@@ -985,7 +985,7 @@ void wxExGuiTestFixture::testViMacros()
   macros.StartRecording("a");
   macros.Record('a');
   macros.Record("test");
-  macros.RecordSeparator();
+  macros.RecordNew();
   macros.StopRecording();
   
   CPPUNIT_ASSERT(!macros.IsRecording());

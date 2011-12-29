@@ -44,7 +44,7 @@ public:
   /// Returns true if all text could be executed.
   bool Playback(wxExVi* vi, const wxString& macro, int repeat = 1);
   
-  /// Records (separated) text to current macro.
+  /// Records text to current macro as a new command.
   /// The text to be recorded should be valid vi command,
   /// though it is not checked here.
   /// If you playback this macro however, the text
@@ -52,10 +52,10 @@ public:
   void Record(const wxString& text);
   
   /// Records single char to current macro.
-  void Record(char c, bool separated = false);
+  void Record(char c, bool new_command = false);
   
-  /// Records a separator only to current macro.
-  void RecordSeparator();
+  /// Records a new command to current macro.
+  void RecordNew();
 
   /// Starts recording a macro (overwrites if exists).
   void StartRecording(const wxString& macro);
