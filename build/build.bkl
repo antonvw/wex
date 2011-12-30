@@ -83,8 +83,8 @@ make-release.bat
   <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">wxExUSE_EMBEDDED_SQL</set>
   <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='0'"></set>
   
-  <set var="VAR_USE_OTL" cond="USE_OTL=='0'"></set>
   <set var="VAR_USE_OTL" cond="USE_OTL=='1'">wxExUSE_OTL</set>
+  <set var="VAR_USE_OTL" cond="USE_OTL=='0'"></set>
   
   <if cond="PLATFORM_UNIX=='1'">
     <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='0'"></set>

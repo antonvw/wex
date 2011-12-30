@@ -66,8 +66,8 @@ WX_VERSION_MAJOR = $(shell echo $(WX_VERSION) | cut -c1,1)
 WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_UNICODE_FLAG) $(WX_CONFIG_SHARED_FLAG) \
 	--toolkit=$(WX_PORT) --version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
-WXEX_CXXFLAGS = $(VAR) $(VAR_5) -DwxExUSE_OTL -I../extension/include \
-	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
+WXEX_CXXFLAGS = $(VAR) $(VAR_3) -I../extension/include `$(WX_CONFIG) --cxxflags \
+	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_app.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_art.o \
@@ -93,7 +93,6 @@ WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_marker.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_menu.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_notebook.o \
-	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_otl.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_printing.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_process.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_property.o \
@@ -114,8 +113,8 @@ WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_version.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_vi.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_vimacros.o
-WXEX_REP_CXXFLAGS = $(VAR) $(VAR_5) -DwxExUSE_OTL -I../extension/include \
-	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
+WXEX_REP_CXXFLAGS = $(VAR) $(VAR_3) -I../extension/include `$(WX_CONFIG) \
+	--cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 WXEX_REP_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_dir.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_dirctrl.o \
@@ -126,46 +125,42 @@ WXEX_REP_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_stc.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_textfile.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_util.o
-WXEX_SAMPLE_CXXFLAGS = $(VAR) $(VAR_5) -I../extension/include `$(WX_CONFIG) \
+WXEX_SAMPLE_CXXFLAGS = $(VAR) $(VAR_3) -I../extension/include `$(WX_CONFIG) \
 	--cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 WXEX_SAMPLE_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_sample_app.o
-WXEX_SAMPLE_REP_CXXFLAGS = $(VAR) $(VAR_5) -I../extension/include `$(WX_CONFIG) \
+WXEX_SAMPLE_REP_CXXFLAGS = $(VAR) $(VAR_3) -I../extension/include `$(WX_CONFIG) \
 	--cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 WXEX_SAMPLE_REP_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_sample_rep_app.o
-WXEX_TEST_BASE_CXXFLAGS = $(VAR) $(VAR_5) -I/usr/include/cppunit \
+WXEX_TEST_BASE_CXXFLAGS = $(VAR) $(VAR_3) -I/usr/include/cppunit \
 	-I../extension/include `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` \
 	$(CPPFLAGS) $(CXXFLAGS)
 WXEX_TEST_BASE_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_test_base_main.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_test_base_test.o
-WXEX_TEST_GUI_CXXFLAGS = $(VAR) $(VAR_5) -I/usr/include/cppunit \
+WXEX_TEST_GUI_CXXFLAGS = $(VAR) $(VAR_3) -I/usr/include/cppunit \
 	-I../extension/include `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` \
 	$(CPPFLAGS) $(CXXFLAGS)
 WXEX_TEST_GUI_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_test_gui_main.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_test_gui_test.o
-WXEX_TEST_GUI_REPORT_CXXFLAGS = $(VAR) $(VAR_5) -I/usr/include/cppunit \
+WXEX_TEST_GUI_REPORT_CXXFLAGS = $(VAR) $(VAR_3) -I/usr/include/cppunit \
 	-I../extension/include `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` \
 	$(CPPFLAGS) $(CXXFLAGS)
 WXEX_TEST_GUI_REPORT_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_test_gui_report_main.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_test_gui_report_test.o
-SYNCPED_CXXFLAGS = $(VAR) $(VAR_5) -DwxExUSE_OTL -I../extension/include \
-	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
+SYNCPED_CXXFLAGS = $(VAR) $(VAR_3) -I../extension/include `$(WX_CONFIG) \
+	--cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 SYNCPED_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped_app.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped_frame.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped_support.o
-SYNCSOCKETSERVER_CXXFLAGS = $(VAR) $(VAR_5) -I../extension/include \
+SYNCSOCKETSERVER_CXXFLAGS = $(VAR) $(VAR_3) -I../extension/include \
 	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 SYNCSOCKETSERVER_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver_app.o
-SYNCODBCQUERY_CXXFLAGS = $(VAR) $(VAR_5) -DwxExUSE_OTL -I../extension/include \
-	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
-SYNCODBCQUERY_OBJECTS =  \
-	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncodbcquery_app.o
 
 ### Conditionally set variables: ###
 
@@ -194,10 +189,10 @@ ifeq ($(WX_DEBUG),1)
 VAR = -O0
 endif
 ifeq ($(WX_DEBUG),0)
-VAR_5 = 
+VAR_3 = 
 endif
 ifeq ($(WX_DEBUG),1)
-VAR_5 = -g
+VAR_3 = -g
 endif
 
 
@@ -207,11 +202,11 @@ $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX):
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-sample $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-sample-rep $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-test-base $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-test-gui $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-test-gui-report $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncodbcquery
+all: test_for_selected_wxbuild $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-sample $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-sample-rep $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-test-base $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-test-gui $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-test-gui-report $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver
 
-install: install_syncped install_syncsocketserver install_syncodbcquery
+install: install_syncped install_syncsocketserver
 
-uninstall: uninstall_syncped uninstall_syncsocketserver uninstall_syncodbcquery
+uninstall: uninstall_syncped uninstall_syncsocketserver
 
 clean: 
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/*.o
@@ -225,7 +220,6 @@ clean:
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-test-gui-report
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver
-	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncodbcquery
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
@@ -241,25 +235,25 @@ $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a: $(WXEX_R
 	$(RANLIB) $@
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-sample: $(WXEX_SAMPLE_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
-	$(CXX) -o $@ $(WXEX_SAMPLE_OBJECTS)   $(VAR_5) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
+	$(CXX) -o $@ $(WXEX_SAMPLE_OBJECTS)   $(VAR_3) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-sample-rep: $(WXEX_SAMPLE_REP_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
-	$(CXX) -o $@ $(WXEX_SAMPLE_REP_OBJECTS)   $(VAR_5) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
+	$(CXX) -o $@ $(WXEX_SAMPLE_REP_OBJECTS)   $(VAR_3) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-test-base: $(WXEX_TEST_BASE_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
-	$(CXX) -o $@ $(WXEX_TEST_BASE_OBJECTS)   $(VAR_5) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a -lcppunit `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
+	$(CXX) -o $@ $(WXEX_TEST_BASE_OBJECTS)   $(VAR_3) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a -lcppunit `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-test-gui: $(WXEX_TEST_GUI_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
-	$(CXX) -o $@ $(WXEX_TEST_GUI_OBJECTS)   $(VAR_5) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a -lcppunit `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
+	$(CXX) -o $@ $(WXEX_TEST_GUI_OBJECTS)   $(VAR_3) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a -lcppunit `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex-test-gui-report: $(WXEX_TEST_GUI_REPORT_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
-	$(CXX) -o $@ $(WXEX_TEST_GUI_REPORT_OBJECTS)   $(VAR_5) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a -lcppunit `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
+	$(CXX) -o $@ $(WXEX_TEST_GUI_REPORT_OBJECTS)   $(VAR_3) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a -lcppunit `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
 
 test-all: 
 	./test-all.sh
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped: $(SYNCPED_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
-	$(CXX) -o $@ $(SYNCPED_OBJECTS)   $(VAR_5) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a -lodbc `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
+	$(CXX) -o $@ $(SYNCPED_OBJECTS)   $(VAR_3) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
 
 install_syncped: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
 	$(INSTALL) -d $(DESTDIR)/usr/local/bin/
@@ -269,7 +263,7 @@ uninstall_syncped:
 	rm -f $(DESTDIR)/usr/local/bin//syncped
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver: $(SYNCSOCKETSERVER_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
-	$(CXX) -o $@ $(SYNCSOCKETSERVER_OBJECTS)   $(VAR_5) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a -lodbc `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,net,xml,core,base`
+	$(CXX) -o $@ $(SYNCSOCKETSERVER_OBJECTS)   $(VAR_3) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,net,xml,core,base`
 
 install_syncsocketserver: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver
 	$(INSTALL) -d $(DESTDIR)/usr/local/bin/
@@ -277,16 +271,6 @@ install_syncsocketserver: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)
 
 uninstall_syncsocketserver: 
 	rm -f $(DESTDIR)/usr/local/bin//syncsocketserver
-
-$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncodbcquery: $(SYNCODBCQUERY_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
-	$(CXX) -o $@ $(SYNCODBCQUERY_OBJECTS)   $(VAR_5) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a -lodbc `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
-
-install_syncodbcquery: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncodbcquery
-	$(INSTALL) -d $(DESTDIR)/usr/local/bin/
-	install -c $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncodbcquery $(DESTDIR)/usr/local/bin/
-
-uninstall_syncodbcquery: 
-	rm -f $(DESTDIR)/usr/local/bin//syncodbcquery
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_app.o: ./../extension/src/app.cpp
 	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
@@ -358,9 +342,6 @@ $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_menu.o: ./../extensi
 	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_notebook.o: ./../extension/src/notebook.cpp
-	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
-
-$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_otl.o: ./../extension/src/otl.cpp
 	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_printing.o: ./../extension/src/printing.cpp
@@ -486,12 +467,8 @@ $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped_support.o: ./../s
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver_app.o: ./../syncsocketserver/app.cpp
 	$(CXX) -c -o $@ $(SYNCSOCKETSERVER_CXXFLAGS) $(CPPDEPS) $<
 
-$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncodbcquery_app.o: ./../syncodbcquery/app.cpp
-	$(CXX) -c -o $@ $(SYNCODBCQUERY_CXXFLAGS) $(CPPDEPS) $<
-
 .PHONY: all install uninstall clean install_syncped uninstall_syncped \
-	install_syncsocketserver uninstall_syncsocketserver install_syncodbcquery \
-	uninstall_syncodbcquery
+	install_syncsocketserver uninstall_syncsocketserver
 
 
 # Dependencies tracking:
