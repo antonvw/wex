@@ -23,6 +23,34 @@ wxExViMacros::wxExViMacros()
 {
 }
 
+const wxString wxExViMacros::Decode(const wxString& text)
+{
+  long c;
+  
+  if (text.ToLong(&c))
+  {
+    return char(c);
+  }
+  
+  return text;
+}
+    
+const wxString wxExViMacros::Encode(const wxString& text, bool& encoded)
+{
+  if (text.length() == 1)
+  {
+    int c = text[0];
+  
+    if (iscntrl(c))
+    {
+      encoded = true;
+      return wxString::Format("%d", c);
+    }
+  }
+
+  return text;  
+}
+
 const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
 {
   std::map<wxString, std::vector< wxString >>::const_iterator it = 
@@ -116,11 +144,19 @@ void wxExViMacros::LoadDocument()
   
       while (command)
       {
-        v.push_back(command->GetNodeContent());
+        if (command->GetAttribute("encoded", "false") == "true")
+        {
+          v.push_back(Decode(command->GetNodeContent()));
+        }
+        else
+        {
+          v.push_back(command->GetNodeContent());
+        }
+        
         command = command->GetNext();
       }
       
-      m_Macros[child->GetName()] = v;
+      m_Macros[child->GetAttribute("name")] = v;
       
       child = child->GetNext();
     }
@@ -183,6 +219,8 @@ bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
 void wxExViMacros::Record(const wxString& text)
 {
   m_Macros[m_Macro].push_back(text);
+  
+  RecordNew();
 }
 
 void wxExViMacros::Record(char c, bool new_command)
@@ -190,9 +228,16 @@ void wxExViMacros::Record(char c, bool new_command)
   if (new_command) 
   {
     m_Macros[m_Macro].push_back(c);
+    
+    RecordNew();
   }
   else
   {
+    if (m_Macros[m_Macro].empty())
+    {
+      RecordNew();
+    }
+    
     m_Macros[m_Macro].back() += c;
   }
 }
@@ -226,19 +271,26 @@ void wxExViMacros::SaveDocument()
     it != m_Macros.rend();
     ++it)
   {
-    wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, it->first);
+    wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "macro");
+    element->AddAttribute("name", it->first);
     
     for (
-      std::vector<wxString>::iterator it2 = it->second.begin();
-      it2 != it->second.end();
+      std::vector<wxString>::reverse_iterator it2 = it->second.rbegin();
+      it2 != it->second.rend();
       ++it2)
     { 
-      const wxString contents(*it2);
+      bool encoded = false;  
+      const wxString contents(Encode(*it2, encoded));
       
       if (!contents.empty())
       {
         wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
         wxXmlNode* content = new wxXmlNode(cmd, wxXML_TEXT_NODE, "", contents);
+        
+        if (encoded)
+        {
+          cmd->AddAttribute("encoded", "true");
+        }
       }
     }
   }

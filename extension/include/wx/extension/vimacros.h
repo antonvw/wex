@@ -71,6 +71,9 @@ public:
 private:  
   static const wxFileName GetFileName();
   static bool Load(wxXmlDocument& doc);
+  
+  static const wxString Encode(const wxString& text, bool& encoded);
+  static const wxString Decode(const wxString& text);
     
   static std::map <wxString, std::vector< wxString > > m_Macros;
   bool m_IsRecording;
