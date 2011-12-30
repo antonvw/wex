@@ -66,7 +66,7 @@ public:
     return m_IsActive && m_Macros.IsRecorded(macro);};
 
   /// A macro is now being recorded.
-  bool MacroIsRecording() const {m_Macros.IsRecording();};
+  bool MacroIsRecording() const {return m_Macros.IsRecording();};
 
   /// Plays back a recorded macro.
   /// If specified macro is empty,
