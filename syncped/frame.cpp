@@ -713,7 +713,6 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_EDIT_INSERT_SEQUENCE: if (editor != NULL) SequenceDialog(editor); break;
 
   case ID_EDIT_MACRO: 
-    wxExViMacros::SaveDocument();
     OpenFile(wxExViMacros::GetFileName().GetFullPath());
     break;
   case ID_EDIT_MACRO_PLAYBACK: if (editor != NULL) editor->GetVi().MacroPlayback(); break;
@@ -1222,6 +1221,11 @@ bool Frame::OpenFile(
 
     wxExSTCWithFrame* editor = (wxExSTCWithFrame*)page;
 
+    if (filename == wxExViMacros::GetFileName().GetFullPath())
+    {
+      wxExViMacros::SaveDocument();
+    }
+    
     if (page == NULL)
     {
       if (wxConfigBase::Get()->ReadBool("HexMode", false))
