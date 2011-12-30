@@ -63,13 +63,15 @@ public:
   /// Stops recording.
   void StopRecording();
   
+  /// Returns the filename with xml document.
+  static const wxFileName GetFileName();
+  
   /// Loads all macros from xml document.
   static void LoadDocument();
   
   /// Saves all macros to xml document.
   static void SaveDocument();
 private:  
-  static const wxFileName GetFileName();
   static bool Load(wxXmlDocument& doc);
   
   static const wxString Encode(const wxString& text, bool& encoded);

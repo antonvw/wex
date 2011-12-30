@@ -96,6 +96,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(ID_EDIT_ADD_HEADER, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_CONTROL_CHAR, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_INSERT_SEQUENCE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_EDIT_MACRO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_PLAYBACK, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, Frame::OnUpdateUI)
@@ -654,6 +655,10 @@ void Frame::OnCommand(wxCommandEvent& event)
       {
         wxExVCS::Read();
       }
+      else if (editor->GetFileName() == wxExViMacros::GetFileName())
+      {
+        wxExViMacros::LoadDocument();
+      }
     }
     break;
   case wxID_SAVEAS:
@@ -707,6 +712,10 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_EDIT_ADD_HEADER: if (editor != NULL) AddHeader(editor); break;
   case ID_EDIT_INSERT_SEQUENCE: if (editor != NULL) SequenceDialog(editor); break;
 
+  case ID_EDIT_MACRO: 
+    wxExViMacros::SaveDocument();
+    OpenFile(wxExViMacros::GetFileName().GetFullPath());
+    break;
   case ID_EDIT_MACRO_PLAYBACK: if (editor != NULL) editor->GetVi().MacroPlayback(); break;
   case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->GetVi().MacroStartRecording(); break;
   case ID_EDIT_MACRO_STOP_RECORD: if (editor != NULL) editor->GetVi().MacroStopRecording(); break;
@@ -1034,6 +1043,12 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           event.Enable(editor->GetLength() > 0);
           break;
 
+        case ID_EDIT_MACRO:
+          event.Enable(
+             editor->GetVi().GetIsActive() &&
+            !editor->GetVi().MacroIsRecording() &&
+             wxExViMacros::GetFileName().FileExists());
+          break;
         case ID_EDIT_MACRO_PLAYBACK:
           event.Enable(editor->GetVi().MacroIsRecorded() && !editor->GetVi().MacroIsRecording());
           break;
