@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Name:      macros.xml
+Purpose:   vi macros for wxextension.
+Author:    Anton van Wezenbeek
+Copyright: (c) 2011, Anton van Wezenbeek
+
+Each macro can have several commands, a 
+command is encoded if the content refers to a
+control character.  
+-->
+<macros>
+</macros>
