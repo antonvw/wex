@@ -202,7 +202,7 @@ bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
           stop = !vi->ExecCommand(*it);
         }
       }
-      else
+      else if (!command.empty())
       {
         stop = !vi->Command(command);
       }
@@ -218,7 +218,16 @@ bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
 
 void wxExViMacros::Record(const wxString& text)
 {
-  m_Macros[m_Macro].push_back(text);
+  if (
+    !m_Macros[m_Macro].empty() &&
+     m_Macros[m_Macro].back().empty())
+  {
+    m_Macros[m_Macro].back() += text;
+  }
+  else
+  {
+    m_Macros[m_Macro].push_back(text);
+  }
   
   RecordNew();
 }
