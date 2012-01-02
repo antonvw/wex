@@ -667,8 +667,8 @@ bool wxExVi::DoCommandRange(const wxString& command)
 
   if (cmd == 'g')
   {
-    // Global search.
-    return Global(address);
+    // Global search (g has no address).
+    return Global(tkz.GetString());
   }
     
   wxString begin_address;
@@ -947,6 +947,10 @@ bool wxExVi::Global(const wxString& search)
     }
     
     // TODO: Do the command.
+    if (command == "d")
+    {
+      // m_STC->Remove()...
+    }
 
     m_STC->SetTargetStart(m_STC->GetTargetEnd());
     m_STC->SetTargetEnd(m_STC->GetTextLength());
