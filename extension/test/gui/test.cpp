@@ -959,6 +959,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->MacroIsRecorded("a"));
   
   CPPUNIT_ASSERT(!vi->MacroIsRecorded("b"));
+  CPPUNIT_ASSERT( vi->MacroIsRecorded());
   
   CPPUNIT_ASSERT( vi->MacroPlayback("a"));
   CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
@@ -972,7 +973,10 @@ void wxExGuiTestFixture::testViMacros()
   wxExViMacros macros;
   
   CPPUNIT_ASSERT(!macros.IsRecording());
-  CPPUNIT_ASSERT(!macros.IsRecorded());
+  
+  // The macros is a static variable, so recording during vi
+  // results in recording here.
+  CPPUNIT_ASSERT( macros.IsRecorded());
   
   macros.StartRecording("a");
   CPPUNIT_ASSERT( macros.IsRecording());
@@ -985,7 +989,6 @@ void wxExGuiTestFixture::testViMacros()
   macros.StartRecording("a");
   macros.Record('a');
   macros.Record("test");
-  macros.RecordNew();
   macros.StopRecording();
   
   CPPUNIT_ASSERT(!macros.IsRecording());
@@ -995,7 +998,7 @@ void wxExGuiTestFixture::testViMacros()
   
   CPPUNIT_ASSERT( macros.Playback(vi, "a"));
   CPPUNIT_ASSERT( macros.Get("a").front() == "a");
-  CPPUNIT_ASSERT( macros.Get("a").back() == "test");
+  CPPUNIT_ASSERT( macros.Get("a").back().empty());
   CPPUNIT_ASSERT(!macros.Playback(vi, "b"));
 }
   
