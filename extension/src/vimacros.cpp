@@ -315,8 +315,17 @@ void wxExViMacros::StartRecording(const wxString& macro)
   }
   
   m_IsRecording = true;
-  m_Macro = macro;
-  m_Macros[m_Macro].clear();
+  
+  // We only use lower case macro's, to be able to
+  // append to them using qA.
+  m_Macro = macro.Lower();
+  
+  // Only clear macro if starts with lower case,
+  // otherwise append to the macro.
+  if (wxIslower(macro[0]))
+  {
+    m_Macros[m_Macro].clear();
+  }
   
   wxLogStatus(_("Macro recording"));
 }

@@ -60,13 +60,15 @@ bool wxExVi::ChangeNumber(bool inc)
     if (inc)
     {
       m_STC->wxStyledTextCtrl::Replace(start, end, 
-        wxString::Format("%d", number++));
+        wxString::Format("%d", ++number));
     }
     else
     {
       m_STC->wxStyledTextCtrl::Replace(start, end, 
-        wxString::Format("%d", number--));
+        wxString::Format("%d", --number));
     }
+    
+    m_STC->MarkerAddChange(m_STC->GetCurrentLine());
     
     return true;
   }
@@ -174,13 +176,14 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   
   switch ((int)command.Last())
   {
-    case WXK_CONTROL_A:
+    case WXK_CONTROL_E:
       if (ChangeNumber(true))
       {
         return true;
       }
       break;
-    case WXK_CONTROL_X:
+      
+    case WXK_CONTROL_J:
       if (ChangeNumber(false))
       {
         return true;
@@ -652,7 +655,7 @@ bool wxExVi::DoCommandRange(const wxString& command)
 {
   // :[address] m destination
   // :[address] s [/pattern/replacement/] [options] [count]
-  wxStringTokenizer tkz(command.AfterFirst(':'), "dmsyw><");
+  wxStringTokenizer tkz(command.AfterFirst(':'), "dgmsyw><");
   
   if (!tkz.HasMoreTokens())
   {
@@ -662,6 +665,12 @@ bool wxExVi::DoCommandRange(const wxString& command)
   const wxString address = tkz.GetNextToken();
   const wxChar cmd = tkz.GetLastDelimiter();
 
+  if (cmd == 'g')
+  {
+    // Global search.
+    return Global(address);
+  }
+    
   wxString begin_address;
   wxString end_address;
     
@@ -689,14 +698,17 @@ bool wxExVi::DoCommandRange(const wxString& command)
   switch (cmd)
   {
   case 0: 
-    return false; break;
+    return false; 
+    break;
     
   case 'd':
     return Delete(begin_address, end_address);
     break;
+    
   case 'm':
     return Move(begin_address, end_address, tkz.GetString());
     break;
+    
   case 's':
     {
     wxStringTokenizer next(tkz.GetString(), "/");
@@ -713,9 +725,11 @@ bool wxExVi::DoCommandRange(const wxString& command)
     return Substitute(begin_address, end_address, pattern, replacement);
     }
     break;
+    
   case 'y':
     return Yank(begin_address, end_address);
     break;
+    
   case 'w':
     return Write(begin_address, end_address, tkz.GetString());
     break;
@@ -902,6 +916,45 @@ void wxExVi::FindWord(bool find_next) const
   
   m_STC->FindNext(
     wxExFindReplaceData::Get()->GetFindString(), m_SearchFlags, find_next);
+}
+
+bool wxExVi::Global(const wxString& search)
+{
+  wxStringTokenizer next(search, "/");
+
+  if (!next.HasMoreTokens())
+  {
+    return false;
+  }
+
+  next.GetNextToken(); // skip empty token
+  const wxString pattern = next.GetNextToken();
+  const wxString command = next.GetNextToken();
+    
+  m_STC->SetSearchFlags(m_SearchFlags);
+
+  m_STC->BeginUndoAction();
+  m_STC->SetTargetStart(0);
+  m_STC->SetTargetEnd(m_STC->GetTextLength());
+
+  while (m_STC->SearchInTarget(pattern) > 0)
+  {
+    const int target_start = m_STC->GetTargetStart();
+
+    if (target_start >= m_STC->GetTargetEnd())
+    {
+      break;
+    }
+    
+    // TODO: Do the command.
+
+    m_STC->SetTargetStart(m_STC->GetTargetEnd());
+    m_STC->SetTargetEnd(m_STC->GetTextLength());
+  }
+
+  m_STC->EndUndoAction();
+
+  return true;
 }
 
 void wxExVi::GotoBrace() const
@@ -1207,8 +1260,8 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     return true;
   }
   else if (
-    event.GetKeyCode() == WXK_CONTROL_A ||
-    event.GetKeyCode() == WXK_CONTROL_X ||
+    event.GetKeyCode() == WXK_CONTROL_J ||
+    event.GetKeyCode() == WXK_CONTROL_E ||
     event.GetKeyCode() == WXK_BACK ||
     event.GetKeyCode() == WXK_ESCAPE ||
     event.GetKeyCode() == WXK_RETURN ||

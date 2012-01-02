@@ -732,6 +732,11 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
 
 void wxExSTC::Cut()
 {
+  if (GetSelectedText().empty())
+  {
+    return;
+  }
+  
   if (!HexMode()) 
   {
     wxStyledTextCtrl::Cut();

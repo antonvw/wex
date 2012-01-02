@@ -112,6 +112,7 @@ private:
   bool DoCommandRange(const wxString& command);
   bool DoCommandSet(const wxString& command);
   void FindWord(bool find_next = true) const;
+  bool Global(const wxString& search);
   void GotoBrace() const;
   bool Indent(
     const wxString& begin_address, 
