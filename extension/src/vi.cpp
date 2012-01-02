@@ -197,9 +197,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         {
           m_InsertText.Truncate(m_InsertText.size() - 1);
         }
+        return false;
       }
-      m_STC->CharLeft();
-      return true;
+      else
+      {
+        m_STC->CharLeft();
+        return true;
+      }
       break;
       
     case WXK_ESCAPE:
