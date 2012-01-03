@@ -176,8 +176,6 @@ void wxExManagedFrame::HideViBar()
   {
     m_Manager.GetPane("VIBAR").Hide();
     m_Manager.Update();
-    
-    m_viTextCtrl->GetVi()->GetSTC()->SetFocus();
   }
 }
   
@@ -328,6 +326,7 @@ void wxExViTextCtrl::OnEnter(wxCommandEvent& event)
     }
       
     m_Frame->HideViBar();
+    m_vi->GetSTC()->SetFocus();
   }
 }
 

@@ -40,6 +40,10 @@ public:
 
   /// Returns true if the page can be closed.
   virtual bool AllowClose(wxWindowID id, wxWindow* page);
+  
+  /// Executes a vi command that can result
+  /// in changing stc, if command is being played back.
+  virtual wxExSTC* ExecViCommand(int command) {return NULL;};
 
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};

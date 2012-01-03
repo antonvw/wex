@@ -20,6 +20,7 @@ std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
 
 wxExViMacros::wxExViMacros()
   : m_IsRecording(false)
+  , m_IsPlayback(false)
 {
 }
 
@@ -174,6 +175,8 @@ bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
   vi->GetSTC()->BeginUndoAction();
   
   bool stop = false;
+  
+  m_IsPlayback = true;
     
   for (int i = 0; i < repeat; i++)
   {
@@ -212,6 +215,8 @@ bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
   vi->GetSTC()->EndUndoAction();
   
   wxLogStatus(!stop ? _("Macro played back"): _("Macro aborted"));
+  
+  m_IsPlayback = false;
   
   return !stop;
 }

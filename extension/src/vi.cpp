@@ -806,13 +806,21 @@ bool wxExVi::ExecCommand(const wxString& command)
   }
   else if (command == "n")
   {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_NEXT);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    wxExSTC* stc = m_Frame->ExecViCommand(ID_EDIT_NEXT);
+    
+    if (m_Macros.IsPlayback())
+    {
+      m_STC = stc;
+    }
   }
   else if (command == "prev")
   {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_PREVIOUS);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    wxExSTC* stc = m_Frame->ExecViCommand(ID_EDIT_PREVIOUS);
+    
+    if (m_Macros.IsPlayback())
+    {
+      m_STC = stc;
+    }
   }
   else if (command == "q")
   {
@@ -1106,7 +1114,11 @@ bool wxExVi::MacroPlayback(const wxString& macro, int repeat)
     choice = dialog.GetStringSelection();
   }
   
+  wxExSTC* stc = m_STC;
+  
   const bool ok = m_Macros.Playback(this, choice, repeat);
+  
+  m_STC = stc;
   
   if (ok)
   {
