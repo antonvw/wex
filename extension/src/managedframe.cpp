@@ -170,12 +170,17 @@ bool wxExManagedFrame::GetViCommandIsFindPrevious() const
   return m_viTextPrefix->GetLabel() == "?";
 }
 
-void wxExManagedFrame::HideViBar()
+void wxExManagedFrame::HideViBar(bool set_focus)
 {
   if (m_Manager.GetPane("VIBAR").IsShown())
   {
     m_Manager.GetPane("VIBAR").Hide();
     m_Manager.Update();
+    
+    if (set_focus &&  m_viTextCtrl != NULL && m_viTextCtrl->GetVi() != NULL)
+    {
+      m_viTextCtrl->GetVi()->GetSTC()->SetFocus();
+    }
   }
 }
   
@@ -326,7 +331,6 @@ void wxExViTextCtrl::OnEnter(wxCommandEvent& event)
     }
       
     m_Frame->HideViBar();
-    m_vi->GetSTC()->SetFocus();
   }
 }
 
