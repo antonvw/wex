@@ -69,7 +69,8 @@ public:
   bool GetViCommandIsFindPrevious() const;
   
   /// Hides the vi bar.
-  void HideViBar();
+  /// Default it sets focus back to stc component associated with current vi.
+  void HideViBar(bool set_focus = true);
 
   /// Called if the notebook changed page.
   virtual void OnNotebook(wxWindowID id, wxWindow* page);

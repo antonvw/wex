@@ -779,6 +779,8 @@ bool wxExVi::ExecCommand(const wxString& command)
   }
   
   MacroRecord(command);
+  
+  bool set_focus = true;
 
   if (command == "$")
   {
@@ -812,6 +814,8 @@ bool wxExVi::ExecCommand(const wxString& command)
     {
       m_STC = stc;
     }
+    
+    set_focus = false;
   }
   else if (command == "prev")
   {
@@ -821,6 +825,8 @@ bool wxExVi::ExecCommand(const wxString& command)
     {
       m_STC = stc;
     }
+    
+    set_focus = false;
   }
   else if (command == "q")
   {
@@ -904,7 +910,8 @@ bool wxExVi::ExecCommand(const wxString& command)
     }
   }
   
-  m_Frame->HideViBar();
+  m_Frame->HideViBar(set_focus);
+  
   return true;
 }
 
