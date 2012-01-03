@@ -37,6 +37,9 @@ public:
   /// Is macro recorded.
   bool IsRecorded(const wxString& macro = wxEmptyString) const;
   
+  /// Are we playing back?
+  bool IsPlayback() const {return m_IsPlayback;};
+  
   /// Are we recording?
   bool IsRecording() const {return m_IsRecording;};
   
@@ -78,6 +81,7 @@ private:
   static const wxString Decode(const wxString& text);
     
   static std::map <wxString, std::vector< wxString > > m_Macros;
+  bool m_IsPlayback;
   bool m_IsRecording;
   wxString m_Macro;
 };

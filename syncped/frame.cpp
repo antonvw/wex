@@ -74,8 +74,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_MENU(wxID_JUMP_TO, Frame::OnCommand)
   EVT_MENU(wxID_SELECTALL, Frame::OnCommand)
   EVT_MENU(wxID_STOP, Frame::OnCommand)
-  EVT_MENU(ID_EDIT_NEXT, Frame::OnCommand)
-  EVT_MENU(ID_EDIT_PREVIOUS, Frame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, Frame::OnCommand)
   EVT_MENU_RANGE(wxID_CLOSE, wxID_PREFERENCES, Frame::OnCommand)
   EVT_MENU_RANGE(ID_APPL_LOWEST, ID_APPL_HIGHEST, Frame::OnCommand)
@@ -411,6 +409,38 @@ bool Frame::DialogProjectOpen()
   return true;
 }
 
+wxExSTC* Frame::ExecViCommand(int command)
+{
+  switch (command)
+  {
+  case ID_EDIT_NEXT:
+    if (m_Editors->GetSelection() == 
+        m_Editors->GetPageCount() - 1)
+    {
+      m_Editors->SetSelection(0);
+    }
+    else
+    {
+      m_Editors->AdvanceSelection();
+    }
+    break;
+  case ID_EDIT_PREVIOUS:
+    if (m_Editors->GetSelection() == 0)
+    {
+      m_Editors->SetSelection(
+        m_Editors->GetPageCount() - 1);
+    }
+    else
+    {
+      m_Editors->AdvanceSelection(false);
+    }
+    break;
+  }
+  
+  return (wxExSTC*)m_Editors->
+    GetPage(m_Editors->GetSelection());
+}
+
 wxExListViewFile* Frame::GetProject()
 {
   if 
@@ -719,29 +749,6 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->GetVi().MacroStartRecording(); break;
   case ID_EDIT_MACRO_STOP_RECORD: if (editor != NULL) editor->GetVi().MacroStopRecording(); break;
   
-  case ID_EDIT_NEXT:
-    if (m_Editors->GetSelection() == 
-        m_Editors->GetPageCount() - 1)
-    {
-      m_Editors->SetSelection(0);
-    }
-    else
-    {
-      m_Editors->AdvanceSelection();
-    }
-    break;
-  case ID_EDIT_PREVIOUS:
-    if (m_Editors->GetSelection() == 0)
-    {
-      m_Editors->SetSelection(
-        m_Editors->GetPageCount() - 1);
-    }
-    else
-    {
-      m_Editors->AdvanceSelection(false);
-    }
-    break;
-
   case ID_OPTION_EDITOR:
     wxExSTC::ConfigDialog(this,
       _("Editor Options"),
