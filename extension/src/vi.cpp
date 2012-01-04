@@ -965,14 +965,22 @@ bool wxExVi::Global(const wxString& search)
       break;
     }
     
-    // TODO: Do the command.
+    // TODO: Add more commands.
     if (command == "d")
     {
-      // m_STC->Remove()...
+      m_STC->MarkTargetChange();
+      
+      const int begin = m_STC->PositionFromLine(m_STC->LineFromPosition(m_STC->GetTargetStart()));
+      const int end = m_STC->PositionFromLine(m_STC->LineFromPosition(m_STC->GetTargetEnd()) + 1);
+      
+      m_STC->Remove(begin, end);
+      m_STC->SetTargetStart(end);
+      m_STC->SetTargetEnd(m_STC->GetTextLength());
     }
-
-    m_STC->SetTargetStart(m_STC->GetTargetEnd());
-    m_STC->SetTargetEnd(m_STC->GetTextLength());
+    else
+    {
+      break;
+    }
   }
 
   m_STC->EndUndoAction();
