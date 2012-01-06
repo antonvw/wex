@@ -82,22 +82,22 @@ one of these applications, being a full featured source code text editor.
     `patch -p0 -i fixes.patch`
 
 - doxy document sources  
-  API documentation is generated from the sources using Doxygen (1.7.1)
+  API documentation is generated from the sources using Doxygen (1.7.1)   
   http://www.stack.nl/~dimitri/doxygen/
 
 - translation is done using poedit (1.4.6)  
   http://www.poedit.net/
   wxextension has it's own localization file, your application should
-  also add it's own one(add _() around text strings), 
+  also add it's own one (add _() around text strings), 
   and also put the standard wxwidgets localization file
   in the localization dir.  
   The place where to put your po files can be found by running wxex-sample,
-  that shows the folder on the status bar. 
+  that shows the folder on the status bar.   
   You can also test other languages using the special LANG config item,
   e.g. setting it to 80 allows you to test french translation.
 
 - automated testing is done using cppunit (1.12)  
-  http://sourceforge.net/projects/cppunit:
+  http://sourceforge.net/projects/cppunit:   
     `sudo apt-get install libcppunit-dev`  
   add a test for it in 
   - extension/test/base
