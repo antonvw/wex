@@ -76,98 +76,7 @@ bool wxExVi::ChangeNumber(bool inc)
   return false;
 }
 
-void wxExVi::Delete(int lines) const
-{
-  if (m_STC->GetReadOnly())
-  {
-    return;
-  }
-  
-  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-  const int start_pos = m_STC->PositionFromLine(line);
-  const int end_pos = m_STC->PositionFromLine(line + lines);
-  const int linecount = m_STC->GetLineCount();
-    
-  m_STC->SetSelectionStart(start_pos);
-
-  if (end_pos != -1)
-  {
-    m_STC->SetSelectionEnd(end_pos);
-  }
-  else
-  {
-    m_STC->DocumentEndExtend();
-  }
-
-  if (m_STC->GetSelectedText().empty())
-  {
-    m_STC->DeleteBack();
-  }
-  else
-  {
-    m_STC->Cut();
-  }
-
-  if (lines >= 2)
-  {
-    m_Frame->ShowViMessage(
-      wxString::Format(_("%d fewer lines"), 
-      linecount - m_STC->GetLineCount()));
-  }
-}
-
-bool wxExVi::Delete(
-  const wxString& begin_address, 
-  const wxString& end_address)
-{
-  if (m_STC->GetReadOnly() || m_STC->HexMode())
-  {
-    return false;
-  }
-  
-  if (!SetSelection(begin_address, end_address))
-  {
-    return false;
-  }
-
-  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
-  
-  m_STC->Cut();
-
-  if (begin_address.StartsWith("'"))
-  {
-    DeleteMarker(begin_address.GetChar(1));
-  }
-
-  if (end_address.StartsWith("'"))
-  {
-    DeleteMarker(end_address.GetChar(1));
-  }
-
-  if (lines >= 2)
-  {
-    m_Frame->ShowViMessage(wxString::Format(_("%d fewer lines"), lines));
-  }
-
-  return true;
-}
-
-void wxExVi::DeleteMarker(const wxUniChar& marker)
-{
-#ifdef wxExUSE_CPP0X	
-  const auto it = m_Markers.find(marker);
-#else
-  const std::map<wxUniChar, int>::iterator it = m_Markers.find(marker);
-#endif
-
-  if (it != m_Markers.end())
-  {
-    m_STC->MarkerDelete(it->second - 1, m_MarkerSymbol.GetNo());
-    m_Markers.erase(it);
-  }
-}
-
-bool wxExVi::DoCommand(const wxString& command, bool dot)
+bool wxExVi::Command(const wxString& command, bool dot)
 {
   if (command.empty())
   {
@@ -297,7 +206,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     if (command.length() > 1)
     {
       // This is a previous entered command.
-      return DoCommandRange(command);
+      return CommandRange(command);
     }
     else
     {
@@ -623,7 +532,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case '?': m_Frame->GetViCommand(this, command.Last());
         break;
 
-      case '.': DoCommand(m_LastCommand, true); break;
+      case '.': Command(m_LastCommand, true); break;
       case ';': Command(m_LastFindCharCommand); break;
       case '~': ToggleCase(); break;
       case '$': m_STC->LineEnd(); break;
@@ -655,7 +564,229 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   return handled;
 }
 
-bool wxExVi::DoCommandRange(const wxString& command)
+bool wxExVi::CommandGlobal(const wxString& search)
+{
+  wxStringTokenizer next(search, "/");
+
+  if (!next.HasMoreTokens())
+  {
+    return false;
+  }
+
+  next.GetNextToken(); // skip empty token
+  const wxString pattern = next.GetNextToken();
+  const wxString command = next.GetNextToken();
+  const wxString replacement = next.GetNextToken();
+  
+  wxString print;
+    
+  m_STC->SetSearchFlags(m_SearchFlags);
+
+  m_STC->BeginUndoAction();
+  m_STC->SetTargetStart(0);
+  m_STC->SetTargetEnd(m_STC->GetTextLength());
+
+  while (m_STC->SearchInTarget(pattern) > 0)
+  {
+    const int target_start = m_STC->GetTargetStart();
+
+    if (target_start >= m_STC->GetTargetEnd())
+    {
+      break;
+    }
+    
+    // TODO: Add more commands.
+    if (command == "d")
+    {
+      m_STC->MarkTargetChange();
+      
+      const int begin = m_STC->PositionFromLine(m_STC->LineFromPosition(m_STC->GetTargetStart()));
+      const int end = m_STC->PositionFromLine(m_STC->LineFromPosition(m_STC->GetTargetEnd()) + 1);
+      
+      m_STC->Remove(begin, end);
+      m_STC->SetTargetStart(end);
+      m_STC->SetTargetEnd(m_STC->GetTextLength());
+    }
+    else if (command == "p")
+    {
+      print += wxString::Format("%s:%d %s\n",
+        m_STC->GetFileName().GetFullPath().c_str(),
+        m_STC->LineFromPosition(m_STC->GetTargetStart()) + 1,
+        m_STC->GetTextRange(m_STC->GetTargetStart(), m_STC->GetTargetEnd()));
+      
+      m_STC->SetTargetStart(m_STC->GetTargetEnd());
+      m_STC->SetTargetEnd(m_STC->GetTextLength());
+    }
+    else if (command == "s")
+    {
+      m_STC->MarkTargetChange();
+      const int target_start = m_STC->GetTargetStart();
+      const int length = m_STC->ReplaceTargetRE(replacement); // always RE!
+      m_STC->SetTargetStart(target_start + length);
+      m_STC->SetTargetEnd(m_STC->GetTextLength());
+    }
+    else
+    {
+      wxBell();
+      return false;
+    }
+  }
+  
+  if (command == "p")
+  {
+    m_Frame->OpenFile("print", print);
+  }
+
+  m_STC->EndUndoAction();
+
+  return true;
+}
+
+bool wxExVi::CommandLine(const wxString& command)
+{
+  if (!m_IsActive || command.empty())
+  {
+    return false;
+  }
+  
+  MacroRecord(command);
+  
+  bool set_focus = true;
+
+  if (command == "$")
+  {
+    m_STC->DocumentEnd();
+  }
+  else if (command == "close")
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_CLOSE);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == "d")
+  {
+    Delete(1);
+  }
+  else if (command.StartsWith("e"))
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
+    
+    if (command.Contains(" "))
+    {
+      event.SetString(command.AfterFirst(' '));
+    }
+    
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == "n")
+  {
+    wxExSTC* stc = m_Frame->ExecViCommand(ID_EDIT_NEXT);
+    
+    if (m_Macros.IsPlayback())
+    {
+      m_STC = stc;
+    }
+    
+    set_focus = false;
+  }
+  else if (command == "prev")
+  {
+    wxExSTC* stc = m_Frame->ExecViCommand(ID_EDIT_PREVIOUS);
+    
+    if (m_Macros.IsPlayback())
+    {
+      m_STC = stc;
+    }
+    
+    set_focus = false;
+  }
+  else if (command == "q")
+  {
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == "q!")
+  {
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    event.SetCanVeto(false); 
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command.StartsWith("r"))
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_READ);
+    event.SetString(command.AfterFirst(' '));
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  // e.g. set ts=4
+  else if (command.StartsWith("set "))
+  {
+    return CommandSet(command.Mid(4));
+  }
+  else if (command.StartsWith("w"))
+  {
+    if (command.Contains(" "))
+    {
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVEAS);
+      event.SetString(command.AfterFirst(' '));
+      wxPostEvent(wxTheApp->GetTopWindow(), event);
+    }
+    else
+    {
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE);
+      wxPostEvent(wxTheApp->GetTopWindow(), event);
+    }
+  }
+  else if (command == "x")
+  {
+    wxPostEvent(wxTheApp->GetTopWindow(), 
+      wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
+      
+    wxPostEvent(wxTheApp->GetTopWindow(), 
+      wxCloseEvent(wxEVT_CLOSE_WINDOW));
+  }
+  else if (command == "y")
+  {
+    Yank(1);
+  }
+  else if (command.Last() == '=')
+  {
+    const int no = ToLineNumber(command.BeforeLast('='));
+    
+    if (no == 0)
+    {
+      return false;
+    }
+    
+    m_Frame->ShowViMessage(wxString::Format("%d", no));
+    return true;
+  }
+  else if (command.StartsWith("!"))
+  {
+    m_Process->Execute(command.AfterFirst('!'));
+  }
+  else if (command.IsNumber())
+  {
+    m_STC->GotoLineAndSelect(atoi(command.c_str()));
+  }
+  else
+  {
+    if (CommandRange(":" + command))
+    {
+      m_LastCommand = ":" + command;
+      m_InsertText.clear();
+    }
+    else
+    {
+      wxBell();
+      return false;
+    }
+  }
+  
+  m_Frame->HideViBar(set_focus);
+  
+  return true;
+}
+
+bool wxExVi::CommandRange(const wxString& command)
 {
   // :[address] m destination
   // :[address] s [/pattern/replacement/] [options] [count]
@@ -672,7 +803,7 @@ bool wxExVi::DoCommandRange(const wxString& command)
   if (cmd == 'g')
   {
     // Global search (g has no address).
-    return Global(tkz.GetString());
+    return CommandGlobal(tkz.GetString());
   }
     
   wxString begin_address;
@@ -751,7 +882,7 @@ bool wxExVi::DoCommandRange(const wxString& command)
   }
 }
 
-bool wxExVi::DoCommandSet(const wxString& command)
+bool wxExVi::CommandSet(const wxString& command)
 {
   // e.g. set ts=4
   if (command.StartsWith("ts") || command.StartsWith("tabstop"))
@@ -771,148 +902,95 @@ bool wxExVi::DoCommandSet(const wxString& command)
   return false;
 }
 
-bool wxExVi::ExecCommand(const wxString& command)
+void wxExVi::Delete(int lines) const
 {
-  if (!m_IsActive || command.empty())
+  if (m_STC->GetReadOnly())
+  {
+    return;
+  }
+  
+  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  const int start_pos = m_STC->PositionFromLine(line);
+  const int end_pos = m_STC->PositionFromLine(line + lines);
+  const int linecount = m_STC->GetLineCount();
+    
+  m_STC->SetSelectionStart(start_pos);
+
+  if (end_pos != -1)
+  {
+    m_STC->SetSelectionEnd(end_pos);
+  }
+  else
+  {
+    m_STC->DocumentEndExtend();
+  }
+
+  if (m_STC->GetSelectedText().empty())
+  {
+    m_STC->DeleteBack();
+  }
+  else
+  {
+    m_STC->Cut();
+  }
+
+  if (lines >= 2)
+  {
+    m_Frame->ShowViMessage(
+      wxString::Format(_("%d fewer lines"), 
+      linecount - m_STC->GetLineCount()));
+  }
+}
+
+bool wxExVi::Delete(
+  const wxString& begin_address, 
+  const wxString& end_address)
+{
+  if (m_STC->GetReadOnly() || m_STC->HexMode())
   {
     return false;
   }
   
-  MacroRecord(command);
-  
-  bool set_focus = true;
+  if (!SetSelection(begin_address, end_address))
+  {
+    return false;
+  }
 
-  if (command == "$")
-  {
-    m_STC->DocumentEnd();
-  }
-  else if (command == "close")
-  {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_CLOSE);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == "d")
-  {
-    Delete(1);
-  }
-  else if (command.StartsWith("e"))
-  {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
-    
-    if (command.Contains(" "))
-    {
-      event.SetString(command.AfterFirst(' '));
-    }
-    
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == "n")
-  {
-    wxExSTC* stc = m_Frame->ExecViCommand(ID_EDIT_NEXT);
-    
-    if (m_Macros.IsPlayback())
-    {
-      m_STC = stc;
-    }
-    
-    set_focus = false;
-  }
-  else if (command == "prev")
-  {
-    wxExSTC* stc = m_Frame->ExecViCommand(ID_EDIT_PREVIOUS);
-    
-    if (m_Macros.IsPlayback())
-    {
-      m_STC = stc;
-    }
-    
-    set_focus = false;
-  }
-  else if (command == "q")
-  {
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == "q!")
-  {
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    event.SetCanVeto(false); 
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command.StartsWith("r"))
-  {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_READ);
-    event.SetString(command.AfterFirst(' '));
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  // e.g. set ts=4
-  else if (command.StartsWith("set "))
-  {
-    return DoCommandSet(command.Mid(4));
-  }
-  else if (command.StartsWith("w"))
-  {
-    if (command.Contains(" "))
-    {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVEAS);
-      event.SetString(command.AfterFirst(' '));
-      wxPostEvent(wxTheApp->GetTopWindow(), event);
-    }
-    else
-    {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE);
-      wxPostEvent(wxTheApp->GetTopWindow(), event);
-    }
-  }
-  else if (command == "x")
-  {
-    wxPostEvent(wxTheApp->GetTopWindow(), 
-      wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
-      
-    wxPostEvent(wxTheApp->GetTopWindow(), 
-      wxCloseEvent(wxEVT_CLOSE_WINDOW));
-  }
-  else if (command == "y")
-  {
-    Yank(1);
-  }
-  else if (command.Last() == '=')
-  {
-    const int no = ToLineNumber(command.BeforeLast('='));
-    
-    if (no == 0)
-    {
-      return false;
-    }
-    
-    m_Frame->ShowViMessage(wxString::Format("%d", no));
-    return true;
-  }
-  else if (command.StartsWith("!"))
-  {
-    m_Process->Execute(command.AfterFirst('!'));
-  }
-  else if (command.IsNumber())
-  {
-    m_STC->GotoLineAndSelect(atoi(command.c_str()));
-  }
-  else
-  {
-    if (DoCommandRange(":" + command))
-    {
-      m_LastCommand = ":" + command;
-      m_InsertText.clear();
-    }
-    else
-    {
-      wxBell();
-      return false;
-    }
-  }
+  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
   
-  m_Frame->HideViBar(set_focus);
-  
+  m_STC->Cut();
+
+  if (begin_address.StartsWith("'"))
+  {
+    DeleteMarker(begin_address.GetChar(1));
+  }
+
+  if (end_address.StartsWith("'"))
+  {
+    DeleteMarker(end_address.GetChar(1));
+  }
+
+  if (lines >= 2)
+  {
+    m_Frame->ShowViMessage(wxString::Format(_("%d fewer lines"), lines));
+  }
+
   return true;
+}
+
+void wxExVi::DeleteMarker(const wxUniChar& marker)
+{
+#ifdef wxExUSE_CPP0X	
+  const auto it = m_Markers.find(marker);
+#else
+  const std::map<wxUniChar, int>::iterator it = m_Markers.find(marker);
+#endif
+
+  if (it != m_Markers.end())
+  {
+    m_STC->MarkerDelete(it->second - 1, m_MarkerSymbol.GetNo());
+    m_Markers.erase(it);
+  }
 }
 
 bool wxExVi::FindNext(const wxString& text, bool find_next)
@@ -935,73 +1013,6 @@ void wxExVi::FindWord(bool find_next) const
   
   m_STC->FindNext(
     wxExFindReplaceData::Get()->GetFindString(), m_SearchFlags, find_next);
-}
-
-bool wxExVi::Global(const wxString& search)
-{
-  wxStringTokenizer next(search, "/");
-
-  if (!next.HasMoreTokens())
-  {
-    return false;
-  }
-
-  next.GetNextToken(); // skip empty token
-  const wxString pattern = next.GetNextToken();
-  const wxString command = next.GetNextToken();
-  
-  wxString print;
-    
-  m_STC->SetSearchFlags(m_SearchFlags);
-
-  m_STC->BeginUndoAction();
-  m_STC->SetTargetStart(0);
-  m_STC->SetTargetEnd(m_STC->GetTextLength());
-
-  while (m_STC->SearchInTarget(pattern) > 0)
-  {
-    const int target_start = m_STC->GetTargetStart();
-
-    if (target_start >= m_STC->GetTargetEnd())
-    {
-      break;
-    }
-    
-    // TODO: Add more commands.
-    if (command == "d")
-    {
-      m_STC->MarkTargetChange();
-      
-      const int begin = m_STC->PositionFromLine(m_STC->LineFromPosition(m_STC->GetTargetStart()));
-      const int end = m_STC->PositionFromLine(m_STC->LineFromPosition(m_STC->GetTargetEnd()) + 1);
-      
-      m_STC->Remove(begin, end);
-      m_STC->SetTargetStart(end);
-      m_STC->SetTargetEnd(m_STC->GetTextLength());
-    }
-    else if (command == "p")
-    {
-      print += wxString::Format("%d %s\n",
-        m_STC->LineFromPosition(m_STC->GetTargetStart()) + 1,
-        m_STC->GetTextRange(m_STC->GetTargetStart(), m_STC->GetTargetEnd()));
-      
-      m_STC->SetTargetStart(m_STC->GetTargetEnd());
-      m_STC->SetTargetEnd(m_STC->GetTextLength());
-    }
-    else
-    {
-      return false;
-    }
-  }
-  
-  if (command == "p")
-  {
-    m_Frame->OpenFile("print", print);
-  }
-
-  m_STC->EndUndoAction();
-
-  return true;
 }
 
 void wxExVi::GotoBrace() const

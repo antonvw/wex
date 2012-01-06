@@ -742,9 +742,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_EDIT_ADD_HEADER: if (editor != NULL) AddHeader(editor); break;
   case ID_EDIT_INSERT_SEQUENCE: if (editor != NULL) SequenceDialog(editor); break;
 
-  case ID_EDIT_MACRO: 
-    OpenFile(wxExViMacros::GetFileName().GetFullPath());
-    break;
+  case ID_EDIT_MACRO: OpenFile(wxExViMacros::GetFileName()); break;
   case ID_EDIT_MACRO_PLAYBACK: if (editor != NULL) editor->GetVi().MacroPlayback(); break;
   case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->GetVi().MacroStartRecording(); break;
   case ID_EDIT_MACRO_STOP_RECORD: if (editor != NULL) editor->GetVi().MacroStopRecording(); break;
@@ -755,7 +753,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY,
       event.GetId());
     break;
-    
+
   case ID_OPTION_COMPARATOR: 
     {
       std::vector<wxExConfigItem> v;

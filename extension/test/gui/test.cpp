@@ -913,9 +913,9 @@ void wxExGuiTestFixture::testVi()
   vi->Use(true);
   CPPUNIT_ASSERT( vi->GetIsActive());
   
-  CPPUNIT_ASSERT( vi->ExecCommand("$"));
-  CPPUNIT_ASSERT( vi->ExecCommand("100"));
-  CPPUNIT_ASSERT(!vi->ExecCommand("xxx"));
+  CPPUNIT_ASSERT( vi->CommandLine("$"));
+  CPPUNIT_ASSERT( vi->CommandLine("100"));
+  CPPUNIT_ASSERT(!vi->CommandLine("xxx"));
   
   CPPUNIT_ASSERT(!vi->GetInsertMode());
   

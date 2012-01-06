@@ -29,14 +29,14 @@ public:
   /// Destructor.
  ~wxExVi();
  
-  /// Executes command in command mode.
+  /// Executes command in command mode (like 'j', or 'y').
   /// Returns true if the command was executed.
-  bool Command(const wxString& command) {return DoCommand(command, false);};
+  bool Command(const wxString& command, bool dot = false);
   
-  /// Executes vi: command that was entered on the vi bar,
+  /// Executes vi: command that was entered on the vi bar command line,
   /// or present as modeline command inside a file.
   /// Returns true if the command was executed.
-  bool ExecCommand(const wxString& command);
+  bool CommandLine(const wxString& command);
 
   /// Finds next.
   /// Returns true if text was found.
@@ -103,16 +103,15 @@ public:
   void Use(bool mode) {m_IsActive = mode;};
 private:
   bool ChangeNumber(bool inc);
+  bool CommandGlobal(const wxString& search);
+  bool CommandRange(const wxString& command);
+  bool CommandSet(const wxString& command);
   void Delete(int lines) const;
   bool Delete(
     const wxString& begin_address, 
     const wxString& end_address);
   void DeleteMarker(const wxUniChar& marker);
-  bool DoCommand(const wxString& command, bool dot);
-  bool DoCommandRange(const wxString& command);
-  bool DoCommandSet(const wxString& command);
   void FindWord(bool find_next = true) const;
-  bool Global(const wxString& search);
   void GotoBrace() const;
   bool Indent(
     const wxString& begin_address, 
