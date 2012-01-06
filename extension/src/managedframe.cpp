@@ -305,7 +305,7 @@ void wxExViTextCtrl::OnEnter(wxCommandEvent& event)
   {
     if (m_vi != NULL)
     {
-      if (m_vi->ExecCommand(GetValue()))
+      if (m_vi->CommandLine(GetValue()))
       {
         wxConfigBase::Get()->Write("vicommand", GetValue());
       }

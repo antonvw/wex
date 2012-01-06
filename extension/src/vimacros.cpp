@@ -202,7 +202,7 @@ bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
         
         if (it != m_Macros[macro].end())
         {
-          stop = !vi->ExecCommand(*it);
+          stop = !vi->CommandLine(*it);
         }
       }
       else if (!command.empty())
