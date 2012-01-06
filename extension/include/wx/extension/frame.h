@@ -69,6 +69,12 @@ public:
     const wxExVCSEntry& vcs,
     long flags = 0);
     
+  /// Allows you to open a filename with specified contents.
+  virtual bool OpenFile(
+    const wxString& filename,
+    const wxString& text,
+    long flags = 0);
+    
   /// Sets the find focus to specified window.
   void SetFindFocus(wxWindow* focus);
   

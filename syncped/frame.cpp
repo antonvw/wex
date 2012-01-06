@@ -1172,6 +1172,34 @@ bool Frame::OpenFile(
 }
 
 bool Frame::OpenFile(
+  const wxString& filename,
+  const wxString& text,
+  long flags)
+{
+  const wxString key = filename;
+
+  wxWindow* page = m_Editors->SelectPage(key);
+
+  if (page == NULL)
+  {
+    wxExSTCWithFrame* editor = new wxExSTCWithFrame(
+      m_Editors, 
+      this,
+      text,
+      flags,
+      filename);
+
+    m_Editors->AddPage(
+      editor,
+      key,
+      filename,
+      true);
+  }
+
+  return true;
+}
+  
+bool Frame::OpenFile(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,

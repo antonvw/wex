@@ -949,6 +949,8 @@ bool wxExVi::Global(const wxString& search)
   next.GetNextToken(); // skip empty token
   const wxString pattern = next.GetNextToken();
   const wxString command = next.GetNextToken();
+  
+  wxString print;
     
   m_STC->SetSearchFlags(m_SearchFlags);
 
@@ -977,10 +979,24 @@ bool wxExVi::Global(const wxString& search)
       m_STC->SetTargetStart(end);
       m_STC->SetTargetEnd(m_STC->GetTextLength());
     }
+    else if (command == "p")
+    {
+      print += wxString::Format("%d %s\n",
+        m_STC->LineFromPosition(m_STC->GetTargetStart()) + 1,
+        m_STC->GetTextRange(m_STC->GetTargetStart(), m_STC->GetTargetEnd()));
+      
+      m_STC->SetTargetStart(m_STC->GetTargetEnd());
+      m_STC->SetTargetEnd(m_STC->GetTextLength());
+    }
     else
     {
-      break;
+      return false;
     }
+  }
+  
+  if (command == "p")
+  {
+    m_Frame->OpenFile("print", print);
   }
 
   m_STC->EndUndoAction();

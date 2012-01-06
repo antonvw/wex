@@ -116,7 +116,7 @@ DecoratedFrame::DecoratedFrame()
   menuMacro->AppendSeparator();
   menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl+M"));
   menuMacro->AppendSeparator();
-  menuMacro->Append(ID_EDIT_MACRO, _("Edit"));
+  menuMacro->Append(ID_EDIT_MACRO, wxGetStockLabel(wxID_EDIT));
   menuEdit->AppendSubMenu(menuMacro, _("&Macro"));
 
   wxExMenu *menuView = new wxExMenu;

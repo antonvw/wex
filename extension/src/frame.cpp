@@ -437,6 +437,25 @@ bool wxExFrame::OpenFile(
   return true;
 }
 
+bool wxExFrame::OpenFile(
+  const wxString& filename,
+  const wxString& text,
+  long flags)
+{
+  wxExSTC* stc = GetSTC();
+
+  if (stc != NULL)
+  {
+    stc->SetText(text);
+  }
+  else
+  {
+    wxLogMessage(text);
+  }
+
+  return true;
+}
+    
 void wxExFrame::SetFindFocus(wxWindow* focus)
 {
   m_FindFocus = focus;
