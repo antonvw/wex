@@ -55,6 +55,10 @@ private:
     const wxExFileName& filename,
     const wxExVCSEntry& vcs,
     long flags = 0);
+  virtual bool OpenFile(
+    const wxString& filename,
+    const wxString& text,
+    long flags = 0);
   void SequenceDialog(wxExSTC* stc);
   virtual void StatusBarDoubleClicked(const wxString& pane);
   virtual void StatusBarDoubleClickedRight(const wxString& pane);
