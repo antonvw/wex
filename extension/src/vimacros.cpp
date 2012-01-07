@@ -54,7 +54,7 @@ const wxString wxExViMacros::Encode(const wxString& text, bool& encoded)
 
 const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
 {
-  std::map<wxString, std::vector< wxString >>::const_iterator it = 
+  std::map<wxString, std::vector< wxString > >::const_iterator it = 
     m_Macros.find(macro);
     
   if (it != m_Macros.end())
