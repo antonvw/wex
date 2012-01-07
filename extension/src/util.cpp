@@ -388,16 +388,7 @@ int wxExGetLineNumber(const wxString& text)
 
   const wxString linenumber = text.substr(pos_char + 1);
 
-  long line;
-
-  if (linenumber.ToLong(&line))
-  {
-    return line;
-  }
-  else
-  {
-    return 0;
-  }
+  return atoi(linenumber.c_str());
 }
 
 const wxString wxExGetWord(
