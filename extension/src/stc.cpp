@@ -1129,7 +1129,7 @@ void wxExSTC::GuessType()
     
   if (ex.Matches(text))
   {
-    m_vi.CommandLine(text.AfterFirst(':').Trim(false));
+    m_vi.Command(":" + text.AfterFirst(':').Trim(false));
   }
 
   if      (text.Contains("\r\n")) SetEOLMode(wxSTC_EOL_CRLF);

@@ -26,6 +26,7 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <sources>../extension/src/configitem.cpp</sources>
     <sources>../extension/src/dialog.cpp</sources>
     <sources>../extension/src/dir.cpp</sources>
+    <sources>../extension/src/ex.cpp</sources>
     <sources>../extension/src/file.cpp</sources>
     <sources>../extension/src/filename.cpp</sources>
     <sources>../extension/src/filedlg.cpp</sources>
@@ -75,6 +76,7 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <headers>../extension/include/wx/extension/defs.h</headers>
     <headers>../extension/include/wx/extension/dialog.h</headers>
     <headers>../extension/include/wx/extension/dir.h</headers>
+    <headers>../extension/include/wx/extension/ex.h</headers>
     <headers>../extension/include/wx/extension/file.h</headers>
     <headers>../extension/include/wx/extension/filedlg.h</headers>
     <headers>../extension/include/wx/extension/filename.h</headers>

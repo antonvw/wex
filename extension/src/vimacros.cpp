@@ -11,8 +11,8 @@
 #endif
 #include <wx/stdpaths.h>
 #include <wx/extension/vimacros.h>
+#include <wx/extension/ex.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/vi.h>
 
 #if wxUSE_GUI
 
@@ -164,7 +164,7 @@ void wxExViMacros::LoadDocument()
   }
 }
 
-bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
+bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
 {
   if (!IsRecorded(macro))
   {
@@ -172,7 +172,7 @@ bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
     return false;
   }
   
-  vi->GetSTC()->BeginUndoAction();
+  ex->GetSTC()->BeginUndoAction();
   
   bool stop = false;
   
@@ -187,32 +187,14 @@ bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
     { 
       const wxString command(*it);
 
-      if (command == "/" || command == "?")
+      if (!command.empty())
       {
-        ++it;
-        
-        if (it != m_Macros[macro].end())
-        {
-          stop = !vi->FindNext(*it, command == "/");
-        }
-      }
-      else if (command == ":")
-      {
-        ++it;
-        
-        if (it != m_Macros[macro].end())
-        {
-          stop = !vi->CommandLine(*it);
-        }
-      }
-      else if (!command.empty())
-      {
-        stop = !vi->Command(command);
+        stop = !ex->Command(command);
       }
     }
   }
 
-  vi->GetSTC()->EndUndoAction();
+  ex->GetSTC()->EndUndoAction();
   
   wxLogStatus(!stop ? _("Macro played back"): _("Macro aborted"));
   

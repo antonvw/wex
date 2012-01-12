@@ -15,10 +15,10 @@
 
 #if wxUSE_GUI
 
-class wxExVi;
+class wxExEx;
 
 /// Offers the macro collection, and allows
-/// recording and playback to vi component.
+/// recording and playback to vi (ex) component.
 class WXDLLIMPEXP_BASE wxExViMacros
 {
 public:  
@@ -43,15 +43,15 @@ public:
   /// Are we recording?
   bool IsRecording() const {return m_IsRecording;};
   
-  /// Plays back macro a number of repeat times on the vi component.
+  /// Plays back macro a number of repeat times on the ex component.
   /// Returns true if all text could be executed.
-  bool Playback(wxExVi* vi, const wxString& macro, int repeat = 1);
+  bool Playback(wxExEx* ex, const wxString& macro, int repeat = 1);
   
   /// Records text to current macro as a new command.
-  /// The text to be recorded should be valid vi command,
+  /// The text to be recorded should be valid ex command,
   /// though it is not checked here.
   /// If you playback this macro however, the text
-  /// is sent to the vi component to execute it.
+  /// is sent to the ex component to execute it.
   void Record(const wxString& text);
   
   /// Records single char to current macro.

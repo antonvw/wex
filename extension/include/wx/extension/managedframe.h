@@ -19,8 +19,8 @@
 
 class wxStaticText;
 class wxExToolBar;
-class wxExVi;
-class wxExViTextCtrl;
+class wxExEx;
+class wxExExTextCtrl;
 
 /// Offers an aui managed frame with a notebook multiple document interface,
 /// used by the notebook classes, and toolbar, findbar and vibar support.
@@ -41,42 +41,33 @@ public:
   /// Returns true if the page can be closed.
   virtual bool AllowClose(wxWindowID id, wxWindow* page);
   
-  /// Executes a vi command that can result
+  /// Executes a ex command that can result
   /// in changing stc, if command is being played back.
-  virtual wxExSTC* ExecViCommand(int command) {return NULL;};
-
-  /// Gets the manager.
-  wxAuiManager& GetManager() {return m_Manager;};
+  virtual wxExSTC* ExecExCommand(int command) {return NULL;};
 
   /// Gets a command line vi command.
   /// It shows the vibar, sets the label and 
   /// sets focus to it, allowing
   /// you to enter a command.
   /// You can override it to e.g. hide other panels.
-  virtual void GetViCommand(
-    /// the vi on which command is to be done
-    wxExVi* vi, 
+  virtual void GetExCommand(
+    /// the ex on which command is to be done
+    wxExEx* ex, 
     /// label for the vibar (like / or ? or :)
     const wxString& label);
   
-  /// Returns true if vi command is a find (next or previous) command.
-  bool GetViCommandIsFind() const;
-  
-  /// Returns true if vi command is a find next.
-  bool GetViCommandIsFindNext() const;
-  
-  /// Returns true if vi command is a find previous.
-  bool GetViCommandIsFindPrevious() const;
-  
+  /// Gets the manager.
+  wxAuiManager& GetManager() {return m_Manager;};
+
   /// Hides the vi bar.
   /// Default it sets focus back to stc component associated with current vi.
-  void HideViBar(bool set_focus = true);
+  void HideExBar(bool set_focus = true);
 
   /// Called if the notebook changed page.
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
   /// Shows text in vi bar.
-  void ShowViMessage(const wxString& text);
+  void ShowExMessage(const wxString& text);
   
   /// Called after all pages from the notebooks are deleted.
   virtual void SyncCloseAll(wxWindowID id);
@@ -93,12 +84,12 @@ private:
     wxWindow* window, 
     const wxString& name, 
     const wxString& caption = wxEmptyString);
-  wxPanel* CreateViPanel();
+  wxPanel* CreateExPanel();
   
   wxAuiManager m_Manager;
   wxExToolBar* m_ToolBar;
-  wxExViTextCtrl* m_viTextCtrl;
-  wxStaticText* m_viTextPrefix;
+  wxExExTextCtrl* m_exTextCtrl;
+  wxStaticText* m_exTextPrefix;
   
   DECLARE_EVENT_TABLE()
 };

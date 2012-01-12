@@ -249,7 +249,7 @@ void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
       {
         const wxString key = GetKeyByPage(GetPage(GetSelection()));
         ErasePage(key);
-        m_Frame->HideViBar();
+        m_Frame->HideExBar();
         event.Skip(); // call base
       }
     }
