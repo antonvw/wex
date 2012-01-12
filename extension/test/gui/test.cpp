@@ -183,6 +183,17 @@ void wxExGuiTestFixture::testDialog()
   wxExDialog(wxTheApp->GetTopWindow(), "hello").Show();
 }
 
+void wxExGuiTestFixture::testEx()
+{
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), 
+    "// vi: set ts=120 "
+    "// this is a modeline");
+    
+  CPPUNIT_ASSERT(stc->GetTabWidth() == 120);
+  
+  wxExEx* ex = new wxExEx(stc);
+}
+
 void wxExGuiTestFixture::testFrame()
 {
   wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
@@ -505,11 +516,7 @@ void wxExGuiTestFixture::testManagedFrame()
   wxExSTC* stc = new wxExSTC(frame, "hello world");
   wxExVi* vi = &stc->GetVi();
   
-  frame->GetViCommand(vi, "/");
-  
-  CPPUNIT_ASSERT( frame->GetViCommandIsFind());
-  CPPUNIT_ASSERT( frame->GetViCommandIsFindNext());
-  CPPUNIT_ASSERT(!frame->GetViCommandIsFindPrevious());
+  frame->GetExCommand(vi, "/");
 }
 
 void wxExGuiTestFixture::testMarker()
@@ -913,9 +920,9 @@ void wxExGuiTestFixture::testVi()
   vi->Use(true);
   CPPUNIT_ASSERT( vi->GetIsActive());
   
-  CPPUNIT_ASSERT( vi->CommandLine("$"));
-  CPPUNIT_ASSERT( vi->CommandLine("100"));
-  CPPUNIT_ASSERT(!vi->CommandLine("xxx"));
+  CPPUNIT_ASSERT( vi->Command(":$"));
+  CPPUNIT_ASSERT( vi->Command(":100"));
+  CPPUNIT_ASSERT(!vi->Command(":xxx"));
   
   CPPUNIT_ASSERT(!vi->GetInsertMode());
   
@@ -1017,6 +1024,10 @@ wxExAppTestSuite::wxExAppTestSuite()
     "testDialog",
     &wxExGuiTestFixture::testDialog));
     
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testEx",
+    &wxExGuiTestFixture::testEx));
+
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testFrame",
     &wxExGuiTestFixture::testFrame));

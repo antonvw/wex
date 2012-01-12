@@ -52,6 +52,7 @@ public:
   void testConfigDialog();
   void testConfigItem();
   void testDialog();
+  void testEx();
   void testFrame();
   void testFrd();
   void testGrid();

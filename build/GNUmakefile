@@ -75,6 +75,7 @@ WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_configitem.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_dialog.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_dir.o \
+	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_ex.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_file.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_filename.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_filedlg.o \
@@ -288,6 +289,9 @@ $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_dialog.o: ./../exten
 	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_dir.o: ./../extension/src/dir.cpp
+	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
+
+$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_ex.o: ./../extension/src/ex.cpp
 	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_file.o: ./../extension/src/file.cpp
