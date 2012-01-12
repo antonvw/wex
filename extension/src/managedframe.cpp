@@ -295,7 +295,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   {
     if (m_ex != NULL)
     {
-      if (m_ex->Command(":" + GetValue()))
+      if (m_ex->Command(m_Prefix->GetLabel() + GetValue()))
       {
         wxConfigBase::Get()->Write("excommand", GetValue());
       }
@@ -311,7 +311,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
         
         if (m_ex != NULL)
         {
-          m_ex->MacroRecord(GetValue());
+          m_ex->MacroRecord(m_Prefix->GetLabel() + GetValue());
         }
       }
     }
@@ -351,14 +351,7 @@ void wxExExTextCtrl::OnKey(wxKeyEvent& event)
   }
   else
   {
-    if (key != WXK_RETURN)
-    {
-      m_UserInput = true;
-    }
-    else
-    {
-      m_UserInput = m_Found;
-    }
+    m_UserInput = true;
     
     event.Skip();
   }

@@ -72,27 +72,26 @@ bool wxExVi::Command(const wxString& command)
   
   if (!m_InsertMode)
   {
-    if (command[0] == '/' || command[0] == '?')
-    {
-      MacroRecord(command);
-
-      return GetSTC()->FindNext(
-         command,
-         m_SearchFlags,
-         command[0] == '/');
-    }
-    else if (command.StartsWith(":"))
+    if (command.StartsWith(":"))
     { 
       if (command.length() > 1)
       {
         // This is a previous entered command.
-        return wxExEx::Command(command.Mid(1));
+        return wxExEx::Command(command);
       }
       else
       {
         GetFrame()->GetExCommand(this, command);
         return true;
       }
+    }
+    else if (
+      command.length() > 1 && (command.StartsWith("/") || command.StartsWith("?")))
+    {
+      return GetSTC()->FindNext(
+        command.Mid(1),
+        m_SearchFlags,
+        command.StartsWith("/"));
     }
   }
   
@@ -401,6 +400,7 @@ bool wxExVi::Command(const wxString& command)
     if (!MacroIsRecording())
     {
       MacroStartRecording(command.Mid(1));
+      return false;
     }
   } 
   else if (command.Matches("*@@"))
@@ -526,7 +526,9 @@ bool wxExVi::Command(const wxString& command)
         for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack(); break;
 
       case '/': 
-      case '?': GetFrame()->GetExCommand(this, command.Last());
+      case '?': 
+        GetFrame()->GetExCommand(this, command.Last());
+        return false;
         break;
 
       case '.': 
@@ -712,14 +714,6 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     {
       m_Command += event.GetUnicodeKey();
       
-      if (MacroIsRecording())
-      {
-        if (event.GetUnicodeKey() != 'q')
-        {
-          m_Macros.Record(event.GetUnicodeKey());
-        }
-      }
-
       if (Command(m_Command))
       {
         if ((m_Command.length() > 1 && !m_Command.Matches("m?")) || 
@@ -743,7 +737,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
         
         if (MacroIsRecording())
         {
-          m_Macros.RecordNew();
+          m_Macros.Record(event.GetUnicodeKey(), true);
         }
         
         m_Command.clear();
@@ -842,27 +836,4 @@ void wxExVi::ToggleCase()
   const int line = GetSTC()->LineFromPosition(GetSTC()->GetCurrentPos());
   GetSTC()->MarkerAddChange(line);
 }
-
-void wxExVi::Yank(int lines)
-{
-  const int line = GetSTC()->LineFromPosition(GetSTC()->GetCurrentPos());
-  const int start = GetSTC()->PositionFromLine(line);
-  const int end = GetSTC()->PositionFromLine(line + lines);
-
-  if (end != -1)
-  {
-    GetSTC()->CopyRange(start, end);
-  }
-  else
-  {
-    GetSTC()->CopyRange(start, GetSTC()->GetLastPosition());
-  }
-
-  if (lines >= 2)
-  {
-    GetFrame()->ShowExMessage(wxString::Format(_("%d lines yanked"), 
-      wxExGetNumberOfLines(wxExClipboardGet()) - 1));
-  }
-}
-
 #endif // wxUSE_GUI
