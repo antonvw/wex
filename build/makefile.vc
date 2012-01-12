@@ -63,13 +63,12 @@ TARGET_CPU = X86
 ### Variables: ###
 
 COMPILER_PREFIX = vc
-WXEX_CXXFLAGS = /MD$(VAR_16) /DWIN32 $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
+WXEX_CXXFLAGS = /MD$(VAR_10) /DWIN32 $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) /D__WXMSW__ \
 	/I$(WX_DIR)$(__WXLIBPATH_FILENAMES)\msw$(WXLIBPOSTFIX) \
-	/I$(WX_DIR)\include $(VAR) $(VAR_12) $(VAR_14) \
+	/I$(WX_DIR)\include $(VAR) $(VAR_6) $(VAR_8) \
 	/Fd$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.pdb \
-	/DwxExUSE_OTL /DwxExUSE_PORTABLE /I..\extension\include /GR /EHsc $(CPPFLAGS) \
-	$(CXXFLAGS)
+	/DwxExUSE_PORTABLE /I..\extension\include /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
 WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_app.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_art.obj \
@@ -77,6 +76,7 @@ WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_configitem.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_dialog.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_dir.obj \
+	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_ex.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_file.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_filename.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_filedlg.obj \
@@ -95,7 +95,6 @@ WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_marker.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_menu.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_notebook.obj \
-	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_otl.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_printing.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_process.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_property.obj \
@@ -116,13 +115,12 @@ WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_version.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_vi.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_vimacros.obj
-WXEX_REP_CXXFLAGS = /MD$(VAR_16) /DWIN32 $(____WX_SHARED) \
+WXEX_REP_CXXFLAGS = /MD$(VAR_10) /DWIN32 $(____WX_SHARED) \
 	$(__WXUNICODE_DEFINE_p) $(__WXDEBUG_DEFINE_p) /D__WXMSW__ \
 	/I$(WX_DIR)$(__WXLIBPATH_FILENAMES_1)\msw$(WXLIBPOSTFIX) \
-	/I$(WX_DIR)\include $(VAR) $(VAR_12) $(VAR_14) \
+	/I$(WX_DIR)\include $(VAR) $(VAR_6) $(VAR_8) \
 	/Fd$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.pdb \
-	/DwxExUSE_OTL /DwxExUSE_PORTABLE /I..\extension\include /GR /EHsc $(CPPFLAGS) \
-	$(CXXFLAGS)
+	/DwxExUSE_PORTABLE /I..\extension\include /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
 WXEX_REP_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_dir.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_dirctrl.obj \
@@ -133,59 +131,48 @@ WXEX_REP_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_stc.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_textfile.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_util.obj
-WXEX_SAMPLE_CXXFLAGS = /MD$(VAR_16) /DWIN32 $(____WX_SHARED) \
+WXEX_SAMPLE_CXXFLAGS = /MD$(VAR_10) /DWIN32 $(____WX_SHARED) \
 	$(__WXUNICODE_DEFINE_p) $(__WXDEBUG_DEFINE_p) /D__WXMSW__ \
 	/I$(WX_DIR)$(__WXLIBPATH_FILENAMES_2)\msw$(WXLIBPOSTFIX) \
-	/I$(WX_DIR)\include /D_WINDOWS $(VAR) $(VAR_12) $(VAR_14) \
+	/I$(WX_DIR)\include /D_WINDOWS $(VAR) $(VAR_6) $(VAR_8) \
 	/Fd$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-sample.pdb \
 	/I..\extension\include /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
 WXEX_SAMPLE_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_sample_app.obj
 WXEX_SAMPLE_RESOURCES =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_sample_app.res
-WXEX_SAMPLE_REP_CXXFLAGS = /MD$(VAR_16) /DWIN32 $(____WX_SHARED) \
+WXEX_SAMPLE_REP_CXXFLAGS = /MD$(VAR_10) /DWIN32 $(____WX_SHARED) \
 	$(__WXUNICODE_DEFINE_p) $(__WXDEBUG_DEFINE_p) /D__WXMSW__ \
 	/I$(WX_DIR)$(__WXLIBPATH_FILENAMES_5)\msw$(WXLIBPOSTFIX) \
-	/I$(WX_DIR)\include /D_WINDOWS $(VAR) $(VAR_12) $(VAR_14) \
+	/I$(WX_DIR)\include /D_WINDOWS $(VAR) $(VAR_6) $(VAR_8) \
 	/Fd$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-sample-rep.pdb \
 	/I..\extension\include /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
 WXEX_SAMPLE_REP_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_sample_rep_app.obj
 WXEX_SAMPLE_REP_RESOURCES =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_sample_rep_app.res
-SYNCPED_CXXFLAGS = /MD$(VAR_16) /DWIN32 $(____WX_SHARED) \
+SYNCPED_CXXFLAGS = /MD$(VAR_10) /DWIN32 $(____WX_SHARED) \
 	$(__WXUNICODE_DEFINE_p) $(__WXDEBUG_DEFINE_p) /D__WXMSW__ \
 	/I$(WX_DIR)$(__WXLIBPATH_FILENAMES_8)\msw$(WXLIBPOSTFIX) \
-	/I$(WX_DIR)\include /D_WINDOWS $(VAR) $(VAR_12) $(VAR_14) \
+	/I$(WX_DIR)\include /D_WINDOWS $(VAR) $(VAR_6) $(VAR_8) \
 	/Fd$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped.pdb \
-	/DwxExUSE_OTL /DwxExUSE_PORTABLE /I..\extension\include /GR /EHsc $(CPPFLAGS) \
-	$(CXXFLAGS)
+	/DwxExUSE_PORTABLE /I..\extension\include /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
 SYNCPED_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped_app.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped_frame.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped_support.obj
 SYNCPED_RESOURCES =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped_app.res
-SYNCSOCKETSERVER_CXXFLAGS = /MD$(VAR_16) /DWIN32 $(____WX_SHARED) \
+SYNCSOCKETSERVER_CXXFLAGS = /MD$(VAR_10) /DWIN32 $(____WX_SHARED) \
 	$(__WXUNICODE_DEFINE_p) $(__WXDEBUG_DEFINE_p) /D__WXMSW__ \
 	/I$(WX_DIR)$(__WXLIBPATH_FILENAMES_11)\msw$(WXLIBPOSTFIX) \
-	/I$(WX_DIR)\include /D_WINDOWS $(VAR) $(VAR_12) $(VAR_14) \
+	/I$(WX_DIR)\include /D_WINDOWS $(VAR) $(VAR_6) $(VAR_8) \
 	/Fd$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver.pdb \
 	/I..\extension\include /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
 SYNCSOCKETSERVER_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver_app.obj
 SYNCSOCKETSERVER_RESOURCES =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver_app.res
-SYNCODBCQUERY_CXXFLAGS = /MD$(VAR_16) /DWIN32 $(____WX_SHARED) \
-	$(__WXUNICODE_DEFINE_p) $(__WXDEBUG_DEFINE_p) /D__WXMSW__ \
-	/I$(WX_DIR)$(__WXLIBPATH_FILENAMES_14)\msw$(WXLIBPOSTFIX) \
-	/I$(WX_DIR)\include /D_WINDOWS $(VAR) $(VAR_12) $(VAR_14) \
-	/Fd$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery.pdb \
-	/DwxExUSE_OTL /I..\extension\include /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
-SYNCODBCQUERY_OBJECTS =  \
-	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery_app.obj
-SYNCODBCQUERY_RESOURCES =  \
-	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery_app.res
 
 ### Conditionally set variables: ###
 
@@ -244,7 +231,7 @@ __WXLIBPATH_FILENAMES_4 = \lib\$(COMPILER_PREFIX)$(WXCPU)_dll
 ____wxex_sample__DEBUGINFO_31 = 
 !endif
 !if "$(WX_DEBUG)" == "1"
-____wxex_sample__DEBUGINFO_31 = $(VAR_17)
+____wxex_sample__DEBUGINFO_31 = $(VAR_11)
 !endif
 !if "$(WX_SHARED)" == "0"
 __WXLIBPATH_FILENAMES_5 = \lib\$(COMPILER_PREFIX)$(WXCPU)_lib
@@ -268,7 +255,7 @@ __WXLIBPATH_FILENAMES_7 = \lib\$(COMPILER_PREFIX)$(WXCPU)_dll
 ____wxex_sample_rep__DEBUGINFO_43 = 
 !endif
 !if "$(WX_DEBUG)" == "1"
-____wxex_sample_rep__DEBUGINFO_43 = $(VAR_17)
+____wxex_sample_rep__DEBUGINFO_43 = $(VAR_11)
 !endif
 !if "$(WX_SHARED)" == "0"
 __WXLIBPATH_FILENAMES_8 = \lib\$(COMPILER_PREFIX)$(WXCPU)_lib
@@ -292,7 +279,7 @@ __WXLIBPATH_FILENAMES_10 = \lib\$(COMPILER_PREFIX)$(WXCPU)_dll
 ____syncped__DEBUGINFO_55 = 
 !endif
 !if "$(WX_DEBUG)" == "1"
-____syncped__DEBUGINFO_55 = $(VAR_17)
+____syncped__DEBUGINFO_55 = $(VAR_11)
 !endif
 !if "$(WX_SHARED)" == "0"
 __WXLIBPATH_FILENAMES_11 = \lib\$(COMPILER_PREFIX)$(WXCPU)_lib
@@ -316,34 +303,10 @@ __WXLIBPATH_FILENAMES_13 = \lib\$(COMPILER_PREFIX)$(WXCPU)_dll
 ____syncsocketserver__DEBUGINFO_67 = 
 !endif
 !if "$(WX_DEBUG)" == "1"
-____syncsocketserver__DEBUGINFO_67 = $(VAR_17)
+____syncsocketserver__DEBUGINFO_67 = $(VAR_11)
 !endif
 !if "$(WX_MONOLITHIC)" == "0"
 __WXLIB_NET_NAME_p = wxbase$(WX_VERSION)$(WXLIBPOSTFIX)_net.lib
-!endif
-!if "$(WX_SHARED)" == "0"
-__WXLIBPATH_FILENAMES_14 = \lib\$(COMPILER_PREFIX)$(WXCPU)_lib
-!endif
-!if "$(WX_SHARED)" == "1"
-__WXLIBPATH_FILENAMES_14 = \lib\$(COMPILER_PREFIX)$(WXCPU)_dll
-!endif
-!if "$(WX_SHARED)" == "0"
-__WXLIBPATH_FILENAMES_15 = \lib\$(COMPILER_PREFIX)$(WXCPU)_lib
-!endif
-!if "$(WX_SHARED)" == "1"
-__WXLIBPATH_FILENAMES_15 = \lib\$(COMPILER_PREFIX)$(WXCPU)_dll
-!endif
-!if "$(WX_SHARED)" == "0"
-__WXLIBPATH_FILENAMES_16 = \lib\$(COMPILER_PREFIX)$(WXCPU)_lib
-!endif
-!if "$(WX_SHARED)" == "1"
-__WXLIBPATH_FILENAMES_16 = \lib\$(COMPILER_PREFIX)$(WXCPU)_dll
-!endif
-!if "$(WX_DEBUG)" == "0"
-____syncodbcquery__DEBUGINFO_79 = 
-!endif
-!if "$(WX_DEBUG)" == "1"
-____syncodbcquery__DEBUGINFO_79 = $(VAR_17)
 !endif
 !if "$(WX_SHARED)" == "0"
 ____WX_SHARED = 
@@ -352,22 +315,22 @@ ____WX_SHARED =
 ____WX_SHARED = /DWXUSINGDLL
 !endif
 !if "$(WX_SHARED)" == "0"
-____WX_SHARED_3 = 
+____WX_SHARED_2 = 
 !endif
 !if "$(WX_SHARED)" == "1"
-____WX_SHARED_3 = /d WXUSINGDLL
+____WX_SHARED_2 = /d WXUSINGDLL
 !endif
 !if "$(WX_UNICODE)" == "1"
 __WXUNICODE_DEFINE_p = /D_UNICODE
 !endif
 !if "$(WX_UNICODE)" == "1"
-__WXUNICODE_DEFINE_p_1_0 = /d _UNICODE
+__WXUNICODE_DEFINE_p_11 = /d _UNICODE
 !endif
 !if "$(WX_DEBUG)" == "1"
 __WXDEBUG_DEFINE_p = /D__WXDEBUG__
 !endif
 !if "$(WX_DEBUG)" == "1"
-__WXDEBUG_DEFINE_p_1_0 = /d __WXDEBUG__
+__WXDEBUG_DEFINE_p_11 = /d __WXDEBUG__
 !endif
 !if "$(WX_DEBUG)" == "0"
 VAR = /O2
@@ -376,40 +339,40 @@ VAR = /O2
 VAR = /Od
 !endif
 !if "$(WX_DEBUG)" == "0"
-VAR_12 = 
+VAR_6 = 
 !endif
 !if "$(WX_DEBUG)" == "1"
-VAR_12 = /Zi
+VAR_6 = /Zi
 !endif
 !if "$(WX_DEBUG)" == "0"
-VAR_13 = 
+VAR_7 = 
 !endif
 !if "$(WX_DEBUG)" == "1"
-VAR_13 = /DEBUG
+VAR_7 = /DEBUG
 !endif
 !if "$(WX_DEBUG)" == "0"
-VAR_14 = 
+VAR_8 = 
 !endif
 !if "$(WX_DEBUG)" == "1"
-VAR_14 = /D_DEBUG
+VAR_8 = /D_DEBUG
 !endif
 !if "$(WX_DEBUG)" == "0"
-VAR_15 = 
+VAR_9 = 
 !endif
 !if "$(WX_DEBUG)" == "1"
-VAR_15 = /d _DEBUG
+VAR_9 = /d _DEBUG
 !endif
 !if "$(WX_DEBUG)" == "0"
-VAR_16 = 
+VAR_10 = 
 !endif
 !if "$(WX_DEBUG)" == "1"
-VAR_16 = d
+VAR_10 = d
 !endif
 !if "$(WX_DEBUG)" == "0"
-VAR_17 = /opt:ref /opt:icf
+VAR_11 = /opt:ref /opt:icf
 !endif
 !if "$(WX_DEBUG)" == "1"
-VAR_17 = 
+VAR_11 = 
 !endif
 !if "$(WX_MONOLITHIC)" == "0"
 __WXLIB_AUI_NAME_p = wxmsw$(WX_VERSION)$(WXLIBPOSTFIX)_aui.lib
@@ -458,7 +421,7 @@ $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX):
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-sample.exe $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-sample-rep.exe $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped.exe $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver.exe $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery.exe
+all: test_for_selected_wxbuild $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-sample.exe $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-sample-rep.exe $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped.exe $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver.exe
 
 clean: 
 	-if exist $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\*.obj del $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\*.obj
@@ -478,9 +441,6 @@ clean:
 	-if exist $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver.exe del $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver.exe
 	-if exist $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver.ilk del $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver.ilk
 	-if exist $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver.pdb del $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver.pdb
-	-if exist $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery.exe del $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery.exe
-	-if exist $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery.ilk del $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery.ilk
-	-if exist $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery.pdb del $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery.pdb
 
 test_for_selected_wxbuild: 
 	@if not exist $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX)\wx\setup.h \
@@ -507,28 +467,23 @@ $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib: $
 <<
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-sample.exe: $(WXEX_SAMPLE_OBJECTS) $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_sample_app.res $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib
-	link /NOLOGO /OUT:$@  /LIBPATH:$(WX_DIR)$(__WXLIBPATH_FILENAMES_4) $(WXMACHINE_FLAG) /SUBSYSTEM:WINDOWS $(VAR_13) /pdb:"$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-sample.pdb" $(____wxex_sample__DEBUGINFO_31) $(LDFLAGS) @<<
+	link /NOLOGO /OUT:$@  /LIBPATH:$(WX_DIR)$(__WXLIBPATH_FILENAMES_4) $(WXMACHINE_FLAG) /SUBSYSTEM:WINDOWS $(VAR_7) /pdb:"$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-sample.pdb" $(____wxex_sample__DEBUGINFO_31) $(LDFLAGS) @<<
 	$(WXEX_SAMPLE_OBJECTS) $(WXEX_SAMPLE_RESOURCES)  $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib $(__WXLIB_AUI_NAME_p) $(__WXLIB_STC_NAME_p) wxscintilla$(WX3RDPARTYLIBPOSTFIX).lib $(__WXLIB_HTML_NAME_p) $(__WXLIB_ADV_NAME_p) $(__WXLIB_XML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) wxtiff$(WX3RDPARTYLIBPOSTFIX).lib wxjpeg$(WX3RDPARTYLIBPOSTFIX).lib wxpng$(WX3RDPARTYLIBPOSTFIX).lib wxzlib$(WX3RDPARTYLIBPOSTFIX).lib wxregex$(WXLIBPOSTFIX).lib wxexpat$(WX3RDPARTYLIBPOSTFIX).lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib oleacc.lib
 <<
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-sample-rep.exe: $(WXEX_SAMPLE_REP_OBJECTS) $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_sample_rep_app.res $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib
-	link /NOLOGO /OUT:$@  /LIBPATH:$(WX_DIR)$(__WXLIBPATH_FILENAMES_7) $(WXMACHINE_FLAG) /SUBSYSTEM:WINDOWS $(VAR_13) /pdb:"$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-sample-rep.pdb" $(____wxex_sample_rep__DEBUGINFO_43) $(LDFLAGS) @<<
+	link /NOLOGO /OUT:$@  /LIBPATH:$(WX_DIR)$(__WXLIBPATH_FILENAMES_7) $(WXMACHINE_FLAG) /SUBSYSTEM:WINDOWS $(VAR_7) /pdb:"$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-sample-rep.pdb" $(____wxex_sample_rep__DEBUGINFO_43) $(LDFLAGS) @<<
 	$(WXEX_SAMPLE_REP_OBJECTS) $(WXEX_SAMPLE_REP_RESOURCES)  $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib $(__WXLIB_AUI_NAME_p) $(__WXLIB_STC_NAME_p) wxscintilla$(WX3RDPARTYLIBPOSTFIX).lib $(__WXLIB_HTML_NAME_p) $(__WXLIB_ADV_NAME_p) $(__WXLIB_XML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) wxtiff$(WX3RDPARTYLIBPOSTFIX).lib wxjpeg$(WX3RDPARTYLIBPOSTFIX).lib wxpng$(WX3RDPARTYLIBPOSTFIX).lib wxzlib$(WX3RDPARTYLIBPOSTFIX).lib wxregex$(WXLIBPOSTFIX).lib wxexpat$(WX3RDPARTYLIBPOSTFIX).lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib oleacc.lib
 <<
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped.exe: $(SYNCPED_OBJECTS) $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped_app.res $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib
-	link /NOLOGO /OUT:$@  /LIBPATH:$(WX_DIR)$(__WXLIBPATH_FILENAMES_10) $(WXMACHINE_FLAG) /SUBSYSTEM:WINDOWS $(VAR_13) /pdb:"$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped.pdb" $(____syncped__DEBUGINFO_55) $(LDFLAGS) @<<
-	$(SYNCPED_OBJECTS) $(SYNCPED_RESOURCES)  $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib odbc32.lib $(__WXLIB_AUI_NAME_p) $(__WXLIB_STC_NAME_p) wxscintilla$(WX3RDPARTYLIBPOSTFIX).lib $(__WXLIB_HTML_NAME_p) $(__WXLIB_ADV_NAME_p) $(__WXLIB_XML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) wxtiff$(WX3RDPARTYLIBPOSTFIX).lib wxjpeg$(WX3RDPARTYLIBPOSTFIX).lib wxpng$(WX3RDPARTYLIBPOSTFIX).lib wxzlib$(WX3RDPARTYLIBPOSTFIX).lib wxregex$(WXLIBPOSTFIX).lib wxexpat$(WX3RDPARTYLIBPOSTFIX).lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib oleacc.lib
+	link /NOLOGO /OUT:$@  /LIBPATH:$(WX_DIR)$(__WXLIBPATH_FILENAMES_10) $(WXMACHINE_FLAG) /SUBSYSTEM:WINDOWS $(VAR_7) /pdb:"$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped.pdb" $(____syncped__DEBUGINFO_55) $(LDFLAGS) @<<
+	$(SYNCPED_OBJECTS) $(SYNCPED_RESOURCES)  $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib $(__WXLIB_AUI_NAME_p) $(__WXLIB_STC_NAME_p) wxscintilla$(WX3RDPARTYLIBPOSTFIX).lib $(__WXLIB_HTML_NAME_p) $(__WXLIB_ADV_NAME_p) $(__WXLIB_XML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) wxtiff$(WX3RDPARTYLIBPOSTFIX).lib wxjpeg$(WX3RDPARTYLIBPOSTFIX).lib wxpng$(WX3RDPARTYLIBPOSTFIX).lib wxzlib$(WX3RDPARTYLIBPOSTFIX).lib wxregex$(WXLIBPOSTFIX).lib wxexpat$(WX3RDPARTYLIBPOSTFIX).lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib oleacc.lib
 <<
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver.exe: $(SYNCSOCKETSERVER_OBJECTS) $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver_app.res $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib
-	link /NOLOGO /OUT:$@  /LIBPATH:$(WX_DIR)$(__WXLIBPATH_FILENAMES_13) $(WXMACHINE_FLAG) /SUBSYSTEM:WINDOWS $(VAR_13) /pdb:"$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver.pdb" $(____syncsocketserver__DEBUGINFO_67) $(LDFLAGS) @<<
-	$(SYNCSOCKETSERVER_OBJECTS) $(SYNCSOCKETSERVER_RESOURCES)  $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib odbc32.lib $(__WXLIB_AUI_NAME_p) $(__WXLIB_STC_NAME_p) wxscintilla$(WX3RDPARTYLIBPOSTFIX).lib $(__WXLIB_HTML_NAME_p) $(__WXLIB_ADV_NAME_p) $(__WXLIB_NET_NAME_p) $(__WXLIB_XML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) wxtiff$(WX3RDPARTYLIBPOSTFIX).lib wxjpeg$(WX3RDPARTYLIBPOSTFIX).lib wxpng$(WX3RDPARTYLIBPOSTFIX).lib wxzlib$(WX3RDPARTYLIBPOSTFIX).lib wxregex$(WXLIBPOSTFIX).lib wxexpat$(WX3RDPARTYLIBPOSTFIX).lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib oleacc.lib
-<<
-
-$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery.exe: $(SYNCODBCQUERY_OBJECTS) $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery_app.res $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib
-	link /NOLOGO /OUT:$@  /LIBPATH:$(WX_DIR)$(__WXLIBPATH_FILENAMES_16) $(WXMACHINE_FLAG) /SUBSYSTEM:WINDOWS $(VAR_13) /pdb:"$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery.pdb" $(____syncodbcquery__DEBUGINFO_79) $(LDFLAGS) @<<
-	$(SYNCODBCQUERY_OBJECTS) $(SYNCODBCQUERY_RESOURCES)  $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib odbc32.lib $(__WXLIB_AUI_NAME_p) $(__WXLIB_STC_NAME_p) wxscintilla$(WX3RDPARTYLIBPOSTFIX).lib $(__WXLIB_HTML_NAME_p) $(__WXLIB_ADV_NAME_p) $(__WXLIB_XML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) wxtiff$(WX3RDPARTYLIBPOSTFIX).lib wxjpeg$(WX3RDPARTYLIBPOSTFIX).lib wxpng$(WX3RDPARTYLIBPOSTFIX).lib wxzlib$(WX3RDPARTYLIBPOSTFIX).lib wxregex$(WXLIBPOSTFIX).lib wxexpat$(WX3RDPARTYLIBPOSTFIX).lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib oleacc.lib
+	link /NOLOGO /OUT:$@  /LIBPATH:$(WX_DIR)$(__WXLIBPATH_FILENAMES_13) $(WXMACHINE_FLAG) /SUBSYSTEM:WINDOWS $(VAR_7) /pdb:"$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver.pdb" $(____syncsocketserver__DEBUGINFO_67) $(LDFLAGS) @<<
+	$(SYNCSOCKETSERVER_OBJECTS) $(SYNCSOCKETSERVER_RESOURCES)  $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex-rep29.lib $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex29.lib $(__WXLIB_AUI_NAME_p) $(__WXLIB_STC_NAME_p) wxscintilla$(WX3RDPARTYLIBPOSTFIX).lib $(__WXLIB_HTML_NAME_p) $(__WXLIB_ADV_NAME_p) $(__WXLIB_NET_NAME_p) $(__WXLIB_XML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) wxtiff$(WX3RDPARTYLIBPOSTFIX).lib wxjpeg$(WX3RDPARTYLIBPOSTFIX).lib wxpng$(WX3RDPARTYLIBPOSTFIX).lib wxzlib$(WX3RDPARTYLIBPOSTFIX).lib wxregex$(WXLIBPOSTFIX).lib wxexpat$(WX3RDPARTYLIBPOSTFIX).lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib oleacc.lib
 <<
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_app.obj: .\..\extension\src\app.cpp
@@ -548,6 +503,9 @@ $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_dialog.obj: 
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_dir.obj: .\..\extension\src\dir.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\dir.cpp
+
+$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_ex.obj: .\..\extension\src\ex.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\ex.cpp
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_file.obj: .\..\extension\src\file.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\file.cpp
@@ -602,9 +560,6 @@ $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_menu.obj: .\
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_notebook.obj: .\..\extension\src\notebook.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\notebook.cpp
-
-$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_otl.obj: .\..\extension\src\otl.cpp
-	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\otl.cpp
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_printing.obj: .\..\extension\src\printing.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\printing.cpp
@@ -697,13 +652,13 @@ $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_sample_app.o
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_SAMPLE_CXXFLAGS) .\..\extension\sample\app.cpp
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_sample_app.res: .\..\extension\sample\app.rc
-	rc /fo$@  /d WIN32 $(____WX_SHARED_3) $(__WXUNICODE_DEFINE_p_1_0) $(__WXDEBUG_DEFINE_p_1_0) /d __WXMSW__ /i $(WX_DIR)$(__WXLIBPATH_FILENAMES_3)\msw$(WXLIBPOSTFIX) /i $(WX_DIR)\include /d _WINDOWS $(VAR_15) /i ..\extension\include .\..\extension\sample\app.rc
+	rc /fo$@  /d WIN32 $(____WX_SHARED_2) $(__WXUNICODE_DEFINE_p_11) $(__WXDEBUG_DEFINE_p_11) /d __WXMSW__ /i $(WX_DIR)$(__WXLIBPATH_FILENAMES_3)\msw$(WXLIBPOSTFIX) /i $(WX_DIR)\include /d _WINDOWS $(VAR_9) /i ..\extension\include .\..\extension\sample\app.rc
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_sample_rep_app.obj: .\..\extension\sample\report\app.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_SAMPLE_REP_CXXFLAGS) .\..\extension\sample\report\app.cpp
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_sample_rep_app.res: .\..\extension\sample\report\app.rc
-	rc /fo$@  /d WIN32 $(____WX_SHARED_3) $(__WXUNICODE_DEFINE_p_1_0) $(__WXDEBUG_DEFINE_p_1_0) /d __WXMSW__ /i $(WX_DIR)$(__WXLIBPATH_FILENAMES_6)\msw$(WXLIBPOSTFIX) /i $(WX_DIR)\include /d _WINDOWS $(VAR_15) /i ..\extension\include .\..\extension\sample\report\app.rc
+	rc /fo$@  /d WIN32 $(____WX_SHARED_2) $(__WXUNICODE_DEFINE_p_11) $(__WXDEBUG_DEFINE_p_11) /d __WXMSW__ /i $(WX_DIR)$(__WXLIBPATH_FILENAMES_6)\msw$(WXLIBPOSTFIX) /i $(WX_DIR)\include /d _WINDOWS $(VAR_9) /i ..\extension\include .\..\extension\sample\report\app.rc
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped_app.obj: .\..\syncped\app.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(SYNCPED_CXXFLAGS) .\..\syncped\app.cpp
@@ -715,17 +670,11 @@ $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped_support.o
 	$(CXX) /c /nologo /TP /Fo$@ $(SYNCPED_CXXFLAGS) .\..\syncped\support.cpp
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncped_app.res: .\..\syncped\app.rc
-	rc /fo$@  /d WIN32 $(____WX_SHARED_3) $(__WXUNICODE_DEFINE_p_1_0) $(__WXDEBUG_DEFINE_p_1_0) /d __WXMSW__ /i $(WX_DIR)$(__WXLIBPATH_FILENAMES_9)\msw$(WXLIBPOSTFIX) /i $(WX_DIR)\include /d _WINDOWS $(VAR_15) /d wxExUSE_OTL /d wxExUSE_PORTABLE /i ..\extension\include .\..\syncped\app.rc
+	rc /fo$@  /d WIN32 $(____WX_SHARED_2) $(__WXUNICODE_DEFINE_p_11) $(__WXDEBUG_DEFINE_p_11) /d __WXMSW__ /i $(WX_DIR)$(__WXLIBPATH_FILENAMES_9)\msw$(WXLIBPOSTFIX) /i $(WX_DIR)\include /d _WINDOWS $(VAR_9)  /d wxExUSE_PORTABLE /i ..\extension\include .\..\syncped\app.rc
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver_app.obj: .\..\syncsocketserver\app.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(SYNCSOCKETSERVER_CXXFLAGS) .\..\syncsocketserver\app.cpp
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncsocketserver_app.res: .\..\syncsocketserver\app.rc
-	rc /fo$@  /d WIN32 $(____WX_SHARED_3) $(__WXUNICODE_DEFINE_p_1_0) $(__WXDEBUG_DEFINE_p_1_0) /d __WXMSW__ /i $(WX_DIR)$(__WXLIBPATH_FILENAMES_12)\msw$(WXLIBPOSTFIX) /i $(WX_DIR)\include /d _WINDOWS $(VAR_15) /i ..\extension\include .\..\syncsocketserver\app.rc
-
-$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery_app.obj: .\..\syncodbcquery\app.cpp
-	$(CXX) /c /nologo /TP /Fo$@ $(SYNCODBCQUERY_CXXFLAGS) .\..\syncodbcquery\app.cpp
-
-$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\syncodbcquery_app.res: .\..\syncodbcquery\app.rc
-	rc /fo$@  /d WIN32 $(____WX_SHARED_3) $(__WXUNICODE_DEFINE_p_1_0) $(__WXDEBUG_DEFINE_p_1_0) /d __WXMSW__ /i $(WX_DIR)$(__WXLIBPATH_FILENAMES_15)\msw$(WXLIBPOSTFIX) /i $(WX_DIR)\include /d _WINDOWS $(VAR_15) /d wxExUSE_OTL /i ..\extension\include .\..\syncodbcquery\app.rc
+	rc /fo$@  /d WIN32 $(____WX_SHARED_2) $(__WXUNICODE_DEFINE_p_11) $(__WXDEBUG_DEFINE_p_11) /d __WXMSW__ /i $(WX_DIR)$(__WXLIBPATH_FILENAMES_12)\msw$(WXLIBPOSTFIX) /i $(WX_DIR)\include /d _WINDOWS $(VAR_9) /i ..\extension\include .\..\syncsocketserver\app.rc
 

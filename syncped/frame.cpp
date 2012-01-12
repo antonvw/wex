@@ -227,7 +227,7 @@ Frame::Frame(bool open_recent)
   // Regardless of the perspective initially hide the next panels.
   GetManager().GetPane("OUTPUT").Hide();
   
-  HideViBar();
+  HideExBar();
   
   if (open_recent)
   {

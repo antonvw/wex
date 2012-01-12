@@ -47,20 +47,20 @@ bool wxExEx::Command(const wxString& command)
   
   bool set_focus = true;
 
-  if (command == "$")
+  if (command == ":$")
   {
     m_STC->DocumentEnd();
   }
-  else if (command == "close")
+  else if (command == ":close")
   {
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_CLOSE);
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command == "d")
+  else if (command == ":d")
   {
     Delete(1);
   }
-  else if (command.StartsWith("e"))
+  else if (command.StartsWith(":e"))
   {
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
     
@@ -71,7 +71,7 @@ bool wxExEx::Command(const wxString& command)
     
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command == "n")
+  else if (command == ":n")
   {
     wxExSTC* stc = m_Frame->ExecExCommand(ID_EDIT_NEXT);
     
@@ -82,7 +82,7 @@ bool wxExEx::Command(const wxString& command)
     
     set_focus = false;
   }
-  else if (command == "prev")
+  else if (command == ":prev")
   {
     wxExSTC* stc = m_Frame->ExecExCommand(ID_EDIT_PREVIOUS);
     
@@ -93,29 +93,29 @@ bool wxExEx::Command(const wxString& command)
     
     set_focus = false;
   }
-  else if (command == "q")
+  else if (command == ":q")
   {
     wxCloseEvent event(wxEVT_CLOSE_WINDOW);
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command == "q!")
+  else if (command == ":q!")
   {
     wxCloseEvent event(wxEVT_CLOSE_WINDOW);
     event.SetCanVeto(false); 
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command.StartsWith("r"))
+  else if (command.StartsWith(":r"))
   {
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_READ);
     event.SetString(command.AfterFirst(' '));
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
   // e.g. set ts=4
-  else if (command.StartsWith("set "))
+  else if (command.StartsWith(":set "))
   {
-    return CommandSet(command.Mid(4));
+    return CommandSet(command.Mid(5));
   }
-  else if (command.StartsWith("w"))
+  else if (command.StartsWith(":w"))
   {
     if (command.Contains(" "))
     {
@@ -129,7 +129,7 @@ bool wxExEx::Command(const wxString& command)
       wxPostEvent(wxTheApp->GetTopWindow(), event);
     }
   }
-  else if (command == "x")
+  else if (command == ":x")
   {
     wxPostEvent(wxTheApp->GetTopWindow(), 
       wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
@@ -137,13 +137,13 @@ bool wxExEx::Command(const wxString& command)
     wxPostEvent(wxTheApp->GetTopWindow(), 
       wxCloseEvent(wxEVT_CLOSE_WINDOW));
   }
-  else if (command == "y")
+  else if (command == ":y")
   {
     Yank(1);
   }
   else if (command.Last() == '=')
   {
-    const int no = ToLineNumber(command.BeforeLast('='));
+    const int no = ToLineNumber(command.AfterFirst(':').BeforeLast('='));
     
     if (no == 0)
     {
@@ -153,17 +153,17 @@ bool wxExEx::Command(const wxString& command)
     m_Frame->ShowExMessage(wxString::Format("%d", no));
     return true;
   }
-  else if (command.StartsWith("!"))
+  else if (command.StartsWith(":!"))
   {
     m_Process->Execute(command.AfterFirst('!'));
   }
-  else if (command.IsNumber())
+  else if (command.AfterFirst(':').IsNumber())
   {
-    m_STC->GotoLineAndSelect(atoi(command.c_str()));
+    m_STC->GotoLineAndSelect(atoi(command.AfterFirst(':').c_str()));
   }
   else
   {
-    if (!CommandRange(command))
+    if (!CommandRange(command.AfterFirst(':')))
     {
       wxBell();
       return false;
@@ -255,9 +255,9 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
 bool wxExEx::CommandRange(const wxString& command)
 {
-  // :[address] m destination
-  // :[address] s [/pattern/replacement/] [options] [count]
-  wxStringTokenizer tkz(command.AfterFirst(':'), "dgmsyw><");
+  // [address] m destination
+  // [address] s [/pattern/replacement/] [options] [count]
+  wxStringTokenizer tkz(command, "dgmsyw><");
   
   if (!tkz.HasMoreTokens())
   {
@@ -787,6 +787,28 @@ bool wxExEx::Write(
     file.Write(m_STC->GetTextRange(
       m_STC->PositionFromLine(begin_line - 1), 
       m_STC->PositionFromLine(end_line)));
+}
+
+void wxExEx::Yank(int lines) const
+{
+  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  const int start = m_STC->PositionFromLine(line);
+  const int end = m_STC->PositionFromLine(line + lines);
+
+  if (end != -1)
+  {
+    m_STC->CopyRange(start, end);
+  }
+  else
+  {
+    m_STC->CopyRange(start, m_STC->GetLastPosition());
+  }
+
+  if (lines >= 2)
+  {
+    m_Frame->ShowExMessage(wxString::Format(_("%d lines yanked"), 
+      wxExGetNumberOfLines(wxExClipboardGet()) - 1));
+  }
 }
 
 bool wxExEx::Yank(
