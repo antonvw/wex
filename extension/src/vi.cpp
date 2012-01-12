@@ -2,22 +2,19 @@
 // Name:      vi.cpp
 // Purpose:   Implementation of class wxExVi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
-#include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
-#include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
@@ -25,33 +22,23 @@
 
 wxString wxExVi::m_LastCommand;
 wxString wxExVi::m_LastFindCharCommand;
-wxExViMacros wxExVi::m_Macros;
 
 wxExVi::wxExVi(wxExSTC* stc)
-  : m_STC(stc)
-  , m_IsActive(false)
+  : wxExEx(stc)
+  , m_Dot(false)
   , m_MarkerSymbol(0, -1)
   , m_InsertMode(false)
   , m_InsertRepeatCount(1)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
-  , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
-  , m_Process(new wxExProcess)
 {
-  wxASSERT(m_Frame != NULL);
-}
-
-wxExVi::~wxExVi()
-{
-  delete m_Process;
 }
 
 bool wxExVi::ChangeNumber(bool inc)
 {
-  const int start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
-  const int end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
-  
-  wxString word = m_STC->GetTextRange(start, end);
+  const int start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
+  const int end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
+  const wxString word = GetSTC()->GetTextRange(start, end);
   
   long number;
   
@@ -59,16 +46,16 @@ bool wxExVi::ChangeNumber(bool inc)
   {
     if (inc)
     {
-      m_STC->wxStyledTextCtrl::Replace(start, end, 
+      GetSTC()->wxStyledTextCtrl::Replace(start, end, 
         wxString::Format("%d", ++number));
     }
     else
     {
-      m_STC->wxStyledTextCtrl::Replace(start, end, 
+      GetSTC()->wxStyledTextCtrl::Replace(start, end, 
         wxString::Format("%d", --number));
     }
     
-    m_STC->MarkerAddChange(m_STC->GetCurrentLine());
+    GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
     
     return true;
   }
@@ -76,11 +63,37 @@ bool wxExVi::ChangeNumber(bool inc)
   return false;
 }
 
-bool wxExVi::Command(const wxString& command, bool dot)
+bool wxExVi::Command(const wxString& command)
 {
   if (command.empty())
   {
     return false;
+  }
+  
+  if (!m_InsertMode)
+  {
+    if (command[0] == '/' || command[0] == '?')
+    {
+      MacroRecord(command);
+
+      return GetSTC()->FindNext(
+         command,
+         m_SearchFlags,
+         command[0] == '/');
+    }
+    else if (command.StartsWith(":"))
+    { 
+      if (command.length() > 1)
+      {
+        // This is a previous entered command.
+        return wxExEx::Command(command.Mid(1));
+      }
+      else
+      {
+        GetFrame()->GetExCommand(this, command);
+        return true;
+      }
+    }
   }
   
   switch ((int)command.Last())
@@ -110,7 +123,7 @@ bool wxExVi::Command(const wxString& command, bool dot)
       }
       else
       {
-        m_STC->CharLeft();
+        GetSTC()->CharLeft();
         return true;
       }
       break;
@@ -121,10 +134,10 @@ bool wxExVi::Command(const wxString& command, bool dot)
         // Add extra inserts if necessary.        
         for (int i = 1; i < m_InsertRepeatCount; i++)
         {
-          m_STC->AddText(m_InsertText);
+          GetSTC()->AddText(m_InsertText);
         }
         
-        m_STC->EndUndoAction();
+        GetSTC()->EndUndoAction();
         
         m_InsertMode = false;
       }
@@ -133,9 +146,9 @@ bool wxExVi::Command(const wxString& command, bool dot)
         wxBell();
       }
 
-      if (!m_STC->GetSelectedText().empty())
+      if (!GetSTC()->GetSelectedText().empty())
       {
-        m_STC->SetSelection(m_STC->GetCurrentPos(), m_STC->GetCurrentPos());
+        GetSTC()->SetSelection(GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
       }
 
       m_Command.clear();
@@ -152,9 +165,9 @@ bool wxExVi::Command(const wxString& command, bool dot)
           repeat++;
         }
   
-        for (int i = 0; i < repeat; i++) m_STC->LineDown();
+        for (int i = 0; i < repeat; i++) GetSTC()->LineDown();
 
-        m_LastCommand = m_Command + m_STC->GetEOL();
+        m_LastCommand = m_Command + GetSTC()->GetEOL();
       }
       else
       {
@@ -175,10 +188,10 @@ bool wxExVi::Command(const wxString& command, bool dot)
           repeat++;
         }
   
-        m_STC->SetTargetStart(m_STC->GetCurrentPos());
-        m_STC->SetTargetEnd(m_STC->GetCurrentPos() + repeat);
-        m_STC->ReplaceTarget(wxString('\t', repeat));
-        m_STC->MarkTargetChange();
+        GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
+        GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + repeat);
+        GetSTC()->ReplaceTarget(wxString('\t', repeat));
+        GetSTC()->MarkTargetChange();
           
         m_LastCommand = m_Command + "\t";
         m_Command.clear();
@@ -194,29 +207,13 @@ bool wxExVi::Command(const wxString& command, bool dot)
   
   if (m_InsertMode)
   {
-    m_STC->AddText(command);
-    m_STC->MarkerAddChange(m_STC->GetCurrentLine());
+    GetSTC()->AddText(command);
+    GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
     return true;
   }
   
   bool handled = true;
 
-  if (command.StartsWith(":"))
-  {
-    if (command.length() > 1)
-    {
-      // This is a previous entered command.
-      return CommandRange(command);
-    }
-    else
-    {
-      m_Frame->GetViCommand(this, command);
-      return true;
-    }
-  }
-  
-  m_Frame->HideViBar();
-          
   int repeat = atoi(command.c_str());
 
   if (repeat == 0)
@@ -225,73 +222,73 @@ bool wxExVi::Command(const wxString& command, bool dot)
   }
   
   // Handle multichar commands.
-  if (command.EndsWith("cw") && !m_STC->GetReadOnly() && !m_STC->HexMode())
+  if (command.EndsWith("cw") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
-    if (!m_STC->GetSelectedText().empty())
+    if (!GetSTC()->GetSelectedText().empty())
     {
-      m_STC->SetCurrentPos(m_STC->GetSelectionStart());
+      GetSTC()->SetCurrentPos(GetSTC()->GetSelectionStart());
     }
 
-    const int pos = m_STC->GetCurrentPos();
+    const int pos = GetSTC()->GetCurrentPos();
     
-    for (int i = 0; i < repeat; i++) m_STC->WordRightEndExtend();
+    for (int i = 0; i < repeat; i++) GetSTC()->WordRightEndExtend();
 
-    if (dot)
+    if (m_Dot)
     {
-      m_STC->ReplaceSelection(m_InsertText);
+      GetSTC()->ReplaceSelection(m_InsertText);
     }
     else
     {
       InsertMode();
-      const int anchor = m_STC->GetCurrentPos();
-      m_STC->SetCurrentPos(pos);
-      m_STC->SetAnchor(anchor);
+      const int anchor = GetSTC()->GetCurrentPos();
+      GetSTC()->SetCurrentPos(pos);
+      GetSTC()->SetAnchor(anchor);
     }
   }
-  else if (command == "cc" && !m_STC->GetReadOnly() && !m_STC->HexMode())
+  else if (command == "cc" && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
-    m_STC->Home();
-    m_STC->DelLineRight();
+    GetSTC()->Home();
+    GetSTC()->DelLineRight();
 
-    if (dot && !m_InsertText.empty())
+    if (m_Dot && !m_InsertText.empty())
     {
-      m_STC->ReplaceSelection(m_InsertText);
+      GetSTC()->ReplaceSelection(m_InsertText);
     }
     else
     {
       InsertMode();
     }
   }
-  else if (command.EndsWith("dd") && !m_STC->GetReadOnly() && !m_STC->HexMode())
+  else if (command.EndsWith("dd") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
     Delete(repeat);
   }
-  else if (command == "d0" && !m_STC->GetReadOnly() && !m_STC->HexMode())
+  else if (command == "d0" && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
-    m_STC->HomeExtend();
-    m_STC->Cut();
+    GetSTC()->HomeExtend();
+    GetSTC()->Cut();
   }
-  else if (command == "d$" && !m_STC->GetReadOnly() && !m_STC->HexMode())
+  else if (command == "d$" && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
-    m_STC->LineEndExtend();
-    m_STC->Cut();
+    GetSTC()->LineEndExtend();
+    GetSTC()->Cut();
   }
-  else if (command.EndsWith("dw") && !m_STC->GetReadOnly() && !m_STC->HexMode())
+  else if (command.EndsWith("dw") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
-    m_STC->BeginUndoAction();
-    const int start = m_STC->GetCurrentPos();
+    GetSTC()->BeginUndoAction();
+    const int start = GetSTC()->GetCurrentPos();
     for (int i = 0; i < repeat; i++) 
-      m_STC->WordRight();
-    m_STC->SetSelection(start, m_STC->GetCurrentPos());
-    m_STC->Cut();
-    m_STC->EndUndoAction();
+      GetSTC()->WordRight();
+    GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
+    GetSTC()->Cut();
+    GetSTC()->EndUndoAction();
   }
   // this one should be first, so rJ will match
-  else if (wxRegEx("[0-9]*r.").Matches(command) && !m_STC->GetReadOnly())
+  else if (wxRegEx("[0-9]*r.").Matches(command) && !GetSTC()->GetReadOnly())
   {
-    if (m_STC->HexMode())
+    if (GetSTC()->HexMode())
     {
-      wxExHexModeLine ml(m_STC);
+      wxExHexModeLine ml(GetSTC());
       
       if (ml.IsReadOnly())
       {
@@ -302,45 +299,45 @@ bool wxExVi::Command(const wxString& command, bool dot)
     }
     else
     {
-      m_STC->SetTargetStart(m_STC->GetCurrentPos());
-      m_STC->SetTargetEnd(m_STC->GetCurrentPos() + repeat);
-      m_STC->ReplaceTarget(wxString(command.Last(), repeat));
-      m_STC->MarkTargetChange();
+      GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
+      GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + repeat);
+      GetSTC()->ReplaceTarget(wxString(command.Last(), repeat));
+      GetSTC()->MarkTargetChange();
     }
   }
   else if (command.Matches("*f?"))
   {
     for (int i = 0; i < repeat; i++) 
-      m_STC->FindNext(command.Last(), m_SearchFlags);
+      GetSTC()->FindNext(command.Last(), m_SearchFlags);
     m_LastFindCharCommand = command;
   }
   else if (command.Matches("*F?"))
   {
     for (int i = 0; i < repeat; i++) 
-      m_STC->FindNext(command.Last(), m_SearchFlags, false);
+      GetSTC()->FindNext(command.Last(), m_SearchFlags, false);
     m_LastFindCharCommand = command;
   }
   else if (command.Matches("*J"))
   {
-    m_STC->BeginUndoAction();
-    m_STC->SetTargetStart(m_STC->PositionFromLine(m_STC->GetCurrentLine()));
-    m_STC->SetTargetEnd(m_STC->PositionFromLine(m_STC->GetCurrentLine() + repeat));
-    m_STC->LinesJoin();
-    m_STC->EndUndoAction();
- }
+    GetSTC()->BeginUndoAction();
+    GetSTC()->SetTargetStart(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));
+    GetSTC()->SetTargetEnd(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine() + repeat));
+    GetSTC()->LinesJoin();
+    GetSTC()->EndUndoAction();
+  }
   else if (command.Matches("m?"))
   {
     DeleteMarker(command.Last());
-    m_Markers[command.Last()] = m_STC->GetCurrentLine() + 1;
-    m_STC->MarkerAdd(m_STC->GetCurrentLine(), m_MarkerSymbol.GetNo());
+    m_Markers[command.Last()] = GetSTC()->GetCurrentLine() + 1;
+    GetSTC()->MarkerAdd(GetSTC()->GetCurrentLine(), m_MarkerSymbol.GetNo());
   }
   else if (command.EndsWith("yw"))
   {
     for (int i = 0; i < repeat; i++) 
-      m_STC->WordRightEnd();
+      GetSTC()->WordRightEnd();
     for (int j = 0; j < repeat; j++) 
-      m_STC->WordLeftExtend();
-    m_STC->Copy();
+      GetSTC()->WordLeftExtend();
+    GetSTC()->Copy();
   }
   else if (command.EndsWith("yy"))
   {
@@ -348,24 +345,24 @@ bool wxExVi::Command(const wxString& command, bool dot)
   }
   else if (command == "zc" || command == "zo")
   {
-    const int level = m_STC->GetFoldLevel(m_STC->GetCurrentLine());
+    const int level = GetSTC()->GetFoldLevel(GetSTC()->GetCurrentLine());
     const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
-      m_STC->GetCurrentLine(): m_STC->GetFoldParent(m_STC->GetCurrentLine());
+      GetSTC()->GetCurrentLine(): GetSTC()->GetFoldParent(GetSTC()->GetCurrentLine());
 
-    if (m_STC->GetFoldExpanded(line_to_fold) && command == "zc")
-      m_STC->ToggleFold(line_to_fold);
-    else if (!m_STC->GetFoldExpanded(line_to_fold) && command == "zo")
-      m_STC->ToggleFold(line_to_fold);
+    if (GetSTC()->GetFoldExpanded(line_to_fold) && command == "zc")
+      GetSTC()->ToggleFold(line_to_fold);
+    else if (!GetSTC()->GetFoldExpanded(line_to_fold) && command == "zo")
+      GetSTC()->ToggleFold(line_to_fold);
   }
   else if (command == "zE")
   {
-    m_STC->SetLexerProperty("fold", "0");
-    m_STC->Fold();
+    GetSTC()->SetLexerProperty("fold", "0");
+    GetSTC()->Fold();
   }
   else if (command == "zf")
   {
-    m_STC->SetLexerProperty("fold", "1");
-    m_STC->Fold(true);
+    GetSTC()->SetLexerProperty("fold", "1");
+    GetSTC()->Fold(true);
   }
   else if (command == "ZZ")
   {
@@ -374,13 +371,13 @@ bool wxExVi::Command(const wxString& command, bool dot)
     wxPostEvent(wxTheApp->GetTopWindow(), 
       wxCloseEvent(wxEVT_CLOSE_WINDOW));
   }
-  else if (command.EndsWith(">>") && !m_STC->GetReadOnly() && !m_STC->HexMode())
+  else if (command.EndsWith(">>") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
-    m_STC->Indent(repeat);
+    GetSTC()->Indent(repeat);
   }
-  else if (command.EndsWith("<<") && !m_STC->GetReadOnly() && !m_STC->HexMode())
+  else if (command.EndsWith("<<") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
-    m_STC->Indent(repeat, false);
+    GetSTC()->Indent(repeat, false);
   }
   else if (command.Matches("'?"))
   {
@@ -392,7 +389,7 @@ bool wxExVi::Command(const wxString& command, bool dot)
 
     if (it != m_Markers.end())
     {
-      m_STC->GotoLineAndSelect(it->second);
+      GetSTC()->GotoLineAndSelect(it->second);
     }
     else
     {
@@ -401,14 +398,14 @@ bool wxExVi::Command(const wxString& command, bool dot)
   }
   else if (command.Matches("q?"))
   {
-    if (!m_Macros.IsRecording())
+    if (!MacroIsRecording())
     {
       MacroStartRecording(command.Mid(1));
     }
   } 
   else if (command.Matches("*@@"))
   {
-    MacroPlayback(m_Macro, repeat);
+    MacroPlayback(GetMacro(), repeat);
   }
   else if (command.Matches("*@?"))
   {
@@ -425,42 +422,42 @@ bool wxExVi::Command(const wxString& command, bool dot)
       case 'C': 
       case 'I': 
       case 'O': 
-        InsertMode(command.Last(), repeat, false, dot); 
+        InsertMode(command.Last(), repeat, false, m_Dot); 
         break;
       case 'R': 
-        InsertMode(command.Last(), repeat, true, dot); 
+        InsertMode(command.Last(), repeat, true, m_Dot); 
         break;
 
       case '0': 
       case '^': 
         if (command.length() == 1)
         {
-          m_STC->Home(); 
+          GetSTC()->Home(); 
         }
         else
         {
           handled = false;
         }
         break;
-      case 'b': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
-      case 'e': for (int i = 0; i < repeat; i++) m_STC->WordRightEnd(); break;
-      case 'g': m_STC->DocumentStart(); break;
+      case 'b': for (int i = 0; i < repeat; i++) GetSTC()->WordLeft(); break;
+      case 'e': for (int i = 0; i < repeat; i++) GetSTC()->WordRightEnd(); break;
+      case 'g': GetSTC()->DocumentStart(); break;
       case 'h': 
-        for (int i = 0; i < repeat; i++) m_STC->CharLeft(); 
+        for (int i = 0; i < repeat; i++) GetSTC()->CharLeft(); 
         break;
       case 'j': 
-        for (int i = 0; i < repeat; i++) m_STC->LineDown(); 
+        for (int i = 0; i < repeat; i++) GetSTC()->LineDown(); 
         break;
       case 'k': 
-        for (int i = 0; i < repeat; i++) m_STC->LineUp(); 
+        for (int i = 0; i < repeat; i++) GetSTC()->LineUp(); 
         break;
       case 'l': 
       case ' ': 
-        for (int i = 0; i < repeat; i++) m_STC->CharRight(); 
+        for (int i = 0; i < repeat; i++) GetSTC()->CharRight(); 
         break;
       case 'n': 
         for (int i = 0; i < repeat; i++) 
-          if (!m_STC->FindNext(
+          if (!GetSTC()->FindNext(
             wxExFindReplaceData::Get()->GetFindString(), 
             m_SearchFlags, 
             m_SearchForward)) break;
@@ -470,7 +467,7 @@ bool wxExVi::Command(const wxString& command, bool dot)
       case 'P': Put(false); break;
       
       case 'q': 
-        if (m_Macros.IsRecording())
+        if (MacroIsRecording())
         {
           MacroStopRecording();
         }
@@ -480,502 +477,95 @@ bool wxExVi::Command(const wxString& command, bool dot)
         }
         break;
       
-      case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
-      case 'u': m_STC->Undo(); break;
+      case 'w': for (int i = 0; i < repeat; i++) GetSTC()->WordRight(); break;
+      case 'u': GetSTC()->Undo(); break;
       case 'x': 
-        if (m_STC->HexMode()) return false;
+        if (GetSTC()->HexMode()) return false;
         for (int i = 0; i < repeat; i++) 
         {
-          m_STC->CharRight();
-          m_STC->DeleteBack(); 
+          GetSTC()->CharRight();
+          GetSTC()->DeleteBack(); 
         }
-        m_STC->MarkerAddChange(m_STC->GetCurrentLine());
+        GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
         break;
 
       case 'D': 
-        if (!m_STC->GetReadOnly())
+        if (!GetSTC()->GetReadOnly())
         {
-          m_STC->LineEndExtend();
-          m_STC->Cut();
+          GetSTC()->LineEndExtend();
+          GetSTC()->Cut();
           }
         break;
       case 'G': 
         if (repeat > 1)
         {
-          m_STC->GotoLine(repeat - 1);
+          GetSTC()->GotoLine(repeat - 1);
         }
         else
         {
-          m_STC->DocumentEnd();
+          GetSTC()->DocumentEnd();
         }
         break;
-      case 'H': m_STC->GotoLine(m_STC->GetFirstVisibleLine());
+      case 'H': GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine());
         break;
-      case 'M': m_STC->GotoLine(
-        m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() / 2);
+      case 'M': GetSTC()->GotoLine(
+        GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() / 2);
         break;
-      case 'L': m_STC->GotoLine(
-        m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen()); 
+      case 'L': GetSTC()->GotoLine(
+        GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen()); 
         break;
       case 'N': 
         for (int i = 0; i < repeat; i++) 
-          if (!m_STC->FindNext(
+          if (!GetSTC()->FindNext(
             wxExFindReplaceData::Get()->GetFindString(), 
             m_SearchFlags, 
             !m_SearchForward)) break;
         break;
       case 'X': 
-        if (m_STC->HexMode()) return false;
-        for (int i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
+        if (GetSTC()->HexMode()) return false;
+        for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack(); break;
 
       case '/': 
-      case '?': m_Frame->GetViCommand(this, command.Last());
+      case '?': GetFrame()->GetExCommand(this, command.Last());
         break;
 
-      case '.': Command(m_LastCommand, true); break;
+      case '.': 
+        m_Dot = true;
+        Command(m_LastCommand); 
+        m_Dot = false;
+        break;
+        
       case ';': Command(m_LastFindCharCommand); break;
       case '~': ToggleCase(); break;
-      case '$': m_STC->LineEnd(); break;
-      case '{': m_STC->ParaUp(); break;
-      case '}': m_STC->ParaDown(); break;
+      case '$': GetSTC()->LineEnd(); break;
+      case '{': GetSTC()->ParaUp(); break;
+      case '}': GetSTC()->ParaDown(); break;
       case '%': GotoBrace(); break;
 
       case '*': FindWord(); break;
       case '#': FindWord(false); break;
       
       case 2:  // ^b
-        for (int i = 0; i < repeat; i++) m_STC->PageUp(); 
+        for (int i = 0; i < repeat; i++) GetSTC()->PageUp(); 
         break;
       case 7:  // ^g (^f is not possible, already find accel key)
-        for (int i = 0; i < repeat; i++) m_STC->PageDown(); 
+        for (int i = 0; i < repeat; i++) GetSTC()->PageDown(); 
         break;
       case 16: // ^p (^y is not possible, already redo accel key)
-        for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); 
+        for (int i = 0; i < repeat; i++) GetSTC()->LineScrollUp(); 
         break;
       case 17: // ^q (^n is not possible, already new doc accel key)
-        for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); 
+        for (int i = 0; i < repeat; i++) GetSTC()->LineScrollDown(); 
         break;
 
       default:
         handled = false;
     }
   }
+  
+  // TODO: set last command.
 
   return handled;
-}
-
-bool wxExVi::CommandGlobal(const wxString& search)
-{
-  wxStringTokenizer next(search, "/");
-
-  if (!next.HasMoreTokens())
-  {
-    return false;
-  }
-
-  next.GetNextToken(); // skip empty token
-  const wxString pattern = next.GetNextToken();
-  const wxString command = next.GetNextToken();
-  const wxString replacement = next.GetNextToken();
-  
-  wxString print;
-    
-  m_STC->SetSearchFlags(m_SearchFlags);
-
-  m_STC->BeginUndoAction();
-  m_STC->SetTargetStart(0);
-  m_STC->SetTargetEnd(m_STC->GetTextLength());
-
-  while (m_STC->SearchInTarget(pattern) > 0)
-  {
-    const int target_start = m_STC->GetTargetStart();
-
-    if (target_start >= m_STC->GetTargetEnd())
-    {
-      break;
-    }
-    
-    // TODO: Add more commands.
-    if (command == "d")
-    {
-      m_STC->MarkTargetChange();
-      
-      const int begin = m_STC->PositionFromLine(m_STC->LineFromPosition(m_STC->GetTargetStart()));
-      const int end = m_STC->PositionFromLine(m_STC->LineFromPosition(m_STC->GetTargetEnd()) + 1);
-      
-      m_STC->Remove(begin, end);
-      m_STC->SetTargetStart(end);
-      m_STC->SetTargetEnd(m_STC->GetTextLength());
-    }
-    else if (command == "p")
-    {
-      print += wxString::Format("%s:%d %s\n",
-        m_STC->GetFileName().GetFullPath().c_str(),
-        m_STC->LineFromPosition(m_STC->GetTargetStart()) + 1,
-        m_STC->GetTextRange(m_STC->GetTargetStart(), m_STC->GetTargetEnd()));
-      
-      m_STC->SetTargetStart(m_STC->GetTargetEnd());
-      m_STC->SetTargetEnd(m_STC->GetTextLength());
-    }
-    else if (command == "s")
-    {
-      m_STC->MarkTargetChange();
-      const int target_start = m_STC->GetTargetStart();
-      const int length = m_STC->ReplaceTargetRE(replacement); // always RE!
-      m_STC->SetTargetStart(target_start + length);
-      m_STC->SetTargetEnd(m_STC->GetTextLength());
-    }
-    else
-    {
-      wxBell();
-      return false;
-    }
-  }
-  
-  if (command == "p")
-  {
-    m_Frame->OpenFile("print", print);
-  }
-
-  m_STC->EndUndoAction();
-
-  return true;
-}
-
-bool wxExVi::CommandLine(const wxString& command)
-{
-  if (!m_IsActive || command.empty())
-  {
-    return false;
-  }
-  
-  MacroRecord(command);
-  
-  bool set_focus = true;
-
-  if (command == "$")
-  {
-    m_STC->DocumentEnd();
-  }
-  else if (command == "close")
-  {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_CLOSE);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == "d")
-  {
-    Delete(1);
-  }
-  else if (command.StartsWith("e"))
-  {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
-    
-    if (command.Contains(" "))
-    {
-      event.SetString(command.AfterFirst(' '));
-    }
-    
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == "n")
-  {
-    wxExSTC* stc = m_Frame->ExecViCommand(ID_EDIT_NEXT);
-    
-    if (m_Macros.IsPlayback())
-    {
-      m_STC = stc;
-    }
-    
-    set_focus = false;
-  }
-  else if (command == "prev")
-  {
-    wxExSTC* stc = m_Frame->ExecViCommand(ID_EDIT_PREVIOUS);
-    
-    if (m_Macros.IsPlayback())
-    {
-      m_STC = stc;
-    }
-    
-    set_focus = false;
-  }
-  else if (command == "q")
-  {
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == "q!")
-  {
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    event.SetCanVeto(false); 
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command.StartsWith("r"))
-  {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_READ);
-    event.SetString(command.AfterFirst(' '));
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  // e.g. set ts=4
-  else if (command.StartsWith("set "))
-  {
-    return CommandSet(command.Mid(4));
-  }
-  else if (command.StartsWith("w"))
-  {
-    if (command.Contains(" "))
-    {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVEAS);
-      event.SetString(command.AfterFirst(' '));
-      wxPostEvent(wxTheApp->GetTopWindow(), event);
-    }
-    else
-    {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE);
-      wxPostEvent(wxTheApp->GetTopWindow(), event);
-    }
-  }
-  else if (command == "x")
-  {
-    wxPostEvent(wxTheApp->GetTopWindow(), 
-      wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
-      
-    wxPostEvent(wxTheApp->GetTopWindow(), 
-      wxCloseEvent(wxEVT_CLOSE_WINDOW));
-  }
-  else if (command == "y")
-  {
-    Yank(1);
-  }
-  else if (command.Last() == '=')
-  {
-    const int no = ToLineNumber(command.BeforeLast('='));
-    
-    if (no == 0)
-    {
-      return false;
-    }
-    
-    m_Frame->ShowViMessage(wxString::Format("%d", no));
-    return true;
-  }
-  else if (command.StartsWith("!"))
-  {
-    m_Process->Execute(command.AfterFirst('!'));
-  }
-  else if (command.IsNumber())
-  {
-    m_STC->GotoLineAndSelect(atoi(command.c_str()));
-  }
-  else
-  {
-    if (CommandRange(":" + command))
-    {
-      m_LastCommand = ":" + command;
-      m_InsertText.clear();
-    }
-    else
-    {
-      wxBell();
-      return false;
-    }
-  }
-  
-  m_Frame->HideViBar(set_focus);
-  
-  return true;
-}
-
-bool wxExVi::CommandRange(const wxString& command)
-{
-  // :[address] m destination
-  // :[address] s [/pattern/replacement/] [options] [count]
-  wxStringTokenizer tkz(command.AfterFirst(':'), "dgmsyw><");
-  
-  if (!tkz.HasMoreTokens())
-  {
-    return false;
-  }
-
-  const wxString address = tkz.GetNextToken();
-  const wxChar cmd = tkz.GetLastDelimiter();
-
-  if (cmd == 'g')
-  {
-    // Global search (g has no address).
-    return CommandGlobal(tkz.GetString());
-  }
-    
-  wxString begin_address;
-  wxString end_address;
-    
-  if (address == ".")
-  {
-    begin_address = address;
-    end_address = address;
-  }
-  else if (address == "%")
-  {
-    begin_address = "1";
-    end_address = "$";
-  }
-  else
-  {
-    begin_address = address.BeforeFirst(',');
-    end_address = address.AfterFirst(',');
-  }
-  
-  if (begin_address.empty() || end_address.empty())
-  {
-    return false;
-  }
-
-  switch (cmd)
-  {
-  case 0: 
-    return false; 
-    break;
-    
-  case 'd':
-    return Delete(begin_address, end_address);
-    break;
-    
-  case 'm':
-    return Move(begin_address, end_address, tkz.GetString());
-    break;
-    
-  case 's':
-    {
-    wxStringTokenizer next(tkz.GetString(), "/");
-
-    if (!next.HasMoreTokens())
-    {
-      return false;
-    }
-
-    next.GetNextToken(); // skip empty token
-    const wxString pattern = next.GetNextToken();
-    const wxString replacement = next.GetNextToken();
-  
-    return Substitute(begin_address, end_address, pattern, replacement);
-    }
-    break;
-    
-  case 'y':
-    return Yank(begin_address, end_address);
-    break;
-    
-  case 'w':
-    return Write(begin_address, end_address, tkz.GetString());
-    break;
-    
-  case '>':
-    return Indent(begin_address, end_address, true);
-    break;
-  case '<':
-    return Indent(begin_address, end_address, false);
-    break;
-    
-  default:
-    wxFAIL;
-    return false;
-  }
-}
-
-bool wxExVi::CommandSet(const wxString& command)
-{
-  // e.g. set ts=4
-  if (command.StartsWith("ts") || command.StartsWith("tabstop"))
-  {
-    const int val = atoi(command.AfterFirst('='));
-    
-    if (val > 0)
-    {
-      m_STC->SetTabWidth(val);
-      wxConfigBase::Get()->Write(_("Tab width"), val);
-      return true;
-    }
-  }
-    
-  wxBell();
-  
-  return false;
-}
-
-void wxExVi::Delete(int lines) const
-{
-  if (m_STC->GetReadOnly())
-  {
-    return;
-  }
-  
-  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-  const int start_pos = m_STC->PositionFromLine(line);
-  const int end_pos = m_STC->PositionFromLine(line + lines);
-  const int linecount = m_STC->GetLineCount();
-    
-  m_STC->SetSelectionStart(start_pos);
-
-  if (end_pos != -1)
-  {
-    m_STC->SetSelectionEnd(end_pos);
-  }
-  else
-  {
-    m_STC->DocumentEndExtend();
-  }
-
-  if (m_STC->GetSelectedText().empty())
-  {
-    m_STC->DeleteBack();
-  }
-  else
-  {
-    m_STC->Cut();
-  }
-
-  if (lines >= 2)
-  {
-    m_Frame->ShowViMessage(
-      wxString::Format(_("%d fewer lines"), 
-      linecount - m_STC->GetLineCount()));
-  }
-}
-
-bool wxExVi::Delete(
-  const wxString& begin_address, 
-  const wxString& end_address)
-{
-  if (m_STC->GetReadOnly() || m_STC->HexMode())
-  {
-    return false;
-  }
-  
-  if (!SetSelection(begin_address, end_address))
-  {
-    return false;
-  }
-
-  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
-  
-  m_STC->Cut();
-
-  if (begin_address.StartsWith("'"))
-  {
-    DeleteMarker(begin_address.GetChar(1));
-  }
-
-  if (end_address.StartsWith("'"))
-  {
-    DeleteMarker(end_address.GetChar(1));
-  }
-
-  if (lines >= 2)
-  {
-    m_Frame->ShowViMessage(wxString::Format(_("%d fewer lines"), lines));
-  }
-
-  return true;
 }
 
 void wxExVi::DeleteMarker(const wxUniChar& marker)
@@ -988,73 +578,40 @@ void wxExVi::DeleteMarker(const wxUniChar& marker)
 
   if (it != m_Markers.end())
   {
-    m_STC->MarkerDelete(it->second - 1, m_MarkerSymbol.GetNo());
+    GetSTC()->MarkerDelete(it->second - 1, m_MarkerSymbol.GetNo());
     m_Markers.erase(it);
   }
 }
 
-bool wxExVi::FindNext(const wxString& text, bool find_next)
+void wxExVi::FindWord(bool find_next)
 {
-  MacroRecord(text);
-
-  return m_STC->FindNext(
-     text,
-     GetSearchFlags(),
-     find_next);
-}
-
-void wxExVi::FindWord(bool find_next) const
-{
-  const int start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
-  const int end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
+  const int start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
+  const int end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
   
   wxExFindReplaceData::Get()->SetFindString(
-    "\\<" + m_STC->GetTextRange(start, end) + "\\>");
+    "\\<" + GetSTC()->GetTextRange(start, end) + "\\>");
   
-  m_STC->FindNext(
+  GetSTC()->FindNext(
     wxExFindReplaceData::Get()->GetFindString(), m_SearchFlags, find_next);
 }
 
-void wxExVi::GotoBrace() const
+void wxExVi::GotoBrace()
 {
-  int brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos());
+  int brace_match = GetSTC()->BraceMatch(GetSTC()->GetCurrentPos());
           
   if (brace_match != wxSTC_INVALID_POSITION)
   {
-    m_STC->GotoPos(brace_match);
+    GetSTC()->GotoPos(brace_match);
   }
   else
   {
-    brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos() - 1);
+    brace_match = GetSTC()->BraceMatch(GetSTC()->GetCurrentPos() - 1);
             
     if (brace_match != wxSTC_INVALID_POSITION)
     {
-      m_STC->GotoPos(brace_match);
+      GetSTC()->GotoPos(brace_match);
     }
   }
-}
-
-bool wxExVi::Indent(
-  const wxString& begin_address, 
-  const wxString& end_address, 
-  bool forward)
-{
-  if (m_STC->GetReadOnly())
-  {
-    return false;
-  }
-  
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
-
-  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
-  {
-    return false;
-  }
-
-  m_STC->Indent(begin_line - 1, end_line - 1, forward);
-  
-  return true;
 }
 
 void wxExVi::InsertMode(
@@ -1063,7 +620,7 @@ void wxExVi::InsertMode(
   bool overtype,
   bool dot)
 {
-  if (m_STC->GetReadOnly() || m_STC->HexMode())
+  if (GetSTC()->GetReadOnly() || GetSTC()->HexMode())
   {
     return;
   }
@@ -1073,38 +630,38 @@ void wxExVi::InsertMode(
     m_InsertMode = true;
     m_InsertText.clear();
     m_InsertRepeatCount = repeat;
-    m_STC->BeginUndoAction();
+    GetSTC()->BeginUndoAction();
   }
 
   switch ((int)c)
   {
-    case 'a': m_STC->CharRight(); 
+    case 'a': GetSTC()->CharRight(); 
       break;
 
     case 'i': 
       break;
 
     case 'o': 
-      m_STC->LineEnd(); 
-      m_STC->NewLine(); 
+      GetSTC()->LineEnd(); 
+      GetSTC()->NewLine(); 
       break;
-    case 'A': m_STC->LineEnd(); 
+    case 'A': GetSTC()->LineEnd(); 
       break;
 
     case 'C': 
     case 'R': 
-      m_STC->SetSelectionStart(m_STC->GetCurrentPos());
-      m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(m_STC->GetCurrentLine()));
+      GetSTC()->SetSelectionStart(GetSTC()->GetCurrentPos());
+      GetSTC()->SetSelectionEnd(GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()));
       break;
 
     case 'I': 
-      m_STC->Home(); 
+      GetSTC()->Home(); 
       break;
 
     case 'O': 
-      m_STC->Home(); 
-      m_STC->NewLine(); 
-      m_STC->LineUp(); 
+      GetSTC()->Home(); 
+      GetSTC()->NewLine(); 
+      GetSTC()->LineUp(); 
       break;
 
     default: wxFAIL;
@@ -1112,143 +669,29 @@ void wxExVi::InsertMode(
 
   if (dot)
   {
-    m_STC->SetTargetStart(m_STC->GetCurrentPos());
+    GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
     
     if (c == 'R' || c == 'C')
     {
-      m_STC->ReplaceSelection(m_InsertText);
+      GetSTC()->ReplaceSelection(m_InsertText);
     }
     else
     {
-      m_STC->AddText(m_InsertText);
+      GetSTC()->AddText(m_InsertText);
     }
     
-    m_STC->SetTargetEnd(m_STC->GetCurrentPos());
-    m_STC->MarkTargetChange();
+    GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos());
+    GetSTC()->MarkTargetChange();
   }
   else
   {
-    m_STC->SetOvertype(overtype);
+    GetSTC()->SetOvertype(overtype);
   }
-}
-
-bool wxExVi::MacroPlayback(const wxString& macro, int repeat)
-{
-  if (!m_IsActive)
-  {
-    return false;
-  }
-  
-  wxString choice(macro);
-  
-  if (choice.empty())
-  {
-    wxSingleChoiceDialog dialog(m_STC,
-      _("Input") + ":", 
-      _("Select Macro"),
-      m_Macros.Get());
-      
-    if (dialog.ShowModal() != wxID_OK)
-    {
-      return false;
-    }
-    
-    choice = dialog.GetStringSelection();
-  }
-  
-  wxExSTC* stc = m_STC;
-  
-  const bool ok = m_Macros.Playback(this, choice, repeat);
-  
-  m_STC = stc;
-  
-  if (ok)
-  {
-    m_Macro = choice;
-  }
-  
-  return ok;
-}
-
-void wxExVi::MacroStartRecording(const wxString& macro)
-{
-  if (!m_IsActive)
-  {
-    return;
-  }
-  
-  wxString choice(macro);
-  
-  if (choice.empty())
-  {
-    wxTextEntryDialog dlg(m_STC,
-      _("Input") + ":",
-      _("Enter Macro"),
-      m_Macros.GetMacro());
-  
-    if (dlg.ShowModal() != wxID_OK)
-    {
-      return;
-    }
-    
-    choice = dlg.GetValue();
-  }
-  
-  m_Macros.StartRecording(choice);
-}
-
-bool wxExVi::Move(
-  const wxString& begin_address, 
-  const wxString& end_address, 
-  const wxString& destination)
-{
-  if (m_STC->GetReadOnly())
-  {
-    return false;
-  }
-
-  const int dest_line = ToLineNumber(destination);
-
-  if (dest_line == 0)
-  {
-    return false;
-  }
-
-  if (!SetSelection(begin_address, end_address))
-  {
-    return false;
-  }
-
-  if (begin_address.StartsWith("'"))
-  {
-    DeleteMarker(begin_address.GetChar(1));
-  }
-
-  if (end_address.StartsWith("'"))
-  {
-    DeleteMarker(end_address.GetChar(1));
-  }
-
-  m_STC->BeginUndoAction();
-
-  m_STC->Cut();
-  m_STC->GotoLine(dest_line - 1);
-  m_STC->Paste();
-
-  m_STC->EndUndoAction();
-  
-  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
-  if (lines >= 2)
-  {
-    m_Frame->ShowViMessage(wxString::Format(_("%d lines moved"), lines));
-  }
-
-  return true;
 }
 
 bool wxExVi::OnChar(const wxKeyEvent& event)
 {
-  if (!m_IsActive)
+  if (!GetIsActive())
   {
     return true;
   }
@@ -1256,7 +699,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   {
     m_InsertText += event.GetUnicodeKey();
     
-    if (m_Macros.IsRecording())
+    if (MacroIsRecording())
     {
       m_Macros.Record(event.GetUnicodeKey());
     }
@@ -1269,7 +712,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     {
       m_Command += event.GetUnicodeKey();
       
-      if (m_Macros.IsRecording())
+      if (MacroIsRecording())
       {
         if (event.GetUnicodeKey() != 'q')
         {
@@ -1298,7 +741,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
           m_LastCommand = m_Command;
         }
         
-        if (m_Macros.IsRecording())
+        if (MacroIsRecording())
         {
           m_Macros.RecordNew();
         }
@@ -1317,7 +760,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
 
 bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 {
-  if (!m_IsActive)
+  if (!GetIsActive())
   {
     return true;
   }
@@ -1331,7 +774,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   {
     const bool result = Command((char)event.GetKeyCode());
     
-    if (result && m_Macros.IsRecording())
+    if (result && MacroIsRecording())
     {
       m_Macros.Record(event.GetKeyCode(), true);
     }
@@ -1344,9 +787,9 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   }
 }
 
-void wxExVi::Put(bool after) const
+void wxExVi::Put(bool after)
 {
-  if (m_STC->GetReadOnly() || m_STC->HexMode())
+  if (GetSTC()->GetReadOnly() || GetSTC()->HexMode())
   {
     return;
   }
@@ -1355,305 +798,71 @@ void wxExVi::Put(bool after) const
   
   if (lines)
   {
-    if (after) m_STC->LineDown();
-    m_STC->Home();
+    if (after) GetSTC()->LineDown();
+    GetSTC()->Home();
   }
 
-  m_STC->Paste();
+  GetSTC()->Paste();
 
   if (lines && after)
   {
-    m_STC->LineUp();
+    GetSTC()->LineUp();
   }
 }        
 
 void wxExVi::SetIndicator(
   const wxExIndicator& indicator, 
   int start, 
-  int end) const
+  int end)
 {
   if (!wxExLexers::Get()->IndicatorIsLoaded(indicator))
   {
     return;
   }
 
-  m_STC->SetIndicatorCurrent(indicator.GetNo());
-  m_STC->IndicatorFillRange(start, end - start);
+  GetSTC()->SetIndicatorCurrent(indicator.GetNo());
+  GetSTC()->IndicatorFillRange(start, end - start);
 }
 
-bool wxExVi::SetSelection(
-  const wxString& begin_address, 
-  const wxString& end_address) const
+void wxExVi::ToggleCase()
 {
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
-
-  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
-  {
-    return false;
-  }
-
-  m_STC->SetSelectionStart(m_STC->PositionFromLine(begin_line - 1));
-  m_STC->SetSelectionEnd(m_STC->PositionFromLine(end_line));
-
-  return true;
-}
-
-bool wxExVi::Substitute(
-  const wxString& begin_address, 
-  const wxString& end_address, 
-  const wxString& pattern,
-  const wxString& replacement) const
-{
-  if (m_STC->GetReadOnly())
-  {
-    return false;
-  }
-
-  if (m_STC->HexMode())
-  {
-    wxLogStatus(_("Not allowed in hex mode"));
-    return false;
-  }
-  
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
-
-  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
-  {
-    return false;
-  }
-
-  m_STC->SetSearchFlags(m_SearchFlags);
-
-  int nr_replacements = 0;
-
-  m_STC->BeginUndoAction();
-  m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
-  m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
-
-  while (m_STC->SearchInTarget(pattern) > 0)
-  {
-    const int target_start = m_STC->GetTargetStart();
-
-    if (target_start >= m_STC->GetTargetEnd())
-    {
-      break;
-    }
-
-    m_STC->MarkTargetChange();
-    const int length = m_STC->ReplaceTargetRE(replacement); // always RE!
-    m_STC->SetTargetStart(target_start + length);
-    m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
-
-    nr_replacements++;
-  }
-
-  m_STC->EndUndoAction();
-
-  m_Frame->ShowViMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
-    nr_replacements, pattern.c_str()));
-
-  return true;
-}
-
-void wxExVi::ToggleCase() const
-{
-  wxString text(m_STC->GetTextRange(
-    m_STC->GetCurrentPos(), 
-    m_STC->GetCurrentPos() + 1));
+  wxString text(GetSTC()->GetTextRange(
+    GetSTC()->GetCurrentPos(), 
+    GetSTC()->GetCurrentPos() + 1));
 
   wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
 
-  m_STC->wxStyledTextCtrl::Replace(
-    m_STC->GetCurrentPos(), 
-    m_STC->GetCurrentPos() + 1, 
+  GetSTC()->wxStyledTextCtrl::Replace(
+    GetSTC()->GetCurrentPos(), 
+    GetSTC()->GetCurrentPos() + 1, 
     text);
 
-  m_STC->CharRight();
+  GetSTC()->CharRight();
   
-  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-  m_STC->MarkerAddChange(line);
+  const int line = GetSTC()->LineFromPosition(GetSTC()->GetCurrentPos());
+  GetSTC()->MarkerAddChange(line);
 }
 
-// Returns 0 and bells on error in address, otherwise the vi line number,
-// so subtract 1 for stc line number.
-int wxExVi::ToLineNumber(const wxString& address) const
+void wxExVi::Yank(int lines)
 {
-  wxString filtered_address(wxExSkipWhiteSpace(address, ""));
-
-  // Filter all markers.
-  int markers = 0;
-
-  while (filtered_address.Contains("'"))
-  {
-    const wxString oper = filtered_address.BeforeFirst('\'');
-    
-    int pos = filtered_address.Find('\'');
-    int size = 2;
-    
-#ifdef wxExUSE_CPP0X	
-    auto it = 
-      m_Markers.find(filtered_address.AfterFirst('\'').GetChar(0));
-#else
-    std::map<wxUniChar, int>::const_iterator it = 
-      m_Markers.find(filtered_address.AfterFirst('\'').GetChar(0));
-#endif	  
-      
-    if (it != m_Markers.end())
-    {
-      if (oper == "-")
-      {
-        markers -= it->second;
-        pos--;
-        size++;
-      }
-      else if (oper == "+")
-      {
-        markers += it->second;
-        pos--;
-        size++;
-      }
-      else 
-      {
-        markers += it->second;
-      }
-    }
-    else
-    {
-      wxBell();
-      return 0;
-    }
-
-    filtered_address.replace(pos, size, "");
-  }
-
-  int dot = 0;
-  int stc_used = 0;
-
-  if (filtered_address.Contains("."))
-  {
-    dot = m_STC->GetCurrentLine();
-    filtered_address.Replace(".", "");
-    stc_used = 1;
-  }
-
-  // Filter $.
-  int dollar = 0;
-
-  if (filtered_address.Contains("$"))
-  {
-    dollar = m_STC->GetLineCount();
-    filtered_address.Replace("$", "");
-    stc_used = 1;
-  }
-
-  // Now we should have a number.
-  if (!filtered_address.IsNumber()) 
-  {
-    wxBell();
-    return 0;
-  }
-
-  // Convert this number.
-  int i = 0;
-  
-  if (!filtered_address.empty())
-  {
-    if ((i = atoi(filtered_address.c_str())) == 0)
-    {
-      wxBell();
-      return 0;
-    }
-  }
-  
-  // Calculate the line.
-  const int line_no = markers + dot + dollar + i + stc_used;
-  
-  // Limit the range of what is returned.
-  if (line_no <= 0)
-  {
-    return 1;
-  }
-  else if (line_no > m_STC->GetLineCount())
-  {
-    return m_STC->GetLineCount();
-  }  
-  else
-  {
-    return line_no;
-  }
-}
-
-bool wxExVi::Write(
-  const wxString& begin_address, 
-  const wxString& end_address,
-  const wxString& filename) const
-{
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
-
-  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
-  {
-    return false;
-  }
-
-  wxFile file(filename, wxFile::write);
-
-  return 
-    file.IsOpened() && 
-    file.Write(m_STC->GetTextRange(
-      m_STC->PositionFromLine(begin_line - 1), 
-      m_STC->PositionFromLine(end_line)));
-}
-
-void wxExVi::Yank(int lines) const
-{
-  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-  const int start = m_STC->PositionFromLine(line);
-  const int end = m_STC->PositionFromLine(line + lines);
+  const int line = GetSTC()->LineFromPosition(GetSTC()->GetCurrentPos());
+  const int start = GetSTC()->PositionFromLine(line);
+  const int end = GetSTC()->PositionFromLine(line + lines);
 
   if (end != -1)
   {
-    m_STC->CopyRange(start, end);
+    GetSTC()->CopyRange(start, end);
   }
   else
   {
-    m_STC->CopyRange(start, m_STC->GetLastPosition());
+    GetSTC()->CopyRange(start, GetSTC()->GetLastPosition());
   }
 
   if (lines >= 2)
   {
-    m_Frame->ShowViMessage(wxString::Format(_("%d lines yanked"), 
+    GetFrame()->ShowExMessage(wxString::Format(_("%d lines yanked"), 
       wxExGetNumberOfLines(wxExClipboardGet()) - 1));
   }
-}
-
-bool wxExVi::Yank(
-  const wxString& begin_address, 
-  const wxString& end_address) const
-{
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
-
-  if (begin_line == 0 || end_line == 0)
-  {
-    return false;
-  }
-
-  const int start = m_STC->PositionFromLine(begin_line - 1);
-  const int end = m_STC->PositionFromLine(end_line);
-
-  m_STC->CopyRange(start, end);
-
-  const int lines = wxExGetNumberOfLines(wxExClipboardGet()) - 1;
-  
-  if (lines >= 2)
-  {
-    m_Frame->ShowViMessage(wxString::Format(_("%d lines yanked"), lines));
-  }
-
-  return true;
 }
 
 #endif // wxUSE_GUI
