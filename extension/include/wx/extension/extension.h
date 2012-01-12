@@ -15,6 +15,7 @@
 #include <wx/extension/defs.h>
 #include <wx/extension/dialog.h>
 #include <wx/extension/dir.h>
+#include <wx/extension/ex.h>
 #include <wx/extension/file.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
