@@ -192,6 +192,41 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT(stc->GetTabWidth() == 120);
   
   wxExEx* ex = new wxExEx(stc);
+  
+  CPPUNIT_ASSERT( ex->Command(":.="));
+  CPPUNIT_ASSERT(!ex->Command(":xxx"));
+  CPPUNIT_ASSERT(!ex->Command(":yyy"));
+  CPPUNIT_ASSERT( ex->Command(":10"));
+  CPPUNIT_ASSERT( ex->Command(":1,$s/this/ok"));
+  CPPUNIT_ASSERT( ex->Command(":g/is/ok"));
+  CPPUNIT_ASSERT( ex->Command(":g/is/d"));
+  CPPUNIT_ASSERT( ex->Command(":g/is/p"));
+  CPPUNIT_ASSERT( ex->Command(":n"));
+  CPPUNIT_ASSERT( ex->Command(":prev"));
+  
+  CPPUNIT_ASSERT(!ex->MacroIsRecording());
+  CPPUNIT_ASSERT(!ex->MacroIsRecorded());
+  
+  vi->MacroStartRecording("a");
+  CPPUNIT_ASSERT( ex->MacroIsRecording());
+  CPPUNIT_ASSERT(!ex->MacroIsRecorded("a"));
+  
+  ex->MacroStopRecording();
+  CPPUNIT_ASSERT(!ex->MacroIsRecording());
+  CPPUNIT_ASSERT(!ex->MacroIsRecorded("a")); // still no macro
+  
+  ex->MacroStartRecording("a");
+  CPPUNIT_ASSERT( ex->Command(":10"));
+  ex->MacroStopRecording();
+  
+  CPPUNIT_ASSERT(!ex->MacroIsRecording());
+  CPPUNIT_ASSERT( ex->MacroIsRecorded("a"));
+  
+  CPPUNIT_ASSERT(!ex->MacroIsRecorded("b"));
+  CPPUNIT_ASSERT( ex->MacroIsRecorded());
+  
+  CPPUNIT_ASSERT( ex->MacroPlayback("a"));
+  CPPUNIT_ASSERT(!ex->MacroPlayback("b"));
 }
 
 void wxExGuiTestFixture::testFrame()

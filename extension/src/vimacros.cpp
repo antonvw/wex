@@ -185,12 +185,7 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
       it != m_Macros[macro].end() && !stop;
       ++it)
     { 
-      const wxString command(*it);
-
-      if (!command.empty())
-      {
-        stop = !ex->Command(command);
-      }
+      stop = !ex->Command(*it);
     }
   }
 
@@ -278,15 +273,12 @@ void wxExViMacros::SaveDocument()
       bool encoded = false;  
       const wxString contents(Encode(*it2, encoded));
       
-      if (!contents.empty())
-      {
-        wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
-        wxXmlNode* content = new wxXmlNode(cmd, wxXML_TEXT_NODE, "", contents);
+      wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
+      wxXmlNode* content = new wxXmlNode(cmd, wxXML_TEXT_NODE, "", contents);
         
-        if (encoded)
-        {
-          cmd->AddAttribute("encoded", "true");
-        }
+      if (encoded)
+      {
+        cmd->AddAttribute("encoded", "true");
       }
     }
   }

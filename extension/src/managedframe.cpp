@@ -51,7 +51,6 @@ private:
   wxExEx* m_ex;
   wxStaticText* m_Prefix;
   bool m_UserInput;
-  bool m_Found;
 
   DECLARE_EVENT_TABLE()
 };
@@ -269,7 +268,6 @@ wxExExTextCtrl::wxExExTextCtrl(
   , m_Frame(frame)
   , m_ex(NULL)
   , m_UserInput(false)
-  , m_Found(false)
   , m_Prefix(prefix)
 {
 }
@@ -281,8 +279,7 @@ void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
   if (m_UserInput && m_ex != NULL && m_Prefix->GetLabel() != ":")
   {
     m_ex->GetSTC()->PositionRestore();
-    
-    m_Found = m_ex->GetSTC()->FindNext(
+    m_ex->GetSTC()->FindNext(
       GetValue(),
       wxSTC_FIND_REGEXP | wxFR_MATCHCASE,
       m_Prefix->GetLabel() == "/");
@@ -317,7 +314,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
     }
     else if (m_ex != NULL)
     {
-      m_Found = m_ex->Command(m_Prefix->GetLabel() + GetValue());
+      m_ex->Command(m_Prefix->GetLabel() + GetValue());
     }
       
     m_Frame->HideExBar();

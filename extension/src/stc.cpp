@@ -625,7 +625,7 @@ void wxExSTC::ConfigGet()
     wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), 
     wxSTC_WRAPVISUALFLAG_END));
 
-  m_vi.Use(wxConfigBase::Get()->ReadBool(_("vi mode"), false));
+  m_vi.Use(wxConfigBase::Get()->ReadBool(_("vi mode"), true));
 
   m_Link.SetFromConfig();
 
@@ -1095,25 +1095,22 @@ void wxExSTC::GotoLineAndSelect(
 
   m_Goto = line_number;
 
-  const int start_pos = PositionFromLine(line_number - 1);
-  const int end_pos = GetLineEndPosition(line_number - 1);
-
-  SetTargetStart(start_pos);
-  SetTargetEnd(end_pos);
-
   if (!text.empty())
   {
     SetSearchFlags(wxExFindReplaceData::Get()->STCFlags());
+    const int start_pos = PositionFromLine(line_number - 1);
+    const int end_pos = GetLineEndPosition(line_number - 1);
 
-    if (SearchInTarget(text) < 0)
+    SetTargetStart(start_pos);
+    SetTargetEnd(end_pos);
+
+    if (SearchInTarget(text) > 0)
     {
       bool recursive = true;
       wxExFindResult(text, true, recursive);
-      return;
+      SetSelection(GetTargetStart(), GetTargetEnd());
     }
   }
-
-  SetSelection(GetTargetStart(), GetTargetEnd());
 }
 
 void wxExSTC::GuessType()
