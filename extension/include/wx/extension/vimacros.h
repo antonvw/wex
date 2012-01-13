@@ -57,9 +57,6 @@ public:
   /// Records single char to current macro.
   void Record(char c, bool new_command = false);
   
-  /// Records a new command to current macro.
-  void RecordNew();
-
   /// Starts recording a macro (overwrites if exists).
   void StartRecording(const wxString& macro);
   
@@ -75,6 +72,9 @@ public:
   /// Saves all macros to xml document.
   static void SaveDocument();
 private:  
+  /// Records a new command to current macro.
+  void RecordNew();
+
   static bool Load(wxXmlDocument& doc);
   
   static const wxString Encode(const wxString& text, bool& encoded);

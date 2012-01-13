@@ -85,14 +85,21 @@ bool wxExVi::Command(const wxString& command)
         return true;
       }
     }
-    else if (
-      command.length() > 1 && (command.StartsWith("/") || command.StartsWith("?")))
+    else if (command.StartsWith("/") || command.StartsWith("?"))
     {
-      return GetSTC()->FindNext(
-        command.Mid(1),
-        m_SearchFlags,
-        command.StartsWith("/"));
-    }
+      if (command.length() > 1)
+      {
+        // This is a previous entered command.
+        return GetSTC()->FindNext(
+          command.Mid(1),
+          m_SearchFlags,
+          command.StartsWith("/"));
+      }
+      else
+      {
+        GetFrame()->GetExCommand(this, command);
+        return true;
+      }
   }
   
   switch ((int)command.Last())
@@ -525,12 +532,6 @@ bool wxExVi::Command(const wxString& command)
         if (GetSTC()->HexMode()) return false;
         for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack(); break;
 
-      case '/': 
-      case '?': 
-        GetFrame()->GetExCommand(this, command.Last());
-        return false;
-        break;
-
       case '.': 
         m_Dot = true;
         Command(m_LastCommand); 
@@ -565,8 +566,6 @@ bool wxExVi::Command(const wxString& command)
     }
   }
   
-  // TODO: set last command.
-
   return handled;
 }
 
@@ -735,10 +734,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
           m_LastCommand = m_Command;
         }
         
-        if (MacroIsRecording())
-        {
-          m_Macros.Record(event.GetUnicodeKey(), true);
-        }
+        MacroRecord(m_Command);
         
         m_Command.clear();
       }
