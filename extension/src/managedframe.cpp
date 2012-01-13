@@ -215,7 +215,7 @@ void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 
 void wxExManagedFrame::ShowExMessage(const wxString& text)
 {
-  if (GetStatusBar()->IsShown())
+  if (GetStatusBar() != NULL && GetStatusBar()->IsShown())
   {
     GetStatusBar()->SetStatusText(text);
     
@@ -225,7 +225,11 @@ void wxExManagedFrame::ShowExMessage(const wxString& text)
   {
     m_exTextPrefix->SetLabel(text);
     m_exTextCtrl->Hide();
-    m_exTextCtrl->GetEx()->GetSTC()->SetFocus();
+    
+    if (m_exTextCtrl->GetEx() != NULL)
+    {
+      m_exTextCtrl->GetEx()->GetSTC()->SetFocus();
+    }
   
     m_Manager.GetPane("VIBAR").Show();
     m_Manager.Update();

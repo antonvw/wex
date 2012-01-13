@@ -172,6 +172,8 @@ bool wxExEx::Command(const wxString& command)
   
   m_Frame->HideExBar(set_focus);
   
+  MacroRecord(command);
+        
   return true;
 }
 
@@ -187,6 +189,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
   next.GetNextToken(); // skip empty token
   const wxString pattern = next.GetNextToken();
   const wxString command = next.GetNextToken();
+  const wxString skip = next.GetNextToken();
   const wxString replacement = next.GetNextToken();
   
   wxString print;
