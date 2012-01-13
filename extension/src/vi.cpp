@@ -100,6 +100,7 @@ bool wxExVi::Command(const wxString& command)
         GetFrame()->GetExCommand(this, command);
         return true;
       }
+    }
   }
   
   switch ((int)command.Last())
@@ -734,8 +735,6 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
           m_LastCommand = m_Command;
         }
         
-        MacroRecord(m_Command);
-        
         m_Command.clear();
       }
       
@@ -762,14 +761,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     event.GetKeyCode() == WXK_RETURN ||
     event.GetKeyCode() == WXK_TAB)
   {
-    const bool result = Command((char)event.GetKeyCode());
-    
-    if (result && MacroIsRecording())
-    {
-      m_Macros.Record(event.GetKeyCode(), true);
-    }
-          
-    return !result;
+    return !Command((char)event.GetKeyCode());
   }
   else
   {
