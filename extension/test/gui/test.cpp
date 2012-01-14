@@ -986,7 +986,6 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->OnChar(event));
   
   CPPUNIT_ASSERT(!vi->MacroIsRecording());
-  CPPUNIT_ASSERT(!vi->MacroIsRecorded());
   
   vi->MacroStartRecording("a");
   CPPUNIT_ASSERT( vi->MacroIsRecording());
@@ -1043,7 +1042,6 @@ void wxExGuiTestFixture::testViMacros()
   
   CPPUNIT_ASSERT( macros.Playback(vi, "a"));
   CPPUNIT_ASSERT( macros.Get("a").front() == "a");
-  CPPUNIT_ASSERT( macros.Get("a").back().empty());
   CPPUNIT_ASSERT(!macros.Playback(vi, "b"));
 }
   

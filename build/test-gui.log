@@ -1,30 +1,15 @@
-....F.........F.adding 750 items took 3981 milliseconds
-sorting 750 items took 2472 milliseconds
-....................F.F
+.............F.adding 750 items took 2329 milliseconds
+sorting 750 items took 1677 milliseconds
+.....................
 
 
 !!!FAILURES!!!
 Test Results:
-Run:  35   Failures: 4   Errors: 0
+Run:  35   Failures: 1   Errors: 0
 
 
-1) test: testEx (F) line: 231 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: ex->MacroPlayback("a")
-
-
-2) test: testLink (F) line: 483 ../extension/test/gui/test.cpp
+1) test: testLink (F) line: 483 ../extension/test/gui/test.cpp
 assertion failed
 - Expression: link.FindPath(":test") == ":test"
-
-
-3) test: testVi (F) line: 989 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: !vi->MacroIsRecorded()
-
-
-4) test: testViMacros (F) line: 1044 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: macros.Playback(vi, "a")
 
 
