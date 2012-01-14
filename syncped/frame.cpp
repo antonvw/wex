@@ -409,7 +409,7 @@ bool Frame::DialogProjectOpen()
   return true;
 }
 
-wxExSTC* Frame::ExecViCommand(int command)
+wxExSTC* Frame::ExecExCommand(int command)
 {
   switch (command)
   {

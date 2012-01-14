@@ -103,21 +103,12 @@ bool wxExVi::Command(const wxString& command)
     }
   }
   
+  bool handled = true;
+
   switch ((int)command.Last())
   {
-    case WXK_CONTROL_E:
-      if (ChangeNumber(true))
-      {
-        return true;
-      }
-      break;
-      
-    case WXK_CONTROL_J:
-      if (ChangeNumber(false))
-      {
-        return true;
-      }
-      break;
+    case WXK_CONTROL_E: ChangeNumber(true); break;
+    case WXK_CONTROL_J: ChangeNumber(false); break;
       
     case WXK_BACK:
       if (m_InsertMode)
@@ -126,12 +117,10 @@ bool wxExVi::Command(const wxString& command)
         {
           m_InsertText.Truncate(m_InsertText.size() - 1);
         }
-        return false;
       }
       else
       {
         GetSTC()->CharLeft();
-        return true;
       }
       break;
       
@@ -157,9 +146,6 @@ bool wxExVi::Command(const wxString& command)
       {
         GetSTC()->SetSelection(GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
       }
-
-      m_Command.clear();
-      return true;
       break;
 
     case WXK_RETURN:
@@ -180,9 +166,6 @@ bool wxExVi::Command(const wxString& command)
       {
         m_InsertText += command.Last();
       }
-
-      m_Command.clear();
-      return !m_InsertMode;
       break;
     
     case WXK_TAB:
@@ -201,15 +184,17 @@ bool wxExVi::Command(const wxString& command)
         GetSTC()->MarkTargetChange();
           
         m_LastCommand = m_Command + "\t";
-        m_Command.clear();
-        return true;
-      }
-      else
-      {
-        // prevent TAB to be entered when not inserting
-       return !m_InsertMode;
       }
       break;
+      
+    default: handled = false;
+  }
+  
+  if (handled)
+  {  
+    MacroRecord(command);
+    m_Command.clear();
+    return !m_InsertMode;
   }
   
   if (m_InsertMode)
@@ -219,8 +204,8 @@ bool wxExVi::Command(const wxString& command)
     return true;
   }
   
-  bool handled = true;
-
+  handled = true;
+  
   int repeat = atoi(command.c_str());
 
   if (repeat == 0)
@@ -408,6 +393,7 @@ bool wxExVi::Command(const wxString& command)
     if (!MacroIsRecording())
     {
       MacroStartRecording(command.Mid(1));
+      m_Command.clear();
       return false;
     }
   } 
@@ -565,6 +551,11 @@ bool wxExVi::Command(const wxString& command)
       default:
         handled = false;
     }
+  }
+
+  if (handled)
+  {  
+    MacroRecord(command);
   }
   
   return handled;

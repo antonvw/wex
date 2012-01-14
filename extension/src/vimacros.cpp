@@ -210,8 +210,6 @@ void wxExViMacros::Record(const wxString& text)
   {
     m_Macros[m_Macro].push_back(text);
   }
-  
-  RecordNew();
 }
 
 void wxExViMacros::Record(char c, bool new_command)

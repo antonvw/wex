@@ -43,9 +43,8 @@ bool wxExEx::Command(const wxString& command)
     return false;
   }
   
-  MacroRecord(command);
-  
   bool set_focus = true;
+  bool result = true;
 
   if (command == ":$")
   {
@@ -113,7 +112,7 @@ bool wxExEx::Command(const wxString& command)
   // e.g. set ts=4
   else if (command.StartsWith(":set "))
   {
-    return CommandSet(command.Mid(5));
+    result = CommandSet(command.Mid(5));
   }
   else if (command.StartsWith(":w"))
   {
@@ -169,12 +168,14 @@ bool wxExEx::Command(const wxString& command)
       return false;
     }
   }
-  
-  m_Frame->HideExBar(set_focus);
-  
-  MacroRecord(command);
+
+  if (result)
+  {  
+    m_Frame->HideExBar(set_focus);
+    MacroRecord(command);
+  }
         
-  return true;
+  return result;
 }
 
 bool wxExEx::CommandGlobal(const wxString& search)
