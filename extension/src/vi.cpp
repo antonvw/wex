@@ -235,6 +235,11 @@ bool wxExVi::Command(const wxString& command)
       const int anchor = GetSTC()->GetCurrentPos();
       GetSTC()->SetCurrentPos(pos);
       GetSTC()->SetAnchor(anchor);
+      
+      if (m_Macros.IsPlayback())
+      {
+        GetSTC()->ReplaceSelection(wxEmptyString);
+      }
     }
   }
   else if (command == "cc" && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
@@ -690,12 +695,14 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   }
   else if (m_InsertMode)
   {
-    m_InsertText += event.GetUnicodeKey();
-    
     if (MacroIsRecording())
     {
-      m_Macros.Record(event.GetUnicodeKey());
+      // Record as new record if insert text is empty,
+      // otherwise append it.
+      m_Macros.Record(event.GetUnicodeKey(), m_InsertText.empty());
     }
+    
+    m_InsertText += event.GetUnicodeKey();
     
     return true;
   }

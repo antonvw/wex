@@ -217,23 +217,16 @@ void wxExViMacros::Record(char c, bool new_command)
   if (new_command) 
   {
     m_Macros[m_Macro].push_back(c);
-    
-    RecordNew();
   }
   else
   {
     if (m_Macros[m_Macro].empty())
     {
-      RecordNew();
+      m_Macros[m_Macro].push_back(wxEmptyString);
     }
     
     m_Macros[m_Macro].back() += c;
   }
-}
-
-void wxExViMacros::RecordNew()
-{
-  m_Macros[m_Macro].push_back(wxEmptyString);
 }
 
 void wxExViMacros::SaveDocument()
