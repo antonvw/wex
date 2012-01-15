@@ -74,7 +74,7 @@ bool wxExEx::Command(const wxString& command)
   {
     wxExSTC* stc = m_Frame->ExecExCommand(ID_EDIT_NEXT);
     
-    if (m_Macros.IsPlayback())
+    if (m_Macros.IsPlayback() && stc != NULL)
     {
       m_STC = stc;
     }
@@ -85,7 +85,7 @@ bool wxExEx::Command(const wxString& command)
   {
     wxExSTC* stc = m_Frame->ExecExCommand(ID_EDIT_PREVIOUS);
     
-    if (m_Macros.IsPlayback())
+    if (m_Macros.IsPlayback() && stc != NULL)
     {
       m_STC = stc;
     }

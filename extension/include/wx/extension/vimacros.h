@@ -72,9 +72,6 @@ public:
   /// Saves all macros to xml document.
   static void SaveDocument();
 private:  
-  /// Records a new command to current macro.
-  void RecordNew();
-
   static bool Load(wxXmlDocument& doc);
   
   static const wxString Encode(const wxString& text, bool& encoded);
