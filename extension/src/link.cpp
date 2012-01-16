@@ -5,12 +5,12 @@
 // Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <regex>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/link.h>
 #include <wx/extension/lexer.h>
@@ -98,25 +98,24 @@ const wxString wxExLink::FindPath(const wxString& text) const
       pos_char2 <= pos_char1)
   {
     // Filter out a possible line number, or ending with : and whitespace.
-    wxRegEx regex("(.+):{[0-9]+}| *");
+    try {
+      std::match_results<std::string::const_iterator> res;
+      std::regex rx("(.+):{[0-9]+}| *");
+      std::string str(text.c_str());
+      std::regex_search(str, res, rx);
     
-    if (regex.Matches(text))
-    {
-      size_t start, len;
-
-      if (regex.GetMatch(&start, &len, 1))
+      if (res.size() > 0)
       {
-        out = text.substr(start, len);
+        out = wxString(res[1]);
       }
       else
       {
         out = text;
       }
-    }
-    else
-    {
-      out = text;
-    }
+      }
+      catch(std::exception& e) {
+        wxLogMessage(e.what());
+      }
   }
   else
   {
