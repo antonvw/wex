@@ -97,8 +97,8 @@ const wxString wxExLink::FindPath(const wxString& text) const
       pos_char2 == wxString::npos || 
       pos_char2 <= pos_char1)
   {
-    // Filter out a possible line number.
-    wxRegEx regex("(.*):[0-9]*");
+    // Filter out a possible line number, or ending with : and whitespace.
+    wxRegEx regex("(.+):{[0-9]+}| *");
     
     if (regex.Matches(text))
     {
