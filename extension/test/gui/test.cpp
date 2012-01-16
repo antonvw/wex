@@ -480,6 +480,7 @@ void wxExGuiTestFixture::testLink()
   CPPUNIT_ASSERT(!link.FindPath("xxxx").empty());
   CPPUNIT_ASSERT(!link.FindPath("./test").empty());
   CPPUNIT_ASSERT( link.FindPath("<test>") == "test");
+  CPPUNIT_ASSERT( link.FindPath("test:") == "test");
   CPPUNIT_ASSERT( link.FindPath(":test") == ":test");
   CPPUNIT_ASSERT( link.FindPath(": test:") == ": test:"); // no po file
   CPPUNIT_ASSERT( link.FindPath("c:test") == "c:test");
