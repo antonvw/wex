@@ -100,7 +100,7 @@ const wxString wxExLink::FindPath(const wxString& text) const
     // Filter out a possible line number, or ending with : and whitespace.
     try {
       std::match_results<std::string::const_iterator> res;
-      std::regex rx("(.+):{[0-9]+}| *");
+      std::regex rx("(.+):(([0-9]+)|( *))");
       std::string str(text.c_str());
       std::regex_search(str, res, rx);
     
