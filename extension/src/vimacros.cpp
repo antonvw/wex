@@ -198,25 +198,11 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   return !stop;
 }
 
-void wxExViMacros::Record(const wxString& text)
-{
-  if (
-    !m_Macros[m_Macro].empty() &&
-     m_Macros[m_Macro].back().empty())
-  {
-    m_Macros[m_Macro].back() += text;
-  }
-  else
-  {
-    m_Macros[m_Macro].push_back(text);
-  }
-}
-
-void wxExViMacros::Record(char c, bool new_command)
+void wxExViMacros::Record(const wxString& text, bool new_command)
 {
   if (new_command) 
   {
-    m_Macros[m_Macro].push_back(c);
+    m_Macros[m_Macro].push_back(text);
   }
   else
   {
@@ -225,7 +211,7 @@ void wxExViMacros::Record(char c, bool new_command)
       m_Macros[m_Macro].push_back(wxEmptyString);
     }
     
-    m_Macros[m_Macro].back() += c;
+    m_Macros[m_Macro].back() += text;
   }
 }
 

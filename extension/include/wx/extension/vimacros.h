@@ -52,10 +52,7 @@ public:
   /// though it is not checked here.
   /// If you playback this macro however, the text
   /// is sent to the ex component to execute it.
-  void Record(const wxString& text);
-  
-  /// Records single char to current macro.
-  void Record(char c, bool new_command = false);
+  void Record(const wxString& text, bool new_command = true);
   
   /// Starts recording a macro (overwrites if exists).
   void StartRecording(const wxString& macro);
