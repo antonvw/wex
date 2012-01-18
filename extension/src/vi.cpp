@@ -236,7 +236,7 @@ bool wxExVi::Command(const wxString& command)
       GetSTC()->SetCurrentPos(pos);
       GetSTC()->SetAnchor(anchor);
       
-      if (m_Macros.IsPlayback())
+      if (MacroIsPlayback())
       {
         GetSTC()->ReplaceSelection(wxEmptyString);
       }
@@ -699,7 +699,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     {
       // Record as new record if insert text is empty,
       // otherwise append it.
-      m_Macros.Record(event.GetUnicodeKey(), m_InsertText.empty());
+      MacroRecord(event.GetUnicodeKey(), m_InsertText.empty());
     }
     
     m_InsertText += event.GetUnicodeKey();

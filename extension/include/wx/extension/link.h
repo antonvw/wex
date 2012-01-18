@@ -22,7 +22,7 @@ public:
   wxExLink(wxExSTC* stc);
   
   /// Adds a possible base path, present in the stc component.
-  /// Returns false if a path was not added.
+  /// Returns false if basepath was not found in stc.
   bool AddBasePath();
   
   /// Gets a possible path from text, does not use pathlist

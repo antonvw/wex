@@ -44,6 +44,10 @@ public:
   /// Returns STC component.
   wxExSTC* GetSTC() {return m_STC;};
   
+  /// A macro is being played back.
+  bool MacroIsPlayback() const {
+    return m_Macros.IsPlayback();};
+    
   /// A macro has been recorded.
   /// If you do not specify a macro, then
   /// returns true if any macro has been recorded,
@@ -63,8 +67,8 @@ public:
     int repeat = 1);
   
   /// Records text within a macro.
-  void MacroRecord(const wxString& text) {
-    if (m_Macros.IsRecording()) m_Macros.Record(text);};
+  void MacroRecord(const wxString& text, bool new_command = true) {
+    if (m_Macros.IsRecording()) m_Macros.Record(text, new_command);};
   
   /// Start recording a macro.  
   /// If specified macro is empty,
@@ -87,8 +91,6 @@ protected:
     const wxString& end_address) const;
   int ToLineNumber(const wxString& address) const;
   void Yank(int lines) const;
-  
-  static wxExViMacros m_Macros;
   
   std::map<wxUniChar, int> m_Markers;
 private:
@@ -115,6 +117,8 @@ private:
   bool Yank(
     const wxString& begin_address, 
     const wxString& end_address) const;
+    
+  static wxExViMacros m_Macros;
 
   bool m_IsActive; // are we actively using ex mode?
   
