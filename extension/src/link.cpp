@@ -5,10 +5,14 @@
 // Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <regex>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
+#endif
+#ifdef wxExUSE_CPP0X	
+#include <regex>
+#else
+#include <wx/regex.h>
 #endif
 #include <wx/config.h>
 #include <wx/tokenzr.h>
@@ -98,6 +102,7 @@ const wxString wxExLink::FindPath(const wxString& text) const
       pos_char2 <= pos_char1)
   {
     // Filter out a possible line number, or ending with : and whitespace.
+#ifdef wxExUSE_CPP0X	
     try {
       std::match_results<std::string::const_iterator> res;
       std::regex rx("(.+):(([0-9]+)|( *))");
@@ -116,6 +121,27 @@ const wxString wxExLink::FindPath(const wxString& text) const
       catch(std::exception& e) {
         wxLogMessage(e.what());
       }
+#else
+    wxRegEx regex("(.*):[0-9]*");
+    
+    if (regex.Matches(text))
+    {
+      size_t start, len;
+
+      if (regex.GetMatch(&start, &len, 1))
+      {
+        out = text.substr(start, len);
+      }
+      else
+      {
+        out = text;
+      }
+    }
+    else
+    {
+      out = text;
+    }
+#endif
   }
   else
   {
