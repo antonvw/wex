@@ -478,7 +478,7 @@ void wxExLogStatus(const wxFileName& fn, long flags)
 bool wxExMatch(
   const wxString& reg, 
   const wxString& text, 
-  std::vector<wxString>& v)
+  std::vector < wxString > & v)
 {
 #ifdef wxExUSE_CPP0X  
   try 
@@ -490,7 +490,7 @@ bool wxExMatch(
     
     if (res.size() > 1)
     {
-      for (int i = 1; i < res.size())
+      for (int i = 1; i < res.size(); i++)
       {
         v.push_back(res[i]);
       }
@@ -498,9 +498,8 @@ bool wxExMatch(
   }
   catch(std::exception& e) 
   {
-    wxLogMessage(e.what());
+    wxLogError(e.what());
   }
-  
 #else
   wxRegEx regex(reg);
     
