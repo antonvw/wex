@@ -10,6 +10,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#ifdef wxExUSE_CPP0X  
+#include <regex>
+#else
+#include <wx/regex.h>
+#endif
 #include <wx/clipbrd.h>
 #include <wx/config.h>
 #include <wx/regex.h>
@@ -356,6 +361,21 @@ int wxExGetIconID(const wxFileName& filename)
   }
 }
 
+int wxExGetLineNumber(const wxString& text)
+{
+  // Get text after :.
+  const size_t pos_char = text.rfind(":");
+
+  if (pos_char == wxString::npos)
+  {
+    return 0;
+  }
+
+  const wxString linenumber = text.substr(pos_char + 1);
+
+  return atoi(linenumber.c_str());
+}
+
 int wxExGetNumberOfLines(const wxString& text)
 {
   if (text.empty())
@@ -374,21 +394,6 @@ int wxExGetNumberOfLines(const wxString& text)
   }
   
   return std::count(trimmed.begin(), trimmed.end(), '\n') + 1;
-}
-
-int wxExGetLineNumber(const wxString& text)
-{
-  // Get text after :.
-  const size_t pos_char = text.rfind(":");
-
-  if (pos_char == wxString::npos)
-  {
-    return 0;
-  }
-
-  const wxString linenumber = text.substr(pos_char + 1);
-
-  return atoi(linenumber.c_str());
 }
 
 const wxString wxExGetWord(
@@ -468,6 +473,52 @@ void wxExLogStatus(const wxFileName& fn, long flags)
   }
 
   wxLogStatus(text);
+}
+
+bool wxExMatch(
+  const wxString& reg, 
+  const wxString& text, 
+  std::vector<wxString>& v)
+{
+#ifdef wxExUSE_CPP0X  
+  try 
+  {
+    std::match_results<std::string::const_iterator> res;
+    std::regex rx(reg);
+    std::string str(text.c_str());
+    std::regex_search(str, res, rx);
+    
+    if (res.size() > 1)
+    {
+      for (int i = 1; i < res.size())
+      {
+        v.push_back(res[i]);
+      }
+    }
+  }
+  catch(std::exception& e) 
+  {
+    wxLogMessage(e.what());
+  }
+  
+#else
+  wxRegEx regex(reg);
+    
+  if (regex.Matches(text))
+  {
+    size_t start, len;
+    
+    for (int i = 1; i < regex.GetMatchCount(); i++)
+    {
+      if (regex.GetMatch(&start, &len, i))
+      {
+        v.push_back(text.substr(start, len));
+      }
+    }
+  }
+#endif
+
+  return v.size();
 }
 
 bool wxExMatchesOneOf(const wxFileName& filename, const wxString& pattern)

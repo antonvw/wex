@@ -200,6 +200,11 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
 
 void wxExViMacros::Record(const wxString& text, bool new_command)
 {
+  if (!m_IsRecording)
+  {
+    return;
+  }
+  
   if (new_command) 
   {
     m_Macros[m_Macro].push_back(text);
@@ -265,7 +270,7 @@ void wxExViMacros::SaveDocument()
 
 void wxExViMacros::StartRecording(const wxString& macro)
 {
-  if (m_IsRecording)
+  if (m_IsRecording || macro.empty())
   {
     return;
   }

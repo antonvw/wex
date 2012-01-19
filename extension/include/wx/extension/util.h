@@ -9,6 +9,7 @@
 #define _EXUTIL_H
 
 #include <list>
+#include <vector>
 #include <wx/combobox.h>
 #include <wx/dir.h> // for wxDIR_DEFAULT
 #include <wx/filedlg.h> // for wxFD_OPEN etc.
@@ -119,6 +120,16 @@ enum wxExStatusFlags
 // Using type wxExStatusFlags instead of long gives compiler errors at
 // invoking.
 void wxExLogStatus(const wxFileName& filename, long flags = STAT_DEFAULT);
+
+/// Regular expression match.
+/// Returns number of submatches present in vector.
+int wxExMatch(
+  /// regular expression
+  const wxString& regex,
+  /// text to match
+  const wxString& text, 
+  /// vector is filled with submatches
+  std::vector<wxString>& v);
 
 /// Returns true if filename (fullname) matches one of the
 /// fields in specified pattern (fields separated by ; sign).

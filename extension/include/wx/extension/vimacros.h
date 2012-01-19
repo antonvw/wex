@@ -44,17 +44,24 @@ public:
   bool IsRecording() const {return m_IsRecording;};
   
   /// Plays back macro a number of repeat times on the ex component.
-  /// Returns true if all text could be executed.
+  /// Returns true if all records could be executed.
   bool Playback(wxExEx* ex, const wxString& macro, int repeat = 1);
   
   /// Records text to current macro as a new command.
   /// The text to be recorded should be valid ex command,
   /// though it is not checked here.
-  /// If you playback this macro however, the text
-  /// is sent to the ex component to execute it.
-  void Record(const wxString& text, bool new_command = true);
+  /// If you playback this macro the text
+  /// is sent to the ex component to execute it, and then should be
+  /// a valid command.
+  void Record(
+    /// text to record
+    const wxString& text, 
+    /// normally each record is a new command, if not,
+    /// the text is appended after the last command
+    bool new_command = true);
   
-  /// Starts recording a macro (overwrites if exists).
+  /// Starts recording a macro (overwrites 
+  /// existing macro if macro starts with lower case).
   void StartRecording(const wxString& macro);
   
   /// Stops recording.
@@ -70,7 +77,6 @@ public:
   static void SaveDocument();
 private:  
   static bool Load(wxXmlDocument& doc);
-  
   static const wxString Encode(const wxString& text, bool& encoded);
   static const wxString Decode(const wxString& text);
     

@@ -80,21 +80,12 @@ bool wxExProcess::CheckInput()
   wxString path;
 
   // Check on error in php script output.
-  const wxRegEx regex(".*in (.*) on line (.*)");
+  std::vector v;
 
-  if (regex.Matches(line))
+  if (wxExMatch(".*in (.*) on line (.*)", line, v) > 1)
   {
-    size_t start, len;
-
-    if (regex.GetMatch(&start, &len, 1))
-    {
-      path = line.substr(start, len);
-    }
-
-    if (regex.GetMatch(&start, &len, 2))
-    {
-      lineno = line.substr(start, len);
-    }
+    path = v[0];
+    lineno = v[1];
   }
   else
   {
