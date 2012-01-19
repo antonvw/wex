@@ -480,7 +480,8 @@ int wxExMatch(
   const wxString& text, 
   std::vector < wxString > & v)
 {
-#ifdef wxExUSE_CPP0X  
+#ifdef __WXMSW__ //wxExUSE_CPP0X  
+// even gcc 4.6.1 asserts on all regex
   try 
   {
     std::match_results<std::string::const_iterator> res;
@@ -496,9 +497,10 @@ int wxExMatch(
       }
     }
   }
-  catch(std::exception& e) 
+  catch (std::regex_error& e) 
   {
-    wxLogError(e.what());
+    wxLogError(wxString::Format("%s: in: %s code: %d",
+      e.what(), reg.c_str(), e.code()));
   }
 #else
   wxRegEx regex(reg);
@@ -511,7 +513,10 @@ int wxExMatch(
     {
       if (regex.GetMatch(&start, &len, i))
       {
-        v.push_back(text.substr(start, len));
+        if (start + len < text.size())
+        {
+          v.push_back(text.substr(start, len));
+        }
       }
     }
   }

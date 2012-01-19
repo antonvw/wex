@@ -1130,7 +1130,7 @@ bool Frame::OpenFile(
   const wxString key = filename.GetFullPath() + unique;
 
   wxWindow* page = m_Editors->SelectPage(key);
-
+  
   if (page == NULL)
   {
     wxExSTCWithFrame* editor = new wxExSTCWithFrame(
@@ -1176,7 +1176,7 @@ bool Frame::OpenFile(
 {
   const wxString key = filename;
 
-  wxWindow* page = m_Editors->SelectPage(key);
+  wxExSTCWithFrame* page = (wxExSTCWithFrame*)m_Editors->SelectPage(key);
 
   if (page == NULL)
   {
@@ -1192,6 +1192,10 @@ bool Frame::OpenFile(
       key,
       filename,
       true);
+  }
+  else
+  {
+    page->SetText(text);
   }
 
   return true;

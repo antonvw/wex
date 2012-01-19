@@ -482,7 +482,7 @@ void wxExGuiTestFixture::testLink()
   CPPUNIT_ASSERT( link.FindPath("<test>") == "test");
   CPPUNIT_ASSERT( link.FindPath("test:") == "test");
   CPPUNIT_ASSERT( link.FindPath(":test") == ":test");
-  CPPUNIT_ASSERT( link.FindPath(": test:") == ": test:"); // no po file
+  CPPUNIT_ASSERT( link.FindPath(": test") == ": test");
   CPPUNIT_ASSERT( link.FindPath("c:test") == "c:test");
   CPPUNIT_ASSERT( link.FindPath("c:\\test") == "c:\\test");
   CPPUNIT_ASSERT( link.FindPath("c:test") == "c:test");
@@ -827,9 +827,14 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetEndOfText("testtest", 3).size() == 3);
   CPPUNIT_ASSERT( wxExGetLineNumber("test on line: 1200") == 1200);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest\n") == 2);
+  
+  std::vector<wxString> v;
+  CPPUNIT_ASSERT( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
+  
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.txt"));
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
+  
   CPPUNIT_ASSERT( wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
   CPPUNIT_ASSERT(!wxExTranslate(
     "hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
@@ -932,7 +937,7 @@ void wxExGuiTestFixture::testVCSEntry()
   CPPUNIT_ASSERT( test.GetName().empty());
   CPPUNIT_ASSERT( test.GetOutput().empty());
   CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
-
+  
   // This should have no effect.  
   test.SetCommand(5);
   
