@@ -475,7 +475,7 @@ void wxExLogStatus(const wxFileName& fn, long flags)
   wxLogStatus(text);
 }
 
-bool wxExMatch(
+int wxExMatch(
   const wxString& reg, 
   const wxString& text, 
   std::vector < wxString > & v)
@@ -492,7 +492,7 @@ bool wxExMatch(
     {
       for (int i = 1; i < res.size(); i++)
       {
-        v.push_back(res[i]);
+        v.push_back(wxString(res[i]));
       }
     }
   }
