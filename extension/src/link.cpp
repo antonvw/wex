@@ -9,11 +9,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#ifdef wxExUSE_CPP0X	
-#include <regex>
-#else
-#include <wx/regex.h>
-#endif
 #include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/link.h>
@@ -94,7 +89,7 @@ const wxString wxExLink::FindPath(const wxString& text) const
     pos_char2 = text.rfind("'");
   }
   
-  wxString out;
+  wxString out = text;
 
   // If we did not find anything.
   if (pos_char1 == wxString::npos || 
@@ -102,46 +97,12 @@ const wxString wxExLink::FindPath(const wxString& text) const
       pos_char2 <= pos_char1)
   {
     // Filter out a possible line number, or ending with : and whitespace.
-#ifdef wxExUSE_CPP0X	
-    try {
-      std::match_results<std::string::const_iterator> res;
-      std::regex rx("(.+):(([0-9]+)|( *))");
-      std::string str(text.c_str());
-      std::regex_search(str, res, rx);
+    std::vector v;
     
-      if (res.size() > 0)
-      {
-        out = wxString(res[1]);
-      }
-      else
-      {
-        out = text;
-      }
-      }
-      catch(std::exception& e) {
-        wxLogMessage(e.what());
-      }
-#else
-    wxRegEx regex("(.*):[0-9]*");
-    
-    if (regex.Matches(text))
+    if (wxExMatch(text, "(.+):(([0-9]+)|( *))", v))
     {
-      size_t start, len;
-
-      if (regex.GetMatch(&start, &len, 1))
-      {
-        out = text.substr(start, len);
-      }
-      else
-      {
-        out = text;
-      }
+      out = v[0];
     }
-    else
-    {
-      out = text;
-    }
-#endif
   }
   else
   {
