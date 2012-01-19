@@ -1,5 +1,5 @@
-.............F.adding 750 items took 2329 milliseconds
-sorting 750 items took 1677 milliseconds
+.............F.adding 750 items took 2378 milliseconds
+sorting 750 items took 1650 milliseconds
 .....................
 
 
@@ -10,6 +10,6 @@ Run:  35   Failures: 1   Errors: 0
 
 1) test: testLink (F) line: 483 ../extension/test/gui/test.cpp
 assertion failed
-- Expression: link.FindPath(":test") == ":test"
+- Expression: link.FindPath("test:") == "test"
 
 
