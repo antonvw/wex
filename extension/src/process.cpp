@@ -80,7 +80,7 @@ bool wxExProcess::CheckInput()
   wxString path;
 
   // Check on error in php script output.
-  std::vector v;
+  std::vector <wxString> v;
 
   if (wxExMatch(".*in (.*) on line (.*)", line, v) > 1)
   {
