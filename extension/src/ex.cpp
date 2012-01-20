@@ -5,6 +5,7 @@
 // Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -289,9 +290,12 @@ bool wxExEx::CommandRange(const wxString& command)
   }
   else if (address == "*")
   {
-    begin_address = itoa(m_STC->GetFirstVisibleLine() + 1);
-    end_address = 
-      itoa(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() + 1);
+    std::stringstream ss;
+    ss << m_STC->GetFirstVisibleLine() + 1;
+    begin_address = wxString(ss.str());
+    std::stringstream tt;
+    tt << m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() + 1;
+    end_address = wxString(tt.str());
   }
   else
   {

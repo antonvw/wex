@@ -1246,6 +1246,15 @@ void wxExSTC::Indent(int lines, bool forward)
 
 void wxExSTC::Initialize()
 {
+  // TODO: There is a bug in scintilla 2.0.3.
+  // const char *Document::SubstituteByPosition(const char *text, int *length) {
+  //   return regex->SubstituteByPosition(this, text, length);
+  // }
+  // If this is invoked without first calling FindNext, while wxSTC_FIND_REGEXP set,
+  // then regex is still 0, and crashes here.
+  SetSearchFlags(wxSTC_FIND_REGEXP);
+  SearchInTarget(wxEmptyString);
+  
   if (HexMode())
   {
     SetHexMode();
