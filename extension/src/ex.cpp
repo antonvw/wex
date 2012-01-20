@@ -160,19 +160,23 @@ bool wxExEx::Command(const wxString& command)
   {
     m_STC->GotoLineAndSelect(atoi(command.AfterFirst(':').c_str()));
   }
+  else if (command.StartsWith(":g"))
+  {
+    result = CommandGlobal(command.AfterFirst('g'));
+  }
   else
   {
-    if (!CommandRange(command.AfterFirst(':')))
-    {
-      wxBell();
-      return false;
-    }
+    result = CommandRange(command.AfterFirst(':'));
   }
 
   if (result)
   {  
     m_Frame->HideExBar(set_focus);
     MacroRecord(command);
+  }
+  else
+  {
+    wxBell();
   }
         
   return result;
@@ -242,7 +246,6 @@ bool wxExEx::CommandGlobal(const wxString& search)
     }
     else
     {
-      wxBell();
       return false;
     }
   }
@@ -261,7 +264,7 @@ bool wxExEx::CommandRange(const wxString& command)
 {
   // [address] m destination
   // [address] s [/pattern/replacement/] [options] [count]
-  wxStringTokenizer tkz(command, "dgmsyw><");
+  wxStringTokenizer tkz(command, "dmsyw><");
   
   if (!tkz.HasMoreTokens())
   {
@@ -271,12 +274,6 @@ bool wxExEx::CommandRange(const wxString& command)
   const wxString address = tkz.GetNextToken();
   const wxChar cmd = tkz.GetLastDelimiter();
 
-  if (cmd == 'g')
-  {
-    // Global search (g has no address).
-    return CommandGlobal(tkz.GetString());
-  }
-    
   wxString begin_address;
   wxString end_address;
     
@@ -289,6 +286,12 @@ bool wxExEx::CommandRange(const wxString& command)
   {
     begin_address = "1";
     end_address = "$";
+  }
+  else if (address == "*")
+  {
+    begin_address = itoa(m_STC->GetFirstVisibleLine() + 1);
+    end_address = 
+      itoa(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() + 1);
   }
   else
   {
@@ -368,8 +371,6 @@ bool wxExEx::CommandSet(const wxString& command)
     }
   }
     
-  wxBell();
-  
   return false;
 }
 
@@ -707,7 +708,6 @@ int wxExEx::ToLineNumber(const wxString& address) const
     }
     else
     {
-      wxBell();
       return 0;
     }
 
@@ -737,7 +737,6 @@ int wxExEx::ToLineNumber(const wxString& address) const
   // Now we should have a number.
   if (!filtered_address.IsNumber()) 
   {
-    wxBell();
     return 0;
   }
 
@@ -748,7 +747,6 @@ int wxExEx::ToLineNumber(const wxString& address) const
   {
     if ((i = atoi(filtered_address.c_str())) == 0)
     {
-      wxBell();
       return 0;
     }
   }

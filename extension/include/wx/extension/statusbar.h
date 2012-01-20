@@ -16,8 +16,6 @@
 #if wxUSE_GUI
 #if wxUSE_STATUSBAR
 
-class wxExFrame;
-
 /// This class defines our statusbar panes, used by wxExFrame::SetupStatusBar.
 /// It just adds some members to the base class, and keeps a static total.
 class WXDLLIMPEXP_BASE wxExStatusBarPane : public wxStatusBarPane
@@ -63,6 +61,8 @@ private:
   int m_No;
   static int m_Total;
 };
+
+class wxExFrame;
 
 /// Offers a status bar that calls virtual methods from wxExFrame.
 class WXDLLIMPEXP_BASE wxExStatusBar : public wxStatusBar
