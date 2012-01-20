@@ -1592,7 +1592,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
         <def style ="word"> fore:yellow </def>
         
         <colour name="caretforeground"> white </colour>
-        <colour name="caretlinebackground"> dark grey </colour>
+        <colour name="caretlinebackground"> dim grey </colour>
         <colour name="edge"> dim grey </colour>
         <colour name="selforeground"> black </colour>
         <colour name="selbackground"> green </colour>

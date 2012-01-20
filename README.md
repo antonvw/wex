@@ -86,7 +86,7 @@ one of these applications, being a full featured source code text editor.
   http://www.stack.nl/~dimitri/doxygen/
 
 - translation is done using poedit (1.4.6)  
-  http://www.poedit.net/
+  http://www.poedit.net/  
   wxextension has it's own localization file, your application should
   also add it's own one (add _() around text strings), 
   and also put the standard wxwidgets localization file
@@ -99,7 +99,7 @@ one of these applications, being a full featured source code text editor.
 - automated testing is done using cppunit (1.12)  
   http://sourceforge.net/projects/cppunit:   
     `sudo apt-get install libcppunit-dev`  
-  add a test for it in 
+  add a test for it in: 
   - extension/test/base
   - extension/test/gui
   - extension/test/gui-report  

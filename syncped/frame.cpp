@@ -839,7 +839,6 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxExFileDialog dlg(this, project);
       if (dlg.ShowModalIfChanged() != wxID_CANCEL)
       {
-        project->FileSave();
         OpenFile(project->GetFileName());
       }
     }

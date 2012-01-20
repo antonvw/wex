@@ -361,11 +361,8 @@ void wxExExTextCtrl::OnKey(wxKeyEvent& event)
 void wxExExTextCtrl::SetEx(wxExEx* ex) 
 {
   m_UserInput = false;
-
   m_ex = ex;
   
-  Show();
-    
   if (m_Prefix->GetLabel() != ":")
   {
     if (!m_ex->GetSTC()->GetSelectedText().empty())
@@ -383,6 +380,7 @@ void wxExExTextCtrl::SetEx(wxExEx* ex)
     SetValue(wxConfigBase::Get()->Read("excommand", wxEmptyString));
   }
     
+  Show();
   SelectAll();
   SetFocus();
 }
