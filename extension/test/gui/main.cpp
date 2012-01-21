@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011
+// Copyright: (c) 2012
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <ui/text/TestRunner.h>
@@ -34,7 +34,7 @@ bool wxExTestApp::OnInit()
   runner.addTest(suite);
   runner.run();
   
-  printf("%s", wxExGuiTestFixture::GetReport());
+  wxExTestFixture::PrintReport();
   
   // Return false, so test ends here.
   return false;

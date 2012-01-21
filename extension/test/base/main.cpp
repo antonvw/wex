@@ -21,7 +21,7 @@ int main (int argc, char* argv[])
   runner.addTest(suite);
   runner.run();
   
-  printf("%s", wxExTestFixture::GetReport());
+  TestFixture::PrintReport();
   
   return 0;
 }

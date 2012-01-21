@@ -2,7 +2,7 @@
 // Name:      extension.h
 // Purpose:   Include file for all wxExtension classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WXEXTENSION_H
@@ -44,6 +44,7 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/style.h>
+#include <wx/extension/test.h>
 #include <wx/extension/textfile.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/toolbar.h>
