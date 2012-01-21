@@ -2,10 +2,10 @@
 // Name:      managedframe.cpp
 // Purpose:   Implementation of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Created:   2010-04-11
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <list>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -47,10 +47,15 @@ protected:
   void OnFocus(wxFocusEvent& event);
   void OnKey(wxKeyEvent& event);
 private:  
+  void ShowCommand(int key);
+  
   wxExManagedFrame* m_Frame;
   wxExEx* m_ex;
   wxStaticText* m_Prefix;
   bool m_UserInput;
+  
+  std::list < wxString > m_Commands;
+  std::list < wxString >::const_iterator m_CommandsIterator;
 
   DECLARE_EVENT_TABLE()
 };
@@ -274,6 +279,8 @@ wxExExTextCtrl::wxExExTextCtrl(
   , m_UserInput(false)
   , m_Prefix(prefix)
 {
+  // Take care that m_CommandsIterator is valid.
+  m_CommandsIterator = m_Commands.end();
 }
 
 void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
@@ -292,6 +299,9 @@ void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
 
 void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
 {
+  m_Commands.remove(GetValue());
+  m_Commands.push_back(GetValue());
+  
   if (m_Prefix->GetLabel() == ":")
   {
     if (m_ex != NULL)
@@ -339,8 +349,14 @@ void wxExExTextCtrl::OnKey(wxKeyEvent& event)
 {
   const int key = event.GetKeyCode();
 
-  if (key == WXK_ESCAPE)
+  switch (key)
   {
+  case WXK_UP: 
+  case WXK_DOWN:
+    ShowCommand(key);
+    break;
+    
+  case WXK_ESCAPE:
     if (m_ex != NULL)
     {
       m_ex->GetSTC()->PositionRestore();
@@ -349,10 +365,13 @@ void wxExExTextCtrl::OnKey(wxKeyEvent& event)
     m_Frame->HideExBar();
     
     m_UserInput = false;
-  }
-  else
-  {
-    m_UserInput = true;
+  break;
+
+  default:  
+    if (key != WXK_RETURN)
+    {
+      m_UserInput = true;
+    }
     
     event.Skip();
   }
@@ -383,6 +402,29 @@ void wxExExTextCtrl::SetEx(wxExEx* ex)
   Show();
   SelectAll();
   SetFocus();
+}
+
+void wxExExTextCtrl::ShowCommand(int key)
+{
+  if (key == WXK_UP)
+  {
+    if (m_CommandsIterator != m_Commands.begin())
+    {
+      m_CommandsIterator--;
+    }
+  }
+  else
+  {
+    if (m_CommandsIterator != m_Commands.end())
+    {
+      m_CommandsIterator++;
+    }
+  }
+
+  if (m_CommandsIterator != m_Commands.end())
+  {
+    SetValue(*m_CommandsIterator);
+  }
 }
 
 #endif // wxUSE_GUI
