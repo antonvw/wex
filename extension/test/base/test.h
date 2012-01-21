@@ -2,14 +2,15 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXTESTUNIT_H
-#define _EXTESTUNIT_H
+#ifndef _EXBASETESTUNIT_H
+#define _EXBASETESTUNIT_H
 
 #include <TestFixture.h>
 #include <TestSuite.h>
+#include <wx/extension/extension.h>
 
 /// CppUnit test suite.
 class wxExTestSuite : public CppUnit::TestSuite
@@ -20,17 +21,15 @@ public:
 };
 
 /// CppUnit base test fixture.
-class wxExTestFixture : public CppUnit::TestFixture
+class TestFixture : public wxExTestFixture
 {
 public:
   /// Default constructor.
-  wxExTestFixture() : TestFixture() {};
+  TestFixture() : wxExTestFixture() {;};
 
   /// Destructor.
- ~wxExTestFixture() {};
+ ~TestFixture() {};
  
-  static const char* GetReport() {return m_Report.c_str();};
-
   /// Set up context before running a test.
   virtual void setUp() {};
 
@@ -48,9 +47,6 @@ public:
   void testTiming();
   void testTimingAttrib();
   void testTool();
-  
-private:
-  static wxString m_Report;  
 };
 
 #endif

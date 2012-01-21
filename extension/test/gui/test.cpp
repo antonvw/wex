@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -15,8 +15,6 @@
 
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
-
-wxString wxExGuiTestFixture::m_Report;  
 
 void wxExGuiTestFixture::setUp()
 {
@@ -521,8 +519,8 @@ void wxExGuiTestFixture::testListItem()
   
   const long add = sw.Time();
 
-  m_Report << wxString::Format(
-    "adding %d items took %ld milliseconds\n", 3 * max, add);
+  Report(wxString::Format(
+    "adding %d items took %ld milliseconds", 3 * max, add));
   
   sw.Start();
   
@@ -532,8 +530,8 @@ void wxExGuiTestFixture::testListItem()
   
   const long sort = sw.Time();
   
-  m_Report << wxString::Format(
-    "sorting %d items took %ld milliseconds\n", 3 * max, sort);
+  Report(wxString::Format(
+    "sorting %d items took %ld milliseconds", 3 * max, sort));
     
   CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
 }
