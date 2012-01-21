@@ -41,6 +41,8 @@ public:
   
   /// Destructor.
  ~wxExGuiTestFixture() {};
+ 
+  static const char* GetReport() {return m_Report.c_str();};
 
   /// From TestFixture.
   /// Set up context before running a test.
@@ -84,5 +86,8 @@ public:
   void testVCSEntry();
   void testVi();
   void testViMacros();
+  
+private:
+  static wxString m_Report;  
 };
 #endif
