@@ -16,6 +16,8 @@
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
+wxString wxExGuiTestFixture::m_Report;  
+
 void wxExGuiTestFixture::setUp()
 {
   // Create the global lexers object, 
@@ -200,8 +202,8 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT(!ex->Command(":xxx"));
   CPPUNIT_ASSERT(!ex->Command(":yyy"));
   CPPUNIT_ASSERT( ex->Command(":10"));
-  //CPPUNIT_ASSERT( ex->Command(":1,$s/this/ok"));
-  //CPPUNIT_ASSERT( ex->Command(":g/is/s//ok"));
+  CPPUNIT_ASSERT( ex->Command(":1,$s/this/ok"));
+  CPPUNIT_ASSERT( ex->Command(":g/is/s//ok"));
   CPPUNIT_ASSERT( ex->Command(":g/is/d"));
   CPPUNIT_ASSERT( ex->Command(":g/is/p"));
   CPPUNIT_ASSERT( ex->Command(":n"));
@@ -519,7 +521,8 @@ void wxExGuiTestFixture::testListItem()
   
   const long add = sw.Time();
 
-  printf("adding %d items took %ld milliseconds\n", 3 * max, add);
+  m_Report << wxString::Format(
+    "adding %d items took %ld milliseconds\n", 3 * max, add);
   
   sw.Start();
   
@@ -529,7 +532,8 @@ void wxExGuiTestFixture::testListItem()
   
   const long sort = sw.Time();
   
-  printf("sorting %d items took %ld milliseconds\n", 3 * max, sort);
+  m_Report << wxString::Format(
+    "sorting %d items took %ld milliseconds\n", 3 * max, sort);
     
   CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
 }

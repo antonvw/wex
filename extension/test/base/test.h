@@ -28,6 +28,8 @@ public:
 
   /// Destructor.
  ~wxExTestFixture() {};
+ 
+  static const char* GetReport() {return m_Report.c_str();};
 
   /// Set up context before running a test.
   virtual void setUp() {};
@@ -46,6 +48,9 @@ public:
   void testTiming();
   void testTimingAttrib();
   void testTool();
+  
+private:
+  static wxString m_Report;  
 };
 
 #endif

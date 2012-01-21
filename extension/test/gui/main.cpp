@@ -34,6 +34,8 @@ bool wxExTestApp::OnInit()
   runner.addTest(suite);
   runner.run();
   
+  printf("%s", wxExGuiTestFixture::GetReport());
+  
   // Return false, so test ends here.
   return false;
 }

@@ -13,6 +13,8 @@
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
+wxString wxExTestFixture::m_Report;  
+
 void wxExTestFixture::testConfig()
 {
   wxConfig* cfg = new wxConfig(
@@ -34,7 +36,8 @@ void wxExTestFixture::testConfig()
 
   const long config = sw.Time();
 
-  printf("reading %d items from config took %ld milliseconds\n", max, config);
+  m_Report << wxString::Format(
+    "reading %d items from config took %ld milliseconds\n", max, config);
 }
 
 void wxExTestFixture::testDir()
@@ -179,7 +182,7 @@ void wxExTestFixture::testTiming()
 
   const long file_read = sw.Time();
 
-  printf(
+  m_Report << wxString::Format(
     "wxExFile::Read:%ld wxFile::Read:%ld\n",
     exfile_read,
     file_read);
@@ -213,7 +216,7 @@ void wxExTestFixture::testTimingAttrib()
 
   const long file_time = sw.Time();
 
-  printf(
+  m_Report << wxString::Format(
     "wxExFileName::IsReadOnly:%ld wxFileName::IsFileWritable:%ld\n",
     exfile_time,
     file_time);
