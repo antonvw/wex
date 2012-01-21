@@ -47,7 +47,10 @@ protected:
   void OnFocus(wxFocusEvent& event);
   void OnKey(wxKeyEvent& event);
 private:  
-  void ShowCommand(int key);
+  void ShowCommand(
+    int key, 
+    const std::list < wxString > & l,
+    std::list < wxString >::const_iterator & it);
   
   wxExManagedFrame* m_Frame;
   wxExEx* m_ex;
@@ -56,6 +59,9 @@ private:
   
   std::list < wxString > m_Commands;
   std::list < wxString >::const_iterator m_CommandsIterator;
+
+  std::list < wxString > m_Finds;
+  std::list < wxString >::const_iterator m_FindsIterator;
 
   DECLARE_EVENT_TABLE()
 };
@@ -279,8 +285,9 @@ wxExExTextCtrl::wxExExTextCtrl(
   , m_UserInput(false)
   , m_Prefix(prefix)
 {
-  // Take care that m_CommandsIterator is valid.
+  // Take care that iterators are valid.
   m_CommandsIterator = m_Commands.end();
+  m_FindsIterator = m_Finds.end();
 }
 
 void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
@@ -299,11 +306,11 @@ void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
 
 void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
 {
-  m_Commands.remove(GetValue());
-  m_Commands.push_back(GetValue());
-  
   if (m_Prefix->GetLabel() == ":")
   {
+    m_Commands.remove(GetValue());
+    m_Commands.push_back(GetValue());
+  
     if (m_ex != NULL)
     {
       if (m_ex->Command(m_Prefix->GetLabel() + GetValue()))
@@ -314,6 +321,9 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   }
   else
   {
+    m_Finds.remove(GetValue());
+    m_Finds.push_back(GetValue());
+  
     if (m_UserInput)
     {
       if (!GetValue().empty())
@@ -353,7 +363,14 @@ void wxExExTextCtrl::OnKey(wxKeyEvent& event)
   {
   case WXK_UP: 
   case WXK_DOWN:
-    ShowCommand(key);
+    if (m_Prefix->GetLabel() == ":")
+    {
+      ShowCommand(key, m_Commands, m_CommandsIterator);
+    }
+    else
+    {
+      ShowCommand(key, m_Finds, m_FindsIterator);
+    }
     break;
     
   case WXK_ESCAPE:
@@ -404,26 +421,29 @@ void wxExExTextCtrl::SetEx(wxExEx* ex)
   SetFocus();
 }
 
-void wxExExTextCtrl::ShowCommand(int key)
+void wxExExTextCtrl::ShowCommand(
+  int key,
+  const std::list < wxString > & l,
+  std::list < wxString >::const_iterator & it)
 {
   if (key == WXK_UP)
   {
-    if (m_CommandsIterator != m_Commands.begin())
+    if (it != l.begin())
     {
-      m_CommandsIterator--;
+      it--;
     }
   }
   else
   {
-    if (m_CommandsIterator != m_Commands.end())
+    if (it != l.end())
     {
-      m_CommandsIterator++;
+      it++;
     }
   }
 
-  if (m_CommandsIterator != m_Commands.end())
+  if (it != l.end())
   {
-    SetValue(*m_CommandsIterator);
+    SetValue(*it);
   }
 }
 
