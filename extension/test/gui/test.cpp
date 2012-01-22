@@ -298,15 +298,12 @@ void wxExGuiTestFixture::testHeader()
   CPPUNIT_ASSERT( str.Contains("Name"));
   CPPUNIT_ASSERT( str.Contains("Purpose"));
   CPPUNIT_ASSERT( str.Contains("Author"));
-  CPPUNIT_ASSERT(!str.Contains("Created"));
   CPPUNIT_ASSERT( str.Contains("Copyright"));
   
   wxExFileName newfile("XXXXXXX");
   wxExHeader newheader;
   newheader.Set("hello test", "AvW");
   const wxString newstr = newheader.Get(&newfile);
-  
-  CPPUNIT_ASSERT(newstr.Contains("Created"));
 }
 
 void wxExGuiTestFixture::testHexMode()
@@ -520,7 +517,7 @@ void wxExGuiTestFixture::testListItem()
   const long add = sw.Time();
 
   Report(wxString::Format(
-    "adding %d items took %ld milliseconds", 3 * max, add));
+    "adding %d items in: %ld milliseconds", 3 * max, add));
   
   sw.Start();
   
@@ -531,7 +528,7 @@ void wxExGuiTestFixture::testListItem()
   const long sort = sw.Time();
   
   Report(wxString::Format(
-    "sorting %d items took %ld milliseconds", 3 * max, sort));
+    "sorting %d items in: %ld milliseconds", 3 * max, sort));
     
   CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
 }
@@ -815,6 +812,42 @@ void wxExGuiTestFixture::testStyle()
   CPPUNIT_ASSERT( style.IsOk());
   
   CPPUNIT_ASSERT(!style.ContainsDefaultStyle());
+}
+
+void wxExGuiTestFixture::testTextFile()
+{
+  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT);
+
+  CPPUNIT_ASSERT( textFile.RunTool());
+  CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
+  CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
+
+  CPPUNIT_ASSERT( textFile.RunTool()); // do the same test
+  CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
+  CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
+
+  wxExTextFile textFile2(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
+  CPPUNIT_ASSERT( textFile2.RunTool());
+  CPPUNIT_ASSERT(!textFile2.GetStatistics().GetKeywords().GetItems().empty());
+  
+  wxExTextFile textFile3(wxExFileName(TEST_FILE), ID_TOOL_REPORT_FIND);
+  wxExFindReplaceData::Get()->SetFindString("test");
+  wxExFindReplaceData::Get()->SetMatchCase(true);
+  wxExFindReplaceData::Get()->SetMatchWord(true);
+  wxExFindReplaceData::Get()->SetUseRegularExpression(false);
+  
+  wxStopWatch sw;
+  sw.Start();
+  CPPUNIT_ASSERT( textFile3.RunTool());
+  const long elapsed = sw.Time();
+  
+  CPPUNIT_ASSERT( textFile3.GetStatistics().GetKeywords().GetItems().empty());
+  CPPUNIT_ASSERT(!textFile3.GetStatistics().GetElements().GetItems().empty());
+  CPPUNIT_ASSERT( textFile3.GetStatistics().Get(_("Actions Completed")) == 193);
+  
+  Report(wxString::Format(
+    "matching %d items in: %ld milliseconds", 
+    textFile3.GetStatistics().Get(_("Actions Completed")), elapsed));
 }
 
 void wxExGuiTestFixture::testUtil()
@@ -1172,6 +1205,10 @@ wxExAppTestSuite::wxExAppTestSuite()
     "testStyle",
     &wxExGuiTestFixture::testStyle));
     
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testTextFile",
+    &wxExGuiTestFixture::testTextFile));
+
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testUtil",
     &wxExGuiTestFixture::testUtil));

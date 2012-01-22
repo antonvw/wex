@@ -39,6 +39,8 @@ bool wxExTestApp::OnInit()
   runner.addTest(suite);
   runner.run();
 
+  wxExTestFixture::PrintReport();
+  
   // Return false, so test ends here.
   return false;
 }

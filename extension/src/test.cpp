@@ -12,7 +12,10 @@ wxString wxExTestFixture::m_Report;
 
 void wxExTestFixture::PrintReport()
 {
-  std::cout << m_Report;
+  if (!m_Report.empty())
+  {
+    std::cout << m_Report;
+  }
 }
 
 void wxExTestFixture::Report(const wxString& text)

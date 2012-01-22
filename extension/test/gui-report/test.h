@@ -10,7 +10,7 @@
 
 #include <TestFixture.h>
 #include <TestSuite.h>
-#include <wx/extension/app.h>
+#include <wx/extension/extension.h>
 
 /// CppUnit test suite.
 class wxExTestSuite : public CppUnit::TestSuite
@@ -33,11 +33,11 @@ private:
 
 /// CppUnit app test fixture.
 /// These classes require either an wxExApp object, or wx to be initialized.
-class wxExGuiReportTestFixture : public CppUnit::TestFixture
+class wxExGuiReportTestFixture : public wxExTestFixture
 {
 public:
   /// Default constructor.
-  wxExGuiReportTestFixture() : TestFixture() {};
+  wxExGuiReportTestFixture() : wxExTestFixture() {;};
 
   /// Destructor.
  ~wxExGuiReportTestFixture() {};
