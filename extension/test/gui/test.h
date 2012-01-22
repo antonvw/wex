@@ -78,6 +78,7 @@ public:
   void testSTCEntryDialog();
   void testSTCFile();
   void testStyle();
+  void testTextFile();
   void testUtil();
   void testVCS();
   void testVCSCommand();

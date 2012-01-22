@@ -43,7 +43,6 @@ public:
   void testFileStatistics();
   void testStat();
   void testStatistics();
-  void testTextFile();
   void testTiming();
   void testTimingAttrib();
   void testTool();
