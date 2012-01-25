@@ -839,14 +839,14 @@ void wxExGuiTestFixture::testTextFile()
   wxStopWatch sw;
   sw.Start();
   CPPUNIT_ASSERT( textFile3.RunTool());
-  const long elapsed = sw.Time();
+  const long elapsed = sw.TimeInMicro().ToLong();
   
   CPPUNIT_ASSERT( textFile3.GetStatistics().GetKeywords().GetItems().empty());
   CPPUNIT_ASSERT(!textFile3.GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT( textFile3.GetStatistics().Get(_("Actions Completed")) == 193);
   
   Report(wxString::Format(
-    "matching %d items in: %ld milliseconds", 
+    "matching %d items in: %ld microseconds", 
     textFile3.GetStatistics().Get(_("Actions Completed")), elapsed));
 }
 

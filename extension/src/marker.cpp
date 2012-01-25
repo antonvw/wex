@@ -67,7 +67,7 @@ void wxExMarker::Set(const wxXmlNode* node)
 
   if (!single.IsNumber())
   {
-    wxLogError(_("Illegal marker: %s on line: %d"), 
+    wxLogError("Illegal marker: %s on line: %d", 
       single.c_str(), node->GetLineNumber());
     return;
   }
@@ -97,7 +97,7 @@ void wxExMarker::Set(const wxXmlNode* node)
 
   if (!IsOk())
   {
-    wxLogError(_("Illegal marker number: %d on line: %d"), 
+    wxLogError("Illegal marker number: %d on line: %d", 
       m_No, node->GetLineNumber());
   }
 }

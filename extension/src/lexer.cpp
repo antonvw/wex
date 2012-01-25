@@ -112,7 +112,7 @@ bool wxExLexer::ApplyLexer(
       !m_ScintillaLexer.empty()&&
        show_error)
   {
-    wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
+    wxLogError("Lexer is not known: " + m_ScintillaLexer);
   }
 
   Apply(stc, clear);
@@ -381,7 +381,7 @@ void wxExLexer::Set(const wxXmlNode* node)
 
   if (!m_IsOk)
   {
-    wxLogError(_("Missing lexer on line: %d"), node->GetLineNumber());
+    wxLogError("Missing lexer on line: %d", node->GetLineNumber());
   }
   else
   {
@@ -422,7 +422,7 @@ void wxExLexer::Set(const wxXmlNode* node)
         if (!SetKeywords(child->GetNodeContent().Strip(wxString::both)))
         {
           wxLogError(
-            _("Keywords could not be set on line: %d"), 
+            "Keywords could not be set on line: %d", 
             child->GetLineNumber());
         }
       }
