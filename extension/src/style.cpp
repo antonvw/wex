@@ -129,7 +129,7 @@ void wxExStyle::Set(const wxXmlNode* node, const wxString& macro)
 
   if (!IsOk())
   {
-    wxLogError(_("Illegal style: %s on line: %d"), 
+    wxLogError("Illegal style: %s on line: %d", 
       m_Value.c_str(), node->GetLineNumber());
   }
 }
@@ -161,7 +161,7 @@ void wxExStyle::SetNo(const wxString& no, const wxString& macro)
     
     if (error)
     {
-      wxLogError(_("Illegal style: %s"), no.c_str());
+      wxLogError("Illegal style: %s", no.c_str());
     }
   }
 }

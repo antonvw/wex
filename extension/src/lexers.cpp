@@ -464,7 +464,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
       {
         if (m_DefaultStyle.IsOk())
         {
-          wxLogError(_("Duplicate default style: %s on line: %d"),
+          wxLogError("Duplicate default style: %s on line: %d",
             child->GetName().c_str(), 
             child->GetLineNumber());
         }
@@ -512,7 +512,7 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
 
           if (it != macro_map.end())
           {
-            wxLogError(_("Macro: %s on line: %d already exists"),
+            wxLogError("Macro: %s on line: %d already exists",
               attrib.c_str(), 
               macro->GetLineNumber());
           }

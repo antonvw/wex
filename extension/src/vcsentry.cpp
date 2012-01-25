@@ -36,7 +36,7 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
 {
   if (m_Name.empty())
   {
-    wxLogError(_("Missing vcs on line: %d"), node->GetLineNumber());
+    wxLogError("Missing vcs on line: %d", node->GetLineNumber());
   }
   else
   {
@@ -55,7 +55,7 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
   
   if (m_Commands.size() == 0)
   {
-    wxLogError(_("No commands found for: ") + m_Name);
+    wxLogError("No commands found for: " + m_Name);
     m_Commands.push_back(wxExVCSCommand());
   }  
 }
@@ -70,7 +70,7 @@ void wxExVCSEntry::AddCommands(const wxXmlNode* node)
     {
       if (m_Commands.size() == VCS_MAX_COMMANDS)
       {
-        wxLogError(_("Reached commands limit: %d"), VCS_MAX_COMMANDS);
+        wxLogError("Reached commands limit: %d", VCS_MAX_COMMANDS);
       }
       else
       {
