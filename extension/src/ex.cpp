@@ -812,8 +812,7 @@ void wxExEx::Yank(int lines) const
 
   if (lines >= 2)
   {
-    m_Frame->ShowExMessage(wxString::Format(_("%d lines yanked"), 
-      wxExGetNumberOfLines(wxExClipboardGet()) - 1));
+    m_Frame->ShowExMessage(wxString::Format(_("%d lines yanked"), lines));
   }
 }
 
@@ -834,7 +833,7 @@ bool wxExEx::Yank(
 
   m_STC->CopyRange(start, end);
 
-  const int lines = wxExGetNumberOfLines(wxExClipboardGet()) - 1;
+  const int lines = wxExGetNumberOfLines(wxExClipboardGet());
   
   if (lines >= 2)
   {

@@ -371,6 +371,8 @@ void wxExExTextCtrl::OnKey(wxKeyEvent& event)
     {
       ShowCommand(key, m_Finds, m_FindsIterator);
     }
+    
+    SetInsertionPointEnd();
     break;
     
   case WXK_ESCAPE:
