@@ -29,7 +29,6 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_MarkerSymbol(0, -1)
   , m_InsertMode(false)
   , m_InsertRepeatCount(1)
-  , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
 {
 }
@@ -92,7 +91,7 @@ bool wxExVi::Command(const wxString& command)
         // This is a previous entered command.
         return GetSTC()->FindNext(
           command.Mid(1),
-          m_SearchFlags,
+          GetSearchFlags(),
           command.StartsWith("/"));
       }
       else
@@ -305,13 +304,13 @@ bool wxExVi::Command(const wxString& command)
   else if (command.Matches("*f?"))
   {
     for (int i = 0; i < repeat; i++) 
-      GetSTC()->FindNext(command.Last(), m_SearchFlags);
+      GetSTC()->FindNext(command.Last(), GetSearchFlags());
     m_LastFindCharCommand = command;
   }
   else if (command.Matches("*F?"))
   {
     for (int i = 0; i < repeat; i++) 
-      GetSTC()->FindNext(command.Last(), m_SearchFlags, false);
+      GetSTC()->FindNext(command.Last(), GetSearchFlags(), false);
     m_LastFindCharCommand = command;
   }
   else if (command.Matches("*J"))
@@ -458,7 +457,7 @@ bool wxExVi::Command(const wxString& command)
         for (int i = 0; i < repeat; i++) 
           if (!GetSTC()->FindNext(
             wxExFindReplaceData::Get()->GetFindString(), 
-            m_SearchFlags, 
+            GetSearchFlags(), 
             m_SearchForward)) break;
         break;
 
@@ -517,7 +516,7 @@ bool wxExVi::Command(const wxString& command)
         for (int i = 0; i < repeat; i++) 
           if (!GetSTC()->FindNext(
             wxExFindReplaceData::Get()->GetFindString(), 
-            m_SearchFlags, 
+            GetSearchFlags(), 
             !m_SearchForward)) break;
         break;
       case 'X': 
@@ -586,11 +585,10 @@ void wxExVi::FindWord(bool find_next)
   const int start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
   const int end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
   
-  wxExFindReplaceData::Get()->SetFindString(
-    "\\<" + GetSTC()->GetTextRange(start, end) + "\\>");
-  
   GetSTC()->FindNext(
-    wxExFindReplaceData::Get()->GetFindString(), m_SearchFlags, find_next);
+    "\\<" + GetSTC()->GetTextRange(start, end) + "\\>", 
+    GetSearchFlags(), 
+    find_next);
 }
 
 void wxExVi::GotoBrace()

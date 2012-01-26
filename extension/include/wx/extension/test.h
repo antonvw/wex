@@ -10,6 +10,7 @@
 
 #ifdef __WXGTK__
 
+#include <TestCaller.h>
 #include <TestFixture.h>
 #include <TestSuite.h>
 #include <wx/extension/extension.h>

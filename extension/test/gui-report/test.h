@@ -8,8 +8,6 @@
 #ifndef _FTTESTUNIT_H
 #define _FTTESTUNIT_H
 
-#include <TestFixture.h>
-#include <TestSuite.h>
 #include <wx/extension/extension.h>
 
 /// CppUnit test suite.

@@ -25,9 +25,10 @@ wxExViMacros wxExEx::m_Macros;
 
 wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
-  , m_Process(new wxExProcess)
+  , m_Process(NULL)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
   , m_IsActive(false)
+  , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
 {
   wxASSERT(m_Frame != NULL);
 }
@@ -155,6 +156,11 @@ bool wxExEx::Command(const wxString& command)
   }
   else if (command.StartsWith(":!"))
   {
+    if (m_Process = NULL)
+    {
+      m_Process = new wxExProcess;
+    }
+    
     m_Process->Execute(command.AfterFirst('!'));
   }
   else if (command.AfterFirst(':').IsNumber())
@@ -200,7 +206,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
   
   wxString print;
     
-  m_STC->SetSearchFlags(m_STC->GetSearchFlags());
+  m_STC->SetSearchFlags(m_SearchFlags);
 
   m_STC->BeginUndoAction();
   m_STC->SetTargetStart(0);
@@ -634,7 +640,7 @@ bool wxExEx::Substitute(
     return false;
   }
 
-  m_STC->SetSearchFlags(m_STC->GetSearchFlags());
+  m_STC->SetSearchFlags(m_SearchFlags);
 
   int nr_replacements = 0;
 
@@ -833,7 +839,7 @@ bool wxExEx::Yank(
 
   m_STC->CopyRange(start, end);
 
-  const int lines = wxExGetNumberOfLines(wxExClipboardGet());
+  const int lines = end_line - begin_line + 1;
   
   if (lines >= 2)
   {

@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of wxExListView and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXLISTVIEW_H
@@ -100,14 +100,6 @@ public:
   /// Finds next.
   bool FindNext(const wxString& text, bool find_next = true);
 
-  /// Returns the index of the bitmap in the image list used by this list view.
-  /// If the artid is not yet on the image lists, it is added to the image list.
-  /// Use only if you setup for IMAGE_ART.
-  unsigned int GetArtID(const wxArtID& artid);
-
-  /// Gets the field separator.
-  const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
-
   /// Gets the item text using item number and column name.
   /// If you do not specify a column, the item label is returned
   /// (this is also valid in non report mode).
@@ -142,11 +134,6 @@ public:
     return (m_ImageType == IMAGE_ART ?
       wxListView::SetItemImage(item_number, GetArtID(artid)): false);};
 
-  /// Sets the item file icon image.
-  bool SetItemImage(long item_number, int iconid) {
-    return (m_ImageType == IMAGE_FILE_ICON ?
-      wxListView::SetItemImage(item_number, iconid): false);};
-
   /// Sorts on a column specified by column name.
   void SortColumn(
     const wxString& column_name, 
@@ -162,6 +149,9 @@ protected:
 
   /// Clears all items.
   void EditClearAll();
+
+  /// Gets the field separator.
+  const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
 
   /// Resets column that was used for sorting.
   void SortColumnReset();
@@ -183,6 +173,17 @@ private:
     }}
   void EditSelectAll() {
     SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);};
+    
+  /// Returns the index of the bitmap in the image list used by this list view.
+  /// If the artid is not yet on the image lists, it is added to the image list.
+  /// Use only if you setup for IMAGE_ART.
+  unsigned int GetArtID(const wxArtID& artid);
+
+  /// Sets the item file icon image.
+  bool SetItemImage(long item_number, int iconid) {
+    return (m_ImageType == IMAGE_FILE_ICON ?
+      wxListView::SetItemImage(item_number, iconid): false);};
+
   /// Sorts on a column.
   /// If you specified use_images,
   /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), depending on whether

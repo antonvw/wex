@@ -5,7 +5,6 @@
 // Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <TestCaller.h>
 #include <wx/extension/report/report.h>
 #include "test.h"
 

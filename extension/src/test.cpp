@@ -5,7 +5,8 @@
 // Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <TestCaller.h>
+#ifdef __WXGTK__
+
 #include <wx/extension/test.h>
 
 wxString wxExTestFixture::m_Report;  
@@ -22,3 +23,5 @@ void wxExTestFixture::Report(const wxString& text)
 {
   m_Report << text << "\n";
 }
+
+#endif

@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
-#include <TestCaller.h>
 #include <wx/config.h>
 //#if wxUSE_UIACTIONSIMULATOR
 //  #include "wx/uiaction.h"
