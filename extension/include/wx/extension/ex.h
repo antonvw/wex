@@ -41,6 +41,9 @@ public:
   /// Returns macro being or last played back.
   const wxString& GetMacro() const {return m_Macro;};
 
+  /// Returns search flags.
+  int GetSearchFlags() const {return m_SearchFlags;};
+  
   /// Returns STC component.
   wxExSTC* GetSTC() {return m_STC;};
   
@@ -121,6 +124,8 @@ private:
   static wxExViMacros m_Macros;
 
   bool m_IsActive; // are we actively using ex mode?
+  
+  int m_SearchFlags;
   
   wxString m_Macro; // macro played back
   

@@ -8,8 +8,6 @@
 #ifndef _EXGUITESTUNIT_H
 #define _EXGUITESTUNIT_H
 
-#include <TestFixture.h>
-#include <TestSuite.h>
 #include <wx/extension/extension.h>
 
 /// CppUnit test suite.

@@ -29,9 +29,6 @@ public:
   /// Returns whether we are in insert mode.
   bool GetInsertMode() const {return m_InsertMode;};
   
-  /// Returns search flags.
-  int GetSearchFlags() const {return m_SearchFlags;};
-  
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
   /// This means that the char is not handled by vi,
@@ -70,7 +67,6 @@ private:
   bool m_SearchForward;
   
   int m_InsertRepeatCount;
-  int m_SearchFlags;
   
   wxString m_Command;
   wxString m_InsertText;

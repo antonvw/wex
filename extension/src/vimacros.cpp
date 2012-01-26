@@ -2,7 +2,7 @@
 // Name:      vimacros.cpp
 // Purpose:   Implementation of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -166,7 +166,7 @@ void wxExViMacros::LoadDocument()
 
 bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
 {
-  if (!IsRecorded(macro))
+  if (!IsRecorded(macro) || macro.empty())
   {
     wxLogStatus(_("Unknown macro"));
     return false;
@@ -299,7 +299,7 @@ void wxExViMacros::StopRecording()
   }
   
   m_IsRecording = false;
-  wxLogStatus(_("Macro is recorded"));
+  wxLogStatus(wxString::Format(_("Macro: %d is recorded"), m_Macro.c_str()));
 }
 
 #endif // wxUSE_GUI
