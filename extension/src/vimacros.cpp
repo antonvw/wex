@@ -299,7 +299,7 @@ void wxExViMacros::StopRecording()
   }
   
   m_IsRecording = false;
-  wxLogStatus(wxString::Format(_("Macro: %d is recorded"), m_Macro.c_str()));
+  wxLogStatus(wxString::Format(_("Macro '%s' is recorded"), m_Macro.c_str()));
 }
 
 #endif // wxUSE_GUI
