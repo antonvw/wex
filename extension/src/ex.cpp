@@ -35,7 +35,10 @@ wxExEx::wxExEx(wxExSTC* stc)
 
 wxExEx::~wxExEx()
 {
-  delete m_Process;
+  if (m_Process != NULL)
+  {
+    delete m_Process;
+  }
 }
 
 bool wxExEx::Command(const wxString& command)
@@ -618,8 +621,8 @@ bool wxExEx::SetSelection(
 bool wxExEx::Substitute(
   const wxString& begin_address, 
   const wxString& end_address, 
-  const wxString& pattern,
-  const wxString& replacement) const
+  const wxString& patt,
+  const wxString& repl)
 {
   if (m_STC->GetReadOnly())
   {
@@ -640,6 +643,11 @@ bool wxExEx::Substitute(
     return false;
   }
 
+  const wxString pattern = (patt == "~" ? m_Replacement: patt);
+  
+  wxString replacement(repl);
+  m_Replacement = replacement; 
+  
   m_STC->SetSearchFlags(m_SearchFlags);
 
   int nr_replacements = 0;
@@ -656,15 +664,26 @@ bool wxExEx::Substitute(
     {
       break;
     }
-
+    
+    if (replacement.Contains("&"))
+    {
+      wxString target = m_STC->GetTextRange(
+        m_STC->GetTargetStart(),
+        m_STC->GetTargetEnd());
+        
+      replacement.Replace("&", target);
+    }
+    
     m_STC->MarkTargetChange();
+    
     const int length = m_STC->ReplaceTargetRE(replacement); // always RE!
+    
     m_STC->SetTargetStart(target_start + length);
     m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
 
     nr_replacements++;
   }
-
+  
   m_STC->EndUndoAction();
 
   m_Frame->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),

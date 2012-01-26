@@ -112,7 +112,7 @@ private:
     const wxString& begin_address, 
     const wxString& end_address, 
     const wxString& pattern,
-    const wxString& replacement) const;
+    const wxString& replacement);
   bool Write(
     const wxString& begin_address, 
     const wxString& end_address,
@@ -128,6 +128,7 @@ private:
   int m_SearchFlags;
   
   wxString m_Macro; // macro played back
+  wxString m_Replacement;
   
   wxExManagedFrame* m_Frame;  
   wxExProcess* m_Process;
