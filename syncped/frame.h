@@ -19,11 +19,6 @@ public:
   Frame(bool open_recent);
  ~Frame();
   
-  void Log(
-    wxLogLevel level,
-    const wxString& msg,
-    const wxLogRecordInfo& info);
-  
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,
@@ -74,9 +69,6 @@ private:
   wxExNotebook* m_Projects;
 
   const wxString m_ProjectWildcard;
-  wxString m_LogFile;
-  wxString m_LogText;
-  wxLog* m_OldLog;
 
   DECLARE_EVENT_TABLE()
 };

@@ -29,43 +29,6 @@
 #include "frame.h"
 #include "defs.h"
 
-class wxExLogStderr : public wxLogStderr
-{
-  public:
-    wxExLogStderr(FILE* fp, Frame* frame) 
-      : wxLogStderr(fp)
-      , m_Frame(frame) {
-#ifdef __WXDEBUG__
-        SetVerbose();
-#endif        
-        SetTimestamp("%x %X");};
-  protected:
-    virtual void DoLogRecord(
-      wxLogLevel level,
-      const wxString& msg,
-      const wxLogRecordInfo& info)
-    {
-      switch (level)
-      {
-      case wxLOG_Status: 
-        m_Frame->SetStatusText(msg); 
-        break;
-      default:
-        // Show errors on statusbar as well.
-        if (level == wxLOG_Error)
-        {
-          m_Frame->SetStatusText(msg); 
-        }
-        
-        wxLogStderr::DoLogRecord(level, msg, info);
-        m_Frame->Log(level, msg, info);
-        break;
-      }
-    }
-  private:
-    Frame* m_Frame;
-};
-
 BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_CLOSE(Frame::OnClose)
   EVT_AUINOTEBOOK_BG_DCLICK(NOTEBOOK_EDITORS, Frame::OnNotebook)
@@ -122,19 +85,9 @@ Frame::Frame(bool open_recent)
   , m_DirCtrl(NULL)
   , m_History(NULL)
   , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
-  , m_LogFile(wxFileName(
-#ifdef wxExUSE_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
-#else
-      wxStandardPaths::Get().GetUserDataDir(),
-#endif
-      wxTheApp->GetAppName().Lower() + ".log").GetFullPath())
 {
   wxExViMacros::LoadDocument();
   
-  m_OldLog = wxLog::SetActiveTarget(
-    new wxExLogStderr(fopen(m_LogFile.c_str() , "a"), this));
-    
   const long flag =
     wxAUI_NB_DEFAULT_STYLE |
     wxAUI_NB_CLOSE_ON_ALL_TABS |
@@ -269,7 +222,6 @@ Frame::Frame(bool open_recent)
 
 Frame::~Frame()
 {
-  delete m_OldLog;
 }
 
 wxExListViewFileName* Frame::Activate(
@@ -457,16 +409,6 @@ wxExListViewFile* Frame::GetProject()
   }
 }
 
-void Frame::Log(
-  wxLogLevel level,
-  const wxString& msg,
-  const wxLogRecordInfo& info)
-{
-  m_LogText += 
-    wxDateTime(info.timestamp).Format(wxLog::GetTimestamp()) + " " + 
-    msg + "\n";
-}
-
 void Frame::NewFile(bool as_project)
 {
   const wxString name = (as_project ? _("project") : _("textfile"));
@@ -541,8 +483,6 @@ void Frame::OnClose(wxCloseEvent& event)
   
   wxExViMacros::SaveDocument();
 
-  delete wxLog::SetActiveTarget(NULL);
-  
   wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
 
   event.Skip();
@@ -1287,11 +1227,6 @@ bool Frame::OpenFile(
         m_DirCtrl->ExpandAndSelectPath(filename.GetFullPath());
       }
       
-      if (filename.GetFullPath() == m_LogFile)
-      {
-        editor->DocumentEnd();
-      }
-      
       // Do not show an edge for project files opened as text.
       if (filename.GetExt() == "prj")
       {
@@ -1409,27 +1344,7 @@ void Frame::SequenceDialog(wxExSTC* stc)
 
 void Frame::StatusBarDoubleClicked(const wxString& pane)
 {
-  if (pane.empty() && !m_LogText.empty())
-  {
-    wxExSTCWithFrame* editor;
-    
-    if ((editor = (wxExSTCWithFrame*)m_Editors->SelectPage("LOGTAIL")) == NULL)
-    {
-      editor = new wxExSTCWithFrame(m_Editors, this);
-      editor->SetName(_("Log"));
-      editor->SetEdgeMode(wxSTC_EDGE_NONE);
-      editor->SetReadOnly(true); // to update page title
-      
-      m_Editors->AddPage(editor, "LOGTAIL", _("Log"), true);
-    }
-    
-    editor->SetText(m_LogText);
-    editor->EmptyUndoBuffer();
-    editor->SetSavePoint();
-    editor->DocumentEnd();
-    editor->SetReadOnly(true);
-  }
-  else if (pane == "PaneTheme")
+  if (pane == "PaneTheme")
   {
     if (wxExLexers::Get()->ShowThemeDialog(this))
     {
@@ -1459,11 +1374,7 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
 
 void Frame::StatusBarDoubleClickedRight(const wxString& pane)
 {
-  if (pane.empty())
-  {
-    OpenFile(m_LogFile);
-  }
-  else if (pane == "PaneLexer" || pane == "PaneTheme")
+  if (pane == "PaneLexer" || pane == "PaneTheme")
   {
     wxString match;
     
