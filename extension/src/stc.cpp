@@ -18,6 +18,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/header.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
@@ -1329,7 +1330,7 @@ void wxExSTC::Initialize()
 
   UsePopUp(false); // we have our own
 
-  const int accels = 20; // take max number of entries
+  const int accels = 21; // take max number of entries
   wxAcceleratorEntry entries[accels];
 
   int i = 0;

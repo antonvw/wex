@@ -15,7 +15,6 @@
 #include <wx/stdpaths.h> // for wxStandardPaths
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
-#include <wx/extension/header.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/printing.h>
@@ -54,9 +53,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(wxID_UNDO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_REDO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_STOP, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_EDIT_ADD_HEADER, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_CONTROL_CHAR, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_EDIT_INSERT_SEQUENCE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_PLAYBACK, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, Frame::OnUpdateUI)
@@ -654,9 +651,6 @@ void Frame::OnCommand(wxCommandEvent& event)
     m_Editors->ForEach(event.GetId());
     break;
 
-  case ID_EDIT_ADD_HEADER: if (editor != NULL) AddHeader(editor); break;
-  case ID_EDIT_INSERT_SEQUENCE: if (editor != NULL) SequenceDialog(editor); break;
-
   case ID_EDIT_MACRO: OpenFile(wxExViMacros::GetFileName()); break;
   case ID_EDIT_MACRO_PLAYBACK: if (editor != NULL) editor->GetVi().MacroPlayback(); break;
   case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->GetVi().MacroStartRecording(); break;
@@ -1005,11 +999,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           }
           break;
 
-        case ID_EDIT_ADD_HEADER:
-        case ID_EDIT_INSERT_SEQUENCE:
-          event.Enable(!editor->GetReadOnly());
-          break;
-  
         default:
           wxFAIL;
         }
