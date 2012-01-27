@@ -9,6 +9,7 @@
 #define _EXEX_H
 
 #include <map>
+#include <wx/extension/marker.h>
 #include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
@@ -88,14 +89,13 @@ protected:
   bool Delete(
     const wxString& begin_address, 
     const wxString& end_address);
-  virtual void DeleteMarker(const wxUniChar& marker) {;};
+  void MarkerAdd(const wxUniChar& marker);
+  void MarkerGoto(const wxUniChar& marker);
   bool SetSelection(
     const wxString& begin_address, 
     const wxString& end_address) const;
   int ToLineNumber(const wxString& address) const;
   void Yank(int lines) const;
-  
-  std::map<wxUniChar, int> m_Markers;
 private:
   bool CommandGlobal(const wxString& search);
   bool CommandRange(const wxString& command);
@@ -104,6 +104,8 @@ private:
     const wxString& begin_address, 
     const wxString& end_address, 
     bool forward);
+  void MarkerDelete(const wxUniChar& marker);
+  int MarkerLine(const wxUniChar& marker) const;
   bool Move(
     const wxString& begin_address, 
     const wxString& end_address, 
@@ -121,6 +123,10 @@ private:
     const wxString& begin_address, 
     const wxString& end_address) const;
     
+  const wxExMarker m_MarkerSymbol;
+  
+  std::map<wxUniChar, int> m_Markers;
+  
   static wxExViMacros m_Macros;
 
   bool m_IsActive; // are we actively using ex mode?

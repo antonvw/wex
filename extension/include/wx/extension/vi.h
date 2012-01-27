@@ -11,7 +11,6 @@
 #include <map>
 #include <wx/extension/ex.h>
 #include <wx/extension/indicator.h>
-#include <wx/extension/marker.h>
 
 #if wxUSE_GUI
 
@@ -41,7 +40,6 @@ public:
   bool OnKeyDown(const wxKeyEvent& event);
 private:
   bool ChangeNumber(bool inc);
-  virtual void DeleteMarker(const wxUniChar& marker);
   void FindWord(bool find_next = true);
   void GotoBrace();
   bool Indent(
@@ -60,8 +58,6 @@ private:
   static wxString m_LastCommand;
   static wxString m_LastFindCharCommand;
 
-  const wxExMarker m_MarkerSymbol;
-  
   bool m_Dot;  
   bool m_InsertMode;
   bool m_SearchForward;

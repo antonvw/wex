@@ -29,6 +29,7 @@ wxExEx::wxExEx(wxExSTC* stc)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
   , m_IsActive(false)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxSTC_FIND_MATCHCASE)
+  , m_MarkerSymbol(0, -1)
 {
   wxASSERT(m_Frame != NULL);
 }
@@ -447,12 +448,12 @@ bool wxExEx::Delete(
 
   if (begin_address.StartsWith("'"))
   {
-    DeleteMarker(begin_address.GetChar(1));
+    MarkerDelete(begin_address.GetChar(1));
   }
 
   if (end_address.StartsWith("'"))
   {
-    DeleteMarker(end_address.GetChar(1));
+    MarkerDelete(end_address.GetChar(1));
   }
 
   if (lines >= 2)
@@ -551,6 +552,57 @@ void wxExEx::MacroStartRecording(const wxString& macro)
   m_Macros.StartRecording(choice);
 }
 
+void wxExEx::MarkerAdd(const wxUniChar& marker)
+{
+  const int id = m_STC->MarkerAdd(m_STC->GetCurrentLine(), m_MarkerSymbol.GetNo());
+  MarkerDelete(marker);
+  m_Markers[marker] = id;
+}  
+
+void wxExEx::MarkerDelete(const wxUniChar& marker)
+{
+#ifdef wxExUSE_CPP0X	
+  const auto it = m_Markers.find(marker);
+#else
+  const std::map<wxUniChar, int>::iterator it = m_Markers.find(marker);
+#endif
+
+  if (it != m_Markers.end())
+  {
+    m_STC->MarkerDeleteHandle(it->second);
+    m_Markers.erase(it);
+  }
+}
+
+void wxExEx::MarkerGoto(const wxUniChar& marker)
+{
+  const int line = MarkerLine(marker);
+  
+  if (line != -1)
+  {
+    m_STC->GotoLineAndSelect(line);
+  }
+}
+
+int wxExEx::MarkerLine(const wxUniChar& marker) const
+{
+#ifdef wxExUSE_CPP0X	
+  const auto it = m_Markers.find(marker);
+#else
+  const std::map<wxUniChar, int>::iterator it = m_Markers.find(marker);
+#endif	
+
+  if (it != m_Markers.end())
+  {
+    return m_STC->MarkerLineFromHandle(it->second);
+  }
+  else
+  {
+    wxBell();
+    return -1;
+  }
+}
+
 bool wxExEx::Move(
   const wxString& begin_address, 
   const wxString& end_address, 
@@ -575,12 +627,12 @@ bool wxExEx::Move(
 
   if (begin_address.StartsWith("'"))
   {
-    DeleteMarker(begin_address.GetChar(1));
+    MarkerDelete(begin_address.GetChar(1));
   }
 
   if (end_address.StartsWith("'"))
   {
-    DeleteMarker(end_address.GetChar(1));
+    MarkerDelete(end_address.GetChar(1));
   }
 
   m_STC->BeginUndoAction();
@@ -708,31 +760,25 @@ int wxExEx::ToLineNumber(const wxString& address) const
     int pos = filtered_address.Find('\'');
     int size = 2;
     
-#ifdef wxExUSE_CPP0X	
-    auto it = 
-      m_Markers.find(filtered_address.AfterFirst('\'').GetChar(0));
-#else
-    std::map<wxUniChar, int>::const_iterator it = 
-      m_Markers.find(filtered_address.AfterFirst('\'').GetChar(0));
-#endif	  
-      
-    if (it != m_Markers.end())
+    const int line = MarkerLine(filtered_address.AfterFirst('\'').GetChar(0));
+
+    if (line != -1)
     {
       if (oper == "-")
       {
-        markers -= it->second;
+        markers -= line;
         pos--;
         size++;
       }
       else if (oper == "+")
       {
-        markers += it->second;
+        markers += line;
         pos--;
         size++;
       }
       else 
       {
-        markers += it->second;
+        markers += line;
       }
     }
     else
