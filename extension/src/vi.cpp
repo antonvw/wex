@@ -26,7 +26,6 @@ wxString wxExVi::m_LastFindCharCommand;
 wxExVi::wxExVi(wxExSTC* stc)
   : wxExEx(stc)
   , m_Dot(false)
-  , m_MarkerSymbol(0, -1)
   , m_InsertMode(false)
   , m_InsertRepeatCount(1)
   , m_SearchForward(true)
@@ -346,9 +345,7 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (command.Matches("m?"))
   {
-    DeleteMarker(command.Last());
-    m_Markers[command.Last()] = GetSTC()->GetCurrentLine() + 1;
-    GetSTC()->MarkerAdd(GetSTC()->GetCurrentLine(), m_MarkerSymbol.GetNo());
+    MarkerAdd(command.Last());
   }
   else if (command.EndsWith("yw"))
   {
@@ -400,20 +397,7 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (command.Matches("'?"))
   {
-#ifdef wxExUSE_CPP0X	
-    const auto it = m_Markers.find(command.Last());
-#else
-    const std::map<wxUniChar, int>::iterator it = m_Markers.find(command.Last());
-#endif	
-
-    if (it != m_Markers.end())
-    {
-      GetSTC()->GotoLineAndSelect(it->second);
-    }
-    else
-    {
-      wxBell();
-    }
+    MarkerGoto(command.Last());
   }
   else if (command.Matches("q?"))
   {
@@ -586,21 +570,6 @@ bool wxExVi::Command(const wxString& command)
   }
   
   return handled;
-}
-
-void wxExVi::DeleteMarker(const wxUniChar& marker)
-{
-#ifdef wxExUSE_CPP0X	
-  const auto it = m_Markers.find(marker);
-#else
-  const std::map<wxUniChar, int>::iterator it = m_Markers.find(marker);
-#endif
-
-  if (it != m_Markers.end())
-  {
-    GetSTC()->MarkerDelete(it->second - 1, m_MarkerSymbol.GetNo());
-    m_Markers.erase(it);
-  }
 }
 
 void wxExVi::FindWord(bool find_next)
