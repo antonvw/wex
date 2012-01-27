@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _FRAME_H
@@ -34,7 +34,6 @@ private:
     wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL);
   void AddAsciiTable(wxExSTC* stc);
-  void AddHeader(wxExSTC* stc);
   wxExListViewWithFrame* AddPage(
     wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL);
@@ -54,7 +53,6 @@ private:
     const wxString& filename,
     const wxString& text,
     long flags = 0);
-  void SequenceDialog(wxExSTC* stc);
   virtual void StatusBarDoubleClicked(const wxString& pane);
   virtual void StatusBarDoubleClickedRight(const wxString& pane);
   virtual void SyncCloseAll(wxWindowID id);

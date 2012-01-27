@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -155,6 +155,31 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   {
     Open(stc.m_File.GetFileName(), -1, wxEmptyString, GetFlags());
   }
+}
+
+void wxExSTC::AddHeader()
+{
+  const wxString sel = GetSelectedText();
+  const wxExHeader header(sel);
+  
+  if (sel.empty() || header.InfoNeeded())
+  {
+    if (header.ShowDialog(this) == wxID_CANCEL)
+    {
+      return;
+    }
+  }
+
+  if (GetLexer().GetScintillaLexer() == "hypertext")
+  {
+    GotoLine(1);
+  }
+  else
+  {
+    DocumentStart();
+  }
+  
+  AddText(header.Get(&GetFile().GetFileName()));
 }
 
 void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
@@ -1313,6 +1338,12 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_CTRL, (int)'Y', wxID_REDO);
   entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
   entries[i++].Set(wxACCEL_CTRL, (int)'K', ID_EDIT_CONTROL_CHAR);
+  entries[i++].Set(wxACCEL_CTRL, (int)'T', ID_EDIT_HEADER);
+  entries[i++].Set(wxACCEL_CTRL, '=', ID_EDIT_ZOOM_IN);
+  entries[i++].Set(wxACCEL_CTRL, '-', ID_EDIT_ZOOM_OUT);
+  entries[i++].Set(wxACCEL_CTRL, '9', ID_EDIT_MARKER_NEXT);
+  entries[i++].Set(wxACCEL_CTRL, '0', ID_EDIT_MARKER_PREVIOUS);
+  entries[i++].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
@@ -1322,13 +1353,8 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_NORMAL, WXK_F11, ID_EDIT_UPPERCASE);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F12, ID_EDIT_LOWERCASE);
   entries[i++].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
-  entries[i++].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
   entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
   entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-  entries[i++].Set(wxACCEL_CTRL, '=', ID_EDIT_ZOOM_IN);
-  entries[i++].Set(wxACCEL_CTRL, '-', ID_EDIT_ZOOM_OUT);
-  entries[i++].Set(wxACCEL_CTRL, '9', ID_EDIT_MARKER_NEXT);
-  entries[i++].Set(wxACCEL_CTRL, '0', ID_EDIT_MARKER_PREVIOUS);
 
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
@@ -1496,6 +1522,8 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
   case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
   case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
+  
+  case ID_EDIT_HEADER: AddHeader(); break;
   
   case ID_EDIT_HEX: Reload(m_Flags ^ STC_WIN_HEX); break;
 

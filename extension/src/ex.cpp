@@ -28,7 +28,7 @@ wxExEx::wxExEx(wxExSTC* stc)
   , m_Process(NULL)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
   , m_IsActive(false)
-  , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
+  , m_SearchFlags(wxSTC_FIND_REGEXP | wxSTC_FIND_MATCHCASE)
 {
   wxASSERT(m_Frame != NULL);
 }

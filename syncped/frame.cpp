@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -269,31 +269,6 @@ void Frame::AddAsciiTable(wxExSTC* stc)
   stc->EmptyUndoBuffer();
   stc->SetSavePoint();
   stc->SetReadOnly(true);
-}
-
-void Frame::AddHeader(wxExSTC* stc)
-{
-  const wxString sel = stc->GetSelectedText();
-  const wxExHeader header(sel);
-  
-  if (sel.empty() || header.InfoNeeded())
-  {
-    if (header.ShowDialog(this) == wxID_CANCEL)
-    {
-      return;
-    }
-  }
-
-  if (stc->GetLexer().GetScintillaLexer() == "hypertext")
-  {
-    stc->GotoLine(1);
-  }
-  else
-  {
-    stc->DocumentStart();
-  }
-  
-  stc->AddText(header.Get(&stc->GetFile().GetFileName()));
 }
 
 wxExListViewWithFrame* Frame::AddPage(
@@ -1244,102 +1219,6 @@ bool Frame::OpenFile(
   }
 
   return true;
-}
-
-void Frame::SequenceDialog(wxExSTC* stc)
-{
-  static wxString start_previous;
-
-  const wxString start = wxGetTextFromUser(
-    _("Input") + ":",
-    _("Start Of Sequence"),
-    start_previous,
-    this);
-
-  if (start.empty()) return;
-
-  start_previous = start;
-
-  static wxString end_previous = start;
-
-  const wxString end = wxGetTextFromUser(
-    _("Input") + ":",
-    _("End Of Sequence"),
-    end_previous,
-    this);
-
-  if (end.empty()) return;
-
-  end_previous = end;
-
-  if (start.length() != end.length())
-  {
-    wxLogStatus(_("Start and end sequence should have same length"));
-    return;
-  }
-
-  long lines = 1;
-
-  for (int pos = end.length() - 1; pos >= 0; pos--)
-  {
-    lines *= abs(end[pos] - start[pos]) + 1;
-  }
-
-  if (wxMessageBox(wxString::Format(_("Generate %ld lines"), lines) + "?",
-    _("Confirm"),
-    wxOK | wxCANCEL | wxICON_QUESTION) == wxCANCEL)
-  {
-    return;
-  }
-
-  wxBusyCursor wait;
-
-  wxString sequence = start;
-
-  long actual_line = 0;
-
-  while (sequence != end)
-  {
-    stc->AddText(sequence + stc->GetEOL());
-    actual_line++;
-
-    if (actual_line > lines)
-    {
-      wxFAIL;
-      return;
-    }
-
-    if (start < end)
-    {
-      sequence.Last() = (int)sequence.Last() + 1;
-    }
-    else
-    {
-      sequence.Last() = (int)sequence.Last() - 1;
-    }
-
-    for (int pos = end.length() - 1; pos > 0; pos--)
-    {
-      if (start < end)
-      {
-        if (sequence[pos] > end[pos])
-        {
-          sequence[pos - 1] = (int)sequence[pos - 1] + 1;
-          sequence[pos] = start[pos];
-        }
-      }
-      else
-      {
-        if (sequence[pos] < end[pos])
-        {
-          sequence[pos - 1] = (int)sequence[pos - 1] - 1;
-          sequence[pos] = start[pos];
-        }
-      }
-    }
-  }
-
-  stc->AddText(sequence + stc->GetEOL());
 }
 
 void Frame::StatusBarDoubleClicked(const wxString& pane)

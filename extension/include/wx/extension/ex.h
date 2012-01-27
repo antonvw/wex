@@ -71,7 +71,7 @@ public:
   
   /// Records text within a macro.
   void MacroRecord(const wxString& text, bool new_command = true) {
-    if (m_Macros.IsRecording()) m_Macros.Record(text, new_command);};
+    m_Macros.Record(text, new_command);};
   
   /// Start recording a macro.  
   /// If specified macro is empty,

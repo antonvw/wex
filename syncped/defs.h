@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Constant definitions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _SYNCDEFS_H
@@ -14,8 +14,6 @@
 enum
 {
   ID_APPL_LOWEST = ID_EXTENSION_REPORT_HIGHEST + 1,
-  ID_EDIT_ADD_HEADER,
-  ID_EDIT_INSERT_SEQUENCE,
   ID_EDIT_MACRO,
   ID_EDIT_MACRO_PLAYBACK,
   ID_EDIT_MACRO_START_RECORD,

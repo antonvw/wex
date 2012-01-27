@@ -2,7 +2,7 @@
 // Name:      support.cpp
 // Purpose:   Implementation of DecoratedFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -99,17 +99,9 @@ DecoratedFrame::DecoratedFrame()
   menuFind->Append(ID_REPLACE_IN_FILES, wxExEllipsed(_("Replace In File&s")));
   menuEdit->AppendSubMenu(menuFind, _("&Find And Replace"));
   menuEdit->AppendSeparator();
-
-  wxExMenu* menuMore = new wxExMenu();
-  menuMore->Append(ID_EDIT_ADD_HEADER, wxExEllipsed(_("&Add Header")));
-  menuMore->Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
-  menuMore->AppendSeparator();
-  menuMore->Append(
+  menuEdit->Append(
     ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+K"));
-  
-  menuEdit->AppendSubMenu(menuMore, _("More"));
   menuEdit->AppendSeparator();
-  
   wxExMenu* menuMacro = new wxExMenu();
   menuMacro->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
   menuMacro->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
