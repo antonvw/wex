@@ -116,6 +116,11 @@ bool wxExVi::Command(const wxString& command)
         {
           m_InsertText.Truncate(m_InsertText.size() - 1);
         }
+        
+        if (MacroIsPlayback())
+        {
+          GetSTC()->CharLeft();
+        }
       }
       else
       {
@@ -164,6 +169,11 @@ bool wxExVi::Command(const wxString& command)
       else
       {
         m_InsertText += command.Last();
+        
+        if (MacroIsPlayback())
+        {
+          m_STC->NewLine();
+        }
       }
       break;
     
@@ -184,6 +194,11 @@ bool wxExVi::Command(const wxString& command)
           
         m_LastCommand = m_Command + "\t";
       }
+      
+      if (m_InsertMode && MacroIsPlayback())
+      {
+        m_STC->AddText("\t");
+      }
       break;
       
     default: handled = false;
@@ -193,7 +208,15 @@ bool wxExVi::Command(const wxString& command)
   {  
     MacroRecord(command);
     m_Command.clear();
-    return !m_InsertMode;
+    
+    if (!MacroIsPlayback())
+    {
+      return !m_InsertMode;
+    }
+    else
+    {
+      return true;
+    }
   }
   
   if (m_InsertMode)
@@ -585,9 +608,11 @@ void wxExVi::FindWord(bool find_next)
   const int start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
   const int end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
   
+  wxExFindReplaceData::Get()->SetFindString(GetSTC()->GetTextRange(start, end));  
+    
   GetSTC()->FindNext(
-    "\\<" + GetSTC()->GetTextRange(start, end) + "\\>", 
-    GetSearchFlags(), 
+    wxExFindReplaceData::Get()->GetFindString(), 
+    GetSearchFlags() | wxSTC_FIND_WHOLEWORD, 
     find_next);
 }
 
@@ -761,6 +786,17 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   }
   else
   {
+    if (MacroIsRecording() && !m_InsertMode)
+    {
+      switch (event.GetKeyCode())
+      {
+        case WXK_LEFT: MacroRecord("h"); break;
+        case WXK_DOWN: MacroRecord("j"); break;
+        case WXK_UP: MacroRecord("k"); break;
+        case WXK_RIGHT: MacroRecord("l"); break;
+      )
+    }
+    
     return true;
   }
 }

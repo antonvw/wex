@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Common defs for all wxExtension classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXDEFS_H
@@ -57,6 +57,7 @@ enum wxExId
   ID_EDIT_READ,
   ID_EDIT_COMPARE,
   ID_EDIT_CONTROL_CHAR,
+  ID_EDIT_HEADER,
   ID_EDIT_HEX_DEC_CALLTIP,
   ID_EDIT_UPPERCASE,
   ID_EDIT_LOWERCASE,

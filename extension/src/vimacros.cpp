@@ -177,7 +177,7 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   bool stop = false;
   
   m_IsPlayback = true;
-    
+  
   for (int i = 0; i < repeat; i++)
   {
     for (
@@ -186,12 +186,20 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
       ++it)
     { 
       stop = !ex->Command(*it);
+      
+      if (stop)
+      {
+        wxLogStatus(_("Macro aborted at '") + *it + "'");
+      }
     }
   }
 
   ex->GetSTC()->EndUndoAction();
-  
-  wxLogStatus(!stop ? _("Macro played back"): _("Macro aborted"));
+
+  if (!stop)
+  {
+    wxLogStatus(_("Macro played back"));
+  }
   
   m_IsPlayback = false;
   
