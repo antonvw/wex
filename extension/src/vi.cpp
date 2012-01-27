@@ -172,7 +172,7 @@ bool wxExVi::Command(const wxString& command)
         
         if (MacroIsPlayback())
         {
-          m_STC->NewLine();
+          GetSTC()->NewLine();
         }
       }
       break;
@@ -197,7 +197,7 @@ bool wxExVi::Command(const wxString& command)
       
       if (m_InsertMode && MacroIsPlayback())
       {
-        m_STC->AddText("\t");
+        GetSTC()->AddText("\t");
       }
       break;
       
@@ -794,7 +794,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
         case WXK_DOWN: MacroRecord("j"); break;
         case WXK_UP: MacroRecord("k"); break;
         case WXK_RIGHT: MacroRecord("l"); break;
-      )
+      }
     }
     
     return true;
