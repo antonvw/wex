@@ -229,6 +229,14 @@ void wxExGuiTestFixture::testEx()
   
   CPPUNIT_ASSERT( ex->MacroPlayback("a"));
   CPPUNIT_ASSERT(!ex->MacroPlayback("b"));
+  
+  ex->MarkerAdd('a');
+  CPPUNIT_ASSERT( ex->MarkerLine('a') != -1);
+  CPPUNIT_ASSERT( ex->MarkerGoto('a'));
+  CPPUNIT_ASSERT( ex->MarkerDelete('a'));
+  CPPUNIT_ASSERT(!ex->MarkerDelete('b'));
+  CPPUNIT_ASSERT(!ex->MarkerGoto('a'));
+  CPPUNIT_ASSERT(!ex->MarkerDelete('a'));
 }
 
 void wxExGuiTestFixture::testFrame()
