@@ -54,6 +54,8 @@ public:
   void testProcess();
   void testSTCWithFrame();
   void testTextFileWithListView();
+  // integration test
+  void test();
 };
 #endif
 
