@@ -24,7 +24,14 @@ public:
     const wxExTool& tool);
 
   /// Sets up the tool.
-  static bool SetupTool(const wxExTool& tool, wxExFrameWithHistory* frame);
+  static bool SetupTool(
+    /// tool to use
+    const wxExTool& tool, 
+    /// frame
+    wxExFrameWithHistory* frame,
+    /// listview to which is reported, if NULL,
+    /// calls Activate on frame to find report
+    wxExListView* report = NULL);
 private:
   /// Inserts a line at current line (or at end if at end),
   /// make that line current and sets modified.

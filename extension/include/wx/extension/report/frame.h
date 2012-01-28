@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Include file for wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_FRAME_H
@@ -15,6 +15,7 @@
 #include <wx/extension/report/process.h>
 
 class wxExConfigDialog;
+class wxExListView;
 class wxExListViewFile;
 
 /// Adds file and project history support to wxExManagedFrame.
@@ -54,9 +55,15 @@ public:
   void FileHistoryPopupMenu();
 
   /// Finds in selected files.  
-  void FindInSelection(
+  bool FindInSelection(
+    /// the selection
     const wxArrayString& files,
-    int id);
+    /// ID_TOOL_REPORT_FIND or ID_TOOL_REPORT_REPLACE
+    int id,
+    /// Default shows a dialog.
+    bool show_dialog = true,
+    /// report for output
+    wxExListView* report = NULL);
 
   /// Finds in selected files dialog.
   int FindInSelectionDialog(

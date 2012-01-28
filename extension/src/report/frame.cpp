@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -249,19 +249,25 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
   tool.Log(&dir.GetStatistics().GetElements());
 }
 
-void wxExFrameWithHistory::FindInSelection(
+bool wxExFrameWithHistory::FindInSelection(
   const wxArrayString& files,
-  int id)
+  int id,
+  bool show_dialog,
+  wxExListView* report)
 {
   const wxExFileName filename(files[0]);
   const wxExTool tool(id);
   
-  if (FindInSelectionDialog(
+  if (show_dialog && FindInSelectionDialog(
     tool.GetId(),
-    filename.DirExists() && !filename.FileExists()) == wxID_CANCEL ||
-     !wxExTextFileWithListView::SetupTool(tool, this))
+    filename.DirExists() && !filename.FileExists()) == wxID_CANCEL)
   {
-    return;
+    return false;
+  }
+  
+  if (!wxExTextFileWithListView::SetupTool(tool, this, report))
+  {
+    return false;
   }
   
   wxExStatistics<long> stats;
@@ -289,6 +295,8 @@ void wxExFrameWithHistory::FindInSelection(
   }
   
   tool.Log(&stats);
+  
+  return true;
 }
 
 int wxExFrameWithHistory::FindInSelectionDialog(

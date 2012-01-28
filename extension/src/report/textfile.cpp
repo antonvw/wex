@@ -328,7 +328,8 @@ bool wxExTextFileWithListView::SetSQLQuery()
 
 bool wxExTextFileWithListView::SetupTool(
   const wxExTool& tool, 
-  wxExFrameWithHistory* frame)
+  wxExFrameWithHistory* frame,
+  wxExListView* report)
 {
   m_Frame = frame;
 
@@ -350,17 +351,24 @@ bool wxExTextFileWithListView::SetupTool(
   }
 #endif
 
-  if (tool.IsReportType())
+  if (report == NULL)
   {
-    if (tool.GetId() != ID_TOOL_REPORT_KEYWORD)
+    if (tool.IsReportType())
     {
-      m_Report = m_Frame->Activate(wxExListViewWithFrame::GetTypeTool(tool));
-
-      if (m_Report == NULL)
+      if (tool.GetId() != ID_TOOL_REPORT_KEYWORD)
       {
-        return false;
+        m_Report = m_Frame->Activate(wxExListViewWithFrame::GetTypeTool(tool));
+  
+        if (m_Report == NULL)
+        {
+          return false;
+        }
       }
     }
+  }
+  else
+  {
+    m_Report = report;
   }
 
   return true;
