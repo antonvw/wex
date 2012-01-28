@@ -559,7 +559,7 @@ void wxExEx::MarkerAdd(const wxUniChar& marker)
   m_Markers[marker] = id;
 }  
 
-void wxExEx::MarkerDelete(const wxUniChar& marker)
+bool wxExEx::MarkerDelete(const wxUniChar& marker)
 {
 #ifdef wxExUSE_CPP0X	
   const auto it = m_Markers.find(marker);
@@ -571,17 +571,23 @@ void wxExEx::MarkerDelete(const wxUniChar& marker)
   {
     m_STC->MarkerDeleteHandle(it->second);
     m_Markers.erase(it);
+    return true;
   }
+  
+  return false;
 }
 
-void wxExEx::MarkerGoto(const wxUniChar& marker)
+bool wxExEx::MarkerGoto(const wxUniChar& marker)
 {
   const int line = MarkerLine(marker);
   
   if (line != -1)
   {
     m_STC->GotoLineAndSelect(line + 1);
+    return true;
   }
+  
+  return false;
 }
 
 int wxExEx::MarkerLine(const wxUniChar& marker) const

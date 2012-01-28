@@ -82,6 +82,21 @@ public:
   /// Stops recording current macro.
   void MacroStopRecording() {m_Macros.StopRecording();};
 
+  /// Adds marker at the current line.
+  void MarkerAdd(const wxUniChar& marker);
+  
+  /// Deletes specified marker.
+  /// Returns true if marker was deleted.
+  bool MarkerDelete(const wxUniChar& marker);
+  
+  /// Goes to specified marker.
+  /// Returns true if marker exists.
+  bool MarkerGoto(const wxUniChar& marker);
+  
+  /// Returns line for specified marker.
+  /// Returns -1 if marker does not exist.
+  int MarkerLine(const wxUniChar& marker) const;
+  
   /// Set using vi mode.
   void Use(bool mode) {m_IsActive = mode;};
 protected:
@@ -89,8 +104,6 @@ protected:
   bool Delete(
     const wxString& begin_address, 
     const wxString& end_address);
-  void MarkerAdd(const wxUniChar& marker);
-  void MarkerGoto(const wxUniChar& marker);
   bool SetSelection(
     const wxString& begin_address, 
     const wxString& end_address) const;
@@ -104,8 +117,6 @@ private:
     const wxString& begin_address, 
     const wxString& end_address, 
     bool forward);
-  void MarkerDelete(const wxUniChar& marker);
-  int MarkerLine(const wxUniChar& marker) const;
   bool Move(
     const wxString& begin_address, 
     const wxString& end_address, 
