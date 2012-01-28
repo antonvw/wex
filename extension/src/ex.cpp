@@ -580,7 +580,7 @@ void wxExEx::MarkerGoto(const wxUniChar& marker)
   
   if (line != -1)
   {
-    m_STC->GotoLineAndSelect(line);
+    m_STC->GotoLineAndSelect(line + 1);
   }
 }
 
@@ -760,30 +760,28 @@ int wxExEx::ToLineNumber(const wxString& address) const
     int pos = filtered_address.Find('\'');
     int size = 2;
     
-    const int line = MarkerLine(filtered_address.AfterFirst('\'').GetChar(0));
-
-    if (line != -1)
-    {
-      if (oper == "-")
-      {
-        markers -= line;
-        pos--;
-        size++;
-      }
-      else if (oper == "+")
-      {
-        markers += line;
-        pos--;
-        size++;
-      }
-      else 
-      {
-        markers += line;
-      }
-    }
-    else
+    const int line = MarkerLine(filtered_address.AfterFirst('\'').GetChar(0)) + 1;
+    
+    if (line == 0)
     {
       return 0;
+    }
+
+    if (oper == "-")
+    {
+      markers -= line;
+      pos--;
+      size++;
+    }
+    else if (oper == "+")
+    {
+      markers += line;
+      pos--;
+      size++;
+    }
+    else 
+    {
+      markers += line;
     }
 
     filtered_address.replace(pos, size, "");
