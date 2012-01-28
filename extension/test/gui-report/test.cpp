@@ -93,6 +93,56 @@ void wxExGuiReportTestFixture::testTextFileWithListView()
   CPPUNIT_ASSERT(wxExTextFileWithListView::SetupTool(tool, frame, report));
 }
 
+void wxExGuiReportTestFixture::test()
+{
+  wxExTool tool(ID_TOOL_REPORT_FIND);
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  wxExListViewFileName* report = new wxExListViewFileName(
+    frame, 
+    wxExListViewFileName::LIST_FILE);
+    
+  wxArrayString files;
+  
+  CPPUNIT_ASSERT(wxDir::GetAllFiles(
+    "../", 
+    &files,
+    "*.cpp", 
+    wxDIR_FILES | wxDIR_DIRS) > 10);
+    
+  wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
+  
+  // This string should occur only once, that is here!
+  frd->SetFindString("xxxxxxxxxxxxx");
+  
+  CPPUNIT_ASSERT(frame->FindInSelection(
+    files, 
+    ID_TOOL_REPORT_FIND, 
+    false, 
+    report));
+    
+  CPPUNIT_ASSERT(report->GetItemCount() == 1);
+  
+  frd->SetFindString("Author:");
+  
+  wxStopWatch sw;
+  sw.Start();
+
+  CPPUNIT_ASSERT(frame->FindInSelection(
+    files, 
+    ID_TOOL_REPORT_FIND, 
+    false, 
+    report));
+    
+  const long find = sw.Time();
+
+  Report(wxString::Format(
+    "match %d items in: %ld milliseconds", report->GetItemCount(), find));
+  
+  // Each file has one author, added the one above, and the one
+  // in the header file. And there is already on item.
+  CPPUNIT_ASSERT(report->GetItemCount() == (files.GetCount() + 3));
+}
+
 wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxexreport test suite")
 {
@@ -123,4 +173,8 @@ wxExTestSuite::wxExTestSuite()
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testTextFileWithListView",
     &wxExGuiReportTestFixture::testTextFileWithListView));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
+    "test",
+    &wxExGuiReportTestFixture::test));
 }
