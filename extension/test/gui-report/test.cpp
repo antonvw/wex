@@ -114,7 +114,7 @@ void wxExGuiReportTestFixture::test()
   // This string should occur only once, that is here!
   frd->SetFindString("xxxxxxxxxxxxx");
   
-  CPPUNIT_ASSERT(frame->FindInSelection(
+  CPPUNIT_ASSERT(frame->FindInFiles(
     files, 
     ID_TOOL_REPORT_FIND, 
     false, 
@@ -127,7 +127,7 @@ void wxExGuiReportTestFixture::test()
   wxStopWatch sw;
   sw.Start();
 
-  CPPUNIT_ASSERT(frame->FindInSelection(
+  CPPUNIT_ASSERT(frame->FindInFiles(
     files, 
     ID_TOOL_REPORT_FIND, 
     false, 
