@@ -1132,8 +1132,6 @@ void wxExSTC::GotoLineAndSelect(
 
     if (SearchInTarget(text) > 0)
     {
-      bool recursive = true;
-      wxExFindResult(text, true, recursive);
       SetSelection(GetTargetStart(), GetTargetEnd());
     }
   }
