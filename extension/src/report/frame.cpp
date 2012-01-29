@@ -249,7 +249,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
   tool.Log(&dir.GetStatistics().GetElements());
 }
 
-bool wxExFrameWithHistory::FindInSelection(
+bool wxExFrameWithHistory::FindInFiles(
   const wxArrayString& files,
   int id,
   bool show_dialog,
@@ -258,7 +258,7 @@ bool wxExFrameWithHistory::FindInSelection(
   const wxExFileName filename(files[0]);
   const wxExTool tool(id);
   
-  if (show_dialog && FindInSelectionDialog(
+  if (show_dialog && FindInFilesDialog(
     tool.GetId(),
     filename.DirExists() && !filename.FileExists()) == wxID_CANCEL)
   {
@@ -299,7 +299,7 @@ bool wxExFrameWithHistory::FindInSelection(
   return true;
 }
 
-int wxExFrameWithHistory::FindInSelectionDialog(
+int wxExFrameWithHistory::FindInFilesDialog(
   int id,
   bool add_in_files)
 {

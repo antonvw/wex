@@ -10,7 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/tokenzr.h>
+//#include <wx/tokenzr.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listitem.h>
@@ -209,7 +209,8 @@ void wxExListViewWithFrame::ItemActivated(long item_number)
 
     m_Frame->OpenFile(
       item.GetFileName().GetFullPath(),
-      line_number, match);
+      line_number, 
+      match);
 
     SetFocus();
   }
@@ -341,7 +342,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
   if (tool.IsFindType())
   {
-    if (m_Frame->FindInSelectionDialog(tool.GetId()) == wxID_CANCEL)
+    if (m_Frame->FindInFilesDialog(tool.GetId()) == wxID_CANCEL)
     {
       return;
     }

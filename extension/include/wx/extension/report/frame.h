@@ -54,9 +54,9 @@ public:
   /// Shows a file history popup menu.
   void FileHistoryPopupMenu();
 
-  /// Finds in selected files.  
-  bool FindInSelection(
-    /// the selection
+  /// Finds (or replaces) in specified files.  
+  bool FindInFiles(
+    /// the files
     const wxArrayString& files,
     /// ID_TOOL_REPORT_FIND or ID_TOOL_REPORT_REPLACE
     int id,
@@ -65,14 +65,15 @@ public:
     /// report for output
     wxExListView* report = NULL);
 
-  /// Finds in selected files dialog.
-  int FindInSelectionDialog(
+  /// Shows a modal find (or replace) in files dialog.
+  /// Returns result from ShowModal.
+  int FindInFilesDialog(
     /// ID_TOOL_REPORT_FIND or ID_TOOL_REPORT_REPLACE
     int id,
     /// add file types selection as well
     bool add_in_files = false);
   
-  /// Returns caption for FindInSelectionDialog.
+  /// Returns caption for FindInFilesDialog.
   const wxString GetFindInCaption(int id) const;
   
   /// Gets the process.

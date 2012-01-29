@@ -72,7 +72,7 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
   }
   else if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
   {
-    m_Frame->FindInSelection(files, event.GetId());
+    m_Frame->FindInFiles(files, event.GetId());
   }
   else switch (event.GetId())
   {
