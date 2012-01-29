@@ -729,6 +729,17 @@ bool wxExEx::Substitute(
         m_STC->GetTargetStart(),
         m_STC->GetTargetEnd());
         
+      if (replacement.StartsWith("\\L"))
+      {
+        target.MakeLower();
+        replacement.Replace("\\L", wxEmptyString);
+      }
+      else if (replacement.StartsWith("\\U"))
+      {
+        target.MakeUpper();
+        replacement.Replace("\\U", wxEmptyString);
+      }
+    
       replacement.Replace("&", target);
     }
     
