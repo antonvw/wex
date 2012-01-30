@@ -138,8 +138,9 @@ void wxExGuiReportTestFixture::test()
   Report(wxString::Format(
     "match %d items in: %ld milliseconds", report->GetItemCount(), find));
   
-  // Each file has one author, added the one above, and the one
-  // in the header file. And there is already on item.
+  // Each file has one author (files.GetCount()), add the one inSetFindString above, 
+  // the one in the header src file, and the one that is already present on the 
+  // list because of the first FindInFiles.
   CPPUNIT_ASSERT(report->GetItemCount() == (files.GetCount() + 3));
 }
 
