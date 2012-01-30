@@ -39,6 +39,9 @@ public:
   /// Returns whether ex is active.
   bool GetIsActive() const {return m_IsActive;};
   
+  /// Returns last entered command.
+  const wxString& GetLastCommand() const {return m_LastCommand;};
+  
   /// Returns macro being or last played back.
   const wxString& GetMacro() const {return m_Macro;};
 
@@ -104,8 +107,7 @@ protected:
   bool Delete(
     const wxString& begin_address, 
     const wxString& end_address);
-  const wxString& GetLastCommand() const {return m_LastCommand;};
-  void SetLastCommand(const wxString& command( {m_LastCommand = command;};
+  void SetLastCommand(const wxString& command) {m_LastCommand = command;};
   bool SetSelection(
     const wxString& begin_address, 
     const wxString& end_address) const;
