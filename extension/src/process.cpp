@@ -186,7 +186,7 @@ long wxExProcess::Execute(
 
     if (pid > 0)
     {
-      wxLogVerbose(_("Execute") + ": " + m_Command);
+      wxLogVerbose("Execute: " + m_Command);
       
       m_Dialog->GetSTCShell()->EnableShell(true);
     
@@ -216,7 +216,7 @@ long wxExProcess::Execute(
       flags,
       &env)) != -1)
     {
-      wxLogVerbose(_("Execute") + ": " + m_Command);
+      wxLogVerbose("Execute: " + m_Command);
     }
 
     // We have an error if the command could not be executed.  

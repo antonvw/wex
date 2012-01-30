@@ -22,6 +22,7 @@
 #if wxUSE_GUI
 
 wxExViMacros wxExEx::m_Macros;
+wxString wxExEx::m_LastCommand;
 
 wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
@@ -183,13 +184,14 @@ bool wxExEx::Command(const wxString& command)
   if (result)
   {  
     m_Frame->HideExBar(set_focus);
+    m_LastCommand = command;
     MacroRecord(command);
   }
   else
   {
     wxBell();
   }
-        
+  
   return result;
 }
 

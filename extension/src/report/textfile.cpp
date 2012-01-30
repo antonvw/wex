@@ -164,16 +164,16 @@ bool wxExTextFileWithListView::ParseSQL()
 */
   if (GetTool().GetId() == ID_TOOL_SQL)
   {
-    wxLogVerbose(
-      _("File") + ": " + GetFileName().GetFullName() + " Query: " + wxExSkipWhiteSpace(m_SQLQuery));
-
+    wxLogVerbose(wxString::Format("File: %s Query: %s",
+      GetFileName().GetFullName(), wxExSkipWhiteSpace(m_SQLQuery)));
+      
     Recordset rs(&m_otl.GetConnect(), this);
     if (!rs.ExecQuery(m_SQLQuery))
     {
       return false;
     }
 
-    wxLogVerbose(wxString::Format(_("Retrieved: %d records"), rs.GetRecords());
+    wxLogVerbose(wxString::Format("Retrieved: %d records", rs.GetRecords());
   }
 
   // Test for SQL end statement.

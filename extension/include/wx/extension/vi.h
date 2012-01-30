@@ -55,7 +55,6 @@ private:
   void SetIndicator(const wxExIndicator& indicator, int start, int end);
   void ToggleCase();
 
-  static wxString m_LastCommand;
   static wxString m_LastFindCharCommand;
 
   bool m_Dot;  

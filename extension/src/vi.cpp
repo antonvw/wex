@@ -20,7 +20,6 @@
 
 #if wxUSE_GUI
 
-wxString wxExVi::m_LastCommand;
 wxString wxExVi::m_LastFindCharCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
@@ -163,7 +162,7 @@ bool wxExVi::Command(const wxString& command)
   
         for (int i = 0; i < repeat; i++) GetSTC()->LineDown();
 
-        m_LastCommand = m_Command + GetSTC()->GetEOL();
+        SetLastCommand(m_Command);
       }
       else
       {
@@ -191,7 +190,7 @@ bool wxExVi::Command(const wxString& command)
         GetSTC()->ReplaceTarget(wxString('\t', repeat));
         GetSTC()->MarkTargetChange();
           
-        m_LastCommand = m_Command + "\t";
+        SetLastCommand(m_Command);
       }
       
       if (m_InsertMode && MacroIsPlayback())
@@ -532,7 +531,7 @@ bool wxExVi::Command(const wxString& command)
 
       case '.': 
         m_Dot = true;
-        Command(m_LastCommand); 
+        Command(GetLastCommand());
         m_Dot = false;
         break;
         
@@ -706,25 +705,6 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
       
       if (Command(m_Command))
       {
-        if ((m_Command.length() > 1 && !m_Command.Matches("m?")) || 
-          m_Command == "a" || 
-          m_Command == "i" || 
-          m_Command == "o" || 
-          m_Command == "p" ||
-          m_Command == "x" ||
-          m_Command == "A" || 
-          m_Command == "C" || 
-          m_Command == "D" || 
-          m_Command == "I" || 
-          m_Command == "O" || 
-          m_Command == "R" || 
-          m_Command == "X" || 
-          m_Command == "~"
-          )
-        {
-          m_LastCommand = m_Command;
-        }
-        
         m_Command.clear();
       }
       
