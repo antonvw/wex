@@ -285,9 +285,8 @@ wxExExTextCtrl::wxExExTextCtrl(
   , m_UserInput(false)
   , m_Prefix(prefix)
 {
-  // Take care that iterators are valid.
-  m_CommandsIterator = m_Commands.end();
-  m_FindsIterator = m_Finds.end();
+  m_CommandsIterator = m_Commands.begin();
+  m_FindsIterator = m_Finds.begin();
 }
 
 void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
@@ -309,7 +308,8 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   if (m_Prefix->GetLabel() == ":")
   {
     m_Commands.remove(GetValue());
-    m_Commands.push_back(GetValue());
+    m_Commands.push_front(GetValue());
+    m_CommandsIterator = m_Commands.begin();
   
     if (m_ex != NULL)
     {
@@ -322,7 +322,8 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   else
   {
     m_Finds.remove(GetValue());
-    m_Finds.push_back(GetValue());
+    m_Finds.push_front(GetValue());
+    m_FindsIterator = m_Finds.begin();
   
     if (m_UserInput)
     {
@@ -428,25 +429,23 @@ void wxExExTextCtrl::ShowCommand(
   const std::list < wxString > & l,
   std::list < wxString >::const_iterator & it)
 {
-  if (key == WXK_UP)
+  switch (key)
   {
-    if (it != l.begin())
-    {
-      it--;
-    }
-  }
-  else
-  {
+  case WXK_UP:
     if (it != l.end())
     {
       it++;
     }
+    break;
+  case WXK_DOWN:
+    if (it != l.begin())
+    {
+      it--;
+    }
+    break;
   }
 
-  if (it != l.end())
-  {
-    SetValue(*it);
-  }
+  SetValue(it != l.end() ? *it: wxEmptyString);
 }
 
 #endif // wxUSE_GUI

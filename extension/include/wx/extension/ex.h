@@ -104,6 +104,8 @@ protected:
   bool Delete(
     const wxString& begin_address, 
     const wxString& end_address);
+  const wxString& GetLastCommand() const {return m_LastCommand;};
+  void SetLastCommand(const wxString& command( {m_LastCommand = command;};
   bool SetSelection(
     const wxString& begin_address, 
     const wxString& end_address) const;
@@ -138,6 +140,7 @@ private:
   
   std::map<wxUniChar, int> m_Markers;
   
+  static wxString m_LastCommand;
   static wxExViMacros m_Macros;
 
   bool m_IsActive; // are we actively using ex mode?
