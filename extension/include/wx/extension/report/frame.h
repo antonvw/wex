@@ -54,7 +54,9 @@ public:
   /// Shows a file history popup menu.
   void FileHistoryPopupMenu();
 
-  /// Finds (or replaces) in specified files.  
+  /// Finds (or replaces) in specified files.
+  /// Returns false if dialog was shown, and cancelled,
+  /// or SetupTool returned false.
   bool FindInFiles(
     /// the files
     const wxArrayString& files,
