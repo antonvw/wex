@@ -448,7 +448,7 @@ void wxExExTextCtrl::ShowCommand(
     break;
   }
 
-  SetValue(it != l.end() ? *it: wxEmptyString);
+  SetValue(it != l.end() ? *it: wxString(wxEmptyString));
 }
 
 #endif // wxUSE_GUI

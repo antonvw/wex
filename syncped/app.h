@@ -14,7 +14,7 @@ class App : public wxExApp
 {
 private:
 #ifdef __WXOSX__  
-  virtual void MacOpenFile(const wxString& fileName);
+  virtual void MacOpenFiles(const wxArrayString& fileNames);
 #endif
   virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
   virtual bool OnInit();
