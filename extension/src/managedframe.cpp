@@ -305,6 +305,12 @@ void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
 
 void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
 {
+  if (GetValue().empty())
+  {
+    m_Frame->HideExBar();
+    return;
+  }
+  
   if (m_Prefix->GetLabel() == ":")
   {
     m_Commands.remove(GetValue());
@@ -327,14 +333,11 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   
     if (m_UserInput)
     {
-      if (!GetValue().empty())
-      {
-        wxExFindReplaceData::Get()->SetFindString(GetValue());
+      wxExFindReplaceData::Get()->SetFindString(GetValue());
         
-        if (m_ex != NULL)
-        {
-          m_ex->MacroRecord(m_Prefix->GetLabel() + GetValue());
-        }
+      if (m_ex != NULL)
+      {
+        m_ex->MacroRecord(m_Prefix->GetLabel() + GetValue());
       }
     }
     else if (m_ex != NULL)
