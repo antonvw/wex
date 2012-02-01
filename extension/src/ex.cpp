@@ -592,7 +592,7 @@ int wxExEx::MarkerLine(const wxUniChar& marker) const
 #ifdef wxExUSE_CPP0X	
   const auto it = m_Markers.find(marker);
 #else
-  const std::map<wxUniChar, int>::iterator it = m_Markers.find(marker);
+  const std::map<wxUniChar, int>::const_iterator it = m_Markers.find(marker);
 #endif	
 
   if (it != m_Markers.end())

@@ -18,10 +18,10 @@
 wxIMPLEMENT_APP(App);
 
 #ifdef __WXOSX__  
-void App::MacOpenFile(const wxString& fileName)
+void App::MacOpenFiles(const wxArrayString& fileNames)
 {
   Frame* frame = (Frame*)GetTopWindow();
-  frame->OpenFile(wxExFileName(fileName));
+  wxExOpenFiles(frame, fileNames);
 }
 #endif
 
