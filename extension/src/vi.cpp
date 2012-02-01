@@ -93,10 +93,15 @@ bool wxExVi::Command(const wxString& command)
       if (command.length() > 1)
       {
         // This is a previous entered command.
-        return GetSTC()->FindNext(
+        const bool result = GetSTC()->FindNext(
           command.Mid(1),
           GetSearchFlags(),
           command.StartsWith("/"));
+          
+        if (result)
+        {
+          MacroRecord(command);
+        }
       }
       else
       {
