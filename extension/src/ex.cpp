@@ -77,6 +77,10 @@ bool wxExEx::Command(const wxString& command)
     
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
+  else if (command.StartsWith(":g"))
+  {
+    result = CommandGlobal(command.AfterFirst('g'));
+  }
   else if (command == ":n")
   {
     wxExSTC* stc = m_Frame->ExecExCommand(ID_EDIT_NEXT);
@@ -171,10 +175,6 @@ bool wxExEx::Command(const wxString& command)
   else if (command.AfterFirst(':').IsNumber())
   {
     m_STC->GotoLineAndSelect(atoi(command.AfterFirst(':').c_str()));
-  }
-  else if (command.StartsWith(":g"))
-  {
-    result = CommandGlobal(command.AfterFirst('g'));
   }
   else
   {
@@ -519,11 +519,6 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   
   m_STC = stc;
   
-  if (ok)
-  {
-    m_Macro = choice;
-  }
-  
   return ok;
 }
 
@@ -779,7 +774,8 @@ int wxExEx::ToLineNumber(const wxString& address) const
     int pos = filtered_address.Find('\'');
     int size = 2;
     
-    const int line = MarkerLine(filtered_address.AfterFirst('\'').GetChar(0)) + 1;
+    const int line = MarkerLine(
+      filtered_address.AfterFirst('\'').GetChar(0)) + 1;
     
     if (line == 0)
     {

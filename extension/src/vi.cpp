@@ -67,7 +67,13 @@ bool wxExVi::Command(const wxString& command)
     return false;
   }
   
-  if (!m_InsertMode)
+  if (m_InsertMode)
+  {
+    GetSTC()->AddText(command);
+    GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
+    return true;
+  }
+  else
   {
     if (command.StartsWith(":"))
     { 
@@ -102,130 +108,6 @@ bool wxExVi::Command(const wxString& command)
   
   bool handled = true;
 
-  switch ((int)command.Last())
-  {
-    case WXK_CONTROL_E: ChangeNumber(true); break;
-    case WXK_CONTROL_J: ChangeNumber(false); break;
-      
-    case WXK_BACK:
-      if (m_InsertMode)
-      {
-        if (m_InsertText.size() > 1)
-        {
-          m_InsertText.Truncate(m_InsertText.size() - 1);
-        }
-        
-        if (MacroIsPlayback())
-        {
-          GetSTC()->CharLeft();
-        }
-      }
-      else
-      {
-        GetSTC()->CharLeft();
-      }
-      break;
-      
-    case WXK_ESCAPE:
-      if (m_InsertMode)
-      {
-        // Add extra inserts if necessary.        
-        for (int i = 1; i < m_InsertRepeatCount; i++)
-        {
-          GetSTC()->AddText(m_InsertText);
-        }
-        
-        GetSTC()->EndUndoAction();
-        
-        m_InsertMode = false;
-      }
-      else
-      {
-        wxBell();
-      }
-
-      if (!GetSTC()->GetSelectedText().empty())
-      {
-        GetSTC()->SetSelection(GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
-      }
-      break;
-
-    case WXK_RETURN:
-      if (!m_InsertMode)
-      {
-        int repeat = atoi(m_Command.c_str());
-
-        if (repeat == 0)
-        {
-          repeat++;
-        }
-  
-        for (int i = 0; i < repeat; i++) GetSTC()->LineDown();
-
-        SetLastCommand(m_Command);
-      }
-      else
-      {
-        m_InsertText += command.Last();
-        
-        if (MacroIsPlayback())
-        {
-          GetSTC()->NewLine();
-        }
-      }
-      break;
-    
-    case WXK_TAB:
-      if (m_Command.size() > 0 && wxRegEx("[0-9]*r").Matches(m_Command))
-      {
-        int repeat = atoi(m_Command.c_str());
-
-        if (repeat == 0)
-        {
-          repeat++;
-        }
-  
-        GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
-        GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + repeat);
-        GetSTC()->ReplaceTarget(wxString('\t', repeat));
-        GetSTC()->MarkTargetChange();
-          
-        SetLastCommand(m_Command);
-      }
-      
-      if (m_InsertMode && MacroIsPlayback())
-      {
-        GetSTC()->AddText("\t");
-      }
-      break;
-      
-    default: handled = false;
-  }
-  
-  if (handled)
-  {  
-    MacroRecord(command);
-    m_Command.clear();
-    
-    if (!MacroIsPlayback())
-    {
-      return !m_InsertMode;
-    }
-    else
-    {
-      return true;
-    }
-  }
-  
-  if (m_InsertMode)
-  {
-    GetSTC()->AddText(command);
-    GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
-    return true;
-  }
-  
-  handled = true;
-  
   int repeat = atoi(command.c_str());
 
   if (repeat == 0)
@@ -428,6 +310,7 @@ bool wxExVi::Command(const wxString& command)
       case 'O': 
         InsertMode(command.Last(), repeat, false, m_Dot); 
         break;
+        
       case 'R': 
         InsertMode(command.Last(), repeat, true, m_Dot); 
         break;
@@ -443,22 +326,38 @@ bool wxExVi::Command(const wxString& command)
           handled = false;
         }
         break;
+        
       case 'b': for (int i = 0; i < repeat; i++) GetSTC()->WordLeft(); break;
+
+      case 'd':
+        if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) 
+        {
+          GetSTC()->Clear(); 
+          GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
+        }
+        break;
+
       case 'e': for (int i = 0; i < repeat; i++) GetSTC()->WordRightEnd(); break;
+      
       case 'g': GetSTC()->DocumentStart(); break;
+      
       case 'h': 
         for (int i = 0; i < repeat; i++) GetSTC()->CharLeft(); 
         break;
+        
       case 'j': 
         for (int i = 0; i < repeat; i++) GetSTC()->LineDown(); 
         break;
+        
       case 'k': 
         for (int i = 0; i < repeat; i++) GetSTC()->LineUp(); 
         break;
+        
       case 'l': 
       case ' ': 
         for (int i = 0; i < repeat; i++) GetSTC()->CharRight(); 
         break;
+        
       case 'n': 
         for (int i = 0; i < repeat; i++) 
           if (!GetSTC()->FindNext(
@@ -468,7 +367,6 @@ bool wxExVi::Command(const wxString& command)
         break;
 
       case 'p': Put(true); break;
-      case 'P': Put(false); break;
       
       case 'q': 
         if (MacroIsRecording())
@@ -481,8 +379,10 @@ bool wxExVi::Command(const wxString& command)
         }
         break;
       
-      case 'w': for (int i = 0; i < repeat; i++) GetSTC()->WordRight(); break;
       case 'u': GetSTC()->Undo(); break;
+      
+      case 'w': for (int i = 0; i < repeat; i++) GetSTC()->WordRight(); break;
+      
       case 'x': 
         if (GetSTC()->HexMode()) return false;
         for (int i = 0; i < repeat; i++) 
@@ -492,6 +392,8 @@ bool wxExVi::Command(const wxString& command)
         }
         GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
         break;
+        
+      case 'y': GetSTC()->Copy(); break;
 
       case 'D': 
         if (!GetSTC()->GetReadOnly())
@@ -500,6 +402,7 @@ bool wxExVi::Command(const wxString& command)
           GetSTC()->Cut();
           }
         break;
+        
       case 'G': 
         if (repeat > 1)
         {
@@ -510,14 +413,18 @@ bool wxExVi::Command(const wxString& command)
           GetSTC()->DocumentEnd();
         }
         break;
+        
       case 'H': GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine());
         break;
-      case 'M': GetSTC()->GotoLine(
-        GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() / 2);
-        break;
+        
       case 'L': GetSTC()->GotoLine(
         GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen()); 
         break;
+        
+      case 'M': GetSTC()->GotoLine(
+        GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() / 2);
+        break;
+        
       case 'N': 
         for (int i = 0; i < repeat; i++) 
           if (!GetSTC()->FindNext(
@@ -525,6 +432,9 @@ bool wxExVi::Command(const wxString& command)
             GetSearchFlags(), 
             !m_SearchForward)) break;
         break;
+        
+      case 'P': Put(false); break;
+      
       case 'X': 
         if (GetSTC()->HexMode()) return false;
         for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack(); break;
@@ -545,19 +455,100 @@ bool wxExVi::Command(const wxString& command)
       case '*': FindWord(); break;
       case '#': FindWord(false); break;
       
-      case 2:  // ^b
+      case WXK_CONTROL_B:
         for (int i = 0; i < repeat; i++) GetSTC()->PageUp(); 
         break;
-      case 7:  // ^g (^f is not possible, already find accel key)
+      case WXK_CONTROL_E: 
+        for (int i = 0; i < repeat; i++) ChangeNumber(true); 
+        break;
+      case WXK_CONTROL_G:  // (^f is not possible, already find accel key)
         for (int i = 0; i < repeat; i++) GetSTC()->PageDown(); 
         break;
-      case 16: // ^p (^y is not possible, already redo accel key)
+      case WXK_CONTROL_J: 
+        for (int i = 0; i < repeat; i++) ChangeNumber(false); 
+        break;
+      case WXK_CONTROL_P: // (^y is not possible, already redo accel key)
         for (int i = 0; i < repeat; i++) GetSTC()->LineScrollUp(); 
         break;
-      case 17: // ^q (^n is not possible, already new doc accel key)
+      case WXK_CONTROL_Q: // (^n is not possible, already new doc accel key)
         for (int i = 0; i < repeat; i++) GetSTC()->LineScrollDown(); 
         break;
+        
+      case WXK_BACK:
+        if (m_InsertMode)
+        {
+          if (m_InsertText.size() > 1)
+          {
+            m_InsertText.Truncate(m_InsertText.size() - 1);
+          }
+        
+          if (MacroIsPlayback())
+          {
+            GetSTC()->CharLeft();
+          }
+        }
+        else
+        {
+          GetSTC()->CharLeft();
+        }
+        break;
+      
+      case WXK_ESCAPE:
+        if (m_InsertMode)
+        {
+          // Add extra inserts if necessary.        
+          for (int i = 1; i < m_InsertRepeatCount; i++)
+          {
+            GetSTC()->AddText(m_InsertText);
+          }
+        
+          GetSTC()->EndUndoAction();
+        
+          m_InsertMode = false;
+        }
+        else
+        {
+          wxBell();
+        }
 
+        if (!GetSTC()->GetSelectedText().empty())
+        {
+          GetSTC()->SetSelection(
+            GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
+        }
+        break;
+
+      case WXK_RETURN:
+        if (!m_InsertMode)
+        {
+          for (int i = 0; i < repeat; i++) GetSTC()->LineDown();
+        }
+        else
+        {
+          m_InsertText += command.Last();
+        
+          if (MacroIsPlayback())
+          {
+            GetSTC()->NewLine();
+          }
+        }
+        break;
+    
+      case WXK_TAB:
+        if (m_Command.size() > 0 && wxRegEx("[0-9]*r").Matches(m_Command))
+        {
+          GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
+          GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + repeat);
+          GetSTC()->ReplaceTarget(wxString('\t', repeat));
+          GetSTC()->MarkTargetChange();
+        }
+      
+        if (m_InsertMode && MacroIsPlayback())
+        {
+          GetSTC()->AddText("\t");
+        }
+        break;
+      
       default:
         handled = false;
     }
@@ -565,9 +556,11 @@ bool wxExVi::Command(const wxString& command)
 
   if (handled)
   {  
+    SetLastCommand(command);
     MacroRecord(command);
+    m_Command.clear();
   }
-  
+ 
   return handled;
 }
 
@@ -703,10 +696,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     {
       m_Command += event.GetUnicodeKey();
       
-      if (Command(m_Command))
-      {
-        m_Command.clear();
-      }
+      Command(m_Command);
       
       return false;
     }

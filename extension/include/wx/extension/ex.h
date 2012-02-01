@@ -43,7 +43,7 @@ public:
   const wxString& GetLastCommand() const {return m_LastCommand;};
   
   /// Returns macro being or last played back.
-  const wxString& GetMacro() const {return m_Macro;};
+  const wxString& GetMacro() const {return m_Macros.GetMacro();};
 
   /// Returns search flags.
   int GetSearchFlags() const {return m_SearchFlags;};
@@ -149,7 +149,6 @@ private:
   
   int m_SearchFlags;
   
-  wxString m_Macro; // macro played back
   wxString m_Replacement;
   
   wxExManagedFrame* m_Frame;  
