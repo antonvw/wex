@@ -558,7 +558,6 @@ bool wxExVi::Command(const wxString& command)
   {  
     SetLastCommand(command);
     MacroRecord(command);
-    m_Command.clear();
   }
  
   return handled;
@@ -696,7 +695,10 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     {
       m_Command += event.GetUnicodeKey();
       
-      Command(m_Command);
+      if (Command(m_Command))
+      {
+        m_Command.clear();
+      }
       
       return false;
     }

@@ -115,9 +115,14 @@ void wxExSTCShell::EnableShell(bool enabled)
 {
   m_Enabled = enabled;
   
-  if (m_Enabled)
+  if (!m_Enabled)
   {
-    // A shell does not use vi mode.
+    // A disabled shell follows STC vi mode.
+    GetVi().Use(wxConfigBase::Get()->ReadBool(_("vi mode"), true));
+  }
+  else
+  {
+    // An enabled shell does not use vi mode.
     GetVi().Use(false);
   }
 }
