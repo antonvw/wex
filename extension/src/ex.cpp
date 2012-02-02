@@ -85,23 +85,29 @@ bool wxExEx::Command(const wxString& command)
   {
     wxExSTC* stc = m_Frame->ExecExCommand(ID_EDIT_NEXT);
     
-    if (m_Macros.IsPlayback() && stc != NULL)
+    if (stc != NULL)
     {
-      m_STC = stc;
+      set_focus = false;
+      
+      if (m_Macros.IsPlayback())
+      {
+        m_STC = stc;
+      }
     }
-    
-    set_focus = false;
   }
   else if (command == ":prev")
   {
     wxExSTC* stc = m_Frame->ExecExCommand(ID_EDIT_PREVIOUS);
     
-    if (m_Macros.IsPlayback() && stc != NULL)
+    if (stc != NULL)
     {
-      m_STC = stc;
+      set_focus = false;
+      
+      if (m_Macros.IsPlayback())
+      {
+        m_STC = stc;
+      }
     }
-    
-    set_focus = false;
   }
   else if (command == ":q")
   {
