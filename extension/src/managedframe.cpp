@@ -47,11 +47,6 @@ protected:
   void OnFocus(wxFocusEvent& event);
   void OnKey(wxKeyEvent& event);
 private:  
-  void ShowCommand(
-    int key, 
-    const std::list < wxString > & l,
-    std::list < wxString >::const_iterator & it);
-  
   wxExManagedFrame* m_Frame;
   wxExEx* m_ex;
   wxStaticText* m_Prefix;
@@ -369,14 +364,12 @@ void wxExExTextCtrl::OnKey(wxKeyEvent& event)
   case WXK_DOWN:
     if (m_Prefix->GetLabel() == ":")
     {
-      ShowCommand(key, m_Commands, m_CommandsIterator);
+      wxExSetTextCtrlValue(this, key, m_Commands, m_CommandsIterator);
     }
     else
     {
-      ShowCommand(key, m_Finds, m_FindsIterator);
+      wxExSetTextCtrlValue(this, key, m_Finds, m_FindsIterator);
     }
-    
-    SetInsertionPointEnd();
     break;
     
   case WXK_ESCAPE:
@@ -426,29 +419,4 @@ void wxExExTextCtrl::SetEx(wxExEx* ex)
   SelectAll();
   SetFocus();
 }
-
-void wxExExTextCtrl::ShowCommand(
-  int key,
-  const std::list < wxString > & l,
-  std::list < wxString >::const_iterator & it)
-{
-  switch (key)
-  {
-  case WXK_UP:
-    if (it != l.end())
-    {
-      it++;
-    }
-    break;
-  case WXK_DOWN:
-    if (it != l.begin())
-    {
-      it--;
-    }
-    break;
-  }
-
-  SetValue(it != l.end() ? *it: wxString(wxEmptyString));
-}
-
 #endif // wxUSE_GUI

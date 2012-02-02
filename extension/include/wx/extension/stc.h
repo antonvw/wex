@@ -283,6 +283,10 @@ public:
 
   /// Sets the text.
   void SetText(const wxString& value);
+
+  /// After pressing enter, starts new line at same place
+  /// as previous line.
+  bool SmartIndentation();
 protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
@@ -310,9 +314,6 @@ private:
   bool LinkOpen(wxString* filename = NULL); // name of found file
   void MarkerNext(bool next);
   void SetHexMode();
-  /// After pressing enter, starts new line at same place
-  /// as previous line.
-  bool SmartIndentation();
   void SortSelectionDialog(
     bool sort_ascending,
     const wxString& caption = _("Enter Sort Position"));

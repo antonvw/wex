@@ -198,6 +198,17 @@ void wxExOpenFilesDialog(
   /// flags to be used with wxExDirOpenFile
   int dir_flags = wxDIR_DEFAULT);
 
+/// Sets a text ctrl value from a list of values.
+void wxExSetTextCtrlValue(
+  /// text ctrl
+  wxTextCtrl* ctrl,
+  /// UP or DOWN key
+  int key,
+  /// the list
+  const std::list < wxString > & l,
+  /// iterator on the list
+  std::list < wxString >::const_iterator & it);
+
 /// Use specified VCS command to set lexer on STC document.
 void wxExVCSCommandOnSTC(
   /// VCS command, used to check for diff or open command
