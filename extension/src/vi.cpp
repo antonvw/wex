@@ -335,10 +335,17 @@ bool wxExVi::Command(const wxString& command)
       case 'b': for (int i = 0; i < repeat; i++) GetSTC()->WordLeft(); break;
 
       case 'd':
-        if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) 
+        if (
+          !GetSTC()->GetSelectedText().empty() &&
+          !GetSTC()->GetReadOnly() && 
+          !GetSTC()->HexMode()) 
         {
           GetSTC()->Clear(); 
           GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
+        }
+        else
+        {
+          handled = false;
         }
         break;
 
@@ -398,7 +405,16 @@ bool wxExVi::Command(const wxString& command)
         GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
         break;
         
-      case 'y': GetSTC()->Copy(); break;
+      case 'y': 
+        if (!GetSTC()->GetSelectedText().empty())
+        {
+          GetSTC()->Copy();
+        } 
+        else
+        {
+          handled = false;
+        }
+        break;
 
       case 'D': 
         if (!GetSTC()->GetReadOnly())
@@ -563,10 +579,7 @@ bool wxExVi::InsertMode(const wxString& command)
           m_InsertText.Truncate(m_InsertText.size() - 1);
         }
         
-        if (MacroIsPlayback())
-        {
-          GetSTC()->CharLeft();
-        }
+        GetSTC()->CharLeft();
       break;
       
     case WXK_ESCAPE:
@@ -586,20 +599,13 @@ bool wxExVi::InsertMode(const wxString& command)
 
     case WXK_RETURN:
         m_InsertText += command.Last();
-        
-        if (MacroIsPlayback())
+
+        if (!GetSTC()->SmartIndentation())
         {
           GetSTC()->NewLine();
         }
       break;
     
-    case WXK_TAB:
-      if (MacroIsPlayback())
-      {
-        GetSTC()->AddText("\t");
-      }
-      break;
-        
     default: GetSTC()->AddText(command);
   }
       
@@ -656,7 +662,6 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   else if (
     event.GetKeyCode() == WXK_CONTROL_J ||
     event.GetKeyCode() == WXK_CONTROL_E ||
-    event.GetKeyCode() == WXK_BACK ||
     event.GetKeyCode() == WXK_ESCAPE ||
     event.GetKeyCode() == WXK_RETURN ||
     event.GetKeyCode() == WXK_TAB)

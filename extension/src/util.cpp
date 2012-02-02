@@ -672,6 +672,32 @@ const wxString wxExSkipWhiteSpace(
   return output;
 }
 
+void wxExSetTextCtrlValue(
+  wxTextCtrl* ctrl,
+  int key,
+  const std::list < wxString > & l,
+  std::list < wxString >::const_iterator & it)
+{
+  switch (key)
+  {
+  case WXK_UP:
+    if (it != l.end())
+    {
+      it++;
+    }
+    break;
+  case WXK_DOWN:
+    if (it != l.begin())
+    {
+      it--;
+    }
+    break;
+  }
+
+  ctrl->SetValue(it != l.end() ? *it: wxString(wxEmptyString));
+  ctrl->SetInsertionPointEnd();
+}
+
 const wxString wxExTranslate(const wxString& text, int pageNum, int numPages)
 {
   wxString translation = text;

@@ -1636,7 +1636,7 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
   
   if (m_vi.OnKeyDown(event))
   {
-    if (event.GetKeyCode() == WXK_RETURN)
+    if (!m_vi.GetIsActive() && event.GetKeyCode() == WXK_RETURN)
     {
       if (!SmartIndentation())
       {
