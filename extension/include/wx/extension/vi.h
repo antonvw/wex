@@ -46,13 +46,14 @@ private:
     const wxString& begin_address, 
     const wxString& end_address, 
     bool forward);
-  void InsertMode(
+  bool InsertMode(const wxString& command);
+  void Put(bool after);
+  void SetIndicator(const wxExIndicator& indicator, int start, int end);
+  void SetInsertMode(
     const wxUniChar c = 'i', 
     int repeat = 1,
     bool overtype = false,
     bool dot = false);
-  void Put(bool after);
-  void SetIndicator(const wxExIndicator& indicator, int start, int end);
   void ToggleCase();
 
   static wxString m_LastFindCharCommand;
