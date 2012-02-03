@@ -530,7 +530,11 @@ bool wxExVi::Command(const wxString& command)
 
   if (handled)
   {  
-    SetLastCommand(command);
+    if (!m_Dot)
+    {
+      SetLastCommand(command);
+    }
+    
     MacroRecord(command);
   }
  
@@ -610,6 +614,8 @@ bool wxExVi::InsertMode(const wxString& command)
   }
       
   GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
+  
+  MacroRecord(command);
   
   return true;
 }

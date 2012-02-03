@@ -200,6 +200,7 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   if (!stop)
   {
     wxLogStatus(_("Macro played back"));
+    m_Macro = macro;
   }
   
   m_IsPlayback = false;

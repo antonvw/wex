@@ -14,6 +14,7 @@
 #include <wx/dir.h> // for wxDIR_DEFAULT
 #include <wx/filedlg.h> // for wxFD_OPEN etc.
 #include <wx/filename.h>
+#include <wx/textctrl.h>
 #include <wx/extension/lexer.h>
 
 class wxExFrame;

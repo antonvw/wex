@@ -111,7 +111,7 @@ protected:
   bool Delete(
     const wxString& begin_address, 
     const wxString& end_address);
-  void SetLastCommand(const wxString& command) {m_LastCommand = command;};
+  void SetLastCommand(const wxString& command);
   bool SetSelection(
     const wxString& begin_address, 
     const wxString& end_address) const;

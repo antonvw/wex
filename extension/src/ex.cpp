@@ -665,6 +665,14 @@ bool wxExEx::Move(
   return true;
 }
 
+void wxExEx::SetLastCommand(const wxString& command)
+{
+  if (command != ".")
+  {
+    m_LastCommand = command;
+  }
+}
+ 
 bool wxExEx::SetSelection(
   const wxString& begin_address, 
   const wxString& end_address) const
