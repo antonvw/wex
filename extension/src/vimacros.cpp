@@ -42,7 +42,8 @@ const wxString wxExViMacros::Encode(const wxString& text, bool& encoded)
   {
     int c = text[0];
   
-    if (iscntrl(c))
+    // Encode control characters, and whitespace.
+    if (iscntrl(c) || isspace(c))
     {
       encoded = true;
       return wxString::Format("%d", c);

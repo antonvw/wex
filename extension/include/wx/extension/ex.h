@@ -86,7 +86,11 @@ public:
   void MacroStopRecording() {m_Macros.StopRecording();};
 
   /// Adds marker at the current line.
-  void MarkerAdd(const wxUniChar& marker);
+  void MarkerAdd(
+    /// marker
+    const wxUniChar& marker,
+    /// line to add marker, default current line
+    int line = -1);
   
   /// Deletes specified marker.
   /// Returns true if marker was deleted.
