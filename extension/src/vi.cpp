@@ -462,7 +462,12 @@ bool wxExVi::Command(const wxString& command)
         m_Dot = false;
         break;
         
-      case ';': Command(m_LastFindCharCommand); break;
+      case ';': 
+        m_Dot = true;
+        Command(m_LastFindCharCommand); 
+        m_Dot = false;
+        break;
+        
       case '~': ToggleCase(); break;
       case '$': GetSTC()->LineEnd(); break;
       case '{': GetSTC()->ParaUp(); break;
@@ -529,9 +534,8 @@ bool wxExVi::Command(const wxString& command)
     if (!m_Dot)
     {
       SetLastCommand(command);
+      MacroRecord(command);
     }
-    
-    MacroRecord(command);
   }
  
   return handled;
