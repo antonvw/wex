@@ -5,6 +5,7 @@
 // Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -41,17 +42,12 @@ bool wxExVi::ChangeNumber(bool inc)
   
   if (word.ToLong(&number))
   {
-    if (inc)
-    {
-      GetSTC()->wxStyledTextCtrl::Replace(start, end, 
-        wxString::Format("%d", ++number));
-    }
-    else
-    {
-      GetSTC()->wxStyledTextCtrl::Replace(start, end, 
-        wxString::Format("%d", --number));
-    }
+    std::ostringstream format;
+    format.fill('0');
+    format.width(end - start);
+    format << (inc ? ++number: --number);
     
+    GetSTC()->wxStyledTextCtrl::Replace(start, end, format.str());
     GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
     
     return true;
