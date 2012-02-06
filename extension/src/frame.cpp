@@ -167,7 +167,7 @@ void wxExFrame::Initialize()
   wxAcceleratorEntry entries[4];
   entries[0].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
   entries[1].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
-  entries[2].Set(wxACCEL_CTRL, (int)'B', ID_VIEW_MENUBAR);
+  entries[2].Set(wxACCEL_CTRL, (int)'I', ID_VIEW_MENUBAR);
   entries[3].Set(wxACCEL_CTRL, (int)'T', ID_VIEW_TITLEBAR);
 
   wxAcceleratorTable accel(WXSIZEOF(entries), entries);
