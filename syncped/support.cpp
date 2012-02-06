@@ -118,7 +118,7 @@ DecoratedFrame::DecoratedFrame()
   menuMacro->Append(ID_EDIT_MACRO_START_RECORD, wxExEllipsed(_("Start Record")));
   menuMacro->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
   menuMacro->AppendSeparator();
-  menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, wxExEllipsed(_("Playback\tCtrl+M")));
+  menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, wxExEllipsed(_("Playback"), "Ctrl+M"));
   menuMacro->AppendSeparator();
   menuMacro->Append(ID_EDIT_MACRO, wxGetStockLabel(wxID_EDIT));
   menuEdit->AppendSubMenu(menuMacro, _("&Macro"));
