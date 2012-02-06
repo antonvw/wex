@@ -772,7 +772,7 @@ bool wxExEx::Substitute(
   
   m_STC->EndUndoAction();
   
-  MarkerDel('$');
+  MarkerDelete('$');
 
   m_Frame->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
     nr_replacements, pattern.c_str()));

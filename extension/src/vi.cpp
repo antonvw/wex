@@ -42,21 +42,21 @@ bool wxExVi::ChangeNumber(bool inc)
   
   if (word.ToLong(&number))
   {
-    const long new = (inc ? ++number: --number);
+    const long next = (inc ? ++number: --number);
     
-    if (new >= 0)
+    if (next >= 0)
     {
       std::ostringstream format;
       format.fill('0');
       format.width(end - start);
-      format << new;
+      format << next;
     
       GetSTC()->wxStyledTextCtrl::Replace(start, end, format.str());
     }
     else
     {
       GetSTC()->wxStyledTextCtrl::Replace(start, end, 
-        wxString::Format("%d", new.str()));
+        wxString::Format("%d", next));
     }
     
     GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
