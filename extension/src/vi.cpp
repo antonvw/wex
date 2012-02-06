@@ -42,12 +42,23 @@ bool wxExVi::ChangeNumber(bool inc)
   
   if (word.ToLong(&number))
   {
-    std::ostringstream format;
-    format.fill('0');
-    format.width(end - start);
-    format << (inc ? ++number: --number);
+    const long new = (inc ? ++number: --number);
     
-    GetSTC()->wxStyledTextCtrl::Replace(start, end, format.str());
+    if (new >= 0)
+    {
+      std::ostringstream format;
+      format.fill('0');
+      format.width(end - start);
+      format << new;
+    
+      GetSTC()->wxStyledTextCtrl::Replace(start, end, format.str());
+    }
+    else
+    {
+      GetSTC()->wxStyledTextCtrl::Replace(start, end, 
+        wxString::Format("%d", new.str()));
+    }
+    
     GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
     
     return true;
@@ -483,7 +494,7 @@ bool wxExVi::Command(const wxString& command)
       case WXK_CONTROL_E: 
         for (int i = 0; i < repeat; i++) ChangeNumber(true); 
         break;
-      case WXK_CONTROL_G:  // (^f is not possible, already find accel key)
+      case WXK_CONTROL_F:
         for (int i = 0; i < repeat; i++) GetSTC()->PageDown(); 
         break;
       case WXK_CONTROL_J: 
@@ -549,8 +560,8 @@ void wxExVi::FindWord(bool find_next)
   wxExFindReplaceData::Get()->SetFindString(GetSTC()->GetTextRange(start, end));  
     
   GetSTC()->FindNext(
-    wxExFindReplaceData::Get()->GetFindString(), 
-    GetSearchFlags() | wxSTC_FIND_WHOLEWORD, 
+    "\\<"+ wxExFindReplaceData::Get()->GetFindString() + "\\>", 
+    GetSearchFlags(), 
     find_next);
 }
 
@@ -666,8 +677,6 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     return true;
   }
   else if (
-    event.GetKeyCode() == WXK_CONTROL_J ||
-    event.GetKeyCode() == WXK_CONTROL_E ||
     event.GetKeyCode() == WXK_ESCAPE ||
     event.GetKeyCode() == WXK_RETURN ||
     event.GetKeyCode() == WXK_TAB)

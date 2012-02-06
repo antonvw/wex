@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
@@ -93,8 +94,19 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->Append(wxID_JUMP_TO);
   menuEdit->AppendSeparator();
   wxExMenu* menuFind = new wxExMenu();
-  menuFind->Append(wxID_FIND);
-  menuFind->Append(wxID_REPLACE);
+  
+  if (wxConfigBase::Get()->ReadBool(_("vi mode"), true))
+  {
+    // No accelerators for vi mode, Ctrl F is page down.
+    menuFind->Append(wxID_FIND, wxGetStockLabel(wxID_FIND));
+    menuFind->Append(wxID_REPLACE, wxGetStockLabel(wxID_REPLACE));
+  }
+  else
+  {
+    menuFind->Append(wxID_FIND);
+    menuFind->Append(wxID_REPLACE);
+  }
+  
   menuFind->Append(ID_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
   menuFind->Append(ID_REPLACE_IN_FILES, wxExEllipsed(_("Replace In File&s")));
   menuEdit->AppendSubMenu(menuFind, _("&Find And Replace"));
@@ -103,10 +115,10 @@ DecoratedFrame::DecoratedFrame()
     ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+K"));
   menuEdit->AppendSeparator();
   wxExMenu* menuMacro = new wxExMenu();
-  menuMacro->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
+  menuMacro->Append(ID_EDIT_MACRO_START_RECORD, wxExEllipsed(_("Start Record")));
   menuMacro->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
   menuMacro->AppendSeparator();
-  menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl+M"));
+  menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, wxExEllipsed(_("Playback\tCtrl+M")));
   menuMacro->AppendSeparator();
   menuMacro->Append(ID_EDIT_MACRO, wxGetStockLabel(wxID_EDIT));
   menuEdit->AppendSubMenu(menuMacro, _("&Macro"));

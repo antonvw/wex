@@ -77,7 +77,8 @@ wxMenuItem* wxExMenu::Append(
 void wxExMenu::AppendBars()
 {
 #ifdef __WXMSW__
-  AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar\tCtrl+B"));
+  // See wxExFrame::Initialize
+  AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar\tCtrl+I"));
 #endif
   AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
   AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));

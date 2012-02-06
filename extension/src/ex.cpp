@@ -190,7 +190,7 @@ bool wxExEx::Command(const wxString& command)
   if (result)
   {  
     m_Frame->HideExBar(set_focus);
-    m_LastCommand = command;
+    SetLastCommand(command);
     MacroRecord(command);
   }
   else
@@ -667,7 +667,7 @@ bool wxExEx::Move(
 
 void wxExEx::SetLastCommand(const wxString& command)
 {
-  if (command != ".")
+  if (command != "." && command.size() > 1 && !command.StartsWith("\t"))
   {
     m_LastCommand = command;
   }
@@ -771,6 +771,8 @@ bool wxExEx::Substitute(
   }
   
   m_STC->EndUndoAction();
+  
+  MarkerDel('$');
 
   m_Frame->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
     nr_replacements, pattern.c_str()));
