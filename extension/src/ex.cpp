@@ -31,6 +31,7 @@ wxExEx::wxExEx(wxExSTC* stc)
   , m_IsActive(false)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxSTC_FIND_MATCHCASE)
   , m_MarkerSymbol(0, -1)
+  , m_YankedLines(false)
 {
   wxASSERT(m_Frame != NULL);
 }
@@ -398,7 +399,7 @@ bool wxExEx::CommandSet(const wxString& command)
 
 void wxExEx::Delete(int lines) const
 {
-  if (m_STC->GetReadOnly())
+  if (m_STC->GetReadOnly() || m_STC->HexMode())
   {
     return;
   }
@@ -665,9 +666,13 @@ bool wxExEx::Move(
   return true;
 }
 
-void wxExEx::SetLastCommand(const wxString& command)
+void wxExEx::SetLastCommand(
+  const wxString& command,
+  bool always)
 {
-  if (command != "." && command.size() > 1 && !command.StartsWith("\t"))
+  if (
+     always || 
+    (command != "." && command.size() > 2 && !command.StartsWith("\t")))
   {
     m_LastCommand = command;
   }
@@ -915,6 +920,8 @@ void wxExEx::Yank(int lines) const
   {
     m_STC->CopyRange(start, m_STC->GetLastPosition());
   }
+  
+  m_YankedLines = true;
 
   if (lines >= 2)
   {
@@ -938,6 +945,8 @@ bool wxExEx::Yank(
   const int end = m_STC->PositionFromLine(end_line);
 
   m_STC->CopyRange(start, end);
+  
+  m_YankedLines = true;
 
   const int lines = end_line - begin_line + 1;
   

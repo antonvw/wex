@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of class App
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,7 +10,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/cmdline.h> // for wxCmdLineParser
-#include <wx/extension/filename.h>
 #include <wx/extension/util.h>
 #include "app.h"
 #include "frame.h"
