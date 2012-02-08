@@ -247,7 +247,7 @@ bool wxExVi::Command(const wxString& command)
     for (int j = 0; j < repeat; j++) 
       GetSTC()->WordLeftExtend();
     GetSTC()->Copy();
-    ResetYankedLines();
+    YankedLinesReset();
   }
   else if (command.EndsWith("yy"))
   {
@@ -417,7 +417,7 @@ bool wxExVi::Command(const wxString& command)
         if (!GetSTC()->GetSelectedText().empty())
         {
           GetSTC()->Copy();
-          ResetYankedLines();
+          YankedLinesReset();
         } 
         else
         {
