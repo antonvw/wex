@@ -556,15 +556,25 @@ void wxExEx::MacroStartRecording(const wxString& macro)
   m_Macros.StartRecording(choice);
 }
 
-void wxExEx::MarkerAdd(const wxUniChar& marker, int line)
+bool wxExEx::MarkerAdd(const wxUniChar& marker, int line)
 {
+  const int lin = (line == -1 ? m_STC->GetCurrentLine(): line);
   const int id = m_STC->MarkerAdd(
-    line == -1 ? m_STC->GetCurrentLine(): line, 
+    lin, 
     m_MarkerSymbol.GetNo());
+    
+  if (id == -1)
+  {
+    wxLogError(wxString::Format("Could not add marker: %c to line: %d",
+      marker, lin));
+    return false;  
+  }
     
   MarkerDelete(marker);
   
   m_Markers[marker] = id;
+  
+  return true;
 }  
 
 bool wxExEx::MarkerDelete(const wxUniChar& marker)
@@ -721,7 +731,10 @@ bool wxExEx::Substitute(
     return false;
   }
   
-  MarkerAdd('$', end_line);
+  if (!MarkerAdd('$', end_line - 1))
+  {
+    return false;
+  }
 
   const wxString pattern = (patt == "~" ? m_Replacement: patt);
   
@@ -734,7 +747,7 @@ bool wxExEx::Substitute(
 
   m_STC->BeginUndoAction();
   m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
-  m_STC->SetTargetEnd(m_STC->PositionFromLine(MarkerLine('$')));
+  m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('$')));
 
   while (m_STC->SearchInTarget(pattern) > 0)
   {
@@ -770,7 +783,7 @@ bool wxExEx::Substitute(
     const int length = m_STC->ReplaceTargetRE(replacement); // always RE!
     
     m_STC->SetTargetStart(target_start + length);
-    m_STC->SetTargetEnd(m_STC->PositionFromLine(MarkerLine('$')));
+    m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('$')));
 
     nr_replacements++;
   }
