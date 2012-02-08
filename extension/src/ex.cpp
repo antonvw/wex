@@ -906,7 +906,7 @@ bool wxExEx::Write(
       m_STC->PositionFromLine(end_line)));
 }
 
-void wxExEx::Yank(int lines) const
+void wxExEx::Yank(int lines)
 {
   const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
   const int start = m_STC->PositionFromLine(line);
@@ -931,7 +931,7 @@ void wxExEx::Yank(int lines) const
 
 bool wxExEx::Yank(
   const wxString& begin_address, 
-  const wxString& end_address) const
+  const wxString& end_address)
 {
   const int begin_line = ToLineNumber(begin_address);
   const int end_line = ToLineNumber(end_address);

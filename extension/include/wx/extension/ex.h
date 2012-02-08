@@ -118,8 +118,8 @@ protected:
     const wxString& begin_address, 
     const wxString& end_address) const;
   int ToLineNumber(const wxString& address) const;
-  void Yank(int lines) const;
-  bool YankedLines() const return m_YankedLines;};    
+  void Yank(int lines);
+  bool YankedLines() const {return m_YankedLines;};    
   void YankedLinesReset() {m_YankedLines = false;};
 private:
   bool CommandGlobal(const wxString& search);
@@ -144,7 +144,7 @@ private:
     const wxString& filename) const;
   bool Yank(
     const wxString& begin_address, 
-    const wxString& end_address) const;
+    const wxString& end_address);
     
   const wxExMarker m_MarkerSymbol;
   
