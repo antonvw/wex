@@ -10,14 +10,12 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
@@ -127,6 +125,8 @@ bool wxExVi::Command(const wxString& command)
     repeat++;
   }
   
+  const int size = GetSTC()->GetLength();
+  
   // Handle multichar commands.
   if (command.EndsWith("cw") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
@@ -170,7 +170,7 @@ bool wxExVi::Command(const wxString& command)
       SetInsertMode();
     }
   }
-  else if (command.EndsWith("dd") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
+  else if (command.EndsWith("dd"))
   {
     Delete(repeat);
   }
@@ -247,6 +247,7 @@ bool wxExVi::Command(const wxString& command)
     for (int j = 0; j < repeat; j++) 
       GetSTC()->WordLeftExtend();
     GetSTC()->Copy();
+    ResetYankedLines();
   }
   else if (command.EndsWith("yy"))
   {
@@ -416,6 +417,7 @@ bool wxExVi::Command(const wxString& command)
         if (!GetSTC()->GetSelectedText().empty())
         {
           GetSTC()->Copy();
+          ResetYankedLines();
         } 
         else
         {
@@ -513,6 +515,8 @@ bool wxExVi::Command(const wxString& command)
       
       case WXK_ESCAPE:
         wxBell();
+        
+        m_Command.clear();
 
         if (!GetSTC()->GetSelectedText().empty())
         {
@@ -544,7 +548,12 @@ bool wxExVi::Command(const wxString& command)
   {  
     if (!m_Dot)
     {
-      SetLastCommand(command);
+      // Set last command, always when in insert mode,
+      // or this was a delete command (so size different from before).
+      SetLastCommand(command, 
+        m_InsertMode ||
+        size != GetSTC()->GetLength());
+        
       MacroRecord(command);
     }
   }
@@ -608,6 +617,8 @@ bool wxExVi::InsertMode(const wxString& command)
         }
         
         GetSTC()->EndUndoAction();
+        
+        SetLastCommand(GetLastCommand() + m_InsertText + command);
         
         m_InsertMode = false;
       break;
@@ -707,9 +718,7 @@ void wxExVi::Put(bool after)
     return;
   }
   
-  const bool lines = wxExClipboardGet().Contains("\n");
-  
-  if (lines)
+  if (YankedLines())
   {
     if (after) GetSTC()->LineDown();
     GetSTC()->Home();
@@ -717,7 +726,7 @@ void wxExVi::Put(bool after)
 
   GetSTC()->Paste();
 
-  if (lines && after)
+  if (YankedLines() && after)
   {
     GetSTC()->LineUp();
   }
