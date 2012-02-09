@@ -341,7 +341,7 @@ wxExSTC* Frame::ExecExCommand(int command)
     if (m_Editors->GetSelection() == 
         m_Editors->GetPageCount() - 1)
     {
-      m_Editors->SetSelection(0);
+      return NULL;
     }
     else
     {
@@ -351,8 +351,7 @@ wxExSTC* Frame::ExecExCommand(int command)
   case ID_EDIT_PREVIOUS:
     if (m_Editors->GetSelection() == 0)
     {
-      m_Editors->SetSelection(
-        m_Editors->GetPageCount() - 1);
+      return NULL;
     }
     else
     {
