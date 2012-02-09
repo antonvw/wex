@@ -21,7 +21,8 @@ wxExListItem::wxExListItem(
   long itemnumber)
   : m_ListView(lv)
   , m_FileName(
-    (!lv->GetItemText(itemnumber, _("File Name")).empty() ?
+    (!lv->GetItemText(itemnumber, _("File Name")).empty() &&
+     !lv->GetItemText(itemnumber, _("In Folder")).empty() ?
         wxFileName(
           lv->GetItemText(itemnumber, _("In Folder")),
           lv->GetItemText(itemnumber, _("File Name"))) : 

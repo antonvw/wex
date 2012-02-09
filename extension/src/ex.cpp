@@ -697,8 +697,9 @@ void wxExEx::SetLastCommand(
   }
   
   if (
-     always || 
-    (command.size() > 2 && !command.StartsWith("\t")))
+      always || 
+    ( command.StartsWith(":") && command.size() > 2) ||
+    (!command.StartsWith(":") && command.size() > 1 && !command.StartsWith("\t")))
   {
     m_LastCommand = command;
   }
