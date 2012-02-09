@@ -57,7 +57,7 @@ public:
   /// Finds a lexer specified by a filename.
   const wxExLexer FindByFileName(const wxFileName& filename) const;
 
-  /// Finds a lexer specified by the (scintilla) name.
+  /// Finds a lexer specified by the (display scintilla) name.
   const wxExLexer FindByName(const wxString& name) const;
 
   /// Finds a lexer if text starts with some special tokens.

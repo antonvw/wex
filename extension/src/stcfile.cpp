@@ -39,7 +39,7 @@ void wxExSTCFile::DoFileLoad(bool synced)
     GetFileName().GetExt().CmpNoCase("log") == 0 &&
     m_STC->GetTextLength() > 1024);
 
-  m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer(), true);
+  m_STC->SetLexer(GetFileName().GetLexer().GetDisplayLexer(), true);
 
   if (!synced)
   {

@@ -548,12 +548,14 @@ bool wxExVi::Command(const wxString& command)
   {  
     if (!m_Dot)
     {
-      // Set last command, always when in insert mode,
-      // or this was a delete command (so size different from before).
+      // Set last command.
       SetLastCommand(command, 
+        // Always when in insert mode,
+        // or this was a file change command (so size different from before).
         m_InsertMode ||
         size != GetSTC()->GetLength());
-        
+
+      // Record it (if recording is on).
       MacroRecord(command);
     }
   }
@@ -650,12 +652,11 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   }
   else if (m_InsertMode)
   {
-    if (MacroIsRecording())
-    {
+    MacroRecord(
+      event.GetUnicodeKey(), 
       // Record as new record if insert text is empty,
       // otherwise append it.
-      MacroRecord(event.GetUnicodeKey(), m_InsertText.empty());
-    }
+      m_InsertText.empty());
     
     m_InsertText += event.GetUnicodeKey();
     

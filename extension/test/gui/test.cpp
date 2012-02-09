@@ -1055,6 +1055,16 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT( vi->MacroPlayback("a"));
   CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
+  
+  CPPUNIT_ASSERT( vi->Command("i"));
+  CPPUNIT_ASSERT( vi->Command("xxxxxxxx"));
+  int esc = 27;
+  CPPUNIT_ASSERT( vi->Command(esc));
+  
+  for (int i = 0; i < 10; i++)
+    CPPUNIT_ASSERT( vi->Command("."));
+    
+  CPPUNIT_ASSERT( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
 }
   
 void wxExGuiTestFixture::testViMacros()

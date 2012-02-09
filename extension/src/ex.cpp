@@ -95,6 +95,10 @@ bool wxExEx::Command(const wxString& command)
         m_STC = stc;
       }
     }
+    else
+    {
+      result = false;
+    }
   }
   else if (command == ":prev")
   {
@@ -108,6 +112,10 @@ bool wxExEx::Command(const wxString& command)
       {
         m_STC = stc;
       }
+    }
+    else
+    {
+      result = false;
     }
   }
   else if (command == ":q")
@@ -558,7 +566,10 @@ void wxExEx::MacroStartRecording(const wxString& macro)
 
 bool wxExEx::MarkerAdd(const wxUniChar& marker, int line)
 {
+  MarkerDelete(marker);
+  
   const int lin = (line == -1 ? m_STC->GetCurrentLine(): line);
+  
   const int id = m_STC->MarkerAdd(
     lin, 
     m_MarkerSymbol.GetNo());
@@ -570,8 +581,6 @@ bool wxExEx::MarkerAdd(const wxUniChar& marker, int line)
     return false;  
   }
     
-  MarkerDelete(marker);
-  
   m_Markers[marker] = id;
   
   return true;
@@ -680,9 +689,16 @@ void wxExEx::SetLastCommand(
   const wxString& command,
   bool always)
 {
+  // First test on dot and ;, these should never be the last command,
+  // even if always were true.
+  if (command == "." || command == ";")
+  {
+    return;
+  }
+  
   if (
      always || 
-    (command != "." && command.size() > 2 && !command.StartsWith("\t")))
+    (command.size() > 2 && !command.StartsWith("\t")))
   {
     m_LastCommand = command;
   }
