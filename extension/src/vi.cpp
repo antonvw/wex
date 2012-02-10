@@ -133,7 +133,7 @@ bool wxExVi::Command(const wxString& command)
   const wxString rest(pEnd);
   
   // Handle multichar commands.
-  if (rest == "cw" && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
+  if (rest.StartsWith("cw") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
     if (!GetSTC()->GetSelectedText().empty())
     {
@@ -144,21 +144,15 @@ bool wxExVi::Command(const wxString& command)
     
     for (int i = 0; i < repeat; i++) GetSTC()->WordRightEndExtend();
 
-    if (m_Dot)
-    {
-      GetSTC()->ReplaceSelection(m_InsertText);
-    }
-    else
-    {
-      SetInsertMode();
-      const int anchor = GetSTC()->GetCurrentPos();
-      GetSTC()->SetCurrentPos(pos);
-      GetSTC()->SetAnchor(anchor);
+    SetInsertMode();
+    InsertMode(rest.Mid(2));
+    const int anchor = GetSTC()->GetCurrentPos();
+    GetSTC()->SetCurrentPos(pos);
+    GetSTC()->SetAnchor(anchor);
       
-      if (MacroIsPlayback())
-      {
-        GetSTC()->ReplaceSelection(wxEmptyString);
-      }
+    if (MacroIsPlayback())
+    {
+      GetSTC()->ReplaceSelection(wxEmptyString);
     }
   }
   else if (rest == "cc" && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
@@ -624,20 +618,36 @@ bool wxExVi::InsertMode(const wxString& command)
       break;
       
     case WXK_ESCAPE:
+        {
         // Add extra inserts if necessary.        
+        wxString text;
+        
         if (!m_InsertText.empty())
         {
           for (int i = 1; i < m_InsertRepeatCount; i++)
           {
-            GetSTC()->AddText(m_InsertText);
+            text += m_InsertText;
           }
         }
         
+        if (!GetSTC()->GetSelectedText().empty())
+        {
+          GetSTC()->ReplaceSelection(command.Left(command.size() - 1));
+        }
+        else
+        {
+          GetSTC()->AddText(m_InsertText);
+        }
+          
         GetSTC()->EndUndoAction();
         
-        SetLastCommand(GetLastCommand() + m_InsertText + command);
+        if (!m_Dot)
+        {
+          SetLastCommand(GetLastCommand() + m_InsertText + command);
+        }
         
         m_InsertMode = false;
+        }
       break;
 
     case WXK_RETURN:
@@ -708,7 +718,16 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     event.GetKeyCode() == WXK_RETURN ||
     event.GetKeyCode() == WXK_TAB)
   {
-    return !Command((char)event.GetKeyCode());
+    m_Command += event.GetKeyCode();
+      
+    const bool result = Command(m_Command);
+    
+    if (result)
+    {
+      m_Command.clear();
+    }
+    
+    return !result;
   }
   else
   {
@@ -773,13 +792,10 @@ void wxExVi::SetInsertMode(
     return;
   }
     
-  if (!dot)
-  {
-    m_InsertMode = true;
-    m_InsertText.clear();
-    m_InsertRepeatCount = repeat;
-    GetSTC()->BeginUndoAction();
-  }
+  m_InsertMode = true;
+  m_InsertText.clear();
+  m_InsertRepeatCount = repeat;
+  GetSTC()->BeginUndoAction();
 
   switch ((int)c)
   {
@@ -815,26 +831,7 @@ void wxExVi::SetInsertMode(
     default: wxFAIL;
   }
 
-  if (dot)
-  {
-    GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
-    
-    if (c == 'R' || c == 'C')
-    {
-      GetSTC()->ReplaceSelection(m_InsertText);
-    }
-    else
-    {
-      GetSTC()->AddText(m_InsertText);
-    }
-    
-    GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos());
-    GetSTC()->MarkTargetChange();
-  }
-  else
-  {
-    GetSTC()->SetOvertype(overtype);
-  }
+  GetSTC()->SetOvertype(overtype);
 }
 
 void wxExVi::ToggleCase()

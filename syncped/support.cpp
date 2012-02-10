@@ -250,7 +250,7 @@ void DecoratedFrame::OnNotebook(wxWindowID id, wxWindow* page)
       wxExLogStatus(((wxExListViewFile*)page)->GetFileName());
       UpdateStatusBar((wxExListViewFile*)page);
 #endif
-    breal;
+    break;
     default:
       wxFAIL;
   }
