@@ -132,8 +132,12 @@ bool wxExVi::Command(const wxString& command)
   
   const wxString rest(pEnd);
   
+  if (command == "0")
+  {
+    GetSTC()->Home(); 
+  }
   // Handle multichar commands.
-  if (rest.StartsWith("cw") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
+  else if (rest.StartsWith("cw") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
     if (!GetSTC()->GetSelectedText().empty())
     {
@@ -469,7 +473,6 @@ bool wxExVi::Command(const wxString& command)
         m_Dot = false;
         break;
         
-      case '0': 
       case '^': 
         if (rest.length() == 1)
         {
@@ -618,25 +621,28 @@ bool wxExVi::InsertMode(const wxString& command)
       break;
       
     case WXK_ESCAPE:
-        {
         // Add extra inserts if necessary.        
-        wxString text;
-        
         if (!m_InsertText.empty())
         {
           for (int i = 1; i < m_InsertRepeatCount; i++)
           {
-            text += m_InsertText;
+            GetSTC()->AddText(m_InsertText);
           }
         }
         
-        if (!GetSTC()->GetSelectedText().empty())
-        {
-          GetSTC()->ReplaceSelection(command.Left(command.size() - 1));
-        }
-        else
-        {
-          GetSTC()->AddText(m_InsertText);
+        // If we have text to be added.
+        if (command.size() > 1)
+        { 
+          const wxString rest(command.Left(command.size() - 1));
+          
+          if (!GetSTC()->GetSelectedText().empty())
+          {
+            GetSTC()->ReplaceSelection(rest);
+          }
+          else
+          {
+            GetSTC()->AddText(rest);
+          }
         }
           
         GetSTC()->EndUndoAction();
@@ -647,7 +653,6 @@ bool wxExVi::InsertMode(const wxString& command)
         }
         
         m_InsertMode = false;
-        }
       break;
 
     case WXK_RETURN:
