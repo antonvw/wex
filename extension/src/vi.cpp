@@ -95,11 +95,13 @@ bool wxExVi::Command(const wxString& command)
     {
       if (command.length() > 1)
       {
+        m_SearchForward = command.StartsWith("/");
+        
         // This is a previous entered command.
         const bool result = GetSTC()->FindNext(
           command.Mid(1),
           GetSearchFlags(),
-          command.StartsWith("/"));
+          m_SearchForward);
           
         if (result)
         {
@@ -197,8 +199,23 @@ bool wxExVi::Command(const wxString& command)
     GetSTC()->Cut();
     GetSTC()->EndUndoAction();
   }
-  // this one should be first, so rJ will match
-  else if (wxRegEx("r.").Matches(rest) && !GetSTC()->GetReadOnly())
+  else if (rest.Matches("f?"))
+  {
+    for (int i = 0; i < repeat; i++) 
+      GetSTC()->FindNext(rest.Last(), GetSearchFlags());
+    m_LastFindCharCommand = command;
+  }
+  else if (rest.Matches("F?"))
+  {
+    for (int i = 0; i < repeat; i++) 
+      GetSTC()->FindNext(rest.Last(), GetSearchFlags(), false);
+    m_LastFindCharCommand = command;
+  }
+  else if (rest.Matches("m?"))
+  {
+    MarkerAdd(rest.Last());
+  }
+  else if (rest.Matches("r?") && !GetSTC()->GetReadOnly())
   {
     if (GetSTC()->HexMode())
     {
@@ -218,30 +235,6 @@ bool wxExVi::Command(const wxString& command)
       GetSTC()->ReplaceTarget(wxString(rest.Last(), repeat));
       GetSTC()->MarkTargetChange();
     }
-  }
-  else if (rest.Matches("f?"))
-  {
-    for (int i = 0; i < repeat; i++) 
-      GetSTC()->FindNext(rest.Last(), GetSearchFlags());
-    m_LastFindCharCommand = command;
-  }
-  else if (rest.Matches("F?"))
-  {
-    for (int i = 0; i < repeat; i++) 
-      GetSTC()->FindNext(rest.Last(), GetSearchFlags(), false);
-    m_LastFindCharCommand = command;
-  }
-  else if (rest.Matches("J"))
-  {
-    GetSTC()->BeginUndoAction();
-    GetSTC()->SetTargetStart(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));
-    GetSTC()->SetTargetEnd(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine() + repeat));
-    GetSTC()->LinesJoin();
-    GetSTC()->EndUndoAction();
-  }
-  else if (rest.Matches("m?"))
-  {
-    MarkerAdd(rest.Last());
   }
   else if (rest == "yw")
   {
@@ -311,7 +304,7 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (rest == "@?")
   {
-    MacroPlayback(rest.AfterFirst('@'), repeat);
+    MacroPlayback(rest.Last(), repeat);
   }
   else if (!rest.empty())
   {
@@ -326,23 +319,6 @@ bool wxExVi::Command(const wxString& command)
       case 'O': 
         SetInsertMode(rest.GetChar(0), repeat, false, m_Dot); 
         InsertMode(rest.Mid(1));
-        break;
-        
-      case 'R': 
-        SetInsertMode(rest.GetChar(0), repeat, true, m_Dot); 
-        InsertMode(rest.Mid(1));
-        break;
-
-      case '0': 
-      case '^': 
-        if (rest.length() == 1)
-        {
-          GetSTC()->Home(); 
-        }
-        else
-        {
-          handled = false;
-        }
         break;
         
       case 'b': for (int i = 0; i < repeat; i++) GetSTC()->WordLeft(); break;
@@ -452,6 +428,14 @@ bool wxExVi::Command(const wxString& command)
       case 'H': GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine());
         break;
         
+      case 'J':
+        GetSTC()->BeginUndoAction();
+        GetSTC()->SetTargetStart(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));
+        GetSTC()->SetTargetEnd(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine() + repeat));
+        GetSTC()->LinesJoin();
+        GetSTC()->EndUndoAction();
+        break;
+        
       case 'L': GetSTC()->GotoLine(
         GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen()); 
         break;
@@ -470,6 +454,11 @@ bool wxExVi::Command(const wxString& command)
         
       case 'P': Put(false); break;
       
+      case 'R': 
+        SetInsertMode(rest.GetChar(0), repeat, true, m_Dot); 
+        InsertMode(rest.Mid(1));
+        break;
+
       case 'X': 
         if (GetSTC()->HexMode()) return false;
         for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack(); break;
@@ -484,6 +473,18 @@ bool wxExVi::Command(const wxString& command)
         m_Dot = true;
         Command(m_LastFindCharCommand); 
         m_Dot = false;
+        break;
+        
+      case '0': 
+      case '^': 
+        if (rest.length() == 1)
+        {
+          GetSTC()->Home(); 
+        }
+        else
+        {
+          handled = false;
+        }
         break;
         
       case '~': ToggleCase(); break;

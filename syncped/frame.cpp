@@ -217,10 +217,6 @@ Frame::Frame(bool open_recent)
   GetManager().Update();
 }
 
-Frame::~Frame()
-{
-}
-
 wxExListViewFileName* Frame::Activate(
   wxExListViewFileName::wxExListType type, 
   const wxExLexer* lexer)

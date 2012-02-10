@@ -207,22 +207,28 @@ DecoratedFrame::DecoratedFrame()
 
 bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
 {
-  if (id == NOTEBOOK_EDITORS)
+  switch (id)
   {
-    wxExFileDialog dlg(this, &((wxExSTC*)page)->GetFile());
+  case NOTEBOOK_EDITORS:
+    {
+      wxExFileDialog dlg(this, &((wxExSTC*)page)->GetFile());
     
-    if (dlg.ShowModalIfChanged() != wxID_OK)
-    {
-      return false;
+      if (dlg.ShowModalIfChanged() != wxID_OK)
+      {
+        return false;
+      }
     }
-  }
-  else if (id == NOTEBOOK_PROJECTS)
-  {
-    wxExFileDialog dlg(this, (wxExListViewFile*)page);
-    if (dlg.ShowModalIfChanged() != wxID_OK)
+  break;
+  case NOTEBOOK_PROJECTS:
     {
-      return false;
+      wxExFileDialog dlg(this, (wxExListViewFile*)page);
+    
+      if (dlg.ShowModalIfChanged() != wxID_OK)
+      {
+        return false;
+      }
     }
+  break;
   }
   
   return wxExFrameWithHistory::AllowClose(id, page);
@@ -232,23 +238,20 @@ void DecoratedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 {
   wxExFrameWithHistory::OnNotebook(id, page);
   
-  if (id == NOTEBOOK_EDITORS)
+  switch (id)
   {
-    ((wxExSTC*)page)->PropertiesMessage();
-  }
-  else if (id == NOTEBOOK_PROJECTS)
-  {
+    case NOTEBOOK_EDITORS:
+      ((wxExSTC*)page)->PropertiesMessage();
+    break;
+    case NOTEBOOK_LISTS:
+    break;
+    case NOTEBOOK_PROJECTS:
 #if wxUSE_STATUSBAR
-    wxExLogStatus(((wxExListViewFile*)page)->GetFileName());
-    UpdateStatusBar((wxExListViewFile*)page);
+      wxExLogStatus(((wxExListViewFile*)page)->GetFileName());
+      UpdateStatusBar((wxExListViewFile*)page);
 #endif
-  }
-  else if (id == NOTEBOOK_LISTS)
-  {
-    // Do nothing special.
-  }
-  else
-  {
-    wxFAIL;
+    breal;
+    default:
+      wxFAIL;
   }
 }

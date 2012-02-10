@@ -689,9 +689,10 @@ void wxExEx::SetLastCommand(
   const wxString& command,
   bool always)
 {
-  // First test on dot and ;, these should never be the last command,
+  // First test on '.' and ';' these should never be the last command,
   // even if always were true.
-  if (command == "." || command == ";")
+  // Also, placing a marker should not be a last command.
+  if (command == "." || command == ";" || command.Matches("m?"))
   {
     return;
   }

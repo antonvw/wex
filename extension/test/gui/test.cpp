@@ -196,15 +196,25 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->GetIsActive());
   
   CPPUNIT_ASSERT( ex->Command(":.="));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":.=");
   CPPUNIT_ASSERT(!ex->Command(":xxx"));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":.=");
   CPPUNIT_ASSERT(!ex->Command(":yyy"));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":.=");
   CPPUNIT_ASSERT( ex->Command(":10"));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":.=");
   CPPUNIT_ASSERT( ex->Command(":1,$s/this/ok"));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":1,$s/this/ok");
   CPPUNIT_ASSERT( ex->Command(":g/is/s//ok"));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":g/is/s//ok");
   CPPUNIT_ASSERT( ex->Command(":g/is/d"));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":g/is/d");
   CPPUNIT_ASSERT( ex->Command(":g/is/p"));
-  CPPUNIT_ASSERT( ex->Command(":n"));
-  CPPUNIT_ASSERT( ex->Command(":prev"));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":g/is/p");
+  CPPUNIT_ASSERT(!ex->Command(":n")); // there is no next
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":n");
+  CPPUNIT_ASSERT(!ex->Command(":prev")); // there is no previous
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":prev");
   
   CPPUNIT_ASSERT(!ex->MacroIsRecording());
   CPPUNIT_ASSERT(!ex->MacroIsRecorded());
@@ -230,7 +240,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->MacroPlayback("a"));
   CPPUNIT_ASSERT(!ex->MacroPlayback("b"));
   
-  ex->MarkerAdd('a');
+  CPPUNIT_ASSERT( ex->MarkerAdd('a'));
   CPPUNIT_ASSERT( ex->MarkerLine('a') != -1);
   CPPUNIT_ASSERT( ex->MarkerGoto('a'));
   CPPUNIT_ASSERT( ex->MarkerDelete('a'));
@@ -253,6 +263,9 @@ void wxExGuiTestFixture::testFrame()
   }
   
   frame->SetupStatusBar(panes);
+  
+  CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE)));
+  CPPUNIT_ASSERT(!frame->OpenFile(TEST_FILE, "contents"));
 }
 
 void wxExGuiTestFixture::testFrd()
@@ -1056,15 +1069,50 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->MacroPlayback("a"));
   CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
   
+  CPPUNIT_ASSERT(!vi->GetInsertMode());
   CPPUNIT_ASSERT( vi->Command("i"));
+  CPPUNIT_ASSERT( vi->GetInsertMode());
+  
   CPPUNIT_ASSERT( vi->Command("xxxxxxxx"));
   int esc = 27;
   CPPUNIT_ASSERT( vi->Command(esc));
+  
+  CPPUNIT_ASSERT(!vi->GetInsertMode());
   
   for (int i = 0; i < 10; i++)
     CPPUNIT_ASSERT( vi->Command("."));
     
   CPPUNIT_ASSERT( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
+  
+  CPPUNIT_ASSERT( vi->Command("iyyyyy"));
+  CPPUNIT_ASSERT( vi->GetInsertMode());
+  CPPUNIT_ASSERT( stc->GetText().Contains("yyyyy"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("iyyyyy"));
+  CPPUNIT_ASSERT( vi->Command(esc));
+  CPPUNIT_ASSERT(!vi->GetInsertMode());
+
+  CPPUNIT_ASSERT( vi->GetLastCommand() == "iyyyyy");
+  
+  CPPUNIT_ASSERT( vi->Command("."));
+  CPPUNIT_ASSERT( vi->GetLastCommand() == "iyyyyy");
+  
+  CPPUNIT_ASSERT( vi->Command(";"));
+  CPPUNIT_ASSERT( vi->GetLastCommand() == "iyyyyy");
+  
+  CPPUNIT_ASSERT( vi->Command("ma"));
+  CPPUNIT_ASSERT( vi->GetLastCommand() == "iyyyyy");
+  
+  CPPUNIT_ASSERT( vi->Command("h"));
+  CPPUNIT_ASSERT( vi->Command("j"));
+  CPPUNIT_ASSERT( vi->Command("k"));
+  CPPUNIT_ASSERT( vi->Command("l"));
+  CPPUNIT_ASSERT( vi->Command(":.="));
+  CPPUNIT_ASSERT( vi->GetLastCommand() == "iyyyyy");
+  
+  CPPUNIT_ASSERT( vi->Command(":1,$s/xx/yy/"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("yyyyy"));
+  
+  CPPUNIT_ASSERT( vi->GetLastCommand() == ":1,$s/xx/yy/");
 }
   
 void wxExGuiTestFixture::testViMacros()

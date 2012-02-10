@@ -17,7 +17,6 @@ class Frame : public DecoratedFrame
 {
 public:
   Frame(bool open_recent);
- ~Frame();
   
   virtual bool OpenFile(
     const wxExFileName& filename,
