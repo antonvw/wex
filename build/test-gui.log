@@ -4,6 +4,12 @@
 OK (36 tests)
 
 
-adding 750 items in: 2329 milliseconds
-sorting 750 items in: 1702 milliseconds
-matching 193 items in: 5193 microseconds
+adding 750 items in: 2383 milliseconds
+sorting 750 items in: 1723 milliseconds
+matching 193 items in: 6246 microseconds
+ixxxxxxxx
+ixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx// vi: set ts=120 // this is a modeline
+iyyyyy
+
+
+ixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyyyyy// vi: set ts=120 // this is a modeline
