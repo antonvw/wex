@@ -137,6 +137,14 @@ bool wxExVi::Command(const wxString& command)
     GetSTC()->Home(); 
   }
   // Handle multichar commands.
+  else if (rest.StartsWith("cc") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
+  {
+    GetSTC()->Home();
+    GetSTC()->DelLineRight();
+
+    SetInsertMode();
+    InsertMode(rest.Mid(2));
+  }
   else if (rest.StartsWith("cw") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
     if (!GetSTC()->GetSelectedText().empty())
@@ -158,14 +166,6 @@ bool wxExVi::Command(const wxString& command)
     {
       GetSTC()->ReplaceSelection(wxEmptyString);
     }
-  }
-  else if (rest.StartsWith("cc") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
-  {
-    GetSTC()->Home();
-    GetSTC()->DelLineRight();
-
-    SetInsertMode();
-    InsertMode(rest.Mid(2));
   }
   else if (rest == "dd")
   {
@@ -294,7 +294,7 @@ bool wxExVi::Command(const wxString& command)
   {
     MacroPlayback(GetMacro(), repeat);
   }
-  else if (rest == "@?")
+  else if (rest.Matches("@?"))
   {
     MacroPlayback(rest.Last(), repeat);
   }
@@ -527,13 +527,7 @@ bool wxExVi::Command(const wxString& command)
         break;
     
       case WXK_TAB:
-        if (m_Command.size() > 0 && wxRegEx("[0-9]*r").Matches(m_Command))
-        {
-          GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
-          GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + repeat);
-          GetSTC()->ReplaceTarget(wxString('\t', repeat));
-          GetSTC()->MarkTargetChange();
-        }
+        // just ignore tab
         break;
       
       default:
