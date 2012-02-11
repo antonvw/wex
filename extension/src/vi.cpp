@@ -143,7 +143,7 @@ bool wxExVi::Command(const wxString& command)
     GetSTC()->DelLineRight();
 
     SetInsertMode();
-    InsertMode(rest.Mid(2));
+    return InsertMode(rest.Mid(2));
   }
   else if (rest.StartsWith("cw") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
@@ -157,7 +157,7 @@ bool wxExVi::Command(const wxString& command)
     for (int i = 0; i < repeat; i++) GetSTC()->WordRightEndExtend();
 
     SetInsertMode();
-    InsertMode(rest.Mid(2));
+    return InsertMode(rest.Mid(2));
     const int anchor = GetSTC()->GetCurrentPos();
     GetSTC()->SetCurrentPos(pos);
     GetSTC()->SetAnchor(anchor);
@@ -310,7 +310,7 @@ bool wxExVi::Command(const wxString& command)
       case 'I': 
       case 'O': 
         SetInsertMode(rest.GetChar(0), repeat, false); 
-        InsertMode(rest.Mid(1));
+        return InsertMode(rest.Mid(1));
         break;
         
       case 'b': for (int i = 0; i < repeat; i++) GetSTC()->WordLeft(); break;
@@ -448,7 +448,7 @@ bool wxExVi::Command(const wxString& command)
       
       case 'R': 
         SetInsertMode(rest.GetChar(0), repeat, true); 
-        InsertMode(rest.Mid(1));
+        return InsertMode(rest.Mid(1));
         break;
 
       case 'X': 
@@ -637,7 +637,8 @@ bool wxExVi::InsertMode(const wxString& command)
         
         if (!m_Dot)
         {
-          SetLastCommand(GetLastCommand() + m_InsertText + command);
+          SetLastCommand(
+            GetLastCommand() + m_InsertText + wxUniChar(WXK_ESCAPE));
         }
         
         m_InsertMode = false;
@@ -652,7 +653,13 @@ bool wxExVi::InsertMode(const wxString& command)
         }
       break;
     
-    default: GetSTC()->AddText(command);
+    default: 
+      GetSTC()->AddText(command);
+      
+      if (!m_Dot)
+      {
+        m_InsertText += command;
+      }
   }
       
   GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
@@ -786,7 +793,14 @@ void wxExVi::SetInsertMode(
     
   m_InsertMode = true;
   m_InsertText.clear();
+  
+  if (!m_Dot)
+  {
+    SetLastCommand(c, true);
+  }
+  
   m_InsertRepeatCount = repeat;
+  
   GetSTC()->BeginUndoAction();
 
   switch ((int)c)
