@@ -159,19 +159,13 @@ bool wxExVi::Command(const wxString& command)
       GetSTC()->ReplaceSelection(wxEmptyString);
     }
   }
-  else if (rest == "cc" && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
+  else if (rest.StartsWith("cc") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
     GetSTC()->Home();
     GetSTC()->DelLineRight();
 
-    if (m_Dot && !m_InsertText.empty())
-    {
-      GetSTC()->ReplaceSelection(m_InsertText);
-    }
-    else
-    {
-      SetInsertMode();
-    }
+    SetInsertMode();
+    InsertMode(rest.Mid(2));
   }
   else if (rest == "dd")
   {
@@ -315,7 +309,7 @@ bool wxExVi::Command(const wxString& command)
       case 'C': 
       case 'I': 
       case 'O': 
-        SetInsertMode(rest.GetChar(0), repeat, false, m_Dot); 
+        SetInsertMode(rest.GetChar(0), repeat, false); 
         InsertMode(rest.Mid(1));
         break;
         
@@ -453,7 +447,7 @@ bool wxExVi::Command(const wxString& command)
       case 'P': Put(false); break;
       
       case 'R': 
-        SetInsertMode(rest.GetChar(0), repeat, true, m_Dot); 
+        SetInsertMode(rest.GetChar(0), repeat, true); 
         InsertMode(rest.Mid(1));
         break;
 
@@ -789,8 +783,7 @@ void wxExVi::SetIndicator(
 void wxExVi::SetInsertMode(
   const wxUniChar c, 
   int repeat, 
-  bool overtype,
-  bool dot)
+  bool overtype)
 {
   if (GetSTC()->GetReadOnly() || GetSTC()->HexMode())
   {

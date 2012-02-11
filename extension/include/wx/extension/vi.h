@@ -52,8 +52,7 @@ private:
   void SetInsertMode(
     const wxUniChar c = 'i', 
     int repeat = 1,
-    bool overtype = false,
-    bool dot = false);
+    bool overtype = false);
   void ToggleCase();
 
   static wxString m_LastFindCharCommand;
