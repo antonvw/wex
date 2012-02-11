@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wxExLexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -190,7 +190,7 @@ const wxString wxExLexers::BuildWildCards(
     if (!it->second.GetExtensions().empty())
     {
       const wxString wildcard =
-        it->second.GetScintillaLexer() +
+        it->first +
         " (" + it->second.GetExtensions() + ") |" +
         it->second.GetExtensions();
 
@@ -308,8 +308,7 @@ const wxString wxExLexers::GetLexerExtensions() const
     it != m_Lexers.end();
     ++it)
   {
-    if (!it->second.GetExtensions().empty() &&
-         it->second.GetExtensions() != "*." + it->second.GetScintillaLexer())
+    if (!it->second.GetExtensions().empty())
     {
       if (!text.empty())
       {
