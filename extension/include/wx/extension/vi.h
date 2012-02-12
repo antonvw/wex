@@ -53,7 +53,7 @@ private:
   void Put(bool after);
   void SetIndicator(const wxExIndicator& indicator, int start, int end);
   void SetInsertMode(
-    const wxUniChar c = 'i', 
+    const wxString& command,
     int repeat = 1,
     bool overtype = false);
   void ToggleCase();

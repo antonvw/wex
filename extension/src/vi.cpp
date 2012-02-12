@@ -142,7 +142,7 @@ bool wxExVi::Command(const wxString& command)
     GetSTC()->Home();
     GetSTC()->DelLineRight();
 
-    SetInsertMode();
+    SetInsertMode("cc");
     return InsertMode(rest.Mid(2));
   }
   else if (rest.StartsWith("cw") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
@@ -156,16 +156,14 @@ bool wxExVi::Command(const wxString& command)
     
     for (int i = 0; i < repeat; i++) GetSTC()->WordRightEndExtend();
 
-    SetInsertMode();
-    return InsertMode(rest.Mid(2));
-    const int anchor = GetSTC()->GetCurrentPos();
-    GetSTC()->SetCurrentPos(pos);
-    GetSTC()->SetAnchor(anchor);
-      
+    SetInsertMode("cw");
+    
     if (MacroIsPlayback())
     {
       GetSTC()->ReplaceSelection(wxEmptyString);
     }
+    
+    return InsertMode(rest.Mid(2));
   }
   else if (rest == "dd")
   {
@@ -637,8 +635,13 @@ bool wxExVi::InsertMode(const wxString& command)
         
         if (!m_Dot)
         {
-          SetLastCommand(
-            GetLastCommand() + m_InsertText + wxUniChar(WXK_ESCAPE));
+          const wxString lc(GetLastCommand() + m_InsertText);
+          
+          SetLastCommand(lc + wxUniChar(WXK_ESCAPE));
+            
+          // Record it (if recording is on).
+          MacroRecord(lc);
+          MacroRecord( wxUniChar(WXK_ESCAPE));
         }
         
         m_InsertMode = false;
@@ -664,8 +667,6 @@ bool wxExVi::InsertMode(const wxString& command)
       
   GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
   
-  MacroRecord(command);
-  
   return true;
 }
 
@@ -677,12 +678,6 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   }
   else if (m_InsertMode)
   {
-    MacroRecord(
-      event.GetUnicodeKey(), 
-      // Record as new record if insert text is empty,
-      // otherwise append it.
-      m_InsertText.empty());
-    
     m_InsertText += event.GetUnicodeKey();
     
     return true;
@@ -782,7 +777,7 @@ void wxExVi::SetIndicator(
 }
 
 void wxExVi::SetInsertMode(
-  const wxUniChar c, 
+  const wxString& c, 
   int repeat, 
   bool overtype)
 {
@@ -803,11 +798,12 @@ void wxExVi::SetInsertMode(
   
   GetSTC()->BeginUndoAction();
 
-  switch ((int)c)
+  switch ((int)c.GetChar(0))
   {
     case 'a': GetSTC()->CharRight(); 
       break;
 
+    case 'c': 
     case 'i': 
       break;
 
