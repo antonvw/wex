@@ -2,7 +2,7 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wxExNotebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -134,11 +134,11 @@ bool wxExNotebook::ForEach(int id)
     case ID_ALL_STC_SET_LEXER: 
       // At this moment same as themed change,
       // as we want default colour updates as well.
-      stc->SetLexer(stc->GetLexer().GetScintillaLexer(), true);
+      stc->SetLexer(stc->GetLexer().GetDisplayLexer(), true);
       break;
 
     case ID_ALL_STC_SET_LEXER_THEME: 
-      stc->SetLexer(stc->GetLexer().GetScintillaLexer(), true);
+      stc->SetLexer(stc->GetLexer().GetDisplayLexer(), true);
       break;
 
     default: wxFAIL; break;

@@ -298,7 +298,21 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (!rest.empty())
   {
-    switch ((int)rest.GetChar(0))
+    // Handle ESCAPE, should clear command buffer,
+    // as last char, so not in switch branch.
+    if (rest.Last() == WXK_ESCAPE)
+    {
+      wxBell();
+        
+      m_Command.clear();
+
+      if (!GetSTC()->GetSelectedText().empty())
+      {
+        GetSTC()->SetSelection(
+          GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
+      }
+    }
+    else switch ((int)rest.GetChar(0))
     {
       case 'a': 
       case 'i': 
@@ -307,7 +321,7 @@ bool wxExVi::Command(const wxString& command)
       case 'C': 
       case 'I': 
       case 'O': 
-        SetInsertMode(rest.GetChar(0), repeat, false); 
+        SetInsertMode(rest.GetChar(0), repeat); 
         return InsertMode(rest.Mid(1));
         break;
         
@@ -445,7 +459,7 @@ bool wxExVi::Command(const wxString& command)
       case 'P': Put(false); break;
       
       case 'R': 
-        SetInsertMode(rest.GetChar(0), repeat, true); 
+        SetInsertMode(rest.GetChar(0), repeat); 
         return InsertMode(rest.Mid(1));
         break;
 
@@ -508,18 +522,6 @@ bool wxExVi::Command(const wxString& command)
         GetSTC()->CharLeft();
         break;
       
-      case WXK_ESCAPE:
-        wxBell();
-        
-        m_Command.clear();
-
-        if (!GetSTC()->GetSelectedText().empty())
-        {
-          GetSTC()->SetSelection(
-            GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
-        }
-        break;
-
       case WXK_RETURN:
         for (int i = 0; i < repeat; i++) GetSTC()->LineDown();
         break;
@@ -665,7 +667,10 @@ bool wxExVi::InsertMode(const wxString& command)
       }
   }
       
-  GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
+  if (GetSTC()->GetModify())
+  {
+    GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
+  }
   
   return true;
 }
@@ -778,8 +783,7 @@ void wxExVi::SetIndicator(
 
 void wxExVi::SetInsertMode(
   const wxString& c, 
-  int repeat, 
-  bool overtype)
+  int repeat)
 {
   if (GetSTC()->GetReadOnly() || GetSTC()->HexMode())
   {
@@ -797,7 +801,7 @@ void wxExVi::SetInsertMode(
   m_InsertRepeatCount = repeat;
   
   GetSTC()->BeginUndoAction();
-
+  
   switch ((int)c.GetChar(0))
   {
     case 'a': GetSTC()->CharRight(); 
@@ -833,7 +837,7 @@ void wxExVi::SetInsertMode(
     default: wxFAIL;
   }
 
-  GetSTC()->SetOvertype(overtype);
+  GetSTC()->SetOvertype((int)c.GetChar(0) == 'R');
 }
 
 void wxExVi::ToggleCase()
