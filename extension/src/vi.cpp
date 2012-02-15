@@ -384,7 +384,16 @@ bool wxExVi::Command(const wxString& command)
         }
         break;
       
-      case 'u': GetSTC()->Undo(); break;
+      case 'u': 
+        if (GetSTC()->CanUndo())
+        {
+          GetSTC()->Undo();
+        }
+        else
+        {
+          wxBell();
+        }
+        break;
       
       case 'w': for (int i = 0; i < repeat; i++) GetSTC()->WordRight(); break;
       
