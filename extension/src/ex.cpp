@@ -180,7 +180,7 @@ bool wxExEx::Command(const wxString& command)
   }
   else if (command.StartsWith(":!"))
   {
-    if (m_Process = NULL)
+    if (m_Process == NULL)
     {
       m_Process = new wxExProcess;
     }
@@ -632,6 +632,7 @@ int wxExEx::MarkerLine(const wxUniChar& marker) const
   else
   {
     wxBell();
+    wxLogStatus(_("Undefined marker: %c"), marker);
     return -1;
   }
 }

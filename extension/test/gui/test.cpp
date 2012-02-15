@@ -7,9 +7,6 @@
 
 #include <vector>
 #include <wx/config.h>
-//#if wxUSE_UIACTIONSIMULATOR
-//  #include "wx/uiaction.h"
-//#endif
 #include "test.h"
 
 #define TEST_FILE "./test.h"
@@ -214,6 +211,17 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":g/is/p");
   CPPUNIT_ASSERT(!ex->Command(":prev")); // there is no previous
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":g/is/p");
+  CPPUNIT_ASSERT( ex->Command(":!ls -l"));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":!ls -l");
+  CPPUNIT_ASSERT( ex->Command(":1,$s/s/w/"));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":1,$s/s/w/");
+  
+  CPPUNIT_ASSERT( ex->Command(":1"));
+  CPPUNIT_ASSERT( ex->MarkerAdd('x'));
+  CPPUNIT_ASSERT( ex->Command(":$"));
+  CPPUNIT_ASSERT( ex->MarkerAdd('y'));
+  CPPUNIT_ASSERT( ex->Command(":'x,'ys/s/w/"));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":'x,'ys/s/w/");
   
   CPPUNIT_ASSERT(!ex->MacroIsRecording());
   CPPUNIT_ASSERT(!ex->MacroIsRecorded());
@@ -1018,18 +1026,13 @@ void wxExGuiTestFixture::testVi()
   vi->Use(true);
   CPPUNIT_ASSERT( vi->GetIsActive());
   
+  // Repeat some ex tests.
   CPPUNIT_ASSERT( vi->Command(":$"));
   CPPUNIT_ASSERT( vi->Command(":100"));
   CPPUNIT_ASSERT(!vi->Command(":xxx"));
   
   CPPUNIT_ASSERT(!vi->GetInsertMode());
   
-  // Tried to use  
-  //  wxUIActionSimulator sim;
-  //  stc->SetFocus();
-  //  sim.Char('i');
-  //  wxYield();
-    
   // First i enters insert mode, so is handled by vi, not to be skipped.
   wxKeyEvent event(wxEVT_CHAR);
   event.m_uniChar = 'i';
@@ -1044,7 +1047,8 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->OnChar(event));
   CPPUNIT_ASSERT( vi->OnChar(event));
   CPPUNIT_ASSERT( vi->OnChar(event));
-  
+
+  // Repeat some macro tests.
   CPPUNIT_ASSERT(!vi->MacroIsRecording());
   
   vi->MacroStartRecording("a");
@@ -1067,7 +1071,8 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT( vi->MacroPlayback("a"));
   CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
-  
+
+  // Vi command tests.
   int esc = 27;
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT(!vi->GetInsertMode());
@@ -1078,13 +1083,11 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT(!vi->GetInsertMode());
   CPPUNIT_ASSERT( vi->GetInsertText() == "xxxxxxxx");
-Report(vi->GetLastCommand());    
   CPPUNIT_ASSERT( vi->GetLastCommand() == wxString("ixxxxxxxx") + wxUniChar(esc));
   
   for (int i = 0; i < 10; i++)
     CPPUNIT_ASSERT( vi->Command("."));
     
-Report(stc->GetText());    
   CPPUNIT_ASSERT( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
   
   CPPUNIT_ASSERT( vi->Command("iyyyyy"));
@@ -1096,9 +1099,6 @@ Report(stc->GetText());
   
   const wxString lastcmd = wxString("iyyyyy") + wxUniChar(esc);
 
-Report(vi->GetLastCommand());
-Report("\n\n" + stc->GetText());    
-    
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
   
   CPPUNIT_ASSERT( vi->Command("."));
@@ -1121,6 +1121,30 @@ Report("\n\n" + stc->GetText());
   CPPUNIT_ASSERT(!stc->GetText().Contains("xx"));
   
   CPPUNIT_ASSERT( vi->GetLastCommand() == ":1,$s/xx/yy/");
+  
+  CPPUNIT_ASSERT( vi->Command("qt"));
+  CPPUNIT_ASSERT( vi->Command("/yy"));
+  CPPUNIT_ASSERT( vi->Command("r"));
+  CPPUNIT_ASSERT( vi->Command("z"));
+  CPPUNIT_ASSERT( vi->Command("q"));
+  
+  CPPUNIT_ASSERT( vi->Command("@t"));
+  CPPUNIT_ASSERT( vi->Command("@@"));
+  CPPUNIT_ASSERT( vi->Command("."));
+  CPPUNIT_ASSERT( vi->Command("10@t"));
+  
+  CPPUNIT_ASSERT( vi->Command(":1"));
+  CPPUNIT_ASSERT( vi->Command("cw"));
+  CPPUNIT_ASSERT( vi->Command("zzz"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->Command("dw"));
+  CPPUNIT_ASSERT( vi->Command("3dw"));
+  CPPUNIT_ASSERT( vi->GetLastCommand() == "3dw");
+  
+  // Test illegal command.
+  CPPUNIT_ASSERT(!vi->Command("dx"));
+  CPPUNIT_ASSERT( vi->GetLastCommand() == "3dw");
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
 }
   
 void wxExGuiTestFixture::testViMacros()

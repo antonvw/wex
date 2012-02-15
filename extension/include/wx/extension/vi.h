@@ -54,8 +54,7 @@ private:
   void SetIndicator(const wxExIndicator& indicator, int start, int end);
   void SetInsertMode(
     const wxString& command,
-    int repeat = 1,
-    bool overtype = false);
+    int repeat = 1);
   void ToggleCase();
 
   static wxString m_LastFindCharCommand;
