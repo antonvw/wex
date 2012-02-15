@@ -290,9 +290,25 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
 bool wxExEx::CommandRange(const wxString& command)
 {
+  const wxString tokens("dmsyw><");
+  
+  // If address contains markers, filter them.
+  if (command.Contains("'"))
+  {
+    const wxString markerfirst = command.AfterFirst('\'');
+    const wxString markerlast = command.AfterLast('\'');
+    
+    if (
+      tokens.Contains(markerfirst.Left(1)) ||
+      tokens.Contains(markerlast.Left(1)))
+    {
+      return false;
+    }
+  }
+  
   // [address] m destination
   // [address] s [/pattern/replacement/] [options] [count]
-  wxStringTokenizer tkz(command, "dmsyw><");
+  wxStringTokenizer tkz(command, tokens);
   
   if (!tkz.HasMoreTokens())
   {
@@ -301,10 +317,10 @@ bool wxExEx::CommandRange(const wxString& command)
 
   const wxString address = tkz.GetNextToken();
   const wxChar cmd = tkz.GetLastDelimiter();
-
+  
   wxString begin_address;
   wxString end_address;
-    
+  
   if (address == ".")
   {
     begin_address = address;
@@ -465,12 +481,18 @@ bool wxExEx::Delete(
 
   if (begin_address.StartsWith("'"))
   {
-    MarkerDelete(begin_address.GetChar(1));
+    if (begin_address.size() > 1)
+    {
+      MarkerDelete(begin_address.GetChar(1));
+    }
   }
 
   if (end_address.StartsWith("'"))
   {
-    MarkerDelete(end_address.GetChar(1));
+    if (end_address.size() > 1)
+    {
+      MarkerDelete(end_address.GetChar(1));
+    }
   }
 
   if (lines >= 2)
@@ -661,12 +683,18 @@ bool wxExEx::Move(
 
   if (begin_address.StartsWith("'"))
   {
-    MarkerDelete(begin_address.GetChar(1));
+    if (begin_address.size() > 1)
+    {
+      MarkerDelete(begin_address.GetChar(1));
+    }
   }
 
   if (end_address.StartsWith("'"))
   {
-    MarkerDelete(end_address.GetChar(1));
+    if (end_address.size() > 1)
+    {
+      MarkerDelete(end_address.GetChar(1));
+    }
   }
 
   m_STC->BeginUndoAction();
@@ -833,8 +861,14 @@ int wxExEx::ToLineNumber(const wxString& address) const
     int pos = filtered_address.Find('\'');
     int size = 2;
     
-    const int line = MarkerLine(
-      filtered_address.AfterFirst('\'').GetChar(0)) + 1;
+    const wxString marker = filtered_address.AfterFirst('\'');
+    
+    if (marker.empty())
+    {
+      return 0;
+    }
+    
+    const int line = MarkerLine(marker.GetChar(0)) + 1;
     
     if (line == 0)
     {
