@@ -1059,8 +1059,11 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->MacroIsRecording());
   CPPUNIT_ASSERT(!vi->MacroIsRecorded("a")); // still no macro
   
+  int esc = 27;
+  
   vi->MacroStartRecording("a");
   CPPUNIT_ASSERT( vi->OnChar(event));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   vi->MacroStopRecording();
   
   CPPUNIT_ASSERT(!vi->MacroIsRecording());
@@ -1073,7 +1076,6 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
 
   // Vi command tests.
-  int esc = 27;
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT(!vi->GetInsertMode());
   
