@@ -1,15 +1,21 @@
-....................................
+....F...............................F.
 
 
-OK (36 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  36   Failures: 2   Errors: 0
 
 
-adding 750 items in: 2383 milliseconds
-sorting 750 items in: 1723 milliseconds
-matching 193 items in: 6246 microseconds
-ixxxxxxxx
-ixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx// vi: set ts=120 // this is a modeline
-iyyyyy
+1) test: testEx (F) line: 223 ../extension/test/gui/test.cpp
+assertion failed
+- Expression: ex->Command(":'x,'ys/s/w/")
 
 
-ixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyyyyy// vi: set ts=120 // this is a modeline
+2) test: testVi (F) line: 1093 ../extension/test/gui/test.cpp
+assertion failed
+- Expression: stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx")
+
+
+adding 750 items in: 2397 milliseconds
+sorting 750 items in: 1699 milliseconds
+matching 193 items in: 5236 microseconds
