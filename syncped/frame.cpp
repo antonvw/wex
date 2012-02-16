@@ -269,7 +269,7 @@ wxExListViewWithFrame* Frame::AddPage(
   const wxExLexer* lexer)
 {
   const wxString name = wxExListViewFileName::GetTypeDescription(type) +
-    (lexer != NULL ?  " " + lexer->GetScintillaLexer(): wxString(wxEmptyString));
+    (lexer != NULL ?  " " + lexer->GetDisplayLexer(): wxString(wxEmptyString));
 
   wxExListViewWithFrame* list = 
     (wxExListViewWithFrame*)m_Lists->GetPageByKey(name);

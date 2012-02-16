@@ -247,6 +247,7 @@ void wxExLexer::Initialize()
   m_Keywords.clear();
   m_KeywordsSet.clear();
   m_ScintillaLexer.clear();
+  m_DisplayLexer.clear();
 }
 
 bool wxExLexer::IsKeyword(const wxString& word) const

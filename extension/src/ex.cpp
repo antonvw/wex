@@ -542,6 +542,13 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
       _("Select Macro"),
       m_Macros.Get());
       
+    const int index = m_Macros.Get().Index(m_Macros.GetMacro());
+  
+    if (index != wxNOT_FOUND)
+    {
+      dialog.SetSelection(index);
+    }
+
     if (dialog.ShowModal() != wxID_OK)
     {
       return false;
