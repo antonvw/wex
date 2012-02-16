@@ -171,7 +171,7 @@ void wxExSTC::AddHeader()
     }
   }
 
-  if (GetLexer().GetScintillaLexer() == "hypertext")
+  if (m_Lexer.GetScintillaLexer() == "hypertext")
   {
     GotoLine(1);
   }
@@ -597,7 +597,7 @@ void wxExSTC::ConfigGet()
     // Doing this once is enough, not yet possible.
     wxExLexers::Get()->Read();
     
-    SetLexer(GetLexer().GetScintillaLexer(), true);
+    SetLexer(m_Lexer.GetDisplayLexer(), true);
   }
 
   const long def_tab_width = 2;
