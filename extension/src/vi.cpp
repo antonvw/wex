@@ -270,7 +270,7 @@ bool wxExVi::Command(const wxString& command)
   {
     MarkerGoto(rest.Last());
   }
-  else if (rest.Matches("q?"))
+  else if (wxRegEx("q[a-zA-Z]").Matches(rest))
   {
     if (!MacroIsRecording())
     {
