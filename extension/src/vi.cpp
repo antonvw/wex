@@ -80,16 +80,7 @@ bool wxExVi::Command(const wxString& command)
   {
     if (command.StartsWith(":"))
     { 
-      if (command.length() > 1)
-      {
-        // This is a previous entered command.
-        return wxExEx::Command(command);
-      }
-      else
-      {
-        GetFrame()->GetExCommand(this, command);
-        return true;
-      }
+      return wxExEx::Command(command);
     }
     else if (command.StartsWith("/") || command.StartsWith("?"))
     {
@@ -300,7 +291,7 @@ bool wxExVi::Command(const wxString& command)
   {
     // Handle ESCAPE, should clear command buffer,
     // as last char, so not in switch branch.
-    if (rest.Last() == WXK_ESCAPE)
+    if (!m_Dot && rest.Last() == WXK_ESCAPE)
     {
       wxBell();
         

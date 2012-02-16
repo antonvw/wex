@@ -54,7 +54,12 @@ bool wxExEx::Command(const wxString& command)
   bool set_focus = true;
   bool result = true;
 
-  if (command == ":$")
+  if (command == ":")
+  {
+    m_Frame->GetExCommand(this, command);
+    return true;
+  }
+  else if (command == ":$")
   {
     m_STC->DocumentEnd();
   }
@@ -727,8 +732,10 @@ void wxExEx::SetLastCommand(
 {
   // First test on '.' and ';' these should never be the last command,
   // even if always were true.
-  // Also, placing a marker should not be a last command.
-  if (command == "." || command == ";" || command.Matches("m?"))
+  // Also, undo or placing a marker should not be a last command.
+  if (
+    command == "." || command == ";" || 
+    command == "u" || command.Matches("m?"))
   {
     return;
   }
