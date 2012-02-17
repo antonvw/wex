@@ -203,7 +203,6 @@ bool wxExEx::Command(const wxString& command)
 
   if (result)
   {  
-    m_Frame->HideExBar(set_focus);
     SetLastCommand(command);
     MacroRecord(command);
   }

@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/richtooltip.h>
 #include <wx/wxcrt.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/defs.h>
@@ -169,7 +170,7 @@ void wxExManagedFrame::HideExBar(bool set_focus)
     m_Manager.GetPane("VIBAR").Hide();
     m_Manager.Update();
     
-    if (set_focus &&  m_exTextCtrl != NULL && m_exTextCtrl->GetEx() != NULL)
+    if (set_focus && m_exTextCtrl != NULL && m_exTextCtrl->GetEx() != NULL)
     {
       m_exTextCtrl->GetEx()->GetSTC()->SetFocus();
     }
@@ -221,24 +222,16 @@ void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 
 void wxExManagedFrame::ShowExMessage(const wxString& text)
 {
+  HideExBar();
+  
   if (GetStatusBar() != NULL && GetStatusBar()->IsShown())
   {
     GetStatusBar()->SetStatusText(text);
-    
-    HideExBar();
   }
   else
   {
-    m_exTextPrefix->SetLabel(text);
-    m_exTextCtrl->Hide();
-    
-    if (m_exTextCtrl->GetEx() != NULL)
-    {
-      m_exTextCtrl->GetEx()->GetSTC()->SetFocus();
-    }
-  
-    m_Manager.GetPane("VIBAR").Show();
-    m_Manager.Update();
+    wxRichToolTip tt("vi", text);
+    tt.ShowFor(m_exTextCtrl);
   }
 }
 
@@ -316,6 +309,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
     {
       if (m_ex->Command(m_Prefix->GetLabel() + GetValue()))
       {
+        m_Frame->HideExBar();
         wxConfigBase::Get()->Write("excommand", GetValue());
       }
     }
@@ -339,7 +333,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
     {
       m_ex->Command(m_Prefix->GetLabel() + GetValue());
     }
-      
+    
     m_Frame->HideExBar();
   }
 }

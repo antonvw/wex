@@ -19,6 +19,12 @@
 
 #if wxUSE_GUI
 
+// Returns true if after text only one letter is followed.
+bool OneLetterAfter(const wxString text, const wxString& letter)
+{
+  return wxRegEx("^" + text + "[a-zA-Z]$").Matches(letter);
+}
+
 wxString wxExVi::m_LastFindCharCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
@@ -76,37 +82,31 @@ bool wxExVi::Command(const wxString& command)
   {
     return InsertMode(command);
   }
-  else
+  else if (command.StartsWith("/") || command.StartsWith("?"))
   {
-    if (command.StartsWith(":"))
-    { 
-      return wxExEx::Command(command);
-    }
-    else if (command.StartsWith("/") || command.StartsWith("?"))
+    bool result = true;
+    
+    if (command.length() > 1)
     {
-      if (command.length() > 1)
-      {
-        m_SearchForward = command.StartsWith("/");
+      m_SearchForward = command.StartsWith("/");
         
-        // This is a previous entered command.
-        const bool result = GetSTC()->FindNext(
-          command.Mid(1),
-          GetSearchFlags(),
-          m_SearchForward);
+      // This is a previous entered command.
+      result = GetSTC()->FindNext(
+        command.Mid(1),
+        GetSearchFlags(),
+        m_SearchForward);
           
-        if (result)
-        {
-          MacroRecord(command);
-        }
-        
-        return result;
-      }
-      else
+      if (result)
       {
-        GetFrame()->GetExCommand(this, command);
-        return true;
+        MacroRecord(command);
       }
     }
+    else
+    {
+      GetFrame()->GetExCommand(this, command);
+    }
+    
+    return result;
   }
   
   bool handled = true;
@@ -192,7 +192,7 @@ bool wxExVi::Command(const wxString& command)
       GetSTC()->FindNext(rest.Last(), GetSearchFlags(), false);
     m_LastFindCharCommand = command;
   }
-  else if (rest.Matches("m?"))
+  else if (OneLetterAfter("m", rest))
   {
     MarkerAdd(rest.Last());
   }
@@ -266,24 +266,23 @@ bool wxExVi::Command(const wxString& command)
   {
     GetSTC()->Indent(repeat, false);
   }
-  else if (rest.Matches("'?"))
+  else if (OneLetterAfter("'", rest))
   {
     MarkerGoto(rest.Last());
   }
-  else if (wxRegEx("q[a-zA-Z]").Matches(rest))
+  else if (OneLetterAfter("q", rest))
   {
     if (!MacroIsRecording())
     {
       MacroStartRecording(rest.Mid(1));
-      m_Command.clear();
-      return false;
+      return true; // as we should not do default actions
     }
   } 
-  else if (rest =="@@")
+  else if (rest == "@@")
   {
     MacroPlayback(GetMacro(), repeat);
   }
-  else if (rest.Matches("@?"))
+  else if (OneLetterAfter("@", rest))
   {
     MacroPlayback(rest.Last(), repeat);
   }
@@ -539,23 +538,25 @@ bool wxExVi::Command(const wxString& command)
     handled = false;
   }
 
-  if (handled)
+  if (!handled)
   {  
-    if (!m_Dot)
-    {
-      // Set last command.
-      SetLastCommand(command, 
-        // Always when in insert mode,
-        // or this was a file change command (so size different from before).
-        m_InsertMode ||
-        size != GetSTC()->GetLength());
-
-      // Record it (if recording is on).
-      MacroRecord(command);
-    }
+    return wxExEx::Command(command);
   }
- 
-  return handled;
+  
+  if (!m_Dot)
+  {
+    // Set last command.
+    SetLastCommand(command, 
+      // Always when in insert mode,
+      // or this was a file change command (so size different from before).
+      m_InsertMode ||
+      size != GetSTC()->GetLength());
+
+    // Record it (if recording is on).
+    MacroRecord(command);
+  }
+    
+  return true;
 }
 
 void wxExVi::FindWord(bool find_next)
