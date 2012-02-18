@@ -46,7 +46,7 @@ wxExEx::~wxExEx()
 
 bool wxExEx::Command(const wxString& command)
 {
-  if (command.empty())
+  if (command.empty() || !command.StartsWith(":"))
   {
     return false;
   }

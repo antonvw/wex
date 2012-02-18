@@ -217,9 +217,9 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":1,$s/s/w/");
   
   CPPUNIT_ASSERT( ex->Command(":1"));
-  CPPUNIT_ASSERT( ex->MarkerAdd('v')); // do not use y marker, it is a token!!
+  CPPUNIT_ASSERT( ex->MarkerAdd('t')); // do not use y or w marker, it is a token!!
   CPPUNIT_ASSERT( ex->Command(":$"));
-  CPPUNIT_ASSERT( ex->MarkerAdd('w'));
+  CPPUNIT_ASSERT( ex->MarkerAdd('u'));
   CPPUNIT_ASSERT( ex->Command(":'v,'ws/s/w/"));
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":'v,'ws/s/w/");
   
