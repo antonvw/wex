@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncsocketserver v2.9.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-26 19:23+0100\n"
-"PO-Revision-Date: 2011-11-26 19:24+0100\n"
+"POT-Creation-Date: 2012-02-18 19:22+0100\n"
+"PO-Revision-Date: 2012-02-18 19:22+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -16,333 +16,333 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: ../syncsocketserver\n"
 
-#: ../syncsocketserver/app.cpp:112
+#: ../syncsocketserver/app.cpp:113
 msgid "Number of clients connected"
 msgstr "Aantal verbonden klanten"
 
-#: ../syncsocketserver/app.cpp:113
+#: ../syncsocketserver/app.cpp:114
 msgid "Repeat timer"
 msgstr "Herhaal timer"
 
-#: ../syncsocketserver/app.cpp:114
+#: ../syncsocketserver/app.cpp:115
 msgid "Number of bytes received and sent"
 msgstr "Bytes ontvangen en verstuurd"
 
-#: ../syncsocketserver/app.cpp:115
+#: ../syncsocketserver/app.cpp:116
 msgid "File type"
 msgstr "Bestands type"
 
-#: ../syncsocketserver/app.cpp:116
+#: ../syncsocketserver/app.cpp:117
 msgid "Lines"
 msgstr "Regels"
 
-#: ../syncsocketserver/app.cpp:122
-#: ../syncsocketserver/app.cpp:185
+#: ../syncsocketserver/app.cpp:124
+#: ../syncsocketserver/app.cpp:187
 msgid "Log"
 msgstr "Log"
 
-#: ../syncsocketserver/app.cpp:137
+#: ../syncsocketserver/app.cpp:139
 msgid "Clear Statistics"
 msgstr "Statistieken legen"
 
-#: ../syncsocketserver/app.cpp:137
+#: ../syncsocketserver/app.cpp:139
 msgid "Clears the statistics"
 msgstr "Statistieken legen"
 
-#: ../syncsocketserver/app.cpp:140
+#: ../syncsocketserver/app.cpp:142
 msgid "Hide"
 msgstr "Verbergen"
 
-#: ../syncsocketserver/app.cpp:140
+#: ../syncsocketserver/app.cpp:142
 msgid "Puts back in the task bar"
 msgstr "Terug naar werkbalk"
 
-#: ../syncsocketserver/app.cpp:147
+#: ../syncsocketserver/app.cpp:149
 msgid "Config"
 msgstr "Configureren"
 
-#: ../syncsocketserver/app.cpp:147
+#: ../syncsocketserver/app.cpp:149
 msgid "Configures the server"
 msgstr "Server configuratie"
 
-#: ../syncsocketserver/app.cpp:156
+#: ../syncsocketserver/app.cpp:158
 msgid "Off"
 msgstr "Uit"
 
-#: ../syncsocketserver/app.cpp:157
+#: ../syncsocketserver/app.cpp:159
 msgid "No answer back to client"
 msgstr "Geen antwoord naar klant"
 
-#: ../syncsocketserver/app.cpp:158
+#: ../syncsocketserver/app.cpp:160
 msgid "Echo"
 msgstr "Echo"
 
-#: ../syncsocketserver/app.cpp:159
+#: ../syncsocketserver/app.cpp:161
 msgid "Echo's received data back to client"
 msgstr "Echo terug naar klant"
 
-#: ../syncsocketserver/app.cpp:160
+#: ../syncsocketserver/app.cpp:162
 msgid "Command"
 msgstr "Opdracht"
 
-#: ../syncsocketserver/app.cpp:161
+#: ../syncsocketserver/app.cpp:163
 msgid "Send last shell command back to client"
 msgstr "Laatste opdracht terug sturen naar klant"
 
-#: ../syncsocketserver/app.cpp:162
+#: ../syncsocketserver/app.cpp:164
 msgid "File"
 msgstr "Bestand"
 
-#: ../syncsocketserver/app.cpp:163
+#: ../syncsocketserver/app.cpp:165
 msgid "Send file contents back to client"
 msgstr "Bestand terugsturen naar klant"
 
-#: ../syncsocketserver/app.cpp:165
+#: ../syncsocketserver/app.cpp:167
 msgid "&Answer"
 msgstr "&Antwoord"
 
-#: ../syncsocketserver/app.cpp:167
-#: ../syncsocketserver/app.cpp:467
-#: ../syncsocketserver/app.cpp:468
-#: ../syncsocketserver/app.cpp:639
-#: ../syncsocketserver/app.cpp:732
-#: ../syncsocketserver/app.cpp:736
-#: ../syncsocketserver/app.cpp:1043
+#: ../syncsocketserver/app.cpp:169
+#: ../syncsocketserver/app.cpp:473
+#: ../syncsocketserver/app.cpp:474
+#: ../syncsocketserver/app.cpp:645
+#: ../syncsocketserver/app.cpp:746
+#: ../syncsocketserver/app.cpp:750
+#: ../syncsocketserver/app.cpp:1057
 msgid "Log Data"
 msgstr "Log data"
 
-#: ../syncsocketserver/app.cpp:168
+#: ../syncsocketserver/app.cpp:170
 msgid "Logs data read from and written to client"
 msgstr "Logs gelezen en geschreven data"
 
-#: ../syncsocketserver/app.cpp:169
-#: ../syncsocketserver/app.cpp:472
-#: ../syncsocketserver/app.cpp:473
-#: ../syncsocketserver/app.cpp:641
-#: ../syncsocketserver/app.cpp:737
-#: ../syncsocketserver/app.cpp:1045
+#: ../syncsocketserver/app.cpp:171
+#: ../syncsocketserver/app.cpp:478
+#: ../syncsocketserver/app.cpp:479
+#: ../syncsocketserver/app.cpp:647
+#: ../syncsocketserver/app.cpp:751
+#: ../syncsocketserver/app.cpp:1059
 msgid "Count Only"
 msgstr "Alleen totalen"
 
-#: ../syncsocketserver/app.cpp:170
+#: ../syncsocketserver/app.cpp:172
 msgid "Logs only byte counts, no text"
 msgstr "Logs alleen aantallen bytes, geen tekst"
 
-#: ../syncsocketserver/app.cpp:172
-#: ../syncsocketserver/app.cpp:456
-#: ../syncsocketserver/app.cpp:457
-#: ../syncsocketserver/app.cpp:461
-#: ../syncsocketserver/app.cpp:622
+#: ../syncsocketserver/app.cpp:174
+#: ../syncsocketserver/app.cpp:462
+#: ../syncsocketserver/app.cpp:463
+#: ../syncsocketserver/app.cpp:467
+#: ../syncsocketserver/app.cpp:628
 msgid "Buffer Size"
 msgstr "Buffer grootte"
 
-#: ../syncsocketserver/app.cpp:173
+#: ../syncsocketserver/app.cpp:175
 msgid "Sets buffersize for data retrieved from client"
 msgstr "Stel buffer grootte in voor klant data"
 
-#: ../syncsocketserver/app.cpp:175
-#: ../syncsocketserver/app.cpp:952
+#: ../syncsocketserver/app.cpp:177
+#: ../syncsocketserver/app.cpp:966
 msgid "Repeat Timer"
 msgstr "Herhaal timer"
 
-#: ../syncsocketserver/app.cpp:176
+#: ../syncsocketserver/app.cpp:178
 msgid "Repeats with timer writing last data to all clients"
 msgstr "Herhaal timer"
 
-#: ../syncsocketserver/app.cpp:177
+#: ../syncsocketserver/app.cpp:179
 msgid "Stop Timer"
 msgstr "Stop timer"
 
-#: ../syncsocketserver/app.cpp:177
+#: ../syncsocketserver/app.cpp:179
 msgid "Stops the timer"
 msgstr "Stop de timer"
 
-#: ../syncsocketserver/app.cpp:179
+#: ../syncsocketserver/app.cpp:181
 msgid "Write"
 msgstr "Schrijven"
 
-#: ../syncsocketserver/app.cpp:180
+#: ../syncsocketserver/app.cpp:182
 msgid "Writes data to all clients"
 msgstr "Data naar alle klanten schrijven"
 
-#: ../syncsocketserver/app.cpp:186
-#: ../syncsocketserver/app.cpp:209
+#: ../syncsocketserver/app.cpp:188
+#: ../syncsocketserver/app.cpp:211
 msgid "Data"
 msgstr "Data"
 
-#: ../syncsocketserver/app.cpp:187
-#: ../syncsocketserver/app.cpp:212
+#: ../syncsocketserver/app.cpp:189
+#: ../syncsocketserver/app.cpp:214
 msgid "Shell"
 msgstr "Opdrachtprompt"
 
-#: ../syncsocketserver/app.cpp:188
-#: ../syncsocketserver/app.cpp:215
+#: ../syncsocketserver/app.cpp:190
+#: ../syncsocketserver/app.cpp:217
 msgid "Statistics"
 msgstr "Statistieken"
 
-#: ../syncsocketserver/app.cpp:198
+#: ../syncsocketserver/app.cpp:200
 msgid "&View"
 msgstr "&Beeld"
 
-#: ../syncsocketserver/app.cpp:199
+#: ../syncsocketserver/app.cpp:201
 msgid "&Server"
 msgstr "&Server"
 
-#: ../syncsocketserver/app.cpp:200
+#: ../syncsocketserver/app.cpp:202
 msgid "&Client"
 msgstr "&Klant"
 
-#: ../syncsocketserver/app.cpp:201
+#: ../syncsocketserver/app.cpp:203
 msgid "&Options"
 msgstr "&Opties"
 
-#: ../syncsocketserver/app.cpp:241
+#: ../syncsocketserver/app.cpp:243
 msgid "Write data"
 msgstr "Schrijf data"
 
-#: ../syncsocketserver/app.cpp:299
-#: ../syncsocketserver/app.cpp:303
+#: ../syncsocketserver/app.cpp:305
+#: ../syncsocketserver/app.cpp:309
 msgid "accepted"
 msgstr "geaccepteerd"
 
-#: ../syncsocketserver/app.cpp:299
-#: ../syncsocketserver/app.cpp:303
+#: ../syncsocketserver/app.cpp:305
+#: ../syncsocketserver/app.cpp:309
 msgid "lost"
 msgstr "verbroken"
 
-#: ../syncsocketserver/app.cpp:303
+#: ../syncsocketserver/app.cpp:309
 msgid "connection"
 msgstr "verbinding"
 
-#: ../syncsocketserver/app.cpp:308
+#: ../syncsocketserver/app.cpp:314
 msgid "clients: "
 msgstr "klanten:"
 
-#: ../syncsocketserver/app.cpp:346
+#: ../syncsocketserver/app.cpp:352
 msgid "This program offers a general socket server."
 msgstr "Dit programma biedt algemene socket server"
 
-#: ../syncsocketserver/app.cpp:397
+#: ../syncsocketserver/app.cpp:403
 msgid "Stop server?"
 msgstr "Server stoppen?"
 
-#: ../syncsocketserver/app.cpp:398
+#: ../syncsocketserver/app.cpp:404
 msgid "Confirm"
 msgstr "Bevestigen"
 
-#: ../syncsocketserver/app.cpp:418
+#: ../syncsocketserver/app.cpp:424
 msgid "server stopped"
 msgstr "server gestopt"
 
-#: ../syncsocketserver/app.cpp:425
-#: ../syncsocketserver/app.cpp:597
-#: ../syncsocketserver/app.cpp:691
+#: ../syncsocketserver/app.cpp:431
+#: ../syncsocketserver/app.cpp:603
+#: ../syncsocketserver/app.cpp:705
 #, c-format
 msgid "%d clients"
 msgstr "%d klanten"
 
-#: ../syncsocketserver/app.cpp:454
+#: ../syncsocketserver/app.cpp:460
 msgid "Input"
 msgstr "Invoer"
 
-#: ../syncsocketserver/app.cpp:483
-#: ../syncsocketserver/app.cpp:807
-#: ../syncsocketserver/app.cpp:813
+#: ../syncsocketserver/app.cpp:489
+#: ../syncsocketserver/app.cpp:821
+#: ../syncsocketserver/app.cpp:827
 msgid "Hostname"
 msgstr "Hostnaam"
 
-#: ../syncsocketserver/app.cpp:492
-#: ../syncsocketserver/app.cpp:814
-#: ../syncsocketserver/app.cpp:830
-#: ../syncsocketserver/app.cpp:847
-#: ../syncsocketserver/app.cpp:996
-#: ../syncsocketserver/app.cpp:1005
+#: ../syncsocketserver/app.cpp:498
+#: ../syncsocketserver/app.cpp:828
+#: ../syncsocketserver/app.cpp:844
+#: ../syncsocketserver/app.cpp:861
+#: ../syncsocketserver/app.cpp:1010
+#: ../syncsocketserver/app.cpp:1019
 msgid "Port"
 msgstr "Poort"
 
-#: ../syncsocketserver/app.cpp:500
+#: ../syncsocketserver/app.cpp:506
 msgid "Server Config"
 msgstr "Server configuratie"
 
-#: ../syncsocketserver/app.cpp:529
-#: ../syncsocketserver/app.cpp:980
+#: ../syncsocketserver/app.cpp:535
+#: ../syncsocketserver/app.cpp:994
 msgid "timer stopped"
 msgstr "timer gestopt"
 
-#: ../syncsocketserver/app.cpp:582
+#: ../syncsocketserver/app.cpp:588
 msgid "error: couldn't accept a new connection"
 msgstr "fout: kon geeen nieuwe verbinding accepteren"
 
-#: ../syncsocketserver/app.cpp:587
+#: ../syncsocketserver/app.cpp:593
 msgid "Connections Accepted"
 msgstr "Verbindingen geaccepteerd"
 
-#: ../syncsocketserver/app.cpp:616
+#: ../syncsocketserver/app.cpp:622
 msgid "Input Events"
 msgstr "Invoer gebeurtenissen"
 
-#: ../syncsocketserver/app.cpp:633
-#: ../syncsocketserver/app.cpp:673
-#: ../syncsocketserver/app.cpp:1006
-#: ../syncsocketserver/app.cpp:1035
+#: ../syncsocketserver/app.cpp:639
+#: ../syncsocketserver/app.cpp:687
+#: ../syncsocketserver/app.cpp:1020
+#: ../syncsocketserver/app.cpp:1049
 msgid "Bytes Received"
 msgstr "Bytes ontvangen"
 
-#: ../syncsocketserver/app.cpp:644
+#: ../syncsocketserver/app.cpp:650
 #, c-format
 msgid "read: %d bytes from: %s"
 msgstr "gelezen: %d bytes van: %s"
 
-#: ../syncsocketserver/app.cpp:674
-#: ../syncsocketserver/app.cpp:1007
-#: ../syncsocketserver/app.cpp:1030
-#: ../syncsocketserver/app.cpp:1035
+#: ../syncsocketserver/app.cpp:688
+#: ../syncsocketserver/app.cpp:1021
+#: ../syncsocketserver/app.cpp:1044
+#: ../syncsocketserver/app.cpp:1049
 msgid "Bytes Sent"
 msgstr "Bytes verstuurd"
 
-#: ../syncsocketserver/app.cpp:687
+#: ../syncsocketserver/app.cpp:701
 msgid "Connections Lost"
 msgstr "Verbindingen verbroken"
 
-#: ../syncsocketserver/app.cpp:792
+#: ../syncsocketserver/app.cpp:806
 msgid "opened: "
 msgstr "geopend:"
 
-#: ../syncsocketserver/app.cpp:829
+#: ../syncsocketserver/app.cpp:843
 #, c-format
 msgid "could not listen at %d"
 msgstr "kan niet luisteren op socket %d"
 
-#: ../syncsocketserver/app.cpp:846
-#: ../syncsocketserver/app.cpp:995
+#: ../syncsocketserver/app.cpp:860
+#: ../syncsocketserver/app.cpp:1009
 #, c-format
 msgid "server listening at %d"
 msgstr "server luistert op %d"
 
-#: ../syncsocketserver/app.cpp:870
+#: ../syncsocketserver/app.cpp:884
 #, c-format
 msgid "Socket Error: %d"
 msgstr "Socket fout: %d"
 
-#: ../syncsocketserver/app.cpp:910
+#: ../syncsocketserver/app.cpp:924
 msgid "socket: "
 msgstr "socket:"
 
-#: ../syncsocketserver/app.cpp:950
+#: ../syncsocketserver/app.cpp:964
 msgid "Input (seconds):"
 msgstr "Invoer (seconden):"
 
-#: ../syncsocketserver/app.cpp:953
-#: ../syncsocketserver/app.cpp:960
+#: ../syncsocketserver/app.cpp:967
+#: ../syncsocketserver/app.cpp:974
 msgid "Timer"
 msgstr "Timer"
 
-#: ../syncsocketserver/app.cpp:967
+#: ../syncsocketserver/app.cpp:981
 #, c-format
 msgid "timer set to: %d seconds (%s)"
 msgstr "timer gezet op: %d seconden (%s)"
 
-#: ../syncsocketserver/app.cpp:1002
+#: ../syncsocketserver/app.cpp:1016
 #, c-format
 msgid ""
 "%s %d clients connected at %d\n"
@@ -351,20 +351,20 @@ msgstr ""
 "%s %d klanten verbonden op %d\n"
 "ontvangen: %ld bytes verstuurd: %ld: bytes"
 
-#: ../syncsocketserver/app.cpp:1027
+#: ../syncsocketserver/app.cpp:1041
 msgid "not all bytes sent to socket"
 msgstr "niet alle bytes verstuurd"
 
-#: ../syncsocketserver/app.cpp:1031
+#: ../syncsocketserver/app.cpp:1045
 msgid "Messages Sent"
 msgstr "Berichten verstuurd"
 
-#: ../syncsocketserver/app.cpp:1048
+#: ../syncsocketserver/app.cpp:1062
 #, c-format
 msgid "write: %d bytes to: %s"
 msgstr "geschreven: %d bytes naar: %s"
 
-#: ../syncsocketserver/app.cpp:1089
+#: ../syncsocketserver/app.cpp:1103
 msgid "Open"
 msgstr "Openen"
 

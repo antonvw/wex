@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncodbcquery v2.9.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-18 12:50+0100\n"
-"PO-Revision-Date: 2011-06-18 12:50+0100\n"
+"POT-Creation-Date: 2012-02-18 19:22+0100\n"
+"PO-Revision-Date: 2012-02-18 19:22+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -16,64 +16,56 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: ../syncodbcquery\n"
 
-#: ../syncodbcquery/app.cpp:92
+#: ../syncodbcquery/app.cpp:89
 msgid "&Open"
 msgstr "&Openen"
 
-#: ../syncodbcquery/app.cpp:93
+#: ../syncodbcquery/app.cpp:90
 msgid "&Close"
 msgstr "&Sluiten"
 
-#: ../syncodbcquery/app.cpp:105
-#: ../syncodbcquery/app.cpp:153
+#: ../syncodbcquery/app.cpp:102
+#: ../syncodbcquery/app.cpp:150
 msgid "Query"
 msgstr "Query"
 
-#: ../syncodbcquery/app.cpp:106
-#: ../syncodbcquery/app.cpp:146
+#: ../syncodbcquery/app.cpp:103
+#: ../syncodbcquery/app.cpp:143
 msgid "Results"
 msgstr "Uitvoer"
 
-#: ../syncodbcquery/app.cpp:107
-#: ../syncodbcquery/app.cpp:160
+#: ../syncodbcquery/app.cpp:104
+#: ../syncodbcquery/app.cpp:157
 msgid "Statistics"
 msgstr "Statistiek"
 
-#: ../syncodbcquery/app.cpp:114
+#: ../syncodbcquery/app.cpp:111
 msgid "&View"
 msgstr "&Beeld"
 
-#: ../syncodbcquery/app.cpp:115
+#: ../syncodbcquery/app.cpp:112
 msgid "&Connection"
 msgstr "&Verbinding"
 
-#: ../syncodbcquery/app.cpp:116
+#: ../syncodbcquery/app.cpp:113
 msgid "&Query"
 msgstr "&Query"
 
-#: ../syncodbcquery/app.cpp:117
+#: ../syncodbcquery/app.cpp:114
 msgid "&Options"
 msgstr "&Opties"
 
-#: ../syncodbcquery/app.cpp:134
+#: ../syncodbcquery/app.cpp:131
 #, fuzzy
 msgid "Lines"
 msgstr "Bestanden"
 
-#: ../syncodbcquery/app.cpp:201
+#: ../syncodbcquery/app.cpp:188
 msgid "This program offers a general ODBC query."
 msgstr "Dit programma biedt algemene ODBC query"
 
-#: ../syncodbcquery/app.cpp:245
-msgid "File Save As"
-msgstr "Bestand opslaan als"
-
-#: ../syncodbcquery/app.cpp:269
-msgid "Datasource"
-msgstr "Databron"
-
-#: ../syncodbcquery/app.cpp:291
-#: ../syncodbcquery/app.cpp:471
+#: ../syncodbcquery/app.cpp:279
+#: ../syncodbcquery/app.cpp:464
 msgid ""
 "\n"
 "error: "
@@ -81,7 +73,7 @@ msgstr ""
 "\n"
 "fout: "
 
-#: ../syncodbcquery/app.cpp:296
+#: ../syncodbcquery/app.cpp:284
 msgid ""
 "\n"
 "not connected"
@@ -89,19 +81,19 @@ msgstr ""
 "\n"
 "geen verbinding"
 
-#: ../syncodbcquery/app.cpp:304
+#: ../syncodbcquery/app.cpp:292
 msgid "cancelled"
 msgstr "geannuleerd"
 
-#: ../syncodbcquery/app.cpp:469
+#: ../syncodbcquery/app.cpp:462
 msgid "Number of query errors"
 msgstr "Aantal query fouten"
 
-#: ../syncodbcquery/app.cpp:472
+#: ../syncodbcquery/app.cpp:465
 msgid " in: "
 msgstr " in: "
 
-#: ../syncodbcquery/app.cpp:477
+#: ../syncodbcquery/app.cpp:470
 #, c-format
 msgid ""
 "\n"
@@ -110,7 +102,7 @@ msgstr ""
 "\n"
 "%d queries (%.3f seconden)"
 
-#: ../syncodbcquery/app.cpp:486
+#: ../syncodbcquery/app.cpp:479
 #, c-format
 msgid ""
 "\n"
@@ -119,25 +111,31 @@ msgstr ""
 "\n"
 "%d records opgehaald (%.3f seconden)"
 
-#: ../syncodbcquery/app.cpp:490
+#: ../syncodbcquery/app.cpp:483
 msgid "Rows processed"
 msgstr "Records opgehaald"
 
-#: ../syncodbcquery/app.cpp:491
+#: ../syncodbcquery/app.cpp:484
 msgid "Query runtime"
 msgstr "Query uitvoertijd"
 
-#: ../syncodbcquery/app.cpp:493
+#: ../syncodbcquery/app.cpp:486
 msgid "Total number of queries run"
 msgstr "Totaal aantal uitgevoerde queries"
 
-#: ../syncodbcquery/app.cpp:494
+#: ../syncodbcquery/app.cpp:487
 msgid "Total query runtime"
 msgstr "Totaal query uitvoertijd"
 
-#: ../syncodbcquery/app.cpp:495
+#: ../syncodbcquery/app.cpp:488
 msgid "Total rows processed"
 msgstr "Totaal aantal records opgehaald"
+
+#~ msgid "File Save As"
+#~ msgstr "Bestand opslaan als"
+
+#~ msgid "Datasource"
+#~ msgstr "Databron"
 
 #~ msgid "Lines in window"
 #~ msgstr "Regels in scherm"
