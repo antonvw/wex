@@ -220,8 +220,8 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->MarkerAdd('t')); // do not use y or w marker, it is a token!!
   CPPUNIT_ASSERT( ex->Command(":$"));
   CPPUNIT_ASSERT( ex->MarkerAdd('u'));
-  CPPUNIT_ASSERT( ex->Command(":'v,'ws/s/w/"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":'v,'ws/s/w/");
+  CPPUNIT_ASSERT( ex->Command(":'t,'us/s/w/"));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":'t,'us/s/w/");
   
   CPPUNIT_ASSERT(!ex->MacroIsRecording());
   CPPUNIT_ASSERT(!ex->MacroIsRecorded());
@@ -1126,8 +1126,7 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT( vi->Command("qt"));
   CPPUNIT_ASSERT( vi->Command("/yy"));
-  CPPUNIT_ASSERT( vi->Command("r"));
-  CPPUNIT_ASSERT( vi->Command("z"));
+  CPPUNIT_ASSERT( vi->Command("rz"));
   CPPUNIT_ASSERT( vi->Command("q"));
   
   CPPUNIT_ASSERT( vi->Command("@t"));

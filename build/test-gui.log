@@ -1,21 +1,9 @@
-....F...............................F.
+....................................
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  36   Failures: 2   Errors: 0
+OK (36 tests)
 
 
-1) test: testEx (F) line: 223 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: ex->Command(":'x,'ys/s/w/")
-
-
-2) test: testVi (F) line: 1093 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx")
-
-
-adding 750 items in: 2397 milliseconds
-sorting 750 items in: 1699 milliseconds
-matching 193 items in: 5236 microseconds
+adding 750 items in: 2477 milliseconds
+sorting 750 items in: 1794 milliseconds
+matching 193 items in: 5798 microseconds
