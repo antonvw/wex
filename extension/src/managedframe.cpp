@@ -11,7 +11,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/richtooltip.h>
 #include <wx/wxcrt.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/defs.h>
@@ -230,8 +229,7 @@ void wxExManagedFrame::ShowExMessage(const wxString& text)
   }
   else
   {
-    wxRichToolTip tt("vi", text);
-    tt.ShowFor(m_exTextCtrl);
+    wxLogMessage(text);
   }
 }
 
