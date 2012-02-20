@@ -48,7 +48,6 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
 
   if (wxExLexers::Get()->GetThemeOk())
   {
-    // Readme: The Scintilla lexer only recognized lower case words, apparently.
     for (
 #ifdef wxExUSE_CPP0X	
       auto it = m_KeywordsSet.begin();
@@ -60,7 +59,7 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
     {
       stc->SetKeyWords(
         it->first,
-        GetKeywordsString(it->first).Lower());
+        GetKeywordsString(it->first));
     }
     
     wxExLexers::Get()->GetDefaultStyle().Apply(stc);
@@ -264,14 +263,14 @@ bool wxExLexer::IsKeyword(const wxString& word) const
 bool wxExLexer::KeywordStartsWith(const wxString& word) const
 {
 #ifdef wxExUSE_CPP0X	
-  const auto it = m_Keywords.lower_bound(word.Lower());
+  const auto it = m_Keywords.lower_bound(word);
 #else
-  std::set<wxString>::iterator it = m_Keywords.lower_bound(word.Lower());
+  std::set<wxString>::iterator it = m_Keywords.lower_bound(word);
 #endif
   
   return 
     it != m_Keywords.end() &&
-    it->StartsWith(word.Lower());
+    it->StartsWith(word);
 }
 
 const wxString wxExLexer::MakeComment(
