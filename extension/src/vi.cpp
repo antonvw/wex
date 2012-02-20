@@ -518,7 +518,7 @@ bool wxExVi::Command(const wxString& command)
         break;
         
       case WXK_BACK:
-        GetSTC()->CharLeft();
+        GetSTC()->DeleteBack();
         break;
       
       case WXK_RETURN:
@@ -606,7 +606,7 @@ bool wxExVi::InsertMode(const wxString& command)
           m_InsertText.Truncate(m_InsertText.size() - 1);
         }
         
-        GetSTC()->CharLeft();
+        GetSTC()->DeleteBack();
       break;
       
     case WXK_ESCAPE:
@@ -684,9 +684,9 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   }
   else if (m_InsertMode)
   {
-    m_InsertText += event.GetUnicodeKey();
+    InsertMode(event.GetUnicodeKey());
     
-    return true;
+    return false;
   }
   else
   {
@@ -715,6 +715,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     return true;
   }
   else if (
+    event.GetKeyCode() == WXK_BACK ||
     event.GetKeyCode() == WXK_ESCAPE ||
     event.GetKeyCode() == WXK_RETURN ||
     event.GetKeyCode() == WXK_TAB)
