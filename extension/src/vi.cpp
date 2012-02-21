@@ -148,12 +148,6 @@ bool wxExVi::Command(const wxString& command)
     for (int i = 0; i < repeat; i++) GetSTC()->WordRightEndExtend();
 
     SetInsertMode("cw");
-    
-    if (MacroIsPlayback())
-    {
-      GetSTC()->ReplaceSelection(wxEmptyString);
-    }
-    
     return InsertMode(rest.Mid(2));
   }
   else if (rest == "dd")
@@ -660,6 +654,11 @@ bool wxExVi::InsertMode(const wxString& command)
       break;
     
     default: 
+      if (GetLastCommand().EndsWith("cw") && m_InsertText.empty())
+      {
+        GetSTC()->ReplaceSelection(wxEmptyString);
+      }
+      
       GetSTC()->AddText(command);
       
       if (!m_Dot)
