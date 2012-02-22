@@ -133,7 +133,7 @@ bool wxExVi::Command(const wxString& command)
     GetSTC()->Home();
     GetSTC()->DelLineRight();
 
-    SetInsertMode("cc");
+    SetInsertMode("cc", repeat);
     return InsertMode(rest.Mid(2));
   }
   else if (rest.StartsWith("cw") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
@@ -143,11 +143,9 @@ bool wxExVi::Command(const wxString& command)
       GetSTC()->SetCurrentPos(GetSTC()->GetSelectionStart());
     }
 
-    const int pos = GetSTC()->GetCurrentPos();
-    
     for (int i = 0; i < repeat; i++) GetSTC()->WordRightEndExtend();
 
-    SetInsertMode("cw");
+    SetInsertMode("cw", repeat);
     return InsertMode(rest.Mid(2));
   }
   else if (rest == "dd")
@@ -796,7 +794,14 @@ void wxExVi::SetInsertMode(
   
   if (!m_Dot)
   {
-    SetLastCommand(c, true);
+    if (repeat > 1)
+    {
+      SetLastCommand(wxString::Format("%d%s", repeat, c.c_str()), true);
+    }
+    else
+    {
+      SetLastCommand(c, true);
+    }
   }
   
   m_InsertRepeatCount = repeat;
