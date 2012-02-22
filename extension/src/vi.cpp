@@ -804,37 +804,45 @@ void wxExVi::SetInsertMode(
     }
   }
   
-  m_InsertRepeatCount = repeat;
-  
   GetSTC()->BeginUndoAction();
   
   switch ((int)c.GetChar(0))
   {
     case 'a': GetSTC()->CharRight(); 
+      m_InsertRepeatCount = repeat;
       break;
 
     case 'c': 
+      break;
+      
     case 'i': 
+      m_InsertRepeatCount = repeat;
       break;
 
     case 'o': 
+      m_InsertRepeatCount = repeat;
       GetSTC()->LineEnd(); 
       GetSTC()->NewLine(); 
       break;
+      
     case 'A': GetSTC()->LineEnd(); 
+      m_InsertRepeatCount = repeat;
       break;
 
     case 'C': 
     case 'R': 
+      m_InsertRepeatCount = repeat;
       GetSTC()->SetSelectionStart(GetSTC()->GetCurrentPos());
       GetSTC()->SetSelectionEnd(GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()));
       break;
 
     case 'I': 
+      m_InsertRepeatCount = repeat;
       GetSTC()->Home(); 
       break;
 
     case 'O': 
+      m_InsertRepeatCount = repeat;
       GetSTC()->Home(); 
       GetSTC()->NewLine(); 
       GetSTC()->LineUp(); 
