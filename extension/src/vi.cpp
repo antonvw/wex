@@ -622,7 +622,10 @@ bool wxExVi::InsertMode(const wxString& command)
           }
           else
           {
-            GetSTC()->AddText(rest);
+            for (int i = 1; i <= m_InsertRepeatCount; i++)
+            {
+              GetSTC()->AddText(rest);
+            }
           }
         }
           
