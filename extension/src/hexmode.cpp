@@ -424,6 +424,7 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
     return false;
   }
   
+  m_STC->MarkerAddChange(m_LineNo);
   m_STC->m_HexBuffer[byte] = val;
   
   return true;
