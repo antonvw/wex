@@ -1040,13 +1040,13 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT( vi->GetInsertMode());
   
-  // Second i (and more) to be handled by stc.
-  CPPUNIT_ASSERT( vi->OnChar(event));
-  CPPUNIT_ASSERT( vi->OnChar(event));
-  CPPUNIT_ASSERT( vi->OnChar(event));
-  CPPUNIT_ASSERT( vi->OnChar(event));
-  CPPUNIT_ASSERT( vi->OnChar(event));
-  CPPUNIT_ASSERT( vi->OnChar(event));
+  // Second i (and more) all handled by vi.
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
 
   // Repeat some macro tests.
   CPPUNIT_ASSERT(!vi->MacroIsRecording());
@@ -1062,7 +1062,7 @@ void wxExGuiTestFixture::testVi()
   int esc = 27;
   
   vi->MacroStartRecording("a");
-  CPPUNIT_ASSERT( vi->OnChar(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   vi->MacroStopRecording();
   
