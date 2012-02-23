@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wxExProcess
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -57,21 +57,18 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
 
 bool wxExProcess::CheckInput()
 {
-  // This assumes that the output is always line buffered.
-  wxString line;
-
   if (IsInputAvailable())
   {
     wxTextInputStream tis(*GetInputStream());
-    line << tis.ReadLine();
+    m_Output << tis.GetChar();
   }
   else if (IsErrorAvailable())
   {
     wxTextInputStream tis(*GetErrorStream());
-    line << tis.ReadLine();
+    m_Output << tis.GetChar();
   }
 
-  if (line.empty())
+  if (m_Output.empty())
   {
     return false;
   }
@@ -82,7 +79,7 @@ bool wxExProcess::CheckInput()
   // Check on error in php script output.
   std::vector <wxString> v;
 
-  if (wxExMatch(".*in (.*) on line (.*)", line, v) > 1)
+  if (wxExMatch(".*in (.*) on line (.*)", m_Output, v) > 1)
   {
     path = v[0];
     lineno = v[1];
@@ -90,7 +87,7 @@ bool wxExProcess::CheckInput()
   else
   {
     // Check on error in gcc output (and some others).
-    wxStringTokenizer tkz(line, ':');
+    wxStringTokenizer tkz(m_Output, ':');
     path = tkz.GetNextToken();
 
     if (tkz.HasMoreTokens())
@@ -109,9 +106,13 @@ bool wxExProcess::CheckInput()
     lineno.clear();
     path.clear();
   }
-    
-  ReportAdd(line, path, lineno);
-
+  
+  if (m_Output.Contains("\n") || m_Output.Contains("(gdb) "))
+  {
+    ReportAdd(m_Output, path, lineno);
+    m_Output.clear();
+  }
+  
   return true;
 }
 
