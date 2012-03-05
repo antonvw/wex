@@ -51,7 +51,6 @@ bool wxExEx::Command(const wxString& command)
     return false;
   }
   
-  bool set_focus = true;
   bool result = true;
 
   if (command == ":")
@@ -93,8 +92,6 @@ bool wxExEx::Command(const wxString& command)
     
     if (stc != NULL)
     {
-      set_focus = false;
-      
       if (m_Macros.IsPlayback())
       {
         m_STC = stc;
@@ -111,8 +108,6 @@ bool wxExEx::Command(const wxString& command)
     
     if (stc != NULL)
     {
-      set_focus = false;
-      
       if (m_Macros.IsPlayback())
       {
         m_STC = stc;

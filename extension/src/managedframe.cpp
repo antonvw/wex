@@ -307,7 +307,10 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
     {
       if (m_ex->Command(m_Prefix->GetLabel() + GetValue()))
       {
-        m_Frame->HideExBar();
+        const bool set_focus = 
+          (GetValue() == "n" || GetValue() == "prev");
+          
+        m_Frame->HideExBar(!set_focus);
         wxConfigBase::Get()->Write("excommand", GetValue());
       }
     }
