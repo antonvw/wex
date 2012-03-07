@@ -9,7 +9,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/process.h>

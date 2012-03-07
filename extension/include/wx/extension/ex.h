@@ -9,6 +9,7 @@
 #define _EXEX_H
 
 #include <map>
+#include <wx/extension/indicator.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/vimacros.h>
 
@@ -147,8 +148,9 @@ private:
     const wxString& begin_address, 
     const wxString& end_address);
     
+  const wxExIndicator m_FindIndicator;
   const wxExMarker m_MarkerSymbol;
-  
+
   std::map<wxUniChar, int> m_Markers;
   
   static wxString m_LastCommand;

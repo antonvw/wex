@@ -2,7 +2,7 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wxExVi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVI_H
@@ -10,7 +10,6 @@
 
 #include <map>
 #include <wx/extension/ex.h>
-#include <wx/extension/indicator.h>
 
 #if wxUSE_GUI
 
@@ -51,7 +50,6 @@ private:
     bool forward);
   bool InsertMode(const wxString& command);
   void Put(bool after);
-  void SetIndicator(const wxExIndicator& indicator, int start, int end);
   void SetInsertMode(
     const wxString& command,
     int repeat = 1);

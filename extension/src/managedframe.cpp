@@ -321,10 +321,10 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
     m_Finds.push_front(GetValue());
     m_FindsIterator = m_Finds.begin();
   
+    wxExFindReplaceData::Get()->SetFindString(GetValue());
+        
     if (m_UserInput)
     {
-      wxExFindReplaceData::Get()->SetFindString(GetValue());
-        
       if (m_ex != NULL)
       {
         m_ex->MacroRecord(m_Prefix->GetLabel() + GetValue());

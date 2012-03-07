@@ -20,6 +20,7 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/header.h>
 #include <wx/extension/hexmode.h>
+#include <wx/extension/indicator.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
@@ -2110,6 +2111,20 @@ void wxExSTC::SetHexMode()
   SetEdgeMode(wxSTC_EDGE_NONE);
   SetViewEOL(false);
   SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
+}
+
+void wxExSTC::SetIndicator(
+  const wxExIndicator& indicator, 
+  int start, 
+  int end)
+{
+  if (!wxExLexers::Get()->IndicatorIsLoaded(indicator))
+  {
+    return;
+  }
+
+  SetIndicatorCurrent(indicator.GetNo());
+  IndicatorFillRange(start, end - start);
 }
 
 bool wxExSTC::SetLexer(const wxString& lexer, bool fold)

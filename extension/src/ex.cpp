@@ -32,6 +32,7 @@ wxExEx::wxExEx(wxExSTC* stc)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxSTC_FIND_MATCHCASE)
   , m_MarkerSymbol(0, -1)
   , m_YankedLines(false)
+  , m_FindIndicator(0, 0)
 {
   wxASSERT(m_Frame != NULL);
 }
@@ -246,8 +247,10 @@ bool wxExEx::CommandGlobal(const wxString& search)
     {
       m_STC->MarkTargetChange();
       
-      const int begin = m_STC->PositionFromLine(m_STC->LineFromPosition(m_STC->GetTargetStart()));
-      const int end = m_STC->PositionFromLine(m_STC->LineFromPosition(m_STC->GetTargetEnd()) + 1);
+      const int begin = m_STC->PositionFromLine(
+        m_STC->LineFromPosition(m_STC->GetTargetStart()));
+      const int end = m_STC->PositionFromLine(
+        m_STC->LineFromPosition(m_STC->GetTargetEnd()) + 1);
       
       m_STC->Remove(begin, end);
       m_STC->SetTargetStart(end);
@@ -255,10 +258,10 @@ bool wxExEx::CommandGlobal(const wxString& search)
     }
     else if (command == "p")
     {
-      print += wxString::Format("%s:%d %s\n",
-        m_STC->GetFileName().GetFullPath().c_str(),
-        m_STC->LineFromPosition(m_STC->GetTargetStart()) + 1,
-        m_STC->GetTextRange(m_STC->GetTargetStart(), m_STC->GetTargetEnd()));
+      print += m_STC->GetLine(m_STC->LineFromPosition(m_STC->GetTargetStart()));
+        
+      m_STC->SetIndicator(
+        m_FindIndicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd());
       
       m_STC->SetTargetStart(m_STC->GetTargetEnd());
       m_STC->SetTargetEnd(m_STC->GetTextLength());

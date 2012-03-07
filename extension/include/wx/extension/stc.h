@@ -21,6 +21,7 @@
 
 #if wxUSE_GUI
 class wxExConfigDialog;
+class wxExIndicator;
 
 /// Offers a styled text ctrl with find/replace, printing, popup menu, 
 /// macro support, vi support and lexer support (syntax colouring, folding).
@@ -274,6 +275,9 @@ public:
   /// Reset all margins.
   /// Default also resets the divider margin.
   void ResetMargins(bool divider_margin = true);
+
+  /// Sets an indicator at specified start and end pos.
+  void SetIndicator(const wxExIndicator& indicator, int start, int end);
 
   /// Sets the (scintilla) lexer for this document.
   bool SetLexer(const wxString& lexer, bool fold = false);
