@@ -769,20 +769,6 @@ void wxExVi::Put(bool after)
   }
 }        
 
-void wxExVi::SetIndicator(
-  const wxExIndicator& indicator, 
-  int start, 
-  int end)
-{
-  if (!wxExLexers::Get()->IndicatorIsLoaded(indicator))
-  {
-    return;
-  }
-
-  GetSTC()->SetIndicatorCurrent(indicator.GetNo());
-  GetSTC()->IndicatorFillRange(start, end - start);
-}
-
 void wxExVi::SetInsertMode(
   const wxString& c, 
   int repeat)

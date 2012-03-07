@@ -1560,6 +1560,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:blue </def>
         <def style ="styledefault"> face:courier new,size:10,back:white,fore:black </def>
+        <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:dark slate blue </def>
         <def style ="variable"> fore:violet </def>
         <def style ="word"> fore:dark turquoise </def>
@@ -1587,6 +1588,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:#ffab8f </def>
         <def style ="styledefault"> default-font,back:black,fore:#BBBBBB </def>
+        <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:cadet blue </def>
         <def style ="variable"> fore:violet </def>
         <def style ="word"> fore:yellow </def>
@@ -1617,6 +1619,8 @@ Copyright: (c) 2011, Anton van Wezenbeek
     
     <marker no="ex_marknum_change">mark_fullrect,green,light blue</marker>
     <marker no="ex_marknum_vi"> mark_circle,blue,light blue </marker>
+    
+    <indicator no="indicator_find"> wxSTC_INDIC_BOX,styleindicatorfind </indicator>
     
     <!-- this style is applied before all other styles -->
     <style no="style_default"> styledefault </style>
