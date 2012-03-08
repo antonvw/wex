@@ -77,14 +77,6 @@ void wxExListItem::Insert(long index)
   wxExFrame::UpdateStatusBar(m_ListView);
 #endif
 
-  SetImage(m_FileName.GetStat().IsOk() ? wxExGetIconID(m_FileName): -1);
-
-  if (!m_ListView->SetItem(*this))
-  {
-    wxFAIL;
-    return;
-  }
-
   Update();
 
   if (col > 0)
@@ -118,6 +110,10 @@ void wxExListItem::SetReadOnly(bool readonly)
 
 void wxExListItem::Update()
 {
+  SetImage(m_FileName.GetStat().IsOk() ? wxExGetIconID(m_FileName): -1);
+
+  m_ListView->SetItem(*this);
+
   SetReadOnly(m_FileName.GetStat().IsReadOnly());
 
   if (
