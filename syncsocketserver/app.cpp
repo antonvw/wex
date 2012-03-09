@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -783,7 +783,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
   case ID_WRITE_DATA:
-    event.Enable(m_Clients.size() > 0 && m_DataWindow->GetLength() > 0);
+    event.Enable(!m_Clients.empty() && m_DataWindow->GetLength() > 0);
     break;
 
   default:
@@ -1002,7 +1002,7 @@ void Frame::TimerDialog()
 #if wxUSE_TASKBARICON
 void Frame::UpdateTaskBar()
 {
-  if (m_Clients.size() == 0)
+  if (m_Clients.empty())
   {
     m_TaskBarIcon->SetIcon(
       wxICON(ready), 

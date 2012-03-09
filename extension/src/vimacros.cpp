@@ -266,7 +266,7 @@ void wxExViMacros::SaveDocument()
       const wxString contents(Encode(*it2, encoded));
       
       wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
-      wxXmlNode* content = new wxXmlNode(cmd, wxXML_TEXT_NODE, "", contents);
+      new wxXmlNode(cmd, wxXML_TEXT_NODE, "", contents);
         
       if (encoded)
       {

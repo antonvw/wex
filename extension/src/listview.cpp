@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wxExListView and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -1166,6 +1166,7 @@ void wxExListViewFileName::ItemActivated(long item_number)
     if (dir_dlg.ShowModal() == wxID_OK)
     {
       SetItemText(item_number, dir_dlg.GetPath());
+      wxExListItem(this, item_number).Update();
     }
   }
   else

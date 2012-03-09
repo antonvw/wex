@@ -162,7 +162,7 @@ void TestFixture::testTiming()
     wxfile.Read(charbuffer, wxfile.Length());
     wxString* buffer = new wxString(charbuffer, wxfile.Length());
     CPPUNIT_ASSERT(buffer->length() > 0);
-    delete charbuffer;
+    delete[] charbuffer;
     delete buffer;
   }
 
