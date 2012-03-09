@@ -17,7 +17,7 @@ void wxExGuiTestFixture::setUp()
   // Create the global lexers object, 
   // it should be present in ~/.wxex-test-app
   // (depending on platform, configuration).
-  wxExLexers* lexers = wxExLexers::Get();
+  wxExLexers::Get();
 }
 
 void wxExGuiTestFixture::testConfigDialog()
@@ -743,7 +743,8 @@ void wxExGuiTestFixture::testStatusBar()
   panes.push_back(wxExStatusBarPane("paney"));
   panes.push_back(wxExStatusBarPane("panez"));
 
-  wxExStatusBar* sb = new wxExStatusBar(frame);
+  //wxExStatusBar* sb = 
+  new wxExStatusBar(frame);
   
   // The next is OK, but asserts in wxWidgets.
   //../src/generic/statusbr.cpp(179): assert "(size_t)n == m_panes.GetCount()" 

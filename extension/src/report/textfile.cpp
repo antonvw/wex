@@ -2,7 +2,7 @@
 // Name:      textfile.cpp
 // Purpose:   Implementation of class wxExTextFileWithListView
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -173,7 +173,7 @@ bool wxExTextFileWithListView::ParseSQL()
       return false;
     }
 
-    wxLogVerbose(wxString::Format("Retrieved: %d records", rs.GetRecords());
+    wxLogVerbose(wxString::Format("Retrieved: %d records", rs.GetRecords()));
   }
 
   // Test for SQL end statement.
