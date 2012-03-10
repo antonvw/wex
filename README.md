@@ -16,20 +16,20 @@ one of these applications, being a full featured source code text editor.
 
 ## Building wxWidgets
 
-- under windows using Microsoft Visual Studio 2010 nmake    
+- under windows using Microsoft Visual Studio 2010 nmake:    
     `nmake -f makefile.vc` or
     `nmake -f makefile.vc BUILD=release`
     
-- under windows using cygwin 1.7.9   
+- under windows using cygwin 1.7.9:   
     `../configure --with-msw --disable-shared`  
     
-- under Ubuntu 11.10 linux gcc (Ubuntu/Linaro 4.6.1-9ubuntu3) 4.6.1   
+- under Ubuntu 11.10 linux gcc (Ubuntu/Linaro 4.6.1-9ubuntu3) 4.6.1:   
     `../configure --with-gtk`  
 
-- under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)  
+- under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg):  
     `../configure --with-mac`
     
-- under SunOS using GNU make (/usr/sfw/bin)  
+- under SunOS using GNU make (/usr/sfw/bin):  
     `../configure --with-gtk --disable-shared --without-opengl`  
   
 ## Building wxExtension      
@@ -40,10 +40,10 @@ one of these applications, being a full featured source code text editor.
 - Project and make files are generated using [Bakefile 0.2.9](http://www.bakefile.org/)  
   In the build dir:
   
-  - under windows:  
+  - under windows using Microsoft Visual Studio 2010:  
     `make` or `make-release`
     
-  - under cygwin   
+  - under cygwin:   
     `make`  
     wxextension does not yet compile
     
