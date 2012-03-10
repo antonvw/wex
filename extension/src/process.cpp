@@ -59,12 +59,20 @@ bool wxExProcess::CheckInput()
   if (IsInputAvailable())
   {
     wxTextInputStream tis(*GetInputStream());
-    m_Output << tis.GetChar();
+    
+    while (IsInputAvailable())
+    {
+      m_Output << tis.GetChar();
+    }
   }
   else if (IsErrorAvailable())
   {
     wxTextInputStream tis(*GetErrorStream());
-    m_Output << tis.GetChar();
+    
+    while (IsErrorAvailable())
+    {
+      m_Output << tis.GetChar();
+    }
   }
 
   if (m_Output.empty())
@@ -194,7 +202,7 @@ long wxExProcess::Execute(
 
       CheckInput();
       
-      m_Timer->Start(1000); // each 1000 milliseconds
+      m_Timer->Start(100); // each 100 milliseconds
     }
 
     return pid;
@@ -256,12 +264,9 @@ wxKillError wxExProcess::Kill(wxSignal sig)
   wxLogStatus(_("Stopped"));
 
   DeletePendingEvents();
-
-  if (m_Dialog != NULL)
-  {
-    m_Dialog->GetSTCShell()->Prompt();
-  }
   
+  m_Dialog->Hide();
+
   return wxProcess::Kill(GetPid(), sig);
 }
 
@@ -273,7 +278,9 @@ void  wxExProcess::OnCommand(wxCommandEvent& event)
     {
     // send command to process
     wxTextOutputStream os(*GetOutputStream());
-    os.WriteString(event.GetString());
+    os.WriteString(event.GetString() + "\n");
+    
+    m_Dialog->GetSTCShell()->AddText(m_Dialog->GetSTCShell()->GetEOL());
     m_Dialog->GetSTCShell()->Prompt();
     }
     break;
@@ -295,20 +302,12 @@ void wxExProcess::OnTerminate(int pid, int status)
   wxPostEvent(wxTheApp->GetTopWindow(), event);
   
   // Collect remaining input.
-  while (CheckInput())
-  {
-    // Do nothing.
-  }
-  
-  m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false); // no eol
+  CheckInput();
 }
 
 void wxExProcess::OnTimer(wxTimerEvent& event)
 {
-  while (CheckInput())
-  {
-    // Do nothing.
-  }
+  CheckInput();
 }
 
 void wxExProcess::ReportAdd(
@@ -316,7 +315,8 @@ void wxExProcess::ReportAdd(
   const wxString& path,
   const wxString& lineno)
 {
-  m_Dialog->GetSTCShell()->AddText(line + m_Dialog->GetSTCShell()->GetEOL());
+  m_Dialog->GetSTCShell()->AddText(line);
+  m_Dialog->GetSTCShell()->Prompt();
 }
 
 void wxExProcess::ReportCreate()

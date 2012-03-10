@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wxExSTCShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -287,6 +287,9 @@ void wxExSTCShell::ProcessChar(int key)
   {
     if (m_Command.empty())
     {
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
+      event.SetString(m_Command);
+      wxPostEvent(m_Handler, event);
       Prompt();
     }
     else if (
@@ -357,14 +360,17 @@ void wxExSTCShell::Prompt(const wxString& text, bool add_eol)
   if (!text.empty())
   {
     AppendText(text);
+    
+    if (GetTextLength() > 0 && add_eol)
+    {
+      AppendText(GetEOL());
+    }
   }
 
-  if (GetTextLength() > 0 && add_eol)
+  if (!m_Prompt.empty())
   {
-    AppendText(GetEOL());
+    AppendText(m_Prompt);
   }
-
-  AppendText(m_Prompt);
 
   DocumentEnd();
 
@@ -439,41 +445,31 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
 
 void wxExSTCShell::ShowCommand(int key)
 {
-  SetTargetStart(GetTextLength());
-  SetTargetEnd(0);
-  SetSearchFlags(wxSTC_FIND_REGEXP);
+  SetTargetStart(m_CommandStartPosition);
+  SetTargetEnd(GetTextLength());
 
-  if (SearchInTarget("^" + m_Prompt + ".*") != -1)
+  if (key == WXK_UP)
   {
-    SetTargetEnd(GetTextLength());
-
-    if (key == WXK_UP)
+    if (m_CommandsIterator != m_Commands.begin())
     {
-      if (m_CommandsIterator != m_Commands.begin())
-      {
-        m_CommandsIterator--;
-      }
+      m_CommandsIterator--;
     }
-    else
-    {
-      if (m_CommandsIterator != m_Commands.end())
-      {
-        m_CommandsIterator++;
-      }
-    }
-
+  }
+  else
+  {
     if (m_CommandsIterator != m_Commands.end())
     {
-      m_Command = *m_CommandsIterator;
-      ReplaceTarget(m_Prompt + m_Command);
+      m_CommandsIterator++;
     }
-    else
-    {
-      ReplaceTarget(m_Prompt);
-    }
-
-    DocumentEnd();
   }
+
+  if (m_CommandsIterator != m_Commands.end())
+  {
+    m_Command = *m_CommandsIterator;
+    ReplaceTarget(m_Command);
+  }
+
+  DocumentEnd();
 }
 
 void wxExSTCShell::ShowHistory()
