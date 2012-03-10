@@ -16,9 +16,9 @@ one of these applications, being a full featured source code text editor.
 
 ## Building wxWidgets
 
-- under windows using Microsoft Visual Studio 2010  
-  Version 10.0.30319.1 RTMRel using command line prompt  
-    `nmake -f makefile.vc`
+- under windows using Microsoft Visual Studio 2010 nmake    
+    `nmake -f makefile.vc` or
+    `nmake -f makefile.vc BUILD=release`
     
 - under windows using cygwin 1.7.9   
     `../configure --with-msw --disable-shared`  
