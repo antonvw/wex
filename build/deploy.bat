@@ -19,6 +19,7 @@ copy c:\windows\syswow64\msvcr100.dll syncped
 
 rem Copy data.
 copy ..\extension\data\lexers.xml syncped
+copy ..\extension\data\macros.xml syncped
 copy ..\extension\data\vcs.xml syncped
 
 rem Copy locale files.
