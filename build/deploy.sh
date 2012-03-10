@@ -19,6 +19,7 @@ cp ~/wxWidgets-2.9.3/buildgtk/lib/libwx*2.9*so*0 syncped
 
 # Copy data.
 cp ../extension/data/lexers.xml syncped
+cp ../extension/data/macros.xml syncped
 cp ../extension/data/vcs.xml syncped
 
 # Copy locale files.
