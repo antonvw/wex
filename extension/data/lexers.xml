@@ -1719,6 +1719,14 @@ Copyright: (c) 2011, Anton van Wezenbeek
   <lexer name="au3"/>
   <lexer name="ave"/>
   <lexer name="baan"/>
+  <lexer name="bash" display="rfw" extensions="TCS*.txt"> 
+    <keywords> 
+    Library Resource Variables Documentation Metadata Suite Setup Suite Teardown 
+    Precondition Postcondition Force Tags
+    Default Test Template Timeout
+    </keywords>
+    <comments begin1="#" />
+  </lexer>
   <lexer name="bash" extensions="*.bash;.bash*;*.sh;Doxyfile"> 
     <keywords>    
     alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
