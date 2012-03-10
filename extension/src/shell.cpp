@@ -290,7 +290,6 @@ void wxExSTCShell::ProcessChar(int key)
       wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
       event.SetString(m_Command);
       wxPostEvent(m_Handler, event);
-      Prompt();
     }
     else if (
       m_CommandEnd == GetEOL() ||
@@ -360,15 +359,15 @@ void wxExSTCShell::Prompt(const wxString& text, bool add_eol)
   if (!text.empty())
   {
     AppendText(text);
-    
-    if (GetTextLength() > 0 && add_eol)
-    {
-      AppendText(GetEOL());
-    }
   }
 
   if (!m_Prompt.empty())
   {
+    if (GetTextLength() > 0 && add_eol)
+    {
+      AppendText(GetEOL());
+    }
+    
     AppendText(m_Prompt);
   }
 
