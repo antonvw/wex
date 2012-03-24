@@ -14,7 +14,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.2</span></div>
+   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.3</span></div>
   </td>
  </tr>
  </tbody>
@@ -76,14 +76,13 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad777f8c2787f7ded9be06d1690684aa7"></a><!-- doxytag: member="wxExFrameWithHistory::FileHistoryPopupMenu" ref="ad777f8c2787f7ded9be06d1690684aa7" args="()" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame_with_history.html#ad777f8c2787f7ded9be06d1690684aa7">FileHistoryPopupMenu</a> ()</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a file history popup menu. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a610c4c9a2c80c4d4cf72aeb3c85442e5"></a><!-- doxytag: member="wxExFrameWithHistory::FindInSelection" ref="a610c4c9a2c80c4d4cf72aeb3c85442e5" args="(const wxArrayString &amp;files, int id)" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame_with_history.html#a610c4c9a2c80c4d4cf72aeb3c85442e5">FindInSelection</a> (const wxArrayString &amp;files, int id)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds in selected files. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame_with_history.html#a0b1dfdab1f3550b1425e63c4c787aceb">FindInSelectionDialog</a> (int id, bool add_in_files=false)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds in selected files dialog.  <a href="#a0b1dfdab1f3550b1425e63c4c787aceb"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame_with_history.html#a86299d471b950f3372c4c79db224ae05">FindInFiles</a> (const wxArrayString &amp;files, int id, bool show_dialog=true, <a class="el" href="classwx_ex_list_view.html">wxExListView</a> *report=NULL)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds (or replaces) in specified files.  <a href="#a86299d471b950f3372c4c79db224ae05"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame_with_history.html#a250171c6e6bca81870ecc1420b488e58">FindInFilesDialog</a> (int id, bool add_in_files=false)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a modal find (or replace) in files dialog.  <a href="#a250171c6e6bca81870ecc1420b488e58"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aff31bd015f843c31561591bee20a4abb"></a><!-- doxytag: member="wxExFrameWithHistory::GetFindInCaption" ref="aff31bd015f843c31561591bee20a4abb" args="(int id) const " -->
 const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame_with_history.html#aff31bd015f843c31561591bee20a4abb">GetFindInCaption</a> (int id) const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns caption for FindInSelectionDialog. <br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns caption for FindInFilesDialog. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6ba36a76a18a27c9762ec817f3e322a8"></a><!-- doxytag: member="wxExFrameWithHistory::GetProcess" ref="a6ba36a76a18a27c9762ec817f3e322a8" args="()" -->
 <a class="el" href="classwx_ex_process.html">wxExProcess</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame_with_history.html#a6ba36a76a18a27c9762ec817f3e322a8">GetProcess</a> ()</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the process. <br/></td></tr>
@@ -226,12 +225,63 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a class="anchor" id="a0b1dfdab1f3550b1425e63c4c787aceb"></a><!-- doxytag: member="wxExFrameWithHistory::FindInSelectionDialog" ref="a0b1dfdab1f3550b1425e63c4c787aceb" args="(int id, bool add_in_files=false)" -->
+<a class="anchor" id="a86299d471b950f3372c4c79db224ae05"></a><!-- doxytag: member="wxExFrameWithHistory::FindInFiles" ref="a86299d471b950f3372c4c79db224ae05" args="(const wxArrayString &amp;files, int id, bool show_dialog=true, wxExListView *report=NULL)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int wxExFrameWithHistory::FindInSelectionDialog </td>
+          <td class="memname">bool wxExFrameWithHistory::FindInFiles </td>
+          <td>(</td>
+          <td class="paramtype">const wxArrayString &amp;&#160;</td>
+          <td class="paramname"><em>files</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>show_dialog</em> = <code>true</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classwx_ex_list_view.html">wxExListView</a> *&#160;</td>
+          <td class="paramname"><em>report</em> = <code>NULL</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Finds (or replaces) in specified files. </p>
+<p>Returns false if dialog was shown, and cancelled, or SetupTool returned false. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">files</td><td>the files </td></tr>
+    <tr><td class="paramname">id</td><td>ID_TOOL_REPORT_FIND or ID_TOOL_REPORT_REPLACE </td></tr>
+    <tr><td class="paramname">show_dialog</td><td>Default shows a dialog. </td></tr>
+    <tr><td class="paramname">report</td><td>report for output </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a250171c6e6bca81870ecc1420b488e58"></a><!-- doxytag: member="wxExFrameWithHistory::FindInFilesDialog" ref="a250171c6e6bca81870ecc1420b488e58" args="(int id, bool add_in_files=false)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int wxExFrameWithHistory::FindInFilesDialog </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>id</em>, </td>
@@ -251,7 +301,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 <div class="memdoc">
 
-<p>Finds in selected files dialog. </p>
+<p>Shows a modal find (or replace) in files dialog. </p>
+<p>Returns result from ShowModal. </p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>ID_TOOL_REPORT_FIND or ID_TOOL_REPORT_REPLACE </td></tr>
@@ -359,7 +410,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Thu Dec 1 2011 18:20:48 for wxextension by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Sat Mar 24 2012 19:36:24 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
 </body>

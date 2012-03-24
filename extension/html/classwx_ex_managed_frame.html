@@ -14,7 +14,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.2</span></div>
+   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.3</span></div>
   </td>
  </tr>
  </tbody>
@@ -70,28 +70,20 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4d66b55e223536000377cf7a393a1c2e"></a><!-- doxytag: member="wxExManagedFrame::AllowClose" ref="a4d66b55e223536000377cf7a393a1c2e" args="(wxWindowID id, wxWindow *page)" -->
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#a4d66b55e223536000377cf7a393a1c2e">AllowClose</a> (wxWindowID id, wxWindow *page)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the page can be closed. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#a6ee0e00d9749ec47541bc099424e6e45">ExecExCommand</a> (int command)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes a ex command that can result in changing stc, if command is being played back.  <a href="#a6ee0e00d9749ec47541bc099424e6e45"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#af310df1ee5b4b509b3ebb174e7314a7b">GetExCommand</a> (<a class="el" href="classwx_ex_ex.html">wxExEx</a> *ex, const wxString &amp;label)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a command line vi command.  <a href="#af310df1ee5b4b509b3ebb174e7314a7b"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa7635cd6f9b4167bed4ae175c70ba86d"></a><!-- doxytag: member="wxExManagedFrame::GetManager" ref="aa7635cd6f9b4167bed4ae175c70ba86d" args="()" -->
 wxAuiManager &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#aa7635cd6f9b4167bed4ae175c70ba86d">GetManager</a> ()</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the manager. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#a0bcd0f7e9522200d0a615608dbe0575d">GetViCommand</a> (<a class="el" href="classwx_ex_vi.html">wxExVi</a> *vi, const wxString &amp;label)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a command line vi command.  <a href="#a0bcd0f7e9522200d0a615608dbe0575d"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abc950eec2f24ba6bb69ebcff48dc6341"></a><!-- doxytag: member="wxExManagedFrame::GetViCommandIsFind" ref="abc950eec2f24ba6bb69ebcff48dc6341" args="() const " -->
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#abc950eec2f24ba6bb69ebcff48dc6341">GetViCommandIsFind</a> () const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if vi command is a find (next or previous) command. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d65915060c30a18af04a9e75e727bcb"></a><!-- doxytag: member="wxExManagedFrame::GetViCommandIsFindNext" ref="a1d65915060c30a18af04a9e75e727bcb" args="() const " -->
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#a1d65915060c30a18af04a9e75e727bcb">GetViCommandIsFindNext</a> () const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if vi command is a find next. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a44769f9a61e317a83191266dc6a482cd"></a><!-- doxytag: member="wxExManagedFrame::GetViCommandIsFindPrevious" ref="a44769f9a61e317a83191266dc6a482cd" args="() const " -->
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#a44769f9a61e317a83191266dc6a482cd">GetViCommandIsFindPrevious</a> () const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if vi command is a find previous. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9b8bc1daf7e21ff26f8d9f976c530535"></a><!-- doxytag: member="wxExManagedFrame::HideViBar" ref="a9b8bc1daf7e21ff26f8d9f976c530535" args="()" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#a9b8bc1daf7e21ff26f8d9f976c530535">HideViBar</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Hides the vi bar. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#a3196ae7f46e269e8e0152396eb36c293">HideExBar</a> (bool set_focus=true)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Hides the vi bar.  <a href="#a3196ae7f46e269e8e0152396eb36c293"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad0fe11775c826fad97274cd7f550a892"></a><!-- doxytag: member="wxExManagedFrame::OnNotebook" ref="ad0fe11775c826fad97274cd7f550a892" args="(wxWindowID id, wxWindow *page)" -->
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#ad0fe11775c826fad97274cd7f550a892">OnNotebook</a> (wxWindowID id, wxWindow *page)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Called if the notebook changed page. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acece6e9257938da952b18da7ade2ba64"></a><!-- doxytag: member="wxExManagedFrame::ShowViMessage" ref="acece6e9257938da952b18da7ade2ba64" args="(const wxString &amp;text)" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#acece6e9257938da952b18da7ade2ba64">ShowViMessage</a> (const wxString &amp;text)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af0bf9f86938fbca6b92b96ae6f56d5ba"></a><!-- doxytag: member="wxExManagedFrame::ShowExMessage" ref="af0bf9f86938fbca6b92b96ae6f56d5ba" args="(const wxString &amp;text)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#af0bf9f86938fbca6b92b96ae6f56d5ba">ShowExMessage</a> (const wxString &amp;text)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows text in vi bar. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa123c09518e2fc006aa4351b11a8c475"></a><!-- doxytag: member="wxExManagedFrame::SyncCloseAll" ref="aa123c09518e2fc006aa4351b11a8c475" args="(wxWindowID id)" -->
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#aa123c09518e2fc006aa4351b11a8c475">SyncCloseAll</a> (wxWindowID id)</td></tr>
@@ -112,15 +104,34 @@ Protected Member Functions</h2></td></tr>
 <li>The vibar is added as normal aui panel to the aui manager. </li>
 </ul>
 </div><hr/><h2>Member Function Documentation</h2>
-<a class="anchor" id="a0bcd0f7e9522200d0a615608dbe0575d"></a><!-- doxytag: member="wxExManagedFrame::GetViCommand" ref="a0bcd0f7e9522200d0a615608dbe0575d" args="(wxExVi *vi, const wxString &amp;label)" -->
+<a class="anchor" id="a6ee0e00d9749ec47541bc099424e6e45"></a><!-- doxytag: member="wxExManagedFrame::ExecExCommand" ref="a6ee0e00d9749ec47541bc099424e6e45" args="(int command)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void wxExManagedFrame::GetViCommand </td>
+          <td class="memname">virtual <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a>* wxExManagedFrame::ExecExCommand </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classwx_ex_vi.html">wxExVi</a> *&#160;</td>
-          <td class="paramname"><em>vi</em>, </td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>command</em></td><td>)</td>
+          <td><code> [inline, virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Executes a ex command that can result in changing stc, if command is being played back. </p>
+
+</div>
+</div>
+<a class="anchor" id="af310df1ee5b4b509b3ebb174e7314a7b"></a><!-- doxytag: member="wxExManagedFrame::GetExCommand" ref="af310df1ee5b4b509b3ebb174e7314a7b" args="(wxExEx *ex, const wxString &amp;label)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void wxExManagedFrame::GetExCommand </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classwx_ex_ex.html">wxExEx</a> *&#160;</td>
+          <td class="paramname"><em>ex</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -141,7 +152,7 @@ Protected Member Functions</h2></td></tr>
 <p>It shows the vibar, sets the label and sets focus to it, allowing you to enter a command. You can override it to e.g. hide other panels. </p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">vi</td><td>the vi on which command is to be done </td></tr>
+    <tr><td class="paramname">ex</td><td>the ex on which command is to be done </td></tr>
     <tr><td class="paramname">label</td><td>label for the vibar (like / or ? or :) </td></tr>
   </table>
   </dd>
@@ -149,8 +160,28 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a3196ae7f46e269e8e0152396eb36c293"></a><!-- doxytag: member="wxExManagedFrame::HideExBar" ref="a3196ae7f46e269e8e0152396eb36c293" args="(bool set_focus=true)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wxExManagedFrame::HideExBar </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>set_focus</em> = <code>true</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Thu Dec 1 2011 18:20:48 for wxextension by&#160;
+<div class="memdoc">
+
+<p>Hides the vi bar. </p>
+<p>Default it sets focus back to stc component associated with current vi. </p>
+
+</div>
+</div>
+</div>
+<hr class="footer"/><address class="footer"><small>Generated on Sat Mar 24 2012 19:36:24 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
 </body>

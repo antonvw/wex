@@ -14,7 +14,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.2</span></div>
+   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.3</span></div>
   </td>
  </tr>
  </tbody>
@@ -67,17 +67,12 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a798c9f9feb24b5b5f0d7137f4ff001bf"></a><!-- doxytag: member="wxExTextFile::GetFileName" ref="a798c9f9feb24b5b5f0d7137f4ff001bf" args="() const " -->
 const <a class="el" href="classwx_ex_file_name.html">wxExFileName</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_text_file.html#a798c9f9feb24b5b5f0d7137f4ff001bf">GetFileName</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the filename. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac9872b5e0ad9f32d51e99b9d3fb283e8"></a><!-- doxytag: member="wxExTextFile::GetRCS" ref="ac9872b5e0ad9f32d51e99b9d3fb283e8" args="() const " -->
-const <a class="el" href="classwx_ex_r_c_s.html">wxExRCS</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_text_file.html#ac9872b5e0ad9f32d51e99b9d3fb283e8">GetRCS</a> () const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the RCS data. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0e886ee462c17ad414432cec08d251be"></a><!-- doxytag: member="wxExTextFile::GetStatistics" ref="a0e886ee462c17ad414432cec08d251be" args="() const " -->
 const <a class="el" href="classwx_ex_file_statistics.html">wxExFileStatistics</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_text_file.html#a0e886ee462c17ad414432cec08d251be">GetStatistics</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the statistics. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3bd3c4003225d29653fbf2f5b96b7549"></a><!-- doxytag: member="wxExTextFile::GetTool" ref="a3bd3c4003225d29653fbf2f5b96b7549" args="() const " -->
 const <a class="el" href="classwx_ex_tool.html">wxExTool</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_text_file.html#a3bd3c4003225d29653fbf2f5b96b7549">GetTool</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the tool. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_text_file.html#a5fde735815715539d619ad97d9b39b82">InsertLine</a> (const wxString &amp;line)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts a line at current line (or at end if at end), make that line current and sets modified.  <a href="#a5fde735815715539d619ad97d9b39b82"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a49acbf58dc3c6e994d9b4b56f7d4ef59"></a><!-- doxytag: member="wxExTextFile::RunTool" ref="a49acbf58dc3c6e994d9b4b56f7d4ef59" args="()" -->
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_text_file.html#a49acbf58dc3c6e994d9b4b56f7d4ef59">RunTool</a> ()</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs the tool (opens the file before running and closes afterwards). <br/></td></tr>
@@ -87,7 +82,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 Protected Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeaa08336b00f3910ef393b455e6688c0"></a><!-- doxytag: member="wxExTextFile::ParseComments" ref="aeaa08336b00f3910ef393b455e6688c0" args="()" -->
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_text_file.html#aeaa08336b00f3910ef393b455e6688c0">ParseComments</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Called after comments have been found. <br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Invoked after comments have been found. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6f9067cea89046bd1392db0970d1a022"></a><!-- doxytag: member="wxExTextFile::Report" ref="a6f9067cea89046bd1392db0970d1a022" args="(size_t WXUNUSED(line))" -->
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_text_file.html#a6f9067cea89046bd1392db0970d1a022">Report</a> (size_t WXUNUSED(line))</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">This one is invoked during parsing of lines. <br/></td></tr>
@@ -107,25 +102,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div class="textblock"><p>Adds file tool methods to wxTextFile. </p>
 <p>In your derived class just implement the Report or ReportStatistics, and take care that the strings are added to your component. </p>
 </div><hr/><h2>Member Function Documentation</h2>
-<a class="anchor" id="a5fde735815715539d619ad97d9b39b82"></a><!-- doxytag: member="wxExTextFile::InsertLine" ref="a5fde735815715539d619ad97d9b39b82" args="(const wxString &amp;line)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void wxExTextFile::InsertLine </td>
-          <td>(</td>
-          <td class="paramtype">const wxString &amp;&#160;</td>
-          <td class="paramname"><em>line</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Inserts a line at current line (or at end if at end), make that line current and sets modified. </p>
-
-</div>
-</div>
 <a class="anchor" id="a0d160be41de5fbc021ea9e802dbb7b8f"></a><!-- doxytag: member="wxExTextFile::ParseLine" ref="a0d160be41de5fbc021ea9e802dbb7b8f" args="(const wxString &amp;line)" -->
 <div class="memitem">
 <div class="memproto">
@@ -166,7 +142,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Thu Dec 1 2011 18:20:49 for wxextension by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Sat Mar 24 2012 19:36:24 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
 </body>

@@ -14,7 +14,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.2</span></div>
+   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.3</span></div>
   </td>
  </tr>
  </tbody>
@@ -62,8 +62,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab5ce1f8b155406fec0e4786e99bab060"></a><!-- doxytag: member="wxExLexers::ApplyIndicators" ref="ab5ce1f8b155406fec0e4786e99bab060" args="(wxStyledTextCtrl *stc) const " -->
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#ab5ce1f8b155406fec0e4786e99bab060">ApplyIndicators</a> (wxStyledTextCtrl *stc) const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets indicators for specified component. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#a7004e0d2c43bf0fb93459e4220353bf3">ApplyMacro</a> (const wxString &amp;text) const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies macro to text: if text is referring to a macro, text is replaced by the macro value.  <a href="#a7004e0d2c43bf0fb93459e4220353bf3"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#a5a9b28fca9dc9a8b62e3a64618c5b18b">ApplyMacro</a> (const wxString &amp;text, const wxString &amp;lexer=&quot;global&quot;) const </td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies macro to text: if text is referring to a macro, text is replaced by the macro value.  <a href="#a5a9b28fca9dc9a8b62e3a64618c5b18b"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1aa98bf6a5c2e880bba11412b545d77e"></a><!-- doxytag: member="wxExLexers::ApplyMarkers" ref="a1aa98bf6a5c2e880bba11412b545d77e" args="(wxStyledTextCtrl *stc) const " -->
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#a1aa98bf6a5c2e880bba11412b545d77e">ApplyMarkers</a> (wxStyledTextCtrl *stc) const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets markers for specified component. <br/></td></tr>
@@ -78,7 +78,7 @@ const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a>&#160;</td><td cla
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds a lexer specified by a filename. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1df7e33dc3f378840e57bde7cd4941ba"></a><!-- doxytag: member="wxExLexers::FindByName" ref="a1df7e33dc3f378840e57bde7cd4941ba" args="(const wxString &amp;name) const " -->
 const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#a1df7e33dc3f378840e57bde7cd4941ba">FindByName</a> (const wxString &amp;name) const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds a lexer specified by the (scintilla) name. <br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds a lexer specified by the (display scintilla) name. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a95e3c4ae68ed1973949a5c50c21932cb"></a><!-- doxytag: member="wxExLexers::FindByText" ref="a95e3c4ae68ed1973949a5c50c21932cb" args="(const wxString &amp;text) const " -->
 const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#a95e3c4ae68ed1973949a5c50c21932cb">FindByText</a> (const wxString &amp;text) const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds a lexer if text starts with some special tokens. <br/></td></tr>
@@ -91,10 +91,10 @@ const <a class="el" href="classwx_ex_style.html">wxExStyle</a> &amp;&#160;</td><
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac92683dbf4a25bcc9d1b383437016aed"></a><!-- doxytag: member="wxExLexers::GetFileName" ref="ac92683dbf4a25bcc9d1b383437016aed" args="() const " -->
 const wxFileName &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#ac92683dbf4a25bcc9d1b383437016aed">GetFileName</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the filename. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8141672a6f15cdc34f827e42981fa444"></a><!-- doxytag: member="wxExLexers::GetMacros" ref="a8141672a6f15cdc34f827e42981fa444" args="() const " -->
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa1e3df6c1ca9343e2edeb71410beba40"></a><!-- doxytag: member="wxExLexers::GetMacros" ref="aa1e3df6c1ca9343e2edeb71410beba40" args="(const wxString &amp;lexer) const " -->
 const std::map&lt; wxString, <br class="typebreak"/>
-wxString &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#a8141672a6f15cdc34f827e42981fa444">GetMacros</a> () const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the macros. <br/></td></tr>
+wxString &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#aa1e3df6c1ca9343e2edeb71410beba40">GetMacros</a> (const wxString &amp;lexer) const </td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the macros for specified lexer. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#a14029fe5aa2475ca6bf5302485b719b1">GetTheme</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current theme, as present in the config.  <a href="#a14029fe5aa2475ca6bf5302485b719b1"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a54d137338eb08fa0a7fb034d2926a455"></a><!-- doxytag: member="wxExLexers::GetThemeOk" ref="a54d137338eb08fa0a7fb034d2926a455" args="() const " -->
@@ -149,7 +149,7 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a7004e0d2c43bf0fb93459e4220353bf3"></a><!-- doxytag: member="wxExLexers::ApplyMacro" ref="a7004e0d2c43bf0fb93459e4220353bf3" args="(const wxString &amp;text) const " -->
+<a class="anchor" id="a5a9b28fca9dc9a8b62e3a64618c5b18b"></a><!-- doxytag: member="wxExLexers::ApplyMacro" ref="a5a9b28fca9dc9a8b62e3a64618c5b18b" args="(const wxString &amp;text, const wxString &amp;lexer=&quot;global&quot;) const " -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -157,8 +157,18 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">const wxString wxExLexers::ApplyMacro </td>
           <td>(</td>
           <td class="paramtype">const wxString &amp;&#160;</td>
-          <td class="paramname"><em>text</em></td><td>)</td>
-          <td> const</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>lexer</em> = <code>&quot;global&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
         </tr>
       </table>
 </div>
@@ -328,7 +338,7 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Thu Dec 1 2011 18:20:48 for wxextension by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Sat Mar 24 2012 19:36:24 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
 </body>

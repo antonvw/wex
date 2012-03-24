@@ -1,4 +1,3 @@
 <map id="G" name="G">
-<area shape="rect" id="node1" href="$classwx_ex_text_file.html" title="Adds file tool methods to wxTextFile." alt="" coords="7,5,105,35"/>
-<area shape="rect" id="node3" href="$classwx_ex_text_file_with_list_view.html" title="Offers a wxExTextFile with reporting to a listview." alt="" coords="156,5,329,35"/>
+<area shape="rect" id="node1" href="$classwx_ex_style.html" title="This class defines our scintilla styles." alt="" coords="7,5,89,35"/>
 </map>

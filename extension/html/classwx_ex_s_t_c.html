@@ -14,7 +14,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.2</span></div>
+   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.3</span></div>
   </td>
  </tr>
  </tbody>
@@ -68,10 +68,14 @@ Public Types</h2></td></tr>
 <a class="el" href="classwx_ex_s_t_c.html#a43213a12b8cd1c082982105d71df96c5a236dc9508e6f57bbe6f6aab6b8b71a26">STC_MENU_DEFAULT</a> =  0xFFFF
  }</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Menu and tooltip flags (0 is used for no menu).  <a href="classwx_ex_s_t_c.html#a43213a12b8cd1c082982105d71df96c5">More...</a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a04bdc486a1d63436a3b7245ff26c7096">wxExWindowFlags</a> { <a class="el" href="classwx_ex_s_t_c.html#a04bdc486a1d63436a3b7245ff26c7096aa65ef6dffc24b5139abbd9fa4e170d45">STC_WIN_DEFAULT</a> =  0x0000, 
+<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a04bdc486a1d63436a3b7245ff26c7096">wxExWindowFlags</a> { <br/>
+&#160;&#160;<a class="el" href="classwx_ex_s_t_c.html#a04bdc486a1d63436a3b7245ff26c7096aa65ef6dffc24b5139abbd9fa4e170d45">STC_WIN_DEFAULT</a> =  0x0000, 
 <a class="el" href="classwx_ex_s_t_c.html#a04bdc486a1d63436a3b7245ff26c7096a89a7b41b2fcd358d1010ed13955186de">STC_WIN_READ_ONLY</a> =  0x0001, 
 <a class="el" href="classwx_ex_s_t_c.html#a04bdc486a1d63436a3b7245ff26c7096aecc3e8556b1fb97974bc40cc2a135118">STC_WIN_HEX</a> =  0x0002, 
-<a class="el" href="classwx_ex_s_t_c.html#a04bdc486a1d63436a3b7245ff26c7096abcc0671f101cd83076bf18fb9d80e76b">STC_WIN_FROM_OTHER</a> =  0x0020
+<a class="el" href="classwx_ex_s_t_c.html#a04bdc486a1d63436a3b7245ff26c7096a0eb607a2af9ecf149b80bca94d000a64">STC_WIN_NO_INDICATOR</a> =  0x0004, 
+<br/>
+&#160;&#160;<a class="el" href="classwx_ex_s_t_c.html#a04bdc486a1d63436a3b7245ff26c7096abcc0671f101cd83076bf18fb9d80e76b">STC_WIN_FROM_OTHER</a> =  0x0020
+<br/>
  }</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Window flags.  <a href="classwx_ex_s_t_c.html#a04bdc486a1d63436a3b7245ff26c7096">More...</a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#ad9e5e389a3e0b337f9cbb98c033dabd8">wxExConfigFlags</a> { <a class="el" href="classwx_ex_s_t_c.html#ad9e5e389a3e0b337f9cbb98c033dabd8a56dd6a3f6214bfcded447a31a1e16f08">STC_CONFIG_DEFAULT</a> =  0x0000, 
@@ -90,6 +94,9 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9798ff873e12d27473bfe284fd0896a2"></a><!-- doxytag: member="wxExSTC::wxExSTC" ref="a9798ff873e12d27473bfe284fd0896a2" args="(const wxExSTC &amp;stc)" -->
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a9798ff873e12d27473bfe284fd0896a2">wxExSTC</a> (const <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a> &amp;stc)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afb40fc702bb17f0938145f230b4077a8"></a><!-- doxytag: member="wxExSTC::AllowChangeIndicator" ref="afb40fc702bb17f0938145f230b4077a8" args="() const " -->
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#afb40fc702bb17f0938145f230b4077a8">AllowChangeIndicator</a> () const </td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Is a change indicator allowed. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a24883094a3554e7f129f39bbdd21e2b2"></a><!-- doxytag: member="wxExSTC::AppendTextHexMode" ref="a24883094a3554e7f129f39bbdd21e2b2" args="(const wxCharBuffer &amp;buffer)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a24883094a3554e7f129f39bbdd21e2b2">AppendTextHexMode</a> (const wxCharBuffer &amp;buffer)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Appends text in hex mode. <br/></td></tr>
@@ -125,15 +132,9 @@ long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaefefd3a5bbe36946ef6f7bea45409c9"></a><!-- doxytag: member="wxExSTC::GetLexer" ref="aaefefd3a5bbe36946ef6f7bea45409c9" args="() const " -->
 const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#aaefefd3a5bbe36946ef6f7bea45409c9">GetLexer</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the lexer. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad838ecc657db614ad8720b4663dbabe8"></a><!-- doxytag: member="wxExSTC::GetLineNumberAtCurrentPos" ref="ad838ecc657db614ad8720b4663dbabe8" args="() const " -->
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#ad838ecc657db614ad8720b4663dbabe8">GetLineNumberAtCurrentPos</a> () const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets line number at current position. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4775d3859cadc358a253b1991fd45c5c"></a><!-- doxytag: member="wxExSTC::GetSelectedText" ref="a4775d3859cadc358a253b1991fd45c5c" args="() const " -->
 const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a4775d3859cadc358a253b1991fd45c5c">GetSelectedText</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets selected text. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6a2158bc3076e23b0ccaa69fd9f4db12"></a><!-- doxytag: member="wxExSTC::GetTextAtCurrentPos" ref="a6a2158bc3076e23b0ccaa69fd9f4db12" args="() const " -->
-const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a6a2158bc3076e23b0ccaa69fd9f4db12">GetTextAtCurrentPos</a> () const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets text at current position. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4d5d9fd4da3df34e909fe376d6e6ba09"></a><!-- doxytag: member="wxExSTC::GetVi" ref="a4d5d9fd4da3df34e909fe376d6e6ba09" args="() const " -->
 const <a class="el" href="classwx_ex_vi.html">wxExVi</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a4d5d9fd4da3df34e909fe376d6e6ba09">GetVi</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets vi component. <br/></td></tr>
@@ -159,15 +160,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac2c530e05c436107893562c76f4833d8"></a><!-- doxytag: member="wxExSTC::Indent" ref="ac2c530e05c436107893562c76f4833d8" args="(int lines, bool forward=true)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#ac2c530e05c436107893562c76f4833d8">Indent</a> (int lines, bool forward=true)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Indents lines from current position. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad91893368b431b0f653309b053efa4da"></a><!-- doxytag: member="wxExSTC::MacroIsRecorded" ref="ad91893368b431b0f653309b053efa4da" args="() const " -->
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#ad91893368b431b0f653309b053efa4da">MacroIsRecorded</a> () const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">A macro has been recorded. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6eb83e01d6b02776a324934eb997a286"></a><!-- doxytag: member="wxExSTC::MacroIsRecording" ref="a6eb83e01d6b02776a324934eb997a286" args="() const " -->
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a6eb83e01d6b02776a324934eb997a286">MacroIsRecording</a> () const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">A marco is now being recorded. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ace39ea34bb88d667a9f395453d50ec74"></a><!-- doxytag: member="wxExSTC::MacroPlayback" ref="ace39ea34bb88d667a9f395453d50ec74" args="()" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#ace39ea34bb88d667a9f395453d50ec74">MacroPlayback</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Plays back the last recorded macro. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad9e9da28bb7060eb56818f6e38cfff10"></a><!-- doxytag: member="wxExSTC::MarkerAddChange" ref="ad9e9da28bb7060eb56818f6e38cfff10" args="(int line)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#ad9e9da28bb7060eb56818f6e38cfff10">MarkerAddChange</a> (int line)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Marks specified line as changed. <br/></td></tr>
@@ -210,6 +202,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Replaces text and calls find next.  <a href="#a8234bd84f0fdb3a0855ea215ac958df4"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a43565cab0cf2410335b1e0d65f31b15f">ResetMargins</a> (bool divider_margin=true)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset all margins.  <a href="#a43565cab0cf2410335b1e0d65f31b15f"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad8cb5796acf77ac3cd0ff22c0aaf7aec"></a><!-- doxytag: member="wxExSTC::SetIndicator" ref="ad8cb5796acf77ac3cd0ff22c0aaf7aec" args="(const wxExIndicator &amp;indicator, int start, int end)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#ad8cb5796acf77ac3cd0ff22c0aaf7aec">SetIndicator</a> (const <a class="el" href="classwx_ex_indicator.html">wxExIndicator</a> &amp;indicator, int start, int end)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets an indicator at specified start and end pos. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8728cc518cf0843560f5d2dcf38e285"></a><!-- doxytag: member="wxExSTC::SetLexer" ref="aa8728cc518cf0843560f5d2dcf38e285" args="(const wxString &amp;lexer, bool fold=false)" -->
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#aa8728cc518cf0843560f5d2dcf38e285">SetLexer</a> (const wxString &amp;lexer, bool fold=false)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the (scintilla) lexer for this document. <br/></td></tr>
@@ -219,11 +214,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e44f2a55a140c870baee7b0f0d1d6b6"></a><!-- doxytag: member="wxExSTC::SetText" ref="a2e44f2a55a140c870baee7b0f0d1d6b6" args="(const wxString &amp;value)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a2e44f2a55a140c870baee7b0f0d1d6b6">SetText</a> (const wxString &amp;value)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the text. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#ac253e687cca0ad64e26ece5d3da1c77e">StartRecord</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts recording the macro, and empties the previous one.  <a href="#ac253e687cca0ad64e26ece5d3da1c77e"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2795d7adf3077e26eed32dcf07745063"></a><!-- doxytag: member="wxExSTC::StopRecord" ref="a2795d7adf3077e26eed32dcf07745063" args="()" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a2795d7adf3077e26eed32dcf07745063">StopRecord</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops recording the macro. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a00904b9016c55b34b64e5aedb11ece31">SmartIndentation</a> ()</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">After pressing enter, starts new line at same place as previous line.  <a href="#a00904b9016c55b34b64e5aedb11ece31"></a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a7430a19daf357aa94f3665a909fec366">ConfigDialog</a> (wxWindow *parent, const wxString &amp;title=_(&quot;Editor Options&quot;), long flags=0, wxWindowID id=wxID_ANY)</td></tr>
@@ -316,10 +308,13 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p>default, not readonly, not hex mode </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a04bdc486a1d63436a3b7245ff26c7096a89a7b41b2fcd358d1010ed13955186de"></a><!-- doxytag: member="STC_WIN_READ_ONLY" ref="a04bdc486a1d63436a3b7245ff26c7096a89a7b41b2fcd358d1010ed13955186de" args="" -->STC_WIN_READ_ONLY</em>&nbsp;</td><td>
-<p>window is readonly, this mode overrides real mode from disk </p>
+<p>window is readonly, overrides real mode from disk </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a04bdc486a1d63436a3b7245ff26c7096aecc3e8556b1fb97974bc40cc2a135118"></a><!-- doxytag: member="STC_WIN_HEX" ref="a04bdc486a1d63436a3b7245ff26c7096aecc3e8556b1fb97974bc40cc2a135118" args="" -->STC_WIN_HEX</em>&nbsp;</td><td>
 <p>window in hex mode </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="a04bdc486a1d63436a3b7245ff26c7096a0eb607a2af9ecf149b80bca94d000a64"></a><!-- doxytag: member="STC_WIN_NO_INDICATOR" ref="a04bdc486a1d63436a3b7245ff26c7096a0eb607a2af9ecf149b80bca94d000a64" args="" -->STC_WIN_NO_INDICATOR</em>&nbsp;</td><td>
+<p>a change indicator is not used </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a04bdc486a1d63436a3b7245ff26c7096abcc0671f101cd83076bf18fb9d80e76b"></a><!-- doxytag: member="STC_WIN_FROM_OTHER" ref="a04bdc486a1d63436a3b7245ff26c7096abcc0671f101cd83076bf18fb9d80e76b" args="" -->STC_WIN_FROM_OTHER</em>&nbsp;</td><td>
 <p>opened from within another file (e.g. a link) </p>
@@ -694,26 +689,6 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a class="anchor" id="a5344964f840aed885b077f09e0e9736b"></a><!-- doxytag: member="wxExSTC::ReplaceNext" ref="a5344964f840aed885b077f09e0e9736b" args="(bool find_next)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool wxExSTC::ReplaceNext </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>find_next</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Replaces text and calls find next. </p>
-<p>Uses settings from find replace data. </p>
-
-</div>
-</div>
 <a class="anchor" id="a8234bd84f0fdb3a0855ea215ac958df4"></a><!-- doxytag: member="wxExSTC::ReplaceNext" ref="a8234bd84f0fdb3a0855ea215ac958df4" args="(const wxString &amp;find_text, const wxString &amp;replace_text, int search_flags=0, bool find_next=true)" -->
 <div class="memitem">
 <div class="memproto">
@@ -765,6 +740,26 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
+<a class="anchor" id="a5344964f840aed885b077f09e0e9736b"></a><!-- doxytag: member="wxExSTC::ReplaceNext" ref="a5344964f840aed885b077f09e0e9736b" args="(bool find_next)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wxExSTC::ReplaceNext </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>find_next</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Replaces text and calls find next. </p>
+<p>Uses settings from find replace data. </p>
+
+</div>
+</div>
 <a class="anchor" id="a43565cab0cf2410335b1e0d65f31b15f"></a><!-- doxytag: member="wxExSTC::ResetMargins" ref="a43565cab0cf2410335b1e0d65f31b15f" args="(bool divider_margin=true)" -->
 <div class="memitem">
 <div class="memproto">
@@ -785,12 +780,12 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a class="anchor" id="ac253e687cca0ad64e26ece5d3da1c77e"></a><!-- doxytag: member="wxExSTC::StartRecord" ref="ac253e687cca0ad64e26ece5d3da1c77e" args="()" -->
+<a class="anchor" id="a00904b9016c55b34b64e5aedb11ece31"></a><!-- doxytag: member="wxExSTC::SmartIndentation" ref="a00904b9016c55b34b64e5aedb11ece31" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void wxExSTC::StartRecord </td>
+          <td class="memname">bool wxExSTC::SmartIndentation </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -799,13 +794,12 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </div>
 <div class="memdoc">
 
-<p>Starts recording the macro, and empties the previous one. </p>
-<p>There is only one shared macro for all objects. </p>
+<p>After pressing enter, starts new line at same place as previous line. </p>
 
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Thu Dec 1 2011 18:20:49 for wxextension by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Sat Mar 24 2012 19:36:24 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
 </body>

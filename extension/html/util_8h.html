@@ -14,7 +14,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.2</span></div>
+   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.3</span></div>
   </td>
  </tr>
  </tbody>
@@ -43,10 +43,12 @@
 </div>
 <div class="contents">
 <div class="textblock"><code>#include &lt;list&gt;</code><br/>
+<code>#include &lt;vector&gt;</code><br/>
 <code>#include &lt;wx/combobox.h&gt;</code><br/>
 <code>#include &lt;wx/dir.h&gt;</code><br/>
 <code>#include &lt;wx/filedlg.h&gt;</code><br/>
 <code>#include &lt;wx/filename.h&gt;</code><br/>
+<code>#include &lt;wx/textctrl.h&gt;</code><br/>
 <code>#include &lt;wx/extension/lexer.h&gt;</code><br/>
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for util.h:</div>
@@ -111,6 +113,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6ace5ff24d510cc87aa6d306cfa6310a"></a><!-- doxytag: member="util.h::wxExLogStatus" ref="a6ace5ff24d510cc87aa6d306cfa6310a" args="(const wxFileName &amp;filename, long flags=STAT_DEFAULT)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a6ace5ff24d510cc87aa6d306cfa6310a">wxExLogStatus</a> (const wxFileName &amp;filename, long flags=STAT_DEFAULT)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs filename info on the statusbar. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a872fa26a4c8d20d4daf7c010d8119862">wxExMatch</a> (const wxString &amp;regex, const wxString &amp;text, std::vector&lt; wxString &gt; &amp;v)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Regular expression match.  <a href="#a872fa26a4c8d20d4daf7c010d8119862"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a8c23eeffd394ae77c439de8088403aea">wxExMatchesOneOf</a> (const wxFileName &amp;filename, const wxString &amp;patterns)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if filename (fullname) matches one of the fields in specified pattern (fields separated by ; sign).  <a href="#a8c23eeffd394ae77c439de8088403aea"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7988b1dcbac63aa531e2c6065687968b"></a><!-- doxytag: member="util.h::wxExPrintCaption" ref="a7988b1dcbac63aa531e2c6065687968b" args="(const wxFileName &amp;filename)" -->
@@ -141,6 +145,8 @@ const std::list&lt; wxString &gt;&#160;</td><td class="memItemRight" valign="bot
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens files.  <a href="#a252f01d765c2438674082842391e1483"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a2260491943f1153ddaf8b1742a7fe324">wxExOpenFilesDialog</a> (<a class="el" href="classwx_ex_frame.html">wxExFrame</a> *frame, long style=wxFD_OPEN|wxFD_MULTIPLE|wxFD_CHANGE_DIR, const wxString &amp;wildcards=wxFileSelectorDefaultWildcardStr, bool ask_for_continue=false, long file_flags=0, int dir_flags=wxDIR_DEFAULT)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a dialog and opens selected files (calls wxExOpenFiles).  <a href="#a2260491943f1153ddaf8b1742a7fe324"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a59e23d4276cc228b7ebb8b71abda6b6f">wxExSetTextCtrlValue</a> (wxTextCtrl *ctrl, int key, const std::list&lt; wxString &gt; &amp;l, std::list&lt; wxString &gt;::const_iterator &amp;it)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a text ctrl value from a list of values.  <a href="#a59e23d4276cc228b7ebb8b71abda6b6f"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#acec5aeac6dd8074c596f65f5ac69148b">wxExVCSCommandOnSTC</a> (const <a class="el" href="classwx_ex_v_c_s_command.html">wxExVCSCommand</a> &amp;command, const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> &amp;lexer, <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a> *stc)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Use specified VCS command to set lexer on STC document.  <a href="#acec5aeac6dd8074c596f65f5ac69148b"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a1c736731461c0d400662e574c1fd7ea5">wxExVCSExecute</a> (<a class="el" href="classwx_ex_frame.html">wxExFrame</a> *frame, int id, const wxArrayString &amp;files)</td></tr>
@@ -343,6 +349,50 @@ const std::list&lt; wxString &gt;&#160;</td><td class="memItemRight" valign="bot
 
 </div>
 </div>
+<a class="anchor" id="a872fa26a4c8d20d4daf7c010d8119862"></a><!-- doxytag: member="util.h::wxExMatch" ref="a872fa26a4c8d20d4daf7c010d8119862" args="(const wxString &amp;regex, const wxString &amp;text, std::vector&lt; wxString &gt; &amp;v)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int wxExMatch </td>
+          <td>(</td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>regex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; wxString &gt; &amp;&#160;</td>
+          <td class="paramname"><em>v</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Regular expression match. </p>
+<p>Returns number of submatches present in vector. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">regex</td><td>regular expression </td></tr>
+    <tr><td class="paramname">text</td><td>text to match </td></tr>
+    <tr><td class="paramname">v</td><td>vector is filled with submatches </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a8c23eeffd394ae77c439de8088403aea"></a><!-- doxytag: member="util.h::wxExMatchesOneOf" ref="a8c23eeffd394ae77c439de8088403aea" args="(const wxFileName &amp;filename, const wxString &amp;patterns)" -->
 <div class="memitem">
 <div class="memproto">
@@ -487,6 +537,56 @@ const std::list&lt; wxString &gt;&#160;</td><td class="memItemRight" valign="bot
 
 </div>
 </div>
+<a class="anchor" id="a59e23d4276cc228b7ebb8b71abda6b6f"></a><!-- doxytag: member="util.h::wxExSetTextCtrlValue" ref="a59e23d4276cc228b7ebb8b71abda6b6f" args="(wxTextCtrl *ctrl, int key, const std::list&lt; wxString &gt; &amp;l, std::list&lt; wxString &gt;::const_iterator &amp;it)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wxExSetTextCtrlValue </td>
+          <td>(</td>
+          <td class="paramtype">wxTextCtrl *&#160;</td>
+          <td class="paramname"><em>ctrl</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::list&lt; wxString &gt; &amp;&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::list&lt; wxString &gt;::const_iterator &amp;&#160;</td>
+          <td class="paramname"><em>it</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Sets a text ctrl value from a list of values. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctrl</td><td>text ctrl </td></tr>
+    <tr><td class="paramname">key</td><td>UP or DOWN key </td></tr>
+    <tr><td class="paramname">l</td><td>the list </td></tr>
+    <tr><td class="paramname">it</td><td>iterator on the list </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="acec5aeac6dd8074c596f65f5ac69148b"></a><!-- doxytag: member="util.h::wxExVCSCommandOnSTC" ref="acec5aeac6dd8074c596f65f5ac69148b" args="(const wxExVCSCommand &amp;command, const wxExLexer &amp;lexer, wxExSTC *stc)" -->
 <div class="memitem">
 <div class="memproto">
@@ -574,7 +674,7 @@ const std::list&lt; wxString &gt;&#160;</td><td class="memItemRight" valign="bot
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Thu Dec 1 2011 18:20:47 for wxextension by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Sat Mar 24 2012 19:36:23 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
 </body>

@@ -14,7 +14,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.2</span></div>
+   <div id="projectname">wxextension&#160;<span id="projectnumber">v2.9.3</span></div>
   </td>
  </tr>
  </tbody>
@@ -63,17 +63,18 @@ Inheritance diagram for wxExConfigDialog:</div>
 Public Types</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br/>
 &#160;&#160;<a class="el" href="classwx_ex_config_dialog.html#ab81d4e987f1f8452bc781e6381f72b3fae721fa2b6a016519f9f83b263d137b74">CONFIG_NOTEBOOK</a>, 
+<a class="el" href="classwx_ex_config_dialog.html#ab81d4e987f1f8452bc781e6381f72b3fab835f65fc3fad1c47473d882a956d78e">CONFIG_AUINOTEBOOK</a>, 
 <a class="el" href="classwx_ex_config_dialog.html#ab81d4e987f1f8452bc781e6381f72b3faa7fd13957731f7e4aa68f6963801bb36">CONFIG_TREEBOOK</a>, 
 <a class="el" href="classwx_ex_config_dialog.html#ab81d4e987f1f8452bc781e6381f72b3fa56c85292e36d26ddbfc2cb68e4cc14a0">CONFIG_CHOICEBOOK</a>, 
-<a class="el" href="classwx_ex_config_dialog.html#ab81d4e987f1f8452bc781e6381f72b3fa23fe1ba4cb74e3f36be55b8e14e7a612">CONFIG_LISTBOOK</a>, 
 <br/>
-&#160;&#160;<a class="el" href="classwx_ex_config_dialog.html#ab81d4e987f1f8452bc781e6381f72b3facb98a47e02479eee7eee7883039223c7">CONFIG_TOOLBOOK</a>
+&#160;&#160;<a class="el" href="classwx_ex_config_dialog.html#ab81d4e987f1f8452bc781e6381f72b3fa23fe1ba4cb74e3f36be55b8e14e7a612">CONFIG_LISTBOOK</a>, 
+<a class="el" href="classwx_ex_config_dialog.html#ab81d4e987f1f8452bc781e6381f72b3facb98a47e02479eee7eee7883039223c7">CONFIG_TOOLBOOK</a>
 <br/>
  }</td></tr>
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_config_dialog.html#a1a27a4df2f460c77e976a0727050f230">wxExConfigDialog</a> (wxWindow *parent, const std::vector&lt; <a class="el" href="classwx_ex_config_item.html">wxExConfigItem</a> &gt; &amp;v, const wxString &amp;title=_(&quot;Options&quot;), int rows=0, int cols=1, long flags=wxOK|wxCANCEL, wxWindowID id=wxID_ANY, int bookctrl_style=CONFIG_NOTEBOOK, long style=wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, const wxString &amp;name=&quot;wxExConfigDialog&quot;)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a1a27a4df2f460c77e976a0727050f230"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_config_dialog.html#abb35b64e87f59f53895469183d53d718">wxExConfigDialog</a> (wxWindow *parent, const std::vector&lt; <a class="el" href="classwx_ex_config_item.html">wxExConfigItem</a> &gt; &amp;v, const wxString &amp;title=_(&quot;Options&quot;), int rows=0, int cols=1, long flags=wxOK|wxCANCEL, wxWindowID id=wxID_ANY, int bookctrl_style=CONFIG_AUINOTEBOOK, long style=wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, const wxString &amp;name=&quot;wxExConfigDialog&quot;)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#abb35b64e87f59f53895469183d53d718"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_config_dialog.html#add47e54e946dcf3a858aa655d557ac74">ForceCheckBoxChecked</a> (const wxString &amp;contains=wxEmptyString, const wxString &amp;page=wxEmptyString)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">If you specified some checkboxes, calling this method requires that one of them should be checked for the OK button to be enabled.  <a href="#add47e54e946dcf3a858aa655d557ac74"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af49648e3514fcea528f4068622a628e4"></a><!-- doxytag: member="wxExConfigDialog::Reload" ref="af49648e3514fcea528f4068622a628e4" args="() const " -->
@@ -98,6 +99,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr><td valign="top"><em><a class="anchor" id="ab81d4e987f1f8452bc781e6381f72b3fae721fa2b6a016519f9f83b263d137b74"></a><!-- doxytag: member="CONFIG_NOTEBOOK" ref="ab81d4e987f1f8452bc781e6381f72b3fae721fa2b6a016519f9f83b263d137b74" args="" -->CONFIG_NOTEBOOK</em>&nbsp;</td><td>
 <p>traditional notebook </p>
 </td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ab81d4e987f1f8452bc781e6381f72b3fab835f65fc3fad1c47473d882a956d78e"></a><!-- doxytag: member="CONFIG_AUINOTEBOOK" ref="ab81d4e987f1f8452bc781e6381f72b3fab835f65fc3fad1c47473d882a956d78e" args="" -->CONFIG_AUINOTEBOOK</em>&nbsp;</td><td>
+<p>aui notebook </p>
+</td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ab81d4e987f1f8452bc781e6381f72b3faa7fd13957731f7e4aa68f6963801bb36"></a><!-- doxytag: member="CONFIG_TREEBOOK" ref="ab81d4e987f1f8452bc781e6381f72b3faa7fd13957731f7e4aa68f6963801bb36" args="" -->CONFIG_TREEBOOK</em>&nbsp;</td><td>
 <p>a tree book </p>
 </td></tr>
@@ -117,7 +121,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <hr/><h2>Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a1a27a4df2f460c77e976a0727050f230"></a><!-- doxytag: member="wxExConfigDialog::wxExConfigDialog" ref="a1a27a4df2f460c77e976a0727050f230" args="(wxWindow *parent, const std::vector&lt; wxExConfigItem &gt; &amp;v, const wxString &amp;title=_(&quot;Options&quot;), int rows=0, int cols=1, long flags=wxOK|wxCANCEL, wxWindowID id=wxID_ANY, int bookctrl_style=CONFIG_NOTEBOOK, long style=wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, const wxString &amp;name=&quot;wxExConfigDialog&quot;)" -->
+<a class="anchor" id="abb35b64e87f59f53895469183d53d718"></a><!-- doxytag: member="wxExConfigDialog::wxExConfigDialog" ref="abb35b64e87f59f53895469183d53d718" args="(wxWindow *parent, const std::vector&lt; wxExConfigItem &gt; &amp;v, const wxString &amp;title=_(&quot;Options&quot;), int rows=0, int cols=1, long flags=wxOK|wxCANCEL, wxWindowID id=wxID_ANY, int bookctrl_style=CONFIG_AUINOTEBOOK, long style=wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, const wxString &amp;name=&quot;wxExConfigDialog&quot;)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -167,7 +171,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>bookctrl_style</em> = <code>CONFIG_NOTEBOOK</code>, </td>
+          <td class="paramname"><em>bookctrl_style</em> = <code>CONFIG_AUINOTEBOOK</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -247,7 +251,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Thu Dec 1 2011 18:20:48 for wxextension by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Sat Mar 24 2012 19:36:23 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
 </body>
