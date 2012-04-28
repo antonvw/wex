@@ -1080,7 +1080,14 @@ bool wxExSTC::GotoDialog()
   }
   else
   {
-    wxASSERT(m_Goto <= GetLineCount() && m_Goto > 0);
+    if (m_Goto > GetLineCount())
+    {
+      m_Goto = GetLineCount();
+    }
+    else if (m_Goto < 1)
+    {
+      m_Goto = 1;
+    }
 
     long val;
     if ((val = wxGetNumberFromUser(
