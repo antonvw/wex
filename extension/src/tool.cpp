@@ -2,7 +2,7 @@
 // Name:      tool.cpp
 // Purpose:   Implementation of wxExTool class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
