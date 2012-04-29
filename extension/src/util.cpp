@@ -386,14 +386,14 @@ int wxExGetNumberOfLines(const wxString& text)
   wxString trimmed(text);
   trimmed.Trim();
   
-  const int c = std::count(trimmed.begin(), trimmed.end(), '\r') + 1;
+  const int c = std::count(trimmed.begin(), trimmed.end(), '\n') + 1;
   
   if (c != 1)
   {
     return c;
   }
   
-  return std::count(trimmed.begin(), trimmed.end(), '\n') + 1;
+  return std::count(trimmed.begin(), trimmed.end(), '\r') + 1;
 }
 
 const wxString wxExGetWord(
