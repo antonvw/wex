@@ -8,7 +8,6 @@
 #ifndef _EXTEXTFILE_H
 #define _EXTEXTFILE_H
 
-#include <wx/datetime.h>
 #include <wx/textfile.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/statistics.h>
