@@ -69,24 +69,17 @@ public:
   /// Gets info about current tool.
   const wxString Info() const;
 
-  // Type checking.
-  /// Is this tool the report count.
-  bool IsCount() const {
-    return m_Id == ID_TOOL_REPORT_COUNT;}
-
   /// Is this tool a find type.
   bool IsFindType() const {
     return m_Id == ID_TOOL_REPORT_FIND || m_Id == ID_TOOL_REPORT_REPLACE;}
 
+  /// Is this tool a keyword type.
+  bool IsKeywordType() const {
+    return m_Id == ID_TOOL_REPORT_KEYWORD;}
+
   /// Is this tool a report type.
   bool IsReportType() const {
     return m_Id > ID_TOOL_REPORT_FIRST && m_Id < ID_TOOL_REPORT_LAST;}
-
-  /// Is this tool a statistics type.
-  bool IsStatisticsType() const {
-    return
-      m_Id == ID_TOOL_REPORT_COUNT ||
-      m_Id == ID_TOOL_REPORT_KEYWORD;}
 
   /// Logs the statistics to the statusbar.
   void Log(const wxExStatistics<long>* stat) const;

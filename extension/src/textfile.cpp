@@ -154,11 +154,6 @@ void wxExTextFile::CommentStatementEnd()
 void wxExTextFile::CommentStatementStart()
 {
   m_IsCommentStatement = true;
-
-  m_Stats.m_Elements.Inc(_("Comments"));
-  m_Stats.m_Elements.Inc(
-    _("Comment Size"),
-    CommentBegin().length());
 }
 
 bool wxExTextFile::MatchLine(wxString& line)
@@ -299,11 +294,6 @@ bool wxExTextFile::ParseLine(const wxString& line)
   {
     if (m_IsCommentStatement)
     {
-      if (m_Tool.IsCount())
-      {
-        m_Stats.m_Elements.Inc(_("Comment Size"));
-      }
-
       m_Comments += line[i];
     }
     else if (line[i] == '"')
@@ -355,11 +345,6 @@ bool wxExTextFile::ParseLine(const wxString& line)
           {
             if (!sequence)
             {
-              if (m_Tool.IsCount())
-              {
-                m_Stats.m_Elements.Inc(_("Words Of Code"));
-              }
-
               sequence = true;
             }
 
@@ -402,26 +387,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
     CommentStatementEnd();
   }
 
-  if (line_contains_code)
-  {
-    m_Stats.m_Elements.Inc(_("Lines Of Code"));
-  }
-
   m_EmptyLine = (line.length() == 0);
-
-  if (m_EmptyLine)
-  {
-    m_Stats.m_Elements.Inc(_("Empty Lines"));
-  }
-
-  if (m_IsCommentStatement && GetCurrentLine() < GetLineCount() - 1)
-  {
-    // End of lines are included in comment size as well.
-    if (m_Tool.IsCount())
-    {
-      m_Stats.m_Elements.Inc(_("Comment Size"), wxString(GetEOL()).length());
-    }
-  }
 
   return ParseComments();
 }
@@ -435,12 +401,6 @@ bool wxExTextFile::RunTool()
 
   m_Stats.m_Elements.Set(_("Files"), 1);
 
-  if (m_Tool.IsCount())
-  {
-    m_Stats.m_Elements.Inc(_("Total Size"), m_FileName.GetStat().st_size);
-    m_Stats.m_Elements.Inc(_("Lines"), GetLineCount());
-  }
-
   if (GetLineCount() > 0)
   {
     if (!Parse())
@@ -451,7 +411,7 @@ bool wxExTextFile::RunTool()
     }
   }
 
-  if (m_Tool.IsStatisticsType())
+  if (m_Tool.IsKeywordType())
   {
     if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
     {

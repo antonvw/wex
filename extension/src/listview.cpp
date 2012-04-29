@@ -982,16 +982,6 @@ void wxExListViewFileName::AddColumns(const wxExLexer* lexer)
 
   switch (m_Type)
   {
-  case LIST_COUNT:
-    // See wxExTextFileWithListView::Report, 
-    // the order in which columns are set should be the same there.
-    InsertColumn(wxExColumn(_("Lines")));
-    InsertColumn(wxExColumn(_("Lines Of Code")));
-    InsertColumn(wxExColumn(_("Empty Lines")));
-    InsertColumn(wxExColumn(_("Words Of Code")));
-    InsertColumn(wxExColumn(_("Comments")));
-    InsertColumn(wxExColumn(_("Comment Size")));
-  break;
   case LIST_FIND:
   case LIST_REPLACE:
     InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
@@ -1109,7 +1099,6 @@ const wxString wxExListViewFileName::GetTypeDescription(wxExListType type)
   switch (type)
   {
   case LIST_FOLDER: value = _("Folder"); break;
-  case LIST_COUNT: value = _("File Count"); break;
   case LIST_FIND: value = _("Find Results"); break;
   case LIST_HISTORY: value = _("History"); break;
   case LIST_KEYWORD: value = _("Keywords"); break;

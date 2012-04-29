@@ -19,7 +19,6 @@ wxExTool::wxExTool(int type)
 {
   if (m_ToolInfo.empty())
   {
-    AddInfo(ID_TOOL_REPORT_COUNT, _("Counted"), _("Report &Count"));
     AddInfo(ID_TOOL_REPORT_FIND, _("Found %ld matches in"));
     AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %ld matches in"));
     AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %ld keywords in"), _("Report &Keyword"));
@@ -53,13 +52,5 @@ void wxExTool::Log(const wxExStatistics<long>* stat) const
 
   logtext << " " << stat->Get(_("Files")) << " " << _("file(s)");
 
-  if (stat->Get(_("Files")) != 0)
-  {
-    if (IsCount())
-    {
-      wxLogMessage(stat->Get());
-    }
-  }
-  
   wxLogStatus(logtext);
 }

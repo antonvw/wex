@@ -88,7 +88,7 @@ void TestFixture::testFileName()
 void TestFixture::testFileStatistics()
 {
   wxExFileStatistics fileStatistics;
-  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT);
+  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
   
   CPPUNIT_ASSERT(fileStatistics.Get().empty());
   CPPUNIT_ASSERT(fileStatistics.Get("xx") == 0);
@@ -210,11 +210,9 @@ void TestFixture::testTimingAttrib()
 
 void TestFixture::testTool()
 {
-  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsCount());
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_FIND).IsFindType());
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_REPLACE).IsFindType());
-  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsStatisticsType());
-  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsReportType());
+  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_KEYWORD).IsKeywordType());
 }
 
 wxExTestSuite::wxExTestSuite()

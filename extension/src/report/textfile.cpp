@@ -21,25 +21,6 @@
 wxExListView* wxExTextFileWithListView::m_Report = NULL;
 wxExFrameWithHistory* wxExTextFileWithListView::m_Frame = NULL;
 
-void SetItemColumnStatistics(
-  wxExListItem& item,
-  const wxString& col,
-  const wxExStatistics<long>& stat)
-{
-#ifdef wxExUSE_CPP0X	
-  const auto it = stat.GetItems().find(col);
-#else
-  std::map<wxString,long>::const_iterator it = stat.GetItems().find(col);
-#endif  
-
-  if (it != stat.GetItems().end())
-  {
-    item.SetItem(
-      col,
-      wxString::Format("%ld", it->second));
-  }
-}
-
 #if wxExUSE_EMBEDDED_SQL
 wxExOTL wxExTextFileWithListView::m_otl;
 
@@ -260,15 +241,6 @@ void wxExTextFileWithListView::ReportStatistics()
 
   switch (GetTool().GetId())
   {
-  case ID_TOOL_REPORT_COUNT:
-    SetItemColumnStatistics(item, _("Lines"), GetStatistics().GetElements());
-    SetItemColumnStatistics(item, _("Lines Of Code"), GetStatistics().GetElements());
-    SetItemColumnStatistics(item, _("Empty Lines"), GetStatistics().GetElements());
-    SetItemColumnStatistics(item, _("Words Of Code"), GetStatistics().GetElements());
-    SetItemColumnStatistics(item, _("Comments"), GetStatistics().GetElements());
-    SetItemColumnStatistics(item, _("Comment Size"), GetStatistics().GetElements());
-  break;
-
   case ID_TOOL_REPORT_KEYWORD:
   {
     long total = 0;
