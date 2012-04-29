@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: wxextension v2.9.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-14 20:07+0100\n"
-"PO-Revision-Date: 2011-10-16 17:00+0100\n"
+"PO-Revision-Date: 2012-04-28 18:00+0100\n"
 "Last-Translator: Emma van Wezenbeek <emmac.vw@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -657,19 +657,19 @@ msgstr "Guide d'indentation"
 
 #: ../extension/src/stc.cpp:605
 msgid "Line before expanded"
-msgstr ""
+msgstr "Ligne avant élargi"
 
 #: ../extension/src/stc.cpp:607
 msgid "Line before contracted"
-msgstr ""
+msgstr "Ligne avant contracté"
 
 #: ../extension/src/stc.cpp:609
 msgid "Line after expanded"
-msgstr ""
+msgstr "Ligne après élargi"
 
 #: ../extension/src/stc.cpp:611
 msgid "Line after contracted"
-msgstr ""
+msgstr "Ligne après contracté"
 
 #: ../extension/src/stc.cpp:614
 #: ../extension/src/stc.cpp:699
@@ -680,7 +680,7 @@ msgstr "Drapeaux"
 #: ../extension/src/stc.cpp:623
 #: ../extension/src/stc.cpp:738
 msgid "Include directory"
-msgstr ""
+msgstr "Catalogue incluré"
 
 #: ../extension/src/stc.cpp:625
 msgid "Directory"
@@ -714,7 +714,7 @@ msgstr "Macro enregistre"
 
 #: ../extension/src/stc.cpp:2394
 msgid "Macro is recorded"
-msgstr ""
+msgstr "Macro est enregistré"
 
 #: ../extension/src/stcfile.cpp:82
 msgid "Opened"
@@ -722,12 +722,12 @@ msgstr "Ouvert"
 
 #: ../extension/src/stcfile.cpp:115
 msgid "Saved"
-msgstr ""
+msgstr "Sauvé"
 
 #: ../extension/src/stcfile.cpp:143
 #, c-format
 msgid "file: %s does not exist"
-msgstr ""
+msgstr "fichier: %s n'existe pas"
 
 #: ../extension/src/style.cpp:85
 #, c-format
@@ -737,7 +737,7 @@ msgstr "Style illégales:% s à la ligne:% d"
 #: ../extension/src/style.cpp:108
 #, c-format
 msgid "Illegal style: %s"
-msgstr ""
+msgstr "Styl illégal: %s"
 
 #: ../extension/src/textfile.cpp:649
 #: ../extension/src/tool.cpp:56
@@ -747,20 +747,20 @@ msgstr "fichiers"
 
 #: ../extension/src/textfile.cpp:653
 msgid "Total Size"
-msgstr ""
+msgstr "Taille Totale"
 
 #: ../extension/src/tool.cpp:26
 msgid "Recent revision from"
-msgstr ""
+msgstr "Récente révision de"
 
 #: ../extension/src/tool.cpp:27
 #, c-format
 msgid "Reported %ld revisions in"
-msgstr ""
+msgstr "Signalés% ld révisions en"
 
 #: ../extension/src/tool.cpp:27
 msgid "Report &Revision"
-msgstr ""
+msgstr "Rapporter &Révision"
 
 #: ../extension/src/tool.cpp:28
 msgid "Counted"
@@ -768,30 +768,30 @@ msgstr "Contenu"
 
 #: ../extension/src/tool.cpp:28
 msgid "Report &Count"
-msgstr ""
+msgstr "Rapporter &Compter"
 
 #: ../extension/src/tool.cpp:29
 #, c-format
 msgid "Found %ld matches in"
-msgstr ""
+msgstr "Trouver %ld couples en"
 
 #: ../extension/src/tool.cpp:30
 #, c-format
 msgid "Replaced %ld matches in"
-msgstr ""
+msgstr "Remplacé %ld couples en"
 
 #: ../extension/src/tool.cpp:31
 #, c-format
 msgid "Reported %ld keywords in"
-msgstr ""
+msgstr "Rapporté %ld mot-clés en"
 
 #: ../extension/src/tool.cpp:31
 msgid "Report &Keyword"
-msgstr ""
+msgstr "Rapport &Mot-clé"
 
 #: ../extension/src/tool.cpp:53
 msgid "Actions Completed"
-msgstr ""
+msgstr "Actions Complétés"
 
 #: ../extension/src/tool.cpp:56
 #: ../extension/src/report/listviewfile.cpp:145
@@ -812,11 +812,11 @@ msgstr "&Rechercher le suivant/tF3"
 
 #: ../extension/src/toolbar.cpp:185
 msgid "Find previous"
-msgstr ""
+msgstr "Trouvez des précédents"
 
 #: ../extension/src/toolbar.cpp:208
 msgid "Search case sensitive"
-msgstr ""
+msgstr "Recherche des cas sensible"
 
 #: ../extension/src/toolbar.cpp:209
 msgid "Search matching words"
@@ -832,27 +832,27 @@ msgstr "Comparé"
 
 #: ../extension/src/util.cpp:225
 msgid "No version information found"
-msgstr ""
+msgstr "Aucune information de la version trouvée"
 
 #: ../extension/src/util.cpp:286
 msgid "No files found"
-msgstr ""
+msgstr "Aucun fichier trouvé"
 
 #: ../extension/src/util.cpp:299
 msgid "bottom"
-msgstr ""
+msgstr "fond"
 
 #: ../extension/src/util.cpp:299
 msgid "top"
-msgstr ""
+msgstr "sommit"
 
 #: ../extension/src/util.cpp:303
 msgid "hit"
-msgstr ""
+msgstr "but"
 
 #: ../extension/src/util.cpp:309
 msgid "not found"
-msgstr ""
+msgstr "pas trouvé"
 
 #: ../extension/src/util.cpp:470
 msgid "Synchronized"
@@ -864,16 +864,16 @@ msgstr "les fichiers de projet"
 
 #: ../extension/src/util.cpp:584
 msgid "Page @PAGENUM@ of @PAGESCNT@"
-msgstr ""
+msgstr "Page @PAGENUM@ ou @PAGESCNT@"
 
 #: ../extension/src/util.cpp:599
 msgid "Printed"
-msgstr ""
+msgstr "imprimé"
 
 #: ../extension/src/vcs.cpp:194
 #: ../extension/src/vcsentry.cpp:302
 msgid "Path"
-msgstr ""
+msgstr "Trajet"
 
 #: ../extension/src/vcs.cpp:197
 #: ../extension/src/vcs.cpp:302
@@ -883,7 +883,7 @@ msgstr ""
 #: ../extension/src/vcs.cpp:337
 #: ../extension/src/vcsentry.cpp:293
 msgid "Base folder"
-msgstr ""
+msgstr "Dossier de base"
 
 #: ../extension/src/vcs.cpp:296
 msgid "Select VCS Folder"
@@ -892,16 +892,16 @@ msgstr "Sélectionnez le dossier VCS"
 #: ../extension/src/vcsentry.cpp:41
 #, c-format
 msgid "Missing vcs on line: %d"
-msgstr ""
+msgstr "Manquant vcs en ligne: %d"
 
 #: ../extension/src/vcsentry.cpp:60
 msgid "No commands found for: "
-msgstr ""
+msgstr "Pas de commandes trouvés pour:"
 
 #: ../extension/src/vcsentry.cpp:75
 #, c-format
 msgid "Reached commands limit: %d"
-msgstr ""
+msgstr "Atteindré la limite des commandes:% d"
 
 #: ../extension/src/vcsentry.cpp:172
 msgid "Select"
@@ -910,17 +910,17 @@ msgstr "Sélectionner"
 #: ../extension/src/vcsentry.cpp:188
 #: ../extension/src/vcsentry.cpp:320
 msgid "Prefix flags"
-msgstr ""
+msgstr "Drapeaux Préfixes"
 
 #: ../extension/src/vcsentry.cpp:195
 #: ../extension/src/vcsentry.cpp:325
 msgid "Subcommand"
-msgstr ""
+msgstr "Sous-commande"
 
 #: ../extension/src/vcsentry.cpp:225
 #: ../extension/src/vcsentry.cpp:284
 msgid "Revision comment"
-msgstr ""
+msgstr "Révision commentaire"
 
 #: ../extension/src/vcsentry.cpp:248
 #: ../extension/src/vcsentry.cpp:312
@@ -932,23 +932,23 @@ msgstr "drapeaux"
 #: ../extension/src/vi.cpp:114
 #, c-format
 msgid "%d fewer lines"
-msgstr ""
+msgstr "%d moins de lignes"
 
 #: ../extension/src/vi.cpp:864
 #, c-format
 msgid "%d lines moved"
-msgstr ""
+msgstr "%d lignes déplacé"
 
 #: ../extension/src/vi.cpp:1287
 #: ../extension/src/vi.cpp:1314
 #, c-format
 msgid "%d lines yanked"
-msgstr ""
+msgstr "%d de lignes tirées"
 
 #: ../extension/src/report/dir.cpp:44
 #: ../extension/src/report/listviewfile.cpp:62
 msgid "Add folders"
-msgstr ""
+msgstr "Ajouter des dossiers"
 
 #: ../extension/src/report/dirctrl.cpp:119
 #: ../extension/src/report/listview.cpp:84
@@ -958,7 +958,7 @@ msgstr "&Ouvrir"
 #: ../extension/src/report/frame.cpp:58
 #: ../extension/src/report/listviewfile.cpp:65
 msgid "In folder"
-msgstr ""
+msgstr "Dans le dossier"
 
 #: ../extension/src/report/frame.cpp:59
 #: ../extension/src/report/listviewfile.cpp:63
@@ -968,20 +968,20 @@ msgstr "récursive"
 #: ../extension/src/report/frame.cpp:83
 #, c-format
 msgid "Executed %ld SQL queries in"
-msgstr ""
+msgstr "Exécuté %ld SQL requêtes en"
 
 #: ../extension/src/report/frame.cpp:84
 msgid "&SQL Query Run"
-msgstr ""
+msgstr "&SQL Requête Exécutée"
 
 #: ../extension/src/report/frame.cpp:88
 #, c-format
 msgid "Reported %ld SQL queries in"
-msgstr ""
+msgstr "Rapportés%ld SQL requêtes en"
 
 #: ../extension/src/report/frame.cpp:89
 msgid "Report SQL &Query"
-msgstr ""
+msgstr "Rapport SQL &Requête"
 
 #: ../extension/src/report/frame.cpp:152
 msgid "Find In Files"
@@ -994,7 +994,7 @@ msgstr "Remplacer dans les fichiers"
 #: ../extension/src/report/frame.cpp:179
 #, c-format
 msgid "Removed not existing file: %s from history"
-msgstr ""
+msgstr "Retiré un fichier non existant: %s de l'histoire"
 
 #: ../extension/src/report/frame.cpp:347
 msgid "Replace In Selection"
@@ -1006,11 +1006,11 @@ msgstr "Trouver en Sélection"
 
 #: ../extension/src/report/frame.cpp:357
 msgid "Process is running"
-msgstr ""
+msgstr "Processus est occupé"
 
 #: ../extension/src/report/frame.cpp:460
 msgid "Cancelled"
-msgstr ""
+msgstr "Annulé"
 
 #: ../extension/src/report/frame.cpp:650
 msgid "Open &Recent"
@@ -1030,7 +1030,7 @@ msgstr "&Comparer avec"
 
 #: ../extension/src/report/listview.cpp:143
 msgid "&Version List"
-msgstr ""
+msgstr "&Version List"
 
 #: ../extension/src/report/listviewfile.cpp:61
 msgid "Add files"
