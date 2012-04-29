@@ -86,7 +86,7 @@ public:
   /// Stops recording current macro.
   void MacroStopRecording() {m_Macros.StopRecording();};
 
-  /// Adds marker at the current line.
+  /// Adds marker at the specified line.
   /// Returns true if marker could be added.
   bool MarkerAdd(
     /// marker

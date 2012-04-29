@@ -376,7 +376,7 @@ int wxExGetLineNumber(const wxString& text)
   return atoi(linenumber.c_str());
 }
 
-int wxExGetNumberOfLines(const wxString& text, bool trimmed)
+int wxExGetNumberOfLines(const wxString& text, bool trim)
 {
   if (text.empty())
   {
@@ -385,7 +385,7 @@ int wxExGetNumberOfLines(const wxString& text, bool trimmed)
   
   wxString trimmed(text);
   
-  if (trimmed)
+  if (trim)
   {
     trimmed.Trim();
   }
