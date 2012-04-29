@@ -411,17 +411,14 @@ bool wxExTextFile::RunTool()
     }
   }
 
-  if (m_Tool.IsKeywordType())
+  if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
   {
-    if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
+    if (!m_FileName.GetLexer().GetKeywordsString().empty())
     {
-      if (!m_FileName.GetLexer().GetKeywordsString().empty())
-      {
-        IncActionsCompleted();
-      }
+      IncActionsCompleted();
     }
 
-    ReportStatistics();
+    ReportKeyword();
   }
 
   if (m_Modified && !m_FileName.GetStat().IsReadOnly())

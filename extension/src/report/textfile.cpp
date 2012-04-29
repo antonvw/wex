@@ -222,57 +222,45 @@ void wxExTextFileWithListView::Report(size_t line)
   }
 }
 
-void wxExTextFileWithListView::ReportStatistics()
+void wxExTextFileWithListView::Reportkeyword()
 {
-  if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
-  {
-    m_Report = m_Frame->Activate(
-      wxExListViewWithFrame::GetTypeTool(GetTool()),
-      &GetFileName().GetLexer());
+  m_Report = m_Frame->Activate(
+    wxExListViewWithFrame::GetTypeTool(GetTool()),
+    &GetFileName().GetLexer());
 
-    if (m_Report == NULL)
-    {
-      return;
-    }
+  if (m_Report == NULL)
+  {
+    return;
   }
 
   wxExListItem item(m_Report, GetFileName());
   item.Insert();
 
-  switch (GetTool().GetId())
+  long total = 0;
+  for (size_t i = 0; i < GetFileName().GetLexer().GetKeywords().size(); i++)
   {
-  case ID_TOOL_REPORT_KEYWORD:
-  {
-    long total = 0;
-    for (size_t i = 0; i < GetFileName().GetLexer().GetKeywords().size(); i++)
-    {
-      wxListItem col;
-      col.SetMask(wxLIST_MASK_TEXT);
-      m_Report->GetColumn(i + 1, col);
-      const wxString name = col.GetText();
-      const wxExStatistics<long>& stat = GetStatistics().GetKeywords();
+    wxListItem col;
+    col.SetMask(wxLIST_MASK_TEXT);
+    m_Report->GetColumn(i + 1, col);
+    const wxString name = col.GetText();
+    const wxExStatistics<long>& stat = GetStatistics().GetKeywords();
 #ifdef wxExUSE_CPP0X	
-      const auto it = stat.GetItems().find(name);
+    const auto it = stat.GetItems().find(name);
 #else
-      std::map<wxString,long>::const_iterator it = stat.GetItems().find(name);
+    std::map<wxString,long>::const_iterator it = stat.GetItems().find(name);
 #endif	  
       
-      if (it != stat.GetItems().end())
-      {
-        m_Report->SetItem(item.GetId(), i + 1, wxString::Format("%ld", it->second));
-        total += it->second;
-      }
+    if (it != stat.GetItems().end())
+    {
+      m_Report->SetItem(item.GetId(), i + 1, wxString::Format("%ld", it->second));
+      total += it->second;
     }
+  }
     
-    m_Report->SetItem(
-      item.GetId(),
-      GetFileName().GetLexer().GetKeywords().size() + 1,
-      wxString::Format("%ld", total));
-  }
-  break;
-
-  default: wxFAIL;
-  }
+  m_Report->SetItem(
+    item.GetId(),
+    GetFileName().GetLexer().GetKeywords().size() + 1,
+    wxString::Format("%ld", total));
 }
 
 #if wxExUSE_EMBEDDED_SQL

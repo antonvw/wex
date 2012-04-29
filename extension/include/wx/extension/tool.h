@@ -73,10 +73,6 @@ public:
   bool IsFindType() const {
     return m_Id == ID_TOOL_REPORT_FIND || m_Id == ID_TOOL_REPORT_REPLACE;}
 
-  /// Is this tool a keyword type.
-  bool IsKeywordType() const {
-    return m_Id == ID_TOOL_REPORT_KEYWORD;}
-
   /// Is this tool a report type.
   bool IsReportType() const {
     return m_Id > ID_TOOL_REPORT_FIRST && m_Id < ID_TOOL_REPORT_LAST;}

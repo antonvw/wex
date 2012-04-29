@@ -50,7 +50,7 @@ private:
 };
 
 /// Adds file tool methods to wxTextFile.
-/// In your derived class just implement the Report or ReportStatistics, and take
+/// In your derived class just implement the Report or ReportKeyword, and take
 /// care that the strings are added to your component.
 class WXDLLIMPEXP_BASE wxExTextFile : public wxTextFile
 {
@@ -79,9 +79,9 @@ protected:
   /// This one is invoked during parsing of lines.
   virtual void Report(size_t WXUNUSED(line)) {;};
 public:
-  /// This one is invoked at the end, when statistics are completed.
+  /// This one is invoked at the end, when keywords are completed.
   /// It is made public, as it can be useful from outside.
-  virtual void ReportStatistics() {;};
+  virtual void ReportKeyword() {;};
 protected:
   /// Clears the comments.
   void ClearComments() {m_Comments.clear();}
