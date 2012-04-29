@@ -31,7 +31,6 @@ wxExEx::wxExEx(wxExSTC* stc)
   , m_IsActive(false)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxSTC_FIND_MATCHCASE)
   , m_MarkerSymbol(0, -1)
-  , m_YankedLines(false)
   , m_FindIndicator(0, 0)
 {
   wxASSERT(m_Frame != NULL);
@@ -998,8 +997,6 @@ void wxExEx::Yank(int lines)
     m_STC->CopyRange(start, m_STC->GetLastPosition());
   }
   
-  m_YankedLines = true;
-
   if (lines >= 2)
   {
     m_Frame->ShowExMessage(wxString::Format(_("%d lines yanked"), lines));
@@ -1023,8 +1020,6 @@ bool wxExEx::Yank(
 
   m_STC->CopyRange(start, end);
   
-  m_YankedLines = true;
-
   const int lines = end_line - begin_line + 1;
   
   if (lines >= 2)

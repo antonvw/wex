@@ -376,7 +376,7 @@ int wxExGetLineNumber(const wxString& text)
   return atoi(linenumber.c_str());
 }
 
-int wxExGetNumberOfLines(const wxString& text)
+int wxExGetNumberOfLines(const wxString& text, bool trimmed)
 {
   if (text.empty())
   {
@@ -384,7 +384,11 @@ int wxExGetNumberOfLines(const wxString& text)
   }
   
   wxString trimmed(text);
-  trimmed.Trim();
+  
+  if (trimmed)
+  {
+    trimmed.Trim();
+  }
   
   const int c = std::count(trimmed.begin(), trimmed.end(), '\n') + 1;
   
