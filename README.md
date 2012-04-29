@@ -23,7 +23,7 @@ one of these applications, being a full featured source code text editor.
 - under windows using cygwin 1.7.9:   
     `../configure --with-msw --disable-shared`  
     
-- under Ubuntu 11.10 linux gcc (Ubuntu/Linaro 4.6.1-9ubuntu3) 4.6.1:   
+- under Ubuntu 12.04 linux g++ (Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3
     `../configure --with-gtk`  
 
 - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg):  
