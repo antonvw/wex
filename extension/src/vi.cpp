@@ -309,21 +309,6 @@ bool wxExVi::Command(const wxString& command)
         
       case 'b': for (int i = 0; i < repeat; i++) GetSTC()->WordLeft(); break;
 
-      case 'd':
-        if (
-          !GetSTC()->GetSelectedText().empty() &&
-          !GetSTC()->GetReadOnly() && 
-          !GetSTC()->HexMode()) 
-        {
-          GetSTC()->Clear(); 
-          GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
-        }
-        else
-        {
-          handled = false;
-        }
-        break;
-
       case 'e': for (int i = 0; i < repeat; i++) GetSTC()->WordRightEnd(); break;
       
       case 'g': GetSTC()->DocumentStart(); break;
