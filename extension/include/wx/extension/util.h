@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wxExtension utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXUTIL_H

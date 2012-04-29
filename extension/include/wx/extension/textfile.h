@@ -2,7 +2,7 @@
 // Name:      textfile.h
 // Purpose:   Declaration of wxExTextFile class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXTEXTFILE_H
