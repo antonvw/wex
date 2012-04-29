@@ -890,6 +890,8 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetEndOfText("testtest", 3).size() == 3);
   CPPUNIT_ASSERT( wxExGetLineNumber("test on line: 1200") == 1200);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest\n") == 2);
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\rtest\r") == 2);
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n") == 2);
   
   std::vector<wxString> v;
   CPPUNIT_ASSERT( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
