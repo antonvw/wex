@@ -16,6 +16,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
@@ -216,7 +217,6 @@ bool wxExVi::Command(const wxString& command)
     for (int j = 0; j < repeat; j++) 
       GetSTC()->WordLeftExtend();
     GetSTC()->Copy();
-    YankedLinesReset();
   }
   else if (rest == "yy")
   {
@@ -393,7 +393,6 @@ bool wxExVi::Command(const wxString& command)
         if (!GetSTC()->GetSelectedText().empty())
         {
           GetSTC()->Copy();
-          YankedLinesReset();
         } 
         else
         {
@@ -861,4 +860,12 @@ void wxExVi::ToggleCase()
   const int line = GetSTC()->LineFromPosition(GetSTC()->GetCurrentPos());
   GetSTC()->MarkerAddChange(line);
 }
+
+bool wxExVi::YankedLines()
+{
+  const wxString cb(wxExClipboardGet(), false); // do not trim
+  
+  return wxExGetNumberOfLines(cb) > 1;
+}
+
 #endif // wxUSE_GUI

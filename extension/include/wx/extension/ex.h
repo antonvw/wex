@@ -121,8 +121,6 @@ protected:
     const wxString& end_address) const;
   int ToLineNumber(const wxString& address) const;
   void Yank(int lines);
-  bool YankedLines() const {return m_YankedLines;};    
-  void YankedLinesReset() {m_YankedLines = false;};
 private:
   bool CommandGlobal(const wxString& search);
   bool CommandRange(const wxString& command);
@@ -157,7 +155,6 @@ private:
   static wxExViMacros m_Macros;
 
   bool m_IsActive; // are we actively using ex mode?
-  bool m_YankedLines;
   
   int m_SearchFlags;
   

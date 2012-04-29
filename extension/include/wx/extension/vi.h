@@ -53,7 +53,8 @@ private:
   void SetInsertMode(
     const wxString& command,
     int repeat = 1);
-  void ToggleCase();
+  void ToggleCase(); 
+  bool YankedLines();   
 
   static wxString m_LastFindCharCommand;
 
