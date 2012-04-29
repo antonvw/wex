@@ -157,7 +157,6 @@ private:
   bool MatchLine(wxString& line);
   bool Parse();
 
-  bool m_EmptyLine;
   bool m_IsCommentStatement;
   bool m_IsString;
 
