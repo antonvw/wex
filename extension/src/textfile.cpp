@@ -51,7 +51,6 @@ wxExTextFile::wxExTextFile(
   , m_LastSyntaxType(SYNTAX_NONE)
   , m_SyntaxType(SYNTAX_NONE)
   , m_Tool(tool)
-  , m_EmptyLine(false)
   , m_IsCommentStatement(false)
   , m_IsString(false)
   , m_Modified(false)
@@ -386,8 +385,6 @@ bool wxExTextFile::ParseLine(const wxString& line)
   {
     CommentStatementEnd();
   }
-
-  m_EmptyLine = (line.length() == 0);
 
   return ParseComments();
 }
