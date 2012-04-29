@@ -218,7 +218,6 @@ public:
   {
     LIST_BEFORE_FIRST, ///< for iterating
     LIST_FOLDER,       ///< a list containing folders only
-    LIST_COUNT,        ///< a list to show statistics
     LIST_FIND,         ///< a list to show find results
     LIST_HISTORY,      ///< a list to show history items
     LIST_KEYWORD,      ///< a list to show keywords

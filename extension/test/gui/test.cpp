@@ -844,7 +844,7 @@ void wxExGuiTestFixture::testStyle()
 
 void wxExGuiTestFixture::testTextFile()
 {
-  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT);
+  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
 
   CPPUNIT_ASSERT( textFile.RunTool());
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
