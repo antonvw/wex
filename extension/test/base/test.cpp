@@ -212,7 +212,6 @@ void TestFixture::testTool()
 {
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_FIND).IsFindType());
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_REPLACE).IsFindType());
-  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_KEYWORD).IsKeywordType());
 }
 
 wxExTestSuite::wxExTestSuite()

@@ -39,7 +39,7 @@ private:
 
   // Implement interface from wxExTextFile.
   virtual void Report(size_t line);
-  virtual void ReportStatistics();
+  virtual void ReportKeyword();
 
   static wxExListView* m_Report;
   static wxExFrameWithHistory* m_Frame;
