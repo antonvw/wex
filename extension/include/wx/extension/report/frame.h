@@ -102,6 +102,10 @@ public:
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
     int commandid = wxID_APPLY);
+    
+  /// Called if the notebook changed page.
+  /// Adds page as recently used (file or project, depending on id).
+  virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
   /// Interface from wxExFrame.
   virtual bool OpenFile(
