@@ -529,6 +529,22 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
   }
 }
 
+void wxExFrameWithHistory::OnNotebook(wxWindowID id, wxWindow* page)
+{
+  wxExManagedFrame::OnNoteboook(id, page);
+  
+  switch (id)
+  {
+    case NOTEBOOK_EDITORS:
+      SetRecentFile(((wxExSTC*)page)->GetFileName().GetFullPath());
+      break;
+      
+    case NOTEBOOK_PROJECTS:
+      SetRecentProject(((wxExListViewFile*)page)->GetFileName().GetFullPath());
+      break;
+  }
+}
+
 bool wxExFrameWithHistory::OpenFile(
   const wxExFileName& filename,
   int line_number,
