@@ -531,17 +531,22 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
 
 void wxExFrameWithHistory::OnNotebook(wxWindowID id, wxWindow* page)
 {
-  wxExManagedFrame::OnNoteboook(id, page);
+  wxExManagedFrame::OnNotebook(id, page);
   
-  switch (id)
+  wxExSTC* stc = wxDynamicCast(page, wxExSTC);
+
+  if (stc != NULL)
   {
-    case NOTEBOOK_EDITORS:
-      SetRecentFile(((wxExSTC*)page)->GetFileName().GetFullPath());
-      break;
-      
-    case NOTEBOOK_PROJECTS:
-      SetRecentProject(((wxExListViewFile*)page)->GetFileName().GetFullPath());
-      break;
+    SetRecentFile(stc->GetFileName().GetFullPath());
+  }
+  else
+  {
+    wxExListViewFile* lv = wxDynamicCast(page, wxExListViewFile);
+    
+    if (lv != NULL)
+    {
+      SetRecentProject(lv->GetFileName().GetFullPath());
+    }
   }
 }
 

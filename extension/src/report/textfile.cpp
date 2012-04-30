@@ -222,7 +222,7 @@ void wxExTextFileWithListView::Report(size_t line)
   }
 }
 
-void wxExTextFileWithListView::Reportkeyword()
+void wxExTextFileWithListView::ReportKeyword()
 {
   m_Report = m_Frame->Activate(
     wxExListViewWithFrame::GetTypeTool(GetTool()),

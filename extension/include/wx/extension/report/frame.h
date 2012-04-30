@@ -104,7 +104,7 @@ public:
     int commandid = wxID_APPLY);
     
   /// Called if the notebook changed page.
-  /// Adds page as recently used (file or project, depending on id).
+  /// Adds page as recently used (file or project, depending on dynamic cast).
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
   /// Interface from wxExFrame.
