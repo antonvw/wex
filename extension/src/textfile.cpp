@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <wx/extension/textfile.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/util.h>
 
 long wxExFileStatistics::Get(const wxString& key) const
 {
@@ -130,30 +129,28 @@ bool wxExTextFile::MatchLine(wxString& line)
 
 bool wxExTextFile::Parse()
 {
-  if (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE &&
-      m_FileName.GetStat().IsReadOnly())
+  if (
+    !m_Tool.IsFindType() || 
+    (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE && m_FileName.GetStat().IsReadOnly()))
   {
     return false;
   }
 
-  if (m_Tool.IsFindType())
+  if (wxExFindReplaceData::Get()->GetFindString().empty())
   {
-    if (wxExFindReplaceData::Get()->GetFindString().empty())
-    {
-      wxFAIL;
-      return false;
-    }
+    wxFAIL;
+    return false;
+  }
 
-    m_FindString = wxExFindReplaceData::Get()->GetFindString();
+  m_FindString = wxExFindReplaceData::Get()->GetFindString();
 
-    if (!wxExFindReplaceData::Get()->MatchCase())
-    {
-      std::transform(
-        m_FindString.begin(), 
-        m_FindString.end(), 
-        m_FindString.begin(), 
-        toupper);
-    }
+  if (!wxExFindReplaceData::Get()->MatchCase())
+  {
+    std::transform(
+      m_FindString.begin(), 
+      m_FindString.end(), 
+      m_FindString.begin(), 
+      toupper);
   }
 
   for (size_t i = 0; i < GetLineCount(); i++)
@@ -181,6 +178,16 @@ bool wxExTextFile::RunTool()
   if (GetLineCount() > 0)
   {
     if (!Parse())
+    {
+      Close();
+
+      return false;
+    }
+  }
+
+  if (m_Modified && !m_FileName.GetStat().IsReadOnly())
+  {
+    if (!Write())
     {
       Close();
 

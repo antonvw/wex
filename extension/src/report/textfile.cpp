@@ -207,16 +207,6 @@ bool wxExTextFileWithListView::Parse()
     ReportKeyword();
   }
 
-  if (m_Modified && !GetFileName().GetStat().IsReadOnly())
-  {
-    if (!Write())
-    {
-      Close();
-
-      return false;
-    }
-  }
-
   return true;
 }
 
