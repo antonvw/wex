@@ -1,9 +1,16 @@
-..........
+.....F.....
 
 
-OK (10 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  10   Failures: 1   Errors: 0
 
 
-reading 100000 items from config took 293 milliseconds
-wxExFile::Read:175 wxFile::Read:227
-wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:11
+1) test: testFileStatistics (F) line: 96 ../extension/test/base/test.cpp
+assertion failed
+- Expression: textFile.RunTool()
+
+
+reading 100000 items from config took 299 milliseconds
+wxExFile::Read:195 wxFile::Read:379
+wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:8
