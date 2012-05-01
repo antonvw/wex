@@ -32,17 +32,6 @@ public:
     /// listview to which is reported, if NULL,
     /// calls Activate on frame to find report
     wxExListView* report = NULL);
-protected:    
-  /// Clears the comments.
-  void ClearComments() {m_Comments.clear();}
-
-  /// Gets the current comments.
-  const wxString& GetComments() const {return m_Comments;};
-  
-  /// Parses the specified line, and invokes actions depending on the tool,
-  /// and fills the comments if any on the line.
-  /// At the end it calls ParseComments.
-  bool ParseLine(const wxString& line);
 private:
   /// The comment type.
   enum wxExCommentType
@@ -70,14 +59,14 @@ private:
   /// Gets the actual begin of comment, depending on the syntax type.
   const wxString CommentBegin() const {
     return (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE) ?
-      m_FileName.GetLexer().GetCommentBegin() :
-      m_FileName.GetLexer().GetCommentBegin2();};
+      GetFileName().GetLexer().GetCommentBegin() :
+      GetFileName().GetLexer().GetCommentBegin2();};
 
   /// Gets the last end of comment detected, depending on the last syntax type.
   const wxString CommentEnd() const {
     return (m_LastSyntaxType == SYNTAX_NONE || m_LastSyntaxType == SYNTAX_ONE) ?
-      m_FileName.GetLexer().GetCommentEnd() :
-      m_FileName.GetLexer().GetCommentEnd2();};
+      GetFileName().GetLexer().GetCommentEnd() :
+      GetFileName().GetLexer().GetCommentEnd2();};
 
   /// Check whether specified text result in a comment.
   wxExCommentType CheckForComment(const wxString& text);
@@ -93,15 +82,18 @@ private:
   /// Returns true if char is a code word separator.
   bool IsCodewordSeparator(int c) const {
     return (isspace(c) || IsBrace(c) || c == ',' || c == ';' || c == ':');};
-  /// Returns true if char is alphanumeric or a _ sign.
-  bool IsWordCharacter(int c) const {
-    return isalnum(c) || c == '_';};
 
   /// Inserts a line at current line (or at end if at end),
   /// make that line current and sets modified.
   void InsertLine(const wxString& line);
 
+  /// Parses the specified line, and invokes actions depending on the tool,
+  /// and fills the comments if any on the line.
+  /// At the end it calls ParseComments.
+  bool ParseLine(const wxString& line);
+  
   // Implement interface from wxExTextFile.
+  virtual bool Parse();
   virtual void Report(size_t line);
   
   void ReportKeyword();
@@ -111,6 +103,8 @@ private:
 
   bool m_IsCommentStatement;
   bool m_IsString;
+
+  wxString m_Comments;
   
   wxExSyntaxType m_LastSyntaxType;
   wxExSyntaxType m_SyntaxType;

@@ -541,12 +541,13 @@ void wxExFrameWithHistory::OnNotebook(wxWindowID id, wxWindow* page)
   }
   else
   {
-    wxExListViewFile* lv = wxDynamicCast(page, wxExListViewFile);
+      // TODO: crash for FiF, new page is not a wxExListViewFile
+//    wxExListViewFile* lv = wxDynamicCast(page, wxExListViewFile);
     
-    if (lv != NULL)
-    {
-      SetRecentProject(lv->GetFileName().GetFullPath());
-    }
+//    if (lv != NULL)
+//    {
+//      SetRecentProject(lv->GetFileName().GetFullPath());
+//    }
   }
 }
 

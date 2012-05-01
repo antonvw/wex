@@ -64,7 +64,7 @@ wxExTextFileWithListView::wxExTextFileWithListView(
 {
 }
 
- wxExTextFileWithListView::wxExCommentType wxExTextFile::CheckCommentSyntax(
+wxExTextFileWithListView::wxExCommentType wxExTextFileWithListView::CheckCommentSyntax(
   const wxString& syntax_begin,
   const wxString& syntax_end,
   const wxString& text) const
@@ -91,14 +91,14 @@ wxExTextFileWithListView::wxExTextFileWithListView(
   return COMMENT_NONE;
 }
 
-wxExTextFileWithListView::wxExCommentType wxExTextFile::CheckForComment(
+wxExTextFileWithListView::wxExCommentType wxExTextFileWithListView::CheckForComment(
   const wxString& text)
 {
-  if (m_FileName.GetLexer().GetCommentBegin2().empty())
+  if (GetFileName().GetLexer().GetCommentBegin2().empty())
   {
     return CheckCommentSyntax(
-      m_FileName.GetLexer().GetCommentBegin(),
-      m_FileName.GetLexer().GetCommentEnd(), text);
+      GetFileName().GetLexer().GetCommentBegin(),
+      GetFileName().GetLexer().GetCommentEnd(), text);
   }
 
   wxExCommentType comment_type1 = COMMENT_NONE;
@@ -106,8 +106,8 @@ wxExTextFileWithListView::wxExCommentType wxExTextFile::CheckForComment(
   if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE)
   {
     if ((comment_type1 = CheckCommentSyntax(
-      m_FileName.GetLexer().GetCommentBegin(),
-      m_FileName.GetLexer().GetCommentEnd(), text)) == COMMENT_BEGIN)
+      GetFileName().GetLexer().GetCommentBegin(),
+      GetFileName().GetLexer().GetCommentEnd(), text)) == COMMENT_BEGIN)
       m_SyntaxType = SYNTAX_ONE;
   }
 
@@ -116,8 +116,8 @@ wxExTextFileWithListView::wxExCommentType wxExTextFile::CheckForComment(
   if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_TWO)
   {
     if ((comment_type2 = CheckCommentSyntax(
-      m_FileName.GetLexer().GetCommentBegin2(),
-      m_FileName.GetLexer().GetCommentEnd2(), text)) == COMMENT_BEGIN)
+      GetFileName().GetLexer().GetCommentBegin2(),
+      GetFileName().GetLexer().GetCommentEnd2(), text)) == COMMENT_BEGIN)
       m_SyntaxType = SYNTAX_TWO;
   }
 
@@ -197,9 +197,9 @@ bool wxExTextFileWithListView::Parse()
     }
   }
 
-  if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
+  if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
   {
-    if (!m_FileName.GetLexer().GetKeywordsString().empty())
+    if (!GetFileName().GetLexer().GetKeywordsString().empty())
     {
       IncActionsCompleted();
     }
@@ -207,7 +207,7 @@ bool wxExTextFileWithListView::Parse()
     ReportKeyword();
   }
 
-  if (m_Modified && !m_FileName.GetStat().IsReadOnly())
+  if (m_Modified && !GetFileName().GetStat().IsReadOnly())
   {
     if (!Write())
     {
@@ -219,6 +219,52 @@ bool wxExTextFileWithListView::Parse()
 
   return true;
 }
+
+#if wxExUSE_EMBEDDED_SQL
+bool wxExTextFileWithListView::ParseComments()
+{
+  if (GetTool().GetId() == ID_TOOL_SQL || GetTool().GetId() == ID_TOOL_REPORT_SQL)
+  {
+    if (!m_SQLResultsParsing)
+    {
+      if (m_Comments.substr(0, 4) == " SQL")
+      {
+        if (SetSQLQuery())
+        {
+          if (!ParseSQL())
+          {
+            return false;
+          }
+        }
+      }
+      else
+      {
+        m_Comments.clear();
+      }
+    }
+    else
+    {
+      if (GetTool().GetId() == ID_TOOL_REPORT_SQL &&
+        m_Comments.length() > Recordset::QueryRunTimeText().length() + 1 &&
+        m_Comments.substr(
+          1,
+          Recordset::QueryRunTimeText().length()) == Recordset::QueryRunTimeText())
+      {
+        const int start_of_runtime = Recordset::QueryRunTimeText().length() + 1;
+        m_SQLQueryRunTime = m_Comments.substr(start_of_runtime);
+        Report(GetCurrentLine());
+      }
+
+      if (m_Comments.substr(0, 8) == " SQL END")
+      {
+        m_SQLResultsParsing = false;
+      }
+
+      m_Comments.clear();
+    }
+  }
+}
+#endif
 
 bool wxExTextFileWithListView::ParseLine(const wxString& line)
 {
@@ -252,7 +298,7 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
       }
 
       const size_t max_check_size = 
-        m_FileName.GetLexer().GetCommentBegin().Length();
+        GetFileName().GetLexer().GetCommentBegin().Length();
       const size_t check_size = (i > max_check_size ? max_check_size: i + 1);
 
       const wxString text = line.substr(i + 1 - check_size, check_size);
@@ -299,11 +345,11 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
       if ( sequence && 
           (IsCodewordSeparator(line[i]) || i ==0 || i == line.length() - 1))
       {
-        if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
+        if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
         {
-          if (m_FileName.GetLexer().IsKeyword(codeword))
+          if (GetFileName().GetLexer().IsKeyword(codeword))
           {
-            m_Stats.m_Keywords.Inc(codeword);
+            IncKeyword(codeword);
           }
         }
 
@@ -328,52 +374,6 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
   return true;
 #endif  
 }
-
-#if wxExUSE_EMBEDDED_SQL
-bool wxExTextFileWithListView::ParseComments()
-{
-  if (GetTool().GetId() == ID_TOOL_SQL || GetTool().GetId() == ID_TOOL_REPORT_SQL)
-  {
-    if (!m_SQLResultsParsing)
-    {
-      if (GetComments().substr(0, 4) == " SQL")
-      {
-        if (SetSQLQuery())
-        {
-          if (!ParseSQL())
-          {
-            return false;
-          }
-        }
-      }
-      else
-      {
-        ClearComments();
-      }
-    }
-    else
-    {
-      if (GetTool().GetId() == ID_TOOL_REPORT_SQL &&
-        GetComments().length() > Recordset::QueryRunTimeText().length() + 1 &&
-        GetComments().substr(
-          1,
-          Recordset::QueryRunTimeText().length()) == Recordset::QueryRunTimeText())
-      {
-        const int start_of_runtime = Recordset::QueryRunTimeText().length() + 1;
-        m_SQLQueryRunTime = GetComments().substr(start_of_runtime);
-        Report(GetCurrentLine());
-      }
-
-      if (GetComments().substr(0, 8) == " SQL END")
-      {
-        m_SQLResultsParsing = false;
-      }
-
-      ClearComments();
-    }
-  }
-}
-#endif
 
 #if wxExUSE_EMBEDDED_SQL
 bool wxExTextFileWithListView::ParseSQL()
@@ -411,7 +411,7 @@ bool wxExTextFileWithListView::ParseSQL()
 
   // Test for SQL end statement.
   const size_t marker = GetCurrentLine();
-  ClearComments();
+  m_Comments.clear();
   m_SQLResultsParsing = true;
 
   while (!Eof() && m_SQLResultsParsing)
@@ -518,8 +518,8 @@ void wxExTextFileWithListView::ReportKeyword()
 #if wxExUSE_EMBEDDED_SQL
 bool wxExTextFileWithListView::SetSQLQuery()
 {
-  const size_t pos_start_of_query = GetComments().find('#');
-  const size_t pos_end_of_query = GetComments().rfind('#');
+  const size_t pos_start_of_query = m_Comments.find('#');
+  const size_t pos_end_of_query = m_Comments.rfind('#');
 
   if (pos_start_of_query == wxString::npos ||
       pos_start_of_query == pos_end_of_query)
@@ -527,7 +527,7 @@ bool wxExTextFileWithListView::SetSQLQuery()
     return false;
   }
 
-  m_SQLQuery = GetComments().substr(
+  m_SQLQuery = m_Comments.substr(
     pos_start_of_query + 1,
     pos_end_of_query - pos_start_of_query - 1);
 
