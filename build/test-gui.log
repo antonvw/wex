@@ -1,9 +1,20 @@
-....................................
+............F..................F......
 
 
-OK (36 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  36   Failures: 2   Errors: 0
 
 
-adding 750 items in: 2509 milliseconds
-sorting 750 items in: 1852 milliseconds
-matching 193 items in: 5290 microseconds
+1) test: testLexers (F) line: 489 ../extension/test/gui/test.cpp
+assertion failed
+- Expression: !wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0, -1))
+
+
+2) test: testTextFile (F) line: 849 ../extension/test/gui/test.cpp
+assertion failed
+- Expression: textFile.RunTool()
+
+
+adding 750 items in: 2345 milliseconds
+sorting 750 items in: 1866 milliseconds
