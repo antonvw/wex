@@ -81,17 +81,22 @@ protected:
   /// Increments the actions completed.
   void IncActionsCompleted(long inc_value = 1) {
     m_Stats.m_Elements.Inc(_("Actions Completed"), inc_value);};
+    
+  /// Increments keyword.
+  void IncKeyword(const wxString& keyword) {
+    m_Stats.m_Keywords.Inc(keyword);};
 
   bool m_Modified;
 private:
+  bool IsWordCharacter(int c) const {
+    return isalnum(c) || c == '_';};
   bool MatchLine(wxString& line);
+  /// Returns true if char is alphanumeric or a _ sign.
 
   wxExFileName m_FileName;
   wxExFileStatistics m_Stats;
   const wxExTool m_Tool;
 
   std::string m_FindString;
-
-  wxString m_Comments;
 };
 #endif
