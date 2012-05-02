@@ -139,8 +139,6 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
         {
           menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
         }
-
-        menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
       }
       
       if (wxExVCS::DirExists(
@@ -188,7 +186,6 @@ wxExListViewWithFrame::wxExListType wxExListViewWithFrame::GetTypeTool(
     case ID_TOOL_REPORT_KEYWORD: return LIST_KEYWORD; break;
     case ID_TOOL_REPORT_REPLACE: return LIST_REPLACE; break;
     case ID_TOOL_REPORT_SQL: return LIST_SQL; break;
-    case ID_TOOL_REPORT_VERSION: return LIST_VERSION; break;
     default: wxFAIL; return LIST_FILE;
   }
 }
@@ -247,19 +244,11 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
 
   case ID_LIST_COMPARE:
   case ID_LIST_COMPARELAST:
-  case ID_LIST_VERSIONLIST:
   {
     bool first = true;
     wxString file1,file2;
-    bool found = false;
 
     wxExListViewFileName* list = NULL;
-
-    if (event.GetId() == ID_LIST_VERSIONLIST)
-    {
-      list = m_Frame->Activate(LIST_VERSION);
-      wxASSERT(list != NULL);
-    }
 
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
@@ -302,19 +291,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
           }
         }
         break;
-        case ID_LIST_VERSIONLIST:
-          if (wxExFindOtherFileName(*filename, list))
-          {
-            found = true;
-          }
-        break;
       }
-    }
-
-    if (event.GetId() == ID_LIST_VERSIONLIST && found)
-    {
-      list->SortColumn(_("Modified"), SORT_DESCENDING);
-      list->DeleteDoubles();
     }
   }
   break;

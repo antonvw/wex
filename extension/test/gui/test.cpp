@@ -844,21 +844,7 @@ void wxExGuiTestFixture::testStyle()
 
 void wxExGuiTestFixture::testTextFile()
 {
-  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
-
-  CPPUNIT_ASSERT( textFile.RunTool());
-  CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
-  CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
-
-  CPPUNIT_ASSERT( textFile.RunTool()); // do the same test
-  CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
-  CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
-
-  wxExTextFile textFile2(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
-  CPPUNIT_ASSERT( textFile2.RunTool());
-  CPPUNIT_ASSERT(!textFile2.GetStatistics().GetKeywords().GetItems().empty());
-  
-  wxExTextFile textFile3(wxExFileName(TEST_FILE), ID_TOOL_REPORT_FIND);
+  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_FIND);
   wxExFindReplaceData::Get()->SetFindString("test");
   wxExFindReplaceData::Get()->SetMatchCase(true);
   wxExFindReplaceData::Get()->SetMatchWord(true);
@@ -866,16 +852,15 @@ void wxExGuiTestFixture::testTextFile()
   
   wxStopWatch sw;
   sw.Start();
-  CPPUNIT_ASSERT( textFile3.RunTool());
+  CPPUNIT_ASSERT( textFile.RunTool());
   const long elapsed = sw.TimeInMicro().ToLong();
   
-  CPPUNIT_ASSERT( textFile3.GetStatistics().GetKeywords().GetItems().empty());
-  CPPUNIT_ASSERT(!textFile3.GetStatistics().GetElements().GetItems().empty());
-  CPPUNIT_ASSERT( textFile3.GetStatistics().Get(_("Actions Completed")) == 193);
+  CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
+  CPPUNIT_ASSERT( textFile.GetStatistics().Get(_("Actions Completed")) == 193);
   
   Report(wxString::Format(
     "matching %d items in: %ld microseconds", 
-    textFile3.GetStatistics().Get(_("Actions Completed")), elapsed));
+    textFile.GetStatistics().Get(_("Actions Completed")), elapsed));
 }
 
 void wxExGuiTestFixture::testUtil()

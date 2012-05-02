@@ -1106,7 +1106,6 @@ const wxString wxExListViewFileName::GetTypeDescription(wxExListType type)
   case LIST_FILE: value = _("File"); break;
   case LIST_REPLACE: value = _("Replace Results"); break;
   case LIST_SQL: value = _("SQL Queries"); break;
-  case LIST_VERSION: value = _("Version List"); break;
   default: wxFAIL;
   }
 

@@ -537,7 +537,10 @@ void wxExFrameWithHistory::OnNotebook(wxWindowID id, wxWindow* page)
 
   if (stc != NULL)
   {
-    SetRecentFile(stc->GetFileName().GetFullPath());
+    if (stc->GetFileName().FileExists())
+    {
+      SetRecentFile(stc->GetFileName().GetFullPath());
+    }
   }
   else
   {

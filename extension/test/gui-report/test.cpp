@@ -84,6 +84,20 @@ void wxExGuiReportTestFixture::testSTCWithFrame()
   
 void wxExGuiReportTestFixture::testTextFileWithListView()
 {
+  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
+
+  CPPUNIT_ASSERT( textFile.RunTool());
+  CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
+  CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
+
+  CPPUNIT_ASSERT( textFile.RunTool()); // do the same test
+  CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
+  CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
+
+  wxExTextFile textFile2(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
+  CPPUNIT_ASSERT( textFile2.RunTool());
+  CPPUNIT_ASSERT(!textFile2.GetStatistics().GetElements().GetItems().empty());
+  
   wxExTool tool(ID_TOOL_REPORT_FIND);
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   wxExListViewFileName* report = new wxExListViewFileName(

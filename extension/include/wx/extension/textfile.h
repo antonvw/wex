@@ -15,9 +15,8 @@
 
 class wxExTextFile;
 
-/// Offers file statistics for elements and keywords.
-/// Used in wxExTextFile to keep statistics like comments and lines of code.
-/// These are stored as elements.
+/// Offers file statistics.
+/// Used by wxExTextFile to keep statistics.
 class WXDLLIMPEXP_BASE wxExFileStatistics
 {
   friend class wxExTextFile;
@@ -25,27 +24,25 @@ public:
   /// Adds other statistics.
   wxExFileStatistics& operator+=(const wxExFileStatistics& s) {
     m_Elements += s.m_Elements;
-    m_Keywords += s.m_Keywords;
     return *this;}
 
   /// Gets all items as a string. All items are returned as a string,
   /// with newlines separating items.
-  const wxString Get() const {
-    return m_Elements.Get() + m_Keywords.Get();};
+  const wxString Get() const {return m_Elements.Get();};
 
-  /// Gets the key, first the elements are tried,
-  /// if not present, the keywords are tried, if not present
-  /// 0 is returned.
-  long Get(const wxString& key) const;
+  /// Gets the key, if not present 0 is returned.
+  long Get(const wxString& key) const {
+#ifdef wxExUSE_CPP0X  
+    const auto it = m_Elements.GetItems().find(key);
+#else
+    std::map<wxString, long>::const_iterator it = m_Elements.GetItems().find(key);  
+#endif  
+    return (it != m_Elements.GetItems().end() ? it->second: 0);};
 
-  /// Gets the const elements.
+  /// Gets the elements.
   const wxExStatistics<long>& GetElements() const {return m_Elements;};
-
-  /// Gets the const keywords.
-  const wxExStatistics<long>& GetKeywords() const {return m_Keywords;};
 private:
   wxExStatistics<long> m_Elements;
-  wxExStatistics<long> m_Keywords;
 };
 
 /// Adds file tool methods to wxTextFile.
@@ -72,30 +69,33 @@ public:
   bool RunTool();
 protected:
   /// Parses the file (already opened).
+  /// This implementation offers find and replace in files.
   virtual bool Parse();
   
-  // Virtual report generators.
-  /// This one is invoked during parsing of lines.
+  /// This one is invoked during parsing of lines when a find or replace
+  /// match is found. The line contains matching line, data is also
+  /// available in find replace data.
   virtual void Report(size_t WXUNUSED(line)) {;};
 protected:
   /// Increments the actions completed.
   void IncActionsCompleted(long inc_value = 1) {
     m_Stats.m_Elements.Inc(_("Actions Completed"), inc_value);};
     
-  /// Increments keyword.
-  void IncKeyword(const wxString& keyword) {
-    m_Stats.m_Keywords.Inc(keyword);};
+  /// Increments statistics keyword.
+  void IncStatistics(const wxString& keyword) {
+    m_Stats.m_Elements.Inc(keyword);};
 
   bool m_Modified;
 private:
+  /// Returns true if char is alphanumeric or a _ sign.
   bool IsWordCharacter(int c) const {
     return isalnum(c) || c == '_';};
   bool MatchLine(wxString& line);
-  /// Returns true if char is alphanumeric or a _ sign.
 
-  wxExFileName m_FileName;
-  wxExFileStatistics m_Stats;
+  const wxExFileName m_FileName;
   const wxExTool m_Tool;
+  
+  wxExFileStatistics m_Stats;
 
   std::string m_FindString;
 };
