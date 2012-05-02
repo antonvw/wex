@@ -204,7 +204,41 @@ bool wxExTextFileWithListView::Parse()
       IncActionsCompleted();
     }
 
-    ReportKeyword();
+    m_Report = m_Frame->Activate(
+      wxExListViewWithFrame::GetTypeTool(GetTool()),
+      &GetFileName().GetLexer());
+
+    if (m_Report != NULL)
+    {
+      wxExListItem item(m_Report, GetFileName());
+      item.Insert();
+
+      long total = 0;
+      for (size_t i = 0; i < GetFileName().GetLexer().GetKeywords().size(); i++)
+      {
+        wxListItem col;
+        col.SetMask(wxLIST_MASK_TEXT);
+        m_Report->GetColumn(i + 1, col);
+        const wxString name = col.GetText();
+        const wxExStatistics<long>& stat = GetStatistics().GetElements();
+#ifdef wxExUSE_CPP0X	
+        const auto it = stat.GetItems().find(name);
+#else
+        std::map<wxString,long>::const_iterator it = stat.GetItems().find(name);
+#endif	  
+      
+        if (it != stat.GetItems().end())
+        {
+          m_Report->SetItem(item.GetId(), i + 1, wxString::Format("%ld", it->second));
+          total += it->second;
+        }
+      }
+    
+      m_Report->SetItem(
+        item.GetId(),
+        GetFileName().GetLexer().GetKeywords().size() + 1,
+        wxString::Format("%ld", total));
+    }
   }
 
   return true;
@@ -462,47 +496,6 @@ void wxExTextFileWithListView::Report(size_t line)
 
   default: wxFAIL;
   }
-}
-
-void wxExTextFileWithListView::ReportKeyword()
-{
-  m_Report = m_Frame->Activate(
-    wxExListViewWithFrame::GetTypeTool(GetTool()),
-    &GetFileName().GetLexer());
-
-  if (m_Report == NULL)
-  {
-    return;
-  }
-
-  wxExListItem item(m_Report, GetFileName());
-  item.Insert();
-
-  long total = 0;
-  for (size_t i = 0; i < GetFileName().GetLexer().GetKeywords().size(); i++)
-  {
-    wxListItem col;
-    col.SetMask(wxLIST_MASK_TEXT);
-    m_Report->GetColumn(i + 1, col);
-    const wxString name = col.GetText();
-    const wxExStatistics<long>& stat = GetStatistics().GetElements();
-#ifdef wxExUSE_CPP0X	
-    const auto it = stat.GetItems().find(name);
-#else
-    std::map<wxString,long>::const_iterator it = stat.GetItems().find(name);
-#endif	  
-      
-    if (it != stat.GetItems().end())
-    {
-      m_Report->SetItem(item.GetId(), i + 1, wxString::Format("%ld", it->second));
-      total += it->second;
-    }
-  }
-    
-  m_Report->SetItem(
-    item.GetId(),
-    GetFileName().GetLexer().GetKeywords().size() + 1,
-    wxString::Format("%ld", total));
 }
 
 #if wxExUSE_EMBEDDED_SQL

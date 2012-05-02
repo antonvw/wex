@@ -750,7 +750,9 @@ void wxExSampleFrame::ShowConfigItems()
     "Config Dialog",
     0,
     1,
-    wxAPPLY | wxCANCEL);
+    wxAPPLY | wxCANCEL,
+    wxID_ANY,
+    wxExConfigDialog::CONFIG_LISTBOOK);
 
   dlg->ForceCheckBoxChecked("Group", "Checkboxes");
   dlg->Show();

@@ -96,8 +96,6 @@ private:
   virtual bool Parse();
   virtual void Report(size_t line);
   
-  void ReportKeyword();
-
   static wxExListView* m_Report;
   static wxExFrameWithHistory* m_Frame;
 

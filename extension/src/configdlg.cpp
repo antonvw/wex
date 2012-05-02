@@ -2,7 +2,7 @@
 // Name:      configdlg.cpp
 // Purpose:   Implementation of wxExtension config dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011
+// Copyright: (c) 2012
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -323,7 +323,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
         wxCheckBox* cb = (wxCheckBox*)it->GetWindow();
 
         if (it->GetLabel().Lower().Contains(m_Contains.Lower()) && 
-            cb->GetValue() &&
+            cb->IsChecked() &&
             it->GetPage() == m_Page)
         {
           one_checkbox_checked = true;
