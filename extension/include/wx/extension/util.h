@@ -20,7 +20,6 @@
 class wxExFrame;
 class wxExSTC;
 class wxExVCSCommand;
-class wxXmlNode;
 
 /*! \file */
 

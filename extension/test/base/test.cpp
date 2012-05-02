@@ -88,7 +88,7 @@ void TestFixture::testFileName()
 void TestFixture::testFileStatistics()
 {
   wxExFileStatistics fileStatistics;
-  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
+  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_FIND);
   
   CPPUNIT_ASSERT(fileStatistics.Get().empty());
   CPPUNIT_ASSERT(fileStatistics.Get("xx") == 0);

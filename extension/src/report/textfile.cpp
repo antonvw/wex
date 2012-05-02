@@ -339,7 +339,7 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
         {
           if (GetFileName().GetLexer().IsKeyword(codeword))
           {
-            IncKeyword(codeword);
+            IncStatistics(codeword);
           }
         }
 
@@ -485,7 +485,7 @@ void wxExTextFileWithListView::ReportKeyword()
     col.SetMask(wxLIST_MASK_TEXT);
     m_Report->GetColumn(i + 1, col);
     const wxString name = col.GetText();
-    const wxExStatistics<long>& stat = GetStatistics().GetKeywords();
+    const wxExStatistics<long>& stat = GetStatistics().GetElements();
 #ifdef wxExUSE_CPP0X	
     const auto it = stat.GetItems().find(name);
 #else
