@@ -9,7 +9,6 @@
 #define _EXLISTVIEW_H
 
 #include <map>
-#include <vector>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/listctrl.h>
 #include <wx/extension/lexer.h>
@@ -34,18 +33,25 @@ public:
   /// Column types.
   enum wxExColumnType
   {
+    COL_INVALID, ///< illegal col
     COL_INT = 1, ///< integer, should be different from 0, as inverse is used by sorting!
     COL_DATE,    ///< date
     COL_FLOAT,   ///< float
     COL_STRING   ///< string
   };
+  
+  /// Default constructor.
+  wxExColumn();
 
   /// Constructor.
-  /// Default width is set by the column type.
-  /// If you specify a width, that one is used.
   wxExColumn(
-    const wxString& name = wxEmptyString,
+    /// name of the column
+    const wxString& name,
+    /// type of the column
     wxExColumnType type = COL_INT,
+    /// width of the column, default width (0) uses a width 
+    /// that depends on the column type
+    /// if you specify a width other than 0, that one is used.
     int width = 0);
 
   /// Assignment operator.
@@ -97,6 +103,9 @@ public:
   /// If column is not found, -1 is returned,
   int FindColumn(const wxString& name) const;
 
+  /// Returns col.
+  const wxExColumn GetColumn(const wxString& name) const;
+  
   /// Finds next.
   bool FindNext(const wxString& text, bool find_next = true);
 
@@ -202,8 +211,7 @@ private:
   int m_ToBeSortedColumnNo;
   
   std::map<wxArtID, unsigned int> m_ArtIDs;
-  // Do not make a const of it, does not compile on Linux.
-  std::vector<wxExColumn> m_Columns;
+  std::map<wxString, wxExColumn> m_Columns;
 
   DECLARE_EVENT_TABLE()
 };
