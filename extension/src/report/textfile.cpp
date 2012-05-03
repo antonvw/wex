@@ -184,6 +184,17 @@ bool wxExTextFileWithListView::Parse()
   {
     return wxExTextFile::Parse();
   }
+  else if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
+  {
+    m_Report = m_Frame->Activate(
+      wxExListViewWithFrame::GetTypeTool(GetTool()),
+      &GetFileName().GetLexer());
+
+    if (m_Report == NULL)
+    {
+      return false;
+    }
+  }
   
   for (size_t i = 0; i < GetLineCount(); i++)
   {
@@ -204,41 +215,42 @@ bool wxExTextFileWithListView::Parse()
       IncActionsCompleted();
     }
 
-    m_Report = m_Frame->Activate(
-      wxExListViewWithFrame::GetTypeTool(GetTool()),
-      &GetFileName().GetLexer());
+    wxExListItem item(m_Report, GetFileName());
+    item.Insert();
 
-    if (m_Report != NULL)
+    long total = 0;
+    long col = 1;
+    
+    for (
+      const std::set<wxString>::const_iterator setit = 
+        GetFileName().GetLexer().GetKeywords().begin();
+      setit != GetFileName().GetLexer().GetKeywords().end();
+      ++setit)
     {
-      wxExListItem item(m_Report, GetFileName());
-      item.Insert();
-
-      long total = 0;
-      for (size_t i = 0; i < GetFileName().GetLexer().GetKeywords().size(); i++)
-      {
-        wxListItem col;
-        col.SetMask(wxLIST_MASK_TEXT);
-        m_Report->GetColumn(i + 1, col);
-        const wxString name = col.GetText();
-        const wxExStatistics<long>& stat = GetStatistics().GetElements();
+      const wxExStatistics<long>& stat = GetStatistics().GetElements();
 #ifdef wxExUSE_CPP0X	
-        const auto it = stat.GetItems().find(name);
+      const auto it = stat.GetItems().find(*setit);
 #else
-        std::map<wxString,long>::const_iterator it = stat.GetItems().find(name);
+      std::map<wxString,long>::const_iterator it = stat.GetItems().find(*setit);
 #endif	  
       
-        if (it != stat.GetItems().end())
-        {
-          m_Report->SetItem(item.GetId(), i + 1, wxString::Format("%ld", it->second));
-          total += it->second;
-        }
+      if (it != stat.GetItems().end())
+      {
+        m_Report->SetItem(
+          item.GetId(), 
+          col, 
+          wxString::Format("%ld", it->second));
+          
+        total += it->second;
       }
-    
-      m_Report->SetItem(
-        item.GetId(),
-        GetFileName().GetLexer().GetKeywords().size() + 1,
-        wxString::Format("%ld", total));
+      
+      col++;
     }
+    
+    m_Report->SetItem(
+      item.GetId(),
+      col,
+      wxString::Format("%ld", total));
   }
 
   return true;
@@ -292,7 +304,7 @@ bool wxExTextFileWithListView::ParseComments()
 
 bool wxExTextFileWithListView::ParseLine(const wxString& line)
 {
-  bool line_contains_code = false, sequence = false;
+  bool sequence = false;
   wxString codeword;
 
   for (size_t i = 0; i < line.length(); i++) // no auto
@@ -344,8 +356,6 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
       case COMMENT_NONE:
         if (!isspace(line[i]) && !m_IsCommentStatement)
         {
-          line_contains_code = true;
-
           if (!IsCodewordSeparator(line[i]))
           {
             if (!sequence)
@@ -380,10 +390,6 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
         sequence = false;
         codeword.clear();
       }
-    }
-    else
-    {
-      line_contains_code = true;
     }
   }
 

@@ -2,7 +2,7 @@
 // Name:      statusbar.h
 // Purpose:   Declaration of wxExStatusBar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTATUSBAR_H
@@ -17,7 +17,9 @@
 #if wxUSE_STATUSBAR
 
 /// This class defines our statusbar panes, used by wxExFrame::SetupStatusBar.
-/// It just adds some members to the base class, and keeps a static total.
+/// It just adds some members to the base class
+/// (that offers GetText(), GetStyle() and GetWidth()), 
+/// and keeps a static total.
 class WXDLLIMPEXP_BASE wxExStatusBarPane : public wxStatusBarPane
 {
 public:
@@ -52,8 +54,14 @@ public:
     , m_Name(name)
     , m_No(m_Total)
     {m_Total++;};
+    
+  /// Returns statusbar pane help text.
   const wxString& GetHelpText() const {return m_HelpText;};
+  
+  /// Returns statusbar pane name.
   const wxString& GetName() const {return m_Name;};
+  
+  /// Returns statusbar pane no.
   int GetNo() const {return m_No;};
 private:
   wxString m_HelpText;

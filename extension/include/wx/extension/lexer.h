@@ -2,7 +2,7 @@
 // Name:      lexer.h
 // Purpose:   Declaration of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXLEXER_H
@@ -61,14 +61,14 @@ public:
   /// Gets the comment end 2.
   const wxString& GetCommentEnd2() const {return m_CommentEnd2;};
 
+  /// Gets the display lexer (as shown in dialog).
+  const wxString& GetDisplayLexer() const {return m_DisplayLexer;};
+
   /// Gets the extensions.
   const wxString& GetExtensions() const {return m_Extensions;};
 
   /// Gets the keywords.
   const std::set<wxString>& GetKeywords() const {return m_Keywords;};
-
-  /// Gets the display lexer (as shown in dialog).
-  const wxString& GetDisplayLexer() const {return m_DisplayLexer;};
 
   /// Gets the keywords as one large string, 
   /// if keyword_set -1 take all the sets,
