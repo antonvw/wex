@@ -103,9 +103,6 @@ public:
   /// If column is not found, -1 is returned,
   int FindColumn(const wxString& name) const;
 
-  /// Returns col.
-  const wxExColumn GetColumn(const wxString& name) const;
-  
   /// Finds next.
   bool FindNext(const wxString& text, bool find_next = true);
 
@@ -173,6 +170,10 @@ protected:
   void OnShow(wxShowEvent& event);
 private:
   const wxString BuildPage();
+  
+  /// Returns col.
+  const wxExColumn Column(const wxString& name) const;
+  
   void CopySelectedItemsToClipboard();
   void EditDelete();
   void EditInvertAll() {

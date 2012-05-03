@@ -222,7 +222,7 @@ bool wxExTextFileWithListView::Parse()
     long col = 1;
     
     for (
-      const std::set<wxString>::const_iterator setit = 
+      std::set<wxString>::const_iterator setit = 
         GetFileName().GetLexer().GetKeywords().begin();
       setit != GetFileName().GetLexer().GetKeywords().end();
       ++setit)
