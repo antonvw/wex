@@ -253,6 +253,24 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
+const wxExColumn wxExListView::Column(const wxString& name) const
+{
+#ifdef wxExUSE_CPP0X  
+  auto it = m_Columns.find(name);
+#else
+  std::map<wxString, wxExColumn>::const_iterator it = m_Columns.find(name);
+#endif	
+
+  if (it != m_Columns.end())
+  {
+    return it->second;
+  }
+  else
+  {
+    return wxExColumn();
+  }
+}
+
 void wxExListView::CopySelectedItemsToClipboard()
 {
   if (GetSelectedItemCount() == 0) return;
@@ -296,7 +314,7 @@ void wxExListView::EditDelete()
   
 int wxExListView::FindColumn(const wxString& name) const
 {
-  return GetColumn(name).GetColumn();
+  return Column(name).GetColumn();
 }
 
 bool wxExListView::FindNext(const wxString& text, bool find_next)
@@ -439,24 +457,6 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
   }
 }
 
-const wxExColumn wxExListView::GetColumn(const wxString& name) const
-{
-#ifdef wxExUSE_CPP0X  
-  auto it = m_Columns.find(name);
-#else
-  std::map<wxString, wxExColumn>::const_iterator it = m_Columns.find(name);
-#endif	
-
-  if (it != m_Columns.end())
-  {
-    return it->second;
-  }
-  else
-  {
-    return wxExColumn();
-  }
-}
-
 const wxString wxExListView::GetItemText(
   long item_number,
   const wxString& col_name) const 
@@ -524,7 +524,7 @@ void wxExListView::InsertColumn(const wxExColumn& col)
   
   wxListView::InsertColumn(GetColumnCount(), mycol);
   mycol.SetColumn(GetColumnCount() - 1);
-  m_Columns.insert(mycol.GetText(), mycol);
+  m_Columns.insert(std::make_pair(mycol.GetText(), mycol));
 }
 
 bool wxExListView::ItemFromText(const wxString& text)
@@ -830,15 +830,22 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   {
     return;
   }
-
+  
   SortColumnReset();
   
   wxListItem col;
   GetColumn(column_no, col);
 
-  const wxExColumn sorted_col(GetColumn(col.GetText()));
+  std::map<wxString, wxExColumn>::iterator it = m_Columns.find(col.GetText());
   
-  sorted_col.SetIsSortedAscending(sort_method);
+  if (it == m_Columns.end())
+  {
+    return;
+  }
+
+  wxExColumn* sorted_col = &it->second;
+  
+  sorted_col->SetIsSortedAscending(sort_method);
 
   wxBusyCursor wait;
 
@@ -851,7 +858,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     const wxString val = wxListView::GetItemText(i, column_no);
     items.push_back(val);
 
-    switch (sorted_col.GetType())
+    switch (sorted_col->GetType())
     {
     case wxExColumn::COL_INT: 
     SetItemData(i, atoi(val.c_str())); 
@@ -890,9 +897,9 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   }
 
   const wxIntPtr sortdata =
-    (sorted_col.GetIsSortedAscending() ?
-       sorted_col.GetType():
-      (0 - sorted_col.GetType()));
+    (sorted_col->GetIsSortedAscending() ?
+       sorted_col->GetType():
+      (0 - sorted_col->GetType()));
 
   SortItems(CompareFunctionCB, sortdata);
 
@@ -903,7 +910,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   if (!m_ArtIDs.empty())
   {
     SetColumnImage(column_no,
-      GetArtID(sorted_col.GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
+      GetArtID(sorted_col->GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
   }
 
   if (GetItemCount() > 0)
@@ -912,7 +919,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     AfterSorting();
   }
 
-  wxLogStatus(_("Sorted on") + ": " + sorted_col.GetText());
+  wxLogStatus(_("Sorted on") + ": " + sorted_col->GetText());
 }
 
 void wxExListView::SortColumnReset()

@@ -1,7 +1,14 @@
-........
+.......F.
 
 
-OK (8 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  8   Failures: 1   Errors: 0
 
 
-match 72 items in: 514 milliseconds
+1) test: testTextFileWithListView (F) line: 89 ../extension/test/gui-report/test.cpp
+assertion failed
+- Expression: textFile.RunTool()
+
+
+match 72 items in: 553 milliseconds
