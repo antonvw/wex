@@ -51,6 +51,7 @@ public:
   void testConfigItem();
   void testDialog();
   void testEx();
+  void testFileStatistics();
   void testFrame();
   void testFrd();
   void testGrid();
