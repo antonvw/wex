@@ -38,7 +38,6 @@ public:
   void testDir();
   void testFile();
   void testFileName();
-  void testFileStatistics();
   void testStat();
   void testStatistics();
   void testTiming();

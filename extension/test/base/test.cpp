@@ -85,22 +85,6 @@ void TestFixture::testFileName()
   CPPUNIT_ASSERT(fileName.GetStat().IsOk());
 }
 
-void TestFixture::testFileStatistics()
-{
-  wxExFileStatistics fileStatistics;
-  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_FIND);
-  
-  CPPUNIT_ASSERT(fileStatistics.Get().empty());
-  CPPUNIT_ASSERT(fileStatistics.Get("xx") == 0);
-
-  CPPUNIT_ASSERT( textFile.RunTool());
-  CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
-
-  fileStatistics += textFile.GetStatistics();
-  
-  CPPUNIT_ASSERT(!fileStatistics.Get().empty());
-}
-
 void TestFixture::testStat()
 {
   wxExStat stat(TEST_FILE);
@@ -232,10 +216,6 @@ wxExTestSuite::wxExTestSuite()
   addTest(new CppUnit::TestCaller<TestFixture>(
     "testFileName",
     &TestFixture::testFileName));
-
-  addTest(new CppUnit::TestCaller<TestFixture>(
-    "testFileStatistics",
-    &TestFixture::testFileStatistics));
 
   addTest(new CppUnit::TestCaller<TestFixture>(
     "testStat",

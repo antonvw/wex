@@ -1,1 +1,9 @@
-.....
+.........
+
+
+OK (9 tests)
+
+
+reading 100000 items from config took 313 milliseconds
+wxExFile::Read:248 wxFile::Read:198
+wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:9

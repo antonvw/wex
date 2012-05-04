@@ -256,6 +256,21 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT(!ex->MarkerDelete('a'));
 }
 
+void wxExGuiTestFixture::testFileStatistics()
+{
+  wxExFileStatistics fileStatistics;
+  
+  CPPUNIT_ASSERT(fileStatistics.Get().empty());
+  CPPUNIT_ASSERT(fileStatistics.Get("xx") == 0);
+
+  wxExFileStatistics fileStatistics2;
+  CPPUNIT_ASSERT(fileStatistics2.Get().empty());
+
+  fileStatistics += fileStatistics2;
+  
+  CPPUNIT_ASSERT(fileStatistics.Get().empty());
+}
+
 void wxExGuiTestFixture::testFrame()
 {
   wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
@@ -1190,6 +1205,10 @@ wxExAppTestSuite::wxExAppTestSuite()
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testEx",
     &wxExGuiTestFixture::testEx));
+
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testFileStatistics",
+    &wxExGuiTestFixture::testFileStatistics));
 
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testFrame",
