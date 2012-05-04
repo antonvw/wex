@@ -84,8 +84,19 @@ void wxExGuiReportTestFixture::testSTCWithFrame()
   
 void wxExGuiReportTestFixture::testTextFileWithListView()
 {
-  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
-
+  wxExTool tool(ID_TOOL_REPORT_FIND);
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  const wxExFileName fn(TEST_FILE);
+  
+  wxExListViewFileName* report = new wxExListViewFileName(
+    frame, 
+    wxExListViewFileName::LIST_FIND);
+    
+  wxExFindReplaceData::Get()->SetFindString("xx");
+  
+  CPPUNIT_ASSERT(wxExTextFileWithListView::SetupTool(tool, frame, report));
+  
+  wxExTextFileWithListView textFile(fn, tool);
   CPPUNIT_ASSERT( textFile.RunTool());
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
@@ -94,17 +105,9 @@ void wxExGuiReportTestFixture::testTextFileWithListView()
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
 
-  wxExTextFile textFile2(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
+  wxExTextFileWithListView textFile2(fn, tool);
   CPPUNIT_ASSERT( textFile2.RunTool());
   CPPUNIT_ASSERT(!textFile2.GetStatistics().GetElements().GetItems().empty());
-  
-  wxExTool tool(ID_TOOL_REPORT_FIND);
-  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExListViewFileName* report = new wxExListViewFileName(
-    frame, 
-    wxExListViewFileName::LIST_FILE);
-  
-  CPPUNIT_ASSERT(wxExTextFileWithListView::SetupTool(tool, frame, report));
 }
 
 void wxExGuiReportTestFixture::test()

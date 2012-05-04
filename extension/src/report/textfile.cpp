@@ -186,6 +186,11 @@ bool wxExTextFileWithListView::Parse()
   }
   else if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
   {
+    if (m_Frame == NULL)
+    {
+      return false;
+    }
+    
     m_Report = m_Frame->Activate(
       wxExListViewWithFrame::GetTypeTool(GetTool()),
       &GetFileName().GetLexer());

@@ -11,6 +11,6 @@ assertion failed
 - Expression: !wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0, -1))
 
 
-adding 750 items in: 2507 milliseconds
-sorting 750 items in: 2562 milliseconds
-matching 193 items in: 8282 microseconds
+adding 750 items in: 2386 milliseconds
+sorting 750 items in: 1863 milliseconds
+matching 193 items in: 7544 microseconds
