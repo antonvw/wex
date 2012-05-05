@@ -23,7 +23,8 @@ class wxExSTC;
 class WXDLLIMPEXP_BASE wxExEx
 {
 public:
-  /// Constructor.
+  /// Constructor. 
+  /// Sets ex mode false.
   wxExEx(wxExSTC* stc);
   
   /// Destructor.
@@ -106,7 +107,7 @@ public:
   /// Returns -1 if marker does not exist.
   int MarkerLine(const wxUniChar& marker) const;
   
-  /// Set using vi mode.
+  /// Set using ex mode.
   void Use(bool mode) {m_IsActive = mode;};
 protected:
   void Delete(int lines) const;
