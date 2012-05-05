@@ -25,6 +25,7 @@ class wxExIndicator;
 
 /// Offers a styled text ctrl with find/replace, printing, popup menu, 
 /// macro support, vi support and lexer support (syntax colouring, folding).
+/// Default uses vi mode.
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
   friend class wxExSTCFile; //  might update m_HexBuffer
@@ -294,14 +295,29 @@ public:
 protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
-  
+
+  /// Char event handler.  
   void OnChar(wxKeyEvent& event);
+  
+  /// Command event handler.
   void OnCommand(wxCommandEvent& event);
+  
+  /// Find dialog event handler.
   void OnFindDialog(wxFindDialogEvent& event);
+  
+  /// Idle event handler.
   void OnIdle(wxIdleEvent& event);
+  
+  /// Key down event handler.
   void OnKeyDown(wxKeyEvent& event);
+  
+  /// Key up event handler.
   void OnKeyUp(wxKeyEvent& event);
+  
+  // Mouse event handler.
   void OnMouse(wxMouseEvent& event);
+  
+  /// Styled text event handler.
   void OnStyledText(wxStyledTextEvent& event);
 private:
   void AddHeader();
