@@ -501,7 +501,8 @@ void wxExGuiTestFixture::testLexers()
   
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetThemeMacros().empty());
 
-  CPPUNIT_ASSERT(!wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0, -1)));
+  CPPUNIT_ASSERT(!wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(99, -1)));
+  CPPUNIT_ASSERT( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0, -1)));
   CPPUNIT_ASSERT( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0, -1)));
 
   CPPUNIT_ASSERT( wxExLexers::Get()->Read());
