@@ -3,7 +3,7 @@
 # Name:      deploy.sh
 # Purpose:   Deploy file (for syncped)
 # Author:    Anton van Wezenbeek
-# Copyright: (c) 2011 Anton van Wezenbeek
+# Copyright: (c) 2012 Anton van Wezenbeek
 ################################################################################
 
 # Run this file in the build folder
@@ -17,10 +17,8 @@ cp gccgtk2_dll/syncped syncped
 # Copy the libs.
 cp ~/wxWidgets-2.9.3/buildgtk/lib/libwx*2.9*so*0 syncped
 
-# Copy data.
-cp ../extension/data/lexers.xml syncped
-cp ../extension/data/macros.xml syncped
-cp ../extension/data/vcs.xml syncped
+# Copy xml data.
+cp ../extension/data/*.xml syncped
 
 # Copy locale files.
 cp ~/wxWidgets-2.9.3/locale/nl.mo syncped/nl-NL/

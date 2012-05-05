@@ -2,7 +2,7 @@
 rem Name:      deploy.bat
 rem Purpose:   Deploy file (for syncped)
 rem Author:    Anton van Wezenbeek
-rem Copyright: (c) 2011 Anton van Wezenbeek
+rem Copyright: (c) 2012 Anton van Wezenbeek
 
 rem Run this file in the build folder
 
@@ -17,10 +17,8 @@ rem Copy msvc DLL's
 copy c:\windows\syswow64\msvcp100.dll syncped
 copy c:\windows\syswow64\msvcr100.dll syncped
 
-rem Copy data.
-copy ..\extension\data\lexers.xml syncped
-copy ..\extension\data\macros.xml syncped
-copy ..\extension\data\vcs.xml syncped
+rem Copy xml data.
+copy ..\extension\data\*.xml syncped
 
 rem Copy locale files.
 copy c:\wxWidgets-2.9.3\locale\nl.mo syncped\nl_NL\
