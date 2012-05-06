@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wxExStatusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -53,6 +53,7 @@ void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
   // Show tooltip if tooltip is available, and not yet presented.
   else if (event.Moving())
   {
+#if wxUSE_TOOLTIPS
     const wxString tooltip = GetToolTipText();
               
     if (pane.GetHelpText().empty())
@@ -66,6 +67,7 @@ void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
     {
       SetToolTip(pane.GetHelpText());
     }
+#endif    
   }
 }
             

@@ -1720,19 +1720,23 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_START_DRAG)
   {
+#if wxUSE_DRAG_AND_DROP
     if (HexMode() || GetReadOnly())
     {
       event.SetDragAllowMove(false);
     }
+#endif    
     
     event.Skip();
   }
   else if (event.GetEventType() == wxEVT_STC_DO_DROP)
   {
+#if wxUSE_DRAG_AND_DROP
     if (HexMode() || GetReadOnly())
     {
       event.SetDragResult(wxDragNone);
     }
+#endif    
     
     event.Skip();
   }

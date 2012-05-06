@@ -8,12 +8,13 @@
 #ifndef _EXTESTUNIT_H
 #define _EXTESTUNIT_H
 
-#ifdef __WXGTK__
+#include <wx/extension/extension.h>
+
+#if wxUSE_UNIX
 
 #include <TestCaller.h>
 #include <TestFixture.h>
 #include <TestSuite.h>
-#include <wx/extension/extension.h>
 
 /// CppUnit test fixture.
 /// These classes require either an wxExApp object, or wx to be initialized.

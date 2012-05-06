@@ -5,9 +5,9 @@
 // Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifdef __WXGTK__
-
 #include <wx/extension/test.h>
+
+#if wxUSE_UNIX
 
 wxString wxExTestFixture::m_Report;  
 
