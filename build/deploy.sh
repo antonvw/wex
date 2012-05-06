@@ -15,7 +15,7 @@ mkdir syncped/nl-NL
 cp gccgtk2_dll/syncped syncped
 
 # Copy the libs.
-cp ~/wxWidgets-2.9.3/buildgtk/lib/libwx*2.9*so*0 syncped
+cp ~/wxWidgets-2.9.3/buildgtk/lib/libwx*2.9*so*3 syncped
 
 # Copy xml data.
 cp ../extension/data/*.xml syncped
