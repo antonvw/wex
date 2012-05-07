@@ -2,8 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrame class
 // Author:    Anton van Wezenbeek
-// Created:   2010-03-26
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -103,7 +102,7 @@ wxExFrame::~wxExFrame()
 
 wxExGrid* wxExFrame::GetGrid()
 {
-  // If we had a find focus on listview component, return that one.
+  // If we had a find focus on grid component, return that one.
   if (m_FindFocus != NULL && m_FindFocus->IsShown())
   {
     wxExGrid* win = dynamic_cast<wxExGrid*>(m_FindFocus);
@@ -365,7 +364,7 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
     {
       UpdateStatusBar(stc, "PaneInfo"); 
     }
-	}
+    }
     break;
 #endif
 
