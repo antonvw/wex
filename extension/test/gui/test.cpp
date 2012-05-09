@@ -431,8 +431,19 @@ void wxExGuiTestFixture::testIndicator()
 void wxExGuiTestFixture::testLexer()
 {
   wxExLexer lexer;
-  lexer = wxExLexers::Get()->FindByText("// this is a cpp comment text");
+  CPPUNIT_ASSERT(!lexer.IsOk());
   
+  lexer = wxExLexers::Get()->FindByText("XXXX");
+  CPPUNIT_ASSERT(!lexer.IsOk());
+  
+  lexer = wxExLexers::Get()->FindByText("<html>");
+  CPPUNIT_ASSERT( lexer.IsOk());
+  CPPUNIT_ASSERT( lexer.GetDisplayLexer() == "hypertext");
+  
+  lexer = wxExLexers::Get()->FindByText("// this is a cpp comment text");
+  CPPUNIT_ASSERT( lexer.IsOk());
+  CPPUNIT_ASSERT( lexer.GetDisplayLexer() == "cpp");
+  CPPUNIT_ASSERT( lexer.GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(!lexer.GetExtensions().empty());
   CPPUNIT_ASSERT(!lexer.GetCommentBegin().empty());
   CPPUNIT_ASSERT(!lexer.GetCommentBegin2().empty());
@@ -449,6 +460,7 @@ void wxExGuiTestFixture::testLexer()
 
   CPPUNIT_ASSERT(!lexer.MakeComment("test", true).empty());
   CPPUNIT_ASSERT(!lexer.MakeComment("test", "test").empty());
+  CPPUNIT_ASSERT(!lexer.MakeSingleLineComment("test").empty());
 
   CPPUNIT_ASSERT( lexer.SetKeywords("hello:1"));
   CPPUNIT_ASSERT( lexer.SetKeywords(
@@ -464,6 +476,9 @@ void wxExGuiTestFixture::testLexer()
   CPPUNIT_ASSERT(!lexer.KeywordStartsWith("xx"));
 
   CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
+  
+  // TODO: improve test
+  lexer.SetProperty("test", "value");
 }
 
 void wxExGuiTestFixture::testLexers()

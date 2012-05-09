@@ -110,17 +110,32 @@ public:
   /// Set using ex mode.
   void Use(bool mode) {m_IsActive = mode;};
 protected:
+  /// Deletes number of lines, starting at current line.
   void Delete(int lines) const;
+  
+  /// Deletes lines from begin to end address.
+  /// Returns false if address cannot be related to a line number.
   bool Delete(
     const wxString& begin_address, 
     const wxString& end_address);
+    
+  /// Sets last command.
   void SetLastCommand(
     const wxString& command,
     bool always = false);
+    
+  /// Sets selection from begin to end address.
+  /// Returns false if address cannot be related to a line number.
   bool SetSelection(
     const wxString& begin_address, 
     const wxString& end_address) const;
+    
+  /// Converts address to a real line number, filtering out markers
+  /// and special characters.
+  /// Returns 0 if address is not valid.
   int ToLineNumber(const wxString& address) const;
+  
+  /// Yanks number of lines, starting at current line.
   void Yank(int lines);
 private:
   bool CommandGlobal(const wxString& search);
