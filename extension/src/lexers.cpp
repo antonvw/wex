@@ -656,7 +656,11 @@ bool wxExLexers::Read()
     else if (child->GetName() == "lexer")
     {
       const wxExLexer lexer(child);
-      m_Lexers.insert(std::make_pair(lexer.GetDisplayLexer(), lexer));
+      
+      if (lexer.IsOk())
+      {
+        m_Lexers.insert(std::make_pair(lexer.GetDisplayLexer(), lexer));
+      }
     }
 
     child = child->GetNext();

@@ -5,7 +5,7 @@ Name:      lexers.xml
 Purpose:   Lexers configuration for wxextension.
            See scintilla v2.03 (www.scintilla.org).
 Author:    Anton van Wezenbeek
-Copyright: (c) 2011, Anton van Wezenbeek
+Copyright: (c) 2012, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -1637,9 +1637,9 @@ Copyright: (c) 2011, Anton van Wezenbeek
   </global>
   
   <!--
-   Each <lexer> has a name atribute (scintilla lexer). 
+   Each <lexer> has a name attribute (scintilla lexer). 
    In addition it might contain the next attributes:
-   1) extensions. File extensions for files associated with this lexer.
+   1) extensions. File extensions for files to be associated with this lexer.
       Extensions are separated by a semicolon (;).
       The extensions appear in the file open dialogs.
    2) macro. The macro attribute specifies the 'no' macro
@@ -1881,7 +1881,7 @@ void          while
   <lexer name="lout"/>
   <lexer name="lua"/>
   <lexer name="magik"/>
-  <lexer name="makefile" extensions="Makefile;*makefile;makefile*.*"/>
+  <lexer name="makefile" extensions="Makefile;*makefile;makefile*.*;*.pro"/>
   <lexer name="markdown" extensions="*.md">
     <styles>
       <style no="header1"> bold,eol </style>
