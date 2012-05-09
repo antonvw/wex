@@ -4,6 +4,6 @@
 OK (37 tests)
 
 
-adding 750 items in: 3198 milliseconds
-sorting 750 items in: 1996 milliseconds
-matching 193 items in: 14482 microseconds
+adding 750 items in: 2929 milliseconds
+sorting 750 items in: 2330 milliseconds
+matching 193 items in: 8150 microseconds
