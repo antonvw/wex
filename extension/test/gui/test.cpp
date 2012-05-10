@@ -806,21 +806,23 @@ void wxExGuiTestFixture::testSTC()
 {
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
   CPPUNIT_ASSERT(stc->GetText() == "hello stc");
+  CPPUNIT_ASSERT(stc->FindNext(wxString("hello"))); // necessary ??
   
   stc->AppendText("more text");
+  
   CPPUNIT_ASSERT(stc->GetText() != "hello stc");
   
   stc->AppendTextHexMode("in hex mode");
   
   stc->DocumentStart();
-  CPPUNIT_ASSERT( stc->FindNext("more text"));
+  CPPUNIT_ASSERT( stc->FindNext(wxString("more text")));
   CPPUNIT_ASSERT( stc->ReplaceAll("more", "less") == 1);
-  CPPUNIT_ASSERT(!stc->FindNext("more text"));
+  CPPUNIT_ASSERT(!stc->FindNext(wxString("more text")));
   CPPUNIT_ASSERT(!stc->FindNext());
-  CPPUNIT_ASSERT( stc->FindNext("less text"));
+  CPPUNIT_ASSERT( stc->FindNext(wxString("less text")));
   CPPUNIT_ASSERT( stc->ReplaceNext("less text", ""));
   CPPUNIT_ASSERT(!stc->ReplaceNext());
-  CPPUNIT_ASSERT(!stc->FindNext("less text"));
+  CPPUNIT_ASSERT(!stc->FindNext(wxString("less text")));
 
   stc->SetText("new text");
   CPPUNIT_ASSERT(stc->GetText() == "new text");
@@ -851,7 +853,7 @@ void wxExGuiTestFixture::testSTC()
   
   CPPUNIT_ASSERT( stc->MarkerDeleteAllChange());
   
-  CPPUNIT_ASSERT(!stc->MarkTargetChange());
+  CPPUNIT_ASSERT( stc->MarkTargetChange());
   
   CPPUNIT_ASSERT(!stc->PositionRestore());
   stc->PositionSave();
