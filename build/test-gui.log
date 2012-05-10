@@ -1,9 +1,9 @@
-.....................................
+.......................................
 
 
-OK (37 tests)
+OK (39 tests)
 
 
-adding 750 items in: 2929 milliseconds
-sorting 750 items in: 2330 milliseconds
-matching 193 items in: 8150 microseconds
+adding 750 items in: 2397 milliseconds
+sorting 750 items in: 1910 milliseconds
+matching 193 items in: 7552 microseconds
