@@ -51,6 +51,7 @@ public:
   void testConfigItem();
   void testDialog();
   void testEx();
+  void testFileDialog();
   void testFileStatistics();
   void testFrame();
   void testFrd();
@@ -82,6 +83,7 @@ public:
   void testVCS();
   void testVCSCommand();
   void testVCSEntry();
+  void testVersion();
   void testVi();
   void testViMacros();
 };

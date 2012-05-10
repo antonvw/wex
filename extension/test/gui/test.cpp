@@ -256,6 +256,14 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT(!ex->MarkerDelete('a'));
 }
 
+void wxExGuiTestFixture::testFileDialog()
+{
+  wxExFile file;
+  wxExFileDialog dlg(wxTheApp->GetTopWindow(), file);
+  
+  CPPUNIT_ASSERT(dlg.ShowModalIfChanged() == wxID_CANCEL);
+}
+
 void wxExGuiTestFixture::testFileStatistics()
 {
   wxExFileStatistics fileStatistics;
@@ -551,6 +559,10 @@ void wxExGuiTestFixture::testLink()
   CPPUNIT_ASSERT( link.AddBasePath());
   
   CPPUNIT_ASSERT( link.GetPath("test") == "/usr/bin/test");
+  
+  link.SetFromConfig();
+  
+  CPPUNIT_ASSERT( link.GetPath("test") == "test");
 }
 
 void wxExGuiTestFixture::testListItem()
@@ -799,10 +811,16 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(stc->GetText() != "hello stc");
   stc->DocumentStart();
   
-  CPPUNIT_ASSERT(stc->FindNext("more text", 0));
-  
-  CPPUNIT_ASSERT(stc->ReplaceAll("more", "less") == 1);
-  CPPUNIT_ASSERT(stc->FindNext("less text", 0));
+  stc->AppendTextHexMode("in hex mode");
+
+  CPPUNIT_ASSERT( stc->FindNext("more text"));
+  CPPUNIT_ASSERT( stc->ReplaceAll("more", "less") == 1);
+  CPPUNIT_ASSERT(!stc->FindNext("more text"));
+  CPPUNIT_ASSERT(!stc->FindNext());
+  CPPUNIT_ASSERT( stc->FindNext("less text"));
+  CPPUNIT_ASSERT( stc->ReplaceNext("less text", ""));
+  CPPUNIT_ASSERT(!stc->ReplaceNext();
+  CPPUNIT_ASSERT(!stc->FindNext("less text"));
 
   stc->SetText("new text");
   CPPUNIT_ASSERT(stc->GetText() == "new text");
@@ -824,6 +842,31 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT( stc->GetFile().GetContentsChanged());
   stc->GetFile().ResetContentsChanged();
   CPPUNIT_ASSERT(!stc->GetFile().GetContentsChanged());
+  
+  CPPUNIT_ASSERT( stc->Indent(3,3));
+  CPPUNIT_ASSERT( stc->Indent(3,4));
+  CPPUNIT_ASSERT( stc->Indent(3));
+  
+  CPPUNIT_ASSERT( stc->MarkerAddChange(0));
+  
+  CPPUNIT_ASSERT( stc->MarkerDeleteAllChange());
+  
+  CPPUNIT_ASSERT(!stc->MarkTargetChange());
+  
+  CPPUNIT_ASSERT(!stc->PositionRestore());
+  stc->PositionSave();
+  CPPUNIT_ASSERT( stc->PositionRestore());
+  
+  stc->PropertiesMessage();
+  
+  stc->Reload();
+  
+  stc->ResetMargins();
+  
+  CPPUNIT_ASSERT(!stc->SetIndicator(wxExIndicator(4,5), 100, 200));
+  stc->SetLexerProperty("xx", "yy");
+  
+  CPPUNIT_ASSERT(!stc->SmartIndentation());
 }
   
 void wxExGuiTestFixture::testSTCEntryDialog()
@@ -1029,6 +1072,12 @@ void wxExGuiTestFixture::testVCSEntry()
   CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
 }
 
+void wxExGuiTestFixture::testVersion()
+{
+  CPPUNIT_ASSERT(!wxExVersionInfo().GetVersionOnlyString().empty());
+  CPPUNIT_ASSERT(!wxExGetVersionInfo().empty());
+}
+
 void wxExGuiTestFixture::testVi()
 {
   wxConfigBase::Get()->Write(_("vi mode"), true);
@@ -1223,6 +1272,10 @@ wxExAppTestSuite::wxExAppTestSuite()
     &wxExGuiTestFixture::testEx));
 
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testFileDialog",
+    &wxExGuiTestFixture::testFileDialog));
+
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testFileStatistics",
     &wxExGuiTestFixture::testFileStatistics));
 
@@ -1345,6 +1398,10 @@ wxExAppTestSuite::wxExAppTestSuite()
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testVCSEntry",
     &wxExGuiTestFixture::testVCSEntry));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testVersion",
+    &wxExGuiTestFixture::testVersion));
     
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testVi",

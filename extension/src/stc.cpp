@@ -1227,8 +1227,13 @@ void wxExSTC::HexDecCalltip(int pos)
   }
 }
 
-void wxExSTC::Indent(int begin, int end, bool forward)
+bool wxExSTC::Indent(int begin, int end, bool forward)
 {
+  if (end - begin < 0)
+  {
+    return false;
+  }
+  
   BeginUndoAction();
 
   for (int i = 0; i <= end - begin; i++)
@@ -1267,13 +1272,15 @@ void wxExSTC::Indent(int begin, int end, bool forward)
   }
 
   EndUndoAction();
+  
+  return true;
 }
 
-void wxExSTC::Indent(int lines, bool forward)
+bool wxExSTC::Indent(int lines, bool forward)
 {
   const int line = LineFromPosition(GetCurrentPos());
 
-  Indent(line, line + lines - 1, forward);
+  return Indent(line, line + lines - 1, forward);
 }
 
 void wxExSTC::Initialize()
@@ -1296,7 +1303,7 @@ void wxExSTC::Initialize()
   
   m_HexBuffer.clear(); // always, not only in hex mode
   
-  m_SavedPos = 0;
+  m_SavedPos = -1;
   m_SavedSelectionStart = -1;
   m_SavedSelectionEnd = -1;
   
@@ -1395,23 +1402,34 @@ bool wxExSTC::LinkOpen(wxString* filename)
   return !path.empty();
 }
 
-void wxExSTC::MarkerAddChange(int line)
+bool wxExSTC::MarkerAddChange(int line)
 {
   if (
-    !GetReadOnly() &&
-     wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange) &&
-     m_File.GetFileName().GetStat().IsOk())
+     GetReadOnly() || 
+    !wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange) ||
+    !m_File.GetFileName().GetStat().IsOk())
   {
-    MarkerAdd(line, m_MarkerChange.GetNo());
+    return false;
   }
+  
+  if (MarkerAdd(line, m_MarkerChange.GetNo()) == -1)
+  {
+    return false;
+  }
+  
+  return true;
 }
   
-void wxExSTC::MarkerDeleteAllChange()
+bool wxExSTC::MarkerDeleteAllChange()
 {
-  if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
+  if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
-    MarkerDeleteAll(m_MarkerChange.GetNo());
+    return false;
   }
+  
+  MarkerDeleteAll(m_MarkerChange.GetNo());
+  
+  return true;
 }
   
 void wxExSTC::MarkerNext(bool next)
@@ -1434,11 +1452,17 @@ void wxExSTC::MarkerNext(bool next)
 }
       
 // cannot be const because of MarkerAddChange
-void wxExSTC::MarkTargetChange()
+bool wxExSTC::MarkTargetChange()
 {
   if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
-    return;
+    return false;
+  }
+  
+  if (GetTargetStart() == 0 && GetTargetEnd() == 0)
+  {
+    // No target defined.
+    return false;
   }
   
   const int line_begin = LineFromPosition(GetTargetStart());
@@ -1446,8 +1470,13 @@ void wxExSTC::MarkTargetChange()
     
   for (int i = line_begin; i <= line_end; i++)
   {
-    MarkerAddChange(i);
+    if (!MarkerAddChange(i))
+    {
+      return false;
+    }
   }
+  
+  return true;
 }
 
 void wxExSTC::OnChar(wxKeyEvent& event)
@@ -1863,19 +1892,26 @@ void wxExSTC::Paste()
   }
 }
 
-void wxExSTC::PositionRestore()
+bool wxExSTC::PositionRestore()
 {
   if (m_SavedSelectionStart != -1 && m_SavedSelectionEnd != -1)
   {
     SetSelection(m_SavedSelectionStart, m_SavedSelectionEnd);
   }
-  else
+  else if (m_SavedPos != -1)
   {
     SetSelection(m_SavedPos, m_SavedPos);
   }
+  else
+  {
+    return false;
+  }
   
   SetCurrentPos(m_SavedPos);
+  
   EnsureCaretVisible();
+  
+  return true;
 }
   
 void wxExSTC::PositionSave()
@@ -2124,18 +2160,20 @@ void wxExSTC::SetHexMode()
   SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
 }
 
-void wxExSTC::SetIndicator(
+bool wxExSTC::SetIndicator(
   const wxExIndicator& indicator, 
   int start, 
   int end)
 {
   if (!wxExLexers::Get()->IndicatorIsLoaded(indicator))
   {
-    return;
+    return false;
   }
 
   SetIndicatorCurrent(indicator.GetNo());
   IndicatorFillRange(start, end - start);
+  
+  return true;
 }
 
 bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
