@@ -13,7 +13,7 @@ TESTDIR=./gccgtk2_dll/
 export CPPFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
 export LDFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
 
-lcov --capture --initial --directory $TESTDIR --output-file app.base
+lcov --base-directory ~/wxExtension/extension --capture --initial --directory $TESTDIR --output-file app.base
 
 echo "-- make clean --"
 make clean
@@ -32,7 +32,7 @@ echo "-- test gui report --"
 $TESTDIR/wxex-test-gui-report
 
 echo "-- lcov to collect data --"
-lcov --capture --directory $TESTDIR --output-file app.run
+lcov --base-directory ~/wxExtension/extension --capture --directory $TESTDIR --output-file app.run
 
 # remove output for external libraries
 lcov --remove app.run "/usr*" --output-file app.run
