@@ -258,7 +258,7 @@ public:
   
   /// Replaces text and calls find next.
   /// Uses settings from find replace data.
-  bool ReplaceNext(bool find_next);
+  bool ReplaceNext(bool find_next = true);
 
   /// Replaces text and calls find next.
   /// It there is a selection, it replaces in the selection, otherwise

@@ -34,10 +34,10 @@ $TESTDIR/wxex-test-gui-report
 echo "-- lcov to collect data --"
 lcov --base-directory ~/wxExtension/extension --capture --directory $TESTDIR --output-file app.run
 
-# remove output for external libraries
-lcov --remove app.run "/usr*" --output-file app.run
-
 lcov --add-tracefile app.base --add-tracefile app.run --output-file app.total
+
+# remove output for external libraries
+lcov --remove app.total "/usr*" --output-file app.total
 
 echo "-- genhtml to build report --"
 genhtml app.total
