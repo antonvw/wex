@@ -259,7 +259,7 @@ void wxExGuiTestFixture::testEx()
 void wxExGuiTestFixture::testFileDialog()
 {
   wxExFile file;
-  wxExFileDialog dlg(wxTheApp->GetTopWindow(), file);
+  wxExFileDialog dlg(wxTheApp->GetTopWindow(), &file);
   
   CPPUNIT_ASSERT(dlg.ShowModalIfChanged() == wxID_CANCEL);
 }
@@ -819,7 +819,7 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(!stc->FindNext());
   CPPUNIT_ASSERT( stc->FindNext("less text"));
   CPPUNIT_ASSERT( stc->ReplaceNext("less text", ""));
-  CPPUNIT_ASSERT(!stc->ReplaceNext();
+  CPPUNIT_ASSERT(!stc->ReplaceNext());
   CPPUNIT_ASSERT(!stc->FindNext("less text"));
 
   stc->SetText("new text");
