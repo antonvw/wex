@@ -132,10 +132,11 @@ public:
     bool find_next = true);
     
   /// Enables or disables folding depending on fold property.
-  /// If foldall (and fold propertry is on) is not specified, all lines are folded
-  /// if document contains more than 'Auto fold' lines,
-  /// if foldall (and fold propertry is on) is specified, always all lines are folded.
-  void Fold(bool foldall = false);
+  void Fold(
+    /// if document contains more than 'Auto fold' lines,
+    /// or if foldall (and fold propertry is on) is specified, 
+    /// always all lines are folded.
+    bool foldall = false);
 
   /// Gets EOL string.
   /// If you only want to insert a newline, use NewLine()
@@ -188,19 +189,22 @@ public:
   bool HexMode() const {return m_Flags & STC_WIN_HEX;};
 
   /// Indent range of lines.
-  void Indent(int begin, int end, bool forward);
+  bool Indent(int begin, int end, bool forward);
   
   /// Indents lines from current position.
-  void Indent(int lines, bool forward = true);
+  bool Indent(int lines, bool forward = true);
   
   /// Marks specified line as changed.
-  void MarkerAddChange(int line);
+  /// Returns false if marker could not be set.
+  bool MarkerAddChange(int line);
   
   /// Deletes all change markers.
-  void MarkerDeleteAllChange();
+  /// Returns false if marker change is not loaded.
+  bool MarkerDeleteAllChange();
   
   /// Mark target as changed.
-  void MarkTargetChange();
+  /// Returns false if marker change is not loaded or if no target was defined.
+  bool MarkTargetChange();
   
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
@@ -219,7 +223,8 @@ public:
   void Paste();
 
   /// Restores saved position.
-  void PositionRestore();
+  /// Returns true if position was saved before.
+  bool PositionRestore();
   
   /// Saves position.
   void PositionSave();
@@ -278,7 +283,7 @@ public:
   void ResetMargins(bool divider_margin = true);
 
   /// Sets an indicator at specified start and end pos.
-  void SetIndicator(const wxExIndicator& indicator, int start, int end);
+  bool SetIndicator(const wxExIndicator& indicator, int start, int end);
 
   /// Sets the (scintilla) lexer for this document.
   bool SetLexer(const wxString& lexer, bool fold = false);
