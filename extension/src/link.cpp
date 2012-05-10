@@ -159,6 +159,11 @@ const wxString wxExLink::GetPath(const wxString& text) const
     if (fullpath.empty())
     {
       fullpath = m_PathList.FindAbsoluteValidPath(link);
+      
+      if (fullpath.empty())
+      {
+        fullpath = link;
+      }
     }
   }
   

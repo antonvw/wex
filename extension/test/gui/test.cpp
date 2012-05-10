@@ -261,7 +261,7 @@ void wxExGuiTestFixture::testFileDialog()
   wxExFile file;
   wxExFileDialog dlg(wxTheApp->GetTopWindow(), &file);
   
-  CPPUNIT_ASSERT(dlg.ShowModalIfChanged() == wxID_CANCEL);
+  CPPUNIT_ASSERT(dlg.ShowModalIfChanged() == wxID_OK);
 }
 
 void wxExGuiTestFixture::testFileStatistics()
@@ -809,10 +809,10 @@ void wxExGuiTestFixture::testSTC()
   
   stc->AppendText("more text");
   CPPUNIT_ASSERT(stc->GetText() != "hello stc");
-  stc->DocumentStart();
   
   stc->AppendTextHexMode("in hex mode");
-
+  
+  stc->DocumentStart();
   CPPUNIT_ASSERT( stc->FindNext("more text"));
   CPPUNIT_ASSERT( stc->ReplaceAll("more", "less") == 1);
   CPPUNIT_ASSERT(!stc->FindNext("more text"));
@@ -1075,7 +1075,7 @@ void wxExGuiTestFixture::testVCSEntry()
 void wxExGuiTestFixture::testVersion()
 {
   CPPUNIT_ASSERT(!wxExVersionInfo().GetVersionOnlyString().empty());
-  CPPUNIT_ASSERT(!wxExGetVersionInfo().empty());
+  CPPUNIT_ASSERT(!wxExGetVersionInfo().GetVersionOnlyString().empty());
 }
 
 void wxExGuiTestFixture::testVi()
