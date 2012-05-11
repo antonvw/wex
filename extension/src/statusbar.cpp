@@ -145,7 +145,7 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
     wxID_ANY);
 }
 
-void wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
+bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
 {
 #ifdef wxExUSE_CPP0X	
   const auto it = m_Panes.find(field);
@@ -153,14 +153,17 @@ void wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
   const std::map<wxString, wxExStatusBarPane>::iterator it = m_Panes.find(field);
 #endif  
 
-  if (it != m_Panes.end())
+  if (it == m_Panes.end())
   {
-    // wxStatusBar checks whether new text differs from current,
-    // and does nothing if the same to avoid flicker.
-    wxStatusBar::SetStatusText(text, it->second.GetNo());
+    // Do not show error, as you might explicitly want to ignore messages.
+    return false;
   }
   
-  // Do not show error, as you might explicitly want to ignore messages.
+  // wxStatusBar checks whether new text differs from current,
+  // and does nothing if the same to avoid flicker.
+  wxStatusBar::SetStatusText(text, it->second.GetNo());
+  
+  return true;
 }
 #endif // wxUSE_STATUSBAR
 #endif // wxUSE_GUI

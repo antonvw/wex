@@ -129,40 +129,44 @@ bool wxExViMacros::Load(wxXmlDocument& doc)
   return true;
 }
 
-void wxExViMacros::LoadDocument()
+bool wxExViMacros::LoadDocument()
 {
   wxXmlDocument doc;
   
-  if (Load(doc))
+  if (!Load(doc))
   {
-    wxXmlNode* root = doc.GetRoot();
-    wxXmlNode* child = root->GetChildren();
-  
-    while (child)
-    {
-      std::vector<wxString> v;
-      
-      wxXmlNode* command = child->GetChildren();
-  
-      while (command)
-      {
-        if (command->GetAttribute("encoded", "false") == "true")
-        {
-          v.push_back(Decode(command->GetNodeContent()));
-        }
-        else
-        {
-          v.push_back(command->GetNodeContent());
-        }
-        
-        command = command->GetNext();
-      }
-      
-      m_Macros[child->GetAttribute("name")] = v;
-      
-      child = child->GetNext();
-    }
+    return false;
   }
+  
+  wxXmlNode* root = doc.GetRoot();
+  wxXmlNode* child = root->GetChildren();
+  
+  while (child)
+  {
+    std::vector<wxString> v;
+      
+    wxXmlNode* command = child->GetChildren();
+  
+    while (command)
+    {
+      if (command->GetAttribute("encoded", "false") == "true")
+      {
+        v.push_back(Decode(command->GetNodeContent()));
+      }
+      else
+      {
+        v.push_back(command->GetNodeContent());
+      }
+        
+      command = command->GetNext();
+    }
+      
+    m_Macros[child->GetAttribute("name")] = v;
+      
+    child = child->GetNext();
+  }
+  
+  return true;
 }
 
 bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
@@ -230,13 +234,13 @@ void wxExViMacros::Record(const wxString& text, bool new_command)
   }
 }
 
-void wxExViMacros::SaveDocument()
+bool wxExViMacros::SaveDocument()
 {
   wxXmlDocument doc;
   
   if (!Load(doc))
   {
-    return;
+    return false;
   }
   
   wxXmlNode* root = doc.GetRoot();
@@ -275,7 +279,7 @@ void wxExViMacros::SaveDocument()
     }
   }
   
-  doc.Save(GetFileName().GetFullPath());
+  return doc.Save(GetFileName().GetFullPath());
 }
 
 void wxExViMacros::StartRecording(const wxString& macro)

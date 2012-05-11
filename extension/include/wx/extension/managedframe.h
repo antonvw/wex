@@ -2,8 +2,7 @@
 // Name:      managedframe.h
 // Purpose:   Declaration of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Created:   2010-04-11
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXMANAGEDFRAME_H
@@ -73,7 +72,10 @@ public:
   virtual void SyncCloseAll(wxWindowID id);
 
   /// Toggles the managed pane: if shown hides it, otherwise shows it.
-  void TogglePane(const wxString& pane);
+  /// Returns false if pane is not managed.
+  bool TogglePane(
+    /// FINDBAR, TOOLBAR, VIBAR  
+    const wxString& pane);
 protected:
   /// Returns the toolbar.
   wxExToolBar* GetToolBar() {return m_ToolBar;};

@@ -24,14 +24,24 @@ void wxExGuiTestFixture::testConfigDialog()
 {
   std::vector <wxExConfigItem> items;
   
-  wxExConfigItem ci_str("ci-string");
-  items.push_back(ci_str);
+  wxExConfigItem ci1("string1", "test", "page0");
+  items.push_back(ci1);
+  wxExConfigItem ci2("string2", "test", "page0");
+  items.push_back(ci2);
   
   wxExConfigDialog dlg(wxTheApp->GetTopWindow(), items);
   
   dlg.ForceCheckBoxChecked();
   
+  dlg.Show();
+  
   dlg.Reload();
+  
+  std::vector <wxExConfigItem> items2;
+  items2.push_back(wxExConfigItem("string1"));
+  
+  wxExConfigDialog dlg2(wxTheApp->GetTopWindow(), items2);
+  dlg2.Show();
 }
 
 void wxExGuiTestFixture::testConfigItem()
@@ -296,6 +306,33 @@ void wxExGuiTestFixture::testFrame()
   
   CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE)));
   CPPUNIT_ASSERT( frame->OpenFile(TEST_FILE, "contents"));
+  
+  CPPUNIT_ASSERT( frame->GetGrid() == NULL);
+  CPPUNIT_ASSERT( frame->GetListView() == NULL);
+  CPPUNIT_ASSERT( frame->GetSTC() != NULL);
+  
+  frame->SetFindFocus(NULL);
+  frame->SetFindFocus(frame);
+  frame->SetFindFocus(frame->GetSTC());
+  
+  wxMenuBar* bar = new wxMenuBar();
+  frame->SetMenuBar(menubar);
+  
+  frame->StatusBarDoubleClicked("test");
+  frame->StatusBarDoubleClicked("Pane1");
+  frame->StatusBarDoubleClicked("Pane2");
+  
+  frame->StatusBarDoubleClickedRight("test");
+  frame->StatusBarDoubleClickedRight("Pane1");
+  frame->StatusBarDoubleClickedRight("Pane2");
+  
+  CPPUNIT_ASSERT(!frame->StatusText("hello", "test"));
+  CPPUNIT_ASSERT( frame->StatusText("hello", "Pane1"));
+  CPPUNIT_ASSERT( frame->StatusText("hello", "Pane2"));
+  
+  CPPUNIT_ASSERT(!frame->UpdateStatusBar(frame->GetSTC(), "test"));
+  CPPUNIT_ASSERT( frame->UpdateStatusBar(frame->GetSTC(), "Pane1"));
+  CPPUNIT_ASSERT( frame->UpdateStatusBar(frame->GetSTC(), "Pane2"));
 }
 
 void wxExGuiTestFixture::testFrd()
@@ -324,13 +361,29 @@ void wxExGuiTestFixture::testFrd()
 void wxExGuiTestFixture::testGrid()
 {
   wxExGrid* grid = new wxExGrid(wxTheApp->GetTopWindow());
+  
   CPPUNIT_ASSERT(grid->CreateGrid(5, 5));
+  
   grid->SetGridCellValue(wxGridCellCoords(0, 0), "test");
+  
   grid->SelectAll();
   CPPUNIT_ASSERT(!grid->GetSelectedCellsValue().empty());
-  CPPUNIT_ASSERT(grid->GetCellValue(0, 0) == "test");
+  CPPUNIT_ASSERT( grid->GetCellValue(0, 0) == "test");
+  
   grid->SetCellsValue(wxGridCellCoords(0, 0), "test1\ttest2\ntest3\ttest4\n");
   CPPUNIT_ASSERT(grid->GetCellValue(0, 0) == "test1");
+  
+  grid->ClearSelection();
+  grid->EmptySelection();
+  
+  CPPUNIT_ASSERT(grid->FindNext("text"));
+  
+  CPPUNIT_ASSERT(grid->CopySelectedCellsToClipboard());
+  
+  m_grid->Print();
+  m_grid->PrintPreview();
+  m_grid->UseDragAndDrop(true);
+  m_grid->UseDragAndDrop(false);
 }
 
 void wxExGuiTestFixture::testHeader()
@@ -426,7 +479,7 @@ void wxExGuiTestFixture::testHexMode()
 void wxExGuiTestFixture::testIndicator()
 {
   wxExIndicator ind;
-  CPPUNIT_ASSERT( !ind.IsOk() );
+  CPPUNIT_ASSERT(!ind.IsOk() );
   
   wxExIndicator indx(5, 2);
   wxExIndicator indy(7, 5);
@@ -613,8 +666,24 @@ void wxExGuiTestFixture::testListView()
 
   CPPUNIT_ASSERT(listView->FindColumn("String") == 0);
   CPPUNIT_ASSERT(listView->FindColumn("Number") == 1);
+  
+  listView->InsertItem(0, "test");
+  
+  CPPUNIT_ASSERT(listView->FindNext("test"));
+  
+  CPPUNIT_ASSERT(listView->ItemFromText("a new item"));
+  CPPUNIT_ASSERT(listView->FindNext("a new item"));
+  
+  CPPUNIT_ASSERT(listView->ItemToText(0) == "test");
+  
+  listView->Print();
+  listView->PrintPreview();
+  
+  CPPUNIT_ASSERT(!listView->SortColumn("xxx"));
+  CPPUNIT_ASSERT( listView->SortColumn("String"));
 }
 
+// Also test the toolbar (wxExToolBar).
 void wxExGuiTestFixture::testManagedFrame()
 {
   wxExManagedFrame* frame = (wxExManagedFrame*)wxTheApp->GetTopWindow();
@@ -625,6 +694,14 @@ void wxExGuiTestFixture::testManagedFrame()
   wxExVi* vi = &stc->GetVi();
   
   frame->GetExCommand(vi, "/");
+  
+  frame->HideExBar();
+  frame->HideExBar(false);
+  
+  frame->ShowExMessage("hello from frame");
+  
+  CPPUNIT_ASSERT( frame->TogglePane("VIBAR"));
+  CPPUNIT_ASSERT(!frame->TogglePane("XXXXBAR"));
 }
 
 void wxExGuiTestFixture::testMarker()
@@ -653,7 +730,16 @@ void wxExGuiTestFixture::testMenu()
   menu.AppendBars();
   CPPUNIT_ASSERT(menu.GetMenuItemCount() > 0);
   
-  // See alo testVCS.
+  menu.Append(wxID_SAVE);
+  menu.Append(wxID_SAVE, "mysave");
+  menu.AppendEdit();
+  menu.AppendEdit(true);
+  menu.AppendPrint();
+  
+  wxMenu* submenu = new wxMenu("submenu");
+  menu.AppendSubmenu(submenu, "submenu");
+  CPPUNIT_ASSERT(menu.AppendTools());
+  menu.AppendVCS(); // see alo testVCS
 }
 
 void wxExGuiTestFixture::testNotebook()
@@ -689,7 +775,11 @@ void  wxExGuiTestFixture::testOTL()
 void  wxExGuiTestFixture::testPrinting()
 {
   CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
-  CPPUNIT_ASSERT(wxExPrinting::Get()->GetPrinter() != NULL);
+  CPPUNIT_ASSERT(wxExPrinting::Get()->GetPrinter() != NULL
+  
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello printing");
+    
+  new wxExPrintout(stc);
 }
 
 void wxExGuiTestFixture::testProcess()
@@ -858,6 +948,9 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(!stc->PositionRestore());
   stc->PositionSave();
   CPPUNIT_ASSERT( stc->PositionRestore());
+  
+  stc->Print();
+  stc->PrintPreview();
   
   stc->PropertiesMessage();
   
@@ -1238,6 +1331,7 @@ void wxExGuiTestFixture::testViMacros()
   macros.StopRecording();
   CPPUNIT_ASSERT(!macros.IsRecording());
   CPPUNIT_ASSERT(!macros.IsRecorded("a")); // still no macro
+  CPPUNIT_ASSERT( macros.GetMacro() == "a");
   
   macros.StartRecording("a");
   macros.Record('a');
@@ -1252,6 +1346,13 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT( macros.Playback(vi, "a"));
   CPPUNIT_ASSERT( macros.Get("a").front() == "a");
   CPPUNIT_ASSERT(!macros.Playback(vi, "b"));
+  
+  CPPUNIT_ASSERT(!macros.Get().empty());
+  
+  CPPUNIT_ASSERT(!macros.GetFileName().GetFullPath().empty());
+  
+  CPPUNIT_ASSERT( macros.LoadDocument());
+  CPPUNIT_ASSERT( macros.SaveDocument());
 }
   
 wxExAppTestSuite::wxExAppTestSuite()

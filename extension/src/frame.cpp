@@ -538,17 +538,19 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
 #endif // wxUSE_STATUSBAR
 
 #if wxUSE_STATUSBAR
-void wxExFrame::StatusText(const wxString& text, const wxString& pane)
+bool wxExFrame::StatusText(const wxString& text, const wxString& pane)
 {
-  if (m_StatusBar != NULL)
+  if (m_StatusBar == NULL)
   {
-    m_StatusBar->SetStatusText(text, pane);
+    return false;
   }
+  
+  return m_StatusBar->SetStatusText(text, pane);
 }
 #endif // wxUSE_STATUSBAR
 
 #if wxUSE_STATUSBAR
-void wxExFrame::UpdateStatusBar(const wxListView* lv)
+bool wxExFrame::UpdateStatusBar(const wxListView* lv)
 {
   if (lv->IsShown())
   {
@@ -556,19 +558,24 @@ void wxExFrame::UpdateStatusBar(const wxListView* lv)
       wxString::Format("%d", lv->GetItemCount()):
       wxString::Format("%d,%d", lv->GetItemCount(), lv->GetSelectedItemCount()));
       
-    StatusText(text, "PaneInfo");
+    return StatusText(text, "PaneInfo");
   }
+  
+  return false;
 }
 
 // Do not make it const, too many const_casts needed,
 // I thought that might cause crash in rect selection, but it didn't.
-void wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
+bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
 {
   wxString text;
 
   if (pane == "PaneInfo")
   {
-    if (stc->GetCurrentPos() == 0) text = wxString::Format("%d", stc->GetLineCount());
+    if (stc->GetCurrentPos() == 0)
+    {
+      text = wxString::Format("%d", stc->GetLineCount());
+    }
     else
     {
       int start;
@@ -579,7 +586,10 @@ void wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
       const int line = stc->GetCurrentLine() + 1;
       const int pos = stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
 
-      if (len == 0) text = wxString::Format("%d,%d", line, pos);
+      if (len == 0) 
+      {
+        text = wxString::Format("%d,%d", line, pos);
+      }
       else
       {
         if (stc->SelectionIsRectangle())
@@ -617,10 +627,10 @@ void wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
   }
   else
   {
-    wxFAIL;
+    return false;
   }
 
-  StatusText(text, pane);
+  return StatusText(text, pane);
 }
 #endif
 

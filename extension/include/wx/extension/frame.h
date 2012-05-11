@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wxExFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFRAME_H
@@ -102,13 +102,13 @@ public:
 
   /// Sets text on specified pane.
   /// Don't forget to call SetupStatusBar first.
-  static void StatusText(const wxString& text, const wxString& pane);
+  static bool StatusText(const wxString& text, const wxString& pane);
   
   /// Updates statusbar pane items pane with values from specified listview.
-  static void UpdateStatusBar(const wxListView* lv);
+  static bool UpdateStatusBar(const wxListView* lv);
   
   /// Updates the specified statusbar pane with values from specified stc.
-  static void UpdateStatusBar(wxExSTC* stc, const wxString& pane);
+  static bool UpdateStatusBar(wxExSTC* stc, const wxString& pane);
 #endif // wxUSE_STATUSBAR
 protected:
 #if wxUSE_STATUSBAR
