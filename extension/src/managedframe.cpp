@@ -238,7 +238,7 @@ void wxExManagedFrame::SyncCloseAll(wxWindowID id)
   SetFindFocus(NULL);
 }
 
-void wxExManagedFrame::TogglePane(const wxString& pane)
+bool wxExManagedFrame::TogglePane(const wxString& pane)
 {
   wxAuiPaneInfo& info = m_Manager.GetPane(pane);
 
