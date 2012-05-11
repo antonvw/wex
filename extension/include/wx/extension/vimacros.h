@@ -2,7 +2,7 @@
 // Name:      vimacros.h
 // Purpose:   Declaration of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVIMACROS_H
@@ -71,10 +71,12 @@ public:
   static const wxFileName GetFileName();
   
   /// Loads all macros from xml document.
-  static void LoadDocument();
+  /// Returns true if document is loaded (macros still can be empty).
+  static bool LoadDocument();
   
   /// Saves all macros to xml document.
-  static void SaveDocument();
+  /// Returns true if macros are saved.
+  static bool SaveDocument();
 private:  
   static bool Load(wxXmlDocument& doc);
   static const wxString Encode(const wxString& text, bool& encoded);

@@ -89,7 +89,8 @@ public:
   void SetFields(const std::vector<wxExStatusBarPane>& fields);
 
   /// Sets text on specified field.
-  void SetStatusText(const wxString& text, const wxString& field);
+  /// Returns false if field does not exist.
+  bool SetStatusText(const wxString& text, const wxString& field);
 protected:
   /// React on some mouse events line button down, double click and
   /// moving over.

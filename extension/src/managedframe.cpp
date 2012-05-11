@@ -242,11 +242,16 @@ void wxExManagedFrame::TogglePane(const wxString& pane)
 {
   wxAuiPaneInfo& info = m_Manager.GetPane(pane);
 
-  wxASSERT(info.IsOk());
+  if (!info.IsOk())
+  {
+    return false;
+  }
 
   info.IsShown() ? info.Hide(): info.Show();
 
   m_Manager.Update();
+  
+  return true;
 }
 
 // Implementation of support class.

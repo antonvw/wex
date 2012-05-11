@@ -824,11 +824,11 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, wxIntPtr sortData)
   return 0;
 }
 
-void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
+bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 {
   if (column_no == -1)
   {
-    return;
+    return false;
   }
   
   SortColumnReset();
@@ -840,7 +840,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   
   if (it == m_Columns.end())
   {
-    return;
+    return false;
   }
 
   wxExColumn* sorted_col = &it->second;
@@ -920,6 +920,8 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   }
 
   wxLogStatus(_("Sorted on") + ": " + sorted_col->GetText());
+  
+  return true;
 }
 
 void wxExListView::SortColumnReset()
