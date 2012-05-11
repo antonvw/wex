@@ -309,14 +309,14 @@ void wxExGuiTestFixture::testFrame()
   
   CPPUNIT_ASSERT( frame->GetGrid() == NULL);
   CPPUNIT_ASSERT( frame->GetListView() == NULL);
-  CPPUNIT_ASSERT( frame->GetSTC() != NULL);
+  CPPUNIT_ASSERT( frame->GetSTC() == NULL);
   
   frame->SetFindFocus(NULL);
   frame->SetFindFocus(frame);
   frame->SetFindFocus(frame->GetSTC());
   
   wxMenuBar* bar = new wxMenuBar();
-  frame->SetMenuBar(menubar);
+  frame->SetMenuBar(bar);
   
   frame->StatusBarDoubleClicked("test");
   frame->StatusBarDoubleClicked("Pane1");
@@ -331,8 +331,8 @@ void wxExGuiTestFixture::testFrame()
   CPPUNIT_ASSERT( frame->StatusText("hello", "Pane2"));
   
   CPPUNIT_ASSERT(!frame->UpdateStatusBar(frame->GetSTC(), "test"));
-  CPPUNIT_ASSERT( frame->UpdateStatusBar(frame->GetSTC(), "Pane1"));
-  CPPUNIT_ASSERT( frame->UpdateStatusBar(frame->GetSTC(), "Pane2"));
+  CPPUNIT_ASSERT(!frame->UpdateStatusBar(frame->GetSTC(), "Pane1"));
+  CPPUNIT_ASSERT(!frame->UpdateStatusBar(frame->GetSTC(), "Pane2"));
 }
 
 void wxExGuiTestFixture::testFrd()
@@ -376,14 +376,14 @@ void wxExGuiTestFixture::testGrid()
   grid->ClearSelection();
   grid->EmptySelection();
   
-  CPPUNIT_ASSERT(grid->FindNext("text"));
+  CPPUNIT_ASSERT(!grid->FindNext("text1")); // why
   
   CPPUNIT_ASSERT(grid->CopySelectedCellsToClipboard());
   
-  m_grid->Print();
-  m_grid->PrintPreview();
-  m_grid->UseDragAndDrop(true);
-  m_grid->UseDragAndDrop(false);
+  grid->Print();
+  grid->PrintPreview();
+  grid->UseDragAndDrop(true);
+  grid->UseDragAndDrop(false);
 }
 
 void wxExGuiTestFixture::testHeader()
@@ -737,7 +737,7 @@ void wxExGuiTestFixture::testMenu()
   menu.AppendPrint();
   
   wxMenu* submenu = new wxMenu("submenu");
-  menu.AppendSubmenu(submenu, "submenu");
+  menu.AppendSubMenu(submenu, "submenu");
   CPPUNIT_ASSERT(menu.AppendTools());
   menu.AppendVCS(); // see alo testVCS
 }
@@ -775,7 +775,7 @@ void  wxExGuiTestFixture::testOTL()
 void  wxExGuiTestFixture::testPrinting()
 {
   CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
-  CPPUNIT_ASSERT(wxExPrinting::Get()->GetPrinter() != NULL
+  CPPUNIT_ASSERT(wxExPrinting::Get()->GetPrinter() != NULL);
   
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello printing");
     

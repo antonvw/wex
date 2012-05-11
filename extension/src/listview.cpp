@@ -594,7 +594,7 @@ const wxString wxExListView::ItemToText(long item_number) const
     }
   }
 
-  return text;
+  return text.Trim();
 }
 
 void wxExListView::OnCommand(wxCommandEvent& event)
