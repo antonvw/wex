@@ -37,8 +37,11 @@ lcov --base-directory ~/wxExtension/extension --capture --directory $TESTDIR --o
 
 lcov --add-tracefile app.base --add-tracefile app.run --output-file app.total
 
-# remove output for external libraries
+# remove output for external and test libraries
 lcov --remove app.total "/usr*" --output-file app.total
+lcov --remove app.total "test/*" --output-file app.total
+lcov --remove app.total "sample*" --output-file app.total
+lcov --remove app.total "*wxExtension/sync*" --output-file app.total
 
 echo "-- genhtml building report --"
 genhtml app.total
