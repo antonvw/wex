@@ -9,7 +9,7 @@
 #define _FTTESTUNIT_H
 
 #include <wx/extension/extension.h>
-#include "../extension.h"
+#include "../test.h"
 
 /// CppUnit test suite.
 class wxExTestSuite : public CppUnit::TestSuite

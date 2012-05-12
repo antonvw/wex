@@ -778,7 +778,7 @@ void wxExGuiTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == NULL);
 }
 
-void  wxExGuiTestFixture::testOTL()
+void wxExGuiTestFixture::testOTL()
 {
 #if wxExUSE_OTL
   wxExOTL otl;
@@ -790,7 +790,7 @@ void  wxExGuiTestFixture::testOTL()
 #endif
 }
 
-void  wxExGuiTestFixture::testPrinting()
+void wxExGuiTestFixture::testPrinting()
 {
   CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
   CPPUNIT_ASSERT(wxExPrinting::Get()->GetPrinter() != NULL);

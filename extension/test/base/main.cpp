@@ -2,12 +2,11 @@
 // Name:      main.cpp
 // Purpose:   main for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011
+// Copyright: (c) 2012
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <ui/text/TestRunner.h>
 #include <cppunit/TestRunner.h>
-#include <wx/log.h>
 #include "test.h"
 
 int main (int argc, char* argv[])
