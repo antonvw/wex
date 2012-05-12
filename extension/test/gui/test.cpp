@@ -544,6 +544,8 @@ void wxExGuiTestFixture::testLexer()
 
 void wxExGuiTestFixture::testLexers()
 {
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  
   CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
   
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("XXX") == "XXX");
@@ -551,6 +553,9 @@ void wxExGuiTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number") == "fore:red");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "asm") == "2");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "cpp") == "4");
+  
+  wxExLexers::Get()->ApplyMarkers(stc);
+  wxExLexers::Get()->ApplyProperties(stc);
 
   CPPUNIT_ASSERT(!wxExLexers::Get()->BuildWildCards(
     wxFileName(TEST_FILE)).empty());
@@ -564,6 +569,8 @@ void wxExGuiTestFixture::testLexers()
     "// this is a cpp comment text").GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
     "xxx").GetScintillaLexer().empty());
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetCount() > 0);
 
   CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle());
   CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().IsOk());
@@ -575,11 +582,17 @@ void wxExGuiTestFixture::testLexers()
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros("pascal").empty());
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros("XXX").empty());
   
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetTheme().empty());
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetThemeOk());
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetThemeMacros().empty());
 
   CPPUNIT_ASSERT(!wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(99, -1)));
   CPPUNIT_ASSERT( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0, -1)));
   CPPUNIT_ASSERT( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0, -1)));
+  
+  wxString lexer("cpp");
+  wxExLexers::Get()->ShowDialog(wxTheApp->GetTopWindow(), lexer);
+  wxExLexers::Get()->ShowThemeDialog(wxTheApp->GetTopWindow());
 
   CPPUNIT_ASSERT( wxExLexers::Get()->Read());
 }
@@ -962,6 +975,10 @@ void wxExGuiTestFixture::testSTC()
   stc->SetLexerProperty("xx", "yy");
   
   CPPUNIT_ASSERT(!stc->SmartIndentation());
+  
+  stc->ClearDocument();
+  
+  stc->ConfigDialog(wxTheApp->GetTopWindow());
 }
   
 void wxExGuiTestFixture::testSTCEntryDialog()
