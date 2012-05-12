@@ -251,9 +251,6 @@ public:
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
 
-  /// Deletes double items.
-  void DeleteDoubles();
-
   /// Gets the list type.
   const wxExListType GetType() const {return m_Type;};
 

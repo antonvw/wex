@@ -2,13 +2,14 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for wxExtension report cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _FTTESTUNIT_H
 #define _FTTESTUNIT_H
 
 #include <wx/extension/extension.h>
+#include "../extension.h"
 
 /// CppUnit test suite.
 class wxExTestSuite : public CppUnit::TestSuite
