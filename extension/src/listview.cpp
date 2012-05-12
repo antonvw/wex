@@ -1081,36 +1081,6 @@ void wxExListViewFileName::BuildPopupMenu(wxExMenu& menu)
 #endif
 }
 
-void wxExListViewFileName::DeleteDoubles()
-{
-  wxDateTime mtime((time_t)0);
-  wxString name;
-  const long itemcount = GetItemCount();
-
-  for (long i = itemcount - 1; i >= 0; i--)
-  {
-    wxExListItem item(this, i);
-
-    // Delete this element if it has the same mtime
-    // and the same name as the previous one.
-    if (mtime == item.GetFileName().GetStat().st_mtime &&
-        name == GetItemText(i, _("File Name")))
-    {
-      DeleteItem(i);
-    }
-    else
-    {
-      mtime = item.GetFileName().GetStat().st_mtime;
-      name = GetItemText(i, _("File Name"));
-    }
-  }
-
-  if (itemcount != GetItemCount())
-  {
-    ItemsUpdate();
-  }
-}
-
 const wxString wxExListViewFileName::GetTypeDescription(wxExListType type)
 {
   wxString value;

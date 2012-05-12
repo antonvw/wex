@@ -9,6 +9,7 @@
 #define _EXGUITESTUNIT_H
 
 #include <wx/extension/extension.h>
+#include "../extension.h"
 
 /// CppUnit test suite.
 class wxExAppTestSuite : public CppUnit::TestSuite
