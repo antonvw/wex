@@ -59,7 +59,6 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <sources>../extension/src/stcfile.cpp</sources>
     <sources>../extension/src/style.cpp</sources>
     <if cond="PLATFORM_UNIX=='1'">
-    <sources>../extension/src/test.cpp</sources>
     <include>/usr/include/cppunit</include>
     <include>../extension/include</include>
     </if>
@@ -113,7 +112,6 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <headers>../extension/include/wx/extension/stcdlg.h</headers>
     <headers>../extension/include/wx/extension/stcfile.h</headers>
     <headers>../extension/include/wx/extension/style.h</headers>
-    <headers>../extension/include/wx/extension/test.h</headers>
     <headers>../extension/include/wx/extension/textfile.h</headers>
     <headers>../extension/include/wx/extension/tool.h</headers>
     <headers>../extension/include/wx/extension/toolbar.h</headers>

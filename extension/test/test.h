@@ -16,8 +16,6 @@
 #include <TestFixture.h>
 #include <TestSuite.h>
 
-wxString wxExTestFixture::m_Report;  
-
 /// CppUnit test fixture.
 /// These classes require either an wxExApp object, or wx to be initialized.
 class wxExTestFixture : public CppUnit::TestFixture
@@ -34,11 +32,14 @@ public:
     m_Report << text << "\n";};
  
   /// Prints out report.
-  static void PrintReport();
-  if (!m_Report.empty()) {
-    std::cout << m_Report;};
+  static void PrintReport() {
+    if (!m_Report.empty()) 
+      std::cout << m_Report;};
 private:
   static wxString m_Report;  
 };
+
+wxString wxExTestFixture::m_Report;
+
 #endif
 #endif
