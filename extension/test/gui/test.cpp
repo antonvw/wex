@@ -264,6 +264,8 @@ void wxExGuiTestFixture::testEx()
   
   CPPUNIT_ASSERT( ex->MacroPlayback("a"));
   CPPUNIT_ASSERT(!ex->MacroPlayback("b"));
+  CPPUNIT_ASSERT( ex->GetMacro() == "a");
+  CPPUNIT_ASSERT( ex->GetSTC() == stc);
   
   CPPUNIT_ASSERT( ex->MarkerAdd('a'));
   CPPUNIT_ASSERT( ex->MarkerLine('a') != -1);
@@ -1272,7 +1274,6 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->OnChar(event));
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   vi->MacroStopRecording();
-  
   CPPUNIT_ASSERT(!vi->MacroIsRecording());
   CPPUNIT_ASSERT( vi->MacroIsRecorded("a"));
   
@@ -1281,7 +1282,27 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT( vi->MacroPlayback("a"));
   CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
-
+  
+  event.m_keyCode = WXK_CONTROL_B;
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  event.m_keyCode = WXK_CONTROL_E;
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  event.m_keyCode = WXK_CONTROL_F;
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  event.m_keyCode = WXK_CONTROL_J;
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  event.m_keyCode = WXK_CONTROL_P;
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  event.m_keyCode = WXK_CONTROL_Q;
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  
+  event.m_keyCode = WXK_BACK;
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  event.m_keyCode = WXK_RETURN;
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  event.m_keyCode = WXK_TAB;
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  
   // Vi command tests.
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT(!vi->GetInsertMode());
@@ -1346,6 +1367,14 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->GetInsertMode());
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT( vi->Command("X"));
+  CPPUNIT_ASSERT( vi->Command("^"));
+  CPPUNIT_ASSERT( vi->Command("~"));
+  CPPUNIT_ASSERT( vi->Command("$"));
+  CPPUNIT_ASSERT( vi->Command("{"));
+  CPPUNIT_ASSERT( vi->Command("}"));
+  CPPUNIT_ASSERT( vi->Command("%"));
+  CPPUNIT_ASSERT( vi->Command("*"));
+  CPPUNIT_ASSERT( vi->Command("#"));
   
   CPPUNIT_ASSERT( vi->Command(":.="));
   
