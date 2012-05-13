@@ -46,7 +46,7 @@ public:
   virtual void setUp();
 
   /// Clean up after the test run.
-  virtual void tearDown() {};
+  virtual void tearDown() {wxExTestFixture::tearDown();};
 
   void testConfigDialog();
   void testConfigItem();

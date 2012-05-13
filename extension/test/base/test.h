@@ -30,10 +30,10 @@ public:
  ~TestFixture() {};
  
   /// Set up context before running a test.
-  virtual void setUp() {};
+  virtual void setUp() {wxExTestFixture::setUp();};
 
   /// Clean up after the test run.
-  virtual void tearDown() {};
+  virtual void tearDown() {wxExTestFixture::tearDown();};
   
   void testConfig();
   void testDir();

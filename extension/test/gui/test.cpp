@@ -679,9 +679,11 @@ void wxExGuiTestFixture::testListView()
   listView->InsertColumn(wxExColumn("Float", wxExColumn::COL_FLOAT));
   listView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
 
-  CPPUNIT_ASSERT(listView->FindColumn("String") == 0);
-  CPPUNIT_ASSERT(listView->FindColumn("Int") == 1);
-  
+  CPPUNIT_ASSERT(listView->FindColumn("Int") == 0);
+  CPPUNIT_ASSERT(listView->FindColumn("Date") == 1);
+  CPPUNIT_ASSERT(listView->FindColumn("Float") == 2);
+  CPPUNIT_ASSERT(listView->FindColumn("String") == 3);
+
   listView->InsertItem(0, "test");
   
   CPPUNIT_ASSERT(listView->FindNext("test"));
