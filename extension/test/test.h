@@ -27,19 +27,17 @@ public:
   /// Destructor.
  ~wxExTestFixture() {};
  
+  /// Clean up after the test run.
+  /// Prints out report.
+  virtual void tearDown() {
+    if (!m_Report.empty()) 
+      std::cout << m_Report;};
+      
   /// Adds text to report.
   void Report(const wxString& text) {
     m_Report << text << "\n";};
- 
-  /// Prints out report.
-  static void PrintReport() {
-    if (!m_Report.empty()) 
-      std::cout << m_Report;};
 private:
-  static wxString m_Report;  
+  wxString m_Report;  
 };
-
-wxString wxExTestFixture::m_Report;
-
 #endif
 #endif

@@ -20,7 +20,5 @@ int main (int argc, char* argv[])
   runner.addTest(suite);
   runner.run();
   
-  TestFixture::PrintReport();
-  
   return 0;
 }
