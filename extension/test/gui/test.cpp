@@ -1306,20 +1306,74 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("ma"));
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
   
+  CPPUNIT_ASSERT( vi->Command("b"));
+  CPPUNIT_ASSERT( vi->Command("e"));
+  CPPUNIT_ASSERT( vi->Command("g"));
   CPPUNIT_ASSERT( vi->Command("h"));
   CPPUNIT_ASSERT( vi->Command("j"));
   CPPUNIT_ASSERT( vi->Command("k"));
   CPPUNIT_ASSERT( vi->Command("l"));
-  CPPUNIT_ASSERT( vi->Command(":.="));
+  CPPUNIT_ASSERT( vi->Command(" "));
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
+  CPPUNIT_ASSERT( vi->Command("n"));
+  CPPUNIT_ASSERT( vi->Command("p"));
+  CPPUNIT_ASSERT( vi->Command("u"));
+  CPPUNIT_ASSERT( vi->Command("w"));
+  CPPUNIT_ASSERT( vi->Command("x"));
+  CPPUNIT_ASSERT(!vi->Command("y"));
+  CPPUNIT_ASSERT( vi->Command("D"));
+  CPPUNIT_ASSERT( vi->Command("G"));
+  CPPUNIT_ASSERT( vi->Command("H"));
+  CPPUNIT_ASSERT( vi->Command("J"));
+  CPPUNIT_ASSERT( vi->Command("L"));
+  CPPUNIT_ASSERT( vi->Command("M"));
+  CPPUNIT_ASSERT( vi->Command("N"));
+  CPPUNIT_ASSERT( vi->Command("P"));
+  CPPUNIT_ASSERT( vi->Command("R"));
+  CPPUNIT_ASSERT( vi->GetInsertMode());
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->Command("X"));
+  
+  CPPUNIT_ASSERT( vi->Command(":.="));
   
   CPPUNIT_ASSERT( vi->Command(":1,$s/xx/yy/"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("xx"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("yy"));
   
   CPPUNIT_ASSERT( vi->GetLastCommand() == ":1,$s/xx/yy/");
   
+  CPPUNIT_ASSERT( vi->Command("cc"));
+  CPPUNIT_ASSERT( vi->GetInsertMode());
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  
+  CPPUNIT_ASSERT( vi->Command(":1"));
+  CPPUNIT_ASSERT( vi->Command("cw"));
+  CPPUNIT_ASSERT( vi->GetInsertMode());
+  CPPUNIT_ASSERT( vi->Command("zzz"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->Command("dw"));
+  CPPUNIT_ASSERT( vi->Command("3dw"));
+  CPPUNIT_ASSERT( vi->GetLastCommand() == "3dw");
+  CPPUNIT_ASSERT( vi->Command("dd"));
+  CPPUNIT_ASSERT( vi->Command("d0"));
+  CPPUNIT_ASSERT( vi->Command("d$"));
+  
+  CPPUNIT_ASSERT( vi->Command("fx"));
+  CPPUNIT_ASSERT( vi->Command("Fx"));
+  CPPUNIT_ASSERT( vi->Command(";"));
+  
+  CPPUNIT_ASSERT( vi->Command("yw"));
+  CPPUNIT_ASSERT( vi->Command("yy"));
+  
+  CPPUNIT_ASSERT( vi->Command("zc"));
+  CPPUNIT_ASSERT( vi->Command("zo"));
+  CPPUNIT_ASSERT( vi->Command("zE"));
+  CPPUNIT_ASSERT( vi->Command(">>"));
+  CPPUNIT_ASSERT( vi->Command("<<"));
+  
+  stc->SetText("this text contains xx");
   CPPUNIT_ASSERT( vi->Command("qt"));
-  CPPUNIT_ASSERT( vi->Command("/yy"));
+  CPPUNIT_ASSERT( vi->Command("/xx"));
   CPPUNIT_ASSERT( vi->Command("rz"));
   CPPUNIT_ASSERT( vi->Command("q"));
   
@@ -1328,17 +1382,9 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("."));
   CPPUNIT_ASSERT( vi->Command("10@t"));
   
-  CPPUNIT_ASSERT( vi->Command(":1"));
-  CPPUNIT_ASSERT( vi->Command("cw"));
-  CPPUNIT_ASSERT( vi->Command("zzz"));
-  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
-  CPPUNIT_ASSERT( vi->Command("dw"));
-  CPPUNIT_ASSERT( vi->Command("3dw"));
-  CPPUNIT_ASSERT( vi->GetLastCommand() == "3dw");
-  
   // Test illegal command.
   CPPUNIT_ASSERT(!vi->Command("dx"));
-  CPPUNIT_ASSERT( vi->GetLastCommand() == "3dw");
+  CPPUNIT_ASSERT( vi->GetLastCommand() == "10@t");
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
 }
   
