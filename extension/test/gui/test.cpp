@@ -233,6 +233,13 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":'t,'us/s/w/"));
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":'t,'us/s/w/");
   
+  CPPUNIT_ASSERT( ex->Command(":d"));
+  CPPUNIT_ASSERT( ex->Command(":e"));
+  CPPUNIT_ASSERT(!ex->Command(":n"));
+  CPPUNIT_ASSERT(!ex->Command(":prev"));
+  CPPUNIT_ASSERT( ex->Command(":r test"));
+  CPPUNIT_ASSERT( ex->Command(":y"));
+
   CPPUNIT_ASSERT(!ex->MacroIsRecording());
   CPPUNIT_ASSERT(!ex->MacroIsRecorded());
   
