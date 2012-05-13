@@ -41,7 +41,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   wxPersistentRegisterAndRestore(this);
 
   m_STC =  (use_shell ?
-    new wxExSTCShell(this, wxEmptyString):
+    new wxExSTCShell(this, text):
     new wxExSTC(this, text));
   
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
