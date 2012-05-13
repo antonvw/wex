@@ -9,6 +9,7 @@
 #include <wx/config.h>
 #include "test.h"
 
+#include <wx/buffer.h>
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
@@ -997,10 +998,22 @@ void wxExGuiTestFixture::testSTC()
   
 void wxExGuiTestFixture::testSTCEntryDialog()
 {
-  wxExSTCEntryDialog dlg(wxTheApp->GetTopWindow(), "hello", "testing");
+  wxExSTCEntryDialog dlg1(wxTheApp->GetTopWindow(), "hello", "testing");
+  CPPUNIT_ASSERT( dlg1.GetText() == "testing");
+  //CPPUNIT_ASSERT( dlg1.GetTextRaw() == "testing");
+  CPPUNIT_ASSERT( dlg1.SetLexer("cpp"));
+  CPPUNIT_ASSERT(!dlg1.SetLexer("xxx"));
   
-  CPPUNIT_ASSERT(dlg.GetText() == "testing");
-//  CPPUNIT_ASSERT(dlg.GetTextRaw() == "testing");
+  wxExSTCEntryDialog dlg2(
+    wxTheApp->GetTopWindow(), 
+      "hello", 
+      "testing",
+      "hello again",
+      wxOK,
+      true);
+  CPPUNIT_ASSERT(!dlg2.GetText().empty());
+  CPPUNIT_ASSERT( dlg2.GetSTCShell() != NULL);
+  CPPUNIT_ASSERT( dlg2.GetSTCShell()->GetPrompt() == "testing");
 }
 
 void wxExGuiTestFixture::testSTCFile()
