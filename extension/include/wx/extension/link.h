@@ -2,13 +2,13 @@
 // Name:      link.h
 // Purpose:   Declaration of class wxExLink
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXLINK_H
 #define _EXLINK_H
 
-#include <wx/filefn.h>
+#include <wx/filefn.h> // for wxPathList
 
 #if wxUSE_GUI
 
@@ -21,7 +21,7 @@ public:
   /// Constructor.
   wxExLink(wxExSTC* stc);
   
-  /// Adds a possible base path, present in the stc component.
+  /// Adds a possible base path to pathlist, present in the stc component.
   /// Returns false if basepath was not found in stc.
   bool AddBasePath();
   
@@ -30,15 +30,12 @@ public:
   /// to retrieve an existing path.
   const wxString FindPath(const wxString& text) const;
   
-  /// Tries to find a line number in combination with a path.
-  /// Returns 0 if none could be found.
-  int GetLineNo(const wxString& text) const;
-  
-  /// Gets a path from text, using path list if necessary.
+  /// Gets a path from text, using pathlist if necessary.
   /// Returns empty string if no path could be found.
   const wxString GetPath(const wxString& text) const;
   
-  /// Sets link with info from config.
+  /// Sets pathlist with info from config.
+  /// If there is no config, pathlist will be empty.
   void SetFromConfig();
 private:
   wxPathList m_PathList;

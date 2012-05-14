@@ -88,7 +88,8 @@ public:
   /// - PaneFileType, shows file types
   /// - PaneInfo, shows info for control, e.g. lines
   /// - PaneLexer, shows lexer
-  void SetupStatusBar(
+  /// Returns created statusbar.
+  wxExStatusBar* SetupStatusBar(
     const std::vector<wxExStatusBarPane>& panes,
     long style = wxST_SIZEGRIP,
     const wxString& name = "statusBar");
