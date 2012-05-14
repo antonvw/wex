@@ -153,7 +153,7 @@ void wxExGuiReportTestFixture::test()
   const long find = sw.Time();
 
   Report(wxString::Format(
-    "match %d items in: %ld milliseconds", report->GetItemCount(), find));
+    "match %d items in: %ld milliseconds", report->GetItemCount(), find).ToStdString());
   
   // Each file has one author (files.GetCount()), add the one inSetFindString above, 
   // the one in the header src file, and the one that is already present on the 
