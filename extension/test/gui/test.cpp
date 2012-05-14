@@ -1139,13 +1139,15 @@ void wxExGuiTestFixture::testVCS()
   // giving the first command of current vcs, being add.
   wxExVCS vcs(ar);
   
+  vcs.ConfigDialog(wxTheApp->GetTopWindow());
+  
   CPPUNIT_ASSERT( vcs.GetCount() > 0);
   CPPUNIT_ASSERT( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);
   CPPUNIT_ASSERT( vcs.DirExists(file));
     
-  // There is a problem in wxExecute inside wxExVCS::Execute (it hangs).
-//  CPPUNIT_ASSERT( vcs.Execute() != -1);
-//  CPPUNIT_ASSERT(!vcs.GetOutput().empty());
+  // We do not have a vcs bin, so execute fails.
+  CPPUNIT_ASSERT( vcs.Execute() == -1);
+  CPPUNIT_ASSERT( vcs.GetEntry().GetOutput().empty());
 
   CPPUNIT_ASSERT( vcs.GetEntry().GetCommand().GetCommand() == "add");
   CPPUNIT_ASSERT( vcs.GetFileName().IsOk());
