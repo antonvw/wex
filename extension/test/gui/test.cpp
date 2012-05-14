@@ -670,7 +670,7 @@ void wxExGuiTestFixture::testListItem()
   const long add = sw.Time();
 
   Report(wxString::Format(
-    "adding %d items in: %ld milliseconds", 3 * max, add));
+    "adding %d items in: %ld milliseconds", 3 * max, add).ToStdString());
   
   sw.Start();
   
@@ -681,7 +681,7 @@ void wxExGuiTestFixture::testListItem()
   const long sort = sw.Time();
   
   Report(wxString::Format(
-    "sorting %d items in: %ld milliseconds", 3 * max, sort));
+    "sorting %d items in: %ld milliseconds", 3 * max, sort).ToStdString());
     
   CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
 }
@@ -1068,13 +1068,13 @@ void wxExGuiTestFixture::testTextFile()
   CPPUNIT_ASSERT( textFile.RunTool());
   const long elapsed = sw.TimeInMicro().ToLong();
   
+  Report(wxString::Format(
+    "matching %d items in: %ld microseconds", 
+    textFile.GetStatistics().Get(_("Actions Completed")), elapsed).ToStdString());
+    
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT( textFile.GetStatistics().Get(_("Actions Completed")) == 193);
   
-  Report(wxString::Format(
-    "matching %d items in: %ld microseconds", 
-    textFile.GetStatistics().Get(_("Actions Completed")), elapsed));
-    
   // Test replace.
   wxExTextFile textFile2(wxExFileName(TEST_FILE), ID_TOOL_REPORT_REPLACE);
   
@@ -1085,12 +1085,12 @@ void wxExGuiTestFixture::testTextFile()
   CPPUNIT_ASSERT( textFile2.RunTool());
   const long elapsed2 = sw2.TimeInMicro().ToLong();
   
-  CPPUNIT_ASSERT(!textFile2.GetStatistics().GetElements().GetItems().empty());
-  CPPUNIT_ASSERT( textFile2.GetStatistics().Get(_("Actions Completed")) == 193);
-  
   Report(wxString::Format(
     "replacing %d items in: %ld microseconds", 
-    textFile2.GetStatistics().Get(_("Actions Completed")), elapsed2));
+    textFile2.GetStatistics().Get(_("Actions Completed")), elapsed2).ToStdString());
+    
+  CPPUNIT_ASSERT(!textFile2.GetStatistics().GetElements().GetItems().empty());
+  CPPUNIT_ASSERT( textFile2.GetStatistics().Get(_("Actions Completed")) == 194);
 }
 
 void wxExGuiTestFixture::testUtil()
@@ -1334,11 +1334,11 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   
   event.m_keyCode = WXK_BACK;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_RETURN;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_TAB;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   
   // Vi command tests.
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));

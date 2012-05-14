@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test.h
-// Purpose:   Declaration of classes for wxExtension cpp unit testing
+// Purpose:   Declaration of classes for cpp unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -8,16 +8,12 @@
 #ifndef _EXTESTUNIT_H
 #define _EXTESTUNIT_H
 
-#include <wx/extension/extension.h>
-
-#if wxUSE_UNIX
-
+#include <string>
 #include <TestCaller.h>
 #include <TestFixture.h>
 #include <TestSuite.h>
 
 /// CppUnit test fixture.
-/// These classes require either an wxExApp object, or wx to be initialized.
 class wxExTestFixture : public CppUnit::TestFixture
 {
 public:
@@ -34,10 +30,10 @@ public:
       std::cout << m_Report;};
       
   /// Adds text to report.
-  void Report(const wxString& text) {
-    m_Report << text << "\n";};
+  void Report(const std::string text) {
+    m_Report.append(text);
+    m_Report.append("\n");};
 private:
-  wxString m_Report;  
+  std::string m_Report;  
 };
-#endif
 #endif

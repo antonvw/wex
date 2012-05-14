@@ -480,7 +480,7 @@ void wxExFrame::SetMenuBar(wxMenuBar* bar)
 }
 
 #if wxUSE_STATUSBAR
-void wxExFrame::SetupStatusBar(
+wxExStatusBar* wxExFrame::SetupStatusBar(
   const std::vector<wxExStatusBarPane>& panes,
   long style,
   const wxString& name)
