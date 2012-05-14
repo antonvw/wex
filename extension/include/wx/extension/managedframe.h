@@ -8,7 +8,6 @@
 #ifndef _EXMANAGEDFRAME_H
 #define _EXMANAGEDFRAME_H
 
-#include <wx/aui/auibar.h> // for wxAuiToolBar
 #include <wx/aui/framemanager.h> // for wxAuiManager
 #include <wx/panel.h>
 #include <wx/extension/frame.h>
@@ -16,10 +15,10 @@
 // Only if we have a gui.
 #if wxUSE_GUI
 
-class wxStaticText;
-class wxExToolBar;
 class wxExEx;
 class wxExExTextCtrl;
+class wxExToolBar;
+class wxStaticText;
 
 /// Offers an aui managed frame with a notebook multiple document interface,
 /// used by the notebook classes, and toolbar, findbar and vibar support.

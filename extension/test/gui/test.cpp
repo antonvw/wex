@@ -312,7 +312,15 @@ void wxExGuiTestFixture::testFrame()
     panes.push_back(wxExStatusBarPane(wxString::Format("Pane%d", i)));
   }
   
-  frame->SetupStatusBar(panes);
+  wxExStatusBar* sb = frame->SetupStatusBar(panes);
+  CPPUNIT_ASSERT( sb != NULL);
+  
+  CPPUNIT_ASSERT( sb->GetFieldsCount () == panes.size());
+  CPPUNIT_ASSERT( sb->SetStatusText("hello", ""));
+  CPPUNIT_ASSERT( sb->SetStatusText("hello", "Pane0"));
+  CPPUNIT_ASSERT( sb->SetStatusText("hello", "Pane1"));
+  CPPUNIT_ASSERT( sb->SetStatusText("hello", "Pane2"));
+  CPPUNIT_ASSERT(!sb->SetStatusText("hello", "Panexxx"));
   
   CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE)));
   CPPUNIT_ASSERT( frame->OpenFile(TEST_FILE, "contents"));
@@ -629,8 +637,6 @@ void wxExGuiTestFixture::testLink()
   CPPUNIT_ASSERT( link.FindPath("test:500000") == "test");
   CPPUNIT_ASSERT( link.FindPath("test:xyz") == "test:xyz");
   
-  CPPUNIT_ASSERT( link.GetLineNo("test:50") == 50);
-  
   CPPUNIT_ASSERT( link.AddBasePath());
   CPPUNIT_ASSERT( link.AddBasePath());
   
@@ -638,7 +644,8 @@ void wxExGuiTestFixture::testLink()
   
   link.SetFromConfig();
   
-  CPPUNIT_ASSERT( link.GetPath("test") == "test");
+  // Return empty if no path could be found.
+  CPPUNIT_ASSERT( link.GetPath("test").empty());
 }
 
 void wxExGuiTestFixture::testListItem()
@@ -899,6 +906,7 @@ void wxExGuiTestFixture::testShell()
 void wxExGuiTestFixture::testStatusBar()
 {
   wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
+  // Real testing already done in testFrame
 
   std::vector<wxExStatusBarPane> panes;
   panes.push_back(wxExStatusBarPane());
@@ -908,18 +916,6 @@ void wxExGuiTestFixture::testStatusBar()
 
   //wxExStatusBar* sb = 
   new wxExStatusBar(frame);
-  
-  // The next is OK, but asserts in wxWidgets.
-  //../src/generic/statusbr.cpp(179): assert "(size_t)n == m_panes.GetCount()" 
-  // failed in SetStatusWidths(): status bar field count mismatch
-  //../src/common/statbar.cpp(189): assert "(size_t)n == m_panes.GetCount()" 
-  // failed in SetStatusStyles(): field number mismatch
-  //CPPUNIT_ASSERT(sb->SetFields(panes) == panes.size());
-  //CPPUNIT_ASSERT(sb->SetStatusText("hello"));
-  //CPPUNIT_ASSERT(sb->SetStatusText("hello", "panex"));
-  //CPPUNIT_ASSERT(sb->SetStatusText("hello", "paney"));
-  //CPPUNIT_ASSERT(sb->SetStatusText("hello", "panez"));
-  //CPPUNIT_ASSERT(!sb->SetStatusText("hello", "panexxx"));
 }
 
 void wxExGuiTestFixture::testSTC()
@@ -1059,7 +1055,9 @@ void wxExGuiTestFixture::testStyle()
 
 void wxExGuiTestFixture::testTextFile()
 {
+  // Test find.
   wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_FIND);
+  
   wxExFindReplaceData::Get()->SetFindString("test");
   wxExFindReplaceData::Get()->SetMatchCase(true);
   wxExFindReplaceData::Get()->SetMatchWord(true);
@@ -1076,6 +1074,23 @@ void wxExGuiTestFixture::testTextFile()
   Report(wxString::Format(
     "matching %d items in: %ld microseconds", 
     textFile.GetStatistics().Get(_("Actions Completed")), elapsed));
+    
+  // Test replace.
+  wxExTextFile textFile2(wxExFileName(TEST_FILE), ID_TOOL_REPORT_REPLACE);
+  
+  wxExFindReplaceData::Get()->SetReplaceString("test");
+  
+  wxStopWatch sw2;
+  sw2.Start();
+  CPPUNIT_ASSERT( textFile2.RunTool());
+  const long elapsed2 = sw2.TimeInMicro().ToLong();
+  
+  CPPUNIT_ASSERT(!textFile2.GetStatistics().GetElements().GetItems().empty());
+  CPPUNIT_ASSERT( textFile2.GetStatistics().Get(_("Actions Completed")) == 193);
+  
+  Report(wxString::Format(
+    "replacing %d items in: %ld microseconds", 
+    textFile2.GetStatistics().Get(_("Actions Completed")), elapsed2));
 }
 
 void wxExGuiTestFixture::testUtil()
@@ -1086,9 +1101,13 @@ void wxExGuiTestFixture::testUtil()
 
   CPPUNIT_ASSERT( wxExClipboardAdd("test"));
   CPPUNIT_ASSERT( wxExClipboardGet() == "test");
+  
   CPPUNIT_ASSERT( wxExGetEndOfText("test", 3).size() == 3);
   CPPUNIT_ASSERT( wxExGetEndOfText("testtest", 3).size() == 3);
+  
   CPPUNIT_ASSERT( wxExGetLineNumber("test on line: 1200") == 1200);
+  CPPUNIT_ASSERT( wxExGetLineNumber("test:50") == 50);
+  
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest\n") == 2);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\rtest\r") == 2);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n") == 2);
@@ -1120,6 +1139,7 @@ void wxExGuiTestFixture::testVCS()
   // giving the first command of current vcs, being add.
   wxExVCS vcs(ar);
   
+  CPPUNIT_ASSERT( vcs.GetCount() > 0);
   CPPUNIT_ASSERT( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);
   CPPUNIT_ASSERT( vcs.DirExists(file));
     
@@ -1197,14 +1217,31 @@ void wxExGuiTestFixture::testVCSEntry()
 {
   wxExVCSEntry test;
   
+  CPPUNIT_ASSERT( test.GetCommands() == 1);
+  
+  wxExVCSEntry test2;
+  
+  CPPUNIT_ASSERT( test2.GetCommands() == 1);
+  
   CPPUNIT_ASSERT( test.GetCommand().GetCommand().empty());
   CPPUNIT_ASSERT( test.GetFlags().empty());
   CPPUNIT_ASSERT( test.GetName().empty());
   CPPUNIT_ASSERT( test.GetOutput().empty());
   CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
+  CPPUNIT_ASSERT( test.ShowDialog(
+    wxTheApp->GetTopWindow(),
+    "vcs",
+    false) == wxID_CANCEL);
+    
+  test.ShowOutput();
+  
+  wxMenu menu;
+  CPPUNIT_ASSERT( test.BuildMenu(0, &menu) == 0);
   
   // This should have no effect.  
-  test.SetCommand(5);
+  CPPUNIT_ASSERT(!test.SetCommand(5));
+  CPPUNIT_ASSERT(!test.SetCommand(ID_EDIT_VCS_LOWEST));
+  CPPUNIT_ASSERT(!test.SetCommand(ID_VCS_LOWEST));
   
   CPPUNIT_ASSERT( test.GetCommand().GetCommand().empty());
   CPPUNIT_ASSERT( test.GetFlags().empty());

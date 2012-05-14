@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wxExLink
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -117,11 +117,6 @@ const wxString wxExLink::FindPath(const wxString& text) const
   return out;
 }
 
-int wxExLink::GetLineNo(const wxString& text) const
-{
-  return wxExGetLineNumber(text);
-}
-
 const wxString wxExLink::GetPath(const wxString& text) const
 {
   const wxString link(FindPath(text));
@@ -160,10 +155,8 @@ const wxString wxExLink::GetPath(const wxString& text) const
     {
       fullpath = m_PathList.FindAbsoluteValidPath(link);
       
-      if (fullpath.empty())
-      {
-        fullpath = link;
-      }
+      // Do nothing if fullpath.empty(),
+      // as we return empty string if no path could be found.
     }
   }
   

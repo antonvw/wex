@@ -2,7 +2,7 @@
 // Name:      vcsentry.cpp
 // Purpose:   Implementation of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,7 +17,7 @@
 #include <wx/extension/vcs.h>
 
 wxExVCSEntry::wxExVCSEntry()
-  : m_CommandId(0)
+  : m_CommandIndex(0)
   , m_Name()
   , m_FlagsLocation(VCS_FLAGS_LOCATION_POSTFIX)
   , m_SupportKeywordExpansion(false)
@@ -26,7 +26,7 @@ wxExVCSEntry::wxExVCSEntry()
 }
 
 wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
-  : m_CommandId(0)
+  : m_CommandIndex(0)
   , m_Name(node->GetAttribute("name"))
   , m_FlagsLocation(
       (node->GetAttribute("flags-location") == "prefix" ?
@@ -80,7 +80,12 @@ void wxExVCSEntry::AddCommands(const wxXmlNode* node)
         const wxString subcommand = child->GetAttribute("subcommand");
         
         m_Commands.push_back(
-          wxExVCSCommand(content, m_Commands.size(), attrib, submenu, subcommand));
+          wxExVCSCommand(
+            content, 
+            m_Commands.size(), 
+            attrib, 
+            submenu, 
+            subcommand));
       }
     }
     
@@ -252,26 +257,36 @@ const wxString wxExVCSEntry::GetFlags() const
   return wxConfigBase::Get()->Read(_("Flags"));
 }
 
-void wxExVCSEntry::SetCommand(int menu_id)
+bool wxExVCSEntry::SetCommand(int menu_id)
 {
+  int new_index;
+  
   if (menu_id > ID_VCS_LOWEST && menu_id < ID_VCS_HIGHEST)
   {
-    m_CommandId = menu_id - ID_VCS_LOWEST - 1;
+    new_index = menu_id - ID_VCS_LOWEST - 1;
   }
   else if (menu_id > ID_EDIT_VCS_LOWEST && menu_id < ID_EDIT_VCS_HIGHEST)
   {
-    m_CommandId = menu_id - ID_EDIT_VCS_LOWEST - 1;
+    new_index = menu_id - ID_EDIT_VCS_LOWEST - 1;
+  }
+  else
+  {
+    return false;
   }
   
-  if (m_CommandId < 0 || m_CommandId >= m_Commands.size())
+  if (new_index < 0 || new_index >= m_Commands.size())
   {
-    m_CommandId = 0;
+    return false;
   }
+  
+  m_CommandIndex = new_index;
   
   m_FlagsKey = wxString::Format(
     "vcsflags/%s%d", 
     m_Name.c_str(), 
     GetCommand().GetNo());
+    
+  return true;
 }
 
 #if wxUSE_GUI
@@ -280,6 +295,11 @@ int wxExVCSEntry::ShowDialog(
   const wxString& caption,
   bool add_folder) const
 {
+  if (GetCommand().GetCommand().empty())
+  {
+    return wxID_CANCEL;
+  }
+  
   std::vector<wxExConfigItem> v;
 
   if (GetCommand().IsCommit())

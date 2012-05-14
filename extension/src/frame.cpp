@@ -487,6 +487,7 @@ void wxExFrame::SetupStatusBar(
 {
   wxFrame::CreateStatusBar(panes.size(), style, ID_UPDATE_STATUS_BAR, name);
   m_StatusBar->SetFields(panes);
+  return m_StatusBar;
 }
 #endif // wxUSE_STATUSBAR
 

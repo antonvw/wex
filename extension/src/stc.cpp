@@ -1389,7 +1389,7 @@ bool wxExSTC::LinkOpen(wxString* filename)
     {
       return Open(
         path, 
-        m_Link.GetLineNo(!sel.empty() ? sel: GetCurLine()), 
+        wxExGetLineNumber(!sel.empty() ? sel: GetCurLine()), 
         wxEmptyString, 
         GetFlags() | STC_WIN_FROM_OTHER);
     }
