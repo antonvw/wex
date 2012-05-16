@@ -48,6 +48,7 @@ public:
   /// Clean up after the test run.
   virtual void tearDown() {wxExTestFixture::tearDown();};
 
+  void testExDirTool();
   void testDirWithListView();
   void testFrameWithHistory();
   void testListViewFile();
@@ -55,6 +56,8 @@ public:
   void testProcess();
   void testSTCWithFrame();
   void testTextFileWithListView();
+  void testUtil();
+  
   // integration test
   void test();
 };

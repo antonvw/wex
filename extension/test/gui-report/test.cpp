@@ -11,6 +11,34 @@
 #define TEST_FILE "./test.h"
 #define TEST_PRJ "./test-rep.prj"
 
+void wxExGuiReportTestFixture::testExDirTool()
+{
+  const wxExTool tool = ID_TOOL_REPORT_FIND;
+
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  
+  wxExListViewFileName* report = new wxExListViewFileName(
+    frame, 
+    wxExListViewFileName::LIST_FIND);
+    
+  if (!wxExTextFileWithListView::SetupTool(tool, report))
+  {
+    return;
+  }
+
+  int flags = wxDIR_FILES | wxDIR_HIDDEN | wxDIR_DIRS;;
+  
+  wxExDirTool dir(
+    tool,
+    "./",
+    "*.cpp",
+    flags);
+
+  dir.FindFiles();
+
+  tool.Log(&dir.GetStatistics().GetElements());
+}
+
 void wxExGuiReportTestFixture::testDirWithListView()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
@@ -38,6 +66,9 @@ void wxExGuiReportTestFixture::testFrameWithHistory()
   
   CPPUNIT_ASSERT( frame->GetProcess()->Execute("wc test.h", wxEXEC_ASYNC));
   CPPUNIT_ASSERT( frame->GetProcess()->IsSelected());
+  
+  frame->FindInFilesDialog(ID_TOOL_REPORT_FIND);
+  CPPUNIT_ASSERT(!frame->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
 }
 
 void wxExGuiReportTestFixture::testListViewFile()
@@ -80,6 +111,8 @@ void wxExGuiReportTestFixture::testSTCWithFrame()
   wxExSTCWithFrame stc(frame, frame, wxExFileName(TEST_FILE));
   
   CPPUNIT_ASSERT(stc.GetFileName().GetFullPath().Contains("test.h"));
+  
+  stc.PropertiesMessage();
 }
   
 void wxExGuiReportTestFixture::testTextFileWithListView()
@@ -108,6 +141,27 @@ void wxExGuiReportTestFixture::testTextFileWithListView()
   wxExTextFileWithListView textFile2(fn, tool);
   CPPUNIT_ASSERT( textFile2.RunTool());
   CPPUNIT_ASSERT(!textFile2.GetStatistics().GetElements().GetItems().empty());
+}
+
+void wxExGuiReportTestFixture::testUtil()
+{
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  wxExNotebook* notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
+  wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  wxWindow* page2 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  
+  CPPUNIT_ASSERT( wxExForEach(notebook, ID_LIST_ALL_ITEMS));
+  
+  CPPUNIT_ASSERT(!wxExMake(frame, "xxx"));
+  CPPUNIT_ASSERT( wxExMake(frame, "make.tst"));
+
+  wxExListViewFileName* listView = new wxExListViewFileName(
+    wxTheApp->GetTopWindow(), wxExListViewFileName::LIST_FILE);
+  
+  wxExListItem item(listView, wxExFileName("./test.h"));
+  item.Insert();
+
+  wxExFileStatistics stat = wxExRun(item, ID_TOOL_REPORT_KEYWORD);
 }
 
 void wxExGuiReportTestFixture::test()
@@ -165,6 +219,10 @@ wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxexreport test suite")
 {
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
+    "testDirTool",
+    &wxExGuiReportTestFixture::testExDirTool));
+
+  addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testDirWithListView",
     &wxExGuiReportTestFixture::testDirWithListView));
     
@@ -191,6 +249,10 @@ wxExTestSuite::wxExTestSuite()
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testTextFileWithListView",
     &wxExGuiReportTestFixture::testTextFileWithListView));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
+    "testUtil",
+    &wxExGuiReportTestFixture::testUtil));
     
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "test",

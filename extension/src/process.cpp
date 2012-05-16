@@ -158,7 +158,7 @@ long wxExProcess::Execute(
     {
       if (ConfigDialog(wxTheApp->GetTopWindow()) == wxID_CANCEL)
       {
-        return -1;
+        return -2;
       }
     }
     
@@ -330,11 +330,24 @@ void wxExProcess::ReportCreate()
 #if wxUSE_GUI
 void wxExProcess::ShowOutput(const wxString& caption) const
 {
-  if (!m_Error && m_Dialog != NULL)
+  if (!m_Error)
   {
-    m_Dialog->GetSTC()->SetText(m_Output);
-    m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
-    m_Dialog->Show();
+    if (m_Dialog != NULL)
+    {
+      m_Dialog->GetSTC()->SetText(m_Output);
+      m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
+      m_Dialog->Show();
+    }
+    else
+    {
+      wxLogMessage(m_Output);
+    }
+  }
+  else
+  {
+    // Executing command failed, so no output,
+    // show failing command.
+    wxLogError(m_Command);
   }
 }
 #endif
