@@ -2,7 +2,7 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wxExVCS class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVCS_H
@@ -37,11 +37,12 @@ public:
 
 #if wxUSE_GUI
   /// Shows a dialog allowing you to choose which vcs to use
-  /// and to set the path for each known vcs.
+  /// and to set the path for each vcs entry.
   /// Returns dialog return code.
   int ConfigDialog(
     wxWindow* parent,
-    const wxString& title = _("Set VCS")) const;
+    const wxString& title = _("Set VCS"),
+    bool modal = true) const;
 #endif    
 
   /// Returns true if specified filename (a path) is a vcs directory.
