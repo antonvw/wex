@@ -830,7 +830,7 @@ void wxExGuiTestFixture::testProcess()
   CPPUNIT_ASSERT(!process.IsRunning());
   CPPUNIT_ASSERT(!process.IsSelected());
   
-  process.ConfigDialog(wxTheApp->GetTopWindow());
+  process.ConfigDialog(wxTheApp->GetTopWindow(), "test process", false);
   
   // wxExecute hangs for wxEXEC_ASYNC
   CPPUNIT_ASSERT( process.Execute("ls -l", wxEXEC_SYNC) != -1);
@@ -939,7 +939,7 @@ void wxExGuiTestFixture::testStatusBar()
 
 void wxExGuiTestFixture::testSTC()
 {
-  wxExSTC::ConfigDialog(wxTheApp->GetTopWindow());
+  wxExSTC::ConfigDialog(wxTheApp->GetTopWindow(), "test stc", STC_CONFIG_MODELESS);
   
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
   CPPUNIT_ASSERT(stc->GetText() == "hello stc");
@@ -1165,7 +1165,7 @@ void wxExGuiTestFixture::testVCS()
   // giving the first command of current vcs, being add.
   wxExVCS vcs(ar);
   
-  vcs.ConfigDialog(wxTheApp->GetTopWindow());
+  vcs.ConfigDialog(wxTheApp->GetTopWindow(), "test vcs", false);
   
   CPPUNIT_ASSERT( vcs.GetCount() > 0);
   CPPUNIT_ASSERT( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);

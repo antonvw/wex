@@ -125,7 +125,8 @@ bool wxExProcess::CheckInput()
 
 int wxExProcess::ConfigDialog(
   wxWindow* parent,
-  const wxString& title)
+  const wxString& title,
+  bool modal)
 {
   std::vector<wxExConfigItem> v;
 
@@ -142,9 +143,21 @@ int wxExProcess::ConfigDialog(
     true,
     1000));
 
-  return wxExConfigDialog(parent,
-    v,
-    title).ShowModal();
+  if (modal)
+  {
+    return wxExConfigDialog(parent,
+      v,
+      title).ShowModal();
+  }
+  else
+  {
+    wxExConfigDialog* dlg = new wxExConfigDialog(
+      parent,
+      v,
+      title);
+      
+    return dlg->Show();
+  }
 }
 
 long wxExProcess::Execute(
@@ -192,23 +205,22 @@ long wxExProcess::Execute(
     wxEnvVariableHashMap()};
     
   if (!(flags & wxEXEC_SYNC))
-  {
+  { 
+    if (!ReportCreate())
+    {
+      return -1; 
+    }
+
     // For asynchronous execution, however, the return value is the process id and zero 
     // value indicates that the command could not be executed
     const long pid = wxExecute(m_Command, flags, this, &env);
 
     if (pid > 0)
     {
-      m_Dialog->GetSTCShell()->EnableShell(true);
-    
-      if (!ReportCreate())
-      {
-        Kill();
-        return 0; 
-      }
-
       wxLogVerbose("Execute: " + m_Command);
       
+      m_Dialog->GetSTCShell()->EnableShell(true);
+    
       CheckInput();
       
       m_Timer->Start(100); // each 100 milliseconds

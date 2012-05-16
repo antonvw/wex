@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wxExVCS class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <map>
@@ -110,7 +110,8 @@ bool wxExVCS::CheckPathAll(
 #if wxUSE_GUI
 int wxExVCS::ConfigDialog(
   wxWindow* parent,
-  const wxString& title) const
+  const wxString& title,
+  bool modal) const
 {
   if (m_Entries.empty())
   {
@@ -175,7 +176,15 @@ int wxExVCS::ConfigDialog(
     v.push_back(wxExConfigItem(it2->GetName(), CONFIG_FILEPICKERCTRL));
   }
 
-  return wxExConfigDialog(parent, v, title).ShowModal();
+  if (modal)
+  {
+    return wxExConfigDialog(parent, v, title).ShowModal();
+  }
+  else
+  {
+    wxExConfigDialog* dlg = new wxExConfigDialog(parent, v, title);
+    return dlg->Show();
+  }
 }
 #endif
 

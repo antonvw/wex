@@ -31,18 +31,20 @@ public:
   /// Assignment operator.
   wxExProcess& operator=(const wxExProcess& p);
 
-  /// Shows a config dialog, sets the command 
-  /// and returns dialog return code.
+  /// Shows a config dialog, allowing you to set the command and folder.
+  /// Returns dialog return code.
   static int ConfigDialog(
     wxWindow* parent,
-    const wxString& title = _("Select Process"));
+    const wxString& title = _("Select Process"),
+    bool modal = true);
 
   /// Executes the process.
   /// - In case asynchronously (wxEXEC_ASYNC) this call immediately returns.
   ///   For each output line ReportAdd is invoked.
   ///   The STC component will be shell enabled.
   ///   The return value is the process id and zero value indicates 
-  ///   that the command could not be executed.
+  ///   that the command could not be executed (or -1 if report could not 
+  ///   be created).
   /// - In case synchronously call returns after execute ends, and the output
   ///   is collected in the output member.
   ///   The STC component will be shell disabled.
