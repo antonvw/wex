@@ -23,6 +23,7 @@ void wxExGuiTestFixture::setUp()
 
 void wxExGuiTestFixture::testConfigDialog()
 {
+  // Test config dialog using notebook with pages.
   std::vector <wxExConfigItem> items;
   
   wxExConfigItem ci1("string1", "test", "page0");
@@ -38,6 +39,7 @@ void wxExGuiTestFixture::testConfigDialog()
   
   dlg.Reload();
   
+  // Test config dialog without pages.
   std::vector <wxExConfigItem> items2;
   items2.push_back(wxExConfigItem("string1"));
   
@@ -821,19 +823,36 @@ void wxExGuiTestFixture::testPrinting()
 
 void wxExGuiTestFixture::testProcess()
 {
-  wxExProcess command;
+  wxExProcess process;
   
-  CPPUNIT_ASSERT(!command.GetError());
-  CPPUNIT_ASSERT( command.GetOutput().empty());
+  CPPUNIT_ASSERT(!process.GetError());
+  CPPUNIT_ASSERT( process.GetOutput().empty());
+  CPPUNIT_ASSERT(!process.IsRunning());
+  CPPUNIT_ASSERT(!process.IsSelected());
   
-  // wxExecute hangs, see also wxExVCS test
-//  CPPUNIT_ASSERT( command.Execute("ls -l") != -1);
-//  CPPUNIT_ASSERT(!command.GetError());
-//  CPPUNIT_ASSERT(!command.GetOutput().empty());
+  process.ConfigDialog(wxTheApp->GetTopWindow());
   
-//  CPPUNIT_ASSERT( command.Execute("xxxx") == -1);
-//  CPPUNIT_ASSERT( command.GetError());
-//  CPPUNIT_ASSERT( command.GetOutput().empty());
+  // wxExecute hangs for wxEXEC_ASYNC
+  CPPUNIT_ASSERT( process.Execute("ls -l", wxEXEC_SYNC) != -1);
+  CPPUNIT_ASSERT(!process.GetError());
+  CPPUNIT_ASSERT(!process.GetOutput().empty());
+  
+  CPPUNIT_ASSERT(!process.IsRunning());
+  CPPUNIT_ASSERT( process.IsSelected());
+  CPPUNIT_ASSERT( process.GetSTC() != NULL);
+  CPPUNIT_ASSERT( process.Kill() == wxKILL_NO_PROCESS);
+  
+  process.ShowOutput();
+
+  // Repeat last process.
+  CPPUNIT_ASSERT( process.Execute("", wxEXEC_SYNC) != -1);
+  CPPUNIT_ASSERT(!process.GetError());
+  CPPUNIT_ASSERT(!process.GetOutput().empty());
+
+  // Invalid process.
+  CPPUNIT_ASSERT( process.Execute("xxxx") == -1);
+  CPPUNIT_ASSERT( process.GetError());
+  CPPUNIT_ASSERT( process.GetOutput().empty());
 }
 
 void wxExGuiTestFixture::testProperty()
@@ -1108,9 +1127,16 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetLineNumber("test on line: 1200") == 1200);
   CPPUNIT_ASSERT( wxExGetLineNumber("test:50") == 50);
   
-  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest\n") == 2);
-  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\rtest\r") == 2);
-  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n") == 2);
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test") == 1);
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\n") == 2);
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest") == 2);
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest\n") == 3);
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\rtest\r") == 3);
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n") == 3);
+  
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n\n\n", true) == 2);
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n\n", true) == 2);
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n\n", true) == 2);
   
   std::vector<wxString> v;
   CPPUNIT_ASSERT( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
@@ -1451,6 +1477,18 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("zE"));
   CPPUNIT_ASSERT( vi->Command(">>"));
   CPPUNIT_ASSERT( vi->Command("<<"));
+
+  // Special put test. 
+  // Put should not put text within a line, but after it, or before it.
+  stc->SetText("the chances of anything coming from mars");
+  vi->Command("$");
+  vi->Command("h");
+  vi->Command("h");
+  vi->Command("yy");
+  vi->Command("p");
+  vi->Command("P");
+  CPPUNIT_ASSERT( stc->GetText().Contains(
+    "the chances of anything coming from mars"));
   
   stc->SetText("this text contains xx");
   CPPUNIT_ASSERT( vi->Command("qt"));

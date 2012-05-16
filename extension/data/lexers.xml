@@ -1741,7 +1741,7 @@ Copyright: (c) 2012, Anton van Wezenbeek
   <lexer name="bullant"/>
   <lexer name="caml"/>
   <lexer name="clarion"/>
-  <lexer name="cmake"/>
+  <lexer name="cmake" extensions="CMakeLists.txt;*.cmake"/>
   <lexer name="cpp" display="c#" extensions="*.cs">
     <keywords>
 abstract      as         base          bool         break
