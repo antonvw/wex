@@ -89,8 +89,8 @@ protected:
   virtual void OnTerminate(int pid, int status);
   
   /// Override to add a process output line to report.
-  /// Default puts the message on the STC shell.
-  virtual void ReportAdd(
+  /// Default puts the message on the STC shell and returns true.
+  virtual bool ReportAdd(
     /// complete line (not empty)
     const wxString& line, 
     /// path from line (if available)
@@ -100,8 +100,9 @@ protected:
     
   /// Override to create a report.
   /// Called for each invocation of Execute.
-  /// Default report creator uses a wxExSTShell.
-  virtual void ReportCreate();
+  /// Default report creator uses a wxExSTShell and returns true.
+  /// If you override and returns false, processing stops.
+  virtual bool ReportCreate();
     
   /// Handles shell events.
   void OnCommand(wxCommandEvent& event);

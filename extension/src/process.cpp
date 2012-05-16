@@ -162,7 +162,12 @@ long wxExProcess::Execute(
       }
     }
     
-    m_Command = wxExConfigFirstOf(_("Process"));
+    const wxString command = wxExConfigFirstOf(_("Process"));
+    
+    if (!command.empty())
+    {
+      m_Command = command;
+    }
   }
   else
   {
@@ -194,12 +199,16 @@ long wxExProcess::Execute(
 
     if (pid > 0)
     {
-      wxLogVerbose("Execute: " + m_Command);
-      
       m_Dialog->GetSTCShell()->EnableShell(true);
     
-      ReportCreate();
+      if (!ReportCreate())
+      {
+        Kill();
+        return 0; 
+      }
 
+      wxLogVerbose("Execute: " + m_Command);
+      
       CheckInput();
       
       m_Timer->Start(100); // each 100 milliseconds
@@ -310,21 +319,23 @@ void wxExProcess::OnTimer(wxTimerEvent& event)
   CheckInput();
 }
 
-void wxExProcess::ReportAdd(
+bool wxExProcess::ReportAdd(
   const wxString& line, 
   const wxString& path,
   const wxString& lineno)
 {
   m_Dialog->GetSTCShell()->AddText(line);
   m_Dialog->GetSTCShell()->Prompt();
+  return true;
 }
 
-void wxExProcess::ReportCreate()
+bool wxExProcess::ReportCreate()
 {
   m_Dialog->SetTitle(m_Command);
   m_Dialog->GetSTCShell()->ClearAll();
   m_Dialog->GetSTCShell()->Prompt();
   m_Dialog->Show();
+  return true;
 }
 
 #if wxUSE_GUI

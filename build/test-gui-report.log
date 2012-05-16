@@ -1,7 +1,24 @@
-........match 71 items in: 548 milliseconds
+...F...F...F.match 71 items in: 603 milliseconds
 
 
 
-OK (8 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  10   Failures: 3   Errors: 0
+
+
+1) test: testFrameWithHistory (F) line: 67 ../extension/test/gui-report/test.cpp
+assertion failed
+- Expression: frame->GetProcess()->Execute("wc test.h", wxEXEC_ASYNC)
+
+
+2) test: testProcess (F) line: 104 ../extension/test/gui-report/test.cpp
+assertion failed
+- Expression: process->Execute("wc test.h")
+
+
+3) test: testUtil (F) line: 156 ../extension/test/gui-report/test.cpp
+assertion failed
+- Expression: wxExMake(frame, wxFileName("make.tst"))
 
 
