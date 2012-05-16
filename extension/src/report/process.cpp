@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wxExProcessListView
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -21,12 +21,15 @@ wxExProcessListView::wxExProcessListView(wxExFrameWithHistory* frame)
 {
 }
 
-void wxExProcessListView::ReportAdd(
+bool wxExProcessListView::ReportAdd(
   const wxString& line, 
   const wxString& path,
   const wxString& lineno)
 {
-  wxASSERT(m_ListView != NULL);
+  if (m_ListView == NULL)
+  {
+    return false;
+  }
 
   if (!path.empty())
   {  
@@ -63,7 +66,9 @@ void wxExProcessListView::ReportAdd(
 #endif
 }
 
-void wxExProcessListView::ReportCreate()
+bool wxExProcessListView::ReportCreate()
 {
   m_ListView = m_Frame->Activate(wxExListViewFileName::LIST_PROCESS);
+  
+  return m_ListView != NULL;
 }

@@ -2,7 +2,7 @@
 // Name:      process.h
 // Purpose:   Declaration of class wxExProcessListView
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_PROCESS_H
@@ -20,11 +20,14 @@ public:
   /// Constructor.
   wxExProcessListView(wxExFrameWithHistory* frame);
 protected:
-  virtual void ReportAdd(
+  /// Override from base class.
+  virtual bool ReportAdd(
     const wxString& line, 
     const wxString& path,
     const wxString& lineno);
-  virtual void ReportCreate();
+    
+  /// Override from base class.
+  virtual bool ReportCreate();
 private:
   wxExFrameWithHistory* m_Frame;
   wxExListView* m_ListView;

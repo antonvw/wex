@@ -939,6 +939,8 @@ void wxExGuiTestFixture::testStatusBar()
 
 void wxExGuiTestFixture::testSTC()
 {
+  wxExSTC::ConfigDialog(wxTheApp->GetTopWindow());
+  
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
   CPPUNIT_ASSERT(stc->GetText() == "hello stc");
   CPPUNIT_ASSERT(stc->FindNext(wxString("hello"))); // necessary ??
@@ -1009,8 +1011,6 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(!stc->SmartIndentation());
   
   stc->ClearDocument();
-  
-  stc->ConfigDialog(wxTheApp->GetTopWindow());
 }
   
 void wxExGuiTestFixture::testSTCEntryDialog()
