@@ -361,7 +361,7 @@ void wxExProcess::ShowOutput(const wxString& caption) const
       m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
       m_Dialog->Show();
     }
-    else
+    else if (!m_Output.empty())
     {
       wxLogMessage(m_Output);
     }
@@ -370,7 +370,10 @@ void wxExProcess::ShowOutput(const wxString& caption) const
   {
     // Executing command failed, so no output,
     // show failing command.
-    wxLogError(m_Command);
+    if (!m_Command.empty())
+    {
+      wxLogError(m_Command);
+    }
   }
 }
 #endif
