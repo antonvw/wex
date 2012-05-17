@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wxExSTCShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTCSHELL_H
@@ -80,7 +80,8 @@ public:
   /// Puts the text (if not empty) and a prompt at the end, goes to the end,
   /// and empties the undo buffer. 
   /// Default it also adds an eol before the prompt.
-  void Prompt(
+  /// Returns false and does not prompt if the shell is not enabled.
+  bool Prompt(
     const wxString& text = wxEmptyString,
     bool add_eol = true);
     
@@ -90,9 +91,8 @@ public:
     m_Handler = handler;};
 
   /// Sets the prompt, and prompts if asked for.
-  void SetPrompt(const wxString& prompt, bool do_prompt = true) {
-    m_Prompt = prompt;
-    if (do_prompt) Prompt();};
+  /// Returns false and does not set the prompt if the shell is not enabled.
+  bool SetPrompt(const wxString& prompt, bool do_prompt = true);
 protected:
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
