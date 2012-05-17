@@ -18,6 +18,7 @@ class wxExFrameWithHistory;
 /*! \file */
 
 /// Do something (id) for all pages on the notebook.
+/// Returns false if page is not a listview file page.
 bool wxExForEach(
   /// the notebook
   wxAuiNotebook* notebook, 
@@ -29,7 +30,7 @@ bool wxExForEach(
 /// Runs make on specified makefile.
 /// Results are placed on the list process output, if it can be activated from frame.
 /// Returns true if make process could be executed.
-bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile);
+long wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile);
 
 /// Runs a tool on this item, and returns statistics.
 const wxExFileStatistics wxExRun(const wxExListItem& item, const wxExTool& tool);

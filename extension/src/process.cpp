@@ -225,7 +225,7 @@ long wxExProcess::Execute(
       
       m_Timer->Start(100); // each 100 milliseconds
     }
-
+    
     return pid;
   }
   else
