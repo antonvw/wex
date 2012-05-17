@@ -914,16 +914,46 @@ void wxExGuiTestFixture::testShell()
   CPPUNIT_ASSERT(shell->GetPrompt() == ">");
   CPPUNIT_ASSERT(shell->GetCommand() == "bbb");
   
+  // Test shell enable/disable.
   shell->EnableShell(false);
   CPPUNIT_ASSERT(!shell->GetShellEnabled());
   
-  const wxString prompt("---------->");
-  shell->SetPrompt(prompt);
-  CPPUNIT_ASSERT(shell->GetPrompt() == prompt);
+  CPPUNIT_ASSERT(!shell->SetPrompt("---------->"));
+  CPPUNIT_ASSERT( shell->GetPrompt() == ">");
   
-  shell->Prompt("test1");
-  shell->Prompt("test2");
-  CPPUNIT_ASSERT(shell->GetPrompt() == prompt);
+  CPPUNIT_ASSERT(!shell->Prompt("test1"));
+  CPPUNIT_ASSERT(!shell->Prompt("test2"));
+  CPPUNIT_ASSERT( shell->GetPrompt() == ">");
+  
+  shell->EnableShell(true);
+  CPPUNIT_ASSERT( shell->GetShellEnabled());
+  
+  // Test shell commands.
+  shell->SetText("");
+  shell->ProcessChar('h');
+  shell->ProcessChar('i');
+  shell->ProcessChar('s');
+  shell->ProcessChar('t');
+  shell->ProcessChar('o');
+  shell->ProcessChar('r');
+  shell->ProcessChar('y');
+  shell->ProcessChar('\r');
+  CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
+  CPPUNIT_ASSERT( shell->GetText().Contains("bbb"));
+  
+  shell->SetText("");
+  shell->ProcessChar('!');
+  shell->ProcessChar('1');
+  shell->ProcessChar('\r');
+  CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
+  CPPUNIT_ASSERT(!shell->GetText().Contains("bbb"));
+  
+  shell->SetText("");
+  shell->ProcessChar('!');
+  shell->ProcessChar('a');
+  shell->ProcessChar('\r');
+  CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
+  CPPUNIT_ASSERT(!shell->GetText().Contains("bbb"));
 }
 
 void wxExGuiTestFixture::testStatusBar()

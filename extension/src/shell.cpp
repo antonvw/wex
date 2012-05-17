@@ -349,11 +349,11 @@ void wxExSTCShell::ProcessChar(int key)
   }
 }
 
-void wxExSTCShell::Prompt(const wxString& text, bool add_eol)
+bool wxExSTCShell::Prompt(const wxString& text, bool add_eol)
 {
   if (!m_Enabled)
   {
-    return;
+    return false;
   }
   
   if (!text.empty())
@@ -376,6 +376,8 @@ void wxExSTCShell::Prompt(const wxString& text, bool add_eol)
   m_CommandStartPosition = GetCurrentPos();
 
   EmptyUndoBuffer();
+  
+  return true;
 }
 
 bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
@@ -440,6 +442,23 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
   }
 
   return false;
+}
+
+bool wxExSTCShell::SetPrompt(const wxString& prompt, bool do_prompt) 
+{
+  if (!m_Enabled)
+  {
+    return false;
+  }
+  
+  m_Prompt = prompt;
+  
+  if (do_prompt) 
+  {
+    Prompt();
+  }
+  
+  return true;
 }
 
 void wxExSTCShell::ShowCommand(int key)
