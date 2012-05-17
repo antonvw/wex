@@ -65,7 +65,7 @@ void wxExGuiReportTestFixture::testFrameWithHistory()
   CPPUNIT_ASSERT(!frame->GetRecentProject().Contains("test-rep.prj"));
   
   // As we do not have process output lists, execute fails.
-  CPPUNIT_ASSERT(!frame->GetProcess()->Execute("wc test.h", wxEXEC_ASYNC));
+  CPPUNIT_ASSERT( frame->GetProcess()->Execute("wc test.h", wxEXEC_ASYNC) == -1);
   CPPUNIT_ASSERT( frame->GetProcess()->IsSelected());
   
   frame->FindInFilesDialog(ID_TOOL_REPORT_FIND);
@@ -104,7 +104,7 @@ void wxExGuiReportTestFixture::testProcess()
   wxExProcess* process = new wxExProcessListView(frame);
   
   // As we do not have process output lists, execute fails.
-  CPPUNIT_ASSERT(!process->Execute("wc test.h"));
+  CPPUNIT_ASSERT( process->Execute("wc test.h") == -1);
   CPPUNIT_ASSERT( process->IsSelected());
 }
 
@@ -156,11 +156,11 @@ void wxExGuiReportTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExForEach(notebook, ID_LIST_ALL_ITEMS));
   
   // As we do not have process output lists, execute fails.
-  CPPUNIT_ASSERT(!wxExMake(frame, wxFileName("xxx")));
+  CPPUNIT_ASSERT( wxExMake(frame, wxFileName("xxx")) == -1);
   
   // As we do not have process output lists, execute fails.
   // TODO: add makefile.
-  CPPUNIT_ASSERT(!wxExMake(frame, wxFileName("make.tst")));
+  CPPUNIT_ASSERT( wxExMake(frame, wxFileName("make.tst")) == -1);
 
   wxExListViewFileName* listView = new wxExListViewFileName(
     wxTheApp->GetTopWindow(), wxExListViewFileName::LIST_FILE);

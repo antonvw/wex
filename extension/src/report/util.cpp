@@ -65,7 +65,7 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
   return true;
 }
 
-bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile)
+long wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile)
 {
   return frame->GetProcess()->Execute(
     wxConfigBase::Get()->Read("Make", "make") + " " +
