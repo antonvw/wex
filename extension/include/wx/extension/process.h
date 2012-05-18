@@ -116,7 +116,6 @@ private:
 
   bool m_Error;
   
-  wxString m_Command;
   wxString m_Output;
   
   static wxString m_WorkingDirKey;
