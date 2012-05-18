@@ -31,7 +31,6 @@ wxExProcess::wxExProcess()
   , m_Timer(new wxTimer(this))
   , m_Error(false)
 {
-  m_Command = wxExConfigFirstOf(_("Process"));
 }
 
 wxExProcess::~wxExProcess()
@@ -46,7 +45,6 @@ wxExProcess::wxExProcess(const wxExProcess& process)
 
 wxExProcess& wxExProcess::operator=(const wxExProcess& p)
 {
-  m_Command = p.m_Command;
   m_Error = p.m_Error;
   m_Output = p.m_Output;
   m_Timer = new wxTimer(this);
@@ -161,13 +159,15 @@ int wxExProcess::ConfigDialog(
 }
 
 long wxExProcess::Execute(
-  const wxString& command,
+  const wxString& command_to_execute,
   int flags,
   const wxString& wd)
 {
+  wxString command(command_to_execute);
+  
   if (command.empty())
   {
-    if (m_Command.empty())
+    if (wxExConfigFirstOf(_("Process")).empty())
     {
       if (ConfigDialog(wxTheApp->GetTopWindow()) == wxID_CANCEL)
       {
@@ -175,23 +175,18 @@ long wxExProcess::Execute(
       }
     }
     
-    const wxString command = wxExConfigFirstOf(_("Process"));
-    
-    if (!command.empty())
-    {
-      m_Command = command;
-    }
+    command = wxExConfigFirstOf(_("Process"));
   }
   else
   {
-    m_Command = command;
+    command = wxExConfigFirstOf(_("Process"));
   }
 
   if (m_Dialog == NULL)
   {
     m_Dialog = new wxExSTCEntryDialog(
       wxTheApp->GetTopWindow(),
-      m_Command,
+      command,
       wxEmptyString,
       wxEmptyString,
       wxOK,
@@ -213,11 +208,11 @@ long wxExProcess::Execute(
 
     // For asynchronous execution, however, the return value is the process id and zero 
     // value indicates that the command could not be executed
-    const long pid = wxExecute(m_Command, flags, this, &env);
+    const long pid = wxExecute(command, flags, this, &env);
 
     if (pid > 0)
     {
-      wxLogVerbose("Execute: " + m_Command);
+      wxLogVerbose("Execute: " + command);
       
       m_Dialog->GetSTCShell()->EnableShell(true);
     
@@ -239,13 +234,13 @@ long wxExProcess::Execute(
     // Call wxExecute to execute the command and
     // collect the output and the errors.
     if ((retValue = wxExecute(
-      m_Command,
+      command,
       output,
       errors,
       flags,
       &env)) != -1)
     {
-      wxLogVerbose("Execute: " + m_Command);
+      wxLogVerbose("Execute: " + command);
     }
 
     // We have an error if the command could not be executed.  
@@ -268,9 +263,7 @@ bool wxExProcess::IsRunning() const
 
 bool wxExProcess::IsSelected() const
 {
-  return 
-    !m_Command.empty() ||
-    !wxExConfigFirstOf(_("Process")).empty();
+  return !wxExConfigFirstOf(_("Process")).empty();
 }
 
 wxKillError wxExProcess::Kill(wxSignal sig)
@@ -343,7 +336,7 @@ bool wxExProcess::ReportAdd(
 
 bool wxExProcess::ReportCreate()
 {
-  m_Dialog->SetTitle(m_Command);
+  m_Dialog->SetTitle(wxExConfigFirstOf(_("Process")));
   m_Dialog->GetSTCShell()->ClearAll();
   m_Dialog->GetSTCShell()->Prompt();
   m_Dialog->Show();
@@ -358,7 +351,7 @@ void wxExProcess::ShowOutput(const wxString& caption) const
     if (m_Dialog != NULL)
     {
       m_Dialog->GetSTC()->SetText(m_Output);
-      m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
+      m_Dialog->SetTitle(caption.empty() ? wxExConfigFirstOf(_("Process")): caption);
       m_Dialog->Show();
     }
     else if (!m_Output.empty())
@@ -370,9 +363,9 @@ void wxExProcess::ShowOutput(const wxString& caption) const
   {
     // Executing command failed, so no output,
     // show failing command.
-    if (!m_Command.empty())
+    if (!wxExConfigFirstOf(_("Process")).empty())
     {
-      wxLogError(m_Command);
+      wxLogError(wxExConfigFirstOf(_("Process")));
     }
   }
 }
