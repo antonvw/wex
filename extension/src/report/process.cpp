@@ -64,6 +64,8 @@ bool wxExProcessListView::ReportAdd(
 #if wxUSE_STATUSBAR
   m_Frame->UpdateStatusBar(m_ListView);
 #endif
+
+  return true;
 }
 
 bool wxExProcessListView::ReportCreate()
