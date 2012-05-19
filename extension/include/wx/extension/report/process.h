@@ -19,14 +19,19 @@ class WXDLLIMPEXP_BASE wxExProcessListView : public wxExProcess
 public:
   /// Constructor.
   wxExProcessListView(wxExFrameWithHistory* frame);
+  
+  /// Sets report, this can be used if you do not override ReportCreate.
+  void SetReport(wxExListView* report);
 protected:
   /// Override from base class.
+  /// Adds line as item on the report listview.
   virtual bool ReportAdd(
     const wxString& line, 
     const wxString& path,
     const wxString& lineno);
     
   /// Override from base class.
+  /// Calls Activate to activate on frame to select a report listview. 
   virtual bool ReportCreate();
 private:
   wxExFrameWithHistory* m_Frame;

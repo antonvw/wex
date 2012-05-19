@@ -70,7 +70,15 @@ bool wxExProcessListView::ReportAdd(
 
 bool wxExProcessListView::ReportCreate()
 {
-  m_ListView = m_Frame->Activate(wxExListViewFileName::LIST_PROCESS);
+  if (m_ListView == NULL)
+  {
+    m_ListView = m_Frame->Activate(wxExListViewFileName::LIST_PROCESS);
+  }
   
   return m_ListView != NULL;
+}
+
+void wxExProcessListView::SetReport(wxExListView* report)
+{
+  m_ListView = report;
 }
