@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/process.h>
@@ -179,7 +180,7 @@ long wxExProcess::Execute(
   }
   else
   {
-    command = wxExConfigFirstOf(_("Process"));
+    wxConfigBase::Get()->Write(_("Process"), command);
   }
 
   if (m_Dialog == NULL)

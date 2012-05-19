@@ -66,7 +66,7 @@ void wxExGuiReportTestFixture::testFrameWithHistory()
   
   // As we do not have process output lists, execute fails.
   CPPUNIT_ASSERT( frame->GetProcess()->Execute("wc test.h", wxEXEC_ASYNC) == -1);
-  CPPUNIT_ASSERT(!frame->GetProcess()->IsSelected());
+  CPPUNIT_ASSERT( frame->GetProcess()->IsSelected());
   
   frame->FindInFilesDialog(ID_TOOL_REPORT_FIND);
   CPPUNIT_ASSERT(!frame->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
@@ -105,7 +105,7 @@ void wxExGuiReportTestFixture::testProcess()
   
   // As we do not have process output lists, execute fails.
   CPPUNIT_ASSERT( process->Execute("wc test.h") == -1);
-  CPPUNIT_ASSERT(!process->IsSelected());
+  CPPUNIT_ASSERT( process->IsSelected());
   
   wxExListViewFileName* report = new wxExListViewFileName(
     frame, 
