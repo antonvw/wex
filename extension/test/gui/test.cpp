@@ -647,6 +647,8 @@ void wxExGuiTestFixture::testLink()
   CPPUNIT_ASSERT( link.AddBasePath());
   
   CPPUNIT_ASSERT( link.GetPath("test") == "/usr/bin/test");
+  // an eol should be skipped
+  CPPUNIT_ASSERT( link.GetPath("test\n") == "/usr/bin/test");
   
   link.SetFromConfig();
   
