@@ -49,7 +49,8 @@ const wxString wxExLink::FindPath(const wxString& text) const
   if (
     text.empty() ||
     // wxPathList cannot handle links over several lines.
-    wxExGetNumberOfLines(text) > 1)
+    // add trimmed argument, to skip eol
+    wxExGetNumberOfLines(text, true) > 1)
   {
     return wxEmptyString;
   }
