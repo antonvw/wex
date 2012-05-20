@@ -30,6 +30,8 @@ bool wxExProcessListView::ReportAdd(
   {
     return false;
   }
+  
+  bool clear_image = false;
 
   if (!path.empty())
   {  
@@ -46,11 +48,21 @@ bool wxExProcessListView::ReportAdd(
     else
     {
       m_ListView->InsertItem(m_ListView->GetItemCount(), line);
+      clear_image = true;
     }
   }
   else
   {
     m_ListView->InsertItem(m_ListView->GetItemCount(), line);
+    clear_image = true;
+  }
+  
+  if (clear_image)
+  {
+    wxListItem item;
+    item.SetImage(-1);
+    item.SetId(m_ListView->GetItemCount() - 1);
+    m_ListView->SetItem(item);
   }
   
   // If nothing selected, then ensure last line is visible.
