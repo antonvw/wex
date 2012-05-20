@@ -113,7 +113,7 @@ bool wxExProcess::CheckInput()
     path.clear();
   }
   
-  if (m_Output.Contains("\n") || m_Output.Contains("(gdb) "))
+  if (!m_Output.empty())
   {
     ReportAdd(m_Output, path, lineno);
     m_Output.clear();
