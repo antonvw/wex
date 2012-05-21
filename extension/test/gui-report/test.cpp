@@ -11,7 +11,18 @@
 #define TEST_FILE "./test.h"
 #define TEST_PRJ "./test-rep.prj"
 
-void wxExGuiReportTestFixture::testExDirTool()
+void wxExGuiReportTestFixture::testDirCtrl()
+{
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  
+  wxExGenericDirCtrl* ctrl = new wxExGenericDirCtrl(frame, frame);
+  ctrl->ExpandAndSelectPath("test");
+
+  wxCommandEvent event(ID_TREE_COPY);  
+  wxPostEvent(ctrl, event);
+}
+
+void wxExGuiReportTestFixture::testDirTool()
 {
   const wxExTool tool = ID_TOOL_REPORT_FIND;
 
@@ -240,8 +251,12 @@ wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxexreport test suite")
 {
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
+    "testDirCtrl",
+    &wxExGuiReportTestFixture::testDirCtrl));
+
+  addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testDirTool",
-    &wxExGuiReportTestFixture::testExDirTool));
+    &wxExGuiReportTestFixture::testDirTool));
 
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testDirWithListView",
