@@ -448,7 +448,7 @@ void wxExListToConfig(
     std::list < wxString >::const_iterator it = l.begin();
 #endif	
     it != l.end();
-    it++)
+    ++it)
   {
     text += *it + wxExGetFieldSeparator();
   }
@@ -562,7 +562,7 @@ void wxExOpenFiles(
     wxArrayString::const_iterator it = files.begin();
 #endif	
     it != files.end();
-    it++)
+    ++it)
   {
     wxString file = *it; // cannot be const because of file = later on
 

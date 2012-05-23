@@ -232,7 +232,7 @@ long wxExVCS::Execute()
         wxArrayString::iterator it = m_Files.begin();
 #endif		
         it != m_Files.end();
-        it++)
+        ++it)
       {
         args += *it + " ";
       }

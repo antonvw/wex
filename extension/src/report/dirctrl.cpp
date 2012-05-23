@@ -87,7 +87,7 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
       wxArrayString::iterator it = files.begin();
 #endif	  
       it != files.end();
-      it++)
+      ++it)
     {
       clipboard += *it + wxTextFile::GetEOL();
     }

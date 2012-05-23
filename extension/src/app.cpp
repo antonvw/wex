@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wxExApp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -94,7 +94,7 @@ bool wxExApp::OnInit()
       wxArrayString::iterator it = files.begin();
 #endif	  
       it != files.end();
-      it++)
+      ++it)
     {
       const wxFileName fn(*it);
 

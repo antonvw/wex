@@ -1525,6 +1525,7 @@ void wxExGuiTestFixture::testVi()
   vi->Command("P");
   CPPUNIT_ASSERT( stc->GetText().Contains(
     "the chances of anything coming from mars"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("mathe"));
   
   stc->SetText("this text contains xx");
   CPPUNIT_ASSERT( vi->Command("qt"));

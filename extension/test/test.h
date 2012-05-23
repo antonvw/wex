@@ -30,7 +30,7 @@ public:
       std::cout << m_Report;};
       
   /// Adds text to report.
-  void Report(const std::string text) {
+  void Report(const std::string& text) {
     m_Report.append(text);
     m_Report.append("\n");};
 private:

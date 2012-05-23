@@ -101,7 +101,7 @@ wxExSTCShell::~wxExSTCShell()
       std::list < wxString >::reverse_iterator it = m_Commands.rbegin();
 #endif	  
       it != m_Commands.rend() && items < m_CommandsSaveInConfig;
-      it++)
+      ++it)
     {
       values += *it + m_CommandsInConfigDelimiter;
       items++;
@@ -395,7 +395,7 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
       std::list < wxString >::iterator it = m_Commands.begin();
 #endif	  
       it != m_Commands.end();
-      it++)
+      ++it)
     {
       if (no == no_asked_for)
       {
@@ -429,7 +429,7 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
       std::list < wxString >::reverse_iterator it = m_Commands.rbegin();
 #endif	  
       it != m_Commands.rend();
-      it++)
+      ++it)
     {
       const wxString command = *it;
 
@@ -501,7 +501,7 @@ void wxExSTCShell::ShowHistory()
     std::list < wxString >::iterator it = m_Commands.begin();
 #endif	
     it != m_Commands.end();
-    it++)
+    ++it)
   {
     const wxString command = *it;
 
