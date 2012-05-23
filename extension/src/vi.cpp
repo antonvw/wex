@@ -848,9 +848,10 @@ void wxExVi::ToggleCase()
 
 bool wxExVi::YankedLines()
 {
-  const wxString cb(wxExClipboardGet(), false); // do not trim
+  const wxString cb(wxExClipboardGet());
   
-  return wxExGetNumberOfLines(cb) > 1;
+  // do not trim
+  return wxExGetNumberOfLines(cb, false) > 1;
 }
 
 #endif // wxUSE_GUI

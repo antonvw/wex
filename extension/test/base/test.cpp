@@ -166,11 +166,9 @@ void TestFixture::testTimingAttrib()
 
   const wxExFileName exfile(TEST_FILE);
 
-  int checked = 0;
-
   for (int i = 0; i < max; i++)
   {
-    checked += exfile.GetStat().IsReadOnly();
+    exfile.GetStat().IsReadOnly();
   }
 
   const long exfile_time = sw.Time();
@@ -181,7 +179,7 @@ void TestFixture::testTimingAttrib()
 
   for (int j = 0; j < max; j++)
   {
-    checked += file.IsFileWritable();
+    file.IsFileWritable();
   }
 
   const long file_time = sw.Time();

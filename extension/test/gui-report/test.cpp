@@ -175,8 +175,12 @@ void wxExGuiReportTestFixture::testUtil()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   wxExNotebook* notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
+  
   wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
   wxWindow* page2 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  
+  CPPUNIT_ASSERT( notebook->AddPage(page1, "page1") != NULL);
+  CPPUNIT_ASSERT( notebook->AddPage(page2, "page2") != NULL);
   
   CPPUNIT_ASSERT( wxExForEach(notebook, ID_LIST_ALL_ITEMS));
   
