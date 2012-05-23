@@ -1516,7 +1516,7 @@ void wxExGuiTestFixture::testVi()
 
   // Special put test. 
   // Put should not put text within a line, but after it, or before it.
-  stc->SetText("the chances of anything coming from mars");
+  stc->SetText("the chances of anything coming from mars\n");
   vi->Command("$");
   vi->Command("h");
   vi->Command("h");
