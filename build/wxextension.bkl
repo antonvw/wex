@@ -3,7 +3,7 @@
 Name:      wxextension.bkl
 Purpose:   Bakefile for wxextension library
 Author:    Anton van Wezenbeek
-Copyright: (c) 2011 Anton van Wezenbeek
+Copyright: (c) 2012 Anton van Wezenbeek
 -->
 
 <makefile>
@@ -58,10 +58,6 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <sources>../extension/src/stcdlg.cpp</sources>
     <sources>../extension/src/stcfile.cpp</sources>
     <sources>../extension/src/style.cpp</sources>
-    <if cond="PLATFORM_UNIX=='1'">
-    <include>/usr/include/cppunit</include>
-    <include>../extension/include</include>
-    </if>
     <sources>../extension/src/textfile.cpp</sources>
     <sources>../extension/src/tool.cpp</sources>
     <sources>../extension/src/toolbar.cpp</sources>

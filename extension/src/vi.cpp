@@ -676,11 +676,18 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   {
     if (!(event.GetModifiers() & wxMOD_ALT))
     {
-      m_Command += event.GetUnicodeKey();
-      
-      if (Command(m_Command))
+      // This check is important, as WXK_NONE (0)
+      // would add NULL terminator at the end of m_Command,
+      // and pressing ESC would not help, (rest is empty
+      // because of the NULL).
+      if (event.GetUnicodeKey() != WXK_NONE)
       {
-        m_Command.clear();
+        m_Command += event.GetUnicodeKey();
+      
+        if (Command(m_Command))
+        {
+          m_Command.clear();
+        }
       }
       
       return false;
