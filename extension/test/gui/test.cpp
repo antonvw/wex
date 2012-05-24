@@ -1343,8 +1343,13 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT(!vi->GetInsertMode());
   
-  // First i enters insert mode, so is handled by vi, not to be skipped.
   wxKeyEvent event(wxEVT_CHAR);
+  
+  // Test WXK_NONE.
+  event.m_uniChar = WXK_NONE;
+  CPPUNIT_ASSERT( vi->OnChar(event));
+  
+  // First i enters insert mode, so is handled by vi, not to be skipped.
   event.m_uniChar = 'i';
   CPPUNIT_ASSERT(!vi->OnChar(event));
   
@@ -1403,6 +1408,8 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_TAB;
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  event.m_keyCode = WXK_NONE;
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
   
   // Vi command tests.
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));

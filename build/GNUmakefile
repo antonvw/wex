@@ -66,9 +66,8 @@ WX_VERSION_MAJOR = $(shell echo $(WX_VERSION) | cut -c1,1)
 WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_UNICODE_FLAG) $(WX_CONFIG_SHARED_FLAG) \
 	--toolkit=$(WX_PORT) --version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
-WXEX_CXXFLAGS = $(VAR) $(VAR_3) -I../extension/include -I/usr/include/cppunit \
-	-I../extension/include `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` \
-	$(CPPFLAGS) $(CXXFLAGS)
+WXEX_CXXFLAGS = $(VAR) $(VAR_3) -I../extension/include `$(WX_CONFIG) --cxxflags \
+	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_app.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_art.o \

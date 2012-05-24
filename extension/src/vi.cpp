@@ -680,7 +680,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
       // would add NULL terminator at the end of m_Command,
       // and pressing ESC would not help, (rest is empty
       // because of the NULL).
-      if (event.GetUnicodeKey() != WXK_NONE)
+      if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
       {
         m_Command += event.GetUnicodeKey();
       
@@ -688,6 +688,10 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
         {
           m_Command.clear();
         }
+      }
+      else
+      {
+        return true;
       }
       
       return false;
@@ -711,16 +715,24 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     event.GetKeyCode() == WXK_RETURN ||
     event.GetKeyCode() == WXK_TAB)
   {
-    m_Command += event.GetKeyCode();
-      
-    const bool result = Command(m_Command);
-    
-    if (result)
+    // See comment above.
+    if (event.GetKeyCode() != WXK_NONE)
     {
-      m_Command.clear();
-    }
+      m_Command += event.GetKeyCode();
+      
+      const bool result = Command(m_Command);
     
-    return !result;
+      if (result)
+      {
+        m_Command.clear();
+      }
+    
+      return !result;
+    }
+    else
+    {
+      return true;
+    }
   }
   else
   {
