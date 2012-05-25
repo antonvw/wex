@@ -177,6 +177,12 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
     return false;
   }
   
+  if (IsPlayback() && macro == m_Macro)
+  {
+    wxLogStatus(_("Already playing back"));
+    return false;
+  }
+  
   ex->GetSTC()->BeginUndoAction();
   
   bool stop = false;
