@@ -1558,6 +1558,10 @@ void wxExGuiTestFixture::testViMacros()
   
   wxExViMacros macros;
   
+  // Load, save document is last test, to be able to check contents.
+  CPPUNIT_ASSERT(!macros.GetFileName().GetFullPath().empty());
+  CPPUNIT_ASSERT( macros.LoadDocument());
+  
   CPPUNIT_ASSERT(!macros.IsRecording());
   
   // The macros is a static variable, so recording during vi
@@ -1589,9 +1593,27 @@ void wxExGuiTestFixture::testViMacros()
   
   CPPUNIT_ASSERT(!macros.Get().empty());
   
-  CPPUNIT_ASSERT(!macros.GetFileName().GetFullPath().empty());
+  // Append to macro.
+  int esc = 27;
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  macros.StartRecording("A");
+  macros.Record('b');
+  macros.Record("test");
+  macros.StopRecording();
   
-  CPPUNIT_ASSERT( macros.LoadDocument());
+  CPPUNIT_ASSERT(!macros.IsRecorded("A"));
+  CPPUNIT_ASSERT( macros.Get("a").front() == "a");
+  
+  // Recursive macro.
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  macros.StartRecording("A");
+  macros.Record('@');
+  macros.Record("a");
+  macros.StopRecording();
+  
+  CPPUNIT_ASSERT( macros.Playback(vi, "a"));
+
+  // So save as last test.
   CPPUNIT_ASSERT( macros.SaveDocument());
 }
   
