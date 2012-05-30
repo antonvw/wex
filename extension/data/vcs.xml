@@ -97,6 +97,17 @@ Copyright: (c) 2011, Anton van Wezenbeek
     </commands>
   </vcs>
 
+  <vcs
+    name="sccs"
+    flags-location="prefix">
+
+    <commands>
+      <command> &amp;print </command>
+      <command> &amp;prs </command>
+      <command> &amp;prt </command>
+    </commands>
+  </vcs>
+
   <vcs 
     name="svn"
     keyword-expansion="true">
@@ -116,17 +127,6 @@ Copyright: (c) 2011, Anton van Wezenbeek
       <command type = "popup"> prop&amp;set </command>
       <command> &amp;stat </command>
       <command> &amp;update </command>
-    </commands>
-  </vcs>
-
-  <vcs
-    name="sccs"
-    flags-location="prefix">
-
-    <commands>
-      <command> &amp;print </command>
-      <command> &amp;prs </command>
-      <command> &amp;prt </command>
     </commands>
   </vcs>
 
