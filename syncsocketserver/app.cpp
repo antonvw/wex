@@ -95,6 +95,7 @@ END_EVENT_TABLE()
 
 Frame::Frame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
+  , m_SocketServer(NULL)
   , m_Timer(this)
   , m_Answer(ANSWER_OFF)
 {
@@ -817,6 +818,14 @@ bool Frame::OpenFile(
 
 bool Frame::SetupSocketServer()
 {
+  if (m_SocketServer != NULL)
+  {
+    // In fact, this should not happen, 
+    // but using Ubuntu the OnUpdateUI does not prevent this...
+    wxLogStatus(_("First stop server"));
+    return false;
+  }
+  
   // Create the address - defaults to localhost and port as specified
   if (!wxConfigBase::Get()->Exists(_("Hostname")))
   {
