@@ -414,7 +414,7 @@ const wxString wxExVCS::GetRoot(
   const wxString& admin_dir, 
   const wxFileName& fn) const
 {
-  if (!fn.IsOk() || vcs.empty())
+  if (!fn.IsOk() || admin_dir.empty())
   {
     return wxEmptyString;
   }
