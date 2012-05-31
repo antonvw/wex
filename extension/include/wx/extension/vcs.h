@@ -95,19 +95,19 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
-  static bool CheckPath(
-    const wxString& admin_dir, 
-    const wxFileName& fn);
-  static bool CheckPathAll(
-    const wxString& admin_dir, 
-    const wxFileName& fn);
   static const wxExVCSEntry FindEntry(const wxFileName& filename);
+  static bool IsAdminDir(
+    const wxString& admin_dir, 
+    const wxFileName& fn);
+  static bool IsAdminDirTopLevel(
+    const wxString& admin_dir, 
+    const wxFileName& fn);
   
   const wxString GetFile() const;
   const wxString GetRelativeFile(
     const wxString& admin_dir, 
     const wxFileName& file) const;
-  const wxString GetRoot(
+  const wxString GetTopLevelDir(
     const wxString& admin_dir, 
     const wxFileName& file) const;
   

@@ -54,49 +54,6 @@ wxExVCS::wxExVCS(const wxArrayString& files, int menu_id)
   }
 }
 
-bool wxExVCS::CheckPath(
-  const wxString& admin_dir, 
-  const wxFileName& fn)
-{
-  if (admin_dir.empty() || !fn.IsOk())
-  {
-    return false;
-  }
-  
-  // these cannot be combined, as AppendDir is a void (2.9.1).
-  wxFileName path(fn);
-  path.AppendDir(admin_dir);
-  return path.DirExists() && !path.FileExists();
-}
-
-bool wxExVCS::CheckPathAll(
-  const wxString& admin_dir, 
-  const wxFileName& fn)
-{
-  if (!fn.IsOk() || admin_dir.empty())
-  {
-    return false;
-  }
-  
-  // The .git dir only exists in the root, so check all components.
-  wxFileName root(fn);
-
-  while (root.DirExists() && root.GetDirCount() > 0)
-  {
-    wxFileName path(root);
-    path.AppendDir(admin_dir);
-
-    if (path.DirExists() && !path.FileExists())
-    {
-      return true;
-    }
-
-    root.RemoveLastDir();
-  }
-
-  return false;
-}
-
 #if wxUSE_GUI
 int wxExVCS::ConfigDialog(
   wxWindow* parent,
@@ -182,13 +139,13 @@ bool wxExVCS::DirExists(const wxFileName& filename)
 {
   const wxExVCSEntry entry(FindEntry(filename));
 
-  if (entry.AdminDirIsTopLevel() && CheckPathAll(entry.GetAdminDir(), filename))
+  if (entry.AdminDirIsTopLevel() && IsAdminDirTopLevel(entry.GetAdminDir(), filename))
   {
     return true;
   }
   else 
   {
-    return CheckPath(entry.GetAdminDir(), filename);
+    return IsAdminDir(entry.GetAdminDir(), filename);
   }
 }
 
@@ -232,13 +189,13 @@ long wxExVCS::Execute()
     }
     else if (m_Entry.GetName().Lower() == "git")
     {
-      const wxString vcs = FindEntry(filename).GetName();
-      wd = GetRoot(vcs, filename);
+      const wxString admin_dir(FindEntry(filename).GetAdminDir());
+      wd = GetTopLevelDir(admin_dir, filename);
       
       if (!filename.GetFullName().empty())
       {
         args = GetRelativeFile(
-          vcs, 
+          admin_dir, 
           filename);
       }
     }
@@ -281,11 +238,11 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
         const bool toplevel = it->AdminDirIsTopLevel();
         const wxString admin_dir = it->GetAdminDir();
 
-        if (toplevel && CheckPathAll(admin_dir, filename))
+        if (toplevel && IsAdminDirTopLevel(admin_dir, filename))
         {
           return *it;
         }
-        else if (CheckPath(admin_dir, filename))
+        else if (IsAdminDir(admin_dir, filename))
         {
           return *it;
         }
@@ -376,7 +333,7 @@ const wxString wxExVCS::GetName() const
   }
 }
 
-// See CheckPathAll
+// See IsAdminDirTopLevel
 const wxString wxExVCS::GetRelativeFile(
   const wxString& admin_dir, 
   const wxFileName& fn) const
@@ -409,8 +366,8 @@ const wxString wxExVCS::GetRelativeFile(
   return wxEmptyString;
 }
 
-// See CheckPathAll
-const wxString wxExVCS::GetRoot(
+// See IsAdminDirTopLevel
+const wxString wxExVCS::GetTopLevelDir(
   const wxString& admin_dir, 
   const wxFileName& fn) const
 {
@@ -436,6 +393,49 @@ const wxString wxExVCS::GetRoot(
   }
 
   return wxEmptyString;
+}
+
+bool wxExVCS::IsAdminDir(
+  const wxString& admin_dir, 
+  const wxFileName& fn)
+{
+  if (admin_dir.empty() || !fn.IsOk())
+  {
+    return false;
+  }
+  
+  // these cannot be combined, as AppendDir is a void (2.9.1).
+  wxFileName path(fn);
+  path.AppendDir(admin_dir);
+  return path.DirExists() && !path.FileExists();
+}
+
+bool wxExVCS::IsAdminDirTopLevel(
+  const wxString& admin_dir, 
+  const wxFileName& fn)
+{
+  if (!fn.IsOk() || admin_dir.empty())
+  {
+    return false;
+  }
+  
+  // The .git dir only exists in the root, so check all components.
+  wxFileName root(fn);
+
+  while (root.DirExists() && root.GetDirCount() > 0)
+  {
+    wxFileName path(root);
+    path.AppendDir(admin_dir);
+
+    if (path.DirExists() && !path.FileExists())
+    {
+      return true;
+    }
+
+    root.RemoveLastDir();
+  }
+
+  return false;
 }
 
 bool wxExVCS::Read()
