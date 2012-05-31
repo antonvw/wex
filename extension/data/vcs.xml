@@ -3,16 +3,19 @@
 Name:      vcs.xml
 Purpose:   collection of version control systems supported
 Author:    Anton van Wezenbeek
-Created:   2010-08-23
-Copyright: (c) 2011, Anton van Wezenbeek
+Copyright: (c) 2012, Anton van Wezenbeek
 -->
 
 <vcss>
   <!--
    Each <vcs> has a name attribute (name of vcs used),
+   an admin-dir attribute (where admin dir is located),
+   a toplevel attribute (default false, admin dir only in toplevel)
    a keyword-expansion attribute (default 'false'),
    and a flags-location attribute (default 'postfix'), 
-   followed by a number of <commands>. The flags-location
+   followed by a number of <commands>. 
+   
+   The flags-location
    configures how this vcs expects the flags argument, if 'postfix'
    the flags will be put after the command, if 'prefix' the flags
    will be put before the command. 
@@ -30,7 +33,8 @@ Copyright: (c) 2011, Anton van Wezenbeek
    -->
   
   <vcs
-    name="bazaar">
+    name="bazaar" 
+    admin-dir=".bzr">
     
     <commands>
       <command type = "main"> &amp;add </command>
@@ -46,6 +50,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
 
   <vcs 
     name="cvs"
+    admin-dir=".cvs"
     keyword-expansion="true">
 
     <commands>
@@ -61,7 +66,9 @@ Copyright: (c) 2011, Anton van Wezenbeek
   </vcs>
   
   <vcs 
-    name="git">
+    name="git"
+    admin-dir=".git"
+    toplevel="true">
 
     <commands>
       <command type = "main"> &amp;add </command>
@@ -80,7 +87,9 @@ Copyright: (c) 2011, Anton van Wezenbeek
   </vcs>
 
   <vcs
-    name="mercurial">
+    name="mercurial"
+    admin-dir=".hg"
+    toplevel="true">
     
     <commands>
       <command type = "main"> &amp;add </command>
@@ -99,6 +108,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
 
   <vcs
     name="sccs"
+    admin-dir=".SCCS"
     flags-location="prefix">
 
     <commands>
@@ -110,6 +120,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
 
   <vcs 
     name="svn"
+    admin-dir=".svn"
     keyword-expansion="true">
 
     <commands>

@@ -54,47 +54,37 @@ wxExVCS::wxExVCS(const wxArrayString& files, int menu_id)
   }
 }
 
-bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn)
+bool wxExVCS::CheckPath(
+  const wxString& admin_dir, 
+  const wxFileName& fn)
 {
-  if (vcs.empty() || !fn.IsOk())
+  if (admin_dir.empty() || !fn.IsOk())
   {
     return false;
   }
   
   // these cannot be combined, as AppendDir is a void (2.9.1).
   wxFileName path(fn);
-  path.AppendDir(vcs);
-
-  if (path.DirExists())
-  {
-    return true;
-  }
-  else
-  {
-    wxFileName path(fn);
-    path.AppendDir("." + vcs);
-    return path.DirExists() && !path.FileExists();
-  }
+  path.AppendDir(admin_dir);
+  return path.DirExists() && !path.FileExists();
 }
 
 bool wxExVCS::CheckPathAll(
-  const wxString& vcs, 
+  const wxString& admin_dir, 
   const wxFileName& fn)
 {
-  if (!fn.IsOk() || vcs.empty())
+  if (!fn.IsOk() || admin_dir.empty())
   {
     return false;
   }
   
-  const wxString use_vcs = (vcs == "mercurial" ? "hg": vcs);
-
   // The .git dir only exists in the root, so check all components.
   wxFileName root(fn);
 
   while (root.DirExists() && root.GetDirCount() > 0)
   {
     wxFileName path(root);
-    path.AppendDir("." + use_vcs);
+    path.AppendDir(admin_dir);
 
     if (path.DirExists() && !path.FileExists())
     {
@@ -190,15 +180,15 @@ int wxExVCS::ConfigDialog(
 
 bool wxExVCS::DirExists(const wxFileName& filename)
 {
-  const wxString vcs = FindEntry(filename).GetName();
+  const wxExVCSEntry entry(FindEntry(filename));
 
-  if (IsCheckPathAllVCS(vcs) && CheckPathAll(vcs, filename))
+  if (entry.AdminDirIsTopLevel() && CheckPathAll(entry.GetAdminDir(), filename))
   {
     return true;
   }
   else 
   {
-    return CheckPath(vcs, filename);
+    return CheckPath(entry.GetAdminDir(), filename);
   }
 }
 
@@ -215,7 +205,10 @@ long wxExVCS::Execute()
       args = wxExConfigFirstOf(_("Path"));
     }
     
-    return m_Entry.Execute(args, wxExLexer(), wxExConfigFirstOf(_("Base folder")));
+    return m_Entry.Execute(
+      args, 
+      wxExLexer(), 
+      wxExConfigFirstOf(_("Base folder")));
   }
   else
   {
@@ -237,7 +230,7 @@ long wxExVCS::Execute()
         args += *it + " ";
       }
     }
-    else if (m_Entry.GetName() == "git")
+    else if (m_Entry.GetName().Lower() == "git")
     {
       const wxString vcs = FindEntry(filename).GetName();
       wd = GetRoot(vcs, filename);
@@ -249,10 +242,10 @@ long wxExVCS::Execute()
           filename);
       }
     }
-    else if (m_Entry.GetName() == "SCCS")
+    else if (m_Entry.GetName().Lower() == "sccs")
     {
       args = "\"" + 
-      // SCCS for windows does not handle windows paths,
+      // sccs for windows does not handle windows paths,
       // so convert them to UNIX, and add volume as well.
 #ifdef __WXMSW__      
         filename.GetVolume() + filename.GetVolumeSeparator() +
@@ -285,13 +278,14 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
         it != m_Entries.end();
         ++it)
       {
-        const wxString name = it->GetName();
+        const bool toplevel = it->AdminDirIsTopLevel();
+        const wxString admin_dir = it->GetAdminDir();
 
-        if (IsCheckPathAllVCS(name) && CheckPathAll(name, filename))
+        if (toplevel && CheckPathAll(admin_dir, filename))
         {
           return *it;
         }
-        else if (CheckPath(name, filename))
+        else if (CheckPath(admin_dir, filename))
         {
           return *it;
         }
@@ -384,11 +378,9 @@ const wxString wxExVCS::GetName() const
 
 // See CheckPathAll
 const wxString wxExVCS::GetRelativeFile(
-  const wxString& vcs, 
+  const wxString& admin_dir, 
   const wxFileName& fn) const
 {
-  const wxString use_vcs = (vcs == "mercurial" ? "hg": vcs);
-
   // The .git dir only exists in the root, so check all components.
   wxFileName root(fn);
   wxArrayString as;
@@ -396,7 +388,7 @@ const wxString wxExVCS::GetRelativeFile(
   while (root.DirExists() && root.GetDirCount() > 0)
   {
     wxFileName path(root);
-    path.AppendDir("." + use_vcs);
+    path.AppendDir(admin_dir);
 
     if (path.DirExists() && !path.FileExists())
     {
@@ -419,7 +411,7 @@ const wxString wxExVCS::GetRelativeFile(
 
 // See CheckPathAll
 const wxString wxExVCS::GetRoot(
-  const wxString& vcs, 
+  const wxString& admin_dir, 
   const wxFileName& fn) const
 {
   if (!fn.IsOk() || vcs.empty())
@@ -427,15 +419,13 @@ const wxString wxExVCS::GetRoot(
     return wxEmptyString;
   }
   
-  const wxString use_vcs = (vcs == "mercurial" ? "hg": vcs);
-
   // The .git dir only exists in the root, so check all components.
   wxFileName root(fn);
 
   while (root.DirExists() && root.GetDirCount() > 0)
   {
     wxFileName path(root);
-    path.AppendDir("." + use_vcs);
+    path.AppendDir(admin_dir);
 
     if (path.DirExists() && !path.FileExists())
     {
@@ -446,11 +436,6 @@ const wxString wxExVCS::GetRoot(
   }
 
   return wxEmptyString;
-}
-
-bool wxExVCS::IsCheckPathAllVCS(const wxString& vcs)
-{
-  return vcs == "git" || vcs == "mercurial";
 }
 
 bool wxExVCS::Read()

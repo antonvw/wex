@@ -1288,10 +1288,12 @@ void wxExGuiTestFixture::testVCSEntry()
   CPPUNIT_ASSERT( test2.GetCommands() == 1);
   
   CPPUNIT_ASSERT( test.GetCommand().GetCommand().empty());
+  CPPUNIT_ASSERT(!test.AdminDirIsTopLevel());
   CPPUNIT_ASSERT( test.GetFlags().empty());
   CPPUNIT_ASSERT( test.GetName().empty());
   CPPUNIT_ASSERT( test.GetOutput().empty());
   CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
+  
   CPPUNIT_ASSERT( test.ShowDialog(
     wxTheApp->GetTopWindow(),
     "vcs",

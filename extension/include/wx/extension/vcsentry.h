@@ -26,6 +26,9 @@ public:
   /// Constructor using xml node.
   wxExVCSEntry(const wxXmlNode* node);
 
+  /// Returns true if admin dir is only at top level.
+  bool AdminDirIsTopLevel() const {return m_AdminDirIsTopLevel;};
+
 #if wxUSE_GUI
   /// Builds a menu from vcs commands.
   /// Returns (total) number of items in menu.
@@ -44,6 +47,9 @@ public:
     const wxExLexer& lexer,
     const wxString& wd = wxEmptyString);
   
+  /// Gets the administrative directory.
+  const wxString& GetAdminDir() const {return m_AdminDir;};
+
   /// Gets the current vcs command.  
   const wxExVCSCommand& GetCommand() const {
     return m_Commands.at(m_CommandIndex);};
@@ -92,10 +98,13 @@ private:
   const wxString GetBin() const;
 
   // no const, as entry is set using operator+ in wxExVCS.
+  bool m_AdminDirIsTopLevel;
   bool m_SupportKeywordExpansion;
+  
   int m_CommandIndex;
   int m_FlagsLocation;
   
+  wxString m_AdminDir;
   wxString m_FlagsKey;
   wxString m_Name;
   

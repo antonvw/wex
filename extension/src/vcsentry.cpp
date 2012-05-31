@@ -18,8 +18,10 @@
 
 wxExVCSEntry::wxExVCSEntry()
   : m_CommandIndex(0)
+  , m_AdminDir()
   , m_Name()
   , m_FlagsLocation(VCS_FLAGS_LOCATION_POSTFIX)
+  , m_AdminDirIsTopLevel(false)
   , m_SupportKeywordExpansion(false)
 {
   m_Commands.push_back(wxExVCSCommand());
@@ -27,10 +29,13 @@ wxExVCSEntry::wxExVCSEntry()
 
 wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
   : m_CommandIndex(0)
+  , m_AdminDir(node->GetAttribute("admin-dir"))
   , m_Name(node->GetAttribute("name"))
   , m_FlagsLocation(
       (node->GetAttribute("flags-location") == "prefix" ?
          VCS_FLAGS_LOCATION_PREFIX: VCS_FLAGS_LOCATION_POSTFIX))
+  , m_AdminDirIsTopLevel(
+      node->GetAttribute("toplevel") == "true")
   , m_SupportKeywordExpansion(
       node->GetAttribute("keyword-expansion") == "true")
 {
