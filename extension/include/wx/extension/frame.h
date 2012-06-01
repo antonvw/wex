@@ -101,6 +101,10 @@ public:
   /// Do something when statusbar is (right) double clicked.
   virtual void StatusBarDoubleClickedRight(const wxString& ) {};
 
+  /// Gets text on specified pane.
+  /// Don't forget to call SetupStatusBar first.
+  static wxString GetStatusText(const wxString& pane);
+  
   /// Sets text on specified pane.
   /// Don't forget to call SetupStatusBar first.
   static bool StatusText(const wxString& text, const wxString& pane);

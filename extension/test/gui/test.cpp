@@ -318,15 +318,25 @@ void wxExGuiTestFixture::testFrame()
     panes.push_back(wxExStatusBarPane(wxString::Format("Pane%d", i)));
   }
   
+  panes.push_back(wxExStatusBarPane("PaneInfo"));
+  panes.push_back(wxExStatusBarPane("PaneLexer"));
+  panes.push_back(wxExStatusBarPane("PaneFileType"));
+  
   wxExStatusBar* sb = frame->SetupStatusBar(panes);
   CPPUNIT_ASSERT( sb != NULL);
   
   CPPUNIT_ASSERT( sb->GetFieldsCount () == panes.size());
   CPPUNIT_ASSERT( sb->SetStatusText("hello", ""));
-  CPPUNIT_ASSERT( sb->SetStatusText("hello", "Pane0"));
-  CPPUNIT_ASSERT( sb->SetStatusText("hello", "Pane1"));
-  CPPUNIT_ASSERT( sb->SetStatusText("hello", "Pane2"));
-  CPPUNIT_ASSERT(!sb->SetStatusText("hello", "Panexxx"));
+  CPPUNIT_ASSERT( sb->SetStatusText("hello0", "Pane0"));
+  CPPUNIT_ASSERT( sb->SetStatusText("hello1", "Pane1"));
+  CPPUNIT_ASSERT( sb->SetStatusText("hello2", "Pane2"));
+  CPPUNIT_ASSERT(!sb->SetStatusText("hello3", "Panexxx"));
+  CPPUNIT_ASSERT(!sb->SetStatusText("hello25", "Pane25"));
+  
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane0") == "hello0");
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane1") == "hello1");
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane2") == "hello2");
+  CPPUNIT_ASSERT( sb->GetStatusText("Panexxx").empty());
   
   CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE)));
   CPPUNIT_ASSERT( frame->OpenFile(TEST_FILE, "contents"));
@@ -351,12 +361,23 @@ void wxExGuiTestFixture::testFrame()
   frame->StatusBarDoubleClickedRight("Pane2");
   
   CPPUNIT_ASSERT(!frame->StatusText("hello", "test"));
-  CPPUNIT_ASSERT( frame->StatusText("hello", "Pane1"));
-  CPPUNIT_ASSERT( frame->StatusText("hello", "Pane2"));
+  CPPUNIT_ASSERT( frame->StatusText("hello1", "Pane1"));
+  CPPUNIT_ASSERT( frame->StatusText("hello2", "Pane2"));
+  CPPUNIT_ASSERT( frame->GetStatusText("Pane1") = "hello1");
+  CPPUNIT_ASSERT( frame->GetStatusText("Pane2") = "hello2");
   
   CPPUNIT_ASSERT(!frame->UpdateStatusBar(frame->GetSTC(), "test"));
   CPPUNIT_ASSERT(!frame->UpdateStatusBar(frame->GetSTC(), "Pane1"));
   CPPUNIT_ASSERT(!frame->UpdateStatusBar(frame->GetSTC(), "Pane2"));
+  CPPUNIT_ASSERT(!frame->UpdateStatusBar(frame->GetSTC(), "PaneInfo"));
+  
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  stc->SetFocus();
+  
+  CPPUNIT_ASSERT( frame->GetSTC() == stc);
+  CPPUNIT_ASSERT( frame->UpdateStatusBar(stc, "PaneInfo"));
+  CPPUNIT_ASSERT( frame->UpdateStatusBar(stc, "PaneLexer"));
+  CPPUNIT_ASSERT( frame->UpdateStatusBar(stc, "PaneFileType"));
 }
 
 void wxExGuiTestFixture::testFrd()
@@ -721,11 +742,22 @@ void wxExGuiTestFixture::testListView()
   listView->Print();
   listView->PrintPreview();
   
+  for (int i = 0; i < 10; i++)
+  {
+    listView->InsertItem(i, wxString::Format(%d", i));
+    listView->SetItem(i, 1, wxDateTime::Now().Format());
+    listView->SetItem(i, 2, wxString::Format("%f", (float)i / 2.0));
+    listView->SetItem(i, 3, wxString::Format("hello %d", i));
+  }
+  
   CPPUNIT_ASSERT(!listView->SortColumn("xxx"));
   CPPUNIT_ASSERT( listView->SortColumn("Int"));
   CPPUNIT_ASSERT( listView->SortColumn("Date"));
   CPPUNIT_ASSERT( listView->SortColumn("Float"));
   CPPUNIT_ASSERT( listView->SortColumn("String"));
+  
+  listView->SetItem(0, 1, "incorrect date");
+  CPPUNIT_ASSERT(!listView->SortColumn("Date"));
 }
 
 // Also test the toolbar (wxExToolBar).

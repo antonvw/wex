@@ -67,7 +67,12 @@ int wxExVCS::ConfigDialog(
   
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair((long)VCS_NONE, _("None")));
-  choices.insert(std::make_pair((long)VCS_AUTO, "Auto"));
+  
+  // Using auto vcs is not useful if we only have one vcs.
+  if (m_Entries.size() != 1)
+  {
+    choices.insert(std::make_pair((long)VCS_AUTO, "Auto"));
+  }
   
   long i = VCS_START;
 
@@ -139,7 +144,9 @@ bool wxExVCS::DirExists(const wxFileName& filename)
 {
   const wxExVCSEntry entry(FindEntry(filename));
 
-  if (entry.AdminDirIsTopLevel() && IsAdminDirTopLevel(entry.GetAdminDir(), filename))
+  if (
+    entry.AdminDirIsTopLevel() && 
+    IsAdminDirTopLevel(entry.GetAdminDir(), filename))
   {
     return true;
   }
