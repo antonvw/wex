@@ -40,6 +40,19 @@ wxExStatusBar::~wxExStatusBar()
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 }
   
+const wxString wxExStatusBar::GetStatusText(const wxString& field) const
+{
+  const std::map<wxString, wxExStatusBarPane>::iterator it = m_Panes.find(field);
+
+  if (it == m_Panes.end())
+  {
+    // Do not show error, as you might explicitly want to ignore messages.
+    return wxEmptyString;
+  }
+  
+  return wxStatusBar::GetStatusText(it->second.GetNo());
+}
+
 void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
 {
   if (event.LeftDClick())

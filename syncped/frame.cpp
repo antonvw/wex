@@ -1262,11 +1262,8 @@ void Frame::StatusBarDoubleClickedRight(const wxString& pane)
   }
   else if (pane == "PaneVCS")
   {
-    wxExVCS vcs;
-    vcs.GetDir(this);
-    
-    const wxString match = (vcs.GetName() != "Auto" ? 
-      vcs.GetName(): wxString(wxEmptyString));
+    const wxString match = (GetStatusText("PaneVCS") != "Auto" ? 
+      GetStatusText("PaneVCS"): wxString(wxEmptyString));
       
     OpenFile(
       wxExVCS::GetFileName(),

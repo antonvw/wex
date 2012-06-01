@@ -84,6 +84,10 @@ public:
     
   /// Destructor.
  ~wxExStatusBar();  
+ 
+  /// Gets the status text on specified field.
+  /// Returns empty string if field does not exist.
+  const wxString GetStatusText(const wxString& field) const;
 
   /// Sets the fields.
   void SetFields(const std::vector<wxExStatusBarPane>& fields);

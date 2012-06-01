@@ -138,6 +138,16 @@ wxExListView* wxExFrame::GetListView()
   return lv;
 }
 
+wxString wxExFrame::GetStatusText(const wxString& pane)
+{
+  if (m_StatusBar == NULL)
+  {
+    return wxEmptyString;
+  }
+  
+  return m_StatusBar->GetStatusText(pane);
+}
+
 wxExSTC* wxExFrame::GetSTC()
 {
   // If we had a find focus on stc component, return that one.
@@ -569,6 +579,11 @@ bool wxExFrame::UpdateStatusBar(const wxListView* lv)
 // I thought that might cause crash in rect selection, but it didn't.
 bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
 {
+  if (stc == NULL)
+  {
+    return false;
+  }
+  
   wxString text;
 
   if (pane == "PaneInfo")

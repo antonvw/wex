@@ -31,6 +31,7 @@ const int ID_RECENT_PROJECT_LOWEST =  wxID_FILE1 + NUMBER_RECENT_FILES + 1;
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
+  EVT_MENU(wxID_CLEAR, wxExFrameWithHistory::OnCommand)
   EVT_MENU(ID_TERMINATED_PROCESS, wxExFrameWithHistory::OnCommand)
   EVT_MENU_RANGE(
     wxID_FILE1, 
@@ -102,6 +103,17 @@ wxExFrameWithHistory::~wxExFrameWithHistory()
   }
   
   wxDELETE(m_Process);
+}
+
+void wxExFrameWithHistory::ClearFileHistory()
+{
+  for (size_t i = 0; i < m_FileHistory.GetCount(); i++)
+  {
+    m_FileHistory.RemoveFileFromHistory(i);
+  }
+
+  // The file history list has a popup menu to delete all items,
+  // so doing it here is not necessary.
 }
 
 void wxExFrameWithHistory::CreateDialogs()
@@ -209,6 +221,9 @@ void wxExFrameWithHistory::FileHistoryPopupMenu()
   
   if (menu->GetMenuItemCount() > 0)
   {
+    menu->AppendSeparator();
+    menu->Append(wxID_CLEAR);
+      
     PopupMenu(menu);
   }
     
@@ -398,6 +413,10 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
   {
     switch (event.GetId())
     {
+    case wxID_CLEAR:
+      ClearFileHistory();
+      break;
+      
     case ID_FIND_IN_FILES: 
       if (m_FiFDialog == NULL)
       {
@@ -569,11 +588,11 @@ bool wxExFrameWithHistory::OpenFile(
   return false;
 }
 
-void wxExFrameWithHistory::SetRecentFile(const wxString& file)
+bool wxExFrameWithHistory::SetRecentFile(const wxString& file)
 {
-  if (file.empty())
+  if (file.empty() || m_FileHistory.GetMaxFiles() <= 0)
   {
-    return;
+    return false;
   }
   
   m_FileHistory.AddFileToHistory(file);
@@ -596,14 +615,20 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
       }
     }
   }
+  
+  return true;
 }
 
-void wxExFrameWithHistory::SetRecentProject(const wxString& project) 
+bool wxExFrameWithHistory::SetRecentProject(const wxString& project) 
 {
-  if (!project.empty() && m_ProjectHistory.GetMaxFiles() > 0) 
+  if (project.empty() || m_ProjectHistory.GetMaxFiles() <= 0)
   {
-    m_ProjectHistory.AddFileToHistory(project);
+    return false;
   }
+  
+  m_ProjectHistory.AddFileToHistory(project);
+  
+  return true;
 }
     
 void wxExFrameWithHistory::UseFileHistory(wxWindowID id, wxMenu* menu)

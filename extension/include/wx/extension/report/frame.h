@@ -115,10 +115,12 @@ public:
     long flags = 0);
 
   /// Updates file history.
-  void SetRecentFile(const wxString& file);
+  /// Returns true if history was updated.
+  bool SetRecentFile(const wxString& file);
 
   /// Updates project history.
-  void SetRecentProject(const wxString& project);
+  /// Returns true if history was updated.
+  bool SetRecentProject(const wxString& project);
 
   /// Adds a recent file menu to specified menu,
   /// and sets the file history to use it.
@@ -137,6 +139,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
 private:
+  void ClearFileHistory();
   void CreateDialogs();
   void DoRecent(wxFileHistory& history, size_t index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);

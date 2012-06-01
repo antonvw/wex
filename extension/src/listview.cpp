@@ -788,6 +788,17 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, wxIntPtr sortData)
 
   switch (type)
   {
+  case wxExColumn::COL_DATE:
+    if (ascending) return (unsigned long)item1 > (unsigned long)item2;
+    else           return (unsigned long)item1 < (unsigned long)item2;
+  break;
+
+  case wxExColumn::COL_INT:
+  case wxExColumn::COL_FLOAT:
+    if (ascending) return item1 > item2;
+    else           return item1 < item2;
+  break;
+
   case wxExColumn::COL_STRING:
     {
     const wxString& str1 = (*pitems)[item1];
@@ -804,17 +815,6 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, wxIntPtr sortData)
       else           return strcmp(str2.c_str(), str1.c_str());
     }
     }
-  break;
-
-  case wxExColumn::COL_DATE:
-    if (ascending) return (unsigned long)item1 > (unsigned long)item2;
-    else           return (unsigned long)item1 < (unsigned long)item2;
-  break;
-
-  case wxExColumn::COL_INT:
-  case wxExColumn::COL_FLOAT:
-    if (ascending) return item1 > item2;
-    else           return item1 < item2;
   break;
 
   default:
@@ -856,18 +856,9 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   for (int i = 0; i < GetItemCount(); i++)
   {
     const wxString val = wxListView::GetItemText(i, column_no);
-    items.push_back(val);
 
     switch (sorted_col->GetType())
     {
-    case wxExColumn::COL_INT: 
-    SetItemData(i, atoi(val.c_str())); 
-    break;
-
-    case wxExColumn::COL_FLOAT: 
-    SetItemData(i, (long)atof(val.c_str())); 
-    break;
-
     case wxExColumn::COL_DATE:
       if (!val.empty())
       {
@@ -875,7 +866,7 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 
         if (!dt.ParseISOCombined(val, ' '))
         {
-          SetItemData(i, 0);
+          return false;
         }
         else
         {
@@ -888,9 +879,19 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
       }
     break;
 
+    case wxExColumn::COL_FLOAT: 
+      SetItemData(i, (long)atof(val.c_str())); 
+    break;
+
+    case wxExColumn::COL_INT: 
+      SetItemData(i, atoi(val.c_str())); 
+    break;
+
     case wxExColumn::COL_STRING: 
+      items.push_back(val);
       SetItemData(i, i); 
     break;
+    
     default: 
       wxFAIL;
     }

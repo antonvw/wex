@@ -79,6 +79,9 @@ void wxExGuiReportTestFixture::testFrameWithHistory()
   CPPUNIT_ASSERT( frame->GetProcess()->Execute("wc test.h", wxEXEC_ASYNC) == -1);
   CPPUNIT_ASSERT( frame->GetProcess()->IsSelected());
   
+  CPPUNIT_ASSERT( frame->SetRecentFile("xxx.cpp"));
+  CPPUNIT_ASSERT(!frame->SetRecentProject("xxx.prj"));
+  
   frame->FindInFilesDialog(ID_TOOL_REPORT_FIND);
   CPPUNIT_ASSERT(!frame->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
 }
