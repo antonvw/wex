@@ -28,10 +28,13 @@ const int NUMBER_RECENT_FILES = 25;
 const int NUMBER_RECENT_PROJECTS = 25;
 const int ID_RECENT_PROJECT_LOWEST =  wxID_FILE1 + NUMBER_RECENT_FILES + 1;
 
+// wxID_CLEAR already pushed to wxExSTC
+const int ID_CLEAR = 32;
+
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
-  EVT_MENU(wxID_CLEAR, wxExFrameWithHistory::OnCommand)
+  EVT_MENU(ID_CLEAR, wxExFrameWithHistory::OnCommand)
   EVT_MENU(ID_TERMINATED_PROCESS, wxExFrameWithHistory::OnCommand)
   EVT_MENU_RANGE(
     wxID_FILE1, 
@@ -107,9 +110,12 @@ wxExFrameWithHistory::~wxExFrameWithHistory()
 
 void wxExFrameWithHistory::ClearFileHistory()
 {
-  for (size_t i = 0; i < m_FileHistory.GetCount(); i++)
+  if (m_FileHistory.GetCount() > 0)
   {
-    m_FileHistory.RemoveFileFromHistory(i);
+    for (int i = m_FileHistory.GetCount() - 1; i >= 0; i--)
+    {
+      m_FileHistory.RemoveFileFromHistory(i);
+    }
   }
 
   // The file history list has a popup menu to delete all items,
@@ -222,7 +228,7 @@ void wxExFrameWithHistory::FileHistoryPopupMenu()
   if (menu->GetMenuItemCount() > 0)
   {
     menu->AppendSeparator();
-    menu->Append(wxID_CLEAR);
+    menu->Append(ID_CLEAR, wxGetStockLabel(wxID_CLEAR));
       
     PopupMenu(menu);
   }
@@ -413,7 +419,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
   {
     switch (event.GetId())
     {
-    case wxID_CLEAR:
+    case ID_CLEAR:
       ClearFileHistory();
       break;
       
