@@ -744,8 +744,8 @@ void wxExGuiTestFixture::testListView()
   
   for (int i = 0; i < 10; i++)
   {
-    listView->InsertItem(i, wxString::Format(%d", i));
-    listView->SetItem(i, 1, wxDateTime::Now().Format());
+    listView->InsertItem(i, wxString::Format("%d", i));
+    listView->SetItem(i, 1, wxDateTime::Now().FormatISOCombined(' '));
     listView->SetItem(i, 2, wxString::Format("%f", (float)i / 2.0));
     listView->SetItem(i, 3, wxString::Format("hello %d", i));
   }

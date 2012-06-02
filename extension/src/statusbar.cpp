@@ -42,7 +42,7 @@ wxExStatusBar::~wxExStatusBar()
   
 const wxString wxExStatusBar::GetStatusText(const wxString& field) const
 {
-  const std::map<wxString, wxExStatusBarPane>::iterator it = m_Panes.find(field);
+  const std::map<wxString, wxExStatusBarPane>::const_iterator it = m_Panes.find(field);
 
   if (it == m_Panes.end())
   {
