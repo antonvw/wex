@@ -34,6 +34,9 @@ public:
   /// Returns current or last macro.
   const wxString& GetMacro() {return m_Macro;};
   
+  /// Have macros been recorded without calling SaveDocument.
+  bool IsModified() {return m_IsModified;};
+  
   /// Is macro recorded.
   bool IsRecorded(const wxString& macro = wxEmptyString) const;
   
@@ -75,16 +78,21 @@ public:
   static bool LoadDocument();
   
   /// Saves all macros to xml document.
+  /// If you set only_if_modified, then document is only saved
+  /// if it was modified (if macros have been recorded since last save).
   /// Returns true if macros are saved.
-  static bool SaveDocument();
+  static bool SaveDocument(bool only_if_modified = true);
 private:  
   static bool Load(wxXmlDocument& doc);
   static const wxString Encode(const wxString& text, bool& encoded);
   static const wxString Decode(const wxString& text);
     
+  static bool m_IsModified;
   static std::map <wxString, std::vector< wxString > > m_Macros;
+  
   bool m_IsPlayback;
   bool m_IsRecording;
+  
   wxString m_Macro;
 };
 #endif // wxUSE_GUI

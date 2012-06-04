@@ -16,6 +16,7 @@
 
 #if wxUSE_GUI
 
+bool wxExViMacros::m_IsModified = false;
 std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
 
 wxExViMacros::wxExViMacros()
@@ -226,6 +227,8 @@ void wxExViMacros::Record(const wxString& text, bool new_command)
     return;
   }
   
+  m_IsModified = true;
+  
   if (new_command) 
   {
     m_Macros[m_Macro].push_back(text);
@@ -241,8 +244,13 @@ void wxExViMacros::Record(const wxString& text, bool new_command)
   }
 }
 
-bool wxExViMacros::SaveDocument()
+bool wxExViMacros::SaveDocument(bool only_if_modified)
 {
+  if (!m_IsModified && only_if_modified)
+  {
+    return false;
+  }
+  
   wxXmlDocument doc;
   
   if (!Load(doc))
@@ -286,7 +294,14 @@ bool wxExViMacros::SaveDocument()
     }
   }
   
-  return doc.Save(GetFileName().GetFullPath());
+  const bool ok = doc.Save(GetFileName().GetFullPath());
+  
+  if (ok)
+  {
+    m_IsModified = false;
+  }
+
+  return ok;
 }
 
 void wxExViMacros::StartRecording(const wxString& macro)
