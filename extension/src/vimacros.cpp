@@ -139,6 +139,12 @@ bool wxExViMacros::LoadDocument()
     return false;
   }
   
+  // If modified is true, then you did not save previous
+  // recordings.
+  // We assume that this is your choice, so we reset the member.
+  m_IsModified = false;
+  m_Macros.clear();
+  
   wxXmlNode* root = doc.GetRoot();
   wxXmlNode* child = root->GetChildren();
   
