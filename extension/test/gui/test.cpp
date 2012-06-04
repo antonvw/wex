@@ -1596,6 +1596,7 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT(!macros.GetFileName().GetFullPath().empty());
   CPPUNIT_ASSERT( macros.LoadDocument());
   
+  CPPUNIT_ASSERT(!macros.IsModified());
   CPPUNIT_ASSERT(!macros.IsRecording());
   
   // The macros is a static variable, so recording during vi
@@ -1616,6 +1617,7 @@ void wxExGuiTestFixture::testViMacros()
   macros.Record("test");
   macros.StopRecording();
   
+  CPPUNIT_ASSERT( macros.IsModified());
   CPPUNIT_ASSERT(!macros.IsRecording());
   CPPUNIT_ASSERT( macros.IsRecorded("a"));
   
@@ -1649,6 +1651,9 @@ void wxExGuiTestFixture::testViMacros()
 
   // So save as last test.
   CPPUNIT_ASSERT( macros.SaveDocument());
+  
+  // A second save is not necessary.
+  CPPUNIT_ASSERT(!macros.SaveDocument());
 }
   
 wxExAppTestSuite::wxExAppTestSuite()
