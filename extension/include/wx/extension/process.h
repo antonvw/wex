@@ -72,6 +72,9 @@ public:
   /// (might be NULL if dialog is NULL).
   static wxExSTC* GetSTC() {
     return m_Dialog != NULL ? m_Dialog->GetSTC(): NULL;};
+    
+  /// Hides the dialog.
+  void HideDialog();
   
   /// Returns true if this process is running.
   bool IsRunning() const;
