@@ -131,9 +131,27 @@ bool wxExEx::Command(const wxString& command)
   }
   else if (command.StartsWith(":r"))
   {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_READ);
-    event.SetString(command.AfterFirst(' '));
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    wxString arg(command.AfterFirst(' '));
+    arg.Trim(false); // from left
+    
+    if (arg.StartsWith("!"))
+    {
+      if (m_Process == NULL)
+      {
+        m_Process = new wxExProcess;
+      }
+    
+      m_Process->Execute(arg.AfterFirst('!'));
+      m_Process->HideDialog();
+      
+      m_STC->AddText(m_Process->GetOutput());
+    }
+    else
+    {
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_READ);
+      event.SetString(arg);
+      wxPostEvent(wxTheApp->GetTopWindow(), event);
+    }
   }
   // e.g. set ts=4
   else if (command.StartsWith(":set "))

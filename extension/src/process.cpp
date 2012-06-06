@@ -252,6 +252,14 @@ long wxExProcess::Execute(
   }
 }
 
+void wxExProcess::HideDialog()
+{
+  if (m_Dialog != NULL)
+  {
+    m_Dialog->Hide();
+  }
+}
+
 bool wxExProcess::IsRunning() const
 {
   if (GetPid() <= 0)
