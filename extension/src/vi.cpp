@@ -467,8 +467,8 @@ bool wxExVi::Command(const wxString& command)
         
       case '~': ToggleCase(); break;
       case '$': GetSTC()->LineEnd(); break;
-      case '{': GetSTC()->ParaUp(); break;
-      case '}': GetSTC()->ParaDown(); break;
+      case '{': for (int i = 0; i < repeat; i++) GetSTC()->ParaUp(); break;
+      case '}': for (int i = 0; i < repeat; i++) GetSTC()->ParaDown(); break;
       case '%': GotoBrace(); break;
 
       case '*': FindWord(); break;
