@@ -141,7 +141,7 @@ bool wxExEx::Command(const wxString& command)
         m_Process = new wxExProcess;
       }
     
-      m_Process->Execute(arg.AfterFirst('!'));
+      m_Process->Execute(arg.AfterFirst('!'), wxEXEC_SYNC);
       m_Process->HideDialog();
       
       m_STC->AddText(m_Process->GetOutput());
