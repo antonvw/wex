@@ -19,11 +19,27 @@ class wxExEx;
 
 /// Offers the macro collection, and allows
 /// recording and playback to vi (ex) component.
+/// You can also use variables inside a macro (or in vi),
+/// these are expanded while playing back.
 class WXDLLIMPEXP_BASE wxExViMacros
 {
 public:  
+  /// Several type of variables are supported.
+  /// See xml file.
+  enum
+  {
+    VARIABLE_UNKNOWN,      ///< variable is not known
+    VARIABLE_CONFIG,       ///< a config variable
+    VARIABLE_ENVIRONMENT,  ///< an environment variable
+    VARIABLE_BUILTIN       ///< a builtin variable
+  };
+  
   /// Default constructor.
   wxExViMacros();
+  
+  /// Expands variable to ex component.
+  /// Returns true if variable could be expanded.
+  bool ExpandVariable(wxExEx* ex, const wxString& variable) const;
   
   /// Returns all macros (names) as an array of strings.
   const wxArrayString Get() const;
@@ -73,22 +89,29 @@ public:
   /// Returns the filename with xml document.
   static const wxFileName GetFileName();
   
-  /// Loads all macros from xml document.
+  /// Loads all macros (and variables) from xml document.
   /// Returns true if document is loaded (macros still can be empty).
   static bool LoadDocument();
   
-  /// Saves all macros to xml document.
+  /// Saves all macros (and variables) to xml document.
   /// If you set only_if_modified, then document is only saved
   /// if it was modified (if macros have been recorded since last save).
   /// Returns true if macros are saved.
   static bool SaveDocument(bool only_if_modified = true);
 private:  
+  bool ExpandVariableBuiltIn(
+    wxExEx* ex, const wxString& variable, wxString& expanded) const;
   static bool Load(wxXmlDocument& doc);
   static const wxString Encode(const wxString& text, bool& encoded);
   static const wxString Decode(const wxString& text);
     
   static bool m_IsModified;
+  
+  /// All macros, as a map of name and a vector of commands.
   static std::map <wxString, std::vector< wxString > > m_Macros;
+  
+  /// All variables, as a map of name and type.
+  static std::map<wxString, int> m_Variables;
   
   bool m_IsPlayback;
   bool m_IsRecording;

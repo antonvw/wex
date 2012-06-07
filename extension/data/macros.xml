@@ -3,11 +3,29 @@
 Name:      macros.xml
 Purpose:   vi macros for wxextension.
 Author:    Anton van Wezenbeek
-Copyright: (c) 2011, Anton van Wezenbeek
+Copyright: (c) 2012, Anton van Wezenbeek
 
 Each macro can have several commands, a 
 command is encoded if the content refers to a
 control character.  
+
+Variables are expanded when playing back the macro. Three
+types are supported:
+CONFIG:  expansion is done with value from the config
+BUILTIN: expansion is done using internal value
+ENVIRONMENT: expansion is done using environment value
 -->
+
 <macros>
+  <variable name = "AUTHOR" type = "CONFIG"/>
+  <variable name = "EMAIL" type = "CONFIG"/>
+  
+  <variable name = "CB" type = "BUILTIN"/>
+  <variable name = "CE" type = "BUILTIN"/>
+  <variable name = "DATE" type = "BUILTIN"/>
+  <variable name = "DATETIME" type = "BUILTIN"/>
+  <variable name = "TIME" type = "BUILTIN"/>
+  <variable name = "YEAR" type = "BUILTIN"/>
+  
+  <variable name = "HOME" type = "ENVIRONMENT"/>
 </macros>

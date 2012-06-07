@@ -265,7 +265,7 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
   {
     // If there is a Shell Language Indicator,
     // match with bash.
-    const wxRegEx re("#! */bin/.*");
+    const wxRegEx re("#!.*/bin/.*");
     
     if (re.Matches(text_lowercase))
     {

@@ -11,7 +11,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/defs.h>
@@ -35,8 +34,6 @@ wxExEx::wxExEx(wxExSTC* stc)
   , m_FindIndicator(0, 0)
 {
   wxASSERT(m_Frame != NULL);
-  
-  AddVariables();
 }
 
 wxExEx::~wxExEx()
@@ -45,13 +42,6 @@ wxExEx::~wxExEx()
   {
     delete m_Process;
   }
-}
-
-void wxExEx::AddVariables()
-{
-  m_Variables["PURPOSE"] =  wxConfigBase::Get()->Read("Purpose"); 
-  m_Variables["AUTHOR"] =  wxConfigBase::Get()->Read("Author"); 
-  m_Variables["LICENSE"] =  wxConfigBase::Get()->Read("License"); 
 }
 
 bool wxExEx::Command(const wxString& command)
@@ -221,25 +211,7 @@ bool wxExEx::Command(const wxString& command)
   }
   else
   {
-    wxRegEx re("%(A-Z+)%");
-    
-    if (re.Matches(command))
-    {
-      std::map<wxString, wxString>::const_iterator it = m_Variables.find(re.GetMatch(command, 1));
-    
-      if (it != m_Variables.end())
-      {
-        m_STC->AddText(it->second);
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else
-    {
-      result = CommandRange(command.AfterFirst(':'));
-    }
+    result = CommandRange(command.AfterFirst(':'));
   }
 
   if (result)

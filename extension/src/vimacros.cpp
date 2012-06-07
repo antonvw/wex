@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/stdpaths.h>
+#include <wx/utils.h>
 #include <wx/extension/vimacros.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/stc.h>
@@ -23,6 +24,84 @@ wxExViMacros::wxExViMacros()
   : m_IsRecording(false)
   , m_IsPlayback(false)
 {
+}
+
+bool wxExViMacros::ExpandVariable(wxExEx* ex, const wxString& variable) const
+{
+  std::map<wxString, int>::const_iterator it = m_Variables.find(variable);
+    
+  if (it == m_Variables.end())
+  {
+    return false;
+  }
+  
+  wxString text;
+  
+  switch (it->second)
+  {
+    case VARIABLE_UNKNOWN:
+      return false;
+      break;
+      
+    case VARIABLE_BUILTIN:
+      if (!ExpandVariableBuiltIn(ex, variable, text))
+      {
+        return false;
+      }
+      break;
+      
+    case VARIABLE_CONFIG:
+      text = wxConfigBase::Get()->Read(variable);
+      break;
+      
+    case VARIABLE_ENVIRONMENT:
+      if (!wxGetEnv(variable, &text))
+      {
+        return false;
+      }
+      break;
+      
+    default: wxFAIL; break;
+  }
+  
+  ex->GetSTC()->AddText(it->second);
+    
+  return true;
+}
+
+bool wxExViMacros::ExpandVariableBuiltIn(
+  wxExEx* ex, const wxString& variable, wxString& expanded) const
+{
+  if (variable == "CB")
+  {
+    expanded = ex->GetSTC()->GetLexer().GetCommentBegin();
+  }
+  if (variable == "CE")
+  {
+    expanded = ex->GetSTC()->GetLexer().GetCommentEnd();
+  }
+  if (variable == "DATE")
+  {
+    expanded = wxDateTime::Now().FormatISODate();
+  }
+  else if (variable == "DATETIME")
+  {
+    expanded = wxDateTime::Now().FormatISOCombined(' ');
+  }
+  else if (variable == "TIME")
+  {
+    expanded = wxDateTime::Now().FormatISOTime();
+  }
+  else if (variable == "YEAR")
+  {
+    expanded = wxDateTime::Now().Format("%Y");
+  }
+  else
+  {
+    return false;
+  }
+  
+  return true;
 }
 
 const wxString wxExViMacros::Decode(const wxString& text)
@@ -143,32 +222,67 @@ bool wxExViMacros::LoadDocument()
   // recordings.
   // We assume that this is your choice, so we reset the member.
   m_IsModified = false;
+  
   m_Macros.clear();
+  m_Variables.clear();
   
   wxXmlNode* root = doc.GetRoot();
   wxXmlNode* child = root->GetChildren();
   
   while (child)
   {
-    std::vector<wxString> v;
-      
-    wxXmlNode* command = child->GetChildren();
-  
-    while (command)
+    if (child->GetName() == "macro")
     {
-      if (command->GetAttribute("encoded", "false") == "true")
+      std::vector<wxString> v;
+      
+      wxXmlNode* command = child->GetChildren();
+  
+      while (command)
       {
-        v.push_back(Decode(command->GetNodeContent()));
+        if (command->GetAttribute("encoded", "false") == "true")
+        {
+          v.push_back(Decode(command->GetNodeContent()));
+        }
+        else
+        {
+          v.push_back(command->GetNodeContent());
+        }
+        
+        command = command->GetNext();
+      }
+      
+      m_Macros[child->GetAttribute("name")] = v;
+    }
+    else if (child->GetName() == "variable")
+    {
+      const wxString type = child->GetAttribute("type");
+      
+      int type_no = VARIABLE_NONE;
+      
+      if (type == "CONFIG")
+      {
+        type_no = VARIABLE_CONFIG;
+      }
+      else if (type == "ENVIRONMENT")
+      {
+        type_no = VARIABLE_ENVIRONMENT;
+      }
+      else if (type == "BUILTIN")
+      {
+        type_no = VARIABLE_BUILTIN;
+      }
+      
+      if (type_no != VARIABLE_NONE)
+      {
+        m_Variables[child->GetAttribute("name")] = type_no;
       }
       else
       {
-        v.push_back(command->GetNodeContent());
+        wxLogError(
+          "Variable on line: %d has unknown type: %s", 
+          child->GetLineNumber(), type.c_str());
       }
-        
-      command = command->GetNext();
     }
-      
-    m_Macros[child->GetAttribute("name")] = v;
       
     child = child->GetNext();
   }
@@ -297,6 +411,37 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
       {
         cmd->AddAttribute("encoded", "true");
       }
+    }
+  }
+  
+  for (
+    std::map< wxString, int >::reverse_iterator it2 = 
+      m_Variables.rbegin();
+    it2 != m_Variables.rend();
+    ++it2)
+  {
+    wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "variable");
+    element->AddAttribute("name", it2->first);
+    
+    switch (it2->second)
+    {
+      case VARIABLE_UNKNOWN:
+        wxFAIL;
+        break;
+      
+      case VARIABLE_CONFIG:
+        element->AddAttribute("type", "CONFIG");
+        break;
+      
+      case VARIABLE_ENVIRONMENT:
+        element->AddAttribute("type", "ENVIRONMENT");
+        break;
+      
+      case VARIABLE_BUILTIN:
+        element->AddAttribute("type", "BUILTIN");
+        break;
+      
+      default: wxFAIL; break;
     }
   }
   
