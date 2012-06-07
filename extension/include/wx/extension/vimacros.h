@@ -24,16 +24,6 @@ class wxExEx;
 class WXDLLIMPEXP_BASE wxExViMacros
 {
 public:  
-  /// Several type of variables are supported.
-  /// See xml file.
-  enum
-  {
-    VARIABLE_UNKNOWN,      ///< variable is not known
-    VARIABLE_CONFIG,       ///< a config variable
-    VARIABLE_ENVIRONMENT,  ///< an environment variable
-    VARIABLE_BUILTIN       ///< a builtin variable
-  };
-  
   /// Default constructor.
   wxExViMacros();
   
