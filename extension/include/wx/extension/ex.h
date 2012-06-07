@@ -53,6 +53,10 @@ public:
   /// Returns STC component.
   wxExSTC* GetSTC() {return m_STC;};
   
+  /// Expands a variable.
+  bool MacroExpandVariable(const wxString& variable) const {
+    return m_Macros.ExpandVariable(this, variable);};
+    
   /// A macro is being played back.
   bool MacroIsPlayback() const {
     return m_Macros.IsPlayback();};
@@ -138,7 +142,6 @@ protected:
   /// Yanks number of lines, starting at current line.
   void Yank(int lines);
 private:
-  void AddVariables();
   bool CommandGlobal(const wxString& search);
   bool CommandRange(const wxString& command);
   bool CommandSet(const wxString& command);
@@ -167,7 +170,6 @@ private:
   const wxExMarker m_MarkerSymbol;
 
   std::map<wxUniChar, int> m_Markers;
-  std::map<wxString, wxString> m_Variables;
   
   static wxString m_LastCommand;
   static wxExViMacros m_Macros;

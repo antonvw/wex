@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/regex.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/hexmode.h>
@@ -280,233 +281,37 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (!rest.empty())
   {
-    // Handle ESCAPE, should clear command buffer,
-    // as last char, so not in switch branch.
-    if (!m_Dot && rest.Last() == WXK_ESCAPE)
+    wxRegEx re("%(A-Z+)%");
+    
+    if (re.Matches(rest))
     {
-      wxBell();
-        
-      m_Command.clear();
-
-      if (!GetSTC()->GetSelectedText().empty())
-      {
-        GetSTC()->SetSelection(
-          GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
-      }
+      MacroExpandVariable(re.GetMatch(rest, 1));
     }
-    else switch ((int)rest.GetChar(0))
+    else
     {
-      case 'a': 
-      case 'i': 
-      case 'o': 
-      case 'A': 
-      case 'C': 
-      case 'I': 
-      case 'O': 
-        SetInsertMode(rest.GetChar(0), repeat); 
-        return InsertMode(rest.Mid(1));
-        break;
+      // Handle ESCAPE, should clear command buffer,
+      // as last char, so not in switch branch.
+      if (!m_Dot && rest.Last() == WXK_ESCAPE)
+      {
+        wxBell();
         
-      case 'b': for (int i = 0; i < repeat; i++) GetSTC()->WordLeft(); break;
+        m_Command.clear();
 
-      case 'e': for (int i = 0; i < repeat; i++) GetSTC()->WordRightEnd(); break;
-      
-      case 'g': GetSTC()->DocumentStart(); break;
-      
-      case 'h': 
-        for (int i = 0; i < repeat; i++) GetSTC()->CharLeft(); 
-        break;
-        
-      case 'j': 
-        for (int i = 0; i < repeat; i++) GetSTC()->LineDown(); 
-        break;
-        
-      case 'k': 
-        for (int i = 0; i < repeat; i++) GetSTC()->LineUp(); 
-        break;
-        
-      case 'l': 
-      case ' ': 
-        for (int i = 0; i < repeat; i++) GetSTC()->CharRight(); 
-        break;
-        
-      case 'n': 
-        for (int i = 0; i < repeat; i++) 
-          if (!GetSTC()->FindNext(
-            wxExFindReplaceData::Get()->GetFindString(), 
-            GetSearchFlags(), 
-            m_SearchForward)) break;
-        break;
-
-      case 'p': Put(true); break;
-      
-      case 'q': 
-        if (MacroIsRecording())
-        {
-          MacroStopRecording();
-        }
-        else
-        {
-          handled = false;
-        }
-        break;
-      
-      case 'u': 
-        if (GetSTC()->CanUndo())
-        {
-          GetSTC()->Undo();
-        }
-        else
-        {
-          wxBell();
-        }
-        break;
-      
-      case 'w': for (int i = 0; i < repeat; i++) GetSTC()->WordRight(); break;
-      
-      case 'x': 
-        if (GetSTC()->HexMode()) return false;
-        for (int i = 0; i < repeat; i++) 
-        {
-          GetSTC()->CharRight();
-          GetSTC()->DeleteBack(); 
-        }
-        GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
-        break;
-        
-      case 'y': 
         if (!GetSTC()->GetSelectedText().empty())
         {
-          GetSTC()->Copy();
-        } 
-        else
-        {
-          handled = false;
+          GetSTC()->SetSelection(
+            GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
         }
-        break;
-
-      case 'D': 
-        if (!GetSTC()->GetReadOnly())
-        {
-          GetSTC()->LineEndExtend();
-          GetSTC()->Cut();
-          }
-        break;
+      }
+      else
+      {
+        handled = CommandChar((int)rest.GetChar(0));
         
-      case 'G': 
-        if (repeat > 1)
+        if (m_InsertMode)
         {
-          GetSTC()->GotoLine(repeat - 1);
+          InsertMode(rest.Mid(1));
         }
-        else
-        {
-          GetSTC()->DocumentEnd();
-        }
-        break;
-        
-      case 'H': GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine());
-        break;
-        
-      case 'J':
-        GetSTC()->BeginUndoAction();
-        GetSTC()->SetTargetStart(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));
-        GetSTC()->SetTargetEnd(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine() + repeat));
-        GetSTC()->LinesJoin();
-        GetSTC()->EndUndoAction();
-        break;
-        
-      case 'L': GetSTC()->GotoLine(
-        GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen()); 
-        break;
-        
-      case 'M': GetSTC()->GotoLine(
-        GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() / 2);
-        break;
-        
-      case 'N': 
-        for (int i = 0; i < repeat; i++) 
-          if (!GetSTC()->FindNext(
-            wxExFindReplaceData::Get()->GetFindString(), 
-            GetSearchFlags(), 
-            !m_SearchForward)) break;
-        break;
-        
-      case 'P': Put(false); break;
-      
-      case 'R': 
-        SetInsertMode(rest.GetChar(0), repeat); 
-        return InsertMode(rest.Mid(1));
-        break;
-
-      case 'X': 
-        if (GetSTC()->HexMode()) return false;
-        for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack(); break;
-
-      case '.': 
-        m_Dot = true;
-        Command(GetLastCommand());
-        m_Dot = false;
-        break;
-        
-      case ';': 
-        m_Dot = true;
-        Command(m_LastFindCharCommand); 
-        m_Dot = false;
-        break;
-        
-      case '^': 
-        if (rest.length() == 1)
-        {
-          GetSTC()->Home(); 
-        }
-        else
-        {
-          handled = false;
-        }
-        break;
-        
-      case '~': ToggleCase(); break;
-      case '$': GetSTC()->LineEnd(); break;
-      case '{': for (int i = 0; i < repeat; i++) GetSTC()->ParaUp(); break;
-      case '}': for (int i = 0; i < repeat; i++) GetSTC()->ParaDown(); break;
-      case '%': GotoBrace(); break;
-
-      case '*': FindWord(); break;
-      case '#': FindWord(false); break;
-      
-      case WXK_CONTROL_B:
-        for (int i = 0; i < repeat; i++) GetSTC()->PageUp(); 
-        break;
-      case WXK_CONTROL_E: 
-        for (int i = 0; i < repeat; i++) ChangeNumber(true); 
-        break;
-      case WXK_CONTROL_F:
-        for (int i = 0; i < repeat; i++) GetSTC()->PageDown(); 
-        break;
-      case WXK_CONTROL_J: 
-        for (int i = 0; i < repeat; i++) ChangeNumber(false); 
-        break;
-      case WXK_CONTROL_P: // (^y is not possible, already redo accel key)
-        for (int i = 0; i < repeat; i++) GetSTC()->LineScrollUp(); 
-        break;
-      case WXK_CONTROL_Q: // (^n is not possible, already new doc accel key)
-        for (int i = 0; i < repeat; i++) GetSTC()->LineScrollDown(); 
-        break;
-        
-      case WXK_BACK:
-        GetSTC()->DeleteBack();
-        break;
-      
-      case WXK_RETURN:
-        for (int i = 0; i < repeat; i++) GetSTC()->LineDown();
-        break;
-    
-      case WXK_TAB:
-        // just ignore tab
-        break;
-      
-      default:
-        handled = false;
+      }
     }
   }
   else
@@ -532,6 +337,211 @@ bool wxExVi::Command(const wxString& command)
     MacroRecord(command);
   }
     
+  return true;
+}
+
+bool wxExVi::CommandChar(int c)
+{
+  switch (c)
+  {
+    case 'a': 
+    case 'i': 
+    case 'o': 
+    case 'A': 
+    case 'C': 
+    case 'I': 
+    case 'O': 
+    case 'R': 
+      SetInsertMode(c, repeat); 
+      break;
+        
+    case 'b': for (int i = 0; i < repeat; i++) GetSTC()->WordLeft(); break;
+
+    case 'e': for (int i = 0; i < repeat; i++) GetSTC()->WordRightEnd(); break;
+      
+    case 'g': GetSTC()->DocumentStart(); break;
+      
+    case 'h': 
+      for (int i = 0; i < repeat; i++) GetSTC()->CharLeft(); 
+      break;
+        
+    case 'j': 
+      for (int i = 0; i < repeat; i++) GetSTC()->LineDown(); 
+      break;
+        
+    case 'k': 
+      for (int i = 0; i < repeat; i++) GetSTC()->LineUp(); 
+      break;
+        
+    case 'l': 
+    case ' ': 
+      for (int i = 0; i < repeat; i++) GetSTC()->CharRight(); 
+      break;
+        
+    case 'n': 
+      for (int i = 0; i < repeat; i++) 
+        if (!GetSTC()->FindNext(
+          wxExFindReplaceData::Get()->GetFindString(), 
+          GetSearchFlags(), 
+          m_SearchForward)) break;
+      break;
+
+    case 'p': Put(true); break;
+      
+    case 'q': 
+      if (MacroIsRecording())
+      {
+        MacroStopRecording();
+      }
+      else
+      {
+        return false;
+      }
+      break;
+      
+    case 'u': 
+      if (GetSTC()->CanUndo())
+      {
+        GetSTC()->Undo();
+      }
+      else
+      {
+        wxBell();
+      }
+      break;
+      
+    case 'w': for (int i = 0; i < repeat; i++) GetSTC()->WordRight(); break;
+      
+    case 'x': 
+      if (GetSTC()->HexMode()) return false;
+      for (int i = 0; i < repeat; i++) 
+      {
+        GetSTC()->CharRight();
+        GetSTC()->DeleteBack(); 
+      }
+      GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
+      break;
+        
+    case 'y': 
+      if (!GetSTC()->GetSelectedText().empty())
+      {
+        GetSTC()->Copy();
+      } 
+      else
+      {
+        return false;
+      }
+      break;
+
+    case 'D': 
+      if (!GetSTC()->GetReadOnly())
+      {
+        GetSTC()->LineEndExtend();
+        GetSTC()->Cut();
+        }
+      break;
+        
+    case 'G': 
+      if (repeat > 1)
+      {
+        GetSTC()->GotoLine(repeat - 1);
+      }
+      else
+      {
+        GetSTC()->DocumentEnd();
+      }
+      break;
+        
+    case 'H': GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine());
+      break;
+        
+    case 'J':
+      GetSTC()->BeginUndoAction();
+      GetSTC()->SetTargetStart(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));
+      GetSTC()->SetTargetEnd(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine() + repeat));
+      GetSTC()->LinesJoin();
+      GetSTC()->EndUndoAction();
+      break;
+        
+    case 'L': GetSTC()->GotoLine(
+      GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen()); 
+      break;
+        
+    case 'M': GetSTC()->GotoLine(
+      GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() / 2);
+      break;
+        
+    case 'N': 
+      for (int i = 0; i < repeat; i++) 
+        if (!GetSTC()->FindNext(
+          wxExFindReplaceData::Get()->GetFindString(), 
+          GetSearchFlags(), 
+          !m_SearchForward)) break;
+      break;
+        
+    case 'P': Put(false); break;
+      
+    case 'X': 
+      if (GetSTC()->HexMode()) return false;
+      for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack(); break;
+
+    case '.': 
+      m_Dot = true;
+      Command(GetLastCommand());
+      m_Dot = false;
+      break;
+        
+    case ';': 
+      m_Dot = true;
+      Command(m_LastFindCharCommand); 
+      m_Dot = false;
+      break;
+        
+    case '^': GetSTC()->Home(); break;
+    case '~': ToggleCase(); break;
+    case '$': GetSTC()->LineEnd(); break;
+    case '{': for (int i = 0; i < repeat; i++) GetSTC()->ParaUp(); break;
+    case '}': for (int i = 0; i < repeat; i++) GetSTC()->ParaDown(); break;
+    case '%': GotoBrace(); break;
+
+    case '*': FindWord(); break;
+    case '#': FindWord(false); break;
+      
+    case WXK_CONTROL_B:
+      for (int i = 0; i < repeat; i++) GetSTC()->PageUp(); 
+      break;
+    case WXK_CONTROL_E: 
+      for (int i = 0; i < repeat; i++) ChangeNumber(true); 
+      break;
+    case WXK_CONTROL_F:
+      for (int i = 0; i < repeat; i++) GetSTC()->PageDown(); 
+      break;
+    case WXK_CONTROL_J: 
+      for (int i = 0; i < repeat; i++) ChangeNumber(false); 
+      break;
+    case WXK_CONTROL_P: // (^y is not possible, already redo accel key)
+      for (int i = 0; i < repeat; i++) GetSTC()->LineScrollUp(); 
+      break;
+    case WXK_CONTROL_Q: // (^n is not possible, already new doc accel key)
+      for (int i = 0; i < repeat; i++) GetSTC()->LineScrollDown(); 
+      break;
+        
+    case WXK_BACK:
+      GetSTC()->DeleteBack();
+      break;
+      
+    case WXK_RETURN:
+      for (int i = 0; i < repeat; i++) GetSTC()->LineDown();
+      break;
+    
+    case WXK_TAB:
+      // just ignore tab
+      break;
+      
+    default:
+      return false;
+  }
+  
   return true;
 }
 

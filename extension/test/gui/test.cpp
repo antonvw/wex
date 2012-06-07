@@ -610,10 +610,28 @@ void wxExGuiTestFixture::testLexers()
 
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByFileName(
     wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");
+    
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
     "cpp").GetScintillaLexer() == "cpp");
+    
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
     "// this is a cpp comment text").GetScintillaLexer() == "cpp");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#! /bin/csh").GetScintillaLexer() == "bash");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#!/bin/csh").GetScintillaLexer() == "bash");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#!/usr/bin/csh").GetScintillaLexer() == "bash");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "<html>").GetScintillaLexer() == "hypertext");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "<?xml").GetScintillaLexer() == "xml");
+    
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
     "xxx").GetScintillaLexer().empty());
     
@@ -1569,7 +1587,8 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( stc->GetText().Contains(
     "the chances of anything coming from mars"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("mathe"));
-  
+ 
+  // Macro test.
   stc->SetText("this text contains xx");
   CPPUNIT_ASSERT( vi->Command("qt"));
   CPPUNIT_ASSERT( vi->Command("/xx"));
@@ -1580,6 +1599,19 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("@@"));
   CPPUNIT_ASSERT( vi->Command("."));
   CPPUNIT_ASSERT( vi->Command("10@t"));
+  
+  // Variable test.
+  stc->SetText("");
+  CPPUNIT_ASSERT( vi->Command("%DATE%"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("DATE"));
+  stc->SetText("");
+  CPPUNIT_ASSERT( vi->Command("%YEAR%"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("20"));
+  CPPUNIT_ASSERT(!vi->Command("%xxx%"));
+  stc->SetText("");
+  CPPUNIT_ASSERT( vi->Command("%CB%"));
+  CPPUNIT_ASSERT( vi->Command("%CE%"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("//"));
   
   // Test illegal command.
   CPPUNIT_ASSERT(!vi->Command("dx"));
@@ -1650,6 +1682,20 @@ void wxExGuiTestFixture::testViMacros()
   macros.StopRecording();
   
   CPPUNIT_ASSERT( macros.Playback(vi, "a"));
+  
+  // Variables.
+  CPPUNIT_ASSERT(!macros.ExpandVariable("xxx"));
+  
+  CPPUNIT_ASSERT( macros.ExpandVariable("AUTHOR"));
+  
+  CPPUNIT_ASSERT( macros.ExpandVariable("CB"));
+  CPPUNIT_ASSERT( macros.ExpandVariable("CE"));
+  CPPUNIT_ASSERT( macros.ExpandVariable("DATE"));
+  CPPUNIT_ASSERT( macros.ExpandVariable("DATETIME"));
+  CPPUNIT_ASSERT( macros.ExpandVariable("TIME"));
+  CPPUNIT_ASSERT( macros.ExpandVariable("YEAR"));
+  
+  CPPUNIT_ASSERT( macros.ExpandVariable("HOME"));
 
   // So save as last test.
   CPPUNIT_ASSERT( macros.SaveDocument());
