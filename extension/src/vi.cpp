@@ -279,38 +279,41 @@ bool wxExVi::Command(const wxString& command)
   {
     MacroPlayback(rest.Last(), repeat);
   }
-  else if (!rest.empty())
+  else if (rest.StartsWith("@"))
   {
-    wxRegEx re("%(A-Z+)%");
+    wxRegEx re("@([A-Z]+)@");
     
     if (re.Matches(rest))
     {
-      MacroExpandVariable(re.GetMatch(rest, 1));
+      MacroExpand(re.GetMatch(rest, 1));
+    }
+    
+    return false;
+  }
+  else if (!rest.empty())
+  {
+    // Handle ESCAPE, should clear command buffer,
+    // as last char, so not in switch branch.
+    if (!m_Dot && rest.Last() == WXK_ESCAPE)
+    {
+      wxBell();
+        
+      m_Command.clear();
+
+      if (!GetSTC()->GetSelectedText().empty())
+      {
+        GetSTC()->SetSelection(
+          GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
+      }
     }
     else
     {
-      // Handle ESCAPE, should clear command buffer,
-      // as last char, so not in switch branch.
-      if (!m_Dot && rest.Last() == WXK_ESCAPE)
-      {
-        wxBell();
+      handled = CommandChar((int)rest.GetChar(0), repeat);
         
-        m_Command.clear();
-
-        if (!GetSTC()->GetSelectedText().empty())
-        {
-          GetSTC()->SetSelection(
-            GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
-        }
-      }
-      else
+      if (m_InsertMode)
       {
-        handled = CommandChar((int)rest.GetChar(0));
-        
-        if (m_InsertMode)
-        {
-          InsertMode(rest.Mid(1));
-        }
+        InsertMode(rest.Mid(1));
+        return true;
       }
     }
   }
@@ -340,7 +343,7 @@ bool wxExVi::Command(const wxString& command)
   return true;
 }
 
-bool wxExVi::CommandChar(int c)
+bool wxExVi::CommandChar(int c, int repeat)
 {
   switch (c)
   {
@@ -352,7 +355,7 @@ bool wxExVi::CommandChar(int c)
     case 'I': 
     case 'O': 
     case 'R': 
-      SetInsertMode(c, repeat); 
+      SetInsertMode((char)c, repeat); 
       break;
         
     case 'b': for (int i = 0; i < repeat; i++) GetSTC()->WordLeft(); break;

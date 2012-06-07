@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/stdpaths.h>
 #include <wx/utils.h>
 #include <wx/extension/vimacros.h>
@@ -22,13 +23,15 @@
 enum
 {
   VARIABLE_UNKNOWN,      ///< variable is not known
+  VARIABLE_BUILTIN,      ///< a builtin variable
   VARIABLE_CONFIG,       ///< a config variable
   VARIABLE_ENVIRONMENT,  ///< an environment variable
-  VARIABLE_BUILTIN       ///< a builtin variable
+  VARIABLE_INPUT         ///< input from user
 };
 
 bool wxExViMacros::m_IsModified = false;
 std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
+std::map <wxString, int > wxExViMacros::m_Variables;
 
 wxExViMacros::wxExViMacros()
   : m_IsRecording(false)
@@ -36,7 +39,7 @@ wxExViMacros::wxExViMacros()
 {
 }
 
-bool wxExViMacros::ExpandVariable(wxExEx* ex, const wxString& variable) const
+bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable) const
 {
   std::map<wxString, int>::const_iterator it = m_Variables.find(variable);
     
@@ -54,7 +57,7 @@ bool wxExViMacros::ExpandVariable(wxExEx* ex, const wxString& variable) const
       break;
       
     case VARIABLE_BUILTIN:
-      if (!ExpandVariableBuiltIn(ex, variable, text))
+      if (!ExpandBuiltIn(ex, variable, text))
       {
         return false;
       }
@@ -71,32 +74,48 @@ bool wxExViMacros::ExpandVariable(wxExEx* ex, const wxString& variable) const
       }
       break;
       
+    case VARIABLE_INPUT:
+      {
+        const wxString str = wxGetTextFromUser(variable);
+         
+        if (str.empty())
+        {
+          return false;
+        }
+        
+        text = str;
+      }
+      break;
     default: wxFAIL; break;
   }
   
-  ex->GetSTC()->AddText(it->second);
+  ex->GetSTC()->AddText(text);
     
   return true;
 }
 
-bool wxExViMacros::ExpandVariableBuiltIn(
+bool wxExViMacros::ExpandBuiltIn(
   wxExEx* ex, const wxString& variable, wxString& expanded) const
 {
   if (variable == "CB")
   {
     expanded = ex->GetSTC()->GetLexer().GetCommentBegin();
   }
-  if (variable == "CE")
+  else if (variable == "CE")
   {
     expanded = ex->GetSTC()->GetLexer().GetCommentEnd();
   }
-  if (variable == "DATE")
+  else if (variable == "DATE")
   {
     expanded = wxDateTime::Now().FormatISODate();
   }
   else if (variable == "DATETIME")
   {
     expanded = wxDateTime::Now().FormatISOCombined(' ');
+  }
+  else if (variable == "FILENAME")
+  {
+    expanded = ex->GetSTC()->GetFileName().GetFullName();
   }
   else if (variable == "TIME")
   {
@@ -267,9 +286,13 @@ bool wxExViMacros::LoadDocument()
     {
       const wxString type = child->GetAttribute("type");
       
-      int type_no = VARIABLE_NONE;
+      int type_no = VARIABLE_UNKNOWN;
       
-      if (type == "CONFIG")
+      if (type == "BUILTIN")
+      {
+        type_no = VARIABLE_BUILTIN;
+      }
+      else if (type == "CONFIG")
       {
         type_no = VARIABLE_CONFIG;
       }
@@ -277,12 +300,12 @@ bool wxExViMacros::LoadDocument()
       {
         type_no = VARIABLE_ENVIRONMENT;
       }
-      else if (type == "BUILTIN")
+      else if (type == "INPUT")
       {
-        type_no = VARIABLE_BUILTIN;
+        type_no = VARIABLE_INPUT;
       }
       
-      if (type_no != VARIABLE_NONE)
+      if (type_no != VARIABLE_UNKNOWN)
       {
         m_Variables[child->GetAttribute("name")] = type_no;
       }
@@ -439,6 +462,10 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
         wxFAIL;
         break;
       
+      case VARIABLE_BUILTIN:
+        element->AddAttribute("type", "BUILTIN");
+        break;
+      
       case VARIABLE_CONFIG:
         element->AddAttribute("type", "CONFIG");
         break;
@@ -447,8 +474,8 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
         element->AddAttribute("type", "ENVIRONMENT");
         break;
       
-      case VARIABLE_BUILTIN:
-        element->AddAttribute("type", "BUILTIN");
+      case VARIABLE_INPUT:
+        element->AddAttribute("type", "INPUT");
         break;
       
       default: wxFAIL; break;

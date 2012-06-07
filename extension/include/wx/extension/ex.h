@@ -54,8 +54,8 @@ public:
   wxExSTC* GetSTC() {return m_STC;};
   
   /// Expands a variable.
-  bool MacroExpandVariable(const wxString& variable) const {
-    return m_Macros.ExpandVariable(this, variable);};
+  bool MacroExpand(const wxString& variable) {
+    return m_Macros.Expand(this, variable);};
     
   /// A macro is being played back.
   bool MacroIsPlayback() const {

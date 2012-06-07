@@ -630,7 +630,7 @@ void wxExGuiTestFixture::testLexers()
     "<html>").GetScintillaLexer() == "hypertext");
     
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "<?xml").GetScintillaLexer() == "xml");
+    "<?xml").GetScintillaLexer() == "hypertext");
     
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
     "xxx").GetScintillaLexer().empty());
@@ -1602,15 +1602,15 @@ void wxExGuiTestFixture::testVi()
   
   // Variable test.
   stc->SetText("");
-  CPPUNIT_ASSERT( vi->Command("%DATE%"));
+  CPPUNIT_ASSERT( vi->Command("@DATE@"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("DATE"));
   stc->SetText("");
-  CPPUNIT_ASSERT( vi->Command("%YEAR%"));
+  CPPUNIT_ASSERT( vi->Command("@YEAR@"));
   CPPUNIT_ASSERT( stc->GetText().Contains("20"));
   CPPUNIT_ASSERT(!vi->Command("%xxx%"));
   stc->SetText("");
-  CPPUNIT_ASSERT( vi->Command("%CB%"));
-  CPPUNIT_ASSERT( vi->Command("%CE%"));
+  CPPUNIT_ASSERT( vi->Command("@CB@"));
+  CPPUNIT_ASSERT( vi->Command("@CE@"));
   CPPUNIT_ASSERT( stc->GetText().Contains("//"));
   
   // Test illegal command.
@@ -1684,18 +1684,18 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT( macros.Playback(vi, "a"));
   
   // Variables.
-  CPPUNIT_ASSERT(!macros.ExpandVariable("xxx"));
+  CPPUNIT_ASSERT(!macros.Expand(vi, "xxx"));
   
-  CPPUNIT_ASSERT( macros.ExpandVariable("AUTHOR"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "AUTHOR"));
   
-  CPPUNIT_ASSERT( macros.ExpandVariable("CB"));
-  CPPUNIT_ASSERT( macros.ExpandVariable("CE"));
-  CPPUNIT_ASSERT( macros.ExpandVariable("DATE"));
-  CPPUNIT_ASSERT( macros.ExpandVariable("DATETIME"));
-  CPPUNIT_ASSERT( macros.ExpandVariable("TIME"));
-  CPPUNIT_ASSERT( macros.ExpandVariable("YEAR"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "CB"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "CE"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "DATE"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "DATETIME"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "TIME"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "YEAR"));
   
-  CPPUNIT_ASSERT( macros.ExpandVariable("HOME"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "HOME"));
 
   // So save as last test.
   CPPUNIT_ASSERT( macros.SaveDocument());

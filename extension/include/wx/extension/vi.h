@@ -42,7 +42,7 @@ public:
   bool OnKeyDown(const wxKeyEvent& event);
 private:
   bool ChangeNumber(bool inc);
-  bool CommandChar(int c);
+  bool CommandChar(int c, int repeat);
   void FindWord(bool find_next = true);
   void GotoBrace();
   bool Indent(
