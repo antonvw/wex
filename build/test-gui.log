@@ -1,10 +1,17 @@
-................adding 750 items in: 4176 milliseconds
-sorting 750 items in: 2135 milliseconds
-................matching 193 items in: 7603 microseconds
-replacing 194 items in: 21510 microseconds
-.......
+................adding 750 items in: 4440 milliseconds
+sorting 750 items in: 2149 milliseconds
+................matching 193 items in: 7664 microseconds
+replacing 194 items in: 22000 microseconds
+......F.
 
 
-OK (39 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  39   Failures: 1   Errors: 0
+
+
+1) test: testVi (F) line: 1605 ../extension/test/gui/test.cpp
+assertion failed
+- Expression: vi->Command("@DATE@")
 
 

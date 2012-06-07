@@ -29,7 +29,7 @@ public:
   
   /// Expands variable to ex component.
   /// Returns true if variable could be expanded.
-  bool ExpandVariable(wxExEx* ex, const wxString& variable) const;
+  bool Expand(wxExEx* ex, const wxString& variable) const;
   
   /// Returns all macros (names) as an array of strings.
   const wxArrayString Get() const;
@@ -89,7 +89,7 @@ public:
   /// Returns true if macros are saved.
   static bool SaveDocument(bool only_if_modified = true);
 private:  
-  bool ExpandVariableBuiltIn(
+  bool ExpandBuiltIn(
     wxExEx* ex, const wxString& variable, wxString& expanded) const;
   static bool Load(wxXmlDocument& doc);
   static const wxString Encode(const wxString& text, bool& encoded);

@@ -24,8 +24,14 @@ ENVIRONMENT: expansion is done using environment value
   <variable name = "CE" type = "BUILTIN"/>
   <variable name = "DATE" type = "BUILTIN"/>
   <variable name = "DATETIME" type = "BUILTIN"/>
+  <variable name = "FILENAME" type = "BUILTIN"/>
   <variable name = "TIME" type = "BUILTIN"/>
   <variable name = "YEAR" type = "BUILTIN"/>
   
   <variable name = "HOME" type = "ENVIRONMENT"/>
+  
+  <variable name = "PURPOSE" type = "INPUT"/>
+  
+  <macro name = "header">
+  </macro>
 </macros>
