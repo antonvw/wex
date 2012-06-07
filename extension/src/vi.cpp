@@ -281,14 +281,16 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (rest.StartsWith("@"))
   {
-    wxRegEx re("@([A-Z]+)@");
+    std::vector <wxString> v;
     
-    if (re.Matches(rest))
+    if (wxExMatch("@(.+)@", rest, v) > 0)
     {
-      MacroExpand(re.GetMatch(rest, 1));
+      MacroExpand(v[0]));
     }
-    
-    return false;
+    else
+    {
+      return false;
+    }
   }
   else if (!rest.empty())
   {
