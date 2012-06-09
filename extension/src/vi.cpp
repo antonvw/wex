@@ -277,7 +277,14 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (OneLetterAfter("@", rest))
   {
-    MacroPlayback(rest.Last(), repeat);
+    if (MacroIsRecorded(rest.Last()))
+    {
+      MacroPlayback(rest.Last(), repeat);
+    }
+    else
+    {
+      return false;
+    }
   }
   else if (rest.StartsWith("@"))
   {
@@ -285,7 +292,14 @@ bool wxExVi::Command(const wxString& command)
     
     if (wxExMatch("@(.+)@", rest, v) > 0)
     {
-      MacroExpand(v[0]));
+      if (MacroIsRecorded(v[0]))
+      {
+        MacroPlayback(v[0], repeat);
+      }
+      else
+      {
+        MacroExpand(v[0]);
+      }
     }
     else
     {
