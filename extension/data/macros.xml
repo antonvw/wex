@@ -15,23 +15,55 @@ CONFIG:  expansion is done with value from the config
 BUILTIN: expansion is done using internal value
 ENVIRONMENT: expansion is done using environment value
 -->
-
 <macros>
-  <variable name = "AUTHOR" type = "CONFIG"/>
-  <variable name = "EMAIL" type = "CONFIG"/>
-  
-  <variable name = "CB" type = "BUILTIN"/>
-  <variable name = "CE" type = "BUILTIN"/>
-  <variable name = "DATE" type = "BUILTIN"/>
-  <variable name = "DATETIME" type = "BUILTIN"/>
-  <variable name = "FILENAME" type = "BUILTIN"/>
-  <variable name = "TIME" type = "BUILTIN"/>
-  <variable name = "YEAR" type = "BUILTIN"/>
-  
-  <variable name = "HOME" type = "ENVIRONMENT"/>
-  
-  <variable name = "PURPOSE" type = "INPUT"/>
-  
-  <macro name = "header">
+  <variable name="AUTHOR" type="CONFIG"/>
+  <variable name="CB" type="BUILTIN"/>
+  <variable name="CE" type="BUILTIN"/>
+  <variable name="CL" type="BUILTIN"/>
+  <variable name="DATE" type="BUILTIN"/>
+  <variable name="DATETIME" type="BUILTIN"/>
+  <variable name="EMAIL" type="CONFIG"/>
+  <variable name="FILENAME" type="BUILTIN"/>
+  <variable name="HOME" type="ENVIRONMENT"/>
+  <variable name="PURPOSE" type="INPUT"/>
+  <variable name="TIME" type="BUILTIN"/>
+  <variable name="YEAR" type="BUILTIN"/>
+  <macro name="hdr">
+    <command>:1</command>
+    <command>O</command>
+    <command encoded="true">27</command>
+    <command>@CL@</command>
+    <command>o</command>
+    <command encoded="true">27</command>
+    <command>@CB@</command>
+    <command>i Name:      </command>
+    <command encoded="true">27</command>
+    <command>@FILENAME@</command>
+    <command>o</command>
+    <command encoded="true">27</command>
+    <command>@CB@</command>
+    <command>i Purpose:   </command>
+    <command encoded="true">27</command>
+    <command>@PURPOSE@</command>
+    <command>o</command>
+    <command encoded="true">27</command>
+    <command>@CB@</command>
+    <command>i Author:    </command>
+    <command encoded="true">27</command>
+    <command>@AUTHOR@</command>
+    <command>o</command>
+    <command encoded="true">27</command>
+    <command>@CB@</command>
+    <command>i Copyright: (c) </command>
+    <command encoded="true">27</command>
+    <command>@YEAR@</command>
+    <command>i </command>
+    <command encoded="true">27</command>
+    <command>@AUTHOR@</command>
+    <command>o</command>
+    <command encoded="true">27</command>
+    <command>@CL@</command>
+    <command>o</command>
+    <command encoded="true">27</command>
   </macro>
 </macros>

@@ -39,12 +39,42 @@ wxExViMacros::wxExViMacros()
 {
 }
 
+const wxString wxExViMacros::Decode(const wxString& text)
+{
+  long c;
+  
+  if (text.ToLong(&c))
+  {
+    return char(c);
+  }
+  
+  return text;
+}
+    
+const wxString wxExViMacros::Encode(const wxString& text, bool& encoded)
+{
+  if (text.length() == 1)
+  {
+    int c = text[0];
+  
+    // Encode control characters, and whitespace.
+    if (iscntrl(c) || isspace(c))
+    {
+      encoded = true;
+      return wxString::Format("%d", c);
+    }
+  }
+
+  return text;  
+}
+
 bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable) const
 {
   std::map<wxString, int>::const_iterator it = m_Variables.find(variable);
     
   if (it == m_Variables.end())
   {
+    wxLogStatus(_("Unknown macro") + ": "  +  variable);
     return false;
   }
   
@@ -64,7 +94,10 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable) const
       break;
       
     case VARIABLE_CONFIG:
-      text = wxConfigBase::Get()->Read(variable);
+      if (!wxConfigBase::Get()->Read(variable, &text))
+      {
+        return false;
+      }
       break;
       
     case VARIABLE_ENVIRONMENT:
@@ -105,6 +138,10 @@ bool wxExViMacros::ExpandBuiltIn(
   {
     expanded = ex->GetSTC()->GetLexer().GetCommentEnd();
   }
+  else if (variable == "CL")
+  {
+    expanded = ex->GetSTC()->GetLexer().MakeComment(wxEmptyString, false);
+  }
   else if (variable == "DATE")
   {
     expanded = wxDateTime::Now().FormatISODate();
@@ -131,35 +168,6 @@ bool wxExViMacros::ExpandBuiltIn(
   }
   
   return true;
-}
-
-const wxString wxExViMacros::Decode(const wxString& text)
-{
-  long c;
-  
-  if (text.ToLong(&c))
-  {
-    return char(c);
-  }
-  
-  return text;
-}
-    
-const wxString wxExViMacros::Encode(const wxString& text, bool& encoded)
-{
-  if (text.length() == 1)
-  {
-    int c = text[0];
-  
-    // Encode control characters, and whitespace.
-    if (iscntrl(c) || isspace(c))
-    {
-      encoded = true;
-      return wxString::Format("%d", c);
-    }
-  }
-
-  return text;  
 }
 
 const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
@@ -327,7 +335,7 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
 {
   if (!IsRecorded(macro) || macro.empty())
   {
-    wxLogStatus(_("Unknown macro"));
+    wxLogStatus(_("Unknown macro") + ": "  +  macro);
     return false;
   }
   
