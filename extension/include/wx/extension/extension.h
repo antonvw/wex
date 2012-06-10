@@ -22,7 +22,6 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/grid.h>
-#include <wx/extension/header.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexer.h>

@@ -433,29 +433,6 @@ void wxExGuiTestFixture::testGrid()
   grid->UseDragAndDrop(false);
 }
 
-void wxExGuiTestFixture::testHeader()
-{
-  wxExFileName filename(TEST_FILE);
-  wxExHeader header;
-  header.Set("hello test", "AvW");
-  CPPUNIT_ASSERT(!header.InfoNeeded());
-  
-  const wxString str = header.Get(&filename);
-  
-  CPPUNIT_ASSERT(!str.empty());
-  CPPUNIT_ASSERT( str.Contains("hello test"));
-  CPPUNIT_ASSERT( str.Contains("AvW"));
-  CPPUNIT_ASSERT( str.Contains("Name"));
-  CPPUNIT_ASSERT( str.Contains("Purpose"));
-  CPPUNIT_ASSERT( str.Contains("Author"));
-  CPPUNIT_ASSERT( str.Contains("Copyright"));
-  
-  wxExFileName newfile("XXXXXXX");
-  wxExHeader newheader;
-  newheader.Set("hello test", "AvW");
-  const wxString newstr = newheader.Get(&newfile);
-}
-
 void wxExGuiTestFixture::testHexMode()
 {
   // 0000000000111111111222222222233333333334444444444555555555566666666666
@@ -1750,10 +1727,6 @@ wxExAppTestSuite::wxExAppTestSuite()
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testGrid",
     &wxExGuiTestFixture::testGrid));
-    
-  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
-    "testHeader",
-    &wxExGuiTestFixture::testHeader));
     
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testHexMode",

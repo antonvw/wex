@@ -18,7 +18,6 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/header.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexers.h>
@@ -157,31 +156,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   {
     Open(stc.m_File.GetFileName(), -1, wxEmptyString, GetFlags());
   }
-}
-
-void wxExSTC::AddHeader()
-{
-  const wxString sel = GetSelectedText();
-  const wxExHeader header(sel);
-  
-  if (sel.empty() || header.InfoNeeded())
-  {
-    if (header.ShowDialog(this) == wxID_CANCEL)
-    {
-      return;
-    }
-  }
-
-  if (m_Lexer.GetScintillaLexer() == "hypertext")
-  {
-    GotoLine(1);
-  }
-  else
-  {
-    DocumentStart();
-  }
-  
-  AddText(header.Get(&GetFile().GetFileName()));
 }
 
 void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
@@ -1343,7 +1317,7 @@ void wxExSTC::Initialize()
 
   UsePopUp(false); // we have our own
 
-  const int accels = 21; // take max number of entries
+  const int accels = 20; // take max number of entries
   wxAcceleratorEntry entries[accels];
 
   int i = 0;
@@ -1352,7 +1326,6 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_CTRL, (int)'Y', wxID_REDO);
   entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
   entries[i++].Set(wxACCEL_CTRL, (int)'K', ID_EDIT_CONTROL_CHAR);
-  entries[i++].Set(wxACCEL_CTRL, (int)'T', ID_EDIT_HEADER);
   entries[i++].Set(wxACCEL_CTRL, '=', ID_EDIT_ZOOM_IN);
   entries[i++].Set(wxACCEL_CTRL, '-', ID_EDIT_ZOOM_OUT);
   entries[i++].Set(wxACCEL_CTRL, '9', ID_EDIT_MARKER_NEXT);
@@ -1558,8 +1531,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
   case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
   case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
-  
-  case ID_EDIT_HEADER: AddHeader(); break;
   
   case ID_EDIT_HEX: Reload(m_Flags ^ STC_WIN_HEX); break;
 

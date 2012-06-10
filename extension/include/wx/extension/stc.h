@@ -325,7 +325,6 @@ protected:
   /// Styled text event handler.
   void OnStyledText(wxStyledTextEvent& event);
 private:
-  void AddHeader();
   void CheckAutoComp(const wxUniChar& c);
   void CheckBrace();
   bool CheckBrace(int pos);
