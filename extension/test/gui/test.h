@@ -57,7 +57,6 @@ public:
   void testFrame();
   void testFrd();
   void testGrid();
-  void testHeader();
   void testHexMode();
   void testIndicator();
   void testLexer();
