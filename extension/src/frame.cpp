@@ -269,7 +269,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
 
             if (!file.FileExists())
             {
-              wxLogError(_("Cannot locate file") + ": " + token);
+              wxLogError("Cannot locate file: " + token);
             }
             else
             {

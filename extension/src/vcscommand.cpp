@@ -2,7 +2,7 @@
 // Name:      vcscommand.cpp
 // Purpose:   Implementation of wxExVCSCommand class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -80,6 +80,7 @@ bool wxExVCSCommand::IsAdd() const
 bool wxExVCSCommand::IsBlame() const
 {
   return 
+    GetCommand(false) == "annotate" ||
     GetCommand(false) == "blame" ||
     GetCommand(false) == "print";
 }

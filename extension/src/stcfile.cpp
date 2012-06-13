@@ -2,7 +2,7 @@
 // Name:      stcfile.cpp
 // Purpose:   Implementation of class wxExSTCFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -112,8 +112,7 @@ void wxExSTCFile::Read(const wxString& name) const
   }
   else
   {
-    wxLogStatus(wxString::Format(_("file: %s does not exist"), 
-      file.GetFileName().GetFullPath()));
+    wxLogStatus(_("file: %s does not exist"), file.GetFileName().GetFullPath());
   }
 }
 

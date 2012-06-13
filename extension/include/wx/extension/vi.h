@@ -49,9 +49,9 @@ private:
     const wxString& begin_address, 
     const wxString& end_address, 
     bool forward);
-  bool InsertMode(const wxString& command);
+  void InsertMode(const wxString& command);
   void Put(bool after);
-  void SetInsertMode(
+  bool SetInsertMode(
     const wxString& command,
     int repeat = 1);
   void ToggleCase(); 

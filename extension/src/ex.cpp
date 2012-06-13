@@ -624,8 +624,8 @@ bool wxExEx::MarkerAdd(const wxUniChar& marker, int line)
     
   if (id == -1)
   {
-    wxLogError(wxString::Format("Could not add marker: %c to line: %d",
-      marker, lin));
+    wxLogError("Could not add marker: %c to line: %d",
+      marker, lin);
     return false;  
   }
     

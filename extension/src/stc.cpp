@@ -2052,8 +2052,8 @@ int wxExSTC::ReplaceAll(
 
   EndUndoAction();
 
-  wxLogStatus(wxString::Format(_("Replaced: %d occurrences of: %s"),
-    nr_replacements, find_text.c_str()));
+  wxLogStatus(_("Replaced: %d occurrences of: %s"),
+    nr_replacements, find_text.c_str());
 
   return nr_replacements;
 }

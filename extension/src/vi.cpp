@@ -82,7 +82,8 @@ bool wxExVi::Command(const wxString& command)
   
   if (m_InsertMode)
   {
-    return InsertMode(command);
+    InsertMode(command);
+    return true;
   }
   else if (command.StartsWith("/") || command.StartsWith("?"))
   {
@@ -135,8 +136,13 @@ bool wxExVi::Command(const wxString& command)
     GetSTC()->Home();
     GetSTC()->DelLineRight();
 
-    SetInsertMode("cc", repeat);
-    return InsertMode(rest.Mid(2));
+    if (!SetInsertMode("cc", repeat))
+    {
+      return false;
+    }
+    
+    InsertMode(rest.Mid(2));
+    return true;
   }
   else if (rest.StartsWith("cw") && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
@@ -147,8 +153,13 @@ bool wxExVi::Command(const wxString& command)
 
     for (int i = 0; i < repeat; i++) GetSTC()->WordRightEndExtend();
 
-    SetInsertMode("cw", repeat);
-    return InsertMode(rest.Mid(2));
+    if (!SetInsertMode("cw", repeat))
+    {
+      return false;
+    }
+    
+    InsertMode(rest.Mid(2));
+    return true;
   }
   else if (rest == "dd")
   {
@@ -596,11 +607,11 @@ void wxExVi::GotoBrace()
   }
 }
 
-bool wxExVi::InsertMode(const wxString& command)
+void wxExVi::InsertMode(const wxString& command)
 {
   if (command.empty())
   {
-    return true;
+    return;
   }
   
   switch ((int)command.Last())
@@ -685,8 +696,6 @@ bool wxExVi::InsertMode(const wxString& command)
   {
     GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
   }
-  
-  return true;
 }
 
 bool wxExVi::OnChar(const wxKeyEvent& event)
@@ -801,13 +810,13 @@ void wxExVi::Put(bool after)
   }
 }        
 
-void wxExVi::SetInsertMode(
+bool wxExVi::SetInsertMode(
   const wxString& c, 
   int repeat)
 {
   if (GetSTC()->GetReadOnly() || GetSTC()->HexMode())
   {
-    return;
+    return false;
   }
     
   m_InsertMode = true;
@@ -873,6 +882,8 @@ void wxExVi::SetInsertMode(
   }
 
   GetSTC()->SetOvertype((int)c.GetChar(0) == 'R');
+  
+  return true;
 }
 
 void wxExVi::ToggleCase()

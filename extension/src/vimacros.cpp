@@ -26,10 +26,12 @@ enum
   VARIABLE_BUILTIN,      ///< a builtin variable
   VARIABLE_CONFIG,       ///< a config variable
   VARIABLE_ENVIRONMENT,  ///< an environment variable
-  VARIABLE_INPUT         ///< input from user
+  VARIABLE_INPUT         ///< input once from user
 };
 
 bool wxExViMacros::m_IsModified = false;
+
+std::map <wxString, wxString > wxExViMacros::m_InputVariables;
 std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
 std::map <wxString, int > wxExViMacros::m_Variables;
 
@@ -68,7 +70,7 @@ const wxString wxExViMacros::Encode(const wxString& text, bool& encoded)
   return text;  
 }
 
-bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable) const
+bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
 {
   std::map<wxString, int>::const_iterator it = m_Variables.find(variable);
     
@@ -108,17 +110,12 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable) const
       break;
       
     case VARIABLE_INPUT:
+      if (!ExpandInput(variable, text))
       {
-        const wxString str = wxGetTextFromUser(variable);
-         
-        if (str.empty())
-        {
-          return false;
-        }
-        
-        text = str;
+        return false;
       }
       break;
+      
     default: wxFAIL; break;
   }
   
@@ -154,6 +151,10 @@ bool wxExViMacros::ExpandBuiltIn(
   {
     expanded = ex->GetSTC()->GetFileName().GetFullName();
   }
+  else if (variable == "NL")
+  {
+    expanded = ex->GetSTC()->GetGetEOL();
+  }
   else if (variable == "TIME")
   {
     expanded = wxDateTime::Now().FormatISOTime();
@@ -170,6 +171,56 @@ bool wxExViMacros::ExpandBuiltIn(
   return true;
 }
 
+bool wxExViMacros::ExpandInput(
+  const wxString& variable, wxString& expanded) const
+{
+  std::map<wxString, wxString>::iterator it = 
+    m_InputVariables.find(variable);
+     
+  if (it == m_Variables.end())
+  {
+    return false;
+  }
+
+  if (!m_IsPlayback || it->second.empty())
+  {
+    const wxString value = wxGetTextFromUser(
+      variable,
+      wxGetTextFromUserPromptStr,
+      it->second);
+         
+    if (value.empty())
+    {
+      return false;
+    }
+          
+    expanded = value;
+    it->second = value;
+  }
+  else
+  {
+    expanded = it->second;
+  }
+  
+  return true;
+}
+
+const wxArrayString wxExViMacros::Get() const
+{
+  wxArrayString as;
+    
+  for (
+    std::map<wxString, std::vector<wxString> >::const_iterator it = 
+      m_Macros.begin();
+    it != m_Macros.end();
+    ++it)
+  {
+    as.Add(it->first);
+  }
+   
+  return as;
+}
+
 const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
 {
   std::map<wxString, std::vector< wxString > >::const_iterator it = 
@@ -184,26 +235,6 @@ const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
     std::vector<wxString> empty;
     return empty;
   }
-}
-
-const wxArrayString wxExViMacros::Get() const
-{
-  wxArrayString as;
-    
-  for (
-    std::map<wxString, std::vector<wxString> >::const_iterator it = 
-      m_Macros.begin();
-    it != m_Macros.end();
-    ++it)
-  {
-    // Add only if we have content.
-    if (!it->second.empty())
-    {
-      as.Add(it->first);
-    }
-  }
-   
-  return as;
 }
 
 const wxFileName wxExViMacros::GetFileName()
@@ -260,6 +291,7 @@ bool wxExViMacros::LoadDocument()
   // We assume that this is your choice, so we reset the member.
   m_IsModified = false;
   
+  m_InputVariables.clear();
   m_Macros.clear();
   m_Variables.clear();
   
@@ -311,6 +343,8 @@ bool wxExViMacros::LoadDocument()
       else if (type == "INPUT")
       {
         type_no = VARIABLE_INPUT;
+        
+        m_InputVariables[child->GetAttribute("name")] = wxEmptyString;
       }
       
       if (type_no != VARIABLE_UNKNOWN)
@@ -351,6 +385,16 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   
   m_IsPlayback = true;
   
+  // Clear all input variables values.
+  for (
+    std::map<wxString, wxString>::iterator it = 
+      m_InputVariables.begin();
+    it != m_InputVariables.end();
+    ++it)
+  {
+    it->second.clear();
+  }
+  
   m_Macro = macro;
   
   for (int i = 0; i < repeat; i++)
@@ -371,7 +415,7 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
 
   ex->GetSTC()->EndUndoAction();
 
-  if (!stop)
+  if (!stop && repeat > 0)
   {
     wxLogStatus(_("Macro played back"));
   }
@@ -531,7 +575,15 @@ void wxExViMacros::StopRecording()
   }
   
   m_IsRecording = false;
-  wxLogStatus(wxString::Format(_("Macro '%s' is recorded"), m_Macro.c_str()));
+  
+  if (!Get(m_Macro).empty())
+  {
+    wxLogStatus(wxString::Format(_("Macro '%s' is recorded"), m_Macro.c_str()));
+  }
+  else
+  {
+    wxLogStatus(_("Ready"));
+  }
 }
 
 #endif // wxUSE_GUI
