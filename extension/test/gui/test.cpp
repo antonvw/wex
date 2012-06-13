@@ -249,6 +249,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( stc->GetText().Contains("qwerty"));
   CPPUNIT_ASSERT( ex->Command(":y"));
 
+  // Test macros.
   CPPUNIT_ASSERT(!ex->MacroIsRecording());
   CPPUNIT_ASSERT(!ex->MacroIsRecorded());
   
@@ -274,7 +275,11 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT(!ex->MacroPlayback("b"));
   CPPUNIT_ASSERT( ex->GetMacro() == "a");
   CPPUNIT_ASSERT( ex->GetSTC() == stc);
+
+  CPPUNIT_ASSERT( ex->MacroExpand("DATE"));
+  CPPUNIT_ASSERT(!ex->MacroExpand("xxx"));
   
+  // Test markers.
   CPPUNIT_ASSERT( ex->MarkerAdd('a'));
   CPPUNIT_ASSERT( ex->MarkerLine('a') != -1);
   CPPUNIT_ASSERT( ex->MarkerGoto('a'));
@@ -1354,6 +1359,7 @@ void wxExGuiTestFixture::testVersion()
 void wxExGuiTestFixture::testVi()
 {
   wxConfigBase::Get()->Write(_("vi mode"), true);
+  const int esc = 27;
  
   // Test for modeline support.
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), 
@@ -1405,8 +1411,6 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->MacroIsRecording());
   CPPUNIT_ASSERT(!vi->MacroIsRecorded("a")); // still no macro
   
-  int esc = 27;
-  
   vi->MacroStartRecording("a");
   CPPUNIT_ASSERT(!vi->OnChar(event));
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
@@ -1453,6 +1457,25 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->GetInsertMode());
   CPPUNIT_ASSERT( vi->GetInsertText() == "xxxxxxxx");
   CPPUNIT_ASSERT( vi->GetLastCommand() == wxString("ixxxxxxxx") + wxUniChar(esc));
+  
+  // Vi command tests on readonly document.
+  stc->SetReadOnly(true);
+  CPPUNIT_ASSERT(!vi->Command("a"));
+  CPPUNIT_ASSERT(!vi->Command("c"));
+  CPPUNIT_ASSERT(!vi->Command("i"));
+  CPPUNIT_ASSERT(!vi->Command("o"));
+  CPPUNIT_ASSERT(!vi->Command("A"));
+  CPPUNIT_ASSERT(!vi->Command("C"));
+  CPPUNIT_ASSERT(!vi->Command("I"));
+  CPPUNIT_ASSERT(!vi->Command("O"));
+  CPPUNIT_ASSERT(!vi->Command("R"));
+  CPPUNIT_ASSERT(!vi->Command("dw"));
+  CPPUNIT_ASSERT(!vi->Command("dd"));
+  CPPUNIT_ASSERT(!vi->GetInsertMode());
+  stc->SetReadOnly(false);
+  CPPUNIT_ASSERT( vi->Command("i"));
+  CPPUNIT_ASSERT( vi->GetInsertMode());
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   
   for (int i = 0; i < 10; i++)
     CPPUNIT_ASSERT( vi->Command("."));
@@ -1597,6 +1620,10 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("@CB@"));
   CPPUNIT_ASSERT( vi->Command("@CE@"));
   CPPUNIT_ASSERT( stc->GetText().Contains("//"));
+  stc->SetText("");
+  CPPUNIT_ASSERT( vi->Command("@CL@"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("//"));
+  CPPUNIT_ASSERT( vi->Command("@NL@"));
   
   // Test illegal command.
   CPPUNIT_ASSERT(!vi->Command("dx"));
@@ -1608,6 +1635,7 @@ void wxExGuiTestFixture::testViMacros()
 {
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello");
   wxExVi* vi = &stc->GetVi();
+  const int esc = 27;
   
   wxExViMacros macros;
   
@@ -1634,6 +1662,7 @@ void wxExGuiTestFixture::testViMacros()
   macros.StartRecording("a");
   macros.Record('a');
   macros.Record("test");
+  macros.Record(wxUniChar(esc)));
   macros.StopRecording();
   
   CPPUNIT_ASSERT( macros.IsModified());
@@ -1642,14 +1671,21 @@ void wxExGuiTestFixture::testViMacros()
   
   CPPUNIT_ASSERT(!macros.IsRecorded("b"));
   
+  stc->SetText("");
   CPPUNIT_ASSERT( macros.Playback(vi, "a"));
   CPPUNIT_ASSERT( macros.Get("a").front() == "a");
+  CPPUNIT_ASSERT( stc->GetText().Contains("test"));
+  stc->SetText("");
+  CPPUNIT_ASSERT( macros.Playback(vi, "a", 0));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("test"));
+  CPPUNIT_ASSERT( macros.Playback(vi, "a", 10));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("testtesttesttest"));
+  
   CPPUNIT_ASSERT(!macros.Playback(vi, "b"));
   
   CPPUNIT_ASSERT(!macros.Get().empty());
   
   // Append to macro.
-  int esc = 27;
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   macros.StartRecording("A");
   macros.Record('b');
@@ -1675,6 +1711,8 @@ void wxExGuiTestFixture::testViMacros()
   
   CPPUNIT_ASSERT( macros.Expand(vi, "CB"));
   CPPUNIT_ASSERT( macros.Expand(vi, "CE"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "CL"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "NL"));
   CPPUNIT_ASSERT( macros.Expand(vi, "DATE"));
   CPPUNIT_ASSERT( macros.Expand(vi, "DATETIME"));
   CPPUNIT_ASSERT( macros.Expand(vi, "TIME"));

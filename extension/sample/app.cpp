@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of sample classes for wxExtension
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -295,8 +295,8 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
   
       const auto stop = sw.Time();
-      wxLogStatus(wxString::Format(
-        "wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
+      wxLogStatus(
+        "wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength());
       }
       break;
   

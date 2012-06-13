@@ -45,7 +45,7 @@ wxExVCS::wxExVCS(const wxArrayString& files, int menu_id)
   
     if (!m_Entry.GetCommand().IsHelp() && m_Files.size() == 1)
     {
-      m_Caption += " " + m_Files[0];
+      m_Caption += " " + wxFileName(m_Files[0]).GetFullName();
     }
   }
   else

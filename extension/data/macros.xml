@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 Name:      macros.xml
-Purpose:   vi macros for wxextension.
+Purpose:   vi macros and variables for wxextension.
 Author:    Anton van Wezenbeek
 Copyright: (c) 2012, Anton van Wezenbeek
 
@@ -9,11 +9,12 @@ Each macro can have several commands, a
 command is encoded if the content refers to a
 control character.  
 
-Variables are expanded when playing back the macro. Three
+Variables are expanded when playing back the macro. The next
 types are supported:
-CONFIG:  expansion is done with value from the config
-BUILTIN: expansion is done using internal value
-ENVIRONMENT: expansion is done using environment value
+- CONFIG:      expansion is done with value from the config
+- BUILTIN:     expansion is done using internal value
+- ENVIRONMENT: expansion is done using environment value
+- INPUT:       expansion is done by asking value from user
 -->
 <macros>
   <variable name="AUTHOR" type="CONFIG"/>
@@ -25,6 +26,7 @@ ENVIRONMENT: expansion is done using environment value
   <variable name="EMAIL" type="CONFIG"/>
   <variable name="FILENAME" type="BUILTIN"/>
   <variable name="HOME" type="ENVIRONMENT"/>
+  <variable name="NL" type="BUILTIN"/>
   <variable name="PURPOSE" type="INPUT"/>
   <variable name="TIME" type="BUILTIN"/>
   <variable name="YEAR" type="BUILTIN"/>

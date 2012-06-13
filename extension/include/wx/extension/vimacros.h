@@ -29,7 +29,7 @@ public:
   
   /// Expands variable to ex component.
   /// Returns true if variable could be expanded.
-  bool Expand(wxExEx* ex, const wxString& variable) const;
+  bool Expand(wxExEx* ex, const wxString& variable);
   
   /// Returns all macros (names) as an array of strings.
   const wxArrayString Get() const;
@@ -53,7 +53,8 @@ public:
   bool IsRecording() const {return m_IsRecording;};
   
   /// Plays back macro a number of repeat times on the ex component.
-  /// Returns true if all records could be executed.
+  /// Returns true if all records could be executed
+  /// (or if repeat is 0).
   bool Playback(wxExEx* ex, const wxString& macro, int repeat = 1);
   
   /// Records text to current macro as a new command.
@@ -84,18 +85,26 @@ public:
   static bool LoadDocument();
   
   /// Saves all macros (and variables) to xml document.
-  /// If you set only_if_modified, then document is only saved
+  /// If you specify only_if_modified, then document is only saved
   /// if it was modified (if macros have been recorded since last save).
-  /// Returns true if macros are saved.
+  /// Returns true if document is saved.
   static bool SaveDocument(bool only_if_modified = true);
 private:  
   bool ExpandBuiltIn(
     wxExEx* ex, const wxString& variable, wxString& expanded) const;
+  bool ExpandInput(
+    const wxString& variable, wxString& expanded) const;
+    
   static bool Load(wxXmlDocument& doc);
   static const wxString Encode(const wxString& text, bool& encoded);
   static const wxString Decode(const wxString& text);
     
   static bool m_IsModified;
+  
+  /// We keep values of input variables,
+  /// so, while playing back, you have to enter them only once.
+  /// The values are cleared each time you start playback.
+  static std::map<wxString, wxString> m_InputVariables;
   
   /// All macros, as a map of name and a vector of commands.
   static std::map <wxString, std::vector< wxString > > m_Macros;

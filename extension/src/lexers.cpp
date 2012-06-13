@@ -582,7 +582,7 @@ void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
 
         if (it != tmpMacros.end())
         {
-          wxLogError(_("Macro style: %s on line: %d already exists"),
+          wxLogError("Macro style: %s on line: %d already exists",
             style.c_str(), 
             child->GetLineNumber());
         }
