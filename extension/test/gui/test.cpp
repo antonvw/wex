@@ -1662,7 +1662,7 @@ void wxExGuiTestFixture::testViMacros()
   macros.StartRecording("a");
   macros.Record('a');
   macros.Record("test");
-  macros.Record(wxUniChar(esc)));
+  macros.Record(wxUniChar(esc));
   macros.StopRecording();
   
   CPPUNIT_ASSERT( macros.IsModified());
@@ -1679,7 +1679,7 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT( macros.Playback(vi, "a", 0));
   CPPUNIT_ASSERT(!stc->GetText().Contains("test"));
   CPPUNIT_ASSERT( macros.Playback(vi, "a", 10));
-  CPPUNIT_ASSERT(!stc->GetText().Contains("testtesttesttest"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("testtesttesttest"));
   
   CPPUNIT_ASSERT(!macros.Playback(vi, "b"));
   
