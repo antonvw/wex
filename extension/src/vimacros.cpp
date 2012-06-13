@@ -153,7 +153,7 @@ bool wxExViMacros::ExpandBuiltIn(
   }
   else if (variable == "NL")
   {
-    expanded = ex->GetSTC()->GetGetEOL();
+    expanded = ex->GetSTC()->GetEOL();
   }
   else if (variable == "TIME")
   {
@@ -177,7 +177,7 @@ bool wxExViMacros::ExpandInput(
   std::map<wxString, wxString>::iterator it = 
     m_InputVariables.find(variable);
      
-  if (it == m_Variables.end())
+  if (it == m_InputVariables.end())
   {
     return false;
   }
