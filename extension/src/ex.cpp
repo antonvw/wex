@@ -69,7 +69,7 @@ bool wxExEx::Command(const wxString& command)
   }
   else if (command == ":d")
   {
-    Delete(1);
+    return Delete(1);
   }
   else if (command.StartsWith(":e"))
   {
@@ -440,11 +440,11 @@ bool wxExEx::CommandSet(const wxString& command)
   return false;
 }
 
-void wxExEx::Delete(int lines) const
+bool wxExEx::Delete(int lines) const
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode())
   {
-    return;
+    return false;
   }
   
   const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
@@ -478,6 +478,8 @@ void wxExEx::Delete(int lines) const
       wxString::Format(_("%d fewer lines"), 
       linecount - m_STC->GetLineCount()));
   }
+  
+  return true;
 }
 
 bool wxExEx::Delete(

@@ -115,7 +115,7 @@ public:
   void Use(bool mode) {m_IsActive = mode;};
 protected:
   /// Deletes number of lines, starting at current line.
-  void Delete(int lines) const;
+  bool Delete(int lines) const;
   
   /// Deletes lines from begin to end address.
   /// Returns false if address cannot be related to a line number.

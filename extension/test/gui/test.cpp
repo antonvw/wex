@@ -250,6 +250,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":y"));
 
   // Test macros.
+  // Do not load macros yet, to test MacroIsRecorded.
   CPPUNIT_ASSERT(!ex->MacroIsRecording());
   CPPUNIT_ASSERT(!ex->MacroIsRecorded());
   
@@ -276,6 +277,10 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->GetMacro() == "a");
   CPPUNIT_ASSERT( ex->GetSTC() == stc);
 
+  // Now load macros, to test whether some are available now.
+  CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
+  CPPUNIT_ASSERT( ex->MacroIsRecorded());
+  
   CPPUNIT_ASSERT( ex->MacroExpand("DATE"));
   CPPUNIT_ASSERT(!ex->MacroExpand("xxx"));
   
@@ -1458,6 +1463,11 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->GetInsertText() == "xxxxxxxx");
   CPPUNIT_ASSERT( vi->GetLastCommand() == wxString("ixxxxxxxx") + wxUniChar(esc));
   
+  for (int i = 0; i < 10; i++)
+    CPPUNIT_ASSERT( vi->Command("."));
+    
+  CPPUNIT_ASSERT( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
+  
   // Vi command tests on readonly document.
   stc->SetReadOnly(true);
   CPPUNIT_ASSERT(!vi->Command("a"));
@@ -1476,11 +1486,6 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->GetInsertMode());
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
-  
-  for (int i = 0; i < 10; i++)
-    CPPUNIT_ASSERT( vi->Command("."));
-    
-  CPPUNIT_ASSERT( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
   
   CPPUNIT_ASSERT( vi->Command("iyyyyy"));
   CPPUNIT_ASSERT( vi->GetInsertMode());
@@ -1688,8 +1693,8 @@ void wxExGuiTestFixture::testViMacros()
   // Append to macro.
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   macros.StartRecording("A");
-  macros.Record('b');
-  macros.Record("test");
+  macros.Record('w');
+  macros.Record("/test");
   macros.StopRecording();
   
   CPPUNIT_ASSERT(!macros.IsRecorded("A"));
@@ -1702,7 +1707,7 @@ void wxExGuiTestFixture::testViMacros()
   macros.Record("a");
   macros.StopRecording();
   
-  CPPUNIT_ASSERT( macros.Playback(vi, "a"));
+  CPPUNIT_ASSERT(!macros.Playback(vi, "a"));
   
   // Variables.
   CPPUNIT_ASSERT(!macros.Expand(vi, "xxx"));
