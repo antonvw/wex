@@ -121,7 +121,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
   
   if (ex->GetSTC()->GetReadOnly() || ex->GetSTC()->HexMode())
   {
-    return false
+    return false;
   }
   
   ex->GetSTC()->AddText(text);

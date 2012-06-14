@@ -1,27 +1,10 @@
-....F...........adding 750 items in: 4021 milliseconds
-sorting 750 items in: 2184 milliseconds
-................matching 193 items in: 8018 microseconds
-replacing 194 items in: 26441 microseconds
-......F.F
+...............adding 750 items in: 4439 milliseconds
+sorting 750 items in: 2156 milliseconds
+................matching 193 items in: 7613 microseconds
+replacing 194 items in: 21831 microseconds
+.......
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  38   Failures: 3   Errors: 0
-
-
-1) test: testEx (F) line: 279 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: ex->MacroExpand("DATE")
-
-
-2) test: testVi (F) line: 1463 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: !vi->Command("a")
-
-
-3) test: testViMacros (F) line: 1705 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: macros.Playback(vi, "a")
+OK (38 tests)
 
 
