@@ -119,6 +119,11 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     default: wxFAIL; break;
   }
   
+  if (ex->GetSTC()->GetReadOnly() || ex->GetSTC()->HexMode())
+  {
+    return false
+  }
+  
   ex->GetSTC()->AddText(text);
     
   return true;
@@ -553,14 +558,22 @@ void wxExViMacros::StartRecording(const wxString& macro)
   
   m_IsRecording = true;
   
-  // We only use lower case macro's, to be able to
-  // append to them using qA.
-  m_Macro = macro.Lower();
-  
-  // Only clear macro if starts with lower case,
-  // otherwise append to the macro.
-  if (wxIslower(macro[0]))
+  if (macro.size() == 1)
   {
+    // We only use lower case macro's, to be able to
+    // append to them using qA.
+    m_Macro = macro.Lower();
+  
+    // Clear macro if it is lower case
+    // (otherwise append to the macro).
+    if (wxIslower(macro[0]))
+    {
+      m_Macros[m_Macro].clear();
+    }
+  }
+  else
+  {
+    m_Macro = macro;
     m_Macros[m_Macro].clear();
   }
   

@@ -50,11 +50,11 @@ private:
     const wxString& end_address, 
     bool forward);
   void InsertMode(const wxString& command);
-  void Put(bool after);
+  bool Put(bool after);
   bool SetInsertMode(
     const wxString& command,
     int repeat = 1);
-  void ToggleCase(); 
+  bool ToggleCase(); 
   bool YankedLines();   
 
   static wxString m_LastFindCharCommand;

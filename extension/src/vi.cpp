@@ -382,7 +382,7 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'I': 
     case 'O': 
     case 'R': 
-      SetInsertMode((char)c, repeat); 
+      return SetInsertMode((char)c, repeat); 
       break;
         
     case 'b': for (int i = 0; i < repeat; i++) GetSTC()->WordLeft(); break;
@@ -416,7 +416,9 @@ bool wxExVi::CommandChar(int c, int repeat)
           m_SearchForward)) break;
       break;
 
-    case 'p': Put(true); break;
+    case 'p': 
+      return Put(true); 
+      break;
       
     case 'q': 
       if (MacroIsRecording())
@@ -443,7 +445,8 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'w': for (int i = 0; i < repeat; i++) GetSTC()->WordRight(); break;
       
     case 'x': 
-      if (GetSTC()->HexMode()) return false;
+      if (GetSTC()->GetReadOnly() || GetSTC()->HexMode()) return false;
+      
       for (int i = 0; i < repeat; i++) 
       {
         GetSTC()->CharRight();
@@ -464,11 +467,9 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
 
     case 'D': 
-      if (!GetSTC()->GetReadOnly())
-      {
-        GetSTC()->LineEndExtend();
-        GetSTC()->Cut();
-        }
+      if (GetSTC()->GetReadOnly() || GetSTC()->HexMode()) return false;
+      GetSTC()->LineEndExtend();
+      GetSTC()->Cut();
       break;
         
     case 'G': 
@@ -486,6 +487,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case 'J':
+      if (GetSTC()->GetReadOnly() || GetSTC()->HexMode()) return false;
       GetSTC()->BeginUndoAction();
       GetSTC()->SetTargetStart(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));
       GetSTC()->SetTargetEnd(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine() + repeat));
@@ -509,11 +511,15 @@ bool wxExVi::CommandChar(int c, int repeat)
           !m_SearchForward)) break;
       break;
         
-    case 'P': Put(false); break;
+    case 'P': 
+      return Put(false); 
+      break;
       
     case 'X': 
-      if (GetSTC()->HexMode()) return false;
-      for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack(); break;
+      if (GetSTC()->GetReadOnly() || GetSTC()->HexMode()) return false;
+      for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack();
+      GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
+      break;
 
     case '.': 
       m_Dot = true;
@@ -528,7 +534,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case '^': GetSTC()->Home(); break;
-    case '~': ToggleCase(); break;
+    case '~': return ToggleCase(); break;
     case '$': GetSTC()->LineEnd(); break;
     case '{': for (int i = 0; i < repeat; i++) GetSTC()->ParaUp(); break;
     case '}': for (int i = 0; i < repeat; i++) GetSTC()->ParaDown(); break;
@@ -557,7 +563,9 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case WXK_BACK:
+      if (GetSTC()->GetReadOnly() || GetSTC()->HexMode()) return false;
       GetSTC()->DeleteBack();
+      GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
       break;
       
     case WXK_RETURN:
@@ -789,11 +797,11 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   }
 }
 
-void wxExVi::Put(bool after)
+bool wxExVi::Put(bool after)
 {
   if (GetSTC()->GetReadOnly() || GetSTC()->HexMode())
   {
-    return;
+    return false;
   }
   
   if (YankedLines())
@@ -808,6 +816,8 @@ void wxExVi::Put(bool after)
   {
     GetSTC()->LineUp();
   }
+  
+  return true;
 }        
 
 bool wxExVi::SetInsertMode(
@@ -886,8 +896,14 @@ bool wxExVi::SetInsertMode(
   return true;
 }
 
-void wxExVi::ToggleCase()
+bool wxExVi::ToggleCase()
 {
+  // Toggle case in hex mode not yet supported.
+  if (GetSTC()->GetReadOnly() || GetSTC()->HexMode())
+  {
+    return false;
+  }
+    
   wxString text(GetSTC()->GetTextRange(
     GetSTC()->GetCurrentPos(), 
     GetSTC()->GetCurrentPos() + 1));
@@ -903,6 +919,8 @@ void wxExVi::ToggleCase()
   
   const int line = GetSTC()->LineFromPosition(GetSTC()->GetCurrentPos());
   GetSTC()->MarkerAddChange(line);
+  
+  return true;
 }
 
 bool wxExVi::YankedLines()
