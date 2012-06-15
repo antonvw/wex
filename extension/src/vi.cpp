@@ -305,11 +305,16 @@ bool wxExVi::Command(const wxString& command)
     {
       if (MacroIsRecorded(v[0]))
       {
-        MacroPlayback(v[0], repeat);
+        handled = MacroPlayback(v[0], repeat);
       }
       else
       {
-        MacroExpand(v[0]);
+        handled = MacroExpand(v[0]);
+      }
+      
+      if (!handled)
+      {
+        m_Command.clear();
       }
     }
     else
