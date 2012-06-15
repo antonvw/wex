@@ -26,7 +26,8 @@ enum
   VARIABLE_BUILTIN,      ///< a builtin variable
   VARIABLE_CONFIG,       ///< a config variable
   VARIABLE_ENVIRONMENT,  ///< an environment variable
-  VARIABLE_INPUT         ///< input once from user
+  VARIABLE_INPUT,        ///< input once from user
+  VARIABLE_INPUT_COMMENT ///< input once from user, used for comments
 };
 
 bool wxExViMacros::m_IsModified = false;
@@ -114,6 +115,17 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
       {
         return false;
       }
+      break;
+      
+    case VARIABLE_INPUT_COMMENT:
+      // First expand variable.
+      if (!ExpandInput(variable, text))
+      {
+        return false;
+      }
+      
+      // Then make comment out of it, using variable as a prefix.
+      text = ex->GetSTC()->GetLexer().MakeComment(variable, text);
       break;
       
     default: wxFAIL; break;
@@ -351,6 +363,10 @@ bool wxExViMacros::LoadDocument()
         
         m_InputVariables[child->GetAttribute("name")] = wxEmptyString;
       }
+      else if (type == "INPUT-COMMENT")
+      {
+        type_no = VARIABLE_INPUT_COMMENT;
+      }
       
       if (type_no != VARIABLE_UNKNOWN)
       {
@@ -533,6 +549,10 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
       
       case VARIABLE_INPUT:
         element->AddAttribute("type", "INPUT");
+        break;
+      
+      case VARIABLE_INPUT_COMMENT:
+        element->AddAttribute("type", "INPUT-COMMENT");
         break;
       
       default: wxFAIL; break;
