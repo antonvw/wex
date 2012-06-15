@@ -17,6 +17,34 @@
 
 class wxExEx;
 
+/// Offers variable support to be used in macros.
+class WXDLLIMPEXP_BASE wxExVariable
+{
+public:
+  /// Default constructor.
+  wxExVariable();
+  
+  /// Constructor.
+  wxExVariable(const wxXmlNode* node);
+  
+  /// Gets name.
+  const wxString& GetName() const {return m_Name;};
+  
+  /// Gets prefix.
+  const wxString& GetPrefix() const {return m_Prefix;};
+  
+  /// Gets type.
+  int GetType() const {return m_Type;};
+  
+  /// Gets value.
+  const wxString& GetValue() const {return m_Value;};
+private:  
+  int m_Type;
+  wxString m_Name;
+  wxString m_Prefix;
+  wxString m_Value;
+};
+
 /// Offers the macro collection, and allows
 /// recording and playback to vi (ex) component.
 /// You can also use variables inside a macro (or in vi),
