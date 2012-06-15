@@ -109,6 +109,9 @@ private:
   /// All macros, as a map of name and a vector of commands.
   static std::map <wxString, std::vector< wxString > > m_Macros;
   
+  /// All values, as a map of name and value.
+  static std::map<wxString, wxString> m_Values;
+  
   /// All variables, as a map of name and type.
   static std::map<wxString, int> m_Variables;
   

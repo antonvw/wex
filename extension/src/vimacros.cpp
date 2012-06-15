@@ -22,18 +22,20 @@
 /// See xml file.
 enum
 {
-  VARIABLE_UNKNOWN,      ///< variable is not known
-  VARIABLE_BUILTIN,      ///< a builtin variable
-  VARIABLE_CONFIG,       ///< a config variable
-  VARIABLE_ENVIRONMENT,  ///< an environment variable
-  VARIABLE_INPUT,        ///< input once from user
-  VARIABLE_INPUT_COMMENT ///< input once from user, used for comments
+  VARIABLE_UNKNOWN,        ///< variable is not known
+  VARIABLE_BUILTIN,        ///< a builtin variable
+  VARIABLE_CONFIG,         ///< a config variable
+  VARIABLE_ENVIRONMENT,    ///< an environment variable
+  VARIABLE_INPUT,          ///< input once from user
+  VARIABLE_INPUT_COMMENT,  ///< input once from user, used for comments
+  VARIABLE_XML             ///< value from xml file
 };
 
 bool wxExViMacros::m_IsModified = false;
 
 std::map <wxString, wxString > wxExViMacros::m_InputVariables;
 std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
+std::map <wxString, wxString > wxExViMacros::m_Values;
 std::map <wxString, int > wxExViMacros::m_Variables;
 
 wxExViMacros::wxExViMacros()
@@ -126,6 +128,10 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
       
       // Then make comment out of it, using variable as a prefix.
       text = ex->GetSTC()->GetLexer().MakeComment(variable, text);
+      break;
+      
+    case VARIABLE_XML:
+      text = m_Values[variable];
       break;
       
     default: wxFAIL; break;
@@ -343,7 +349,7 @@ bool wxExViMacros::LoadDocument()
     {
       const wxString type = child->GetAttribute("type");
       
-      int type_no = VARIABLE_UNKNOWN;
+      int type_no = VARIABLE_XML;
       
       if (type == "BUILTIN")
       {
@@ -366,18 +372,12 @@ bool wxExViMacros::LoadDocument()
       else if (type == "INPUT-COMMENT")
       {
         type_no = VARIABLE_INPUT_COMMENT;
+        
+        m_InputVariables[child->GetAttribute("name")] = wxEmptyString;
       }
       
-      if (type_no != VARIABLE_UNKNOWN)
-      {
-        m_Variables[child->GetAttribute("name")] = type_no;
-      }
-      else
-      {
-        wxLogError(
-          "Variable on line: %d has unknown type: %s", 
-          child->GetLineNumber(), type.c_str());
-      }
+      m_Variables[child->GetAttribute("name")] = type_no;
+      m_Values[child->GetAttribute("name")] = child->GetNodeContent().Strip(wxString::both);
     }
       
     child = child->GetNext();
@@ -553,6 +553,10 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
       
       case VARIABLE_INPUT_COMMENT:
         element->AddAttribute("type", "INPUT-COMMENT");
+        break;
+      
+      case VARIABLE_XML:
+        new wxXmlNode(element, wxXML_TEXT_NODE, "", m_Values[it2->first]);
         break;
       
       default: wxFAIL; break;
