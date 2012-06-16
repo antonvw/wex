@@ -492,7 +492,7 @@ bool wxExVariable::Expand(bool playback, wxExEx* ex)
       }
       
       // Then make comment out of it, using variable as a prefix.
-      text = ex->GetSTC()->GetLexer().MakeComment(m_Name, text);
+      text = ex->GetSTC()->GetLexer().MakeComment(m_Prefix, text);
       break;
       
     case VARIABLE_XML:
@@ -583,7 +583,7 @@ bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
   return true;
 }
 
-void wxExVariable::Save(wxXmlNode* node)
+void wxExVariable::Save(wxXmlNode* node) const
 {
   node->AddAttribute("name", m_Name);
   
