@@ -27,6 +27,10 @@ public:
   /// Constructor.
   wxExVariable(const wxXmlNode* node);
   
+  /// Expands variable to ex component.
+  /// Returns true if variable could be expanded.
+  bool Expand(bool playback, wxExEx* ex);
+  
   /// Gets name.
   const wxString& GetName() const {return m_Name;};
   
@@ -38,10 +42,20 @@ public:
   
   /// Gets value.
   const wxString& GetValue() const {return m_Value;};
+  
+  /// Sets value.
+  void SetValue(const wxString& value) {m_Value = value;};
 private:  
+  bool ExpandBuiltIn(wxExEx* ex, wxString& expanded) const;
+  bool ExpandInput(bool playback, wxString& expanded);
+    
   int m_Type;
   wxString m_Name;
   wxString m_Prefix;
+  
+  /// We keep values of input variables,
+  /// so, while playing back, you have to enter them only once.
+  /// The values are cleared each time you start playback.
   wxString m_Value;
 };
 
@@ -118,30 +132,17 @@ public:
   /// Returns true if document is saved.
   static bool SaveDocument(bool only_if_modified = true);
 private:  
-  bool ExpandBuiltIn(
-    wxExEx* ex, const wxString& variable, wxString& expanded) const;
-  bool ExpandInput(
-    const wxString& variable, wxString& expanded) const;
-    
   static bool Load(wxXmlDocument& doc);
   static const wxString Encode(const wxString& text, bool& encoded);
   static const wxString Decode(const wxString& text);
     
   static bool m_IsModified;
   
-  /// We keep values of input variables,
-  /// so, while playing back, you have to enter them only once.
-  /// The values are cleared each time you start playback.
-  static std::map<wxString, wxString> m_InputVariables;
-  
   /// All macros, as a map of name and a vector of commands.
   static std::map <wxString, std::vector< wxString > > m_Macros;
   
-  /// All values, as a map of name and value.
-  static std::map<wxString, wxString> m_Values;
-  
-  /// All variables, as a map of name and type.
-  static std::map<wxString, int> m_Variables;
+  /// All variables, as a map of name and variable.
+  static std::map<wxString, wxExVariable> m_Variables;
   
   bool m_IsPlayback;
   bool m_IsRecording;

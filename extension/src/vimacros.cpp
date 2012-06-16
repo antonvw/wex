@@ -18,13 +18,12 @@
 
 #if wxUSE_GUI
 
-/// Several type of variables are supported.
+/// Several types of variables are supported.
 /// See xml file.
 enum
 {
   VARIABLE_UNKNOWN,        ///< variable is not known
   VARIABLE_BUILTIN,        ///< a builtin variable
-  VARIABLE_CONFIG,         ///< a config variable
   VARIABLE_ENVIRONMENT,    ///< an environment variable
   VARIABLE_INPUT,          ///< input once from user
   VARIABLE_INPUT_COMMENT,  ///< input once from user, used for comments
@@ -33,10 +32,8 @@ enum
 
 bool wxExViMacros::m_IsModified = false;
 
-std::map <wxString, wxString > wxExViMacros::m_InputVariables;
 std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
-std::map <wxString, wxString > wxExViMacros::m_Values;
-std::map <wxString, int > wxExViMacros::m_Variables;
+std::map <wxString, wxExVariable > wxExViMacros::m_Variables;
 
 wxExViMacros::wxExViMacros()
   : m_IsRecording(false)
@@ -75,7 +72,7 @@ const wxString wxExViMacros::Encode(const wxString& text, bool& encoded)
 
 bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
 {
-  std::map<wxString, int>::const_iterator it = m_Variables.find(variable);
+  std::map<wxString, wxExVariable>::iterator it = m_Variables.find(variable);
     
   if (it == m_Variables.end())
   {
@@ -83,150 +80,8 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     return false;
   }
   
-  wxString text;
-  
-  switch (it->second)
-  {
-    case VARIABLE_UNKNOWN:
-      return false;
-      break;
-      
-    case VARIABLE_BUILTIN:
-      if (!ExpandBuiltIn(ex, variable, text))
-      {
-        return false;
-      }
-      break;
-      
-    case VARIABLE_CONFIG:
-      if (!wxConfigBase::Get()->Read(variable, &text))
-      {
-        return false;
-      }
-      break;
-      
-    case VARIABLE_ENVIRONMENT:
-      if (!wxGetEnv(variable, &text))
-      {
-        return false;
-      }
-      break;
-      
-    case VARIABLE_INPUT:
-      if (!ExpandInput(variable, text))
-      {
-        return false;
-      }
-      break;
-      
-    case VARIABLE_INPUT_COMMENT:
-      // First expand variable.
-      if (!ExpandInput(variable, text))
-      {
-        return false;
-      }
-      
-      // Then make comment out of it, using variable as a prefix.
-      text = ex->GetSTC()->GetLexer().MakeComment(variable, text);
-      break;
-      
-    case VARIABLE_XML:
-      text = m_Values[variable];
-      break;
-      
-    default: wxFAIL; break;
-  }
-  
-  if (ex->GetSTC()->GetReadOnly() || ex->GetSTC()->HexMode())
-  {
-    return false;
-  }
-  
-  ex->GetSTC()->AddText(text);
-    
-  return true;
-}
-
-bool wxExViMacros::ExpandBuiltIn(
-  wxExEx* ex, const wxString& variable, wxString& expanded) const
-{
-  if (variable == "CB")
-  {
-    expanded = ex->GetSTC()->GetLexer().GetCommentBegin();
-  }
-  else if (variable == "CE")
-  {
-    expanded = ex->GetSTC()->GetLexer().GetCommentEnd();
-  }
-  else if (variable == "CL")
-  {
-    expanded = ex->GetSTC()->GetLexer().MakeComment(wxEmptyString, false);
-  }
-  else if (variable == "DATE")
-  {
-    expanded = wxDateTime::Now().FormatISODate();
-  }
-  else if (variable == "DATETIME")
-  {
-    expanded = wxDateTime::Now().FormatISOCombined(' ');
-  }
-  else if (variable == "FILENAME")
-  {
-    expanded = ex->GetSTC()->GetFileName().GetFullName();
-  }
-  else if (variable == "NL")
-  {
-    expanded = ex->GetSTC()->GetEOL();
-  }
-  else if (variable == "TIME")
-  {
-    expanded = wxDateTime::Now().FormatISOTime();
-  }
-  else if (variable == "YEAR")
-  {
-    expanded = wxDateTime::Now().Format("%Y");
-  }
-  else
-  {
-    return false;
-  }
-  
-  return true;
-}
-
-bool wxExViMacros::ExpandInput(
-  const wxString& variable, wxString& expanded) const
-{
-  std::map<wxString, wxString>::iterator it = 
-    m_InputVariables.find(variable);
-     
-  if (it == m_InputVariables.end())
-  {
-    return false;
-  }
-
-  if (!m_IsPlayback || it->second.empty())
-  {
-    const wxString value = wxGetTextFromUser(
-      variable,
-      wxGetTextFromUserPromptStr,
-      it->second);
-         
-    if (value.empty())
-    {
-      return false;
-    }
-          
-    expanded = value;
-    it->second = value;
-  }
-  else
-  {
-    expanded = it->second;
-  }
-  
-  return true;
-}
+  return it->second.Expand(m_IsPlayback, ex);
+}  
 
 const wxArrayString wxExViMacros::Get() const
 {
@@ -314,7 +169,6 @@ bool wxExViMacros::LoadDocument()
   // We assume that this is your choice, so we reset the member.
   m_IsModified = false;
   
-  m_InputVariables.clear();
   m_Macros.clear();
   m_Variables.clear();
   
@@ -347,37 +201,8 @@ bool wxExViMacros::LoadDocument()
     }
     else if (child->GetName() == "variable")
     {
-      const wxString type = child->GetAttribute("type");
-      
-      int type_no = VARIABLE_XML;
-      
-      if (type == "BUILTIN")
-      {
-        type_no = VARIABLE_BUILTIN;
-      }
-      else if (type == "CONFIG")
-      {
-        type_no = VARIABLE_CONFIG;
-      }
-      else if (type == "ENVIRONMENT")
-      {
-        type_no = VARIABLE_ENVIRONMENT;
-      }
-      else if (type == "INPUT")
-      {
-        type_no = VARIABLE_INPUT;
-        
-        m_InputVariables[child->GetAttribute("name")] = wxEmptyString;
-      }
-      else if (type == "INPUT-COMMENT")
-      {
-        type_no = VARIABLE_INPUT_COMMENT;
-        
-        m_InputVariables[child->GetAttribute("name")] = wxEmptyString;
-      }
-      
-      m_Variables[child->GetAttribute("name")] = type_no;
-      m_Values[child->GetAttribute("name")] = child->GetNodeContent().Strip(wxString::both);
+      wxExVariable variable(child);
+      m_Variables.insert(std::make_pair(child->GetName(), variable));
     }
       
     child = child->GetNext();
@@ -408,12 +233,15 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   
   // Clear all input variables values.
   for (
-    std::map<wxString, wxString>::iterator it = 
-      m_InputVariables.begin();
-    it != m_InputVariables.end();
+    std::map<wxString, wxExVariable>::iterator it = 
+      m_Variables.begin();
+    it != m_Variables.end();
     ++it)
   {
-    it->second.clear();
+    if (it->second.GetType() == VARIABLE_INPUT)
+    {
+      it->second.SetValue(wxEmptyString);
+    }
   }
   
   m_Macro = macro;
@@ -521,7 +349,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
   }
   
   for (
-    std::map< wxString, int >::reverse_iterator it2 = 
+    std::map< wxString, wxExVariable >::reverse_iterator it2 = 
       m_Variables.rbegin();
     it2 != m_Variables.rend();
     ++it2)
@@ -529,7 +357,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
     wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "variable");
     element->AddAttribute("name", it2->first);
     
-    switch (it2->second)
+    switch (it2->second.GetType())
     {
       case VARIABLE_UNKNOWN:
         wxFAIL;
@@ -537,10 +365,6 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
       
       case VARIABLE_BUILTIN:
         element->AddAttribute("type", "BUILTIN");
-        break;
-      
-      case VARIABLE_CONFIG:
-        element->AddAttribute("type", "CONFIG");
         break;
       
       case VARIABLE_ENVIRONMENT:
@@ -556,7 +380,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
         break;
       
       case VARIABLE_XML:
-        new wxXmlNode(element, wxXML_TEXT_NODE, "", m_Values[it2->first]);
+        new wxXmlNode(element, wxXML_TEXT_NODE, "", it2->second.GetValue());
         break;
       
       default: wxFAIL; break;
@@ -621,6 +445,165 @@ void wxExViMacros::StopRecording()
   {
     wxLogStatus(_("Ready"));
   }
+}
+
+wxExVariable::wxExVariable()
+{
+}
+  
+wxExVariable::wxExVariable(const wxXmlNode* node)
+  : m_Type(VARIABLE_XML)
+{
+  const wxString type = node->GetAttribute("type");
+      
+  if (type == "BUILTIN")
+  {
+    m_Type = VARIABLE_BUILTIN;
+  }
+  else if (type == "ENVIRONMENT")
+  {
+    m_Type = VARIABLE_ENVIRONMENT;
+  }
+  else if (type == "INPUT")
+  {
+    m_Type = VARIABLE_INPUT;
+  }
+  else if (type == "INPUT-COMMENT")
+  {
+    m_Type = VARIABLE_INPUT_COMMENT;
+  }
+      
+  m_Value = node->GetNodeContent().Strip(wxString::both);
+}
+
+bool wxExVariable::Expand(bool playback, wxExEx* ex)
+{
+  wxString text;
+  
+  switch (m_Type)
+  {
+    case VARIABLE_UNKNOWN:
+      return false;
+      break;
+      
+    case VARIABLE_BUILTIN:
+      if (!ExpandBuiltIn(ex, text))
+      {
+        return false;
+      }
+      break;
+      
+    case VARIABLE_ENVIRONMENT:
+      if (!wxGetEnv(m_Name, &text))
+      {
+        return false;
+      }
+      break;
+      
+    case VARIABLE_INPUT:
+      if (!ExpandInput(playback, text))
+      {
+        return false;
+      }
+      break;
+      
+    case VARIABLE_INPUT_COMMENT:
+      // First expand variable.
+      if (!ExpandInput(playback, text))
+      {
+        return false;
+      }
+      
+      // Then make comment out of it, using variable as a prefix.
+      text = ex->GetSTC()->GetLexer().MakeComment(m_Name, text);
+      break;
+      
+    case VARIABLE_XML:
+      text = m_Value;
+      break;
+      
+    default: wxFAIL; break;
+  }
+  
+  if (ex->GetSTC()->GetReadOnly() || ex->GetSTC()->HexMode())
+  {
+    return false;
+  }
+  
+  ex->GetSTC()->AddText(text);
+    
+  return true;
+}
+
+bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
+{
+  if (m_Name == "CB")
+  {
+    expanded = ex->GetSTC()->GetLexer().GetCommentBegin();
+  }
+  else if (m_Name == "CE")
+  {
+    expanded = ex->GetSTC()->GetLexer().GetCommentEnd();
+  }
+  else if (m_Name == "CL")
+  {
+    expanded = ex->GetSTC()->GetLexer().MakeComment(wxEmptyString, false);
+  }
+  else if (m_Name == "DATE")
+  {
+    expanded = wxDateTime::Now().FormatISODate();
+  }
+  else if (m_Name == "DATETIME")
+  {
+    expanded = wxDateTime::Now().FormatISOCombined(' ');
+  }
+  else if (m_Name == "FILENAME")
+  {
+    expanded = ex->GetSTC()->GetFileName().GetFullName();
+  }
+  else if (m_Name == "NL")
+  {
+    expanded = ex->GetSTC()->GetEOL();
+  }
+  else if (m_Name == "TIME")
+  {
+    expanded = wxDateTime::Now().FormatISOTime();
+  }
+  else if (m_Name == "YEAR")
+  {
+    expanded = wxDateTime::Now().Format("%Y");
+  }
+  else
+  {
+    return false;
+  }
+  
+  return true;
+}
+
+bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
+{
+  if (!playback || m_Value.empty())
+  {
+    const wxString value = wxGetTextFromUser(
+      m_Name,
+      wxGetTextFromUserPromptStr,
+      m_Value);
+         
+    if (value.empty())
+    {
+      return false;
+    }
+          
+    expanded = value;
+    m_Value = value;
+  }
+  else
+  {
+    expanded = m_Value;
+  }
+  
+  return true;
 }
 
 #endif // wxUSE_GUI
