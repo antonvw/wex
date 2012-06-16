@@ -18,18 +18,6 @@
 
 #if wxUSE_GUI
 
-/// Several types of variables are supported.
-/// See xml file.
-enum
-{
-  VARIABLE_UNKNOWN,        ///< variable is not known
-  VARIABLE_BUILTIN,        ///< a builtin variable
-  VARIABLE_ENVIRONMENT,    ///< an environment variable
-  VARIABLE_INPUT,          ///< input once from user
-  VARIABLE_INPUT_COMMENT,  ///< input once from user, used for comments
-  VARIABLE_XML             ///< value from xml file
-};
-
 bool wxExViMacros::m_IsModified = false;
 
 std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
@@ -238,10 +226,7 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
     it != m_Variables.end();
     ++it)
   {
-    if (it->second.GetType() == VARIABLE_INPUT)
-    {
-      it->second.SetValue(wxEmptyString);
-    }
+    it->second.Clear();
   }
   
   m_Macro = macro;
@@ -355,36 +340,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
     ++it2)
   {
     wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "variable");
-    element->AddAttribute("name", it2->first);
-    
-    switch (it2->second.GetType())
-    {
-      case VARIABLE_UNKNOWN:
-        wxFAIL;
-        break;
-      
-      case VARIABLE_BUILTIN:
-        element->AddAttribute("type", "BUILTIN");
-        break;
-      
-      case VARIABLE_ENVIRONMENT:
-        element->AddAttribute("type", "ENVIRONMENT");
-        break;
-      
-      case VARIABLE_INPUT:
-        element->AddAttribute("type", "INPUT");
-        break;
-      
-      case VARIABLE_INPUT_COMMENT:
-        element->AddAttribute("type", "INPUT-COMMENT");
-        break;
-      
-      case VARIABLE_XML:
-        new wxXmlNode(element, wxXML_TEXT_NODE, "", it2->second.GetValue());
-        break;
-      
-      default: wxFAIL; break;
-    }
+    it2->second.Save(element);
   }
   
   const bool ok = doc.Save(GetFileName().GetFullPath());
@@ -447,6 +403,18 @@ void wxExViMacros::StopRecording()
   }
 }
 
+/// Several types of variables are supported.
+/// See xml file.
+enum
+{
+  VARIABLE_UNKNOWN,        ///< variable is not known
+  VARIABLE_BUILTIN,        ///< a builtin variable
+  VARIABLE_ENVIRONMENT,    ///< an environment variable
+  VARIABLE_INPUT,          ///< input once from user
+  VARIABLE_INPUT_COMMENT,  ///< input once from user, used for comments
+  VARIABLE_XML             ///< value from xml file
+};
+
 wxExVariable::wxExVariable()
 {
 }
@@ -473,7 +441,16 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
     m_Type = VARIABLE_INPUT_COMMENT;
   }
       
+  m_Prefix = node->GetAttribute("prefix");
   m_Value = node->GetNodeContent().Strip(wxString::both);
+}
+
+void wxExVariable::Clear()
+{
+  if (m_Type == VARIABLE_INPUT)
+  {
+    m_Value.clear();
+  }
 }
 
 bool wxExVariable::Expand(bool playback, wxExEx* ex)
@@ -605,5 +582,44 @@ bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
   
   return true;
 }
+
+void wxExVariable::Save(wxXmlNode* node)
+{
+  node->AddAttribute("name", m_Name);
+  
+  if (m_Prefix.empty())
+  {
+    node->AddAttribute("prefix", m_Prefix);
+  }
+    
+  switch (m_Type)
+  {
+    case VARIABLE_UNKNOWN:
+      wxFAIL;
+      break;
+      
+    case VARIABLE_BUILTIN:
+      node->AddAttribute("type", "BUILTIN");
+      break;
+      
+    case VARIABLE_ENVIRONMENT:
+      node->AddAttribute("type", "ENVIRONMENT");
+      break;
+      
+    case VARIABLE_INPUT:
+      node->AddAttribute("type", "INPUT");
+      break;
+      
+    case VARIABLE_INPUT_COMMENT:
+      node->AddAttribute("type", "INPUT-COMMENT");
+      break;
+      
+    case VARIABLE_XML:
+      new wxXmlNode(node, wxXML_TEXT_NODE, "", m_Value);
+      break;
+      
+    default: wxFAIL; break;
+  }
+} 
 
 #endif // wxUSE_GUI
