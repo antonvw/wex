@@ -24,7 +24,7 @@ public:
   /// Default constructor.
   wxExVariable();
   
-  /// Constructor.
+  /// Constructor using xml node.
   wxExVariable(const wxXmlNode* node);
   
   /// Clears value, depending on type.
@@ -34,17 +34,8 @@ public:
   /// Returns true if variable could be expanded.
   bool Expand(bool playback, wxExEx* ex);
   
-  /// Gets name.
-  const wxString& GetName() const {return m_Name;};
-  
-  /// Gets prefix.
-  const wxString& GetPrefix() const {return m_Prefix;};
-  
-  /// Gets value.
-  const wxString& GetValue() const {return m_Value;};
-  
   /// Save in xml node.
-  void Save(wxXmlNode* node);
+  void Save(wxXmlNode* node) const;
 private:  
   bool ExpandBuiltIn(wxExEx* ex, wxString& expanded) const;
   bool ExpandInput(bool playback, wxString& expanded);
