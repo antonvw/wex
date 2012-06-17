@@ -407,11 +407,9 @@ void wxExViMacros::StopRecording()
 /// See xml file.
 enum
 {
-  VARIABLE_UNKNOWN,        ///< variable is not known
   VARIABLE_BUILTIN,        ///< a builtin variable
   VARIABLE_ENVIRONMENT,    ///< an environment variable
   VARIABLE_INPUT,          ///< input once from user
-  VARIABLE_INPUT_COMMENT,  ///< input once from user, used for comments
   VARIABLE_XML             ///< value from xml file
 };
 
@@ -423,22 +421,25 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
   : m_Type(VARIABLE_XML)
 {
   const wxString type = node->GetAttribute("type");
-      
-  if (type == "BUILTIN")
+   
+  if (!type.empty())
   {
-    m_Type = VARIABLE_BUILTIN;
-  }
-  else if (type == "ENVIRONMENT")
-  {
-    m_Type = VARIABLE_ENVIRONMENT;
-  }
-  else if (type == "INPUT")
-  {
-    m_Type = VARIABLE_INPUT;
-  }
-  else if (type == "INPUT-COMMENT")
-  {
-    m_Type = VARIABLE_INPUT_COMMENT;
+    if (type == "BUILTIN")
+    {
+      m_Type = VARIABLE_BUILTIN;
+    }
+    else if (type == "ENVIRONMENT")
+    {
+      m_Type = VARIABLE_ENVIRONMENT;
+    }
+    else if (type == "INPUT")
+    {
+      m_Type = VARIABLE_INPUT;
+    }
+    else
+    {
+      wxLogError("Variable type is not supported: " + type);
+    }
   }
 
   m_Name = node->GetAttribute("name");
@@ -460,10 +461,6 @@ bool wxExVariable::Expand(bool playback, wxExEx* ex)
   
   switch (m_Type)
   {
-    case VARIABLE_UNKNOWN:
-      return false;
-      break;
-      
     case VARIABLE_BUILTIN:
       if (!ExpandBuiltIn(ex, text))
       {
@@ -479,21 +476,18 @@ bool wxExVariable::Expand(bool playback, wxExEx* ex)
       break;
       
     case VARIABLE_INPUT:
-      if (!ExpandInput(playback, text))
-      {
-        return false;
-      }
-      break;
-      
-    case VARIABLE_INPUT_COMMENT:
       // First expand variable.
       if (!ExpandInput(playback, text))
       {
         return false;
       }
       
-      // Then make comment out of it, using variable as a prefix.
-      text = ex->GetSTC()->GetLexer().MakeComment(m_Prefix, text);
+      // Then if there is a prefix, 
+      // make comment out of it, using variable as a prefix.
+      if (!m_Prefix.empty())
+      {
+        text = ex->GetSTC()->GetLexer().MakeComment(m_Prefix, text);
+      }
       break;
       
     case VARIABLE_XML:
@@ -595,10 +589,6 @@ void wxExVariable::Save(wxXmlNode* node) const
     
   switch (m_Type)
   {
-    case VARIABLE_UNKNOWN:
-      wxFAIL;
-      break;
-      
     case VARIABLE_BUILTIN:
       node->AddAttribute("type", "BUILTIN");
       break;
@@ -609,10 +599,6 @@ void wxExVariable::Save(wxXmlNode* node) const
       
     case VARIABLE_INPUT:
       node->AddAttribute("type", "INPUT");
-      break;
-      
-    case VARIABLE_INPUT_COMMENT:
-      node->AddAttribute("type", "INPUT-COMMENT");
       break;
       
     case VARIABLE_XML:

@@ -1618,8 +1618,7 @@ void wxExGuiTestFixture::testVi()
   stc->SetText("");
   CPPUNIT_ASSERT( vi->Command("@YEAR@"));
   CPPUNIT_ASSERT( stc->GetText().Contains("20"));
-  // All macros currently return ok, as long they are within @@.
-  CPPUNIT_ASSERT( vi->Command("@xxx@"));
+  CPPUNIT_ASSERT(!vi->Command("@xxx@"));
   CPPUNIT_ASSERT( stc->SetLexer("cpp"));
   stc->SetText("");
   CPPUNIT_ASSERT( vi->Command("@CB@"));
@@ -1711,8 +1710,9 @@ void wxExGuiTestFixture::testViMacros()
   
   // Variables.
   CPPUNIT_ASSERT(!macros.Expand(vi, "xxx"));
-  
-  CPPUNIT_ASSERT( macros.Expand(vi, "AUTHOR"));
+
+  // Next requires input...    
+  //  CPPUNIT_ASSERT( macros.Expand(vi, "AUTHOR"));
   
   CPPUNIT_ASSERT( macros.Expand(vi, "CB"));
   CPPUNIT_ASSERT( macros.Expand(vi, "CE"));
