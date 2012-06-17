@@ -11,23 +11,22 @@ control character.
 
 Variables are expanded when playing back the macro. The next
 types are supported:
-- CONFIG:      expansion is done with value from the config
 - BUILTIN:     expansion is done using internal value
 - ENVIRONMENT: expansion is done using environment value
 - INPUT:       expansion is done by asking value from user
 -->
 <macros>
-  <variable name="AUTHOR" type="CONFIG"/>
+  <variable name="AUTHOR" prefix="Author:    " type="INPUT"/>
   <variable name="CB" type="BUILTIN"/>
   <variable name="CE" type="BUILTIN"/>
   <variable name="CL" type="BUILTIN"/>
   <variable name="DATE" type="BUILTIN"/>
   <variable name="DATETIME" type="BUILTIN"/>
-  <variable name="EMAIL" type="CONFIG"/>
+  <variable name="EMAIL"/>
   <variable name="FILENAME" type="BUILTIN"/>
   <variable name="HOME" type="ENVIRONMENT"/>
   <variable name="NL" type="BUILTIN"/>
-  <variable name="PURPOSE" type="INPUT"/>
+  <variable name="PURPOSE" type="INPUT" prefix="Purpose:   "/>
   <variable name="TIME" type="BUILTIN"/>
   <variable name="YEAR" type="BUILTIN"/>
   <macro name="hdr">
@@ -43,14 +42,8 @@ types are supported:
     <command>@FILENAME@</command>
     <command>o</command>
     <command encoded="true">27</command>
-    <command>@CB@</command>
-    <command>i Purpose:   </command>
-    <command encoded="true">27</command>
     <command>@PURPOSE@</command>
     <command>o</command>
-    <command encoded="true">27</command>
-    <command>@CB@</command>
-    <command>i Author:    </command>
     <command encoded="true">27</command>
     <command>@AUTHOR@</command>
     <command>o</command>
