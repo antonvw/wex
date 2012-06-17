@@ -64,7 +64,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     
   if (it == m_Variables.end())
   {
-    wxLogStatus(_("Unknown macro") + ": "  +  variable);
+    wxLogStatus(_("Unknown variable") + ": "  +  variable);
     return false;
   }
   
@@ -440,7 +440,8 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
   {
     m_Type = VARIABLE_INPUT_COMMENT;
   }
-      
+
+  m_Name = node->GetAttribute("name");
   m_Prefix = node->GetAttribute("prefix");
   m_Value = node->GetNodeContent().Strip(wxString::both);
 }
