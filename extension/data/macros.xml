@@ -14,9 +14,10 @@ types are supported:
 - BUILTIN:     expansion is done using internal value
 - ENVIRONMENT: expansion is done using environment value
 - INPUT:       expansion is done by asking value from user
+- INPUT-KEEP:  expansion is done by asking value from user, value is kept in this file
 -->
 <macros>
-  <variable name="AUTHOR" prefix="Author:    " type="INPUT"/>
+  <variable name="AUTHOR" prefix="Author:    " type="INPUT-KEEP"/>
   <variable name="CB" type="BUILTIN"/>
   <variable name="CE" type="BUILTIN"/>
   <variable name="CL" type="BUILTIN"/>

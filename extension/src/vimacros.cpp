@@ -68,7 +68,14 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     return false;
   }
   
-  return it->second.Expand(m_IsPlayback, ex);
+  const bool ok = it->second.Expand(m_IsPlayback, ex);
+  
+  if (it->second.IsModified())
+  {
+    m_IsModified = true;
+  }
+  
+  return ok;
 }  
 
 const wxArrayString wxExViMacros::Get() const
@@ -410,6 +417,7 @@ enum
   VARIABLE_BUILTIN,        ///< a builtin variable
   VARIABLE_ENVIRONMENT,    ///< an environment variable
   VARIABLE_INPUT,          ///< input once from user
+  VARIABLE_INPUT_KEEP,     ///< input once from user, keep value in xml file
   VARIABLE_XML             ///< value from xml file
 };
 
@@ -419,6 +427,7 @@ wxExVariable::wxExVariable()
   
 wxExVariable::wxExVariable(const wxXmlNode* node)
   : m_Type(VARIABLE_XML)
+  , m_IsModified(false)
 {
   const wxString type = node->GetAttribute("type");
    
@@ -435,6 +444,10 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
     else if (type == "INPUT")
     {
       m_Type = VARIABLE_INPUT;
+    }
+    else if (type == "INPUT-KEEP")
+    {
+      m_Type = VARIABLE_INPUT_KEEP;
     }
     else
     {
@@ -476,6 +489,7 @@ bool wxExVariable::Expand(bool playback, wxExEx* ex)
       break;
       
     case VARIABLE_INPUT:
+    case VARIABLE_INPUT_KEEP:
       // First expand variable.
       if (!ExpandInput(playback, text))
       {
@@ -568,7 +582,12 @@ bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
     }
           
     expanded = value;
-    m_Value = value;
+    
+    if (m_Value != value)
+    {
+      m_Value = value;
+      m_IsModified = true;
+    }
   }
   else
   {
@@ -582,7 +601,7 @@ void wxExVariable::Save(wxXmlNode* node) const
 {
   node->AddAttribute("name", m_Name);
   
-  if (m_Prefix.empty())
+  if (!m_Prefix.empty())
   {
     node->AddAttribute("prefix", m_Prefix);
   }
@@ -601,11 +620,19 @@ void wxExVariable::Save(wxXmlNode* node) const
       node->AddAttribute("type", "INPUT");
       break;
       
+    case VARIABLE_INPUT_KEEP:
+      node->AddAttribute("type", "INPUT-KEEP");
+      break;
+    
     case VARIABLE_XML:
-      new wxXmlNode(node, wxXML_TEXT_NODE, "", m_Value);
       break;
       
     default: wxFAIL; break;
+  }
+  
+  if (!m_Value.empty() && m_Type != VARIABLE_INPUT)
+  {
+    new wxXmlNode(node, wxXML_TEXT_NODE, "", m_Value);
   }
 } 
 

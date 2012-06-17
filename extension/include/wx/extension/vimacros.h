@@ -37,11 +37,16 @@ public:
   /// Returns variable name.
   const wxString& GetName() const {return m_Name;};
   
+  /// Returns true if expanding has modified value.
+  bool IsModified() const {return m_IsModified;};
+  
   /// Save in xml node.
   void Save(wxXmlNode* node) const;
 private:  
   bool ExpandBuiltIn(wxExEx* ex, wxString& expanded) const;
   bool ExpandInput(bool playback, wxString& expanded);
+
+  bool m_IsModified;
     
   int m_Type;
   wxString m_Name;
