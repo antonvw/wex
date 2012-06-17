@@ -34,6 +34,9 @@ public:
   /// Returns true if variable could be expanded.
   bool Expand(bool playback, wxExEx* ex);
   
+  /// Returns variable name.
+  const wxString& GetName() const {return m_Name;};
+  
   /// Save in xml node.
   void Save(wxXmlNode* node) const;
 private:  

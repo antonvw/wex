@@ -190,7 +190,7 @@ bool wxExViMacros::LoadDocument()
     else if (child->GetName() == "variable")
     {
       wxExVariable variable(child);
-      m_Variables.insert(std::make_pair(child->GetName(), variable));
+      m_Variables.insert(std::make_pair(variable.GetName(), variable));
     }
       
     child = child->GetNext();
