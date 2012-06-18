@@ -578,9 +578,9 @@ void wxExGuiTestFixture::testLexer()
   // TODO: improve test
   lexer.SetProperty("test", "value");
   
-  CPPUNIT_ASSERT( lexer.Apply("pascal", stc));
-  CPPUNIT_ASSERT(!lexer.CommentComplete("{test").empty());
-  CPPUNIT_ASSERT( lexer.CommentComplete("{test").EndsWith("     }"));
+  CPPUNIT_ASSERT( lexer.ApplyLexer("pascal", stc));
+  CPPUNIT_ASSERT(!lexer.CommentComplete("(*test").empty());
+  CPPUNIT_ASSERT( lexer.CommentComplete("(*test").EndsWith("     *)"));
 }
 
 void wxExGuiTestFixture::testLexers()
