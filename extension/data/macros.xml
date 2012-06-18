@@ -5,31 +5,56 @@ Purpose:   vi macros and variables for wxextension.
 Author:    Anton van Wezenbeek
 Copyright: (c) 2012, Anton van Wezenbeek
 
+Both variables and names have a "name" attribute, you call the macro
+from vi mode using @name@. If the name is a single character c, you can all it
+using @c.
+
 Each macro can have several commands, a 
 command is encoded if the content refers to a
 control character.  
 
-Variables are expanded when playing back the macro. The next
-types are supported:
-- BUILTIN:     expansion is done using internal value
-- ENVIRONMENT: expansion is done using environment value
-- INPUT:       expansion is done by asking value from user
-- INPUT-KEEP:  expansion is done by asking value from user, value is kept in this file
+Variables are expanded when playing back the macro. 
+- A variable can have a "type" attribute.
+  The next "type" values are supported:
+  - BUILTIN:     expansion is done using internal value
+  - ENVIRONMENT: expansion is done using environment value
+  - INPUT:       expansion is done by asking value from user
+  - INPUT-SAVE:  expansion is done by asking value from user, value is saved
+  If you do not specify the attribute "type", then the variable is expanded
+  to the xml contents as specified here.
+- A variable can have a "prefix" attribute. 
+  This attribute causes a comment line to be generated that is prefixed with
+  the value of the "prefix" attribute, according to the "type" attribute.
 -->
 <macros>
-  <variable name="AUTHOR" prefix="Author:    " type="INPUT-KEEP"/>
-  <variable name="CB" type="BUILTIN"/>
-  <variable name="CE" type="BUILTIN"/>
-  <variable name="CL" type="BUILTIN"/>
-  <variable name="DATE" type="BUILTIN"/>
-  <variable name="DATETIME" type="BUILTIN"/>
-  <variable name="EMAIL"/>
-  <variable name="FILENAME" type="BUILTIN"/>
-  <variable name="HOME" type="ENVIRONMENT"/>
-  <variable name="NL" type="BUILTIN"/>
-  <variable name="PURPOSE" type="INPUT" prefix="Purpose:   "/>
-  <variable name="TIME" type="BUILTIN"/>
-  <variable name="YEAR" type="BUILTIN"/>
+  <!-- Expands to Comment Begin according to current lexer -->
+  <variable name="CB"               type="BUILTIN"/>
+  <!-- Expands to Comment Complete according to current lexer -->
+  <variable name="CC"               type="BUILTIN"/>
+  <!-- Expands to Comment End according to current lexer -->
+  <variable name="CE"               type="BUILTIN"/>
+  <!-- Expands to Comment Line according to current lexer -->
+  <variable name="CL"               type="BUILTIN"/>
+  <!-- Expands to current date -->
+  <variable name="DATE"             type="BUILTIN"/>
+  <!-- Expands to current datetime -->
+  <variable name="DATETIME"         type="BUILTIN"/>
+  <!-- Expands to current filename -->
+  <variable name="FILENAME"         type="BUILTIN"/>
+  <!-- Expands to new line according to current document type -->
+  <variable name="NL"               type="BUILTIN"/>
+  <!-- Expands to current time -->
+  <variable name="TIME"             type="BUILTIN"/>
+  <!-- Expands to current year -->
+  <variable name="YEAR"             type="BUILTIN"/>
+  
+  <variable name="HOME"             type="ENVIRONMENT"/>
+  
+  <variable name="PURPOSE"          type="INPUT" prefix="Purpose:   "/>
+  
+  <variable name="AUTHOR"           type="INPUT-SAVE" prefix="Author:    "/>
+  <variable name="AUTHOR-COPYRIGHT" type="INPUT-SAVE"/>
+  
   <macro name="hdr">
     <command>:1</command>
     <command>O</command>
@@ -41,6 +66,7 @@ types are supported:
     <command>i Name:      </command>
     <command encoded="true">27</command>
     <command>@FILENAME@</command>
+    <command>@CC@</command>
     <command>o</command>
     <command encoded="true">27</command>
     <command>@PURPOSE@</command>
@@ -55,7 +81,8 @@ types are supported:
     <command>@YEAR@</command>
     <command>i </command>
     <command encoded="true">27</command>
-    <command>@AUTHOR@</command>
+    <command>@AUTHOR-COPYRIGHT@</command>
+    <command>@CC@</command>
     <command>o</command>
     <command encoded="true">27</command>
     <command>@CL@</command>
