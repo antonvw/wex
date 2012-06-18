@@ -84,9 +84,6 @@ public:
   /// Overriden from base class.
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
-  
-  /// Does this vcs support keyword expansion.
-  bool SupportKeywordExpansion() const {return m_SupportKeywordExpansion;};
 private:
   enum
   {
@@ -99,7 +96,6 @@ private:
 
   // no const, as entry is set using operator+ in wxExVCS.
   bool m_AdminDirIsTopLevel;
-  bool m_SupportKeywordExpansion;
   
   int m_CommandIndex;
   int m_FlagsLocation;

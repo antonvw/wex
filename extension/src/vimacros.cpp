@@ -417,8 +417,8 @@ enum
   VARIABLE_BUILTIN,        ///< a builtin variable
   VARIABLE_ENVIRONMENT,    ///< an environment variable
   VARIABLE_INPUT,          ///< input once from user
-  VARIABLE_INPUT_KEEP,     ///< input once from user, keep value in xml file
-  VARIABLE_XML             ///< value from xml file
+  VARIABLE_INPUT_SAVE,     ///< input once from user, save value in xml file
+  VARIABLE_READ            ///< read value from xml file
 };
 
 wxExVariable::wxExVariable()
@@ -426,7 +426,7 @@ wxExVariable::wxExVariable()
 }
   
 wxExVariable::wxExVariable(const wxXmlNode* node)
-  : m_Type(VARIABLE_XML)
+  : m_Type(VARIABLE_READ)
   , m_IsModified(false)
 {
   const wxString type = node->GetAttribute("type");
@@ -445,9 +445,9 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
     {
       m_Type = VARIABLE_INPUT;
     }
-    else if (type == "INPUT-KEEP")
+    else if (type == "INPUT-SAVE")
     {
-      m_Type = VARIABLE_INPUT_KEEP;
+      m_Type = VARIABLE_INPUT_SAVE;
     }
     else
     {
@@ -470,6 +470,11 @@ void wxExVariable::Clear()
 
 bool wxExVariable::Expand(bool playback, wxExEx* ex)
 {
+  if (ex->GetSTC()->GetReadOnly() || ex->GetSTC()->HexMode())
+  {
+    return false;
+  }
+  
   wxString text;
   
   switch (m_Type)
@@ -489,31 +494,25 @@ bool wxExVariable::Expand(bool playback, wxExEx* ex)
       break;
       
     case VARIABLE_INPUT:
-    case VARIABLE_INPUT_KEEP:
+    case VARIABLE_INPUT_SAVE:
       // First expand variable.
       if (!ExpandInput(playback, text))
       {
         return false;
       }
-      
-      // Then if there is a prefix, 
-      // make comment out of it, using variable as a prefix.
-      if (!m_Prefix.empty())
-      {
-        text = ex->GetSTC()->GetLexer().MakeComment(m_Prefix, text);
-      }
       break;
       
-    case VARIABLE_XML:
+    case VARIABLE_READ:
       text = m_Value;
       break;
       
     default: wxFAIL; break;
   }
   
-  if (ex->GetSTC()->GetReadOnly() || ex->GetSTC()->HexMode())
+  // If there is a prefix, make a comment out of it.
+  if (!m_Prefix.empty())
   {
-    return false;
+    text = ex->GetSTC()->GetLexer().MakeComment(m_Prefix, text);
   }
   
   ex->GetSTC()->AddText(text);
@@ -526,6 +525,11 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
   if (m_Name == "CB")
   {
     expanded = ex->GetSTC()->GetLexer().GetCommentBegin();
+  }
+  else if (m_Name == "CC")
+  {
+    expanded = ex->GetSTC()->GetLexer().CommentComplete(
+      ex->GetSTC()->GetCurLine());
   }
   else if (m_Name == "CE")
   {
@@ -620,11 +624,11 @@ void wxExVariable::Save(wxXmlNode* node) const
       node->AddAttribute("type", "INPUT");
       break;
       
-    case VARIABLE_INPUT_KEEP:
-      node->AddAttribute("type", "INPUT-KEEP");
+    case VARIABLE_INPUT_SAVE:
+      node->AddAttribute("type", "INPUT-SAVE");
       break;
     
-    case VARIABLE_XML:
+    case VARIABLE_READ:
       break;
       
     default: wxFAIL; break;

@@ -367,11 +367,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       ar.Add(openFileDialog.GetPath());
       wxExVCS vcs(ar);
       wxLogMessage(vcs.GetName());
-      
-      if (vcs.GetEntry().SupportKeywordExpansion())
-      {
-        wxLogMessage("supports keyword expansion");
-      }
       }
       break;
   

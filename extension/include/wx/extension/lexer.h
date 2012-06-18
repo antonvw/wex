@@ -49,6 +49,11 @@ public:
     /// if clear is true, old styles are reset (including folding)
     bool clear = true);
 
+  /// Returns a string that completes specified comment,
+  /// by adding spaces and a comment end at the end.
+  /// If the comment end string is empty, it returns empty string.
+  const wxString CommentComplete(const wxString& comment) const;
+    
   /// Gets the comment begin.
   const wxString& GetCommentBegin() const {return m_CommentBegin;};
 

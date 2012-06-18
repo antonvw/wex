@@ -11,7 +11,6 @@ Copyright: (c) 2012, Anton van Wezenbeek
    Each <vcs> has a name attribute (name of vcs used),
    an admin-dir attribute (where admin dir is located),
    a toplevel attribute (default false, admin dir only in toplevel)
-   a keyword-expansion attribute (default 'false'),
    and a flags-location attribute (default 'postfix'), 
    followed by a number of <commands>. 
    
@@ -50,8 +49,7 @@ Copyright: (c) 2012, Anton van Wezenbeek
 
   <vcs 
     name="cvs"
-    admin-dir=".cvs"
-    keyword-expansion="true">
+    admin-dir=".cvs">
 
     <commands>
       <command type = "main"> &amp;add </command>
@@ -120,8 +118,7 @@ Copyright: (c) 2012, Anton van Wezenbeek
 
   <vcs 
     name="svn"
-    admin-dir=".svn"
-    keyword-expansion="true">
+    admin-dir=".svn">
 
     <commands>
       <command type = "main"> &amp;add </command>

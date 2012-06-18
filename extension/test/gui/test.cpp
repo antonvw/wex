@@ -525,6 +525,8 @@ void wxExGuiTestFixture::testIndicator()
 
 void wxExGuiTestFixture::testLexer()
 {
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  
   wxExLexer lexer;
   CPPUNIT_ASSERT(!lexer.IsOk());
   
@@ -546,6 +548,7 @@ void wxExGuiTestFixture::testLexer()
   CPPUNIT_ASSERT(!lexer.GetCommentEnd2().empty());
   CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
   CPPUNIT_ASSERT(!lexer.GetKeywordsString().empty());
+  CPPUNIT_ASSERT( lexer.CommentComplete("// test").empty());
 
   CPPUNIT_ASSERT( lexer.IsKeyword("class"));
   CPPUNIT_ASSERT( lexer.IsKeyword("const"));
@@ -574,6 +577,10 @@ void wxExGuiTestFixture::testLexer()
   
   // TODO: improve test
   lexer.SetProperty("test", "value");
+  
+  CPPUNIT_ASSERT( lexer.Apply("pascal", stc));
+  CPPUNIT_ASSERT(!lexer.CommentComplete("{test").empty());
+  CPPUNIT_ASSERT( lexer.CommentComplete("{test").EndsWith("     }"));
 }
 
 void wxExGuiTestFixture::testLexers()
@@ -1254,7 +1261,6 @@ void wxExGuiTestFixture::testVCS()
   CPPUNIT_ASSERT( vcs.GetFileName().IsOk());
   CPPUNIT_ASSERT(!vcs.GetEntry().GetCommand().IsOpen());
   CPPUNIT_ASSERT( vcs.Read());
-  CPPUNIT_ASSERT(!vcs.GetEntry().SupportKeywordExpansion());
   CPPUNIT_ASSERT( vcs.Use());
   
   wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());
@@ -1331,7 +1337,6 @@ void wxExGuiTestFixture::testVCSEntry()
   CPPUNIT_ASSERT( test.GetFlags().empty());
   CPPUNIT_ASSERT( test.GetName().empty());
   CPPUNIT_ASSERT( test.GetOutput().empty());
-  CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
   
   CPPUNIT_ASSERT( test.ShowDialog(
     wxTheApp->GetTopWindow(),
@@ -1352,7 +1357,6 @@ void wxExGuiTestFixture::testVCSEntry()
   CPPUNIT_ASSERT( test.GetFlags().empty());
   CPPUNIT_ASSERT( test.GetName().empty());
   CPPUNIT_ASSERT( test.GetOutput().empty());
-  CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
 }
 
 void wxExGuiTestFixture::testVersion()
@@ -1715,6 +1719,7 @@ void wxExGuiTestFixture::testViMacros()
   //  CPPUNIT_ASSERT( macros.Expand(vi, "AUTHOR"));
   
   CPPUNIT_ASSERT( macros.Expand(vi, "CB"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "CC"));
   CPPUNIT_ASSERT( macros.Expand(vi, "CE"));
   CPPUNIT_ASSERT( macros.Expand(vi, "CL"));
   CPPUNIT_ASSERT( macros.Expand(vi, "NL"));

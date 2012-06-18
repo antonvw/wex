@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,6 +17,9 @@
 #include <wx/extension/lexer.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h> // for wxExAlignText
+
+// We always use lines with 80 characters. 
+const int line_size = 80;
 
 wxExLexer::wxExLexer()
 {
@@ -145,6 +148,26 @@ void wxExLexer::AutoMatch(const wxString& lexer)
       }
     }
   }
+}
+
+const wxString wxExLexer::CommentComplete(const wxString& comment) const
+{
+  if (m_CommentEnd.empty())
+  {
+    return wxEmptyString;
+  }
+  
+  // Fill out rest of comment with spaces, and comment end string.
+  const int n = line_size - comment.size() - m_CommentEnd.size();
+  
+  if (n <= 0)
+  {
+    return wxEmptyString;
+  }
+  
+  const wxString blanks = wxString(' ', n);
+  
+  return blanks + m_CommentEnd;
 }
 
 const wxString wxExLexer::GetFormattedText(
@@ -534,9 +557,9 @@ void wxExLexer::SetProperty(const wxString& name, const wxString& value)
 
 int wxExLexer::UsableCharactersPerLine() const
 {
-  // We always use lines with 80 characters. We adjust this here for
+  // We adjust this here for
   // the space the beginning and end of the comment characters occupy.
-  return 80
+  return line_size
     - ((m_CommentBegin.size() != 0) ? m_CommentBegin.size() + 1 : 0)
     - ((m_CommentEnd.size() != 0) ? m_CommentEnd.size() + 1 : 0);
 }
