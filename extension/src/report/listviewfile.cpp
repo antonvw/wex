@@ -2,7 +2,7 @@
 // Name:      listviewfile.cpp
 // Purpose:   Implementation of class wxExListViewFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -105,6 +105,12 @@ wxExListViewFile::~wxExListViewFile()
 
 void wxExListViewFile::AddItems()
 {
+  if (wxExDir::GetIsBusy())
+  {
+    wxLogStatus(_("Busy"));
+    return;
+  }
+  
   int flags = 0;
 
   if (wxConfigBase::Get()->ReadBool(m_TextAddFiles, true)) 

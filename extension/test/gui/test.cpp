@@ -764,8 +764,16 @@ void wxExGuiTestFixture::testListView()
     listView->SetItem(i, 3, wxString::Format("hello %d", i));
   }
   
+  // Test sorting.
   CPPUNIT_ASSERT(!listView->SortColumn("xxx"));
+  
   CPPUNIT_ASSERT( listView->SortColumn("Int"));
+  CPPUNIT_ASSERT( listView->GetItemText(0, "Int") == "0");
+  CPPUNIT_ASSERT( listView->GetItemText(1, "Int") == "1");
+  CPPUNIT_ASSERT( listView->SortColumn("Int"));
+  CPPUNIT_ASSERT( listView->GetItemText(0, "Int") == "9");
+  CPPUNIT_ASSERT( listView->GetItemText(1, "Int") == "8");
+
   CPPUNIT_ASSERT( listView->SortColumn("Date"));
   CPPUNIT_ASSERT( listView->SortColumn("Float"));
   CPPUNIT_ASSERT( listView->SortColumn("String"));
@@ -1715,20 +1723,28 @@ void wxExGuiTestFixture::testViMacros()
   // Variables.
   CPPUNIT_ASSERT(!macros.Expand(vi, "xxx"));
 
-  // Next requires input...    
-  //  CPPUNIT_ASSERT( macros.Expand(vi, "AUTHOR"));
-  
+  // Test all builtin macro variables.
   CPPUNIT_ASSERT( macros.Expand(vi, "CB"));
   CPPUNIT_ASSERT( macros.Expand(vi, "CC"));
   CPPUNIT_ASSERT( macros.Expand(vi, "CE"));
   CPPUNIT_ASSERT( macros.Expand(vi, "CL"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "NL"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "CREATED"));
   CPPUNIT_ASSERT( macros.Expand(vi, "DATE"));
   CPPUNIT_ASSERT( macros.Expand(vi, "DATETIME"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "FILENAME""));
+  CPPUNIT_ASSERT( macros.Expand(vi, "FULLNAME""));
+  CPPUNIT_ASSERT( macros.Expand(vi, "FULLPATH""));
+  CPPUNIT_ASSERT( macros.Expand(vi, "NL"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "PATH""));
   CPPUNIT_ASSERT( macros.Expand(vi, "TIME"));
   CPPUNIT_ASSERT( macros.Expand(vi, "YEAR"));
   
+  // Test environment macro variables.
   CPPUNIT_ASSERT( macros.Expand(vi, "HOME"));
+
+  // Test input macro variables.
+  // Next requires input...    
+  //  CPPUNIT_ASSERT( macros.Expand(vi, "AUTHOR"));
 
   // So save as last test.
   CPPUNIT_ASSERT( macros.SaveDocument());

@@ -539,6 +539,20 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
   {
     expanded = ex->GetSTC()->GetLexer().MakeComment(wxEmptyString, false);
   }
+  else if (m_Name == "CREATED")
+  {
+    wxFileName file(ex->GetSTC()->GetFileName());
+    wxDateTime dtCreate;
+    
+    if (file.GetTimes (NULL, NULL, &dtCreate))
+    {
+      expanded = dtCreate.FormatISODate();
+    }
+    else
+    {
+      expanded = wxDateTime::Now().FormatISODate();
+    }
+  }
   else if (m_Name == "DATE")
   {
     expanded = wxDateTime::Now().FormatISODate();
@@ -549,11 +563,23 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
   }
   else if (m_Name == "FILENAME")
   {
+    expanded = ex->GetSTC()->GetFileName().GetName();
+  }
+  else if (m_Name == "FULLNAME")
+  {
     expanded = ex->GetSTC()->GetFileName().GetFullName();
+  }
+  else if (m_Name == "FULLPATH")
+  {
+    expanded = ex->GetSTC()->GetFileName().GetFullPath();
   }
   else if (m_Name == "NL")
   {
     expanded = ex->GetSTC()->GetEOL();
+  }
+  else if (m_Name == "PATH")
+  {
+    expanded = ex->GetSTC()->GetFileName().GetPath();
   }
   else if (m_Name == "TIME")
   {

@@ -549,7 +549,7 @@ bool wxExEx::Indent(
 
 bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
 {
-  if (!m_IsActive)
+  if (!m_IsActive || m_Macros.size() == 0)
   {
     return false;
   }
