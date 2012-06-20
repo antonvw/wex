@@ -6,7 +6,7 @@ Author:    Anton van Wezenbeek
 Copyright: (c) 2012, Anton van Wezenbeek
 
 Both variables and names have a "name" attribute, you call the macro
-from vi mode using @name@. If the name is a single character c, you can all it
+from vi mode using @name@. If the name is a single character c, you can call it
 using @c.
 
 Each macro can have several commands, a 
@@ -16,15 +16,24 @@ control character.
 Variables are expanded when playing back the macro. 
 - A variable can have a "type" attribute.
   The next "type" values are supported:
-  - BUILTIN:     expansion is done using internal value
-  - ENVIRONMENT: expansion is done using environment value
-  - INPUT:       expansion is done by asking value from user
-  - INPUT-SAVE:  expansion is done by asking value from user, value is saved
-  If you do not specify the attribute "type", then the variable is expanded
+  - BUILTIN:     
+    Expansion is done using internal value, so you cannot add your own.
+  - ENVIRONMENT: 
+    Expansion is done using environment value, you can add your own,
+    as long as they are part of the environment variables.
+  - INPUT:       
+    Expansion is done by asking value from user. You can add your own.
+  - INPUT-SAVE:  
+    Expansion is done by asking value from user, value is saved.
+    The next time this value is used for expansion, no input is asked for.
+    You can add your own.
+  
+  If you do not specify this attribute, then the variable is expanded
   to the xml contents as specified here.
+  
 - A variable can have a "prefix" attribute. 
   This attribute causes a comment line to be generated that is prefixed with
-  the value of the "prefix" attribute, according to the "type" attribute.
+  the value of this attribute, according to the "type" attribute.
 -->
 <macros>
   <!-- Expands to Comment Begin according to current lexer -->
@@ -35,14 +44,22 @@ Variables are expanded when playing back the macro.
   <variable name="CE"               type="BUILTIN"/>
   <!-- Expands to Comment Line according to current lexer -->
   <variable name="CL"               type="BUILTIN"/>
+  <!-- Expands to creation date current filename -->
+  <variable name="CREATED"          type="BUILTIN"/>
   <!-- Expands to current date -->
   <variable name="DATE"             type="BUILTIN"/>
   <!-- Expands to current datetime -->
   <variable name="DATETIME"         type="BUILTIN"/>
-  <!-- Expands to current filename -->
+  <!-- Expands to current filename without extension-->
   <variable name="FILENAME"         type="BUILTIN"/>
+  <!-- Expands to current filename -->
+  <variable name="FULLNAME"         type="BUILTIN"/>
+  <!-- Expands to current filename fullpath -->
+  <variable name="FULLPATH"         type="BUILTIN"/>
   <!-- Expands to new line according to current document type -->
   <variable name="NL"               type="BUILTIN"/>
+  <!-- Expands to current filename path only -->
+  <variable name="PATH"         type="BUILTIN"/>
   <!-- Expands to current time -->
   <variable name="TIME"             type="BUILTIN"/>
   <!-- Expands to current year -->
@@ -65,7 +82,7 @@ Variables are expanded when playing back the macro.
     <command>@CB@</command>
     <command>i Name:      </command>
     <command encoded="true">27</command>
-    <command>@FILENAME@</command>
+    <command>@FULLNAME@</command>
     <command>@CC@</command>
     <command>o</command>
     <command encoded="true">27</command>
