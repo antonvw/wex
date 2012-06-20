@@ -856,6 +856,7 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   for (int i = 0; i < GetItemCount(); i++)
   {
     const wxString val = wxListView::GetItemText(i, column_no);
+    items.push_back(val);
 
     switch (sorted_col->GetType())
     {
@@ -888,7 +889,6 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     break;
 
     case wxExColumn::COL_STRING: 
-      items.push_back(val);
       SetItemData(i, i); 
     break;
     
