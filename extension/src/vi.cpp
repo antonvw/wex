@@ -733,7 +733,14 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
       // because of the NULL).
       if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
       {
-        m_Command += event.GetUnicodeKey();
+        if (m_Command.StartsWith("@") && event.GetKeyCode() == WXK_BACK)
+        {
+          m_Command = m_Command.Truncate(m_Command.size() - 1);
+        }
+        else
+        {
+          m_Command += event.GetUnicodeKey();
+        }
       
         if (Command(m_Command))
         {
@@ -766,24 +773,23 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     event.GetKeyCode() == WXK_RETURN ||
     event.GetKeyCode() == WXK_TAB)
   {
-    // See comment above.
-    if (event.GetKeyCode() != WXK_NONE)
+    if (m_Command.StartsWith("@") && event.GetKeyCode() == WXK_BACK)
     {
-      m_Command += event.GetKeyCode();
-      
-      const bool result = Command(m_Command);
-    
-      if (result)
-      {
-        m_Command.clear();
-      }
-    
-      return !result;
+      m_Command = m_Command.Truncate(m_Command.size() - 1);
     }
     else
     {
-      return true;
+      m_Command += event.GetKeyCode();
     }
+      
+    const bool result = Command(m_Command);
+    
+    if (result)
+    {
+      m_Command.clear();
+    }
+    
+    return !result;
   }
   else
   {
