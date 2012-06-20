@@ -755,6 +755,9 @@ void wxExGuiTestFixture::testListView()
   
   listView->Print();
   listView->PrintPreview();
+
+  // Delete all items, to test sorting later on.  
+  listView->DeleteAllItems();
   
   for (int i = 0; i < 10; i++)
   {
@@ -766,11 +769,10 @@ void wxExGuiTestFixture::testListView()
   
   // Test sorting.
   CPPUNIT_ASSERT(!listView->SortColumn("xxx"));
-  
-  CPPUNIT_ASSERT( listView->SortColumn("Int"));
+  CPPUNIT_ASSERT( listView->SortColumn("Int", SORT_ASCENDING));
   CPPUNIT_ASSERT( listView->GetItemText(0, "Int") == "0");
   CPPUNIT_ASSERT( listView->GetItemText(1, "Int") == "1");
-  CPPUNIT_ASSERT( listView->SortColumn("Int"));
+  CPPUNIT_ASSERT( listView->SortColumn("Int", SORT_DESCENDING));
   CPPUNIT_ASSERT( listView->GetItemText(0, "Int") == "9");
   CPPUNIT_ASSERT( listView->GetItemText(1, "Int") == "8");
 
@@ -1731,11 +1733,11 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT( macros.Expand(vi, "CREATED"));
   CPPUNIT_ASSERT( macros.Expand(vi, "DATE"));
   CPPUNIT_ASSERT( macros.Expand(vi, "DATETIME"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "FILENAME""));
-  CPPUNIT_ASSERT( macros.Expand(vi, "FULLNAME""));
-  CPPUNIT_ASSERT( macros.Expand(vi, "FULLPATH""));
+  CPPUNIT_ASSERT( macros.Expand(vi, "FILENAME"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "FULLNAME"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "FULLPATH"));
   CPPUNIT_ASSERT( macros.Expand(vi, "NL"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "PATH""));
+  CPPUNIT_ASSERT( macros.Expand(vi, "PATH"));
   CPPUNIT_ASSERT( macros.Expand(vi, "TIME"));
   CPPUNIT_ASSERT( macros.Expand(vi, "YEAR"));
   

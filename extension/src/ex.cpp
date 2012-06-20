@@ -549,7 +549,14 @@ bool wxExEx::Indent(
 
 bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
 {
-  if (!m_IsActive || m_Macros.size() == 0)
+  if (!m_IsActive)
+  {
+    return false;
+  }
+  
+  const wxArrayString macros(m_Macros.Get());
+  
+  if (macros.size() == 0)
   {
     return false;
   }
@@ -563,7 +570,7 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
       _("Select Macro"),
       m_Macros.Get());
       
-    const int index = m_Macros.Get().Index(m_Macros.GetMacro());
+    const int index = macros.Index(m_Macros.GetMacro());
   
     if (index != wxNOT_FOUND)
     {
