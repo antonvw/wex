@@ -528,8 +528,11 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
   }
   else if (m_Name == "CC")
   {
+    const int line = ex->GetSTC()->GetCurrentLine();
+    const int startPos = ex->GetSTC()->PositionFromLine(line);
+    const int endPos = ex->GetSTC()->GetLineEndPosition(line);
     expanded = ex->GetSTC()->GetLexer().CommentComplete(
-      ex->GetSTC()->GetCurLine());
+      ex->GetSTC()->GetTextRange(startPos, endPos));
   }
   else if (m_Name == "CE")
   {
