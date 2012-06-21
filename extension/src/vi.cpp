@@ -776,6 +776,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     if (m_Command.StartsWith("@") && event.GetKeyCode() == WXK_BACK)
     {
       m_Command = m_Command.Truncate(m_Command.size() - 1);
+      return false;
     }
     else
     {
