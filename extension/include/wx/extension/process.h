@@ -65,7 +65,7 @@ public:
   /// Returns true if the command could not be executed.
   bool GetError() const {return m_Error;};
 
-  /// Gets the output from Execute.
+  /// Gets the output from Execute (only for wxEXEC_SYNC).
   const wxString& GetOutput() const {return m_Output;};
   
   /// Returns the STC component from the dialog
@@ -101,7 +101,7 @@ protected:
     /// path from line (if available)
     const wxString& path,
     /// lineno from line (if available)
-    const wxString& lineno);
+    const wxString& lineno) const;
     
   /// Override to create a report.
   /// Called for each invocation of Execute.
@@ -115,8 +115,8 @@ protected:
   /// Handles timer events.
   void OnTimer(wxTimerEvent& event);
 private:
-  bool CheckInput();
-  void HandleLine(const wxString& line);
+  bool CheckInput() const;
+  void HandleLine(const wxString& line) const;
 
   bool m_Error;
   
