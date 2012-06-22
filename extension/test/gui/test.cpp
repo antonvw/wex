@@ -1246,11 +1246,27 @@ void wxExGuiTestFixture::testVariable()
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello again");
   wxExEx* ex = new wxExEx(stc);
   
-  wxExVariable var;
+  wxExVariable v;
+  CPPUNIT_ASSERT( v.Expand(false, ex));
+  CPPUNIT_ASSERT( v.GetName().empty());
+  CPPUNIT_ASSERT(!v.IsModified());
   
-  CPPUNIT_ASSERT( var.Expand(false, ex));
-  CPPUNIT_ASSERT( var.GetName().empty());
+  wxXmlNode xml(wxXML_ELEMENT_NODE, "variable");
+  xml.AddAttribute("name", "test");
+  xml.AddAttribute("type", "BUILTIN");
+    
+  wxExVariable var(&xml);
+  CPPUNIT_ASSERT( var.GetName() == "test");
+  CPPUNIT_ASSERT(!var.Expand(false, ex));
   CPPUNIT_ASSERT(!var.IsModified());
+  
+  xml.DeleteAttribute("name");
+  xml.AddAttribute("name", "YEAR");
+  
+  wxExVariable var2(&xml);
+  CPPUNIT_ASSERT( var2.GetName() == "YEAR");
+  CPPUNIT_ASSERT( var2.Expand(false, ex));
+  CPPUNIT_ASSERT(!var2.IsModified());
 }
 
 void wxExGuiTestFixture::testVCS()
