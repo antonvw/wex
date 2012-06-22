@@ -27,17 +27,19 @@ public:
   /// Destructor.
  ~wxExVariable();
   
-  /// Constructor using xml node.
+  /// Constructor using xml node, setting name, value,
+  /// prefix using node attributes.
   wxExVariable(const wxXmlNode* node);
   
   /// Expands variable to ex component.
+  /// This might update the value, and set the modified flag.
   /// Returns true if variable could be expanded.
   bool Expand(bool playback, wxExEx* ex);
   
   /// Returns variable name.
   const wxString& GetName() const {return m_Name;};
   
-  /// Returns true if expanding has modified value.
+  /// Returns true if expanding has modified the value.
   bool IsModified() const {return m_IsModified;};
   
   /// Save in xml node.
