@@ -28,7 +28,9 @@ enum
 };
 
 wxExVariable::wxExVariable()
-  : m_Dialog(NULL)
+  : m_Type(VARIABLE_READ)
+  , m_IsModified(false)
+  , m_Dialog(NULL)
 {
 }
   
@@ -218,17 +220,22 @@ bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
     {
       if (m_Dialog == NULL)
       {
-        m_Dialog = new wxExSTCEntryDialog dlg(
+        m_Dialog = new wxExSTCEntryDialog(
           wxTheApp->GetTopWindow(),
-          m_Name,
+          m_Name, 
+          m_Value);
+          
+        m_Dialog->GetSTC()->GetVi().Use(false);
       }
-
-      m_Dialog->SetTitle(m_Name);
-      m_Dialog->GetSTC()->SetText(m_Value);
+      else
+      {
+        m_Dialog->SetTitle(m_Name);
+        m_Dialog->GetSTC()->SetText(m_Value);
+      }
         
       if (m_Dialog->ShowModal())
       {
-        value = dlg->GetText();
+        value = m_Dialog->GetText();
       }
     }
     else

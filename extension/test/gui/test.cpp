@@ -1241,6 +1241,25 @@ void wxExGuiTestFixture::testUtil()
     "hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
 }
 
+void wxExGuiTestFixture::testVariable()
+{
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello again");
+  wxExEx* ex = new wxExEx(stc);
+  
+  wxExVariable var;
+  
+  CPPUNIT_ASSERT( var.Expand(false, ex));
+  CPPUNIT_ASSERT( var.GetName().empty());
+  CPPUNIT_ASSERT(!var.IsModified());
+
+  // Clear should have no effect on other methods.  
+  var.Clear();
+  CPPUNIT_ASSERT( var.Expand(false, ex));
+  CPPUNIT_ASSERT( var.GetName().empty());
+  CPPUNIT_ASSERT(!var.IsModified());
+  
+}
+
 void wxExGuiTestFixture::testVCS()
 {
   CPPUNIT_ASSERT(wxExVCS::GetCount() > 0);
@@ -1885,6 +1904,10 @@ wxExAppTestSuite::wxExAppTestSuite()
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testUtil",
     &wxExGuiTestFixture::testUtil));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testVariable",
+    &wxExGuiTestFixture::testVariable));
     
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testVCS",
