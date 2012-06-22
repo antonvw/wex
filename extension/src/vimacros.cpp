@@ -225,16 +225,6 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   
   m_IsPlayback = true;
   
-  // Clear all input variables values.
-  for (
-    std::map<wxString, wxExVariable>::iterator it = 
-      m_Variables.begin();
-    it != m_Variables.end();
-    ++it)
-  {
-    it->second.Clear();
-  }
-  
   m_Macro = macro;
   
   for (int i = 0; i < repeat; i++)

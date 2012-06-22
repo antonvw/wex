@@ -22,7 +22,7 @@ enum
 {
   VARIABLE_BUILTIN,        ///< a builtin variable
   VARIABLE_ENVIRONMENT,    ///< an environment variable
-  VARIABLE_INPUT,          ///< input once from user
+  VARIABLE_INPUT,          ///< input from user
   VARIABLE_INPUT_SAVE,     ///< input once from user, save value in xml file
   VARIABLE_READ            ///< read value from xml file
 };
@@ -70,11 +70,11 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
   m_Value = node->GetNodeContent().Strip(wxString::both);
 }
 
-void wxExVariable::Clear()
+wxExVariable::~wxExVariable()
 {
-  if (m_Type == VARIABLE_INPUT)
+  if (m_Dialog != NULL)
   {
-    m_Value.clear();
+    delete m_Dialog;
   }
 }
 
@@ -105,7 +105,6 @@ bool wxExVariable::Expand(bool playback, wxExEx* ex)
       
     case VARIABLE_INPUT:
     case VARIABLE_INPUT_SAVE:
-      // First expand variable.
       if (!ExpandInput(playback, text))
       {
         return false;
@@ -212,7 +211,7 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
 
 bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
 {
-  if (!playback || m_Value.empty())
+  if (!playback || m_Value.empty() || m_Type == VARIABLE_INPUT)
   {
     wxString value;
     
@@ -233,10 +232,12 @@ bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
         m_Dialog->GetSTC()->SetText(m_Value);
       }
         
-      if (m_Dialog->ShowModal())
+      if (m_Dialog->ShowModal() == wxID_CANCEL)
       {
-        value = m_Dialog->GetText();
+        return false;
       }
+      
+      value = m_Dialog->GetText();
     }
     else
     {
@@ -244,13 +245,13 @@ bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
         m_Name,
         wxGetTextFromUserPromptStr,
         m_Value);
+        
+      if (value.empty())
+      {
+        return false;
+      }  
     }
     
-    if (value.empty())
-    {
-      return false;
-    }  
-          
     expanded = value;
     
     if (m_Value != value)
