@@ -79,45 +79,14 @@ bool wxExProcess::CheckInput()
     return false;
   }
   
-  wxString lineno;
-  wxString path;
-
-  // Check on error in php script output.
-  std::vector <wxString> v;
-
-  if (wxExMatch(".*in (.*) on line (.*)", m_Output, v) > 1)
+  wxStringTokenizer tkz(m_Output, wxTextFile::GetEOL());
+  
+  while (tkz.HasMoreTokens())
   {
-    path = v[0];
-    lineno = v[1];
-  }
-  else
-  {
-    // Check on error in gcc output (and some others).
-    wxStringTokenizer tkz(m_Output, ':');
-    path = tkz.GetNextToken();
-
-    if (tkz.HasMoreTokens())
-    {
-      lineno = tkz.GetNextToken();
-    }
-  }
-
-  if (atoi(lineno.c_str()) == 0)
-  {
-    lineno.clear();
-  }
-    
-  if (!wxFileExists(path))
-  {
-    lineno.clear();
-    path.clear();
+    HandleLine(tkz.GetNextToken());
   }
   
-  if (!m_Output.empty())
-  {
-    ReportAdd(m_Output, path, lineno);
-    m_Output.clear();
-  }
+  m_Output.clear();
   
   return true;
 }
@@ -260,6 +229,48 @@ void wxExProcess::HideDialog()
   }
 }
 
+void wxExProcess::HandleLine(const wxString& line)
+{
+  wxString lineno;
+  wxString path;
+
+  // Check on error in php script output.
+  std::vector <wxString> v;
+
+  if (wxExMatch(".*in (.*) on line (.*)", m_Output, v) > 1)
+  {
+    path = v[0];
+    lineno = v[1];
+  }
+  else
+  {
+    // Check on error in gcc output (and some others).
+    wxStringTokenizer tkz(line, ':');
+    path = tkz.GetNextToken();
+
+    if (tkz.HasMoreTokens())
+    {
+      lineno = tkz.GetNextToken();
+    }
+  }
+
+  if (atoi(lineno.c_str()) == 0)
+  {
+    lineno.clear();
+  }
+    
+  if (!wxFileExists(path))
+  {
+    lineno.clear();
+    path.clear();
+  }
+  
+  if (!line.empty())
+  {
+    ReportAdd(line, path, lineno);
+  }
+}
+  
 bool wxExProcess::IsRunning() const
 {
   if (GetPid() <= 0)
