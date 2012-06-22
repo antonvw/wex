@@ -47,6 +47,7 @@
 #include <wx/extension/tool.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
+#include <wx/extension/variable.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/vcscommand.h>
 #include <wx/extension/vcsentry.h>

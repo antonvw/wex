@@ -61,6 +61,7 @@ Copyright: (c) 2012 Anton van Wezenbeek
     <sources>../extension/src/tool.cpp</sources>
     <sources>../extension/src/toolbar.cpp</sources>
     <sources>../extension/src/util.cpp</sources>
+    <sources>../extension/src/variable.cpp</sources>
     <sources>../extension/src/vcs.cpp</sources>
     <sources>../extension/src/vcscommand.cpp</sources>
     <sources>../extension/src/vcsentry.cpp</sources>
@@ -110,6 +111,7 @@ Copyright: (c) 2012 Anton van Wezenbeek
     <headers>../extension/include/wx/extension/tool.h</headers>
     <headers>../extension/include/wx/extension/toolbar.h</headers>
     <headers>../extension/include/wx/extension/util.h</headers>
+    <headers>../extension/include/wx/extension/variable.h</headers>
     <headers>../extension/include/wx/extension/vcs.h</headers>
     <headers>../extension/include/wx/extension/vcscommand.h</headers>
     <headers>../extension/include/wx/extension/vcsentry.h</headers>
