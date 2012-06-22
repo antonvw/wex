@@ -80,6 +80,7 @@ public:
   void testStyle();
   void testTextFile();
   void testUtil();
+  void testVariable();
   void testVCS();
   void testVCSCommand();
   void testVCSEntry();
