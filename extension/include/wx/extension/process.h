@@ -116,6 +116,7 @@ protected:
   void OnTimer(wxTimerEvent& event);
 private:
   bool CheckInput();
+  void HandleLine(const wxString& line);
 
   bool m_Error;
   
