@@ -53,15 +53,17 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
   return *this;
 }
 
-bool wxExProcess::CheckInput()
+bool wxExProcess::CheckInput() const
 {
+  wxString output;
+  
   if (IsInputAvailable())
   {
     wxTextInputStream tis(*GetInputStream());
     
     while (IsInputAvailable())
     {
-      m_Output << tis.GetChar();
+      output << tis.GetChar();
     }
   }
   else if (IsErrorAvailable())
@@ -70,23 +72,21 @@ bool wxExProcess::CheckInput()
     
     while (IsErrorAvailable())
     {
-      m_Output << tis.GetChar();
+      output << tis.GetChar();
     }
   }
 
-  if (m_Output.empty())
+  if (output.empty())
   {
     return false;
   }
   
-  wxStringTokenizer tkz(m_Output, wxTextFile::GetEOL());
+  wxStringTokenizer tkz(output, wxTextFile::GetEOL());
   
   while (tkz.HasMoreTokens())
   {
     HandleLine(tkz.GetNextToken());
   }
-  
-  m_Output.clear();
   
   return true;
 }
@@ -169,6 +169,8 @@ long wxExProcess::Execute(
     (wd.empty() ? wxExConfigFirstOf(m_WorkingDirKey): wd), 
     wxEnvVariableHashMap()};
     
+  m_Error = false;
+    
   if (!(flags & wxEXEC_SYNC))
   { 
     if (!ReportCreate())
@@ -190,6 +192,10 @@ long wxExProcess::Execute(
       
       m_Timer->Start(100); // each 100 milliseconds
     }
+    else
+    {
+      m_Error = true;
+    }
     
     return pid;
   }
@@ -198,6 +204,7 @@ long wxExProcess::Execute(
     wxArrayString output;
     wxArrayString errors;
     long retValue;
+    m_Output.clear();
     
     m_Dialog->GetSTCShell()->EnableShell(false);
     
@@ -221,15 +228,7 @@ long wxExProcess::Execute(
   }
 }
 
-void wxExProcess::HideDialog()
-{
-  if (m_Dialog != NULL)
-  {
-    m_Dialog->Hide();
-  }
-}
-
-void wxExProcess::HandleLine(const wxString& line)
+void wxExProcess::HandleLine(const wxString& line) const
 {
   wxString lineno;
   wxString path;
@@ -237,7 +236,7 @@ void wxExProcess::HandleLine(const wxString& line)
   // Check on error in php script output.
   std::vector <wxString> v;
 
-  if (wxExMatch(".*in (.*) on line (.*)", m_Output, v) > 1)
+  if (wxExMatch(".*in (.*) on line (.*)", line, v) > 1)
   {
     path = v[0];
     lineno = v[1];
@@ -271,6 +270,14 @@ void wxExProcess::HandleLine(const wxString& line)
   }
 }
   
+void wxExProcess::HideDialog()
+{
+  if (m_Dialog != NULL)
+  {
+    m_Dialog->Hide();
+  }
+}
+
 bool wxExProcess::IsRunning() const
 {
   if (GetPid() <= 0)
@@ -347,7 +354,7 @@ void wxExProcess::OnTimer(wxTimerEvent& event)
 bool wxExProcess::ReportAdd(
   const wxString& line, 
   const wxString& path,
-  const wxString& lineno)
+  const wxString& lineno) const
 {
   m_Dialog->GetSTCShell()->AddText(line);
   m_Dialog->GetSTCShell()->Prompt();

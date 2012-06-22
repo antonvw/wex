@@ -24,7 +24,7 @@ wxExProcessListView::wxExProcessListView(wxExFrameWithHistory* frame)
 bool wxExProcessListView::ReportAdd(
   const wxString& line, 
   const wxString& path,
-  const wxString& lineno)
+  const wxString& lineno) const
 {
   if (m_ListView == NULL)
   {

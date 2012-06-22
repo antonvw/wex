@@ -28,7 +28,7 @@ protected:
   virtual bool ReportAdd(
     const wxString& line, 
     const wxString& path,
-    const wxString& lineno);
+    const wxString& lineno) const;
     
   /// Override from base class.
   /// Calls Activate to activate on frame to select a report listview. 
