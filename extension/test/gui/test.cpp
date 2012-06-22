@@ -1251,13 +1251,6 @@ void wxExGuiTestFixture::testVariable()
   CPPUNIT_ASSERT( var.Expand(false, ex));
   CPPUNIT_ASSERT( var.GetName().empty());
   CPPUNIT_ASSERT(!var.IsModified());
-
-  // Clear should have no effect on other methods.  
-  var.Clear();
-  CPPUNIT_ASSERT( var.Expand(false, ex));
-  CPPUNIT_ASSERT( var.GetName().empty());
-  CPPUNIT_ASSERT(!var.IsModified());
-  
 }
 
 void wxExGuiTestFixture::testVCS()

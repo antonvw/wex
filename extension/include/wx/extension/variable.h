@@ -16,17 +16,19 @@ class wxExEx;
 class wxExSTCEntryDialog;
 
 /// Offers variable support to be used in macros.
+/// Variables are assigned from an xml node, and
+/// you can expand them on an ex component.
 class WXDLLIMPEXP_BASE wxExVariable
 {
 public:
   /// Default constructor.
   wxExVariable();
   
+  /// Destructor.
+ ~wxExVariable();
+  
   /// Constructor using xml node.
   wxExVariable(const wxXmlNode* node);
-  
-  /// Clears value, depending on type.
-  void Clear();
   
   /// Expands variable to ex component.
   /// Returns true if variable could be expanded.
@@ -47,6 +49,7 @@ private:
   bool m_IsModified;
     
   int m_Type;
+  
   wxString m_Name;
   wxString m_Prefix;
   
@@ -55,6 +58,7 @@ private:
   /// The values are cleared each time you start playback.
   wxString m_Value;
   
+  // The dialog used when a prefix is available.
   wxExSTCEntryDialog* m_Dialog;
 };
 
