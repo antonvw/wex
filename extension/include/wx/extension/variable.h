@@ -13,6 +13,7 @@
 #if wxUSE_GUI
 
 class wxExEx;
+class wxExSTCEntryDialog;
 
 /// Offers variable support to be used in macros.
 class WXDLLIMPEXP_BASE wxExVariable
@@ -53,6 +54,8 @@ private:
   /// so, while playing back, you have to enter them only once.
   /// The values are cleared each time you start playback.
   wxString m_Value;
+  
+  wxExSTCEntryDialog* m_Dialog;
 };
 
 #endif // wxUSE_GUI

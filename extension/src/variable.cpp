@@ -28,12 +28,14 @@ enum
 };
 
 wxExVariable::wxExVariable()
+  : m_Dialog(NULL)
 {
 }
   
 wxExVariable::wxExVariable(const wxXmlNode* node)
   : m_Type(VARIABLE_READ)
   , m_IsModified(false)
+  , m_Dialog(NULL)
 {
   const wxString type = node->GetAttribute("type");
    
@@ -214,15 +216,19 @@ bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
     
     if (!m_Prefix.empty())
     {
-      wxExSTCEntryDialog dlg(
-        wxTheApp->GetTopWindow(),
-        m_Name,
-        m_Value,
-        wxEmptyString);
-        
-      if (dlg.ShowModal())
+      if (m_Dialog == NULL)
       {
-        value = dlg.GetText();
+        m_Dialog = new wxExSTCEntryDialog dlg(
+          wxTheApp->GetTopWindow(),
+          m_Name,
+      }
+
+      m_Dialog->SetTitle(m_Name);
+      m_Dialog->GetSTC()->SetText(m_Value);
+        
+      if (m_Dialog->ShowModal())
+      {
+        value = dlg->GetText();
       }
     }
     else
@@ -231,12 +237,12 @@ bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
         m_Name,
         wxGetTextFromUserPromptStr,
         m_Value);
-         
-      if (value.empty())
-      {
-        return false;
-      }
     }
+    
+    if (value.empty())
+    {
+      return false;
+    }  
           
     expanded = value;
     
