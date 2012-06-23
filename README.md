@@ -42,7 +42,7 @@ one of these applications, being a full featured source code text editor.
     
   - under cygwin:   
     `make`  
-    wxextension does not yet compile
+    wxExtension does not yet compile
     
   - under Ubuntu:  
     `make`
@@ -73,7 +73,7 @@ one of these applications, being a full featured source code text editor.
   using [Doxygen (1.7.1)](http://www.stack.nl/~dimitri/doxygen/)
 
 - translation is done using [poedit (1.4.6)](http://www.poedit.net/)    
-  - wxextension has it's own localization file, your application should
+  - wxExtension has it's own localization file, your application should
     also add it's own one (add _() around text strings), 
     and also put the standard wxwidgets localization file
     in the localization dir.  
