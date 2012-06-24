@@ -2,7 +2,7 @@
 // Name:      grid.cpp
 // Purpose:   Implementation of wxExGrid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -231,6 +231,16 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
 
     end_row = -1;
     end_col = -1;
+  }
+  
+  if (start_col == -1)
+  {
+    start_col = 0;
+  }
+
+  if (start_row == -1)
+  {
+    start_row = 0;
   }
 
   wxGridCellCoords match;
