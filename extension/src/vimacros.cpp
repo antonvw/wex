@@ -191,12 +191,36 @@ bool wxExViMacros::LoadDocument()
         command = command->GetNext();
       }
       
-      m_Macros[child->GetAttribute("name")] = v;
+      std::map<wxString, std::vector< wxString >>::const_iterator it = 
+        m_Macros.find(child->GetAttribute("name"));
+    
+      if (it != m_Macros.end())
+      {
+        wxLogError("Duplicate macro: %s on line: %d", 
+          child->GetAttribute("name"),
+          child->GetLineNumber());
+      }
+      else
+      {
+        m_Macros.insert(std::make_pair(child->GetAttribute("name"), v));
+      }
     }
     else if (child->GetName() == "variable")
     {
       wxExVariable variable(child);
-      m_Variables.insert(std::make_pair(variable.GetName(), variable));
+      
+      std::map<wxString, wxExVariable>::const_iterator it = m_Variables.find(variable.GetName());
+    
+      if (it != m_Variables.end())
+      {
+        wxLogError("Duplicate variable: %s on line: %d", 
+         variable.GetName(),
+         child->GetLineNumber());
+      }
+      else
+      {
+        m_Variables.insert(std::make_pair(variable.GetName(), variable));
+      }
     }
       
     child = child->GetNext();
