@@ -74,8 +74,38 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     m_IsModified = true;
   }
   
+  if (!ok)
+  {
+    wxLogStatus(_("Could not expand variable") + ": "  +  variable);
+  }
+  
   return ok;
 }  
+
+bool wxExViMacros::Expand(const wxString& variable, wxString& value)
+{
+  std::map<wxString, wxExVariable>::iterator it = m_Variables.find(variable);
+    
+  if (it == m_Variables.end())
+  {
+    wxLogStatus(_("Unknown variable") + ": "  +  variable);
+    return false;
+  }
+  
+  const bool ok = it->second.Expand(m_IsPlayback, ex, value);
+  
+  if (it->second.IsModified())
+  {
+    m_IsModified = true;
+  }
+  
+  if (!ok)
+  {
+    wxLogStatus(_("Could not expand variable") + ": "  +  variable);
+  }
+  
+  return ok;
+}
 
 const wxArrayString wxExViMacros::Get() const
 {

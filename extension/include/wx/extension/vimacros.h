@@ -28,10 +28,6 @@ public:
   /// Default constructor.
   wxExViMacros();
   
-  /// Expands variable to ex component.
-  /// Returns true if variable could be expanded.
-  bool Expand(wxExEx* ex, const wxString& variable);
-  
   /// Returns all macros (names) as an array of strings.
   const wxArrayString Get() const;
   
@@ -77,6 +73,14 @@ public:
   
   /// Stops recording.
   void StopRecording();
+  
+  /// Expands variable to ex component.
+  /// Returns true if variable could be expanded.
+  static bool Expand(wxExEx* ex, const wxString& variable);
+  
+  /// Expands variable to value text.
+  /// Returns true if variable could be expanded.
+  static bool Expand(wxExEx* ex, const wxString& variable, wxString& value);
   
   /// Returns the filename with xml document.
   static const wxFileName GetFileName();

@@ -5,6 +5,8 @@
 // Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
+#include <fstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -24,7 +26,8 @@ enum
   VARIABLE_ENVIRONMENT,    ///< an environment variable
   VARIABLE_INPUT,          ///< input from user
   VARIABLE_INPUT_SAVE,     ///< input once from user, save value in xml file
-  VARIABLE_READ            ///< read value from xml file
+  VARIABLE_READ,           ///< read value from macros xml  file
+  VARIABLE_TEMPLATE        ///< read value from a template file
 };
 
 wxExVariable::wxExVariable()
@@ -59,6 +62,10 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
     {
       m_Type = VARIABLE_INPUT_SAVE;
     }
+    else if (type == "TEMPLATE")
+    {
+      m_Type = VARIABLE_TEMPLATE;
+    }
     else
     {
       wxLogError("Variable type is not supported: " + type);
@@ -87,17 +94,29 @@ bool wxExVariable::Expand(bool playback, wxExEx* ex)
   
   wxString text;
   
+  if (!Expand(playback, ex, text))
+  {
+    return false;
+  }
+  
+  ex->GetSTC()->AddText(text);
+    
+  return true;
+}
+
+bool wxExVariable::Expand(bool playback, wxExEx* ex, wxString& value)
+{
   switch (m_Type)
   {
     case VARIABLE_BUILTIN:
-      if (!ExpandBuiltIn(ex, text))
+      if (!ExpandBuiltIn(ex, value))
       {
         return false;
       }
       break;
       
     case VARIABLE_ENVIRONMENT:
-      if (!wxGetEnv(m_Name, &text))
+      if (!wxGetEnv(m_Name, &value))
       {
         return false;
       }
@@ -105,14 +124,21 @@ bool wxExVariable::Expand(bool playback, wxExEx* ex)
       
     case VARIABLE_INPUT:
     case VARIABLE_INPUT_SAVE:
-      if (!ExpandInput(playback, text))
+      if (!ExpandInput(playback, value))
       {
         return false;
       }
       break;
       
     case VARIABLE_READ:
-      text = m_Value;
+      value = m_Value;
+      break;
+      
+    case VARIABLE_TEMPLATE:
+      if (!ExpandTemplate(ex, value))
+      {
+        return false;
+      }
       break;
       
     default: wxFAIL; break;
@@ -121,11 +147,9 @@ bool wxExVariable::Expand(bool playback, wxExEx* ex)
   // If there is a prefix, make a comment out of it.
   if (!m_Prefix.empty())
   {
-    text = ex->GetSTC()->GetLexer().MakeComment(m_Prefix, text);
+    value = ex->GetSTC()->GetLexer().MakeComment(m_Prefix, value);
   }
   
-  ex->GetSTC()->AddText(text);
-    
   return true;
 }
 
@@ -268,6 +292,63 @@ bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
   return true;
 }
 
+bool wxExVariable::ExpandTemplate(wxExEx* ex, wxString& expanded)
+{
+  // Read the file (file name is in m_Value), expand
+  // all macro variables in it, and set expanded.
+  std::ifstream ifs(m_Value , std::ifstream::in);
+
+  if (!ifs.good())
+  {
+    return false;
+  }
+  
+  while (ifs.good()) 
+  {
+    char c = ifs.get();
+    
+    if (c != '@')
+    {
+      expanded << c;
+    }
+    else
+    {
+      wxString variable;
+      bool completed = false;
+      
+      while (ifs.good() && !completed) 
+      {
+        char c = ifs.get();
+    
+        if (c != '@')
+        {
+          variable << c;
+        }
+        else
+        {
+          completed = true;
+        }
+      }
+      
+      if (!completed)
+      {
+        return false;
+      }
+      
+      wxString value;
+      
+      if (!wxExViMacros::Expand(ex, variable, value))
+      {
+        return false;
+      }
+      
+      expanded << value;
+    }
+  }
+  
+  return true;
+}
+
 void wxExVariable::Save(wxXmlNode* node) const
 {
   node->AddAttribute("name", m_Name);
@@ -291,6 +372,10 @@ void wxExVariable::Save(wxXmlNode* node) const
       break;
     
     case VARIABLE_READ:
+      break;
+      
+    case VARIABLE_TEMPLATE:
+      node->AddAttribute("type", "TEMPLATE");
       break;
       
     default: wxFAIL; break;
