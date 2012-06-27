@@ -161,7 +161,7 @@ bool wxExVi::Command(const wxString& command)
     InsertMode(rest.Mid(2));
     return true;
   }
-  else if (rest == "dd")
+  else if (rest == "dd" && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
     Delete(repeat);
   }
