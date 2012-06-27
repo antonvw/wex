@@ -82,7 +82,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
   return ok;
 }  
 
-bool wxExViMacros::Expand(const wxString& variable, wxString& value)
+bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
 {
   std::map<wxString, wxExVariable>::iterator it = m_Variables.find(variable);
     
