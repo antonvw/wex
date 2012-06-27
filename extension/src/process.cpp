@@ -222,7 +222,9 @@ long wxExProcess::Execute(
 
     // We have an error if the command could not be executed.  
     m_Error = (retValue == -1);
-    m_Output = wxJoin(errors, '\n') + wxJoin(output, '\n');
+    
+    // Set output by converting array strings into normal strings.
+    m_Output = wxJoin(errors, '\n', '\n') + wxJoin(output, '\n', '\n');
   
     return retValue;
   }
@@ -318,11 +320,16 @@ void  wxExProcess::OnCommand(wxCommandEvent& event)
   case ID_SHELL_COMMAND:
     {
     // send command to process
-    wxTextOutputStream os(*GetOutputStream());
-    os.WriteString(event.GetString() + "\n");
+    wxOutputStream* os = GetOutputStream();
     
-    m_Dialog->GetSTCShell()->AddText(m_Dialog->GetSTCShell()->GetEOL());
-    m_Dialog->GetSTCShell()->Prompt();
+    if (os != NULL)
+    {
+      wxTextOutputStream os(*GetOutputStream());
+      os.WriteString(event.GetString() + "\n");
+    
+      m_Dialog->GetSTCShell()->AddText(m_Dialog->GetSTCShell()->GetEOL());
+      m_Dialog->GetSTCShell()->Prompt();
+    } 
     }
     break;
 

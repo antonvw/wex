@@ -163,7 +163,7 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (rest == "dd")
   {
-    return Delete(repeat);
+    Delete(repeat);
   }
   else if (rest == "d0" && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
   {
