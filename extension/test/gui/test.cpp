@@ -1779,6 +1779,11 @@ void wxExGuiTestFixture::testViMacros()
   // Next requires input...    
   //  CPPUNIT_ASSERT( macros.Expand(vi, "AUTHOR"));
 
+  // Test template macro variables.
+  //wxString value;
+  //CPPUNIT_ASSERT( macros.Expand(vi, "CHT", value));
+  //CPPUNIT_ASSERT( value.Contains("Template example"));
+
   // So save as last test.
   CPPUNIT_ASSERT( macros.SaveDocument());
   

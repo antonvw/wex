@@ -100,6 +100,7 @@ private:
   static const wxString Decode(const wxString& text);
     
   static bool m_IsModified;
+  static bool m_IsPlayback;
   
   /// All macros, as a map of name and a vector of commands.
   static std::map <wxString, std::vector< wxString > > m_Macros;
@@ -107,7 +108,6 @@ private:
   /// All variables, as a map of name and variable.
   static std::map<wxString, wxExVariable> m_Variables;
   
-  bool m_IsPlayback;
   bool m_IsRecording;
   
   wxString m_Macro;

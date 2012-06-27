@@ -11,6 +11,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/stdpaths.h>
 #include <wx/extension/variable.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/stc.h>
@@ -296,20 +297,29 @@ bool wxExVariable::ExpandTemplate(wxExEx* ex, wxString& expanded)
 {
   // Read the file (file name is in m_Value), expand
   // all macro variables in it, and set expanded.
-  std::ifstream ifs(m_Value , std::ifstream::in);
+  const wxFileName filename(
+#ifdef wxExUSE_PORTABLE
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+#else
+      wxStandardPaths::Get().GetUserDataDir()
+#endif
+      + wxFileName::GetPathSeparator() + m_Value);
+      
+  std::ifstream ifs(filename.GetFullPath() , std::ifstream::in);
 
   if (!ifs.good())
   {
+    wxLogError("Could not open template file: " + filename.GetFullPath());
     return false;
   }
   
   while (ifs.good()) 
   {
-    char c = ifs.get();
+    const int c = ifs.get();
     
     if (c != '@')
     {
-      expanded << c;
+      expanded += wxUniChar(c);
     }
     else
     {
@@ -318,11 +328,11 @@ bool wxExVariable::ExpandTemplate(wxExEx* ex, wxString& expanded)
       
       while (ifs.good() && !completed) 
       {
-        char c = ifs.get();
+        const int c = ifs.get();
     
         if (c != '@')
         {
-          variable << c;
+          variable += wxUniChar(c);
         }
         else
         {
@@ -342,7 +352,7 @@ bool wxExVariable::ExpandTemplate(wxExEx* ex, wxString& expanded)
         return false;
       }
       
-      expanded << value;
+      expanded += value;
     }
   }
   

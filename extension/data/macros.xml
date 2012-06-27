@@ -27,6 +27,10 @@ Variables are expanded when playing back the macro.
     Expansion is done by asking value from user, value is saved.
     The next time this value is used for expansion, no input is asked for.
     You can add your own.
+  - TEMPLATE:
+    Expansion is done by reading the value from a template file. This
+    file is specified in the contents of the node. In the file you
+    can use macro variables as well.
   
   If you do not specify this attribute, then the variable is expanded
   to the xml contents as specified here.
@@ -36,6 +40,7 @@ Variables are expanded when playing back the macro.
   the value of this attribute, according to the "type" attribute.
 -->
 <macros>
+  <!-- BUILTIN type -->
   <!-- Expands to Comment Begin according to current lexer -->
   <variable name="CB"               type="BUILTIN"/>
   <!-- Expands to Comment Complete according to current lexer -->
@@ -65,12 +70,21 @@ Variables are expanded when playing back the macro.
   <!-- Expands to current year -->
   <variable name="YEAR"             type="BUILTIN"/>
   
+  <!-- ENVIRONMENT type -->
   <variable name="HOME"             type="ENVIRONMENT"/>
   
-  <variable name="PURPOSE"          type="INPUT" prefix="Purpose:   "/>
+  <!-- INPUT type -->
+  <variable name="MYCLASS"          type="INPUT"/>
+  <variable name="PURPOSE"          type="INPUT"/>
+  <variable name="PURPOSEP"         type="INPUT" prefix="Purpose:   "/>
   
-  <variable name="AUTHOR"           type="INPUT-SAVE" prefix="Author:    "/>
-  <variable name="AUTHOR-COPYRIGHT" type="INPUT-SAVE"/>
+  <!-- INPUT-SAVE type -->
+  <variable name="AUTHOR"           type="INPUT-SAVE"/>
+  <variable name="AUTHORP"          type="INPUT-SAVE" prefix="Author:    "/>
+
+  <!-- TEMPLATE type -->
+  <!-- A C Header Template -->  
+  <variable name="CHT"              type="TEMPLATE">chdr.tpl</variable>
   
   <macro name="hdr">
     <command>:1</command>
@@ -86,10 +100,10 @@ Variables are expanded when playing back the macro.
     <command>@CC@</command>
     <command>o</command>
     <command encoded="true">27</command>
-    <command>@PURPOSE@</command>
+    <command>@PURPOSEP@</command>
     <command>o</command>
     <command encoded="true">27</command>
-    <command>@AUTHOR@</command>
+    <command>@AUTHORP@</command>
     <command>o</command>
     <command encoded="true">27</command>
     <command>@CB@</command>
@@ -98,7 +112,7 @@ Variables are expanded when playing back the macro.
     <command>@YEAR@</command>
     <command>i </command>
     <command encoded="true">27</command>
-    <command>@AUTHOR-COPYRIGHT@</command>
+    <command>@AUTHOR@</command>
     <command>@CC@</command>
     <command>o</command>
     <command encoded="true">27</command>

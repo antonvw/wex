@@ -18,13 +18,13 @@
 #if wxUSE_GUI
 
 bool wxExViMacros::m_IsModified = false;
+bool wxExViMacros::m_IsPlayback = false;
 
 std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
 std::map <wxString, wxExVariable > wxExViMacros::m_Variables;
 
 wxExViMacros::wxExViMacros()
   : m_IsRecording(false)
-  , m_IsPlayback(false)
 {
 }
 
