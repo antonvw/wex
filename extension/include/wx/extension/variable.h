@@ -37,7 +37,9 @@ public:
   bool Expand(bool playback, wxExEx* ex);
   
   /// Expands variable to value text.
-  bool Expand(bool playback, wxString& value);
+  /// This might update the value, and set the modified flag.
+  /// Returns true if variable could be expanded.
+  bool Expand(bool playback, wxExEx* ex, wxString& value);
   
   /// Returns variable name.
   const wxString& GetName() const {return m_Name;};
