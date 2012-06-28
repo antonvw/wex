@@ -228,7 +228,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
   }
   // Ctrl-Q pressed, used to stop processing.
   else if (
-    event.GetModifiers() == wxMOD_CONTROL && m_Enabled &&
+    event.GetModifiers() == wxMOD_CONTROL && 
    (key == 'Q' || key == 'C'))
   {
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
@@ -283,9 +283,11 @@ void wxExSTCShell::OnStyledText(wxStyledTextEvent& event)
 
 void wxExSTCShell::ProcessChar(int key)
 {
+  // No need to check m_Enabled, already done by calling this method.
+  
   if (key == '\r')
   {
-    if (m_Command.empty() && m_Enabled)
+    if (m_Command.empty())
     {
       wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
       event.SetString(m_Command);
@@ -307,7 +309,7 @@ void wxExSTCShell::ProcessChar(int key)
         Prompt();
       }
       // !.. command, get it from history.
-      else if (m_Command.StartsWith("!") && m_Enabled)
+      else if (m_Command.StartsWith("!"))
       {
         if (SetCommandFromHistory(m_Command.substr(1)))
         {
@@ -326,7 +328,7 @@ void wxExSTCShell::ProcessChar(int key)
         }
       }
       // Other command, send to parent.
-      else if (m_Enabled)
+      else
       {
         KeepCommand();
         wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);

@@ -65,7 +65,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     
   if (it == m_Variables.end())
   {
-    const wxExVariable var(variable);
+    wxExVariable var(variable);
     m_Variables.insert(std::make_pair(variable, var));
     wxLogStatus(_("Added variable") + ": "  +  variable);
     
@@ -102,7 +102,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
     
   if (it == m_Variables.end())
   {
-    const wxExVariable var(variable);
+    wxExVariable var(variable);
     m_Variables.insert(std::make_pair(variable, var));
     wxLogStatus(_("Added variable") + ": "  +  variable);
     
