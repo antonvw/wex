@@ -60,18 +60,30 @@ const wxString wxExViMacros::Encode(const wxString& text, bool& encoded)
 bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
 {
   std::map<wxString, wxExVariable>::iterator it = m_Variables.find(variable);
+  
+  bool ok;
     
   if (it == m_Variables.end())
   {
-    wxLogStatus(_("Unknown variable") + ": "  +  variable);
-    return false;
+    const wxExVariable var(variable);
+    m_Variables.insert(std::make_pair(variable, var));
+    wxLogStatus(_("Added variable") + ": "  +  variable);
+    
+    ok = var.Expand(m_IsPlayback, ex);
+  
+    if (var.IsModified())
+    {
+      m_IsModified = true;
+    }
   }
-  
-  const bool ok = it->second.Expand(m_IsPlayback, ex);
-  
-  if (it->second.IsModified())
+  else
   {
-    m_IsModified = true;
+    ok = it->second.Expand(m_IsPlayback, ex);
+  
+    if (it->second.IsModified())
+    {
+      m_IsModified = true;
+    }
   }
   
   if (!ok)
@@ -86,17 +98,29 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
 {
   std::map<wxString, wxExVariable>::iterator it = m_Variables.find(variable);
     
+  bool ok;
+    
   if (it == m_Variables.end())
   {
-    wxLogStatus(_("Unknown variable") + ": "  +  variable);
-    return false;
+    const wxExVariable var(variable);
+    m_Variables.insert(std::make_pair(variable, var));
+    wxLogStatus(_("Added variable") + ": "  +  variable);
+    
+    ok = var.Expand(m_IsPlayback, ex);
+  
+    if (var.IsModified())
+    {
+      m_IsModified = true;
+    }
   }
-  
-  const bool ok = it->second.Expand(m_IsPlayback, ex, value);
-  
-  if (it->second.IsModified())
+  else
   {
-    m_IsModified = true;
+    ok = it->second.Expand(m_IsPlayback, ex, value);
+  
+    if (it->second.IsModified())
+    {
+      m_IsModified = true;
+    }
   }
   
   if (!ok)

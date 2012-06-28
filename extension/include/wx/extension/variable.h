@@ -24,20 +24,25 @@ public:
   /// Default constructor.
   wxExVariable();
   
-  /// Destructor.
- ~wxExVariable();
+  /// Constructor using name.
+  /// The type is derived from this name, if name starts with MY,
+  /// type will be INPUT, otherwise type will be INPUT-SAVE.
+  wxExVariable(const wxString& name);
   
-  /// Constructor using xml node, setting name, value,
+  /// Constructor using xml node, setting name, type, value,
   /// prefix using node attributes.
   wxExVariable(const wxXmlNode* node);
   
+  /// Destructor.
+ ~wxExVariable();
+  
   /// Expands variable to ex component.
-  /// This might update the value, and set the modified flag.
+  /// This might update the internal value, and set the modified flag.
   /// Returns true if variable could be expanded.
   bool Expand(bool playback, wxExEx* ex);
   
   /// Expands variable to value text.
-  /// This might update the value, and set the modified flag.
+  /// This might update the interanl value, and set the modified flag.
   /// Returns true if variable could be expanded.
   bool Expand(bool playback, wxExEx* ex, wxString& value);
   

@@ -5,13 +5,13 @@
 // Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-#include <fstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <wx/stdpaths.h>
+#include <wx/txtstrm.h>
+#include <wx/wfstream.h>
 #include <wx/extension/variable.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/stc.h>
@@ -76,6 +76,16 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
   m_Name = node->GetAttribute("name");
   m_Prefix = node->GetAttribute("prefix");
   m_Value = node->GetNodeContent().Strip(wxString::both);
+}
+
+wxExVariable::wxExVariable(const wxString& name)
+  : m_IsModified(false)
+  , m_Type(name.StartsWith("MY") ? VARIABLE_INPUT: VARIABLE_INPUT_SAVE)
+  , m_Name(name)
+  , m_Prefix()
+  , m_Value()
+  , m_Dialog(NULL)
+{
 }
 
 wxExVariable::~wxExVariable()
@@ -236,7 +246,7 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
 
 bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
 {
-  if (!playback || m_Value.empty() || m_Type == VARIABLE_INPUT)
+  if (!playback || m_Value.empty())
   {
     wxString value;
     
@@ -304,35 +314,37 @@ bool wxExVariable::ExpandTemplate(wxExEx* ex, wxString& expanded)
       wxStandardPaths::Get().GetUserDataDir()
 #endif
       + wxFileName::GetPathSeparator() + m_Value);
-      
-  std::ifstream ifs(filename.GetFullPath() , std::ifstream::in);
 
-  if (!ifs.good())
+  wxFileInputStream input(filename.GetFullPath());
+  
+  if (!input.IsOk())
   {
     wxLogError("Could not open template file: " + filename.GetFullPath());
     return false;
   }
   
-  while (ifs.good()) 
+  wxTextInputStream text(input);
+  
+  while (input.IsOk() && !input.Eof()) 
   {
-    const int c = ifs.get();
+    const wxChar c = text.GetChar();
     
     if (c != '@')
     {
-      expanded += wxUniChar(c);
+      expanded += c;
     }
     else
     {
       wxString variable;
       bool completed = false;
       
-      while (ifs.good() && !completed) 
+      while (input.IsOk() && !input.Eof() && !completed) 
       {
-        const int c = ifs.get();
+        const wxChar c = text.GetChar();
     
         if (c != '@')
         {
-          variable += wxUniChar(c);
+          variable += c;
         }
         else
         {
@@ -341,6 +353,12 @@ bool wxExVariable::ExpandTemplate(wxExEx* ex, wxString& expanded)
       }
       
       if (!completed)
+      {
+        return false;
+      }
+      
+      // Prevent recursion.
+      if (variable == m_Name)
       {
         return false;
       }

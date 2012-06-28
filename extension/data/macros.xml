@@ -74,12 +74,9 @@ Variables are expanded when playing back the macro.
   <variable name="HOME"             type="ENVIRONMENT"/>
   
   <!-- INPUT type -->
-  <variable name="MYCLASS"          type="INPUT"/>
-  <variable name="PURPOSE"          type="INPUT"/>
   <variable name="PURPOSEP"         type="INPUT" prefix="Purpose:   "/>
   
   <!-- INPUT-SAVE type -->
-  <variable name="AUTHOR"           type="INPUT-SAVE"/>
   <variable name="AUTHORP"          type="INPUT-SAVE" prefix="Author:    "/>
 
   <!-- TEMPLATE type -->
