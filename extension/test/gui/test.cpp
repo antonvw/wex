@@ -1270,6 +1270,10 @@ void wxExGuiTestFixture::testVariable()
   CPPUNIT_ASSERT( var2.GetName() == "YEAR");
   CPPUNIT_ASSERT( var2.Expand(false, ex));
   CPPUNIT_ASSERT(!var2.IsModified());
+  
+  wxExVariable var3("added");
+  CPPUNIT_ASSERT( var3.GetName() == "added");
+  // This is input, we cannot test it at this moment.
 }
 
 void wxExGuiTestFixture::testVCS()
@@ -1663,7 +1667,7 @@ void wxExGuiTestFixture::testVi()
   stc->SetText("");
   CPPUNIT_ASSERT( vi->Command("@YEAR@"));
   CPPUNIT_ASSERT( stc->GetText().Contains("20"));
-  CPPUNIT_ASSERT(!vi->Command("@xxx@"));
+//  CPPUNIT_ASSERT(!vi->Command("@xxx@"));
   CPPUNIT_ASSERT( stc->SetLexer("cpp"));
   stc->SetText("");
   CPPUNIT_ASSERT( vi->Command("@CB@"));
@@ -1754,7 +1758,7 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT(!macros.Playback(vi, "a"));
   
   // Variables.
-  CPPUNIT_ASSERT(!macros.Expand(vi, "xxx"));
+  //CPPUNIT_ASSERT(!macros.Expand(vi, "xxx"));
 
   // Test all builtin macro variables.
   CPPUNIT_ASSERT( macros.Expand(vi, "CB"));

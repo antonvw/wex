@@ -318,7 +318,7 @@ void  wxExProcess::OnCommand(wxCommandEvent& event)
   switch (event.GetId())
   {
   case ID_SHELL_COMMAND:
-    if (IsRunning() 
+    if (IsRunning()) 
     {
       // send command to process
       wxOutputStream* os = GetOutputStream();
@@ -364,7 +364,7 @@ bool wxExProcess::ReportAdd(
   const wxString& path,
   const wxString& lineno) const
 {
-  m_Dialog->GetSTCShell()->AddText(line);
+  m_Dialog->GetSTCShell()->AddText(line + wxTextFile::GetEOL());
   m_Dialog->GetSTCShell()->Prompt();
   return true;
 }
