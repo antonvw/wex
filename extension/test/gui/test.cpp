@@ -1729,7 +1729,8 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT( macros.Get("a").front() == "a");
   CPPUNIT_ASSERT( stc->GetText().Contains("test"));
   stc->SetText("");
-  CPPUNIT_ASSERT( macros.Playback(vi, "a", 0));
+  CPPUNIT_ASSERT(!macros.Playback(vi, "a", 0));
+  CPPUNIT_ASSERT(!macros.Playback(vi, "a", -8));
   CPPUNIT_ASSERT(!stc->GetText().Contains("test"));
   CPPUNIT_ASSERT( macros.Playback(vi, "a", 10));
   CPPUNIT_ASSERT( stc->GetText().Contains("testtesttesttest"));

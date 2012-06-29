@@ -50,8 +50,7 @@ public:
   bool IsRecording() const {return m_IsRecording;};
   
   /// Plays back macro a number of repeat times on the ex component.
-  /// Returns true if all records could be executed
-  /// (or if repeat is 0).
+  /// Returns true if all records could be executed.
   bool Playback(wxExEx* ex, const wxString& macro, int repeat = 1);
   
   /// Records text to current macro as a new command.

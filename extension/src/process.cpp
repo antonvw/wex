@@ -85,7 +85,14 @@ bool wxExProcess::CheckInput() const
   
   while (tkz.HasMoreTokens())
   {
-    HandleLine(tkz.GetNextToken());
+    wxString line = tkz.GetNextToken();
+
+    if (tkz.HasMoreTokens())
+    {
+      line += wxTextFile::GetEOL();
+    }
+
+    HandleLine(line);
   }
   
   return true;
@@ -266,10 +273,7 @@ void wxExProcess::HandleLine(const wxString& line) const
     path.clear();
   }
   
-  if (!line.empty())
-  {
-    ReportAdd(line, path, lineno);
-  }
+  ReportAdd(line, path, lineno);
 }
   
 void wxExProcess::HideDialog()
@@ -364,7 +368,7 @@ bool wxExProcess::ReportAdd(
   const wxString& path,
   const wxString& lineno) const
 {
-  m_Dialog->GetSTCShell()->AddText(line + wxTextFile::GetEOL());
+  m_Dialog->GetSTCShell()->AddText(line);
   m_Dialog->GetSTCShell()->Prompt();
   return true;
 }
