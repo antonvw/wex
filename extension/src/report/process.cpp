@@ -33,7 +33,8 @@ bool wxExProcessListView::ReportAdd(
 
   wxString line(line_with_eol);
   line.Trim();
-
+  line.Trim(false);
+  
   if (line.empty())
   {
     return false;
