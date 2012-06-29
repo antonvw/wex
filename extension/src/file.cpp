@@ -2,7 +2,7 @@
 // Name:      file.cpp
 // Purpose:   Implementation of class wxExFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -43,17 +43,16 @@ bool wxExFile::CheckSync()
     return false;
   }
 
-  if (m_FileName.m_Stat.Sync())
+  if (
+    m_FileName.m_Stat.Sync() &&
+    m_FileName.m_Stat.st_mtime != m_Stat.st_mtime)
   {
-    if (m_FileName.m_Stat.st_mtime != m_Stat.st_mtime)
-    {
-      Get(true);
+    Get(true);
 
-      // Update the stat member, so next time no sync.
-      m_Stat.Sync();
+    // Update the stat member, so next time no sync.
+    m_Stat.Sync();
       
-      return true;
-    }
+    return true;
   }
   
   return false;

@@ -22,11 +22,19 @@ wxExProcessListView::wxExProcessListView(wxExFrameWithHistory* frame)
 }
 
 bool wxExProcessListView::ReportAdd(
-  const wxString& line, 
+  const wxString& line_with_eol, 
   const wxString& path,
   const wxString& lineno) const
 {
   if (m_ListView == NULL)
+  {
+    return false;
+  }
+
+  wxString line(line_with_eol);
+  line.Trim();
+
+  if (line.empty())
   {
     return false;
   }

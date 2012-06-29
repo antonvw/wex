@@ -246,7 +246,7 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
 
 bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
 {
-  if (!playback || m_Value.empty())
+  if (!playback || m_Value.empty() || m_Type == VARIABLE_INPUT)
   {
     wxString value;
     
