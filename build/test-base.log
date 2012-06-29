@@ -1,6 +1,6 @@
-.reading 100000 items from config took 285 milliseconds
-......wxExFile::Read:206 wxFile::Read:203
-.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:9
+.reading 100000 items from config took 568 milliseconds
+......wxExFile::Read:207 wxFile::Read:213
+.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:10
 .
 
 
