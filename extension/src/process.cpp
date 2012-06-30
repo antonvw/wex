@@ -63,7 +63,12 @@ bool wxExProcess::CheckInput() const
     
     while (IsInputAvailable())
     {
-      output << tis.GetChar();
+      const wxChar c = tis.GetChar();
+      
+      if (c != 0)
+      {
+        output << c;
+      }
     }
   }
   else if (IsErrorAvailable())
@@ -72,7 +77,12 @@ bool wxExProcess::CheckInput() const
     
     while (IsErrorAvailable())
     {
-      output << tis.GetChar();
+      const wxChar c = tis.GetChar();
+      
+      if (c != 0)
+      {
+        output << c;
+      }
     }
   }
 
@@ -301,20 +311,37 @@ bool wxExProcess::IsSelected() const
 
 wxKillError wxExProcess::Kill(wxSignal sig)
 {
-  if (!IsRunning())
+  const wxKillError result = wxProcess::Kill(GetPid(), sig);
+  
+  switch (result)
   {
-    return wxKILL_NO_PROCESS;
+    case wxKILL_OK:
+      wxLogStatus(_("Stopped"));
+      DeletePendingEvents();
+      m_Timer->Stop();
+      m_Dialog->Hide();
+      break;
+
+    case wxKILL_BAD_SIGNAL:
+      wxLogStatus(_("no such signal"));
+      break;
+
+    case wxKILL_ACCESS_DENIED:
+    	wxLogStatus(_("permission denied"));
+      break;
+
+    case wxKILL_NO_PROCESS: 
+      wxLogStatus(_("no such process"));
+      break;
+
+    case wxKILL_ERROR:
+      wxLogStatus(_("another, unspecified error"));
+      break;
+    
+    default: wxFAIL;
   }
-
-  m_Timer->Stop();
   
-  wxLogStatus(_("Stopped"));
-
-  DeletePendingEvents();
-  
-  m_Dialog->Hide();
-
-  return wxProcess::Kill(GetPid(), sig);
+  return result;
 }
 
 void  wxExProcess::OnCommand(wxCommandEvent& event)
