@@ -212,6 +212,7 @@ long wxExProcess::Execute(
     else
     {
       m_Error = true;
+      wxLogStatus(_("Could not execute") + ":" + command);
     }
     
     return pid;
@@ -236,10 +237,12 @@ long wxExProcess::Execute(
     {
       wxLogVerbose("Execute: " + command);
     }
+    else
+    {
+      m_Error = true;
+      wxLogStatus(_("Could not execute") + ":" + command);
+    }
 
-    // We have an error if the command could not be executed.  
-    m_Error = (retValue == -1);
-    
     // Set output by converting array strings into normal strings.
     m_Output = wxJoin(errors, '\n', '\n') + wxJoin(output, '\n', '\n');
   
@@ -311,6 +314,13 @@ bool wxExProcess::IsSelected() const
 
 wxKillError wxExProcess::Kill(wxSignal sig)
 {
+  // This seems necessary.
+  if (!IsRunning())
+  {
+    wxLogStatus(_("no such process"));
+    return wxKILL_NO_PROCESS;
+  }
+  
   const wxKillError result = wxProcess::Kill(GetPid(), sig);
   
   switch (result)
