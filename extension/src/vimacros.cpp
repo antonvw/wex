@@ -17,6 +17,7 @@
 
 #if wxUSE_GUI
 
+bool wxExViMacros::m_IsExpand = false;
 bool wxExViMacros::m_IsModified = false;
 bool wxExViMacros::m_IsPlayback = false;
 
@@ -69,7 +70,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     m_Variables.insert(std::make_pair(variable, var));
     wxLogStatus(_("Added variable") + ": "  +  variable);
     
-    ok = var.Expand(m_IsPlayback, ex);
+    ok = var.Expand(ex);
   
     if (var.IsModified())
     {
@@ -78,7 +79,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
   }
   else
   {
-    ok = it->second.Expand(m_IsPlayback, ex);
+    ok = it->second.Expand(ex);
   
     if (it->second.IsModified())
     {
@@ -106,7 +107,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
     m_Variables.insert(std::make_pair(variable, var));
     wxLogStatus(_("Added variable") + ": "  +  variable);
     
-    ok = var.Expand(m_IsPlayback, ex);
+    ok = var.Expand(ex);
   
     if (var.IsModified())
     {
@@ -115,7 +116,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
   }
   else
   {
-    ok = it->second.Expand(m_IsPlayback, ex, value);
+    ok = it->second.Expand(ex, value);
   
     if (it->second.IsModified())
     {

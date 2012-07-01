@@ -98,6 +98,7 @@ private:
   static const wxString Encode(const wxString& text, bool& encoded);
   static const wxString Decode(const wxString& text);
     
+  static bool m_IsExpand;
   static bool m_IsModified;
   static bool m_IsPlayback;
   

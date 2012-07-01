@@ -1250,7 +1250,7 @@ void wxExGuiTestFixture::testVariable()
   wxExEx* ex = new wxExEx(stc);
   
   wxExVariable v;
-  CPPUNIT_ASSERT( v.Expand(false, ex));
+  CPPUNIT_ASSERT( v.Expand(ex));
   CPPUNIT_ASSERT( v.GetName().empty());
   CPPUNIT_ASSERT(!v.IsModified());
   
@@ -1260,7 +1260,7 @@ void wxExGuiTestFixture::testVariable()
     
   wxExVariable var(&xml);
   CPPUNIT_ASSERT( var.GetName() == "test");
-  CPPUNIT_ASSERT(!var.Expand(false, ex));
+  CPPUNIT_ASSERT(!var.Expand(ex));
   CPPUNIT_ASSERT(!var.IsModified());
   
   xml.DeleteAttribute("name");
@@ -1268,7 +1268,7 @@ void wxExGuiTestFixture::testVariable()
   
   wxExVariable var2(&xml);
   CPPUNIT_ASSERT( var2.GetName() == "YEAR");
-  CPPUNIT_ASSERT( var2.Expand(false, ex));
+  CPPUNIT_ASSERT( var2.Expand(ex));
   CPPUNIT_ASSERT(!var2.IsModified());
   
   wxExVariable var3("added");

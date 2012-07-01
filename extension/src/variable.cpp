@@ -33,6 +33,7 @@ enum
 
 wxExVariable::wxExVariable()
   : m_Type(VARIABLE_READ)
+  , m_AskForInput(true)
   , m_IsModified(false)
   , m_Dialog(NULL)
 {
@@ -40,6 +41,7 @@ wxExVariable::wxExVariable()
   
 wxExVariable::wxExVariable(const wxXmlNode* node)
   : m_Type(VARIABLE_READ)
+  , m_AskForInput(true)
   , m_IsModified(false)
   , m_Dialog(NULL)
 {
@@ -62,6 +64,7 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
     else if (type == "INPUT-SAVE")
     {
       m_Type = VARIABLE_INPUT_SAVE;
+      m_AskForInput = false;
     }
     else if (type == "TEMPLATE")
     {
@@ -86,6 +89,7 @@ wxExVariable::wxExVariable(const wxString& name)
   , m_Value()
   , m_Dialog(NULL)
 {
+  m_AskForInput = (m_Type == VARIABLE_INPUT);
 }
 
 wxExVariable::~wxExVariable()
@@ -96,7 +100,15 @@ wxExVariable::~wxExVariable()
   }
 }
 
-bool wxExVariable::Expand(bool playback, wxExEx* ex)
+void wxExVariable::AskForInput() 
+{
+  if (m_Type == VARIABLE_INPUT)
+  {
+    m_AskForInput = true;
+  }
+}
+
+bool wxExVariable::Expand(wxExEx* ex)
 {
   if (ex->GetSTC()->GetReadOnly() || ex->GetSTC()->HexMode())
   {
@@ -105,7 +117,7 @@ bool wxExVariable::Expand(bool playback, wxExEx* ex)
   
   wxString text;
   
-  if (!Expand(playback, ex, text))
+  if (!Expand(ex, text))
   {
     return false;
   }
@@ -115,7 +127,7 @@ bool wxExVariable::Expand(bool playback, wxExEx* ex)
   return true;
 }
 
-bool wxExVariable::Expand(bool playback, wxExEx* ex, wxString& value)
+bool wxExVariable::Expand(wxExEx* ex, wxString& value)
 {
   switch (m_Type)
   {
@@ -135,7 +147,7 @@ bool wxExVariable::Expand(bool playback, wxExEx* ex, wxString& value)
       
     case VARIABLE_INPUT:
     case VARIABLE_INPUT_SAVE:
-      if (!ExpandInput(playback, value))
+      if (!ExpandInput(value))
       {
         return false;
       }
@@ -244,9 +256,9 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
   return true;
 }
 
-bool wxExVariable::ExpandInput(bool playback, wxString& expanded)
+bool wxExVariable::ExpandInput(wxString& expanded)
 {
-  if (!playback || m_Value.empty() || m_Type == VARIABLE_INPUT)
+  if (m_AskForInput || m_Value.empty())
   {
     wxString value;
     

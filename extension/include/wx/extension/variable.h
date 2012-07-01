@@ -35,16 +35,19 @@ public:
   
   /// Destructor.
  ~wxExVariable();
+ 
+  /// Sets the ask for input member, if appropriate for type.
+  void AskForInput();
   
   /// Expands variable to ex component.
   /// This might update the internal value, and set the modified flag.
   /// Returns true if variable could be expanded.
-  bool Expand(bool playback, wxExEx* ex);
+  bool Expand(wxExEx* ex);
   
   /// Expands variable to value text.
   /// This might update the interanl value, and set the modified flag.
   /// Returns true if variable could be expanded.
-  bool Expand(bool playback, wxExEx* ex, wxString& value);
+  bool Expand(wxExEx* ex, wxString& value);
   
   /// Returns variable name.
   const wxString& GetName() const {return m_Name;};
@@ -56,9 +59,10 @@ public:
   void Save(wxXmlNode* node) const;
 private:  
   bool ExpandBuiltIn(wxExEx* ex, wxString& expanded) const;
-  bool ExpandInput(bool playback, wxString& expanded);
+  bool ExpandInput(wxString& expanded);
   bool ExpandTemplate(wxExEx* ex, wxString& expanded);
 
+  bool m_AskForInput;
   bool m_IsModified;
     
   int m_Type;
@@ -68,7 +72,7 @@ private:
   
   /// We keep values of input variables,
   /// so, while playing back, you have to enter them only once.
-  /// The values are cleared each time you start playback.
+  /// The m_AskForInput member is set each time you start playback.
   wxString m_Value;
   
   // The dialog used when a prefix is available.
