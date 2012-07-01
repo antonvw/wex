@@ -5,11 +5,14 @@
 // Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <wx/stdpaths.h>
+#include <wx/txtstrm.h>
+#include <wx/wfstream.h>
 #include <wx/utils.h>
 #include <wx/extension/vimacros.h>
 #include <wx/extension/ex.h>
@@ -130,6 +133,96 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
   }
   
   return ok;
+}
+
+bool wxExViMacros::ExpandTemplate(
+  wxExEx* ex, const wxExVariable& v, wxString& expanded)
+{
+  if (!m_IsExpand)
+  {
+    m_IsExpand = true;
+    
+    for (std::map<wxString, wxExVariable >::iterator it = 
+      m_Variables.begin();
+    it != m_Variables.end();
+    ++it)
+    {
+      it->second.AskForInput();
+    }
+  }
+
+  // Read the file (file name is in m_Value), expand
+  // all macro variables in it, and set expanded.
+  const wxFileName filename(
+#ifdef wxExUSE_PORTABLE
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+#else
+      wxStandardPaths::Get().GetUserDataDir()
+#endif
+      + wxFileName::GetPathSeparator() + v.GetValue());
+
+  wxFileInputStream input(filename.GetFullPath());
+  
+  if (!input.IsOk())
+  {
+    wxLogError("Could not open template file: " + filename.GetFullPath());
+    return false;
+  }
+  
+  wxTextInputStream text(input);
+  
+  while (input.IsOk() && !input.Eof()) 
+  {
+    const wxChar c = text.GetChar();
+    
+    if (c != '@')
+    {
+      expanded += c;
+    }
+    else
+    {
+      wxString variable;
+      bool completed = false;
+      
+      while (input.IsOk() && !input.Eof() && !completed) 
+      {
+        const wxChar c = text.GetChar();
+    
+        if (c != '@')
+        {
+          variable += c;
+        }
+        else
+        {
+          completed = true;
+        }
+      }
+      
+      if (!completed)
+      {
+        return false;
+      }
+      
+      // Prevent recursion.
+      if (variable == v.GetName())
+      {
+        return false;
+      }
+      
+      wxString value;
+      
+      if (!Expand(ex, variable, value))
+      {
+        return false;
+      }
+      
+      expanded += value;
+    }
+  }
+  
+  m_IsExpand = false;
+  
+  return true;
 }
 
 const wxArrayString wxExViMacros::Get() const
@@ -311,6 +404,14 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   
   m_Macro = macro;
   
+  for (std::map<wxString, wxExVariable >::iterator it = 
+    m_Variables.begin();
+    it != m_Variables.end();
+    ++it)
+  {
+    it->second.AskForInput();
+  }
+    
   for (int i = 0; i < repeat; i++)
   {
     for (

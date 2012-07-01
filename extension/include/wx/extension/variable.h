@@ -52,6 +52,9 @@ public:
   /// Returns variable name.
   const wxString& GetName() const {return m_Name;};
   
+  /// Returns variable value.
+  const wxString& GetValue() const {return m_Value;};
+  
   /// Returns true if expanding has modified the value.
   bool IsModified() const {return m_IsModified;};
   

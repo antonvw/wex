@@ -9,9 +9,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/stdpaths.h>
-#include <wx/txtstrm.h>
-#include <wx/wfstream.h>
 #include <wx/extension/variable.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/stc.h>
@@ -306,6 +303,8 @@ bool wxExVariable::ExpandInput(wxString& expanded)
       m_Value = value;
       m_IsModified = true;
     }
+    
+    m_AskForInput = false;
   }
   else
   {
@@ -317,76 +316,7 @@ bool wxExVariable::ExpandInput(wxString& expanded)
 
 bool wxExVariable::ExpandTemplate(wxExEx* ex, wxString& expanded)
 {
-  // Read the file (file name is in m_Value), expand
-  // all macro variables in it, and set expanded.
-  const wxFileName filename(
-#ifdef wxExUSE_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
-#else
-      wxStandardPaths::Get().GetUserDataDir()
-#endif
-      + wxFileName::GetPathSeparator() + m_Value);
-
-  wxFileInputStream input(filename.GetFullPath());
-  
-  if (!input.IsOk())
-  {
-    wxLogError("Could not open template file: " + filename.GetFullPath());
-    return false;
-  }
-  
-  wxTextInputStream text(input);
-  
-  while (input.IsOk() && !input.Eof()) 
-  {
-    const wxChar c = text.GetChar();
-    
-    if (c != '@')
-    {
-      expanded += c;
-    }
-    else
-    {
-      wxString variable;
-      bool completed = false;
-      
-      while (input.IsOk() && !input.Eof() && !completed) 
-      {
-        const wxChar c = text.GetChar();
-    
-        if (c != '@')
-        {
-          variable += c;
-        }
-        else
-        {
-          completed = true;
-        }
-      }
-      
-      if (!completed)
-      {
-        return false;
-      }
-      
-      // Prevent recursion.
-      if (variable == m_Name)
-      {
-        return false;
-      }
-      
-      wxString value;
-      
-      if (!wxExViMacros::Expand(ex, variable, value))
-      {
-        return false;
-      }
-      
-      expanded += value;
-    }
-  }
-  
-  return true;
+  return wxExViMacros::ExpandTemplate(ex, *this, expanded);
 }
 
 void wxExVariable::Save(wxXmlNode* node) const
