@@ -359,6 +359,9 @@ void  wxExProcess::OnCommand(wxCommandEvent& event)
   switch (event.GetId())
   {
   case ID_SHELL_COMMAND:
+    m_Dialog->GetSTCShell()->AddText(m_Dialog->GetSTCShell()->GetEOL());
+    m_Dialog->GetSTCShell()->Prompt();
+    
     if (IsRunning()) 
     {
       // send command to process
@@ -368,9 +371,6 @@ void  wxExProcess::OnCommand(wxCommandEvent& event)
       {
         wxTextOutputStream os(*GetOutputStream());
         os.WriteString(event.GetString() + "\n");
-    
-        m_Dialog->GetSTCShell()->AddText(m_Dialog->GetSTCShell()->GetEOL());
-        m_Dialog->GetSTCShell()->Prompt();
       } 
     }
     break;
