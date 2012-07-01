@@ -81,6 +81,9 @@ public:
   /// Returns true if variable could be expanded.
   static bool Expand(wxExEx* ex, const wxString& variable, wxString& value);
   
+  /// Expands template variable.
+  static bool ExpandTemplate(wxExEx* ex, const wxExVariable& variable, wxString& expanded);
+  
   /// Returns the filename with xml document.
   static const wxFileName GetFileName();
   
