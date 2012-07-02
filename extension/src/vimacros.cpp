@@ -110,7 +110,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
     m_Variables.insert(std::make_pair(variable, var));
     wxLogStatus(_("Added variable") + ": "  +  variable);
     
-    ok = var.Expand(ex);
+    ok = var.Expand(ex, value);
   
     if (var.IsModified())
     {
