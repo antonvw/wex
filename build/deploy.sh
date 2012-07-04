@@ -12,16 +12,16 @@ mkdir syncped
 mkdir syncped/nl-NL
 
 # Copy application.
-cp gccgtk2_dll/syncped syncped
+cp gccgtk3_dll/syncped syncped
 
 # Copy the libs.
-cp ~/wxWidgets-2.9.3/buildgtk/lib/libwx*2.9*so*3 syncped
+cp ~/wxWidgets-2.9.4/buildgtk/lib/libwx*2.9*so*4 syncped
 
 # Copy xml data.
 cp ../extension/data/*.xml syncped
 
 # Copy locale files.
-cp ~/wxWidgets-2.9.3/locale/nl.mo syncped/nl-NL/
+cp ~/wxWidgets-2.9.4/locale/nl.mo syncped/nl-NL/
 cp ../locale/wxextension-nl.mo syncped/nl-NL/
 cp ../locale/wxstd-xxx-nl.mo syncped/nl-NL/
 cp ../locale/syncped-nl.mo syncped/nl-NL/
