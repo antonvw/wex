@@ -34,25 +34,27 @@ void wxExSTCFile::DoFileLoad(bool synced)
   // Other kind of files might get new data anywhere inside the file,
   // we cannot sync that by keeping pos. 
   // Also only do it for reasonably large files.
+  const bool isLog = (GetFileName().GetExt().CmpNoCase("log") == 0);
+  
   ReadFromFile(
     synced &&
-    GetFileName().GetExt().CmpNoCase("log") == 0 &&
+    isLog &&
     m_STC->GetTextLength() > 1024);
-
-  m_STC->SetLexer(GetFileName().GetLexer().GetDisplayLexer(), true);
 
   if (!synced)
   {
+    m_STC->SetLexer(GetFileName().GetLexer().GetDisplayLexer(), true);
+
+    // No edges for log files.
+    if (isLog)
+    {
+      m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
+    }
+    
     wxLogStatus(_("Opened") + ": " + GetFileName().GetFullPath());
   }
   
   m_STC->PropertiesMessage(synced ? STAT_SYNC: STAT_DEFAULT);
-
-  // No edges for log files.
-  if (GetFileName().GetExt() == "log")
-  {
-    m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
-  }
 }
 
 void wxExSTCFile::DoFileNew()
