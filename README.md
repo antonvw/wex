@@ -7,7 +7,7 @@ one of these applications, being a full featured source code text editor.
 
 # Dependencies
 
-- [wxWidgets 2.9.3](http://www.wxwidgets.org/) is used as a stable master branch  
+- [wxWidgets 2.9.4](http://www.wxwidgets.org/) is used as a stable master branch  
   
 - [OTL database](http://otl.sourceforge.net/) (Version 4.0.214)  
   
