@@ -991,10 +991,9 @@ const wxString wxExSTC::GetFindString() const
 
 const wxString wxExSTC::GetSelectedText() const
 {
-  // TODO: Fix crash for rectangular selection.
   if (SelectionIsRectangle())
   {
-    return wxEmptyString;
+    return const_cast< wxExSTC * >( this )->wxStyledTextCtrl::GetSelectedText();
   }
   else
   {
