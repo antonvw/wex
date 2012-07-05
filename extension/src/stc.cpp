@@ -217,7 +217,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   {
     if (!sel.empty())
     {
-      wxExMenu* menuSelection = menuSelection = new wxExMenu(menu);
+      wxExMenu* menuSelection = new wxExMenu(menu);
       menuSelection->Append(ID_EDIT_UPPERCASE, _("&Uppercase\tF11"));
       menuSelection->Append(ID_EDIT_LOWERCASE, _("&Lowercase\tF12"));
 

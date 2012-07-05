@@ -339,7 +339,7 @@ const wxUniChar wxExGetFieldSeparator()
 
 int wxExGetIconID(const wxFileName& filename)
 {
-  if (filename.FileExists(filename.GetFullPath()) || 
+  if (filename.FileExists() || 
       filename.DirExists(filename.GetFullPath()))
   {
     if (filename.DirExists(filename.GetFullPath()))

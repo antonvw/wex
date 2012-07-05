@@ -224,12 +224,10 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
   menu.AppendSeparator();
   menu.AppendEdit(true);
   
-  const long style = GetWindowStyle();
-
   if (
     GetItemCount() > 0 && 
     GetSelectedItemCount() == 0 &&
-    style & wxLC_REPORT)
+    InReportView())
   {
     menu.AppendSeparator();
 
@@ -1182,7 +1180,7 @@ bool wxExListViewFileName::ItemFromText(const wxString& text)
   {
     modified = true;
     
-    if (!(GetWindowStyle() & wxLC_REPORT))
+    if (!InReportView())
     {
       wxExListItem(this, tk.GetNextToken()).Insert();
     }

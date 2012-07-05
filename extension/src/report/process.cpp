@@ -49,7 +49,7 @@ bool wxExProcessListView::ReportAdd(
     wxFileName fn(path);
     fn.Normalize();
     
-    if (fn.FileExists() || fn.DirExists())
+    if (fn.Exists())
     {
       wxExListItem item(m_ListView, fn);
       item.Insert();
