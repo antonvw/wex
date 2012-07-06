@@ -515,12 +515,7 @@ int wxExSTC::ConfigDialog(
     buttons |= wxAPPLY;
   }
   
-#ifdef __WXOSX__
-  // The listbook does not look nice on the iBook.
   const int style = wxExConfigDialog::CONFIG_NOTEBOOK;
-#else  
-  const int style = wxExConfigDialog::CONFIG_LISTBOOK;
-#endif
 
   if (!(flags & STC_CONFIG_MODELESS))
   {
