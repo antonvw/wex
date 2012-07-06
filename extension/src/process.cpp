@@ -317,7 +317,7 @@ wxKillError wxExProcess::Kill(wxSignal sig)
   // This seems necessary.
   if (!IsRunning())
   {
-    wxLogStatus(_("no such process"));
+    wxLogStatus("no such process");
     return wxKILL_NO_PROCESS;
   }
   
@@ -333,19 +333,19 @@ wxKillError wxExProcess::Kill(wxSignal sig)
       break;
 
     case wxKILL_BAD_SIGNAL:
-      wxLogStatus(_("no such signal"));
+      wxLogStatus("no such signal");
       break;
 
     case wxKILL_ACCESS_DENIED:
-    	wxLogStatus(_("permission denied"));
+    	wxLogStatus("permission denied");
       break;
 
     case wxKILL_NO_PROCESS: 
-      wxLogStatus(_("no such process"));
+      wxLogStatus("no such process");
       break;
 
     case wxKILL_ERROR:
-      wxLogStatus(_("another, unspecified error"));
+      wxLogStatus("another, unspecified error");
       break;
     
     default: wxFAIL;
