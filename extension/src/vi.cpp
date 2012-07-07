@@ -683,7 +683,7 @@ void wxExVi::InsertMode(const wxString& command)
       break;
 
     case WXK_RETURN:
-        m_InsertText += command.Last();
+        m_InsertText += GetSTC()->GetEOL();
 
         if (!GetSTC()->SmartIndentation())
         {
