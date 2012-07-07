@@ -122,8 +122,8 @@ void TestFixture::testStatistics()
 void TestFixture::testTiming()
 {
   wxExFile file(wxExFileName(TEST_FILE));
-
   CPPUNIT_ASSERT(file.IsOpened());
+  CPPUNIT_ASSERT(file.Length() > 0);
 
   wxStopWatch sw;
 
@@ -136,9 +136,11 @@ void TestFixture::testTiming()
 
   const long exfile_read = sw.Time();
 
-  sw.Start();
-
   wxFile wxfile(TEST_FILE);
+  CPPUNIT_ASSERT(wxfile.IsOpened());
+  CPPUNIT_ASSERT(wxfile.Length() > 0);
+
+  sw.Start();
 
   for (int j = 0; j < max; j++)
   {
