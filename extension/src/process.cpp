@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/textfile.h>
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/process.h>
