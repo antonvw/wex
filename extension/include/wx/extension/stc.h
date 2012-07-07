@@ -152,16 +152,13 @@ public:
   /// Gets find string, from selected text or from config.
   /// The search flags are taken from frd.
   /// If text is selected, it also sets the find string.
-  const wxString GetFindString() const;
+  const wxString GetFindString();
 
   /// Gets current flags.
   long GetFlags() const {return m_Flags;};
   
   /// Gets the lexer.
   const wxExLexer& GetLexer() const {return m_Lexer;};
-
-  /// Gets selected text.
-  const wxString GetSelectedText() const;
 
   /// Gets vi component.
   const wxExVi& GetVi() const {return m_vi;};

@@ -954,7 +954,8 @@ const wxString wxExSTC::GetEOL() const
   return "\r\n";
 }
 
-const wxString wxExSTC::GetFindString() const
+// Cannot be const because of GetSelectedText (not const in 2.9.4).
+const wxString wxExSTC::GetFindString()
 {
   const wxString selection = GetSelectedText();
 
@@ -982,18 +983,6 @@ const wxString wxExSTC::GetFindString() const
   }
 
   return wxExFindReplaceData::Get()->GetFindString();
-}
-
-const wxString wxExSTC::GetSelectedText() const
-{
-  if (SelectionIsRectangle())
-  {
-    return const_cast< wxExSTC * >( this )->wxStyledTextCtrl::GetSelectedText();
-  }
-  else
-  {
-    return const_cast< wxExSTC * >( this )->wxStyledTextCtrl::GetSelectedText();
-  }
 }
 
 const wxString wxExSTC::GetWordAtPos(int pos) const
