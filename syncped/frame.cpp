@@ -1113,6 +1113,8 @@ bool Frame::OpenFile(
   
   wxExNotebook* notebook = (flags & WIN_IS_PROJECT
     ? m_Projects : m_Editors);
+    
+  notebook->Freeze();
 
   wxWindow* page = notebook->SelectPage(filename.GetFullPath());
 
@@ -1201,6 +1203,8 @@ bool Frame::OpenFile(
       editor->FindNext(match);
     }
   }
+  
+  notebook->Thaw();
 
   return true;
 }
