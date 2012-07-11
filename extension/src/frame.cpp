@@ -266,20 +266,9 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
           if (file.IsRelative() && stc != NULL)
           {
             file.MakeAbsolute(stc->GetFileName().GetPath());
-
-            if (!file.FileExists())
-            {
-              wxLogError("Cannot locate file: " + token);
-            }
-            else
-            {
-              files.Add(file.GetFullPath());
-            }
           }
-          else
-          {
-            files.Add(file.GetFullPath());
-          }
+          
+          files.Add(file.GetFullPath());
         }
       }
 
@@ -370,9 +359,19 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
     case ID_UPDATE_STATUS_BAR:
     {
     wxExSTC* stc = GetSTC();
-    if (stc != NULL) 
+    
+    if (stc != NULL && stc->HasFocus()) 
     {
       UpdateStatusBar(stc, "PaneInfo"); 
+    }
+    else
+    {
+      wxExListView* lv = GetListView();
+      
+      if (lv != NULL && lv->HasFocus())
+      {
+        UpdateStatusBar(lv);
+      }
     }
     }
     break;
@@ -514,9 +513,9 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
     }
     else
     {
-      wxExListView* list = GetListView();
+      wxExListView* lv = GetListView();
       
-      if (list != NULL) list->GotoDialog();
+      if (lv != NULL) lv->GotoDialog();
     }
   }
   else if (pane == "PaneLexer")

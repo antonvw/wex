@@ -240,6 +240,7 @@ public:
   virtual void ProcessChar(int c) {;};
   
   /// Shows properties on the statusbar.
+  /// Flags used are from wxExStatusFlags.
   virtual void PropertiesMessage(long flags = 0);
   
   /// Reloads current document using specified flags.

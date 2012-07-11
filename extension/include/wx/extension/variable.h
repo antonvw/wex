@@ -45,7 +45,7 @@ public:
   bool Expand(wxExEx* ex);
   
   /// Expands variable to value text.
-  /// This might update the interanl value, and set the modified flag.
+  /// This might update the internal value, and set the modified flag.
   /// Returns true if variable could be expanded.
   bool Expand(wxExEx* ex, wxString& value);
   
