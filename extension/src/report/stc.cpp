@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wxExSTCWithFrame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -100,22 +100,15 @@ bool wxExSTCWithFrame::Open(
   const wxString& match,
   long flags)
 {
-  bool retValue;
+  const bool retValue = (flags & STC_WIN_FROM_OTHER ?
+     m_Frame->OpenFile(filename, line_number, match, flags):
+     wxExSTC::Open(filename, line_number, match, flags));
 
-  if (flags & STC_WIN_FROM_OTHER)
+  if (retValue)
   {
-    retValue = m_Frame->OpenFile(filename, line_number, match, flags);
+    m_Frame->SetRecentFile(filename.GetFullPath());
   }
-  else
-  {
-    retValue = wxExSTC::Open(filename, line_number, match, flags);
-
-    if (retValue)
-    {
-      m_Frame->SetRecentFile(filename.GetFullPath());
-    }
-  }
-
+    
   return retValue;
 }
 
