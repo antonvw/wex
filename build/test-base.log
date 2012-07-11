@@ -1,5 +1,5 @@
-.reading 100000 items from config took 252 milliseconds
-......F.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:7
+.reading 100000 items from config took 248 milliseconds
+......F.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:8
 .
 
 
@@ -8,7 +8,7 @@ Test Results:
 Run:  9   Failures: 1   Errors: 0
 
 
-1) test: testTiming (F) line: 148 ../extension/test/base/test.cpp
+1) test: testTiming (F) line: 150 ../extension/test/base/test.cpp
 assertion failed
 - Expression: buffer->length() > 0
 
