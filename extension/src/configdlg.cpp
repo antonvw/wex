@@ -163,7 +163,7 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
     ++it)
   {
     if (first_time ||
-        (it->GetPage() != previous_page && !it->GetPage().empty()))
+       (it->GetPage() != previous_page && !it->GetPage().empty()))
     {
       first_time = false;
 
@@ -215,11 +215,26 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
         this, 
         it->GetWindow()->GetId());
     }
-
-    if ( sizer->GetRows() > 0 &&
-        !sizer->IsRowGrowable(sizer->GetRows() - 1))
+    
+    std::vector<wxExConfigItem>::iterator next = it + 1;
+    
+    wxString next_page;
+    
+    if (next != m_ConfigItems.end())
     {
-      sizer->AddGrowableRow(sizer->GetRows() - 1);
+      next_page = next->GetPage();
+    }
+    else
+    {
+      next_page = "YYYYYY";
+    }
+    
+    if (sizer != NULL &&
+        it->GetPage() != next_page &&
+        sizer->GetEffectiveRowsCount() == 1 &&
+       !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1))
+    {
+      sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
     }
   }
 
