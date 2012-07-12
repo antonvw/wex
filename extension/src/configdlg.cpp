@@ -197,6 +197,7 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
     wxFlexGridSizer* use_item_sizer = (it->GetType() == previous_item_type ?
       previous_item_sizer: NULL);
 
+    // Layout the config item.
     previous_item_sizer = it->Layout(
       (bookctrl != NULL ? bookctrl->GetCurrentPage(): this), 
       sizer, 
@@ -215,7 +216,9 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
         this, 
         it->GetWindow()->GetId());
     }
-    
+
+    // Take care that if this item is the only one
+    // on this page, that the row is growable.
     std::vector<wxExConfigItem>::iterator next = it + 1;
     
     wxString next_page;
@@ -230,6 +233,7 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
     }
     
     if (sizer != NULL &&
+        use_item_sizer == NULL &&
         it->GetPage() != next_page &&
         sizer->GetEffectiveRowsCount() == 1 &&
        !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1))
