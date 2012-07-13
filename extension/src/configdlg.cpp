@@ -42,6 +42,8 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   long flags,
   wxWindowID id,
   int bookctrl_style,
+  const wxPoint& pos,
+  const wxSize& size, 
   long style,
   const wxString& name)
   : wxExDialog(
@@ -49,8 +51,8 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
       title, 
       flags, 
       id, 
-      wxDefaultPosition, 
-      wxDefaultSize, 
+      pos, 
+      size, 
       style,
       name)
   , m_ForceCheckBoxChecked(false)
@@ -172,7 +174,7 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
         // Finish the current page.
         if (bookctrl->GetCurrentPage() != NULL)
         {
-          bookctrl->GetCurrentPage()->SetSizerAndFit(sizer);
+          bookctrl->GetCurrentPage()->SetSizer(sizer);
         }
 
         // And make a new one.
@@ -244,7 +246,7 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
 
   if (bookctrl != NULL)
   {
-    bookctrl->GetCurrentPage()->SetSizerAndFit(sizer);
+    bookctrl->GetCurrentPage()->SetSizer(sizer);
     bookctrl->SetName("book" + GetName());
 
     if (!wxPersistenceManager::Get().RegisterAndRestore(bookctrl))
