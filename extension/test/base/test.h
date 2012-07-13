@@ -38,11 +38,11 @@ public:
   void testConfig();
   void testDir();
   void testFile();
+  void testFileTiming();
   void testFileName();
+  void testFileNameTiming();
   void testStat();
   void testStatistics();
-  void testTiming();
-  void testTimingAttrib();
   void testTool();
 };
 

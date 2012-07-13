@@ -74,6 +74,48 @@ void TestFixture::testFile()
   wxCharBuffer buffer = file.Read();
   CPPUNIT_ASSERT(buffer.length() == 40);
 }
+
+void TestFixture::testFileTiming()
+{
+  wxExFile file(wxExFileName(TEST_FILE));
+  CPPUNIT_ASSERT(file.IsOpened());
+  CPPUNIT_ASSERT(file.Length() > 0);
+
+  wxStopWatch sw;
+
+  const int max = 10000;
+
+  for (int i = 0; i < max; i++)
+  {
+    CPPUNIT_ASSERT(file.Read().length() > 0);
+  }
+
+  const long exfile_read = sw.Time();
+
+  wxFile wxfile(TEST_FILE);
+  CPPUNIT_ASSERT(wxfile.IsOpened());
+  const size_t l = wxfile.Length();
+  CPPUNIT_ASSERT(l > 0);
+  
+  sw.Start();
+
+  for (int j = 0; j < max; j++)
+  {
+    char* charbuffer = new char[l];
+    wxfile.Read(charbuffer, l);
+    wxString* buffer = new wxString(charbuffer, l);
+    CPPUNIT_ASSERT(buffer->length() > 0);
+    delete[] charbuffer;
+    delete buffer;
+  }
+
+  const long file_read = sw.Time();
+
+  Report(wxString::Format(
+    "wxExFile::Read:%ld wxFile::Read:%ld",
+    exfile_read,
+    file_read).ToStdString());
+}
   
 void TestFixture::testFileName()
 {
@@ -83,6 +125,38 @@ void TestFixture::testFileName()
   CPPUNIT_ASSERT(fileName.GetStat().IsOk());
   fileName.Assign("xxx");
   CPPUNIT_ASSERT(fileName.GetStat().IsOk());
+}
+
+void TestFixture::testFileNameTiming()
+{
+  const int max = 1000;
+
+  wxStopWatch sw;
+
+  const wxExFileName exfile(TEST_FILE);
+
+  for (int i = 0; i < max; i++)
+  {
+    exfile.GetStat().IsReadOnly();
+  }
+
+  const long exfile_time = sw.Time();
+
+  sw.Start();
+
+  const wxFileName file(TEST_FILE);
+
+  for (int j = 0; j < max; j++)
+  {
+    file.IsFileWritable();
+  }
+
+  const long file_time = sw.Time();
+
+  Report(wxString::Format(
+    "wxExFileName::IsReadOnly:%ld wxFileName::IsFileWritable:%ld",
+    exfile_time,
+    file_time).ToStdString());
 }
 
 void TestFixture::testStat()
@@ -119,79 +193,6 @@ void TestFixture::testStatistics()
   CPPUNIT_ASSERT(!copy.GetItems().empty());
 }
 
-void TestFixture::testTiming()
-{
-  wxExFile file(wxExFileName(TEST_FILE));
-  CPPUNIT_ASSERT(file.IsOpened());
-  CPPUNIT_ASSERT(file.Length() > 0);
-
-  wxStopWatch sw;
-
-  const int max = 10000;
-
-  for (int i = 0; i < max; i++)
-  {
-    CPPUNIT_ASSERT(file.Read().length() > 0);
-  }
-
-  const long exfile_read = sw.Time();
-
-  wxFile wxfile(TEST_FILE);
-  CPPUNIT_ASSERT(wxfile.IsOpened());
-  CPPUNIT_ASSERT(wxfile.Length() > 0);
-
-  sw.Start();
-
-  for (int j = 0; j < max; j++)
-  {
-    char* charbuffer = new char[wxfile.Length()];
-    wxfile.Read(charbuffer, wxfile.Length());
-    wxString* buffer = new wxString(charbuffer, wxfile.Length());
-    CPPUNIT_ASSERT(buffer->length() > 0);
-    delete[] charbuffer;
-    delete buffer;
-  }
-
-  const long file_read = sw.Time();
-
-  Report(wxString::Format(
-    "wxExFile::Read:%ld wxFile::Read:%ld",
-    exfile_read,
-    file_read).ToStdString());
-}
-
-void TestFixture::testTimingAttrib()
-{
-  const int max = 1000;
-
-  wxStopWatch sw;
-
-  const wxExFileName exfile(TEST_FILE);
-
-  for (int i = 0; i < max; i++)
-  {
-    exfile.GetStat().IsReadOnly();
-  }
-
-  const long exfile_time = sw.Time();
-
-  sw.Start();
-
-  const wxFileName file(TEST_FILE);
-
-  for (int j = 0; j < max; j++)
-  {
-    file.IsFileWritable();
-  }
-
-  const long file_time = sw.Time();
-
-  Report(wxString::Format(
-    "wxExFileName::IsReadOnly:%ld wxFileName::IsFileWritable:%ld",
-    exfile_time,
-    file_time).ToStdString());
-}
-
 void TestFixture::testTool()
 {
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_FIND).IsFindType());
@@ -214,9 +215,17 @@ wxExTestSuite::wxExTestSuite()
     &TestFixture::testFile));
 
   addTest(new CppUnit::TestCaller<TestFixture>(
+    "testFileTiming",
+    &TestFixture::testFileTiming));
+
+  addTest(new CppUnit::TestCaller<TestFixture>(
     "testFileName",
     &TestFixture::testFileName));
 
+  addTest(new CppUnit::TestCaller<TestFixture>(
+    "testFileNameTiming",
+    &TestFixture::testFileNameTiming));
+    
   addTest(new CppUnit::TestCaller<TestFixture>(
     "testStat",
     &TestFixture::testStat));
@@ -225,14 +234,6 @@ wxExTestSuite::wxExTestSuite()
     "testStatistics",
     &TestFixture::testStatistics));
 
-  addTest(new CppUnit::TestCaller<TestFixture>(
-    "testTiming",
-    &TestFixture::testTiming));
-
-  addTest(new CppUnit::TestCaller<TestFixture>(
-    "testTimingAttrib",
-    &TestFixture::testTimingAttrib));
-    
   addTest(new CppUnit::TestCaller<TestFixture>(
     "testTool",
     &TestFixture::testTool));
