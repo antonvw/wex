@@ -685,7 +685,7 @@ void wxExSampleFrame::ShowConfigItems()
       0,
       CONFIG_STATICTEXT));
   }
-  
+
   // CONFIG_STATICLINE (horizontal)
   v.push_back(wxExConfigItem(wxLI_HORIZONTAL, "Static Line"));
 
@@ -699,7 +699,7 @@ void wxExSampleFrame::ShowConfigItems()
     "STC",
     0,
     CONFIG_STC));
-      
+
   // CONFIG_STRING
   for (size_t l = 1; l <= 5; l++)
   {
@@ -723,7 +723,7 @@ void wxExSampleFrame::ShowConfigItems()
       CONFIG_TOGGLEBUTTON,
       "Toggle buttons"));
   }
-  
+
   /// CONFIG_USER
   v.push_back(wxExConfigItem(
     "HTML Control", 
@@ -731,7 +731,7 @@ void wxExSampleFrame::ShowConfigItems()
     myHtmlCreate,
     NULL,
     "User Controls"));
-    
+
   v.push_back(wxExConfigItem(
     "Text Control", 
     new wxTextCtrl(),
@@ -747,8 +747,10 @@ void wxExSampleFrame::ShowConfigItems()
     1,
     wxAPPLY | wxCANCEL,
     wxID_ANY,
-    wxExConfigDialog::CONFIG_LISTBOOK);
-
+    wxExConfigDialog::CONFIG_LISTBOOK,
+    wxDefaultPosition,
+    wxSize(500, 500));
+  
   dlg->ForceCheckBoxChecked("Group", "Checkboxes");
   dlg->Show();
 }

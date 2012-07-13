@@ -2,7 +2,7 @@
 // Name:      configdlg.h
 // Purpose:   Declaration of wxExConfigDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXCONFIGDIALOG_H
@@ -51,6 +51,10 @@ public:
     wxWindowID id = wxID_ANY,
     /// bookctrl style, only used if you specified pages for your config items
     int bookctrl_style = CONFIG_AUINOTEBOOK,
+    /// position
+    const wxPoint& pos = wxDefaultPosition,
+    /// size
+    const wxSize& size = wxDefaultSize, 
     /// dialog style
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
     /// name

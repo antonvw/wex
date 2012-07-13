@@ -2,7 +2,7 @@
 // Name:      dialog.h
 // Purpose:   Declaration of wxExDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXDIALOG_H
@@ -66,6 +66,8 @@ protected:
   void LayoutSizers(bool add_separator_line = true);
 private:
   const long m_ButtonFlags;
+  const bool m_HasDefaultSize;
+  
   wxFlexGridSizer* m_TopSizer;
   wxFlexGridSizer* m_UserSizer;
 };

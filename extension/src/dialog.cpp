@@ -2,7 +2,7 @@
 // Name:      dialog.cpp
 // Purpose:   Implementation of wxExDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -22,6 +22,7 @@ wxExDialog::wxExDialog(wxWindow* parent,
   const wxString& name)
   : wxDialog(parent, id, title, pos, size, style, name)
   , m_ButtonFlags(button_flags)
+  , m_HasDefaultSize(size == wxDefaultSize)
   , m_TopSizer(new wxFlexGridSizer(1, 0, 0))
   , m_UserSizer(new wxFlexGridSizer(1, 0, 0))
 {
@@ -86,7 +87,14 @@ void wxExDialog::LayoutSizers(bool add_separator_line)
   // The top sizer ends with a spacer as well.
   m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
 
-  SetSizerAndFit(m_TopSizer);
+  if (m_HasDefaultSize)
+  {
+    SetSizerAndFit(m_TopSizer);
+  }
+  else
+  {
+    SetSizer(m_TopSizer);
+  }
 }
 
 #endif // wxUSE_GUI
