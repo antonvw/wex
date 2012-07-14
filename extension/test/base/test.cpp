@@ -33,7 +33,7 @@ void TestFixture::testConfig()
   const long config = sw.Time();
 
   Report(wxString::Format(
-    "reading %d items from config took %ld milliseconds", max, config).ToStdString());
+    "wxConfig::Read %d items in %ld ms", max, config).ToStdString());
 }
 
 void TestFixture::testDir()
@@ -103,17 +103,17 @@ void TestFixture::testFileTiming()
   {
     char* charbuffer = new char[l];
     wxfile.Read(charbuffer, l);
-    wxString* buffer = new wxString(charbuffer, l);
-    CPPUNIT_ASSERT(buffer->length() > 0);
-    delete[] charbuffer;
-    delete buffer;
+    CPPUNIT_ASSERT(sizeof(charbuffer) > 0);
+    delete charbuffer;
   }
 
   const long file_read = sw.Time();
 
   Report(wxString::Format(
-    "wxExFile::Read:%ld wxFile::Read:%ld",
+    "wxExFile::Read %d items in %ld ms wxFile::Read %d items in %ld ms",
+    max,
     exfile_read,
+    max,
     file_read).ToStdString());
 }
   
@@ -154,8 +154,10 @@ void TestFixture::testFileNameTiming()
   const long file_time = sw.Time();
 
   Report(wxString::Format(
-    "wxExFileName::IsReadOnly:%ld wxFileName::IsFileWritable:%ld",
+    "wxExFileName::IsReadOnly %d files in %ld ms wxFileName::IsFileWritable %d files in %ld ms",
+    max,
     exfile_time,
+    max,
     file_time).ToStdString());
 }
 

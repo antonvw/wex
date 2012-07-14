@@ -13,9 +13,10 @@
 #include <wx/extension/file.h>
 
 wxExFile::wxExFile(bool open_file)
-  : m_FileName()
+  : m_OpenFile(open_file)
+  , m_HasRead(false)
+  , m_FileName()
   , m_Stat()
-  , m_OpenFile(open_file)
 {
 }
 
@@ -25,6 +26,7 @@ wxExFile::wxExFile(
   bool open_file)
   : wxFile(filename.GetFullPath(), mode)
   , m_OpenFile(open_file)
+  , m_HasRead(false)
   , m_Stat(filename.GetFullPath())
 {
   m_FileName.Assign(filename);
@@ -126,15 +128,15 @@ bool wxExFile::Get(bool synced)
 
 const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
 {
-  if (!IsOpened())
-  {
-    return wxCharBuffer((size_t)0);
-  }
+  wxASSERT(IsOpened());
   
-  const wxFileOffset bytes_to_read = Length() - seek_position;
+  if ((!m_HasRead && seek_position > 0) || 
+      ( m_HasRead && Tell() != seek_position))
+  {
+    Seek(seek_position);
+  }
 
-  // Always do a seek, so you can do more Reads on the same object.
-  Seek(seek_position);
+  const wxFileOffset bytes_to_read = Length() - seek_position;
 
   wxCharBuffer buffer(bytes_to_read);
 
@@ -142,6 +144,8 @@ const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
   {
     wxFAIL;
   }
+  
+  m_HasRead = true;
 
   return buffer;
 }

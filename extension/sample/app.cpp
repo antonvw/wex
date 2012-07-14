@@ -749,7 +749,11 @@ void wxExSampleFrame::ShowConfigItems()
     wxID_ANY,
     wxExConfigDialog::CONFIG_LISTBOOK,
     wxDefaultPosition,
+#ifdef __WXMSW__    
     wxSize(500, 500));
+#else
+    wxSize(600, 600));
+#endif    
   
   dlg->ForceCheckBoxChecked("Group", "Checkboxes");
   dlg->Show();

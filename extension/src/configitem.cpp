@@ -2,7 +2,7 @@
 // Name:      configitem.cpp
 // Purpose:   Implementation of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011
+// Copyright: (c) 2012
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -502,6 +502,11 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         wxEmptyString,
         wxExSTC::STC_MENU_DEFAULT,
         m_Id);
+      
+      // Do not use vi mode, as ESC should cancel the dialog,
+      // and would not be interpreted by vi.
+      ((wxExSTC* )m_Window)->GetVi().Use(false);
+
       if (!m_Default.empty())
       {
         ((wxExSTC* )m_Window)->SetLexer(m_Default);
