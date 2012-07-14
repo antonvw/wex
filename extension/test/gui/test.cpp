@@ -714,7 +714,7 @@ void wxExGuiTestFixture::testListItem()
   const long add = sw.Time();
 
   Report(wxString::Format(
-    "adding %d items in: %ld milliseconds", 3 * max, add).ToStdString());
+    "wxExListTiem::Insert %d items in %ld ms", 3 * max, add).ToStdString());
   
   sw.Start();
   
@@ -725,7 +725,7 @@ void wxExGuiTestFixture::testListItem()
   const long sort = sw.Time();
   
   Report(wxString::Format(
-    "sorting %d items in: %ld milliseconds", 3 * max, sort).ToStdString());
+    "wxExListView::Sort %d items in %ld ms", 3 * max, sort).ToStdString());
     
   CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
 }
@@ -1182,7 +1182,7 @@ void wxExGuiTestFixture::testTextFile()
   const long elapsed = sw.TimeInMicro().ToLong();
   
   Report(wxString::Format(
-    "matching %d items in: %ld microseconds", 
+    "wxExTextFile::matching %d items in %ld us", 
     textFile.GetStatistics().Get(_("Actions Completed")), elapsed).ToStdString());
     
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
@@ -1199,7 +1199,7 @@ void wxExGuiTestFixture::testTextFile()
   const long elapsed2 = sw2.TimeInMicro().ToLong();
   
   Report(wxString::Format(
-    "replacing %d items in: %ld microseconds", 
+    "wxExTextFile::replacing %d items in %ld us", 
     textFile2.GetStatistics().Get(_("Actions Completed")), elapsed2).ToStdString());
     
   CPPUNIT_ASSERT(!textFile2.GetStatistics().GetElements().GetItems().empty());

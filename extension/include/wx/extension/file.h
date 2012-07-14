@@ -2,7 +2,7 @@
 // Name:      file.h
 // Purpose:   Declaration of class wxExFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFILE_H
@@ -92,6 +92,7 @@ private:
       m_Stat.Sync(m_FileName.GetFullPath());};
 
   const bool m_OpenFile;
+  bool m_HasRead;
 
   wxExFileName m_FileName;
   wxExStat m_Stat; // used for syncing, no public access
