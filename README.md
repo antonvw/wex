@@ -27,8 +27,10 @@ one of these applications, being a full featured source code text editor.
     `../configure --with-gtk`  or   
     `../configure --with-gtk=3`
 
-- under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg):  
+- under mac os 10.4 use gcc 4.0.1 (use v2.9.3 tag) (part of xcode25_8m2258_developerdvd.dmg):   
     `../configure --with-mac`
+
+- under mac os 10.5 not tested
     
 - under SunOS using GNU make (/usr/sfw/bin):  
     `../configure --with-gtk --disable-shared --without-opengl`  
