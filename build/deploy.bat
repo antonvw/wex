@@ -7,6 +7,7 @@ rem Copyright: (c) 2012 Anton van Wezenbeek
 rem Run this file in the build folder
 
 mkdir syncped
+mkdir syncped\fr
 mkdir syncped\nl_NL
 
 rem Copy application.
@@ -21,10 +22,10 @@ rem Copy xml data.
 copy ..\extension\data\*.xml syncped
 
 rem Copy locale files.
+copy c:\wxWidgets-2.9.4\locale\fr.mo syncped\fr\
 copy c:\wxWidgets-2.9.4\locale\nl.mo syncped\nl_NL\
-copy ..\locale\wxextension-nl.mo syncped\nl_NL\
-copy ..\locale\wxstd-xxx-nl.mo syncped\nl_NL\
-copy ..\locale\syncped-nl.mo syncped\nl_NL\
+copy ..\locale\*fr.mo syncped\fr\
+copy ..\locale\*nl.mo syncped\nl_NL\
  
 7z a syncped.zip syncped\
 

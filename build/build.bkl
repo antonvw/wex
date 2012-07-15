@@ -3,7 +3,7 @@
 Name:      build.bkl
 Purpose:   Bakefile for wxextension libraries, samples, tests and applications
 Author:    Anton van Wezenbeek
-Copyright: (c) 2011 Anton van Wezenbeek
+Copyright: (c) 2012 Anton van Wezenbeek
 -->
 
 <!--
@@ -21,7 +21,7 @@ or as include dir using -I option:
 bakefile -f msvc -I ../build/bakefiles/wxpresets build.bkl
 
 Or to make a release makefile:
-bakefile -omakefile-release.vc -f msvc -DWX_DEBUG=0 -I../build/bakefiles/wxpresets build.bkl
+bakefile -omakefile-release.vc -f msvc -DWX_DEBUG=0 -I ../build/bakefiles/wxpresets build.bkl
 
 And run the makefile:
 make
