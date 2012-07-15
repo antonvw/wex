@@ -9,10 +9,11 @@
 # Run this file in the build folder
 
 mkdir syncped
+mkdir syncped/fr
 mkdir syncped/nl-NL
 
 # Copy application.
-cp gccgtk3_dll/syncped syncped
+cp gccgtk2_dll/syncped syncped
 
 # Copy the libs.
 cp ~/wxWidgets-2.9.4/buildgtk/lib/libwx*2.9*so*4 syncped
@@ -21,10 +22,10 @@ cp ~/wxWidgets-2.9.4/buildgtk/lib/libwx*2.9*so*4 syncped
 cp ../extension/data/*.xml syncped
 
 # Copy locale files.
+cp ~/wxWidgets-2.9.4/locale/fr.mo syncped/fr/
 cp ~/wxWidgets-2.9.4/locale/nl.mo syncped/nl-NL/
-cp ../locale/wxextension-nl.mo syncped/nl-NL/
-cp ../locale/wxstd-xxx-nl.mo syncped/nl-NL/
-cp ../locale/syncped-nl.mo syncped/nl-NL/
+cp ../locale/*fr.mo syncped/fr/
+cp ../locale/*nl.mo syncped/nl-NL/
  
 strip syncped/syncped
 tar cf syncped.tar syncped
