@@ -496,6 +496,8 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
       
       std::map <wxString, wxString> macro_map;
 
+      long val = 0;
+  
       while (macro)
       {
         const wxString attrib = macro->GetAttribute("no");
@@ -517,7 +519,24 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
           }
           else
           {
-            macro_map[attrib] = content;
+            if (!content.empty())
+            {
+              if (!content.ToLong(&val))
+              {
+                wxLogError("Macro: %s on line: %d is not a number",
+                  attrib.c_str(), 
+                  macro->GetLineNumber());
+              }
+              else
+              {
+                macro_map[attrib] = content;
+              }
+            }
+            else
+            {
+              val++;
+              macro_map[attrib] = wxString::Format("%ld", val);
+            }
           }
         }
         
