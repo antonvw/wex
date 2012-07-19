@@ -38,7 +38,7 @@ Copyright: (c) 2012, Anton van Wezenbeek
       <def no ="mark_arrows"/>
       <def no ="mark_pixmap"/>
       <def no ="mark_fullrect"/>
-      <def no ="marknum_folderend"/>
+      <def no ="marknum_folderend"> 25 </def>
       <def no ="marknum_folderopenmid"/>
       <def no ="marknum_foldermidtail"/>
       <def no ="marknum_foldertail"/>

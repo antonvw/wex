@@ -530,12 +530,13 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
               else
               {
                 macro_map[attrib] = content;
+                val++;
               }
             }
             else
             {
-              val++;
               macro_map[attrib] = wxString::Format("%ld", val);
+              val++;
             }
           }
         }
