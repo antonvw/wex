@@ -210,6 +210,7 @@ wxWindow* wxExNotebook::InsertPage(
 {
   if (GetPageByKey(key) != NULL)
   {
+    wxFAIL;
     return NULL;
   }
 
