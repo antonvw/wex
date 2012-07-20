@@ -9,7 +9,7 @@
 # Run this file in the build folder
 
 mkdir syncped
-mkdir syncped/fr
+mkdir syncped/fr-FR
 mkdir syncped/nl-NL
 
 # Copy application.
@@ -22,11 +22,27 @@ cp ~/wxWidgets-2.9.4/buildgtk/lib/libwx*2.9*so*4 syncped
 cp ../extension/data/*.xml syncped
 
 # Copy locale files.
-cp ~/wxWidgets-2.9.4/locale/fr.mo syncped/fr/
-cp ~/wxWidgets-2.9.4/locale/nl.mo syncped/nl-NL/
-cp ../locale/*fr.mo syncped/fr/
-cp ../locale/*nl.mo syncped/nl-NL/
- 
+msgfmt ~/wxWidgets-2.9.4/locale/fr.mo -o syncped/fr-FR/fr.po
+msgfmt ~/wxWidgets-2.9.4/locale/nl.mo -o syncped/nl-NL/nl.po
+
+FILES=( $( /bin/ls ../locale/*fr.po  ) )
+
+for f in $FILES
+do
+  # name without extension
+  name=${f%\.*}
+  msgfmt ../locale/$name.po -o syncped/fr-FR/$name.mo
+done
+
+FILES=( $( /bin/ls ../locale/*nl.po  ) )
+
+for f in $FILES
+do
+  # name without extension
+  name=${f%\.*}
+  msgfmt ../locale/$name.po -o syncped/nl-NL/$name.mo
+done
+
 strip syncped/syncped
 tar cf syncped.tar syncped
 gzip syncped.tar
