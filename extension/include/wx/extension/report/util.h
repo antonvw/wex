@@ -28,9 +28,12 @@ bool wxExForEach(
   const wxFont& font = wxFont());
 
 /// Runs make on specified makefile.
-/// Results are placed on the list process output, if it can be activated from frame.
-/// Returns true if make process could be executed.
-long wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile);
+/// Returns value from executing the make process.
+long wxExMake(
+  /// results are placed on the list process output, if it can be activated from frame
+  wxExFrameWithHistory* frame, 
+  /// the makefile
+  const wxFileName& makefile);
 
 /// Runs a tool on this item, and returns statistics.
 const wxExFileStatistics wxExRun(const wxExListItem& item, const wxExTool& tool);

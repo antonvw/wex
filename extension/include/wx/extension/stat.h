@@ -17,7 +17,7 @@
 class WXDLLIMPEXP_BASE wxExStat : public stat
 {
 public:
-  /// Default constructor. Calls Sync.
+  /// Default constructor. Calls sync.
   wxExStat(const wxString& fullpath = wxEmptyString);
 
   /// Gets the modification time.
@@ -26,7 +26,7 @@ public:
   const wxString GetModificationTime() const {
     return wxDateTime(st_mtime).FormatISOCombined(' ');};
 
-  /// Returns true if the stat is okay (last update was okay).
+  /// Returns true if the stat is okay (last sync was okay).
   bool IsOk() const {return m_IsOk;};
 
   /// Returns true if this stat is readonly.
@@ -36,7 +36,7 @@ public:
   /// Sets (syncs) this stat, returns result and keeps it in IsOk.
   bool Sync();
 
-  /// Sets the fullpath member, then Syncs.
+  /// Sets the fullpath member, then syncs.
   bool Sync(const wxString& fullpath) {
     m_FullPath = fullpath;
     return Sync();}
