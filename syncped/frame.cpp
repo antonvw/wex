@@ -963,7 +963,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         case ID_EDIT_MACRO_START_RECORD:
           event.Enable(
              editor->GetVi().GetIsActive() && 
-             editor->GetLength() > 0 && 
             !editor->GetVi().MacroIsRecording());
           break;
         case ID_EDIT_MACRO_STOP_RECORD:
