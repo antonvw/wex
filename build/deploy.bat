@@ -18,7 +18,8 @@ rem Copy msvc DLL's
 copy c:\windows\syswow64\msvcp100.dll syncped
 copy c:\windows\syswow64\msvcr100.dll syncped
 
-rem Copy xml data.
+rem Copy templates and xml data.
+copy ..\extension\data\*.tpl syncped
 copy ..\extension\data\*.xml syncped
 
 rem Copy locale files.
