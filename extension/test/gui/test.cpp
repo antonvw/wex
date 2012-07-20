@@ -735,10 +735,11 @@ void wxExGuiTestFixture::testListView()
   wxExListView* listView = new wxExListView(wxTheApp->GetTopWindow());
   
   listView->SetSingleStyle(wxLC_REPORT);
-  listView->InsertColumn(wxExColumn("Int", wxExColumn::COL_INT));
-  listView->InsertColumn(wxExColumn("Date", wxExColumn::COL_DATE));
-  listView->InsertColumn(wxExColumn("Float", wxExColumn::COL_FLOAT));
-  listView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
+  
+  CPPUNIT_ASSERT(listView->InsertColumn(wxExColumn("Int", wxExColumn::COL_INT) == 0);
+  CPPUNIT_ASSERT(listView->InsertColumn(wxExColumn("Date", wxExColumn::COL_DATE) == 1);
+  CPPUNIT_ASSERT(listView->InsertColumn(wxExColumn("Float", wxExColumn::COL_FLOAT) == 2);
+  CPPUNIT_ASSERT(listView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING) == 3);
 
   CPPUNIT_ASSERT(listView->FindColumn("Int") == 0);
   CPPUNIT_ASSERT(listView->FindColumn("Date") == 1);

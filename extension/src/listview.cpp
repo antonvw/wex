@@ -516,13 +516,19 @@ bool wxExListView::GotoDialog(const wxString& caption)
   return true;
 }
 
-void wxExListView::InsertColumn(const wxExColumn& col)
+long wxExListView::InsertColumn(const wxExColumn& col)
 {
   wxExColumn mycol(col);
   
-  wxListView::InsertColumn(GetColumnCount(), mycol);
-  mycol.SetColumn(GetColumnCount() - 1);
-  m_Columns.insert(std::make_pair(mycol.GetText(), mycol));
+  const long index = wxListView::InsertColumn(GetColumnCount(), mycol);
+  
+  if (index != -1)
+  {
+    mycol.SetColumn(GetColumnCount() - 1);
+    m_Columns.insert(std::make_pair(mycol.GetText(), mycol));
+  }
+  
+  return index;
 }
 
 bool wxExListView::ItemFromText(const wxString& text)
