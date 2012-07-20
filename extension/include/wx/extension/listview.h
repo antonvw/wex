@@ -117,7 +117,8 @@ public:
   bool GotoDialog(const wxString& caption = _("Enter Item Number"));
 
   /// Inserts a column.
-  void InsertColumn(const wxExColumn& col);
+  /// Returns the index of the inserted column or -1 if adding it failed.
+  long InsertColumn(const wxExColumn& col);
 
   /// Inserts a new item with column values from text.
   virtual bool ItemFromText(const wxString& text);
