@@ -18,7 +18,8 @@ cp gccgtk2_dll/syncped syncped
 # Copy the libs.
 cp ~/wxWidgets-2.9.4/buildgtk/lib/libwx*2.9*so*4 syncped
 
-# Copy xml data.
+# Copy xml and templates data.
+cp ../extension/data/*.tpl syncped
 cp ../extension/data/*.xml syncped
 
 # Copy locale files.
