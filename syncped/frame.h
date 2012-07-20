@@ -58,6 +58,7 @@ private:
 
   int m_NewFileNo;
   int m_NewProjectNo;
+  int m_SplitId;
 
   wxExGenericDirCtrl* m_DirCtrl;
   wxExListViewWithFrame* m_History;

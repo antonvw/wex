@@ -76,6 +76,7 @@ Frame::Frame(bool open_recent)
   : DecoratedFrame()
   , m_NewFileNo(1)
   , m_NewProjectNo(1)
+  , m_SplitId(1)
   , m_Editors(NULL)
   , m_Projects(NULL)
   , m_Lists(NULL)
@@ -784,7 +785,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       m_Editors->GetPageIndex(editor),
       stc,
       // key should be unique
-      wxString::Format("stc%d", stc->GetId()),
+      wxString::Format("split%06d", m_SplitId++),
       stc->GetFileName().GetFullName(),
       true,
       wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
