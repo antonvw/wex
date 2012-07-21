@@ -17,6 +17,8 @@
 
 #if wxUSE_GUI
 
+#undef LOGGING
+
 BEGIN_EVENT_TABLE(wxExNotebook, wxAuiNotebook)
   EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, wxExNotebook::OnNotebook)
   EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, wxExNotebook::OnNotebook)
@@ -42,6 +44,7 @@ wxWindow* wxExNotebook::AddPage(
 {
   if (GetPageByKey(key) != NULL)
   {
+    wxFAIL;
     return NULL;
   }
 
@@ -52,8 +55,14 @@ wxWindow* wxExNotebook::AddPage(
     wxFAIL;
     return NULL;
   }
-
+  
   m_MapPages[key] = page;
+
+#ifdef LOGGING
+  wxLogMessage("added page key: %s text: %s page: %d",
+    key.c_str(), text.c_str(), page->GetId());
+  LogMapPages();
+#endif
 
   return page;
 }
@@ -66,6 +75,12 @@ bool wxExNotebook::DeletePage(const wxString& key)
 
   if (wxAuiNotebook::DeletePage(GetPageIndex(page)))
   {
+#ifdef LOGGING
+    wxLogMessage("deleted page: %s page: %d",
+      key.c_str(), page->GetId());
+    LogMapPages();
+#endif
+
     ErasePage(key);
     return true;
   }
@@ -79,6 +94,12 @@ bool wxExNotebook::DeletePage(const wxString& key)
 void wxExNotebook::ErasePage(const wxString& key)
 {
   m_MapPages.erase(key);
+
+#ifdef LOGGING
+  wxLogMessage("erased page key: %s",
+    key.c_str());
+  LogMapPages();
+#endif
 
   if (m_Frame != NULL)
   {
@@ -150,6 +171,12 @@ bool wxExNotebook::ForEach(int id)
 
 const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
 {
+#ifdef LOGGING
+  wxLogMessage("get key by page: %d",
+    page->GetId());
+  LogMapPages();
+#endif
+
   for (
 #ifdef wxExUSE_CPP0X	
     auto it = m_MapPages.begin();
@@ -224,9 +251,26 @@ wxWindow* wxExNotebook::InsertPage(
 
   m_MapPages[key] = page;
 
+#ifdef LOGGING
+  wxLogMessage("inserted page key: %s text: %s page: %d",
+    key.c_str(), text.c_str(), page->GetId());
+  LogMapPages();
+#endif
+
   return page;
 }
 
+void wxExNotebook::LogMapPages() const
+{
+  for (
+    std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.begin();
+    it != m_MapPages.end();
+    ++it)
+  {
+     wxLogMessage("map[%s]=%d", it->first.c_str(), it->second->GetId());
+  }
+}
+  
 void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED)
@@ -242,13 +286,21 @@ void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
   {
     if (m_Frame != NULL)
     {
-      if (!m_Frame->AllowClose(GetId(), GetPage(GetSelection())))
+      const int sel = event.GetSelection();
+      
+      if (sel == wxNOT_FOUND)
+      {
+        wxFAIL;
+        return;
+      }
+      
+      if (!m_Frame->AllowClose(GetId(), GetPage(sel)))
       {
         event.Veto();
       }
       else
       {
-        const wxString key = GetKeyByPage(GetPage(GetSelection()));
+        const wxString key = GetKeyByPage(GetPage(sel));
         ErasePage(key);
         m_Frame->HideExBar();
         event.Skip(); // call base
