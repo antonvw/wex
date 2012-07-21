@@ -55,7 +55,7 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
-  EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
+//  EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_START_DRAG(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_DO_DROP(wxID_ANY, wxExSTC::OnStyledText)  
   EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
@@ -1368,12 +1368,21 @@ bool wxExSTC::MarkerAddChange(int line)
     return false;
   }
   
-  if (MarkerAdd(line, m_MarkerChange.GetNo()) == -1)
-  {
-    return false;
-  }
+  Unbind(
+    wxEVT_STC_MODIFIED, 
+    &wxExSTC::OnStyledText,
+    this,
+    wxID_ANY);
+
+  const bool ok =  (MarkerAdd(line, m_MarkerChange.GetNo()) != -1);
   
-  return true;
+  Bind(
+    wxEVT_STC_MODIFIED, 
+    &wxExSTC::OnStyledText,
+    this,
+    wxID_ANY);
+
+  return ok;
 }
   
 bool wxExSTC::MarkerDeleteAllChange()
@@ -1480,7 +1489,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     if (!GetReadOnly() && !HexMode()) 
     {
       Clear(); 
-      MarkerAddChange(GetCurrentLine());
     }
     break;
   case wxID_JUMP_TO: GotoDialog(); break;
@@ -1698,8 +1706,8 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   if (event.GetEventType() == wxEVT_STC_MODIFIED)
   {
     event.Skip();
-
-//    MarkerAddChange(event.GetLine()); 
+    
+    MarkerAddChange(LineFromPosition(event.GetPosition())); 
   }
   else if (event.GetEventType() == wxEVT_STC_START_DRAG)
   {
@@ -1742,16 +1750,6 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
         ToggleFold(line);
       }
     }
-  }
-  else if (event.GetEventType() == wxEVT_STC_CHARADDED)
-  {
-    MarkerAddChange(GetCurrentLine());
-  }
-  else if (event.GetEventType() == wxEVT_STC_MODIFIED)
-  {
-    event.Skip();
-
-//    MarkerAddChange(event.GetLine());
   }
   else
   {
@@ -1833,17 +1831,7 @@ void wxExSTC::Paste()
     return;
   }
   
-  const int line = GetCurrentLine();
-
   wxStyledTextCtrl::Paste();
-  
-  if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
-  {
-    for (int i = line; i <= GetCurrentLine(); i++)
-    {
-      MarkerAddChange(i);
-    }
-  }
 }
 
 bool wxExSTC::PositionRestore()
