@@ -1355,42 +1355,40 @@ bool wxExSTC::LinkOpen(wxString* filename)
   return !path.empty();
 }
 
-bool wxExSTC::MarkerAddChange(int line)
+void wxExSTC::MarkerAddChange(const wxStyledTextEvent& event)
 {
   if (
      GetReadOnly() || 
     !wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange) ||
     !m_File.GetFileName().GetStat().IsOk())
   {
-    return false;
+    return;
   }
   
+  const int line_begin = LineFromPosition(event.GetPosition());
+  const int lines = wxExGetNumberOfLines(event.GetText());
+  
+  if (lines == 0)
+  {
+    return;
+  }
+    
   Unbind(
     wxEVT_STC_MODIFIED, 
     &wxExSTC::OnStyledText,
     this,
     wxID_ANY);
-
-  const bool ok = (MarkerAdd(line, m_MarkerChange.GetNo()) != -1);
-  
-//  const int line_begin = LineFromPosition(GetTargetStart());
-//  const int line_end = LineFromPosition(GetTargetEnd());
     
-//  for (int i = line_begin; i <= line_end; i++)
-//  {
-//    if (!MarkerAddChange(i))
-//    {
-//      return false;
-//    }
-//  }
+  for (int i = line_begin; i < line_begin + lines; i++)
+  {
+    MarkerAdd(i, m_MarkerChange.GetNo());
+  }
   
   Bind(
     wxEVT_STC_MODIFIED, 
     &wxExSTC::OnStyledText,
     this,
     wxID_ANY);
-
-  return ok;
 }
   
 bool wxExSTC::MarkerDeleteAllChange()
@@ -1684,7 +1682,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   {
     event.Skip();
     
-    MarkerAddChange(LineFromPosition(event.GetPosition())); 
+    MarkerAddChange(event); 
   }
   else if (event.GetEventType() == wxEVT_STC_START_DRAG)
   {

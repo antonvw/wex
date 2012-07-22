@@ -326,9 +326,7 @@ private:
   void HexDecCalltip(int pos);
   void Initialize();
   bool LinkOpen(wxString* filename = NULL); // name of found file
-  /// Marks specified line as changed.
-  /// Returns false if marker could not be set.
-  bool MarkerAddChange(int line);
+  void MarkerAddChange(const wxStyledTextEvent& event);
   void MarkerNext(bool next);
   void SetHexMode();
   void SortSelectionDialog(
