@@ -65,8 +65,6 @@ bool wxExVi::ChangeNumber(bool inc)
         wxString::Format("%d", next));
     }
     
-    GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
-    
     return true;
   }
   
@@ -456,7 +454,6 @@ bool wxExVi::CommandChar(int c, int repeat)
         GetSTC()->CharRight();
         GetSTC()->DeleteBack(); 
       }
-      GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
       break;
         
     case 'y': 
@@ -522,7 +519,6 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'X': 
       if (GetSTC()->GetReadOnly() || GetSTC()->HexMode()) return false;
       for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack();
-      GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
       break;
 
     case '.': 
@@ -569,7 +565,6 @@ bool wxExVi::CommandChar(int c, int repeat)
     case WXK_BACK:
       if (GetSTC()->GetReadOnly() || GetSTC()->HexMode()) return false;
       GetSTC()->DeleteBack();
-      GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
       break;
       
     case WXK_RETURN:
@@ -702,11 +697,6 @@ void wxExVi::InsertMode(const wxString& command)
       {
         m_InsertText += command;
       }
-  }
-      
-  if (GetSTC()->GetModify())
-  {
-    GetSTC()->MarkerAddChange(GetSTC()->GetCurrentLine());
   }
 }
 
@@ -929,7 +919,6 @@ bool wxExVi::ToggleCase()
   GetSTC()->CharRight();
   
   const int line = GetSTC()->LineFromPosition(GetSTC()->GetCurrentPos());
-  GetSTC()->MarkerAddChange(line);
   
   return true;
 }

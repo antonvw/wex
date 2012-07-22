@@ -736,7 +736,6 @@ void wxExSTC::Cut()
   if (!HexMode()) 
   {
     wxStyledTextCtrl::Cut();
-    MarkerAddChange(GetCurrentLine());
   }
 }
   
@@ -1224,8 +1223,6 @@ bool wxExSTC::Indent(int begin, int end, bool forward)
         }
       }
     }
-    
-    MarkerAddChange(begin + i);
   }
 
   EndUndoAction();
