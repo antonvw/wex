@@ -1765,12 +1765,13 @@ bool wxExSTC::Open(
 
   m_Flags = flags;
 
+  // TODO: Move to stcfile.
   Unbind(
     wxEVT_STC_MODIFIED, 
     &wxExSTC::OnStyledText,
     this,
     wxID_ANY);
-    
+
   bool success;
 
   if (m_File.FileLoad(filename))
