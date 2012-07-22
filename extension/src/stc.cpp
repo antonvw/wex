@@ -1908,6 +1908,12 @@ void wxExSTC::Reload(long flags)
 {
   const bool modified = GetModify();
   
+  Unbind(
+    wxEVT_STC_MODIFIED, 
+    &wxExSTC::OnStyledText,
+    this,
+    wxID_ANY);
+    
   if ((flags & STC_WIN_HEX) && !HexMode())
   {
     const wxCharBuffer buffer = GetTextRaw(); // keep buffer
@@ -1927,6 +1933,12 @@ void wxExSTC::Reload(long flags)
     AppendText(buffer);
   }
   
+  Bind(
+    wxEVT_STC_MODIFIED, 
+    &wxExSTC::OnStyledText,
+    this,
+    wxID_ANY);
+
   m_Flags = flags;
     
   if (m_Flags & STC_WIN_READ_ONLY || GetFileName().GetStat().IsReadOnly())
