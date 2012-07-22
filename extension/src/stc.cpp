@@ -1366,11 +1366,20 @@ void wxExSTC::MarkerAddChange(const wxStyledTextEvent& event)
   }
   
   const int line_begin = LineFromPosition(event.GetPosition());
-  const int lines = wxExGetNumberOfLines(event.GetText());
+  int lines = wxExGetNumberOfLines(event.GetText());
   
   if (lines == 0)
   {
     return;
+  }
+  
+  const int SC_MOD_DELETETEXT  = 0x2;
+  const int SC_MOD_BEFOREINSERT = 0x400;
+  const int SC_MOD_BEFOREDELETE = 0x800;
+  
+  if (event.GetModificationType() & (SC_MOD_DELETETEXT | SC_MOD_BEFOREDELETE | SC_MOD_BEFOREINSERT))
+  {
+    lines = 1;
   }
     
   Unbind(
