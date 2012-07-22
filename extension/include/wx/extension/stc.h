@@ -326,8 +326,8 @@ private:
   void HexDecCalltip(int pos);
   void Initialize();
   bool LinkOpen(wxString* filename = NULL); // name of found file
-  void MarkerAddChange(const wxStyledTextEvent& event);
   void MarkerNext(bool next);
+  void MarkModified(const wxStyledTextEvent& event);
   void SetHexMode();
   void SortSelectionDialog(
     bool sort_ascending,
