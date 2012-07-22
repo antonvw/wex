@@ -219,7 +219,6 @@ bool wxExVi::Command(const wxString& command)
       GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
       GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + repeat);
       GetSTC()->ReplaceTarget(wxString(rest.Last(), repeat));
-      GetSTC()->MarkTargetChange();
     }
   }
   else if (rest == "yw")

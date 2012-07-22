@@ -1085,8 +1085,6 @@ void wxExGuiTestFixture::testSTC()
   
   CPPUNIT_ASSERT( stc->MarkerDeleteAllChange());
   
-  CPPUNIT_ASSERT( stc->MarkTargetChange());
-  
   CPPUNIT_ASSERT(!stc->PositionRestore());
   stc->PositionSave();
   CPPUNIT_ASSERT( stc->PositionRestore());

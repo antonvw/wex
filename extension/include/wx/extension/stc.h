@@ -199,10 +199,6 @@ public:
   /// Returns false if marker change is not loaded.
   bool MarkerDeleteAllChange();
   
-  /// Mark target as changed.
-  /// Returns false if marker change is not loaded or if no target was defined.
-  bool MarkTargetChange();
-  
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
   virtual bool Open(

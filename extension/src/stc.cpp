@@ -1374,7 +1374,18 @@ bool wxExSTC::MarkerAddChange(int line)
     this,
     wxID_ANY);
 
-  const bool ok =  (MarkerAdd(line, m_MarkerChange.GetNo()) != -1);
+  const bool ok = (MarkerAdd(line, m_MarkerChange.GetNo()) != -1);
+  
+//  const int line_begin = LineFromPosition(GetTargetStart());
+//  const int line_end = LineFromPosition(GetTargetEnd());
+    
+//  for (int i = line_begin; i <= line_end; i++)
+//  {
+//    if (!MarkerAddChange(i))
+//    {
+//      return false;
+//    }
+//  }
   
   Bind(
     wxEVT_STC_MODIFIED, 
@@ -1416,33 +1427,6 @@ void wxExSTC::MarkerNext(bool next)
   }
 }
       
-// cannot be const because of MarkerAddChange
-bool wxExSTC::MarkTargetChange()
-{
-  if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
-  {
-    return false;
-  }
-  
-  if (GetTargetStart() == 0 && GetTargetEnd() == 0)
-  {
-    // No target defined.
-    return false;
-  }
-  
-  const int line_begin = LineFromPosition(GetTargetStart());
-  const int line_end = LineFromPosition(GetTargetEnd());
-    
-  for (int i = line_begin; i <= line_end; i++)
-  {
-    if (!MarkerAddChange(i))
-    {
-      return false;
-    }
-  }
-  
-  return true;
-}
 
 void wxExSTC::OnChar(wxKeyEvent& event)
 {
@@ -1544,13 +1528,9 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
   case ID_EDIT_LOWERCASE: 
     LowerCase(); 
-    TargetFromSelection();
-    MarkTargetChange();
     break;
   case ID_EDIT_UPPERCASE: 
     UpperCase(); 
-    TargetFromSelection();
-    MarkTargetChange();
     break;
   
   case ID_EDIT_MARKER_NEXT: MarkerNext(true); break;
@@ -2008,8 +1988,6 @@ int wxExSTC::ReplaceAll(
 
     if (!skip_replace)
     {
-      MarkTargetChange();
-  
       length = (wxExFindReplaceData::Get()->UseRegularExpression() ?
         ReplaceTargetRE(replace_text):
         ReplaceTarget(replace_text));
@@ -2055,8 +2033,6 @@ bool wxExSTC::ReplaceNext(
     if (SearchInTarget(find_text) == -1) return false;
   }
   
-  MarkTargetChange();
-    
   if (HexMode())
   {
     for (int i = 0; i < replace_text.size(); i++)
