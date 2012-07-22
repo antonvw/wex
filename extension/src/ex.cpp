@@ -262,8 +262,6 @@ bool wxExEx::CommandGlobal(const wxString& search)
     // TODO: Add more commands.
     if (command == "d")
     {
-      m_STC->MarkTargetChange();
-      
       const int begin = m_STC->PositionFromLine(
         m_STC->LineFromPosition(m_STC->GetTargetStart()));
       const int end = m_STC->PositionFromLine(
@@ -285,7 +283,6 @@ bool wxExEx::CommandGlobal(const wxString& search)
     }
     else if (command == "s")
     {
-      m_STC->MarkTargetChange();
       const int target_start = m_STC->GetTargetStart();
       const int length = m_STC->ReplaceTargetRE(replacement); // always RE!
       m_STC->SetTargetStart(target_start + length);
@@ -861,8 +858,6 @@ bool wxExEx::Substitute(
     
       replacement.Replace("&", target);
     }
-    
-    m_STC->MarkTargetChange();
     
     const int length = m_STC->ReplaceTargetRE(replacement); // always RE!
     

@@ -119,10 +119,7 @@ bool wxExVariable::Expand(wxExEx* ex)
     return false;
   }
   
-  ex->GetSTC()->SetTargetStart(ex->GetSTC()->GetCurrentPos());
   ex->GetSTC()->AddText(text);
-  ex->GetSTC()->SetTargetEnd(ex->GetSTC()->GetCurrentPos());
-  ex->GetSTC()->MarkTargetChange();
     
   return true;
 }

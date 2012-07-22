@@ -2,7 +2,7 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wxExHexModeLine
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -424,7 +424,6 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
     return false;
   }
   
-  m_STC->MarkerAddChange(m_LineNo);
   m_STC->m_HexBuffer[byte] = val;
   
   return true;
