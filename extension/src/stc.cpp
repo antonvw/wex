@@ -1355,7 +1355,19 @@ bool wxExSTC::LinkOpen(wxString* filename)
   return !path.empty();
 }
 
-void wxExSTC::MarkerAddChange(const wxStyledTextEvent& event)
+bool wxExSTC::MarkerDeleteAllChange()
+{
+  if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
+  {
+    return false;
+  }
+  
+  MarkerDeleteAll(m_MarkerChange.GetNo());
+  
+  return true;
+}
+  
+void wxExSTC::MarkModified(const wxStyledTextEvent& event)
 {
   if (
      GetReadOnly() || 
@@ -1373,11 +1385,13 @@ void wxExSTC::MarkerAddChange(const wxStyledTextEvent& event)
     return;
   }
   
-  const int SC_MOD_DELETETEXT  = 0x2;
+  const int SC_MOD_DELETETEXT   =   0x2;
+  const int SC_PERFORMED_UNDO   =  0x20;
   const int SC_MOD_BEFOREINSERT = 0x400;
   const int SC_MOD_BEFOREDELETE = 0x800;
   
-  if (event.GetModificationType() & (SC_MOD_DELETETEXT | SC_MOD_BEFOREDELETE | SC_MOD_BEFOREINSERT))
+  if ( event.GetModificationType() & 
+      (SC_MOD_DELETETEXT | SC_MOD_BEFOREDELETE | SC_MOD_BEFOREINSERT))
   {
     lines = 1;
   }
@@ -1390,7 +1404,14 @@ void wxExSTC::MarkerAddChange(const wxStyledTextEvent& event)
     
   for (int i = line_begin; i < line_begin + lines; i++)
   {
-    MarkerAdd(i, m_MarkerChange.GetNo());
+    if ( event.GetModificationType() & SC_PERFORMED_UNDO)
+    {
+      MarkerDelete(i, m_MarkerChange.GetNo());
+    }
+    else
+    {
+      MarkerAdd(i, m_MarkerChange.GetNo());
+    }
   }
   
   Bind(
@@ -1398,18 +1419,6 @@ void wxExSTC::MarkerAddChange(const wxStyledTextEvent& event)
     &wxExSTC::OnStyledText,
     this,
     wxID_ANY);
-}
-  
-bool wxExSTC::MarkerDeleteAllChange()
-{
-  if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
-  {
-    return false;
-  }
-  
-  MarkerDeleteAll(m_MarkerChange.GetNo());
-  
-  return true;
 }
   
 void wxExSTC::MarkerNext(bool next)
@@ -1691,7 +1700,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   {
     event.Skip();
     
-    MarkerAddChange(event); 
+    MarkModified(event); 
   }
   else if (event.GetEventType() == wxEVT_STC_START_DRAG)
   {
