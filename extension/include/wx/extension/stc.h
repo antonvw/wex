@@ -287,6 +287,9 @@ public:
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
+  
+  /// Use and show modification markers in the margin.
+  void UseModificationMarkers(bool use);
 protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
