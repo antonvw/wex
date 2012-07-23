@@ -36,10 +36,14 @@ void wxExSTCFile::DoFileLoad(bool synced)
   // Also only do it for reasonably large files.
   const bool isLog = (GetFileName().GetExt().CmpNoCase("log") == 0);
   
+  m_STC->UseModificationMarkers(false);
+
   ReadFromFile(
     synced &&
     isLog &&
     m_STC->GetTextLength() > 1024);
+
+  m_STC->UseModificationMarkers(true);
 
   if (!synced)
   {

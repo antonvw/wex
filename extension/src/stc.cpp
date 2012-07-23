@@ -1264,11 +1264,7 @@ void wxExSTC::Initialize()
   m_DefaultFont = wxConfigBase::Get()->ReadObject(
     _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT));
   
-  Bind(
-    wxEVT_STC_MODIFIED, 
-    &wxExSTC::OnStyledText,
-    this,
-    wxID_ANY);
+  UseModificationMarkers(true);
 
 #ifdef __WXMSW__
   SetEOLMode(wxSTC_EOL_CRLF);
@@ -1369,10 +1365,7 @@ bool wxExSTC::MarkerDeleteAllChange()
   
 void wxExSTC::MarkModified(const wxStyledTextEvent& event)
 {
-  if (
-     GetReadOnly() || 
-    !wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange) ||
-    !m_File.GetFileName().GetStat().IsOk())
+  if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
     return;
   }
@@ -1396,11 +1389,7 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
     lines = 1;
   }
     
-  Unbind(
-    wxEVT_STC_MODIFIED, 
-    &wxExSTC::OnStyledText,
-    this,
-    wxID_ANY);
+  UseModificationMarkers(false);
     
   for (int i = line_begin; i < line_begin + lines; i++)
   {
@@ -1414,11 +1403,7 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
     }
   }
   
-  Bind(
-    wxEVT_STC_MODIFIED, 
-    &wxExSTC::OnStyledText,
-    this,
-    wxID_ANY);
+  UseModificationMarkers(true);
 }
   
 void wxExSTC::MarkerNext(bool next)
@@ -1765,13 +1750,6 @@ bool wxExSTC::Open(
 
   m_Flags = flags;
 
-  // TODO: Move to stcfile.
-  Unbind(
-    wxEVT_STC_MODIFIED, 
-    &wxExSTC::OnStyledText,
-    this,
-    wxID_ANY);
-
   bool success;
 
   if (m_File.FileLoad(filename))
@@ -1809,12 +1787,6 @@ bool wxExSTC::Open(
     success = false;
   }
   
-  Bind(
-    wxEVT_STC_MODIFIED, 
-    &wxExSTC::OnStyledText,
-    this,
-    wxID_ANY);
-
   return success;
 }
 
@@ -1909,12 +1881,8 @@ void wxExSTC::Reload(long flags)
 {
   const bool modified = GetModify();
   
-  Unbind(
-    wxEVT_STC_MODIFIED, 
-    &wxExSTC::OnStyledText,
-    this,
-    wxID_ANY);
-    
+  UseModificationMarkers(false);
+  
   if ((flags & STC_WIN_HEX) && !HexMode())
   {
     const wxCharBuffer buffer = GetTextRaw(); // keep buffer
@@ -1934,11 +1902,7 @@ void wxExSTC::Reload(long flags)
     AppendText(buffer);
   }
   
-  Bind(
-    wxEVT_STC_MODIFIED, 
-    &wxExSTC::OnStyledText,
-    this,
-    wxID_ANY);
+  UseModificationMarkers(true);
 
   m_Flags = flags;
     
@@ -2277,6 +2241,26 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
   // Set selection back, without removed empty lines.
   SetSelection(start_pos, GetLineEndPosition(start_line + mm.size()));
+}
+
+void wxExSTC::UseModificationMarkers(bool use)
+{
+  if (use)
+  {
+    Bind(
+      wxEVT_STC_MODIFIED, 
+      &wxExSTC::OnStyledText,
+      this,
+      wxID_ANY);
+  }
+  else
+  {
+    Unbind(
+      wxEVT_STC_MODIFIED, 
+      &wxExSTC::OnStyledText,
+      this,
+      wxID_ANY);
+  }
 }
 
 #endif // wxUSE_GUI
