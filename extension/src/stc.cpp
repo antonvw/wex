@@ -1423,8 +1423,11 @@ void wxExSTC::MarkerNext(bool next)
   {
     GotoLine(line);
   }
+  else
+  {
+    wxLogStatus(_("No markers present"));
+  }
 }
-      
 
 void wxExSTC::OnChar(wxKeyEvent& event)
 {
