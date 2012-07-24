@@ -2,7 +2,7 @@
 // Name:      listviewfile.h
 // Purpose:   Declaration of class wxExListViewFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_LISTVIEWFILE_H
@@ -50,7 +50,7 @@ public:
   virtual void ResetContentsChanged() {m_ContentsChanged = false;};
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
-  virtual void DoFileLoad(bool synced = false);
+  virtual bool DoFileLoad(bool synced = false);
   virtual void DoFileNew();
   virtual void DoFileSave(bool save_as = false);
   void OnCommand(wxCommandEvent& event);

@@ -71,7 +71,7 @@ protected:
   /// The file is already opened, so you can call Read.
   /// If synced is true, this call was a result of
   /// CheckSync and not of FileLoad.
-  virtual void DoFileLoad(bool synced = false) {;};
+  virtual bool DoFileLoad(bool synced = false) {return false;};
 
   /// Invoked by FileNew, allows you to make a new (empty) file.
   virtual void DoFileNew() {;};
