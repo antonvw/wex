@@ -2,7 +2,7 @@
 // Name:      stcfile.h
 // Purpose:   Declaration of class wxExSTCFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTCFILE_H
@@ -28,7 +28,7 @@ public:
   /// Reads other file and adds contents to STC.
   void Read(const wxString& file) const;
 protected:
-  virtual void DoFileLoad(bool synced = false);
+  virtual bool DoFileLoad(bool synced = false);
   virtual void DoFileNew();
   virtual void DoFileSave(bool save_as = false);
 private:
