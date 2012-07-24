@@ -177,7 +177,7 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-void wxExListViewFile::DoFileLoad(bool synced)
+bool wxExListViewFile::DoFileLoad(bool synced)
 {
   EditClearAll();
 
@@ -185,7 +185,7 @@ void wxExListViewFile::DoFileLoad(bool synced)
 
   if (!doc.Load(GetFileName().GetFullPath()))
   {
-    return;
+    return false;
   }
 
   wxXmlNode* child = doc.GetRoot()->GetChildren();
@@ -212,6 +212,8 @@ void wxExListViewFile::DoFileLoad(bool synced)
   }
 
   GetFrame()->SetRecentProject(GetFileName().GetFullPath());
+  
+  return true;
 }
 
 void wxExListViewFile::DoFileNew()

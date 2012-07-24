@@ -49,6 +49,8 @@ bool wxExFile::CheckSync()
     m_FileName.m_Stat.Sync() &&
     m_FileName.m_Stat.st_mtime != m_Stat.st_mtime)
   {
+    // Do not check return value,
+    // we sync anyhow, to force nex time no sync.
     Get(true);
 
     // Update the stat member, so next time no sync.
@@ -114,7 +116,10 @@ bool wxExFile::Get(bool synced)
     return false;
   }
 
-  DoFileLoad(synced);
+  if (!DoFileLoad(synced))
+  {
+    return false;
+  }
 
   if (IsOpened())
   {

@@ -22,12 +22,12 @@ wxExSTCFile::wxExSTCFile(wxExSTC* stc)
 {
 }
 
-void wxExSTCFile::DoFileLoad(bool synced)
+bool wxExSTCFile::DoFileLoad(bool synced)
 {
   if (GetContentsChanged())
   {
     wxExFileDialog dlg(m_STC, this);
-    if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
+    if (dlg.ShowModalIfChanged() == wxID_CANCEL) return false;
   }
 
   // Synchronizing by appending only new data only works for log files.
@@ -59,6 +59,8 @@ void wxExSTCFile::DoFileLoad(bool synced)
   }
   
   m_STC->PropertiesMessage(synced ? STAT_SYNC: STAT_DEFAULT);
+  
+  return true;
 }
 
 void wxExSTCFile::DoFileNew()
