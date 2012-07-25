@@ -213,6 +213,8 @@ long wxExProcess::Execute(
     else
     {
       m_Error = true;
+      m_Dialog->Hide();
+      
       wxLogStatus(_("Could not execute") + ":" + command);
     }
     
