@@ -48,7 +48,8 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   m_STC->ResetMargins();
   m_STC->SetViewEOL(false);
   m_STC->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
-  
+  m_STC->UseModificationMarkers(false);
+
   AddUserSizer(m_STC);
 
   LayoutSizers();

@@ -565,7 +565,7 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
     wxSingleChoiceDialog dialog(m_STC,
       _("Input") + ":", 
       _("Select Macro"),
-      m_Macros.Get());
+      macros);
       
     const int index = macros.Index(m_Macros.GetMacro());
   

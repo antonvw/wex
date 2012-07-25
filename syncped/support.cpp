@@ -114,13 +114,19 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->Append(
     ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+K"));
   menuEdit->AppendSeparator();
+  
   wxExMenu* menuMacro = new wxExMenu();
   menuMacro->Append(ID_EDIT_MACRO_START_RECORD, wxExEllipsed(_("Start Record")));
   menuMacro->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
   menuMacro->AppendSeparator();
   menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, wxExEllipsed(_("Playback"), "Ctrl+M"));
-  menuMacro->AppendSeparator();
-  menuMacro->Append(ID_EDIT_MACRO, wxGetStockLabel(wxID_EDIT));
+  
+  if (wxExViMacros::GetFileName().FileExists())
+  {
+    menuMacro->AppendSeparator();
+    menuMacro->Append(ID_EDIT_MACRO, wxGetStockLabel(wxID_EDIT));
+  }
+  
   menuEdit->AppendSubMenu(menuMacro, _("&Macro"));
 
   wxExMenu *menuView = new wxExMenu;

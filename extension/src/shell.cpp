@@ -58,6 +58,8 @@ wxExSTCShell::wxExSTCShell(
   , m_Handler(parent)
   , m_Enabled(true)
 {
+  UseModificationMarkers(false);
+
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
   ResetMargins(false); // do not reset divider margin
