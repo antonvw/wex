@@ -154,11 +154,11 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_File(this)
   , m_Link(wxExLink(this))
 {
-  UseModificationMarkers(stc.m_File.GetStat().IsOk());
+  UseModificationMarkers(stc.m_File.GetFileName().GetStat().IsOk());
 
-  Initialize(stc.m_File.GetStat().IsOk());
+  Initialize(stc.m_File.GetFileName().GetStat().IsOk());
 
-  if (stc.m_File.GetStat().IsOk())
+  if (stc.m_File.GetFileName().GetStat().IsOk())
   {
     Open(stc.m_File.GetFileName(), -1, wxEmptyString, GetFlags());
   }
