@@ -86,7 +86,9 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_File(this)
   , m_Link(wxExLink(this))
 {
-  Initialize();
+  UseModificationMarkers(false);
+
+  Initialize(false);
 
   PropertiesMessage();
 
@@ -132,7 +134,9 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_vi(wxExVi(this))
   , m_Link(wxExLink(this))
 {
-  Initialize();
+  UseModificationMarkers(true);
+
+  Initialize(filename.GetStat().IsOk());
 
   Open(filename, line_number, match, flags);
 }
@@ -150,9 +154,11 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_File(this)
   , m_Link(wxExLink(this))
 {
-  Initialize();
+  UseModificationMarkers(stc.m_File.GetStat().IsOk());
 
-  if (stc.m_File.GetFileName().IsOk())
+  Initialize(stc.m_File.GetStat().IsOk());
+
+  if (stc.m_File.GetStat().IsOk())
   {
     Open(stc.m_File.GetFileName(), -1, wxEmptyString, GetFlags());
   }
@@ -1237,7 +1243,7 @@ bool wxExSTC::Indent(int lines, bool forward)
   return Indent(line, line + lines - 1, forward);
 }
 
-void wxExSTC::Initialize()
+void wxExSTC::Initialize(bool file_exists)
 {
   // TODO: There is a bug in scintilla 2.0.3.
   // const char *Document::SubstituteByPosition(const char *text, int *length) {
@@ -1264,8 +1270,6 @@ void wxExSTC::Initialize()
   m_DefaultFont = wxConfigBase::Get()->ReadObject(
     _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT));
   
-  UseModificationMarkers(true);
-
 #ifdef __WXMSW__
   SetEOLMode(wxSTC_EOL_CRLF);
 #elif __WXGTK__
@@ -1321,8 +1325,12 @@ void wxExSTC::Initialize()
 
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
-  
-  wxExLexers::Get()->ApplyGlobalStyles(this);
+
+  // Prevent doing this double, see wxExLexer::Apply.
+  if (!file_exists)
+  {
+    wxExLexers::Get()->ApplyGlobalStyles(this);
+  }
   
   ConfigGet();
 }

@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTC_H
@@ -327,7 +327,7 @@ private:
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void FoldAll();
   void HexDecCalltip(int pos);
-  void Initialize();
+  void Initialize(bool file_exists);
   bool LinkOpen(wxString* filename = NULL); // name of found file
   void MarkerNext(bool next);
   void MarkModified(const wxStyledTextEvent& event);
