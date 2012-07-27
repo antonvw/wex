@@ -1699,17 +1699,10 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
     {
       int style = 0; // otherwise CAN_PASTE already on
       
-      if (
-        GetReadOnly() ||
-        HexMode()) 
-      {
-        style |= wxExMenu::MENU_IS_READ_ONLY;
-      }
-      
-      if (!GetSelectedText().empty()) 
-        style |= wxExMenu::MENU_IS_SELECTED;
-      if (GetTextLength() == 0) style |= wxExMenu::MENU_IS_EMPTY;
-      if (CanPaste()) style |= wxExMenu::MENU_CAN_PASTE;
+      if (!CanCut())                  style |= wxExMenu::MENU_IS_READ_ONLY;
+      if (!GetSelectedText().empty()) style |= wxExMenu::MENU_IS_SELECTED;
+      if ( GetTextLength() == 0)      style |= wxExMenu::MENU_IS_EMPTY;
+      if ( CanPaste())                style |= wxExMenu::MENU_CAN_PASTE;
 
       wxExMenu menu(style);
       
