@@ -22,6 +22,7 @@
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
+#include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
@@ -51,6 +52,7 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU(wxID_SORT_DESCENDING, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_FIND_NEXT, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_FIND_PREVIOUS, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_SHOW_PROPERTIES, wxExSTC::OnCommand)  
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
@@ -173,9 +175,16 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 {
   const wxString sel = GetSelectedText();
 
+  if (GetCurrentLine() == 0)
+  {
+    menu.Append(ID_EDIT_SHOW_PROPERTIES, _("Properties"));
+    menu.AppendSeparator();
+  }
+    
   if (m_MenuFlags & STC_MENU_OPEN_LINK)
   {
     wxString filename;
+    
     if (LinkOpen(&filename))
     {
       menu.AppendSeparator();
@@ -261,6 +270,16 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     menu.Append(ID_EDIT_FOLD_ALL, _("&Fold All Lines\tF9"));
     menu.Append(ID_EDIT_UNFOLD_ALL, _("&Unfold All Lines\tF10"));
   }
+}
+
+wxExSTC::bool CanCut() const
+{
+  return !GetReadOnly() && !HexMode();
+}
+
+wxExSTC::bool CanPaste() const
+{
+  return !GetReadOnly() && !HexMode();
 }
 
 void wxExSTC::CheckAutoComp(const wxUniChar& c)
@@ -734,12 +753,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
 
 void wxExSTC::Cut()
 {
-  if (GetSelectedText().empty())
-  {
-    return;
-  }
-  
-  if (!HexMode()) 
+  if (CanCut()) 
   {
     wxStyledTextCtrl::Cut();
   }
@@ -1478,12 +1492,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   {
   case wxID_COPY: Copy(); break;
   case wxID_CUT: Cut(); break;
-  case wxID_DELETE: 
-    if (!GetReadOnly() && !HexMode()) 
-    {
-      Clear(); 
-    }
-    break;
+  case wxID_DELETE: if (CanCut()) Clear(); break;
   case wxID_JUMP_TO: GotoDialog(); break;
   case wxID_PASTE: Paste(); break;
   case wxID_SELECTALL: SelectAll(); break;
@@ -1549,6 +1558,26 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
     break;
 
+  case ID_EDIT_SHOW_PROPERTIES:
+    {
+      wxString text;
+    
+      for (
+        const std::vector<wxExProperty>::iterator const_it = m_Lexer.GetProperties().begin();
+        it != m_Lexer.GetProperties().end();
+        ++it)
+      {
+        text += it->GetName() + ": " + GetProperty(it->GetName()) + "\n";
+      }
+    
+      wxExSTCEntryDialog(this, _("Properties"), text).ShowModal();
+      
+    // TODO: Add all available properties as well.
+    // #define SCI_DESCRIBEPROPERTY 4016
+    // not available in scintilla v2.03.
+    }
+    break;
+    
   case ID_EDIT_OPEN_LINK: LinkOpen(); break;
 
   case ID_EDIT_READ: m_File.Read(command.GetString()); break;
@@ -1803,12 +1832,10 @@ bool wxExSTC::Open(
 
 void wxExSTC::Paste()
 {
-  if (HexMode())
+  if (CanPaste())
   {
-    return;
+    wxStyledTextCtrl::Paste();
   }
-  
-  wxStyledTextCtrl::Paste();
 }
 
 bool wxExSTC::PositionRestore()

@@ -43,6 +43,7 @@ enum wxExId
   // add them to stc file event macro as well.
   ID_EDIT_OPEN_LINK,
   ID_EDIT_OPEN_BROWSER,
+  ID_EDIT_SHOW_PROPERTIES,
 
   ID_VIEW_MENUBAR,
   ID_VIEW_STATUSBAR,

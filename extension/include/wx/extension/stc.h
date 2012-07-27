@@ -90,7 +90,13 @@ public:
 
   /// Appends text in hex mode.
   void AppendTextHexMode(const wxCharBuffer& buffer);
+  
+  /// Will a cut paste succeed? 
+  virtual bool CanCut() const;
 
+  /// Will a paste succeed? 
+  virtual bool CanPaste() const;
+  
   // Clears the component: all text is cleared and all styles are reset.
   // Invoked by Open and DoFileNew.
   // (Clear is used by scintilla to clear the selection).

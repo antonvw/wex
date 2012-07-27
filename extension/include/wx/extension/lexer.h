@@ -80,6 +80,9 @@ public:
   /// otherwise take the specified set.
   const wxString GetKeywordsString(int keyword_set = -1) const;
 
+  /// Gets the properties.
+  const std::vector<wxExProperty> & GetProperties() const {return m_Properties;};
+  
   /// Gets the scintilla lexer.
   const wxString& GetScintillaLexer() const {return m_ScintillaLexer;};
 
@@ -113,7 +116,7 @@ public:
   /// Sets keywords (public for testing only).
   bool SetKeywords(const wxString& text);
   
-  /// Override a local property.
+  /// Overrides a local property.
   void SetProperty(const wxString& name, const wxString& value);
 
   /// Returns number of chars that fit on a line, skipping comment chars.
