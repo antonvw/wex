@@ -844,6 +844,7 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   
   if (it == m_Columns.end())
   {
+    wxFAIL;
     return false;
   }
 
