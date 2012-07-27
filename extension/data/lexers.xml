@@ -1853,9 +1853,7 @@ void          while
       <style no="hphp_commentline"> fore:green </style>
     </styles>
     <properties>
-      <property name="fold"> 1 </property>
       <property name="fold.html"> 1 </property>
-      <property name="fold.compact"> 1 </property>
       <!-- Default Language 1 for JS, 2 for VBS, 3 for python -->
       <property name="asp.default.language"> 1 </property>
     </properties>
@@ -1869,9 +1867,7 @@ void          while
       <style no="xmlstart,xmlend"> fore:red </style>
     </styles>
     <properties>
-      <property name="fold"> 1 </property>
       <property name="fold.html"> 1 </property>
-      <property name="fold.compact"> 1 </property>
     </properties>
     <!-- xml comments cannot be added, but don't need to, 
          they are added in the source -->
