@@ -1563,11 +1563,19 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
       wxString text;
     
       for (
-        std::vector<wxExProperty>::const_iterator it = m_Lexer.GetProperties().begin();
-        it != m_Lexer.GetProperties().end();
-        ++it)
+        std::vector<wxExProperty>::const_iterator it1 = wxExLexers::Get()->GetProperties().begin();
+        it1 != wxExLexers::Get()->GetProperties().end();
+        ++it1)
       {
-        text += it->GetName() + ": " + GetProperty(it->GetName()) + "\n";
+        text += it1->GetName() + ": " + GetProperty(it1->GetName()) + "\n";
+      }
+      
+      for (
+        std::vector<wxExProperty>::const_iterator it2 = m_Lexer.GetProperties().begin();
+        it2 != m_Lexer.GetProperties().end();
+        ++it2)
+      {
+        text += it2->GetName() + ": " + GetProperty(it2->GetName()) + "\n";
       }
     
       wxExSTCEntryDialog(this, _("Properties"), text, wxEmptyString, wxOK).ShowModal();

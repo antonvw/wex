@@ -76,9 +76,12 @@ public:
 
   /// Gets the filename.
   const wxFileName& GetFileName() const {return m_FileName;};
-
+  
   /// Gets the macros for specified lexer.
   const std::map<wxString, wxString>& GetMacros(const wxString& lexer) const;
+
+  /// Gets global properties.
+  const std::vector<wxExProperty> & GetProperties() const {return m_GlobalProperties;};
 
   /// Returns the current theme, as present in the config.
   /// It checks whether the config theme is really
