@@ -272,12 +272,12 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-wxExSTC::bool CanCut() const
+bool wxExSTC::CanCut() const
 {
   return !GetReadOnly() && !HexMode();
 }
 
-wxExSTC::bool CanPaste() const
+bool wxExSTC::CanPaste() const
 {
   return !GetReadOnly() && !HexMode();
 }
@@ -1563,14 +1563,14 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
       wxString text;
     
       for (
-        const std::vector<wxExProperty>::iterator const_it = m_Lexer.GetProperties().begin();
+        std::vector<wxExProperty>::const_iterator it = m_Lexer.GetProperties().begin();
         it != m_Lexer.GetProperties().end();
         ++it)
       {
         text += it->GetName() + ": " + GetProperty(it->GetName()) + "\n";
       }
     
-      wxExSTCEntryDialog(this, _("Properties"), text).ShowModal();
+      wxExSTCEntryDialog(this, _("Properties"), text, wxEmptyString, wxOK).ShowModal();
       
     // TODO: Add all available properties as well.
     // #define SCI_DESCRIBEPROPERTY 4016
