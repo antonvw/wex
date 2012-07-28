@@ -112,10 +112,11 @@ void wxExNotebook::ErasePage(const wxString& key)
 
 bool wxExNotebook::ForEach(int id)
 {
+  int page = 0;
+    
   // The page should be an int (no), otherwise page >= 0 never fails!
-  while (GetPageCount() > 0)
+  while (page < GetPageCount() )
   {
-    const int page = 0;
     
     // When trying to cast to wxExFile, there is an error:
     // src\notebook.cpp(96): error C2440: 'static_cast' : cannot convert from 'wxWindow *' to 'const wxExFile *'
@@ -145,6 +146,7 @@ bool wxExNotebook::ForEach(int id)
 
     case ID_ALL_STC_CONFIG_GET: 
       stc->ConfigGet(); 
+      page++;
       break;
       
     case ID_ALL_STC_SAVE:
@@ -152,19 +154,25 @@ bool wxExNotebook::ForEach(int id)
       {
         stc->GetFile().FileSave();
       }
+      page++;
       break;
 
     case ID_ALL_STC_SET_LEXER: 
       // At this moment same as themed change,
       // as we want default colour updates as well.
       stc->SetLexer(stc->GetLexer().GetDisplayLexer(), true);
+      page++;
       break;
 
     case ID_ALL_STC_SET_LEXER_THEME: 
       stc->SetLexer(stc->GetLexer().GetDisplayLexer(), true);
+      page++;
       break;
 
-    default: wxFAIL; break;
+    default: 
+      wxFAIL; 
+      page++;
+      break;
     }
   }
 
