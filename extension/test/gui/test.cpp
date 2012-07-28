@@ -853,7 +853,6 @@ void wxExGuiTestFixture::testNotebook()
   
   CPPUNIT_ASSERT(notebook->AddPage(page1, "key1") != NULL);
   CPPUNIT_ASSERT(notebook->AddPage(page2, "key2") != NULL);
-  CPPUNIT_ASSERT(notebook->AddPage(page1, "key1") == NULL);
   
   CPPUNIT_ASSERT(notebook->GetKeyByPage(page1) == "key1");
   CPPUNIT_ASSERT(notebook->GetPageByKey("key1") == page1);
