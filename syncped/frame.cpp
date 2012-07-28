@@ -74,6 +74,7 @@ END_EVENT_TABLE()
 
 Frame::Frame(bool open_recent)
   : DecoratedFrame()
+  , m_IsClosing(false)
   , m_NewFileNo(1)
   , m_NewProjectNo(1)
   , m_SplitId(1)
@@ -437,6 +438,8 @@ void Frame::NewFile(bool as_project)
 
 void Frame::OnClose(wxCloseEvent& event)
 {
+  m_IsClosing = true; 
+  
   if (event.CanVeto())
   {
     if (
@@ -445,6 +448,7 @@ void Frame::OnClose(wxCloseEvent& event)
       !AllowCloseAll(NOTEBOOK_EDITORS))
     {
       event.Veto();
+      m_IsClosing = false;
       return;
     }
   }
@@ -1283,6 +1287,11 @@ void Frame::StatusBarDoubleClickedRight(const wxString& pane)
 void Frame::SyncCloseAll(wxWindowID id)
 {
   DecoratedFrame::SyncCloseAll(id);
+  
+  if (m_IsClosing)
+  {
+    return;
+  }
   
   switch (id)
   {
