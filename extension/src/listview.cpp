@@ -838,7 +838,13 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   SortColumnReset();
   
   wxListItem col;
-  GetColumn(column_no, col);
+  col.SetMask(wxLIST_MASK_TEXT);
+  
+  if (!GetColumn(column_no, col))
+  {
+    wxFAIL;
+    return false;
+  }
 
   std::map<wxString, wxExColumn>::iterator it = m_Columns.find(col.GetText());
   
