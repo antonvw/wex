@@ -118,6 +118,11 @@ bool wxExFile::Get(bool synced)
 
   if (!DoFileLoad(synced))
   {
+    if (IsOpened())
+    {
+      Close();
+    }
+    
     return false;
   }
 
