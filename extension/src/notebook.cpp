@@ -113,8 +113,10 @@ void wxExNotebook::ErasePage(const wxString& key)
 bool wxExNotebook::ForEach(int id)
 {
   // The page should be an int (no), otherwise page >= 0 never fails!
-  for (int page = GetPageCount() - 1; page >= 0; page--)
+  while (GetPageCount() > 0)
   {
+    const int page = 0;
+    
     // When trying to cast to wxExFile, there is an error:
     // src\notebook.cpp(96): error C2440: 'static_cast' : cannot convert from 'wxWindow *' to 'const wxExFile *'
     // src\notebook.cpp(96): error C2039: 'ms_classInfo' : is not a member of 'wxExFile'

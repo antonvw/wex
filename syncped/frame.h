@@ -56,6 +56,7 @@ private:
   virtual void StatusBarDoubleClickedRight(const wxString& pane);
   virtual void SyncCloseAll(wxWindowID id);
 
+  bool m_IsClosing;
   int m_NewFileNo;
   int m_NewProjectNo;
   int m_SplitId;
