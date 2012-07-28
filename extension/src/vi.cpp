@@ -142,7 +142,8 @@ bool wxExVi::Command(const wxString& command)
     InsertMode(rest.Mid(2));
     return true;
   }
-  else if (rest.StartsWith("cw") && GetSTC()->CanCopy())
+  // do not use CanCopy 
+  else if (rest.StartsWith("cw") && !GetSTC()->HexMode() && !GetSTC()->GetReadOnly())
   {
     if (!GetSTC()->GetSelectedText().empty())
     {

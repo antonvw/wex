@@ -65,7 +65,7 @@ void TestFixture::testFile()
   CPPUNIT_ASSERT( file.GetFileName().GetFullPath() != TEST_FILE);
   CPPUNIT_ASSERT(!file.GetFileName().GetStat().IsReadOnly());
 
-  CPPUNIT_ASSERT( file.FileLoad(wxExFileName(TEST_BIN)));
+  CPPUNIT_ASSERT(!file.FileLoad(wxExFileName(TEST_BIN)));
   CPPUNIT_ASSERT(!file.IsOpened());
   
   CPPUNIT_ASSERT( file.Open(wxExFileName(TEST_BIN).GetFullPath()));
