@@ -43,7 +43,7 @@ public:
     /// The lexer used by stc.
     const wxString& lexer = wxEmptyString,
     /// The stc menu flags.
-    long menu_flags = STC_MENU_DEFAULT,
+    long menu_flags = STC_MENU_DEFAULT & ~STC_MENU_OPEN_LINK,
     /// The window id.
     wxWindowID id = wxID_ANY,
     /// Position.

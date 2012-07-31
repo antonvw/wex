@@ -34,7 +34,7 @@ public:
   /// Menu and tooltip flags (0 is used for no menu).
   enum wxExMenuFlags
   {
-    STC_MENU_OPEN_LINK = 0x0020, ///< for adding link open menu
+    STC_MENU_OPEN_LINK = 0x0001, ///< for adding link open menu
     STC_MENU_DEFAULT   = 0xFFFF  ///< all
   };
 
@@ -46,7 +46,7 @@ public:
                                    ///<   overrides real mode from disk
     STC_WIN_HEX          = 0x0002, ///< window in hex mode
     STC_WIN_NO_INDICATOR = 0x0004, ///< a change indicator is not used
-    STC_WIN_FROM_OTHER   = 0x0020  ///< opened from within another file (e.g. a link)
+    STC_WIN_FROM_OTHER   = 0x0010  ///< opened from within another file (e.g. a link)
   };
 
   /// Config dialog flags.
@@ -63,7 +63,7 @@ public:
     const wxString& value = wxEmptyString,
     long win_flags = STC_WIN_DEFAULT,
     const wxString& title = wxEmptyString,
-    long menu_flags = STC_MENU_DEFAULT,
+    long menu_flags = STC_MENU_DEFAULT & ~STC_MENU_OPEN_LINK,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize, 
