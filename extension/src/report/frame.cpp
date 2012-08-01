@@ -71,7 +71,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   for (int i = m_ProjectHistory.GetMaxFiles() - 1 ; i >=0 ; i--)
   {
     SetRecentProject(
-      wxConfigBase::Get()->Read(wxString::Format("RecentProject%d", i)));
+      wxConfigBase::Get()->Read(wxString::Format("RecentProject/%d", i)));
   }
 
   // Take care of default value.
@@ -390,11 +390,16 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 
   m_FileHistory.Save(*wxConfigBase::Get());
 
-  for (size_t i = 0; i < m_ProjectHistory.GetCount(); i++)
+  if (m_ProjectHistory.GetCount() > 0)
   {
-    wxConfigBase::Get()->Write(
-      wxString::Format("RecentProject%d", i),
-      m_ProjectHistory.GetHistoryFile(i));
+    wxConfigBase::Get()->DeleteGroup("RecentProject");
+    
+    for (size_t i = 0; i < m_ProjectHistory.GetCount(); i++)
+    {
+      wxConfigBase::Get()->Write(
+        wxString::Format("RecentProject/%d", i),
+        m_ProjectHistory.GetHistoryFile(i));
+    }
   }
 
   event.Skip();
