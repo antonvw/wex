@@ -60,6 +60,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   , m_TextInFiles(_("In files"))
   , m_TextInFolder(_("In folder"))
   , m_TextRecursive(_("Recursive"))
+  , m_ProjectModified(false)
   , m_FileHistory(maxFiles, wxID_FILE1)
   , m_FileHistoryList(NULL)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST)
@@ -199,6 +200,11 @@ void wxExFrameWithHistory::DoRecent(
     else
     {
       OpenFile(file, 0, wxEmptyString, flags);
+    }
+    
+    if (flags == WIN_IS_PROJECT)
+    {
+      m_ProjectModified = true;
     }
   }
 }
@@ -390,7 +396,7 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 
   m_FileHistory.Save(*wxConfigBase::Get());
 
-  if (m_ProjectHistory.GetCount() > 0)
+  if (m_ProjectHistory.GetCount() > 0 && m_ProjectModified)
   {
     wxConfigBase::Get()->DeleteGroup("RecentProject");
     
@@ -638,6 +644,7 @@ bool wxExFrameWithHistory::SetRecentProject(const wxString& project)
   }
   
   m_ProjectHistory.AddFileToHistory(project);
+  m_ProjectModified = true;
   
   return true;
 }
