@@ -155,6 +155,8 @@ private:
   const wxString m_TextInFiles;
   const wxString m_TextInFolder;
   const wxString m_TextRecursive;
+  
+  bool m_ProjectModified;
 
   DECLARE_EVENT_TABLE()
 };
