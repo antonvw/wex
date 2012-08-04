@@ -100,7 +100,7 @@ bool wxExSTCFile::GetContentsChanged() const
   return m_STC->GetModify();
 }
 
-void wxExSTCFile::Read(const wxString& name) const
+bool wxExSTCFile::Read(const wxString& name) const
 {
   wxFileName fn(name);
 
@@ -108,6 +108,9 @@ void wxExSTCFile::Read(const wxString& name) const
   {
     fn.Normalize(wxPATH_NORM_ALL, GetFileName().GetPath());
   }
+  
+  // wxFile.Open() normally complains if file can't be opened, we don't want it
+  wxLogNull logNo;
 
   wxExFile file(fn);
 
@@ -117,11 +120,13 @@ void wxExSTCFile::Read(const wxString& name) const
     const wxCharBuffer& buffer = file.Read();
     m_STC->SendMsg(
       SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+      
+    return true;
   }
-  else
-  {
-    wxLogStatus(_("file: %s does not exist"), file.GetFileName().GetFullPath());
-  }
+  
+  wxLogStatus(_("file: %s does not exist"), file.GetFileName().GetFullPath());
+  
+  return false;
 }
 
 void wxExSTCFile::ReadFromFile(bool get_only_new_data)

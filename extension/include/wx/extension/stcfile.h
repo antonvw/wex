@@ -26,7 +26,8 @@ public:
   virtual void ResetContentsChanged();
   
   /// Reads other file and adds contents to STC.
-  void Read(const wxString& file) const;
+  /// Returns true if file was read.
+  bool Read(const wxString& file) const;
 protected:
   virtual bool DoFileLoad(bool synced = false);
   virtual void DoFileNew();
