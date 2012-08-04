@@ -1348,8 +1348,16 @@ void wxExListViewFileName::OnList(wxListEvent& event)
   {
     if (GetSelectedItemCount() == 1)
     {
-      wxExLogStatus(wxExListItem(this, event.GetIndex()).GetFileName(), 
-        STAT_FULLPATH);
+      const wxFileName fn(wxExListItem(this, event.GetIndex()).GetFileName());
+      
+      if (fn.FileExists())
+      {
+        wxExLogStatus(fn, STAT_FULLPATH);
+      }
+      else
+      {
+        wxLogStatus(GetItemText(0));
+      }
     }
 
     event.Skip();
