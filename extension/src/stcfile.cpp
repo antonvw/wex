@@ -109,22 +109,22 @@ bool wxExSTCFile::Read(const wxString& name) const
     fn.Normalize(wxPATH_NORM_ALL, GetFileName().GetPath());
   }
   
-  // wxFile.Open() normally complains if file can't be opened, we don't want it
-  wxLogNull logNo;
+  wxExFile file;
 
-  wxExFile file(fn);
-
-  if (file.IsOpened())
+  if (file.Exists(fn.GetFullPath()))
   {
-    const int SCI_ADDTEXT = 2001;
-    const wxCharBuffer& buffer = file.Read();
-    m_STC->SendMsg(
-      SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+    if (file.Open(fn.GetFullPath()))
+    {
+      const int SCI_ADDTEXT = 2001;
+      const wxCharBuffer& buffer = file.Read();
+      m_STC->SendMsg(
+        SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
       
-    return true;
+      return true;
+    }
   }
   
-  wxLogStatus(_("file: %s does not exist"), file.GetFileName().GetFullPath());
+  wxLogStatus(_("file: %s does not exist"), name);
   
   return false;
 }
