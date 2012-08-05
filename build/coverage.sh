@@ -13,14 +13,14 @@ TESTDIR=./gccgtk2_dll/
 export CPPFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
 export LDFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
 
-echo "-- lcov initializing --"
-lcov --base-directory ~/wxExtension/extension --capture --initial --directory $TESTDIR --output-file app.base
-
 echo "-- make clean --"
 make clean
 
 echo "-- make test coverage build --"
 make
+
+echo "-- lcov initializing --"
+lcov --base-directory ~/wxExtension/extension --capture --initial --directory $TESTDIR --output-file app.base
 
 # do not call test-all, in order to not overwrite log files
 echo "-- test base --"
@@ -34,7 +34,6 @@ $TESTDIR/wxex-test-gui-report
 
 echo "-- lcov collecting data --"
 lcov --base-directory ~/wxExtension/extension --capture --directory $TESTDIR --output-file app.run
-
 lcov --add-tracefile app.base --add-tracefile app.run --output-file app.total
 
 # remove output for external and test libraries
