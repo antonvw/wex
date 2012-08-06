@@ -40,6 +40,11 @@ wxExVi::wxExVi(wxExSTC* stc)
 
 bool wxExVi::ChangeNumber(bool inc)
 {
+  if (GetSTC()->HexMode())
+  {
+    return false;
+  }
+  
   const int start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
   const int end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
   const wxString word = GetSTC()->GetTextRange(start, end);
