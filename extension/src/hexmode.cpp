@@ -324,7 +324,7 @@ wxUniChar wxExHexModeLine::Printable(unsigned int c) const
 {
   // We do not want control chars (\n etc.) to be printed,
   // as that disturbs the hex view field.
-  if (c <= 255 && !iscntrl(c))
+  if (isascii(c) && !iscntrl(c))
   {
     return c;
   }
@@ -365,6 +365,8 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
   
   if (IsAsciiField())
   {
+    m_STC->BeginUndoAction();
+    
     // replace ascii field with value
     m_STC->wxStyledTextCtrl::Replace(
       pos + m_Index, 
@@ -378,6 +380,8 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
       pos + OtherField(), 
       pos + OtherField() + 2, 
       code);
+      
+    m_STC->EndUndoAction();
   }
   else if (IsHexField())
   {
@@ -387,6 +391,8 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
       return false;
     }
       
+    m_STC->BeginUndoAction();
+    
     // replace hex field with value
     m_STC->wxStyledTextCtrl::Replace(
       pos + m_Index, 
@@ -417,6 +423,8 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
       pos + OtherField() + 1, 
       Printable(code));
       
+    m_STC->EndUndoAction();
+    
     val = code;
   }
   else
