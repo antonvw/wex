@@ -1494,7 +1494,7 @@ void wxExGuiTestFixture::testVi()
   event.m_keyCode = WXK_TAB;
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_NONE;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   
   // Vi command tests.
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
@@ -1513,21 +1513,71 @@ void wxExGuiTestFixture::testVi()
     
   CPPUNIT_ASSERT( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
   
-  // Vi command tests on readonly document.
-  stc->SetReadOnly(true);
-  CPPUNIT_ASSERT(!vi->Command("a"));
-  CPPUNIT_ASSERT(!vi->Command("c"));
-  CPPUNIT_ASSERT(!vi->Command("i"));
-  CPPUNIT_ASSERT(!vi->Command("o"));
-  CPPUNIT_ASSERT(!vi->Command("A"));
-  CPPUNIT_ASSERT(!vi->Command("C"));
-  CPPUNIT_ASSERT(!vi->Command("I"));
-  CPPUNIT_ASSERT(!vi->Command("O"));
-  CPPUNIT_ASSERT(!vi->Command("R"));
-  CPPUNIT_ASSERT(!vi->Command("dw"));
-  CPPUNIT_ASSERT(!vi->Command("dd"));
+  // Vi insert command tests.
+  std::vector<wxString> commands;
+  commands.push_back("a");
+  commands.push_back("c");
+  commands.push_back("i");
+  commands.push_back("o");
+  commands.push_back("A");
+  commands.push_back("C");
+  commands.push_back("I");
+  commands.push_back("O");
+  commands.push_back("R");
+  
   CPPUNIT_ASSERT(!vi->GetInsertMode());
+  
+  for (std::vector< wxString >::iterator it1 = commands.begin();
+    it1 != commands.end();
+    ++it1)
+  {
+    CPPUNIT_ASSERT( vi->Command(*it1) );
+    CPPUNIT_ASSERT( vi->GetInsertMode());
+    CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+    CPPUNIT_ASSERT(!vi->GetInsertMode());
+  }
+  
+  // Vi insert command tests and delete command tests on readonly document.
+  commands.push_back("dd");
+  commands.push_back("d0");
+  commands.push_back("d$");
+  commands.push_back("dw");
+  
+  stc->SetReadOnly(true);
+  stc->EmptyUndoBuffer();
+  stc->SetSavePoint();
+  
+  for (std::vector< wxString >::iterator it2 = commands.begin();
+    it2 != commands.end();
+    ++it2)
+  {
+    CPPUNIT_ASSERT( vi->Command(*it2) );
+  }
+  
+  CPPUNIT_ASSERT(!vi->GetInsertMode());
+  CPPUNIT_ASSERT(!stc->GetModified());
+  
   stc->SetReadOnly(false);
+  stc->Reload(wxExSTC::STC_WIN_HEX);
+  CPPUNIT_ASSERT( stc->HexMode());
+  
+  // Vi insert command tests on hexmode document.
+  for (std::vector< wxString >::iterator it3 = commands.begin();
+    it3 != commands.end();
+    ++it3)
+  {
+    CPPUNIT_ASSERT( vi->Command(*it3) );
+  }
+  
+  CPPUNIT_ASSERT(!vi->GetInsertMode());
+  CPPUNIT_ASSERT(!stc->GetModified());
+  
+  stc->Reload();
+  CPPUNIT_ASSERT(!stc->HexMode());
+  
+  CPPUNIT_ASSERT(!stc->GetModified());
+  stc->SetReadOnly(false);
+  
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->GetInsertMode());
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
@@ -1552,41 +1602,48 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("ma"));
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
   
-  CPPUNIT_ASSERT( vi->Command("b"));
-  CPPUNIT_ASSERT( vi->Command("e"));
-  CPPUNIT_ASSERT( vi->Command("g"));
-  CPPUNIT_ASSERT( vi->Command("h"));
-  CPPUNIT_ASSERT( vi->Command("j"));
-  CPPUNIT_ASSERT( vi->Command("k"));
-  CPPUNIT_ASSERT( vi->Command("l"));
-  CPPUNIT_ASSERT( vi->Command(" "));
-  CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
-  CPPUNIT_ASSERT( vi->Command("n"));
-  CPPUNIT_ASSERT( vi->Command("p"));
-  CPPUNIT_ASSERT( vi->Command("u"));
-  CPPUNIT_ASSERT( vi->Command("w"));
-  CPPUNIT_ASSERT( vi->Command("x"));
-  CPPUNIT_ASSERT(!vi->Command("y"));
-  CPPUNIT_ASSERT( vi->Command("D"));
-  CPPUNIT_ASSERT( vi->Command("G"));
-  CPPUNIT_ASSERT( vi->Command("H"));
-  CPPUNIT_ASSERT( vi->Command("J"));
-  CPPUNIT_ASSERT( vi->Command("L"));
-  CPPUNIT_ASSERT( vi->Command("M"));
-  CPPUNIT_ASSERT( vi->Command("N"));
-  CPPUNIT_ASSERT( vi->Command("P"));
-  CPPUNIT_ASSERT( vi->Command("R"));
-  CPPUNIT_ASSERT( vi->GetInsertMode());
-  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
-  CPPUNIT_ASSERT( vi->Command("X"));
-  CPPUNIT_ASSERT( vi->Command("^"));
-  CPPUNIT_ASSERT( vi->Command("~"));
-  CPPUNIT_ASSERT( vi->Command("$"));
-  CPPUNIT_ASSERT( vi->Command("{"));
-  CPPUNIT_ASSERT( vi->Command("}"));
-  CPPUNIT_ASSERT( vi->Command("%"));
-  CPPUNIT_ASSERT( vi->Command("*"));
-  CPPUNIT_ASSERT( vi->Command("#"));
+  // Vi other command tests.
+  commands.clear();
+  commands.push_back("b");
+  commands.push_back("e");
+  commands.push_back("g");
+  commands.push_back("h");
+  commands.push_back("j");
+  commands.push_back("k");
+  commands.push_back("l");
+  commands.push_back(" ");
+  commands.push_back("n");
+  commands.push_back("p");
+  commands.push_back("u");
+  commands.push_back("w");
+  commands.push_back("x");
+  commands.push_back("y");
+  commands.push_back("D");
+  commands.push_back("G");
+  commands.push_back("H");
+  commands.push_back("J");
+  commands.push_back("L");
+  commands.push_back("M");
+  commands.push_back("N");
+  commands.push_back("P");
+  commands.push_back("X");
+  commands.push_back("^");
+  commands.push_back("~");
+  commands.push_back("$");
+  commands.push_back("{");
+  commands.push_back("}");
+  commands.push_back("%");
+  commands.push_back("*");
+  commands.push_back("#");
+  
+  for (std::vector< wxString >::iterator it4 = commands.begin();
+    it4 != commands.end();
+    ++it4)
+  {
+    CPPUNIT_ASSERT( vi->Command(*it4) );
+    CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
+    CPPUNIT_ASSERT(!vi->GetInsertMode());
+  }
   
   CPPUNIT_ASSERT( vi->Command(":.="));
   

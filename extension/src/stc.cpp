@@ -1205,6 +1205,11 @@ void wxExSTC::HexDecCalltip(int pos)
 
 bool wxExSTC::Indent(int begin, int end, bool forward)
 {
+  if (GetReadOnly() || HexMode())
+  {
+    return false;
+  }
+  
   if (end - begin < 0)
   {
     return false;
@@ -1920,6 +1925,11 @@ void wxExSTC::Reload(long flags)
 {
   const bool modified = GetModify();
   
+  if (modified)
+  {
+    BeginUndoAction();
+  }
+  
   UseModificationMarkers(false);
   
   if ((flags & STC_WIN_HEX) && !HexMode())
@@ -1945,7 +1955,7 @@ void wxExSTC::Reload(long flags)
 
   m_Flags = flags;
     
-  if (m_Flags & STC_WIN_READ_ONLY || GetFileName().GetStat().IsReadOnly())
+  if ((m_Flags & STC_WIN_READ_ONLY) || GetFileName().GetStat().IsReadOnly())
   {
     SetReadOnly(true);
   }
@@ -1954,6 +1964,10 @@ void wxExSTC::Reload(long flags)
   {
     EmptyUndoBuffer();
     SetSavePoint();
+  }
+  else
+  {
+    EndUndoAction();
   }
 }
 

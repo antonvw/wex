@@ -134,60 +134,77 @@ bool wxExVi::Command(const wxString& command)
     GetSTC()->Home(); 
   }
   // Handle multichar commands.
-  else if (rest.StartsWith("cc") && GetSTC()->CanCut())
+  else if (rest.StartsWith("cc"))
   {
-    GetSTC()->Home();
-    GetSTC()->DelLineRight();
-
-    if (!SetInsertMode("cc", repeat))
+    if (GetSTC()->CanCut())
     {
-      return false;
+      GetSTC()->Home();
+      GetSTC()->DelLineRight();
+
+      if (!SetInsertMode("cc", repeat))
+      {
+        return false;
+      }
+    
+      InsertMode(rest.Mid(2));
     }
     
-    InsertMode(rest.Mid(2));
     return true;
   }
-  // do not use CanCopy 
-  else if (rest.StartsWith("cw") && !GetSTC()->HexMode() && !GetSTC()->GetReadOnly())
+  else if (rest.StartsWith("cw"))
   {
-    if (!GetSTC()->GetSelectedText().empty())
+    // do not use CanCopy 
+    if (!GetSTC()->HexMode() && !GetSTC()->GetReadOnly())
     {
-      GetSTC()->SetCurrentPos(GetSTC()->GetSelectionStart());
-    }
+      if (!GetSTC()->GetSelectedText().empty())
+      {
+        GetSTC()->SetCurrentPos(GetSTC()->GetSelectionStart());
+      }
 
-    for (int i = 0; i < repeat; i++) GetSTC()->WordRightEndExtend();
+      for (int i = 0; i < repeat; i++) GetSTC()->WordRightEndExtend();
 
-    if (!SetInsertMode("cw", repeat))
-    {
-      return false;
+      if (!SetInsertMode("cw", repeat))
+      {
+        return false;
+      }
+    
+      InsertMode(rest.Mid(2));
     }
     
-    InsertMode(rest.Mid(2));
     return true;
   }
-  else if (rest == "dd" && GetSTC()->CanCut())
+  else if (rest == "dd")
   {
-    Delete(repeat);
+     if (GetSTC()->CanCut()) Delete(repeat);
   }
-  else if (rest == "d0" && GetSTC()->CanCut())
+  else if (rest == "d0")
   {
-    GetSTC()->HomeExtend();
-    GetSTC()->Cut();
+    if (GetSTC()->CanCut())
+    {
+      GetSTC()->HomeExtend();
+      GetSTC()->Cut();
+    }
   }
-  else if (rest == "d$" && GetSTC()->CanCut())
+  else if (rest == "d$")
   {
-    GetSTC()->LineEndExtend();
-    GetSTC()->Cut();
+    if (GetSTC()->CanCut())
+    {
+      GetSTC()->LineEndExtend();
+      GetSTC()->Cut();
+    }
   }
-  else if (rest == "dw" && GetSTC()->CanCut())
+  else if (rest == "dw")
   {
-    GetSTC()->BeginUndoAction();
-    const int start = GetSTC()->GetCurrentPos();
-    for (int i = 0; i < repeat; i++) 
-      GetSTC()->WordRight();
-    GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
-    GetSTC()->Cut();
-    GetSTC()->EndUndoAction();
+    if (GetSTC()->CanCut())
+    {
+      GetSTC()->BeginUndoAction();
+      const int start = GetSTC()->GetCurrentPos();
+      for (int i = 0; i < repeat; i++) 
+        GetSTC()->WordRight();
+      GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
+      GetSTC()->Cut();
+      GetSTC()->EndUndoAction();
+    }
   }
   else if (rest.Matches("f?"))
   {
@@ -205,24 +222,27 @@ bool wxExVi::Command(const wxString& command)
   {
     MarkerAdd(rest.Last());
   }
-  else if (rest.Matches("r?") && !GetSTC()->GetReadOnly())
+  else if (rest.Matches("r?"))
   {
-    if (GetSTC()->HexMode())
+    if (!GetSTC()->GetReadOnly())
     {
-      wxExHexModeLine ml(GetSTC());
-      
-      if (ml.IsReadOnly())
+      if (GetSTC()->HexMode())
       {
-        return false;
-      }
+        wxExHexModeLine ml(GetSTC());
       
-      ml.Replace(rest.Last());
-    }
-    else
-    {
-      GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
-      GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + repeat);
-      GetSTC()->ReplaceTarget(wxString(rest.Last(), repeat));
+        if (ml.IsReadOnly())
+        {
+          return false;
+        }
+      
+        ml.Replace(rest.Last());
+      }
+      else
+      {
+        GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
+        GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + repeat);
+        GetSTC()->ReplaceTarget(wxString(rest.Last(), repeat));
+      }
     }
   }
   else if (rest == "yw")
@@ -265,11 +285,11 @@ bool wxExVi::Command(const wxString& command)
     wxPostEvent(wxTheApp->GetTopWindow(), 
       wxCloseEvent(wxEVT_CLOSE_WINDOW));
   }
-  else if (rest == ">>" && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
+  else if (rest == ">>")
   {
     GetSTC()->Indent(repeat);
   }
-  else if (rest == "<<" && !GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
+  else if (rest == "<<")
   {
     GetSTC()->Indent(repeat, false);
   }
@@ -390,7 +410,7 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'I': 
     case 'O': 
     case 'R': 
-      return SetInsertMode((char)c, repeat); 
+      SetInsertMode((char)c, repeat); 
       break;
         
     case 'b': for (int i = 0; i < repeat; i++) GetSTC()->WordLeft(); break;
@@ -425,7 +445,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
 
     case 'p': 
-      return Put(true); 
+      Put(true); 
       break;
       
     case 'q': 
@@ -453,12 +473,13 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'w': for (int i = 0; i < repeat; i++) GetSTC()->WordRight(); break;
       
     case 'x': 
-      if (!GetSTC()->CanCut()) return false;
-      
-      for (int i = 0; i < repeat; i++) 
+      if (GetSTC()->CanCut())
       {
-        GetSTC()->CharRight();
-        GetSTC()->DeleteBack(); 
+        for (int i = 0; i < repeat; i++) 
+        {
+          GetSTC()->CharRight();
+          GetSTC()->DeleteBack(); 
+        }  
       }
       break;
         
@@ -474,9 +495,11 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
 
     case 'D': 
-      if (!GetSTC()->CanCut()) return false;
-      GetSTC()->LineEndExtend();
-      GetSTC()->Cut();
+      if (GetSTC()->CanCut())
+      {
+        GetSTC()->LineEndExtend();
+        GetSTC()->Cut();
+      }
       break;
         
     case 'G': 
@@ -494,12 +517,14 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case 'J':
-      if (GetSTC()->GetReadOnly() || GetSTC()->HexMode()) return false;
-      GetSTC()->BeginUndoAction();
-      GetSTC()->SetTargetStart(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));
-      GetSTC()->SetTargetEnd(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine() + repeat));
-      GetSTC()->LinesJoin();
-      GetSTC()->EndUndoAction();
+      if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
+      {
+        GetSTC()->BeginUndoAction();
+        GetSTC()->SetTargetStart(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));
+        GetSTC()->SetTargetEnd(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine() + repeat));
+        GetSTC()->LinesJoin();
+        GetSTC()->EndUndoAction();
+      }
       break;
         
     case 'L': GetSTC()->GotoLine(
@@ -519,12 +544,11 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case 'P': 
-      return Put(false); 
+      Put(false); 
       break;
       
     case 'X': 
-      if (!GetSTC()->CanCut()) return false;
-      for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack();
+      if (GetSTC()->CanCut()) for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack();
       break;
 
     case '.': 
@@ -569,8 +593,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case WXK_BACK:
-      if (!GetSTC()->CanCut()) return false;
-      GetSTC()->DeleteBack();
+      if (GetSTC()->CanCut()) GetSTC()->DeleteBack();
       break;
       
     case WXK_RETURN:
