@@ -1494,7 +1494,7 @@ void wxExGuiTestFixture::testVi()
   event.m_keyCode = WXK_TAB;
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_NONE;
-  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
   
   // Vi command tests.
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
@@ -1555,7 +1555,7 @@ void wxExGuiTestFixture::testVi()
   }
   
   CPPUNIT_ASSERT(!vi->GetInsertMode());
-  CPPUNIT_ASSERT(!stc->GetModified());
+  CPPUNIT_ASSERT(!stc->GetModify());
   
   stc->SetReadOnly(false);
   stc->Reload(wxExSTC::STC_WIN_HEX);
@@ -1570,12 +1570,12 @@ void wxExGuiTestFixture::testVi()
   }
   
   CPPUNIT_ASSERT(!vi->GetInsertMode());
-  CPPUNIT_ASSERT(!stc->GetModified());
+  CPPUNIT_ASSERT(!stc->GetModify());
   
   stc->Reload();
   CPPUNIT_ASSERT(!stc->HexMode());
   
-  CPPUNIT_ASSERT(!stc->GetModified());
+  CPPUNIT_ASSERT(!stc->GetModify());
   stc->SetReadOnly(false);
   
   CPPUNIT_ASSERT( vi->Command("i"));
