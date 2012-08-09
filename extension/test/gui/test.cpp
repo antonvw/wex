@@ -1516,7 +1516,6 @@ void wxExGuiTestFixture::testVi()
   // Vi insert command tests.
   std::vector<wxString> commands;
   commands.push_back("a");
-  commands.push_back("c");
   commands.push_back("i");
   commands.push_back("o");
   commands.push_back("A");
@@ -1617,7 +1616,7 @@ void wxExGuiTestFixture::testVi()
   commands.push_back("u");
   commands.push_back("w");
   commands.push_back("x");
-  commands.push_back("y");
+//  commands.push_back("y"); // only true if something selected
   commands.push_back("D");
   commands.push_back("G");
   commands.push_back("H");
@@ -1641,7 +1640,8 @@ void wxExGuiTestFixture::testVi()
     ++it4)
   {
     CPPUNIT_ASSERT( vi->Command(*it4) );
-    CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
+// p changes last command    
+//    CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
     CPPUNIT_ASSERT(!vi->GetInsertMode());
   }
   

@@ -1,17 +1,10 @@
-...............wxExListTiem::Insert 750 items in 2354 ms
-wxExListView::Sort 750 items in 1308 ms
-................wxExTextFile::matching 193 items in 16724 us
-wxExTextFile::replacing 194 items in 24719 us
-.......F.
+...............wxExListTiem::Insert 750 items in 2573 ms
+wxExListView::Sort 750 items in 1340 ms
+................wxExTextFile::matching 193 items in 18400 us
+wxExTextFile::replacing 194 items in 21016 us
+........
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  39   Failures: 1   Errors: 0
-
-
-1) test: testVi (F) line: 1534 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: vi->Command(*it1)
+OK (39 tests)
 
 
