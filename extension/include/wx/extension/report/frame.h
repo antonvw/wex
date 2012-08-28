@@ -92,6 +92,9 @@ public:
     if (m_FileHistory.GetCount() == 0) return wxEmptyString;
     return m_FileHistory.GetHistoryFile(0);}
 
+  /// Returns file history.
+  const wxFileHistory& GetFileHistory() const {return m_FileHistory;};
+  
   /// Returns the recent opened project.
   // Returning a reference here gives a warning.
   const wxString GetRecentProject() const {
