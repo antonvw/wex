@@ -576,9 +576,9 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_NEW: NewFile(); break;
   
   case wxID_PREVIEW:
-    if (GetSTC() != NULL)
+    if (editor != NULL)
     {
-      GetSTC()->PrintPreview();
+      editor->PrintPreview();
     }
     else if (GetListView() != NULL)
     {
@@ -586,9 +586,9 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
   case wxID_PRINT:
-    if (GetSTC() != NULL)
+    if (editor != NULL)
     {
-      GetSTC()->Print();
+      editor->Print();
     }
     else if (GetListView() != NULL)
     {
