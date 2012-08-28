@@ -185,7 +185,26 @@ Frame::Frame(bool open_recent)
   {
     if (!GetRecentFile().empty())
     {
-      OpenFile(wxExFileName(GetRecentFile()));
+      long count;
+      
+      if (wxConfigBase::Get()->Read("OpenFiles", &count))
+      {
+        wxArrayString ar;
+        
+        if (count > 0)
+        {
+          for (int i = count - 1; i >= 0; i--)
+          {
+            ar.Add(GetFileHistory().GetHistoryFile(i));
+          }  
+  
+          wxExOpenFiles(this, ar);
+        }
+      }
+      else
+      {
+        OpenFile(wxExFileName(GetRecentFile()));
+      }
     }
     else
     {
@@ -439,6 +458,7 @@ void Frame::NewFile(bool as_project)
 void Frame::OnClose(wxCloseEvent& event)
 {
   m_IsClosing = true; 
+  const long count = m_Editors->GetPageCount();
   
   if (event.CanVeto())
   {
@@ -456,6 +476,7 @@ void Frame::OnClose(wxCloseEvent& event)
   wxExViMacros::SaveDocument();
 
   wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
+  wxConfigBase::Get()->Write("OpenFiles", count);
 
   event.Skip();
 }
