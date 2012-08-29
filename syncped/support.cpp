@@ -107,9 +107,9 @@ DecoratedFrame::DecoratedFrame()
     menuFind->Append(wxID_REPLACE);
   }
   
-  menuFind->Append(ID_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
-  menuFind->Append(ID_REPLACE_IN_FILES, wxExEllipsed(_("Replace In File&s")));
-  menuEdit->AppendSubMenu(menuFind, _("&Find And Replace"));
+  menuFind->Append(ID_FIND_IN_FILES, wxExEllipsed(_("Find &in Files")));
+  menuFind->Append(ID_REPLACE_IN_FILES, wxExEllipsed(_("Replace in File&s")));
+  menuEdit->AppendSubMenu(menuFind, _("&Find and Replace"));
   menuEdit->AppendSeparator();
   menuEdit->Append(
     ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+K"));
@@ -152,7 +152,7 @@ DecoratedFrame::DecoratedFrame()
   menuProject->Append(
     ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), wxEmptyString, wxART_FILE_OPEN);
   UseProjectHistory(ID_RECENT_PROJECT_MENU, menuProject);
-  menuProject->Append(ID_PROJECT_OPENTEXT, _("&Open As Text"));
+  menuProject->Append(ID_PROJECT_OPENTEXT, _("&Open as Text"));
   menuProject->Append(
     ID_PROJECT_CLOSE, wxGetStockLabel(wxID_CLOSE), wxEmptyString, wxART_CLOSE);
   menuProject->AppendSeparator();
