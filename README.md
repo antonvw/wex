@@ -72,7 +72,7 @@ one of these applications, being a full featured source code text editor.
   API documentation is generated from the sources 
   using [Doxygen 1.7.1](http://www.stack.nl/~dimitri/doxygen/)
 
-- translation is done using [poedit 1.4.6](http://www.poedit.net/)    
+- translation is done using [poedit 1.5.2](http://www.poedit.net/)    
   - wxExtension has it's own localization file, your application should
     also add it's own one (add _() around text strings), 
     and also put the standard wxWidgets localization file
