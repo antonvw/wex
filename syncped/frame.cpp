@@ -365,6 +365,7 @@ wxExSTC* Frame::ExecExCommand(int command)
       m_Editors->AdvanceSelection();
     }
     break;
+    
   case ID_EDIT_PREVIOUS:
     if (m_Editors->GetSelection() == 0)
     {
@@ -375,6 +376,9 @@ wxExSTC* Frame::ExecExCommand(int command)
       m_Editors->AdvanceSelection(false);
     }
     break;
+    
+  default:
+    wxFAIL;
   }
   
   return (wxExSTC*)m_Editors->
