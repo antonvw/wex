@@ -15,9 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "About "
-msgstr "Info "
-
 msgid "&Cancel"
 msgstr "&Annuleren"
 
@@ -50,4 +47,3 @@ msgstr "Alles selecteren"
 
 msgid "Select All"
 msgstr "Alles &selecteren"
-
