@@ -426,13 +426,18 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
 
 unsigned int wxExListView::GetArtID(const wxArtID& artid)
 {
-  if (GetImageList(wxIMAGE_LIST_SMALL) == NULL ||
-      m_ImageType != IMAGE_ART)
+  if (GetImageList(wxIMAGE_LIST_SMALL) == NULL)
   {
     wxFAIL;
     return 0;
   }
 
+  if (m_ImageType == IMAGE_NONE)
+  {
+    wxFAIL_MSG("Incorrect image type");
+    return 0;
+  }
+      
 #ifdef wxExUSE_CPP0X	
   const auto it = m_ArtIDs.find(artid);
 #else
@@ -917,13 +922,8 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 
   m_SortedColumnNo = column_no;
 
-  // Only use an image if the list items have images as well.
-  // Otherwise the list items get a sorting image as well.
-  if (!m_ArtIDs.empty())
-  {
-    SetColumnImage(column_no,
-      GetArtID(sorted_col->GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
-  }
+  SetColumnImage(column_no,
+    GetArtID(sorted_col->GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
 
   if (GetItemCount() > 0)
   {
