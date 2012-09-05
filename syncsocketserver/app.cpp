@@ -179,8 +179,8 @@ Frame::Frame()
     _("Repeats with timer writing last data to all clients"));
   menuClient->Append(ID_TIMER_STOP, _("Stop Timer"), _("Stops the timer"));
   menuClient->AppendSeparator();
-  menuClient->Append(ID_WRITE_DATA, _("Write"),
-    _("Writes data to all clients"), wxART_GO_FORWARD);
+  // Adding bitmap results in a checkable menu item.
+  menuClient->Append(ID_WRITE_DATA, _("Write"), _("Writes data to all clients"));
 
   wxExMenu* menuView = new wxExMenu();
   menuView->AppendBars();

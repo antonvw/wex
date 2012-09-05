@@ -143,6 +143,10 @@ void wxExListViewFile::AddItems()
     {
       SortColumn(_("Modified"), SORT_KEEP);
     }
+    else
+    {
+      SortColumnReset();
+    }
   }
 
   const wxString text = 
