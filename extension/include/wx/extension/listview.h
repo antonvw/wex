@@ -147,6 +147,9 @@ public:
     const wxString& column_name, 
     wxExSortType sort_method = SORT_TOGGLE) {  
       return SortColumn(FindColumn(column_name), sort_method);};
+      
+  /// Resets column that was used for sorting.
+  void SortColumnReset();
 protected:
   // Interface.
   /// Invoked after sorting, allows you to do something extra.
@@ -160,9 +163,6 @@ protected:
 
   /// Gets the field separator.
   const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
-
-  /// Resets column that was used for sorting.
-  void SortColumnReset();
 
   // Events.
   void OnCommand(wxCommandEvent& event);
