@@ -118,10 +118,6 @@ Frame::Frame(bool open_recent)
     wxDefaultSize, 
     flag);
     
-  m_History = new wxExListViewWithFrame(this, this,
-    wxExListViewFileName::LIST_HISTORY,
-    wxExListViewWithFrame::LIST_MENU_DEFAULT);
-    
   m_DirCtrl = new wxExGenericDirCtrl(this, this);
     
   wxExSTC* asciiTable = new wxExSTC(this);
@@ -149,10 +145,6 @@ Frame::Frame(bool open_recent)
     .Left()
     .Name("ASCIITABLE")
     .Caption(_("Ascii Table")));
-
-  GetManager().AddPane(m_History, wxAuiPaneInfo()
-    .Left().Name("HISTORY")
-    .Caption(_("History")));
 
   GetManager().AddPane(m_Lists, wxAuiPaneInfo()
     .Bottom()
@@ -715,8 +707,12 @@ void Frame::OnCommand(wxCommandEvent& event)
 
         wxExForEach(m_Projects, ID_LIST_ALL_ITEMS, font);
         wxExForEach(m_Lists, ID_LIST_ALL_ITEMS, font);
-        m_History->SetFont(font);
-        m_History->ItemsUpdate();
+        
+        if (m_History != NULL)
+        {
+          m_History->SetFont(font);
+          m_History->ItemsUpdate();
+        }
       }
     }
     break;
@@ -837,7 +833,23 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
     
   case ID_VIEW_HISTORY: 
-    TogglePane("HISTORY");
+    if (m_History == NULL)
+    {
+      m_History = new wxExListViewWithFrame(this, this,
+        wxExListViewFileName::LIST_HISTORY,
+        wxExListViewWithFrame::LIST_MENU_DEFAULT);
+        
+      GetManager().AddPane(m_History, wxAuiPaneInfo()
+        .Left().Name("HISTORY")
+       .Caption(_("History")));
+       
+      GetManager().Update();
+    }
+    else
+    {
+      TogglePane("HISTORY");
+    }
+    
 #if wxUSE_STATUSBAR
     UpdateStatusBar(m_History);
 #endif
@@ -950,7 +962,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Check(GetManager().GetPane("FILES").IsShown());
       break;
     case ID_VIEW_HISTORY:
-      event.Check(GetManager().GetPane("HISTORY").IsShown());
+      event.Check(m_History != NULL && GetManager().GetPane("HISTORY").IsShown());
       break;
     case ID_VIEW_OUTPUT:
       event.Check(GetManager().GetPane("OUTPUT").IsShown());
