@@ -137,7 +137,7 @@ wxExListView::wxExListView(wxWindow* parent,
   : wxListView(parent, id, pos, size, style, validator, name)
   , m_FieldSeparator('\t')
   , m_ImageType(image_type)
-  , m_ImageHeight(16)
+  , m_ImageHeight(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
   , m_ImageWidth(16)
   , m_SortedColumnNo(-1)
 {
