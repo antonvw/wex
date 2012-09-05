@@ -616,6 +616,8 @@ bool wxExFrameWithHistory::SetRecentFile(const wxString& file)
 
   if (m_FileHistoryList != NULL)
   {
+    m_FileHistoryList->SortColumnReset();
+    
     wxExListItem item(m_FileHistoryList, file);
     item.Insert((long)0);
 
