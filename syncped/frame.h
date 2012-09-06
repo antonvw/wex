@@ -35,6 +35,7 @@ private:
     const wxExLexer* lexer = NULL);
   void AddAsciiTable(wxExSTC* stc);
   void AddPaneHistory();
+  void AddPaneProjects();
   wxExListViewWithFrame* AddPage(
     wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL);
@@ -64,12 +65,13 @@ private:
   int m_SplitId;
 
   wxExGenericDirCtrl* m_DirCtrl;
-  wxExListViewWithFrame* m_History;
   wxExNotebook* m_Editors;
+  wxExListViewWithFrame* m_History;
   wxExNotebook* m_Lists;
   wxExProcessListView* m_Process;
   wxExNotebook* m_Projects;
 
+  const long m_PaneFlag;
   const wxString m_ProjectWildcard;
 
   DECLARE_EVENT_TABLE()
