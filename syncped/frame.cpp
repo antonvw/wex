@@ -168,6 +168,11 @@ Frame::Frame(bool open_recent)
   {
     GetManager().LoadPerspective(perspective);
   }
+  
+  if (wxConfigBase::Get()->ReadBool("ShowHistory", false))
+  {
+    AddPaneHistory();
+  }
 
   // Regardless of the perspective initially hide the next panels.
   GetManager().GetPane("OUTPUT").Hide();
@@ -303,6 +308,17 @@ wxExListViewWithFrame* Frame::AddPage(
   return list;
 }
 
+void Frame::AddPaneHistory()
+{
+  m_History = new wxExListViewWithFrame(this, this,
+    wxExListViewFileName::LIST_HISTORY,
+    wxExListViewWithFrame::LIST_MENU_DEFAULT);
+        
+  GetManager().AddPane(m_History, wxAuiPaneInfo()
+    .Left().Name("HISTORY")
+    .Caption(_("History")));
+}
+       
 bool Frame::AllowCloseAll(wxWindowID id)
 {
   switch (id)
@@ -481,6 +497,8 @@ void Frame::OnClose(wxCloseEvent& event)
 
   wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
   wxConfigBase::Get()->Write("OpenFiles", count);
+  wxConfigBase::Get()->Write("ShowHistory", 
+    m_History != NULL && m_History->IsShown());
 
   wxDELETE(m_Process);
   
@@ -845,14 +863,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_VIEW_HISTORY: 
     if (m_History == NULL)
     {
-      m_History = new wxExListViewWithFrame(this, this,
-        wxExListViewFileName::LIST_HISTORY,
-        wxExListViewWithFrame::LIST_MENU_DEFAULT);
-        
-      GetManager().AddPane(m_History, wxAuiPaneInfo()
-        .Left().Name("HISTORY")
-       .Caption(_("History")));
-       
+      AddPaneHistory();
       GetManager().Update();
     }
     else
