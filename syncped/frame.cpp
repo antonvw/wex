@@ -78,22 +78,21 @@ Frame::Frame(bool open_recent)
   , m_NewFileNo(1)
   , m_NewProjectNo(1)
   , m_SplitId(1)
-  , m_Editors(NULL)
-  , m_Projects(NULL)
-  , m_Lists(NULL)
   , m_DirCtrl(NULL)
+  , m_Editors(NULL)
   , m_History(NULL)
+  , m_Lists(NULL)
   , m_Process(new wxExProcessListView(this))
-  , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
-{
-  wxExViMacros::LoadDocument();
-  
-  const long flag =
+  , m_Projects(NULL)
+  , m_PaneFlag(
     wxAUI_NB_DEFAULT_STYLE |
     wxAUI_NB_CLOSE_ON_ALL_TABS |
     wxAUI_NB_CLOSE_BUTTON |
     wxAUI_NB_WINDOWLIST_BUTTON |
-    wxAUI_NB_SCROLL_BUTTONS;
+    wxAUI_NB_SCROLL_BUTTONS)
+  , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
+{
+  wxExViMacros::LoadDocument();
 
   m_Editors = new wxExNotebook(
     this, 
@@ -101,7 +100,7 @@ Frame::Frame(bool open_recent)
     (wxWindowID)NOTEBOOK_EDITORS, 
     wxDefaultPosition, 
     wxDefaultSize, 
-    flag);
+    m_PaneFlag);
     
   m_Lists = new wxExNotebook(
     this, 
@@ -109,15 +108,7 @@ Frame::Frame(bool open_recent)
     (wxWindowID)NOTEBOOK_LISTS, 
     wxDefaultPosition, 
     wxDefaultSize, 
-    flag);
-    
-  m_Projects = new wxExNotebook(
-    this, 
-    this, 
-    (wxWindowID)NOTEBOOK_PROJECTS, 
-    wxDefaultPosition, 
-    wxDefaultSize, 
-    flag);
+    m_PaneFlag);
     
   m_DirCtrl = new wxExGenericDirCtrl(this, this);
     
@@ -130,12 +121,10 @@ Frame::Frame(bool open_recent)
     .Name("FILES")
     .Caption(_("Files")));
 
-  GetManager().AddPane(m_Projects, wxAuiPaneInfo()
-    .Left()
-    .MaximizeButton(true)
-    .Name("PROJECTS")
-    .MinSize(wxSize(150, -1))
-    .Caption(_("Projects")));
+//  if (wxConfigBase::Get()->ReadBool("ShowProjects", false))
+  {
+    AddPaneProjects();
+  }
 
   GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo()
     .Left()
@@ -319,6 +308,24 @@ void Frame::AddPaneHistory()
     .Caption(_("History")));
 }
        
+void Frame::AddPaneProjects()
+{
+  m_Projects = new wxExNotebook(
+    this, 
+    this, 
+    (wxWindowID)NOTEBOOK_PROJECTS, 
+    wxDefaultPosition, 
+    wxDefaultSize, 
+    m_PaneFlag);
+    
+  GetManager().AddPane(m_Projects, wxAuiPaneInfo()
+    .Left()
+    .MaximizeButton(true)
+    .Name("PROJECTS")
+    .MinSize(wxSize(150, -1))
+    .Caption(_("Projects")));
+}
+
 bool Frame::AllowCloseAll(wxWindowID id)
 {
   switch (id)
@@ -327,7 +334,10 @@ bool Frame::AllowCloseAll(wxWindowID id)
     return m_Editors->ForEach(ID_ALL_STC_CLOSE); 
     break;
   case NOTEBOOK_PROJECTS: 
-    return wxExForEach(m_Projects, ID_LIST_ALL_CLOSE); 
+    if (m_Projects != NULL)
+    {
+      return wxExForEach(m_Projects, ID_LIST_ALL_CLOSE); 
+    }
     break;
   default:
     wxFAIL;
@@ -412,6 +422,11 @@ wxExListViewFile* Frame::GetProject()
 
 void Frame::NewFile(bool as_project)
 {
+  if (as_project && m_Projects == NULL)
+  {
+    AddPaneProjects();
+  }
+  
   const wxString name = (as_project ? _("project") : _("textfile"));
   const int use_no = (as_project ? m_NewProjectNo : m_NewFileNo);
   const wxString text = wxString::Format("%s%d", name.c_str(), use_no);
@@ -499,6 +514,8 @@ void Frame::OnClose(wxCloseEvent& event)
   wxConfigBase::Get()->Write("OpenFiles", count);
   wxConfigBase::Get()->Write("ShowHistory", 
     m_History != NULL && m_History->IsShown());
+  wxConfigBase::Get()->Write("ShowProjects", 
+    m_Projects != NULL && m_Projects->IsShown());
 
   wxDELETE(m_Process);
   
@@ -733,7 +750,11 @@ void Frame::OnCommand(wxCommandEvent& event)
           wxConfigBase::Get()->ReadObject(_("List Font"), 
             wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
 
-        wxExForEach(m_Projects, ID_LIST_ALL_ITEMS, font);
+        if (m_Projects != NULL)
+        {
+          wxExForEach(m_Projects, ID_LIST_ALL_ITEMS, font);
+        }
+        
         wxExForEach(m_Lists, ID_LIST_ALL_ITEMS, font);
         
         if (m_History != NULL)
@@ -782,7 +803,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_PROCESS_SELECT: wxExProcess::ConfigDialog(this); break;
 
   case ID_PROJECT_CLOSE:
-    if (project != NULL)
+    if (project != NULL && m_Projects != NULL)
     {
       m_Projects->DeletePage(project->GetFileName().GetFullPath());
     }
@@ -802,7 +823,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
   case ID_PROJECT_SAVEAS:
-    if (project != NULL)
+    if (project != NULL && m_Projects != NULL)
     {
       const wxString old_key = m_Projects->GetKeyByPage(project);
 
@@ -878,9 +899,11 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_VIEW_OUTPUT: 
     TogglePane("OUTPUT");
     break;
+    
   case ID_VIEW_PROJECTS: 
-    if (m_Projects->GetPageCount() == 0)
+    if (m_Projects == NULL)
     {
+      AddPaneProjects();
       NewFile(true);
     }
     else
