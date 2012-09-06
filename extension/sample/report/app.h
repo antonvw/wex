@@ -2,13 +2,14 @@
 // Name:      app.h
 // Purpose:   Declaration of sample classes for wxExtension report
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/treectrl.h>
 #include <wx/extension/app.h>
 #include <wx/extension/notebook.h>
 #include <wx/extension/report/frame.h>
+#include <wx/extension/report/process.h>
 #include <wx/extension/report/stc.h>
 
 /// Derive your application from wxExApp.
@@ -43,6 +44,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
 private:
   wxExNotebook* m_NotebookWithLists; ///< all listviews
+  wxExProcessListView* m_Process;
   wxExSTCWithFrame* m_STC;           ///< an stc
   DECLARE_EVENT_TABLE()
 };

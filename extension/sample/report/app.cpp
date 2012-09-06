@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of sample classes for wxExRep
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -58,6 +58,7 @@ bool wxExRepSampleApp::OnInit()
 
 wxExRepSampleFrame::wxExRepSampleFrame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
+  , m_Process(new wxExProcessListView(this))
 {
   SetIcon(wxICON(app));
 
@@ -261,7 +262,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_STOP:
-    GetProcess()->Kill();
+    m_Process->Kill();
     break;
 
   case ID_PROCESS_DIALOG:
@@ -269,7 +270,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_PROCESS_RUN:
-    GetProcess()->Execute();
+    m_Process->Execute();
     break;
 
   default: 

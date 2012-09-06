@@ -12,7 +12,6 @@
 #include <wx/extension/listview.h> // for wxExListViewFileName::wxExListType 
 #include <wx/extension/managedframe.h>
 #include <wx/extension/report/defs.h>
-#include <wx/extension/report/process.h>
 
 class wxExConfigDialog;
 class wxExListView;
@@ -20,7 +19,7 @@ class wxExListViewFile;
 
 /// Adds file and project history support to wxExManagedFrame.
 /// It also sets a change indicator in the title of the frame if applicable.
-/// Finally it adds process support and find in files and selection dialogs.
+/// Finally it adds find in files and selection dialogs.
 class WXDLLIMPEXP_BASE wxExFrameWithHistory : public wxExManagedFrame
 {
 public:
@@ -77,9 +76,6 @@ public:
   
   /// Returns caption for FindInFilesDialog.
   const wxString GetFindInCaption(int id) const;
-  
-  /// Gets the process.
-  wxExProcess* GetProcess() {return m_Process;};
   
   /// If there is a project somewhere, 
   /// your implementation should return that one.
@@ -153,7 +149,6 @@ private:
   wxFileHistory m_FileHistory;
   wxExListView* m_FileHistoryList;
   wxFileHistory m_ProjectHistory;
-  wxExProcessListView* m_Process;
 
   const wxString m_TextInFiles;
   const wxString m_TextInFolder;
