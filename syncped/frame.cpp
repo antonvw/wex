@@ -83,6 +83,7 @@ Frame::Frame(bool open_recent)
   , m_Lists(NULL)
   , m_DirCtrl(NULL)
   , m_History(NULL)
+  , m_Process(new wxExProcessListView(this))
   , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
 {
   wxExViMacros::LoadDocument();
@@ -459,12 +460,19 @@ void Frame::OnClose(wxCloseEvent& event)
   if (event.CanVeto())
   {
     if (
-       GetProcess()->IsRunning() || 
+       m_Process->IsRunning() || 
       !AllowCloseAll(NOTEBOOK_PROJECTS) || 
       !AllowCloseAll(NOTEBOOK_EDITORS))
     {
       event.Veto();
+      
+      if (m_Process->IsRunning())
+      {
+        wxLogStatus(_("Process is running"));
+      }
+      
       m_IsClosing = false;
+      
       return;
     }
   }
@@ -474,6 +482,8 @@ void Frame::OnClose(wxCloseEvent& event)
   wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
   wxConfigBase::Get()->Write("OpenFiles", count);
 
+  wxDELETE(m_Process);
+  
   event.Skip();
 }
 
@@ -660,8 +670,8 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
 
-  case wxID_EXECUTE: GetProcess()->Execute(); break;
-  case wxID_STOP: GetProcess()->Kill(); break;
+  case wxID_EXECUTE: m_Process->Execute(); break;
+  case wxID_STOP: m_Process->Kill(); break;
 
   case ID_ALL_STC_CLOSE:
   case ID_ALL_STC_SAVE:
@@ -901,10 +911,10 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
   switch (event.GetId())
   {
     case wxID_EXECUTE: 
-      event.Enable( GetProcess()->IsSelected() &&
-                   !GetProcess()->IsRunning()); 
+      event.Enable( m_Process->IsSelected() &&
+                   !m_Process->IsRunning()); 
       break;
-    case wxID_STOP: event.Enable(GetProcess()->IsRunning()); break;
+    case wxID_STOP: event.Enable(m_Process->IsRunning()); break;
     case wxID_PREVIEW:
     case wxID_PRINT:
       event.Enable(

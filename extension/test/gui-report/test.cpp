@@ -75,10 +75,6 @@ void wxExGuiReportTestFixture::testFrameWithHistory()
   // It does not open, next should fail.
   CPPUNIT_ASSERT(!frame->GetRecentProject().Contains("test-rep.prj"));
   
-  // As we do not have process output lists, execute fails.
-  CPPUNIT_ASSERT( frame->GetProcess()->Execute("wc test.h", wxEXEC_ASYNC) == -1);
-  CPPUNIT_ASSERT( frame->GetProcess()->IsSelected());
-  
   CPPUNIT_ASSERT( frame->SetRecentFile("xxx.cpp"));
   CPPUNIT_ASSERT(!frame->SetRecentProject("xxx.prj"));
   

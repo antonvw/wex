@@ -11,6 +11,7 @@
 #include <wx/extension/notebook.h>
 #include <wx/extension/report/dirctrl.h>
 #include <wx/extension/report/listview.h>
+#include <wx/extension/report/process.h>
 #include "support.h"
 
 class Frame : public DecoratedFrame
@@ -65,6 +66,7 @@ private:
   wxExListViewWithFrame* m_History;
   wxExNotebook* m_Editors;
   wxExNotebook* m_Lists;
+  wxExProcessListView* m_Process;
   wxExNotebook* m_Projects;
 
   const wxString m_ProjectWildcard;

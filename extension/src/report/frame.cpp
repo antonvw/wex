@@ -64,7 +64,6 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   , m_FileHistory(maxFiles, wxID_FILE1)
   , m_FileHistoryList(NULL)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST)
-  , m_Process(new wxExProcessListView(this))
 {
   // There is only support for one history in the config.
   // We use file history for this, so update project history ourselves.
@@ -105,8 +104,6 @@ wxExFrameWithHistory::~wxExFrameWithHistory()
   {
     m_RiFDialog->Destroy();
   }
-  
-  wxDELETE(m_Process);
 }
 
 void wxExFrameWithHistory::ClearFileHistory()
@@ -384,16 +381,6 @@ const wxString wxExFrameWithHistory::GetFindInCaption(int id) const
 
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 {
-  if (event.CanVeto())
-  {
-    if (m_Process->IsRunning())
-    {
-      wxLogStatus(_("Process is running"));
-      event.Veto();
-      return;
-    }
-  }
-
   m_FileHistory.Save(*wxConfigBase::Get());
 
   if (m_ProjectHistory.GetCount() > 0 && m_ProjectModified)
