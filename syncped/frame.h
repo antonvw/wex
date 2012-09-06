@@ -34,6 +34,7 @@ private:
     wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL);
   void AddAsciiTable(wxExSTC* stc);
+  void AddPaneHistory();
   wxExListViewWithFrame* AddPage(
     wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL);
