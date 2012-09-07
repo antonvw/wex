@@ -198,7 +198,7 @@ Frame::Frame(bool open_recent)
       NewFile();
     }
 
-    if (GetManager().GetPane("PROJECTS").IsShown())
+    if (GetManager().GetPane("PROJECTS").IsShown() && m_Projects != NULL)
     {
       if (!GetRecentProject().empty())
       {
@@ -1206,6 +1206,12 @@ bool Frame::OpenFile(
   {
     wxLogError(_("Cannot open file") + ": " + filename.GetFullPath());
     return false;
+  }
+  
+  if ((flags & WIN_IS_PROJECT) && m_Projects == NULL)
+  {
+    AddPaneProjects();
+    GetManager().Update();
   }
   
   wxExNotebook* notebook = (flags & WIN_IS_PROJECT
