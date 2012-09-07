@@ -119,7 +119,8 @@ private:
   void HandleLine(const wxString& line) const;
 
   bool m_Error;
-  
+
+  wxString m_Command;  
   wxString m_Output;
   
   static wxString m_WorkingDirKey;
