@@ -121,7 +121,7 @@ Frame::Frame(bool open_recent)
     .Name("FILES")
     .Caption(_("Files")));
 
-//  if (wxConfigBase::Get()->ReadBool("ShowProjects", false))
+  if (wxConfigBase::Get()->ReadBool("ShowProjects", false))
   {
     AddPaneProjects();
   }
@@ -299,6 +299,8 @@ wxExListViewWithFrame* Frame::AddPage(
 
 void Frame::AddPaneHistory()
 {
+  wxASSERT(m_History == NULL);
+  
   m_History = new wxExListViewWithFrame(this, this,
     wxExListViewFileName::LIST_HISTORY,
     wxExListViewWithFrame::LIST_MENU_DEFAULT);
@@ -310,6 +312,8 @@ void Frame::AddPaneHistory()
        
 void Frame::AddPaneProjects()
 {
+  wxASSERT(m_Projects == NULL);
+  
   m_Projects = new wxExNotebook(
     this, 
     this, 
@@ -333,12 +337,14 @@ bool Frame::AllowCloseAll(wxWindowID id)
   case NOTEBOOK_EDITORS: 
     return m_Editors->ForEach(ID_ALL_STC_CLOSE); 
     break;
+    
   case NOTEBOOK_PROJECTS: 
     if (m_Projects != NULL)
     {
       return wxExForEach(m_Projects, ID_LIST_ALL_CLOSE); 
     }
     break;
+    
   default:
     wxFAIL;
     break;
@@ -406,10 +412,13 @@ wxExSTC* Frame::ExecExCommand(int command)
 
 wxExListViewFile* Frame::GetProject()
 {
-  if 
-    (m_Projects == NULL ||
-    !m_Projects->IsShown() || 
-     m_Projects->GetPageCount() == 0)
+  if (m_Projects == NULL)
+  {
+    return NULL;
+  }
+
+  if (!m_Projects->IsShown() || 
+       m_Projects->GetPageCount() == 0)
   {
     return NULL;
   }
@@ -431,7 +440,10 @@ void Frame::NewFile(bool as_project)
   const int use_no = (as_project ? m_NewProjectNo : m_NewFileNo);
   const wxString text = wxString::Format("%s%d", name.c_str(), use_no);
   wxString key;
+  
   wxExNotebook* notebook = (as_project ? m_Projects : m_Editors);
+  wxASSERT(notebook != NULL);
+  
   wxWindow* page;
 
   if (as_project)
@@ -1199,6 +1211,8 @@ bool Frame::OpenFile(
   wxExNotebook* notebook = (flags & WIN_IS_PROJECT
     ? m_Projects : m_Editors);
     
+  wxASSERT(notebook != NULL);
+  
   notebook->Freeze();
 
   wxWindow* page = notebook->SelectPage(filename.GetFullPath());
