@@ -309,11 +309,6 @@ bool wxExProcess::IsRunning() const
   return Exists(GetPid());
 }
 
-bool wxExProcess::IsSelected() const
-{
-  return !m_Command.empty();
-}
-
 wxKillError wxExProcess::Kill(wxSignal sig)
 {
   // This seems necessary.
