@@ -152,6 +152,8 @@ long wxExProcess::Execute(
   int flags,
   const wxString& wd)
 {
+  struct wxExecuteEnv env;
+    
   if (command_to_execute.empty())
   {
     if (wxExConfigFirstOf(_("Process")).empty())
@@ -163,10 +165,12 @@ long wxExProcess::Execute(
     }
     
     m_Command = wxExConfigFirstOf(_("Process"));
+    env.cwd = wxExConfigFirstOf(m_WorkingDirKey);
   }
   else
   {
     m_Command = command_to_execute;
+    env.cwd = wd;
   }
 
   if (m_Dialog == NULL)
@@ -182,10 +186,6 @@ long wxExProcess::Execute(
     m_Dialog->GetSTCShell()->SetEventHandler(this);
   }
       
-  const struct wxExecuteEnv env = {
-    (wd.empty() ? wxExConfigFirstOf(m_WorkingDirKey): wd), 
-    wxEnvVariableHashMap()};
-    
   m_Error = false;
     
   if (!(flags & wxEXEC_SYNC))
