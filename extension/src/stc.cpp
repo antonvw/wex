@@ -1363,11 +1363,24 @@ bool wxExSTC::LinkOpen(wxString* filename)
   {
     if (filename == NULL)
     {
-      return Open(
-        path, 
-        wxExGetLineNumber(!sel.empty() ? sel: GetCurLine()), 
-        wxEmptyString, 
-        GetFlags() | STC_WIN_FROM_OTHER);
+      wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
+      
+      if (frame != NULL)
+      {
+        return frame->OpenFile(
+          path,
+          wxExGetLineNumber(!sel.empty() ? sel: GetCurLine()), 
+          wxEmptyString, 
+          GetFlags() | STC_WIN_FROM_OTHER);          
+      }
+      else
+      {
+        return Open(
+          path, 
+          wxExGetLineNumber(!sel.empty() ? sel: GetCurLine()), 
+          wxEmptyString, 
+          GetFlags() | STC_WIN_FROM_OTHER);
+      }
     }
     else
     {
