@@ -31,6 +31,7 @@ wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 wxExProcess::wxExProcess()
   : wxProcess(wxPROCESS_REDIRECT)
   , m_Timer(new wxTimer(this))
+  , m_Busy(false)
   , m_Error(false)
 {
   m_Command = wxExConfigFirstOf(_("Process"));
@@ -55,8 +56,15 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
   return *this;
 }
 
-bool wxExProcess::CheckInput() const
+bool wxExProcess::CheckInput()
 {
+  if (m_Busy)
+  {
+    return false;
+  }
+  
+  m_Busy = true;
+  
   wxString output;
   
   if (IsInputAvailable())
@@ -73,7 +81,8 @@ bool wxExProcess::CheckInput() const
       }
     }
   }
-  else if (IsErrorAvailable())
+  
+  if (IsErrorAvailable())
   {
     wxTextInputStream tis(*GetErrorStream());
     
@@ -90,6 +99,7 @@ bool wxExProcess::CheckInput() const
 
   if (output.empty())
   {
+    m_Busy = false;
     return false;
   }
   
@@ -106,6 +116,8 @@ bool wxExProcess::CheckInput() const
 
     HandleLine(line);
   }
+  
+  m_Busy = false;
   
   return true;
 }
@@ -436,10 +448,7 @@ void wxExProcess::ShowOutput(const wxString& caption) const
   {
     // Executing command failed, so no output,
     // show failing command.
-    if (!m_Command.empty())
-    {
-      wxLogError(m_Command);
-    }
+    wxLogError(m_Command);
   }
 }
 #endif
