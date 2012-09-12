@@ -213,9 +213,6 @@ long wxExProcess::Execute(
 
     if (pid > 0)
     {
-      m_Dialog->Show();
-      m_Dialog->GetSTCShell()->EnableShell(true);
-      
       wxLogVerbose("Execute: " + m_Command);
     
       CheckInput();
@@ -415,6 +412,7 @@ bool wxExProcess::ReportAdd(
   const wxString& path,
   const wxString& lineno) const
 {
+  m_Dialog->Show();
   m_Dialog->GetSTCShell()->AddText(line);
   m_Dialog->GetSTCShell()->Prompt();
   return true;
@@ -425,6 +423,7 @@ bool wxExProcess::ReportCreate()
   m_Dialog->SetTitle(m_Command);
   m_Dialog->GetSTCShell()->ClearAll();
   m_Dialog->GetSTCShell()->Prompt();
+  m_Dialog->GetSTCShell()->EnableShell(true);
   return true;
 }
 
