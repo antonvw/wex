@@ -788,7 +788,7 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
 
 bool wxExSTC::FileReadOnlyAttributeChanged()
 {
-  SetReadOnly(m_File.GetFileName().GetStat().IsReadOnly()); // does not return anything
+  SetReadOnly(!m_File.GetFileName().IsFileWritable()); // does not return anything
   wxLogStatus(_("Readonly attribute changed"));
 
   return true;
@@ -1968,7 +1968,7 @@ void wxExSTC::Reload(long flags)
 
   m_Flags = flags;
     
-  if ((m_Flags & STC_WIN_READ_ONLY) || GetFileName().GetStat().IsReadOnly())
+  if ((m_Flags & STC_WIN_READ_ONLY) || !GetFileName().IsFileWritable())
   {
     SetReadOnly(true);
   }
