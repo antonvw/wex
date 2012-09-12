@@ -655,7 +655,11 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_SAVE:
     if (editor != NULL)
     {
-      editor->GetFile().FileSave();
+      if (!editor->GetFile().FileSave())
+      {
+        wxLogStatus("Could not save file");
+        return;
+      }
 
       if (editor->GetFileName() == wxExLexers::Get()->GetFileName())
       {
@@ -681,10 +685,12 @@ void Frame::OnCommand(wxCommandEvent& event)
     if (editor != NULL)
     {
       const wxString old_key = editor->GetFileName().GetFullPath();
+      
+      bool result;
 
       if (!event.GetString().empty())
       {
-        editor->GetFile().FileSave(event.GetString());
+        result = editor->GetFile().FileSave(event.GetString());
       }
       else
       {
@@ -700,7 +706,13 @@ void Frame::OnCommand(wxCommandEvent& event)
           return;
         }
 
-        editor->GetFile().FileSave(dlg.GetPath());
+        result = editor->GetFile().FileSave(dlg.GetPath());
+      }
+      
+      if (!result)
+      {
+        wxLogStatus("Could not save file");
+        return;
       }
       
       const wxBitmap bitmap = (editor->GetFileName().GetStat().IsOk() ? 
