@@ -213,9 +213,10 @@ long wxExProcess::Execute(
 
     if (pid > 0)
     {
-      wxLogVerbose("Execute: " + m_Command);
-      
+      m_Dialog->Show();
       m_Dialog->GetSTCShell()->EnableShell(true);
+      
+      wxLogVerbose("Execute: " + m_Command);
     
       CheckInput();
       
@@ -424,7 +425,6 @@ bool wxExProcess::ReportCreate()
   m_Dialog->SetTitle(m_Command);
   m_Dialog->GetSTCShell()->ClearAll();
   m_Dialog->GetSTCShell()->Prompt();
-  m_Dialog->Show();
   return true;
 }
 
