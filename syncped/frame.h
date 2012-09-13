@@ -9,9 +9,9 @@
 #define _FRAME_H
 
 #include <wx/extension/notebook.h>
+#include <wx/extension/process.h>
 #include <wx/extension/report/dirctrl.h>
 #include <wx/extension/report/listview.h>
-#include <wx/extension/report/process.h>
 #include "support.h"
 
 class Frame : public DecoratedFrame
@@ -68,7 +68,7 @@ private:
   wxExNotebook* m_Editors;
   wxExListViewWithFrame* m_History;
   wxExNotebook* m_Lists;
-  wxExProcessListView* m_Process;
+  wxExProcess* m_Process;
   wxExNotebook* m_Projects;
 
   const long m_PaneFlag;

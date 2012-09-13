@@ -82,7 +82,7 @@ Frame::Frame(bool open_recent)
   , m_Editors(NULL)
   , m_History(NULL)
   , m_Lists(NULL)
-  , m_Process(new wxExProcessListView(this))
+  , m_Process(new wxExProcess())
   , m_Projects(NULL)
   , m_PaneFlag(
     wxAUI_NB_DEFAULT_STYLE |
@@ -657,7 +657,6 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
       if (!editor->GetFile().FileSave())
       {
-        wxLogStatus("Could not save file");
         return;
       }
 
@@ -686,11 +685,12 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
       const wxString old_key = editor->GetFileName().GetFullPath();
       
-      bool result;
-
       if (!event.GetString().empty())
       {
-        result = editor->GetFile().FileSave(event.GetString());
+        if (!editor->GetFile().FileSave(event.GetString()))
+        {
+          return;
+        }
       }
       else
       {
@@ -706,13 +706,10 @@ void Frame::OnCommand(wxCommandEvent& event)
           return;
         }
 
-        result = editor->GetFile().FileSave(dlg.GetPath());
-      }
-      
-      if (!result)
-      {
-        wxLogStatus("Could not save file");
-        return;
+        if (!editor->GetFile().FileSave(dlg.GetPath()))
+        {
+          return;
+        }
       }
       
       const wxBitmap bitmap = (editor->GetFileName().GetStat().IsOk() ? 
