@@ -73,15 +73,23 @@ void wxExSTCFile::DoFileNew()
 
 void wxExSTCFile::DoFileSave(bool save_as)
 {
+  size_t size;
+  
   if (m_STC->HexMode())
   {
     // TODO: Does this allow NULLs?
-    Write(m_STC->m_HexBuffer, m_STC->m_HexBuffer.size());
+    size = Write(m_STC->m_HexBuffer, m_STC->m_HexBuffer.size());
   }
   else
   {
     const wxCharBuffer& buffer = m_STC->GetTextRaw(); 
-    Write(buffer.data(), buffer.length());
+    size = Write(buffer.data(), buffer.length());
+  }
+  
+  if (size == 0)
+  {
+    wxLogStatus("could not save file");
+    return;
   }
   
   if (save_as)

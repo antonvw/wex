@@ -87,8 +87,6 @@ bool wxExFile::FileSave(const wxExFileName& filename)
     save_as = true;
   }
 
-  wxLogNull logNo;
-  
   if (m_OpenFile && !Open(m_FileName.GetFullPath(), wxFile::write))
   {
     return false;
