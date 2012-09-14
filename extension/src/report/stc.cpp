@@ -75,18 +75,16 @@ wxExSTCWithFrame::wxExSTCWithFrame(
 
 void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 {
-  if (wxExFileDialog(this, &GetFile()).ShowModalIfChanged() == wxID_CANCEL)
-  {
-    return;
-  }
-
   if (command.GetId() > ID_EDIT_VCS_LOWEST && 
       command.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    // Cannot move this code to wxExSTC, because of member m_Frame.
-    wxArrayString files;
-    files.Add(GetFileName().GetFullPath());
-    wxExVCSExecute(m_Frame, command.GetId(), files);
+    if (wxExFileDialog(this, &GetFile()).ShowModalIfChanged() == wxID_OK)
+    {
+      // Cannot move this code to wxExSTC, because of member m_Frame.
+      wxArrayString files;
+      files.Add(GetFileName().GetFullPath());
+      wxExVCSExecute(m_Frame, command.GetId(), files);
+    }
   }
   else
   {
