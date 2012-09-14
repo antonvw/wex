@@ -22,9 +22,7 @@ wxExProcessListView::wxExProcessListView(wxExFrameWithHistory* frame)
 }
 
 bool wxExProcessListView::ReportAdd(
-  const wxString& line_with_eol, 
-  const wxString& path,
-  const wxString& lineno) const
+  const wxString& line_with_eol) const
 {
   if (m_ListView == NULL)
   {
@@ -40,41 +38,7 @@ bool wxExProcessListView::ReportAdd(
     return false;
   }
   
-  // Using next gives folder image for MSW.
-  // m_ListView->InsertItem(m_ListView->GetItemCount(), line, -1);
-  bool clear_image = false;
-
-  if (!path.empty())
-  {  
-    wxFileName fn(path);
-    fn.Normalize();
-    
-    if (fn.Exists())
-    {
-      wxExListItem item(m_ListView, fn);
-      item.Insert();
-      item.SetItem(_("Line"), line);
-      item.SetItem(_("Line No"), lineno);
-    }
-    else
-    {
-      m_ListView->InsertItem(m_ListView->GetItemCount(), line);
-      clear_image = true;
-    }
-  }
-  else
-  {
-    m_ListView->InsertItem(m_ListView->GetItemCount(), line);
-    clear_image = true;
-  }
-  
-  if (clear_image)
-  {
-    wxListItem item;
-    item.SetImage(-1);
-    item.SetId(m_ListView->GetItemCount() - 1);
-    m_ListView->SetItem(item);
-  }
+  m_ListView->InsertItem(m_ListView->GetItemCount(), line);
   
   // If nothing selected, then ensure last line is visible.
   // Otherwise you are busy inspecting some line, and

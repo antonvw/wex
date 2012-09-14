@@ -97,11 +97,7 @@ protected:
   /// Default puts the message on the STC shell and returns true.
   virtual bool ReportAdd(
     /// complete line (not empty)
-    const wxString& line, 
-    /// path from line (if available)
-    const wxString& path,
-    /// lineno from line (if available)
-    const wxString& lineno) const;
+    const wxString& line) const;
     
   /// Override to create a report.
   /// Called for each invocation of Execute.
@@ -116,7 +112,6 @@ protected:
   void OnTimer(wxTimerEvent& event);
 private:
   bool CheckInput();
-  void HandleLine(const wxString& line) const;
 
   bool m_Busy;
   bool m_Error;
