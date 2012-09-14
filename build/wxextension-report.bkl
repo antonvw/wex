@@ -3,7 +3,7 @@
 Name:      wxextension-report.bkl
 Purpose:   Bakefile for wxextension report library
 Author:    Anton van Wezenbeek
-Copyright: (c) 2011 Anton van Wezenbeek
+Copyright: (c) 2012 Anton van Wezenbeek
 -->
 
 <makefile>
@@ -27,7 +27,6 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <sources>../extension/src/report/frame.cpp</sources>
     <sources>../extension/src/report/listview.cpp</sources>
     <sources>../extension/src/report/listviewfile.cpp</sources>
-    <sources>../extension/src/report/process.cpp</sources>
     <sources>../extension/src/report/stc.cpp</sources>
     <sources>../extension/src/report/textfile.cpp</sources>
     <sources>../extension/src/report/util.cpp</sources>
@@ -38,7 +37,6 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <headers>../extension/include/wx/extension/report/frame.h</headers>
     <headers>../extension/include/wx/extension/report/listview.h</headers>
     <headers>../extension/include/wx/extension/report/listviewfile.h</headers>
-    <headers>../extension/include/wx/extension/report/process.h</headers>
     <headers>../extension/include/wx/extension/report/stc.h</headers>
     <headers>../extension/include/wx/extension/report/textfile.h</headers>
     <headers>../extension/include/wx/extension/report/util.h</headers>

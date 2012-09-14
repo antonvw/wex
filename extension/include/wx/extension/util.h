@@ -122,6 +122,12 @@ enum wxExStatusFlags
 // invoking.
 void wxExLogStatus(const wxFileName& filename, long flags = STAT_DEFAULT);
 
+/// Runs make on specified makefile.
+/// Returns value from executing the make process.
+long wxExMake(
+  /// the makefile
+  const wxFileName& makefile);
+
 /// Regular expression match.
 /// Returns number of submatches present in vector.
 int wxExMatch(

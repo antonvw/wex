@@ -40,7 +40,7 @@ WX_DEBUG ?= 1
 # Location and arguments of wx-config script 
 WX_CONFIG ?= wx-config
 
-# Port of the wx library to build against [gtk1,gtk2,msw,x11,motif,mgl,osx_cocoa,osx_carbon,dfb]
+# Port of the wx library to build against [gtk1,gtk2,msw,x11,motif,osx_cocoa,osx_carbon,dfb]
 WX_PORT ?= $(shell $(WX_CONFIG) --query-toolkit)
 
 # Use DLL build of wx library to use? [0,1]
@@ -122,7 +122,6 @@ WXEX_REP_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_frame.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_listview.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_listviewfile.o \
-	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_process.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_stc.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_textfile.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_util.o
@@ -421,9 +420,6 @@ $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_listview.o: ./..
 	$(CXX) -c -o $@ $(WXEX_REP_CXXFLAGS) $(CPPDEPS) $<
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_listviewfile.o: ./../extension/src/report/listviewfile.cpp
-	$(CXX) -c -o $@ $(WXEX_REP_CXXFLAGS) $(CPPDEPS) $<
-
-$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_process.o: ./../extension/src/report/process.cpp
 	$(CXX) -c -o $@ $(WXEX_REP_CXXFLAGS) $(CPPDEPS) $<
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_rep_stc.o: ./../extension/src/report/stc.cpp

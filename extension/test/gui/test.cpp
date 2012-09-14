@@ -1228,6 +1228,14 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n\n", true) == 2);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n\n", true) == 2);
   
+  // As we do not have process output lists, execute fails.
+  CPPUNIT_ASSERT( wxExMake(wxFileName("xxx")) == -1);
+  
+  // As we do not have process output lists, execute fails.
+  // TODO: add makefile.
+  CPPUNIT_ASSERT( wxExMake(wxFileName("make.tst")) == -1);
+
+  
   std::vector<wxString> v;
   CPPUNIT_ASSERT( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
   
