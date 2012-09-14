@@ -114,7 +114,7 @@ bool wxExProcess::CheckInput()
       line += wxTextFile::GetEOL();
     }
 
-    HandleLine(line);
+    ReportAdd(line);
   }
   
   m_Busy = false;
@@ -262,45 +262,6 @@ long wxExProcess::Execute(
   }
 }
 
-void wxExProcess::HandleLine(const wxString& line) const
-{
-  wxString lineno;
-  wxString path;
-
-  // Check on error in php script output.
-  std::vector <wxString> v;
-
-  if (wxExMatch(".*in (.*) on line (.*)", line, v) > 1)
-  {
-    path = v[0];
-    lineno = v[1];
-  }
-  else
-  {
-    // Check on error in gcc output (and some others).
-    wxStringTokenizer tkz(line, ':');
-    path = tkz.GetNextToken();
-
-    if (tkz.HasMoreTokens())
-    {
-      lineno = tkz.GetNextToken();
-    }
-  }
-
-  if (atoi(lineno.c_str()) == 0)
-  {
-    lineno.clear();
-  }
-    
-  if (!wxFileExists(path))
-  {
-    lineno.clear();
-    path.clear();
-  }
-  
-  ReportAdd(line, path, lineno);
-}
-  
 void wxExProcess::HideDialog()
 {
   if (m_Dialog != NULL)
@@ -407,10 +368,7 @@ void wxExProcess::OnTimer(wxTimerEvent& event)
   CheckInput();
 }
 
-bool wxExProcess::ReportAdd(
-  const wxString& line, 
-  const wxString& path,
-  const wxString& lineno) const
+bool wxExProcess::ReportAdd(const wxString& line) const
 {
   m_Dialog->Show();
   m_Dialog->GetSTCShell()->AddText(line);

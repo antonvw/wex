@@ -26,8 +26,6 @@ protected:
   /// Override from base class.
   /// Adds line as item on the report listview.
   virtual bool ReportAdd(
-    const wxString& line, 
-    const wxString& path,
     const wxString& lineno) const;
     
   /// Override from base class.
