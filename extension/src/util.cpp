@@ -461,6 +461,7 @@ void wxExLogStatus(const wxFileName& fn, long flags)
 {
   if (!fn.IsOk())
   {
+    wxLogStatus(wxEmptyString);
     return;
   }
   
