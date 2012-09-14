@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of class wxExListViewWithFrame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,7 +10,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-//#include <wx/tokenzr.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listitem.h>
@@ -297,7 +296,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   break;
 
   case ID_LIST_RUN_MAKE:
-    wxExMake(m_Frame, wxExListItem(this, GetFirstSelected()).GetFileName());
+    wxExMake(wxExListItem(this, GetFirstSelected()).GetFileName());
   break;
 
   default: 

@@ -58,7 +58,7 @@ bool wxExRepSampleApp::OnInit()
 
 wxExRepSampleFrame::wxExRepSampleFrame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
-  , m_Process(new wxExProcessListView(this))
+  , m_Process(new wxExProcess())
 {
   SetIcon(wxICON(app));
 

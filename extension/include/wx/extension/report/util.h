@@ -27,14 +27,6 @@ bool wxExForEach(
   /// font to be used if id is ID_LIST_ALL_ITEMS
   const wxFont& font = wxFont());
 
-/// Runs make on specified makefile.
-/// Returns value from executing the make process.
-long wxExMake(
-  /// results are placed on the list process output, if it can be activated from frame
-  wxExFrameWithHistory* frame, 
-  /// the makefile
-  const wxFileName& makefile);
-
 /// Runs a tool on this item, and returns statistics.
 const wxExFileStatistics wxExRun(const wxExListItem& item, const wxExTool& tool);
 

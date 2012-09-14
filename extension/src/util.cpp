@@ -27,6 +27,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vcs.h>
 
@@ -477,6 +478,18 @@ void wxExLogStatus(const wxFileName& fn, long flags)
   }
 
   wxLogStatus(text);
+}
+
+long wxExMake(const wxFileName& makefile)
+{
+  wxExProcess process;
+
+  return process.Execute(
+    wxConfigBase::Get()->Read("Make", "make") + " " +
+      wxConfigBase::Get()->Read("MakeSwitch", "-f") + " " +
+      makefile.GetFullPath(),
+    wxEXEC_ASYNC,
+    makefile.GetPath());
 }
 
 int wxExMatch(

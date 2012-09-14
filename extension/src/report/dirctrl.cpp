@@ -2,18 +2,17 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wxExGenericDirCtrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stockitem.h> // for wxGetStockLabel
+#include <wx/textfile.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/report/dirctrl.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
-#include <wx/extension/report/textfile.h>
-#include <wx/extension/report/util.h>
 
 #if wxUSE_DIRDLG
 
@@ -100,7 +99,7 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
   break;
   
   case ID_TREE_RUN_MAKE: 
-    wxExMake(m_Frame, files[0]);
+    wxExMake(files[0]);
     break;
     
   default: wxFAIL;

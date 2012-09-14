@@ -19,7 +19,6 @@
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listviewfile.h>
-#include <wx/extension/report/process.h>
 #include <wx/extension/report/textfile.h>
 
 bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
@@ -64,18 +63,6 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
   }
 
   return true;
-}
-
-long wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile)
-{
-  wxExProcessListView process(frame);
-
-  return process.Execute(
-    wxConfigBase::Get()->Read("Make", "make") + " " +
-      wxConfigBase::Get()->Read("MakeSwitch", "-f") + " " +
-      makefile.GetFullPath(),
-    wxEXEC_ASYNC,
-    makefile.GetPath());
 }
 
 const wxExFileStatistics wxExRun(const wxExListItem& item, const wxExTool& tool)

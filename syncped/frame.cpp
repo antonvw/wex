@@ -821,7 +821,12 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
     
-  case ID_PROCESS_SELECT: wxExProcess::ConfigDialog(this); break;
+  case ID_PROCESS_SELECT: 
+    if (wxExProcess::ConfigDialog(this) == wxID_OK)
+    {
+      m_Process->Execute();
+    }
+    break;
 
   case ID_PROJECT_CLOSE:
     if (project != NULL && m_Projects != NULL)

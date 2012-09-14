@@ -107,31 +107,6 @@ void wxExGuiReportTestFixture::testListViewWithFrame()
     wxExListViewWithFrame::GetTypeTool(tool) == wxExListViewWithFrame::LIST_FIND);
 }
 
-void wxExGuiReportTestFixture::testProcess()
-{
-  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  
-  wxExProcessListView* process = new wxExProcessListView(frame);
-  
-  // As we do not have process output lists, execute fails.
-  CPPUNIT_ASSERT( process->Execute("wc test.h") == -1);
-  CPPUNIT_ASSERT( process->IsSelected());
-  
-  wxExListViewFileName* report = new wxExListViewFileName(
-    frame, 
-    wxExListViewFileName::LIST_PROCESS);
-    
-  process->SetReport(report);
-    
-  // As now we have output list, execute should succeed.
-  CPPUNIT_ASSERT( report->GetItemCount() == 0);
-  CPPUNIT_ASSERT( process->Execute("wc test.h") > 0);
-  CPPUNIT_ASSERT( process->IsSelected());
-  // TODO: Next should succeed, there should be an item on the list,
-  // however it keeps failing?
-  //CPPUNIT_ASSERT( report->GetItemCount() > 0);
-}
-
 void wxExGuiReportTestFixture::testSTCWithFrame()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
@@ -183,13 +158,6 @@ void wxExGuiReportTestFixture::testUtil()
   
   CPPUNIT_ASSERT( wxExForEach(notebook, ID_LIST_ALL_ITEMS));
   
-  // As we do not have process output lists, execute fails.
-  CPPUNIT_ASSERT( wxExMake(frame, wxFileName("xxx")) == -1);
-  
-  // As we do not have process output lists, execute fails.
-  // TODO: add makefile.
-  CPPUNIT_ASSERT( wxExMake(frame, wxFileName("make.tst")) == -1);
-
   wxExListViewFileName* listView = new wxExListViewFileName(
     wxTheApp->GetTopWindow(), wxExListViewFileName::LIST_FILE);
   
@@ -276,10 +244,6 @@ wxExTestSuite::wxExTestSuite()
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testListViewWithFrame",
     &wxExGuiReportTestFixture::testListViewWithFrame));
-    
-  addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
-    "testProcess",
-    &wxExGuiReportTestFixture::testProcess));
     
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testSTCWithFrame",
