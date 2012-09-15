@@ -93,11 +93,11 @@ protected:
   /// Overriden from wxProcess.
   virtual void OnTerminate(int pid, int status);
   
-  /// Override to add a process output line to report.
-  /// Default puts the message on the STC shell and returns true.
+  /// Override to add a process output text to report.
+  /// Default puts the text on the STC shell and returns true.
   virtual bool ReportAdd(
-    /// complete line (not empty)
-    const wxString& line) const;
+    /// complete text (not empty)
+    const wxString& text) const;
     
   /// Override to create a report.
   /// Called for each invocation of Execute.
@@ -111,7 +111,7 @@ protected:
   /// Handles timer events.
   void OnTimer(wxTimerEvent& event);
 private:
-  bool CheckInput();
+  void CheckInput();
 
   bool m_Busy;
   bool m_Error;
