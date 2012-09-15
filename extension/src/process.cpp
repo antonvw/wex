@@ -10,8 +10,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/textfile.h>
-#include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/process.h>
 #include <wx/extension/configdlg.h>
@@ -56,11 +54,11 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
   return *this;
 }
 
-bool wxExProcess::CheckInput()
+void wxExProcess::CheckInput()
 {
   if (m_Busy)
   {
-    return false;
+    return;
   }
   
   m_Busy = true;
@@ -97,29 +95,12 @@ bool wxExProcess::CheckInput()
     }
   }
 
-  if (output.empty())
-  {
-    m_Busy = false;
-    return false;
-  }
-  
-  wxStringTokenizer tkz(output, wxTextFile::GetEOL());
-  
-  while (tkz.HasMoreTokens())
-  {
-    wxString line = tkz.GetNextToken();
-
-    if (tkz.HasMoreTokens())
-    {
-      line += wxTextFile::GetEOL();
-    }
-
-    ReportAdd(line);
-  }
-  
   m_Busy = false;
   
-  return true;
+  if (!output.empty())
+  {
+    ReportAdd(output);
+  }
 }
 
 int wxExProcess::ConfigDialog(
