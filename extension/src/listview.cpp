@@ -1006,10 +1006,7 @@ void wxExListViewFileName::AddColumns(const wxExLexer* lexer)
 {
   const int col_line_width = 250;
 
-  if (m_Type != LIST_PROCESS)
-  {
-    InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
-  }
+  InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
 
   switch (m_Type)
   {
@@ -1038,11 +1035,6 @@ void wxExListViewFileName::AddColumns(const wxExLexer* lexer)
     }
 
     InsertColumn(wxExColumn(_("Keywords")));
-  break;
-  case LIST_PROCESS:
-    InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
-    InsertColumn(wxExColumn(_("Line No")));
-    InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
   break;
   case LIST_SQL:
     InsertColumn(wxExColumn(_("Run Time"), wxExColumn::COL_DATE));
@@ -1103,7 +1095,6 @@ const wxString wxExListViewFileName::GetTypeDescription(wxExListType type)
   case LIST_FIND: value = _("Find Results"); break;
   case LIST_HISTORY: value = _("History"); break;
   case LIST_KEYWORD: value = _("Keywords"); break;
-  case LIST_PROCESS: value = _("Process Output"); break;
   case LIST_FILE: value = _("File"); break;
   case LIST_REPLACE: value = _("Replace Results"); break;
   case LIST_SQL: value = _("SQL Queries"); break;
