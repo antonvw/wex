@@ -289,6 +289,9 @@ wxExExTextCtrl::wxExExTextCtrl(
   }
 
   m_CommandsIterator = m_Commands.begin();
+  
+  m_Finds = wxExFindReplaceData::Get()->GetFindStrings();
+  
   m_FindsIterator = m_Finds.begin();
 }
 
