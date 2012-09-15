@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/tokenzr.h>
 #include <wx/wxcrt.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/defs.h>
@@ -35,6 +36,9 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize);
+    
+  /// Destructor.
+ ~wxExExTextCtrl();
     
   /// Returns ex component.
   wxExEx* GetEx() {return m_ex;};
@@ -73,7 +77,6 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   const wxString& title,
   long style)
   : wxExFrame(parent, id, title, style)
-  
 {
   m_Manager.SetManagedWindow(this);
 
@@ -276,8 +279,36 @@ wxExExTextCtrl::wxExExTextCtrl(
   , m_UserInput(false)
   , m_Prefix(prefix)
 {
+  wxStringTokenizer tkz(wxConfigBase::Get()->Read("excommand"),
+    wxExGetFieldSeparator());
+
+  while (tkz.HasMoreTokens())
+  {
+    const wxString val = tkz.GetNextToken();
+    m_Commands.push_front(val);
+  }
+
   m_CommandsIterator = m_Commands.begin();
   m_FindsIterator = m_Finds.begin();
+}
+
+wxExExTextCtrl::~wxExExTextCtrl()
+{
+  const int commandsSaveInConfig = 25;
+  
+  wxString values;
+  int items = 0;
+
+  for (
+    std::list < wxString >::reverse_iterator it = m_Commands.rbegin();
+    it != m_Commands.rend() && items < commandsSaveInConfig;
+    ++it)
+  {
+    values += *it + wxExGetFieldSeparator();
+    items++;
+  }
+
+  wxConfigBase::Get()->Write("excommand", values);
 }
 
 void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
@@ -316,7 +347,6 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
           (GetValue() == "n" || GetValue() == "prev");
           
         m_Frame->HideExBar(!set_focus);
-        wxConfigBase::Get()->Write("excommand", GetValue());
       }
     }
   }
@@ -412,7 +442,10 @@ void wxExExTextCtrl::SetEx(wxExEx* ex)
   }
   else
   {
-    SetValue(wxConfigBase::Get()->Read("excommand", wxEmptyString));
+    if (m_Commands.begin() != m_Commands.end())
+    {
+      SetValue(*m_Commands.begin());
+    }
   }
     
   Show();
