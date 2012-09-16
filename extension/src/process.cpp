@@ -326,7 +326,10 @@ void  wxExProcess::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_SHELL_COMMAND_STOP:
-    Kill();
+    if (IsRunning())
+    {
+      Kill();
+    }
     break;
     
   default: wxFAIL; break;
