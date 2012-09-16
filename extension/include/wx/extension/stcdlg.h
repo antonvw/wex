@@ -2,7 +2,7 @@
 // Name:      stcdlg.h
 // Purpose:   Declaration of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2012 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTCDLG_H
@@ -62,12 +62,17 @@ public:
   /// Gets raw STC text value.
   const wxCharBuffer GetTextRaw() const;
 
+  /// Set the event handler for handling window close event.
+  void SetEventHandler(wxEvtHandler* handler) {
+    m_Handler = handler;};
+
   /// Sets the STC lexer.
   bool SetLexer(const wxString& lexer);
 protected:
   void OnCommand(wxCommandEvent& command);
 private:
   wxExSTC* m_STC;
+  wxEvtHandler* m_Handler;
 
   DECLARE_EVENT_TABLE()
 };

@@ -176,6 +176,7 @@ long wxExProcess::Execute(
       wxOK,
       true);
       
+    m_Dialog->SetEventHandler(this);
     m_Dialog->GetSTCShell()->SetEventHandler(this);
   }
       
