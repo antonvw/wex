@@ -11,11 +11,13 @@
 #endif
 #include <wx/persist/toplevel.h>
 #include <wx/extension/stcdlg.h>
+#include <wx/extension/defs.h> // for ID_SHELL_COMMAND_STOP
 #include <wx/extension/shell.h>
 
 #if wxUSE_GUI
 
 BEGIN_EVENT_TABLE(wxExSTCEntryDialog, wxExDialog)
+  EVT_BUTTON(wxID_OK, wxExSTCEntryDialog::OnCommand)
   EVT_MENU(wxID_FIND, wxExSTCEntryDialog::OnCommand)
   EVT_MENU(wxID_REPLACE, wxExSTCEntryDialog::OnCommand)
 END_EVENT_TABLE()
@@ -32,6 +34,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   long style,
   const wxString& name)
   : wxExDialog(parent, caption, button_style, id, pos, size, style, name)
+  , m_Handler(NULL)
 {
   if (!prompt.empty())
   {
@@ -89,6 +92,15 @@ void wxExSTCEntryDialog::OnCommand(wxCommandEvent& command)
       wxPostEvent(wxTheApp->GetTopWindow(), command);
       break;
 
+    case wxID_OK: 
+      // Do the same as with OnClose.
+      if (m_Handler != NULL)
+      {
+        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
+        wxPostEvent(m_Handler, event);
+      }
+      break;
+      
     default: wxFAIL;
   }
 }
