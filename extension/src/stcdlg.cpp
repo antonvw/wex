@@ -99,6 +99,8 @@ void wxExSTCEntryDialog::OnCommand(wxCommandEvent& command)
         wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
         wxPostEvent(m_Handler, event);
       }
+      
+      command.Skip();
       break;
       
     default: wxFAIL;
