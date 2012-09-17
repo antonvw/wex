@@ -1267,12 +1267,12 @@ const wxString wxExListViewFileName::ItemToText(long item_number) const
       item.GetFileName().GetFullPath(): 
       item.GetFileName().GetFullName());
 
-    if (item.GetFileName().DirExists())
+    if (item.GetFileName().DirExists() && !item.GetFileName().FileExists())
     {
       text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
     }
 
-    if (m_Type != LIST_FILE)
+    if (m_Type != LIST_FILE && m_Type != LIST_HISTORY)
     {
       text += GetFieldSeparator() + wxExListView::ItemToText(item_number);
     }
