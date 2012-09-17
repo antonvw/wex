@@ -12,6 +12,7 @@
 #include <wx/persist/toplevel.h>
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/defs.h> // for ID_SHELL_COMMAND_STOP
+#include <wx/extension/process.h>
 #include <wx/extension/shell.h>
 
 #if wxUSE_GUI
@@ -34,7 +35,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   long style,
   const wxString& name)
   : wxExDialog(parent, caption, button_style, id, pos, size, style, name)
-  , m_Handler(NULL)
+  , m_Process(NULL)
 {
   if (!prompt.empty())
   {
@@ -82,6 +83,17 @@ const wxCharBuffer wxExSTCEntryDialog::GetTextRaw() const
   return m_STC->GetTextRaw();
 }
 
+void wxExSTCEntryDialog::OnClose(wxCloseEvent& event)
+{
+  if (m_Process != NULL)
+  {
+    if (m_Process->IsRunning())
+    {
+      m_Process->Kill();
+    }
+  }
+}
+
 void wxExSTCEntryDialog::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
@@ -93,11 +105,12 @@ void wxExSTCEntryDialog::OnCommand(wxCommandEvent& command)
       break;
 
     case wxID_OK: 
-      // Do the same as with OnClose.
-      if (m_Handler != NULL)
+      if (m_Process != NULL)
       {
-        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
-        wxPostEvent(m_Handler, event);
+        if (m_Process->IsRunning())
+        {
+          m_Process->Kill();
+        }
       }
       
       command.Skip();

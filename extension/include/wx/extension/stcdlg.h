@@ -13,6 +13,7 @@
 
 #if wxUSE_GUI
 class wxExLexer;
+class wxExProcess;
 
 /// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
 /// The prompt (if not empty) is first added as a text sizer to the user sizer.
@@ -45,7 +46,7 @@ public:
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
     /// name
     const wxString& name = "wxExSTCEntryDialog");
-
+    
   /// Gets the STC lexer.
   const wxExLexer* GetLexer() const;
   
@@ -62,17 +63,17 @@ public:
   /// Gets raw STC text value.
   const wxCharBuffer GetTextRaw() const;
 
-  /// Set the event handler for handling window close event.
-  void SetEventHandler(wxEvtHandler* handler) {
-    m_Handler = handler;};
-
   /// Sets the STC lexer.
   bool SetLexer(const wxString& lexer);
+  
+  /// Set process callback.
+  void SetProcess(wxExProcess* process) {m_Process = process;};
 protected:
+  void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& command);
 private:
   wxExSTC* m_STC;
-  wxEvtHandler* m_Handler;
+  wxExProcess* m_Process;
 
   DECLARE_EVENT_TABLE()
 };
