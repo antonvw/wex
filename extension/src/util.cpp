@@ -389,7 +389,7 @@ void wxExLogStatus(const wxFileName& fn, long flags)
 
   if (fn.FileExists())
   {
-    const wxString what = (flags & STAT_SYNC ? 
+    const wxString what = ((flags & STAT_SYNC) ? 
       _("Synchronized"): 
       _("Modified"));
         
