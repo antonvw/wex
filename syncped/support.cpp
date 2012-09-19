@@ -175,12 +175,9 @@ DecoratedFrame::DecoratedFrame()
     menuOptions->AppendSeparator();
   }
   
-  if (wxExVCS::GetCount() == 0)
-  {
-    menuOptions->Append(
-      ID_OPTION_COMPARATOR, wxExEllipsed(_("Set &Comparator")));
-    menuOptions->AppendSeparator();
-  }
+  menuOptions->Append(
+    ID_OPTION_COMPARATOR, wxExEllipsed(_("Set &Comparator")));
+  menuOptions->AppendSeparator();
   
   menuOptions->Append(ID_OPTION_LIST_FONT, wxExEllipsed(_("Set &List Font")));
   // text also used as caption

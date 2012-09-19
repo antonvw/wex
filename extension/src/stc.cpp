@@ -199,11 +199,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
       menu.AppendSeparator();
       menu.AppendVCS(m_File.GetFileName());
     }
-    else if (!wxConfigBase::Get()->Read(_("Comparator")).empty())
-    {
-      menu.AppendSeparator();
-      menu.Append(ID_EDIT_COMPARE, wxExEllipsed(_("&Compare Recent Version")));
-    }
   }
 
   if (sel.empty() && 
@@ -1524,17 +1519,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case wxID_REPLACE: 
     GetFindString();
     command.Skip();
-    break;
-
-  case ID_EDIT_COMPARE:
-    {
-    wxFileName lastfile;
-
-    if (wxExFindOtherFileName(m_File.GetFileName(), &lastfile))
-    {
-      wxExCompareFile(m_File.GetFileName(), lastfile);
-    }
-    }
     break;
 
   case ID_EDIT_CONTROL_CHAR: ControlCharDialog(); break;
