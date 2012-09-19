@@ -114,15 +114,18 @@ void wxExSTCWithFrame::PropertiesMessage(long flags)
 {
   wxExSTC::PropertiesMessage(flags);
   
-  const wxString file = GetName() + 
-    (GetReadOnly() ? " [" + _("Readonly") + "]": wxString(wxEmptyString));
+  if (!(flags & STAT_SYNC))
+  {
+    const wxString file = GetName() + 
+      (GetReadOnly() ? " [" + _("Readonly") + "]": wxString(wxEmptyString));
     
-  if (file.empty())
-  {
-    m_Frame->SetTitle(wxTheApp->GetAppName());
-  }
-  else
-  {
-    m_Frame->SetTitle(file);
+    if (file.empty())
+    {
+      m_Frame->SetTitle(wxTheApp->GetAppName());
+    }
+    else
+    {
+      m_Frame->SetTitle(file);
+    }
   }
 }
