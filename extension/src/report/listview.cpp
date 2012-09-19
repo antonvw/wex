@@ -130,16 +130,6 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   {
     if (exists && !is_folder)
     {
-      if (!wxExVCS().Use())
-      {
-        menu.AppendSeparator();
-
-        if (!wxConfigBase::Get()->Read(_("Comparator")).empty())
-        {
-          menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
-        }
-      }
-      
       if (wxExVCS::DirExists(
         wxExListItem(this, GetFirstSelected()).GetFileName()))
       {
@@ -242,7 +232,6 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   break;
 
   case ID_LIST_COMPARE:
-  case ID_LIST_COMPARELAST:
   {
     bool first = true;
     wxString file1,file2;
@@ -278,15 +267,6 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
               file2 = filename->GetFullPath();
             }
             if (first) wxExCompareFile(wxFileName(file1), wxFileName(file2));
-          }
-        }
-        break;
-        case ID_LIST_COMPARELAST:
-        {
-          wxFileName lastfile;
-          if (wxExFindOtherFileName(*filename, &lastfile))
-          {
-            wxExCompareFile(*filename, lastfile);
           }
         }
         break;
