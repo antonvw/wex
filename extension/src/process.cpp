@@ -195,6 +195,8 @@ long wxExProcess::Execute(
 
     if (pid > 0)
     {
+      m_Dialog->Show();
+      
       wxLogVerbose("Execute: " + m_Command);
     
       CheckInput();
@@ -203,10 +205,11 @@ long wxExProcess::Execute(
     }
     else
     {
-      m_Error = true;
       m_Dialog->Hide();
       
       wxLogStatus(_("Could not execute") + ": " + m_Command);
+      
+      m_Error = true;
     }
     
     return pid;
@@ -355,7 +358,6 @@ void wxExProcess::OnTimer(wxTimerEvent& event)
 
 bool wxExProcess::ReportAdd(const wxString& line) const
 {
-  m_Dialog->Show();
   m_Dialog->GetSTCShell()->AddText(line);
   m_Dialog->GetSTCShell()->Prompt();
   return true;
