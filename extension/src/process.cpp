@@ -267,10 +267,8 @@ bool wxExProcess::IsRunning() const
 
 wxKillError wxExProcess::Kill(wxSignal sig)
 {
-  // This seems necessary.
   if (!IsRunning())
   {
-    wxLogStatus("no such process");
     return wxKILL_NO_PROCESS;
   }
   
