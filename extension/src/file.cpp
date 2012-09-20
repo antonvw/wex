@@ -109,13 +109,16 @@ bool wxExFile::FileSave(const wxExFileName& filename)
 
 bool wxExFile::Get(bool synced)
 {
-  wxLogNull logNo;
-  
-  if ( 
-     synced && !Open(m_FileName.GetFullPath()) ||
-    !synced && m_OpenFile && !Open(m_FileName.GetFullPath()))
+  // Do not log error messages if opening fails.
   {
-    return false;
+    wxLogNull logNo;
+  
+    if ( 
+       synced && !Open(m_FileName.GetFullPath()) ||
+      !synced && m_OpenFile && !Open(m_FileName.GetFullPath()))
+    {
+      return false;
+    }
   }
 
   if (!DoFileLoad(synced))
