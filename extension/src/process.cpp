@@ -31,6 +31,7 @@ wxExProcess::wxExProcess()
   , m_Timer(new wxTimer(this))
   , m_Busy(false)
   , m_Error(false)
+  , m_Sync(false)
 {
   m_Command = wxExConfigFirstOf(_("Process"));
 }
@@ -99,7 +100,8 @@ void wxExProcess::CheckInput()
   
   if (!output.empty())
   {
-    ReportAdd(output);
+    m_Dialog->GetSTCShell()->AddText(output);
+    m_Dialog->GetSTCShell()->Prompt();
   }
 }
 
@@ -166,6 +168,8 @@ long wxExProcess::Execute(
     env.cwd = wd;
   }
 
+  m_Sync = (flags & wxEXEC_SYNC);
+  
   if (m_Dialog == NULL)
   {
     m_Dialog = new wxExSTCEntryDialog(
@@ -180,25 +184,24 @@ long wxExProcess::Execute(
     m_Dialog->GetSTCShell()->SetEventHandler(this);
   }
       
+  m_Dialog->GetSTCShell()->EnableShell(!m_Sync);
+    
   m_Error = false;
     
-  if (!(flags & wxEXEC_SYNC))
+  if (!m_Sync)
   { 
-    if (!ReportCreate())
-    {
-      return -1; 
-    }
+    m_Dialog->SetTitle(m_Command);
+    m_Dialog->GetSTCShell()->ClearAll();
+    m_Dialog->GetSTCShell()->Prompt();
 
-    // For asynchronous execution, however, the return value is the process id and zero 
-    // value indicates that the command could not be executed
+    // For asynchronous execution the return value is the process id and zero 
+    // value indicates that the command could not be executed.
     const long pid = wxExecute(m_Command, flags, this, &env);
 
     if (pid > 0)
     {
       m_Dialog->Show();
       
-      wxLogVerbose("Execute: " + m_Command);
-    
       CheckInput();
       
       m_Timer->Start(100); // each 100 milliseconds
@@ -207,9 +210,8 @@ long wxExProcess::Execute(
     {
       m_Dialog->Hide();
       
-      wxLogStatus(_("Could not execute") + ": " + m_Command);
-      
       m_Error = true;
+      wxLogStatus(_("Could not execute") + ": " + m_Command);
     }
     
     return pid;
@@ -221,8 +223,6 @@ long wxExProcess::Execute(
     long retValue;
     m_Output.clear();
     
-    m_Dialog->GetSTCShell()->EnableShell(false);
-    
     // Call wxExecute to execute the command and
     // collect the output and the errors.
     if ((retValue = wxExecute(
@@ -230,11 +230,7 @@ long wxExProcess::Execute(
       output,
       errors,
       flags,
-      &env)) != -1)
-    {
-      wxLogVerbose("Execute: " + m_Command);
-    }
-    else
+      &env)) == -1)
     {
       m_Error = true;
       wxLogStatus(_("Could not execute") + ": " + m_Command);
@@ -247,17 +243,13 @@ long wxExProcess::Execute(
   }
 }
 
-void wxExProcess::HideDialog()
-{
-  if (m_Dialog != NULL)
-  {
-    m_Dialog->Hide();
-  }
-}
-
 bool wxExProcess::IsRunning() const
 {
-  if (GetPid() <= 0)
+  if (
+    // If we executed a sync process, then it always ended,
+    // so it is not running.
+    m_Sync || 
+    GetPid() <= 0)
   {
     return false;
   }
@@ -352,22 +344,6 @@ void wxExProcess::OnTerminate(int pid, int status)
 void wxExProcess::OnTimer(wxTimerEvent& event)
 {
   CheckInput();
-}
-
-bool wxExProcess::ReportAdd(const wxString& line) const
-{
-  m_Dialog->GetSTCShell()->AddText(line);
-  m_Dialog->GetSTCShell()->Prompt();
-  return true;
-}
-
-bool wxExProcess::ReportCreate()
-{
-  m_Dialog->SetTitle(m_Command);
-  m_Dialog->GetSTCShell()->ClearAll();
-  m_Dialog->GetSTCShell()->Prompt();
-  m_Dialog->GetSTCShell()->EnableShell(true);
-  return true;
 }
 
 #if wxUSE_GUI

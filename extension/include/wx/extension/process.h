@@ -12,10 +12,8 @@
 #include <wx/timer.h>
 #include <wx/extension/stcdlg.h>
 
-/// Offers a wxProcess with default output to a wxExSTC on a 
-/// wxExSTCEntryDialog.
-/// You can change that by inheriting this class and provide
-/// your own report generators.
+/// Offers a wxProcess, capturing execution output depending
+/// on sync ar async call to Execute.
 class WXDLLIMPEXP_BASE wxExProcess : public wxProcess
 {
 public:
@@ -40,19 +38,19 @@ public:
 
   /// Executes the process.
   /// - In case asynchronously (wxEXEC_ASYNC) this call immediately returns.
-  ///   For each output line ReportAdd is invoked.
-  ///   The STC component will be shell enabled.
+  ///   The dialog will be shown, with STC component shell enabled,
+  ///   and will be filled with output from the process.
   ///   The return value is the process id and zero value indicates 
-  ///   that the command could not be executed (or -1 if report could not 
-  ///   be created).
-  /// - In case synchronously call returns after execute ends, and the output
-  ///   is collected in the output member.
-  ///   The STC component will be shell disabled.
+  ///   that the command could not be executed.
+  ///   When the process is finished, a ID_TERMINATED_PROCESS command event
+  ///   is sent to the application top window.
+  /// - In case synchronously (wxEXEC_SYNC) this call returns after execute ends, 
+  ///   and the output is collected in the output member.
+  ///   The dialog is not shown (call ShowOutput). 
+  ///   The STC component in the dialog will be shell disabled.
   ///   Return value is return value from wxExecute, -1 execute fails.
   /// The return value can also be -2, if config dialog was invoked and
   /// cancelled.
-  /// When the process is finished, a ID_TERMINATED_PROCESS command event
-  /// is sent to the application top window.
   long Execute(
     /// command to be executed, if empty
     /// last given command is used
@@ -65,7 +63,7 @@ public:
   /// Returns true if the command could not be executed.
   bool GetError() const {return m_Error;};
 
-  /// Gets the output from Execute (only for wxEXEC_SYNC).
+  /// Gets the output from Execute (only filled for wxEXEC_SYNC).
   const wxString& GetOutput() const {return m_Output;};
   
   /// Returns the STC component from the dialog
@@ -73,9 +71,6 @@ public:
   static wxExSTC* GetSTC() {
     return m_Dialog != NULL ? m_Dialog->GetSTC(): NULL;};
     
-  /// Hides the dialog.
-  void HideDialog();
-  
   /// Returns true if this process is running.
   bool IsRunning() const;
 
@@ -86,25 +81,14 @@ public:
   wxKillError Kill(wxSignal sig = wxSIGKILL);
   
 #if wxUSE_GUI
-  /// Shows output from Execute on the STC component (if no error).
+  /// Shows output from Execute (wxEXEC_SYNC) on the STC component 
+  /// (if no error code returned from Execute).
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
 protected:
   /// Overriden from wxProcess.
   virtual void OnTerminate(int pid, int status);
   
-  /// Override to add a process output text to report.
-  /// Default puts the text on the STC shell and returns true.
-  virtual bool ReportAdd(
-    /// complete text (not empty)
-    const wxString& text) const;
-    
-  /// Override to create a report.
-  /// Called for each invocation of Execute.
-  /// Default report creator uses a wxExSTShell and returns true.
-  /// If you override and returns false, processing stops.
-  virtual bool ReportCreate();
-    
   /// Handles shell events.
   void OnCommand(wxCommandEvent& event);
   
@@ -115,6 +99,7 @@ private:
 
   bool m_Busy;
   bool m_Error;
+  bool m_Sync;
 
   wxString m_Command;  
   wxString m_Output;
