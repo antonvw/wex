@@ -55,8 +55,8 @@ private:
     const wxString& filename,
     const wxString& text,
     long flags = 0);
-  virtual void StatusBarDoubleClicked(const wxString& pane);
-  virtual void StatusBarDoubleClickedRight(const wxString& pane);
+  virtual void StatusBarClicked(const wxString& pane);
+  virtual void StatusBarClickedRight(const wxString& pane);
   virtual void SyncCloseAll(wxWindowID id);
 
   bool m_IsClosing;

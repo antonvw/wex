@@ -1328,7 +1328,7 @@ bool Frame::OpenFile(
   return true;
 }
 
-void Frame::StatusBarDoubleClicked(const wxString& pane)
+void Frame::StatusBarClicked(const wxString& pane)
 {
   if (pane == "PaneTheme")
   {
@@ -1362,11 +1362,11 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
   }
   else
   {
-    DecoratedFrame::StatusBarDoubleClicked(pane);
+    DecoratedFrame::StatusBarClicked(pane);
   }
 }
 
-void Frame::StatusBarDoubleClickedRight(const wxString& pane)
+void Frame::StatusBarClickedRight(const wxString& pane)
 {
   if (pane == "PaneLexer" || pane == "PaneTheme")
   {
@@ -1403,7 +1403,7 @@ void Frame::StatusBarDoubleClickedRight(const wxString& pane)
   }
   else
   {
-    DecoratedFrame::StatusBarDoubleClickedRight(pane);
+    DecoratedFrame::StatusBarClickedRight(pane);
   }
 }
 

@@ -94,12 +94,12 @@ public:
     long style = wxST_SIZEGRIP,
     const wxString& name = "statusBar");
 
-  /// When (left) double clicked, uses the GetSTC() for some dialogs.
-  virtual void StatusBarDoubleClicked(
+  /// When (left) clicked, uses the GetSTC() for some dialogs.
+  virtual void StatusBarClicked(
     const wxString& pane);
 
-  /// Do something when statusbar is (right) double clicked.
-  virtual void StatusBarDoubleClickedRight(const wxString& ) {};
+  /// Do something when statusbar is (right) clicked.
+  virtual void StatusBarClickedRight(const wxString& ) {};
 
   /// Gets text on specified pane.
   /// Don't forget to call SetupStatusBar first.

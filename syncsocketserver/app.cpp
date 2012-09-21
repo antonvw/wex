@@ -955,7 +955,7 @@ void Frame::SocketLost(wxSocketBase* sock, bool remove_from_clients)
   sock->Destroy();
 }
 
-void Frame::StatusBarDoubleClicked(const wxString& pane)
+void Frame::StatusBarClicked(const wxString& pane)
 {
   if (pane == "PaneTimer")
   {
@@ -963,7 +963,7 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
   }
   else
   {
-    wxExFrameWithHistory::StatusBarDoubleClicked(pane);
+    wxExFrameWithHistory::StatusBarClicked(pane);
   }
 }
 

@@ -364,13 +364,13 @@ void wxExGuiTestFixture::testFrame()
   wxMenuBar* bar = new wxMenuBar();
   frame->SetMenuBar(bar);
   
-  frame->StatusBarDoubleClicked("test");
-  frame->StatusBarDoubleClicked("Pane1");
-  frame->StatusBarDoubleClicked("Pane2");
+  frame->StatusBarClicked("test");
+  frame->StatusBarClicked("Pane1");
+  frame->StatusBarClicked("Pane2");
   
-  frame->StatusBarDoubleClickedRight("test");
-  frame->StatusBarDoubleClickedRight("Pane1");
-  frame->StatusBarDoubleClickedRight("Pane2");
+  frame->StatusBarClickedRight("test");
+  frame->StatusBarClickedRight("Pane1");
+  frame->StatusBarClickedRight("Pane2");
   
   CPPUNIT_ASSERT(!frame->StatusText("hello", "test"));
   CPPUNIT_ASSERT( frame->StatusText("hello1", "Pane1"));
