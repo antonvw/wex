@@ -501,7 +501,7 @@ wxExStatusBar* wxExFrame::SetupStatusBar(
 #endif // wxUSE_STATUSBAR
 
 #if wxUSE_STATUSBAR
-void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
+void wxExFrame::StatusBarClicked(const wxString& pane)
 {
   if (pane == "PaneInfo")
   {

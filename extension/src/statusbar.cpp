@@ -19,8 +19,8 @@
 int wxExStatusBarPane::m_Total = 0;
 
 BEGIN_EVENT_TABLE(wxExStatusBar, wxStatusBar)
-  EVT_LEFT_DCLICK(wxExStatusBar::OnMouse)
-  EVT_RIGHT_DCLICK(wxExStatusBar::OnMouse)
+  EVT_LEFT_UP(wxExStatusBar::OnMouse)
+  EVT_RIGHT_UP(wxExStatusBar::OnMouse)
 END_EVENT_TABLE()
 
 wxExStatusBar::wxExStatusBar(
@@ -55,13 +55,13 @@ const wxString wxExStatusBar::GetStatusText(const wxString& field) const
 
 void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
 {
-  if (event.LeftDClick())
+  if (event.LeftUp())
   {
-    m_Frame->StatusBarDoubleClicked(pane.GetName());
+    m_Frame->StatusBarClicked(pane.GetName());
   }
-  else if (event.RightDClick())
+  else if (event.RightUp())
   {
-    m_Frame->StatusBarDoubleClickedRight(pane.GetName());
+    m_Frame->StatusBarClickedRight(pane.GetName());
   }
   // Show tooltip if tooltip is available, and not yet presented.
   else if (event.Moving())

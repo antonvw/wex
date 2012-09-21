@@ -51,7 +51,7 @@ private:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0);
-  virtual void StatusBarDoubleClicked(
+  virtual void StatusBarClicked(
     const wxString& pane);
 
   void LogConnection(
