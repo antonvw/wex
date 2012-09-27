@@ -297,7 +297,7 @@ Copyright: (c) 2012, Anton van Wezenbeek
       <def no ="stringvar"/>
       <def no ="number"/>
     </def>
-    
+
     <def name = "conf">
       <def no ="default"/>
       <def no ="comment"/>
@@ -435,7 +435,7 @@ Copyright: (c) 2012, Anton van Wezenbeek
       <def no ="unknown"> 31 </def>
     </def>
     
-    <def name = "errlist">
+    <def name = "errorlist">
       <def no ="default"/>
       <def no ="python"/>
       <def no ="gcc"/>
@@ -1047,7 +1047,7 @@ Copyright: (c) 2012, Anton van Wezenbeek
       <def no ="format"/>
     </def>
     
-    <def name = "plm">
+    <def name = "PL/M">
       <def no ="default"/>
       <def no ="comment"/>
       <def no ="string"/>
@@ -1347,7 +1347,7 @@ Copyright: (c) 2012, Anton van Wezenbeek
       <def no ="comment3"/>
     </def>
     
-    <def name = "sorcus">
+    <def name = "sorcins">
       <def no ="default"/>
       <def no ="command"/>
       <def no ="parameter"/>
@@ -1741,10 +1741,21 @@ Copyright: (c) 2012, Anton van Wezenbeek
     <comments begin1="#" />
   </lexer>
   <lexer name="batch" extensions="*.bat"/>
+  <lexer name="blitzbasic"/>
   <lexer name="bullant"/>
   <lexer name="caml"/>
   <lexer name="clarion"/>
+  <lexer name="clarionnocase"/>
   <lexer name="cmake" extensions="CMakeLists.txt;*.cmake"/>
+  <lexer name="COBOL" macro="cpp">
+    <keywords>
+    configuration data declaratives division environment environment-division file 
+    file-control function i-o i-o-control identification input input-output linkage 
+    local-storage output procedure program program-id receive-control section 
+    special-names working-storage
+    </keywords>
+  </lexer>
+  <lexer name="conf"/>
   <lexer name="cpp" display="c#" extensions="*.cs">
     <keywords>
 abstract      as         base          bool         break
@@ -1812,6 +1823,7 @@ void          while
     </keywords>
     <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
+  <lexer name="cppnocase"/>
   <lexer name="csound"/>
   <lexer name="css"/>
   <lexer name="d"/> 
@@ -1825,12 +1837,15 @@ void          while
     </styles>
   </lexer>
   <lexer name="eiffel"/>
+  <lexer name="eiffelkw"/>
   <lexer name="erlang"/>
-  <lexer name="errlist"/>
+  <lexer name="errorlist"/>
   <lexer name="escript"/>
   <lexer name="flagship"/>
   <lexer name="forth"/>
   <lexer name="fortran"/>
+  <lexer name="f77"/>
+  <lexer name="freebasic"/>
   <lexer name="gap"/>
   <lexer name="gui4cli"/>
   <lexer name="haskell"/>
@@ -1903,6 +1918,7 @@ void          while
   <lexer name="mmixal"/>
   <lexer name="mssql"/>
   <lexer name="mysql"/>
+  <lexer name="nimrod"/>
   <lexer name="nncrontab"/>
   <lexer name="nsis"/>
   <lexer name="octave" macro="matlab"/>
@@ -1960,7 +1976,7 @@ void          while
       given when default say state
     </keywords>
   </lexer>
-  <lexer name="plm"/>
+  <lexer name="PL/M"/>
   <lexer name="php" macro="hypertext"/> 
   <lexer name="phpscript" macro="hypertext"/> 
   <lexer name="po" extensions="*.po">
@@ -1973,6 +1989,7 @@ void          while
     </keywords>
   </lexer>
   <lexer name="pov"/>
+  <lexer name="powerbasic"/>
   <lexer name="powerpro"/>
   <lexer name="powershell"/>
   <lexer name="progress"/>
@@ -1985,6 +2002,7 @@ void          while
     </styles>
   </lexer>
   <lexer name="ps"/>
+  <lexer name="purebasic"/>
   <lexer name="python" extensions="*.py">
     <styles>
       <style no="triple"> comment </style>
@@ -2001,8 +2019,8 @@ void          while
   <lexer name="ruby"/>
   <lexer name="scriptol"/>
   <lexer name="smalltalk"/>
-  <lexer name="sml"/>
-  <lexer name="sorcus"/>
+  <lexer name="SML"/>
+  <lexer name="sorcins"/>
   <lexer name="specman"/>
   <lexer name="spice"/>
   <lexer name="sql" extensions="*.sql">
@@ -2064,7 +2082,9 @@ void          while
     </keywords>
     <comments begin1="--" />
   </lexer>
+  <lexer name="TACL"/>
   <lexer name="tads3"/>
+  <lexer name="TAL"/>
   <lexer name="tcl" extensions="*.tcl"/>
   <lexer name="tex"/>
   <lexer name="vb"/>
