@@ -211,7 +211,6 @@ long wxExProcess::Execute(
       m_Dialog->Hide();
       
       m_Error = true;
-      wxLogStatus(_("Could not execute") + ": " + m_Command);
     }
     
     return pid;
@@ -233,7 +232,6 @@ long wxExProcess::Execute(
       &env)) == -1)
     {
       m_Error = true;
-      wxLogStatus(_("Could not execute") + ": " + m_Command);
     }
 
     // Set output by converting array strings into normal strings.
