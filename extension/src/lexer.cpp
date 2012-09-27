@@ -116,6 +116,8 @@ bool wxExLexer::ApplyLexer(
   {
     wxLogError("Lexer is not known: " + m_ScintillaLexer);
   }
+  
+  stc->SetStyleBits(stc->GetStyleBitsNeeded());
 
   Apply(stc, clear);
   
