@@ -166,15 +166,17 @@ void wxExListViewFile::AfterSorting()
 
 void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 {
-  const long style = menu.GetStyle() |
-    (!GetFileName().IsFileWritable() ? wxExMenu::MENU_IS_READ_ONLY: 0);
+  const bool ok =
+     !GetFileName().FileExists() || 
+     (GetFileName().FileExists() && GetFileName().IsFileWritable());
+     
+  const long style = menu.GetStyle() | (!ok ? wxExMenu::MENU_IS_READ_ONLY: 0);
 
   menu.SetStyle(style);
 
   wxExListViewWithFrame::BuildPopupMenu(menu);
     
-  if ( GetSelectedItemCount() == 0 &&
-       GetFileName().IsFileWritable())
+  if (GetSelectedItemCount() == 0 && ok)
   {
     menu.AppendSeparator();
     menu.Append(wxID_ADD);
