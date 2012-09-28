@@ -1741,11 +1741,11 @@ Copyright: (c) 2012, Anton van Wezenbeek
     <comments begin1="#" />
   </lexer>
   <lexer name="batch" extensions="*.bat"/>
-  <lexer name="blitzbasic"/>
+  <lexer name="blitzbasic" macro="vb"/>
   <lexer name="bullant"/>
   <lexer name="caml"/>
   <lexer name="clarion"/>
-  <lexer name="clarionnocase"/>
+  <lexer name="clarionnocase" macro="clarion"/>
   <lexer name="cmake" extensions="CMakeLists.txt;*.cmake"/>
   <lexer name="COBOL" macro="cpp">
     <keywords>
@@ -1823,7 +1823,7 @@ void          while
     </keywords>
     <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
-  <lexer name="cppnocase"/>
+  <lexer name="cppnocase" macro="cpp"/>
   <lexer name="csound"/>
   <lexer name="css"/>
   <lexer name="d"/> 
@@ -1837,15 +1837,15 @@ void          while
     </styles>
   </lexer>
   <lexer name="eiffel"/>
-  <lexer name="eiffelkw"/>
+  <lexer name="eiffelkw" macro="eiffel"/>
   <lexer name="erlang"/>
   <lexer name="errorlist"/>
   <lexer name="escript"/>
   <lexer name="flagship"/>
   <lexer name="forth"/>
   <lexer name="fortran"/>
-  <lexer name="f77"/>
-  <lexer name="freebasic"/>
+  <lexer name="f77" macro="fortran"/>
+  <lexer name="freebasic" macro="vb"/>
   <lexer name="gap"/>
   <lexer name="gui4cli"/>
   <lexer name="haskell"/>
@@ -1918,7 +1918,7 @@ void          while
   <lexer name="mmixal"/>
   <lexer name="mssql"/>
   <lexer name="mysql"/>
-  <lexer name="nimrod"/>
+  <lexer name="nimrod" macro="python"/>
   <lexer name="nncrontab"/>
   <lexer name="nsis"/>
   <lexer name="octave" macro="matlab"/>
@@ -1989,7 +1989,7 @@ void          while
     </keywords>
   </lexer>
   <lexer name="pov"/>
-  <lexer name="powerbasic"/>
+  <lexer name="powerbasic" macro="vb"/>
   <lexer name="powerpro"/>
   <lexer name="powershell"/>
   <lexer name="progress"/>
@@ -2002,7 +2002,7 @@ void          while
     </styles>
   </lexer>
   <lexer name="ps"/>
-  <lexer name="purebasic"/>
+  <lexer name="purebasic" macro="vb"/>
   <lexer name="python" extensions="*.py">
     <styles>
       <style no="triple"> comment </style>
@@ -2082,13 +2082,13 @@ void          while
     </keywords>
     <comments begin1="--" />
   </lexer>
-  <lexer name="TACL"/>
+  <lexer name="TACL" macro="cpp"/>
   <lexer name="tads3"/>
-  <lexer name="TAL"/>
+  <lexer name="TAL" macro="cpp"/>
   <lexer name="tcl" extensions="*.tcl"/>
   <lexer name="tex"/>
   <lexer name="vb"/>
-  <lexer name="vbscript"/>
+  <lexer name="vbscript" macro="vb"/>
   <lexer name="verilog"/>
   <lexer name="vhdl"/>
   <lexer name="yaml"/>
