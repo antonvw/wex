@@ -337,7 +337,7 @@ private:
   bool LinkOpen(wxString* filename = NULL); // name of found file
   void MarkerNext(bool next);
   void MarkModified(const wxStyledTextEvent& event);
-  void SetHexMode();
+  void SetHexMode(bool on);
   void SortSelectionDialog(
     bool sort_ascending,
     const wxString& caption = _("Enter Sort Position"));

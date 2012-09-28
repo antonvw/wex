@@ -1270,7 +1270,7 @@ void wxExSTC::Initialize(bool file_exists)
   
   if (HexMode())
   {
-    SetHexMode();
+    SetHexMode(true);
   }
   
   m_AllowChangeIndicator = !(m_Flags & STC_WIN_NO_INDICATOR);
@@ -1932,15 +1932,14 @@ void wxExSTC::Reload(long flags)
   if ((flags & STC_WIN_HEX) && !HexMode())
   {
     const wxCharBuffer buffer = GetTextRaw(); // keep buffer
-    SetHexMode();
+    SetHexMode(true);
     ClearDocument(!modified);
     
     AppendTextHexMode(buffer);
   }
   else
   {
-    m_Goto = 1;
-    SetControlCharSymbol(0);
+    SetHexMode(false);
     
     const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
     ClearDocument(!modified);
@@ -2104,18 +2103,31 @@ void wxExSTC::ResetMargins(bool divider_margin)
   }
 }
 
-void wxExSTC::SetHexMode()
+void wxExSTC::SetHexMode(bool on)
 {
-  SetControlCharSymbol('.');
-  wxExLexers::Get()->ApplyHexStyles(this);
-  wxExLexers::Get()->ApplyMarkers(this);
+  if (on)
+  {
+    SetControlCharSymbol('.');
+    wxExLexers::Get()->ApplyHexStyles(this);
+    wxExLexers::Get()->ApplyMarkers(this);
   
-  m_Goto = 0;
+    m_Goto = 0;
 
-  // Do not show an edge, eol or whitespace in hex mode.
-  SetEdgeMode(wxSTC_EDGE_NONE);
-  SetViewEOL(false);
-  SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
+    // Do not show an edge, eol or whitespace in hex mode.
+    SetEdgeMode(wxSTC_EDGE_NONE);
+    SetViewEOL(false);
+    SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
+    //SetUndoCollection(false);
+    EmptyUndoBuffer();
+  }
+  else
+  {
+    SetControlCharSymbol(0);
+    
+    m_Goto = 1;
+    
+    //SetUndoCollection(true);
+  }
 }
 
 bool wxExSTC::SetIndicator(
