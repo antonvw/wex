@@ -293,6 +293,9 @@ public:
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
+
+  /// Undo one action in the undo history.  
+  virtual void Undo();
   
   /// Use and show modification markers in the margin.
   void UseModificationMarkers(bool use);
@@ -356,6 +359,7 @@ private:
   long m_Goto;
   
   bool m_AllowChangeIndicator;
+  bool m_HexMode;
 
   // We use a separate lexer here as well
   // (though wxExSTCFile offers one), as you can manually override
@@ -369,6 +373,7 @@ private:
   
   // Only used in hex mode.
   wxString m_HexBuffer;
+  wxString m_HexBufferOriginal;
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;

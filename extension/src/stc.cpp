@@ -376,6 +376,7 @@ void wxExSTC::ClearDocument(bool set_savepoint)
   if (HexMode())
   {
     m_HexBuffer.clear();
+    m_HexBufferOriginal.clear();
   }
 }
 
@@ -1276,6 +1277,8 @@ void wxExSTC::Initialize(bool file_exists)
   m_AllowChangeIndicator = !(m_Flags & STC_WIN_NO_INDICATOR);
   
   m_HexBuffer.clear(); // always, not only in hex mode
+  m_HexBufferOriginal.clear();
+  m_HexMode = false;
   
   m_SavedPos = -1;
   m_SavedSelectionStart = -1;
@@ -2107,26 +2110,35 @@ void wxExSTC::SetHexMode(bool on)
 {
   if (on)
   {
+    if (!m_HexMode)
+    {
+      EmptyUndoBuffer();
+      BeginUndoAction();
+      m_HexMode = true;
+    }
+    
     SetControlCharSymbol('.');
     wxExLexers::Get()->ApplyHexStyles(this);
     wxExLexers::Get()->ApplyMarkers(this);
   
-    m_Goto = 0;
+m_Goto = 0;
 
     // Do not show an edge, eol or whitespace in hex mode.
     SetEdgeMode(wxSTC_EDGE_NONE);
     SetViewEOL(false);
     SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
-    //SetUndoCollection(false);
-    EmptyUndoBuffer();
   }
   else
   {
+    if (m_HexMode)
+    {
+      EndUndoAction();
+      m_HexMode = false;
+    }
+    
     SetControlCharSymbol(0);
     
     m_Goto = 1;
-    
-    //SetUndoCollection(true);
   }
 }
 
@@ -2303,6 +2315,16 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
   // Set selection back, without removed empty lines.
   SetSelection(start_pos, GetLineEndPosition(start_line + mm.size()));
+}
+
+void wxExSTC::Undo()
+{
+  wxStyledTextCtrl::Undo();
+  
+  if (HexMode())
+  {
+    m_HexBuffer = m_HexBufferOriginal;
+  }
 }
 
 void wxExSTC::UseModificationMarkers(bool use)

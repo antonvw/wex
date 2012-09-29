@@ -62,6 +62,7 @@ void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
   wxFileOffset start = m_STC->m_HexBuffer.length();
   
   m_STC->m_HexBuffer += buffer;
+  m_STC->m_HexBufferOriginal += buffer;
   
   const wxFileOffset mid_in_hex_field = 7;
 
@@ -363,10 +364,11 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
   
   wxUniChar val = c;
   
+  // Because m_HexBuffer is changed, begin and end undo action
+  // cannot be used, as these do not operate on the hex buffer.
+  
   if (IsAsciiField())
   {
-    m_STC->BeginUndoAction();
-    
     // replace ascii field with value
     m_STC->wxStyledTextCtrl::Replace(
       pos + m_Index, 
@@ -380,8 +382,6 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
       pos + OtherField(), 
       pos + OtherField() + 2, 
       code);
-      
-    m_STC->EndUndoAction();
   }
   else if (IsHexField())
   {
@@ -391,8 +391,6 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
       return false;
     }
       
-    m_STC->BeginUndoAction();
-    
     // replace hex field with value
     m_STC->wxStyledTextCtrl::Replace(
       pos + m_Index, 
@@ -423,15 +421,15 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
       pos + OtherField() + 1, 
       Printable(code));
       
-    m_STC->EndUndoAction();
-    
     val = code;
   }
   else
   {
     return false;
   }
-  
+
+  // Only hex buffer, not original,
+  // so it can be undone.  
   m_STC->m_HexBuffer[byte] = val;
   
   return true;
