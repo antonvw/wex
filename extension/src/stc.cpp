@@ -2092,9 +2092,6 @@ void wxExSTC::SetHexMode(
   {
     if (!m_HexMode)
     {
-      EmptyUndoBuffer();
-      BeginUndoAction();
-      SetSavePoint();
       m_HexMode = true;
     }
     
@@ -2113,6 +2110,14 @@ void wxExSTC::SetHexMode(
     {
       ClearDocument(!modified);
       AppendTextHexMode(text);
+      
+      if (!modified)
+      {
+        SetSavePoint();
+      }
+
+      // This should be after SetSavePoint.      
+      BeginUndoAction();
     }
   }
   else
@@ -2123,15 +2128,14 @@ void wxExSTC::SetHexMode(
     
     if (!m_HexBuffer.empty())
     {
-      EmptyUndoBuffer();
-      BeginUndoAction();
-      SetSavePoint();
-  
       const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
       ClearDocument(!modified);
       AppendText(buffer);
-
-      EndUndoAction();
+      
+      if (!modified)
+      {
+        SetSavePoint();
+      }
     }
     
     if (m_HexMode)
@@ -2324,6 +2328,15 @@ void wxExSTC::Undo()
   if (HexMode())
   {
     m_HexBuffer = m_HexBufferOriginal;
+  }
+  else
+  {
+    // Add test if this undone is just after going back to normal mode,
+    // then restore hex buffer.
+    //const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
+    //ClearDocument();
+    //AppendText(buffer.ToAscii());
+    //SetSavePoint();
   }
 }
 
