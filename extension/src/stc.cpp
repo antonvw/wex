@@ -1925,11 +1925,6 @@ void wxExSTC::Reload(long flags)
 {
   const bool modified = GetModify();
   
-  if (modified)
-  {
-    BeginUndoAction();
-  }
-  
   UseModificationMarkers(false);
   
   if ((flags & STC_WIN_HEX) && !HexMode())
@@ -1949,16 +1944,6 @@ void wxExSTC::Reload(long flags)
   if ((m_Flags & STC_WIN_READ_ONLY) || !GetFileName().IsFileWritable())
   {
     SetReadOnly(true);
-  }
-  
-  if (!modified)
-  {
-    EmptyUndoBuffer();
-    SetSavePoint();
-  }
-  else
-  {
-    EndUndoAction();
   }
 }
 
@@ -2109,6 +2094,7 @@ void wxExSTC::SetHexMode(
     {
       EmptyUndoBuffer();
       BeginUndoAction();
+      SetSavePoint();
       m_HexMode = true;
     }
     
@@ -2137,9 +2123,15 @@ void wxExSTC::SetHexMode(
     
     if (!m_HexBuffer.empty())
     {
+      EmptyUndoBuffer();
+      BeginUndoAction();
+      SetSavePoint();
+  
       const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
       ClearDocument(!modified);
       AppendText(buffer);
+
+      EndUndoAction();
     }
     
     if (m_HexMode)
