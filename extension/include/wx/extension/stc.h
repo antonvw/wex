@@ -363,6 +363,7 @@ private:
   
   bool m_AllowChangeIndicator;
   bool m_HexMode;
+  bool m_UndoPossible;
 
   // We use a separate lexer here as well
   // (though wxExSTCFile offers one), as you can manually override

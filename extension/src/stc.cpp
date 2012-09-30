@@ -1279,6 +1279,7 @@ void wxExSTC::Initialize(bool file_exists)
   m_HexBuffer.clear(); // always, not only in hex mode
   m_HexBufferOriginal.clear();
   m_HexMode = false;
+  m_UndoPossible = false;
   
   m_SavedPos = -1;
   m_SavedSelectionStart = -1;
@@ -2114,6 +2115,7 @@ void wxExSTC::SetHexMode(
       if (!modified)
       {
         SetSavePoint();
+        m_UndoPossible = true;
       }
 
       // This should be after SetSavePoint.      
@@ -2329,14 +2331,17 @@ void wxExSTC::Undo()
   {
     m_HexBuffer = m_HexBufferOriginal;
   }
-  else
+  else if (m_UndoPossible)
   {
+    m_HexBuffer = m_HexBufferOriginal;
+    
     // Add test if this undone is just after going back to normal mode,
     // then restore hex buffer.
-    //const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
-    //ClearDocument();
-    //AppendText(buffer.ToAscii());
-    //SetSavePoint();
+    const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
+    ClearDocument();
+    AppendText(buffer);
+    SetSavePoint();
+    m_UndoPossible = false;
   }
 }
 
