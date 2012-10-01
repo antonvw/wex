@@ -373,7 +373,7 @@ void wxExSTC::ClearDocument(bool set_savepoint)
     SetSavePoint();
   }
   
-  if (HexMode())
+  if (HexMode() && !m_UndoPossible)
   {
     m_HexBuffer.clear();
     m_HexBufferOriginal.clear();
@@ -2333,15 +2333,20 @@ void wxExSTC::Undo()
   }
   else if (m_UndoPossible)
   {
+    m_UndoPossible = false;
     m_HexBuffer = m_HexBufferOriginal;
     
     // Add test if this undone is just after going back to normal mode,
     // then restore hex buffer.
     const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
+    UseModificationMarkers(false);
     ClearDocument();
+    m_HexBuffer.clear();
+    m_HexBufferOriginal.clear();
     AppendText(buffer);
     SetSavePoint();
-    m_UndoPossible = false;
+    EmptyUndoBuffer();
+    UseModificationMarkers(true);
   }
 }
 
