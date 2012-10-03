@@ -19,7 +19,7 @@ wxIMPLEMENT_APP(App);
 #ifdef __WXOSX__  
 void App::MacOpenFiles(const wxArrayString& fileNames)
 {
-  Frame* frame = (Frame*)GetTopWindow();
+  Frame* frame = wxDynamicCast(GetTopWindow(), Frame);
   wxExOpenFiles(frame, fileNames);
 }
 #endif

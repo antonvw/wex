@@ -947,8 +947,6 @@ bool wxExVi::ToggleCase()
 
   GetSTC()->CharRight();
   
-  const int line = GetSTC()->LineFromPosition(GetSTC()->GetCurrentPos());
-  
   return true;
 }
 

@@ -78,7 +78,7 @@ void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
     buffer.length());
 
   // Using wxString::Format here asserts (wxWidgets-2.9.1).
-  char field_offset[start_hex_field];
+  char field_offset[start_hex_field + 1];
   
   for (
     wxFileOffset offset = 0; 
