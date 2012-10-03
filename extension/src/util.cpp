@@ -509,8 +509,13 @@ void wxExOpenFiles(
 
       if (!wxFileName(file).FileExists() && file.Contains(":"))
       {
-        line = atoi(file.AfterFirst(':').c_str());
-        file = file.BeforeFirst(':');
+        const int val = atoi(file.AfterLast(':').c_str());
+        
+        if (val != 0)
+        {
+          line = val;
+          file = file.BeforeLast(':');
+        }
       }
 
       frame->OpenFile(file, line, wxEmptyString, file_flags);
