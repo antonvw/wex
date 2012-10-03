@@ -148,7 +148,7 @@ void wxExGuiReportTestFixture::testTextFileWithListView()
 void wxExGuiReportTestFixture::testUtil()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExNotebook* notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
+  wxExNotebook* notebook = new wxExNotebook(wxTheApp->GetTopWindow(), frame);
   
   wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
   wxWindow* page2 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);

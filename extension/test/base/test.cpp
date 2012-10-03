@@ -104,7 +104,7 @@ void TestFixture::testFileTiming()
     char* charbuffer = new char[l];
     wxfile.Read(charbuffer, l);
     CPPUNIT_ASSERT(sizeof(charbuffer) > 0);
-    delete charbuffer;
+    delete[] charbuffer;
   }
 
   const long file_read = sw.Time();
