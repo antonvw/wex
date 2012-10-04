@@ -23,7 +23,8 @@ enum
   VARIABLE_BUILTIN,        ///< a builtin variable
   VARIABLE_ENVIRONMENT,    ///< an environment variable
   VARIABLE_INPUT,          ///< input from user
-  VARIABLE_INPUT_SAVE,     ///< input once from user, save value in xml file
+  VARIABLE_INPUT_ONCE,     ///< input once from user, save value in xml file
+  VARIABLE_INPUT_SAVE,     ///< input from user, save value in xml file
   VARIABLE_READ,           ///< read value from macros xml  file
   VARIABLE_TEMPLATE        ///< read value from a template file
 };
@@ -61,6 +62,10 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
     else if (type == "INPUT-SAVE")
     {
       m_Type = VARIABLE_INPUT_SAVE;
+    }
+    else if (type == "INPUT-ONCE")
+    {
+      m_Type = VARIABLE_INPUT_ONCE;
       m_AskForInput = false;
     }
     else if (type == "TEMPLATE")
@@ -80,13 +85,13 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
 
 wxExVariable::wxExVariable(const wxString& name)
   : m_IsModified(false)
-  , m_Type(name.StartsWith("MY") ? VARIABLE_INPUT: VARIABLE_INPUT_SAVE)
+  , m_Type(name.StartsWith("MY") ? VARIABLE_INPUT_SAVE: VARIABLE_INPUT_ONCE)
   , m_Name(name)
   , m_Prefix()
   , m_Value()
   , m_Dialog(NULL)
 {
-  m_AskForInput = (m_Type == VARIABLE_INPUT);
+  m_AskForInput = (m_Type == VARIABLE_INPUT || m_Type == VARIABLE_INPUT_SAVE);
 }
 
 wxExVariable::~wxExVariable()
@@ -99,7 +104,7 @@ wxExVariable::~wxExVariable()
 
 void wxExVariable::AskForInput() 
 {
-  if (m_Type == VARIABLE_INPUT)
+  if (m_Type == VARIABLE_INPUT || m_Type == VARIABLE_INPUT_SAVE)
   {
     m_AskForInput = true;
   }
@@ -143,6 +148,7 @@ bool wxExVariable::Expand(wxExEx* ex, wxString& value)
       break;
       
     case VARIABLE_INPUT:
+    case VARIABLE_INPUT_ONCE:
     case VARIABLE_INPUT_SAVE:
       if (!ExpandInput(value))
       {
@@ -303,8 +309,11 @@ bool wxExVariable::ExpandInput(wxString& expanded)
       m_Value = value;
       m_IsModified = true;
     }
-    
-    m_AskForInput = false;
+
+    if (m_Type == VARIABLE_INPUT_ONCE)
+    {
+      m_AskForInput = false;
+    }
   }
   else
   {
@@ -337,6 +346,10 @@ void wxExVariable::Save(wxXmlNode* node) const
       node->AddAttribute("type", "INPUT");
       break;
       
+    case VARIABLE_INPUT_ONCE:
+      node->AddAttribute("type", "INPUT-ONCE");
+      break;
+    
     case VARIABLE_INPUT_SAVE:
       node->AddAttribute("type", "INPUT-SAVE");
       break;
@@ -361,5 +374,13 @@ void wxExVariable::Save(wxXmlNode* node) const
     new wxXmlNode(node, wxXML_TEXT_NODE, "", m_Value);
   }
 } 
+
+void wxExVariable::SkipInput()
+{
+  if (m_Type == VARIABLE_INPUT || m_Type == VARIABLE_INPUT_SAVE)
+  {
+    m_AskForInput = false;
+  }
+}
 
 #endif // wxUSE_GUI
