@@ -23,9 +23,12 @@ Variables are expanded when playing back the macro.
     as long as they are part of the environment variables.
   - INPUT:       
     Expansion is done by asking value from user. You can add your own.
-  - INPUT-SAVE:  
+  - INPUT-ONCE:  
     Expansion is done by asking value from user, value is saved.
     The next time this value is used for expansion, no input is asked for.
+    You can add your own.
+  - INPUT-SAVE:  
+    Expansion is done by asking value from user, value is saved.
     You can add your own.
   - TEMPLATE:
     Expansion is done by reading the value from a template file. This
@@ -64,7 +67,7 @@ Variables are expanded when playing back the macro.
   <!-- Expands to new line according to current document type -->
   <variable name="NL"               type="BUILTIN"/>
   <!-- Expands to current filename path only -->
-  <variable name="PATH"         type="BUILTIN"/>
+  <variable name="PATH"             type="BUILTIN"/>
   <!-- Expands to current time -->
   <variable name="TIME"             type="BUILTIN"/>
   <!-- Expands to current year -->
@@ -74,10 +77,10 @@ Variables are expanded when playing back the macro.
   <variable name="HOME"             type="ENVIRONMENT"/>
   
   <!-- INPUT type -->
-  <variable name="PURPOSEP"         type="INPUT" prefix="Purpose:   "/>
+  <variable name="PURPOSEP"         type="INPUT-SAVE" prefix="Purpose:   "/>
   
-  <!-- INPUT-SAVE type -->
-  <variable name="AUTHORP"          type="INPUT-SAVE" prefix="Author:    "/>
+  <!-- INPUT-ONCE type -->
+  <variable name="AUTHORP"          type="INPUT-ONCE" prefix="Author:    "/>
 
   <!-- TEMPLATE type -->
   <!-- A C Header Template -->  

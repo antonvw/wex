@@ -120,6 +120,12 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
   else
   {
     ok = it->second.Expand(ex, value);
+
+    // If we are expanding, one input is enough.    
+    if (m_IsExpand)
+    {
+      it->second.SkipInput();
+    }
   
     if (it->second.IsModified())
     {
@@ -221,7 +227,16 @@ bool wxExViMacros::ExpandTemplate(
   }
   
   m_IsExpand = false;
-  
+
+  // Set back to normal value.  
+  for (std::map<wxString, wxExVariable >::iterator it = 
+    m_Variables.begin();
+  it != m_Variables.end();
+  ++it)
+  {
+    it->second.AskForInput();
+  }
+    
   return true;
 }
 
