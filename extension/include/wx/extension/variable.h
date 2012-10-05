@@ -80,8 +80,8 @@ private:
   /// The m_AskForInput member is set each time you start playback.
   wxString m_Value;
   
-  // The dialog used when a prefix is available.
-  wxExSTCEntryDialog* m_Dialog;
+  // The dialog used.
+  static wxExSTCEntryDialog* m_Dialog;
 };
 
 #endif // wxUSE_GUI
