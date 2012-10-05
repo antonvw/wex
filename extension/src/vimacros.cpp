@@ -32,6 +32,17 @@ wxExViMacros::wxExViMacros()
 {
 }
 
+void wxExViMacros::AskForInput()
+{
+  for (std::map<wxString, wxExVariable >::iterator it = 
+    m_Variables.begin();
+    it != m_Variables.end();
+    ++it)
+  {
+    it->second.AskForInput();
+  }
+}
+
 const wxString wxExViMacros::Decode(const wxString& text)
 {
   long c;
@@ -147,14 +158,7 @@ bool wxExViMacros::ExpandTemplate(
   if (!m_IsExpand)
   {
     m_IsExpand = true;
-    
-    for (std::map<wxString, wxExVariable >::iterator it = 
-      m_Variables.begin();
-    it != m_Variables.end();
-    ++it)
-    {
-      it->second.AskForInput();
-    }
+    AskForInput();
   }
 
   // Read the file (file name is in m_Value), expand
@@ -229,13 +233,7 @@ bool wxExViMacros::ExpandTemplate(
   m_IsExpand = false;
 
   // Set back to normal value.  
-  for (std::map<wxString, wxExVariable >::iterator it = 
-    m_Variables.begin();
-  it != m_Variables.end();
-  ++it)
-  {
-    it->second.AskForInput();
-  }
+  AskForInput();
     
   return true;
 }

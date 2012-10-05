@@ -85,13 +85,13 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
 
 wxExVariable::wxExVariable(const wxString& name)
   : m_IsModified(false)
-  , m_Type(name.StartsWith("MY") ? VARIABLE_INPUT_SAVE: VARIABLE_INPUT_ONCE)
+  , m_Type(VARIABLE_INPUT_SAVE)
+  , m_AskForInput(true)
   , m_Name(name)
   , m_Prefix()
   , m_Value()
   , m_Dialog(NULL)
 {
-  m_AskForInput = (m_Type == VARIABLE_INPUT || m_Type == VARIABLE_INPUT_SAVE);
 }
 
 wxExVariable::~wxExVariable()
@@ -161,7 +161,7 @@ bool wxExVariable::Expand(wxExEx* ex, wxString& value)
       break;
       
     case VARIABLE_TEMPLATE:
-      if (!ExpandTemplate(ex, value))
+      if (!wxExViMacros::ExpandTemplate(ex, *this, value))
       {
         return false;
       }
@@ -265,42 +265,29 @@ bool wxExVariable::ExpandInput(wxString& expanded)
   {
     wxString value;
     
-    if (!m_Prefix.empty())
+    if (m_Dialog == NULL)
     {
-      if (m_Dialog == NULL)
-      {
-        m_Dialog = new wxExSTCEntryDialog(
-          wxTheApp->GetTopWindow(),
-          m_Name, 
-          m_Value);
-          
-        m_Dialog->GetSTC()->GetVi().Use(false);
-      }
-      else
-      {
-        m_Dialog->SetTitle(m_Name);
-        m_Dialog->GetSTC()->SetText(m_Value);
-      }
+      m_Dialog = new wxExSTCEntryDialog(
+        wxTheApp->GetTopWindow(),
+        m_Name, 
+        m_Value);
         
-      if (m_Dialog->ShowModal() == wxID_CANCEL)
-      {
-        return false;
-      }
-      
-      value = m_Dialog->GetText();
+      m_Dialog->GetSTC()->GetVi().Use(false);
     }
     else
     {
-      value = wxGetTextFromUser(
-        m_Name,
-        wxGetTextFromUserPromptStr,
-        m_Value);
-        
-      if (value.empty())
-      {
-        return false;
-      }  
+      m_Dialog->SetTitle(m_Name);
+      m_Dialog->GetSTC()->SetText(m_Value);
     }
+        
+    m_Dialog->GetSTC()->SetFocus();
+    
+    if (m_Dialog->ShowModal() == wxID_CANCEL)
+    {
+      return false;
+    }
+      
+    value = m_Dialog->GetText();
     
     expanded = value;
     
@@ -321,11 +308,6 @@ bool wxExVariable::ExpandInput(wxString& expanded)
   }
   
   return true;
-}
-
-bool wxExVariable::ExpandTemplate(wxExEx* ex, wxString& expanded)
-{
-  return wxExViMacros::ExpandTemplate(ex, *this, expanded);
 }
 
 void wxExVariable::Save(wxXmlNode* node) const

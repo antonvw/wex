@@ -41,6 +41,8 @@ Variables are expanded when playing back the macro.
 - A variable can have a "prefix" attribute. 
   This attribute causes a comment line to be generated that is prefixed with
   the value of this attribute, according to the "type" attribute.
+  
+Comments you add within xml elements are not saved when you edit macros.
 -->
 <macros>
   <!-- BUILTIN type -->
@@ -76,12 +78,12 @@ Variables are expanded when playing back the macro.
   <!-- ENVIRONMENT type -->
   <variable name="HOME"             type="ENVIRONMENT"/>
   
-  <!-- INPUT type -->
-  <variable name="PURPOSEP"         type="INPUT-SAVE" prefix="Purpose:   "/>
-  
   <!-- INPUT-ONCE type -->
   <variable name="AUTHORP"          type="INPUT-ONCE" prefix="Author:    "/>
 
+  <!-- INPUT-SAVE type -->
+  <variable name="PURPOSEP"         type="INPUT-SAVE" prefix="Purpose:   "/>
+  
   <!-- TEMPLATE type -->
   <!-- A C Header Template -->  
   <variable name="CHT"              type="TEMPLATE">chdr.tpl</variable>
