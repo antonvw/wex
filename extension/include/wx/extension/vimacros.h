@@ -79,10 +79,22 @@ public:
   
   /// Expands variable to value text.
   /// Returns true if variable could be expanded.
-  static bool Expand(wxExEx* ex, const wxString& variable, wxString& value);
+  static bool Expand(
+    /// ex component to use
+    wxExEx* ex, 
+    /// variable name
+    const wxString& variable, 
+    /// value to receive contents
+    wxString& value);
   
   /// Expands template variable.
-  static bool ExpandTemplate(wxExEx* ex, const wxExVariable& variable, wxString& expanded);
+  static bool ExpandTemplate(
+    /// ex component to use
+    wxExEx* ex, 
+    /// variable (containing template file name)
+    const wxExVariable& variable, 
+    /// value to receive contents
+    wxString& expanded);
   
   /// Returns the filename with xml document.
   static const wxFileName GetFileName();
@@ -97,6 +109,7 @@ public:
   /// Returns true if document is saved.
   static bool SaveDocument(bool only_if_modified = true);
 private:  
+  static void AskForInput();
   static bool Load(wxXmlDocument& doc);
   static const wxString Encode(const wxString& text, bool& encoded);
   static const wxString Decode(const wxString& text);

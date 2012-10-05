@@ -66,7 +66,6 @@ public:
 private:  
   bool ExpandBuiltIn(wxExEx* ex, wxString& expanded) const;
   bool ExpandInput(wxString& expanded);
-  bool ExpandTemplate(wxExEx* ex, wxString& expanded);
 
   bool m_AskForInput;
   bool m_IsModified;
