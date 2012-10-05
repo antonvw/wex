@@ -29,11 +29,13 @@ enum
   VARIABLE_TEMPLATE        ///< read value from a template file
 };
 
+wxExSTCEntryDialog* wxExVariable::m_Dialog = NULL;
+
+
 wxExVariable::wxExVariable()
   : m_Type(VARIABLE_READ)
   , m_AskForInput(true)
   , m_IsModified(false)
-  , m_Dialog(NULL)
 {
 }
   
@@ -41,7 +43,6 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
   : m_Type(VARIABLE_READ)
   , m_AskForInput(true)
   , m_IsModified(false)
-  , m_Dialog(NULL)
 {
   const wxString type = node->GetAttribute("type");
    
@@ -90,16 +91,11 @@ wxExVariable::wxExVariable(const wxString& name)
   , m_Name(name)
   , m_Prefix()
   , m_Value()
-  , m_Dialog(NULL)
 {
 }
 
 wxExVariable::~wxExVariable()
 {
-  if (m_Dialog != NULL)
-  {
-    delete m_Dialog;
-  }
 }
 
 void wxExVariable::AskForInput() 
@@ -288,6 +284,11 @@ bool wxExVariable::ExpandInput(wxString& expanded)
     }
       
     value = m_Dialog->GetText();
+    
+    if (value.empty())
+    {
+      return false;
+    }
     
     expanded = value;
     
