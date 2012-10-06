@@ -1,19 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      @FILENAME@
-// Purpose:   Declaration of class @MYCLASS@
-// Author:    @AUTHOR@
-// Copyright: (c) @YEAR@ @AUTHOR@
+// Name:      @filename@
+// Purpose:   Declaration of class @myclass@
+// Author:    @author@
+// Copyright: (c) @year@ @author@
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _@FILENAME@_H
-#define _@FILENAME@_H
+#ifndef _@filename@_H
+#define _@filename@_H
 
-/// @PURPOSE@
-class @MYCLASS@
+/// @Purpose@
+class @myclass@
 {
 public:
   /// Default constructor.
-  @MYCLASS@();
+  @myclass@();
 protected:
 private:
 };

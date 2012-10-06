@@ -47,79 +47,79 @@ Comments you add within xml elements are not saved when you edit macros.
 <macros>
   <!-- BUILTIN type -->
   <!-- Expands to Comment Begin according to current lexer -->
-  <variable name="CB"               type="BUILTIN"/>
+  <variable name="cb"               type="BUILTIN"/>
   <!-- Expands to Comment Complete according to current lexer -->
-  <variable name="CC"               type="BUILTIN"/>
+  <variable name="cc"               type="BUILTIN"/>
   <!-- Expands to Comment End according to current lexer -->
-  <variable name="CE"               type="BUILTIN"/>
+  <variable name="ce"               type="BUILTIN"/>
   <!-- Expands to Comment Line according to current lexer -->
-  <variable name="CL"               type="BUILTIN"/>
+  <variable name="cl"               type="BUILTIN"/>
   <!-- Expands to creation date current filename -->
-  <variable name="CREATED"          type="BUILTIN"/>
+  <variable name="created"          type="BUILTIN"/>
   <!-- Expands to current date -->
-  <variable name="DATE"             type="BUILTIN"/>
+  <variable name="date"             type="BUILTIN"/>
   <!-- Expands to current datetime -->
-  <variable name="DATETIME"         type="BUILTIN"/>
+  <variable name="datetime"         type="BUILTIN"/>
   <!-- Expands to current filename without extension-->
-  <variable name="FILENAME"         type="BUILTIN"/>
+  <variable name="filename"         type="BUILTIN"/>
   <!-- Expands to current filename -->
-  <variable name="FULLNAME"         type="BUILTIN"/>
+  <variable name="fullname"         type="BUILTIN"/>
   <!-- Expands to current filename fullpath -->
-  <variable name="FULLPATH"         type="BUILTIN"/>
+  <variable name="fullpath"         type="BUILTIN"/>
   <!-- Expands to new line according to current document type -->
-  <variable name="NL"               type="BUILTIN"/>
+  <variable name="nl"               type="BUILTIN"/>
   <!-- Expands to current filename path only -->
-  <variable name="PATH"             type="BUILTIN"/>
+  <variable name="path"             type="BUILTIN"/>
   <!-- Expands to current time -->
-  <variable name="TIME"             type="BUILTIN"/>
+  <variable name="time"             type="BUILTIN"/>
   <!-- Expands to current year -->
-  <variable name="YEAR"             type="BUILTIN"/>
+  <variable name="year"             type="BUILTIN"/>
   
   <!-- ENVIRONMENT type -->
   <variable name="HOME"             type="ENVIRONMENT"/>
   
   <!-- INPUT-ONCE type -->
-  <variable name="AUTHOR"           type="INPUT-ONCE"/>
-  <variable name="AUTHORP"          type="INPUT-ONCE" prefix="Author:    "/>
+  <variable name="author"           type="INPUT-ONCE"/>
+  <variable name="authorp"          type="INPUT-ONCE" prefix="Author:    "/>
 
   <!-- INPUT-SAVE type -->
-  <variable name="PURPOSEP"         type="INPUT-SAVE" prefix="Purpose:   "/>
+  <variable name="purposep"         type="INPUT-SAVE" prefix="Purpose:   "/>
   
   <!-- TEMPLATE type -->
   <!-- A C Header Template -->  
-  <variable name="CHT"              type="TEMPLATE">chdr.tpl</variable>
+  <variable name="cht"              type="TEMPLATE">cht.txt</variable>
   
   <macro name="hdr">
     <command>:1</command>
     <command>O</command>
     <command encoded="true">27</command>
-    <command>@CL@</command>
+    <command>@cl@</command>
     <command>o</command>
     <command encoded="true">27</command>
-    <command>@CB@</command>
+    <command>@cb@</command>
     <command>i Name:      </command>
     <command encoded="true">27</command>
-    <command>@FULLNAME@</command>
-    <command>@CC@</command>
+    <command>@fullname@</command>
+    <command>@cc@</command>
     <command>o</command>
     <command encoded="true">27</command>
-    <command>@PURPOSEP@</command>
+    <command>@purposep@</command>
     <command>o</command>
     <command encoded="true">27</command>
-    <command>@AUTHORP@</command>
+    <command>@authorp@</command>
     <command>o</command>
     <command encoded="true">27</command>
-    <command>@CB@</command>
+    <command>@cb@</command>
     <command>i Copyright: (c) </command>
     <command encoded="true">27</command>
-    <command>@YEAR@</command>
+    <command>@year@</command>
     <command>i </command>
     <command encoded="true">27</command>
-    <command>@AUTHOR@</command>
-    <command>@CC@</command>
+    <command>@author@</command>
+    <command>@cc@</command>
     <command>o</command>
     <command encoded="true">27</command>
-    <command>@CL@</command>
+    <command>@cl@</command>
     <command>o</command>
     <command encoded="true">27</command>
   </macro>
