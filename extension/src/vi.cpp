@@ -322,27 +322,42 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (rest.StartsWith("@"))
   {
-    std::vector <wxString> v;
-    
-    if (wxExMatch("@(.+)@", rest, v) > 0)
+    if (rest.Last() == WXK_ESCAPE)
     {
-      if (MacroIsRecorded(v[0]))
+      wxBell();
+        
+      m_Command.clear();
+
+      if (!GetSTC()->GetSelectedText().empty())
       {
-        handled = MacroPlayback(v[0], repeat);
-      }
-      else
-      {
-        handled = MacroExpand(v[0]);
-      }
-      
-      if (!handled)
-      {
-        m_Command.clear();
+        GetSTC()->SetSelection(
+          GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
       }
     }
     else
     {
-      return false;
+      std::vector <wxString> v;
+      
+      if (wxExMatch("@(.+)@", rest, v) > 0)
+      {
+        if (MacroIsRecorded(v[0]))
+        {
+          handled = MacroPlayback(v[0], repeat);
+        }
+        else
+        {
+          handled = MacroExpand(v[0]);
+        }
+      
+        if (!handled)
+        {
+          m_Command.clear();
+        }
+      }
+      else
+      {
+        return false;
+      }
     }
   }
   else if (!rest.empty())
