@@ -8,7 +8,7 @@
 #ifndef _@filename@_H
 #define _@filename@_H
 
-/// @Purpose@
+/// @purpose@
 class @myclass@
 {
 public:

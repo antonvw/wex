@@ -123,6 +123,12 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
     
     ok = var.Expand(ex, value);
   
+    // If we are expanding, one input is enough.    
+    if (m_IsExpand)
+    {
+      var.SkipInput();
+    }
+    
     if (var.IsModified())
     {
       m_IsModified = true;

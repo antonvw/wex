@@ -259,8 +259,6 @@ bool wxExVariable::ExpandInput(wxString& expanded)
 {
   if (m_AskForInput || m_Value.empty())
   {
-    wxString value;
-    
     if (m_Dialog == NULL)
     {
       m_Dialog = new wxExSTCEntryDialog(
@@ -283,7 +281,7 @@ bool wxExVariable::ExpandInput(wxString& expanded)
       return false;
     }
       
-    value = m_Dialog->GetText();
+    const wxString value = m_Dialog->GetText();
     
     if (value.empty())
     {
