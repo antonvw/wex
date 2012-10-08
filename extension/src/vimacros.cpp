@@ -117,19 +117,20 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
     
   if (it == m_Variables.end())
   {
-    wxExVariable var(variable);
-    m_Variables.insert(std::make_pair(variable, var));
+    std::pair<std::map<wxString, wxExVariable>::iterator, bool> ret = 
+      m_Variables.insert(std::make_pair(variable, wxExVariable(variable)));
+      
     wxLogStatus(_("Added variable") + ": "  +  variable);
     
-    ok = var.Expand(ex, value);
+    ok = ret.first->second.Expand(ex, value);
   
     // If we are expanding, one input is enough.    
     if (m_IsExpand)
     {
-      var.SkipInput();
+      ret.first->second.SkipInput();
     }
     
-    if (var.IsModified())
+    if (ret.first->second.IsModified())
     {
       m_IsModified = true;
     }
