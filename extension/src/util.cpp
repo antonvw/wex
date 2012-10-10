@@ -88,7 +88,6 @@ bool wxExClipboardAdd(const wxString& text)
 
 const wxString wxExClipboardGet()
 {
-  wxBusyCursor wait;
   wxClipboardLocker locker;
 
   if (!locker)
