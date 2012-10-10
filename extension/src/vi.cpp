@@ -444,7 +444,12 @@ bool wxExVi::CommandChar(int c, int repeat)
         
     case '+': 
       for (int i = 0; i < repeat; i++) GetSTC()->LineDown(); 
-      GetSTC()->VCHome();
+      
+      if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) != 
+          GetSTC()->GetLineIndentation(GetSTC()->GetCurrentLine()))
+      {
+        GetSTC()->VCHome();
+      }
       break;
         
     case 'k': 
@@ -453,7 +458,12 @@ bool wxExVi::CommandChar(int c, int repeat)
         
     case '-': 
       for (int i = 0; i < repeat; i++) GetSTC()->LineUp(); 
-      GetSTC()->VCHome();
+      
+      if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) != 
+          GetSTC()->GetLineIndentation(GetSTC()->GetCurrentLine()))
+      {
+        GetSTC()->VCHome();
+      }
       break;
         
     case 'l': 
