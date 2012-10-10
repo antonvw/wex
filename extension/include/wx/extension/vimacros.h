@@ -35,7 +35,7 @@ public:
   const std::vector< wxString > Get(const wxString& macro) const;
   
   /// Returns current or last macro.
-  const wxString& GetMacro() {return m_Macro;};
+  const wxString& GetMacro() const {return m_Macro;};
   
   /// Have macros been recorded without calling SaveDocument.
   bool IsModified() {return m_IsModified;};
