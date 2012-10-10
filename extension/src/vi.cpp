@@ -442,8 +442,18 @@ bool wxExVi::CommandChar(int c, int repeat)
       for (int i = 0; i < repeat; i++) GetSTC()->LineDown(); 
       break;
         
+    case '+': 
+      for (int i = 0; i < repeat; i++) GetSTC()->LineDown(); 
+      GetSTC()->VCHome();
+      break;
+        
     case 'k': 
       for (int i = 0; i < repeat; i++) GetSTC()->LineUp(); 
+      break;
+        
+    case '-': 
+      for (int i = 0; i < repeat; i++) GetSTC()->LineUp(); 
+      GetSTC()->VCHome();
       break;
         
     case 'l': 

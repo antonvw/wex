@@ -80,13 +80,14 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     
   if (it == m_Variables.end())
   {
-    wxExVariable var(variable);
-    m_Variables.insert(std::make_pair(variable, var));
+    std::pair<std::map<wxString, wxExVariable>::iterator, bool> ret = 
+      m_Variables.insert(std::make_pair(variable, wxExVariable(variable)));
+      
     wxLogStatus(_("Added variable") + ": "  +  variable);
     
-    ok = var.Expand(ex);
+    ok = ret.first->second.Expand(ex);
   
-    if (var.IsModified())
+    if (ret.first->second.IsModified())
     {
       m_IsModified = true;
     }
@@ -424,13 +425,7 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   
   m_Macro = macro;
   
-  for (std::map<wxString, wxExVariable >::iterator it = 
-    m_Variables.begin();
-    it != m_Variables.end();
-    ++it)
-  {
-    it->second.AskForInput();
-  }
+  AskForInput();
     
   for (int i = 0; i < repeat; i++)
   {
