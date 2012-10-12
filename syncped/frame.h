@@ -33,7 +33,7 @@ private:
   virtual wxExListViewFileName* Activate(
     wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL);
-  void AddAsciiTable(wxExSTC* stc);
+  void AddAsciiTable();
   void AddPaneHistory();
   void AddPaneProjects();
   wxExListViewWithFrame* AddPage(
@@ -70,6 +70,7 @@ private:
   wxExNotebook* m_Lists;
   wxExProcess* m_Process;
   wxExNotebook* m_Projects;
+  wxExSTC* m_asciiTable;
 
   const long m_PaneFlag;
   const wxString m_ProjectWildcard;
