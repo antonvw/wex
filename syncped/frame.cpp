@@ -84,6 +84,7 @@ Frame::Frame(bool open_recent)
   , m_Lists(NULL)
   , m_Process(new wxExProcess())
   , m_Projects(NULL)
+  , m_asciiTable(NULL)
   , m_PaneFlag(
     wxAUI_NB_DEFAULT_STYLE |
     wxAUI_NB_CLOSE_ON_ALL_TABS |
@@ -112,9 +113,6 @@ Frame::Frame(bool open_recent)
     
   m_DirCtrl = new wxExGenericDirCtrl(this, this);
     
-  wxExSTC* asciiTable = new wxExSTC(this);
-  AddAsciiTable(asciiTable);
-
   GetManager().AddPane(m_Editors, wxAuiPaneInfo()
     .CenterPane()
     .MaximizeButton(true)
@@ -131,11 +129,6 @@ Frame::Frame(bool open_recent)
     .Name("DIRCTRL")
     .Caption(_("Explorer")));
 
-  GetManager().AddPane(asciiTable, wxAuiPaneInfo()
-    .Left()
-    .Name("ASCIITABLE")
-    .Caption(_("Ascii Table")));
-
   GetManager().AddPane(m_Lists, wxAuiPaneInfo()
     .Bottom()
     .MaximizeButton(true)
@@ -147,7 +140,6 @@ Frame::Frame(bool open_recent)
 
   if (perspective.empty())
   {
-    GetManager().GetPane("ASCIITABLE").Hide();
     GetManager().GetPane("DIRCTRL").Hide();
     GetManager().GetPane("HISTORY").Hide();
     GetManager().GetPane("LOG").Hide();
@@ -242,34 +234,43 @@ wxExListViewFileName* Frame::Activate(
   }
 }
 
-void Frame::AddAsciiTable(wxExSTC* stc)
+void Frame::AddAsciiTable()
 {
+  m_asciiTable = new wxExSTC(this);
+
+  GetManager().AddPane(m_asciiTable, wxAuiPaneInfo()
+    .Left()
+    .Name("ASCIITABLE")
+    .Caption(_("Ascii Table")));
+        
+  GetManager().Update();
+
   // Do not show an edge, eol or whitespace for ascii table.
-  stc->SetEdgeMode(wxSTC_EDGE_NONE);
-  stc->SetViewEOL(false);
-  stc->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
+  m_asciiTable->SetEdgeMode(wxSTC_EDGE_NONE);
+  m_asciiTable->SetViewEOL(false);
+  m_asciiTable->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
 
   // And override tab width.
-  stc->SetTabWidth(5);
+  m_asciiTable->SetTabWidth(5);
 
   for (int i = 1; i <= 255; i++)
   {
     switch (i)
     {
-      case  9: stc->AddText(wxString::Format("%3d\tTAB", i)); break;
-      case 10: stc->AddText(wxString::Format("%3d\tLF", i)); break;
-      case 13: stc->AddText(wxString::Format("%3d\tCR", i)); break;
+      case  9: m_asciiTable->AddText(wxString::Format("%3d\tTAB", i)); break;
+      case 10: m_asciiTable->AddText(wxString::Format("%3d\tLF", i)); break;
+      case 13: m_asciiTable->AddText(wxString::Format("%3d\tCR", i)); break;
         
       default:
-        stc->AddText(wxString::Format("%3d\t%c", i, (wxUniChar)i));
+        m_asciiTable->AddText(wxString::Format("%3d\t%c", i, (wxUniChar)i));
     }
     
-    stc->AddText((i % 5 == 0) ? stc->GetEOL(): "\t");
+    m_asciiTable->AddText((i % 5 == 0) ? m_asciiTable->GetEOL(): "\t");
   }
 
-  stc->EmptyUndoBuffer();
-  stc->SetSavePoint();
-  stc->SetReadOnly(true);
+  m_asciiTable->EmptyUndoBuffer();
+  m_asciiTable->SetSavePoint();
+  m_asciiTable->SetReadOnly(true);
 }
 
 wxExListViewWithFrame* Frame::AddPage(
@@ -895,7 +896,16 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
     
-  case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
+  case ID_VIEW_ASCII_TABLE: 
+    if (m_asciiTable == NULL)
+    {
+      AddAsciiTable();
+    }
+    else
+    {
+      TogglePane("ASCIITABLE"); 
+    }
+    break;
   case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL"); break;
   case ID_VIEW_FILES: TogglePane("FILES"); 
     if (!GetManager().GetPane("FILES").IsShown())
@@ -1023,7 +1033,9 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       break;
 
     case ID_VIEW_ASCII_TABLE:
-      event.Check(GetManager().GetPane("ASCIITABLE").IsShown());
+      event.Check(
+        m_asciiTable != NULL && 
+        GetManager().GetPane("ASCIITABLE").IsShown());
       break;
     case ID_VIEW_DIRCTRL:
       event.Check(GetManager().GetPane("DIRCTRL").IsShown());
