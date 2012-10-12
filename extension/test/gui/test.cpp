@@ -248,6 +248,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":r !echo qwerty"));
   CPPUNIT_ASSERT( stc->GetText().Contains("qwerty"));
   CPPUNIT_ASSERT( ex->Command(":y"));
+  CPPUNIT_ASSERT( ex->Command(":1,$s/^/BEGIN-OF-LINE"));
 
   // Test macros.
   // Do not load macros yet, to test MacroIsRecorded.
@@ -281,7 +282,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
   CPPUNIT_ASSERT( ex->MacroIsRecorded());
   
-  CPPUNIT_ASSERT( ex->MacroExpand("DATE"));
+  CPPUNIT_ASSERT( ex->MacroExpand("date"));
   CPPUNIT_ASSERT(!ex->MacroExpand("xxx"));
   
   // Test markers.
@@ -1263,10 +1264,10 @@ void wxExGuiTestFixture::testVariable()
   CPPUNIT_ASSERT(!var.IsModified());
   
   xml.DeleteAttribute("name");
-  xml.AddAttribute("name", "YEAR");
+  xml.AddAttribute("name", "year");
   
   wxExVariable var2(&xml);
-  CPPUNIT_ASSERT( var2.GetName() == "YEAR");
+  CPPUNIT_ASSERT( var2.GetName() == "year");
   CPPUNIT_ASSERT( var2.Expand(ex));
   CPPUNIT_ASSERT(!var2.IsModified());
   
@@ -1718,21 +1719,21 @@ void wxExGuiTestFixture::testVi()
   
   // Variable test.
   stc->SetText("");
-  CPPUNIT_ASSERT( vi->Command("@DATE@"));
-  CPPUNIT_ASSERT(!stc->GetText().Contains("DATE"));
+  CPPUNIT_ASSERT( vi->Command("@date@"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("date"));
   stc->SetText("");
-  CPPUNIT_ASSERT( vi->Command("@YEAR@"));
+  CPPUNIT_ASSERT( vi->Command("@year@"));
   CPPUNIT_ASSERT( stc->GetText().Contains("20"));
 //  CPPUNIT_ASSERT(!vi->Command("@xxx@"));
   CPPUNIT_ASSERT( stc->SetLexer("cpp"));
   stc->SetText("");
-  CPPUNIT_ASSERT( vi->Command("@CB@"));
-  CPPUNIT_ASSERT( vi->Command("@CE@"));
+  CPPUNIT_ASSERT( vi->Command("@cb@"));
+  CPPUNIT_ASSERT( vi->Command("@ce@"));
   CPPUNIT_ASSERT( stc->GetText().Contains("//"));
   stc->SetText("");
-  CPPUNIT_ASSERT( vi->Command("@CL@"));
+  CPPUNIT_ASSERT( vi->Command("@cl@"));
   CPPUNIT_ASSERT( stc->GetText().Contains("//"));
-  CPPUNIT_ASSERT( vi->Command("@NL@"));
+  CPPUNIT_ASSERT( vi->Command("@nl@"));
   
   // Test illegal command.
   CPPUNIT_ASSERT(!vi->Command("dx"));
@@ -1818,31 +1819,31 @@ void wxExGuiTestFixture::testViMacros()
   //CPPUNIT_ASSERT(!macros.Expand(vi, "xxx"));
 
   // Test all builtin macro variables.
-  CPPUNIT_ASSERT( macros.Expand(vi, "CB"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "CC"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "CE"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "CL"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "CREATED"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "DATE"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "DATETIME"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "FILENAME"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "FULLNAME"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "FULLPATH"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "NL"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "PATH"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "TIME"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "YEAR"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "cb"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "cc"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "ce"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "cl"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "created"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "date"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "datetime"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "filename"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "fullname"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "fullpath"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "nl"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "path"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "time"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "year"));
   
   // Test environment macro variables.
   CPPUNIT_ASSERT( macros.Expand(vi, "HOME"));
 
   // Test input macro variables.
   // Next requires input...    
-  //  CPPUNIT_ASSERT( macros.Expand(vi, "AUTHOR"));
+  //  CPPUNIT_ASSERT( macros.Expand(vi, "author"));
 
   // Test template macro variables.
   //wxString value;
-  //CPPUNIT_ASSERT( macros.Expand(vi, "CHT", value));
+  //CPPUNIT_ASSERT( macros.Expand(vi, "cht", value));
   //CPPUNIT_ASSERT( value.Contains("Template example"));
 
   // So save as last test.
