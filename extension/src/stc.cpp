@@ -885,10 +885,7 @@ bool wxExSTC::FindNext(
     
     recursive = false;
 
-    if (GetTargetStart() != GetTargetEnd())
-    {
-      SetSelection(GetTargetStart(), GetTargetEnd());
-    }
+    SetSelection(GetTargetStart(), GetTargetEnd());
     
     EnsureVisible(LineFromPosition(GetTargetStart()));
     EnsureCaretVisible();
@@ -1981,7 +1978,7 @@ int wxExSTC::ReplaceAll(
 
   BeginUndoAction();
 
-  while (SearchInTarget(find_text) > 0)
+  while (SearchInTarget(find_text) != -1)
   {
     const int target_start = GetTargetStart();
     int length;
