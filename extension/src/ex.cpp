@@ -830,15 +830,10 @@ bool wxExEx::Substitute(
   m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
   m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('$')));
 
-  while (m_STC->SearchInTarget(pattern) > 0)
+  while (m_STC->SearchInTarget(pattern) != -1)
   {
     const int target_start = m_STC->GetTargetStart();
 
-    if (target_start >= m_STC->GetTargetEnd())
-    {
-      break;
-    }
-    
     if (replacement.Contains("&"))
     {
       wxString target = m_STC->GetTextRange(
