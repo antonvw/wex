@@ -425,7 +425,7 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   
   m_Macro = macro;
   
-  wxBusyCursor;
+  wxBusyCursor wait;
     
   AskForInput();
   
