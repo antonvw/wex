@@ -58,7 +58,7 @@ bool wxExFile::CheckSync()
       sync_needed = true;
     }
     
-    if (m_FileName.m_Stat.IsReadOnly() != m_Stat.IsReadOnlyt_mtime)
+    if (m_FileName.m_Stat.IsReadOnly() != m_Stat.IsReadOnly())
     {
       sync_needed = true;
     }
