@@ -58,6 +58,11 @@ void wxExListItem::Insert(long index)
       m_FileName.Exists() ?
         m_FileName.GetFullName():
         m_FileName.GetFullPath());
+        
+    if (m_ListView->GetItemCount() > 0)
+    {
+      m_ListView->SortColumnReset();
+    }
   }
   else
   {

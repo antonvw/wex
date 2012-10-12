@@ -425,8 +425,10 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   
   m_Macro = macro;
   
-  AskForInput();
+  wxBusyCursor;
     
+  AskForInput();
+  
   for (int i = 0; i < repeat; i++)
   {
     for (
