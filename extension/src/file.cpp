@@ -45,18 +45,34 @@ bool wxExFile::CheckSync()
     return false;
   }
 
-  if (
-    m_FileName.m_Stat.Sync() &&
-    m_FileName.m_Stat.st_mtime != m_Stat.st_mtime)
+  if (m_FileName.m_Stat.Sync())
   {
-    // Do not check return value,
-    // we sync anyhow, to force nex time no sync.
-    Get(true);
-
-    // Update the stat member, so next time no sync.
-    m_Stat.Sync();
+    bool sync_needed = false;
+    
+    if (m_FileName.m_Stat.st_mtime != m_Stat.st_mtime)
+    {
+      // Do not check return value,
+      // we sync anyhow, to force nex time no sync.
+      Get(true);
       
-    return true;
+      sync_needed = true;
+    }
+    
+    if (m_FileName.m_Stat.IsReadOnly() != m_Stat.IsReadOnlyt_mtime)
+    {
+      sync_needed = true;
+    }
+
+    if (sync_needed)
+    {
+          // Update the stat member, so next time no sync.
+      if (!m_Stat.Sync())
+      {
+        wxLogError("Could not sync: " + m_FileName.GetFullPath());
+      }
+        
+      return true;
+    }
   }
   
   return false;

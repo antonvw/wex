@@ -1645,14 +1645,13 @@ void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
 void wxExSTC::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
-
+  
   if (
     m_File.CheckSync() &&
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
-    !GetReadOnly() &&
-    m_File.GetFileName().GetStat().IsOk() &&
-    m_File.GetFileName().GetStat().IsReadOnly() != GetReadOnly())
+    !(m_Flags & STC_WIN_READ_ONLY()) &&
+      m_File.GetFileName().GetStat().IsReadOnly() != GetReadOnly())
   {
     FileReadOnlyAttributeChanged();
   }
