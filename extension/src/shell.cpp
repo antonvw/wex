@@ -203,11 +203,6 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
   {
     ProcessChar(key);
   }
-  else if (key == WXK_BACK)
-  {
-    ProcessChar(key);
-    if (m_Echo) event.Skip();
-  }
   // Up or down key pressed, and at the end of document.
   else if ((key == WXK_UP || key == WXK_DOWN) &&
             GetCurrentPos() == GetTextLength())
@@ -250,6 +245,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
     else
     {
       // Allow.
+      ProcessChar(key);
       if (m_Echo) event.Skip();
     }
   }
@@ -285,7 +281,7 @@ void wxExSTCShell::ProcessChar(int key)
 {
   // No need to check m_Enabled, already done by calling this method.
   
-  if (key == '\r')
+  if (key == WXK_RETURN)
   {
     if (m_Command.empty())
     {
@@ -343,7 +339,13 @@ void wxExSTCShell::ProcessChar(int key)
   }
   else if (key == WXK_BACK)
   {
-    m_Command = m_Command.Truncate(m_Command.size() - 1);
+    // Delete the key at current position (-1  because of WXK_BACK).
+    const int index = GetCurrentPos() - m_CommandStartPosition - 1;
+    
+    if (index >= 0 && index < m_Command.length() && m_Command.length() > 0)
+    {
+      m_Command.erase(index, 1);
+    }
   }
   else
   {

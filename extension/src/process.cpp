@@ -300,6 +300,7 @@ void  wxExProcess::OnCommand(wxCommandEvent& event)
   switch (event.GetId())
   {
   case ID_SHELL_COMMAND:
+    m_Dialog->GetSTCShell()->LineEnd();
     m_Dialog->GetSTCShell()->AddText(m_Dialog->GetSTCShell()->GetEOL());
     m_Dialog->GetSTCShell()->Prompt();
     
