@@ -349,7 +349,10 @@ void wxExSTCShell::ProcessChar(int key)
   }
   else
   {
-    m_Command += wxChar(key);
+    // Insert the key at current position (-1  because of WXK_BACK).
+    const int index = GetCurrentPos() - m_CommandStartPosition;
+    
+    m_Command.insert(index, wxChar(key));
   }
 }
 
