@@ -42,7 +42,10 @@ public:
 #endif
 
   /// Executes the current vcs command.
-  long Execute(
+  /// Might ask for vcs binary if it is not yet known.
+  /// Return code is code from process Execute,
+  /// and also can be false if dialog for vcs bin was cancelled.
+  bool Execute(
     const wxString& args,
     const wxExLexer& lexer,
     const wxString& wd = wxEmptyString);

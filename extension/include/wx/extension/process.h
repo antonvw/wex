@@ -13,7 +13,7 @@
 #include <wx/extension/stcdlg.h>
 
 /// Offers a wxProcess, capturing execution output depending
-/// on sync ar async call to Execute.
+/// on sync or async call to Execute.
 class WXDLLIMPEXP_BASE wxExProcess : public wxProcess
 {
 public:
@@ -40,18 +40,17 @@ public:
   /// - In case asynchronously (wxEXEC_ASYNC) this call immediately returns.
   ///   The dialog will be shown, with STC component shell enabled,
   ///   and will be filled with output from the process.
-  ///   The return value is the process id and zero value indicates 
-  ///   that the command could not be executed.
   ///   When the process is finished, a ID_TERMINATED_PROCESS command event
   ///   is sent to the application top window.
   /// - In case synchronously (wxEXEC_SYNC) this call returns after execute ends, 
   ///   and the output is collected in the output member.
-  ///   The dialog is not shown (call ShowOutput). 
-  ///   The STC component in the dialog will be shell disabled.
-  ///   Return value is return value from wxExecute, -1 execute fails.
-  /// The return value can also be -2, if config dialog was invoked and
-  /// cancelled.
-  long Execute(
+  ///   The dialog is not shown (call ShowOutput).
+  /// Return value is false if process could not execute (and GetError is true), 
+  /// or if config dialog was invoked and cancelled (and GetError is false).
+  /// Normally the reason for not being able to run the process is logged
+  /// by the wxWidgets library using a wxLogError. You can prevent that
+  /// using a wxLogNull before calling Execute.
+  bool Execute(
     /// command to be executed, if empty
     /// last given command is used
     const wxString& command = wxEmptyString,
@@ -81,8 +80,7 @@ public:
   wxKillError Kill(wxSignal sig = wxSIGKILL);
   
 #if wxUSE_GUI
-  /// Shows output from Execute (wxEXEC_SYNC) on the STC component 
-  /// (if no error code returned from Execute).
+  /// Shows output from Execute (wxEXEC_SYNC) on the STC component.
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
 protected:

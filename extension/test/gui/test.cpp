@@ -896,7 +896,7 @@ void wxExGuiTestFixture::testProcess()
   process.ConfigDialog(wxTheApp->GetTopWindow(), "test process", false);
   
   // wxExecute hangs for wxEXEC_ASYNC
-  CPPUNIT_ASSERT( process.Execute("ls -l", wxEXEC_SYNC) != -1);
+  CPPUNIT_ASSERT( process.Execute("ls -l", wxEXEC_SYNC));
   CPPUNIT_ASSERT(!process.GetError());
   CPPUNIT_ASSERT(!process.GetOutput().empty());
   
@@ -908,12 +908,12 @@ void wxExGuiTestFixture::testProcess()
   process.ShowOutput();
 
   // Repeat last process (sync).
-  CPPUNIT_ASSERT( process.Execute("", wxEXEC_SYNC) != -1);
+  CPPUNIT_ASSERT( process.Execute("", wxEXEC_SYNC));
   CPPUNIT_ASSERT(!process.GetError());
   CPPUNIT_ASSERT(!process.GetOutput().empty());
 
   // Invalid async process (TODO: but it is started??).
-  CPPUNIT_ASSERT( process.Execute("xxxx") > 0);
+  CPPUNIT_ASSERT( process.Execute("xxxx"));
   CPPUNIT_ASSERT(!process.GetError());
   // The output is not touched by the async process, so if it was not empty,
   // it still is not empty.

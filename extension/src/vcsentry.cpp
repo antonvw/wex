@@ -164,7 +164,7 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 
 #endif
 
-long wxExVCSEntry::Execute(
+bool wxExVCSEntry::Execute(
   const wxString& args,
   const wxExLexer& lexer,
   const wxString& wd)
@@ -177,12 +177,16 @@ long wxExVCSEntry::Execute(
     const wxString wc(wxFileSelectorDefaultWildcardStr);
 #endif
 
-    wxFileDialog 
-      dlg(NULL, _("Select") + " " + m_Name + " bin", "", "", wc, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+    wxFileDialog dlg(NULL, 
+      _("Select") + " " + m_Name + " bin", 
+      "", 
+      "", 
+      wc, 
+      wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 
     if (dlg.ShowModal() == wxID_CANCEL)
     {
-      return -1;
+      return false;
     }
         
     wxConfigBase::Get()->Write(m_Name, dlg.GetPath());

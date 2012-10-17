@@ -156,7 +156,7 @@ bool wxExVCS::DirExists(const wxFileName& filename)
   }
 }
 
-long wxExVCS::Execute()
+bool wxExVCS::Execute()
 {
   const wxExFileName filename(GetFile());
 
@@ -505,7 +505,7 @@ wxStandardID wxExVCS::Request(wxWindow* parent)
     return wxID_CANCEL;
   }  
   
-  if (Execute() < 0)
+  if (!Execute())
   {
     return wxID_CANCEL;
   }

@@ -142,11 +142,13 @@ int wxExProcess::ConfigDialog(
   }
 }
 
-long wxExProcess::Execute(
+bool wxExProcess::Execute(
   const wxString& command_to_execute,
   int flags,
   const wxString& wd)
 {
+  m_Error = false;
+    
   struct wxExecuteEnv env;
     
   if (command_to_execute.empty())
@@ -155,7 +157,7 @@ long wxExProcess::Execute(
     {
       if (ConfigDialog(wxTheApp->GetTopWindow()) == wxID_CANCEL)
       {
-        return -2;
+        return false;
       }
     }
     
@@ -186,8 +188,6 @@ long wxExProcess::Execute(
       
   m_Dialog->GetSTCShell()->EnableShell(!m_Sync);
     
-  m_Error = false;
-    
   if (!m_Sync)
   { 
     m_Dialog->SetTitle(m_Command);
@@ -196,9 +196,7 @@ long wxExProcess::Execute(
 
     // For asynchronous execution the return value is the process id and zero 
     // value indicates that the command could not be executed.
-    const long pid = wxExecute(m_Command, flags, this, &env);
-
-    if (pid > 0)
+    if (wxExecute(m_Command, flags, this, &env) > 0)
     {
       m_Dialog->Show();
       
@@ -212,33 +210,32 @@ long wxExProcess::Execute(
       
       m_Error = true;
     }
-    
-    return pid;
   }
   else
   {
     wxArrayString output;
     wxArrayString errors;
-    long retValue;
-    m_Output.clear();
     
     // Call wxExecute to execute the command and
     // collect the output and the errors.
-    if ((retValue = wxExecute(
+    if (wxExecute(
       m_Command,
       output,
       errors,
       flags,
-      &env)) == -1)
+      &env) == -1)
     {
+      m_Output.clear();
       m_Error = true;
     }
-
-    // Set output by converting array strings into normal strings.
-    m_Output = wxJoin(errors, '\n', '\n') + wxJoin(output, '\n', '\n');
-  
-    return retValue;
+    else
+    {
+      // Set output by converting array strings into normal strings.
+      m_Output = wxJoin(errors, '\n', '\n') + wxJoin(output, '\n', '\n');
+    }
   }
+  
+  return m_Error;
 }
 
 bool wxExProcess::IsRunning() const
@@ -365,7 +362,7 @@ void wxExProcess::ShowOutput(const wxString& caption) const
   {
     // Executing command failed, so no output,
     // show failing command.
-    wxLogError(m_Command);
+    wxLogError("Could not execute: " + m_Command);
   }
 }
 #endif
