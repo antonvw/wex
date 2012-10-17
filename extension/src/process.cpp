@@ -235,7 +235,7 @@ bool wxExProcess::Execute(
     }
   }
   
-  return m_Error;
+  return !m_Error;
 }
 
 bool wxExProcess::IsRunning() const
