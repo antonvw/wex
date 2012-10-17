@@ -699,18 +699,13 @@ void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
         ar.Add(files[i]);
         
         wxExVCS vcs(ar, id);
-        const int retValue = vcs.Execute();
         
-        if (!vcs.GetEntry().GetError() && retValue != -1)
+        if (vcs.Execute())
         {
           frame->OpenFile(
             files[i], 
             vcs.GetEntry(),
             wxExSTC::STC_WIN_READ_ONLY);
-        }
-        else
-        {
-          vcs.GetEntry().ShowOutput();
         }
       }
     }

@@ -49,8 +49,8 @@ public:
   static bool DirExists(const wxFileName& filename);
 
   /// Executes the vcs command, and collects the output.
-  /// Returns return code from command Execute.
-  long Execute();
+  /// Returns return code from vcs entry Execute.
+  bool Execute();
   
   /// Gets the number of vcs entries.
   static int GetCount() {return m_Entries.size();};
