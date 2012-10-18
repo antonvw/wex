@@ -963,6 +963,11 @@ void Frame::OnCommandConfigDialog(
     if (commandid != wxID_CANCEL)
     {
       m_Editors->ForEach(ID_ALL_STC_CONFIG_GET);
+      
+      if (m_Process->GetSTC() != NULL)
+      {
+        m_Process->GetSTC()->ConfigGet();
+      }
     }
   }
   else

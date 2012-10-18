@@ -61,7 +61,7 @@ public:
   /// Save in xml node.
   void Save(wxXmlNode* node) const;
   
-  /// Resets the ask for input member, , if appropriate for type.
+  /// Resets the ask for input member, if appropriate for type.
   void SkipInput();
 private:  
   bool ExpandBuiltIn(wxExEx* ex, wxString& expanded) const;
