@@ -198,7 +198,20 @@ bool wxExProcess::Execute(
   { 
     m_Dialog->SetTitle(m_Command);
     m_Dialog->GetSTCShell()->ClearAll();
-    m_Dialog->GetSTCShell()->Prompt();
+    
+    // If we have entered a shell, then the shell
+    // it self has no prompt. So put one here.
+    if (m_Command == "bash" || 
+        m_Command == "csh" || 
+        m_Command == "ksh" || 
+        m_Command == "sh")
+    {
+      m_Dialog->GetSTCShell()->SetPrompt("$");
+    }
+    else
+    {
+      m_Dialog->GetSTCShell()->SetPrompt("");
+    }
 
     // For asynchronous execution the return value is the process id and zero 
     // value indicates that the command could not be executed.
@@ -305,7 +318,7 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
   case ID_SHELL_COMMAND:
     m_Dialog->GetSTCShell()->LineEnd();
     m_Dialog->GetSTCShell()->AddText(m_Dialog->GetSTCShell()->GetEOL());
-    m_Dialog->GetSTCShell()->Prompt();
+    m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
     
     if (IsRunning()) 
     {
