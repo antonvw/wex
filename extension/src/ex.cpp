@@ -383,7 +383,28 @@ bool wxExEx::CommandRange(const wxString& command)
     
   case 's':
     {
-    wxStringTokenizer next(tkz.GetString(), "/");
+    wxString text(tkz.GetString());
+    
+    // If there are escaped / chars in the text,
+    // temporarily replace them to un unused char, so
+    // we can use string tokenizer with / as separator.
+    bool escaped = false;
+    
+    if (text.Contains("\\/"))
+    {
+      if (!text.Contains(wxChar(1)))
+      {
+        text.Replace("\\/", wxChar(1));
+        escaped = true;
+      }
+      else
+      {
+        wxLogStatus("Cannot substitute, internal char exists");
+        return false;
+      }
+    }
+    
+    wxStringTokenizer next(text, "/");
 
     if (!next.HasMoreTokens())
     {
@@ -391,9 +412,16 @@ bool wxExEx::CommandRange(const wxString& command)
     }
 
     next.GetNextToken(); // skip empty token
-    const wxString pattern = next.GetNextToken();
-    const wxString replacement = next.GetNextToken();
-  
+    wxString pattern = next.GetNextToken();
+    wxString replacement = next.GetNextToken();
+    
+    // Restore a / for all occurrences of the special char.
+    if (escaped)
+    {  
+      pattern.Replace(wxChar(1), "/");
+      replacement.Replace(wxChar(1), "/");
+    }
+    
     return Substitute(begin_address, end_address, pattern, replacement);
     }
     break;
