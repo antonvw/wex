@@ -48,10 +48,12 @@ wxExProcess::wxExProcess(const wxExProcess& process)
 
 wxExProcess& wxExProcess::operator=(const wxExProcess& p)
 {
+  m_Busy = p.m_Busy;
   m_Error = p.m_Error;
   m_Output = p.m_Output;
+  m_Sync = p.m_Sync;
   m_Timer = new wxTimer(this);
-  
+
   return *this;
 }
 
@@ -171,16 +173,20 @@ bool wxExProcess::Execute(
   }
 
   m_Sync = (flags & wxEXEC_SYNC);
-  
+
+  // Construct the dialog.
+  // This is necessary both in sync and async mode,
+  // as for sync mode the dialog is used for presenting the 
+  // output member.
   if (m_Dialog == NULL)
   {
     m_Dialog = new wxExSTCEntryDialog(
       wxTheApp->GetTopWindow(),
-      m_Command,
+      wxEmptyString,
       wxEmptyString,
       wxEmptyString,
       wxOK,
-      true);
+      true); // use_shell to force STCShell
       
     m_Dialog->SetProcess(this);
     m_Dialog->GetSTCShell()->SetEventHandler(this);
@@ -292,7 +298,7 @@ wxKillError wxExProcess::Kill(wxSignal sig)
   return result;
 }
 
-void  wxExProcess::OnCommand(wxCommandEvent& event)
+void wxExProcess::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
@@ -345,7 +351,11 @@ void wxExProcess::OnTimer(wxTimerEvent& event)
 #if wxUSE_GUI
 void wxExProcess::ShowOutput(const wxString& caption) const
 {
-  if (!m_Error)
+  if (!m_Sync)
+  {
+    wxLogStatus("Output only available for sync processes");
+  }  
+  else if (!m_Error)
   {
     if (m_Dialog != NULL)
     {
@@ -356,6 +366,10 @@ void wxExProcess::ShowOutput(const wxString& caption) const
     else if (!m_Output.empty())
     {
       wxLogMessage(m_Output);
+    }
+    else
+    {
+      wxLogStatus("No output available");
     }
   }
   else
