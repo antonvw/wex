@@ -43,7 +43,7 @@ public:
   ///   When the process is finished, a ID_TERMINATED_PROCESS command event
   ///   is sent to the application top window.
   /// - In case synchronously (wxEXEC_SYNC) this call returns after execute ends, 
-  ///   and the output is collected in the output member.
+  ///   and the output is available using GetOutput.
   ///   The dialog is not shown (call ShowOutput).
   /// Return value is false if process could not execute (and GetError is true), 
   /// or if config dialog was invoked and cancelled (and GetError is false).
@@ -69,18 +69,20 @@ public:
   /// (might be NULL if dialog is NULL).
   static wxExSTC* GetSTC() {
     return m_Dialog != NULL ? m_Dialog->GetSTC(): NULL;};
-    
+
   /// Returns true if this process is running.
   bool IsRunning() const;
 
   /// Returns true if a process command is selected.
   bool IsSelected() const {return !m_Command.empty();};
-    
+
   /// Kills the process (sends specified signal if process still running).
   wxKillError Kill(wxSignal sig = wxSIGKILL);
   
 #if wxUSE_GUI
   /// Shows output from Execute (wxEXEC_SYNC) on the STC component.
+  /// You can override this method to e.g. prepare a lexer on GetSTC
+  /// before calling this base method.
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
 protected:
@@ -93,7 +95,7 @@ protected:
   /// Handles timer events.
   void OnTimer(wxTimerEvent& event);
 private:
-  void CheckInput();
+  bool CheckInput();
 
   bool m_Busy;
   bool m_Error;
