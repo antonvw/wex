@@ -11,6 +11,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
+#include <wx/utils.h> // for wxGetEnv
 #include <wx/extension/process.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
@@ -57,11 +58,11 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
   return *this;
 }
 
-void wxExProcess::CheckInput()
+bool wxExProcess::CheckInput()
 {
   if (m_Busy)
   {
-    return;
+    return false;
   }
   
   m_Busy = true;
@@ -103,7 +104,12 @@ void wxExProcess::CheckInput()
   if (!output.empty())
   {
     m_Dialog->GetSTCShell()->AddText(output);
-    m_Dialog->GetSTCShell()->Prompt();
+    
+    return true;
+  }
+  else
+  {
+    return false;
   }
 }
 
@@ -200,13 +206,16 @@ bool wxExProcess::Execute(
     m_Dialog->GetSTCShell()->ClearAll();
     
     // If we have entered a shell, then the shell
-    // it self has no prompt. So put one here.
-    if (m_Command == "bash" || 
-        m_Command == "csh" || 
-        m_Command == "ksh" || 
+    // itself has no prompt. So put one here.
+    if (m_Command == "bash" ||
+        m_Command == "csh" ||
+        m_Command == "ksh" ||
+        m_Command == "tcsh" ||
         m_Command == "sh")
     {
-      m_Dialog->GetSTCShell()->SetPrompt("$");
+      wxString host;
+      wxGetEnv("HOST", &host);
+      m_Dialog->GetSTCShell()->SetPrompt(host + ">");
     }
     else
     {
@@ -219,7 +228,10 @@ bool wxExProcess::Execute(
     {
       m_Dialog->Show();
       
-      CheckInput();
+      if (!CheckInput())
+      {
+        m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
+      }
       
       m_Timer->Start(100); // each 100 milliseconds
     }
@@ -316,9 +328,9 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
   switch (event.GetId())
   {
   case ID_SHELL_COMMAND:
+    m_Timer->Stop();
     m_Dialog->GetSTCShell()->LineEnd();
     m_Dialog->GetSTCShell()->AddText(m_Dialog->GetSTCShell()->GetEOL());
-    m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
     
     if (IsRunning()) 
     {
@@ -330,6 +342,13 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
         wxTextOutputStream os(*GetOutputStream());
         os.WriteString(event.GetString() + "\n");
       } 
+      
+      if (CheckInput())
+      {
+        m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
+      }
+      
+      m_Timer->Start();
     }
     break;
 
