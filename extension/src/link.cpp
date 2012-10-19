@@ -157,7 +157,7 @@ const wxString wxExLink::GetPath(const wxString& text) const
         
         if (wxGetEnv("PWD", &pwd))
         {
-          if (file.MakeAbsolute(pwd)
+          if (file.MakeAbsolute(pwd))
           {
             if (file.FileExists())
             {

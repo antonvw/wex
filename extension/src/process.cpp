@@ -350,6 +350,10 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
       
       m_Timer->Start();
     }
+    else
+    {
+      wxLogStatus("Process is not running");
+    }
     break;
 
   case ID_SHELL_COMMAND_STOP:
