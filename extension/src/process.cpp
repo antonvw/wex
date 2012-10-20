@@ -104,6 +104,7 @@ bool wxExProcess::CheckInput()
   if (!output.empty())
   {
     m_Dialog->GetSTCShell()->AddText(output);
+    m_Dialog->GetSTCShell()->EnsureCaretVisible();
     
     return true;
   }
@@ -215,7 +216,7 @@ bool wxExProcess::Execute(
     {
       wxString host;
       wxGetEnv("HOST", &host);
-      m_Dialog->GetSTCShell()->SetPrompt(host + ">");
+      m_Dialog->GetSTCShell()->SetPrompt(host + ">", false);
     }
     else
     {
@@ -233,7 +234,10 @@ bool wxExProcess::Execute(
         m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
       }
       
-      m_Timer->Start(100); // each 100 milliseconds
+      if (IsRunning())
+      {
+        m_Timer->Start(100); // each 100 milliseconds
+      }
     }
     else
     {
@@ -347,10 +351,7 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
         os.WriteString(event.GetString() + "\n");
       } 
       
-      if (CheckInput())
-      {
-        m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
-      }
+      m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
       
       m_Timer->Start();
     }
