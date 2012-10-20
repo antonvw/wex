@@ -330,7 +330,11 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
   case ID_SHELL_COMMAND:
     m_Timer->Stop();
     m_Dialog->GetSTCShell()->LineEnd();
-    m_Dialog->GetSTCShell()->AddText(m_Dialog->GetSTCShell()->GetEOL());
+    
+    if (m_Command != "cmd")
+    {
+      m_Dialog->GetSTCShell()->AddText(m_Dialog->GetSTCShell()->GetEOL());
+    }
     
     if (IsRunning()) 
     {
