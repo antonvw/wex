@@ -25,8 +25,8 @@ one of these applications, being a full featured source code text editor.
     
 - under Ubuntu 12.10 linux g++ g++ (Ubuntu/Linaro 4.7.2-2ubuntu1) 4.7.2 
     `../configure --with-gtk`  or   
-    `../configure --with-gtk=3`
-    after insalling gtk:
+    `../configure --with-gtk=3`   
+    after installing gtk:   
     `sudo apt-get install libgtk2.0-dev`
 
 - under mac os 10.4 use gcc 4.0.1 (use v2.9.3 tag) (part of xcode25_8m2258_developerdvd.dmg):   
