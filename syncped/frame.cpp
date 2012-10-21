@@ -499,7 +499,19 @@ void Frame::NewFile(bool as_project)
 void Frame::OnClose(wxCloseEvent& event)
 {
   m_IsClosing = true; 
-  const long count = m_Editors->GetPageCount();
+  
+  long count = 0;
+  
+  for (int i = 0; i < m_Editors->GetPageCount(); i++)
+  {
+    wxExSTC* stc = wxDynamicCast(m_Editors->GetPage(i), wxExSTC);
+    
+    if (stc->GetFileName().FileExists())
+    {
+      count++;
+
+    }
+  }
   
   if (event.CanVeto())
   {
