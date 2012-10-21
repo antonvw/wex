@@ -104,7 +104,6 @@ bool wxExProcess::CheckInput()
   if (!output.empty())
   {
     m_Dialog->GetSTCShell()->AddText(output);
-    m_Dialog->GetSTCShell()->EnsureCaretVisible();
     
     return true;
   }
