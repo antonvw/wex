@@ -111,6 +111,13 @@ wxExSTCShell::~wxExSTCShell()
   }
 }
 
+void wxExSTCShell::AddText(const wxString& text)
+{
+  wxExSTC::AddText(text);
+  EnsureCaretVisible();
+  m_CommandStartPosition = GetCurrentPos();
+}
+
 void wxExSTCShell::EnableShell(bool enabled)
 {
   m_Enabled = enabled;
