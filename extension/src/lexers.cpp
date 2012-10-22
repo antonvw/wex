@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <algorithm>
+#include <functional>
 #include <wx/config.h>
 #include <wx/regex.h>
 #include <wx/stdpaths.h>

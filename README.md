@@ -16,7 +16,7 @@ one of these applications, being a full featured source code text editor.
 
 ## Building wxWidgets
 
-- under windows using Microsoft Visual Studio 2010 nmake:    
+- under windows using Microsoft Visual Studio 2012 nmake:    
     `nmake -f makefile.vc` or   
     `nmake -f makefile.vc BUILD=release`
     
@@ -42,7 +42,7 @@ one of these applications, being a full featured source code text editor.
 - Project and make files are generated using [Bakefile 0.2.9](http://www.bakefile.org/)  
   In the build dir:
   
-  - under windows using Microsoft Visual Studio 2010:  
+  - under windows using Microsoft Visual Studio 2012:   
     `make` or `make-release`
     
   - under cygwin:   
