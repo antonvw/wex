@@ -350,6 +350,10 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
         os.WriteString(event.GetString() + "\n");
       } 
       
+      wxMilliSleep(10);
+      
+      CheckInput();
+      
       m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
       
       m_Timer->Start();
