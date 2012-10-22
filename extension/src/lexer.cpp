@@ -9,9 +9,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-//#include <numeric> // both for accumulate
-//#include <functional>
 #include <algorithm>
+#include <functional>
+//#include <numeric> // both for accumulate
 #include <wx/stc/stc.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/lexer.h>
