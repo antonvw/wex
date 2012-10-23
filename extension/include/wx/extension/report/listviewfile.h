@@ -66,9 +66,6 @@ private:
   const wxString m_TextAddWhat;
   const wxString m_TextInFolder;
   
-  bool m_ItemUpdated;
-  long m_ItemNumber;
-
   DECLARE_EVENT_TABLE()
 };
 #endif
