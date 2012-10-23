@@ -276,11 +276,15 @@ public:
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);
+  void OnIdle(wxIdleEvent& event);
   void OnList(wxListEvent& event);
 private:
   void AddColumns(const wxExLexer* lexer);
   void Initialize(const wxExLexer* lexer);
   const wxExListType m_Type;
+
+  bool m_ItemUpdated;
+  long m_ItemNumber;
 
   DECLARE_EVENT_TABLE()
 };
