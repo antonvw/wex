@@ -122,9 +122,23 @@ void wxExComboBoxFromList(
     wxASSERT(cb != NULL);
     cb->Clear();
     wxArrayString items;
-    items.resize(text.size());
-    copy (text.begin(), text.end(), items.begin()); // required!
-    cb->Append(items);
+    std::vector<wxString> v;
+    v.resize(text.size());
+    
+    // Under gcc you can directly copy to items,
+    // msvc gives a warning, so copy to vector instead.
+    copy (text.begin(), text.end(), v.begin()); // required!
+    
+    wxArrayString as;
+    
+    for (
+      std::vector<wxString>::const_iterator it = v.begin(); it != v.end();
+      ++it)
+    {
+      as.Add(*it);
+    }
+    
+    cb->Append(as);
     cb->SetValue(cb->GetString(0));
   }
 
