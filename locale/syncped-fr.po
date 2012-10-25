@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: syncped v2.9.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-10-25 20:15+0100\n"
-"PO-Revision-Date: 2012-10-25 20:15+0100\n"
-"Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
+"PO-Revision-Date: 2012-10-25 21:00+0100\n"
+"Last-Translator: Emma v. Wezenbeek <emmac.vw@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -61,7 +61,7 @@ msgstr "Fichier"
 
 #: ../syncped/frame.cpp:527
 msgid "Process is running"
-msgstr ""
+msgstr "Processus passe"
 
 #: ../syncped/frame.cpp:606
 msgid ""
@@ -148,19 +148,16 @@ msgid "vi mode"
 msgstr "mode vi"
 
 #: ../syncped/support.cpp:110
-#, fuzzy
 msgid "Find &in Files"
-msgstr "&Chercher dans les Fichiers"
+msgstr "Chercher &dans Fichiers"
 
 #: ../syncped/support.cpp:111
-#, fuzzy
 msgid "Replace in File&s"
 msgstr "Remplacer dans Fichier&s"
 
 #: ../syncped/support.cpp:112
-#, fuzzy
 msgid "&Find and Replace"
-msgstr "chercher et remplacer"
+msgstr "&Chercher et Remplacer"
 
 #: ../syncped/support.cpp:115
 msgid "&Control Char"
@@ -211,7 +208,6 @@ msgid "&Select"
 msgstr "&Sélectionner"
 
 #: ../syncped/support.cpp:155
-#, fuzzy
 msgid "&Open as Text"
 msgstr "&Ouvrir comme Texte"
 
