@@ -347,7 +347,15 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
       if (os != NULL)
       {
         wxTextOutputStream os(*GetOutputStream());
-        os.WriteString(event.GetString() + "\n");
+        const wxString command(event.GetString());
+        os.WriteString(command + "\n");
+        
+        wxString rest;
+        if (command.StartsWith("cd", &rest))
+        {
+          rest.Trim(false);
+          wxSetWorkingDirectory(rest);
+        }
       } 
       
       wxMilliSleep(10);
