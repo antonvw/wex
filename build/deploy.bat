@@ -15,16 +15,16 @@ copy vcmswu\syncped.exe syncped
 copy syncped.exe.manifest syncped
 
 rem Copy msvc DLL's
-copy c:\windows\syswow64\msvcp100.dll syncped
-copy c:\windows\syswow64\msvcr100.dll syncped
+copy c:\windows\syswow64\msvcp110.dll syncped
+copy c:\windows\syswow64\msvcr110.dll syncped
 
 rem Copy templates and xml data.
-copy ..\extension\data\*.tpl syncped
+copy ..\extension\data\*.txt syncped
 copy ..\extension\data\*.xml syncped
 
 rem Copy locale files.
-msgftm c:\wxWidgets-2.9.4\locale\fr.mo -o syncped\fr_FR\fr.po
-msgftm c:\wxWidgets-2.9.4\locale\nl.mo -o syncped\nl_NL\nl.po
+msgftm c:\wxWidgets-2.9.5\locale\fr.mo -o syncped\fr_FR\fr.po
+msgftm c:\wxWidgets-2.9.5\locale\nl.mo -o syncped\nl_NL\nl.po
 
 for %%X in (..\locale\*fr.mo) do (
   msgfmt %%X syncped\fr_FR\%%X.po)
