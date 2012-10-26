@@ -96,6 +96,7 @@ protected:
   void OnTimer(wxTimerEvent& event);
 private:
   bool CheckInput(const wxString& command = wxEmptyString);
+  void HandleCommand(const wxString& command) const;
 
   bool m_Busy;
   bool m_Error;
