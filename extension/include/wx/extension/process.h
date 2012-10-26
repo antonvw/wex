@@ -95,7 +95,7 @@ protected:
   /// Handles timer events.
   void OnTimer(wxTimerEvent& event);
 private:
-  bool CheckInput();
+  bool CheckInput(const wxString& command = wxEmptyString);
 
   bool m_Busy;
   bool m_Error;

@@ -58,7 +58,7 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
   return *this;
 }
 
-bool wxExProcess::CheckInput()
+bool wxExProcess::CheckInput(const wxString& command)
 {
   if (m_Busy)
   {
@@ -103,7 +103,14 @@ bool wxExProcess::CheckInput()
   
   if (!output.empty())
   {
-    m_Dialog->GetSTCShell()->AddText(output);
+    if (!command.empty() && output.StartsWith(command))
+    {
+      m_Dialog->GetSTCShell()->AddText(output.substr(command.length()));
+    }
+    else
+    {
+      m_Dialog->GetSTCShell()->AddText(output);
+    }
     
     return true;
   }
@@ -351,20 +358,24 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
         os.WriteString(command + "\n");
         
         wxString rest;
+#ifdef __WXMSW__
+        if (command.StartsWith("chdir", &rest))
+#else        
         if (command.StartsWith("cd", &rest))
+#endif        
         {
           rest.Trim(false);
           wxSetWorkingDirectory(rest);
         }
+        
+        wxMilliSleep(10);
+      
+        CheckInput(command);
+      
+        m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
+      
+        m_Timer->Start();
       } 
-      
-      wxMilliSleep(10);
-      
-      CheckInput();
-      
-      m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
-      
-      m_Timer->Start();
     }
     else
     {
