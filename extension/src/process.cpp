@@ -279,6 +279,21 @@ bool wxExProcess::Execute(
   return !m_Error;
 }
 
+void wxExProcess::HandleCommand(const wxString& command) const
+{
+  wxString rest;
+  
+#ifdef __WXMSW__
+  if (command.StartsWith("chdir", &rest))
+#else        
+  if (command.StartsWith("cd", &rest))
+#endif        
+  {
+    rest.Trim(false);
+    wxSetWorkingDirectory(rest);
+  }
+}
+
 bool wxExProcess::IsRunning() const
 {
   if (
@@ -357,19 +372,9 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
         const wxString command(event.GetString());
         os.WriteString(command + "\n");
         
-        wxString rest;
-#ifdef __WXMSW__
-        if (command.StartsWith("chdir", &rest))
-#else        
-        if (command.StartsWith("cd", &rest))
-#endif        
-        {
-          rest.Trim(false);
-          wxSetWorkingDirectory(rest);
-        }
-        
         wxMilliSleep(10);
       
+        HandleCommand(command);
         CheckInput(command);
       
         m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
