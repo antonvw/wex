@@ -371,7 +371,10 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       break;
   
     case ID_STATISTICS_SHOW:
-      m_Notebook->AddPage(m_Statistics.Show(m_Notebook), "Statistics");
+      if (m_Notebook->SelectPage("Statistics") == NULL)
+      {
+        m_Notebook->AddPage(m_Statistics.Show(m_Notebook), "Statistics");
+      }
       break;
   
     case ID_STC_CONFIG_DLG:
