@@ -249,7 +249,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
   switch (m_Type)
   {
     case CONFIG_BUTTON:
-      m_Window = new wxButton(parent, m_Id);
+      // Using a label is necessary for wxGTK.
+      m_Window = new wxButton(parent, m_Id, "default");
       ((wxButton *)m_Window)->SetLabelMarkup(m_Label);
       expand = false;
       break;
