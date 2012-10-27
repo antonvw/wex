@@ -27,7 +27,8 @@ one of these applications, being a full featured source code text editor.
     `../configure --with-gtk`  or   
     `../configure --with-gtk=3`   
     after installing gtk:   
-    `sudo apt-get install libgtk2.0-dev`
+    `sudo apt-get install libgtk2.0-dev`   or   
+    `sudo apt-get install libgtk-3-dev`
 - under mac os 10.4 use gcc 4.0.1 (use v2.9.3 tag) (part of xcode25_8m2258_developerdvd.dmg):   
     `../configure --with-mac`
 
