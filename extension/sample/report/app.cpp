@@ -177,7 +177,11 @@ wxExListViewFileName* wxExRepSampleFrame::Activate(
         {
           if (lexer->GetScintillaLexer() != "cpp")
           {
-            wxLogMessage(lexer->GetScintillaLexer() + ", only cpp for the sample");
+            if (!lexer->GetDisplayLexer().empty())
+            {
+              wxLogMessage(lexer->GetDisplayLexer() + ", only cpp for the sample");
+            }
+              
             return NULL;
           }
         }
