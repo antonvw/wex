@@ -15,13 +15,13 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/defs.h> // for ID_SHELL_COMMAND
+#include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
 BEGIN_EVENT_TABLE(wxExSTCShell, wxExSTC)
   EVT_CHAR(wxExSTCShell::OnChar)
   EVT_KEY_DOWN(wxExSTCShell::OnKey)
-  EVT_MENU(wxID_PASTE, wxExSTCShell::OnCommand)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTCShell::OnStyledText)
 END_EVENT_TABLE()
 
@@ -157,6 +157,7 @@ void wxExSTCShell::KeepCommand()
   m_Commands.push_back(m_Command);
 }
 
+// No longer used, for the moment.
 void wxExSTCShell::OnCommand(wxCommandEvent& command)
 {
   if (!m_Enabled)
@@ -167,16 +168,6 @@ void wxExSTCShell::OnCommand(wxCommandEvent& command)
   
   switch (command.GetId())
   {
-    case wxID_PASTE:
-      // Take care that we cannot paste somewhere inside.
-      if (GetCurrentPos() < m_CommandStartPosition)
-      {
-        DocumentEnd();
-      }
-
-      Paste();
-      break;
-
     default: 
       wxFAIL;
       break;
@@ -206,7 +197,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
   
   const int key = event.GetKeyCode();
 
-  if (key == WXK_RETURN)
+  if (key == WXK_RETURN || key == WXK_TAB)
   {
     ProcessChar(key);
   }
@@ -229,9 +220,11 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
     }
   }
   // Ctrl-Q pressed, used to stop processing.
+  // Ctrl-C pressed and no text selected (otherwise copy), also used to stop processing.
   else if (
     event.GetModifiers() == wxMOD_CONTROL && 
-   (key == 'Q' || key == 'C'))
+   ( key == 'Q' || 
+    (key == 'C' && GetSelectedText().empty())))
   {
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
     wxPostEvent(m_Handler, event);
@@ -239,8 +232,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
   // Ctrl-V pressed, used for pasting as well.
   else if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')
   {
-    if (GetCurrentPos() < m_CommandStartPosition) DocumentEnd();
-    if (m_Echo) event.Skip();
+    Paste();
   }
   // Backspace or delete key pressed.
   else if (key == WXK_BACK || key == WXK_DELETE)
@@ -282,6 +274,24 @@ void wxExSTCShell::OnStyledText(wxStyledTextEvent& event)
   }
   
   // do nothing, keep event from sent to wxExSTC.
+}
+
+void wxExSTCShell::Paste()
+{
+  if (!CanPaste())
+  {
+    return;
+  }
+  
+  // Take care that we cannot paste somewhere inside.
+  if (GetCurrentPos() < m_CommandStartPosition)
+  {
+    DocumentEnd();
+  }
+  
+  wxExSTC::Paste();
+  
+  m_Command += wxExClipboardGet();  
 }
 
 void wxExSTCShell::ProcessChar(int key)
@@ -352,6 +362,20 @@ void wxExSTCShell::ProcessChar(int key)
     if (index >= 0 && index < m_Command.length() && m_Command.length() > 0)
     {
       m_Command.erase(index, 1);
+    }
+  }
+  else if (key == WXK_TAB)
+  {
+    wxDir dir(wxGetCwd());
+    wxString filename;
+    const wxString word(m_Command.AfterLast(' '));
+    
+    if (dir.GetFirst(&filename, word + "*"))
+    {
+      const wxString expansion = filename.Mid(word.length());
+      
+      AddText(expansion);
+      m_Command += expansion;
     }
   }
   else

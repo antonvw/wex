@@ -77,6 +77,9 @@ public:
   /// Returns whether shell processing is enabled.
   bool GetShellEnabled() const {return m_Enabled;};
   
+  // Paste the contents of the clipboard into the document replacing the selection.
+  void Paste();
+  
   /// Processes specified char.
   virtual void ProcessChar(int c);
   
