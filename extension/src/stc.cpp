@@ -1822,6 +1822,8 @@ bool wxExSTC::Open(
       }
     }
 
+    PropertiesMessage();
+    
     success = true;
   }
   else
