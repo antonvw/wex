@@ -105,6 +105,7 @@ protected:
   void OnKey(wxKeyEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:
+  void Expand();
   void KeepCommand();
   /// Set command for command specified as number or as start of command,
   /// Returns true if found and m_Command was set.
