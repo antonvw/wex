@@ -98,12 +98,24 @@ const wxString wxExLink::FindPath(const wxString& text) const
       pos_char2 == wxString::npos || 
       pos_char2 <= pos_char1)
   {
-    // Filter out a possible line number, or ending with : and whitespace.
-    std::vector <wxString> v;
+    // Check whether last word is a file.
+    const wxString word = out.AfterLast(' ').Trim();
     
-    if (wxExMatch("(.+):(([0-9]+)|(\\s*$))", text, v))
+    if (
+      !word.empty() &&
+       wxFileExists(word))
     {
-      out = v[0];
+      out = word;
+    }
+    else
+    {
+      // Filter out a possible line number, or ending with : and whitespace.
+      std::vector <wxString> v;
+    
+      if (wxExMatch("(.+):(([0-9]+)|(\\s*$))", text, v))
+      {
+        out = v[0];
+      }
     }
   }
   else
