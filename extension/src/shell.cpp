@@ -134,6 +134,21 @@ void wxExSTCShell::EnableShell(bool enabled)
   }
 }
 
+void wxExSTCShell::Expand()
+{
+  wxDir dir(wxGetCwd());
+  wxString filename;
+  const wxString word(m_Command.AfterLast(' '));
+    
+  if (dir.GetFirst(&filename, word + "*"))
+  {
+    const wxString expansion = filename.Mid(word.length());
+      
+    AddText(expansion);
+    m_Command += expansion;
+  }
+}
+    
 const wxString wxExSTCShell::GetCommand() const
 {
   if (!m_Commands.empty())
@@ -366,17 +381,7 @@ void wxExSTCShell::ProcessChar(int key)
   }
   else if (key == WXK_TAB)
   {
-    wxDir dir(wxGetCwd());
-    wxString filename;
-    const wxString word(m_Command.AfterLast(' '));
-    
-    if (dir.GetFirst(&filename, word + "*"))
-    {
-      const wxString expansion = filename.Mid(word.length());
-      
-      AddText(expansion);
-      m_Command += expansion;
-    }
+    Expand();
   }
   else
   {
