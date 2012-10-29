@@ -72,7 +72,7 @@ one of these applications, being a full featured source code text editor.
 
 - doxy document sources  
   API documentation is generated from the sources 
-  using [Doxygen 1.7.1](http://www.stack.nl/~dimitri/doxygen/)
+  using [Doxygen 1.8.1.2](http://www.stack.nl/~dimitri/doxygen/)
 
 - translation is done using [poedit 1.5.4](http://www.poedit.net/)    
   - wxExtension has it's own localization file, your application should
