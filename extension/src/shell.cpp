@@ -136,18 +136,61 @@ void wxExSTCShell::EnableShell(bool enabled)
 
 void wxExSTCShell::Expand()
 {
+  const wxString word(m_Command.AfterLast(' '));
+  
+  if (AutoCompActive())
+  {
+    const int index = AutoCompGetCurrent();
+    
+    if (index >=0 && index < m_AutoCompleteList.GetCount())
+    {
+      const wxString expansion = m_AutoCompleteList[index].Mid(word.length());
+      
+      // We cannot use our AddText, as command start pos
+      // should not be changed.
+      wxExSTC::AddText(expansion);
+      m_Command += expansion;
+    }
+    
+    AutoCompCancel();
+    return;
+  }
+  
   wxDir dir(wxGetCwd());
   wxString filename;
-  const wxString word(m_Command.AfterLast(' '));
-    
+  
   if (dir.GetFirst(&filename, word + "*"))
   {
-    const wxString expansion = filename.Mid(word.length());
+    wxString next;
+    
+    if (!dir.GetNext(&next))
+    {
+      const wxString expansion = filename.Mid(word.length());
 
-    // We cannot use our AddText, as command start pos
-    // should not be changed.
-    wxExSTC::AddText(expansion);
-    m_Command += expansion;
+      // We cannot use our AddText, as command start pos
+      // should not be changed.
+      wxExSTC::AddText(expansion);
+      m_Command += expansion;
+    }
+    else
+    {
+      m_AutoCompleteList.Clear();
+      m_AutoCompleteList.Add(next);
+      
+      while (dir.GetNext(&next))
+      {
+        m_AutoCompleteList.Add(next);
+      }
+      
+      wxString list;
+      
+      for (int i = 0; i < m_AutoCompleteList.GetCount(); i++)
+      {
+        list += m_AutoCompleteList[i] + " ";
+      }
+      
+      AutoCompShow(word.length(), list);
+    }
   }
 }
     
@@ -218,9 +261,10 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
   {
     ProcessChar(key);
   }
-  // Up or down key pressed, and at the end of document.
+  // Up or down key pressed, and at the end of document (and autocomplete active)
   else if ((key == WXK_UP || key == WXK_DOWN) &&
-            GetCurrentPos() == GetTextLength())
+            GetCurrentPos() == GetTextLength() &&
+           !AutoCompActive())
   {
     ShowCommand(key);
   }

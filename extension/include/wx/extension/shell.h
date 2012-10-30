@@ -118,6 +118,8 @@ private:
   // it is moved to the end of the list.
   std::list < wxString > m_Commands;
   std::list < wxString >::const_iterator m_CommandsIterator;
+  
+  wxSortedArrayString m_AutoCompleteList;
 
   wxString m_Command;
   const wxString m_CommandEnd;
