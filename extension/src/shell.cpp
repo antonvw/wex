@@ -143,8 +143,10 @@ void wxExSTCShell::Expand()
   if (dir.GetFirst(&filename, word + "*"))
   {
     const wxString expansion = filename.Mid(word.length());
-      
-    AddText(expansion);
+
+    // We cannot use our AddText, as command start pos
+    // should not be changed.
+    wxExSTC::AddText(expansion);
     m_Command += expansion;
   }
 }
