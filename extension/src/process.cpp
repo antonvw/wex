@@ -279,7 +279,7 @@ bool wxExProcess::Execute(
   return !m_Error;
 }
 
-void wxExProcess::HandleCommand(const wxString& command) const
+bool wxExProcess::HandleCommand(const wxString& command) const
 {
   wxString rest;
   
@@ -290,8 +290,18 @@ void wxExProcess::HandleCommand(const wxString& command) const
 #endif        
   {
     rest.Trim(false);
-    wxSetWorkingDirectory(rest);
+    
+    if (rest.empty())
+    {
+      return wxSetWorkingDirectory(wxGetHomeDir());
+    }
+    else
+    {
+      return wxSetWorkingDirectory(rest);
+    }
   }
+  
+  return true;
 }
 
 bool wxExProcess::IsRunning() const
@@ -370,16 +380,18 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
       {
         wxTextOutputStream os(*GetOutputStream());
         const wxString command(event.GetString());
-        os.WriteString(command + "\n");
         
-        wxMilliSleep(10);
+        if (HandleCommand(command))
+        {
+          os.WriteString(command + "\n");
+        
+          wxMilliSleep(10);
       
-        HandleCommand(command);
-        CheckInput(command);
+          CheckInput(command);
+          m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
       
-        m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
-      
-        m_Timer->Start();
+          m_Timer->Start();
+        }
       } 
     }
     else

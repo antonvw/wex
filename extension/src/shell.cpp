@@ -192,7 +192,7 @@ void wxExSTCShell::Expand()
   }
   
   // If we have an expansion.
-  if (!expansion.empty)
+  if (!expansion.empty())
   {
     // We cannot use our AddText, as command start pos
     // should not be changed.
