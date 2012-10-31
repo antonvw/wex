@@ -137,6 +137,7 @@ void wxExSTCShell::EnableShell(bool enabled)
 void wxExSTCShell::Expand()
 {
   const wxString word(m_Command.AfterLast(' '));
+  wxString expansion;
   
   if (AutoCompActive())
   {
@@ -144,53 +145,59 @@ void wxExSTCShell::Expand()
     
     if (index >=0 && index < m_AutoCompleteList.GetCount())
     {
-      const wxString expansion = m_AutoCompleteList[index].Mid(word.length());
-      
-      // We cannot use our AddText, as command start pos
-      // should not be changed.
-      wxExSTC::AddText(expansion);
-      m_Command += expansion;
+      expansion = m_AutoCompleteList[index].Mid(word.length());
     }
     
     AutoCompCancel();
-    return;
+  }
+  else
+  {
+    wxDir dir(wxGetCwd());
+    wxString filename;
+  
+    if (dir.GetFirst(&filename, word + "*"))
+    {
+      wxString next;
+    
+      if (!dir.GetNext(&next))
+      {
+        expansion = filename.Mid(word.length());
+      }
+      else
+      {
+        // Fill the autocomplete list and show it
+        // (when user selected something,
+        // we come back at Expand at entry).
+        m_AutoCompleteList.Clear();
+        m_AutoCompleteList.Add(filename);
+        m_AutoCompleteList.Add(next);
+      
+        while (dir.GetNext(&next))
+        {
+          m_AutoCompleteList.Add(next);
+        }
+      
+        wxString list;
+      
+        for (int i = 0; i < m_AutoCompleteList.GetCount(); i++)
+        {
+          list += m_AutoCompleteList[i] + " ";
+        }
+      
+        list.Trim(); // skip last whitespace separator
+      
+        AutoCompShow(word.length(), list);
+      }
+    }
   }
   
-  wxDir dir(wxGetCwd());
-  wxString filename;
-  
-  if (dir.GetFirst(&filename, word + "*"))
+  // If we have an expansion.
+  if (!expansion.empty)
   {
-    wxString next;
-    
-    if (!dir.GetNext(&next))
-    {
-      const wxString expansion = filename.Mid(word.length());
-
-      // We cannot use our AddText, as command start pos
-      // should not be changed.
-      wxExSTC::AddText(expansion);
-      m_Command += expansion;
-    }
-    else
-    {
-      m_AutoCompleteList.Clear();
-      m_AutoCompleteList.Add(next);
-      
-      while (dir.GetNext(&next))
-      {
-        m_AutoCompleteList.Add(next);
-      }
-      
-      wxString list;
-      
-      for (int i = 0; i < m_AutoCompleteList.GetCount(); i++)
-      {
-        list += m_AutoCompleteList[i] + " ";
-      }
-      
-      AutoCompShow(word.length(), list);
-    }
+    // We cannot use our AddText, as command start pos
+    // should not be changed.
+    wxExSTC::AddText(expansion);
+    m_Command += expansion;
   }
 }
     
@@ -309,6 +316,17 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
       if (m_Echo) event.Skip();
     }
   }
+  else if (key == WXK_ESCAPE)
+  {
+    if (AutoCompActive())
+    {
+      AutoCompCancel();
+    }
+    else
+    {
+      event.Skip();
+    }
+  }
   // The rest.
   else
   {
@@ -361,7 +379,11 @@ void wxExSTCShell::ProcessChar(int key)
   
   if (key == WXK_RETURN)
   {
-    if (m_Command.empty())
+    if (AutoCompActive())
+    {
+      Expand();
+    }
+    else if (m_Command.empty())
     {
       wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
       event.SetString(m_Command);
