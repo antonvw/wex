@@ -136,7 +136,25 @@ void wxExSTCShell::EnableShell(bool enabled)
 
 void wxExSTCShell::Expand()
 {
-  const wxString word(m_Command.AfterLast(' '));
+  // We might have commands:
+  // 1) ls -l s
+  // -> should build list with e.g. sample and src.
+  // path:   s
+  // word:   s
+  // subdir: empty
+  // 2) ls -l src/
+  // path:   src/
+  // subdir: src
+  // word:   empty
+  // -> should build list with all files in src
+  // 3) ls -l src/vi
+  // -> should build list with files in src starting with vi
+  // path:   src/vi
+  // subdir: src
+  // word:   vi
+  const wxString path(m_Command.AfterLast(' '));
+  const wxString word(path.AfterLast(wxFileName::GetPathSeparator()));
+  
   wxString expansion;
   
   if (AutoCompActive())
@@ -152,7 +170,14 @@ void wxExSTCShell::Expand()
   }
   else
   {
-    wxDir dir(wxGetCwd());
+    wxString subdir = path.BeforeLast(wxFileName::GetPathSeparator());
+    
+    if (!subdir.empty())
+    {
+      subdir = wxFileName::GetPathSeparator() + subdir;
+    }
+    
+    wxDir dir(wxGetCwd() + subdir);
     wxString filename;
   
     if (dir.GetFirst(&filename, word + "*"))

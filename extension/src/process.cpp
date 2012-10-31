@@ -293,7 +293,11 @@ bool wxExProcess::HandleCommand(const wxString& command) const
     
     if (rest.empty())
     {
+#ifdef __WXMSW__
+      return true;
+#else        
       return wxSetWorkingDirectory(wxGetHomeDir());
+#endif        
     }
     else
     {
