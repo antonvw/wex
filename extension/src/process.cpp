@@ -202,6 +202,7 @@ bool wxExProcess::Execute(
       true); // use_shell to force STCShell
       
     m_Dialog->SetProcess(this);
+    m_Dialog->SetEscapeId(wxID_NONE);
     m_Dialog->GetSTCShell()->SetEventHandler(this);
   }
       
