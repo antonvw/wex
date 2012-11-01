@@ -292,7 +292,7 @@ bool wxExProcess::HandleCommand(const wxString& command) const
   {
     rest.Trim(false);
     
-    if (rest.empty())
+    if (rest.empty() || rest == "~")
     {
 #ifdef __WXMSW__
       return true;
