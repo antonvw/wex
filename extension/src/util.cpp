@@ -452,7 +452,7 @@ int wxExMatch(
       e.what(), reg.c_str(), e.code()));
   }
 #else
-  wxRegEx regex(reg);
+  wxRegEx regex(reg, wxRE_ADVANCED);
     
   if (regex.Matches(text))
   {
