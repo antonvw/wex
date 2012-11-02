@@ -102,11 +102,18 @@ const wxString wxExLink::FindPath(const wxString& text) const
     // or a : and at least some whitespace.
     std::vector <wxString> v;
     
-    if (wxExMatch("(.+):(([0-9]+)|(\\s+.*))", out, v))
+    bool ok = false;
+    
+    if (wxExMatch("([alnum]+):(([0-9]+)|(\\s+.*))", out, v))
     {
-      out = v[0];
+      if (wxFileExists(v[0]))
+      {
+        out = v[0];
+        ok = true;
+      }
     }
-    else
+    
+    if (!ok)
     {
       // Check whether last word is a file.
       const wxString word = out.AfterLast(' ').Trim();
