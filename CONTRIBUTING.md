@@ -8,6 +8,8 @@
 
 - use STL whenever possible 
 
+- make files are generated using [Bakefile 0.2.9](http://www.bakefile.org/)  
+
 - icons and bitmaps
   - menu and toolbar bitmaps are from wxWidgets, using wxArtProvider
 
