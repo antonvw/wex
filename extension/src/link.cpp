@@ -91,40 +91,14 @@ const wxString wxExLink::FindPath(const wxString& text) const
     pos_char2 = text.rfind("'");
   }
   
-  wxString out = text;
+  wxString out;
 
   // If we did not find anything.
   if (pos_char1 == wxString::npos || 
       pos_char2 == wxString::npos || 
       pos_char2 <= pos_char1)
   {
-    // Filter out a possible line number, 
-    // or a : and at least some whitespace.
-    std::vector <wxString> v;
-    
-    bool ok = false;
-    
-    if (wxExMatch("([alnum]+):(([0-9]+)|(\\s+.*))", out, v))
-    {
-      if (wxFileExists(v[0]))
-      {
-        out = v[0];
-        ok = true;
-      }
-    }
-    
-    if (!ok)
-    {
-      // Check whether last word is a file.
-      const wxString word = out.AfterLast(' ').Trim();
-    
-      if (
-        !word.empty() &&
-         wxFileExists(word))
-      {
-        out = word;
-      }
-    }
+    out = text;
   }
   else
   {
@@ -141,8 +115,36 @@ const wxString wxExLink::FindPath(const wxString& text) const
 
 const wxString wxExLink::GetPath(const wxString& text) const
 {
-  const wxString link(FindPath(text));
+  wxString link(FindPath(text));
 
+  // Filter out a possible line number, 
+  // or a : and at least some whitespace.
+  std::vector <wxString> v;
+  
+  bool ok = false;
+  
+  if (wxExMatch(" *([a-zA-Z0-9/\.-_]+):", link, v))
+  {
+    if (wxFileExists(v[0]))
+    {
+      link = v[0];
+      ok = true;
+    }
+  }
+  
+  if (!ok)
+  {
+    // Check whether last word is a file.
+    const wxString word = link.AfterLast(' ').Trim();
+  
+    if (
+      !word.empty() &&
+       wxFileExists(word))
+    {
+      link = word;
+    }
+  }
+    
   if (
     link.empty() || 
     // Otherwise, if you happen to select text that 
@@ -188,7 +190,7 @@ const wxString wxExLink::GetPath(const wxString& text) const
       }
     }
 
-    if (fullpath.empty())
+    if (fullpath.empty() && !m_PathList.empty())
     {
       fullpath = m_PathList.FindAbsoluteValidPath(link);
       
