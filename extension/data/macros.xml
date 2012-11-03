@@ -80,18 +80,17 @@ Comments you add within xml elements are not saved when you edit macros.
   
   <!-- INPUT-ONCE type -->
   <variable name="author"           type="INPUT-ONCE"/>
-  <variable name="authorp"          type="INPUT-ONCE" prefix="Author:    "/>
+  <variable name="AUTHOR"           type="INPUT-ONCE" prefix="Author:    "/>
 
   <!-- INPUT-SAVE type -->
-  <variable name="purposep"         type="INPUT-SAVE" prefix="Purpose:   "/>
+  <variable name="PURPOSE"          type="INPUT-SAVE" prefix="Purpose:   "/>
   
   <!-- TEMPLATE type -->
   <!-- A C Header Template -->  
   <variable name="cht"              type="TEMPLATE">cht.txt</variable>
   
   <macro name="hdr">
-    <command>:1</command>
-    <command>O</command>
+    <command>g</command>
     <command encoded="true">27</command>
     <command>@cl@</command>
     <command>o</command>
@@ -103,10 +102,10 @@ Comments you add within xml elements are not saved when you edit macros.
     <command>@cc@</command>
     <command>o</command>
     <command encoded="true">27</command>
-    <command>@purposep@</command>
+    <command>@PURPOSE@</command>
     <command>o</command>
     <command encoded="true">27</command>
-    <command>@authorp@</command>
+    <command>@AUTHOR@</command>
     <command>o</command>
     <command encoded="true">27</command>
     <command>@cb@</command>
