@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 /*!
-\mainpage wxextension Main Page
+\mainpage wxExtension Main Page
 
 This is a <a href="https://antonvw@github.com/antonvw/wxExtension.git">public source code library</a>
 containing a collection of wxWidgets extension classes.
