@@ -35,7 +35,6 @@ BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
   EVT_MENU(ID_CLEAR, wxExFrameWithHistory::OnCommand)
-  EVT_MENU(ID_TERMINATED_PROCESS, wxExFrameWithHistory::OnCommand)
   EVT_MENU_RANGE(
     wxID_FILE1, 
     wxID_FILE1 + NUMBER_RECENT_FILES, wxExFrameWithHistory::OnCommand)
@@ -466,10 +465,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       }
       break;
       
-    case ID_TERMINATED_PROCESS:
-      wxBell();
-    break;
-
     default:
       wxFAIL;
     }
