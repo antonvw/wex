@@ -40,8 +40,6 @@ public:
   /// - In case asynchronously (wxEXEC_ASYNC) this call immediately returns.
   ///   The dialog will be shown, with STC component shell enabled,
   ///   and will be filled with output from the process.
-  ///   When the process is finished, a ID_TERMINATED_PROCESS command event
-  ///   is sent to the application top window.
   /// - In case synchronously (wxEXEC_SYNC) this call returns after execute ends, 
   ///   and the output is available using GetOutput.
   ///   The dialog is not shown (call ShowOutput).

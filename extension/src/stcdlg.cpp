@@ -11,7 +11,6 @@
 #endif
 #include <wx/persist/toplevel.h>
 #include <wx/extension/stcdlg.h>
-#include <wx/extension/defs.h> // for ID_SHELL_COMMAND_STOP
 #include <wx/extension/process.h>
 #include <wx/extension/shell.h>
 

@@ -408,7 +408,10 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
   case ID_SHELL_COMMAND_STOP:
     if (IsRunning())
     {
-      Kill();
+      if (Kill() == wxKILL_OK)
+      {
+        wxBell();
+      }
     }
     break;
     
@@ -421,8 +424,6 @@ void wxExProcess::OnTerminate(int pid, int status)
   m_Timer->Stop();
 
   wxLogStatus(_("Ready"));
-  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_PROCESS);
-  wxPostEvent(wxTheApp->GetTopWindow(), event);
   
   // Collect remaining input.
   CheckInput();
