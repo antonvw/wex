@@ -36,7 +36,7 @@ one of these applications, being a full featured source code text editor.
 - under SunOS using GNU make (/usr/sfw/bin):  
     `../configure --with-gtk --disable-shared --without-opengl`  
   
-## Building wxExtension (in the build dir):   
+## Building wxExtension (in the build dir)
   
 - under windows using Microsoft Visual Studio 2012:   
     `make` or `make-release`
