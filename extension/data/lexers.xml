@@ -1901,15 +1901,15 @@ void          while
   <lexer name="makefile" extensions="Makefile;*makefile;makefile*.*;*.pro"/>
   <lexer name="markdown" extensions="*.md">
     <styles>
-      <style no="header1"> bold,eol </style>
-      <style no="header2"> bold,eol </style>
-      <style no="header3"> bold,eol </style>
-      <style no="header4"> bold,eol </style>
-      <style no="header5"> bold,eol </style>
-      <style no="header6"> bold,eol </style>
+      <style no="header1"> size:14,fore:yellow,bold,eol </style>
+      <style no="header2"> size:12,fore:yellow,bold,eol </style>
+      <style no="header3"> fore:yellow,bold,eol </style>
+      <style no="header4"> fore:yellow,bold,eol </style>
+      <style no="header5"> fore:yellow,bold,eol </style>
+      <style no="header6"> fore:yellow,bold,eol </style>
       <style no="ulist_item"> fore:green </style>
       <style no="olist_item"> fore:green </style>
-      <style no="link"> italic </style>
+      <style no="link"> fore:green,italic </style>
       <style no="code"> fore:blue </style>
       <style no="code2"> fore:blue </style>
       <style no="codebk"> fore:blue </style>
