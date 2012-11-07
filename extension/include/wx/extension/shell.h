@@ -17,12 +17,13 @@
 /// by pressing key up and down you browse through the commands.
 /// If a command is entered, an ID_SHELL_COMMAND command event is sent to the
 /// event handler, with the command available as event.GetString().
-/// - If you press Ctrl-Q in the shell,
+/// - If you press Ctrl-Q or Ctrl-C in the shell, and no text is selected,
 ///   a ID_SHELL_COMMAND_STOP is sent to the event handler.
 /// - If you enter 'history', all previously entered commands are shown.
 /// - If you enter !\<number\> the previous \<number\> command is entered.
 /// - If you enter !\<abbreviation\> the last command starting with 
 ///   \<abbreviation\> is entered.
+/// - Tab expansion is available for text entered matching existing files.
 class WXDLLIMPEXP_BASE wxExSTCShell: public wxExSTC
 {
 public:
@@ -103,6 +104,7 @@ protected:
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
+  void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:
   void Expand();
