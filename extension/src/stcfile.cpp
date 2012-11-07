@@ -75,6 +75,8 @@ void wxExSTCFile::DoFileSave(bool save_as)
 {
   size_t size;
   
+  m_STC->SetReadOnly(false);
+  
   if (m_STC->HexMode())
   {
     // TODO: Does this allow NULLs?
