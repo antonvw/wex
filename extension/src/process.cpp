@@ -291,6 +291,7 @@ bool wxExProcess::HandleCommand(const wxString& command) const
 #endif        
   {
     rest.Trim(false);
+    rest.Trim(true);
     
     if (rest.empty() || rest == "~")
     {
@@ -392,12 +393,14 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
         
           wxMilliSleep(10);
       
-          CheckInput(command);
-          m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
-      
-          m_Timer->Start();
+          if (!CheckInput(command))
+          {
+            m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
+          }
         }
       } 
+      
+      m_Timer->Start();
     }
     else
     {
