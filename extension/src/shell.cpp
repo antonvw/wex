@@ -22,6 +22,7 @@
 BEGIN_EVENT_TABLE(wxExSTCShell, wxExSTC)
   EVT_CHAR(wxExSTCShell::OnChar)
   EVT_KEY_DOWN(wxExSTCShell::OnKey)
+  EVT_MIDDLE_UP(wxExSTCShell::OnMouse)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTCShell::OnStyledText)
 END_EVENT_TABLE()
 
@@ -327,6 +328,10 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
   {
     Paste();
   }
+  else if (key == WXK_MBUTTON)
+  {
+    Paste();
+  }
   // Backspace or delete key pressed.
   else if (key == WXK_BACK || key == WXK_DELETE)
   {
@@ -366,6 +371,22 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
     m_CommandsIterator = m_Commands.end();
 
     if (m_Echo) event.Skip();
+  }
+}
+
+void wxExSTCShell::OnMouse(wxMouseEvent& event)
+{
+  if (event.MiddleUp())
+  {
+    if (CanCopy())
+    {
+      Copy();
+      Paste();
+    }
+  }
+  else
+  {
+    event.Skip();
   }
 }
 
