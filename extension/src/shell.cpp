@@ -323,11 +323,19 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
     wxPostEvent(m_Handler, event);
   }
-  // Ctrl-V pressed, used for pasting as well.
+  // Ctrl-V pressed, used for pasting.
   else if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')
   {
     Paste();
   }
+  // Shift-Insert key pressed, used for pasting.
+  else if (
+    event.GetModifiers() == wxMOD_SHIFT && 
+    key == WXK_INSERT) 
+  {
+    Paste();
+  }
+  // Middle mouse button, to paste, though actually OnMouse is used.
   else if (key == WXK_MBUTTON)
   {
     Paste();
