@@ -123,7 +123,7 @@ const wxString wxExLink::GetPath(const wxString& text) const
   
   bool ok = false;
   
-  if (wxExMatch(" *([a-zA-Z0-9/.-_]+):", link, v))
+  if (wxExMatch("([a-zA-Z0-9/.-_]+):", link, v))
   {
     if (wxFileExists(v[0]))
     {
