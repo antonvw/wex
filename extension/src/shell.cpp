@@ -497,10 +497,11 @@ void wxExSTCShell::ProcessChar(int key)
 
     m_CommandsIterator = m_Commands.end();
   }
-  else if (key == WXK_BACK)
+  else if (key == WXK_BACK || key == WXK_DELETE)
   {
-    // Delete the key at current position (-1  because of WXK_BACK).
-    const int index = GetCurrentPos() - m_CommandStartPosition - 1;
+    // Delete the key at current position.
+    const int offset = (key == WXK_BACK ? 1: 0);
+    const int index = GetCurrentPos() - m_CommandStartPosition - offset;
     
     if (index >= 0 && index < m_Command.length() && m_Command.length() > 0)
     {
