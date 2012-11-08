@@ -188,6 +188,11 @@ void wxExSTCShell::Expand()
       if (!dir.GetNext(&next))
       {
         expansion = filename.Mid(word.length());
+        
+        if (wxDirExists(dir.GetNameWithSep() + filename))
+        {
+          expansion += wxFileName::GetPathSeparator();
+        }
       }
       else
       {
@@ -220,10 +225,11 @@ void wxExSTCShell::Expand()
   // If we have an expansion.
   if (!expansion.empty())
   {
+    m_Command += expansion;
+    
     // We cannot use our AddText, as command start pos
     // should not be changed.
     wxExSTC::AddText(expansion);
-    m_Command += expansion;
   }
 }
     
