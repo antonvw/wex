@@ -105,11 +105,11 @@ bool wxExProcess::CheckInput(const wxString& command)
   {
     if (!command.empty() && output.StartsWith(command))
     {
-      m_Dialog->GetSTCShell()->AddText(output.substr(command.length()));
+      m_Dialog->GetSTCShell()->AppendText(output.substr(command.length()));
     }
     else
     {
-      m_Dialog->GetSTCShell()->AddText(output);
+      m_Dialog->GetSTCShell()->AppendText(output);
     }
     
     return true;
@@ -374,7 +374,7 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
     
     if (m_Command != "cmd")
     {
-      m_Dialog->GetSTCShell()->AddText(m_Dialog->GetSTCShell()->GetEOL());
+      m_Dialog->GetSTCShell()->AppendText(m_Dialog->GetSTCShell()->GetEOL());
     }
     
     if (IsRunning()) 

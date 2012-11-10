@@ -57,8 +57,8 @@ public:
   /// Destructor, keeps the commands in the config, if required.
  ~wxExSTCShell();
  
-  /// Adds text, and updated the command start position.
-  void AddText(const wxString& text);
+  /// Appends text, and updates the command start position.
+  void AppendText(const wxString& text);
  
   /// Enable/disable shell processing.
   /// Default (and after constructed) shell processing is enabled.

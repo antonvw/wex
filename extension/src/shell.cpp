@@ -114,9 +114,10 @@ wxExSTCShell::~wxExSTCShell()
   }
 }
 
-void wxExSTCShell::AddText(const wxString& text)
+void wxExSTCShell::AppendText(const wxString& text)
 {
-  wxExSTC::AddText(text);
+  wxExSTC::AppendText(text);
+  DocumentEnd();
   EnsureCaretVisible();
   m_CommandStartPosition = GetCurrentPos();
 }
@@ -229,9 +230,9 @@ void wxExSTCShell::Expand()
   {
     m_Command += expansion;
     
-    // We cannot use our AddText, as command start pos
+    // We cannot use our AppendText, as command start pos
     // should not be changed.
-    wxExSTC::AddText(expansion);
+    AddText(expansion);
   }
 }
     
