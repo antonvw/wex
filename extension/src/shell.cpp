@@ -24,6 +24,8 @@ BEGIN_EVENT_TABLE(wxExSTCShell, wxExSTC)
   EVT_KEY_DOWN(wxExSTCShell::OnKey)
   EVT_MIDDLE_UP(wxExSTCShell::OnMouse)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTCShell::OnStyledText)
+  EVT_STC_DO_DROP(wxID_ANY, wxExSTCShell::OnStyledText)  
+  EVT_STC_START_DRAG(wxID_ANY, wxExSTCShell::OnStyledText)
 END_EVENT_TABLE()
 
 wxExSTCShell::wxExSTCShell(
@@ -409,10 +411,29 @@ void wxExSTCShell::OnStyledText(wxStyledTextEvent& event)
   if (!m_Enabled)
   {
     event.Skip();
-    return;
   }
-  
-  // do nothing, keep event from sent to wxExSTC.
+  else if (event.GetEventType() == wxEVT_STC_CHARADDED)
+  {
+    // do nothing, keep event from sent to wxExSTC.
+  }
+  // Currently no drag/drop, though we might be able to
+  // drag/drop copy to command line.
+  else if (event.GetEventType() == wxEVT_STC_START_DRAG)
+  {
+#if wxUSE_DRAG_AND_DROP
+    event.SetDragAllowMove(false);
+#endif    
+    
+    event.Skip();
+  }
+  else if (event.GetEventType() == wxEVT_STC_DO_DROP)
+  {
+#if wxUSE_DRAG_AND_DROP
+      event.SetDragResult(wxDragNone);
+#endif    
+    
+    event.Skip();
+  }
 }
 
 void wxExSTCShell::Paste()
