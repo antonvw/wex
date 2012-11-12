@@ -293,21 +293,6 @@ int wxExGetIconID(const wxFileName& filename)
   }
 }
 
-int wxExGetLineNumber(const wxString& text)
-{
-  // Get text after :.
-  const size_t pos_char = text.rfind(":");
-
-  if (pos_char == wxString::npos)
-  {
-    return 0;
-  }
-
-  const wxString linenumber = text.substr(pos_char + 1);
-
-  return atoi(linenumber.c_str());
-}
-
 int wxExGetNumberOfLines(const wxString& text, bool trim)
 {
   if (text.empty())
@@ -518,20 +503,21 @@ void wxExOpenFiles(
     }
     else
     {
-      int line = 0;
+      int line_no = 0;
 
       if (!wxFileName(file).FileExists() && file.Contains(":"))
       {
-        const int val = atoi(file.AfterLast(':').c_str());
+        wxExLink link;
+        int col_no = 0;
+        const wxString val = link.GetPath(file, line_no, col_no);
         
-        if (val != 0)
+        if (line_no != 0)
         {
-          line = val;
-          file = file.BeforeLast(':');
+          file = val;
         }
       }
 
-      frame->OpenFile(file, line, wxEmptyString, file_flags);
+      frame->OpenFile(file, line_no, wxEmptyString, file_flags);
     }
   }
 }

@@ -24,6 +24,11 @@ wxExLink::wxExLink(wxExSTC* stc)
 
 bool wxExLink::AddBasePath()
 {
+  if (m_STC == NULL)
+  {
+    return false;
+  }
+  
   // Find the base path, if this is not yet on the list, add it.
   const wxString basepath_text = "Basepath: ";
   const int find = m_STC->FindText(
@@ -73,7 +78,9 @@ const wxString wxExLink::FindPath(const wxString& text) const
   }
 
   // If that did not succeed, then get text between : and : (in .po files).
-  if (m_STC->GetLexer().GetScintillaLexer() == "po" && 
+  if (
+    m_STC != NULL &&
+    m_STC->GetLexer().GetScintillaLexer() == "po" && 
       (pos_char1 == wxString::npos || 
        pos_char2 == wxString::npos || 
        pos_char2 <= pos_char1))
@@ -113,7 +120,10 @@ const wxString wxExLink::FindPath(const wxString& text) const
   return out;
 }
 
-const wxString wxExLink::GetPath(const wxString& text) const
+const wxString wxExLink::GetPath(
+  const wxString& text,
+  int& line_no,
+  int& column_no) const
 {
   wxString link(FindPath(text));
 
@@ -128,6 +138,17 @@ const wxString wxExLink::GetPath(const wxString& text) const
     if (wxFileExists(v[0]))
     {
       link = v[0];
+      
+      if (v.size() > 1)
+      {
+        line_no = atoi(v[1]);
+        
+        if (v.size() > 2)
+        {
+          column_no = atoi(v[2]);
+        }
+      }
+      
       ok = true;
     }
   }
@@ -164,7 +185,10 @@ const wxString wxExLink::GetPath(const wxString& text) const
   }
   else
   {
-    if (file.IsRelative() && m_STC->GetFileName().FileExists())
+    if (
+      file.IsRelative() && 
+      m_STC != NULL && 
+      m_STC->GetFileName().FileExists())
     {
       if (file.MakeAbsolute(m_STC->GetFileName().GetPath()))
       {

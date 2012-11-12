@@ -683,9 +683,16 @@ void wxExGuiTestFixture::testLink()
   CPPUNIT_ASSERT( link.AddBasePath());
   CPPUNIT_ASSERT( link.AddBasePath());
   
-  CPPUNIT_ASSERT( link.GetPath("test") == "/usr/bin/test");
+  int line_no = 0;
+  int col_no = 0;
+  CPPUNIT_ASSERT( link.GetPath("test", line_no, col_no) == "/usr/bin/test");
   // an eol should be skipped
-  CPPUNIT_ASSERT( link.GetPath("test\n") == "/usr/bin/test");
+  CPPUNIT_ASSERT( link.GetPath("test\n", line_no, col_no) == "/usr/bin/test");
+  
+  CPPUNIT_ASSERT( link.GetPath("test on line: 1200", line_no, col_no) == "test on line");
+  CPPUNIT_ASSERT( line_no == 1200);
+  CPPUNIT_ASSERT( link.GetPath("test:50", line_no, col_no) == "test");
+  CPPUNIT_ASSERT( line_no == 50);
   
   link.SetFromConfig();
   
@@ -1214,9 +1221,6 @@ void wxExGuiTestFixture::testUtil()
   
   CPPUNIT_ASSERT( wxExGetEndOfText("test", 3).size() == 3);
   CPPUNIT_ASSERT( wxExGetEndOfText("testtest", 3).size() == 3);
-  
-  CPPUNIT_ASSERT( wxExGetLineNumber("test on line: 1200") == 1200);
-  CPPUNIT_ASSERT( wxExGetLineNumber("test:50") == 50);
   
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test") == 1);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\n") == 2);
