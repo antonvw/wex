@@ -81,9 +81,6 @@ const wxUniChar wxExGetFieldSeparator();
 /// wxTheFileIconsTable->GetSmallImageList()->GetBitmap(wxExGetIconID(file))
 int wxExGetIconID(const wxFileName& filename);
 
-/// Gets a line number from a string.
-int wxExGetLineNumber(const wxString& text);
-
 /// Gets the number of lines in a (trimmed) string.
 /// If text is empty, 0 is returned, otherwise at least 1.
 int wxExGetNumberOfLines(const wxString& text, bool trimmed = false);

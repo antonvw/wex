@@ -1354,7 +1354,9 @@ bool wxExSTC::LinkOpen(wxString* filename)
 {
   const wxString sel = GetSelectedText();
   const wxString text = (!sel.empty() ? sel: GetCurLine());
-  const wxString path = m_Link.GetPath(text);
+  int line_no = 0;
+  int col_no = 0;
+  const wxString path = m_Link.GetPath(text, line_no, col_no);
   
   if (!path.empty())
   {
@@ -1366,7 +1368,7 @@ bool wxExSTC::LinkOpen(wxString* filename)
       {
         return frame->OpenFile(
           path,
-          wxExGetLineNumber(text), 
+          line_no, 
           wxEmptyString, 
           GetFlags() | STC_WIN_FROM_OTHER);          
       }
@@ -1374,7 +1376,7 @@ bool wxExSTC::LinkOpen(wxString* filename)
       {
         return Open(
           path, 
-          wxExGetLineNumber(text), 
+          line_no, 
           wxEmptyString, 
           GetFlags() | STC_WIN_FROM_OTHER);
       }
