@@ -11,7 +11,6 @@
 #endif
 #include <wx/config.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
-#include <wx/utils.h> // for wxGetEnv
 #include <wx/extension/process.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
@@ -221,9 +220,7 @@ bool wxExProcess::Execute(
         m_Command == "tcsh" ||
         m_Command == "sh")
     {
-      wxString host;
-      wxGetEnv("HOST", &host);
-      m_Dialog->GetSTCShell()->SetPrompt(host + ">", false);
+      m_Dialog->GetSTCShell()->SetPrompt(">", false);
     }
     else
     {
