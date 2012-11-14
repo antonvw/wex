@@ -23,6 +23,7 @@ public:
     const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
+    int col_number = 0,
     long flags = 0);
 protected:
   void OnClose(wxCloseEvent& event);

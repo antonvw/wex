@@ -504,11 +504,11 @@ void wxExOpenFiles(
     else
     {
       int line_no = 0;
+      int col_no = 0;
 
       if (!wxFileName(file).FileExists() && file.Contains(":"))
       {
         wxExLink link;
-        int col_no = 0;
         const wxString val = link.GetPath(file, line_no, col_no);
         
         if (line_no != 0)
@@ -517,7 +517,7 @@ void wxExOpenFiles(
         }
       }
 
-      frame->OpenFile(file, line_no, wxEmptyString, file_flags);
+      frame->OpenFile(file, line_no, wxEmptyString, col_no, file_flags);
     }
   }
 }

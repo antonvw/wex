@@ -43,6 +43,7 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
+  int col_number,
   long flags,
   long type,
   wxWindowID id,
@@ -54,6 +55,7 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
       filename, 
       line_number, 
       match, 
+      col_number,
       flags, 
       type, 
       id, 
@@ -96,11 +98,12 @@ bool wxExSTCWithFrame::Open(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
+  int col_number,
   long flags)
 {
   const bool retValue = (flags & STC_WIN_FROM_OTHER ?
      m_Frame->OpenFile(filename, line_number, match, flags):
-     wxExSTC::Open(filename, line_number, match, flags));
+     wxExSTC::Open(filename, line_number, match, col_number, flags));
 
   if (retValue)
   {

@@ -198,6 +198,7 @@ Frame::Frame(bool open_recent)
           wxExFileName(GetRecentProject()),
           0,
           wxEmptyString,
+          0,
           WIN_IS_PROJECT);
       }
       else
@@ -1243,6 +1244,7 @@ bool Frame::OpenFile(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
+  int col_number,
   long flags)
 {
   if (!filename.GetStat().IsOk())
@@ -1321,6 +1323,7 @@ bool Frame::OpenFile(
         filename,
         line_number,
         match,
+        col_number,
         flags);
 
       notebook->AddPage(
