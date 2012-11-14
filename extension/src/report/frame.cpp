@@ -195,7 +195,7 @@ void wxExFrameWithHistory::DoRecent(
     }
     else
     {
-      OpenFile(file, 0, wxEmptyString, flags);
+      OpenFile(file, 0, wxEmptyString, 0, flags);
     }
     
     if (flags == WIN_IS_PROJECT)
@@ -576,9 +576,10 @@ bool wxExFrameWithHistory::OpenFile(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
+  int col_number,
   long flags)
 {
-  if (wxExManagedFrame::OpenFile(filename, line_number, match, flags))
+  if (wxExManagedFrame::OpenFile(filename, line_number, match, col_number, flags))
   {
     SetRecentFile(filename.GetFullPath());
     return true;

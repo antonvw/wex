@@ -75,6 +75,7 @@ public:
     const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
+    int col_number = 0,
     long win_flags = STC_WIN_DEFAULT,
     long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
@@ -182,7 +183,8 @@ public:
   /// Goes to line and selects the line or the specified text in it.
   void GotoLineAndSelect(
     int line_number, 
-    const wxString& text = wxEmptyString);
+    const wxString& text = wxEmptyString,
+    int col_number = 0);
 
   /// Guesses the file type using a small sample size from this document, 
   /// and sets EOL mode and updates statusbar if it found eols.
@@ -211,6 +213,8 @@ public:
     /// if not empty selects the text on that line (if line was specified)
     /// or finds text from begin (if line was 0) or end (line was -1)
     const wxString& match = wxEmptyString,
+    /// goes to column if col_number > 0
+    int col_number = 0,
     /// flags
     long flags = 0);
 

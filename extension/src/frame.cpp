@@ -411,13 +411,14 @@ bool wxExFrame::OpenFile(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
+  int col_number,
   long flags)
 {
   wxExSTC* stc = GetSTC();
 
   if (stc != NULL)
   {
-    return stc->Open(filename, line_number, match, flags);
+    return stc->Open(filename, line_number, match, col_number, flags);
   }
 
   return false;

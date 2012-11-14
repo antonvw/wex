@@ -697,7 +697,7 @@ void wxExGuiTestFixture::testLink()
   link.SetFromConfig();
   
   // Return empty if no path could be found.
-  CPPUNIT_ASSERT( link.GetPath("test").empty());
+  CPPUNIT_ASSERT( link.GetPath("test", line_no, col_no).empty());
 }
 
 void wxExGuiTestFixture::testListItem()

@@ -118,6 +118,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
+  int col_number,
   long flags,
   long menu_flags,
   wxWindowID id,
@@ -140,7 +141,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
 
   Initialize(filename.GetStat().IsOk());
 
-  Open(filename, line_number, match, flags);
+  Open(filename, line_number, match, col_number, flags);
 }
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
@@ -162,7 +163,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 
   if (stc.m_File.GetFileName().GetStat().IsOk())
   {
-    Open(stc.m_File.GetFileName(), -1, wxEmptyString, GetFlags());
+    Open(stc.m_File.GetFileName(), -1, wxEmptyString, 0, GetFlags());
   }
 }
 
@@ -1078,7 +1079,8 @@ bool wxExSTC::GotoDialog()
 
 void wxExSTC::GotoLineAndSelect(
   int line_number, 
-  const wxString& text)
+  const wxString& text,
+  int col_number)
 {
   // line_number and m_Goto start with 1 and is allowed to be 
   // equal to number of lines.
@@ -1111,6 +1113,10 @@ void wxExSTC::GotoLineAndSelect(
     {
       SetSelection(GetTargetStart(), GetTargetEnd());
     }
+  }
+  else if (col_number > 0)
+  {
+    SetCurrentPos(GetCurrentPos() + col_number);
   }
 }
 
@@ -1369,7 +1375,8 @@ bool wxExSTC::LinkOpen(wxString* filename)
         return frame->OpenFile(
           path,
           line_no, 
-          wxEmptyString, 
+          wxEmptyString,
+          col_no,
           GetFlags() | STC_WIN_FROM_OTHER);          
       }
       else
@@ -1378,6 +1385,7 @@ bool wxExSTC::LinkOpen(wxString* filename)
           path, 
           line_no, 
           wxEmptyString, 
+          col_no,
           GetFlags() | STC_WIN_FROM_OTHER);
       }
     }
@@ -1785,6 +1793,7 @@ bool wxExSTC::Open(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
+  int col_number,
   long flags)
 {
   if (m_File.GetFileName() == filename && line_number > 0)
@@ -1804,7 +1813,7 @@ bool wxExSTC::Open(
 
     if (line_number > 0)
     {
-      GotoLineAndSelect(line_number, match);
+      GotoLineAndSelect(line_number, match, col_number);
     }
     else
     {

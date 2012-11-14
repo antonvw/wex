@@ -34,6 +34,7 @@ public:
     const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
+    int col_number = 0,
     long flags = STC_WIN_DEFAULT,
     long type = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
@@ -49,6 +50,7 @@ public:
     const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
+    int col_number = 0,
     long flags = STC_WIN_DEFAULT);
 
   /// Invokes base properties message and sets the frame title.
