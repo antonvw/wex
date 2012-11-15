@@ -44,7 +44,7 @@ bool App::OnInit()
     return false;
   }
 
-  Frame* frame = new Frame(m_Files.Count() == 0);
+  Frame* frame = new Frame(m_Files.empty());
   frame->Show();
 
   wxExOpenFiles(frame, m_Files, 0, wxDIR_FILES); // only files in this dir
@@ -57,7 +57,7 @@ void App::OnInitCmdLine(wxCmdLineParser& parser)
   wxApp::OnInitCmdLine(parser);
 
   parser.AddParam(
-    "input file:line number",
+    "input file:line number:column number",
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
 }
