@@ -508,10 +508,9 @@ void wxExOpenFiles(
 
       if (!wxFileName(file).FileExists() && file.Contains(":"))
       {
-        wxExLink link;
-        const wxString val = link.GetPath(file, line_no, col_no);
+        const wxString val = wxExLink().GetPath(file, line_no, col_no);
         
-        if (line_no != 0)
+        if (!val.empty())
         {
           file = val;
         }
