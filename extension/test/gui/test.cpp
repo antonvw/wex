@@ -20,7 +20,7 @@
 void wxExGuiTestFixture::setUp()
 {
   // Create the global lexers object, 
-  // it should be present in ~/.wxex-test-app
+  // it should be present in ~/.wxex-test-gui
   // (depending on platform, configuration).
   wxExLexers::Get();
 }
@@ -666,33 +666,69 @@ void wxExGuiTestFixture::testLink()
   
   wxExLink link(stc);  
   
-  CPPUNIT_ASSERT( link.FindPath("").empty());
-  CPPUNIT_ASSERT(!link.FindPath("xxxx").empty());
-  CPPUNIT_ASSERT(!link.FindPath("./test").empty());
-  CPPUNIT_ASSERT( link.FindPath("<test>") == "test");
-  CPPUNIT_ASSERT( link.FindPath("test:") == "test");
-  CPPUNIT_ASSERT( link.FindPath(":test") == ":test");
-  CPPUNIT_ASSERT( link.FindPath(": test") == ": test");
-  CPPUNIT_ASSERT( link.FindPath("c:test") == "c:test");
-  CPPUNIT_ASSERT( link.FindPath("c:\\test") == "c:\\test");
-  CPPUNIT_ASSERT( link.FindPath("c:test") == "c:test");
-  CPPUNIT_ASSERT( link.FindPath("test:50") == "test");
-  CPPUNIT_ASSERT( link.FindPath("test:500000") == "test");
-  CPPUNIT_ASSERT( link.FindPath("test:xyz") == "test:xyz");
-  
   CPPUNIT_ASSERT( link.AddBasePath());
   CPPUNIT_ASSERT( link.AddBasePath());
   
   int line_no = 0;
   int col_no = 0;
-  CPPUNIT_ASSERT( link.GetPath("test", line_no, col_no) == "/usr/bin/test");
-  // an eol should be skipped
-  CPPUNIT_ASSERT( link.GetPath("test\n", line_no, col_no) == "/usr/bin/test");
   
-  CPPUNIT_ASSERT( link.GetPath("test on line: 1200", line_no, col_no) == "test on line");
-  CPPUNIT_ASSERT( line_no == 1200);
-  CPPUNIT_ASSERT( link.GetPath("test:50", line_no, col_no) == "test");
+  // Test empty, or illegal paths.
+  CPPUNIT_ASSERT( link.GetPath("", line_no, col_no).empty());
+  CPPUNIT_ASSERT( link.GetPath("xxxx", line_no, col_no).empty());
+  CPPUNIT_ASSERT( link.GetPath("1 othertest:" , line_no, col_no).empty());
+  CPPUNIT_ASSERT( link.GetPath(":test" , line_no, col_no).empty());
+  CPPUNIT_ASSERT( link.GetPath(": test" , line_no, col_no).empty());
+  CPPUNIT_ASSERT( link.GetPath("c:test" , line_no, col_no).empty());
+  CPPUNIT_ASSERT( link.GetPath("c:\\test" , line_no, col_no).empty());
+  CPPUNIT_ASSERT( link.GetPath("c:test" , line_no, col_no).empty());
+  
+  // Test existing file int the basepath.
+  CPPUNIT_ASSERT( link.GetPath("test", line_no, col_no) == "/usr/bin/test");
+  CPPUNIT_ASSERT( line_no == 0);
+  CPPUNIT_ASSERT( col_no == 0);
+  
+  CPPUNIT_ASSERT( link.GetPath("./test", line_no, col_no) == "/usr/bin/./test");
+  CPPUNIT_ASSERT( line_no == 0);
+  CPPUNIT_ASSERT( col_no == 0);
+  
+  // Whitespace should be skipped.
+  CPPUNIT_ASSERT( link.GetPath("  test \n", line_no, col_no) == "/usr/bin/test");
+  CPPUNIT_ASSERT( line_no == 0);
+  CPPUNIT_ASSERT( col_no == 0);
+  
+  CPPUNIT_ASSERT( link.GetPath("<test>", line_no, col_no) == "/usr/bin/test");
+  CPPUNIT_ASSERT( line_no == 0);
+  CPPUNIT_ASSERT( col_no == 0);
+  
+  CPPUNIT_ASSERT( link.GetPath("test:", line_no, col_no) == "/usr/bin/test");
+  CPPUNIT_ASSERT( line_no == 0);
+  CPPUNIT_ASSERT( col_no == 0);
+  
+  CPPUNIT_ASSERT( link.GetPath("test:xyz", line_no, col_no) == "/usr/bin/test");
+  CPPUNIT_ASSERT( line_no == 0);
+  CPPUNIT_ASSERT( col_no == 0);
+  
+  // Test incorrect file line_no.
+  CPPUNIT_ASSERT( link.GetPath("on xxxx: 1200", line_no, col_no).empty());
+  CPPUNIT_ASSERT( line_no == 0);
+  CPPUNIT_ASSERT( col_no == 0);
+  
+  CPPUNIT_ASSERT( link.GetPath("on xxxx: not a number", line_no, col_no).empty());
+  CPPUNIT_ASSERT( line_no == 0);
+  CPPUNIT_ASSERT( col_no == 0);
+  
+  // Test correct file, line_no and col no.
+  CPPUNIT_ASSERT( link.GetPath("test:50", line_no, col_no) == "/usr/bin/test");
   CPPUNIT_ASSERT( line_no == 50);
+  CPPUNIT_ASSERT( col_no == 0);
+  
+  CPPUNIT_ASSERT( link.GetPath("test:50:6", line_no, col_no) == "/usr/bin/test");
+  CPPUNIT_ASSERT( line_no == 50);
+  CPPUNIT_ASSERT( col_no == 6);
+  
+  CPPUNIT_ASSERT( link.GetPath("test:500000", line_no, col_no) == "/usr/bin/test");
+  CPPUNIT_ASSERT( line_no == 500000);
+  CPPUNIT_ASSERT( col_no == 0);
   
   link.SetFromConfig();
   
@@ -915,7 +951,8 @@ void wxExGuiTestFixture::testProcess()
   process.ShowOutput();
 
   // Repeat last process (sync).
-  CPPUNIT_ASSERT( process.Execute("", wxEXEC_SYNC));
+  // Currently dialog might be cancelled, so do not check return value.
+  process.Execute("", wxEXEC_SYNC);
   CPPUNIT_ASSERT(!process.GetError());
   CPPUNIT_ASSERT(!process.GetOutput().empty());
 
@@ -1041,20 +1078,30 @@ void wxExGuiTestFixture::testStatusBar()
 
 void wxExGuiTestFixture::testSTC()
 {
+  // Some methods that do not return values, just call them to 
+  // prevent cores, and improve test coverage.
+  
   wxExSTC::ConfigDialog(wxTheApp->GetTopWindow(), "test stc", wxExSTC::STC_CONFIG_MODELESS);
   
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  
   CPPUNIT_ASSERT(stc->GetText() == "hello stc");
   CPPUNIT_ASSERT(stc->FindNext(wxString("hello"))); // necessary ??
   
+  CPPUNIT_ASSERT(stc->AllowChangeIndicator());
+  
   stc->AppendText("more text");
   
-  CPPUNIT_ASSERT(stc->GetText() != "hello stc");
+  CPPUNIT_ASSERT( stc->GetText() != "hello stc");
   
   stc->AppendTextHexMode("in hex mode");
   
+  CPPUNIT_ASSERT( stc->CanCut());
+  CPPUNIT_ASSERT( stc->CanPaste());
+  
   stc->DocumentStart();
   CPPUNIT_ASSERT( stc->FindNext(wxString("more text")));
+  CPPUNIT_ASSERT( stc->GetFindString() != "more text");
   CPPUNIT_ASSERT( stc->ReplaceAll("more", "less") == 1);
   CPPUNIT_ASSERT(!stc->FindNext(wxString("more text")));
   CPPUNIT_ASSERT(!stc->FindNext());
@@ -1062,7 +1109,15 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT( stc->ReplaceNext("less text", ""));
   CPPUNIT_ASSERT(!stc->ReplaceNext());
   CPPUNIT_ASSERT(!stc->FindNext(wxString("less text")));
-
+  CPPUNIT_ASSERT( stc->GetFindString() != "less text");
+  
+  stc->GotoLineAndSelect(1);
+  CPPUNIT_ASSERT(stc->GetCurrentLine() == 0);
+  CPPUNIT_ASSERT(stc->GetCurrentPos() == 0);
+  stc->GotoLineAndSelect(1, wxEmptyString, 5);
+  CPPUNIT_ASSERT(stc->GetCurrentLine() == 0);
+  CPPUNIT_ASSERT(stc->GetCurrentPos() == 5);
+  
   stc->SetText("new text");
   CPPUNIT_ASSERT(stc->GetText() == "new text");
   
@@ -1088,13 +1143,27 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT( stc->Indent(3,4));
   CPPUNIT_ASSERT( stc->Indent(3));
   
+  stc->ConfigGet();
+  
+  stc->Cut();
+  
+  //  stc->FileTypeMenu();
+  
+  stc->Fold();
+  
+  CPPUNIT_ASSERT(!stc->GetEOL().empty());
+  
+  stc->GuessType();
+  
   CPPUNIT_ASSERT( stc->MarkerDeleteAllChange());
+  
+  stc->Paste();
   
   CPPUNIT_ASSERT(!stc->PositionRestore());
   stc->PositionSave();
   CPPUNIT_ASSERT( stc->PositionRestore());
   
-//  stc->Print();
+  //  stc->Print();
   stc->PrintPreview();
   
   stc->PropertiesMessage();
@@ -1104,6 +1173,7 @@ void wxExGuiTestFixture::testSTC()
   stc->ResetMargins();
   
   CPPUNIT_ASSERT(!stc->SetIndicator(wxExIndicator(4,5), 100, 200));
+  
   stc->SetLexerProperty("xx", "yy");
   
   CPPUNIT_ASSERT(!stc->SmartIndentation());
@@ -1238,6 +1308,8 @@ void wxExGuiTestFixture::testUtil()
   
   std::vector<wxString> v;
   CPPUNIT_ASSERT( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
+  CPPUNIT_ASSERT( wxExMatch("(\\d+)ok(\\d+)nice", "19999ok245nice", v) == 2);
+  CPPUNIT_ASSERT( wxExMatch(" ([\\d\\w]+)", " 19999ok245nice ", v) == 1);
   
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.txt"));

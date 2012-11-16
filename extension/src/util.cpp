@@ -414,6 +414,8 @@ int wxExMatch(
   const wxString& text, 
   std::vector < wxString > & v)
 {
+  v.clear();
+  
 #ifdef __WXMSW__ //wxExUSE_CPP0X  
 // even gcc 4.6.1 asserts on all regex
   try 
@@ -441,17 +443,9 @@ int wxExMatch(
     
   if (regex.Matches(text))
   {
-    size_t start, len;
-    
-    for (int i = 1; i < regex.GetMatchCount(); i++)
+    for (int i = 0; i < regex.GetMatchCount() - 1; i++)
     {
-      if (regex.GetMatch(&start, &len, i))
-      {
-        if (start + len < text.size())
-        {
-          v.push_back(text.substr(start, len));
-        }
-      }
+      v.push_back(regex.GetMatch(text, i + 1));
     }
   }
 #endif
