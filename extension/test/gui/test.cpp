@@ -658,82 +658,67 @@ void wxExGuiTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->Read());
 }
 
+
+void wxExGuiTestFixture::link(
+  const wxExLink& link,
+  const wxString& path, 
+  const wxString& expect,
+  int expect_line_no,
+  int expect_col_no)
+{
+  int line_no = 0;
+  int col_no = 0;
+  
+  CPPUNIT_ASSERT(link.GetPath(path, line_no, col_no) == expect);
+  CPPUNIT_ASSERT(line_no == expect_line_no);
+  CPPUNIT_ASSERT(col_no == expect_col_no);
+}
+
 void wxExGuiTestFixture::testLink()
 {
   wxExSTC* stc = new wxExSTC(
     wxTheApp->GetTopWindow(), 
     "hello stc, \"X-Poedit-Basepath: /usr/bin\\n\"");
   
-  wxExLink link(stc);  
+  wxExLink lnk(stc);  
   
-  CPPUNIT_ASSERT( link.AddBasePath());
-  CPPUNIT_ASSERT( link.AddBasePath());
-  
-  int line_no = 0;
-  int col_no = 0;
+  CPPUNIT_ASSERT( lnk.AddBasePath());
+  CPPUNIT_ASSERT( lnk.AddBasePath());
   
   // Test empty, or illegal paths.
-  CPPUNIT_ASSERT( link.GetPath("", line_no, col_no).empty());
-  CPPUNIT_ASSERT( link.GetPath("xxxx", line_no, col_no).empty());
-  CPPUNIT_ASSERT( link.GetPath("1 othertest:" , line_no, col_no).empty());
-  CPPUNIT_ASSERT( link.GetPath(":test" , line_no, col_no).empty());
-  CPPUNIT_ASSERT( link.GetPath(": test" , line_no, col_no).empty());
-  CPPUNIT_ASSERT( link.GetPath("c:test" , line_no, col_no).empty());
-  CPPUNIT_ASSERT( link.GetPath("c:\\test" , line_no, col_no).empty());
-  CPPUNIT_ASSERT( link.GetPath("c:test" , line_no, col_no).empty());
+  link(lnk, "");
+  link(lnk, "xxxx");
+  link(lnk, "1 othertest:");
+  link(lnk, ":test");
+  link(lnk, ": test");
+  link(lnk, "c:test");
+  link(lnk, "c:\\test");
+  link(lnk, "c:test");
+  link(lnk, "on xxxx: 1200");
+  link(lnk, "on xxxx: not a number");
   
-  // Test existing file int the basepath.
-  CPPUNIT_ASSERT( link.GetPath("test", line_no, col_no) == "/usr/bin/test");
-  CPPUNIT_ASSERT( line_no == 0);
-  CPPUNIT_ASSERT( col_no == 0);
+  // Test existing file in the basepath.
+  link(lnk, "test", "/usr/bin/test");
+  link(lnk, "  test \n", "/usr/bin/test"); // whitespace should be skipped
+  link(lnk, "./test", "/usr/bin/./test");
+  link(lnk, "<test>", "/usr/bin/test");
   
-  CPPUNIT_ASSERT( link.GetPath("./test", line_no, col_no) == "/usr/bin/./test");
-  CPPUNIT_ASSERT( line_no == 0);
-  CPPUNIT_ASSERT( col_no == 0);
+  // Test existing file in the basepath, incorrect line and/or col.
+  link(lnk, "test:", "/usr/bin/test");
+  link(lnk, "test:xyz", "/usr/bin/test");
+  link(lnk, "test:50:xyz", "/usr/bin/test", 50);
+  link(lnk, "test:abc:xyz", "/usr/bin/test");
   
-  // Whitespace should be skipped.
-  CPPUNIT_ASSERT( link.GetPath("  test \n", line_no, col_no) == "/usr/bin/test");
-  CPPUNIT_ASSERT( line_no == 0);
-  CPPUNIT_ASSERT( col_no == 0);
+  // Test existing file, line_no and col no.
+  link(lnk, "test:50", "/usr/bin/test", 50);
+  link(lnk, "test:50:6", "/usr/bin/test", 50, 6);
+  link(lnk, "test:500000", "/usr/bin/test", 500000);
+  link(lnk, "test:500000:599", "/usr/bin/test", 500000, 599);
   
-  CPPUNIT_ASSERT( link.GetPath("<test>", line_no, col_no) == "/usr/bin/test");
-  CPPUNIT_ASSERT( line_no == 0);
-  CPPUNIT_ASSERT( col_no == 0);
+  lnk.SetFromConfig();
   
-  CPPUNIT_ASSERT( link.GetPath("test:", line_no, col_no) == "/usr/bin/test");
-  CPPUNIT_ASSERT( line_no == 0);
-  CPPUNIT_ASSERT( col_no == 0);
-  
-  CPPUNIT_ASSERT( link.GetPath("test:xyz", line_no, col_no) == "/usr/bin/test");
-  CPPUNIT_ASSERT( line_no == 0);
-  CPPUNIT_ASSERT( col_no == 0);
-  
-  // Test incorrect file line_no.
-  CPPUNIT_ASSERT( link.GetPath("on xxxx: 1200", line_no, col_no).empty());
-  CPPUNIT_ASSERT( line_no == 0);
-  CPPUNIT_ASSERT( col_no == 0);
-  
-  CPPUNIT_ASSERT( link.GetPath("on xxxx: not a number", line_no, col_no).empty());
-  CPPUNIT_ASSERT( line_no == 0);
-  CPPUNIT_ASSERT( col_no == 0);
-  
-  // Test correct file, line_no and col no.
-  CPPUNIT_ASSERT( link.GetPath("test:50", line_no, col_no) == "/usr/bin/test");
-  CPPUNIT_ASSERT( line_no == 50);
-  CPPUNIT_ASSERT( col_no == 0);
-  
-  CPPUNIT_ASSERT( link.GetPath("test:50:6", line_no, col_no) == "/usr/bin/test");
-  CPPUNIT_ASSERT( line_no == 50);
-  CPPUNIT_ASSERT( col_no == 6);
-  
-  CPPUNIT_ASSERT( link.GetPath("test:500000", line_no, col_no) == "/usr/bin/test");
-  CPPUNIT_ASSERT( line_no == 500000);
-  CPPUNIT_ASSERT( col_no == 0);
-  
-  link.SetFromConfig();
-  
-  // Return empty if no path could be found.
-  CPPUNIT_ASSERT( link.GetPath("test", line_no, col_no).empty());
+  // Now we have no basepath, so previous test is different.
+  link(lnk, "test");
 }
 
 void wxExGuiTestFixture::testListItem()

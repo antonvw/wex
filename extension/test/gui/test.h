@@ -87,5 +87,12 @@ public:
   void testVersion();
   void testVi();
   void testViMacros();
+private:
+  void link(
+    const wxExLink& link,
+    const wxString& path, 
+    const wxString& expect = wxEmptyString,
+    int expect_line_no = 0,
+    int expect_col_no = 0);
 };
 #endif
