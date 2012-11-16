@@ -270,12 +270,12 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
 bool wxExSTC::CanCut() const
 {
-  return !GetReadOnly() && !HexMode();
+  return wxStyledTextCtrl::CanCut() && !GetReadOnly() && !HexMode();
 }
 
 bool wxExSTC::CanPaste() const
 {
-  return !GetReadOnly() && !HexMode();
+  return wxStyledTextCtrl::CanPaste() && !GetReadOnly() && !HexMode();
 }
 
 void wxExSTC::CheckAutoComp(const wxUniChar& c)
@@ -1712,10 +1712,10 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
     {
       int style = 0; // otherwise CAN_PASTE already on
       
-      if (!CanCut())                  style |= wxExMenu::MENU_IS_READ_ONLY;
-      if (!GetSelectedText().empty()) style |= wxExMenu::MENU_IS_SELECTED;
-      if ( GetTextLength() == 0)      style |= wxExMenu::MENU_IS_EMPTY;
-      if ( CanPaste())                style |= wxExMenu::MENU_CAN_PASTE;
+      if ( GetReadOnly() || HexMode()) style |= wxExMenu::MENU_IS_READ_ONLY;
+      if (!GetSelectedText().empty())  style |= wxExMenu::MENU_IS_SELECTED;
+      if ( GetTextLength() == 0)       style |= wxExMenu::MENU_IS_EMPTY;
+      if ( CanPaste())                 style |= wxExMenu::MENU_CAN_PASTE;
 
       wxExMenu menu(style);
       

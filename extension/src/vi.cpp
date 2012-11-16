@@ -136,7 +136,7 @@ bool wxExVi::Command(const wxString& command)
   // Handle multichar commands.
   else if (rest.StartsWith("cc"))
   {
-    if (GetSTC()->CanCut())
+    if (!GetSTC()->GetReadOnly() && !!GetSTC()->HexMode())
     {
       GetSTC()->Home();
       GetSTC()->DelLineRight();
@@ -175,7 +175,7 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (rest == "dd")
   {
-     if (GetSTC()->CanCut()) Delete(repeat);
+     if (!GetSTC()->GetReadOnly() && !!GetSTC()->HexMode()) Delete(repeat);
   }
   else if (rest == "d0")
   {
@@ -508,7 +508,7 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'w': for (int i = 0; i < repeat; i++) GetSTC()->WordRight(); break;
       
     case 'x': 
-      if (GetSTC()->CanCut())
+      if (!GetSTC()->GetReadOnly() && !!GetSTC()->HexMode())
       {
         for (int i = 0; i < repeat; i++) 
         {
@@ -583,7 +583,8 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
       
     case 'X': 
-      if (GetSTC()->CanCut()) for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack();
+      if (!GetSTC()->GetReadOnly() && !!GetSTC()->HexMode()) 
+        for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack();
       break;
 
     case '.': 
@@ -628,7 +629,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case WXK_BACK:
-      if (GetSTC()->CanCut()) GetSTC()->DeleteBack();
+      if (!GetSTC()->GetReadOnly() && !!GetSTC()->HexMode()) GetSTC()->DeleteBack();
       break;
       
     case WXK_RETURN:
