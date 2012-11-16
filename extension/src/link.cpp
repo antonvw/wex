@@ -127,33 +127,24 @@ const wxString wxExLink::GetPath(
 {
   wxString link(FindPath(text));
 
-  // Filter out a possible line number, 
-  // or a : and at least some whitespace.
+  // file[:line[:column]]
   std::vector <wxString> v;
   
-  bool ok = false;
-  
-  if (wxExMatch("([a-zA-Z0-9/.-_]+)\s*:([0-9]*)?:?([0-9]*)?", link, v))
+  if (wxExMatch("([0-9A-Za-z_/.-]+):([0-9]*):?([0-9]*)", link, v))
   {
-    if (wxFileExists(v[0]))
+    link = v[0];
+      
+    if (v.size() > 1)
     {
-      link = v[0];
-      
-      if (v.size() > 1)
-      {
-        line_no = atoi(v[1]);
+      line_no = atoi(v[1]);
         
-        if (v.size() > 2)
-        {
-          column_no = atoi(v[2]);
-        }
+      if (v.size() > 2)
+      {
+        column_no = atoi(v[2]);
       }
-      
-      ok = true;
     }
   }
-  
-  if (!ok)
+  else
   {
     // Check whether last word is a file.
     const wxString word = link.AfterLast(' ').Trim();

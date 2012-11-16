@@ -25,11 +25,6 @@ public:
   /// Returns false if basepath was not found in stc (or stc is NULL).
   bool AddBasePath();
   
-  /// Gets a possible path from text, does not use pathlist
-  /// to make an existing path of it, use GetPath
-  /// to retrieve an existing path.
-  const wxString FindPath(const wxString& text) const;
-  
   /// Gets a path from text, using pathlist if necessary.
   /// Returns empty string if no path could be found.
   const wxString GetPath(
@@ -44,6 +39,11 @@ public:
   /// If there is no config, pathlist will be empty.
   void SetFromConfig();
 private:
+  /// Gets a possible path from text, does not use pathlist
+  /// to make an existing path of it, use GetPath
+  /// to retrieve an existing path.
+  const wxString FindPath(const wxString& text) const;
+  
   wxPathList m_PathList;
   wxExSTC* m_STC;
 };
