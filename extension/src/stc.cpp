@@ -1116,7 +1116,10 @@ void wxExSTC::GotoLineAndSelect(
   }
   else if (col_number > 0)
   {
-    SetCurrentPos(GetCurrentPos() + col_number);
+    SetCurrentPos(GetCurrentPos() + col_number - 1);
+    
+    // Reset selection, seems necessary.
+    SetSelection(GetCurrentPos(), GetCurrentPos());
   }
 }
 
@@ -1798,7 +1801,7 @@ bool wxExSTC::Open(
 {
   if (m_File.GetFileName() == filename && line_number > 0)
   {
-    GotoLineAndSelect(line_number, match);
+    GotoLineAndSelect(line_number, match, col_number);
     PropertiesMessage();
     return true;
   }

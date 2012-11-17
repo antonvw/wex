@@ -1264,8 +1264,6 @@ bool Frame::OpenFile(
     
   wxASSERT(notebook != NULL);
   
-  notebook->Freeze();
-
   wxWindow* page = notebook->SelectPage(filename.GetFullPath());
 
   if (flags & WIN_IS_PROJECT)
@@ -1355,8 +1353,6 @@ bool Frame::OpenFile(
     }
   }
   
-  notebook->Thaw();
-
   return true;
 }
 

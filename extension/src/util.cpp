@@ -478,6 +478,10 @@ void wxExOpenFiles(
   long file_flags,
   int dir_flags)
 {
+#ifdef __WXMSW__
+  frame->Freeze();
+#endif  
+  
   // std::vector gives compile error.
   for (
 #ifdef wxExUSE_CPP0X	
@@ -513,6 +517,10 @@ void wxExOpenFiles(
       frame->OpenFile(file, line_no, wxEmptyString, col_no, file_flags);
     }
   }
+  
+#ifdef __WXMSW__
+  frame->Thaw();
+#endif  
 }
 
 void wxExOpenFilesDialog(
