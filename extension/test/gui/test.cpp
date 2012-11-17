@@ -702,6 +702,10 @@ void wxExGuiTestFixture::testLink()
   link(lnk, "  test \n", "/usr/bin/test"); // whitespace should be skipped
   link(lnk, "./test", "/usr/bin/./test");
   link(lnk, "<test>", "/usr/bin/test");
+  link(lnk, "\"test\"", "/usr/bin/test");
+  link(lnk, "skip <test> skip skip", "/usr/bin/test");
+  link(lnk, "skip \"test\" skip skip", "/usr/bin/test");
+  link(lnk, "skip 'test' skip skip", "/usr/bin/test");
   
   // Test existing file in the basepath, incorrect line and/or col.
   link(lnk, "test:", "/usr/bin/test");
@@ -715,6 +719,7 @@ void wxExGuiTestFixture::testLink()
   link(lnk, "test:50:6", "/usr/bin/test", 50, 6);
   link(lnk, "test:500000", "/usr/bin/test", 500000);
   link(lnk, "test:500000:599", "/usr/bin/test", 500000, 599);
+  link(lnk, "skip skip test:50", "/usr/bin/test", 50);
   
   lnk.SetFromConfig();
   
@@ -1110,7 +1115,7 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(stc->GetCurrentPos() == 0);
   stc->GotoLineAndSelect(1, wxEmptyString, 5);
   CPPUNIT_ASSERT(stc->GetCurrentLine() == 0);
-  CPPUNIT_ASSERT(stc->GetCurrentPos() == 5);
+  CPPUNIT_ASSERT(stc->GetCurrentPos() == 4);
   
   stc->SetText("new text");
   CPPUNIT_ASSERT(stc->GetText() == "new text");
