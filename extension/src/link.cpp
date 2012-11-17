@@ -125,7 +125,8 @@ const wxString wxExLink::GetPath(
   int& line_no,
   int& column_no) const
 {
-  wxString link(FindPath(text));
+  const wxString path(FindPath(text));
+  wxString link(path);
 
   // file[:line[:column]]
   std::vector <wxString> v;
@@ -144,10 +145,13 @@ const wxString wxExLink::GetPath(
       }
     }
   }
-  else
+  
+  if (
+    !link.empty() &&
+    !wxFileExists(link))
   {
     // Check whether last word is a file.
-    const wxString word = link.AfterLast(' ').Trim();
+    const wxString word = path.AfterLast(' ').Trim();
   
     if (
       !word.empty() &&
