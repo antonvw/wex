@@ -711,6 +711,7 @@ void wxExGuiTestFixture::testLink()
   
   // Test existing file, line_no and col no.
   link(lnk, "test:50", "/usr/bin/test", 50);
+  link(lnk, "test:50:", "/usr/bin/test", 50);
   link(lnk, "test:50:6", "/usr/bin/test", 50, 6);
   link(lnk, "test:500000", "/usr/bin/test", 500000);
   link(lnk, "test:500000:599", "/usr/bin/test", 500000, 599);
@@ -719,6 +720,14 @@ void wxExGuiTestFixture::testLink()
   
   // Now we have no basepath, so previous test is different.
   link(lnk, "test");
+  
+  // Test link with default contructor.
+  wxExLink lnk2;
+  
+  CPPUNIT_ASSERT(!lnk2.AddBasePath());
+  CPPUNIT_ASSERT(!lnk2.AddBasePath());
+  
+  link(lnk2, "test");
 }
 
 void wxExGuiTestFixture::testListItem()
