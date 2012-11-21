@@ -1520,7 +1520,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   {
   case wxID_COPY: Copy(); break;
   case wxID_CUT: Cut(); break;
-  case wxID_DELETE: if (CanCut()) Clear(); break;
+  case wxID_DELETE: if (!GetReadOnly() && !HexMode()) Clear(); break;
   case wxID_JUMP_TO: GotoDialog(); break;
   case wxID_PASTE: Paste(); break;
   case wxID_SELECTALL: SelectAll(); break;
