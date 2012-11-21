@@ -1998,7 +1998,6 @@ int wxExSTC::ReplaceAll(
   while (SearchInTarget(find_text) != -1)
   {
     const int target_start = GetTargetStart();
-    int length;
     bool skip_replace = false;
 
     // Check that the target is within the rectangular selection.
@@ -2008,7 +2007,7 @@ int wxExSTC::ReplaceAll(
       const int line = LineFromPosition(target_start);
       const int start_pos = GetLineSelStartPosition(line);
       const int end_pos = GetLineSelEndPosition(line);
-      length = GetTargetEnd() - target_start;
+      const int length = GetTargetEnd() - target_start;
 
       if (start_pos == wxSTC_INVALID_POSITION ||
           end_pos == wxSTC_INVALID_POSITION ||
@@ -2021,15 +2020,20 @@ int wxExSTC::ReplaceAll(
 
     if (!skip_replace)
     {
-      length = (wxExFindReplaceData::Get()->UseRegularExpression() ?
+      wxExFindReplaceData::Get()->UseRegularExpression() ?
         ReplaceTargetRE(replace_text):
-        ReplaceTarget(replace_text));
+        ReplaceTarget(replace_text);
 
       nr_replacements++;
     }
 
-    SetTargetStart(target_start + length);
+    SetTargetStart(GetTargetEnd());
     SetTargetEnd(GetLength() - selection_from_end);
+    
+    if (GetTargetStart() == GetTargetEnd())
+    {
+      break;
+    }
   }
 
   EndUndoAction();

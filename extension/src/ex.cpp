@@ -252,13 +252,6 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
   while (m_STC->SearchInTarget(pattern) > 0)
   {
-    const int target_start = m_STC->GetTargetStart();
-
-    if (target_start >= m_STC->GetTargetEnd())
-    {
-      break;
-    }
-    
     // TODO: Add more commands.
     if (command == "d")
     {
@@ -283,10 +276,14 @@ bool wxExEx::CommandGlobal(const wxString& search)
     }
     else if (command == "s")
     {
-      const int target_start = m_STC->GetTargetStart();
-      const int length = m_STC->ReplaceTargetRE(replacement); // always RE!
-      m_STC->SetTargetStart(target_start + length);
+      m_STC->ReplaceTargetRE(replacement); // always RE!
+      m_STC->SetTargetStart(m_STC->GetTargetEnd());
       m_STC->SetTargetEnd(m_STC->GetTextLength());
+      
+      if (m_STC->GetTargetStart() == m_STC->GetTargetEnd())
+      {
+        break;
+      }
     }
     else
     {
@@ -860,8 +857,6 @@ bool wxExEx::Substitute(
 
   while (m_STC->SearchInTarget(pattern) != -1)
   {
-    const int target_start = m_STC->GetTargetStart();
-
     if (replacement.Contains("&"))
     {
       wxString target = m_STC->GetTextRange(
@@ -882,12 +877,16 @@ bool wxExEx::Substitute(
       replacement.Replace("&", target);
     }
     
-    const int length = m_STC->ReplaceTargetRE(replacement); // always RE!
-    
-    m_STC->SetTargetStart(target_start + length);
+    m_STC->ReplaceTargetRE(replacement); // always RE!
+    m_STC->SetTargetStart(m_STC->GetTargetEnd());
     m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('$')));
-
+    
     nr_replacements++;
+    
+    if (m_STC->GetTargetStart() == m_STC->GetTargetEnd())
+    {
+      break;
+    }
   }
   
   m_STC->EndUndoAction();
