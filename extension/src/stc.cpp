@@ -1997,22 +1997,21 @@ int wxExSTC::ReplaceAll(
 
   while (SearchInTarget(find_text) != -1)
   {
-    const int target_start = GetTargetStart();
     bool skip_replace = false;
 
     // Check that the target is within the rectangular selection.
     // If not just continue without replacing.
     if (SelectionIsRectangle() && selection_from_end != 0)
     {
-      const int line = LineFromPosition(target_start);
+      const int line = LineFromPosition(GetTargetStart());
       const int start_pos = GetLineSelStartPosition(line);
       const int end_pos = GetLineSelEndPosition(line);
-      const int length = GetTargetEnd() - target_start;
+      const int length = GetTargetEnd() - GetTargetStart();
 
       if (start_pos == wxSTC_INVALID_POSITION ||
           end_pos == wxSTC_INVALID_POSITION ||
-          target_start < start_pos ||
-          target_start + length > end_pos)
+          GetTargetStart() < start_pos ||
+          GetTargetStart() + length > end_pos)
       {
         skip_replace = true;
       }
