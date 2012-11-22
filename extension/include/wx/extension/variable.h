@@ -55,6 +55,9 @@ public:
   /// Returns variable value.
   const wxString& GetValue() const {return m_Value;};
   
+  /// Returns true if this variable is of type input.
+  bool IsInput() const;
+  
   /// Returns true if expanding has modified the value.
   bool IsModified() const {return m_IsModified;};
   
