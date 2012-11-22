@@ -250,7 +250,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
   m_STC->SetTargetStart(0);
   m_STC->SetTargetEnd(m_STC->GetTextLength());
 
-  while (m_STC->SearchInTarget(pattern) > 0)
+  while (m_STC->SearchInTarget(pattern) != -1)
   {
     // TODO: Add more commands.
     if (command == "d")
@@ -844,8 +844,7 @@ bool wxExEx::Substitute(
 
   const wxString pattern = (patt == "~" ? m_Replacement: patt);
   
-  wxString replacement(repl);
-  m_Replacement = replacement; 
+  m_Replacement = repl; 
   
   m_STC->SetSearchFlags(m_SearchFlags);
 
@@ -857,6 +856,8 @@ bool wxExEx::Substitute(
 
   while (m_STC->SearchInTarget(pattern) != -1)
   {
+    wxString replacement(repl);
+    
     if (replacement.Contains("&"))
     {
       wxString target = m_STC->GetTextRange(
