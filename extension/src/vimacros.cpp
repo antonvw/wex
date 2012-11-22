@@ -91,6 +91,9 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     {
       m_IsModified = true;
     }
+    
+    // If ok is false, this is because expansion dialog was cancelled,
+    // no need to show log status message.
   }
   else
   {
@@ -100,11 +103,13 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     {
       m_IsModified = true;
     }
-  }
-  
-  if (!ok)
-  {
-    wxLogStatus(_("Could not expand variable") + ": "  +  variable);
+
+    // Now only show log status if this is no input variable,
+    // as it was cancelled in that case.    
+    if (!ok && !it->second.IsInput())
+    {
+      wxLogStatus(_("Could not expand variable") + ": "  +  variable);
+    }
   }
   
   return ok;

@@ -309,6 +309,14 @@ bool wxExVariable::ExpandInput(wxString& expanded)
   return true;
 }
 
+bool wxExVariable::IsInput() const
+{
+  return 
+     m_Type == VARIABLE_INPUT || 
+     m_Type == VARIABLE_INPUT_ONCE ||
+     m_Type == VARIABLE_INPUT_SAVE;
+}
+
 void wxExVariable::Save(wxXmlNode* node) const
 {
   node->AddAttribute("name", m_Name);
