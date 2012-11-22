@@ -862,7 +862,7 @@ bool wxExSTC::FindNext(
   SetTargetEnd(end_pos);
   SetSearchFlags(search_flags);
 
-  if (SearchInTarget(text) < 0)
+  if (SearchInTarget(text) == -1)
   {
     wxExFindResult(text, find_next, recursive);
     
@@ -1109,7 +1109,7 @@ void wxExSTC::GotoLineAndSelect(
     SetTargetStart(start_pos);
     SetTargetEnd(end_pos);
 
-    if (SearchInTarget(text) > 0)
+    if (SearchInTarget(text) != -1)
     {
       SetSelection(GetTargetStart(), GetTargetEnd());
     }
