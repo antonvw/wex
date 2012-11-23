@@ -2,7 +2,7 @@
 // Name:      @filename@
 // Purpose:   Declaration of class @myclass@
 // Author:    @author@
-// Copyright: (c) @year@ @author@
+// Copyright: (c) @year@ @copyright@
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _@filename@_H
