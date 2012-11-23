@@ -1374,6 +1374,11 @@ void Frame::StatusBarClicked(const wxString& pane)
       }
     }
   }
+  else if (pane == "PaneMacro")
+  {
+    wxExSTC* editor = GetSTC();
+    if (editor != NULL) editor->GetVi().MacroPlayback();
+  }
   else if (pane == "PaneVCS")
   {
     if (wxExVCS::GetCount() > 0)
@@ -1418,6 +1423,10 @@ void Frame::StatusBarClickedRight(const wxString& pane)
       wxExLexers::Get()->GetFileName(),
       0,
       match);
+  }
+  else if (pane == "PaneMacro")
+  {
+    OpenFile(wxExViMacros::GetFileName());
   }
   else if (pane == "PaneVCS")
   {
