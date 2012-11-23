@@ -2016,6 +2016,7 @@ void          while
       else except exec finally for from global if import in is lambda None 
       not or pass print raise return try while with yield
     </keywords>
+    <comments begin1="#"/>
   </lexer>
   <lexer name="r"/>
   <lexer name="rebol"/>
