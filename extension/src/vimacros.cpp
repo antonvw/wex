@@ -16,6 +16,7 @@
 #include <wx/utils.h>
 #include <wx/extension/vimacros.h>
 #include <wx/extension/ex.h>
+#include <wx/extension/frame.h>
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
@@ -430,6 +431,8 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   
   m_Macro = macro;
   
+  wxExFrame::StatusText(m_Macro, "PaneMacro");
+  
   wxBusyCursor wait;
     
   AskForInput();
@@ -583,6 +586,8 @@ void wxExViMacros::StartRecording(const wxString& macro)
     m_Macro = macro;
     m_Macros[m_Macro].clear();
   }
+  
+  wxExFrame::StatusText(m_Macro, "PaneMacro");
   
   wxLogStatus(_("Macro recording"));
 }

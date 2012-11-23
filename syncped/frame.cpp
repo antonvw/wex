@@ -1426,7 +1426,9 @@ void Frame::StatusBarClickedRight(const wxString& pane)
   }
   else if (pane == "PaneMacro")
   {
-    OpenFile(wxExViMacros::GetFileName());
+    OpenFile(wxExViMacros::GetFileName(),
+      0,
+      GetStatusText("PaneMacro"));
   }
   else if (pane == "PaneVCS")
   {
