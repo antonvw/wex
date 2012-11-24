@@ -77,18 +77,6 @@ const wxString wxExLink::FindPath(const wxString& text) const
     pos_char2 = text.rfind(">");
   }
 
-  // If that did not succeed, then get text between : and : (in .po files).
-  if (
-    m_STC != NULL &&
-    m_STC->GetLexer().GetScintillaLexer() == "po" && 
-      (pos_char1 == wxString::npos || 
-       pos_char2 == wxString::npos || 
-       pos_char2 <= pos_char1))
-  {
-    pos_char1 = text.find(": ");
-    pos_char2 = text.rfind(":");
-  }
-
   // If that did not succeed, then get text between ' and '.
   if (pos_char1 == wxString::npos ||
       pos_char2 == wxString::npos || 
