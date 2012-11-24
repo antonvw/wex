@@ -723,6 +723,8 @@ void wxExGuiTestFixture::testLink()
   link(lnk, "test:500000", "/usr/bin/test", 500000);
   link(lnk, "test:500000:599", "/usr/bin/test", 500000, 599);
   link(lnk, "skip skip test:50", "/usr/bin/test", 50);
+  // po file format
+  link(lnk, "#: test:120", "/usr/bin/test", 120);
   
   lnk.SetFromConfig();
   
