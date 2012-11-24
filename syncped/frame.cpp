@@ -1422,7 +1422,7 @@ void Frame::StatusBarClickedRight(const wxString& pane)
     OpenFile(
       wxExLexers::Get()->GetFileName(),
       0,
-      match);
+      "macro name=\"" + match);
   }
   else if (pane == "PaneMacro")
   {
