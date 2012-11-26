@@ -1422,13 +1422,13 @@ void Frame::StatusBarClickedRight(const wxString& pane)
     OpenFile(
       wxExLexers::Get()->GetFileName(),
       0,
-      "macro name=\"" + match);
+      match);
   }
   else if (pane == "PaneMacro")
   {
     OpenFile(wxExViMacros::GetFileName(),
       0,
-      GetStatusText("PaneMacro"));
+      "macro name=\"" + GetStatusText("PaneMacro"));
   }
   else if (pane == "PaneVCS")
   {
