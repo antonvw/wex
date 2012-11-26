@@ -527,7 +527,7 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
     {
       wxString lexer = stc->GetLexer().GetDisplayLexer();
 
-      if (wxExLexers::Get()->ShowDialog(this, lexer))
+      if (wxExLexers::Get()->ShowDialog(stc, lexer))
       {
         stc->SetLexer(
           lexer,
