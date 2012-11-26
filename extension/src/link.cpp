@@ -146,6 +146,10 @@ const wxString wxExLink::GetPath(
        wxFileExists(word))
     {
       link = word;
+      
+      // And reset line or column.
+      line_no = 0;
+      column_no = 0;
     }
   }
     
