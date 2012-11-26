@@ -56,7 +56,10 @@ DecoratedFrame::DecoratedFrame()
     panes.push_back(wxExStatusBarPane("PaneVCS", 75, _("VCS")));
   }
   
-  panes.push_back(wxExStatusBarPane("PaneMacro", 75));
+  if (wxExViMacros::GetFileName().FileExists())
+  {
+    panes.push_back(wxExStatusBarPane("PaneMacro", 75));
+  }
   
   SetupStatusBar(panes);
   
