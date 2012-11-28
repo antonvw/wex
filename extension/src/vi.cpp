@@ -179,7 +179,7 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (rest == "d0")
   {
-    if (GetSTC()->CanCut())
+    if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
     {
       GetSTC()->HomeExtend();
       GetSTC()->Cut();
@@ -187,7 +187,7 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (rest == "d$")
   {
-    if (GetSTC()->CanCut())
+    if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
     {
       GetSTC()->LineEndExtend();
       GetSTC()->Cut();
@@ -530,7 +530,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
 
     case 'D': 
-      if (GetSTC()->CanCut())
+      if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
       {
         GetSTC()->LineEndExtend();
         GetSTC()->Cut();
