@@ -5,7 +5,7 @@ Purpose:   vi macros and variables for wxextension.
 Author:    Anton van Wezenbeek
 Copyright: (c) 2012, Anton van Wezenbeek
 
-Both variables and names have a "name" attribute, you call the macro
+Both variables and macros have a "name" attribute, you call them
 from vi mode using @name@. If the name is a single character c, you can call it
 using @c.
 
