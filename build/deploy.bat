@@ -7,8 +7,8 @@ rem Copyright: (c) 2012 Anton van Wezenbeek
 rem Run this file in the build folder
 
 mkdir syncped
-mkdir syncped\fr_FR
-mkdir syncped\nl_NL
+mkdir syncped\fr-FR
+mkdir syncped\nl-NL
 
 rem Copy application.
 copy vcmswu\syncped.exe syncped
@@ -23,14 +23,14 @@ copy ..\extension\data\*.txt syncped
 copy ..\extension\data\*.xml syncped
 
 rem Copy locale files.
-msgftm c:\wxWidgets-2.9.5\locale\fr.mo -o syncped\fr_FR\fr.po
-msgftm c:\wxWidgets-2.9.5\locale\nl.mo -o syncped\nl_NL\nl.po
+msgftm c:\wxWidgets-2.9.5\locale\fr.mo -o syncped\fr-FR\fr.po
+msgftm c:\wxWidgets-2.9.5\locale\nl.mo -o syncped\nl-NL\nl.po
 
 for %%X in (..\locale\*fr.mo) do (
-  msgfmt %%X syncped\fr_FR\%%X.po)
+  msgfmt %%X syncped\fr-FR\%%X.po)
   
 for %%X in (..\locale\*nl.mo) do (
-  msgfmt %%X syncped\fr_NL\%%X.po)
+  msgfmt %%X syncped\fr-NL\%%X.po)
   
 7z a syncped.zip syncped\
 
