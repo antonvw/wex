@@ -700,6 +700,13 @@ void wxExGuiTestFixture::testLink()
   link(lnk, "on xxxx: 1200");
   link(lnk, "on xxxx: not a number");
   
+  // Test existing file in current dir.
+  link(lnk, "test.h", wxGetHomeDir() + "/wxExtension/build/test.h");
+  
+  // Test output ls -l 
+  // -rw-rw-r-- 1 anton anton  2287 nov 17 10:53 test.h
+  link(lnk, "-rw-rw-r-- 1 anton anton 35278 nov 24 16:09 test.h", wxGetHomeDir() + "/wxExtension/build/test.h");
+
   // Test existing file in the basepath.
   link(lnk, "test", "/usr/bin/test");
   link(lnk, "  test \n", "/usr/bin/test"); // whitespace should be skipped
