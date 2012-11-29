@@ -1099,7 +1099,10 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
              wxExViMacros::GetFileName().FileExists());
           break;
         case ID_EDIT_MACRO_PLAYBACK:
-          event.Enable(editor->GetVi().MacroIsRecorded() && !editor->GetVi().MacroIsRecording());
+          event.Enable(
+             editor->GetVi().GetIsActive() &&
+             editor->GetVi().MacroIsRecorded() && 
+            !editor->GetVi().MacroIsRecording());
           break;
         case ID_EDIT_MACRO_START_RECORD:
           event.Enable(
@@ -1426,6 +1429,13 @@ void Frame::StatusBarClickedRight(const wxString& pane)
   }
   else if (pane == "PaneMacro")
   {
+    wxExSTC* stc = GetSTC();
+    
+    if (stc != NULL && !stc->GetVi().GetIsActive())
+    {
+      return;
+    }
+    
     OpenFile(wxExViMacros::GetFileName(),
       0,
       "macro name=\"" + GetStatusText("PaneMacro"));
