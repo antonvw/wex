@@ -1,12 +1,12 @@
 # ###############################################################################
-# File:     wxextension-nl.po
-# Purpose:  Translation for wxextension library to dutch.
+# File:     wxExtension-nl.po
+# Purpose:  Translation for wxExtension library to dutch.
 # Author:   Anton van Wezenbeek
 # Copyright (c) 2012 Anton van Wezenbeek
 # ###############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: wxextension v2.9.5\n"
+"Project-Id-Version: wxExtension v2.9.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-10-25 20:14+0100\n"
 "PO-Revision-Date: 2012-10-25 20:14+0100\n"

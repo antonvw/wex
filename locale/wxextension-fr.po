@@ -1,12 +1,12 @@
 # ###############################################################################
 # Name:      syncped-fr.po
-# Purpose:   Translation for wxextension library to french
+# Purpose:   Translation for wxExtension library to french
 # Author:    Emma van Wezenbeek
 # Copyright: (c) 2012 Emma van Wezenbeek
 # ###############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: wxextension v2.9.5\n"
+"Project-Id-Version: wxExtension v2.9.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-10-25 20:13+0100\n"
 "PO-Revision-Date: 2012-10-25 20:55+0100\n"
