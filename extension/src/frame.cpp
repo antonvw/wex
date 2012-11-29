@@ -363,6 +363,8 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
     if (stc != NULL && stc->HasFocus()) 
     {
       UpdateStatusBar(stc, "PaneInfo"); 
+      UpdateStatusBar(stc, "PaneLexer"); 
+      UpdateStatusBar(stc, "PaneFileType"); 
     }
     else
     {
