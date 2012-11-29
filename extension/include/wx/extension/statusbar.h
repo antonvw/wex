@@ -37,7 +37,7 @@ public:
   /// Constructor.
   wxExStatusBarPane(
     /// The name of the pane.
-    /// The wxextension lib uses PaneLexer, PaneInfo, PaneFileType, 
+    /// The wxExtension lib uses PaneFileType, PaneInfo, PaneLexer, PaneMacro
     /// by setting up one of these panes,
     /// youre panes will get controlled by the lib.
     const wxString& name,
