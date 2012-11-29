@@ -276,7 +276,22 @@ bool wxExVariable::ExpandInput(wxString& expanded)
         
     m_Dialog->GetSTC()->SetFocus();
     
-    if (m_Dialog->ShowModal() == wxID_CANCEL)
+    bool ended = false;
+    
+    if (wxIsBusy())
+    {
+      ended = true;
+      wxEndBusyCursor();
+    }
+    
+    const int result = m_Dialog->ShowModal();
+    
+    if (ended)
+    {
+      wxBeginBusyCursor();
+    }
+    
+    if (result == wxID_CANCEL)
     {
       return false;
     }
