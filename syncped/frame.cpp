@@ -1443,12 +1443,12 @@ void Frame::StatusBarClickedRight(const wxString& pane)
     
     OpenFile(wxExViMacros::GetFileName(),
       0,
-      "macro name=\"" + GetStatusText("PaneMacro"));
+      "macro name=\"" + GetStatusText(pane));
   }
   else if (pane == "PaneVCS")
   {
-    const wxString match = (GetStatusText("PaneVCS") != "Auto" ? 
-      GetStatusText("PaneVCS"): wxString(wxEmptyString));
+    const wxString match = (GetStatusText(pane) != "Auto" ? 
+      GetStatusText(pane): wxString(wxEmptyString));
       
     OpenFile(
       wxExVCS::GetFileName(),
