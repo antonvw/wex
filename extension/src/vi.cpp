@@ -311,53 +311,45 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (OneLetterAfter("@", rest))
   {
-    if (MacroIsRecorded(rest.Last()))
+    const wxString macro = rest.Last();
+    
+    if (MacroIsRecorded(macro))
     {
-      MacroPlayback(rest.Last(), repeat);
+      MacroPlayback(macro, repeat);
     }
     else
     {
+      GetFrame()->StatusText(macro, "PaneMacro");
       return false;
     }
   }
   else if (rest.StartsWith("@"))
   {
-    if (rest.Last() == WXK_ESCAPE)
+    std::vector <wxString> v;
+      
+    if (wxExMatch("@(.+)@", rest, v) > 0)
     {
-      wxBell();
+      const wxString macro = v[0];
         
-      m_Command.clear();
-
-      if (!GetSTC()->GetSelectedText().empty())
+      if (MacroIsRecorded(macro))
       {
-        GetSTC()->SetSelection(
-          GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
+        handled = MacroPlayback(macro, repeat);
+      }
+      else
+      {
+        handled = MacroExpand(macro);
+      }
+      
+      if (!handled)
+      {
+        m_Command.clear();
+        GetFrame()->StatusText(GetMacro(), "PaneMacro");
       }
     }
     else
     {
-      std::vector <wxString> v;
-      
-      if (wxExMatch("@(.+)@", rest, v) > 0)
-      {
-        if (MacroIsRecorded(v[0]))
-        {
-          handled = MacroPlayback(v[0], repeat);
-        }
-        else
-        {
-          handled = MacroExpand(v[0]);
-        }
-      
-        if (!handled)
-        {
-          m_Command.clear();
-        }
-      }
-      else
-      {
-        return false;
-      }
+      GetFrame()->StatusText(rest.Mid(1), "PaneMacro");
+      return false;
     }
   }
   else if (!rest.empty())
@@ -827,9 +819,19 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     event.GetKeyCode() == WXK_RETURN ||
     event.GetKeyCode() == WXK_TAB)
   {
-    if (m_Command.StartsWith("@") && event.GetKeyCode() == WXK_BACK)
+    if (m_Command.StartsWith("@"))
     {
-      m_Command = m_Command.Truncate(m_Command.size() - 1);
+      if (event.GetKeyCode() == WXK_BACK)
+      {
+        m_Command = m_Command.Truncate(m_Command.size() - 1);
+        GetFrame()->StatusText(m_Command.Mid(1), "PaneMacro");
+      }
+      else if (event.GetKeyCode() == WXK_ESCAPE)
+      {
+        m_Command.clear();
+        GetFrame()->StatusText(GetMacro(), "PaneMacro");
+      }
+      
       return false;
     }
     else
