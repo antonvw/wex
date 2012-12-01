@@ -41,7 +41,7 @@ one of these applications, being a full featured source code text editor.
   
 - under windows:   
     using Microsoft Visual Studio 2012:   
-    `make` or `make-release`
+    `make` or `make-release`   
     using cygwin:   
     `make`  
     wxExtension does not yet compile

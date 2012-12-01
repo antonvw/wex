@@ -727,7 +727,7 @@ void wxExVi::InsertMode(const wxString& command)
             
           // Record it (if recording is on).
           MacroRecord(lc);
-          MacroRecord( wxUniChar(WXK_ESCAPE));
+          MacroRecord(wxUniChar(WXK_ESCAPE));
         }
         
         m_InsertMode = false;
