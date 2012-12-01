@@ -119,7 +119,7 @@ const wxString wxExLink::GetPath(
   // file[:line[:column]]
   std::vector <wxString> v;
   
-  if (wxExMatch("([0-9A-Za-z_/.-]+):([0-9]*):?([0-9]*)", link, v))
+  if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link, v))
   {
     link = v[0];
       
