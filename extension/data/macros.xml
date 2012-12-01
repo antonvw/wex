@@ -7,7 +7,8 @@ Copyright: (c) 2012, Anton van Wezenbeek
 
 Both variables and macros have a "name" attribute, you call them
 from vi mode using @name@. If the name is a single character c, you can call it
-using @c.
+using @c. From vi you can record a macro using q followed by a letter,
+and ending with a q as well.
 
 Each macro can have several commands, a 
 command is encoded if the content refers to a
@@ -30,6 +31,7 @@ Variables are expanded when playing back the macro.
   - INPUT-SAVE:  
     Expansion is done by asking value from user, value is saved.
     You can add your own.
+    This is the default value when you add your own variable from vi.
   - TEMPLATE:
     Expansion is done by reading the value from a template file. This
     file is specified in the contents of the node. In the file you
