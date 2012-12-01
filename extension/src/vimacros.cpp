@@ -601,14 +601,7 @@ void wxExViMacros::StopRecording()
   
   m_IsRecording = false;
   
-  if (!Get(m_Macro).empty())
-  {
-    wxLogStatus(wxString::Format(_("Macro '%s' is recorded"), m_Macro.c_str()));
-  }
-  else
-  {
-    wxLogStatus(_("Ready"));
-  }
+  wxLogStatus(wxString::Format(_("Macro '%s' is recorded"), m_Macro.c_str()));
 }
 
 #endif // wxUSE_GUI
