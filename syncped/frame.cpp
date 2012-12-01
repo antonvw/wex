@@ -55,6 +55,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(wxID_STOP, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_CONTROL_CHAR, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_EDIT_MACRO_MENU, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_PLAYBACK, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, Frame::OnUpdateUI)
@@ -1097,6 +1098,10 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
              editor->GetVi().GetIsActive() &&
             !editor->GetVi().MacroIsRecording() &&
              wxExViMacros::GetFileName().FileExists());
+          break;
+        case ID_EDIT_MACRO_MENU:
+          event.Enable(
+             editor->GetVi().GetIsActive());
           break;
         case ID_EDIT_MACRO_PLAYBACK:
           event.Enable(

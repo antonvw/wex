@@ -132,7 +132,7 @@ DecoratedFrame::DecoratedFrame()
     menuMacro->Append(ID_EDIT_MACRO, wxGetStockLabel(wxID_EDIT));
   }
   
-  menuEdit->AppendSubMenu(menuMacro, _("&Macro"));
+  menuEdit->AppendSubMenu(menuMacro, _("&Macro"), wxEmptyString, ID_EDIT_MACRO_MENU);
 
   wxExMenu *menuView = new wxExMenu;
   menuView->AppendBars();
