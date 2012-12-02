@@ -1116,7 +1116,10 @@ void wxExSTC::GotoLineAndSelect(
   }
   else if (col_number > 0)
   {
-    SetCurrentPos(GetCurrentPos() + col_number - 1);
+    const int max = GetLineEndPosition(line_number - 1);
+    const int asked = GetCurrentPos() + col_number - 1;
+    
+    SetCurrentPos(asked < max ? asked: max);
     
     // Reset selection, seems necessary.
     SetSelection(GetCurrentPos(), GetCurrentPos());
