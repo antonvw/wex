@@ -672,9 +672,6 @@ void wxExGuiTestFixture::link(
   int line_no = 0;
   int col_no = 0;
   
-  wxLogMessage(path);
-  wxLogMessage(link.GetPath(path, line_no, col_no));
-  
   CPPUNIT_ASSERT(link.GetPath(path, line_no, col_no) == expect);
   CPPUNIT_ASSERT(line_no == expect_line_no);
   CPPUNIT_ASSERT(col_no == expect_col_no);
@@ -696,7 +693,7 @@ void wxExGuiTestFixture::testLink()
   link(lnk, "xxxx");
   link(lnk, "1 othertest:");
   link(lnk, ":test");
-  link(lnk, ": test");
+  link(lnk, ": xtest");
   link(lnk, "c:test");
   link(lnk, "c:\\test");
   link(lnk, "c:test");
@@ -705,7 +702,9 @@ void wxExGuiTestFixture::testLink()
   
   // Test existing file in current dir.
   link(lnk, "test.h", wxGetHomeDir() + "/wxExtension/build/test.h");
+  link(lnk, "  test.h", wxGetHomeDir() + "/wxExtension/build/test.h");
   link(lnk, "test special.h", wxGetHomeDir() + "/wxExtension/build/test special.h");
+  link(lnk, "  test special.h", wxGetHomeDir() + "/wxExtension/build/test special.h");
   
   // Test output ls -l 
   // -rw-rw-r-- 1 anton anton  2287 nov 17 10:53 test.h

@@ -135,25 +135,6 @@ const wxString wxExLink::GetPath(
   }
   
   if (
-    !link.empty() &&
-    !wxFileExists(link))
-  {
-    // Check whether last word is a file.
-    const wxString word = path.AfterLast(' ').Trim();
-  
-    if (
-      !word.empty() &&
-       wxFileExists(word))
-    {
-      link = word;
-      
-      // And reset line or column.
-      line_no = 0;
-      column_no = 0;
-    }
-  }
-    
-  if (
     link.empty() || 
     // Otherwise, if you happen to select text that 
     // ends with a separator, wx asserts.
@@ -201,9 +182,33 @@ const wxString wxExLink::GetPath(
       }
     }
 
-    if (fullpath.empty() && !m_PathList.empty())
+    if (fullpath.empty())
     {
-      fullpath = m_PathList.FindAbsoluteValidPath(link);
+      // Check whether last word is a file.
+      const wxString word = path.AfterLast(' ').Trim();
+    
+      if (!word.empty() && wxFileExists(word))
+      {
+        wxFileName file(word);
+        file.MakeAbsolute();
+        fullpath = file.GetFullPath();
+        // And reset line or column.
+        line_no = 0;
+        column_no = 0;
+      }
+    
+      if (fullpath.empty() && !m_PathList.empty())
+      {
+        fullpath = m_PathList.FindAbsoluteValidPath(link);
+      
+        if (fullpath.empty() && !word.empty())
+        {
+          fullpath = m_PathList.FindAbsoluteValidPath(word.BeforeFirst(':'));
+          // And reset line or column.
+          line_no = atoi(word.AfterFirst(':'));
+          column_no = 0;
+        }
+      }
       
       // Do nothing if fullpath.empty(),
       // as we return empty string if no path could be found.
