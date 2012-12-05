@@ -115,24 +115,8 @@ const wxString wxExLink::GetPath(
 {
   const wxString path(FindPath(text));
   wxString link(path);
-
-  // file[:line[:column]]
-  std::vector <wxString> v;
   
-  if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link, v))
-  {
-    link = v[0];
-      
-    if (v.size() > 1)
-    {
-      line_no = atoi(v[1]);
-        
-      if (v.size() > 2)
-      {
-        column_no = atoi(v[2]);
-      }
-    }
-  }
+  SetLink(link, line_no, column_no);
   
   if (
     link.empty() || 
@@ -185,9 +169,12 @@ const wxString wxExLink::GetPath(
     if (fullpath.empty())
     {
       // Check whether last word is a file.
-      const wxString word = path.AfterLast(' ').Trim();
+      wxString word = path.AfterLast(' ').Trim();
     
-      if (!word.empty() && wxFileExists(word))
+      if (
+       !word.empty() && 
+       !wxFileName::IsPathSeparator(link.Last()) &&
+        wxFileExists(word))
       {
         wxFileName file(word);
         file.MakeAbsolute();
@@ -201,12 +188,12 @@ const wxString wxExLink::GetPath(
       {
         fullpath = m_PathList.FindAbsoluteValidPath(link);
       
-        if (fullpath.empty() && !word.empty())
+        if (
+          fullpath.empty() && 
+         !word.empty() &&
+          SetLink(word, line_no, column_no))
         {
-          fullpath = m_PathList.FindAbsoluteValidPath(word.BeforeFirst(':'));
-          // And reset line or column.
-          line_no = atoi(word.AfterFirst(':'));
-          column_no = 0;
+          fullpath = m_PathList.FindAbsoluteValidPath(word);
         }
       }
       
@@ -218,6 +205,36 @@ const wxString wxExLink::GetPath(
   return fullpath;
 }
 
+bool wxExLink::SetLink(
+  wxString& link,
+  int& line_no,
+  int& column_no) const
+{
+  // file[:line[:column]]
+  std::vector <wxString> v;
+  
+  if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link, v))
+  {
+    link = v[0];
+    line_no = 0;
+    column_no = 0;
+      
+    if (v.size() > 1)
+    {
+      line_no = atoi(v[1]);
+        
+      if (v.size() > 2)
+      {
+        column_no = atoi(v[2]);
+      }
+    }
+    
+    return true;
+  }
+  
+  return false;
+}
+  
 void wxExLink::SetFromConfig()
 {
   wxStringTokenizer tkz(

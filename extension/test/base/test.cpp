@@ -41,7 +41,7 @@ void TestFixture::testDir()
   wxExDir dir("./", "*.h", wxDIR_FILES);
   CPPUNIT_ASSERT(dir.IsOpened());
   CPPUNIT_ASSERT(dir.GetFileSpec() == "*.h");
-  CPPUNIT_ASSERT(dir.FindFiles() == 1);
+  CPPUNIT_ASSERT(dir.FindFiles() == 2);
   
   // we could use *.h;*.cpp, however wxDir handles only
   // one type, so all files would be found (wxExDir uses empty spec,
