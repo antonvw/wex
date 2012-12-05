@@ -1,7 +1,7 @@
-...............wxExListTiem::Insert 750 items in 2753 ms
-wxExListView::Sort 750 items in 1307 ms
-................wxExTextFile::matching 193 items in 12585 us
-wxExTextFile::replacing 194 items in 17697 us
+...............wxExListTiem::Insert 750 items in 2638 ms
+wxExListView::Sort 750 items in 1383 ms
+................wxExTextFile::matching 193 items in 11592 us
+wxExTextFile::replacing 194 items in 17175 us
 ........
 
 

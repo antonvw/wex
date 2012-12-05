@@ -39,10 +39,11 @@ public:
   /// If there is no config, pathlist will be empty.
   void SetFromConfig();
 private:
-  /// Gets a possible path from text, does not use pathlist
-  /// to make an existing path of it, use GetPath
-  /// to retrieve an existing path.
   const wxString FindPath(const wxString& text) const;
+  bool SetLink(
+    wxString& text,
+    int& line_no,
+    int& column_no) const;
   
   wxPathList m_PathList;
   wxExSTC* m_STC;
