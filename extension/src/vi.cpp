@@ -432,11 +432,23 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'g': GetSTC()->DocumentStart(); break;
       
     case 'h': 
-      for (int i = 0; i < repeat; i++) GetSTC()->CharLeft(); 
+      for (int i = 0; i < repeat; i++) 
+      {
+        if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0)
+        {
+          GetSTC()->CharLeft(); 
+        }
+      }
       break;
         
     case 'j': 
-      for (int i = 0; i < repeat; i++) GetSTC()->LineDown(); 
+      for (int i = 0; i < repeat; i++) 
+      {
+         if (GetSTC()->GetCurrentLine() < GetSTC()->GetNumberOfLines())
+         {
+           GetSTC()->LineDown(); 
+         }
+      }
       break;
         
     case '+': 
@@ -450,7 +462,13 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case 'k': 
-      for (int i = 0; i < repeat; i++) GetSTC()->LineUp(); 
+      for (int i = 0; i < repeat; i++) 
+      {
+        if (GetSTC()->GetCurrentLine() > 0)
+        {
+          GetSTC()->LineUp(); 
+        }
+      }
       break;
         
     case '-': 
@@ -465,7 +483,14 @@ bool wxExVi::CommandChar(int c, int repeat)
         
     case 'l': 
     case ' ': 
-      for (int i = 0; i < repeat; i++) GetSTC()->CharRight(); 
+      for (int i = 0; i < repeat; i++) 
+      {
+        if (GetSTC()->GetCurrentPos() < 
+            GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()))
+        {
+          GetSTC()->CharRight(); 
+        }
+      }
       break;
         
     case 'n': 
