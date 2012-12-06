@@ -773,7 +773,7 @@ msgstr "Al aan het afspelen"
 
 #: ../extension/src/vimacros.cpp:443
 msgid "Macro aborted at '"
-msgstr "Macro afgebroken"
+msgstr "Macro afgebroken bij '"
 
 #: ../extension/src/vimacros.cpp:452
 msgid "Macro played back"
