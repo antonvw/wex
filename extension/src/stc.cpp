@@ -2032,7 +2032,7 @@ int wxExSTC::ReplaceAll(
     SetTargetStart(GetTargetEnd());
     SetTargetEnd(GetLength() - selection_from_end);
     
-    if (GetTargetStart() == GetTargetEnd())
+    if (GetTargetStart() >= GetTargetEnd())
     {
       break;
     }

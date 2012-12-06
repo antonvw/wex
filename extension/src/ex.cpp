@@ -280,7 +280,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
       m_STC->SetTargetStart(m_STC->GetTargetEnd());
       m_STC->SetTargetEnd(m_STC->GetTextLength());
       
-      if (m_STC->GetTargetStart() == m_STC->GetTargetEnd())
+      if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
       {
         break;
       }
@@ -884,7 +884,7 @@ bool wxExEx::Substitute(
     
     nr_replacements++;
     
-    if (m_STC->GetTargetStart() == m_STC->GetTargetEnd())
+    if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
     {
       break;
     }

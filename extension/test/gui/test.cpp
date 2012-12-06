@@ -235,6 +235,7 @@ void wxExGuiTestFixture::testEx()
   
   CPPUNIT_ASSERT( ex->Command(":1,$s/$/ZXXX/"));
   CPPUNIT_ASSERT( ex->Command(":1,$s/^/Zxxx/"));
+  CPPUNIT_ASSERT( ex->Command(":.s/$/\n"));
   
   CPPUNIT_ASSERT( ex->Command(":1"));
   CPPUNIT_ASSERT( ex->MarkerAdd('t')); // do not use y or w marker, it is a token!!
