@@ -362,6 +362,11 @@ bool wxExVi::Command(const wxString& command)
         
       m_Command.clear();
 
+      if (MacroIsRecording())
+      {
+        MacroStopRecording();
+      }
+      
       if (!GetSTC()->GetSelectedText().empty())
       {
         GetSTC()->SetSelection(
