@@ -177,6 +177,19 @@ bool wxExVi::Command(const wxString& command)
   {
      if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) Delete(repeat);
   }
+  else if (rest == "de")
+  {
+    if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
+    {
+      GetSTC()->BeginUndoAction();
+      const int start = GetSTC()->GetCurrentPos();
+      for (int i = 0; i < repeat; i++) 
+        GetSTC()->WordRightEnd();
+      GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
+      GetSTC()->Cut();
+      GetSTC()->EndUndoAction();
+    }
+  }
   else if (rest == "d0")
   {
     if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())

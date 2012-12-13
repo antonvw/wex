@@ -1638,6 +1638,7 @@ void wxExGuiTestFixture::testVi()
   commands.push_back("d0");
   commands.push_back("d$");
   commands.push_back("dw");
+  commands.push_back("de");
   
   stc->SetReadOnly(true);
   stc->EmptyUndoBuffer();
@@ -1763,6 +1764,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("3dw"));
   CPPUNIT_ASSERT( vi->GetLastCommand() == "3dw");
   CPPUNIT_ASSERT( vi->Command("dd"));
+  CPPUNIT_ASSERT( vi->Command("de"));
   CPPUNIT_ASSERT( vi->Command("d0"));
   CPPUNIT_ASSERT( vi->Command("d$"));
   
