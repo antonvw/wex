@@ -68,6 +68,9 @@ public:
   static wxExSTC* GetSTC() {
     return m_Dialog != NULL ? m_Dialog->GetSTC(): NULL;};
 
+  /// Returns true when the command executed resulted in stderr errors.
+  bool HasStdError() const {return m_HasStdError;};
+  
   /// Returns true if this process is running.
   bool IsRunning() const;
 
@@ -98,6 +101,7 @@ private:
 
   bool m_Busy;
   bool m_Error;
+  bool m_HasStdError;
   bool m_Sync;
 
   wxString m_Command;  

@@ -303,7 +303,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
 bool wxExEx::CommandRange(const wxString& command)
 {
-  const wxString tokens("dmsyw><");
+  const wxString tokens("dmsyw><!");
   
   // If address contains markers, filter them.
   if (command.Contains("'"))
@@ -436,6 +436,35 @@ bool wxExEx::CommandRange(const wxString& command)
     break;
   case '<':
     return Indent(begin_address, end_address, false);
+    break;
+    
+  case '!':
+    {
+      // A filter command.
+      // The address range is used as input for the command,
+      // and the output of the command is replaces the address range.
+      if (!Yank(begin_address, end_address))
+      {
+        return false;
+      }
+      
+      wxExProcess process;
+      const wxString command = tkz.GetString();
+      
+      if (
+         process.Execute(command + " < " + wxExClipboardGet(), wxEXEC_SYNC) &&
+        !process.HasStdError())
+      {
+        if (Delete(begin_address, end_address))
+        {
+          m_STC->AddText(process.GetOutput());
+        }
+      }
+      else
+      {
+        m_Frame->ShowExMessage(command + ": not ok");
+      }
+    }
     break;
     
   default:
