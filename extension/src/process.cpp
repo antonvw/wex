@@ -31,6 +31,7 @@ wxExProcess::wxExProcess()
   , m_Timer(new wxTimer(this))
   , m_Busy(false)
   , m_Error(false)
+  , m_HasStdError(false)
   , m_Sync(false)
 {
   m_Command = wxExConfigFirstOf(_("Process"));
@@ -207,6 +208,8 @@ bool wxExProcess::Execute(
       
   m_Dialog->GetSTCShell()->EnableShell(!m_Sync);
     
+  m_HasStdError = false;
+  
   if (!m_Sync)
   { 
     m_Dialog->SetTitle(m_Command);
@@ -269,6 +272,8 @@ bool wxExProcess::Execute(
     }
     else
     {
+      m_HasStdError = !errors.empty();
+      
       // Set output by converting array strings into normal strings.
       m_Output = wxJoin(errors, '\n', '\n') + wxJoin(output, '\n', '\n');
     }
