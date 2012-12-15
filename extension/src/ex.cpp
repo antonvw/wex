@@ -12,6 +12,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/tokenzr.h>
+#include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/ex.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/managedframe.h>
@@ -462,23 +463,52 @@ bool wxExEx::CommandRange(const wxString& command)
         input = " < " + input;
       }
       
-      wxExProcess process;
+      const int begin_line = ToLineNumber(begin_address);
+      const int end_line = ToLineNumber(end_address);
+
+      if (begin_line == 0 || end_line == 0 || end_line < begin_line)
+      {
+        return false;
+      }
+  
+      wxProcess process;
+      process.Redirect();
+      
       const wxString command = tkz.GetString();
       
-      if (process.Execute(command + input, wxEXEC_SYNC))
+      if (wxExecute(command,  wxEXEC_ASYNC, &process) == 0)
       {
-        if (!process.HasStdError())
+        return false;
+      }
+    
+      wxString output;
+      
+      wxTextOutputStream os(*process.GetOutputStream());
+      
+      for (int i = begin_line - 1; i < end_line - 1; i++)
+      {
+        os.WriteString(m_STC->GetLine(i) + "\n");
+        
+        if (process.IsInputAvailable())
         {
-          if (Delete(begin_address, end_address))
+          wxTextInputStream tis(*process.GetInputStream());
+        
+          while (process.IsInputAvailable())
           {
-            m_STC->AddText(process.GetOutput());
-            return true;
+            const wxChar c = tis.GetChar();
+        
+            if (c != 0)
+            {
+              output << c;
+            }
           }
         }
-        else
-        {
-          m_Frame->ShowExMessage(process.GetOutput());
-        }
+      }
+      
+      if (Delete(begin_address, end_address))
+      {
+        m_STC->AddText(output);
+        return true;
       }
       
       return false;
@@ -598,7 +628,7 @@ bool wxExEx::Indent(
   const wxString& end_address, 
   bool forward)
 {
-  if (m_STC->GetReadOnly())
+  if (m_STC->GetReadOnly() || m_STC->HexMode())
   {
     return false;
   }
