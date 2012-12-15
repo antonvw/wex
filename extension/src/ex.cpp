@@ -448,22 +448,35 @@ bool wxExEx::CommandRange(const wxString& command)
         return false;
       }
       
+      wxString input = wxExClipboardGet();
+      input.Trim(true);
+      input.Trim(false);
+      
+      if (!input.empty())
+      {
+        input = " < " + input;
+      }
+      
       wxExProcess process;
       const wxString command = tkz.GetString();
       
-      if (
-         process.Execute(command + " < " + wxExClipboardGet(), wxEXEC_SYNC) &&
-        !process.HasStdError())
+      if (process.Execute(command + input, wxEXEC_SYNC))
       {
-        if (Delete(begin_address, end_address))
+        if (!process.HasStdError())
         {
-          m_STC->AddText(process.GetOutput());
+          if (Delete(begin_address, end_address))
+          {
+            m_STC->AddText(process.GetOutput());
+            return true;
+          }
+        }
+        else
+        {
+          m_Frame->ShowExMessage(process.GetOutput());
         }
       }
-      else
-      {
-        m_Frame->ShowExMessage(command + ": not ok");
-      }
+      
+      return false;
     }
     break;
     
@@ -1091,6 +1104,11 @@ bool wxExEx::Yank(
 
   const int start = m_STC->PositionFromLine(begin_line - 1);
   const int end = m_STC->PositionFromLine(end_line);
+  
+  if (start == end)
+  {
+    return false;
+  }
 
   m_STC->CopyRange(start, end);
   
