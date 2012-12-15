@@ -103,8 +103,8 @@ DecoratedFrame::DecoratedFrame()
   if (wxConfigBase::Get()->ReadBool(_("vi mode"), true))
   {
     // No accelerators for vi mode, Ctrl F is page down.
-    menuFind->Append(wxID_FIND, wxGetStockLabel(wxID_FIND));
-    menuFind->Append(wxID_REPLACE, wxGetStockLabel(wxID_REPLACE));
+    menuFind->Append(wxID_FIND, wxGetStockLabel(wxID_FIND, wxSTOCK_NOFLAGS));
+    menuFind->Append(wxID_REPLACE, wxGetStockLabel(wxID_REPLACE, wxSTOCK_NOFLAGS));
   }
   else
   {
