@@ -134,6 +134,11 @@ bool wxExEx::Command(const wxString& command)
     wxString arg(command.AfterFirst(' '));
     arg.Trim(false); // from left
     
+    if (arg.empty())
+    {
+      return false;
+    }
+    
     if (arg.StartsWith("!"))
     {
       if (m_Process == NULL)
