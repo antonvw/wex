@@ -457,44 +457,40 @@ bool wxExEx::CommandRange(const wxString& command)
         return false;
       }
   
-      wxProcess process;
-      process.Redirect();
+      wxExProcess process;
+      char buffer[255];
+      tmpnam(buffer);
       
-      const wxString command = tkz.GetString();
-      
-      if (wxExecute(command, wxEXEC_ASYNC, &process) == 0)
+      wxTextFile file(buffer);
+      if (!file.Create())
       {
         return false;
       }
-    
-      wxTextOutputStream os(*process.GetOutputStream());
+ 
+      wxString input;
       
       for (int i = begin_line - 1; i < end_line - 1; i++)
       {
-        os.WriteString(m_STC->GetLine(i) + "\n");
+        file.AddLine(m_STC->GetLine(i));
       }
       
-      process.CloseOutput();
+      file.Write();
+        
+      const wxString command = tkz.GetString();
       
-      if (process.IsInputAvailable())
+      if (process.Execute(command + " " + buffer, wxEXEC_SYNC))
       {
-        wxString output;
-        wxTextInputStream tis(*process.GetInputStream());
-        
-        while (process.IsInputAvailable())
-        {
-          const wxChar c = tis.GetChar();
-        
-          if (c != 0)
+        if (!process.HasStdError())
+        {      
+          if (Delete(begin_address, end_address))
           {
-            output << c;
+            m_STC->AddText(process.GetOutput());
+            return true;
           }
         }
-        
-        if (Delete(begin_address, end_address))
+        else
         {
-          m_STC->AddText(output);
-          return true;
+          m_Frame->ShowExMessage(process.GetOutput());
         }
       }
       
