@@ -449,20 +449,6 @@ bool wxExEx::CommandRange(const wxString& command)
       // A filter command.
       // The address range is used as input for the command,
       // and the output of the command is replaces the address range.
-      if (!Yank(begin_address, end_address))
-      {
-        return false;
-      }
-      
-      wxString input = wxExClipboardGet();
-      input.Trim(true);
-      input.Trim(false);
-      
-      if (!input.empty())
-      {
-        input = " < " + input;
-      }
-      
       const int begin_line = ToLineNumber(begin_address);
       const int end_line = ToLineNumber(end_address);
 
@@ -476,39 +462,40 @@ bool wxExEx::CommandRange(const wxString& command)
       
       const wxString command = tkz.GetString();
       
-      if (wxExecute(command,  wxEXEC_ASYNC, &process) == 0)
+      if (wxExecute(command, wxEXEC_ASYNC, &process) == 0)
       {
         return false;
       }
     
-      wxString output;
-      
       wxTextOutputStream os(*process.GetOutputStream());
       
       for (int i = begin_line - 1; i < end_line - 1; i++)
       {
         os.WriteString(m_STC->GetLine(i) + "\n");
-        
-        if (process.IsInputAvailable())
-        {
-          wxTextInputStream tis(*process.GetInputStream());
-        
-          while (process.IsInputAvailable())
-          {
-            const wxChar c = tis.GetChar();
-        
-            if (c != 0)
-            {
-              output << c;
-            }
-          }
-        }
       }
       
-      if (Delete(begin_address, end_address))
+      process.CloseOutput();
+      
+      if (process.IsInputAvailable())
       {
-        m_STC->AddText(output);
-        return true;
+        wxString output;
+        wxTextInputStream tis(*process.GetInputStream());
+        
+        while (process.IsInputAvailable())
+        {
+          const wxChar c = tis.GetChar();
+        
+          if (c != 0)
+          {
+            output << c;
+          }
+        }
+        
+        if (Delete(begin_address, end_address))
+        {
+          m_STC->AddText(output);
+          return true;
+        }
       }
       
       return false;
