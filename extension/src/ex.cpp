@@ -462,6 +462,7 @@ bool wxExEx::CommandRange(const wxString& command)
       tmpnam(buffer);
       
       wxTextFile file(buffer);
+      
       if (!file.Create())
       {
         return false;
@@ -469,24 +470,31 @@ bool wxExEx::CommandRange(const wxString& command)
  
       wxString input;
       
-      for (int i = begin_line - 1; i < end_line - 1; i++)
+      for (int i = begin_line - 1; i <= end_line - 1; i++)
       {
-        file.AddLine(m_STC->GetLine(i));
+        file.AddLine(m_STC->GetLine(i).Trim());
       }
       
       file.Write();
         
       const wxString command = tkz.GetString();
       
-      if (process.Execute(command + " " + buffer, wxEXEC_SYNC))
+      const bool ok = process.Execute(command + " " + buffer, wxEXEC_SYNC);
+      
+      remove(buffer);
+      
+      if (ok)
       {
         if (!process.HasStdError())
         {      
-          if (Delete(begin_address, end_address))
-          {
-            m_STC->AddText(process.GetOutput());
-            return true;
-          }
+          m_STC->BeginUndoAction();
+          
+          Delete(begin_address, end_address);
+          m_STC->AddText(process.GetOutput());
+          
+          m_STC->EndUndoAction();
+          
+          return true;
         }
         else
         {
@@ -867,7 +875,7 @@ bool wxExEx::SetSelection(
   }
 
   m_STC->SetSelectionStart(m_STC->PositionFromLine(begin_line - 1));
-  m_STC->SetSelectionEnd(m_STC->PositionFromLine(end_line));
+  m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(end_line - 1));
 
   return true;
 }
