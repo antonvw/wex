@@ -26,6 +26,7 @@ bool wxExViMacros::m_IsModified = false;
 bool wxExViMacros::m_IsPlayback = false;
 
 std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
+std::map <wxString, wxString> wxExViMacros::m_Registers;
 std::map <wxString, wxExVariable > wxExViMacros::m_Variables;
 
 wxExViMacros::wxExViMacros()
@@ -295,6 +296,21 @@ const wxFileName wxExViMacros::GetFileName()
       + wxFileName::GetPathSeparator() + "macros.xml");
 }
 
+const wxString wxExViMacros::GetRegister(const wxString& name) const
+{
+  std::map<wxString, wxString >::const_iterator it = 
+    m_Registers.find(name);
+    
+  if (it != m_Registers.end())
+  {
+    return it->second;
+  }
+  else
+  {
+    return wxEmptyString;
+  }
+}
+
 bool wxExViMacros::IsRecorded(const wxString& macro) const
 {
   if (macro.empty())
@@ -557,6 +573,11 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
   }
 
   return ok;
+}
+
+void wxExViMacros::SetRegister(const wxString& name, const wxString& value)
+{
+  m_Registers[name] = value;
 }
 
 void wxExViMacros::StartRecording(const wxString& macro)
