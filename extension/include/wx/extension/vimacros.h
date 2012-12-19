@@ -37,6 +37,9 @@ public:
   /// Returns current or last macro.
   const wxString& GetMacro() const {return m_Macro;};
   
+  /// Returns register.
+  const wxString GetRegister(const wxString& name) const;
+
   /// Have macros been recorded without calling SaveDocument.
   bool IsModified() {return m_IsModified;};
   
@@ -65,6 +68,9 @@ public:
     /// normally each record is a new command, if not,
     /// the text is appended after the last command
     bool new_command = true);
+  
+  /// Sets register.
+  void SetRegister(const wxString& name, const wxString& value);
   
   /// Starts recording a macro (overwrites 
   /// existing macro if macro starts with lower case).
@@ -120,6 +126,9 @@ private:
   
   /// All macros, as a map of name and a vector of commands.
   static std::map <wxString, std::vector< wxString > > m_Macros;
+  
+  /// All registers, as a map of name and value.
+  static std::map<wxString, wxString> m_Registers;
   
   /// All variables, as a map of name and variable.
   static std::map<wxString, wxExVariable> m_Variables;

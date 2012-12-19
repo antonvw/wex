@@ -336,6 +336,19 @@ bool wxExVi::Command(const wxString& command)
       return false;
     }
   }
+  else if (OneLetterAfter("\"", rest))
+  {
+    const wxString reg = rest.Mid(1);
+        
+    if (!GetMacros().GetRegister(reg).empty())
+    {
+      wxLogStatus(GetMacros().GetRegister(reg));
+    }
+    else
+    {
+      wxLogStatus("?" + reg);
+    }
+  }
   else if (rest.StartsWith("@"))
   {
     std::vector <wxString> v;
