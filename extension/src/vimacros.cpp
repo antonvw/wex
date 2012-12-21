@@ -311,6 +311,22 @@ const wxString wxExViMacros::GetRegister(const wxString& name) const
   }
 }
 
+const wxArrayString wxExViMacros::GetRegisters() const
+{
+  wxArrayString as;
+    
+  for (
+    std::map<wxString, wxString>::const_iterator it = 
+      m_Registers.begin();
+    it != m_Registers.end();
+    ++it)
+  {
+    as.Add(it->first + ": " + it->second);
+  }
+   
+  return as;
+}
+
 bool wxExViMacros::IsRecorded(const wxString& macro) const
 {
   if (macro.empty())
