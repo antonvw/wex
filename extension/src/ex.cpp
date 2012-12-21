@@ -13,6 +13,7 @@
 #include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
+#include <wx/textfile.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/managedframe.h>
@@ -223,7 +224,7 @@ bool wxExEx::Command(const wxString& command)
   if (result)
   {  
     SetLastCommand(command);
-    MacroRecord(command);
+    m_Macros.Record(command);
   }
   else
   {

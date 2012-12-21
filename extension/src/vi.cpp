@@ -104,7 +104,7 @@ bool wxExVi::Command(const wxString& command)
           
       if (result)
       {
-        MacroRecord(command);
+        GetMacros().Record(command);
       }
     }
     else
@@ -312,7 +312,7 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (OneLetterAfter("q", rest))
   {
-    if (!MacroIsRecording())
+    if (!GetMacros().IsRecording())
     {
       MacroStartRecording(rest.Mid(1));
       return true; // as we should not do default actions
@@ -326,7 +326,7 @@ bool wxExVi::Command(const wxString& command)
   {
     const wxString macro = rest.Last();
     
-    if (MacroIsRecorded(macro))
+    if (GetMacros().IsRecorded(macro))
     {
       MacroPlayback(macro, repeat);
     }
@@ -357,13 +357,13 @@ bool wxExVi::Command(const wxString& command)
     {
       const wxString macro = v[0];
         
-      if (MacroIsRecorded(macro))
+      if (GetMacros().IsRecorded(macro))
       {
         handled = MacroPlayback(macro, repeat);
       }
       else
       {
-        handled = MacroExpand(macro);
+        handled = GetMacros().Expand(this, macro);
       }
       
       if (!handled)
@@ -388,9 +388,9 @@ bool wxExVi::Command(const wxString& command)
         
       m_Command.clear();
 
-      if (MacroIsRecording())
+      if (GetMacros().IsRecording())
       {
-        MacroStopRecording();
+        GetMacros().StopRecording();
       }
       
       if (!GetSTC()->GetSelectedText().empty())
@@ -430,7 +430,7 @@ bool wxExVi::Command(const wxString& command)
       size != GetSTC()->GetLength());
 
     // Record it (if recording is on).
-    MacroRecord(command);
+    GetMacros().Record(command);
   }
     
   return true;
@@ -532,9 +532,9 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
       
     case 'q': 
-      if (MacroIsRecording())
+      if (GetMacros().IsRecording())
       {
-        MacroStopRecording();
+        GetMacros().StopRecording();
       }
       else
       {
@@ -782,8 +782,8 @@ void wxExVi::InsertMode(const wxString& command)
           SetLastCommand(lc + wxUniChar(WXK_ESCAPE));
             
           // Record it (if recording is on).
-          MacroRecord(lc);
-          MacroRecord(wxUniChar(WXK_ESCAPE));
+          GetMacros().Record(lc);
+          GetMacros().Record(wxUniChar(WXK_ESCAPE));
         }
         
         m_InsertMode = false;
@@ -906,14 +906,14 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   }
   else
   {
-    if (MacroIsRecording() && !m_InsertMode)
+    if (GetMacros().IsRecording() && !m_InsertMode)
     {
       switch (event.GetKeyCode())
       {
-        case WXK_LEFT: MacroRecord("h"); break;
-        case WXK_DOWN: MacroRecord("j"); break;
-        case WXK_UP: MacroRecord("k"); break;
-        case WXK_RIGHT: MacroRecord("l"); break;
+        case WXK_LEFT: GetMacros().Record("h"); break;
+        case WXK_DOWN: GetMacros().Record("j"); break;
+        case WXK_UP: GetMacros().Record("k"); break;
+        case WXK_RIGHT: GetMacros().Record("l"); break;
       }
     }
     

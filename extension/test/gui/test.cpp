@@ -255,27 +255,27 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":1,$s/^/BEGIN-OF-LINE"));
 
   // Test macros.
-  // Do not load macros yet, to test MacroIsRecorded.
-  CPPUNIT_ASSERT(!ex->MacroIsRecording());
-  CPPUNIT_ASSERT(!ex->MacroIsRecorded());
+  // Do not load macros yet, to test IsRecorded.
+  CPPUNIT_ASSERT(!ex->GetMacros().IsRecording());
+  CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded());
   
   ex->MacroStartRecording("a");
-  CPPUNIT_ASSERT( ex->MacroIsRecording());
-  CPPUNIT_ASSERT(!ex->MacroIsRecorded("a"));
+  CPPUNIT_ASSERT( ex->GetMacros().IsRecording());
+  CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded("a"));
   
-  ex->MacroStopRecording();
-  CPPUNIT_ASSERT(!ex->MacroIsRecording());
-  CPPUNIT_ASSERT(!ex->MacroIsRecorded("a")); // still no macro
+  ex->GetMacros().StopRecording();
+  CPPUNIT_ASSERT(!ex->GetMacros().IsRecording());
+  CPPUNIT_ASSERT(!ex->m_Macros.IsRecorded("a")); // still no macro
   
   ex->MacroStartRecording("a");
   CPPUNIT_ASSERT( ex->Command(":10"));
-  ex->MacroStopRecording();
+  ex->GetMacros().StopRecording();
   
-  CPPUNIT_ASSERT(!ex->MacroIsRecording());
-  CPPUNIT_ASSERT( ex->MacroIsRecorded("a"));
+  CPPUNIT_ASSERT(!ex->GetMacros().IsRecording());
+  CPPUNIT_ASSERT( ex->GetMacros().IsRecorded("a"));
   
-  CPPUNIT_ASSERT(!ex->MacroIsRecorded("b"));
-  CPPUNIT_ASSERT( ex->MacroIsRecorded());
+  CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded("b"));
+  CPPUNIT_ASSERT( ex->GetMacros().IsRecorded());
   
   CPPUNIT_ASSERT( ex->MacroPlayback("a"));
   CPPUNIT_ASSERT(!ex->MacroPlayback("b"));
@@ -284,10 +284,10 @@ void wxExGuiTestFixture::testEx()
 
   // Now load macros, to test whether some are available now.
   CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
-  CPPUNIT_ASSERT( ex->MacroIsRecorded());
+  CPPUNIT_ASSERT( ex->GetMacros().IsRecorded());
   
-  CPPUNIT_ASSERT( ex->MacroExpand("date"));
-  CPPUNIT_ASSERT(!ex->MacroExpand("xxx"));
+  CPPUNIT_ASSERT( ex->GetMacros().Expand(ex, "date"));
+  CPPUNIT_ASSERT(!ex->GetMacros().Expand(ex, "xxx"));
   
   // Test markers.
   CPPUNIT_ASSERT( ex->MarkerAdd('a'));
@@ -1548,25 +1548,25 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->OnChar(event));
 
   // Repeat some macro tests.
-  CPPUNIT_ASSERT(!vi->MacroIsRecording());
+  CPPUNIT_ASSERT(!vi->GetMacros().IsRecording());
   
   vi->MacroStartRecording("a");
-  CPPUNIT_ASSERT( vi->MacroIsRecording());
-  CPPUNIT_ASSERT(!vi->MacroIsRecorded("a"));
+  CPPUNIT_ASSERT( vi->GetMacros().IsRecording());
+  CPPUNIT_ASSERT(!vi->GetMacros().IsRecorded("a"));
   
-  vi->MacroStopRecording();
-  CPPUNIT_ASSERT(!vi->MacroIsRecording());
-  CPPUNIT_ASSERT(!vi->MacroIsRecorded("a")); // still no macro
+  vi->GetMacros().StopRecording();
+  CPPUNIT_ASSERT(!vi->GetMacros().IsRecording());
+  CPPUNIT_ASSERT(!vi->GetMacros().IsRecorded("a")); // still no macro
   
   vi->MacroStartRecording("a");
   CPPUNIT_ASSERT(!vi->OnChar(event));
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
-  vi->MacroStopRecording();
-  CPPUNIT_ASSERT(!vi->MacroIsRecording());
-  CPPUNIT_ASSERT( vi->MacroIsRecorded("a"));
+  vi->GetMacros().StopRecording();
+  CPPUNIT_ASSERT(!vi->GetMacros().IsRecording());
+  CPPUNIT_ASSERT( vi->GetMacros().IsRecorded("a"));
   
-  CPPUNIT_ASSERT(!vi->MacroIsRecorded("b"));
-  CPPUNIT_ASSERT( vi->MacroIsRecorded());
+  CPPUNIT_ASSERT(!vi->GetMacros().IsRecorded("b"));
+  CPPUNIT_ASSERT( vi->GetMacros().IsRecorded());
   
   CPPUNIT_ASSERT( vi->MacroPlayback("a"));
   CPPUNIT_ASSERT(!vi->MacroPlayback("b"));

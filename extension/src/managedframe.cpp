@@ -365,7 +365,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
     {
       if (m_ex != NULL)
       {
-        m_ex->MacroRecord(m_Prefix->GetLabel() + GetValue());
+        m_ex->GetMacros().Record(m_Prefix->GetLabel() + GetValue());
       }
     }
     else if (m_ex != NULL)
