@@ -162,6 +162,22 @@ bool wxExEx::Command(const wxString& command)
     event.SetCanVeto(false); 
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
+  else if (command == ":reg")
+  {
+    wxArrayString regs = GetMacros().GetRegisters();
+    
+    wxString output;
+    
+    for (int i = 0; i < regs.GetCount(); i++)
+    {
+      output += regs[i];
+    }
+    
+    wxExSTCEntryDialog(
+      wxTheApp->GetTopWindow(),
+      "Registers", 
+      output).ShowModal();
+  }
   else if (command.StartsWith(":r"))
   {
     wxString arg(command.AfterFirst(' '));
