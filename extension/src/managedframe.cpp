@@ -46,14 +46,15 @@ public:
   /// Sets ex component.
   void SetEx(wxExEx* ex);
 protected:
+  void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnEnter(wxCommandEvent& event);
   void OnFocus(wxFocusEvent& event);
-  void OnKey(wxKeyEvent& event);
 private:  
   wxExManagedFrame* m_Frame;
   wxExEx* m_ex;
   wxStaticText* m_Prefix;
+  bool m_Controlr;
   bool m_UserInput;
   
   std::list < wxString > m_Commands;
@@ -260,7 +261,7 @@ bool wxExManagedFrame::TogglePane(const wxString& pane)
 // Implementation of support class.
 
 BEGIN_EVENT_TABLE(wxExExTextCtrl, wxTextCtrl)
-  EVT_CHAR(wxExExTextCtrl::OnKey)
+  EVT_CHAR(wxExExTextCtrl::OnChar)
   EVT_SET_FOCUS(wxExExTextCtrl::OnFocus)
   EVT_TEXT(wxID_ANY, wxExExTextCtrl::OnCommand)
   EVT_TEXT_ENTER(wxID_ANY, wxExExTextCtrl::OnEnter)
@@ -276,6 +277,7 @@ wxExExTextCtrl::wxExExTextCtrl(
   : wxTextCtrl(parent, id, wxEmptyString, pos, size, wxTE_PROCESS_ENTER)
   , m_Frame(frame)
   , m_ex(NULL)
+  , m_Controlr(false)
   , m_UserInput(false)
   , m_Prefix(prefix)
 {
@@ -312,6 +314,77 @@ wxExExTextCtrl::~wxExExTextCtrl()
   }
 
   wxConfigBase::Get()->Write("excommand", values);
+}
+
+void wxExExTextCtrl::OnChar(wxKeyEvent& event)
+{
+  const int key = event.GetKeyCode();
+
+  switch (key)
+  {
+  case WXK_UP: 
+  case WXK_DOWN:
+    if (m_Prefix->GetLabel() == ":")
+    {
+      wxExSetTextCtrlValue(this, key, m_Commands, m_CommandsIterator);
+    }
+    else if (m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?")
+    {
+      wxExSetTextCtrlValue(this, key, m_Finds, m_FindsIterator);
+    }
+    break;
+    
+  case WXK_ESCAPE:
+    if (m_ex != NULL)
+    {
+      m_ex->GetSTC()->PositionRestore();
+    }
+    
+    m_Frame->HideExBar();
+    
+    m_Controlr = false;
+    m_UserInput = false;
+  break;
+  
+  case WXK_CONTROL_R:
+    m_Controlr = true;
+    break;
+
+  default:  
+    if (key != WXK_RETURN)
+    {
+      if (m_Prefix->GetLabel() == "=")
+      {  
+        if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
+        {
+          if (m_Controlr)
+          {
+            const wxChar c = event.GetUnicodeKey();
+          
+            switch (c)
+            {
+            case '\"':
+              AppendText(wxExClipboardGet()); break;
+                
+            default:
+              if (
+                m_ex != NULL &&
+                !m_ex->GetMacros().GetRegister(c).empty())
+                {
+                  AppendText(!m_ex->GetMacros().GetRegister(c)); break;
+                }
+            }
+          }
+        }
+      }
+      
+      m_UserInput = true;
+    }
+    
+    m_Controlr = false;
+    
+    event.Skip();
+  }
 }
 
 void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
@@ -400,52 +473,6 @@ void wxExExTextCtrl::OnFocus(wxFocusEvent& event)
   if (m_ex != NULL)
   {
     m_ex->GetSTC()->PositionSave();
-  }
-}
-
-void wxExExTextCtrl::OnKey(wxKeyEvent& event)
-{
-  const int key = event.GetKeyCode();
-
-  switch (key)
-  {
-  case WXK_UP: 
-  case WXK_DOWN:
-    if (m_Prefix->GetLabel() == ":")
-    {
-      wxExSetTextCtrlValue(this, key, m_Commands, m_CommandsIterator);
-    }
-    else if (m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?")
-    {
-      wxExSetTextCtrlValue(this, key, m_Finds, m_FindsIterator);
-    }
-    break;
-    
-  case WXK_ESCAPE:
-    if (m_ex != NULL)
-    {
-      m_ex->GetSTC()->PositionRestore();
-    }
-    
-    m_Frame->HideExBar();
-    
-    m_UserInput = false;
-  break;
-  
-  case WXK_CONTROL_R:
-    if (m_Prefix->GetLabel() == "=")
-    {
-      AppendText(wxExClipboardGet());
-    }
-    break;
-
-  default:  
-    if (key != WXK_RETURN)
-    {
-      m_UserInput = true;
-    }
-    
-    event.Skip();
   }
 }
 

@@ -40,6 +40,9 @@ public:
   /// Returns register.
   const wxString GetRegister(const wxString& name) const;
 
+  /// Returns all registers as an array of strings.
+  const wxArrayString GetRegisters() const;
+  
   /// Have macros been recorded without calling SaveDocument.
   bool IsModified() {return m_IsModified;};
   
