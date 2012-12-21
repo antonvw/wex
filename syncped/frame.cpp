@@ -752,7 +752,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_EDIT_MACRO: OpenFile(wxExViMacros::GetFileName()); break;
   case ID_EDIT_MACRO_PLAYBACK: if (editor != NULL) editor->GetVi().MacroPlayback(); break;
   case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->GetVi().MacroStartRecording(); break;
-  case ID_EDIT_MACRO_STOP_RECORD: if (editor != NULL) editor->GetVi().MacroStopRecording(); break;
+  case ID_EDIT_MACRO_STOP_RECORD: if (editor != NULL) editor->GetVi().GetMacros().StopRecording(); break;
   
   case ID_OPTION_EDITOR:
     wxExSTC::ConfigDialog(this,
@@ -1096,7 +1096,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         case ID_EDIT_MACRO:
           event.Enable(
              editor->GetVi().GetIsActive() &&
-            !editor->GetVi().MacroIsRecording() &&
+            !editor->GetVi().GetMacros().IsRecording() &&
              wxExViMacros::GetFileName().FileExists());
           break;
         case ID_EDIT_MACRO_MENU:
@@ -1106,16 +1106,16 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         case ID_EDIT_MACRO_PLAYBACK:
           event.Enable(
              editor->GetVi().GetIsActive() &&
-             editor->GetVi().MacroIsRecorded() && 
-            !editor->GetVi().MacroIsRecording());
+             editor->GetVi().GetMacros().IsRecorded() && 
+            !editor->GetVi().GetMacros().IsRecording());
           break;
         case ID_EDIT_MACRO_START_RECORD:
           event.Enable(
              editor->GetVi().GetIsActive() && 
-            !editor->GetVi().MacroIsRecording());
+            !editor->GetVi().GetMacros().IsRecording());
           break;
         case ID_EDIT_MACRO_STOP_RECORD:
-          event.Enable(editor->GetVi().MacroIsRecording());
+          event.Enable(editor->GetVi().GetMacros().IsRecording());
           break;
 
         case ID_EDIT_TOGGLE_FOLD:

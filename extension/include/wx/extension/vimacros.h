@@ -44,6 +44,9 @@ public:
   bool IsModified() {return m_IsModified;};
   
   /// Is macro recorded.
+  /// If you do not specify a macro, then
+  /// returns true if any macro has been recorded,
+  /// otherwise true if specified macro has been recorded.
   bool IsRecorded(const wxString& macro = wxEmptyString) const;
   
   /// Are we playing back?

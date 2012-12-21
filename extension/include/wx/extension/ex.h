@@ -56,24 +56,6 @@ public:
   /// Returns STC component.
   wxExSTC* GetSTC() {return m_STC;};
   
-  /// Expands a variable.
-  bool MacroExpand(const wxString& variable) {
-    return m_Macros.Expand(this, variable);};
-    
-  /// A macro is being played back.
-  bool MacroIsPlayback() const {
-    return m_Macros.IsPlayback();};
-    
-  /// A macro has been recorded.
-  /// If you do not specify a macro, then
-  /// returns true if any macro has been recorded,
-  /// otherwise true if specified macro has been recorded.
-  bool MacroIsRecorded(const wxString& macro = wxEmptyString) const {
-    return m_Macros.IsRecorded(macro);};
-
-  /// A macro is now being recorded.
-  bool MacroIsRecording() const {return m_Macros.IsRecording();};
-
   /// Plays back a recorded macro.
   /// If specified macro is empty,
   /// it asks for the name of the macro.
@@ -82,18 +64,11 @@ public:
     const wxString& macro = wxEmptyString,
     int repeat = 1);
   
-  /// Records text within a macro.
-  void MacroRecord(const wxString& text, bool new_command = true) {
-    m_Macros.Record(text, new_command);};
-  
   /// Start recording a macro.  
   /// If specified macro is empty,
   /// it asks for the name of the macro.
   void MacroStartRecording(const wxString& macro = wxEmptyString);
   
-  /// Stops recording current macro.
-  void MacroStopRecording() {m_Macros.StopRecording();};
-
   /// Adds marker at the specified line.
   /// Returns true if marker could be added.
   bool MarkerAdd(
