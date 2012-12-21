@@ -27,6 +27,11 @@ bool OneLetterAfter(const wxString text, const wxString& letter)
   return wxRegEx("^" + text + "[a-zA-Z]$").Matches(letter);
 }
 
+bool RegAfter(const wxString text, const wxString& letter)
+{
+  return wxRegEx("^" + text + "[0-9=\"a-z]$").Matches(letter);
+}
+
 wxString wxExVi::m_LastFindCharCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
@@ -336,7 +341,7 @@ bool wxExVi::Command(const wxString& command)
       return false;
     }
   }
-  else if (OneLetterAfter("\"", rest))
+  else if (RegAfter("\"", rest))
   {
     const wxString reg = rest.Mid(1);
         
@@ -349,6 +354,34 @@ bool wxExVi::Command(const wxString& command)
       wxLogStatus("?" + reg);
     }
   }
+  else if (RegAfter(wxUniChar(WXK_CONTROL_R), rest))
+  {
+    const wxString reg = rest.Mid(1);
+    
+    if (reg == "=")
+    {
+      GetFrame()->GetExCommand(this, reg);
+    }
+    else if (reg == "\"")
+    {
+      Put(true);
+    }
+    else if (m_InsertMode)
+    {
+      if (!GetMacros().GetRegister(reg).empty())
+      {
+        GetSTC()->AddText(GetMacros().GetRegister(reg));
+      }
+      else
+      {
+        wxLogStatus("?" + reg);
+      }
+    }
+    else
+    {
+      wxLogStatus("?" + reg);
+    }
+  }  
   else if (rest.StartsWith("@"))
   {
     std::vector <wxString> v;
