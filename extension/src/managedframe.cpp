@@ -318,7 +318,9 @@ void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
 {
   event.Skip();
   
-  if (m_UserInput && m_ex != NULL && m_Prefix->GetLabel() != ":")
+  if (
+     m_UserInput && m_ex != NULL && 
+    (m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?"))
   {
     m_ex->GetSTC()->PositionRestore();
     m_ex->GetSTC()->FindNext(
@@ -353,7 +355,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
       }
     }
   }
-  else
+  else if (m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?")
   {
     m_Finds.remove(GetValue());
     m_Finds.push_front(GetValue());
@@ -374,6 +376,20 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
     }
     
     m_Frame->HideExBar();
+  }
+  else if (m_Prefix->GetLabel() == "=")
+  {
+    if (m_ex != NULL)
+    {
+      if (m_ex->Command(m_Prefix->GetLabel() + GetValue()))
+      {
+        m_Frame->HideExBar();
+      }
+    }
+  }
+  else
+  {
+    wxFAIL;
   }
 }
 
@@ -399,7 +415,7 @@ void wxExExTextCtrl::OnKey(wxKeyEvent& event)
     {
       wxExSetTextCtrlValue(this, key, m_Commands, m_CommandsIterator);
     }
-    else
+    else if (m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?")
     {
       wxExSetTextCtrlValue(this, key, m_Finds, m_FindsIterator);
     }
@@ -415,6 +431,13 @@ void wxExExTextCtrl::OnKey(wxKeyEvent& event)
     
     m_UserInput = false;
   break;
+  
+  case WXK_CONTROL_R:
+    if (m_Prefix->GetLabel() == "=")
+    {
+      AppendText(wxExClipboardGet());
+    }
+    break;
 
   default:  
     if (key != WXK_RETURN)
@@ -431,7 +454,7 @@ void wxExExTextCtrl::SetEx(wxExEx* ex)
   m_UserInput = false;
   m_ex = ex;
   
-  if (m_Prefix->GetLabel() != ":")
+  if (m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?" )
   {
     if (!m_ex->GetSTC()->GetSelectedText().empty())
     {
@@ -443,7 +466,7 @@ void wxExExTextCtrl::SetEx(wxExEx* ex)
       SetValue(wxExFindReplaceData::Get()->GetFindString());
     }
   }
-  else
+  else if (m_Prefix->GetLabel() == ":")
   {
     if (m_Commands.begin() != m_Commands.end())
     {

@@ -48,7 +48,38 @@ wxExEx::~wxExEx()
 
 bool wxExEx::Command(const wxString& command)
 {
-  if (command.empty() || !command.StartsWith(":"))
+  if (command.empty())
+  {
+    return false;
+  }
+  
+  if (command.StartsWith("="))
+  {
+    // Calculation register.
+    const wxString calc = command.Mid(1);
+    
+    wxStringTokenizer tkz(calc, "+-*/");
+
+    int sum = 0;
+
+    while (tkz.HasMoreTokens())
+    {
+      const int value = atoi(tkz.GetNextToken());
+      const wxChar cmd = tkz.GetLastDelimiter();
+      
+      switch (cmd)
+      {
+        case 0:
+        case '+': sum += value; break;
+        case '-': sum -= value; break;
+        case '*': sum *= value; break;
+        case '/': sum /= value; break;
+      }
+    }
+    
+    GetSTC()->AddText(wxString::Format("%d", sum));
+  }
+  else if (!command.StartsWith(":"))
   {
     return false;
   }
