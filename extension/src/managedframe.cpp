@@ -51,6 +51,8 @@ protected:
   void OnEnter(wxCommandEvent& event);
   void OnFocus(wxFocusEvent& event);
 private:  
+  void Handle(wxKeyEvent& event);
+  
   wxExManagedFrame* m_Frame;
   wxExEx* m_ex;
   wxStaticText* m_Prefix;
@@ -316,6 +318,47 @@ wxExExTextCtrl::~wxExExTextCtrl()
   wxConfigBase::Get()->Write("excommand", values);
 }
 
+void wxExExTextCtrl::Handle(wxKeyEvent& event)
+{
+  bool skip = true;
+  
+  if (event.GetKeyCode() != WXK_RETURN)
+  {
+    if (
+      m_Prefix->GetLabel() == "=" &&
+      event.GetUnicodeKey() != (wxChar)WXK_NONE &&
+      m_Controlr)
+    {
+      skip = false;
+      
+      const wxChar c = event.GetUnicodeKey();
+    
+      switch (c)
+      {
+      case '\"':
+        AppendText(wxExClipboardGet()); break;
+          
+      default:
+        if (
+           m_ex != NULL &&
+          !m_ex->GetMacros().GetRegister(c).empty())
+          {
+            AppendText(m_ex->GetMacros().GetRegister(c)); break;
+          }
+      }
+    }
+    
+    m_UserInput = true;
+  }
+  
+  if (skip)
+  {
+    event.Skip();
+  }
+  
+  m_Controlr = false;
+}
+    
 void wxExExTextCtrl::OnChar(wxKeyEvent& event)
 {
   const int key = event.GetKeyCode();
@@ -350,40 +393,7 @@ void wxExExTextCtrl::OnChar(wxKeyEvent& event)
     m_Controlr = true;
     break;
 
-  default:  
-    if (key != WXK_RETURN)
-    {
-      if (m_Prefix->GetLabel() == "=")
-      {  
-        if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
-        {
-          if (m_Controlr)
-          {
-            const wxChar c = event.GetUnicodeKey();
-          
-            switch (c)
-            {
-            case '\"':
-              AppendText(wxExClipboardGet()); break;
-                
-            default:
-              if (
-                m_ex != NULL &&
-                !m_ex->GetMacros().GetRegister(c).empty())
-                {
-                  AppendText(!m_ex->GetMacros().GetRegister(c)); break;
-                }
-            }
-          }
-        }
-      }
-      
-      m_UserInput = true;
-    }
-    
-    m_Controlr = false;
-    
-    event.Skip();
+  default: Handle(event);
   }
 }
 

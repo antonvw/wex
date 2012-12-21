@@ -78,6 +78,8 @@ bool wxExEx::Command(const wxString& command)
     }
     
     GetSTC()->AddText(wxString::Format("%d", sum));
+    
+    return true;
   }
   else if (!command.StartsWith(":"))
   {
@@ -578,7 +580,7 @@ bool wxExEx::CommandSet(const wxString& command)
   return false;
 }
 
-bool wxExEx::Delete(int lines) const
+bool wxExEx::Delete(int lines, const wxString& reg)
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode())
   {
@@ -607,6 +609,11 @@ bool wxExEx::Delete(int lines) const
   }
   else
   {
+    if (!reg.empty())
+    {
+      GetMacros().SetRegister(reg, m_STC->GetSelectedText());
+    }
+    
     m_STC->Cut();
   }
 
@@ -1143,7 +1150,7 @@ bool wxExEx::Write(
       m_STC->PositionFromLine(end_line)));
 }
 
-void wxExEx::Yank(int lines)
+void wxExEx::Yank(int lines, const wxString& reg)
 {
   const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
   const int start = m_STC->PositionFromLine(line);
@@ -1151,11 +1158,25 @@ void wxExEx::Yank(int lines)
 
   if (end != -1)
   {
-    m_STC->CopyRange(start, end);
+    if (!reg.empty())
+    {
+      GetMacros().SetRegister(reg, m_STC->GetTextRange(start, end));
+    }
+    else
+    {
+      m_STC->CopyRange(start, end);
+    }
   }
   else
   {
-    m_STC->CopyRange(start, m_STC->GetLastPosition());
+    if (!reg.empty())
+    {
+      GetMacros().SetRegister(reg, m_STC->GetTextRange(start, m_STC->GetLastPosition()));
+    }
+    else
+    {  
+      m_STC->CopyRange(start, m_STC->GetLastPosition());
+    }
   }
   
   if (lines >= 2)

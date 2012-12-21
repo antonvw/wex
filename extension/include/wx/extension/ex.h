@@ -93,7 +93,7 @@ public:
   void Use(bool mode) {m_IsActive = mode;};
 protected:
   /// Deletes number of lines, starting at current line.
-  bool Delete(int lines) const;
+  bool Delete(int lines, const wxString& reg = "");
   
   /// Deletes lines from begin to end address.
   /// Returns false if address cannot be related to a line number.
@@ -118,7 +118,7 @@ protected:
   int ToLineNumber(const wxString& address) const;
   
   /// Yanks number of lines, starting at current line.
-  void Yank(int lines);
+  void Yank(int lines, const wxString& reg = "");
 private:
   bool CommandGlobal(const wxString& search);
   bool CommandRange(const wxString& command);

@@ -224,6 +224,10 @@ bool wxExVi::Command(const wxString& command)
       GetSTC()->EndUndoAction();
     }
   }
+  else if (rest.Matches("\"?dd"))
+  {
+     if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) Delete(repeat, rest.Mid(1, 1));
+  }
   else if (rest.Matches("f?"))
   {
     for (int i = 0; i < repeat; i++) 
@@ -274,6 +278,10 @@ bool wxExVi::Command(const wxString& command)
   else if (rest == "yy")
   {
     Yank(repeat);
+  }
+  else if (rest.Matches("\"?yy"))
+  {
+    Yank(repeat, rest.Mid(1, 1));
   }
   else if (rest == "zc" || rest == "zo")
   {
@@ -339,19 +347,6 @@ bool wxExVi::Command(const wxString& command)
     {
       GetFrame()->StatusText(macro, "PaneMacro");
       return false;
-    }
-  }
-  else if (RegAfter("\"", rest))
-  {
-    const wxString reg = rest.Mid(1);
-        
-    if (!GetMacros().GetRegister(reg).empty())
-    {
-      wxLogStatus(GetMacros().GetRegister(reg));
-    }
-    else
-    {
-      wxLogStatus("?" + reg);
     }
   }
   else if (RegAfter(wxUniChar(WXK_CONTROL_R), rest))
