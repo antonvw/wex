@@ -44,9 +44,6 @@ public:
   /// Returns last entered command.
   const wxString& GetLastCommand() const {return m_LastCommand;};
   
-  /// Returns macro being or last played back.
-  const wxString& GetMacro() const {return m_Macros.GetMacro();};
-
   /// Gets the macros.
   wxExViMacros& GetMacros() {return m_Macros;};
 

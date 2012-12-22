@@ -34,7 +34,7 @@ public:
   /// Returns contents of macro (for testing).
   const std::vector< wxString > Get(const wxString& macro) const;
   
-  /// Returns current or last macro.
+  /// Returns current or last macro played back.
   const wxString& GetMacro() const {return m_Macro;};
   
   /// Returns register.
