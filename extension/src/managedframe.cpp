@@ -59,6 +59,8 @@ private:
   bool m_Controlr;
   bool m_UserInput;
   
+  wxString m_Command;
+  
   std::list < wxString > m_Commands;
   std::list < wxString >::const_iterator m_CommandsIterator;
 
@@ -361,6 +363,18 @@ void wxExExTextCtrl::Handle(wxKeyEvent& event)
     
 void wxExExTextCtrl::OnChar(wxKeyEvent& event)
 {
+  if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
+  {
+    if (event.GetKeyCode() == WXK_BACK)
+    {
+      m_Command = m_Command.Truncate(m_Command.size() - 1);
+    }
+    else
+    {
+      m_Command += event.GetUnicodeKey();
+    }
+  }
+      
   const int key = event.GetKeyCode();
 
   switch (key)
@@ -446,16 +460,16 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   
     wxExFindReplaceData::Get()->SetFindString(GetValue());
         
-    if (m_UserInput)
+    if (m_ex != NULL)
     {
-      if (m_ex != NULL)
+      if (m_UserInput)
       {
         m_ex->GetMacros().Record(m_Prefix->GetLabel() + GetValue());
       }
-    }
-    else if (m_ex != NULL)
-    {
-      m_ex->Command(m_Prefix->GetLabel() + GetValue());
+      else 
+      {
+        m_ex->Command(m_Prefix->GetLabel() + GetValue());
+      }
     }
     
     m_Frame->HideExBar();
@@ -464,6 +478,11 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   {
     if (m_ex != NULL)
     {
+      if (m_UserInput)
+      {
+        m_ex->GetMacros().Record(m_Prefix->GetLabel() + m_Command);
+      }
+      
       if (m_ex->Command(m_Prefix->GetLabel() + GetValue()))
       {
         m_Frame->HideExBar();
@@ -488,6 +507,8 @@ void wxExExTextCtrl::OnFocus(wxFocusEvent& event)
 
 void wxExExTextCtrl::SetEx(wxExEx* ex) 
 {
+  m_Command.clear();
+  m_Controlr = false;
   m_UserInput = false;
   m_ex = ex;
   
