@@ -88,7 +88,14 @@ bool wxExVi::Command(const wxString& command)
     return false;
   }
   
-  if (m_InsertMode)
+  if (command.StartsWith("="))
+  {
+    if (wxExEx::Command(command))
+    {
+      return true;
+    }
+  }
+  else if (m_InsertMode)
   {
     InsertMode(command);
     return true;
