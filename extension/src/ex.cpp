@@ -612,9 +612,12 @@ bool wxExEx::Delete(int lines, const wxString& reg)
     if (!reg.empty())
     {
       GetMacros().SetRegister(reg, m_STC->GetSelectedText());
+      m_STC->ReplaceSelection(wxEmptyString);
     }
-    
-    m_STC->Cut();
+    else
+    {
+      m_STC->Cut();
+    }
   }
 
   if (lines >= 2)

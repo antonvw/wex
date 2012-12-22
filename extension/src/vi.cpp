@@ -351,31 +351,7 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (RegAfter(wxUniChar(WXK_CONTROL_R), rest))
   {
-    const wxString reg = rest.Mid(1);
-    
-    if (reg == "=")
-    {
-      GetFrame()->GetExCommand(this, reg);
-    }
-    else if (reg == "\"")
-    {
-      Put(true);
-    }
-    else if (m_InsertMode)
-    {
-      if (!GetMacros().GetRegister(reg).empty())
-      {
-        GetSTC()->AddText(GetMacros().GetRegister(reg));
-      }
-      else
-      {
-        wxLogStatus("?" + reg);
-      }
-    }
-    else
-    {
-      wxLogStatus("?" + reg);
-    }
+    CommandReg(rest.Mid(1));
   }  
   else if (rest.StartsWith("@"))
   {
@@ -723,6 +699,33 @@ bool wxExVi::CommandChar(int c, int repeat)
   return true;
 }
 
+void wxExVi::CommandReg(const wxString& reg)
+{
+  if (reg == "=")
+  {
+    GetFrame()->GetExCommand(this, reg);
+  }
+  else if (reg == "\"")
+  {
+    Put(true);
+  }
+  else if (m_InsertMode)
+  {
+    if (!GetMacros().GetRegister(reg).empty())
+    {
+      GetSTC()->AddText(GetMacros().GetRegister(reg));
+    }
+    else
+    {
+      wxLogStatus("?" + reg);
+    }
+  }
+  else
+  {
+    wxLogStatus("?" + reg);
+  }
+}
+    
 void wxExVi::FindWord(bool find_next)
 {
   const int start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
@@ -825,14 +828,25 @@ void wxExVi::InsertMode(const wxString& command)
           GetSTC()->NewLine();
         }
       break;
+      
+    case WXK_CONTROL_R:
+      m_InsertText += command;
+      break;
     
     default: 
       if (GetLastCommand().EndsWith("cw") && m_InsertText.empty())
       {
         GetSTC()->ReplaceSelection(wxEmptyString);
       }
-      
-      GetSTC()->AddText(command);
+
+      if (m_InsertText.Last() == wxUniChar(WXK_CONTROL_R))
+      {
+        CommandReg(command);
+      }
+      else
+      {
+        GetSTC()->AddText(command);
+      }
       
       if (!m_Dot)
       {
