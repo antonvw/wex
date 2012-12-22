@@ -333,7 +333,7 @@ bool wxExVi::Command(const wxString& command)
   } 
   else if (rest == "@@")
   {
-    MacroPlayback(GetMacro(), repeat);
+    MacroPlayback(GetMacros().GetMacro(), repeat);
   }
   else if (OneLetterAfter("@", rest))
   {
@@ -397,7 +397,7 @@ bool wxExVi::Command(const wxString& command)
       if (!handled)
       {
         m_Command.clear();
-        GetFrame()->StatusText(GetMacro(), "PaneMacro");
+        GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
       }
     }
     else
@@ -913,7 +913,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
       else if (event.GetKeyCode() == WXK_ESCAPE)
       {
         m_Command.clear();
-        GetFrame()->StatusText(GetMacro(), "PaneMacro");
+        GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
       }
       
       return false;
