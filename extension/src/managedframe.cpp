@@ -52,6 +52,12 @@ protected:
   void OnFocus(wxFocusEvent& event);
 private:  
   void Handle(wxKeyEvent& event);
+  bool IsCalc() const {return 
+    m_Prefix->GetLabel() == "=";};
+  bool IsCommand() const {return 
+    m_Prefix->GetLabel() == ":";};
+  bool IsFind() const {return 
+    m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?";};
   
   wxExManagedFrame* m_Frame;
   wxExEx* m_ex;
@@ -327,7 +333,7 @@ void wxExExTextCtrl::Handle(wxKeyEvent& event)
   if (event.GetKeyCode() != WXK_RETURN)
   {
     if (
-      m_Prefix->GetLabel() == "=" &&
+      IsCalc() &&
       event.GetUnicodeKey() != (wxChar)WXK_NONE &&
       m_Controlr)
     {
@@ -381,11 +387,11 @@ void wxExExTextCtrl::OnChar(wxKeyEvent& event)
   {
   case WXK_UP: 
   case WXK_DOWN:
-    if (m_Prefix->GetLabel() == ":")
+    if (IsCommand())
     {
       wxExSetTextCtrlValue(this, key, m_Commands, m_CommandsIterator);
     }
-    else if (m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?")
+    else if (IsFind())
     {
       wxExSetTextCtrlValue(this, key, m_Finds, m_FindsIterator);
     }
@@ -416,8 +422,7 @@ void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
   event.Skip();
   
   if (
-     m_UserInput && m_ex != NULL && 
-    (m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?"))
+     m_UserInput && m_ex != NULL && IsFind())
   {
     m_ex->GetSTC()->PositionRestore();
     m_ex->GetSTC()->FindNext(
@@ -435,7 +440,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
     return;
   }
   
-  if (m_Prefix->GetLabel() == ":")
+  if (IsCommand())
   {
     m_Commands.remove(GetValue());
     m_Commands.push_front(GetValue());
@@ -452,7 +457,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
       }
     }
   }
-  else if (m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?")
+  else if (IsFind())
   {
     m_Finds.remove(GetValue());
     m_Finds.push_front(GetValue());
@@ -474,7 +479,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
     
     m_Frame->HideExBar();
   }
-  else if (m_Prefix->GetLabel() == "=")
+  else if (IsCalc())
   {
     if (m_ex != NULL)
     {
@@ -512,7 +517,7 @@ void wxExExTextCtrl::SetEx(wxExEx* ex)
   m_UserInput = false;
   m_ex = ex;
   
-  if (m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?" )
+  if (IsFind())
   {
     if (!m_ex->GetSTC()->GetSelectedText().empty())
     {
@@ -524,7 +529,7 @@ void wxExExTextCtrl::SetEx(wxExEx* ex)
       SetValue(wxExFindReplaceData::Get()->GetFindString());
     }
   }
-  else if (m_Prefix->GetLabel() == ":")
+  else if (IsCommand())
   {
     if (m_Commands.begin() != m_Commands.end())
     {

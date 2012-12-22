@@ -265,7 +265,7 @@ void wxExGuiTestFixture::testEx()
   
   ex->GetMacros().StopRecording();
   CPPUNIT_ASSERT(!ex->GetMacros().IsRecording());
-  CPPUNIT_ASSERT(!ex->m_Macros.IsRecorded("a")); // still no macro
+  CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded("a")); // still no macro
   
   ex->MacroStartRecording("a");
   CPPUNIT_ASSERT( ex->Command(":10"));
@@ -1862,7 +1862,7 @@ void wxExGuiTestFixture::testViMacros()
   macros.StopRecording();
   CPPUNIT_ASSERT(!macros.IsRecording());
   CPPUNIT_ASSERT(!macros.IsRecorded("a")); // still no macro
-  CPPUNIT_ASSERT( macros.GetMacros().GetMacro() == "a");
+  CPPUNIT_ASSERT( macros.GetMacro() == "a");
   
   macros.StartRecording("a");
   macros.Record('a');

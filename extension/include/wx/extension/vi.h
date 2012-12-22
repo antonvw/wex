@@ -43,6 +43,7 @@ public:
 private:
   bool ChangeNumber(bool inc);
   bool CommandChar(int c, int repeat);
+  void CommandReg(const wxString& reg);
   void FindWord(bool find_next = true);
   void GotoBrace();
   bool Indent(
