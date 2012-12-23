@@ -90,7 +90,7 @@ public:
   void Use(bool mode) {m_IsActive = mode;};
 protected:
   /// Deletes number of lines, starting at current line.
-  bool Delete(int lines, const wxString& reg = "");
+  bool Delete(int lines);
   
   /// Deletes lines from begin to end address.
   /// Returns false if address cannot be related to a line number.
@@ -98,10 +98,16 @@ protected:
     const wxString& begin_address, 
     const wxString& end_address);
     
+  /// Returns register name.
+  const wxString& GetRegister() const {return m_Register;};
+  
   /// Sets last command.
   void SetLastCommand(
     const wxString& command,
     bool always = false);
+  
+  /// Sets register name.
+  void SetRegister(const wxString& name) {m_Register = name;};
     
   /// Sets selection from begin to end address.
   /// Returns false if address cannot be related to a line number.
@@ -115,7 +121,7 @@ protected:
   int ToLineNumber(const wxString& address) const;
   
   /// Yanks number of lines, starting at current line.
-  void Yank(int lines, const wxString& reg = "");
+  void Yank(int lines);
 private:
   bool CommandGlobal(const wxString& search);
   bool CommandRange(const wxString& command);
@@ -154,6 +160,7 @@ private:
   int m_SearchFlags;
   
   wxString m_Replacement;
+  wxString m_Register;
   
   wxExManagedFrame* m_Frame;  
   wxExProcess* m_Process;

@@ -580,7 +580,7 @@ bool wxExEx::CommandSet(const wxString& command)
   return false;
 }
 
-bool wxExEx::Delete(int lines, const wxString& reg)
+bool wxExEx::Delete(int lines)
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode())
   {
@@ -609,9 +609,9 @@ bool wxExEx::Delete(int lines, const wxString& reg)
   }
   else
   {
-    if (!reg.empty())
+    if (!m_Register.empty())
     {
-      GetMacros().SetRegister(reg, m_STC->GetSelectedText());
+      GetMacros().SetRegister(m_Register, m_STC->GetSelectedText());
       m_STC->ReplaceSelection(wxEmptyString);
     }
     else
@@ -1153,7 +1153,7 @@ bool wxExEx::Write(
       m_STC->PositionFromLine(end_line)));
 }
 
-void wxExEx::Yank(int lines, const wxString& reg)
+void wxExEx::Yank(int lines)
 {
   const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
   const int start = m_STC->PositionFromLine(line);
@@ -1161,9 +1161,9 @@ void wxExEx::Yank(int lines, const wxString& reg)
 
   if (end != -1)
   {
-    if (!reg.empty())
+    if (!m_Register.empty())
     {
-      GetMacros().SetRegister(reg, m_STC->GetTextRange(start, end));
+      GetMacros().SetRegister(m_Register, m_STC->GetTextRange(start, end));
     }
     else
     {
@@ -1172,9 +1172,11 @@ void wxExEx::Yank(int lines, const wxString& reg)
   }
   else
   {
-    if (!reg.empty())
+    if (!m_Register.empty())
     {
-      GetMacros().SetRegister(reg, m_STC->GetTextRange(start, m_STC->GetLastPosition()));
+      GetMacros().SetRegister(
+        m_Register, 
+        m_STC->GetTextRange(start, m_STC->GetLastPosition()));
     }
     else
     {  
