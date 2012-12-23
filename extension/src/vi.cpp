@@ -139,7 +139,22 @@ bool wxExVi::Command(const wxString& command)
   
   const int size = GetSTC()->GetLength();
   
-  const wxString rest(pEnd);
+  wxString rest(pEnd);
+  
+  if (rest.StartsWith("\""))
+  {
+    if (rest.size() < 2)
+    {
+      return false;
+    }
+    
+    SetRegister(rest.Mid(1, 1));
+    rest = rest.Mid(2);
+  }
+  else
+  {
+    SetRegister(wxEmptyString);
+  }
   
   if (command == "0")
   {
@@ -231,10 +246,6 @@ bool wxExVi::Command(const wxString& command)
       GetSTC()->EndUndoAction();
     }
   }
-  else if (rest.Matches("\"?dd"))
-  {
-     if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) Delete(repeat, rest.Mid(1, 1));
-  }
   else if (rest.Matches("f?"))
   {
     for (int i = 0; i < repeat; i++) 
@@ -280,15 +291,21 @@ bool wxExVi::Command(const wxString& command)
       GetSTC()->WordRightEnd();
     for (int j = 0; j < repeat; j++) 
       GetSTC()->WordLeftExtend();
-    GetSTC()->Copy();
+      
+    if (GetRegister().empty())
+    {
+      GetSTC()->Copy();
+    }
+    else
+    {
+      GetMacros().SetRegister(
+        GetRegister(),
+        GetSTC()->GetSelectedText());
+    }
   }
   else if (rest == "yy")
   {
     Yank(repeat);
-  }
-  else if (rest.Matches("\"?yy"))
-  {
-    Yank(repeat, rest.Mid(1, 1));
   }
   else if (rest == "zc" || rest == "zo")
   {

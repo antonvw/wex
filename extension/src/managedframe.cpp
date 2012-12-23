@@ -488,11 +488,10 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
         m_ex->GetMacros().Record(m_Prefix->GetLabel() + m_Command);
       }
       
-      if (m_ex->Command(m_Prefix->GetLabel() + GetValue()))
-      {
-        m_Frame->HideExBar();
-      }
+      m_ex->Command(m_Prefix->GetLabel() + GetValue());
     }
+    
+    m_Frame->HideExBar();
   }
   else
   {
