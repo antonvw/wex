@@ -78,7 +78,8 @@ bool wxExEx::Command(const wxString& command)
     }
     
     GetSTC()->AddText(wxString::Format("%d", sum));
-    
+    m_Frame->HideExBar();
+
     return true;
   }
   else if (!command.StartsWith(":"))
