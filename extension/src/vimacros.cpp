@@ -97,7 +97,7 @@ const wxString wxExViMacros::Encode(const wxString& text)
   {
     const int c = text[i];
   
-    // Encode control characters, and whitespace.
+    // Encode control characters.
     if (iscntrl(c))
     {
       output += wxString::Format("$!%d!", c);
