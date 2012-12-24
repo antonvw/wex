@@ -123,7 +123,7 @@ public:
 private:  
   static void AskForInput();
   static bool Load(wxXmlDocument& doc);
-  static const wxString Encode(const wxString& text, bool& encoded);
+  static const wxString Encode(const wxString& text);
   static const wxString Decode(const wxString& text);
     
   static bool m_IsExpand;

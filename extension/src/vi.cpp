@@ -863,7 +863,9 @@ void wxExVi::InsertMode(const wxString& command)
         GetSTC()->ReplaceSelection(wxEmptyString);
       }
 
-      if (m_InsertText.Last() == wxUniChar(WXK_CONTROL_R))
+      if (
+       !m_InsertText.empty() &&
+        m_InsertText.Last() == wxUniChar(WXK_CONTROL_R))
       {
         CommandReg(command);
       }

@@ -10,9 +10,7 @@ from vi mode using @name@. If the name is a single character c, you can call it
 using @c. From vi you can record a macro using q followed by a letter,
 and ending with a q as well.
 
-Each macro can have several commands, a 
-command is encoded if the content refers to a
-control character.  
+Each macro can have several commands.  
 
 Variables are expanded when playing back the macro. 
 - A variable can have a "type" attribute.
@@ -95,35 +93,35 @@ Comments you add within xml elements are not saved when you edit macros.
   <macro name="hdr">
     <command>g</command>
     <command>O</command>
-    <command encoded="true">27</command>
+    <command>$!27!</command>
     <command>@cl@</command>
     <command>o</command>
-    <command encoded="true">27</command>
+    <command>$!27!</command>
     <command>@cb@</command>
     <command>i Name:      </command>
-    <command encoded="true">27</command>
+    <command>$!27!</command>
     <command>@fullname@</command>
     <command>@cc@</command>
     <command>o</command>
-    <command encoded="true">27</command>
+    <command>$!27!</command>
     <command>@PURPOSE@</command>
     <command>o</command>
-    <command encoded="true">27</command>
+    <command>$!27!</command>
     <command>@AUTHOR@</command>
     <command>o</command>
-    <command encoded="true">27</command>
+    <command>$!27!</command>
     <command>@cb@</command>
     <command>i Copyright: (c) </command>
-    <command encoded="true">27</command>
+    <command>$!27!</command>
     <command>@year@</command>
     <command>i </command>
-    <command encoded="true">27</command>
+    <command>$!27!</command>
     <command>@copyright@</command>
     <command>@cc@</command>
     <command>o</command>
-    <command encoded="true">27</command>
+    <command>$!27!</command>
     <command>@cl@</command>
     <command>o</command>
-    <command encoded="true">27</command>
+    <command>$!27!</command>
   </macro>
 </macros>
