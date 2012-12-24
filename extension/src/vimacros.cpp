@@ -47,31 +47,68 @@ void wxExViMacros::AskForInput()
 
 const wxString wxExViMacros::Decode(const wxString& text)
 {
-  long c;
+  wxString output;
   
-  if (text.ToLong(&c))
+  for (int i = 0; i < text.length(); i++)
   {
-    return char(c);
+    int skip = 0;
+    wxString number;
+    
+    if (
+      text[i]     == '$' &&
+      text[i + 1] == '!')
+    {
+      if (
+        isdigit(text[i + 2]) && 
+        text[i + 3] == '!')
+      {
+        skip  = 3;
+        number = text.Mid(i + 2, 1);
+      }
+      else if (
+        isdigit(text[i + 2]) &&
+        isdigit(text[i + 3]) &&
+        text[i + 4] == '!')
+      {
+        skip = 4;
+        number = text.Mid(i + 2, 2);
+      }
+    }
+    
+    if (!number.empty())
+    {
+      output += wxChar(atoi(number));
+      i += skip;
+    }
+    else
+    {
+      output += text[i];
+    }
   }
   
-  return text;
+  return output;
 }
-    
-const wxString wxExViMacros::Encode(const wxString& text, bool& encoded)
+
+const wxString wxExViMacros::Encode(const wxString& text)
 {
-  if (text.length() == 1)
+  wxString output;
+  
+  for (int i = 0; i < text.length(); i++)
   {
-    int c = text[0];
+    const int c = text[i];
   
     // Encode control characters, and whitespace.
-    if (iscntrl(c) || isspace(c))
+    if (iscntrl(c))
     {
-      encoded = true;
-      return wxString::Format("%d", c);
+      output += wxString::Format("$!%d!", c);
+    }
+    else
+    {
+      output += text[i];
     }
   }
 
-  return text;  
+  return output;
 }
 
 bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
@@ -386,15 +423,7 @@ bool wxExViMacros::LoadDocument()
   
       while (command)
       {
-        if (command->GetAttribute("encoded", "false") == "true")
-        {
-          v.push_back(Decode(command->GetNodeContent()));
-        }
-        else
-        {
-          v.push_back(command->GetNodeContent());
-        }
-        
+        v.push_back(Decode(command->GetNodeContent()));
         command = command->GetNext();
       }
       
@@ -558,16 +587,8 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
       it2 != it->second.rend();
       ++it2)
     { 
-      bool encoded = false;  
-      const wxString contents(Encode(*it2, encoded));
-      
       wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
-      new wxXmlNode(cmd, wxXML_TEXT_NODE, "", contents);
-        
-      if (encoded)
-      {
-        cmd->AddAttribute("encoded", "true");
-      }
+      new wxXmlNode(cmd, wxXML_TEXT_NODE, "", Encode(*it2));
     }
   }
   
