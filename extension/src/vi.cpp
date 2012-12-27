@@ -150,6 +150,11 @@ bool wxExVi::Command(const wxString& command)
     
     SetRegister(rest.Mid(1, 1));
     rest = rest.Mid(2);
+    
+    if (rest.empty())
+    {
+      return false;
+    }
   }
   else
   {

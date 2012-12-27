@@ -174,6 +174,7 @@ bool wxExEx::Command(const wxString& command)
     for (int i = 0; i < regs.GetCount(); i++)
     {
       output += regs[i];
+      output += "\n";
     }
     
     wxExSTCEntryDialog(

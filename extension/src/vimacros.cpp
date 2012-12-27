@@ -26,7 +26,6 @@ bool wxExViMacros::m_IsModified = false;
 bool wxExViMacros::m_IsPlayback = false;
 
 std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
-std::map <wxString, wxString> wxExViMacros::m_Registers;
 std::map <wxString, wxExVariable > wxExViMacros::m_Variables;
 
 wxExViMacros::wxExViMacros()
@@ -335,12 +334,25 @@ const wxFileName wxExViMacros::GetFileName()
 
 const wxString wxExViMacros::GetRegister(const wxString& name) const
 {
-  std::map<wxString, wxString >::const_iterator it = 
-    m_Registers.find(name);
+  std::map<wxString, std::vector< wxString > >::const_iterator it = 
+    m_Macros.find(name);
     
-  if (it != m_Registers.end())
+  if (it != m_Macros.end())
   {
-    return it->second;
+    std::vector<wxString> v = it->second;
+    
+    wxString output;
+    
+    for (
+      std::vector<wxString>::const_iterator it2 = 
+        v.begin();
+      it2 != v.end();
+      ++it2)
+    {
+      output += *it2;
+    }
+    
+    return output;
   }
   else
   {
@@ -353,12 +365,26 @@ const wxArrayString wxExViMacros::GetRegisters() const
   wxArrayString as;
     
   for (
-    std::map<wxString, wxString>::const_iterator it = 
-      m_Registers.begin();
-    it != m_Registers.end();
+    std::map<wxString, std::vector< wxString > >::const_iterator it = 
+      m_Macros.begin();
+    it != m_Macros.end();
     ++it)
   {
-    as.Add(it->first + ": " + it->second);
+    std::vector<wxString> v = it->second;
+    
+    wxString output;
+    
+    for (
+      std::vector<wxString>::const_iterator it2 = 
+        v.begin();
+      it2 != v.end();
+      ++it2)
+    {
+      output += *it2;
+      output.Trim();
+    }
+    
+    as.Add(it->first + ": " + output);
   }
    
   return as;
@@ -614,7 +640,9 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
 
 void wxExViMacros::SetRegister(const wxString& name, const wxString& value)
 {
-  m_Registers[name] = value;
+  std::vector<wxString> v;
+  v.push_back(value);
+  m_Macros[name] = v;
 }
 
 void wxExViMacros::StartRecording(const wxString& macro)
