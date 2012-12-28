@@ -1946,6 +1946,15 @@ void wxExGuiTestFixture::testViMacros()
   
   // A second save is not necessary.
   CPPUNIT_ASSERT(!macros.SaveDocument());
+  
+  // Test registers.
+  CPPUNIT_ASSERT(!macros.GetRegister("a").empty());
+  CPPUNIT_ASSERT( macros.GetRegister("z").empty());
+  CPPUNIT_ASSERT(!macros.GetRegisters().empty());
+  CPPUNIT_ASSERT( macros.GetMacro("z").empty());
+  macros.SetRegister("z", "hello z");
+  CPPUNIT_ASSERT(!macros.GetRegister("z").empty());
+  CPPUNIT_ASSERT(!macros.GetMacro("z").empty());
 }
   
 wxExAppTestSuite::wxExAppTestSuite()
