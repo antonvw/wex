@@ -535,6 +535,10 @@ void wxExExTextCtrl::SetEx(wxExEx* ex)
       SetValue(*m_Commands.begin());
     }
   }
+  else if (IsCalc())
+  {
+    SetValue(wxEmptyString);
+  }
     
   Show();
   SelectAll();
