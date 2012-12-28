@@ -179,7 +179,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   if (GetCurrentLine() == 0)
   {
     menu.Append(ID_EDIT_SHOW_PROPERTIES, _("Properties"));
-    menu.AppendSeparator();
   }
     
   if (m_MenuFlags & STC_MENU_OPEN_LINK)
