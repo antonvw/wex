@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/regex.h>
+#include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/hexmode.h>
@@ -90,10 +91,52 @@ bool wxExVi::Command(const wxString& command)
   
   if (command.StartsWith("="))
   {
-    if (wxExEx::Command(command))
+    // Calculation register.
+    const wxString calc = command.Mid(1);
+    
+    wxStringTokenizer tkz(calc, "+-*/");
+
+    int sum = 0;
+    bool init = true;
+    wxChar prev_cmd = 0;
+
+    while (tkz.HasMoreTokens())
     {
-      return true;
+      const int value = atoi(tkz.GetNextToken());
+      const wxChar cmd = tkz.GetLastDelimiter();
+      
+      if (init)
+      {
+        init = false;
+        sum = value;
+      }
+      else
+      {
+        switch (prev_cmd)
+        {
+          case 0: break;
+          case '+': sum += value; break;
+          case '-': sum -= value; break;
+          case '*': sum *= value; break;
+          case '/': sum /= value; break;
+        }
+      }
+      
+      prev_cmd = cmd;
     }
+    
+    if (m_InsertMode)
+    {
+      GetSTC()->AddText(wxString::Format("%d", sum));
+    }
+    else
+    {
+      wxLogStatus(wxString::Format("%d", sum));
+    }
+    
+    GetFrame()->HideExBar();
+
+    return true;
   }
   else if (m_InsertMode)
   {
