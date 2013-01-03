@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -607,7 +607,7 @@ void wxExSTC::ConfigGet()
     wxSTC_PRINT_BLACKONWHITE));
   
   SetCaretLineVisible(
-    wxConfigBase::Get()->ReadBool(_("Caret line"), true));
+    wxConfigBase::Get()->ReadBool(_("Caret line"), false));
     
   SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));

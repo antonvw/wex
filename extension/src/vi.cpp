@@ -2,7 +2,7 @@
 // Name:      vi.cpp
 // Purpose:   Implementation of class wxExVi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -96,13 +96,17 @@ bool wxExVi::Command(const wxString& command)
     
     wxStringTokenizer tkz(calc, "+-*/");
 
-    int sum = 0;
+    double sum = 0;
     bool init = true;
     wxChar prev_cmd = 0;
+    int width = 0;
 
     while (tkz.HasMoreTokens())
     {
-      const int value = atoi(tkz.GetNextToken());
+      const wxString token = tkz.GetNextToken();
+      const int new_width = token.AfterFirst('.').length();
+      if (new_width > width) width = new_width;
+      const double value = atof(token);
       const wxChar cmd = tkz.GetLastDelimiter();
       
       if (init)
@@ -127,11 +131,11 @@ bool wxExVi::Command(const wxString& command)
     
     if (m_InsertMode)
     {
-      GetSTC()->AddText(wxString::Format("%d", sum));
+      GetSTC()->AddText(wxString::Format("%.*f", width, sum));
     }
     else
     {
-      wxLogStatus(wxString::Format("%d", sum));
+      wxLogStatus(wxString::Format("%.*f", width, sum));
     }
     
     GetFrame()->HideExBar();
