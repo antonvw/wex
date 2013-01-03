@@ -2,7 +2,7 @@
 // Name:      managedframe.cpp
 // Purpose:   Implementation of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -434,6 +434,11 @@ void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
 
 void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
 {
+  if (m_ex == NULL)
+  {
+    return;
+  }
+  
   if (GetValue().empty())
   {
     m_Frame->HideExBar();
@@ -442,19 +447,16 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   
   if (IsCommand())
   {
-    m_Commands.remove(GetValue());
-    m_Commands.push_front(GetValue());
-    m_CommandsIterator = m_Commands.begin();
-  
-    if (m_ex != NULL)
+    if (m_ex->Command(m_Prefix->GetLabel() + GetValue()))
     {
-      if (m_ex->Command(m_Prefix->GetLabel() + GetValue()))
-      {
-        const bool set_focus = 
-          (GetValue() == "n" || GetValue() == "prev");
+      const bool set_focus = 
+        (GetValue() == "n" || GetValue() == "prev");
           
-        m_Frame->HideExBar(!set_focus);
-      }
+      m_Commands.remove(GetValue());
+      m_Commands.push_front(GetValue());
+      m_CommandsIterator = m_Commands.begin();
+
+      m_Frame->HideExBar(!set_focus);
     }
   }
   else if (IsFind())
@@ -465,31 +467,25 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   
     wxExFindReplaceData::Get()->SetFindString(GetValue());
         
-    if (m_ex != NULL)
+    if (m_UserInput)
     {
-      if (m_UserInput)
-      {
-        m_ex->GetMacros().Record(m_Prefix->GetLabel() + GetValue());
-      }
-      else 
-      {
-        m_ex->Command(m_Prefix->GetLabel() + GetValue());
-      }
+      m_ex->GetMacros().Record(m_Prefix->GetLabel() + GetValue());
+    }
+    else 
+    {
+      m_ex->Command(m_Prefix->GetLabel() + GetValue());
     }
     
     m_Frame->HideExBar();
   }
   else if (IsCalc())
   {
-    if (m_ex != NULL)
+    if (m_UserInput)
     {
-      if (m_UserInput)
-      {
-        m_ex->GetMacros().Record(m_Prefix->GetLabel() + m_Command);
-      }
-      
-      m_ex->Command(m_Prefix->GetLabel() + GetValue());
+      m_ex->GetMacros().Record(m_Prefix->GetLabel() + m_Command);
     }
+      
+    m_ex->Command(m_Prefix->GetLabel() + GetValue());
     
     m_Frame->HideExBar();
   }

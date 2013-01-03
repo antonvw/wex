@@ -2,7 +2,7 @@
 // Name:      ex.cpp
 // Purpose:   Implementation of class wxExEx
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -25,7 +25,8 @@
 
 wxExViMacros wxExEx::m_Macros;
 wxString wxExEx::m_LastCommand;
-
+wxExSTCEntryDialog* wxExEx::m_Dialog = NULL;
+  
 wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
   , m_Process(NULL)
@@ -143,10 +144,19 @@ bool wxExEx::Command(const wxString& command)
       output += "\n";
     }
     
-    wxExSTCEntryDialog(
-      wxTheApp->GetTopWindow(),
-      "Registers", 
-      output).ShowModal();
+    if (m_Dialog == NULL)
+    {
+      m_Dialog = new wxExSTCEntryDialog(
+        wxTheApp->GetTopWindow(),
+        "Registers", 
+        output);
+    }
+    else
+    {
+      m_Dialog->GetSTC()->SetText(output);
+    }
+    
+    m_Dialog->ShowModal();
   }
   else if (command.StartsWith(":r"))
   {
