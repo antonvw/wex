@@ -126,6 +126,12 @@ bool wxExManagedFrame::AddToolBarPane(
       .Top()
       .ToolbarPane()
       .Caption(caption);
+      
+    // Initially hide findbar as well.
+    if (name == "FINDBAR")
+    {
+      pane.Hide();
+    }
   }
   else
   {
