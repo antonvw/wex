@@ -19,6 +19,7 @@
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI

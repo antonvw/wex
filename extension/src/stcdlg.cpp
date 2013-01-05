@@ -2,7 +2,7 @@
 // Name:      stcdlg.cpp
 // Purpose:   Implementation of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>

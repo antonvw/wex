@@ -2,18 +2,19 @@
 // Name:      stcdlg.h
 // Purpose:   Declaration of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTCDLG_H
 #define _EXSTCDLG_H
 
 #include <wx/extension/dialog.h>
-#include <wx/extension/shell.h>
 
 #if wxUSE_GUI
 class wxExLexer;
 class wxExProcess;
+class wxExSTC;
+class wxExSTCShell;
 
 /// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
 /// The prompt (if not empty) is first added as a text sizer to the user sizer.

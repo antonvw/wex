@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wxExProcess
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,11 +10,13 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/timer.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/process.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/shell.h>
+#include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h> // for wxExConfigFirstOf
 
 BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
@@ -280,6 +282,11 @@ bool wxExProcess::Execute(
   }
   
   return !m_Error;
+}
+
+wxExSTC* wxExProcess::GetSTC() 
+{
+  return m_Dialog != NULL ? m_Dialog->GetSTC(): NULL;
 }
 
 bool wxExProcess::HandleCommand(const wxString& command) const

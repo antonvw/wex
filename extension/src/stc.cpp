@@ -176,7 +176,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 {
   const wxString sel = GetSelectedText();
 
-  if (GetCurrentLine() == 0)
+  if (GetCurrentLine() == 0 && wxExLexers::Get()->GetCount() > 0)
   {
     menu.Append(ID_EDIT_SHOW_PROPERTIES, _("Properties"));
   }
@@ -1725,6 +1725,14 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
       wxExMenu menu(style);
       
       BuildPopupMenu(menu);
+      
+      // If last item is a separator, delete it.
+      wxMenuItem* item = menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
+      
+      if (item->IsSeparator())
+      {
+        menu.Delete(item->GetId());
+      }
       
       if (menu.GetMenuItemCount() > 0)
       {

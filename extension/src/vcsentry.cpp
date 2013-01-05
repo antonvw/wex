@@ -2,7 +2,7 @@
 // Name:      vcsentry.cpp
 // Purpose:   Implementation of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -13,6 +13,7 @@
 #include <wx/extension/vcsentry.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
