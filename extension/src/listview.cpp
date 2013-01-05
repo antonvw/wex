@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wxExListView and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -21,6 +21,8 @@
 #include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/lexer.h>
+#include <wx/extension/menu.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
 

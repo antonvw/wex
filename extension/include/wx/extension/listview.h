@@ -2,17 +2,19 @@
 // Name:      listview.h
 // Purpose:   Declaration of wxExListView and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXLISTVIEW_H
 #define _EXLISTVIEW_H
 
 #include <map>
+#include <wx/artprov.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/listctrl.h>
-#include <wx/extension/lexer.h>
-#include <wx/extension/menu.h> // for wxExMenu
+
+class wxExLexer;
+class wxExMenu;
 
 #if wxUSE_GUI
 
