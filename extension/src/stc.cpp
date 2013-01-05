@@ -16,15 +16,21 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/indicator.h>
+#include <wx/extension/lexer.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/link.h>
+#include <wx/extension/menu.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stcdlg.h>
+#include <wx/extension/stcfile.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
+#include <wx/extension/vi.h>
 
 #if wxUSE_GUI
 

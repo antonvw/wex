@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTC_H
@@ -11,17 +11,17 @@
 #include <vector> 
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/stc/stc.h>
-#include <wx/extension/filename.h>
-#include <wx/extension/hexmode.h>
-#include <wx/extension/lexer.h>
 #include <wx/extension/link.h>
-#include <wx/extension/menu.h>
+#include <wx/extension/marker.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/vi.h>
 
 #if wxUSE_GUI
 class wxExConfigDialog;
+class wxExFile;
+class wxExFileName;
 class wxExIndicator;
+class wxExMenu;
 
 /// Offers a styled text ctrl with find/replace, printing, popup menu, 
 /// macro support, vi support and lexer support (syntax colouring, folding).
@@ -373,9 +373,9 @@ private:
   // (though wxExSTCFile offers one), as you can manually override
   // the lexer.
   wxExLexer m_Lexer;
+  wxExLink m_Link;
   wxExSTCFile m_File;
   wxExVi m_vi;
-  wxExLink m_Link;
 
   wxFont m_DefaultFont;
   
