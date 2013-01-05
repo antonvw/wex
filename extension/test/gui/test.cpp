@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -1951,10 +1951,10 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT(!macros.GetRegister("a").empty());
   CPPUNIT_ASSERT( macros.GetRegister("z").empty());
   CPPUNIT_ASSERT(!macros.GetRegisters().empty());
-  CPPUNIT_ASSERT( macros.GetMacro("z").empty());
+  CPPUNIT_ASSERT( macros.Get("z").empty());
   macros.SetRegister("z", "hello z");
   CPPUNIT_ASSERT(!macros.GetRegister("z").empty());
-  CPPUNIT_ASSERT(!macros.GetMacro("z").empty());
+  CPPUNIT_ASSERT(!macros.Get("z").empty());
 }
   
 wxExAppTestSuite::wxExAppTestSuite()
