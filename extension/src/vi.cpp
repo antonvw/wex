@@ -176,17 +176,7 @@ bool wxExVi::Command(const wxString& command)
   
   bool handled = true;
 
-  char * pEnd;
-  long int repeat = strtol(command.c_str(), &pEnd, 10);
-
-  if (repeat == 0)
-  {
-    repeat++;
-  }
-  
-  const int size = GetSTC()->GetLength();
-  
-  wxString rest(pEnd);
+  wxString rest(command);
   
   if (rest.StartsWith("\""))
   {
@@ -207,6 +197,18 @@ bool wxExVi::Command(const wxString& command)
   {
     SetRegister(wxEmptyString);
   }
+  
+  char * pEnd;
+  long int repeat = strtol(rest.c_str(), &pEnd, 10);
+
+  if (repeat == 0)
+  {
+    repeat++;
+  }
+  
+  rest = wxString(pEnd);
+  
+  const int size = GetSTC()->GetLength();
   
   if (command == "0")
   {
