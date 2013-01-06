@@ -2,7 +2,7 @@
 // Name:      vimacros.cpp
 // Purpose:   Implementation of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -18,6 +18,7 @@
 #include <wx/extension/ex.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
@@ -363,6 +364,15 @@ const wxString wxExViMacros::GetRegister(const wxString& name) const
 const wxArrayString wxExViMacros::GetRegisters() const
 {
   wxArrayString as;
+  
+  // Currently the " register does not really exist,
+  // but copies clipboard contents instead.
+  const wxString clipboard(wxExSkipWhiteSpace(wxExClipboardGet()));
+  
+  if (!clipboard.empty())
+  {
+    as.Add("\": " + clipboard);
+  }
     
   for (
     std::map<wxString, std::vector< wxString > >::const_iterator it = 
@@ -381,10 +391,9 @@ const wxArrayString wxExViMacros::GetRegisters() const
       ++it2)
     {
       output += *it2;
-      output.Trim();
     }
     
-    as.Add(it->first + ": " + output);
+    as.Add(it->first + ": " + wxExSkipWhiteSpace(output));
   }
    
   return as;
