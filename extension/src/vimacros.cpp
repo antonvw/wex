@@ -652,6 +652,8 @@ void wxExViMacros::SetRegister(const wxString& name, const wxString& value)
   std::vector<wxString> v;
   v.push_back(value);
   m_Macros[name] = v;
+  
+  m_IsModified = true;
 }
 
 void wxExViMacros::StartRecording(const wxString& macro)

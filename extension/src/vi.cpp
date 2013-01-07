@@ -1055,8 +1055,15 @@ bool wxExVi::Put(bool after)
     if (after) GetSTC()->LineDown();
     GetSTC()->Home();
   }
-
-  GetSTC()->Paste();
+  
+  if (GetRegister().empty())
+  {
+    GetSTC()->Paste();
+  }
+  else
+  {
+    GetSTC()->AddText(GetMacros().GetRegister(GetRegister()));
+  }
 
   if (YankedLines() && after)
   {
