@@ -282,6 +282,10 @@ public:
   /// Default also resets the divider margin.
   void ResetMargins(bool divider_margin = true);
 
+  /// Deselects selected text in the control.
+  // Reimplemented, since scintilla version sets empty sel at 0, and sets caret on pos 0.
+  virtual void SelectNone();
+  
   /// Sets an indicator at specified start and end pos.
   bool SetIndicator(const wxExIndicator& indicator, int start, int end);
 

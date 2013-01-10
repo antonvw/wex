@@ -2,7 +2,7 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -115,10 +115,7 @@ bool wxExFindReplaceData::Get(
 
 const wxString wxExFindReplaceData::GetFindReplaceInfoText(bool replace) const
 {
-  // TODO: wx 2.9.1 GetFindString is no const, so use a cast here.
-
-  wxString log = _("Searching for") + ": " + 
-    const_cast< wxExFindReplaceData * >( this )->GetFindString();
+  wxString log = _("Searching for") + ": " + GetFindString();
 
   if (replace)
   {

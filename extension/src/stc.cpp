@@ -1127,7 +1127,7 @@ void wxExSTC::GotoLineAndSelect(
     SetCurrentPos(asked < max ? asked: max);
     
     // Reset selection, seems necessary.
-    SetSelection(GetCurrentPos(), GetCurrentPos());
+    SelectNone();
   }
 }
 
@@ -1274,14 +1274,7 @@ bool wxExSTC::Indent(int lines, bool forward)
 
 void wxExSTC::Initialize(bool file_exists)
 {
-  // TODO: There is a bug in scintilla 2.0.3.
-  // const char *Document::SubstituteByPosition(const char *text, int *length) {
-  //   return regex->SubstituteByPosition(this, text, length);
-  // }
-  // If this is invoked without first calling FindNext, while wxSTC_FIND_REGEXP set,
-  // then regex is still 0, and crashes here.
   SetSearchFlags(wxSTC_FIND_REGEXP);
-  SearchInTarget(wxEmptyString);
   
   if (HexMode())
   {
@@ -1585,8 +1578,15 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
   case ID_EDIT_SHOW_PROPERTIES:
     {
+      const wxString propnames = PropertyNames();
+      
       wxString text;
     
+      if (!propnames.empty())
+      {
+        text += "Current properties\n";
+      }
+      
       for (
         std::vector<wxExProperty>::const_iterator it1 = wxExLexers::Get()->GetProperties().begin();
         it1 != wxExLexers::Get()->GetProperties().end();
@@ -1603,11 +1603,19 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
         text += it2->GetName() + ": " + GetProperty(it2->GetName()) + "\n";
       }
     
-      wxExSTCEntryDialog(this, _("Properties"), text, wxEmptyString, wxOK).ShowModal();
+      if (!propnames.empty())
+      {
+        text += "\nAvailable properties\n";
+        wxStringTokenizer tkz(propnames, "\n");
       
-    // TODO: Add all available properties as well.
-    // #define SCI_DESCRIBEPROPERTY 4016
-    // not available in scintilla v2.03.
+        while (tkz.HasMoreTokens())
+        {
+          const wxString prop = tkz.GetNextToken();
+          text += prop + ": " + DescribeProperty(prop) + "\n";
+        }
+      }
+      
+      wxExSTCEntryDialog(this, _("Properties"), text, wxEmptyString, wxOK).ShowModal();
     }
     break;
     
@@ -2114,6 +2122,12 @@ void wxExSTC::ResetMargins(bool divider_margin)
   {
     SetMarginWidth(m_MarginDividerNumber, 0);
   }
+}
+
+void wxExSTC::SelectNone()
+{
+  // The base styledtextctrl version uses scintilla, sets caret at 0.
+  SetSelection(GetCurrentPos(), GetCurrentPos());
 }
 
 void wxExSTC::SetHexMode(

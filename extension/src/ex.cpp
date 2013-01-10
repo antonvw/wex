@@ -287,7 +287,6 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
   while (m_STC->SearchInTarget(pattern) != -1)
   {
-    // TODO: Add more commands.
     if (command == "d")
     {
       const int begin = m_STC->PositionFromLine(
