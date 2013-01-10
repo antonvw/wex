@@ -2,7 +2,7 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wxExHexModeLine
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -46,7 +46,7 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc,
       m_LineNo = m_STC->GetCurrentLine();
       m_Line = m_STC->GetLine(m_LineNo);
       m_Index = (pos_or_offset & 0x0f);
-      m_STC->SetSelection(m_STC->GetCurrentPos(), m_STC->GetCurrentPos());
+      m_STC->SelectNone();
     }
     else
     {
@@ -262,7 +262,7 @@ bool wxExHexModeLine::Goto() const
  
   m_STC->SetFocus(); 
   m_STC->SetCurrentPos(start + start_ascii_field + m_Index);
-  m_STC->SetSelection(m_STC->GetCurrentPos(), m_STC->GetCurrentPos());
+  m_STC->SelectNone();
   
   return true;
 }

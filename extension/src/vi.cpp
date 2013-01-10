@@ -262,42 +262,82 @@ bool wxExVi::Command(const wxString& command)
   {
     if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
     {
-      GetSTC()->BeginUndoAction();
       const int start = GetSTC()->GetCurrentPos();
       for (int i = 0; i < repeat; i++) 
         GetSTC()->WordRightEnd();
-      GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
-      GetSTC()->Cut();
-      GetSTC()->EndUndoAction();
+        
+      if (GetRegister().empty())
+      {
+        GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
+        GetSTC()->Cut();
+      }
+      else
+      {
+        GetMacros().SetRegister(
+          GetRegister(), 
+          GetSTC()->GetTextRange(start, GetSTC()->GetCurrentPos()));
+        GetSTC()->DeleteRange(start, GetSTC()->GetCurrentPos() - start);
+      }
     }
   }
   else if (rest == "d0")
   {
     if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
     {
-      GetSTC()->HomeExtend();
-      GetSTC()->Cut();
+      if (GetRegister().empty())
+      {
+        GetSTC()->HomeExtend();
+        GetSTC()->Cut();
+      }
+      else
+      {
+        const int start = GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine());
+        GetMacros().SetRegister(
+          GetRegister(), 
+          GetSTC()->GetTextRange(start, GetSTC()->GetCurrentPos()));
+        GetSTC()->DeleteRange(start, GetSTC()->GetCurrentPos() - start);
+      }
     }
   }
   else if (rest == "d$")
   {
     if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
     {
-      GetSTC()->LineEndExtend();
-      GetSTC()->Cut();
+      if (GetRegister().empty())
+      {
+        GetSTC()->LineEndExtend();
+        GetSTC()->Cut();
+      }
+      else
+      {
+        const int end = GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine());
+        GetMacros().SetRegister(
+          GetRegister(), 
+          GetSTC()->GetTextRange(GetSTC()->GetCurrentPos(), end));
+        GetSTC()->DeleteRange(GetSTC()->GetCurrentPos(), end - GetSTC()->GetCurrentPos());
+      }
     }
   }
   else if (rest == "dw")
   {
     if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
     {
-      GetSTC()->BeginUndoAction();
       const int start = GetSTC()->GetCurrentPos();
       for (int i = 0; i < repeat; i++) 
         GetSTC()->WordRight();
-      GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
-      GetSTC()->Cut();
-      GetSTC()->EndUndoAction();
+        
+      if (GetRegister().empty())
+      {
+        GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
+        GetSTC()->Cut();
+      }
+      else
+      {
+        GetMacros().SetRegister(
+          GetRegister(), 
+          GetSTC()->GetTextRange(start, GetSTC()->GetCurrentPos()));
+        GetSTC()->DeleteRange(start, GetSTC()->GetCurrentPos() - start);
+      }
     }
   }
   else if (rest.Matches("f?"))
@@ -477,8 +517,7 @@ bool wxExVi::Command(const wxString& command)
       
       if (!GetSTC()->GetSelectedText().empty())
       {
-        GetSTC()->SetSelection(
-          GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos());
+        GetSTC()->SelectNone();
       }
     }
     else
@@ -1175,10 +1214,12 @@ bool wxExVi::ToggleCase()
 
 bool wxExVi::YankedLines()
 {
-  const wxString cb(wxExClipboardGet());
+  const wxString txt = (GetRegister().empty() ?
+    wxExClipboardGet(): 
+    GetMacros().GetRegister(GetRegister()));
   
   // do not trim
-  return wxExGetNumberOfLines(cb, false) > 1;
+  return wxExGetNumberOfLines(txt, false) > 1;
 }
 
 #endif // wxUSE_GUI
