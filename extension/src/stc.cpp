@@ -42,7 +42,6 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_FIND_NEXT(wxID_ANY, wxExSTC::OnFindDialog)
   EVT_FIND_REPLACE(wxID_ANY, wxExSTC::OnFindDialog)
   EVT_FIND_REPLACE_ALL(wxID_ANY, wxExSTC::OnFindDialog)
-  EVT_IDLE(wxExSTC::OnIdle)
   EVT_KEY_DOWN(wxExSTC::OnKeyDown)
   EVT_KEY_UP(wxExSTC::OnKeyUp)
   EVT_LEFT_UP(wxExSTC::OnMouse)
@@ -71,6 +70,7 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
 END_EVENT_TABLE()
 
 wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
+wxExSTCEntryDialog* wxExSTC::m_EntryDialog = NULL;
 int wxExSTC::m_Zoom = -1;
 
 wxExSTC::wxExSTC(wxWindow *parent, 
@@ -1276,6 +1276,12 @@ void wxExSTC::Initialize(bool file_exists)
 {
   SetSearchFlags(wxSTC_FIND_REGEXP);
   
+  Bind(
+    wxEVT_IDLE, 
+    &wxExSTC::OnIdle,
+    this,
+    wxID_ANY);
+  
   if (HexMode())
   {
     SetHexMode(true);
@@ -1576,48 +1582,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
     break;
 
-  case ID_EDIT_SHOW_PROPERTIES:
-    {
-      const wxString propnames = PropertyNames();
-      
-      wxString text;
-    
-      if (!propnames.empty())
-      {
-        text += "Current properties\n";
-      }
-      
-      for (
-        std::vector<wxExProperty>::const_iterator it1 = wxExLexers::Get()->GetProperties().begin();
-        it1 != wxExLexers::Get()->GetProperties().end();
-        ++it1)
-      {
-        text += it1->GetName() + ": " + GetProperty(it1->GetName()) + "\n";
-      }
-      
-      for (
-        std::vector<wxExProperty>::const_iterator it2 = m_Lexer.GetProperties().begin();
-        it2 != m_Lexer.GetProperties().end();
-        ++it2)
-      {
-        text += it2->GetName() + ": " + GetProperty(it2->GetName()) + "\n";
-      }
-    
-      if (!propnames.empty())
-      {
-        text += "\nAvailable properties\n";
-        wxStringTokenizer tkz(propnames, "\n");
-      
-        while (tkz.HasMoreTokens())
-        {
-          const wxString prop = tkz.GetNextToken();
-          text += prop + ": " + DescribeProperty(prop) + "\n";
-        }
-      }
-      
-      wxExSTCEntryDialog(this, _("Properties"), text, wxEmptyString, wxOK).ShowModal();
-    }
-    break;
+  case ID_EDIT_SHOW_PROPERTIES: ShowProperties(); break;
     
   case ID_EDIT_OPEN_LINK: LinkOpen(); break;
 
@@ -2259,6 +2224,62 @@ void wxExSTC::SetText(const wxString& value)
   EmptyUndoBuffer();
 }
 
+void wxExSTC::ShowProperties()
+{
+  const wxString propnames = PropertyNames();
+  
+  wxString text;
+
+  if (!propnames.empty())
+  {
+    text += "Current properties\n";
+  }
+  
+  for (
+    std::vector<wxExProperty>::const_iterator it1 = wxExLexers::Get()->GetProperties().begin();
+    it1 != wxExLexers::Get()->GetProperties().end();
+    ++it1)
+  {
+    text += it1->GetName() + ": " + GetProperty(it1->GetName()) + "\n";
+  }
+  
+  for (
+    std::vector<wxExProperty>::const_iterator it2 = m_Lexer.GetProperties().begin();
+    it2 != m_Lexer.GetProperties().end();
+    ++it2)
+  {
+    text += it2->GetName() + ": " + GetProperty(it2->GetName()) + "\n";
+  }
+
+  if (!propnames.empty())
+  {
+    text += "\nAvailable properties\n";
+    wxStringTokenizer tkz(propnames, "\n");
+  
+    while (tkz.HasMoreTokens())
+    {
+      const wxString prop = tkz.GetNextToken();
+      text += prop + ": " + DescribeProperty(prop) + "\n";
+    }
+  }
+  
+  if (m_EntryDialog == NULL)
+  {
+    m_EntryDialog = new wxExSTCEntryDialog(
+      this, 
+      _("Properties"), 
+      text, 
+      wxEmptyString, 
+      wxOK);
+  }
+  else
+  {
+    m_EntryDialog->GetSTC()->SetText(text);
+  }
+  
+  m_EntryDialog->ShowModal();
+}
+
 bool wxExSTC::SmartIndentation()
 {
   // At this moment a newline has been given (but not yet processed).
@@ -2367,6 +2388,15 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
   // Set selection back, without removed empty lines.
   SetSelection(start_pos, GetLineEndPosition(start_line + mm.size()));
+}
+
+void wxExSTC::StopSync()
+{
+  Unbind(
+    wxEVT_IDLE, 
+    &wxExSTC::OnIdle,
+    this,
+    wxID_ANY);
 }
 
 void wxExSTC::Undo()

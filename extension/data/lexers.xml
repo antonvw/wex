@@ -70,6 +70,28 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <def no ="ex_marknum_vi"> 0 </def>
     </def>
 
+    <def name = "a68k">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="number_dec"/>
+      <def no ="number_bin"/>
+      <def no ="number_hex"/>
+      <def no ="string1"/>
+      <def no ="operator"/>
+      <def no ="cpuinstruction"/>
+      <def no ="extinstruction"/>
+      <def no ="register"/>
+      <def no ="directive"/>
+      <def no ="macro_arg"/>
+      <def no ="label"/>
+      <def no ="string2"/>
+      <def no ="identifier"/>
+      <def no ="macro_declaration"/>
+      <def no ="comment_word"/>
+      <def no ="comment_special"/>
+      <def no ="comment_doxygen"/>
+    </def>
+
     <def name = "abaqus">
       <def no ="default"/>
       <def no ="comment"/>
@@ -201,6 +223,24 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <def no ="word6"/>
     </def>
     
+    <def name = "avs">
+      <def no ="default"/>
+      <def no ="commentblock"/>
+      <def no ="commentblockn"/>
+      <def no ="commentline"/>
+      <def no ="number"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="string"/>
+      <def no ="triplestring"/>
+      <def no ="keyword"/>
+      <def no ="filter"/>
+      <def no ="plugin"/>
+      <def no ="function"/>
+      <def no ="clipprop"/>
+      <def no ="userdfn"/>
+    </def>
+
     <def name = "baan">
       <def no ="default"/>
       <def no ="comment"/>
@@ -297,6 +337,35 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <def no ="macrodef"/>
       <def no ="stringvar"/>
       <def no ="number"/>
+    </def>
+
+    <def name = "coffeescript">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="commentline"/>
+      <def no ="commentdoc"/>
+      <def no ="number"/>
+      <def no ="word"/>
+      <def no ="string"/>
+      <def no ="character"/>
+      <def no ="uuid"/>
+      <def no ="preprocessor"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="stringeol"/>
+      <def no ="verbatim"/>
+      <def no ="regex"/>
+      <def no ="commentlinedoc"/>
+      <def no ="word2"/>
+      <def no ="commentdockeyword"/>
+      <def no ="commentdockeyworderror"/>
+      <def no ="globalclass"/>
+      <def no ="stringraw"/>
+      <def no ="tripleverbatim"/>
+      <def no ="hashquotedstring"/>
+      <def no ="commentblock"/>
+      <def no ="verbose_regex"/>
+      <def no ="verbose_regex_comment"/>
     </def>
 
     <def name = "conf">
@@ -417,6 +486,37 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <def no ="changed"/>
     </def>
     
+    <def name = "ecl">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="commentline"/>
+      <def no ="number"/>
+      <def no ="string"/>
+      <def no ="word0"/>
+      <def no ="operator"/>
+      <def no ="character"/>
+      <def no ="uuid"/>
+      <def no ="preprocessor"/>
+      <def no ="unknown"/>
+      <def no ="identifier"/>
+      <def no ="stringeol"/>
+      <def no ="verbatim"/>
+      <def no ="regex"/>
+      <def no ="commentlinedoc"/>
+      <def no ="word1"/>
+      <def no ="commentdockeyword"/>
+      <def no ="commentdockeyworderror"/>
+      <def no ="word2"/>
+      <def no ="word3"/>
+      <def no ="word4"/>
+      <def no ="word5"/>
+      <def no ="commentdoc"/>
+      <def no ="added"/>
+      <def no ="deleted"/>
+      <def no ="changed"/>
+      <def no ="moved"/>
+    </def>
+
     <def name = "eiffel">
       <def no ="default"/>
       <def no ="commentline"/>
@@ -926,6 +1026,27 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <def no ="include"/>
     </def>
     
+    <def name = "modula">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="doxycomm"/>
+      <def no ="doxykey"/>
+      <def no ="keyword"/>
+      <def no ="reserved"/>
+      <def no ="number"/>
+      <def no ="basenum"/>
+      <def no ="float"/>
+      <def no ="string"/>
+      <def no ="strspec"/>
+      <def no ="char"/>
+      <def no ="charspec"/>
+      <def no ="proc"/>
+      <def no ="pragma"/>
+      <def no ="prgkey"/>
+      <def no ="operator"/>
+      <def no ="badstr"/>
+    </def>
+
     <def name = "mssql">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1018,6 +1139,28 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <def no ="par"/>
       <def no ="bool_const"/>
       <def no ="default"> 32 </def>
+    </def>
+    
+    <def name = "oscript">
+      <def no ="default"/>
+      <def no ="line_comment"/>
+      <def no ="block_comment"/>
+      <def no ="doc_comment"/>
+      <def no ="preprocessor"/>
+      <def no ="number"/>
+      <def no ="singlequote_string"/>
+      <def no ="doublequote_string"/>
+      <def no ="constant"/>
+      <def no ="identifier"/>
+      <def no ="global"/>
+      <def no ="keyword"/>
+      <def no ="operator"/>
+      <def no ="label"/>
+      <def no ="type"/>
+      <def no ="function"/>
+      <def no ="object"/>
+      <def no ="property"/>
+      <def no ="method"/>
     </def>
     
     <def name = "pascal">
@@ -1507,6 +1650,19 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <def no ="block_comment"/>
     </def>
     
+    <def name = "tcmd">
+      <def no ="comment"/>
+      <def no ="word"/>
+      <def no ="label"/>
+      <def no ="hide"/>
+      <def no ="command"/>
+      <def no ="identifier"/>
+      <def no ="operator"/>
+      <def no ="environment"/>
+      <def no ="expansion"/>
+      <def no ="clabel"/>
+    </def>
+
     <def name = "tex">
       <def no ="default"/>
       <def no ="special"/>
@@ -1516,6 +1672,35 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <def no ="text"/>
     </def>
     
+    <def name = "txt2tags">
+      <def no ="default"/>
+      <def no ="line_begin"/>
+      <def no ="strong1"/>
+      <def no ="strong2"/>
+      <def no ="em1"/>
+      <def no ="em2"/>
+      <def no ="header1"/>
+      <def no ="header2"/>
+      <def no ="header3"/>
+      <def no ="header4"/>
+      <def no ="header5"/>
+      <def no ="header6"/>
+      <def no ="prechar"/>
+      <def no ="ulist_item"/>
+      <def no ="olist_item"/>
+      <def no ="blockquote"/>
+      <def no ="strikeout"/>
+      <def no ="hrule"/>
+      <def no ="link"/>
+      <def no ="code"/>
+      <def no ="code2"/>
+      <def no ="codebk"/>
+      <def no ="comment"/>
+      <def no ="option"/>
+      <def no ="preproc"/>
+      <def no ="postproc"/>
+    </def>
+
     <def name = "vb">
     <!-- , vbscript, powerbasic -->
       <def no ="default"/>
@@ -1574,204 +1759,6 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <def no ="userword"/>
     </def>
     
-    <def name = "yaml">
-      <def no ="default"/>
-      <def no ="comment"/>
-      <def no ="identifier"/>
-      <def no ="keyword"/>
-      <def no ="number"/>
-      <def no ="reference"/>
-      <def no ="document"/>
-      <def no ="text"/>
-      <def no ="error"/>
-      <def no ="operator"/>
-    </def>
-    
-    <def name = "txt2tags">
-      <def no ="default"/>
-      <def no ="line_begin"/>
-      <def no ="strong1"/>
-      <def no ="strong2"/>
-      <def no ="em1"/>
-      <def no ="em2"/>
-      <def no ="header1"/>
-      <def no ="header2"/>
-      <def no ="header3"/>
-      <def no ="header4"/>
-      <def no ="header5"/>
-      <def no ="header6"/>
-      <def no ="prechar"/>
-      <def no ="ulist_item"/>
-      <def no ="olist_item"/>
-      <def no ="blockquote"/>
-      <def no ="strikeout"/>
-      <def no ="hrule"/>
-      <def no ="link"/>
-      <def no ="code"/>
-      <def no ="code2"/>
-      <def no ="codebk"/>
-      <def no ="comment"/>
-      <def no ="option"/>
-      <def no ="preproc"/>
-      <def no ="postproc"/>
-    </def>
-
-    <def name = "a68k">
-      <def no ="default"/>
-      <def no ="comment"/>
-      <def no ="number_dec"/>
-      <def no ="number_bin"/>
-      <def no ="number_hex"/>
-      <def no ="string1"/>
-      <def no ="operator"/>
-      <def no ="cpuinstruction"/>
-      <def no ="extinstruction"/>
-      <def no ="register"/>
-      <def no ="directive"/>
-      <def no ="macro_arg"/>
-      <def no ="label"/>
-      <def no ="string2"/>
-      <def no ="identifier"/>
-      <def no ="macro_declaration"/>
-      <def no ="comment_word"/>
-      <def no ="comment_special"/>
-      <def no ="comment_doxygen"/>
-    </def>
-
-    <def name = "modula">
-      <def no ="default"/>
-      <def no ="comment"/>
-      <def no ="doxycomm"/>
-      <def no ="doxykey"/>
-      <def no ="keyword"/>
-      <def no ="reserved"/>
-      <def no ="number"/>
-      <def no ="basenum"/>
-      <def no ="float"/>
-      <def no ="string"/>
-      <def no ="strspec"/>
-      <def no ="char"/>
-      <def no ="charspec"/>
-      <def no ="proc"/>
-      <def no ="pragma"/>
-      <def no ="prgkey"/>
-      <def no ="operator"/>
-      <def no ="badstr"/>
-    </def>
-
-    <def name = "coffeescript">
-      <def no ="default"/>
-      <def no ="comment"/>
-      <def no ="commentline"/>
-      <def no ="commentdoc"/>
-      <def no ="number"/>
-      <def no ="word"/>
-      <def no ="string"/>
-      <def no ="character"/>
-      <def no ="uuid"/>
-      <def no ="preprocessor"/>
-      <def no ="operator"/>
-      <def no ="identifier"/>
-      <def no ="stringeol"/>
-      <def no ="verbatim"/>
-      <def no ="regex"/>
-      <def no ="commentlinedoc"/>
-      <def no ="word2"/>
-      <def no ="commentdockeyword"/>
-      <def no ="commentdockeyworderror"/>
-      <def no ="globalclass"/>
-      <def no ="stringraw"/>
-      <def no ="tripleverbatim"/>
-      <def no ="hashquotedstring"/>
-      <def no ="commentblock"/>
-      <def no ="verbose_regex"/>
-      <def no ="verbose_regex_comment"/>
-    </def>
-
-    <def name = "avs">
-      <def no ="default"/>
-      <def no ="commentblock"/>
-      <def no ="commentblockn"/>
-      <def no ="commentline"/>
-      <def no ="number"/>
-      <def no ="operator"/>
-      <def no ="identifier"/>
-      <def no ="string"/>
-      <def no ="triplestring"/>
-      <def no ="keyword"/>
-      <def no ="filter"/>
-      <def no ="plugin"/>
-      <def no ="function"/>
-      <def no ="clipprop"/>
-      <def no ="userdfn"/>
-    </def>
-
-    <def name = "ecl">
-      <def no ="default"/>
-      <def no ="comment"/>
-      <def no ="commentline"/>
-      <def no ="number"/>
-      <def no ="string"/>
-      <def no ="word0"/>
-      <def no ="operator"/>
-      <def no ="character"/>
-      <def no ="uuid"/>
-      <def no ="preprocessor"/>
-      <def no ="unknown"/>
-      <def no ="identifier"/>
-      <def no ="stringeol"/>
-      <def no ="verbatim"/>
-      <def no ="regex"/>
-      <def no ="commentlinedoc"/>
-      <def no ="word1"/>
-      <def no ="commentdockeyword"/>
-      <def no ="commentdockeyworderror"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
-      <def no ="word4"/>
-      <def no ="word5"/>
-      <def no ="commentdoc"/>
-      <def no ="added"/>
-      <def no ="deleted"/>
-      <def no ="changed"/>
-      <def no ="moved"/>
-    </def>
-
-    <def name = "oscript">
-      <def no ="default"/>
-      <def no ="line_comment"/>
-      <def no ="block_comment"/>
-      <def no ="doc_comment"/>
-      <def no ="preprocessor"/>
-      <def no ="number"/>
-      <def no ="singlequote_string"/>
-      <def no ="doublequote_string"/>
-      <def no ="constant"/>
-      <def no ="identifier"/>
-      <def no ="global"/>
-      <def no ="keyword"/>
-      <def no ="operator"/>
-      <def no ="label"/>
-      <def no ="type"/>
-      <def no ="function"/>
-      <def no ="object"/>
-      <def no ="property"/>
-      <def no ="method"/>
-    </def>
-    
-    <def name = "tcmd">
-      <def no ="comment"/>
-      <def no ="word"/>
-      <def no ="label"/>
-      <def no ="hide"/>
-      <def no ="command"/>
-      <def no ="identifier"/>
-      <def no ="operator"/>
-      <def no ="environment"/>
-      <def no ="expansion"/>
-      <def no ="clabel"/>
-    </def>
-
     <def name = "visualprolog">
       <def no ="default"/>
       <def no ="key_major"/>
@@ -1795,6 +1782,19 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <def no ="string_verbatim"/>
       <def no ="string_verbatim_special"/>
       <def no ="string_verbatim_eol"/>
+    </def>
+    
+    <def name = "yaml">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="identifier"/>
+      <def no ="keyword"/>
+      <def no ="number"/>
+      <def no ="reference"/>
+      <def no ="document"/>
+      <def no ="text"/>
+      <def no ="error"/>
+      <def no ="operator"/>
     </def>
     
     <!-- These are the themes, including style macro's and colours. -->
@@ -1927,6 +1927,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
    4) A <comments> element.
    -->
   
+  <lexer name="a68k"/>
   <lexer name="abaqus"/> 
   <lexer name="ada" extensions="*.a">
     <keywords>    
@@ -1973,6 +1974,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="asy"/>
   <lexer name="au3"/>
   <lexer name="ave"/>
+  <lexer name="avs"/>
   <lexer name="baan"/>
   <lexer name="bash" display="rfw" extensions="TCS*.txt"> 
     <keywords> 
@@ -2007,6 +2009,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
     special-names working-storage
     </keywords>
   </lexer>
+  <lexer name="coffeescript"/>
   <lexer name="conf"/>
   <lexer name="cpp" display="c#" extensions="*.cs">
     <keywords>
@@ -2091,6 +2094,7 @@ void          while
     <style no="changed"> fore:yellow </style>
     </styles>
   </lexer>
+  <lexer name="ecl"/>
   <lexer name="eiffel"/>
   <lexer name="eiffelkw" macro="eiffel"/>
   <lexer name="erlang"/>
@@ -2153,6 +2157,10 @@ void          while
   <lexer name="makefile" extensions="Makefile;*makefile;makefile*.*;*.pro"/>
   <lexer name="markdown" extensions="*.md">
     <styles>
+      <style no="strong1"> fore:yellow,bold </style>
+      <style no="strong2"> fore:green,bold </style>
+      <style no="em1"> fore:yellow,italic </style>
+      <style no="em2"> fore:green,italic </style>
       <style no="header1"> size:14,fore:yellow,bold,eol </style>
       <style no="header2"> size:12,fore:yellow,bold,eol </style>
       <style no="header3"> fore:yellow,bold,eol </style>
@@ -2171,6 +2179,7 @@ void          while
   <lexer name="matlab"/>
   <lexer name="metapost"/>
   <lexer name="mmixal"/>
+  <lexer name="modula"/>
   <lexer name="mssql"/>
   <lexer name="mysql"/>
   <lexer name="nimrod" macro="python"/>
@@ -2178,6 +2187,7 @@ void          while
   <lexer name="nsis"/>
   <lexer name="octave" macro="matlab"/>
   <lexer name="opal"/>
+  <lexer name="oscript"/>
   <lexer name="pascal" extensions="*.pas">
     <keywords>    
     ABSOLUTE ABSTRACT AND ARRAY AS ASM ASSEMBLER AUTOMATED BEGIN CASE CDECL 
@@ -2238,6 +2248,7 @@ void          while
     <styles>
       <style no ="msgid"> word </style>
       <style no ="msgstr"> word </style>
+      <style no ="fuzzy"> fore:yellow </style>
     </styles>
     <keywords>    
       msgid msgstr
@@ -2342,21 +2353,14 @@ void          while
   <lexer name="tads3"/>
   <lexer name="TAL" macro="cpp"/>
   <lexer name="tcl" extensions="*.tcl"/>
+  <lexer name="tcmd"/>
   <lexer name="tex"/>
+  <lexer name="txt2tags"/>
   <lexer name="vb"/>
   <lexer name="vbscript" macro="vb"/>
   <lexer name="verilog"/>
   <lexer name="vhdl"/>
-  <lexer name="yaml"/>
-  
-  <lexer name="txt2tags"/>
-  <lexer name="a68k"/>
-  <lexer name="modula"/>
-  <lexer name="coffeescript"/>
-  <lexer name="tcmd"/>
-  <lexer name="avs"/>
-  <lexer name="ecl"/>
-  <lexer name="oscript"/>
   <lexer name="visualprolog"/>
+  <lexer name="yaml"/>
  
 </lexers>

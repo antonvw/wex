@@ -150,7 +150,9 @@ bool wxExEx::Command(const wxString& command)
       m_Dialog = new wxExSTCEntryDialog(
         wxTheApp->GetTopWindow(),
         "Registers", 
-        output);
+        output,
+        wxEmptyString,
+        wxOK);
     }
     else
     {

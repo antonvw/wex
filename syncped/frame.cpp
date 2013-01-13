@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -894,6 +894,8 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_SPLIT:
     {
     wxExSTCWithFrame* stc = new wxExSTCWithFrame(*editor, this);
+    editor->StopSync();
+    stc->StopSync();
 
     // Place new page before page for editor.
     m_Editors->InsertPage(

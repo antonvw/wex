@@ -301,6 +301,9 @@ public:
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
+  
+  /// Stop syncing.
+  void StopSync();
 
   /// Undo one action in the undo history.  
   virtual void Undo();
@@ -352,6 +355,7 @@ private:
     bool on, 
     bool modified = false, 
     const wxCharBuffer& text = wxCharBuffer());
+  void ShowProperties();
   void SortSelectionDialog(
     bool sort_ascending,
     const wxString& caption = _("Enter Sort Position"));
@@ -389,6 +393,7 @@ private:
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
+  static wxExSTCEntryDialog* m_EntryDialog;
   static int m_Zoom;
 
   DECLARE_EVENT_TABLE()
