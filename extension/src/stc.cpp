@@ -34,8 +34,6 @@
 
 #if wxUSE_GUI
 
-const int SCI_ADDTEXT = 2001;
-
 BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_CHAR(wxExSTC::OnChar)
   EVT_FIND(wxID_ANY, wxExSTC::OnFindDialog)
@@ -744,10 +742,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
     char buffer[2];
     buffer[0] = (char)new_value;
 
-    // README: The stc.h equivalents AddText, AddTextRaw, InsertText,
-    // InsertTextRaw do not add the length.
-    // To be able to add NULLs this is the only way.
-    SendMsg(SCI_ADDTEXT, 1, (wxIntPtr)buffer);
+    AddTextRaw(buffer, 1);
     
     ProcessChar(new_value);
   }
@@ -2213,10 +2208,7 @@ void wxExSTC::SetText(const wxString& value)
 {
   ClearDocument();
 
-  // The stc.h equivalents SetText, AddText, AddTextRaw, InsertText, 
-  // InsertTextRaw do not add the length.
-  // So for text with nulls this is the only way for opening.
-  SendMsg(SCI_ADDTEXT, value.length(), (wxIntPtr)(const char *)value.c_str());
+  AddTextRaw((const char *)value.c_str(), value.length());
 
   DocumentStart();
 
@@ -2277,7 +2269,7 @@ void wxExSTC::ShowProperties()
     m_EntryDialog->GetSTC()->SetText(text);
   }
   
-  m_EntryDialog->ShowModal();
+  m_EntryDialog->Show();
 }
 
 bool wxExSTC::SmartIndentation()
