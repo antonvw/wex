@@ -2,7 +2,7 @@
 // Name:      stcfile.cpp
 // Purpose:   Implementation of class wxExSTCFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -125,10 +125,8 @@ bool wxExSTCFile::Read(const wxString& name) const
   {
     if (file.Open(fn.GetFullPath()))
     {
-      const int SCI_ADDTEXT = 2001;
       const wxCharBuffer& buffer = file.Read();
-      m_STC->SendMsg(
-        SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+      m_STC->AddTextRaw((const char *)buffer.data(), buffer.length());
       
       return true;
     }
@@ -173,14 +171,9 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
     m_STC->SetControlCharSymbol(0);
 
-    const int SCI_ADDTEXT = 2001;
-    const int SCI_APPENDTEXT = 2282;
-    const int message = (get_only_new_data ? SCI_APPENDTEXT: SCI_ADDTEXT);
-
-    // README: The stc.h equivalents AddText, AddTextRaw, InsertText, 
-    // InsertTextRaw do not add the length.
-    // So for binary files this is the only way for opening.
-    m_STC->SendMsg(message, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+    get_only_new_data ? 
+      m_STC->AppendTextRaw((const char *)buffer.data(), buffer.length()):
+      m_STC->AddTextRaw((const char *)buffer.data(), buffer.length());
   }
   else
   {

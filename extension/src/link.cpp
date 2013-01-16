@@ -61,6 +61,12 @@ const wxString wxExLink::FindPath(const wxString& text) const
     return wxEmptyString;
   }
 
+  // Path in .po files.
+  if (m_STC->GetLexer().GetScintillaLexer() == "po" && text.StartsWith("#: "))
+  {
+    return text.Mid(2);
+  }
+
   // Better first try to find "...", then <...>, as in next example.
   // <A HREF="http://www.scintilla.org">scintilla</A> component.
 
