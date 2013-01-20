@@ -2,7 +2,7 @@
 // Name:      configitem.cpp
 // Purpose:   Implementation of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012
+// Copyright: (c) 2013
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -16,9 +16,12 @@
 #include <wx/filepicker.h>
 #include <wx/fontpicker.h>
 #include <wx/hyperlink.h>
+#include <wx/sizer.h>
 #include <wx/spinctrl.h>
+#include <wx/statline.h>
 #include <wx/tglbtn.h>
 #include <wx/valtext.h>
+#include <wx/window.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/listview.h>
@@ -450,7 +453,9 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_SPINCTRL:
-      m_Window = new wxSpinCtrl(parent,
+    case CONFIG_SPINCTRL_HEX:
+      {
+      wxSpinCtrl* sp = new wxSpinCtrl(parent,
         m_Id,
         wxEmptyString,
         wxDefaultPosition,
@@ -458,7 +463,16 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
         m_Min,
         m_Max);
+        
+      m_Window = sp;
+      
       expand = false;
+      
+      if (m_Type == CONFIG_SPINCTRL_HEX)
+      {
+        sp->SetBase(16);
+      }
+      }
       break;
 
     case CONFIG_SPINCTRL_DOUBLE:
@@ -835,6 +849,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       break;
 
     case CONFIG_SPINCTRL:
+    case CONFIG_SPINCTRL_HEX:
       {
       wxSpinCtrl* sc = (wxSpinCtrl*)m_Window;
       if (save)

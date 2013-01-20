@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wxExtension utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -23,6 +23,8 @@
 #include <wx/tokenzr.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/util.h>
+#include <wx/extension/configitem.h>
+#include <wx/extension/configdlg.h>
 #include <wx/extension/dir.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
@@ -291,6 +293,43 @@ int wxExGetIconID(const wxFileName& filename)
   {
     return wxFileIconsTable::computer;
   }
+}
+
+long wxExGetHexNumberFromUser(
+  const wxString& message,
+  const wxString& prompt,
+  const wxString& caption,
+  long value,
+  long min,
+  long max,
+  wxWindow *parent,
+  const wxPoint& pos)
+{
+  std::vector<wxExConfigItem> v;
+  
+  wxConfigBase::Get()->Write(message, value);
+
+  v.push_back(wxExConfigItem(
+    message, 
+    min, 
+    max, 
+    wxEmptyString,
+    CONFIG_SPINCTRL_HEX));
+    
+  wxExConfigDialog dlg(
+    parent,
+    v,
+    caption,
+    0,
+    1,
+    wxOK | wxCANCEL);
+  
+  if (dlg.ShowModal() == wxID_CANCEL)
+  {
+    return -1;
+  }
+  
+  return wxConfigBase::Get()->ReadLong(message, 80);
 }
 
 int wxExGetNumberOfLines(const wxString& text, bool trim)

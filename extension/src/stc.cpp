@@ -662,7 +662,7 @@ void wxExSTC::ConfigGet()
 
 void wxExSTC::ControlCharDialog(const wxString& caption)
 {
-  if (GetSelectedText().length() > 1)
+  if (GetSelectedText().length() > 2)
   {
     // Do nothing
     return;
@@ -679,7 +679,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
       const wxUniChar value = GetSelectedText().GetChar(0);
 
       long new_value;
-      if ((new_value = wxGetNumberFromUser(_("Input") + " 0 - 255:",
+      if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 0 - 255",
         wxEmptyString,
         caption,
         value,
@@ -691,6 +691,31 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
       }
       
       ml.Replace(new_value);
+    }
+    else if (
+      ml.IsHexField() &&
+      GetSelectedText().length() == 2)
+    {
+      long value;
+      
+      if (!GetSelectedText().ToLong(&value, 16))
+      {
+        return;
+      }
+
+      long new_value;
+      if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 0 - 255",
+        wxEmptyString,
+        caption,
+        value,
+        0,
+        255,
+        this)) < 0)
+      {
+        return;
+      }
+      
+      ml.ReplaceHex(new_value);
     }
     
     return;
@@ -1039,7 +1064,8 @@ bool wxExSTC::GotoDialog()
       _("Enter Byte Offset"),
       m_Goto, // initial value
       0,
-      m_HexBuffer.length() - 1)) < 0)
+      m_HexBuffer.length() - 1),
+      this) < 0)
     {
       return false;
     }
@@ -1066,7 +1092,8 @@ bool wxExSTC::GotoDialog()
       _("Enter Line Number"),
       m_Goto, // initial value
       1,
-      GetLineCount())) < 0)
+      GetLineCount())) < 0,
+      this)
     {
       return false;
     }
@@ -1649,6 +1676,16 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
   if (event.GetModifiers() == wxMOD_ALT)
   {
     return;
+  }
+  
+  if (HexMode())
+  {  
+    if (
+      event.GetKeyCode() == WXK_LEFT ||
+      event.GetKeyCode() == WXK_RIGHT)
+    {
+      wxExHexModeLine(this).SetPos(event);
+    }
   }
   
   if (m_vi.OnKeyDown(event))

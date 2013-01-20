@@ -2,7 +2,7 @@
 // Name:      configitem.h
 // Purpose:   Declaration of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011
+// Copyright: (c) 2013
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXCONFIGITEM_H
@@ -10,11 +10,11 @@
 
 #include <map>
 #include <set>
-#include <wx/sizer.h>
 #include <wx/slider.h> // for wxSL_HORIZONTAL
-#include <wx/statline.h>
 #include <wx/string.h>
-#include <wx/window.h>
+
+class wxSizer;
+class wxWindow;
 
 #if wxUSE_GUI
 /*! \file */
@@ -77,6 +77,9 @@ enum wxExConfigType
 
   /// a spinctrl double item
   CONFIG_SPINCTRL_DOUBLE,
+
+  /// a spinctrl hex item
+  CONFIG_SPINCTRL_HEX,
 
   /// a static line item (default horizontal)
   CONFIG_STATICLINE,
@@ -188,7 +191,8 @@ public:
     /// number of cols for this control
     int cols = -1);
 
-  /// Constructor for a spin ctrl, a spin ctrl double or a slider.
+  /// Constructor for a spin ctrl, a spin ctrl double,
+  /// a spin ctrl hex, or a slider.
   wxExConfigItem(
     /// label for the control as on the dialog and in the config
     const wxString& label,
