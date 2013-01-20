@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of sample classes for wxExtension
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -645,37 +645,48 @@ void wxExSampleFrame::ShowConfigItems()
 
   // CONFIG_SLIDER
   const int start = 1;
-  for (size_t sl = start + 1; sl <= start + 5; sl++)
+  for (size_t sl = start + 1; sl <= start + 3; sl++)
   {
     v.push_back(wxExConfigItem(
       wxString::Format("Slider%d", sl),
       start,
       sl,
-      wxString("Spin controls"),
+      "Spin controls",
       CONFIG_SLIDER));
   }
 
   // CONFIG_SPINCTRL
-  for (size_t s = 1; s <= 3; s++)
+  for (size_t s = 1; s <= 2; s++)
   {
     v.push_back(wxExConfigItem(
       wxString::Format("Spin Control%d", s), 
       1, 
       s, 
-      wxString("Spin controls")));
+      "Spin controls"));
   }
 
   // CONFIG_SPINCTRL_DOUBLE
-  for (size_t sd = 1; sd <= 3; sd++)
+  for (size_t sd = 1; sd <= 2; sd++)
   {
     v.push_back(wxExConfigItem(
       wxString::Format("Spin Control Double%d", sd), 
       1.0,
       (double)sd, 
-      wxString("Spin controls"),
+      "Spin controls",
       CONFIG_SPINCTRL_DOUBLE,
       wxSL_HORIZONTAL,
       0.01));
+  }
+
+  // CONFIG_SPINCTRL_HEX
+  for (size_t s = 1; s <= 2; s++)
+  {
+    v.push_back(wxExConfigItem(
+      wxString::Format("Spin Control Hex%d", s), 
+      0, 
+      255, 
+      "Spin controls",
+      CONFIG_SPINCTRL_HEX));
   }
 
   for (size_t st = 1; st <= 5; st++)

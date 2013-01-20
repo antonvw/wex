@@ -14,10 +14,9 @@
 
 const wxFileOffset bytes_per_line = 16;
 const wxFileOffset each_hex_field = 3;
-const wxFileOffset space_between_fields = 1;
 const wxFileOffset start_hex_field = 9;
 const wxFileOffset start_ascii_field =
-  start_hex_field + each_hex_field * bytes_per_line + space_between_fields;
+  start_hex_field + each_hex_field * bytes_per_line;
   
 wxExHexModeLine::wxExHexModeLine(wxExSTC* stc)
   : m_Line(stc->GetCurLine())
@@ -39,7 +38,7 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc,
   {
     char field_offset[start_hex_field];
   
-    sprintf(field_offset, "%08lx", (unsigned long)(pos_or_offset & ~0x0f));
+    sprintf(field_offset, "%08lX", (unsigned long)(pos_or_offset & ~0x0f));
   
     if (m_STC->FindNext(field_offset, 0))
     {
@@ -64,8 +63,6 @@ void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
   m_STC->m_HexBuffer += buffer;
   m_STC->m_HexBufferOriginal += buffer;
   
-  const wxFileOffset mid_in_hex_field = 7;
-
   wxString text;
 
   // Allocate space for the string.
@@ -95,24 +92,11 @@ void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
     {
       const unsigned char c = buffer.data()[offset + byte];
 
-      field_hex += wxString::Format("%02x ", c);
-
-      // Print an extra space.
-      if (byte == mid_in_hex_field)
-      {
-        field_hex += ' ';
-      }
-
+      field_hex += wxString::Format("%02X ", c);
       field_ascii += Printable(c);
     }
 
-    // The extra space if we ended too soon.
-    if (count <= mid_in_hex_field)
-    {
-      field_hex += ' ';
-    }
-    
-    sprintf(field_offset, "%08lx ", (unsigned long)start + (unsigned long)offset);
+    sprintf(field_offset, "%08lX ", (unsigned long)start + (unsigned long)offset);
     
     const wxString field_spaces = wxString(
       ' ', 
@@ -153,17 +137,7 @@ int wxExHexModeLine::GetAsciiField() const
 {
   if (m_Line.GetChar(m_Index) != ' ')
   {
-    int space = 0;
-
-    if (m_Index >= 
-      start_hex_field + 
-      space_between_fields + 
-      (bytes_per_line * each_hex_field) / 2)
-    {
-      space++;
-    }
-
-    const int offset = (m_Index - (start_hex_field + space)) / each_hex_field;
+    const int offset = (m_Index - (start_hex_field)) / each_hex_field;
 
     return start_ascii_field + offset;
   }
@@ -185,17 +159,7 @@ int wxExHexModeLine::GetByte() const
   {
     if (m_Line.GetChar(m_Index) != ' ')
     {
-      int space = 0;
-
-      if (m_Index >= 
-        start_hex_field + 
-        space_between_fields + 
-        (bytes_per_line * each_hex_field) / 2)
-      {
-        space++;
-      }
-
-      return Convert((m_Index - (start_hex_field + space)) / each_hex_field);
+      return Convert((m_Index - (start_hex_field)) / each_hex_field);
     }
   }
 
@@ -237,18 +201,8 @@ const wxString wxExHexModeLine::GetInfo() const
 int wxExHexModeLine::GetHexField() const
 {
   const int offset = m_Index - start_ascii_field;
-  int space = 0;
 
-  if (m_Index == start_ascii_field + bytes_per_line)
-  {
-    space--;
-  }
-  else if (m_Index >= start_ascii_field + bytes_per_line / 2)
-  {
-    space++;
-  }
-
-  return start_hex_field + each_hex_field * offset + space;
+  return start_hex_field + each_hex_field * offset;
 }
 
 bool wxExHexModeLine::Goto() const
@@ -376,7 +330,7 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
       c);
       
     // replace hex field with code
-    const wxString code = wxString::Format("%02x", c);
+    const wxString code = wxString::Format("%02X", c);
     
     m_STC->wxStyledTextCtrl::Replace(
       pos + OtherField(), 
@@ -414,7 +368,7 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
     str[2] = '\0';
     
     unsigned int code;
-    sscanf(str, "%x", &code);
+    sscanf(str, "%X", &code);
     
     m_STC->wxStyledTextCtrl::Replace(
       pos + OtherField(), 
@@ -435,9 +389,109 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
   return true;
 }
 
+bool wxExHexModeLine::ReplaceHex(int value)
+{
+  if (IsReadOnly() || !IsHexField() || m_LineNo < 0 || m_Index < 0)
+  {
+    return false;
+  }
+  
+  const int byte = GetByte();
+  
+  if (byte == wxSTC_INVALID_POSITION)
+  {
+    return false;
+  }
+  
+  const int pos = m_STC->PositionFromLine(m_LineNo);
+  
+  wxString buffer = wxString::Format("%X", value);
+  
+  // replace hex field with value
+  m_STC->wxStyledTextCtrl::Replace(
+    pos + m_Index, 
+    pos + m_Index + 2,
+    buffer);
+        
+  // replace ascii field with code
+  m_STC->wxStyledTextCtrl::Replace(
+    pos + OtherField(), 
+    pos + OtherField() + 1, 
+    Printable(value));
+      
+  // Only hex buffer, not original,
+  // so it can be undone.  
+  m_STC->m_HexBuffer[byte] = value;
+  
+  return true;
+}
+
 void wxExHexModeLine::Set(int pos)
 {
   m_LineNo = m_STC->LineFromPosition(pos);
   m_Line = m_STC->GetLine(m_LineNo);
   m_Index = m_STC->GetColumn(pos);
+}
+
+void wxExHexModeLine::SetPos(const wxKeyEvent& event)
+{
+  const int start = m_STC->PositionFromLine(m_LineNo);
+  const bool right = (event.GetKeyCode() == WXK_RIGHT);
+  const int pos = m_STC->GetCurrentPos();
+  
+  if (IsOffsetField())
+  {
+    if (right)
+    {
+      m_STC->SetCurrentPos(start + start_hex_field);
+    }
+    else
+    {
+      if (m_LineNo > 0)
+      {
+        m_STC->SetCurrentPos(
+          m_STC->PositionFromLine(m_LineNo - 1) + start_hex_field);
+      }
+    }
+  }
+  else if (IsHexField())
+  {
+    right ? 
+      m_STC->SetCurrentPos(pos + 3):
+      m_STC->SetCurrentPos(pos - 3);
+      
+    if (m_STC->GetCurrentPos() >= start + start_ascii_field)
+    {
+      m_STC->SetCurrentPos(
+        m_STC->PositionFromLine(m_LineNo + 1) + start_hex_field);
+    }
+    else if (m_STC->GetCurrentPos() < start + start_hex_field)
+    {
+      if (m_LineNo > 0)
+      {
+        m_STC->SetCurrentPos(
+          m_STC->PositionFromLine(m_LineNo - 1) 
+            + start_ascii_field - each_hex_field);
+      }
+    }
+  }
+  else
+  {
+    right ? 
+      m_STC->SetCurrentPos(pos + 1):
+      m_STC->SetCurrentPos(pos - 1);
+      
+    if (m_STC->GetCurrentPos() >= start + start_ascii_field + bytes_per_line)
+    {
+      m_STC->SetCurrentPos(
+        m_STC->PositionFromLine(m_LineNo + 1) + start_ascii_field);
+    }
+    else if (m_STC->GetCurrentPos() < start + start_ascii_field)
+    {
+      if (m_LineNo > 0)
+      {
+        m_STC->SetCurrentPos(m_STC->GetLineEndPosition(m_LineNo - 1) - 1);
+      }
+    }
+  }
 }

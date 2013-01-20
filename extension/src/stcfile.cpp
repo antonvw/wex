@@ -73,9 +73,9 @@ void wxExSTCFile::DoFileNew()
 
 void wxExSTCFile::DoFileSave(bool save_as)
 {
-  size_t size;
+  wxASSERT(!m_STC->GetReadOnly());
   
-  m_STC->SetReadOnly(false);
+  size_t size;
   
   if (m_STC->HexMode())
   {

@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wxExtension utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXUTIL_H
@@ -166,6 +166,17 @@ void wxExComboBoxFromList(
 const std::list < wxString > wxExComboBoxToList(
   const wxComboBox* cb,
   size_t max_items = 25);
+  
+/// Gets a number from user, using hex display.
+long wxExGetHexNumberFromUser(
+  const wxString& message,
+  const wxString& prompt,
+  const wxString& caption,
+  long value = 0,
+  long min = 0,
+  long max = 255,
+  wxWindow *parent = NULL,
+  const wxPoint& pos = wxDefaultPosition);
 
 /// Opens files.
 /// Opens all files specified by files.

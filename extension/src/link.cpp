@@ -64,7 +64,7 @@ const wxString wxExLink::FindPath(const wxString& text) const
   // Path in .po files.
   if (m_STC->GetLexer().GetScintillaLexer() == "po" && text.StartsWith("#: "))
   {
-    return text.Mid(2);
+    return text.Mid(3);
   }
 
   // Better first try to find "...", then <...>, as in next example.
