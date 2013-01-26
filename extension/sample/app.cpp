@@ -33,6 +33,8 @@ enum
 {
   ID_FIRST = 15000,
   ID_CONFIG_DLG,
+  ID_CONFIG_DLG_1_COL,
+  ID_CONFIG_DLG_3_COL,
   ID_CONFIG_DLG_READONLY,
   ID_SHOW_VCS,
   ID_PROCESS_SELECT,
@@ -141,6 +143,8 @@ wxExSampleFrame::wxExSampleFrame()
   
   wxExMenu* menuConfig = new wxExMenu;
   menuConfig->Append(ID_CONFIG_DLG, wxExEllipsed("Config Dialog"));
+  menuConfig->Append(ID_CONFIG_DLG_1_COL, wxExEllipsed("Config Dialog 1 Col"));
+  menuConfig->Append(ID_CONFIG_DLG_3_COL, wxExEllipsed("Config Dialog 3 Col"));
   menuConfig->Append(
     ID_CONFIG_DLG_READONLY, 
     wxExEllipsed("Config Dialog Readonly"));
@@ -320,6 +324,75 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       break;
   
     case ID_CONFIG_DLG: ShowConfigItems(); break;
+    
+    case ID_CONFIG_DLG_1_COL:
+      {
+      std::vector<wxExConfigItem> v;
+  
+      for (size_t sl = 1; sl <= 3; sl++)
+      {
+        v.push_back(wxExConfigItem(
+          wxString::Format("Slider%d", sl),
+          1,
+          10,
+          wxEmptyString,
+          CONFIG_SLIDER,
+          wxSL_HORIZONTAL,
+          1,
+          1));
+      }
+      
+      v.push_back(wxExConfigItem(
+        "Group Checkbox1",
+        CONFIG_CHECKBOX, 
+        wxEmptyString));
+    
+      wxExConfigDialog* dlg = new wxExConfigDialog(
+        this,
+        v,
+        "Config Dialog Readonly",
+        0,
+        1,
+        wxCANCEL);
+  
+      dlg->Show();
+      }
+      break;
+    
+    case ID_CONFIG_DLG_3_COL:
+      {
+      std::vector<wxExConfigItem> v;
+  
+      for (size_t sl = 1; sl <= 3; sl++)
+      {
+        v.push_back(wxExConfigItem(
+          wxString::Format("Slider%d", sl),
+          1,
+          10,
+          wxEmptyString,
+          CONFIG_SLIDER,
+          wxSL_HORIZONTAL,
+          1,
+          4));
+      }
+      
+      v.push_back(wxExConfigItem(
+        "Group Checkbox1",
+        CONFIG_CHECKBOX, 
+        wxEmptyString));
+    
+      wxExConfigDialog* dlg = new wxExConfigDialog(
+        this,
+        v,
+        "Config Dialog Readonly",
+        0,
+        4,
+        wxCANCEL);
+  
+      dlg->Show();
+      }
+      break;
+    
     case ID_CONFIG_DLG_READONLY:
       {
       std::vector<wxExConfigItem> v;

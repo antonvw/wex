@@ -177,7 +177,7 @@ Frame::Frame(bool open_recent)
           {
             ar.Add(GetFileHistory().GetHistoryFile(i));
           }  
-  
+          
           wxExOpenFiles(this, ar);
         }
       }

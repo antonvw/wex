@@ -237,7 +237,7 @@ void wxExConfigItem::AddStaticText(wxSizer* sizer) const
     new wxStaticText(m_Window->GetParent(), 
       wxID_ANY, 
       m_Label + ":"), 
-      wxSizerFlags().Right().Border());
+      wxSizerFlags().Right().Border().Align(wxALIGN_LEFT));
 }
 
 void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
@@ -583,8 +583,10 @@ wxFlexGridSizer* wxExConfigItem::Layout(
       // Construct a child flex grid sizer.
       if (fgz == NULL)
       {
-        use = new wxFlexGridSizer(2, 0, 0);
-        use->AddGrowableCol(1); // the control
+        use = new wxFlexGridSizer(
+          (m_Cols == 1 ? 1: 2), 0, 0);
+        
+        use->AddGrowableCol(use->GetCols() - 1); // the control
         use->AddGrowableRow(0);
       
         // Add label and control.
