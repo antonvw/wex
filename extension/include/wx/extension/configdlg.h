@@ -2,7 +2,7 @@
 // Name:      configdlg.h
 // Purpose:   Declaration of wxExConfigDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXCONFIGDIALOG_H
@@ -39,9 +39,9 @@ public:
     const std::vector<wxExConfigItem>& v,
     /// title
     const wxString& title = _("Options"),
-    /// number of columns
-    int rows = 0,
     /// number of rows
+    int rows = 0,
+    /// number of columns
     int cols = 1,
     /// dialog flags for buttons
     /// When wxOK or wxAPPLY is pressed, any change in one of the

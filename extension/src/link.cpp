@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wxExLink
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -62,7 +62,9 @@ const wxString wxExLink::FindPath(const wxString& text) const
   }
 
   // Path in .po files.
-  if (m_STC->GetLexer().GetScintillaLexer() == "po" && text.StartsWith("#: "))
+  if (
+    m_STC != NULL &&
+    m_STC->GetLexer().GetScintillaLexer() == "po" && text.StartsWith("#: "))
   {
     return text.Mid(3);
   }

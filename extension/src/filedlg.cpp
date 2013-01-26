@@ -2,7 +2,7 @@
 // Name:      filedlg.cpp
 // Purpose:   Implementation of wxExtension file dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -63,7 +63,8 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
           m_File->ResetContentsChanged(); 
           break;
 
-        case wxCANCEL: return wxID_CANCEL; break;
+        case wxCANCEL: 
+          return wxID_CANCEL; break;
       }
     }
     else
@@ -79,6 +80,7 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
 
         case wxNO:     
           m_File->ResetContentsChanged(); 
+          return wxID_NO;
           break;
 
         case wxCANCEL: 

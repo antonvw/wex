@@ -415,8 +415,8 @@ int wxExSTC::ConfigDialog(
     _("General"),
     1));
 
-  // Next code does not have any effect (2.9.2, on MSW and GTK)
-  /*
+  // Next code does not have any effect (2.9.5, on MSW and GTK)
+/*  
   std::map<long, const wxString> smode;
   smode.insert(std::make_pair(wxSTC_SEL_STREAM, _("Stream")));
   smode.insert(std::make_pair(wxSTC_SEL_RECTANGLE, _("Rectangular")));
@@ -428,7 +428,7 @@ int wxExSTC::ConfigDialog(
     true, 
     _("General"),
     1));
-  */
+*/
   
   std::map<long, const wxString> wchoices;
   wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
@@ -471,24 +471,35 @@ int wxExSTC::ConfigDialog(
   items.push_back(wxExConfigItem(
     _("Tab width"), 
     1, 
-    (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
+    (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), 
+    _("Margin")));
   items.push_back(wxExConfigItem(
     _("Indent"), 
     1, 
-    (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
-  items.push_back(
-    wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
-  items.push_back(
-    wxExConfigItem(_("Folding"), 0, 40, _("Margin")));
-  items.push_back(
-    wxExConfigItem(_("Line number"), 0, 100, _("Margin")));
+    (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), 
+    _("Margin")));
+  items.push_back(wxExConfigItem(
+    _("Divider"), 
+    0, 
+    40, 
+    _("Margin")));
+  items.push_back(wxExConfigItem(
+    _("Folding"), 
+    0, 
+    40, 
+    _("Margin")));
+  items.push_back(wxExConfigItem(
+    _("Line number"), 
+    0, 
+    100, 
+    _("Margin")));
 
   if (wxExLexers::Get()->GetCount() > 0)
   {
     // Folding page.
-    items.push_back(wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")));
     items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX,
       _("Folding")));
+    items.push_back(wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")));
 
     std::map<long, const wxString> fchoices;
     fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED,
@@ -633,8 +644,8 @@ void wxExSTC::ConfigGet()
     m_MarginLineNumber, 
     (wxConfigBase::Get()->ReadBool(_("Line numbers"), false) ? margin: 0));
 
-  //SetSelectionMode(
-  //  wxConfigBase::Get()->ReadLong(_("Selection mode"), wxSTC_SEL_STREAM));
+//  SetSelectionMode(
+//    wxConfigBase::Get()->ReadLong(_("Selection mode"), wxSTC_SEL_STREAM));
     
   SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), def_tab_width));
   SetUseTabs(wxConfigBase::Get()->ReadBool(_("Use tabs"), false));
@@ -679,7 +690,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
       const wxUniChar value = GetSelectedText().GetChar(0);
 
       long new_value;
-      if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 0 - 255",
+      if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 00 - FF",
         wxEmptyString,
         caption,
         value,
@@ -704,7 +715,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
       }
 
       long new_value;
-      if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 0 - 255",
+      if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 00 - FF",
         wxEmptyString,
         caption,
         value,

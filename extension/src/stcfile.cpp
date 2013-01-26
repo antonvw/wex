@@ -27,7 +27,14 @@ bool wxExSTCFile::DoFileLoad(bool synced)
   if (GetContentsChanged())
   {
     wxExFileDialog dlg(m_STC, this);
-    if (dlg.ShowModalIfChanged() == wxID_CANCEL) return false;
+    
+    const int result = dlg.ShowModalIfChanged();
+    
+    switch (result)
+    {
+      case wxID_CANCEL: return false; break;
+      case wxID_OK: return false; break; // file is now saved
+    }
   }
 
   // Synchronizing by appending only new data only works for log files.
