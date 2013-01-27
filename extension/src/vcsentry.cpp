@@ -343,17 +343,17 @@ int wxExVCSEntry::ShowDialog(
       _("Flags"), 
       wxConfigBase::Get()->Read(m_FlagsKey));
 
-    v.push_back(wxExConfigItem(_("Flags")));
+    v.push_back(wxExConfigItem(_("Flags"), wxEmptyString));
   }
 
   if (m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX)
   {
-    v.push_back(wxExConfigItem(_("Prefix flags")));
+    v.push_back(wxExConfigItem(_("Prefix flags"), wxEmptyString));
   }
   
   if (GetCommand().UseSubcommand())
   {
-    v.push_back(wxExConfigItem(_("Subcommand")));
+    v.push_back(wxExConfigItem(_("Subcommand"), wxEmptyString));
   }
   
   const int retValue = wxExConfigDialog(parent,
