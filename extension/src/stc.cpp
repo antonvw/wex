@@ -401,7 +401,7 @@ int wxExSTC::ConfigDialog(
   bchoices.insert(_("Caret line"));
   bchoices.insert(_("vi mode"));
   // use 2 cols here, but 1 for others on this page
-  items.push_back(wxExConfigItem(bchoices, _("General"), 2)); 
+  items.push_back(wxExConfigItem(bchoices, _("General") + ":2")); 
 
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));

@@ -34,7 +34,7 @@ enum
   ID_FIRST = 15000,
   ID_CONFIG_DLG,
   ID_CONFIG_DLG_1_COL,
-  ID_CONFIG_DLG_3_COL,
+  ID_CONFIG_DLG_4_COL,
   ID_CONFIG_DLG_READONLY,
   ID_SHOW_VCS,
   ID_PROCESS_SELECT,
@@ -144,7 +144,7 @@ wxExSampleFrame::wxExSampleFrame()
   wxExMenu* menuConfig = new wxExMenu;
   menuConfig->Append(ID_CONFIG_DLG, wxExEllipsed("Config Dialog"));
   menuConfig->Append(ID_CONFIG_DLG_1_COL, wxExEllipsed("Config Dialog 1 Col"));
-  menuConfig->Append(ID_CONFIG_DLG_3_COL, wxExEllipsed("Config Dialog 3 Col"));
+  menuConfig->Append(ID_CONFIG_DLG_4_COL, wxExEllipsed("Config Dialog 4 Col"));
   menuConfig->Append(
     ID_CONFIG_DLG_READONLY, 
     wxExEllipsed("Config Dialog Readonly"));
@@ -342,52 +342,43 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
           1));
       }
       
-      v.push_back(wxExConfigItem(
-        "Group Checkbox1",
-        CONFIG_CHECKBOX, 
-        wxEmptyString));
+      v.push_back(wxExConfigItem("Group Checkbox1", CONFIG_CHECKBOX));
     
       wxExConfigDialog* dlg = new wxExConfigDialog(
         this,
         v,
-        "Config Dialog Readonly",
+        "Config Dialog 1 Col",
         0,
-        1,
-        wxCANCEL);
+        1);
   
       dlg->Show();
       }
       break;
     
-    case ID_CONFIG_DLG_3_COL:
+    case ID_CONFIG_DLG_4_COL:
       {
       std::vector<wxExConfigItem> v;
   
-      for (size_t sl = 1; sl <= 3; sl++)
+      for (size_t sl = 1; sl <= 6; sl++)
       {
         v.push_back(wxExConfigItem(
           wxString::Format("Slider%d", sl),
           1,
           10,
           wxEmptyString,
-          CONFIG_SLIDER,
-          wxSL_HORIZONTAL,
-          1,
-          4));
+          CONFIG_SLIDER));
       }
       
-      v.push_back(wxExConfigItem(
-        "Group Checkbox1",
-        CONFIG_CHECKBOX, 
-        wxEmptyString));
+      v.push_back(wxExConfigItem("Group Checkbox1", CONFIG_CHECKBOX));
+      v.push_back(wxExConfigItem("Group Checkbox2", CONFIG_CHECKBOX));
+      v.push_back(wxExConfigItem("Group Checkbox3", CONFIG_CHECKBOX));
     
       wxExConfigDialog* dlg = new wxExConfigDialog(
         this,
         v,
-        "Config Dialog Readonly",
+        "Config Dialog 4 Col",
         0,
-        4,
-        wxCANCEL);
+        4);
   
       dlg->Show();
       }
@@ -661,6 +652,9 @@ void wxExSampleFrame::ShowConfigItems()
     "Dir Picker", 
     CONFIG_DIRPICKERCTRL, 
     "Pickers"));
+
+  // CONFIG_EMPTY
+  v.push_back(wxExConfigItem(10, "Pickers", CONFIG_EMPTY));
 
   // CONFIG_FILEPICKERCTRL
   v.push_back(wxExConfigItem(

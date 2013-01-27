@@ -30,17 +30,27 @@
 
 #if wxUSE_GUI
 
-wxExConfigItem::wxExConfigItem(
-  long style,
-  const wxString& page)
+wxExConfigItem::wxExConfigItem(int size)
   : m_Window(NULL)
-  , m_Page(page)
-  , m_Style(style)
-  , m_Type(CONFIG_STATICLINE)
+  , m_Style(size)
+  , m_Type(CONFIG_EMPTY)
   , m_AddLabel(false)
-  , m_Cols(-1)
   , m_IsRequired(false)
 {
+  Init(wxEmptyString, -1);
+}
+
+wxExConfigItem::wxExConfigItem(
+  long style,
+  const wxString& page,
+  wxExConfigType type)
+  : m_Window(NULL)
+  , m_Style(style)
+  , m_Type(type)
+  , m_AddLabel(false)
+  , m_IsRequired(false)
+{
+  Init(page, -1);
 }
     
 wxExConfigItem::wxExConfigItem(
@@ -60,10 +70,8 @@ wxExConfigItem::wxExConfigItem(
   , m_MaxItems(max_items)
   , m_MajorDimension(1)
   , m_Label(label)
-  , m_Page(page)
   , m_Style(0)
   , m_Type(type)
-  , m_Cols(cols)
   , m_AddLabel(
       type == CONFIG_BUTTON ||
       type == CONFIG_CHECKBOX ||
@@ -71,6 +79,7 @@ wxExConfigItem::wxExConfigItem(
       type == CONFIG_TOGGLEBUTTON ? false: add_label)
   , m_Inc(1)
 {
+  Init(page, cols);
 }
 
 wxExConfigItem::wxExConfigItem(
@@ -90,15 +99,14 @@ wxExConfigItem::wxExConfigItem(
   , m_MaxItems(1)
   , m_MajorDimension(1)
   , m_Label(label)
-  , m_Page(page)
   , m_Style(0)
   , m_Type(CONFIG_USER)
-  , m_Cols(cols)
   , m_AddLabel(add_label)
   , m_Inc(1)
   , m_UserWindowCreate(user)
   , m_UserWindowToConfig(cfg)
 {
+  Init(page, cols);
 }
     
 wxExConfigItem::wxExConfigItem(
@@ -116,14 +124,13 @@ wxExConfigItem::wxExConfigItem(
   , m_MaxItems(0)
   , m_Inc(inc)
   , m_Label(label)
-  , m_Page(page)
   , m_Style(style)
   , m_Type(type)
-  , m_Cols(cols)
   , m_AddLabel(true)
   , m_Min(min)
   , m_Max(max)
 {
+  Init(page, cols);
 }
 
 wxExConfigItem::wxExConfigItem(
@@ -142,16 +149,15 @@ wxExConfigItem::wxExConfigItem(
   , m_Max(0)
   , m_MaxItems(0)
   , m_Label(label)
-  , m_Page(page)
   , m_Style(style)
   , m_Type(type)
-  , m_Cols(cols)
   , m_AddLabel(
       (type != CONFIG_STATICTEXT && 
        type != CONFIG_HYPERLINKCTRL ? add_label: false))
   , m_Inc(1)
   , m_Default(value)
 {
+  Init(page, cols);
 }
 
 wxExConfigItem::wxExConfigItem(
@@ -170,14 +176,13 @@ wxExConfigItem::wxExConfigItem(
   , m_Max(0)
   , m_MaxItems(0)
   , m_Label(label)
-  , m_Page(page)
   , m_Style(style)
   , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX)
   , m_Choices(choices)
-  , m_Cols(cols)
   , m_AddLabel(false)
   , m_Inc(1)
 {
+  Init(page, cols);
 }
 
 wxExConfigItem::wxExConfigItem(
@@ -191,14 +196,13 @@ wxExConfigItem::wxExConfigItem(
   , m_Max(0)
   , m_MaxItems(0)
   , m_Label("checklistbox_noname")
-  , m_Page(page)
   , m_Style(0)
   , m_Type(CONFIG_CHECKLISTBOX_NONAME)
   , m_ChoicesBool(choices) 
-  , m_Cols(cols)
   , m_AddLabel(false)
   , m_Inc(1)
 {
+  Init(page, cols);
 }
 
 wxFlexGridSizer* wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
@@ -244,7 +248,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
 {
   const int width = 200;
   const int width_numeric = 75;
-
+  
   // Default control is expanded when laid out, 
   // override in switch if not wanted.
   bool expand = true;
@@ -335,6 +339,9 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
+    case CONFIG_EMPTY:
+      break;
+      
     case CONFIG_FILEPICKERCTRL:
       {
 #if defined(__WXMSW__) || defined(__OS2__)
@@ -559,7 +566,23 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
   m_SizerFlags = wxSizerFlags().Border().Left();
   if (expand) m_SizerFlags.Expand();
 
-  wxASSERT(m_Window != NULL);
+  if (m_Type != CONFIG_EMPTY)
+  {
+    wxASSERT(m_Window != NULL);
+  }
+}
+
+void wxExConfigItem::Init(const wxString& page, int cols)
+{
+  m_Cols = cols;
+  m_Page = page;
+  m_PageCols = -1;
+  
+  if (m_Page.Contains(":"))
+  {
+    m_PageCols = atoi(m_Page.AfterFirst(':'));
+    m_Page = m_Page.BeforeFirst(':');
+  }
 }
 
 wxFlexGridSizer* wxExConfigItem::Layout(
@@ -604,7 +627,14 @@ wxFlexGridSizer* wxExConfigItem::Layout(
     }
     else
     {
-      sizer->Add(m_Window, m_SizerFlags);
+      if (m_Window != NULL)
+      {
+        sizer->Add(m_Window, m_SizerFlags);
+      }
+      else
+      {
+        sizer->AddSpacer(m_Style);
+      }
     }
   }
   
@@ -615,8 +645,6 @@ wxFlexGridSizer* wxExConfigItem::Layout(
 
 bool wxExConfigItem::ToConfig(bool save) const
 {
-  wxASSERT(m_Window != NULL);
-
   switch (m_Type)
   {
     case CONFIG_CHECKBOX:

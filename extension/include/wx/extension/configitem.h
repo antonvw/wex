@@ -51,6 +51,9 @@ enum wxExConfigType
   /// a dirpicker ctrl item
   CONFIG_DIRPICKERCTRL,
 
+  /// an empty item
+  CONFIG_EMPTY,
+
   /// a filepicker ctrl item
   CONFIG_FILEPICKERCTRL,
 
@@ -112,6 +115,8 @@ typedef bool (*wxExUserWindowToConfig)(wxWindow* user, bool save);
 /// Container class for using with wxExConfigDialog.
 /// - If you specify a page, then all items are placed on that page 
 ///   in a book ctrl on the config dialog.
+///   You can specify the number of columns for the page after :
+///   in the page name.
 /// - If you specify add label, then the label is added as a label to
 ///   the item as well, otherwise the label is not added, and only used
 ///   for loading and saving from config.
@@ -120,12 +125,19 @@ typedef bool (*wxExUserWindowToConfig)(wxWindow* user, bool save);
 class WXDLLIMPEXP_BASE wxExConfigItem
 {
 public:
+  /// Default constructor for empty config item.
+  wxExConfigItem(int size = 10);
+  
   /// Constuctor for a static horizontal or vertical line.
+  /// Or for an empty config item on specified page.
   wxExConfigItem(
     /// style: wxLI_HORIZONTAL or wxLI_VERTICAL
+    /// or size for a empty config item
     long style, 
     /// page on notebook
-    const wxString& page = wxEmptyString);
+    const wxString& page = wxEmptyString,
+    /// type
+    wxExConfigType type = CONFIG_STATICLINE);
     
   /// Constuctor for most types.
   wxExConfigItem(
@@ -243,8 +255,8 @@ public:
     /// number of cols for this control
     int cols = -1);
 
-  /// Gets the columns.
-  int GetColumns() const {return m_Cols;};
+  /// Gets the columns for the current page.
+  int GetColumns() const {return m_PageCols;};
 
   /// Gets is required.
   bool GetIsRequired() const {return m_IsRequired;};
@@ -286,6 +298,7 @@ private:
   wxFlexGridSizer* AddBrowseButton(wxSizer* sizer) const;
   void AddStaticText(wxSizer* sizer) const;
   void CreateWindow(wxWindow* parent, bool readonly);
+  void Init(const wxString& page, int cols);
 
   // The members are allowed to be const using
   // MS Visual Studio 2010, not using gcc, so
@@ -297,6 +310,7 @@ private:
   int m_Id;
   int m_MajorDimension;
   int m_MaxItems;
+  int m_PageCols;
   
   double m_Min;
   double m_Max;
