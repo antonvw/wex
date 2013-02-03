@@ -107,7 +107,10 @@ enum wxExConfigType
 };
 
 /// Callback for user window creation.
-typedef void (*wxExUserWindowCreate)(wxWindow* user, wxWindow* parent, bool readonly);
+typedef void (*wxExUserWindowCreate)(
+  wxWindow* user, 
+  wxWindow* parent, 
+  bool readonly);
 
 /// Callback for load or save data for user window.
 typedef bool (*wxExUserWindowToConfig)(wxWindow* user, bool save);
@@ -252,10 +255,10 @@ public:
     int majorDimension = 0,
     /// style for the radiobox
     long style = wxRA_SPECIFY_COLS,
-    /// number of cols for this control
+    /// number of columns for this control
     int cols = -1);
 
-  /// Gets the columns for the current page.
+  /// Gets the number of columns for the current page.
   int GetColumns() const {return m_PageCols;};
 
   /// Gets is required.
@@ -272,6 +275,9 @@ public:
 
   /// Gets the window (first call Layout, to create it, otherwise it is NULL).
   wxWindow* GetWindow() const {return m_Window;};
+  
+  /// Is this item allowed to be expanded on a row.
+  bool IsRowGrowable() const {return m_IsRowGrowable;};
 
   /// Creates the window,
   /// lays out this item on the specified sizer, and fills it
@@ -305,6 +311,7 @@ private:
   // removed again (operator= seems to be used).
   bool m_AddLabel;
   bool m_IsRequired;
+  bool m_IsRowGrowable;
 
   int m_Cols;
   int m_Id;

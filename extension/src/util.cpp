@@ -27,6 +27,7 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/dir.h>
 #include <wx/extension/filedlg.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/process.h>
@@ -412,7 +413,7 @@ void wxExListToConfig(
   wxConfigBase::Get()->Write(config, text);
 }
 
-void wxExLogStatus(const wxFileName& fn, long flags)
+void wxExLogStatus(const wxExFileName& fn, long flags)
 {
   if (!fn.IsOk())
   {
@@ -424,13 +425,13 @@ void wxExLogStatus(const wxFileName& fn, long flags)
     fn.GetFullPath(): 
     fn.GetFullName());
 
-  if (fn.FileExists())
+  if (fn.GetStat().IsOk())
   {
     const wxString what = ((flags & STAT_SYNC) ? 
       _("Synchronized"): 
       _("Modified"));
         
-    text += " " + what + " " + fn.GetModificationTime().Format();
+    text += " " + what + " " + fn.GetStat().GetModificationTime();
   }
 
   wxLogStatus(text);

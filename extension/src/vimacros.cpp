@@ -51,14 +51,16 @@ const wxString wxExViMacros::Decode(const wxString& text)
   
   for (int i = 0; i < text.length(); i++)
   {
-    int skip = 0;
-    wxString number;
-    
     if (
+      i + 1 < text.length() &&
       text[i]     == '$' &&
       text[i + 1] == '!')
     {
+      int skip = 0;
+      wxString number;
+    
       if (
+        i + 3 < text.length() &&
         isdigit(text[i + 2]) && 
         text[i + 3] == '!')
       {
@@ -66,6 +68,7 @@ const wxString wxExViMacros::Decode(const wxString& text)
         number = text.Mid(i + 2, 1);
       }
       else if (
+        i + 4 < text.length() &&
         isdigit(text[i + 2]) &&
         isdigit(text[i + 3]) &&
         text[i + 4] == '!')
@@ -73,12 +76,12 @@ const wxString wxExViMacros::Decode(const wxString& text)
         skip = 4;
         number = text.Mid(i + 2, 2);
       }
-    }
-    
-    if (!number.empty())
-    {
-      output += wxChar(atoi(number));
-      i += skip;
+      
+      if (!number.empty())
+      {
+        output += wxChar(atoi(number));
+        i += skip;
+      }
     }
     else
     {

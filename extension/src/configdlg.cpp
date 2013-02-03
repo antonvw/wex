@@ -2,7 +2,7 @@
 // Name:      configdlg.cpp
 // Purpose:   Implementation of wxExtension config dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012
+// Copyright: (c) 2013
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -219,26 +219,10 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
         it->GetWindow()->GetId());
     }
 
-    // Take care that if this item is the only one
-    // on this page, that the row is growable.
-    std::vector<wxExConfigItem>::iterator next = it + 1;
-    
-    wxString next_page;
-    
-    if (next != m_ConfigItems.end())
-    {
-      next_page = next->GetPage();
-    }
-    else
-    {
-      next_page = "YYYYYY";
-    }
-    
     if (sizer != NULL &&
-        use_item_sizer == NULL &&
-        it->GetPage() != next_page &&
-        sizer->GetEffectiveRowsCount() == 1 &&
-       !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1))
+        sizer->GetEffectiveRowsCount() >= 1 &&
+       !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
+        it->IsRowGrowable())
     {
       sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
     }

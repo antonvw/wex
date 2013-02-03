@@ -17,6 +17,7 @@
 #include <wx/textctrl.h>
 #include <wx/extension/lexer.h>
 
+class wxExFileName;
 class wxExFrame;
 class wxExSTC;
 class wxExVCSCommand;
@@ -111,7 +112,7 @@ enum wxExStatusFlags
 /// Logs filename info on the statusbar.
 // Using type wxExStatusFlags instead of long gives compiler errors at
 // invoking.
-void wxExLogStatus(const wxFileName& filename, long flags = STAT_DEFAULT);
+void wxExLogStatus(const wxExFileName& filename, long flags = STAT_DEFAULT);
 
 /// Runs make on specified makefile.
 /// Returns value from executing the make process.

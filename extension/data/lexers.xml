@@ -3,7 +3,7 @@
 <!--
 Name:      lexers.xml
 Purpose:   Lexers configuration for wxExtension.
-           See scintilla v3.21 (www.scintilla.org).
+           See scintilla v3.2.1 (www.scintilla.org).
 Author:    Anton van Wezenbeek
 Copyright: (c) 2013, Anton van Wezenbeek
 -->
