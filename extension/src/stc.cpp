@@ -465,7 +465,8 @@ int wxExSTC::ConfigDialog(
     _("Edge line"), 
     echoices, 
     true, 
-    _("Edge")));
+    _("Edge"),
+    1));
 
   // Margin page.
   items.push_back(wxExConfigItem(

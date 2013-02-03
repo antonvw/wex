@@ -2,7 +2,7 @@
 // Name:      support.cpp
 // Purpose:   Implementation of DecoratedFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -222,7 +222,7 @@ bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
     {
       wxExFileDialog dlg(this, &((wxExSTC*)page)->GetFile());
     
-      if (dlg.ShowModalIfChanged() != wxID_OK)
+      if (dlg.ShowModalIfChanged() == wxID_CANCEL)
       {
         return false;
       }
@@ -232,7 +232,7 @@ bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
     {
       wxExFileDialog dlg(this, (wxExListViewFile*)page);
     
-      if (dlg.ShowModalIfChanged() != wxID_OK)
+      if (dlg.ShowModalIfChanged() == wxID_CANCEL)
       {
         return false;
       }

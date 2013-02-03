@@ -285,6 +285,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       m_Window = new wxCheckListBox(parent,
         m_Id, wxDefaultPosition, wxDefaultSize, arraychoices);
       }
+      
+      m_IsRowGrowable = true;
       break;
 
     case CONFIG_CHECKLISTBOX_NONAME:
@@ -295,6 +297,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       m_Window = new wxCheckListBox(parent,
         m_Id, wxDefaultPosition, wxDefaultSize, arraychoices);
       }
+      
+      m_IsRowGrowable = true;
       break;
 
     case CONFIG_COLOUR:
@@ -418,6 +422,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         NULL,
         wxDefaultPosition,
         wxSize(width, 200));
+        
+      m_IsRowGrowable = true;
       break;
 
     case CONFIG_RADIOBOX:
@@ -445,6 +451,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_MajorDimension,
         m_Style);
       }
+      
+      m_IsRowGrowable = true;
       break;
 
     case CONFIG_SLIDER:
@@ -515,6 +523,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
            wxSize(width, wxDefaultCoord)),
         m_Style);
       ((wxStaticText* )m_Window)->SetLabelMarkup(m_Label);
+      
+      m_IsRowGrowable = (m_Style & wxTE_MULTILINE);
       break;
 
     case CONFIG_STC:
@@ -533,6 +543,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       {
         ((wxExSTC* )m_Window)->SetLexer(m_Default);
       }
+      
+      m_IsRowGrowable = true;
       break;
 
     case CONFIG_STRING:
@@ -545,6 +557,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
            wxSize(width, wxDefaultCoord)),
         m_Style | 
           (readonly ? wxTE_READONLY: 0));
+          
+      m_IsRowGrowable = (m_Style & wxTE_MULTILINE);
       break;
 
     case CONFIG_TOGGLEBUTTON:
@@ -564,7 +578,11 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
   }
 
   m_SizerFlags = wxSizerFlags().Border().Left();
-  if (expand) m_SizerFlags.Expand();
+  
+  if (expand) 
+  {
+    m_SizerFlags.Expand();
+  }
 
   if (m_Type != CONFIG_EMPTY)
   {
@@ -575,9 +593,10 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
 void wxExConfigItem::Init(const wxString& page, int cols)
 {
   m_Cols = cols;
+  m_IsRowGrowable = false;
   m_Page = page;
   m_PageCols = -1;
-  
+
   if (m_Page.Contains(":"))
   {
     m_PageCols = atoi(m_Page.AfterFirst(':'));
@@ -610,7 +629,11 @@ wxFlexGridSizer* wxExConfigItem::Layout(
           (m_Cols == 1 ? 1: 2), 0, 0);
         
         use->AddGrowableCol(use->GetCols() - 1); // the control
-        use->AddGrowableRow(0);
+        
+        if (m_IsRowGrowable)
+        {
+          use->AddGrowableRow(0);
+        }
       
         // Add label and control.
         AddStaticText(use);
@@ -623,6 +646,11 @@ wxFlexGridSizer* wxExConfigItem::Layout(
       {
         AddStaticText(fgz);
         fgz->Add(m_Window, m_SizerFlags);
+        
+        if (m_IsRowGrowable && fgz->GetEffectiveRowsCount() >= 1)
+        {
+          fgz->AddGrowableRow(fgz->GetEffectiveRowsCount() - 1);
+        }
       }
     }
     else

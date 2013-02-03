@@ -343,6 +343,19 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       }
       
       v.push_back(wxExConfigItem("Group Checkbox1", CONFIG_CHECKBOX));
+      v.push_back(wxExConfigItem(
+        "STC cpp", 
+        "cpp",
+        wxEmptyString,
+        0,
+        CONFIG_STC));
+    
+      v.push_back(wxExConfigItem(
+        "STC pascal", 
+        "pascal",
+        wxEmptyString,
+        0,
+        CONFIG_STC));
     
       wxExConfigDialog* dlg = new wxExConfigDialog(
         this,
@@ -388,6 +401,12 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       {
       std::vector<wxExConfigItem> v;
   
+      v.push_back(wxExConfigItem());
+      v.push_back(wxExConfigItem());
+      v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
+      v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
+      v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
+      v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
       v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
   
       for (size_t j = 1; j <= 10; j++)
@@ -400,7 +419,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
         v,
         "Config Dialog Readonly",
         0,
-        1,
+        4,
         wxCANCEL);
   
         dlg->Show();
