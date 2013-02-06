@@ -357,6 +357,17 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
         0,
         CONFIG_STC));
     
+      wxExConfigItem item(
+        "STC lisp", 
+        "lisp",
+        wxEmptyString,
+        0,
+        CONFIG_STC);
+        
+      item.SetRowGrowable(false);
+      
+      v.push_back(item);
+    
       wxExConfigDialog* dlg = new wxExConfigDialog(
         this,
         v,

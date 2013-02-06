@@ -2,7 +2,7 @@
 // Name:      configitem.h
 // Purpose:   Declaration of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXCONFIGITEM_H
@@ -125,6 +125,8 @@ typedef bool (*wxExUserWindowToConfig)(wxWindow* user, bool save);
 ///   for loading and saving from config.
 /// - If you use the default for cols, then the number of cols used
 ///   is determined by the config dialog, otherwise this number is used.
+/// - Default whether the item row is growable is determined
+///   by the kind of item. You can ovverride this using SetRowGrowable.
 class WXDLLIMPEXP_BASE wxExConfigItem
 {
 public:
@@ -295,6 +297,9 @@ public:
     /// specify the sizer for creating the item, or NULL,
     /// than a new one is created
     wxFlexGridSizer* fgz = NULL);
+    
+  /// Sets this item to be growable.
+  void SetRowGrowable(bool value) {m_IsRowGrowable = value;};
     
   /// Loads or saves this item to the config.
   /// Returns true if the config was accessed, as not all
