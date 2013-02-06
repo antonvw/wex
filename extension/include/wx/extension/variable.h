@@ -2,18 +2,17 @@
 // Name:      variable.h
 // Purpose:   Declaration of class wxExVariable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVARIABLE_H
 #define _EXVARIABLE_H
 
-#include <wx/xml/xml.h>
-
 #if wxUSE_GUI
 
 class wxExEx;
 class wxExSTCEntryDialog;
+class wxXmlNode;
 
 /// Offers variable support to be used in macros.
 /// Variables are assigned from an xml node, and
@@ -25,8 +24,6 @@ public:
   wxExVariable();
   
   /// Constructor using name.
-  /// The type is derived from this name, if name starts with MY,
-  /// type will be INPUT, otherwise type will be INPUT-SAVE.
   wxExVariable(const wxString& name);
   
   /// Constructor using xml node, setting name, type, value,

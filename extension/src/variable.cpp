@@ -2,13 +2,14 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wxExVariable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/xml/xml.h>
 #include <wx/extension/variable.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/stc.h>
@@ -30,7 +31,6 @@ enum
 };
 
 wxExSTCEntryDialog* wxExVariable::m_Dialog = NULL;
-
 
 wxExVariable::wxExVariable()
   : m_Type(VARIABLE_READ)
