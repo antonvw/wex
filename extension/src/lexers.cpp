@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wxExLexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -15,6 +15,7 @@
 #include <wx/regex.h>
 #include <wx/stdpaths.h>
 #include <wx/stc/stc.h>
+#include <wx/xml/xml.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h> // for wxExMatchesOneOf
 

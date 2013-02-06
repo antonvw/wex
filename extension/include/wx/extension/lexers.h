@@ -2,7 +2,7 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wxExLexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXLEXERS_H
@@ -12,8 +12,6 @@
 #include <set>
 #include <vector>
 #include <wx/filename.h>
-#include <wx/window.h>
-#include <wx/xml/xml.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/marker.h>
@@ -21,6 +19,8 @@
 #include <wx/extension/style.h>
 
 class wxStyledTextCtrl;
+class wxWindow;
+class wxXmlNode;
 
 /// Collection of all lexers.
 /// The lexers are read in from lexers.xml, this is done
