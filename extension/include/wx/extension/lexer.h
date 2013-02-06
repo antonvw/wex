@@ -2,7 +2,7 @@
 // Name:      lexer.h
 // Purpose:   Declaration of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXLEXER_H
@@ -11,11 +11,11 @@
 #include <map>
 #include <set>
 #include <vector>
-#include <wx/xml/xml.h>
 #include <wx/extension/property.h>
 #include <wx/extension/style.h>
 
 class wxStyledTextCtrl;
+class wxXmlNode;
 
 /// This class defines a lexer using file extensions,
 /// syntax colouring and comment definitions.

@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,6 +14,8 @@
 //#include <numeric> // both for accumulate
 #include <wx/stc/stc.h>
 #include <wx/tokenzr.h>
+#include <wx/window.h>
+#include <wx/xml/xml.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h> // for wxExAlignText

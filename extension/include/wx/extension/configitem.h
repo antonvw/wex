@@ -13,6 +13,7 @@
 #include <wx/slider.h> // for wxSL_HORIZONTAL
 #include <wx/string.h>
 
+class wxFlexGridSizer;
 class wxSizer;
 class wxWindow;
 
