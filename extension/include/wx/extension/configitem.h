@@ -10,11 +10,11 @@
 
 #include <map>
 #include <set>
+#include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 #include <wx/slider.h> // for wxSL_HORIZONTAL
 #include <wx/string.h>
 
 class wxFlexGridSizer;
-class wxSizer;
 class wxWindow;
 
 #if wxUSE_GUI
