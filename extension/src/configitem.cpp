@@ -249,17 +249,12 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
   const int width = 200;
   const int width_numeric = 75;
   
-  // Default control is expanded when laid out, 
-  // override in switch if not wanted.
-  bool expand = true;
-
   switch (m_Type)
   {
     case CONFIG_BUTTON:
       // Using a label is necessary for wxGTK.
       m_Window = new wxButton(parent, m_Id, "default");
       ((wxButton *)m_Window)->SetLabelMarkup(m_Label);
-      expand = false;
       break;
 
     case CONFIG_CHECKBOX:
@@ -285,8 +280,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       m_Window = new wxCheckListBox(parent,
         m_Id, wxDefaultPosition, wxDefaultSize, arraychoices);
       }
-      
-      m_IsRowGrowable = true;
       break;
 
     case CONFIG_CHECKLISTBOX_NONAME:
@@ -297,13 +290,10 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       m_Window = new wxCheckListBox(parent,
         m_Id, wxDefaultPosition, wxDefaultSize, arraychoices);
       }
-      
-      m_IsRowGrowable = true;
       break;
 
     case CONFIG_COLOUR:
       m_Window = new wxColourPickerWidget(parent, m_Id);
-      expand = false;
       break;
 
     case CONFIG_COMBOBOX:
@@ -322,7 +312,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Id, 
         m_Label.BeforeFirst('\t'), 
         m_Label.AfterFirst('\t'));
-      expand = false;
       break;
 
     case CONFIG_DIRPICKERCTRL:
@@ -386,7 +375,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       {
         pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
       }
-      expand = false;
       }
       break;
 
@@ -399,7 +387,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Default,
         wxDefaultPosition,
         wxSize(width, wxDefaultCoord));
-      expand = false;
 #endif      
       }
       break;
@@ -412,7 +399,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         wxSize(width_numeric, wxDefaultCoord),
         m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
         wxTextValidator(wxFILTER_NUMERIC));
-      expand = false;
       break;
 
     case CONFIG_LISTVIEW_FOLDER:
@@ -422,8 +408,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         NULL,
         wxDefaultPosition,
         wxSize(width, 200));
-        
-      m_IsRowGrowable = true;
       break;
 
     case CONFIG_RADIOBOX:
@@ -451,8 +435,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_MajorDimension,
         m_Style);
       }
-      
-      m_IsRowGrowable = true;
       break;
 
     case CONFIG_SLIDER:
@@ -464,7 +446,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         wxDefaultPosition,
         wxSize(width_numeric, wxDefaultCoord),
         m_Style);
-      expand = false;
       break;
 
     case CONFIG_SPINCTRL:
@@ -480,8 +461,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Max);
         
       m_Window = sp;
-      
-      expand = false;
       
       if (m_Type == CONFIG_SPINCTRL_HEX)
       {
@@ -501,7 +480,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Max,
         m_Min,
         m_Inc);
-      expand = false;
       break;
 
     case CONFIG_STATICLINE:
@@ -523,8 +501,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
            wxSize(width, wxDefaultCoord)),
         m_Style);
       ((wxStaticText* )m_Window)->SetLabelMarkup(m_Label);
-      
-      m_IsRowGrowable = (m_Style & wxTE_MULTILINE);
       break;
 
     case CONFIG_STC:
@@ -543,8 +519,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       {
         ((wxExSTC* )m_Window)->SetLexer(m_Default);
       }
-      
-      m_IsRowGrowable = true;
       break;
 
     case CONFIG_STRING:
@@ -557,13 +531,10 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
            wxSize(width, wxDefaultCoord)),
         m_Style | 
           (readonly ? wxTE_READONLY: 0));
-          
-      m_IsRowGrowable = (m_Style & wxTE_MULTILINE);
       break;
 
     case CONFIG_TOGGLEBUTTON:
       m_Window = new wxToggleButton(parent, m_Id, m_Label);
-      expand = false;
       break;
 
     case CONFIG_USER:
@@ -575,13 +546,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
   
     default: wxFAIL;
-  }
-
-  m_SizerFlags = wxSizerFlags().Border().Left();
-  
-  if (expand) 
-  {
-    m_SizerFlags.Expand();
   }
 
   if (m_Type != CONFIG_EMPTY)
@@ -601,6 +565,59 @@ void wxExConfigItem::Init(const wxString& page, int cols)
   {
     m_PageCols = atoi(m_Page.AfterFirst(':'));
     m_Page = m_Page.BeforeFirst(':');
+  }
+  
+  // Default control is expanded when laid out, 
+  // override in switch if not wanted.
+  bool expand = true;
+
+  switch (m_Type)
+  {
+    case CONFIG_BUTTON:
+    case CONFIG_COLOUR:
+    case CONFIG_COMMAND_LINK_BUTTON:
+    case CONFIG_FONTPICKERCTRL:
+    case CONFIG_HYPERLINKCTRL:
+    case CONFIG_INT:
+    case CONFIG_SLIDER:
+    case CONFIG_SPINCTRL:
+    case CONFIG_SPINCTRL_HEX:
+    case CONFIG_SPINCTRL_DOUBLE:
+    case CONFIG_TOGGLEBUTTON:
+      expand = false;
+      break;
+
+    case CONFIG_CHECKLISTBOX:
+    case CONFIG_CHECKLISTBOX_NONAME:
+    case CONFIG_LISTVIEW_FOLDER:
+    case CONFIG_RADIOBOX:
+    case CONFIG_STC:
+      m_IsRowGrowable = true;
+      break;
+
+    case CONFIG_STATICTEXT:
+    case CONFIG_STRING:
+      m_IsRowGrowable = (m_Style & wxTE_MULTILINE);
+      break;
+  
+    case CONFIG_CHECKBOX:
+    case CONFIG_COMBOBOX:
+    case CONFIG_COMBOBOXDIR:
+    case CONFIG_DIRPICKERCTRL:
+    case CONFIG_EMPTY:
+    case CONFIG_FILEPICKERCTRL:
+    case CONFIG_STATICLINE:
+    case CONFIG_USER:
+      break;
+
+    default: wxFAIL;
+  }
+
+  m_SizerFlags = wxSizerFlags().Border().Left();
+  
+  if (expand) 
+  {
+    m_SizerFlags.Expand();
   }
 }
 
