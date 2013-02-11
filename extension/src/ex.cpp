@@ -280,6 +280,9 @@ bool wxExEx::CommandGlobal(const wxString& search)
   const wxString replacement = next.GetNextToken();
   
   wxString print;
+  
+  m_STC->SetIndicatorCurrent(m_FindIndicator.GetNo());
+  m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
     
   m_STC->SetSearchFlags(m_SearchFlags);
 
