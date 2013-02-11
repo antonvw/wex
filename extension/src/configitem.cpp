@@ -2,7 +2,7 @@
 // Name:      configitem.cpp
 // Purpose:   Implementation of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -75,6 +75,7 @@ wxExConfigItem::wxExConfigItem(
       type == CONFIG_BUTTON ||
       type == CONFIG_CHECKBOX ||
       type == CONFIG_COMMAND_LINK_BUTTON ||
+      type == CONFIG_EMPTY ||
       type == CONFIG_TOGGLEBUTTON ? false: add_label)
   , m_Inc(1)
 {

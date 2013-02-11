@@ -123,7 +123,9 @@ public:
     /// set to the selected lexer.
     wxString& lexer,
     /// caption
-    const wxString& caption = _("Enter Lexer")) const;
+    const wxString& caption = _("Enter Lexer"),
+    /// shows modal dialog
+    bool show_modal = true) const;
     
   /// Shows a dialog with all themes, allowing you to choose one.
   /// Returns true and sets current theme if you select one.
@@ -131,7 +133,9 @@ public:
     /// parent
     wxWindow* parent,
     /// caption
-    const wxString& caption = _("Enter Theme"));
+    const wxString& caption = _("Enter Theme"),
+    /// shows modal dialog
+    bool show_modal = true);
 private:
   wxExLexers(const wxFileName& filename);
   const wxString GetLexerExtensions() const;
