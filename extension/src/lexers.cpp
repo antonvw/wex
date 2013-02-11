@@ -717,7 +717,8 @@ wxExLexers* wxExLexers::Set(wxExLexers* lexers)
 bool wxExLexers::ShowDialog(
   wxWindow* parent,
   wxString& lexer,
-  const wxString& caption) const
+  const wxString& caption,
+  bool show_modal) const
 {
   wxArrayString s;
 
@@ -748,7 +749,7 @@ bool wxExLexers::ShowDialog(
     dlg.SetSelection(index);
   }
 
-  if (dlg.ShowModal() == wxID_CANCEL)
+  if (show_modal && dlg.ShowModal() == wxID_CANCEL)
   {
     return false;
   }
@@ -760,7 +761,8 @@ bool wxExLexers::ShowDialog(
 
 bool wxExLexers::ShowThemeDialog(
   wxWindow* parent, 
-  const wxString& caption)
+  const wxString& caption,
+  bool show_modal)
 {
   if (m_ThemeMacros.empty())
   {
@@ -794,7 +796,7 @@ bool wxExLexers::ShowThemeDialog(
     dlg.SetSelection(index);
   }
 
-  if (dlg.ShowModal() == wxID_CANCEL)
+  if (show_modal && dlg.ShowModal() == wxID_CANCEL)
   {
     return false;
   }

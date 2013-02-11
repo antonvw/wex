@@ -2,7 +2,7 @@
 // Name:      menu.h
 // Purpose:   Declaration of wxExMenu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXMENU_H
@@ -76,10 +76,13 @@ public:
   bool AppendTools(int itemid = wxID_ANY);
 
   /// Appends VCS menu items.
-  /// If a filename is specified the menu is built as a submenu,
-  /// otherwise as menu items.
   /// Returns true if items have been appended.
-  bool AppendVCS(const wxFileName& filename = wxFileName());
+  bool AppendVCS(
+    /// if a filename is specified the menu is built as a submenu,
+    /// otherwise as menu items.
+    const wxFileName& filename = wxFileName(),
+    /// shows modal dialog if necessary
+    bool show_modal = true);
 
   /// Gets the style.
   long GetStyle() const {return m_Style;};
