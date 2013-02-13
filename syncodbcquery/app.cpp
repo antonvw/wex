@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncodbcquery
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -369,12 +369,20 @@ bool Frame::OpenFile(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
+  int col_number,
   long flags)
 {
-  GetManager().GetPane("QUERY").Show(true);
-  GetManager().Update();
+  if (m_Query->Open(filename, line_number, match, ,col_number, flags))
+  {
+    GetManager().GetPane("QUERY").Show(true);
+    GetManager().Update();
 
-  return m_Query->Open(filename, line_number, match, flags);
+    SetRecentFile(filename.GetFullPath());
+  }
+  else
+  {
+    return false;
+  }  
 }
 
 void Frame::RunQuery(const wxString& query, bool empty_results)

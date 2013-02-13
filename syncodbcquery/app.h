@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of classes for syncodbcquery
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #define wxExUSE_OTL 1
@@ -52,6 +52,7 @@ private:
     const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
+    int col_number = 0,
     long flags = 0);
   void RunQuery(const wxString& query, bool empty_results = false);
   void RunQueries(const wxString& text);

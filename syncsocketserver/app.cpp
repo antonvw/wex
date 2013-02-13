@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -796,9 +796,10 @@ bool Frame::OpenFile(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
+  int col_number,
   long flags)
 {
-  if (m_DataWindow->Open(filename, line_number, match, flags))
+  if (m_DataWindow->Open(filename, line_number, match, col_number, flags))
   {
     GetManager().GetPane("DATA").Show();
     GetManager().Update();
@@ -808,6 +809,8 @@ bool Frame::OpenFile(
       m_DataWindow->GetLength()),
       DATA_MESSAGE);
 
+    SetRecentFile(filename.GetFullPath());
+    
     return true;
   }
   else

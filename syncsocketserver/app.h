@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -50,6 +50,7 @@ private:
     const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
+    int col_number = 0,
     long flags = 0);
   virtual void StatusBarClicked(
     const wxString& pane);
