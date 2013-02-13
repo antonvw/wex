@@ -24,12 +24,15 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc)
   , m_Index(stc->GetColumn(stc->GetCurrentPos()))
   , m_STC(stc)
 {
+  wxASSERT(m_STC->HexMode());
 }  
 
 wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, 
   int pos_or_offset, bool is_position)
   : m_STC(stc)
 {
+  wxASSERT(m_STC->HexMode());
+  
   if (is_position)
   {
     Set(pos_or_offset != -1 ? pos_or_offset: stc->GetCurrentPos()); 
@@ -428,6 +431,8 @@ bool wxExHexModeLine::ReplaceHex(int value)
 
 void wxExHexModeLine::Set(int pos)
 {
+  wxASSERT(m_STC->HexMode());
+  
   m_LineNo = m_STC->LineFromPosition(pos);
   m_Line = m_STC->GetLine(m_LineNo);
   m_Index = m_STC->GetColumn(pos);
@@ -435,6 +440,8 @@ void wxExHexModeLine::Set(int pos)
 
 void wxExHexModeLine::SetPos(const wxKeyEvent& event)
 {
+  wxASSERT(m_STC->HexMode());
+  
   const int start = m_STC->PositionFromLine(m_LineNo);
   const bool right = (event.GetKeyCode() == WXK_RIGHT);
   const int pos = m_STC->GetCurrentPos();
