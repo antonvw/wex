@@ -1,6 +1,6 @@
-.wxConfig::Read 100000 items in 213 ms
-...wxExFile::Read 10000 items in 1075 ms wxFile::Read 10000 items in 19 ms
-..wxExFileName::IsReadOnly 1000 files in 0 ms wxFileName::IsFileWritable 1000 files in 4 ms
+.wxConfig::Read 100000 items in 209 ms
+...wxExFile::Read 10000 items in 1032 ms wxFile::Read 10000 items in 18 ms
+..wxExFileName::IsReadOnly 1000 files in 0 ms wxFileName::IsFileWritable 1000 files in 5 ms
 ...
 
 

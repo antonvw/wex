@@ -525,17 +525,18 @@ void wxExGuiTestFixture::testHexMode()
   stc->Reload();
   CPPUNIT_ASSERT(stc->GetText() == "0;2345x7890123456789");
   
+  stc->Reload(wxExSTC::STC_WIN_HEX);
   hex.Set(63); // valid
   CPPUNIT_ASSERT( hex.Goto());
   hex.Set(9999); // invalid, should result in goto end
   CPPUNIT_ASSERT( hex.Goto());
   
   // test hex field
-  stc->Reload();
+  stc->Reload(wxExSTC::STC_WIN_HEX);
   hex.Set(13); // 31 <- (ascii 1)
   CPPUNIT_ASSERT( hex.ReplaceHex(32));
   hex.Set(64); // 7 <-
-  //CPPUNIT_ASSERT(!hex.ReplaceHex(32));
+  CPPUNIT_ASSERT(!hex.ReplaceHex(32));
 }
 
 void wxExGuiTestFixture::testIndicator()
