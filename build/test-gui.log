@@ -1,1 +1,17 @@
-..........
+...............wxExListTiem::Insert 750 items in 2129 ms
+wxExListView::Sort 750 items in 1226 ms
+............F....wxExTextFile::matching 193 items in 19560 us
+wxExTextFile::replacing 194 items in 60346 us
+........
+
+
+!!!FAILURES!!!
+Test Results:
+Run:  39   Failures: 1   Errors: 0
+
+
+1) test: testSTC (F) line: 1217 ../extension/test/gui/test.cpp
+assertion failed
+- Expression: !stc->SmartIndentation()
+
+

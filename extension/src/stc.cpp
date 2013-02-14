@@ -1316,7 +1316,9 @@ void wxExSTC::Initialize(bool file_exists)
     this,
     wxID_ANY);
   
-  if (HexMode())
+  m_HexMode = false;
+  
+  if (m_Flags & STC_WIN_HEX)
   {
     SetHexMode(true);
   }
@@ -1325,7 +1327,6 @@ void wxExSTC::Initialize(bool file_exists)
   
   m_HexBuffer.clear(); // always, not only in hex mode
   m_HexBufferOriginal.clear();
-  m_HexMode = false;
   m_UndoPossible = false;
   
   m_SavedPos = -1;
@@ -1974,10 +1975,13 @@ void wxExSTC::Reload(long flags)
   
   UseModificationMarkers(false);
   
-  if ((flags & STC_WIN_HEX) && !HexMode())
+  if (flags & STC_WIN_HEX)
   {
-    const wxCharBuffer buffer = GetTextRaw(); // keep buffer
-    SetHexMode(true, modified, buffer);
+    if (!HexMode())
+    {
+      const wxCharBuffer buffer = GetTextRaw(); // keep buffer
+      SetHexMode(true, modified, buffer);
+    }
   }
   else
   {
