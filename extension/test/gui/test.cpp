@@ -1134,8 +1134,6 @@ void wxExGuiTestFixture::testSTC()
   
   CPPUNIT_ASSERT( stc->GetText() != "hello stc");
   
-  stc->AppendTextHexMode("in hex mode");
-  
   CPPUNIT_ASSERT( stc->CanCut());
   CPPUNIT_ASSERT( stc->CanPaste());
   
@@ -1219,6 +1217,9 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(!stc->SmartIndentation());
   
   stc->ClearDocument();
+  
+  stc->Reload(wxExSTC::STC_WIN_HEX);
+  stc->AppendTextHexMode("in hex mode");
 }
   
 void wxExGuiTestFixture::testSTCEntryDialog()

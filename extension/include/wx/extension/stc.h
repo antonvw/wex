@@ -191,7 +191,7 @@ public:
   void GuessType();
   
   /// Returns true if we are in hex mode.
-  bool HexMode() const {return m_Flags & STC_WIN_HEX;};
+  bool HexMode() const {return m_HexMode;};
 
   /// Indent range of lines.
   bool Indent(int begin, int end, bool forward);
