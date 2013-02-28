@@ -46,12 +46,12 @@ fi
 echo "-- test gui report --"
 $TESTDIR/wxex-test-gui-report
 
-echo "-- lcov collecting data --"
 if [ $? != 0 ]; then
   echo "test gui report failed"
   exit 1
 fi
 
+echo "-- lcov collecting data --"
 lcov --base-directory ~/wxExtension/extension --capture --directory $TESTDIR --output-file app.run
 lcov --add-tracefile app.base --add-tracefile app.run --output-file app.total
 
