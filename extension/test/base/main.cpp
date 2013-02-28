@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012
+// Copyright: (c) 2013
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <ui/text/TestRunner.h>
@@ -18,7 +18,7 @@ int main (int argc, char* argv[])
   wxExTestSuite* suite = new wxExTestSuite;
 
   runner.addTest(suite);
-  runner.run();
+  bool success = runner.run("", false);
   
-  return 0;
+  return !success;
 }

@@ -219,7 +219,7 @@ void wxExGuiReportTestFixture::test()
 }
 
 wxExTestSuite::wxExTestSuite()
-  : CppUnit::TestSuite("wxexreport test suite")
+  : CppUnit::TestSuite("wxExtension Report test suite")
 {
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testDirCtrl",

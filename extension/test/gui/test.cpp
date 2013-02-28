@@ -845,6 +845,8 @@ void wxExGuiTestFixture::testListView()
   // Delete all items, to test sorting later on.  
   listView->DeleteAllItems();
   
+  listView->ItemsUpdate();
+  
   for (int i = 0; i < 10; i++)
   {
     listView->InsertItem(i, wxString::Format("%d", i));
@@ -868,6 +870,8 @@ void wxExGuiTestFixture::testListView()
   
   listView->SetItem(0, 1, "incorrect date");
   CPPUNIT_ASSERT(!listView->SortColumn("Date"));
+  
+  listView->SetItemImage(0, wxART_WARNING);
 }
 
 // Also test the toolbar (wxExToolBar).
@@ -1059,6 +1063,21 @@ void wxExGuiTestFixture::testShell()
   CPPUNIT_ASSERT(shell->GetPrompt() == ">");
   CPPUNIT_ASSERT(shell->GetCommand() == "bbb");
   
+  shell->ProcessChar('b');
+  shell->ProcessChar('\t'); // tests Expand
+  shell->ProcessChar(WXK_BACK);
+  shell->ProcessChar(WXK_BACK);
+  shell->ProcessChar(WXK_BACK);
+  shell->ProcessChar(WXK_BACK);
+  shell->ProcessChar(WXK_BACK);
+  shell->ProcessChar(WXK_DELETE);
+  
+  shell->DocumentEnd();
+  shell->ProcessChar(WXK_UP);
+  shell->ProcessChar(WXK_DOWN);
+  
+  shell->AppendText("hello");
+  
   // Test shell enable/disable.
   shell->EnableShell(false);
   CPPUNIT_ASSERT(!shell->GetShellEnabled());
@@ -1072,6 +1091,8 @@ void wxExGuiTestFixture::testShell()
   
   shell->EnableShell(true);
   CPPUNIT_ASSERT( shell->GetShellEnabled());
+  
+  shell->Paste();
   
   // Test shell commands.
   shell->SetText("");
@@ -1204,11 +1225,15 @@ void wxExGuiTestFixture::testSTC()
   //  stc->Print();
   stc->PrintPreview();
   
+  stc->ProcessChar(5);
+  
   stc->PropertiesMessage();
   
   stc->Reload();
   
   stc->ResetMargins();
+  
+  stc->SelectNone();
   
   CPPUNIT_ASSERT(!stc->SetIndicator(wxExIndicator(4,5), 100, 200));
   
@@ -1216,9 +1241,17 @@ void wxExGuiTestFixture::testSTC()
   
   CPPUNIT_ASSERT(stc->SmartIndentation());
   
+  stc->StopSync();
+  
+  stc->Undo();
+  
+  stc->UseModificationMarkers(true);
+  stc->UseModificationMarkers(false);
+  
   stc->ClearDocument();
   
   stc->Reload(wxExSTC::STC_WIN_HEX);
+  CPPUNIT_ASSERT(stc->HexMode());
   stc->AppendTextHexMode("in hex mode");
 }
   
@@ -1238,6 +1271,7 @@ void wxExGuiTestFixture::testSTCEntryDialog()
       wxOK,
       true);
   CPPUNIT_ASSERT(!dlg2.GetText().empty());
+  CPPUNIT_ASSERT( dlg2.GetTextRaw().length() > 0);
   CPPUNIT_ASSERT( dlg2.GetSTCShell() != NULL);
   CPPUNIT_ASSERT( dlg2.GetSTCShell()->GetPrompt() == "testing");
 }
