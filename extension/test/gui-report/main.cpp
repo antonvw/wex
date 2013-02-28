@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wxExtension report cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -37,8 +37,12 @@ bool wxExTestApp::OnInit()
   wxExTestSuite* suite = new wxExTestSuite;
 
   runner.addTest(suite);
-  runner.run();
+  m_Success = runner.run("", false);
+  
+  return true;
+}
 
-  // Return false, so test ends here.
-  return false;
+int wxExTestApp::OnRun()
+{
+  return !m_Success;
 }

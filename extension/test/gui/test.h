@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXGUITESTUNIT_H
@@ -28,6 +28,9 @@ public:
 private:
   /// Override the OnInit.
   virtual bool OnInit();
+  virtual int OnRun();
+  
+  bool m_Success;
 };
 
 /// CppUnit gui test fixture.
