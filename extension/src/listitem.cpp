@@ -2,7 +2,7 @@
 // Name:      listitem.cpp
 // Purpose:   Implementation of class 'wxExListItem'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -58,11 +58,6 @@ void wxExListItem::Insert(long index)
       m_FileName.Exists() ?
         m_FileName.GetFullName():
         m_FileName.GetFullPath());
-        
-    if (m_ListView->GetItemCount() > 0)
-    {
-      m_ListView->SortColumnReset();
-    }
   }
   else
   {

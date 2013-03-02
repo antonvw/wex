@@ -11,6 +11,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/dnd.h> 
+#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/numdlg.h> // for wxGetNumberFromUser
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
@@ -42,7 +43,8 @@ private:
       // so dropping on your own selection is impossible.
       return (m_ListView->GetSelectedItemCount() == 0 ?
         m_ListView->ItemFromText(text): false);};
-wxExListView* m_ListView;
+        
+  wxExListView* m_ListView;
 };
 #endif
 
@@ -580,7 +582,7 @@ bool wxExListView::ItemFromText(const wxString& text)
   {
     if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
     {
-      SortColumn(_("Modified"), SORT_KEEP);
+      SortColumn(m_SortedColumnNo, SORT_KEEP);
     }
     else
     {
@@ -944,8 +946,6 @@ void wxExListView::SortColumnReset()
   {
     ClearColumnImage(m_SortedColumnNo);
   }
-
-  m_SortedColumnNo = -1;
 }
 
 BEGIN_EVENT_TABLE(wxExListViewFileName, wxExListView)
@@ -1243,6 +1243,18 @@ bool wxExListViewFileName::ItemFromText(const wxString& text)
     }
   }
 
+  if (modified)
+  {
+    if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+    {
+      SortColumn(GetSortedColumnNo(), SORT_KEEP);
+    }
+    else
+    {
+      SortColumnReset();
+    }
+  }
+  
   return modified;
 }
 
