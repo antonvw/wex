@@ -10,9 +10,9 @@
 
 #include <map>
 #include <wx/artprov.h>
-#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/listctrl.h>
 
+class wxFindDialogEvent;
 class wxExLexer;
 class wxExMenu;
 
@@ -114,6 +114,9 @@ public:
   const wxString GetItemText(
     long item_number,
     const wxString& col_name = wxEmptyString) const;
+    
+  /// Returns current sorted column no.
+  int GetSortedColumnNo() const {return m_SortedColumnNo;};
 
   /// Asks for an item number and goes to the item.
   bool GotoDialog(const wxString& caption = _("Enter Item Number"));
@@ -150,6 +153,17 @@ public:
     wxExSortType sort_method = SORT_TOGGLE) {  
       return SortColumn(FindColumn(column_name), sort_method);};
       
+  /// Sorts on a column.
+  /// If you specified use_images,
+  /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), 
+  /// depending on whether
+  /// it is sorted ascending or descending.
+  /// By using wxArtProvider CreateBitmap you can override this image to 
+  /// provide your own one.
+  bool SortColumn(
+    int column_no, 
+    wxExSortType sort_method = SORT_TOGGLE);
+
   /// Resets column that was used for sorting.
   void SortColumnReset();
 protected:
@@ -197,17 +211,6 @@ private:
   bool SetItemImage(long item_number, int iconid) {
     return (m_ImageType == IMAGE_FILE_ICON ?
       wxListView::SetItemImage(item_number, iconid): false);};
-
-  /// Sorts on a column.
-  /// If you specified use_images,
-  /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), 
-  /// depending on whether
-  /// it is sorted ascending or descending.
-  /// By using wxArtProvider CreateBitmap you can override this image to 
-  /// provide your own one.
-  bool SortColumn(
-    int column_no, 
-    wxExSortType sort_method = SORT_TOGGLE);
 
   const wxUniChar m_FieldSeparator;
   const wxExImageType m_ImageType;

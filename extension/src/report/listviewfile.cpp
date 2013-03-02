@@ -2,7 +2,7 @@
 // Name:      listviewfile.cpp
 // Purpose:   Implementation of class wxExListViewFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -139,7 +139,7 @@ void wxExListViewFile::AddItems()
 
     if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
     {
-      SortColumn(_("Modified"), SORT_KEEP);
+      SortColumn(GetSortedColumnNo(), SORT_KEEP);
     }
   }
 
@@ -261,8 +261,15 @@ void wxExListViewFile::DoFileSave(bool save_as)
 
 bool wxExListViewFile::ItemFromText(const wxString& text)
 {
-  m_ContentsChanged = true;
-  return wxExListViewFileName::ItemFromText(text);
+  bool result = false;
+  
+  if (wxExListViewFileName::ItemFromText(text))
+  {
+    m_ContentsChanged = true;
+    result = true;
+  }
+  
+  return result;
 }
 
 void wxExListViewFile::OnCommand(wxCommandEvent& event)
@@ -274,7 +281,7 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
   case wxID_CUT:
   case wxID_DELETE:
   case wxID_PASTE:
-    if (GetFileName().IsFileWritable())
+    if (!GetFileName().FileExists() || GetFileName().IsFileWritable())
     {
       event.Skip();
       m_ContentsChanged = true;
