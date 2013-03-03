@@ -578,18 +578,6 @@ bool wxExListView::ItemFromText(const wxString& text)
     }
   }
 
-  if (modified)
-  {
-    if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
-    {
-      SortColumn(m_SortedColumnNo, SORT_KEEP);
-    }
-    else
-    {
-      SortColumnReset();
-    }
-  }
-
   return modified;
 }
 
@@ -1243,18 +1231,6 @@ bool wxExListViewFileName::ItemFromText(const wxString& text)
     }
   }
 
-  if (modified)
-  {
-    if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
-    {
-      SortColumn(GetSortedColumnNo(), SORT_KEEP);
-    }
-    else
-    {
-      SortColumnReset();
-    }
-  }
-  
   return modified;
 }
 
@@ -1387,7 +1363,9 @@ void wxExListViewFileName::OnIdle(wxIdleEvent& event)
     {
       if (m_Type == LIST_FILE)
       {
-        if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+        if (
+          wxConfigBase::Get()->ReadBool("List/SortSync", true) &&
+          GetSortedColumnNo() == FindColumn(_("Modified")))
         {
           SortColumn(_("Modified"), SORT_KEEP);
         }

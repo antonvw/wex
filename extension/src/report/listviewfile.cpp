@@ -267,6 +267,15 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
   {
     m_ContentsChanged = true;
     result = true;
+    
+    if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+    {
+      SortColumn(GetSortedColumnNo(), SORT_KEEP);
+    }
+    else
+    {
+      SortColumnReset();
+    }
   }
   
   return result;
