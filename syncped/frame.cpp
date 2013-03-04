@@ -698,7 +698,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_SAVEAS:
     if (editor != NULL)
     {
-      const wxString old_key = editor->GetFileName().GetFullPath();
+      const wxString old_key = m_Editors->GetKeyByPage(editor);
       
       if (!event.GetString().empty())
       {
