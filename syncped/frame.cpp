@@ -698,8 +698,6 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_SAVEAS:
     if (editor != NULL)
     {
-      const wxString old_key = m_Editors->GetKeyByPage(editor);
-      
       if (!event.GetString().empty())
       {
         if (!editor->GetFile().FileSave(event.GetString()))
@@ -732,7 +730,7 @@ void Frame::OnCommand(wxCommandEvent& event)
         wxNullBitmap);
 
       m_Editors->SetPageText(
-        old_key,
+        m_Editors->GetKeyByPage(editor),
         editor->GetFileName().GetFullPath(),
         editor->GetFileName().GetFullName(),
         bitmap);
@@ -866,8 +864,6 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_PROJECT_SAVEAS:
     if (project != NULL && m_Projects != NULL)
     {
-      const wxString old_key = m_Projects->GetKeyByPage(project);
-
       wxExFileDialog dlg(
         this, project, 
         _("Project Save As"), 
@@ -879,7 +875,7 @@ void Frame::OnCommand(wxCommandEvent& event)
         project->FileSave(dlg.GetPath());
 
         m_Projects->SetPageText(
-          old_key,
+          m_Projects->GetKeyByPage(project),
           project->GetFileName().GetFullPath(),
           project->GetFileName().GetName());
       }

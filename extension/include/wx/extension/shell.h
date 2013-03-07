@@ -100,6 +100,9 @@ public:
   /// Sets the prompt, and prompts if asked for.
   /// Returns false and does not set the prompt if the shell is not enabled.
   bool SetPrompt(const wxString& prompt, bool do_prompt = true);
+  
+  /// Undo one action in the undo history.  
+  virtual void Undo();
 protected:
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
