@@ -120,6 +120,7 @@ void wxExSTCShell::AppendText(const wxString& text)
   DocumentEnd();
   EnsureCaretVisible();
   m_CommandStartPosition = GetCurrentPos();
+  EmptyUndoBuffer();
 }
 
 void wxExSTCShell::EnableShell(bool enabled)
@@ -232,7 +233,7 @@ void wxExSTCShell::Expand()
     
     // We cannot use our AppendText, as command start pos
     // should not be changed.
-    AddText(expansion);
+    wxExSTC::AppendText(expansion);
   }
 }
     
@@ -557,13 +558,18 @@ bool wxExSTCShell::Prompt(const wxString& text, bool add_eol)
     return false;
   }
   
+  bool appended = false;
+  
   if (!text.empty())
   {
+    appended = true;
     AppendText(text);
   }
 
   if (!m_Prompt.empty())
   {
+    appended = true;
+    
     if (GetTextLength() > 0 && add_eol)
     {
       AppendText(GetEOL());
@@ -571,13 +577,14 @@ bool wxExSTCShell::Prompt(const wxString& text, bool add_eol)
     
     AppendText(m_Prompt);
   }
-
-  DocumentEnd();
-
-  m_CommandStartPosition = GetCurrentPos();
-
-  EmptyUndoBuffer();
   
+  if (!appended)
+  {
+    DocumentEnd();
+    EmptyUndoBuffer();
+    m_CommandStartPosition = GetCurrentPos();
+  }
+
   return true;
 }
 
@@ -712,4 +719,12 @@ void wxExSTCShell::ShowHistory()
   }
 }
 
+void wxExSTCShell::Undo()
+{
+  if (CanUndo())
+  {
+    wxExSTC::Undo();
+    m_Command.clear();
+  }
+}
 #endif // wxUSE_GUI
