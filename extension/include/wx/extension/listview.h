@@ -56,15 +56,6 @@ public:
     /// if you specify a width other than 0, that one is used.
     int width = 0);
 
-  /// Assignment operator.
-  /// Visual Studio needs this, though gcc does not.
-  wxExColumn& operator=(const wxExColumn& p)
-  {
-    m_Type = p.m_Type;
-    m_IsSortedAscending = p.m_IsSortedAscending;
-    return *this;
-  };
-
   /// Returns whether sorting is ascending.
   bool GetIsSortedAscending() const {return m_IsSortedAscending;}
 
