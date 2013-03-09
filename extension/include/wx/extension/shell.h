@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wxExSTCShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTCSHELL_H

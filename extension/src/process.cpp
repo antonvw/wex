@@ -45,17 +45,29 @@ wxExProcess::~wxExProcess()
 }
 
 wxExProcess::wxExProcess(const wxExProcess& process)
+  : m_Timer(NULL)
 {
   *this = process;
 }
 
 wxExProcess& wxExProcess::operator=(const wxExProcess& p)
 {
-  m_Busy = p.m_Busy;
-  m_Error = p.m_Error;
-  m_Output = p.m_Output;
-  m_Sync = p.m_Sync;
-  m_Timer = new wxTimer(this);
+  if (this != &p)
+  {
+    if (m_Timer != NULL)
+    {
+      delete m_Timer;
+    }
+    
+    m_Timer = new wxTimer(this);
+    
+    m_Busy = p.m_Busy;
+    m_Command = p.m_Command;
+    m_Error = p.m_Error;
+    m_HasStdError = p.m_HasStdError;
+    m_Output = p.m_Output;
+    m_Sync = p.m_Sync;
+  }
 
   return *this;
 }
@@ -293,11 +305,12 @@ bool wxExProcess::HandleCommand(const wxString& command) const
 {
   wxString rest;
   
+  if (
+         command.StartsWith("cd", &rest)
 #ifdef __WXMSW__
-  if (command.StartsWith("chdir", &rest))
-#else        
-  if (command.StartsWith("cd", &rest))
+      || command.StartsWith("chdir", &rest)
 #endif        
+     )
   {
     rest.Trim(false);
     rest.Trim(true);
@@ -406,10 +419,10 @@ void wxExProcess::OnCommand(wxCommandEvent& event)
           {
             m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
           }
+      
+          m_Timer->Start();
         }
       } 
-      
-      m_Timer->Start();
     }
     else
     {
