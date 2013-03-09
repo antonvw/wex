@@ -121,6 +121,10 @@ void wxExSTCShell::AppendText(const wxString& text)
   EnsureCaretVisible();
   m_CommandStartPosition = GetCurrentPos();
   EmptyUndoBuffer();
+  
+#ifdef DEBUG
+  wxLogMessage("AppendText::" + GetText() + "::");
+#endif
 }
 
 void wxExSTCShell::EnableShell(bool enabled)
@@ -235,6 +239,10 @@ void wxExSTCShell::Expand()
     // should not be changed.
     wxExSTC::AppendText(expansion);
   }
+  
+#ifdef DEBUG
+  wxLogMessage("Expand::" + GetText() + "::");
+#endif
 }
     
 const wxString wxExSTCShell::GetCommand() const
@@ -454,6 +462,10 @@ void wxExSTCShell::Paste()
   wxExSTC::Paste();
   
   m_Command += wxExClipboardGet();  
+  
+#ifdef DEBUG
+  wxLogMessage("Paste::" + GetText() + "::");
+#endif
 }
 
 void wxExSTCShell::ProcessChar(int key)
@@ -549,6 +561,10 @@ void wxExSTCShell::ProcessChar(int key)
       m_Command += wxChar(key);
     }
   }
+  
+#ifdef DEBUG
+  wxLogMessage("ProcessChar::" + GetText() + "::");
+#endif
 }
 
 bool wxExSTCShell::Prompt(const wxString& text, bool add_eol)
@@ -584,6 +600,10 @@ bool wxExSTCShell::Prompt(const wxString& text, bool add_eol)
     EmptyUndoBuffer();
     m_CommandStartPosition = GetCurrentPos();
   }
+  
+#ifdef DEBUG
+  wxLogMessage("Prompt::" + GetText() + "::");
+#endif
 
   return true;
 }
@@ -717,6 +737,10 @@ void wxExSTCShell::ShowHistory()
       command_no++,
       command.c_str()));
   }
+  
+#ifdef DEBUG
+  wxLogMessage("ShowHistory::" + GetText() + "::");
+#endif
 }
 
 void wxExSTCShell::Undo()
@@ -726,5 +750,9 @@ void wxExSTCShell::Undo()
     wxExSTC::Undo();
     m_Command.clear();
   }
+  
+#ifdef DEBUG
+  wxLogMessage("Undo::" + GetText() + "::");
+#endif
 }
 #endif // wxUSE_GUI
