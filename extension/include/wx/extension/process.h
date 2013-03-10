@@ -14,6 +14,7 @@ class wxTimer;
 class wxTimerEvent;
 class wxExSTC;
 class wxExSTCEntryDialog;
+class wxExSTCShell;
 
 /// Offers a wxProcess, capturing execution output depending
 /// on sync or async call to Execute.
@@ -66,10 +67,15 @@ public:
   /// Gets the output from Execute (only filled for wxEXEC_SYNC).
   const wxString& GetOutput() const {return m_Output;};
   
+  /// Returns the shell, for input to the process.
+  /// If you did not yet invoke Execute,
+  /// NULL is returned.
+  static wxExSTCShell* GetShell();
+
   /// Returns the STC component from the dialog
   /// (might be NULL if dialog is NULL).
   static wxExSTC* GetSTC();
-
+  
   /// Returns true when the command executed resulted in stderr errors.
   bool HasStdError() const {return m_HasStdError;};
   

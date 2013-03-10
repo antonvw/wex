@@ -620,7 +620,8 @@ void wxExGuiTestFixture::testLexers()
   
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("XXX") == "XXX");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("mark_lcorner") == "10");
-  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number") == "fore:red");
+  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number") == "number");
+  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("iv_none") == "0");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "asm") == "2");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "cpp") == "4");
   
@@ -1073,8 +1074,6 @@ void wxExGuiTestFixture::testShell()
   shell->ProcessChar(WXK_DELETE);
   
   shell->DocumentEnd();
-  shell->ProcessChar(WXK_UP);
-  shell->ProcessChar(WXK_DOWN);
   
   shell->AppendText("hello");
   

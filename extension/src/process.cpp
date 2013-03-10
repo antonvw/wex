@@ -296,6 +296,11 @@ bool wxExProcess::Execute(
   return !m_Error;
 }
 
+wxExSTCShell* wxExProcess::GetShell()
+{
+  return m_Dialog != NULL ? m_Dialog->GetSTCShell(): NULL;
+}
+
 wxExSTC* wxExProcess::GetSTC() 
 {
   return m_Dialog != NULL ? m_Dialog->GetSTC(): NULL;
