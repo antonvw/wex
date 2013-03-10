@@ -318,6 +318,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
            !AutoCompActive())
   {
     ShowCommand(key);
+    m_Command.clear();
   }
   // Home key pressed.
   else if (key == WXK_HOME)
