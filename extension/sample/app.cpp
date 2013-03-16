@@ -244,6 +244,16 @@ wxExSampleFrame::wxExSampleFrame()
   panes.push_back(wxExStatusBarPane("PaneLexer", 60, "Lexer"));
   SetupStatusBar(panes);
 #endif
+
+  if (!wxExLexers::Get()->GetDefaultStyle().IsOk())
+  {
+    wxMessageBox("lexers default style not ok");
+  }
+  
+  if (!wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle())
+  {
+    wxMessageBox("lexers default style does not contain default style");
+  }
 }
 
 void wxExSampleFrame::OnCommand(wxCommandEvent& event)

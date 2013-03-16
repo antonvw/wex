@@ -620,7 +620,7 @@ void wxExGuiTestFixture::testLexers()
   
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("XXX") == "XXX");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("mark_lcorner") == "10");
-  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number") == "number");
+  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number") == "fore:red");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("iv_none") == "0");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "asm") == "2");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "cpp") == "4");
@@ -979,11 +979,15 @@ void wxExGuiTestFixture::testProcess()
   
   CPPUNIT_ASSERT(!process.GetError());
   CPPUNIT_ASSERT( process.GetOutput().empty());
+  CPPUNIT_ASSERT(!process.HasStdError());
+  // in testEx we did !ls -l, so there is a shell, and STC.
+  CPPUNIT_ASSERT( process.GetShell() != NULL);
+  CPPUNIT_ASSERT( process.GetSTC() != NULL);
   CPPUNIT_ASSERT(!process.IsRunning());
   
   process.ConfigDialog(wxTheApp->GetTopWindow(), "test process", false);
   
-  // wxExecute hangs for wxEXEC_ASYNC
+  // Test wxEXEC_SYNC process.
   CPPUNIT_ASSERT( process.Execute("ls -l", wxEXEC_SYNC));
   CPPUNIT_ASSERT(!process.GetError());
   CPPUNIT_ASSERT(!process.GetOutput().empty());
@@ -991,22 +995,56 @@ void wxExGuiTestFixture::testProcess()
   CPPUNIT_ASSERT(!process.IsRunning());
   CPPUNIT_ASSERT( process.IsSelected());
   CPPUNIT_ASSERT( process.GetSTC() != NULL);
+  CPPUNIT_ASSERT(!process.GetSTC()->GetText().empty());
   CPPUNIT_ASSERT( process.Kill() == wxKILL_NO_PROCESS);
   
   process.ShowOutput();
 
-  // Repeat last process (sync).
+  // Repeat last wxEXEC_SYNC process.
   // Currently dialog might be cancelled, so do not check return value.
-//  process.Execute("", wxEXEC_SYNC);
+  //  process.Execute("", wxEXEC_SYNC);
   CPPUNIT_ASSERT(!process.GetError());
   CPPUNIT_ASSERT(!process.GetOutput().empty());
 
-  // Invalid async process (TODO: but it is started??).
+  // TODO:
+  // Test invalid wxEXEC_SYNC process.
+  
+  // Test wxEXEC_ASYNC process.
+  // wxExecute hangs for wxEXEC_ASYNC
+  CPPUNIT_ASSERT( process.Execute("bash"));
+  CPPUNIT_ASSERT( process.IsRunning());
+  wxExSTCShell* shell = process.GetShell();  
+  
+  CPPUNIT_ASSERT( shell != NULL);
+  
+  // Test commands entered in shell.
+  const wxString cwd = wxGetCwd();
+  
+  shell->ProcessChar('c');
+  shell->ProcessChar('d');
+  shell->ProcessChar(' ');
+  shell->ProcessChar('~');
+  shell->ProcessChar('\r');
+  shell->ProcessChar('p');
+  shell->ProcessChar('w');
+  shell->ProcessChar('d');
+  shell->ProcessChar('\r');
+  
+  wxLogMessage("SHELL: ");
+  wxLogMessage(shell->GetText());
+  
+  CPPUNIT_ASSERT( shell->GetText().Contains("home"));
+//  CPPUNIT_ASSERT( cwd != wxGetCwd());
+
+  // Test invalid wxEXEC_ASYNC process (TODO: but it is started??).
   CPPUNIT_ASSERT( process.Execute("xxxx"));
   CPPUNIT_ASSERT(!process.GetError());
   // The output is not touched by the async process, so if it was not empty,
   // it still is not empty.
   CPPUNIT_ASSERT(!process.GetOutput().empty());
+  
+  // TODO:
+  // Repeat last process (wxEXEC_ASYNC).
 }
 
 void wxExGuiTestFixture::testProperty()

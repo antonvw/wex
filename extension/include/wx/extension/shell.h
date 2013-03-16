@@ -12,6 +12,8 @@
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
+class wxExProcess;
+
 /// This class offers a wxExSTC with support for commands.
 /// The commands are entered at the last line, and kept in a list of commands,
 /// by pressing key up and down you browse through the commands.
@@ -92,10 +94,8 @@ public:
     const wxString& text = wxEmptyString,
     bool add_eol = true);
     
-  /// Set the event handler to which commands are sent.
-  /// Normally these go to the parent, you can change that here.
-  void SetEventHandler(wxEvtHandler* handler) {
-    m_Handler = handler;};
+  /// Sets the process to which commands are sent.
+  void SetProcess(wxExProcess* process);
 
   /// Sets the prompt, and prompts if asked for.
   /// Returns false and does not set the prompt if the shell is not enabled.
@@ -135,7 +135,7 @@ private:
   const int m_CommandsSaveInConfig;
   wxString m_Prompt;
   
-  wxEvtHandler* m_Handler;
+  wxExProcess* m_Process;
 
   DECLARE_EVENT_TABLE()
 };
