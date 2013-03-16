@@ -319,7 +319,6 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
            !AutoCompActive())
   {
     ShowCommand(key);
-    m_Command.clear();
   }
   // Home key pressed.
   else if (key == WXK_HOME)
@@ -582,7 +581,9 @@ void wxExSTCShell::ProcessChar(int key)
     // Insert the key at current position.
     const int index = GetCurrentPos() - m_CommandStartPosition;
     
-    if (index > 0 && index < m_Command.size())
+    if (
+      GetCurrentPos() < GetLength() && 
+      index >= 0 && index < m_Command.size())
     {
       m_Command.insert(index, wxChar(key));
     }
