@@ -20,8 +20,6 @@
 #include <wx/extension/util.h> // for wxExConfigFirstOf
 
 BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
-  EVT_MENU(ID_SHELL_COMMAND, wxExProcess::OnCommand)
-  EVT_MENU(ID_SHELL_COMMAND_STOP, wxExProcess::OnCommand)
   EVT_TIMER(-1, wxExProcess::OnTimer)
 END_EVENT_TABLE()
 
@@ -134,6 +132,68 @@ bool wxExProcess::CheckInput(const wxString& command)
   }
 }
 
+bool wxExProcess::Command(int id, const wxString& command)
+{
+  switch (id)
+  {
+  case ID_SHELL_COMMAND:
+    m_Timer->Stop();
+    m_Dialog->GetSTCShell()->LineEnd();
+    
+    if (m_Command != "cmd")
+    {
+      m_Dialog->GetSTCShell()->AppendText(m_Dialog->GetSTCShell()->GetEOL());
+    }
+    
+    if (IsRunning()) 
+    {
+      // send command to process
+      wxOutputStream* os = GetOutputStream();
+    
+      if (os != NULL)
+      {
+        wxTextOutputStream os(*GetOutputStream());
+        
+        if (HandleCommand(command))
+        {
+          os.WriteString(command + "\n");
+        
+          wxMilliSleep(10);
+      
+          if (!CheckInput(command))
+          {
+            m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
+          }
+      
+          m_Timer->Start();
+        }
+      } 
+    }
+    else
+    {
+      wxLogStatus("Process is not running");
+      return false;
+    }
+    break;
+
+  case ID_SHELL_COMMAND_STOP:
+    if (IsRunning())
+    {
+      if (Kill() == wxKILL_OK)
+      {
+        wxBell();
+      }
+    }
+    break;
+    
+  default: wxFAIL; 
+    return false;
+    break;
+  }
+  
+  return true;
+}
+  
 int wxExProcess::ConfigDialog(
   wxWindow* parent,
   const wxString& title,
@@ -215,12 +275,12 @@ bool wxExProcess::Execute(
       wxOK,
       true); // use_shell to force STCShell
       
-    m_Dialog->SetProcess(this);
     m_Dialog->SetEscapeId(wxID_NONE);
-    m_Dialog->GetSTCShell()->SetEventHandler(this);
   }
       
+  m_Dialog->SetProcess(this);
   m_Dialog->GetSTCShell()->EnableShell(!m_Sync);
+  m_Dialog->GetSTCShell()->SetProcess(this);
     
   m_HasStdError = false;
   
@@ -391,64 +451,6 @@ wxKillError wxExProcess::Kill(wxSignal sig)
   return result;
 }
 
-void wxExProcess::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case ID_SHELL_COMMAND:
-    m_Timer->Stop();
-    m_Dialog->GetSTCShell()->LineEnd();
-    
-    if (m_Command != "cmd")
-    {
-      m_Dialog->GetSTCShell()->AppendText(m_Dialog->GetSTCShell()->GetEOL());
-    }
-    
-    if (IsRunning()) 
-    {
-      // send command to process
-      wxOutputStream* os = GetOutputStream();
-    
-      if (os != NULL)
-      {
-        wxTextOutputStream os(*GetOutputStream());
-        const wxString command(event.GetString());
-        
-        if (HandleCommand(command))
-        {
-          os.WriteString(command + "\n");
-        
-          wxMilliSleep(10);
-      
-          if (!CheckInput(command))
-          {
-            m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
-          }
-      
-          m_Timer->Start();
-        }
-      } 
-    }
-    else
-    {
-      wxLogStatus("Process is not running");
-    }
-    break;
-
-  case ID_SHELL_COMMAND_STOP:
-    if (IsRunning())
-    {
-      if (Kill() == wxKILL_OK)
-      {
-        wxBell();
-      }
-    }
-    break;
-    
-  default: wxFAIL; break;
-  }
-}
-  
 void wxExProcess::OnTerminate(int pid, int status)
 {
   m_Timer->Stop();

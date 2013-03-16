@@ -15,6 +15,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/defs.h> // for ID_SHELL_COMMAND
+#include <wx/extension/process.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -58,7 +59,7 @@ wxExSTCShell::wxExSTCShell(
   , m_CommandsInConfigDelimiter(wxUniChar(0x03))
   , m_CommandsSaveInConfig(commands_save_in_config)
   , m_Prompt(prompt)
-  , m_Handler(parent)
+  , m_Process(NULL)
   , m_Enabled(true)
 {
   // Override defaults from config.
@@ -339,8 +340,15 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
    ( key == 'Q' || 
     (key == 'C' && GetSelectedText().empty())))
   {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
-    wxPostEvent(m_Handler, event);
+    if (m_Process != NULL)
+    {
+      m_Process->Command(ID_SHELL_COMMAND_STOP, wxEmptyString);
+    }
+    else
+    {
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
+      wxPostEvent(GetParent(), event);
+    }
   }
   // Ctrl-V pressed, used for pasting.
   else if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')
@@ -481,9 +489,16 @@ void wxExSTCShell::ProcessChar(int key)
     }
     else if (m_Command.empty())
     {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
-      event.SetString(m_Command);
-      wxPostEvent(m_Handler, event);
+      if (m_Process != NULL)
+      {
+        m_Process->Command(ID_SHELL_COMMAND, m_Command);
+      }
+      else
+      {
+        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
+        event.SetString(m_Command);
+        wxPostEvent(GetParent(), event);
+      }
     }
     else if (
       m_CommandEnd == GetEOL() ||
@@ -509,23 +524,37 @@ void wxExSTCShell::ProcessChar(int key)
 
           // We don't keep the command, so commands are not rearranged and
           // repeatingly calling !5 always gives the same command, just as bash does.
-
-          wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
-          event.SetString(m_Command);
-          wxPostEvent(m_Handler, event);
+          if (m_Process != NULL)
+          {
+            m_Process->Command(ID_SHELL_COMMAND, m_Command);
+          }
+          else
+          {
+            wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
+            event.SetString(m_Command);
+            wxPostEvent(GetParent(), event);
+          }
         }
         else
         {
           Prompt(GetEOL() + m_Command + ": " + _("event not found"));
         }
       }
-      // Other command, send to parent.
+      // Other command, send to parent or process.
       else
       {
         KeepCommand();
-        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
-        event.SetString(m_Command);
-        wxPostEvent(m_Handler, event);
+        
+        if (m_Process != NULL)
+        {
+          m_Process->Command(ID_SHELL_COMMAND, m_Command);
+        }
+        else
+        {
+          wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
+          event.SetString(m_Command);
+          wxPostEvent(GetParent(), event);
+        }
       }
 
       m_Command.clear();
@@ -553,7 +582,7 @@ void wxExSTCShell::ProcessChar(int key)
     // Insert the key at current position.
     const int index = GetCurrentPos() - m_CommandStartPosition;
     
-    if (index >= 0 && index < m_Command.size())
+    if (index > 0 && index < m_Command.size())
     {
       m_Command.insert(index, wxChar(key));
     }
@@ -671,6 +700,11 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
   }
 
   return false;
+}
+
+void wxExSTCShell::SetProcess(wxExProcess* process)
+{
+  m_Process = process;
 }
 
 bool wxExSTCShell::SetPrompt(const wxString& prompt, bool do_prompt) 

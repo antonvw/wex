@@ -33,6 +33,9 @@ public:
   /// Assignment operator.
   wxExProcess& operator=(const wxExProcess& p);
 
+  /// Handles shell commands.
+  bool Command(int id, const wxString& command);
+  
   /// Shows a config dialog, allowing you to set the command and folder.
   /// Returns dialog return code.
   static int ConfigDialog(
@@ -97,9 +100,6 @@ public:
 protected:
   /// Overriden from wxProcess.
   virtual void OnTerminate(int pid, int status);
-  
-  /// Handles shell events.
-  void OnCommand(wxCommandEvent& event);
   
   /// Handles timer events.
   void OnTimer(wxTimerEvent& event);
