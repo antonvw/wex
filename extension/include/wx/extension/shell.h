@@ -19,6 +19,7 @@ class wxExProcess;
 /// by pressing key up and down you browse through the commands.
 /// If a command is entered, an ID_SHELL_COMMAND command event is sent to the
 /// event handler, with the command available as event.GetString().
+/// Or, if you used SetProcess, commands are sent to the process.
 /// - If you press Ctrl-Q or Ctrl-C in the shell, and no text is selected,
 ///   a ID_SHELL_COMMAND_STOP is sent to the event handler.
 /// - If you enter 'history', all previously entered commands are shown.
@@ -95,6 +96,7 @@ public:
     bool add_eol = true);
     
   /// Sets the process to which commands are sent.
+  /// If you do not set this, commands are sent to the parent.
   void SetProcess(wxExProcess* process);
 
   /// Sets the prompt, and prompts if asked for.
