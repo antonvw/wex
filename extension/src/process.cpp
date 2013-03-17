@@ -244,6 +244,11 @@ bool wxExProcess::Execute(
   {
     if (wxExConfigFirstOf(_("Process")).empty())
     {
+      if (!wd.empty())
+      {
+        wxLogStatus("Ignored specified working directory");
+      }
+      
       if (ConfigDialog(wxTheApp->GetTopWindow()) == wxID_CANCEL)
       {
         return false;
@@ -257,6 +262,11 @@ bool wxExProcess::Execute(
   {
     m_Command = command_to_execute;
     env.cwd = wd;
+  }
+  
+  if (!env.cwd.empty() && env.cwd != wxGetCwd())
+  {
+    wxSetWorkingDirectory(env.cwd);
   }
 
   m_Sync = (flags & wxEXEC_SYNC);
