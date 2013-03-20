@@ -311,6 +311,9 @@ wxExExTextCtrl::wxExExTextCtrl(
   m_Finds = wxExFindReplaceData::Get()->GetFindStrings();
   
   m_FindsIterator = m_Finds.begin();
+  
+  // Next does not work.
+  //AutoCompleteFileNames();
 }
 
 wxExExTextCtrl::~wxExExTextCtrl()

@@ -239,6 +239,7 @@ void wxExSTCShell::Expand()
     // We cannot use our AppendText, as command start pos
     // should not be changed.
     wxExSTC::AppendText(expansion);
+    DocumentEnd();
   }
   
 #ifdef DEBUG
