@@ -2271,7 +2271,9 @@ void wxExSTC::SetText(const wxString& value)
 
 void wxExSTC::ShowProperties()
 {
-  const wxString propnames = PropertyNames();
+  // Added check, otherwise scintilla crashes.
+  const wxString propnames = (!m_Lexer.GetScintillaLexer().empty() ?
+    PropertyNames(): wxEmptyString);
   
   wxString text;
 
@@ -2279,7 +2281,8 @@ void wxExSTC::ShowProperties()
   {
     text += "Current properties\n";
   }
-  
+
+  // Add global properties.  
   for (
     std::vector<wxExProperty>::const_iterator it1 = wxExLexers::Get()->GetProperties().begin();
     it1 != wxExLexers::Get()->GetProperties().end();
@@ -2287,7 +2290,8 @@ void wxExSTC::ShowProperties()
   {
     text += it1->GetName() + ": " + GetProperty(it1->GetName()) + "\n";
   }
-  
+
+  // Add lexer properties.  
   for (
     std::vector<wxExProperty>::const_iterator it2 = m_Lexer.GetProperties().begin();
     it2 != m_Lexer.GetProperties().end();
@@ -2296,6 +2300,7 @@ void wxExSTC::ShowProperties()
     text += it2->GetName() + ": " + GetProperty(it2->GetName()) + "\n";
   }
 
+  // Add available properties.
   if (!propnames.empty())
   {
     text += "\nAvailable properties\n";

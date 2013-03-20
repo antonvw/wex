@@ -118,7 +118,7 @@ public:
 #endif // wxUSE_STATUSBAR
 protected:
 #if wxUSE_STATUSBAR
-  static wxExStatusBar* GetStatusBar() return {m_StatusBar;};
+  static wxExStatusBar* GetStatusBar() {return m_StatusBar;};
   
   // Interface from wxFrame.
   virtual wxStatusBar* OnCreateStatusBar(int number,

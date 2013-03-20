@@ -834,7 +834,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       
       GetStatusBar()->ShowField(
         "PaneVCS", 
-        wxConfigBase::Get()->ReadLong("VCS", 0));
+        vcs.Use());
     }
     break;
     
