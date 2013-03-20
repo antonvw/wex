@@ -266,7 +266,11 @@ bool wxExProcess::Execute(
   
   if (!env.cwd.empty() && env.cwd != wxGetCwd())
   {
-    wxSetWorkingDirectory(env.cwd);
+    if (!wxSetWorkingDirectory(env.cwd))
+    {
+      wxLogStatus("Working directory invalid");
+      return false;
+    }
   }
 
   m_Sync = (flags & wxEXEC_SYNC);

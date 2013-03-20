@@ -94,7 +94,11 @@ public:
 
   /// Sets text on specified field.
   /// Returns false if field does not exist.
-  bool SetStatusText(const wxString& text, const wxString& field);
+  bool SetStatusText(
+    /// text
+    const wxString& text, 
+    /// field, default field pane 0
+    const wxString& field = wxEmptyString);
   
   /// Shows or hides the field by adjusting the fields size.
   /// Returns true if field size actually changed.

@@ -79,7 +79,10 @@ void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
     }
     else if (tooltip != pane.GetHelpText())
     {
-      SetToolTip(pane.GetHelpText());
+      if (GetStatusWidth(pane.GetNo()) != 0)
+      {
+        SetToolTip(pane.GetHelpText());
+      }
     }
 #endif    
   }
@@ -210,7 +213,7 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
       }
       else
       {
-        if (GetStatusWidth(i) > 0)
+        if (GetStatusWidth(i) != 0)
         {
           widths[i] = 0;
           changed = true;

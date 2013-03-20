@@ -64,11 +64,19 @@ DecoratedFrame::DecoratedFrame()
   
   SetupStatusBar(panes);
   
-  if (wxExVCS::GetCount() > 0)
+  wxExVCS vcs;
+  
+  if (vcs.Use())
   {
-    wxExVCS vcs;
-    vcs.GetDir();
-    StatusText(vcs.GetName(), "PaneVCS");
+    if (wxExVCS::GetCount() > 0)
+    {
+      vcs.GetDir();
+      StatusText(vcs.GetName(), "PaneVCS");
+    }
+  }
+  else
+  {
+    GetStatusBar()->ShowField("PaneVCS", false);
   }
 #endif
 
