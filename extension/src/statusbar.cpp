@@ -184,33 +184,42 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
 {
   wxASSERT(!m_Panes.empty());
   
+  const std::map<wxString, wxExStatusBarPane>::const_iterator it = 
+    m_Panes.find(field);
+
+  if (it == m_Panes.end())
+  {
+    return false;
+  }
+  
   bool changed = false;
   
   int* widths = new int[m_Panes.size()];
 
-  for (
-    const auto it = m_Panes.begin();
-    it != m_Panes.end() && !changed;
-    ++it)
+  for (int i = 0; i < m_Panes.size(); i++)
   {
-    if (it->GetName() == field)
+    if (it->second.GetNo() == i)
     {
       if (show)
       {
-        if (GetStatusWidth(it->GetNo()) == 0)
+        if (GetStatusWidth(i) == 0)
         {
-          widths[it->GetNo()] = it->GetWidth():
+          widths[i] = it->second.GetWidth();
           changed = true;
         }
       }
       else
       {
-        if (GetStatusWidth(it->GetNo()) > 0)
+        if (GetStatusWidth(i) > 0)
         {
-          widths[it->GetNo()] = 0:
+          widths[i] = 0;
           changed = true;
         }
       }
+    }
+    else
+    {
+      widths[i] = GetStatusWidth(i);
     }
   }
 
