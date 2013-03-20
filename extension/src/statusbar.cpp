@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wxExStatusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -42,7 +42,8 @@ wxExStatusBar::~wxExStatusBar()
   
 const wxString wxExStatusBar::GetStatusText(const wxString& field) const
 {
-  const std::map<wxString, wxExStatusBarPane>::const_iterator it = m_Panes.find(field);
+  const std::map<wxString, wxExStatusBarPane>::const_iterator it = 
+    m_Panes.find(field);
 
   if (it == m_Panes.end())
   {
@@ -178,5 +179,50 @@ bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
   
   return true;
 }
+
+bool wxExStatusBar::ShowField(const wxString& field, bool show)
+{
+  wxASSERT(!m_Panes.empty());
+  
+  bool changed = false;
+  
+  int* widths = new int[m_Panes.size()];
+
+  for (
+    const auto it = m_Panes.begin();
+    it != m_Panes.end() && !changed;
+    ++it)
+  {
+    if (it->GetName() == field)
+    {
+      if (show)
+      {
+        if (GetStatusWidth(it->GetNo()) == 0)
+        {
+          widths[it->GetNo()] = it->GetWidth():
+          changed = true;
+        }
+      }
+      else
+      {
+        if (GetStatusWidth(it->GetNo()) > 0)
+        {
+          widths[it->GetNo()] = 0:
+          changed = true;
+        }
+      }
+    }
+  }
+
+  if (changed)
+  {
+    SetFieldsCount(m_Panes.size(), widths);
+  }
+
+  delete[] widths;
+  
+  return changed;
+}
+
 #endif // wxUSE_STATUSBAR
 #endif // wxUSE_GUI
