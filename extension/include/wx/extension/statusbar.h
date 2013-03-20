@@ -2,7 +2,7 @@
 // Name:      statusbar.h
 // Purpose:   Declaration of wxExStatusBar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTATUSBAR_H
@@ -39,7 +39,7 @@ public:
     /// The name of the pane.
     /// The wxExtension lib uses PaneFileType, PaneInfo, PaneLexer, PaneMacro
     /// by setting up one of these panes,
-    /// youre panes will get controlled by the lib.
+    /// your panes will get controlled by the lib.
     const wxString& name,
     /// Width of the field
     int width = 50,
@@ -95,6 +95,10 @@ public:
   /// Sets text on specified field.
   /// Returns false if field does not exist.
   bool SetStatusText(const wxString& text, const wxString& field);
+  
+  /// Shows or hides the field by adjusting the fields size.
+  /// Returns true if field size actually changed.
+  bool ShowField(const wxString& field, bool show);
 protected:
   /// React on some mouse events line button down, double click and
   /// moving over.

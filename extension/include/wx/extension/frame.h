@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wxExFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFRAME_H
@@ -118,6 +118,8 @@ public:
 #endif // wxUSE_STATUSBAR
 protected:
 #if wxUSE_STATUSBAR
+  static wxExStatusBar* GetStatusBar() return {m_StatusBar;};
+  
   // Interface from wxFrame.
   virtual wxStatusBar* OnCreateStatusBar(int number,
     long style,

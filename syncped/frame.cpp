@@ -831,6 +831,10 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxExVCS vcs;
       vcs.GetDir(this);
       StatusText(vcs.GetName(), "PaneVCS");
+      
+      GetStatusBar()->ShowField(
+        "PaneVCS", 
+        wxConfigBase::Get()->ReadLong("VCS", 0));
     }
     break;
     
@@ -980,6 +984,10 @@ void Frame::OnCommandConfigDialog(
       {
         m_Process->GetSTC()->ConfigGet();
       }
+      
+      GetStatusBar()->ShowField(
+        "PaneMacro", 
+        wxConfigBase::Get()->ReadBool(_("vi mode"), true));
     }
   }
   else
