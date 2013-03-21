@@ -123,7 +123,7 @@ private:
   void Handle(wxMouseEvent& event, const wxExStatusBarPane& wxExStatusBarPane);
   
   wxExFrame* m_Frame;
-  std::vecor<wxExStatusBarPane> m_Panes;
+  std::vector<wxExStatusBarPane> m_Panes;
 
   DECLARE_EVENT_TABLE()
 };

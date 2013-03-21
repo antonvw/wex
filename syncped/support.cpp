@@ -78,6 +78,13 @@ DecoratedFrame::DecoratedFrame()
   {
     GetStatusBar()->ShowField("PaneVCS", false);
   }
+  
+  if (wxExViMacros::GetFileName().FileExists())
+  {
+    GetStatusBar()->ShowField(
+      "PaneMacro", 
+      wxConfigBase::Get()->ReadBool(_("vi mode"), true));
+  }
 #endif
 
   wxExMenu *menuFile = new wxExMenu();

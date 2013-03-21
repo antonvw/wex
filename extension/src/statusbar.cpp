@@ -43,11 +43,11 @@ wxExStatusBar::~wxExStatusBar()
 int wxExStatusBar::FindField(const wxString& field) const
 {
   for (
-    const auto it = m_Panes.begin();
+    auto it = m_Panes.begin();
     it != m_Panes.end();
     ++it)
   {
-    if (it->GetName() == field)
+    if (it->GetName() == field && it->IsShown())
     {
       return it->GetNo();
     }
@@ -186,13 +186,6 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
 {
   wxASSERT(!m_Panes.empty());
   
-  const int pane = FindField(field);
-
-  if (pane == -1)
-  {
-    return false;
-  }
-  
   bool changed = false;
   int* widths = new int[m_Panes.size()];
   int* styles = new int[m_Panes.size()];
@@ -203,7 +196,7 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
     it != m_Panes.end();
     ++it)
   {
-    if (pane == i)
+    if (it->GetName() == field)
     {
       if (show)
       {
