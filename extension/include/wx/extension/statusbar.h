@@ -8,7 +8,6 @@
 #ifndef _EXSTATUSBAR_H
 #define _EXSTATUSBAR_H
 
-#include <map>
 #include <vector>
 #include <wx/statusbr.h> 
 
@@ -30,6 +29,7 @@ public:
     int style = wxSB_NORMAL)
     : wxStatusBarPane(style, width)
     , m_HelpText()
+    , m_IsShown(true)
     , m_Name()
     , m_No(m_Total)
     {m_Total++;};
@@ -51,6 +51,7 @@ public:
     int style = wxSB_NORMAL)
     : wxStatusBarPane(style, width)
     , m_HelpText(helptext.empty() ? name.AfterFirst('e'): helptext)
+    , m_IsShown(true)
     , m_Name(name)
     , m_No(m_Total)
     {m_Total++;};
@@ -63,9 +64,19 @@ public:
   
   /// Returns statusbar pane no.
   int GetNo() const {return m_No;};
+  
+  /// Returns whether this pane is shown.
+  bool IsShown() const {return m_IsShown;};
+  
+  /// Sets changed pane number.
+  void SetNo(int no) {m_No = no;};
+  
+  /// Sets wheher this pane is shown.
+  void Show(bool show) {m_IsShown = show;};
 private:
   wxString m_HelpText;
   wxString m_Name;
+  bool m_IsShown;
   int m_No;
   static int m_Total;
 };
@@ -100,18 +111,19 @@ public:
     /// field, default field pane 0
     const wxString& field = wxEmptyString);
   
-  /// Shows or hides the field by adjusting the fields size.
-  /// Returns true if field size actually changed.
+  /// Shows or hides the field.
+  /// Returns true if field visibility actually changed.
   bool ShowField(const wxString& field, bool show);
 protected:
   /// React on some mouse events line button down, double click and
   /// moving over.
   void OnMouse(wxMouseEvent& event);
 private:
+  int FindField(const wxString& field) const;
   void Handle(wxMouseEvent& event, const wxExStatusBarPane& wxExStatusBarPane);
   
   wxExFrame* m_Frame;
-  std::map<wxString, wxExStatusBarPane> m_Panes;
+  std::vecor<wxExStatusBarPane> m_Panes;
 
   DECLARE_EVENT_TABLE()
 };

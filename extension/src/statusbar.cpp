@@ -39,19 +39,34 @@ wxExStatusBar::~wxExStatusBar()
 { 
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 }
+
+int wxExStatusBar::FindField(const wxString& field) const
+{
+  for (
+    const auto it = m_Panes.begin();
+    it != m_Panes.end();
+    ++it)
+  {
+    if (it->GetName() == field)
+    {
+      return it->GetNo();
+    }
+  }
+  
+  return -1;
+}
   
 const wxString wxExStatusBar::GetStatusText(const wxString& field) const
 {
-  const std::map<wxString, wxExStatusBarPane>::const_iterator it = 
-    m_Panes.find(field);
-
-  if (it == m_Panes.end())
+  const int no = FindField(field);
+  
+  if (no == -1)
   {
     // Do not show error, as you might explicitly want to ignore messages.
     return wxEmptyString;
   }
   
-  return wxStatusBar::GetStatusText(it->second.GetNo());
+  return wxStatusBar::GetStatusText(no);
 }
 
 void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
@@ -79,15 +94,12 @@ void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
     }
     else if (tooltip != pane.GetHelpText())
     {
-      if (GetStatusWidth(pane.GetNo()) != 0)
-      {
-        SetToolTip(pane.GetHelpText());
-      }
+      SetToolTip(pane.GetHelpText());
     }
 #endif    
   }
 }
-            
+
 void wxExStatusBar::OnMouse(wxMouseEvent& event)
 {
   event.Skip();
@@ -105,20 +117,16 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
         found = true;
 
         for (
-#ifdef wxExUSE_CPP0X  
           auto it = m_Panes.begin();
-#else
-          std::map<wxString, wxExStatusBarPane>::iterator it = m_Panes.begin();
-#endif		  
           it != m_Panes.end();
           ++it)
         {
           // Handle the event, don't fail if none is true here,
           // it seems that moving and clicking almost at the same time
           // could cause assertions.
-          if (it->second.GetNo() == i)
+          if (it->IsShown() && it->GetNo() == i)
           {
-            Handle(event, it->second);
+            Handle(event, *it);
           }
         }
       }
@@ -130,21 +138,16 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
 {
   wxASSERT(m_Panes.empty());
   
+  m_Panes = fields;
+    
   int* styles = new int[fields.size()];
   int* widths = new int[fields.size()];
 
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = fields.begin();
-#else
-    std::vector<wxExStatusBarPane>::const_iterator it = fields.begin();
-#endif	
     it != fields.end();
     ++it)
   {
-    // our member should have same size as fields
-    m_Panes.insert(std::make_pair(it->GetName(), *it));
-    
     styles[it->GetNo()] = it->GetStyle();
     widths[it->GetNo()] = it->GetWidth();
   }
@@ -164,13 +167,9 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
 
 bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
 {
-#ifdef wxExUSE_CPP0X	
-  const auto it = m_Panes.find(field);
-#else
-  const std::map<wxString, wxExStatusBarPane>::iterator it = m_Panes.find(field);
-#endif  
+  const int no = FindField(field);
 
-  if (it == m_Panes.end())
+  if (no == -1)
   {
     // Do not show error, as you might explicitly want to ignore messages.
     return false;
@@ -178,7 +177,7 @@ bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
   
   // wxStatusBar checks whether new text differs from current,
   // and does nothing if the same to avoid flicker.
-  wxStatusBar::SetStatusText(text, it->second.GetNo());
+  wxStatusBar::SetStatusText(text, no);
   
   return true;
 }
@@ -187,50 +186,67 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
 {
   wxASSERT(!m_Panes.empty());
   
-  const std::map<wxString, wxExStatusBarPane>::const_iterator it = 
-    m_Panes.find(field);
+  const int pane = FindField(field);
 
-  if (it == m_Panes.end())
+  if (pane == -1)
   {
     return false;
   }
   
   bool changed = false;
-  
   int* widths = new int[m_Panes.size()];
+  int* styles = new int[m_Panes.size()];
+  int i = 0;
 
-  for (int i = 0; i < m_Panes.size(); i++)
+  for (
+    auto it = m_Panes.begin();
+    it != m_Panes.end();
+    ++it)
   {
-    if (it->second.GetNo() == i)
+    if (pane == i)
     {
       if (show)
       {
-        if (GetStatusWidth(i) == 0)
+        if (!it->IsShown())
         {
-          widths[i] = it->second.GetWidth();
+          widths[i] = it->GetWidth();
+          styles[i] = it->GetStyle();
+          it->Show(true);
           changed = true;
         }
+        
+        it->SetNo(i);
+        i++;
       }
       else
       {
-        if (GetStatusWidth(i) != 0)
+        if (it->IsShown())
         {
-          widths[i] = 0;
+          it->Show(false);
           changed = true;
         }
       }
     }
     else
     {
-      widths[i] = GetStatusWidth(i);
+      if (it->IsShown())
+      {
+        widths[i] = it->GetWidth();
+        styles[i] = it->GetStyle();
+        
+        it->SetNo(i);
+        i++;
+      }
     }
   }
 
   if (changed)
   {
-    SetFieldsCount(m_Panes.size(), widths);
+    SetFieldsCount(i, widths);
+    SetStatusStyles(i, styles);
   }
 
+  delete[] styles;
   delete[] widths;
   
   return changed;
