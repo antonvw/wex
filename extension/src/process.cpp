@@ -391,6 +391,9 @@ bool wxExProcess::HandleCommand(const wxString& command) const
 #endif        
      )
   {
+    // Always return true, so you get a new line,
+    // whether or not setworkingdir succeeded.
+    wxLogNull logNo;
     rest.Trim(false);
     rest.Trim(true);
     
@@ -399,12 +402,12 @@ bool wxExProcess::HandleCommand(const wxString& command) const
 #ifdef __WXMSW__
       return true;
 #else        
-      return wxSetWorkingDirectory(wxGetHomeDir());
+      wxSetWorkingDirectory(wxGetHomeDir());
 #endif        
     }
     else
     {
-      return wxSetWorkingDirectory(rest);
+      wxSetWorkingDirectory(rest);
     }
   }
   

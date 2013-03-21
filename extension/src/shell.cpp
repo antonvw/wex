@@ -751,6 +751,10 @@ void wxExSTCShell::ShowCommand(int key)
     m_Command = *m_CommandsIterator;
     ReplaceTarget(m_Command);
   }
+  else
+  {
+    Undo();
+  }
 
   DocumentEnd();
 }
