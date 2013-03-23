@@ -452,7 +452,10 @@ int wxExSTC::ConfigDialog(
     _("General"),
     1));
     
-  items.push_back(wxExConfigItem(_("Default font"), CONFIG_FONTPICKERCTRL));
+  if (wxExLexers::Get()->GetCount() > 0)
+  {
+    items.push_back(wxExConfigItem(_("Default font"), CONFIG_FONTPICKERCTRL));
+  }
 
   // Edge page.
   items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
@@ -592,19 +595,22 @@ void wxExSTC::ConfigGet()
     wxConfigBase::Get()->SetRecordDefaults(true);
   }
   
-  const wxFont font(wxConfigBase::Get()->ReadObject(
-    _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
-
-  if (m_DefaultFont != font)
+  if (wxExLexers::Get()->GetCount() > 0)
   {
-    m_DefaultFont = font;
+    const wxFont font(wxConfigBase::Get()->ReadObject(
+      _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+
+    if (m_DefaultFont != font)
+    {
+      m_DefaultFont = font;
     
-    StyleResetDefault();
+      StyleResetDefault();
     
-    // Doing this once is enough, not yet possible.
-    wxExLexers::Get()->Read();
+      // Doing this once is enough, not yet possible.
+      wxExLexers::Get()->Read();
     
-    SetLexer(m_Lexer.GetDisplayLexer(), true);
+      SetLexer(m_Lexer.GetDisplayLexer(), true);
+    }
   }
 
   const long def_tab_width = 2;
