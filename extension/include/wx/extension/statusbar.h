@@ -17,8 +17,7 @@
 
 /// This class defines our statusbar panes, used by wxExFrame::SetupStatusBar.
 /// It just adds some members to the base class
-/// (that offers GetText(), GetStyle() and GetWidth()), 
-/// and keeps a static total.
+/// (that offers GetText(), GetStyle() and GetWidth()).
 class WXDLLIMPEXP_BASE wxExStatusBarPane : public wxStatusBarPane
 {
 public:
@@ -31,8 +30,7 @@ public:
     , m_HelpText()
     , m_IsShown(true)
     , m_Name()
-    , m_No(m_Total)
-    {m_Total++;};
+    {};
   
   /// Constructor.
   wxExStatusBarPane(
@@ -53,8 +51,7 @@ public:
     , m_HelpText(helptext.empty() ? name.AfterFirst('e'): helptext)
     , m_IsShown(true)
     , m_Name(name)
-    , m_No(m_Total)
-    {m_Total++;};
+    {};
     
   /// Returns statusbar pane help text.
   const wxString& GetHelpText() const {return m_HelpText;};
@@ -62,23 +59,15 @@ public:
   /// Returns statusbar pane name.
   const wxString& GetName() const {return m_Name;};
   
-  /// Returns statusbar pane no.
-  int GetNo() const {return m_No;};
-  
   /// Returns whether this pane is shown.
   bool IsShown() const {return m_IsShown;};
   
-  /// Sets changed pane number.
-  void SetNo(int no) {m_No = no;};
-  
-  /// Sets wheher this pane is shown.
+  /// Sets whether this pane is shown.
   void Show(bool show) {m_IsShown = show;};
 private:
   wxString m_HelpText;
   wxString m_Name;
   bool m_IsShown;
-  int m_No;
-  static int m_Total;
 };
 
 class wxExFrame;
@@ -96,15 +85,20 @@ public:
   /// Destructor.
  ~wxExStatusBar();  
  
-  /// Gets the status text on specified field.
-  /// Returns empty string if field does not exist.
+  /// Returns the field no, or -1 if field does not exist
+  /// or is not shown.
+  int GetFieldNo(const wxString& field) const;
+  
+  /// Returns the status text on specified field.
+  /// Returns empty string if field does not exist
+  /// or is not shown.
   const wxString GetStatusText(const wxString& field) const;
 
   /// Sets the fields.
   void SetFields(const std::vector<wxExStatusBarPane>& fields);
 
   /// Sets text on specified field.
-  /// Returns false if field does not exist.
+  /// Returns false if field does not exist or is not shown.
   bool SetStatusText(
     /// text
     const wxString& text, 
@@ -119,7 +113,6 @@ protected:
   /// moving over.
   void OnMouse(wxMouseEvent& event);
 private:
-  int FindField(const wxString& field) const;
   void Handle(wxMouseEvent& event, const wxExStatusBarPane& wxExStatusBarPane);
   
   wxExFrame* m_Frame;

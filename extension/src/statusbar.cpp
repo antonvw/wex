@@ -16,8 +16,6 @@
 #if wxUSE_GUI
 #if wxUSE_STATUSBAR
 
-int wxExStatusBarPane::m_Total = 0;
-
 BEGIN_EVENT_TABLE(wxExStatusBar, wxStatusBar)
   EVT_LEFT_UP(wxExStatusBar::OnMouse)
   EVT_RIGHT_UP(wxExStatusBar::OnMouse)
@@ -40,16 +38,23 @@ wxExStatusBar::~wxExStatusBar()
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 }
 
-int wxExStatusBar::FindField(const wxString& field) const
+int wxExStatusBar::GeFieldNo(const wxString& field) const
 {
+  int i = 0;
+  
   for (
-    auto it = m_Panes.begin();
+    const auto it = m_Panes.begin();
     it != m_Panes.end();
     ++it)
   {
-    if (it->GetName() == field && it->IsShown())
+    if (it->IsShown())
     {
-      return it->GetNo();
+      if (it->GetName() == field)
+      {
+        return i;
+      }
+      
+      i++;
     }
   }
   
@@ -58,7 +63,7 @@ int wxExStatusBar::FindField(const wxString& field) const
   
 const wxString wxExStatusBar::GetStatusText(const wxString& field) const
 {
-  const int no = FindField(field);
+  const int no = GetFieldNo(field);
   
   if (no == -1)
   {
@@ -106,29 +111,17 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
 
   bool found = false;
 
-  for (int i = 0; i < GetFieldsCount() && !found; i++)
+  for (int i = 0; i < m_Panes.size() && !found; i++)
   {
     wxRect rect;
 
-    if (GetFieldRect(i, rect))
+    if (m_Panes[i].IsShown() && GetFieldRect(i, rect))
     {
       if (rect.Contains(event.GetPosition()))
       {
         found = true;
 
-        for (
-          auto it = m_Panes.begin();
-          it != m_Panes.end();
-          ++it)
-        {
-          // Handle the event, don't fail if none is true here,
-          // it seems that moving and clicking almost at the same time
-          // could cause assertions.
-          if (it->IsShown() && it->GetNo() == i)
-          {
-            Handle(event, *it);
-          }
-        }
+        Handle(event, m_Panes[i]);
       }
     }
   }
@@ -136,20 +129,15 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
 
 void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
 {
-  wxASSERT(m_Panes.empty());
-  
   m_Panes = fields;
     
   int* styles = new int[fields.size()];
   int* widths = new int[fields.size()];
 
-  for (
-    auto it = fields.begin();
-    it != fields.end();
-    ++it)
+  for (int i = 0; i < fields.size(); i++)
   {
-    styles[it->GetNo()] = it->GetStyle();
-    widths[it->GetNo()] = it->GetWidth();
+    styles[i] = fields[i].GetStyle();
+    widths[i] = fields[i].GetWidth();
   }
   
   SetFieldsCount(fields.size(), widths);
@@ -167,7 +155,7 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
 
 bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
 {
-  const int no = FindField(field);
+  const int no = GeFieldNo(field);
 
   if (no == -1)
   {
@@ -189,7 +177,7 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
   bool changed = false;
   int* widths = new int[m_Panes.size()];
   int* styles = new int[m_Panes.size()];
-  int i = 0;
+  int i = 0; // number of shown panes
 
   for (
     auto it = m_Panes.begin();
@@ -202,13 +190,13 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
       {
         if (!it->IsShown())
         {
-          widths[i] = it->GetWidth();
-          styles[i] = it->GetStyle();
           it->Show(true);
           changed = true;
         }
         
-        it->SetNo(i);
+        widths[i] = it->GetWidth();
+        styles[i] = it->GetStyle();
+        
         i++;
       }
       else
@@ -227,7 +215,6 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
         widths[i] = it->GetWidth();
         styles[i] = it->GetStyle();
         
-        it->SetNo(i);
         i++;
       }
     }
