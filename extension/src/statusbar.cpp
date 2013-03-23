@@ -38,12 +38,12 @@ wxExStatusBar::~wxExStatusBar()
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 }
 
-int wxExStatusBar::GeFieldNo(const wxString& field) const
+int wxExStatusBar::GetFieldNo(const wxString& field) const
 {
   int i = 0;
   
   for (
-    const auto it = m_Panes.begin();
+    auto it = m_Panes.begin();
     it != m_Panes.end();
     ++it)
   {
@@ -110,19 +110,25 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
   event.Skip();
 
   bool found = false;
-
+  int fieldno = 0;
+  
   for (int i = 0; i < m_Panes.size() && !found; i++)
   {
-    wxRect rect;
-
-    if (m_Panes[i].IsShown() && GetFieldRect(i, rect))
+    if (m_Panes[i].IsShown())
     {
-      if (rect.Contains(event.GetPosition()))
+      wxRect rect;
+      
+      if (GetFieldRect(fieldno, rect))
       {
-        found = true;
+        if (rect.Contains(event.GetPosition()))
+        {
+          found = true;
 
-        Handle(event, m_Panes[i]);
+          Handle(event, m_Panes[i]);
+        }
       }
+      
+      fieldno++;
     }
   }
 }
@@ -155,7 +161,7 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
 
 bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
 {
-  const int no = GeFieldNo(field);
+  const int no = GetFieldNo(field);
 
   if (no == -1)
   {
