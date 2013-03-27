@@ -662,22 +662,19 @@ void wxExSTC::ConfigGet()
     wxConfigBase::Get()->SetRecordDefaults(true);
   }
   
-  if (wxExLexers::Get()->GetCount() > 0)
-  {
-    const wxFont font(wxConfigBase::Get()->ReadObject(
-      _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+  const wxFont font(wxConfigBase::Get()->ReadObject(
+    _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
 
-    if (m_DefaultFont != font)
-    {
-      m_DefaultFont = font;
+  if (m_DefaultFont != font)
+  {
+    m_DefaultFont = font;
     
-      StyleResetDefault();
+    StyleResetDefault();
     
-      // Doing this once is enough, not yet possible.
-      wxExLexers::Get()->Read();
+    // Doing this once is enough, not yet possible.
+    wxExLexers::Get()->Read();
     
-      SetLexer(m_Lexer.GetDisplayLexer(), true);
-    }
+    SetLexer(m_Lexer.GetDisplayLexer(), true);
   }
 
   const long def_tab_width = 2;
