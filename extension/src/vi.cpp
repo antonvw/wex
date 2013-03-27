@@ -939,11 +939,6 @@ void wxExVi::InsertMode(const wxString& command)
 
     case WXK_RETURN:
         m_InsertText += GetSTC()->GetEOL();
-
-        if (!GetSTC()->SmartIndentation())
-        {
-          GetSTC()->NewLine();
-        }
       break;
       
     case WXK_CONTROL_R:
