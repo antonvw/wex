@@ -211,6 +211,7 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
         {
           it->Show(false);
           changed = true;
+          wxStatusBar::SetStatusText(wxEmptyString, i);
         }
       }
     }
