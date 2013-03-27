@@ -939,6 +939,7 @@ void wxExVi::InsertMode(const wxString& command)
 
     case WXK_RETURN:
         m_InsertText += GetSTC()->GetEOL();
+        GetSTC()->NewLine();
       break;
       
     case WXK_CONTROL_R:
