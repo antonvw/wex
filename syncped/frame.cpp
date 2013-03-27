@@ -899,15 +899,21 @@ void Frame::OnCommand(wxCommandEvent& event)
     stc->StopSync();
 
     // Place new page before page for editor.
+    wxBitmap bitmap(wxNullBitmap);
+    
+    if (stc->GetFileName().FileExists())
+    {
+      bitmap = wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+        wxExGetIconID(stc->GetFileName()));
+    }
+    
     m_Editors->InsertPage(
       m_Editors->GetPageIndex(editor),
       stc,
       // key should be unique
       wxString::Format("split%06d", m_SplitId++),
       stc->GetFileName().GetFullName(),
-      true,
-      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-        wxExGetIconID(stc->GetFileName())));
+      true);
 
     stc->SetDocPointer(editor->GetDocPointer());
     }

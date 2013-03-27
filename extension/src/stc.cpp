@@ -89,7 +89,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_MarginLineNumber(0)
   , m_MarkerChange(1, -1)
   , m_vi(wxExVi(this))
-  , m_File(this)
+  , m_File(this, title)
   , m_Link(wxExLink(this))
 {
   UseModificationMarkers(false);
@@ -149,7 +149,8 @@ wxExSTC::wxExSTC(wxWindow* parent,
 }
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
-  : wxStyledTextCtrl(stc.GetParent())
+  : wxStyledTextCtrl(stc.GetParent(), 
+      wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, stc.GetName())
   , m_Flags(stc.m_Flags)
   , m_Goto(stc.m_Goto)
   , m_MenuFlags(stc.m_MenuFlags)
@@ -158,7 +159,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_MarginLineNumber(stc.m_MarginLineNumber)
   , m_MarkerChange(stc.m_MarkerChange)
   , m_vi(wxExVi(this)) // do not use stc.m_vi, crash
-  , m_File(this)
+  , m_File(this, stc.m_File.GetFileName().GetFullPath())
   , m_Link(wxExLink(this))
 {
   UseModificationMarkers(stc.m_File.GetFileName().GetStat().IsOk());
