@@ -2,7 +2,7 @@
 // Name:      file.h
 // Purpose:   Declaration of class wxExFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFILE_H
@@ -79,11 +79,13 @@ protected:
   /// Invoked by FileSave, allows you to save the file.
   /// The file is already opened.
   virtual void DoFileSave(bool save_as = false) {;};
-private:
+
+  /// Assigns the filename.  
   bool Assign(const wxExFileName& filename) {
     m_FileName = filename;
     m_Stat = filename.GetFullPath();
     return m_Stat.IsOk();};
+private:
   bool Get(bool synced);
   bool MakeAbsolute() {
     return 

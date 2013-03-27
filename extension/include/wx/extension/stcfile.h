@@ -2,7 +2,7 @@
 // Name:      stcfile.h
 // Purpose:   Declaration of class wxExSTCFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTCFILE_H
@@ -19,7 +19,11 @@ class WXDLLIMPEXP_BASE wxExSTCFile: public wxExFile
 public:
   /// Constructor.
   /// Does not open the file.
-  wxExSTCFile(wxExSTC* stc);
+  wxExSTCFile(
+    /// the stc component
+    wxExSTC* stc,
+    /// the filename to be assigned if not empty
+    const wxString& filename = wxEmptyString);
   
   /// Override virtual methods.
   virtual bool GetContentsChanged() const;

@@ -16,10 +16,14 @@
 #include <wx/extension/util.h> // for STAT_ etc.
 
 #if wxUSE_GUI
-wxExSTCFile::wxExSTCFile(wxExSTC* stc)
+wxExSTCFile::wxExSTCFile(wxExSTC* stc, const wxString& filename)
   : m_STC(stc)
   , m_PreviousLength(0)
 {
+  if (!filename.empty())
+  {
+    Assign(wxExFileName(filename));
+  }
 }
 
 bool wxExSTCFile::DoFileLoad(bool synced)
