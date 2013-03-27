@@ -830,11 +830,12 @@ void Frame::OnCommand(wxCommandEvent& event)
     { 
       wxExVCS vcs;
       vcs.GetDir(this);
-      StatusText(vcs.GetName(), "PaneVCS");
       
       GetStatusBar()->ShowField(
         "PaneVCS", 
         vcs.Use());
+        
+      StatusText(vcs.GetName(), "PaneVCS");
     }
     break;
     
