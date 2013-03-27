@@ -1276,7 +1276,7 @@ void wxExGuiTestFixture::testSTC()
   
   stc->SetLexerProperty("xx", "yy");
   
-  CPPUNIT_ASSERT(stc->SmartIndentation());
+  CPPUNIT_ASSERT(stc->AutoIndentation('\n'));
   
   stc->StopSync();
   

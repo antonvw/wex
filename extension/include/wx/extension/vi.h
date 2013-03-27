@@ -2,13 +2,12 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wxExVi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVI_H
 #define _EXVI_H
 
-#include <map>
 #include <wx/extension/ex.h>
 
 #if wxUSE_GUI

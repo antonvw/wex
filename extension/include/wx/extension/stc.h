@@ -92,6 +92,10 @@ public:
   /// Appends text in hex mode.
   void AppendTextHexMode(const wxCharBuffer& buffer);
   
+  /// After pressing enter, starts new line at same place
+  /// as previous line.
+  bool AutoIndentation(int c);
+  
   /// Will a cut paste succeed? 
   virtual bool CanCut() const;
 
@@ -298,10 +302,6 @@ public:
   /// Sets the text.
   void SetText(const wxString& value);
 
-  /// After pressing enter, starts new line at same place
-  /// as previous line.
-  bool SmartIndentation();
-  
   /// Stop syncing.
   void StopSync();
 
@@ -366,6 +366,7 @@ private:
   const wxExMarker m_MarkerChange;
   const long m_MenuFlags;
 
+  int m_FoldLevel;
   int m_SavedPos;
   int m_SavedSelectionStart;
   int m_SavedSelectionEnd;

@@ -60,11 +60,11 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
-//  EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
-  EVT_STC_START_DRAG(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_DO_DROP(wxID_ANY, wxExSTC::OnStyledText)  
   EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_START_DRAG(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
 
 wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
@@ -174,6 +174,73 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
 {
   wxExHexModeLine(this).AppendText(buffer);
+}
+
+bool wxExSTC::AutoIndentation(int c)
+{
+  bool nl = false;
+  
+  switch (GetEOLMode())
+  {
+  case wxSTC_EOL_CR:   nl = (c == '\r'); break;
+  case wxSTC_EOL_CRLF: nl = (c== '\n'); break; // so ignore first \r
+  case wxSTC_EOL_LF:   nl = (c== '\n'); break;
+  }
+  
+  if (nl)
+  {
+    const int currentLine = GetCurrentLine();
+    
+    int indent = 0;
+    
+    if (currentLine > 0) 
+    {
+      indent = GetLineIndentation(currentLine - 1);
+    }
+    
+    const int level = 
+      (GetFoldLevel(currentLine + 1) & wxSTC_FOLDLEVELNUMBERMASK) 
+      - wxSTC_FOLDLEVELBASE;
+      
+    bool dec = false;
+      
+    if (level != m_FoldLevel)
+    {
+      if (level > m_FoldLevel)
+      {
+        indent += GetIndent();
+      }
+      else
+      {
+        indent -= GetIndent();
+        dec = true;
+      }
+      
+      m_FoldLevel = level;
+    }
+      
+    if (indent == 0 && !dec) 
+    {
+      return false;
+    }
+    
+    BeginUndoAction();
+
+    SetLineIndentation(currentLine, indent);
+    
+    if (dec)
+    {
+      SetLineIndentation(currentLine - 1, indent);
+    }
+    
+    EndUndoAction();
+
+    GotoPos(PositionFromLine(currentLine) + indent);
+  
+    return true;
+  }
+  
+  return false;
 }
 
 void wxExSTC::BuildPopupMenu(wxExMenu& menu)
@@ -1255,12 +1322,7 @@ void wxExSTC::HexDecCalltip(int pos)
 
 bool wxExSTC::Indent(int begin, int end, bool forward)
 {
-  if (GetReadOnly() || HexMode())
-  {
-    return false;
-  }
-  
-  if (end - begin < 0)
+  if (GetReadOnly() || HexMode() || end - begin < 0)
   {
     return false;
   }
@@ -1334,13 +1396,17 @@ void wxExSTC::Initialize(bool file_exists)
   m_HexBuffer.clear(); // always, not only in hex mode
   m_HexBufferOriginal.clear();
   m_UndoPossible = false;
-  
+
+  m_FoldLevel = 0;
   m_SavedPos = -1;
   m_SavedSelectionStart = -1;
   m_SavedSelectionEnd = -1;
   
-  m_DefaultFont = wxConfigBase::Get()->ReadObject(
-    _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT));
+  if (wxExLexers::Get()->GetCount() > 0)
+  {
+    m_DefaultFont = wxConfigBase::Get()->ReadObject(
+      _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT));
+  }
   
 #ifdef __WXMSW__
   SetEOLMode(wxSTC_EOL_CRLF);
@@ -1468,7 +1534,6 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
     return;
   }
   
-  const int line_begin = LineFromPosition(event.GetPosition());
   int lines = wxExGetNumberOfLines(event.GetText());
   
   if (lines == 0)
@@ -1476,6 +1541,8 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
     return;
   }
   
+  UseModificationMarkers(false);
+    
   const int SC_MOD_DELETETEXT   =   0x2;
   const int SC_PERFORMED_UNDO   =  0x20;
   const int SC_MOD_BEFOREINSERT = 0x400;
@@ -1487,8 +1554,8 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
     lines = 1;
   }
     
-  UseModificationMarkers(false);
-    
+  const int line_begin = LineFromPosition(event.GetPosition());
+  
   for (int i = line_begin; i < line_begin + lines; i++)
   {
     if ( event.GetModificationType() & SC_PERFORMED_UNDO)
@@ -1709,14 +1776,6 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
   
   if (m_vi.OnKeyDown(event))
   {
-    if (!m_vi.GetIsActive() && event.GetKeyCode() == WXK_RETURN)
-    {
-      if (!SmartIndentation())
-      {
-        event.Skip();
-      }
-    }
-    else
     {
       event.Skip();
     }
@@ -1736,6 +1795,10 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
     PropertiesMessage();
     event.Skip();
     CheckBrace();
+    
+    m_FoldLevel = 
+      (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
+      - wxSTC_FOLDLEVELBASE;
   }
   else if (event.RightUp())
   {
@@ -1783,6 +1846,10 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
     event.Skip();
     
     MarkModified(event); 
+  }
+  else if (event.GetEventType() == wxEVT_STC_CHARADDED)
+  {
+    AutoIndentation(event.GetKey());
   }
   else if (event.GetEventType() == wxEVT_STC_START_DRAG)
   {
@@ -2334,44 +2401,6 @@ void wxExSTC::ShowProperties()
   }
   
   m_EntryDialog->Show();
-}
-
-bool wxExSTC::SmartIndentation()
-{
-  // At this moment a newline has been given (but not yet processed).
-  const wxString line = GetLine(GetCurrentLine());
-
-  if (line.empty() || line == GetEOL())
-  {
-    return false;
-  }
-
-  // We check for a tab or space at the begin of this line,
-  // and copy all these characters to the new line.
-  // Using isspace is not okay, as that copies the CR and LF too, these
-  // are already copied.
-  int i = 0;
-
-  if (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' '))
-  {
-    InsertText(GetCurrentPos(), GetEOL());
-    GotoLine(GetCurrentLine() + 1);
-
-    while (
-      i < line.size() && 
-      (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' ')))
-    {
-      InsertText(GetCurrentPos(), line[i]);
-      GotoPos(GetCurrentPos() + 1);
-      i++;
-    }
-    
-    return true;
-  }
-  else
-  {
-    return false;
-  }
 }
 
 void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
