@@ -248,8 +248,6 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
   const wxString text_lowercase = text.Lower();
 
   if (text_lowercase.StartsWith("<html>"))
-  // php is not yet ok, so do not add it here.
-  //   text_lowercase.StartsWith("<?php"))
   {
     return FindByName("hypertext");
   }
@@ -262,6 +260,10 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
   else if (text_lowercase.StartsWith("//"))
   {
     return FindByName("cpp");
+  }
+  else if (text_lowercase.StartsWith("<?php"))
+  {
+    return FindByName("phpscript");
   }
   else
   {
