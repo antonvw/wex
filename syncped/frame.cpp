@@ -895,10 +895,9 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_SPLIT:
     {
     wxExSTCWithFrame* stc = new wxExSTCWithFrame(*editor, this);
-    editor->StopSync();
-    stc->StopSync();
+    editor->Sync(false);
+    stc->Sync(false);
 
-    // Place new page before page for editor.
     wxBitmap bitmap(wxNullBitmap);
     
     if (stc->GetFileName().FileExists())
@@ -907,6 +906,7 @@ void Frame::OnCommand(wxCommandEvent& event)
         wxExGetIconID(stc->GetFileName()));
     }
     
+    // Place new page before page for editor.
     m_Editors->InsertPage(
       m_Editors->GetPageIndex(editor),
       stc,

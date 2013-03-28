@@ -92,8 +92,6 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_File(this, title)
   , m_Link(wxExLink(this))
 {
-  UseModificationMarkers(false);
-
   Initialize(false);
 
   PropertiesMessage();
@@ -141,8 +139,6 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_vi(wxExVi(this))
   , m_Link(wxExLink(this))
 {
-  UseModificationMarkers(true);
-
   Initialize(filename.GetStat().IsOk());
 
   Open(filename, line_number, match, col_number, flags);
@@ -162,8 +158,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_File(this, stc.m_File.GetFileName().GetFullPath())
   , m_Link(wxExLink(this))
 {
-  UseModificationMarkers(stc.m_File.GetFileName().GetStat().IsOk());
-
   Initialize(stc.m_File.GetFileName().GetStat().IsOk());
 
   if (stc.m_File.GetFileName().GetStat().IsOk())
@@ -1374,13 +1368,9 @@ bool wxExSTC::Indent(int lines, bool forward)
 
 void wxExSTC::Initialize(bool file_exists)
 {
+  UseModificationMarkers(file_exists);
   SetSearchFlags(wxSTC_FIND_REGEXP);
-  
-  Bind(
-    wxEVT_IDLE, 
-    &wxExSTC::OnIdle,
-    this,
-    wxID_ANY);
+  Sync();
   
   m_HexMode = false;
   
@@ -2473,13 +2463,24 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
   SetSelection(start_pos, GetLineEndPosition(start_line + mm.size()));
 }
 
-void wxExSTC::StopSync()
+void wxExSTC::Sync(bool start)
 {
-  Unbind(
-    wxEVT_IDLE, 
-    &wxExSTC::OnIdle,
-    this,
-    wxID_ANY);
+  if (start)
+  {
+    Bind(
+      wxEVT_IDLE, 
+      &wxExSTC::OnIdle,
+      this,
+      wxID_ANY);
+  }
+  else
+  {
+    Unbind(
+      wxEVT_IDLE, 
+      &wxExSTC::OnIdle,
+      this,
+      wxID_ANY);
+  }
 }
 
 void wxExSTC::Undo()

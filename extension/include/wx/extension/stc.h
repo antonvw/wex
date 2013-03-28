@@ -302,8 +302,9 @@ public:
   /// Sets the text.
   void SetText(const wxString& value);
 
-  /// Stop syncing.
-  void StopSync();
+  /// Starts or stops syncing.
+  /// Default syncing is started during construction.
+  void Sync(bool start = true);
 
   /// Undo one action in the undo history.  
   virtual void Undo();
