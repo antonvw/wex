@@ -1517,45 +1517,30 @@ bool wxExSTC::MarkerDeleteAllChange()
   
 void wxExSTC::MarkModified(const wxStyledTextEvent& event)
 {
-  if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
-  {
-    return;
-  }
-  
-  int lines = wxExGetNumberOfLines(event.GetText());
-  
-  if (lines == 0)
+  if (
+    !wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange) ||
+     event.GetText().empty())
   {
     return;
   }
   
   UseModificationMarkers(false);
     
-  const int SC_MOD_DELETETEXT   =   0x2;
-  const int SC_PERFORMED_UNDO   =  0x20;
-  const int SC_MOD_BEFOREINSERT = 0x400;
-  const int SC_MOD_BEFOREDELETE = 0x800;
+  const int SC_PERFORMED_UNDO = 0x20;
   
-  if ( event.GetModificationType() & 
-      (SC_MOD_DELETETEXT | SC_MOD_BEFOREDELETE | SC_MOD_BEFOREINSERT))
+  if ( event.GetModificationType() & SC_PERFORMED_UNDO)
   {
-    lines = 1;
+    MarkerDelete(
+      LineFromPosition(event.GetPosition()), 
+      m_MarkerChange.GetNo());
+  }
+  else
+  {
+    MarkerAdd(
+      LineFromPosition(event.GetPosition()), 
+      m_MarkerChange.GetNo());
   }
     
-  const int line_begin = LineFromPosition(event.GetPosition());
-  
-  for (int i = line_begin; i < line_begin + lines; i++)
-  {
-    if ( event.GetModificationType() & SC_PERFORMED_UNDO)
-    {
-      MarkerDelete(i, m_MarkerChange.GetNo());
-    }
-    else
-    {
-      MarkerAdd(i, m_MarkerChange.GetNo());
-    }
-  }
-  
   UseModificationMarkers(true);
 }
   
