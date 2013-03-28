@@ -714,7 +714,7 @@ void wxExVCSCommandOnSTC(
   }
   else if (command.IsOpen())
   {
-    stc->SetLexer(lexer.GetScintillaLexer());
+    stc->SetLexer(lexer.GetScintillaLexer(), true); // fold
   }
   else
   {
