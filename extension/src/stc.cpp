@@ -114,6 +114,8 @@ wxExSTC::wxExSTC(wxWindow *parent,
   {
     SetReadOnly(true);
   }
+    
+  UseModificationMarkers(false);
 }
 
 wxExSTC::wxExSTC(wxWindow* parent,
@@ -140,8 +142,11 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_Link(wxExLink(this))
 {
   Initialize(filename.GetStat().IsOk());
-
-  Open(filename, line_number, match, col_number, flags);
+  
+  if (filename.GetStat().IsOk())
+  {
+    Open(filename, line_number, match, col_number, flags);
+  }
 }
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
@@ -1368,7 +1373,6 @@ bool wxExSTC::Indent(int lines, bool forward)
 
 void wxExSTC::Initialize(bool file_exists)
 {
-  UseModificationMarkers(file_exists);
   SetSearchFlags(wxSTC_FIND_REGEXP);
   Sync();
   
@@ -1519,7 +1523,7 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
 {
   if (
     !wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange) ||
-     event.GetText().empty())
+    event.GetText().empty())
   {
     return;
   }
@@ -1528,7 +1532,7 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
     
   const int SC_PERFORMED_UNDO = 0x20;
   
-  if ( event.GetModificationType() & SC_PERFORMED_UNDO)
+  if (event.GetModificationType() & SC_PERFORMED_UNDO)
   {
     MarkerDelete(
       LineFromPosition(event.GetPosition()), 

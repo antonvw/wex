@@ -54,8 +54,6 @@ bool wxExSTCFile::DoFileLoad(bool synced)
     isLog &&
     m_STC->GetTextLength() > 1024);
 
-  m_STC->UseModificationMarkers(true);
-
   if (!synced)
   {
     m_STC->SetLexer(GetFileName().GetLexer().GetDisplayLexer(), true);
@@ -70,6 +68,7 @@ bool wxExSTCFile::DoFileLoad(bool synced)
   }
   
   m_STC->PropertiesMessage(synced ? STAT_SYNC: STAT_DEFAULT);
+  m_STC->UseModificationMarkers(true);
   
   return true;
 }
