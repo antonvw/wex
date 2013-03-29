@@ -2,7 +2,7 @@
 rem Name:      deploy.bat
 rem Purpose:   Deploy file (for syncped)
 rem Author:    Anton van Wezenbeek
-rem Copyright: (c) 2012 Anton van Wezenbeek
+rem Copyright: (c) 2013 Anton van Wezenbeek
 
 rem Run this file in the build folder
 
@@ -12,7 +12,7 @@ mkdir syncped\nl-NL
 
 rem Copy application.
 copy vcmswu\syncped.exe syncped
-copy syncped.exe.manifest syncped
+copy vcmswu\syncped.exe.manifest syncped
 
 rem Copy msvc DLL's
 copy c:\windows\syswow64\msvcp110.dll syncped
@@ -23,14 +23,13 @@ copy ..\extension\data\*.txt syncped
 copy ..\extension\data\*.xml syncped
 
 rem Copy locale files.
-msgftm c:\wxWidgets-2.9.5\locale\fr.mo -o syncped\fr-FR\fr.po
-msgftm c:\wxWidgets-2.9.5\locale\nl.mo -o syncped\nl-NL\nl.po
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" c:\wxWidgets-2.9.5\misc\locale\nl.po -o syncped\nl-NL\nl.mo
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" c:\wxWidgets-2.9.5\misc\locale\fr.po -o syncped\fr-FR\fr.mo
 
-for %%X in (..\locale\*fr.mo) do (
-  msgfmt %%X syncped\fr-FR\%%X.po)
-  
-for %%X in (..\locale\*nl.mo) do (
-  msgfmt %%X syncped\fr-NL\%%X.po)
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\wxextension-nl.po -o syncped\nl-NL\wxextension-nl.mo
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\wxextension-fr.po -o syncped\fr-FR\wxextension-fr.mo
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\syncped-nl.po -o syncped\nl-NL\syncped-nl.mo
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\syncped-fr.po -o syncped\fr-FR\syncped-fr.mo
   
 7z a syncped.zip syncped\
 
