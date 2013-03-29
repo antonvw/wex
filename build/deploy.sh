@@ -3,7 +3,7 @@
 # Name:      deploy.sh
 # Purpose:   Deploy file (for syncped)
 # Author:    Anton van Wezenbeek
-# Copyright: (c) 2012 Anton van Wezenbeek
+# Copyright: (c) 2013 Anton van Wezenbeek
 ################################################################################
 
 # Run this file in the build folder
@@ -23,8 +23,8 @@ cp ../extension/data/*.txt syncped
 cp ../extension/data/*.xml syncped
 
 # Copy locale files.
-msgfmt ~/wxWidgets-2.9.5/locale/fr.mo -o syncped/fr-FR/fr.po
-msgfmt ~/wxWidgets-2.9.5/locale/nl.mo -o syncped/nl-NL/nl.po
+msgfmt ~/wxWidgets-2.9.5/locale/fr.po -o syncped/fr-FR/fr.mo
+msgfmt ~/wxWidgets-2.9.5/locale/nl.po -o syncped/nl-NL/nl.mo
 
 FILES=( $( /bin/ls ../locale/*fr.po  ) )
 
