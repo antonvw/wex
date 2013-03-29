@@ -1814,7 +1814,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
         <def style ="preprocessor"> fore:grey </def>
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:blue </def>
-        <def style ="styledefault"> face:courier new,size:10,back:white,fore:black </def>
+        <def style ="styledefault"> default-font,back:white,fore:black </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:dark slate blue </def>
         <def style ="variable"> fore:violet </def>
