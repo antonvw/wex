@@ -9,8 +9,8 @@
 # Run this file in the build folder
 
 mkdir syncped
-mkdir syncped/fr-FR
-mkdir syncped/nl-NL
+mkdir syncped/fr_FR
+mkdir syncped/nl_NL
 
 # Copy application.
 cp gccgtk2_dll/syncped syncped
@@ -23,8 +23,8 @@ cp ../extension/data/*.txt syncped
 cp ../extension/data/*.xml syncped
 
 # Copy locale files.
-msgfmt ~/wxWidgets-2.9.5/locale/fr.po -o syncped/fr-FR/fr.mo
-msgfmt ~/wxWidgets-2.9.5/locale/nl.po -o syncped/nl-NL/nl.mo
+msgfmt ~/wxWidgets-2.9.5/locale/fr.po -o syncped/fr_FR/fr.mo
+msgfmt ~/wxWidgets-2.9.5/locale/nl.po -o syncped/nl_NL/nl.mo
 
 FILES=( $( /bin/ls ../locale/*fr.po  ) )
 
@@ -32,7 +32,7 @@ for f in $FILES
 do
   # name without extension
   name=${f%\.*}
-  msgfmt ../locale/$name.po -o syncped/fr-FR/$name.mo
+  msgfmt ../locale/$name.po -o syncped/fr_FR/$name.mo
 done
 
 FILES=( $( /bin/ls ../locale/*nl.po  ) )
@@ -41,7 +41,7 @@ for f in $FILES
 do
   # name without extension
   name=${f%\.*}
-  msgfmt ../locale/$name.po -o syncped/nl-NL/$name.mo
+  msgfmt ../locale/$name.po -o syncped/nl_NL/$name.mo
 done
 
 strip syncped/syncped

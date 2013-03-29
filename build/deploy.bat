@@ -7,8 +7,8 @@ rem Copyright: (c) 2013 Anton van Wezenbeek
 rem Run this file in the build folder
 
 mkdir syncped
-mkdir syncped\fr-FR
-mkdir syncped\nl-NL
+mkdir syncped\fr_FR
+mkdir syncped\nl_NL
 
 rem Copy application.
 copy vcmswu\syncped.exe syncped
@@ -23,13 +23,13 @@ copy ..\extension\data\*.txt syncped
 copy ..\extension\data\*.xml syncped
 
 rem Copy locale files.
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" c:\wxWidgets-2.9.5\misc\locale\nl.po -o syncped\nl-NL\nl.mo
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" c:\wxWidgets-2.9.5\misc\locale\fr.po -o syncped\fr-FR\fr.mo
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" c:\wxWidgets-2.9.5\misc\locale\nl.po -o syncped\nl_NL\nl.mo
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" c:\wxWidgets-2.9.5\misc\locale\fr.po -o syncped\fr_FR\fr.mo
 
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\wxextension-nl.po -o syncped\nl-NL\wxextension-nl.mo
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\wxextension-fr.po -o syncped\fr-FR\wxextension-fr.mo
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\syncped-nl.po -o syncped\nl-NL\syncped-nl.mo
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\syncped-fr.po -o syncped\fr-FR\syncped-fr.mo
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\wxextension-nl.po -o syncped\nl_NL\wxextension-nl.mo
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\wxextension-fr.po -o syncped\fr_FR\wxextension-fr.mo
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\syncped-nl.po -o syncped\nl_NL\syncped-nl.mo
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\syncped-fr.po -o syncped\fr_FR\syncped-fr.mo
   
 7z a syncped.zip syncped\
 
