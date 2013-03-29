@@ -2,7 +2,7 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wxExGenericDirCtrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stockitem.h> // for wxGetStockLabel
@@ -54,7 +54,6 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
 
 void wxExGenericDirCtrl::ExpandAndSelectPath(const wxString& path)
 {
-  UnselectAll();
   ExpandPath(path);
   SelectPath(path);
 }
