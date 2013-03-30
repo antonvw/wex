@@ -1148,8 +1148,8 @@ bool wxExSTC::GotoDialog()
       _("Enter Byte Offset"),
       m_Goto, // initial value
       0,
-      m_HexBuffer.length() - 1),
-      this) < 0)
+      m_HexBuffer.length() - 1,
+      this)) < 0)
     {
       return false;
     }
@@ -1176,8 +1176,8 @@ bool wxExSTC::GotoDialog()
       _("Enter Line Number"),
       m_Goto, // initial value
       1,
-      GetLineCount())) < 0,
-      this)
+      GetLineCount(),
+      this)) < 0)
     {
       return false;
     }
