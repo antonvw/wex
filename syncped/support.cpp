@@ -76,14 +76,14 @@ DecoratedFrame::DecoratedFrame()
   }
   else
   {
-    GetStatusBar()->ShowField("PaneVCS", false);
+    ((wxExStatusBar *)GetStatusBar())->ShowField("PaneVCS", false);
   }
   
   const bool vi_mode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
   
   if (wxExViMacros::GetFileName().FileExists())
   {
-    GetStatusBar()->ShowField("PaneMacro", vi_mode);
+    ((wxExStatusBar *)GetStatusBar())->ShowField("PaneMacro", vi_mode);
   }
 #endif
 

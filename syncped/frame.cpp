@@ -831,7 +831,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxExVCS vcs;
       vcs.GetDir(this);
       
-      GetStatusBar()->ShowField(
+      ((wxExStatusBar *)GetStatusBar())->ShowField(
         "PaneVCS", 
         vcs.Use());
         
@@ -992,7 +992,7 @@ void Frame::OnCommandConfigDialog(
         m_Process->GetSTC()->ConfigGet();
       }
       
-      GetStatusBar()->ShowField(
+      ((wxExStatusBar *)GetStatusBar())->ShowField(
         "PaneMacro", 
         wxConfigBase::Get()->ReadBool(_("vi mode"), true));
     }

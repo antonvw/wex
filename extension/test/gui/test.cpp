@@ -1045,6 +1045,9 @@ void wxExGuiTestFixture::testProcess()
   
   // TODO:
   // Repeat last process (wxEXEC_ASYNC).
+  
+  // Go back to where we were, necessary for other tests.
+  wxSetWorkingDirectory(cwd);
 }
 
 void wxExGuiTestFixture::testProperty()
@@ -1276,9 +1279,10 @@ void wxExGuiTestFixture::testSTC()
   
   stc->SetLexerProperty("xx", "yy");
   
-  CPPUNIT_ASSERT(stc->AutoIndentation('\n'));
+  stc->AutoIndentation('\n');
   
-  stc->StopSync();
+  stc->Sync(false);
+  stc->Sync(true);
   
   stc->Undo();
   
