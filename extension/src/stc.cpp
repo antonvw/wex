@@ -728,7 +728,9 @@ void wxExSTC::ConfigGet()
     wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), 
     wxSTC_WRAPVISUALFLAG_END));
 
-  m_vi.Use(wxConfigBase::Get()->ReadBool(_("vi mode"), true));
+  // Here the default vi mode is set, and used if the application
+  // is run for the first time.
+  m_vi.Use(wxConfigBase::Get()->ReadBool(_("vi mode"), false));
 
   m_Link.SetFromConfig();
 

@@ -79,11 +79,11 @@ DecoratedFrame::DecoratedFrame()
     GetStatusBar()->ShowField("PaneVCS", false);
   }
   
+  const bool vi_mode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
+  
   if (wxExViMacros::GetFileName().FileExists())
   {
-    GetStatusBar()->ShowField(
-      "PaneMacro", 
-      wxConfigBase::Get()->ReadBool(_("vi mode"), true));
+    GetStatusBar()->ShowField("PaneMacro", vi_mode);
   }
 #endif
 
@@ -116,7 +116,7 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->AppendSeparator();
   wxExMenu* menuFind = new wxExMenu();
   
-  if (wxConfigBase::Get()->ReadBool(_("vi mode"), true))
+  if (vi_mode)
   {
     // No accelerators for vi mode, Ctrl F is page down.
     menuFind->Append(wxID_FIND, wxGetStockLabel(wxID_FIND, wxSTOCK_NOFLAGS));
