@@ -344,7 +344,9 @@ const std::map<wxString, wxString>& wxExLexers::GetMacros(
 
 const wxString wxExLexers::GetTheme() const
 {
-  const wxString theme = wxConfigBase::Get()->Read("theme", "torte");
+  // Here the default theme is set, and used if the application
+  // is run for the first time.
+  const wxString theme = wxConfigBase::Get()->Read("theme", "studio");
 
   // Use the theme macros, though we could also use the theme colours,
   // as they contain the same themes.  
