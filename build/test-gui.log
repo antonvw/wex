@@ -1,30 +1,10 @@
-...............wxExListTiem::Insert 750 items in 2067 ms
-wxExListView::Sort 750 items in 1208 ms
-........F....F....F...F.....
+...............wxExListTiem::Insert 750 items in 2101 ms
+wxExListView::Sort 750 items in 1227 ms
+................wxExTextFile::matching 193 items in 23233 us
+wxExTextFile::replacing 194 items in 20975 us
+........
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  39   Failures: 4   Errors: 0
-
-
-1) test: testProcess (F) line: 1036 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: shell->GetText().Contains("home")
-
-
-2) test: testSTC (F) line: 1228 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: stc->Open(wxExFileName(TEST_BIN))
-
-
-3) test: testTextFile (F) line: 1367 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: textFile.RunTool()
-
-
-4) test: testVCS (F) line: 1486 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: vcs.DirExists(file)
+OK (39 tests)
 
 

@@ -2325,7 +2325,7 @@ void wxExSTC::ShowProperties()
 {
   // Added check, otherwise scintilla crashes.
   const wxString propnames = (!m_Lexer.GetScintillaLexer().empty() ?
-    PropertyNames(): wxEmptyString);
+    PropertyNames(): wxString(wxEmptyString));
   
   wxString text;
 
