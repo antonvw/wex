@@ -370,6 +370,12 @@ void wxExGuiTestFixture::testFrame()
   CPPUNIT_ASSERT( sb->GetStatusText("Pane2") == "hello2");
   CPPUNIT_ASSERT( sb->GetStatusText("Panexxx").empty());
   
+  CPPUNIT_ASSERT( sb->ShowField("Pane0", false));
+  CPPUNIT_ASSERT(!sb->ShowField("Pane0", false));
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane0").empty());
+  CPPUNIT_ASSERT( sb->ShowField("Pane0", true));
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane0").empty());
+  
   CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE)));
   CPPUNIT_ASSERT( frame->OpenFile(TEST_FILE, "contents"));
   
