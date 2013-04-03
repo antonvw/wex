@@ -114,8 +114,6 @@ wxExSTC::wxExSTC(wxWindow *parent,
   {
     SetReadOnly(true);
   }
-    
-  UseModificationMarkers(false);
 }
 
 wxExSTC::wxExSTC(wxWindow* parent,
