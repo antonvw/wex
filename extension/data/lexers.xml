@@ -1885,9 +1885,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
     
     <properties>
       <property name="fold"> 1 </property>
-      <property name="fold.comment"> 1 </property>
       <property name="fold.compact"> 1 </property>
-      <property name="fold.preprocessor"> 0 </property>
     </properties>
   </global>
   
@@ -2044,6 +2042,8 @@ transient try var void volatile while
   <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
     <properties>
       <property name="lexer.cpp.track.preprocessor"> 0 </property>
+      <property name="fold.comment"> 1 </property>
+      <property name="fold.preprocessor"> 0 </property>
     </properties>
     <keywords>
     argc:0 argv:0 auto:0 bool:0 break:0 case:0 catch:0 char:0 class:0 const:0
