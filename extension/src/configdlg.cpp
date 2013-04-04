@@ -272,7 +272,17 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 
         if (dir_dlg.ShowModal() == wxID_OK)
         {
-          browse->SetValue(dir_dlg.GetPath());
+          const wxString value = dir_dlg.GetPath();
+          const int item = browse->FindString(value);
+          
+          if (item == wxNOT_FOUND)
+          {
+            browse->SetSelection(browse->Append(value));
+          }
+          else
+          {
+            browse->SetSelection(item);
+          }
         }
       }
       else if (it->GetType() == CONFIG_BUTTON)
