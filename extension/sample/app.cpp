@@ -666,7 +666,7 @@ void wxExSampleFrame::ShowConfigItems()
     CONFIG_COMBOBOXDIR, 
     "Comboboxes",
     true,
-    1000));
+    1005));
 
   // CONFIG_COMBOBOXDIR
   v.push_back(wxExConfigItem(
@@ -674,7 +674,7 @@ void wxExSampleFrame::ShowConfigItems()
     CONFIG_COMBOBOXDIR, 
     "Comboboxes",
     false,
-    1001));
+    1006));
 
   // CONFIG_COMMAND_LINK_BUTTON
   for (size_t l = 1; l <= 4; l++)
@@ -684,7 +684,7 @@ void wxExSampleFrame::ShowConfigItems()
       CONFIG_COMMAND_LINK_BUTTON,
       "Command Link Buttons",
       false,
-      1000 + l));
+      1007 + l));
   }
 
   // CONFIG_DIRPICKERCTRL

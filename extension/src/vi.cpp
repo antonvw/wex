@@ -709,7 +709,7 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'G': 
       if (repeat > 1)
       {
-        GetSTC()->GotoLine(repeat - 1);
+        GetSTC()->GotoLineAndSelect(repeat);
       }
       else
       {
