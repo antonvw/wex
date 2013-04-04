@@ -544,7 +544,7 @@ int wxExSTC::ConfigDialog(
     _("Margin")));
   items.push_back(wxExConfigItem(
     _("Indent"), 
-    1, 
+    0, 
     (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), 
     _("Margin")));
   items.push_back(wxExConfigItem(
