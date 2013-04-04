@@ -104,7 +104,7 @@ bool wxExVi::Command(const wxString& command)
     while (tkz.HasMoreTokens())
     {
       const wxString token = tkz.GetNextToken();
-      const int new_width = token.AfterFirst('.').length();
+      const int new_width = token.AfterFirst(',').length();
       if (new_width > width) width = new_width;
       const double value = atof(token);
       const wxChar cmd = tkz.GetLastDelimiter();
