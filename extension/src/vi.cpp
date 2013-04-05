@@ -707,7 +707,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case 'G': 
-      if (repeat > 1)
+      if (repeat > 0)
       {
         GetSTC()->GotoLineAndSelect(repeat);
       }
