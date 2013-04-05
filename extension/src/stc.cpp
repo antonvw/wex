@@ -464,6 +464,7 @@ int wxExSTC::ConfigDialog(
   bchoices.insert(_("Line numbers"));
   bchoices.insert(_("Use tabs"));
   bchoices.insert(_("Caret line"));
+  bchoices.insert(_("Scroll bars"));
   bchoices.insert(_("vi mode"));
   // use 2 cols here, but 1 for others on this page
   items.push_back(wxExConfigItem(bchoices, _("General") + ":2")); 
@@ -686,6 +687,11 @@ void wxExSTC::ConfigGet()
     SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
     SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
   }
+  
+  SetUseHorizontalScrollBar(
+    wxConfigBase::Get()->ReadBool(_("Scroll bars"), true));
+  SetUseVerticalScrollBar(
+    wxConfigBase::Get()->ReadBool(_("Scroll bars"), true));
   
   SetPrintColourMode(wxConfigBase::Get()->ReadLong(_("Print flags"),
     wxSTC_PRINT_BLACKONWHITE));
