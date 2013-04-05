@@ -33,6 +33,8 @@ wxExNotebook::wxExNotebook(wxWindow* parent,
   : wxAuiNotebook(parent, id, pos, size, style)
   , m_Frame(frame)
 {
+  // Here you could use another atr provider.
+  //SetArtProvider(new wxAuiSimpleTabArt); 
 }
 
 wxWindow* wxExNotebook::AddPage(
