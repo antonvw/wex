@@ -43,7 +43,8 @@ class wxExTestApp: public wxExApp
 {
 public:
   /// Constructor.
-  wxExTestApp() {}
+  wxExTestApp()
+    : m_Frame(NULL) {}
 private:
   /// Override the OnInit.
   virtual bool OnInit();
