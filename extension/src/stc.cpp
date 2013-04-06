@@ -743,6 +743,7 @@ void wxExSTC::ConfigGet()
     // Set defaults only.
     wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500);
     wxConfigBase::Get()->ReadLong(_("Folding"), 16);
+    wxConfigBase::Get()->ReadBool(_("Scroll bars"), true);
 
     wxConfigBase::Get()->SetRecordDefaults(false);
   }
