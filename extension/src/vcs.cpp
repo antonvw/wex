@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wxExVCS class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <map>
@@ -281,7 +281,7 @@ bool wxExVCS::GetDir(wxWindow* parent)
     CONFIG_COMBOBOXDIR, 
     wxEmptyString, 
     true,
-    1000));
+    1005));
       
   if (wxExConfigFirstOf(_("Base folder")).empty()) 
   {
