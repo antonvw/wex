@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -147,7 +147,7 @@ void wxExFrameWithHistory::CreateDialogs()
     CONFIG_COMBOBOXDIR, 
     wxEmptyString, 
     true,
-    1000));
+    1005));
   r.push_back(f.back());
 
   // Match whole word does not work with replace.

@@ -325,7 +325,7 @@ int wxExVCSEntry::ShowDialog(
       CONFIG_COMBOBOXDIR, 
       wxEmptyString, 
       true,
-      1000));
+      1005));
 
     if (GetCommand().IsAdd())
     {

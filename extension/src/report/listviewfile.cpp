@@ -77,7 +77,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
     CONFIG_COMBOBOXDIR, 
     wxEmptyString, 
     true,
-    1000));
+    1005));
 
   std::set<wxString> set;
     
