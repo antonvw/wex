@@ -17,6 +17,8 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
+//#define DEBUG
+
 wxExLink::wxExLink(wxExSTC* stc)
   : m_STC(stc)
 {
@@ -124,6 +126,11 @@ const wxString wxExLink::GetPath(
   const wxString path(FindPath(text));
   wxString link(path);
   
+#ifdef DEBUG
+  wxLogMessage("+wxExLink::GetPath. text: " + text + 
+    "\nlink: " + link + "\ncwd: " + wxGetCwd());
+#endif
+
   SetLink(link, line_no, column_no);
   
   if (
@@ -145,6 +152,9 @@ const wxString wxExLink::GetPath(
   }
   else
   {
+#ifdef DEBUG
+    wxLogMessage("File " + link + " does not exist");
+#endif
     if (
       file.IsRelative() && 
       m_STC != NULL && 
@@ -172,6 +182,9 @@ const wxString wxExLink::GetPath(
           }
         }
       }
+#ifdef DEBUG
+    wxLogMessage("Fullpath " + fullpath);
+#endif
     }
 
     if (fullpath.empty())
@@ -190,6 +203,9 @@ const wxString wxExLink::GetPath(
         // And reset line or column.
         line_no = 0;
         column_no = 0;
+#ifdef DEBUG
+        wxLogMessage("Fullpath updated " + fullpath);
+#endif
       }
     
       if (fullpath.empty() && !m_PathList.empty())
@@ -207,9 +223,15 @@ const wxString wxExLink::GetPath(
       
       // Do nothing if fullpath.empty(),
       // as we return empty string if no path could be found.
+#ifdef DEBUG
+      wxLogMessage("Fullpath after pathlist update " + fullpath);
+#endif
     }
   }
   
+#ifdef DEBUG
+  wxLogMessage("-wxExLink::GetPath: " + fullpath);
+#endif
   return fullpath;
 }
 
@@ -218,6 +240,25 @@ bool wxExLink::SetLink(
   int& line_no,
   int& column_no) const
 {
+  if (link.size() < 2)
+  {
+    return false;
+  }
+
+  // Using backslash as separator does not yet work.
+  link.Replace("\\\\", "/");
+  link.Replace("\\", "/");
+
+  // The harddrive letter is filtererd, it does not work
+  // when adding it to wxExMatch.
+  wxString prefix;
+
+  if (isalpha(link[0]) && link[1] == ':')
+  {
+    prefix = link.SubString(0,1);
+    link = link.Mid(2);
+  }
+
   // file[:line[:column]]
   std::vector <wxString> v;
   
@@ -236,6 +277,8 @@ bool wxExLink::SetLink(
         column_no = atoi(v[2]);
       }
     }
+      
+    link = prefix + link;
     
     return true;
   }

@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -241,8 +241,6 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   case wxID_OPEN:
     if (!command.GetString().empty())
     {
-      wxArrayString files;
-      wxStringTokenizer tkz(command.GetString());
       wxExSTC* stc = GetSTC();
 
       if ( stc != NULL && 
@@ -251,25 +249,12 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
         wxSetWorkingDirectory(stc->GetFileName().GetPath());
       }
       
+      wxArrayString files;
+      wxStringTokenizer tkz(command.GetString());
+      
       while (tkz.HasMoreTokens())
       {
-        const wxString token = tkz.GetNextToken();
-
-        if (token.Contains("*") || token.Contains("?"))
-        {
-          files.Add(token);
-        }
-        else
-        {
-          wxFileName file(token);
-
-          if (file.IsRelative() && stc != NULL)
-          {
-            file.MakeAbsolute(stc->GetFileName().GetPath());
-          }
-          
-          files.Add(file.GetFullPath());
-        }
+        files.Add(tkz.GetNextToken());
       }
 
       wxExOpenFiles(this, files);
