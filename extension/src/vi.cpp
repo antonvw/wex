@@ -732,7 +732,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case 'L': GetSTC()->GotoLine(
-      GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen()); 
+      GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() - 1); 
       break;
         
     case 'M': GetSTC()->GotoLine(
