@@ -243,8 +243,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     {
       wxExSTC* stc = GetSTC();
 
-      if ( stc != NULL && 
-          (command.GetString().Contains("*") || command.GetString().Contains("?")))
+      if (stc != NULL)
       {
         wxSetWorkingDirectory(stc->GetFileName().GetPath());
       }
