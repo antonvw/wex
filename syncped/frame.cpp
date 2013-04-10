@@ -1189,7 +1189,7 @@ bool Frame::OpenFile(
     
   const wxString key = filename.GetFullPath() + unique;
 
-  wxWindow* page = m_Editors->SelectPage(key);
+  wxWindow* page = m_Editors->SetSelection(key);
   
   if (page == NULL)
   {
@@ -1236,7 +1236,7 @@ bool Frame::OpenFile(
 {
   const wxString key = filename;
 
-  wxExSTCWithFrame* page = (wxExSTCWithFrame*)m_Editors->SelectPage(key);
+  wxExSTCWithFrame* page = (wxExSTCWithFrame*)m_Editors->SetSelection(key);
 
   if (page == NULL)
   {
@@ -1285,7 +1285,7 @@ bool Frame::OpenFile(
     
   wxASSERT(notebook != NULL);
   
-  wxWindow* page = notebook->SelectPage(filename.GetFullPath());
+  wxWindow* page = notebook->SetSelection(filename.GetFullPath());
 
   if (flags & WIN_IS_PROJECT)
   {

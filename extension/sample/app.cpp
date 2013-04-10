@@ -475,7 +475,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       break;
   
     case ID_STATISTICS_SHOW:
-      if (m_Notebook->SelectPage("Statistics") == NULL)
+      if (m_Notebook->SetSelection("Statistics") == NULL)
       {
         m_Notebook->AddPage(m_Statistics.Show(m_Notebook), "Statistics");
       }

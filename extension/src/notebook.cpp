@@ -2,7 +2,7 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wxExNotebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -325,18 +325,6 @@ void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
   }
 }
 
-wxWindow* wxExNotebook::SelectPage(const wxString& key)
-{
-  wxWindow* page = GetPageByKey(key);
-
-  if (page != NULL)
-  {
-    SetSelection(GetPageIndex(page));
-  }
-  
-  return page;
-}
-  
 bool wxExNotebook::SetPageText(
   const wxString& key,
   const wxString& new_key,
@@ -364,4 +352,16 @@ bool wxExNotebook::SetPageText(
   return (page != NULL);
 }
 
+wxWindow* wxExNotebook::SetSelection(const wxString& key)
+{
+  wxWindow* page = GetPageByKey(key);
+
+  if (page != NULL)
+  {
+    wxAuiNotebook::SetSelection(GetPageIndex(page));
+  }
+  
+  return page;
+}
+  
 #endif // wxUSE_GUI
