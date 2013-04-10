@@ -599,7 +599,15 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case '+': 
-      for (int i = 0; i < repeat; i++) GetSTC()->LineDown(); 
+      for (int i = 0; i < repeat; i++) 
+      {
+        GetSTC()->LineDown();
+        
+        for (int j = 1; j < GetSTC()->WrapCount(GetSTC()->GetCurrentLine()); j++)
+        {
+          GetSTC()->LineDown();
+        }
+      }
       
       if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) != 
           GetSTC()->GetLineIndentation(GetSTC()->GetCurrentLine()))
