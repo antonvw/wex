@@ -2,7 +2,7 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wxExNotebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXNOTEBOOK_H
@@ -69,10 +69,6 @@ public:
     bool select = false,
     const wxBitmap& bitmap = wxNullBitmap);
 
-  /// Selects (and returns) the page specified by the given key.
-  /// If the key does not exist NULL is returned.
-  wxWindow* SelectPage(const wxString& key);
-
   /// Sets the pagetext for the given new key,
   /// on the page for the given key.
   /// If the key does not exist false is returned.
@@ -81,6 +77,10 @@ public:
     const wxString& new_key,
     const wxString& text,
     const wxBitmap& bitmap = wxNullBitmap);
+      
+  /// Selects (and returns) the page specified by the given key.
+  /// If the key does not exist NULL is returned.
+  wxWindow* SetSelection(const wxString& key);
 protected:
   void OnNotebook(wxAuiNotebookEvent& event);
 private:
