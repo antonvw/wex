@@ -89,8 +89,10 @@ bool wxExVi::Command(const wxString& command)
     return false;
   }
   
-  if (command.StartsWith("=") ||
-      command.StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("=")))
+  if (
+      command.StartsWith("=") ||
+     (GetMacros().IsPlayback() &&
+      command.StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("="))))
   {
     const int index = command.StartsWith("=") ? 1: 2;
     
