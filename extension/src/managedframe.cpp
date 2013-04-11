@@ -492,7 +492,8 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   {
     if (m_UserInput)
     {
-      m_ex->GetMacros().Record(m_Prefix->GetLabel() + m_Command);
+      m_ex->GetMacros().Record(
+        wxUniChar(WXK_CONTROL_R) + m_Prefix->GetLabel() + m_Command);
     }
       
     m_ex->Command(m_Prefix->GetLabel() + GetValue());
