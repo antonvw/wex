@@ -61,6 +61,9 @@ public:
   bool MacroPlayback(
     const wxString& macro = wxEmptyString,
     int repeat = 1);
+      
+  /// Adds recording to current macro.
+  virtual void MacroRecord(const wxString& text);
   
   /// Start recording a macro.  
   /// If specified macro is empty,

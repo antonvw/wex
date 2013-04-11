@@ -50,6 +50,8 @@ private:
     const wxString& end_address, 
     bool forward);
   void InsertMode(const wxString& command);
+  /// Adds recording to current macro.
+  virtual void MacroRecord(const wxString& text);
   bool Put(bool after);
   bool SetInsertMode(
     const wxString& command,
