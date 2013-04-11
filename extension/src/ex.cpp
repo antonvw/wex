@@ -725,6 +725,11 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   return ok;
 }
 
+void wxExEx::MacroRecord(const wxString& text)
+{
+  GetMacros().Record(text);
+}
+
 void wxExEx::MacroStartRecording(const wxString& macro)
 {
   if (!m_IsActive)

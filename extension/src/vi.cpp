@@ -970,17 +970,31 @@ void wxExVi::InsertMode(const wxString& command)
        !m_InsertText.empty() &&
         m_InsertText.Last() == wxUniChar(WXK_CONTROL_R))
       {
+        m_InsertText += command;
+        
         CommandReg(command);
       }
       else
       {
         GetSTC()->AddText(command);
+        
+        if (!m_Dot)
+        {
+          m_InsertText += command;
+        }
       }
-      
-      if (!m_Dot)
-      {
-        m_InsertText += command;
-      }
+  }
+}
+
+void wxExVi::MacroRecord(const wxString& text)
+{
+  if (m_InsertMode)
+  {
+    m_InsertText += text;
+  }
+  else
+  {
+    wxExEx::MacroRecord(text);
   }
 }
 
