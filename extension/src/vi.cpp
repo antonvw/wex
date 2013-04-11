@@ -89,10 +89,13 @@ bool wxExVi::Command(const wxString& command)
     return false;
   }
   
-  if (command.StartsWith("="))
+  if (command.StartsWith("=") ||
+      command.StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("=")))
   {
+    const int index = command.StartsWith("=") ? 1: 2;
+    
     // Calculation register.
-    const wxString calc = command.Mid(1);
+    const wxString calc = command.Mid(index);
     
     wxStringTokenizer tkz(calc, "+-*/");
 
@@ -470,6 +473,7 @@ bool wxExVi::Command(const wxString& command)
   else if (RegAfter(wxUniChar(WXK_CONTROL_R), rest))
   {
     CommandReg(rest.Mid(1));
+    return true;
   }  
   else if (rest.StartsWith("@"))
   {
