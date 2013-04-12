@@ -998,11 +998,22 @@ void wxExVi::InsertMode(const wxString& command)
         GetSTC()->ReplaceSelection(wxEmptyString);
       }
 
-      GetSTC()->AddText(command);
-        
-      if (!m_Dot)
+      if (
+       !m_InsertText.empty() &&
+        m_InsertText.Last() == wxUniChar(WXK_CONTROL_R))
       {
         m_InsertText += command;
+        
+        CommandReg(command);
+      }
+      else
+      {
+        GetSTC()->AddText(command);
+        
+        if (!m_Dot)
+        {
+          m_InsertText += command;
+        }
       }
   }
 }
