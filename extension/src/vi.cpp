@@ -94,57 +94,7 @@ bool wxExVi::Command(const wxString& command)
      (GetMacros().IsPlayback() &&
       command.StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("="))))
   {
-    const int index = command.StartsWith("=") ? 1: 2;
-    
-    // Calculation register.
-    const wxString calc = command.Mid(index);
-    
-    wxStringTokenizer tkz(calc, "+-*/");
-
-    double sum = 0;
-    bool init = true;
-    wxChar prev_cmd = 0;
-    int width = 0;
-
-    while (tkz.HasMoreTokens())
-    {
-      const wxString token = tkz.GetNextToken();
-      const int new_width = token.AfterFirst(',').length();
-      if (new_width > width) width = new_width;
-      const double value = atof(token);
-      const wxChar cmd = tkz.GetLastDelimiter();
-      
-      if (init)
-      {
-        init = false;
-        sum = value;
-      }
-      else
-      {
-        switch (prev_cmd)
-        {
-          case 0: break;
-          case '+': sum += value; break;
-          case '-': sum -= value; break;
-          case '*': sum *= value; break;
-          case '/': sum /= value; break;
-        }
-      }
-      
-      prev_cmd = cmd;
-    }
-    
-    if (m_InsertMode)
-    {
-      GetSTC()->AddText(wxString::Format("%.*f", width, sum));
-    }
-    else
-    {
-      wxLogStatus(wxString::Format("%.*f", width, sum));
-    }
-    
-    GetFrame()->HideExBar();
-
+    CommandCalc(command);
     return true;
   }
   else if (m_InsertMode)
@@ -563,6 +513,81 @@ bool wxExVi::Command(const wxString& command)
   return true;
 }
 
+void wxExVi::CommandCalc(const wxString& command)
+{
+  const int index = command.StartsWith("=") ? 1: 2;
+  
+  // Calculation register.
+  const wxString calc = command.Mid(index);
+  
+  wxStringTokenizer tkz(calc, "+-*/");
+
+  double sum = 0;
+  bool init = true;
+  wxChar prev_cmd = 0;
+  int width = 0;
+
+  while (tkz.HasMoreTokens())
+  {
+    wxString token = tkz.GetNextToken();
+    token.Trim(true);
+    token.Trim(false);
+    
+    const int new_width = token.AfterFirst(',').length();
+    if (new_width > width) width = new_width;
+    
+    double value;
+  
+    if (token.StartsWith(wxUniChar(WXK_CONTROL_R)))
+    {
+      const wxChar c = token[1];
+    
+      switch (c)
+      {
+      case '\"':
+        value = atof(wxExClipboardGet()); break;
+          
+      default:
+        value = atof(GetMacros().GetRegister(c));
+      }
+    }
+    else
+    {
+      value = atof(token);
+    }
+    
+    const wxChar cmd = tkz.GetLastDelimiter();
+    
+    if (init)
+    {
+      init = false;
+      sum = value;
+    }
+    else
+    {
+      switch (prev_cmd)
+      {
+        case 0: break;
+        case '+': sum += value; break;
+        case '-': sum -= value; break;
+        case '*': sum *= value; break;
+        case '/': sum /= value; break;
+      }
+    }
+    
+    prev_cmd = cmd;
+  }
+  
+  if (m_InsertMode)
+  {
+    GetSTC()->AddText(wxString::Format("%.*f", width, sum));
+  }
+  else
+  {
+    wxLogStatus(wxString::Format("%.*f", width, sum));
+  }
+}
+
 bool wxExVi::CommandChar(int c, int repeat)
 {
   switch (c)
@@ -895,7 +920,14 @@ void wxExVi::InsertMode(const wxString& command)
   {
     return;
   }
-  
+
+  if (
+    command.StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("=")))
+  {
+    CommandCalc(command);
+    return;
+  }
+    
   switch ((int)command.Last())
   {
     case WXK_BACK:
@@ -907,6 +939,10 @@ void wxExVi::InsertMode(const wxString& command)
         GetSTC()->DeleteBack();
       break;
       
+    case WXK_CONTROL_R:
+      m_InsertText += command;
+      break;
+        
     case WXK_ESCAPE:
         // Add extra inserts if necessary.        
         if (!m_InsertText.empty())
@@ -956,32 +992,17 @@ void wxExVi::InsertMode(const wxString& command)
         GetSTC()->NewLine();
       break;
       
-    case WXK_CONTROL_R:
-      m_InsertText += command;
-      break;
-    
     default: 
       if (GetLastCommand().EndsWith("cw") && m_InsertText.empty())
       {
         GetSTC()->ReplaceSelection(wxEmptyString);
       }
 
-      if (
-       !m_InsertText.empty() &&
-        m_InsertText.Last() == wxUniChar(WXK_CONTROL_R))
+      GetSTC()->AddText(command);
+        
+      if (!m_Dot)
       {
         m_InsertText += command;
-        
-        CommandReg(command);
-      }
-      else
-      {
-        GetSTC()->AddText(command);
-        
-        if (!m_Dot)
-        {
-          m_InsertText += command;
-        }
       }
   }
 }

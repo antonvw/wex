@@ -41,6 +41,7 @@ public:
   bool OnKeyDown(const wxKeyEvent& event);
 private:
   bool ChangeNumber(bool inc);
+  void CommandCalc(const wxString& reg);
   bool CommandChar(int c, int repeat);
   void CommandReg(const wxString& reg);
   void FindWord(bool find_next = true);

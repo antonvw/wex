@@ -360,9 +360,9 @@ void wxExExTextCtrl::Handle(wxKeyEvent& event)
         if (
            m_ex != NULL &&
           !m_ex->GetMacros().GetRegister(c).empty())
-          {
-            AppendText(m_ex->GetMacros().GetRegister(c)); break;
-          }
+        {
+          AppendText(m_ex->GetMacros().GetRegister(c));
+        }
       }
     }
     
