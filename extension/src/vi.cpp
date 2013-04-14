@@ -921,11 +921,20 @@ void wxExVi::InsertMode(const wxString& command)
     return;
   }
 
-  if (
-    command.StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("=")))
+  if (command.Contains(wxUniChar(WXK_CONTROL_R) + wxString("=")))
   {
-    CommandCalc(command);
-    return;
+    if (
+      command.StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("=")))
+    {
+      CommandCalc(command);
+      return;
+    }
+    else
+    {
+      InsertMode(command.BeforeFirst(wxUniChar(WXK_CONTROL_R)));
+      CommandCalc(command.AfterFirst(wxUniChar(WXK_CONTROL_R)));
+      return;
+    }
   }
     
   switch ((int)command.Last())
