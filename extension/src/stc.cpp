@@ -233,7 +233,7 @@ bool wxExSTC::AutoIndentation(int c)
     
     EndUndoAction();
 
-    GotoPos(PositionFromLine(currentLine) + indent);
+    GotoPos(GetLineIndentPosition(currentLine));
   
     return true;
   }
