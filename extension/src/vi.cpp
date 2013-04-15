@@ -580,6 +580,11 @@ void wxExVi::CommandCalc(const wxString& command)
   
   if (m_InsertMode)
   {
+    if (GetLastCommand().EndsWith("cw"))
+    {
+      GetSTC()->ReplaceSelection(wxEmptyString);
+    }
+    
     GetSTC()->AddText(wxString::Format("%.*f", width, sum));
   }
   else
