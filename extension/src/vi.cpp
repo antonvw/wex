@@ -999,6 +999,7 @@ void wxExVi::InsertMode(const wxString& command)
         }
         
         m_InsertMode = false;
+        GetSTC()->SetOvertype(false);
       break;
 
     case WXK_RETURN:
@@ -1022,7 +1023,10 @@ void wxExVi::InsertMode(const wxString& command)
       }
       else
       {
-        GetSTC()->AddText(command);
+        if (!GetSTC()->GetOvertype())
+        {
+          GetSTC()->AddText(command);
+        }
         
         if (!m_Dot)
         {
@@ -1053,8 +1057,8 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   else if (m_InsertMode)
   {
     InsertMode(event.GetUnicodeKey());
-    
-    return false;
+
+    return GetSTC()->GetOvertype();
   }
   else
   {
@@ -1232,12 +1236,11 @@ bool wxExVi::SetInsertMode(
       break;
 
     case 'C': 
-    case 'R': 
       m_InsertRepeatCount = repeat;
       GetSTC()->SetSelectionStart(GetSTC()->GetCurrentPos());
       GetSTC()->SetSelectionEnd(GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()));
       break;
-
+      
     case 'I': 
       m_InsertRepeatCount = repeat;
       GetSTC()->Home(); 
@@ -1250,11 +1253,14 @@ bool wxExVi::SetInsertMode(
       GetSTC()->LineUp(); 
       break;
 
+    case 'R': 
+      m_InsertRepeatCount = repeat;
+      GetSTC()->SetOvertype(true);
+      break;
+
     default: wxFAIL;
   }
 
-  GetSTC()->SetOvertype((int)c.GetChar(0) == 'R');
-  
   return true;
 }
 
