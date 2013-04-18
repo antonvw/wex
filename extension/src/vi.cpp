@@ -1237,8 +1237,8 @@ bool wxExVi::SetInsertMode(
 
     case 'C': 
       m_InsertRepeatCount = repeat;
-      GetSTC()->SetSelectionStart(GetSTC()->GetCurrentPos());
-      GetSTC()->SetSelectionEnd(GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()));
+      GetSTC()->LineEndExtend();
+      GetSTC()->Cut();
       break;
       
     case 'I': 
