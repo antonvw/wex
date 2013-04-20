@@ -616,7 +616,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
     info.SetDescription(description);
     info.SetCopyright(wxExGetVersionInfo().GetCopyright());
-    info.SetWebSite("http://antonvw.github.com/syncped/index.htm");
+    info.SetWebSite("http://antonvw.github.io/syncped/index.htm");
       
     wxAboutBox(info);
     }
@@ -638,7 +638,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_EXIT: Close(true); break;
   
   case wxID_HELP:
-    wxLaunchDefaultBrowser("http://antonvw.github.com/syncped/syncped.htm");
+    wxLaunchDefaultBrowser("http://antonvw.github.io/syncped/syncped.htm");
     break;
     
   case wxID_NEW: NewFile(); break;
