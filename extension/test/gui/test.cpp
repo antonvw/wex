@@ -702,6 +702,12 @@ void wxExGuiTestFixture::link(
 {
   int line_no = 0;
   int col_no = 0;
+
+#ifdef DEBUG  
+  wxLogMessage("%s %s %d %d\n", 
+    path.c_str(), expect.c_str(), 
+    expect_line_no, expect_col_no);
+#endif
   
   CPPUNIT_ASSERT(link.GetPath(path, line_no, col_no) == expect);
   CPPUNIT_ASSERT(line_no == expect_line_no);
@@ -727,7 +733,6 @@ void wxExGuiTestFixture::testLink()
   link(lnk, ": xtest");
   link(lnk, "c:test");
   link(lnk, "c:\\test");
-  link(lnk, "c:test");
   link(lnk, "on xxxx: 1200");
   link(lnk, "on xxxx: not a number");
   
