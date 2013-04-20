@@ -1536,20 +1536,38 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
   }
   
   UseModificationMarkers(false);
-    
-  const int SC_PERFORMED_UNDO = 0x20;
   
-  if (event.GetModificationType() & SC_PERFORMED_UNDO)
+  const int line = LineFromPosition(event.GetPosition());
+  
+  if (event.GetModificationType() & wxSTC_PERFORMED_UNDO)
   {
-    MarkerDelete(
-      LineFromPosition(event.GetPosition()), 
-      m_MarkerChange.GetNo());
+    if (event.GetLinesAdded() == 0)
+    {
+      MarkerDelete(line, m_MarkerChange.GetNo());
+    }
+    else
+    {
+      for (int i = 0; i < 0 - event.GetLinesAdded(); i++)
+      {
+        MarkerDelete(line, m_MarkerChange.GetNo());
+      }
+    }
   }
-  else
+  else if (
+    (event.GetModificationType() & wxSTC_MOD_INSERTTEXT) ||
+    (event.GetModificationType() & wxSTC_MOD_DELETETEXT))
   {
-    MarkerAdd(
-      LineFromPosition(event.GetPosition()), 
-      m_MarkerChange.GetNo());
+    if (event.GetLinesAdded() <= 0)
+    {
+      MarkerAdd(line, m_MarkerChange.GetNo());
+    }
+    else
+    {
+      for (int i = 0; i < event.GetLinesAdded(); i++)
+      {
+        MarkerAdd(line + i, m_MarkerChange.GetNo());
+      }
+    }
   }
     
   UseModificationMarkers(true);
