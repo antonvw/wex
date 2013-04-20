@@ -253,11 +253,13 @@ bool wxExLink::SetLink(
   // when adding it to wxExMatch.
   wxString prefix;
 
+#ifdef __WXMSW__
   if (isalpha(link[0]) && link[1] == ':')
   {
     prefix = link.SubString(0,1);
     link = link.Mid(2);
   }
+#endif
 
   // file[:line[:column]]
   std::vector <wxString> v;
