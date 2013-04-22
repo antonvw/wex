@@ -941,7 +941,12 @@ void wxExVi::InsertMode(const wxString& command)
       return;
     }
   }
-    
+  else if (RegAfter(wxUniChar(WXK_CONTROL_R), command))
+  {
+    CommandReg(command.Mid(1));
+    return;
+  }  
+  
   switch ((int)command.Last())
   {
     case WXK_BACK:
