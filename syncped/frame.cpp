@@ -1391,7 +1391,7 @@ void Frame::StatusBarClicked(const wxString& pane)
 
       if (stc != NULL)
       {
-        stc->SetLexer(stc->GetLexer().GetDisplayLexer(), true);
+        stc->SetLexer(stc->GetLexer().GetDisplayLexer());
       }
     }
   }

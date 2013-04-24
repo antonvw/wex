@@ -117,7 +117,7 @@ public:
     wxWindowID id = wxID_ANY);
 
   /// Sets the configurable parameters to values currently in config.
-  void ConfigGet();
+  void ConfigGet(bool init = false);
 
   /// Cuts text to clipboard.
   void Cut();
