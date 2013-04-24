@@ -654,7 +654,7 @@ int wxExSTC::ConfigDialog(
   }
 }
 
-void wxExSTC::ConfigGet()
+void wxExSTC::ConfigGet(bool init)
 {
   if (!wxConfigBase::Get()->Exists(_("Caret line")))
   {
@@ -673,7 +673,7 @@ void wxExSTC::ConfigGet()
     // Doing this once is enough, not yet possible.
     wxExLexers::Get()->Read();
     
-    SetLexer(m_Lexer.GetDisplayLexer(), true);
+    SetLexer(m_Lexer.GetDisplayLexer());
   }
 
   const long def_tab_width = 2;
@@ -708,8 +708,11 @@ void wxExSTC::ConfigGet()
   SetMarginWidth(
     m_MarginDividerNumber, 
     wxConfigBase::Get()->ReadLong(_("Divider"), 16));
-    
-  Fold();
+
+  if (init)
+  {
+    Fold();
+  }
 
   const int margin = wxConfigBase::Get()->ReadLong(
     _("Line number"), 
@@ -1472,7 +1475,7 @@ void wxExSTC::Initialize(bool file_exists)
     wxExLexers::Get()->ApplyGlobalStyles(this);
   }
   
-  ConfigGet();
+  ConfigGet(true);
 }
 
 bool wxExSTC::LinkOpen(wxString* filename)

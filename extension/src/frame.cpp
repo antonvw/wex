@@ -515,9 +515,7 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
 
       if (wxExLexers::Get()->ShowDialog(stc, lexer))
       {
-        stc->SetLexer(
-          lexer,
-          true); // fold: refresh
+        stc->SetLexer(lexer);
       }
     }
   }
