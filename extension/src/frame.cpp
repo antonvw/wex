@@ -515,7 +515,14 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
 
       if (wxExLexers::Get()->ShowDialog(stc, lexer))
       {
-        stc->SetLexer(lexer);
+        if (lexer.empty())
+        {
+          stc->ResetLexer();
+        }
+        else
+        {
+          stc->SetLexer(lexer);
+        }
       }
     }
   }
