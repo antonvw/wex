@@ -27,7 +27,6 @@
 #include <wx/extension/menu.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stcdlg.h>
-#include <wx/extension/stcfile.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/vi.h>
