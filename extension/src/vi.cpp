@@ -984,9 +984,26 @@ void wxExVi::InsertMode(const wxString& command)
           }
           else
           {
-            for (int i = 1; i <= m_InsertRepeatCount; i++)
+            if (!GetSTC()->GetOvertype())
             {
-              GetSTC()->AddText(rest);
+              for (int i = 1; i <= m_InsertRepeatCount; i++)
+              {
+                GetSTC()->AddText(rest);
+              }
+            }
+            else
+            {
+              wxString text;
+              
+              GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
+              
+              for (int i = 1; i <= m_InsertRepeatCount; i++)
+              {
+                text += rest;
+              }
+              
+              GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + text.size());
+              GetSTC()->ReplaceTarget(text);
             }
           }
         }
