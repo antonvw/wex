@@ -282,6 +282,9 @@ public:
     /// argument passed on to FindNext
     bool find_next = true);
   
+  /// Resets lexer.
+  void ResetLexer();
+  
   /// Reset all margins.
   /// Default also resets the divider margin.
   void ResetMargins(bool divider_margin = true);

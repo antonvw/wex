@@ -112,6 +112,9 @@ public:
     const wxString& text,
     bool fill_out_with_space = true,
     bool fill_out = true) const;
+    
+  /// Resets lexer.
+  void Reset(wxStyledTextCtrl* stc);
 
   /// Sets keywords (public for testing only).
   bool SetKeywords(const wxString& text);

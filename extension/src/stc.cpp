@@ -2205,7 +2205,13 @@ bool wxExSTC::ReplaceNext(
   
   return true;
 }
-  
+
+void wxExSTC::ResetLexer()
+{
+  m_Lexer.Reset(this);
+  wxExFrame::StatusText(m_Lexer.GetDisplayLexer(), "PaneLexer");
+}
+ 
 void wxExSTC::ResetMargins(bool divider_margin)
 {
   SetMarginWidth(m_MarginFoldingNumber, 0);
@@ -2305,7 +2311,7 @@ bool wxExSTC::SetIndicator(
 
 bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
 {
-  if (!m_Lexer.ApplyLexer(lexer, this, false, fold))
+  if (!m_Lexer.ApplyLexer(lexer, this, false, true))
   {
     return false;
   }

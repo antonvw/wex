@@ -398,6 +398,18 @@ const std::vector<wxExStyle> wxExLexer::ParseNodeStyles(
   return text;
 }
 
+void wxExLexer::Reset(wxStyledTextCtrl* stc)
+{
+  m_ScintillaLexer.clear();
+  m_DisplayLexer.clear();
+  
+  stc->SetLexer(wxSTC_LEX_NULL);
+  
+  m_IsOk = true;
+  
+  Apply(stc, true);
+}
+
 void wxExLexer::Set(const wxXmlNode* node)
 {
   m_ScintillaLexer = node->GetAttribute("name");
