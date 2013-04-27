@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _FRAME_H
@@ -17,7 +17,7 @@
 class Frame : public DecoratedFrame
 {
 public:
-  Frame(bool open_recent);
+  Frame(const wxArrayString& files);
   
   virtual bool OpenFile(
     const wxExFileName& filename,

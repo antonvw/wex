@@ -73,7 +73,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, Frame::OnUpdateUI)
 END_EVENT_TABLE()
 
-Frame::Frame(bool open_recent)
+Frame::Frame(const wxArrayString& files)
   : DecoratedFrame()
   , m_IsClosing(false)
   , m_NewFileNo(1)
@@ -161,32 +161,26 @@ Frame::Frame(bool open_recent)
   
   HideExBar();
   
-  if (open_recent)
+  if (files.empty())
   {
-    if (!GetRecentFile().empty())
-    {
-      long count;
+    long count;
       
-      if (wxConfigBase::Get()->Read("OpenFiles", &count))
-      {
-        wxArrayString ar;
+    if (wxConfigBase::Get()->Read("OpenFiles", &count))
+    {
+      wxArrayString ar;
         
-        if (count > 0)
-        {
-          for (int i = count - 1; i >= 0; i--)
-          {
-            ar.Add(GetFileHistory().GetHistoryFile(i));
-          }  
-          
-          wxExOpenFiles(this, ar);
-        }
-      }
-      else
+      if (count > 0)
       {
-        OpenFile(wxExFileName(GetRecentFile()));
+        for (int i = count - 1; i >= 0; i--)
+        {
+          ar.Add(GetFileHistory().GetHistoryFile(i));
+        }  
+          
+        wxExOpenFiles(this, ar);
       }
     }
-    else
+      
+    if (count == 0)
     {
       NewFile();
     }
@@ -211,6 +205,7 @@ Frame::Frame(bool open_recent)
   else
   {
     GetManager().GetPane("PROJECTS").Hide();
+    wxExOpenFiles(this, files, 0, wxDIR_FILES); // only files in this dir
   }
   
   StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");

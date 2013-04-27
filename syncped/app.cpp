@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of class App
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -44,11 +44,9 @@ bool App::OnInit()
     return false;
   }
 
-  Frame* frame = new Frame(m_Files.empty());
+  Frame* frame = new Frame(m_Files);
   frame->Show();
 
-  wxExOpenFiles(frame, m_Files, 0, wxDIR_FILES); // only files in this dir
- 
   return true;
 }
 
