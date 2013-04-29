@@ -420,6 +420,8 @@ bool wxExProcess::IsRunning() const
     // If we executed a sync process, then it always ended,
     // so it is not running.
     m_Sync || 
+    // If we have not yet run Execute, process is not running
+    m_Dialog == NULL ||
     GetPid() <= 0)
   {
     return false;
