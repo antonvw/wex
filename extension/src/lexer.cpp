@@ -98,7 +98,6 @@ bool wxExLexer::ApplyLexer(
   bool show_error,
   bool clear)
 {
-  // Even if the lexer is empty.
   (*this) = wxExLexers::Get()->FindByName(lexer);
   
   if (m_ScintillaLexer.empty())
