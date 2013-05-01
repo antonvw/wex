@@ -134,6 +134,11 @@ int wxExMatch(
 /// fields in specified pattern (fields separated by ; sign).
 bool wxExMatchesOneOf(const wxFileName& filename, const wxString& patterns);
 
+/// Parses properties node.
+void wxExNodeProperties(
+  const wxXmlNode* node,
+  std::vector<wxExProperty>& properties);
+
 /// Adds a caption.
 const wxString wxExPrintCaption(const wxFileName& filename);
 

@@ -28,6 +28,9 @@ wxExLexers* wxExLexers::m_Self = NULL;
 wxExLexers::wxExLexers(const wxFileName& filename)
   : m_FileName(filename)
   , m_NoTheme(wxEmptyString)
+  // Here the default theme is set, and used if the application
+  // is run for the first time.
+  , m_Theme(wxConfigBase::Get()->Read("theme", "studio"))
 {
   m_DefaultColours.clear();
 }
@@ -59,23 +62,12 @@ void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc)
   for_each (m_Styles.begin(), m_Styles.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
 
-  const wxString theme = GetTheme();
-  
-#ifdef wxExUSE_CPP0X	
-  const auto colour_it = m_ThemeColours.find(theme);
-#else
-  const std::map<wxString, std::map<wxString, wxString> >::const_iterator 
-    colour_it = m_ThemeColours.find(theme);
-#endif  
+  const auto colour_it = m_ThemeColours.find(m_Theme);
   
   if (colour_it != m_ThemeColours.end())
   {
     for (
-#ifdef wxExUSE_CPP0X	
       auto it = colour_it->second.begin();
-#else
-	  std::map<wxString, wxString>::const_iterator it = colour_it->second.begin();
-#endif	  
       it != colour_it->second.end();
       ++it)
     {
@@ -126,27 +118,17 @@ void wxExLexers::ApplyIndicators(wxStyledTextCtrl* stc) const
 }
 
 const wxString wxExLexers::ApplyMacro(
-  const wxString& text, const wxString& lexer) const
+  const wxString& text, const wxString& lexer)
 {
-#ifdef wxExUSE_CPP0X	
   const auto it = GetMacros(lexer).find(text);
-#else
-  const std::map<wxString, wxString>::const_iterator it = 
-    GetMacros(lexer).find(text);
-#endif  
+  
   if (it != GetMacros(lexer).end())
   {
     return it->second;
   }
   else
   {
-#ifdef wxExUSE_CPP0X	
-    const auto it = 
-      GetThemeMacros().find(text);
-#else
-    const std::map<wxString, wxString>::const_iterator it = 
-      GetThemeMacros().find(text);
-#endif	  
+    const auto it = GetThemeMacros().find(text);
 
     if (it != GetThemeMacros().end())
     {
@@ -181,11 +163,7 @@ const wxString wxExLexers::BuildWildCards(
 
   // Build the wildcard string using all available lexers.
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = m_Lexers.begin();
-#else
-    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
-#endif	
     it != m_Lexers.end();
     ++it)
   {
@@ -214,11 +192,7 @@ const wxExLexer wxExLexers::FindByFileName(
   const wxFileName& filename) const
 {
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = m_Lexers.begin();
-#else
-    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
-#endif	
     it != m_Lexers.end();
     ++it)
   {
@@ -233,12 +207,7 @@ const wxExLexer wxExLexers::FindByFileName(
 
 const wxExLexer wxExLexers::FindByName(const wxString& name) const
 {
-#ifdef wxExUSE_CPP0X	
   const auto it = m_Lexers.find(name);
-#else
-  const std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.find(name);
-#endif
-  
   return (it != m_Lexers.end() ? it->second: wxExLexer());
 }
 
@@ -304,11 +273,7 @@ const wxString wxExLexers::GetLexerExtensions() const
   wxString text;
 
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = m_Lexers.begin();
-#else
-    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
-#endif	
     it != m_Lexers.end();
     ++it)
   {
@@ -327,70 +292,19 @@ const wxString wxExLexers::GetLexerExtensions() const
 }
 
 const std::map<wxString, wxString>& wxExLexers::GetMacros(
-  const wxString& lexer) const
+  const wxString& lexer)
 {
-  const std::map<wxString, std::map<wxString, wxString> >::const_iterator it = 
-    m_Macros.find(lexer);
-  
-  if (it != m_Macros.end())
-  {
-    return it->second;
-  }
-  else
-  {
-    return m_Macros.begin()->second;
-  }
+  return m_Macros[lexer];
 }
 
-const wxString wxExLexers::GetTheme() const
+const std::map<wxString, wxString>& wxExLexers::GetThemeMacros()
 {
-  // Here the default theme is set, and used if the application
-  // is run for the first time.
-  const wxString theme = wxConfigBase::Get()->Read("theme", "studio");
-
-  // Use the theme macros, though we could also use the theme colours,
-  // as they contain the same themes.  
-#ifdef wxExUSE_CPP0X	
-  const auto it = m_ThemeMacros.find(theme);
-#else
-  std::map<wxString, std::map<wxString, wxString> >::const_iterator it = 
-    m_ThemeMacros.find(theme);
-#endif  
-    
-  if (it != m_ThemeMacros.end())
-  {
-    return theme;
-  }
-  else if (!m_ThemeMacros.empty())
-  {
-    return m_ThemeMacros.begin()->first;
-  }
-
-  // During Read we added the no theme,
-  // so use that one if we have come here.
-  return m_NoTheme;
-}
-
-const std::map<wxString, wxString>& wxExLexers::GetThemeMacros() const
-{
-#ifdef wxExUSE_CPP0X	
-  const auto it = m_ThemeMacros.find(GetTheme());
-#else
-  const std::map<wxString, std::map<wxString, wxString> >::const_iterator it = 
-    m_ThemeMacros.find(GetTheme());
-#endif
-  
-  return it->second;
+  return m_ThemeMacros[m_Theme];
 }
 
 bool wxExLexers::IndicatorIsLoaded(const wxExIndicator& indic) const
 {
-#ifdef wxExUSE_CPP0X	
   const auto it = m_Indicators.find(indic);
-#else
-  const std::set<wxExIndicator>::const_iterator it = m_Indicators.find(indic);
-#endif
-  
   return (it != m_Indicators.end());
 }
 
@@ -406,22 +320,14 @@ void wxExLexers::Initialize()
   m_Markers.clear();
   m_Styles.clear();
   m_StylesHex.clear();
-  
-  const std::map<wxString, wxString> empty_map;
-  m_Macros["global"] = empty_map;
-    
   m_ThemeColours[m_NoTheme] = m_DefaultColours;
-  m_ThemeMacros[m_NoTheme] = empty_map;
+  const std::map<wxString, wxString> empty_map;
+  m_ThemeMacros[m_NoTheme] = empty_map;  
 }
 
 bool wxExLexers::MarkerIsLoaded(const wxExMarker& marker) const
 {
-#ifdef wxExUSE_CPP0X	
   const auto it = m_Markers.find(marker);
-#else
-  const std::set<wxExMarker>::const_iterator it = m_Markers.find(marker);
-#endif
-  
   return (it != m_Markers.end());
 }
 
@@ -431,7 +337,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
 
   while (child)
   {
-    if (GetTheme() == m_NoTheme)
+    if (m_Theme == m_NoTheme)
     {
       // Do nothing.
     }
@@ -459,7 +365,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "properties")
     {
-      m_GlobalProperties = ParseNodeProperties(child);
+      wxExNodeProperties(child, m_GlobalProperties);
     }
     else if (child->GetName() == "style")
     {
@@ -511,11 +417,7 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
 
         if (!attrib.empty())
         {
-#ifdef wxExUSE_CPP0X	
           const auto it = macro_map.find(attrib);
-#else
-          const std::map<wxString, wxString>::iterator it = macro_map.find(attrib);
-#endif		
 
           if (it != macro_map.end())
           {
@@ -561,26 +463,6 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
   }
 }
 
-const std::vector<wxExProperty> wxExLexers::ParseNodeProperties(
-  const wxXmlNode* node) const
-{
-  std::vector<wxExProperty> v;
-
-  wxXmlNode *child = node->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "property")
-    {
-      v.push_back(wxExProperty(child));
-    }
-    
-    child = child->GetNext();
-  }
-
-  return v;
-}
-
 void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
 {
   std::map<wxString, wxString> tmpColours;
@@ -598,13 +480,7 @@ void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
       
       if (!style.empty())
       {
-#ifdef wxExUSE_CPP0X	
-        auto it = 
-          tmpMacros.find(style);
-#else
-        std::map<wxString, wxString>::iterator it = 
-          tmpMacros.find(style);
-#endif		  
+        auto it = tmpMacros.find(style);
 
         if (it != tmpMacros.end())
         {
@@ -727,11 +603,7 @@ bool wxExLexers::ShowDialog(
   wxArrayString s;
 
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = m_Lexers.begin();
-#else
-    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
-#endif	
     it != m_Lexers.end();
     ++it)
   {
@@ -776,11 +648,7 @@ bool wxExLexers::ShowThemeDialog(
   wxArrayString choices;
 
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = m_ThemeMacros.begin();
-#else
-    std::map<wxString, std::map<wxString, wxString> >::iterator it = m_ThemeMacros.begin();
-#endif	
     it != m_ThemeMacros.end();
     ++it)
   {
@@ -793,7 +661,7 @@ bool wxExLexers::ShowThemeDialog(
     caption,
     choices);
 
-  const int index = choices.Index(GetTheme());
+  const int index = choices.Index(m_Theme);
 
   if (index != wxNOT_FOUND)
   {
@@ -805,7 +673,8 @@ bool wxExLexers::ShowThemeDialog(
     return false;
   }
 
-  wxConfigBase::Get()->Write("theme", dlg.GetStringSelection());
+  m_Theme = dlg.GetStringSelection();
+  wxConfigBase::Get()->Write("theme", m_Theme);  
 
   return Read();
 }

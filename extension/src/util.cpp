@@ -511,6 +511,23 @@ bool wxExMatchesOneOf(const wxFileName& filename, const wxString& pattern)
   return false;
 }
 
+void wxExNodeProperties(
+  const wxXmlNode* node,
+  std::vector<wxExProperty>& properties)
+{
+  wxXmlNode *child = node->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "property")
+    {
+      properties.push_back(wxExProperty(child));
+    }
+    
+    child = child->GetNext();
+  }
+}
+
 #if wxUSE_GUI
 void wxExOpenFiles(
   wxExFrame* frame,
