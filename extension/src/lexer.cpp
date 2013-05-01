@@ -466,7 +466,7 @@ void wxExLexer::Set(const wxXmlNode* node)
       }
       else if (child->GetName() == "properties")
       {
-        m_Properties = wxExLexers::Get()->ParseNodeProperties(child);
+        wxExNodeProperties(child, m_Properties);
       }
       else if (child->GetName() == "comments")
       {

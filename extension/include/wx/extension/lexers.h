@@ -43,7 +43,7 @@ public:
   /// Otherwise the same text is returned.
   const wxString ApplyMacro(
     const wxString& text, 
-    const wxString& lexer = "global") const;
+    const wxString& lexer = "global");
 
   /// Sets markers for specified component.
   void ApplyMarkers(wxStyledTextCtrl* stc) const;
@@ -78,31 +78,25 @@ public:
   const wxFileName& GetFileName() const {return m_FileName;};
   
   /// Gets the macros for specified lexer.
-  const std::map<wxString, wxString>& GetMacros(const wxString& lexer) const;
+  const std::map<wxString, wxString>& GetMacros(const wxString& lexer);
 
   /// Gets global properties.
   const std::vector<wxExProperty> & GetProperties() const {return m_GlobalProperties;};
 
-  /// Returns the current theme, as present in the config.
-  /// It checks whether the config theme is really
-  /// present as a theme, if not, the empty theme is returned.
-  const wxString GetTheme() const;
+  /// Returns the current theme.
+  const wxString& GetTheme() const {return m_Theme;};
   
   /// Returns whether the current theme is not the empty theme.
   bool GetThemeOk() const {return GetTheme() != m_NoTheme;};
   
   /// Gets the theme macros for the current theme.
-  const std::map<wxString, wxString>& GetThemeMacros() const;
+  const std::map<wxString, wxString>& GetThemeMacros();
 
   /// Returns true if specified indicator is available.
   bool IndicatorIsLoaded(const wxExIndicator& indic) const;
 
   /// Returns true if specified marker is available.
   bool MarkerIsLoaded(const wxExMarker& marker) const;
-
-  /// Parses properties node.
-  const std::vector<wxExProperty> ParseNodeProperties(
-    const wxXmlNode* node) const;
 
   /// Reads all lexers (first clears them) from file.
   /// Returns true if the file could be read and loaded as valid xml file.
@@ -162,6 +156,7 @@ private:
 
   const wxFileName m_FileName;
   const wxString m_NoTheme;
+  wxString m_Theme;
 
   static wxExLexers* m_Self;
 };
