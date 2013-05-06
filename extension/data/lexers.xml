@@ -113,6 +113,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <def no ="word"/>
       <def no ="identifier"/>
       <def no ="number"/>
+      <def no ="delimiter"/>
       <def no ="character"/>
       <def no ="charactereol"/>
       <def no ="string"/>
