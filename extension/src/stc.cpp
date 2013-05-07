@@ -712,14 +712,8 @@ void wxExSTC::ConfigGet(bool init)
   {
     Fold();
   }
-
-  const int margin = wxConfigBase::Get()->ReadLong(
-    _("Line number"), 
-    TextWidth(wxSTC_STYLE_DEFAULT, "999999"));
-
-  SetMarginWidth(
-    m_MarginLineNumber, 
-    (wxConfigBase::Get()->ReadBool(_("Line numbers"), false) ? margin: 0));
+    
+  ShowLineNumbers(wxConfigBase::Get()->ReadBool(_("Line numbers"), false));
 
 //  SetSelectionMode(
 //    wxConfigBase::Get()->ReadLong(_("Selection mode"), wxSTC_SEL_STREAM));
@@ -2353,6 +2347,17 @@ void wxExSTC::SetText(const wxString& value)
 
   // Do not allow the text specified to be undone.
   EmptyUndoBuffer();
+}
+
+void wxExSTC::ShowLineNumbers(bool show)
+{
+  const int margin = wxConfigBase::Get()->ReadLong(
+    _("Line number"), 
+    TextWidth(wxSTC_STYLE_DEFAULT, "999999"));
+
+  SetMarginWidth(
+    m_MarginLineNumber, 
+    show ? margin: 0);
 }
 
 void wxExSTC::ShowProperties()

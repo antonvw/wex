@@ -305,6 +305,9 @@ public:
   /// Sets the text.
   void SetText(const wxString& value);
 
+  /// Shows or hides line numbers.
+  void ShowLineNumbers(bool show);
+  
   /// Starts or stops syncing.
   /// Default syncing is started during construction.
   void Sync(bool start = true);
