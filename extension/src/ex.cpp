@@ -547,11 +547,13 @@ bool wxExEx::CommandRange(const wxString& command)
 
 bool wxExEx::CommandSet(const wxString& command)
 {
-  // e.g. set ts=4
+  const bool on = !command.EndsWith("!");
+  
+  // e.g.: set ts=4
   if (command.StartsWith("ts") || command.StartsWith("tabstop"))
   {
     const int val = atoi(command.AfterFirst('='));
-    
+
     if (val > 0)
     {
       m_STC->SetTabWidth(val);
@@ -559,7 +561,18 @@ bool wxExEx::CommandSet(const wxString& command)
       return true;
     }
   }
-    
+  else if (command.StartsWith("nu") || command.StartsWith("number"))
+  {
+    m_STC->ShowLineNumbers(on);
+    return true;
+  }
+  else if (command.StartsWith("list"))
+  {
+    m_STC->SetViewEOL(on);
+    m_STC->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+    return true;
+  }
+  
   return false;
 }
 
