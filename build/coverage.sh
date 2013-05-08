@@ -9,7 +9,8 @@
 # Run this file in the build folder
 # If you did another make before, first do a make clean.
 
-TESTDIR=./gccgtk2_dll/
+TOOLKIT=`wx-config --query-toolkit`
+TESTDIR=./gcc$TOOLKIT\_dll/
 
 export CPPFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
 export LDFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"

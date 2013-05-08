@@ -6,7 +6,8 @@
 # Copyright: (c) 2011 Anton van Wezenbeek
 ################################################################################
 
-TESTDIR=./gccgtk2_dll/
+TOOLKIT=`wx-config --query-toolkit`
+TESTDIR=./gcc$TOOLKIT\_dll/
 
 ORG=$PWD
 

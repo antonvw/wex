@@ -23,7 +23,7 @@ one of these applications, being a full featured source code text editor.
     using cygwin 1.7.9:   
     `../configure --with-msw --disable-shared`  
     
-- under Ubuntu 12.10 g++ (Ubuntu/Linaro 4.7.2-2ubuntu1) 4.7.2:   
+- under Ubuntu 13.04 g++ (Ubuntu/Linaro 4.7.3-1ubuntu1) 4.7.3:   
     install gtk:   
     `sudo apt-get install libgtk2.0-dev`   or   
     `sudo apt-get install libgtk-3-dev`   
