@@ -919,11 +919,11 @@ void wxExVi::GotoBrace()
   }
 }
 
-void wxExVi::InsertMode(const wxString& command)
+bool wxExVi::InsertMode(const wxString& command)
 {
   if (command.empty())
   {
-    return;
+    return false;
   }
 
   if (command.Contains(wxUniChar(WXK_CONTROL_R) + wxString("=")))
@@ -932,20 +932,20 @@ void wxExVi::InsertMode(const wxString& command)
       command.StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("=")))
     {
       CommandCalc(command);
-      return;
+      return true;
     }
     else
     {
       InsertMode(command.BeforeFirst(wxUniChar(WXK_CONTROL_R)));
       CommandCalc(command.AfterFirst(wxUniChar(WXK_CONTROL_R)));
-      return;
+      return true;
     }
   }
   else if (RegAfter(wxUniChar(WXK_CONTROL_R), command.Mid(0, 2)))
   {
     CommandReg(command.Mid(1, 1));
     InsertMode(command.Mid(2));
-    return;
+    return true;
   }  
   
   switch ((int)command.Last())
@@ -1041,8 +1041,8 @@ void wxExVi::InsertMode(const wxString& command)
         m_InsertText.Last() == wxUniChar(WXK_CONTROL_R))
       {
         m_InsertText += command;
-        
         CommandReg(command);
+        return false;
       }
       else
       {
@@ -1057,6 +1057,8 @@ void wxExVi::InsertMode(const wxString& command)
         }
       }
   }
+  
+  return true;
 }
 
 void wxExVi::MacroRecord(const wxString& text)
@@ -1079,9 +1081,8 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   }
   else if (m_InsertMode)
   {
-    InsertMode(event.GetUnicodeKey());
-
-    return GetSTC()->GetOvertype();
+    const bool result = InsertMode(event.GetUnicodeKey());
+    return result && GetSTC()->GetOvertype();
   }
   else
   {
