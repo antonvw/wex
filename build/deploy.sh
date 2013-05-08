@@ -8,12 +8,14 @@
 
 # Run this file in the build folder
 
+TOOLKIT=`wx-config --query-toolkit`
+
 mkdir syncped
 mkdir syncped/fr_FR
 mkdir syncped/nl_NL
 
 # Copy application.
-cp gccgtk2_dll/syncped syncped
+cp gcc$TOOLKIT\_dll/syncped syncped
 
 # Copy the libs.
 cp ~/wxWidgets-2.9.5/buildgtk/lib/libwx*2.9*so*5 syncped
