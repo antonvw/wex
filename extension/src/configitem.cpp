@@ -248,6 +248,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
 {
   const int width = 200;
   const int width_numeric = 75;
+  const int width_numeric_spin = 125;
   
   switch (m_Type)
   {
@@ -455,7 +456,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Id,
         wxEmptyString,
         wxDefaultPosition,
-        wxSize(width_numeric, wxDefaultCoord),
+        wxSize(width_numeric_spin, wxDefaultCoord),
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
         m_Min,
         m_Max);
@@ -474,7 +475,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Id,
         wxEmptyString,
         wxDefaultPosition,
-        wxSize(width_numeric, wxDefaultCoord),
+        wxSize(width_numeric_spin, wxDefaultCoord),
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
         m_Min,
         m_Max,

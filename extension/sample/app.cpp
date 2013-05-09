@@ -342,7 +342,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       for (size_t sl = 1; sl <= 3; sl++)
       {
         v.push_back(wxExConfigItem(
-          wxString::Format("Slider%d", sl),
+          wxString::Format("Slider%zu", sl),
           1,
           10,
           wxEmptyString,
@@ -396,7 +396,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       for (size_t sl = 1; sl <= 6; sl++)
       {
         v.push_back(wxExConfigItem(
-          wxString::Format("Slider%d", sl),
+          wxString::Format("Slider%zu", sl),
           1,
           10,
           wxEmptyString,
@@ -432,7 +432,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   
       for (size_t j = 1; j <= 10; j++)
       {
-        v.push_back(wxExConfigItem(wxString::Format("Integer%d", j), CONFIG_INT));
+        v.push_back(wxExConfigItem(wxString::Format("Integer%zu", j), CONFIG_INT));
       }
   
       wxExConfigDialog* dlg = new wxExConfigDialog(
@@ -585,7 +585,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t b = 1; b <= 4; b++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("<span size='x-large' color='blue'>Big</span> <b>bold</b> button %d", b),
+      wxString::Format("<span size='x-large' color='blue'>Big</span> <b>bold</b> button %zu", b),
       CONFIG_BUTTON,
       "Buttons",
       false,
@@ -596,7 +596,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t h = 1; h <= 4; h++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Checkbox%d", h), 
+      wxString::Format("Checkbox%zu", h), 
       CONFIG_CHECKBOX, 
       "Checkboxes"));
   }
@@ -636,7 +636,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t i = 1; i <= 5; i++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Colour%d", i), 
+      wxString::Format("Colour%zu", i), 
       CONFIG_COLOUR, 
       "Colours"));
   }
@@ -645,7 +645,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t m = 1; m <= 5; m++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Combobox%d", m), 
+      wxString::Format("Combobox%zu", m), 
       CONFIG_COMBOBOX, 
       "Comboboxes"));
   }
@@ -680,7 +680,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t l = 1; l <= 4; l++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Command Link Button%d\tThis text describes what the button does", l),
+      wxString::Format("Command Link Button%zu\tThis text describes what the button does", l),
       CONFIG_COMMAND_LINK_BUTTON,
       "Command Link Buttons",
       false,
@@ -727,7 +727,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t j = 1; j <= 5; j++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Integer%d", j), 
+      wxString::Format("Integer%zu", j), 
       CONFIG_INT, 
       "Integers", 
       true));
@@ -755,7 +755,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t sl = start + 1; sl <= start + 3; sl++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Slider%d", sl),
+      wxString::Format("Slider%zu", sl),
       start,
       sl,
       "Spin controls",
@@ -766,7 +766,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t s = 1; s <= 2; s++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Spin Control%d", s), 
+      wxString::Format("Spin Control%zu", s), 
       1, 
       s, 
       "Spin controls"));
@@ -776,7 +776,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t sd = 1; sd <= 2; sd++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Spin Control Double%d", sd), 
+      wxString::Format("Spin Control Double%zu", sd), 
       1.0,
       (double)sd, 
       "Spin controls",
@@ -789,7 +789,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t s = 1; s <= 2; s++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Spin Control Hex%d", s), 
+      wxString::Format("Spin Control Hex%zu", s), 
       0, 
       255, 
       "Spin controls",
@@ -800,7 +800,7 @@ void wxExSampleFrame::ShowConfigItems()
   {
     // CONFIG_STATICTEXT
     v.push_back(wxExConfigItem(
-      wxString::Format("Static Text%d", st),
+      wxString::Format("Static Text%zu", st),
       "this is my static text",
       "Static Text",
       0,
@@ -825,7 +825,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t l = 1; l <= 5; l++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("String%d", l), 
+      wxString::Format("String%zu", l), 
       wxEmptyString,
       "Strings"));
   }
@@ -840,7 +840,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t tb = 1; tb <= 4; tb++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Toggle Button%d", tb),
+      wxString::Format("Toggle Button%zu", tb),
       CONFIG_TOGGLEBUTTON,
       "Toggle buttons"));
   }
