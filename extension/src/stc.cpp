@@ -1820,16 +1820,16 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
       
       BuildPopupMenu(menu);
       
-      // If last item is a separator, delete it.
-      wxMenuItem* item = menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
-      
-      if (item->IsSeparator())
-      {
-        menu.Delete(item->GetId());
-      }
-      
       if (menu.GetMenuItemCount() > 0)
       {
+        // If last item is a separator, delete it.
+        wxMenuItem* item = menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
+      
+        if (item->IsSeparator())
+        {
+          menu.Delete(item->GetId());
+        }
+      
         PopupMenu(&menu);
       }
     }
