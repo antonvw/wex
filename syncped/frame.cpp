@@ -163,7 +163,7 @@ Frame::Frame(const wxArrayString& files)
   
   if (files.empty())
   {
-    long count;
+    long count = 0;
       
     if (wxConfigBase::Get()->Read("OpenFiles", &count))
     {
