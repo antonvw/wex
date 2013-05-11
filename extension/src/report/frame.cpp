@@ -386,11 +386,11 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
   {
     wxConfigBase::Get()->DeleteGroup("RecentProject");
     
-    for (size_t i = 0; i < m_ProjectHistory.GetCount(); i++)
+    for (int i = 0; i < m_ProjectHistory.GetCount(); i++)
     {
       wxConfigBase::Get()->Write(
         wxString::Format("RecentProject/%d", i),
-        m_ProjectHistory.GetHistoryFile(i));
+        m_ProjectHistory.GetHistoryFile((size_t)i));
     }
   }
 

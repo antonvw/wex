@@ -499,14 +499,13 @@ void Frame::OnClose(wxCloseEvent& event)
   
   long count = 0;
   
-  for (int i = 0; i < m_Editors->GetPageCount(); i++)
+  for (size_t i = 0; i < m_Editors->GetPageCount(); i++)
   {
     wxExSTC* stc = wxDynamicCast(m_Editors->GetPage(i), wxExSTC);
     
     if (stc->GetFileName().FileExists())
     {
       count++;
-
     }
   }
   
