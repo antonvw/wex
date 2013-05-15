@@ -2,14 +2,13 @@
 // Name:      util.h
 // Purpose:   Include file for wxExtension report utilities
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_UTIL_H
 #define _EX_REPORT_UTIL_H
 
 #include <wx/aui/auibook.h>
-#include <wx/filename.h>
 #include <wx/extension/listitem.h>
 #include <wx/extension/textfile.h> // for wxExFileStatistics
 
