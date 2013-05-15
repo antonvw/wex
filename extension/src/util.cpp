@@ -528,6 +528,24 @@ void wxExNodeProperties(
   }
 }
 
+void wxExNodeStyles(
+  const wxXmlNode* node,
+  const wxString& lexer,
+  std::vector<wxExStyle>& styles)
+{
+  wxXmlNode* child = node->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "style")
+    {
+      styles.push_back(wxExStyle(child, lexer));
+    }
+    
+    child = child->GetNext();
+  }
+}
+
 #if wxUSE_GUI
 void wxExOpenFiles(
   wxExFrame* frame,

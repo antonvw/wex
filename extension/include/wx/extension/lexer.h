@@ -133,7 +133,6 @@ private:
     bool fill_out) const;
   const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
   void Initialize();
-  const std::vector<wxExStyle> ParseNodeStyles(const wxXmlNode* node) const;
   void Set(const wxXmlNode* node);
 
   wxString m_CommentBegin;

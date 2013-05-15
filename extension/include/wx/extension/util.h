@@ -138,6 +138,12 @@ bool wxExMatchesOneOf(const wxFileName& filename, const wxString& patterns);
 void wxExNodeProperties(
   const wxXmlNode* node,
   std::vector<wxExProperty>& properties);
+  
+/// Parses style node.
+void wxExNodeStyles(
+  const wxXmlNode* node,
+  const wxString& lexer,
+  std::vector<wxExStyle>& styles);
 
 /// Adds a caption.
 const wxString wxExPrintCaption(const wxFileName& filename);
