@@ -1527,9 +1527,7 @@ bool wxExSTC::MarkerDeleteAllChange()
   
 void wxExSTC::MarkModified(const wxStyledTextEvent& event)
 {
-  if (
-    !wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange) ||
-    event.GetText().empty())
+  if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
     return;
   }
