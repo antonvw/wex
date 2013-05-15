@@ -377,26 +377,6 @@ const wxString wxExLexer::MakeSingleLineComment(
   return out;
 }
 
-const std::vector<wxExStyle> wxExLexer::ParseNodeStyles(
-  const wxXmlNode* node) const
-{
-  std::vector<wxExStyle> text;
-
-  wxXmlNode* child = node->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "style")
-    {
-      text.push_back(wxExStyle(child, m_ScintillaLexer));
-    }
-    
-    child = child->GetNext();
-  }
-
-  return text;
-}
-
 void wxExLexer::Reset(wxStyledTextCtrl* stc)
 {
   m_ScintillaLexer.clear();
@@ -447,13 +427,7 @@ void wxExLexer::Set(const wxXmlNode* node)
     {
       if (child->GetName() == "styles")
       {
-        const std::vector<wxExStyle> v = ParseNodeStyles(child);
-      
-        // Do not assign styles to result of ParseNode,
-        // as styles might already be filled with result of automatch.
-        m_Styles.insert(
-          m_Styles.end(), 
-          v.begin(), v.end());
+        wxExNodeStyles(child, m_ScintillaLexer, m_Styles);
       }
       else if (child->GetName() == "keywords")
       {
