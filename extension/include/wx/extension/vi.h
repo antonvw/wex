@@ -40,6 +40,7 @@ public:
   /// See OnChar.
   bool OnKeyDown(const wxKeyEvent& event);
 private:
+  void AddText(const wxString& text);
   bool ChangeNumber(bool inc);
   void CommandCalc(const wxString& reg);
   bool CommandChar(int c, int repeat);

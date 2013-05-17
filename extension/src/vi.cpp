@@ -44,6 +44,20 @@ wxExVi::wxExVi(wxExSTC* stc)
 {
 }
 
+void wxExVi::AddText(const wxString& text)
+{
+  if (!GetSTC()->GetOvertype())
+  {
+    GetSTC()->AddText(text);
+  }
+  else
+  {
+    GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
+    GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + text.size());
+    GetSTC()->ReplaceTarget(text);
+  }
+}
+
 bool wxExVi::ChangeNumber(bool inc)
 {
   if (GetSTC()->HexMode())
@@ -584,8 +598,8 @@ void wxExVi::CommandCalc(const wxString& command)
     {
       GetSTC()->ReplaceSelection(wxEmptyString);
     }
-    
-    GetSTC()->AddText(wxString::Format("%.*f", width, sum));
+  
+    AddText(wxString::Format("%.*f", width, sum));
   }
   else
   {
@@ -874,7 +888,7 @@ void wxExVi::CommandReg(const wxString& reg)
   {
     if (!GetMacros().GetRegister(reg).empty())
     {
-      GetSTC()->AddText(GetMacros().GetRegister(reg));
+      AddText(GetMacros().GetRegister(reg));
     }
     else
     {
@@ -1199,7 +1213,7 @@ bool wxExVi::Put(bool after)
   }
   else
   {
-    GetSTC()->AddText(GetMacros().GetRegister(GetRegister()));
+    AddText(GetMacros().GetRegister(GetRegister()));
   }
 
   if (YankedLines() && after)
