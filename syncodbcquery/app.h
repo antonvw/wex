@@ -62,7 +62,7 @@ private:
   wxExGrid* m_Results;
   wxExSTCShell* m_Shell;
   
-  wxExStatistics <long> m_Statistics;
+  wxExStatistics <int> m_Statistics;
   wxExOTL m_otl;
   
   bool m_Running;

@@ -99,11 +99,7 @@ wxExSTCShell::~wxExSTCShell()
     int items = 0;
 
     for (
-#ifdef wxExUSE_CPP0X	
-      auto it = m_Commands.rbegin();
-#else
-      std::list < wxString >::reverse_iterator it = m_Commands.rbegin();
-#endif	  
+      auto it = m_Commands.rbegin(); 
       it != m_Commands.rend() && items < m_CommandsSaveInConfig;
       ++it)
     {
@@ -506,7 +502,7 @@ void wxExSTCShell::ProcessChar(int key)
     {
       // We have a command.
       EmptyUndoBuffer();
-
+      
       // History command.
       if (m_Command == wxString("history") +
          (m_CommandEnd == GetEOL() ? wxString(wxEmptyString): m_CommandEnd))
@@ -595,7 +591,7 @@ void wxExSTCShell::ProcessChar(int key)
   }
   
 #ifdef DEBUG
-  wxLogMessage("ProcessChar::" + GetText() + "::");
+  wxLogMessage("ProcessChar::" + GetText() + "(" + m_Command + ")::");
 #endif
 }
 
@@ -649,11 +645,7 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
     int no = 1;
 
     for (
-#ifdef wxExUSE_CPP0X	
       auto it = m_Commands.begin();
-#else
-      std::list < wxString >::iterator it = m_Commands.begin();
-#endif	  
       it != m_Commands.end();
       ++it)
     {
@@ -683,11 +675,7 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
     }
 
     for (
-#ifdef wxExUSE_CPP0X	
       auto it = m_Commands.rbegin();
-#else
-      std::list < wxString >::reverse_iterator it = m_Commands.rbegin();
-#endif	  
       it != m_Commands.rend();
       ++it)
     {
@@ -764,11 +752,7 @@ void wxExSTCShell::ShowHistory()
   int command_no = 1;
 
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = m_Commands.begin();
-#else
-    std::list < wxString >::iterator it = m_Commands.begin();
-#endif	
     it != m_Commands.end();
     ++it)
   {
@@ -789,9 +773,10 @@ void wxExSTCShell::Undo()
   if (CanUndo())
   {
     wxExSTC::Undo();
-    m_Command.clear();
   }
   
+  m_Command.clear();
+
 #ifdef DEBUG
   wxLogMessage("Undo::" + GetText() + "::");
 #endif

@@ -76,7 +76,7 @@ private:
   wxExSTC* m_LogWindow;
   wxExSTCShell* m_Shell;
 
-  wxExStatistics < long > m_Statistics;
+  wxExStatistics < int > m_Statistics;
 
   wxSocketServer* m_SocketServer;
   wxTimer m_Timer;

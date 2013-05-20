@@ -2,7 +2,7 @@
 // Name:      grid.cpp
 // Purpose:   Implementation of wxExGrid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -538,7 +538,7 @@ void wxExGrid::OnGridRange(wxGridRangeSelectEvent& event)
 
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(
-    wxString::Format("%d", GetSelectedCells().GetCount()),
+    wxString::Format("%ld", GetSelectedCells().GetCount()),
     "PaneInfo");
 #endif
 }

@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of sample classes for wxExtension
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011
+// Copyright: (c) 2013
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/app.h>
@@ -70,7 +70,7 @@ private:
   wxExSTCShell* m_STCShell;
 
   long m_FlagsSTC;
-  wxExStatistics <long> m_Statistics;
+  wxExStatistics <int> m_Statistics;
   wxExProcess m_Process;
 
   DECLARE_NO_COPY_CLASS(wxExSampleFrame)
