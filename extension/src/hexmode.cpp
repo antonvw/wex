@@ -188,14 +188,14 @@ const wxString wxExHexModeLine::GetInfo() const
         }
         else
         {
-          return wxString::Format("byte: %ld %ld", GetByte(), base16_val);
+          return wxString::Format("byte: %d %ld", GetByte(), base16_val);
         }
       }
     }
   }
   else if (IsAsciiField())
   {
-    return wxString::Format("byte: %ld", GetByte());
+    return wxString::Format("byte: %d", GetByte());
   }
   
   return wxEmptyString;
