@@ -561,6 +561,12 @@ bool wxExEx::CommandSet(const wxString& command)
       return true;
     }
   }
+  else if (command.StartsWith("ic"))
+  {
+    if (!on) m_SearchFlags |= wxSTC_FIND_MATCHCASE;
+    else     m_SearchFlags &= ~wxSTC_FIND_MATCHCASE;
+    return true;
+  }
   else if (command.StartsWith("nu") || command.StartsWith("number"))
   {
     m_STC->ShowLineNumbers(on);
