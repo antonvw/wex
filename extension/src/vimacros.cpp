@@ -526,11 +526,13 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   
   bool stop = false;
   
+  if (!m_IsPlayback && !m_IsRecording)
+  {
+    m_Macro = macro;
+    wxExFrame::StatusText(m_Macro, "PaneMacro");
+  }
+  
   m_IsPlayback = true;
-  
-  m_Macro = macro;
-  
-  wxExFrame::StatusText(m_Macro, "PaneMacro");
   
   wxBusyCursor wait;
     
