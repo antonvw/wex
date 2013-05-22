@@ -100,8 +100,8 @@ const wxString wxExViMacros::Encode(const wxString& text)
   {
     const int c = text[i];
   
-    // Encode control characters.
-    if (iscntrl(c))
+    // Encode control and whitespace characters.
+    if (iscntrl(c) || isspace(c))
     {
       output += wxString::Format("$!%d!", c);
     }
