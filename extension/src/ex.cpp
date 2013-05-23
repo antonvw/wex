@@ -744,9 +744,17 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   }
   
   wxExSTC* stc = m_STC;
+  bool ok;
   
-  const bool ok = m_Macros.Playback(this, choice, repeat);
-  
+  if (m_Macros.IsRecorded(choice))
+  {
+    ok = m_Macros.Playback(this, choice, repeat);
+  }
+  else
+  {
+    ok = m_Macros.Expand(this, choice);
+  }
+    
   m_STC = stc;
   
   return ok;

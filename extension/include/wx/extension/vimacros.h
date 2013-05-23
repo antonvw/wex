@@ -129,16 +129,15 @@ private:
   static bool m_IsExpand;
   static bool m_IsModified;
   static bool m_IsPlayback;
+  static bool m_IsRecording;
+  
+  static wxString m_Macro;
   
   /// All macros, as a map of name and a vector of commands.
   static std::map <wxString, std::vector< wxString > > m_Macros;
   
   /// All variables, as a map of name and variable.
   static std::map<wxString, wxExVariable> m_Variables;
-  
-  bool m_IsRecording;
-  
-  wxString m_Macro;
 };
 #endif // wxUSE_GUI
 #endif
