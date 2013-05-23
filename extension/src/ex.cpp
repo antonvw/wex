@@ -16,6 +16,7 @@
 #include <wx/textfile.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/defs.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
@@ -33,11 +34,16 @@ wxExEx::wxExEx(wxExSTC* stc)
   , m_Process(NULL)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
   , m_IsActive(false)
-  , m_SearchFlags(wxSTC_FIND_REGEXP | wxSTC_FIND_MATCHCASE)
+  , m_SearchFlags(wxSTC_FIND_REGEXP)
   , m_MarkerSymbol(0, -1)
   , m_FindIndicator(0, 0)
 {
   wxASSERT(m_Frame != NULL);
+  
+  if (wxExFindReplaceData::Get()->MatchCase())
+  {
+    m_SearchFlags = m_SearchFlags | wxSTC_FIND_MATCHCASE;
+  }
 }
 
 wxExEx::~wxExEx()
@@ -561,18 +567,20 @@ bool wxExEx::CommandSet(const wxString& command)
       return true;
     }
   }
-  else if (command.StartsWith("ic"))
+  else if (command.StartsWith("ic")) // ignore case
   {
     if (!on) m_SearchFlags |= wxSTC_FIND_MATCHCASE;
     else     m_SearchFlags &= ~wxSTC_FIND_MATCHCASE;
+    
+    wxExFindReplaceData::Get()->SetMatchCase(!on);
     return true;
   }
-  else if (command.StartsWith("nu") || command.StartsWith("number"))
+  else if (command.StartsWith("nu")) // number
   {
     m_STC->ShowLineNumbers(on);
     return true;
   }
-  else if (command.StartsWith("list"))
+  else if (command.StartsWith("li")) // list
   {
     m_STC->SetViewEOL(on);
     m_STC->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
