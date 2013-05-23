@@ -2,7 +2,7 @@
 // Name:      vimacros.h
 // Purpose:   Declaration of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVIMACROS_H
@@ -44,7 +44,7 @@ public:
   const wxArrayString GetRegisters() const;
   
   /// Have macros been recorded without calling SaveDocument.
-  bool IsModified() {return m_IsModified;};
+  bool IsModified() const {return m_IsModified;};
   
   /// Is macro recorded.
   /// If you do not specify a macro, then
