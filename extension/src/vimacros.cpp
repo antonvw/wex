@@ -25,12 +25,13 @@
 bool wxExViMacros::m_IsExpand = false;
 bool wxExViMacros::m_IsModified = false;
 bool wxExViMacros::m_IsPlayback = false;
+bool wxExViMacros::m_IsRecording = false;
+wxString wxExViMacros::m_Macro;
 
 std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
 std::map <wxString, wxExVariable > wxExViMacros::m_Variables;
 
 wxExViMacros::wxExViMacros()
-  : m_IsRecording(false)
 {
 }
 
@@ -153,6 +154,11 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
       wxLogStatus(_("Could not expand variable") + ": "  +  variable);
     }
   }
+
+  if (ok && m_IsRecording)
+  {
+    m_Macro = variable;
+  }
   
   return ok;
 }  
@@ -202,6 +208,10 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
   if (!ok)
   {
     wxLogStatus(_("Could not expand variable") + ": "  +  variable);
+  }
+  else if (!m_IsRecording)
+  {
+    m_Macro = variable;
   }
   
   return ok;
@@ -295,7 +305,7 @@ bool wxExViMacros::ExpandTemplate(
 
 const wxArrayString wxExViMacros::Get() const
 {
-  wxArrayString as;
+  wxSortedArrayString as;
     
   for (
     std::map<wxString, std::vector<wxString> >::const_iterator it = 
@@ -306,6 +316,15 @@ const wxArrayString wxExViMacros::Get() const
     as.Add(it->first);
   }
    
+  for (
+    std::map<wxString, wxExVariable >::iterator it = 
+    m_Variables.begin();
+    it != m_Variables.end();
+    ++it)
+  {
+    as.Add(it->first);
+  }
+  
   return as;
 }
 
