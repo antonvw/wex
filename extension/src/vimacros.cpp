@@ -568,7 +568,7 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
 
 void wxExViMacros::Record(const wxString& text, bool new_command)
 {
-  if (!m_IsRecording)
+  if (!m_IsRecording || m_IsPlayback)
   {
     return;
   }
