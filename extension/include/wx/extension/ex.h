@@ -54,10 +54,12 @@ public:
   /// Returns STC component.
   wxExSTC* GetSTC() {return m_STC;};
   
-  /// Plays back a recorded macro.
+  /// Plays back a recorded macro or expands a variable.
   /// If specified macro is empty,
-  /// it asks for the name of the macro.
-  /// Returns true if the macro was played back succesfully.
+  /// it shows a list with all macros and variables,
+  /// allowing you to choose one.
+  /// Returns true if the macro was played back 
+  /// or the variable was expanded succesfully.
   bool MacroPlayback(
     const wxString& macro = wxEmptyString,
     int repeat = 1);
@@ -68,6 +70,7 @@ public:
   /// Start recording a macro.  
   /// If specified macro is empty,
   /// it asks for the name of the macro.
+  /// You can stop recording by invoking GetMacros.StopRecording().
   void MacroStartRecording(const wxString& macro = wxEmptyString);
   
   /// Adds marker at the specified line.
