@@ -340,7 +340,7 @@ const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
   else
   {
     std::map<wxString, wxExVariable>::const_iterator it = 
-      m_Variables.find(variable);
+      m_Variables.find(macro);
     
     if (it != m_Variables.end())
     {
