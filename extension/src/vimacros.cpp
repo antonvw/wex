@@ -155,7 +155,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     }
   }
 
-  if (ok && m_IsRecording)
+  if (ok && !m_IsRecording)
   {
     m_Macro = variable;
   }
@@ -339,8 +339,20 @@ const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
   }
   else
   {
-    std::vector<wxString> empty;
-    return empty;
+    std::map<wxString, wxExVariable>::const_iterator it = 
+      m_Variables.find(variable);
+    
+    if (it != m_Variables.end())
+    {
+      std::vector<wxString> v;
+      v.push_back(it->second.GetValue());
+      return v;
+    }
+    else
+    {
+      std::vector<wxString> empty;
+      return empty;
+    }
   }
 }
 

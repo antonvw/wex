@@ -28,22 +28,25 @@ public:
   /// Default constructor.
   wxExViMacros();
   
-  /// Returns all macros (names) as an array of strings.
+  /// Returns all macro or variable names as an array of strings.
   const wxArrayString Get() const;
   
-  /// Returns contents of macro (for testing).
+  /// Returns contents of macro or variable.
   const std::vector< wxString > Get(const wxString& macro) const;
   
-  /// Returns current or last macro played back.
+  /// Returns current or last macro played back or variable expanded.
   const wxString& GetMacro() const {return m_Macro;};
   
   /// Returns register.
   const wxString GetRegister(const wxString& name) const;
 
-  /// Returns all registers as an array of strings.
+  /// Returns all registers (macros with content) as an array of strings.
+  /// The difference with Get() is, that this method 
+  /// does not add variables, but adds the macro contents as well.
   const wxArrayString GetRegisters() const;
   
-  /// Have macros been recorded without calling SaveDocument.
+  /// Have macros been recorded or variables 
+  /// expanded without calling SaveDocument.
   bool IsModified() const {return m_IsModified;};
   
   /// Is macro recorded.
@@ -60,7 +63,13 @@ public:
   
   /// Plays back macro a number of repeat times on the ex component.
   /// Returns true if all records could be executed.
-  bool Playback(wxExEx* ex, const wxString& macro, int repeat = 1);
+  bool Playback(
+    /// ex component to use
+    wxExEx* ex, 
+    /// macro name
+    const wxString& macro, 
+    /// number of times this maco is executed
+    int repeat = 1);
   
   /// Records text to current macro as a new command.
   /// The text to be recorded should be valid ex command,
@@ -75,11 +84,11 @@ public:
     /// the text is appended after the last command
     bool new_command = true);
   
-  /// Sets register.
+  /// Sets register (overwrites existing macro).
   void SetRegister(const wxString& name, const wxString& value);
   
-  /// Starts recording a macro (overwrites 
-  /// existing macro if macro starts with lower case).
+  /// Starts recording a macro (appends to 
+  /// existing macro if macro is single upper case character).
   void StartRecording(const wxString& macro);
   
   /// Stops recording.
@@ -100,6 +109,8 @@ public:
     wxString& value);
   
   /// Expands template variable.
+  /// Returns true if the template file name exists,
+  /// and all variables in it could be expanded.
   static bool ExpandTemplate(
     /// ex component to use
     wxExEx* ex, 
