@@ -447,16 +447,7 @@ bool wxExVi::Command(const wxString& command)
       
     if (wxExMatch("@(.+)@", rest, v) > 0)
     {
-      const wxString macro = v[0];
-        
-      if (GetMacros().IsRecorded(macro))
-      {
-        handled = MacroPlayback(macro, repeat);
-      }
-      else
-      {
-        handled = GetMacros().Expand(this, macro);
-      }
+      handled = MacroPlayback(v[0], repeat);
       
       if (!handled)
       {

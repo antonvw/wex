@@ -712,17 +712,17 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
     return false;
   }
   
-  const wxArrayString macros(m_Macros.Get());
-  
-  if (macros.size() == 0)
-  {
-    return false;
-  }
-  
   wxString choice(macro);
   
   if (choice.empty())
   {
+    const wxArrayString macros(m_Macros.Get());
+  
+    if (macros.size() == 0)
+    {
+      return false;
+    }
+  
     wxSingleChoiceDialog dialog(m_STC,
       _("Input") + ":", 
       _("Select Macro"),
