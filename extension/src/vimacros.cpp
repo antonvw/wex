@@ -328,6 +328,11 @@ const wxArrayString wxExViMacros::Get() const
   return as;
 }
 
+int wxExViMacros::GetCount() const
+{
+  return m_Macros.size() + m_Variables.size();
+}
+
 const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
 {
   std::map<wxString, std::vector< wxString > >::const_iterator it = 

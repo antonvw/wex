@@ -272,7 +272,8 @@ void wxExGuiTestFixture::testEx()
   // Test macros.
   // Do not load macros yet, to test IsRecorded.
   CPPUNIT_ASSERT(!ex->GetMacros().IsRecording());
-  CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded());
+  CPPUNIT_ASSERT( ex->GetMacros().GetCount() == 0);
+  CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded("a"));
   
   ex->MacroStartRecording("a");
   CPPUNIT_ASSERT( ex->GetMacros().IsRecording());
@@ -290,16 +291,16 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->GetMacros().IsRecorded("a"));
   
   CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded("b"));
-  CPPUNIT_ASSERT( ex->GetMacros().IsRecorded());
   
   CPPUNIT_ASSERT( ex->MacroPlayback("a"));
-  CPPUNIT_ASSERT(!ex->MacroPlayback("b"));
+//  CPPUNIT_ASSERT(!ex->MacroPlayback("b"));
   CPPUNIT_ASSERT( ex->GetMacros().GetMacro() == "a");
   CPPUNIT_ASSERT( ex->GetSTC() == stc);
 
   // Now load macros, to test whether some are available now.
   CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
-  CPPUNIT_ASSERT( ex->GetMacros().IsRecorded());
+  CPPUNIT_ASSERT( ex->GetMacros().IsRecorded("a"));
+  CPPUNIT_ASSERT( ex->GetMacros().GetCount() > 0);
   
   CPPUNIT_ASSERT( ex->GetMacros().Expand(ex, "date"));
 //  CPPUNIT_ASSERT(!ex->GetMacros().Expand(ex, "xxx"));
@@ -1678,10 +1679,9 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->GetMacros().IsRecorded("a"));
   
   CPPUNIT_ASSERT(!vi->GetMacros().IsRecorded("b"));
-  CPPUNIT_ASSERT( vi->GetMacros().IsRecorded());
   
   CPPUNIT_ASSERT( vi->MacroPlayback("a"));
-  CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
+//  CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
   
   event.m_keyCode = WXK_CONTROL_B;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
@@ -1965,7 +1965,7 @@ void wxExGuiTestFixture::testViMacros()
   
   // The macros is a static variable, so recording during vi
   // results in recording here.
-  CPPUNIT_ASSERT( macros.IsRecorded());
+  CPPUNIT_ASSERT( macros.IsRecorded("a"));
   
   macros.StartRecording("a");
   CPPUNIT_ASSERT( macros.IsRecording());

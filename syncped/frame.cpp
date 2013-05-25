@@ -1116,7 +1116,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         case ID_EDIT_MACRO_PLAYBACK:
           event.Enable(
              editor->GetVi().GetIsActive() &&
-             editor->GetVi().GetMacros().IsRecorded() && 
+             editor->GetVi().GetMacros().GetCount() > 0 &&
             !editor->GetVi().GetMacros().IsRecording());
           break;
         case ID_EDIT_MACRO_START_RECORD:
