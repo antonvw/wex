@@ -173,7 +173,10 @@ Frame::Frame(const wxArrayString& files)
       {
         for (int i = count - 1; i >= 0; i--)
         {
-          ar.Add(GetFileHistory().GetHistoryFile(i));
+          if (i < GetFileHistory().GetCount())
+          {
+            ar.Add(GetFileHistory().GetHistoryFile(i));
+          }
         }  
           
         wxExOpenFiles(this, ar);
