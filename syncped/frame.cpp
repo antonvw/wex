@@ -1451,9 +1451,20 @@ void Frame::StatusBarClickedRight(const wxString& pane)
       return;
     }
     
-    OpenFile(wxExViMacros::GetFileName(),
-      0,
-      "macro name=\"" + GetStatusText(pane));
+    const wxString  macro(GetStatusText(pane));
+      
+    if (stc->GetVi().GetMacros().IsRecordedMacro(macro))
+    {
+      OpenFile(wxExViMacros::GetFileName(),
+        0,
+        "macro name=\"" + macro);
+    }
+    else
+    {
+      OpenFile(wxExViMacros::GetFileName(),
+        0,
+        "variable name=\"" + macro);
+    }
   }
   else if (pane == "PaneVCS")
   {
