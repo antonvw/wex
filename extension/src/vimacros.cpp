@@ -155,9 +155,14 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     }
   }
 
-  if (ok && !m_IsRecording)
+  if (ok)
   {
-    m_Macro = variable;
+    wxLogStatus(_("Variable expanded"));
+  
+    if (!m_IsRecording)
+    {
+      m_Macro = variable;
+    }
   }
   
   return ok;
@@ -209,9 +214,14 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
   {
     wxLogStatus(_("Could not expand variable") + ": "  +  variable);
   }
-  else if (!m_IsRecording)
+  else 
   {
-    m_Macro = variable;
+    wxLogStatus(_("Variable expanded"));
+  
+    if (!m_IsRecording)
+    {
+      m_Macro = variable;
+    }
   }
   
   return ok;
