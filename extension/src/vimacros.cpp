@@ -435,14 +435,15 @@ const wxArrayString wxExViMacros::GetRegisters() const
 
 bool wxExViMacros::IsRecorded(const wxString& macro) const
 {
-  if (macro.empty())
-  {
-    return !m_Macros.empty();
-  }
-  else
-  {
-    return !Get(macro).empty();
-  }
+  return !Get(macro).empty();
+}
+
+bool wxExViMacros::IsRecordedMacro(const wxString& macro) const
+{
+  std::map<wxString, std::vector< wxString > >::const_iterator it = 
+    m_Macros.find(macro);
+    
+  return it != m_Macros.end();
 }
 
 bool wxExViMacros::Load(wxXmlDocument& doc)
@@ -536,7 +537,7 @@ bool wxExViMacros::LoadDocument()
 
 bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
 {
-  if (!IsRecorded(macro) || macro.empty())
+  if (!IsRecordedMacro(macro))
   {
     wxLogStatus(_("Unknown macro") + ": "  +  macro);
     return false;

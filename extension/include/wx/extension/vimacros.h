@@ -49,11 +49,11 @@ public:
   /// expanded without calling SaveDocument.
   bool IsModified() const {return m_IsModified;};
   
+  /// Is macro or variable recorded.
+  bool IsRecorded(const wxString& macro) const;
+  
   /// Is macro recorded.
-  /// If you do not specify a macro, then
-  /// returns true if any macro has been recorded,
-  /// otherwise true if specified macro has been recorded.
-  bool IsRecorded(const wxString& macro = wxEmptyString) const;
+  bool IsRecordedMacro(const wxString& macro) const;
   
   /// Are we playing back?
   bool IsPlayback() const {return m_IsPlayback;};
