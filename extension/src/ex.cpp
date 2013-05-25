@@ -746,7 +746,7 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   wxExSTC* stc = m_STC;
   bool ok;
   
-  if (m_Macros.IsRecorded(choice))
+  if (m_Macros.IsRecordedMacro(choice))
   {
     ok = m_Macros.Playback(this, choice, repeat);
   }
@@ -756,6 +756,11 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   }
     
   m_STC = stc;
+  
+  if (ok)
+  {
+    m_Frame->StatusText(m_Macros.GetMacro(), "PaneMacro");
+  }
   
   return ok;
 }
