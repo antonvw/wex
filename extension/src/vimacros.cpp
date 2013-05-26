@@ -253,6 +253,10 @@ bool wxExViMacros::ExpandTemplate(
     wxLogError("Could not open template file: " + filename.GetFullPath());
     return false;
   }
+
+  // Keep current macro, in case you cancel expanding,
+  // this one is restored.
+  wxString macro = m_Macro;
   
   wxTextInputStream text(input);
   
@@ -285,12 +289,14 @@ bool wxExViMacros::ExpandTemplate(
       
       if (!completed)
       {
+        m_Macro = macro;
         return false;
       }
       
       // Prevent recursion.
       if (variable == v.GetName())
       {
+        m_Macro = macro;
         return false;
       }
       
@@ -298,6 +304,7 @@ bool wxExViMacros::ExpandTemplate(
       
       if (!Expand(ex, variable, value))
       {
+        m_Macro = macro;
         return false;
       }
       
@@ -309,6 +316,11 @@ bool wxExViMacros::ExpandTemplate(
 
   // Set back to normal value.  
   AskForInput();
+    
+  if (!m_IsRecording)
+  {
+    m_Macro = v.GetName();
+  }
     
   return true;
 }
