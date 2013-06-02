@@ -314,5 +314,5 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     stats += wxExRun(wxExListItem(this, i), tool).GetElements();
   }
 
-  tool.Log(&stats);
+  wxLogStatus(tool.Info(&stats));
 }
