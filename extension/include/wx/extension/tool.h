@@ -2,7 +2,7 @@
 // Name:      tool.h
 // Purpose:   Declaration of wxExTool classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXTOOL_H
@@ -10,7 +10,6 @@
 
 #include <map>
 #include <wx/extension/defs.h>
-#include <wx/filename.h>
 
 /// This class defines our tool info.
 /// It is stored in the tool info map available from the wxExTool class.
@@ -51,7 +50,7 @@ public:
   wxExTool(int id = -1);
 
   /// Adds your own info to the tool.
-  /// If you use a %ld in the info string, it is replaced by GetStatistics
+  /// If you use a %d in the info string, it is replaced by GetStatistics
   /// with the Actions Completed element.
   void AddInfo(
     int tool_id,
@@ -78,7 +77,7 @@ public:
     return m_Id > ID_TOOL_REPORT_FIRST && m_Id < ID_TOOL_REPORT_LAST;}
 
   /// Logs the statistics to the statusbar.
-  void Log(const wxExStatistics<long>* stat) const;
+  void Log(const wxExStatistics<int>* stat) const;
 private:
   const int m_Id;
   static std::map < int, wxExToolInfo > m_ToolInfo;

@@ -31,18 +31,18 @@ public:
   const wxString Get() const {return m_Elements.Get();};
 
   /// Gets the key, if not present 0 is returned.
-  long Get(const wxString& key) const {
+  int Get(const wxString& key) const {
 #ifdef wxExUSE_CPP0X  
     const auto it = m_Elements.GetItems().find(key);
 #else
-    std::map<wxString, long>::const_iterator it = m_Elements.GetItems().find(key);  
+    std::map<wxString, int>::const_iterator it = m_Elements.GetItems().find(key);  
 #endif  
     return (it != m_Elements.GetItems().end() ? it->second: 0);};
 
   /// Gets the elements.
-  const wxExStatistics<long>& GetElements() const {return m_Elements;};
+  const wxExStatistics<int>& GetElements() const {return m_Elements;};
 private:
-  wxExStatistics<long> m_Elements;
+  wxExStatistics<int> m_Elements;
 };
 
 /// Adds file tool methods to wxTextFile.
@@ -78,7 +78,7 @@ protected:
   virtual void Report(size_t WXUNUSED(line)) {;};
 protected:
   /// Increments the actions completed.
-  void IncActionsCompleted(long inc_value = 1) {
+  void IncActionsCompleted(int inc_value = 1) {
     m_Stats.m_Elements.Inc(_("Actions Completed"), inc_value);};
     
   /// Increments statistics keyword.

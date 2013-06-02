@@ -2,7 +2,7 @@
 // Name:      tool.cpp
 // Purpose:   Implementation of wxExTool class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -19,9 +19,9 @@ wxExTool::wxExTool(int type)
 {
   if (m_ToolInfo.empty())
   {
-    AddInfo(ID_TOOL_REPORT_FIND, _("Found %ld matches in"));
-    AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %ld matches in"));
-    AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %ld keywords in"), _("Report &Keyword"));
+    AddInfo(ID_TOOL_REPORT_FIND, _("Found %d matches in"));
+    AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %d matches in"));
+    AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %d keywords in"), _("Report &Keyword"));
   }
 }
 
@@ -41,11 +41,11 @@ const wxString wxExTool::Info() const
   return wxEmptyString;
 }
 
-void wxExTool::Log(const wxExStatistics<long>* stat) const
+void wxExTool::Log(const wxExStatistics<int>* stat) const
 {
   wxString logtext(Info());
 
-  if (logtext.Contains("%ld"))
+  if (logtext.Contains("%d"))
   {
     logtext = logtext.Format(logtext, stat->Get(_("Actions Completed")));
   }

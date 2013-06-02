@@ -2,7 +2,7 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of class wxExDir and wxExDirOpenFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -18,8 +18,11 @@ class wxExDirTraverser: public wxDirTraverser
 public:
   wxExDirTraverser(wxExDir& dir)
     : m_Dir(dir){;}
+  
+  // Calling Yield on Linux Mint causes the app to hang,
+  // so enabled it only for MSW.
 
-  virtual wxDirTraverseResult OnDir(const wxString& dirname)
+  virtual wxDirTraverseResult OnDir(const wxString& dirname) override
   {
     if (m_Dir.Cancelled())
     {
@@ -33,13 +36,15 @@ public:
 
     if (wxTheApp != NULL)
     {
+#ifdef __WXMSW__      
       wxTheApp->Yield();
+#endif      
     }
 
     return wxDIR_CONTINUE;
   }
 
-  virtual wxDirTraverseResult OnFile(const wxString& filename)
+  virtual wxDirTraverseResult OnFile(const wxString& filename) override
   {
     if (m_Dir.Cancelled())
     {
@@ -53,7 +58,9 @@ public:
 
     if (wxTheApp != NULL)
     {
+#ifdef __WXMSW__
       wxTheApp->Yield();
+#endif      
     }
 
     return wxDIR_CONTINUE;

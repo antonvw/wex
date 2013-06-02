@@ -2,7 +2,7 @@
 // Name:      textfile.cpp
 // Purpose:   Implementation of class wxExTextFileWithListView
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype> // for isspace
@@ -223,8 +223,8 @@ bool wxExTextFileWithListView::Parse()
     wxExListItem item(m_Report, GetFileName());
     item.Insert();
 
-    long total = 0;
-    long col = 1;
+    int total = 0;
+    int col = 1;
     
     for (
       std::set<wxString>::const_iterator setit = 
@@ -232,19 +232,15 @@ bool wxExTextFileWithListView::Parse()
       setit != GetFileName().GetLexer().GetKeywords().end();
       ++setit)
     {
-      const wxExStatistics<long>& stat = GetStatistics().GetElements();
-#ifdef wxExUSE_CPP0X	
+      const wxExStatistics<int>& stat = GetStatistics().GetElements();
       const auto it = stat.GetItems().find(*setit);
-#else
-      std::map<wxString,long>::const_iterator it = stat.GetItems().find(*setit);
-#endif	  
       
       if (it != stat.GetItems().end())
       {
         m_Report->SetItem(
           item.GetId(), 
           col, 
-          wxString::Format("%ld", it->second));
+          wxString::Format("%d", it->second));
           
         total += it->second;
       }
@@ -255,7 +251,7 @@ bool wxExTextFileWithListView::Parse()
     m_Report->SetItem(
       item.GetId(),
       col,
-      wxString::Format("%ld", total));
+      wxString::Format("%d", total));
   }
 
   return true;
@@ -487,7 +483,7 @@ void wxExTextFileWithListView::Report(size_t line)
   wxExListItem item(m_Report, GetFileName());
   item.Insert();
 
-  item.SetItem(_("Line No"), wxString::Format("%d", line + 1));
+  item.SetItem(_("Line No"), wxString::Format("%d", (int)line + 1));
 
   switch (GetTool().GetId())
   {

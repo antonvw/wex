@@ -459,6 +459,7 @@ void wxExGuiTestFixture::testGrid()
   
   grid->ClearSelection();
   grid->EmptySelection();
+  grid->SetFocus();
   
   CPPUNIT_ASSERT( grid->FindNext("test1"));
   CPPUNIT_ASSERT(!grid->FindNext("text1"));
@@ -1386,7 +1387,7 @@ void wxExGuiTestFixture::testTextFile()
   const long elapsed = sw.TimeInMicro().ToLong();
   
   Report(wxString::Format(
-    "wxExTextFile::matching %ld items in %ld us", 
+    "wxExTextFile::matching %d items in %ld us", 
     textFile.GetStatistics().Get(_("Actions Completed")), elapsed).ToStdString());
     
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
@@ -1403,7 +1404,7 @@ void wxExGuiTestFixture::testTextFile()
   const long elapsed2 = sw2.TimeInMicro().ToLong();
   
   Report(wxString::Format(
-    "wxExTextFile::replacing %ld items in %ld us", 
+    "wxExTextFile::replacing %d items in %ld us", 
     textFile2.GetStatistics().Get(_("Actions Completed")), elapsed2).ToStdString());
     
   CPPUNIT_ASSERT(!textFile2.GetStatistics().GetElements().GetItems().empty());

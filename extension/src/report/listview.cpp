@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of class wxExListViewWithFrame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -307,7 +307,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     return;
   }
 
-  wxExStatistics<long> stats;
+  wxExStatistics<int> stats;
 
   for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
   {
