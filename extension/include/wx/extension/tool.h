@@ -68,6 +68,9 @@ public:
   /// Gets info about current tool.
   const wxString Info() const;
 
+  /// Gets info about current tool using specified statistics.
+  const wxString Info(const wxExStatistics<int>* stat) const;
+  
   /// Is this tool a find type.
   bool IsFindType() const {
     return m_Id == ID_TOOL_REPORT_FIND || m_Id == ID_TOOL_REPORT_REPLACE;}
@@ -75,9 +78,6 @@ public:
   /// Is this tool a report type.
   bool IsReportType() const {
     return m_Id > ID_TOOL_REPORT_FIRST && m_Id < ID_TOOL_REPORT_LAST;}
-
-  /// Logs the statistics to the statusbar.
-  void Log(const wxExStatistics<int>* stat) const;
 private:
   const int m_Id;
   static std::map < int, wxExToolInfo > m_ToolInfo;

@@ -41,7 +41,7 @@ const wxString wxExTool::Info() const
   return wxEmptyString;
 }
 
-void wxExTool::Log(const wxExStatistics<int>* stat) const
+const wxString wxExTool::Info(const wxExStatistics<int>* stat) const
 {
   wxString logtext(Info());
 
@@ -52,5 +52,5 @@ void wxExTool::Log(const wxExStatistics<int>* stat) const
 
   logtext << " " << stat->Get(_("Files")) << " " << _("file(s)");
 
-  wxLogStatus(logtext);
+  return logtext;
 }

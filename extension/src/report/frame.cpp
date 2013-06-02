@@ -260,7 +260,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 
   dir.FindFiles();
 
-  tool.Log(&dir.GetStatistics().GetElements());
+  wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
 }
 
 bool wxExFrameWithHistory::FindInFiles(
@@ -308,7 +308,7 @@ bool wxExFrameWithHistory::FindInFiles(
     }
   }
   
-  tool.Log(&stats);
+  wxLogStatus(tool.Info(&stats));
   
   return true;
 }
