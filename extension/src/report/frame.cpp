@@ -94,15 +94,6 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
 
 wxExFrameWithHistory::~wxExFrameWithHistory()
 {
-  if (m_FiFDialog != NULL)
-  {
-    m_FiFDialog->Destroy();
-  }
-  
-  if (m_RiFDialog != NULL)
-  {
-    m_RiFDialog->Destroy();
-  }
 }
 
 void wxExFrameWithHistory::ClearFileHistory()
@@ -293,7 +284,7 @@ bool wxExFrameWithHistory::FindInFiles(
     return false;
   }
   
-  wxExStatistics<long> stats;
+  wxExStatistics<int> stats;
   
   for (int i = 0; i < files.GetCount(); i++)
   {

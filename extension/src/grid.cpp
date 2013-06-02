@@ -242,7 +242,7 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
   {
     start_row = 0;
   }
-
+  
   wxGridCellCoords match;
 
   for (int j = start_col; j != end_col && !match; (find_next ? j++: j--))
@@ -277,16 +277,18 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
 
   if (!match)
   {
+    bool result = false;
+    
     wxExFindResult(text, find_next, recursive);
     
     if (!recursive)
     {
       recursive = true;
-      FindNext(text, find_next);
+      result = FindNext(text, find_next);
       recursive = false;
     }
     
-    return false;
+    return result;
   }
   else
   {

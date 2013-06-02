@@ -94,10 +94,6 @@ wxExFrame::~wxExFrame()
   
   wxConfigBase::Get()->Write("ShowMenuBar", 
     GetMenuBar() != NULL && GetMenuBar()->IsShown());
-
-#if wxUSE_STATUSBAR
-  delete m_StatusBar;
-#endif
 }
 
 wxExGrid* wxExFrame::GetGrid()

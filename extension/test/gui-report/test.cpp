@@ -232,7 +232,7 @@ wxExTestSuite::wxExTestSuite()
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testDirWithListView",
     &wxExGuiReportTestFixture::testDirWithListView));
-    
+
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testFrameWithHistory",
     &wxExGuiReportTestFixture::testFrameWithHistory));
