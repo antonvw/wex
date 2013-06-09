@@ -926,13 +926,18 @@ void Frame::OnCommand(wxCommandEvent& event)
       TogglePane("ASCIITABLE"); 
     }
     break;
+    
   case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL"); break;
-  case ID_VIEW_FILES: TogglePane("FILES"); 
+  
+  case ID_VIEW_FILES: 
+    TogglePane("FILES"); 
+    
     if (!GetManager().GetPane("FILES").IsShown())
     {
       if (GetManager().GetPane("PROJECTS").IsShown())
       {
         GetManager().GetPane("PROJECTS").Maximize();
+        GetManager().Update();
       }
     }
     break;
@@ -960,7 +965,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     if (m_Projects == NULL)
     {
       AddPaneProjects();
-      NewFile(true);
+      NewFile(true); // calls manager update 
     }
     else
     {
