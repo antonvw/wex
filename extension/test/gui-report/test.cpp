@@ -47,7 +47,7 @@ void wxExGuiReportTestFixture::testDirTool()
 
   dir.FindFiles();
 
-  tool.Log(&dir.GetStatistics().GetElements());
+  wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
 }
 
 void wxExGuiReportTestFixture::testDirWithListView()

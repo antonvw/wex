@@ -616,16 +616,23 @@ void wxExGuiTestFixture::testLexer()
   lexer.SetProperty("test", "value");
   
   CPPUNIT_ASSERT( lexer.ApplyLexer("pascal", stc));
+  CPPUNIT_ASSERT( lexer.GetDisplayLexer() == "pascal");
+  CPPUNIT_ASSERT( lexer.GetScintillaLexer() == "pascal");
   CPPUNIT_ASSERT(!lexer.CommentComplete("(*test").empty());
   CPPUNIT_ASSERT( lexer.CommentComplete("(*test").EndsWith("     *)"));
+  
+  lexer.Reset(stc);
+  CPPUNIT_ASSERT( lexer.GetDisplayLexer().empty());
+  CPPUNIT_ASSERT( lexer.GetScintillaLexer().empty());
 }
 
 void wxExGuiTestFixture::testLexers()
 {
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
   
-  CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
+  CPPUNIT_ASSERT( wxExLexers::Get() != NULL);
   
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetCount() > 0);
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("XXX") == "XXX");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("mark_lcorner") == "10");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number") == "fore:red");
@@ -1201,10 +1208,14 @@ void wxExGuiTestFixture::testSTC()
   
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
   
-  CPPUNIT_ASSERT(stc->GetText() == "hello stc");
-  CPPUNIT_ASSERT(stc->FindNext(wxString("hello"))); // necessary ??
+  CPPUNIT_ASSERT( stc->GetText() == "hello stc");
+  CPPUNIT_ASSERT( stc->FindNext(wxString("hello")));
   
-  CPPUNIT_ASSERT(stc->AllowChangeIndicator());
+  CPPUNIT_ASSERT(!stc->FindNext(wxString("%d")));
+  CPPUNIT_ASSERT(!stc->FindNext(wxString("%ld")));
+  CPPUNIT_ASSERT(!stc->FindNext(wxString("%q")));
+  
+  CPPUNIT_ASSERT( stc->AllowChangeIndicator());
   
   stc->AppendText("more text");
   
@@ -1423,6 +1434,16 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetEndOfText("test", 3).size() == 3);
   CPPUNIT_ASSERT( wxExGetEndOfText("testtest", 3).size() == 3);
   
+  CPPUNIT_ASSERT( wxExGetFindResult("test", true, true).Contains("test"));
+  CPPUNIT_ASSERT( wxExGetFindResult("test", true, false).Contains("test"));
+  CPPUNIT_ASSERT( wxExGetFindResult("test", false, true).Contains("test"));
+  CPPUNIT_ASSERT( wxExGetFindResult("test", false, false).Contains("test"));
+  
+  CPPUNIT_ASSERT( wxExGetFindResult("%d", true, true).Contains("%d"));
+  CPPUNIT_ASSERT( wxExGetFindResult("%d", true, false).Contains("%d"));
+  CPPUNIT_ASSERT( wxExGetFindResult("%d", false, true).Contains("%d"));
+  CPPUNIT_ASSERT( wxExGetFindResult("%d", false, false).Contains("%d"));
+  
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test") == 1);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\n") == 2);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest") == 2);
@@ -1446,6 +1467,10 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.txt"));
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   
+  CPPUNIT_ASSERT( wxExQuoted("test") == "'test'");
+  CPPUNIT_ASSERT( wxExQuoted("%d") == "'%d'");
+  CPPUNIT_ASSERT( wxExQuoted(wxExSkipWhiteSpace(wxString(" %d "))) == "'%d'");
+      
   CPPUNIT_ASSERT( wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
   CPPUNIT_ASSERT(!wxExTranslate(
     "hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));

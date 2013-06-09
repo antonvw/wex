@@ -415,7 +415,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   }
   else
   {
-    wxExFindResult(text, find_next, recursive);
+    wxExFrame::StatusText(wxExGetFindResult(text, find_next, recursive), wxEmptyString);
     
     if (!recursive)
     {

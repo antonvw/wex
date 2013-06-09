@@ -974,7 +974,7 @@ bool wxExSTC::FindNext(
 
   if (SearchInTarget(text) == -1)
   {
-    wxExFindResult(text, find_next, recursive);
+    wxExFrame::StatusText(wxExGetFindResult(text, find_next, recursive), wxEmptyString);
     
     bool found = false;
     
