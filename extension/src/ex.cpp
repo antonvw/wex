@@ -284,7 +284,10 @@ bool wxExEx::CommandGlobal(const wxString& search)
   const wxString command = next.GetNextToken();
   const wxString skip = next.GetNextToken();
   const wxString replacement = next.GetNextToken();
+  const int linecount = m_STC->GetLineCount();
   
+  int nr_replacements = 0;
+
   wxString print;
   
   m_STC->SetIndicatorCurrent(m_FindIndicator.GetNo());
@@ -324,6 +327,8 @@ bool wxExEx::CommandGlobal(const wxString& search)
       m_STC->ReplaceTargetRE(replacement); // always RE!
       m_STC->SetTargetStart(m_STC->GetTargetEnd());
       m_STC->SetTargetEnd(m_STC->GetTextLength());
+        
+      nr_replacements++;
       
       if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
       {
@@ -336,9 +341,23 @@ bool wxExEx::CommandGlobal(const wxString& search)
     }
   }
   
-  if (command == "p")
+  if (command == "d")
+  {
+    if (linecount - m_STC->GetLineCount() > 0)
+    {
+      m_Frame->ShowExMessage(
+        wxString::Format(_("%d fewer lines"), 
+        linecount - m_STC->GetLineCount()));
+    }
+  }
+  else if (command == "p")
   {
     m_Frame->OpenFile("print", print);
+  }
+  else if (command == 's')
+  {
+    m_Frame->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
+      nr_replacements, pattern.c_str()));
   }
 
   m_STC->EndUndoAction();
