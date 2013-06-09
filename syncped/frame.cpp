@@ -1427,9 +1427,18 @@ void Frame::StatusBarClickedRight(const wxString& pane)
     {
       wxExSTC* stc = GetSTC();
     
-      if (stc != NULL && !stc->GetLexer().GetScintillaLexer().empty())
+      if (stc != NULL)
       {
-        match = "name=\"" + stc->GetLexer().GetScintillaLexer();
+        if (
+          !stc->GetLexer().GetScintillaLexer().empty() && 
+           stc->GetLexer().GetScintillaLexer() == stc->GetLexer().GetDisplayLexer())
+        {
+          match = "name=\"" + stc->GetLexer().GetScintillaLexer();
+        }
+        else if (!stc->GetLexer().GetDisplayLexer().empty())
+        {
+          match = "display=\"" + stc->GetLexer().GetDisplayLexer();
+        }
       }
     }
     else

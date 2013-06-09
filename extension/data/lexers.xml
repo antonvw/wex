@@ -1975,14 +1975,6 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="ave"/>
   <lexer name="avs"/>
   <lexer name="baan"/>
-  <lexer name="bash" display="rfw" extensions="TCS*.txt"> 
-    <keywords> 
-    Library Resource Variables Documentation Metadata Suite Setup Suite Teardown 
-    Precondition Postcondition Force Tags
-    Default Test Template Timeout
-    </keywords>
-    <comments begin1="#" />
-  </lexer>
   <lexer name="bash" extensions="*.bash;.bash*;*.sh;Doxyfile"> 
     <keywords>    
     alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
@@ -1990,6 +1982,14 @@ Copyright: (c) 2013, Anton van Wezenbeek
     help history if in jobs kill logout mount pwd rm select set sleep source 
     tail test then
     time ulimit umount umask unalias unset until while
+    </keywords>
+    <comments begin1="#" />
+  </lexer>
+  <lexer name="bash" display="rfw" extensions="TCS*.txt"> 
+    <keywords> 
+    Library Resource Variables Documentation Metadata Suite Setup Suite Teardown 
+    Precondition Postcondition Force Tags
+    Default Test Template Timeout
     </keywords>
     <comments begin1="#" />
   </lexer>
@@ -2010,36 +2010,6 @@ Copyright: (c) 2013, Anton van Wezenbeek
   </lexer>
   <lexer name="coffeescript"/>
   <lexer name="conf"/>
-  <lexer name="cpp" display="c#" extensions="*.cs">
-    <keywords>
-abstract      as         base          bool         break
-Byte          case       catch         char         checked
-class         const      continue      decimal      default
-delegate      do         double        else         enum
-event         explicit   extern        false        finally
-fixed         float      for           foreach      goto
-if            implicit   in            int          interface
-internal      is         lock          long         namespace
-new           null       object        operator     out
-override      params     private       protected    public
-readonly      ref        return        sbyte        sealed
-short         sizeof     stackalloc    static       string
-struct        switch     this          throw        true
-try           typeof     uint          ulong        unchecked
-unsafe        ushort     using         virtual      volatile
-void          while    
-    </keywords>
-  </lexer>
-  <lexer name="cpp" display="java" extensions="*.java">
-    <keywords>
-abstract assert boolean break byte case catch char class
-const continue default do double else enum extends final finally float for
-goto if implements import instanceof int interface long
-native new package private protected public
-return short static strictfp super switch synchronized this throw throws
-transient try var void volatile while
-    </keywords>
-  </lexer>
   <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
     <properties>
       <property name="lexer.cpp.track.preprocessor"> 0 </property>
@@ -2091,6 +2061,36 @@ transient try var void volatile while
     valarray:1 vector:1
     </keywords>
     <comments begin1="//" begin2="/*" end2="*/" />
+  </lexer>
+  <lexer name="cpp" display="c#" extensions="*.cs">
+    <keywords>
+abstract      as         base          bool         break
+Byte          case       catch         char         checked
+class         const      continue      decimal      default
+delegate      do         double        else         enum
+event         explicit   extern        false        finally
+fixed         float      for           foreach      goto
+if            implicit   in            int          interface
+internal      is         lock          long         namespace
+new           null       object        operator     out
+override      params     private       protected    public
+readonly      ref        return        sbyte        sealed
+short         sizeof     stackalloc    static       string
+struct        switch     this          throw        true
+try           typeof     uint          ulong        unchecked
+unsafe        ushort     using         virtual      volatile
+void          while    
+    </keywords>
+  </lexer>
+  <lexer name="cpp" display="java" extensions="*.java">
+    <keywords>
+abstract assert boolean break byte case catch char class
+const continue default do double else enum extends final finally float for
+goto if implements import instanceof int interface long
+native new package private protected public
+return short static strictfp super switch synchronized this throw throws
+transient try var void volatile while
+    </keywords>
   </lexer>
   <lexer name="cppnocase" macro="cpp"/>
   <lexer name="csound"/>
