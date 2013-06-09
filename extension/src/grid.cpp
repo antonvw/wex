@@ -279,7 +279,7 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
   {
     bool result = false;
     
-    wxExFindResult(text, find_next, recursive);
+    wxExFrame::StatusText(wxExGetFindResult(text, find_next, recursive), wxEmptyString);
     
     if (!recursive)
     {

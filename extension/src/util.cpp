@@ -225,27 +225,6 @@ const wxString wxExEllipsed(const wxString& text, const wxString& control)
       (!control.empty() ? "\t" + control: wxString(wxEmptyString));
 }
 
-void wxExFindResult(
-  const wxString& find_text,
-  bool find_next, 
-  bool recursive)
-{
-  if (!recursive)
-  {
-    const wxString where = (find_next) ? _("bottom"): _("top");
-    wxLogStatus(
-      _("Searching for") + " " + 
-      wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
-      _("hit") + " " + where);
-  }
-  else
-  {
-    wxBell();
-    wxLogStatus(
-      wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found"));
-  }
-}
-
 const wxString wxExGetEndOfText(
   const wxString& text,
   size_t max_chars)
@@ -265,6 +244,32 @@ const wxString wxExGetEndOfText(
   }
 
   return text_out;
+}
+
+const wxString wxExGetFindResult(
+  const wxString& find_text,
+  bool find_next, 
+  bool recursive)
+{
+  wxString text;
+  
+  if (!recursive)
+  {
+    const wxString where = (find_next) ? _("bottom"): _("top");
+    text <<
+      _("Searching for") << " " << 
+      wxExQuoted(wxExSkipWhiteSpace(find_text)) << " " <<
+      _("hit") << " " << where;
+  }
+  else
+  {
+    wxBell();
+      
+    text << 
+      wxExQuoted(wxExSkipWhiteSpace(find_text)) << " " << _("not found");
+  }
+  
+  return text;
 }
 
 const wxUniChar wxExGetFieldSeparator()
