@@ -83,8 +83,6 @@ void wxExSTCFile::DoFileNew()
 
 void wxExSTCFile::DoFileSave(bool save_as)
 {
-  wxASSERT(!m_STC->GetReadOnly());
-  
   size_t size;
   
   if (m_STC->HexMode())
@@ -106,6 +104,7 @@ void wxExSTCFile::DoFileSave(bool save_as)
   
   if (save_as)
   {
+    m_STC->SetReadOnly(!GetFileName().IsFileWritable());
     m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
     m_STC->SetName(GetFileName().GetFullPath());
   }

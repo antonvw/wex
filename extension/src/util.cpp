@@ -101,7 +101,6 @@ const wxString wxExClipboardGet()
 
   if (!wxTheClipboard->IsSupported(wxDF_TEXT))
   {
-    wxLogError("Clipboard format not supported");
     return wxEmptyString;
   }
 
