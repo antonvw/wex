@@ -220,7 +220,12 @@ void wxExGuiTestFixture::testEx()
   
   wxExEx* ex = new wxExEx(stc);
   
-  ex->Use(true);
+  CPPUNIT_ASSERT( ex->GetIsActive());
+  CPPUNIT_ASSERT( ex->Use());
+  CPPUNIT_ASSERT( ex->GetIsActive());
+  CPPUNIT_ASSERT( ex->Use(false));
+  CPPUNIT_ASSERT(!ex->GetIsActive());
+  CPPUNIT_ASSERT( ex->Use());
   CPPUNIT_ASSERT( ex->GetIsActive());
   
   CPPUNIT_ASSERT( ex->Command(":.="));
@@ -1656,7 +1661,6 @@ void wxExGuiTestFixture::testVi()
   
   wxExVi* vi = &stc->GetVi();
   
-  vi->Use(true);
   CPPUNIT_ASSERT( vi->GetIsActive());
   
   // Repeat some ex tests.

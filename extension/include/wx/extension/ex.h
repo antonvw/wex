@@ -25,7 +25,7 @@ class WXDLLIMPEXP_BASE wxExEx
 {
 public:
   /// Constructor. 
-  /// Sets ex mode false.
+  /// Sets ex mode.
   wxExEx(wxExSTC* stc);
   
   /// Destructor.
@@ -33,6 +33,7 @@ public:
  
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.
+  /// The command should start with a ':'.
   /// Returns true if the command was executed.
   virtual bool Command(const wxString& command);
   
@@ -145,7 +146,8 @@ private:
     const wxString& begin_address, 
     const wxString& end_address, 
     const wxString& pattern,
-    const wxString& replacement);
+    const wxString& replacement,
+    const wxString& options);
   bool Write(
     const wxString& begin_address, 
     const wxString& end_address,

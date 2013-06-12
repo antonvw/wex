@@ -33,7 +33,7 @@ wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
   , m_Process(NULL)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
-  , m_IsActive(false)
+  , m_IsActive(true)
   , m_SearchFlags(wxSTC_FIND_REGEXP)
   , m_MarkerSymbol(0, -1)
   , m_FindIndicator(0, 0)
@@ -56,7 +56,7 @@ wxExEx::~wxExEx()
 
 bool wxExEx::Command(const wxString& command)
 {
-  if (!command.StartsWith(":"))
+  if (!m_IsActive || !command.StartsWith(":"))
   {
     return false;
   }
@@ -309,7 +309,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
         m_STC->LineFromPosition(m_STC->GetTargetEnd()) + 1);
       
       m_STC->Remove(begin, end);
-      m_STC->SetTargetStart(begin);
+      m_STC->SetTargetStart(end);
       m_STC->SetTargetEnd(m_STC->GetTextLength());
     }
     else if (command == "p")
@@ -369,7 +369,7 @@ bool wxExEx::CommandRange(const wxString& command)
 {
   const wxString tokens("dmsyw><!");
   
-  // If address contains markers, filter them.
+  // We cannot yet handle a command containing tokens as markers.
   if (command.Contains("'"))
   {
     const wxString markerfirst = command.AfterFirst('\'');
@@ -383,8 +383,8 @@ bool wxExEx::CommandRange(const wxString& command)
     }
   }
   
-  // [address] m destination
-  // [address] s [/pattern/replacement/] [options] [count]
+  // [range]m[destination]
+  // [range]s/pattern/replacement/[options]
   wxStringTokenizer tkz(command, tokens);
   
   if (!tkz.HasMoreTokens())
@@ -392,23 +392,23 @@ bool wxExEx::CommandRange(const wxString& command)
     return false;
   }
 
-  const wxString address = tkz.GetNextToken();
+  const wxString range = tkz.GetNextToken();
   const wxChar cmd = tkz.GetLastDelimiter();
   
   wxString begin_address;
   wxString end_address;
   
-  if (address == ".")
+  if (range == ".")
   {
-    begin_address = address;
-    end_address = address;
+    begin_address = range;
+    end_address = range;
   }
-  else if (address == "%")
+  else if (range == "%")
   {
     begin_address = "1";
     end_address = "$";
   }
-  else if (address == "*")
+  else if (range == "*")
   {
     std::stringstream ss;
     ss << m_STC->GetFirstVisibleLine() + 1;
@@ -419,8 +419,8 @@ bool wxExEx::CommandRange(const wxString& command)
   }
   else
   {
-    begin_address = address.BeforeFirst(',');
-    end_address = address.AfterFirst(',');
+    begin_address = range.BeforeFirst(',');
+    end_address = range.AfterFirst(',');
   }
   
   if (begin_address.empty() || end_address.empty())
@@ -447,7 +447,7 @@ bool wxExEx::CommandRange(const wxString& command)
     wxString text(tkz.GetString());
     
     // If there are escaped / chars in the text,
-    // temporarily replace them to un unused char, so
+    // temporarily replace them to an unused char, so
     // we can use string tokenizer with / as separator.
     bool escaped = false;
     
@@ -475,6 +475,7 @@ bool wxExEx::CommandRange(const wxString& command)
     next.GetNextToken(); // skip empty token
     wxString pattern = next.GetNextToken();
     wxString replacement = next.GetNextToken();
+    const wxString options = next.GetNextToken();
     
     // Restore a / for all occurrences of the special char.
     if (escaped)
@@ -483,7 +484,8 @@ bool wxExEx::CommandRange(const wxString& command)
       replacement.Replace(wxChar(1), "/");
     }
     
-    return Substitute(begin_address, end_address, pattern, replacement);
+    return Substitute(
+      begin_address, end_address, pattern, replacement, options);
     }
     break;
     
@@ -989,7 +991,8 @@ bool wxExEx::Substitute(
   const wxString& begin_address, 
   const wxString& end_address, 
   const wxString& patt,
-  const wxString& repl)
+  const wxString& repl,
+  const wxString& options)
 {
   if (m_STC->GetReadOnly())
   {
@@ -1018,8 +1021,12 @@ bool wxExEx::Substitute(
   const wxString pattern = (patt == "~" ? m_Replacement: patt);
   
   m_Replacement = repl; 
+      
+  int searchFlags = m_SearchFlags;
   
-  m_STC->SetSearchFlags(m_SearchFlags);
+  if (options.Contains("i")) searchFlags &= ~wxSTC_FIND_MATCHCASE;
+    
+  m_STC->SetSearchFlags(searchFlags);
 
   int nr_replacements = 0;
 
@@ -1027,7 +1034,9 @@ bool wxExEx::Substitute(
   m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
   m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('$')));
 
-  while (m_STC->SearchInTarget(pattern) != -1)
+  int result = wxID_YES;
+       
+  while (m_STC->SearchInTarget(pattern) != -1 && result != wxID_CANCEL)
   {
     wxString replacement(repl);
     
@@ -1051,15 +1060,50 @@ bool wxExEx::Substitute(
       replacement.Replace("&", target);
     }
     
-    m_STC->ReplaceTargetRE(replacement); // always RE!
-    m_STC->SetTargetStart(m_STC->GetTargetEnd());
-    m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('$')));
-    
-    nr_replacements++;
-    
-    if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
+    if (options.Contains("c"))
     {
-      break;
+      wxMessageDialog msgDialog(m_STC, 
+        _("Replace") + " " + pattern + " " + _("with") + " " + replacement, 
+        _("Replace"), 
+        wxCANCEL | wxYES_NO);
+      
+      msgDialog.SetExtendedMessage(m_STC->GetLineText(
+        m_STC->LineFromPosition(m_STC->GetTargetStart())));
+      
+      result = msgDialog.ShowModal();
+        
+      if (result == wxID_YES)
+      {
+        m_STC->ReplaceTargetRE(replacement); // always RE!
+      }
+    }
+    else
+    {
+      m_STC->ReplaceTargetRE(replacement); // always RE!
+    }
+        
+    if (result != wxID_CANCEL)
+    {
+      if (options.Contains("g"))
+      {
+        m_STC->SetTargetStart(m_STC->GetTargetEnd());
+      }
+      else
+      {
+        m_STC->SetTargetStart(m_STC->GetLineEndPosition(m_STC->GetTargetEnd()));
+      }
+  
+      m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('$')));
+    
+      if (result == wxID_YES)
+      {
+        nr_replacements++;
+      }
+    
+      if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
+      {
+        result = wxCANCEL;
+      }
     }
   }
   
