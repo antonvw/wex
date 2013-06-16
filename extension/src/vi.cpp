@@ -22,6 +22,14 @@
 
 #if wxUSE_GUI
 
+enum
+{
+  MODE_NORMAL,
+  MODE_INSERT,
+  MODE_VISUAL,
+  MODE_VISUAL_LINE
+};
+
 // Returns true if after text only one letter is followed.
 bool OneLetterAfter(const wxString text, const wxString& letter)
 {
@@ -38,7 +46,7 @@ wxString wxExVi::m_LastFindCharCommand;
 wxExVi::wxExVi(wxExSTC* stc)
   : wxExEx(stc)
   , m_Dot(false)
-  , m_InsertMode(false)
+  , m_Mode(MODE_NORMAL)
   , m_InsertRepeatCount(1)
   , m_SearchForward(true)
 {
@@ -111,7 +119,7 @@ bool wxExVi::Command(const wxString& command)
     CommandCalc(command);
     return true;
   }
-  else if (m_InsertMode)
+  else if (m_Mode == MODE_INSERT)
   {
     InsertMode(command);
     return true;
@@ -128,7 +136,8 @@ bool wxExVi::Command(const wxString& command)
       result = GetSTC()->FindNext(
         command.Mid(1),
         GetSearchFlags(),
-        m_SearchForward);
+        m_SearchForward,
+        m_Mode == MODE_VISUAL);
           
       if (result)
       {
@@ -137,7 +146,14 @@ bool wxExVi::Command(const wxString& command)
     }
     else
     {
-      GetFrame()->GetExCommand(this, command);
+      if (m_Mode == MODE_VISUAL)
+      {
+        GetFrame()->GetExCommand(this, command + "'<,'>");
+      }
+      else
+      {
+        GetFrame()->GetExCommand(this, command);
+      }
     }
     
     return result;
@@ -467,25 +483,32 @@ bool wxExVi::Command(const wxString& command)
     // as last char, so not in switch branch.
     if (!m_Dot && rest.Last() == WXK_ESCAPE)
     {
-      wxBell();
+      if (m_Mode == MODE_NORMAL)
+      {
+        wxBell();
         
-      m_Command.clear();
+        m_Command.clear();
 
-      if (GetMacros().IsRecording())
-      {
-        GetMacros().StopRecording();
-      }
+        if (GetMacros().IsRecording())
+        {
+          GetMacros().StopRecording();
+        }
       
-      if (!GetSTC()->GetSelectedText().empty())
+        if (!GetSTC()->GetSelectedText().empty())
+        {
+          GetSTC()->SelectNone();
+        }
+      }
+      else
       {
-        GetSTC()->SelectNone();
+        m_Mode = MODE_NORMAL;
       }
     }
     else
     {
       handled = CommandChar((int)rest.GetChar(0), repeat);
         
-      if (m_InsertMode)
+      if (m_Mode == MODE_INSERT)
       {
         InsertMode(rest.Mid(1));
         return true;
@@ -499,7 +522,14 @@ bool wxExVi::Command(const wxString& command)
 
   if (!handled)
   {  
-    return wxExEx::Command(command);
+    if (m_Mode == MODE_VISUAL)
+    {
+      return wxExEx::Command(command + "'<,'>");
+    }
+    else
+    {
+      return wxExEx::Command(command);
+    }
   }
   
   if (!m_Dot)
@@ -508,7 +538,7 @@ bool wxExVi::Command(const wxString& command)
     SetLastCommand(command, 
       // Always when in insert mode,
       // or this was a file change command (so size different from before).
-      m_InsertMode ||
+      m_Mode == MODE_INSERT ||
       size != GetSTC()->GetLength());
 
     // Record it (if recording is on).
@@ -583,7 +613,7 @@ void wxExVi::CommandCalc(const wxString& command)
     prev_cmd = cmd;
   }
   
-  if (m_InsertMode)
+  if (m_Mode == MODE_INSERT)
   {
     if (GetLastCommand().EndsWith("cw"))
     {
@@ -613,9 +643,38 @@ bool wxExVi::CommandChar(int c, int repeat)
       SetInsertMode((char)c, repeat); 
       break;
         
-    case 'b': for (int i = 0; i < repeat; i++) GetSTC()->WordLeft(); break;
+    case 'b': 
+      for (int i = 0; i < repeat; i++)
+      {
+        switch (m_Mode)
+        {
+          case MODE_NORMAL: GetSTC()->WordLeft(); break;
+          case MODE_VISUAL: GetSTC()->WordLeftExtend(); break;
+        }
+      }
+      break;
 
-    case 'e': for (int i = 0; i < repeat; i++) GetSTC()->WordRightEnd(); break;
+    case 'd': 
+      if (GetSTC()->CanCut())
+      {
+        GetSTC()->Cut();
+      } 
+      else
+      {
+        return false;
+      }
+      break;
+      
+    case 'e': 
+      for (int i = 0; i < repeat; i++) 
+      {
+        switch (m_Mode)
+        {
+          case MODE_NORMAL: GetSTC()->WordRightEnd(); break;
+          case MODE_VISUAL: GetSTC()->WordRightEndExtend(); break;
+        }
+      }
+      break;
       
     case 'g': GetSTC()->DocumentStart(); break;
       
@@ -624,7 +683,11 @@ bool wxExVi::CommandChar(int c, int repeat)
       {
         if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0)
         {
-          GetSTC()->CharLeft(); 
+          switch (m_Mode)
+          {
+            case MODE_NORMAL: GetSTC()->CharLeft(); break;
+            case MODE_VISUAL: GetSTC()->CharLeftExtend(); break;
+          }
         }
       }
       break;
@@ -634,7 +697,11 @@ bool wxExVi::CommandChar(int c, int repeat)
       {
          if (GetSTC()->GetCurrentLine() < GetSTC()->GetNumberOfLines())
          {
-           GetSTC()->LineDown(); 
+            switch (m_Mode)
+            {
+              case MODE_NORMAL: GetSTC()->LineDown(); break;
+              case MODE_VISUAL: GetSTC()->LineDownExtend(); break;
+            }
          }
       }
       break;
@@ -642,18 +709,30 @@ bool wxExVi::CommandChar(int c, int repeat)
     case '+': 
       for (int i = 0; i < repeat; i++) 
       {
-        GetSTC()->LineDown();
+        switch (m_Mode)
+        {
+          case MODE_NORMAL: GetSTC()->LineDown(); break;
+          case MODE_VISUAL: GetSTC()->LineDownExtend(); break;
+        }
         
         for (int j = 1; j < GetSTC()->WrapCount(GetSTC()->GetCurrentLine()); j++)
         {
-          GetSTC()->LineDown();
+          switch (m_Mode)
+          {
+            case MODE_NORMAL: GetSTC()->LineDown(); break;
+            case MODE_VISUAL: GetSTC()->LineDownExtend(); break;
+          }
         }
       }
       
       if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) != 
           GetSTC()->GetLineIndentation(GetSTC()->GetCurrentLine()))
       {
-        GetSTC()->VCHome();
+        switch (m_Mode)
+        {
+          case MODE_NORMAL: GetSTC()->VCHome(); break;
+          case MODE_VISUAL: GetSTC()->VCHomeExtend(); break;
+        }
       }
       break;
         
@@ -662,7 +741,11 @@ bool wxExVi::CommandChar(int c, int repeat)
       {
         if (GetSTC()->GetCurrentLine() > 0)
         {
-          GetSTC()->LineUp(); 
+          switch (m_Mode)
+          {
+            case MODE_NORMAL: GetSTC()->LineUp(); break;
+            case MODE_VISUAL: GetSTC()->LineUpExtend(); break;
+          }
         }
       }
       break;
@@ -673,7 +756,11 @@ bool wxExVi::CommandChar(int c, int repeat)
       if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) != 
           GetSTC()->GetLineIndentation(GetSTC()->GetCurrentLine()))
       {
-        GetSTC()->VCHome();
+        switch (m_Mode)
+        {
+          case MODE_NORMAL: GetSTC()->VCHome(); break;
+          case MODE_VISUAL: GetSTC()->VCHomeExtend(); break;
+        }
       }
       break;
         
@@ -684,7 +771,11 @@ bool wxExVi::CommandChar(int c, int repeat)
         if (GetSTC()->GetCurrentPos() < 
             GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()))
         {
-          GetSTC()->CharRight(); 
+          switch (m_Mode)
+          {
+            case MODE_NORMAL: GetSTC()->CharRight(); break;
+            case MODE_VISUAL: GetSTC()->CharRightExtend(); break;
+          }
         }
       }
       break;
@@ -722,8 +813,19 @@ bool wxExVi::CommandChar(int c, int repeat)
         wxBell();
       }
       break;
+    
+    case 'v': m_Mode = MODE_VISUAL; break;
       
-    case 'w': for (int i = 0; i < repeat; i++) GetSTC()->WordRight(); break;
+    case 'w': 
+      for (int i = 0; i < repeat; i++) 
+      {
+        switch (m_Mode)
+        {
+          case MODE_NORMAL: GetSTC()->WordRight(); break;
+          case MODE_VISUAL: GetSTC()->WordRightExtend(); break;
+        }
+      }
+      break;
       
     case 'x': 
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
@@ -800,6 +902,8 @@ bool wxExVi::CommandChar(int c, int repeat)
       Put(false); 
       break;
       
+    case 'V': m_Mode = MODE_VISUAL_LINE; break;
+      
     case 'X': 
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) 
         for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack();
@@ -875,7 +979,7 @@ void wxExVi::CommandReg(const wxString& reg)
   {
     Put(true);
   }
-  else if (m_InsertMode)
+  else if (m_Mode == MODE_INSERT)
   {
     if (!GetMacros().GetRegister(reg).empty())
     {
@@ -903,6 +1007,11 @@ void wxExVi::FindWord(bool find_next)
     "\\<"+ wxExFindReplaceData::Get()->GetFindString() + "\\>", 
     GetSearchFlags(), 
     find_next);
+}
+
+bool wxExVi::GetInsertMode() const
+{
+  return m_Mode == MODE_INSERT;
 }
 
 void wxExVi::GotoBrace()
@@ -1026,7 +1135,7 @@ bool wxExVi::InsertMode(const wxString& command)
           GetMacros().Record(wxUniChar(WXK_ESCAPE));
         }
         
-        m_InsertMode = false;
+        m_Mode = MODE_NORMAL;
         GetSTC()->SetOvertype(false);
       break;
 
@@ -1068,7 +1177,7 @@ bool wxExVi::InsertMode(const wxString& command)
 
 void wxExVi::MacroRecord(const wxString& text)
 {
-  if (m_InsertMode)
+  if (m_Mode == MODE_INSERT)
   {
     m_InsertText += text;
   }
@@ -1084,7 +1193,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   {
     return true;
   }
-  else if (m_InsertMode)
+  else if (m_Mode == MODE_INSERT)
   {
     const bool result = InsertMode(event.GetUnicodeKey());
     return result && GetSTC()->GetOvertype();
@@ -1170,7 +1279,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   }
   else
   {
-    if (GetMacros().IsRecording() && !m_InsertMode)
+    if (GetMacros().IsRecording() && m_Mode != MODE_INSERT)
     {
       switch (event.GetKeyCode())
       {
@@ -1224,7 +1333,7 @@ bool wxExVi::SetInsertMode(
     return false;
   }
     
-  m_InsertMode = true;
+  m_Mode = MODE_INSERT;
   m_InsertText.clear();
   
   if (!m_Dot)

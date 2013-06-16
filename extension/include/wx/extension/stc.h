@@ -140,7 +140,9 @@ public:
     /// wxSTC_FIND_POSIX
     int search_flags = 0,
     /// finds next or previous
-    bool find_next = true);
+    bool find_next = true,
+    /// are we finding using visual mode
+    bool visual_mode = false);
     
   /// Enables or disables folding depending on fold property.
   void Fold(

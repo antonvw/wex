@@ -24,7 +24,7 @@ public:
   virtual bool Command(const wxString& command);
   
   /// Returns whether we are in insert mode.
-  bool GetInsertMode() const {return m_InsertMode;};
+  bool GetInsertMode() const;
   
   /// Returns text to be inserted.
   const wxString& GetInsertText() const {return m_InsertText;};
@@ -64,10 +64,10 @@ private:
   static wxString m_LastFindCharCommand;
 
   bool m_Dot;  
-  bool m_InsertMode;
   bool m_SearchForward;
   
   int m_InsertRepeatCount;
+  int m_Mode;
   
   wxString m_Command;
   wxString m_InsertText;

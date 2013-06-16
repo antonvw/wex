@@ -63,7 +63,7 @@ bool wxExEx::Command(const wxString& command)
   
   bool result = true;
 
-  if (command == ":")
+  if (command == ":" || command == ":'<,'>")
   {
     m_Frame->GetExCommand(this, command);
     return true;
@@ -367,65 +367,79 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
 bool wxExEx::CommandRange(const wxString& command)
 {
-  const wxString tokens("dmsyw><!");
-  
-  // We cannot yet handle a command containing tokens as markers.
-  if (command.Contains("'"))
-  {
-    const wxString markerfirst = command.AfterFirst('\'');
-    const wxString markerlast = command.AfterLast('\'');
-    
-    if (
-      tokens.Contains(markerfirst.Left(1)) ||
-      tokens.Contains(markerlast.Left(1)))
-    {
-      return false;
-    }
-  }
-  
-  // [range]m[destination]
-  // [range]s/pattern/replacement/[options]
-  wxStringTokenizer tkz(command, tokens);
-  
-  if (!tkz.HasMoreTokens())
-  {
-    return false;
-  }
-
-  const wxString range = tkz.GetNextToken();
-  const wxChar cmd = tkz.GetLastDelimiter();
-  
   wxString begin_address;
   wxString end_address;
-  
-  if (range == ".")
+  wxString text;
+  wxChar cmd;
+
+  if (command.StartsWith("'<,'>"))
   {
-    begin_address = range;
-    end_address = range;
-  }
-  else if (range == "%")
-  {
-    begin_address = "1";
-    end_address = "$";
-  }
-  else if (range == "*")
-  {
-    std::stringstream ss;
-    ss << m_STC->GetFirstVisibleLine() + 1;
-    begin_address = wxString(ss.str());
-    std::stringstream tt;
-    tt << m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() + 1;
-    end_address = wxString(tt.str());
+    begin_address = "'<";
+    end_address = "'>";
+    cmd = command.GetChar(5);
+    text = command.Mid(6);
   }
   else
   {
-    begin_address = range.BeforeFirst(',');
-    end_address = range.AfterFirst(',');
-  }
+    const wxString tokens("dmsyw><!");
+      
+    // We cannot yet handle a command containing tokens as markers.
+    if (command.Contains("'"))
+    {
+      const wxString markerfirst = command.AfterFirst('\'');
+      const wxString markerlast = command.AfterLast('\'');
+    
+      if (
+        tokens.Contains(markerfirst.Left(1)) ||
+        tokens.Contains(markerlast.Left(1)))
+      {
+        return false;
+      }
+    }
   
-  if (begin_address.empty() || end_address.empty())
-  {
-    return false;
+    // [range]m[destination]
+    // [range]s/pattern/replacement/[options]
+    wxStringTokenizer tkz(command, tokens);
+  
+    if (!tkz.HasMoreTokens())
+    {
+      return false;
+    }
+
+    const wxString range = tkz.GetNextToken();
+    cmd = tkz.GetLastDelimiter();
+  
+    if (range == ".")
+    {
+      begin_address = range;
+      end_address = range;
+    }
+    else if (range == "%")
+    {
+      begin_address = "1";
+      end_address = "$";
+    }
+    else if (range == "*")
+    {
+      std::stringstream ss;
+      ss << m_STC->GetFirstVisibleLine() + 1;
+      begin_address = wxString(ss.str());
+      std::stringstream tt;
+      tt << m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() + 1;
+      end_address = wxString(tt.str());
+    }
+    else
+    {
+      begin_address = range.BeforeFirst(',');
+      end_address = range.AfterFirst(',');
+    }
+  
+    if (begin_address.empty() || end_address.empty())
+    {
+      return false;
+    }
+    
+    text = tkz.GetString();
   }
 
   switch (cmd)
@@ -439,13 +453,11 @@ bool wxExEx::CommandRange(const wxString& command)
     break;
     
   case 'm':
-    return Move(begin_address, end_address, tkz.GetString());
+    return Move(begin_address, end_address, text);
     break;
     
   case 's':
     {
-    wxString text(tkz.GetString());
-    
     // If there are escaped / chars in the text,
     // temporarily replace them to an unused char, so
     // we can use string tokenizer with / as separator.
@@ -494,7 +506,7 @@ bool wxExEx::CommandRange(const wxString& command)
     break;
     
   case 'w':
-    return Write(begin_address, end_address, tkz.GetString());
+    return Write(begin_address, end_address, text);
     break;
     
   case '>':
@@ -537,7 +549,7 @@ bool wxExEx::CommandRange(const wxString& command)
       
       file.Write();
         
-      const wxString command = tkz.GetString();
+      const wxString command = text;
       
       const bool ok = process.Execute(command + " " + buffer, wxEXEC_SYNC);
       
@@ -842,11 +854,7 @@ bool wxExEx::MarkerAdd(const wxUniChar& marker, int line)
 
 bool wxExEx::MarkerDelete(const wxUniChar& marker)
 {
-#ifdef wxExUSE_CPP0X	
   const auto it = m_Markers.find(marker);
-#else
-  const std::map<wxUniChar, int>::iterator it = m_Markers.find(marker);
-#endif
 
   if (it != m_Markers.end())
   {
@@ -873,21 +881,28 @@ bool wxExEx::MarkerGoto(const wxUniChar& marker)
 
 int wxExEx::MarkerLine(const wxUniChar& marker) const
 {
-#ifdef wxExUSE_CPP0X	
-  const auto it = m_Markers.find(marker);
-#else
-  const std::map<wxUniChar, int>::const_iterator it = m_Markers.find(marker);
-#endif	
-
-  if (it != m_Markers.end())
+  if (marker == '<')
   {
-    return m_STC->MarkerLineFromHandle(it->second);
+    return m_STC->LineFromPosition(m_STC->GetSelectionStart());
+  }
+  else if (marker == '>')
+  {
+    return m_STC->LineFromPosition(m_STC->GetSelectionEnd());
   }
   else
   {
-    wxBell();
-    wxLogStatus(_("Undefined marker: %c"), marker);
-    return -1;
+    const auto it = m_Markers.find(marker);
+
+    if (it != m_Markers.end())
+    {
+      return m_STC->MarkerLineFromHandle(it->second);
+    }
+    else
+    {
+      wxBell();
+      wxLogStatus(_("Undefined marker: %c"), marker);
+      return -1;
+    }
   }
 }
 
@@ -896,7 +911,7 @@ bool wxExEx::Move(
   const wxString& end_address, 
   const wxString& destination)
 {
-  if (m_STC->GetReadOnly())
+  if (m_STC->GetReadOnly() || m_STC->HexMode())
   {
     return false;
   }
@@ -994,14 +1009,8 @@ bool wxExEx::Substitute(
   const wxString& repl,
   const wxString& options)
 {
-  if (m_STC->GetReadOnly())
+  if (m_STC->GetReadOnly() || m_STC->HexMode())
   {
-    return false;
-  }
-
-  if (m_STC->HexMode())
-  {
-    wxLogStatus(_("Not allowed in hex mode"));
     return false;
   }
   
@@ -1090,7 +1099,9 @@ bool wxExEx::Substitute(
       }
       else
       {
-        m_STC->SetTargetStart(m_STC->GetLineEndPosition(m_STC->GetTargetEnd()));
+        m_STC->SetTargetStart(
+          m_STC->GetLineEndPosition(m_STC->LineFromPosition(
+            m_STC->GetTargetEnd())));
       }
   
       m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('$')));
@@ -1102,7 +1113,7 @@ bool wxExEx::Substitute(
     
       if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
       {
-        result = wxCANCEL;
+        result = wxID_CANCEL;
       }
     }
   }
