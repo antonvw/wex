@@ -936,7 +936,8 @@ bool wxExSTC::FindNext(bool find_next)
 bool wxExSTC::FindNext(
   const wxString& text, 
   int search_flags,
-  bool find_next)
+  bool find_next,
+  bool visual_mode)
 {
   if (text.empty())
   {
@@ -974,14 +975,15 @@ bool wxExSTC::FindNext(
 
   if (SearchInTarget(text) == -1)
   {
-    wxExFrame::StatusText(wxExGetFindResult(text, find_next, recursive), wxEmptyString);
+    wxExFrame::StatusText(
+      wxExGetFindResult(text, find_next, recursive), wxEmptyString);
     
     bool found = false;
     
     if (!recursive)
     {
       recursive = true;
-      found = FindNext(text, search_flags, find_next);
+      found = FindNext(text, search_flags, find_next, visual_mode);
       recursive = false;
     }
     
@@ -996,9 +998,17 @@ bool wxExSTC::FindNext(
     
     recursive = false;
 
-    SetSelection(GetTargetStart(), GetTargetEnd());
-    
-    EnsureVisible(LineFromPosition(GetTargetStart()));
+    if (!visual_mode)
+    {
+      SetSelection(GetTargetStart(), GetTargetEnd());
+      EnsureVisible(LineFromPosition(GetTargetStart()));
+    }
+    else
+    {
+      SetSelection(GetSelectionStart(), GetTargetEnd());
+      EnsureVisible(LineFromPosition(GetTargetEnd()));
+    }
+      
     EnsureCaretVisible();
 
     return true;
@@ -1544,10 +1554,15 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
     }
     else
     {
-      for (int i = 0; i < 0 - event.GetLinesAdded(); i++)
+      for (int i = 0; i < abs(event.GetLinesAdded()); i++)
       {
-        MarkerDelete(line, m_MarkerChange.GetNo());
+        MarkerDelete(line + 1, m_MarkerChange.GetNo());
       }
+    }
+      
+    if (!IsModified())
+    {
+      MarkerDeleteAllChange();
     }
   }
   else if (
@@ -1842,9 +1857,9 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 {
   if (event.GetEventType() == wxEVT_STC_MODIFIED)
   {
-    event.Skip();
-    
     MarkModified(event); 
+      
+    event.Skip();
   }
   else if (event.GetEventType() == wxEVT_STC_CHARADDED)
   {

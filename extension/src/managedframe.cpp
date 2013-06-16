@@ -44,7 +44,7 @@ public:
   wxExEx* GetEx() {return m_ex;};
     
   /// Sets ex component.
-  void SetEx(wxExEx* ex);
+  void SetEx(wxExEx* ex, const wxString& range);
 protected:
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
@@ -63,6 +63,7 @@ private:
   wxExEx* m_ex;
   wxStaticText* m_Prefix;
   bool m_Controlr;
+  bool m_ModeVisual;
   bool m_UserInput;
   
   wxString m_Command;
@@ -176,8 +177,8 @@ wxPanel* wxExManagedFrame::CreateExPanel()
 
 void wxExManagedFrame::GetExCommand(wxExEx* ex, const wxString& command)
 {
-  m_exTextPrefix->SetLabel(command);
-  m_exTextCtrl->SetEx(ex);
+  m_exTextPrefix->SetLabel(command.Left(1));
+  m_exTextCtrl->SetEx(ex, command.Mid(1));
   
   m_Manager.GetPane("VIBAR").Show();
   m_Manager.Update();
@@ -295,6 +296,7 @@ wxExExTextCtrl::wxExExTextCtrl(
   , m_Frame(frame)
   , m_ex(NULL)
   , m_Controlr(false)
+  , m_ModeVisual(false)
   , m_UserInput(false)
   , m_Prefix(prefix)
 {
@@ -438,7 +440,8 @@ void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
     m_ex->GetSTC()->FindNext(
       GetValue(),
       wxSTC_FIND_REGEXP | wxFR_MATCHCASE,
-      m_Prefix->GetLabel() == "/");
+      m_Prefix->GetLabel() == "/",
+      m_ModeVisual);
   }
 }
 
@@ -515,10 +518,11 @@ void wxExExTextCtrl::OnFocus(wxFocusEvent& event)
   }
 }
 
-void wxExExTextCtrl::SetEx(wxExEx* ex) 
+void wxExExTextCtrl::SetEx(wxExEx* ex, const wxString& range) 
 {
   m_Command.clear();
   m_Controlr = false;
+  m_ModeVisual = !range.empty();
   m_UserInput = false;
   m_ex = ex;
   
@@ -538,7 +542,9 @@ void wxExExTextCtrl::SetEx(wxExEx* ex)
   {
     if (m_Commands.begin() != m_Commands.end())
     {
-      SetValue(*m_Commands.begin());
+      const wxString current(*m_Commands.begin());
+      
+      SetValue((!current.StartsWith(range) ? range: wxEmptyString) + current);
     }
   }
   else if (IsCalc())
