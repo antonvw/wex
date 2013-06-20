@@ -528,14 +528,9 @@ void wxExExTextCtrl::SetEx(wxExEx* ex, const wxString& range)
   
   if (IsFind())
   {
-    if (!m_ex->GetSTC()->GetSelectedText().empty())
+    if (!m_ModeVisual)
     {
-      SetValue(m_ex->GetSTC()->GetSelectedText());
-      wxExFindReplaceData::Get()->SetFindString(GetValue());
-    }
-    else
-    {
-      SetValue(wxExFindReplaceData::Get()->GetFindString());
+      SetValue(m_ex->GetSTC()->GetFindString());
     }
   }
   else if (IsCommand())
