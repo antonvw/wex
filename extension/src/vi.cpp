@@ -416,11 +416,45 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (rest == ">>")
   {
-    GetSTC()->Indent(repeat);
+    switch (m_Mode)
+    {
+      case MODE_NORMAL: GetSTC()->Indent(repeat); break;
+      case MODE_VISUAL: 
+        {
+        const int begin_line = ToLineNumber("'<");
+        const int end_line = ToLineNumber("'>");
+        
+        if (begin_line > 0 && end_line > 0)
+        {
+          if (GetSTC()->Indent(begin_line - 1, end_line - 1, true))
+          {
+            m_Mode = MODE_NORMAL;
+          }
+        }
+        }
+        break;
+    }
   }
   else if (rest == "<<")
   {
-    GetSTC()->Indent(repeat, false);
+    switch (m_Mode)
+    {
+      case MODE_NORMAL: GetSTC()->Indent(repeat, false); break;
+      case MODE_VISUAL: 
+        {
+        const int begin_line = ToLineNumber("'<");
+        const int end_line = ToLineNumber("'>");
+        
+        if (begin_line > 0 && end_line > 0)
+        {
+          if (GetSTC()->Indent(begin_line - 1, end_line - 1, false))
+          {
+            m_Mode = MODE_NORMAL;
+          }
+        }
+        }
+        break;
+    }
   }
   else if (OneLetterAfter("'", rest))
   {
@@ -524,7 +558,14 @@ bool wxExVi::Command(const wxString& command)
   {  
     if (m_Mode == MODE_VISUAL)
     {
-      return wxExEx::Command(command + "'<,'>");
+      const bool ok = wxExEx::Command(command + "'<,'>");
+        
+      if (ok)
+      {
+        m_Mode = MODE_NORMAL;
+      }
+      
+      return ok;
     }
     else
     {
