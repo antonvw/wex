@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      @filename@
+// Name:      @fullname@
 // Purpose:   Declaration of class @myclass@
 // Author:    @author@
 // Copyright: (c) @year@ @copyright@
