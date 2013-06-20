@@ -2261,11 +2261,12 @@ void wxExSTC::SetHexMode(
     
     if (text.length() > 0)
     {
-      ClearDocument(!modified);
+      ClearDocument(false);
       AppendTextHexMode(text);
-      
+
       if (!modified)
       {
+        EmptyUndoBuffer();
         SetSavePoint();
         m_UndoPossible = true;
       }
@@ -2283,11 +2284,12 @@ void wxExSTC::SetHexMode(
     if (!m_HexBuffer.empty())
     {
       const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
-      ClearDocument(!modified);
+      ClearDocument(false);
       AppendText(buffer);
       
       if (!modified)
       {
+        EmptyUndoBuffer();
         SetSavePoint();
       }
     }
