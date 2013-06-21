@@ -77,11 +77,7 @@ int wxExVCS::ConfigDialog(
   long i = VCS_START;
 
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = m_Entries.begin();
-#else
-    std::vector<wxExVCSEntry>::const_iterator it = m_Entries.begin();
-#endif	
     it != m_Entries.end();
     ++it)
   {
@@ -117,11 +113,7 @@ int wxExVCS::ConfigDialog(
     cols));
 
   for (
-#ifdef wxExUSE_CPP0X	
     auto it2 = m_Entries.begin();
-#else
-    std::vector<wxExVCSEntry>::const_iterator it2 = m_Entries.begin();
-#endif	
     it2 != m_Entries.end();
     ++it2)
   {
@@ -181,17 +173,12 @@ bool wxExVCS::Execute()
     
     if (m_Files.size() > 1)
     {
-      // File should not be surrounded by double quotes.
       for (
-#ifdef wxExUSE_CPP0X	
         auto it = m_Files.begin();
-#else
-        wxArrayString::iterator it = m_Files.begin();
-#endif		
         it != m_Files.end();
         ++it)
       {
-        args += *it + " ";
+        args += "\"" + *it + "\" ";
       }
     }
     else if (m_Entry.GetName().Lower() == "git")
@@ -234,11 +221,7 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
     if (filename.IsOk())
     {
       for (
-#ifdef wxExUSE_CPP0X	
         auto it = m_Entries.begin();
-#else
-        std::vector<wxExVCSEntry>::iterator it = m_Entries.begin();
-#endif		
         it != m_Entries.end();
         ++it)
       {
