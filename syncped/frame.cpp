@@ -215,6 +215,11 @@ Frame::Frame(const wxArrayString& files)
   
   // End with update, so all changes in the manager are handled.
   GetManager().Update();
+  
+  if (m_Editors->GetPageCount() > 0)
+  {
+    m_Editors->GetPage(m_Editors->GetPageCount() - 1)->SetFocus();
+  }
 }
 
 wxExListViewFileName* Frame::Activate(
