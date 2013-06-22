@@ -2165,7 +2165,9 @@ transient try var void volatile while
   <lexer name="lout"/>
   <lexer name="lua"/>
   <lexer name="magik"/>
-  <lexer name="makefile" extensions="Makefile;*makefile;makefile*.*;*.pro"/>
+  <lexer name="makefile" extensions="Makefile;*makefile;makefile*.*;*.pro">
+    <comments begin1="#"/>
+  </lexer>
   <lexer name="markdown" extensions="*.md">
     <styles>
       <style no="strong1"> fore:yellow,bold </style>
