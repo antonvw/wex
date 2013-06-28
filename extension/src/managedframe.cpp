@@ -528,7 +528,7 @@ void wxExExTextCtrl::SetEx(wxExEx* ex, const wxString& range)
     {
       const wxString current(*m_Commands.begin());
       
-      SetValue((!current.StartsWith(range) ? range: wxEmptyString) + current);
+      SetValue((!current.StartsWith(range) ? range: wxString(wxEmptyString)) + current);
     }
   }
   else if (IsCalc())
