@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wxExToolBar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -32,7 +32,7 @@ enum
 // Support class.
 // Offers a find text ctrl that allows you to find text
 // on a current STC on an wxExFrame.
-class wxExTextCtrl : public wxTextCtrl
+class wxExTextCtrl : public wxExFindTextCtrl
 {
 public:
   /// Constructor. Fills the text ctrl with value 
@@ -50,12 +50,8 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnEnter(wxCommandEvent& event);
   void OnFocus(wxFocusEvent& event);
-  void OnKey(wxKeyEvent& event);
 private:
   wxExFrame* m_Frame;
-
-  std::list < wxString > m_Finds;
-  std::list < wxString >::const_iterator m_FindsIterator;
 
   DECLARE_EVENT_TABLE()
 };
@@ -252,8 +248,7 @@ void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 
 // Implementation of support class.
 
-BEGIN_EVENT_TABLE(wxExTextCtrl, wxTextCtrl)
-  EVT_CHAR(wxExTextCtrl::OnKey)
+BEGIN_EVENT_TABLE(wxExTextCtrl, wxExFindTextCtrl)
   EVT_SET_FOCUS(wxExTextCtrl::OnFocus)
   EVT_TEXT(wxID_ANY, wxExTextCtrl::OnCommand)
   EVT_TEXT_ENTER(wxID_ANY, wxExTextCtrl::OnEnter)
@@ -265,13 +260,9 @@ wxExTextCtrl::wxExTextCtrl(
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
-  : wxTextCtrl(parent, 
-      id,
-      wxExFindReplaceData::Get()->GetFindString(), 
-      pos, size, wxTE_PROCESS_ENTER)
+  : wxExFindTextCtrl(parent, id, pos, size)
   , m_Frame(frame)
 {
-  m_FindsIterator = m_Finds.begin();
   const int accels = 1;
   wxAcceleratorEntry entries[accels];
   entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
@@ -311,11 +302,6 @@ void wxExTextCtrl::OnEnter(wxCommandEvent& event)
 {
   if (!GetValue().empty())
   {
-    m_Finds.remove(GetValue());
-    m_Finds.push_front(GetValue());
-    m_FindsIterator = m_Finds.begin();
-    
-    wxExFindReplaceData::Get()->SetFindString(GetValue());
     Find();
   }
 }
@@ -331,20 +317,4 @@ void wxExTextCtrl::OnFocus(wxFocusEvent& event)
   
   event.Skip();
 }
-
-void wxExTextCtrl::OnKey(wxKeyEvent& event)
-{
-  const int key = event.GetKeyCode();
-
-  switch (key)
-  {
-  case WXK_UP: 
-  case WXK_DOWN:
-    wxExSetTextCtrlValue(this, key, m_Finds, m_FindsIterator);
-    break;
-    
-  default:  
-    event.Skip();
-  }    
-}    
 #endif // wxUSE_GUI

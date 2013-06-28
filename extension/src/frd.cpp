@@ -233,3 +233,50 @@ void wxExFindReplaceData::SetReplaceStrings(
 
   wxExListToConfig(m_ReplaceStrings, m_TextReplaceWith);
 }
+
+BEGIN_EVENT_TABLE(wxExFindTextCtrl, wxTextCtrl)
+  EVT_CHAR(wxExFindTextCtrl::OnKey)
+  EVT_TEXT_ENTER(wxID_ANY, wxExFindTextCtrl::OnEnter)
+END_EVENT_TABLE()
+
+wxExFindTextCtrl::wxExFindTextCtrl(
+  wxWindow* parent,
+  wxWindowID id,
+  const wxPoint& pos,
+  const wxSize& size)
+  : wxTextCtrl(parent, 
+      id,
+      wxExFindReplaceData::Get()->GetFindString(), 
+      pos, size, wxTE_PROCESS_ENTER)
+{
+  m_FindsIterator = wxExFindReplaceData::Get()->m_FindStrings.begin();
+}
+
+void wxExFindTextCtrl::OnEnter(wxCommandEvent& event)
+{
+  if (!GetValue().empty())
+  {
+    wxExFindReplaceData::Get()->m_FindStrings.remove(GetValue());
+    wxExFindReplaceData::Get()->m_FindStrings.push_front(GetValue());
+    m_FindsIterator = wxExFindReplaceData::Get()->m_FindStrings.begin();
+    
+    wxExFindReplaceData::Get()->SetFindString(GetValue());
+  }
+}
+
+void wxExFindTextCtrl::OnKey(wxKeyEvent& event)
+{
+  const int key = event.GetKeyCode();
+
+  switch (key)
+  {
+  case WXK_UP: 
+  case WXK_DOWN:
+    wxExSetTextCtrlValue(
+      this, key, wxExFindReplaceData::Get()->m_FindStrings, m_FindsIterator);
+    break;
+    
+  default:  
+    event.Skip();
+  }    
+}    
