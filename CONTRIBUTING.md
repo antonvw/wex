@@ -20,7 +20,7 @@
 
 - doxy document sources  
   API documentation is generated from the sources 
-  using [Doxygen 1.8.1.2](http://www.stack.nl/~dimitri/doxygen/)
+  using [Doxygen 1.8.3.1](http://www.stack.nl/~dimitri/doxygen/)
   
 - add or update sample
 
