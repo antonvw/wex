@@ -25,7 +25,7 @@
 
 // Support class.
 // Offers a text ctrl related to a ex object.
-class wxExExTextCtrl: public wxTextCtrl
+class wxExExTextCtrl: public wxExFindTextCtrl
 {
 public:
   /// Constructor. Creates empty control.
@@ -70,9 +70,6 @@ private:
   
   std::list < wxString > m_Commands;
   std::list < wxString >::const_iterator m_CommandsIterator;
-
-  std::list < wxString > m_Finds;
-  std::list < wxString >::const_iterator m_FindsIterator;
 
   DECLARE_EVENT_TABLE()
 };
@@ -278,7 +275,7 @@ bool wxExManagedFrame::TogglePane(const wxString& pane)
 
 // Implementation of support class.
 
-BEGIN_EVENT_TABLE(wxExExTextCtrl, wxTextCtrl)
+BEGIN_EVENT_TABLE(wxExExTextCtrl, wxExFindTextCtrl)
   EVT_CHAR(wxExExTextCtrl::OnChar)
   EVT_SET_FOCUS(wxExExTextCtrl::OnFocus)
   EVT_TEXT(wxID_ANY, wxExExTextCtrl::OnCommand)
@@ -292,7 +289,7 @@ wxExExTextCtrl::wxExExTextCtrl(
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
-  : wxTextCtrl(parent, id, wxEmptyString, pos, size, wxTE_PROCESS_ENTER)
+  : wxExFindTextCtrl(parent, id, pos, size)
   , m_Frame(frame)
   , m_ex(NULL)
   , m_Controlr(false)
@@ -310,10 +307,6 @@ wxExExTextCtrl::wxExExTextCtrl(
   }
 
   m_CommandsIterator = m_Commands.begin();
-  
-  m_Finds = wxExFindReplaceData::Get()->GetFindStrings();
-  
-  m_FindsIterator = m_Finds.begin();
   
   // Next does not work.
   //AutoCompleteFileNames();
@@ -405,7 +398,7 @@ void wxExExTextCtrl::OnChar(wxKeyEvent& event)
     }
     else if (IsFind())
     {
-      wxExSetTextCtrlValue(this, key, m_Finds, m_FindsIterator);
+      event.Skip();
     }
     break;
     
@@ -474,11 +467,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   }
   else if (IsFind())
   {
-    m_Finds.remove(GetValue());
-    m_Finds.push_front(GetValue());
-    m_FindsIterator = m_Finds.begin();
-  
-    wxExFindReplaceData::Get()->SetFindString(GetValue());
+    event.Skip();    
         
     if (m_UserInput)
     {

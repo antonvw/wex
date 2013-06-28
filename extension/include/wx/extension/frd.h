@@ -2,7 +2,7 @@
 // Name:      frd.h
 // Purpose:   Declaration of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFRD_H
@@ -12,12 +12,15 @@
 #include <set>
 #include <wx/regex.h>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
+#include <wx/textctrl.h>
 
 class wxCheckListBox;
+class wxExFindTextCtrl;
 
 /// Adds an existing config to wxFindReplaceData, and some members.
 class WXDLLIMPEXP_BASE wxExFindReplaceData : public wxFindReplaceData
 {
+  friend class wxExFindTextCtrl;
 public:
   // Destructor (not for Doxy).
  ~wxExFindReplaceData();
@@ -131,4 +134,28 @@ private:
 
   static wxExFindReplaceData* m_Self;
 };
+
+/// Offers a find text ctrl.
+/// Pressing key up and down browses through values from
+/// wxExFindReplaceData, and pressing enter sets value
+/// in wxExFindReplaceData.
+class wxExFindTextCtrl : public wxTextCtrl
+{
+public:
+  /// Constructor. 
+  /// Fills the text ctrl with value from wxExFindReplaceData.
+  wxExFindTextCtrl(
+    wxWindow* parent,
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize);
+protected:
+  void OnEnter(wxCommandEvent& event);
+  void OnKey(wxKeyEvent& event);
+private:
+  std::list < wxString >::const_iterator m_FindsIterator;
+
+  DECLARE_EVENT_TABLE()
+};
+
 #endif
