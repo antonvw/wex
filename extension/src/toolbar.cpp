@@ -301,6 +301,8 @@ void wxExTextCtrl::OnCommand(wxCommandEvent& event)
 
 void wxExTextCtrl::OnEnter(wxCommandEvent& event)
 {
+  event.Skip();
+    
   if (!GetValue().empty())
   {
     Find();
