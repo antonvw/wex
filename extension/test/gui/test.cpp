@@ -213,6 +213,8 @@ void wxExGuiTestFixture::testDialog()
 
 void wxExGuiTestFixture::testEx()
 {
+  wxConfigBase::Get()->Write(_("vi mode"), true);
+  
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), 
     "// vi: set ts=120"); // this is a modeline
     
@@ -221,11 +223,9 @@ void wxExGuiTestFixture::testEx()
   wxExEx* ex = new wxExEx(stc);
   
   CPPUNIT_ASSERT( ex->GetIsActive());
-  CPPUNIT_ASSERT( ex->Use());
-  CPPUNIT_ASSERT( ex->GetIsActive());
-  CPPUNIT_ASSERT( ex->Use(false));
+  ex->Use(false);
   CPPUNIT_ASSERT(!ex->GetIsActive());
-  CPPUNIT_ASSERT( ex->Use());
+  ex->Use(true);
   CPPUNIT_ASSERT( ex->GetIsActive());
   
   CPPUNIT_ASSERT( ex->Command(":.="));
@@ -1887,11 +1887,11 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT( vi->Command(":.="));
   
-  CPPUNIT_ASSERT( vi->Command(":1,$s/xx/yy/"));
+  CPPUNIT_ASSERT( vi->Command(":1,$s/xx/yy/g"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("xx"));
   CPPUNIT_ASSERT( stc->GetText().Contains("yy"));
   
-  CPPUNIT_ASSERT( vi->GetLastCommand() == ":1,$s/xx/yy/");
+  CPPUNIT_ASSERT( vi->GetLastCommand() == ":1,$s/xx/yy/g");
   
   CPPUNIT_ASSERT( vi->Command("cc"));
   CPPUNIT_ASSERT( vi->GetInsertMode());
