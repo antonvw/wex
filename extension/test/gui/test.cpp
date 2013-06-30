@@ -302,9 +302,8 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->GetMacros().GetMacro() == "a");
   CPPUNIT_ASSERT( ex->GetSTC() == stc);
 
-  // Now load macros, to test whether some are available now.
   CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
-  CPPUNIT_ASSERT( ex->GetMacros().IsRecorded("a"));
+  CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded("xxx"));
   CPPUNIT_ASSERT( ex->GetMacros().GetCount() > 0);
   
   CPPUNIT_ASSERT( ex->GetMacros().Expand(ex, "date"));
@@ -1992,10 +1991,6 @@ void wxExGuiTestFixture::testViMacros()
   
   CPPUNIT_ASSERT(!macros.IsModified());
   CPPUNIT_ASSERT(!macros.IsRecording());
-  
-  // The macros is a static variable, so recording during vi
-  // results in recording here.
-  CPPUNIT_ASSERT( macros.IsRecorded("a"));
   
   macros.StartRecording("a");
   CPPUNIT_ASSERT( macros.IsRecording());
