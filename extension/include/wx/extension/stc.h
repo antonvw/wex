@@ -132,12 +132,12 @@ public:
   bool FindNext(
     /// text to find
     const wxString& text, 
-    /// search flags to be used
-    /// wxSTC_FIND_WHOLEWORD
-    /// wxSTC_FIND_MATCHCASE
-    /// wxSTC_FIND_WORDSTART
-    /// wxSTC_FIND_REGEXP
-    /// wxSTC_FIND_POSIX
+    /// search flags to be used:
+    /// - wxSTC_FIND_WHOLEWORD
+    /// - wxSTC_FIND_MATCHCASE
+    /// - wxSTC_FIND_WORDSTART
+    /// - wxSTC_FIND_REGEXP
+    /// - wxSTC_FIND_POSIX
     int search_flags = 0,
     /// finds next or previous
     bool find_next = true,
