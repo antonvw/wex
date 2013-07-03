@@ -93,6 +93,10 @@ public:
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
 
+  /// Adds a new column.
+  /// Returns the index of the inserted column or -1 if adding it failed.
+  long AppendColumn(const wxExColumn& col);
+
   /// If column is not found, -1 is returned,
   int FindColumn(const wxString& name) const;
 
@@ -111,10 +115,6 @@ public:
 
   /// Asks for an item number and goes to the item.
   bool GotoDialog(const wxString& caption = _("Enter Item Number"));
-
-  /// Inserts a column.
-  /// Returns the index of the inserted column or -1 if adding it failed.
-  long InsertColumn(const wxExColumn& col);
 
   /// Inserts a new item with column values from text.
   virtual bool ItemFromText(const wxString& text);
