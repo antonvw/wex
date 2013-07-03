@@ -185,6 +185,24 @@ wxExListView::wxExListView(wxWindow* parent,
   SetAcceleratorTable(accel);
 }
 
+long wxExListView::AppendColumn(const wxExColumn& col)
+{
+  wxExColumn mycol(col);
+  
+  const long index = wxListView::AppendColumn(
+    mycol.GetText(),
+    mycol.GetAlign(),
+    mycol.GetWidth());
+  
+  if (index != -1)
+  {
+    mycol.SetColumn(GetColumnCount() - 1);
+    m_Columns.insert(std::make_pair(mycol.GetText(), mycol));
+  }
+  
+  return index;
+}
+
 const wxString wxExListView::BuildPage()
 {
   wxString text;
@@ -238,11 +256,7 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
     wxMenu* menuSort = new wxMenu;
 
     for (
-#ifdef wxExUSE_CPP0X	
       auto it = m_Columns.begin();
-#else
-      std::map<wxString, wxExColumn>::iterator it = m_Columns.begin();
-#endif	  
       it != m_Columns.end();
       ++it)
     {
@@ -257,11 +271,7 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
 
 const wxExColumn wxExListView::Column(const wxString& name) const
 {
-#ifdef wxExUSE_CPP0X  
   auto it = m_Columns.find(name);
-#else
-  std::map<wxString, wxExColumn>::const_iterator it = m_Columns.find(name);
-#endif	
 
   if (it != m_Columns.end())
   {
@@ -442,11 +452,7 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
     return 0;
   }
       
-#ifdef wxExUSE_CPP0X	
   const auto it = m_ArtIDs.find(artid);
-#else
-  const std::map<wxArtID, unsigned int>::iterator it = m_ArtIDs.find(artid);
-#endif  
 
   if (it != m_ArtIDs.end())
   {
@@ -523,21 +529,6 @@ bool wxExListView::GotoDialog(const wxString& caption)
   EnsureVisible(val - 1);
 
   return true;
-}
-
-long wxExListView::InsertColumn(const wxExColumn& col)
-{
-  wxExColumn mycol(col);
-  
-  const long index = wxListView::InsertColumn(GetColumnCount(), mycol);
-  
-  if (index != -1)
-  {
-    mycol.SetColumn(GetColumnCount() - 1);
-    m_Columns.insert(std::make_pair(mycol.GetText(), mycol));
-  }
-  
-  return index;
 }
 
 bool wxExListView::ItemFromText(const wxString& text)
@@ -999,48 +990,44 @@ void wxExListViewFileName::AddColumns(const wxExLexer* lexer)
 {
   const int col_line_width = 250;
 
-  InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
+  AppendColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
 
   switch (m_Type)
   {
   case LIST_FIND:
   case LIST_REPLACE:
-    InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
-    InsertColumn(wxExColumn(_("Match"), wxExColumn::COL_STRING));
-    InsertColumn(wxExColumn(_("Line No")));
+    AppendColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
+    AppendColumn(wxExColumn(_("Match"), wxExColumn::COL_STRING));
+    AppendColumn(wxExColumn(_("Line No")));
     
     if (m_Type == LIST_REPLACE)
     {
-      InsertColumn(wxExColumn(_("Replaced")));
+      AppendColumn(wxExColumn(_("Replaced")));
     }
   break;
   case LIST_KEYWORD:
     for (
-#ifdef wxExUSE_CPP0X	
       auto it = lexer->GetKeywords().begin();
-#else
-      std::set<wxString>::iterator it = lexer->GetKeywords().begin();
-#endif	  
       it != lexer->GetKeywords().end();
       ++it)
     {
-      InsertColumn(wxExColumn(*it));
+      AppendColumn(wxExColumn(*it));
     }
 
-    InsertColumn(wxExColumn(_("Keywords")));
+    AppendColumn(wxExColumn(_("Keywords")));
   break;
   case LIST_SQL:
-    InsertColumn(wxExColumn(_("Run Time"), wxExColumn::COL_DATE));
-    InsertColumn(wxExColumn(_("Query"), wxExColumn::COL_STRING, 400));
-    InsertColumn(wxExColumn(_("Line No")));
+    AppendColumn(wxExColumn(_("Run Time"), wxExColumn::COL_DATE));
+    AppendColumn(wxExColumn(_("Query"), wxExColumn::COL_STRING, 400));
+    AppendColumn(wxExColumn(_("Line No")));
   break;
   default: break; // to prevent warnings
   }
 
-  InsertColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
-  InsertColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
-  InsertColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
-  InsertColumn(wxExColumn(_("Size")));
+  AppendColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
+  AppendColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
+  AppendColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
+  AppendColumn(wxExColumn(_("Size")));
 }
 
 void wxExListViewFileName::BuildPopupMenu(wxExMenu& menu)
