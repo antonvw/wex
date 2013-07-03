@@ -25,8 +25,10 @@ bool wxExTestApp::OnInit()
     wxID_ANY, wxTheApp->GetAppDisplayName());
     
   m_Frame->Show(true);
-
   wxLog::SetActiveTarget(new wxLogStderr());
+  
+  wxLogStatus(GetCatalogDir());
+  wxLogStatus(GetLocale().GetLocale());
   
   return true;
 }
