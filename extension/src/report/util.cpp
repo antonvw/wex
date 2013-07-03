@@ -2,29 +2,24 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wxExtension report utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/regex.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/listitem.h>
-#include <wx/extension/util.h>
 #include <wx/extension/report/util.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
-#include <wx/extension/report/frame.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/textfile.h>
 
 bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 {
   for (
-	// no auto, should be int
     int page = notebook->GetPageCount() - 1;
     page >= 0;
     page--)

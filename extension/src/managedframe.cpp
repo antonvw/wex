@@ -12,7 +12,6 @@
 #endif
 #include <wx/config.h>
 #include <wx/tokenzr.h>
-#include <wx/wxcrt.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/ex.h>
