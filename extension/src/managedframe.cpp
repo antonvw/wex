@@ -514,6 +514,8 @@ void wxExExTextCtrl::SetEx(wxExEx* ex, const wxString& range)
   m_UserInput = false;
   m_ex = ex;
   
+  SetValue(wxEmptyString);
+  
   if (IsFind())
   {
     if (!m_ModeVisual)
@@ -529,10 +531,6 @@ void wxExExTextCtrl::SetEx(wxExEx* ex, const wxString& range)
       
       SetValue((!current.StartsWith(range) ? range: wxString(wxEmptyString)) + current);
     }
-  }
-  else if (IsCalc())
-  {
-    SetValue(wxEmptyString);
   }
     
   Show();
