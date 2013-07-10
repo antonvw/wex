@@ -295,39 +295,14 @@ wxExExTextCtrl::wxExExTextCtrl(
   , m_ModeVisual(false)
   , m_UserInput(false)
   , m_Prefix(prefix)
+  , m_Commands(wxExListFromConfig("excommand"))
 {
-  wxStringTokenizer tkz(wxConfigBase::Get()->Read("excommand"),
-    wxExGetFieldSeparator());
-
-  while (tkz.HasMoreTokens())
-  {
-    const wxString val = tkz.GetNextToken();
-    m_Commands.push_front(val);
-  }
-
   m_CommandsIterator = m_Commands.begin();
-  
-  // Next does not work.
-  //AutoCompleteFileNames();
 }
 
 wxExExTextCtrl::~wxExExTextCtrl()
 {
-  const int commandsSaveInConfig = 25;
-  
-  wxString values;
-  int items = 0;
-
-  for (
-    std::list < wxString >::reverse_iterator it = m_Commands.rbegin();
-    it != m_Commands.rend() && items < commandsSaveInConfig;
-    ++it)
-  {
-    values += *it + wxExGetFieldSeparator();
-    items++;
-  }
-
-  wxConfigBase::Get()->Write("excommand", values);
+  wxExListToConfig(m_Commands, "excommand");
 }
 
 void wxExExTextCtrl::Handle(wxKeyEvent& event)

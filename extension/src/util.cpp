@@ -401,17 +401,16 @@ void wxExListToConfig(
   const wxString& config)
 {
   wxString text;
+  const int commandsSaveInConfig = 75;
+  int items = 0;
 
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = l.begin();
-#else
-    std::list < wxString >::const_iterator it = l.begin();
-#endif	
-    it != l.end();
+    it != l.end() && items < commandsSaveInConfig;
     ++it)
   {
     text += *it + wxExGetFieldSeparator();
+    items++;
   }
 
   wxConfigBase::Get()->Write(config, text);
@@ -563,11 +562,7 @@ void wxExOpenFiles(
   
   // std::vector gives compile error.
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = files.begin();
-#else
-    wxArrayString::const_iterator it = files.begin();
-#endif	
     it != files.end();
     ++it)
   {
