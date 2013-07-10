@@ -406,7 +406,7 @@ void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
     m_ex->GetSTC()->PositionRestore();
     m_ex->GetSTC()->FindNext(
       GetValue(),
-      wxSTC_FIND_REGEXP | wxFR_MATCHCASE,
+      m_ex->GetSearchFlags(),
       m_Prefix->GetLabel() == "/",
       m_ModeVisual);
   }
