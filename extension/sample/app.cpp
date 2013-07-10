@@ -223,7 +223,7 @@ wxExSampleFrame::wxExSampleFrame()
     m_ListView->InsertItem(i, wxString::Format("item%d", i));
     m_ListView->SetItem(i, 1, wxString::Format("%d", i));
     m_ListView->SetItem(i, 2, wxString::Format("%f", (float)i / 2.0));
-    m_ListView->SetItem(i, 3, wxDateTime::Now().Format());
+    m_ListView->SetItem(i, 3, wxDateTime::Now().FormatISOCombined(' '));
 
     // Set some images.
     if      (i == 0) m_ListView->SetItemImage(i, wxART_CDROM);
