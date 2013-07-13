@@ -256,11 +256,8 @@ void wxExFindTextCtrl::OnEnter(wxCommandEvent& event)
 {
   if (!GetValue().empty())
   {
-    wxExFindReplaceData::Get()->m_FindStrings.remove(GetValue());
-    wxExFindReplaceData::Get()->m_FindStrings.push_front(GetValue());
-    m_FindsIterator = wxExFindReplaceData::Get()->m_FindStrings.begin();
-    
     wxExFindReplaceData::Get()->SetFindString(GetValue());
+    m_FindsIterator = wxExFindReplaceData::Get()->GetFindStrings().begin();
   }
 }
 
