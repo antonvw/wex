@@ -26,12 +26,20 @@ void App::MacOpenFiles(const wxArrayString& fileNames)
 
 bool App::OnCmdLineParsed(wxCmdLineParser& parser)
 {
+  const bool result = wxApp::OnCmdLineParsed(parser);
+  
   for (size_t i = 0; i < parser.GetParamCount(); i++)
   {
     m_Files.Add(parser.GetParam(i));
   }
+  
+  if (parser.Found("l"))
+  {
+    wxLogMessage(
+      "Locale: " + GetLocale().GetLocale() + " dir: " + GetCatalogDir());
+  }
 
-  return wxApp::OnCmdLineParsed(parser);
+  return result;
 }
 
 bool App::OnInit()
@@ -46,7 +54,7 @@ bool App::OnInit()
 
   Frame* frame = new Frame(m_Files);
   frame->Show();
-
+  
   return true;
 }
 
@@ -58,4 +66,6 @@ void App::OnInitCmdLine(wxCmdLineParser& parser)
     "input file:line number:column number",
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
+    
+  parser.AddSwitch("l", wxEmptyString, "show locale");
 }
