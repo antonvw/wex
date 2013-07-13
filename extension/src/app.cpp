@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wxExApp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -32,11 +32,6 @@ int wxExApp::OnExit()
 
 bool wxExApp::OnInit()
 {
-  if (!wxApp::OnInit())
-  {
-    return false;
-  }
-
   wxConfigBase* config;
 #ifdef wxExUSE_PORTABLE
   // Use a portable file config.
@@ -88,11 +83,7 @@ bool wxExApp::OnInit()
     wxDir::GetAllFiles(m_CatalogDir, &files);
 
     for (
-#ifdef wxExUSE_CPP0X	
       auto it = files.begin();
-#else
-      wxArrayString::iterator it = files.begin();
-#endif	  
       it != files.end();
       ++it)
     {
@@ -113,5 +104,5 @@ bool wxExApp::OnInit()
 #endif
     "vcs.xml")).Read();
 
-  return true;
+  return wxApp::OnInit();
 }

@@ -30,10 +30,10 @@
     and also put the standard wxWidgets localization file
     in the localization dir.  
 
-  - The place where to put your po files can be found by running `wxex-sample`,
-    that shows the folder on the status bar.   
+  - The place where to put your po files can be found by adding -l comand line switch.
     You can also test other languages using the special LANG config item,
-    e.g. setting it to 80 allows you to test french translation.
+    e.g. setting it to 80 allows you to test french translation
+    (see wxWidgets/misc/languages/langtabl.txt).
     
 ## Test it
 
