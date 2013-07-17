@@ -14,7 +14,6 @@
 //#include <numeric> // both for accumulate
 #include <wx/stc/stc.h>
 #include <wx/tokenzr.h>
-#include <wx/window.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/lexers.h>
@@ -51,14 +50,15 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
     stc->SetKeyWords(setno, wxEmptyString);
   }
 
+  if (clear)
+  {
+    wxExLexers::Get()->ApplyGlobalStyles(stc);
+  }
+
   if (wxExLexers::Get()->GetThemeOk())
   {
     for (
-#ifdef wxExUSE_CPP0X	
       auto it = m_KeywordsSet.begin();
-#else
-      std::map< int, std::set<wxString> >::const_iterator it = m_KeywordsSet.begin();
-#endif	  
       it != m_KeywordsSet.end();
       ++it)
     {
@@ -68,15 +68,6 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
     }
     
     wxExLexers::Get()->GetDefaultStyle().Apply(stc);
-  }
-  
-  if (clear)
-  {
-    wxExLexers::Get()->ApplyGlobalStyles(stc);
-  }
-
-  if (wxExLexers::Get()->GetThemeOk())
-  {
     wxExLexers::Get()->ApplyIndicators(stc);
     wxExLexers::Get()->ApplyProperties(stc);
     wxExLexers::Get()->ApplyMarkers(stc);
@@ -136,11 +127,7 @@ void wxExLexer::AutoMatch(const wxString& lexer)
     bool match = false;
     
     for (
-#ifdef wxExUSE_CPP0X	
       auto style = wxExLexers::Get()->GetThemeMacros().begin();
-#else
-      std::map<wxString, wxString>::const_iterator style = wxExLexers::Get()->GetThemeMacros().begin();
-#endif	  
       style != wxExLexers::Get()->GetThemeMacros().end() && !match;
       ++style)
     {
@@ -219,13 +206,8 @@ const wxString wxExLexer::GetKeywordsString(int keyword_set) const
   }
   else
   {
-#ifdef wxExUSE_CPP0X	
     const auto it = 
       m_KeywordsSet.find(keyword_set);
-#else
-    const std::map< int, std::set<wxString> >::const_iterator it = 
-      m_KeywordsSet.find(keyword_set);
-#endif	  
 
     if (it != m_KeywordsSet.end())
     {
@@ -244,11 +226,7 @@ const wxString wxExLexer::GetKeywordsStringSet(
   wxString keywords;
 
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = kset.begin();
-#else
-    std::set<wxString>::iterator it = kset.begin();
-#endif	
     it != kset.end();
     ++it)
   {
@@ -277,23 +255,13 @@ void wxExLexer::Initialize()
 
 bool wxExLexer::IsKeyword(const wxString& word) const
 {
-#ifdef wxExUSE_CPP0X	
   const auto it = m_Keywords.find(word);
-#else
-  std::set<wxString>::iterator it = m_Keywords.find(word);
-#endif
-  
   return (it != m_Keywords.end());
 }
 
 bool wxExLexer::KeywordStartsWith(const wxString& word) const
 {
-#ifdef wxExUSE_CPP0X	
   const auto it = m_Keywords.lower_bound(word);
-#else
-  std::set<wxString>::iterator it = m_Keywords.lower_bound(word);
-#endif
-  
   return 
     it != m_Keywords.end() &&
     it->StartsWith(word);
@@ -526,11 +494,7 @@ bool wxExLexer::SetKeywords(const wxString& value)
 void wxExLexer::SetProperty(const wxString& name, const wxString& value)
 {
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = m_Properties.begin();
-#else
-    std::vector<wxExProperty>::iterator it = m_Properties.begin();
-#endif	
     it != m_Properties.end();
     ++it)
   {
