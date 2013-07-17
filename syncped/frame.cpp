@@ -1400,6 +1400,10 @@ void Frame::StatusBarClicked(const wxString& pane)
       {
         stc->SetLexer(stc->GetLexer().GetDisplayLexer());
       }
+      
+      ((wxExStatusBar *)GetStatusBar())->ShowField(
+        "PaneLexer", 
+        wxExLexers::Get()->GetThemeOk());
     }
   }
   else if (pane == "PaneMacro")
