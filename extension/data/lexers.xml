@@ -1929,15 +1929,18 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="a68k"/>
   <lexer name="abaqus"/> 
   <lexer name="ada" extensions="*.a">
+    <properties>
+      <property name="fold.ada.comment.multiline"> 1 </property>
+    </properties>
     <keywords>    
-      abort abs abstract accept access ackage aliased all and array at
+      abort abs abstract accept access aliased all and array at
       begin body case constant declare delay delta digits do else elsif
       end entry exception exit for function generic goto if in interface
-      israise limited loop mod new not null of or others out
-      overriding pragma private procedure protected range record rem renames 
-      requeue return reverse
-      select separate subtype synchronized tagged task terminate then type until
-      use when while with xor
+      is limited loop mod new not null of or others out
+      overriding package pragma private procedure protected raise range record 
+      rem renames requeue return reverse
+      select separate some subtype synchronized tagged task terminate then type 
+      until use when while with xor
     </keywords>    
     <comments begin1="--" />
   </lexer>
