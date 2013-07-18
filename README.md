@@ -23,7 +23,7 @@ one of these applications, being a full featured source code text editor.
     using cygwin 1.7.9:   
     `../configure --with-msw --disable-shared`  
     
-- under Ubuntu 13.04 g++ (Ubuntu/Linaro 4.7.3-1ubuntu1) 4.7.3:   
+- under Linux g++ 4.7.3:   
     install gtk:   
     `sudo apt-get install libgtk2.0-dev`   or   
     `sudo apt-get install libgtk-3-dev`   
@@ -31,8 +31,8 @@ one of these applications, being a full featured source code text editor.
     `../configure --with-gtk`  or   
     `../configure --with-gtk=3`   
     
-- under SunOS using GNU make (/usr/sfw/bin):  
-    `../configure --with-gtk --disable-shared --without-opengl`  
+- under SunOS:  
+    `../configure --with-gtk --disable-shared --without-opengl --disable-mediactrl`  
   
 - under mac os 10.4 use gcc 4.0.1 (use v2.9.3 tag) (part of xcode25_8m2258_developerdvd.dmg):   
     `../configure --with-mac`
@@ -46,11 +46,8 @@ one of these applications, being a full featured source code text editor.
     `make`  
     wxExtension does not yet compile
     
-- under Ubuntu:  
+- under Linux:  
     `make`
-    
-- under SunOS:  
-    `/usr/sfw/bin/make`   
     
 - under mac:  
     `make -f GNUMakefile-mac`
