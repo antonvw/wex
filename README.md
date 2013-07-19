@@ -9,7 +9,7 @@ one of these applications, being a full featured source code text editor.
 
 - [wxWidgets 2.9.5](http://www.wxwidgets.org/)
   
-- [cppunit 1.12](http://sourceforge.net/projects/cppunit)
+- [cppunit 1.12](http://sourceforge.net/projects/cppunit)    
     `sudo apt-get install libcppunit-dev`  
     
 - [OTL database 4.0.214](http://otl.sourceforge.net/) is used by syncodbcquery  
