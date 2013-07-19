@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ################################################################################
 # Name:      deploy.sh
 # Purpose:   Deploy file (for syncped)
@@ -33,7 +33,8 @@ FILES=( $( /bin/ls ../locale/*fr.po  ) )
 for f in $FILES
 do
   # name without extension
-  name=${f%\.*}
+  name=${f%%.po}
+  name=${name##*/}
   msgfmt ../locale/$name.po -o syncped/fr_FR/$name.mo
 done
 
@@ -42,7 +43,8 @@ FILES=( $( /bin/ls ../locale/*nl.po  ) )
 for f in $FILES
 do
   # name without extension
-  name=${f%\.*}
+  name=${f%%.po}
+  name=${name##*/}
   msgfmt ../locale/$name.po -o syncped/nl_NL/$name.mo
 done
 
