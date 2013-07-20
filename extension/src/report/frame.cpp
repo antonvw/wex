@@ -508,13 +508,8 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
   }
   
 
-#ifdef wxExUSE_CPP0X	
   auto* stc = GetSTC();
   auto* project = GetProject();
-#else
-  wxExSTC* stc = GetSTC();
-  wxExListViewFile* project = GetProject();
-#endif
 
   const wxUniChar indicator('*');
 

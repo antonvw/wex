@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Common definitions for wxExtension report
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_DEFS_H
@@ -22,7 +22,6 @@ enum
   ID_LIST_OPEN_ITEM,
   ID_LIST_RUN_MAKE,
   ID_LIST_HIGHEST,
-  ID_LIST_SEND_ITEM, // only for wxExListViewFile
   ID_LIST_ALL_ITEMS, // not a real command, used by exForEach
   ID_TREE_OPEN,
   ID_TREE_COPY,

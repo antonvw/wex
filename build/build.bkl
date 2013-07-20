@@ -3,7 +3,7 @@
 Name:      build.bkl
 Purpose:   Bakefile for wxextension libraries, samples, tests and applications
 Author:    Anton van Wezenbeek
-Copyright: (c) 2012 Anton van Wezenbeek
+Copyright: (c) 2013 Anton van Wezenbeek
 -->
 
 <!--
@@ -36,19 +36,10 @@ make-release.bat
   <set-wxlike-builddir/>
   
   <if cond="PLATFORM_UNIX=='1'">
-     <set var="DEFAULT_CXXFLAGS">-Wno-write-strings -std=c++0x -DwxExUSE_CPP0X</set>
-  </if>
-  
-  <if cond="PLATFORM_WIN32=='1'">
-     <set var="DEFAULT_CXXFLAGS">-DwxExUSE_CPP0X</set>
+     <set var="DEFAULT_CXXFLAGS">-Wno-write-strings -std=c++0x</set>
   </if>
   
   <!-- options -->
-  <option name="USE_CPP0X">
-     <values>0,1</values>
-     <default-value>1</default-value>
-  </option>
-  
   <option name="USE_EMBEDDED_SQL">
      <values>0,1</values>
      <values-description>No Embedded SQL,Uses Embedded SQL</values-description>
@@ -70,13 +61,6 @@ make-release.bat
      <description>Use portable build of wxex library?</description>
   </option>
         
-  <option name="USE_RBS">
-     <values>0,1</values>
-     <values-description>No RBS,Uses RBS</values-description>
-     <default-value>0</default-value>
-     <description>Use RBS?</description>
-  </option>
-        
   <!-- variables derived from options, so they can be used in the targets as weak conditions -->
   <!-- Todo: there is a bug (in bakefile), when making one var of these, bakefile hangs,
               doing it as is written here, only uses the last line -->
@@ -92,9 +76,6 @@ make-release.bat
   <if cond="PLATFORM_UNIX=='0'">
     <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='1'">wxExUSE_PORTABLE</set>
   </if>
-  
-  <set var="VAR_USE_RBS" cond="USE_RBS=='1'">wxExUSE_RBS</set>
-  <set var="VAR_USE_RBS" cond="USE_RBS=='0'"></set>
   
   <!-- libraries -->
   <include file="wxextension.bkl"/>

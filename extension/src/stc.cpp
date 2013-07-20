@@ -2490,11 +2490,7 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
   else
   {
     for (
-#ifdef wxExUSE_CPP0X	
       auto it = mm.rbegin();
-#else
-      std::multimap<wxString, wxString>::reverse_iterator it = mm.rbegin();
-#endif	  
       it != mm.rend();
       ++it)
     {

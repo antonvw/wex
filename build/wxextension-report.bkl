@@ -3,7 +3,7 @@
 Name:      wxextension-report.bkl
 Purpose:   Bakefile for wxextension report library
 Author:    Anton van Wezenbeek
-Copyright: (c) 2012 Anton van Wezenbeek
+Copyright: (c) 2013 Anton van Wezenbeek
 -->
 
 <makefile>
@@ -13,7 +13,6 @@ Copyright: (c) 2012 Anton van Wezenbeek
     <define>$(VAR_USE_EMBEDDED_SQL)</define>
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>
-    <define>$(VAR_USE_RBS)</define>
     
     <if cond="FORMAT=='msvs2008prj'">
       <define>_CRT_SECURE_NO_WARNINGS</define>
