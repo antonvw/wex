@@ -2,7 +2,7 @@
 // Name:      art.cpp
 // Purpose:   Implementation of wxExStockArt class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -61,11 +61,7 @@ const wxBitmap wxExStockArt::GetBitmap(
   if (wxIsStockID(m_Id))
   {
     // Check if there is art for this id.
-#ifdef wxExUSE_CPP0X	
     const auto art_it = m_ArtIDs.find(m_Id);
-#else
-    const std::map<wxWindowID, wxArtID>::iterator art_it = m_ArtIDs.find(m_Id);
-#endif	
 
     if (art_it != m_ArtIDs.end())
     {

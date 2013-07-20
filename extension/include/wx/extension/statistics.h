@@ -2,7 +2,7 @@
 // Name:      statistics.h
 // Purpose:   Include file for statistics classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTATISTICS_H
@@ -72,11 +72,7 @@ public:
   /// Adds other statistics.
   wxExStatistics& operator+=(const wxExStatistics& s) {
     for (
-#ifdef wxExUSE_CPP0X	
       auto it = s.m_Items.begin();
-#else
-      typename std::map<wxString, T>::const_iterator it = s.m_Items.begin();
-#endif
       it != s.m_Items.end();
       ++it)
     {
@@ -106,11 +102,7 @@ public:
   const wxString Get() const {
     wxString text;
     for (
-#ifdef wxExUSE_CPP0X	
       auto it = m_Items.begin();
-#else
-      typename std::map<wxString, T>::const_iterator it = m_Items.begin();
-#endif	
       it != m_Items.end();
       ++it)
     {
@@ -128,11 +120,7 @@ public:
 
   /// Gets value for specified key.
   const T Get(const wxString& key) const {
-#ifdef wxExUSE_CPP0X	
     const auto it = m_Items.find(key);
-#else
-    typename std::map<wxString, T>::const_iterator it = m_Items.find(key);
-#endif	
     if (it != m_Items.end())
     {
       return it->second;
@@ -159,11 +147,7 @@ public:
 #if wxUSE_GRID
     if (m_Grid != NULL)
     {
-#ifdef wxExUSE_CPP0X	
       const auto it = m_Rows.find(key);
-#else
-      std::map<wxString, int>::const_iterator it = m_Rows.find(key);
-#endif	  
 
       if (it != m_Rows.end())
       {
@@ -231,11 +215,7 @@ public:
       }
 
       for (
-#ifdef wxExUSE_CPP0X	
         auto it = m_Items.begin();
-#else
-        typename std::map<wxString, T>::const_iterator it = m_Items.begin();
-#endif	  
         it != m_Items.end();
         ++it)
       {

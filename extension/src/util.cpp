@@ -10,11 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#ifdef wxExUSE_CPP0X  
 #include <regex>
-#else
-#include <wx/regex.h>
-#endif
 #include <wx/clipbrd.h>
 #include <wx/config.h>
 #include <wx/regex.h>
@@ -459,7 +455,6 @@ int wxExMatch(
 {
   v.clear();
   
-#ifdef __WXMSW__ //wxExUSE_CPP0X  
 // even gcc 4.6.1 asserts on all regex
   try 
   {
@@ -481,17 +476,6 @@ int wxExMatch(
     wxLogError(wxString::Format("%s: in: %s code: %d",
       e.what(), reg.c_str(), e.code()));
   }
-#else
-  wxRegEx regex(reg, wxRE_ADVANCED);
-    
-  if (regex.Matches(text))
-  {
-    for (int i = 0; i < regex.GetMatchCount() - 1; i++)
-    {
-      v.push_back(regex.GetMatch(text, i + 1));
-    }
-  }
-#endif
 
   return v.size();
 }

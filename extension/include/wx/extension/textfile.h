@@ -2,7 +2,7 @@
 // Name:      textfile.h
 // Purpose:   Declaration of wxExTextFile class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXTEXTFILE_H
@@ -32,11 +32,7 @@ public:
 
   /// Gets the key, if not present 0 is returned.
   int Get(const wxString& key) const {
-#ifdef wxExUSE_CPP0X  
     const auto it = m_Elements.GetItems().find(key);
-#else
-    std::map<wxString, int>::const_iterator it = m_Elements.GetItems().find(key);  
-#endif  
     return (it != m_Elements.GetItems().end() ? it->second: 0);};
 
   /// Gets the elements.

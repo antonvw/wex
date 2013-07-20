@@ -190,11 +190,7 @@ const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
 #endif
 
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = m_MapPages.begin();
-#else
-    std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.begin();
-#endif	
     it != m_MapPages.end();
     ++it)
   {
@@ -211,11 +207,7 @@ const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
 
 wxWindow* wxExNotebook::GetPageByKey(const wxString& key) const
 {
-#ifdef wxExUSE_CPP0X	
   const auto it = m_MapPages.find(key);
-#else
-  const std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.find(key);
-#endif  
 
   if (it != m_MapPages.end())
   {

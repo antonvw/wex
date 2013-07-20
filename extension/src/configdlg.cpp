@@ -66,11 +66,7 @@ std::vector< wxExConfigItem >::const_iterator
 wxExConfigDialog::FindConfigItem(int id) const
 {
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = m_ConfigItems.begin();
-#else
-    std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
-#endif	
     it != m_ConfigItems.end();
     ++it)
   {
@@ -156,11 +152,7 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
   wxString previous_page = "XXXXXX";
 
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = m_ConfigItems.begin();
-#else
-    std::vector<wxExConfigItem>::iterator it = m_ConfigItems.begin();
-#endif	
     it != m_ConfigItems.end();
     ++it)
   {
@@ -253,11 +245,8 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 {
   if (command.GetId() < wxID_LOWEST)
   {
-#ifdef wxExUSE_CPP0X	
     auto it = FindConfigItem(command.GetId());
-#else
-    std::vector<wxExConfigItem>::const_iterator it = FindConfigItem(command.GetId());
-#endif	
+      
     if (it != m_ConfigItems.end())
     {
       if (it->GetType() == CONFIG_COMBOBOXDIR)
@@ -320,11 +309,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
   bool one_checkbox_checked = false;
 
   for (
-#ifdef wxExUSE_CPP0X	
     auto it = m_ConfigItems.begin();
-#else
-    std::vector<wxExConfigItem>::iterator it = m_ConfigItems.begin();
-#endif	
     it != m_ConfigItems.end();
     ++it)
   {

@@ -14,7 +14,7 @@
 CXX = cl
 
 # Standard flags for C++ 
-CXXFLAGS = -DwxExUSE_CPP0X
+CXXFLAGS = 
 
 # Standard preprocessor flags (common for CC and CXX) 
 CPPFLAGS = 
