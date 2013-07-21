@@ -989,11 +989,6 @@ void wxExListViewFileName::AddColumns(const wxExLexer* lexer)
 
     AppendColumn(wxExColumn(_("Keywords")));
   break;
-  case LIST_SQL:
-    AppendColumn(wxExColumn(_("Run Time"), wxExColumn::COL_DATE));
-    AppendColumn(wxExColumn(_("Query"), wxExColumn::COL_STRING, 400));
-    AppendColumn(wxExColumn(_("Line No")));
-  break;
   default: break; // to prevent warnings
   }
 
@@ -1026,7 +1021,6 @@ const wxString wxExListViewFileName::GetTypeDescription(wxExListType type)
   case LIST_KEYWORD: value = _("Keywords"); break;
   case LIST_FILE: value = _("File"); break;
   case LIST_REPLACE: value = _("Replace Results"); break;
-  case LIST_SQL: value = _("SQL Queries"); break;
   default: wxFAIL;
   }
 

@@ -40,13 +40,6 @@ make-release.bat
   </if>
   
   <!-- options -->
-  <option name="USE_EMBEDDED_SQL">
-     <values>0,1</values>
-     <values-description>No Embedded SQL,Uses Embedded SQL</values-description>
-     <default-value>1</default-value>
-     <description>Use embedded SQL?</description>
-  </option>
-
   <option name="USE_OTL">
      <values>0,1</values>
      <values-description>No OTL,Uses OTL</values-description>
@@ -64,9 +57,6 @@ make-release.bat
   <!-- variables derived from options, so they can be used in the targets as weak conditions -->
   <!-- Todo: there is a bug (in bakefile), when making one var of these, bakefile hangs,
               doing it as is written here, only uses the last line -->
-  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">wxExUSE_EMBEDDED_SQL</set>
-  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='0'"></set>
-  
   <set var="VAR_USE_OTL" cond="USE_OTL=='1'">wxExUSE_OTL</set>
   <set var="VAR_USE_OTL" cond="USE_OTL=='0'"></set>
   

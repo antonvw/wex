@@ -174,7 +174,6 @@ wxExListViewWithFrame::wxExListType wxExListViewWithFrame::GetTypeTool(
     case ID_TOOL_REPORT_FIND: return LIST_FIND; break;
     case ID_TOOL_REPORT_KEYWORD: return LIST_KEYWORD; break;
     case ID_TOOL_REPORT_REPLACE: return LIST_REPLACE; break;
-    case ID_TOOL_REPORT_SQL: return LIST_SQL; break;
     default: wxFAIL; return LIST_FILE;
   }
 }
@@ -287,9 +286,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
 
 void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 {
-  if ((tool.GetId() == ID_TOOL_REPORT_KEYWORD && GetType() == LIST_KEYWORD) ||
-      (tool.GetId() == ID_TOOL_REPORT_SQL && GetType() == LIST_SQL)
-     )
+  if (tool.GetId() == ID_TOOL_REPORT_KEYWORD && GetType() == LIST_KEYWORD)
   {
     return;
   }
