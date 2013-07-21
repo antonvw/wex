@@ -602,10 +602,6 @@ void Frame::OnCommand(wxCommandEvent& event)
     info.SetIcon(GetIcon());
     info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
 
-#ifdef wxExUSE_EMBEDDED_SQL
-    info.AddDeveloper(wxExOTL::VersionInfo().GetVersionString());
-#endif
-
     wxString description(
       _("This program offers a portable text or binary editor\n"
         "with automatic syncing."));

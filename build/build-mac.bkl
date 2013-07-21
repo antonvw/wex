@@ -3,7 +3,7 @@
 Name:      build-mac.bkl
 Purpose:   Bakefile for wxextension libraries, samples, tests and applications
 Author:    Anton van Wezenbeek
-Copyright: (c) 2011 Anton van Wezenbeek
+Copyright: (c) 2013 Anton van Wezenbeek
 -->
 
 <!-- see build.bkl 
@@ -85,13 +85,6 @@ Copyright: (c) 2011 Anton van Wezenbeek
   </if>
   
   <!-- options -->
-  <option name="USE_EMBEDDED_SQL">
-     <values>0,1</values>
-     <values-description>No Embedded SQL,Uses Embedded SQL</values-description>
-     <default-value>1</default-value>
-     <description>Use embedded SQL?</description>
-  </option>
-
   <option name="USE_OTL">
     <values>0,1</values>
     <values-description>No OTL,Uses OTL</values-description>
@@ -106,28 +99,15 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <description>Use portable build of wxex library?</description>
   </option>
         
-  <option name="USE_RBS">
-    <values>0,1</values>
-    <values-description>No RBS,Uses RBS</values-description>
-    <default-value>0</default-value>
-    <description>Use RBS?</description>
-  </option>
-        
   <!-- variables derived from options, so they can be used in the targets as weak conditions -->
   <!-- Todo: there is a bug (in bakefile), when making one var of these, bakefile hangs,
              doing it as is written here, only uses the last line -->
-  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">wxExUSE_EMBEDDED_SQL</set>
-  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='0'"></set>
-  
   <set var="VAR_USE_OTL" cond="USE_OTL=='1'">wxExUSE_OTL</set>
   <set var="VAR_USE_OTL" cond="USE_OTL=='0'"></set>
   
   <if cond="PLATFORM_UNIX=='1'">
     <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='1'">wxExUSE_PORTABLE</set>
   </if>
-  
-  <set var="VAR_USE_RBS" cond="USE_RBS=='1'">wxExUSE_RBS</set>
-  <set var="VAR_USE_RBS" cond="USE_RBS=='0'"></set>
   
   <!-- libraries -->
   <include file="wxextension.bkl"/>

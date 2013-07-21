@@ -232,7 +232,6 @@ public:
     LIST_KEYWORD,      ///< a list to show keywords
     LIST_REPLACE,      ///< a list to show replace results
     LIST_FILE,         ///< a list associated with a file
-    LIST_SQL,          ///< a list to show embedded sql
     LIST_AFTER_LAST    ///< for iterating
   };
 

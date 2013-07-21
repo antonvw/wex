@@ -2,14 +2,13 @@
 // Name:      textfile.h
 // Purpose:   Declaration of class 'wxExTextFileWithListView'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_TEXTFILE_H
 #define _EX_REPORT_TEXTFILE_H
 
 #include <wx/extension/textfile.h>
-#include <wx/extension/otl.h>
 
 class wxExFrameWithHistory;
 class wxExListView;
@@ -106,18 +105,5 @@ private:
   
   wxExSyntaxType m_LastSyntaxType;
   wxExSyntaxType m_SyntaxType;
-  
-#if wxExUSE_EMBEDDED_SQL
-  bool ParseComments();
-  bool ParseSQL();
-  bool SetSQLQuery();
-
-  bool m_SQLResultsParsing;
-
-  static wxExOTL m_otl;
-
-  wxString m_SQLQuery;
-  wxString m_SQLQueryRunTime;
-#endif
 };
 #endif

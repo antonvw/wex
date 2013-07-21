@@ -10,7 +10,6 @@ Copyright: (c) 2013 Anton van Wezenbeek
   <lib id="wxex-rep" template="wx-lib,wxlike">
     <libname>wxex-rep29</libname>
     
-    <define>$(VAR_USE_EMBEDDED_SQL)</define>
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>
     
