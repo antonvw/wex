@@ -11,7 +11,6 @@
 #endif
 #include <wx/config.h>
 #include <wx/tokenzr.h>
-#include <wx/utils.h> // for wxGetEnv
 #include <wx/extension/link.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/stc.h>
@@ -167,23 +166,9 @@ const wxString wxExLink::GetPath(
           fullpath = file.GetFullPath();
         }
       }
-      else
-      {
-        wxString pwd;
-        
-        if (wxGetEnv("PWD", &pwd))
-        {
-          if (file.MakeAbsolute(pwd))
-          {
-            if (file.FileExists())
-            {
-              fullpath = file.GetFullPath();
-            }
-          }
-        }
-      }
+    
 #ifdef DEBUG
-    wxLogMessage("Fullpath " + fullpath);
+      wxLogMessage("Fullpath " + fullpath);
 #endif
     }
 
