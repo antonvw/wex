@@ -223,7 +223,7 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
   {
     expanded = ex->GetSTC()->GetFileName().GetName();
   }
-  else if (m_Name == "fullname")
+  else if (m_Name == "fn")
   {
     expanded = ex->GetSTC()->GetFileName().GetFullName();
   }
