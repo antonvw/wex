@@ -291,17 +291,6 @@ const wxString wxExLexers::GetLexerExtensions() const
   return text;
 }
 
-const std::map<wxString, wxString>& wxExLexers::GetMacros(
-  const wxString& lexer)
-{
-  return m_Macros[lexer];
-}
-
-const std::map<wxString, wxString>& wxExLexers::GetThemeMacros()
-{
-  return m_ThemeMacros[m_Theme];
-}
-
 bool wxExLexers::IndicatorIsLoaded(const wxExIndicator& indic) const
 {
   const auto it = m_Indicators.find(indic);
