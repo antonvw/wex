@@ -63,9 +63,9 @@ void App::OnInitCmdLine(wxCmdLineParser& parser)
   wxApp::OnInitCmdLine(parser);
 
   parser.AddParam(
-    "input file:line number:column number",
+    _("input file:line number:column number"),
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
     
-  parser.AddSwitch("l", wxEmptyString, "show locale");
+  parser.AddSwitch("l", wxEmptyString, _("show locale"));
 }
