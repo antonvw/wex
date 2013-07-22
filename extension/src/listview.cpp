@@ -1002,7 +1002,7 @@ void wxExListViewFileName::BuildPopupMenu(wxExMenu& menu)
 {
   wxExListView::BuildPopupMenu(menu);
 
-  if (m_Type == LIST_FOLDER)
+  if (m_Type == LIST_FOLDER && GetSelectedItemCount() <= 1)
   {
     menu.AppendSeparator();
     menu.Append(wxID_ADD);
