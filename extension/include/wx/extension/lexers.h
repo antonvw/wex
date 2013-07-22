@@ -78,10 +78,12 @@ public:
   const wxFileName& GetFileName() const {return m_FileName;};
   
   /// Gets the macros for specified lexer.
-  const std::map<wxString, wxString>& GetMacros(const wxString& lexer);
+  const std::map<wxString, wxString>& GetMacros(const wxString& lexer) {
+    return m_Macros[lexer];};
 
   /// Gets global properties.
-  const std::vector<wxExProperty> & GetProperties() const {return m_GlobalProperties;};
+  const std::vector<wxExProperty> & GetProperties() const {
+    return m_GlobalProperties;};
 
   /// Returns the current theme.
   const wxString& GetTheme() const {return m_Theme;};
@@ -90,7 +92,8 @@ public:
   bool GetThemeOk() const {return GetTheme() != m_NoTheme;};
   
   /// Gets the theme macros for the current theme.
-  const std::map<wxString, wxString>& GetThemeMacros();
+  const std::map<wxString, wxString>& GetThemeMacros() {
+    return m_ThemeMacros[m_Theme];};
 
   /// Returns true if specified indicator is available.
   bool IndicatorIsLoaded(const wxExIndicator& indic) const;
