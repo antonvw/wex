@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wxExSTCWithFrame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -85,7 +85,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
       // Cannot move this code to wxExSTC, because of member m_Frame.
       wxArrayString files;
       files.Add(GetFileName().GetFullPath());
-      wxExVCSExecute(m_Frame, command.GetId(), files);
+      wxExVCSExecute(m_Frame, command.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
     }
   }
   else

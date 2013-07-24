@@ -219,7 +219,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
       files.Add(wxExListItem(this, i).GetFileName().GetFullPath());
     }
   
-    wxExVCSExecute(m_Frame, event.GetId(), files);
+    wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
   }
   else switch (event.GetId())
   {
