@@ -495,7 +495,6 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
     return;
   }
   
-
   auto* stc = GetSTC();
   auto* project = GetProject();
 

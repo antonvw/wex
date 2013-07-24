@@ -117,7 +117,7 @@ const wxString wxExViMacros::Encode(const wxString& text)
 
 bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
 {
-  std::map<wxString, wxExVariable>::iterator it = m_Variables.find(variable);
+  auto it = m_Variables.find(variable);
   
   bool ok;
     
@@ -170,7 +170,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
 
 bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
 {
-  std::map<wxString, wxExVariable>::iterator it = m_Variables.find(variable);
+  auto it = m_Variables.find(variable);
     
   bool ok;
     
@@ -338,11 +338,7 @@ const wxArrayString wxExViMacros::Get() const
     as.Add(it->first);
   }
    
-  for (
-    std::map<wxString, wxExVariable >::iterator it = 
-    m_Variables.begin();
-    it != m_Variables.end();
-    ++it)
+  for (auto it = m_Variables.begin(); it != m_Variables.end(); ++it)
   {
     as.Add(it->first);
   }

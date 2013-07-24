@@ -120,7 +120,7 @@ bool wxExVariable::Expand(wxExEx* ex)
     return false;
   }
   
-  ex->GetSTC()->AddText(text);
+  ex->AddText(text);
     
   return true;
 }
