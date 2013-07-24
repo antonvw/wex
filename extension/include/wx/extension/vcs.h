@@ -52,7 +52,7 @@ public:
   const wxExVCSEntry& GetEntry() const {return m_Entry;};
   
   /// Gets the xml filename.
-  static const wxFileName& GetFileName();
+  static const wxFileName GetFileName();
   
   /// Returns name for current vcs entry, or empty string
   /// if vcs is not used.

@@ -12,6 +12,7 @@
 #include <wx/config.h>
 #include <wx/extension/vcsentry.h>
 #include <wx/extension/configdlg.h>
+#include <wx/extension/defs.h> // for VCS_MAX_COMMANDS
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
@@ -102,12 +103,12 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
   const wxString unused = "XXXXX";  
   wxString prev_menu = unused;
   
-  int i;
+  int i = 0;
 
   for (
-    auto it = m_Commands.begin(), i = 0;
+    auto it = m_Commands.begin();
     it != m_Commands.end();
-    ++it, i++)
+    ++it)
   {
     bool add = false;
 
@@ -154,6 +155,8 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
         usemenu->AppendSeparator();
       }
     }
+      
+    i++;
   }
 
   return menu->GetMenuItemCount();
