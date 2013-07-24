@@ -704,7 +704,7 @@ void wxExGuiTestFixture::testLexers()
   wxExLexers::Get()->ShowDialog(wxTheApp->GetTopWindow(), lexer, wxEmptyString, false);
   wxExLexers::Get()->ShowThemeDialog(wxTheApp->GetTopWindow(), wxEmptyString, false);
 
-  CPPUNIT_ASSERT( wxExLexers::Get()->Read());
+  CPPUNIT_ASSERT( wxExLexers::Get()->LoadDocument());
 }
 
 
@@ -1547,7 +1547,7 @@ void wxExGuiTestFixture::testVCS()
   CPPUNIT_ASSERT( vcs.GetEntry().GetCommand().GetCommand() == "add");
   CPPUNIT_ASSERT( vcs.GetFileName().IsOk());
   CPPUNIT_ASSERT(!vcs.GetEntry().GetCommand().IsOpen());
-  CPPUNIT_ASSERT( vcs.Read());
+  CPPUNIT_ASSERT( vcs.LoadDocument());
   CPPUNIT_ASSERT( vcs.Use());
   
   wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());
@@ -1558,14 +1558,14 @@ void wxExGuiTestFixture::testVCS()
 
 void wxExGuiTestFixture::testVCSCommand()
 {
-  const wxExVCSCommand add("a&dd", 0);
-  const wxExVCSCommand blame("blame", 1);
-  const wxExVCSCommand co("checkou&t", 2);
-  const wxExVCSCommand commit("commit", 3, "main");
-  const wxExVCSCommand diff("diff", 4, "popup", "submenu");
-  const wxExVCSCommand log("log", 5, "main");
-  const wxExVCSCommand help("h&elp", 6, "error", "", "m&e");
-  const wxExVCSCommand update("update", 7);
+  const wxExVCSCommand add("a&dd");
+  const wxExVCSCommand blame("blame");
+  const wxExVCSCommand co("checkou&t");
+  const wxExVCSCommand commit("commit", "main");
+  const wxExVCSCommand diff("diff", "popup", "submenu");
+  const wxExVCSCommand log("log", "main");
+  const wxExVCSCommand help("h&elp", "error", "", "m&e");
+  const wxExVCSCommand update("update");
   const wxExVCSCommand none;
 
   CPPUNIT_ASSERT(add.GetCommand() == "add");
@@ -1575,15 +1575,6 @@ void wxExGuiTestFixture::testVCSCommand()
   CPPUNIT_ASSERT(help.GetCommand(false, true) == "h&elp");
   CPPUNIT_ASSERT(help.GetCommand(false, false) == "help");
   
-  CPPUNIT_ASSERT(add.GetNo() == 0);
-  CPPUNIT_ASSERT(update.GetNo() != add.GetNo());
-  CPPUNIT_ASSERT(update.GetNo() != co.GetNo());
-  CPPUNIT_ASSERT(update.GetNo() != commit.GetNo());
-  CPPUNIT_ASSERT(update.GetNo() != diff.GetNo());
-  CPPUNIT_ASSERT(update.GetNo() != help.GetNo());
-  CPPUNIT_ASSERT(update.GetNo() != blame.GetNo());
-  CPPUNIT_ASSERT(update.GetNo() != none.GetNo());
-
   CPPUNIT_ASSERT(add.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
   CPPUNIT_ASSERT(blame.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
   CPPUNIT_ASSERT(commit.GetType() == wxExVCSCommand::VCS_COMMAND_IS_MAIN);

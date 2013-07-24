@@ -12,7 +12,6 @@
 #include <wx/config.h>
 #include <wx/extension/vcsentry.h>
 #include <wx/extension/configdlg.h>
-#include <wx/extension/defs.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
@@ -56,7 +55,7 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
     }
   }
   
-  if (m_Commands.size() == 0)
+  if (m_Commands.empty())
   {
     wxLogError("No commands found for: " + m_Name);
     m_Commands.push_back(wxExVCSCommand());
@@ -85,7 +84,6 @@ void wxExVCSEntry::AddCommands(const wxXmlNode* node)
         m_Commands.push_back(
           wxExVCSCommand(
             content, 
-            m_Commands.size(), 
             attrib, 
             submenu, 
             subcommand));
@@ -103,11 +101,13 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 
   const wxString unused = "XXXXX";  
   wxString prev_menu = unused;
+  
+  int i;
 
   for (
-    auto it = m_Commands.begin();
+    auto it = m_Commands.begin(), i = 0;
     it != m_Commands.end();
-    ++it)
+    ++it, i++)
   {
     bool add = false;
 
@@ -144,10 +144,10 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
     {
       wxMenu* usemenu = (submenu == NULL ? menu: submenu);
       usemenu->Append(
-        base_id + it->GetNo(), 
+        base_id + i, 
         wxExEllipsed(it->GetCommand(false, true))); // use no sub and do accel
         
-      const long sep  = it->GetType() & 0x00F0;
+      const long sep = it->GetType() & 0x00F0;
       
       if (sep)
       {
@@ -195,7 +195,12 @@ bool wxExVCSEntry::Execute(
   
   if (m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX)
   {
-    prefix += wxConfigBase::Get()->Read(_("Prefix flags")) + " ";
+    prefix = wxConfigBase::Get()->Read(_("Prefix flags"));
+    
+    if (!prefix.empty())
+    {
+      prefix += " ";
+    }
   }
   
   wxString subcommand;
@@ -243,7 +248,7 @@ bool wxExVCSEntry::Execute(
 
   return wxExProcess::Execute(
     GetBin() + " " + 
-      prefix + 
+      prefix +
       GetCommand().GetCommand() + " " + 
       subcommand + flags + comment + my_args, 
     wxEXEC_SYNC, // for the moment (problems with wxTimer when ASYC is used)
@@ -260,34 +265,19 @@ const wxString wxExVCSEntry::GetFlags() const
   return wxConfigBase::Get()->Read(_("Flags"));
 }
 
-bool wxExVCSEntry::SetCommand(int menu_id)
+bool wxExVCSEntry::SetCommand(int command_no)
 {
-  int new_index;
-  
-  if (menu_id > ID_VCS_LOWEST && menu_id < ID_VCS_HIGHEST)
-  {
-    new_index = menu_id - ID_VCS_LOWEST - 1;
-  }
-  else if (menu_id > ID_EDIT_VCS_LOWEST && menu_id < ID_EDIT_VCS_HIGHEST)
-  {
-    new_index = menu_id - ID_EDIT_VCS_LOWEST - 1;
-  }
-  else
+  if (command_no < 0 || command_no >= m_Commands.size())
   {
     return false;
   }
   
-  if (new_index < 0 || new_index >= m_Commands.size())
-  {
-    return false;
-  }
-  
-  m_CommandIndex = new_index;
+  m_CommandIndex = command_no;
   
   m_FlagsKey = wxString::Format(
     "vcsflags/%s%d", 
     m_Name.c_str(), 
-    GetCommand().GetNo());
+    m_CommandIndex);
     
   return true;
 }

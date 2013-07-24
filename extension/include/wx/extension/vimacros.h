@@ -31,11 +31,11 @@ public:
   /// Returns all macro or variable names as an array of strings.
   const wxArrayString Get() const;
   
-  /// Returns number of macros and variables available.
-  int GetCount() const;
-  
   /// Returns contents of macro or variable.
   const std::vector< wxString > Get(const wxString& macro) const;
+  
+  /// Returns number of macros and variables available.
+  int GetCount() const;
   
   /// Returns current or last macro played back or variable expanded.
   const wxString& GetMacro() const {return m_Macro;};

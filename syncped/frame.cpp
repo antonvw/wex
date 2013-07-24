@@ -560,7 +560,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   if (event.GetId() > ID_VCS_LOWEST && 
       event.GetId() < ID_VCS_HIGHEST)
   {
-    wxExVCS(wxArrayString(), event.GetId()).Request(this);
+    wxExVCS(wxArrayString(), event.GetId() - ID_VCS_LOWEST - 1).Request(this);
   }
   // edit commands
   // Do not change the wxID* in wxID_LOWEST and wdID_HIGHEST,
@@ -675,7 +675,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
       if (editor->GetFileName() == wxExLexers::Get()->GetFileName())
       {
-        wxExLexers::Get()->Read();
+        wxExLexers::Get()->LoadDocument();
         m_Editors->ForEach(ID_ALL_STC_SET_LEXER);
 
         // As the lexer might have changed, update status bar field as well.
@@ -685,7 +685,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       }
       else if (editor->GetFileName() == wxExVCS::GetFileName())
       {
-        wxExVCS::Read();
+        wxExVCS::LoadDocument();
       }
       else if (editor->GetFileName() == wxExViMacros::GetFileName())
       {
@@ -827,9 +827,9 @@ void Frame::OnCommand(wxCommandEvent& event)
     if (wxExVCS().ConfigDialog(this) == wxID_OK)
     { 
       wxExVCS vcs;
-      vcs.GetDir(this);
+      vcs.SetEntryFromBase(this);
       
-      ((wxExStatusBar *)GetStatusBar())->ShowField(
+      m_StatusBar->ShowField(
         "PaneVCS", 
         vcs.Use());
         
@@ -995,7 +995,7 @@ void Frame::OnCommandConfigDialog(
         m_Process->GetSTC()->ConfigGet();
       }
       
-      ((wxExStatusBar *)GetStatusBar())->ShowField(
+      m_StatusBar->ShowField(
         "PaneMacro", 
         wxConfigBase::Get()->ReadBool(_("vi mode"), true));
     }
@@ -1397,7 +1397,7 @@ void Frame::StatusBarClicked(const wxString& pane)
         stc->SetLexer(stc->GetLexer().GetDisplayLexer());
       }
       
-      ((wxExStatusBar *)GetStatusBar())->ShowField(
+      m_StatusBar->ShowField(
         "PaneLexer", 
         wxExLexers::Get()->GetThemeOk());
     }

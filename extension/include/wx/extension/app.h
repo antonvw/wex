@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Include file for wxExApp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXAPP_H
@@ -23,13 +23,13 @@ public:
   /// Gets the locale.
   const wxLocale& GetLocale() const {return m_Locale;};
 
-  /// Constructs the config, and initializes the locale.
-  /// In your class OnInit first set the app name,
+  /// Constructs the config, initializes the locale, loads the VCS file.
+  /// In your own OnInit first set the app name,
   /// as it uses this name for the config,
   /// and then call this base class method.
   virtual bool OnInit();
 
-  /// This deletes all global objects and cleans up things if necessary.
+  /// Deletes all global objects and cleans up things if necessary.
   /// You should normally don't need to override it.
   virtual int OnExit();
 private:

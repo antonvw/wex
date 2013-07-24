@@ -670,7 +670,7 @@ void wxExSTC::ConfigGet(bool init)
     StyleResetDefault();
     
     // Doing this once is enough, not yet possible.
-    wxExLexers::Get()->Read();
+    wxExLexers::Get()->LoadDocument();
     
     SetLexer(m_Lexer.GetDisplayLexer());
   }

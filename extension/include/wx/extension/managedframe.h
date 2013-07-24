@@ -43,28 +43,28 @@ public:
   /// in changing stc, if command is being played back.
   virtual wxExSTC* ExecExCommand(int command) {return NULL;};
 
-  /// Gets a command line vi command.
-  /// It shows the vibar, sets the label and 
+  /// Gets a command line ex command.
+  /// It shows the ex bar, sets the label and 
   /// sets focus to it, allowing
   /// you to enter a command.
   /// You can override it to e.g. hide other panels.
   virtual void GetExCommand(
     /// the ex on which command is to be done
     wxExEx* ex, 
-    /// label for the vibar (like / or ? or :)
+    /// label for the ex bar (like / or ? or :)
     const wxString& label);
   
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};
 
-  /// Hides the vi bar.
-  /// Default it sets focus back to stc component associated with current vi.
+  /// Hides the ex bar.
+  /// Default it sets focus back to stc component associated with current ex.
   void HideExBar(bool set_focus = true);
 
   /// Called if the notebook changed page.
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
-  /// Shows text in vi bar.
+  /// Shows text in ex bar.
   void ShowExMessage(const wxString& text);
   
   /// Called after all pages from the notebooks are deleted.
@@ -76,7 +76,7 @@ public:
     /// pane to be toggled:
     /// - FINDBAR
     /// - TOOLBAR
-    /// - VIBAR  
+    /// - VIBAR (same as the ex bar)
     const wxString& pane);
 protected:
   /// Returns the toolbar.

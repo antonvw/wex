@@ -11,6 +11,7 @@
 #endif
 #include <wx/cmdline.h> // for wxCmdLineParser
 #include <wx/extension/util.h>
+#include <wx/extension/version.h>
 #include "app.h"
 #include "frame.h"
 
@@ -37,6 +38,10 @@ bool App::OnCmdLineParsed(wxCmdLineParser& parser)
   {
     wxLogMessage(
       "Locale: " + GetLocale().GetLocale() + " dir: " + GetCatalogDir());
+  }
+  else if (parser.Found("v"))
+  {
+    wxLogMessage(wxExGetVersionInfo().GetVersionOnlyString());
   }
 
   return result;
@@ -68,4 +73,5 @@ void App::OnInitCmdLine(wxCmdLineParser& parser)
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
     
   parser.AddSwitch("l", wxEmptyString, _("show locale"));
+  parser.AddSwitch("v", wxEmptyString, _("show version"));
 }
