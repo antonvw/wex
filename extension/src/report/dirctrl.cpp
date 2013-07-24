@@ -66,7 +66,7 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
   if (event.GetId() > ID_EDIT_VCS_LOWEST && 
       event.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    wxExVCSExecute(m_Frame, event.GetId(), files);
+    wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
   }
   else if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
   {
