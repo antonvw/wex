@@ -2,7 +2,7 @@
 // Name:      vcscommand.h
 // Purpose:   Declaration of wxExVCSCommand class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVCSCOMMAND_H
@@ -30,8 +30,6 @@ public:
   wxExVCSCommand(
     /// Specify command.
     const wxString& command,
-    /// The no.
-    int no,
     /// The type (main, popup, both).
     const wxString& type = wxEmptyString,
     /// The submenu member is set to specified submenu if not empty,
@@ -45,9 +43,6 @@ public:
     bool include_subcommand = true,
     bool include_accelerators = false) const;
   
-  /// Gets the no.
-  int GetNo() const {return m_No;};
-
   /// Returns the submenu.
   const wxString& GetSubMenu() const {return m_SubMenu;};
 
@@ -94,7 +89,6 @@ private:
   wxString m_SubMenu;
 
   bool m_SubMenuIsCommand;
-  int m_No;
   long m_Type;
 };
 #endif

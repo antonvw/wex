@@ -324,7 +324,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       if (m_STC->GetFileName().GetFullPath() == 
           wxExLexers::Get()->GetFileName().GetFullPath())
       {
-        wxExLexers::Get()->Read();
+        wxExLexers::Get()->LoadDocument();
         wxLogMessage("File contains: %d lexers", wxExLexers::Get()->GetCount());
           // As the lexer might have changed, update status bar field as well.
   #if wxUSE_STATUSBAR

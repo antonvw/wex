@@ -41,7 +41,7 @@ const wxString wxExAlignText(
 
   // Use the header, with one space extra to separate, or no header at all.
   const wxString header_with_spaces =
-    (header.size() == 0) ? wxString(wxEmptyString) : wxString(' ', header.size());
+    (header.empty()) ? wxString(wxEmptyString) : wxString(' ', header.size());
 
   wxString in = lines, line = header;
 

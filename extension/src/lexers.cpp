@@ -23,8 +23,8 @@ wxExLexers* wxExLexers::m_Self = NULL;
 
 // Constructor for lexers from specified filename.
 // This must be an existing xml file containing all lexers.
-// It does not Read this file, however if you use the global Get,
-// it both constructs and reads the lexers.
+// It does not do LoadDocument, however if you use the global Get,
+// it both constructs and loads the lexers.
 wxExLexers::wxExLexers(const wxFileName& filename)
   : m_FileName(filename)
   , m_NoTheme(wxEmptyString)
@@ -262,7 +262,7 @@ wxExLexers* wxExLexers::Get(bool createOnDemand)
       + wxFileName::GetPathSeparator() + "lexers.xml")
     );
 
-    m_Self->Read();
+    m_Self->LoadDocument();
   }
 
   return m_Self;
@@ -312,6 +312,71 @@ void wxExLexers::Initialize()
   m_ThemeColours[m_NoTheme] = m_DefaultColours;
   const std::map<wxString, wxString> empty_map;
   m_ThemeMacros[m_NoTheme] = empty_map;  
+}
+
+bool wxExLexers::LoadDocument()
+{
+  // This test is to prevent showing an error if the lexers file does not exist,
+  // as this is not required.
+  if (!m_FileName.FileExists())
+  {
+    return false;
+  } 
+
+  wxXmlDocument doc;
+
+  if (!doc.Load(m_FileName.GetFullPath()))
+  {
+    return false;
+  }
+  
+  Initialize();
+  
+  // Even if no theme is chosen,
+  // read all lexers, to be able to select other themes again.
+
+  wxXmlNode* child = doc.GetRoot()->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "macro")
+    {
+      ParseNodeMacro(child);
+    }
+    else if (child->GetName() == "global")
+    {
+      ParseNodeGlobal(child);
+    }
+    else if (child->GetName() == "lexer")
+    {
+      const wxExLexer lexer(child);
+      
+      if (lexer.IsOk())
+      {
+        m_Lexers.insert(std::make_pair(lexer.GetDisplayLexer(), lexer));
+      }
+    }
+
+    child = child->GetNext();
+  }
+
+  // Check config, but do not create one.
+  wxConfigBase* config = wxConfigBase::Get(false);
+
+  if (config != NULL)
+  {
+    if (!config->Exists(_("In files")))
+    {
+      config->Write(_("In files"), GetLexerExtensions());
+    }
+
+    if (!config->Exists(_("Add what")))
+    {
+      config->Write(_("Add what"), GetLexerExtensions());
+    }
+  }
+  
+  return true;
 }
 
 bool wxExLexers::MarkerIsLoaded(const wxExMarker& marker) const
@@ -511,71 +576,6 @@ void wxExLexers::ParseNodeThemes(const wxXmlNode* node)
   }
 }
       
-bool wxExLexers::Read()
-{
-  // This test is to prevent showing an error if the lexers file does not exist,
-  // as this is not required.
-  if (!m_FileName.FileExists())
-  {
-    return false;
-  } 
-
-  wxXmlDocument doc;
-
-  if (!doc.Load(m_FileName.GetFullPath()))
-  {
-    return false;
-  }
-  
-  Initialize();
-  
-  // Even if no theme is chosen,
-  // read all lexers, to be able to select other themes again.
-
-  wxXmlNode* child = doc.GetRoot()->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "macro")
-    {
-      ParseNodeMacro(child);
-    }
-    else if (child->GetName() == "global")
-    {
-      ParseNodeGlobal(child);
-    }
-    else if (child->GetName() == "lexer")
-    {
-      const wxExLexer lexer(child);
-      
-      if (lexer.IsOk())
-      {
-        m_Lexers.insert(std::make_pair(lexer.GetDisplayLexer(), lexer));
-      }
-    }
-
-    child = child->GetNext();
-  }
-
-  // Check config, but do not create one.
-  wxConfigBase* config = wxConfigBase::Get(false);
-
-  if (config != NULL)
-  {
-    if (!config->Exists(_("In files")))
-    {
-      config->Write(_("In files"), GetLexerExtensions());
-    }
-
-    if (!config->Exists(_("Add what")))
-    {
-      config->Write(_("Add what"), GetLexerExtensions());
-    }
-  }
-  
-  return true;
-}
-
 wxExLexers* wxExLexers::Set(wxExLexers* lexers)
 {
   wxExLexers* old = m_Self;
@@ -665,5 +665,5 @@ bool wxExLexers::ShowThemeDialog(
   m_Theme = dlg.GetStringSelection();
   wxConfigBase::Get()->Write("theme", m_Theme);  
 
-  return Read();
+  return LoadDocument();
 }

@@ -14,7 +14,6 @@
 #ifdef wxExUSE_PORTABLE
 #include <wx/fileconf.h> 
 #endif
-#include <wx/stdpaths.h>
 #include <wx/extension/app.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
@@ -96,13 +95,7 @@ bool wxExApp::OnInit()
     }
   }
 
-  wxExVCS(wxFileName(
-#ifdef wxExUSE_PORTABLE
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
-#else
-    wxStandardPaths::Get().GetUserDataDir(),
-#endif
-    "vcs.xml")).Read();
+  wxExVCS::LoadDocument();
 
   return wxApp::OnInit();
 }

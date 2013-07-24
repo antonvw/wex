@@ -751,7 +751,7 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   {
     const wxArrayString macros(m_Macros.Get());
   
-    if (macros.size() == 0)
+    if (macros.empty())
     {
       return false;
     }

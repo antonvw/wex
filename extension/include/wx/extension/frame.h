@@ -128,12 +128,12 @@ protected:
   void OnCommand(wxCommandEvent& command);
   void OnFindDialog(wxFindDialogEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);  
-private:
-  void Initialize();
-
+  
 #if wxUSE_STATUSBAR
   static wxExStatusBar* m_StatusBar;
 #endif
+private:
+  void Initialize();
 
   wxWindow* m_FindFocus;
   wxFindReplaceDialog* m_FindReplaceDialog;

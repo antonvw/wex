@@ -23,7 +23,7 @@ class wxWindow;
 class wxXmlNode;
 
 /// Collection of all lexers.
-/// The lexers are read in from lexers.xml, this is done
+/// The lexers are loaded from lexers.xml, this is done
 /// automatically during the first Get call.
 class WXDLLIMPEXP_BASE wxExLexers
 {
@@ -65,7 +65,7 @@ public:
 
   /// Returns the lexers object.
   /// If this is the first invocation, and createOnDemand is true,
-  /// it also invokes Read.
+  /// it also invokes LoadDocument.
   static wxExLexers* Get(bool createOnDemand = true);
 
   /// Returns the number of lexers.
@@ -98,12 +98,12 @@ public:
   /// Returns true if specified indicator is available.
   bool IndicatorIsLoaded(const wxExIndicator& indic) const;
 
+  /// Loads all lexers (first clears them) from document.
+  /// Returns true if the document is loaded.
+  bool LoadDocument();
+
   /// Returns true if specified marker is available.
   bool MarkerIsLoaded(const wxExMarker& marker) const;
-
-  /// Reads all lexers (first clears them) from file.
-  /// Returns true if the file could be read and loaded as valid xml file.
-  bool Read();
 
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object 

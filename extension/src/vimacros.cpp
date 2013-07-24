@@ -387,11 +387,11 @@ const wxFileName wxExViMacros::GetFileName()
 {
   return wxFileName(
 #ifdef wxExUSE_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
 #else
-      wxStandardPaths::Get().GetUserDataDir()
+    wxStandardPaths::Get().GetUserDataDir(),
 #endif
-      + wxFileName::GetPathSeparator() + "macros.xml");
+    "macros.xml");
 }
 
 const wxString wxExViMacros::GetRegister(const wxString& name) const

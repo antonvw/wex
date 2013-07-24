@@ -2,7 +2,7 @@
 // Name:      vcsentry.h
 // Purpose:   Declaration of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVCSENTRY_H
@@ -30,10 +30,10 @@ public:
   bool AdminDirIsTopLevel() const {return m_AdminDirIsTopLevel;};
 
 #if wxUSE_GUI
-  /// Builds a menu from vcs commands.
+  /// Builds a menu from all vcs commands.
   /// Returns (total) number of items in menu.
   int BuildMenu(
-    /// menu id to be added to the vcs command
+    /// menu id to be added to the vcs commands
     int base_id, 
     /// menu to be built
     wxMenu* menu, 
@@ -46,8 +46,11 @@ public:
   /// Return code is code from process Execute,
   /// and also can be false if dialog for vcs bin was cancelled.
   bool Execute(
+    /// args
     const wxString& args,
+    /// lexer that is used for presenting the output
     const wxExLexer& lexer,
+    /// working directory
     const wxString& wd = wxEmptyString);
   
   /// Gets the administrative directory.
@@ -64,15 +67,14 @@ public:
   /// Gets the flags used to run the command.
   const wxString GetFlags() const;
 
-  /// Gets the name.
+  /// Gets the name for this vcs entry.
   const wxString& GetName() const {return m_Name;};
 
   /// Sets the current vcs command.
   /// Returns true if command was set.
   bool SetCommand(
-    /// Should be in between ID_EDIT_VCS_LOWEST and ID_EDIT_VCS_HIGHEST
-    /// or in between ID_VCS_LOWEST and ID_VCS_HIGHEST
-    int menu_id);
+    /// a command no from commands
+    int command_no);
 
 #if wxUSE_GUI
   /// Shows a dialog allowing you to run or cancel the current vcs command.

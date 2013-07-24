@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/stdpaths.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/configdlg.h>
@@ -27,30 +28,24 @@ enum
 };
 
 std::vector<wxExVCSEntry> wxExVCS::m_Entries;
-wxFileName wxExVCS::m_FileName;
 
-wxExVCS::wxExVCS()
-{
-}
-
-wxExVCS::wxExVCS(const wxArrayString& files, int menu_id)
+wxExVCS::wxExVCS(const wxArrayString& files, int command_no)
   : m_Files(files)
+  , m_Caption("VCS")
 {
   m_Entry = FindEntry(GetFile());
   
   if (!m_Entry.GetName().empty())
   {
-    m_Entry.SetCommand(menu_id);
-    m_Caption = m_Entry.GetName() + " " + m_Entry.GetCommand().GetCommand();
-  
-    if (!m_Entry.GetCommand().IsHelp() && m_Files.size() == 1)
+    if (m_Entry.SetCommand(command_no))
     {
-      m_Caption += " " + wxFileName(m_Files[0]).GetFullName();
+      m_Caption = m_Entry.GetName() + " " + m_Entry.GetCommand().GetCommand();
+  
+      if (!m_Entry.GetCommand().IsHelp() && m_Files.size() == 1)
+      {
+        m_Caption += " " + wxFileName(m_Files[0]).GetFullName();
+      }
     }
-  }
-  else
-  {
-    m_Caption = "VCS";
   }
 }
 
@@ -247,54 +242,6 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
   return wxExVCSEntry();
 }
 
-bool wxExVCS::GetDir(wxWindow* parent)
-{
-  if (!Use())
-  {
-    return false;
-  }
-  
-  const wxString message = _("Select VCS Folder");
-  
-  std::vector<wxExConfigItem> v;
-
-  // See also vcsentry, same item is used there.
-  v.push_back(wxExConfigItem(
-    _("Base folder"), 
-    CONFIG_COMBOBOXDIR, 
-    wxEmptyString, 
-    true,
-    1005));
-      
-  if (wxExConfigFirstOf(_("Base folder")).empty()) 
-  {
-    if (
-      parent != NULL && 
-      wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
-    {
-      return false;
-    }
-  }
-  else
-  {
-    m_Entry = FindEntry(wxExConfigFirstOf(_("Base folder")));
-  
-    if (m_Entry.GetName().empty())
-    {
-      if (
-        parent != NULL &&
-        wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
-      {
-        return false;
-      }
-    }
-  }
-  
-  m_Entry = FindEntry(wxExConfigFirstOf(_("Base folder")));
-  
-  return !m_Entry.GetName().empty();
-}
-
 const wxString wxExVCS::GetFile() const
 {
   if (m_Files.empty())
@@ -305,6 +252,17 @@ const wxString wxExVCS::GetFile() const
   {
     return m_Files[0];
   }
+}
+
+const wxFileName wxExVCS::GetFileName()
+{
+  return wxFileName(
+#ifdef wxExUSE_PORTABLE
+    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
+#else
+    wxStandardPaths::Get().GetUserDataDir(),
+#endif
+    "vcs.xml");
 }
 
 const wxString wxExVCS::GetName() const
@@ -428,18 +386,18 @@ bool wxExVCS::IsAdminDirTopLevel(
   return false;
 }
 
-bool wxExVCS::Read()
+bool wxExVCS::LoadDocument()
 {
   // This test is to prevent showing an error if the vcs file does not exist,
   // as this is not required.
-  if (!m_FileName.FileExists())
+  if (!GetFileName().FileExists())
   {
     return false;
   }
-
+  
   wxXmlDocument doc;
 
-  if (!doc.Load(m_FileName.GetFullPath()))
+  if (!doc.Load(GetFileName().GetFullPath()))
   {
     return false;
   }
@@ -498,6 +456,56 @@ wxStandardID wxExVCS::Request(wxWindow* parent)
   return wxID_OK;
 }
 #endif
+
+bool wxExVCS::SetEntryFromBase(wxWindow* parent)
+{
+  if (!Use())
+  {
+    return false;
+  }
+  
+  const wxString message = _("Select VCS Folder");
+  
+  std::vector<wxExConfigItem> v;
+
+  // See also vcsentry, same item is used there.
+  v.push_back(wxExConfigItem(
+    _("Base folder"), 
+    CONFIG_COMBOBOXDIR, 
+    wxEmptyString, 
+    true,
+    1005));
+      
+  if (wxExConfigFirstOf(_("Base folder")).empty()) 
+  {
+    if (
+      parent != NULL && 
+      wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
+    {
+      return false;
+    }
+    
+    m_Entry = FindEntry(wxExConfigFirstOf(_("Base folder")));
+  }
+  else
+  {
+    m_Entry = FindEntry(wxExConfigFirstOf(_("Base folder")));
+  
+    if (m_Entry.GetName().empty())
+    {
+      if (
+        parent != NULL &&
+        wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
+      {
+        return false;
+      }
+      
+      m_Entry = FindEntry(wxExConfigFirstOf(_("Base folder")));
+    }
+  }
+  
+  return !m_Entry.GetName().empty();
+}
 
 bool wxExVCS::Use() const
 {

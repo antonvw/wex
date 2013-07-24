@@ -2,7 +2,7 @@
 // Name:      vcscommand.cpp
 // Purpose:   Implementation of wxExVCSCommand class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -15,21 +15,18 @@ wxExVCSCommand::wxExVCSCommand()
   : m_Command()
   , m_SubMenu()
   , m_SubMenuIsCommand(false)
-  , m_No(0)
   , m_Type(VCS_COMMAND_IS_NONE)
 {
 }
 
 wxExVCSCommand::wxExVCSCommand(
   const wxString& command,
-  int no,
   const wxString& type,
   const wxString& submenu,
   const wxString& subcommand)
   : m_Command(command)
   , m_SubMenu(!submenu.empty() ? submenu: subcommand)
   , m_SubMenuIsCommand(!subcommand.empty())
-  , m_No(no)
   , m_Type(From(type))
 {
 }

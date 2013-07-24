@@ -70,20 +70,20 @@ DecoratedFrame::DecoratedFrame()
   {
     if (wxExVCS::GetCount() > 0)
     {
-      vcs.GetDir();
+      vcs.SetEntryFromBase();
       StatusText(vcs.GetName(), "PaneVCS");
     }
   }
   else
   {
-    ((wxExStatusBar *)GetStatusBar())->ShowField("PaneVCS", false);
+    m_StatusBar->ShowField("PaneVCS", false);
   }
   
   const bool vi_mode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
   
   if (wxExViMacros::GetFileName().FileExists())
   {
-    ((wxExStatusBar *)GetStatusBar())->ShowField("PaneMacro", vi_mode);
+    m_StatusBar->ShowField("PaneMacro", vi_mode);
   }
 #endif
 
