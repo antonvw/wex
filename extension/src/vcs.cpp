@@ -267,17 +267,11 @@ const wxFileName wxExVCS::GetFileName()
 
 const wxString wxExVCS::GetName() const
 {
-  if (!Use())
+  switch (wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO))
   {
-    return wxEmptyString;
-  }
-  else if (wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO) == VCS_AUTO)
-  {
-    return "Auto";
-  }
-  else
-  {
-    return m_Entry.GetName();
+    case VCS_NONE: return wxEmptyString; break;
+    case VCS_AUTO: return "Auto"; break;
+    default: return m_Entry.GetName();
   }
 }
 
