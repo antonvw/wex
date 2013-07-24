@@ -54,6 +54,18 @@ wxExEx::~wxExEx()
   }
 }
 
+void wxExEx::AddText(const wxString& text)
+{
+  if (!m_Register.empty())
+  {
+    GetMacros().SetRegister(m_Register, text);
+  }
+  else
+  {
+    m_STC->AddText(text);
+  }
+}
+
 bool wxExEx::Command(const wxString& command)
 {
   if (!m_IsActive || !command.StartsWith(":"))
