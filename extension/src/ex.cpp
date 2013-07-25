@@ -321,7 +321,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
         m_STC->LineFromPosition(m_STC->GetTargetEnd()) + 1);
       
       m_STC->Remove(begin, end);
-      m_STC->SetTargetStart(end);
+      m_STC->SetTargetStart(begin);
       m_STC->SetTargetEnd(m_STC->GetTextLength());
     }
     else if (command == "p")
