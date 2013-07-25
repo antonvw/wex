@@ -83,39 +83,6 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
   stc->Colourise(0, stc->GetLength() - 1);
 }
 
-bool wxExLexer::ApplyLexer(
-  const wxString& lexer, 
-  wxStyledTextCtrl* stc,
-  bool show_error,
-  bool clear)
-{
-  (*this) = wxExLexers::Get()->FindByName(lexer);
-  
-  if (m_ScintillaLexer.empty())
-  {
-    (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
-  }
-  
-  stc->SetLexerLanguage(m_ScintillaLexer);
-  
-  m_IsOk = 
-   (m_ScintillaLexer.empty() && lexer.empty()) ||
-   (stc->GetLexer() != wxSTC_LEX_NULL);
-  
-  if (!m_IsOk && 
-      !m_ScintillaLexer.empty()&&
-       show_error)
-  {
-    wxLogError("Lexer is not known: " + m_ScintillaLexer);
-  }
-  
-  stc->SetStyleBits(stc->GetStyleBitsNeeded());
-
-  Apply(stc, clear);
-  
-  return m_IsOk;
-}
-
 void wxExLexer::AutoMatch(const wxString& lexer)
 {
   for (
@@ -355,6 +322,39 @@ void wxExLexer::Reset(wxStyledTextCtrl* stc)
   m_IsOk = true;
   
   Apply(stc, true);
+}
+
+bool wxExLexer::Set(
+  const wxString& lexer, 
+  wxStyledTextCtrl* stc,
+  bool show_error,
+  bool clear)
+{
+  (*this) = wxExLexers::Get()->FindByName(lexer);
+  
+  if (m_ScintillaLexer.empty())
+  {
+    (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
+  }
+  
+  stc->SetLexerLanguage(m_ScintillaLexer);
+  
+  m_IsOk = 
+   (m_ScintillaLexer.empty() && lexer.empty()) ||
+   (stc->GetLexer() != wxSTC_LEX_NULL);
+  
+  if (!m_IsOk && 
+      !m_ScintillaLexer.empty()&&
+       show_error)
+  {
+    wxLogError("Lexer is not known: " + m_ScintillaLexer);
+  }
+  
+  stc->SetStyleBits(stc->GetStyleBitsNeeded());
+
+  Apply(stc, clear);
+  
+  return m_IsOk;
 }
 
 void wxExLexer::Set(const wxXmlNode* node)

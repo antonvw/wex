@@ -619,7 +619,7 @@ void wxExGuiTestFixture::testLexer()
   // TODO: improve test
   lexer.SetProperty("test", "value");
   
-  CPPUNIT_ASSERT( lexer.ApplyLexer("pascal", stc));
+  CPPUNIT_ASSERT( lexer.Set("pascal", stc));
   CPPUNIT_ASSERT( lexer.GetDisplayLexer() == "pascal");
   CPPUNIT_ASSERT( lexer.GetScintillaLexer() == "pascal");
   CPPUNIT_ASSERT(!lexer.CommentComplete("(*test").empty());
@@ -1258,9 +1258,9 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(stc->SetLexer("cpp"));
 
   wxExLexer lexer;
-  CPPUNIT_ASSERT( lexer.ApplyLexer(wxEmptyString, stc, false));
-  CPPUNIT_ASSERT( lexer.ApplyLexer("cpp", stc, false));
-  CPPUNIT_ASSERT(!lexer.ApplyLexer("xyz", stc, false));
+  CPPUNIT_ASSERT( lexer.Set(wxEmptyString, stc, false));
+  CPPUNIT_ASSERT( lexer.Set("cpp", stc, false));
+  CPPUNIT_ASSERT(!lexer.Set("xyz", stc, false));
   
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(stc->Open(wxExFileName(TEST_BIN)));
