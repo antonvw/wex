@@ -23,6 +23,21 @@
 
 #if wxUSE_GUI
 
+#define wxCAST_TO(classname)                                 \
+  if (m_FindFocus != NULL && m_FindFocus->IsShown())         \
+  {                                                          \
+    classname* win = dynamic_cast<classname*>(m_FindFocus);  \
+                                                             \
+    if (win != NULL)                                         \
+    {                                                        \
+      return win;                                            \
+    }                                                        \
+  }                                                          \
+                                                             \
+  wxWindow* win = wxWindow::FindFocus();                     \
+  classname* cl = dynamic_cast<classname*>(win);             \
+  return cl;
+  
 const int ID_UPDATE_STATUS_BAR = 900;
 
 #if wxUSE_STATUSBAR
@@ -98,40 +113,12 @@ wxExFrame::~wxExFrame()
 
 wxExGrid* wxExFrame::GetGrid()
 {
-  // If we had a find focus on grid component, return that one.
-  if (m_FindFocus != NULL && m_FindFocus->IsShown())
-  {
-    wxExGrid* win = dynamic_cast<wxExGrid*>(m_FindFocus);
-    
-    if (win != NULL)
-    {
-      return win;
-    }
-  }
-  
-  // If current focus is on grid component, return that one.  
-  wxWindow* win = wxWindow::FindFocus();
-  wxExGrid* grid = dynamic_cast<wxExGrid*>(win);
-  return grid;
+  wxCAST_TO(wxExGrid);
 }
 
 wxExListView* wxExFrame::GetListView()
 {
-  // If we had a find focus on listview component, return that one.
-  if (m_FindFocus != NULL && m_FindFocus->IsShown())
-  {
-    wxExListView* lv = dynamic_cast<wxExListView*>(m_FindFocus);
-    
-    if (lv != NULL)
-    {
-      return lv;
-    }
-  }
-  
-  // If current focus is on listview component, return that one.  
-  wxWindow* win = wxWindow::FindFocus();
-  wxExListView* lv = dynamic_cast<wxExListView*>(win);
-  return lv;
+  wxCAST_TO(wxExListView);
 }
 
 wxString wxExFrame::GetStatusText(const wxString& pane)
@@ -146,21 +133,7 @@ wxString wxExFrame::GetStatusText(const wxString& pane)
 
 wxExSTC* wxExFrame::GetSTC()
 {
-  // If we had a find focus on stc component, return that one.
-  if (m_FindFocus != NULL && m_FindFocus->IsShown())
-  {
-    wxExSTC* stc = dynamic_cast<wxExSTC*>(m_FindFocus);
-    
-    if (stc != NULL)
-    {
-      return stc;
-    }
-  }
-
-  // If current focus is on stc component, return that one.  
-  wxWindow* win = wxWindow::FindFocus();
-  wxExSTC* stc = dynamic_cast<wxExSTC*>(win);
-  return stc;
+  wxCAST_TO(wxExSTC);
 }
   
 void wxExFrame::Initialize()
