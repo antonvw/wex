@@ -34,21 +34,6 @@ public:
   /// (and colours the component).
   void Apply(wxStyledTextCtrl* stc, bool clear = true) const;
 
-  /// Sets scintilla lexer for specified lexer and stc. 
-  /// Returns true if a scintilla lexer has been set.
-  /// The is ok member is set as well according to whether the
-  /// lexer could be set. Calls Apply.
-  bool ApplyLexer(
-    /// lexer to use
-    const wxString& lexer, 
-    /// stc component on which to apply
-    wxStyledTextCtrl* stc,
-    /// If show_error is true, a log error message is given
-    /// if a lexer was specified, but could not be set.
-    bool show_error = true,
-    /// if clear is true, old styles are reset (including folding)
-    bool clear = true);
-
   /// Returns a string that completes specified comment,
   /// by adding spaces and a comment end at the end.
   /// If the comment end string is empty, it returns empty string.
@@ -115,6 +100,21 @@ public:
     
   /// Resets lexer.
   void Reset(wxStyledTextCtrl* stc);
+
+  /// Sets scintilla lexer for specified lexer and applies it to stc. 
+  /// Returns true if a scintilla lexer has been set.
+  /// The is ok member is set as well according to whether the
+  /// lexer could be set. Calls Apply.
+  bool Set(
+    /// lexer to use
+    const wxString& lexer, 
+    /// stc component on which to apply
+    wxStyledTextCtrl* stc,
+    /// If show_error is true, a log error message is given
+    /// if a lexer was specified, but could not be set.
+    bool show_error = true,
+    /// if clear is true, old styles are reset (including folding)
+    bool clear = true);
 
   /// Sets keywords (public for testing only).
   bool SetKeywords(const wxString& text);

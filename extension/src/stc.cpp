@@ -2320,7 +2320,7 @@ bool wxExSTC::SetIndicator(
 
 bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
 {
-  if (!m_Lexer.ApplyLexer(lexer, this, false, true))
+  if (!m_Lexer.Set(lexer, this, false, true))
   {
     return false;
   }
