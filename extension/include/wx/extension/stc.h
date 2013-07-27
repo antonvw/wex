@@ -314,9 +314,6 @@ public:
   /// Default syncing is started during construction.
   void Sync(bool start = true);
 
-  /// Undo one action in the undo history.  
-  virtual void Undo();
-  
   /// Use and show modification markers in the margin.
   void UseModificationMarkers(bool use);
 protected:
@@ -360,7 +357,7 @@ private:
   bool LinkOpen(wxString* filename = NULL); // name of found file
   void MarkerNext(bool next);
   void MarkModified(const wxStyledTextEvent& event);
-  void SetHexMode(
+  bool SetHexMode(
     bool on, 
     bool modified = false, 
     const wxCharBuffer& text = wxCharBuffer());
@@ -385,7 +382,6 @@ private:
   
   bool m_AllowChangeIndicator;
   bool m_HexMode;
-  bool m_UndoPossible;
 
   // We use a separate lexer here as well
   // (though wxExSTCFile offers one), as you can manually override
@@ -399,7 +395,6 @@ private:
   
   // Only used in hex mode.
   wxString m_HexBuffer;
-  wxString m_HexBufferOriginal;
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
