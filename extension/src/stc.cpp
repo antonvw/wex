@@ -441,11 +441,7 @@ void wxExSTC::ClearDocument(bool set_savepoint)
     SetSavePoint();
   }
   
-  if (HexMode() && !m_UndoPossible)
-  {
-    m_HexBuffer.clear();
-    m_HexBufferOriginal.clear();
-  }
+  m_HexBuffer.clear();
 }
 
 // This is a static method, cannot use normal members here.
@@ -1402,8 +1398,6 @@ void wxExSTC::Initialize(bool file_exists)
   m_AllowChangeIndicator = !(m_Flags & STC_WIN_NO_INDICATOR);
   
   m_HexBuffer.clear(); // always, not only in hex mode
-  m_HexBufferOriginal.clear();
-  m_UndoPossible = false;
 
   m_FoldLevel = 0;
   m_SavedPos = -1;
@@ -2236,22 +2230,24 @@ void wxExSTC::SelectNone()
   SetSelection(GetCurrentPos(), GetCurrentPos());
 }
 
-void wxExSTC::SetHexMode(
+bool wxExSTC::SetHexMode(
   bool on, 
   bool modified,
   const wxCharBuffer& text)
 {
+  if (IsModified() || m_vi.GetInsertMode())
+  {
+    return false;
+  }
+    
   if (on)
   {
-    if (!m_HexMode)
-    {
-      m_HexMode = true;
-    }
+    m_HexMode = true;
     
     SetControlCharSymbol('.');
     wxExLexers::Get()->ApplyHexStyles(this);
     wxExLexers::Get()->ApplyMarkers(this);
-  
+    
     m_Goto = 0;
 
     // Do not show an edge, eol or whitespace in hex mode.
@@ -2268,7 +2264,6 @@ void wxExSTC::SetHexMode(
       {
         EmptyUndoBuffer();
         SetSavePoint();
-        m_UndoPossible = true;
       }
 
       // This should be after SetSavePoint.      
@@ -2300,6 +2295,8 @@ void wxExSTC::SetHexMode(
       m_HexMode = false;
     }
   }
+ 
+  return true;
 }
 
 bool wxExSTC::SetIndicator(
@@ -2524,32 +2521,6 @@ void wxExSTC::Sync(bool start)
   }
 }
 
-void wxExSTC::Undo()
-{
-  wxStyledTextCtrl::Undo();
-  
-  if (HexMode())
-  {
-    m_HexBuffer = m_HexBufferOriginal;
-  }
-  else if (m_UndoPossible)
-  {
-    m_UndoPossible = false;
-    m_HexBuffer = m_HexBufferOriginal;
-    
-    // Add test if this undone is just after going back to normal mode,
-    // then restore hex buffer.
-    const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
-    UseModificationMarkers(false);
-    ClearDocument();
-    m_HexBuffer.clear();
-    m_HexBufferOriginal.clear();
-    AppendText(buffer);
-    SetSavePoint();
-    EmptyUndoBuffer();
-    UseModificationMarkers(true);
-  }
-}
 
 void wxExSTC::UseModificationMarkers(bool use)
 {

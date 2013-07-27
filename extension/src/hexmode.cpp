@@ -64,7 +64,6 @@ void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
   wxFileOffset start = m_STC->m_HexBuffer.length();
   
   m_STC->m_HexBuffer += buffer;
-  m_STC->m_HexBufferOriginal += buffer;
   
   wxString text;
 
