@@ -500,7 +500,8 @@ void wxExGuiTestFixture::testHexMode()
   CPPUNIT_ASSERT(!hex.GetInfo().empty());
   CPPUNIT_ASSERT(!hex.Replace('x'));
   CPPUNIT_ASSERT( hex.OtherField() == wxSTC_INVALID_POSITION);
-  
+
+  stc->DiscardEdits();  
   stc->Reload();
   CPPUNIT_ASSERT(stc->GetText() == "01234567890123456789");
   
@@ -2056,7 +2057,7 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT( macros.Expand(vi, "date"));
   CPPUNIT_ASSERT( macros.Expand(vi, "datetime"));
   CPPUNIT_ASSERT( macros.Expand(vi, "filename"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "fullname"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "fn"));
   CPPUNIT_ASSERT( macros.Expand(vi, "fullpath"));
   CPPUNIT_ASSERT( macros.Expand(vi, "nl"));
   CPPUNIT_ASSERT( macros.Expand(vi, "path"));
@@ -2064,7 +2065,7 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT( macros.Expand(vi, "year"));
   
   // Test environment macro variables.
-  CPPUNIT_ASSERT( macros.Expand(vi, "HOME"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "home"));
 
   // Test input macro variables.
   // Next requires input...    
