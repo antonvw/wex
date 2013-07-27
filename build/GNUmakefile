@@ -26,7 +26,7 @@ RANLIB ?= ranlib
 CXX = `$(WX_CONFIG) --cxx`
 
 # Standard flags for C++ 
-CXXFLAGS ?= -Wno-write-strings -std=c++0x -DwxExUSE_CPP0X
+CXXFLAGS ?= -Wno-write-strings -std=c++0x
 
 # Standard preprocessor flags (common for CC and CXX) 
 CPPFLAGS ?= 

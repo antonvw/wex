@@ -137,7 +137,7 @@ bool wxExVariable::Expand(wxExEx* ex, wxString& value)
       break;
       
     case VARIABLE_ENVIRONMENT:
-      if (!wxGetEnv(m_Name, &value))
+      if (!wxGetEnv(m_Name.Upper(), &value))
       {
         return false;
       }

@@ -455,7 +455,8 @@ int wxExMatch(
 {
   v.clear();
   
-// even gcc 4.6.1 asserts on all regex
+#ifdef __WXMSW__
+// gcc 4.7.3 gives error code: 4
   try 
   {
     std::match_results<std::string::const_iterator> res;
@@ -476,6 +477,17 @@ int wxExMatch(
     wxLogError(wxString::Format("%s: in: %s code: %d",
       e.what(), reg.c_str(), e.code()));
   }
+#else
+  wxRegEx regex(reg, wxRE_ADVANCED);
+
+  if (regex.Matches(text))
+  {
+    for (int i = 0; i < regex.GetMatchCount() - 1; i++)
+    {
+      v.push_back(regex.GetMatch(text, i + 1));
+    }
+  }
+#endif
 
   return v.size();
 }
