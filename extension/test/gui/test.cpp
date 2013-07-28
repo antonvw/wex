@@ -317,6 +317,18 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT(!ex->MarkerDelete('b'));
   CPPUNIT_ASSERT(!ex->MarkerGoto('a'));
   CPPUNIT_ASSERT(!ex->MarkerDelete('a'));
+  
+  // Test global delete
+  stc->AppendText("line xxxx 1 added\n");
+  stc->AppendText("line xxxx 2 added\n");
+  stc->AppendText("line xxxx 3 added\n");
+  stc->AppendText("line xxxx 4 added\n");
+  stc->AppendText("line xxxx 5 added\n");
+  stc->AppendText("line xxxx 6 added\n");
+  
+  const int lines = stc->GetLineCount();
+  CPPUNIT_ASSERT( ex->Command(":g/xxxx/d"));
+  CPPUNIT_ASSERT( stc->GetLineCount() == lines - 6);
 }
 
 void wxExGuiTestFixture::testFileDialog()
@@ -637,11 +649,14 @@ void wxExGuiTestFixture::testLexers()
   
   CPPUNIT_ASSERT( wxExLexers::Get() != NULL);
   
+  // global macro
   CPPUNIT_ASSERT( wxExLexers::Get()->GetCount() > 0);
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("XXX") == "XXX");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("mark_lcorner") == "10");
-  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number") == "fore:red");
+  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("mark_circle") == "0");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("iv_none") == "0");
+  
+  // lexer macro
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "asm") == "2");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "cpp") == "4");
   
