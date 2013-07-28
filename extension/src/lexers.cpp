@@ -657,13 +657,16 @@ bool wxExLexers::ShowThemeDialog(
     dlg.SetSelection(index);
   }
 
-  if (show_modal && dlg.ShowModal() == wxID_CANCEL)
+  if (show_modal)
   {
-    return false;
+    if (dlg.ShowModal() == wxID_CANCEL)
+    {
+      return false;
+    }
+  
+    m_Theme = dlg.GetStringSelection();
+    wxConfigBase::Get()->Write("theme", m_Theme);  
   }
-
-  m_Theme = dlg.GetStringSelection();
-  wxConfigBase::Get()->Write("theme", m_Theme);  
 
   return LoadDocument();
 }
