@@ -3,7 +3,7 @@
 Name:      macros.xml
 Purpose:   vi macros and variables for wxExtension.
 Author:    Anton van Wezenbeek
-Copyright: (c) 2012, Anton van Wezenbeek
+Copyright: (c) 2013, Anton van Wezenbeek
 
 Both variables and macros have a "name" attribute, you call them
 from vi mode using @name@. If the name is a single character c, you can call it
@@ -62,8 +62,6 @@ Comments you add within xml elements are not saved when you edit macros.
   <variable name="datetime"         type="BUILTIN"/>
   <!-- Expands to current filename without extension-->
   <variable name="filename"         type="BUILTIN"/>
-  <!-- Expands to current filename -->
-  <variable name="fn"               type="BUILTIN"/>
   <!-- Expands to current filename fullpath -->
   <variable name="fullpath"         type="BUILTIN"/>
   <!-- Expands to new line according to current document type -->
@@ -100,7 +98,8 @@ Comments you add within xml elements are not saved when you edit macros.
     <command>@cb@</command>
     <command>i Name:      </command>
     <command>$!27!</command>
-    <command>@fn@</command>
+    <command>i$18$%</command>
+    <command>$!27!</command>
     <command>@cc@</command>
     <command>o</command>
     <command>$!27!</command>

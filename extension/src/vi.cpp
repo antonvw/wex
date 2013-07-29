@@ -1012,13 +1012,20 @@ bool wxExVi::CommandChar(int c, int repeat)
 
 void wxExVi::CommandReg(const wxString& reg)
 {
+  // calc register
   if (reg == "=")
   {
     GetFrame()->GetExCommand(this, reg);
   }
+  // clipboard register
   else if (reg == "\"")
   {
     Put(true);
+  }
+  // filename register
+  else  if (reg == "%")
+  {
+    AddText(GetSTC()->GetFileName().GetFullName());
   }
   else if (m_Mode == MODE_INSERT)
   {
