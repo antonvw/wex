@@ -383,6 +383,11 @@ bool Frame::DialogProjectOpen()
 
 wxExSTC* Frame::ExecExCommand(int command)
 {
+  if (m_Editors->GetPageCount() == 0)
+  {
+    return NULL;
+  }
+
   switch (command)
   {
   case ID_EDIT_NEXT:
