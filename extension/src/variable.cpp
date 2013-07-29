@@ -94,10 +94,6 @@ wxExVariable::wxExVariable(const wxString& name)
 {
 }
 
-wxExVariable::~wxExVariable()
-{
-}
-
 void wxExVariable::AskForInput() 
 {
   if (m_Type == VARIABLE_INPUT || m_Type == VARIABLE_INPUT_SAVE)
