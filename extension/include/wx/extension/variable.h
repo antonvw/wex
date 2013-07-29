@@ -30,9 +30,6 @@ public:
   /// prefix using node attributes.
   wxExVariable(const wxXmlNode* node);
   
-  /// Destructor.
- ~wxExVariable();
- 
   /// Sets the ask for input member, if appropriate for type.
   void AskForInput();
   
