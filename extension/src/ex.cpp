@@ -349,6 +349,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
     }
     else
     {
+      m_STC->EndUndoAction();
       return false;
     }
   }
