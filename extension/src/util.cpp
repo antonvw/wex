@@ -548,7 +548,7 @@ void wxExNodeStyles(
 #if wxUSE_GUI
 void wxExOpenFiles(
   wxExFrame* frame,
-  const wxArrayString& files,
+  const std::vector< wxString > & files,
   long file_flags,
   int dir_flags)
 {
@@ -602,7 +602,7 @@ void wxExOpenFilesDialog(
   int dir_flags)
 {
   wxExSTC* stc = frame->GetSTC();
-  wxArrayString files;
+  wxArrayString paths;
 
   const wxString caption(_("Select Files"));
       
@@ -622,8 +622,8 @@ void wxExOpenFilesDialog(
     {
       if (dlg.ShowModal() == wxID_CANCEL) return;
     }
-
-    dlg.GetPaths(files);
+      
+    dlg.GetPaths(paths);
   }
   else
   {
@@ -634,10 +634,17 @@ void wxExOpenFilesDialog(
       wildcards,
       style);
     if (dlg.ShowModal() == wxID_CANCEL) return;
-    dlg.GetPaths(files);
+    dlg.GetPaths(paths);
   }
 
-  wxExOpenFiles(frame, files, file_flags, dir_flags);
+  std::vector< wxString > v;
+
+  for (auto it = paths.begin(); it != paths.end(); ++it)
+  {
+    v.push_back(*it);
+  }
+
+  wxExOpenFiles(frame, v, file_flags, dir_flags);
 }
 #endif // wxUSE_GUI
 
@@ -752,24 +759,19 @@ void wxExVCSCommandOnSTC(
   }
 }
 
-void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
+void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< wxString > & files)
 {
   const wxExVCS check(files, id);
   
-  if (check.GetEntry().GetCommand().IsOpen() && files.GetCount() > 0)
+  if (check.GetEntry().GetCommand().IsOpen() && !files.empty())
   {
-    wxArrayString ar;
-    ar.Add(files[0]);
-    const wxExVCS vcs(ar, id);
+    const wxExVCS vcs(std::vector< wxString >(files.begin(), files.begin()), id);
     
     if (vcs.ShowDialog(frame) == wxID_OK)
     {
-      for (int i = 0; i < files.GetCount(); i++)
+      for (int i = 0; i < files.size(); i++)
       {
-        wxArrayString ar;
-        ar.Add(files[i]);
-        
-        wxExVCS vcs(ar, id);
+        wxExVCS vcs(std::vector< wxString >(files.begin() + i, files.begin() + i), id);
         
         if (vcs.Execute())
         {

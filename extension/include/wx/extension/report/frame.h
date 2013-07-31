@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Include file for wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_FRAME_H
@@ -58,7 +58,7 @@ public:
   /// or SetupTool returned false.
   bool FindInFiles(
     /// the files
-    const wxArrayString& files,
+    const std::vector< wxString > & files,
     /// ID_TOOL_REPORT_FIND or ID_TOOL_REPORT_REPLACE
     int id,
     /// Default shows a dialog.

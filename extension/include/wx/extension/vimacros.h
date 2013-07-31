@@ -28,8 +28,8 @@ public:
   /// Default constructor.
   wxExViMacros();
   
-  /// Returns all macro or variable names as an array of strings.
-  const wxArrayString Get() const;
+  /// Returns all macro or variable names as a vector of strings.
+  const std::vector< wxString > Get() const;
   
   /// Returns contents of macro or variable.
   const std::vector< wxString > Get(const wxString& macro) const;
@@ -43,10 +43,10 @@ public:
   /// Returns register.
   const wxString GetRegister(const wxString& name) const;
 
-  /// Returns all registers (macros with content) as an array of strings.
+  /// Returns all registers (macros with content) as a vector of strings.
   /// The difference with Get() is, that this method 
   /// does not add variables, but adds the macro contents as well.
-  const wxArrayString GetRegisters() const;
+  const std::vector< wxString > GetRegisters() const;
   
   /// Have macros been recorded or variables 
   /// expanded without calling SaveDocument.

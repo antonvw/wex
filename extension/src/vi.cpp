@@ -18,6 +18,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -41,6 +42,7 @@ bool RegAfter(const wxString text, const wxString& letter)
   return wxRegEx("^" + text + "[0-9=\"a-z]$").Matches(letter);
 }
 
+wxExSTCEntryDialog* wxExVi::m_Dialog = NULL;
 wxString wxExVi::m_LastFindCharCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
@@ -510,6 +512,44 @@ bool wxExVi::Command(const wxString& command)
       GetFrame()->StatusText(rest.Mid(1), "PaneMacro");
       return false;
     }
+  }
+  else if (command == ":reg")
+  {
+    wxString output;
+    
+    // Currently the " register does not really exist,
+    // but copies clipboard contents instead.
+    const wxString clipboard(wxExSkipWhiteSpace(wxExClipboardGet()));
+  
+    if (!clipboard.empty())
+    {
+      output += "\": " + clipboard + "\n";
+    }
+    
+    output += "%: " + GetSTC()->GetFileName().GetFullName() + "\n";
+    
+    auto v(GetMacros().GetRegisters());
+      
+    for (auto it = v.begin();  it != v.end(); ++it)
+    {
+      output += *it + "\n";
+    }
+  
+    if (m_Dialog == NULL)
+    {
+      m_Dialog = new wxExSTCEntryDialog(
+        wxTheApp->GetTopWindow(),
+        "Registers", 
+        output,
+        wxEmptyString,
+        wxOK);
+    }
+    else
+    {
+      m_Dialog->GetSTC()->SetText(output);
+    }
+    
+    m_Dialog->ShowModal();
   }
   else if (!rest.empty())
   {

@@ -175,7 +175,7 @@ void wxExGuiReportTestFixture::test()
     frame, 
     wxExListViewFileName::LIST_FILE);
     
-  wxArrayString files;
+  std::vector< wxString > files;
   
   CPPUNIT_ASSERT(wxDir::GetAllFiles(
     "../", 

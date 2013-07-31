@@ -17,7 +17,7 @@
 class Frame : public DecoratedFrame
 {
 public:
-  Frame(const wxArrayString& files);
+  Frame(const std::vector< wxString > & files);
   
   virtual bool OpenFile(
     const wxExFileName& filename,

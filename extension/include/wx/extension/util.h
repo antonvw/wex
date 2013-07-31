@@ -197,7 +197,7 @@ void wxExOpenFiles(
   /// and wxExDirOpenFile for each dir
   wxExFrame* frame,
   /// array with files
-  const wxArrayString& files,
+  const std::vector< wxString > & files,
   /// flags to be used with OpenFile
   long file_flags = 0,
   /// flags to be used with wxExDirOpenFile
@@ -247,7 +247,7 @@ void wxExVCSExecute(
   /// VCS menu id to execute
   int id,
   /// files on which to operate
-  const wxArrayString& files);
+  const std::vector< wxString > & files);
 #endif // wxUSE_GUI
 
 #endif

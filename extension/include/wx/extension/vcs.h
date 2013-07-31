@@ -23,7 +23,7 @@ public:
     /// Specify several files for which you want vcs action.
     /// Sets vcs entry for first of the specified files, or
     /// to the base folder if array is empty.
-    const wxArrayString& files = wxArrayString(),
+    const std::vector< wxString > & files = std::vector< wxString >(),
     /// The command no that is used to set the current vcs command
     /// (index in vcs entry commands).
     int command_no = -1);
@@ -106,7 +106,7 @@ private:
   
   wxExVCSEntry m_Entry;
 
-  wxArrayString m_Files;
+  std::vector< wxString > m_Files;
   wxString m_Caption;
 
   static std::vector<wxExVCSEntry> m_Entries;

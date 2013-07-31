@@ -73,7 +73,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, Frame::OnUpdateUI)
 END_EVENT_TABLE()
 
-Frame::Frame(const wxArrayString& files)
+Frame::Frame(const std::vector< wxString > & files)
   : DecoratedFrame()
   , m_IsClosing(false)
   , m_NewFileNo(1)
@@ -167,7 +167,7 @@ Frame::Frame(const wxArrayString& files)
       
     if (wxConfigBase::Get()->Read("OpenFiles", &count))
     {
-      wxArrayString ar;
+      std::vector< wxString > v;
         
       if (count > 0)
       {
@@ -175,11 +175,11 @@ Frame::Frame(const wxArrayString& files)
         {
           if (i < GetFileHistory().GetCount())
           {
-            ar.Add(GetFileHistory().GetHistoryFile(i));
+            v.push_back(GetFileHistory().GetHistoryFile(i));
           }
         }  
           
-        wxExOpenFiles(this, ar);
+        wxExOpenFiles(this, v);
       }
     }
       
@@ -374,8 +374,13 @@ bool Frame::DialogProjectOpen()
 
   if (dlg.ShowModal() == wxID_CANCEL) return false;
 
-  wxArrayString files;
-  dlg.GetPaths(files);
+  wxArrayString paths;
+  dlg.GetPaths(paths);
+  std::vector< wxString > files;
+  for (auto it = paths.begin(); it != paths.end(); ++it)
+  {
+    files.push_back(*it);
+  }
   wxExOpenFiles(this, files, WIN_IS_PROJECT);
 
   return true;
@@ -565,7 +570,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   if (event.GetId() > ID_VCS_LOWEST && 
       event.GetId() < ID_VCS_HIGHEST)
   {
-    wxExVCS(wxArrayString(), event.GetId() - ID_VCS_LOWEST - 1).Request(this);
+    wxExVCS(std::vector< wxString >(), event.GetId() - ID_VCS_LOWEST - 1).Request(this);
   }
   // edit commands
   // Do not change the wxID* in wxID_LOWEST and wdID_HIGHEST,

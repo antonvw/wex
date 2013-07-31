@@ -20,7 +20,7 @@ BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
   EVT_MENU_RANGE(
     ID_EDIT_VCS_LOWEST, 
     ID_EDIT_VCS_HIGHEST, 
-    wxExSTCWithFrame::OnCommand)
+      wxExSTCWithFrame::OnCommand)
 END_EVENT_TABLE()
 
 wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
@@ -83,8 +83,8 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     if (wxExFileDialog(this, &GetFile()).ShowModalIfChanged() == wxID_OK)
     {
       // Cannot move this code to wxExSTC, because of member m_Frame.
-      wxArrayString files;
-      files.Add(GetFileName().GetFullPath());
+      std::vector< wxString > files;
+      files.push_back(GetFileName().GetFullPath());
       wxExVCSExecute(m_Frame, command.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
     }
   }

@@ -252,7 +252,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 }
 
 bool wxExFrameWithHistory::FindInFiles(
-  const wxArrayString& files,
+  const std::vector< wxString > & files,
   int id,
   bool show_dialog,
   wxExListView* report)
@@ -274,9 +274,9 @@ bool wxExFrameWithHistory::FindInFiles(
   
   wxExStatistics<int> stats;
   
-  for (int i = 0; i < files.GetCount(); i++)
+  for (auto it = files.begin(); it != files.end(); ++it)
   {
-    const wxExFileName fn(files[i]);
+    const wxExFileName fn(*it);
     
     if (fn.FileExists())
     {
