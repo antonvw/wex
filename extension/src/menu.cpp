@@ -224,9 +224,9 @@ bool wxExMenu::AppendVCS(const wxFileName& filename, bool show_modal)
 
     wxExMenu* vcsmenu = new wxExMenu;
   
-    wxArrayString ar;
-    ar.Add(filename.GetFullPath());
-    const wxExVCS vcs(ar);
+    std::vector< wxString > v;
+    v.push_back(filename.GetFullPath());
+    const wxExVCS vcs(v);
 
     if (vcs.GetEntry().BuildMenu(vcs_offset_id, vcsmenu))
     { 

@@ -55,7 +55,12 @@ private:
     wxCoord x, 
     wxCoord y, 
     const wxArrayString& filenames) {
-      wxExOpenFiles(m_Frame, filenames);
+      std::vector< wxString > v;
+      for (auto it = filenames.begin(); it != filenames.end(); ++it)
+      {
+        v.push_back(*it);
+      }
+      wxExOpenFiles(m_Frame, v);
       return true;}
 
   wxExFrame* m_Frame;
@@ -217,12 +222,12 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
         wxSetWorkingDirectory(stc->GetFileName().GetPath());
       }
       
-      wxArrayString files;
+      std::vector< wxString > files;
       wxStringTokenizer tkz(command.GetString());
       
       while (tkz.HasMoreTokens())
       {
-        files.Add(tkz.GetNextToken());
+        files.push_back(tkz.GetNextToken());
       }
 
       wxExOpenFiles(this, files);

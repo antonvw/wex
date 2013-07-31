@@ -467,9 +467,9 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       if (openFileDialog.ShowModal() == wxID_CANCEL)
         return;     // the user changed idea...
           
-      wxArrayString ar;
-      ar.Add(openFileDialog.GetPath());
-      wxExVCS vcs(ar);
+      std::vector< wxString > v;
+      v.push_back(openFileDialog.GetPath());
+      wxExVCS vcs(v);
       wxLogMessage(vcs.GetName());
       }
       break;

@@ -60,8 +60,13 @@ void wxExGenericDirCtrl::ExpandAndSelectPath(const wxString& path)
 
 void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
 {
-  wxArrayString files;
-  GetPaths(files);
+  wxArrayString paths;
+  GetPaths(paths);
+  std::vector< wxString > files;
+  for (auto it = paths.begin(); it != paths.end(); ++it)
+  {
+    files.push_back(*it);
+  }
     
   if (event.GetId() > ID_EDIT_VCS_LOWEST && 
       event.GetId() < ID_EDIT_VCS_HIGHEST)
@@ -103,15 +108,21 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
 
 void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
 {
-  wxArrayString files;
-  GetPaths(files);
+  wxArrayString paths;
+  GetPaths(paths);
 
-  if (files.empty()) 
+  if (paths.empty()) 
   {
     event.Skip();
     return;
   }
 
+  std::vector< wxString > files;
+  for (auto it = paths.begin(); it != paths.end(); ++it)
+  {
+    files.push_back(*it);
+  }
+    
   if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_MENU)
   {
     const wxExFileName filename(files[0]);

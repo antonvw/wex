@@ -212,11 +212,11 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   }
   else if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    wxArrayString files;
+    std::vector< wxString > files;
     
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
-      files.Add(wxExListItem(this, i).GetFileName().GetFullPath());
+      files.push_back(wxExListItem(this, i).GetFileName().GetFullPath());
     }
   
     wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);

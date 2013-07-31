@@ -29,7 +29,7 @@ enum
 
 std::vector<wxExVCSEntry> wxExVCS::m_Entries;
 
-wxExVCS::wxExVCS(const wxArrayString& files, int command_no)
+wxExVCS::wxExVCS(const std::vector< wxString > & files, int command_no)
   : m_Files(files)
   , m_Caption("VCS")
 {
@@ -282,7 +282,7 @@ const wxString wxExVCS::GetRelativeFile(
 {
   // The .git dir only exists in the root, so check all components.
   wxFileName root(fn);
-  wxArrayString as;
+  std::vector< wxString > v;
 
   while (root.DirExists() && root.GetDirCount() > 0)
   {
@@ -293,15 +293,15 @@ const wxString wxExVCS::GetRelativeFile(
     {
       wxString relative_file;
 
-      for (int i = as.GetCount() - 1; i >= 0; i--)
+      for (int i = v.size() - 1; i >= 0; i--)
       {
-        relative_file += as[i] + "/";
+        relative_file += v[i] + "/";
       }
       
       return relative_file + fn.GetFullName();
     }
 
-    as.Add(root.GetDirs().Last());
+    v.push_back(root.GetDirs().Last());
     root.RemoveLastDir();
   }
   
@@ -325,7 +325,6 @@ const wxString wxExVCS::GetTopLevelDir(
   {
     wxFileName path(root);
     path.AppendDir(admin_dir);
-
     if (path.DirExists() && !path.FileExists())
     {
       return root.GetPath();

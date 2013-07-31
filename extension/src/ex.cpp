@@ -20,14 +20,12 @@
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
 wxExViMacros wxExEx::m_Macros;
 wxString wxExEx::m_LastCommand;
-wxExSTCEntryDialog* wxExEx::m_Dialog = NULL;
   
 wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
@@ -150,34 +148,6 @@ bool wxExEx::Command(const wxString& command)
     wxCloseEvent event(wxEVT_CLOSE_WINDOW);
     event.SetCanVeto(false); 
     wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == ":reg")
-  {
-    wxArrayString regs = GetMacros().GetRegisters();
-    
-    wxString output;
-    
-    for (int i = 0; i < regs.GetCount(); i++)
-    {
-      output += regs[i];
-      output += "\n";
-    }
-    
-    if (m_Dialog == NULL)
-    {
-      m_Dialog = new wxExSTCEntryDialog(
-        wxTheApp->GetTopWindow(),
-        "Registers", 
-        output,
-        wxEmptyString,
-        wxOK);
-    }
-    else
-    {
-      m_Dialog->GetSTC()->SetText(output);
-    }
-    
-    m_Dialog->ShowModal();
   }
   else if (command.StartsWith(":r"))
   {
@@ -762,13 +732,20 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   
   if (choice.empty())
   {
-    const wxArrayString macros(m_Macros.Get());
+    auto v(m_Macros.Get());
   
-    if (macros.empty())
+    if (v.empty())
     {
       return false;
     }
   
+    wxArrayString macros;
+    
+    for (auto it = v.begin(); it != v.end(); ++it)
+    {
+      macros.Add(*it);
+    }
+    
     wxSingleChoiceDialog dialog(m_STC,
       _("Input") + ":", 
       _("Select Macro"),

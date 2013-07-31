@@ -325,9 +325,9 @@ bool wxExViMacros::ExpandTemplate(
   return true;
 }
 
-const wxArrayString wxExViMacros::Get() const
+const std::vector< wxString > wxExViMacros::Get() const
 {
-  wxSortedArrayString as;
+  std::vector< wxString > v;
     
   for (
     std::map<wxString, std::vector<wxString> >::const_iterator it = 
@@ -335,15 +335,17 @@ const wxArrayString wxExViMacros::Get() const
     it != m_Macros.end();
     ++it)
   {
-    as.Add(it->first);
+    v.push_back(it->first);
   }
    
   for (auto it = m_Variables.begin(); it != m_Variables.end(); ++it)
   {
-    as.Add(it->first);
+    v.push_back(it->first);
   }
   
-  return as;
+  std::sort(v.begin(), v.end());
+  
+  return v;
 }
 
 int wxExViMacros::GetCount() const
@@ -418,19 +420,10 @@ const wxString wxExViMacros::GetRegister(const wxString& name) const
   }
 }
 
-const wxArrayString wxExViMacros::GetRegisters() const
+const std::vector< wxString > wxExViMacros::GetRegisters() const
 {
-  wxArrayString as;
+  std::vector< wxString > r;
   
-  // Currently the " register does not really exist,
-  // but copies clipboard contents instead.
-  const wxString clipboard(wxExSkipWhiteSpace(wxExClipboardGet()));
-  
-  if (!clipboard.empty())
-  {
-    as.Add("\": " + clipboard);
-  }
-    
   for (
     std::map<wxString, std::vector< wxString > >::const_iterator it = 
       m_Macros.begin();
@@ -450,10 +443,10 @@ const wxArrayString wxExViMacros::GetRegisters() const
       output += *it2;
     }
     
-    as.Add(it->first + ": " + wxExSkipWhiteSpace(output));
+    r.push_back(it->first + ": " + wxExSkipWhiteSpace(output));
   }
    
-  return as;
+  return r;
 }
 
 bool wxExViMacros::IsRecorded(const wxString& macro) const

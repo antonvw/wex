@@ -21,7 +21,12 @@ wxIMPLEMENT_APP(App);
 void App::MacOpenFiles(const wxArrayString& fileNames)
 {
   Frame* frame = wxDynamicCast(GetTopWindow(), Frame);
-  wxExOpenFiles(frame, fileNames);
+  std::vector< wxString > files;
+  for (auto it = fileNames.begin(); it != fileNames.end(); ++it)
+  {
+    files.push_back(*it);
+  }
+  wxExOpenFiles(frame, files);
 }
 #endif
 
@@ -31,7 +36,7 @@ bool App::OnCmdLineParsed(wxCmdLineParser& parser)
   
   for (size_t i = 0; i < parser.GetParamCount(); i++)
   {
-    m_Files.Add(parser.GetParam(i));
+    m_Files.push_back(parser.GetParam(i));
   }
   
   if (parser.Found("l"))

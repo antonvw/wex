@@ -1541,13 +1541,13 @@ void wxExGuiTestFixture::testVCS()
   wxFileName file(TEST_FILE);
   file.Normalize();
   
-  wxArrayString ar;
-  ar.Add(file.GetFullPath());
+  std::vector< wxString > v;
+  v.Add(file.GetFullPath());
   
   // In wxExApp the vcs is Read, so current vcs is known,
   // using this constructor results in command id 0,
   // giving the first command of current vcs, being add.
-  wxExVCS vcs(ar);
+  wxExVCS vcs(v);
   
   vcs.ConfigDialog(wxTheApp->GetTopWindow(), "test vcs", false);
   

@@ -12,6 +12,8 @@
 
 #if wxUSE_GUI
 
+class wxExSTCEntryDialog;
+
 /// Offers a class that extends wxExSTC with vi behaviour.
 class WXDLLIMPEXP_BASE wxExVi : public wxExEx
 {
@@ -61,6 +63,7 @@ private:
   bool ToggleCase(); 
   bool YankedLines();   
 
+  static wxExSTCEntryDialog* m_Dialog;
   static wxString m_LastFindCharCommand;
 
   bool m_Dot;  
