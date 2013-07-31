@@ -1542,7 +1542,7 @@ void wxExGuiTestFixture::testVCS()
   file.Normalize();
   
   std::vector< wxString > v;
-  v.Add(file.GetFullPath());
+  v.push_back(file.GetFullPath());
   
   // In wxExApp the vcs is Read, so current vcs is known,
   // using this constructor results in command id 0,

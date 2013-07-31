@@ -175,7 +175,7 @@ void wxExGuiReportTestFixture::test()
     frame, 
     wxExListViewFileName::LIST_FILE);
     
-  std::vector< wxString > files;
+  wxArrayString files;
   
   CPPUNIT_ASSERT(wxDir::GetAllFiles(
     "../", 
@@ -188,8 +188,15 @@ void wxExGuiReportTestFixture::test()
   // This string should occur only once, that is here!
   frd->SetFindString("@@@@@@@@@@@@@@@@@@@");
   
+  std::vector< wxString > v;
+    
+  for (auto it = files.begin(); it != files.end(); ++it)
+  {
+    v.push_back(*it);
+  }
+  
   CPPUNIT_ASSERT(frame->FindInFiles(
-    files, 
+    v, 
     ID_TOOL_REPORT_FIND, 
     false, 
     report));
@@ -202,7 +209,7 @@ void wxExGuiReportTestFixture::test()
   sw.Start();
 
   CPPUNIT_ASSERT(frame->FindInFiles(
-    files, 
+    v, 
     ID_TOOL_REPORT_FIND, 
     false, 
     report));
@@ -215,7 +222,7 @@ void wxExGuiReportTestFixture::test()
   // Each file has one author (files.GetCount()), add the one in SetFindString above, 
   // and the one that is already present on the 
   // list because of the first FindInFiles.
-  CPPUNIT_ASSERT(report->GetItemCount() == (files.GetCount() + 2));
+  CPPUNIT_ASSERT(report->GetItemCount() == (v.size() + 2));
 }
 
 wxExTestSuite::wxExTestSuite()
