@@ -703,7 +703,13 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
 void wxExViMacros::SetRegister(const wxString& name, const wxString& value)
 {
   std::vector<wxString> v;
-  v.push_back(value);
+  
+  // The black hole register, everything written to it is discarded.
+  if (name != "_")
+  {
+    v.push_back(value);
+  }
+  
   m_Macros[name] = v;
   
   m_IsModified = true;
