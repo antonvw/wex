@@ -69,7 +69,7 @@ public:
     const wxSize& size = wxDefaultSize, 
     long style = 0);
 
-  /// Constructor, opens the file.
+  /// Constructor, opens the file if it exists.
   /// See also Open.
   wxExSTC(wxWindow* parent,
     const wxExFileName& filename,
