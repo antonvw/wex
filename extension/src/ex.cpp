@@ -56,7 +56,7 @@ void wxExEx::AddText(const wxString& text)
 {
   if (!m_Register.empty())
   {
-    GetMacros().SetRegister(m_Register, text);
+    m_Macros.SetRegister(m_Register, text);
   }
   else
   {
@@ -635,9 +635,19 @@ bool wxExEx::Delete(int lines)
   }
   else
   {
+    // Update delete registers.
+    for (int i = 9; i >= 1; i--)
+    {
+      m_Macros.SetRegister(
+        wxString::Format("%d", i + 1),
+        m_Macros.GetRegister(wxString::Format("%d", i)));
+    }
+  
+    m_Macros.SetRegister("1", m_STC->GetSelectedText());
+    
     if (!m_Register.empty())
     {
-      GetMacros().SetRegister(m_Register, m_STC->GetSelectedText());
+      m_Macros.SetRegister(m_Register, m_STC->GetSelectedText());
       m_STC->ReplaceSelection(wxEmptyString);
     }
     else
@@ -790,7 +800,7 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
 
 void wxExEx::MacroRecord(const wxString& text)
 {
-  GetMacros().Record(text);
+  m_Macros.Record(text);
 }
 
 void wxExEx::MacroStartRecording(const wxString& macro)
@@ -1255,7 +1265,7 @@ void wxExEx::Yank(int lines)
   {
     if (!m_Register.empty())
     {
-      GetMacros().SetRegister(m_Register, m_STC->GetTextRange(start, end));
+      m_Macros.SetRegister(m_Register, m_STC->GetTextRange(start, end));
     }
     else
     {
@@ -1266,7 +1276,7 @@ void wxExEx::Yank(int lines)
   {
     if (!m_Register.empty())
     {
-      GetMacros().SetRegister(
+      m_Macros.SetRegister(
         m_Register, 
         m_STC->GetTextRange(start, m_STC->GetLastPosition()));
     }
@@ -1303,6 +1313,7 @@ bool wxExEx::Yank(
   }
 
   m_STC->CopyRange(start, end);
+  m_Macros.SetRegister("0", m_STC->GetTextRange(start, end));
   
   const int lines = end_line - begin_line + 1;
   
