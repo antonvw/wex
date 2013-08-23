@@ -1263,6 +1263,8 @@ void wxExEx::Yank(int lines)
 
   if (end != -1)
   {
+    m_Macros.SetRegister("0", m_STC->GetTextRange(start, end));
+  
     if (!m_Register.empty())
     {
       m_Macros.SetRegister(m_Register, m_STC->GetTextRange(start, end));
@@ -1274,6 +1276,9 @@ void wxExEx::Yank(int lines)
   }
   else
   {
+    m_Macros.SetRegister("0", m_STC->GetTextRange(
+      start, m_STC->GetLastPosition()));
+      
     if (!m_Register.empty())
     {
       m_Macros.SetRegister(
