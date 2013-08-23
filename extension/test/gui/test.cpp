@@ -484,8 +484,10 @@ void wxExGuiTestFixture::testGrid()
   
 //  grid->Print();
   grid->PrintPreview();
+#if wxUSE_DRAG_AND_DROP
   grid->UseDragAndDrop(true);
   grid->UseDragAndDrop(false);
+#endif
 }
 
 void wxExGuiTestFixture::testHexMode()
@@ -1988,6 +1990,21 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->Command("dx"));
   CPPUNIT_ASSERT( vi->GetLastCommand() != "dx");
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  
+  // Test registers
+  stc = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
+  vi = &stc->GetVi();
+  const int ctrl_r = 18;
+  CPPUNIT_ASSERT( vi->Command("i"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(ctrl_r)));
+  CPPUNIT_ASSERT( vi->Command("_"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  
+  CPPUNIT_ASSERT( vi->Command("i"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(ctrl_r)));
+  CPPUNIT_ASSERT( vi->Command("%"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( stc->GetText().Contains("test.h"));
 }
   
 void wxExGuiTestFixture::testViMacros()
