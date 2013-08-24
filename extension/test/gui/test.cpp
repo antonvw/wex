@@ -2005,6 +2005,27 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("%"));
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT( stc->GetText().Contains("test.h"));
+  
+  CPPUNIT_ASSERT( vi->Command("yy"));
+  stc->SetText("");
+  CPPUNIT_ASSERT( vi->Command("i"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(ctrl_r)));
+  CPPUNIT_ASSERT( vi->Command("0"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("test.h"));
+  
+  stc->SetText("XXXXX");
+  CPPUNIT_ASSERT( vi->Command("dd"));
+  CPPUNIT_ASSERT( vi->Command("i"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(ctrl_r)));
+  CPPUNIT_ASSERT( vi->Command("1"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("XXXXX"));
+  
+  stc->SetText("YYYYY");
+  CPPUNIT_ASSERT( vi->Command("dd"));
+  CPPUNIT_ASSERT( vi->Command("i"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(ctrl_r)));
+  CPPUNIT_ASSERT( vi->Command("2"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("XXXXX"));
 }
   
 void wxExGuiTestFixture::testViMacros()
