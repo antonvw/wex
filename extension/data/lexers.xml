@@ -1929,6 +1929,13 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="a68k"/>
   <lexer name="abaqus"/> 
   <lexer name="ada" extensions="*.a">
+    <!--
+    ada folding is supported using next ada lexer:
+    http://dlchnr.dl.funpic.de/in/LexAdaFF.zip   
+    You have to put it in the 
+    wxWidgets-2.9.5\src\stc\scintilla\lexers
+    folder and rename it into LexAda, and rebuild wxWidgets
+    -->
     <properties>
       <property name="fold.ada.comment.multiline"> 1 </property>
     </properties>
