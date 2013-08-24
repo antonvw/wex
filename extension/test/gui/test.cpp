@@ -228,6 +228,8 @@ void wxExGuiTestFixture::testEx()
   ex->Use(true);
   CPPUNIT_ASSERT( ex->GetIsActive());
   
+  CPPUNIT_ASSERT( ex->GetMacros().GetCount() == 0);
+  
   CPPUNIT_ASSERT( ex->Command(":.="));
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120");
   CPPUNIT_ASSERT(!ex->Command(":xxx"));
@@ -277,7 +279,6 @@ void wxExGuiTestFixture::testEx()
   // Test macros.
   // Do not load macros yet, to test IsRecorded.
   CPPUNIT_ASSERT(!ex->GetMacros().IsRecording());
-  CPPUNIT_ASSERT( ex->GetMacros().GetCount() == 0);
   CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded("a"));
   
   ex->MacroStartRecording("a");
@@ -2011,6 +2012,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->Command(wxUniChar(ctrl_r)));
   CPPUNIT_ASSERT( vi->Command("0"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT( stc->GetText().Contains("test.h"));
   
   stc->SetText("XXXXX");
@@ -2018,6 +2020,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->Command(wxUniChar(ctrl_r)));
   CPPUNIT_ASSERT( vi->Command("1"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT( stc->GetText().Contains("XXXXX"));
   
   stc->SetText("YYYYY");
@@ -2025,6 +2028,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->Command(wxUniChar(ctrl_r)));
   CPPUNIT_ASSERT( vi->Command("2"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT( stc->GetText().Contains("XXXXX"));
 }
   
