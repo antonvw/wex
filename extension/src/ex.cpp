@@ -635,12 +635,12 @@ bool wxExEx::Delete(int lines)
   }
   else
   {
-    // Update delete registers.
-    for (int i = 9; i >= 1; i--)
+    // Update delete registers 1 - 9.
+    for (int i = 9; i >= 2; i--)
     {
       m_Macros.SetRegister(
-        wxString::Format("%d", i + 1),
-        m_Macros.GetRegister(wxString::Format("%d", i)));
+        wxString::Format("%d", i),
+        m_Macros.GetRegister(wxString::Format("%d", i - 1)));
     }
   
     m_Macros.SetRegister("1", m_STC->GetSelectedText());
