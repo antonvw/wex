@@ -1,0 +1,25 @@
+# This is the control file for Travis continuous integration system.
+#
+# It is used automatically for the repositories on Github if it's found in the
+# root directory of the project.
+language: cpp
+
+compiler: gcc
+
+branches:
+    only:
+        - v3.0
+
+notifications:
+    email:
+        recipients:
+            - vadim@wxwidgets.org
+        on_success: change
+        on_failure: change
+
+before_install:
+    - sudo apt-get install -y libcppunit-dev
+
+script:
+    - pushd build
+    - make
