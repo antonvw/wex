@@ -119,8 +119,11 @@ public:
   /// Sets the configurable parameters to values currently in config.
   void ConfigGet(bool init = false);
 
+  /// Copies text to clipboard.
+  virtual void Copy();
+
   /// Cuts text to clipboard.
-  void Cut();
+  virtual void Cut();
 
   /// Shows a menu with current line type checked, and allows you to change it.
   void FileTypeMenu();

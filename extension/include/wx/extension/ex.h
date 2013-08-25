@@ -96,6 +96,12 @@ public:
   /// Returns -1 if marker does not exist.
   int MarkerLine(const wxUniChar& marker) const;
   
+  /// Sets delete registers 1 - 9.
+  void SetRegistersDelete(const wxString& value);
+  
+  /// Sets yank register.
+  void SetRegisterYank(const wxString& value);
+  
   /// Set using ex mode.
   void Use(bool mode) {m_IsActive = mode;};
 protected:
@@ -129,7 +135,7 @@ protected:
   /// and special characters.
   /// Returns 0 if address is not valid.
   int ToLineNumber(const wxString& address) const;
-  
+    
   /// Yanks number of lines, starting at current line.
   void Yank(int lines);
 private:
