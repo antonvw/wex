@@ -635,8 +635,6 @@ bool wxExEx::Delete(int lines)
   }
   else
   {
-    SetRegistersDelete(m_STC->GetSelectedText());
-    
     if (!m_Register.empty())
     {
       m_Macros.SetRegister(m_Register, m_STC->GetSelectedText());
