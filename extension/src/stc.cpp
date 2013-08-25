@@ -854,10 +854,28 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   }
 }
 
+void wxExSTC::Copy()
+{
+  if (CanCopy()) 
+  {
+    wxStyledTextCtrl::Copy();
+      
+    if (m_vi.GetIsActive())
+    {
+      m_vi.SetRegisterYank(GetSelectedText());
+    }
+  }
+}
+
 void wxExSTC::Cut()
 {
   if (CanCut()) 
   {
+    if (m_vi.GetIsActive())
+    {
+      m_vi.SetRegistersDelete(GetSelectedText());
+    }
+  
     wxStyledTextCtrl::Cut();
   }
 }
