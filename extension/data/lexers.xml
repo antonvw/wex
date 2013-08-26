@@ -2384,6 +2384,6 @@ transient try var void volatile while
   <lexer name="verilog"/>
   <lexer name="vhdl"/>
   <lexer name="visualprolog"/>
-  <lexer name="yaml"/>
+  <lexer name="yaml" extensions="*.yml"/>
  
 </lexers>
