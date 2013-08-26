@@ -765,13 +765,13 @@ void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< wxString > & fi
   
   if (check.GetEntry().GetCommand().IsOpen() && !files.empty())
   {
-    const wxExVCS vcs(std::vector< wxString >(files.begin(), files.begin()), id);
+    const wxExVCS vcs(std::vector< wxString >(files.begin(), files.begin() + 1), id);
     
     if (vcs.ShowDialog(frame) == wxID_OK)
     {
       for (int i = 0; i < files.size(); i++)
       {
-        wxExVCS vcs(std::vector< wxString >(files.begin() + i, files.begin() + i), id);
+        wxExVCS vcs(std::vector< wxString >(files.begin() + i, files.begin() + i + 1), id);
         
         if (vcs.Execute())
         {
