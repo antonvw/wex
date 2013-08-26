@@ -316,7 +316,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent,
         m_Id,
         wxEmptyString,
-        _(wxDirSelectorPromptStr),
+        wxDirSelectorPromptStr,
         wxDefaultPosition,
         wxSize(width, wxDefaultCoord));
 
