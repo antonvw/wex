@@ -13,6 +13,7 @@ branches:
 before_install:
     - sudo apt-key adv --fetch-keys http://repos.codelite.org/CodeLite.asc
     - sudo apt-add-repository 'deb http://repos.codelite.org/wx2.9/ubuntu/ raring universe'
+    - sudo apt-get update
     - sudo apt-get install -y libwxbase2.9-0-unofficial libwxbase2.9-dev libwxgtk2.9-0-unofficial libwxgtk2.9-dev wx2.9-headers wx-common libwxbase2.9-dbg libwxgtk2.9-dbg wx2.9-i18n    
     - sudo apt-get install -y libcppunit-dev
 
