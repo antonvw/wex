@@ -3,12 +3,12 @@
 Name:      wxextension.bkl
 Purpose:   Bakefile for wxextension library
 Author:    Anton van Wezenbeek
-Copyright: (c) 2012 Anton van Wezenbeek
+Copyright: (c) 2013 Anton van Wezenbeek
 -->
 
 <makefile>
   <lib id="wxex" template="wx-lib,wxlike">
-    <libname>wxex29</libname>
+    <libname>wxex30</libname>
     
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>
