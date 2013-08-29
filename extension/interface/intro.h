@@ -12,7 +12,7 @@ This is a <a href="https://antonvw@github.com/antonvw/wxExtension.git">public so
 containing a collection of wxWidgets extension classes.
 
 <p>
-It uses <a href="http://docs.wxwidgets.org/2.9.5/">wxWidgets 2.9.5</a> 
+It uses <a href="http://docs.wxwidgets.org/3.0/">wxWidgets 3.0</a> 
 and <a href="http://www.cplusplus.com/reference/algorithm/">STL classes</a>. 
 
 <p>

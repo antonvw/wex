@@ -23,8 +23,8 @@ copy ..\extension\data\*.txt syncped
 copy ..\extension\data\*.xml syncped
 
 rem Copy locale files.
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" c:\wxWidgets-2.9.5\locale\nl.po -o syncped\nl_NL\nl.mo
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" c:\wxWidgets-2.9.5\locale\fr.po -o syncped\fr_FR\fr.mo
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" c:\wxWidgets-3.0\locale\nl.po -o syncped\nl_NL\nl.mo
+"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" c:\wxWidgets-3.0\locale\fr.po -o syncped\fr_FR\fr.mo
 
 "C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\wxextension-nl.po -o syncped\nl_NL\wxextension-nl.mo
 "C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\wxextension-fr.po -o syncped\fr_FR\wxextension-fr.mo
