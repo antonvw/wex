@@ -549,7 +549,7 @@ bool wxExVi::Command(const wxString& command)
       m_Dialog->GetSTC()->SetText(output);
     }
     
-    m_Dialog->ShowModal();
+    m_Dialog->Show();
   }
   else if (!rest.empty())
   {
