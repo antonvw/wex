@@ -312,16 +312,20 @@ const wxString wxExLexer::MakeSingleLineComment(
   return out;
 }
 
-void wxExLexer::Reset(wxStyledTextCtrl* stc)
+bool wxExLexer::Reset(wxStyledTextCtrl* stc)
 {
-  m_ScintillaLexer.clear();
-  m_DisplayLexer.clear();
+  Initialize();
   
   stc->SetLexer(wxSTC_LEX_NULL);
   
-  m_IsOk = true;
+  m_IsOk = (stc->GetLexer() == wxSTC_LEX_NULL);
   
-  Apply(stc, true);
+  if (m_IsOk)
+  {
+    Apply(stc, true);
+  }
+
+  return m_IsOk;
 }
 
 bool wxExLexer::Set(
@@ -341,16 +345,18 @@ bool wxExLexer::Set(
   
   m_IsOk = (stc->GetLexer() != wxSTC_LEX_NULL);
   
-  if (!m_IsOk && 
-      !m_ScintillaLexer.empty()&&
-       show_error)
+  if (m_IsOk)
   {
-    wxLogError("Lexer is not known: " + m_ScintillaLexer);
+    stc->SetStyleBits(stc->GetStyleBitsNeeded());
+    Apply(stc, clear);
   }
-  
-  stc->SetStyleBits(stc->GetStyleBitsNeeded());
-
-  Apply(stc, clear);
+  else
+  {
+    if (show_error)
+    {
+      wxLogError("Lexer is not known: " + m_ScintillaLexer);
+    }
+  }
   
   return m_IsOk;
 }
