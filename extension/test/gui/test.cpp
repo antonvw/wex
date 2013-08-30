@@ -1277,7 +1277,7 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(stc->SetLexer("cpp"));
 
   wxExLexer lexer;
-  CPPUNIT_ASSERT( lexer.Set(wxEmptyString, stc, false));
+  CPPUNIT_ASSERT( lexer.Reset(stc));
   CPPUNIT_ASSERT( lexer.Set("cpp", stc, false));
   CPPUNIT_ASSERT(!lexer.Set("xyz", stc, false));
   

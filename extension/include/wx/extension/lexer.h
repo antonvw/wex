@@ -98,13 +98,16 @@ public:
     bool fill_out_with_space = true,
     bool fill_out = true) const;
     
-  /// Resets lexer.
-  void Reset(wxStyledTextCtrl* stc);
+  /// Resets lexer and if ok applies it to stc.
+  /// Returns true if a scintilla lexer has been reset.
+  /// The is ok member is set according to whether the
+  /// lexer could be reset.
+  bool Reset(wxStyledTextCtrl* stc);
 
-  /// Sets scintilla lexer for specified lexer and applies it to stc. 
+  /// Sets scintilla lexer for specified lexer and if ok applies it to stc. 
   /// Returns true if a scintilla lexer has been set.
-  /// The is ok member is set as well according to whether the
-  /// lexer could be set. Calls Apply.
+  /// The is ok member is set according to whether the
+  /// lexer could be set.
   bool Set(
     /// lexer to use
     const wxString& lexer, 
