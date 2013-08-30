@@ -28,34 +28,35 @@ public:
   /// Default constructor.
   wxExViMacros();
   
-  /// Returns all macro or variable names as a vector of strings.
+  /// Returns all macro names as a vector of strings.
+  /// Does not include registers.
   const std::vector< wxString > Get() const;
   
-  /// Returns contents of macro or variable.
-  const std::vector< wxString > Get(const wxString& macro) const;
+  /// Returns contents of macro as a vector of strings.
+  const std::vector< wxString > Get(const wxString& name) const;
   
   /// Returns number of macros and variables available.
   int GetCount() const;
   
-  /// Returns current or last macro played back or variable expanded.
+  /// Returns current or last macro played back (or variable expanded).
   const wxString& GetMacro() const {return m_Macro;};
   
-  /// Returns register.
+  /// Returns content of register.
   const wxString GetRegister(const wxString& name) const;
 
-  /// Returns all registers (macros with content) as a vector of strings.
-  /// The difference with Get() is, that this method 
-  /// does not add variables, but adds the macro contents as well.
+  /// Returns all registers (with content) as a vector of strings.
+  /// Does not include macros.
   const std::vector< wxString > GetRegisters() const;
   
-  /// Have macros been recorded or variables 
-  /// expanded without calling SaveDocument.
+  /// Have macros been recorded (or variables 
+  /// expanded) without calling SaveDocument.
   bool IsModified() const {return m_IsModified;};
   
   /// Is macro or variable recorded.
   bool IsRecorded(const wxString& macro) const;
   
   /// Is macro recorded.
+  /// Does not check for variables.
   bool IsRecordedMacro(const wxString& macro) const;
   
   /// Are we playing back?
@@ -74,7 +75,7 @@ public:
     /// number of times this maco is executed
     int repeat = 1);
   
-  /// Records text to current macro as a new command.
+  /// Records text to current macro (or regiser) as a new command.
   /// The text to be recorded should be valid ex command,
   /// though it is not checked here.
   /// If you playback this macro the text
@@ -87,7 +88,8 @@ public:
     /// the text is appended after the last command
     bool new_command = true);
   
-  /// Sets register (overwrites existing macro).
+  /// Sets register (overwrites existing register).
+  /// The name should be a one letter register.
   void SetRegister(const wxString& name, const wxString& value);
   
   /// Starts recording a macro (appends to 
@@ -147,7 +149,8 @@ private:
   
   static wxString m_Macro;
   
-  /// All macros, as a map of name and a vector of commands.
+  /// All macros (and registers), as a map of name and a vector of commands.
+  /// Registers are 1 letter macros.
   static std::map <wxString, std::vector< wxString > > m_Macros;
   
   /// All variables, as a map of name and variable.
