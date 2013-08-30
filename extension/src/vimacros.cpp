@@ -335,7 +335,10 @@ const std::vector< wxString > wxExViMacros::Get() const
     it != m_Macros.end();
     ++it)
   {
-    v.push_back(it->first);
+    if (it->first.size() > 1)
+    {
+      v.push_back(it->first);
+    }
   }
    
   for (auto it = m_Variables.begin(); it != m_Variables.end(); ++it)
@@ -346,11 +349,6 @@ const std::vector< wxString > wxExViMacros::Get() const
   std::sort(v.begin(), v.end());
   
   return v;
-}
-
-int wxExViMacros::GetCount() const
-{
-  return m_Macros.size() + m_Variables.size();
 }
 
 const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
@@ -381,6 +379,11 @@ const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
   }
 }
 
+int wxExViMacros::GetCount() const
+{
+  return m_Macros.size() + m_Variables.size();
+}
+
 const wxFileName wxExViMacros::GetFileName()
 {
   return wxFileName(
@@ -394,6 +397,11 @@ const wxFileName wxExViMacros::GetFileName()
 
 const wxString wxExViMacros::GetRegister(const wxString& name) const
 {
+  if (name.size() != 1)
+  {
+    return wxEmptyString;
+  }
+  
   std::map<wxString, std::vector< wxString > >::const_iterator it = 
     m_Macros.find(name);
     
@@ -430,20 +438,23 @@ const std::vector< wxString > wxExViMacros::GetRegisters() const
     it != m_Macros.end();
     ++it)
   {
-    std::vector<wxString> v = it->second;
-    
-    wxString output;
-    
-    for (
-      std::vector<wxString>::const_iterator it2 = 
-        v.begin();
-      it2 != v.end();
-      ++it2)
+    if (i->first.size() == 1)
     {
-      output += *it2;
-    }
+      std::vector<wxString> v = it->second;
     
-    r.push_back(it->first + ": " + wxExSkipWhiteSpace(output));
+      wxString output;
+    
+      for (
+        std::vector<wxString>::const_iterator it2 = 
+          v.begin();
+        it2 != v.end();
+        ++it2)
+      {
+        output += *it2;
+      }
+    
+      r.push_back(it->first + ": " + wxExSkipWhiteSpace(output));
+    }
   }
    
   return r;
@@ -702,6 +713,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
 
 void wxExViMacros::SetRegister(const wxString& name, const wxString& value)
 {
+  
   std::vector<wxString> v;
   
   // The black hole register, everything written to it is discarded.
