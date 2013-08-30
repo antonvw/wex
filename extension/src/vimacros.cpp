@@ -438,7 +438,7 @@ const std::vector< wxString > wxExViMacros::GetRegisters() const
     it != m_Macros.end();
     ++it)
   {
-    if (i->first.size() == 1)
+    if (it->first.size() == 1)
     {
       std::vector<wxString> v = it->second;
     
