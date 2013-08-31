@@ -31,10 +31,6 @@ wxString wxExViMacros::m_Macro;
 std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
 std::map <wxString, wxExVariable > wxExViMacros::m_Variables;
 
-wxExViMacros::wxExViMacros()
-{
-}
-
 void wxExViMacros::AskForInput()
 {
   for (std::map<wxString, wxExVariable >::iterator it = 
