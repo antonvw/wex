@@ -25,9 +25,6 @@ class wxExEx;
 class WXDLLIMPEXP_BASE wxExViMacros
 {
 public:  
-  /// Default constructor.
-  wxExViMacros();
-  
   /// Returns all macro names as a vector of strings.
   /// Does not include registers.
   const std::vector< wxString > Get() const;
