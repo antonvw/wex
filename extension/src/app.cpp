@@ -80,7 +80,7 @@ bool wxExApp::OnInit()
   if (wxFileName::DirExists(m_CatalogDir))
   {
     wxArrayString files;
-    wxDir::GetAllFiles(m_CatalogDir, &files);
+    wxDir::GetAllFiles(m_CatalogDir, &files, "*.mo");
 
     for (
       auto it = files.begin();
