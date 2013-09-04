@@ -57,13 +57,10 @@ bool wxExApp::OnInit()
 #endif
   wxConfigBase::Set(config);
   
-  int lang = wxLANGUAGE_DEFAULT;
-  
-  if (wxConfigBase::Get()->Exists("LANG"))
-  {
-    lang = wxConfigBase::Get()->ReadLong("LANG", wxLANGUAGE_DEFAULT);
-  }
-  
+  const int lang = (wxConfigBase::Get()->Exists("LANG") ?
+    wxConfigBase::Get()->ReadLong("LANG", wxLANGUAGE_DEFAULT):
+    wxLANGUAGE_DEFAULT);
+    
   // Init the localization, from now on things will be translated.
   // Do not load wxstd, we load all files ourselved,
   // and do not want messages about loading non existing wxstd files.
