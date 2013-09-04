@@ -718,7 +718,7 @@ void Frame::OnCommand(wxCommandEvent& event)
         wxExFileDialog dlg(
           this, 
           &editor->GetFile(), 
-          wxGetStockLabel(wxID_SAVEAS), 
+          wxGetStockLabel(wxID_SAVEAS, wxSTOCK_NOFLAGS), 
           wxFileSelectorDefaultWildcardStr, 
           wxFD_SAVE);
 
