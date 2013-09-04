@@ -86,8 +86,7 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
 void wxExLexer::AutoMatch(const wxString& lexer)
 {
   for (
-    std::map<wxString, wxString>::const_iterator it = 
-      wxExLexers::Get()->GetMacros(lexer).begin();
+    auto it = wxExLexers::Get()->GetMacros(lexer).begin();
     it != wxExLexers::Get()->GetMacros(lexer).end();
     ++it)
   {
