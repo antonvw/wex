@@ -197,7 +197,7 @@ long wxExListView::AppendColumn(const wxExColumn& col)
   if (index != -1)
   {
     mycol.SetColumn(GetColumnCount() - 1);
-    m_Columns.insert(std::make_pair(mycol.GetText(), mycol));
+    m_Columns.push_back(mycol);
   }
   
   return index;
@@ -260,9 +260,7 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
       it != m_Columns.end();
       ++it)
     {
-      menuSort->Append(
-        ID_COL_FIRST + it->second.GetColumn(), 
-        it->second.GetText());
+      menuSort->Append(ID_COL_FIRST + it->GetColumn(), it->GetText());
     }
 
     menu.AppendSubMenu(menuSort, _("Sort On"));
@@ -271,16 +269,18 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
 
 const wxExColumn wxExListView::Column(const wxString& name) const
 {
-  auto it = m_Columns.find(name);
-
-  if (it != m_Columns.end())
+  for (
+    auto it = m_Columns.begin();
+    it != m_Columns.end();
+    ++it)
   {
-    return it->second;
+    if (it->GetText() == name)
+    {
+      return *it;
+    }
   }
-  else
-  {
-    return wxExColumn();
-  }
+  
+  return wxExColumn();
 }
 
 void wxExListView::CopySelectedItemsToClipboard()
@@ -440,18 +440,6 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
 
 unsigned int wxExListView::GetArtID(const wxArtID& artid)
 {
-  if (GetImageList(wxIMAGE_LIST_SMALL) == NULL)
-  {
-    wxFAIL;
-    return 0;
-  }
-
-  if (m_ImageType == IMAGE_NONE)
-  {
-    wxFAIL_MSG("Incorrect image type");
-    return 0;
-  }
-      
   const auto it = m_ArtIDs.find(artid);
 
   if (it != m_ArtIDs.end())
@@ -460,13 +448,18 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
   }
   else
   {
-    m_ArtIDs.insert(std::make_pair(artid, 
-      GetImageList(wxIMAGE_LIST_SMALL)->GetImageCount()));
+    wxImageList* il = GetImageList(wxIMAGE_LIST_SMALL);
+    
+    if (il == NULL)
+    {
+      wxFAIL;
+      return 0;
+    }
 
-    const wxSize smallsize(m_ImageWidth, m_ImageHeight);
+    m_ArtIDs.insert(std::make_pair(artid, il->GetImageCount()));
 
-    return GetImageList(wxIMAGE_LIST_SMALL)->Add(
-      wxArtProvider::GetBitmap(artid, wxART_OTHER, smallsize));
+    return il->Add(wxArtProvider::GetBitmap(
+      artid, wxART_OTHER, wxSize(m_ImageWidth, m_ImageHeight)));
   }
 }
 
@@ -818,33 +811,16 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, wxIntPtr sortData)
 
 bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 {
-  if (column_no == -1)
+  if (column_no == -1 || column_no >= m_Columns.size())
   {
     return false;
   }
   
   SortColumnReset();
   
-  wxListItem col;
-  col.SetMask(wxLIST_MASK_TEXT);
+  wxExColumn& sorted_col = m_Columns[column_no];
   
-  if (!GetColumn(column_no, col))
-  {
-    wxFAIL;
-    return false;
-  }
-
-  std::map<wxString, wxExColumn>::iterator it = m_Columns.find(col.GetText());
-  
-  if (it == m_Columns.end())
-  {
-    wxFAIL;
-    return false;
-  }
-
-  wxExColumn* sorted_col = &it->second;
-  
-  sorted_col->SetIsSortedAscending(sort_method);
+  sorted_col.SetIsSortedAscending(sort_method);
 
   wxBusyCursor wait;
 
@@ -857,7 +833,7 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     const wxString val = wxListView::GetItemText(i, column_no);
     items.push_back(val);
 
-    switch (sorted_col->GetType())
+    switch (sorted_col.GetType())
     {
     case wxExColumn::COL_DATE:
       if (!val.empty())
@@ -897,16 +873,19 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   }
 
   const wxIntPtr sortdata =
-    (sorted_col->GetIsSortedAscending() ?
-       sorted_col->GetType():
-      (0 - sorted_col->GetType()));
+    (sorted_col.GetIsSortedAscending() ?
+       sorted_col.GetType():
+      (0 - sorted_col.GetType()));
 
   SortItems(CompareFunctionCB, sortdata);
 
   m_SortedColumnNo = column_no;
 
-  SetColumnImage(column_no,
-    GetArtID(sorted_col->GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
+  if (m_ImageType != IMAGE_NONE)
+  {
+    SetColumnImage(column_no, GetArtID(
+      sorted_col.GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
+  }
 
   if (GetItemCount() > 0)
   {
@@ -914,7 +893,7 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     AfterSorting();
   }
 
-  wxLogStatus(_("Sorted on") + ": " + sorted_col->GetText());
+  wxLogStatus(_("Sorted on") + ": " + sorted_col.GetText());
   
   return true;
 }

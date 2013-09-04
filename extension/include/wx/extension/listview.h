@@ -9,6 +9,7 @@
 #define _EXLISTVIEW_H
 
 #include <map>
+#include <vector>
 #include <wx/artprov.h>
 #include <wx/listctrl.h>
 
@@ -145,7 +146,7 @@ public:
       return SortColumn(FindColumn(column_name), sort_method);};
       
   /// Sorts on a column.
-  /// If you specified use_images,
+  /// If you did not specify IMAGE_NONE,
   /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), 
   /// depending on whether
   /// it is sorted ascending or descending.
@@ -212,7 +213,7 @@ private:
   int m_ToBeSortedColumnNo;
   
   std::map<wxArtID, unsigned int> m_ArtIDs;
-  std::map<wxString, wxExColumn> m_Columns;
+  std::vector<wxExColumn> m_Columns;
 
   DECLARE_EVENT_TABLE()
 };
