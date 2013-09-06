@@ -13,6 +13,8 @@
 #include <wx/listctrl.h>
 
 class wxFindDialogEvent;
+typedef wxString wxArtID;
+
 class wxExLexer;
 class wxExMenu;
 

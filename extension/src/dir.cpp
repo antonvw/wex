@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/dir.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/util.h>
 

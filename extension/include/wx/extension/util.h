@@ -17,11 +17,14 @@ class wxArrayString;
 class wxFileHistory;
 class wxFileName;
 class wxGenericDirCtrl;
+class wxXmlNode;
 
 class wxExFileName;
 class wxExFrame;
 class wxExLexer;
+class wxExProperty;
 class wxExSTC;
+class wxExStyle;
 class wxExVCSCommand;
 
 /// Converts several objects to a vector string.
@@ -64,9 +67,9 @@ const wxString wxExAlignText(
   /// the header is repeated as a string of spaces.
   const wxString& header,
   /// if fill out, then use space
-  bool fill_out_with_space = false,
+  bool fill_out_with_space,
   /// fill out
-  bool fill_out = false,
+  bool fill_out,
   /// if lexer is specified 
   /// fills out over lexer comment lines  
   /// If the lexer has no comment end character, fill out

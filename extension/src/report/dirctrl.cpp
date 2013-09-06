@@ -5,8 +5,10 @@
 // Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/combobox.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/textfile.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
@@ -68,12 +70,13 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
   }
   else if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
   {
-    m_Frame->FindInFiles(files, event.GetId());
+    m_Frame->FindInFiles(wxExToVectorString(*this).Get(), event.GetId());
   }
   else switch (event.GetId())
   {
   case ID_TREE_COPY: 
     {
+    const std::vector<wxString> files(wxExToVectorString(*this).Get());
     wxBusyCursor wait;
     wxString clipboard;
     for (
@@ -93,7 +96,10 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
   break;
   
   case ID_TREE_RUN_MAKE: 
+    {
+    const std::vector<wxString> files(wxExToVectorString(*this).Get());
     wxExMake(files[0]);
+    }
     break;
     
   default: wxFAIL;

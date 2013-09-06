@@ -15,13 +15,15 @@
 // Only if we have a gui.
 #if wxUSE_GUI
 
+class wxFindDialogEvent;
+class wxFindReplaceDialog;
+class wxListView;
+
 class wxExFileName;
 class wxExGrid;
 class wxExListView;
 class wxExSTC;
 class wxExVCSEntry;
-class wxFindDialogEvent;
-class wxListView;
 
 /// Offers a frame with easy statusbar methods, 
 /// find/replace, and allows for file dropping.
