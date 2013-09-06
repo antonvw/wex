@@ -167,19 +167,10 @@ Frame::Frame(const std::vector< wxString > & files)
       
     if (wxConfigBase::Get()->Read("OpenFiles", &count))
     {
-      std::vector< wxString > v;
-        
       if (count > 0)
       {
-        for (int i = count - 1; i >= 0; i--)
-        {
-          if (i < GetFileHistory().GetCount())
-          {
-            v.push_back(GetFileHistory().GetHistoryFile(i));
-          }
-        }  
-          
-        wxExOpenFiles(this, v);
+        wxExOpenFiles(this, 
+          wxExToVectorString(GetFileHistory(), count).Get());
       }
     }
       
@@ -312,7 +303,8 @@ void Frame::AddPaneHistory()
     wxExListViewWithFrame::LIST_MENU_DEFAULT);
         
   GetManager().AddPane(m_History, wxAuiPaneInfo()
-    .Left().Name("HISTORY")
+    .Left()
+    .Name("HISTORY")
     .Caption(_("History")));
 }
        
@@ -374,14 +366,7 @@ bool Frame::DialogProjectOpen()
 
   if (dlg.ShowModal() == wxID_CANCEL) return false;
 
-  wxArrayString paths;
-  dlg.GetPaths(paths);
-  std::vector< wxString > files;
-  for (auto it = paths.begin(); it != paths.end(); ++it)
-  {
-    files.push_back(*it);
-  }
-  wxExOpenFiles(this, files, WIN_IS_PROJECT);
+  wxExOpenFiles(this, wxExToVectorString(dlg).Get(), WIN_IS_PROJECT);
 
   return true;
 }
@@ -1095,7 +1080,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Check(GetManager().GetPane("OUTPUT").IsShown());
       break;
     case ID_VIEW_PROJECTS:
-      event.Check(GetManager().GetPane("PROJECTS").IsShown());
+      event.Check(m_Projects != NULL && GetManager().GetPane("PROJECTS").IsShown());
       break;
 
     default:

@@ -12,10 +12,14 @@
 #endif
 #include <regex>
 #include <wx/clipbrd.h>
+#include <wx/combobox.h>
 #include <wx/config.h>
+#include <wx/filename.h>
+#include <wx/filehistory.h>
+#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/regex.h>
 #include <wx/stdpaths.h>
-#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
+#include <wx/textctrl.h>
 #include <wx/tokenzr.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/util.h>
@@ -26,9 +30,58 @@
 #include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/lexer.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vcs.h>
+
+wxExToVectorString::wxExToVectorString(const wxArrayString& in)
+{
+  FromArrayString(in);
+}
+
+wxExToVectorString::wxExToVectorString(const wxFileDialog& in)
+{
+  wxArrayString paths;
+  in.GetPaths(paths);
+  FromArrayString(paths);
+}
+
+wxExToVectorString::wxExToVectorString(const wxFileHistory& in, int count)
+{
+  for (int i = count - 1; i >= 0; i--)
+  {
+    if (i < inGetCount())
+    {
+      m_VS.push_back(in.GetHistoryFile(i));
+    }
+  }  
+}
+
+wxExToVectorString::wxExToVectorString(const wxGenericDirCtrl& in)
+{
+  wxArrayString paths;
+  in.GetPaths(paths);
+  FromArrayString(paths);
+}
+
+wxExToVectorString::wxExToVectorString(const wxString& in)
+{
+  wxStringTokenizer tkz(in.GetString());
+      
+  while (tkz.HasMoreTokens())
+  {
+    m_VS.push_back(tkz.GetNextToken());
+  }
+}
+
+void wxExToVectorString::FromArrayString(const wxArrayString& in)
+{
+  for (auto it = in.begin(); it != in.end(); ++it)
+  {
+    m_VS.push_back(*it);
+  }
+}
 
 const wxString wxExAlignText(
   const wxString& lines,

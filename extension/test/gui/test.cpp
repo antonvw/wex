@@ -1450,6 +1450,29 @@ void wxExGuiTestFixture::testTextFile()
   CPPUNIT_ASSERT( textFile2.GetStatistics().Get(_("Actions Completed")) == 194);
 }
 
+void wxExGuiTestFixture::testToVector()
+{
+  wxArrayString a;
+  a.Add("x");
+  a.Add("b");
+  a.Add("c");
+  a.Add("d");
+  wxExToVectorString v1(a);
+  CPPUNIT_ASSERT( v1.Get().size() == 4);
+  
+  wxMenu menu;
+  menu.Append(1, "x");
+  menu.Append(2, "y");
+  wxFileHistory history;
+  history.UseMenu(&menu);
+  history.AddFileToHistory("test");
+  wxExToVectorString v2(history);
+  CPPUNIT_ASSERT( v2.Get().size() == 2);
+  
+  wxExToVectorString v3("test test test");
+  CPPUNIT_ASSERT( v3.Get().size() == 3);
+}
+
 void wxExGuiTestFixture::testUtil()
 {
   CPPUNIT_ASSERT( wxExAlignText("test", "header", true, true,
@@ -2276,6 +2299,10 @@ wxExAppTestSuite::wxExAppTestSuite()
     "testTextFile",
     &wxExGuiTestFixture::testTextFile));
 
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testToVector",
+    &wxExGuiTestFixture::testToVector));
+    
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testUtil",
     &wxExGuiTestFixture::testUtil));

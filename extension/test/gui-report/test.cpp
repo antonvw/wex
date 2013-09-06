@@ -188,15 +188,8 @@ void wxExGuiReportTestFixture::test()
   // This string should occur only once, that is here!
   frd->SetFindString("@@@@@@@@@@@@@@@@@@@");
   
-  std::vector< wxString > v;
-    
-  for (auto it = files.begin(); it != files.end(); ++it)
-  {
-    v.push_back(*it);
-  }
-  
   CPPUNIT_ASSERT(frame->FindInFiles(
-    v, 
+    wxExToVectorString(files).Get(), 
     ID_TOOL_REPORT_FIND, 
     false, 
     report));
@@ -209,7 +202,7 @@ void wxExGuiReportTestFixture::test()
   sw.Start();
 
   CPPUNIT_ASSERT(frame->FindInFiles(
-    v, 
+    wxExToVectorString(files).Get(), 
     ID_TOOL_REPORT_FIND, 
     false, 
     report));

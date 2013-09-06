@@ -9,18 +9,18 @@
 #define _EXFRAME_H
 
 #include <vector>
-#include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/frame.h>
 #include <wx/extension/statusbar.h>
-#include <wx/extension/filename.h>
-#include <wx/extension/vcsentry.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
 
+class wxExFileName;
 class wxExGrid;
 class wxExListView;
 class wxExSTC;
+class wxExVCSEntry;
+class wxFindDialogEvent;
 class wxListView;
 
 /// Offers a frame with easy statusbar methods, 

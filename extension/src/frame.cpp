@@ -9,10 +9,12 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/persist/toplevel.h>
 #include <wx/tokenzr.h> 
 #include <wx/extension/frame.h>
 #include <wx/extension/defs.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/lexers.h>
@@ -20,6 +22,7 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vcsentry.h>
 
 #if wxUSE_GUI
 
@@ -55,12 +58,7 @@ private:
     wxCoord x, 
     wxCoord y, 
     const wxArrayString& filenames) {
-      std::vector< wxString > v;
-      for (auto it = filenames.begin(); it != filenames.end(); ++it)
-      {
-        v.push_back(*it);
-      }
-      wxExOpenFiles(m_Frame, v);
+      wxExOpenFiles(m_Frame, wxExToVectorString(filenames).Get());
       return true;}
 
   wxExFrame* m_Frame;
@@ -222,15 +220,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
         wxSetWorkingDirectory(stc->GetFileName().GetPath());
       }
       
-      std::vector< wxString > files;
-      wxStringTokenizer tkz(command.GetString());
-      
-      while (tkz.HasMoreTokens())
-      {
-        files.push_back(tkz.GetNextToken());
-      }
-
-      wxExOpenFiles(this, files);
+      wxExOpenFiles(this, wxExToVectorString(command).Get());
     }
     else
     {

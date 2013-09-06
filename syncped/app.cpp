@@ -21,12 +21,7 @@ wxIMPLEMENT_APP(App);
 void App::MacOpenFiles(const wxArrayString& fileNames)
 {
   Frame* frame = wxDynamicCast(GetTopWindow(), Frame);
-  std::vector< wxString > files;
-  for (auto it = fileNames.begin(); it != fileNames.end(); ++it)
-  {
-    files.push_back(*it);
-  }
-  wxExOpenFiles(frame, files);
+  wxExOpenFiles(frame, wxExToVectorString(fileNames).Get());
 }
 #endif
 
