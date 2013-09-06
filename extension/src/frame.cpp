@@ -220,7 +220,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
         wxSetWorkingDirectory(stc->GetFileName().GetPath());
       }
       
-      wxExOpenFiles(this, wxExToVectorString(command).Get());
+      wxExOpenFiles(this, wxExToVectorString(command.GetString()).Get());
     }
     else
     {

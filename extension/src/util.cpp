@@ -51,7 +51,7 @@ wxExToVectorString::wxExToVectorString(const wxFileHistory& in, int count)
 {
   for (int i = count - 1; i >= 0; i--)
   {
-    if (i < inGetCount())
+    if (i < in.GetCount())
     {
       m_VS.push_back(in.GetHistoryFile(i));
     }
@@ -67,7 +67,7 @@ wxExToVectorString::wxExToVectorString(const wxGenericDirCtrl& in)
 
 wxExToVectorString::wxExToVectorString(const wxString& in)
 {
-  wxStringTokenizer tkz(in.GetString());
+  wxStringTokenizer tkz(in);
       
   while (tkz.HasMoreTokens())
   {
