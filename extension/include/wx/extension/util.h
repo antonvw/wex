@@ -10,18 +10,49 @@
 
 #include <list>
 #include <vector>
-#include <wx/combobox.h>
 #include <wx/dir.h> // for wxDIR_DEFAULT
 #include <wx/filedlg.h> // for wxFD_OPEN etc.
-#include <wx/filename.h>
-#include <wx/textctrl.h>
-#include <wx/extension/lexer.h>
+
+class wxArrayString;
+class wxFileHistory;
+class wxFileName;
+class wxGenericDirCtrl;
 
 class wxExFileName;
 class wxExFrame;
+class wxExLexer;
 class wxExSTC;
 class wxExVCSCommand;
 
+/// Converts several objects to a vector string.
+class WXDLLIMPEXP_BASE wxExToVectorString
+{
+public:  
+  /// Constructor, using aray string.
+  wxExToVectorString(const wxArrayString& in);
+  
+  /// Constructor, using file dialog.
+  /// Fills the vector with the full paths of the files chosen.
+  wxExToVectorString(const wxFileDialog& in);
+
+  /// Constructor, using file history and max.
+  wxExToVectorString(const wxFileHistory& in, int max);
+  
+  /// Constructor, using generic dirctrl.
+  /// Fills the vector with the currently-selected directory or filename. 
+  wxExToVectorString(const wxGenericDirCtrl& in);
+  
+  /// Constructor, using string, each word results in a vector element.
+  wxExToVectorString(const wxString& in);
+  
+  /// Gets the vector string.
+  const std::vector< wxString > & Get() const {return m_VS;};
+private:
+  void FromArrayString(const wxArrayString& in);
+  
+  std::vector< wxString > m_VS;
+};
+  
 /*! \file */
 
 /// Aligns text.
@@ -40,7 +71,7 @@ const wxString wxExAlignText(
   /// fills out over lexer comment lines  
   /// If the lexer has no comment end character, fill out
   /// with spaces is not done.
-  const wxExLexer& lexer = wxExLexer());
+  const wxExLexer& lexer);
 
 /// Adds data to the clipboard.
 bool wxExClipboardAdd(const wxString& text);

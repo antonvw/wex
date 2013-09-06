@@ -10,7 +10,6 @@
 
 #include <map>
 #include <vector>
-#include <wx/artprov.h>
 #include <wx/listctrl.h>
 
 class wxFindDialogEvent;

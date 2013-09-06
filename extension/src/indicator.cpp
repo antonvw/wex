@@ -2,7 +2,7 @@
 // Name:      indicator.cpp
 // Purpose:   Implementation of class wxExIndicator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -12,6 +12,7 @@
 #include <wx/log.h> 
 #include <wx/stc/stc.h>
 #include <wx/tokenzr.h>
+#include <wx/xml/xml.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexers.h>
 

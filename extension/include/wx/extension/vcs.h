@@ -9,8 +9,9 @@
 #define _EXVCS_H
 
 #include <vector>
-#include <wx/filename.h>
 #include <wx/extension/vcsentry.h>
+
+class wxFileName;
 
 /// This class collects all vcs handling.
 /// The VCS entries are loaded from vcs.xml, this is done

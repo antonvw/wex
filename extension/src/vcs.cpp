@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/filename.h>
 #include <wx/stdpaths.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/vcs.h>

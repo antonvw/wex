@@ -2,15 +2,14 @@
 // Name:      listitem.h
 // Purpose:   Declaration of class 'wxExListItem'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EX_REPORT_LISTITEM_H
-#define _EX_REPORT_LISTITEM_H
+#ifndef _EX_LISTITEM_H
+#define _EX_LISTITEM_H
 
 #include <wx/extension/filename.h>
 #include <wx/extension/listview.h>
-#include <wx/extension/statistics.h>
 
 /// Offers a list item associated with a file on an wxExListView.
 class WXDLLIMPEXP_BASE wxExListItem : public wxListItem

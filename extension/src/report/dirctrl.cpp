@@ -60,18 +60,11 @@ void wxExGenericDirCtrl::ExpandAndSelectPath(const wxString& path)
 
 void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
 {
-  wxArrayString paths;
-  GetPaths(paths);
-  std::vector< wxString > files;
-  for (auto it = paths.begin(); it != paths.end(); ++it)
-  {
-    files.push_back(*it);
-  }
-    
   if (event.GetId() > ID_EDIT_VCS_LOWEST && 
       event.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
+    wxExVCSExecute(m_Frame, 
+      event.GetId() - ID_EDIT_VCS_LOWEST - 1, wxExToVectorString(*this).Get());
   }
   else if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
   {
@@ -95,7 +88,8 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
   break;
   
   case ID_TREE_OPEN: 
-    wxExOpenFiles(m_Frame, files, 0, wxDIR_FILES); // only files in this dir
+    wxExOpenFiles(m_Frame, 
+      wxExToVectorString(*this).Get(), 0, wxDIR_FILES); // only files in this dir
   break;
   
   case ID_TREE_RUN_MAKE: 
@@ -108,21 +102,14 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
 
 void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
 {
-  wxArrayString paths;
-  GetPaths(paths);
+  const std::vector< wxString > files(wxExToVectorString(*this).Get());
 
-  if (paths.empty()) 
+  if (files.empty()) 
   {
     event.Skip();
     return;
   }
 
-  std::vector< wxString > files;
-  for (auto it = paths.begin(); it != paths.end(); ++it)
-  {
-    files.push_back(*it);
-  }
-    
   if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_MENU)
   {
     const wxExFileName filename(files[0]);
