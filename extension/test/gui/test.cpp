@@ -12,6 +12,7 @@
 #endif
 #include <wx/buffer.h>
 #include <wx/config.h>
+#include <wx/filehistory.h>
 #include "test.h"
 
 #define TEST_FILE "./test.h"
@@ -1465,8 +1466,9 @@ void wxExGuiTestFixture::testToVector()
   menu.Append(2, "y");
   wxFileHistory history;
   history.UseMenu(&menu);
-  history.AddFileToHistory("test");
-  wxExToVectorString v2(history);
+  history.AddFileToHistory("test1");
+  history.AddFileToHistory("test2");
+  wxExToVectorString v2(history, 5);
   CPPUNIT_ASSERT( v2.Get().size() == 2);
   
   wxExToVectorString v3("test test test");

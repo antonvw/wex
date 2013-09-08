@@ -342,7 +342,7 @@ bool wxExLexer::Set(
   
   stc->SetLexerLanguage(m_ScintillaLexer);
   
-  if (m_ScintillaLexer.empty())
+  if (m_ScintillaLexer.empty() && lexer.empty())
   {
     m_IsOk = (stc->GetLexer() == wxSTC_LEX_NULL);
   }
