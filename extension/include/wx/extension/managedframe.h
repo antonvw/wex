@@ -9,12 +9,12 @@
 #define _EXMANAGEDFRAME_H
 
 #include <wx/aui/framemanager.h> // for wxAuiManager
-#include <wx/panel.h>
 #include <wx/extension/frame.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
 
+class wxPane;
 class wxExEx;
 class wxExExTextCtrl;
 class wxExToolBar;

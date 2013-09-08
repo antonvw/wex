@@ -2,15 +2,15 @@
 // Name:      style.h
 // Purpose:   Declaration of wxExStyle class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTYLE_H
 #define _EXSTYLE_H
 
 #include <set>
-#include <wx/xml/xml.h>
 
+class wxXmlNode;
 class wxStyledTextCtrl;
 
 /// This class defines our scintilla styles. The no as in xml or in the string
@@ -22,7 +22,7 @@ class WXDLLIMPEXP_BASE wxExStyle
 {
 public:
   /// Default constructor.
-  wxExStyle();
+  wxExStyle() {;};
   
   /// Constructor using xml node (sets no from the no attribute).
   wxExStyle(const wxXmlNode* node, const wxString& macro);

@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/panel.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/defs.h>

@@ -9,7 +9,6 @@
 #define _EXSTC_H
 
 #include <vector> 
-#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/stc/stc.h>
 #include <wx/extension/link.h>
 #include <wx/extension/marker.h>
@@ -17,6 +16,7 @@
 #include <wx/extension/vi.h>
 
 #if wxUSE_GUI
+class wxFindDialogEvent;
 class wxExConfigDialog;
 class wxExFile;
 class wxExFileName;
