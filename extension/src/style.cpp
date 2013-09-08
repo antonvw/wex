@@ -13,15 +13,10 @@
 #include <wx/log.h> 
 #include <wx/stc/stc.h>
 #include <wx/tokenzr.h>
+#include <wx/xml/xml.h>
 #include <wx/extension/style.h>
 #include <wx/extension/lexers.h>
 
-wxExStyle::wxExStyle()
-  : m_No()
-  , m_Value()
-{
-}
-  
 wxExStyle::wxExStyle(const wxXmlNode* node, const wxString& macro)
 {
   Set(node, macro);
