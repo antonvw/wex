@@ -170,7 +170,8 @@ void wxExGuiReportTestFixture::testUtil()
 void wxExGuiReportTestFixture::test()
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
-  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  wxExFrameWithHistory* frame = (
+    wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   wxExListViewFileName* report = new wxExListViewFileName(
     frame, 
     wxExListViewFileName::LIST_FILE);
@@ -210,12 +211,14 @@ void wxExGuiReportTestFixture::test()
   const long find = sw.Time();
 
   Report(wxString::Format(
-    "wxExFrameWithHistory::FindInFiles %d items in: %ld ms", report->GetItemCount(), find).ToStdString());
+    "wxExFrameWithHistory::FindInFiles %d items in: %ld ms", 
+    report->GetItemCount(), find).ToStdString());
   
-  // Each file has one author (files.GetCount()), add the one in SetFindString above, 
-  // and the one that is already present on the 
+  // Each file has one author (files.GetCount()), add the one in SetFindString 
+  // above, and the one that is already present on the 
   // list because of the first FindInFiles.
-  CPPUNIT_ASSERT(report->GetItemCount() == (v.size() + 2));
+  CPPUNIT_ASSERT(report->GetItemCount() == (
+    wxExToVectorString(files).Get().size() + 2));
 }
 
 wxExTestSuite::wxExTestSuite()
