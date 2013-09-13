@@ -167,14 +167,14 @@ const wxString wxExLexers::BuildWildCards(
     it != m_Lexers.end();
     ++it)
   {
-    if (!it->second.GetExtensions().empty())
+    if (!it->GetExtensions().empty())
     {
       const wxString wildcard =
-        it->first +
-        " (" + it->second.GetExtensions() + ") |" +
-        it->second.GetExtensions();
+        it->GetDisplayLexer() +
+        " (" + it->GetExtensions() + ") |" +
+        it->GetExtensions();
 
-      if (wxExMatchesOneOf(filename, it->second.GetExtensions()))
+      if (wxExMatchesOneOf(filename, it->GetExtensions()))
       {
         wildcards = wildcard + "|" + wildcards;
       }
@@ -196,9 +196,9 @@ const wxExLexer wxExLexers::FindByFileName(
     it != m_Lexers.end();
     ++it)
   {
-    if (wxExMatchesOneOf(filename, it->second.GetExtensions()))
+    if (wxExMatchesOneOf(filename, it->GetExtensions()))
     {
-      return it->second;
+      return *it;
     }
   }
 
@@ -207,8 +207,18 @@ const wxExLexer wxExLexers::FindByFileName(
 
 const wxExLexer wxExLexers::FindByName(const wxString& name) const
 {
-  const auto it = m_Lexers.find(name);
-  return (it != m_Lexers.end() ? it->second: wxExLexer());
+  for (
+    auto it = m_Lexers.begin();
+    it != m_Lexers.end();
+    ++it)
+  {
+    if (it->GetDisplayLexer() == name)
+    {
+      return *it;
+    }
+  }
+  
+  return wxExLexer());
 }
 
 const wxExLexer wxExLexers::FindByText(const wxString& text) const
@@ -277,14 +287,14 @@ const wxString wxExLexers::GetLexerExtensions() const
     it != m_Lexers.end();
     ++it)
   {
-    if (!it->second.GetExtensions().empty())
+    if (!it->GetExtensions().empty())
     {
       if (!text.empty())
       {
         text += wxExGetFieldSeparator();
       }
 
-      text += it->second.GetExtensions();
+      text += it->GetExtensions();
     }
   }
 
@@ -353,7 +363,7 @@ bool wxExLexers::LoadDocument()
       
       if (lexer.IsOk())
       {
-        m_Lexers.insert(std::make_pair(lexer.GetDisplayLexer(), lexer));
+        m_Lexers.push_back(lexer));
       }
     }
 
@@ -596,7 +606,7 @@ bool wxExLexers::ShowDialog(
     it != m_Lexers.end();
     ++it)
   {
-    s.Add(it->first);
+    s.Add(it->GetDisplayLexer());
   } 
 
   s.Add(wxEmptyString);
@@ -619,7 +629,7 @@ bool wxExLexers::ShowDialog(
     return false;
   }
 
-  lexer = FindByName(dlg.GetStringSelection()).GetDisplayLexer();
+  lexer = dlg.GetStringSelection();
 
   return true;
 }

@@ -2,14 +2,13 @@
 // Name:      property.h
 // Purpose:   Declaration of wxExProperty class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXPROPERTY_H
 #define _EXPROPERTY_H
 
-#include <wx/xml/xml.h>
-
+class wxXmlNode;
 class wxStyledTextCtrl;
 
 /// This class defines our scintilla properties.

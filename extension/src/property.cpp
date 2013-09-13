@@ -2,7 +2,7 @@
 // Name:      property.cpp
 // Purpose:   Implementation of wxExProperty class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,6 +11,7 @@
 #endif
 #include <wx/log.h> 
 #include <wx/stc/stc.h>
+#include <wx/xml/xml.h>
 #include <wx/extension/property.h>
 
 wxExProperty::wxExProperty(const wxXmlNode* node)

@@ -1019,7 +1019,7 @@ void wxExListViewFileName::Initialize(const wxExLexer* lexer)
       return;
     }
 
-    SetName(GetName() + " " + lexer->GetScintillaLexer());
+    SetName(GetName() + " " + lexer->GetDisplayLexer());
   }
   
   if (m_Type != LIST_FOLDER)

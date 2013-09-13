@@ -2,15 +2,15 @@
 // Name:      marker.h
 // Purpose:   Declaration of class wxExMarker
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXMARKER_H
 #define _EXMARKER_H
 
 #include <wx/colour.h> 
-#include <wx/xml/xml.h>
 
+class wxXmlNode;
 class wxStyledTextCtrl;
 
 /// This class defines our scintilla markers.

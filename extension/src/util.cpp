@@ -656,7 +656,6 @@ void wxExOpenFilesDialog(
 {
   wxExSTC* stc = frame->GetSTC();
   wxArrayString paths;
-
   const wxString caption(_("Select Files"));
       
   if (stc != NULL)
@@ -690,14 +689,7 @@ void wxExOpenFilesDialog(
     dlg.GetPaths(paths);
   }
 
-  std::vector< wxString > v;
-
-  for (auto it = paths.begin(); it != paths.end(); ++it)
-  {
-    v.push_back(*it);
-  }
-
-  wxExOpenFiles(frame, v, file_flags, dir_flags);
+  wxExOpenFiles(frame, wxExToVectorString(paths).Get(), file_flags, dir_flags);
 }
 #endif // wxUSE_GUI
 
@@ -763,6 +755,8 @@ void wxExSetTextCtrlValue(
       it--;
     }
     break;
+  default:
+    wxFAIL;
   }
 
   ctrl->SetValue(it != l.end() ? *it: wxString(wxEmptyString));
@@ -800,31 +794,35 @@ void wxExVCSCommandOnSTC(
   }
   else if (command.IsHistory())
   {
-    stc->SetLexer("");
+    stc->ResetLexer();
   }
   else if (command.IsOpen())
   {
-    stc->SetLexer(lexer.GetScintillaLexer(), true); // fold
+    stc->SetLexer(lexer, true); // fold
   }
   else
   {
-    stc->SetLexer(wxEmptyString);
+    stc->ResetLexer();
   }
 }
 
-void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< wxString > & files)
+void wxExVCSExecute(
+  wxExFrame* frame, int id, const std::vector< wxString > & files)
 {
   const wxExVCS check(files, id);
   
   if (check.GetEntry().GetCommand().IsOpen() && !files.empty())
   {
-    const wxExVCS vcs(std::vector< wxString >(files.begin(), files.begin() + 1), id);
+    const wxExVCS vcs(
+      std::vector< wxString >(files.begin(), files.begin() + 1), id);
     
     if (vcs.ShowDialog(frame) == wxID_OK)
     {
       for (int i = 0; i < files.size(); i++)
       {
-        wxExVCS vcs(std::vector< wxString >(files.begin() + i, files.begin() + i + 1), id);
+        wxExVCS vcs(
+          std::vector< wxString >(files.begin() + i, files.begin() + i + 1), 
+          id);
         
         if (vcs.Execute())
         {

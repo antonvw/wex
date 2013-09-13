@@ -142,9 +142,8 @@ private:
   void ParseNodeTheme(const wxXmlNode* node);
   void ParseNodeThemes(const wxXmlNode* node);
 
-  std::map<wxString, wxExLexer> m_Lexers;
-  std::map<wxString, std::map<wxString, wxString> > m_Macros;
   std::map<wxString, wxString> m_DefaultColours;
+  std::map<wxString, std::map<wxString, wxString> > m_Macros;
   std::map<wxString, std::map<wxString, wxString> > m_ThemeColours;
   std::map<wxString, std::map<wxString, wxString> > m_ThemeMacros;
 
@@ -152,6 +151,7 @@ private:
   std::set<wxExMarker> m_Markers;
 
   std::vector<wxExProperty> m_GlobalProperties;
+  std::vector<wxExLexer> m_Lexers;
   std::vector<wxExStyle> m_Styles;
   std::vector<wxExStyle> m_StylesHex;
 
