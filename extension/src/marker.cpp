@@ -2,7 +2,7 @@
 // Name:      marker.cpp
 // Purpose:   Implementation of class wxExMarker
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,6 +11,7 @@
 #endif
 #include <wx/log.h> 
 #include <wx/stc/stc.h>
+#include <wx/xml/xml.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/lexers.h>
