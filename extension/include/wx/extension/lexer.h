@@ -99,7 +99,7 @@ public:
     bool fill_out = true) const;
     
   /// Resets lexer and if ok applies it to stc.
-  /// Returns true if a scintilla lexer has been reset.
+  /// Returns true if the scintilla lexer has been reset.
   /// The is ok member is set according to whether the
   /// lexer could be reset.
   bool Reset(wxStyledTextCtrl* stc);
@@ -107,18 +107,25 @@ public:
   /// Sets scintilla lexer for specified lexer and if ok applies it to stc. 
   /// Returns true if a scintilla lexer has been set.
   /// The is ok member is set according to whether the
-  /// lexer could be set.
+  /// lexer could be set. Shows error message when lexer could not be set.
   bool Set(
     /// lexer to use
     const wxString& lexer, 
     /// stc component on which to apply
     wxStyledTextCtrl* stc,
-    /// If show_error is true, a log error message is given
-    /// if a lexer was specified, but could not be set.
-    bool show_error = true,
     /// if clear is true, old styles are reset (including folding)
     bool clear = true);
-
+    
+  /// Sets lexer to specified lexer.
+  /// Returns true if a scintilla lexer has been set.
+  /// The is ok member is set according to whether the
+  /// lexer could be set.
+  bool Set(
+    /// lexer to use
+    const wxExLexer& lexer, 
+    /// stc component on which to apply
+    wxStyledTextCtrl* stc);
+      
   /// Sets keywords (public for testing only).
   bool SetKeywords(const wxString& text);
   
@@ -136,6 +143,7 @@ private:
     bool fill_out) const;
   const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
   void Initialize();
+  void ApplyWhenSet(const wxString& lexer, wxStyledTextCtrl* stc, bool clear);
   void Set(const wxXmlNode* node);
 
   wxString m_CommentBegin;
