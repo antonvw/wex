@@ -368,7 +368,7 @@ private:
     bool on, 
     bool modified = false, 
     const wxCharBuffer& text = wxCharBuffer());
-  void SetLexer(bool fold);
+  void SetLexerCommon(bool fold);
   void ShowProperties();
   void SortSelectionDialog(
     bool sort_ascending,

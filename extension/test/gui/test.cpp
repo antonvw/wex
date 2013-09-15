@@ -642,6 +642,16 @@ void wxExGuiTestFixture::testLexer()
   CPPUNIT_ASSERT(!lexer.CommentComplete("(*test").empty());
   CPPUNIT_ASSERT( lexer.CommentComplete("(*test").EndsWith("     *)"));
   
+  wxExLexer lexer2(wxExLexers::Get()->FindByText("// this is a cpp comment text"));
+  CPPUNIT_ASSERT( lexer2.IsOk());
+  CPPUNIT_ASSERT( lexer2.GetDisplayLexer() == "cpp");
+  CPPUNIT_ASSERT( lexer2.GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT( lexer2.Set(lexer, stc));
+  CPPUNIT_ASSERT( lexer2.GetDisplayLexer() == "pascal");
+  CPPUNIT_ASSERT( lexer2.GetScintillaLexer() == "pascal");
+  CPPUNIT_ASSERT(!lexer2.CommentComplete("(*test").empty());
+  CPPUNIT_ASSERT( lexer2.CommentComplete("(*test").EndsWith("     *)"));
+  
   lexer.Reset(stc);
   CPPUNIT_ASSERT( lexer.GetDisplayLexer().empty());
   CPPUNIT_ASSERT( lexer.GetScintillaLexer().empty());
@@ -1281,6 +1291,7 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT( lexer.Reset(stc));
   CPPUNIT_ASSERT( lexer.Set("cpp", stc, false));
   CPPUNIT_ASSERT(!lexer.Set("xyz", stc, false));
+  CPPUNIT_ASSERT( stc->SetLexer(lexer));
   
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(stc->Open(wxExFileName(TEST_BIN)));
