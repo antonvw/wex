@@ -2334,7 +2334,7 @@ bool wxExSTC::SetIndicator(
   return true;
 }
 
-void wxExSTC::SetLexer(bool fold)
+void wxExSTC::SetLexerCommon(bool fold)
 {
   if (fold)
   {
@@ -2357,7 +2357,7 @@ bool wxExSTC::SetLexer(const wxExLexer& lexer, bool fold)
     return false;
   }
 
-  SetLexer(fold);
+  SetLexerCommon(fold);
   
   return true;
 }
@@ -2369,7 +2369,7 @@ bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
     return false;
   }
   
-  SetLexer(fold);
+  SetLexerCommon(fold);
   
   return true;
 }
