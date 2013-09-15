@@ -669,7 +669,7 @@ void wxExSTC::ConfigGet(bool init)
     // Doing this once is enough, not yet possible.
     wxExLexers::Get()->LoadDocument();
     
-    SetLexer(m_Lexer.GetDisplayLexer());
+    SetLexer(m_Lexer);
   }
 
   const long def_tab_width = 2;
@@ -2334,31 +2334,43 @@ bool wxExSTC::SetIndicator(
   return true;
 }
 
-bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
+void wxExSTC::SetLexer(bool fold)
 {
-  if (!m_Lexer.Set(lexer, this, false, true))
-  {
-    return false;
-  }
-  
   if (fold)
   {
     Fold();
   }
   
-  if (lexer == "diff")
-  {
-    SetEdgeMode(wxSTC_EDGE_NONE);
-  }
-  
-  if (!HexMode() &&
-       m_Lexer.GetScintillaLexer() == "po")
+  if (HexMode() &&
+      m_Lexer.GetScintillaLexer() == "po")
   {
     m_Link.AddBasePath();
   }
-
-  wxExFrame::StatusText(m_Lexer.GetDisplayLexer(), "PaneLexer");
     
+  wxExFrame::StatusText(m_Lexer.GetDisplayLexer(), "PaneLexer");
+}
+
+bool wxExSTC::SetLexer(const wxExLexer& lexer, bool fold)
+{
+  if (!m_Lexer.Set(lexer, this))
+  {
+    return false;
+  }
+
+  SetLexer(fold);
+  
+  return true;
+}
+
+bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
+{
+  if (!m_Lexer.Set(lexer, this))
+  {
+    return false;
+  }
+  
+  SetLexer(fold);
+  
   return true;
 }
 

@@ -218,7 +218,7 @@ const wxExLexer wxExLexers::FindByName(const wxString& name) const
     }
   }
   
-  return wxExLexer());
+  return wxExLexer();
 }
 
 const wxExLexer wxExLexers::FindByText(const wxString& text) const
@@ -363,7 +363,7 @@ bool wxExLexers::LoadDocument()
       
       if (lexer.IsOk())
       {
-        m_Lexers.push_back(lexer));
+        m_Lexers.push_back(lexer);
       }
     }
 

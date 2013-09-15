@@ -56,7 +56,7 @@ bool wxExSTCFile::DoFileLoad(bool synced)
 
   if (!synced)
   {
-    m_STC->SetLexer(GetFileName().GetLexer().GetDisplayLexer(), true);
+    m_STC->SetLexer(GetFileName().GetLexer(), true);
 
     // No edges for log files.
     if (isLog)
@@ -78,7 +78,7 @@ void wxExSTCFile::DoFileNew()
   m_STC->SetName(GetFileName().GetFullPath());
   m_STC->PropertiesMessage();
   m_STC->ClearDocument();
-  m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
+  m_STC->SetLexer(GetFileName().GetLexer());
 }
 
 void wxExSTCFile::DoFileSave(bool save_as)
@@ -105,7 +105,7 @@ void wxExSTCFile::DoFileSave(bool save_as)
   if (save_as)
   {
     m_STC->SetReadOnly(!GetFileName().IsFileWritable());
-    m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
+    m_STC->SetLexer(GetFileName().GetLexer());
     m_STC->SetName(GetFileName().GetFullPath());
   }
   

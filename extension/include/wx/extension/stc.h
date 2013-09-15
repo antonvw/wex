@@ -21,6 +21,7 @@ class wxExConfigDialog;
 class wxExFile;
 class wxExFileName;
 class wxExIndicator;
+class wxExLexer;
 class wxExMenu;
 
 /// Offers a styled text ctrl with find/replace, printing, popup menu, 
@@ -28,8 +29,8 @@ class wxExMenu;
 /// Default uses vi mode.
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
-  friend class wxExSTCFile; //  might update m_HexBuffer
   friend class wxExHexModeLine; // might update m_HexBuffer
+  friend class wxExSTCFile; //  might update m_HexBuffer
 public:
   /// Menu and tooltip flags (0 is used for no menu).
   enum wxExMenuFlags
@@ -302,6 +303,9 @@ public:
   bool SetIndicator(const wxExIndicator& indicator, int start, int end);
 
   /// Sets the (scintilla) lexer for this document.
+  bool SetLexer(const wxExLexer& lexer, bool fold = false);
+  
+  /// Sets the (scintilla) lexer for this document.
   bool SetLexer(const wxString& lexer, bool fold = false);
   
   /// Sets lexer prop name and value, and applies it.
@@ -364,6 +368,7 @@ private:
     bool on, 
     bool modified = false, 
     const wxCharBuffer& text = wxCharBuffer());
+  void SetLexer(bool fold);
   void ShowProperties();
   void SortSelectionDialog(
     bool sort_ascending,
