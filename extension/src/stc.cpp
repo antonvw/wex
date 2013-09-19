@@ -824,6 +824,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   }
 
   int new_value;
+  
   if ((new_value = (int)wxGetNumberFromUser(_("Input") + " 0 - 255:",
     wxEmptyString,
     caption,
@@ -853,6 +854,8 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
     
     ProcessChar(new_value);
   }
+  
+  value = new_value;
 }
 
 void wxExSTC::Copy()
