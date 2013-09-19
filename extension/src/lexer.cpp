@@ -360,7 +360,7 @@ bool wxExLexer::Set(
 {
   (*this) = wxExLexers::Get()->FindByName(lexer);
   
-  if (m_ScintillaLexer.empty())
+  if (!m_IsOk)
   {
     (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
   }
