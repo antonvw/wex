@@ -1995,14 +1995,6 @@ Copyright: (c) 2013, Anton van Wezenbeek
     </keywords>
     <comments begin1="#" />
   </lexer>
-  <lexer name="bash" display="rfw" extensions="TCS*.txt"> 
-    <keywords> 
-    Library Resource Variables Documentation Metadata Suite Setup Suite Teardown 
-    Precondition Postcondition Force Tags
-    Default Test Template Timeout
-    </keywords>
-    <comments begin1="#" />
-  </lexer>
   <lexer name="batch" extensions="*.bat"/>
   <lexer name="blitzbasic" macro="vb"/>
   <lexer name="bullant"/>
@@ -2020,6 +2012,26 @@ Copyright: (c) 2013, Anton van Wezenbeek
   </lexer>
   <lexer name="coffeescript"/>
   <lexer name="conf"/>
+  <lexer display="c#" name="cpp" extensions="*.cs">
+    <keywords>
+abstract      as         base          bool         break
+Byte          case       catch         char         checked
+class         const      continue      decimal      default
+delegate      do         double        else         enum
+event         explicit   extern        false        finally
+fixed         float      for           foreach      goto
+if            implicit   in            int          interface
+internal      is         lock          long         namespace
+new           null       object        operator     out
+override      params     private       protected    public
+readonly      ref        return        sbyte        sealed
+short         sizeof     stackalloc    static       string
+struct        switch     this          throw        true
+try           typeof     uint          ulong        unchecked
+unsafe        ushort     using         virtual      volatile
+void          while    
+    </keywords>
+  </lexer>
   <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
     <properties>
       <property name="lexer.cpp.track.preprocessor"> 0 </property>
@@ -2072,36 +2084,6 @@ Copyright: (c) 2013, Anton van Wezenbeek
     </keywords>
     <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
-  <lexer name="cpp" display="c#" extensions="*.cs">
-    <keywords>
-abstract      as         base          bool         break
-Byte          case       catch         char         checked
-class         const      continue      decimal      default
-delegate      do         double        else         enum
-event         explicit   extern        false        finally
-fixed         float      for           foreach      goto
-if            implicit   in            int          interface
-internal      is         lock          long         namespace
-new           null       object        operator     out
-override      params     private       protected    public
-readonly      ref        return        sbyte        sealed
-short         sizeof     stackalloc    static       string
-struct        switch     this          throw        true
-try           typeof     uint          ulong        unchecked
-unsafe        ushort     using         virtual      volatile
-void          while    
-    </keywords>
-  </lexer>
-  <lexer name="cpp" display="java" extensions="*.java">
-    <keywords>
-abstract assert boolean break byte case catch char class
-const continue default do double else enum extends final finally float for
-goto if implements import instanceof int interface long
-native new package private protected public
-return short static strictfp super switch synchronized this throw throws
-transient try var void volatile while
-    </keywords>
-  </lexer>
   <lexer name="cppnocase" macro="cpp"/>
   <lexer name="csound"/>
   <lexer name="css"/>
@@ -2153,21 +2135,17 @@ transient try var void volatile while
       <property name="asp.default.language"> 1 </property>
     </properties>
   </lexer>
-  <lexer name="hypertext" display= "xml">
-    <styles>
-      <style no="tag"> tag </style>
-      <style no="tagend"> tag </style>
-      <style no="tagunknown"> error </style>
-      <style no="attributeunknown"> error </style>
-      <style no="xmlstart,xmlend"> fore:red </style>
-    </styles>
-    <properties>
-      <property name="fold.html"> 1 </property>
-    </properties>
-    <!-- xml comments cannot be added, but don't need to, 
-         they are added in the source -->
-  </lexer>
   <lexer name="inno"/>
+  <lexer display="java" name="cpp" extensions="*.java">
+    <keywords>
+abstract assert boolean break byte case catch char class
+const continue default do double else enum extends final finally float for
+goto if implements import instanceof int interface long
+native new package private protected public
+return short static strictfp super switch synchronized this throw throws
+transient try var void volatile while
+    </keywords>
+  </lexer>
   <lexer name="kix"/>
   <lexer name="latex"/>
   <lexer name="lisp"/>
@@ -2306,6 +2284,14 @@ transient try var void volatile while
   </lexer>
   <lexer name="r"/>
   <lexer name="rebol"/>
+  <lexer display="rfw" name="bash" extensions="TCS*.txt"> 
+    <keywords> 
+    Library Resource Variables Documentation Metadata Suite Setup Suite Teardown 
+    Precondition Postcondition Force Tags
+    Default Test Template Timeout
+    </keywords>
+    <comments begin1="#" />
+  </lexer>
   <lexer name="ruby"/>
   <lexer name="scriptol"/>
   <lexer name="smalltalk"/>
@@ -2384,6 +2370,20 @@ transient try var void volatile while
   <lexer name="verilog"/>
   <lexer name="vhdl"/>
   <lexer name="visualprolog"/>
+  <lexer display= "xml" name="hypertext">
+    <styles>
+      <style no="tag"> tag </style>
+      <style no="tagend"> tag </style>
+      <style no="tagunknown"> error </style>
+      <style no="attributeunknown"> error </style>
+      <style no="xmlstart,xmlend"> fore:red </style>
+    </styles>
+    <properties>
+      <property name="fold.html"> 1 </property>
+    </properties>
+    <!-- xml comments cannot be added, but don't need to, 
+         they are added in the source -->
+  </lexer>
   <lexer name="yaml" extensions="*.yml"/>
  
 </lexers>
