@@ -301,6 +301,8 @@ void wxExListView::EditClearAll()
 {
   DeleteAllItems();
 
+  SortColumnReset();
+
 #if wxUSE_STATUSBAR
   wxExFrame::UpdateStatusBar(this);
 #endif

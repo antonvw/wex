@@ -195,8 +195,6 @@ void wxExListViewWithFrame::ItemActivated(long item_number)
       item.GetFileName().GetFullPath(),
       line_number, 
       match);
-
-    SetFocus();
   }
   else
   { 

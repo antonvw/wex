@@ -1237,6 +1237,7 @@ void wxExSTC::GotoLineAndSelect(
 
   GotoLine(line_number - 1);
   EnsureVisible(line_number - 1);
+  EnsureCaretVisible();
 
   m_Goto = line_number;
 
