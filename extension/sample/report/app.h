@@ -2,10 +2,9 @@
 // Name:      app.h
 // Purpose:   Declaration of sample classes for wxExtension report
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/treectrl.h>
 #include <wx/extension/app.h>
 #include <wx/extension/notebook.h>
 #include <wx/extension/report/frame.h>
@@ -33,6 +32,7 @@ protected:
   virtual wxExListViewFileName* Activate(
     wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL);
+  virtual bool AllowClose(wxWindowID id, wxWindow* page);
   virtual wxExListView* GetListView();
   virtual wxExSTC* GetSTC();
   virtual bool OpenFile(

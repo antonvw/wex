@@ -10,8 +10,8 @@
 #include <wx/wx.h>
 #endif
 #include <wx/aboutdlg.h>
-#include <wx/extension/listitem.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/listitem.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/process.h>
 #include <wx/extension/toolbar.h>
@@ -193,6 +193,20 @@ wxExListViewFileName* wxExRepSampleFrame::Activate(
   }
 
   return NULL;
+}
+
+bool wxExRepSampleFrame::AllowClose(wxWindowID id, wxWindow* page)
+{
+  if (page == GetFileHistoryList())
+  {
+    // prevent possible crash, if SetRecentFile tries
+    // to add listitem to deleted history list.
+    return false;
+  }  
+  else
+  {
+    return wxExFrameWithHistory::AllowClose(id, page);
+  }
 }
 
 wxExListView* wxExRepSampleFrame::GetListView()

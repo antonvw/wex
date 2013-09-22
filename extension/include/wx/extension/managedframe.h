@@ -37,7 +37,11 @@ public:
  ~wxExManagedFrame();
 
   /// Returns true if the page can be closed.
-  virtual bool AllowClose(wxWindowID id, wxWindow* page);
+  virtual bool AllowClose(
+    /// notebook id
+    wxWindowID id, 
+    /// page
+    wxWindow* page);
   
   /// Executes a ex command that can result
   /// in changing stc, if command is being played back.
