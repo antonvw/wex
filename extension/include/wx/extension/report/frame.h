@@ -134,6 +134,11 @@ public:
   /// and sets the project history to use it.
   void UseProjectHistory(wxWindowID id, wxMenu* menu);
 protected:
+  /// Access tp file history list, 
+  /// if you use this as a page in a notebook,
+  // you might want prevent closing it.
+  wxExListView* GetFileHistoryList() {return m_FileHistoryList;};
+  
   // Cleans up all as well.
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
