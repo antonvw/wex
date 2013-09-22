@@ -185,26 +185,23 @@ bool wxExSTC::AutoIndentation(int c)
   case wxSTC_EOL_LF:   nl = (c== '\n'); break;
   }
   
-  if (nl)
+  const int currentLine = GetCurrentLine();
+  
+  if (!nl || currentLine == 0)
   {
-    const int currentLine = GetCurrentLine();
+    return false;
+  }
+
+  // the current line has yet no indents, so use previous line
+  int indent = GetLineIndentation(currentLine - 1);
+  const int level = 
+    (GetFoldLevel(currentLine) & wxSTC_FOLDLEVELNUMBERMASK) 
+    - wxSTC_FOLDLEVELBASE;
+  bool dec = false;
     
-    int indent = 0;
-    
-    if (currentLine > 0) 
-    {
-      indent = GetLineIndentation(currentLine - 1);
-    }
-    
-    const int level = 
-      (GetFoldLevel(currentLine + 1) & wxSTC_FOLDLEVELNUMBERMASK) 
-      - wxSTC_FOLDLEVELBASE;
-      
-    bool dec = false;
-      
-    if (level != m_FoldLevel)
-    {
-      if (level > m_FoldLevel)
+  if (level != m_FoldLevel)
+  {
+    if (level > m_FoldLevel)
       {
         indent += GetIndent();
       }
@@ -215,30 +212,27 @@ bool wxExSTC::AutoIndentation(int c)
       }
       
       m_FoldLevel = level;
-    }
-      
-    if (indent == 0 && !dec) 
-    {
-      return false;
-    }
+  }
     
-    BeginUndoAction();
-
-    SetLineIndentation(currentLine, indent);
-    
-    if (dec)
-    {
-      SetLineIndentation(currentLine - 1, indent);
-    }
-    
-    EndUndoAction();
-
-    GotoPos(GetLineIndentPosition(currentLine));
-  
-    return true;
+  if (indent == 0 && !dec) 
+  {
+    return false;
   }
   
-  return false;
+  BeginUndoAction();
+
+  SetLineIndentation(currentLine, indent);
+    
+  if (dec && m_AddingChars)
+  {
+    SetLineIndentation(currentLine - 1, indent);
+  }
+  
+  EndUndoAction();
+
+  GotoPos(GetLineIndentPosition(currentLine));
+
+  return true;
 }
 
 void wxExSTC::BuildPopupMenu(wxExMenu& menu)
@@ -1417,7 +1411,8 @@ void wxExSTC::Initialize(bool file_exists)
   {
     SetHexMode(true);
   }
-  
+
+  m_AddingChars = false;
   m_AllowChangeIndicator = !(m_Flags & STC_WIN_NO_INDICATOR);
   
   m_HexBuffer.clear(); // always, not only in hex mode
@@ -1658,6 +1653,8 @@ void wxExSTC::OnChar(wxKeyEvent& event)
 
     event.Skip();
   }
+  
+  m_AddingChars = true;
 }
 
 void wxExSTC::OnCommand(wxCommandEvent& command)
@@ -1816,7 +1813,11 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
 void wxExSTC::OnKeyUp(wxKeyEvent& event)
 {
   event.Skip();
+    
   CheckBrace();
+    m_FoldLevel = 
+      (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
+      - wxSTC_FOLDLEVELBASE;
 }
 
 void wxExSTC::OnMouse(wxMouseEvent& event)
@@ -1826,7 +1827,8 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
     PropertiesMessage();
     event.Skip();
     CheckBrace();
-    
+      
+    m_AddingChars = false;
     m_FoldLevel = 
       (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
       - wxSTC_FOLDLEVELBASE;
@@ -1880,6 +1882,8 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_CHARADDED)
   {
+    event.Skip();
+    
     AutoIndentation(event.GetKey());
   }
   else if (event.GetEventType() == wxEVT_STC_START_DRAG)

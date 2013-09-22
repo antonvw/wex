@@ -388,6 +388,7 @@ private:
   long m_Flags; // win flags
   long m_Goto;
   
+  bool m_AddingChars;
   bool m_AllowChangeIndicator;
   bool m_HexMode;
 
