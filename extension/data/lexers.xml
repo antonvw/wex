@@ -1961,20 +1961,20 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <style no="commentblock"> underline </style>
     </styles>
     <keywords>    
-    ADC ADCB ADD ASH ASHC ASL ASLB ASR ASRB BCC BCS BEQ BGE BGT BHI BHIS BIC 
-    BICB BIS BISB BIT BITB BLE BLO BLOS BLT
-    BMI BNE BPL BPT BR BVC BVS CLR CLRB C CCC CLC CLN CLV CLZ CMP CMPB COM COMB 
-    CSM DEC DECB DF DIV EMT HALT INC
-    INCB IOT JMP JSR MARK MFPD MFPS MFPT MOV MOVB MTPD MTPI MTPS MUL NEG NEGB 
-    NOP RESET ROL ROLB ROR RORB RTI RTS 
-    RTT SBC SBCB S SCC SEC SEN SEV SEZ SOB SPL SUB SWAB SXT TRAP TST TSTB 
-    TSTSET WAIT WRTLCK XOR
-    .ASCII .ASCIZ .ASECT .BLKB .BYTE .CROSS .CSECT .DSABL .ENABL .END .ENDC 
-    .EVEN .FLT2 .FLT4 .GLOBL .IDENT .IF 
-    .IFF .IFT .IFTF .IIF .INCLUDE .LIBRARY .LIMIT .LIST .NLIST .NOCROSS .ODD 
-    .PACKED .PAGE .PSECT .RAD50 .RADIX .REM 
-    .RESTORE .SBTTL .TITLE .WEAK .WORD
-    MN SO DO PC MS CC SP R1 R2 R3 R4 R5
+      adc adcb add ash ashc asl aslb asr asrb bcc bcs beq bge bgt bhi bhis bic 
+      bicb bis bisb bit bitb ble blo blos blt
+      bmi bne bpl bpt br bvc bvs clr clrb c ccc clc cln clv clz cmp cmpb com comb 
+      csm dec decb df div emt halt inc
+      incb iot jmp jsr mark mfpd mfps mfpt mov movb mtpd mtpi mtps mul neg negb 
+      nop reset rol rolb ror rorb rti rts 
+      rtt sbc sbcb s scc sec sen sev sez sob spl sub swab sxt trap tst tstb 
+      tstset wait wrtlck xor
+      .ascii .asciz .asect .blkb .byte .cross .csect .dsabl .enabl .end .endc 
+      .even .flt2 .flt4 .globl .ident .if 
+      .iff .ift .iftf .iif .include .library .limit .list .nlist .nocross .odd 
+      .packed .page .psect .rad50 .radix .rem 
+      .restore .sbttl .title .weak .word
+      mn so do pc ms cc sp r1 r2 r3 r4 r5
     </keywords>
     <comments begin1=";" />
   </lexer>
@@ -1987,11 +1987,10 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="baan"/>
   <lexer name="bash" extensions="*.bash;.bash*;*.sh;Doxyfile"> 
     <keywords>    
-    alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
-    for function
-    help history if in jobs kill logout mount pwd rm select set sleep source 
-    tail test then
-    time ulimit umount umask unalias unset until while
+      alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
+      for function
+      help history if in jobs kill logout mount pwd rm select set sleep source 
+      tail test then time ulimit umount umask unalias unset until while
     </keywords>
     <comments begin1="#" />
   </lexer>
@@ -2004,32 +2003,32 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="cmake" extensions="CMakeLists.txt;*.cmake"/>
   <lexer name="COBOL" macro="cpp">
     <keywords>
-    configuration data declaratives division environment environment-division file 
-    file-control function i-o i-o-control identification input input-output linkage 
-    local-storage output procedure program program-id receive-control section 
-    special-names working-storage
+      configuration data declaratives division environment environment-division file 
+      file-control function i-o i-o-control identification input input-output linkage 
+      local-storage output procedure program program-id receive-control section 
+      special-names working-storage
     </keywords>
   </lexer>
   <lexer name="coffeescript"/>
   <lexer name="conf"/>
   <lexer display="c#" name="cpp" extensions="*.cs">
     <keywords>
-abstract      as         base          bool         break
-Byte          case       catch         char         checked
-class         const      continue      decimal      default
-delegate      do         double        else         enum
-event         explicit   extern        false        finally
-fixed         float      for           foreach      goto
-if            implicit   in            int          interface
-internal      is         lock          long         namespace
-new           null       object        operator     out
-override      params     private       protected    public
-readonly      ref        return        sbyte        sealed
-short         sizeof     stackalloc    static       string
-struct        switch     this          throw        true
-try           typeof     uint          ulong        unchecked
-unsafe        ushort     using         virtual      volatile
-void          while    
+      abstract  as        base       bool      break
+      Byte      case      catch      char      checked
+      class     const     continue   decimal   default
+      delegate  do        double     else      enum
+      event     explicit  extern     false     finally
+      fixed     float     for        foreach   goto
+      if        implicit  in         int       interface
+      internal  is        lock       long      namespace
+      new       null      object     operator  out
+      override  params    private    protected public
+      readonly  ref       return     sbyte     sealed
+      short     sizeof    stackalloc static    string
+      struct    switch    this       throw     true
+      try       typeof    uint       ulong     unchecked
+      unsafe    ushort    using      virtual   volatile
+      void      while    
     </keywords>
   </lexer>
   <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
@@ -2039,48 +2038,48 @@ void          while
       <property name="fold.preprocessor"> 0 </property>
     </properties>
     <keywords>
-    argc:0 argv:0 auto:0 bool:0 break:0 case:0 catch:0 char:0 class:0 const:0
-    const_cast:0 continue:0 default:0 delete:0 do:0 double:0 dynamic_cast:0
-    else:0 enum:0 envp:0 explicit:0 extern:0 false:0 float:0 for:0 friend:0
-    fstream:0 goto:0 if:0 inline:0 int:0 istream:0 istrstream:0 istringstream:0
-    long:0 main:0 mutable:0 namespace:0 new:0 operator:0 ostream:0 ostrstream:0
-    ostringstream:0 private:0 protected:0 public:0 register:0 reinterpret_cast:0
-    return:0 short:0 signed:0 sizeof:0 static:0 static_cast:0 struct:0 switch:0
-    template:0 this:0 throw:0 true:0 try:0 typedef:0 typeid:0 typename:0
-    union:0 unsigned:0 using:0 virtual:0 void:0 volatile:0 wchar_t:0 while:0 
-    wmain:0
-    adjacent_find:1 array:1 at:1 back:1 back_insert_iterator:1 begin:1 
-    binary_search:1
-    bind1st:1 bind2nd:1 bitset:1 capacity:1 clear:1 const_iterator:1 copy:1 
-    copy_backward:1
-    count:1 count_if:1 deque:1 divides:1 empty:1 end:1 equal:1 equal_range:1 
-    equal_to:1
-    erase:1 fill:1 fill_n:1 find:1 find_end:1 find_first_of:1 find_if:1 
-    for_each:1
-    front:1 front_insert_iterator:1 generate:1 generate_n:1 get_allocator:1 
-    greater:1
-    greater_equal:1 includes:1 inplace_merge:1 insert:1 istream_iterator:1 
-    istreambuf_iterator:1 iter_swap:1 iterator:1 less:1 less_equal:1 
-    lexicographical_compare:1
-    list:1 logical_and:1 logical_not:1 logical_or:1 lower_bound:1 make_heap:1 
-    make_pair:1
-    map:1 max:1 max_element:1 max_size:1  mem_fun:1 mem_fun_ref:1 merge:1
-    min:1 min_element:1 minus:1 mismatch:1 modulus:1 multimap:1 multiplies:1 
-    multiset:1
-    negate:1 next_permutation:1 not1:1 not2:1 not_equal_to:1 nth_element:1
-    ostream_iterator:1 ostreambuf_iterator:1
-    partial_sort:1 partial_sort_copy:1 partition:1
-    plus:1 pop_back:1 pop_front:1 pop_heap:1 prev_permutation:1 priority_queue:1
-    ptr_fun:1 push_back:1 push_front:1 push_heap:1 queue:1
-    random_shuffle:1 rbegin:1 remove:1 remove_copy:1 remove_copy_if:1 
-    remove_if:1
-    rend:1 replace:1 replace_copy:1 replace_copy_if:1 replace_if:1 reserve:1
-    reserve_copy:1 resize:1 reverse:1 reverse_iterator:1 rotate:1 rotate_copy:1
-    search:1 search_n:1 set:1
-    set_difference:1 set_intersection:1 set_symmetric_difference:1 set_union:1
-    size:1 sort:1 sort_heap:1 stable_partition:1 stable_sort:1 stack:1 string:1
-    swap:1 swap_ranges:1 transform:1 unique:1 unique_copy:1 upper_bound:1 
-    valarray:1 vector:1
+      argc:0 argv:0 auto:0 bool:0 break:0 case:0 catch:0 char:0 class:0 const:0
+      const_cast:0 continue:0 default:0 delete:0 do:0 double:0 dynamic_cast:0
+      else:0 enum:0 envp:0 explicit:0 extern:0 false:0 float:0 for:0 friend:0
+      fstream:0 goto:0 if:0 inline:0 int:0 istream:0 istrstream:0 istringstream:0
+      long:0 main:0 mutable:0 namespace:0 new:0 operator:0 ostream:0 ostrstream:0
+      ostringstream:0 private:0 protected:0 public:0 register:0 reinterpret_cast:0
+      return:0 short:0 signed:0 sizeof:0 static:0 static_cast:0 struct:0 switch:0
+      template:0 this:0 throw:0 true:0 try:0 typedef:0 typeid:0 typename:0
+      union:0 unsigned:0 using:0 virtual:0 void:0 volatile:0 wchar_t:0 while:0 
+      wmain:0
+      adjacent_find:1 array:1 at:1 back:1 back_insert_iterator:1 begin:1 
+      binary_search:1
+      bind1st:1 bind2nd:1 bitset:1 capacity:1 clear:1 const_iterator:1 copy:1 
+      copy_backward:1
+      count:1 count_if:1 deque:1 divides:1 empty:1 end:1 equal:1 equal_range:1 
+      equal_to:1
+      erase:1 fill:1 fill_n:1 find:1 find_end:1 find_first_of:1 find_if:1 
+      for_each:1
+      front:1 front_insert_iterator:1 generate:1 generate_n:1 get_allocator:1 
+      greater:1
+      greater_equal:1 includes:1 inplace_merge:1 insert:1 istream_iterator:1 
+      istreambuf_iterator:1 iter_swap:1 iterator:1 less:1 less_equal:1 
+      lexicographical_compare:1
+      list:1 logical_and:1 logical_not:1 logical_or:1 lower_bound:1 make_heap:1 
+      make_pair:1
+      map:1 max:1 max_element:1 max_size:1  mem_fun:1 mem_fun_ref:1 merge:1
+      min:1 min_element:1 minus:1 mismatch:1 modulus:1 multimap:1 multiplies:1 
+      multiset:1
+      negate:1 next_permutation:1 not1:1 not2:1 not_equal_to:1 nth_element:1
+      ostream_iterator:1 ostreambuf_iterator:1
+      partial_sort:1 partial_sort_copy:1 partition:1
+      plus:1 pop_back:1 pop_front:1 pop_heap:1 prev_permutation:1 priority_queue:1
+      ptr_fun:1 push_back:1 push_front:1 push_heap:1 queue:1
+      random_shuffle:1 rbegin:1 remove:1 remove_copy:1 remove_copy_if:1 
+      remove_if:1
+      rend:1 replace:1 replace_copy:1 replace_copy_if:1 replace_if:1 reserve:1
+      reserve_copy:1 resize:1 reverse:1 reverse_iterator:1 rotate:1 rotate_copy:1
+      search:1 search_n:1 set:1
+      set_difference:1 set_intersection:1 set_symmetric_difference:1 set_union:1
+      size:1 sort:1 sort_heap:1 stable_partition:1 stable_sort:1 stack:1 string:1
+      swap:1 swap_ranges:1 transform:1 unique:1 unique_copy:1 upper_bound:1 
+      valarray:1 vector:1
     </keywords>
     <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
@@ -2138,12 +2137,12 @@ void          while
   <lexer name="inno"/>
   <lexer display="java" name="cpp" extensions="*.java">
     <keywords>
-abstract assert boolean break byte case catch char class
-const continue default do double else enum extends final finally float for
-goto if implements import instanceof int interface long
-native new package private protected public
-return short static strictfp super switch synchronized this throw throws
-transient try var void volatile while
+      abstract assert boolean break byte case catch char class
+      const continue default do double else enum extends final finally float for
+      goto if implements import instanceof int interface long
+      native new package private protected public
+      return short static strictfp super switch synchronized this throw throws
+      transient try var void volatile while
     </keywords>
   </lexer>
   <lexer name="kix"/>
@@ -2191,23 +2190,19 @@ transient try var void volatile while
   <lexer name="oscript"/>
   <lexer name="pascal" extensions="*.pas">
     <keywords>    
-    ABSOLUTE ABSTRACT AND ARRAY AS ASM ASSEMBLER AUTOMATED BEGIN CASE CDECL 
-    CLASS CONST
-    CONSTRUCTOR CONTAINS DEFAULT DESTRUCTOR DISPID DISPINTERFACE DIV DO DOWNTO 
-    DYNAMIC
-    ELSE END EXCEPT EXPORT EXPORTS EXTERNAL FAR FILE FINALIZATION FINALLY FOR 
-    FORWARD
-    FUNCTION GOTO IF IMPLEMENTATION IMPLEMENTS IN INDEX INHERITED INITIALIZATION
-    INLINE INTERFACE
-    IS LABEL LIBRARY MESSAGE MOD NAME NEAR NIL NODEFAULT NOT OBJECT OF OR OUT 
-    OVERLOAD
-    OVERRIDE PACKAGE PACKED PASCAL PRIVATE PROCEDURE PROGRAM PROPERTY PROTECTED 
-    PUBLIC PUBLISHED RAISE
-    READ READONLY RECORD REGISTER REINTRODUCE REPEAT REQUIRES RESIDENT 
-    RESOURCESTRING SAFECALL SET
-    SHL SHR STDCALL STORED STRING THEN THREADVAR TO TRY TYPE UNIT UNTIL USES VAR
-    VIRTUAL
-    WHILE WITH WRITE WRITELN WRITEONLY XOR BOOLEAN CHAR INTEGER REAL
+      absolute abstract and array as asm assembler automated begin case cdecl 
+      class const constructor contains default destructor dispid dispinterface 
+      div do downto dynamic else end except export exports external far file 
+      finalization finally for forward function goto if implementation 
+      implements in index inherited initialization inline interface
+      is label library message mod name near nil nodefault not object of or out 
+      overload
+      override package packed pascal private procedure program property protected 
+      public published raise
+      read readonly record register reintroduce repeat requires resident 
+      resourcestring safecall set
+      shl shr stdcall stored string then threadvar to try type unit until uses var
+      virtual while with write writeln writeonly xor boolean char integer real
     </keywords>
     <comments begin1="(*" end1="*)" begin2="{" end2="}"/>
   </lexer>
@@ -2238,8 +2233,7 @@ transient try var void volatile while
       system syswrite tell telldir tie tied time times truncate 
       uc ucfirst umask undef unless unlink unpack unshift untie until 
       use utime values vec wait waitpid wantarray warn while write 
-      xor 
-      given when default say state
+      xor given when default say state
     </keywords>
   </lexer>
   <lexer name="PL/M"/>
@@ -2286,9 +2280,9 @@ transient try var void volatile while
   <lexer name="rebol"/>
   <lexer display="rfw" name="bash" extensions="TCS*.txt"> 
     <keywords> 
-    Library Resource Variables Documentation Metadata Suite Setup Suite Teardown 
-    Precondition Postcondition Force Tags
-    Default Test Template Timeout
+      Library Resource Variables Documentation Metadata Setup Suite Teardown 
+      Precondition Postcondition Force Tags
+      Default Test Template Timeout
     </keywords>
     <comments begin1="#" />
   </lexer>
@@ -2303,58 +2297,49 @@ transient try var void volatile while
     <keywords>    
     <!-- First line added manually -->
     <!-- Copied from scite, v1.68. -->
-    auto_increment comment index exists
-    absolute action add admin after aggregate
-    alias all allocate alter and any are array as asc
-    assertion at authorization
-    before begin binary bit blob boolean both breadth by
-    call cascade cascaded case cast catalog char character
-    check class clob close collate collation column commit
-    completion connect connection constraint constraints
-    constructor continue corresponding create cross cube current
-    current_date current_path current_role current_time current_timestamp
-    current_user cursor cycle
-    data date day deallocate dec decimal declare default
-    deferrable deferred delete depth deref desc describe descriptor
-    destroy destructor deterministic dictionary diagnostics disconnect
-    distinct domain double drop dynamic
-    each else end end-exec equals escape every except
-    exception exec execute external
-    false fetch first float for foreign found from free full
-    function
-    general get global go goto grant group grouping
-    having host hour
-    identity if ignore immediate in indicator initialize initially
-    inner inout input insert int integer intersect interval
-    into is isolation iterate
-    join
-    key
-    language large last lateral leading left less level like
-    limit local localtime localtimestamp locator
-    map match minute modifies modify module month
-    names national natural nchar nclob new next no none
-    not null numeric
-    object of off old on only open operation option
-    or order ordinality out outer output
-    pad parameter parameters partial path postfix precision prefix
-    preorder prepare preserve primary
-    prior privileges procedure public
-    read reads real recursive ref references referencing relative
-    restrict result return returns revoke right
-    role rollback rollup routine row rows
-    savepoint schema scroll scope search second section select
-    sequence session session_user set sets size smallint some| space
-    specific specifictype sql sqlexception sqlstate sqlwarning start
-    state statement static structure system_user
-    table temporary terminate than then time timestamp
-    timezone_hour timezone_minute to trailing transaction translation
-    treat trigger true
-    under union unique unknown
-    unnest update usage user using
-    value values varchar variable varying view
-    when whenever where with without work write
-    year
-    zone
+      auto_increment comment index exists
+      absolute action add admin after aggregate
+      alias all allocate alter and any are array as asc
+      assertion at authorization
+      before begin binary bit blob boolean both breadth by
+      call cascade cascaded case cast catalog char character
+      check class clob close collate collation column commit
+      completion connect connection constraint constraints
+      constructor continue corresponding create cross cube current
+      current_date current_path current_role current_time current_timestamp
+      current_user cursor cycle
+      data date day deallocate dec decimal declare default
+      deferrable deferred delete depth deref desc describe descriptor
+      destroy destructor deterministic dictionary diagnostics disconnect
+      distinct domain double drop dynamic
+      each else end end-exec equals escape every except
+      exception exec execute external
+      false fetch first float for foreign found from free full
+      function general get global go goto grant group grouping
+      having host hour identity if ignore immediate in indicator initialize 
+      initially inner inout input insert int integer intersect interval
+      into is isolation iterate
+      join key language large last lateral leading left less level like
+      limit local localtime localtimestamp locator
+      map match minute modifies modify module month
+      names national natural nchar nclob new next no none
+      not null numeric object of off old on only open operation option
+      or order ordinality out outer output
+      pad parameter parameters partial path postfix precision prefix
+      preorder prepare preserve primary
+      prior privileges procedure public
+      read reads real recursive ref references referencing relative
+      restrict result return returns revoke right
+      role rollback rollup routine row rows
+      savepoint schema scroll scope search second section select
+      sequence session session_user set sets size smallint some| space
+      specific specifictype sql sqlexception sqlstate sqlwarning start
+      state statement static structure system_user
+      table temporary terminate than then time timestamp
+      timezone_hour timezone_minute to trailing transaction translation
+      treat trigger true under union unique unknown
+      unnest update usage user using value values varchar variable varying view
+      when whenever where with without work write year zone
     </keywords>
     <comments begin1="--" />
   </lexer>
