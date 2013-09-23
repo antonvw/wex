@@ -12,7 +12,6 @@
 #endif
 #include <wx/config.h>
 #include <wx/tokenzr.h>
-#include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/textfile.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/defs.h>
