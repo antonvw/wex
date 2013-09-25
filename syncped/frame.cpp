@@ -1496,6 +1496,11 @@ void Frame::StatusBarClickedRight(const wxString& pane)
   }
 }
 
+void Frame::SyncAll()
+{
+  m_Editors->ForEach(ID_ALL_STC_SYNC);
+}
+
 void Frame::SyncCloseAll(wxWindowID id)
 {
   DecoratedFrame::SyncCloseAll(id);

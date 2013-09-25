@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Common defs for all wxExtension classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXDEFS_H
@@ -23,6 +23,7 @@ enum wxExId
   ID_ALL_STC_SAVE,
   ID_ALL_STC_SET_LEXER,
   ID_ALL_STC_SET_LEXER_THEME,
+  ID_ALL_STC_SYNC,
   ID_ALL_HIGHEST,        // and before this one
 
   ID_SHELL_COMMAND,

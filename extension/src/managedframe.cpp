@@ -252,6 +252,10 @@ void wxExManagedFrame::ShowExMessage(const wxString& text)
   }
 }
 
+void wxExManagedFrame::SyncAll()
+{
+}
+
 void wxExManagedFrame::SyncCloseAll(wxWindowID id)
 {
   SetFindFocus(NULL);
