@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/extension/notebook.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
@@ -171,6 +172,11 @@ bool wxExNotebook::ForEach(int id)
       page++;
       break;
 
+    case ID_ALL_STC_SYNC: 
+      stc->Sync(wxConfigBase::Get()->ReadBool("AllowSync", true)); 
+      page++;
+      break;
+      
     default: 
       wxFAIL; 
       page++;

@@ -12,8 +12,8 @@
 #include <wx/config.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/art.h>
-#include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
@@ -61,7 +61,7 @@ BEGIN_EVENT_TABLE(wxExToolBar, wxAuiToolBar)
   EVT_CHECKBOX(ID_SYNC_MODE, wxExToolBar::OnCommand)
 END_EVENT_TABLE()
 
-wxExToolBar::wxExToolBar(wxExFrame* frame,
+wxExToolBar::wxExToolBar(wxExManagedFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
@@ -143,6 +143,7 @@ void wxExToolBar::OnCommand(wxCommandEvent& event)
 
   case ID_SYNC_MODE:
     wxConfigBase::Get()->Write("AllowSync", m_SyncMode->GetValue());
+    m_Frame->SyncAll();
     break;
 
   default: 
@@ -162,7 +163,7 @@ BEGIN_EVENT_TABLE(wxExFindToolBar, wxExToolBar)
 END_EVENT_TABLE()
 
 wxExFindToolBar::wxExFindToolBar(
-  wxExFrame* frame,
+  wxExManagedFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,

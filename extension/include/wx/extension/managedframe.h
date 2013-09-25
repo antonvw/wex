@@ -15,10 +15,11 @@
 #if wxUSE_GUI
 
 class wxPane;
+class wxStaticText;
+
 class wxExEx;
 class wxExExTextCtrl;
 class wxExToolBar;
-class wxStaticText;
 
 /// Offers an aui managed frame with a notebook multiple document interface,
 /// used by the notebook classes, and toolbar, findbar and vibar support.
@@ -71,6 +72,9 @@ public:
   /// Shows text in ex bar.
   void ShowExMessage(const wxString& text);
   
+  /// Called after you checked the Sync checkbox on the toolbar.
+  virtual void SyncAll();
+
   /// Called after all pages from the notebooks are deleted.
   virtual void SyncCloseAll(wxWindowID id);
 

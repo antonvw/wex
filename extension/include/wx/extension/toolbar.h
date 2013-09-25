@@ -2,7 +2,7 @@
 // Name:      toolbar.h
 // Purpose:   Declaration of wxExToolBar classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011
+// Copyright: (c) 2013
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXTOOLBAR_H
@@ -13,7 +13,7 @@
 // Only if we have a gui.
 #if wxUSE_GUI
 
-class wxExFrame;
+class wxExManagedFrame;
 class wxExTextCtrl;
 
 /// Offers a toolbar together with stock art.
@@ -22,7 +22,7 @@ class WXDLLIMPEXP_BASE wxExToolBar : public wxAuiToolBar
 {
 public:
   /// Constructor.
-  wxExToolBar(wxExFrame* frame, 
+  wxExToolBar(wxExManagedFrame* frame, 
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
@@ -42,13 +42,13 @@ public:
   void AddControls();
   
   /// Gets the frame.
-  wxExFrame* GetFrame() {return m_Frame;};
+  wxExManagedFrame* GetFrame() {return m_Frame;};
 protected:
   void OnCommand(wxCommandEvent& event);
 private:
   wxCheckBox* m_HexMode;
   wxCheckBox* m_SyncMode;
-  wxExFrame* m_Frame;
+  wxExManagedFrame* m_Frame;
 
   DECLARE_EVENT_TABLE()
 };
@@ -61,7 +61,7 @@ class WXDLLIMPEXP_BASE wxExFindToolBar : public wxExToolBar
 {
 public:
   /// Constructor.
-  wxExFindToolBar(wxExFrame* frame, 
+  wxExFindToolBar(wxExManagedFrame* frame, 
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,

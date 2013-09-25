@@ -58,6 +58,7 @@ private:
     long flags = 0);
   virtual void StatusBarClicked(const wxString& pane);
   virtual void StatusBarClickedRight(const wxString& pane);
+  virtual void SyncAll();
   virtual void SyncCloseAll(wxWindowID id);
 
   bool m_IsClosing;
