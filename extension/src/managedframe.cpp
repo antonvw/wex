@@ -20,6 +20,7 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
 
@@ -45,8 +46,7 @@ public:
     
   /// Sets ex component.
   void SetEx(wxExEx* ex, const wxString& range);
-protected:
-  void OnChar(wxKeyEvent& event);
+protected:  void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnEnter(wxCommandEvent& event);
   void OnFocus(wxFocusEvent& event);
