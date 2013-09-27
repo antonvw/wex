@@ -356,6 +356,11 @@ bool wxExEx::CommandRange(const wxString& command)
 
   if (command.StartsWith("'<,'>"))
   {
+    if (m_STC->GetSelectedText().empty())
+    {
+      return false;
+    }
+
     begin_address = "'<";
     end_address = "'>";
     cmd = command.GetChar(5);
@@ -872,10 +877,20 @@ int wxExEx::MarkerLine(const wxUniChar& marker) const
 {
   if (marker == '<')
   {
+    if (m_STC->GetSelectedText().empty())
+    {
+      return -1;
+    }
+    
     return m_STC->LineFromPosition(m_STC->GetSelectionStart());
   }
   else if (marker == '>')
   {
+    if (m_STC->GetSelectedText().empty())
+    {
+      return -1;
+    }
+  
     return m_STC->LineFromPosition(m_STC->GetSelectionEnd());
   }
   else
@@ -1159,7 +1174,7 @@ int wxExEx::ToLineNumber(const wxString& address) const
     
     const int line = MarkerLine(marker.GetChar(0)) + 1;
     
-    if (line == 0)
+    if (line == -1)
     {
       return 0;
     }
