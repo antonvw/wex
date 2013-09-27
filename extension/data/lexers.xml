@@ -2189,6 +2189,9 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="opal"/>
   <lexer name="oscript"/>
   <lexer name="pascal" extensions="*.pas">
+    <properties>
+      <property name="fold.comment"> 1 </property>
+    </properties>
     <keywords>    
       absolute abstract and array as asm assembler automated begin case cdecl 
       class const constructor contains default destructor dispid dispinterface 
