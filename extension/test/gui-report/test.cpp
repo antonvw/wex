@@ -209,6 +209,8 @@ void wxExGuiReportTestFixture::test()
     report));
     
   const long find = sw.Time();
+  
+  CPPUNIT_ASSERT(find < 1000);
 
   Report(wxString::Format(
     "wxExFrameWithHistory::FindInFiles %d items in: %ld ms", 
