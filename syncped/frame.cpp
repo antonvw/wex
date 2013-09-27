@@ -22,6 +22,7 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/version.h>
+#include <wx/extension/vimacros.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>

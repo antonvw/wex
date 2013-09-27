@@ -20,6 +20,7 @@
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
 
@@ -990,6 +991,11 @@ void wxExEx::SetLastCommand(
  
 void wxExEx::SetRegistersDelete(const wxString& value)
 {
+  if (value.empty())
+  {
+    return;
+  }
+  
   for (int i = 9; i >= 2; i--)
   {
     m_Macros.SetRegister(
@@ -1002,6 +1008,11 @@ void wxExEx::SetRegistersDelete(const wxString& value)
   
 void wxExEx::SetRegisterYank(const wxString& value)
 {
+  if (value.empty())
+  {
+    return;
+  }
+  
   m_Macros.SetRegister("0", value);
 }
 

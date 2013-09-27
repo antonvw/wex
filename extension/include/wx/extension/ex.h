@@ -11,13 +11,13 @@
 #include <map>
 #include <wx/extension/indicator.h>
 #include <wx/extension/marker.h>
-#include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
 
 class wxExManagedFrame;
 class wxExProcess;
 class wxExSTC;
+class wxExViMacros;
 
 /// Offers a class that adds ex editor to wxExSTC.
 class WXDLLIMPEXP_BASE wxExEx
@@ -96,10 +96,10 @@ public:
   /// Returns -1 if marker does not exist.
   int MarkerLine(const wxUniChar& marker) const;
   
-  /// Sets delete registers 1 - 9.
+  /// Sets delete registers 1 - 9 (if value not empty).
   void SetRegistersDelete(const wxString& value);
   
-  /// Sets yank register.
+  /// Sets yank register (if value not empty).
   void SetRegisterYank(const wxString& value);
   
   /// Set using ex mode.

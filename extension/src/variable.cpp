@@ -14,6 +14,7 @@
 #include <wx/extension/ex.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/stcdlg.h>
+#include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
 

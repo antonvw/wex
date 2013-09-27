@@ -20,6 +20,7 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
 
