@@ -854,6 +854,8 @@ void wxExGuiTestFixture::testListItem()
   
   const long add = sw.Time();
 
+  CPPUNIT_ASSERT(add < 1000);
+  
   Report(wxString::Format(
     "wxExListTiem::Insert %d items in %ld ms", 3 * max, add).ToStdString());
   
@@ -864,6 +866,8 @@ void wxExGuiTestFixture::testListItem()
   listView->SortColumn(_("File Name"), SORT_ASCENDING);
   
   const long sort = sw.Time();
+  
+  CPPUNIT_ASSERT(sort < 1000);
   
   Report(wxString::Format(
     "wxExListView::Sort %d items in %ld ms", 3 * max, sort).ToStdString());
@@ -1435,10 +1439,12 @@ void wxExGuiTestFixture::testTextFile()
   wxStopWatch sw;
   sw.Start();
   CPPUNIT_ASSERT( textFile.RunTool());
-  const long elapsed = sw.TimeInMicro().ToLong();
+  const long elapsed = sw.Time();
+  
+  CPPUNIT_ASSERT(elapsed < 20);
   
   Report(wxString::Format(
-    "wxExTextFile::matching %d items in %ld us", 
+    "wxExTextFile::matching %d items in %ld ms", 
     textFile.GetStatistics().Get(_("Actions Completed")), elapsed).ToStdString());
     
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
@@ -1452,10 +1458,12 @@ void wxExGuiTestFixture::testTextFile()
   wxStopWatch sw2;
   sw2.Start();
   CPPUNIT_ASSERT( textFile2.RunTool());
-  const long elapsed2 = sw2.TimeInMicro().ToLong();
+  const long elapsed2 = sw2.Time();
+  
+  CPPUNIT_ASSERT(elapsed2 < 100);
   
   Report(wxString::Format(
-    "wxExTextFile::replacing %d items in %ld us", 
+    "wxExTextFile::replacing %d items in %ld ms", 
     textFile2.GetStatistics().Get(_("Actions Completed")), elapsed2).ToStdString());
     
   CPPUNIT_ASSERT(!textFile2.GetStatistics().GetElements().GetItems().empty());

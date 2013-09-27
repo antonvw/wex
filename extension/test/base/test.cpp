@@ -31,6 +31,8 @@ void TestFixture::testConfig()
   }
 
   const long config = sw.Time();
+  
+  CPPUNIT_ASSERT(config < 100);
 
   Report(wxString::Format(
     "wxConfig::Read %d items in %ld ms", max, config).ToStdString());
@@ -109,6 +111,9 @@ void TestFixture::testFileTiming()
 
   const long file_read = sw.Time();
 
+  CPPUNIT_ASSERT(exfile_read < 100);
+  CPPUNIT_ASSERT(file_read < 100);
+  
   Report(wxString::Format(
     "wxExFile::Read %d items in %ld ms wxFile::Read %d items in %ld ms",
     max,
@@ -153,6 +158,9 @@ void TestFixture::testFileNameTiming()
 
   const long file_time = sw.Time();
 
+  CPPUNIT_ASSERT(exfile_time < 10);
+  CPPUNIT_ASSERT(file_time < 10);
+  
   Report(wxString::Format(
     "wxExFileName::IsReadOnly %d files in %ld ms wxFileName::IsFileWritable %d files in %ld ms",
     max,
