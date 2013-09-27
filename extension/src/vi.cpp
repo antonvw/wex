@@ -557,6 +557,11 @@ bool wxExVi::Command(const wxString& command)
     // as last char, so not in switch branch.
     if (!m_Dot && rest.Last() == WXK_ESCAPE)
     {
+      if (!GetSTC()->GetSelectedText().empty())
+      {
+        GetSTC()->SelectNone();
+      }
+      
       if (m_Mode == MODE_NORMAL)
       {
         wxBell();
@@ -566,11 +571,6 @@ bool wxExVi::Command(const wxString& command)
         if (GetMacros().IsRecording())
         {
           GetMacros().StopRecording();
-        }
-      
-        if (!GetSTC()->GetSelectedText().empty())
-        {
-          GetSTC()->SelectNone();
         }
       }
       else
@@ -1225,6 +1225,11 @@ bool wxExVi::InsertMode(const wxString& command)
         
         m_Mode = MODE_NORMAL;
         GetSTC()->SetOvertype(false);
+        
+        if (!GetSTC()->GetSelectedText().empty())
+        {
+          GetSTC()->SelectNone();
+        }
       break;
 
     case WXK_RETURN:
