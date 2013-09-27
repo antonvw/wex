@@ -27,8 +27,8 @@ enum
 {
   MODE_NORMAL,
   MODE_INSERT,
+  // at this moment treated as visual_line mode
   MODE_VISUAL,
-  MODE_VISUAL_LINE
 };
 
 // Returns true if after text only one letter is followed.
@@ -983,7 +983,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       Put(false); 
       break;
       
-    case 'V': m_Mode = MODE_VISUAL_LINE; break;
+    case 'V': m_Mode = MODE_VISUAL; break;
       
     case 'X': 
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) 
