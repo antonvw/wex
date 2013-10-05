@@ -423,7 +423,7 @@ bool wxExVi::Command(const wxString& command)
     switch (m_Mode)
     {
       case MODE_NORMAL: wxExAddressRange(this, ".", 
-        wxString::Format(".+%d", repeat - 1)).Indent(true); break;
+        wxString::Format(".+%ld", repeat - 1)).Indent(true); break;
       case MODE_VISUAL: wxExAddressRange(this, "'<", "'>").Indent(true); break;
     }
   }
@@ -432,7 +432,7 @@ bool wxExVi::Command(const wxString& command)
     switch (m_Mode)
     {
       case MODE_NORMAL: wxExAddressRange(this, ".",
-        wxString::Format(".+%d", repeat)).Indent(false); break;
+        wxString::Format(".+%ld", repeat)).Indent(false); break;
       case MODE_VISUAL: wxExAddressRange(this, "'<", "'>").Indent(false);
         break;
     }
