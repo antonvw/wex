@@ -13,6 +13,7 @@
 #include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
+#include <wx/extension/address.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/lexers.h>
@@ -421,41 +422,18 @@ bool wxExVi::Command(const wxString& command)
   {
     switch (m_Mode)
     {
-      case MODE_NORMAL: GetSTC()->Indent(repeat); break;
-      case MODE_VISUAL: 
-        {
-        const int begin_line = ToLineNumber("'<");
-        const int end_line = ToLineNumber("'>");
-        
-        if (begin_line > 0 && end_line > 0)
-        {
-          if (GetSTC()->Indent(begin_line - 1, end_line - 1, true))
-          {
-            m_Mode = MODE_NORMAL;
-          }
-        }
-        }
-        break;
+      case MODE_NORMAL: wxExAddressRange(this, ".", 
+        wxString::Format(".+%d", repeat - 1)).Indent(true); break;
+      case MODE_VISUAL: wxExAddressRange(this, "'<", "'>").Indent(true); break;
     }
   }
   else if (rest == "<<")
   {
     switch (m_Mode)
     {
-      case MODE_NORMAL: GetSTC()->Indent(repeat, false); break;
-      case MODE_VISUAL: 
-        {
-        const int begin_line = ToLineNumber("'<");
-        const int end_line = ToLineNumber("'>");
-        
-        if (begin_line > 0 && end_line > 0)
-        {
-          if (GetSTC()->Indent(begin_line - 1, end_line - 1, false))
-          {
-            m_Mode = MODE_NORMAL;
-          }
-        }
-        }
+      case MODE_NORMAL: wxExAddressRange(this, ".",
+        wxString::Format(".+%d", repeat)).Indent(false); break;
+      case MODE_VISUAL: wxExAddressRange(this, "'<", "'>").Indent(false);
         break;
     }
   }
@@ -1041,7 +1019,12 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
     
     case WXK_TAB:
-      // just ignore tab
+      // just ignore tab, except on first col, then it indents
+      if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) == 0)
+       {
+        m_Command.clear();
+        return false;
+      }
       break;
       
     default:
@@ -1106,6 +1089,7 @@ bool wxExVi::GetInsertMode() const
 void wxExVi::GotoBrace()
 {
   int brace_match = GetSTC()->BraceMatch(GetSTC()->GetCurrentPos());
+  const int pos = GetSTC()->GetCurrentPos();
           
   if (brace_match != wxSTC_INVALID_POSITION)
   {
@@ -1118,6 +1102,17 @@ void wxExVi::GotoBrace()
     if (brace_match != wxSTC_INVALID_POSITION)
     {
       GetSTC()->GotoPos(brace_match);
+    }
+  }
+
+  if (m_Mode == MODE_VISUAL)
+  {
+    if (brace_match != wxSTC_INVALID_POSITION)
+    {
+      if (brace_match < pos)
+        GetSTC()->SetSelection(brace_match, pos + 1);
+      else
+        GetSTC()->SetSelection(pos, brace_match + 1);
     }
   }
 }

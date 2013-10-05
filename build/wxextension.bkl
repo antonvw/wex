@@ -20,6 +20,7 @@ Copyright: (c) 2013 Anton van Wezenbeek
     
     <include>../extension/include</include>
     
+    <sources>../extension/src/address.cpp</sources>
     <sources>../extension/src/app.cpp</sources>
     <sources>../extension/src/art.cpp</sources>
     <sources>../extension/src/configdlg.cpp</sources>
@@ -69,6 +70,7 @@ Copyright: (c) 2013 Anton van Wezenbeek
     <sources>../extension/src/vi.cpp</sources>
     <sources>../extension/src/vimacros.cpp</sources>
     
+    <headers>../extension/include/wx/extension/address.h</headers>
     <headers>../extension/include/wx/extension/app.h</headers>
     <headers>../extension/include/wx/extension/art.h</headers>
     <headers>../extension/include/wx/extension/configdlg.h</headers>

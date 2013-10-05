@@ -24,6 +24,48 @@ void wxExGuiTestFixture::setUp()
   // it should be present in ~/.wxex-test-gui
   // (depending on platform, configuration).
   wxExLexers::Get();
+  
+  wxConfigBase::Get()->Write(_("vi mode"), true);
+}
+
+void wxExGuiTestFixture::testAddress()
+{
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello\nhello1\hello2");
+  wxExEx* ex = new wxExEx(stc);
+  stc->GotoLineAndSelect(1);
+  
+  wxString pattern;
+  wxString replacement;
+  wxString options;
+  
+  wxExAddress address(ex);
+  CPPUNIT_ASSERT( address.ToLine() == 0);
+  CPPUNIT_ASSERT(!address.Substitute(pattern, replacement, options));
+  
+  CPPUNIT_ASSERT( wxExAddress(ex, ".").ToLine() == 2);
+  CPPUNIT_ASSERT( wxExAddress(ex, ".+1").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "$").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "$-2").ToLine() == 1);
+  CPPUNIT_ASSERT( wxExAddress(ex, "x").ToLine() == 0);
+}
+
+void wxExGuiTestFixture::testAddressRange()
+{
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello\nhello1\hello2");
+  wxExEx* ex = new wxExEx(stc);
+  stc->GotoLineAndSelect(1);
+
+  CPPUNIT_ASSERT(!wxExAddressRange(ex).IsOk());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "x", "3").Delete());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "x").Filter());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "x").Indent());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "!").IsOk());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "@").Move());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "x").Write("flut"));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, " ", "").Yank);
+  
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1", "3").Delete());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1", "3").Delete());
 }
 
 void wxExGuiTestFixture::testConfigDialog()
@@ -214,8 +256,6 @@ void wxExGuiTestFixture::testDialog()
 
 void wxExGuiTestFixture::testEx()
 {
-  wxConfigBase::Get()->Write(_("vi mode"), true);
-  
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), 
     "// vi: set ts=120"); // this is a modeline
     
@@ -1308,10 +1348,6 @@ void wxExGuiTestFixture::testSTC()
   stc->GetFile().ResetContentsChanged();
   CPPUNIT_ASSERT(!stc->GetFile().GetContentsChanged());
   
-  CPPUNIT_ASSERT( stc->Indent(3,3));
-  CPPUNIT_ASSERT( stc->Indent(3,4));
-  CPPUNIT_ASSERT( stc->Indent(3));
-  
   stc->ConfigGet();
   
   stc->Cut();
@@ -1708,7 +1744,6 @@ void wxExGuiTestFixture::testVersion()
 
 void wxExGuiTestFixture::testVi()
 {
-  wxConfigBase::Get()->Write(_("vi mode"), true);
   const int esc = 27;
  
   // Test for modeline support.
@@ -2196,6 +2231,14 @@ void wxExGuiTestFixture::testViMacros()
 wxExAppTestSuite::wxExAppTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testAddress",
+    &wxExGuiTestFixture::testAddress));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testAddressRange",
+    &wxExGuiTestFixture::testAddressRange));
+    
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testConfigDialog",
     &wxExGuiTestFixture::testConfigDialog));

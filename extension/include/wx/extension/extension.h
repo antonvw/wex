@@ -2,12 +2,13 @@
 // Name:      extension.h
 // Purpose:   Include file for all wxExtension classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WXEXTENSION_H
 #define _WXEXTENSION_H
 
+#include <wx/extension/address.h>
 #include <wx/extension/app.h>
 #include <wx/extension/art.h>
 #include <wx/extension/configdlg.h>
