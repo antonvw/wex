@@ -1346,60 +1346,6 @@ void wxExSTC::HexDecCalltip(int pos)
   }
 }
 
-bool wxExSTC::Indent(int begin, int end, bool forward)
-{
-  if (GetReadOnly() || HexMode() || end - begin < 0)
-  {
-    return false;
-  }
-  
-  BeginUndoAction();
-
-  for (int i = 0; i <= end - begin; i++)
-  {
-    const int start = PositionFromLine(begin + i);
-
-    if (forward)
-    {
-      if (GetUseTabs())
-      {
-        InsertText(start, '\t');
-      }
-      else
-      {
-        InsertText(start, wxString(' ', GetIndent()));
-      }
-    }
-    else
-    {
-      const int cols = GetLineIndentation(begin + i);
-      
-      if (cols > 0)
-      {
-        if (GetUseTabs())
-        {
-          Remove(start, start + 1);
-        }
-        else
-        {
-          Remove(start, start + GetIndent());
-        }
-      }
-    }
-  }
-
-  EndUndoAction();
-  
-  return true;
-}
-
-bool wxExSTC::Indent(int lines, bool forward)
-{
-  const int line = LineFromPosition(GetCurrentPos());
-
-  return Indent(line, line + lines - 1, forward);
-}
-
 void wxExSTC::Initialize(bool file_exists)
 {
   SetSearchFlags(wxSTC_FIND_REGEXP);
@@ -1653,8 +1599,6 @@ void wxExSTC::OnChar(wxKeyEvent& event)
 
     event.Skip();
   }
-  
-  m_AddingChars = true;
 }
 
 void wxExSTC::OnCommand(wxCommandEvent& command)
@@ -1801,12 +1745,10 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
       wxExHexModeLine(this).SetPos(event);
     }
   }
-  
+
   if (m_vi.OnKeyDown(event))
   {
-    {
-      event.Skip();
-    }
+    event.Skip();
   }
 }
 
@@ -1885,6 +1827,8 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
     event.Skip();
     
     AutoIndentation(event.GetKey());
+  
+    m_AddingChars = true;
   }
   else if (event.GetEventType() == wxEVT_STC_START_DRAG)
   {

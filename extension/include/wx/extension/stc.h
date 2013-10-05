@@ -203,12 +203,6 @@ public:
   /// Returns true if we are in hex mode.
   bool HexMode() const {return m_HexMode;};
 
-  /// Indent range of lines.
-  bool Indent(int begin, int end, bool forward);
-  
-  /// Indents lines from current position.
-  bool Indent(int lines, bool forward = true);
-  
   /// Deletes all change markers.
   /// Returns false if marker change is not loaded.
   bool MarkerDeleteAllChange();

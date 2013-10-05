@@ -71,6 +71,8 @@ public:
   /// Clean up after the test run.
   virtual void tearDown() {wxExTestFixture::tearDown();};
 
+  void testAddress();
+  void testAddressRange();
   void testConfigDialog();
   void testConfigItem();
   void testDialog();

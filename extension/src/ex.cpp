@@ -12,8 +12,8 @@
 #endif
 #include <wx/config.h>
 #include <wx/tokenzr.h>
-#include <wx/textfile.h>
 #include <wx/extension/ex.h>
+#include <wx/extension/address.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
@@ -211,7 +211,8 @@ bool wxExEx::Command(const wxString& command)
   }
   else if (command.Last() == '=')
   {
-    const int no = ToLineNumber(command.AfterFirst(':').BeforeLast('='));
+    const wxExAddress address(this, command.AfterFirst(':').BeforeLast('='));
+    const int no = address.ToLine();
     
     if (no == 0)
     {
@@ -350,9 +351,9 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
 bool wxExEx::CommandRange(const wxString& command)
 {
-  wxString begin_address;
-  wxString end_address;
-  wxString text;
+  wxExAddressRange range(this);
+  wxExAddress text(this);
+  
   wxChar cmd;
 
   if (command.StartsWith("'<,'>"))
@@ -362,10 +363,9 @@ bool wxExEx::CommandRange(const wxString& command)
       return false;
     }
 
-    begin_address = "'<";
-    end_address = "'>";
+    range.Set("'<", "'>");
     cmd = command.GetChar(5);
-    text = command.Mid(6);
+    text.assign(command.Mid(6));
   }
   else
   {
@@ -394,175 +394,63 @@ bool wxExEx::CommandRange(const wxString& command)
       return false;
     }
 
-    const wxString range = tkz.GetNextToken();
+    const wxString range_str = tkz.GetNextToken();
     cmd = tkz.GetLastDelimiter();
   
-    if (range == ".")
+    if (range_str == ".")
     {
-      begin_address = range;
-      end_address = range;
+      range.Set(range_str);
     }
-    else if (range == "%")
+    else if (range_str == "%")
     {
-      begin_address = "1";
-      end_address = "$";
+      range.Set("1", "$");
     }
-    else if (range == "*")
+    else if (range_str == "*")
     {
       std::stringstream ss;
       ss << m_STC->GetFirstVisibleLine() + 1;
-      begin_address = wxString(ss.str());
       std::stringstream tt;
       tt << m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() + 1;
-      end_address = wxString(tt.str());
+      range.Set(wxString(ss.str()), wxString(tt.str()));
     }
     else
     {
-      begin_address = range.BeforeFirst(',');
-      end_address = range.AfterFirst(',');
+      range.Set(range_str.BeforeFirst(','), range_str.AfterFirst(','));
     }
   
-    if (begin_address.empty() || end_address.empty())
+    if (!range.IsOk())
     {
       return false;
     }
     
-    text = tkz.GetString();
+    text.assign(tkz.GetString());
   }
 
   switch (cmd)
   {
-  case 0: 
-    return false; 
-    break;
-    
-  case 'd':
-    return Delete(begin_address, end_address);
-    break;
-    
-  case 'm':
-    return Move(begin_address, end_address, text);
-    break;
+  case 0: return false; break;
+  case 'd': return range.Delete(); break;
+  case 'm': return range.Move(text); break;
+  case 'y': return range.Yank(); break;
+  case 'w': return range.Write(text); break;
+  case '>': return range.Indent(true); break;
+  case '<': return range.Indent(false); break;
+  case '!': return range.Filter(text); break;
     
   case 's':
     {
-    // If there are escaped / chars in the text,
-    // temporarily replace them to an unused char, so
-    // we can use string tokenizer with / as separator.
-    bool escaped = false;
+    wxString pattern;
+    wxString replacement;
+    wxString options;
     
-    if (text.Contains("\\/"))
+    if (text.Substitute(pattern, replacement, options))
     {
-      if (!text.Contains(wxChar(1)))
-      {
-        text.Replace("\\/", wxChar(1));
-        escaped = true;
-      }
-      else
-      {
-        wxLogStatus("Cannot substitute, internal char exists");
-        return false;
-      }
+      return Substitute(range, pattern, replacement, options);
     }
-    
-    wxStringTokenizer next(text, "/");
-
-    if (!next.HasMoreTokens())
+    else
     {
       return false;
     }
-
-    next.GetNextToken(); // skip empty token
-    wxString pattern = next.GetNextToken();
-    wxString replacement = next.GetNextToken();
-    const wxString options = next.GetNextToken();
-    
-    // Restore a / for all occurrences of the special char.
-    if (escaped)
-    {  
-      pattern.Replace(wxChar(1), "/");
-      replacement.Replace(wxChar(1), "/");
-    }
-    
-    return Substitute(
-      begin_address, end_address, pattern, replacement, options);
-    }
-    break;
-    
-  case 'y':
-    return Yank(begin_address, end_address);
-    break;
-    
-  case 'w':
-    return Write(begin_address, end_address, text);
-    break;
-    
-  case '>':
-    return Indent(begin_address, end_address, true);
-    break;
-  case '<':
-    return Indent(begin_address, end_address, false);
-    break;
-    
-  case '!':
-    {
-      // A filter command.
-      // The address range is used as input for the command,
-      // and the output of the command is replaces the address range.
-      const int begin_line = ToLineNumber(begin_address);
-      const int end_line = ToLineNumber(end_address);
-
-      if (begin_line == 0 || end_line == 0 || end_line < begin_line)
-      {
-        return false;
-      }
-  
-      wxExProcess process;
-      char buffer[255];
-      tmpnam(buffer);
-      
-      wxTextFile file(buffer);
-      
-      if (!file.Create())
-      {
-        return false;
-      }
- 
-      wxString input;
-      
-      for (int i = begin_line - 1; i <= end_line - 1; i++)
-      {
-        file.AddLine(m_STC->GetLine(i).Trim());
-      }
-      
-      file.Write();
-        
-      const wxString command = text;
-      
-      const bool ok = process.Execute(command + " " + buffer, wxEXEC_SYNC);
-      
-      remove(buffer);
-      
-      if (ok)
-      {
-        if (!process.HasStdError())
-        {      
-          m_STC->BeginUndoAction();
-          
-          Delete(begin_address, end_address);
-          m_STC->AddText(process.GetOutput());
-          
-          m_STC->EndUndoAction();
-          
-          return true;
-        }
-        else
-        {
-          m_Frame->ShowExMessage(process.GetOutput());
-        }
-      }
-      
-      return false;
     }
     break;
     
@@ -657,71 +545,6 @@ bool wxExEx::Delete(int lines)
       wxString::Format(_("%d fewer lines"), 
       linecount - m_STC->GetLineCount()));
   }
-  
-  return true;
-}
-
-bool wxExEx::Delete(
-  const wxString& begin_address, 
-  const wxString& end_address)
-{
-  if (m_STC->GetReadOnly() || m_STC->HexMode())
-  {
-    return false;
-  }
-  
-  if (!SetSelection(begin_address, end_address))
-  {
-    return false;
-  }
-
-  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
-  
-  m_STC->Cut();
-
-  if (begin_address.StartsWith("'"))
-  {
-    if (begin_address.size() > 1)
-    {
-      MarkerDelete(begin_address.GetChar(1));
-    }
-  }
-
-  if (end_address.StartsWith("'"))
-  {
-    if (end_address.size() > 1)
-    {
-      MarkerDelete(end_address.GetChar(1));
-    }
-  }
-
-  if (lines >= 2)
-  {
-    m_Frame->ShowExMessage(wxString::Format(_("%d fewer lines"), lines));
-  }
-
-  return true;
-}
-
-bool wxExEx::Indent(
-  const wxString& begin_address, 
-  const wxString& end_address, 
-  bool forward)
-{
-  if (m_STC->GetReadOnly() || m_STC->HexMode())
-  {
-    return false;
-  }
-  
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
-
-  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
-  {
-    return false;
-  }
-
-  m_STC->Indent(begin_line - 1, end_line - 1, forward);
   
   return true;
 }
@@ -911,61 +734,6 @@ int wxExEx::MarkerLine(const wxUniChar& marker) const
   }
 }
 
-bool wxExEx::Move(
-  const wxString& begin_address, 
-  const wxString& end_address, 
-  const wxString& destination)
-{
-  if (m_STC->GetReadOnly() || m_STC->HexMode())
-  {
-    return false;
-  }
-
-  const int dest_line = ToLineNumber(destination);
-
-  if (dest_line == 0)
-  {
-    return false;
-  }
-
-  if (!SetSelection(begin_address, end_address))
-  {
-    return false;
-  }
-
-  if (begin_address.StartsWith("'"))
-  {
-    if (begin_address.size() > 1)
-    {
-      MarkerDelete(begin_address.GetChar(1));
-    }
-  }
-
-  if (end_address.StartsWith("'"))
-  {
-    if (end_address.size() > 1)
-    {
-      MarkerDelete(end_address.GetChar(1));
-    }
-  }
-
-  m_STC->BeginUndoAction();
-
-  m_STC->Cut();
-  m_STC->GotoLine(dest_line - 1);
-  m_STC->Paste();
-
-  m_STC->EndUndoAction();
-  
-  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
-  if (lines >= 2)
-  {
-    m_Frame->ShowExMessage(wxString::Format(_("%d lines moved"), lines));
-  }
-
-  return true;
-}
-
 void wxExEx::SetLastCommand(
   const wxString& command,
   bool always)
@@ -1016,27 +784,8 @@ void wxExEx::SetRegisterYank(const wxString& value)
   m_Macros.SetRegister("0", value);
 }
 
-bool wxExEx::SetSelection(
-  const wxString& begin_address, 
-  const wxString& end_address) const
-{
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
-
-  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
-  {
-    return false;
-  }
-
-  m_STC->SetSelectionStart(m_STC->PositionFromLine(begin_line - 1));
-  m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(end_line - 1));
-
-  return true;
-}
-
 bool wxExEx::Substitute(
-  const wxString& begin_address, 
-  const wxString& end_address, 
+  const wxExAddressRange& range, 
   const wxString& patt,
   const wxString& repl,
   const wxString& options)
@@ -1046,8 +795,8 @@ bool wxExEx::Substitute(
     return false;
   }
   
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
+  const int begin_line = range.GetBegin().ToLine();
+  const int end_line = range.GetEnd().ToLine();
 
   if (begin_line == 0 || end_line == 0 || end_line < begin_line)
   {
@@ -1160,133 +909,6 @@ bool wxExEx::Substitute(
   return true;
 }
 
-// Returns 0 and bells on error in address, otherwise the vi line number,
-// so subtract 1 for stc line number.
-int wxExEx::ToLineNumber(const wxString& address) const
-{
-  wxString filtered_address(wxExSkipWhiteSpace(address, ""));
-
-  // Filter all markers.
-  int markers = 0;
-
-  while (filtered_address.Contains("'"))
-  {
-    const wxString oper = filtered_address.BeforeFirst('\'');
-    
-    int pos = filtered_address.Find('\'');
-    int size = 2;
-    
-    const wxString marker = filtered_address.AfterFirst('\'');
-    
-    if (marker.empty())
-    {
-      return 0;
-    }
-    
-    const int line = MarkerLine(marker.GetChar(0)) + 1;
-    
-    if (line == -1)
-    {
-      return 0;
-    }
-
-    if (oper == "-")
-    {
-      markers -= line;
-      pos--;
-      size++;
-    }
-    else if (oper == "+")
-    {
-      markers += line;
-      pos--;
-      size++;
-    }
-    else 
-    {
-      markers += line;
-    }
-
-    filtered_address.replace(pos, size, "");
-  }
-
-  int dot = 0;
-  int stc_used = 0;
-
-  if (filtered_address.Contains("."))
-  {
-    dot = m_STC->GetCurrentLine();
-    filtered_address.Replace(".", "");
-    stc_used = 1;
-  }
-
-  // Filter $.
-  int dollar = 0;
-
-  if (filtered_address.Contains("$"))
-  {
-    dollar = m_STC->GetLineCount();
-    filtered_address.Replace("$", "");
-    stc_used = 1;
-  }
-
-  // Now we should have a number.
-  if (!filtered_address.IsNumber()) 
-  {
-    return 0;
-  }
-
-  // Convert this number.
-  int i = 0;
-  
-  if (!filtered_address.empty())
-  {
-    if ((i = atoi(filtered_address.c_str())) == 0)
-    {
-      return 0;
-    }
-  }
-  
-  // Calculate the line.
-  const int line_no = markers + dot + dollar + i + stc_used;
-  
-  // Limit the range of what is returned.
-  if (line_no <= 0)
-  {
-    return 1;
-  }
-  else if (line_no > m_STC->GetLineCount())
-  {
-    return m_STC->GetLineCount();
-  }  
-  else
-  {
-    return line_no;
-  }
-}
-
-bool wxExEx::Write(
-  const wxString& begin_address, 
-  const wxString& end_address,
-  const wxString& filename) const
-{
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
-
-  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
-  {
-    return false;
-  }
-
-  wxFile file(filename, wxFile::write);
-
-  return 
-    file.IsOpened() && 
-    file.Write(m_STC->GetTextRange(
-      m_STC->PositionFromLine(begin_line - 1), 
-      m_STC->PositionFromLine(end_line)));
-}
-
 void wxExEx::Yank(int lines)
 {
   const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
@@ -1327,39 +949,6 @@ void wxExEx::Yank(int lines)
   {
     m_Frame->ShowExMessage(wxString::Format(_("%d lines yanked"), lines));
   }
-}
-
-bool wxExEx::Yank(
-  const wxString& begin_address, 
-  const wxString& end_address)
-{
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
-
-  if (begin_line == 0 || end_line == 0)
-  {
-    return false;
-  }
-
-  const int start = m_STC->PositionFromLine(begin_line - 1);
-  const int end = m_STC->PositionFromLine(end_line);
-  
-  if (start == end)
-  {
-    return false;
-  }
-
-  m_STC->CopyRange(start, end);
-  SetRegisterYank(m_STC->GetTextRange(start, end));
-  
-  const int lines = end_line - begin_line + 1;
-  
-  if (lines >= 2)
-  {
-    m_Frame->ShowExMessage(wxString::Format(_("%d lines yanked"), lines));
-  }
-
-  return true;
 }
 
 #endif // wxUSE_GUI

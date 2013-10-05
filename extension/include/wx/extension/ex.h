@@ -14,6 +14,7 @@
 
 #if wxUSE_GUI
 
+class wxExAddressRange;
 class wxExManagedFrame;
 class wxExProcess;
 class wxExSTC;
@@ -108,12 +109,6 @@ protected:
   /// Deletes number of lines, starting at current line.
   bool Delete(int lines);
   
-  /// Deletes lines from begin to end address.
-  /// Returns false if address cannot be related to a line number.
-  bool Delete(
-    const wxString& begin_address, 
-    const wxString& end_address);
-    
   /// Returns register name.
   const wxString& GetRegister() const {return m_Register;};
   
@@ -125,44 +120,17 @@ protected:
   /// Sets register name.
   void SetRegister(const wxString& name) {m_Register = name;};
     
-  /// Sets selection from begin to end address.
-  /// Returns false if address cannot be related to a line number.
-  bool SetSelection(
-    const wxString& begin_address, 
-    const wxString& end_address) const;
-    
-  /// Converts address to a real line number, filtering out markers
-  /// and special characters.
-  /// Returns 0 if address is not valid.
-  int ToLineNumber(const wxString& address) const;
-    
   /// Yanks number of lines, starting at current line.
   void Yank(int lines);
 private:
   bool CommandGlobal(const wxString& search);
   bool CommandRange(const wxString& command);
   bool CommandSet(const wxString& command);
-  bool Indent(
-    const wxString& begin_address, 
-    const wxString& end_address, 
-    bool forward);
-  bool Move(
-    const wxString& begin_address, 
-    const wxString& end_address, 
-    const wxString& destination);
   bool Substitute(
-    const wxString& begin_address, 
-    const wxString& end_address, 
+    const wxExAddressRange& range, 
     const wxString& pattern,
     const wxString& replacement,
     const wxString& options);
-  bool Write(
-    const wxString& begin_address, 
-    const wxString& end_address,
-    const wxString& filename) const;
-  bool Yank(
-    const wxString& begin_address, 
-    const wxString& end_address);
     
   const wxExIndicator m_FindIndicator;
   const wxExMarker m_MarkerSymbol;
