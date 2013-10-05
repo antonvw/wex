@@ -75,6 +75,11 @@ bool wxExAddress::Substitute(
 int wxExAddress::ToLine() const
 {
   wxString filtered_address(wxExSkipWhiteSpace(*this, ""));
+  
+  if (filtered_address.empty())
+  {
+    return 0;
+  }
 
   // Filter all markers.
   int markers = 0;
@@ -322,7 +327,7 @@ bool wxExAddressRange::Indent(bool forward) const
 
 bool wxExAddressRange::IsOk() const
 {
-  if (m_Begin.empty() || m_End.empty())
+  if (m_Begin.ToLine() == 0 || m_End.ToLine() == 0)
   {
     return false;
   }
@@ -403,7 +408,7 @@ bool wxExAddressRange::SetSelection() const
   const int begin_line = m_Begin.ToLine();
   const int end_line = m_End.ToLine();
 
-  if (!IsOk() || begin_line == 0 || end_line == 0 || end_line < begin_line)
+  if (!IsOk() || end_line < begin_line)
   {
     return false;
   }
@@ -434,7 +439,7 @@ bool wxExAddressRange::Write(const wxString& filename) const
     const int begin_line = m_Begin.ToLine();
     const int end_line = m_End.ToLine();
 
-    if (!IsOk() || begin_line == 0 || end_line == 0 || end_line < begin_line)
+    if (!IsOk() || end_line < begin_line)
     {
       return false;
     }
@@ -460,7 +465,7 @@ bool wxExAddressRange::Yank() const
     const int begin_line = m_Begin.ToLine();
     const int end_line = m_End.ToLine();
 
-    if (!IsOk() || begin_line == 0 || end_line == 0)
+    if (!IsOk())
     {
       return false;
     }
