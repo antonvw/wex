@@ -249,9 +249,10 @@ bool wxExAddressRange::Delete() const
 
 bool wxExAddressRange::Filter(const wxString& command) const
 {
-  // A filter command.
-  // The address range is used as input for the command,
-  // and the output of the command replaces the address range.
+  // For example, the command:
+  // :96,99!sort
+  // will pass lines 96 through 99 through the sort (36.1) filter and 
+  // replace those lines with the output of sort.  
   const int begin_line = m_Begin.ToLine();
   const int end_line = m_End.ToLine();
 
@@ -260,7 +261,6 @@ bool wxExAddressRange::Filter(const wxString& command) const
     return false;
   }
 
-  wxExProcess process;
   char buffer[255];
   tmpnam(buffer);
   
@@ -270,15 +270,19 @@ bool wxExAddressRange::Filter(const wxString& command) const
   {
     return false;
   }
-    wxString input;
-  
+
   for (int i = begin_line - 1; i <= end_line - 1; i++)
   {
     file.AddLine(m_STC->GetLine(i).Trim());
   }
   
-  file.Write();
+  if (!file.Write())
+  {
+    return false;
+  }
     
+  wxExProcess process;
+  
   const bool ok = process.Execute(command + " " + buffer, wxEXEC_SYNC);
   
   remove(buffer);
@@ -344,7 +348,9 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
 
   const int dest_line = destination.ToLine();
 
-  if (dest_line == 0)
+  if (
+    dest_line == 0 || 
+    (dest_line >= m_Begin.ToLine() && dest_line <= m_End.ToLine()))
   {
     return false;
   }

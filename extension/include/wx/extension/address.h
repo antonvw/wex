@@ -51,6 +51,8 @@ public:
   bool Delete() const;
   
   /// Filters range with command.
+  /// The address range is used as input for the command,
+  /// and the output of the command replaces the address range.
   bool Filter(const wxString& command) const;
   
   /// Gets begin address.

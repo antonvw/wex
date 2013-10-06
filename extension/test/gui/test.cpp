@@ -62,6 +62,7 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "!").IsOk());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "@").Move(wxExAddress(ex, "2")));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "1", "2").Move(wxExAddress(ex, "x")));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1", "3").Move(wxExAddress(ex, "2")));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "x").Write("flut"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, " ", "").Yank());
   
