@@ -1827,8 +1827,11 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
     event.Skip();
     
     AutoIndentation(event.GetKey());
-  
-    m_AddingChars = true;
+    
+    if (!wxIsspace(event.GetKey()))
+    {
+      m_AddingChars = true;
+    }
   }
   else if (event.GetEventType() == wxEVT_STC_START_DRAG)
   {
