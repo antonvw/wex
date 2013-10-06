@@ -95,7 +95,7 @@ void wxExGuiReportTestFixture::testListViewFile()
   CPPUNIT_ASSERT(listView->FindColumn("Number") > 1);
 
   CPPUNIT_ASSERT(listView->FileLoad(wxExFileName(TEST_PRJ)));
-  CPPUNIT_ASSERT(listView->FileSave());
+  CPPUNIT_ASSERT(listView->FileSave(wxExFileName("test-rep.prj.bck")));
 
   CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
 }
