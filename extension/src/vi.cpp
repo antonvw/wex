@@ -341,6 +341,20 @@ bool wxExVi::Command(const wxString& command)
       GetSTC()->FindNext(rest.Last(), GetSearchFlags(), false);
     m_LastFindCharCommand = command;
   }
+  else if (rest.Matches("t?"))
+  {
+    for (int i = 0; i < repeat; i++) 
+      GetSTC()->FindNext(rest.Last(), GetSearchFlags());
+    GetSTC()->CharLeft();
+    m_LastFindCharCommand = command;
+  }
+  else if (rest.Matches("T?"))
+  {
+    for (int i = 0; i < repeat; i++) 
+      GetSTC()->FindNext(rest.Last(), GetSearchFlags(), false);
+    GetSTC()->CharLeft();
+    m_LastFindCharCommand = command;
+  }
   else if (OneLetterAfter("m", rest))
   {
     MarkerAdd(rest.Last());
@@ -767,6 +781,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case '+': 
+    case WXK_RETURN:
       for (int i = 0; i < repeat; i++) 
       {
         switch (m_Mode)
@@ -1014,10 +1029,6 @@ bool wxExVi::CommandChar(int c, int repeat)
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) GetSTC()->DeleteBack();
       break;
       
-    case WXK_RETURN:
-      for (int i = 0; i < repeat; i++) GetSTC()->LineDown();
-      break;
-    
     case WXK_TAB:
       // just ignore tab, except on first col, then it indents
       if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) == 0)
@@ -1088,8 +1099,8 @@ bool wxExVi::GetInsertMode() const
 
 void wxExVi::GotoBrace()
 {
-  int brace_match = GetSTC()->BraceMatch(GetSTC()->GetCurrentPos());
-  const int pos = GetSTC()->GetCurrentPos();
+  int pos = GetSTC()->GetCurrentPos();
+  int brace_match = GetSTC()->BraceMatch(pos);
           
   if (brace_match != wxSTC_INVALID_POSITION)
   {
@@ -1097,7 +1108,8 @@ void wxExVi::GotoBrace()
   }
   else
   {
-    brace_match = GetSTC()->BraceMatch(GetSTC()->GetCurrentPos() - 1);
+    pos = GetSTC()->GetCurrentPos() - 1;
+    brace_match = GetSTC()->BraceMatch(pos);
             
     if (brace_match != wxSTC_INVALID_POSITION)
     {
