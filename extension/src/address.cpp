@@ -323,6 +323,14 @@ bool wxExAddressRange::Indent(bool forward) const
       return false;
     }
   }
+  else
+  {
+    if (wxExGetNumberOfLines(m_STC->GetSelectedText()) == 1)
+    {
+      // TODO: Replaces the selection.
+      return false;
+    }
+  }
 
   m_STC->SendMsg(forward ? wxSTC_CMD_TAB: wxSTC_CMD_BACKTAB);
   
