@@ -1054,6 +1054,21 @@ void wxExGuiTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == page1);
   CPPUNIT_ASSERT(notebook->DeletePage("keyx"));
   CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == NULL);
+  CPPUNIT_ASSERT(notebook->DeletePage("key2"));
+
+  // ForEach expects wxExSTC pages.  
+  wxExSTC* stc1 = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  wxExSTC* stc2 = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  wxExSTC* stc3 = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  
+  CPPUNIT_ASSERT(notebook->AddPage(stc1, "key1") != NULL);
+  CPPUNIT_ASSERT(notebook->AddPage(stc2, "key2") != NULL);
+  CPPUNIT_ASSERT(notebook->AddPage(stc3, "key3") != NULL);
+  
+  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CONFIG_GET));
+  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CLOSE));
+  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_SET_LEXER));
+  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_SET_LEXER_THEME));
 }
 
 void wxExGuiTestFixture::testOTL()
