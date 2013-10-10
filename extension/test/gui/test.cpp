@@ -1842,7 +1842,7 @@ void wxExGuiTestFixture::testVi()
   event.m_keyCode = WXK_RETURN;
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_TAB;
-  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
   event.m_keyCode = WXK_NONE;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   
