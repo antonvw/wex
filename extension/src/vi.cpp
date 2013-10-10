@@ -728,17 +728,6 @@ bool wxExVi::CommandChar(int c, int repeat)
       }
       break;
 
-    case 'd': 
-      if (GetSTC()->CanCut())
-      {
-        GetSTC()->Cut();
-      } 
-      else
-      {
-        return false;
-      }
-      break;
-      
     case 'e': 
       for (int i = 0; i < repeat; i++) 
       {
