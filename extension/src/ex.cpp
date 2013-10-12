@@ -707,7 +707,7 @@ void wxExEx::SetLastCommand(
   }
 }
  
-void wxExEx::SetRegistersDelete(const wxString& value)
+void wxExEx::SetRegistersDelete(const wxString& value) const
 {
   if (value.empty())
   {
@@ -724,6 +724,16 @@ void wxExEx::SetRegistersDelete(const wxString& value)
   m_Macros.SetRegister("1", m_STC->GetSelectedText());
 }
   
+void wxExEx::SetRegisterYank(const wxString& value) const
+{
+  if (value.empty())
+  {
+    return;
+  }
+  
+  m_Macros.SetRegister("0", value);
+}
+
 bool wxExEx::Substitute(
   const wxExAddressRange& range, 
   const wxString& patt,

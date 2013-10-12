@@ -245,7 +245,7 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (rest == "dd")
   {
-    wxExAddressRange(repeat).Delete();
+    wxExAddressRange(this, repeat).Delete();
   }
   else if (rest == "de")
   {

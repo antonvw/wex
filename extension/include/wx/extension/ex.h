@@ -101,7 +101,10 @@ public:
   int MarkerLine(const wxUniChar& marker) const;
   
   /// Sets delete registers 1 - 9 (if value not empty).
-  void SetRegistersDelete(const wxString& value);
+  void SetRegistersDelete(const wxString& value) const;
+  
+  /// Sets yank register (if value not empty).
+  void SetRegisterYank(const wxString& value) const;
   
   /// Set using ex mode.
   void Use(bool mode) {m_IsActive = mode;};

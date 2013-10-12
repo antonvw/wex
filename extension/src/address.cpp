@@ -17,12 +17,14 @@
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
 
 wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
   : wxString(address)
   , m_Ex(ex)
+  , m_Line(-1)
   , m_Pos(-1)
 {
 }
@@ -74,6 +76,11 @@ bool wxExAddress::Substitute(
     
 int wxExAddress::ToLine() const
 {
+  if (m_Line >= 0)
+  {
+    return m_Line;
+  }
+  
   wxString filtered_address(wxExSkipWhiteSpace(*this, ""));
   
   if (filtered_address.empty())
@@ -196,23 +203,30 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex)
 }
 
 wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
-  : m_Ex(ex)
+  : m_Begin(ex)
+  , m_End(ex)
+  , m_Ex(ex)
   , m_STC(ex->GetSTC())
 {
-  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-  m_Begin.m_Pos = m_STC->PositionFromLine(line);
-  m_End.m_Pos = m_STC->PositionFromLine(line + lines);
-  
-  if (m_Begin.m_Pos > m_End.m_Pos)
+  if (lines > 0)
   {
-    const int tmp = m_Begin.m_Pos;
-    m_Begin.m_Pos = m_End.m_Pos;
-    m_End.m_Pos = tmp;
+    m_Begin.m_Line = m_STC->LineFromPosition(m_STC->GetCurrentPos()) + 1;
+    m_End.m_Line = m_Begin.m_Line + lines - 1; 
+    
+    if (m_End.m_Line > m_STC->GetLineCount())
+    {
+      m_End.m_Line = m_STC->GetLineCount();
+    }
   }
-  
-  if (m_End.m_Pos == -1)
+  else
   {
-    m_End.m_Pos = m_STC->GetLastPosition();
+    m_End.m_Line = m_STC->LineFromPosition(m_STC->GetCurrentPos()) + 1;
+    m_Begin.m_Line = m_End.m_Line + lines - 1;
+    
+    if (m_Begin.m_Line < 1)
+    {
+      m_Begin.m_Line = 1;
+    }
   }
 }
 
@@ -248,7 +262,7 @@ bool wxExAddressRange::Delete() const
   }
   else
   {
-    if (!m_Register.empty())
+    if (!m_Ex->GetRegister().empty())
     {
       m_Ex->GetMacros().SetRegister(
         m_Ex->GetRegister(), m_STC->GetSelectedText());
@@ -276,9 +290,9 @@ bool wxExAddressRange::Delete() const
     }
   }
 
-  if (lines >= 2)
+  if (lines >= 3)
   {
-    m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("%d fewer lines"), lines));
+    m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("%d fewer lines"), lines - 1));
   }
 
   return true;
@@ -454,16 +468,6 @@ void wxExAddressRange::Set(const wxString& begin, const wxString& end)
   m_End.assign(end);
 }
 
-void wxExAddressRange::SetRegisterYank(const wxString& value)
-{
-  if (value.empty())
-  {
-    return;
-  }
-  
-  m_Ex.GetMacros().SetRegister("0", value);
-}
-
 bool wxExAddressRange::SetSelection() const
 {
   const int begin_line = m_Begin.ToLine();
@@ -474,18 +478,9 @@ bool wxExAddressRange::SetSelection() const
     return false;
   }
 
-  if (begin_line == end_line)
-  {
-    m_STC->SetSelection(
-      m_STC->PositionFromLine(begin_line - 1),
-      m_STC->PositionFromLine(end_line));
-  }
-  else
-  {
-    m_STC->SetSelection(
-      m_STC->PositionFromLine(begin_line - 1),
-      m_STC->GetLineEndPosition(end_line - 1));
-  }
+  m_STC->SetSelection(
+    m_STC->PositionFromLine(begin_line - 1),
+    m_STC->PositionFromLine(end_line));
 
   return true;
 }
@@ -552,13 +547,13 @@ bool wxExAddressRange::Yank() const
   }
 
   const wxString range(m_STC->GetTextRange(begin, end));
-  SetRegisterYank(range);
+  m_Ex->SetRegisterYank(range);
   
   const int lines = wxExGetNumberOfLines(range);
   
-  if (lines >= 2)
+  if (lines >= 3)
   {
-    m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("%d lines yanked"), lines));
+    m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("%d lines yanked"), lines - 1));
   }
 
   return true;
