@@ -68,6 +68,18 @@ void wxExGuiTestFixture::testAddressRange()
   
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1", "3").Delete());
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1", "3").Delete());
+  
+  stc->SetText("a\nb\nc\nd\ne\nf\n");
+  stc->GotoLineAndSelect(2);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Delete());
+  CPPUNIT_ASSERT( stc->GetLineCount() == 2);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 0).Delete());
+  CPPUNIT_ASSERT( stc->GetLineCount() == 2);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Yank());
+  CPPUNIT_ASSERT( stc->GetLineCount() == 7);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
+  stc->GotoLineAndSelect(1;
+  CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
 }
 
 void wxExGuiTestFixture::testConfigDialog()

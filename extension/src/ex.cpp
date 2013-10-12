@@ -89,7 +89,7 @@ bool wxExEx::Command(const wxString& command)
   }
   else if (command == ":d")
   {
-    return Delete(1);
+    return wxExAddressRange(this, 1).Delete();
   }
   else if (command.StartsWith(":e"))
   {
@@ -207,7 +207,7 @@ bool wxExEx::Command(const wxString& command)
   }
   else if (command == ":y")
   {
-    Yank(1);
+    wxExAddressRange(this, 1).Yank();
   }
   else if (command.Last() == '=')
   {
@@ -499,56 +499,6 @@ bool wxExEx::CommandSet(const wxString& command)
   return false;
 }
 
-bool wxExEx::Delete(int lines)
-{
-  if (m_STC->GetReadOnly() || m_STC->HexMode())
-  {
-    return false;
-  }
-  
-  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-  const int start_pos = m_STC->PositionFromLine(line);
-  const int end_pos = m_STC->PositionFromLine(line + lines);
-  const int linecount = m_STC->GetLineCount();
-    
-  m_STC->SetSelectionStart(start_pos);
-
-  if (end_pos != -1)
-  {
-    m_STC->SetSelectionEnd(end_pos);
-  }
-  else
-  {
-    m_STC->DocumentEndExtend();
-  }
-
-  if (m_STC->GetSelectedText().empty())
-  {
-    m_STC->DeleteBack();
-  }
-  else
-  {
-    if (!m_Register.empty())
-    {
-      m_Macros.SetRegister(m_Register, m_STC->GetSelectedText());
-      m_STC->ReplaceSelection(wxEmptyString);
-    }
-    else
-    {
-      m_STC->Cut();
-    }
-  }
-
-  if (lines >= 2)
-  {
-    m_Frame->ShowExMessage(
-      wxString::Format(_("%d fewer lines"), 
-      linecount - m_STC->GetLineCount()));
-  }
-  
-  return true;
-}
-
 bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
 {
   if (!m_IsActive)
@@ -774,16 +724,6 @@ void wxExEx::SetRegistersDelete(const wxString& value)
   m_Macros.SetRegister("1", m_STC->GetSelectedText());
 }
   
-void wxExEx::SetRegisterYank(const wxString& value)
-{
-  if (value.empty())
-  {
-    return;
-  }
-  
-  m_Macros.SetRegister("0", value);
-}
-
 bool wxExEx::Substitute(
   const wxExAddressRange& range, 
   const wxString& patt,
@@ -908,47 +848,4 @@ bool wxExEx::Substitute(
 
   return true;
 }
-
-void wxExEx::Yank(int lines)
-{
-  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-  const int start = m_STC->PositionFromLine(line);
-  const int end = m_STC->PositionFromLine(line + lines);
-
-  if (end != -1)
-  {
-    SetRegisterYank(m_STC->GetTextRange(start, end));
-  
-    if (!m_Register.empty())
-    {
-      m_Macros.SetRegister(m_Register, m_STC->GetTextRange(start, end));
-    }
-    else
-    {
-      m_STC->CopyRange(start, end);
-    }
-  }
-  else
-  {
-    SetRegisterYank(m_STC->GetTextRange(
-      start, m_STC->GetLastPosition()));
-      
-    if (!m_Register.empty())
-    {
-      m_Macros.SetRegister(
-        m_Register, 
-        m_STC->GetTextRange(start, m_STC->GetLastPosition()));
-    }
-    else
-    {  
-      m_STC->CopyRange(start, m_STC->GetLastPosition());
-    }
-  }
-  
-  if (lines >= 2)
-  {
-    m_Frame->ShowExMessage(wxString::Format(_("%d lines yanked"), lines));
-  }
-}
-
 #endif // wxUSE_GUI

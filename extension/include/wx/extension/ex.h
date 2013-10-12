@@ -52,6 +52,9 @@ public:
   /// Gets the macros.
   wxExViMacros& GetMacros() {return m_Macros;};
 
+  /// Returns register name.
+  const wxString& GetRegister() const {return m_Register;};
+  
   /// Returns search flags.
   int GetSearchFlags() const {return m_SearchFlags;};
   
@@ -100,18 +103,9 @@ public:
   /// Sets delete registers 1 - 9 (if value not empty).
   void SetRegistersDelete(const wxString& value);
   
-  /// Sets yank register (if value not empty).
-  void SetRegisterYank(const wxString& value);
-  
   /// Set using ex mode.
   void Use(bool mode) {m_IsActive = mode;};
 protected:
-  /// Deletes number of lines, starting at current line.
-  bool Delete(int lines);
-  
-  /// Returns register name.
-  const wxString& GetRegister() const {return m_Register;};
-  
   /// Sets last command.
   void SetLastCommand(
     const wxString& command,
@@ -119,9 +113,6 @@ protected:
   
   /// Sets register name.
   void SetRegister(const wxString& name) {m_Register = name;};
-    
-  /// Yanks number of lines, starting at current line.
-  void Yank(int lines);
 private:
   bool CommandGlobal(const wxString& search);
   bool CommandRange(const wxString& command);
