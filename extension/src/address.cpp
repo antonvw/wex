@@ -195,6 +195,27 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex)
   }
 }
 
+wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
+  : m_Ex(ex)
+  , m_STC(ex->GetSTC())
+{
+  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  m_Begin.m_Pos = m_STC->PositionFromLine(line);
+  m_End.m_Pos = m_STC->PositionFromLine(line + lines);
+  
+  if (m_Begin.m_Pos > m_End.m_Pos)
+  {
+    const int tmp = m_Begin.m_Pos;
+    m_Begin.m_Pos = m_End.m_Pos;
+    m_End.m_Pos = tmp;
+  }
+  
+  if (m_End.m_Pos == -1)
+  {
+    m_End.m_Pos = m_STC->GetLastPosition();
+  }
+}
+
 wxExAddressRange::wxExAddressRange(wxExEx* ex, 
   const wxString& begin, const wxString& end)
   : m_Begin(ex, begin)
@@ -221,7 +242,23 @@ bool wxExAddressRange::Delete() const
 
   const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
   
-  m_STC->Cut();
+  if (m_STC->GetSelectedText().empty())
+  {
+    m_STC->DeleteBack();
+  }
+  else
+  {
+    if (!m_Register.empty())
+    {
+      m_Ex->GetMacros().SetRegister(
+        m_Ex->GetRegister(), m_STC->GetSelectedText());
+      m_STC->ReplaceSelection(wxEmptyString);
+    }
+    else
+    {
+      m_STC->Cut();
+    }
+  }
 
   if (m_Begin.StartsWith("'"))
   {
@@ -417,6 +454,16 @@ void wxExAddressRange::Set(const wxString& begin, const wxString& end)
   m_End.assign(end);
 }
 
+void wxExAddressRange::SetRegisterYank(const wxString& value)
+{
+  if (value.empty())
+  {
+    return;
+  }
+  
+  m_Ex.GetMacros().SetRegister("0", value);
+}
+
 bool wxExAddressRange::SetSelection() const
 {
   const int begin_line = m_Begin.ToLine();
@@ -493,9 +540,19 @@ bool wxExAddressRange::Yank() const
     }
   }
 
-  m_STC->CopyRange(begin, end);
+  if (!m_Ex->GetRegister().empty())
+  {
+    m_Ex->GetMacros().SetRegister(
+      m_Ex->GetRegister(), 
+      m_STC->GetTextRange(begin, end));
+  }
+  else
+  {
+    m_STC->CopyRange(begin, end);
+  }
+
   const wxString range(m_STC->GetTextRange(begin, end));
-  m_Ex->SetRegisterYank(range);
+  SetRegisterYank(range);
   
   const int lines = wxExGetNumberOfLines(range);
   

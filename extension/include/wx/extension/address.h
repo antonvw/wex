@@ -41,7 +41,13 @@ class WXDLLIMPEXP_BASE wxExAddressRange
 {
 public:
   /// Constructor.
+  /// If there is a selection, sets begin and end position
+  /// accordingly.
   wxExAddressRange(wxExEx* ex);
+  
+  /// Constructor for a range from current position 
+  // extending with number of lines.
+  wxExAddressRange(wxExEx* ex, int lines);
   
   /// Constructor with begin and end address range.
   wxExAddressRange(wxExEx* ex, const wxString& begin, const wxString& end);
@@ -64,16 +70,16 @@ public:
   /// Indents range.
   bool Indent(bool forward = true) const;
   
-  /// Is range ok.
+  /// Is this range ok.
   bool IsOk() const;
   
   /// Moves range to destination.
   bool Move(const wxExAddress& destination) const;
   
-  /// Set begin and end addresses same value.
+  /// Sets begin and end addresses to the same value.
   void Set(const wxString& value);
   
-  /// Set from begin and end addresses.
+  /// Sets begin and end addresses.
   void Set(const wxString& begin, const wxString& end);
     
   /// Writes range to filename.
@@ -82,6 +88,9 @@ public:
   /// Yanks range.
   bool Yank() const;
 private:  
+  /// Sets yank register (if value not empty).
+  void SetRegisterYank(const wxString& value);
+  
   /// Sets selection from begin to end address.
   /// Returns false if address cannot be related to a line number.
   bool SetSelection() const;

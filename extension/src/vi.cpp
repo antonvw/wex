@@ -245,7 +245,7 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (rest == "dd")
   {
-     if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) Delete(repeat);
+    wxExAddressRange(repeat).Delete();
   }
   else if (rest == "de")
   {
@@ -402,7 +402,7 @@ bool wxExVi::Command(const wxString& command)
   }
   else if (rest == "yy")
   {
-    Yank(repeat);
+    wxExAddressRange(this, repeat).Yank();
   }
   else if (rest == "zc" || rest == "zo")
   {
