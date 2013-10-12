@@ -31,6 +31,7 @@ public:
   int ToLine() const;
 private:
   wxExEx* m_Ex;
+  int m_Line;
   int m_Pos;
 };
 
@@ -88,9 +89,6 @@ public:
   /// Yanks range.
   bool Yank() const;
 private:  
-  /// Sets yank register (if value not empty).
-  void SetRegisterYank(const wxString& value);
-  
   /// Sets selection from begin to end address.
   /// Returns false if address cannot be related to a line number.
   bool SetSelection() const;
