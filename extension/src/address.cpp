@@ -487,6 +487,11 @@ bool wxExAddressRange::SetSelection() const
 
 bool wxExAddressRange::Write(const wxString& filename) const
 {
+  if (!IsOk())
+  {
+    return false;
+  }
+
   if (m_STC->GetSelectedText().empty())
   {
     if (!SetSelection())
@@ -504,6 +509,11 @@ bool wxExAddressRange::Write(const wxString& filename) const
 
 bool wxExAddressRange::Yank() const
 {
+  if (!IsOk())
+  {
+    return false;
+  }
+
   if (m_STC->GetSelectedText().empty())
   {
     if (!SetSelection())
