@@ -307,7 +307,7 @@ bool wxExAddressRange::Filter(const wxString& command) const
   const int begin_line = m_Begin.ToLine();
   const int end_line = m_End.ToLine();
 
-  if (!IsOk() || begin_line == 0 || end_line == 0 || end_line < begin_line)
+  if (!IsOk() || end_line < begin_line)
   {
     return false;
   }
@@ -487,49 +487,26 @@ bool wxExAddressRange::SetSelection() const
 
 bool wxExAddressRange::Write(const wxString& filename) const
 {
-  int begin = m_Begin.m_Pos;
-  int end = m_End.m_Pos;
-    
   if (m_STC->GetSelectedText().empty())
   {
-    const int begin_line = m_Begin.ToLine();
-    const int end_line = m_End.ToLine();
-
-    if (!IsOk() || end_line < begin_line)
+    if (!SetSelection())
     {
       return false;
     }
-   
-    begin = m_STC->PositionFromLine(begin_line - 1);
-    end = m_STC->PositionFromLine(end_line);
   }
 
   wxFile file(filename, wxFile::write);
 
   return 
     file.IsOpened() && 
-    file.Write(m_STC->GetTextRange(begin, end));
+    file.Write(m_STC->GetSelectedText());
 }
 
 bool wxExAddressRange::Yank() const
 {
-  int begin = m_Begin.m_Pos;
-  int end = m_End.m_Pos;
-    
   if (m_STC->GetSelectedText().empty())
   {
-    const int begin_line = m_Begin.ToLine();
-    const int end_line = m_End.ToLine();
-
-    if (!IsOk())
-    {
-      return false;
-    }
-
-    begin = m_STC->PositionFromLine(begin_line - 1);
-    end = m_STC->PositionFromLine(end_line);
-  
-    if (begin == end)
+    if (!SetSelection())
     {
       return false;
     }
@@ -538,15 +515,14 @@ bool wxExAddressRange::Yank() const
   if (!m_Ex->GetRegister().empty())
   {
     m_Ex->GetMacros().SetRegister(
-      m_Ex->GetRegister(), 
-      m_STC->GetTextRange(begin, end));
+      m_Ex->GetRegister(), m_STC->GetSelectedText());
   }
   else
   {
-    m_STC->CopyRange(begin, end);
+    m_STC->Copy();
   }
 
-  const wxString range(m_STC->GetTextRange(begin, end));
+  const wxString range(m_STC->GetSelectedText());
   m_Ex->SetRegisterYank(range);
   
   const int lines = wxExGetNumberOfLines(range);
