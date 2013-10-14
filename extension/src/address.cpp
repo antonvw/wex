@@ -234,7 +234,7 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex,
 {
 }
 
-bool wxExAddressRange::Delete() const
+bool wxExAddressRange::Delete(bool show_message) const
 {
   if (!IsOk() || m_STC->GetReadOnly() || m_STC->HexMode())
   {
@@ -285,7 +285,7 @@ bool wxExAddressRange::Delete() const
     }
   }
 
-  if (lines >= 3)
+  if (lines >= 3 && show_message)
   {
     m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("%d fewer lines"), lines - 1));
   }
@@ -338,9 +338,10 @@ bool wxExAddressRange::Filter(const wxString& command) const
     if (!process.HasStdError())
     {      
       m_STC->BeginUndoAction();
-      
-      Delete();
+
+      Delete(false);
       m_STC->AddText(process.GetOutput());
+      m_STC->AddText(m_STC->GetEOL());
       
       m_STC->EndUndoAction();
       
