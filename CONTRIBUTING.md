@@ -10,7 +10,7 @@
 
 - make files are generated using [Bakefile 0.2.9](http://www.bakefile.org/)  
 
-- run [cppcheck 1.59](http://cppcheck.sourceforge.net/)
+- run [cppcheck 1.62](http://cppcheck.sourceforge.net/)
 
 - icons and bitmaps
   - menu and toolbar bitmaps are from wxWidgets, using wxArtProvider
