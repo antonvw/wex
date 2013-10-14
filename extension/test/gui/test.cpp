@@ -78,7 +78,7 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Yank());
   CPPUNIT_ASSERT( stc->GetLineCount() == 7);
   CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
-  stc->GotoLineAndSelect(1;
+  stc->GotoLineAndSelect(1);
   CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
 }
 

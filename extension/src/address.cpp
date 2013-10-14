@@ -25,7 +25,6 @@ wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
   : wxString(address)
   , m_Ex(ex)
   , m_Line(-1)
-  , m_Pos(-1)
 {
 }
 
@@ -196,10 +195,6 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex)
   , m_Ex(ex)
   , m_STC(ex->GetSTC())
 {
-  if (!m_STC->GetSelectedText().empty())
-  {
-    m_STC->GetSelection(&m_Begin.m_Pos, &m_End.m_Pos);
-  }
 }
 
 wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
@@ -478,9 +473,8 @@ bool wxExAddressRange::SetSelection() const
     return false;
   }
 
-  m_STC->SetSelection(
-    m_STC->PositionFromLine(begin_line - 1),
-    m_STC->PositionFromLine(end_line));
+  m_STC->SetCurrentPos(m_STC->PositionFromLine(begin_line - 1));
+  m_STC->SetAnchor(m_STC->PositionFromLine(end_line));
 
   return true;
 }

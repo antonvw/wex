@@ -32,7 +32,6 @@ public:
 private:
   wxExEx* m_Ex;
   int m_Line;
-  int m_Pos;
 };
 
 class wxExSTC;
