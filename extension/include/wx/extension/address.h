@@ -54,7 +54,7 @@ public:
   
   /// Deletes lines from range.
   /// Returns false if address cannot be related to a line number.
-  bool Delete() const;
+  bool Delete(bool show_message = true) const;
   
   /// Filters range with command.
   /// The address range is used as input for the command,
