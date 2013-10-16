@@ -5,6 +5,7 @@
 // Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -197,6 +198,34 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex)
 {
 }
 
+wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
+  : m_Begin(ex)
+  , m_End(ex)
+  , m_Ex(ex)
+  , m_STC(ex->GetSTC())
+{
+  if (range == ".")
+  {
+    Set(".", ".");
+  }
+  else if (range == "%")
+  {
+    Set("1", "$");
+  }
+  else if (range == "*")
+  {
+    std::stringstream ss;
+    ss << m_STC->GetFirstVisibleLine() + 1;
+    std::stringstream tt;
+    tt << m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() + 1;
+    Set(wxString(ss.str()), wxString(tt.str()));
+  }
+  else
+  {
+    Set(range.BeforeFirst(','), range.AfterFirst(','));
+  }
+}
+  
 wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
   : m_Begin(ex)
   , m_End(ex)
@@ -295,10 +324,6 @@ bool wxExAddressRange::Delete(bool show_message) const
 
 bool wxExAddressRange::Filter(const wxString& command) const
 {
-  // For example, the command:
-  // :96,99!sort
-  // will pass lines 96 through 99 through the sort (36.1) filter and 
-  // replace those lines with the output of sort.  
   const int begin_line = m_Begin.ToLine();
   const int end_line = m_End.ToLine();
 
@@ -450,12 +475,6 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
   }
 
   return true;
-}
-
-void wxExAddressRange::Set(const wxString& value)
-{
-  m_Begin.assign(value);
-  m_End.assign(value);
 }
 
 void wxExAddressRange::Set(const wxString& begin, const wxString& end)
