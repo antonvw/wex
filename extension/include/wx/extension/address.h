@@ -41,13 +41,18 @@ class WXDLLIMPEXP_BASE wxExAddressRange
 {
 public:
   /// Constructor.
-  /// If there is a selection, sets begin and end position
-  /// accordingly.
   wxExAddressRange(wxExEx* ex);
   
   /// Constructor for a range from current position 
-  // extending with number of lines.
+  /// extending with number of lines.
   wxExAddressRange(wxExEx* ex, int lines);
+  
+  /// Contructor for a range.
+  /// - . : current line 
+  /// - % : entire document
+  /// - * : current screen
+  /// <address>,<address> : range from begin and end address range.
+  wxExAddressRange(wxExEx* ex, const wxString& range);
   
   /// Constructor with begin and end address range.
   wxExAddressRange(wxExEx* ex, const wxString& begin, const wxString& end);
@@ -59,6 +64,10 @@ public:
   /// Filters range with command.
   /// The address range is used as input for the command,
   /// and the output of the command replaces the address range.
+  /// For example, the command:
+  /// :96,99!sort
+  /// will pass lines 96 through 99 through the sort filter and 
+  /// replace those lines with the output of sort.  
   bool Filter(const wxString& command) const;
   
   /// Gets begin address.
@@ -75,9 +84,6 @@ public:
   
   /// Moves range to destination.
   bool Move(const wxExAddress& destination) const;
-  
-  /// Sets begin and end addresses to the same value.
-  void Set(const wxString& value);
   
   /// Sets begin and end addresses.
   void Set(const wxString& begin, const wxString& end);

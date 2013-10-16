@@ -5,7 +5,6 @@
 // Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <sstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -351,9 +350,9 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
 bool wxExEx::CommandRange(const wxString& command)
 {
-  wxExAddressRange range(this);
   wxExAddress text(this);
-  
+
+  wxString range_str;  
   wxChar cmd;
 
   if (command.StartsWith("'<,'>"))
@@ -363,7 +362,7 @@ bool wxExEx::CommandRange(const wxString& command)
       return false;
     }
 
-    range.Set("'<", "'>");
+    range_str = "'<,'>";
     cmd = command.GetChar(5);
     text.assign(command.Mid(6));
   }
@@ -385,8 +384,6 @@ bool wxExEx::CommandRange(const wxString& command)
       }
     }
   
-    // [range]m[destination]
-    // [range]s/pattern/replacement/[options]
     wxStringTokenizer tkz(command, tokens);
   
     if (!tkz.HasMoreTokens())
@@ -394,38 +391,18 @@ bool wxExEx::CommandRange(const wxString& command)
       return false;
     }
 
-    const wxString range_str = tkz.GetNextToken();
+    range_str = tkz.GetNextToken();
     cmd = tkz.GetLastDelimiter();
-  
-    if (range_str == ".")
-    {
-      range.Set(range_str);
-    }
-    else if (range_str == "%")
-    {
-      range.Set("1", "$");
-    }
-    else if (range_str == "*")
-    {
-      std::stringstream ss;
-      ss << m_STC->GetFirstVisibleLine() + 1;
-      std::stringstream tt;
-      tt << m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() + 1;
-      range.Set(wxString(ss.str()), wxString(tt.str()));
-    }
-    else
-    {
-      range.Set(range_str.BeforeFirst(','), range_str.AfterFirst(','));
-    }
-  
-    if (!range.IsOk())
-    {
-      return false;
-    }
-    
     text.assign(tkz.GetString());
   }
 
+  wxExAddressRange range(this, range_str);
+  
+  if (!range.IsOk())
+  {
+    return false;
+  }
+    
   switch (cmd)
   {
   case 0: return false; break;
