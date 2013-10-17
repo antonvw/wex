@@ -350,8 +350,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
 bool wxExEx::CommandRange(const wxString& command)
 {
-  wxExAddress text(this);
-
+  wxString rest;
   wxString range_str;  
   wxChar cmd;
 
@@ -364,7 +363,7 @@ bool wxExEx::CommandRange(const wxString& command)
 
     range_str = "'<,'>";
     cmd = command.GetChar(5);
-    text.assign(command.Mid(6));
+    rest = command.Mid(6);
   }
   else
   {
@@ -393,44 +392,22 @@ bool wxExEx::CommandRange(const wxString& command)
 
     range_str = tkz.GetNextToken();
     cmd = tkz.GetLastDelimiter();
-    text.assign(tkz.GetString());
+    rest = tkz.GetString();
   }
 
   wxExAddressRange range(this, range_str);
   
-  if (!range.IsOk())
-  {
-    return false;
-  }
-    
   switch (cmd)
   {
   case 0: return false; break;
   case 'd': return range.Delete(); break;
-  case 'm': return range.Move(text); break;
+  case 'm': return range.Move(wxExAddress(this, rest)); break;
   case 'y': return range.Yank(); break;
-  case 'w': return range.Write(text); break;
+  case 'w': return range.Write(rest); break;
   case '>': return range.Indent(true); break;
   case '<': return range.Indent(false); break;
-  case '!': return range.Filter(text); break;
-    
-  case 's':
-    {
-    wxString pattern;
-    wxString replacement;
-    wxString options;
-    
-    if (text.Substitute(pattern, replacement, options))
-    {
-      return Substitute(range, pattern, replacement, options);
-    }
-    else
-    {
-      return false;
-    }
-    }
-    break;
-    
+  case '!': return range.Filter(rest); break;
+  case 's': return range.Substitute(rest); break;
   default:
     wxFAIL;
     return false;
@@ -711,128 +688,4 @@ void wxExEx::SetRegisterYank(const wxString& value) const
   m_Macros.SetRegister("0", value);
 }
 
-bool wxExEx::Substitute(
-  const wxExAddressRange& range, 
-  const wxString& patt,
-  const wxString& repl,
-  const wxString& options)
-{
-  if (m_STC->GetReadOnly() || m_STC->HexMode())
-  {
-    return false;
-  }
-  
-  const int begin_line = range.GetBegin().ToLine();
-  const int end_line = range.GetEnd().ToLine();
-
-  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
-  {
-    return false;
-  }
-  
-  if (!MarkerAdd('$', end_line - 1))
-  {
-    return false;
-  }
-
-  const wxString pattern = (patt == "~" ? m_Replacement: patt);
-  
-  m_Replacement = repl; 
-      
-  int searchFlags = m_SearchFlags;
-  
-  if (options.Contains("i")) searchFlags &= ~wxSTC_FIND_MATCHCASE;
-    
-  m_STC->SetSearchFlags(searchFlags);
-
-  int nr_replacements = 0;
-
-  m_STC->BeginUndoAction();
-  m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
-  m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('$')));
-
-  int result = wxID_YES;
-       
-  while (m_STC->SearchInTarget(pattern) != -1 && result != wxID_CANCEL)
-  {
-    wxString replacement(repl);
-    
-    if (replacement.Contains("&"))
-    {
-      wxString target = m_STC->GetTextRange(
-        m_STC->GetTargetStart(),
-        m_STC->GetTargetEnd());
-        
-      if (replacement.StartsWith("\\L"))
-      {
-        target.MakeLower();
-        replacement.Replace("\\L", wxEmptyString);
-      }
-      else if (replacement.StartsWith("\\U"))
-      {
-        target.MakeUpper();
-        replacement.Replace("\\U", wxEmptyString);
-      }
-    
-      replacement.Replace("&", target);
-    }
-    
-    if (options.Contains("c"))
-    {
-      wxMessageDialog msgDialog(m_STC, 
-        _("Replace") + " " + pattern + " " + _("with") + " " + replacement, 
-        _("Replace"), 
-        wxCANCEL | wxYES_NO);
-      
-      msgDialog.SetExtendedMessage(m_STC->GetLineText(
-        m_STC->LineFromPosition(m_STC->GetTargetStart())));
-      
-      result = msgDialog.ShowModal();
-        
-      if (result == wxID_YES)
-      {
-        m_STC->ReplaceTargetRE(replacement); // always RE!
-      }
-    }
-    else
-    {
-      m_STC->ReplaceTargetRE(replacement); // always RE!
-    }
-        
-    if (result != wxID_CANCEL)
-    {
-      if (options.Contains("g"))
-      {
-        m_STC->SetTargetStart(m_STC->GetTargetEnd());
-      }
-      else
-      {
-        m_STC->SetTargetStart(
-          m_STC->GetLineEndPosition(m_STC->LineFromPosition(
-            m_STC->GetTargetEnd())));
-      }
-  
-      m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('$')));
-    
-      if (result == wxID_YES)
-      {
-        nr_replacements++;
-      }
-    
-      if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
-      {
-        result = wxID_CANCEL;
-      }
-    }
-  }
-  
-  m_STC->EndUndoAction();
-  
-  MarkerDelete('$');
-
-  m_Frame->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
-    nr_replacements, pattern.c_str()));
-
-  return true;
-}
 #endif // wxUSE_GUI
