@@ -29,51 +29,6 @@ wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
 {
 }
 
-// Cannot be const because of Replace.
-bool wxExAddress::Substitute(
- wxString& pattern, wxString& replacement, wxString& options)
-{
-  // If there are escaped / chars in the text,
-  // temporarily replace them to an unused char, so
-  // we can use string tokenizer with / as separator.
-  bool escaped = false;
-  
-  if (Contains("\\/"))
-  {
-    if (!Contains(wxChar(1)))
-    {
-      Replace("\\/", wxChar(1));
-      escaped = true;
-    }
-    else
-    {
-      wxLogStatus("Cannot substitute, internal char exists");
-      return false;
-    }
-  }
-  
-  wxStringTokenizer next(*this, "/");
-
-  if (!next.HasMoreTokens())
-  {
-    return false;
-  }
-
-  next.GetNextToken(); // skip empty token
-  pattern = next.GetNextToken();
-  replacement = next.GetNextToken();
-  options = next.GetNextToken();
-  
-  // Restore a / for all occurrences of the special char.
-  if (escaped)
-  {  
-    pattern.Replace(wxChar(1), "/");
-    replacement.Replace(wxChar(1), "/");
-  }
-
-  return true;
-}
-    
 int wxExAddress::ToLine() const
 {
   if (m_Line >= 0)
@@ -477,6 +432,51 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
   return true;
 }
 
+bool wxExAddressRange::Parse(
+ const wxString& command, 
+ wxString& pattern, wxString& replacement, wxString& options) const
+{
+  // If there are escaped / chars in the text,
+  // temporarily replace them to an unused char, so
+  // we can use string tokenizer with / as separator.
+  bool escaped = false;
+  
+  if (Contains("\\/"))
+  {
+    if (!Contains(wxChar(1)))
+    {
+//      command.Replace("\\/", wxChar(1));
+      escaped = true;
+    }
+    else
+    {
+      wxLogStatus("Cannot substitute, internal char exists");
+      return false;
+    }
+  }
+  
+  wxStringTokenizer next(*this, "/");
+
+  if (!next.HasMoreTokens())
+  {
+    return false;
+  }
+
+  next.GetNextToken(); // skip empty token
+  pattern = next.GetNextToken();
+  replacement = next.GetNextToken();
+  options = next.GetNextToken();
+  
+  // Restore a / for all occurrences of the special char.
+  if (escaped)
+  {  
+    pattern.Replace(wxChar(1), "/");
+    replacement.Replace(wxChar(1), "/");
+  }
+
+  return true;
+}
+    
 void wxExAddressRange::Set(const wxString& begin, const wxString& end)
 {
   m_Begin.assign(begin);
@@ -495,6 +495,136 @@ bool wxExAddressRange::SetSelection() const
 
   m_STC->SetCurrentPos(m_STC->PositionFromLine(begin_line - 1));
   m_STC->SetAnchor(m_STC->PositionFromLine(end_line));
+
+  return true;
+}
+
+bool wxExAddressRange::Substitute(const wxString& command)
+{
+  if (
+    m_STC->GetReadOnly() || m_STC->HexMode() ||
+    // Currently this ignores seleced text, so
+    // better do nothing at all.
+   !m_STC->GetSelectedText().empy())
+  {
+    return false;
+  }
+  
+  wxString pattern;
+  wxString repl;
+  wxString options;
+    
+  if (!Substitute(command, pattern, repl, options))
+  {
+    return false;
+  }
+    
+  const int begin_line = m_Begin.ToLine();
+  const int end_line = m_End.ToLine();
+
+  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
+  {
+    return false;
+  }
+  
+  if (!m_Ex->MarkerAdd('$', end_line - 1))
+  {
+    return false;
+  }
+
+  const wxString pattern = (patt == "~" ? m_Replacement: patt);
+  
+  m_Replacement = repl; 
+      
+  int searchFlags = m_Ex->GetSearchFlags();
+  
+  if (options.Contains("i")) searchFlags &= ~wxSTC_FIND_MATCHCASE;
+    
+  m_STC->SetSearchFlags(searchFlags);
+  m_STC->BeginUndoAction();
+  m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
+  m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('$')));
+
+  int nr_replacements = 0;
+  int result = wxID_YES;
+       
+  while (m_STC->SearchInTarget(pattern) != -1 && result != wxID_CANCEL)
+  {
+    wxString replacement(repl);
+    
+    if (replacement.Contains("&"))
+    {
+      wxString target = m_STC->GetTextRange(
+        m_STC->GetTargetStart(),
+        m_STC->GetTargetEnd());
+        
+      if (replacement.StartsWith("\\L"))
+      {
+        target.MakeLower();
+        replacement.Replace("\\L", wxEmptyString);
+      }
+      else if (replacement.StartsWith("\\U"))
+      {
+        target.MakeUpper();
+        replacement.Replace("\\U", wxEmptyString);
+      }
+    
+      replacement.Replace("&", target);
+    }
+    
+    if (options.Contains("c"))
+    {
+      wxMessageDialog msgDialog(m_STC, 
+        _("Replace") + " " + pattern + " " + _("with") + " " + replacement, 
+        _("Replace"), 
+        wxCANCEL | wxYES_NO);
+      
+      msgDialog.SetExtendedMessage(m_STC->GetLineText(
+        m_STC->LineFromPosition(m_STC->GetTargetStart())));
+      
+      result = msgDialog.ShowModal();
+        
+      if (result == wxID_YES)
+      {
+        m_STC->ReplaceTargetRE(replacement); // always RE!
+      }
+    }
+    else
+    {
+      m_STC->ReplaceTargetRE(replacement); // always RE!
+    }
+        
+    if (result != wxID_CANCEL)
+    {
+      if (options.Contains("g"))
+      {
+        m_STC->SetTargetStart(m_STC->GetTargetEnd());
+      }
+      else
+      {
+        m_STC->SetTargetStart(
+          m_STC->GetLineEndPosition(m_STC->LineFromPosition(
+            m_STC->GetTargetEnd())));
+      }
+  
+      m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('$')));
+    
+      if (result == wxID_YES)
+      {
+        nr_replacements++;
+      }
+    
+      if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
+      {
+        result = wxID_CANCEL;
+      }
+    }
+  }
+  
+  m_STC->EndUndoAction();
+  m_Ex->MarkerDelete('$');
+  m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
+    nr_replacements, pattern.c_str()));
 
   return true;
 }

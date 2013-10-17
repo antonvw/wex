@@ -21,9 +21,6 @@ public:
   /// Constructor.
   wxExAddress(wxExEx* ex, const wxString& address = wxEmptyString);
   
-  /// Gets substitute values out of address.
-  bool Substitute(wxString& pattern, wxString& replacement, wxString& options);
-  
   /// Converts address to a real line number, filtering out markers
   /// and special characters.
   /// Returns 0 and bells on error in address, otherwise the vi line number,
@@ -70,12 +67,6 @@ public:
   /// replace those lines with the output of sort.  
   bool Filter(const wxString& command) const;
   
-  /// Gets begin address.
-  const wxExAddress& GetBegin() const {return m_Begin;};
-  
-  /// Gets end address.
-  const wxExAddress& GetEnd() const {return m_End;};
-  
   /// Indents range.
   bool Indent(bool forward = true) const;
   
@@ -85,8 +76,8 @@ public:
   /// Moves range to destination.
   bool Move(const wxExAddress& destination) const;
   
-  /// Sets begin and end addresses.
-  void Set(const wxString& begin, const wxString& end);
+  /// Substitutes range by /pattern/replace/optins in command.
+  bool Substitute(const wxString& command);
     
   /// Writes range to filename.
   bool Write(const wxString& filename) const;
@@ -94,9 +85,16 @@ public:
   /// Yanks range.
   bool Yank() const;
 private:  
+  /// Gets substitute values out of command.
+  bool Parse(const wxString& command, 
+    wxString& pattern, wxString& replacement, wxString& options) const;
+  /// Sets begin and end addresses.
+  void Set(const wxString& begin, const wxString& end);
   /// Sets selection from begin to end address.
   /// Returns false if address cannot be related to a line number.
   bool SetSelection() const;
+
+  wxString m_Replacement;
   
   wxExAddress m_Begin;
   wxExAddress m_End;

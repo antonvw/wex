@@ -120,11 +120,6 @@ private:
   bool CommandGlobal(const wxString& search);
   bool CommandRange(const wxString& command);
   bool CommandSet(const wxString& command);
-  bool Substitute(
-    const wxExAddressRange& range, 
-    const wxString& pattern,
-    const wxString& replacement,
-    const wxString& options);
     
   const wxExIndicator m_FindIndicator;
   const wxExMarker m_MarkerSymbol;
@@ -138,7 +133,6 @@ private:
   
   int m_SearchFlags;
   
-  wxString m_Replacement;
   wxString m_Register;
   
   wxExManagedFrame* m_Frame;  
