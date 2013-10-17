@@ -433,7 +433,7 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
 }
 
 bool wxExAddressRange::Parse(
- const wxString& command, 
+ const wxString& command_org, 
  wxString& pattern, wxString& replacement, wxString& options) const
 {
   // If there are escaped / chars in the text,
@@ -441,11 +441,13 @@ bool wxExAddressRange::Parse(
   // we can use string tokenizer with / as separator.
   bool escaped = false;
   
-  if (Contains("\\/"))
+  wxString command(command_org);
+  
+  if (command.Contains("\\/"))
   {
-    if (!Contains(wxChar(1)))
+    if (!command.Contains(wxChar(1)))
     {
-//      command.Replace("\\/", wxChar(1));
+      command.Replace("\\/", wxChar(1));
       escaped = true;
     }
     else
@@ -455,7 +457,7 @@ bool wxExAddressRange::Parse(
     }
   }
   
-  wxStringTokenizer next(*this, "/");
+  wxStringTokenizer next(command, "/");
 
   if (!next.HasMoreTokens())
   {
@@ -505,16 +507,16 @@ bool wxExAddressRange::Substitute(const wxString& command)
     m_STC->GetReadOnly() || m_STC->HexMode() ||
     // Currently this ignores seleced text, so
     // better do nothing at all.
-   !m_STC->GetSelectedText().empy())
+   !m_STC->GetSelectedText().empty())
   {
     return false;
   }
   
-  wxString pattern;
+  wxString patt;
   wxString repl;
   wxString options;
     
-  if (!Substitute(command, pattern, repl, options))
+  if (!Parse(command, patt, repl, options))
   {
     return false;
   }
@@ -607,7 +609,7 @@ bool wxExAddressRange::Substitute(const wxString& command)
             m_STC->GetTargetEnd())));
       }
   
-      m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('$')));
+      m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('$')));
     
       if (result == wxID_YES)
       {
