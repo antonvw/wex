@@ -76,7 +76,7 @@ public:
   /// Moves range to destination.
   bool Move(const wxExAddress& destination) const;
   
-  /// Substitutes range by /pattern/replace/optins in command.
+  /// Substitutes range by /pattern/replace/options in command.
   bool Substitute(const wxString& command);
     
   /// Writes range to filename.
