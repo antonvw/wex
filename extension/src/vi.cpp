@@ -432,23 +432,12 @@ bool wxExVi::Command(const wxString& command)
     wxPostEvent(wxTheApp->GetTopWindow(), 
       wxCloseEvent(wxEVT_CLOSE_WINDOW));
   }
-  else if (rest == ">>")
+  else if (rest == ">>" || rest == "<<")
   {
     switch (m_Mode)
     {
-      case MODE_NORMAL: wxExAddressRange(this, ".", 
-        wxString::Format(".+%ld", repeat - 1)).Indent(true); break;
-      case MODE_VISUAL: wxExAddressRange(this, "'<", "'>").Indent(true); break;
-    }
-  }
-  else if (rest == "<<")
-  {
-    switch (m_Mode)
-    {
-      case MODE_NORMAL: wxExAddressRange(this, ".",
-        wxString::Format(".+%ld", repeat)).Indent(false); break;
-      case MODE_VISUAL: wxExAddressRange(this, "'<", "'>").Indent(false);
-        break;
+      case MODE_NORMAL: wxExAddressRange(this, repeat).Indent(rest == ">>"); break;
+      case MODE_VISUAL: wxExAddressRange(this, "'<,'>").Indent(rest == ">>"); break;
     }
   }
   else if (OneLetterAfter("'", rest))

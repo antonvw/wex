@@ -13,16 +13,17 @@
 class wxExEx;
 class wxExAddressRange;
 
-/// Support class for ex address.
+/// Offers an address class to be used by vi address ranges.
 class WXDLLIMPEXP_BASE wxExAddress : public wxString
 {
   friend wxExAddressRange;
 public:
-  /// Constructor.
+  /// Constructor for the address.
+  /// You can specify line numbers, markers
+  /// and special characters (like $, ., + or -).
   wxExAddress(wxExEx* ex, const wxString& address = wxEmptyString);
   
-  /// Converts address to a real line number, filtering out markers
-  /// and special characters.
+  /// Converts the address to a line number.
   /// Returns 0 and bells on error in address, otherwise the vi line number,
   /// so subtract 1 for stc line number.
   int ToLine() const;
@@ -33,13 +34,10 @@ private:
 
 class wxExSTC;
 
-/// Support class for ex address range.
+/// Offers an address range for vi (ex).
 class WXDLLIMPEXP_BASE wxExAddressRange
 {
 public:
-  /// Constructor.
-  wxExAddressRange(wxExEx* ex);
-  
   /// Constructor for a range from current position 
   /// extending with number of lines.
   wxExAddressRange(wxExEx* ex, int lines);
@@ -50,9 +48,6 @@ public:
   /// - * : current screen
   /// <address>,<address> : range from begin and end address range.
   wxExAddressRange(wxExEx* ex, const wxString& range);
-  
-  /// Constructor with begin and end address range.
-  wxExAddressRange(wxExEx* ex, const wxString& begin, const wxString& end);
   
   /// Deletes lines from range.
   /// Returns false if address cannot be related to a line number.

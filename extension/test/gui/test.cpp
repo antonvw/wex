@@ -34,14 +34,11 @@ void wxExGuiTestFixture::testAddress()
   wxExEx* ex = new wxExEx(stc);
   stc->GotoLineAndSelect(2);
   
-  wxString pattern;
-  wxString replacement;
-  wxString options;
-  
   wxExAddress address(ex);
   CPPUNIT_ASSERT( address.ToLine() == 0);
-  CPPUNIT_ASSERT(!address.Substitute(pattern, replacement, options));
-  
+  CPPUNIT_ASSERT( wxExAddress(ex, "30").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "40").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "-40").ToLine() == 1);
   CPPUNIT_ASSERT( wxExAddress(ex, ".").ToLine() == 2);
   CPPUNIT_ASSERT( wxExAddress(ex, ".+1").ToLine() == 3);
   CPPUNIT_ASSERT( wxExAddress(ex, "$").ToLine() == 3);
@@ -56,21 +53,31 @@ void wxExGuiTestFixture::testAddressRange()
   stc->GotoLineAndSelect(2);
 
   CPPUNIT_ASSERT(!wxExAddressRange(ex).IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "x", "3").Delete());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "x").Filter("ls"));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "x").Indent());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "!").IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "@").Move(wxExAddress(ex, "2")));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1", "2").Move(wxExAddress(ex, "x")));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1", "3").Move(wxExAddress(ex, "2")));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3", "x").Write("flut"));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, " ", "").Yank());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").IsOk);
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "x").IsOk);
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "x,3").IsOk());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "x,3").Delete());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,x").Filter("ls"));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,x").Indent());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,!").IsOk());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,@").Move(wxExAddress(ex, "2")));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "x")));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,3").Move(wxExAddress(ex, "2")));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,x").Write("flut"));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, " ,").Yank());
   
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1", "3").Delete());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1", "3").Delete());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
+  
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").Substitute("/x/y"));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "2").Substitute("/x/y/f"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y"));
   
   stc->SetText("a\nb\nc\nd\ne\nf\n");
   stc->GotoLineAndSelect(2);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, -1).IsOk());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 0).IsOk());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Delete());
   CPPUNIT_ASSERT( stc->GetLineCount() == 2);
   CPPUNIT_ASSERT( wxExAddressRange(ex, 0).Delete());
