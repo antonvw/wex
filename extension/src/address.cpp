@@ -145,14 +145,6 @@ int wxExAddress::ToLine() const
   }
 }
 
-wxExAddressRange::wxExAddressRange(wxExEx* ex)
-  : m_Begin(ex)
-  , m_End(ex)
-  , m_Ex(ex)
-  , m_STC(ex->GetSTC())
-{
-}
-
 wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
   : m_Begin(ex)
   , m_End(ex)
@@ -175,9 +167,13 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
     tt << m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() + 1;
     Set(wxString(ss.str()), wxString(tt.str()));
   }
-  else
+  else if (range.Contains(","))
   {
     Set(range.BeforeFirst(','), range.AfterFirst(','));
+  }
+  else
+  {
+    Set(range, range);
   }
 }
   
@@ -207,15 +203,6 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
       m_Begin.m_Line = 1;
     }
   }
-}
-
-wxExAddressRange::wxExAddressRange(wxExEx* ex, 
-  const wxString& begin, const wxString& end)
-  : m_Begin(ex, begin)
-  , m_End(ex, end)
-  , m_Ex(ex)
-  , m_STC(ex->GetSTC())
-{
 }
 
 bool wxExAddressRange::Delete(bool show_message) const
@@ -433,8 +420,8 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
 }
 
 bool wxExAddressRange::Parse(
- const wxString& command_org, 
- wxString& pattern, wxString& replacement, wxString& options) const
+  const wxString& command_org, 
+  wxString& pattern, wxString& replacement, wxString& options) const
 {
   // If there are escaped / chars in the text,
   // temporarily replace them to an unused char, so
@@ -461,6 +448,7 @@ bool wxExAddressRange::Parse(
 
   if (!next.HasMoreTokens())
   {
+    wxLogStatus("Cannot substitute, missing slash");
     return false;
   }
 
@@ -468,6 +456,26 @@ bool wxExAddressRange::Parse(
   pattern = next.GetNextToken();
   replacement = next.GetNextToken();
   options = next.GetNextToken();
+  
+  if (pattern.empty())
+  {
+    wxLogStatus("Cannot substitute, pattern is empty");
+    return false;
+  }
+
+  if (!options.empty())
+  {
+    wxString filter(options);
+    filter.Replace("c", "");
+    filter.Replace("g", "");
+    filter.Replace("i", "");
+    
+    if (!filter.empty())
+    {
+      wxLogStatus("Cannot substitute, unsupported flags: " + filter);
+      return false;
+    }
+  }
   
   // Restore a / for all occurrences of the special char.
   if (escaped)
@@ -505,9 +513,9 @@ bool wxExAddressRange::Substitute(const wxString& command)
 {
   if (
     m_STC->GetReadOnly() || m_STC->HexMode() ||
-    // Currently this ignores seleced text, so
+    // Currently this ignores rectangles, so
     // better do nothing at all.
-   !m_STC->GetSelectedText().empty())
+    m_STC->SelectionIsRectangle())
   {
     return false;
   }
