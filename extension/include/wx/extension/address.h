@@ -21,7 +21,7 @@ public:
   /// Constructor for the address.
   /// You can specify line numbers, markers
   /// and special characters (like $, ., + or -).
-  wxExAddress(wxExEx* ex, const wxString& address = wxEmptyString);
+  wxExAddress(wxExEx* ex, const wxString& address);
   
   /// Converts the address to a line number.
   /// Returns 0 and bells on error in address, otherwise the vi line number,
@@ -39,8 +39,8 @@ class WXDLLIMPEXP_BASE wxExAddressRange
 {
 public:
   /// Constructor for a range from current position 
-  /// extending with number of lines.
-  wxExAddressRange(wxExEx* ex, int lines);
+  /// extending with number of lines (1 is current line).
+  wxExAddressRange(wxExEx* ex, int lines = 1);
   
   /// Contructor for a range.
   /// - . : current line 

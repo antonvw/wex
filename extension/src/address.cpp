@@ -146,8 +146,8 @@ int wxExAddress::ToLine() const
 }
 
 wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
-  : m_Begin(ex)
-  , m_End(ex)
+  : m_Begin(ex, "")
+  , m_End(ex, "")
   , m_Ex(ex)
   , m_STC(ex->GetSTC())
 {
@@ -178,8 +178,8 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
 }
   
 wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
-  : m_Begin(ex)
-  , m_End(ex)
+  : m_Begin(ex, "")
+  , m_End(ex, "")
   , m_Ex(ex)
   , m_STC(ex->GetSTC())
 {

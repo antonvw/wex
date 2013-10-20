@@ -412,8 +412,7 @@ void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
     m_ex->GetSTC()->FindNext(
       GetValue(),
       m_ex->GetSearchFlags(),
-      m_Prefix->GetLabel() == "/",
-      m_ModeVisual);
+      m_Prefix->GetLabel() == "/");
   }
 }
 
