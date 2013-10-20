@@ -193,6 +193,12 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
       m_End.m_Line = m_STC->GetLineCount();
     }
   }
+  else if (lines == 0)
+  {
+    // this is illegal
+    m_Begin.m_Line = 0;
+    m_End.m_Line = 0;
+  }
   else
   {
     m_End.m_Line = m_STC->LineFromPosition(m_STC->GetCurrentPos()) + 1;
