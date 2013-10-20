@@ -25,14 +25,6 @@
 
 #if wxUSE_GUI
 
-enum
-{
-  MODE_NORMAL,
-  MODE_INSERT,
-  // at this moment treated as visual_line mode
-  MODE_VISUAL,
-};
-
 // Returns true if after text only one letter is followed.
 bool OneLetterAfter(const wxString text, const wxString& letter)
 {
@@ -140,8 +132,7 @@ bool wxExVi::Command(const wxString& command)
       result = GetSTC()->FindNext(
         command.Mid(1),
         GetSearchFlags(),
-        m_SearchForward,
-        m_Mode == MODE_VISUAL);
+        m_SearchForward);
           
       if (result)
       {
@@ -437,7 +428,9 @@ bool wxExVi::Command(const wxString& command)
     switch (m_Mode)
     {
       case MODE_NORMAL: wxExAddressRange(this, repeat).Indent(rest == ">>"); break;
-      case MODE_VISUAL: wxExAddressRange(this, "'<,'>").Indent(rest == ">>"); break;
+      case MODE_VISUAL: 
+      case MODE_VISUAL_LINE: 
+        wxExAddressRange(this, "'<,'>").Indent(rest == ">>"); break;
     }
   }
   else if (OneLetterAfter("'", rest))
@@ -578,7 +571,7 @@ bool wxExVi::Command(const wxString& command)
 
   if (!handled)
   {  
-    if (m_Mode == MODE_VISUAL)
+    if (m_Mode == MODE_VISUAL || m_Mode == MODE_VISUAL_LINE)
     {
       const bool ok = wxExEx::Command(command + "'<,'>");
         
@@ -707,6 +700,8 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case 'b': 
+      VisualExtendLeftLine();
+      
       for (int i = 0; i < repeat; i++)
       {
         switch (m_Mode)
@@ -718,6 +713,8 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
 
     case 'e': 
+      VisualExtendRightLine();
+      
       for (int i = 0; i < repeat; i++) 
       {
         switch (m_Mode)
@@ -731,6 +728,8 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'g': GetSTC()->DocumentStart(); break;
       
     case 'h': 
+      VisualExtendLeftLine();
+      
       for (int i = 0; i < repeat; i++) 
       {
         if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0)
@@ -745,6 +744,8 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case 'j': 
+      VisualExtendRightLine();
+      
       for (int i = 0; i < repeat; i++) 
       {
          if (GetSTC()->GetCurrentLine() < GetSTC()->GetNumberOfLines())
@@ -753,6 +754,10 @@ bool wxExVi::CommandChar(int c, int repeat)
             {
               case MODE_NORMAL: GetSTC()->LineDown(); break;
               case MODE_VISUAL: GetSTC()->LineDownExtend(); break;
+              case MODE_VISUAL_LINE: 
+                GetSTC()->LineDownExtend(); 
+                GetSTC()->LineEndExtend(); 
+                break;
             }
          }
       }
@@ -760,12 +765,17 @@ bool wxExVi::CommandChar(int c, int repeat)
         
     case '+': 
     case WXK_RETURN:
+      VisualExtendLeftLine();
+      
       for (int i = 0; i < repeat; i++) 
       {
         switch (m_Mode)
         {
           case MODE_NORMAL: GetSTC()->LineDown(); break;
-          case MODE_VISUAL: GetSTC()->LineDownExtend(); break;
+          case MODE_VISUAL: 
+          case MODE_VISUAL_LINE: 
+            GetSTC()->LineDownExtend(); 
+          break;
         }
         
         for (int j = 1; j < GetSTC()->WrapCount(GetSTC()->GetCurrentLine()); j++)
@@ -773,7 +783,9 @@ bool wxExVi::CommandChar(int c, int repeat)
           switch (m_Mode)
           {
             case MODE_NORMAL: GetSTC()->LineDown(); break;
-            case MODE_VISUAL: GetSTC()->LineDownExtend(); break;
+            case MODE_VISUAL: 
+            case MODE_VISUAL_LINE: 
+              GetSTC()->LineDownExtend(); break;
           }
         }
       }
@@ -785,11 +797,14 @@ bool wxExVi::CommandChar(int c, int repeat)
         {
           case MODE_NORMAL: GetSTC()->VCHome(); break;
           case MODE_VISUAL: GetSTC()->VCHomeExtend(); break;
+          case MODE_VISUAL_LINE: GetSTC()->HomeExtend(); break;
         }
       }
       break;
         
     case 'k': 
+      VisualExtendLeftLine();
+      
       for (int i = 0; i < repeat; i++) 
       {
         if (GetSTC()->GetCurrentLine() > 0)
@@ -798,13 +813,33 @@ bool wxExVi::CommandChar(int c, int repeat)
           {
             case MODE_NORMAL: GetSTC()->LineUp(); break;
             case MODE_VISUAL: GetSTC()->LineUpExtend(); break;
+            case MODE_VISUAL_LINE: 
+              GetSTC()->LineUpExtend(); 
+              GetSTC()->HomeExtend(); 
+              break;
           }
         }
       }
       break;
         
     case '-': 
-      for (int i = 0; i < repeat; i++) GetSTC()->LineUp(); 
+      VisualExtendLeftLine();
+      
+      for (int i = 0; i < repeat; i++) 
+      {
+        if (GetSTC()->GetCurrentLine() > 0)
+        {
+          switch (m_Mode)
+          {
+            case MODE_NORMAL: GetSTC()->LineUp(); break;
+            case MODE_VISUAL: GetSTC()->LineUpExtend(); break;
+            case MODE_VISUAL_LINE: 
+              GetSTC()->LineUpExtend(); 
+              GetSTC()->HomeExtend(); 
+              break;
+          }
+        }
+      }
       
       if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) != 
           GetSTC()->GetLineIndentation(GetSTC()->GetCurrentLine()))
@@ -813,12 +848,15 @@ bool wxExVi::CommandChar(int c, int repeat)
         {
           case MODE_NORMAL: GetSTC()->VCHome(); break;
           case MODE_VISUAL: GetSTC()->VCHomeExtend(); break;
+          case MODE_VISUAL_LINE: GetSTC()->HomeExtend(); break;
         }
       }
       break;
         
     case 'l': 
     case ' ': 
+      VisualExtendRightLine();
+      
       for (int i = 0; i < repeat; i++) 
       {
         if (GetSTC()->GetCurrentPos() < 
@@ -828,6 +866,7 @@ bool wxExVi::CommandChar(int c, int repeat)
           {
             case MODE_NORMAL: GetSTC()->CharRight(); break;
             case MODE_VISUAL: GetSTC()->CharRightExtend(); break;
+            case MODE_VISUAL_LINE: break;
           }
         }
       }
@@ -870,6 +909,8 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'v': m_Mode = MODE_VISUAL; break;
       
     case 'w': 
+      VisualExtendRightLine();
+      
       for (int i = 0; i < repeat; i++) 
       {
         switch (m_Mode)
@@ -955,7 +996,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       Put(false); 
       break;
       
-    case 'V': m_Mode = MODE_VISUAL; break;
+    case 'V': m_Mode = MODE_VISUAL_LINE; break;
       
     case 'X': 
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) 
@@ -1068,11 +1109,6 @@ void wxExVi::FindWord(bool find_next)
     "\\<"+ wxExFindReplaceData::Get()->GetFindString() + "\\>", 
     GetSearchFlags(), 
     find_next);
-}
-
-bool wxExVi::GetInsertMode() const
-{
-  return m_Mode == MODE_INSERT;
 }
 
 void wxExVi::GotoBrace()
@@ -1505,6 +1541,24 @@ bool wxExVi::ToggleCase()
   return true;
 }
 
+void wxExVi::VisualExtendLeftLine()
+{
+  if (m_Mode == MODE_VISUAL_LINE && GetSTC()->GetSelectedText().empty())
+  {
+    GetSTC()->LineEnd();
+    GetSTC()->HomeExtend();
+  }
+}
+
+void wxExVi::VisualExtendRightLine()
+{
+  if (m_Mode == MODE_VISUAL_LINE && GetSTC()->GetSelectedText().empty())
+  {
+    GetSTC()->Home();
+    GetSTC()->LineEndExtend();
+  }
+}
+  
 bool wxExVi::YankedLines()
 {
   const wxString txt = (GetRegister().empty() ?

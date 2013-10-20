@@ -948,8 +948,7 @@ bool wxExSTC::FindNext(bool find_next)
 bool wxExSTC::FindNext(
   const wxString& text, 
   int search_flags,
-  bool find_next,
-  bool visual_mode)
+  bool find_next)
 {
   if (text.empty())
   {
@@ -995,7 +994,7 @@ bool wxExSTC::FindNext(
     if (!recursive)
     {
       recursive = true;
-      found = FindNext(text, search_flags, find_next, visual_mode);
+      found = FindNext(text, search_flags, find_next);
       recursive = false;
     }
     
@@ -1010,15 +1009,23 @@ bool wxExSTC::FindNext(
     
     recursive = false;
 
-    if (!visual_mode)
+    switch (m_vi.GetMode())
     {
-      SetSelection(GetTargetStart(), GetTargetEnd());
-      EnsureVisible(LineFromPosition(GetTargetStart()));
-    }
-    else
-    {
-      SetSelection(GetSelectionStart(), GetTargetEnd());
-      EnsureVisible(LineFromPosition(GetTargetEnd()));
+      case wxExVi::MODE_NORMAL:
+        SetSelection(GetTargetStart(), GetTargetEnd());
+        EnsureVisible(LineFromPosition(GetTargetStart()));
+      break;
+      case wxExVi::MODE_VISUAL:
+        SetSelection(GetSelectionStart(), GetTargetEnd());
+        EnsureVisible(LineFromPosition(GetTargetEnd()));
+      case wxExVi::MODE_VISUAL_LINE:
+        {
+        int begin = PositionFromLine(LineFromPosition(GetSelectionStart()));
+        int end = PositionFromLine(LineFromPosition(GetTargetEnd()) + 1);
+        SetSelection(begin, end);
+        EnsureVisible(LineFromPosition(GetTargetEnd()));
+        }
+      break;
     }
       
     EnsureCaretVisible();
@@ -2209,7 +2216,7 @@ bool wxExSTC::SetHexMode(
   bool modified,
   const wxCharBuffer& text)
 {
-  if (IsModified() || m_vi.GetInsertMode())
+  if (IsModified() || m_vi.GetMode() == wxExVi::MODE_INSERT)
   {
     return false;
   }

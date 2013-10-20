@@ -18,6 +18,15 @@ class wxExSTCEntryDialog;
 class WXDLLIMPEXP_BASE wxExVi : public wxExEx
 {
 public:
+  // The possible vi modes.
+  enum wxExViMode
+  {
+    MODE_NORMAL,      // normal, command or navigation, mode
+    MODE_INSERT,      // pressing key inserts key
+    MODE_VISUAL,      // navigation keys extend selection
+    MODE_VISUAL_LINE, // complete lines are selected
+  };
+
   /// Constructor.
   wxExVi(wxExSTC* stc);
   
@@ -25,11 +34,11 @@ public:
   /// Returns true if the command was executed.
   virtual bool Command(const wxString& command);
   
-  /// Returns whether we are in insert mode.
-  bool GetInsertMode() const;
-  
   /// Returns text to be inserted.
   const wxString& GetInsertText() const {return m_InsertText;};
+  
+  /// Returns the mode we are in.
+  int GetMode() const {return m_Mode;};
   
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
@@ -61,6 +70,8 @@ private:
     const wxString& command,
     int repeat = 1);
   bool ToggleCase(); 
+  void VisualExtendLeftLine();
+  void VisualExtendRightLine();
   bool YankedLines();   
 
   static wxExSTCEntryDialog* m_Dialog;
