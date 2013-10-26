@@ -141,7 +141,7 @@ bool wxExVi::Command(const wxString& command)
     }
     else
     {
-      if (m_Mode == MODE_VISUAL)
+      if (m_Mode == MODE_VISUAL || m_Mode == MODE_VISUAL_LINE)
       {
         GetFrame()->GetExCommand(this, command + "'<,'>");
       }
@@ -1139,6 +1139,24 @@ void wxExVi::GotoBrace()
         GetSTC()->SetSelection(brace_match, pos + 1);
       else
         GetSTC()->SetSelection(pos, brace_match + 1);
+    }
+  }
+  else if (m_Mode == MODE_VISUAL_LINE)
+  {
+    if (brace_match != wxSTC_INVALID_POSITION)
+    {
+      if (brace_match < pos)
+      {
+        GetSTC()->SetSelection(
+          GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(brace_match)), 
+          GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(pos) + 1));
+      }
+      else
+      {
+        GetSTC()->SetSelection(
+          GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(pos)), 
+          GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(brace_match) + 1));
+      }
     }
   }
 }
