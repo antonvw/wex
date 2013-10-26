@@ -1007,6 +1007,8 @@ void wxExGuiTestFixture::testManagedFrame()
   wxExSTC* stc = new wxExSTC(frame, "hello world");
   wxExVi* vi = &stc->GetVi();
   
+  CPPUNIT_ASSERT( frame->ExecExCommand("/") == NULL);
+  
   frame->GetExCommand(vi, "/");
   
   frame->HideExBar();
@@ -1016,9 +1018,13 @@ void wxExGuiTestFixture::testManagedFrame()
   
   frame->ShowExMessage("hello from frame");
   
+  frame->SyncAll();
+  frame->SyncCloseAll(0);
+  
   CPPUNIT_ASSERT( frame->TogglePane("VIBAR"));
   CPPUNIT_ASSERT( frame->GetManager().GetPane("VIBAR").IsShown());
   CPPUNIT_ASSERT(!frame->TogglePane("XXXXBAR"));
+  CPPUNIT_ASSERT(!frame->GetManager().GetPane("XXXXBAR").IsShown());
 }
 
 void wxExGuiTestFixture::testMarker()
@@ -1810,7 +1816,6 @@ void wxExGuiTestFixture::testVi()
   // First i enters insert mode, so is handled by vi, not to be skipped.
   event.m_uniChar = 'i';
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
   
   // Second i (and more) all handled by vi.
@@ -1972,7 +1977,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("ma"));
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
   
-  // Vi other command tests.
+  // Vi other command (commands that do not change mode) tests.
   commands.clear();
   commands.push_back("b");
   commands.push_back("e");
@@ -2146,6 +2151,32 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("2"));
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT( stc->GetText().Contains("XXXXX"));
+  
+  // Vi visual mode tests.
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  event.m_uniChar = 'v';
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL);
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  event.m_uniChar = 'V';
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_LINE);
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  
+  CPPUNIT_ASSERT( vi->Command("v"));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL);
+  CPPUNIT_ASSERT( vi->Command("jjj"));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL);
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  CPPUNIT_ASSERT( vi->Command("V"));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_LINE);
+  CPPUNIT_ASSERT( vi->Command("jjj"));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_LINE);
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
 }
   
 void wxExGuiTestFixture::testViMacros()
