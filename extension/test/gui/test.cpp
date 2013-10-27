@@ -71,22 +71,26 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").Substitute("/x/y"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "2").Substitute("/x/y/f"));
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/i"));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Substitute("/x/y/f"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/g"));
   
-  stc->SetText("a\nb\nc\nd\ne\nf\n");
-  stc->GotoLine(2);
+  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
+  stc->GotoLine(1);
   CPPUNIT_ASSERT( wxExAddressRange(ex, -1).IsOk());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Delete());
-  CPPUNIT_ASSERT( stc->GetLineCount() == 2);
+  CPPUNIT_ASSERT( stc->GetLineCount() == 3);
   CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).Delete());
-  CPPUNIT_ASSERT( stc->GetLineCount() == 2);
-  stc->GotoLine(1);
+  CPPUNIT_ASSERT( stc->GetLineCount() == 3);
+  stc->GotoLine(0);
   CPPUNIT_ASSERT( wxExAddressRange(ex, 2).Yank());
+  stc->SelectNone();
   stc->Paste();
-  CPPUNIT_ASSERT( stc->GetLineCount() == 4);
+  CPPUNIT_ASSERT( stc->GetLineCount() == 5);
   CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
-  stc->GotoLine(1);
+  stc->GotoLine(0);
   CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
 }
 
@@ -1007,7 +1011,7 @@ void wxExGuiTestFixture::testManagedFrame()
   wxExSTC* stc = new wxExSTC(frame, "hello world");
   wxExVi* vi = &stc->GetVi();
   
-  CPPUNIT_ASSERT( frame->ExecExCommand("/") == NULL);
+  CPPUNIT_ASSERT( frame->ExecExCommand(ID_EDIT_NEXT) == NULL);
   
   frame->GetExCommand(vi, "/");
   
@@ -1024,7 +1028,7 @@ void wxExGuiTestFixture::testManagedFrame()
   CPPUNIT_ASSERT( frame->TogglePane("VIBAR"));
   CPPUNIT_ASSERT( frame->GetManager().GetPane("VIBAR").IsShown());
   CPPUNIT_ASSERT(!frame->TogglePane("XXXXBAR"));
-  CPPUNIT_ASSERT(!frame->GetManager().GetPane("XXXXBAR").IsShown());
+  CPPUNIT_ASSERT(!frame->GetManager().GetPane("XXXXBAR").IsOk());
 }
 
 void wxExGuiTestFixture::testMarker()
