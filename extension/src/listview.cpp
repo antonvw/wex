@@ -1060,7 +1060,7 @@ void wxExListViewFileName::ItemActivated(long item_number)
     wxExListItem item(this, item_number);
   
     if (!item.GetFileName().FileExists() &&
-         item.GetFileName().DirExists())
+         wxDirExists(item.GetFileName().GetFullPath()))
     {
       wxTextEntryDialog dlg(this,
         _("Input") + ":",
