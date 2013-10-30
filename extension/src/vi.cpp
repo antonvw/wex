@@ -189,10 +189,15 @@ bool wxExVi::Command(const wxString& command)
   rest = wxString(pEnd);
   
   const int size = GetSTC()->GetLength();
-  
-  if (command == "0")
+ 
+  // Cannot be at CommandChar, as 0 is stripped from rest.
+  if (command == "0" || command == "^")
   {
-    GetSTC()->Home(); 
+    switch (m_Mode)
+    {
+      case MODE_NORMAL: GetSTC()->Home(); break;
+      case MODE_VISUAL: GetSTC()->HomeExtend(); break;
+    }
   }
   // Handle multichar commands.
   else if (rest.StartsWith("cc"))
@@ -1015,9 +1020,16 @@ bool wxExVi::CommandChar(int c, int repeat)
       m_Dot = false;
       break;
         
-    case '^': GetSTC()->Home(); break;
     case '~': return ToggleCase(); break;
-    case '$': GetSTC()->LineEnd(); break;
+    
+    case '$': 
+      switch (m_Mode)
+      {
+        case MODE_NORMAL: GetSTC()->LineEnd(); break;
+        case MODE_VISUAL: GetSTC()->LineEndExtend(); break;
+      }
+      break;
+    
     case '{': for (int i = 0; i < repeat; i++) GetSTC()->ParaUp(); break;
     case '}': for (int i = 0; i < repeat; i++) GetSTC()->ParaDown(); break;
     case '%': GotoBrace(); break;
