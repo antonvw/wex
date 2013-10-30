@@ -2054,7 +2054,9 @@ void wxExSTC::Reload(long flags)
 
   m_Flags = flags;
     
-  if ((m_Flags & STC_WIN_READ_ONLY) || !GetFileName().IsFileWritable())
+  if (
+    (m_Flags & STC_WIN_READ_ONLY) || 
+    (GetFileName().Exists() && !GetFileName().IsFileWritable()))
   {
     SetReadOnly(true);
   }
