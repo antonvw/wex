@@ -111,6 +111,8 @@ Copyright: (c) 2012, Anton van Wezenbeek
 
     <commands>
       <command> &amp;get </command>
+      <!-- print shows blame info -->
+      <command> &amp;print </command>
       <command> &amp;prs </command>
       <command> &amp;prt </command>
       <command> &amp;sccsdiff </command>
