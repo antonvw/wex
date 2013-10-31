@@ -65,8 +65,10 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <def no ="iv_real"/>
       <def no ="iv_lookforward"/>
       <def no ="iv_lookboth"/>
-    <!-- Macro's for wxExtension vi mode -->
+      
+      <!-- Macro's for wxExtension -->
       <def no ="ex_marknum_change"> 1 </def>
+      <!-- Macro for wxExtension vi markers -->
       <def no ="ex_marknum_vi"> 0 </def>
     </def>
 
@@ -1810,6 +1812,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> light blue </def>
         <def style ="identifier"> fore:black</def>
+        <def style ="label"> fore:medium slate blue,italic </def>
         <def style ="number"> fore:red </def>
         <def style ="operator"> fore:brown </def>
         <def style ="preprocessor"> fore:grey </def>
@@ -1838,6 +1841,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> light blue </def>
         <def style ="identifier"> fore:white</def>
+        <def style ="label"> fore:medium slate blue,italic </def>
         <def style ="number"> fore:red </def>
         <def style ="operator"> fore:white </def>
         <def style ="preprocessor"> fore:grey </def>
@@ -1874,7 +1878,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
     <marker no="marknum_folderopen"> mark_minus,folder </marker>
     
     <marker no="ex_marknum_change">mark_fullrect,green,light blue</marker>
-    <marker no="ex_marknum_vi"> mark_circle,blue,light blue </marker>
+    <marker no="ex_marknum_vi"> mark_circle,blue,turquoise </marker>
     
     <indicator no="0"> indic_box,styleindicatorfind </indicator>
     
@@ -1933,7 +1937,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
     ada folding is supported using next ada lexer:
     http://dlchnr.dl.funpic.de/in/LexAdaFF.zip   
     You have to put it in the 
-    wxWidgets-2.9.5\src\stc\scintilla\lexers
+    wxWidgets-3.0.x\src\stc\scintilla\lexers
     folder and rename it into LexAda, and rebuild wxWidgets
     -->
     <properties>
@@ -2358,7 +2362,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="verilog"/>
   <lexer name="vhdl"/>
   <lexer name="visualprolog"/>
-  <lexer display= "xml" name="hypertext">
+  <lexer display="xml" name="hypertext">
     <styles>
       <style no="tag"> tag </style>
       <style no="tagend"> tag </style>
