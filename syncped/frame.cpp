@@ -1380,7 +1380,7 @@ void Frame::StatusBarClicked(const wxString& pane)
 {
   if (pane == "PaneTheme")
   {
-    if (wxExLexers::Get()->ShowThemeDialog(this))
+    if (wxExLexers::Get()->ShowThemeDialog(m_Editors))
     {
       StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
 
