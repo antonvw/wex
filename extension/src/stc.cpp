@@ -1018,6 +1018,7 @@ bool wxExSTC::FindNext(
       case wxExVi::MODE_VISUAL:
         SetSelection(GetSelectionStart(), GetTargetEnd());
         EnsureVisible(LineFromPosition(GetTargetEnd()));
+      break;
       case wxExVi::MODE_VISUAL_LINE:
         {
         int begin = PositionFromLine(LineFromPosition(GetSelectionStart()));
