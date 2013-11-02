@@ -576,10 +576,21 @@ bool wxExVi::Command(const wxString& command)
 
   if (!handled)
   {  
-    return wxExEx::Command(command + 
-      (m_Mode == MODE_VISUAL || m_Mode == MODE_VISUAL_LINE ? 
-        "'<,'>": 
-        wxString(wxEmptyString)));
+    if (m_Mode == MODE_VISUAL || m_Mode == MODE_VISUAL_LINE)
+    {
+      if (!command.Contains("'<,'>"))
+      {
+        return wxExEx::Command(command + "'<,'>");
+      }
+      else
+      {
+        return wxExEx::Command(command);
+      }
+    }
+    else
+    {
+      return wxExEx::Command(command);
+    }
   }
   
   if (!m_Dot)
