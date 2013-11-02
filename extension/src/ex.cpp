@@ -409,7 +409,7 @@ bool wxExEx::CommandRange(const wxString& command)
   case '!': return range.Filter(rest); break;
   case 's': return range.Substitute(rest); break;
   default:
-    wxFAIL;
+    wxLogStatus("Unknown range command: %c", cmd);
     return false;
   }
 }
