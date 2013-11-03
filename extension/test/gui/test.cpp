@@ -600,11 +600,12 @@ void wxExGuiTestFixture::testHexMode()
   CPPUNIT_ASSERT(!hex.Replace('g'));
   CPPUNIT_ASSERT( hex.Replace('a'));
   CPPUNIT_ASSERT( hex.Replace('9'));
-  CPPUNIT_ASSERT( hex.Replace('b')); // (ascii ;)
+  CPPUNIT_ASSERT( hex.Replace('2'));
   CPPUNIT_ASSERT( hex.OtherField() != wxSTC_INVALID_POSITION);
   
+  stc->GetFile().FileSave(wxExFileName("test.hex"));
   stc->Reload();
-  CPPUNIT_ASSERT(stc->GetText() == "0;234567890123456789");
+  CPPUNIT_ASSERT(stc->GetText() == "02234567890123456789");
   
   // test ascii field
   stc->Reload(wxExSTC::STC_WIN_HEX);
@@ -617,8 +618,9 @@ void wxExGuiTestFixture::testHexMode()
   CPPUNIT_ASSERT( hex.Replace('x'));
   CPPUNIT_ASSERT( hex.OtherField() != wxSTC_INVALID_POSITION);
   
+  stc->GetFile().FileSave();
   stc->Reload();
-  CPPUNIT_ASSERT(stc->GetText() == "0;2345x7890123456789");
+  CPPUNIT_ASSERT(stc->GetText() == "022345x7890123456789");
   
   stc->Reload(wxExSTC::STC_WIN_HEX);
   hex.Set(63); // valid
