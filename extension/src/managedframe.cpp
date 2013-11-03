@@ -508,7 +508,14 @@ void wxExExTextCtrl::SetEx(wxExEx* ex, const wxString& range)
     {
       const wxString current(*m_Commands.begin());
       
-      SetValue((!current.StartsWith(range) ? range: wxString(wxEmptyString)) + current);
+      if (m_ModeVisual && !current.StartsWith(range))
+      {
+        SetValue(range + current); 
+      }
+      else
+      {
+        SetValue(current);
+      }
     }
   }
     

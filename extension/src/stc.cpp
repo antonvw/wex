@@ -176,18 +176,18 @@ void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
 
 bool wxExSTC::AutoIndentation(int c)
 {
-  bool nl = false;
+  bool is_nl = false;
   
   switch (GetEOLMode())
   {
-  case wxSTC_EOL_CR:   nl = (c == '\r'); break;
-  case wxSTC_EOL_CRLF: nl = (c== '\n'); break; // so ignore first \r
-  case wxSTC_EOL_LF:   nl = (c== '\n'); break;
+    case wxSTC_EOL_CR:   is_nl = (c == '\r'); break;
+    case wxSTC_EOL_CRLF: is_nl = (c== '\n'); break; // so ignore first \r
+    case wxSTC_EOL_LF:   is_nl = (c== '\n'); break;
   }
   
   const int currentLine = GetCurrentLine();
   
-  if (!nl || currentLine == 0)
+  if (!is_nl || currentLine == 0)
   {
     return false;
   }
@@ -202,16 +202,16 @@ bool wxExSTC::AutoIndentation(int c)
   if (level != m_FoldLevel)
   {
     if (level > m_FoldLevel)
-      {
-        indent += GetIndent();
-      }
-      else
-      {
-        indent -= GetIndent();
-        dec = true;
-      }
-      
-      m_FoldLevel = level;
+    {
+      indent += GetIndent();
+    }
+    else
+    {
+      indent -= GetIndent();
+      dec = true;
+    }
+    
+    m_FoldLevel = level;
   }
     
   if (indent == 0 && !dec) 
