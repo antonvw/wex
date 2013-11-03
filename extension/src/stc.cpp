@@ -1576,6 +1576,25 @@ void wxExSTC::MarkerNext(bool next)
 
 void wxExSTC::OnChar(wxKeyEvent& event)
 {
+  if (!m_vi.GetIsActive())
+  {
+    if (wxIsalnum(event.GetUnicodeKey()))
+    {
+      m_AddingChars = true;
+    }
+  }
+  else if (m_vi.GetMode() == wxExVi::MODE_INSERT)
+  {
+    if (wxIsalnum(event.GetUnicodeKey()))
+    {
+      m_AddingChars = true;
+    }
+  }
+  else
+  {
+    m_AddingChars = false;
+  }
+
   if (m_vi.OnChar(event))
   {
     if (
@@ -1835,11 +1854,6 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
     event.Skip();
     
     AutoIndentation(event.GetKey());
-    
-    if (!wxIsspace(event.GetKey()))
-    {
-      m_AddingChars = true;
-    }
   }
   else if (event.GetEventType() == wxEVT_STC_START_DRAG)
   {
