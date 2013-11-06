@@ -263,7 +263,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
   next.GetNextToken(); // skip empty token
   const wxString pattern = next.GetNextToken();
-  const wxString command = next.GetNextToken();
+  const wxChar command = next.GetNextToken().GetChar(0);
   const wxString skip = next.GetNextToken();
   const wxString replacement = next.GetNextToken();
   const int linecount = m_STC->GetLineCount();
@@ -283,19 +283,22 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
   while (m_STC->SearchInTarget(pattern) != -1)
   {
-    if (command == "d")
+    switch (command)
     {
-      const int begin = m_STC->PositionFromLine(
-        m_STC->LineFromPosition(m_STC->GetTargetStart()));
-      const int end = m_STC->PositionFromLine(
-        m_STC->LineFromPosition(m_STC->GetTargetEnd()) + 1);
-      
-      m_STC->Remove(begin, end);
-      m_STC->SetTargetStart(begin);
-      m_STC->SetTargetEnd(m_STC->GetTextLength());
-    }
-    else if (command == "p")
-    {
+      case 'd':
+      {
+        const int begin = m_STC->PositionFromLine(
+          m_STC->LineFromPosition(m_STC->GetTargetStart()));
+        const int end = m_STC->PositionFromLine(
+          m_STC->LineFromPosition(m_STC->GetTargetEnd()) + 1);
+        
+        m_STC->Remove(begin, end);
+        m_STC->SetTargetStart(begin);
+        m_STC->SetTargetEnd(m_STC->GetTextLength());
+      }
+      break;
+  
+    case 'p':
       print += m_STC->GetLine(m_STC->LineFromPosition(m_STC->GetTargetStart()));
         
       m_STC->SetIndicator(
@@ -303,9 +306,9 @@ bool wxExEx::CommandGlobal(const wxString& search)
       
       m_STC->SetTargetStart(m_STC->GetTargetEnd());
       m_STC->SetTargetEnd(m_STC->GetTextLength());
-    }
-    else if (command == "s")
-    {
+      break;
+      
+    case 's':
       m_STC->ReplaceTargetRE(replacement); // always RE!
       m_STC->SetTargetStart(m_STC->GetTargetEnd());
       m_STC->SetTargetEnd(m_STC->GetTextLength());
@@ -316,31 +319,31 @@ bool wxExEx::CommandGlobal(const wxString& search)
       {
         break;
       }
-    }
-    else
-    {
+      break;
+      
+    default:
       m_STC->EndUndoAction();
       return false;
     }
   }
   
-  if (command == "d")
+  switch (command)
   {
-    if (linecount - m_STC->GetLineCount() > 0)
-    {
-      m_Frame->ShowExMessage(
-        wxString::Format(_("%d fewer lines"), 
-        linecount - m_STC->GetLineCount()));
-    }
-  }
-  else if (command == "p")
-  {
-    m_Frame->OpenFile("print", print);
-  }
-  else if (command == 's')
-  {
-    m_Frame->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
-      nr_replacements, pattern.c_str()));
+    case 'd': 
+      if (linecount - m_STC->GetLineCount() > 0)
+      {
+        m_Frame->ShowExMessage(
+          wxString::Format(_("%d fewer lines"), 
+          linecount - m_STC->GetLineCount()));
+      }
+      break;
+    case 'p':
+      m_Frame->OpenFile("print", print);
+      break;
+    case 's':
+      m_Frame->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
+        nr_replacements, pattern.c_str()));
+      break;
   }
 
   m_STC->EndUndoAction();
