@@ -199,6 +199,10 @@ bool wxExVi::Command(const wxString& command)
       case MODE_VISUAL: GetSTC()->HomeExtend(); break;
     }
   }
+  else if (command == "G")
+  {
+    GetSTC()->DocumentEnd();
+  }
   // Handle multichar commands.
   else if (rest.StartsWith("cc"))
   {
@@ -956,16 +960,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       }
       break;
         
-    case 'G': 
-      if (repeat > 0)
-      {
-        GetSTC()->GotoLineAndSelect(repeat);
-      }
-      else
-      {
-        GetSTC()->DocumentEnd();
-      }
-      break;
+    case 'G': GetSTC()->GotoLineAndSelect(repeat); break;
         
     case 'H': GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine());
       break;
