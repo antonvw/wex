@@ -1025,8 +1025,38 @@ bool wxExVi::CommandChar(int c, int repeat)
       }
       break;
     
-    case '{': for (int i = 0; i < repeat; i++) GetSTC()->ParaUp(); break;
-    case '}': for (int i = 0; i < repeat; i++) GetSTC()->ParaDown(); break;
+    case '{': 
+      VisualExtendLeftLine();
+      
+      for (int i = 0; i < repeat; i++)
+      {
+        switch (m_Mode)
+        {
+          case MODE_NORMAL: GetSTC()->ParaUp(); break;
+          case MODE_VISUAL: 
+          case MODE_VISUAL_LINE: 
+            GetSTC()->ParaUpExtend(); 
+            break;
+        }
+      }
+      break;
+      
+    case '}': 
+      VisualExtendRightLine();
+      
+      for (int i = 0; i < repeat; i++) 
+      {
+        switch (m_Mode)
+        {
+          case MODE_NORMAL: GetSTC()->ParaDown(); break;
+          case MODE_VISUAL: 
+          case MODE_VISUAL_LINE: 
+            GetSTC()->ParaDownExtend(); 
+            break;
+        }
+      }
+      break;
+
     case '%': GotoBrace(); break;
 
     case '*': FindWord(); break;
@@ -1040,6 +1070,13 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
     case WXK_CONTROL_F:
       for (int i = 0; i < repeat; i++) GetSTC()->PageDown(); 
+      break;
+    case WXK_CONTROL_G:
+      GetFrame()->ShowExMessage(wxString::Format("%s line %d of %d --%d\%--", 
+        GetSTC()->GetFileName().GetFullName().c_str(), 
+        GetSTC()->GetCurrentLine() + 1,
+        GetSTC()->GetLineCount(),
+        100 * GetSTC()->GetCurrentLine() / GetSTC()->GetLineCount()));
       break;
     case WXK_CONTROL_J: 
       for (int i = 0; i < repeat; i++) ChangeNumber(false); 
