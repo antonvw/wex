@@ -941,17 +941,6 @@ bool wxExVi::CommandChar(int c, int repeat)
       }
       break;
         
-    case 'y': 
-      if (GetSTC()->CanCopy())
-      {
-        GetSTC()->Copy();
-      } 
-      else
-      {
-        return false;
-      }
-      break;
-
     case 'D': 
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
       {
@@ -1072,11 +1061,11 @@ bool wxExVi::CommandChar(int c, int repeat)
       for (int i = 0; i < repeat; i++) GetSTC()->PageDown(); 
       break;
     case WXK_CONTROL_G:
-      GetFrame()->ShowExMessage(wxString::Format("%s line %d of %d --%d\%--", 
+      GetFrame()->ShowExMessage(wxString::Format("%s line %d of %d --%d%%--", 
         GetSTC()->GetFileName().GetFullName().c_str(), 
         GetSTC()->GetCurrentLine() + 1,
         GetSTC()->GetLineCount(),
-        100 * GetSTC()->GetCurrentLine() / GetSTC()->GetLineCount()));
+        100 * (GetSTC()->GetCurrentLine() + 1)/ GetSTC()->GetLineCount()));
       break;
     case WXK_CONTROL_J: 
       for (int i = 0; i < repeat; i++) ChangeNumber(false); 
