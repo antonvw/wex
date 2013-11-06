@@ -33,7 +33,7 @@ bool OneLetterAfter(const wxString text, const wxString& letter)
 
 bool RegAfter(const wxString text, const wxString& letter)
 {
-  return wxRegEx("^" + text + "[0-9=\"a-z]$").Matches(letter);
+  return wxRegEx("^" + text + "[0-9=\"a-z%]$").Matches(letter);
 }
 
 wxExSTCEntryDialog* wxExVi::m_Dialog = NULL;
@@ -1110,9 +1110,16 @@ void wxExVi::CommandReg(const wxString& reg)
     Put(true);
   }
   // filename register
-  else  if (reg == "%")
+  else if (reg == "%")
   {
-    AddText(GetSTC()->GetFileName().GetFullName());
+    if (m_Mode == MODE_INSERT)
+    {
+      AddText(GetSTC()->GetFileName().GetFullName());
+    }
+    else
+    {
+      wxExClipboardAdd(GetSTC()->GetFileName().GetFullPath());
+    }
   }
   else if (m_Mode == MODE_INSERT)
   {
