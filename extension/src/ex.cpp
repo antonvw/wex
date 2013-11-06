@@ -654,6 +654,7 @@ void wxExEx::SetLastCommand(
   
   if (
       always || 
+      command == "~" || 
     ( command.StartsWith(":") && command.size() > 2) ||
     (!command.StartsWith(":") && command.size() > 1 && !command.StartsWith("\t")))
   {
