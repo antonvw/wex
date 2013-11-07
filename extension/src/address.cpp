@@ -594,9 +594,13 @@ bool wxExAddressRange::Substitute(const wxString& command)
         _("Replace") + " " + pattern + " " + _("with") + " " + replacement, 
         _("Replace"), 
         wxCANCEL | wxYES_NO);
+        
+      const int line = m_STC->LineFromPosition(m_STC->GetTargetStart());
       
-      msgDialog.SetExtendedMessage(m_STC->GetLineText(
-        m_STC->LineFromPosition(m_STC->GetTargetStart())));
+      msgDialog.SetExtendedMessage(wxString::Format("Line %d: %s", 
+        line + 1, m_STC->GetLineText(line).c_str()));
+        
+      m_STC->ScrollToLine(line);
       
       result = msgDialog.ShowModal();
         
