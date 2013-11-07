@@ -31,10 +31,42 @@
 #if wxUSE_GUI
 
 #if wxUSE_DRAG_AND_DROP
-class ListViewDropTarget : public wxTextDropTarget
+class FileDropTarget : public wxFileDropTarget
 {
 public:
-  ListViewDropTarget(wxExListView* lv) {m_ListView = lv;}
+  FileDropTarget(wxExListView* lv) {m_ListView = lv;}
+private:
+  virtual bool OnDropFiles(
+    wxCoord x, 
+    wxCoord y, 
+    const wxArrayString& filenames) 
+  {
+    // Only drop text if nothing is selected,
+    // so dropping on your own selection is impossible.
+    if (m_ListView->GetSelectedItemCount() == 0)
+    {
+      for (int i = 0; i < filenames.GetCount(); i++)
+      {
+        m_ListView->ItemFromText(filenames[i]);
+      }
+    
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  };
+        
+  wxExListView* m_ListView;
+};
+
+// A text drop target, is not used, but could
+// be used instead of the file drop target.
+class TextDropTarget : public wxTextDropTarget
+{
+public:
+  TextDropTarget(wxExListView* lv) {m_ListView = lv;}
 private:
   virtual bool OnDropText(
     wxCoord x, 
@@ -147,7 +179,9 @@ wxExListView::wxExListView(wxWindow* parent,
   , m_SortedColumnNo(-1)
 {
 #if wxUSE_DRAG_AND_DROP
-  SetDropTarget(new ListViewDropTarget(this));
+  // We can only have one drop target, we use file drop target,
+  // as list items can also be copied and pasted.
+  SetDropTarget(new FileDropTarget(this));
 #endif
 
   if (image_type != IMAGE_NONE)
