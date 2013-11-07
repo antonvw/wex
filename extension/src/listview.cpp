@@ -208,16 +208,6 @@ wxExListView::wxExListView(wxWindow* parent,
 
   SetFont(wxConfigBase::Get()->ReadObject(
     _("List Font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
-
-  wxAcceleratorEntry entries[4];
-
-  entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
-  entries[1].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
-  entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
-  entries[3].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-
-  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
-  SetAcceleratorTable(accel);
 }
 
 long wxExListView::AppendColumn(const wxExColumn& col)
