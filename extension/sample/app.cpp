@@ -245,14 +245,17 @@ wxExSampleFrame::wxExSampleFrame()
   SetupStatusBar(panes);
 #endif
 
-  if (!wxExLexers::Get()->GetDefaultStyle().IsOk())
+  if (wxExLexers::Get()->GetCount() > 0)
   {
-    wxMessageBox("lexers default style not ok");
-  }
-  
-  if (!wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle())
-  {
-    wxMessageBox("lexers default style does not contain default style");
+    if (!wxExLexers::Get()->GetDefaultStyle().IsOk())
+    {
+      wxMessageBox("lexers default style not ok");
+    }
+    
+    if (!wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle())
+    {
+      wxMessageBox("lexers default style does not contain default style");
+    }
   }
 }
 
