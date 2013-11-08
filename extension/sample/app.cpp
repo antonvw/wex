@@ -61,7 +61,7 @@ wxIMPLEMENT_APP(wxExSampleApp);
 
 bool wxExSampleApp::OnInit()
 {
-  SetAppName("wxExSample");
+  SetAppName("wxex-sample");
 
   if (!wxExApp::OnInit())
   {
