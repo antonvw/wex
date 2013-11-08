@@ -338,7 +338,10 @@ bool wxExEx::CommandGlobal(const wxString& search)
       }
       break;
     case 'p':
-      m_Frame->OpenFile("print", print);
+      if (!print.empty())
+      {
+        m_Frame->OpenFile("print", print);
+      }
       break;
     case 's':
       m_Frame->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
