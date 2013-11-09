@@ -51,7 +51,16 @@ void wxExGuiTestFixture::testAddressRange()
   wxExEx* ex = new wxExEx(stc);
   stc->GotoLineAndSelect(2);
 
+  // Test valid ranges.
   CPPUNIT_ASSERT( wxExAddressRange(ex).IsOk());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, -1).IsOk());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).IsOk());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").IsOk());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "*").IsOk());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, ".").IsOk());
+  
+  // Test invalid ranges.
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).IsOk());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").IsOk());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "x").IsOk());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "x,3").IsOk());
@@ -68,18 +77,17 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
   
+  // Test Substitute and flags.
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").Substitute("/x/y"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "2").Substitute("/x/y/f"));
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y"));
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/i"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Substitute("/x/y/f"));
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/g"));
-  
+
+  // Test implementation.  
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   stc->GotoLine(1);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, -1).IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).IsOk());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Delete());
   CPPUNIT_ASSERT( stc->GetLineCount() == 3);
   CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).Delete());
@@ -92,6 +100,11 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
   stc->GotoLine(0);
   CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
+  
+  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  CPPUNIT_ASSERT( stc->GetLineCount() == 8);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Filter("uniq"));
+  CPPUNIT_ASSERT( stc->GetLineCount() == 6);
 }
 
 void wxExGuiTestFixture::testConfigDialog()
@@ -386,7 +399,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT(!ex->MarkerGoto('a'));
   CPPUNIT_ASSERT(!ex->MarkerDelete('a'));
   
-  // Test global delete
+  // Test global delete.
   stc->AppendText("line xxxx 1 added\n");
   stc->AppendText("line xxxx 2 added\n");
   stc->AppendText("line xxxx 3 added\n");
@@ -397,6 +410,19 @@ void wxExGuiTestFixture::testEx()
   const int lines = stc->GetLineCount();
   CPPUNIT_ASSERT( ex->Command(":g/xxxx/d"));
   CPPUNIT_ASSERT( stc->GetLineCount() == lines - 6);
+  
+  // Test goto.
+  stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+  CPPUNIT_ASSERT( stc->GetLineCount() == 12);
+  stc->GotoLine(2);
+  CPPUNIT_ASSERT( ex->Command(":1"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
+  CPPUNIT_ASSERT( ex->Command(":-10"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
+  CPPUNIT_ASSERT( ex->Command(":10"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 9);
+  CPPUNIT_ASSERT( ex->Command(":10000"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 11);
 }
 
 void wxExGuiTestFixture::testFileDialog()
@@ -574,7 +600,7 @@ void wxExGuiTestFixture::testHexMode()
   
   hex.AppendText("0123456789");
 
-  // test the offset field  
+  // Test the offset field.
   CPPUNIT_ASSERT( hex.IsOffsetField());
   CPPUNIT_ASSERT(!hex.IsHexField());
   CPPUNIT_ASSERT(!hex.IsAsciiField());
@@ -587,7 +613,7 @@ void wxExGuiTestFixture::testHexMode()
   stc->Reload();
   CPPUNIT_ASSERT(stc->GetText() == "01234567890123456789");
   
-  // test hex field
+  // Test hex field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
   hex.Set(13); // 31 <- (ascii 1)
   CPPUNIT_ASSERT(!hex.IsOffsetField());
@@ -607,7 +633,7 @@ void wxExGuiTestFixture::testHexMode()
   stc->Reload();
   CPPUNIT_ASSERT(stc->GetText() == "02234567890123456789");
   
-  // test ascii field
+  // Test ascii field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
   hex.Set(63); // 6 <-
   CPPUNIT_ASSERT(!hex.IsOffsetField());
@@ -628,7 +654,7 @@ void wxExGuiTestFixture::testHexMode()
   hex.Set(9999); // invalid, should result in goto end
   CPPUNIT_ASSERT( hex.Goto());
   
-  // test hex field
+  // Test hex field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
   hex.Set(13); // 31 <- (ascii 1)
   CPPUNIT_ASSERT( hex.ReplaceHex(32));
@@ -731,14 +757,14 @@ void wxExGuiTestFixture::testLexers()
   
   CPPUNIT_ASSERT( wxExLexers::Get() != NULL);
   
-  // global macro
+  // Test global macro.
   CPPUNIT_ASSERT( wxExLexers::Get()->GetCount() > 0);
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("XXX") == "XXX");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("mark_lcorner") == "10");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("mark_circle") == "0");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("iv_none") == "0");
   
-  // lexer macro
+  // Test lexer macro.
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "asm") == "2");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "cpp") == "4");
   
@@ -855,7 +881,7 @@ void wxExGuiTestFixture::testLink()
   link(lnk, "test-special.h", wxGetHomeDir() + "/wxExtension/build/test-special.h");
   link(lnk, "  test-special.h", wxGetHomeDir() + "/wxExtension/build/test-special.h");
   
-  // Test output ls -l 
+  // Test output ls -l.
   // -rw-rw-r-- 1 anton anton  2287 nov 17 10:53 test.h
   link(lnk, "-rw-rw-r-- 1 anton anton 35278 nov 24 16:09 test.h", wxGetHomeDir() + "/wxExtension/build/test.h");
 
@@ -1555,7 +1581,7 @@ void wxExGuiTestFixture::testTextFile()
   CPPUNIT_ASSERT( textFile2.GetStatistics().Get(_("Actions Completed")) == 194);
 }
 
-void wxExGuiTestFixture::testToVector()
+void wxExGuiTestFixture::testToVectorString()
 {
   wxArrayString a;
   a.Add("x");
@@ -1861,6 +1887,8 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   event.m_keyCode = WXK_CONTROL_F;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  event.m_keyCode = WXK_CONTROL_G;
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
   event.m_keyCode = WXK_CONTROL_J;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   event.m_keyCode = WXK_CONTROL_P;
@@ -1894,7 +1922,7 @@ void wxExGuiTestFixture::testVi()
     
   CPPUNIT_ASSERT( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
   
-  // Vi insert command tests.
+  // Test MODE_INSERT commands.
   std::vector<wxString> commands;
   commands.push_back("a");
   commands.push_back("i");
@@ -1917,7 +1945,7 @@ void wxExGuiTestFixture::testVi()
     CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   }
   
-  // Vi insert command tests and delete command tests on readonly document.
+  // Test MODE_INSERT commands and delete command on readonly document.
   commands.push_back("dd");
   commands.push_back("d0");
   commands.push_back("d$");
@@ -1938,11 +1966,11 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT(!stc->GetModify());
   
+  // Test MODE_INSERT commands on hexmode document.
   stc->SetReadOnly(false);
   stc->Reload(wxExSTC::STC_WIN_HEX);
   CPPUNIT_ASSERT( stc->HexMode());
   
-  // Vi insert command tests on hexmode document.
   for (std::vector< wxString >::iterator it3 = commands.begin();
     it3 != commands.end();
     ++it3)
@@ -1958,7 +1986,8 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT(!stc->GetModify());
   stc->SetReadOnly(false);
-  
+
+  // Test insert command.  
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
@@ -1973,17 +2002,21 @@ void wxExGuiTestFixture::testVi()
   const wxString lastcmd = wxString("iyyyyy") + wxUniChar(esc);
 
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
-  
   CPPUNIT_ASSERT( vi->Command("."));
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
-  
   CPPUNIT_ASSERT( vi->Command(";"));
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
-  
   CPPUNIT_ASSERT( vi->Command("ma"));
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
   
-  // Vi other command (commands that do not change mode) tests.
+  CPPUNIT_ASSERT( vi->Command("100izz"));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
+  CPPUNIT_ASSERT(!stc->GetText().Contains("izz"));
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( stc->GetText().Contains(wxString('z', 200)));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  
+  // Test commands that do not change mode.
   commands.clear();
   commands.push_back("b");
   commands.push_back("e");
@@ -2026,24 +2059,38 @@ void wxExGuiTestFixture::testVi()
 //    CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
     CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   }
-  
+
+  // Test substitute command.
+  stc->SetText("xxxxxxxxxx\nxxxxxxxx\naaaaaaaaaa\n");
   CPPUNIT_ASSERT( vi->Command(":.="));
-  
   CPPUNIT_ASSERT( vi->Command(":1,$s/xx/yy/g"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("xx"));
   CPPUNIT_ASSERT( stc->GetText().Contains("yy"));
-  
   CPPUNIT_ASSERT( vi->GetLastCommand() == ":1,$s/xx/yy/g");
   
+  // Test change command.
+  stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
+  CPPUNIT_ASSERT( stc->GetLineCount() == 4);
+  CPPUNIT_ASSERT( vi->Command(":1"));
   CPPUNIT_ASSERT( vi->Command("cc"));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
+  CPPUNIT_ASSERT( vi->Command("zzz"));
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  CPPUNIT_ASSERT( stc->GetLineCount() == 4);
+  CPPUNIT_ASSERT( stc->GetLineText(0) == "zzz");
   
+  stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
   CPPUNIT_ASSERT( vi->Command(":1"));
   CPPUNIT_ASSERT( vi->Command("cw"));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
   CPPUNIT_ASSERT( vi->Command("zzz"));
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  CPPUNIT_ASSERT( stc->GetLineCount() == 4);
+  CPPUNIT_ASSERT( stc->GetLineText(0) == "zzz second");
+  
+  // Test delete command.
   CPPUNIT_ASSERT( vi->Command("dw"));
   CPPUNIT_ASSERT( vi->Command("3dw"));
   CPPUNIT_ASSERT( vi->GetLastCommand() == "3dw");
@@ -2052,6 +2099,17 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("d0"));
   CPPUNIT_ASSERT( vi->Command("d$"));
   
+  // Test back command.
+  stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
+  CPPUNIT_ASSERT( vi->Command(":1"));
+  CPPUNIT_ASSERT( vi->Command("w"));
+  CPPUNIT_ASSERT( vi->Command("x"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("second"));
+  CPPUNIT_ASSERT( vi->Command("p"));
+  // this is different from vi, that would put back s after e: escond
+  CPPUNIT_ASSERT( stc->GetText().Contains("second"));
+  
+  // Test other commands.
   CPPUNIT_ASSERT( vi->Command("fx"));
   CPPUNIT_ASSERT( vi->Command("Fx"));
   CPPUNIT_ASSERT( vi->Command(";"));
@@ -2078,7 +2136,7 @@ void wxExGuiTestFixture::testVi()
     "the chances of anything coming from mars"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("mathe"));
  
-  // Macro test.
+  // Test macro.
   // First load macros.
   CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
   
@@ -2096,7 +2154,7 @@ void wxExGuiTestFixture::testVi()
   // Next should be OK, but crashes due to input expand variable.
   //CPPUNIT_ASSERT( vi->Command("@hdr@"));
   
-  // Variable test.
+  // Test variable.
   stc->SetText("");
   CPPUNIT_ASSERT( vi->Command("@date@"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("date"));
@@ -2158,7 +2216,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT( stc->GetText().Contains("XXXXX"));
   
-  // Vi visual mode tests.
+  // Test MODE_VISUAL and MODE_VISUAL_LINE.
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   event.m_uniChar = 'v';
   CPPUNIT_ASSERT(!vi->OnChar(event));
@@ -2183,6 +2241,19 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_LINE);
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  
+  // Test goto.
+  stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+  CPPUNIT_ASSERT( stc->GetLineCount() == 12);
+  stc->GotoLine(2);
+  CPPUNIT_ASSERT( vi->Command("g"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
+  CPPUNIT_ASSERT( vi->Command("1G"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
+  CPPUNIT_ASSERT( vi->Command("10G"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 9);
+  CPPUNIT_ASSERT( vi->Command("10000G"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 11);
 }
   
 void wxExGuiTestFixture::testViMacros()
@@ -2236,7 +2307,7 @@ void wxExGuiTestFixture::testViMacros()
   
   CPPUNIT_ASSERT(!macros.Get().empty());
   
-  // Append to macro.
+  // Test append to macro.
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   macros.StartRecording("A");
   macros.Record('w');
@@ -2246,7 +2317,7 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT(!macros.IsRecorded("A"));
   CPPUNIT_ASSERT( macros.Get("a").front() == "a");
   
-  // Recursive macro.
+  // Test recursive macro.
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   macros.StartRecording("A");
   macros.Record('@');
@@ -2255,7 +2326,7 @@ void wxExGuiTestFixture::testViMacros()
   
   CPPUNIT_ASSERT(!macros.Playback(vi, "a"));
   
-  // Variables.
+  // Test variables.
   //CPPUNIT_ASSERT(!macros.Expand(vi, "xxx"));
 
   // Test all builtin macro variables.
@@ -2437,8 +2508,8 @@ wxExAppTestSuite::wxExAppTestSuite()
     &wxExGuiTestFixture::testTextFile));
 
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
-    "testToVector",
-    &wxExGuiTestFixture::testToVector));
+    "testToVectorString",
+    &wxExGuiTestFixture::testToVectorString));
     
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testUtil",
