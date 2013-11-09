@@ -104,7 +104,7 @@ public:
   void testSTCFile();
   void testStyle();
   void testTextFile();
-  void testToVector();
+  void testToVectorString();
   void testUtil();
   void testVariable();
   void testVCS();
