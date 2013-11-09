@@ -2,7 +2,7 @@
 // Name:      link.h
 // Purpose:   Declaration of class wxExLink
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXLINK_H
@@ -32,7 +32,7 @@ public:
     const wxString& text,
     /// line number to be filled in
     int& line_no,
-    // column to be filled in
+    /// column to be filled in
     int& column_no) const;
   
   /// Sets pathlist with info from config.
