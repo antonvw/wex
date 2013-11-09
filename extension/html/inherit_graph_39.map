@@ -1,3 +1,4 @@
-<map id="G" name="G">
-<area shape="rect" id="node1" href="$classwx_ex_v_c_s_command.html" title="This class contains a single vcs command." alt="" coords="5,5,144,35"/>
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classwx_ex_tool_bar.html" title="Offers a toolbar together with stock art." alt="" coords="5,5,101,33"/>
+<area shape="rect" id="node3" href="$classwx_ex_find_tool_bar.html" title="Offers a find toolbar, containing a find ctrl, up and down arrows and checkboxes." alt="" coords="151,5,271,33"/>
 </map>

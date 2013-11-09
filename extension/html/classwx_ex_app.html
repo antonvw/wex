@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v2.9.5</span>
+   &#160;<span id="projectnumber">v3.0</span>
    </div>
   </td>
  </tr>
@@ -70,10 +70,10 @@ const wxLocale &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class
 <tr class="memdesc:ab56cf55369547d98789291aeca96528d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the locale. <br/></td></tr>
 <tr class="separator:ab56cf55369547d98789291aeca96528d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89dad9cc1260497eb7c4091935ec39e7"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_app.html#a89dad9cc1260497eb7c4091935ec39e7">OnInit</a> ()</td></tr>
-<tr class="memdesc:a89dad9cc1260497eb7c4091935ec39e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs the config, and initializes the locale.  <a href="#a89dad9cc1260497eb7c4091935ec39e7">More...</a><br/></td></tr>
+<tr class="memdesc:a89dad9cc1260497eb7c4091935ec39e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs the config, initializes the locale, loads the VCS file.  <a href="#a89dad9cc1260497eb7c4091935ec39e7">More...</a><br/></td></tr>
 <tr class="separator:a89dad9cc1260497eb7c4091935ec39e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f62ac4ef0ca47e2b80106725d979be2"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_app.html#a5f62ac4ef0ca47e2b80106725d979be2">OnExit</a> ()</td></tr>
-<tr class="memdesc:a5f62ac4ef0ca47e2b80106725d979be2"><td class="mdescLeft">&#160;</td><td class="mdescRight">This deletes all global objects and cleans up things if necessary.  <a href="#a5f62ac4ef0ca47e2b80106725d979be2">More...</a><br/></td></tr>
+<tr class="memdesc:a5f62ac4ef0ca47e2b80106725d979be2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes all global objects and cleans up things if necessary.  <a href="#a5f62ac4ef0ca47e2b80106725d979be2">More...</a><br/></td></tr>
 <tr class="separator:a5f62ac4ef0ca47e2b80106725d979be2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -101,7 +101,7 @@ const wxLocale &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class
 </table>
 </div><div class="memdoc">
 
-<p>This deletes all global objects and cleans up things if necessary. </p>
+<p>Deletes all global objects and cleans up things if necessary. </p>
 <p>You should normally don't need to override it. </p>
 
 </div>
@@ -127,8 +127,8 @@ const wxLocale &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class
 </table>
 </div><div class="memdoc">
 
-<p>Constructs the config, and initializes the locale. </p>
-<p>In your class OnInit first set the app name, as it uses this name for the config, and then call this base class method. </p>
+<p>Constructs the config, initializes the locale, loads the VCS file. </p>
+<p>In your own OnInit first set the app name, as it uses this name for the config, and then call this base class method. </p>
 
 </div>
 </div>

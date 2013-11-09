@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v2.9.5</span>
+   &#160;<span id="projectnumber">v3.0</span>
    </div>
   </td>
  </tr>
@@ -47,6 +47,7 @@
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classwx_ex_frame_with_history-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">wxExFrameWithHistory Class Reference</div>  </div>
@@ -88,9 +89,9 @@ Public Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame_with_history.html#ad777f8c2787f7ded9be06d1690684aa7">FileHistoryPopupMenu</a> ()</td></tr>
 <tr class="memdesc:ad777f8c2787f7ded9be06d1690684aa7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a file history popup menu. <br/></td></tr>
 <tr class="separator:ad777f8c2787f7ded9be06d1690684aa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86299d471b950f3372c4c79db224ae05"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame_with_history.html#a86299d471b950f3372c4c79db224ae05">FindInFiles</a> (const wxArrayString &amp;files, int id, bool show_dialog=true, <a class="el" href="classwx_ex_list_view.html">wxExListView</a> *report=NULL)</td></tr>
-<tr class="memdesc:a86299d471b950f3372c4c79db224ae05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds (or replaces) in specified files.  <a href="#a86299d471b950f3372c4c79db224ae05">More...</a><br/></td></tr>
-<tr class="separator:a86299d471b950f3372c4c79db224ae05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa986fac7b13fb55d849308499520361a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame_with_history.html#aa986fac7b13fb55d849308499520361a">FindInFiles</a> (const std::vector&lt; wxString &gt; &amp;files, int id, bool show_dialog=true, <a class="el" href="classwx_ex_list_view.html">wxExListView</a> *report=NULL)</td></tr>
+<tr class="memdesc:aa986fac7b13fb55d849308499520361a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds (or replaces) in specified files.  <a href="#aa986fac7b13fb55d849308499520361a">More...</a><br/></td></tr>
+<tr class="separator:aa986fac7b13fb55d849308499520361a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a250171c6e6bca81870ecc1420b488e58"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame_with_history.html#a250171c6e6bca81870ecc1420b488e58">FindInFilesDialog</a> (int id, bool add_in_files=false)</td></tr>
 <tr class="memdesc:a250171c6e6bca81870ecc1420b488e58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a modal find (or replace) in files dialog.  <a href="#a250171c6e6bca81870ecc1420b488e58">More...</a><br/></td></tr>
 <tr class="separator:a250171c6e6bca81870ecc1420b488e58"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -148,27 +149,30 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#a6aa2a78f878ea0945ec6c731ef329e22">~wxExManagedFrame</a> ()</td></tr>
 <tr class="memdesc:a6aa2a78f878ea0945ec6c731ef329e22 inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor, uninits the aui manager. <br/></td></tr>
 <tr class="separator:a6aa2a78f878ea0945ec6c731ef329e22 inherit pub_methods_classwx_ex_managed_frame"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d66b55e223536000377cf7a393a1c2e inherit pub_methods_classwx_ex_managed_frame"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4d66b55e223536000377cf7a393a1c2e"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#a4d66b55e223536000377cf7a393a1c2e">AllowClose</a> (wxWindowID id, wxWindow *page)</td></tr>
-<tr class="memdesc:a4d66b55e223536000377cf7a393a1c2e inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the page can be closed. <br/></td></tr>
+<tr class="memitem:a4d66b55e223536000377cf7a393a1c2e inherit pub_methods_classwx_ex_managed_frame"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#a4d66b55e223536000377cf7a393a1c2e">AllowClose</a> (wxWindowID id, wxWindow *page)</td></tr>
+<tr class="memdesc:a4d66b55e223536000377cf7a393a1c2e inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the page can be closed.  <a href="#a4d66b55e223536000377cf7a393a1c2e">More...</a><br/></td></tr>
 <tr class="separator:a4d66b55e223536000377cf7a393a1c2e inherit pub_methods_classwx_ex_managed_frame"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ee0e00d9749ec47541bc099424e6e45 inherit pub_methods_classwx_ex_managed_frame"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#a6ee0e00d9749ec47541bc099424e6e45">ExecExCommand</a> (int command)</td></tr>
 <tr class="memdesc:a6ee0e00d9749ec47541bc099424e6e45 inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes a ex command that can result in changing stc, if command is being played back.  <a href="#a6ee0e00d9749ec47541bc099424e6e45">More...</a><br/></td></tr>
 <tr class="separator:a6ee0e00d9749ec47541bc099424e6e45 inherit pub_methods_classwx_ex_managed_frame"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af310df1ee5b4b509b3ebb174e7314a7b inherit pub_methods_classwx_ex_managed_frame"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#af310df1ee5b4b509b3ebb174e7314a7b">GetExCommand</a> (<a class="el" href="classwx_ex_ex.html">wxExEx</a> *ex, const wxString &amp;label)</td></tr>
-<tr class="memdesc:af310df1ee5b4b509b3ebb174e7314a7b inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a command line vi command.  <a href="#af310df1ee5b4b509b3ebb174e7314a7b">More...</a><br/></td></tr>
+<tr class="memdesc:af310df1ee5b4b509b3ebb174e7314a7b inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a command line ex command.  <a href="#af310df1ee5b4b509b3ebb174e7314a7b">More...</a><br/></td></tr>
 <tr class="separator:af310df1ee5b4b509b3ebb174e7314a7b inherit pub_methods_classwx_ex_managed_frame"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7635cd6f9b4167bed4ae175c70ba86d inherit pub_methods_classwx_ex_managed_frame"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa7635cd6f9b4167bed4ae175c70ba86d"></a>
 wxAuiManager &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#aa7635cd6f9b4167bed4ae175c70ba86d">GetManager</a> ()</td></tr>
 <tr class="memdesc:aa7635cd6f9b4167bed4ae175c70ba86d inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the manager. <br/></td></tr>
 <tr class="separator:aa7635cd6f9b4167bed4ae175c70ba86d inherit pub_methods_classwx_ex_managed_frame"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3196ae7f46e269e8e0152396eb36c293 inherit pub_methods_classwx_ex_managed_frame"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#a3196ae7f46e269e8e0152396eb36c293">HideExBar</a> (bool set_focus=true)</td></tr>
-<tr class="memdesc:a3196ae7f46e269e8e0152396eb36c293 inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hides the vi bar.  <a href="#a3196ae7f46e269e8e0152396eb36c293">More...</a><br/></td></tr>
+<tr class="memdesc:a3196ae7f46e269e8e0152396eb36c293 inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hides the ex bar.  <a href="#a3196ae7f46e269e8e0152396eb36c293">More...</a><br/></td></tr>
 <tr class="separator:a3196ae7f46e269e8e0152396eb36c293 inherit pub_methods_classwx_ex_managed_frame"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0bf9f86938fbca6b92b96ae6f56d5ba inherit pub_methods_classwx_ex_managed_frame"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af0bf9f86938fbca6b92b96ae6f56d5ba"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#af0bf9f86938fbca6b92b96ae6f56d5ba">ShowExMessage</a> (const wxString &amp;text)</td></tr>
-<tr class="memdesc:af0bf9f86938fbca6b92b96ae6f56d5ba inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows text in vi bar. <br/></td></tr>
+<tr class="memdesc:af0bf9f86938fbca6b92b96ae6f56d5ba inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows text in ex bar. <br/></td></tr>
 <tr class="separator:af0bf9f86938fbca6b92b96ae6f56d5ba inherit pub_methods_classwx_ex_managed_frame"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adee1026f902ad1a0dfcc492ae97ba44d inherit pub_methods_classwx_ex_managed_frame"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adee1026f902ad1a0dfcc492ae97ba44d"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#adee1026f902ad1a0dfcc492ae97ba44d">SyncAll</a> ()</td></tr>
+<tr class="memdesc:adee1026f902ad1a0dfcc492ae97ba44d inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called after you checked the Sync checkbox on the toolbar. <br/></td></tr>
+<tr class="separator:adee1026f902ad1a0dfcc492ae97ba44d inherit pub_methods_classwx_ex_managed_frame"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa123c09518e2fc006aa4351b11a8c475 inherit pub_methods_classwx_ex_managed_frame"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa123c09518e2fc006aa4351b11a8c475"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#aa123c09518e2fc006aa4351b11a8c475">SyncCloseAll</a> (wxWindowID id)</td></tr>
 <tr class="memdesc:aa123c09518e2fc006aa4351b11a8c475 inherit pub_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called after all pages from the notebooks are deleted. <br/></td></tr>
@@ -227,6 +231,18 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a70df418ee75ae0c79fa13800c812c0bf inherit pub_methods_classwx_ex_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do something when statusbar is (right) clicked. <br/></td></tr>
 <tr class="separator:a70df418ee75ae0c79fa13800c812c0bf inherit pub_methods_classwx_ex_frame"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a9509423ba565321a689d431d78d4bc06"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9509423ba565321a689d431d78d4bc06"></a>
+<a class="el" href="classwx_ex_list_view.html">wxExListView</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame_with_history.html#a9509423ba565321a689d431d78d4bc06">GetFileHistoryList</a> ()</td></tr>
+<tr class="memdesc:a9509423ba565321a689d431d78d4bc06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Access tp file history list, if you use this as a page in a notebook,. <br/></td></tr>
+<tr class="separator:a9509423ba565321a689d431d78d4bc06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classwx_ex_managed_frame"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classwx_ex_managed_frame')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classwx_ex_managed_frame.html">wxExManagedFrame</a></td></tr>
+<tr class="memitem:ac601321bfb3a70f5b62119be7b3ae76c inherit pro_methods_classwx_ex_managed_frame"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac601321bfb3a70f5b62119be7b3ae76c"></a>
+<a class="el" href="classwx_ex_tool_bar.html">wxExToolBar</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#ac601321bfb3a70f5b62119be7b3ae76c">GetToolBar</a> ()</td></tr>
+<tr class="memdesc:ac601321bfb3a70f5b62119be7b3ae76c inherit pro_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the toolbar. <br/></td></tr>
+<tr class="separator:ac601321bfb3a70f5b62119be7b3ae76c inherit pro_methods_classwx_ex_managed_frame"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_static_methods_classwx_ex_frame"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classwx_ex_frame')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classwx_ex_frame.html">wxExFrame</a></td></tr>
@@ -244,11 +260,6 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame.html#a700b1d9a6c537fb761135d8c9d70e8cd">UpdateStatusBar</a> (<a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a> *stc, const wxString &amp;pane)</td></tr>
 <tr class="memdesc:a700b1d9a6c537fb761135d8c9d70e8cd inherit pub_static_methods_classwx_ex_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the specified statusbar pane with values from specified stc. <br/></td></tr>
 <tr class="separator:a700b1d9a6c537fb761135d8c9d70e8cd inherit pub_static_methods_classwx_ex_frame"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classwx_ex_managed_frame"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classwx_ex_managed_frame')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classwx_ex_managed_frame.html">wxExManagedFrame</a></td></tr>
-<tr class="memitem:ac601321bfb3a70f5b62119be7b3ae76c inherit pro_methods_classwx_ex_managed_frame"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac601321bfb3a70f5b62119be7b3ae76c"></a>
-<a class="el" href="classwx_ex_tool_bar.html">wxExToolBar</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_managed_frame.html#ac601321bfb3a70f5b62119be7b3ae76c">GetToolBar</a> ()</td></tr>
-<tr class="memdesc:ac601321bfb3a70f5b62119be7b3ae76c inherit pro_methods_classwx_ex_managed_frame"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the toolbar. <br/></td></tr>
-<tr class="separator:ac601321bfb3a70f5b62119be7b3ae76c inherit pro_methods_classwx_ex_managed_frame"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Adds file and project history support to <a class="el" href="classwx_ex_managed_frame.html" title="Offers an aui managed frame with a notebook multiple document interface, used by the notebook classes...">wxExManagedFrame</a>. </p>
@@ -365,14 +376,14 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="a86299d471b950f3372c4c79db224ae05"></a>
+<a class="anchor" id="aa986fac7b13fb55d849308499520361a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">bool wxExFrameWithHistory::FindInFiles </td>
           <td>(</td>
-          <td class="paramtype">const wxArrayString &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; wxString &gt; &amp;&#160;</td>
           <td class="paramname"><em>files</em>, </td>
         </tr>
         <tr>

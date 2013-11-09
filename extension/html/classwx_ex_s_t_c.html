@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v2.9.5</span>
+   &#160;<span id="projectnumber">v3.0</span>
    </div>
   </td>
  </tr>
@@ -101,7 +101,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a4fe59f74ef66b3006c8270c41fa51c03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br/></td></tr>
 <tr class="separator:a4fe59f74ef66b3006c8270c41fa51c03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af89bdb7a43608af39448c8f7a24587f6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#af89bdb7a43608af39448c8f7a24587f6">wxExSTC</a> (wxWindow *parent, const <a class="el" href="classwx_ex_file_name.html">wxExFileName</a> &amp;filename, int line_number=0, const wxString &amp;match=wxEmptyString, int col_number=0, long win_flags=<a class="el" href="classwx_ex_s_t_c.html#a04bdc486a1d63436a3b7245ff26c7096aa65ef6dffc24b5139abbd9fa4e170d45">STC_WIN_DEFAULT</a>, long menu_flags=<a class="el" href="classwx_ex_s_t_c.html#a43213a12b8cd1c082982105d71df96c5a236dc9508e6f57bbe6f6aab6b8b71a26">STC_MENU_DEFAULT</a>, wxWindowID id=wxID_ANY, const wxPoint &amp;pos=wxDefaultPosition, const wxSize &amp;size=wxDefaultSize, long style=0)</td></tr>
-<tr class="memdesc:af89bdb7a43608af39448c8f7a24587f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor, opens the file.  <a href="#af89bdb7a43608af39448c8f7a24587f6">More...</a><br/></td></tr>
+<tr class="memdesc:af89bdb7a43608af39448c8f7a24587f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor, opens the file if it exists.  <a href="#af89bdb7a43608af39448c8f7a24587f6">More...</a><br/></td></tr>
 <tr class="separator:af89bdb7a43608af39448c8f7a24587f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9798ff873e12d27473bfe284fd0896a2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9798ff873e12d27473bfe284fd0896a2"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a9798ff873e12d27473bfe284fd0896a2">wxExSTC</a> (const <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a> &amp;stc)</td></tr>
@@ -130,10 +130,14 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a8865f2e9543055587bf11c03609db701">ConfigGet</a> (bool init=false)</td></tr>
 <tr class="memdesc:a8865f2e9543055587bf11c03609db701"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the configurable parameters to values currently in config. <br/></td></tr>
 <tr class="separator:a8865f2e9543055587bf11c03609db701"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a08b8c6251f905ac09bbb71a6351a5ccb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a08b8c6251f905ac09bbb71a6351a5ccb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a08b8c6251f905ac09bbb71a6351a5ccb">Cut</a> ()</td></tr>
-<tr class="memdesc:a08b8c6251f905ac09bbb71a6351a5ccb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cuts text to clipboard. <br/></td></tr>
-<tr class="separator:a08b8c6251f905ac09bbb71a6351a5ccb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d07af4b3313d3b7383c39e09d580a8c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0d07af4b3313d3b7383c39e09d580a8c"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a0d07af4b3313d3b7383c39e09d580a8c">Copy</a> ()</td></tr>
+<tr class="memdesc:a0d07af4b3313d3b7383c39e09d580a8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies text to clipboard. <br/></td></tr>
+<tr class="separator:a0d07af4b3313d3b7383c39e09d580a8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2750c007700a53d1eb00bdac22e127c3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2750c007700a53d1eb00bdac22e127c3"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a2750c007700a53d1eb00bdac22e127c3">Cut</a> ()</td></tr>
+<tr class="memdesc:a2750c007700a53d1eb00bdac22e127c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cuts text to clipboard. <br/></td></tr>
+<tr class="separator:a2750c007700a53d1eb00bdac22e127c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a853c0aaa9b18ab6886bade7e6d8504c8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a853c0aaa9b18ab6886bade7e6d8504c8"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a853c0aaa9b18ab6886bade7e6d8504c8">FileTypeMenu</a> ()</td></tr>
 <tr class="memdesc:a853c0aaa9b18ab6886bade7e6d8504c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a menu with current line type checked, and allows you to change it. <br/></td></tr>
@@ -142,9 +146,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#af2c56b266ef2cbdea8d123a25dbfa8c7">FindNext</a> (bool find_next=true)</td></tr>
 <tr class="memdesc:af2c56b266ef2cbdea8d123a25dbfa8c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds next with settings from find replace data. <br/></td></tr>
 <tr class="separator:af2c56b266ef2cbdea8d123a25dbfa8c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad65d764d5ee7fd89ad4ed3acde175148"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#ad65d764d5ee7fd89ad4ed3acde175148">FindNext</a> (const wxString &amp;text, int search_flags=0, bool find_next=true, bool visual_mode=false)</td></tr>
-<tr class="memdesc:ad65d764d5ee7fd89ad4ed3acde175148"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds next.  <a href="#ad65d764d5ee7fd89ad4ed3acde175148">More...</a><br/></td></tr>
-<tr class="separator:ad65d764d5ee7fd89ad4ed3acde175148"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e17b40be6e48dec97790a32514bfe22"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a6e17b40be6e48dec97790a32514bfe22">FindNext</a> (const wxString &amp;text, int search_flags=0, bool find_next=true)</td></tr>
+<tr class="memdesc:a6e17b40be6e48dec97790a32514bfe22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds next.  <a href="#a6e17b40be6e48dec97790a32514bfe22">More...</a><br/></td></tr>
+<tr class="separator:a6e17b40be6e48dec97790a32514bfe22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7d3db8817f55a0345c0448136f6e779"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#ab7d3db8817f55a0345c0448136f6e779">Fold</a> (bool foldall=false)</td></tr>
 <tr class="memdesc:ab7d3db8817f55a0345c0448136f6e779"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables or disables folding depending on fold property.  <a href="#ab7d3db8817f55a0345c0448136f6e779">More...</a><br/></td></tr>
 <tr class="separator:ab7d3db8817f55a0345c0448136f6e779"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -196,14 +200,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#aeaa5e112e8c298d1e4202e69a3dc7050">HexMode</a> () const </td></tr>
 <tr class="memdesc:aeaa5e112e8c298d1e4202e69a3dc7050"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if we are in hex mode. <br/></td></tr>
 <tr class="separator:aeaa5e112e8c298d1e4202e69a3dc7050"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91b6a05d716bc83bfce1d2901d99a972"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a91b6a05d716bc83bfce1d2901d99a972"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a91b6a05d716bc83bfce1d2901d99a972">Indent</a> (int begin, int end, bool forward)</td></tr>
-<tr class="memdesc:a91b6a05d716bc83bfce1d2901d99a972"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indent range of lines. <br/></td></tr>
-<tr class="separator:a91b6a05d716bc83bfce1d2901d99a972"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85b768fe4d8fa1078453dd21e4c333df"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a85b768fe4d8fa1078453dd21e4c333df"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a85b768fe4d8fa1078453dd21e4c333df">Indent</a> (int lines, bool forward=true)</td></tr>
-<tr class="memdesc:a85b768fe4d8fa1078453dd21e4c333df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indents lines from current position. <br/></td></tr>
-<tr class="separator:a85b768fe4d8fa1078453dd21e4c333df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a870af273812e6f7e58ba2ccebb980719"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a870af273812e6f7e58ba2ccebb980719">MarkerDeleteAllChange</a> ()</td></tr>
 <tr class="memdesc:a870af273812e6f7e58ba2ccebb980719"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes all change markers.  <a href="#a870af273812e6f7e58ba2ccebb980719">More...</a><br/></td></tr>
 <tr class="separator:a870af273812e6f7e58ba2ccebb980719"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -263,6 +259,10 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a560eaea7bfa02c2c66a53adac3a7bfe0">SetIndicator</a> (const <a class="el" href="classwx_ex_indicator.html">wxExIndicator</a> &amp;indicator, int start, int end)</td></tr>
 <tr class="memdesc:a560eaea7bfa02c2c66a53adac3a7bfe0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets an indicator at specified start and end pos. <br/></td></tr>
 <tr class="separator:a560eaea7bfa02c2c66a53adac3a7bfe0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42d7dc8da92c6bfcddfab8ed27f11cc1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a42d7dc8da92c6bfcddfab8ed27f11cc1"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a42d7dc8da92c6bfcddfab8ed27f11cc1">SetLexer</a> (const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> &amp;lexer, bool fold=false)</td></tr>
+<tr class="memdesc:a42d7dc8da92c6bfcddfab8ed27f11cc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the (scintilla) lexer for this document. <br/></td></tr>
+<tr class="separator:a42d7dc8da92c6bfcddfab8ed27f11cc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8728cc518cf0843560f5d2dcf38e285"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8728cc518cf0843560f5d2dcf38e285"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#aa8728cc518cf0843560f5d2dcf38e285">SetLexer</a> (const wxString &amp;lexer, bool fold=false)</td></tr>
 <tr class="memdesc:aa8728cc518cf0843560f5d2dcf38e285"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the (scintilla) lexer for this document. <br/></td></tr>
@@ -282,10 +282,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ad13fa6c57c43bd7aa563bb371e431efa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#ad13fa6c57c43bd7aa563bb371e431efa">Sync</a> (bool start=true)</td></tr>
 <tr class="memdesc:ad13fa6c57c43bd7aa563bb371e431efa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts or stops syncing.  <a href="#ad13fa6c57c43bd7aa563bb371e431efa">More...</a><br/></td></tr>
 <tr class="separator:ad13fa6c57c43bd7aa563bb371e431efa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3fd0cda17ba9886cede6c6d0a36356c1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3fd0cda17ba9886cede6c6d0a36356c1"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a3fd0cda17ba9886cede6c6d0a36356c1">Undo</a> ()</td></tr>
-<tr class="memdesc:a3fd0cda17ba9886cede6c6d0a36356c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Undo one action in the undo history. <br/></td></tr>
-<tr class="separator:a3fd0cda17ba9886cede6c6d0a36356c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adda5139126fb566e48893d954c031a02"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adda5139126fb566e48893d954c031a02"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#adda5139126fb566e48893d954c031a02">UseModificationMarkers</a> (bool use)</td></tr>
 <tr class="memdesc:adda5139126fb566e48893d954c031a02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use and show modification markers in the margin. <br/></td></tr>
@@ -334,12 +330,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:a3f939fc89d38a8dab06bc32f0e0ff6be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3f939fc89d38a8dab06bc32f0e0ff6be"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>wxExSTCFile</b></td></tr>
-<tr class="separator:a3f939fc89d38a8dab06bc32f0e0ff6be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9482bca971ff8e04a4ed33b87334121c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9482bca971ff8e04a4ed33b87334121c"></a>
 class&#160;</td><td class="memItemRight" valign="bottom"><b>wxExHexModeLine</b></td></tr>
 <tr class="separator:a9482bca971ff8e04a4ed33b87334121c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f939fc89d38a8dab06bc32f0e0ff6be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3f939fc89d38a8dab06bc32f0e0ff6be"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><b>wxExSTCFile</b></td></tr>
+<tr class="separator:a3f939fc89d38a8dab06bc32f0e0ff6be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Offers a styled text ctrl with find/replace, printing, popup menu, macro support, vi support and lexer support (syntax colouring, folding). </p>
@@ -505,7 +501,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>wxExHexModeLine</b><
       </table>
 </div><div class="memdoc">
 
-<p>Constructor, opens the file. </p>
+<p>Constructor, opens the file if it exists. </p>
 <p>See also Open. </p>
 
 </div>
@@ -578,7 +574,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>wxExHexModeLine</b><
 
 </div>
 </div>
-<a class="anchor" id="ad65d764d5ee7fd89ad4ed3acde175148"></a>
+<a class="anchor" id="a6e17b40be6e48dec97790a32514bfe22"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -598,13 +594,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>wxExHexModeLine</b><
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>find_next</em> = <code>true</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>visual_mode</em> = <code>false</code>&#160;</td>
+          <td class="paramname"><em>find_next</em> = <code>true</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -627,7 +617,6 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>wxExHexModeLine</b><
 </ul>
 </td></tr>
     <tr><td class="paramname">find_next</td><td>finds next or previous </td></tr>
-    <tr><td class="paramname">visual_mode</td><td>are we finding using visual mode </td></tr>
   </table>
   </dd>
 </dl>

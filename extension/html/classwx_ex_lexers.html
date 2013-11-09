@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v2.9.5</span>
+   &#160;<span id="projectnumber">v3.0</span>
    </div>
   </td>
  </tr>
@@ -136,13 +136,13 @@ wxString &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class=
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#aa5cfb5b82fce56f1251e2ebf9e2bb881">IndicatorIsLoaded</a> (const <a class="el" href="classwx_ex_indicator.html">wxExIndicator</a> &amp;indic) const </td></tr>
 <tr class="memdesc:aa5cfb5b82fce56f1251e2ebf9e2bb881"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if specified indicator is available. <br/></td></tr>
 <tr class="separator:aa5cfb5b82fce56f1251e2ebf9e2bb881"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5880b65ac8f2fec5f615b8900cfd795"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#ac5880b65ac8f2fec5f615b8900cfd795">LoadDocument</a> ()</td></tr>
+<tr class="memdesc:ac5880b65ac8f2fec5f615b8900cfd795"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads all lexers (first clears them) from document.  <a href="#ac5880b65ac8f2fec5f615b8900cfd795">More...</a><br/></td></tr>
+<tr class="separator:ac5880b65ac8f2fec5f615b8900cfd795"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ed491ba58e2e0df77ac22c4e886bca8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7ed491ba58e2e0df77ac22c4e886bca8"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#a7ed491ba58e2e0df77ac22c4e886bca8">MarkerIsLoaded</a> (const <a class="el" href="classwx_ex_marker.html">wxExMarker</a> &amp;marker) const </td></tr>
 <tr class="memdesc:a7ed491ba58e2e0df77ac22c4e886bca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if specified marker is available. <br/></td></tr>
 <tr class="separator:a7ed491ba58e2e0df77ac22c4e886bca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abbced5c068b61ddb0ef7eb90e9f627bf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#abbced5c068b61ddb0ef7eb90e9f627bf">Read</a> ()</td></tr>
-<tr class="memdesc:abbced5c068b61ddb0ef7eb90e9f627bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads all lexers (first clears them) from file.  <a href="#abbced5c068b61ddb0ef7eb90e9f627bf">More...</a><br/></td></tr>
-<tr class="separator:abbced5c068b61ddb0ef7eb90e9f627bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a420f9f69c0ce002a66784e6c508ab23a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#a420f9f69c0ce002a66784e6c508ab23a">ShowDialog</a> (wxWindow *parent, wxString &amp;lexer, const wxString &amp;caption=_(&quot;Enter Lexer&quot;), bool show_modal=true) const </td></tr>
 <tr class="memdesc:a420f9f69c0ce002a66784e6c508ab23a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a dialog with all lexers, allowing you to choose one.  <a href="#a420f9f69c0ce002a66784e6c508ab23a">More...</a><br/></td></tr>
 <tr class="separator:a420f9f69c0ce002a66784e6c508ab23a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -161,7 +161,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Collection of all lexers. </p>
-<p>The lexers are read in from lexers.xml, this is done automatically during the first Get call. </p>
+<p>The lexers are loaded from lexers.xml, this is done automatically during the first Get call. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="ac58cd3a72fa6f1b0654192e7def93a68"></a>
 <div class="memitem">
@@ -233,16 +233,16 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the lexers object. </p>
-<p>If this is the first invocation, and createOnDemand is true, it also invokes Read. </p>
+<p>If this is the first invocation, and createOnDemand is true, it also invokes LoadDocument. </p>
 
 </div>
 </div>
-<a class="anchor" id="abbced5c068b61ddb0ef7eb90e9f627bf"></a>
+<a class="anchor" id="ac5880b65ac8f2fec5f615b8900cfd795"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool wxExLexers::Read </td>
+          <td class="memname">bool wxExLexers::LoadDocument </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -250,8 +250,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Reads all lexers (first clears them) from file. </p>
-<p>Returns true if the file could be read and loaded as valid xml file. </p>
+<p>Loads all lexers (first clears them) from document. </p>
+<p>Returns true if the document is loaded. </p>
 
 </div>
 </div>

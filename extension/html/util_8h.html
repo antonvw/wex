@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v2.9.5</span>
+   &#160;<span id="projectnumber">v3.0</span>
    </div>
   </td>
  </tr>
@@ -47,6 +47,7 @@
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
@@ -55,18 +56,20 @@
 <div class="contents">
 <div class="textblock"><code>#include &lt;list&gt;</code><br/>
 <code>#include &lt;vector&gt;</code><br/>
-<code>#include &lt;wx/combobox.h&gt;</code><br/>
 <code>#include &lt;wx/dir.h&gt;</code><br/>
 <code>#include &lt;wx/filedlg.h&gt;</code><br/>
-<code>#include &lt;wx/filename.h&gt;</code><br/>
-<code>#include &lt;wx/textctrl.h&gt;</code><br/>
-<code>#include &lt;wx/extension/lexer.h&gt;</code><br/>
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for util.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="util_8h__incl.png" border="0" usemap="#include_2wx_2extension_2util_8h" alt=""/></div>
 </div>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_to_vector_string.html">wxExToVectorString</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts several objects to a vector string.  <a href="classwx_ex_to_vector_string.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a300640a0b3ba7f15e60fb51dcefc3a09"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a300640a0b3ba7f15e60fb51dcefc3a09">wxExStatusFlags</a> { <a class="el" href="util_8h.html#a300640a0b3ba7f15e60fb51dcefc3a09a9273836b1bf6ac90a79d10a9ee74392d">STAT_DEFAULT</a> = 0x0000, 
@@ -78,9 +81,9 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae64fe184def5cffb7830ae2b24aea07e"><td class="memItemLeft" align="right" valign="top">const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ae64fe184def5cffb7830ae2b24aea07e">wxExAlignText</a> (const wxString &amp;lines, const wxString &amp;header, bool fill_out_with_space=false, bool fill_out=false, const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> &amp;lexer=<a class="el" href="classwx_ex_lexer.html">wxExLexer</a>())</td></tr>
-<tr class="memdesc:ae64fe184def5cffb7830ae2b24aea07e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aligns text.  <a href="#ae64fe184def5cffb7830ae2b24aea07e">More...</a><br/></td></tr>
-<tr class="separator:ae64fe184def5cffb7830ae2b24aea07e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc70b8e0b0ac58db636f999dff2dd203"><td class="memItemLeft" align="right" valign="top">const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#afc70b8e0b0ac58db636f999dff2dd203">wxExAlignText</a> (const wxString &amp;lines, const wxString &amp;header, bool fill_out_with_space, bool fill_out, const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> &amp;lexer)</td></tr>
+<tr class="memdesc:afc70b8e0b0ac58db636f999dff2dd203"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aligns text.  <a href="#afc70b8e0b0ac58db636f999dff2dd203">More...</a><br/></td></tr>
+<tr class="separator:afc70b8e0b0ac58db636f999dff2dd203"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c134bebfb4a12c4f94f83d1095b6b97"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5c134bebfb4a12c4f94f83d1095b6b97"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a5c134bebfb4a12c4f94f83d1095b6b97">wxExClipboardAdd</a> (const wxString &amp;text)</td></tr>
 <tr class="memdesc:a5c134bebfb4a12c4f94f83d1095b6b97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds data to the clipboard. <br/></td></tr>
@@ -186,9 +189,9 @@ const std::list&lt; wxString &gt;&#160;</td><td class="memItemRight" valign="bot
 long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a5d71a1c9efe10d2c50985b8d921300c4">wxExGetHexNumberFromUser</a> (const wxString &amp;message, const wxString &amp;prompt, const wxString &amp;caption, long value=0, long min=0, long max=255, wxWindow *parent=NULL, const wxPoint &amp;pos=wxDefaultPosition)</td></tr>
 <tr class="memdesc:a5d71a1c9efe10d2c50985b8d921300c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a number from user, using hex display. <br/></td></tr>
 <tr class="separator:a5d71a1c9efe10d2c50985b8d921300c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a252f01d765c2438674082842391e1483"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a252f01d765c2438674082842391e1483">wxExOpenFiles</a> (<a class="el" href="classwx_ex_frame.html">wxExFrame</a> *frame, const wxArrayString &amp;files, long file_flags=0, int dir_flags=wxDIR_DEFAULT)</td></tr>
-<tr class="memdesc:a252f01d765c2438674082842391e1483"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens files.  <a href="#a252f01d765c2438674082842391e1483">More...</a><br/></td></tr>
-<tr class="separator:a252f01d765c2438674082842391e1483"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af30d60d776b63b57468f8546462423ed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#af30d60d776b63b57468f8546462423ed">wxExOpenFiles</a> (<a class="el" href="classwx_ex_frame.html">wxExFrame</a> *frame, const std::vector&lt; wxString &gt; &amp;files, long file_flags=0, int dir_flags=wxDIR_DEFAULT)</td></tr>
+<tr class="memdesc:af30d60d776b63b57468f8546462423ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens files.  <a href="#af30d60d776b63b57468f8546462423ed">More...</a><br/></td></tr>
+<tr class="separator:af30d60d776b63b57468f8546462423ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2260491943f1153ddaf8b1742a7fe324"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a2260491943f1153ddaf8b1742a7fe324">wxExOpenFilesDialog</a> (<a class="el" href="classwx_ex_frame.html">wxExFrame</a> *frame, long style=wxFD_OPEN|wxFD_MULTIPLE|wxFD_CHANGE_DIR, const wxString &amp;wildcards=wxFileSelectorDefaultWildcardStr, bool ask_for_continue=false, long file_flags=0, int dir_flags=wxDIR_DEFAULT)</td></tr>
 <tr class="memdesc:a2260491943f1153ddaf8b1742a7fe324"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a dialog and opens selected files (calls wxExOpenFiles).  <a href="#a2260491943f1153ddaf8b1742a7fe324">More...</a><br/></td></tr>
 <tr class="separator:a2260491943f1153ddaf8b1742a7fe324"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -198,9 +201,9 @@ long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util
 <tr class="memitem:acec5aeac6dd8074c596f65f5ac69148b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#acec5aeac6dd8074c596f65f5ac69148b">wxExVCSCommandOnSTC</a> (const <a class="el" href="classwx_ex_v_c_s_command.html">wxExVCSCommand</a> &amp;command, const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> &amp;lexer, <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a> *stc)</td></tr>
 <tr class="memdesc:acec5aeac6dd8074c596f65f5ac69148b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use specified VCS command to set lexer on STC document.  <a href="#acec5aeac6dd8074c596f65f5ac69148b">More...</a><br/></td></tr>
 <tr class="separator:acec5aeac6dd8074c596f65f5ac69148b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c736731461c0d400662e574c1fd7ea5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a1c736731461c0d400662e574c1fd7ea5">wxExVCSExecute</a> (<a class="el" href="classwx_ex_frame.html">wxExFrame</a> *frame, int id, const wxArrayString &amp;files)</td></tr>
-<tr class="memdesc:a1c736731461c0d400662e574c1fd7ea5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes VCS command id for specified files and opens component if necessary.  <a href="#a1c736731461c0d400662e574c1fd7ea5">More...</a><br/></td></tr>
-<tr class="separator:a1c736731461c0d400662e574c1fd7ea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1038e25e9b2ec68c5999facc3db3a76c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a1038e25e9b2ec68c5999facc3db3a76c">wxExVCSExecute</a> (<a class="el" href="classwx_ex_frame.html">wxExFrame</a> *frame, int id, const std::vector&lt; wxString &gt; &amp;files)</td></tr>
+<tr class="memdesc:a1038e25e9b2ec68c5999facc3db3a76c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes VCS command id for specified files and opens component if necessary.  <a href="#a1038e25e9b2ec68c5999facc3db3a76c">More...</a><br/></td></tr>
+<tr class="separator:a1038e25e9b2ec68c5999facc3db3a76c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a class="anchor" id="a300640a0b3ba7f15e60fb51dcefc3a09"></a>
@@ -229,7 +232,7 @@ long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="ae64fe184def5cffb7830ae2b24aea07e"></a>
+<a class="anchor" id="afc70b8e0b0ac58db636f999dff2dd203"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -249,19 +252,19 @@ long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>fill_out_with_space</em> = <code>false</code>, </td>
+          <td class="paramname"><em>fill_out_with_space</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>fill_out</em> = <code>false</code>, </td>
+          <td class="paramname"><em>fill_out</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> &amp;&#160;</td>
-          <td class="paramname"><em>lexer</em> = <code><a class="el" href="classwx_ex_lexer.html">wxExLexer</a>()</code>&#160;</td>
+          <td class="paramname"><em>lexer</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -486,7 +489,7 @@ long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util
 
 </div>
 </div>
-<a class="anchor" id="a252f01d765c2438674082842391e1483"></a>
+<a class="anchor" id="af30d60d776b63b57468f8546462423ed"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -499,7 +502,7 @@ long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const wxArrayString &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; wxString &gt; &amp;&#160;</td>
           <td class="paramname"><em>files</em>, </td>
         </tr>
         <tr>
@@ -690,7 +693,7 @@ long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util
 
 </div>
 </div>
-<a class="anchor" id="a1c736731461c0d400662e574c1fd7ea5"></a>
+<a class="anchor" id="a1038e25e9b2ec68c5999facc3db3a76c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -709,7 +712,7 @@ long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const wxArrayString &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; wxString &gt; &amp;&#160;</td>
           <td class="paramname"><em>files</em>&#160;</td>
         </tr>
         <tr>

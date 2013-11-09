@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v2.9.5</span>
+   &#160;<span id="projectnumber">v3.0</span>
    </div>
   </td>
  </tr>
@@ -70,9 +70,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5dcd81913da2041eab865dd060ab35a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexer.html#a5dcd81913da2041eab865dd060ab35a4">Apply</a> (wxStyledTextCtrl *stc, bool clear=true) const </td></tr>
 <tr class="memdesc:a5dcd81913da2041eab865dd060ab35a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies this lexer to stc component (and colours the component).  <a href="#a5dcd81913da2041eab865dd060ab35a4">More...</a><br/></td></tr>
 <tr class="separator:a5dcd81913da2041eab865dd060ab35a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a799046ec593237a3c5ccae528fa922e4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexer.html#a799046ec593237a3c5ccae528fa922e4">ApplyLexer</a> (const wxString &amp;lexer, wxStyledTextCtrl *stc, bool show_error=true, bool clear=true)</td></tr>
-<tr class="memdesc:a799046ec593237a3c5ccae528fa922e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets scintilla lexer for specified lexer and stc.  <a href="#a799046ec593237a3c5ccae528fa922e4">More...</a><br/></td></tr>
-<tr class="separator:a799046ec593237a3c5ccae528fa922e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a029ee028ae016be152c4d91ebf990737"><td class="memItemLeft" align="right" valign="top">const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexer.html#a029ee028ae016be152c4d91ebf990737">CommentComplete</a> (const wxString &amp;comment) const </td></tr>
 <tr class="memdesc:a029ee028ae016be152c4d91ebf990737"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a string that completes specified comment, by adding spaces and a comment end at the end.  <a href="#a029ee028ae016be152c4d91ebf990737">More...</a><br/></td></tr>
 <tr class="separator:a029ee028ae016be152c4d91ebf990737"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -138,10 +135,15 @@ const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexer.html#a8dc3f2cc4dd47d7ae081ce1e3d555592">MakeSingleLineComment</a> (const wxString &amp;text, bool fill_out_with_space=true, bool fill_out=true) const </td></tr>
 <tr class="memdesc:a8dc3f2cc4dd47d7ae081ce1e3d555592"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a lexer comment string filled out over one line. <br/></td></tr>
 <tr class="separator:a8dc3f2cc4dd47d7ae081ce1e3d555592"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e730c8670bff687ec70cdb6c2194d7c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e730c8670bff687ec70cdb6c2194d7c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexer.html#a2e730c8670bff687ec70cdb6c2194d7c">Reset</a> (wxStyledTextCtrl *stc)</td></tr>
-<tr class="memdesc:a2e730c8670bff687ec70cdb6c2194d7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets lexer. <br/></td></tr>
-<tr class="separator:a2e730c8670bff687ec70cdb6c2194d7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8582ba14e53e4d86ad86c5c5383ebdc4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexer.html#a8582ba14e53e4d86ad86c5c5383ebdc4">Reset</a> (wxStyledTextCtrl *stc)</td></tr>
+<tr class="memdesc:a8582ba14e53e4d86ad86c5c5383ebdc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets lexer and if ok applies it to stc.  <a href="#a8582ba14e53e4d86ad86c5c5383ebdc4">More...</a><br/></td></tr>
+<tr class="separator:a8582ba14e53e4d86ad86c5c5383ebdc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c8230fa2d9146880d9b63943fd837fc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexer.html#a3c8230fa2d9146880d9b63943fd837fc">Set</a> (const wxString &amp;lexer, wxStyledTextCtrl *stc, bool clear=true)</td></tr>
+<tr class="memdesc:a3c8230fa2d9146880d9b63943fd837fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets scintilla lexer for specified lexer and if ok applies it to stc.  <a href="#a3c8230fa2d9146880d9b63943fd837fc">More...</a><br/></td></tr>
+<tr class="separator:a3c8230fa2d9146880d9b63943fd837fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e35423038e179503420b111837380d2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexer.html#a6e35423038e179503420b111837380d2">Set</a> (const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> &amp;lexer, wxStyledTextCtrl *stc)</td></tr>
+<tr class="memdesc:a6e35423038e179503420b111837380d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets lexer to specified lexer.  <a href="#a6e35423038e179503420b111837380d2">More...</a><br/></td></tr>
+<tr class="separator:a6e35423038e179503420b111837380d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e828ae7cf08059806d3f1d697648539"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e828ae7cf08059806d3f1d697648539"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexer.html#a7e828ae7cf08059806d3f1d697648539">SetKeywords</a> (const wxString &amp;text)</td></tr>
 <tr class="memdesc:a7e828ae7cf08059806d3f1d697648539"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets keywords (public for testing only). <br/></td></tr>
@@ -184,56 +186,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 
 <p>Applies this lexer to stc component (and colours the component). </p>
-
-</div>
-</div>
-<a class="anchor" id="a799046ec593237a3c5ccae528fa922e4"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool wxExLexer::ApplyLexer </td>
-          <td>(</td>
-          <td class="paramtype">const wxString &amp;&#160;</td>
-          <td class="paramname"><em>lexer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">wxStyledTextCtrl *&#160;</td>
-          <td class="paramname"><em>stc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>show_error</em> = <code>true</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>clear</em> = <code>true</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Sets scintilla lexer for specified lexer and stc. </p>
-<p>Returns true if a scintilla lexer has been set. The is ok member is set as well according to whether the lexer could be set. Calls Apply. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">lexer</td><td>lexer to use </td></tr>
-    <tr><td class="paramname">stc</td><td>stc component on which to apply </td></tr>
-    <tr><td class="paramname">show_error</td><td>If show_error is true, a log error message is given if a lexer was specified, but could not be set. </td></tr>
-    <tr><td class="paramname">clear</td><td>if clear is true, old styles are reset (including folding) </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -289,6 +241,104 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 
 <p>Does any keyword (allways all keywords) start with this word, case insensitive. </p>
+
+</div>
+</div>
+<a class="anchor" id="a8582ba14e53e4d86ad86c5c5383ebdc4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wxExLexer::Reset </td>
+          <td>(</td>
+          <td class="paramtype">wxStyledTextCtrl *&#160;</td>
+          <td class="paramname"><em>stc</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Resets lexer and if ok applies it to stc. </p>
+<p>Returns true if the scintilla lexer has been reset. The is ok member is set according to whether the lexer could be reset. </p>
+
+</div>
+</div>
+<a class="anchor" id="a3c8230fa2d9146880d9b63943fd837fc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wxExLexer::Set </td>
+          <td>(</td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>lexer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">wxStyledTextCtrl *&#160;</td>
+          <td class="paramname"><em>stc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>clear</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets scintilla lexer for specified lexer and if ok applies it to stc. </p>
+<p>Returns true if a scintilla lexer has been set. The is ok member is set according to whether the lexer could be set. Shows error message when lexer could not be set. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">lexer</td><td>lexer to use </td></tr>
+    <tr><td class="paramname">stc</td><td>stc component on which to apply </td></tr>
+    <tr><td class="paramname">clear</td><td>if clear is true, old styles are reset (including folding) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a6e35423038e179503420b111837380d2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wxExLexer::Set </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> &amp;&#160;</td>
+          <td class="paramname"><em>lexer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">wxStyledTextCtrl *&#160;</td>
+          <td class="paramname"><em>stc</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets lexer to specified lexer. </p>
+<p>Returns true if a scintilla lexer has been set. The is ok member is set according to whether the lexer could be set. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">lexer</td><td>lexer to use </td></tr>
+    <tr><td class="paramname">stc</td><td>stc component on which to apply </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

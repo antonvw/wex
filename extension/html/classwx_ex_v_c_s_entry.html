@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v2.9.5</span>
+   &#160;<span id="projectnumber">v3.0</span>
    </div>
   </td>
  </tr>
@@ -78,7 +78,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a57d4c4cab238eaa4ac1ba46749198d6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if admin dir is only at top level. <br/></td></tr>
 <tr class="separator:a57d4c4cab238eaa4ac1ba46749198d6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23015846cc516902bdfde1d8cd30c646"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s_entry.html#a23015846cc516902bdfde1d8cd30c646">BuildMenu</a> (int base_id, wxMenu *menu, bool is_popup=true) const </td></tr>
-<tr class="memdesc:a23015846cc516902bdfde1d8cd30c646"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds a menu from vcs commands.  <a href="#a23015846cc516902bdfde1d8cd30c646">More...</a><br/></td></tr>
+<tr class="memdesc:a23015846cc516902bdfde1d8cd30c646"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds a menu from all vcs commands.  <a href="#a23015846cc516902bdfde1d8cd30c646">More...</a><br/></td></tr>
 <tr class="separator:a23015846cc516902bdfde1d8cd30c646"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e9df81a09ae90a9806d5341daf7853f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s_entry.html#a6e9df81a09ae90a9806d5341daf7853f">Execute</a> (const wxString &amp;args, const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> &amp;lexer, const wxString &amp;wd=wxEmptyString)</td></tr>
 <tr class="memdesc:a6e9df81a09ae90a9806d5341daf7853f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the current vcs command.  <a href="#a6e9df81a09ae90a9806d5341daf7853f">More...</a><br/></td></tr>
@@ -101,11 +101,11 @@ const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <tr class="separator:a213966366a29ad9c7027b7aed809bb7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a541d91310d77313553bfdc8ced03fde3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a541d91310d77313553bfdc8ced03fde3"></a>
 const wxString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s_entry.html#a541d91310d77313553bfdc8ced03fde3">GetName</a> () const </td></tr>
-<tr class="memdesc:a541d91310d77313553bfdc8ced03fde3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the name. <br/></td></tr>
+<tr class="memdesc:a541d91310d77313553bfdc8ced03fde3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the name for this vcs entry. <br/></td></tr>
 <tr class="separator:a541d91310d77313553bfdc8ced03fde3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7d2cb4c3d89746220c949f897a726b8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s_entry.html#ad7d2cb4c3d89746220c949f897a726b8">SetCommand</a> (int menu_id)</td></tr>
-<tr class="memdesc:ad7d2cb4c3d89746220c949f897a726b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current vcs command.  <a href="#ad7d2cb4c3d89746220c949f897a726b8">More...</a><br/></td></tr>
-<tr class="separator:ad7d2cb4c3d89746220c949f897a726b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7967ae464511a8064c759a22ed70c62"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s_entry.html#ac7967ae464511a8064c759a22ed70c62">SetCommand</a> (int command_no)</td></tr>
+<tr class="memdesc:ac7967ae464511a8064c759a22ed70c62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current vcs command.  <a href="#ac7967ae464511a8064c759a22ed70c62">More...</a><br/></td></tr>
+<tr class="separator:ac7967ae464511a8064c759a22ed70c62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89474550739a0265c888bf0a7a740ae9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s_entry.html#a89474550739a0265c888bf0a7a740ae9">ShowDialog</a> (wxWindow *parent, const wxString &amp;caption, bool add_folder) const </td></tr>
 <tr class="memdesc:a89474550739a0265c888bf0a7a740ae9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a dialog allowing you to run or cancel the current vcs command.  <a href="#a89474550739a0265c888bf0a7a740ae9">More...</a><br/></td></tr>
 <tr class="separator:a89474550739a0265c888bf0a7a740ae9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -236,11 +236,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
       </table>
 </div><div class="memdoc">
 
-<p>Builds a menu from vcs commands. </p>
+<p>Builds a menu from all vcs commands. </p>
 <p>Returns (total) number of items in menu. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">base_id</td><td>menu id to be added to the vcs command </td></tr>
+    <tr><td class="paramname">base_id</td><td>menu id to be added to the vcs commands </td></tr>
     <tr><td class="paramname">menu</td><td>menu to be built </td></tr>
     <tr><td class="paramname">is_popup</td><td>default assumes this is a popup menu </td></tr>
   </table>
@@ -281,10 +281,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>Executes the current vcs command. </p>
 <p>Might ask for vcs binary if it is not yet known. Return code is code from process Execute, and also can be false if dialog for vcs bin was cancelled. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">args</td><td>args </td></tr>
+    <tr><td class="paramname">lexer</td><td>lexer that is used for presenting the output </td></tr>
+    <tr><td class="paramname">wd</td><td>working directory </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a class="anchor" id="ad7d2cb4c3d89746220c949f897a726b8"></a>
+<a class="anchor" id="ac7967ae464511a8064c759a22ed70c62"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -292,7 +300,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
           <td class="memname">bool wxExVCSEntry::SetCommand </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>menu_id</em></td><td>)</td>
+          <td class="paramname"><em>command_no</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -302,7 +310,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>Returns true if command was set. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">menu_id</td><td>Should be in between ID_EDIT_VCS_LOWEST and ID_EDIT_VCS_HIGHEST or in between ID_VCS_LOWEST and ID_VCS_HIGHEST </td></tr>
+    <tr><td class="paramname">command_no</td><td>a command no from commands </td></tr>
   </table>
   </dd>
 </dl>

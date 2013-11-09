@@ -46,7 +46,7 @@ public:
   /// - . : current line 
   /// - % : entire document
   /// - * : current screen
-  /// <address>,<address> : range from begin and end address range.
+  /// x, y: range from begin x and end y address range.
   wxExAddressRange(wxExEx* ex, const wxString& range);
   
   /// Deletes lines from range.

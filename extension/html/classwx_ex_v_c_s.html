@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v2.9.5</span>
+   &#160;<span id="projectnumber">v3.0</span>
    </div>
   </td>
  </tr>
@@ -60,24 +60,15 @@
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8565710d233922f815c3d9bc36225486"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#a8565710d233922f815c3d9bc36225486">wxExVCS</a> ()</td></tr>
-<tr class="memdesc:a8565710d233922f815c3d9bc36225486"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a8565710d233922f815c3d9bc36225486">More...</a><br/></td></tr>
-<tr class="separator:a8565710d233922f815c3d9bc36225486"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3de3800d4637666cb59b17218696ccc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#ac3de3800d4637666cb59b17218696ccc">wxExVCS</a> (const wxArrayString &amp;files, int menu_id=-1)</td></tr>
-<tr class="memdesc:ac3de3800d4637666cb59b17218696ccc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#ac3de3800d4637666cb59b17218696ccc">More...</a><br/></td></tr>
-<tr class="separator:ac3de3800d4637666cb59b17218696ccc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22a0e4df21278bf6e54aadb4c72b1265"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#a22a0e4df21278bf6e54aadb4c72b1265">wxExVCS</a> (const wxFileName &amp;filename)</td></tr>
-<tr class="memdesc:a22a0e4df21278bf6e54aadb4c72b1265"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for vcs from specified filename.  <a href="#a22a0e4df21278bf6e54aadb4c72b1265">More...</a><br/></td></tr>
-<tr class="separator:a22a0e4df21278bf6e54aadb4c72b1265"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1640567ed22931f3f7120269e075d3c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#ae1640567ed22931f3f7120269e075d3c">wxExVCS</a> (const std::vector&lt; wxString &gt; &amp;files=std::vector&lt; wxString &gt;(), int command_no=-1)</td></tr>
+<tr class="memdesc:ae1640567ed22931f3f7120269e075d3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#ae1640567ed22931f3f7120269e075d3c">More...</a><br/></td></tr>
+<tr class="separator:ae1640567ed22931f3f7120269e075d3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02446216b7230851da8b9ff3788f644e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#a02446216b7230851da8b9ff3788f644e">ConfigDialog</a> (wxWindow *parent, const wxString &amp;title=_(&quot;Set VCS&quot;), bool modal=true) const </td></tr>
 <tr class="memdesc:a02446216b7230851da8b9ff3788f644e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a dialog allowing you to choose which vcs to use and to set the path for each vcs entry.  <a href="#a02446216b7230851da8b9ff3788f644e">More...</a><br/></td></tr>
 <tr class="separator:a02446216b7230851da8b9ff3788f644e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebfce592a3116b2862a8acf29973a4c4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#aebfce592a3116b2862a8acf29973a4c4">Execute</a> ()</td></tr>
-<tr class="memdesc:aebfce592a3116b2862a8acf29973a4c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the vcs command, and collects the output.  <a href="#aebfce592a3116b2862a8acf29973a4c4">More...</a><br/></td></tr>
+<tr class="memdesc:aebfce592a3116b2862a8acf29973a4c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the current vcs command, and collects the output.  <a href="#aebfce592a3116b2862a8acf29973a4c4">More...</a><br/></td></tr>
 <tr class="separator:aebfce592a3116b2862a8acf29973a4c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac95dd7c8a9e5ad0b6bc9d02cfcbf522a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#ac95dd7c8a9e5ad0b6bc9d02cfcbf522a">GetDir</a> (wxWindow *parent=NULL)</td></tr>
-<tr class="memdesc:ac95dd7c8a9e5ad0b6bc9d02cfcbf522a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether the current base folder is under vcs control.  <a href="#ac95dd7c8a9e5ad0b6bc9d02cfcbf522a">More...</a><br/></td></tr>
-<tr class="separator:ac95dd7c8a9e5ad0b6bc9d02cfcbf522a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a185bbdd501b8af280531115fe80e0e35"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a185bbdd501b8af280531115fe80e0e35"></a>
 const <a class="el" href="classwx_ex_v_c_s_entry.html">wxExVCSEntry</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#a185bbdd501b8af280531115fe80e0e35">GetEntry</a> () const </td></tr>
 <tr class="memdesc:a185bbdd501b8af280531115fe80e0e35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current vcs entry. <br/></td></tr>
@@ -88,9 +79,12 @@ const <a class="el" href="classwx_ex_v_c_s_entry.html">wxExVCSEntry</a> &amp;&#1
 <tr class="memitem:abe703e7197d84baa188eca2f62e45bcb"><td class="memItemLeft" align="right" valign="top">wxStandardID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#abe703e7197d84baa188eca2f62e45bcb">Request</a> (wxWindow *parent)</td></tr>
 <tr class="memdesc:abe703e7197d84baa188eca2f62e45bcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Combines ShowDialog, Execute and vcs entry ShowOutput in one method.  <a href="#abe703e7197d84baa188eca2f62e45bcb">More...</a><br/></td></tr>
 <tr class="separator:abe703e7197d84baa188eca2f62e45bcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a986d64e20efec5163dae0eba6eb280"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#a0a986d64e20efec5163dae0eba6eb280">SetEntryFromBase</a> (wxWindow *parent=NULL)</td></tr>
+<tr class="memdesc:a0a986d64e20efec5163dae0eba6eb280"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the entry using base folder.  <a href="#a0a986d64e20efec5163dae0eba6eb280">More...</a><br/></td></tr>
+<tr class="separator:a0a986d64e20efec5163dae0eba6eb280"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5e40b4fbe05a696c478ff9fb1905356"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa5e40b4fbe05a696c478ff9fb1905356"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#aa5e40b4fbe05a696c478ff9fb1905356">ShowDialog</a> (wxWindow *parent) const </td></tr>
-<tr class="memdesc:aa5e40b4fbe05a696c478ff9fb1905356"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls show dialog for the selected vcs entry. <br/></td></tr>
+<tr class="memdesc:aa5e40b4fbe05a696c478ff9fb1905356"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls show dialog for the current vcs entry. <br/></td></tr>
 <tr class="separator:aa5e40b4fbe05a696c478ff9fb1905356"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a362f5432945de6fd18aa0ddb28d06e47"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a362f5432945de6fd18aa0ddb28d06e47"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#a362f5432945de6fd18aa0ddb28d06e47">Use</a> () const </td></tr>
@@ -107,51 +101,33 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#a8e036d03c3fe50ac076071065028cca8">GetCount</a> ()</td></tr>
 <tr class="memdesc:a8e036d03c3fe50ac076071065028cca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the number of vcs entries. <br/></td></tr>
 <tr class="separator:a8e036d03c3fe50ac076071065028cca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a942843d6855839a8e6b5abb6e7bbffac"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a942843d6855839a8e6b5abb6e7bbffac"></a>
-static const wxFileName &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#a942843d6855839a8e6b5abb6e7bbffac">GetFileName</a> ()</td></tr>
-<tr class="memdesc:a942843d6855839a8e6b5abb6e7bbffac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the xml filename. <br/></td></tr>
-<tr class="separator:a942843d6855839a8e6b5abb6e7bbffac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7da7094a38f04ad67b1e6644b033826b"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#a7da7094a38f04ad67b1e6644b033826b">Read</a> ()</td></tr>
-<tr class="memdesc:a7da7094a38f04ad67b1e6644b033826b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads all vcs (first clears them) from file.  <a href="#a7da7094a38f04ad67b1e6644b033826b">More...</a><br/></td></tr>
-<tr class="separator:a7da7094a38f04ad67b1e6644b033826b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26bc24a8d0256a1a73604ee7b8a620c9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26bc24a8d0256a1a73604ee7b8a620c9"></a>
+static const wxFileName&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#a26bc24a8d0256a1a73604ee7b8a620c9">GetFileName</a> ()</td></tr>
+<tr class="memdesc:a26bc24a8d0256a1a73604ee7b8a620c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the xml filename. <br/></td></tr>
+<tr class="separator:a26bc24a8d0256a1a73604ee7b8a620c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abef6f53ed65fe2d798bb8220b369b698"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s.html#abef6f53ed65fe2d798bb8220b369b698">LoadDocument</a> ()</td></tr>
+<tr class="memdesc:abef6f53ed65fe2d798bb8220b369b698"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads all entries (first clears them) from vcs document.  <a href="#abef6f53ed65fe2d798bb8220b369b698">More...</a><br/></td></tr>
+<tr class="separator:abef6f53ed65fe2d798bb8220b369b698"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class collects all vcs handling. </p>
-<p>The VCS entries are read in from vcs.xml, this is done during <a class="el" href="classwx_ex_app.html" title="Offers the application, with wxExtension specific init and exit.">wxExApp</a> startup. </p>
+<p>The VCS entries are loaded from vcs.xml, this is done during <a class="el" href="classwx_ex_app.html" title="Offers the application, with wxExtension specific init and exit.">wxExApp</a> startup. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a8565710d233922f815c3d9bc36225486"></a>
+<a class="anchor" id="ae1640567ed22931f3f7120269e075d3c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">wxExVCS::wxExVCS </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Default constructor. </p>
-<p>Use GetDir to check on vcs for current base folder. </p>
-
-</div>
-</div>
-<a class="anchor" id="ac3de3800d4637666cb59b17218696ccc"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">wxExVCS::wxExVCS </td>
-          <td>(</td>
-          <td class="paramtype">const wxArrayString &amp;&#160;</td>
-          <td class="paramname"><em>files</em>, </td>
+          <td class="paramtype">const std::vector&lt; wxString &gt; &amp;&#160;</td>
+          <td class="paramname"><em>files</em> = <code>std::vector&lt;&#160;wxString&#160;&gt;()</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>menu_id</em> = <code>-1</code>&#160;</td>
+          <td class="paramname"><em>command_no</em> = <code>-1</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -161,43 +137,11 @@ static const wxFileName &amp;&#160;</td><td class="memItemRight" valign="bottom"
       </table>
 </div><div class="memdoc">
 
-<p>Constructor. </p>
+<p>Default constructor. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">files</td><td>Specify several files for which you want vcs action. </td></tr>
-    <tr><td class="paramname">menu_id</td><td>The menu command id that is used to set the vcs command. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="a22a0e4df21278bf6e54aadb4c72b1265"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">wxExVCS::wxExVCS </td>
-          <td>(</td>
-          <td class="paramtype">const wxFileName &amp;&#160;</td>
-          <td class="paramname"><em>filename</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Constructor for vcs from specified filename. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">filename</td><td>This must be an existing xml file containing all vcs. This is done during <a class="el" href="classwx_ex_app.html" title="Offers the application, with wxExtension specific init and exit.">wxExApp</a> startup. </td></tr>
+    <tr><td class="paramname">files</td><td>Specify several files for which you want vcs action. Sets vcs entry for first of the specified files, or to the base folder if array is empty. </td></tr>
+    <tr><td class="paramname">command_no</td><td>The command no that is used to set the current vcs command (index in vcs entry commands). </td></tr>
   </table>
   </dd>
 </dl>
@@ -253,33 +197,8 @@ static const wxFileName &amp;&#160;</td><td class="memItemRight" valign="bottom"
       </table>
 </div><div class="memdoc">
 
-<p>Executes the vcs command, and collects the output. </p>
+<p>Executes the current vcs command, and collects the output. </p>
 <p>Returns return code from vcs entry Execute. </p>
-
-</div>
-</div>
-<a class="anchor" id="ac95dd7c8a9e5ad0b6bc9d02cfcbf522a"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool wxExVCS::GetDir </td>
-          <td>(</td>
-          <td class="paramtype">wxWindow *&#160;</td>
-          <td class="paramname"><em>parent</em> = <code>NULL</code></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Checks whether the current base folder is under vcs control. </p>
-<p>If not, it will show a dialog for selecting a vcs folder (if parent is not NULL). Sets the entry. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">parent</td><td>Parent window for showing dir dialog if there is not a current directory. </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -300,7 +219,7 @@ static const wxFileName &amp;&#160;</td><td class="memItemRight" valign="bottom"
 
 </div>
 </div>
-<a class="anchor" id="a7da7094a38f04ad67b1e6644b033826b"></a>
+<a class="anchor" id="abef6f53ed65fe2d798bb8220b369b698"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -308,7 +227,7 @@ static const wxFileName &amp;&#160;</td><td class="memItemRight" valign="bottom"
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool wxExVCS::Read </td>
+          <td class="memname">static bool wxExVCS::LoadDocument </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -321,8 +240,8 @@ static const wxFileName &amp;&#160;</td><td class="memItemRight" valign="bottom"
 </table>
 </div><div class="memdoc">
 
-<p>Reads all vcs (first clears them) from file. </p>
-<p>Returns true if the file could be read and loaded as valid xml file. </p>
+<p>Loads all entries (first clears them) from vcs document. </p>
+<p>Returns true if document is loaded. </p>
 
 </div>
 </div>
@@ -341,7 +260,35 @@ static const wxFileName &amp;&#160;</td><td class="memItemRight" valign="bottom"
 </div><div class="memdoc">
 
 <p>Combines ShowDialog, Execute and vcs entry ShowOutput in one method. </p>
-<p>Returns wxID_CANCEL if dialog was cancelled, or an execute error occurred. Returns wxID_OK if okay (use vcs entry GetError to check whether the output contains errors or normal info). </p>
+<ul>
+<li>Returns wxID_CANCEL if dialog was cancelled, or an execute error occurred.</li>
+<li>Returns wxID_OK if okay (use vcs entry GetError to check whether the output contains errors or normal info). </li>
+</ul>
+
+</div>
+</div>
+<a class="anchor" id="a0a986d64e20efec5163dae0eba6eb280"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wxExVCS::SetEntryFromBase </td>
+          <td>(</td>
+          <td class="paramtype">wxWindow *&#160;</td>
+          <td class="paramname"><em>parent</em> = <code>NULL</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the entry using base folder. </p>
+<p>If not, it will show a dialog for selecting a vcs folder (if parent is not NULL). Returns true if entry is under vcs control. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>Parent window for showing dir dialog if there is not a current directory. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

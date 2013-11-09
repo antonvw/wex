@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v2.9.5</span>
+   &#160;<span id="projectnumber">v3.0</span>
    </div>
   </td>
  </tr>
@@ -87,9 +87,9 @@
 : <a class="el" href="classwx_ex_find_replace_data.html#a104d7a999df14e5c7fde2b69e8c6e529">wxExFindReplaceData</a>
 , <a class="el" href="classwx_ex_printing.html#a67cc975d2b1f226259eb9c80ff3acd1a">wxExPrinting</a>
 , <a class="el" href="classwx_ex_file_statistics.html#a500ee82edefca7af69b34835d7e402a2">wxExFileStatistics</a>
-, <a class="el" href="classwx_ex_vi_macros.html#a92a1443d352a31a6bfb4184afa6fe2f1">wxExViMacros</a>
+, <a class="el" href="classwx_ex_to_vector_string.html#af7049fe4f9a92108e77a259921b7c7e7">wxExToVectorString</a>
 , <a class="el" href="classwx_ex_statistics.html#a0b2f9e717eebb56395d3f4f83f2c4b27">wxExStatistics&lt; T &gt;</a>
-, <a class="el" href="classwx_ex_vi_macros.html#a10d14bafd5235756b9826e1cc9b4ed92">wxExViMacros</a>
+, <a class="el" href="classwx_ex_vi_macros.html#aa3e360aac525d51dc69e59c543c63412">wxExViMacros</a>
 , <a class="el" href="classwx_ex_lexers.html#a685a228894f141e3210e39f589e07d9f">wxExLexers</a>
 , <a class="el" href="classwx_ex_statistics.html#a6e3646a890a82cdf9103a7eb91fa33a1">wxExStatistics&lt; T &gt;</a>
 , <a class="el" href="classwx_ex_file_statistics.html#afe722fb54bf1410012e9f72c40d00374">wxExFileStatistics</a>
@@ -145,9 +145,6 @@
 <li>GetDefaultStyle()
 : <a class="el" href="classwx_ex_lexers.html#adb5fa8eaae040416e889f29f293a7876">wxExLexers</a>
 </li>
-<li>GetDir()
-: <a class="el" href="classwx_ex_v_c_s.html#ac95dd7c8a9e5ad0b6bc9d02cfcbf522a">wxExVCS</a>
-</li>
 <li>GetDisplayLexer()
 : <a class="el" href="classwx_ex_lexer.html#a6e44ff0b90802e91ffc531122043fc74">wxExLexer</a>
 </li>
@@ -181,13 +178,16 @@
 <li>GetFileHistory()
 : <a class="el" href="classwx_ex_frame_with_history.html#a97f15e946f4f22fd18cf5b3e34cbe2f2">wxExFrameWithHistory</a>
 </li>
+<li>GetFileHistoryList()
+: <a class="el" href="classwx_ex_frame_with_history.html#a9509423ba565321a689d431d78d4bc06">wxExFrameWithHistory</a>
+</li>
 <li>GetFileName()
 : <a class="el" href="classwx_ex_file.html#a21e6b8aae4ce3dc911a15b2d12b4dede">wxExFile</a>
 , <a class="el" href="classwx_ex_lexers.html#ac92683dbf4a25bcc9d1b383437016aed">wxExLexers</a>
 , <a class="el" href="classwx_ex_list_item.html#ab6f6e16e48281b338c7ef065f4facdda">wxExListItem</a>
 , <a class="el" href="classwx_ex_s_t_c.html#a697bc68bf6e54d2d9aaa2c60fdfba306">wxExSTC</a>
 , <a class="el" href="classwx_ex_text_file.html#a798c9f9feb24b5b5f0d7137f4ff001bf">wxExTextFile</a>
-, <a class="el" href="classwx_ex_v_c_s.html#a942843d6855839a8e6b5abb6e7bbffac">wxExVCS</a>
+, <a class="el" href="classwx_ex_v_c_s.html#a26bc24a8d0256a1a73604ee7b8a620c9">wxExVCS</a>
 , <a class="el" href="classwx_ex_vi_macros.html#ae7275d8977d439551026231337700b71">wxExViMacros</a>
 </li>
 <li>GetFileSpec()
@@ -214,11 +214,11 @@
 </li>
 <li>GetFrame()
 : <a class="el" href="classwx_ex_ex.html#a3b9d3e9835e19b9775240ebb90093269">wxExEx</a>
-, <a class="el" href="classwx_ex_tool_bar.html#a0977aa3005c59030aa57060b5e1528ce">wxExToolBar</a>
+, <a class="el" href="classwx_ex_tool_bar.html#a04da9a6abe45b9d895920741f2f9551f">wxExToolBar</a>
 </li>
 <li>GetGrid()
-: <a class="el" href="classwx_ex_statistics.html#a270d04e5ca522dfa0191574b8c0c3144">wxExStatistics&lt; T &gt;</a>
-, <a class="el" href="classwx_ex_frame.html#a19eb0bd4b64423ff3f5a19a962d6924f">wxExFrame</a>
+: <a class="el" href="classwx_ex_frame.html#a19eb0bd4b64423ff3f5a19a962d6924f">wxExFrame</a>
+, <a class="el" href="classwx_ex_statistics.html#a270d04e5ca522dfa0191574b8c0c3144">wxExStatistics&lt; T &gt;</a>
 </li>
 <li>GetHelpText()
 : <a class="el" href="classwx_ex_status_bar_pane.html#ae00b16a9b009a27a0bd685b585a6813d">wxExStatusBarPane</a>
@@ -237,9 +237,6 @@
 : <a class="el" href="classwx_ex_find_replace_data.html#a903a09ccd0b4d62926c9e3943460cc8b">wxExFindReplaceData</a>
 , <a class="el" href="classwx_ex_hex_mode_line.html#a9c7bfa163fbe8c540a2961b9c556a454">wxExHexModeLine</a>
 , <a class="el" href="classwx_ex_tool_info.html#a89288dd3b8110971b3ce49377d972e70">wxExToolInfo</a>
-</li>
-<li>GetInsertMode()
-: <a class="el" href="classwx_ex_vi.html#af7cc82905d598ee7e99e844c1aa20475">wxExVi</a>
 </li>
 <li>GetInsertText()
 : <a class="el" href="classwx_ex_vi.html#a9e327c85d7e3a32c43481b1116687b39">wxExVi</a>
@@ -299,6 +296,9 @@
 <li>GetManager()
 : <a class="el" href="classwx_ex_managed_frame.html#aa7635cd6f9b4167bed4ae175c70ba86d">wxExManagedFrame</a>
 </li>
+<li>GetMode()
+: <a class="el" href="classwx_ex_vi.html#a70e01f38309a6518846dbeb7d9a6e927">wxExVi</a>
+</li>
 <li>GetModificationTime()
 : <a class="el" href="classwx_ex_stat.html#ac86627b6fbb5e1536ccae76b29503fcd">wxExStat</a>
 </li>
@@ -310,9 +310,8 @@
 , <a class="el" href="classwx_ex_v_c_s_entry.html#a541d91310d77313553bfdc8ced03fde3">wxExVCSEntry</a>
 </li>
 <li>GetNo()
-: <a class="el" href="classwx_ex_marker.html#a8950ca1a16649f31a0603c48dbdc1dc0">wxExMarker</a>
-, <a class="el" href="classwx_ex_indicator.html#a6e746395a54a504bf530683c34895845">wxExIndicator</a>
-, <a class="el" href="classwx_ex_v_c_s_command.html#a68f1b2b67f349d1c5f376f4790d83a7e">wxExVCSCommand</a>
+: <a class="el" href="classwx_ex_indicator.html#a6e746395a54a504bf530683c34895845">wxExIndicator</a>
+, <a class="el" href="classwx_ex_marker.html#a8950ca1a16649f31a0603c48dbdc1dc0">wxExMarker</a>
 </li>
 <li>GetOutput()
 : <a class="el" href="classwx_ex_process.html#a89defd1d5972b3c2dc29f0b1b9cb52b1">wxExProcess</a>
@@ -353,7 +352,7 @@
 , <a class="el" href="classwx_ex_vi_macros.html#a05870fe6b982273db25cf5d0de31d30b">wxExViMacros</a>
 </li>
 <li>GetRegisters()
-: <a class="el" href="classwx_ex_vi_macros.html#ac96e609d4376bd420288b5a1d4fc94fb">wxExViMacros</a>
+: <a class="el" href="classwx_ex_vi_macros.html#a2d0be15f088a461dc41dc4cb309523e8">wxExViMacros</a>
 </li>
 <li>GetRegularExpression()
 : <a class="el" href="classwx_ex_find_replace_data.html#a9764b5d847db3be11fec24f055af7d86">wxExFindReplaceData</a>
@@ -467,7 +466,7 @@
 : <a class="el" href="classwx_ex_version_info.html#a1004a23f9ef3eebe0f1583561255e0c0">wxExVersionInfo</a>
 </li>
 <li>GetVi()
-: <a class="el" href="classwx_ex_s_t_c.html#a4d5d9fd4da3df34e909fe376d6e6ba09">wxExSTC</a>
+: <a class="el" href="classwx_ex_s_t_c.html#a3d09114706df0621f8b7c660e78d8b28">wxExSTC</a>
 </li>
 <li>GetWindow()
 : <a class="el" href="classwx_ex_config_item.html#a0af53a776cadd8bf5abcde91cfbd17cd">wxExConfigItem</a>
@@ -479,8 +478,8 @@
 : <a class="el" href="classwx_ex_hex_mode_line.html#a12ca76e0b2a5b2086123a7010a62d0e2">wxExHexModeLine</a>
 </li>
 <li>GotoDialog()
-: <a class="el" href="classwx_ex_s_t_c.html#addf4540dc931469224eeaf6c77cfa924">wxExSTC</a>
-, <a class="el" href="classwx_ex_list_view.html#a08c594797862d67a5d8b2c9dd6a2f25f">wxExListView</a>
+: <a class="el" href="classwx_ex_list_view.html#a08c594797862d67a5d8b2c9dd6a2f25f">wxExListView</a>
+, <a class="el" href="classwx_ex_s_t_c.html#addf4540dc931469224eeaf6c77cfa924">wxExSTC</a>
 </li>
 <li>GotoLineAndSelect()
 : <a class="el" href="classwx_ex_s_t_c.html#a4c5ec3ee6dd74a7c8a67e8a9972d5dab">wxExSTC</a>

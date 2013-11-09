@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v2.9.5</span>
+   &#160;<span id="projectnumber">v3.0</span>
    </div>
   </td>
  </tr>
@@ -74,6 +74,10 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#acfb89bb516782256e0c8a82471f88854">~wxExEx</a> ()</td></tr>
 <tr class="memdesc:acfb89bb516782256e0c8a82471f88854"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br/></td></tr>
 <tr class="separator:acfb89bb516782256e0c8a82471f88854"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac386332547bf46dc546bf4963f099768"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac386332547bf46dc546bf4963f099768"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#ac386332547bf46dc546bf4963f099768">AddText</a> (const wxString &amp;text)</td></tr>
+<tr class="memdesc:ac386332547bf46dc546bf4963f099768"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds text (to STC or register, if register is active). <br/></td></tr>
+<tr class="separator:ac386332547bf46dc546bf4963f099768"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acecead2829a88707e6831457e6da2cb1"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#acecead2829a88707e6831457e6da2cb1">Command</a> (const wxString &amp;command)</td></tr>
 <tr class="memdesc:acecead2829a88707e6831457e6da2cb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes ex: command that was entered on the command line, or present as modeline command inside a file.  <a href="#acecead2829a88707e6831457e6da2cb1">More...</a><br/></td></tr>
 <tr class="separator:acecead2829a88707e6831457e6da2cb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -93,6 +97,10 @@ const wxString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class
 <a class="el" href="classwx_ex_vi_macros.html">wxExViMacros</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a62bbd2d4c84c5e4e3508c70b48315b33">GetMacros</a> ()</td></tr>
 <tr class="memdesc:a62bbd2d4c84c5e4e3508c70b48315b33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the macros. <br/></td></tr>
 <tr class="separator:a62bbd2d4c84c5e4e3508c70b48315b33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e54ee977a26a93a4bdb7358acb17563"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9e54ee977a26a93a4bdb7358acb17563"></a>
+const wxString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a9e54ee977a26a93a4bdb7358acb17563">GetRegister</a> () const </td></tr>
+<tr class="memdesc:a9e54ee977a26a93a4bdb7358acb17563"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns register name. <br/></td></tr>
+<tr class="separator:a9e54ee977a26a93a4bdb7358acb17563"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a950598b5a0e7c4ee1cabe3c8537bb449"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a950598b5a0e7c4ee1cabe3c8537bb449"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a950598b5a0e7c4ee1cabe3c8537bb449">GetSearchFlags</a> () const </td></tr>
 <tr class="memdesc:a950598b5a0e7c4ee1cabe3c8537bb449"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns search flags. <br/></td></tr>
@@ -123,6 +131,14 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:ab230b6cb1121fec710df1d927eb75aa8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#ab230b6cb1121fec710df1d927eb75aa8">MarkerLine</a> (const wxUniChar &amp;marker) const </td></tr>
 <tr class="memdesc:ab230b6cb1121fec710df1d927eb75aa8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns line for specified marker.  <a href="#ab230b6cb1121fec710df1d927eb75aa8">More...</a><br/></td></tr>
 <tr class="separator:ab230b6cb1121fec710df1d927eb75aa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e3c59966918c2db64a93bea20fee0ee"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4e3c59966918c2db64a93bea20fee0ee"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a4e3c59966918c2db64a93bea20fee0ee">SetRegistersDelete</a> (const wxString &amp;value) const </td></tr>
+<tr class="memdesc:a4e3c59966918c2db64a93bea20fee0ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets delete registers 1 - 9 (if value not empty). <br/></td></tr>
+<tr class="separator:a4e3c59966918c2db64a93bea20fee0ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4531178a42343a8b2d6bb7904013aa3f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4531178a42343a8b2d6bb7904013aa3f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a4531178a42343a8b2d6bb7904013aa3f">SetRegisterYank</a> (const wxString &amp;value) const </td></tr>
+<tr class="memdesc:a4531178a42343a8b2d6bb7904013aa3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets yank register (if value not empty). <br/></td></tr>
+<tr class="separator:a4531178a42343a8b2d6bb7904013aa3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b0b1e14a94025160d2546b806935894"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b0b1e14a94025160d2546b806935894"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a0b0b1e14a94025160d2546b806935894">Use</a> (bool mode)</td></tr>
 <tr class="memdesc:a0b0b1e14a94025160d2546b806935894"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set using ex mode. <br/></td></tr>
@@ -130,17 +146,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a41bd92a0f6b7585599d01ae1974b4f50"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a41bd92a0f6b7585599d01ae1974b4f50"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a41bd92a0f6b7585599d01ae1974b4f50">Delete</a> (int lines)</td></tr>
-<tr class="memdesc:a41bd92a0f6b7585599d01ae1974b4f50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes number of lines, starting at current line. <br/></td></tr>
-<tr class="separator:a41bd92a0f6b7585599d01ae1974b4f50"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81323be745eb88326e9ecec9b04de3bf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a81323be745eb88326e9ecec9b04de3bf">Delete</a> (const wxString &amp;begin_address, const wxString &amp;end_address)</td></tr>
-<tr class="memdesc:a81323be745eb88326e9ecec9b04de3bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes lines from begin to end address.  <a href="#a81323be745eb88326e9ecec9b04de3bf">More...</a><br/></td></tr>
-<tr class="separator:a81323be745eb88326e9ecec9b04de3bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e54ee977a26a93a4bdb7358acb17563"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9e54ee977a26a93a4bdb7358acb17563"></a>
-const wxString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a9e54ee977a26a93a4bdb7358acb17563">GetRegister</a> () const </td></tr>
-<tr class="memdesc:a9e54ee977a26a93a4bdb7358acb17563"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns register name. <br/></td></tr>
-<tr class="separator:a9e54ee977a26a93a4bdb7358acb17563"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ab4bc0c32d388f759acb7290d480f04"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4ab4bc0c32d388f759acb7290d480f04"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a4ab4bc0c32d388f759acb7290d480f04">SetLastCommand</a> (const wxString &amp;command, bool always=false)</td></tr>
 <tr class="memdesc:a4ab4bc0c32d388f759acb7290d480f04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets last command. <br/></td></tr>
@@ -149,16 +154,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a71bd1ed0034fac951759705d2d1e0758">SetRegister</a> (const wxString &amp;name)</td></tr>
 <tr class="memdesc:a71bd1ed0034fac951759705d2d1e0758"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets register name. <br/></td></tr>
 <tr class="separator:a71bd1ed0034fac951759705d2d1e0758"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98d136dfe9688de37cac93d66ca1167c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a98d136dfe9688de37cac93d66ca1167c">SetSelection</a> (const wxString &amp;begin_address, const wxString &amp;end_address) const </td></tr>
-<tr class="memdesc:a98d136dfe9688de37cac93d66ca1167c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets selection from begin to end address.  <a href="#a98d136dfe9688de37cac93d66ca1167c">More...</a><br/></td></tr>
-<tr class="separator:a98d136dfe9688de37cac93d66ca1167c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9981489ad36ce984dad1798810120212"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a9981489ad36ce984dad1798810120212">ToLineNumber</a> (const wxString &amp;address) const </td></tr>
-<tr class="memdesc:a9981489ad36ce984dad1798810120212"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts address to a real line number, filtering out markers and special characters.  <a href="#a9981489ad36ce984dad1798810120212">More...</a><br/></td></tr>
-<tr class="separator:a9981489ad36ce984dad1798810120212"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a886f52834a963c30970fea86d502bd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2a886f52834a963c30970fea86d502bd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_ex.html#a2a886f52834a963c30970fea86d502bd">Yank</a> (int lines)</td></tr>
-<tr class="memdesc:a2a886f52834a963c30970fea86d502bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Yanks number of lines, starting at current line. <br/></td></tr>
-<tr class="separator:a2a886f52834a963c30970fea86d502bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Offers a class that adds ex editor to <a class="el" href="classwx_ex_s_t_c.html" title="Offers a styled text ctrl with find/replace, printing, popup menu, macro support, vi support and lexe...">wxExSTC</a>. </p>
@@ -209,43 +204,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>The command should start with a ':'. Returns true if the command was executed. </p>
 
 <p>Reimplemented in <a class="el" href="classwx_ex_vi.html#a39ed98104511bf0d9e205465856c9426">wxExVi</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a81323be745eb88326e9ecec9b04de3bf"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool wxExEx::Delete </td>
-          <td>(</td>
-          <td class="paramtype">const wxString &amp;&#160;</td>
-          <td class="paramname"><em>begin_address</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const wxString &amp;&#160;</td>
-          <td class="paramname"><em>end_address</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Deletes lines from begin to end address. </p>
-<p>Returns false if address cannot be related to a line number. </p>
 
 </div>
 </div>
@@ -387,70 +345,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>Returns line for specified marker. </p>
 <p>Returns -1 if marker does not exist. </p>
-
-</div>
-</div>
-<a class="anchor" id="a98d136dfe9688de37cac93d66ca1167c"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool wxExEx::SetSelection </td>
-          <td>(</td>
-          <td class="paramtype">const wxString &amp;&#160;</td>
-          <td class="paramname"><em>begin_address</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const wxString &amp;&#160;</td>
-          <td class="paramname"><em>end_address</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Sets selection from begin to end address. </p>
-<p>Returns false if address cannot be related to a line number. </p>
-
-</div>
-</div>
-<a class="anchor" id="a9981489ad36ce984dad1798810120212"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int wxExEx::ToLineNumber </td>
-          <td>(</td>
-          <td class="paramtype">const wxString &amp;&#160;</td>
-          <td class="paramname"><em>address</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Converts address to a real line number, filtering out markers and special characters. </p>
-<p>Returns 0 if address is not valid. </p>
 
 </div>
 </div>
