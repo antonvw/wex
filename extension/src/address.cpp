@@ -548,6 +548,10 @@ bool wxExAddressRange::Substitute(const wxString& command)
     return false;
   }
 
+  wxExIndicator indicator(0, 0);
+
+  m_STC->SetIndicatorCurrent(indicator.GetNo());
+    
   const wxString pattern = (patt == "~" ? m_Replacement: patt);
   
   m_Replacement = repl; 
@@ -600,7 +604,10 @@ bool wxExAddressRange::Substitute(const wxString& command)
       msgDialog.SetExtendedMessage(wxString::Format("Line %d: %s", 
         line + 1, m_STC->GetLineText(line).c_str()));
         
-      m_STC->ScrollToLine(line);
+      m_STC->GotoLine(line);
+      m_STC->EnsureVisible(line);
+      m_STC->SetIndicator(
+        indicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd());
       
       result = msgDialog.ShowModal();
         
@@ -646,6 +653,8 @@ bool wxExAddressRange::Substitute(const wxString& command)
   m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
     nr_replacements, pattern.c_str()));
 
+  m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
+  
   return true;
 }
 
