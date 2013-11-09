@@ -1525,53 +1525,53 @@ bool wxExVi::SetInsertMode(
   
   switch ((int)c.GetChar(0))
   {
-    case 'a': GetSTC()->CharRight(); 
-      m_InsertRepeatCount = repeat;
+    case 'a': 
+      GetSTC()->CharRight(); 
       break;
 
     case 'c': 
-      break;
-      
     case 'i': 
-      m_InsertRepeatCount = repeat;
       break;
 
     case 'o': 
-      m_InsertRepeatCount = repeat;
       GetSTC()->LineEnd(); 
       GetSTC()->NewLine(); 
       break;
       
     case 'A': GetSTC()->LineEnd(); 
-      m_InsertRepeatCount = repeat;
       break;
 
     case 'C': 
-      m_InsertRepeatCount = repeat;
       GetSTC()->LineEndExtend();
       GetSTC()->Cut();
       break;
       
     case 'I': 
-      m_InsertRepeatCount = repeat;
       GetSTC()->Home(); 
       break;
 
     case 'O': 
-      m_InsertRepeatCount = repeat;
       GetSTC()->Home(); 
       GetSTC()->NewLine(); 
       GetSTC()->LineUp(); 
       break;
 
     case 'R': 
-      m_InsertRepeatCount = repeat;
       GetSTC()->SetOvertype(true);
       break;
 
     default: wxFAIL;
   }
 
+  if (c.GetChar(0) == 'c')
+  {
+    m_InsertRepeatCount = 1;
+  }
+  else
+  {
+    m_InsertRepeatCount = repeat;
+  }
+  
   return true;
 }
 
