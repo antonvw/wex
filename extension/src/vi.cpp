@@ -935,9 +935,10 @@ bool wxExVi::CommandChar(int c, int repeat)
       {
         for (int i = 0; i < repeat; i++) 
         {
-          GetSTC()->CharRight();
-          GetSTC()->DeleteBack(); 
+          GetSTC()->CharRightExtend();
         }  
+      
+        GetSTC()->Cut(); 
       }
       break;
         
@@ -989,7 +990,14 @@ bool wxExVi::CommandChar(int c, int repeat)
       
     case 'X': 
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) 
-        for (int i = 0; i < repeat; i++) GetSTC()->DeleteBack();
+      {
+        for (int i = 0; i < repeat; i++) 
+        {
+          GetSTC()->CharLeftExtend();
+        }  
+      
+        GetSTC()->Cut(); 
+      }
       break;
 
     case '.': 
