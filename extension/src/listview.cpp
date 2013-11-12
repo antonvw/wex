@@ -31,10 +31,11 @@
 #if wxUSE_GUI
 
 #if wxUSE_DRAG_AND_DROP
-class FileDropTarget : public wxFileDropTarget
+// FileDropTarget is already used by wxExFrame.
+class DropTarget : public wxFileDropTarget
 {
 public:
-  FileDropTarget(wxExListView* lv) {m_ListView = lv;}
+  DropTarget(wxExListView* lv) {m_ListView = lv;}
 private:
   virtual bool OnDropFiles(
     wxCoord x, 
@@ -181,7 +182,7 @@ wxExListView::wxExListView(wxWindow* parent,
 #if wxUSE_DRAG_AND_DROP
   // We can only have one drop target, we use file drop target,
   // as list items can also be copied and pasted.
-  SetDropTarget(new FileDropTarget(this));
+  SetDropTarget(new DropTarget(this));
 #endif
 
   if (image_type != IMAGE_NONE)
