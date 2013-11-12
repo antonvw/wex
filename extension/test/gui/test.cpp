@@ -105,6 +105,11 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Filter("uniq"));
   CPPUNIT_ASSERT( stc->GetLineCount() == 6);
+  
+  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  CPPUNIT_ASSERT( stc->GetLineCount() == 8);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "$")));
+  CPPUNIT_ASSERT( stc->GetLineCount() == 8);
 }
 
 void wxExGuiTestFixture::testConfigDialog()
@@ -309,7 +314,8 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->GetIsActive());
   
   CPPUNIT_ASSERT( ex->GetMacros().GetCount() > 0); // TODO
-  
+
+  // Test last command.  
   CPPUNIT_ASSERT( ex->Command(":.="));
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120");
   CPPUNIT_ASSERT(!ex->Command(":xxx"));
@@ -346,6 +352,35 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":'t,'us/s/w/"));
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":'t,'us/s/w/");
   
+  // Test range.
+  stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+  CPPUNIT_ASSERT( ex->Command(":1,2>"));
+  stc->SelectNone();
+  CPPUNIT_ASSERT(!ex->Command(":'<,'>>"));
+  stc->GotoLine(2);
+  stc->LineDownExtend();
+  CPPUNIT_ASSERT( ex->Command(":'<,'>m1"));
+  stc->GotoLine(2);
+  stc->LineDownExtend();
+  CPPUNIT_ASSERT( ex->Command(":'<,'>wtext-ex.txt"));
+  CPPUNIT_ASSERT( ex->Command(":'<,'><"));
+  CPPUNIT_ASSERT( ex->Command(":'<,'>>"));
+  CPPUNIT_ASSERT( ex->Command(":'<,'>!sort"));
+  stc->GotoLine(2);
+  stc->LineDownExtend();
+  CPPUNIT_ASSERT(!ex->Command(":'<,'>x"));
+  
+  // Test set.
+  CPPUNIT_ASSERT( ex->Command(":set ic"));
+  CPPUNIT_ASSERT( ex->Command(":set ic!"));
+  CPPUNIT_ASSERT( ex->Command(":set li"));
+  CPPUNIT_ASSERT( ex->Command(":set li!"));
+  CPPUNIT_ASSERT( ex->Command(":set nu"));
+  CPPUNIT_ASSERT( ex->Command(":set nu!"));
+  CPPUNIT_ASSERT( ex->Command(":set ts=10"));
+  CPPUNIT_ASSERT( ex->Command(":set tabstop=10"));
+  CPPUNIT_ASSERT(!ex->Command(":set xxx"));
+  
   CPPUNIT_ASSERT( ex->Command(":d"));
   //CPPUNIT_ASSERT( ex->Command(":e")); // shows dialog
   CPPUNIT_ASSERT(!ex->Command(":n"));
@@ -355,6 +390,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( stc->GetText().Contains("qwerty"));
   CPPUNIT_ASSERT( ex->Command(":y"));
   CPPUNIT_ASSERT( ex->Command(":1,$s/^/BEGIN-OF-LINE"));
+  CPPUNIT_ASSERT( ex->Command(":w test-ex.txt"));
 
   // Test macros.
   // Do not load macros yet, to test IsRecorded.
@@ -399,7 +435,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT(!ex->MarkerGoto('a'));
   CPPUNIT_ASSERT(!ex->MarkerDelete('a'));
   
-  // Test global delete.
+  // Test global delete (previous delete was on ont found text).
   stc->AppendText("line xxxx 1 added\n");
   stc->AppendText("line xxxx 2 added\n");
   stc->AppendText("line xxxx 3 added\n");
@@ -410,6 +446,11 @@ void wxExGuiTestFixture::testEx()
   const int lines = stc->GetLineCount();
   CPPUNIT_ASSERT( ex->Command(":g/xxxx/d"));
   CPPUNIT_ASSERT( stc->GetLineCount() == lines - 6);
+  
+  // Test global print.
+  stc->AppendText("line xxxx 3 added\n");
+  stc->AppendText("line xxxx 4 added\n");
+  CPPUNIT_ASSERT( ex->Command(":g/xxxx/p"));
   
   // Test goto.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
@@ -540,16 +581,27 @@ void wxExGuiTestFixture::testFrd()
   frd->SetFindString("find1");
   frd->SetFindString("find2");
   frd->SetFindString("find[0-9]");
-  
   CPPUNIT_ASSERT(!frd->GetFindStrings().empty());
+  CPPUNIT_ASSERT( frd->GetFindString() == "find[0-9]");
   CPPUNIT_ASSERT( frd->GetRegularExpression().IsValid());
   CPPUNIT_ASSERT( frd->GetRegularExpression().Matches("find9"));
 
+  std::list < wxString > l;
+  l.push_back("find3");
+  l.push_back("find4");
+  l.push_back("find5");
+  frd->SetFindStrings(l);
+  CPPUNIT_ASSERT( frd->GetFindString() == "find3");
+  
   frd->SetReplaceString("replace1");
   frd->SetReplaceString("replace2");
   frd->SetReplaceString("replace[0-9]");
-
   CPPUNIT_ASSERT(!frd->GetReplaceStrings().empty());
+  CPPUNIT_ASSERT( frd->GetReplaceString() == "replace[0-9]");
+  
+  frd->SetReplaceStrings(l);
+  CPPUNIT_ASSERT( frd->GetFindString() == "find3");
+  CPPUNIT_ASSERT( frd->GetReplaceString() == "find3");
 }
 
 void wxExGuiTestFixture::testGrid()
@@ -1430,6 +1482,7 @@ void wxExGuiTestFixture::testSTC()
   //  stc->FileTypeMenu();
   
   stc->Fold();
+  stc->Fold(true); // FoldAll
   
   CPPUNIT_ASSERT(!stc->GetEOL().empty());
   
@@ -1475,6 +1528,24 @@ void wxExGuiTestFixture::testSTC()
   stc->Reload(wxExSTC::STC_WIN_HEX);
   CPPUNIT_ASSERT(stc->HexMode());
   stc->AppendTextHexMode("in hex mode");
+  
+  // Test events.
+  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED);
+  
+  event.SetInt(ID_EDIT_HEX_DEC_CALLTIP);
+  wxPostEvent(stc, event);
+  event.SetInt(ID_EDIT_MARKER_NEXT);
+  wxPostEvent(stc, event);
+  event.SetInt(ID_EDIT_MARKER_PREVIOUS);
+  wxPostEvent(stc, event);
+  event.SetInt(ID_EDIT_OPEN_LINK);
+  wxPostEvent(stc, event);
+  event.SetInt(ID_EDIT_SHOW_PROPERTIES);
+  wxPostEvent(stc, event);
+  event.SetInt(ID_EDIT_ZOOM_IN);
+  wxPostEvent(stc, event);
+  event.SetInt(ID_EDIT_ZOOM_OUT);
+  wxPostEvent(stc, event);
 }
   
 void wxExGuiTestFixture::testSTCEntryDialog()
@@ -1507,7 +1578,9 @@ void wxExGuiTestFixture::testSTCFile()
   CPPUNIT_ASSERT(!file.GetFileName().GetStat().IsOk());
   CPPUNIT_ASSERT(!file.GetContentsChanged());
 
-  // For more tests see testSTC.
+  CPPUNIT_ASSERT( file.Read("test.bin"));
+  
+  file.FileNew(wxExFileName("xxxx"));
 }
 
 void wxExGuiTestFixture::testStyle()
@@ -1883,25 +1956,32 @@ void wxExGuiTestFixture::testVi()
   
   event.m_keyCode = WXK_CONTROL_B;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
   event.m_keyCode = WXK_CONTROL_E;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
   event.m_keyCode = WXK_CONTROL_F;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
   event.m_keyCode = WXK_CONTROL_G;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
   event.m_keyCode = WXK_CONTROL_J;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
   event.m_keyCode = WXK_CONTROL_P;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
   event.m_keyCode = WXK_CONTROL_Q;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  CPPUNIT_ASSERT(!vi->OnChar(event));
   
   event.m_keyCode = WXK_BACK;
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_RETURN;
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_TAB;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_NONE;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   
