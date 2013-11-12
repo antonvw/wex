@@ -75,6 +75,8 @@ void TestFixture::testFile()
 
   wxCharBuffer buffer = file.Read();
   CPPUNIT_ASSERT(buffer.length() == 40);
+  
+  file.FileNew(wxExFileName("xxx"));
 }
 
 void TestFixture::testFileTiming()
