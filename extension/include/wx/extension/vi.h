@@ -21,10 +21,10 @@ public:
   /// The possible vi modes.
   enum wxExViMode
   {
-    MODE_NORMAL,      /// normal, command or navigation, mode
-    MODE_INSERT,      /// pressing key inserts key
-    MODE_VISUAL,      /// navigation keys extend selection
-    MODE_VISUAL_LINE, /// complete lines are selected
+    MODE_NORMAL,      ///< normal, command or navigation, mode
+    MODE_INSERT,      ///< pressing key inserts key
+    MODE_VISUAL,      ///< navigation keys extend selection
+    MODE_VISUAL_LINE, ///< complete lines are selected
   };
 
   /// Constructor.
