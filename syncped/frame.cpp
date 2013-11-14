@@ -907,7 +907,8 @@ void Frame::OnCommand(wxCommandEvent& event)
       // key should be unique
       wxString::Format("split%06d", m_SplitId++),
       stc->GetFileName().GetFullName(),
-      true);
+      true,
+      bitmap);
 
     stc->SetDocPointer(editor->GetDocPointer());
     }
