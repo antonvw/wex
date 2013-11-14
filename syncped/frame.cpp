@@ -1302,7 +1302,8 @@ bool Frame::OpenFile(
         filename.GetFullPath(),
         filename.GetName(),
         true,
-        wxArtProvider::GetBitmap(wxART_NORMAL_FILE));
+        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+          wxExGetIconID(filename)));
     }
 
     if (!GetManager().GetPane("PROJECTS").IsShown())
