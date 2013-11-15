@@ -18,13 +18,22 @@ class WXDLLIMPEXP_BASE wxExAddress : public wxString
 {
   friend wxExAddressRange;
 public:
-  /// Constructor for the address.
-  /// You can specify line numbers, markers
-  /// and special characters (like $, ., + or -).
-  wxExAddress(wxExEx* ex, const wxString& address);
+  /// Constructor for an address.
+  wxExAddress(
+    /// the ex (or vi) component
+    wxExEx* ex, 
+    /// the address, being a string containing:
+    /// - a normal line number
+    /// - a defined marker, 
+    ///   like 'x, or '<: begin of selection and '>: end of selection
+    /// - $ : last line
+    /// - . : current line 
+    /// - or a combination of these, using + or -
+    const wxString& address);
   
   /// Converts the address to a line number.
-  /// Returns 0 and bells on error in address, otherwise the vi line number,
+  /// Returns 0 and bells on error in address, 
+  /// otherwise returns the vi line number,
   /// so subtract 1 for stc line number.
   int ToLine() const;
 private:
@@ -43,13 +52,17 @@ public:
   wxExAddressRange(wxExEx* ex, int lines = 1);
   
   /// Contructor for a range.
-  /// - . : current line 
-  /// - % : entire document
-  /// - * : current screen
-  /// x, y: range from begin x and end y address range.
-  wxExAddressRange(wxExEx* ex, const wxString& range);
+  wxExAddressRange(
+    /// the ex (or vi) component
+    wxExEx* ex, 
+    /// the range, being a string containing:
+    /// - . : current line 
+    /// - % : entire document
+    /// - * : current screen visible area
+    /// x, y: range from begin x and end y address.
+    const wxString& range);
   
-  /// Deletes lines from range.
+  /// Deletes range.
   /// Returns false if address cannot be related to a line number.
   bool Delete(bool show_message = true) const;
   
@@ -80,7 +93,7 @@ public:
   /// Yanks range.
   bool Yank() const;
 private:  
-  /// Gets substitute values out of command.
+  /// Gets substitute values from command.
   bool Parse(const wxString& command, 
     wxString& pattern, wxString& replacement, wxString& options) const;
   /// Sets begin and end addresses.

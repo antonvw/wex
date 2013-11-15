@@ -24,9 +24,12 @@ class wxExIndicator;
 class wxExLexer;
 class wxExMenu;
 
-/// Offers a styled text ctrl with find/replace, printing, popup menu, 
-/// macro support, vi support and lexer support (syntax colouring, folding).
-/// Default uses vi mode.
+/// Offers a styled text ctrl with:
+/// - lexer support (syntax colouring, folding)
+/// - vi support (default vi mode is off)
+/// - find/replace 
+/// - popup menu
+/// - printing
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
   friend class wxExHexModeLine; // might update m_HexBuffer
@@ -178,7 +181,11 @@ public:
   /// Gets vi component.
   const wxExVi& GetVi() const {return m_vi;};
   
-  /// Gets vi component (for testing).
+  /// Gets writable vi component.
+  /// This allows you to do vi like editing:
+  /// - GetVi().Command(":1,$s/xx/yy/g")
+  /// - GetVi().Command(":w")
+  /// to replace all xx by yy, and save the file.
   wxExVi& GetVi() {return m_vi;};
   
   /// Gets word at position.
@@ -270,12 +277,12 @@ public:
     const wxString& find_text, 
     /// text to replace with
     const wxString& replace_text,
-    /// search flags to be used
-    /// wxSTC_FIND_WHOLEWORD
-    /// wxSTC_FIND_MATCHCASE
-    /// wxSTC_FIND_WORDSTART
-    /// wxSTC_FIND_REGEXP
-    /// wxSTC_FIND_POSIX
+    /// search flags to be used:
+    /// - wxSTC_FIND_WHOLEWORD
+    /// - wxSTC_FIND_MATCHCASE
+    /// - wxSTC_FIND_WORDSTART
+    /// - wxSTC_FIND_REGEXP
+    /// - wxSTC_FIND_POSIX
     int search_flags = 0,
     /// argument passed on to FindNext
     bool find_next = true);
@@ -314,6 +321,7 @@ public:
   void Sync(bool start = true);
 
   /// Use and show modification markers in the margin.
+  /// If you open a file, the modification markers are used.
   void UseModificationMarkers(bool use);
 protected:
   /// Builds the popup menu.
