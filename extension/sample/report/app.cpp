@@ -44,7 +44,7 @@ wxIMPLEMENT_APP(wxExRepSampleApp);
 
 bool wxExRepSampleApp::OnInit()
 {
-  SetAppName("wxex-rep-sample");
+  SetAppName("wxex-sample-rep");
 
   if (!wxExApp::OnInit())
   {
