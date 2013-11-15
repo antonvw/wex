@@ -98,6 +98,9 @@ Frame::Frame()
   , m_SocketServer(NULL)
   , m_Timer(this)
   , m_Answer(ANSWER_OFF)
+  , m_DataWindow(new wxExSTCWithFrame(this, this))
+  , m_LogWindow(new wxExSTC(this, wxEmptyString, wxExSTC::STC_WIN_NO_INDICATOR))
+  , m_Shell(new wxExSTCShell(this))
 {
   SetIcon(wxICON(app));
 
@@ -118,13 +121,6 @@ Frame::Frame()
   panes.push_back(wxExStatusBarPane("PaneInfo", 100, _("Lines")));
   SetupStatusBar(panes);
 #endif
-
-  m_DataWindow = new wxExSTCWithFrame(this, this);
-
-  m_LogWindow = new wxExSTC(
-    this, wxEmptyString, wxExSTC::STC_WIN_NO_INDICATOR, _("Log"));
-
-  m_Shell = new wxExSTCShell(this);
 
   m_LogWindow->ResetMargins();
 
@@ -472,7 +468,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   case ID_CLIENT_LOG_DATA:
     wxConfigBase::Get()->Write(_("Log Data"), 
-      !wxConfigBase::Get()->ReadBool(_("Log Data"), false));
+      !wxConfigBase::Get()->ReadBool(_("Log Data"), true));
     break;
 
   case ID_CLIENT_LOG_DATA_COUNT_ONLY:
@@ -744,11 +740,11 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
   case ID_CLIENT_LOG_DATA:
-    event.Check(wxConfigBase::Get()->ReadBool(_("Log Data"), false));
+    event.Check(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
     break;
 
   case ID_CLIENT_LOG_DATA_COUNT_ONLY:
-    event.Enable(wxConfigBase::Get()->ReadBool(_("Log Data"), false));
+    event.Enable(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
     event.Check(wxConfigBase::Get()->ReadBool(_("Count Only"), true));
     break;
 
