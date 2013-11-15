@@ -14,7 +14,6 @@
 
 #if wxUSE_GUI
 
-class wxExAddressRange;
 class wxExManagedFrame;
 class wxExProcess;
 class wxExSTC;
