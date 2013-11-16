@@ -263,12 +263,13 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
   next.GetNextToken(); // skip empty token
   const wxString pattern = next.GetNextToken();
-  const wxChar command = next.GetNextToken().GetChar(0);
+  const wxChar command =
+    (next.HasMoreTokens() ? next.GetNextToken().GetChar(0): ' ');
   const wxString skip = next.GetNextToken();
   const wxString replacement = next.GetNextToken();
   const int linecount = m_STC->GetLineCount();
   
-  int nr_replacements = 0;
+  int hits = 0;
 
   wxString print;
   
@@ -300,12 +301,13 @@ bool wxExEx::CommandGlobal(const wxString& search)
   
     case 'p':
       print += m_STC->GetLine(m_STC->LineFromPosition(m_STC->GetTargetStart()));
-        
+    case ' ':
       m_STC->SetIndicator(
         m_FindIndicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd());
       
       m_STC->SetTargetStart(m_STC->GetTargetEnd());
       m_STC->SetTargetEnd(m_STC->GetTextLength());
+      hits++;
       break;
       
     case 's':
@@ -313,7 +315,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
       m_STC->SetTargetStart(m_STC->GetTargetEnd());
       m_STC->SetTargetEnd(m_STC->GetTextLength());
         
-      nr_replacements++;
+      hits++;
       
       if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
       {
@@ -329,6 +331,10 @@ bool wxExEx::CommandGlobal(const wxString& search)
   
   switch (command)
   {
+    case ' ':
+      m_Frame->ShowExMessage(wxString::Format(_("Found: %d occurrences of: %s"),
+        hits, pattern.c_str()));
+      break;
     case 'd': 
       if (linecount - m_STC->GetLineCount() > 0)
       {
@@ -345,7 +351,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
       break;
     case 's':
       m_Frame->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
-        nr_replacements, pattern.c_str()));
+        hits, pattern.c_str()));
       break;
   }
 
