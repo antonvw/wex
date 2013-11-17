@@ -36,112 +36,58 @@ int wxExAddress::ToLine() const
     return m_Line;
   }
   
-  wxString filtered_address(wxExSkipWhiteSpace(*this, ""));
-  
-  if (filtered_address.empty())
-  {
-    return 0;
-  }
+  wxStringTokenizer tkz(*this, "+-.$'", wxTOKEN_RET_EMPTY_ALL);
 
-  // Filter all markers.
-  int markers = 0;
+  int sum = 0;
+  wxChar cmd = 0;
 
-  while (filtered_address.Contains("'"))
+  while (tkz.HasMoreTokens())
   {
-    const wxString oper = filtered_address.BeforeFirst('\'');
+    wxString token = tkz.GetNextToken();
+    token.Trim(true);
+    token.Trim(false);
+    const int value = atoi(token);
     
-    int pos = filtered_address.Find('\'');
-    int size = 2;
-    
-    const wxString marker = filtered_address.AfterFirst('\'');
-    
-    if (marker.empty())
+    if (tkz.GetLastDelimiter() != 0 || value == 0)
     {
-      return 0;
+      cmd = tkz.GetLastDelimiter();
     }
     
-    const int line = m_Ex->MarkerLine(marker.GetChar(0)) + 1;
-    
-    if (line == 0)
+    switch (cmd)
     {
-      return 0;
-    }
+      case 0: break;
+      case '+': sum += value; break;
+      case '-': sum -= value; break;
+      case '.': sum += m_Ex->GetSTC()->GetCurrentLine() + 1; break;
+      case '$': sum += m_Ex->GetSTC()->GetLineCount(); break;
+      case '\'': 
+        if (!tkz.GetString().empty())
+        {
+          const int line = m_Ex->MarkerLine(tkz.GetString().GetChar(0));
+        
+          if (line == 0)
+          {
+            return 0;
+          }
 
-    if (oper == "-")
-    {
-      markers -= line;
-      pos--;
-      size++;
-    }
-    else if (oper == "+")
-    {
-      markers += line;
-      pos--;
-      size++;
-    }
-    else 
-    {
-      markers += line;
-    }
-
-    filtered_address.replace(pos, size, "");
-  }
-
-  int dot = 0;
-  int stc_used = 0;
-
-  if (filtered_address.Contains("."))
-  {
-    dot = m_Ex->GetSTC()->GetCurrentLine();
-    filtered_address.Replace(".", "");
-    stc_used = 1;
-  }
-
-  // Filter $.
-  int dollar = 0;
-
-  if (filtered_address.Contains("$"))
-  {
-    dollar = m_Ex->GetSTC()->GetLineCount();
-    filtered_address.Replace("$", "");
-    stc_used = 1;
-  }
-
-  // Now we should have a number.
-  if (!filtered_address.IsNumber()) 
-  {
-    return 0;
-  }
-
-  // Convert this number.
-  int i = 0;
-  
-  if (
-  !filtered_address.empty() &&
-   filtered_address != "-0" && 
-   filtered_address != "+0")
-  {
-    if ((i = atoi(filtered_address.c_str())) == 0)
-    {
-      return 0;
+          sum += line + 1;
+        }
+        break;
     }
   }
-  
-  // Calculate the line.
-  const int line_no = markers + dot + dollar + i + stc_used;
-  
+
   // Limit the range of what is returned.
-  if (line_no <= 0)
+  if (sum <= 0)
   {
     return 1;
   }
-  else if (line_no > m_Ex->GetSTC()->GetLineCount())
+  else if (sum > m_Ex->GetSTC()->GetLineCount())
   {
     return m_Ex->GetSTC()->GetLineCount();
   }  
   else
   {
-    return line_no;
+    return sum;
   }
 }
 
