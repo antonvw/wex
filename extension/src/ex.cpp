@@ -230,9 +230,9 @@ bool wxExEx::Command(const wxString& command)
     
     m_Process->Execute(command.AfterFirst('!'));
   }
-  else if (command.AfterFirst(':').IsNumber())
+  else if (wxExAddress(this, command.AfterFirst(':')).ToLine() > 0)
   {
-    m_STC->GotoLineAndSelect(atoi(command.AfterFirst(':').c_str()));
+    m_STC->GotoLineAndSelect(wxExAddress(this, command.AfterFirst(':')).ToLine());
   }
   else
   {
