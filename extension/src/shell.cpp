@@ -186,7 +186,7 @@ void wxExSTCShell::Expand()
     wxDir dir(wxGetCwd() + subdir);
     wxString filename;
   
-    if (dir.GetFirst(&filename, word + "*"))
+    if (dir.IsOpened() && dir.GetFirst(&filename, word + "*"))
     {
       wxString next;
     
@@ -305,103 +305,105 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
   }
   
   const int key = event.GetKeyCode();
-
-  if (key == WXK_RETURN || key == WXK_TAB)
+  
+  switch (key)
   {
-    ProcessChar(key);
-  }
-  // Up or down key pressed, and at the end of document (and autocomplete active)
-  else if ((key == WXK_UP || key == WXK_DOWN) &&
-            GetCurrentPos() == GetTextLength() &&
-           !AutoCompActive())
-  {
-    ShowCommand(key);
-  }
-  // Home key pressed.
-  else if (key == WXK_HOME)
-  {
-    Home();
-
-    const wxString line = GetLine(GetCurrentLine());
-
-    if (line.StartsWith(m_Prompt))
-    {
-      GotoPos(GetCurrentPos() + m_Prompt.length());
-    }
-  }
-  // Ctrl-Q pressed, used to stop processing.
-  // Ctrl-C pressed and no text selected (otherwise copy), also used to stop processing.
-  else if (
-    event.GetModifiers() == wxMOD_CONTROL && 
-   ( key == 'Q' || 
-    (key == 'C' && GetSelectedText().empty())))
-  {
-    if (m_Process != NULL)
-    {
-      m_Process->Command(ID_SHELL_COMMAND_STOP, wxEmptyString);
-    }
-    else
-    {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
-      wxPostEvent(GetParent(), event);
-    }
-  }
-  // Ctrl-V pressed, used for pasting.
-  else if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')
-  {
-    Paste();
-  }
-  // Shift-Insert key pressed, used for pasting.
-  else if (
-    event.GetModifiers() == wxMOD_SHIFT && 
-    key == WXK_INSERT) 
-  {
-    Paste();
-  }
-  // Middle mouse button, to paste, though actually OnMouse is used.
-  else if (key == WXK_MBUTTON)
-  {
-    Paste();
-  }
-  // Backspace or delete key pressed.
-  else if (key == WXK_BACK || key == WXK_DELETE)
-  {
-    if (GetCurrentPos() <= m_CommandStartPosition)
-    {
-      // Ignore, so do nothing.
-    }
-    else
-    {
-      // Allow.
+    case WXK_RETURN:
+    case WXK_TAB:
       ProcessChar(key);
+      break;
+    
+    // Up or down key pressed, and at the end of document (and autocomplete active)
+    case WXK_UP:
+    case WXK_DOWN:
+      if (GetCurrentPos() == GetTextLength() && !AutoCompActive())
+      {
+        ShowCommand(key);
+      }
+      break;
+      
+    case WXK_HOME:
+      Home();
+
+      if (GetLine(GetCurrentLine()).StartsWith(m_Prompt))
+      {
+        GotoPos(GetCurrentPos() + m_Prompt.length());
+      }
+      break;
+      
+    // Shift-Insert key pressed, used for pasting.
+    case WXK_INSERT:
+      if (event.GetModifiers() == wxMOD_SHIFT)
+      {
+        Paste();
+      }
+      break;
+      
+    // Middle mouse button, to paste, though actually OnMouse is used.
+    case WXK_MBUTTON:
+      Paste();
+      break;
+      
+    // Backspace or delete key pressed.
+    case WXK_BACK:
+    case WXK_DELETE:
+      if (GetCurrentPos() <= m_CommandStartPosition)
+      {
+        // Ignore, so do nothing.
+      }
+      else
+      {
+        // Allow.
+        ProcessChar(key);
+        if (m_Echo) event.Skip();
+      }
+      break;
+      
+    case WXK_ESCAPE:
+      if (AutoCompActive())
+      {
+        AutoCompCancel();
+      }
+      else
+      {
+        event.Skip();
+      }
+      break;
+      
+    default:
+      // Ctrl-V pressed, used for pasting.
+      if (key == 'V' && event.GetModifiers() == wxMOD_CONTROL)
+      {
+        Paste();
+      }
+      // Ctrl-Q pressed, used to stop processing.
+      // Ctrl-C pressed and no text selected (otherwise copy), also used to stop processing.
+      else if (
+        event.GetModifiers() == wxMOD_CONTROL && 
+        (key == 'Q' || 
+        (key == 'C' && GetSelectedText().empty())))
+      {
+        if (m_Process != NULL)
+        {
+          m_Process->Command(ID_SHELL_COMMAND_STOP, wxEmptyString);
+        }
+        else
+        {
+          wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
+          wxPostEvent(GetParent(), event);
+        }
+      }
+      // If we enter regular text and not already building a command, first goto end.
+      else if (event.GetModifiers() == wxMOD_NONE &&
+          key < WXK_START &&
+          GetCurrentPos() < m_CommandStartPosition)
+      {
+        DocumentEnd();
+      }
+
+      m_CommandsIterator = m_Commands.end();
+
       if (m_Echo) event.Skip();
-    }
-  }
-  else if (key == WXK_ESCAPE)
-  {
-    if (AutoCompActive())
-    {
-      AutoCompCancel();
-    }
-    else
-    {
-      event.Skip();
-    }
-  }
-  // The rest.
-  else
-  {
-    // If we enter regular text and not already building a command, first goto end.
-    if (event.GetModifiers() == wxMOD_NONE &&
-        key < WXK_START &&
-        GetCurrentPos() < m_CommandStartPosition)
-    {
-      DocumentEnd();
-    }
-
-    m_CommandsIterator = m_Commands.end();
-
-    if (m_Echo) event.Skip();
   }
 }
 
@@ -476,71 +478,15 @@ void wxExSTCShell::Paste()
 void wxExSTCShell::ProcessChar(int key)
 {
   // No need to check m_Enabled, already done by calling this method.
-  
-  if (key == WXK_RETURN)
+  switch (key)
   {
-    if (AutoCompActive())
-    {
-      Expand();
-    }
-    else if (m_Command.empty())
-    {
-      if (m_Process != NULL)
+    case WXK_RETURN:
+      if (AutoCompActive())
       {
-        m_Process->Command(ID_SHELL_COMMAND, m_Command);
+        Expand();
       }
-      else
+      else if (m_Command.empty())
       {
-        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
-        event.SetString(m_Command);
-        wxPostEvent(GetParent(), event);
-      }
-    }
-    else if (
-      m_CommandEnd == GetEOL() ||
-      m_Command.EndsWith(m_CommandEnd))
-    {
-      // We have a command.
-      EmptyUndoBuffer();
-      
-      // History command.
-      if (m_Command == wxString("history") +
-         (m_CommandEnd == GetEOL() ? wxString(wxEmptyString): m_CommandEnd))
-      {
-        KeepCommand();
-        ShowHistory();
-        Prompt();
-      }
-      // !.. command, get it from history.
-      else if (m_Command.StartsWith("!"))
-      {
-        if (SetCommandFromHistory(m_Command.substr(1)))
-        {
-          AppendText(GetEOL() + m_Command);
-
-          // We don't keep the command, so commands are not rearranged and
-          // repeatingly calling !5 always gives the same command, just as bash does.
-          if (m_Process != NULL)
-          {
-            m_Process->Command(ID_SHELL_COMMAND, m_Command);
-          }
-          else
-          {
-            wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
-            event.SetString(m_Command);
-            wxPostEvent(GetParent(), event);
-          }
-        }
-        else
-        {
-          Prompt(GetEOL() + m_Command + ": " + _("event not found"));
-        }
-      }
-      // Other command, send to parent or process.
-      else
-      {
-        KeepCommand();
-        
         if (m_Process != NULL)
         {
           m_Process->Command(ID_SHELL_COMMAND, m_Command);
@@ -552,41 +498,102 @@ void wxExSTCShell::ProcessChar(int key)
           wxPostEvent(GetParent(), event);
         }
       }
+      else if (
+        m_CommandEnd == GetEOL() ||
+        m_Command.EndsWith(m_CommandEnd))
+      {
+        // We have a command.
+        EmptyUndoBuffer();
+        
+        // History command.
+        if (m_Command == wxString("history") +
+           (m_CommandEnd == GetEOL() ? wxString(wxEmptyString): m_CommandEnd))
+        {
+          KeepCommand();
+          ShowHistory();
+          Prompt();
+        }
+        // !.. command, get it from history.
+        else if (m_Command.StartsWith("!"))
+        {
+          if (SetCommandFromHistory(m_Command.substr(1)))
+          {
+            AppendText(GetEOL() + m_Command);
 
-      m_Command.clear();
-    }
+            // We don't keep the command, so commands are not rearranged and
+            // repeatingly calling !5 always gives the same command, just as bash does.
+            if (m_Process != NULL)
+            {
+              m_Process->Command(ID_SHELL_COMMAND, m_Command);
+            }
+            else
+            {
+              wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
+              event.SetString(m_Command);
+              wxPostEvent(GetParent(), event);
+            }
+          }
+          else
+          {
+            Prompt(GetEOL() + m_Command + ": " + _("event not found"));
+          }
+        }
+        // Other command, send to parent or process.
+        else
+        {
+          KeepCommand();
+          
+          if (m_Process != NULL)
+          {
+            m_Process->Command(ID_SHELL_COMMAND, m_Command);
+          }
+          else
+          {
+            wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
+            event.SetString(m_Command);
+            wxPostEvent(GetParent(), event);
+          }
+        }
 
-    m_CommandsIterator = m_Commands.end();
-  }
-  else if (key == WXK_BACK || key == WXK_DELETE)
-  {
-    // Delete the key at current position.
-    const int offset = (key == WXK_BACK ? 1: 0);
-    const int index = GetCurrentPos() - m_CommandStartPosition - offset;
+        m_Command.clear();
+      }
+
+      m_CommandsIterator = m_Commands.end();
+      break;
+  
+    case WXK_BACK:
+    case WXK_DELETE:
+      {
+        // Delete the key at current position.
+        const int offset = (key == WXK_BACK ? 1: 0);
+        const int index = GetCurrentPos() - m_CommandStartPosition - offset;
+        
+        if (index >= 0 && index < m_Command.length() && m_Command.length() > 0)
+        {
+          m_Command.erase(index, 1);
+        }
+      }
+      break;
     
-    if (index >= 0 && index < m_Command.length() && m_Command.length() > 0)
+    case WXK_TAB:
+      Expand();
+      break;
+      
+    default:
     {
-      m_Command.erase(index, 1);
-    }
-  }
-  else if (key == WXK_TAB)
-  {
-    Expand();
-  }
-  else
-  {
-    // Insert the key at current position.
-    const int index = GetCurrentPos() - m_CommandStartPosition;
-    
-    if (
-      GetCurrentPos() < GetLength() && 
-      index >= 0 && index < m_Command.size())
-    {
-      m_Command.insert(index, wxChar(key));
-    }
-    else
-    {
-      m_Command += wxChar(key);
+      // Insert the key at current position.
+      const int index = GetCurrentPos() - m_CommandStartPosition;
+      
+      if (
+        GetCurrentPos() < GetLength() && 
+        index >= 0 && index < m_Command.size())
+      {
+        m_Command.insert(index, wxChar(key));
+      }
+      else
+      {
+        m_Command += wxChar(key);
+      }
     }
   }
   
