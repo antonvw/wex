@@ -55,11 +55,23 @@ int wxExAddress::ToLine() const
     
     switch (cmd)
     {
-      case 0: break;
-      case '+': sum += value; break;
-      case '-': sum -= value; break;
-      case '.': sum += m_Ex->GetSTC()->GetCurrentLine() + 1; break;
-      case '$': sum += m_Ex->GetSTC()->GetLineCount(); break;
+      case 0: 
+      case '+': 
+        sum += value; 
+        break;
+      
+      case '-': 
+        sum -= value; 
+        break;
+      
+      case '.': 
+        sum += m_Ex->GetSTC()->GetCurrentLine() + 1; 
+        break;
+      
+      case '$': 
+        sum += m_Ex->GetSTC()->GetLineCount(); 
+        break;
+      
       case '\'': 
         if (!tkz.GetString().empty())
         {
@@ -77,7 +89,7 @@ int wxExAddress::ToLine() const
   }
 
   // Limit the range of what is returned.
-  if (sum <= 0)
+  if (sum < 0)
   {
     return 1;
   }
