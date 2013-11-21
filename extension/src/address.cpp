@@ -35,6 +35,11 @@ int wxExAddress::ToLine() const
   {
     return m_Line;
   }
+   
+  if (Contains("/"))
+  {
+    return 0;
+  }
   
   wxStringTokenizer tkz(*this, "+-.$'", wxTOKEN_RET_EMPTY_ALL);
 

@@ -33,16 +33,25 @@ void wxExGuiTestFixture::testAddress()
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello\nhello1\nhello2");
   wxExEx* ex = new wxExEx(stc);
   stc->GotoLineAndSelect(2);
+  ex->Command("ma"); // put maker a on line
   
   CPPUNIT_ASSERT( wxExAddress(ex, "").ToLine() == 0);
   CPPUNIT_ASSERT( wxExAddress(ex, "30").ToLine() == 3);
   CPPUNIT_ASSERT( wxExAddress(ex, "40").ToLine() == 3);
   CPPUNIT_ASSERT( wxExAddress(ex, "-40").ToLine() == 1);
+  CPPUNIT_ASSERT( wxExAddress(ex, "3-3").ToLine() == 0);
+  CPPUNIT_ASSERT( wxExAddress(ex, "3-1").ToLine() == 2);
   CPPUNIT_ASSERT( wxExAddress(ex, ".").ToLine() == 2);
   CPPUNIT_ASSERT( wxExAddress(ex, ".+1").ToLine() == 3);
   CPPUNIT_ASSERT( wxExAddress(ex, "$").ToLine() == 3);
   CPPUNIT_ASSERT( wxExAddress(ex, "$-2").ToLine() == 2); // TODO
   CPPUNIT_ASSERT( wxExAddress(ex, "x").ToLine() == 0);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'x").ToLine() == 0);
+  CPPUNIT_ASSERT( wxExAddress(ex, "1,3s/x/y").ToLine() == 0);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'a").ToLine() == 2);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'a").ToLine() == 2);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'a+1").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "1+'a").ToLine() == 3);
 }
 
 void wxExGuiTestFixture::testAddressRange()
@@ -2094,6 +2103,13 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!stc->GetText().Contains("izz"));
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT( stc->GetText().Contains(wxString('z', 200)));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  
+  CPPUNIT_ASSERT( vi->Command("i"));
+  CPPUNIT_ASSERT( vi->Command("="));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( stc->GetText().Contains("="));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   
   // Test commands that do not change mode.
