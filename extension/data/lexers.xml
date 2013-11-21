@@ -1932,7 +1932,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
   
   <lexer name="a68k"/>
   <lexer name="abaqus"/> 
-  <lexer name="ada" extensions="*.a">
+  <lexer name="ada" extensions="*.a;*.adb;*.ads">
     <!--
     ada folding is supported using next ada lexer:
     http://dlchnr.dl.funpic.de/in/LexAdaFF.zip   
@@ -1989,7 +1989,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="ave"/>
   <lexer name="avs"/>
   <lexer name="baan"/>
-  <lexer name="bash" extensions="*.bash;.bash*;*.sh;Doxyfile"> 
+  <lexer name="bash" extensions="*.bash;*.sh;Doxyfile"> 
     <keywords>    
       alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
       for function
