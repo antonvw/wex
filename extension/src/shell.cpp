@@ -320,6 +320,10 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
       {
         ShowCommand(key);
       }
+      else
+      {
+        event.Skip();
+      }
       break;
       
     case WXK_HOME:
