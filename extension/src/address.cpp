@@ -53,11 +53,6 @@ int wxExAddress::ToLine() const
     token.Trim(false);
     const int value = atoi(token);
     
-    if (tkz.GetLastDelimiter() != 0 || value == 0)
-    {
-      cmd = tkz.GetLastDelimiter();
-    }
-    
     switch (cmd)
     {
       case 0: 
@@ -90,6 +85,11 @@ int wxExAddress::ToLine() const
           sum += line + 1;
         }
         break;
+    }
+  
+    if (tkz.GetLastDelimiter() != 0 || value == 0)
+    {
+      cmd = tkz.GetLastDelimiter();
     }
   }
 
