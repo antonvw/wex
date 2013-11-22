@@ -230,13 +230,14 @@ bool wxExEx::Command(const wxString& command)
     
     m_Process->Execute(command.AfterFirst('!'));
   }
+  else if (CommandRange(command.AfterFirst(':')))
+  {
+    result = true;
+  }
   else if (wxExAddress(this, command.AfterFirst(':')).ToLine() > 0)
   {
     m_STC->GotoLineAndSelect(wxExAddress(this, command.AfterFirst(':')).ToLine());
-  }
-  else
-  {
-    result = CommandRange(command.AfterFirst(':'));
+    result = true;
   }
 
   if (result)

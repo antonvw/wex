@@ -51,45 +51,49 @@ int wxExAddress::ToLine() const
     wxString token = tkz.GetNextToken();
     token.Trim(true);
     token.Trim(false);
-    const int value = atoi(token);
     
-    switch (cmd)
+    if (tkz.GetLastDelimiter() == '\'')
     {
-      case 0: 
-      case '+': 
-        sum += value; 
-        break;
+      if (!tkz.GetString().empty())
+      {
+        const int line = m_Ex->MarkerLine(tkz.GetString().GetChar(0));
       
-      case '-': 
-        sum -= value; 
-        break;
-      
-      case '.': 
-        sum += m_Ex->GetSTC()->GetCurrentLine() + 1; 
-        break;
-      
-      case '$': 
-        sum += m_Ex->GetSTC()->GetLineCount(); 
-        break;
-      
-      case '\'': 
-        if (!tkz.GetString().empty())
+        if (line == 0)
         {
-          const int line = m_Ex->MarkerLine(tkz.GetString().GetChar(0));
-        
-          if (line == 0)
-          {
-            return 0;
-          }
-
-          sum += line + 1;
+          return 0;
         }
-        break;
+
+        sum += line + 1;
+      }
     }
-  
-    if (tkz.GetLastDelimiter() != 0 || value == 0)
+    else
     {
-      cmd = tkz.GetLastDelimiter();
+      const int value = atoi(token);
+    
+      switch (cmd)
+      {
+        case 0: 
+        case '+': 
+          sum += value; 
+          break;
+        
+        case '-': 
+          sum -= value; 
+          break;
+        
+        case '.': 
+          sum += m_Ex->GetSTC()->GetCurrentLine() + 1; 
+          break;
+        
+        case '$': 
+          sum += m_Ex->GetSTC()->GetLineCount(); 
+          break;
+      }
+    
+      if (tkz.GetLastDelimiter() != 0 || value == 0)
+      {
+        cmd = tkz.GetLastDelimiter();
+      }
     }
   }
 
