@@ -33,7 +33,7 @@ void wxExGuiTestFixture::testAddress()
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello\nhello1\nhello2");
   wxExEx* ex = new wxExEx(stc);
   stc->GotoLineAndSelect(2);
-  ex->Command("ma"); // put maker a on line
+  ex->MarkerAdd('a'); // put marker a on line
   
   CPPUNIT_ASSERT( wxExAddress(ex, "").ToLine() == 0);
   CPPUNIT_ASSERT( wxExAddress(ex, "30").ToLine() == 3);
@@ -44,11 +44,10 @@ void wxExGuiTestFixture::testAddress()
   CPPUNIT_ASSERT( wxExAddress(ex, ".").ToLine() == 2);
   CPPUNIT_ASSERT( wxExAddress(ex, ".+1").ToLine() == 3);
   CPPUNIT_ASSERT( wxExAddress(ex, "$").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "$-2").ToLine() == 2); // TODO
+  CPPUNIT_ASSERT( wxExAddress(ex, "$-2").ToLine() == 1);
   CPPUNIT_ASSERT( wxExAddress(ex, "x").ToLine() == 0);
   CPPUNIT_ASSERT( wxExAddress(ex, "'x").ToLine() == 0);
   CPPUNIT_ASSERT( wxExAddress(ex, "1,3s/x/y").ToLine() == 0);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'a").ToLine() == 2);
   CPPUNIT_ASSERT( wxExAddress(ex, "'a").ToLine() == 2);
   CPPUNIT_ASSERT( wxExAddress(ex, "'a+1").ToLine() == 3);
   CPPUNIT_ASSERT( wxExAddress(ex, "1+'a").ToLine() == 3);
@@ -377,7 +376,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":'<,'>!sort"));
   stc->GotoLine(2);
   stc->LineDownExtend();
-  CPPUNIT_ASSERT(!ex->Command(":'<,'>x"));
+  CPPUNIT_ASSERT( ex->Command(":'<,'>x")); // gives unknown range command: ok
   
   // Test set.
   CPPUNIT_ASSERT( ex->Command(":set ic"));

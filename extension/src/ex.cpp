@@ -232,12 +232,15 @@ bool wxExEx::Command(const wxString& command)
   }
   else if (CommandRange(command.AfterFirst(':')))
   {
-    result = true;
+    // do nothing
   }
   else if (wxExAddress(this, command.AfterFirst(':')).ToLine() > 0)
   {
     m_STC->GotoLineAndSelect(wxExAddress(this, command.AfterFirst(':')).ToLine());
-    result = true;
+  }
+  else
+  {
+    result = false;
   }
 
   if (result)
@@ -264,8 +267,8 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
   next.GetNextToken(); // skip empty token
   const wxString pattern = next.GetNextToken();
-  const wxChar command =
-    (next.HasMoreTokens() ? next.GetNextToken().GetChar(0): ' ');
+  const int command =
+    (next.HasMoreTokens() ? (int)next.GetNextToken().GetChar(0): (int)' ');
   const wxString skip = next.GetNextToken();
   const wxString replacement = next.GetNextToken();
   const int linecount = m_STC->GetLineCount();
