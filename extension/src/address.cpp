@@ -58,7 +58,7 @@ int wxExAddress::ToLine() const
       {
         const int line = m_Ex->MarkerLine(tkz.GetString().GetChar(0));
       
-        if (line == 0)
+        if (line == -1)
         {
           return 0;
         }
