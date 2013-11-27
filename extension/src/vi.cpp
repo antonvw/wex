@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
+#include <string>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -177,16 +178,23 @@ bool wxExVi::Command(const wxString& command)
   {
     SetRegister(wxEmptyString);
   }
-  
-  char * pEnd;
-  long int repeat = strtol(rest.c_str(), &pEnd, 10);
 
-  if (repeat == 0)
+  int seq_size = 0; // size of sequence of digits from begin in rest
+  
+  for (int i = 0; i < rest.size(); i++)
   {
-    repeat++;
+    if (rest[i] > 255 || rest[i] < 0 || !isdigit(rest[i]))
+      break;
+    seq_size++;
   }
   
-  rest = wxString(pEnd);
+  long int repeat = 1;
+
+  if (seq_size > 0)
+  {
+    repeat = strtol(rest.Mid(0, seq_size).c_str(), NULL, 10);
+    rest = rest.Mid(seq_size);
+  }
   
   const int size = GetSTC()->GetLength();
  
@@ -737,6 +745,7 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'g': GetSTC()->DocumentStart(); break;
       
     case 'h': 
+    case WXK_LEFT:
       VisualExtendLeftLine();
       
       for (int i = 0; i < repeat; i++) 
@@ -753,6 +762,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case 'j': 
+    case WXK_DOWN:
       VisualExtendRightLine();
       
       for (int i = 0; i < repeat; i++) 
@@ -812,6 +822,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case 'k': 
+    case WXK_UP:
       VisualExtendLeftLine();
       
       for (int i = 0; i < repeat; i++) 
@@ -864,6 +875,7 @@ bool wxExVi::CommandChar(int c, int repeat)
         
     case 'l': 
     case ' ': 
+    case WXK_RIGHT:
       VisualExtendRightLine();
       
       for (int i = 0; i < repeat; i++) 
@@ -1060,12 +1072,14 @@ bool wxExVi::CommandChar(int c, int repeat)
     case '#': FindWord(false); break;
       
     case WXK_CONTROL_B:
+    case WXK_PAGEUP:
       for (int i = 0; i < repeat; i++) GetSTC()->PageUp(); 
       break;
     case WXK_CONTROL_E: 
       for (int i = 0; i < repeat; i++) ChangeNumber(true); 
       break;
     case WXK_CONTROL_F:
+    case WXK_PAGEDOWN:
       for (int i = 0; i < repeat; i++) GetSTC()->PageDown(); 
       break;
     case WXK_CONTROL_G:
@@ -1427,7 +1441,13 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     event.GetKeyCode() == WXK_BACK ||
     event.GetKeyCode() == WXK_ESCAPE ||
     event.GetKeyCode() == WXK_RETURN ||
-    event.GetKeyCode() == WXK_TAB)
+    event.GetKeyCode() == WXK_TAB ||
+    event.GetKeyCode() == WXK_LEFT ||
+    event.GetKeyCode() == WXK_DOWN ||
+    event.GetKeyCode() == WXK_UP ||
+    event.GetKeyCode() == WXK_RIGHT ||
+    event.GetKeyCode() == WXK_PAGEUP ||
+    event.GetKeyCode() == WXK_PAGEDOWN)
   {
     if (m_Command.StartsWith("@"))
     {
@@ -1460,17 +1480,6 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   }
   else
   {
-    if (GetMacros().IsRecording() && m_Mode != MODE_INSERT)
-    {
-      switch (event.GetKeyCode())
-      {
-        case WXK_LEFT: GetMacros().Record("h"); break;
-        case WXK_DOWN: GetMacros().Record("j"); break;
-        case WXK_UP: GetMacros().Record("k"); break;
-        case WXK_RIGHT: GetMacros().Record("l"); break;
-      }
-    }
-    
     return true;
   }
 }
