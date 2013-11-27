@@ -279,6 +279,18 @@ bool wxExEx::CommandGlobal(const wxString& search)
   
   m_STC->SetIndicatorCurrent(m_FindIndicator.GetNo());
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
+  
+  if (pattern.empty())
+  {
+    if (!replacement.empty())
+    {
+      wxLogStatus("Cannot replace, pattern is empty");
+      return false;
+    }
+    
+    // Silently cleared indicators.
+    return true;  
+  }
     
   m_STC->SetSearchFlags(m_SearchFlags);
 
