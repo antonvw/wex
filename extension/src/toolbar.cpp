@@ -118,7 +118,8 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
     return wxAuiToolBar::AddTool(
       toolId, 
       wxEmptyString,
-      art.GetBitmap(wxART_TOOLBAR),
+      // art.GetBitmap(wxART_TOOLBAR),
+      art.GetBitmap(wxART_MENU, wxSize(16, 16)),
       wxGetStockLabel(toolId, wxSTOCK_NOFLAGS),
       kind);
   }
