@@ -70,6 +70,17 @@ wxMenuItem* wxExMenu::Append(
       item->SetBitmap(bitmap);
     }
   }
+  else
+  {
+    const wxExStockArt art(id);
+
+    if (art.GetBitmap().IsOk())
+    {
+      item->SetBitmap(art.GetBitmap(
+        wxART_MENU, 
+        wxArtProvider::GetSizeHint(wxART_MENU, true)));
+    }
+  }
 
   return wxMenu::Append(item);
 }
