@@ -235,8 +235,14 @@ bool wxExVi::Command(const wxString& command)
         switch (rest.size())
         {
           case 0: return false;
-          case 1: handled = CommandChar((int)rest.GetChar(0), repeat); break;
-          case 2: 
+          case 1: 
+            handled = CommandChar((int)rest.GetChar(0), repeat); 
+            if (handled)
+            {
+              rest = rest.Mid(1);
+            }
+            break;
+          default: 
           switch (CHR_TO_NUM((int)rest[0], (int)rest[1]))
           {
             case CHR_TO_NUM('c','c'):
@@ -249,8 +255,9 @@ bool wxExVi::Command(const wxString& command)
                 {
                   return false;
                 }
+                rest = rest.Mid(2);
               }
-              return true;
+              break;
             case CHR_TO_NUM('c','w'):
               // do not use CanCopy 
               if (!GetSTC()->HexMode() && !GetSTC()->GetReadOnly())
@@ -266,8 +273,9 @@ bool wxExVi::Command(const wxString& command)
                 {
                   return false;
                 }
+                rest = rest.Mid(2);
               }
-              return true;
+              break;
             case CHR_TO_NUM('d','d'): wxExAddressRange(this, repeat).Delete(); break;
             case CHR_TO_NUM('d','e'):
               if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
@@ -473,77 +481,80 @@ bool wxExVi::Command(const wxString& command)
                 CommandReg(rest.Mid(1));
                 return true;
               }  
+              else if (CommandChar((int)rest.GetChar(0), repeat))
+              {
+                rest = rest.Mid(1);
+              }
+              else if (rest.StartsWith("@"))
+              {
+                std::vector <wxString> v;
+                  
+                if (wxExMatch("@(.+)@", rest, v) > 0)
+                {
+                  handled = MacroPlayback(v[0], repeat);
+                  
+                  if (!handled)
+                  {
+                    m_Command.clear();
+                    GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
+                  }
+                }
+                else
+                {
+                  GetFrame()->StatusText(rest.Mid(1), "PaneMacro");
+                  return false;
+                }
+              }
+              else if (command == ":reg")
+              {
+                wxString output;
+                
+                // Currently the " register does not really exist,
+                // but copies clipboard contents instead.
+                const wxString clipboard(wxExSkipWhiteSpace(wxExClipboardGet()));
+              
+                if (!clipboard.empty())
+                {
+                  output += "\": " + clipboard + "\n";
+                }
+                
+                output += "%: " + GetSTC()->GetFileName().GetFullName() + "\n";
+                
+                auto v(GetMacros().GetRegisters());
+                  
+                for (auto it = v.begin();  it != v.end(); ++it)
+                {
+                  output += *it + "\n";
+                }
+              
+                if (m_Dialog == NULL)
+                {
+                  m_Dialog = new wxExSTCEntryDialog(
+                    wxTheApp->GetTopWindow(),
+                    "Registers", 
+                    output,
+                    wxEmptyString,
+                    wxOK);
+                }
+                else
+                {
+                  m_Dialog->GetSTC()->SetText(output);
+                }
+                
+                m_Dialog->Show();
+              }
               else
               {
                 handled = false;
               }
-          } // switch (CHR_TO_NUM((int)rest[0], (int)rest[1]))
-          break;
-        
-          default:
-            if (rest.StartsWith("@"))
-            {
-              std::vector <wxString> v;
-                
-              if (wxExMatch("@(.+)@", rest, v) > 0)
-              {
-                handled = MacroPlayback(v[0], repeat);
-                
-                if (!handled)
-                {
-                  m_Command.clear();
-                  GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
-                }
-              }
-              else
-              {
-                GetFrame()->StatusText(rest.Mid(1), "PaneMacro");
-                return false;
-              }
-            }
-            else if (command == ":reg")
-            {
-              wxString output;
-              
-              // Currently the " register does not really exist,
-              // but copies clipboard contents instead.
-              const wxString clipboard(wxExSkipWhiteSpace(wxExClipboardGet()));
-            
-              if (!clipboard.empty())
-              {
-                output += "\": " + clipboard + "\n";
-              }
-              
-              output += "%: " + GetSTC()->GetFileName().GetFullName() + "\n";
-              
-              auto v(GetMacros().GetRegisters());
-                
-              for (auto it = v.begin();  it != v.end(); ++it)
-              {
-                output += *it + "\n";
-              }
-            
-              if (m_Dialog == NULL)
-              {
-                m_Dialog = new wxExSTCEntryDialog(
-                  wxTheApp->GetTopWindow(),
-                  "Registers", 
-                  output,
-                  wxEmptyString,
-                  wxOK);
-              }
-              else
-              {
-                m_Dialog->GetSTC()->SetText(output);
-              }
-              
-              m_Dialog->Show();
-            }
-            else
-            {
-              handled = false;
-            }
+            } // switch (CHR_TO_NUM((int)rest[0], (int)rest[1]))
         } // switch (rest.size())
+      
+        if (handled && m_Mode == MODE_INSERT && !rest.empty())
+        {
+          InsertMode(rest);
+          return true;
+        }
       } // Handle multichar commands.
   } // switch (command[0])
 
