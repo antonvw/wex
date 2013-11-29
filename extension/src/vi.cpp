@@ -236,8 +236,7 @@ bool wxExVi::Command(const wxString& command)
         {
           case 0: return false;
           case 1: handled = CommandChar((int)rest.GetChar(0), repeat); break;
-          
-          default: 
+          case 2: 
           switch (CHR_TO_NUM((int)rest[0], (int)rest[1]))
           {
             case CHR_TO_NUM('c','c'):
@@ -250,8 +249,6 @@ bool wxExVi::Command(const wxString& command)
                 {
                   return false;
                 }
-              
-                InsertMode(rest.Mid(2));
               }
               return true;
             case CHR_TO_NUM('c','w'):
@@ -269,8 +266,6 @@ bool wxExVi::Command(const wxString& command)
                 {
                   return false;
                 }
-              
-                InsertMode(rest.Mid(2));
               }
               return true;
             case CHR_TO_NUM('d','d'): wxExAddressRange(this, repeat).Delete(); break;
@@ -405,14 +400,11 @@ bool wxExVi::Command(const wxString& command)
             case CHR_TO_NUM('@','@'): MacroPlayback(GetMacros().GetMacro(), repeat); break;
               
             default:
-              if (CommandChar((int)rest.GetChar(0), repeat))
-              {
-                // do nothing
-              }
-              else if (rest.Matches("f?") || rest.Matches("F?"))
+              if (rest.Matches("f?") || rest.Matches("F?"))
               {
                 for (int i = 0; i < repeat; i++) 
-                  GetSTC()->FindNext(rest.Last(), GetSearchFlags(), rest[0] == 'f');
+                  if (!GetSTC()->FindNext(rest.Last(), GetSearchFlags(), rest[0] == 'f'))
+                    return false;
                 m_LastFindCharCommand = command;
               }
               else if (OneLetterAfter("m", rest))
@@ -453,7 +445,8 @@ bool wxExVi::Command(const wxString& command)
               else if (rest.Matches("t?") || rest.Matches("T?"))
               {
                 for (int i = 0; i < repeat; i++) 
-                  GetSTC()->FindNext(rest.Last(), GetSearchFlags(), rest[0] == 't');
+                  if (!GetSTC()->FindNext(rest.Last(), GetSearchFlags(), rest[0] == 't'))
+                    return false;
                 GetSTC()->CharLeft();
                 m_LastFindCharCommand = command;
               }
@@ -480,76 +473,77 @@ bool wxExVi::Command(const wxString& command)
                 CommandReg(rest.Mid(1));
                 return true;
               }  
-              else if (rest.StartsWith("@"))
-              {
-                std::vector <wxString> v;
-                  
-                if (wxExMatch("@(.+)@", rest, v) > 0)
-                {
-                  handled = MacroPlayback(v[0], repeat);
-                  
-                  if (!handled)
-                  {
-                    m_Command.clear();
-                    GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
-                  }
-                }
-                else
-                {
-                  GetFrame()->StatusText(rest.Mid(1), "PaneMacro");
-                  return false;
-                }
-              }
-              else if (command == ":reg")
-              {
-                wxString output;
-                
-                // Currently the " register does not really exist,
-                // but copies clipboard contents instead.
-                const wxString clipboard(wxExSkipWhiteSpace(wxExClipboardGet()));
-              
-                if (!clipboard.empty())
-                {
-                  output += "\": " + clipboard + "\n";
-                }
-                
-                output += "%: " + GetSTC()->GetFileName().GetFullName() + "\n";
-                
-                auto v(GetMacros().GetRegisters());
-                  
-                for (auto it = v.begin();  it != v.end(); ++it)
-                {
-                  output += *it + "\n";
-                }
-              
-                if (m_Dialog == NULL)
-                {
-                  m_Dialog = new wxExSTCEntryDialog(
-                    wxTheApp->GetTopWindow(),
-                    "Registers", 
-                    output,
-                    wxEmptyString,
-                    wxOK);
-                }
-                else
-                {
-                  m_Dialog->GetSTC()->SetText(output);
-                }
-                
-                m_Dialog->Show();
-              }
               else
               {
                 handled = false;
               }
-            } // switch (CHR_TO_NUM((int)rest[0], (int)rest[1]))
+          } // switch (CHR_TO_NUM((int)rest[0], (int)rest[1]))
+          break;
+        
+          default:
+            if (rest.StartsWith("@"))
+            {
+              std::vector <wxString> v;
+                
+              if (wxExMatch("@(.+)@", rest, v) > 0)
+              {
+                handled = MacroPlayback(v[0], repeat);
+                
+                if (!handled)
+                {
+                  m_Command.clear();
+                  GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
+                }
+              }
+              else
+              {
+                GetFrame()->StatusText(rest.Mid(1), "PaneMacro");
+                return false;
+              }
+            }
+            else if (command == ":reg")
+            {
+              wxString output;
+              
+              // Currently the " register does not really exist,
+              // but copies clipboard contents instead.
+              const wxString clipboard(wxExSkipWhiteSpace(wxExClipboardGet()));
+            
+              if (!clipboard.empty())
+              {
+                output += "\": " + clipboard + "\n";
+              }
+              
+              output += "%: " + GetSTC()->GetFileName().GetFullName() + "\n";
+              
+              auto v(GetMacros().GetRegisters());
+                
+              for (auto it = v.begin();  it != v.end(); ++it)
+              {
+                output += *it + "\n";
+              }
+            
+              if (m_Dialog == NULL)
+              {
+                m_Dialog = new wxExSTCEntryDialog(
+                  wxTheApp->GetTopWindow(),
+                  "Registers", 
+                  output,
+                  wxEmptyString,
+                  wxOK);
+              }
+              else
+              {
+                m_Dialog->GetSTC()->SetText(output);
+              }
+              
+              m_Dialog->Show();
+            }
+            else
+            {
+              handled = false;
+            }
         } // switch (rest.size())
-      
-        if (handled && m_Mode == MODE_INSERT)
-        {
-          InsertMode(rest.Mid(1));
-          return true;
-        }
       } // Handle multichar commands.
   } // switch (command[0])
 
