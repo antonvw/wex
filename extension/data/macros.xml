@@ -98,7 +98,7 @@ Comments you add within xml elements are not saved when you edit macros.
     <command>@cb@</command>
     <command>i Name:      </command>
     <command>$!27!</command>
-    <command>i$18$%</command>
+    <command>i$!18!%</command>
     <command>$!27!</command>
     <command>@cc@</command>
     <command>o</command>
