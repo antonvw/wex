@@ -550,9 +550,13 @@ bool wxExVi::Command(const wxString& command)
             } // switch (CHR_TO_NUM((int)rest[0], (int)rest[1]))
         } // switch (rest.size())
       
-        if (handled && m_Mode == MODE_INSERT && !rest.empty())
+        if (handled && m_Mode == MODE_INSERT)
         {
-          InsertMode(rest);
+          if (!rest.empty())
+          {
+            InsertMode(rest);
+          }
+          
           return true;
         }
       } // Handle multichar commands.
