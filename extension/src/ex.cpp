@@ -330,18 +330,17 @@ bool wxExEx::CommandGlobal(const wxString& search)
       m_STC->ReplaceTargetRE(replacement); // always RE!
       m_STC->SetTargetStart(m_STC->GetTargetEnd());
       m_STC->SetTargetEnd(m_STC->GetTextLength());
-        
       hits++;
-      
-      if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
-      {
-        break;
-      }
       break;
       
     default:
       m_STC->EndUndoAction();
       return false;
+    }
+  
+    if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
+    {
+      break;
     }
   }
   
