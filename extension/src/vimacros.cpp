@@ -614,6 +614,8 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   if (!stop)
   {
     wxLogStatus(_("Macro played back"));
+    m_Macro = macro; // might be overridden by expanded variable
+    wxExFrame::StatusText(m_Macro, "PaneMacro");
   }
   
   m_IsPlayback = false;
