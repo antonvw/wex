@@ -1201,12 +1201,24 @@ bool wxExVi::InsertMode(const wxString& command)
       return true;
     }
   }
-  else if (RegAfter(wxUniChar(WXK_CONTROL_R), command.Mid(0, 2)))
+  else if (command.Contains(wxUniChar(WXK_CONTROL_R)))
   {
-    CommandReg(command.Mid(1, 1));
-    InsertMode(command.Mid(2));
-    return true;
-  }  
+    wxStringTokenizer tkz(command, wxUniChar(WXK_CONTROL_R));
+    
+    while (tkz.HasMoreTokens())
+    {
+      wxString token = tkz.GetNextToken();
+      
+      if (RegAfter(wxUniChar(WXK_CONTROL_R), 
+        wxUniChar(WXK_CONTROL_R) + tkz.GetString().Mid(0, 1)))
+      {
+        InsertMode(token);
+        CommandReg(tkz.GetString().Mid(0, 1));
+        InsertMode(tkz.GetString().Mid(1));
+        return true;
+      }  
+    }
+  }
   
   switch ((int)command.Last())
   {
