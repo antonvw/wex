@@ -86,6 +86,7 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
   
   // Test Substitute and flags.
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1").Substitute("//y"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").Substitute("/x/y"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "2").Substitute("/x/y/f"));
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y"));
@@ -459,6 +460,13 @@ void wxExGuiTestFixture::testEx()
   stc->AppendText("line xxxx 3 added\n");
   stc->AppendText("line xxxx 4 added\n");
   CPPUNIT_ASSERT( ex->Command(":g/xxxx/p"));
+  
+  // Test global substitute.
+  stc->AppendText("line xxxx 6 added\n");
+  stc->AppendText("line xxxx 7 added\n");
+  CPPUNIT_ASSERT( ex->Command(":g/xxxx/s//yyyy"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("yyyy"));
+  CPPUNIT_ASSERT( ex->Command(":g//"));
   
   // Test goto.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
@@ -847,10 +855,25 @@ void wxExGuiTestFixture::testLexers()
     "// this is a cpp comment text").GetScintillaLexer() == "cpp");
     
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "#! /bin/csh").GetScintillaLexer() == "bash");
+    "#!/bin/sh").GetScintillaLexer() == "bash");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#!/bin/sh").GetDisplayLexer() == "sh");
     
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
     "#!/bin/csh").GetScintillaLexer() == "bash");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#!/bin/csh").GetDisplayLexer() == "csh");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#!/bin/tcsh").GetScintillaLexer() == "bash");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#!/bin/tcsh").GetDisplayLexer() == "tcsh");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#!/bin/bash").GetScintillaLexer() == "bash");
     
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
     "#!/usr/bin/csh").GetScintillaLexer() == "bash");
@@ -1990,13 +2013,28 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_TAB;
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  
+  // Vi navigation command tests.
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  
+  event.m_keyCode = WXK_LEFT;
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  event.m_keyCode = WXK_DOWN;
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  event.m_keyCode = WXK_UP;
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  event.m_keyCode = WXK_RIGHT;
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  event.m_keyCode = WXK_PAGEUP;
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  event.m_keyCode = WXK_PAGEDOWN;
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_NONE;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   
   // Vi command tests.
-  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
   CPPUNIT_ASSERT( vi->Command("xxxxxxxx"));
