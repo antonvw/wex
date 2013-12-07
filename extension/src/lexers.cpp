@@ -244,9 +244,21 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
   {
     return FindByName("phpscript");
   }
+  else if (text.StartsWith("#!/bin/csh"))
+  {
+    return FindByName("csh");
+  }
+  else if (text.StartsWith("#!/bin/tcsh"))
+  {
+    return FindByName("tcsh");
+  }
+  else if (text.StartsWith("#!/bin/sh"))
+  {
+    return FindByName("sh");
+  }
   else
   {
-    // If there is a Shell Language Indicator,
+    // If there is another Shell Language Indicator,
     // match with bash.
     const wxRegEx re("#!.*/bin/.*");
     
