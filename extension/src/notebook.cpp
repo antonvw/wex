@@ -186,14 +186,11 @@ const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
   LogMapPages();
 #endif
 
-  for (
-    auto it = m_MapPages.begin();
-    it != m_MapPages.end();
-    ++it)
+  for (auto it : m_MapPages)
   {
-    if (it->second == page)
+    if (it.second == page)
     {
-      return it->first;
+      return it.first;
     }
   }
 
@@ -263,12 +260,9 @@ wxWindow* wxExNotebook::InsertPage(
 
 void wxExNotebook::LogMapPages() const
 {
-  for (
-    std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.begin();
-    it != m_MapPages.end();
-    ++it)
+  for (auto it : m_MapPages)
   {
-     wxLogMessage("map[%s]=%d", it->first.c_str(), it->second->GetId());
+     wxLogMessage("map[%s]=%d", it.first.c_str(), it.second->GetId());
   }
 }
   
