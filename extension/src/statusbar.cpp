@@ -42,14 +42,11 @@ int wxExStatusBar::GetFieldNo(const wxString& field) const
 {
   int i = 0;
   
-  for (
-    auto it = m_Panes.begin();
-    it != m_Panes.end();
-    ++it)
+  for (auto it : m_Panes)
   {
-    if (it->IsShown())
+    if (it.IsShown())
     {
-      if (it->GetName() == field)
+      if (it.GetName() == field)
       {
         return i;
       }
@@ -185,31 +182,28 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
   int* styles = new int[m_Panes.size()];
   int i = 0; // number of shown panes
 
-  for (
-    auto it = m_Panes.begin();
-    it != m_Panes.end();
-    ++it)
+  for (auto it : m_Panes)
   {
-    if (it->GetName() == field)
+    if (it.GetName() == field)
     {
       if (show)
       {
-        if (!it->IsShown())
+        if (!it.IsShown())
         {
-          it->Show(true);
+          it.Show(true);
           changed = true;
         }
         
-        widths[i] = it->GetWidth();
-        styles[i] = it->GetStyle();
+        widths[i] = it.GetWidth();
+        styles[i] = it.GetStyle();
         
         i++;
       }
       else
       {
-        if (it->IsShown())
+        if (it.IsShown())
         {
-          it->Show(false);
+          it.Show(false);
           changed = true;
           wxStatusBar::SetStatusText(wxEmptyString, i);
         }
@@ -217,10 +211,10 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
     }
     else
     {
-      if (it->IsShown())
+      if (it.IsShown())
       {
-        widths[i] = it->GetWidth();
-        styles[i] = it->GetStyle();
+        widths[i] = it.GetWidth();
+        styles[i] = it.GetStyle();
         
         i++;
       }
