@@ -610,12 +610,9 @@ void wxExOpenFiles(
 #endif  
   
   // std::vector gives compile error.
-  for (
-    auto it = files.begin();
-    it != files.end();
-    ++it)
+  for (auto it : files)
   {
-    wxString file = *it; // cannot be const because of file = later on
+    wxString file(it); // cannot be const because of file = later on
 
     if (file.Contains("*") || file.Contains("?"))
     {
