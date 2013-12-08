@@ -655,14 +655,11 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
   {
     int no = 1;
 
-    for (
-      auto it = m_Commands.begin();
-      it != m_Commands.end();
-      ++it)
+    for (auto it : m_Commands)
     {
       if (no == no_asked_for)
       {
-        m_Command = *it;
+        m_Command = it;
         return true;
       }
 
@@ -762,12 +759,9 @@ void wxExSTCShell::ShowHistory()
 {
   int command_no = 1;
 
-  for (
-    auto it = m_Commands.begin();
-    it != m_Commands.end();
-    ++it)
+  for (auto it : m_Commands)
   {
-    const wxString command = *it;
+    const wxString command = it;
 
     AppendText(wxString::Format("\n%d %s",
       command_no++,

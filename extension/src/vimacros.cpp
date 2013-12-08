@@ -33,12 +33,9 @@ std::map <wxString, wxExVariable > wxExViMacros::m_Variables;
 
 void wxExViMacros::AskForInput()
 {
-  for (std::map<wxString, wxExVariable >::iterator it = 
-    m_Variables.begin();
-    it != m_Variables.end();
-    ++it)
+  for (auto it : m_Variables)
   {
-    it->second.AskForInput();
+    it.second.AskForInput();
   }
 }
 
@@ -325,21 +322,17 @@ const std::vector< wxString > wxExViMacros::Get() const
 {
   std::vector< wxString > v;
     
-  for (
-    std::map<wxString, std::vector<wxString> >::const_iterator it = 
-      m_Macros.begin();
-    it != m_Macros.end();
-    ++it)
+  for (auto it : m_Macros)
   {
-    if (it->first.size() > 1)
+    if (it.first.size() > 1)
     {
-      v.push_back(it->first);
+      v.push_back(it.first);
     }
   }
    
-  for (auto it = m_Variables.begin(); it != m_Variables.end(); ++it)
+  for (auto it : m_Variables)
   {
-    v.push_back(it->first);
+    v.push_back(it.first);
   }
   
   std::sort(v.begin(), v.end());
@@ -407,13 +400,9 @@ const wxString wxExViMacros::GetRegister(const wxString& name) const
     
     wxString output;
     
-    for (
-      std::vector<wxString>::const_iterator it2 = 
-        v.begin();
-      it2 != v.end();
-      ++it2)
+    for (auto it2 : v)
     {
-      output += *it2;
+      output += it2;
     }
     
     return output;
@@ -428,28 +417,18 @@ const std::vector< wxString > wxExViMacros::GetRegisters() const
 {
   std::vector< wxString > r;
   
-  for (
-    std::map<wxString, std::vector< wxString > >::const_iterator it = 
-      m_Macros.begin();
-    it != m_Macros.end();
-    ++it)
+  for (auto it : m_Macros)
   {
-    if (it->first.size() == 1)
+    if (it.first.size() == 1)
     {
-      std::vector<wxString> v = it->second;
-    
       wxString output;
     
-      for (
-        std::vector<wxString>::const_iterator it2 = 
-          v.begin();
-        it2 != v.end();
-        ++it2)
+      for (auto it2 : it.second)
       {
-        output += *it2;
+        output += it2;
       }
     
-      r.push_back(it->first + ": " + wxExSkipWhiteSpace(output));
+      r.push_back(it.first + ": " + wxExSkipWhiteSpace(output));
     }
   }
    

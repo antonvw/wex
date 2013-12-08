@@ -500,9 +500,9 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   
     wxArrayString macros;
     
-    for (auto it = v.begin(); it != v.end(); ++it)
+    for (auto it : v)
     {
-      macros.Add(*it);
+      macros.Add(it);
     }
     
     wxSingleChoiceDialog dialog(m_STC,
