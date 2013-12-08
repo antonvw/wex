@@ -66,38 +66,35 @@ void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc)
   
   if (colour_it != m_ThemeColours.end())
   {
-    for (
-      auto it = colour_it->second.begin();
-      it != colour_it->second.end();
-      ++it)
+    for (auto it : colour_it->second)
     {
-      if (it->first == "caretforeground")
+      if (it.first == "caretforeground")
       {
-        stc->SetCaretForeground(it->second);
+        stc->SetCaretForeground(it.second);
       }
-      else if (it->first == "caretlinebackground")
+      else if (it.first == "caretlinebackground")
       {
-        stc->SetCaretLineBackground(it->second);
+        stc->SetCaretLineBackground(it.second);
       }
-      else if (it->first == "selbackground")
+      else if (it.first == "selbackground")
       {
-        stc->SetSelBackground(true, it->second);
+        stc->SetSelBackground(true, it.second);
       }
-      else if (it->first == "selforeground")
+      else if (it.first == "selforeground")
       {
-        stc->SetSelForeground(true, it->second);
+        stc->SetSelForeground(true, it.second);
       }
-      else if (it->first == "calltipbackground")
+      else if (it.first == "calltipbackground")
       {
-        stc->CallTipSetBackground(wxColour(it->second));
+        stc->CallTipSetBackground(wxColour(it.second));
       }
-      else if (it->first == "calltipforeground")
+      else if (it.first == "calltipforeground")
       {
-        stc->CallTipSetForeground(wxColour(it->second));
+        stc->CallTipSetForeground(wxColour(it.second));
       }
-      else if (it->first == "edge")
+      else if (it.first == "edge")
       {
-        stc->SetEdgeColour(wxColour(it->second));
+        stc->SetEdgeColour(wxColour(it.second));
       }
     }
   }
@@ -162,19 +159,16 @@ const wxString wxExLexers::BuildWildCards(
   wxString wildcards = allfiles_wildcard;
 
   // Build the wildcard string using all available lexers.
-  for (
-    auto it = m_Lexers.begin();
-    it != m_Lexers.end();
-    ++it)
+  for (auto it : m_Lexers)
   {
-    if (!it->GetExtensions().empty())
+    if (!it.GetExtensions().empty())
     {
       const wxString wildcard =
-        it->GetDisplayLexer() +
-        " (" + it->GetExtensions() + ") |" +
-        it->GetExtensions();
+        it.GetDisplayLexer() +
+        " (" + it.GetExtensions() + ") |" +
+        it.GetExtensions();
 
-      if (wxExMatchesOneOf(filename, it->GetExtensions()))
+      if (wxExMatchesOneOf(filename, it.GetExtensions()))
       {
         wildcards = wildcard + "|" + wildcards;
       }
@@ -191,14 +185,11 @@ const wxString wxExLexers::BuildWildCards(
 const wxExLexer wxExLexers::FindByFileName(
   const wxFileName& filename) const
 {
-  for (
-    auto it = m_Lexers.begin();
-    it != m_Lexers.end();
-    ++it)
+  for (auto it : m_Lexers)
   {
-    if (wxExMatchesOneOf(filename, it->GetExtensions()))
+    if (wxExMatchesOneOf(filename, it.GetExtensions()))
     {
-      return *it;
+      return it;
     }
   }
 
@@ -207,14 +198,11 @@ const wxExLexer wxExLexers::FindByFileName(
 
 const wxExLexer wxExLexers::FindByName(const wxString& name) const
 {
-  for (
-    auto it = m_Lexers.begin();
-    it != m_Lexers.end();
-    ++it)
+  for (auto it : m_Lexers)
   {
-    if (it->GetDisplayLexer() == name)
+    if (it.GetDisplayLexer() == name)
     {
-      return *it;
+      return it;
     }
   }
   
@@ -294,19 +282,16 @@ const wxString wxExLexers::GetLexerExtensions() const
 {
   wxString text;
 
-  for (
-    auto it = m_Lexers.begin();
-    it != m_Lexers.end();
-    ++it)
+  for (auto it : m_Lexers)
   {
-    if (!it->GetExtensions().empty())
+    if (!it.GetExtensions().empty())
     {
       if (!text.empty())
       {
         text += wxExGetFieldSeparator();
       }
 
-      text += it->GetExtensions();
+      text += it.GetExtensions();
     }
   }
 
@@ -613,12 +598,9 @@ bool wxExLexers::ShowDialog(
 {
   wxArrayString s;
 
-  for (
-    auto it = m_Lexers.begin();
-    it != m_Lexers.end();
-    ++it)
+  for (auto it : m_Lexers)
   {
-    s.Add(it->GetDisplayLexer());
+    s.Add(it.GetDisplayLexer());
   } 
 
   s.Add(wxEmptyString);
@@ -658,12 +640,9 @@ bool wxExLexers::ShowThemeDialog(
 
   wxArrayString choices;
 
-  for (
-    auto it = m_ThemeMacros.begin();
-    it != m_ThemeMacros.end();
-    ++it)
+  for (auto it : m_ThemeMacros)
   {
-    choices.Add(it->first);
+    choices.Add(it.first);
   }
 
   wxSingleChoiceDialog dlg(
