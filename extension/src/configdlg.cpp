@@ -65,9 +65,13 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
 std::vector< wxExConfigItem >::const_iterator 
 wxExConfigDialog::FindConfigItem(int id) const
 {
-  for (auto it : m_ConfigItems)
+  // using a range for gives compile error
+  for (
+    auto it = m_ConfigItems.begin();
+    it != m_ConfigItems.end();
+    ++it)
   {
-    if (it.GetWindow()->GetId() == id)
+    if (it->GetWindow()->GetId() == id)
     {
       return it;
     }
@@ -151,7 +155,7 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
   for (auto it : m_ConfigItems)
   {
     if (first_time ||
-       (it.GetPage() != previous_page && !it->GetPage().empty()))
+       (it.GetPage() != previous_page && !it.GetPage().empty()))
     {
       first_time = false;
 
@@ -186,7 +190,7 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
       previous_item_sizer: NULL);
 
     // Layout the config item.
-    previous_item_sizer = it->Layout(
+    previous_item_sizer = it.Layout(
       (bookctrl != NULL ? bookctrl->GetCurrentPage(): this), 
       sizer, 
       GetButtonFlags() == wxCANCEL,

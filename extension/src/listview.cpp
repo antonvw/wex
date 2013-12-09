@@ -281,12 +281,9 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
 
     wxMenu* menuSort = new wxMenu;
 
-    for (
-      auto it = m_Columns.begin();
-      it != m_Columns.end();
-      ++it)
+    for (auto it : m_Columns)
     {
-      menuSort->Append(ID_COL_FIRST + it->GetColumn(), it->GetText());
+      menuSort->Append(ID_COL_FIRST + it.GetColumn(), it.GetText());
     }
 
     menu.AppendSubMenu(menuSort, _("Sort On"));
@@ -295,14 +292,11 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
 
 const wxExColumn wxExListView::Column(const wxString& name) const
 {
-  for (
-    auto it = m_Columns.begin();
-    it != m_Columns.end();
-    ++it)
+  for (auto it : m_Columns)
   {
-    if (it->GetText() == name)
+    if (it.GetText() == name)
     {
-      return *it;
+      return it;
     }
   }
   
@@ -986,12 +980,9 @@ void wxExListViewFileName::AddColumns(const wxExLexer* lexer)
     }
   break;
   case LIST_KEYWORD:
-    for (
-      auto it = lexer->GetKeywords().begin();
-      it != lexer->GetKeywords().end();
-      ++it)
+    for (auto it : lexer->GetKeywords())
     {
-      AppendColumn(wxExColumn(*it));
+      AppendColumn(wxExColumn(it));
     }
 
     AppendColumn(wxExColumn(_("Keywords")));

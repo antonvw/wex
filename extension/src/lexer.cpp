@@ -110,17 +110,12 @@ void wxExLexer::AutoMatch(const wxString& lexer)
 {
   for (auto it : wxExLexers::Get()->GetMacros(lexer))
   {
-    bool match = false;
-    
-    for (
-      auto style = wxExLexers::Get()->GetThemeMacros().begin();
-      style != wxExLexers::Get()->GetThemeMacros().end() && !match;
-      ++style)
+    for (auto style : wxExLexers::Get()->GetThemeMacros())
     {
-      if (it.first.Contains(style->first))
+      if (it.first.Contains(style.first))
       {
-        m_Styles.push_back(wxExStyle(it.second, style->second));
-        match = true;
+        m_Styles.push_back(wxExStyle(it.second, style.second));
+        break;
       }
     }
   }
