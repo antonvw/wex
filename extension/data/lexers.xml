@@ -1989,7 +1989,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="ave"/>
   <lexer name="avs"/>
   <lexer name="baan"/>
-  <lexer name="bash" extensions="*.bash;*.sh;Doxyfile"> 
+  <lexer name="bash" extensions="*.bash;Doxyfile"> 
     <keywords>    
       alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
       for function
