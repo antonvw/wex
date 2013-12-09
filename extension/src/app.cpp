@@ -79,12 +79,9 @@ bool wxExApp::OnInit()
     wxArrayString files;
     wxDir::GetAllFiles(m_CatalogDir, &files, "*.mo");
 
-    for (
-      auto it = files.begin();
-      it != files.end();
-      ++it)
+    for (auto it : files)
     {
-      const wxFileName fn(*it);
+      const wxFileName fn(it);
 
       if (!m_Locale.AddCatalog(fn.GetName()))
       {

@@ -243,53 +243,47 @@ void wxExGuiTestFixture::testConfigItem()
   }
 
   // Check members are initialized.
-  for (
-    auto it = items.begin();
-    it != items.end();
-    ++it)
+  for (auto it : items)
   {
-    CPPUNIT_ASSERT( it->GetColumns() == -1);
+    CPPUNIT_ASSERT( it.GetColumns() == -1);
     
-    if (it->GetType() == CONFIG_USER)
-      CPPUNIT_ASSERT( it->GetWindow() != NULL);
+    if (it.GetType() == CONFIG_USER)
+      CPPUNIT_ASSERT( it.GetWindow() != NULL);
     else 
-      CPPUNIT_ASSERT( it->GetWindow() == NULL);
+      CPPUNIT_ASSERT( it.GetWindow() == NULL);
       
-    CPPUNIT_ASSERT(!it->GetIsRequired());
+    CPPUNIT_ASSERT(!it.GetIsRequired());
     
     if (
-      it->GetType() != CONFIG_STATICLINE &&
-      it->GetType() != CONFIG_EMPTY)
+      it.GetType() != CONFIG_STATICLINE &&
+      it.GetType() != CONFIG_EMPTY)
     {
-      CPPUNIT_ASSERT(!it->GetLabel().empty());
+      CPPUNIT_ASSERT(!it.GetLabel().empty());
     }
     
-    CPPUNIT_ASSERT( it->GetPage().empty());
+    CPPUNIT_ASSERT( it.GetPage().empty());
 
     CPPUNIT_ASSERT(
-      it->GetType() > CONFIG_ITEM_MIN &&
-      it->GetType() < CONFIG_ITEM_MAX);
+      it.GetType() > CONFIG_ITEM_MIN &&
+      it.GetType() < CONFIG_ITEM_MAX);
   }
 
   wxGridSizer sizer(3);
 
   // Layout the items and check control is created.
-  for (
-    auto it = items.begin();
-    it != items.end();
-    ++it)
+  for (auto it : items)
   {
     // CONFIG_USER is not yet laid out ok, gives errors.
-    if (it->GetType() != CONFIG_USER)
+    if (it.GetType() != CONFIG_USER)
     {
       // Testing on not NULL not possible,
       // not all items need a sizer.
-      it->Layout(wxTheApp->GetTopWindow(), &sizer);
+      it.Layout(wxTheApp.GetTopWindow(), &sizer);
     }
  
-    if (it->GetType() != CONFIG_EMPTY)
+    if (it.GetType() != CONFIG_EMPTY)
     {
-      CPPUNIT_ASSERT(it->GetWindow() != NULL);
+      CPPUNIT_ASSERT(it.GetWindow() != NULL);
     }
   }
 
@@ -2061,14 +2055,12 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   
-  for (std::vector< wxString >::iterator it1 = commands.begin();
-    it1 != commands.end();
-    ++it1)
+  for (auto it1 : commands)
   {
-    CPPUNIT_ASSERT( vi->Command(*it1) );
-    CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
-    CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
-    CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+    CPPUNIT_ASSERT( vi.Command(*it1) );
+    CPPUNIT_ASSERT( vi.GetMode() == wxExVi::MODE_INSERT);
+    CPPUNIT_ASSERT( vi.Command(wxUniChar(esc)));
+    CPPUNIT_ASSERT( vi.GetMode() == wxExVi::MODE_NORMAL);
   }
   
   // Test MODE_INSERT commands and delete command on readonly document.
@@ -2082,11 +2074,9 @@ void wxExGuiTestFixture::testVi()
   stc->EmptyUndoBuffer();
   stc->SetSavePoint();
   
-  for (std::vector< wxString >::iterator it2 = commands.begin();
-    it2 != commands.end();
-    ++it2)
+  for (auto it2 : commands)
   {
-    CPPUNIT_ASSERT( vi->Command(*it2) );
+    CPPUNIT_ASSERT( vi.Command(*it2) );
   }
   
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
@@ -2097,11 +2087,9 @@ void wxExGuiTestFixture::testVi()
   stc->Reload(wxExSTC::STC_WIN_HEX);
   CPPUNIT_ASSERT( stc->HexMode());
   
-  for (std::vector< wxString >::iterator it3 = commands.begin();
-    it3 != commands.end();
-    ++it3)
+  for (auto it3 : commands)
   {
-    CPPUNIT_ASSERT( vi->Command(*it3) );
+    CPPUNIT_ASSERT( vi.Command(*it3) );
   }
   
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
@@ -2183,14 +2171,12 @@ void wxExGuiTestFixture::testVi()
   commands.push_back("*");
   commands.push_back("#");
   
-  for (std::vector< wxString >::iterator it4 = commands.begin();
-    it4 != commands.end();
-    ++it4)
+  for (auto it4 : commands)
   {
-    CPPUNIT_ASSERT( vi->Command(*it4) );
+    CPPUNIT_ASSERT( vi.Command(*it4) );
 // p changes last command    
-//    CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
-    CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+//    CPPUNIT_ASSERT( vi.GetLastCommand() == lastcmd);
+    CPPUNIT_ASSERT( vi.GetMode() == wxExVi::MODE_NORMAL);
   }
 
   // Test substitute command.

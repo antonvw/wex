@@ -72,12 +72,9 @@ int wxExVCS::ConfigDialog(
   
   long i = VCS_START;
 
-  for (
-    auto it = m_Entries.begin();
-    it != m_Entries.end();
-    ++it)
+  for (auto it : m_Entries)
   {
-    choices.insert(std::make_pair(i, it->GetName()));
+    choices.insert(std::make_pair(i, it.GetName()));
     i++;
   }
 
@@ -108,12 +105,9 @@ int wxExVCS::ConfigDialog(
     wxEmptyString, 
     cols));
 
-  for (
-    auto it2 = m_Entries.begin();
-    it2 != m_Entries.end();
-    ++it2)
+  for (auto it2 : m_Entries)
   {
-    v.push_back(wxExConfigItem(it2->GetName(), CONFIG_FILEPICKERCTRL));
+    v.push_back(wxExConfigItem(it2.GetName(), CONFIG_FILEPICKERCTRL));
   }
 
   if (modal)
@@ -169,12 +163,9 @@ bool wxExVCS::Execute()
     
     if (m_Files.size() > 1)
     {
-      for (
-        auto it = m_Files.begin();
-        it != m_Files.end();
-        ++it)
+      for (auto it : m_Files)
       {
-        args += "\"" + *it + "\" ";
+        args += "\"" + it + "\" ";
       }
     }
     else if (m_Entry.GetName().Lower() == "git")
@@ -216,21 +207,18 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
   {
     if (filename.IsOk())
     {
-      for (
-        auto it = m_Entries.begin();
-        it != m_Entries.end();
-        ++it)
+      for (auto it : m_Entries)
       {
-        const bool toplevel = it->AdminDirIsTopLevel();
-        const wxString admin_dir = it->GetAdminDir();
+        const bool toplevel = it.AdminDirIsTopLevel();
+        const wxString admin_dir = it.GetAdminDir();
 
         if (toplevel && IsAdminDirTopLevel(admin_dir, filename))
         {
-          return *it;
+          return it;
         }
         else if (IsAdminDir(admin_dir, filename))
         {
-          return *it;
+          return it;
         }
       }
     }

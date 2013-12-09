@@ -105,21 +105,18 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
   
   int i = 0;
 
-  for (
-    auto it = m_Commands.begin();
-    it != m_Commands.end();
-    ++it)
+  for (auto it : m_Commands)
   {
     bool add = false;
 
-    if (!it->GetSubMenu().empty() && prev_menu != it->GetSubMenu())
+    if (!it.GetSubMenu().empty() && prev_menu != it.GetSubMenu())
     {
       submenu = new wxMenu();
-      prev_menu = it->GetSubMenu();
+      prev_menu = it.GetSubMenu();
       menu->AppendSeparator();
-      menu->AppendSubMenu(submenu, it->GetSubMenu());
+      menu->AppendSubMenu(submenu, it.GetSubMenu());
     }
-    else if (it->GetSubMenu().empty())
+    else if (it.GetSubMenu().empty())
     {
       if (prev_menu != unused)
       {
@@ -130,7 +127,7 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
       submenu = NULL;
     }
     
-    const long type = it->GetType() & 0x000F;
+    const long type = it.GetType() & 0x000F;
 
     switch (type)
     {
@@ -146,9 +143,9 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
       wxMenu* usemenu = (submenu == NULL ? menu: submenu);
       usemenu->Append(
         base_id + i, 
-        wxExEllipsed(it->GetCommand(false, true))); // use no sub and do accel
+        wxExEllipsed(it.GetCommand(false, true))); // use no sub and do accel
         
-      const long sep = it->GetType() & 0x00F0;
+      const long sep = it.GetType() & 0x00F0;
       
       if (sep)
       {

@@ -2396,21 +2396,15 @@ void wxExSTC::ShowProperties()
   }
 
   // Add global properties.  
-  for (
-    std::vector<wxExProperty>::const_iterator it1 = wxExLexers::Get()->GetProperties().begin();
-    it1 != wxExLexers::Get()->GetProperties().end();
-    ++it1)
+  for (auto it1 : wxExLexers::Get()->GetProperties())
   {
-    text += it1->GetName() + ": " + GetProperty(it1->GetName()) + "\n";
+    text += it1.GetName() + ": " + GetProperty(it1.GetName()) + "\n";
   }
 
   // Add lexer properties.  
-  for (
-    std::vector<wxExProperty>::const_iterator it2 = m_Lexer.GetProperties().begin();
-    it2 != m_Lexer.GetProperties().end();
-    ++it2)
+  for (auto it2 : m_Lexer.GetProperties())
   {
-    text += it2->GetName() + ": " + GetProperty(it2->GetName()) + "\n";
+    text += it2.GetName() + ": " + GetProperty(it2.GetName()) + "\n";
   }
 
   // Add available properties.
@@ -2486,12 +2480,9 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
   if (sort_ascending)
   {
-    for (
-      std::multimap<wxString, wxString>::iterator it = mm.begin();
-      it != mm.end();
-      ++it)
+    for (auto it : mm)
     {
-      text += it->second;
+      text += it.second;
     }
   }
   else

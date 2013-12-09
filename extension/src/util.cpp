@@ -182,11 +182,9 @@ void wxExComboBoxFromList(
     
     wxArrayString as;
     
-    for (
-      std::vector<wxString>::const_iterator it = v.begin(); it != v.end();
-      ++it)
+    for (auto it : v)
     {
-      as.Add(*it);
+      as.Add(it);
     }
     
     cb->Append(as);
