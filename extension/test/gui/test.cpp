@@ -278,7 +278,7 @@ void wxExGuiTestFixture::testConfigItem()
     {
       // Testing on not NULL not possible,
       // not all items need a sizer.
-      it.Layout(wxTheApp.GetTopWindow(), &sizer);
+      it.Layout(wxTheApp->GetTopWindow(), &sizer);
     }
  
     if (it.GetType() != CONFIG_EMPTY)
@@ -2057,10 +2057,10 @@ void wxExGuiTestFixture::testVi()
   
   for (auto& it1 : commands)
   {
-    CPPUNIT_ASSERT( vi.Command(*it1) );
-    CPPUNIT_ASSERT( vi.GetMode() == wxExVi::MODE_INSERT);
-    CPPUNIT_ASSERT( vi.Command(wxUniChar(esc)));
-    CPPUNIT_ASSERT( vi.GetMode() == wxExVi::MODE_NORMAL);
+    CPPUNIT_ASSERT( vi->Command(it1) );
+    CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
+    CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+    CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   }
   
   // Test MODE_INSERT commands and delete command on readonly document.
@@ -2076,7 +2076,7 @@ void wxExGuiTestFixture::testVi()
   
   for (auto& it2 : commands)
   {
-    CPPUNIT_ASSERT( vi.Command(*it2) );
+    CPPUNIT_ASSERT( vi->Command(it2) );
   }
   
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
@@ -2089,7 +2089,7 @@ void wxExGuiTestFixture::testVi()
   
   for (auto& it3 : commands)
   {
-    CPPUNIT_ASSERT( vi.Command(*it3) );
+    CPPUNIT_ASSERT( vi->Command(it3) );
   }
   
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
@@ -2173,10 +2173,10 @@ void wxExGuiTestFixture::testVi()
   
   for (auto& it4 : commands)
   {
-    CPPUNIT_ASSERT( vi.Command(*it4) );
+    CPPUNIT_ASSERT( vi->Command(it4) );
 // p changes last command    
 //    CPPUNIT_ASSERT( vi.GetLastCommand() == lastcmd);
-    CPPUNIT_ASSERT( vi.GetMode() == wxExVi::MODE_NORMAL);
+    CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   }
 
   // Test substitute command.
