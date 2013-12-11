@@ -186,7 +186,7 @@ const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
   LogMapPages();
 #endif
 
-  for (auto it : m_MapPages)
+  for (const auto& it : m_MapPages)
   {
     if (it.second == page)
     {
@@ -260,7 +260,7 @@ wxWindow* wxExNotebook::InsertPage(
 
 void wxExNotebook::LogMapPages() const
 {
-  for (auto it : m_MapPages)
+  for (const auto& it : m_MapPages)
   {
      wxLogMessage("map[%s]=%d", it.first.c_str(), it.second->GetId());
   }

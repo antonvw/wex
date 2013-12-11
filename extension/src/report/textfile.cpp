@@ -195,7 +195,7 @@ bool wxExTextFileWithListView::Parse()
     int total = 0;
     int col = 1;
     
-    for (auto setit : GetFileName().GetLexer().GetKeywords())
+    for (const auto& setit : GetFileName().GetLexer().GetKeywords())
     {
       const wxExStatistics<int>& stat = GetStatistics().GetElements();
       const auto it = stat.GetItems().find(setit);

@@ -2396,13 +2396,13 @@ void wxExSTC::ShowProperties()
   }
 
   // Add global properties.  
-  for (auto it1 : wxExLexers::Get()->GetProperties())
+  for (const auto& it1 : wxExLexers::Get()->GetProperties())
   {
     text += it1.GetName() + ": " + GetProperty(it1.GetName()) + "\n";
   }
 
   // Add lexer properties.  
-  for (auto it2 : m_Lexer.GetProperties())
+  for (const auto& it2 : m_Lexer.GetProperties())
   {
     text += it2.GetName() + ": " + GetProperty(it2.GetName()) + "\n";
   }
@@ -2480,7 +2480,7 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
   if (sort_ascending)
   {
-    for (auto it : mm)
+    for (const auto& it : mm)
     {
       text += it.second;
     }

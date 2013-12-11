@@ -42,7 +42,7 @@ int wxExStatusBar::GetFieldNo(const wxString& field) const
 {
   int i = 0;
   
-  for (auto it : m_Panes)
+  for (const auto& it : m_Panes)
   {
     if (it.IsShown())
     {
@@ -182,7 +182,7 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
   int* styles = new int[m_Panes.size()];
   int i = 0; // number of shown panes
 
-  for (auto it : m_Panes)
+  for (auto& it : m_Panes)
   {
     if (it.GetName() == field)
     {

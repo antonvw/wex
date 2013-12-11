@@ -266,7 +266,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       {
       wxArrayString arraychoices;
 
-      for (auto it : m_Choices)
+      for (const auto& it : m_Choices)
       {
         arraychoices.Add(it.second);
       }
@@ -408,7 +408,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       {
       wxArrayString arraychoices;
 
-      for (auto it : m_Choices)
+      for (const auto& it : m_Choices)
       {
         arraychoices.Add(it.second);
       } 
@@ -698,7 +698,7 @@ bool wxExConfigItem::ToConfig(bool save) const
         value = wxConfigBase::Get()->ReadLong(m_Label, 0);
       int item = 0;
 
-      for (auto b : m_Choices)
+      for (const auto& b : m_Choices)
       {
         if (save)
         {
@@ -856,7 +856,7 @@ bool wxExConfigItem::ToConfig(bool save) const
 
       if (save)
       {
-        for (auto b : m_Choices)
+        for (const auto& b : m_Choices)
         {
           if (b.second == rb->GetStringSelection())
           {

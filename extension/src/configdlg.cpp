@@ -152,7 +152,7 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
        
   wxString previous_page = "XXXXXX";
 
-  for (auto it : m_ConfigItems)
+  for (auto& it : m_ConfigItems)
   {
     if (first_time ||
        (it.GetPage() != previous_page && !it.GetPage().empty()))
@@ -288,8 +288,10 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
   }
   else
   {
-    for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
-      std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), true));
+    for (const auto& it : m_ConfigItems)
+    {
+      it.ToConfig(true);
+    }
   }
 
   if (  command.GetId() == wxID_APPLY ||
@@ -306,7 +308,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 {
   bool one_checkbox_checked = false;
 
-  for (auto it : m_ConfigItems)
+  for (const auto& it : m_ConfigItems)
   {
     switch (it.GetType())
     {
@@ -409,7 +411,9 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 
 void wxExConfigDialog::Reload() const
 {
-  for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false));
+  for (const auto& it : m_ConfigItems)
+  {
+    it.ToConfig(false);
+  }
 }
 #endif // wxUSE_GUI

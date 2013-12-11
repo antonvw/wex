@@ -500,7 +500,7 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   
     wxArrayString macros;
     
-    for (auto it : v)
+    for (const auto& it : v)
     {
       macros.Add(it);
     }

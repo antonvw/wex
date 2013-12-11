@@ -404,7 +404,7 @@ void Frame::OnCommand(wxCommandEvent& event)
         return;
       }
 
-      for (auto it : m_Clients)
+      for (auto& it : m_Clients)
       {
         wxSocketBase* sock = it;
         SocketLost(sock, false);
@@ -509,7 +509,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       const wxString str = event.GetString() + wxTextFile::GetEOL();
       const wxCharBuffer& buffer(str.c_str());
 
-      for (auto it : m_Clients)
+      for (auto& it : m_Clients)
       {
         wxSocketBase* sock = it;
         WriteDataToClient(buffer, sock);
@@ -1076,7 +1076,7 @@ void Frame::WriteDataWindowToClients()
 {
   const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
 
-  for (auto it : m_Clients)
+  for (auto& it : m_Clients)
   {
     wxSocketBase* sock = it;
     WriteDataToClient(buffer, sock);

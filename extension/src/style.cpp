@@ -42,7 +42,7 @@ void wxExStyle::Apply(wxStyledTextCtrl* stc) const
   }
   else
   {
-    for (auto it : m_No)
+    for (const auto& it : m_No)
     {
       stc->StyleSetSpec(it, m_Value);
     }

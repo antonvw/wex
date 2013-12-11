@@ -105,7 +105,7 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
   
   int i = 0;
 
-  for (auto it : m_Commands)
+  for (const auto& it : m_Commands)
   {
     bool add = false;
 
