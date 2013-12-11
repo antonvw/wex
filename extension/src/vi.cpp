@@ -520,7 +520,7 @@ bool wxExVi::Command(const wxString& command)
                 
                 output += "%: " + GetSTC()->GetFileName().GetFullName() + "\n";
                 
-                for (auto it : GetMacros().GetRegisters())
+                for (const auto& it : GetMacros().GetRegisters())
                 {
                   output += it + "\n";
                 }

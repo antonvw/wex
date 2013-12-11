@@ -79,7 +79,7 @@ bool wxExApp::OnInit()
     wxArrayString files;
     wxDir::GetAllFiles(m_CatalogDir, &files, "*.mo");
 
-    for (auto it : files)
+    for (const auto& it : files)
     {
       const wxFileName fn(it);
 

@@ -71,12 +71,9 @@ public:
 
   /// Adds other statistics.
   wxExStatistics& operator+=(const wxExStatistics& s) {
-    for (
-      auto it = s.m_Items.begin();
-      it != s.m_Items.end();
-      ++it)
+    for (const auto& it : s.m_Items)
     {
-      Inc(it->first, it->second);
+      Inc(it.first, it.second);
     }
 	
     return *this;}
@@ -101,17 +98,14 @@ public:
   /// with comma's separating items, and a : separating key and value.
   const wxString Get() const {
     wxString text;
-    for (
-      auto it = m_Items.begin();
-      it != m_Items.end();
-      ++it)
+    for (const auto& it : m_Items)
     {
       if (!text.empty())
       {
         text << ", ";
       }
       
-      text << it->first << ":" << it->second;
+      text << it.first << ":" << it.second;
     }
     return text;};
 
@@ -214,19 +208,16 @@ public:
         m_Grid->HideColLabels();
       }
 
-      for (
-        auto it = m_Items.begin();
-        it != m_Items.end();
-        ++it)
+      for (const auto& it : m_Items)
       {
         m_Grid->AppendRows(1);
 
         const int row = m_Grid->GetNumberRows() - 1;
 
-        m_Grid->SetCellValue(row, 0, it->first);
-        m_Grid->SetCellValue(row, 1, wxString::Format("%d", it->second));
+        m_Grid->SetCellValue(row, 0, it.first);
+        m_Grid->SetCellValue(row, 1, wxString::Format("%d", it.second));
 
-        m_Rows[it->first] = row;
+        m_Rows[it.first] = row;
       }
     }
     m_Grid->Show();

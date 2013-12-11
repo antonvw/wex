@@ -243,7 +243,7 @@ void wxExGuiTestFixture::testConfigItem()
   }
 
   // Check members are initialized.
-  for (auto it : items)
+  for (auto& it : items)
   {
     CPPUNIT_ASSERT( it.GetColumns() == -1);
     
@@ -271,7 +271,7 @@ void wxExGuiTestFixture::testConfigItem()
   wxGridSizer sizer(3);
 
   // Layout the items and check control is created.
-  for (auto it : items)
+  for (auto& it : items)
   {
     // CONFIG_USER is not yet laid out ok, gives errors.
     if (it.GetType() != CONFIG_USER)
@@ -2055,7 +2055,7 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   
-  for (auto it1 : commands)
+  for (auto& it1 : commands)
   {
     CPPUNIT_ASSERT( vi.Command(*it1) );
     CPPUNIT_ASSERT( vi.GetMode() == wxExVi::MODE_INSERT);
@@ -2074,7 +2074,7 @@ void wxExGuiTestFixture::testVi()
   stc->EmptyUndoBuffer();
   stc->SetSavePoint();
   
-  for (auto it2 : commands)
+  for (auto& it2 : commands)
   {
     CPPUNIT_ASSERT( vi.Command(*it2) );
   }
@@ -2087,7 +2087,7 @@ void wxExGuiTestFixture::testVi()
   stc->Reload(wxExSTC::STC_WIN_HEX);
   CPPUNIT_ASSERT( stc->HexMode());
   
-  for (auto it3 : commands)
+  for (auto& it3 : commands)
   {
     CPPUNIT_ASSERT( vi.Command(*it3) );
   }
@@ -2171,7 +2171,7 @@ void wxExGuiTestFixture::testVi()
   commands.push_back("*");
   commands.push_back("#");
   
-  for (auto it4 : commands)
+  for (auto& it4 : commands)
   {
     CPPUNIT_ASSERT( vi.Command(*it4) );
 // p changes last command    

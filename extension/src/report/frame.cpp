@@ -274,7 +274,7 @@ bool wxExFrameWithHistory::FindInFiles(
   
   wxExStatistics<int> stats;
   
-  for (auto it : files)
+  for (const auto& it : files)
   {
     const wxExFileName fn(it);
     

@@ -66,7 +66,7 @@ void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc)
   
   if (colour_it != m_ThemeColours.end())
   {
-    for (auto it : colour_it->second)
+    for (const auto& it : colour_it->second)
     {
       if (it.first == "caretforeground")
       {
@@ -159,7 +159,7 @@ const wxString wxExLexers::BuildWildCards(
   wxString wildcards = allfiles_wildcard;
 
   // Build the wildcard string using all available lexers.
-  for (auto it : m_Lexers)
+  for (const auto& it : m_Lexers)
   {
     if (!it.GetExtensions().empty())
     {
@@ -185,7 +185,7 @@ const wxString wxExLexers::BuildWildCards(
 const wxExLexer wxExLexers::FindByFileName(
   const wxFileName& filename) const
 {
-  for (auto it : m_Lexers)
+  for (const auto& it : m_Lexers)
   {
     if (wxExMatchesOneOf(filename, it.GetExtensions()))
     {
@@ -198,7 +198,7 @@ const wxExLexer wxExLexers::FindByFileName(
 
 const wxExLexer wxExLexers::FindByName(const wxString& name) const
 {
-  for (auto it : m_Lexers)
+  for (const auto& it : m_Lexers)
   {
     if (it.GetDisplayLexer() == name)
     {
@@ -282,7 +282,7 @@ const wxString wxExLexers::GetLexerExtensions() const
 {
   wxString text;
 
-  for (auto it : m_Lexers)
+  for (const auto& it : m_Lexers)
   {
     if (!it.GetExtensions().empty())
     {
@@ -598,7 +598,7 @@ bool wxExLexers::ShowDialog(
 {
   wxArrayString s;
 
-  for (auto it : m_Lexers)
+  for (const auto& it : m_Lexers)
   {
     s.Add(it.GetDisplayLexer());
   } 
@@ -640,7 +640,7 @@ bool wxExLexers::ShowThemeDialog(
 
   wxArrayString choices;
 
-  for (auto it : m_ThemeMacros)
+  for (const auto& it : m_ThemeMacros)
   {
     choices.Add(it.first);
   }

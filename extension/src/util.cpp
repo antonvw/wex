@@ -77,9 +77,9 @@ wxExToVectorString::wxExToVectorString(const wxString& in)
 
 void wxExToVectorString::FromArrayString(const wxArrayString& in)
 {
-  for (auto it = in.begin(); it != in.end(); ++it)
+  for (const auto& it : in)
   {
-    m_VS.push_back(*it);
+    m_VS.push_back(it);
   }
 }
 
@@ -182,7 +182,7 @@ void wxExComboBoxFromList(
     
     wxArrayString as;
     
-    for (auto it : v)
+    for (const auto& it : v)
     {
       as.Add(it);
     }
@@ -608,7 +608,7 @@ void wxExOpenFiles(
 #endif  
   
   // std::vector gives compile error.
-  for (auto it : files)
+  for (const auto& it : files)
   {
     wxString file(it); // cannot be const because of file = later on
 

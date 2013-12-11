@@ -72,7 +72,7 @@ int wxExVCS::ConfigDialog(
   
   long i = VCS_START;
 
-  for (auto it : m_Entries)
+  for (const auto& it : m_Entries)
   {
     choices.insert(std::make_pair(i, it.GetName()));
     i++;
@@ -105,7 +105,7 @@ int wxExVCS::ConfigDialog(
     wxEmptyString, 
     cols));
 
-  for (auto it2 : m_Entries)
+  for (const auto& it2 : m_Entries)
   {
     v.push_back(wxExConfigItem(it2.GetName(), CONFIG_FILEPICKERCTRL));
   }
@@ -163,7 +163,7 @@ bool wxExVCS::Execute()
     
     if (m_Files.size() > 1)
     {
-      for (auto it : m_Files)
+      for (const auto& it : m_Files)
       {
         args += "\"" + it + "\" ";
       }
@@ -207,7 +207,7 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
   {
     if (filename.IsOk())
     {
-      for (auto it : m_Entries)
+      for (const auto& it : m_Entries)
       {
         const bool toplevel = it.AdminDirIsTopLevel();
         const wxString admin_dir = it.GetAdminDir();

@@ -655,7 +655,7 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
   {
     int no = 1;
 
-    for (auto it : m_Commands)
+    for (const auto& it : m_Commands)
     {
       if (no == no_asked_for)
       {
@@ -759,7 +759,7 @@ void wxExSTCShell::ShowHistory()
 {
   int command_no = 1;
 
-  for (auto it : m_Commands)
+  for (const auto& it : m_Commands)
   {
     const wxString command = it;
 

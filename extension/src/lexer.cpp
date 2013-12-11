@@ -57,7 +57,7 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
 
   if (wxExLexers::Get()->GetThemeOk())
   {
-    for (auto it : m_KeywordsSet)
+    for (const auto& it : m_KeywordsSet)
     {
       stc->SetKeyWords(
         it.first,
@@ -108,9 +108,9 @@ void wxExLexer::ApplyWhenSet(
 
 void wxExLexer::AutoMatch(const wxString& lexer)
 {
-  for (auto it : wxExLexers::Get()->GetMacros(lexer))
+  for (const auto& it : wxExLexers::Get()->GetMacros(lexer))
   {
-    for (auto style : wxExLexers::Get()->GetThemeMacros())
+    for (const auto& style : wxExLexers::Get()->GetThemeMacros())
     {
       if (it.first.Contains(style.first))
       {
@@ -206,7 +206,7 @@ const wxString wxExLexer::GetKeywordsStringSet(
   // return accumulate(kset.begin(), kset.end(), wxEmptyString);
   wxString keywords;
 
-  for (auto it : kset)
+  for (const auto& it : kset)
   {
     keywords += it + " ";
   }
@@ -516,7 +516,7 @@ bool wxExLexer::SetKeywords(const wxString& value)
 
 void wxExLexer::SetProperty(const wxString& name, const wxString& value)
 {
-  for (auto it : m_Properties)
+  for (auto& it : m_Properties)
   {
     if (it.GetName() == name)
     {

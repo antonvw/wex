@@ -192,7 +192,7 @@ bool wxExMenu::AppendTools(int itemid)
 
   wxExMenu* menuTool = new wxExMenu(*this);
 
-  for (auto it : wxExTool().GetToolInfo())
+  for (const auto& it : wxExTool().GetToolInfo())
   {
     if (!it.second.GetText().empty())
     {

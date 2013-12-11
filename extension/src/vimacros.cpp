@@ -33,7 +33,7 @@ std::map <wxString, wxExVariable > wxExViMacros::m_Variables;
 
 void wxExViMacros::AskForInput()
 {
-  for (auto it : m_Variables)
+  for (auto& it : m_Variables)
   {
     it.second.AskForInput();
   }
@@ -322,7 +322,7 @@ const std::vector< wxString > wxExViMacros::Get() const
 {
   std::vector< wxString > v;
     
-  for (auto it : m_Macros)
+  for (const auto& it : m_Macros)
   {
     if (it.first.size() > 1)
     {
@@ -330,7 +330,7 @@ const std::vector< wxString > wxExViMacros::Get() const
     }
   }
    
-  for (auto it : m_Variables)
+  for (const auto& it : m_Variables)
   {
     v.push_back(it.first);
   }
@@ -400,7 +400,7 @@ const wxString wxExViMacros::GetRegister(const wxString& name) const
     
     wxString output;
     
-    for (auto it2 : v)
+    for (const auto& it2 : v)
     {
       output += it2;
     }
@@ -417,13 +417,13 @@ const std::vector< wxString > wxExViMacros::GetRegisters() const
 {
   std::vector< wxString > r;
   
-  for (auto it : m_Macros)
+  for (const auto& it : m_Macros)
   {
     if (it.first.size() == 1)
     {
       wxString output;
     
-      for (auto it2 : it.second)
+      for (const auto& it2 : it.second)
       {
         output += it2;
       }
