@@ -342,8 +342,7 @@ const std::vector< wxString > wxExViMacros::Get() const
 
 const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
 {
-  std::map<wxString, std::vector< wxString > >::const_iterator it = 
-    m_Macros.find(macro);
+  const auto it = m_Macros.find(macro);
     
   if (it != m_Macros.end())
   {
@@ -351,8 +350,7 @@ const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
   }
   else
   {
-    std::map<wxString, wxExVariable>::const_iterator it = 
-      m_Variables.find(macro);
+    const auto it = m_Variables.find(macro);
     
     if (it != m_Variables.end())
     {
@@ -391,8 +389,7 @@ const wxString wxExViMacros::GetRegister(const wxString& name) const
     return wxEmptyString;
   }
   
-  std::map<wxString, std::vector< wxString > >::const_iterator it = 
-    m_Macros.find(name);
+  const auto it = m_Macros.find(name);
     
   if (it != m_Macros.end())
   {
@@ -442,9 +439,7 @@ bool wxExViMacros::IsRecorded(const wxString& macro) const
 
 bool wxExViMacros::IsRecordedMacro(const wxString& macro) const
 {
-  std::map<wxString, std::vector< wxString > >::const_iterator it = 
-    m_Macros.find(macro);
-    
+  const auto it = m_Macros.find(macro);
   return it != m_Macros.end();
 }
 
@@ -499,8 +494,7 @@ bool wxExViMacros::LoadDocument()
         command = command->GetNext();
       }
       
-      std::map<wxString, std::vector< wxString >>::const_iterator it = 
-        m_Macros.find(child->GetAttribute("name"));
+      const auto it = m_Macros.find(child->GetAttribute("name"));
     
       if (it != m_Macros.end())
       {
@@ -517,7 +511,7 @@ bool wxExViMacros::LoadDocument()
     {
       wxExVariable variable(child);
       
-      std::map<wxString, wxExVariable>::const_iterator it = m_Variables.find(variable.GetName());
+      const auto it = m_Variables.find(variable.GetName());
     
       if (it != m_Variables.end())
       {
@@ -575,7 +569,7 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   for (int i = 0; i < repeat; i++)
   {
     for (
-      std::vector<wxString>::const_iterator it = m_Macros[macro].begin();
+      auto it = m_Macros[macro].begin();
       it != m_Macros[macro].end() && !stop;
       ++it)
     { 
@@ -650,7 +644,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
   }
  
   for (
-    std::map<wxString, std::vector<wxString> >::reverse_iterator it = 
+    auto it = 
       m_Macros.rbegin();
     it != m_Macros.rend();
     ++it)
@@ -659,7 +653,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
     element->AddAttribute("name", it->first);
     
     for (
-      std::vector<wxString>::reverse_iterator it2 = it->second.rbegin();
+      auto it2 = it->second.rbegin();
       it2 != it->second.rend();
       ++it2)
     { 
@@ -669,7 +663,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
   }
   
   for (
-    std::map< wxString, wxExVariable >::reverse_iterator it2 = 
+    auto it2 = 
       m_Variables.rbegin();
     it2 != m_Variables.rend();
     ++it2)
