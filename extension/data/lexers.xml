@@ -1996,6 +1996,9 @@ Copyright: (c) 2013, Anton van Wezenbeek
       help history if in jobs kill logout mount pwd rm select set sleep source 
       tail test then time ulimit umount umask unalias unset until while
     </keywords>
+    <properties>
+      <property name="fold.comment"> 1 </property>
+    </properties>
     <comments begin1="#" />
   </lexer>
   <lexer name="batch" extensions="*.bat"/>
@@ -2102,6 +2105,9 @@ Copyright: (c) 2013, Anton van Wezenbeek
       unhash unlimit unset unsetenv wait while
     </keywords>
     <comments begin1="#" />
+    <properties>
+      <property name="fold.comment"> 1 </property>
+    </properties>
   </lexer>
   <lexer name="css"/>
   <lexer name="d"/> 
@@ -2306,6 +2312,9 @@ Copyright: (c) 2013, Anton van Wezenbeek
       Default Test Template Timeout
     </keywords>
     <comments begin1="#" />
+    <properties>
+      <property name="fold.comment"> 1 </property>
+    </properties>
   </lexer>
   <lexer name="ruby"/>
   <lexer name="scriptol"/>
@@ -2316,6 +2325,9 @@ Copyright: (c) 2013, Anton van Wezenbeek
       select then until while time
     </keywords>
     <comments begin1="#" />
+    <properties>
+      <property name="fold.comment"> 1 </property>
+    </properties>
   </lexer>
   <lexer name="smalltalk"/>
   <lexer name="SML"/>
@@ -2394,6 +2406,9 @@ Copyright: (c) 2013, Anton van Wezenbeek
       settc setty telltc uncomplete where which      
     </keywords>
     <comments begin1="#" />
+    <properties>
+      <property name="fold.comment"> 1 </property>
+    </properties>
   </lexer>
   <lexer name="tex"/>
   <lexer name="txt2tags"/>
