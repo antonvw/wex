@@ -48,11 +48,6 @@ void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc)
       
     m_DefaultColours["edge"] = 
       stc->GetEdgeColour().GetAsString();
-      
-    //tempColours["selbackground"]
-    //tempColours["selforeground"]
-    //tempColours["calltipbackground"]
-    //tempColours["calltipforeground"]
   }
     
   m_DefaultStyle.Apply(stc);
@@ -151,14 +146,11 @@ void wxExLexers::ApplyProperties(wxStyledTextCtrl* stc) const
 const wxString wxExLexers::BuildWildCards(
   const wxFileName& filename) const
 {
-  const wxString allfiles_wildcard =
+  wxString wildcards = 
     _("All Files") + wxString::Format(" (%s)|%s",
       wxFileSelectorDefaultWildcardStr,
       wxFileSelectorDefaultWildcardStr);
 
-  wxString wildcards = allfiles_wildcard;
-
-  // Build the wildcard string using all available lexers.
   for (const auto& it : m_Lexers)
   {
     if (!it.GetExtensions().empty())
@@ -300,8 +292,7 @@ const wxString wxExLexers::GetLexerExtensions() const
 
 bool wxExLexers::IndicatorIsLoaded(const wxExIndicator& indic) const
 {
-  const auto it = m_Indicators.find(indic);
-  return (it != m_Indicators.end());
+  return m_Indicators.find(indic) != m_Indicators.end();
 }
 
 void wxExLexers::Initialize()
@@ -388,8 +379,7 @@ bool wxExLexers::LoadDocument()
 
 bool wxExLexers::MarkerIsLoaded(const wxExMarker& marker) const
 {
-  const auto it = m_Markers.find(marker);
-  return (it != m_Markers.end());
+  return m_Markers.find(marker) != m_Markers.end();
 }
 
 void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
@@ -557,8 +547,7 @@ void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
     }
     else if (child->GetName() == "colour")
     {
-      tmpColours[child->GetAttribute("name", "0")] = 
-        ApplyMacro(content);
+      tmpColours[child->GetAttribute("name", "0")] = ApplyMacro(content);
     }
     
     child = child->GetNext();
