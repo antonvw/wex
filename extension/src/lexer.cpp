@@ -353,7 +353,7 @@ bool wxExLexer::Set(
   
   if (!m_IsOk)
   {
-    wxLogError("Lexer is not known: " + m_ScintillaLexer);
+    wxLogError("Lexer is not known: " + lexer);
   }
   
   return m_IsOk;
