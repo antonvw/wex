@@ -351,18 +351,14 @@ const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
   else
   {
     const auto it = m_Variables.find(macro);
+    std::vector<wxString> v;
     
     if (it != m_Variables.end())
     {
-      std::vector<wxString> v;
       v.push_back(it->second.GetValue());
-      return v;
     }
-    else
-    {
-      std::vector<wxString> empty;
-      return empty;
-    }
+  
+    return v;
   }
 }
 
@@ -391,23 +387,17 @@ const wxString wxExViMacros::GetRegister(const wxString& name) const
   
   const auto it = m_Macros.find(name);
     
+  wxString output;
+    
   if (it != m_Macros.end())
   {
-    std::vector<wxString> v = it->second;
-    
-    wxString output;
-    
-    for (const auto& it2 : v)
+    for (const auto& it2 : it->second)
     {
       output += it2;
     }
-    
-    return output;
   }
-  else
-  {
-    return wxEmptyString;
-  }
+
+  return output;
 }
 
 const std::vector< wxString > wxExViMacros::GetRegisters() const
@@ -439,8 +429,7 @@ bool wxExViMacros::IsRecorded(const wxString& macro) const
 
 bool wxExViMacros::IsRecordedMacro(const wxString& macro) const
 {
-  const auto it = m_Macros.find(macro);
-  return it != m_Macros.end();
+  return m_Macros.find(macro) != m_Macros.end();
 }
 
 bool wxExViMacros::Load(wxXmlDocument& doc)
@@ -509,8 +498,7 @@ bool wxExViMacros::LoadDocument()
     }
     else if (child->GetName() == "variable")
     {
-      wxExVariable variable(child);
-      
+      const wxExVariable variable(child);
       const auto it = m_Variables.find(variable.GetName());
     
       if (it != m_Variables.end())
@@ -566,18 +554,16 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
     
   AskForInput();
   
-  for (int i = 0; i < repeat; i++)
+  for (int i = 0; i < repeat && !stop; i++)
   {
-    for (
-      auto it = m_Macros[macro].begin();
-      it != m_Macros[macro].end() && !stop;
-      ++it)
+    for (auto& it : m_Macros[macro])
     { 
-      stop = !ex->Command(*it);
+      stop = !ex->Command(it);
       
       if (stop)
       {
-        wxLogStatus(_("Macro aborted at '") + *it + "'");
+        wxLogStatus(_("Macro aborted at '") + it + "'");
+        break;
       }
     }
   }
@@ -684,7 +670,6 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
 
 void wxExViMacros::SetRegister(const wxString& name, const wxString& value)
 {
-  
   std::vector<wxString> v;
   
   // The black hole register, everything written to it is discarded.

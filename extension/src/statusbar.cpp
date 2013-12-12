@@ -16,11 +16,6 @@
 #if wxUSE_GUI
 #if wxUSE_STATUSBAR
 
-BEGIN_EVENT_TABLE(wxExStatusBar, wxStatusBar)
-  EVT_LEFT_UP(wxExStatusBar::OnMouse)
-  EVT_RIGHT_UP(wxExStatusBar::OnMouse)
-END_EVENT_TABLE()
-
 wxExStatusBar::wxExStatusBar(
   wxExFrame* parent,
   wxWindowID id,
@@ -106,12 +101,11 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
 {
   event.Skip();
 
-  bool found = false;
   int fieldno = 0;
   
-  for (int i = 0; i < m_Panes.size() && !found; i++)
+  for (const auto& it : m_Panes)
   {
-    if (m_Panes[i].IsShown())
+    if (it.IsShown())
     {
       wxRect rect;
       
@@ -119,9 +113,8 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
       {
         if (rect.Contains(event.GetPosition()))
         {
-          found = true;
-
-          Handle(event, m_Panes[i]);
+          Handle(event, it);
+          return;
         }
       }
       
@@ -149,11 +142,9 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
   delete[] styles;
   delete[] widths;
 
-  Bind(
-    wxEVT_MOTION,
-    &wxExStatusBar::OnMouse,
-    this,
-    wxID_ANY);
+  Bind(wxEVT_LEFT_UP, &wxExStatusBar::OnMouse, this, wxID_ANY);
+  Bind(wxEVT_RIGHT_UP, &wxExStatusBar::OnMouse, this, wxID_ANY);
+  Bind(wxEVT_MOTION, &wxExStatusBar::OnMouse, this, wxID_ANY);
 }
 
 bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
