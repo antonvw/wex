@@ -82,6 +82,20 @@ bool wxExClipboardAdd(const wxString& text);
 /// Gets data from the clipboard.
 const wxString wxExClipboardGet();
 
+#if wxUSE_GUI
+/// Adds entries to a combobox from a list with strings.
+void wxExComboBoxFromList(
+  wxComboBox* cb,
+  const std::list < wxString > & text);
+#endif
+
+#if wxUSE_GUI
+/// Adds entries from a combobox to a list with strings.
+const std::list < wxString > wxExComboBoxToList(
+  const wxComboBox* cb,
+  size_t max_items = 25);
+#endif
+  
 /// Compares the files, using wxExecute on comparator set in the config.
 bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2);
 
@@ -109,6 +123,19 @@ const wxString wxExGetFindResult(
   const wxString& find_text, 
   bool find_next, 
   bool recursive);
+
+#if wxUSE_GUI
+/// Gets a number from user, using hex display.
+long wxExGetHexNumberFromUser(
+  const wxString& message,
+  const wxString& prompt,
+  const wxString& caption,
+  long value = 0,
+  long min = 0,
+  long max = 255,
+  wxWindow *parent = NULL,
+  const wxPoint& pos = wxDefaultPosition);
+#endif
 
 /// Gets the icon index for this filename (uses the file extension to get it).
 /// The return value is an index in wxTheFileIconsTable.
@@ -179,51 +206,7 @@ void wxExNodeStyles(
   const wxString& lexer,
   std::vector<wxExStyle>& styles);
 
-/// Adds a caption.
-const wxString wxExPrintCaption(const wxFileName& filename);
-
-/// You can use macros in PrintFooter and in PrintHeader:
-///   \@PAGENUM\@ is replaced by page number
-///   \@PAGESCNT\@ is replaced by total number of pages
-const wxString wxExPrintFooter();
-
-/// Adds a header.
-const wxString wxExPrintHeader(const wxFileName& filename);
-
-/// Returns quotes around the text.
-const wxString wxExQuoted(const wxString& text);
-
-/// Returns a string without all white space in specified input.
-const wxString wxExSkipWhiteSpace(
-  const wxString& text,
-  const wxString& replace_with = " ");
-
-/// This takes care of the translation.
-const wxString wxExTranslate(const wxString& text, int pageNum, int numPages);
-
 #if wxUSE_GUI
-
-/// Adds entries to a combobox from a list with strings.
-void wxExComboBoxFromList(
-  wxComboBox* cb,
-  const std::list < wxString > & text);
-
-/// Adds entries from a combobox to a list with strings.
-const std::list < wxString > wxExComboBoxToList(
-  const wxComboBox* cb,
-  size_t max_items = 25);
-  
-/// Gets a number from user, using hex display.
-long wxExGetHexNumberFromUser(
-  const wxString& message,
-  const wxString& prompt,
-  const wxString& caption,
-  long value = 0,
-  long min = 0,
-  long max = 255,
-  wxWindow *parent = NULL,
-  const wxPoint& pos = wxDefaultPosition);
-
 /// Opens files.
 /// Opens all files specified by files.
 void wxExOpenFiles(
@@ -236,8 +219,10 @@ void wxExOpenFiles(
   long file_flags = 0,
   /// flags to be used with wxExDirOpenFile
   int dir_flags = wxDIR_DEFAULT);
+#endif
 
 /// Shows a dialog and opens selected files
+#if wxUSE_GUI
 /// (calls wxExOpenFiles).
 void wxExOpenFilesDialog(
   /// frame
@@ -252,7 +237,23 @@ void wxExOpenFilesDialog(
   long file_flags = 0,
   /// flags to be used with wxExDirOpenFile
   int dir_flags = wxDIR_DEFAULT);
+#endif
 
+/// Adds a caption.
+const wxString wxExPrintCaption(const wxFileName& filename);
+
+/// You can use macros in PrintFooter and in PrintHeader:
+///   \@PAGENUM\@ is replaced by page number
+///   \@PAGESCNT\@ is replaced by total number of pages
+const wxString wxExPrintFooter();
+
+/// Adds a header.
+const wxString wxExPrintHeader(const wxFileName& filename);
+
+/// Returns quotes around the text.
+const wxString wxExQuoted(const wxString& text);
+
+#if wxUSE_GUI
 /// Sets a text ctrl value from a list of values.
 void wxExSetTextCtrlValue(
   /// text ctrl
@@ -263,7 +264,17 @@ void wxExSetTextCtrlValue(
   const std::list < wxString > & l,
   /// iterator on the list
   std::list < wxString >::const_iterator & it);
+#endif
 
+/// Returns a string without all white space in specified input.
+const wxString wxExSkipWhiteSpace(
+  const wxString& text,
+  const wxString& replace_with = " ");
+
+/// This takes care of the translation.
+const wxString wxExTranslate(const wxString& text, int pageNum, int numPages);
+
+#if wxUSE_GUI
 /// Use specified VCS command to set lexer on STC document.
 void wxExVCSCommandOnSTC(
   /// VCS command, used to check for diff or open command
@@ -272,7 +283,9 @@ void wxExVCSCommandOnSTC(
   const wxExLexer& lexer,
   /// stc on which lexer is set
   wxExSTC* stc);
+#endif
 
+#if wxUSE_GUI
 /// Executes VCS command id for specified files
 /// and opens component if necessary.
 void wxExVCSExecute(
@@ -282,6 +295,6 @@ void wxExVCSExecute(
   int id,
   /// files on which to operate
   const std::vector< wxString > & files);
-#endif // wxUSE_GUI
+#endif
 
 #endif
