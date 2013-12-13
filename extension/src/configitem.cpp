@@ -763,7 +763,7 @@ bool wxExConfigItem::ToConfig(bool save) const
 
       if (save)
       {
-        const auto l = wxExComboBoxToList(cb, m_MaxItems);
+        const auto& l = wxExComboBoxToList(cb, m_MaxItems);
         wxExListToConfig(l, m_Label);
 
         if (m_Label == wxExFindReplaceData::Get()->GetTextFindWhat())
