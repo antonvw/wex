@@ -49,12 +49,9 @@ wxExToVectorString::wxExToVectorString(const wxFileDialog& in)
 
 wxExToVectorString::wxExToVectorString(const wxFileHistory& in, int count)
 {
-  for (int i = 0; i < count; i++)
+  for (int i = 0; i < count && i < in.GetCount(); i++)
   {
-    if (i < in.GetCount())
-    {
-      m_VS.push_back(in.GetHistoryFile(i));
-    }
+    m_VS.push_back(in.GetHistoryFile(i));
   }  
 }
 
