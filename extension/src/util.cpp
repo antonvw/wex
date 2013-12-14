@@ -794,12 +794,7 @@ void wxExVCSExecute(
     {
       for (const auto& it : files)
       {
-        // README: Should be simpler using initializer lists,
-        // does not yet work using Visual Studio 2012.
-        // See also menu.cpp.
-        std::vector< wxString > v;
-        v.push_back(it);
-        wxExVCS vcs(v, id);
+        wxExVCS vcs({it}, id);
         
         if (vcs.Execute())
         {
