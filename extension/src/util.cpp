@@ -172,18 +172,10 @@ void wxExComboBoxFromList(
   {
     wxASSERT(cb != NULL);
     cb->Clear();
-    std::vector<wxString> v;
-    v.resize(text.size());
 
-    // TODO: test put in as.begin() directly.    
-    copy(text.begin(), text.end(), v.begin()); // required!
-    
     wxArrayString as;
-    
-    for (const auto& it : v)
-    {
-      as.Add(it);
-    }
+    as.resize(text.size());
+    copy(text.begin(), text.end(), as.begin());
     
     cb->Append(as);
     cb->SetValue(cb->GetString(0));
