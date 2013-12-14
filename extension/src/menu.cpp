@@ -34,7 +34,6 @@ wxMenuItem* wxExMenu::Append(int id)
   // Using wxMenu::Append(id)
   // also appends the stock item,
   // but does not add the bitmap.
-
   wxMenuItem* item = new wxMenuItem(this, id);
 
   const wxExStockArt art(id);
@@ -217,25 +216,19 @@ bool wxExMenu::AppendVCS(const wxFileName& filename, bool show_modal)
     if (vcs.SetEntryFromBase(
       show_modal ? wxTheApp->GetTopWindow(): NULL))
     {
-      const int vcs_offset_id = ID_VCS_LOWEST + 1;
- 
       return vcs.GetEntry().BuildMenu(
-        vcs_offset_id, 
+        ID_VCS_LOWEST + 1, 
         this, 
-        false) > 0;// no popup
+        false) > 0; // no popup
     }
   }
   else
   {
-    const int vcs_offset_id = ID_EDIT_VCS_LOWEST + 1;
-
     wxExMenu* vcsmenu = new wxExMenu;
   
-    std::vector< wxString > v;
-    v.push_back(filename.GetFullPath());
-    const wxExVCS vcs(v);
+    const wxExVCS vcs({filename.GetFullPath()});
 
-    if (vcs.GetEntry().BuildMenu(vcs_offset_id, vcsmenu))
+    if (vcs.GetEntry().BuildMenu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
     { 
       AppendSubMenu(vcsmenu, vcs.GetEntry().GetName());
       return true;

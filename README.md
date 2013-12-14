@@ -19,7 +19,7 @@ one of these applications, being a full featured source code text editor.
 ## Building wxWidgets
 
 - under windows:   
-    using Microsoft Visual Studio 2012 nmake in build/msw:    
+    using Microsoft Visual Studio 2013 nmake in build/msw:    
     `nmake -f makefile.vc` or   
     `nmake -f makefile.vc BUILD=release`   
     using cygwin 1.7.9:   
