@@ -199,14 +199,13 @@ int wxExProcess::ConfigDialog(
   const wxString& title,
   bool modal)
 {
-  std::vector<wxExConfigItem> v;
-
-  v.push_back(wxExConfigItem(
+  std::vector<wxExConfigItem> v{wxExConfigItem(
     _("Process"), 
     CONFIG_COMBOBOX, 
     wxEmptyString,
-    true));
+    true)};
 
+  // adding this to initializer list, causes error
   v.push_back(wxExConfigItem(
     m_WorkingDirKey, 
     CONFIG_COMBOBOXDIR, 
