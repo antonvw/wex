@@ -185,8 +185,7 @@ const std::list < wxString > wxExComboBoxToList(
 {
   wxASSERT(cb != NULL);
 
-  std::list < wxString > l;
-  l.push_back(cb->GetValue());
+  std::list < wxString > l{cb->GetValue()};
 
   switch (cb->FindString(
     cb->GetValue(),
@@ -341,20 +340,16 @@ long wxExGetHexNumberFromUser(
   wxWindow *parent,
   const wxPoint& pos)
 {
-  std::vector<wxExConfigItem> v;
-  
   wxConfigBase::Get()->Write(message, value);
 
-  v.push_back(wxExConfigItem(
-    message, 
-    min, 
-    max, 
-    wxEmptyString,
-    CONFIG_SPINCTRL_HEX));
-    
   wxExConfigDialog dlg(
     parent,
-    v,
+    std::vector<wxExConfigItem>{wxExConfigItem(
+      message, 
+      min, 
+      max, 
+      wxEmptyString,
+      CONFIG_SPINCTRL_HEX)},
     caption,
     0,
     1,
