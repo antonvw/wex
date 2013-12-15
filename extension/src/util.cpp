@@ -587,15 +587,14 @@ void wxExOpenFiles(
   
   for (const auto& it : files)
   {
-    wxString file(it); // cannot be const because of file = later on
-
-    if (file.Contains("*") || file.Contains("?"))
+    if (it.Contains("*") || it.Contains("?"))
     {
-      wxExDirOpenFile dir(frame, wxGetCwd(), file, file_flags, dir_flags);
+      wxExDirOpenFile dir(frame, wxGetCwd(), it, file_flags, dir_flags);
       dir.FindFiles();
     }
     else
     {
+      wxString file(it);
       int line_no = 0;
       int col_no = 0;
 
