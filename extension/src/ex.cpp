@@ -491,19 +491,16 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   
   if (choice.empty())
   {
-    auto v(m_Macros.Get());
-  
+    const auto& v(m_Macros.Get());
+    
     if (v.empty())
     {
       return false;
     }
   
     wxArrayString macros;
-    
-    for (const auto& it : v)
-    {
-      macros.Add(it);
-    }
+    macros.resize(v.size());
+    copy(v.begin(), v.end(), macros.begin());
     
     wxSingleChoiceDialog dialog(m_STC,
       _("Input") + ":", 
@@ -526,7 +523,7 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   }
   
   wxExSTC* stc = m_STC;
-  bool ok;
+  bool ok = true;
   
   if (m_Macros.IsRecordedMacro(choice))
   {
@@ -534,7 +531,13 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   }
   else
   {
-    ok = m_Macros.Expand(this, choice);
+    for (int i = 0; i < repeat && ok; i++)
+    {
+      if (!m_Macros.Expand(this, choice))
+      {
+        ok = false;
+      }
+    }
   }
     
   m_STC = stc;
