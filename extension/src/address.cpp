@@ -63,7 +63,17 @@ int wxExAddress::ToLine() const
           return 0;
         }
 
-        sum += line + 1;
+        switch (cmd)
+        {
+          case 0: 
+          case '+': 
+            sum += line + 1;
+            break;
+          
+          case '-': 
+            sum -= line + 1; 
+            break;
+        }
       }
     }
     else
