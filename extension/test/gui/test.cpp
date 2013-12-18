@@ -30,10 +30,13 @@ void wxExGuiTestFixture::setUp()
 
 void wxExGuiTestFixture::testAddress()
 {
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello\nhello1\nhello2");
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
+  const int lines = stc->GetLineCount();
   wxExEx* ex = new wxExEx(stc);
-  stc->GotoLineAndSelect(2);
+  stc->GotoLineAndSelect(1);
   ex->MarkerAdd('a'); // put marker a on line
+  stc->GotoLineAndSelect(2);
+  ex->MarkerAdd('b'); // put marker b on line
   
   CPPUNIT_ASSERT( wxExAddress(ex, "").ToLine() == 0);
   CPPUNIT_ASSERT( wxExAddress(ex, "30").ToLine() == 3);
@@ -43,14 +46,18 @@ void wxExGuiTestFixture::testAddress()
   CPPUNIT_ASSERT( wxExAddress(ex, "3-1").ToLine() == 2);
   CPPUNIT_ASSERT( wxExAddress(ex, ".").ToLine() == 2);
   CPPUNIT_ASSERT( wxExAddress(ex, ".+1").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "$").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "$-2").ToLine() == 1);
+  CPPUNIT_ASSERT( wxExAddress(ex, "$").ToLine() == lines);
+  CPPUNIT_ASSERT( wxExAddress(ex, "$-2").ToLine() == lines - 2);
   CPPUNIT_ASSERT( wxExAddress(ex, "x").ToLine() == 0);
   CPPUNIT_ASSERT( wxExAddress(ex, "'x").ToLine() == 0);
   CPPUNIT_ASSERT( wxExAddress(ex, "1,3s/x/y").ToLine() == 0);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'a").ToLine() == 2);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'a+1").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "1+'a").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'a").ToLine() == 1);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b").ToLine() == 2);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b+1").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "1+'b").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'a+'b").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b+'a").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b-'a").ToLine() == 1);
 }
 
 void wxExGuiTestFixture::testAddressRange()
@@ -134,9 +141,7 @@ void wxExGuiTestFixture::testConfigDialog()
   wxExConfigDialog dlg(wxTheApp->GetTopWindow(), items);
   
   dlg.ForceCheckBoxChecked();
-  
   dlg.Show();
-  
   dlg.Reload();
   
   // Test config dialog without pages.
@@ -145,6 +150,10 @@ void wxExGuiTestFixture::testConfigDialog()
   
   wxExConfigDialog dlg2(wxTheApp->GetTopWindow(), items2);
   dlg2.Show();
+  
+  // Test config dialog without items.
+  wxExConfigDialog dlg3(wxTheApp->GetTopWindow(), std::vector <wxExConfigItem>());
+  dlg3.Show();
 }
 
 void wxExGuiTestFixture::testConfigItem()
@@ -474,6 +483,9 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( stc->GetCurrentLine() == 9);
   CPPUNIT_ASSERT( ex->Command(":10000"));
   CPPUNIT_ASSERT( stc->GetCurrentLine() == 11);
+  
+  ex->SetRegistersDelete("x");
+  ex->SetRegisterYank("test");
 }
 
 void wxExGuiTestFixture::testFileDialog()
@@ -907,7 +919,6 @@ void wxExGuiTestFixture::testLexers()
 
   CPPUNIT_ASSERT( wxExLexers::Get()->LoadDocument());
 }
-
 
 void wxExGuiTestFixture::link(
   const wxExLink& link,
@@ -1705,16 +1716,30 @@ void wxExGuiTestFixture::testToVectorString()
 
 void wxExGuiTestFixture::testUtil()
 {
+  // wxExAlignText
   CPPUNIT_ASSERT( wxExAlignText("test", "header", true, true,
     wxExLexers::Get()->FindByName("cpp")).size() 
       == wxString("// headertest").size());
 
+  // wxExClipboardAdd
   CPPUNIT_ASSERT( wxExClipboardAdd("test"));
+  
+  // wxExClipboardGet
   CPPUNIT_ASSERT( wxExClipboardGet() == "test");
   
+  // wxExComboBoxFromList
+  // wxExComboBoxToList
+  // wxExCompareFile
+  // wxExConfigFirstOf
+  // wxExEllipsed  
+  
+  // wxExGetEndOfText
   CPPUNIT_ASSERT( wxExGetEndOfText("test", 3).size() == 3);
   CPPUNIT_ASSERT( wxExGetEndOfText("testtest", 3).size() == 3);
   
+  // wxExGetFieldSeparator
+
+  // wxExGetFindResult  
   CPPUNIT_ASSERT( wxExGetFindResult("test", true, true).Contains("test"));
   CPPUNIT_ASSERT( wxExGetFindResult("test", true, false).Contains("test"));
   CPPUNIT_ASSERT( wxExGetFindResult("test", false, true).Contains("test"));
@@ -1725,6 +1750,10 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetFindResult("%d", false, true).Contains("%d"));
   CPPUNIT_ASSERT( wxExGetFindResult("%d", false, false).Contains("%d"));
   
+  // wxExGetHexNumberFromUser
+  // wxExGetIconID
+
+  // wxExGetNumberOfLines  
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test") == 1);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\n") == 2);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest") == 2);
@@ -1736,25 +1765,56 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n\n", true) == 2);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n\n", true) == 2);
   
+  // wxExGetWord
+  // wxExListFromConfig
+  // wxExListToConfig
+  // wxExLogStatus
+
+  // wxExMake  
   CPPUNIT_ASSERT( wxExMake(wxFileName("xxx")) != -1);
   CPPUNIT_ASSERT( wxExMake(wxFileName("make.tst")) != -1);
-  
+
+  // wxExMatch
   std::vector<wxString> v;
   CPPUNIT_ASSERT( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
   CPPUNIT_ASSERT( wxExMatch("(\\d+)ok(\\d+)nice", "19999ok245nice", v) == 2);
   CPPUNIT_ASSERT( wxExMatch(" ([\\d\\w]+)", " 19999ok245nice ", v) == 1);
   
+  // wxExMatchesOneOf
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.txt"));
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   
+  // wxExNodeProperties
+  // wxExNodeStyles
+  // wxExOpenFiles
+  // wxExOpenFilesDialog
+  
+  // wxExPrintCaption
+  CPPUNIT_ASSERT( wxExPrintCaption(wxFileName("test")).Contains("test"));
+  
+  // wxExPrintFooter
+  CPPUNIT_ASSERT( wxExPrintFooter().Contains("@"));
+  
+  // wxExPrintHeader
+  CPPUNIT_ASSERT( wxExPrintHeader(wxFileName("test")).Contains("test"));
+  
+  // wxExQuoted
   CPPUNIT_ASSERT( wxExQuoted("test") == "'test'");
   CPPUNIT_ASSERT( wxExQuoted("%d") == "'%d'");
   CPPUNIT_ASSERT( wxExQuoted(wxExSkipWhiteSpace(wxString(" %d "))) == "'%d'");
-      
+  
+  // wxExSetTextCtrlValue
+
+  // wxExSkipWhiteSpace      
   CPPUNIT_ASSERT( wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
+  
+  // wxExTranslate
   CPPUNIT_ASSERT(!wxExTranslate(
     "hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
+    
+  // wxExVCSCommandOnSTC    
+  // wxExVCSExecute
 }
 
 void wxExGuiTestFixture::testVariable()

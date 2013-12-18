@@ -61,8 +61,7 @@ int wxExVCS::ConfigDialog(
     return wxID_CANCEL;
   }
   
-  std::map<long, const wxString> choices;
-  choices.insert(std::make_pair((long)VCS_NONE, _("None")));
+  std::map<long, const wxString> choices{std::make_pair((long)VCS_NONE, _("None"))};
   
   // Using auto vcs is not useful if we only have one vcs.
   if (m_Entries.size() != 1)
@@ -74,8 +73,7 @@ int wxExVCS::ConfigDialog(
 
   for (const auto& it : m_Entries)
   {
-    choices.insert(std::make_pair(i, it.GetName()));
-    i++;
+    choices.insert(std::make_pair(i++, it.GetName()));
   }
 
   // Estimate number of columns used by the radiobox.
@@ -96,14 +94,12 @@ int wxExVCS::ConfigDialog(
       break;
   }
 
-  std::vector<wxExConfigItem> v;
-
-  v.push_back(wxExConfigItem(
+  std::vector<wxExConfigItem> v{wxExConfigItem(
     "VCS",
     choices,
     true, // use a radiobox 
     wxEmptyString, 
-    cols));
+    cols)};
 
   for (const auto& it2 : m_Entries)
   {
@@ -233,14 +229,7 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 
 const wxString wxExVCS::GetFile() const
 {
-  if (m_Files.empty())
-  {
-    return wxExConfigFirstOf(_("Base folder"));
-  }
-  else
-  {
-    return m_Files[0];
-  }
+  return (m_Files.empty() ? wxExConfigFirstOf(_("Base folder")): m_Files[0]);
 }
 
 const wxFileName wxExVCS::GetFileName()
@@ -448,15 +437,13 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   
   const wxString message = _("Select VCS Folder");
   
-  std::vector<wxExConfigItem> v;
-
   // See also vcsentry, same item is used there.
-  v.push_back(wxExConfigItem(
+  const std::vector<wxExConfigItem> v{wxExConfigItem(
     _("Base folder"), 
     CONFIG_COMBOBOXDIR, 
     wxEmptyString, 
     true,
-    1005));
+    1005)};
       
   if (wxExConfigFirstOf(_("Base folder")).empty()) 
   {
