@@ -39,8 +39,8 @@ void wxExGuiTestFixture::testAddress()
   ex->MarkerAdd('b'); // put marker b on line
   
   CPPUNIT_ASSERT( wxExAddress(ex, "").ToLine() == 0);
-  CPPUNIT_ASSERT( wxExAddress(ex, "30").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "40").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "30").ToLine() == lines);
+  CPPUNIT_ASSERT( wxExAddress(ex, "40").ToLine() == lines);
   CPPUNIT_ASSERT( wxExAddress(ex, "-40").ToLine() == 1);
   CPPUNIT_ASSERT( wxExAddress(ex, "3-3").ToLine() == 0);
   CPPUNIT_ASSERT( wxExAddress(ex, "3-1").ToLine() == 2);
@@ -53,8 +53,8 @@ void wxExGuiTestFixture::testAddress()
   CPPUNIT_ASSERT( wxExAddress(ex, "1,3s/x/y").ToLine() == 0);
   CPPUNIT_ASSERT( wxExAddress(ex, "'a").ToLine() == 1);
   CPPUNIT_ASSERT( wxExAddress(ex, "'b").ToLine() == 2);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'b+1").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "1+'b").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b+10").ToLine() == lines);
+  CPPUNIT_ASSERT( wxExAddress(ex, "10+'b").ToLine() == lines);
   CPPUNIT_ASSERT( wxExAddress(ex, "'a+'b").ToLine() == 3);
   CPPUNIT_ASSERT( wxExAddress(ex, "'b+'a").ToLine() == 3);
   CPPUNIT_ASSERT( wxExAddress(ex, "'b-'a").ToLine() == 1);
@@ -1797,7 +1797,7 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExPrintFooter().Contains("@"));
   
   // wxExPrintHeader
-  CPPUNIT_ASSERT( wxExPrintHeader(wxFileName("test")).Contains("test"));
+  CPPUNIT_ASSERT( wxExPrintHeader(wxFileName(TEST_FILE)).Contains("test"));
   
   // wxExQuoted
   CPPUNIT_ASSERT( wxExQuoted("test") == "'test'");
