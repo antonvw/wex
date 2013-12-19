@@ -18,17 +18,17 @@
 
 #if wxUSE_GUI
 
-/// Several types of variables are supported.
-/// See xml file.
+// Several types of variables are supported.
+// See xml file.
 enum
 {
-  VARIABLE_BUILTIN,        ///< a builtin variable
-  VARIABLE_ENVIRONMENT,    ///< an environment variable
-  VARIABLE_INPUT,          ///< input from user
-  VARIABLE_INPUT_ONCE,     ///< input once from user, save value in xml file
-  VARIABLE_INPUT_SAVE,     ///< input from user, save value in xml file
-  VARIABLE_READ,           ///< read value from macros xml  file
-  VARIABLE_TEMPLATE        ///< read value from a template file
+  VARIABLE_BUILTIN,     // a builtin variable
+  VARIABLE_ENVIRONMENT, // an environment variable
+  VARIABLE_INPUT,       // input from user
+  VARIABLE_INPUT_ONCE,  // input once from user, save value in xml file
+  VARIABLE_INPUT_SAVE,  // input from user, save value in xml file
+  VARIABLE_READ,        // read value from macros xml  file
+  VARIABLE_TEMPLATE     // read value from a template file
 };
 
 wxExSTCEntryDialog* wxExVariable::m_Dialog = NULL;
@@ -257,7 +257,8 @@ bool wxExVariable::ExpandInput(wxString& expanded)
       m_Dialog = new wxExSTCEntryDialog(
         wxTheApp->GetTopWindow(),
         m_Name, 
-        m_Value);
+        m_Value,
+        _("Input") + ":");
         
       m_Dialog->GetSTC()->GetVi().Use(false);
     }
