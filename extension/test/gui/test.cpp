@@ -1791,16 +1791,17 @@ void wxExGuiTestFixture::testUtil()
   // wxExGetWord
   
   // wxExListFromConfig
-  l = wxExListFromConfig("xxx");
-  CPPUNIT_ASSERT( l.size() == 0);
+  CPPUNIT_ASSERT( wxExListFromConfig("xxx").size() == 0);
   
   // wxExListToConfig
+  l.clear();
   l.push_back("1");
   l.push_back("2");
-  CPPUNIT_ASSERT( wxExListToConfig(l, "list_items").size() == 2);
+  wxExListToConfig(l, "list_items");
+  CPPUNIT_ASSERT( l.size() == 2); // TODO: improve, test on config
   
   // wxExLogStatus
-  wxExLogStatus( "hello world");
+  wxExLogStatus( wxExFileName(TEST_FILE));
 
   // wxExMake  
   CPPUNIT_ASSERT( wxExMake(wxFileName("xxx")) != -1);
@@ -1826,7 +1827,8 @@ void wxExGuiTestFixture::testUtil()
   wxFileName file(TEST_FILE);
   file.Normalize();
   files.push_back(file.GetFullPath());
-  files.push_back("*test*");
+  files.push_back("test.cpp");
+  files.push_back("*xxxxxx*.cpp");
   wxExOpenFiles(frame, files);
   
   // wxExOpenFilesDialog
@@ -1860,7 +1862,7 @@ void wxExGuiTestFixture::testUtil()
   wxExVCSCommandOnSTC(command, lexer, stc);
   
   // wxExVCSExecute
-  wxExVCSExecute(frame, 0, files);
+  // wxExVCSExecute(frame, 0, files); // calls dialog
 }
 
 void wxExGuiTestFixture::testVariable()
