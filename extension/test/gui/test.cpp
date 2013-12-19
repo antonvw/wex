@@ -1716,6 +1716,10 @@ void wxExGuiTestFixture::testToVectorString()
 
 void wxExGuiTestFixture::testUtil()
 {
+  wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
+  wxExSTC* stc = new wxExSTC(frame);
+  stc->SetFocus();
+  
   // wxExAlignText
   CPPUNIT_ASSERT( wxExAlignText("test", "header", true, true,
     wxExLexers::Get()->FindByName("cpp")).size() 
@@ -1728,16 +1732,33 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExClipboardGet() == "test");
   
   // wxExComboBoxFromList
+  std::list < wxString > l;
+  l.push_back("x");
+  l.push_back("y");
+  l.push_back("z");
+  wxComboBox* cb = new wxComboBox(frame, wxID_ANY);
+  wxExComboBoxFromList(cb, l);
+  CPPUNIT_ASSERT( cb->GetCount() == 3);
+  
   // wxExComboBoxToList
+  l.clear();
+  l = wxExComboBoxToList(cb);
+  CPPUNIT_ASSERT( l.size() == 3);
+  
   // wxExCompareFile
+  
   // wxExConfigFirstOf
+  CPPUNIT_ASSERT( wxExConfigFirstOf("xxxx").empty());
+  
   // wxExEllipsed  
+  CPPUNIT_ASSERT( wxExEllipsed("xxx").Contains("..."));
   
   // wxExGetEndOfText
   CPPUNIT_ASSERT( wxExGetEndOfText("test", 3).size() == 3);
   CPPUNIT_ASSERT( wxExGetEndOfText("testtest", 3).size() == 3);
   
   // wxExGetFieldSeparator
+  CPPUNIT_ASSERT( wxExGetFieldSeparator() != 'a');
 
   // wxExGetFindResult  
   CPPUNIT_ASSERT( wxExGetFindResult("test", true, true).Contains("test"));
@@ -1751,7 +1772,9 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetFindResult("%d", false, false).Contains("%d"));
   
   // wxExGetHexNumberFromUser
+  
   // wxExGetIconID
+  CPPUNIT_ASSERT( wxExGetIconID( wxFileName(TEST_FILE)) != -1);
 
   // wxExGetNumberOfLines  
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test") == 1);
@@ -1766,9 +1789,18 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n\n", true) == 2);
   
   // wxExGetWord
+  
   // wxExListFromConfig
+  l = wxExListFromConfig("xxx");
+  CPPUNIT_ASSERT( l.size() == 0);
+  
   // wxExListToConfig
+  l.push_back("1");
+  l.push_back("2");
+  CPPUNIT_ASSERT( wxExListToConfig(l, "list_items").size() == 2);
+  
   // wxExLogStatus
+  wxExLogStatus( "hello world");
 
   // wxExMake  
   CPPUNIT_ASSERT( wxExMake(wxFileName("xxx")) != -1);
@@ -1787,7 +1819,16 @@ void wxExGuiTestFixture::testUtil()
   
   // wxExNodeProperties
   // wxExNodeStyles
+  
   // wxExOpenFiles
+  std::vector<wxString> files;
+  wxExOpenFiles(frame, files);
+  wxFileName file(TEST_FILE);
+  file.Normalize();
+  files.push_back(file.GetFullPath());
+  files.push_back("*test*");
+  wxExOpenFiles(frame, files);
+  
   // wxExOpenFilesDialog
   
   // wxExPrintCaption
@@ -1806,15 +1847,20 @@ void wxExGuiTestFixture::testUtil()
   
   // wxExSetTextCtrlValue
 
-  // wxExSkipWhiteSpace      
+  // wxExSkipWhiteSpace
   CPPUNIT_ASSERT( wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
   
   // wxExTranslate
   CPPUNIT_ASSERT(!wxExTranslate(
     "hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
     
-  // wxExVCSCommandOnSTC    
+  // wxExVCSCommandOnSTC
+  wxExVCSCommand command("status");
+  wxExLexer lexer = wxExLexers::Get()->FindByText("// this is a cpp comment text");
+  wxExVCSCommandOnSTC(command, lexer, stc);
+  
   // wxExVCSExecute
+  wxExVCSExecute(frame, 0, files);
 }
 
 void wxExGuiTestFixture::testVariable()
