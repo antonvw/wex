@@ -41,6 +41,27 @@
   classname* cl = dynamic_cast<classname*>(win);             \
   return cl;
   
+#define FIND_REPLACE( text, dlg)                             \
+{                                                            \
+  if (m_FindReplaceDialog != NULL)                           \
+  {                                                          \
+    m_FindReplaceDialog->Destroy();                          \
+  }                                                          \
+                                                             \
+  m_FindFocus = wxWindow::FindFocus();                       \
+                                                             \
+  wxExSTC* stc = GetSTC();                                   \
+                                                             \
+  if (stc != NULL)                                           \
+  {                                                          \
+    stc->GetFindString();                                    \
+  }                                                          \
+                                                             \
+  m_FindReplaceDialog = new wxFindReplaceDialog(             \
+    this, wxExFindReplaceData::Get(), text, dlg);            \
+  m_FindReplaceDialog->Show();                               \
+};                                                           \
+  
 const int ID_UPDATE_STATUS_BAR = 900;
 
 #if wxUSE_STATUSBAR
@@ -126,12 +147,7 @@ wxExListView* wxExFrame::GetListView()
 
 wxString wxExFrame::GetStatusText(const wxString& pane)
 {
-  if (m_StatusBar == NULL)
-  {
-    return wxEmptyString;
-  }
-  
-  return m_StatusBar->GetStatusText(pane);
+  return (m_StatusBar == NULL ? wxEmptyString: m_StatusBar->GetStatusText(pane));
 }
 
 wxExSTC* wxExFrame::GetSTC()
@@ -161,55 +177,8 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
 
   switch (command.GetId())
   {
-  case wxID_FIND: 
-    {
-    if (m_FindReplaceDialog != NULL)
-    {
-      m_FindReplaceDialog->Destroy();
-    }
-    
-    m_FindFocus = wxWindow::FindFocus();
-
-    // If stc text is selected, copy to find replace data.
-    wxExSTC* stc = GetSTC();
-    
-    if (stc != NULL)
-    {
-      stc->GetFindString();
-    }
-    
-    m_FindReplaceDialog = new wxFindReplaceDialog(
-      this, wxExFindReplaceData::Get(), _("Find")); 
-    m_FindReplaceDialog->Show();
-    }
-    break;
-    
-  case wxID_REPLACE: 
-    {
-    if (m_FindReplaceDialog != NULL)
-    {
-      m_FindReplaceDialog->Destroy();
-    }
-    
-    m_FindFocus = wxWindow::FindFocus();
-    
-    // If stc text is selected, copy to find replace data.
-    wxExSTC* stc = GetSTC();
-    
-    if (stc != NULL)
-    {
-      stc->GetFindString();
-    }
-    
-    m_FindReplaceDialog = new wxFindReplaceDialog(
-      this, 
-      wxExFindReplaceData::Get(),
-      _("Replace"), 
-      wxFR_REPLACEDIALOG); 
-    m_FindReplaceDialog->Show();
-    }
-    break;
-    
+  case wxID_FIND: FIND_REPLACE(_("Find"), 0 ); break;
+  case wxID_REPLACE: FIND_REPLACE( _("Replace") , wxFR_REPLACEDIALOG ); break;
   case wxID_OPEN:
     if (!command.GetString().empty())
     {
@@ -229,14 +198,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
       
   case ID_VIEW_MENUBAR:
-    if (GetMenuBar() != NULL)
-    {
-      SetMenuBar(NULL);
-    }
-    else
-    {
-      SetMenuBar(m_MenuBar);
-    }
+    SetMenuBar(GetMenuBar() != NULL ? NULL: m_MenuBar);
     break;
 
   case ID_VIEW_STATUSBAR:
@@ -250,16 +212,10 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
     
   case ID_VIEW_TITLEBAR:
-    if (!(GetWindowStyleFlag() & wxCAPTION))
-    {
-      SetWindowStyleFlag(wxDEFAULT_FRAME_STYLE);
-      Refresh();
-    }
-    else
-    {
-      SetWindowStyleFlag(GetWindowStyleFlag() & ~wxCAPTION);
-      Refresh();
-    }
+    SetWindowStyleFlag(!(GetWindowStyleFlag() & wxCAPTION) ? 
+      wxDEFAULT_FRAME_STYLE:
+      GetWindowStyleFlag() & ~wxCAPTION);
+    Refresh();
     break;
 
   default: wxFAIL; break;
@@ -328,26 +284,12 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 #endif
 
   case ID_VIEW_MENUBAR:
-    if (GetMenuBar() != NULL)
-    {
-      event.Check(GetMenuBar()->IsShown());
-    }
-    else
-    {
-      event.Check(false);
-    }
+    (GetMenuBar() != NULL ? event.Check(GetMenuBar()->IsShown()): event.Check(false));
     break;
 
 #if wxUSE_STATUSBAR
   case ID_VIEW_STATUSBAR:
-    if (GetStatusBar() != NULL)
-    {
-      event.Check(GetStatusBar()->IsShown());
-    }
-    else
-    {
-      event.Check(false);
-    }
+    (GetStatusBar() != NULL ? event.Check(GetStatusBar()->IsShown()): event.Check(false));
     break;
 #endif
       
@@ -384,9 +326,7 @@ bool wxExFrame::OpenFile(
   if (stc != NULL)
   {
     stc->SetText(vcs.GetOutput());
-
-    wxExVCSCommandOnSTC(
-      vcs.GetCommand(), filename.GetLexer(), stc);
+    wxExVCSCommandOnSTC(vcs.GetCommand(), filename.GetLexer(), stc);
   }
   else
   {
@@ -403,14 +343,7 @@ bool wxExFrame::OpenFile(
 {
   wxExSTC* stc = GetSTC();
 
-  if (stc != NULL)
-  {
-    stc->SetText(text);
-  }
-  else
-  {
-    wxLogMessage(text);
-  }
+  if (stc != NULL) stc->SetText(text); else wxLogMessage(text);
 
   return true;
 }
@@ -427,16 +360,8 @@ void wxExFrame::SetMenuBar(wxMenuBar* bar)
     m_MenuBar = bar;
   }
   
-  if (
-    !m_IsCommand &&
-    !wxConfigBase::Get()->ReadBool("ShowMenuBar", true))
-  {
-    wxFrame::SetMenuBar(NULL);
-  }
-  else
-  {
-    wxFrame::SetMenuBar(bar);
-  }
+  wxFrame::SetMenuBar(
+   !m_IsCommand && !wxConfigBase::Get()->ReadBool("ShowMenuBar", true) ? NULL: bar);
 }
 
 #if wxUSE_STATUSBAR
@@ -473,7 +398,7 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
   {
     wxExSTC* stc = GetSTC();
 
-    if (stc != NULL && wxExLexers::Get()->GetCount() > 0)
+    if (stc != NULL)
     {
       wxString lexer = stc->GetLexer().GetDisplayLexer();
 
@@ -485,7 +410,7 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
         }
         else
         {
-          stc->SetLexer(lexer);
+          stc->SetLexer(lexer, true); // allow fold
         }
       }
     }
@@ -506,12 +431,7 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
 #if wxUSE_STATUSBAR
 bool wxExFrame::StatusText(const wxString& text, const wxString& pane)
 {
-  if (m_StatusBar == NULL)
-  {
-    return false;
-  }
-  
-  return m_StatusBar->SetStatusText(text, pane);
+  return (m_StatusBar == NULL ? false: m_StatusBar->SetStatusText(text, pane));
 }
 #endif // wxUSE_STATUSBAR
 
@@ -531,7 +451,6 @@ bool wxExFrame::UpdateStatusBar(const wxListView* lv)
 }
 
 // Do not make it const, too many const_casts needed,
-// I thought that might cause crash in rect selection, but it didn't.
 bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
 {
   if (stc == NULL)
