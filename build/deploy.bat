@@ -15,8 +15,8 @@ copy vcmswu\syncped.exe syncped
 copy vcmswu\syncped.exe.manifest syncped
 
 rem Copy msvc DLL's
-copy c:\windows\syswow64\msvcp110.dll syncped
-copy c:\windows\syswow64\msvcr110.dll syncped
+copy c:\windows\syswow64\msvcp120.dll syncped
+copy c:\windows\syswow64\msvcr120.dll syncped
 
 rem Copy templates and xml data.
 copy ..\extension\data\*.txt syncped

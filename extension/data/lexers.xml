@@ -1989,13 +1989,16 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="ave"/>
   <lexer name="avs"/>
   <lexer name="baan"/>
-  <lexer name="bash" extensions="*.bash;*.sh;Doxyfile"> 
+  <lexer name="bash" extensions="*.bash;Doxyfile"> 
     <keywords>    
       alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
       for function
       help history if in jobs kill logout mount pwd rm select set sleep source 
       tail test then time ulimit umount umask unalias unset until while
     </keywords>
+    <properties>
+      <property name="fold.comment"> 1 </property>
+    </properties>
     <comments begin1="#" />
   </lexer>
   <lexer name="batch" extensions="*.bat"/>
@@ -2089,6 +2092,23 @@ Copyright: (c) 2013, Anton van Wezenbeek
   </lexer>
   <lexer name="cppnocase" macro="cpp"/>
   <lexer name="csound"/>
+  <lexer display="csh" name="bash" extensions="*.csh"> 
+    <keywords>    
+      <!-- http://sourceforge.net/p/zsh-nt/tcsh-nt/ci/master/tree/csh-mode.el#l159 -->
+      @ alias bg break breaksw case cd chdir 
+      continue default dirs echo else end endif
+      endsw eval exec exit fg foreach glob goto
+      hashstat history if jobs kill limit login
+      logout limit notify onintr popd printenv
+      pushd rehash repeat set setenv shift source
+      stop suspend switch then time umask unalias
+      unhash unlimit unset unsetenv wait while
+    </keywords>
+    <comments begin1="#" />
+    <properties>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+  </lexer>
   <lexer name="css"/>
   <lexer name="d"/> 
   <lexer name="diff">
@@ -2292,9 +2312,23 @@ Copyright: (c) 2013, Anton van Wezenbeek
       Default Test Template Timeout
     </keywords>
     <comments begin1="#" />
+    <properties>
+      <property name="fold.comment"> 1 </property>
+    </properties>
   </lexer>
   <lexer name="ruby"/>
   <lexer name="scriptol"/>
+  <lexer display="sh" name="bash" extensions="*.csh"> 
+    <keywords>    
+      <!-- https://github.com/OutOfOrder/mod_highlight/blob/master/colorer/hrc/scripts/sh-keywords.hrc -->
+      case do done elif else esac fi for function if in
+      select then until while time
+    </keywords>
+    <comments begin1="#" />
+    <properties>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+  </lexer>
   <lexer name="smalltalk"/>
   <lexer name="SML"/>
   <lexer name="sorcins"/>
@@ -2355,6 +2389,27 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="TAL" macro="cpp"/>
   <lexer name="tcl" extensions="*.tcl"/>
   <lexer name="tcmd"/>
+  <lexer display="tcsh" name="bash" extensions="*.tcsh"> 
+    <keywords>    
+      <!-- http://sourceforge.net/p/zsh-nt/tcsh-nt/ci/master/tree/csh-mode.el#l159 -->
+      @ alias bg break breaksw case cd chdir 
+      continue default dirs echo else end endif
+      endsw eval exec exit fg foreach glob goto
+      hashstat history if jobs kill limit login
+      logout limit notify onintr popd printenv
+      pushd rehash repeat set setenv shift source
+      stop suspend switch then time umask unalias
+      unhash unlimit unset unsetenv wait while
+      <!-- ;; tcsh-keywords -->
+      alloc bindkey builtins complete echotc
+      filetest hup log ls-F nice nohup sched
+      settc setty telltc uncomplete where which      
+    </keywords>
+    <comments begin1="#" />
+    <properties>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+  </lexer>
   <lexer name="tex"/>
   <lexer name="txt2tags"/>
   <lexer name="vb"/>

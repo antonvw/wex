@@ -404,12 +404,9 @@ void Frame::OnCommand(wxCommandEvent& event)
         return;
       }
 
-      for (
-        std::list<wxSocketBase*>::iterator it = m_Clients.begin();
-        it != m_Clients.end();
-        ++it)
+      for (auto& it : m_Clients)
       {
-        wxSocketBase* sock = *it;
+        wxSocketBase* sock = it;
         SocketLost(sock, false);
       }
 
@@ -512,12 +509,9 @@ void Frame::OnCommand(wxCommandEvent& event)
       const wxString str = event.GetString() + wxTextFile::GetEOL();
       const wxCharBuffer& buffer(str.c_str());
 
-      for (
-        std::list<wxSocketBase*>::iterator it = m_Clients.begin();
-        it != m_Clients.end();
-        ++it)
+      for (auto& it : m_Clients)
       {
-        wxSocketBase* sock = *it;
+        wxSocketBase* sock = it;
         WriteDataToClient(buffer, sock);
       }
 
@@ -1082,12 +1076,9 @@ void Frame::WriteDataWindowToClients()
 {
   const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
 
-  for (
-    std::list<wxSocketBase*>::iterator it = m_Clients.begin();
-    it != m_Clients.end();
-    ++it)
+  for (auto& it : m_Clients)
   {
-    wxSocketBase* sock = *it;
+    wxSocketBase* sock = it;
     WriteDataToClient(buffer, sock);
   }
 }

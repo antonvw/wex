@@ -61,8 +61,7 @@ int wxExVCS::ConfigDialog(
     return wxID_CANCEL;
   }
   
-  std::map<long, const wxString> choices;
-  choices.insert(std::make_pair((long)VCS_NONE, _("None")));
+  std::map<long, const wxString> choices{std::make_pair((long)VCS_NONE, _("None"))};
   
   // Using auto vcs is not useful if we only have one vcs.
   if (m_Entries.size() != 1)
@@ -72,13 +71,9 @@ int wxExVCS::ConfigDialog(
   
   long i = VCS_START;
 
-  for (
-    auto it = m_Entries.begin();
-    it != m_Entries.end();
-    ++it)
+  for (const auto& it : m_Entries)
   {
-    choices.insert(std::make_pair(i, it->GetName()));
-    i++;
+    choices.insert(std::make_pair(i++, it.GetName()));
   }
 
   // Estimate number of columns used by the radiobox.
@@ -99,21 +94,16 @@ int wxExVCS::ConfigDialog(
       break;
   }
 
-  std::vector<wxExConfigItem> v;
-
-  v.push_back(wxExConfigItem(
+  std::vector<wxExConfigItem> v{wxExConfigItem(
     "VCS",
     choices,
     true, // use a radiobox 
     wxEmptyString, 
-    cols));
+    cols)};
 
-  for (
-    auto it2 = m_Entries.begin();
-    it2 != m_Entries.end();
-    ++it2)
+  for (const auto& it2 : m_Entries)
   {
-    v.push_back(wxExConfigItem(it2->GetName(), CONFIG_FILEPICKERCTRL));
+    v.push_back(wxExConfigItem(it2.GetName(), CONFIG_FILEPICKERCTRL));
   }
 
   if (modal)
@@ -169,12 +159,9 @@ bool wxExVCS::Execute()
     
     if (m_Files.size() > 1)
     {
-      for (
-        auto it = m_Files.begin();
-        it != m_Files.end();
-        ++it)
+      for (const auto& it : m_Files)
       {
-        args += "\"" + *it + "\" ";
+        args += "\"" + it + "\" ";
       }
     }
     else if (m_Entry.GetName().Lower() == "git")
@@ -216,21 +203,18 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
   {
     if (filename.IsOk())
     {
-      for (
-        auto it = m_Entries.begin();
-        it != m_Entries.end();
-        ++it)
+      for (const auto& it : m_Entries)
       {
-        const bool toplevel = it->AdminDirIsTopLevel();
-        const wxString admin_dir = it->GetAdminDir();
+        const bool toplevel = it.AdminDirIsTopLevel();
+        const wxString admin_dir = it.GetAdminDir();
 
         if (toplevel && IsAdminDirTopLevel(admin_dir, filename))
         {
-          return *it;
+          return it;
         }
         else if (IsAdminDir(admin_dir, filename))
         {
-          return *it;
+          return it;
         }
       }
     }
@@ -245,14 +229,7 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 
 const wxString wxExVCS::GetFile() const
 {
-  if (m_Files.empty())
-  {
-    return wxExConfigFirstOf(_("Base folder"));
-  }
-  else
-  {
-    return m_Files[0];
-  }
+  return (m_Files.empty() ? wxExConfigFirstOf(_("Base folder")): m_Files[0]);
 }
 
 const wxFileName wxExVCS::GetFileName()
@@ -460,15 +437,13 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   
   const wxString message = _("Select VCS Folder");
   
-  std::vector<wxExConfigItem> v;
-
   // See also vcsentry, same item is used there.
-  v.push_back(wxExConfigItem(
+  const std::vector<wxExConfigItem> v{wxExConfigItem(
     _("Base folder"), 
     CONFIG_COMBOBOXDIR, 
     wxEmptyString, 
     true,
-    1005));
+    1005)};
       
   if (wxExConfigFirstOf(_("Base folder")).empty()) 
   {

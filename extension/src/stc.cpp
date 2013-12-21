@@ -465,11 +465,7 @@ int wxExSTC::ConfigDialog(
     _("Invisible after ident")));
   choices.insert(std::make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
   items.push_back(wxExConfigItem(
-    _("Whitespace"), 
-    choices, 
-    true, 
-    _("General"),
-    1));
+    _("Whitespace"), choices, true, _("General"), 1));
 
   // Next code does not have any effect (2.9.5, on MSW and GTK)
 /*  
@@ -491,22 +487,14 @@ int wxExSTC::ConfigDialog(
   wchoices.insert(std::make_pair(wxSTC_WRAP_WORD, _("Word")));
   wchoices.insert(std::make_pair(wxSTC_WRAP_CHAR, _("Char")));
   items.push_back(wxExConfigItem(
-    _("Wrap line"), 
-    wchoices, 
-    true,
-    _("General"),
-    1));
+    _("Wrap line"), wchoices, true, _("General"), 1));
 
   std::map<long, const wxString> vchoices;
   vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
   vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
   vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
   items.push_back(wxExConfigItem(
-    _("Wrap visual flags"), 
-    vchoices, 
-    true, 
-    _("General"),
-    1));
+    _("Wrap visual flags"), vchoices, true, _("General"), 1));
     
   if (wxExLexers::Get()->GetCount() > 0)
   {
@@ -515,44 +503,25 @@ int wxExSTC::ConfigDialog(
 
   // Edge page.
   items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
-
   std::map<long, const wxString> echoices;
   echoices.insert(std::make_pair(wxSTC_EDGE_NONE, _("None")));
   echoices.insert(std::make_pair(wxSTC_EDGE_LINE, _("Line")));
   echoices.insert(std::make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
   items.push_back(wxExConfigItem(
-    _("Edge line"), 
-    echoices, 
-    true, 
-    _("Edge"),
-    1));
+    _("Edge line"), echoices, true, _("Edge"), 1));
 
   // Margin page.
   items.push_back(wxExConfigItem(
-    _("Tab width"), 
-    1, 
-    (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), 
+    _("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), 
     _("Margin")));
   items.push_back(wxExConfigItem(
-    _("Indent"), 
-    0, 
-    (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), 
-    _("Margin")));
+    _("Indent"), 0, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
   items.push_back(wxExConfigItem(
-    _("Divider"), 
-    0, 
-    40, 
-    _("Margin")));
+    _("Divider"), 0, 40, _("Margin")));
   items.push_back(wxExConfigItem(
-    _("Folding"), 
-    0, 
-    40, 
-    _("Margin")));
+    _("Folding"), 0, 40, _("Margin")));
   items.push_back(wxExConfigItem(
-    _("Line number"), 
-    0, 
-    100, 
-    _("Margin")));
+    _("Line number"), 0, 100, _("Margin")));
 
   if (wxExLexers::Get()->GetCount() > 0)
   {
@@ -584,24 +553,13 @@ int wxExSTC::ConfigDialog(
   pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITE, _("Colour on white")));
   pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")));
   items.push_back(wxExConfigItem(
-    _("Print flags"), 
-    pchoices, 
-    true, 
-    _("Printer"),
-    1));
+    _("Print flags"), pchoices, true, _("Printer"), 1));
 
   if (!(flags & STC_CONFIG_SIMPLE))
   {
     // Directory page.
-    items.push_back(
-      wxExConfigItem(
-        _("Include directory"), 
-        CONFIG_LISTVIEW_FOLDER,
-        _("Directory"), 
-        false,
-        wxID_ANY,
-        25,
-        false)); // no label
+    items.push_back(wxExConfigItem(
+      _("Include directory"), CONFIG_LISTVIEW_FOLDER, _("Directory"), false, wxID_ANY, 25, false)); // no label
   }
 
   int buttons = wxOK | wxCANCEL;
@@ -616,28 +574,14 @@ int wxExSTC::ConfigDialog(
   if (!(flags & STC_CONFIG_MODELESS))
   {
     return wxExConfigDialog(
-      parent,
-      items,
-      title,
-      0,
-      1,
-      buttons,
-      id,
-      style).ShowModal();
+      parent, items, title, 0, 1, buttons, id, style).ShowModal();
   }
   else
   {
     if (m_ConfigDialog == NULL)
     {
       m_ConfigDialog = new wxExConfigDialog(
-        parent,
-        items,
-        title,
-        0,
-        1,
-        buttons,
-        id,
-        style);
+        parent, items, title, 0, 1, buttons, id, style);
     }
 
     return m_ConfigDialog->Show();
@@ -646,13 +590,14 @@ int wxExSTC::ConfigDialog(
 
 void wxExSTC::ConfigGet(bool init)
 {
-  if (!wxConfigBase::Get()->Exists(_("Caret line")))
+  wxConfigBase* cfg = wxConfigBase::Get();
+  
+  if (!cfg->Exists(_("Caret line")))
   {
-    wxConfigBase::Get()->SetRecordDefaults(true);
+    cfg->SetRecordDefaults(true);
   }
   
-  const wxFont font(wxConfigBase::Get()->ReadObject(
-    _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+  const wxFont font(cfg->ReadObject(_("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
 
   if (m_DefaultFont != font)
   {
@@ -666,73 +611,58 @@ void wxExSTC::ConfigGet(bool init)
     SetLexer(m_Lexer);
   }
 
-  const long def_tab_width = 2;
-
   if (m_File.GetFileName().GetExt().CmpNoCase("log") == 0)
   {
     SetEdgeMode(wxSTC_EDGE_NONE);
   }
   else
   {
-    SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
-    SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
+    SetEdgeColumn(cfg->ReadLong(_("Edge column"), 80));
+    SetEdgeMode(cfg->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
   }
   
-  SetUseHorizontalScrollBar(
-    wxConfigBase::Get()->ReadBool(_("Scroll bars"), true));
-  SetUseVerticalScrollBar(
-    wxConfigBase::Get()->ReadBool(_("Scroll bars"), true));
-  
-  SetPrintColourMode(wxConfigBase::Get()->ReadLong(_("Print flags"),
-    wxSTC_PRINT_BLACKONWHITE));
-  
-  SetCaretLineVisible(
-    wxConfigBase::Get()->ReadBool(_("Caret line"), false));
+  SetUseHorizontalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
+  SetUseVerticalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
+  SetPrintColourMode(cfg->ReadLong(_("Print flags"), wxSTC_PRINT_BLACKONWHITE));
+  SetCaretLineVisible(cfg->ReadBool(_("Caret line"), false));
     
-  SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
+  SetFoldFlags(cfg->ReadLong( _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
-  SetIndent(wxConfigBase::Get()->ReadLong(_("Indent"), def_tab_width));
-  SetIndentationGuides(
-    wxConfigBase::Get()->ReadBool(_("Indentation guide"), false));
-
-  SetMarginWidth(
-    m_MarginDividerNumber, 
-    wxConfigBase::Get()->ReadLong(_("Divider"), 16));
+  const long def_tab_width = 2;
+  SetIndent(cfg->ReadLong(_("Indent"), def_tab_width));
+  SetIndentationGuides( cfg->ReadBool(_("Indentation guide"), false));
+  SetMarginWidth(m_MarginDividerNumber,  cfg->ReadLong(_("Divider"), 16));
 
   if (init)
   {
     Fold();
   }
     
-  ShowLineNumbers(wxConfigBase::Get()->ReadBool(_("Line numbers"), false));
+  ShowLineNumbers(cfg->ReadBool(_("Line numbers"), false));
 
-//  SetSelectionMode(
-//    wxConfigBase::Get()->ReadLong(_("Selection mode"), wxSTC_SEL_STREAM));
+//  SetSelectionMode(cfg->ReadLong(_("Selection mode"), wxSTC_SEL_STREAM));
     
-  SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), def_tab_width));
-  SetUseTabs(wxConfigBase::Get()->ReadBool(_("Use tabs"), false));
-  SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
-  SetViewWhiteSpace(
-    wxConfigBase::Get()->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
-  SetWrapMode(wxConfigBase::Get()->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
-  SetWrapVisualFlags(
-    wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), 
-    wxSTC_WRAPVISUALFLAG_END));
+  SetTabWidth(cfg->ReadLong(_("Tab width"), def_tab_width));
+  SetUseTabs(cfg->ReadBool(_("Use tabs"), false));
+  SetViewEOL(cfg->ReadBool(_("End of line"), false));
+  SetViewWhiteSpace(cfg->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
+  SetWrapMode(cfg->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
+  SetWrapVisualFlags(cfg->ReadLong(_("Wrap visual flags"),  wxSTC_WRAPVISUALFLAG_END));
 
   // Here the default vi mode is set, and used if the application
   // is run for the first time.
-  m_vi.Use(wxConfigBase::Get()->ReadBool(_("vi mode"), false));
+  m_vi.Use(cfg->ReadBool(_("vi mode"), false));
 
   m_Link.SetFromConfig();
 
-  if (wxConfigBase::Get()->IsRecordingDefaults())
+  if (cfg->IsRecordingDefaults())
   {
     // Set defaults only.
-    wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500);
-    wxConfigBase::Get()->ReadLong(_("Folding"), 16);
-    wxConfigBase::Get()->ReadBool(_("Scroll bars"), true);
+    cfg->ReadLong(_("Auto fold"), 1500);
+    cfg->ReadLong(_("Folding"), 16);
+    cfg->ReadBool(_("Scroll bars"), true);
 
-    wxConfigBase::Get()->SetRecordDefaults(false);
+    cfg->SetRecordDefaults(false);
   }
 }
 
@@ -1098,10 +1028,10 @@ const wxString wxExSTC::GetEOL() const
 {
   switch (GetEOLMode())
   {
-  case wxSTC_EOL_CR: return "\r"; break;
-  case wxSTC_EOL_CRLF: return "\r\n"; break;
-  case wxSTC_EOL_LF: return "\n"; break;
-  default: wxFAIL; break;
+    case wxSTC_EOL_CR: return "\r"; break;
+    case wxSTC_EOL_CRLF: return "\r\n"; break;
+    case wxSTC_EOL_LF: return "\n"; break;
+    default: wxFAIL; break;
   }
 
   return "\r\n";
@@ -1632,86 +1562,73 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
   {
-  case wxID_COPY: Copy(); break;
-  case wxID_CUT: Cut(); break;
-  case wxID_DELETE: if (!GetReadOnly() && !HexMode()) Clear(); break;
-  case wxID_JUMP_TO: GotoDialog(); break;
-  case wxID_PASTE: Paste(); break;
-  case wxID_SELECTALL: SelectAll(); break;
-  case wxID_UNDO: Undo(); break;
-  case wxID_REDO: Redo(); break;
-  case wxID_SAVE: m_File.FileSave(); break;
-  case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
-  case wxID_SORT_DESCENDING: SortSelectionDialog(false); break;
-  
-  case wxID_FIND: 
-  case wxID_REPLACE: 
-    GetFindString();
-    command.Skip();
-    break;
-
-  case ID_EDIT_CONTROL_CHAR: ControlCharDialog(); break;
-  
-  case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
-  case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
-  case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
-  
-  case ID_EDIT_HEX: Reload(m_Flags ^ STC_WIN_HEX); break;
-
-  case ID_EDIT_FOLD_ALL: FoldAll(); break;
-  case ID_EDIT_UNFOLD_ALL:
-    for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);
-  break;
-  case ID_EDIT_TOGGLE_FOLD:
-  {
-    const int level = GetFoldLevel(GetCurrentLine());
-    const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
-      GetCurrentLine(): GetFoldParent(GetCurrentLine());
-    ToggleFold(line_to_fold);
-  }
-  break;
-
-  case ID_EDIT_HEX_DEC_CALLTIP:
-    HexDecCalltip(GetCurrentPos());
-  break;
-
-  case ID_EDIT_LOWERCASE: 
-    LowerCase(); 
-    break;
-  case ID_EDIT_UPPERCASE: 
-    UpperCase(); 
-    break;
-  
-  case ID_EDIT_MARKER_NEXT: MarkerNext(true); break;
-  case ID_EDIT_MARKER_PREVIOUS: MarkerNext(false); break;
-  
-  case ID_EDIT_OPEN_BROWSER:
-    wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
-    break;
-
-  case ID_EDIT_SHOW_PROPERTIES: ShowProperties(); break;
+    case wxID_COPY: Copy(); break;
+    case wxID_CUT: Cut(); break;
+    case wxID_DELETE: if (!GetReadOnly() && !HexMode()) Clear(); break;
+    case wxID_JUMP_TO: GotoDialog(); break;
+    case wxID_PASTE: Paste(); break;
+    case wxID_SELECTALL: SelectAll(); break;
+    case wxID_UNDO: Undo(); break;
+    case wxID_REDO: Redo(); break;
+    case wxID_SAVE: m_File.FileSave(); break;
+    case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
+    case wxID_SORT_DESCENDING: SortSelectionDialog(false); break;
     
-  case ID_EDIT_OPEN_LINK: LinkOpen(); break;
+    case wxID_FIND: 
+    case wxID_REPLACE: 
+      GetFindString();
+      command.Skip();
+      break;
 
-  case ID_EDIT_READ: m_File.Read(command.GetString()); break;
+    case ID_EDIT_FIND_NEXT: 
+    case ID_EDIT_FIND_PREVIOUS: 
+      GetFindString();
+      FindNext(command.GetId() == ID_EDIT_FIND_NEXT); 
+      break;
+      
+    case ID_EDIT_CONTROL_CHAR: ControlCharDialog(); break;
+    case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
+    case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
+    case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
+    case ID_EDIT_HEX: Reload(m_Flags ^ STC_WIN_HEX); break;
+
+    case ID_EDIT_FOLD_ALL: FoldAll(); break;
+    case ID_EDIT_UNFOLD_ALL:
+      for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);
+    break;
+    case ID_EDIT_TOGGLE_FOLD:
+    {
+      const int level = GetFoldLevel(GetCurrentLine());
+      const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+        GetCurrentLine(): GetFoldParent(GetCurrentLine());
+      ToggleFold(line_to_fold);
+    }
+    break;
+
+    case ID_EDIT_HEX_DEC_CALLTIP:
+      HexDecCalltip(GetCurrentPos());
+    break;
+
+    case ID_EDIT_LOWERCASE: LowerCase(); break;
+    case ID_EDIT_UPPERCASE: UpperCase(); break;
     
-  case ID_EDIT_ZOOM_IN:
-    m_Zoom++;
-    SetZoom(m_Zoom);
-    break;
-
-  case ID_EDIT_ZOOM_OUT:
-    m_Zoom--;
-    SetZoom(m_Zoom);
-    break;
-
-  case ID_EDIT_FIND_NEXT: 
-  case ID_EDIT_FIND_PREVIOUS: 
-    GetFindString();
-    FindNext(command.GetId() == ID_EDIT_FIND_NEXT); 
-    break;
+    case ID_EDIT_MARKER_NEXT: MarkerNext(true); break;
+    case ID_EDIT_MARKER_PREVIOUS: MarkerNext(false); break;
     
-  default: wxFAIL; break;
+    case ID_EDIT_OPEN_BROWSER:
+      wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
+      break;
+
+    case ID_EDIT_OPEN_LINK: LinkOpen(); break;
+
+    case ID_EDIT_READ: m_File.Read(command.GetString()); break;
+      
+    case ID_EDIT_SHOW_PROPERTIES: ShowProperties(); break;
+      
+    case ID_EDIT_ZOOM_IN: SetZoom(++m_Zoom); break;
+    case ID_EDIT_ZOOM_OUT: SetZoom(--m_Zoom);  break;
+
+    default: wxFAIL; break;
   }
 }
 
@@ -2187,10 +2104,9 @@ bool wxExSTC::ReplaceNext(
   
   if (HexMode())
   {
-    for (int i = 0; i < replace_text.size(); i++)
+    for (const auto& it : replace_text)
     {
-      wxExHexModeLine(
-        this, GetTargetStart()).Replace(replace_text[i]);
+      wxExHexModeLine(this, GetTargetStart()).Replace(it);
     }
   }
   else
@@ -2209,6 +2125,7 @@ void wxExSTC::ResetLexer()
 {
   m_Lexer.Reset(this);
   wxExFrame::StatusText(m_Lexer.GetDisplayLexer(), "PaneLexer");
+  SetMarginWidth(m_MarginFoldingNumber, 0);
 }
  
 void wxExSTC::ResetMargins(bool divider_margin)
@@ -2313,22 +2230,6 @@ bool wxExSTC::SetIndicator(
   return true;
 }
 
-void wxExSTC::SetLexerCommon(bool fold)
-{
-  if (fold)
-  {
-    Fold();
-  }
-  
-  if (HexMode() &&
-      m_Lexer.GetScintillaLexer() == "po")
-  {
-    m_Link.AddBasePath();
-  }
-    
-  wxExFrame::StatusText(m_Lexer.GetDisplayLexer(), "PaneLexer");
-}
-
 bool wxExSTC::SetLexer(const wxExLexer& lexer, bool fold)
 {
   if (!m_Lexer.Set(lexer, this))
@@ -2351,6 +2252,22 @@ bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
   SetLexerCommon(fold);
   
   return true;
+}
+
+void wxExSTC::SetLexerCommon(bool fold)
+{
+  if (fold)
+  {
+    Fold();
+  }
+  
+  if (HexMode() &&
+      m_Lexer.GetScintillaLexer() == "po")
+  {
+    m_Link.AddBasePath();
+  }
+    
+  wxExFrame::StatusText(m_Lexer.GetDisplayLexer(), "PaneLexer");
 }
 
 void wxExSTC::SetLexerProperty(const wxString& name, const wxString& value)
@@ -2396,21 +2313,15 @@ void wxExSTC::ShowProperties()
   }
 
   // Add global properties.  
-  for (
-    std::vector<wxExProperty>::const_iterator it1 = wxExLexers::Get()->GetProperties().begin();
-    it1 != wxExLexers::Get()->GetProperties().end();
-    ++it1)
+  for (const auto& it1 : wxExLexers::Get()->GetProperties())
   {
-    text += it1->GetName() + ": " + GetProperty(it1->GetName()) + "\n";
+    text += it1.GetName() + ": " + GetProperty(it1.GetName()) + "\n";
   }
 
   // Add lexer properties.  
-  for (
-    std::vector<wxExProperty>::const_iterator it2 = m_Lexer.GetProperties().begin();
-    it2 != m_Lexer.GetProperties().end();
-    ++it2)
+  for (const auto& it2 : m_Lexer.GetProperties())
   {
-    text += it2->GetName() + ": " + GetProperty(it2->GetName()) + "\n";
+    text += it2.GetName() + ": " + GetProperty(it2.GetName()) + "\n";
   }
 
   // Add available properties.
@@ -2486,12 +2397,9 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
   if (sort_ascending)
   {
-    for (
-      std::multimap<wxString, wxString>::iterator it = mm.begin();
-      it != mm.end();
-      ++it)
+    for (const auto& it : mm)
     {
-      text += it->second;
+      text += it.second;
     }
   }
   else
@@ -2513,43 +2421,19 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
 void wxExSTC::Sync(bool start)
 {
+  // do not use ?, compile error for gcc, as Bind is void, Unbind is bool
   if (start)
-  {
-    Bind(
-      wxEVT_IDLE, 
-      &wxExSTC::OnIdle,
-      this,
-      wxID_ANY);
-  }
+    Bind(wxEVT_IDLE, &wxExSTC::OnIdle, this, wxID_ANY);
   else
-  {
-    Unbind(
-      wxEVT_IDLE, 
-      &wxExSTC::OnIdle,
-      this,
-      wxID_ANY);
-  }
+    Unbind(wxEVT_IDLE, &wxExSTC::OnIdle, this, wxID_ANY);
 }
-
 
 void wxExSTC::UseModificationMarkers(bool use)
 {
   if (use)
-  {
-    Bind(
-      wxEVT_STC_MODIFIED, 
-      &wxExSTC::OnStyledText,
-      this,
-      wxID_ANY);
-  }
+    Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this, wxID_ANY);
   else
-  {
-    Unbind(
-      wxEVT_STC_MODIFIED, 
-      &wxExSTC::OnStyledText,
-      this,
-      wxID_ANY);
-  }
+    Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this, wxID_ANY);
 }
 
 #endif // wxUSE_GUI

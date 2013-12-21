@@ -30,27 +30,34 @@ void wxExGuiTestFixture::setUp()
 
 void wxExGuiTestFixture::testAddress()
 {
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello\nhello1\nhello2");
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
+  const int lines = stc->GetLineCount();
   wxExEx* ex = new wxExEx(stc);
-  stc->GotoLineAndSelect(2);
+  stc->GotoLineAndSelect(1);
   ex->MarkerAdd('a'); // put marker a on line
+  stc->GotoLineAndSelect(2);
+  ex->MarkerAdd('b'); // put marker b on line
   
   CPPUNIT_ASSERT( wxExAddress(ex, "").ToLine() == 0);
-  CPPUNIT_ASSERT( wxExAddress(ex, "30").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "40").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "30").ToLine() == lines);
+  CPPUNIT_ASSERT( wxExAddress(ex, "40").ToLine() == lines);
   CPPUNIT_ASSERT( wxExAddress(ex, "-40").ToLine() == 1);
   CPPUNIT_ASSERT( wxExAddress(ex, "3-3").ToLine() == 0);
   CPPUNIT_ASSERT( wxExAddress(ex, "3-1").ToLine() == 2);
   CPPUNIT_ASSERT( wxExAddress(ex, ".").ToLine() == 2);
   CPPUNIT_ASSERT( wxExAddress(ex, ".+1").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "$").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "$-2").ToLine() == 1);
+  CPPUNIT_ASSERT( wxExAddress(ex, "$").ToLine() == lines);
+  CPPUNIT_ASSERT( wxExAddress(ex, "$-2").ToLine() == lines - 2);
   CPPUNIT_ASSERT( wxExAddress(ex, "x").ToLine() == 0);
   CPPUNIT_ASSERT( wxExAddress(ex, "'x").ToLine() == 0);
   CPPUNIT_ASSERT( wxExAddress(ex, "1,3s/x/y").ToLine() == 0);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'a").ToLine() == 2);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'a+1").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "1+'a").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'a").ToLine() == 1);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b").ToLine() == 2);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b+10").ToLine() == lines);
+  CPPUNIT_ASSERT( wxExAddress(ex, "10+'b").ToLine() == lines);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'a+'b").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b+'a").ToLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b-'a").ToLine() == 1);
 }
 
 void wxExGuiTestFixture::testAddressRange()
@@ -86,6 +93,7 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
   
   // Test Substitute and flags.
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1").Substitute("//y"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").Substitute("/x/y"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "2").Substitute("/x/y/f"));
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y"));
@@ -133,9 +141,7 @@ void wxExGuiTestFixture::testConfigDialog()
   wxExConfigDialog dlg(wxTheApp->GetTopWindow(), items);
   
   dlg.ForceCheckBoxChecked();
-  
   dlg.Show();
-  
   dlg.Reload();
   
   // Test config dialog without pages.
@@ -144,6 +150,10 @@ void wxExGuiTestFixture::testConfigDialog()
   
   wxExConfigDialog dlg2(wxTheApp->GetTopWindow(), items2);
   dlg2.Show();
+  
+  // Test config dialog without items.
+  wxExConfigDialog dlg3(wxTheApp->GetTopWindow(), std::vector <wxExConfigItem>());
+  dlg3.Show();
 }
 
 void wxExGuiTestFixture::testConfigItem()
@@ -242,53 +252,47 @@ void wxExGuiTestFixture::testConfigItem()
   }
 
   // Check members are initialized.
-  for (
-    auto it = items.begin();
-    it != items.end();
-    ++it)
+  for (auto& it : items)
   {
-    CPPUNIT_ASSERT( it->GetColumns() == -1);
+    CPPUNIT_ASSERT( it.GetColumns() == -1);
     
-    if (it->GetType() == CONFIG_USER)
-      CPPUNIT_ASSERT( it->GetWindow() != NULL);
+    if (it.GetType() == CONFIG_USER)
+      CPPUNIT_ASSERT( it.GetWindow() != NULL);
     else 
-      CPPUNIT_ASSERT( it->GetWindow() == NULL);
+      CPPUNIT_ASSERT( it.GetWindow() == NULL);
       
-    CPPUNIT_ASSERT(!it->GetIsRequired());
+    CPPUNIT_ASSERT(!it.GetIsRequired());
     
     if (
-      it->GetType() != CONFIG_STATICLINE &&
-      it->GetType() != CONFIG_EMPTY)
+      it.GetType() != CONFIG_STATICLINE &&
+      it.GetType() != CONFIG_EMPTY)
     {
-      CPPUNIT_ASSERT(!it->GetLabel().empty());
+      CPPUNIT_ASSERT(!it.GetLabel().empty());
     }
     
-    CPPUNIT_ASSERT( it->GetPage().empty());
+    CPPUNIT_ASSERT( it.GetPage().empty());
 
     CPPUNIT_ASSERT(
-      it->GetType() > CONFIG_ITEM_MIN &&
-      it->GetType() < CONFIG_ITEM_MAX);
+      it.GetType() > CONFIG_ITEM_MIN &&
+      it.GetType() < CONFIG_ITEM_MAX);
   }
 
   wxGridSizer sizer(3);
 
   // Layout the items and check control is created.
-  for (
-    auto it = items.begin();
-    it != items.end();
-    ++it)
+  for (auto& it : items)
   {
     // CONFIG_USER is not yet laid out ok, gives errors.
-    if (it->GetType() != CONFIG_USER)
+    if (it.GetType() != CONFIG_USER)
     {
       // Testing on not NULL not possible,
       // not all items need a sizer.
-      it->Layout(wxTheApp->GetTopWindow(), &sizer);
+      it.Layout(wxTheApp->GetTopWindow(), &sizer);
     }
  
-    if (it->GetType() != CONFIG_EMPTY)
+    if (it.GetType() != CONFIG_EMPTY)
     {
-      CPPUNIT_ASSERT(it->GetWindow() != NULL);
+      CPPUNIT_ASSERT(it.GetWindow() != NULL);
     }
   }
 
@@ -460,6 +464,13 @@ void wxExGuiTestFixture::testEx()
   stc->AppendText("line xxxx 4 added\n");
   CPPUNIT_ASSERT( ex->Command(":g/xxxx/p"));
   
+  // Test global substitute.
+  stc->AppendText("line xxxx 6 added\n");
+  stc->AppendText("line xxxx 7 added\n");
+  CPPUNIT_ASSERT( ex->Command(":g/xxxx/s//yyyy"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("yyyy"));
+  CPPUNIT_ASSERT( ex->Command(":g//"));
+  
   // Test goto.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
   CPPUNIT_ASSERT( stc->GetLineCount() == 12);
@@ -472,6 +483,9 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( stc->GetCurrentLine() == 9);
   CPPUNIT_ASSERT( ex->Command(":10000"));
   CPPUNIT_ASSERT( stc->GetCurrentLine() == 11);
+  
+  ex->SetRegistersDelete("x");
+  ex->SetRegisterYank("test");
 }
 
 void wxExGuiTestFixture::testFileDialog()
@@ -847,10 +861,25 @@ void wxExGuiTestFixture::testLexers()
     "// this is a cpp comment text").GetScintillaLexer() == "cpp");
     
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "#! /bin/csh").GetScintillaLexer() == "bash");
+    "#!/bin/sh").GetScintillaLexer() == "bash");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#!/bin/sh").GetDisplayLexer() == "sh");
     
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
     "#!/bin/csh").GetScintillaLexer() == "bash");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#!/bin/csh").GetDisplayLexer() == "csh");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#!/bin/tcsh").GetScintillaLexer() == "bash");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#!/bin/tcsh").GetDisplayLexer() == "tcsh");
+    
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    "#!/bin/bash").GetScintillaLexer() == "bash");
     
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
     "#!/usr/bin/csh").GetScintillaLexer() == "bash");
@@ -890,7 +919,6 @@ void wxExGuiTestFixture::testLexers()
 
   CPPUNIT_ASSERT( wxExLexers::Get()->LoadDocument());
 }
-
 
 void wxExGuiTestFixture::link(
   const wxExLink& link,
@@ -1688,16 +1716,51 @@ void wxExGuiTestFixture::testToVectorString()
 
 void wxExGuiTestFixture::testUtil()
 {
+  wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
+  wxExSTC* stc = new wxExSTC(frame);
+  stc->SetFocus();
+  
+  // wxExAlignText
   CPPUNIT_ASSERT( wxExAlignText("test", "header", true, true,
     wxExLexers::Get()->FindByName("cpp")).size() 
       == wxString("// headertest").size());
 
+  // wxExClipboardAdd
   CPPUNIT_ASSERT( wxExClipboardAdd("test"));
+  
+  // wxExClipboardGet
   CPPUNIT_ASSERT( wxExClipboardGet() == "test");
   
+  // wxExComboBoxFromList
+  std::list < wxString > l;
+  l.push_back("x");
+  l.push_back("y");
+  l.push_back("z");
+  wxComboBox* cb = new wxComboBox(frame, wxID_ANY);
+  wxExComboBoxFromList(cb, l);
+  CPPUNIT_ASSERT( cb->GetCount() == 3);
+  
+  // wxExComboBoxToList
+  l.clear();
+  l = wxExComboBoxToList(cb);
+  CPPUNIT_ASSERT( l.size() == 3);
+  
+  // wxExCompareFile
+  
+  // wxExConfigFirstOf
+  CPPUNIT_ASSERT( wxExConfigFirstOf("xxxx").empty());
+  
+  // wxExEllipsed  
+  CPPUNIT_ASSERT( wxExEllipsed("xxx").Contains("..."));
+  
+  // wxExGetEndOfText
   CPPUNIT_ASSERT( wxExGetEndOfText("test", 3).size() == 3);
   CPPUNIT_ASSERT( wxExGetEndOfText("testtest", 3).size() == 3);
   
+  // wxExGetFieldSeparator
+  CPPUNIT_ASSERT( wxExGetFieldSeparator() != 'a');
+
+  // wxExGetFindResult  
   CPPUNIT_ASSERT( wxExGetFindResult("test", true, true).Contains("test"));
   CPPUNIT_ASSERT( wxExGetFindResult("test", true, false).Contains("test"));
   CPPUNIT_ASSERT( wxExGetFindResult("test", false, true).Contains("test"));
@@ -1708,6 +1771,12 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetFindResult("%d", false, true).Contains("%d"));
   CPPUNIT_ASSERT( wxExGetFindResult("%d", false, false).Contains("%d"));
   
+  // wxExGetHexNumberFromUser
+  
+  // wxExGetIconID
+  CPPUNIT_ASSERT( wxExGetIconID( wxFileName(TEST_FILE)) != -1);
+
+  // wxExGetNumberOfLines  
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test") == 1);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\n") == 2);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest") == 2);
@@ -1719,25 +1788,81 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n\n", true) == 2);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\r\ntest\n\n", true) == 2);
   
+  // wxExGetWord
+  
+  // wxExListFromConfig
+  CPPUNIT_ASSERT( wxExListFromConfig("xxx").size() == 0);
+  
+  // wxExListToConfig
+  l.clear();
+  l.push_back("1");
+  l.push_back("2");
+  wxExListToConfig(l, "list_items");
+  CPPUNIT_ASSERT( l.size() == 2); // TODO: improve, test on config
+  
+  // wxExLogStatus
+  wxExLogStatus( wxExFileName(TEST_FILE));
+
+  // wxExMake  
   CPPUNIT_ASSERT( wxExMake(wxFileName("xxx")) != -1);
   CPPUNIT_ASSERT( wxExMake(wxFileName("make.tst")) != -1);
-  
+
+  // wxExMatch
   std::vector<wxString> v;
   CPPUNIT_ASSERT( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
   CPPUNIT_ASSERT( wxExMatch("(\\d+)ok(\\d+)nice", "19999ok245nice", v) == 2);
   CPPUNIT_ASSERT( wxExMatch(" ([\\d\\w]+)", " 19999ok245nice ", v) == 1);
   
+  // wxExMatchesOneOf
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.txt"));
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   
+  // wxExNodeProperties
+  // wxExNodeStyles
+  
+  // wxExOpenFiles
+  std::vector<wxString> files;
+  wxExOpenFiles(frame, files);
+  wxFileName file(TEST_FILE);
+  file.Normalize();
+  files.push_back(file.GetFullPath());
+  files.push_back("test.cpp");
+  files.push_back("*xxxxxx*.cpp");
+  wxExOpenFiles(frame, files);
+  
+  // wxExOpenFilesDialog
+  
+  // wxExPrintCaption
+  CPPUNIT_ASSERT( wxExPrintCaption(wxFileName("test")).Contains("test"));
+  
+  // wxExPrintFooter
+  CPPUNIT_ASSERT( wxExPrintFooter().Contains("@"));
+  
+  // wxExPrintHeader
+  CPPUNIT_ASSERT( wxExPrintHeader(wxFileName(TEST_FILE)).Contains("test"));
+  
+  // wxExQuoted
   CPPUNIT_ASSERT( wxExQuoted("test") == "'test'");
   CPPUNIT_ASSERT( wxExQuoted("%d") == "'%d'");
   CPPUNIT_ASSERT( wxExQuoted(wxExSkipWhiteSpace(wxString(" %d "))) == "'%d'");
-      
+  
+  // wxExSetTextCtrlValue
+
+  // wxExSkipWhiteSpace
   CPPUNIT_ASSERT( wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
+  
+  // wxExTranslate
   CPPUNIT_ASSERT(!wxExTranslate(
     "hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
+    
+  // wxExVCSCommandOnSTC
+  wxExVCSCommand command("status");
+  wxExLexer lexer = wxExLexers::Get()->FindByText("// this is a cpp comment text");
+  wxExVCSCommandOnSTC(command, lexer, stc);
+  
+  // wxExVCSExecute
+  // wxExVCSExecute(frame, 0, files); // calls dialog
 }
 
 void wxExGuiTestFixture::testVariable()
@@ -1990,13 +2115,28 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_TAB;
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  
+  // Vi navigation command tests.
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  
+  event.m_keyCode = WXK_LEFT;
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  event.m_keyCode = WXK_DOWN;
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  event.m_keyCode = WXK_UP;
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  event.m_keyCode = WXK_RIGHT;
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  event.m_keyCode = WXK_PAGEUP;
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  event.m_keyCode = WXK_PAGEDOWN;
+  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_NONE;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   
   // Vi command tests.
-  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
   CPPUNIT_ASSERT( vi->Command("xxxxxxxx"));
@@ -2023,11 +2163,9 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   
-  for (std::vector< wxString >::iterator it1 = commands.begin();
-    it1 != commands.end();
-    ++it1)
+  for (auto& it1 : commands)
   {
-    CPPUNIT_ASSERT( vi->Command(*it1) );
+    CPPUNIT_ASSERT( vi->Command(it1) );
     CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
     CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
     CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
@@ -2044,11 +2182,9 @@ void wxExGuiTestFixture::testVi()
   stc->EmptyUndoBuffer();
   stc->SetSavePoint();
   
-  for (std::vector< wxString >::iterator it2 = commands.begin();
-    it2 != commands.end();
-    ++it2)
+  for (auto& it2 : commands)
   {
-    CPPUNIT_ASSERT( vi->Command(*it2) );
+    CPPUNIT_ASSERT( vi->Command(it2) );
   }
   
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
@@ -2059,11 +2195,9 @@ void wxExGuiTestFixture::testVi()
   stc->Reload(wxExSTC::STC_WIN_HEX);
   CPPUNIT_ASSERT( stc->HexMode());
   
-  for (std::vector< wxString >::iterator it3 = commands.begin();
-    it3 != commands.end();
-    ++it3)
+  for (auto& it3 : commands)
   {
-    CPPUNIT_ASSERT( vi->Command(*it3) );
+    CPPUNIT_ASSERT( vi->Command(it3) );
   }
   
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
@@ -2145,13 +2279,11 @@ void wxExGuiTestFixture::testVi()
   commands.push_back("*");
   commands.push_back("#");
   
-  for (std::vector< wxString >::iterator it4 = commands.begin();
-    it4 != commands.end();
-    ++it4)
+  for (auto& it4 : commands)
   {
-    CPPUNIT_ASSERT( vi->Command(*it4) );
+    CPPUNIT_ASSERT( vi->Command(it4) );
 // p changes last command    
-//    CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
+//    CPPUNIT_ASSERT( vi.GetLastCommand() == lastcmd);
     CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   }
 

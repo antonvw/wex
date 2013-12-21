@@ -65,6 +65,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
 std::vector< wxExConfigItem >::const_iterator 
 wxExConfigDialog::FindConfigItem(int id) const
 {
+  // using a range for gives compile error
   for (
     auto it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
@@ -151,13 +152,10 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
        
   wxString previous_page = "XXXXXX";
 
-  for (
-    auto it = m_ConfigItems.begin();
-    it != m_ConfigItems.end();
-    ++it)
+  for (auto& it : m_ConfigItems)
   {
     if (first_time ||
-       (it->GetPage() != previous_page && !it->GetPage().empty()))
+       (it.GetPage() != previous_page && !it.GetPage().empty()))
     {
       first_time = false;
 
@@ -171,12 +169,12 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
 
         // And make a new one.
         bookctrl->AddPage(
-          new wxWindow(bookctrl, wxID_ANY), it->GetPage(), true); // select
+          new wxWindow(bookctrl, wxID_ANY), it.GetPage(), true); // select
       }
 
-      previous_page = it->GetPage();
+      previous_page = it.GetPage();
 
-      const int use_cols = (it->GetColumns() != -1 ? it->GetColumns(): cols);
+      const int use_cols = (it.GetColumns() != -1 ? it.GetColumns(): cols);
 
       sizer = (rows != 0 ? 
         new wxFlexGridSizer(rows, use_cols, 0, 0):
@@ -188,33 +186,33 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
       }
     }
 
-    wxFlexGridSizer* use_item_sizer = (it->GetType() == previous_item_type ?
+    wxFlexGridSizer* use_item_sizer = (it.GetType() == previous_item_type ?
       previous_item_sizer: NULL);
 
     // Layout the config item.
-    previous_item_sizer = it->Layout(
+    previous_item_sizer = it.Layout(
       (bookctrl != NULL ? bookctrl->GetCurrentPage(): this), 
       sizer, 
       GetButtonFlags() == wxCANCEL,
       use_item_sizer);
 
-    previous_item_type = it->GetType();
+    previous_item_type = it.GetType();
 
     if (
-      it->GetType() == CONFIG_BUTTON ||
-      it->GetType() == CONFIG_COMBOBOXDIR)
+      it.GetType() == CONFIG_BUTTON ||
+      it.GetType() == CONFIG_COMBOBOXDIR)
     {
       Bind(
         wxEVT_COMMAND_BUTTON_CLICKED, 
         &wxExConfigDialog::OnCommand, 
         this, 
-        it->GetWindow()->GetId());
+        it.GetWindow()->GetId());
     }
 
     if (sizer != NULL &&
         sizer->GetEffectiveRowsCount() >= 1 &&
        !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
-        it->IsRowGrowable())
+        it.IsRowGrowable())
     {
       sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
     }
@@ -290,8 +288,10 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
   }
   else
   {
-    for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
-      std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), true));
+    for (const auto& it : m_ConfigItems)
+    {
+      it.ToConfig(true);
+    }
   }
 
   if (  command.GetId() == wxID_APPLY ||
@@ -308,21 +308,18 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 {
   bool one_checkbox_checked = false;
 
-  for (
-    auto it = m_ConfigItems.begin();
-    it != m_ConfigItems.end();
-    ++it)
+  for (const auto& it : m_ConfigItems)
   {
-    switch (it->GetType())
+    switch (it.GetType())
     {
     case CONFIG_CHECKBOX:
       if (m_ForceCheckBoxChecked)
       {
-        wxCheckBox* cb = (wxCheckBox*)it->GetWindow();
+        wxCheckBox* cb = (wxCheckBox*)it.GetWindow();
 
-        if (it->GetLabel().Lower().Contains(m_Contains.Lower()) && 
+        if (it.GetLabel().Lower().Contains(m_Contains.Lower()) && 
             cb->IsChecked() &&
-            it->GetPage() == m_Page)
+            it.GetPage() == m_Page)
         {
           one_checkbox_checked = true;
         }
@@ -332,7 +329,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     case CONFIG_CHECKLISTBOX_NONAME:
       if (m_ForceCheckBoxChecked)
       {
-        wxCheckListBox* clb = (wxCheckListBox*)it->GetWindow();
+        wxCheckListBox* clb = (wxCheckListBox*)it.GetWindow();
 
         for (
           size_t i = 0;
@@ -341,7 +338,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
         {
           if (clb->GetString(i).Lower().Contains(m_Contains.Lower()) && 
               clb->IsChecked(i) &&
-              it->GetPage() == m_Page)
+              it.GetPage() == m_Page)
           {
             one_checkbox_checked = true;
           }
@@ -352,8 +349,8 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
       {
-      wxComboBox* cb = (wxComboBox*)it->GetWindow();
-      if (it->GetIsRequired())
+      wxComboBox* cb = (wxComboBox*)it.GetWindow();
+      if (it.GetIsRequired())
       {
         if (cb->GetValue().empty())
         {
@@ -367,8 +364,8 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     case CONFIG_INT:
     case CONFIG_STRING:
       {
-      wxTextCtrl* tc = (wxTextCtrl*)it->GetWindow();
-      if (it->GetIsRequired())
+      wxTextCtrl* tc = (wxTextCtrl*)it.GetWindow();
+      if (it.GetIsRequired())
       {
         if (tc->GetValue().empty())
         {
@@ -381,8 +378,8 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 
     case CONFIG_DIRPICKERCTRL:
       {
-      wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it->GetWindow();
-      if (it->GetIsRequired())
+      wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it.GetWindow();
+      if (it.GetIsRequired())
       {
         if (pc->GetPath().empty())
         {
@@ -395,8 +392,8 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 
     case CONFIG_FILEPICKERCTRL:
       {
-      wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it->GetWindow();
-      if (it->GetIsRequired())
+      wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it.GetWindow();
+      if (it.GetIsRequired())
       {
         if (pc->GetPath().empty())
         {
@@ -414,7 +411,9 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 
 void wxExConfigDialog::Reload() const
 {
-  for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false));
+  for (const auto& it : m_ConfigItems)
+  {
+    it.ToConfig(false);
+  }
 }
 #endif // wxUSE_GUI

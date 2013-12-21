@@ -49,12 +49,9 @@ wxExToVectorString::wxExToVectorString(const wxFileDialog& in)
 
 wxExToVectorString::wxExToVectorString(const wxFileHistory& in, int count)
 {
-  for (int i = 0; i < count; i++)
+  for (int i = 0; i < count && i < in.GetCount(); i++)
   {
-    if (i < in.GetCount())
-    {
-      m_VS.push_back(in.GetHistoryFile(i));
-    }
+    m_VS.push_back(in.GetHistoryFile(i));
   }  
 }
 
@@ -77,9 +74,9 @@ wxExToVectorString::wxExToVectorString(const wxString& in)
 
 void wxExToVectorString::FromArrayString(const wxArrayString& in)
 {
-  for (auto it = in.begin(); it != in.end(); ++it)
+  for (const auto& it : in)
   {
-    m_VS.push_back(*it);
+    m_VS.push_back(it);
   }
 }
 
@@ -172,29 +169,14 @@ void wxExComboBoxFromList(
   {
     wxASSERT(cb != NULL);
     cb->Clear();
-    wxArrayString items;
-    std::vector<wxString> v;
-    v.resize(text.size());
-    
-    // Under gcc you can directly copy to items,
-    // msvc gives a warning, so copy to vector instead.
-    copy (text.begin(), text.end(), v.begin()); // required!
-    
+
     wxArrayString as;
-    
-    for (
-      std::vector<wxString>::const_iterator it = v.begin(); it != v.end();
-      ++it)
-    {
-      as.Add(*it);
-    }
+    as.resize(text.size());
+    copy(text.begin(), text.end(), as.begin());
     
     cb->Append(as);
     cb->SetValue(cb->GetString(0));
   }
-
-  // Not sure whether this is easy.
-  //cb->AutoComplete(items);
 }
 
 const std::list < wxString > wxExComboBoxToList(
@@ -203,8 +185,7 @@ const std::list < wxString > wxExComboBoxToList(
 {
   wxASSERT(cb != NULL);
 
-  std::list < wxString > l;
-  l.push_back(cb->GetValue());
+  std::list < wxString > l{cb->GetValue()};
 
   switch (cb->FindString(
     cb->GetValue(),
@@ -359,20 +340,16 @@ long wxExGetHexNumberFromUser(
   wxWindow *parent,
   const wxPoint& pos)
 {
-  std::vector<wxExConfigItem> v;
-  
   wxConfigBase::Get()->Write(message, value);
 
-  v.push_back(wxExConfigItem(
-    message, 
-    min, 
-    max, 
-    wxEmptyString,
-    CONFIG_SPINCTRL_HEX));
-    
   wxExConfigDialog dlg(
     parent,
-    v,
+    std::vector<wxExConfigItem>{wxExConfigItem(
+      message, 
+      min, 
+      max, 
+      wxEmptyString,
+      CONFIG_SPINCTRL_HEX)},
     caption,
     0,
     1,
@@ -437,8 +414,7 @@ const std::list < wxString > wxExListFromConfig(
 
   while (tkz.HasMoreTokens())
   {
-    const wxString val = tkz.GetNextToken();
-    l.push_back(val);
+    l.push_back(tkz.GetNextToken());
   }
 
   return l;
@@ -609,21 +585,16 @@ void wxExOpenFiles(
   frame->Freeze();
 #endif  
   
-  // std::vector gives compile error.
-  for (
-    auto it = files.begin();
-    it != files.end();
-    ++it)
+  for (const auto& it : files)
   {
-    wxString file = *it; // cannot be const because of file = later on
-
-    if (file.Contains("*") || file.Contains("?"))
+    if (it.Contains("*") || it.Contains("?"))
     {
-      wxExDirOpenFile dir(frame, wxGetCwd(), file, file_flags, dir_flags);
+      wxExDirOpenFile dir(frame, wxGetCwd(), it, file_flags, dir_flags);
       dir.FindFiles();
     }
     else
     {
+      wxString file(it);
       int line_no = 0;
       int col_no = 0;
 
@@ -809,33 +780,25 @@ void wxExVCSCommandOnSTC(
 void wxExVCSExecute(
   wxExFrame* frame, int id, const std::vector< wxString > & files)
 {
-  const wxExVCS check(files, id);
+  wxExVCS vcs(files, id);
   
-  if (check.GetEntry().GetCommand().IsOpen() && !files.empty())
+  if (vcs.GetEntry().GetCommand().IsOpen() && !files.empty())
   {
-    const wxExVCS vcs(
-      std::vector< wxString >(files.begin(), files.begin() + 1), id);
-    
     if (vcs.ShowDialog(frame) == wxID_OK)
     {
-      for (int i = 0; i < files.size(); i++)
+      for (const auto& it : files)
       {
-        wxExVCS vcs(
-          std::vector< wxString >(files.begin() + i, files.begin() + i + 1), 
-          id);
+        wxExVCS vcs({it}, id);
         
         if (vcs.Execute())
         {
-          frame->OpenFile(
-            files[i], 
-            vcs.GetEntry(),
-            wxExSTC::STC_WIN_READ_ONLY);
+          frame->OpenFile(it, vcs.GetEntry(), wxExSTC::STC_WIN_READ_ONLY);
         }
       }
     }
   }
   else
   {
-    wxExVCS(files, id).Request(frame);
+    vcs.Request(frame);
   }
 }

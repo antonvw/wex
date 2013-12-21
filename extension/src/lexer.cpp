@@ -57,14 +57,11 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
 
   if (wxExLexers::Get()->GetThemeOk())
   {
-    for (
-      auto it = m_KeywordsSet.begin();
-      it != m_KeywordsSet.end();
-      ++it)
+    for (const auto& it : m_KeywordsSet)
     {
       stc->SetKeyWords(
-        it->first,
-        GetKeywordsString(it->first));
+        it.first,
+        GetKeywordsString(it.first));
     }
     
     wxExLexers::Get()->GetDefaultStyle().Apply(stc);
@@ -111,22 +108,14 @@ void wxExLexer::ApplyWhenSet(
 
 void wxExLexer::AutoMatch(const wxString& lexer)
 {
-  for (
-    auto it = wxExLexers::Get()->GetMacros(lexer).begin();
-    it != wxExLexers::Get()->GetMacros(lexer).end();
-    ++it)
+  for (const auto& it : wxExLexers::Get()->GetMacros(lexer))
   {
-    bool match = false;
-    
-    for (
-      auto style = wxExLexers::Get()->GetThemeMacros().begin();
-      style != wxExLexers::Get()->GetThemeMacros().end() && !match;
-      ++style)
+    for (const auto& style : wxExLexers::Get()->GetThemeMacros())
     {
-      if (it->first.Contains(style->first))
+      if (it.first.Contains(style.first))
       {
-        m_Styles.push_back(wxExStyle(it->second, style->second));
-        match = true;
+        m_Styles.push_back(wxExStyle(it.second, style.second));
+        break;
       }
     }
   }
@@ -198,8 +187,7 @@ const wxString wxExLexer::GetKeywordsString(int keyword_set) const
   }
   else
   {
-    const auto it = 
-      m_KeywordsSet.find(keyword_set);
+    const auto it = m_KeywordsSet.find(keyword_set);
 
     if (it != m_KeywordsSet.end())
     {
@@ -217,12 +205,9 @@ const wxString wxExLexer::GetKeywordsStringSet(
   // return accumulate(kset.begin(), kset.end(), wxEmptyString);
   wxString keywords;
 
-  for (
-    auto it = kset.begin();
-    it != kset.end();
-    ++it)
+  for (const auto& it : kset)
   {
-    keywords += *it + " ";
+    keywords += it + " ";
   }
 
   return keywords.Trim(); // remove the ending space
@@ -247,8 +232,7 @@ void wxExLexer::Initialize()
 
 bool wxExLexer::IsKeyword(const wxString& word) const
 {
-  const auto it = m_Keywords.find(word);
-  return (it != m_Keywords.end());
+  return m_Keywords.find(word) != m_Keywords.end();
 }
 
 bool wxExLexer::KeywordStartsWith(const wxString& word) const
@@ -369,7 +353,7 @@ bool wxExLexer::Set(
   
   if (!m_IsOk)
   {
-    wxLogError("Lexer is not known: " + m_ScintillaLexer);
+    wxLogError("Lexer is not known: " + lexer);
   }
   
   return m_IsOk;
@@ -530,14 +514,11 @@ bool wxExLexer::SetKeywords(const wxString& value)
 
 void wxExLexer::SetProperty(const wxString& name, const wxString& value)
 {
-  for (
-    auto it = m_Properties.begin();
-    it != m_Properties.end();
-    ++it)
+  for (auto& it : m_Properties)
   {
-    if (it->GetName() == name)
+    if (it.GetName() == name)
     {
-      it->Set(value);
+      it.Set(value);
       return;
     }
   }

@@ -279,6 +279,18 @@ bool wxExEx::CommandGlobal(const wxString& search)
   
   m_STC->SetIndicatorCurrent(m_FindIndicator.GetNo());
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
+  
+  if (pattern.empty())
+  {
+    if (!replacement.empty())
+    {
+      wxLogStatus("Cannot replace, pattern is empty");
+      return false;
+    }
+    
+    // Silently cleared indicators.
+    return true;  
+  }
     
   m_STC->SetSearchFlags(m_SearchFlags);
 
@@ -318,18 +330,17 @@ bool wxExEx::CommandGlobal(const wxString& search)
       m_STC->ReplaceTargetRE(replacement); // always RE!
       m_STC->SetTargetStart(m_STC->GetTargetEnd());
       m_STC->SetTargetEnd(m_STC->GetTextLength());
-        
       hits++;
-      
-      if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
-      {
-        break;
-      }
       break;
       
     default:
       m_STC->EndUndoAction();
       return false;
+    }
+  
+    if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
+    {
+      break;
     }
   }
   
@@ -480,19 +491,16 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   
   if (choice.empty())
   {
-    auto v(m_Macros.Get());
-  
+    const auto& v(m_Macros.Get());
+    
     if (v.empty())
     {
       return false;
     }
   
     wxArrayString macros;
-    
-    for (auto it = v.begin(); it != v.end(); ++it)
-    {
-      macros.Add(*it);
-    }
+    macros.resize(v.size());
+    copy(v.begin(), v.end(), macros.begin());
     
     wxSingleChoiceDialog dialog(m_STC,
       _("Input") + ":", 
@@ -515,7 +523,7 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   }
   
   wxExSTC* stc = m_STC;
-  bool ok;
+  bool ok = true;
   
   if (m_Macros.IsRecordedMacro(choice))
   {
@@ -523,7 +531,13 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   }
   else
   {
-    ok = m_Macros.Expand(this, choice);
+    for (int i = 0; i < repeat && ok; i++)
+    {
+      if (!m_Macros.Expand(this, choice))
+      {
+        ok = false;
+      }
+    }
   }
     
   m_STC = stc;

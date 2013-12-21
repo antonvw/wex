@@ -266,12 +266,9 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       {
       wxArrayString arraychoices;
 
-      for (
-        auto it = m_Choices.begin();
-        it != m_Choices.end();
-       ++it)
+      for (const auto& it : m_Choices)
       {
-        arraychoices.Add(it->second);
+        arraychoices.Add(it.second);
       }
 
       m_Window = new wxCheckListBox(parent,
@@ -411,12 +408,9 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       {
       wxArrayString arraychoices;
 
-      for (
-        auto it = m_Choices.begin();
-        it != m_Choices.end();
-        ++it)
+      for (const auto& it : m_Choices)
       {
-        arraychoices.Add(it->second);
+        arraychoices.Add(it.second);
       } 
 
       m_Window = new wxRadioBox(parent,
@@ -704,21 +698,18 @@ bool wxExConfigItem::ToConfig(bool save) const
         value = wxConfigBase::Get()->ReadLong(m_Label, 0);
       int item = 0;
 
-      for (
-        auto b = m_Choices.begin();
-        b != m_Choices.end();
-        ++b)
+      for (const auto& b : m_Choices)
       {
         if (save)
         {
           if (clb->IsChecked(item))
           {
-            value |= b->first;
+            value |= b.first;
           }
         }
         else
         {
-          clb->Check(item, (value & b->first) > 0);
+          clb->Check(item, (value & b.first) > 0);
         }
 
         item++;
@@ -772,7 +763,7 @@ bool wxExConfigItem::ToConfig(bool save) const
 
       if (save)
       {
-        const auto l = wxExComboBoxToList(cb, m_MaxItems);
+        const auto& l = wxExComboBoxToList(cb, m_MaxItems);
         wxExListToConfig(l, m_Label);
 
         if (m_Label == wxExFindReplaceData::Get()->GetTextFindWhat())
@@ -865,14 +856,11 @@ bool wxExConfigItem::ToConfig(bool save) const
 
       if (save)
       {
-        for (
-          auto b = m_Choices.begin();
-          b != m_Choices.end();
-          ++b)
+        for (const auto& b : m_Choices)
         {
-          if (b->second == rb->GetStringSelection())
+          if (b.second == rb->GetStringSelection())
           {
-            wxConfigBase::Get()->Write(m_Label, b->first);
+            wxConfigBase::Get()->Write(m_Label, b.first);
           }
         }
       }
