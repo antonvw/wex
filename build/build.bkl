@@ -36,7 +36,7 @@ make-release.bat
   <set-wxlike-builddir/>
   
   <if cond="PLATFORM_UNIX=='1'">
-     <set var="DEFAULT_CXXFLAGS">-Wno-write-strings -std=c++0x</set>
+     <set var="DEFAULT_CXXFLAGS">-Wno-write-strings -std=c++11</set>
   </if>
   
   <!-- options -->
