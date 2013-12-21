@@ -107,7 +107,6 @@ public:
   virtual void Undo();
 protected:
   void OnChar(wxKeyEvent& event);
-  void OnCommand(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
