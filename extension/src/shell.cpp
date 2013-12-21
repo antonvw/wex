@@ -266,23 +266,6 @@ void wxExSTCShell::KeepCommand()
   m_Commands.push_back(m_Command);
 }
 
-// No longer used, for the moment.
-void wxExSTCShell::OnCommand(wxCommandEvent& command)
-{
-  if (!m_Enabled)
-  {
-    command.Skip();
-    return;
-  }
-  
-  switch (command.GetId())
-  {
-    default: 
-      wxFAIL;
-      break;
-  }
-}
-
 void wxExSTCShell::OnChar(wxKeyEvent& event)
 {
   if (m_Enabled)
