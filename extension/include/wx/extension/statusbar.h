@@ -85,10 +85,6 @@ public:
   /// Destructor.
  ~wxExStatusBar();  
  
-  /// Returns the field no, or -1 if field does not exist
-  /// or is not shown.
-  int GetFieldNo(const wxString& field) const;
-  
   /// Returns the status text on specified field.
   /// Returns empty string if field does not exist
   /// or is not shown.
@@ -113,6 +109,9 @@ protected:
   /// moving over.
   void OnMouse(wxMouseEvent& event);
 private:
+  /// Returns the field no, or -1 if field does not exist
+  /// or is not shown.
+  int GetFieldNo(const wxString& field) const;
   void Handle(wxMouseEvent& event, const wxExStatusBarPane& wxExStatusBarPane);
   
   wxExFrame* m_Frame;
