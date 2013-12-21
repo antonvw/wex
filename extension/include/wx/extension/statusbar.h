@@ -117,8 +117,6 @@ private:
   
   wxExFrame* m_Frame;
   std::vector<wxExStatusBarPane> m_Panes;
-
-  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_STATUSBAR
 #endif // wxUSE_GUI

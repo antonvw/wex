@@ -754,24 +754,18 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_OPTION_COMPARATOR: 
-    {
-      std::vector<wxExConfigItem> v;
-      v.push_back(wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
       wxExConfigDialog(
         this,
-        v,
+        std::vector<wxExConfigItem>
+          {wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL)},
         _("Set Comparator")).ShowModal();
-    }
     break;
 
   case ID_OPTION_LIST_FONT:
-    {
-      std::vector<wxExConfigItem> v;
-      v.push_back(wxExConfigItem(_("List Font"), CONFIG_FONTPICKERCTRL));
-
       if (wxExConfigDialog(
         this,
-        v,
+        std::vector<wxExConfigItem>
+          {wxExConfigItem(_("List Font"), CONFIG_FONTPICKERCTRL)},
         _("Set List Font")).ShowModal() == wxID_OK)
       {
         const wxFont font(
@@ -791,25 +785,20 @@ void Frame::OnCommand(wxCommandEvent& event)
           m_History->ItemsUpdate();
         }
       }
-    }
     break;
 
   case ID_OPTION_LIST_READONLY_COLOUR:
-    {
       if (!wxConfigBase::Get()->Exists(_("List Colour")))
       {
         wxConfigBase::Get()->Write(_("List Colour"), wxColour("RED"));
       }
 
-      std::vector<wxExConfigItem> v;
-      v.push_back(wxExConfigItem(_("List Colour"), CONFIG_COLOUR));
-
       // text also used in menu
       wxExConfigDialog(
         this,
-        v,
+        std::vector<wxExConfigItem>
+          {wxExConfigItem(_("List Colour"), CONFIG_COLOUR)},
         _("Set List Read Only Colour")).ShowModal();
-    }
     break;
 
   case ID_OPTION_LIST_SORT_ASCENDING:

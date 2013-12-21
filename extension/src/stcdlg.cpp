@@ -36,14 +36,18 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   : wxExDialog(parent, caption, button_style, id, pos, size, style, name)
   , m_Process(NULL)
 {
+#if wxUSE_STATTEXT
   if (!prompt.empty())
   {
-    AddUserSizer(CreateTextSizer(prompt), wxSizerFlags().Center());
+    // See wxWidgets: src\generic\textdlgg.cpp, use similar bottom border flags.
+    AddUserSizer(CreateTextSizer(prompt), 
+      wxSizerFlags().DoubleBorder(wxBOTTOM));
   }
+#endif
 
   wxPersistentRegisterAndRestore(this);
 
-  m_STC =  (use_shell ?
+  m_STC = (use_shell ?
     new wxExSTCShell(this, text, wxEmptyString, true, -1, wxEmptyString, wxExSTC::STC_MENU_DEFAULT):
     new wxExSTC(this, text));
   

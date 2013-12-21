@@ -79,12 +79,9 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
     const std::vector<wxString> files(wxExToVectorString(*this).Get());
     wxBusyCursor wait;
     wxString clipboard;
-    for (
-      auto it = files.begin();
-      it != files.end();
-      ++it)
+    for (const auto& it : files)
     {
-      clipboard += *it + wxTextFile::GetEOL();
+      clipboard += it + wxTextFile::GetEOL();
     }
     wxExClipboardAdd(clipboard);
     }

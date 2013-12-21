@@ -195,14 +195,10 @@ bool wxExTextFileWithListView::Parse()
     int total = 0;
     int col = 1;
     
-    for (
-      std::set<wxString>::const_iterator setit = 
-        GetFileName().GetLexer().GetKeywords().begin();
-      setit != GetFileName().GetLexer().GetKeywords().end();
-      ++setit)
+    for (const auto& setit : GetFileName().GetLexer().GetKeywords())
     {
       const wxExStatistics<int>& stat = GetStatistics().GetElements();
-      const auto it = stat.GetItems().find(*setit);
+      const auto it = stat.GetItems().find(setit);
       
       if (it != stat.GetItems().end())
       {

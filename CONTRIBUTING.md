@@ -8,25 +8,25 @@
 
 - use STL whenever possible 
 
-- make files are generated using [Bakefile 0.2.9](http://www.bakefile.org/)  
+- make files are generated using [Bakefile](http://www.bakefile.org/)  
 
-- run [cppcheck 1.62](http://cppcheck.sourceforge.net/)
+- run [cppcheck](http://cppcheck.sourceforge.net/)
 
 - icons and bitmaps
   - menu and toolbar bitmaps are from wxWidgets, using wxArtProvider
 
-  - application icons from [Tango](http://tango.freedesktop.org/Tango_Desktop_Project),
-  [converted to ico](http://www.convertico.com/), 
-  [converted to xpm using GIMP 2.6.6)](http://www.gimp.org/), 
+  - application icons from [Tango](http://tango.freedesktop.org/Tango_Desktop_Project),   
+  [converted to ico](http://www.convertico.com/),   
+  [converted to xpm using GIMP](http://www.gimp.org/),   
   [convert to mac icns (first make 128 by 128 icon)](http://iconverticons.com/)
 
 - doxy document sources  
   API documentation is generated from the sources 
-  using [Doxygen 1.8.3.1](http://www.stack.nl/~dimitri/doxygen/)
+  using [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
   
-- add or update sample
-
-- translation is done using [poedit 1.5.4](http://www.poedit.net/)    
+- add a test and update sample
+ 
+- translation is done using [poedit](http://www.poedit.net/)    
   - wxExtension has it's own localization file, your application should
     also add it's own one (add '_()' around text strings), 
     and also put the standard wxWidgets localization file
