@@ -147,7 +147,7 @@ wxExListView* wxExFrame::GetListView()
 
 wxString wxExFrame::GetStatusText(const wxString& pane)
 {
-  return (m_StatusBar == NULL ? wxEmptyString: m_StatusBar->GetStatusText(pane));
+  return (m_StatusBar == NULL ? wxString(wxEmptyString): m_StatusBar->GetStatusText(pane));
 }
 
 wxExSTC* wxExFrame::GetSTC()

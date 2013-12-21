@@ -2104,7 +2104,7 @@ bool wxExSTC::ReplaceNext(
   
   if (HexMode())
   {
-    for (auto& it : replace_text)
+    for (const auto& it : replace_text)
     {
       wxExHexModeLine(this, GetTargetStart()).Replace(it);
     }
@@ -2421,16 +2421,19 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
 void wxExSTC::Sync(bool start)
 {
-  (start ?
-    Bind(wxEVT_IDLE, &wxExSTC::OnIdle, this, wxID_ANY):
-    Unbind(wxEVT_IDLE, &wxExSTC::OnIdle, this, wxID_ANY));
+  // do not use ?, compile error for gcc, as Bind is void, Unbind is bool
+  if (start)
+    Bind(wxEVT_IDLE, &wxExSTC::OnIdle, this, wxID_ANY);
+  else
+    Unbind(wxEVT_IDLE, &wxExSTC::OnIdle, this, wxID_ANY);
 }
 
 void wxExSTC::UseModificationMarkers(bool use)
 {
-  (use ? 
-    Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this, wxID_ANY):
-    Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this, wxID_ANY));
+  if (use)
+    Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this, wxID_ANY);
+  else
+    Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this, wxID_ANY);
 }
 
 #endif // wxUSE_GUI
