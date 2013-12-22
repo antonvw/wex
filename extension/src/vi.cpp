@@ -209,12 +209,12 @@ bool wxExVi::Command(const wxString& command)
             return false;
           }
           
-          SetRegister(rest.Mid(1, 1));
+          SetRegister(rest.GetChar(1));
           rest = rest.Mid(2);
         }
         else
         {
-          SetRegister(wxEmptyString);
+          SetRegister(0);
 
           int seq_size = 0; // size of sequence of digits from begin in rest
           
@@ -284,7 +284,7 @@ bool wxExVi::Command(const wxString& command)
                 for (int i = 0; i < repeat; i++) 
                   GetSTC()->WordRightEnd();
                   
-                if (GetRegister().empty())
+                if (!GetRegister())
                 {
                   GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
                   GetSTC()->Cut();
@@ -305,7 +305,7 @@ bool wxExVi::Command(const wxString& command)
                 for (int i = 0; i < repeat; i++) 
                   GetSTC()->WordRight();
                   
-                if (GetRegister().empty())
+                if (!GetRegister())
                 {
                   GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
                   GetSTC()->Cut();
@@ -322,7 +322,7 @@ bool wxExVi::Command(const wxString& command)
             case CHR_TO_NUM('d','0'):
               if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
               {
-                if (GetRegister().empty())
+                if (!GetRegister())
                 {
                   GetSTC()->HomeExtend();
                   GetSTC()->Cut();
@@ -340,7 +340,7 @@ bool wxExVi::Command(const wxString& command)
             case CHR_TO_NUM('d','$'):
               if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
               {
-                if (GetRegister().empty())
+                if (!GetRegister())
                 {
                   GetSTC()->LineEndExtend();
                   GetSTC()->Cut();
@@ -359,7 +359,7 @@ bool wxExVi::Command(const wxString& command)
               for (int i = 0; i < repeat; i++) GetSTC()->WordRightEnd();
               for (int j = 0; j < repeat; j++) GetSTC()->WordLeftExtend();
                 
-              if (GetRegister().empty())
+              if (!GetRegister())
               {
                 GetSTC()->Copy();
               }
@@ -478,7 +478,7 @@ bool wxExVi::Command(const wxString& command)
               }
               else if (RegAfter(wxUniChar(WXK_CONTROL_R), rest))
               {
-                CommandReg(rest.Mid(1));
+                CommandReg(rest.GetChar(1));
                 return true;
               }  
               else if (CommandChar((int)rest.GetChar(0), repeat))
@@ -1073,44 +1073,42 @@ bool wxExVi::CommandChar(int c, int repeat)
   return true;
 }
 
-void wxExVi::CommandReg(const wxString& reg)
+void wxExVi::CommandReg(const char reg)
 {
-  if (!reg.empty())
+  switch (reg)
   {
-    switch ((int)reg[0])
-    {
-      // calc register
-      case '=': GetFrame()->GetExCommand(this, reg); break;
-      // clipboard register
-      case '\"': Put(true); break;
-      // filename register
-      case '%':
-        if (m_Mode == MODE_INSERT)
+    case 0: break;
+    // calc register
+    case '=': GetFrame()->GetExCommand(this, reg); break;
+    // clipboard register
+    case '\"': Put(true); break;
+    // filename register
+    case '%':
+      if (m_Mode == MODE_INSERT)
+      {
+        AddText(GetSTC()->GetFileName().GetFullName());
+      }
+      else
+      {
+        wxExClipboardAdd(GetSTC()->GetFileName().GetFullPath());
+      }
+      break;
+    default:
+      if (m_Mode == MODE_INSERT)
+      {
+        if (!GetMacros().GetRegister(reg).empty())
         {
-          AddText(GetSTC()->GetFileName().GetFullName());
+          AddText(GetMacros().GetRegister(reg));
         }
         else
         {
-          wxExClipboardAdd(GetSTC()->GetFileName().GetFullPath());
+          wxLogStatus("?" + wxString(reg));
         }
-        break;
-      default:
-        if (m_Mode == MODE_INSERT)
-        {
-          if (!GetMacros().GetRegister(reg).empty())
-          {
-            AddText(GetMacros().GetRegister(reg));
-          }
-          else
-          {
-            wxLogStatus("?" + reg);
-          }
-        }
-        else
-        {
-          wxLogStatus("?" + reg);
-        }
-    }
+      }
+      else
+      {
+        wxLogStatus("?" + wxString(reg));
+      }
   }
 }
     
@@ -1211,7 +1209,7 @@ bool wxExVi::InsertMode(const wxString& command)
         wxUniChar(WXK_CONTROL_R) + tkz.GetString().Mid(0, 1)))
       {
         InsertMode(token);
-        CommandReg(tkz.GetString().Mid(0, 1));
+        CommandReg(tkz.GetString().GetChar(0));
         InsertMode(tkz.GetString().Mid(1));
         return true;
       }  
@@ -1316,7 +1314,7 @@ bool wxExVi::InsertMode(const wxString& command)
         m_InsertText.Last() == wxUniChar(WXK_CONTROL_R))
       {
         m_InsertText += command;
-        CommandReg(command);
+        CommandReg(command.Last());
         return false;
       }
       else
@@ -1465,7 +1463,7 @@ bool wxExVi::Put(bool after)
     GetSTC()->Home();
   }
   
-  if (GetRegister().empty())
+  if (!GetRegister())
   {
     GetSTC()->Paste();
   }
@@ -1604,7 +1602,7 @@ void wxExVi::VisualExtendRightLine()
   
 bool wxExVi::YankedLines()
 {
-  const wxString txt = (GetRegister().empty() ?
+  const wxString txt = (!GetRegister() ?
     wxExClipboardGet(): 
     GetMacros().GetRegister(GetRegister()));
   

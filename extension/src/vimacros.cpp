@@ -378,13 +378,8 @@ const wxFileName wxExViMacros::GetFileName()
     "macros.xml");
 }
 
-const wxString wxExViMacros::GetRegister(const wxString& name) const
+const wxString wxExViMacros::GetRegister(const char name) const
 {
-  if (name.size() != 1)
-  {
-    return wxEmptyString;
-  }
-  
   const auto it = m_Macros.find(name);
     
   wxString output;
@@ -668,12 +663,12 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
   return ok;
 }
 
-void wxExViMacros::SetRegister(const wxString& name, const wxString& value)
+void wxExViMacros::SetRegister(const char name, const wxString& value)
 {
   std::vector<wxString> v;
   
   // The black hole register, everything written to it is discarded.
-  if (name != "_")
+  if (name != '_')
   {
     v.push_back(value);
   }

@@ -53,7 +53,7 @@ wxExEx::~wxExEx()
 
 void wxExEx::AddText(const wxString& text)
 {
-  if (!m_Register.empty())
+  if (m_Register)
   {
     m_Macros.SetRegister(m_Register, text);
   }
@@ -701,12 +701,11 @@ void wxExEx::SetRegistersDelete(const wxString& value) const
   
   for (int i = 9; i >= 2; i--)
   {
-    m_Macros.SetRegister(
-      wxString::Format("%d", i),
-      m_Macros.GetRegister(wxString::Format("%d", i - 1)));
+    m_Macros.SetRegister(wxUniChar(48 + i),
+      m_Macros.GetRegister(wxUniChar(48 + i - 1)));
   }
   
-  m_Macros.SetRegister("1", m_STC->GetSelectedText());
+  m_Macros.SetRegister('1', m_STC->GetSelectedText());
 }
   
 void wxExEx::SetRegisterYank(const wxString& value) const
@@ -716,7 +715,7 @@ void wxExEx::SetRegisterYank(const wxString& value) const
     return;
   }
   
-  m_Macros.SetRegister("0", value);
+  m_Macros.SetRegister('0', value);
 }
 
 #endif // wxUSE_GUI

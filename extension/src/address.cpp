@@ -211,7 +211,7 @@ bool wxExAddressRange::Delete(bool show_message) const
   }
   else
   {
-    if (!m_Ex->GetRegister().empty())
+    if (m_Ex->GetRegister())
     {
       m_Ex->GetMacros().SetRegister(
         m_Ex->GetRegister(), m_STC->GetSelectedText());
@@ -672,7 +672,7 @@ bool wxExAddressRange::Yank() const
     }
   }
 
-  if (!m_Ex->GetRegister().empty())
+  if (m_Ex->GetRegister())
   {
     m_Ex->GetMacros().SetRegister(
       m_Ex->GetRegister(), m_STC->GetSelectedText());
