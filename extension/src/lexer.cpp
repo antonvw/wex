@@ -420,11 +420,31 @@ void wxExLexer::Set(const wxXmlNode* node)
       }
       else if (child->GetName() == "keywords")
       {
-        if (!SetKeywords(child->GetNodeContent().Strip(wxString::both)))
+        // Add all direct keywords
+        const wxString& direct(child->GetNodeContent().Strip(wxString::both));
+        
+        if (!direct.empty() && !SetKeywords(direct))
         {
           wxLogError(
             "Keywords could not be set on line: %d", 
             child->GetLineNumber());
+        }
+      
+        // Add all keywords that point to a keyword set.
+        wxXmlAttribute* att = child->GetAttributes();
+        
+        while (att != NULL)
+        {
+          if (!SetKeywords(wxExLexers::Get()->GetKeywords(
+            att->GetValue().Strip(wxString::both))))
+          {
+            wxLogError(
+              "Keywords for %s could not be set on line: %d", 
+              att->GetName().c_str(),
+              child->GetLineNumber());
+          }
+        
+          att = att->GetNext();
         }
       }
       else if (child->GetName() == "properties")
@@ -442,25 +462,29 @@ void wxExLexer::Set(const wxXmlNode* node)
       child = child->GetNext();
     }
   }
+
+#ifdef DEBUG
+  wxString keywords;
+  
+  for (const auto& it : m_KeywordsSet)
+  {
+    keywords += wxString::Format("set: %d %s\n",
+     it.first, GetKeywordsString(it.first).c_str());
+  }
+
+  if (!keywords.empty())
+  {
+    wxLogMessage("Lexer: %s Display: %s Keywords: %s",
+     m_ScintillaLexer.c_str(), m_DisplayLexer.c_str(), keywords.c_str());
+  }
+#endif
 }
 
 // Adds the specified keywords to the keywords map and the keywords set.
 // The text might contain the keyword set after a ':'.
-// Returns true if keyword could be added 
-// and false if specified set is illegal.
-// Empties existing keywords.
+// Returns false if specified set is illegal.
 bool wxExLexer::SetKeywords(const wxString& value)
 {
-  if (!m_Keywords.empty())
-  {
-    m_Keywords.clear();
-  }
-
-  if (!m_KeywordsSet.empty())
-  {
-    m_KeywordsSet.clear();
-  }
-
   std::set<wxString> keywords_set;
 
   wxStringTokenizer tkz(value, "\r\n ");
@@ -495,15 +519,13 @@ bool wxExLexer::SetKeywords(const wxString& value)
 
         setno = new_setno;
       }
-
-      keywords_set.insert(keyword);
     }
     else
     {
       keyword = line;
-      keywords_set.insert(line);
     }
 
+    keywords_set.insert(keyword);
     m_Keywords.insert(keyword);
   }
 
