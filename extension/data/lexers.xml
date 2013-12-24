@@ -2021,7 +2021,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer display="c#" name="cpp" extensions="*.cs">
     <keywords>
       abstract  as        base       bool      break
-      Byte      case      catch      char      checked
+      byte      case      catch      char      checked
       class     const     continue   decimal   default
       delegate  do        double     else      enum
       event     explicit  extern     false     finally
@@ -2034,8 +2034,8 @@ Copyright: (c) 2013, Anton van Wezenbeek
       short     sizeof    stackalloc static    string
       struct    switch    this       throw     true
       try       typeof    uint       ulong     unchecked
-      unsafe    ushort    using      virtual   volatile
-      void      while    
+      unsafe    ushort    using      virtual   void
+      volatile  while    
     </keywords>
   </lexer>
   <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
@@ -2157,6 +2157,52 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <!-- Default Language 1 for JS, 2 for VBS, 3 for python -->
       <property name="asp.default.language"> 1 </property>
     </properties>
+    <keywords>
+      <!-- See scintilla html.properies -->      
+      a abbr acronym address applet area b base basefont
+      bdo big blockquote body br button caption center
+      cite code col colgroup dd del dfn dir div dl dt em
+      fieldset font form frame frameset h1 h2 h3 h4 h5 h6
+      head hr html i iframe img input ins isindex kbd label
+      legend li link map menu meta noframes noscript
+      object ol optgroup option p param pre q s samp
+      script select small span strike strong style sub sup
+      table tbody td textarea tfoot th thead title tr tt u ul
+      var xml xmlns
+
+      abbr accept-charset accept accesskey action align alink
+      alt archive axis background bgcolor border
+      cellpadding cellspacing char charoff charset checked cite
+      class classid clear codebase codetype color cols colspan
+      compact content coords
+      data datafld dataformatas datapagesize datasrc datetime
+      declare defer dir disabled enctype event
+      face for frame frameborder
+      headers height href hreflang hspace http-equiv
+      id ismap label lang language leftmargin link longdesc
+      marginwidth marginheight maxlength media method multiple
+      name nohref noresize noshade nowrap
+      object onblur onchange onclick ondblclick onfocus
+      onkeydown onkeypress onkeyup onload onmousedown
+      onmousemove onmouseover onmouseout onmouseup
+      onreset onselect onsubmit onunload
+      profile prompt readonly rel rev rows rowspan rules
+      scheme scope selected shape size span src standby start style
+      summary tabindex target text title topmargin type usemap
+      valign value valuetype version vlink vspace width
+      text password checkbox radio submit reset
+      file hidden image
+ 
+      address article aside audio base canvas command details datalist embed
+      figure figcaption footer header hgroup keygen mark menu meter nav output
+      progress ruby rt rp section source time video wbr
+
+      async autocomplete autofocus contenteditable contextmenu draggable
+      form formaction formenctype formmethod formnovalidate formtarget
+      list manifest max min novalidate pattern placeholder
+      required reversed role sandbox scoped seamless sizes spellcheck srcdoc step
+    </keywords>
+  
   </lexer>
   <lexer name="inno"/>
   <lexer display="java" name="cpp" extensions="*.java">
@@ -2417,7 +2463,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="verilog"/>
   <lexer name="vhdl"/>
   <lexer name="visualprolog"/>
-  <lexer display="xml" name="hypertext">
+  <lexer display="xml" name="hypertext" extensions="*.xml">
     <styles>
       <style no="tag"> tag </style>
       <style no="tagend"> tag </style>
