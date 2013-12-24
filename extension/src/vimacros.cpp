@@ -630,16 +630,19 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
     it != m_Macros.rend();
     ++it)
   {
-    wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "macro");
-    element->AddAttribute("name", it->first);
-    
-    for (
-      auto it2 = it->second.rbegin();
-      it2 != it->second.rend();
-      ++it2)
-    { 
-      wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
-      new wxXmlNode(cmd, wxXML_TEXT_NODE, "", Encode(*it2));
+    if (!it->second.empty())
+    {
+      wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "macro");
+      element->AddAttribute("name", it->first);
+      
+      for (
+        auto it2 = it->second.rbegin();
+        it2 != it->second.rend();
+        ++it2)
+      { 
+        wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
+        new wxXmlNode(cmd, wxXML_TEXT_NODE, "", Encode(*it2));
+      }
     }
   }
   

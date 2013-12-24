@@ -701,11 +701,15 @@ void wxExEx::SetRegistersDelete(const wxString& value) const
   
   for (int i = 9; i >= 2; i--)
   {
-    m_Macros.SetRegister(wxUniChar(48 + i),
-      m_Macros.GetRegister(wxUniChar(48 + i - 1)));
+    const wxString value(m_Macros.GetRegister(wxUniChar(48 + i - 1)));
+    
+    if (!value.empty())
+    {
+      m_Macros.SetRegister(wxUniChar(48 + i), value);
+    }
   }
   
-  m_Macros.SetRegister('1', m_STC->GetSelectedText());
+  m_Macros.SetRegister('1', value);
 }
   
 void wxExEx::SetRegisterYank(const wxString& value) const
