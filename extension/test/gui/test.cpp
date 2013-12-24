@@ -916,6 +916,11 @@ void wxExGuiTestFixture::testLexers()
   wxString lexer("cpp");
   wxExLexers::Get()->ShowDialog(wxTheApp->GetTopWindow(), lexer, wxEmptyString, false);
   wxExLexers::Get()->ShowThemeDialog(wxTheApp->GetTopWindow(), wxEmptyString, false);
+  
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetKeywords("cpp").empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetKeywords("csh").empty());
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetKeywords("xxx").empty());
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetKeywords(wxEmptyString).empty());
 
   CPPUNIT_ASSERT( wxExLexers::Get()->LoadDocument());
 }

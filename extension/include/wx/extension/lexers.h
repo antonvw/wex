@@ -77,6 +77,10 @@ public:
   /// Gets the filename.
   const wxFileName& GetFileName() const {return m_FileName;};
   
+  /// Gets the keywords for the specified named set of keywords.
+  /// Returns empty string if set does not exist.
+  const wxString GetKeywords(const wxString& set) const;
+
   /// Gets the macros for specified lexer.
   const std::map<wxString, wxString>& GetMacros(const wxString& lexer) {
     return m_Macros[lexer];};
@@ -138,11 +142,13 @@ private:
   const wxString GetLexerExtensions() const;
   void Initialize();
   void ParseNodeGlobal(const wxXmlNode* node);
+  void ParseNodeKeyword(const wxXmlNode* node);
   void ParseNodeMacro(const wxXmlNode* node);
   void ParseNodeTheme(const wxXmlNode* node);
   void ParseNodeThemes(const wxXmlNode* node);
 
   std::map<wxString, wxString> m_DefaultColours;
+  std::map<wxString, wxString> m_Keywords;
   std::map<wxString, std::map<wxString, wxString> > m_Macros;
   std::map<wxString, std::map<wxString, wxString> > m_ThemeColours;
   std::map<wxString, std::map<wxString, wxString> > m_ThemeMacros;
