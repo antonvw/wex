@@ -9,6 +9,7 @@
 #define _EXSTCSHELL_H
 
 #include <list>
+#include <vector>
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
@@ -124,8 +125,7 @@ private:
   // it is moved to the end of the list.
   std::list < wxString > m_Commands;
   std::list < wxString >::const_iterator m_CommandsIterator;
-  
-  wxSortedArrayString m_AutoCompleteList;
+  std::vector < wxString > m_AutoCompleteList;
 
   wxString m_Command;
   const wxString m_CommandEnd;

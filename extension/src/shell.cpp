@@ -167,7 +167,7 @@ void wxExSTCShell::Expand()
   {
     const int index = AutoCompGetCurrent();
     
-    if (index >=0 && index < m_AutoCompleteList.GetCount())
+    if (index >=0 && index < m_AutoCompleteList.size())
     {
       expansion = m_AutoCompleteList[index].Mid(word.length());
     }
@@ -204,20 +204,20 @@ void wxExSTCShell::Expand()
         // Fill the autocomplete list and show it
         // (when user selected something,
         // we come back at Expand at entry).
-        m_AutoCompleteList.Clear();
-        m_AutoCompleteList.Add(filename);
-        m_AutoCompleteList.Add(next);
+        m_AutoCompleteList.clear();
+        m_AutoCompleteList.push_back(filename);
+        m_AutoCompleteList.push_back(next);
       
         while (dir.GetNext(&next))
         {
-          m_AutoCompleteList.Add(next);
+          m_AutoCompleteList.push_back(next);
         }
       
         wxString list;
       
-        for (int i = 0; i < m_AutoCompleteList.GetCount(); i++)
+        for (const auto& it : m_AutoCompleteList)
         {
-          list += m_AutoCompleteList[i] + " ";
+          list += it + " ";
         }
       
         list.Trim(); // skip last whitespace separator
@@ -744,11 +744,7 @@ void wxExSTCShell::ShowHistory()
 
   for (const auto& it : m_Commands)
   {
-    const wxString command = it;
-
-    AppendText(wxString::Format("\n%d %s",
-      command_no++,
-      command.c_str()));
+    AppendText(wxString::Format("\n%d %s", command_no++, it.c_str()));
   }
   
 #ifdef DEBUG
