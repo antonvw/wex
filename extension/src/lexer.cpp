@@ -34,6 +34,60 @@ wxExLexer::wxExLexer(const wxXmlNode* node)
   Set(node);
 }
 
+// Adds the specified keywords to the keywords map and the keywords set.
+// The text might contain the keyword set after a ':'.
+// Returns false if specified set is illegal.
+bool wxExLexer::AddKeywords(const wxString& value)
+{
+  std::set<wxString> keywords_set;
+
+  wxStringTokenizer tkz(value, "\r\n ");
+
+  int setno = 0;
+
+  while (tkz.HasMoreTokens())
+  {
+    const wxString line = tkz.GetNextToken();
+    wxStringTokenizer fields(line, ":");
+
+    wxString keyword;
+
+    if (fields.CountTokens() > 1)
+    {
+      keyword = fields.GetNextToken();
+
+      const int new_setno = atoi(fields.GetNextToken().c_str());
+
+      if (new_setno >= wxSTC_KEYWORDSET_MAX)
+      {
+        return false;
+      }
+
+      if (new_setno != setno)
+      {
+        if (!keywords_set.empty())
+        {
+          m_KeywordsSet.insert(make_pair(setno, keywords_set));
+          keywords_set.clear();
+        }
+
+        setno = new_setno;
+      }
+    }
+    else
+    {
+      keyword = line;
+    }
+
+    keywords_set.insert(keyword);
+    m_Keywords.insert(keyword);
+  }
+
+  m_KeywordsSet.insert(make_pair(setno, keywords_set));
+
+  return true;
+}
+
 void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
 {
   if (clear)
@@ -423,7 +477,7 @@ void wxExLexer::Set(const wxXmlNode* node)
         // Add all direct keywords
         const wxString& direct(child->GetNodeContent().Strip(wxString::both));
         
-        if (!direct.empty() && !SetKeywords(direct))
+        if (!direct.empty() && !AddKeywords(direct))
         {
           wxLogError(
             "Keywords could not be set on line: %d", 
@@ -435,7 +489,7 @@ void wxExLexer::Set(const wxXmlNode* node)
         
         while (att != NULL)
         {
-          if (!SetKeywords(wxExLexers::Get()->GetKeywords(
+          if (!AddKeywords(wxExLexers::Get()->GetKeywords(
             att->GetValue().Strip(wxString::both))))
           {
             wxLogError(
@@ -478,60 +532,6 @@ void wxExLexer::Set(const wxXmlNode* node)
      m_ScintillaLexer.c_str(), m_DisplayLexer.c_str(), keywords.c_str());
   }
 #endif
-}
-
-// Adds the specified keywords to the keywords map and the keywords set.
-// The text might contain the keyword set after a ':'.
-// Returns false if specified set is illegal.
-bool wxExLexer::SetKeywords(const wxString& value)
-{
-  std::set<wxString> keywords_set;
-
-  wxStringTokenizer tkz(value, "\r\n ");
-
-  int setno = 0;
-
-  while (tkz.HasMoreTokens())
-  {
-    const wxString line = tkz.GetNextToken();
-    wxStringTokenizer fields(line, ":");
-
-    wxString keyword;
-
-    if (fields.CountTokens() > 1)
-    {
-      keyword = fields.GetNextToken();
-
-      const int new_setno = atoi(fields.GetNextToken().c_str());
-
-      if (new_setno >= wxSTC_KEYWORDSET_MAX)
-      {
-        return false;
-      }
-
-      if (new_setno != setno)
-      {
-        if (!keywords_set.empty())
-        {
-          m_KeywordsSet.insert(make_pair(setno, keywords_set));
-          keywords_set.clear();
-        }
-
-        setno = new_setno;
-      }
-    }
-    else
-    {
-      keyword = line;
-    }
-
-    keywords_set.insert(keyword);
-    m_Keywords.insert(keyword);
-  }
-
-  m_KeywordsSet.insert(make_pair(setno, keywords_set));
-
-  return true;
 }
 
 void wxExLexer::SetProperty(const wxString& name, const wxString& value)

@@ -668,6 +668,11 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
 
 void wxExViMacros::SetRegister(const char name, const wxString& value)
 {
+  if (!isascii(name))
+  {
+    return;
+  }
+
   std::vector<wxString> v;
   
   // The black hole register, everything written to it is discarded.

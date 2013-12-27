@@ -30,6 +30,9 @@ public:
   /// Constructor using xml node.
   wxExLexer(const wxXmlNode* node);
 
+  /// Adds keywords (public for testing only).
+  bool AddKeywords(const wxString& text);
+  
   /// Applies this lexer to stc component
   /// (and colours the component).
   void Apply(wxStyledTextCtrl* stc, bool clear = true) const;
@@ -126,9 +129,6 @@ public:
     /// stc component on which to apply
     wxStyledTextCtrl* stc);
       
-  /// Sets keywords (public for testing only).
-  bool SetKeywords(const wxString& text);
-  
   /// Overrides a local property.
   void SetProperty(const wxString& name, const wxString& value);
 
