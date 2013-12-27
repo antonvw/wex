@@ -786,11 +786,11 @@ void wxExGuiTestFixture::testLexer()
   CPPUNIT_ASSERT(!lexer.MakeComment("test", "test").empty());
   CPPUNIT_ASSERT(!lexer.MakeSingleLineComment("test").empty());
 
-  CPPUNIT_ASSERT( lexer.SetKeywords("hello:1"));
-  CPPUNIT_ASSERT( lexer.SetKeywords(
+  CPPUNIT_ASSERT( lexer.AddKeywords("hello:1"));
+  CPPUNIT_ASSERT( lexer.AddKeywords(
     "test11 test21:1 test31:1 test12:2 test22:2"));
 
-  CPPUNIT_ASSERT(!lexer.IsKeyword("class")); // now overwritten
+  CPPUNIT_ASSERT( lexer.IsKeyword("class")); 
   CPPUNIT_ASSERT( lexer.IsKeyword("test11"));
   CPPUNIT_ASSERT( lexer.IsKeyword("test21"));
   CPPUNIT_ASSERT( lexer.IsKeyword("test12"));
@@ -2595,12 +2595,12 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT(!macros.SaveDocument());
   
   // Test registers.
-  CPPUNIT_ASSERT(!macros.GetRegister("a").empty());
-  CPPUNIT_ASSERT( macros.GetRegister("z").empty());
+  CPPUNIT_ASSERT(!macros.GetRegister('a').empty());
+  CPPUNIT_ASSERT( macros.GetRegister('z').empty());
   CPPUNIT_ASSERT(!macros.GetRegisters().empty());
   CPPUNIT_ASSERT( macros.Get("z").empty());
-  macros.SetRegister("z", "hello z");
-  CPPUNIT_ASSERT(!macros.GetRegister("z").empty());
+  macros.SetRegister('z', "hello z");
+  CPPUNIT_ASSERT(!macros.GetRegister('z').empty());
   CPPUNIT_ASSERT(!macros.Get("z").empty());
 }
   

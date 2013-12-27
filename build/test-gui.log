@@ -1,6 +1,18 @@
-..........................................
+..F...............F.........................
 
 
-OK (42 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  42   Failures: 2   Errors: 0
+
+
+1) test: testAddressRange (F) line: 115 ../extension/test/gui/test.cpp
+assertion failed
+- Expression: stc->GetLineCount() == 5
+
+
+2) test: testListItem (F) line: 1044 ../extension/test/gui/test.cpp
+assertion failed
+- Expression: add < 1000
 
 
