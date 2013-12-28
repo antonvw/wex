@@ -14,6 +14,21 @@
 #include <wx/extension/report/listview.h>
 #include "support.h"
 
+class Notebook : public wxExNotebook
+{
+public:
+  Notebook(wxWindow* parent,
+    wxExManagedFrame* frame,
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = wxAUI_NB_DEFAULT_STYLE);
+protected:
+  void OnNotebook(wxAuiNotebookEvent& event);
+private:    
+  DECLARE_EVENT_TABLE()
+};
+
 class Frame : public DecoratedFrame
 {
 public:
@@ -66,8 +81,9 @@ private:
   int m_NewProjectNo;
   int m_SplitId;
 
+  Notebook* m_Editors;
+  
   wxExGenericDirCtrl* m_DirCtrl;
-  wxExNotebook* m_Editors;
   wxExListViewWithFrame* m_History;
   wxExNotebook* m_Lists;
   wxExProcess* m_Process;

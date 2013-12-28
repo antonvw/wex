@@ -97,7 +97,7 @@ Frame::Frame(const std::vector< wxString > & files)
 {
   wxExViMacros::LoadDocument();
 
-  m_Editors = new wxExNotebook(
+  m_Editors = new Notebook(
     this, 
     this, 
     (wxWindowID)NOTEBOOK_EDITORS, 
@@ -1516,5 +1516,34 @@ void Frame::SyncCloseAll(wxWindowID id)
     GetManager().Update();
     break;
   default: wxFAIL;
+  }
+}
+
+BEGIN_EVENT_TABLE(Notebook, wxExNotebook)
+  EVT_AUINOTEBOOK_TAB_RIGHT_UP(wxID_ANY, Notebook::OnNotebook)
+END_EVENT_TABLE()
+
+Notebook::Notebook(wxWindow* parent,
+  wxExManagedFrame* frame,
+  wxWindowID id,
+  const wxPoint& pos,
+  const wxSize& size,
+  long style)
+  : wxExNotebook(parent, frame, id, pos, size, style)
+{
+}
+
+void Notebook::OnNotebook(wxAuiNotebookEvent& event)
+{
+  if (event.GetEventType() == wxEVT_AUINOTEBOOK_TAB_RIGHT_UP)
+  {
+    wxExMenu menu;
+    menu.Append(ID_SPLIT, _("Split"));
+    menu.Append(wxID_CLOSE);
+    PopupMenu(&menu);
+  }
+  else
+  {
+    wxExNotebook::OnNotebook(event);
   }
 }

@@ -186,9 +186,6 @@ DecoratedFrame::DecoratedFrame()
   menuProject->AppendSeparator();
   menuProject->AppendCheckItem(ID_SORT_SYNC, _("&Auto Sort"));
 
-  wxMenu *menuWindow = new wxMenu();
-  menuWindow->Append(ID_SPLIT, _("Split"));
-
   wxMenu* menuOptions = new wxMenu();
   
   if (wxExVCS::GetCount() > 0)
@@ -223,7 +220,6 @@ DecoratedFrame::DecoratedFrame()
   menubar->Append(menuView, _("&View"));
   menubar->Append(menuProcess, _("&Process"));
   menubar->Append(menuProject, _("&Project"));
-  menubar->Append(menuWindow, _("&Window"));
   menubar->Append(menuOptions, _("&Options"));
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   
