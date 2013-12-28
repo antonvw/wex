@@ -6,7 +6,7 @@ one of these applications, being a full featured source code text editor.
 
 # Dependencies
 
-- [wxWidgets 3.0.0](http://www.wxwidgets.org/)
+- [wxWidgets 3.1.0](http://www.wxwidgets.org/)
   
 - [cppunit 1.12](http://sourceforge.net/projects/cppunit)    
     `sudo apt-get install libcppunit-dev` or   
