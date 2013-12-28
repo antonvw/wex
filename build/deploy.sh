@@ -18,15 +18,15 @@ mkdir syncped/nl_NL
 cp gcc$TOOLKIT\_dll/syncped syncped
 
 # Copy the libs.
-cp ~/wxWidgets-3.0.0/buildgtk/lib/libwx*3.0*so*0 syncped
+cp ~/wxWidgets-3.1.0/buildgtk/lib/libwx*3.0*so*0 syncped
 
 # Copy xml and templates data.
 cp ../extension/data/*.txt syncped
 cp ../extension/data/*.xml syncped
 
 # Copy locale files.
-msgfmt ~/wxWidgets-3.0.0/locale/fr.po -o syncped/fr_FR/fr.mo
-msgfmt ~/wxWidgets-3.0.0/locale/nl.po -o syncped/nl_NL/nl.mo
+msgfmt ~/wxWidgets-3.1.0/locale/fr.po -o syncped/fr_FR/fr.mo
+msgfmt ~/wxWidgets-3.1.0/locale/nl.po -o syncped/nl_NL/nl.mo
 
 FILES=( $( /bin/ls ../locale/*fr.po  ) )
 
