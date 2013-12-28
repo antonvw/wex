@@ -32,7 +32,7 @@ void TestFixture::testConfig()
 
   const long config = sw.Time();
   
-  CPPUNIT_ASSERT(config < 100);
+  CPPUNIT_ASSERT(config < 150);
 
   Report(wxString::Format(
     "wxConfig::Read %d items in %ld ms", max, config).ToStdString());
@@ -113,7 +113,7 @@ void TestFixture::testFileTiming()
 
   const long file_read = sw.Time();
 
-  CPPUNIT_ASSERT(exfile_read < 100);
+  CPPUNIT_ASSERT(exfile_read < 150);
   CPPUNIT_ASSERT(file_read < 100);
   
   Report(wxString::Format(
