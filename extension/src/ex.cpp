@@ -34,6 +34,7 @@ wxExEx::wxExEx(wxExSTC* stc)
   , m_SearchFlags(wxSTC_FIND_REGEXP)
   , m_MarkerSymbol(0, -1)
   , m_FindIndicator(0, 0)
+  , m_Register(0)
 {
   wxASSERT(m_Frame != NULL);
   

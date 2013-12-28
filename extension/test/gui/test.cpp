@@ -1041,7 +1041,7 @@ void wxExGuiTestFixture::testListItem()
   
   const long add = sw.Time();
 
-  CPPUNIT_ASSERT(add < 1000);
+  CPPUNIT_ASSERT(add < 1500);
   
   Report(wxString::Format(
     "wxExListTiem::Insert %d items in %ld ms", 3 * max, add).ToStdString());
