@@ -1795,6 +1795,17 @@ void wxExGuiTestFixture::testUtil()
   
   // wxExGetWord
   
+  // wxExIsBrace
+  CPPUNIT_ASSERT( wxExIsBrace('('));
+  CPPUNIT_ASSERT( wxExIsBrace(')'));
+  CPPUNIT_ASSERT( wxExIsBrace('{'));
+  CPPUNIT_ASSERT(!wxExIsBrace('a'));
+  
+  // wxExIsCodewordSeparator
+  CPPUNIT_ASSERT( wxExIsCodewordSeparator('('));
+  CPPUNIT_ASSERT( wxExIsCodewordSeparator(','));
+  CPPUNIT_ASSERT(!wxExIsCodewordSeparator('x'));
+
   // wxExListFromConfig
   CPPUNIT_ASSERT( wxExListFromConfig("xxx").size() == 0);
   
