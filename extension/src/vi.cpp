@@ -1299,8 +1299,12 @@ bool wxExVi::InsertMode(const wxString& command)
       break;
 
     case WXK_RETURN:
-        m_InsertText += GetSTC()->GetEOL();
         GetSTC()->NewLine();
+        
+        if (!GetSTC()->AutoCompActive())
+        {
+          m_InsertText += GetSTC()->GetEOL();
+        }
       break;
       
     default: 
@@ -1397,7 +1401,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
 
 bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 {
-  if (!GetIsActive())
+  if (!GetIsActive() || GetSTC()->AutoCompActive())
   {
     return true;
   }

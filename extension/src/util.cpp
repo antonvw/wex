@@ -403,6 +403,19 @@ const wxString wxExGetWord(
   return token;
 }
 
+bool wxExIsBrace(int c) 
+{
+  return c == '[' || c == ']' ||
+         c == '(' || c == ')' ||
+         c == '{' || c == '}' ||
+         c == '<' || c == '>';
+}
+         
+bool wxExIsCodewordSeparator(int c) 
+{
+  return (isspace(c) || wxExIsBrace(c) || c == ',' || c == ';' || c == ':');
+}
+
 const std::list < wxString > wxExListFromConfig(
   const wxString& config)
 {

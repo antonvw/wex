@@ -72,16 +72,6 @@ private:
   void CommentStatementEnd();
   void CommentStatementStart();
   
-  /// Returns true if char is a brace open or close character.
-  bool IsBrace(int c) const {
-    return c == '[' || c == ']' ||
-           c == '(' || c == ')' ||
-           c == '{' || c == '}' ||
-           c == '<' || c == '>';};
-  /// Returns true if char is a code word separator.
-  bool IsCodewordSeparator(int c) const {
-    return (isspace(c) || IsBrace(c) || c == ',' || c == ';' || c == ':');};
-
   /// Inserts a line at current line (or at end if at end),
   /// make that line current and sets modified.
   void InsertLine(const wxString& line);
