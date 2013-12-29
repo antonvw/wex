@@ -276,7 +276,7 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
       case COMMENT_NONE:
         if (!isspace(line[i]) && !m_IsCommentStatement)
         {
-          if (!IsCodewordSeparator(line[i]))
+          if (!wxExIsCodewordSeparator(line[i]))
           {
             if (!sequence)
             {
@@ -297,7 +297,7 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
       }
 
       if ( sequence && 
-          (IsCodewordSeparator(line[i]) || i ==0 || i == line.length() - 1))
+          (wxExIsCodewordSeparator(line[i]) || i ==0 || i == line.length() - 1))
       {
         if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
         {

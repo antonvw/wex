@@ -402,6 +402,7 @@ private:
 
   wxFont m_DefaultFont;
   
+  wxString m_AutoComplete;
   // Only used in hex mode.
   wxString m_HexBuffer;
 

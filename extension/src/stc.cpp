@@ -60,6 +60,7 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
+  EVT_STC_AUTOCOMP_SELECTION(wxID_ANY, wxExSTC::OnStyledText)  
   EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_DO_DROP(wxID_ANY, wxExSTC::OnStyledText)  
   EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
@@ -342,17 +343,15 @@ bool wxExSTC::CanPaste() const
 
 void wxExSTC::CheckAutoComp(const wxUniChar& c)
 {
-  static wxString text;
-
-  if (isspace(GetCharAt(GetCurrentPos() - 1)))
+  if (wxExIsCodewordSeparator(GetCharAt(GetCurrentPos() - 1)))
   {
-    text = c;
+    m_AutoComplete = c;
   }
   else
   {
-    text += c;
+    m_AutoComplete += c;
 
-    if (text.length() >= 3) // Only autocompletion for large words
+    if (m_AutoComplete.length() >= 3) // Only autocompletion for large words
     {
       if (!AutoCompActive())
       {
@@ -360,9 +359,9 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
         AutoCompSetAutoHide(false);
       }
 
-      if (m_Lexer.KeywordStartsWith(text))
+      if (m_Lexer.KeywordStartsWith(m_AutoComplete))
         AutoCompShow(
-          text.length() - 1,
+          m_AutoComplete.length() - 1,
           m_Lexer.GetKeywordsString());
       else
         AutoCompCancel();
@@ -1519,6 +1518,8 @@ void wxExSTC::OnChar(wxKeyEvent& event)
     {
       m_AddingChars = true;
     }
+  
+    CheckAutoComp(event.GetUnicodeKey());
   }
   else
   {
@@ -1548,12 +1549,11 @@ void wxExSTC::OnChar(wxKeyEvent& event)
       return;
     }
     
-    // Auto complete does not yet combine with vi mode.
     if (!m_vi.GetIsActive())
     {
       CheckAutoComp(event.GetUnicodeKey());
     }
-
+  
     event.Skip();
   }
 }
@@ -1812,6 +1812,13 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
       {
         ToggleFold(line);
       }
+    }
+  }
+  else if (event.GetEventType() == wxEVT_STC_AUTOCOMP_SELECTION)
+  {
+    if (m_vi.GetIsActive())
+    {
+      m_vi.Command(event.GetText().Mid(m_AutoComplete.size()));
     }
   }
   else

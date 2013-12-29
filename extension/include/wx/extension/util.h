@@ -153,6 +153,12 @@ const wxString wxExGetWord(
   bool use_other_field_separators = false,
   bool use_path_separator = false);
 
+/// Returns true if char is a brace open or close character.
+bool wxExIsBrace(int c);
+         
+/// Returns true if char is a code word separator.
+bool wxExIsCodewordSeparator(int c);
+
 /// Loads entries from the config into a list with strings.
 const std::list < wxString > wxExListFromConfig(
   const wxString& config);
