@@ -1218,6 +1218,7 @@ void wxExGuiTestFixture::testNotebook()
   
   CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CONFIG_GET));
   CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CLOSE));
+  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CLOSE_OTHERS));
   CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_SET_LEXER));
   CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_SET_LEXER_THEME));
 }

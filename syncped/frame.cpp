@@ -737,6 +737,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_STOP: m_Process->Kill(); break;
 
   case ID_ALL_STC_CLOSE:
+  case ID_ALL_STC_CLOSE_OTHERS:
   case ID_ALL_STC_SAVE:
     m_Editors->ForEach(event.GetId());
     break;
@@ -1540,6 +1541,11 @@ void Notebook::OnNotebook(wxAuiNotebookEvent& event)
     wxExMenu menu;
     menu.Append(ID_SPLIT, _("Split"));
     menu.Append(wxID_CLOSE);
+    if (GetPageCount() > 2)
+    {
+      menu.Append(ID_ALL_STC_CLOSE_OTHERS, _("Close Others"));
+    }
+
     PopupMenu(&menu);
   }
   else

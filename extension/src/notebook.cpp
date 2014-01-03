@@ -137,10 +137,16 @@ bool wxExNotebook::ForEach(int id)
     switch (id)
     {
     case ID_ALL_STC_CLOSE:
+    case ID_ALL_STC_CLOSE_OTHERS:
       {
       wxExFileDialog dlg(this, &stc->GetFile());
       if (dlg.ShowModalIfChanged() == wxID_CANCEL) return false;
-      DeletePage(GetKeyByPage(GetPage(page)));
+      const int sel = GetSelection();
+      if ((id == ID_ALL_STC_CLOSE_OTHERS && sel != page) ||
+           id == ID_ALL_STC_CLOSE)
+      {
+        DeletePage(GetKeyByPage(GetPage(page)));
+      }
       }
       break;
 
