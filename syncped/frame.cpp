@@ -77,7 +77,6 @@ END_EVENT_TABLE()
 Frame::Frame(const std::vector< wxString > & files)
   : DecoratedFrame()
   , m_IsClosing(false)
-  , m_NewFileNo(1)
   , m_NewProjectNo(1)
   , m_SplitId(1)
   , m_DirCtrl(NULL)
@@ -175,11 +174,6 @@ Frame::Frame(const std::vector< wxString > & files)
       }
     }
       
-    if (count == 0)
-    {
-      NewFile();
-    }
-
     if (GetManager().GetPane("PROJECTS").IsShown() && m_Projects != NULL)
     {
       if (!GetRecentProject().empty())
@@ -333,17 +327,8 @@ bool Frame::AllowCloseAll(wxWindowID id)
 {
   switch (id)
   {
-  case NOTEBOOK_EDITORS: 
-    return m_Editors->ForEach(ID_ALL_STC_CLOSE); 
-    break;
-    
-  case NOTEBOOK_PROJECTS: 
-    if (m_Projects != NULL)
-    {
-      return wxExForEach(m_Projects, ID_LIST_ALL_CLOSE); 
-    }
-    break;
-    
+  case NOTEBOOK_EDITORS: return m_Editors->ForEach(ID_ALL_STC_CLOSE); 
+  case NOTEBOOK_PROJECTS: return wxExForEach(m_Projects, ID_LIST_ALL_CLOSE); 
   default:
     wxFAIL;
     break;
@@ -438,18 +423,15 @@ void Frame::NewFile(bool as_project)
     AddPaneProjects();
   }
   
-  const wxString name = (as_project ? _("project") : _("textfile"));
-  const int use_no = (as_project ? m_NewProjectNo : m_NewFileNo);
-  const wxString text = wxString::Format("%s%d", name.c_str(), use_no);
+  static wxString text;
   wxString key;
-  
+  wxWindow* page;
   wxExNotebook* notebook = (as_project ? m_Projects : m_Editors);
   wxASSERT(notebook != NULL);
   
-  wxWindow* page;
-
   if (as_project)
   {
+    text = wxString::Format("%s%d", _("project"), m_NewProjectNo++);
     const wxFileName fn(
 #ifdef wxExUSE_PORTABLE
       wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
@@ -467,8 +449,6 @@ void Frame::NewFile(bool as_project)
       wxExListViewWithFrame::LIST_MENU_DEFAULT);
 
     ((wxExListViewFile*)page)->FileNew(key);
-
-    m_NewProjectNo++;
   }
   else
   {
@@ -477,13 +457,19 @@ void Frame::NewFile(bool as_project)
       // In hex mode we cannot edit the file.
       return;
     }
-
+   
+    wxTextEntryDialog dlg(this, _("File Name"), wxGetTextFromUserPromptStr, text);
+    
+    if (dlg.ShowModal() == wxID_CANCEL)
+    {
+      return;
+    }
+    
+    text = dlg.GetValue();
     key = text;
     page = new wxExSTCWithFrame(notebook, this);
 
     ((wxExSTC*)page)->GetFile().FileNew(text);
-
-    m_NewFileNo++;
   }
 
   // This file does yet exist, so do not give it a bitmap.
@@ -1506,7 +1492,6 @@ void Frame::SyncCloseAll(wxWindowID id)
   switch (id)
   {
   case NOTEBOOK_EDITORS:
-    NewFile();
     break;
   case NOTEBOOK_LISTS:
     GetManager().GetPane("OUTPUT").Hide();
@@ -1540,7 +1525,9 @@ void Notebook::OnNotebook(wxAuiNotebookEvent& event)
   {
     wxExMenu menu;
     menu.Append(ID_SPLIT, _("Split"));
+    menu.AppendSeparator();
     menu.Append(wxID_CLOSE);
+    
     if (GetPageCount() > 2)
     {
       menu.Append(ID_ALL_STC_CLOSE_OTHERS, _("Close Others"));
