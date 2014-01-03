@@ -416,70 +416,74 @@ wxExListViewFile* Frame::GetProject()
   }
 }
 
-void Frame::NewFile(bool as_project)
+void Frame::NewFile()
 {
-  if (as_project && m_Projects == NULL)
-  {
-    AddPaneProjects();
-  }
-  
   static wxString text;
-  wxString key;
-  wxWindow* page;
-  wxExNotebook* notebook = (as_project ? m_Projects : m_Editors);
-  wxASSERT(notebook != NULL);
   
-  if (as_project)
+  if (wxConfigBase::Get()->ReadBool("HexMode", false))
   {
-    text = wxString::Format("%s%d", _("project"), m_NewProjectNo++);
-    const wxFileName fn(
-#ifdef wxExUSE_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
-#else
-      wxStandardPaths::Get().GetUserDataDir(),
-#endif
-      text + ".prj");
-
-    key = fn.GetFullPath();
-
-    page = new wxExListViewFile(notebook,
-      this,
-      key,
-      wxID_ANY,
-      wxExListViewWithFrame::LIST_MENU_DEFAULT);
-
-    ((wxExListViewFile*)page)->FileNew(key);
+    // In hex mode we cannot edit the file.
+    return;
   }
-  else
+ 
+  wxTextEntryDialog dlg(this, _("File Name"), wxGetTextFromUserPromptStr, text);
+  
+  if (dlg.ShowModal() == wxID_CANCEL)
   {
-    if (wxConfigBase::Get()->ReadBool("HexMode", false))
-    {
-      // In hex mode we cannot edit the file.
-      return;
-    }
-   
-    wxTextEntryDialog dlg(this, _("File Name"), wxGetTextFromUserPromptStr, text);
-    
-    if (dlg.ShowModal() == wxID_CANCEL)
-    {
-      return;
-    }
-    
-    text = dlg.GetValue();
-    key = text;
-    page = new wxExSTCWithFrame(notebook, this);
-
-    ((wxExSTC*)page)->GetFile().FileNew(text);
+    return;
   }
+  
+  text = dlg.GetValue();
+  const wxString key = text;
+  wxWindow* page = new wxExSTCWithFrame(m_Editors, this);
+
+  ((wxExSTC*)page)->GetFile().FileNew(text);
 
   // This file does yet exist, so do not give it a bitmap.
-  notebook->AddPage(
+  m_Editors->AddPage(
     page,
     key,
     text,
     true);
 
-  GetManager().GetPane(as_project ? "PROJECTS" : "FILES").Show();
+  GetManager().GetPane("FILES").Show();
+  GetManager().Update();
+}
+
+void Frame::NewProject()
+{
+  if (m_Projects == NULL)
+  {
+    AddPaneProjects();
+  }
+  
+  const wxString text = wxString::Format("%s%d", _("project"), m_NewProjectNo++);
+  const wxFileName fn(
+#ifdef wxExUSE_PORTABLE
+    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
+#else
+    wxStandardPaths::Get().GetUserDataDir(),
+#endif
+    text + ".prj");
+
+  const wxString key = fn.GetFullPath();
+
+  wxWindow* page = new wxExListViewFile(m_Projects,
+    this,
+    key,
+    wxID_ANY,
+    wxExListViewWithFrame::LIST_MENU_DEFAULT);
+
+  ((wxExListViewFile*)page)->FileNew(key);
+
+  // This file does yet exist, so do not give it a bitmap.
+  m_Projects->AddPage(
+    page,
+    key,
+    text,
+    true);
+
+  GetManager().GetPane("PROJECTS").Show();
   GetManager().Update();
 }
 
@@ -822,7 +826,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       m_Projects->DeletePage(project->GetFileName().GetFullPath());
     }
     break;
-  case ID_PROJECT_NEW: NewFile(true); break;
+  case ID_PROJECT_NEW: NewProject(); break;
   case ID_PROJECT_OPEN:
     DialogProjectOpen();
     break;
@@ -939,7 +943,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     if (m_Projects == NULL)
     {
       AddPaneProjects();
-      NewFile(true); // calls manager update 
+      NewProject(); // calls manager update 
     }
     else
     {
