@@ -248,7 +248,14 @@ void wxExManagedFrame::ShowExMessage(const wxString& text)
   }
   else
   {
-    wxLogMessage(text);
+    wxString t(text);
+    
+    if (t.Contains("%"))
+    {
+      t.Replace("%", "%%");
+    }
+    
+    wxLogMessage(t);
   }
 }
 
