@@ -31,7 +31,8 @@
 
 BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_CLOSE(Frame::OnClose)
-  EVT_AUINOTEBOOK_BG_DCLICK(NOTEBOOK_EDITORS, Frame::OnNotebook)
+  EVT_AUINOTEBOOK_BG_DCLICK(NOTEBOOK_EDITORS, Frame::OnNotebookEditors)
+  EVT_AUINOTEBOOK_BG_DCLICK(NOTEBOOK_PROJECTS, Frame::OnNotebookProjects)
   EVT_MENU(wxID_DELETE, Frame::OnCommand)
   EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
   EVT_MENU(wxID_JUMP_TO, Frame::OnCommand)
@@ -977,9 +978,14 @@ void Frame::OnCommandConfigDialog(
   }
 }
 
-void Frame::OnNotebook(wxAuiNotebookEvent& event)
+void Frame::OnNotebookEditors(wxAuiNotebookEvent& event)
 {
   FileHistoryPopupMenu();
+}
+
+void Frame::OnNotebookProjects(wxAuiNotebookEvent& event)
+{
+  ProjectHistoryPopupMenu();
 }
 
 void Frame::OnUpdateUI(wxUpdateUIEvent& event)

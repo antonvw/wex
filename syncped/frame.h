@@ -43,7 +43,8 @@ public:
 protected:
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
-  void OnNotebook(wxAuiNotebookEvent& event);
+  void OnNotebookEditors(wxAuiNotebookEvent& event);
+  void OnNotebookProjects(wxAuiNotebookEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual wxExListViewFileName* Activate(
