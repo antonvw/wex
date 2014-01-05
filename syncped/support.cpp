@@ -175,6 +175,7 @@ DecoratedFrame::DecoratedFrame()
     ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), wxEmptyString, wxART_FILE_OPEN);
   UseProjectHistory(ID_RECENT_PROJECT_MENU, menuProject);
   menuProject->Append(ID_PROJECT_OPENTEXT, _("&Open as Text"));
+  menuProject->AppendSeparator();
   menuProject->Append(
     ID_PROJECT_CLOSE, wxGetStockLabel(wxID_CLOSE), wxEmptyString, wxART_CLOSE);
   menuProject->AppendSeparator();
