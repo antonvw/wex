@@ -19,6 +19,7 @@ class wxFileName;
 class wxGenericDirCtrl;
 class wxXmlNode;
 
+class wxExEx;
 class wxExFileName;
 class wxExFrame;
 class wxExLexer;
@@ -75,6 +76,15 @@ const wxString wxExAlignText(
   /// If the lexer has no comment end character, fill out
   /// with spaces is not done.
   const wxExLexer& lexer);
+
+/// Returns calculated value of text.
+double wxExCalculator(
+  /// text used for calculation
+  const wxString& text, 
+  /// a marker, or line no referenced in text is solved using this ex
+  wxExEx* ex, 
+  /// width, or precision, for doubles
+  int& width);
 
 /// Adds data to the clipboard.
 bool wxExClipboardAdd(const wxString& text);

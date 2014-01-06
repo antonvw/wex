@@ -599,66 +599,9 @@ void wxExVi::CommandCalc(const wxString& command)
   const int index = command.StartsWith("=") ? 1: 2;
   
   // Calculation register.
-  const wxString calc = command.Mid(index);
-  
-  wxStringTokenizer tkz(calc, "+-*/");
-
-  double sum = 0;
-  bool init = true;
-  wxChar prev_cmd = 0;
   int width = 0;
+  const double sum = wxExCalculator(command.Mid(index), this, width);
 
-  while (tkz.HasMoreTokens())
-  {
-    wxString token = tkz.GetNextToken();
-    token.Trim(true);
-    token.Trim(false);
-    
-    const int new_width = token.AfterFirst(',').length();
-    if (new_width > width) width = new_width;
-    
-    double value;
-  
-    if (token.StartsWith(wxUniChar(WXK_CONTROL_R)))
-    {
-      const wxChar c = token[1];
-    
-      switch (c)
-      {
-      case '\"':
-        value = atof(wxExClipboardGet()); break;
-          
-      default:
-        value = atof(GetMacros().GetRegister(c));
-      }
-    }
-    else
-    {
-      value = atof(token);
-    }
-    
-    const wxChar cmd = tkz.GetLastDelimiter();
-    
-    if (init)
-    {
-      init = false;
-      sum = value;
-    }
-    else
-    {
-      switch (prev_cmd)
-      {
-        case 0: break;
-        case '+': sum += value; break;
-        case '-': sum -= value; break;
-        case '*': sum *= value; break;
-        case '/': sum /= value; break;
-      }
-    }
-    
-    prev_cmd = cmd;
-  }
-  
   if (m_Mode == MODE_INSERT)
   {
     if (GetLastCommand().EndsWith("cw"))

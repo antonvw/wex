@@ -26,6 +26,7 @@
 #include <wx/extension/configitem.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/dir.h>
+#include <wx/extension/ex.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
@@ -34,6 +35,7 @@
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vcs.h>
+#include <wx/extension/vimacros.h>
 
 wxExToVectorString::wxExToVectorString(const wxArrayString& in)
 {
@@ -118,6 +120,95 @@ const wxString wxExAlignText(
   out << lexer.MakeSingleLineComment(line, fill_out_with_space, fill_out);
 
   return out;
+}
+
+double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
+{
+  wxStringTokenizer tkz(text, "+-*/.$'", wxTOKEN_RET_EMPTY_ALL);
+
+  double sum = 0;
+  wxChar cmd = 0;
+
+  while (tkz.HasMoreTokens())
+  {
+    wxString token = tkz.GetNextToken();
+    token.Trim(true);
+    token.Trim(false);
+    
+    if (tkz.GetLastDelimiter() == '\'')
+    {
+      if (!tkz.GetString().empty())
+      {
+        const int line = ex->MarkerLine(tkz.GetString().GetChar(0));
+      
+        if (line == -1)
+        {
+          return 0;
+        }
+
+        switch (cmd)
+        {
+          case 0: 
+          case '+': 
+            sum += line + 1;
+            break;
+          
+          case '-': 
+            sum -= line + 1; 
+            break;
+        }
+      }
+    }
+    else
+    {
+      const int new_width = token.AfterFirst(',').length();
+      if (new_width > width) width = new_width;
+      
+      double value;
+    
+      if (token.StartsWith(wxUniChar(WXK_CONTROL_R)))
+      {
+        const wxChar c = token[1];
+      
+        switch (c)
+        {
+        case '\"':
+          value = atof(wxExClipboardGet()); break;
+            
+        default:
+          value = atof(ex->GetMacros().GetRegister(c));
+        }
+      }
+      else
+      {
+        value = atof(token);
+      }
+    
+      switch (cmd)
+      {
+        case 0: 
+        case '+': sum += value; break;
+        case '-': sum -= value; break;
+        case '*': sum *= value; break;
+        case '/': sum /= value; break;
+        
+        case '.': 
+          sum += ex->GetSTC()->GetCurrentLine() + 1; 
+          break;
+        
+        case '$': 
+          sum += ex->GetSTC()->GetLineCount(); 
+          break;
+      }
+    
+      if (tkz.GetLastDelimiter() != 0 || value == 0)
+      {
+        cmd = tkz.GetLastDelimiter();
+      }
+    }
+  }
+
+  return sum;
 }
 
 bool wxExClipboardAdd(const wxString& text)
