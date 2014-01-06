@@ -40,73 +40,10 @@ int wxExAddress::ToLine() const
   {
     return 0;
   }
+
+  int width = 0;
+  const int sum = wxExCalculator(*this, m_Ex, width);
   
-  wxStringTokenizer tkz(*this, "+-.$'", wxTOKEN_RET_EMPTY_ALL);
-
-  int sum = 0;
-  wxChar cmd = 0;
-
-  while (tkz.HasMoreTokens())
-  {
-    wxString token = tkz.GetNextToken();
-    token.Trim(true);
-    token.Trim(false);
-    
-    if (tkz.GetLastDelimiter() == '\'')
-    {
-      if (!tkz.GetString().empty())
-      {
-        const int line = m_Ex->MarkerLine(tkz.GetString().GetChar(0));
-      
-        if (line == -1)
-        {
-          return 0;
-        }
-
-        switch (cmd)
-        {
-          case 0: 
-          case '+': 
-            sum += line + 1;
-            break;
-          
-          case '-': 
-            sum -= line + 1; 
-            break;
-        }
-      }
-    }
-    else
-    {
-      const int value = atoi(token);
-    
-      switch (cmd)
-      {
-        case 0: 
-        case '+': 
-          sum += value; 
-          break;
-        
-        case '-': 
-          sum -= value; 
-          break;
-        
-        case '.': 
-          sum += m_Ex->GetSTC()->GetCurrentLine() + 1; 
-          break;
-        
-        case '$': 
-          sum += m_Ex->GetSTC()->GetLineCount(); 
-          break;
-      }
-    
-      if (tkz.GetLastDelimiter() != 0 || value == 0)
-      {
-        cmd = tkz.GetLastDelimiter();
-      }
-    }
-  }
-
   // Limit the range of what is returned.
   if (sum < 0)
   {
