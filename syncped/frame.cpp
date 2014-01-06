@@ -428,7 +428,8 @@ void Frame::NewFile()
  
   static wxString text;
   
-  wxTextEntryDialog dlg(this, _("File Name"), wxGetTextFromUserPromptStr, text);
+  wxTextEntryDialog dlg(this, 
+    _("Input") + ":", _("File Name"), text);
   
   if (dlg.ShowModal() == wxID_CANCEL)
   {
