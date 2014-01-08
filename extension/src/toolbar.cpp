@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wxExToolBar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -15,7 +15,7 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/util.h>
+//#include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
@@ -56,11 +56,6 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
-BEGIN_EVENT_TABLE(wxExToolBar, wxAuiToolBar)
-  EVT_CHECKBOX(ID_HEX_MODE, wxExToolBar::OnCommand)
-  EVT_CHECKBOX(ID_SYNC_MODE, wxExToolBar::OnCommand)
-END_EVENT_TABLE()
-
 wxExToolBar::wxExToolBar(wxExManagedFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
@@ -69,8 +64,6 @@ wxExToolBar::wxExToolBar(wxExManagedFrame* frame,
   : wxAuiToolBar(frame, id, pos, size, 
     style | wxAUI_TB_PLAIN_BACKGROUND | wxAUI_TB_HORZ_TEXT)
   , m_Frame(frame)
-  , m_HexMode(NULL)
-  , m_SyncMode(NULL)
 {
 }
 
@@ -80,26 +73,6 @@ void wxExToolBar::AddControls()
   AddTool(wxID_SAVE);
   AddTool(wxID_PRINT);
   AddTool(wxID_FIND);
-
-  AddControl(
-    m_HexMode = new wxCheckBox(
-      this,
-      ID_HEX_MODE,
-      "Hex"));
-
-  AddControl(
-    m_SyncMode = new wxCheckBox(
-      this,
-      ID_SYNC_MODE,
-      "Sync"));
-
-#if wxUSE_TOOLTIPS
-  m_HexMode->SetToolTip(_("Open in hex mode"));
-  m_SyncMode->SetToolTip(_("Synchronize modified files"));
-#endif
-
-  m_HexMode->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false));
-  m_SyncMode->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
 
   Realize();
 }
@@ -134,25 +107,6 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
       bitmap,
       shortHelp,
       kind);
-  }
-}
-
-void wxExToolBar::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case ID_HEX_MODE:
-    wxConfigBase::Get()->Write("HexMode", m_HexMode->GetValue());
-    break;
-
-  case ID_SYNC_MODE:
-    wxConfigBase::Get()->Write("AllowSync", m_SyncMode->GetValue());
-    m_Frame->SyncAll();
-    break;
-
-  default: 
-    wxFAIL;
-    break;
   }
 }
 
@@ -250,6 +204,59 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
 void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 {
   event.Enable(!m_FindCtrl->GetValue().empty());
+}
+
+BEGIN_EVENT_TABLE(wxExOptionsToolBar, wxExToolBar)
+  EVT_CHECKBOX(ID_HEX_MODE, wxExOptionsToolBar::OnCommand)
+  EVT_CHECKBOX(ID_SYNC_MODE, wxExOptionsToolBar::OnCommand)
+END_EVENT_TABLE()
+
+wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
+  wxWindowID id,
+  const wxPoint& pos,
+  const wxSize& size,
+  long style)
+  : wxExToolBar(frame, id, pos, size, style)
+  , m_HexMode(new wxCheckBox(
+    this,
+    ID_HEX_MODE,
+    "Hex"))
+  , m_SyncMode(new wxCheckBox(
+    this,
+    ID_SYNC_MODE,
+    "Sync"))
+{
+  AddControl(m_HexMode);
+  AddControl(m_SyncMode);
+
+#if wxUSE_TOOLTIPS
+  m_HexMode->SetToolTip(_("Open in hex mode"));
+  m_SyncMode->SetToolTip(_("Synchronize modified files"));
+#endif
+
+  m_HexMode->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false));
+  m_SyncMode->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
+  
+  Realize();
+}
+
+void wxExOptionsToolBar::OnCommand(wxCommandEvent& event)
+{
+  switch (event.GetId())
+  {
+  case ID_HEX_MODE:
+    wxConfigBase::Get()->Write("HexMode", m_HexMode->GetValue());
+    break;
+
+  case ID_SYNC_MODE:
+    wxConfigBase::Get()->Write("AllowSync", m_SyncMode->GetValue());
+    GetFrame()->SyncAll();
+    break;
+
+  default: 
+    wxFAIL;
+    break;
+  }
 }
 
 // Implementation of support class.
