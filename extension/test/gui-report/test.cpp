@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wxExtension report cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/report/report.h>
@@ -80,6 +80,9 @@ void wxExGuiReportTestFixture::testFrameWithHistory()
   
   // frame->FindInFilesDialog(ID_TOOL_REPORT_FIND);
   CPPUNIT_ASSERT(!frame->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
+  
+  frame->FileHistoryPopupMenu();
+  frame->ProjectHistoryPopupMenu();
 }
 
 void wxExGuiReportTestFixture::testListViewFile()

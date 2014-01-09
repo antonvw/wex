@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -36,9 +36,14 @@ wxExLexer::wxExLexer(const wxXmlNode* node)
 
 // Adds the specified keywords to the keywords map and the keywords set.
 // The text might contain the keyword set after a ':'.
-// Returns false if specified set is illegal.
+// Returns false if specified set is illegal or value is empty.
 bool wxExLexer::AddKeywords(const wxString& value)
 {
+  if (value.empty())
+  {
+    return false;
+  }
+  
   std::set<wxString> keywords_set;
 
   wxStringTokenizer tkz(value, "\r\n ");
@@ -49,7 +54,6 @@ bool wxExLexer::AddKeywords(const wxString& value)
   {
     const wxString line = tkz.GetNextToken();
     wxStringTokenizer fields(line, ":");
-
     wxString keyword;
 
     if (fields.CountTokens() > 1)
@@ -83,7 +87,16 @@ bool wxExLexer::AddKeywords(const wxString& value)
     m_Keywords.insert(keyword);
   }
 
-  m_KeywordsSet.insert(make_pair(setno, keywords_set));
+  auto it = m_KeywordsSet.find(setno);
+  
+  if (it == m_KeywordsSet.end())
+  {
+    m_KeywordsSet.insert(make_pair(setno, keywords_set));
+  }
+  else
+  {
+    it->second.insert(keywords_set.begin(), keywords_set.end());
+  }
 
   return true;
 }
@@ -203,7 +216,6 @@ const wxString wxExLexer::GetFormattedText(
 {
   wxString text = lines, header_to_use = header;
   size_t nCharIndex;
-
   wxString out;
 
   // Process text between the carriage return line feeds.
@@ -494,7 +506,7 @@ void wxExLexer::Set(const wxXmlNode* node)
           {
             wxLogError(
               "Keywords for %s could not be set on line: %d", 
-              att->GetName().c_str(),
+              att->GetValue().c_str(),
               child->GetLineNumber());
           }
         
@@ -523,7 +535,7 @@ void wxExLexer::Set(const wxXmlNode* node)
   for (const auto& it : m_KeywordsSet)
   {
     keywords += wxString::Format("set: %d %s\n",
-     it.first, GetKeywordsString(it.first).c_str());
+      it.first, GetKeywordsString(it.first).c_str());
   }
 
   if (!keywords.empty())
