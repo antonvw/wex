@@ -128,6 +128,7 @@ double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
 
   double sum = 0;
   wxChar cmd = 0;
+  width = 0;
 
   while (tkz.HasMoreTokens())
   {
