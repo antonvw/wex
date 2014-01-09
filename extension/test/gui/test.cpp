@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -787,14 +787,19 @@ void wxExGuiTestFixture::testLexer()
   CPPUNIT_ASSERT(!lexer.MakeSingleLineComment("test").empty());
 
   CPPUNIT_ASSERT( lexer.AddKeywords("hello:1"));
+  CPPUNIT_ASSERT( lexer.AddKeywords("more:1"));
   CPPUNIT_ASSERT( lexer.AddKeywords(
     "test11 test21:1 test31:1 test12:2 test22:2"));
+  CPPUNIT_ASSERT(!lexer.AddKeywords(""));
 
+  CPPUNIT_ASSERT( lexer.IsKeyword("hello")); 
+  CPPUNIT_ASSERT( lexer.IsKeyword("more")); 
   CPPUNIT_ASSERT( lexer.IsKeyword("class")); 
   CPPUNIT_ASSERT( lexer.IsKeyword("test11"));
   CPPUNIT_ASSERT( lexer.IsKeyword("test21"));
   CPPUNIT_ASSERT( lexer.IsKeyword("test12"));
   CPPUNIT_ASSERT( lexer.IsKeyword("test22"));
+  CPPUNIT_ASSERT( lexer.IsKeyword("test31"));
 
   CPPUNIT_ASSERT( lexer.KeywordStartsWith("te"));
   CPPUNIT_ASSERT(!lexer.KeywordStartsWith("xx"));
@@ -1146,8 +1151,15 @@ void wxExGuiTestFixture::testManagedFrame()
   frame->SyncAll();
   frame->SyncCloseAll(0);
   
+  CPPUNIT_ASSERT( frame->TogglePane("FINDBAR"));
+  CPPUNIT_ASSERT( frame->GetManager().GetPane("FINDBAR").IsShown());
+  CPPUNIT_ASSERT( frame->TogglePane("OPTIONSBAR"));
+  CPPUNIT_ASSERT( frame->GetManager().GetPane("OPTIONSBAR").IsShown());
+  CPPUNIT_ASSERT( frame->TogglePane("TOOLBAR"));
+  CPPUNIT_ASSERT(!frame->GetManager().GetPane("TOOLBAR").IsShown());
   CPPUNIT_ASSERT( frame->TogglePane("VIBAR"));
   CPPUNIT_ASSERT( frame->GetManager().GetPane("VIBAR").IsShown());
+  
   CPPUNIT_ASSERT(!frame->TogglePane("XXXXBAR"));
   CPPUNIT_ASSERT(!frame->GetManager().GetPane("XXXXBAR").IsOk());
 }
@@ -1730,6 +1742,22 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExAlignText("test", "header", true, true,
     wxExLexers::Get()->FindByName("cpp")).size() 
       == wxString("// headertest").size());
+      
+  // wxExCalculator
+  wxExEx* ex = new wxExEx(stc);
+  int width = 0;
+  CPPUNIT_ASSERT( wxExCalculator("", ex, width) == 0);
+  CPPUNIT_ASSERT( width == 0);
+  CPPUNIT_ASSERT( wxExCalculator("1 + 1", ex, width) == 2);
+  CPPUNIT_ASSERT( width == 0);
+  CPPUNIT_ASSERT( wxExCalculator("1 - 1", ex, width) == 0);
+  CPPUNIT_ASSERT( width == 0);
+  CPPUNIT_ASSERT( wxExCalculator("1 * 1", ex, width) == 1);
+  CPPUNIT_ASSERT( width == 0);
+  CPPUNIT_ASSERT( wxExCalculator("1.0 + 1", ex, width) == 2);
+  CPPUNIT_ASSERT( width == 1);
+  CPPUNIT_ASSERT( wxExCalculator("xxx", ex, width) == 0);
+  CPPUNIT_ASSERT( width == 0);
 
   // wxExClipboardAdd
   CPPUNIT_ASSERT( wxExClipboardAdd("test"));
@@ -1836,6 +1864,7 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   
   // wxExNodeProperties
+  
   // wxExNodeStyles
   
   // wxExOpenFiles
