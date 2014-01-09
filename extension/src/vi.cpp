@@ -2,7 +2,7 @@
 // Name:      vi.cpp
 // Purpose:   Implementation of class wxExVi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -1260,6 +1260,7 @@ bool wxExVi::InsertMode(const wxString& command)
        !m_InsertText.empty() &&
         m_InsertText.Last() == wxUniChar(WXK_CONTROL_R))
       {
+        GetSTC()->ReplaceSelection(wxEmptyString);
         m_InsertText += command;
         CommandReg(command.Last());
         return false;
