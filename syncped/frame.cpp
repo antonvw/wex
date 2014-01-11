@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -1499,6 +1499,11 @@ void Frame::SyncCloseAll(wxWindowID id)
   switch (id)
   {
   case NOTEBOOK_EDITORS:
+    SetTitle(wxTheApp->GetAppDisplayName());
+    StatusText(wxEmptyString, wxEmptyString);
+    StatusText(wxEmptyString, "PaneFileType");
+    StatusText(wxEmptyString, "PaneInfo");
+    StatusText(wxEmptyString, "PaneLexer");
     break;
   case NOTEBOOK_LISTS:
     GetManager().GetPane("OUTPUT").Hide();

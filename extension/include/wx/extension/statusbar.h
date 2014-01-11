@@ -2,7 +2,7 @@
 // Name:      statusbar.h
 // Purpose:   Declaration of wxExStatusBar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTATUSBAR_H
@@ -98,7 +98,8 @@ public:
   bool SetStatusText(
     /// text
     const wxString& text, 
-    /// field, default field pane 0
+    /// field, default field pane 0,
+    /// field ALL sets text on all panes
     const wxString& field = wxEmptyString);
   
   /// Shows or hides the field.

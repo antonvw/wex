@@ -532,6 +532,11 @@ void wxExGuiTestFixture::testFrame()
   CPPUNIT_ASSERT( sb != NULL);
   
   CPPUNIT_ASSERT( sb->GetFieldsCount () == panes.size());
+  CPPUNIT_ASSERT( sb->SetStatusText("XYZ", "ALL"));
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane0") == "XYZ");
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane2") == "XYZ");
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane4") == "XYZ");
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane6") == "XYZ");
   CPPUNIT_ASSERT( sb->SetStatusText("hello", ""));
   CPPUNIT_ASSERT( sb->SetStatusText("hello0", "Pane0"));
   CPPUNIT_ASSERT( sb->SetStatusText("hello1", "Pane1"));
