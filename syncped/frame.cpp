@@ -1504,6 +1504,12 @@ void Frame::SyncCloseAll(wxWindowID id)
     StatusText(wxEmptyString, "PaneFileType");
     StatusText(wxEmptyString, "PaneInfo");
     StatusText(wxEmptyString, "PaneLexer");
+    
+    if (GetManager().GetPane("PROJECTS").IsShown() && m_Projects != NULL)
+    {
+      GetManager().GetPane("PROJECTS").Maximize();
+      GetManager().Update();
+    }
     break;
   case NOTEBOOK_LISTS:
     GetManager().GetPane("OUTPUT").Hide();
