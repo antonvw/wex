@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wxExStatusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -149,17 +149,27 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
 
 bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
 {
-  const int no = GetFieldNo(field);
-
-  if (no == -1)
+  if (field == "ALL")
   {
-    // Do not show error, as you might explicitly want to ignore messages.
-    return false;
+    for (int i = 0; i < GetFieldsCount(); i++)
+    {
+      wxStatusBar::SetStatusText(text, i);
+    }
   }
-  
-  // wxStatusBar checks whether new text differs from current,
-  // and does nothing if the same to avoid flicker.
-  wxStatusBar::SetStatusText(text, no);
+  else
+  {
+    const int no = GetFieldNo(field);
+
+    if (no == -1)
+    {
+      // Do not show error, as you might explicitly want to ignore messages.
+      return false;
+    }
+    
+    // wxStatusBar checks whether new text differs from current,
+    // and does nothing if the same to avoid flicker.
+    wxStatusBar::SetStatusText(text, no);
+  }
   
   return true;
 }
