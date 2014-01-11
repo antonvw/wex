@@ -48,6 +48,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_STC_SAVE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_FIND, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_JUMP_TO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_PRINT, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_PREVIEW, Frame::OnUpdateUI)
@@ -1077,6 +1078,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
         switch (event.GetId())
         {
+        case wxID_FIND:
         case wxID_JUMP_TO:
         case wxID_REPLACE:
         case wxID_SAVEAS:
