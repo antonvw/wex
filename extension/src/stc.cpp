@@ -517,8 +517,11 @@ int wxExSTC::ConfigDialog(
     _("Indent"), 0, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
   items.push_back(wxExConfigItem(
     _("Divider"), 0, 40, _("Margin")));
-  items.push_back(wxExConfigItem(
-    _("Folding"), 0, 40, _("Margin")));
+  if (wxExLexers::Get()->GetCount() > 0)
+  {
+    items.push_back(wxExConfigItem(
+      _("Folding"), 0, 40, _("Margin")));
+  }
   items.push_back(wxExConfigItem(
     _("Line number"), 0, 100, _("Margin")));
 
@@ -554,7 +557,7 @@ int wxExSTC::ConfigDialog(
   items.push_back(wxExConfigItem(
     _("Print flags"), pchoices, true, _("Printer"), 1));
 
-  if (!(flags & STC_CONFIG_SIMPLE))
+  if (!(flags & STC_CONFIG_SIMPLE) && wxExLexers::Get()->GetCount() > 0)
   {
     // Directory page.
     items.push_back(wxExConfigItem(
