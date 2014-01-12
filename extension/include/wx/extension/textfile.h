@@ -2,7 +2,7 @@
 // Name:      textfile.h
 // Purpose:   Declaration of wxExTextFile class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXTEXTFILE_H
@@ -88,7 +88,7 @@ private:
     return isalnum(c) || c == '_';};
   bool MatchLine(wxString& line);
 
-  const wxExFileName m_FileName;
+  wxExFileName m_FileName;
   const wxExTool m_Tool;
   
   wxExFileStatistics m_Stats;

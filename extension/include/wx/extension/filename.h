@@ -2,7 +2,7 @@
 // Name:      filename.h
 // Purpose:   Declaration of class wxExFileName
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFILENAME_H
@@ -42,6 +42,9 @@ public:
 
   /// Gets the stat.
   const wxExStat& GetStat() const {return m_Stat;};
+  
+  /// Sets the lexer.
+  void SetLexer(const wxExLexer& lexer) {m_Lexer = lexer;};
 private:
   wxExLexer m_Lexer;
   wxExStat m_Stat;
