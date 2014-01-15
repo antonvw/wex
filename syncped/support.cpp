@@ -58,10 +58,7 @@ DecoratedFrame::DecoratedFrame()
     panes.push_back(wxExStatusBarPane("PaneVCS", 75, _("VCS")));
   }
   
-  if (wxExViMacros::GetFileName().FileExists())
-  {
-    panes.push_back(wxExStatusBarPane("PaneMacro", 75));
-  }
+  panes.push_back(wxExStatusBarPane("PaneMacro", 75));
   
   SetupStatusBar(panes);
   
@@ -82,10 +79,7 @@ DecoratedFrame::DecoratedFrame()
   
   const bool vi_mode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
   
-  if (wxExViMacros::GetFileName().FileExists())
-  {
-    m_StatusBar->ShowField("PaneMacro", vi_mode);
-  }
+  m_StatusBar->ShowField("PaneMacro", vi_mode);
 #endif
 
   wxExMenu *menuFile = new wxExMenu();

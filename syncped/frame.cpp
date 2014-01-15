@@ -1448,7 +1448,8 @@ void Frame::StatusBarClickedRight(const wxString& pane)
   {
     wxExSTC* stc = GetSTC();
     
-    if (stc != NULL && !stc->GetVi().GetIsActive())
+    if ((stc != NULL && !stc->GetVi().GetIsActive()) || 
+        !wxExViMacros::GetFileName().FileExists())
     {
       return;
     }
