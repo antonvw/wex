@@ -2,7 +2,7 @@
 // Name:      support.cpp
 // Purpose:   Implementation of DecoratedFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -94,7 +94,6 @@ DecoratedFrame::DecoratedFrame()
   UseFileHistory(ID_RECENT_FILE_MENU, menuFile);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_CLOSE);
-  menuFile->Append(ID_ALL_STC_CLOSE, _("Close A&ll"));
   menuFile->AppendSeparator();
   menuFile->Append(wxID_SAVE);
   menuFile->Append(wxID_SAVEAS);
