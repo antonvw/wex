@@ -1547,6 +1547,7 @@ void Notebook::OnNotebook(wxAuiNotebookEvent& event)
     menu.Append(ID_SPLIT, _("Split"));
     menu.AppendSeparator();
     menu.Append(wxID_CLOSE);
+    menu.Append(ID_ALL_STC_CLOSE, _("Close A&ll"));
     
     if (GetPageCount() > 2)
     {
