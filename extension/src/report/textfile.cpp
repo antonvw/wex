@@ -2,7 +2,7 @@
 // Name:      textfile.cpp
 // Purpose:   Implementation of class wxExTextFileWithListView
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype> // for isspace
@@ -38,6 +38,11 @@ wxExTextFileWithListView::wxExCommentType wxExTextFileWithListView::CheckComment
   const wxString& syntax_end,
   const wxString& text) const
 {
+  if (syntax_begin.empty() && syntax_end.empty())
+  {
+    return COMMENT_NONE;
+  }
+  
   if (syntax_begin == text)
   {
     return (syntax_end == text) ? COMMENT_BOTH: COMMENT_BEGIN;
