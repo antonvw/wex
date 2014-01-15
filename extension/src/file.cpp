@@ -2,7 +2,7 @@
 // Name:      file.cpp
 // Purpose:   Implementation of class wxExFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -65,10 +65,11 @@ bool wxExFile::CheckSync()
 
     if (sync_needed)
     {
-          // Update the stat member, so next time no sync.
+      // Update the stat member, so next time no sync.
       if (!m_Stat.Sync())
       {
-        wxLogError("Could not sync: " + m_FileName.GetFullPath());
+        // This might be reported in an OnIdele, so do not use wxLogError.
+        wxLogStatus("Could not sync: " + m_FileName.GetFullPath());
       }
         
       return true;
