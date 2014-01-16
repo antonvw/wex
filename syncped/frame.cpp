@@ -429,9 +429,11 @@ void Frame::NewFile()
   }
  
   static wxString text;
+  wxTextEntryDialog dlg(this, _("Input") + ":", _("File Name"), text);
   
-  wxTextEntryDialog dlg(this, 
-    _("Input") + ":", _("File Name"), text);
+  wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
+  validator.SetCharExcludes("/\\?%*:|\"<>");
+  dlg.SetTextValidator(validator);
   
   if (dlg.ShowModal() == wxID_CANCEL)
   {
