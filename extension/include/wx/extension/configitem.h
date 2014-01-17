@@ -2,7 +2,7 @@
 // Name:      configitem.h
 // Purpose:   Declaration of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXCONFIGITEM_H
@@ -13,6 +13,7 @@
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 #include <wx/slider.h> // for wxSL_HORIZONTAL
 #include <wx/string.h>
+#include <wx/valtext.h>
 
 class wxFlexGridSizer;
 class wxWindow;
@@ -301,6 +302,11 @@ public:
     
   /// Sets this item to be growable.
   void SetRowGrowable(bool value) {m_IsRowGrowable = value;};
+  
+  /// Sets the text validator to be used by the config item, if appropriate.
+  /// Default a normal wxDefaultValidator is used, except for CONFIG_INT,
+  /// that uses a wxTextValidator with wxFILTER_NUMERIC.
+  void SetTextValidator(wxTextValidator* validator) {m_Validator = validator;};
     
   /// Loads or saves this item to the config.
   /// Returns true if the config was accessed, as not all
@@ -340,9 +346,10 @@ private:
 
   wxExUserWindowCreate m_UserWindowCreate;
   wxExUserWindowToConfig m_UserWindowToConfig;
-    
+  
   wxExConfigType m_Type;
   wxSizerFlags m_SizerFlags;
+  wxTextValidator* m_Validator;
   wxWindow* m_Window;
 };
 #endif // wxUSE_GUI
