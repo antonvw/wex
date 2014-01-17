@@ -296,7 +296,11 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Id,
         wxEmptyString,
         wxDefaultPosition,
-        wxSize(250, wxDefaultCoord));
+        wxSize(250, wxDefaultCoord),
+        0,
+        NULL,
+        0,
+        (m_Validator != NULL ? *m_Validator: wxTextValidator(wxFILTER_NUMERIC)));
       break;
 
     case CONFIG_COMMAND_LINK_BUTTON:
