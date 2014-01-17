@@ -59,6 +59,9 @@ enum wxExConfigType
   /// a filepicker ctrl item
   CONFIG_FILEPICKERCTRL,
 
+  /// a textctrl item that only accepts a float (double)
+  CONFIG_FLOAT,
+  
   /// a fontpicker ctrl item
   CONFIG_FONTPICKERCTRL,
 
@@ -303,10 +306,10 @@ public:
   /// Sets this item to be growable.
   void SetRowGrowable(bool value) {m_IsRowGrowable = value;};
   
-  /// Sets the text validator to be used by the config item, if appropriate.
+  /// Sets the validator to be used by the config item, if appropriate.
   /// Default a normal wxDefaultValidator is used, except for CONFIG_INT,
   /// that uses a wxTextValidator with wxFILTER_NUMERIC.
-  void SetTextValidator(wxTextValidator* validator) {m_Validator = validator;};
+  void SetValidator(wxValidator* validator) {m_Validator = validator;};
     
   /// Loads or saves this item to the config.
   /// Returns true if the config was accessed, as not all
@@ -349,7 +352,7 @@ private:
   
   wxExConfigType m_Type;
   wxSizerFlags m_SizerFlags;
-  wxTextValidator* m_Validator;
+  wxValidator* m_Validator;
   wxWindow* m_Window;
 };
 #endif // wxUSE_GUI

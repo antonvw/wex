@@ -705,6 +705,13 @@ void wxExSampleFrame::ShowConfigItems()
     CONFIG_FILEPICKERCTRL, 
     "Pickers"));
 
+  // CONFIG_FLOAT
+  v.push_back(wxExConfigItem(
+    "Float", 
+    CONFIG_FLOAT, 
+    "Floats", 
+    true));
+      
   // CONFIG_FONTPICKERCTRL
   v.push_back(wxExConfigItem(
     "Font Picker", 
@@ -839,7 +846,7 @@ void wxExSampleFrame::ShowConfigItems()
     "Strings");
   wxTextValidator validator(wxFILTER_INCLUDE_CHAR_LIST);
   validator.SetCharIncludes("0123");
-  ci.SetTextValidator(&validator);
+  ci.SetValidator(&validator);
   v.push_back(ci);
       
   v.push_back(wxExConfigItem(

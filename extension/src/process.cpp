@@ -208,7 +208,7 @@ int wxExProcess::ConfigDialog(
     true);
     
   wxTextValidator validator(wxFILTER_ALPHANUMERIC);
-  ci.SetTextValidator(&validator);
+  ci.SetValidator(&validator);
   
   v.push_back(ci);
 
