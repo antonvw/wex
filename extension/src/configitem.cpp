@@ -19,6 +19,7 @@
 #include <wx/spinctrl.h>
 #include <wx/statline.h>
 #include <wx/tglbtn.h>
+#include <wx/valnum.h>
 #include <wx/window.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
@@ -300,7 +301,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         0,
         NULL,
         0,
-        (m_Validator != NULL ? *m_Validator: wxTextValidator(wxFILTER_NUMERIC)));
+        (m_Validator != NULL ? *m_Validator: wxDefaultValidator));
       break;
 
     case CONFIG_COMMAND_LINK_BUTTON:
@@ -357,6 +358,17 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
+    case CONFIG_FLOAT:
+      m_Window = new wxTextCtrl(parent,
+        m_Id,
+        wxEmptyString,
+        wxDefaultPosition,
+        wxSize(width_numeric, wxDefaultCoord),
+        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+        (m_Validator != NULL ? *m_Validator: 
+           wxFloatingPointValidator<float>()));
+      break;
+      
     case CONFIG_FONTPICKERCTRL:
       {
       wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent,
@@ -568,6 +580,7 @@ void wxExConfigItem::Init(const wxString& page, int cols)
     case CONFIG_BUTTON:
     case CONFIG_COLOUR:
     case CONFIG_COMMAND_LINK_BUTTON:
+    case CONFIG_FLOAT:
     case CONFIG_FONTPICKERCTRL:
     case CONFIG_HYPERLINKCTRL:
     case CONFIG_INT:
@@ -817,6 +830,18 @@ bool wxExConfigItem::ToConfig(bool save) const
       }
       break;
 
+    case CONFIG_FLOAT:
+      {
+      wxTextCtrl* tc = (wxTextCtrl*)m_Window;
+      
+      if (save)
+        wxConfigBase::Get()->Write(m_Label, atof(tc->GetValue().c_str()));
+      else
+        tc->SetValue(
+          wxString::Format("%lf", wxConfigBase::Get()->ReadDouble(m_Label, 0)));
+      }
+      break;
+      
     case CONFIG_FONTPICKERCTRL:
       {
       wxFontPickerCtrl* pc = (wxFontPickerCtrl*)m_Window;
