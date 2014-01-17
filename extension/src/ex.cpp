@@ -2,7 +2,7 @@
 // Name:      ex.cpp
 // Purpose:   Implementation of class wxExEx
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -571,6 +571,9 @@ void wxExEx::MacroStartRecording(const wxString& macro)
       _("Input") + ":",
       _("Enter Macro"),
       m_Macros.GetMacro());
+  
+    wxTextValidator validator(wxFILTER_ALPHANUMERIC);
+    dlg.SetTextValidator(validator);
   
     if (dlg.ShowModal() != wxID_OK)
     {
