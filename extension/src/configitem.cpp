@@ -2,7 +2,7 @@
 // Name:      configitem.cpp
 // Purpose:   Implementation of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -19,7 +19,6 @@
 #include <wx/spinctrl.h>
 #include <wx/statline.h>
 #include <wx/tglbtn.h>
-#include <wx/valtext.h>
 #include <wx/window.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
@@ -392,7 +391,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         wxDefaultPosition,
         wxSize(width_numeric, wxDefaultCoord),
         m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
-        wxTextValidator(wxFILTER_NUMERIC));
+        (m_Validator != NULL ? *m_Validator: wxTextValidator(wxFILTER_NUMERIC)));
       break;
 
     case CONFIG_LISTVIEW_FOLDER:
@@ -517,7 +516,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
            wxSize(width, 200):
            wxSize(width, wxDefaultCoord)),
         m_Style | 
-          (readonly ? wxTE_READONLY: 0));
+          (readonly ? wxTE_READONLY: 0),
+        (m_Validator != NULL ? *m_Validator: wxDefaultValidator));
       break;
 
     case CONFIG_TOGGLEBUTTON:
@@ -547,6 +547,7 @@ void wxExConfigItem::Init(const wxString& page, int cols)
   m_IsRowGrowable = false;
   m_Page = page;
   m_PageCols = -1;
+  m_Validator = NULL;
 
   if (m_Page.Contains(":"))
   {
