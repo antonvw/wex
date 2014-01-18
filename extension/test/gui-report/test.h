@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for wxExtension report cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _FTTESTUNIT_H
@@ -11,12 +11,21 @@
 #include <wx/extension/extension.h>
 #include "../test.h"
 
-/// CppUnit test suite.
-class wxExTestSuite : public CppUnit::TestSuite
+class FrameWithHistory : public wxExFrameWithHistory
 {
 public:
-  /// Default constructor.
-  wxExTestSuite();
+  FrameWithHistory(wxWindow* parent,
+    wxWindowID id,
+    const wxString& title,
+    size_t maxFiles = 9,
+    size_t maxProjects = 0,
+    int style = wxDEFAULT_FRAME_STYLE);
+
+  virtual wxExListViewFileName* Activate(
+    wxExListViewFileName::wxExListType list_type, 
+    const wxExLexer* lexer);
+private:
+  wxExListViewFileName* m_Report;
 };
 
 /// Derive your application from wxExApp.
@@ -31,6 +40,14 @@ private:
   virtual int OnRun();
   
   bool m_Success;
+};
+
+/// CppUnit test suite.
+class wxExTestSuite : public CppUnit::TestSuite
+{
+public:
+  /// Default constructor.
+  wxExTestSuite();
 };
 
 /// CppUnit app test fixture.
@@ -65,4 +82,3 @@ public:
   void test();
 };
 #endif
-
