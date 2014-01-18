@@ -761,6 +761,10 @@ void wxExGuiTestFixture::testLexer()
   wxExLexer lexer;
   CPPUNIT_ASSERT(!lexer.IsOk());
   
+  CPPUNIT_ASSERT( wxExLexer("cpp").IsOk());
+  CPPUNIT_ASSERT( wxExLexer("pascal").IsOk());
+  CPPUNIT_ASSERT(!wxExLexer("xxx").IsOk());
+  
   lexer = wxExLexers::Get()->FindByText("XXXX");
   CPPUNIT_ASSERT(!lexer.IsOk());
   
@@ -770,6 +774,7 @@ void wxExGuiTestFixture::testLexer()
   
   lexer = wxExLexers::Get()->FindByText("// this is a cpp comment text");
   CPPUNIT_ASSERT( lexer.IsOk());
+  CPPUNIT_ASSERT( wxExLexer(lexer).IsOk());
   CPPUNIT_ASSERT( lexer.GetDisplayLexer() == "cpp");
   CPPUNIT_ASSERT( lexer.GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(!lexer.GetExtensions().empty());

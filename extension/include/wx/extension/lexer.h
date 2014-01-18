@@ -2,7 +2,7 @@
 // Name:      lexer.h
 // Purpose:   Declaration of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXLEXER_H
@@ -30,6 +30,22 @@ public:
   /// Constructor using xml node.
   wxExLexer(const wxXmlNode* node);
 
+  /// Constructor using lexer.
+  wxExLexer(
+    /// lexer to use
+    const wxString& lexer, 
+    /// stc component on which to apply
+    wxStyledTextCtrl* stc = NULL,
+    /// if clear is true, old styles are reset (including folding)
+    bool clear = true);
+    
+  /// Constructor using lexer.
+  wxExLexer(
+    /// lexer to use
+    const wxExLexer& lexer, 
+    /// stc component on which to apply
+    wxStyledTextCtrl* stc = NULL);
+    
   /// Adds keywords (public for testing only).
   bool AddKeywords(const wxString& text);
   

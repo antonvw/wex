@@ -30,10 +30,21 @@ wxExLexer::wxExLexer()
 wxExLexer::wxExLexer(const wxXmlNode* node)
 {
   Initialize();
-  
   Set(node);
 }
 
+wxExLexer::wxExLexer(const wxString& lexer, wxStyledTextCtrl* stc, bool clear)
+{
+  Initialize();
+  Set(lexer, stc, true);
+}
+  
+wxExLexer::wxExLexer(const wxExLexer& lexer, wxStyledTextCtrl* stc) 
+{
+  Initialize();
+  Set(lexer, stc);
+}
+    
 // Adds the specified keywords to the keywords map and the keywords set.
 // The text might contain the keyword set after a ':'.
 // Returns false if specified set is illegal or value is empty.
@@ -150,6 +161,11 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
 void wxExLexer::ApplyWhenSet(
   const wxString& lexer, wxStyledTextCtrl* stc, bool clear)
 {
+  if (stc == NULL)
+  {
+    return;
+  }
+  
   stc->SetLexerLanguage(m_ScintillaLexer);
   
   if (m_ScintillaLexer.empty() && lexer.empty())
@@ -410,7 +426,7 @@ bool wxExLexer::Set(
 {
   (*this) = wxExLexers::Get()->FindByName(lexer);
   
-  if (!m_IsOk)
+  if (!m_IsOk && stc != NULL)
   {
     (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
   }
@@ -427,7 +443,7 @@ bool wxExLexer::Set(
 
 bool wxExLexer::Set(const wxExLexer& lexer, wxStyledTextCtrl* stc)
 {
-  if (lexer.GetScintillaLexer().empty())
+  if (lexer.GetScintillaLexer().empty() && stc != NULL)
   {
     (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
   }

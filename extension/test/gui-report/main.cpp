@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wxExtension report cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -16,6 +16,29 @@
 
 wxIMPLEMENT_APP(wxExTestApp);
 
+FrameWithHistory::FrameWithHistory(wxWindow* parent,
+  wxWindowID id,
+  const wxString& title,
+  size_t maxFiles,
+  size_t maxProjects,
+  int style)
+  : wxExFrameWithHistory(parent, id, title, maxFiles, maxProjects, style)
+{
+  wxExLexer lexer("cpp");
+  m_Report = new wxExListViewFileName(
+    this, 
+    wxExListViewFileName::LIST_KEYWORD,
+    wxID_ANY,
+    &lexer);
+}
+
+wxExListViewFileName* FrameWithHistory::Activate(
+  wxExListViewFileName::wxExListType list_type, 
+  const wxExLexer* lexer)
+{
+  return m_Report;
+}
+
 bool wxExTestApp::OnInit()
 {
   SetAppName("wxex-test-gui-report");
@@ -25,8 +48,8 @@ bool wxExTestApp::OnInit()
     return false;
   }
 
-  wxExFrameWithHistory *frame = new 
-    wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
+  FrameWithHistory* frame = new 
+    FrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
     
   frame->Show(true);
 
