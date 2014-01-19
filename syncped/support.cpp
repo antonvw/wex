@@ -87,7 +87,8 @@ DecoratedFrame::DecoratedFrame()
   menuFile->Append(wxID_OPEN);
   UseFileHistory(ID_RECENT_FILE_MENU, menuFile);
   menuFile->AppendSeparator();
-  menuFile->Append(wxID_CLOSE);
+  menuFile->Append(wxID_CLOSE,
+    wxGetStockLabel(wxID_CLOSE, wxSTOCK_NOFLAGS) + "\tCtrl+W");
   menuFile->AppendSeparator();
   menuFile->Append(wxID_SAVE);
   menuFile->Append(wxID_SAVEAS);

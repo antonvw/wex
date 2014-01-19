@@ -209,6 +209,12 @@ Frame::Frame(const std::vector< wxString > & files)
   {
     m_Editors->GetPage(m_Editors->GetPageCount() - 1)->SetFocus();
   }
+
+  wxAcceleratorEntry entries[1];
+  entries[0].Set(wxACCEL_CTRL, (int)'W', wxID_CLOSE);
+
+  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
+  SetAcceleratorTable(accel);
 }
 
 wxExListViewFileName* Frame::Activate(
