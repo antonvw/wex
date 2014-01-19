@@ -850,7 +850,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       else
         pc->SetSelectedFont(
           wxConfigBase::Get()->ReadObject(m_Label, 
-          wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+          wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
       }
       break;
 

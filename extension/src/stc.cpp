@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -599,7 +599,8 @@ void wxExSTC::ConfigGet(bool init)
     cfg->SetRecordDefaults(true);
   }
   
-  const wxFont font(cfg->ReadObject(_("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+  const wxFont font(cfg->ReadObject(
+    _("Default font"), wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
 
   if (m_DefaultFont != font)
   {
@@ -1311,7 +1312,7 @@ void wxExSTC::Initialize(bool file_exists)
   if (wxExLexers::Get()->GetCount() > 0)
   {
     m_DefaultFont = wxConfigBase::Get()->ReadObject(
-      _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT));
+      _("Default font"), wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
   }
   
 #ifdef __WXMSW__
