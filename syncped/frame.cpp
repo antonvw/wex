@@ -762,7 +762,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       {
         const wxFont font(
           wxConfigBase::Get()->ReadObject(_("List Font"), 
-            wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+            wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
 
         if (m_Projects != NULL)
         {
