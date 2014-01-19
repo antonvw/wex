@@ -359,14 +359,27 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_FLOAT:
-      m_Window = new wxTextCtrl(parent,
-        m_Id,
-        wxEmptyString,
-        wxDefaultPosition,
-        wxSize(width_numeric, wxDefaultCoord),
-        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
-        (m_Validator != NULL ? *m_Validator: 
-           wxFloatingPointValidator<float>()));
+      // See also CONFIG_INT, validator cannot be set using ?.
+      if (m_Validator == NULL)
+      {
+        m_Window = new wxTextCtrl(parent,
+          m_Id,
+          wxEmptyString,
+          wxDefaultPosition,
+          wxSize(width_numeric, wxDefaultCoord),
+          m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+          wxFloatingPointValidator<float>());
+      }
+      else
+      {
+        m_Window = new wxTextCtrl(parent,
+          m_Id,
+          wxEmptyString,
+          wxDefaultPosition,
+          wxSize(width_numeric, wxDefaultCoord),
+          m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+          *m_Validator);
+      }
       break;
       
     case CONFIG_FONTPICKERCTRL:
@@ -401,13 +414,26 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_INT:
-      m_Window = new wxTextCtrl(parent,
-        m_Id,
-        wxEmptyString,
-        wxDefaultPosition,
-        wxSize(width_numeric, wxDefaultCoord),
-        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
-        (m_Validator != NULL ? *m_Validator: wxTextValidator(wxFILTER_NUMERIC)));
+      if (m_Validator == NULL)
+      {
+        m_Window = new wxTextCtrl(parent,
+          m_Id,
+          wxEmptyString,
+          wxDefaultPosition,
+          wxSize(width_numeric, wxDefaultCoord),
+          m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+          wxTextValidator(wxFILTER_NUMERIC));
+      }
+      else
+      {
+        m_Window = new wxTextCtrl(parent,
+          m_Id,
+          wxEmptyString,
+          wxDefaultPosition,
+          wxSize(width_numeric, wxDefaultCoord),
+          m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+          *m_Validator);
+      }
       break;
 
     case CONFIG_LISTVIEW_FOLDER:
