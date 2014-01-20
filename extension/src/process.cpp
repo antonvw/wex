@@ -207,7 +207,8 @@ int wxExProcess::ConfigDialog(
     wxEmptyString,
     true);
     
-  wxTextValidator validator(wxFILTER_ALPHANUMERIC);
+  wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
+  validator.SetCharExcludes("/\\?%*:|\"<>");
   ci.SetValidator(&validator);
   
   v.push_back(ci);
