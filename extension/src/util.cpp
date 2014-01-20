@@ -21,6 +21,7 @@
 #include <wx/stdpaths.h>
 #include <wx/textctrl.h>
 #include <wx/tokenzr.h>
+#include <wx/wupdlock.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/util.h>
 #include <wx/extension/configitem.h>
@@ -686,9 +687,7 @@ void wxExOpenFiles(
   long file_flags,
   int dir_flags)
 {
-#ifdef __WXMSW__
-  frame->Freeze();
-#endif  
+  wxWindowUpdateLocker locker(frame);
   
   for (const auto& it : files)
   {
@@ -716,10 +715,6 @@ void wxExOpenFiles(
       frame->OpenFile(file, line_no, wxEmptyString, col_no, file_flags);
     }
   }
-  
-#ifdef __WXMSW__
-  frame->Thaw();
-#endif  
 }
 
 void wxExOpenFilesDialog(
