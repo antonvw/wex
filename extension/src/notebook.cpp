@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/wupdlock.h>
 #include <wx/extension/notebook.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
@@ -115,6 +116,8 @@ void wxExNotebook::ErasePage(const wxString& key)
 
 bool wxExNotebook::ForEach(int id)
 {
+  wxWindowUpdateLocker locker(m_Frame);
+  
   // The page should be an int (no), otherwise page >= 0 never fails!
   for (int page = GetPageCount() - 1; page >= 0; page--)
   {
