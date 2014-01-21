@@ -1098,7 +1098,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         case ID_EDIT_UNFOLD_ALL:
           event.Enable(editor->GetLength() > 0);
           break;
-
         case ID_EDIT_MACRO:
           event.Enable(
              editor->GetVi().GetIsActive() &&
@@ -1153,7 +1152,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           wxFAIL;
         }
       }
-      else if (list != NULL)
+      else if (list != NULL && list->IsShown())
       {
         event.Enable(false);
 
@@ -1162,6 +1161,10 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           event.GetId() < ID_TOOL_HIGHEST)
         {
           event.Enable(list->GetSelectedItemCount() > 0);
+        }
+        else if (event.GetId() == wxID_FIND)
+        {
+          event.Enable(list->GetItemCount() > 0);
         }
       }
       else
