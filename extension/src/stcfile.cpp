@@ -199,7 +199,10 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
   else
   {
     m_STC->GuessType();
-    // When opening a lot of files, this might cause an assert.
+    
+#ifdef DEBUG
+    std::cout << GetFileName().GetFullPath() << "\n";
+#endif
     m_STC->DocumentStart();
   }
 
