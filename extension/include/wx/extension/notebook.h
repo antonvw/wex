@@ -29,7 +29,7 @@ public:
     long style = wxAUI_NB_DEFAULT_STYLE);
 
   /// Adds the page with given key and fills the keys.
-  /// If the key already exists, NULL is returned,
+  /// If the page already exists, NULL is returned,
   /// and no new page is added.
   wxWindow* AddPage(
     wxWindow* page,
@@ -62,7 +62,7 @@ public:
   int GetPageIndexByKey(const wxString& key) const;
   
   /// Inserts the page with given key and fills the keys.
-  /// If the key already exists, NULL is returned,
+  /// If the page already exists, NULL is returned,
   /// and no new page is added.
   wxWindow* InsertPage(
     size_t page_idx,
