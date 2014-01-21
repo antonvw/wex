@@ -46,7 +46,7 @@ wxWindow* wxExNotebook::AddPage(
   bool select,
   const wxBitmap& bitmap)
 {
-  if (GetPageByKey(key) != NULL)
+  if (GetPageIndex(page) != wxNOT_FOUND)
   {
     return NULL;
   }
@@ -244,7 +244,7 @@ wxWindow* wxExNotebook::InsertPage(
   bool select,
   const wxBitmap& bitmap)
 {
-  if (GetPageByKey(key) != NULL)
+  if (GetPageIndex(page) != wxNOT_FOUND)
   {
     return NULL;
   }
