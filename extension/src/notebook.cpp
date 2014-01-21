@@ -48,7 +48,6 @@ wxWindow* wxExNotebook::AddPage(
 {
   if (GetPageByKey(key) != NULL)
   {
-    wxFAIL;
     return NULL;
   }
 
@@ -60,12 +59,12 @@ wxWindow* wxExNotebook::AddPage(
     return NULL;
   }
   
-  m_MapPages[key] = page;
+  m_Keys.push_back(key);
 
 #ifdef LOGGING
-  wxLogMessage("added page key: %s text: %s page: %d",
+  wxLogMessage("added key: %s text: %s page: %d",
     key.c_str(), text.c_str(), page->GetId());
-  LogMapPages();
+  LogKeys();
 #endif
 
   return page;
@@ -73,50 +72,44 @@ wxWindow* wxExNotebook::AddPage(
 
 bool wxExNotebook::DeletePage(const wxString& key)
 {
-  wxWindow* page = GetPageByKey(key);
+  const int index = GetPageIndexByKey(key);
 
-  wxASSERT(page != NULL);
-
-  if (wxAuiNotebook::DeletePage(GetPageIndex(page)))
+  if (index != wxNOT_FOUND && wxAuiNotebook::DeletePage(index))
   {
+    EraseKey(index);
 #ifdef LOGGING
-    wxLogMessage("deleted page: %s page: %d",
-      key.c_str(), page->GetId());
-    LogMapPages();
+    wxLogMessage("deleted key: %s page: %d",
+      key.c_str(), index);
+    LogKeys();
 #endif
 
-    ErasePage(key);
     return true;
   }
   else
   {
-    wxFAIL;
     return false;
   }
 }
 
-void wxExNotebook::ErasePage(const wxString& key)
+void wxExNotebook::EraseKey(int page)
 {
-  m_MapPages.erase(key);
+  auto it = m_Keys.begin();
+  m_Keys.erase(it + page);
 
 #ifdef LOGGING
-  wxLogMessage("erased page key: %s",
-    key.c_str());
-  LogMapPages();
+  wxLogMessage("erased key: %d", page);
+  LogKeys();
 #endif
 
-  if (m_Frame != NULL)
+  if (m_Frame != NULL && m_Keys.empty())
   {
-    if (m_MapPages.empty())
-    {
-      m_Frame->SyncCloseAll(GetId());
-    }
+    m_Frame->SyncCloseAll(GetId());
   }
 }
 
 bool wxExNotebook::ForEach(int id)
 {
-  wxWindowUpdateLocker locker(m_Frame);
+  wxWindowUpdateLocker locker(m_Frame != NULL ? (wxWindow*)m_Frame: (wxWindow*)this);
   
   // The page should be an int (no), otherwise page >= 0 never fails!
   for (int page = GetPageCount() - 1; page >= 0; page--)
@@ -154,7 +147,8 @@ bool wxExNotebook::ForEach(int id)
             return false;
           }
         
-          DeletePage(GetKeyByPage(GetPage(page)));
+          wxAuiNotebook::DeletePage(page);
+          EraseKey(page);
         }
       }
       break;
@@ -196,17 +190,15 @@ bool wxExNotebook::ForEach(int id)
 const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
 {
 #ifdef LOGGING
-  wxLogMessage("get key by page: %d",
-    page->GetId());
-  LogMapPages();
+  wxLogMessage("get key by page: %d", page->GetId());
+  LogKeys();
 #endif
 
-  for (const auto& it : m_MapPages)
+  const int index = GetPageIndex(page);
+  
+  if (index != wxNOT_FOUND)
   {
-    if (it.second == page)
-    {
-      return it.first;
-    }
+    return m_Keys[index];
   }
 
   wxFAIL;
@@ -216,28 +208,32 @@ const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
 
 wxWindow* wxExNotebook::GetPageByKey(const wxString& key) const
 {
-  const auto it = m_MapPages.find(key);
-
-  if (it != m_MapPages.end())
+  const int index = GetPageIndexByKey(key);
+  
+  if (index != wxNOT_FOUND)
   {
-    return it->second;
+    return GetPage(index);
   }
-  else
-  {
-    return NULL;
-  }
+  
+  return NULL;
 }
 
 int wxExNotebook::GetPageIndexByKey(const wxString& key) const
 {
-  wxWindow* page = GetPageByKey(key);
-  
-  if (page != NULL)
+  // std::find gives compile error
+  // const auto it = std::find(m_Keys.begin(), m_Keys.end(), key);
+  int i = 0;
+  for (const auto& it : m_Keys)
   {
-    return GetPageIndex(page);
-  }
+    if (it == key)
+    {
+      return i;
+    }
   
-  return -1;
+    i++;
+  }
+
+  return wxNOT_FOUND;
 }
 
 wxWindow* wxExNotebook::InsertPage(
@@ -250,7 +246,6 @@ wxWindow* wxExNotebook::InsertPage(
 {
   if (GetPageByKey(key) != NULL)
   {
-    wxFAIL;
     return NULL;
   }
 
@@ -262,22 +257,24 @@ wxWindow* wxExNotebook::InsertPage(
     return NULL;
   }
 
-  m_MapPages[key] = page;
+  auto it = m_Keys.begin();
+  m_Keys.insert(it + page_idx, key);
 
 #ifdef LOGGING
-  wxLogMessage("inserted page key: %s text: %s page: %d",
-    key.c_str(), text.c_str(), page->GetId());
-  LogMapPages();
+  wxLogMessage("inserted key: %s text: %s page: %d",
+    key.c_str(), text.c_str(), page_idx);
+  LogKeys();
 #endif
 
   return page;
 }
 
-void wxExNotebook::LogMapPages() const
+void wxExNotebook::LogKeys() const
 {
-  for (const auto& it : m_MapPages)
+  int i = 0;
+  for (const auto& it : m_Keys)
   {
-     wxLogMessage("map[%s]=%d", it.first.c_str(), it.second->GetId());
+    wxLogMessage("key[%d]=%s", i++, it);
   }
 }
   
@@ -310,8 +307,7 @@ void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
       }
       else
       {
-        const wxString key = GetKeyByPage(GetPage(sel));
-        ErasePage(key);
+        EraseKey(sel);
         m_Frame->HideExBar();
         event.Skip(); // call base
       }
@@ -329,25 +325,24 @@ bool wxExNotebook::SetPageText(
   const wxString& text,
   const wxBitmap& bitmap)
 {
-  wxWindow* page = GetPageByKey(key);
+  const int index = GetPageIndexByKey(key);
 
-  if (page != NULL)
+  if (index != wxNOT_FOUND)
   {
-    m_MapPages.erase(key);
-    m_MapPages[new_key] = page;
-
-    if (!wxAuiNotebook::SetPageText(GetPageIndex(page), text))
+    if (!wxAuiNotebook::SetPageText(index, text))
     {
       wxFAIL;
     }
     
+    m_Keys[index] = new_key;
+    
     if (bitmap.IsOk())
     {
-      SetPageBitmap(GetPageIndex(page), bitmap);
+      SetPageBitmap(index, bitmap);
     }
   }
 
-  return (page != NULL);
+  return (index != wxNOT_FOUND);
 }
 
 wxWindow* wxExNotebook::SetSelection(const wxString& key)
