@@ -21,6 +21,17 @@
 
 #undef LOGGING
 
+#ifdef LOGGING
+void LogKeys(const vector<wxString>& keys)
+{
+  int i = 0;
+  for (const auto& it : keys)
+  {
+    wxLogMessage("key[%d]=%s", i++, it);
+  }
+}
+#endif
+  
 BEGIN_EVENT_TABLE(wxExNotebook, wxAuiNotebook)
   EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, wxExNotebook::OnNotebook)
   EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, wxExNotebook::OnNotebook)
@@ -35,8 +46,8 @@ wxExNotebook::wxExNotebook(wxWindow* parent,
   : wxAuiNotebook(parent, id, pos, size, style)
   , m_Frame(frame)
 {
-  // Here you could use another atr provider.
-  //SetArtProvider(new wxAuiSimpleTabArt); 
+  // Here you could use another art provider.
+  // SetArtProvider(new wxAuiSimpleTabArt); 
 }
 
 wxWindow* wxExNotebook::AddPage(
@@ -46,25 +57,16 @@ wxWindow* wxExNotebook::AddPage(
   bool select,
   const wxBitmap& bitmap)
 {
-  if (GetPageIndex(page) != wxNOT_FOUND)
+  if (!wxAuiNotebook::AddPage(page, (text.empty() ? key: text), select, bitmap))
   {
-    return NULL;
-  }
-
-  const wxString use_text = (text.empty() ? key: text);
-
-  if (!wxAuiNotebook::AddPage(page, use_text, select, bitmap))
-  {
-    wxFAIL;
     return NULL;
   }
   
   m_Keys.push_back(key);
 
 #ifdef LOGGING
-  wxLogMessage("added key: %s text: %s page: %d",
-    key.c_str(), text.c_str(), page->GetId());
-  LogKeys();
+  wxLogMessage("added key: %s", key.c_str());
+  LogKeys(m_Keys);
 #endif
 
   return page;
@@ -76,11 +78,15 @@ bool wxExNotebook::DeletePage(const wxString& key)
 
   if (index != wxNOT_FOUND && wxAuiNotebook::DeletePage(index))
   {
-    EraseKey(index);
+    m_Keys.erase(m_Keys.begin() + index);
+    
+    if (m_Frame != NULL && m_Keys.empty())
+    {
+      m_Frame->SyncCloseAll(GetId());
+    }
 #ifdef LOGGING
-    wxLogMessage("deleted key: %s page: %d",
-      key.c_str(), index);
-    LogKeys();
+    wxLogMessage("deleted key: %s index: %d", key.c_str(), index);
+    LogKeys(m_Keys);
 #endif
 
     return true;
@@ -88,22 +94,6 @@ bool wxExNotebook::DeletePage(const wxString& key)
   else
   {
     return false;
-  }
-}
-
-void wxExNotebook::EraseKey(int page)
-{
-  auto it = m_Keys.begin();
-  m_Keys.erase(it + page);
-
-#ifdef LOGGING
-  wxLogMessage("erased key: %d", page);
-  LogKeys();
-#endif
-
-  if (m_Frame != NULL && m_Keys.empty())
-  {
-    m_Frame->SyncCloseAll(GetId());
   }
 }
 
@@ -125,7 +115,6 @@ bool wxExNotebook::ForEach(int id)
     if (stc == NULL)
     {
       wxFAIL;
-
       // Do not return false, otherwise close all would not finish.
       continue;
     }
@@ -148,7 +137,7 @@ bool wxExNotebook::ForEach(int id)
           }
         
           wxAuiNotebook::DeletePage(page);
-          EraseKey(page);
+          m_Keys.erase(m_Keys.begin() + page);
         }
       }
       break;
@@ -184,16 +173,16 @@ bool wxExNotebook::ForEach(int id)
     }
   }
 
+  if (m_Frame != NULL && m_Keys.empty())
+  {
+    m_Frame->SyncCloseAll(GetId());
+  }
+
   return true;
 }
 
 const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
 {
-#ifdef LOGGING
-  wxLogMessage("get key by page: %d", page->GetId());
-  LogKeys();
-#endif
-
   const int index = GetPageIndex(page);
   
   if (index != wxNOT_FOUND)
@@ -244,40 +233,21 @@ wxWindow* wxExNotebook::InsertPage(
   bool select,
   const wxBitmap& bitmap)
 {
-  if (GetPageIndex(page) != wxNOT_FOUND)
+  if (!wxAuiNotebook::InsertPage(page_idx, page, (text.empty() ? key: text), select, bitmap))
   {
     return NULL;
   }
 
-  const wxString use_text = (text.empty() ? key: text);
-
-  if (!wxAuiNotebook::InsertPage(page_idx, page, use_text, select, bitmap))
-  {
-    wxFAIL;
-    return NULL;
-  }
-
-  auto it = m_Keys.begin();
-  m_Keys.insert(it + page_idx, key);
+  m_Keys.insert(m_Keys.begin() + page_idx, key);
 
 #ifdef LOGGING
-  wxLogMessage("inserted key: %s text: %s page: %d",
-    key.c_str(), text.c_str(), page_idx);
-  LogKeys();
+  wxLogMessage("inserted key: %s index: %d", key.c_str(), page_idx);
+  LogKeys(m_Keys);
 #endif
 
   return page;
 }
 
-void wxExNotebook::LogKeys() const
-{
-  int i = 0;
-  for (const auto& it : m_Keys)
-  {
-    wxLogMessage("key[%d]=%s", i++, it);
-  }
-}
-  
 void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED)
@@ -291,25 +261,24 @@ void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
   }
   else if (event.GetEventType() == wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE)
   {
-    if (m_Frame != NULL)
+    const int sel = event.GetSelection();
+    
+    if (sel != wxNOT_FOUND)
     {
-      const int sel = event.GetSelection();
-      
-      if (sel == wxNOT_FOUND)
-      {
-        wxFAIL;
-        return;
-      }
-      
-      if (!m_Frame->AllowClose(GetId(), GetPage(sel)))
+      if (m_Frame != NULL && !m_Frame->AllowClose(GetId(), GetPage(sel)))
       {
         event.Veto();
       }
       else
       {
-        EraseKey(sel);
-        m_Frame->HideExBar();
+        m_Keys.erase(m_Keys.begin() + sel);
         event.Skip(); // call base
+        
+        if (m_Frame != NULL)
+        {
+          if (m_Keys.empty()) m_Frame->SyncCloseAll(GetId());
+          m_Frame->HideExBar();
+        }
       }
     }
   }
@@ -327,34 +296,32 @@ bool wxExNotebook::SetPageText(
 {
   const int index = GetPageIndexByKey(key);
 
-  if (index != wxNOT_FOUND)
+  if (index == wxNOT_FOUND || !wxAuiNotebook::SetPageText(index, text))
   {
-    if (!wxAuiNotebook::SetPageText(index, text))
-    {
-      wxFAIL;
-    }
-    
-    m_Keys[index] = new_key;
-    
-    if (bitmap.IsOk())
-    {
-      SetPageBitmap(index, bitmap);
-    }
+    return false;
   }
 
-  return (index != wxNOT_FOUND);
+  m_Keys[index] = new_key;
+  
+  if (bitmap.IsOk())
+  {
+    SetPageBitmap(index, bitmap);
+  }
+
+  return true;
 }
 
 wxWindow* wxExNotebook::SetSelection(const wxString& key)
 {
-  wxWindow* page = GetPageByKey(key);
+  const int index = GetPageIndexByKey(key);
 
-  if (page != NULL)
+  if (index == wxNOT_FOUND)
   {
-    wxAuiNotebook::SetSelection(GetPageIndex(page));
+    return NULL;
   }
-  
-  return page;
+
+  wxAuiNotebook::SetSelection(index);
+  return GetPage(index);
 }
   
 #endif // wxUSE_GUI
