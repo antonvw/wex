@@ -29,8 +29,6 @@ public:
     long style = wxAUI_NB_DEFAULT_STYLE);
 
   /// Adds the page with given key and fills the keys.
-  /// If the page already exists, NULL is returned,
-  /// and no new page is added.
   wxWindow* AddPage(
     wxWindow* page,
     const wxString& key,
@@ -62,8 +60,6 @@ public:
   int GetPageIndexByKey(const wxString& key) const;
   
   /// Inserts the page with given key and fills the keys.
-  /// If the page already exists, NULL is returned,
-  /// and no new page is added.
   wxWindow* InsertPage(
     size_t page_idx,
     wxWindow* page,
@@ -87,9 +83,6 @@ public:
 protected:
   void OnNotebook(wxAuiNotebookEvent& event);
 private:
-  void EraseKey(int page);
-  void LogKeys() const;
-
   wxExManagedFrame* m_Frame;
   // In bookctrl.h: m_pages
   std::vector<wxString> m_Keys;
