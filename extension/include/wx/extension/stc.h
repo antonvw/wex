@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTC_H
@@ -35,11 +35,13 @@ class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
   friend class wxExHexModeLine; // might update m_HexBuffer
   friend class wxExSTCFile; //  might update m_HexBuffer
 public:
-  /// Menu and tooltip flags (0 is used for no menu).
+  /// Menu and tooltip flags.
   enum wxExMenuFlags
   {
-    STC_MENU_OPEN_LINK = 0x0001, ///< for adding link open menu
-    STC_MENU_DEFAULT   = 0xFFFF  ///< all
+    STC_MENU_NONE      = 0x0000, ///< no context menu
+    STC_MENU_DEFAULT   = 0x0001, ///< default, standard context menu
+    STC_MENU_OPEN_LINK = 0x0002, ///< for adding link open menu
+    STC_MENU_VCS       = 0x0004, ///< for adding vcs menu
   };
 
   /// Window flags.
@@ -67,7 +69,7 @@ public:
     const wxString& value = wxEmptyString,
     long win_flags = STC_WIN_DEFAULT,
     const wxString& title = wxEmptyString,
-    long menu_flags = STC_MENU_DEFAULT & ~STC_MENU_OPEN_LINK,
+    long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize, 
@@ -81,7 +83,7 @@ public:
     const wxString& match = wxEmptyString,
     int col_number = 0,
     long win_flags = STC_WIN_DEFAULT,
-    long menu_flags = STC_MENU_DEFAULT,
+    long menu_flags = STC_MENU_DEFAULT & STC_MENU_OPEN_LINK,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,

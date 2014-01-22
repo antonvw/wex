@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _FRAME_H
@@ -24,6 +24,7 @@ public:
     const wxSize& size = wxDefaultSize,
     long style = wxAUI_NB_DEFAULT_STYLE);
 protected:
+  void OnCommand(wxCommandEvent& event);
   void OnNotebook(wxAuiNotebookEvent& event);
 private:    
   DECLARE_EVENT_TABLE()
