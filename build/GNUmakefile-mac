@@ -23,7 +23,7 @@ AR ?= ar
 RANLIB ?= ranlib
 
 # C++ compiler 
-CXX = `$(WX_CONFIG) --cxx`
+CXX = `$(WX_CONFIG) --cxx` --std=c++11
 
 # Standard flags for C++ 
 CXXFLAGS ?= 
@@ -69,6 +69,7 @@ WX_CONFIG_FLAGS = $(WX_CONFIG_UNICODE_FLAG) $(WX_CONFIG_SHARED_FLAG) \
 WXEX_CXXFLAGS = $(VAR) $(VAR_3) -DwxExUSE_PORTABLE -I../extension/include \
 	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 WXEX_OBJECTS =  \
+	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_address.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_app.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_art.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_configdlg.o \
@@ -177,7 +178,7 @@ $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX):
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver
+all: test_for_selected_wxbuild $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex30.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep30.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver
 
 install: install_syncped install_syncsocketserver
 
@@ -186,26 +187,26 @@ uninstall: uninstall_syncped uninstall_syncsocketserver
 clean: 
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/*.o
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/*.d
-	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
-	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a
+	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex30.a
+	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep30.a
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
 
-$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a: $(WXEX_OBJECTS)
+$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex30.a: $(WXEX_OBJECTS)
 	rm -f $@
 	$(AR) rcu $@ $(WXEX_OBJECTS)
 	$(RANLIB) $@
 
-$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a: $(WXEX_REP_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
+$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep30.a: $(WXEX_REP_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex30.a
 	rm -f $@
 	$(AR) rcu $@ $(WXEX_REP_OBJECTS)
 	$(RANLIB) $@
 
-$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped: $(SYNCPED_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
-	$(CXX) -o $@ $(SYNCPED_OBJECTS)   $(VAR_3) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
+$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped: $(SYNCPED_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep30.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex30.a
+	$(CXX) -o $@ $(SYNCPED_OBJECTS)   $(VAR_3) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep30.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex30.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,xml,core,base`
 
 install_syncped: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
 	$(INSTALL) -d $(DESTDIR)/usr/local/bin/
@@ -214,8 +215,8 @@ install_syncped: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
 uninstall_syncped: 
 	rm -f $(DESTDIR)/usr/local/bin//syncped
 
-$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver: $(SYNCSOCKETSERVER_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
-	$(CXX) -o $@ $(SYNCSOCKETSERVER_OBJECTS)   $(VAR_3) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,net,xml,core,base`
+$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver: $(SYNCSOCKETSERVER_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep30.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex30.a
+	$(CXX) -o $@ $(SYNCSOCKETSERVER_OBJECTS)   $(VAR_3) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep30.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex30.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,net,xml,core,base`
 
 install_syncsocketserver: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver
 	$(INSTALL) -d $(DESTDIR)/usr/local/bin/
@@ -223,6 +224,9 @@ install_syncsocketserver: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)
 
 uninstall_syncsocketserver: 
 	rm -f $(DESTDIR)/usr/local/bin//syncsocketserver
+
+$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_address.o: ./../extension/src/address.cpp
+	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_app.o: ./../extension/src/app.cpp
 	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
