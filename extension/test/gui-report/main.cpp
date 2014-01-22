@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <ui/text/TestRunner.h>
+#include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/TestRunner.h>
 #include <wx/extension/report/frame.h>
 #include "test.h"
