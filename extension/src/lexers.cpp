@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wxExLexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -179,7 +179,9 @@ const wxExLexer wxExLexers::FindByFileName(
 {
   for (const auto& it : m_Lexers)
   {
-    if (wxExMatchesOneOf(filename, it.GetExtensions()))
+    if (
+      !it.GetExtensions().empty() && 
+       wxExMatchesOneOf(filename, it.GetExtensions()))
     {
       return it;
     }
