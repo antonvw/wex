@@ -16,7 +16,7 @@ class wxExAddressRange;
 /// Offers an address class to be used by vi address ranges.
 class WXDLLIMPEXP_BASE wxExAddress : public wxString
 {
-  friend wxExAddressRange;
+  friend class wxExAddressRange;
 public:
   /// Constructor for an address.
   wxExAddress(
