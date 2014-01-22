@@ -256,12 +256,15 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if (m_File.GetFileName().FileExists() && sel.empty())
+  if (m_MenuFlags & STC_MENU_VCS)
   {
-    if (wxExVCS::DirExists(m_File.GetFileName()))
+    if (m_File.GetFileName().FileExists() && sel.empty())
     {
-      menu.AppendSeparator();
-      menu.AppendVCS(m_File.GetFileName());
+      if (wxExVCS::DirExists(m_File.GetFileName()))
+      {
+        menu.AppendSeparator();
+        menu.AppendVCS(m_File.GetFileName());
+      }
     }
   }
 
@@ -1725,7 +1728,7 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
   }
   else if (event.RightUp())
   {
-    if (m_MenuFlags == 0)
+    if (m_MenuFlags == STC_MENU_NONE)
     {
       event.Skip();
     }

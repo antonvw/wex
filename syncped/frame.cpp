@@ -1340,7 +1340,8 @@ bool Frame::OpenFile(
         line_number,
         match,
         col_number,
-        flags);
+        flags,
+        0xFFFF);
 
       notebook->AddPage(
         editor,
@@ -1539,6 +1540,7 @@ void Frame::SyncCloseAll(wxWindowID id)
 
 BEGIN_EVENT_TABLE(Notebook, wxExNotebook)
   EVT_AUINOTEBOOK_TAB_RIGHT_UP(wxID_ANY, Notebook::OnNotebook)
+  EVT_MENU_RANGE(ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST, Notebook::OnCommand)
 END_EVENT_TABLE()
 
 Notebook::Notebook(wxWindow* parent,
@@ -1549,6 +1551,15 @@ Notebook::Notebook(wxWindow* parent,
   long style)
   : wxExNotebook(parent, frame, id, pos, size, style)
 {
+}
+
+void Notebook::OnCommand(wxCommandEvent& event)
+{
+  if (event.GetId() > ID_EDIT_VCS_LOWEST && 
+      event.GetId() < ID_EDIT_VCS_HIGHEST)
+  {
+    wxPostEvent(GetCurrentPage(), event);
+  }
 }
 
 void Notebook::OnNotebook(wxAuiNotebookEvent& event)
@@ -1566,6 +1577,14 @@ void Notebook::OnNotebook(wxAuiNotebookEvent& event)
       menu.Append(ID_ALL_STC_CLOSE_OTHERS, _("Close Others"));
     }
 
+    wxExSTC* stc = wxDynamicCast(GetPage(event.GetSelection()), wxExSTC);
+    
+    if (wxExVCS::DirExists(stc->GetFile().GetFileName()))
+    {
+      menu.AppendSeparator();
+      menu.AppendVCS(stc->GetFile().GetFileName());
+    }
+    
     PopupMenu(&menu);
   }
   else
