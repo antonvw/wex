@@ -8,7 +8,7 @@
 #ifndef _EXNOTEBOOK_H
 #define _EXNOTEBOOK_H
 
-#include <vector>
+#include <map>
 #include <wx/aui/auibook.h>
 
 #if wxUSE_GUI
@@ -85,7 +85,8 @@ protected:
 private:
   wxExManagedFrame* m_Frame;
   // In bookctrl.h: m_pages
-  std::vector<wxString> m_Keys;
+  std::map<wxString, wxWindow*> m_Keys;
+  std::map<wxWindow*, wxString> m_Windows;
 
   DECLARE_EVENT_TABLE()
 };
