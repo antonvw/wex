@@ -186,24 +186,6 @@ bool wxExNotebook::ForEach(int id)
   return true;
 }
 
-const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
-{
-  const auto it = m_Windows.find(page);
-  return (it != m_Windows.end() ? it->second: wxString(wxEmptyString));
-}
-
-wxWindow* wxExNotebook::GetPageByKey(const wxString& key) const
-{
-  const auto it = m_Keys.find(key);
-  return (it != m_Keys.end() ? it->second: NULL);
-}
-
-int wxExNotebook::GetPageIndexByKey(const wxString& key) const
-{
-  wxWindow* page = GetPageByKey(key);
-  return (page != NULL ? GetPageIndex(page): wxNOT_FOUND);  
-}
-
 wxWindow* wxExNotebook::InsertPage(
   size_t page_idx,
   wxWindow* page,

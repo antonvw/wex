@@ -47,17 +47,22 @@ public:
   bool ForEach(int id);
 
   /// Returns the key specified by the given page.
-  /// If the page does not exist an empty string is returned,
-  /// and an assert is reported.
-  const wxString GetKeyByPage(wxWindow* page) const;
-
+  /// If the page does not exist an empty string is returned.
+  const wxString GetKeyByPage(wxWindow* page) const {
+    const auto it = m_Windows.find(page);
+    return (it != m_Windows.end() ? it->second: wxString(wxEmptyString));};
+  
   /// Returns the page specified by the given key.
   /// If the key does not exist NULL is returned.
-  wxWindow* GetPageByKey(const wxString& key) const;
+  wxWindow* GetPageByKey(const wxString& key) const {
+    const auto it = m_Keys.find(key);
+    return (it != m_Keys.end() ? it->second: NULL);};
   
   /// Returns the page index specified by the given key.
   /// If the key does not exist wxNOT_FOUND is returned.
-  int GetPageIndexByKey(const wxString& key) const;
+  int GetPageIndexByKey(const wxString& key) const {
+    wxWindow* page = GetPageByKey(key);
+    return (page != NULL ? GetPageIndex(page): wxNOT_FOUND);};
   
   /// Inserts the page with given key and fills the keys.
   wxWindow* InsertPage(
