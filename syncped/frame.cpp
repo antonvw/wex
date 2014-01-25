@@ -1577,7 +1577,7 @@ void Notebook::OnNotebook(wxAuiNotebookEvent& event)
       menu.Append(ID_ALL_STC_CLOSE_OTHERS, _("Close Others"));
     }
 
-    wxExSTC* stc = wxDynamicCast(GetPage(event.GetSelection()), wxExSTC);
+    wxExSTC* stc = wxDynamicCast(GetCurrentPage(), wxExSTC);
     
     if (wxExVCS::DirExists(stc->GetFile().GetFileName()))
     {
