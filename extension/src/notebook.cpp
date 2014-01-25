@@ -201,13 +201,7 @@ wxWindow* wxExNotebook::GetPageByKey(const wxString& key) const
 int wxExNotebook::GetPageIndexByKey(const wxString& key) const
 {
   wxWindow* page = GetPageByKey(key);
-  
-  if (page != NULL)
-  {
-    return GetPageIndex(page);
-  }
-  
-  return wxNOT_FOUND;
+  return (page != NULL ? GetPageIndex(page): wxNOT_FOUND);  
 }
 
 wxWindow* wxExNotebook::InsertPage(
