@@ -618,7 +618,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
   wxXmlNode* root = doc.GetRoot();
   wxXmlNode* child;
   
-  while (child = root->GetChildren())
+  while (child == root->GetChildren())
   {
     root->RemoveChild(child);
     delete child;
