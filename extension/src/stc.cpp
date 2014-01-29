@@ -2205,6 +2205,10 @@ bool wxExSTC::SetHexMode(
     
     m_Goto = 1;
     
+    SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
+    SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
+    SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
+    
     if (!m_HexBuffer.empty())
     {
       const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
