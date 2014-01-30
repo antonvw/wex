@@ -201,8 +201,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     return;
   }
 
-  wxLogStatus(
-    wxExFindReplaceData::Get()->GetFindReplaceInfoText(replace));
+  wxLogStatus(GetFindReplaceInfoText(replace));
     
   int flags = wxDIR_FILES | wxDIR_HIDDEN;
   
@@ -314,9 +313,7 @@ int wxExFrameWithHistory::FindInFilesDialog(
     return wxID_CANCEL;
   }
 
-  wxLogStatus(
-    wxExFindReplaceData::Get()->GetFindReplaceInfoText(
-      id == ID_TOOL_REPORT_REPLACE));
+  wxLogStatus(GetFindReplaceInfoText(id == ID_TOOL_REPORT_REPLACE));
         
   return wxID_OK;
 }
@@ -326,6 +323,18 @@ const wxString wxExFrameWithHistory::GetFindInCaption(int id) const
   return (id == ID_TOOL_REPORT_REPLACE ?
     _("Replace In Selection"):
     _("Find In Selection"));
+}
+
+const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
+{
+  wxString log = _("Searching for") + ": " + wxExFindReplaceData::Get()->GetFindString();
+
+  if (replace)
+  {
+    log += " " + _("replacing with") + ": " + wxExFindReplaceData::Get()->GetReplaceString();
+  }
+
+  return log;
 }
 
 void wxExFrameWithHistory::HistoryPopupMenu(
