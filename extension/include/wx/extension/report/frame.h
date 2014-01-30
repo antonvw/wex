@@ -8,6 +8,7 @@
 #ifndef _EX_REPORT_FRAME_H
 #define _EX_REPORT_FRAME_H
 
+#include <set>
 #include <wx/filehistory.h>
 #include <wx/extension/listview.h> // for wxExListViewFileName::wxExListType 
 #include <wx/extension/managedframe.h>
@@ -164,6 +165,8 @@ private:
   const wxString m_TextInFiles;
   const wxString m_TextInFolder;
   const wxString m_TextRecursive;
+  
+  std::set < wxString > m_Info;
   
   bool m_ProjectModified;
 

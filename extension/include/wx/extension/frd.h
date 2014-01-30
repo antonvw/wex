@@ -35,9 +35,6 @@ public:
   const std::list < wxString > & GetFindStrings() const {
     return m_FindStrings;};
 
-  /// Gets the text for the check boxes.
-  const std::set<wxString> & GetInfo() const {return m_Info;};
-
   /// Gets the regular expression.
   const wxRegEx& GetRegularExpression() const {
     return m_FindRegularExpression;};
@@ -127,7 +124,6 @@ private:
 
   std::list < wxString > m_FindStrings;
   std::list < wxString > m_ReplaceStrings;
-  std::set < wxString > m_Info;
 
   static wxExFindReplaceData* m_Self;
 };

@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -80,6 +80,12 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   {
     wxConfigBase::Get()->Write(m_TextRecursive, true); 
   }
+
+  // This set determines what fields are placed on the Find Files dialogs
+  // as a list of checkboxes.
+  m_Info.insert(wxExFindReplaceData::Get()->GetTextMatchWholeWord());
+  m_Info.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
+  m_Info.insert(wxExFindReplaceData::Get()->GetTextRegEx());
 }
 
 wxExFrameWithHistory::~wxExFrameWithHistory()
@@ -135,7 +141,7 @@ void wxExFrameWithHistory::CreateDialogs()
   s.insert(m_TextRecursive);
   r.push_back(wxExConfigItem(s));
   
-  std::set<wxString> t(wxExFindReplaceData::Get()->GetInfo());
+  std::set<wxString> t(m_Info);
   t.insert(m_TextRecursive);
   f.push_back(wxExConfigItem(t));
   
@@ -304,7 +310,7 @@ int wxExFrameWithHistory::FindInFilesDialog(
       CONFIG_COMBOBOX));
   }
 
-  v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
+  v.push_back(wxExConfigItem(m_Info));
 
   if (wxExConfigDialog(this,
     v,
