@@ -48,12 +48,6 @@ wxExFindReplaceData::wxExFindReplaceData()
   {
     wxFindReplaceData::SetReplaceString(m_ReplaceStrings.front());
   }
-
-  // This set determines what fields are placed on the Find Files dialogs
-  // as a list of checkboxes.
-  m_Info.insert(m_TextMatchWholeWord);
-  m_Info.insert(m_TextMatchCase);
-  m_Info.insert(m_TextRegEx);
 }
 
 wxExFindReplaceData::~wxExFindReplaceData()
