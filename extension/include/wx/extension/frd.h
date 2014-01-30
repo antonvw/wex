@@ -2,7 +2,7 @@
 // Name:      frd.h
 // Purpose:   Declaration of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFRD_H
@@ -30,9 +30,6 @@ public:
 
   /// Gets field member into a check list box.
   bool Get(const wxString& field, wxCheckListBox* clb, int item) const;
-
-  /// Gets find/replace info text.
-  const wxString GetFindReplaceInfoText(bool replace = false) const;
 
   /// Gets the find strings.
   const std::list < wxString > & GetFindStrings() const {

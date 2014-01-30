@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Include file for wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_FRAME_H
@@ -151,6 +151,7 @@ private:
   void CreateDialogs();
   void DoRecent(wxFileHistory& history, size_t index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);
+  const wxString GetFindReplaceInfoText(bool replace = false) const;
   void HistoryPopupMenu(const wxFileHistory& history, int first_id, int clear_id);
   void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
