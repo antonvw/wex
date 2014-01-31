@@ -48,7 +48,8 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   wxPersistentRegisterAndRestore(this);
 
   m_STC = (use_shell ?
-    new wxExSTCShell(this, text, wxEmptyString, true, -1, wxEmptyString, wxExSTC::STC_MENU_DEFAULT):
+    new wxExSTCShell(this, text, wxEmptyString, true, -1, wxEmptyString,
+      wxExSTC::STC_MENU_DEFAULT | wxExSTC::STC_MENU_OPEN_LINK):
     new wxExSTC(this, text));
   
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
