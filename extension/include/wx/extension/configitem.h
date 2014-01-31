@@ -15,6 +15,7 @@
 #include <wx/string.h>
 #include <wx/valtext.h>
 
+class wxCheckListBox;
 class wxFlexGridSizer;
 class wxWindow;
 

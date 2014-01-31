@@ -12,6 +12,7 @@
 #include <wx/button.h>
 #include <wx/clrpicker.h> // for wxColourPickerWidget
 #include <wx/commandlinkbutton.h>
+#include <wx/checklst.h>
 #include <wx/config.h>
 #include <wx/filepicker.h>
 #include <wx/fontpicker.h>
