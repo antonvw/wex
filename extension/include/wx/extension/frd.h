@@ -9,12 +9,10 @@
 #define _EXFRD_H
 
 #include <list>
-#include <set>
-#include <wx/regex.h>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
+#include <wx/regex.h>
 #include <wx/textctrl.h>
 
-class wxCheckListBox;
 class wxExFindTextCtrl;
 
 /// Adds an existing config to wxFindReplaceData, and some members.
@@ -27,9 +25,6 @@ public:
  
   /// Gets the find replace data.
   static wxExFindReplaceData* Get(bool createOnDemand = true);
-
-  /// Gets field member into a check list box.
-  bool Get(const wxString& field, wxCheckListBox* clb, int item) const;
 
   /// Gets the find strings.
   const std::list < wxString > & GetFindStrings() const {
@@ -76,7 +71,7 @@ public:
   static wxExFindReplaceData* Set(wxExFindReplaceData* frd);
 
   /// Sets field member if the specified text matches 
-  /// one of the text fields.
+  /// one of the (boolean) text fields.
   bool Set(const wxString& field, bool value);
 
   /// Sets the find string.

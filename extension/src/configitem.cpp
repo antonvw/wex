@@ -583,6 +583,31 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
   }
 }
 
+bool wxExConfigItem::Get(
+  const wxString& field, 
+  wxCheckListBox* clb, 
+  int item) const
+{
+  if (field == wxExFindReplaceData::Get()->GetTextMatchWholeWord())
+  {
+    clb->Check(item, wxExFindReplaceData::Get()->MatchWord());
+  }
+  else if (field == wxExFindReplaceData::Get()->GetTextMatchCase())
+  {
+    clb->Check(item, wxExFindReplaceData::Get()->MatchCase());
+  }
+  else if (field == wxExFindReplaceData::Get()->GetTextRegEx())
+  {
+    clb->Check(item, wxExFindReplaceData::Get()->UseRegularExpression());
+  }
+  else
+  {
+    return false;
+  }
+
+  return true;
+}
+
 void wxExConfigItem::Init(const wxString& page, int cols)
 {
   m_Cols = cols;
@@ -781,7 +806,7 @@ bool wxExConfigItem::ToConfig(bool save) const
         }
         else
         {
-          if (!wxExFindReplaceData::Get()->Get(clb->GetString(i), clb, i))
+          if (!Get(clb->GetString(i), clb, i))
           {
             clb->Check(i, wxConfigBase::Get()->ReadBool(clb->GetString(i), false));
           }
