@@ -320,6 +320,7 @@ private:
   void AddStaticText(wxSizer* sizer) const;
   void CreateWindow(wxWindow* parent, bool readonly);
   void Init(const wxString& page, int cols);
+  bool Get(const wxString& field, wxCheckListBox* clb, int item) const;
 
   // The members are allowed to be const using
   // MS Visual Studio 2010, not using gcc, so

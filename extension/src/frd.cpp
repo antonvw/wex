@@ -10,7 +10,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h> 
-#include <wx/checklst.h> 
 #include <wx/stc/stc.h> 
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
@@ -82,31 +81,6 @@ wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
   return m_Self;
 }
 
-bool wxExFindReplaceData::Get(
-  const wxString& field, 
-  wxCheckListBox* clb, 
-  int item) const
-{
-  if (field == m_TextMatchWholeWord)
-  {
-    clb->Check(item, MatchWord());
-  }
-  else if (field == m_TextMatchCase)
-  {
-    clb->Check(item, MatchCase());
-  }
-  else if (field == m_TextRegEx)
-  {
-    clb->Check(item, UseRegularExpression());
-  }
-  else
-  {
-    return false;
-  }
-
-  return true;
-}
-
 wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
 {
   wxExFindReplaceData* old = m_Self;
@@ -116,17 +90,21 @@ wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
 
 bool wxExFindReplaceData::Set(const wxString& field, bool value)
 {
-  if (field == m_TextMatchWholeWord)
-  {
-    SetMatchWord(value);
-  }
-  else if (field == m_TextMatchCase)
+  if (field == m_TextMatchCase)
   {
     SetMatchCase(value);
+  }
+  else if (field == m_TextMatchWholeWord)
+  {
+    SetMatchWord(value);
   }
   else if (field == m_TextRegEx)
   {
     SetUseRegularExpression(value);
+  }
+  else if (field == m_TextSearchDown)
+  {
+    SetFlags(value ? wxFR_DOWN: ~wxFR_DOWN);
   }
   else
   {
