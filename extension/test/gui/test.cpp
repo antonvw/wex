@@ -603,7 +603,12 @@ void wxExGuiTestFixture::testFrd()
   
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
   
+  frd->SetMatchCase(true);
+  CPPUNIT_ASSERT( frd->MatchCase());
+  frd->SetMatchWord(true);
+  CPPUNIT_ASSERT( frd->MatchWord());
   frd->SetUseRegularExpression(true);
+  CPPUNIT_ASSERT( frd->UseRegularExpression());
 
   frd->SetFindString("find1");
   frd->SetFindString("find2");
@@ -629,6 +634,12 @@ void wxExGuiTestFixture::testFrd()
   frd->SetReplaceStrings(l);
   CPPUNIT_ASSERT( frd->GetFindString() == "find3");
   CPPUNIT_ASSERT( frd->GetReplaceString() == "find3");
+  
+  CPPUNIT_ASSERT( frd->Set(frd->GetTextMatchCase(), false));
+  CPPUNIT_ASSERT(!frd->MatchCase());
+  CPPUNIT_ASSERT( frd->Set(frd->GetTextMatchWholeWord(), false));
+  CPPUNIT_ASSERT(!frd->MatchWord());
+  CPPUNIT_ASSERT(!frd->Set("XXXX", false));
 }
 
 void wxExGuiTestFixture::testGrid()
@@ -2179,26 +2190,31 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT( vi->MacroPlayback("a"));
 //  CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
+
+  // Be sure we are in normal mode.
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   
-  event.m_keyCode = WXK_CONTROL_B;
+  // Vi control key tests.
+  event.m_uniChar = WXK_CONTROL_B;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_keyCode = WXK_CONTROL_E;
+  event.m_uniChar = WXK_CONTROL_E;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_keyCode = WXK_CONTROL_F;
+  event.m_uniChar = WXK_CONTROL_F;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_keyCode = WXK_CONTROL_G;
+  event.m_uniChar = WXK_CONTROL_G;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_keyCode = WXK_CONTROL_J;
+  event.m_uniChar = WXK_CONTROL_J;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_keyCode = WXK_CONTROL_P;
+  event.m_uniChar = WXK_CONTROL_P;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_keyCode = WXK_CONTROL_Q;
+  event.m_uniChar = WXK_CONTROL_Q;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
   
@@ -2207,7 +2223,7 @@ void wxExGuiTestFixture::testVi()
   event.m_keyCode = WXK_RETURN;
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_TAB;
-  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
   
   // Vi navigation command tests.
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
