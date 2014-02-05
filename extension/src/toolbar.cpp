@@ -300,7 +300,7 @@ void wxExTextCtrl::Find(bool find_next, bool restore_position)
     
     stc->FindNext(
       GetValue(), 
-      wxExFindReplaceData::Get()->STCFlags(),
+      -1,
       find_next);
   }
 }

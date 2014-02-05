@@ -98,9 +98,6 @@ public:
   void SetUseRegularExpression(bool value) {
     m_UseRegularExpression = value;};
 
-  /// Convert search flags into STC search flags.
-  int STCFlags() const;
-
   /// Returns true if find text is used as a regular expression.
   bool UseRegularExpression() const {return m_UseRegularExpression;};
 private:
