@@ -147,7 +147,8 @@ public:
     /// - wxSTC_FIND_WORDSTART
     /// - wxSTC_FIND_REGEXP
     /// - wxSTC_FIND_POSIX
-    int search_flags = 0,
+    /// - if -1, use flags from find replace data
+    int find_flags = -1,
     /// finds next or previous
     bool find_next = true);
     
@@ -285,7 +286,8 @@ public:
     /// - wxSTC_FIND_WORDSTART
     /// - wxSTC_FIND_REGEXP
     /// - wxSTC_FIND_POSIX
-    int search_flags = 0,
+    /// - if -1, use flags from find replace data
+    int find_flags = 0,
     /// argument passed on to FindNext
     bool find_next = true);
   
@@ -312,6 +314,15 @@ public:
   /// Sets lexer prop name and value, and applies it.
   void SetLexerProperty(const wxString& name, const wxString& value);
 
+  /// search flags to be used:
+  /// - wxSTC_FIND_WHOLEWORD
+  /// - wxSTC_FIND_MATCHCASE
+  /// - wxSTC_FIND_WORDSTART
+  /// - wxSTC_FIND_REGEXP
+  /// - wxSTC_FIND_POSIX
+  /// - if -1, use flags from find replace data
+  void SetSearchFlags(int flags);
+  
   /// Sets the text.
   void SetText(const wxString& value);
 

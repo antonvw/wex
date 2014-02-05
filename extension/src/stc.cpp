@@ -877,13 +877,13 @@ bool wxExSTC::FindNext(bool find_next)
 {
   return FindNext(
     wxExFindReplaceData::Get()->GetFindString(),
-    wxExFindReplaceData::Get()->STCFlags(),
+    -1,
     find_next);
 }
 
 bool wxExSTC::FindNext(
   const wxString& text, 
-  int search_flags,
+  int find_flags,
   bool find_next)
 {
   if (text.empty())
@@ -918,7 +918,7 @@ bool wxExSTC::FindNext(
 
   SetTargetStart(start_pos);
   SetTargetEnd(end_pos);
-  SetSearchFlags(search_flags);
+  SetSearchFlags(find_flags);
 
   if (SearchInTarget(text) == -1)
   {
@@ -930,7 +930,7 @@ bool wxExSTC::FindNext(
     if (!recursive)
     {
       recursive = true;
-      found = FindNext(text, search_flags, find_next);
+      found = FindNext(text, GetSearchFlags(), find_next);
       recursive = false;
     }
     
@@ -1054,7 +1054,7 @@ const wxString wxExSTC::GetFindString()
     
     // If regexp is true, then only use selected text if text does not
     // contain special regexp characters.
-    if (wxExFindReplaceData::Get()->STCFlags() & wxSTC_FIND_REGEXP)
+    if (GetSearchFlags() & wxSTC_FIND_REGEXP)
     {
       for (size_t i = 0; i < selection.size() && alnum; i++)
       {
@@ -1076,6 +1076,7 @@ const wxString wxExSTC::GetFindString()
 
   return wxExFindReplaceData::Get()->GetFindString();
 }
+
 
 const wxString wxExSTC::GetWordAtPos(int pos) const
 {
@@ -1184,10 +1185,10 @@ void wxExSTC::GotoLineAndSelect(
 
   if (!text.empty())
   {
-    SetSearchFlags(wxExFindReplaceData::Get()->STCFlags());
     const int start_pos = PositionFromLine(line_number - 1);
     const int end_pos = GetLineEndPosition(line_number - 1);
 
+    SetSearchFlags(-1);
     SetTargetStart(start_pos);
     SetTargetEnd(end_pos);
 
@@ -1292,7 +1293,6 @@ void wxExSTC::HexDecCalltip(int pos)
 
 void wxExSTC::Initialize(bool file_exists)
 {
-  SetSearchFlags(wxSTC_FIND_REGEXP);
   Sync();
   
   m_HexMode = false;
@@ -2037,9 +2037,8 @@ int wxExSTC::ReplaceAll(
     SetTargetEnd(GetLength());
   }
 
-  SetSearchFlags(wxExFindReplaceData::Get()->STCFlags());
   int nr_replacements = 0;
-
+  SetSearchFlags(-1);
   BeginUndoAction();
 
   while (SearchInTarget(find_text) != -1)
@@ -2095,14 +2094,14 @@ bool wxExSTC::ReplaceNext(bool find_next)
   return ReplaceNext(
     wxExFindReplaceData::Get()->GetFindString(),
     wxExFindReplaceData::Get()->GetReplaceString(),
-    wxExFindReplaceData::Get()->STCFlags(),
+    -1,
     find_next);
 }
 
 bool wxExSTC::ReplaceNext(
   const wxString& find_text, 
   const wxString& replace_text,
-  int search_flags,
+  int find_flags,
   bool find_next)
 {
   if (!GetSelectedText().empty())
@@ -2113,9 +2112,10 @@ bool wxExSTC::ReplaceNext(
   {
     SetTargetStart(GetCurrentPos());
     SetTargetEnd(GetLength());
+    SetSearchFlags(find_flags);
     if (SearchInTarget(find_text) == -1) return false;
   }
-  
+
   if (HexMode())
   {
     for (const auto& it : replace_text)
@@ -2130,7 +2130,7 @@ bool wxExSTC::ReplaceNext(
       ReplaceTarget(replace_text);
   }
 
-  FindNext(find_text, search_flags, find_next);
+  FindNext(find_text, find_flags, find_next);
   
   return true;
 }
@@ -2292,6 +2292,21 @@ void wxExSTC::SetLexerProperty(const wxString& name, const wxString& value)
 {
   m_Lexer.SetProperty(name, value);
   m_Lexer.Apply(this);
+}
+
+void wxExSTC::SetSearchFlags(int flags)
+{
+  if (flags == -1)
+  {
+    flags = 0;
+    
+    wxExFindReplaceData* frd = wxExFindReplaceData::Get();
+    if (frd->UseRegularExpression()) flags |= wxSTC_FIND_REGEXP;
+    if (frd->MatchWord()) flags |= wxSTC_FIND_WHOLEWORD;
+    if (frd->MatchCase()) flags |= wxSTC_FIND_MATCHCASE;
+  }
+
+  wxStyledTextCtrl::SetSearchFlags(flags);
 }
 
 void wxExSTC::SetText(const wxString& value)

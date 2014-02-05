@@ -10,7 +10,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h> 
-#include <wx/stc/stc.h> 
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
 
@@ -58,17 +57,6 @@ wxExFindReplaceData::~wxExFindReplaceData()
   wxConfigBase::Get()->Write(m_TextMatchWholeWord, MatchWord());
   wxConfigBase::Get()->Write(m_TextRegEx, m_UseRegularExpression);
   wxConfigBase::Get()->Write(m_TextSearchDown, SearchDown());
-}
-
-int wxExFindReplaceData::STCFlags() const
-{
-  int flags = 0;
-
-  if (UseRegularExpression())  flags |= wxSTC_FIND_REGEXP;
-  if (MatchWord()) flags |= wxSTC_FIND_WHOLEWORD;
-  if (MatchCase()) flags |= wxSTC_FIND_MATCHCASE;
-
-  return flags;
 }
 
 wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
