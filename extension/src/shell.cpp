@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wxExSTCShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -176,44 +176,16 @@ void wxExSTCShell::Expand()
   }
   else
   {
-    wxString subdir = path.BeforeLast(wxFileName::GetPathSeparator());
-    
-    if (!subdir.empty())
+    if (wxExAutoCompleteFileName(m_Command, m_AutoCompleteList))
     {
-      subdir = wxFileName::GetPathSeparator() + subdir;
-    }
-    
-    wxDir dir(wxGetCwd() + subdir);
-    wxString filename;
-  
-    if (dir.IsOpened() && dir.GetFirst(&filename, word + "*"))
-    {
-      wxString next;
-    
-      if (!dir.GetNext(&next))
+      if (m_AutoCompleteList.size() == 2)
       {
-        expansion = filename.Mid(word.length());
-        
-        if (wxDirExists(dir.GetNameWithSep() + filename))
-        {
-          expansion += wxFileName::GetPathSeparator();
-        }
+        expansion = m_AutoCompleteList[0];
       }
       else
       {
-        // Fill the autocomplete list and show it
-        // (when user selected something,
-        // we come back at Expand at entry).
-        m_AutoCompleteList.clear();
-        m_AutoCompleteList.push_back(filename);
-        m_AutoCompleteList.push_back(next);
-      
-        while (dir.GetNext(&next))
-        {
-          m_AutoCompleteList.push_back(next);
-        }
-      
         wxString list;
+        m_AutoCompleteList.erase(m_AutoCompleteList.begin());
       
         for (const auto& it : m_AutoCompleteList)
         {
