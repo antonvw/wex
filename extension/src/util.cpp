@@ -123,6 +123,63 @@ const wxString wxExAlignText(
   return out;
 }
 
+bool wxExAutoCompleteFileName(
+  const wxString& text, 
+  std::vector<wxString> & v)
+{
+  const wxString path(text.AfterLast(' '));
+  const wxString word(path.AfterLast(wxFileName::GetPathSeparator()));
+  
+  wxString subdir = path.BeforeLast(wxFileName::GetPathSeparator());
+  
+  if (!subdir.empty())
+  {
+    subdir = wxFileName::GetPathSeparator() + subdir;
+  }
+  
+  wxDir dir(wxGetCwd() + subdir);
+  wxString filename;
+
+  if (!dir.IsOpened() || !dir.GetFirst(&filename, word + "*"))
+  {
+    return false;
+  }
+  
+  wxString expansion = filename.Mid(word.length());
+  
+  if (wxDirExists(dir.GetNameWithSep() + filename))
+  {
+    expansion += wxFileName::GetPathSeparator();
+  }
+
+  v.clear();
+  v.push_back(expansion);
+  v.push_back(filename);
+    
+  while (dir.GetNext(&filename))
+  {
+    v.push_back(filename);
+  }
+
+  if (v.size() > 2)
+  {
+    int min_equal_size = 0;
+    
+    for (int i = 0; i < v[1].size(); i++)
+    {
+      if (v[1].GetChar(i) == v[2].GetChar(i))
+      {
+        min_equal_size++;
+      }
+    }
+  
+    v[0] = v[1].Mid(
+      word.length(), min_equal_size -word.length());
+  }
+
+  return true;
+}
+
 double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
 {
   wxStringTokenizer tkz(text, "+-*/.$'", wxTOKEN_RET_EMPTY_ALL);

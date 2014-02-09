@@ -51,6 +51,7 @@ protected:  void OnChar(wxKeyEvent& event);
   void OnEnter(wxCommandEvent& event);
   void OnFocus(wxFocusEvent& event);
 private:  
+  void Expand();
   void Handle(wxKeyEvent& event);
   bool IsCalc() const {return 
     m_Prefix->GetLabel() == "=";};
@@ -328,6 +329,22 @@ wxExExTextCtrl::~wxExExTextCtrl()
   wxExListToConfig(m_Commands, "excommand");
 }
 
+void wxExExTextCtrl::Expand()
+{
+  if (m_ex != NULL)
+  {
+    wxSetWorkingDirectory(m_ex->GetSTC()->GetFileName().GetPath());
+  }
+  
+  std::vector<wxString> v;
+  
+  if (wxExAutoCompleteFileName(m_Command, v))
+  {
+    m_Command += v[0];
+    AppendText(v[0]);
+  }
+}
+
 void wxExExTextCtrl::Handle(wxKeyEvent& event)
 {
   bool skip = true;
@@ -377,7 +394,7 @@ void wxExExTextCtrl::OnChar(wxKeyEvent& event)
     {
       m_Command = m_Command.Truncate(m_Command.size() - 1);
     }
-    else
+    else if (event.GetKeyCode() != WXK_TAB)
     {
       m_Command += event.GetUnicodeKey();
     }
@@ -415,6 +432,10 @@ void wxExExTextCtrl::OnChar(wxKeyEvent& event)
     m_Controlr = true;
     break;
 
+  case WXK_TAB:
+    Expand();
+    break;
+      
   default: Handle(event);
   }
 }

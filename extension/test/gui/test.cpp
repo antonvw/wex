@@ -1523,7 +1523,7 @@ void wxExGuiTestFixture::testStatusBar()
 
 void wxExGuiTestFixture::testSTC()
 {
-  // Some methods that do not return values, just call them to 
+  // Some methods do not return values, just call them to 
   // prevent cores, and improve test coverage.
   
   wxExSTC::ConfigDialog(wxTheApp->GetTopWindow(), "test stc", wxExSTC::STC_CONFIG_MODELESS);
@@ -1536,6 +1536,12 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(!stc->FindNext(wxString("%d")));
   CPPUNIT_ASSERT(!stc->FindNext(wxString("%ld")));
   CPPUNIT_ASSERT(!stc->FindNext(wxString("%q")));
+  
+  CPPUNIT_ASSERT( stc->FindNext(wxString("hello"), wxSTC_FIND_WHOLEWORD));
+  CPPUNIT_ASSERT(!stc->FindNext(wxString("HELLO"), wxSTC_FIND_MATCHCASE));
+  CPPUNIT_ASSERT( stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE);
+  // uses flags from frd
+  CPPUNIT_ASSERT( stc->FindNext(wxString("HELLO")));
   
   CPPUNIT_ASSERT( stc->AllowChangeIndicator());
   
@@ -1624,6 +1630,11 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(!stc->SetIndicator(wxExIndicator(4,5), 100, 200));
   
   stc->SetLexerProperty("xx", "yy");
+  
+  CPPUNIT_ASSERT(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
+  wxExFindReplaceData::Get()->SetMatchCase(false);
+  stc->SetSearchFlags(-1);
+  CPPUNIT_ASSERT(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
   
   stc->AutoIndentation('\n');
   
@@ -1801,6 +1812,13 @@ void wxExGuiTestFixture::testUtil()
     wxExLexers::Get()->FindByName("cpp")).size() 
       == wxString("// headertest").size());
       
+  // wxExAutoCompleteFileName
+  std::vector<wxString> v;
+  CPPUNIT_ASSERT( wxExAutoCompleteFileName("te", v));
+  CPPUNIT_ASSERT( v[0] == "st-");
+  CPPUNIT_ASSERT(!wxExAutoCompleteFileName("XX", v));
+  CPPUNIT_ASSERT( v[0] == "st-");
+  
   // wxExCalculator
   wxExEx* ex = new wxExEx(stc);
   int width = 0;
@@ -1911,7 +1929,6 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExMake(wxFileName("make.tst")) != -1);
 
   // wxExMatch
-  std::vector<wxString> v;
   CPPUNIT_ASSERT( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
   CPPUNIT_ASSERT( wxExMatch("(\\d+)ok(\\d+)nice", "19999ok245nice", v) == 2);
   CPPUNIT_ASSERT( wxExMatch(" ([\\d\\w]+)", " 19999ok245nice ", v) == 1);
@@ -1962,8 +1979,7 @@ void wxExGuiTestFixture::testUtil()
     
   // wxExVCSCommandOnSTC
   wxExVCSCommand command("status");
-  wxExLexer lexer = wxExLexers::Get()->FindByText("// this is a cpp comment text");
-  wxExVCSCommandOnSTC(command, lexer, stc);
+  wxExVCSCommandOnSTC(command, wxExLexer("cpp"), stc);
   
   // wxExVCSExecute
   // wxExVCSExecute(frame, 0, files); // calls dialog

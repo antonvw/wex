@@ -77,6 +77,20 @@ const wxString wxExAlignText(
   /// with spaces is not done.
   const wxExLexer& lexer);
 
+/// Tries to autocomplete filename,
+/// result stored in the vector.
+bool wxExAutoCompleteFileName(
+  /// text containing a filename
+  const wxString& text, 
+  /// vector containing completed file name(s)
+  /// v[0] is expansion of text to matching filename
+  /// (if only 1 match exists)
+  /// or common part of matching filenames
+  /// other elements are all matching file names
+  /// Returns true if a match was found 
+  /// (and v contains at least 2 elements).
+  std::vector<wxString> & v);
+
 /// Returns calculated value of text.
 double wxExCalculator(
   /// text used for calculation
