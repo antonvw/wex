@@ -79,6 +79,9 @@ private:
   virtual void SyncAll();
   virtual void SyncCloseAll(wxWindowID id);
 
+  const long m_PaneFlag;
+  const wxString m_ProjectWildcard;
+
   bool m_IsClosing;
   int m_NewProjectNo;
   int m_SplitId;
@@ -91,9 +94,6 @@ private:
   wxExProcess* m_Process;
   wxExNotebook* m_Projects;
   wxExSTC* m_asciiTable;
-
-  const long m_PaneFlag;
-  const wxString m_ProjectWildcard;
 
   DECLARE_EVENT_TABLE()
 };
