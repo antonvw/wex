@@ -47,7 +47,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, Frame::OnCommand)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_STC_SAVE, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_CLOSE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_FIND, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_JUMP_TO, Frame::OnUpdateUI)
@@ -82,41 +81,35 @@ Frame::Frame(const std::vector< wxString > & files)
   , m_IsClosing(false)
   , m_NewProjectNo(1)
   , m_SplitId(1)
-  , m_DirCtrl(NULL)
-  , m_Editors(NULL)
   , m_History(NULL)
-  , m_Lists(NULL)
   , m_Process(new wxExProcess())
   , m_Projects(NULL)
   , m_asciiTable(NULL)
   , m_PaneFlag(
-    wxAUI_NB_DEFAULT_STYLE |
-    wxAUI_NB_CLOSE_ON_ALL_TABS |
-    wxAUI_NB_CLOSE_BUTTON |
-    wxAUI_NB_WINDOWLIST_BUTTON |
-    wxAUI_NB_SCROLL_BUTTONS)
+      wxAUI_NB_DEFAULT_STYLE |
+      wxAUI_NB_CLOSE_ON_ALL_TABS |
+      wxAUI_NB_CLOSE_BUTTON |
+      wxAUI_NB_WINDOWLIST_BUTTON |
+      wxAUI_NB_SCROLL_BUTTONS)
   , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
+  , m_Editors(new Notebook(
+      this, 
+      this, 
+      (wxWindowID)NOTEBOOK_EDITORS, 
+      wxDefaultPosition, 
+      wxDefaultSize, 
+      m_PaneFlag))
+  , m_Lists(new wxExNotebook(
+      this, 
+      this, 
+      (wxWindowID)NOTEBOOK_LISTS, 
+      wxDefaultPosition, 
+      wxDefaultSize, 
+      m_PaneFlag))
+  , m_DirCtrl(new wxExGenericDirCtrl(this, this))
 {
   wxExViMacros::LoadDocument();
 
-  m_Editors = new Notebook(
-    this, 
-    this, 
-    (wxWindowID)NOTEBOOK_EDITORS, 
-    wxDefaultPosition, 
-    wxDefaultSize, 
-    m_PaneFlag);
-    
-  m_Lists = new wxExNotebook(
-    this, 
-    this, 
-    (wxWindowID)NOTEBOOK_LISTS, 
-    wxDefaultPosition, 
-    wxDefaultSize, 
-    m_PaneFlag);
-    
-  m_DirCtrl = new wxExGenericDirCtrl(this, this);
-    
   GetManager().AddPane(m_Editors, wxAuiPaneInfo()
     .CenterPane()
     .MaximizeButton(true)
@@ -1087,7 +1080,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
         switch (event.GetId())
         {
-        case wxID_CLOSE:
         case wxID_FIND:
         case wxID_JUMP_TO:
         case wxID_REPLACE:
