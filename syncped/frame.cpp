@@ -1570,7 +1570,8 @@ void Notebook::OnNotebook(wxAuiNotebookEvent& event)
 
     wxExSTC* stc = wxDynamicCast(GetCurrentPage(), wxExSTC);
     
-    if (wxExVCS::DirExists(stc->GetFile().GetFileName()))
+    if (stc->GetFile().GetFileName().FileExists() && 
+        wxExVCS::DirExists(stc->GetFile().GetFileName()))
     {
       menu.AppendSeparator();
       menu.AppendVCS(stc->GetFile().GetFileName());
