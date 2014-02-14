@@ -83,7 +83,8 @@ DecoratedFrame::DecoratedFrame()
 #endif
 
   wxExMenu *menuFile = new wxExMenu();
-  menuFile->Append(wxID_NEW);
+  menuFile->Append(wxID_NEW,
+    wxExEllipsed(wxGetStockLabel(wxID_NEW, wxSTOCK_NOFLAGS)), "\tCtrl+N");
   menuFile->Append(wxID_OPEN);
   UseFileHistory(ID_RECENT_FILE_MENU, menuFile);
   menuFile->AppendSeparator();
