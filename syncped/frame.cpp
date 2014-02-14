@@ -55,6 +55,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(wxID_REPLACE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_UNDO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_REDO, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_SAVE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_STOP, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_CONTROL_CHAR, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO, Frame::OnUpdateUI)
@@ -67,7 +68,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_PROJECT_MENU, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_SORT_SYNC, Frame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(wxID_SAVE, wxID_SAVEAS, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_FIND_NEXT, ID_EDIT_FIND_PREVIOUS, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_TOGGLE_FOLD, ID_EDIT_UNFOLD_ALL, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(
@@ -1083,7 +1083,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         case wxID_FIND:
         case wxID_JUMP_TO:
         case wxID_REPLACE:
-        case wxID_SAVEAS:
         case ID_EDIT_FIND_NEXT:
         case ID_EDIT_FIND_PREVIOUS:
         case ID_EDIT_FOLD_ALL:
