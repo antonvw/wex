@@ -2,14 +2,13 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wxExSTCWithFrame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/filedlg.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/defs.h>
@@ -80,13 +79,10 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
   if (command.GetId() > ID_EDIT_VCS_LOWEST && 
       command.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    if (wxExFileDialog(this, &GetFile()).ShowModalIfChanged() == wxID_OK)
-    {
-      // Cannot move this code to wxExSTC, because of member m_Frame.
-      std::vector< wxString > files;
-      files.push_back(GetFileName().GetFullPath());
-      wxExVCSExecute(m_Frame, command.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
-    }
+    // Cannot move this code to wxExSTC, because of member m_Frame.
+    std::vector< wxString > files;
+    files.push_back(GetFileName().GetFullPath());
+    wxExVCSExecute(m_Frame, command.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
   }
   else
   {
