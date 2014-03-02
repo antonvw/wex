@@ -47,6 +47,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, Frame::OnCommand)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_STC_SAVE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_CLOSE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_FIND, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_JUMP_TO, Frame::OnUpdateUI)
@@ -56,6 +57,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(wxID_UNDO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_REDO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_SAVE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_SAVEAS, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_STOP, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_CONTROL_CHAR, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO, Frame::OnUpdateUI)
@@ -1008,6 +1010,11 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         (GetListView() != NULL && GetListView()->GetItemCount() > 0));
       break;
 
+    case wxID_CLOSE:
+    case wxID_SAVEAS:
+      event.Enable(m_Editors->IsShown() && m_Editors->GetPageCount() > 0);
+    break;
+    
     case ID_ALL_STC_CLOSE:
     case ID_ALL_STC_SAVE:
       event.Enable(m_Editors->GetPageCount() > 2);
