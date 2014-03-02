@@ -442,7 +442,13 @@ void Frame::NewFile()
   }
   
   text = dlg.GetValue();
-  wxWindow* page = new wxExSTCWithFrame(m_Editors, this);
+  wxWindow* page = new wxExSTCWithFrame(
+    m_Editors, 
+    this,
+    wxEmptyString,
+    wxExSTC::STC_WIN_DEFAULT,
+    wxEmptyString,
+    0xFFFF);
 
   ((wxExSTC*)page)->GetFile().FileNew(text);
 
