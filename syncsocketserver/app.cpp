@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -793,11 +793,6 @@ bool Frame::OpenFile(
   {
     GetManager().GetPane("DATA").Show();
     GetManager().Update();
-
-    AppendText(m_LogWindow,
-      _("opened: ") + filename.GetFullPath() + wxString::Format(" (%d bytes)",
-      m_DataWindow->GetLength()),
-      DATA_MESSAGE);
 
     SetRecentFile(filename.GetFullPath());
     
