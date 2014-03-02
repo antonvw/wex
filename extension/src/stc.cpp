@@ -550,15 +550,18 @@ int wxExSTC::ConfigDialog(
       _("Folding")));
   }
   
-  // Printer page
-  std::map<long, const wxString> pchoices;
-  pchoices.insert(std::make_pair(wxSTC_PRINT_NORMAL, _("Normal")));
-  pchoices.insert(std::make_pair(wxSTC_PRINT_INVERTLIGHT, _("Invert on white")));
-  pchoices.insert(std::make_pair(wxSTC_PRINT_BLACKONWHITE, _("Black on white")));
-  pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITE, _("Colour on white")));
-  pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")));
-  items.push_back(wxExConfigItem(
-    _("Print flags"), pchoices, true, _("Printer"), 1));
+  if (!(flags & STC_CONFIG_SIMPLE))
+  {
+    // Printer page
+    std::map<long, const wxString> pchoices;
+    pchoices.insert(std::make_pair(wxSTC_PRINT_NORMAL, _("Normal")));
+    pchoices.insert(std::make_pair(wxSTC_PRINT_INVERTLIGHT, _("Invert on white")));
+    pchoices.insert(std::make_pair(wxSTC_PRINT_BLACKONWHITE, _("Black on white")));
+    pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITE, _("Colour on white")));
+    pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")));
+    items.push_back(wxExConfigItem(
+      _("Print flags"), pchoices, true, _("Printer"), 1));
+  }
 
   if (!(flags & STC_CONFIG_SIMPLE) && wxExLexers::Get()->GetCount() > 0)
   {
