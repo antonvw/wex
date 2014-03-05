@@ -1578,7 +1578,14 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     case wxID_JUMP_TO: GotoDialog(); break;
     case wxID_PASTE: Paste(); break;
     case wxID_SELECTALL: SelectAll(); break;
-    case wxID_UNDO: Undo(); break;
+    case wxID_UNDO: 
+      Undo(); 
+      
+      if (m_HexMode)
+      {
+        m_HexBuffer = m_HexBufferOriginal;
+      }
+      break;
     case wxID_REDO: Redo(); break;
     case wxID_SAVE: m_File.FileSave(); break;
     case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
