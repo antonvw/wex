@@ -418,6 +418,7 @@ private:
   wxString m_AutoComplete;
   // Only used in hex mode.
   wxString m_HexBuffer;
+  wxString m_HexBufferOriginal;
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
