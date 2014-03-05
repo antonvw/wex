@@ -303,6 +303,7 @@ void Frame::AddPaneHistory()
         
   GetManager().AddPane(m_History, wxAuiPaneInfo()
     .Left()
+    .MaximizeButton(true)
     .Name("HISTORY")
     .Caption(_("History")));
 }
