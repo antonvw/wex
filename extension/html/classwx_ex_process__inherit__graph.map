@@ -1,4 +1,3 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$classwx_ex_process_list_view.html" title="Offers a wxExProcess with reporting to a listview." alt="" coords="5,86,155,117"/>
-<area shape="rect" id="node5" href="$classwx_ex_v_c_s_entry.html" title="This class collects a single vcs." alt="" coords="179,86,288,117"/>
+<map id="wxExProcess" name="wxExProcess">
+<area shape="rect" id="node2" href="$classwx_ex_v_c_s_entry.html" title="This class collects a single vcs. " alt="" coords="5,80,117,107"/>
 </map>

@@ -1,5 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classwx_ex_grid.html" title="Offers popup menu with copy/paste, printing." alt="" coords="5,34,80,62"/>
-<area shape="rect" id="node3" href="$classwx_ex_grid_statistics.html" title="Helper class for adding clear menu to the grid, and calling Clear for the statistics." alt="" coords="129,5,287,33"/>
-<area shape="rect" id="node5" href="$classwx_ex_grid_statistics.html" title="wxExGridStatistics\l\&lt; int \&gt;" alt="" coords="144,55,272,99"/>
+<area shape="rect" id="node1" href="$classwx_ex_grid.html" title="Offers popup menu with copy/paste, printing. " alt="" coords="6,35,85,61"/>
+<area shape="rect" id="node2" href="$classwx_ex_grid_statistics.html" title="Helper class for adding clear menu to the grid, and calling Clear for the statistics. " alt="" coords="134,5,309,32"/>
+<area shape="rect" id="node3" href="$classwx_ex_grid_statistics.html" title="wxExGridStatistics\l\&lt; int \&gt;" alt="" coords="152,57,291,98"/>
 </map>

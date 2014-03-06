@@ -1,4 +1,4 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$classwx_ex_s_t_c_shell.html" title="This class offers a wxExSTC with support for commands." alt="" coords="5,86,112,117"/>
-<area shape="rect" id="node5" href="$classwx_ex_s_t_c_with_frame.html" title="Adds a frame to wxExSTC." alt="" coords="136,86,275,117"/>
+<map id="wxExSTC" name="wxExSTC">
+<area shape="rect" id="node2" href="$classwx_ex_s_t_c_shell.html" title="This class offers a wxExSTC with support for commands. " alt="" coords="5,80,112,107"/>
+<area shape="rect" id="node3" href="$classwx_ex_s_t_c_with_frame.html" title="Adds a frame to wxExSTC. " alt="" coords="137,80,281,107"/>
 </map>

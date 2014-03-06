@@ -1,3 +1,4 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$classwx_ex_find_tool_bar.html" title="Offers a find toolbar, containing a find ctrl, up and down arrows and checkboxes." alt="" coords="5,86,128,117"/>
+<map id="wxExToolBar" name="wxExToolBar">
+<area shape="rect" id="node2" href="$classwx_ex_find_tool_bar.html" title="Offers a find toolbar, containing a find ctrl, up and down arrows and checkboxes. ..." alt="" coords="5,80,128,107"/>
+<area shape="rect" id="node3" href="$classwx_ex_options_tool_bar.html" title="Offers a options toolbar, containing checkboxes. " alt="" coords="153,80,300,107"/>
 </map>

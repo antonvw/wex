@@ -1,8 +1,8 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classwx_ex_file.html" title="Adds several File* methods to wxFile." alt="" coords="400,55,472,83"/>
-<area shape="rect" id="node3" href="$classwx_ex_list_view_file.html" title="Combines wxExListViewWithFrame and wxExFile, giving you a list control with file synchronization supp..." alt="" coords="567,5,684,33"/>
-<area shape="rect" id="node5" href="$classwx_ex_s_t_c_file.html" title="Adds file read and write to wxExSTC." alt="" coords="576,55,675,83"/>
-<area shape="rect" id="node6" href="$classwx_ex_list_view.html" title="Adds printing, popup menu, images, columns and items to wxListView." alt="" coords="5,5,104,33"/>
-<area shape="rect" id="node8" href="$classwx_ex_list_view_file_name.html" title="Adds some standard lists, all these lists have items associated with files or folders." alt="" coords="153,5,305,33"/>
-<area shape="rect" id="node10" href="$classwx_ex_list_view_with_frame.html" title="Adds a wxExFrameWithHistory to wxExListViewFileName." alt="" coords="356,5,516,33"/>
+<area shape="rect" id="node1" href="$classwx_ex_file.html" title="Adds several File* methods to wxFile. " alt="" coords="417,56,490,83"/>
+<area shape="rect" id="node2" href="$classwx_ex_list_view_file.html" title="Combines wxExListViewWithFrame and wxExFile, giving you a list control with file synchronization supp..." alt="" coords="587,5,711,32"/>
+<area shape="rect" id="node3" href="$classwx_ex_s_t_c_file.html" title="Adds file read and write to wxExSTC. " alt="" coords="601,56,698,83"/>
+<area shape="rect" id="node4" href="$classwx_ex_list_view.html" title="Adds printing, popup menu, images, columns and items to wxListView. " alt="" coords="5,5,109,32"/>
+<area shape="rect" id="node5" href="$classwx_ex_list_view_file_name.html" title="Adds some standard lists, all these lists have items associated with files or folders. " alt="" coords="157,5,320,32"/>
+<area shape="rect" id="node6" href="$classwx_ex_list_view_with_frame.html" title="Adds a wxExFrameWithHistory to wxExListViewFileName. " alt="" coords="368,5,539,32"/>
 </map>

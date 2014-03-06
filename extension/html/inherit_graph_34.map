@@ -1,5 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classwx_ex_s_t_c.html" title="Offers a styled text ctrl with find/replace, printing, popup menu, macro support, vi support and lexe..." alt="" coords="5,30,83,58"/>
-<area shape="rect" id="node3" href="$classwx_ex_s_t_c_shell.html" title="This class offers a wxExSTC with support for commands." alt="" coords="148,5,255,33"/>
-<area shape="rect" id="node5" href="$classwx_ex_s_t_c_with_frame.html" title="Adds a frame to wxExSTC." alt="" coords="132,55,271,83"/>
+<area shape="rect" id="node1" href="$classwx_ex_s_t_c.html" title="Offers a styled text ctrl with: " alt="" coords="5,31,83,57"/>
+<area shape="rect" id="node2" href="$classwx_ex_s_t_c_shell.html" title="This class offers a wxExSTC with support for commands. " alt="" coords="149,5,257,32"/>
+<area shape="rect" id="node3" href="$classwx_ex_s_t_c_with_frame.html" title="Adds a frame to wxExSTC. " alt="" coords="131,56,275,83"/>
 </map>

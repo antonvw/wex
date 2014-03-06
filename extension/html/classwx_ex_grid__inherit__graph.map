@@ -1,4 +1,4 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$classwx_ex_grid_statistics.html" title="Helper class for adding clear menu to the grid, and calling Clear for the statistics." alt="" coords="5,86,171,117"/>
-<area shape="rect" id="node5" href="$classwx_ex_grid_statistics.html" title="wxExGridStatistics\&lt; long \&gt;" alt="" coords="195,86,376,117"/>
+<map id="wxExGrid" name="wxExGrid">
+<area shape="rect" id="node2" href="$classwx_ex_grid_statistics.html" title="Helper class for adding clear menu to the grid, and calling Clear for the statistics. " alt="" coords="5,88,179,115"/>
+<area shape="rect" id="node3" href="$classwx_ex_grid_statistics.html" title="wxExGridStatistics\l\&lt; int \&gt;" alt="" coords="204,81,343,122"/>
 </map>

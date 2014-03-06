@@ -1,5 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classwx_ex_frame.html" title="Offers a frame with easy statusbar methods, find/replace, and allows for file dropping." alt="" coords="5,5,93,33"/>
-<area shape="rect" id="node3" href="$classwx_ex_managed_frame.html" title="Offers an aui managed frame with a notebook multiple document interface, used by the notebook classes..." alt="" coords="141,5,283,33"/>
-<area shape="rect" id="node5" href="$classwx_ex_frame_with_history.html" title="Adds file and project history support to wxExManagedFrame." alt="" coords="332,5,484,33"/>
+<area shape="rect" id="node1" href="$classwx_ex_frame.html" title="Offers a frame with easy statusbar methods, find/replace, and allows for file dropping. " alt="" coords="5,5,99,32"/>
+<area shape="rect" id="node2" href="$classwx_ex_managed_frame.html" title="Offers an aui managed frame with a notebook multiple document interface, used by the notebook classes..." alt="" coords="147,5,299,32"/>
+<area shape="rect" id="node3" href="$classwx_ex_frame_with_history.html" title="Adds file and project history support to wxExManagedFrame. " alt="" coords="347,5,512,32"/>
 </map>
