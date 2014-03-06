@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -60,6 +60,7 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
+  EVT_STC_AUTOCOMP_SELECTION(wxID_ANY, wxExSTC::OnStyledText)  
   EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_DO_DROP(wxID_ANY, wxExSTC::OnStyledText)  
   EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
@@ -255,12 +256,15 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if (m_File.GetFileName().FileExists() && sel.empty())
+  if (m_MenuFlags & STC_MENU_VCS)
   {
-    if (wxExVCS::DirExists(m_File.GetFileName()))
+    if (m_File.GetFileName().FileExists() && sel.empty())
     {
-      menu.AppendSeparator();
-      menu.AppendVCS(m_File.GetFileName());
+      if (wxExVCS::DirExists(m_File.GetFileName()))
+      {
+        menu.AppendSeparator();
+        menu.AppendVCS(m_File.GetFileName());
+      }
     }
   }
 
@@ -342,17 +346,15 @@ bool wxExSTC::CanPaste() const
 
 void wxExSTC::CheckAutoComp(const wxUniChar& c)
 {
-  static wxString text;
-
-  if (isspace(GetCharAt(GetCurrentPos() - 1)))
+  if (wxExIsCodewordSeparator(GetCharAt(GetCurrentPos() - 1)))
   {
-    text = c;
+    m_AutoComplete = c;
   }
   else
   {
-    text += c;
+    m_AutoComplete += c;
 
-    if (text.length() >= 3) // Only autocompletion for large words
+    if (m_AutoComplete.length() >= 3) // Only autocompletion for large words
     {
       if (!AutoCompActive())
       {
@@ -360,9 +362,9 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
         AutoCompSetAutoHide(false);
       }
 
-      if (m_Lexer.KeywordStartsWith(text))
+      if (m_Lexer.KeywordStartsWith(m_AutoComplete))
         AutoCompShow(
-          text.length() - 1,
+          m_AutoComplete.length() - 1,
           m_Lexer.GetKeywordsString());
       else
         AutoCompCancel();
@@ -518,8 +520,11 @@ int wxExSTC::ConfigDialog(
     _("Indent"), 0, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
   items.push_back(wxExConfigItem(
     _("Divider"), 0, 40, _("Margin")));
-  items.push_back(wxExConfigItem(
-    _("Folding"), 0, 40, _("Margin")));
+  if (wxExLexers::Get()->GetCount() > 0)
+  {
+    items.push_back(wxExConfigItem(
+      _("Folding"), 0, 40, _("Margin")));
+  }
   items.push_back(wxExConfigItem(
     _("Line number"), 0, 100, _("Margin")));
 
@@ -545,17 +550,20 @@ int wxExSTC::ConfigDialog(
       _("Folding")));
   }
   
-  // Printer page
-  std::map<long, const wxString> pchoices;
-  pchoices.insert(std::make_pair(wxSTC_PRINT_NORMAL, _("Normal")));
-  pchoices.insert(std::make_pair(wxSTC_PRINT_INVERTLIGHT, _("Invert on white")));
-  pchoices.insert(std::make_pair(wxSTC_PRINT_BLACKONWHITE, _("Black on white")));
-  pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITE, _("Colour on white")));
-  pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")));
-  items.push_back(wxExConfigItem(
-    _("Print flags"), pchoices, true, _("Printer"), 1));
-
   if (!(flags & STC_CONFIG_SIMPLE))
+  {
+    // Printer page
+    std::map<long, const wxString> pchoices;
+    pchoices.insert(std::make_pair(wxSTC_PRINT_NORMAL, _("Normal")));
+    pchoices.insert(std::make_pair(wxSTC_PRINT_INVERTLIGHT, _("Invert on white")));
+    pchoices.insert(std::make_pair(wxSTC_PRINT_BLACKONWHITE, _("Black on white")));
+    pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITE, _("Colour on white")));
+    pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")));
+    items.push_back(wxExConfigItem(
+      _("Print flags"), pchoices, true, _("Printer"), 1));
+  }
+
+  if (!(flags & STC_CONFIG_SIMPLE) && wxExLexers::Get()->GetCount() > 0)
   {
     // Directory page.
     items.push_back(wxExConfigItem(
@@ -597,7 +605,8 @@ void wxExSTC::ConfigGet(bool init)
     cfg->SetRecordDefaults(true);
   }
   
-  const wxFont font(cfg->ReadObject(_("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+  const wxFont font(cfg->ReadObject(
+    _("Default font"), wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
 
   if (m_DefaultFont != font)
   {
@@ -871,13 +880,13 @@ bool wxExSTC::FindNext(bool find_next)
 {
   return FindNext(
     wxExFindReplaceData::Get()->GetFindString(),
-    wxExFindReplaceData::Get()->STCFlags(),
+    -1,
     find_next);
 }
 
 bool wxExSTC::FindNext(
   const wxString& text, 
-  int search_flags,
+  int find_flags,
   bool find_next)
 {
   if (text.empty())
@@ -912,7 +921,7 @@ bool wxExSTC::FindNext(
 
   SetTargetStart(start_pos);
   SetTargetEnd(end_pos);
-  SetSearchFlags(search_flags);
+  SetSearchFlags(find_flags);
 
   if (SearchInTarget(text) == -1)
   {
@@ -924,7 +933,7 @@ bool wxExSTC::FindNext(
     if (!recursive)
     {
       recursive = true;
-      found = FindNext(text, search_flags, find_next);
+      found = FindNext(text, GetSearchFlags(), find_next);
       recursive = false;
     }
     
@@ -1048,7 +1057,7 @@ const wxString wxExSTC::GetFindString()
     
     // If regexp is true, then only use selected text if text does not
     // contain special regexp characters.
-    if (wxExFindReplaceData::Get()->STCFlags() & wxSTC_FIND_REGEXP)
+    if (GetSearchFlags() & wxSTC_FIND_REGEXP)
     {
       for (size_t i = 0; i < selection.size() && alnum; i++)
       {
@@ -1070,6 +1079,7 @@ const wxString wxExSTC::GetFindString()
 
   return wxExFindReplaceData::Get()->GetFindString();
 }
+
 
 const wxString wxExSTC::GetWordAtPos(int pos) const
 {
@@ -1178,10 +1188,10 @@ void wxExSTC::GotoLineAndSelect(
 
   if (!text.empty())
   {
-    SetSearchFlags(wxExFindReplaceData::Get()->STCFlags());
     const int start_pos = PositionFromLine(line_number - 1);
     const int end_pos = GetLineEndPosition(line_number - 1);
 
+    SetSearchFlags(-1);
     SetTargetStart(start_pos);
     SetTargetEnd(end_pos);
 
@@ -1286,7 +1296,6 @@ void wxExSTC::HexDecCalltip(int pos)
 
 void wxExSTC::Initialize(bool file_exists)
 {
-  SetSearchFlags(wxSTC_FIND_REGEXP);
   Sync();
   
   m_HexMode = false;
@@ -1309,7 +1318,7 @@ void wxExSTC::Initialize(bool file_exists)
   if (wxExLexers::Get()->GetCount() > 0)
   {
     m_DefaultFont = wxConfigBase::Get()->ReadObject(
-      _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT));
+      _("Default font"), wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
   }
   
 #ifdef __WXMSW__
@@ -1519,6 +1528,8 @@ void wxExSTC::OnChar(wxKeyEvent& event)
     {
       m_AddingChars = true;
     }
+  
+    CheckAutoComp(event.GetUnicodeKey());
   }
   else
   {
@@ -1548,12 +1559,11 @@ void wxExSTC::OnChar(wxKeyEvent& event)
       return;
     }
     
-    // Auto complete does not yet combine with vi mode.
     if (!m_vi.GetIsActive())
     {
       CheckAutoComp(event.GetUnicodeKey());
     }
-
+  
     event.Skip();
   }
 }
@@ -1568,7 +1578,14 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     case wxID_JUMP_TO: GotoDialog(); break;
     case wxID_PASTE: Paste(); break;
     case wxID_SELECTALL: SelectAll(); break;
-    case wxID_UNDO: Undo(); break;
+    case wxID_UNDO: 
+      Undo(); 
+      
+      if (m_HexMode)
+      {
+        m_HexBuffer = m_HexBufferOriginal;
+      }
+      break;
     case wxID_REDO: Redo(); break;
     case wxID_SAVE: m_File.FileSave(); break;
     case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
@@ -1721,7 +1738,7 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
   }
   else if (event.RightUp())
   {
-    if (m_MenuFlags == 0)
+    if (m_MenuFlags == STC_MENU_NONE)
     {
       event.Skip();
     }
@@ -1812,6 +1829,13 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
       {
         ToggleFold(line);
       }
+    }
+  }
+  else if (event.GetEventType() == wxEVT_STC_AUTOCOMP_SELECTION)
+  {
+    if (m_vi.GetIsActive())
+    {
+      m_vi.Command(event.GetText().Mid(m_AutoComplete.size()));
     }
   }
   else
@@ -2023,9 +2047,8 @@ int wxExSTC::ReplaceAll(
     SetTargetEnd(GetLength());
   }
 
-  SetSearchFlags(wxExFindReplaceData::Get()->STCFlags());
   int nr_replacements = 0;
-
+  SetSearchFlags(-1);
   BeginUndoAction();
 
   while (SearchInTarget(find_text) != -1)
@@ -2081,14 +2104,14 @@ bool wxExSTC::ReplaceNext(bool find_next)
   return ReplaceNext(
     wxExFindReplaceData::Get()->GetFindString(),
     wxExFindReplaceData::Get()->GetReplaceString(),
-    wxExFindReplaceData::Get()->STCFlags(),
+    -1,
     find_next);
 }
 
 bool wxExSTC::ReplaceNext(
   const wxString& find_text, 
   const wxString& replace_text,
-  int search_flags,
+  int find_flags,
   bool find_next)
 {
   if (!GetSelectedText().empty())
@@ -2099,9 +2122,10 @@ bool wxExSTC::ReplaceNext(
   {
     SetTargetStart(GetCurrentPos());
     SetTargetEnd(GetLength());
+    SetSearchFlags(find_flags);
     if (SearchInTarget(find_text) == -1) return false;
   }
-  
+
   if (HexMode())
   {
     for (const auto& it : replace_text)
@@ -2116,7 +2140,7 @@ bool wxExSTC::ReplaceNext(
       ReplaceTarget(replace_text);
   }
 
-  FindNext(find_text, search_flags, find_next);
+  FindNext(find_text, find_flags, find_next);
   
   return true;
 }
@@ -2190,6 +2214,10 @@ bool wxExSTC::SetHexMode(
     SetControlCharSymbol(0);
     
     m_Goto = 1;
+    
+    SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
+    SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
+    SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
     
     if (!m_HexBuffer.empty())
     {
@@ -2274,6 +2302,21 @@ void wxExSTC::SetLexerProperty(const wxString& name, const wxString& value)
 {
   m_Lexer.SetProperty(name, value);
   m_Lexer.Apply(this);
+}
+
+void wxExSTC::SetSearchFlags(int flags)
+{
+  if (flags == -1)
+  {
+    flags = 0;
+    
+    wxExFindReplaceData* frd = wxExFindReplaceData::Get();
+    if (frd->UseRegularExpression()) flags |= wxSTC_FIND_REGEXP;
+    if (frd->MatchWord()) flags |= wxSTC_FIND_WHOLEWORD;
+    if (frd->MatchCase()) flags |= wxSTC_FIND_MATCHCASE;
+  }
+
+  wxStyledTextCtrl::SetSearchFlags(flags);
 }
 
 void wxExSTC::SetText(const wxString& value)

@@ -2,7 +2,7 @@
 // Name:      vi.cpp
 // Purpose:   Implementation of class wxExVi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -209,12 +209,12 @@ bool wxExVi::Command(const wxString& command)
             return false;
           }
           
-          SetRegister(rest.Mid(1, 1));
+          SetRegister(rest.GetChar(1));
           rest = rest.Mid(2);
         }
         else
         {
-          SetRegister(wxEmptyString);
+          SetRegister(0);
 
           int seq_size = 0; // size of sequence of digits from begin in rest
           
@@ -284,7 +284,7 @@ bool wxExVi::Command(const wxString& command)
                 for (int i = 0; i < repeat; i++) 
                   GetSTC()->WordRightEnd();
                   
-                if (GetRegister().empty())
+                if (!GetRegister())
                 {
                   GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
                   GetSTC()->Cut();
@@ -305,7 +305,7 @@ bool wxExVi::Command(const wxString& command)
                 for (int i = 0; i < repeat; i++) 
                   GetSTC()->WordRight();
                   
-                if (GetRegister().empty())
+                if (!GetRegister())
                 {
                   GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
                   GetSTC()->Cut();
@@ -322,7 +322,7 @@ bool wxExVi::Command(const wxString& command)
             case CHR_TO_NUM('d','0'):
               if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
               {
-                if (GetRegister().empty())
+                if (!GetRegister())
                 {
                   GetSTC()->HomeExtend();
                   GetSTC()->Cut();
@@ -340,7 +340,7 @@ bool wxExVi::Command(const wxString& command)
             case CHR_TO_NUM('d','$'):
               if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
               {
-                if (GetRegister().empty())
+                if (!GetRegister())
                 {
                   GetSTC()->LineEndExtend();
                   GetSTC()->Cut();
@@ -359,7 +359,7 @@ bool wxExVi::Command(const wxString& command)
               for (int i = 0; i < repeat; i++) GetSTC()->WordRightEnd();
               for (int j = 0; j < repeat; j++) GetSTC()->WordLeftExtend();
                 
-              if (GetRegister().empty())
+              if (!GetRegister())
               {
                 GetSTC()->Copy();
               }
@@ -478,7 +478,7 @@ bool wxExVi::Command(const wxString& command)
               }
               else if (RegAfter(wxUniChar(WXK_CONTROL_R), rest))
               {
-                CommandReg(rest.Mid(1));
+                CommandReg(rest.GetChar(1));
                 return true;
               }  
               else if (CommandChar((int)rest.GetChar(0), repeat))
@@ -599,66 +599,9 @@ void wxExVi::CommandCalc(const wxString& command)
   const int index = command.StartsWith("=") ? 1: 2;
   
   // Calculation register.
-  const wxString calc = command.Mid(index);
-  
-  wxStringTokenizer tkz(calc, "+-*/");
-
-  double sum = 0;
-  bool init = true;
-  wxChar prev_cmd = 0;
   int width = 0;
+  const double sum = wxExCalculator(command.Mid(index), this, width);
 
-  while (tkz.HasMoreTokens())
-  {
-    wxString token = tkz.GetNextToken();
-    token.Trim(true);
-    token.Trim(false);
-    
-    const int new_width = token.AfterFirst(',').length();
-    if (new_width > width) width = new_width;
-    
-    double value;
-  
-    if (token.StartsWith(wxUniChar(WXK_CONTROL_R)))
-    {
-      const wxChar c = token[1];
-    
-      switch (c)
-      {
-      case '\"':
-        value = atof(wxExClipboardGet()); break;
-          
-      default:
-        value = atof(GetMacros().GetRegister(c));
-      }
-    }
-    else
-    {
-      value = atof(token);
-    }
-    
-    const wxChar cmd = tkz.GetLastDelimiter();
-    
-    if (init)
-    {
-      init = false;
-      sum = value;
-    }
-    else
-    {
-      switch (prev_cmd)
-      {
-        case 0: break;
-        case '+': sum += value; break;
-        case '-': sum -= value; break;
-        case '*': sum *= value; break;
-        case '/': sum /= value; break;
-      }
-    }
-    
-    prev_cmd = cmd;
-  }
-  
   if (m_Mode == MODE_INSERT)
   {
     if (GetLastCommand().EndsWith("cw"))
@@ -1073,44 +1016,42 @@ bool wxExVi::CommandChar(int c, int repeat)
   return true;
 }
 
-void wxExVi::CommandReg(const wxString& reg)
+void wxExVi::CommandReg(const char reg)
 {
-  if (!reg.empty())
+  switch (reg)
   {
-    switch ((int)reg[0])
-    {
-      // calc register
-      case '=': GetFrame()->GetExCommand(this, reg); break;
-      // clipboard register
-      case '\"': Put(true); break;
-      // filename register
-      case '%':
-        if (m_Mode == MODE_INSERT)
+    case 0: break;
+    // calc register
+    case '=': GetFrame()->GetExCommand(this, reg); break;
+    // clipboard register
+    case '\"': Put(true); break;
+    // filename register
+    case '%':
+      if (m_Mode == MODE_INSERT)
+      {
+        AddText(GetSTC()->GetFileName().GetFullName());
+      }
+      else
+      {
+        wxExClipboardAdd(GetSTC()->GetFileName().GetFullPath());
+      }
+      break;
+    default:
+      if (m_Mode == MODE_INSERT)
+      {
+        if (!GetMacros().GetRegister(reg).empty())
         {
-          AddText(GetSTC()->GetFileName().GetFullName());
+          AddText(GetMacros().GetRegister(reg));
         }
         else
         {
-          wxExClipboardAdd(GetSTC()->GetFileName().GetFullPath());
+          wxLogStatus("?" + wxString(reg));
         }
-        break;
-      default:
-        if (m_Mode == MODE_INSERT)
-        {
-          if (!GetMacros().GetRegister(reg).empty())
-          {
-            AddText(GetMacros().GetRegister(reg));
-          }
-          else
-          {
-            wxLogStatus("?" + reg);
-          }
-        }
-        else
-        {
-          wxLogStatus("?" + reg);
-        }
-    }
+      }
+      else
+      {
+        wxLogStatus("?" + wxString(reg));
+      }
   }
 }
     
@@ -1211,7 +1152,7 @@ bool wxExVi::InsertMode(const wxString& command)
         wxUniChar(WXK_CONTROL_R) + tkz.GetString().Mid(0, 1)))
       {
         InsertMode(token);
-        CommandReg(tkz.GetString().Mid(0, 1));
+        CommandReg(tkz.GetString().GetChar(0));
         InsertMode(tkz.GetString().Mid(1));
         return true;
       }  
@@ -1301,8 +1242,12 @@ bool wxExVi::InsertMode(const wxString& command)
       break;
 
     case WXK_RETURN:
-        m_InsertText += GetSTC()->GetEOL();
         GetSTC()->NewLine();
+        
+        if (!GetSTC()->AutoCompActive())
+        {
+          m_InsertText += GetSTC()->GetEOL();
+        }
       break;
       
     default: 
@@ -1315,8 +1260,9 @@ bool wxExVi::InsertMode(const wxString& command)
        !m_InsertText.empty() &&
         m_InsertText.Last() == wxUniChar(WXK_CONTROL_R))
       {
+        GetSTC()->ReplaceSelection(wxEmptyString);
         m_InsertText += command;
-        CommandReg(command);
+        CommandReg(command.Last());
         return false;
       }
       else
@@ -1399,7 +1345,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
 
 bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 {
-  if (!GetIsActive())
+  if (!GetIsActive() || GetSTC()->AutoCompActive())
   {
     return true;
   }
@@ -1465,7 +1411,7 @@ bool wxExVi::Put(bool after)
     GetSTC()->Home();
   }
   
-  if (GetRegister().empty())
+  if (!GetRegister())
   {
     GetSTC()->Paste();
   }
@@ -1604,7 +1550,7 @@ void wxExVi::VisualExtendRightLine()
   
 bool wxExVi::YankedLines()
 {
-  const wxString txt = (GetRegister().empty() ?
+  const wxString txt = (!GetRegister() ?
     wxExClipboardGet(): 
     GetMacros().GetRegister(GetRegister()));
   

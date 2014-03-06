@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -532,6 +532,11 @@ void wxExGuiTestFixture::testFrame()
   CPPUNIT_ASSERT( sb != NULL);
   
   CPPUNIT_ASSERT( sb->GetFieldsCount () == panes.size());
+  CPPUNIT_ASSERT( sb->SetStatusText("XYZ", "ALL"));
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane0") == "XYZ");
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane2") == "XYZ");
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane4") == "XYZ");
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane6") == "XYZ");
   CPPUNIT_ASSERT( sb->SetStatusText("hello", ""));
   CPPUNIT_ASSERT( sb->SetStatusText("hello0", "Pane0"));
   CPPUNIT_ASSERT( sb->SetStatusText("hello1", "Pane1"));
@@ -598,7 +603,12 @@ void wxExGuiTestFixture::testFrd()
   
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
   
+  frd->SetMatchCase(true);
+  CPPUNIT_ASSERT( frd->MatchCase());
+  frd->SetMatchWord(true);
+  CPPUNIT_ASSERT( frd->MatchWord());
   frd->SetUseRegularExpression(true);
+  CPPUNIT_ASSERT( frd->UseRegularExpression());
 
   frd->SetFindString("find1");
   frd->SetFindString("find2");
@@ -624,6 +634,12 @@ void wxExGuiTestFixture::testFrd()
   frd->SetReplaceStrings(l);
   CPPUNIT_ASSERT( frd->GetFindString() == "find3");
   CPPUNIT_ASSERT( frd->GetReplaceString() == "find3");
+  
+  CPPUNIT_ASSERT( frd->Set(frd->GetTextMatchCase(), false));
+  CPPUNIT_ASSERT(!frd->MatchCase());
+  CPPUNIT_ASSERT( frd->Set(frd->GetTextMatchWholeWord(), false));
+  CPPUNIT_ASSERT(!frd->MatchWord());
+  CPPUNIT_ASSERT(!frd->Set("XXXX", false));
 }
 
 void wxExGuiTestFixture::testGrid()
@@ -756,6 +772,10 @@ void wxExGuiTestFixture::testLexer()
   wxExLexer lexer;
   CPPUNIT_ASSERT(!lexer.IsOk());
   
+  CPPUNIT_ASSERT( wxExLexer("cpp").IsOk());
+  CPPUNIT_ASSERT( wxExLexer("pascal").IsOk());
+  CPPUNIT_ASSERT(!wxExLexer("xxx").IsOk());
+  
   lexer = wxExLexers::Get()->FindByText("XXXX");
   CPPUNIT_ASSERT(!lexer.IsOk());
   
@@ -765,6 +785,7 @@ void wxExGuiTestFixture::testLexer()
   
   lexer = wxExLexers::Get()->FindByText("// this is a cpp comment text");
   CPPUNIT_ASSERT( lexer.IsOk());
+  CPPUNIT_ASSERT( wxExLexer(lexer).IsOk());
   CPPUNIT_ASSERT( lexer.GetDisplayLexer() == "cpp");
   CPPUNIT_ASSERT( lexer.GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(!lexer.GetExtensions().empty());
@@ -786,15 +807,20 @@ void wxExGuiTestFixture::testLexer()
   CPPUNIT_ASSERT(!lexer.MakeComment("test", "test").empty());
   CPPUNIT_ASSERT(!lexer.MakeSingleLineComment("test").empty());
 
-  CPPUNIT_ASSERT( lexer.SetKeywords("hello:1"));
-  CPPUNIT_ASSERT( lexer.SetKeywords(
+  CPPUNIT_ASSERT( lexer.AddKeywords("hello:1"));
+  CPPUNIT_ASSERT( lexer.AddKeywords("more:1"));
+  CPPUNIT_ASSERT( lexer.AddKeywords(
     "test11 test21:1 test31:1 test12:2 test22:2"));
+  CPPUNIT_ASSERT(!lexer.AddKeywords(""));
 
-  CPPUNIT_ASSERT(!lexer.IsKeyword("class")); // now overwritten
+  CPPUNIT_ASSERT( lexer.IsKeyword("hello")); 
+  CPPUNIT_ASSERT( lexer.IsKeyword("more")); 
+  CPPUNIT_ASSERT( lexer.IsKeyword("class")); 
   CPPUNIT_ASSERT( lexer.IsKeyword("test11"));
   CPPUNIT_ASSERT( lexer.IsKeyword("test21"));
   CPPUNIT_ASSERT( lexer.IsKeyword("test12"));
   CPPUNIT_ASSERT( lexer.IsKeyword("test22"));
+  CPPUNIT_ASSERT( lexer.IsKeyword("test31"));
 
   CPPUNIT_ASSERT( lexer.KeywordStartsWith("te"));
   CPPUNIT_ASSERT(!lexer.KeywordStartsWith("xx"));
@@ -916,6 +942,11 @@ void wxExGuiTestFixture::testLexers()
   wxString lexer("cpp");
   wxExLexers::Get()->ShowDialog(wxTheApp->GetTopWindow(), lexer, wxEmptyString, false);
   wxExLexers::Get()->ShowThemeDialog(wxTheApp->GetTopWindow(), wxEmptyString, false);
+  
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetKeywords("cpp").empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetKeywords("csh").empty());
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetKeywords("xxx").empty());
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetKeywords(wxEmptyString).empty());
 
   CPPUNIT_ASSERT( wxExLexers::Get()->LoadDocument());
 }
@@ -1036,7 +1067,7 @@ void wxExGuiTestFixture::testListItem()
   
   const long add = sw.Time();
 
-  CPPUNIT_ASSERT(add < 1000);
+  CPPUNIT_ASSERT(add < 1500);
   
   Report(wxString::Format(
     "wxExListTiem::Insert %d items in %ld ms", 3 * max, add).ToStdString());
@@ -1141,8 +1172,15 @@ void wxExGuiTestFixture::testManagedFrame()
   frame->SyncAll();
   frame->SyncCloseAll(0);
   
+  CPPUNIT_ASSERT( frame->TogglePane("FINDBAR"));
+  CPPUNIT_ASSERT( frame->GetManager().GetPane("FINDBAR").IsShown());
+  CPPUNIT_ASSERT( frame->TogglePane("OPTIONSBAR"));
+  CPPUNIT_ASSERT( frame->GetManager().GetPane("OPTIONSBAR").IsShown());
+  CPPUNIT_ASSERT( frame->TogglePane("TOOLBAR"));
+  CPPUNIT_ASSERT(!frame->GetManager().GetPane("TOOLBAR").IsShown());
   CPPUNIT_ASSERT( frame->TogglePane("VIBAR"));
   CPPUNIT_ASSERT( frame->GetManager().GetPane("VIBAR").IsShown());
+  
   CPPUNIT_ASSERT(!frame->TogglePane("XXXXBAR"));
   CPPUNIT_ASSERT(!frame->GetManager().GetPane("XXXXBAR").IsOk());
 }
@@ -1190,19 +1228,54 @@ void wxExGuiTestFixture::testNotebook()
   wxExNotebook* notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
   wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
   wxWindow* page2 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  wxWindow* page3 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  wxWindow* page4 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  wxWindow* page5 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
   
+  // Test AddPage. 
   CPPUNIT_ASSERT(notebook->AddPage(page1, "key1") != NULL);
   CPPUNIT_ASSERT(notebook->AddPage(page2, "key2") != NULL);
+  CPPUNIT_ASSERT(notebook->AddPage(page3, "key3") != NULL);
+  // pages: 0,1,2 keys: key1, key2, key3 pages page1,page2,page3.
   
+  // Test GetKeyByPage, GetPageByKey, GetPageIndexByKey.
   CPPUNIT_ASSERT(notebook->GetKeyByPage(page1) == "key1");
   CPPUNIT_ASSERT(notebook->GetPageByKey("key1") == page1);
+  CPPUNIT_ASSERT(notebook->GetPageIndexByKey("key1") == 0);
+  CPPUNIT_ASSERT(notebook->GetPageIndexByKey("xxx") == wxNOT_FOUND);
+  
+  // Test SetPageText.
   CPPUNIT_ASSERT(notebook->SetPageText("key1", "keyx", "hello"));
   CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == page1);
+  // pages: 0,1,2 keys: keyx, key2, key3 pages page1, page2,page3.
+  CPPUNIT_ASSERT(notebook->GetPageIndexByKey("key1") == wxNOT_FOUND);
+  
+  // Test DeletePage.
   CPPUNIT_ASSERT(notebook->DeletePage("keyx"));
   CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == NULL);
   CPPUNIT_ASSERT(notebook->DeletePage("key2"));
+  CPPUNIT_ASSERT(!notebook->DeletePage("xxx"));
+  // pages: 0 keys: key3 pages:page3.
 
-  // ForEach expects wxExSTC pages.  
+  // Test InsertPage.
+  CPPUNIT_ASSERT(notebook->InsertPage(0, page4, "KEY1") != NULL);
+  CPPUNIT_ASSERT(notebook->InsertPage(0, page5, "KEY0") != NULL);
+  // pages: 0,1,2 keys: KEY0, KEY1, key3 pages: page5,page4,page3.
+  CPPUNIT_ASSERT(notebook->GetPageIndexByKey("KEY0") == 0);
+  CPPUNIT_ASSERT(notebook->GetPageIndexByKey("KEY1") == 1);
+  
+  // Test SetSelection.
+  CPPUNIT_ASSERT(notebook->SetSelection("KEY1") == page4);
+  CPPUNIT_ASSERT(notebook->SetSelection("key3") == page3);
+  CPPUNIT_ASSERT(notebook->SetSelection("XXX") == NULL);
+  
+  // Prepare next test, delete all pages.
+  CPPUNIT_ASSERT(notebook->DeletePage("KEY0"));
+  CPPUNIT_ASSERT(notebook->DeletePage("KEY1"));
+  CPPUNIT_ASSERT(notebook->DeletePage("key3"));
+  CPPUNIT_ASSERT(notebook->GetPageCount() == 0);
+  
+  // Test ForEach. ForEach expects wxExSTC pages.  
   wxExSTC* stc1 = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
   wxExSTC* stc2 = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
   wxExSTC* stc3 = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
@@ -1211,10 +1284,13 @@ void wxExGuiTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->AddPage(stc2, "key2") != NULL);
   CPPUNIT_ASSERT(notebook->AddPage(stc3, "key3") != NULL);
   
-  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CONFIG_GET));
-  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CLOSE));
   CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_SET_LEXER));
   CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_SET_LEXER_THEME));
+  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CONFIG_GET));
+  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CLOSE_OTHERS));
+  CPPUNIT_ASSERT(notebook->GetPageCount() == 1);
+  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CLOSE));
+  CPPUNIT_ASSERT(notebook->GetPageCount() == 0);
 }
 
 void wxExGuiTestFixture::testOTL()
@@ -1447,7 +1523,7 @@ void wxExGuiTestFixture::testStatusBar()
 
 void wxExGuiTestFixture::testSTC()
 {
-  // Some methods that do not return values, just call them to 
+  // Some methods do not return values, just call them to 
   // prevent cores, and improve test coverage.
   
   wxExSTC::ConfigDialog(wxTheApp->GetTopWindow(), "test stc", wxExSTC::STC_CONFIG_MODELESS);
@@ -1460,6 +1536,12 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(!stc->FindNext(wxString("%d")));
   CPPUNIT_ASSERT(!stc->FindNext(wxString("%ld")));
   CPPUNIT_ASSERT(!stc->FindNext(wxString("%q")));
+  
+  CPPUNIT_ASSERT( stc->FindNext(wxString("hello"), wxSTC_FIND_WHOLEWORD));
+  CPPUNIT_ASSERT(!stc->FindNext(wxString("HELLO"), wxSTC_FIND_MATCHCASE));
+  CPPUNIT_ASSERT( stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE);
+  // uses flags from frd
+  CPPUNIT_ASSERT( stc->FindNext(wxString("HELLO")));
   
   CPPUNIT_ASSERT( stc->AllowChangeIndicator());
   
@@ -1548,6 +1630,11 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(!stc->SetIndicator(wxExIndicator(4,5), 100, 200));
   
   stc->SetLexerProperty("xx", "yy");
+  
+  CPPUNIT_ASSERT(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
+  wxExFindReplaceData::Get()->SetMatchCase(false);
+  stc->SetSearchFlags(-1);
+  CPPUNIT_ASSERT(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
   
   stc->AutoIndentation('\n');
   
@@ -1724,6 +1811,29 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExAlignText("test", "header", true, true,
     wxExLexers::Get()->FindByName("cpp")).size() 
       == wxString("// headertest").size());
+      
+  // wxExAutoCompleteFileName
+  std::vector<wxString> v;
+  CPPUNIT_ASSERT( wxExAutoCompleteFileName("te", v));
+  CPPUNIT_ASSERT( v[0] == "st-");
+  CPPUNIT_ASSERT(!wxExAutoCompleteFileName("XX", v));
+  CPPUNIT_ASSERT( v[0] == "st-");
+  
+  // wxExCalculator
+  wxExEx* ex = new wxExEx(stc);
+  int width = 0;
+  CPPUNIT_ASSERT( wxExCalculator("", ex, width) == 0);
+  CPPUNIT_ASSERT( width == 0);
+  CPPUNIT_ASSERT( wxExCalculator("1 + 1", ex, width) == 2);
+  CPPUNIT_ASSERT( width == 0);
+  CPPUNIT_ASSERT( wxExCalculator("1 - 1", ex, width) == 0);
+  CPPUNIT_ASSERT( width == 0);
+  CPPUNIT_ASSERT( wxExCalculator("1 * 1", ex, width) == 1);
+  CPPUNIT_ASSERT( width == 0);
+  CPPUNIT_ASSERT( wxExCalculator("1,0 + 1", ex, width) == 2);
+  CPPUNIT_ASSERT( width == 1);
+  CPPUNIT_ASSERT( wxExCalculator("xxx", ex, width) == 0);
+  CPPUNIT_ASSERT( width == 0);
 
   // wxExClipboardAdd
   CPPUNIT_ASSERT( wxExClipboardAdd("test"));
@@ -1790,6 +1900,17 @@ void wxExGuiTestFixture::testUtil()
   
   // wxExGetWord
   
+  // wxExIsBrace
+  CPPUNIT_ASSERT( wxExIsBrace('('));
+  CPPUNIT_ASSERT( wxExIsBrace(')'));
+  CPPUNIT_ASSERT( wxExIsBrace('{'));
+  CPPUNIT_ASSERT(!wxExIsBrace('a'));
+  
+  // wxExIsCodewordSeparator
+  CPPUNIT_ASSERT( wxExIsCodewordSeparator('('));
+  CPPUNIT_ASSERT( wxExIsCodewordSeparator(','));
+  CPPUNIT_ASSERT(!wxExIsCodewordSeparator('x'));
+
   // wxExListFromConfig
   CPPUNIT_ASSERT( wxExListFromConfig("xxx").size() == 0);
   
@@ -1808,7 +1929,6 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExMake(wxFileName("make.tst")) != -1);
 
   // wxExMatch
-  std::vector<wxString> v;
   CPPUNIT_ASSERT( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
   CPPUNIT_ASSERT( wxExMatch("(\\d+)ok(\\d+)nice", "19999ok245nice", v) == 2);
   CPPUNIT_ASSERT( wxExMatch(" ([\\d\\w]+)", " 19999ok245nice ", v) == 1);
@@ -1819,6 +1939,7 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   
   // wxExNodeProperties
+  
   // wxExNodeStyles
   
   // wxExOpenFiles
@@ -1858,8 +1979,7 @@ void wxExGuiTestFixture::testUtil()
     
   // wxExVCSCommandOnSTC
   wxExVCSCommand command("status");
-  wxExLexer lexer = wxExLexers::Get()->FindByText("// this is a cpp comment text");
-  wxExVCSCommandOnSTC(command, lexer, stc);
+  wxExVCSCommandOnSTC(command, wxExLexer("cpp"), stc);
   
   // wxExVCSExecute
   // wxExVCSExecute(frame, 0, files); // calls dialog
@@ -2086,26 +2206,31 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT( vi->MacroPlayback("a"));
 //  CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
+
+  // Be sure we are in normal mode.
+  CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   
-  event.m_keyCode = WXK_CONTROL_B;
+  // Vi control key tests.
+  event.m_uniChar = WXK_CONTROL_B;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_keyCode = WXK_CONTROL_E;
+  event.m_uniChar = WXK_CONTROL_E;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_keyCode = WXK_CONTROL_F;
+  event.m_uniChar = WXK_CONTROL_F;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_keyCode = WXK_CONTROL_G;
+  event.m_uniChar = WXK_CONTROL_G;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_keyCode = WXK_CONTROL_J;
+  event.m_uniChar = WXK_CONTROL_J;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_keyCode = WXK_CONTROL_P;
+  event.m_uniChar = WXK_CONTROL_P;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_keyCode = WXK_CONTROL_Q;
+  event.m_uniChar = WXK_CONTROL_Q;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   CPPUNIT_ASSERT(!vi->OnChar(event));
   
@@ -2114,7 +2239,7 @@ void wxExGuiTestFixture::testVi()
   event.m_keyCode = WXK_RETURN;
   CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_TAB;
-  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  CPPUNIT_ASSERT( vi->OnKeyDown(event));
   
   // Vi navigation command tests.
   CPPUNIT_ASSERT( vi->Command(wxUniChar(esc)));
@@ -2590,12 +2715,12 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT(!macros.SaveDocument());
   
   // Test registers.
-  CPPUNIT_ASSERT(!macros.GetRegister("a").empty());
-  CPPUNIT_ASSERT( macros.GetRegister("z").empty());
+  CPPUNIT_ASSERT(!macros.GetRegister('a').empty());
+  CPPUNIT_ASSERT( macros.GetRegister('z').empty());
   CPPUNIT_ASSERT(!macros.GetRegisters().empty());
   CPPUNIT_ASSERT( macros.Get("z").empty());
-  macros.SetRegister("z", "hello z");
-  CPPUNIT_ASSERT(!macros.GetRegister("z").empty());
+  macros.SetRegister('z', "hello z");
+  CPPUNIT_ASSERT(!macros.GetRegister('z').empty());
   CPPUNIT_ASSERT(!macros.Get("z").empty());
 }
   

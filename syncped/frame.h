@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _FRAME_H
@@ -13,6 +13,22 @@
 #include <wx/extension/report/dirctrl.h>
 #include <wx/extension/report/listview.h>
 #include "support.h"
+
+class Notebook : public wxExNotebook
+{
+public:
+  Notebook(wxWindow* parent,
+    wxExManagedFrame* frame,
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = wxAUI_NB_DEFAULT_STYLE);
+protected:
+  void OnCommand(wxCommandEvent& event);
+  void OnNotebook(wxAuiNotebookEvent& event);
+private:    
+  DECLARE_EVENT_TABLE()
+};
 
 class Frame : public DecoratedFrame
 {
@@ -28,7 +44,8 @@ public:
 protected:
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
-  void OnNotebook(wxAuiNotebookEvent& event);
+  void OnNotebookEditors(wxAuiNotebookEvent& event);
+  void OnNotebookProjects(wxAuiNotebookEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual wxExListViewFileName* Activate(
@@ -44,7 +61,8 @@ private:
   bool DialogProjectOpen();
   wxExSTC* ExecExCommand(int command);
   virtual wxExListViewFile* GetProject();
-  void NewFile(bool as_project = false);
+  void NewFile();
+  void NewProject();
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
     int commandid = wxID_APPLY);
@@ -61,21 +79,21 @@ private:
   virtual void SyncAll();
   virtual void SyncCloseAll(wxWindowID id);
 
+  const long m_PaneFlag;
+  const wxString m_ProjectWildcard;
+
   bool m_IsClosing;
-  int m_NewFileNo;
   int m_NewProjectNo;
   int m_SplitId;
 
+  Notebook* m_Editors;
+  
   wxExGenericDirCtrl* m_DirCtrl;
-  wxExNotebook* m_Editors;
   wxExListViewWithFrame* m_History;
   wxExNotebook* m_Lists;
   wxExProcess* m_Process;
   wxExNotebook* m_Projects;
   wxExSTC* m_asciiTable;
-
-  const long m_PaneFlag;
-  const wxString m_ProjectWildcard;
 
   DECLARE_EVENT_TABLE()
 };

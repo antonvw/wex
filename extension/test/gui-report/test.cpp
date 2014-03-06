@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wxExtension report cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/report/report.h>
@@ -80,6 +80,9 @@ void wxExGuiReportTestFixture::testFrameWithHistory()
   
   // frame->FindInFilesDialog(ID_TOOL_REPORT_FIND);
   CPPUNIT_ASSERT(!frame->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
+  
+  frame->FileHistoryPopupMenu();
+  frame->ProjectHistoryPopupMenu();
 }
 
 void wxExGuiReportTestFixture::testListViewFile()
@@ -120,7 +123,7 @@ void wxExGuiReportTestFixture::testSTCWithFrame()
 void wxExGuiReportTestFixture::testTextFileWithListView()
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
-  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  FrameWithHistory* frame = (FrameWithHistory *)wxTheApp->GetTopWindow();
   const wxExFileName fn(TEST_FILE);
   
   wxExListViewFileName* report = new wxExListViewFileName(
@@ -143,6 +146,12 @@ void wxExGuiReportTestFixture::testTextFileWithListView()
   wxExTextFileWithListView textFile2(fn, tool);
   CPPUNIT_ASSERT( textFile2.RunTool());
   CPPUNIT_ASSERT(!textFile2.GetStatistics().GetElements().GetItems().empty());
+  
+  wxExTool tool3(ID_TOOL_REPORT_KEYWORD);
+  CPPUNIT_ASSERT(wxExTextFileWithListView::SetupTool(tool3, frame));
+  wxExTextFileWithListView textFile3(fn, tool3);
+  CPPUNIT_ASSERT( textFile3.RunTool());
+  CPPUNIT_ASSERT(!textFile3.GetStatistics().GetElements().GetItems().empty());
 }
 
 void wxExGuiReportTestFixture::testUtil()

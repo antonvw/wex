@@ -5,7 +5,7 @@
 // Copyright: (c) 2013
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <ui/text/TestRunner.h>
+#include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/TestRunner.h>
 #include "test.h"
 

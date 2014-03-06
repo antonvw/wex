@@ -2,7 +2,7 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wxExStyle class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -78,7 +78,7 @@ void wxExStyle::Set(const wxXmlNode* node, const wxString& macro)
     if (value.Contains("default-font"))
     {
       const wxFont font(wxConfigBase::Get()->ReadObject(_("Default font"), 
-        wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+        wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
       
       value.Replace("default-font", 
         wxString::Format("face:%s,size:%d",

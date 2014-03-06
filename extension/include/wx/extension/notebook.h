@@ -2,7 +2,7 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wxExNotebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXNOTEBOOK_H
@@ -15,7 +15,8 @@
 
 class wxExManagedFrame;
 
-/// Offers a notebook with page mapping and interfaces with wxExManagedFrame.
+/// Offers a notebook with page access using keys,
+/// and that interfaces with wxExManagedFrame.
 class WXDLLIMPEXP_BASE wxExNotebook : public wxAuiNotebook
 {
 public:
@@ -27,9 +28,7 @@ public:
     const wxSize& size = wxDefaultSize,
     long style = wxAUI_NB_DEFAULT_STYLE);
 
-  /// Adds the page with given key and fills the map.
-  /// If the key already exists, NULL is returned,
-  /// and no new page is added.
+  /// Adds the page with given key and fills the keys.
   wxWindow* AddPage(
     wxWindow* page,
     const wxString& key,
@@ -38,6 +37,7 @@ public:
     const wxBitmap& bitmap = wxNullBitmap);
 
   /// Deletes the page with the given key.
+  /// Returns true if page could be deleted.
   bool DeletePage(const wxString& key);
 
   /// Do something for each page in the notebook.
@@ -48,19 +48,23 @@ public:
 
   /// Returns the key specified by the given page.
   /// If the page does not exist an empty string is returned.
-  const wxString GetKeyByPage(wxWindow* page) const;
-
+  const wxString GetKeyByPage(wxWindow* page) const {
+    const auto it = m_Windows.find(page);
+    return (it != m_Windows.end() ? it->second: wxString(wxEmptyString));};
+  
   /// Returns the page specified by the given key.
   /// If the key does not exist NULL is returned.
-  wxWindow* GetPageByKey(const wxString& key) const;
+  wxWindow* GetPageByKey(const wxString& key) const {
+    const auto it = m_Keys.find(key);
+    return (it != m_Keys.end() ? it->second: NULL);};
   
   /// Returns the page index specified by the given key.
-  /// If the key does not exist -1 is returned.
-  int GetPageIndexByKey(const wxString& key) const;
+  /// If the key does not exist wxNOT_FOUND is returned.
+  int GetPageIndexByKey(const wxString& key) const {
+    wxWindow* page = GetPageByKey(key);
+    return (page != NULL ? GetPageIndex(page): wxNOT_FOUND);};
   
-  /// Inserts the page with given key and fills the map.
-  /// If the key already exists, NULL is returned,
-  /// and no new page is added.
+  /// Inserts the page with given key and fills the keys.
   wxWindow* InsertPage(
     size_t page_idx,
     wxWindow* page,
@@ -84,12 +88,10 @@ public:
 protected:
   void OnNotebook(wxAuiNotebookEvent& event);
 private:
-  void ErasePage(const wxString& key); // remove from the map
-  void LogMapPages() const;
-
   wxExManagedFrame* m_Frame;
   // In bookctrl.h: m_pages
-  std::map<wxString, wxWindow*> m_MapPages;
+  std::map<wxString, wxWindow*> m_Keys;
+  std::map<wxWindow*, wxString> m_Windows;
 
   DECLARE_EVENT_TABLE()
 };

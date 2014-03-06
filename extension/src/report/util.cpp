@@ -19,6 +19,11 @@
 
 bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 {
+  if (notebook == NULL)
+  {
+    return true;
+  }
+  
   for (
     int page = notebook->GetPageCount() - 1;
     page >= 0;

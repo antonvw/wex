@@ -2,7 +2,7 @@
 // Name:      managedframe.h
 // Purpose:   Declaration of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXMANAGEDFRAME_H
@@ -15,8 +15,6 @@
 #if wxUSE_GUI
 
 class wxPane;
-class wxStaticText;
-
 class wxExEx;
 class wxExExTextCtrl;
 class wxExToolBar;
@@ -38,6 +36,7 @@ public:
  ~wxExManagedFrame();
 
   /// Returns true if the page can be closed.
+  /// Default resets the find focus.
   virtual bool AllowClose(
     /// notebook id
     wxWindowID id, 
@@ -49,7 +48,7 @@ public:
   virtual wxExSTC* ExecExCommand(int command) {return NULL;};
 
   /// Gets a command line ex command.
-  /// It shows the ex bar, sets the label and 
+  /// Default shows the ex bar, sets the label and 
   /// sets focus to it, allowing
   /// you to enter a command.
   /// You can override it to e.g. hide other panels.
@@ -67,15 +66,18 @@ public:
   void HideExBar(bool set_focus = true);
 
   /// Called if the notebook changed page.
+  /// Default sets the focus to page.
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
   /// Shows text in ex bar.
   void ShowExMessage(const wxString& text);
   
-  /// Called after you checked the Sync checkbox on the toolbar.
+  /// Called after you checked the Sync checkbox on the options toolbar.
+  /// Default syncs current stc.
   virtual void SyncAll();
 
   /// Called after all pages from the notebooks are deleted.
+  /// Default resets the find focus.
   virtual void SyncCloseAll(wxWindowID id);
 
   /// Toggles the managed pane: if shown hides it, otherwise shows it.
@@ -83,6 +85,7 @@ public:
   bool TogglePane(
     /// pane to be toggled:
     /// - FINDBAR
+    /// - OPTIONSBAR
     /// - TOOLBAR
     /// - VIBAR (same as the ex bar)
     const wxString& pane);
@@ -101,7 +104,6 @@ private:
   wxAuiManager m_Manager;
   wxExToolBar* m_ToolBar;
   wxExExTextCtrl* m_exTextCtrl;
-  wxStaticText* m_exTextPrefix;
   
   DECLARE_EVENT_TABLE()
 };

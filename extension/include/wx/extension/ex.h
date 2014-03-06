@@ -52,7 +52,7 @@ public:
   wxExViMacros& GetMacros() {return m_Macros;};
 
   /// Returns register name.
-  const wxString& GetRegister() const {return m_Register;};
+  const char GetRegister() const {return m_Register;};
   
   /// Returns search flags.
   int GetSearchFlags() const {return m_SearchFlags;};
@@ -114,7 +114,9 @@ protected:
     bool always = false);
   
   /// Sets register name.
-  void SetRegister(const wxString& name) {m_Register = name;};
+  /// Setting register 0 results in
+  /// disabling current register.
+  void SetRegister(const char name) {m_Register = name;};
 private:
   bool CommandGlobal(const wxString& search);
   bool CommandRange(const wxString& command);
@@ -132,7 +134,7 @@ private:
   
   int m_SearchFlags;
   
-  wxString m_Register;
+  char m_Register;
   
   wxExManagedFrame* m_Frame;  
   wxExProcess* m_Process;

@@ -55,7 +55,7 @@ private:
   bool ChangeNumber(bool inc);
   void CommandCalc(const wxString& reg);
   bool CommandChar(int c, int repeat);
-  void CommandReg(const wxString& reg);
+  void CommandReg(const char reg);
   void FindWord(bool find_next = true);
   void GotoBrace();
   bool Indent(

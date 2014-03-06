@@ -2,19 +2,17 @@
 // Name:      frd.h
 // Purpose:   Declaration of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFRD_H
 #define _EXFRD_H
 
 #include <list>
-#include <set>
-#include <wx/regex.h>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
+#include <wx/regex.h>
 #include <wx/textctrl.h>
 
-class wxCheckListBox;
 class wxExFindTextCtrl;
 
 /// Adds an existing config to wxFindReplaceData, and some members.
@@ -28,18 +26,9 @@ public:
   /// Gets the find replace data.
   static wxExFindReplaceData* Get(bool createOnDemand = true);
 
-  /// Gets field member into a check list box.
-  bool Get(const wxString& field, wxCheckListBox* clb, int item) const;
-
-  /// Gets find/replace info text.
-  const wxString GetFindReplaceInfoText(bool replace = false) const;
-
   /// Gets the find strings.
   const std::list < wxString > & GetFindStrings() const {
     return m_FindStrings;};
-
-  /// Gets the text for the check boxes.
-  const std::set<wxString> & GetInfo() const {return m_Info;};
 
   /// Gets the regular expression.
   const wxRegEx& GetRegularExpression() const {
@@ -82,7 +71,7 @@ public:
   static wxExFindReplaceData* Set(wxExFindReplaceData* frd);
 
   /// Sets field member if the specified text matches 
-  /// one of the text fields.
+  /// one of the (boolean) text fields.
   bool Set(const wxString& field, bool value);
 
   /// Sets the find string.
@@ -109,9 +98,6 @@ public:
   void SetUseRegularExpression(bool value) {
     m_UseRegularExpression = value;};
 
-  /// Convert search flags into STC search flags.
-  int STCFlags() const;
-
   /// Returns true if find text is used as a regular expression.
   bool UseRegularExpression() const {return m_UseRegularExpression;};
 private:
@@ -130,7 +116,6 @@ private:
 
   std::list < wxString > m_FindStrings;
   std::list < wxString > m_ReplaceStrings;
-  std::set < wxString > m_Info;
 
   static wxExFindReplaceData* m_Self;
 };

@@ -2,7 +2,7 @@
 // Name:      textfile.cpp
 // Purpose:   Implementation of wxExTextFile class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <algorithm>
+#include <wx/extension/lexers.h>
 #include <wx/extension/textfile.h>
 #include <wx/extension/frd.h>
 
@@ -142,6 +143,11 @@ bool wxExTextFile::RunTool()
   if (!wxTextFile::Open(m_FileName.GetFullPath()))
   {
     return false;
+  }
+
+  if (!m_FileName.GetLexer().IsOk())
+  {
+    m_FileName.SetLexer(wxExLexers::Get()->FindByText(GetLine(0)));
   }
 
   m_Stats.m_Elements.Set(_("Files"), 1);

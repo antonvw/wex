@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wxExLexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -179,7 +179,9 @@ const wxExLexer wxExLexers::FindByFileName(
 {
   for (const auto& it : m_Lexers)
   {
-    if (wxExMatchesOneOf(filename, it.GetExtensions()))
+    if (
+      !it.GetExtensions().empty() && 
+       wxExMatchesOneOf(filename, it.GetExtensions()))
     {
       return it;
     }
@@ -270,6 +272,20 @@ wxExLexers* wxExLexers::Get(bool createOnDemand)
   return m_Self;
 }
 
+const wxString wxExLexers::GetKeywords(const wxString& set) const
+{
+  const auto it = m_Keywords.find(set);
+  
+  if (it != m_Keywords.end())
+  {
+    return it->second;
+  }
+  else
+  {
+    return wxEmptyString;
+  }
+}
+
 const wxString wxExLexers::GetLexerExtensions() const
 {
   wxString text;
@@ -301,6 +317,7 @@ void wxExLexers::Initialize()
   m_ThemeColours.clear();
   m_GlobalProperties.clear();
   m_Indicators.clear();
+  m_Keywords.clear();
   m_Lexers.clear();
   m_Macros.clear();
   m_ThemeMacros.clear();
@@ -344,6 +361,10 @@ bool wxExLexers::LoadDocument()
     else if (child->GetName() == "global")
     {
       ParseNodeGlobal(child);
+    }
+    else if (child->GetName() == "keyword")
+    {
+      ParseNodeKeyword(child);
     }
     else if (child->GetName() == "lexer")
     {
@@ -439,6 +460,23 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
       {
         m_Styles.push_back(style);
       }
+    }
+    
+    child = child->GetNext();
+  }
+}
+
+void wxExLexers::ParseNodeKeyword(const wxXmlNode* node)
+{
+  wxXmlNode* child = node->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "set")
+    {
+      const wxString name(child->GetAttribute("name"));
+      const wxString content(child->GetNodeContent().Strip(wxString::both));
+      m_Keywords[name] = content;
     }
     
     child = child->GetNext();

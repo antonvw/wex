@@ -2,7 +2,7 @@
 // Name:      configitem.cpp
 // Purpose:   Implementation of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -12,6 +12,7 @@
 #include <wx/button.h>
 #include <wx/clrpicker.h> // for wxColourPickerWidget
 #include <wx/commandlinkbutton.h>
+#include <wx/checklst.h>
 #include <wx/config.h>
 #include <wx/filepicker.h>
 #include <wx/fontpicker.h>
@@ -19,7 +20,7 @@
 #include <wx/spinctrl.h>
 #include <wx/statline.h>
 #include <wx/tglbtn.h>
-#include <wx/valtext.h>
+#include <wx/valnum.h>
 #include <wx/window.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
@@ -297,7 +298,11 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Id,
         wxEmptyString,
         wxDefaultPosition,
-        wxSize(250, wxDefaultCoord));
+        wxSize(250, wxDefaultCoord),
+        0,
+        NULL,
+        0,
+        (m_Validator != NULL ? *m_Validator: wxDefaultValidator));
       break;
 
     case CONFIG_COMMAND_LINK_BUTTON:
@@ -354,6 +359,30 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
+    case CONFIG_FLOAT:
+      // See also CONFIG_INT, validator cannot be set using ?.
+      if (m_Validator == NULL)
+      {
+        m_Window = new wxTextCtrl(parent,
+          m_Id,
+          wxEmptyString,
+          wxDefaultPosition,
+          wxSize(width_numeric, wxDefaultCoord),
+          m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+          wxFloatingPointValidator<float>());
+      }
+      else
+      {
+        m_Window = new wxTextCtrl(parent,
+          m_Id,
+          wxEmptyString,
+          wxDefaultPosition,
+          wxSize(width_numeric, wxDefaultCoord),
+          m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+          *m_Validator);
+      }
+      break;
+      
     case CONFIG_FONTPICKERCTRL:
       {
       wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent,
@@ -386,13 +415,26 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_INT:
-      m_Window = new wxTextCtrl(parent,
-        m_Id,
-        wxEmptyString,
-        wxDefaultPosition,
-        wxSize(width_numeric, wxDefaultCoord),
-        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
-        wxTextValidator(wxFILTER_NUMERIC));
+      if (m_Validator == NULL)
+      {
+        m_Window = new wxTextCtrl(parent,
+          m_Id,
+          wxEmptyString,
+          wxDefaultPosition,
+          wxSize(width_numeric, wxDefaultCoord),
+          m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+          wxTextValidator(wxFILTER_NUMERIC));
+      }
+      else
+      {
+        m_Window = new wxTextCtrl(parent,
+          m_Id,
+          wxEmptyString,
+          wxDefaultPosition,
+          wxSize(width_numeric, wxDefaultCoord),
+          m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+          *m_Validator);
+      }
       break;
 
     case CONFIG_LISTVIEW_FOLDER:
@@ -517,7 +559,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
            wxSize(width, 200):
            wxSize(width, wxDefaultCoord)),
         m_Style | 
-          (readonly ? wxTE_READONLY: 0));
+          (readonly ? wxTE_READONLY: 0),
+        (m_Validator != NULL ? *m_Validator: wxDefaultValidator));
       break;
 
     case CONFIG_TOGGLEBUTTON:
@@ -541,12 +584,38 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
   }
 }
 
+bool wxExConfigItem::Get(
+  const wxString& field, 
+  wxCheckListBox* clb, 
+  int item) const
+{
+  if (field == wxExFindReplaceData::Get()->GetTextMatchWholeWord())
+  {
+    clb->Check(item, wxExFindReplaceData::Get()->MatchWord());
+  }
+  else if (field == wxExFindReplaceData::Get()->GetTextMatchCase())
+  {
+    clb->Check(item, wxExFindReplaceData::Get()->MatchCase());
+  }
+  else if (field == wxExFindReplaceData::Get()->GetTextRegEx())
+  {
+    clb->Check(item, wxExFindReplaceData::Get()->UseRegularExpression());
+  }
+  else
+  {
+    return false;
+  }
+
+  return true;
+}
+
 void wxExConfigItem::Init(const wxString& page, int cols)
 {
   m_Cols = cols;
   m_IsRowGrowable = false;
   m_Page = page;
   m_PageCols = -1;
+  m_Validator = NULL;
 
   if (m_Page.Contains(":"))
   {
@@ -563,6 +632,7 @@ void wxExConfigItem::Init(const wxString& page, int cols)
     case CONFIG_BUTTON:
     case CONFIG_COLOUR:
     case CONFIG_COMMAND_LINK_BUTTON:
+    case CONFIG_FLOAT:
     case CONFIG_FONTPICKERCTRL:
     case CONFIG_HYPERLINKCTRL:
     case CONFIG_INT:
@@ -737,7 +807,7 @@ bool wxExConfigItem::ToConfig(bool save) const
         }
         else
         {
-          if (!wxExFindReplaceData::Get()->Get(clb->GetString(i), clb, i))
+          if (!Get(clb->GetString(i), clb, i))
           {
             clb->Check(i, wxConfigBase::Get()->ReadBool(clb->GetString(i), false));
           }
@@ -764,7 +834,6 @@ bool wxExConfigItem::ToConfig(bool save) const
       if (save)
       {
         const auto& l = wxExComboBoxToList(cb, m_MaxItems);
-        wxExListToConfig(l, m_Label);
 
         if (m_Label == wxExFindReplaceData::Get()->GetTextFindWhat())
         {
@@ -773,6 +842,10 @@ bool wxExConfigItem::ToConfig(bool save) const
         else if (m_Label == wxExFindReplaceData::Get()->GetTextReplaceWith())
         {
           wxExFindReplaceData::Get()->SetReplaceStrings(l);
+        }
+        else
+        {
+          wxExListToConfig(l, m_Label);
         }
       }
       else
@@ -812,6 +885,18 @@ bool wxExConfigItem::ToConfig(bool save) const
       }
       break;
 
+    case CONFIG_FLOAT:
+      {
+      wxTextCtrl* tc = (wxTextCtrl*)m_Window;
+      
+      if (save)
+        wxConfigBase::Get()->Write(m_Label, atof(tc->GetValue().c_str()));
+      else
+        tc->SetValue(
+          wxString::Format("%lf", wxConfigBase::Get()->ReadDouble(m_Label, 0)));
+      }
+      break;
+      
     case CONFIG_FONTPICKERCTRL:
       {
       wxFontPickerCtrl* pc = (wxFontPickerCtrl*)m_Window;
@@ -820,7 +905,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       else
         pc->SetSelectedFont(
           wxConfigBase::Get()->ReadObject(m_Label, 
-          wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+          wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
       }
       break;
 

@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of sample classes for wxExtension
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -705,6 +705,13 @@ void wxExSampleFrame::ShowConfigItems()
     CONFIG_FILEPICKERCTRL, 
     "Pickers"));
 
+  // CONFIG_FLOAT
+  v.push_back(wxExConfigItem(
+    "Float", 
+    CONFIG_FLOAT, 
+    "Floats", 
+    true));
+      
   // CONFIG_FONTPICKERCTRL
   v.push_back(wxExConfigItem(
     "Font Picker", 
@@ -833,6 +840,15 @@ void wxExSampleFrame::ShowConfigItems()
       "Strings"));
   }
   
+  wxExConfigItem ci(
+    "String Validator", 
+    wxEmptyString,
+    "Strings");
+  wxTextValidator validator(wxFILTER_INCLUDE_CHAR_LIST);
+  validator.SetCharIncludes("0123");
+  ci.SetValidator(&validator);
+  v.push_back(ci);
+      
   v.push_back(wxExConfigItem(
     "String Multiline", 
     wxEmptyString,

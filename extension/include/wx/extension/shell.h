@@ -9,6 +9,7 @@
 #define _EXSTCSHELL_H
 
 #include <list>
+#include <vector>
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
@@ -47,7 +48,7 @@ public:
     /// The lexer used by stc.
     const wxString& lexer = wxEmptyString,
     /// The stc menu flags.
-    long menu_flags = STC_MENU_DEFAULT & ~STC_MENU_OPEN_LINK,
+    long menu_flags = STC_MENU_DEFAULT,
     /// The window id.
     wxWindowID id = wxID_ANY,
     /// Position.
@@ -107,7 +108,6 @@ public:
   virtual void Undo();
 protected:
   void OnChar(wxKeyEvent& event);
-  void OnCommand(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
@@ -125,8 +125,7 @@ private:
   // it is moved to the end of the list.
   std::list < wxString > m_Commands;
   std::list < wxString >::const_iterator m_CommandsIterator;
-  
-  wxSortedArrayString m_AutoCompleteList;
+  std::vector < wxString > m_AutoCompleteList;
 
   wxString m_Command;
   const wxString m_CommandEnd;

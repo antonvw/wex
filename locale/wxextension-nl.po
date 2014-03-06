@@ -54,7 +54,7 @@ msgstr "Geef macro"
 #: ../extension/src/ex.cpp:868
 #, c-format
 msgid "Undefined marker: %c"
-msgstr "Onbekende macro: %c"
+msgstr "Onbekende marker: %c"
 
 #: ../extension/src/ex.cpp:922
 #, c-format

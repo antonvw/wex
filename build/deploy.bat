@@ -2,7 +2,7 @@
 rem Name:      deploy.bat
 rem Purpose:   Deploy file (for syncped)
 rem Author:    Anton van Wezenbeek
-rem Copyright: (c) 2013 Anton van Wezenbeek
+rem Copyright: (c) 2014 Anton van Wezenbeek
 
 rem Run this file in the build folder
 
