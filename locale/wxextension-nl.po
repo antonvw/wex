@@ -2,625 +2,215 @@
 # File:     wxExtension-nl.po
 # Purpose:  Translation for wxExtension library to dutch.
 # Author:   Anton van Wezenbeek
-# Copyright (c) 2012 Anton van Wezenbeek
+# Copyright (c) 2014 Anton van Wezenbeek
 # ###############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: wxExtension v2.9.5\n"
+"Project-Id-Version: wxExtension v3.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-02 16:11+0100\n"
-"PO-Revision-Date: 2013-06-02 16:13+0100\n"
+"POT-Creation-Date: 2014-03-06 15:07+0100\n"
+"PO-Revision-Date: 2014-03-06 15:20+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ./\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: Dutch\n"
 "X-Poedit-SearchPath-0: ../extension/include\n"
 "X-Poedit-SearchPath-1: ../extension/src\n"
 
-#: ../extension/src/configdlg.cpp:110
-msgid "No further info available"
-msgstr "Geen info beschikbaar"
-
-#: ../extension/src/ex.cpp:566 ../extension/src/stc.cpp:541
-#: ../extension/src/stc.cpp:721
-msgid "Tab width"
-msgstr "Tab breedte"
-
-#: ../extension/src/ex.cpp:636 ../extension/src/ex.cpp:679
-#, c-format
-msgid "%d fewer lines"
-msgstr "%d regels minder"
-
-#: ../extension/src/ex.cpp:727 ../extension/src/ex.cpp:785
-#: ../extension/src/lexers.cpp:617 ../extension/src/lexers.cpp:660
-#: ../extension/src/listview.cpp:507 ../extension/src/listview.cpp:1154
-#: ../extension/src/stc.cpp:767 ../extension/src/stc.cpp:792
-#: ../extension/src/stc.cpp:830 ../extension/src/stc.cpp:1150
-#: ../extension/src/stc.cpp:1178 ../extension/src/stc.cpp:2425
+#: ../extension/src/variable.cpp:261 ../extension/src/lexers.cpp:637
+#: ../extension/src/lexers.cpp:677 ../extension/src/ex.cpp:507
+#: ../extension/src/ex.cpp:571 ../extension/src/stc.cpp:697
+#: ../extension/src/stc.cpp:722 ../extension/src/stc.cpp:761
+#: ../extension/src/stc.cpp:1120 ../extension/src/stc.cpp:1148
+#: ../extension/src/stc.cpp:2403 ../extension/src/listview.cpp:528
+#: ../extension/src/listview.cpp:1082
 msgid "Input"
 msgstr "Invoer"
 
-#: ../extension/src/ex.cpp:728
-msgid "Select Macro"
-msgstr "Macro selecteren"
+#: ../extension/src/textfile.cpp:153 ../extension/src/tool.cpp:49
+msgid "Files"
+msgstr "Bestanden"
 
-#: ../extension/src/ex.cpp:786
-msgid "Enter Macro"
-msgstr "Geef macro"
-
-#: ../extension/src/ex.cpp:868
-#, c-format
-msgid "Undefined marker: %c"
-msgstr "Onbekende marker: %c"
-
-#: ../extension/src/ex.cpp:922
-#, c-format
-msgid "%d lines moved"
-msgstr "%d regels verplaatst"
-
-#: ../extension/src/ex.cpp:982 ../extension/src/stc.cpp:880
-#: ../extension/src/stc.cpp:2079
-msgid "Not allowed in hex mode"
-msgstr "Niet toegestaan in hexadecimale modus"
-
-#: ../extension/src/ex.cpp:1051 ../extension/src/stc.cpp:2149
-#, c-format
-msgid "Replaced: %d occurrences of: %s"
-msgstr "Vervangen: %d voorkomens van: %s"
-
-#: ../extension/src/ex.cpp:1217 ../extension/src/ex.cpp:1247
-#, c-format
-msgid "%d lines yanked"
-msgstr "%d regels yanked"
-
-#: ../extension/src/filedlg.cpp:54
-msgid "Save changes"
-msgstr "Wijzigingen opslaan"
-
-#: ../extension/src/filedlg.cpp:55 ../extension/src/filedlg.cpp:74
-msgid "Confirm"
-msgstr "Bevestigen"
-
-#: ../extension/src/filedlg.cpp:73
-msgid "Save changes to"
-msgstr "Wijzigingen opslaan in"
-
-#: ../extension/src/frame.cpp:206
-msgid "Find"
-msgstr "Zoeken"
-
-#: ../extension/src/frame.cpp:231
-msgid "Replace"
-msgstr "Vervangen"
-
-#: ../extension/src/frd.cpp:22
+#: ../extension/src/frd.cpp:20
 msgid "Find what"
 msgstr "Zoeken"
 
-#: ../extension/src/frd.cpp:23
+#: ../extension/src/frd.cpp:21
 msgid "Match case"
 msgstr "Identieke hoofdletters/kleine letters"
 
-#: ../extension/src/frd.cpp:24
+#: ../extension/src/frd.cpp:22
 msgid "Match whole word"
 msgstr "Heel woord"
 
-#: ../extension/src/frd.cpp:25
+#: ../extension/src/frd.cpp:23
 msgid "Regular expression"
 msgstr "Reguliere expressie"
 
-#: ../extension/src/frd.cpp:26
+#: ../extension/src/frd.cpp:24
 msgid "Replace with"
 msgstr "Vervangen door"
 
-#: ../extension/src/frd.cpp:27
+#: ../extension/src/frd.cpp:25
 msgid "Search down"
 msgstr "Omlaag zoeken"
 
-#: ../extension/src/frd.cpp:118 ../extension/src/util.cpp:237
-msgid "Searching for"
-msgstr "Zoeken naar"
+#: ../extension/src/vcs.cpp:64 ../extension/src/stc.cpp:488
+#: ../extension/src/stc.cpp:495 ../extension/src/stc.cpp:509
+msgid "None"
+msgstr "Geen"
 
-#: ../extension/src/frd.cpp:122
-msgid "replacing with"
-msgstr "vervangen door"
+#: ../extension/src/vcs.cpp:147 ../extension/src/vcsentry.cpp:319
+msgid "Path"
+msgstr "Pad"
 
-#: ../extension/src/lexers.cpp:158
+#: ../extension/src/vcs.cpp:153 ../extension/src/vcs.cpp:232
+#: ../extension/src/vcs.cpp:442 ../extension/src/vcs.cpp:448
+#: ../extension/src/vcs.cpp:457 ../extension/src/vcs.cpp:461
+#: ../extension/src/vcs.cpp:472 ../extension/src/vcsentry.cpp:310
+msgid "Base folder"
+msgstr "Basis map"
+
+#: ../extension/src/vcs.cpp:438
+msgid "Select VCS Folder"
+msgstr "VCS map selecteren"
+
+#: ../extension/src/lexers.cpp:150
 msgid "All Files"
 msgstr "Alle bestanden"
 
-#: ../extension/src/lexers.cpp:576 ../extension/src/lexers.cpp:578
-#: ../extension/src/report/frame.cpp:59
+#: ../extension/src/lexers.cpp:387 ../extension/src/lexers.cpp:389
+#: ../extension/src/report/frame.cpp:61
 msgid "In files"
 msgstr "In bestanden"
 
-#: ../extension/src/lexers.cpp:581 ../extension/src/lexers.cpp:583
+#: ../extension/src/lexers.cpp:392 ../extension/src/lexers.cpp:394
 #: ../extension/src/report/listviewfile.cpp:62
 msgid "Add what"
 msgstr "Toevoegen"
 
-#: ../extension/src/link.cpp:294 ../extension/src/stc.cpp:607
-msgid "Include directory"
-msgstr "Include map"
-
-#: ../extension/src/listitem.cpp:24 ../extension/src/listitem.cpp:28
-#: ../extension/src/listitem.cpp:56 ../extension/src/listview.cpp:1002
-msgid "File Name"
-msgstr "Bestand"
-
-#: ../extension/src/listitem.cpp:25 ../extension/src/listitem.cpp:27
-#: ../extension/src/listitem.cpp:129 ../extension/src/listview.cpp:1041
-#: ../extension/src/listview.cpp:1207
-msgid "In Folder"
-msgstr "Map"
-
-#: ../extension/src/listitem.cpp:30 ../extension/src/listitem.cpp:125
-#: ../extension/src/listview.cpp:1042 ../extension/src/listview.cpp:1156
-#: ../extension/src/listview.cpp:1160 ../extension/src/listview.cpp:1206
-#: ../extension/src/listview.cpp:1265
-#: ../extension/src/report/listviewfile.cpp:245
-msgid "Type"
-msgstr "Type"
-
-#: ../extension/src/listitem.cpp:101
-msgid "List Colour"
-msgstr "Lijst kleur"
-
-#: ../extension/src/listitem.cpp:130 ../extension/src/listview.cpp:1043
-#: ../extension/src/listview.cpp:1208
-msgid "Size"
-msgstr "Grootte"
-
-#: ../extension/src/listitem.cpp:134 ../extension/src/listview.cpp:1040
-#: ../extension/src/listview.cpp:1209 ../extension/src/listview.cpp:1347
-#: ../extension/src/listview.cpp:1368 ../extension/src/listview.cpp:1370
-#: ../extension/src/util.cpp:432
-msgid "Modified"
-msgstr "Gewijzigd"
-
-#: ../extension/src/listview.cpp:175
-msgid "List Font"
-msgstr "Lijst lettertype"
-
-#: ../extension/src/listview.cpp:254
-msgid "Sort On"
-msgstr "Sorteren op"
-
-#: ../extension/src/listview.cpp:926
-msgid "Sorted on"
-msgstr "Gesorteerd op kolom"
-
-#: ../extension/src/listview.cpp:1008 ../extension/src/stc.cpp:530
-#: ../extension/src/report/textfile.cpp:493
-msgid "Line"
-msgstr "Regel"
-
-#: ../extension/src/listview.cpp:1009 ../extension/src/report/listview.cpp:193
-#: ../extension/src/report/textfile.cpp:494
-msgid "Match"
-msgstr "Zoektekst"
-
-#: ../extension/src/listview.cpp:1010 ../extension/src/listview.cpp:1035
-#: ../extension/src/report/listview.cpp:188
-#: ../extension/src/report/textfile.cpp:486
-msgid "Line No"
-msgstr "Regel nummer"
-
-#: ../extension/src/listview.cpp:1014 ../extension/src/report/listview.cpp:192
-#: ../extension/src/report/textfile.cpp:491
-msgid "Replaced"
-msgstr "Vervangen"
-
-#: ../extension/src/listview.cpp:1030 ../extension/src/listview.cpp:1090
-msgid "Keywords"
-msgstr "Keywords"
-
-#: ../extension/src/listview.cpp:1033 ../extension/src/report/textfile.cpp:500
-msgid "Run Time"
-msgstr "Uitvoertijd"
-
-#: ../extension/src/listview.cpp:1034 ../extension/src/report/textfile.cpp:499
-msgid "Query"
-msgstr "Query"
-
-#: ../extension/src/listview.cpp:1074
-msgid "&Build RBS File"
-msgstr "&RBS bestand maken"
-
-#: ../extension/src/listview.cpp:1087
-msgid "Folder"
-msgstr "Map"
-
-#: ../extension/src/listview.cpp:1088
-msgid "Find Results"
-msgstr "Zoek resultaten"
-
-#: ../extension/src/listview.cpp:1089
-msgid "History"
-msgstr "Geschiedenis"
-
-#: ../extension/src/listview.cpp:1091 ../extension/src/listview.cpp:1488
-msgid "File"
-msgstr "Bestand"
-
-#: ../extension/src/listview.cpp:1092
-msgid "Replace Results"
-msgstr "Vervang resultaten"
-
-#: ../extension/src/listview.cpp:1093
-msgid "SQL Queries"
-msgstr "SQL queries"
-
-#: ../extension/src/listview.cpp:1155
-msgid "Folder Type"
-msgstr "Map type"
-
-#: ../extension/src/listview.cpp:1443 ../extension/src/listview.cpp:1448
-msgid "RBS File"
-msgstr "RBS bestand"
-
-#: ../extension/src/listview.cpp:1444 ../extension/src/listview.cpp:1459
-msgid "RBS Pattern"
-msgstr "RBS patroon"
-
-#: ../extension/src/listview.cpp:1445
-msgid "Build RBS File"
-msgstr "RBS bestand maken"
-
-#: ../extension/src/listview.cpp:1488
-msgid "generated"
-msgstr "gegenereerd"
-
-#: ../extension/src/managedframe.cpp:97
+#: ../extension/src/managedframe.cpp:96
 msgid "Toolbar"
 msgstr "Werkbalk"
 
-#: ../extension/src/managedframe.cpp:98
+#: ../extension/src/managedframe.cpp:97
 msgid "Findbar"
 msgstr "Zoekbalk"
 
-#: ../extension/src/managedframe.cpp:206
-#: ../extension/include/wx/extension/stc.h:115
+#: ../extension/src/managedframe.cpp:98
+msgid "Optionsbar"
+msgstr "Optiesbalk"
+
+#: ../extension/src/managedframe.cpp:205
+#: ../extension/include/wx/extension/stc.h:121
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: ../extension/src/menu.cpp:81
-msgid "&Menubar\tCtrl+I"
-msgstr "&Menubalk\tCtrl+I"
+#: ../extension/src/configdlg.cpp:107
+msgid "No further info available"
+msgstr "Geen info beschikbaar"
 
-#: ../extension/src/menu.cpp:83
-msgid "&Statusbar"
-msgstr "&Statusbalk"
+#: ../extension/src/util.cpp:374 ../extension/src/util.cpp:384
+#: ../extension/src/report/listview.cpp:101
+#: ../extension/src/report/listview.cpp:130
+msgid "Comparator"
+msgstr "Vergelijker"
 
-#: ../extension/src/menu.cpp:84
-msgid "&Toolbar"
-msgstr "&Werkbalk"
+#: ../extension/src/util.cpp:389
+msgid "Compared"
+msgstr "Vergeleken"
 
-#: ../extension/src/menu.cpp:85
-msgid "&Findbar"
-msgstr "&Zoekbalk"
+#: ../extension/src/util.cpp:437
+msgid "bottom"
+msgstr "einde"
 
-#: ../extension/src/menu.cpp:116
-msgid "&Deselect All"
-msgstr "Alles &deselecteren"
+#: ../extension/src/util.cpp:437
+msgid "top"
+msgstr "begin"
 
-#: ../extension/src/menu.cpp:127
-msgid "&Invert"
-msgstr "&Inverteren"
+#: ../extension/src/util.cpp:439 ../extension/src/report/frame.cpp:336
+msgid "Searching for"
+msgstr "Zoeken naar"
 
-#: ../extension/src/menu.cpp:140
-msgid "Page &Setup"
-msgstr "Pagina-&instelling"
+#: ../extension/src/util.cpp:441
+msgid "hit"
+msgstr "passeert"
 
-#: ../extension/src/menu.cpp:204
-msgid "&Tools"
-msgstr "&Hulpmiddelen"
+#: ../extension/src/util.cpp:448
+msgid "not found"
+msgstr "niet gevonden"
 
-#: ../extension/src/otl.cpp:37 ../extension/src/otl.cpp:61
-msgid "Datasource"
-msgstr "Databron"
+#: ../extension/src/util.cpp:622
+msgid "Synchronized"
+msgstr "Gesynchroniseerd"
 
-#: ../extension/src/otl.cpp:67 ../extension/src/otl.cpp:84
-msgid "User"
-msgstr "Gebruiker"
+#: ../extension/src/util.cpp:623 ../extension/src/listitem.cpp:134
+#: ../extension/src/listview.cpp:993 ../extension/src/listview.cpp:1137
+#: ../extension/src/listview.cpp:1267 ../extension/src/listview.cpp:1288
+#: ../extension/src/listview.cpp:1290
+msgid "Modified"
+msgstr "Gewijzigd"
 
-#: ../extension/src/otl.cpp:68 ../extension/src/otl.cpp:84
-msgid "Password"
-msgstr "Wachtwoord"
+#: ../extension/src/util.cpp:787
+msgid "Select Files"
+msgstr "Bestanden selecteren"
 
-#: ../extension/src/otl.cpp:180 ../extension/src/otl.cpp:258
-msgid "<Skipped>"
-msgstr "<Overgeslagen>"
+#: ../extension/src/util.cpp:831
+msgid "Page @PAGENUM@ of @PAGESCNT@"
+msgstr "Pagina @PAGENUM@ van @PAGESCNT@"
+
+#: ../extension/src/util.cpp:846
+msgid "Printed"
+msgstr "Afgedrukt"
 
 #: ../extension/src/process.cpp:27
 msgid "Process folder"
 msgstr "Proces map"
 
 #: ../extension/src/process.cpp:37 ../extension/src/process.cpp:205
-#: ../extension/src/process.cpp:245 ../extension/src/process.cpp:258
+#: ../extension/src/process.cpp:252 ../extension/src/process.cpp:265
 msgid "Process"
 msgstr "Proces"
 
-#: ../extension/src/process.cpp:445
+#: ../extension/src/process.cpp:452
 msgid "Stopped"
 msgstr "Gestopt"
 
-#: ../extension/src/process.cpp:477
+#: ../extension/src/process.cpp:484
 msgid "Ready"
 msgstr "Klaar"
 
-#: ../extension/src/shell.cpp:134 ../extension/src/stc.cpp:467
-#: ../extension/src/stc.cpp:733
-msgid "vi mode"
-msgstr "vi modus"
+#: ../extension/src/toolbar.cpp:140
+msgid "Find next"
+msgstr "Volgende zoeken"
 
-#: ../extension/src/shell.cpp:536
-msgid "event not found"
-msgstr "gebeurtenis niet gevonden"
+#: ../extension/src/toolbar.cpp:145
+msgid "Find previous"
+msgstr "Vorige zoeken"
 
-#: ../extension/src/stc.cpp:249 ../extension/src/stc.cpp:2409
-msgid "Properties"
-msgstr "Eigenschappen"
+#: ../extension/src/toolbar.cpp:168
+msgid "Search case sensitive"
+msgstr "Zoeken identieke hoofdletters/kleine letters"
 
-#: ../extension/src/stc.cpp:259
-msgid "Open"
-msgstr "Openen"
+#: ../extension/src/toolbar.cpp:169
+msgid "Search matching words"
+msgstr "Zoeken hele woorden"
 
-#: ../extension/src/stc.cpp:277
-msgid "&Open In Browser"
-msgstr "&Openen in browser"
+#: ../extension/src/toolbar.cpp:170
+msgid "Search using regular expressions"
+msgstr "Zoeken met reguliere expressie"
 
-#: ../extension/src/stc.cpp:299
-msgid "&Uppercase\tF11"
-msgstr "&Hoofdletter\tF11"
+#: ../extension/src/toolbar.cpp:233
+msgid "Open in hex mode"
+msgstr "Hexadecimaal openen"
 
-#: ../extension/src/stc.cpp:300
-msgid "&Lowercase\tF12"
-msgstr "&Kleine letter\tF12"
-
-#: ../extension/src/stc.cpp:308
-msgid "&Sort"
-msgstr "&Sorteren"
-
-#: ../extension/src/stc.cpp:312
-msgid "&Selection"
-msgstr "Selectie"
-
-#: ../extension/src/stc.cpp:332
-msgid "&Toggle Fold\tCtrl+T"
-msgstr "&Op/uitvouwen\tCtrl-T"
-
-#: ../extension/src/stc.cpp:333
-msgid "&Fold All Lines\tF9"
-msgstr "&Alle regels opvouwen\tF9"
-
-#: ../extension/src/stc.cpp:334
-msgid "&Unfold All Lines\tF10"
-msgstr "&Alle regels uitvouwen\tF10"
-
-#: ../extension/src/stc.cpp:462 ../extension/src/stc.cpp:723
-msgid "End of line"
-msgstr "Zichtbaar maken einde regel"
-
-#: ../extension/src/stc.cpp:463 ../extension/src/stc.cpp:716
-msgid "Line numbers"
-msgstr "Regel nummers"
-
-#: ../extension/src/stc.cpp:464 ../extension/src/stc.cpp:722
-msgid "Use tabs"
-msgstr "Gebruik tabs"
-
-#: ../extension/src/stc.cpp:465 ../extension/src/stc.cpp:658
-#: ../extension/src/stc.cpp:699
-msgid "Caret line"
-msgstr "Cursor regel"
-
-#: ../extension/src/stc.cpp:466 ../extension/src/stc.cpp:691
-#: ../extension/src/stc.cpp:693 ../extension/src/stc.cpp:742
-msgid "Scroll bars"
-msgstr "Schuifbalken"
-
-#: ../extension/src/stc.cpp:469 ../extension/src/stc.cpp:480
-#: ../extension/src/stc.cpp:506 ../extension/src/stc.cpp:517
-msgid "General"
-msgstr "Algemeen"
-
-#: ../extension/src/stc.cpp:472
-msgid "Invisible"
-msgstr "Onzichtbaar"
-
-#: ../extension/src/stc.cpp:474
-msgid "Invisible after ident"
-msgstr "Onzichtbaar na inspringen"
-
-#: ../extension/src/stc.cpp:475
-msgid "Visible always"
-msgstr "Altijd zichtbaar"
-
-#: ../extension/src/stc.cpp:477 ../extension/src/stc.cpp:725
-msgid "Whitespace"
-msgstr "Niet zichtbare tekens"
-
-#: ../extension/src/stc.cpp:499 ../extension/src/stc.cpp:510
-#: ../extension/src/stc.cpp:529 ../extension/src/vcs.cpp:69
-msgid "None"
-msgstr "Geen"
-
-#: ../extension/src/stc.cpp:500
-msgid "Word"
-msgstr "Woord"
-
-#: ../extension/src/stc.cpp:501
-msgid "Char"
-msgstr "Char"
-
-#: ../extension/src/stc.cpp:503 ../extension/src/stc.cpp:726
-msgid "Wrap line"
-msgstr "Regel doorloop"
-
-#: ../extension/src/stc.cpp:511
-msgid "End"
-msgstr "Einde"
-
-#: ../extension/src/stc.cpp:512
-msgid "Start"
-msgstr "Start"
-
-#: ../extension/src/stc.cpp:514 ../extension/src/stc.cpp:728
-msgid "Wrap visual flags"
-msgstr "Visuele regel doorloop"
-
-#: ../extension/src/stc.cpp:522 ../extension/src/stc.cpp:664
-#: ../extension/src/stc.cpp:1406 ../extension/src/style.cpp:102
-msgid "Default font"
-msgstr "Standaard lettertype"
-
-#: ../extension/src/stc.cpp:526 ../extension/src/stc.cpp:543
-#: ../extension/src/stc.cpp:548 ../extension/src/stc.cpp:686
-msgid "Edge column"
-msgstr "Kantlijn kolom"
-
-#: ../extension/src/stc.cpp:526 ../extension/src/stc.cpp:536
-msgid "Edge"
-msgstr "Kantlijn"
-
-#: ../extension/src/stc.cpp:531
-msgid "Background"
-msgstr "Achtergrond"
-
-#: ../extension/src/stc.cpp:533 ../extension/src/stc.cpp:687
-msgid "Edge line"
-msgstr "Kantlijn regel"
-
-#: ../extension/src/stc.cpp:544 ../extension/src/stc.cpp:549
-#: ../extension/src/stc.cpp:554 ../extension/src/stc.cpp:559
-#: ../extension/src/stc.cpp:564
-msgid "Margin"
-msgstr "Marges"
-
-#: ../extension/src/stc.cpp:546 ../extension/src/stc.cpp:703
-msgid "Indent"
-msgstr "Indentatie"
-
-#: ../extension/src/stc.cpp:551 ../extension/src/stc.cpp:709
-msgid "Divider"
-msgstr "Scheiding"
-
-#: ../extension/src/stc.cpp:556 ../extension/src/stc.cpp:570
-#: ../extension/src/stc.cpp:571 ../extension/src/stc.cpp:585
-#: ../extension/src/stc.cpp:741 ../extension/src/stc.cpp:1016
-msgid "Folding"
-msgstr "Vouwen"
-
-#: ../extension/src/stc.cpp:561 ../extension/src/stc.cpp:2353
-msgid "Line number"
-msgstr "Regel nummer"
-
-#: ../extension/src/stc.cpp:569 ../extension/src/stc.cpp:705
-msgid "Indentation guide"
-msgstr "Inspring gids"
-
-#: ../extension/src/stc.cpp:571 ../extension/src/stc.cpp:740
-#: ../extension/src/stc.cpp:1024
-msgid "Auto fold"
-msgstr "Automatisch opvouwen"
-
-#: ../extension/src/stc.cpp:575
-msgid "Line before expanded"
-msgstr "Lijn voor uitgevouwen"
-
-#: ../extension/src/stc.cpp:577
-msgid "Line before contracted"
-msgstr "Lijn voor opgevouwen"
-
-#: ../extension/src/stc.cpp:579
-msgid "Line after expanded"
-msgstr "Lijn na uitgevouwen"
-
-#: ../extension/src/stc.cpp:581
-msgid "Line after contracted"
-msgstr "Lijn na opgevouwen"
-
-#: ../extension/src/stc.cpp:584 ../extension/src/stc.cpp:701
-#: ../extension/src/stc.cpp:1018
-msgid "Fold flags"
-msgstr "Opvouw vlaggen"
-
-#: ../extension/src/stc.cpp:590
-msgid "Normal"
-msgstr "Normaal"
-
-#: ../extension/src/stc.cpp:591
-msgid "Invert on white"
-msgstr "Geïnverteerd op wit"
-
-#: ../extension/src/stc.cpp:592
-msgid "Black on white"
-msgstr "Zwart op wit"
-
-#: ../extension/src/stc.cpp:593
-msgid "Colour on white"
-msgstr "Kleuren op wit"
-
-#: ../extension/src/stc.cpp:594
-msgid "Colour on white normal"
-msgstr "Kleuren op wit normaal"
-
-#: ../extension/src/stc.cpp:596 ../extension/src/stc.cpp:695
-msgid "Print flags"
-msgstr "Afdruk vlaggen"
-
-#: ../extension/src/stc.cpp:599
-msgid "Printer"
-msgstr "Printer"
-
-#: ../extension/src/stc.cpp:609
-msgid "Directory"
-msgstr "Map"
-
-#: ../extension/src/stc.cpp:816
-msgid "Control Character"
-msgstr "Controle karakter"
-
-#: ../extension/src/stc.cpp:873 ../extension/src/stc.cpp:1604
-msgid "Document is readonly"
-msgstr "Document is alleen lezen"
-
-#: ../extension/src/stc.cpp:899
-msgid "Readonly attribute changed"
-msgstr "Alleen-lezen attribuut gewijzigd"
-
-#: ../extension/src/stc.cpp:1152
-msgid "Enter Byte Offset"
-msgstr "Byte offset invoeren"
-
-#: ../extension/src/stc.cpp:1180
-msgid "Enter Line Number"
-msgstr "Geef regel nummer"
-
-#: ../extension/src/stc.cpp:1592
-msgid "No markers present"
-msgstr "Geen markers aanwezig"
-
-#: ../extension/src/stcfile.cpp:67
-msgid "Opened"
-msgstr "Geopend"
-
-#: ../extension/src/stcfile.cpp:115
-msgid "Saved"
-msgstr "Opgeslagen"
-
-#: ../extension/src/stcfile.cpp:145
-#, c-format
-msgid "file: %s does not exist"
-msgstr "bestand: %s bestaat niet"
-
-#: ../extension/src/textfile.cpp:147 ../extension/src/tool.cpp:53
-msgid "Files"
-msgstr "Bestanden"
+#: ../extension/src/toolbar.cpp:234
+msgid "Synchronize modified files"
+msgstr "Synchronizeer gewijzigde bestanden"
 
 #: ../extension/src/tool.cpp:22
 #, c-format
@@ -641,244 +231,576 @@ msgstr "%d keywords gerapporteerd in"
 msgid "Report &Keyword"
 msgstr "&Keyword overzicht"
 
-#: ../extension/src/tool.cpp:50
-#: ../extension/include/wx/extension/textfile.h:82
+#: ../extension/src/tool.cpp:46
+#: ../extension/include/wx/extension/textfile.h:78
 msgid "Actions Completed"
 msgstr "Acties uitgevoerd"
 
-#: ../extension/src/tool.cpp:53 ../extension/src/report/listviewfile.cpp:147
+#: ../extension/src/tool.cpp:49 ../extension/src/report/listviewfile.cpp:147
 msgid "file(s)"
 msgstr "bestand(en)"
 
-#: ../extension/src/toolbar.cpp:100
-msgid "Open in hex mode"
-msgstr "Hexadecimaal openen"
+#: ../extension/src/stcfile.cpp:67
+msgid "Opened"
+msgstr "Geopend"
 
-#: ../extension/src/toolbar.cpp:101
-msgid "Synchronize modified files"
-msgstr "Synchronizeer gewijzigde bestanden"
+#: ../extension/src/stcfile.cpp:114
+msgid "Saved"
+msgstr "Opgeslagen"
 
-#: ../extension/src/toolbar.cpp:184
-msgid "Find next"
-msgstr "Volgende zoeken"
+#: ../extension/src/stcfile.cpp:144
+#, c-format
+msgid "file: %s does not exist"
+msgstr "bestand: %s bestaat niet"
 
-#: ../extension/src/toolbar.cpp:189
-msgid "Find previous"
-msgstr "Vorige zoeken"
+#: ../extension/src/address.cpp:181 ../extension/src/ex.cpp:358
+#, c-format
+msgid "%d fewer lines"
+msgstr "%d regels minder"
 
-#: ../extension/src/toolbar.cpp:212
-msgid "Search case sensitive"
-msgstr "Zoeken identieke hoofdletters/kleine letters"
+#: ../extension/src/address.cpp:336
+#, c-format
+msgid "%d lines moved"
+msgstr "%d regels verplaatst"
 
-#: ../extension/src/toolbar.cpp:213
-msgid "Search matching words"
-msgstr "Zoeken hele woorden"
+#: ../extension/src/address.cpp:512 ../extension/src/address.cpp:513
+#: ../extension/src/frame.cpp:181
+msgid "Replace"
+msgstr "Vervangen"
 
-#: ../extension/src/toolbar.cpp:214
-msgid "Search using regular expressions"
-msgstr "Zoeken met reguliere expressie"
+#: ../extension/src/address.cpp:512
+msgid "with"
+msgstr "met"
 
-#: ../extension/src/util.cpp:195 ../extension/src/util.cpp:205
-#: ../extension/src/report/listview.cpp:90
-#: ../extension/src/report/listview.cpp:119
-msgid "Comparator"
-msgstr "Vergelijker"
+#: ../extension/src/address.cpp:567 ../extension/src/ex.cpp:369
+#: ../extension/src/stc.cpp:2096
+#, c-format
+msgid "Replaced: %d occurrences of: %s"
+msgstr "Vervangen: %d voorkomens van: %s"
 
-#: ../extension/src/util.cpp:210
-msgid "Compared"
-msgstr "Vergeleken"
+#: ../extension/src/address.cpp:629
+#, c-format
+msgid "%d lines yanked"
+msgstr "%d regels yanked"
 
-#: ../extension/src/util.cpp:235
-msgid "bottom"
-msgstr "einde"
+#: ../extension/src/shell.cpp:134 ../extension/src/stc.cpp:460
+#: ../extension/src/stc.cpp:663
+msgid "vi mode"
+msgstr "vi modus"
 
-#: ../extension/src/util.cpp:235
-msgid "top"
-msgstr "begin"
+#: ../extension/src/shell.cpp:497
+msgid "event not found"
+msgstr "gebeurtenis niet gevonden"
 
-#: ../extension/src/util.cpp:239
-msgid "hit"
-msgstr "passeert"
+#: ../extension/src/ex.cpp:351
+#, c-format
+msgid "Found: %d occurrences of: %s"
+msgstr "Vervangen: %d voorkomens van: %s"
 
-#: ../extension/src/util.cpp:245
-msgid "not found"
-msgstr "niet gevonden"
+#: ../extension/src/ex.cpp:457 ../extension/src/stc.cpp:517
+#: ../extension/src/stc.cpp:654
+msgid "Tab width"
+msgstr "Tab breedte"
 
-#: ../extension/src/util.cpp:431
-msgid "Synchronized"
-msgstr "Gesynchroniseerd"
+#: ../extension/src/ex.cpp:508
+msgid "Select Macro"
+msgstr "Macro selecteren"
 
-#: ../extension/src/util.cpp:612
-msgid "Select Files"
-msgstr "Bestanden selecteren"
+#: ../extension/src/ex.cpp:572
+msgid "Enter Macro"
+msgstr "Geef macro"
 
-#: ../extension/src/util.cpp:656
-msgid "Page @PAGENUM@ of @PAGESCNT@"
-msgstr "Pagina @PAGENUM@ van @PAGESCNT@"
+#: ../extension/src/ex.cpp:669
+#, c-format
+msgid "Undefined marker: %c"
+msgstr "Onbekende marker: %c"
 
-#: ../extension/src/util.cpp:671
-msgid "Printed"
-msgstr "Afgedrukt"
+#: ../extension/src/link.cpp:279 ../extension/src/stc.cpp:570
+msgid "Include directory"
+msgstr "Include map"
 
-#: ../extension/src/vcs.cpp:169 ../extension/src/vcsentry.cpp:333
-msgid "Path"
-msgstr "Pad"
-
-#: ../extension/src/vcs.cpp:175 ../extension/src/vcs.cpp:280
-#: ../extension/src/vcs.cpp:286 ../extension/src/vcs.cpp:297
-#: ../extension/src/vcs.cpp:310 ../extension/src/vcs.cpp:319
-#: ../extension/src/vcsentry.cpp:324
-msgid "Base folder"
-msgstr "Basis map"
-
-#: ../extension/src/vcs.cpp:274
-msgid "Select VCS Folder"
-msgstr "VCS map selecteren"
-
-#: ../extension/src/vcsentry.cpp:182
+#: ../extension/src/vcsentry.cpp:178
 msgid "Select"
 msgstr "Selecteren"
 
-#: ../extension/src/vcsentry.cpp:202 ../extension/src/vcsentry.cpp:351
+#: ../extension/src/vcsentry.cpp:198 ../extension/src/vcsentry.cpp:337
 msgid "Prefix flags"
 msgstr "Prefix vlaggen"
 
-#: ../extension/src/vcsentry.cpp:209 ../extension/src/vcsentry.cpp:356
+#: ../extension/src/vcsentry.cpp:210 ../extension/src/vcsentry.cpp:342
 msgid "Subcommand"
 msgstr "Subcommand"
 
-#: ../extension/src/vcsentry.cpp:239 ../extension/src/vcsentry.cpp:315
+#: ../extension/src/vcsentry.cpp:240 ../extension/src/vcsentry.cpp:301
 msgid "Revision comment"
 msgstr "Commentaar"
 
-#: ../extension/src/vcsentry.cpp:264 ../extension/src/vcsentry.cpp:343
-#: ../extension/src/vcsentry.cpp:346
+#: ../extension/src/vcsentry.cpp:265 ../extension/src/vcsentry.cpp:329
+#: ../extension/src/vcsentry.cpp:332
 msgid "Flags"
 msgstr "Vlaggen"
+
+#: ../extension/src/listitem.cpp:24 ../extension/src/listitem.cpp:28
+#: ../extension/src/listitem.cpp:56 ../extension/src/listview.cpp:967
+msgid "File Name"
+msgstr "Bestand"
+
+#: ../extension/src/listitem.cpp:25 ../extension/src/listitem.cpp:27
+#: ../extension/src/listitem.cpp:129 ../extension/src/listview.cpp:994
+#: ../extension/src/listview.cpp:1135
+msgid "In Folder"
+msgstr "Map"
+
+#: ../extension/src/listitem.cpp:30 ../extension/src/listitem.cpp:125
+#: ../extension/src/listview.cpp:995 ../extension/src/listview.cpp:1084
+#: ../extension/src/listview.cpp:1088 ../extension/src/listview.cpp:1134
+#: ../extension/src/listview.cpp:1193
+#: ../extension/src/report/listviewfile.cpp:245
+msgid "Type"
+msgstr "Type"
+
+#: ../extension/src/listitem.cpp:101
+msgid "List Colour"
+msgstr "Lijst kleur"
+
+#: ../extension/src/listitem.cpp:130 ../extension/src/listview.cpp:996
+#: ../extension/src/listview.cpp:1136
+msgid "Size"
+msgstr "Grootte"
+
+#: ../extension/src/vimacros.cpp:122 ../extension/src/vimacros.cpp:175
+msgid "Added variable"
+msgstr "Variabele toegevoegd"
+
+#: ../extension/src/vimacros.cpp:147 ../extension/src/vimacros.cpp:208
+msgid "Could not expand variable"
+msgstr "Variabele kan niet worden geëxpandeerd"
+
+#: ../extension/src/vimacros.cpp:153 ../extension/src/vimacros.cpp:212
+msgid "Variable expanded"
+msgstr "Variabele geëxpandeerd"
+
+#: ../extension/src/vimacros.cpp:521
+msgid "Unknown macro"
+msgstr "Onbekende macro"
+
+#: ../extension/src/vimacros.cpp:527
+msgid "Already playing back"
+msgstr "Al aan het afspelen"
+
+#: ../extension/src/vimacros.cpp:560
+msgid "Macro aborted at '"
+msgstr "Macro afgebroken bij '"
+
+#: ../extension/src/vimacros.cpp:570
+msgid "Macro played back"
+msgstr "Macro afgespeeld"
+
+#: ../extension/src/vimacros.cpp:719
+msgid "Macro recording"
+msgstr "Macro aan het opnemen"
+
+#: ../extension/src/vimacros.cpp:731
+#, c-format
+msgid "Macro '%s' is recorded"
+msgstr "Macro '%s' is opgenomen"
 
 #: ../extension/src/version.cpp:20
 msgid "All rights reserved."
 msgstr "Alle rechten voorgehouden."
 
-#: ../extension/src/vimacros.cpp:129 ../extension/src/vimacros.cpp:182
-msgid "Added variable"
-msgstr "Variabele toegevoegd"
+#: ../extension/src/stc.cpp:245 ../extension/src/stc.cpp:2387
+msgid "Properties"
+msgstr "Eigenschappen"
 
-#: ../extension/src/vimacros.cpp:154 ../extension/src/vimacros.cpp:215
-msgid "Could not expand variable"
-msgstr "Variabele kan niet worden geëxpandeerd"
+#: ../extension/src/stc.cpp:255
+msgid "Open"
+msgstr "Openen"
 
-#: ../extension/src/vimacros.cpp:160 ../extension/src/vimacros.cpp:219
-msgid "Variable expanded"
-msgstr "Variabele geëxpandeerd"
+#: ../extension/src/stc.cpp:276
+msgid "&Open In Browser"
+msgstr "&Openen in browser"
 
-#: ../extension/src/vimacros.cpp:569
-msgid "Unknown macro"
-msgstr "Onbekende macro"
+#: ../extension/src/stc.cpp:298
+msgid "&Uppercase\tF11"
+msgstr "&Hoofdletter\tF11"
 
-#: ../extension/src/vimacros.cpp:575
-msgid "Already playing back"
-msgstr "Al aan het afspelen"
+#: ../extension/src/stc.cpp:299
+msgid "&Lowercase\tF12"
+msgstr "&Kleine letter\tF12"
 
-#: ../extension/src/vimacros.cpp:611
-msgid "Macro aborted at '"
-msgstr "Macro afgebroken bij '"
+#: ../extension/src/stc.cpp:307
+msgid "&Sort"
+msgstr "&Sorteren"
 
-#: ../extension/src/vimacros.cpp:620
-msgid "Macro played back"
-msgstr "Macro afgespeeld"
+#: ../extension/src/stc.cpp:311
+msgid "&Selection"
+msgstr "Selectie"
 
-#: ../extension/src/vimacros.cpp:753
-msgid "Macro recording"
-msgstr "Macro aan het opnemen"
+#: ../extension/src/stc.cpp:331
+msgid "&Toggle Fold\tCtrl+T"
+msgstr "&Op/uitvouwen\tCtrl-T"
 
-#: ../extension/src/vimacros.cpp:765
-#, c-format
-msgid "Macro '%s' is recorded"
-msgstr "Macro '%s' is opgenomen"
+#: ../extension/src/stc.cpp:332
+msgid "&Fold All Lines\tF9"
+msgstr "&Alle regels opvouwen\tF9"
 
-#: ../extension/src/report/dir.cpp:40
-#: ../extension/src/report/listviewfile.cpp:60
-msgid "Add folders"
-msgstr "Mappen toevoegen"
+#: ../extension/src/stc.cpp:333
+msgid "&Unfold All Lines\tF10"
+msgstr "&Alle regels uitvouwen\tF10"
 
-#: ../extension/src/report/dirctrl.cpp:127
-#: ../extension/src/report/listview.cpp:83
-msgid "&Open"
-msgstr "&Openen"
+#: ../extension/src/stc.cpp:455 ../extension/src/stc.cpp:656
+#: ../extension/src/stc.cpp:2219
+msgid "End of line"
+msgstr "Zichtbaar maken einde regel"
 
-#: ../extension/src/report/frame.cpp:60
-#: ../extension/src/report/listviewfile.cpp:63
-msgid "In folder"
-msgstr "In map"
+#: ../extension/src/stc.cpp:456 ../extension/src/stc.cpp:650
+msgid "Line numbers"
+msgstr "Regel nummers"
 
-#: ../extension/src/report/frame.cpp:61
-#: ../extension/src/report/listviewfile.cpp:61
-msgid "Recursive"
-msgstr "Recursief"
+#: ../extension/src/stc.cpp:457 ../extension/src/stc.cpp:655
+msgid "Use tabs"
+msgstr "Gebruik tabs"
 
-#: ../extension/src/report/frame.cpp:85
-#, c-format
-msgid "Executed %ld SQL queries in"
-msgstr "%ld queries uitgevoerd"
+#: ../extension/src/stc.cpp:458 ../extension/src/stc.cpp:603
+#: ../extension/src/stc.cpp:636
+msgid "Caret line"
+msgstr "Cursor regel"
 
-#: ../extension/src/report/frame.cpp:86
-msgid "&SQL Query Run"
-msgstr "&SQL queries uitvoeren"
+#: ../extension/src/stc.cpp:459 ../extension/src/stc.cpp:633
+#: ../extension/src/stc.cpp:634 ../extension/src/stc.cpp:672
+msgid "Scroll bars"
+msgstr "Schuifbalken"
 
-#: ../extension/src/report/frame.cpp:90
-#, c-format
-msgid "Reported %ld SQL queries in"
-msgstr "%ld queries gerapporteerd"
+#: ../extension/src/stc.cpp:462 ../extension/src/stc.cpp:470
+#: ../extension/src/stc.cpp:492 ../extension/src/stc.cpp:499
+msgid "General"
+msgstr "Algemeen"
 
-#: ../extension/src/report/frame.cpp:91
-msgid "Report SQL &Query"
-msgstr "SQL queries overzicht"
+#: ../extension/src/stc.cpp:465
+msgid "Invisible"
+msgstr "Onzichtbaar"
 
-#: ../extension/src/report/frame.cpp:157
-msgid "Find In Files"
-msgstr "Zoeken in bestanden"
+#: ../extension/src/stc.cpp:467
+msgid "Invisible after ident"
+msgstr "Onzichtbaar na inspringen"
 
-#: ../extension/src/report/frame.cpp:165
-msgid "Replace In Files"
-msgstr "Vervangen in bestanden"
+#: ../extension/src/stc.cpp:468
+msgid "Visible always"
+msgstr "Altijd zichtbaar"
 
-#: ../extension/src/report/frame.cpp:184
-#, c-format
-msgid "Removed not existing file: %s from history"
-msgstr "Niet bestaand bestand: %s verwijderd uit geschiedenis"
+#: ../extension/src/stc.cpp:470 ../extension/src/stc.cpp:657
+#: ../extension/src/stc.cpp:2220
+msgid "Whitespace"
+msgstr "Niet zichtbare tekens"
 
-#: ../extension/src/report/frame.cpp:368
-msgid "Replace In Selection"
-msgstr "Vervangen in selectie"
+#: ../extension/src/stc.cpp:489
+msgid "Word"
+msgstr "Woord"
 
-#: ../extension/src/report/frame.cpp:369
-msgid "Find In Selection"
-msgstr "Zoeken in selectie"
+#: ../extension/src/stc.cpp:490
+msgid "Char"
+msgstr "Char"
 
-#: ../extension/src/report/frame.cpp:475
-msgid "Cancelled"
-msgstr "Geannuleerd"
+#: ../extension/src/stc.cpp:492 ../extension/src/stc.cpp:658
+msgid "Wrap line"
+msgstr "Regel doorloop"
 
-#: ../extension/src/report/frame.cpp:659
-msgid "Open &Recent"
-msgstr "&Laatste openen"
+#: ../extension/src/stc.cpp:496
+msgid "End"
+msgstr "Einde"
 
-#: ../extension/src/report/listview.cpp:93
-msgid "C&ompare"
-msgstr "&Vergelijken"
+#: ../extension/src/stc.cpp:497
+msgid "Start"
+msgstr "Start"
 
-#: ../extension/src/report/listview.cpp:101
-msgid "&Make"
-msgstr "&Maken"
+#: ../extension/src/stc.cpp:499 ../extension/src/stc.cpp:659
+msgid "Wrap visual flags"
+msgstr "Visuele regel doorloop"
 
-#: ../extension/src/report/listview.cpp:123
-msgid "&Compare With"
-msgstr "Vergelijken &met"
+#: ../extension/src/stc.cpp:503 ../extension/src/stc.cpp:609
+#: ../extension/src/stc.cpp:1321 ../extension/src/style.cpp:80
+msgid "Default font"
+msgstr "Standaard lettertype"
+
+#: ../extension/src/stc.cpp:507 ../extension/src/stc.cpp:517
+#: ../extension/src/stc.cpp:520 ../extension/src/stc.cpp:629
+msgid "Edge column"
+msgstr "Kantlijn kolom"
+
+#: ../extension/src/stc.cpp:507 ../extension/src/stc.cpp:513
+msgid "Edge"
+msgstr "Kantlijn"
+
+#: ../extension/src/stc.cpp:510 ../extension/src/listview.cpp:973
+#: ../extension/src/report/textfile.cpp:343
+msgid "Line"
+msgstr "Regel"
+
+#: ../extension/src/stc.cpp:511
+msgid "Background"
+msgstr "Achtergrond"
+
+#: ../extension/src/stc.cpp:513 ../extension/src/stc.cpp:630
+#: ../extension/src/stc.cpp:2218
+msgid "Edge line"
+msgstr "Kantlijn regel"
+
+#: ../extension/src/stc.cpp:518 ../extension/src/stc.cpp:520
+#: ../extension/src/stc.cpp:522 ../extension/src/stc.cpp:526
+#: ../extension/src/stc.cpp:529
+msgid "Margin"
+msgstr "Marges"
+
+#: ../extension/src/stc.cpp:520 ../extension/src/stc.cpp:641
+msgid "Indent"
+msgstr "Indentatie"
+
+#: ../extension/src/stc.cpp:522 ../extension/src/stc.cpp:643
+msgid "Divider"
+msgstr "Scheiding"
+
+#: ../extension/src/stc.cpp:526 ../extension/src/stc.cpp:535
+#: ../extension/src/stc.cpp:536 ../extension/src/stc.cpp:550
+#: ../extension/src/stc.cpp:671 ../extension/src/stc.cpp:985
+msgid "Folding"
+msgstr "Vouwen"
+
+#: ../extension/src/stc.cpp:529 ../extension/src/stc.cpp:2337
+msgid "Line number"
+msgstr "Regel nummer"
+
+#: ../extension/src/stc.cpp:534 ../extension/src/stc.cpp:642
+msgid "Indentation guide"
+msgstr "Inspring gids"
+
+#: ../extension/src/stc.cpp:536 ../extension/src/stc.cpp:670
+#: ../extension/src/stc.cpp:993
+msgid "Auto fold"
+msgstr "Automatisch opvouwen"
+
+#: ../extension/src/stc.cpp:540
+msgid "Line before expanded"
+msgstr "Lijn voor uitgevouwen"
+
+#: ../extension/src/stc.cpp:542
+msgid "Line before contracted"
+msgstr "Lijn voor opgevouwen"
+
+#: ../extension/src/stc.cpp:544
+msgid "Line after expanded"
+msgstr "Lijn na uitgevouwen"
+
+#: ../extension/src/stc.cpp:546
+msgid "Line after contracted"
+msgstr "Lijn na opgevouwen"
+
+#: ../extension/src/stc.cpp:549 ../extension/src/stc.cpp:638
+#: ../extension/src/stc.cpp:987
+msgid "Fold flags"
+msgstr "Opvouw vlaggen"
+
+#: ../extension/src/stc.cpp:557
+msgid "Normal"
+msgstr "Normaal"
+
+#: ../extension/src/stc.cpp:558
+msgid "Invert on white"
+msgstr "Geïnverteerd op wit"
+
+#: ../extension/src/stc.cpp:559
+msgid "Black on white"
+msgstr "Zwart op wit"
+
+#: ../extension/src/stc.cpp:560
+msgid "Colour on white"
+msgstr "Kleuren op wit"
+
+#: ../extension/src/stc.cpp:561
+msgid "Colour on white normal"
+msgstr "Kleuren op wit normaal"
+
+#: ../extension/src/stc.cpp:563 ../extension/src/stc.cpp:635
+msgid "Print flags"
+msgstr "Afdruk vlaggen"
+
+#: ../extension/src/stc.cpp:563
+msgid "Printer"
+msgstr "Printer"
+
+#: ../extension/src/stc.cpp:570
+msgid "Directory"
+msgstr "Map"
+
+#: ../extension/src/stc.cpp:746
+msgid "Control Character"
+msgstr "Controle karakter"
+
+#: ../extension/src/stc.cpp:824 ../extension/src/stc.cpp:1545
+msgid "Document is readonly"
+msgstr "Document is alleen lezen"
+
+#: ../extension/src/stc.cpp:831 ../extension/src/stc.cpp:2027
+msgid "Not allowed in hex mode"
+msgstr "Niet toegestaan in hexadecimale modus"
+
+#: ../extension/src/stc.cpp:850
+msgid "Readonly attribute changed"
+msgstr "Alleen-lezen attribuut gewijzigd"
+
+#: ../extension/src/stc.cpp:1122
+msgid "Enter Byte Offset"
+msgstr "Byte offset invoeren"
+
+#: ../extension/src/stc.cpp:1150
+msgid "Enter Line Number"
+msgstr "Geef regel nummer"
+
+#: ../extension/src/stc.cpp:1512
+msgid "No markers present"
+msgstr "Geen markers aanwezig"
+
+#: ../extension/src/listview.cpp:211
+msgid "List Font"
+msgstr "Lijst lettertype"
+
+#: ../extension/src/listview.cpp:289
+msgid "Sort On"
+msgstr "Sorteren op"
+
+#: ../extension/src/listview.cpp:918
+msgid "Sorted on"
+msgstr "Gesorteerd op kolom"
+
+#: ../extension/src/listview.cpp:974 ../extension/src/report/textfile.cpp:344
+#: ../extension/src/report/listview.cpp:203
+msgid "Match"
+msgstr "Zoektekst"
+
+#: ../extension/src/listview.cpp:975 ../extension/src/report/textfile.cpp:336
+#: ../extension/src/report/listview.cpp:198
+msgid "Line No"
+msgstr "Regel nummer"
+
+#: ../extension/src/listview.cpp:979 ../extension/src/report/textfile.cpp:341
+#: ../extension/src/report/listview.cpp:202
+msgid "Replaced"
+msgstr "Vervangen"
+
+#: ../extension/src/listview.cpp:988 ../extension/src/listview.cpp:1019
+msgid "Keywords"
+msgstr "Keywords"
+
+#: ../extension/src/listview.cpp:1016
+msgid "Folder"
+msgstr "Map"
+
+#: ../extension/src/listview.cpp:1017
+msgid "Find Results"
+msgstr "Zoek resultaten"
+
+#: ../extension/src/listview.cpp:1018
+msgid "History"
+msgstr "Geschiedenis"
+
+#: ../extension/src/listview.cpp:1020
+msgid "File"
+msgstr "Bestand"
+
+#: ../extension/src/listview.cpp:1021
+msgid "Replace Results"
+msgstr "Vervang resultaten"
+
+#: ../extension/src/listview.cpp:1083
+msgid "Folder Type"
+msgstr "Map type"
+
+#: ../extension/src/frame.cpp:180
+msgid "Find"
+msgstr "Zoeken"
+
+#: ../extension/src/menu.cpp:91
+msgid "&Menubar\tCtrl+I"
+msgstr "&Menubalk\tCtrl+I"
+
+#: ../extension/src/menu.cpp:93
+msgid "&Statusbar"
+msgstr "&Statusbalk"
+
+#: ../extension/src/menu.cpp:94
+msgid "&Toolbar"
+msgstr "&Werkbalk"
+
+#: ../extension/src/menu.cpp:95
+msgid "&Findbar"
+msgstr "&Zoekbalk"
+
+#: ../extension/src/menu.cpp:96
+msgid "&Optionsbar"
+msgstr "&Optiesbalk"
+
+#: ../extension/src/menu.cpp:127
+msgid "&Deselect All"
+msgstr "Alles &deselecteren"
+
+#: ../extension/src/menu.cpp:138
+msgid "&Invert"
+msgstr "&Inverteren"
+
+#: ../extension/src/menu.cpp:151
+msgid "Page &Setup"
+msgstr "Pagina-&instelling"
+
+#: ../extension/src/menu.cpp:206
+msgid "&Tools"
+msgstr "&Hulpmiddelen"
+
+#: ../extension/src/filedlg.cpp:54
+msgid "Save changes"
+msgstr "Wijzigingen opslaan"
+
+#: ../extension/src/filedlg.cpp:55 ../extension/src/filedlg.cpp:74
+msgid "Confirm"
+msgstr "Bevestigen"
+
+#: ../extension/src/filedlg.cpp:73
+msgid "Save changes to"
+msgstr "Wijzigingen opslaan in"
+
+#: ../extension/src/otl.cpp:37 ../extension/src/otl.cpp:61
+msgid "Datasource"
+msgstr "Databron"
+
+#: ../extension/src/otl.cpp:67 ../extension/src/otl.cpp:84
+msgid "User"
+msgstr "Gebruiker"
+
+#: ../extension/src/otl.cpp:68 ../extension/src/otl.cpp:84
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: ../extension/src/otl.cpp:180 ../extension/src/otl.cpp:258
+msgid "<Skipped>"
+msgstr "<Overgeslagen>"
 
 #: ../extension/src/report/listviewfile.cpp:59
 msgid "Add files"
 msgstr "Bestanden toevoegen"
+
+#: ../extension/src/report/listviewfile.cpp:60
+#: ../extension/src/report/dir.cpp:40
+msgid "Add folders"
+msgstr "Mappen toevoegen"
+
+#: ../extension/src/report/listviewfile.cpp:61
+#: ../extension/src/report/frame.cpp:63
+msgid "Recursive"
+msgstr "Recursief"
+
+#: ../extension/src/report/listviewfile.cpp:63
+#: ../extension/src/report/frame.cpp:62
+msgid "In folder"
+msgstr "In map"
 
 #: ../extension/src/report/listviewfile.cpp:92
 msgid "Add Items"
@@ -896,33 +818,95 @@ msgstr "Toegevoegd"
 msgid "Add"
 msgstr "Toevoegen"
 
-#: ../extension/src/report/stc.cpp:123
+#: ../extension/src/report/stc.cpp:119
 msgid "Readonly"
 msgstr "Alleen lezen"
 
-#: ../extension/src/report/textfile.cpp:598
-msgid "Error"
-msgstr "Fout"
+#: ../extension/src/report/listview.cpp:94
+#: ../extension/src/report/dirctrl.cpp:124
+msgid "&Open"
+msgstr "&Openen"
 
-#: ../extension/src/report/textfile.cpp:599
-msgid "ODBC Error"
-msgstr "ODBC fout"
+#: ../extension/src/report/listview.cpp:104
+msgid "C&ompare"
+msgstr "&Vergelijken"
+
+#: ../extension/src/report/listview.cpp:112
+msgid "&Make"
+msgstr "&Maken"
+
+#: ../extension/src/report/listview.cpp:134
+msgid "&Compare With"
+msgstr "Vergelijken &met"
+
+#: ../extension/src/report/frame.cpp:150
+msgid "Find In Files"
+msgstr "Zoeken in bestanden"
+
+#: ../extension/src/report/frame.cpp:158
+msgid "Replace In Files"
+msgstr "Vervangen in bestanden"
+
+#: ../extension/src/report/frame.cpp:177
+#, c-format
+msgid "Removed not existing file: %s from history"
+msgstr "Niet bestaand bestand: %s verwijderd uit geschiedenis"
+
+#: ../extension/src/report/frame.cpp:330
+msgid "Replace In Selection"
+msgstr "Vervangen in selectie"
+
+#: ../extension/src/report/frame.cpp:331
+msgid "Find In Selection"
+msgstr "Zoeken in selectie"
+
+#: ../extension/src/report/frame.cpp:340
+msgid "replacing with"
+msgstr "vervangen door"
+
+#: ../extension/src/report/frame.cpp:482
+msgid "Cancelled"
+msgstr "Geannuleerd"
+
+#: ../extension/src/report/frame.cpp:665
+msgid "Open &Recent"
+msgstr "&Laatste openen"
+
+#: ../extension/include/wx/extension/lexers.h:127
+msgid "Enter Lexer"
+msgstr "Geef lexer"
+
+#: ../extension/include/wx/extension/lexers.h:137
+msgid "Enter Theme"
+msgstr "Geef thema"
+
+#: ../extension/include/wx/extension/vcs.h:38
+msgid "Set VCS"
+msgstr "VCS Instellen"
 
 #: ../extension/include/wx/extension/configdlg.h:41
 msgid "Options"
 msgstr "Opties"
 
-#: ../extension/include/wx/extension/lexers.h:120
-msgid "Enter Lexer"
-msgstr "Geef lexer"
-
-#: ../extension/include/wx/extension/lexers.h:130
-msgid "Enter Theme"
-msgstr "Geef thema"
-
-#: ../extension/include/wx/extension/listview.h:113
+#: ../extension/include/wx/extension/listview.h:119
 msgid "Enter Item Number"
 msgstr "Geef item nummer"
+
+#: ../extension/include/wx/extension/stc.h:371
+msgid "Enter Control Character"
+msgstr "Geef controle karakter"
+
+#: ../extension/include/wx/extension/stc.h:388
+msgid "Enter Sort Position"
+msgstr "Geef sorteer positie"
+
+#: ../extension/include/wx/extension/statistics.h:200
+msgid "Item"
+msgstr "Item"
+
+#: ../extension/include/wx/extension/statistics.h:201
+msgid "Value"
+msgstr "Waarde"
 
 #: ../extension/include/wx/extension/otl.h:55
 msgid "Open ODBC Connection"
@@ -932,25 +916,47 @@ msgstr "ODBC verbinding openen"
 msgid "Select Process"
 msgstr "Proces selecteren"
 
-#: ../extension/include/wx/extension/statistics.h:222
-msgid "Item"
-msgstr "Item"
+#~ msgid "Run Time"
+#~ msgstr "Uitvoertijd"
 
-#: ../extension/include/wx/extension/statistics.h:223
-msgid "Value"
-msgstr "Waarde"
+#~ msgid "Query"
+#~ msgstr "Query"
 
-#: ../extension/include/wx/extension/stc.h:352
-msgid "Enter Control Character"
-msgstr "Geef controle karakter"
+#~ msgid "&Build RBS File"
+#~ msgstr "&RBS bestand maken"
 
-#: ../extension/include/wx/extension/stc.h:368
-msgid "Enter Sort Position"
-msgstr "Geef sorteer positie"
+#~ msgid "SQL Queries"
+#~ msgstr "SQL queries"
 
-#: ../extension/include/wx/extension/vcs.h:44
-msgid "Set VCS"
-msgstr "VCS Instellen"
+#~ msgid "RBS File"
+#~ msgstr "RBS bestand"
+
+#~ msgid "RBS Pattern"
+#~ msgstr "RBS patroon"
+
+#~ msgid "Build RBS File"
+#~ msgstr "RBS bestand maken"
+
+#~ msgid "generated"
+#~ msgstr "gegenereerd"
+
+#~ msgid "Executed %ld SQL queries in"
+#~ msgstr "%ld queries uitgevoerd"
+
+#~ msgid "&SQL Query Run"
+#~ msgstr "&SQL queries uitvoeren"
+
+#~ msgid "Reported %ld SQL queries in"
+#~ msgstr "%ld queries gerapporteerd"
+
+#~ msgid "Report SQL &Query"
+#~ msgstr "SQL queries overzicht"
+
+#~ msgid "Error"
+#~ msgstr "Fout"
+
+#~ msgid "ODBC Error"
+#~ msgstr "ODBC fout"
 
 #~ msgid "Process Output"
 #~ msgstr "Proces uitvoer"
