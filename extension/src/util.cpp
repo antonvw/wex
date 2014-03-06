@@ -21,11 +21,13 @@
 #include <wx/stdpaths.h>
 #include <wx/textctrl.h>
 #include <wx/tokenzr.h>
+#include <wx/wupdlock.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/util.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/dir.h>
+#include <wx/extension/ex.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
@@ -34,6 +36,7 @@
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vcs.h>
+#include <wx/extension/vimacros.h>
 
 wxExToVectorString::wxExToVectorString(const wxArrayString& in)
 {
@@ -118,6 +121,153 @@ const wxString wxExAlignText(
   out << lexer.MakeSingleLineComment(line, fill_out_with_space, fill_out);
 
   return out;
+}
+
+bool wxExAutoCompleteFileName(
+  const wxString& text, 
+  std::vector<wxString> & v)
+{
+  const wxString path(text.AfterLast(' '));
+  const wxString word(path.AfterLast(wxFileName::GetPathSeparator()));
+  
+  wxString subdir = path.BeforeLast(wxFileName::GetPathSeparator());
+  
+  if (!subdir.empty())
+  {
+    subdir = wxFileName::GetPathSeparator() + subdir;
+  }
+  
+  wxDir dir(wxGetCwd() + subdir);
+  wxString filename;
+
+  if (!dir.IsOpened() || !dir.GetFirst(&filename, word + "*"))
+  {
+    return false;
+  }
+  
+  wxString expansion = filename.Mid(word.length());
+  
+  if (wxDirExists(dir.GetNameWithSep() + filename))
+  {
+    expansion += wxFileName::GetPathSeparator();
+  }
+
+  v.clear();
+  v.push_back(expansion);
+  v.push_back(filename);
+    
+  while (dir.GetNext(&filename))
+  {
+    v.push_back(filename);
+  }
+
+  if (v.size() > 2)
+  {
+    int min_equal_size = 0;
+    
+    for (int i = 0; i < v[1].size(); i++)
+    {
+      if (v[1].GetChar(i) == v[2].GetChar(i))
+      {
+        min_equal_size++;
+      }
+    }
+  
+    v[0] = v[1].Mid(
+      word.length(), min_equal_size -word.length());
+  }
+
+  return true;
+}
+
+double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
+{
+  wxStringTokenizer tkz(text, "+-*/.$'", wxTOKEN_RET_EMPTY_ALL);
+
+  double sum = 0;
+  wxChar cmd = 0;
+  width = 0;
+
+  while (tkz.HasMoreTokens())
+  {
+    wxString token = tkz.GetNextToken();
+    token.Trim(true);
+    token.Trim(false);
+    
+    if (tkz.GetLastDelimiter() == '\'')
+    {
+      if (!tkz.GetString().empty())
+      {
+        const int line = ex->MarkerLine(tkz.GetString().GetChar(0));
+      
+        if (line == -1)
+        {
+          return 0;
+        }
+
+        switch (cmd)
+        {
+          case 0: 
+          case '+': 
+            sum += line + 1;
+            break;
+          
+          case '-': 
+            sum -= line + 1; 
+            break;
+        }
+      }
+    }
+    else
+    {
+      const int new_width = token.AfterFirst(',').length();
+      if (new_width > width) width = new_width;
+      
+      double value;
+    
+      if (token.StartsWith(wxUniChar(WXK_CONTROL_R)))
+      {
+        const wxChar c = token[1];
+      
+        switch (c)
+        {
+        case '\"':
+          value = atof(wxExClipboardGet()); break;
+            
+        default:
+          value = atof(ex->GetMacros().GetRegister(c));
+        }
+      }
+      else
+      {
+        value = atof(token);
+      }
+    
+      switch (cmd)
+      {
+        case 0: 
+        case '+': sum += value; break;
+        case '-': sum -= value; break;
+        case '*': sum *= value; break;
+        case '/': sum /= value; break;
+        
+        case '.': 
+          sum += ex->GetSTC()->GetCurrentLine() + 1; 
+          break;
+        
+        case '$': 
+          sum += ex->GetSTC()->GetLineCount(); 
+          break;
+      }
+    
+      if (tkz.GetLastDelimiter() != 0 || value == 0)
+      {
+        cmd = tkz.GetLastDelimiter();
+      }
+    }
+  }
+
+  return sum;
 }
 
 bool wxExClipboardAdd(const wxString& text)
@@ -403,6 +553,19 @@ const wxString wxExGetWord(
   return token;
 }
 
+bool wxExIsBrace(int c) 
+{
+  return c == '[' || c == ']' ||
+         c == '(' || c == ')' ||
+         c == '{' || c == '}' ||
+         c == '<' || c == '>';
+}
+         
+bool wxExIsCodewordSeparator(int c) 
+{
+  return (isspace(c) || wxExIsBrace(c) || c == ',' || c == ';' || c == ':');
+}
+
 const std::list < wxString > wxExListFromConfig(
   const wxString& config)
 {
@@ -581,9 +744,7 @@ void wxExOpenFiles(
   long file_flags,
   int dir_flags)
 {
-#ifdef __WXMSW__
-  frame->Freeze();
-#endif  
+  wxWindowUpdateLocker locker(frame);
   
   for (const auto& it : files)
   {
@@ -611,10 +772,6 @@ void wxExOpenFiles(
       frame->OpenFile(file, line_no, wxEmptyString, col_no, file_flags);
     }
   }
-  
-#ifdef __WXMSW__
-  frame->Thaw();
-#endif  
 }
 
 void wxExOpenFilesDialog(

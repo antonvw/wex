@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wxExListView and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -208,7 +208,7 @@ wxExListView::wxExListView(wxWindow* parent,
   }
 
   SetFont(wxConfigBase::Get()->ReadObject(
-    _("List Font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+    _("List Font"), wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
 }
 
 long wxExListView::AppendColumn(const wxExColumn& col)

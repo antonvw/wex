@@ -2,7 +2,7 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,8 +10,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h> 
-#include <wx/checklst.h> 
-#include <wx/stc/stc.h> 
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
 
@@ -48,12 +46,6 @@ wxExFindReplaceData::wxExFindReplaceData()
   {
     wxFindReplaceData::SetReplaceString(m_ReplaceStrings.front());
   }
-
-  // This set determines what fields are placed on the Find Files dialogs
-  // as a list of checkboxes.
-  m_Info.insert(m_TextMatchWholeWord);
-  m_Info.insert(m_TextMatchCase);
-  m_Info.insert(m_TextRegEx);
 }
 
 wxExFindReplaceData::~wxExFindReplaceData()
@@ -67,17 +59,6 @@ wxExFindReplaceData::~wxExFindReplaceData()
   wxConfigBase::Get()->Write(m_TextSearchDown, SearchDown());
 }
 
-int wxExFindReplaceData::STCFlags() const
-{
-  int flags = 0;
-
-  if (UseRegularExpression())  flags |= wxSTC_FIND_REGEXP;
-  if (MatchWord()) flags |= wxSTC_FIND_WHOLEWORD;
-  if (MatchCase()) flags |= wxSTC_FIND_MATCHCASE;
-
-  return flags;
-}
-
 wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
 {
   if (m_Self == NULL && createOnDemand)
@@ -86,44 +67,6 @@ wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
   }
 
   return m_Self;
-}
-
-bool wxExFindReplaceData::Get(
-  const wxString& field, 
-  wxCheckListBox* clb, 
-  int item) const
-{
-  if (field == m_TextMatchWholeWord)
-  {
-    clb->Check(item, MatchWord());
-  }
-  else if (field == m_TextMatchCase)
-  {
-    clb->Check(item, MatchCase());
-  }
-  else if (field == m_TextRegEx)
-  {
-    clb->Check(item, UseRegularExpression());
-  }
-  else
-  {
-    return false;
-  }
-
-  return true;
-}
-
-const wxString wxExFindReplaceData::GetFindReplaceInfoText(bool replace) const
-{
-  wxString log = _("Searching for") + ": " + GetFindString();
-
-  if (replace)
-  {
-    log += " " + _("replacing with") + ": " + 
-      const_cast< wxExFindReplaceData * >( this )->GetReplaceString();
-  }
-
-  return log;
 }
 
 wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
@@ -135,17 +78,21 @@ wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
 
 bool wxExFindReplaceData::Set(const wxString& field, bool value)
 {
-  if (field == m_TextMatchWholeWord)
-  {
-    SetMatchWord(value);
-  }
-  else if (field == m_TextMatchCase)
+  if (field == m_TextMatchCase)
   {
     SetMatchCase(value);
+  }
+  else if (field == m_TextMatchWholeWord)
+  {
+    SetMatchWord(value);
   }
   else if (field == m_TextRegEx)
   {
     SetUseRegularExpression(value);
+  }
+  else if (field == m_TextSearchDown)
+  {
+    SetFlags(value ? wxFR_DOWN: ~wxFR_DOWN);
   }
   else
   {

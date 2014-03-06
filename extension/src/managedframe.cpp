@@ -2,7 +2,7 @@
 // Name:      managedframe.cpp
 // Purpose:   Implementation of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -51,6 +51,7 @@ protected:  void OnChar(wxKeyEvent& event);
   void OnEnter(wxCommandEvent& event);
   void OnFocus(wxFocusEvent& event);
 private:  
+  void Expand();
   void Handle(wxKeyEvent& event);
   bool IsCalc() const {return 
     m_Prefix->GetLabel() == "=";};
@@ -94,6 +95,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
 
   AddToolBarPane(m_ToolBar, "TOOLBAR", _("Toolbar"));
   AddToolBarPane(new wxExFindToolBar(this), "FINDBAR", _("Findbar"));
+  AddToolBarPane(new wxExOptionsToolBar(this), "OPTIONSBAR", _("Optionsbar"));
   AddToolBarPane(CreateExPanel(), "VIBAR");
   
   m_Manager.Update();
@@ -126,8 +128,8 @@ bool wxExManagedFrame::AddToolBarPane(
       .Resizable()
       .Caption(caption);
       
-    // Initially hide findbar as well.
-    if (name == "FINDBAR")
+    // Initially hide special bars.
+    if (name == "FINDBAR" || name == "OPTIONSBAR" )
     {
       pane.Hide();
     }
@@ -156,15 +158,15 @@ bool wxExManagedFrame::AllowClose(wxWindowID id, wxWindow* page)
 
 wxPanel* wxExManagedFrame::CreateExPanel()
 {
-  // A ex panel starts with small static text for : or /, then
+  // An ex panel starts with small static text for : or /, then
   // comes the ex ctrl for getting user input.
   wxPanel* panel = new wxPanel(this);
-  m_exTextPrefix = new wxStaticText(panel, wxID_ANY, wxEmptyString);
-  m_exTextCtrl = new wxExExTextCtrl(panel, this, m_exTextPrefix, wxID_ANY);
+  wxStaticText* text = new wxStaticText(panel, wxID_ANY, wxEmptyString);
+  m_exTextCtrl = new wxExExTextCtrl(panel, this, text, wxID_ANY);
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
   sizer->AddGrowableCol(1);
-  sizer->Add(m_exTextPrefix, wxSizerFlags().Expand());
+  sizer->Add(text, wxSizerFlags().Expand());
   sizer->Add(m_exTextCtrl, wxSizerFlags().Expand());
   
   panel->SetSizerAndFit(sizer);
@@ -174,8 +176,7 @@ wxPanel* wxExManagedFrame::CreateExPanel()
 
 void wxExManagedFrame::GetExCommand(wxExEx* ex, const wxString& command)
 {
-  m_exTextPrefix->SetLabel(command.Left(1));
-  m_exTextCtrl->SetEx(ex, command.Mid(1));
+  m_exTextCtrl->SetEx(ex, command);
   
   m_Manager.GetPane("VIBAR").Show();
   m_Manager.Update();
@@ -209,11 +210,17 @@ void wxExManagedFrame::OnCommand(wxCommandEvent& event)
     break;
 
     case ID_VIEW_FINDBAR: TogglePane("FINDBAR"); break;
+    case ID_VIEW_OPTIONSBAR: TogglePane("OPTIONSBAR"); break;
     case ID_VIEW_TOOLBAR: TogglePane("TOOLBAR"); break;
 
     default:
       wxFAIL;
   }
+}
+
+void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
+{
+  SetFindFocus(page);
 }
 
 void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
@@ -224,6 +231,10 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Check(m_Manager.GetPane("FINDBAR").IsShown());
     break;
 
+    case ID_VIEW_OPTIONSBAR:
+      event.Check(m_Manager.GetPane("OPTIONSBAR").IsShown());
+    break;
+
     case ID_VIEW_TOOLBAR:
       event.Check(m_Manager.GetPane("TOOLBAR").IsShown());
     break;
@@ -231,11 +242,6 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
     default:
       wxFAIL;
   }
-}
-
-void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
-{
-  SetFindFocus(page);
 }
 
 void wxExManagedFrame::ShowExMessage(const wxString& text)
@@ -248,12 +254,25 @@ void wxExManagedFrame::ShowExMessage(const wxString& text)
   }
   else
   {
-    wxLogMessage(text);
+    wxString t(text);
+    
+    if (t.Contains("%"))
+    {
+      t.Replace("%", "%%");
+    }
+    
+    wxLogMessage(t);
   }
 }
 
 void wxExManagedFrame::SyncAll()
 {
+  wxExSTC* stc = GetSTC();
+  
+  if (stc != NULL)
+  {
+    stc->Sync(wxConfigBase::Get()->ReadBool("AllowSync", true));
+  }
 }
 
 void wxExManagedFrame::SyncCloseAll(wxWindowID id)
@@ -310,6 +329,22 @@ wxExExTextCtrl::~wxExExTextCtrl()
   wxExListToConfig(m_Commands, "excommand");
 }
 
+void wxExExTextCtrl::Expand()
+{
+  if (m_ex != NULL)
+  {
+    wxSetWorkingDirectory(m_ex->GetSTC()->GetFileName().GetPath());
+  }
+  
+  std::vector<wxString> v;
+  
+  if (wxExAutoCompleteFileName(m_Command, v))
+  {
+    m_Command += v[0];
+    AppendText(v[0]);
+  }
+}
+
 void wxExExTextCtrl::Handle(wxKeyEvent& event)
 {
   bool skip = true;
@@ -359,7 +394,7 @@ void wxExExTextCtrl::OnChar(wxKeyEvent& event)
     {
       m_Command = m_Command.Truncate(m_Command.size() - 1);
     }
-    else
+    else if (event.GetKeyCode() != WXK_TAB)
     {
       m_Command += event.GetUnicodeKey();
     }
@@ -397,6 +432,10 @@ void wxExExTextCtrl::OnChar(wxKeyEvent& event)
     m_Controlr = true;
     break;
 
+  case WXK_TAB:
+    Expand();
+    break;
+      
   default: Handle(event);
   }
 }
@@ -485,8 +524,11 @@ void wxExExTextCtrl::OnFocus(wxFocusEvent& event)
   }
 }
 
-void wxExExTextCtrl::SetEx(wxExEx* ex, const wxString& range) 
+void wxExExTextCtrl::SetEx(wxExEx* ex, const wxString& command) 
 {
+  m_Prefix->SetLabel(command.Left(1));
+  const wxString range(command.Mid(1));
+  
   m_Command.clear();
   m_Controlr = false;
   m_ModeVisual = !range.empty();

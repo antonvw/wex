@@ -5,7 +5,7 @@ Name:      lexers.xml
 Purpose:   Lexers configuration for wxExtension.
            See scintilla v3.2.1 (www.scintilla.org).
 Author:    Anton van Wezenbeek
-Copyright: (c) 2013, Anton van Wezenbeek
+Copyright: (c) 2014, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -1893,6 +1893,64 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <property name="fold.compact"> 1 </property>
     </properties>
   </global>
+
+  <keyword>
+    <set name="cpp">
+      argc:0 argv:0 auto:0 bool:0 break:0 case:0 catch:0 char:0 class:0 const:0
+      const_cast:0 continue:0 default:0 delete:0 do:0 double:0 dynamic_cast:0
+      else:0 enum:0 envp:0 explicit:0 extern:0 false:0 float:0 for:0 friend:0
+      fstream:0 goto:0 if:0 inline:0 int:0 istream:0 istrstream:0 istringstream:0
+      long:0 main:0 mutable:0 namespace:0 new:0 operator:0 ostream:0 ostrstream:0
+      ostringstream:0 private:0 protected:0 public:0 register:0 reinterpret_cast:0
+      return:0 short:0 signed:0 sizeof:0 static:0 static_cast:0 struct:0 switch:0
+      template:0 this:0 throw:0 true:0 try:0 typedef:0 typeid:0 typename:0
+      union:0 unsigned:0 using:0 virtual:0 void:0 volatile:0 wchar_t:0 while:0 
+      wmain:0
+      adjacent_find:1 array:1 at:1 back:1 back_insert_iterator:1 begin:1 
+      binary_search:1
+      bind1st:1 bind2nd:1 bitset:1 capacity:1 clear:1 const_iterator:1 copy:1 
+      copy_backward:1
+      count:1 count_if:1 deque:1 divides:1 empty:1 end:1 equal:1 equal_range:1 
+      equal_to:1
+      erase:1 fill:1 fill_n:1 find:1 find_end:1 find_first_of:1 find_if:1 
+      for_each:1
+      front:1 front_insert_iterator:1 generate:1 generate_n:1 get_allocator:1 
+      greater:1
+      greater_equal:1 includes:1 inplace_merge:1 insert:1 istream_iterator:1 
+      istreambuf_iterator:1 iter_swap:1 iterator:1 less:1 less_equal:1 
+      lexicographical_compare:1
+      list:1 logical_and:1 logical_not:1 logical_or:1 lower_bound:1 make_heap:1 
+      make_pair:1
+      map:1 max:1 max_element:1 max_size:1  mem_fun:1 mem_fun_ref:1 merge:1
+      min:1 min_element:1 minus:1 mismatch:1 modulus:1 multimap:1 multiplies:1 
+      multiset:1
+      negate:1 next_permutation:1 not1:1 not2:1 not_equal_to:1 nth_element:1
+      ostream_iterator:1 ostreambuf_iterator:1
+      partial_sort:1 partial_sort_copy:1 partition:1
+      plus:1 pop_back:1 pop_front:1 pop_heap:1 prev_permutation:1 priority_queue:1
+      ptr_fun:1 push_back:1 push_front:1 push_heap:1 queue:1
+      random_shuffle:1 rbegin:1 remove:1 remove_copy:1 remove_copy_if:1 
+      remove_if:1
+      rend:1 replace:1 replace_copy:1 replace_copy_if:1 replace_if:1 reserve:1
+      reserve_copy:1 resize:1 reverse:1 reverse_iterator:1 rotate:1 rotate_copy:1
+      search:1 search_n:1 set:1
+      set_difference:1 set_intersection:1 set_symmetric_difference:1 set_union:1
+      size:1 sort:1 sort_heap:1 stable_partition:1 stable_sort:1 stack:1 string:1
+      swap:1 swap_ranges:1 transform:1 unique:1 unique_copy:1 upper_bound:1 
+      valarray:1 vector:1
+    </set>
+    <set name="csh">
+      <!-- http://sourceforge.net/p/zsh-nt/tcsh-nt/ci/master/tree/csh-mode.el#l159 -->
+      @ alias bg break breaksw case cd chdir 
+      continue default dirs echo else end endif
+      endsw eval exec exit fg foreach glob goto
+      hashstat history if jobs kill limit login
+      logout limit notify onintr popd printenv
+      pushd rehash repeat set setenv shift source
+      stop suspend switch then time umask unalias
+      unhash unlimit unset unsetenv wait while
+    </set>
+  </keyword>
   
   <!--
    Each <lexer> has a name attribute (scintilla lexer). 
@@ -1923,6 +1981,8 @@ Copyright: (c) 2013, Anton van Wezenbeek
       and can be set using options edit, and substitutes face and size.
    2) <keywords>. Keywords for this lexer. Default they are in set 0, but you can 
       explicitly express the set by adding :<setno> after the keyword.
+      You can share keyword sets by adding keyword sets in the keyword section above,
+      and specify the name of the set as attribute here.
    3) <properties>. Properties for this lexer. This field
       is built of two fields, separated by an equal sign (=).
       The first field contains the scintilla property key.
@@ -2021,7 +2081,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer display="c#" name="cpp" extensions="*.cs">
     <keywords>
       abstract  as        base       bool      break
-      Byte      case      catch      char      checked
+      byte      case      catch      char      checked
       class     const     continue   decimal   default
       delegate  do        double     else      enum
       event     explicit  extern     false     finally
@@ -2034,8 +2094,8 @@ Copyright: (c) 2013, Anton van Wezenbeek
       short     sizeof    stackalloc static    string
       struct    switch    this       throw     true
       try       typeof    uint       ulong     unchecked
-      unsafe    ushort    using      virtual   volatile
-      void      while    
+      unsafe    ushort    using      virtual   void
+      volatile  while    
     </keywords>
   </lexer>
   <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
@@ -2044,66 +2104,15 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <property name="fold.comment"> 1 </property>
       <property name="fold.preprocessor"> 0 </property>
     </properties>
-    <keywords>
-      argc:0 argv:0 auto:0 bool:0 break:0 case:0 catch:0 char:0 class:0 const:0
-      const_cast:0 continue:0 default:0 delete:0 do:0 double:0 dynamic_cast:0
-      else:0 enum:0 envp:0 explicit:0 extern:0 false:0 float:0 for:0 friend:0
-      fstream:0 goto:0 if:0 inline:0 int:0 istream:0 istrstream:0 istringstream:0
-      long:0 main:0 mutable:0 namespace:0 new:0 operator:0 ostream:0 ostrstream:0
-      ostringstream:0 private:0 protected:0 public:0 register:0 reinterpret_cast:0
-      return:0 short:0 signed:0 sizeof:0 static:0 static_cast:0 struct:0 switch:0
-      template:0 this:0 throw:0 true:0 try:0 typedef:0 typeid:0 typename:0
-      union:0 unsigned:0 using:0 virtual:0 void:0 volatile:0 wchar_t:0 while:0 
-      wmain:0
-      adjacent_find:1 array:1 at:1 back:1 back_insert_iterator:1 begin:1 
-      binary_search:1
-      bind1st:1 bind2nd:1 bitset:1 capacity:1 clear:1 const_iterator:1 copy:1 
-      copy_backward:1
-      count:1 count_if:1 deque:1 divides:1 empty:1 end:1 equal:1 equal_range:1 
-      equal_to:1
-      erase:1 fill:1 fill_n:1 find:1 find_end:1 find_first_of:1 find_if:1 
-      for_each:1
-      front:1 front_insert_iterator:1 generate:1 generate_n:1 get_allocator:1 
-      greater:1
-      greater_equal:1 includes:1 inplace_merge:1 insert:1 istream_iterator:1 
-      istreambuf_iterator:1 iter_swap:1 iterator:1 less:1 less_equal:1 
-      lexicographical_compare:1
-      list:1 logical_and:1 logical_not:1 logical_or:1 lower_bound:1 make_heap:1 
-      make_pair:1
-      map:1 max:1 max_element:1 max_size:1  mem_fun:1 mem_fun_ref:1 merge:1
-      min:1 min_element:1 minus:1 mismatch:1 modulus:1 multimap:1 multiplies:1 
-      multiset:1
-      negate:1 next_permutation:1 not1:1 not2:1 not_equal_to:1 nth_element:1
-      ostream_iterator:1 ostreambuf_iterator:1
-      partial_sort:1 partial_sort_copy:1 partition:1
-      plus:1 pop_back:1 pop_front:1 pop_heap:1 prev_permutation:1 priority_queue:1
-      ptr_fun:1 push_back:1 push_front:1 push_heap:1 queue:1
-      random_shuffle:1 rbegin:1 remove:1 remove_copy:1 remove_copy_if:1 
-      remove_if:1
-      rend:1 replace:1 replace_copy:1 replace_copy_if:1 replace_if:1 reserve:1
-      reserve_copy:1 resize:1 reverse:1 reverse_iterator:1 rotate:1 rotate_copy:1
-      search:1 search_n:1 set:1
-      set_difference:1 set_intersection:1 set_symmetric_difference:1 set_union:1
-      size:1 sort:1 sort_heap:1 stable_partition:1 stable_sort:1 stack:1 string:1
-      swap:1 swap_ranges:1 transform:1 unique:1 unique_copy:1 upper_bound:1 
-      valarray:1 vector:1
-    </keywords>
+    <keywords set="cpp"/>
     <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
-  <lexer name="cppnocase" macro="cpp"/>
+  <lexer name="cppnocase" macro="cpp">
+    <keywords set="cpp"/>
+  </lexer>
   <lexer name="csound"/>
   <lexer display="csh" name="bash" extensions="*.csh"> 
-    <keywords>    
-      <!-- http://sourceforge.net/p/zsh-nt/tcsh-nt/ci/master/tree/csh-mode.el#l159 -->
-      @ alias bg break breaksw case cd chdir 
-      continue default dirs echo else end endif
-      endsw eval exec exit fg foreach glob goto
-      hashstat history if jobs kill limit login
-      logout limit notify onintr popd printenv
-      pushd rehash repeat set setenv shift source
-      stop suspend switch then time umask unalias
-      unhash unlimit unset unsetenv wait while
-    </keywords>
+    <keywords set="csh"/>
     <comments begin1="#" />
     <properties>
       <property name="fold.comment"> 1 </property>
@@ -2157,6 +2166,52 @@ Copyright: (c) 2013, Anton van Wezenbeek
       <!-- Default Language 1 for JS, 2 for VBS, 3 for python -->
       <property name="asp.default.language"> 1 </property>
     </properties>
+    <keywords>
+      <!-- See scintilla html.properies -->      
+      a abbr acronym address applet area b base basefont
+      bdo big blockquote body br button caption center
+      cite code col colgroup dd del dfn dir div dl dt em
+      fieldset font form frame frameset h1 h2 h3 h4 h5 h6
+      head hr html i iframe img input ins isindex kbd label
+      legend li link map menu meta noframes noscript
+      object ol optgroup option p param pre q s samp
+      script select small span strike strong style sub sup
+      table tbody td textarea tfoot th thead title tr tt u ul
+      var xml xmlns
+
+      abbr accept-charset accept accesskey action align alink
+      alt archive axis background bgcolor border
+      cellpadding cellspacing char charoff charset checked cite
+      class classid clear codebase codetype color cols colspan
+      compact content coords
+      data datafld dataformatas datapagesize datasrc datetime
+      declare defer dir disabled enctype event
+      face for frame frameborder
+      headers height href hreflang hspace http-equiv
+      id ismap label lang language leftmargin link longdesc
+      marginwidth marginheight maxlength media method multiple
+      name nohref noresize noshade nowrap
+      object onblur onchange onclick ondblclick onfocus
+      onkeydown onkeypress onkeyup onload onmousedown
+      onmousemove onmouseover onmouseout onmouseup
+      onreset onselect onsubmit onunload
+      profile prompt readonly rel rev rows rowspan rules
+      scheme scope selected shape size span src standby start style
+      summary tabindex target text title topmargin type usemap
+      valign value valuetype version vlink vspace width
+      text password checkbox radio submit reset
+      file hidden image
+ 
+      address article aside audio base canvas command details datalist embed
+      figure figcaption footer header hgroup keygen mark menu meter nav output
+      progress ruby rt rp section source time video wbr
+
+      async autocomplete autofocus contenteditable contextmenu draggable
+      form formaction formenctype formmethod formnovalidate formtarget
+      list manifest max min novalidate pattern placeholder
+      required reversed role sandbox scoped seamless sizes spellcheck srcdoc step
+    </keywords>
+  
   </lexer>
   <lexer name="inno"/>
   <lexer display="java" name="cpp" extensions="*.java">
@@ -2318,7 +2373,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
   </lexer>
   <lexer name="ruby"/>
   <lexer name="scriptol"/>
-  <lexer display="sh" name="bash" extensions="*.csh"> 
+  <lexer display="sh" name="bash"> 
     <keywords>    
       <!-- https://github.com/OutOfOrder/mod_highlight/blob/master/colorer/hrc/scripts/sh-keywords.hrc -->
       case do done elif else esac fi for function if in
@@ -2390,17 +2445,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="tcl" extensions="*.tcl"/>
   <lexer name="tcmd"/>
   <lexer display="tcsh" name="bash" extensions="*.tcsh"> 
-    <keywords>    
-      <!-- http://sourceforge.net/p/zsh-nt/tcsh-nt/ci/master/tree/csh-mode.el#l159 -->
-      @ alias bg break breaksw case cd chdir 
-      continue default dirs echo else end endif
-      endsw eval exec exit fg foreach glob goto
-      hashstat history if jobs kill limit login
-      logout limit notify onintr popd printenv
-      pushd rehash repeat set setenv shift source
-      stop suspend switch then time umask unalias
-      unhash unlimit unset unsetenv wait while
-      <!-- ;; tcsh-keywords -->
+    <keywords set ="csh">    
       alloc bindkey builtins complete echotc
       filetest hup log ls-F nice nohup sched
       settc setty telltc uncomplete where which      
@@ -2417,7 +2462,7 @@ Copyright: (c) 2013, Anton van Wezenbeek
   <lexer name="verilog"/>
   <lexer name="vhdl"/>
   <lexer name="visualprolog"/>
-  <lexer display="xml" name="hypertext">
+  <lexer display="xml" name="hypertext" extensions="*.xml">
     <styles>
       <style no="tag"> tag </style>
       <style no="tagend"> tag </style>

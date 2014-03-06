@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -29,12 +29,14 @@ const int NUMBER_RECENT_PROJECTS = 25;
 const int ID_RECENT_PROJECT_LOWEST =  wxID_FILE1 + NUMBER_RECENT_FILES + 1;
 
 // wxID_CLEAR already pushed to wxExSTC
-const int ID_CLEAR = 32;
+const int ID_CLEAR_FILES = 32;
+const int ID_CLEAR_PROJECTS = 33;
 
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
-  EVT_MENU(ID_CLEAR, wxExFrameWithHistory::OnCommand)
+  EVT_MENU(ID_CLEAR_FILES, wxExFrameWithHistory::OnCommand)
+  EVT_MENU(ID_CLEAR_PROJECTS, wxExFrameWithHistory::OnCommand)
   EVT_MENU_RANGE(
     wxID_FILE1, 
     wxID_FILE1 + NUMBER_RECENT_FILES, wxExFrameWithHistory::OnCommand)
@@ -78,24 +80,27 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   {
     wxConfigBase::Get()->Write(m_TextRecursive, true); 
   }
+
+  // This set determines what fields are placed on the Find Files dialogs
+  // as a list of checkboxes.
+  m_Info.insert(wxExFindReplaceData::Get()->GetTextMatchWholeWord());
+  m_Info.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
+  m_Info.insert(wxExFindReplaceData::Get()->GetTextRegEx());
 }
 
 wxExFrameWithHistory::~wxExFrameWithHistory()
 {
 }
 
-void wxExFrameWithHistory::ClearFileHistory()
+void wxExFrameWithHistory::ClearHistory(wxFileHistory& history)
 {
-  if (m_FileHistory.GetCount() > 0)
+  if (history.GetCount() > 0)
   {
-    for (int i = m_FileHistory.GetCount() - 1; i >= 0; i--)
+    for (int i = history.GetCount() - 1; i >= 0; i--)
     {
-      m_FileHistory.RemoveFileFromHistory(i);
+      history.RemoveFileFromHistory(i);
     }
   }
-
-  // The file history list has a popup menu to delete all items,
-  // so doing it here is not necessary.
 }
 
 void wxExFrameWithHistory::CreateDialogs()
@@ -136,7 +141,7 @@ void wxExFrameWithHistory::CreateDialogs()
   s.insert(m_TextRecursive);
   r.push_back(wxExConfigItem(s));
   
-  std::set<wxString> t(wxExFindReplaceData::Get()->GetInfo());
+  std::set<wxString> t(m_Info);
   t.insert(m_TextRecursive);
   f.push_back(wxExConfigItem(t));
   
@@ -186,37 +191,9 @@ void wxExFrameWithHistory::DoRecent(
 
 void wxExFrameWithHistory::FileHistoryPopupMenu()
 {
-  wxMenu* menu = new wxMenu();
-
-  for (int i = 0; i < m_FileHistory.GetCount(); i++)
-  {
-    const wxFileName file(m_FileHistory.GetHistoryFile(i));
-    
-    if (file.FileExists())
-    {
-      wxMenuItem* item = new wxMenuItem(
-        menu, 
-        wxID_FILE1 + i, 
-        file.GetFullName());
-
-      item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-        wxExGetIconID(file)));
-    
-      menu->Append(item);
-    }
-  }
-  
-  if (menu->GetMenuItemCount() > 0)
-  {
-    menu->AppendSeparator();
-    menu->Append(ID_CLEAR, wxGetStockLabel(wxID_CLEAR));
-      
-    PopupMenu(menu);
-  }
-    
-  delete menu;
+  HistoryPopupMenu(m_FileHistory, wxID_FILE1, ID_CLEAR_FILES);
 }
-  
+
 void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 {
   const bool replace = (dialogid == ID_REPLACE_IN_FILES);
@@ -230,8 +207,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     return;
   }
 
-  wxLogStatus(
-    wxExFindReplaceData::Get()->GetFindReplaceInfoText(replace));
+  wxLogStatus(GetFindReplaceInfoText(replace));
     
   int flags = wxDIR_FILES | wxDIR_HIDDEN;
   
@@ -334,7 +310,7 @@ int wxExFrameWithHistory::FindInFilesDialog(
       CONFIG_COMBOBOX));
   }
 
-  v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
+  v.push_back(wxExConfigItem(m_Info));
 
   if (wxExConfigDialog(this,
     v,
@@ -343,9 +319,7 @@ int wxExFrameWithHistory::FindInFilesDialog(
     return wxID_CANCEL;
   }
 
-  wxLogStatus(
-    wxExFindReplaceData::Get()->GetFindReplaceInfoText(
-      id == ID_TOOL_REPORT_REPLACE));
+  wxLogStatus(GetFindReplaceInfoText(id == ID_TOOL_REPORT_REPLACE));
         
   return wxID_OK;
 }
@@ -357,6 +331,52 @@ const wxString wxExFrameWithHistory::GetFindInCaption(int id) const
     _("Find In Selection"));
 }
 
+const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
+{
+  wxString log = _("Searching for") + ": " + wxExFindReplaceData::Get()->GetFindString();
+
+  if (replace)
+  {
+    log += " " + _("replacing with") + ": " + wxExFindReplaceData::Get()->GetReplaceString();
+  }
+
+  return log;
+}
+
+void wxExFrameWithHistory::HistoryPopupMenu(
+  const wxFileHistory& history, int first_id, int clear_id)
+{
+  wxMenu* menu = new wxMenu();
+
+  for (int i = 0; i < history.GetCount(); i++)
+  {
+    const wxFileName file(history.GetHistoryFile(i));
+    
+    if (file.FileExists())
+    {
+      wxMenuItem* item = new wxMenuItem(
+        menu, 
+        first_id + i, 
+        file.GetFullName());
+
+      item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+        wxExGetIconID(file)));
+    
+      menu->Append(item);
+    }
+  }
+  
+  if (menu->GetMenuItemCount() > 0)
+  {
+    menu->AppendSeparator();
+    menu->Append(clear_id, wxGetStockLabel(wxID_CLEAR));
+      
+    PopupMenu(menu);
+  }
+    
+  delete menu;
+}
+  
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 {
   m_FileHistory.Save(*wxConfigBase::Get());
@@ -395,9 +415,8 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
   {
     switch (event.GetId())
     {
-    case ID_CLEAR:
-      ClearFileHistory();
-      break;
+    case ID_CLEAR_FILES: ClearHistory(m_FileHistory); break;
+    case ID_CLEAR_PROJECTS: ClearHistory(m_ProjectHistory); break;
       
     case ID_FIND_IN_FILES: 
       if (m_FiFDialog == NULL)
@@ -559,6 +578,11 @@ bool wxExFrameWithHistory::OpenFile(
   }
 
   return false;
+}
+
+void wxExFrameWithHistory::ProjectHistoryPopupMenu()
+{
+  HistoryPopupMenu(m_ProjectHistory, ID_RECENT_PROJECT_LOWEST, ID_CLEAR_PROJECTS);
 }
 
 bool wxExFrameWithHistory::SetRecentFile(const wxString& file)

@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wxExSTCShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -167,7 +167,7 @@ void wxExSTCShell::Expand()
   {
     const int index = AutoCompGetCurrent();
     
-    if (index >=0 && index < m_AutoCompleteList.GetCount())
+    if (index >=0 && index < m_AutoCompleteList.size())
     {
       expansion = m_AutoCompleteList[index].Mid(word.length());
     }
@@ -176,48 +176,20 @@ void wxExSTCShell::Expand()
   }
   else
   {
-    wxString subdir = path.BeforeLast(wxFileName::GetPathSeparator());
-    
-    if (!subdir.empty())
+    if (wxExAutoCompleteFileName(m_Command, m_AutoCompleteList))
     {
-      subdir = wxFileName::GetPathSeparator() + subdir;
-    }
-    
-    wxDir dir(wxGetCwd() + subdir);
-    wxString filename;
-  
-    if (dir.IsOpened() && dir.GetFirst(&filename, word + "*"))
-    {
-      wxString next;
-    
-      if (!dir.GetNext(&next))
+      if (m_AutoCompleteList.size() == 2)
       {
-        expansion = filename.Mid(word.length());
-        
-        if (wxDirExists(dir.GetNameWithSep() + filename))
-        {
-          expansion += wxFileName::GetPathSeparator();
-        }
+        expansion = m_AutoCompleteList[0];
       }
       else
       {
-        // Fill the autocomplete list and show it
-        // (when user selected something,
-        // we come back at Expand at entry).
-        m_AutoCompleteList.Clear();
-        m_AutoCompleteList.Add(filename);
-        m_AutoCompleteList.Add(next);
-      
-        while (dir.GetNext(&next))
-        {
-          m_AutoCompleteList.Add(next);
-        }
-      
         wxString list;
+        m_AutoCompleteList.erase(m_AutoCompleteList.begin());
       
-        for (int i = 0; i < m_AutoCompleteList.GetCount(); i++)
+        for (const auto& it : m_AutoCompleteList)
         {
-          list += m_AutoCompleteList[i] + " ";
+          list += it + " ";
         }
       
         list.Trim(); // skip last whitespace separator
@@ -264,23 +236,6 @@ void wxExSTCShell::KeepCommand()
 {
   m_Commands.remove(m_Command);
   m_Commands.push_back(m_Command);
-}
-
-// No longer used, for the moment.
-void wxExSTCShell::OnCommand(wxCommandEvent& command)
-{
-  if (!m_Enabled)
-  {
-    command.Skip();
-    return;
-  }
-  
-  switch (command.GetId())
-  {
-    default: 
-      wxFAIL;
-      break;
-  }
 }
 
 void wxExSTCShell::OnChar(wxKeyEvent& event)
@@ -761,11 +716,7 @@ void wxExSTCShell::ShowHistory()
 
   for (const auto& it : m_Commands)
   {
-    const wxString command = it;
-
-    AppendText(wxString::Format("\n%d %s",
-      command_no++,
-      command.c_str()));
+    AppendText(wxString::Format("\n%d %s", command_no++, it.c_str()));
   }
   
 #ifdef DEBUG

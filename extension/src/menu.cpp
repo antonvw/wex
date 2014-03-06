@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wxExMenu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -93,6 +93,7 @@ void wxExMenu::AppendBars()
   AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
   AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
   AppendCheckItem(ID_VIEW_FINDBAR, _("&Findbar"));
+  AppendCheckItem(ID_VIEW_OPTIONSBAR, _("&Optionsbar"));
 }
 
 void wxExMenu::AppendEdit(bool add_invert)

@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Common defs for all wxExtension classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXDEFS_H
@@ -19,6 +19,7 @@ enum wxExId
 
   ID_ALL_LOWEST,         // all ALL commands after this one
   ID_ALL_STC_CLOSE,
+  ID_ALL_STC_CLOSE_OTHERS,
   ID_ALL_STC_CONFIG_GET,
   ID_ALL_STC_SAVE,
   ID_ALL_STC_SET_LEXER,
@@ -51,6 +52,7 @@ enum wxExId
   ID_VIEW_LOWEST,        // aui panes that can be toggled
   ID_VIEW_FINDBAR,
   ID_VIEW_TOOLBAR,
+  ID_VIEW_OPTIONSBAR,
   ID_VIEW_HIGHEST,
 
   ID_EDIT_STC_LOWEST,    // all STC commands after this one

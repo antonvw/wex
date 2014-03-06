@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wxExProcess
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -199,11 +199,19 @@ int wxExProcess::ConfigDialog(
   const wxString& title,
   bool modal)
 {
-  std::vector<wxExConfigItem> v{wxExConfigItem(
+  std::vector<wxExConfigItem> v;
+    
+  wxExConfigItem ci(
     _("Process"), 
     CONFIG_COMBOBOX, 
     wxEmptyString,
-    true)};
+    true);
+    
+  wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
+  validator.SetCharExcludes("/\\?%*:|\"<>");
+  ci.SetValidator(&validator);
+  
+  v.push_back(ci);
 
   // adding this to initializer list, causes error
   v.push_back(wxExConfigItem(

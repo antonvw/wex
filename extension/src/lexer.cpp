@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -30,8 +30,86 @@ wxExLexer::wxExLexer()
 wxExLexer::wxExLexer(const wxXmlNode* node)
 {
   Initialize();
-  
   Set(node);
+}
+
+wxExLexer::wxExLexer(const wxString& lexer, wxStyledTextCtrl* stc, bool clear)
+{
+  Initialize();
+  Set(lexer, stc, true);
+}
+  
+wxExLexer::wxExLexer(const wxExLexer& lexer, wxStyledTextCtrl* stc) 
+{
+  Initialize();
+  Set(lexer, stc);
+}
+    
+// Adds the specified keywords to the keywords map and the keywords set.
+// The text might contain the keyword set after a ':'.
+// Returns false if specified set is illegal or value is empty.
+bool wxExLexer::AddKeywords(const wxString& value)
+{
+  if (value.empty())
+  {
+    return false;
+  }
+  
+  std::set<wxString> keywords_set;
+
+  wxStringTokenizer tkz(value, "\r\n ");
+
+  int setno = 0;
+
+  while (tkz.HasMoreTokens())
+  {
+    const wxString line = tkz.GetNextToken();
+    wxStringTokenizer fields(line, ":");
+    wxString keyword;
+
+    if (fields.CountTokens() > 1)
+    {
+      keyword = fields.GetNextToken();
+
+      const int new_setno = atoi(fields.GetNextToken().c_str());
+
+      if (new_setno >= wxSTC_KEYWORDSET_MAX)
+      {
+        return false;
+      }
+
+      if (new_setno != setno)
+      {
+        if (!keywords_set.empty())
+        {
+          m_KeywordsSet.insert(make_pair(setno, keywords_set));
+          keywords_set.clear();
+        }
+
+        setno = new_setno;
+      }
+    }
+    else
+    {
+      keyword = line;
+    }
+
+    keywords_set.insert(keyword);
+    m_Keywords.insert(keyword);
+  }
+
+  auto it = m_KeywordsSet.find(setno);
+  
+  if (it == m_KeywordsSet.end())
+  {
+    m_KeywordsSet.insert(make_pair(setno, keywords_set));
+  }
+  else
+  {
+    it->second.insert(keywords_set.begin(), keywords_set.end());
+  }
+
+  return true;
 }
 
 void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
@@ -83,6 +161,11 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
 void wxExLexer::ApplyWhenSet(
   const wxString& lexer, wxStyledTextCtrl* stc, bool clear)
 {
+  if (stc == NULL)
+  {
+    return;
+  }
+  
   stc->SetLexerLanguage(m_ScintillaLexer);
   
   if (m_ScintillaLexer.empty() && lexer.empty())
@@ -149,7 +232,6 @@ const wxString wxExLexer::GetFormattedText(
 {
   wxString text = lines, header_to_use = header;
   size_t nCharIndex;
-
   wxString out;
 
   // Process text between the carriage return line feeds.
@@ -344,7 +426,7 @@ bool wxExLexer::Set(
 {
   (*this) = wxExLexers::Get()->FindByName(lexer);
   
-  if (!m_IsOk)
+  if (!m_IsOk && stc != NULL)
   {
     (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
   }
@@ -361,7 +443,7 @@ bool wxExLexer::Set(
 
 bool wxExLexer::Set(const wxExLexer& lexer, wxStyledTextCtrl* stc)
 {
-  if (lexer.GetScintillaLexer().empty())
+  if (lexer.GetScintillaLexer().empty() && stc != NULL)
   {
     (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
   }
@@ -420,11 +502,31 @@ void wxExLexer::Set(const wxXmlNode* node)
       }
       else if (child->GetName() == "keywords")
       {
-        if (!SetKeywords(child->GetNodeContent().Strip(wxString::both)))
+        // Add all direct keywords
+        const wxString& direct(child->GetNodeContent().Strip(wxString::both));
+        
+        if (!direct.empty() && !AddKeywords(direct))
         {
           wxLogError(
             "Keywords could not be set on line: %d", 
             child->GetLineNumber());
+        }
+      
+        // Add all keywords that point to a keyword set.
+        wxXmlAttribute* att = child->GetAttributes();
+        
+        while (att != NULL)
+        {
+          if (!AddKeywords(wxExLexers::Get()->GetKeywords(
+            att->GetValue().Strip(wxString::both))))
+          {
+            wxLogError(
+              "Keywords for %s could not be set on line: %d", 
+              att->GetValue().c_str(),
+              child->GetLineNumber());
+          }
+        
+          att = att->GetNext();
         }
       }
       else if (child->GetName() == "properties")
@@ -442,74 +544,22 @@ void wxExLexer::Set(const wxXmlNode* node)
       child = child->GetNext();
     }
   }
-}
 
-// Adds the specified keywords to the keywords map and the keywords set.
-// The text might contain the keyword set after a ':'.
-// Returns true if keyword could be added 
-// and false if specified set is illegal.
-// Empties existing keywords.
-bool wxExLexer::SetKeywords(const wxString& value)
-{
-  if (!m_Keywords.empty())
+#ifdef DEBUG
+  wxString keywords;
+  
+  for (const auto& it : m_KeywordsSet)
   {
-    m_Keywords.clear();
+    keywords += wxString::Format("set: %d %s\n",
+      it.first, GetKeywordsString(it.first).c_str());
   }
 
-  if (!m_KeywordsSet.empty())
+  if (!keywords.empty())
   {
-    m_KeywordsSet.clear();
+    wxLogMessage("Lexer: %s Display: %s Keywords: %s",
+     m_ScintillaLexer.c_str(), m_DisplayLexer.c_str(), keywords.c_str());
   }
-
-  std::set<wxString> keywords_set;
-
-  wxStringTokenizer tkz(value, "\r\n ");
-
-  int setno = 0;
-
-  while (tkz.HasMoreTokens())
-  {
-    const wxString line = tkz.GetNextToken();
-    wxStringTokenizer fields(line, ":");
-
-    wxString keyword;
-
-    if (fields.CountTokens() > 1)
-    {
-      keyword = fields.GetNextToken();
-
-      const int new_setno = atoi(fields.GetNextToken().c_str());
-
-      if (new_setno >= wxSTC_KEYWORDSET_MAX)
-      {
-        return false;
-      }
-
-      if (new_setno != setno)
-      {
-        if (!keywords_set.empty())
-        {
-          m_KeywordsSet.insert(make_pair(setno, keywords_set));
-          keywords_set.clear();
-        }
-
-        setno = new_setno;
-      }
-
-      keywords_set.insert(keyword);
-    }
-    else
-    {
-      keyword = line;
-      keywords_set.insert(line);
-    }
-
-    m_Keywords.insert(keyword);
-  }
-
-  m_KeywordsSet.insert(make_pair(setno, keywords_set));
-
-  return true;
+#endif
 }
 
 void wxExLexer::SetProperty(const wxString& name, const wxString& value)

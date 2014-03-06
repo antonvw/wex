@@ -9,9 +9,9 @@
 #define _EXTESTUNIT_H
 
 #include <string>
-#include <TestCaller.h>
-#include <TestFixture.h>
-#include <TestSuite.h>
+#include <cppunit/TestCaller.h>
+#include <cppunit/TestFixture.h>
+#include <cppunit/TestSuite.h>
 
 //#define SHOW_REPORT
 

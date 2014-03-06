@@ -2,12 +2,13 @@
 // Name:      frame.h
 // Purpose:   Include file for wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_FRAME_H
 #define _EX_REPORT_FRAME_H
 
+#include <set>
 #include <wx/filehistory.h>
 #include <wx/extension/listview.h> // for wxExListViewFileName::wxExListType 
 #include <wx/extension/managedframe.h>
@@ -114,6 +115,9 @@ public:
     int col_number = 0,
     long flags = 0);
 
+  /// Shows a project history popup menu.
+  void ProjectHistoryPopupMenu();
+
   /// Updates file history.
   /// Returns true if history was updated.
   bool SetRecentFile(const wxString& file);
@@ -134,9 +138,9 @@ public:
   /// and sets the project history to use it.
   void UseProjectHistory(wxWindowID id, wxMenu* menu);
 protected:
-  /// Access tp file history list, 
+  /// Access to file history list, 
   /// if you use this as a page in a notebook,
-  // you might want prevent closing it.
+  /// you might want prevent closing it.
   wxExListView* GetFileHistoryList() {return m_FileHistoryList;};
   
   // Cleans up all as well.
@@ -144,10 +148,12 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
 private:
-  void ClearFileHistory();
+  void ClearHistory(wxFileHistory& history);
   void CreateDialogs();
   void DoRecent(wxFileHistory& history, size_t index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);
+  const wxString GetFindReplaceInfoText(bool replace = false) const;
+  void HistoryPopupMenu(const wxFileHistory& history, int first_id, int clear_id);
   void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
   wxExConfigDialog* m_FiFDialog;
@@ -159,6 +165,8 @@ private:
   const wxString m_TextInFiles;
   const wxString m_TextInFolder;
   const wxString m_TextRecursive;
+  
+  std::set < wxString > m_Info;
   
   bool m_ProjectModified;
 

@@ -19,6 +19,7 @@ class wxFileName;
 class wxGenericDirCtrl;
 class wxXmlNode;
 
+class wxExEx;
 class wxExFileName;
 class wxExFrame;
 class wxExLexer;
@@ -75,6 +76,29 @@ const wxString wxExAlignText(
   /// If the lexer has no comment end character, fill out
   /// with spaces is not done.
   const wxExLexer& lexer);
+
+/// Tries to autocomplete filename,
+/// result stored in the vector.
+bool wxExAutoCompleteFileName(
+  /// text containing a filename
+  const wxString& text, 
+  /// vector containing completed file name(s)
+  /// v[0] is expansion of text to matching filename
+  /// (if only 1 match exists)
+  /// or common part of matching filenames
+  /// other elements are all matching file names
+  /// Returns true if a match was found 
+  /// (and v contains at least 2 elements).
+  std::vector<wxString> & v);
+
+/// Returns calculated value of text.
+double wxExCalculator(
+  /// text used for calculation
+  const wxString& text, 
+  /// a marker, or line no referenced in text is solved using this ex
+  wxExEx* ex, 
+  /// width, or precision, for doubles
+  int& width);
 
 /// Adds data to the clipboard.
 bool wxExClipboardAdd(const wxString& text);
@@ -152,6 +176,12 @@ const wxString wxExGetWord(
   wxString& text,
   bool use_other_field_separators = false,
   bool use_path_separator = false);
+
+/// Returns true if char is a brace open or close character.
+bool wxExIsBrace(int c);
+         
+/// Returns true if char is a code word separator.
+bool wxExIsCodewordSeparator(int c);
 
 /// Loads entries from the config into a list with strings.
 const std::list < wxString > wxExListFromConfig(

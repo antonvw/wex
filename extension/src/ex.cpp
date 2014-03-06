@@ -2,7 +2,7 @@
 // Name:      ex.cpp
 // Purpose:   Implementation of class wxExEx
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -34,6 +34,7 @@ wxExEx::wxExEx(wxExSTC* stc)
   , m_SearchFlags(wxSTC_FIND_REGEXP)
   , m_MarkerSymbol(0, -1)
   , m_FindIndicator(0, 0)
+  , m_Register(0)
 {
   wxASSERT(m_Frame != NULL);
   
@@ -53,7 +54,7 @@ wxExEx::~wxExEx()
 
 void wxExEx::AddText(const wxString& text)
 {
-  if (!m_Register.empty())
+  if (m_Register)
   {
     m_Macros.SetRegister(m_Register, text);
   }
@@ -571,6 +572,9 @@ void wxExEx::MacroStartRecording(const wxString& macro)
       _("Enter Macro"),
       m_Macros.GetMacro());
   
+    wxTextValidator validator(wxFILTER_ALPHANUMERIC);
+    dlg.SetTextValidator(validator);
+  
     if (dlg.ShowModal() != wxID_OK)
     {
       return;
@@ -701,12 +705,15 @@ void wxExEx::SetRegistersDelete(const wxString& value) const
   
   for (int i = 9; i >= 2; i--)
   {
-    m_Macros.SetRegister(
-      wxString::Format("%d", i),
-      m_Macros.GetRegister(wxString::Format("%d", i - 1)));
+    const wxString value(m_Macros.GetRegister(wxUniChar(48 + i - 1)));
+    
+    if (!value.empty())
+    {
+      m_Macros.SetRegister(wxUniChar(48 + i), value);
+    }
   }
   
-  m_Macros.SetRegister("1", m_STC->GetSelectedText());
+  m_Macros.SetRegister('1', value);
 }
   
 void wxExEx::SetRegisterYank(const wxString& value) const
@@ -716,7 +723,7 @@ void wxExEx::SetRegisterYank(const wxString& value) const
     return;
   }
   
-  m_Macros.SetRegister("0", value);
+  m_Macros.SetRegister('0', value);
 }
 
 #endif // wxUSE_GUI

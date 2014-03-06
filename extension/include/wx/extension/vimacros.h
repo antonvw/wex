@@ -39,7 +39,7 @@ public:
   const wxString& GetMacro() const {return m_Macro;};
   
   /// Returns content of register.
-  const wxString GetRegister(const wxString& name) const;
+  const wxString GetRegister(const char name) const;
 
   /// Returns all registers (with content) as a vector of strings.
   /// Does not include macros.
@@ -87,7 +87,7 @@ public:
   
   /// Sets register (overwrites existing register).
   /// The name should be a one letter register.
-  void SetRegister(const wxString& name, const wxString& value);
+  void SetRegister(const char name, const wxString& value);
   
   /// Starts recording a macro (appends to 
   /// existing macro if macro is single upper case character).

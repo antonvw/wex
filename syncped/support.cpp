@@ -2,7 +2,7 @@
 // Name:      support.cpp
 // Purpose:   Implementation of DecoratedFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -58,10 +58,7 @@ DecoratedFrame::DecoratedFrame()
     panes.push_back(wxExStatusBarPane("PaneVCS", 75, _("VCS")));
   }
   
-  if (wxExViMacros::GetFileName().FileExists())
-  {
-    panes.push_back(wxExStatusBarPane("PaneMacro", 75));
-  }
+  panes.push_back(wxExStatusBarPane("PaneMacro", 75));
   
   SetupStatusBar(panes);
   
@@ -82,19 +79,17 @@ DecoratedFrame::DecoratedFrame()
   
   const bool vi_mode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
   
-  if (wxExViMacros::GetFileName().FileExists())
-  {
-    m_StatusBar->ShowField("PaneMacro", vi_mode);
-  }
+  m_StatusBar->ShowField("PaneMacro", vi_mode);
 #endif
 
   wxExMenu *menuFile = new wxExMenu();
-  menuFile->Append(wxID_NEW);
+  menuFile->Append(wxID_NEW,
+    wxExEllipsed(wxGetStockLabel(wxID_NEW, wxSTOCK_NOFLAGS), "\tCtrl+N"));
   menuFile->Append(wxID_OPEN);
   UseFileHistory(ID_RECENT_FILE_MENU, menuFile);
   menuFile->AppendSeparator();
-  menuFile->Append(wxID_CLOSE);
-  menuFile->Append(ID_ALL_STC_CLOSE, _("Close A&ll"));
+  menuFile->Append(wxID_CLOSE,
+    wxGetStockLabel(wxID_CLOSE, wxSTOCK_NOFLAGS) + "\tCtrl+W");
   menuFile->AppendSeparator();
   menuFile->Append(wxID_SAVE);
   menuFile->Append(wxID_SAVEAS);
@@ -175,6 +170,7 @@ DecoratedFrame::DecoratedFrame()
     ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), wxEmptyString, wxART_FILE_OPEN);
   UseProjectHistory(ID_RECENT_PROJECT_MENU, menuProject);
   menuProject->Append(ID_PROJECT_OPENTEXT, _("&Open as Text"));
+  menuProject->AppendSeparator();
   menuProject->Append(
     ID_PROJECT_CLOSE, wxGetStockLabel(wxID_CLOSE), wxEmptyString, wxART_CLOSE);
   menuProject->AppendSeparator();
@@ -185,9 +181,6 @@ DecoratedFrame::DecoratedFrame()
     wxGetStockLabel(wxID_SAVEAS), wxEmptyString, wxART_FILE_SAVE_AS);
   menuProject->AppendSeparator();
   menuProject->AppendCheckItem(ID_SORT_SYNC, _("&Auto Sort"));
-
-  wxMenu *menuWindow = new wxMenu();
-  menuWindow->Append(ID_SPLIT, _("Split"));
 
   wxMenu* menuOptions = new wxMenu();
   
@@ -223,7 +216,6 @@ DecoratedFrame::DecoratedFrame()
   menubar->Append(menuView, _("&View"));
   menubar->Append(menuProcess, _("&Process"));
   menubar->Append(menuProject, _("&Project"));
-  menubar->Append(menuWindow, _("&Window"));
   menubar->Append(menuOptions, _("&Options"));
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   

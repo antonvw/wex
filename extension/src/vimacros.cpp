@@ -378,13 +378,8 @@ const wxFileName wxExViMacros::GetFileName()
     "macros.xml");
 }
 
-const wxString wxExViMacros::GetRegister(const wxString& name) const
+const wxString wxExViMacros::GetRegister(const char name) const
 {
-  if (name.size() != 1)
-  {
-    return wxEmptyString;
-  }
-  
   const auto it = m_Macros.find(name);
     
   wxString output;
@@ -635,16 +630,19 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
     it != m_Macros.rend();
     ++it)
   {
-    wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "macro");
-    element->AddAttribute("name", it->first);
-    
-    for (
-      auto it2 = it->second.rbegin();
-      it2 != it->second.rend();
-      ++it2)
-    { 
-      wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
-      new wxXmlNode(cmd, wxXML_TEXT_NODE, "", Encode(*it2));
+    if (!it->second.empty())
+    {
+      wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "macro");
+      element->AddAttribute("name", it->first);
+      
+      for (
+        auto it2 = it->second.rbegin();
+        it2 != it->second.rend();
+        ++it2)
+      { 
+        wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
+        new wxXmlNode(cmd, wxXML_TEXT_NODE, "", Encode(*it2));
+      }
     }
   }
   
@@ -668,12 +666,17 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
   return ok;
 }
 
-void wxExViMacros::SetRegister(const wxString& name, const wxString& value)
+void wxExViMacros::SetRegister(const char name, const wxString& value)
 {
+  if (!isascii(name))
+  {
+    return;
+  }
+
   std::vector<wxString> v;
   
   // The black hole register, everything written to it is discarded.
-  if (name != "_")
+  if (name != '_')
   {
     v.push_back(value);
   }

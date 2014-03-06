@@ -2,7 +2,7 @@
 // Name:      configitem.h
 // Purpose:   Declaration of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXCONFIGITEM_H
@@ -13,7 +13,9 @@
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 #include <wx/slider.h> // for wxSL_HORIZONTAL
 #include <wx/string.h>
+#include <wx/valtext.h>
 
+class wxCheckListBox;
 class wxFlexGridSizer;
 class wxWindow;
 
@@ -58,6 +60,9 @@ enum wxExConfigType
   /// a filepicker ctrl item
   CONFIG_FILEPICKERCTRL,
 
+  /// a textctrl item that only accepts a float (double)
+  CONFIG_FLOAT,
+  
   /// a fontpicker ctrl item
   CONFIG_FONTPICKERCTRL,
 
@@ -301,6 +306,11 @@ public:
     
   /// Sets this item to be growable.
   void SetRowGrowable(bool value) {m_IsRowGrowable = value;};
+  
+  /// Sets the validator to be used by the config item, if appropriate.
+  /// Default a normal wxDefaultValidator is used, except for CONFIG_INT,
+  /// that uses a wxTextValidator with wxFILTER_NUMERIC.
+  void SetValidator(wxValidator* validator) {m_Validator = validator;};
     
   /// Loads or saves this item to the config.
   /// Returns true if the config was accessed, as not all
@@ -311,6 +321,7 @@ private:
   void AddStaticText(wxSizer* sizer) const;
   void CreateWindow(wxWindow* parent, bool readonly);
   void Init(const wxString& page, int cols);
+  bool Get(const wxString& field, wxCheckListBox* clb, int item) const;
 
   // The members are allowed to be const using
   // MS Visual Studio 2010, not using gcc, so
@@ -340,9 +351,10 @@ private:
 
   wxExUserWindowCreate m_UserWindowCreate;
   wxExUserWindowToConfig m_UserWindowToConfig;
-    
+  
   wxExConfigType m_Type;
   wxSizerFlags m_SizerFlags;
+  wxValidator* m_Validator;
   wxWindow* m_Window;
 };
 #endif // wxUSE_GUI

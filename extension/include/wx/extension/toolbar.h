@@ -2,7 +2,7 @@
 // Name:      toolbar.h
 // Purpose:   Declaration of wxExToolBar classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013
+// Copyright: (c) 2014
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXTOOLBAR_H
@@ -37,20 +37,13 @@ public:
     wxItemKind kind = wxITEM_NORMAL);
 
   /// Adds the standard controls.
-  /// This adds a file open, save and print control, and
-  /// the hex mode and sync check boxes.
+  /// This adds a file open, save and print and find control.
   void AddControls();
   
   /// Gets the frame.
   wxExManagedFrame* GetFrame() {return m_Frame;};
-protected:
-  void OnCommand(wxCommandEvent& event);
 private:
-  wxCheckBox* m_HexMode;
-  wxCheckBox* m_SyncMode;
   wxExManagedFrame* m_Frame;
-
-  DECLARE_EVENT_TABLE()
 };
 
 /// Offers a find toolbar, containing a find ctrl, up and down arrows
@@ -76,6 +69,25 @@ private:
   wxCheckBox* m_IsRegularExpression;
   wxCheckBox* m_MatchCase;
   wxCheckBox* m_MatchWholeWord;
+
+  DECLARE_EVENT_TABLE()
+};
+
+/// Offers a options toolbar, containing checkboxes.
+class WXDLLIMPEXP_BASE wxExOptionsToolBar : public wxExToolBar
+{
+public:
+  /// Constructor.
+  wxExOptionsToolBar(wxExManagedFrame* frame, 
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = wxAUI_TB_DEFAULT_STYLE);
+protected:
+  void OnCommand(wxCommandEvent& event);
+private:
+  wxCheckBox* m_HexMode;
+  wxCheckBox* m_SyncMode;
 
   DECLARE_EVENT_TABLE()
 };

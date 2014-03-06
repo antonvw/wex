@@ -2,7 +2,7 @@
 // Name:      stcfile.cpp
 // Purpose:   Implementation of class wxExSTCFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -174,12 +174,6 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
   if (!m_STC->HexMode())
   {
-    // At least for toggling between hex and non-hex this is necessary to
-    // reshow the edge line.
-    m_STC->ConfigGet();
-
-    m_STC->SetControlCharSymbol(0);
-
     get_only_new_data ? 
       m_STC->AppendTextRaw((const char *)buffer.data(), buffer.length()):
       m_STC->AddTextRaw((const char *)buffer.data(), buffer.length());
@@ -199,6 +193,10 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
   else
   {
     m_STC->GuessType();
+    
+#ifdef DEBUG
+    std::cout << GetFileName().GetFullPath() << "\n";
+#endif
     m_STC->DocumentStart();
   }
 
