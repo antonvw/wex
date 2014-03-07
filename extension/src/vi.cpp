@@ -368,6 +368,7 @@ bool wxExVi::Command(const wxString& command)
                 GetMacros().SetRegister(
                   GetRegister(),
                   GetSTC()->GetSelectedText());
+                GetSTC()->SelectNone();
               }
               break;
             case CHR_TO_NUM('y','y'): wxExAddressRange(this, repeat).Yank(); break;
