@@ -288,7 +288,7 @@ const wxString wxExLexers::GetKeywords(const wxString& set) const
 
 const wxString wxExLexers::GetLexerExtensions() const
 {
-  wxString text;
+  wxString text = wxFileSelectorDefaultWildcardStr;
 
   for (const auto& it : m_Lexers)
   {
