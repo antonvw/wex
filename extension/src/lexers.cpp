@@ -384,14 +384,19 @@ bool wxExLexers::LoadDocument()
 
   if (config != NULL)
   {
+    if (!config->Exists(_("Add what")))
+    {
+      config->Write(_("Add what"), GetLexerExtensions());
+    }
+  
     if (!config->Exists(_("In files")))
     {
       config->Write(_("In files"), GetLexerExtensions());
     }
 
-    if (!config->Exists(_("Add what")))
+    if (!config->Exists(_("In folder")))
     {
-      config->Write(_("Add what"), GetLexerExtensions());
+      config->Write(_("In folder"), wxGetHomeDir());
     }
   }
   
