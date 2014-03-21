@@ -424,7 +424,7 @@ bool wxExAddressRange::SetSelection() const
   }
 
   m_STC->SetCurrentPos(m_STC->PositionFromLine(begin_line - 1));
-  m_STC->SetAnchor(m_STC->PositionFromLine(end_line));
+  m_STC->SetAnchor(m_STC->GetLineEndPosition(end_line - 1));
 
   return true;
 }
@@ -461,6 +461,8 @@ bool wxExAddressRange::Substitute(const wxString& command)
   {
     return false;
   }
+
+  const bool selected = !m_STC->GetSelectedText().empty();
 
   wxExIndicator indicator(0, 0);
 
@@ -560,6 +562,11 @@ bool wxExAddressRange::Substitute(const wxString& command)
         result = wxID_CANCEL;
       }
     }
+  }
+
+  if (selected)
+  {
+    SetSelection();
   }
   
   m_STC->EndUndoAction();
