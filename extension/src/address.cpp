@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wxExAddress and wxExAddressRange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -413,7 +413,7 @@ void wxExAddressRange::Set(const wxString& begin, const wxString& end)
   m_End.assign(end);
 }
 
-bool wxExAddressRange::SetSelection() const
+bool wxExAddressRange::SetSelection(bool line_end_position) const
 {
   const int begin_line = m_Begin.ToLine();
   const int end_line = m_End.ToLine();
@@ -423,8 +423,18 @@ bool wxExAddressRange::SetSelection() const
     return false;
   }
 
-  m_STC->SetCurrentPos(m_STC->PositionFromLine(begin_line - 1));
-  m_STC->SetAnchor(m_STC->GetLineEndPosition(end_line - 1));
+  if (line_end_position)
+  {
+    m_STC->SetSelection(
+      m_STC->PositionFromLine(begin_line - 1),
+      m_STC->GetLineEndPosition(end_line - 1));
+  }
+  else 
+  {
+    m_STC->SetSelection(
+      m_STC->PositionFromLine(begin_line - 1),
+      m_STC->PositionFromLine(end_line));
+  }
 
   return true;
 }
@@ -564,11 +574,7 @@ bool wxExAddressRange::Substitute(const wxString& command)
     }
   }
 
-  if (selected)
-  {
-    SetSelection();
-  }
-  
+
   m_STC->EndUndoAction();
   m_Ex->MarkerDelete('$');
   m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
@@ -576,6 +582,11 @@ bool wxExAddressRange::Substitute(const wxString& command)
 
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
   
+  if (selected)
+  {
+    SetSelection(true);
+  }
+
   return true;
 }
 

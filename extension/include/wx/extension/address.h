@@ -2,7 +2,7 @@
 // Name:      address.h
 // Purpose:   Declaration of class wxExAddress and wxExAddressRange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXADDRESS_H
@@ -100,7 +100,7 @@ private:
   void Set(const wxString& begin, const wxString& end);
   /// Sets selection from begin to end address.
   /// Returns false if address cannot be related to a line number.
-  bool SetSelection() const;
+  bool SetSelection(bool line_end_pos = false) const;
 
   wxString m_Replacement;
   
