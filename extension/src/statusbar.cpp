@@ -16,6 +16,40 @@
 #if wxUSE_GUI
 #if wxUSE_STATUSBAR
 
+const int FIELD_INVALID = -1;
+
+//#define DEBUG ON
+
+#ifdef DEBUG
+void DebugPanes(const std::vector<wxExStatusBarPane>& panes)
+{
+  int i = 0;
+  for (const auto& it : panes)
+  {
+    wxLogMessage("pane %d (%s): %s shown: %d hidden: %s", 
+      i++, 
+      it.GetName().c_str(),
+      it.GetText().c_str(), 
+      it.IsShown(), 
+      it.GetHiddenText().c_str());
+  }
+}
+#endif
+  
+void wxExStatusBarPane::Show(bool show)
+{
+  m_IsShown = show;
+  
+  if (show) 
+  {
+    m_HiddenText.clear();
+  }
+  else
+  {
+    m_HiddenText = GetText();
+  }
+}
+
 wxExStatusBar::wxExStatusBar(
   wxExFrame* parent,
   wxWindowID id,
@@ -33,9 +67,12 @@ wxExStatusBar::~wxExStatusBar()
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 }
 
-int wxExStatusBar::GetFieldNo(const wxString& field) const
+int wxExStatusBar::GetFieldNo(
+  const wxString& field, bool& shown) const
 {
   int i = 0;
+  int j = 0;
+  shown = false;
   
   for (const auto& it : m_Panes)
   {
@@ -43,21 +80,32 @@ int wxExStatusBar::GetFieldNo(const wxString& field) const
     {
       if (it.GetName() == field)
       {
+        shown = true;
         return i;
       }
       
       i++;
     }
+    else
+    {
+      if (it.GetName() == field)
+      {
+        return j;
+      }
+    }
+  
+    j++;
   }
   
-  return -1;
+  return FIELD_INVALID;
 }
   
 const wxString wxExStatusBar::GetStatusText(const wxString& field) const
 {
-  const int no = GetFieldNo(field);
+  bool shown;
+  const int no = GetFieldNo(field, shown);
   
-  if (no == -1)
+  if (no == FIELD_INVALID || !shown)
   {
     // Do not show error, as you might explicitly want to ignore messages.
     return wxEmptyString;
@@ -149,39 +197,39 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
 
 bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
 {
-  if (field == "ALL")
+  bool shown;
+  const int no = GetFieldNo(field, shown);
+
+  if (no == FIELD_INVALID)
   {
-    for (int i = 0; i < GetFieldsCount(); i++)
-    {
-      wxStatusBar::SetStatusText(text, i);
-    }
+    // Do not show error, as you might explicitly want to ignore messages.
+    return false;
+  }
+
+  if (!shown)
+  {
+    m_Panes[no].SetHiddenText(text);
+    return false;
   }
   else
   {
-    const int no = GetFieldNo(field);
-
-    if (no == -1)
-    {
-      // Do not show error, as you might explicitly want to ignore messages.
-      return false;
-    }
+    m_Panes[no].SetText(text);
     
     // wxStatusBar checks whether new text differs from current,
     // and does nothing if the same to avoid flicker.
     wxStatusBar::SetStatusText(text, no);
+    return true;
   }
-  
-  return true;
 }
 
 bool wxExStatusBar::ShowField(const wxString& field, bool show)
 {
   wxASSERT(!m_Panes.empty());
   
-  bool changed = false;
   int* widths = new int[m_Panes.size()];
   int* styles = new int[m_Panes.size()];
   int i = 0; // number of shown panes
+  std::vector <wxString> changes;
 
   for (auto& it : m_Panes)
   {
@@ -191,8 +239,14 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
       {
         if (!it.IsShown())
         {
+          changes.push_back(it.GetHiddenText());
+          
           it.Show(true);
-          changed = true;
+          
+          for (int j = i; j < GetFieldsCount(); j++)
+          {
+            changes.push_back(wxStatusBar::GetStatusText(j));
+          }
         }
         
         widths[i] = it.GetWidth();
@@ -205,8 +259,11 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
         if (it.IsShown())
         {
           it.Show(false);
-          changed = true;
-          wxStatusBar::SetStatusText(wxEmptyString, i);
+          
+          for (int j = i + 1; j < GetFieldsCount(); j++)
+          {
+            changes.push_back(wxStatusBar::GetStatusText(j));
+          }
         }
       }
     }
@@ -222,16 +279,39 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
     }
   }
 
-  if (changed)
+  if (!changes.empty())
   {
     SetFieldsCount(i, widths);
     SetStatusStyles(i, styles);
+    
+    int z = 0;
+    for (int j = changes.size() - 1; j >= 0; j--)
+    {
+      wxStatusBar::SetStatusText(changes[j], GetFieldsCount() - 1 - z);
+      z++;
+    }
+  
+#ifdef DEBUG
+    wxLogMessage("start: %d", GetFieldsCount() - 1 - z); 
+      
+    for (int k = 0; k < changes.size(); k++)
+    {
+      wxLogMessage("changes[%d]=%s", k, changes[k].c_str()); 
+    }
+  
+    for (int l = 0; l < GetFieldsCount(); l++)
+    {
+      wxLogMessage("statusbar[%d]=%s", l, wxStatusBar::GetStatusText(l).c_str()); 
+    }
+  
+    DebugPanes(m_Panes);
+#endif
   }
 
   delete[] styles;
   delete[] widths;
   
-  return changed;
+  return !changes.empty();
 }
 
 #endif // wxUSE_STATUSBAR

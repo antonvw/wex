@@ -1386,8 +1386,6 @@ void Frame::StatusBarClicked(const wxString& pane)
   {
     if (wxExLexers::Get()->ShowThemeDialog(m_Editors))
     {
-      StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
-
       m_Editors->ForEach(ID_ALL_STC_SET_LEXER_THEME);
 
       wxExSTC* stc = wxExProcess::GetSTC();
@@ -1400,6 +1398,8 @@ void Frame::StatusBarClicked(const wxString& pane)
       m_StatusBar->ShowField(
         "PaneLexer", 
         wxExLexers::Get()->GetThemeOk());
+        
+      StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
     }
   }
   else if (pane == "PaneMacro")
