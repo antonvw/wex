@@ -518,7 +518,7 @@ void wxExGuiTestFixture::testFrame()
   std::vector<wxExStatusBarPane> panes;
 
   panes.push_back(wxExStatusBarPane());
-
+  
   for (int i = 0; i < 25; i++)
   {
     panes.push_back(wxExStatusBarPane(wxString::Format("Pane%d", i)));
@@ -532,11 +532,6 @@ void wxExGuiTestFixture::testFrame()
   CPPUNIT_ASSERT( sb != NULL);
   
   CPPUNIT_ASSERT( sb->GetFieldsCount () == panes.size());
-  CPPUNIT_ASSERT( sb->SetStatusText("XYZ", "ALL"));
-  CPPUNIT_ASSERT( sb->GetStatusText("Pane0") == "XYZ");
-  CPPUNIT_ASSERT( sb->GetStatusText("Pane2") == "XYZ");
-  CPPUNIT_ASSERT( sb->GetStatusText("Pane4") == "XYZ");
-  CPPUNIT_ASSERT( sb->GetStatusText("Pane6") == "XYZ");
   CPPUNIT_ASSERT( sb->SetStatusText("hello", ""));
   CPPUNIT_ASSERT( sb->SetStatusText("hello0", "Pane0"));
   CPPUNIT_ASSERT( sb->SetStatusText("hello1", "Pane1"));
@@ -545,15 +540,19 @@ void wxExGuiTestFixture::testFrame()
   CPPUNIT_ASSERT(!sb->SetStatusText("hello25", "Pane25"));
   
   CPPUNIT_ASSERT( sb->GetStatusText("Pane0") == "hello0");
+  CPPUNIT_ASSERT( ((wxStatusBar*) sb)->GetStatusText(1) == "hello0");
   CPPUNIT_ASSERT( sb->GetStatusText("Pane1") == "hello1");
   CPPUNIT_ASSERT( sb->GetStatusText("Pane2") == "hello2");
   CPPUNIT_ASSERT( sb->GetStatusText("Panexxx").empty());
   
   CPPUNIT_ASSERT( sb->ShowField("Pane0", false));
+  CPPUNIT_ASSERT( ((wxStatusBar*) sb)->GetStatusText(1) == "hello1");
   CPPUNIT_ASSERT(!sb->ShowField("Pane0", false));
+  CPPUNIT_ASSERT( ((wxStatusBar*) sb)->GetStatusText(1) == "hello1");
   CPPUNIT_ASSERT( sb->GetStatusText("Pane0").empty());
   CPPUNIT_ASSERT( sb->ShowField("Pane0", true));
-  CPPUNIT_ASSERT( sb->GetStatusText("Pane0").empty());
+  CPPUNIT_ASSERT( ((wxStatusBar*) sb)->GetStatusText(1) == "hello0");
+  CPPUNIT_ASSERT( sb->GetStatusText("Pane0") == "hello0");
   
   CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE)));
   CPPUNIT_ASSERT( frame->OpenFile(TEST_FILE, "contents"));

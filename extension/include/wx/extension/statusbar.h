@@ -56,23 +56,32 @@ public:
   /// Returns statusbar pane help text.
   const wxString& GetHelpText() const {return m_HelpText;};
   
+  /// Returns hidden text.
+  const wxString& GetHiddenText() const {return m_HiddenText;};
+  
   /// Returns statusbar pane name.
   const wxString& GetName() const {return m_Name;};
   
   /// Returns whether this pane is shown.
   bool IsShown() const {return m_IsShown;};
   
+  /// Sets hidden text.
+  void SetHiddenText(const wxString& text) {m_HiddenText = text;};
+  
   /// Sets whether this pane is shown.
-  void Show(bool show) {m_IsShown = show;};
+  /// Resets the hidden text if show is true.
+  void Show(bool show);
 private:
   wxString m_HelpText;
+  wxString m_HiddenText;
   wxString m_Name;
   bool m_IsShown;
 };
 
 class wxExFrame;
 
-/// Offers a status bar that calls virtual methods from wxExFrame.
+/// Offers a status bar that calls virtual methods from wxExFrame,
+/// and allows you to address fields by name instead of number.
 class WXDLLIMPEXP_BASE wxExStatusBar : public wxStatusBar
 {
 public:
@@ -99,7 +108,6 @@ public:
     /// text
     const wxString& text, 
     /// field, default field pane 0,
-    /// field ALL sets text on all panes
     const wxString& field = wxEmptyString);
   
   /// Shows or hides the field.
@@ -110,9 +118,8 @@ protected:
   /// moving over.
   void OnMouse(wxMouseEvent& event);
 private:
-  /// Returns the field no, or -1 if field does not exist
-  /// or is not shown.
-  int GetFieldNo(const wxString& field) const;
+  /// Returns the field no, or -1 if field does not exist.
+  int GetFieldNo(const wxString& field, bool& shown) const;
   void Handle(wxMouseEvent& event, const wxExStatusBarPane& wxExStatusBarPane);
   
   wxExFrame* m_Frame;
