@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of wxExListView and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXLISTVIEW_H
@@ -177,7 +177,6 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnFindDialog(wxFindDialogEvent& event);
   void OnList(wxListEvent& event);
-  void OnMouse(wxMouseEvent& event);
   void OnShow(wxShowEvent& event);
 private:
   const wxString BuildPage();
@@ -275,6 +274,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnList(wxListEvent& event);
+  void OnMouse(wxMouseEvent& event);
 private:
   void AddColumns(const wxExLexer* lexer);
   void Initialize(const wxExLexer* lexer);

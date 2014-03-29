@@ -160,7 +160,6 @@ BEGIN_EVENT_TABLE(wxExListView, wxListView)
   EVT_MENU(ID_EDIT_SELECT_NONE, wxExListView::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExListView::OnCommand)
   EVT_MENU_RANGE(ID_COL_FIRST, ID_COL_LAST, wxExListView::OnCommand)
-  EVT_RIGHT_DOWN(wxExListView::OnMouse)
   EVT_SHOW(wxExListView::OnShow)
 END_EVENT_TABLE()
 
@@ -733,34 +732,6 @@ void wxExListView::OnList(wxListEvent& event)
   }
 }
 
-void wxExListView::OnMouse(wxMouseEvent& event)
-{
-  if (event.RightDown())
-  {
-    long style = wxExMenu::MENU_DEFAULT;
-    
-    if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
-    if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
-    if (GetSelectedItemCount() == 0 && GetItemCount() > 0) 
-    {
-      style |= wxExMenu::MENU_ALLOW_CLEAR;
-    }
-
-    wxExMenu menu(style);
-
-    BuildPopupMenu(menu);
-
-    if (menu.GetMenuItemCount() > 0)
-    {
-      PopupMenu(&menu);
-    }
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
 void wxExListView::OnShow(wxShowEvent& event)
 {
   event.Skip();
@@ -933,6 +904,7 @@ BEGIN_EVENT_TABLE(wxExListViewFileName, wxExListView)
   EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewFileName::OnList)
   EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewFileName::OnList)
   EVT_MENU(wxID_ADD, wxExListViewFileName::OnCommand)
+  EVT_RIGHT_DOWN(wxExListViewFileName::OnMouse)
 END_EVENT_TABLE()
 
 wxExListViewFileName::wxExListViewFileName(wxWindow* parent,
@@ -1326,5 +1298,34 @@ void wxExListViewFileName::OnList(wxListEvent& event)
   }
 }
 
+void wxExListViewFileName::OnMouse(wxMouseEvent& event)
+{
+  if (event.RightDown())
+  {
+    long style = 0; // otherwise CAN_PASTE already on
+    
+    if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
+    if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
+    if (m_Type != LIST_FIND && m_Type != LIST_REPLACE) style |= wxExMenu::MENU_CAN_PASTE;
+    
+    if (GetSelectedItemCount() == 0 && GetItemCount() > 0) 
+    {
+      style |= wxExMenu::MENU_ALLOW_CLEAR;
+    }
+
+    wxExMenu menu(style);
+
+    BuildPopupMenu(menu);
+
+    if (menu.GetMenuItemCount() > 0)
+    {
+      PopupMenu(&menu);
+    }
+  }
+  else
+  {
+    wxFAIL;
+  }
+}
 
 #endif // wxUSE_GUI
