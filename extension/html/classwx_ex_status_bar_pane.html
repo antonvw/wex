@@ -71,6 +71,10 @@ Public Member Functions</h2></td></tr>
 const wxString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_status_bar_pane.html#ae00b16a9b009a27a0bd685b585a6813d">GetHelpText</a> () const </td></tr>
 <tr class="memdesc:ae00b16a9b009a27a0bd685b585a6813d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns statusbar pane help text. <br/></td></tr>
 <tr class="separator:ae00b16a9b009a27a0bd685b585a6813d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afca104209196e04b2b06b3b6287d5cec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afca104209196e04b2b06b3b6287d5cec"></a>
+const wxString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_status_bar_pane.html#afca104209196e04b2b06b3b6287d5cec">GetHiddenText</a> () const </td></tr>
+<tr class="memdesc:afca104209196e04b2b06b3b6287d5cec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns hidden text. <br/></td></tr>
+<tr class="separator:afca104209196e04b2b06b3b6287d5cec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6f03a87e778d0c951181b7783c1c1e0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa6f03a87e778d0c951181b7783c1c1e0"></a>
 const wxString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_status_bar_pane.html#aa6f03a87e778d0c951181b7783c1c1e0">GetName</a> () const </td></tr>
 <tr class="memdesc:aa6f03a87e778d0c951181b7783c1c1e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns statusbar pane name. <br/></td></tr>
@@ -79,9 +83,12 @@ const wxString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_status_bar_pane.html#a5faf74a092b7856b36dcc2a4d0713494">IsShown</a> () const </td></tr>
 <tr class="memdesc:a5faf74a092b7856b36dcc2a4d0713494"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether this pane is shown. <br/></td></tr>
 <tr class="separator:a5faf74a092b7856b36dcc2a4d0713494"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42b4b7169d9360bcc37774a6f35191a3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a42b4b7169d9360bcc37774a6f35191a3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_status_bar_pane.html#a42b4b7169d9360bcc37774a6f35191a3">Show</a> (bool show)</td></tr>
-<tr class="memdesc:a42b4b7169d9360bcc37774a6f35191a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets whether this pane is shown. <br/></td></tr>
+<tr class="memitem:ad1d2d6ebbb3a006db251272d6f3aca05"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad1d2d6ebbb3a006db251272d6f3aca05"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_status_bar_pane.html#ad1d2d6ebbb3a006db251272d6f3aca05">SetHiddenText</a> (const wxString &amp;text)</td></tr>
+<tr class="memdesc:ad1d2d6ebbb3a006db251272d6f3aca05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets hidden text. <br/></td></tr>
+<tr class="separator:ad1d2d6ebbb3a006db251272d6f3aca05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42b4b7169d9360bcc37774a6f35191a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_status_bar_pane.html#a42b4b7169d9360bcc37774a6f35191a3">Show</a> (bool show)</td></tr>
+<tr class="memdesc:a42b4b7169d9360bcc37774a6f35191a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets whether this pane is shown.  <a href="#a42b4b7169d9360bcc37774a6f35191a3">More...</a><br/></td></tr>
 <tr class="separator:a42b4b7169d9360bcc37774a6f35191a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -179,6 +186,26 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a42b4b7169d9360bcc37774a6f35191a3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wxExStatusBarPane::Show </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>show</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets whether this pane is shown. </p>
+<p>Resets the hidden text if show is true. </p>
 
 </div>
 </div>
