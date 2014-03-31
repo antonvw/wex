@@ -18,20 +18,42 @@
 
 const int FIELD_INVALID = -1;
 
-//#define DEBUG ON
+// #define DEBUG ON
 
 #ifdef DEBUG
-void DebugPanes(const std::vector<wxExStatusBarPane>& panes)
+void DebugPanes(
+  const wxString& field, 
+  bool show,
+  wxStatusBar* sb, 
+  const std::vector<wxExStatusBarPane>& panes,
+  const std::vector<wxString>& v)
 {
+  const int no = sb->GetFieldsCount() - 1 - v.size();
+  
+  wxLogMessage("field: %s show: %d start: %d", 
+    field.c_str(),
+    show,
+    no);
+    
+  for (int l = 0; l < sb->GetFieldsCount(); l++)
+  {
+    wxLogMessage("statusbar[%d]=%s", l, sb->GetStatusText(l).c_str()); 
+  }
+  
   int i = 0;
   for (const auto& it : panes)
   {
-    wxLogMessage("pane %d (%s): %s shown: %d hidden: %s", 
-      i++, 
+    wxLogMessage("pane[%s](%d)=%s(shown: %d hidden: %s)", 
       it.GetName().c_str(),
+      i++, 
       it.GetText().c_str(), 
       it.IsShown(), 
       it.GetHiddenText().c_str());
+  }
+
+  for (int k = 0; k < v.size(); k++)
+  {
+    wxLogMessage("changes[%d]=%s", k, v[k].c_str()); 
   }
 }
 #endif
@@ -230,6 +252,7 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
   int* styles = new int[m_Panes.size()];
   int i = 0; // number of shown panes
   std::vector <wxString> changes;
+  bool changed = false;
 
   for (auto& it : m_Panes)
   {
@@ -259,6 +282,7 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
         if (it.IsShown())
         {
           it.Show(false);
+          changed = true;
           
           for (int j = i + 1; j < GetFieldsCount(); j++)
           {
@@ -279,34 +303,25 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
     }
   }
 
-  if (!changes.empty())
+  if (!changes.empty() || changed)
   {
     SetFieldsCount(i, widths);
     SetStatusStyles(i, styles);
-    
-    int z = 0;
-    for (int j = changes.size() - 1; j >= 0; j--)
+
+    if (!changes.empty())
     {
-      wxStatusBar::SetStatusText(changes[j], GetFieldsCount() - 1 - z);
-      z++;
+      int z = 0;
+      for (int j = changes.size() - 1; j >= 0; j--)
+      {
+        wxStatusBar::SetStatusText(changes[j], GetFieldsCount() - 1 - z);
+        z++;
+      }
     }
-  
-#ifdef DEBUG
-    wxLogMessage("start: %d", GetFieldsCount() - 1 - z); 
-      
-    for (int k = 0; k < changes.size(); k++)
-    {
-      wxLogMessage("changes[%d]=%s", k, changes[k].c_str()); 
-    }
-  
-    for (int l = 0; l < GetFieldsCount(); l++)
-    {
-      wxLogMessage("statusbar[%d]=%s", l, wxStatusBar::GetStatusText(l).c_str()); 
-    }
-  
-    DebugPanes(m_Panes);
-#endif
   }
+
+#ifdef DEBUG
+  DebugPanes(field, show, this, m_Panes, changes);
+#endif
 
   delete[] styles;
   delete[] widths;
