@@ -118,8 +118,12 @@ protected:
   /// moving over.
   void OnMouse(wxMouseEvent& event);
 private:
-  /// Returns the field no, or -1 if field does not exist.
-  int GetFieldNo(const wxString& field, bool& shown) const;
+  /// Returns true if the field exists.
+  /// The visible_pane_no is FIELD_NOT_SHOWN if the field is not shown.
+  bool GetFieldNo(
+    const wxString& field, 
+    int& shown_pane_no,
+    int& pane_no) const;
   void Handle(wxMouseEvent& event, const wxExStatusBarPane& wxExStatusBarPane);
   
   wxExFrame* m_Frame;
