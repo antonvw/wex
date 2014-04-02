@@ -413,17 +413,15 @@ void wxExAddressRange::Set(const wxString& begin, const wxString& end)
   m_End.assign(end);
 }
 
-bool wxExAddressRange::SetSelection(bool line_end_position) const
+bool wxExAddressRange::SetSelection(
+  int begin_line, int end_line, bool line_end_pos) const
 {
-  const int begin_line = m_Begin.ToLine();
-  const int end_line = m_End.ToLine();
-
-  if (!IsOk() || end_line < begin_line)
+  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
   {
     return false;
   }
 
-  if (line_end_position)
+  if (line_end_pos)
   {
     m_STC->SetSelection(
       m_STC->PositionFromLine(begin_line - 1),
@@ -437,6 +435,12 @@ bool wxExAddressRange::SetSelection(bool line_end_position) const
   }
 
   return true;
+}
+
+bool wxExAddressRange::SetSelection(bool line_end_position) const
+{
+  return IsOk() && 
+    SetSelection(m_Begin.ToLine(), m_End.ToLine(), line_end_position);
 }
 
 bool wxExAddressRange::Substitute(const wxString& command)
@@ -584,7 +588,7 @@ bool wxExAddressRange::Substitute(const wxString& command)
   
   if (selected)
   {
-    SetSelection(true);
+    SetSelection(begin_line, end_line, true);
   }
 
   return true;
