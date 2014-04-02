@@ -16,7 +16,7 @@
 #if wxUSE_GUI
 #if wxUSE_STATUSBAR
 
-const int FIELD_INVALID = -1;
+const int FIELD_NOT_SHOWN = -1;
 
 // #define DEBUG ON
 
@@ -89,12 +89,13 @@ wxExStatusBar::~wxExStatusBar()
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 }
 
-int wxExStatusBar::GetFieldNo(
-  const wxString& field, bool& shown) const
+bool wxExStatusBar::GetFieldNo(
+  const wxString& field,
+  int& shown_pane_no,
+  int& pane_no) const
 {
-  int i = 0;
-  int j = 0;
-  shown = false;
+  shown_pane_no = 0;
+  pane_no = 0;
   
   for (const auto& it : m_Panes)
   {
@@ -102,38 +103,37 @@ int wxExStatusBar::GetFieldNo(
     {
       if (it.GetName() == field)
       {
-        shown = true;
-        return i;
+        return true;
       }
       
-      i++;
+      shown_pane_no++;
     }
     else
     {
       if (it.GetName() == field)
       {
-        return j;
+        shown_pane_no = FIELD_NOT_SHOWN;
+        return true;
       }
     }
   
-    j++;
+    pane_no++;
   }
   
-  return FIELD_INVALID;
+  return false;
 }
   
 const wxString wxExStatusBar::GetStatusText(const wxString& field) const
 {
-  bool shown;
-  const int no = GetFieldNo(field, shown);
+  int shown_pane_no, dummy;
   
-  if (no == FIELD_INVALID || !shown)
+  if (!GetFieldNo(field, shown_pane_no, dummy) || shown_pane_no == FIELD_NOT_SHOWN)
   {
     // Do not show error, as you might explicitly want to ignore messages.
     return wxEmptyString;
   }
   
-  return wxStatusBar::GetStatusText(no);
+  return wxStatusBar::GetStatusText(shown_pane_no);
 }
 
 void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
@@ -219,27 +219,26 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
 
 bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
 {
-  bool shown;
-  const int no = GetFieldNo(field, shown);
+  int shown_pane_no, pane_no;
 
-  if (no == FIELD_INVALID)
+  if (!GetFieldNo(field, shown_pane_no, pane_no))
   {
     // Do not show error, as you might explicitly want to ignore messages.
     return false;
   }
 
-  if (!shown)
+  if (shown_pane_no == FIELD_NOT_SHOWN)
   {
-    m_Panes[no].SetHiddenText(text);
+    m_Panes[pane_no].SetHiddenText(text);
     return false;
   }
   else
   {
-    m_Panes[no].SetText(text);
+    m_Panes[pane_no].SetText(text);
     
     // wxStatusBar checks whether new text differs from current,
     // and does nothing if the same to avoid flicker.
-    wxStatusBar::SetStatusText(text, no);
+    wxStatusBar::SetStatusText(text, shown_pane_no);
     return true;
   }
 }
@@ -250,7 +249,7 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
   
   int* widths = new int[m_Panes.size()];
   int* styles = new int[m_Panes.size()];
-  int i = 0; // number of shown panes
+  int panes_shown = 0;
   std::vector <wxString> changes;
   bool changed = false;
 
@@ -266,16 +265,16 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
           
           it.Show(true);
           
-          for (int j = i; j < GetFieldsCount(); j++)
+          for (int j = panes_shown; j < GetFieldsCount(); j++)
           {
             changes.push_back(wxStatusBar::GetStatusText(j));
           }
         }
         
-        widths[i] = it.GetWidth();
-        styles[i] = it.GetStyle();
+        widths[panes_shown] = it.GetWidth();
+        styles[panes_shown] = it.GetStyle();
         
-        i++;
+        panes_shown++;
       }
       else
       {
@@ -284,7 +283,7 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
           it.Show(false);
           changed = true;
           
-          for (int j = i + 1; j < GetFieldsCount(); j++)
+          for (int j = panes_shown + 1; j < GetFieldsCount(); j++)
           {
             changes.push_back(wxStatusBar::GetStatusText(j));
           }
@@ -295,18 +294,18 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
     {
       if (it.IsShown())
       {
-        widths[i] = it.GetWidth();
-        styles[i] = it.GetStyle();
+        widths[panes_shown] = it.GetWidth();
+        styles[panes_shown] = it.GetStyle();
         
-        i++;
+        panes_shown++;
       }
     }
   }
 
   if (!changes.empty() || changed)
   {
-    SetFieldsCount(i, widths);
-    SetStatusStyles(i, styles);
+    SetFieldsCount(panes_shown, widths);
+    SetStatusStyles(panes_shown, styles);
 
     if (!changes.empty())
     {
@@ -326,7 +325,7 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
   delete[] styles;
   delete[] widths;
   
-  return !changes.empty();
+  return !changes.empty() || changed;
 }
 
 #endif // wxUSE_STATUSBAR

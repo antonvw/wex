@@ -527,6 +527,7 @@ void wxExGuiTestFixture::testFrame()
   panes.push_back(wxExStatusBarPane("PaneInfo"));
   panes.push_back(wxExStatusBarPane("PaneLexer"));
   panes.push_back(wxExStatusBarPane("PaneFileType"));
+  panes.push_back(wxExStatusBarPane("LastPane"));
   
   wxExStatusBar* sb = frame->SetupStatusBar(panes);
   CPPUNIT_ASSERT( sb != NULL);
@@ -538,6 +539,7 @@ void wxExGuiTestFixture::testFrame()
   CPPUNIT_ASSERT( sb->SetStatusText("hello2", "Pane2"));
   CPPUNIT_ASSERT(!sb->SetStatusText("hello3", "Panexxx"));
   CPPUNIT_ASSERT(!sb->SetStatusText("hello25", "Pane25"));
+  CPPUNIT_ASSERT( sb->SetStatusText("GoodBye", "LastPane"));
   
   CPPUNIT_ASSERT( sb->GetStatusText("Pane0") == "hello0");
   CPPUNIT_ASSERT( ((wxStatusBar*) sb)->GetStatusText(1) == "hello0");
@@ -553,6 +555,11 @@ void wxExGuiTestFixture::testFrame()
   CPPUNIT_ASSERT( sb->ShowField("Pane0", true));
   CPPUNIT_ASSERT( ((wxStatusBar*) sb)->GetStatusText(1) == "hello0");
   CPPUNIT_ASSERT( sb->GetStatusText("Pane0") == "hello0");
+  CPPUNIT_ASSERT( sb->ShowField("LastPane", false));
+  CPPUNIT_ASSERT( sb->GetStatusText("LastPane").empty());
+  CPPUNIT_ASSERT(!sb->SetStatusText("BackAgain", "LastPane"));
+  CPPUNIT_ASSERT( sb->ShowField("LastPane", true));
+  CPPUNIT_ASSERT( sb->GetStatusText("LastPane") == "BackAgain");
   
   CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE)));
   CPPUNIT_ASSERT( frame->OpenFile(TEST_FILE, "contents"));
