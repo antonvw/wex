@@ -101,6 +101,8 @@ private:
   /// Sets selection from begin to end address.
   /// Returns false if address cannot be related to a line number.
   bool SetSelection(bool line_end_pos = false) const;
+  bool SetSelection(
+    int begin_line, int end_line, bool line_end_pos = false) const;
 
   wxString m_Replacement;
   
