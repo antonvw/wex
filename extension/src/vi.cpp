@@ -1410,7 +1410,8 @@ bool wxExVi::Put(bool after)
   {
     if (after) 
     {
-      if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0)
+      if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0 || 
+          GetSTC()->GetSelectedText().empty())
       {
         GetSTC()->LineDown();
       }
@@ -1426,6 +1427,11 @@ bool wxExVi::Put(bool after)
   else
   {
     AddText(GetMacros().GetRegister(GetRegister()));
+  }
+
+  if (YankedLines() && after)
+  {
+    GetSTC()->LineUp();
   }
 
   return true;
