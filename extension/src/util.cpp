@@ -769,7 +769,10 @@ void wxExOpenFiles(
         }
       }
 
-      frame->OpenFile(file, line_no, wxEmptyString, col_no, file_flags);
+      if (wxFileName(file).FileExists())
+      {
+        frame->OpenFile(file, line_no, wxEmptyString, col_no, file_flags);
+      }
     }
   }
 }
