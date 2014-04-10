@@ -3,7 +3,7 @@
 # Name:      deploy.sh
 # Purpose:   Deploy file (for syncped)
 # Author:    Anton van Wezenbeek
-# Copyright: (c) 2013 Anton van Wezenbeek
+# Copyright: (c) 2014 Anton van Wezenbeek
 ################################################################################
 
 # Run this file in the build folder
@@ -51,7 +51,3 @@ done
 strip syncped/syncped
 tar cf syncped.tar syncped
 gzip syncped.tar
-
-mv syncped.tar.gz ~/syncped/bin
-
-rm -rf syncped

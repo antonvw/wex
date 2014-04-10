@@ -32,7 +32,3 @@ rem Copy locale files.
 "C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\syncped-fr.po -o syncped\fr_FR\syncped-fr.mo
   
 7z a syncped.zip syncped\
-
-move syncped.zip ..\..\syncped\bin
-
-rmdir /S /Q syncped
