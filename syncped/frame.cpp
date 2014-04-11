@@ -624,7 +624,7 @@ void Frame::OnCommand(wxCommandEvent& event)
         return;
       }
         
-      m_Editors->DeletePage(editor->GetFileName().GetFullPath());
+      m_Editors->DeletePage(m_Editors->GetKeyByPage(editor));
     }
     break;
     
@@ -1188,7 +1188,7 @@ bool Frame::OpenFile(
   const wxString unique = 
     vcs.GetCommand().GetCommand() + " " + vcs.GetFlags();
     
-  const wxString key = filename.GetFullPath() + unique;
+  const wxString key = filename.GetFullPath() + " " + unique;
 
   wxWindow* page = m_Editors->SetSelection(key);
   
