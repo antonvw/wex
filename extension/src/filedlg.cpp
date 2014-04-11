@@ -2,7 +2,7 @@
 // Name:      filedlg.cpp
 // Purpose:   Implementation of wxExtension file dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -31,7 +31,7 @@ wxExFileDialog::wxExFileDialog(
       style, 
       pos, 
       size) 
-// when compiling under x11 the name is not used as argument,
+// TODO: when compiling under x11 the name is not used as argument,
 // so outcommented it here.      
 //      name)
   , m_File(file)
@@ -46,6 +46,8 @@ wxExFileDialog::wxExFileDialog(
 
 int wxExFileDialog::ShowModalIfChanged(bool show_modal)
 {
+  bool reset = false;
+  
   if (m_File->GetContentsChanged())
   {
     if (!m_File->GetFileName().IsOk())
@@ -55,16 +57,9 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
         _("Confirm"),
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {
-        case wxYES: 
-          return ShowModal();
-          break;
-
-        case wxNO:     
-          m_File->ResetContentsChanged(); 
-          break;
-
-        case wxCANCEL: 
-          return wxID_CANCEL; break;
+        case wxYES: return ShowModal(); break;
+        case wxNO: reset = true; break;
+        case wxCANCEL: return wxID_CANCEL; break;
       }
     }
     else
@@ -74,25 +69,23 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
         _("Confirm"),
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {
-        case wxYES:    
-          m_File->FileSave();
-          break;
-
-        case wxNO:     
-          m_File->ResetContentsChanged(); 
-          return wxID_NO;
-          break;
-
-        case wxCANCEL: 
-          return wxID_CANCEL;
-          break;
+        case wxYES: m_File->FileSave(); break;
+        case wxNO: reset = true; break;
+        case wxCANCEL: return wxID_CANCEL; break;
       }
     }
   }
 
   if (show_modal)
   {
-    return ShowModal();
+    const int result = ShowModal();
+    
+    if (reset && result != wxID_CANCEL)
+    {
+      m_File->ResetContentsChanged(); 
+    }
+  
+    return result;
   }
 
   return wxID_OK;

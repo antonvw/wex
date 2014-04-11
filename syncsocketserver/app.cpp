@@ -422,7 +422,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 #endif
 #if wxUSE_STATUSBAR
       StatusText(
-        wxString::Format(_("%d clients"), m_Clients.size()),
+        wxString::Format(_("%ld clients"), m_Clients.size()),
         "PaneClients");
 #endif
 
@@ -591,7 +591,7 @@ void Frame::OnSocket(wxSocketEvent& event)
 
 #if wxUSE_STATUSBAR
     StatusText(
-      wxString::Format(_("%d clients"), m_Clients.size()),
+      wxString::Format(_("%ld clients"), m_Clients.size()),
       "PaneClients");
 #endif
 
@@ -693,7 +693,7 @@ void Frame::OnSocket(wxSocketEvent& event)
         SocketLost(sock, true);
 #if wxUSE_STATUSBAR
         StatusText(
-          wxString::Format(_("%d clients"), m_Clients.size()),
+          wxString::Format(_("%ld clients"), m_Clients.size()),
           "PaneClients");
 #endif
 
@@ -837,7 +837,7 @@ bool Frame::SetupSocketServer()
   // We use Ok() here to see if the server is really listening
   if (!m_SocketServer->Ok())
   {
-    text = wxString::Format(_("could not listen at %d"), 
+    text = wxString::Format(_("could not listen at %ld"), 
       wxConfigBase::Get()->ReadLong(_("Port"), 3000));
       
 #if wxUSE_TASKBARICON
@@ -854,7 +854,7 @@ bool Frame::SetupSocketServer()
   }
   else
   {
-    text = wxString::Format(_("server listening at %d"), 
+    text = wxString::Format(_("server listening at %ld"), 
         wxConfigBase::Get()->ReadLong(_("Port"), 3000));
 
 #if wxUSE_TASKBARICON
@@ -1003,14 +1003,14 @@ void Frame::UpdateTaskBar()
   {
     m_TaskBarIcon->SetIcon(
       wxICON(ready), 
-      wxString::Format(_("server listening at %d"), 
+      wxString::Format(_("server listening at %ld"), 
         wxConfigBase::Get()->ReadLong(_("Port"), 3000)));
   }
   else
   {
     const wxString text =
       wxString::Format(
-        _("%s %d clients connected at %d\nreceived: %ld bytes sent: %ld bytes"),
+        _("%s %ld clients connected at %d\nreceived: %ld bytes sent: %ld bytes"),
           wxTheApp->GetAppName().c_str(),
           m_Clients.size(),
           wxConfigBase::Get()->ReadLong(_("Port"), 3000),
