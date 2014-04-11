@@ -609,7 +609,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
     info.SetDescription(description);
     info.SetCopyright(wxExGetVersionInfo().GetCopyright());
-    info.SetWebSite("http://antonvw.github.io/syncped/index.htm");
+    info.SetWebSite("http://sourceforge.net/projects/syncped/");
       
     wxAboutBox(info);
     }
