@@ -23,12 +23,14 @@ copy ..\extension\data\*.txt syncped
 copy ..\extension\data\*.xml syncped
 
 rem Copy locale files.
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" c:\wxWidgets-3.0.1\locale\nl.po -o syncped\nl_NL\nl.mo
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" c:\wxWidgets-3.0.1\locale\fr.po -o syncped\fr_FR\fr.mo
+"C:\Program Files (x86)\GnuWin32\bin\msgfmt.exe" c:\wxWidgets-3.0.1\locale\nl.po -o syncped\nl_NL\nl.mo
+"C:\Program Files (x86)\GnuWin32\bin\msgfmt.exe" c:\wxWidgets-3.0.1\locale\fr.po -o syncped\fr_FR\fr.mo
 
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\wxextension-nl.po -o syncped\nl_NL\wxextension-nl.mo
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\wxextension-fr.po -o syncped\fr_FR\wxextension-fr.mo
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\syncped-nl.po -o syncped\nl_NL\syncped-nl.mo
-"C:\Program Files (x86)\Poedit\bin\msgfmt.exe" ..\locale\syncped-fr.po -o syncped\fr_FR\syncped-fr.mo
+"C:\Program Files (x86)\GnuWin32\bin\msgfmt.exe" ..\locale\wxextension-nl.po -o syncped\nl_NL\wxextension-nl.mo
+"C:\Program Files (x86)\GnuWin32\bin\msgfmt.exe" ..\locale\wxextension-fr.po -o syncped\fr_FR\wxextension-fr.mo
+"C:\Program Files (x86)\GnuWin32\bin\msgfmt.exe" ..\locale\syncped-nl.po -o syncped\nl_NL\syncped-nl.mo
+"C:\Program Files (x86)\GnuWin32\bin\msgfmt.exe" ..\locale\syncped-fr.po -o syncped\fr_FR\syncped-fr.mo
   
 7z a syncped.zip syncped\
+
+rmdir /S /Q syncped
