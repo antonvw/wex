@@ -2390,6 +2390,9 @@ Copyright: (c) 2014, Anton van Wezenbeek
   <lexer name="specman"/>
   <lexer name="spice"/>
   <lexer name="sql" extensions="*.sql">
+    <properties>
+      <property name="fold.comment"> 1 </property>
+    </properties>
     <keywords>    
     <!-- First line added manually -->
     <!-- Copied from scite, v1.68. -->
