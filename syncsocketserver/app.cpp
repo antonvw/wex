@@ -265,7 +265,7 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, int mode)
     case DATA_WRITE: prefix = "w: "; break;
   }
 
-  if (mode !=  DATA_MESSAGE_RAW)
+  if (mode != DATA_MESSAGE_RAW)
   {
     stc->AppendText(wxDateTime::Now().Format() + " " + prefix);
   }
@@ -278,8 +278,11 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, int mode)
   {
     stc->AppendTextHexMode(text.c_str());
   }
-  
-  stc->AppendText(stc->GetEOL());
+
+  if (!text.EndsWith("\n"))
+  {
+    stc->AppendText(stc->GetEOL());
+  }
 
   stc->EmptyUndoBuffer();
   stc->SetSavePoint();
@@ -553,6 +556,7 @@ void Frame::OnCommandConfigDialog(
     {
       m_DataWindow->ConfigGet();
       m_LogWindow->ConfigGet();
+      m_Shell->ConfigGet();
     }
   }
   else
@@ -1010,12 +1014,12 @@ void Frame::UpdateTaskBar()
   {
     const wxString text =
       wxString::Format(
-        _("%s %ld clients connected at %d\nreceived: %ld bytes sent: %ld bytes"),
-          wxTheApp->GetAppName().c_str(),
-          m_Clients.size(),
-          wxConfigBase::Get()->ReadLong(_("Port"), 3000),
-          m_Statistics.Get(_("Bytes Received")),
-          m_Statistics.Get(_("Bytes Sent")));
+        _("%s %ld clients connected at %ld\nreceived: %d bytes sent: %d bytes"),
+        wxTheApp->GetAppName().c_str(),
+        m_Clients.size(),
+        wxConfigBase::Get()->ReadLong(_("Port"), 3000),
+        m_Statistics.Get(_("Bytes Received")),
+        m_Statistics.Get(_("Bytes Sent")));
 
     m_TaskBarIcon->SetIcon(wxICON(connect), text);
   }
