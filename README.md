@@ -13,7 +13,8 @@ one of these applications, being a full featured source code text editor.
     `yum install cppunit-devel`  
     
 - [OTL database 4.0.214](http://otl.sourceforge.net/) is used by syncodbcquery  
-
+    `yum install unixODBC`  
+    `yum install unixODBC-devel`  
 
 # Build process
 
