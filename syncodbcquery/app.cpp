@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncodbcquery
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -372,7 +372,7 @@ bool Frame::OpenFile(
   int col_number,
   long flags)
 {
-  if (m_Query->Open(filename, line_number, match, ,col_number, flags))
+  if (m_Query->Open(filename, line_number, match, col_number, flags))
   {
     GetManager().GetPane("QUERY").Show(true);
     GetManager().Update();
