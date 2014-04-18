@@ -262,12 +262,17 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
       try
       {
-        const wxString query = event.GetString().substr(
-          0,
-          event.GetString().length() - 1);
+        const wxString input(event.GetString());
+        
+        if (!input.empty())
+        {
+          const wxString query = input.substr(
+            0,
+            input.length() - 1);
 
-        m_Stopped = false;
-        RunQuery(query, true);
+          m_Stopped = false;
+          RunQuery(query, true);
+        }
       }
       catch (otl_exception& p)
       {
@@ -484,7 +489,7 @@ void Frame::RunQueries(const wxString& text)
 
 void Frame::UpdateStatistics(long time, long rpc)
 {
-  m_Shell->AppendText(wxString::Format(_("\n%d rows processed (%.3f seconds)"),
+  m_Shell->AppendText(wxString::Format(_("\n%ld rows processed (%.3f seconds)"),
     rpc,
     (float)time / (float)1000));
 
