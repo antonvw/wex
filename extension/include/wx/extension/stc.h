@@ -251,7 +251,8 @@ public:
   /// Processes specified char.
   /// Default does nothing, but is invoked during ControlCharDialog,
   /// allowing you to add your own processing.
-  virtual void ProcessChar(int c) {;};
+  /// Return true if char was processed.
+  virtual bool ProcessChar(int c) {;};
   
   /// Shows properties on the statusbar.
   /// Flags used are from wxExStatusFlags.

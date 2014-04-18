@@ -265,7 +265,10 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
   {
     case WXK_RETURN:
     case WXK_TAB:
-      ProcessChar(key);
+      {
+      const bool processed = ProcessChar(key);
+      if (m_Echo && processed) event.Skip();
+      }
       break;
     
     // Up or down key pressed, and at the end of document (and autocomplete active)
@@ -354,8 +357,8 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
       }
       // If we enter regular text and not already building a command, first goto end.
       else if (event.GetModifiers() == wxMOD_NONE &&
-          key < WXK_START &&
-          GetCurrentPos() < m_CommandStartPosition)
+        key < WXK_START &&
+        GetCurrentPos() < m_CommandStartPosition)
       {
         DocumentEnd();
       }
@@ -434,8 +437,10 @@ void wxExSTCShell::Paste()
 #endif
 }
 
-void wxExSTCShell::ProcessChar(int key)
+bool wxExSTCShell::ProcessChar(int key)
 {
+  bool processed = false;
+  
   // No need to check m_Enabled, already done by calling this method.
   switch (key)
   {
@@ -516,6 +521,11 @@ void wxExSTCShell::ProcessChar(int key)
 
         m_Command.clear();
       }
+      else
+      {
+        ProcessCharDefault(key);
+        processed = true;
+      }
 
       m_CommandsIterator = m_Commands.end();
       break;
@@ -539,28 +549,34 @@ void wxExSTCShell::ProcessChar(int key)
       break;
       
     default:
-    {
-      // Insert the key at current position.
-      const int index = GetCurrentPos() - m_CommandStartPosition;
-      
-      if (
-        GetCurrentPos() < GetLength() && 
-        index >= 0 && index < m_Command.size())
-      {
-        m_Command.insert(index, wxChar(key));
-      }
-      else
-      {
-        m_Command += wxChar(key);
-      }
-    }
+      ProcessCharDefault(key);
+      processed = true;
   }
   
 #ifdef DEBUG
   wxLogMessage("ProcessChar::" + GetText() + "(" + m_Command + ")::");
 #endif
+
+  return processed;
 }
 
+void wxExSTCShell::ProcessCharDefault(int key)
+{
+  // Insert the key at current position.
+  const int index = GetCurrentPos() - m_CommandStartPosition;
+  
+  if (
+    GetCurrentPos() < GetLength() && 
+    index >= 0 && index < m_Command.size())
+  {
+    m_Command.insert(index, wxChar(key));
+  }
+  else
+  {
+    m_Command += wxChar(key);
+  }
+}
+  
 bool wxExSTCShell::Prompt(const wxString& text, bool add_eol)
 {
   if (!m_Enabled)
