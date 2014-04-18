@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wxExSTCShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTCSHELL_H
@@ -86,7 +86,8 @@ public:
   void Paste();
   
   /// Processes specified char.
-  virtual void ProcessChar(int c);
+  /// Returns true if char was processed.
+  virtual bool ProcessChar(int c);
   
   /// Puts the text (if not empty) and a prompt at the end, goes to the end,
   /// and empties the undo buffer. 
@@ -114,6 +115,7 @@ protected:
 private:
   void Expand();
   void KeepCommand();
+  void ProcessCharDefault(int key);
   /// Set command for command specified as number or as start of command,
   /// Returns true if found and m_Command was set.
   bool SetCommandFromHistory(const wxString& short_command);
