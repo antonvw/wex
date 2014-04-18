@@ -51,6 +51,10 @@ BEGIN_EVENT_TABLE(Frame, wxExFrameWithHistory)
   EVT_MENU(wxID_ABOUT, Frame::OnCommand)
   EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
   EVT_MENU(wxID_EXIT, Frame::OnCommand)
+  EVT_MENU(wxID_NEW, Frame::OnCommand)
+  EVT_MENU(wxID_OPEN, Frame::OnCommand)
+  EVT_MENU(wxID_SAVE, Frame::OnCommand)
+  EVT_MENU(wxID_SAVEAS, Frame::OnCommand)
   EVT_MENU(wxID_STOP, Frame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND, Frame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND_STOP, Frame::OnCommand)
@@ -214,7 +218,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     wxExOpenFilesDialog(
       this, 
       wxFD_OPEN | wxFD_CHANGE_DIR, 
-      "sql files (*.sql) | *.sql", 
+      "sql files (*.sql)|*.sql", 
       true);
     break;
 
