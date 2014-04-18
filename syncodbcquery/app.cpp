@@ -313,6 +313,7 @@ void Frame::OnCommandConfigDialog(
   if (dialogid == wxID_PREFERENCES)
   {
     m_Query->ConfigGet();
+    m_Shell->ConfigGet();
   }
   else
   {
