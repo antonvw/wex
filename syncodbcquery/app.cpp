@@ -141,6 +141,13 @@ Frame::Frame()
   SetupStatusBar(panes);
 #endif
 
+  GetToolBar()->AddTool(wxID_EXECUTE, 
+    wxEmptyString,
+    wxArtProvider::GetBitmap(
+      wxART_GO_FORWARD, wxART_TOOLBAR, GetToolBar()->GetToolBitmapSize()),
+    wxGetStockLabel(wxID_EXECUTE, wxSTOCK_NOFLAGS));
+  GetToolBar()->Realize();
+
   GetManager().AddPane(m_Shell,
     wxAuiPaneInfo().
       Name("CONSOLE").
@@ -398,6 +405,7 @@ bool Frame::OpenFile(
     GetManager().Update();
 
     SetRecentFile(filename.GetFullPath());
+    return true;
   }
   else
   {
