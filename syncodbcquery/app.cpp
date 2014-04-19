@@ -16,6 +16,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/grid.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
@@ -76,6 +77,9 @@ Frame::Frame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
   , m_Running(false)
   , m_Stopped(false)
+  , m_Query( new wxExSTCWithFrame(this, this))
+  , m_Shell( new wxExSTCShell(this, ">", ";", true, 50))
+  , m_Results( new wxExGrid(this))
 {
   SetIcon(wxICON(app));
 
@@ -119,14 +123,15 @@ Frame::Frame()
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   SetMenuBar(menubar);
 
-  m_Query = new wxExSTCWithFrame(this, this);
-  m_Query->SetLexer("sql");
-
-  m_Results = new wxExGrid(this);
   m_Results->CreateGrid(0, 0);
   m_Results->EnableEditing(false); // this is a read-only grid
 
-  m_Shell = new wxExSTCShell(this, ">", ";", true, 50);
+  if (wxExLexers::Get()->GetCount() > 0)
+  {
+    m_Query->SetLexer("sql");
+    m_Shell->SetLexer("sql");
+  }
+
   m_Shell->SetFocus();
 
 #if wxUSE_STATUSBAR
@@ -208,7 +213,12 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   case wxID_NEW:
     m_Query->GetFile().FileNew(wxExFileName());
-    m_Query->SetLexer("sql");
+    
+    if (wxExLexers::Get()->GetCount() > 0)
+    {
+      m_Query->SetLexer("sql");
+    }
+    
     m_Query->SetFocus();
     GetManager().GetPane("QUERY").Show();
     GetManager().Update();
