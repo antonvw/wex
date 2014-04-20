@@ -2,7 +2,7 @@
 // Name:      otl.cpp
 // Purpose:   Implementation of wxExOTL class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -284,7 +284,7 @@ const wxVersionInfo wxExOTL::VersionInfo()
   return wxVersionInfo(
     "OTL", 
      version >> 16,
-    (version >> 8) & 0xff,
-    (version & 0xff));
+     0,
+    (version & 0xffff));
 }
 #endif // wxExUSE_OTL
