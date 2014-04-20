@@ -195,7 +195,14 @@ bool wxExAddressRange::Filter(const wxString& command) const
   }
 
   char buffer[255];
+  
+  // using tmpnam gives warning on gcc 4.8.2, but tmpnam is not known
+  // on windows
+#ifdef __WXMSW__  
+  tmpnam(buffer);
+#else
   mkstemp(buffer);
+#endif  
   
   wxTextFile file(buffer);
   
