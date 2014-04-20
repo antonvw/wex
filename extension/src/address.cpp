@@ -195,7 +195,7 @@ bool wxExAddressRange::Filter(const wxString& command) const
   }
 
   char buffer[255];
-  tmpnam(buffer);
+  mkstemp(buffer);
   
   wxTextFile file(buffer);
   
