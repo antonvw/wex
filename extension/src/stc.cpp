@@ -346,6 +346,11 @@ bool wxExSTC::CanPaste() const
 
 void wxExSTC::CheckAutoComp(const wxUniChar& c)
 {
+  if (!m_UseAutoComplete)
+  {
+    return;
+  }
+  
   if (wxExIsCodewordSeparator(GetCharAt(GetCurrentPos() - 1)))
   {
     m_AutoComplete = c;
@@ -1307,6 +1312,7 @@ void wxExSTC::Initialize(bool file_exists)
 
   m_AddingChars = false;
   m_AllowChangeIndicator = !(m_Flags & STC_WIN_NO_INDICATOR);
+  m_UseAutoComplete = true;
   
   m_HexBuffer.clear(); // always, not only in hex mode
 
@@ -2469,6 +2475,11 @@ void wxExSTC::Sync(bool start)
     Bind(wxEVT_IDLE, &wxExSTC::OnIdle, this, wxID_ANY);
   else
     Unbind(wxEVT_IDLE, &wxExSTC::OnIdle, this, wxID_ANY);
+}
+
+void wxExSTC::UseAutoComplete(bool use)
+{
+  m_UseAutoComplete = use;
 }
 
 void wxExSTC::UseModificationMarkers(bool use)
