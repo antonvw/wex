@@ -66,6 +66,7 @@ wxExSTCShell::wxExSTCShell(
   SetEdgeMode(wxSTC_EDGE_NONE);
   ResetMargins(false); // do not reset divider margin
   SetName("SHELL");
+  UseAutoComplete(false); // we have our own autocomplete
 
   // Start with a prompt.
   Prompt();
@@ -447,7 +448,14 @@ bool wxExSTCShell::ProcessChar(int key)
     case WXK_RETURN:
       if (AutoCompActive())
       {
-        Expand();
+        if (!m_AutoCompleteList.empty())
+        {
+          Expand();
+        }
+        else
+        {
+          processed = true;
+        }
       }
       else if (m_Command.empty())
       {

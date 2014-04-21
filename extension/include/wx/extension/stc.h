@@ -252,7 +252,7 @@ public:
   /// Default does nothing, but is invoked during ControlCharDialog,
   /// allowing you to add your own processing.
   /// Return true if char was processed.
-  virtual bool ProcessChar(int c) {;};
+  virtual bool ProcessChar(int c) {return false;};
   
   /// Shows properties on the statusbar.
   /// Flags used are from wxExStatusFlags.
@@ -333,6 +333,10 @@ public:
   /// Starts or stops syncing.
   /// Default syncing is started during construction.
   void Sync(bool start = true);
+  
+  /// Use autocomplete lists.
+  /// Default on.
+  void UseAutoComplete(bool use);
 
   /// Use and show modification markers in the margin.
   /// If you open a file, the modification markers are used.
@@ -405,6 +409,7 @@ private:
   bool m_AddingChars;
   bool m_AllowChangeIndicator;
   bool m_HexMode;
+  bool m_UseAutoComplete;
 
   // We use a separate lexer here as well
   // (though wxExSTCFile offers one), as you can manually override
