@@ -235,6 +235,12 @@ const wxString wxExSTCShell::GetHistory() const
 
 void wxExSTCShell::KeepCommand()
 {
+  // Prevent large commands, in case command end is not eol.
+  if (m_CommandEnd != GetEOL())
+  {
+    m_Command = wxExSkipWhiteSpace(m_Command);
+  }
+  
   m_Commands.remove(m_Command);
   m_Commands.push_back(m_Command);
 }
