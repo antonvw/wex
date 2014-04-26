@@ -194,19 +194,11 @@ bool wxExAddressRange::Filter(const wxString& command) const
     return false;
   }
 
-  char buffer[255];
+  const wxString filename("__TMPFILE__" + wxDateTime::Now().FormatTime());
   
-  // using tmpnam gives warning on gcc 4.8.2, but tmpnam is not known
-  // on windows
-#ifdef __WXMSW__  
-  tmpnam(buffer);
-#else
-  mkstemp(buffer);
-#endif  
+  wxTextFile file(filename);
   
-  wxTextFile file(buffer);
-  
-  if (!file.Create())
+  if (file.Exists() || !file.Create())
   {
     return false;
   }
@@ -223,9 +215,9 @@ bool wxExAddressRange::Filter(const wxString& command) const
     
   wxExProcess process;
   
-  const bool ok = process.Execute(command + " " + buffer, wxEXEC_SYNC);
+  const bool ok = process.Execute(command + " " + filename, wxEXEC_SYNC);
   
-  remove(buffer);
+  remove(filename);
   
   if (ok)
   {

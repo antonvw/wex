@@ -374,7 +374,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":'<,'>m1"));
   stc->GotoLine(2);
   stc->LineDownExtend();
-  CPPUNIT_ASSERT( ex->Command(":'<,'>wtext-ex.txt"));
+  CPPUNIT_ASSERT( ex->Command(":'<,'>wtest-ex.txt"));
   CPPUNIT_ASSERT( ex->Command(":'<,'><"));
   CPPUNIT_ASSERT( ex->Command(":'<,'>>"));
   CPPUNIT_ASSERT( ex->Command(":'<,'>!sort"));
@@ -1821,9 +1821,9 @@ void wxExGuiTestFixture::testUtil()
   // wxExAutoCompleteFileName
   std::vector<wxString> v;
   CPPUNIT_ASSERT( wxExAutoCompleteFileName("te", v));
-  CPPUNIT_ASSERT( v[0] == "st-");
+  CPPUNIT_ASSERT( v[0] == "st");
   CPPUNIT_ASSERT(!wxExAutoCompleteFileName("XX", v));
-  CPPUNIT_ASSERT( v[0] == "st-");
+  CPPUNIT_ASSERT( v[0] == "st");
   
   // wxExCalculator
   wxExEx* ex = new wxExEx(stc);
