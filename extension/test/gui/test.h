@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXGUITESTUNIT_H
@@ -69,7 +69,7 @@ public:
   virtual void setUp();
 
   /// Clean up after the test run.
-  virtual void tearDown() {wxExTestFixture::tearDown();};
+  virtual void tearDown();
 
   void testAddress();
   void testAddressRange();
