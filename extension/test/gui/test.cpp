@@ -28,6 +28,15 @@ void wxExGuiTestFixture::setUp()
   wxConfigBase::Get()->Write(_("vi mode"), true);
 }
 
+void wxExGuiTestFixture::tearDown() 
+{
+  wxExTestFixture::tearDown();
+  
+  // Remove files.
+  remove("test-ex.txt");
+  remove("test.hex");
+}
+
 void wxExGuiTestFixture::testAddress()
 {
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello0\nhello1\nhello2\nhello3\nhello4\nhello5");

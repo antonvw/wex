@@ -101,6 +101,8 @@ void wxExGuiReportTestFixture::testListViewFile()
   CPPUNIT_ASSERT(listView->FileSave(wxExFileName("test-rep.prj.bck")));
 
   CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
+  
+  remove("test-rep.prj.bck");
 }
 
 void wxExGuiReportTestFixture::testListViewWithFrame()
