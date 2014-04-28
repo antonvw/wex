@@ -225,9 +225,11 @@ bool wxExAddressRange::Filter(const wxString& command) const
     {      
       m_STC->BeginUndoAction();
 
-      Delete(false);
-      m_STC->AddText(process.GetOutput());
-      m_STC->AddText(m_STC->GetEOL());
+      if (Delete(false))
+      {
+        m_STC->AddText(process.GetOutput());
+        m_STC->AddText(m_STC->GetEOL());
+      }
       
       m_STC->EndUndoAction();
       
