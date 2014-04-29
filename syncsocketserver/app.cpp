@@ -798,9 +798,8 @@ bool Frame::OpenFile(
     GetManager().GetPane("DATA").Show();
     GetManager().Update();
 
-    SetRecentFile(filename.GetFullPath());
-    
-    return true;
+    return wxExFrameWithHistory::OpenFile(filename,
+      line_number, match, col_number, flags);
   }
   else
   {

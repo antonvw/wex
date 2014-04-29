@@ -1272,12 +1272,6 @@ bool Frame::OpenFile(
   int col_number,
   long flags)
 {
-  if (!filename.GetStat().IsOk())
-  {
-    wxLogError(_("Cannot open file") + ": " + filename.GetFullPath());
-    return false;
-  }
-  
   if ((flags & WIN_IS_PROJECT) && m_Projects == NULL)
   {
     AddPaneProjects();
