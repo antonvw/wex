@@ -140,7 +140,10 @@ bool wxExProcess::Command(int id, const wxString& command)
     m_Timer->Stop();
     m_Dialog->GetSTCShell()->LineEnd();
     
-    if (m_Command != "cmd")
+    if (
+      m_Command != "cmd" && 
+      m_Command != "cmd.exe" &&
+      m_Command != "powershell")
     {
       m_Dialog->GetSTCShell()->AppendText(m_Dialog->GetSTCShell()->GetEOL());
     }
