@@ -404,8 +404,8 @@ bool Frame::OpenFile(
     GetManager().GetPane("QUERY").Show(true);
     GetManager().Update();
 
-    SetRecentFile(filename.GetFullPath());
-    return true;
+    return wxExFrameWithHistory::OpenFile(filename,
+      line_number, match, col_number, flags);
   }
   else
   {
