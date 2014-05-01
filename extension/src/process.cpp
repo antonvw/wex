@@ -322,10 +322,20 @@ bool wxExProcess::Execute(
         m_Command == "sh")
     {
       m_Dialog->GetSTCShell()->SetPrompt(">", false);
+      m_Dialog->SetLexer(m_Command);
     }
     else
     {
       m_Dialog->GetSTCShell()->SetPrompt("");
+      
+      if (m_Command == "cmd")
+      {
+        m_Dialog->SetLexer("batch");
+      }
+      else if (m_Command == "powershell")
+      {
+        m_Dialog->SetLexer("powershell");
+      }
     }
 
     // For asynchronous execution the return value is the process id and zero 

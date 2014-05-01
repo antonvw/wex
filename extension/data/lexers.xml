@@ -1821,7 +1821,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
         <def style ="styledefault"> default-font,back:white,fore:black </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:dark slate blue </def>
-        <def style ="variable"> fore:violet </def>
+        <def style ="variable"> fore:medium blue </def>
         <def style ="word"> fore:dark turquoise </def>
         
         <colour name="caretforeground"> black </colour>
@@ -1850,7 +1850,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
         <def style ="styledefault"> default-font,back:black,fore:#BBBBBB </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:cadet blue </def>
-        <def style ="variable"> fore:violet </def>
+        <def style ="variable"> fore:medium blue </def>
         <def style ="word"> fore:yellow </def>
         
         <colour name="caretforeground"> white </colour>
@@ -2061,7 +2061,19 @@ Copyright: (c) 2014, Anton van Wezenbeek
     </properties>
     <comments begin1="#" />
   </lexer>
-  <lexer name="batch" extensions="*.bat"/>
+  <lexer name="batch" extensions="*.bat">
+    <keywords>
+      assoc attrib bcdedit break break cacls call cd chcp chdir chkdsk chkntfs 
+      choice cls cmd color com comp compact con convert copy country ctty date 
+      defined del dir diskcomp diskcopy diskpart do doskey driverquery echo else 
+      endlocal erase errorlevel exist exit fc find findstr for format fsutil ftype goto 
+      gpresult graftabl help icacls if in label loadfix loadhigh lpt md mkdir 
+      mklink mode more move not nul openfiles path pause popd print prompt pushd 
+      rd recover rem ren rename replace rmdir robocopy sc schtasks set setlocal shift 
+      shutdown sort start subst systeminfo taskkill tasklist time title tree type 
+      ver verify vol wmic xcopy 
+    </keywords>
+  </lexer>
   <lexer name="blitzbasic" macro="vb"/>
   <lexer name="bullant"/>
   <lexer name="caml"/>
@@ -2334,7 +2346,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
   <lexer name="pov"/>
   <lexer name="powerbasic" macro="vb"/>
   <lexer name="powerpro"/>
-  <lexer name="powershell"/>
+  <lexer name="powershell" extensions="*.ps1"/>
   <lexer name="progress"/>
   <lexer name="props" extensions="*.ini;*.conf">
     <styles>
