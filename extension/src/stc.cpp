@@ -2295,8 +2295,8 @@ void wxExSTC::SetLexerCommon(bool fold)
     Fold();
   }
   
-  if (HexMode() &&
-      m_Lexer.GetScintillaLexer() == "po")
+  if (!HexMode() &&
+       m_Lexer.GetScintillaLexer() == "po")
   {
     m_Link.AddBasePath();
   }
