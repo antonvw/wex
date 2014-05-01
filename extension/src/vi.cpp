@@ -971,14 +971,34 @@ bool wxExVi::CommandChar(int c, int repeat)
 
     case WXK_CONTROL_B:
     case WXK_PAGEUP:
-      for (int i = 0; i < repeat; i++) GetSTC()->PageUp(); 
+      for (int i = 0; i < repeat; i++) 
+      {
+        switch (m_Mode)
+        {
+          case MODE_NORMAL: GetSTC()->PageUp(); break;
+          case MODE_VISUAL: 
+          case MODE_VISUAL_LINE: 
+            GetSTC()->PageUpExtend(); 
+            break;
+        }
+      }
       break;
     case WXK_CONTROL_E: 
       for (int i = 0; i < repeat; i++) ChangeNumber(true); 
       break;
     case WXK_CONTROL_F:
     case WXK_PAGEDOWN:
-      for (int i = 0; i < repeat; i++) GetSTC()->PageDown(); 
+      for (int i = 0; i < repeat; i++) 
+      {
+        switch (m_Mode)
+        {
+          case MODE_NORMAL: GetSTC()->PageDown(); break;
+          case MODE_VISUAL: 
+          case MODE_VISUAL_LINE: 
+            GetSTC()->PageDownExtend(); 
+            break;
+        }
+      }
       break;
     case WXK_CONTROL_G:
       GetFrame()->ShowExMessage(wxString::Format("%s line %d of %d --%d%%--", 
@@ -1356,13 +1376,13 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
      event.GetKeyCode() == WXK_ESCAPE ||
      event.GetKeyCode() == WXK_RETURN ||
      event.GetKeyCode() == WXK_TAB ||
-     (m_Mode == MODE_NORMAL &&
-      (event.GetKeyCode() == WXK_LEFT ||
-       event.GetKeyCode() == WXK_DOWN ||
-       event.GetKeyCode() == WXK_UP ||
-       event.GetKeyCode() == WXK_RIGHT ||
-       event.GetKeyCode() == WXK_PAGEUP ||
-       event.GetKeyCode() == WXK_PAGEDOWN))))
+     (m_Mode != MODE_INSERT &&
+       (event.GetKeyCode() == WXK_LEFT ||
+        event.GetKeyCode() == WXK_DOWN ||
+        event.GetKeyCode() == WXK_UP ||
+        event.GetKeyCode() == WXK_RIGHT ||
+        event.GetKeyCode() == WXK_PAGEUP ||
+        event.GetKeyCode() == WXK_PAGEDOWN))))
   {
     if (m_Command.StartsWith("@"))
     {
