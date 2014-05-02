@@ -70,8 +70,6 @@ private:
     const wxString& command,
     int repeat = 1);
   bool ToggleCase(); 
-  void VisualExtendLeftLine();
-  void VisualExtendRightLine();
   bool YankedLines();   
 
   static wxExSTCEntryDialog* m_Dialog;
