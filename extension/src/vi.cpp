@@ -28,7 +28,7 @@
 
 #define CHR_TO_NUM(c1,c2) ((c1 << 8) + c2)
 
-#define NAVIGATE(REPEAT, SCOPE, DIRECTION, COND)                         \
+#define NAVIGATE(REPEAT, SCOPE, DIRECTION, COND1, COND2)                 \
 {                                                                        \
   if (m_Mode == MODE_VISUAL_LINE && GetSTC()->GetSelectedText().empty()) \
   {                                                                      \
@@ -45,7 +45,7 @@
   }                                                                      \
   for (int i = 0; i < REPEAT; i++)                                       \
   {                                                                      \
-    if (COND)                                                            \
+    if (COND1)                                                           \
     {                                                                    \
       switch (m_Mode)                                                    \
       {                                                                  \
@@ -60,22 +60,27 @@
       }                                                                  \
     }                                                                    \
   }                                                                      \
+  if ((#SCOPE) == "Line")                                                \
+  {                                                                      \
+    switch (m_Mode)                                                      \
+    {                                                                    \
+      case MODE_NORMAL:                                                  \
+        if ((COND2) &&                                                   \
+          GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) !=              \
+          GetSTC()->GetLineIndentation(GetSTC()->GetCurrentLine()))      \
+          GetSTC()->VCHome(); break;                                     \
+      case MODE_VISUAL:                                                  \
+        if (COND2) GetSTC()->VCHomeExtend(); break;                      \
+      case MODE_VISUAL_LINE:                                             \
+        if ((#DIRECTION) == "Up")                                        \
+          GetSTC()->HomeExtend();                                        \
+        else                                                             \
+          GetSTC()->LineEndExtend();                                     \
+        break;                                                           \
+    }                                                                    \
+  }                                                                      \
 };                                                                       \
 
-void Home(wxExVi* vi)
-{      
-  if (vi->GetSTC()->GetColumn(vi->GetSTC()->GetCurrentPos()) != 
-      vi->GetSTC()->GetLineIndentation(vi->GetSTC()->GetCurrentLine()))
-  {
-    switch (vi->GetMode())
-    {
-      case wxExVi::MODE_NORMAL: vi->GetSTC()->VCHome(); break;
-      case wxExVi::MODE_VISUAL:  vi->GetSTC()->VCHomeExtend(); break;
-      case wxExVi::MODE_VISUAL_LINE:  vi->GetSTC()->HomeExtend(); break;
-    }
-  }
-}    
-    
 // Returns true if after text only one letter is followed.
 bool OneLetterAfter(const wxString text, const wxString& letter)
 {
@@ -682,59 +687,42 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
 
     // Navigate commands (B, W, E, treated as b, w, e and (,) as {,} for the moment).
-    case 'B':
-    case 'b': NAVIGATE(repeat, Word, Left, true); break;
-    case 'W':
-    case 'w': NAVIGATE(repeat, Word, Right, true); break;
-    case 'E':
-    case 'e': NAVIGATE(repeat, Word, RightEnd, true); break;
-    case '(':
-    case '{': NAVIGATE(repeat, Para, Up, true); break;
-    case ')':
-    case '}': NAVIGATE(repeat, Para, Down, true); break;
-    case WXK_CONTROL_B:
-    case WXK_PAGEUP:
-              NAVIGATE(repeat, Page, Up, true); break;
-    case WXK_CONTROL_F:
-    case WXK_PAGEDOWN:
-              NAVIGATE(repeat, Page, Down, true); break;
-    
     case 'h': 
     case WXK_LEFT:
-      NAVIGATE(repeat, Char, Left, GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0);
-      break;
-        
-    case 'j': 
-    case WXK_DOWN:
-      NAVIGATE(repeat, Line, Down, GetSTC()->GetCurrentLine() < GetSTC()->GetNumberOfLines());
-      if (m_Mode == MODE_VISUAL_LINE)
-        GetSTC()->LineEndExtend(); 
-      break;
-        
-    case 'k': 
-    case WXK_UP:
-      NAVIGATE(repeat, Line, Up, GetSTC()->GetCurrentLine() > 0);
-      if (m_Mode == MODE_VISUAL_LINE)
-        GetSTC()->HomeExtend(); 
-      break;
-        
+              NAVIGATE(repeat, Char, Left,     GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0, false); break;
     case 'l': 
     case ' ': 
     case WXK_RIGHT:
-      NAVIGATE(repeat, Char, Right, GetSTC()->GetCurrentPos() < GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()));
+              NAVIGATE(repeat, Char, Right,    GetSTC()->GetCurrentPos() < GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()), false); break;
+    case 'j': 
+    case WXK_DOWN:
+              NAVIGATE(repeat, Line, Down,     GetSTC()->GetCurrentLine() < GetSTC()->GetNumberOfLines(), false); break;
+    case 'k': 
+    case WXK_UP:
+              NAVIGATE(repeat, Line, Up,       GetSTC()->GetCurrentLine() > 0, false); break;
       break;
-        
     // does not include wrapped lines
     case '+': 
     case WXK_RETURN:
-      NAVIGATE(repeat, Line, Down, true);
-      Home(this);
-      break;
-        
+              NAVIGATE(repeat, Line, Down,     true, true); break;
     case '-': 
-      NAVIGATE(repeat, Line, Up, GetSTC()->GetCurrentLine() > 0);
-      Home(this);
-      break;
+              NAVIGATE(repeat, Line, Up,       GetSTC()->GetCurrentLine() > 0, true); break;    
+    case 'B':
+    case 'b': NAVIGATE(repeat, Word, Left,     true, false); break;
+    case 'W':
+    case 'w': NAVIGATE(repeat, Word, Right,    true, false); break;
+    case 'E':
+    case 'e': NAVIGATE(repeat, Word, RightEnd, true, false); break;
+    case '(':
+    case '{': NAVIGATE(repeat, Para, Up,       true, false); break;
+    case ')':
+    case '}': NAVIGATE(repeat, Para, Down,     true, false); break;
+    case WXK_CONTROL_B:
+    case WXK_PAGEUP:
+              NAVIGATE(repeat, Page, Up,       true, false); break;
+    case WXK_CONTROL_F:
+    case WXK_PAGEDOWN:
+              NAVIGATE(repeat, Page, Down,     true, false); break;
         
     // Other commands.
     case 'g': GetSTC()->DocumentStart(); break;
