@@ -2401,7 +2401,9 @@ void wxExGuiTestFixture::testVi()
   commands.push_back("w");
   commands.push_back("x");
 //  commands.push_back("y"); // only true if something selected
+  commands.push_back("B");
   commands.push_back("D");
+  commands.push_back("E");
   commands.push_back("G");
   commands.push_back("H");
   commands.push_back("J");
@@ -2409,12 +2411,15 @@ void wxExGuiTestFixture::testVi()
   commands.push_back("M");
   commands.push_back("N");
   commands.push_back("P");
+  commands.push_back("W");
   commands.push_back("X");
   commands.push_back("^");
   commands.push_back("~");
   commands.push_back("$");
   commands.push_back("{");
   commands.push_back("}");
+  commands.push_back("(");
+  commands.push_back(")");
   commands.push_back("%");
   commands.push_back("*");
   commands.push_back("#");
