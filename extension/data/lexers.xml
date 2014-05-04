@@ -2051,10 +2051,16 @@ Copyright: (c) 2014, Anton van Wezenbeek
   <lexer name="baan"/>
   <lexer name="bash" extensions="*.bash;Doxyfile"> 
     <keywords>    
-      alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
+      alias bg bind break builtin caller case cd command compgen complete
+      cp diff do done echo elif else esac exit fg fi find 
+      compopt continue coproc declare dirs disown echo enable eval exec
+      exit export false fc fg for function getopts hash help logout
       for function
-      help history if in jobs kill logout mount pwd rm select set sleep source 
-      tail test then time ulimit umount umask unalias unset until while
+      help history if in jobs kill mount rm select sleep 
+      mapfile popd printf pushd pwd read readarray readonly return select
+      set shift shopt source suspend test time times trap true type typeset
+      tail then time ulimit umount unalias unset until while
+      ulimit umask unalias unset until
     </keywords>
     <properties>
       <property name="fold.comment"> 1 </property>
