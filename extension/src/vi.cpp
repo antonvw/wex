@@ -54,7 +54,7 @@
         case MODE_VISUAL: GetSTC()->SCOPE##DIRECTION##Extend();          \
           break;                                                         \
         case MODE_VISUAL_LINE:                                           \
-          if ((#SCOPE) != "Char")                                        \
+          if ((#SCOPE) != "Char" && (#SCOPE) != "Word")                  \
             GetSTC()->SCOPE##DIRECTION##Extend();                        \
           break;                                                         \
       }                                                                  \
