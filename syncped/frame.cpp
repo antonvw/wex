@@ -1440,7 +1440,7 @@ void Frame::StatusBarClickedRight(const wxString& pane)
           !stc->GetLexer().GetScintillaLexer().empty() && 
            stc->GetLexer().GetScintillaLexer() == stc->GetLexer().GetDisplayLexer())
         {
-          match = "name=\"" + stc->GetLexer().GetScintillaLexer();
+          match = "lexer name=\"" + stc->GetLexer().GetScintillaLexer();
         }
         else if (!stc->GetLexer().GetDisplayLexer().empty())
         {
