@@ -638,7 +638,7 @@ void wxExSTC::ConfigGet(bool init)
   SetUseHorizontalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
   SetUseVerticalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
   SetPrintColourMode(cfg->ReadLong(_("Print flags"), wxSTC_PRINT_BLACKONWHITE));
-  SetCaretLineVisible(cfg->ReadBool(_("Caret line"), false));
+  SetCaretLineVisible(cfg->ReadBool(_("Caret line"), true));
     
   SetFoldFlags(cfg->ReadLong( _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
