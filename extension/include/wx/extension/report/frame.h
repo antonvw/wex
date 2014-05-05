@@ -9,6 +9,7 @@
 #define _EX_REPORT_FRAME_H
 
 #include <set>
+#include <wx/aui/auibar.h>
 #include <wx/filehistory.h>
 #include <wx/extension/listview.h> // for wxExListViewFileName::wxExListType 
 #include <wx/extension/managedframe.h>
