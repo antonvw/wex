@@ -143,6 +143,7 @@ protected:
   /// you might want prevent closing it.
   wxExListView* GetFileHistoryList() {return m_FileHistoryList;};
   
+  void OnDropDown(wxAuiToolBarEvent& event);
   // Cleans up all as well.
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
@@ -153,7 +154,9 @@ private:
   void DoRecent(wxFileHistory& history, size_t index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);
   const wxString GetFindReplaceInfoText(bool replace = false) const;
-  void HistoryPopupMenu(const wxFileHistory& history, int first_id, int clear_id);
+  void HistoryPopupMenu(
+    const wxFileHistory& history, int first_id, int clear_id,
+    const wxPoint& pos = wxDefaultPosition);
   void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
   wxExConfigDialog* m_FiFDialog;
