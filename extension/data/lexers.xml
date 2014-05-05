@@ -2394,7 +2394,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
   <lexer display="sh" name="bash"> 
     <keywords>    
       <!-- https://github.com/OutOfOrder/mod_highlight/blob/master/colorer/hrc/scripts/sh-keywords.hrc -->
-      case do done elif else esac fi for function if in
+      case do done echo elif else esac export fi for function if in
       select then until while time
     </keywords>
     <comments begin1="#" />
