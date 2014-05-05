@@ -15,6 +15,7 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/listitem.h>
+#include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/defs.h>
@@ -33,6 +34,7 @@ const int ID_CLEAR_FILES = 32;
 const int ID_CLEAR_PROJECTS = 33;
 
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
+  EVT_AUITOOLBAR_TOOL_DROPDOWN(wxID_OPEN, wxExFrameWithHistory::OnDropDown)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
   EVT_MENU(ID_CLEAR_FILES, wxExFrameWithHistory::OnCommand)
@@ -86,6 +88,9 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   m_Info.insert(wxExFindReplaceData::Get()->GetTextMatchWholeWord());
   m_Info.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
   m_Info.insert(wxExFindReplaceData::Get()->GetTextRegEx());
+  
+  GetToolBar()->SetToolDropDown(wxID_OPEN, true);
+  GetToolBar()->Realize();
 }
 
 wxExFrameWithHistory::~wxExFrameWithHistory()
@@ -344,7 +349,7 @@ const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
 }
 
 void wxExFrameWithHistory::HistoryPopupMenu(
-  const wxFileHistory& history, int first_id, int clear_id)
+  const wxFileHistory& history, int first_id, int clear_id, const wxPoint& pos)
 {
   wxMenu* menu = new wxMenu();
 
@@ -371,7 +376,7 @@ void wxExFrameWithHistory::HistoryPopupMenu(
     menu->AppendSeparator();
     menu->Append(clear_id, wxGetStockLabel(wxID_CLEAR));
       
-    PopupMenu(menu);
+    PopupMenu(menu, pos);
   }
     
   delete menu;
@@ -500,6 +505,30 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
       break;
 
     default: wxFAIL;
+  }
+}
+
+void wxExFrameWithHistory::OnDropDown(wxAuiToolBarEvent& event)
+{
+  if (event.IsDropDownClicked())
+  {
+    wxAuiToolBar* tb = static_cast<wxAuiToolBar*>(event.GetEventObject());
+
+    tb->SetToolSticky(event.GetId(), true);
+
+    // create the popup menu
+    // line up our menu with the button
+    wxRect rect = tb->GetToolRect(event.GetId());
+    wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
+    pt = ScreenToClient(pt);
+    HistoryPopupMenu(m_FileHistory, wxID_FILE1, ID_CLEAR_FILES, pt);
+
+    // make sure the button is "un-stuck"
+    tb->SetToolSticky(event.GetId(), false);
+  }
+  else
+  {
+    event.Skip();
   }
 }
 
