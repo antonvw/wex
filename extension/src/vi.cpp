@@ -704,6 +704,7 @@ bool wxExVi::CommandChar(int c, int repeat)
     // does not include wrapped lines
     case '+': 
     case WXK_RETURN:
+    case WXK_NUMPAD_ENTER:
               NAVIGATE(repeat, Line, Down,     true, true); break;
     case '-': 
               NAVIGATE(repeat, Line, Up,       GetSTC()->GetCurrentLine() > 0, true); break;    
@@ -1124,6 +1125,7 @@ bool wxExVi::InsertMode(const wxString& command)
       break;
 
     case WXK_RETURN:
+    case WXK_NUMPAD_ENTER:
       GetSTC()->NewLine();
         
       if (!GetSTC()->AutoCompActive())
@@ -1236,6 +1238,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     (event.GetKeyCode() == WXK_BACK ||
      event.GetKeyCode() == WXK_ESCAPE ||
      event.GetKeyCode() == WXK_RETURN ||
+     event.GetKeyCode() == WXK_NUMPAD_ENTER ||
      event.GetKeyCode() == WXK_TAB ||
      (m_Mode != MODE_INSERT &&
        (event.GetKeyCode() == WXK_LEFT ||
