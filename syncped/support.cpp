@@ -50,7 +50,11 @@ DecoratedFrame::DecoratedFrame()
 #endif
 
     panes.push_back(wxExStatusBarPane("PaneLexer", lexer_size, _("Lexer")));
-    panes.push_back(wxExStatusBarPane("PaneTheme", lexer_size, _("Theme")));
+    
+    if (wxExLexers::Get()->GetThemeMacros().size() > 1)
+    {
+      panes.push_back(wxExStatusBarPane("PaneTheme", lexer_size, _("Theme")));
+    }
   }
 
   if (wxExVCS::GetCount() > 0)
