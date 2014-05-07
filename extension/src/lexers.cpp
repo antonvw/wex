@@ -400,6 +400,22 @@ bool wxExLexers::LoadDocument()
     }
   }
   
+  // Do some theme checking.
+  if (m_ThemeMacros.size() <= 1) // NoTheme is always present
+  {
+    wxLogError("Themes are missing");
+    return false;
+  }
+
+  for (const auto& it : m_ThemeMacros)
+  {
+    if (!it.first.empty() && it.second.empty())
+    {
+      wxLogError("Theme %s is unknown", it.first);
+      return false;
+    }
+  } 
+
   return true;
 }
 
@@ -665,7 +681,7 @@ bool wxExLexers::ShowThemeDialog(
   const wxString& caption,
   bool show_modal)
 {
-  if (m_ThemeMacros.empty())
+  if (m_ThemeMacros.size() <= 1) // NoTheme is always present
   {
     return false;
   }
