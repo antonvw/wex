@@ -73,8 +73,9 @@ bool wxExLexer::AddKeywords(const wxString& value)
 
       const int new_setno = atoi(fields.GetNextToken().c_str());
 
-      if (new_setno >= wxSTC_KEYWORDSET_MAX)
+      if (new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
       {
+        wxLogError("Invalid keyword set: %d", new_setno);
         return false;
       }
 
