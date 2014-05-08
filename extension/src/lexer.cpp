@@ -138,9 +138,7 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
   {
     for (const auto& it : m_KeywordsSet)
     {
-      stc->SetKeyWords(
-        it.first,
-        GetKeywordsString(it.first));
+      stc->SetKeyWords(it.first, GetKeywordsStringSet(it.second));
     }
     
     wxExLexers::Get()->GetDefaultStyle().Apply(stc);
