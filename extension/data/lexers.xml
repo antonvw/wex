@@ -101,7 +101,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="number"/>
       <def no ="string"/>
       <def no ="operator"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="processor"/>
       <def no ="command"/>
       <def no ="slashcommand"/>
@@ -112,7 +112,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     
     <def name = "ada">
       <def no ="default"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="identifier"/>
       <def no ="number"/>
       <def no ="delimiter"/>
@@ -132,7 +132,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="number"/>
       <def no ="string"/>
       <def no ="operator"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="processor"/>
       <def no ="command"/>
       <def no ="slashcommand"/>
@@ -167,7 +167,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="string"/>
       <def no ="oid"/>
       <def no ="scalar"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="attribute"/>
       <def no ="descriptor"/>
       <def no ="type"/>
@@ -179,14 +179,14 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="comment"/>
       <def no ="commentline"/>
       <def no ="number"/>
-      <def no ="word1"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="character"/>
       <def no ="operator"/>
       <def no ="identifier"/>
       <def no ="stringeol"/>
       <def no ="commentlinedoc"/>
-      <def no ="word2"/>
+      <def no ="keyword2"/>
     </def>
     
     <def name = "au3">
@@ -195,7 +195,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentblock"/>
       <def no ="number"/>
       <def no ="function"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="macro"/>
       <def no ="string"/>
       <def no ="operator"/>
@@ -212,18 +212,18 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="default"/>
       <def no ="comment"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="enum"/>
       <def no ="stringeol"/>
       <def no ="identifier"/>
       <def no ="operator"/>
-      <def no ="word1"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
-      <def no ="word4"/>
-      <def no ="word5"/>
-      <def no ="word6"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
+      <def no ="keyword5"/>
+      <def no ="keyword6"/>
+      <def no ="keyword7"/>
     </def>
     
     <def name = "avs">
@@ -236,7 +236,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="identifier"/>
       <def no ="string"/>
       <def no ="triplestring"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="filter"/>
       <def no ="plugin"/>
       <def no ="function"/>
@@ -249,13 +249,13 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="comment"/>
       <def no ="commentdoc"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="preprocessor"/>
       <def no ="operator"/>
       <def no ="identifier"/>
       <def no ="stringeol"/>
-      <def no ="word2"/>
+      <def no ="keyword2"/>
     </def>
     
     <def name = "bash">
@@ -263,7 +263,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="error"/>
       <def no ="commentline"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="character"/>
       <def no ="operator"/>
@@ -278,7 +278,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     <def name = "batch">
       <def no ="default"/>
       <def no ="comment"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="label"/>
       <def no ="hide"/>
       <def no ="command"/>
@@ -290,7 +290,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="default"/>
       <def no ="identifier"/>
       <def no ="tagname"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="keyword2"/>
       <def no ="keyword3"/>
       <def no ="linenum"/>
@@ -313,7 +313,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="integer_constant"/>
       <def no ="real_constant"/>
       <def no ="picture_string"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="compiler_directive"/>
       <def no ="runtime_expressions"/>
       <def no ="builtin_procedures_function"/>
@@ -348,7 +348,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentline"/>
       <def no ="commentdoc"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="character"/>
       <def no ="uuid"/>
@@ -359,7 +359,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="verbatim"/>
       <def no ="regex"/>
       <def no ="commentlinedoc"/>
-      <def no ="word2"/>
+      <def no ="keyword2"/>
       <def no ="commentdockeyword"/>
       <def no ="commentdockeyworderror"/>
       <def no ="globalclass"/>
@@ -390,7 +390,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentline"/>
       <def no ="commentdoc"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="character"/>
       <def no ="uuid"/>
@@ -401,7 +401,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="verbatim"/>
       <def no ="regex"/>
       <def no ="commentlinedoc"/>
-      <def no ="word2"/>
+      <def no ="keyword2"/>
       <def no ="commentdockeyword"/>
       <def no ="commentdockeyworderror"/>
       <def no ="globalclass"/>
@@ -464,9 +464,9 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentdoc"/>
       <def no ="commentnested"/>
       <def no ="number"/>
-      <def no ="word"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
+      <def no ="keyword1"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
       <def no ="typedef"/>
       <def no ="string"/>
       <def no ="stringeol"/>
@@ -495,7 +495,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentline"/>
       <def no ="number"/>
       <def no ="string"/>
-      <def no ="word0"/>
+      <def no ="keyword1"/>
       <def no ="operator"/>
       <def no ="character"/>
       <def no ="uuid"/>
@@ -506,13 +506,13 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="verbatim"/>
       <def no ="regex"/>
       <def no ="commentlinedoc"/>
-      <def no ="word1"/>
+      <def no ="keyword2"/>
       <def no ="commentdockeyword"/>
       <def no ="commentdockeyworderror"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
-      <def no ="word4"/>
-      <def no ="word5"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
+      <def no ="keyword5"/>
+      <def no ="keyword6"/>
       <def no ="commentdoc"/>
       <def no ="added"/>
       <def no ="deleted"/>
@@ -524,7 +524,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="default"/>
       <def no ="commentline"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="character"/>
       <def no ="operator"/>
@@ -537,7 +537,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="comment"/>
       <def no ="variable"/>
       <def no ="number"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="operator"/>
       <def no ="atom"/>
@@ -581,13 +581,13 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentline"/>
       <def no ="commentdoc"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="operator"/>
       <def no ="identifier"/>
       <def no ="brace"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
     </def>
     
     <def name = "flagship">
@@ -599,7 +599,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentlinedoc"/>
       <def no ="commentdockeyword"/>
       <def no ="commentdockeyworderror"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="keyword2"/>
       <def no ="keyword3"/>
       <def no ="keyword4"/>
@@ -632,7 +632,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="comment_ml"/>
       <def no ="identifier"/>
       <def no ="control"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="defword"/>
       <def no ="preword1"/>
       <def no ="preword2"/>
@@ -650,9 +650,9 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="stringeol"/>
       <def no ="operator"/>
       <def no ="identifier"/>
-      <def no ="word"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
+      <def no ="keyword1"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
       <def no ="preprocessor"/>
       <def no ="operator2"/>
       <def no ="label"/>
@@ -662,7 +662,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     <def name = "gap">
       <def no ="default"/>
       <def no ="identifier"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="keyword2"/>
       <def no ="keyword3"/>
       <def no ="keyword4"/>
@@ -690,7 +690,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     <def name = "haskell">
       <def no ="default"/>
       <def no ="identifier"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="number"/>
       <def no ="string"/>
       <def no ="character"/>
@@ -824,7 +824,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     <def name = "inno">
       <def no ="default"/>
       <def no ="comment"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="parameter"/>
       <def no ="section"/>
       <def no ="preproc"/>
@@ -845,7 +845,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="number"/>
       <def no ="var"/>
       <def no ="macro"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="functions"/>
       <def no ="operator"/>
       <def no ="identifier"> 31 </def>
@@ -871,7 +871,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="default"/>
       <def no ="comment"/>
       <def no ="number"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="keyword_kw"/>
       <def no ="symbol"/>
       <def no ="string"/>
@@ -896,10 +896,10 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="default"/>
       <def no ="comment"/>
       <def no ="number"/>
-      <def no ="word"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
-      <def no ="word4"/>
+      <def no ="keyword1"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
       <def no ="string"/>
       <def no ="operator"/>
       <def no ="identifier"/>
@@ -912,7 +912,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentline"/>
       <def no ="commentdoc"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="character"/>
       <def no ="literalstring"/>
@@ -920,13 +920,13 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="operator"/>
       <def no ="identifier"/>
       <def no ="stringeol"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
-      <def no ="word4"/>
-      <def no ="word5"/>
-      <def no ="word6"/>
-      <def no ="word7"/>
-      <def no ="word8"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
+      <def no ="keyword5"/>
+      <def no ="keyword6"/>
+      <def no ="keyword7"/>
+      <def no ="keyword8"/>
       <def no ="label"/>
     </def>
     
@@ -945,7 +945,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="brace_block"/>
       <def no ="sqbracket_block"/>
       <def no ="unknown_keyword"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="pragma"/>
       <def no ="symbol"/>
     </def>
@@ -991,7 +991,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="comment"/>
       <def no ="command"/>
       <def no ="number"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="operator"/>
       <def no ="identifier"/>
@@ -1034,7 +1034,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="comment"/>
       <def no ="doxycomm"/>
       <def no ="doxykey"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="reserved"/>
       <def no ="number"/>
       <def no ="basenum"/>
@@ -1078,10 +1078,10 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="systemvariable"/>
       <def no ="knownsystemvariable"/>
       <def no ="number"/>
-      <def no ="majorkeyword"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
+      <def no ="keyword2"/>
       <def no ="databaseobject"/>
-      <def no ="procedurekeyword"/>
+      <def no ="keyword3"/>
       <def no ="string"/>
       <def no ="sqstring"/>
       <def no ="dqstring"/>
@@ -1100,7 +1100,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="comment"/>
       <def no ="task"/>
       <def no ="section"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="modifier"/>
       <def no ="asterisk"/>
       <def no ="number"/>
@@ -1136,7 +1136,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="comment_block"/>
       <def no ="comment_line"/>
       <def no ="integer"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="sort"/>
       <def no ="string"/>
       <def no ="par"/>
@@ -1156,7 +1156,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="constant"/>
       <def no ="identifier"/>
       <def no ="global"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="operator"/>
       <def no ="label"/>
       <def no ="type"/>
@@ -1176,7 +1176,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="preprocessor2"/>
       <def no ="number"/>
       <def no ="hexnumber"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="stringeol"/>
       <def no ="character"/>
@@ -1190,7 +1190,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentline"/>
       <def no ="pod"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="character"/>
       <def no ="punctuation"/>
@@ -1240,7 +1240,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="identifier"/>
       <def no ="operator"/>
       <def no ="control"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
     </def>
     
     <def name = "po">
@@ -1266,13 +1266,13 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="stringeol"/>
       <def no ="directive"/>
       <def no ="baddirective"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
-      <def no ="word4"/>
-      <def no ="word5"/>
-      <def no ="word6"/>
-      <def no ="word7"/>
-      <def no ="word8"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
+      <def no ="keyword5"/>
+      <def no ="keyword6"/>
+      <def no ="keyword7"/>
+      <def no ="keyword8"/>
     </def>
     
     <def name = "powerpro">
@@ -1280,10 +1280,10 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentblock"/>
       <def no ="commentline"/>
       <def no ="number"/>
-      <def no ="word"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
-      <def no ="word4"/>
+      <def no ="keyword1"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
       <def no ="doublequotedstring"/>
       <def no ="singlequotedstring"/>
       <def no ="linecontinue"/>
@@ -1304,7 +1304,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="variable"/>
       <def no ="operator"/>
       <def no ="identifier"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="cmdlet"/>
       <def no ="alias"/>
       <def no ="function"/>
@@ -1315,7 +1315,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     <def name = "progress">
       <def no ="default"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="character"/>
       <def no ="preprocessor"/>
@@ -1331,7 +1331,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="comment6"/>
       <def no ="default_"/>
       <def no ="number_"/>
-      <def no ="word_"/>
+      <def no ="keyword2"/>
       <def no ="string_"/>
       <def no ="character_"/>
       <def no ="preprocessor_"/>
@@ -1363,7 +1363,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="dsc_value"/>
       <def no ="number"/>
       <def no ="name"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="literal"/>
       <def no ="immeval"/>
       <def no ="paren_array"/>
@@ -1381,7 +1381,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="number"/>
       <def no ="string"/>
       <def no ="character"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="triple"/>
       <def no ="tripledouble"/>
       <def no ="classname"/>
@@ -1390,16 +1390,16 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="identifier"/>
       <def no ="commentblock"/>
       <def no ="stringeol"/>
-      <def no ="word2"/>
+      <def no ="keyword2"/>
       <def no ="decorator"/>
     </def>
     
     <def name = "r">
       <def no ="default"/>
       <def no ="comment"/>
-      <def no ="kword"/>
-      <def no ="basekword"/>
-      <def no ="otherkword"/>
+      <def no ="keyword1"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
       <def no ="number"/>
       <def no ="string"/>
       <def no ="string2"/>
@@ -1431,14 +1431,14 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="date"/>
       <def no ="time"/>
       <def no ="identifier"/>
-      <def no ="word"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
-      <def no ="word4"/>
-      <def no ="word5"/>
-      <def no ="word6"/>
-      <def no ="word7"/>
-      <def no ="word8"/>
+      <def no ="keyword1"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
+      <def no ="keyword5"/>
+      <def no ="keyword6"/>
+      <def no ="keyword7"/>
+      <def no ="keyword8"/>
     </def>
     
     <def name = "ruby">
@@ -1447,7 +1447,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentline"/>
       <def no ="pod"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="character"/>
       <def no ="classname"/>
@@ -1489,7 +1489,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="string"/>
       <def no ="character"/>
       <def no ="stringeol"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="operator"/>
       <def no ="identifier"/>
       <def no ="triple"/>
@@ -1521,7 +1521,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="default"/>
       <def no ="identifier"/>
       <def no ="tagname"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="keyword2"/>
       <def no ="keyword3"/>
       <def no ="linenum"/>
@@ -1554,10 +1554,10 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentline"/>
       <def no ="commentlinebang"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
       <def no ="preprocessor"/>
       <def no ="operator"/>
       <def no ="identifier"/>
@@ -1570,7 +1570,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     <def name = "spice">
       <def no ="default"/>
       <def no ="identifier"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="keyword2"/>
       <def no ="keyword3"/>
       <def no ="number"/>
@@ -1585,7 +1585,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentline"/>
       <def no ="commentdoc"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="character"/>
       <def no ="sqlplus"/>
@@ -1594,7 +1594,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="identifier"/>
       <def no ="sqlplus_comment"> 13 </def>
       <def no ="commentlinedoc"> 15 </def>
-      <def no ="word2"/>
+      <def no ="keyword2"/>
       <def no ="commentdockeyword"/>
       <def no ="commentdockeyworderror"/>
       <def no ="user1"/>
@@ -1611,7 +1611,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="block_comment"/>
       <def no ="line_comment"/>
       <def no ="operator"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="number"/>
       <def no ="identifier"/>
       <def no ="s_string"/>
@@ -1641,21 +1641,21 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="brace"/>
       <def no ="modifier"/>
       <def no ="expand"/>
-      <def no ="word"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
-      <def no ="word4"/>
-      <def no ="word5"/>
-      <def no ="word6"/>
-      <def no ="word7"/>
-      <def no ="word8"/>
+      <def no ="keyword1"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
+      <def no ="keyword5"/>
+      <def no ="keyword6"/>
+      <def no ="keyword7"/>
+      <def no ="keyword8"/>
       <def no ="box"/>
       <def no ="block_comment"/>
     </def>
     
     <def name = "tcmd">
       <def no ="comment"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="label"/>
       <def no ="hide"/>
       <def no ="command"/>
@@ -1709,7 +1709,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="default"/>
       <def no ="comment"/>
       <def no ="number"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
       <def no ="preprocessor"/>
       <def no ="operator"/>
@@ -1733,10 +1733,10 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="commentline"/>
       <def no ="commentlinebang"/>
       <def no ="number"/>
-      <def no ="word"/>
+      <def no ="keyword1"/>
       <def no ="string"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
       <def no ="preprocessor"/>
       <def no ="operator"/>
       <def no ="identifier"/>
@@ -1753,7 +1753,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="operator"/>
       <def no ="identifier"/>
       <def no ="stringeol"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="stdoperator"/>
       <def no ="attribute"/>
       <def no ="stdfunction"/>
@@ -1791,7 +1791,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="default"/>
       <def no ="comment"/>
       <def no ="identifier"/>
-      <def no ="keyword"/>
+      <def no ="keyword1"/>
       <def no ="number"/>
       <def no ="reference"/>
       <def no ="document"/>
@@ -1822,7 +1822,8 @@ Copyright: (c) 2014, Anton van Wezenbeek
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:dark slate blue </def>
         <def style ="variable"> fore:medium blue </def>
-        <def style ="word"> fore:dark turquoise </def>
+        <def style ="keyword1"> fore:dark turquoise </def>
+        <def style ="keyword2"> fore:dark green </def>
         
         <colour name="caretforeground"> black </colour>
         <colour name="caretlinebackground"> light grey </colour>
@@ -1851,7 +1852,9 @@ Copyright: (c) 2014, Anton van Wezenbeek
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:cadet blue </def>
         <def style ="variable"> fore:medium blue </def>
-        <def style ="word"> fore:yellow </def>
+        <def style ="keyword1"> fore:yellow </def>
+        <def style ="keyword2"> fore:yellow green </def>
+        <def style ="commentdockeyword"> fore:medium sea green </def>
         
         <colour name="caretforeground"> white </colour>
         <colour name="caretlinebackground"> dim grey </colour>
@@ -1896,16 +1899,16 @@ Copyright: (c) 2014, Anton van Wezenbeek
 
   <keyword>
     <set name="cpp">
-      argc:0 argv:0 auto:0 bool:0 break:0 case:0 catch:0 char:0 class:0 const:0
-      const_cast:0 continue:0 default:0 delete:0 do:0 double:0 dynamic_cast:0
-      else:0 enum:0 envp:0 explicit:0 extern:0 false:0 float:0 for:0 friend:0
-      fstream:0 goto:0 if:0 inline:0 int:0 istream:0 istrstream:0 istringstream:0
-      long:0 main:0 mutable:0 namespace:0 new:0 operator:0 ostream:0 ostrstream:0
-      ostringstream:0 private:0 protected:0 public:0 register:0 reinterpret_cast:0
-      return:0 short:0 signed:0 sizeof:0 static:0 static_cast:0 struct:0 switch:0
-      template:0 this:0 throw:0 true:0 try:0 typedef:0 typeid:0 typename:0
-      union:0 unsigned:0 using:0 virtual:0 void:0 volatile:0 wchar_t:0 while:0 
-      wmain:0
+      argc argv auto bool break case catch char class const
+      const_cast continue default delete do double dynamic_cast
+      else enum envp explicit extern false float for friend
+      fstream goto if inline int istream istrstream istringstream
+      long main mutable namespace new operator ostream ostrstream
+      ostringstream private protected public register reinterpret_cast
+      return short signed sizeof static static_cast struct switch
+      template this throw true try typedef typeid typename
+      union unsigned using virtual void volatile wchar_t while 
+      wmain
       adjacent_find:1 array:1 at:1 back:1 back_insert_iterator:1 begin:1 
       binary_search:1
       bind1st:1 bind2nd:1 bitset:1 capacity:1 clear:1 const_iterator:1 copy:1 
@@ -1938,6 +1941,17 @@ Copyright: (c) 2014, Anton van Wezenbeek
       size:1 sort:1 sort_heap:1 stable_partition:1 stable_sort:1 stack:1 string:1
       swap:1 swap_ranges:1 transform:1 unique:1 unique_copy:1 upper_bound:1 
       valarray:1 vector:1
+      a:2 addindex:2 addtogroup:2 anchor:2 arg:2 attention
+      author:2 b:2 brief:2 bug:2 c:2 class:2 code:2 date:2 def:2 defgroup:2 deprecated:2 dontinclude
+      e:2 em:2 endcode:2 endhtmlonly:2 endif:2 endlatexonly:2 endlink:2 endverbatim:2 enum:2 example:2 exception
+      f$:2 f[:2 f]:2 file:2 fn:2 hideinitializer:2 htmlinclude:2 htmlonly
+      if:2 image:2 include:2 ingroup:2 internal:2 invariant:2 interface:2 latexonly:2 li:2 line:2 link
+      mainpage:2 name:2 namespace:2 nosubgrouping:2 note:2 overload
+      p:2 page:2 par:2 param:2 param[in]:2 param[out]
+      post:2 pre:2 ref:2 relates:2 remarks:2 return:2 retval
+      sa:2 section:2 see:2 showinitializer:2 since:2 skip:2 skipline:2 struct:2 subsection
+      test:2 throw:2 throws:2 todo:3 typedef:2 union:2 until
+      var:2 verbatim:2 verbinclude:2 version:2 warning:2 weakgroup:2
     </set>
     <set name="csh">
       <!-- http://sourceforge.net/p/zsh-nt/tcsh-nt/ci/master/tree/csh-mode.el#l159 -->
@@ -2018,7 +2032,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
   <lexer name="apdl"/>
   <lexer name="asm" extensions="*.mac">
     <styles>
-      <style no="cpuinstruction"> word </style>
+      <style no="cpuinstruction"> keyword1 </style>
       <style no="mathinstruction"> italic </style>
       <style no="register"> fore:blue </style>
       <style no="directive"> italic </style>
@@ -2341,8 +2355,8 @@ Copyright: (c) 2014, Anton van Wezenbeek
   <lexer name="phpscript" macro="hypertext"/> 
   <lexer name="po" extensions="*.po">
     <styles>
-      <style no ="msgid"> word </style>
-      <style no ="msgstr"> word </style>
+      <style no ="msgid"> keyword1 </style>
+      <style no ="msgstr"> keyword2 </style>
       <style no ="fuzzy"> fore:yellow </style>
     </styles>
     <keywords>    
