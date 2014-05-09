@@ -1809,9 +1809,12 @@ Copyright: (c) 2014, Anton van Wezenbeek
         <def style ="char"> fore:pink </def>
         <def style ="command"> fore:steel blue </def>
         <def style ="comment"> fore:forest green,italic,eol </def>
+        <def style ="commentdockeyword"> fore:medium sea green,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> light blue </def>
         <def style ="identifier"> fore:black</def>
+        <def style ="keyword1"> fore:dark turquoise </def>
+        <def style ="keyword2"> fore:dark green </def>
         <def style ="label"> fore:medium slate blue,italic </def>
         <def style ="number"> fore:red </def>
         <def style ="operator"> fore:brown </def>
@@ -1822,8 +1825,6 @@ Copyright: (c) 2014, Anton van Wezenbeek
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:dark slate blue </def>
         <def style ="variable"> fore:medium blue </def>
-        <def style ="keyword1"> fore:dark turquoise </def>
-        <def style ="keyword2"> fore:dark green </def>
         
         <colour name="caretforeground"> black </colour>
         <colour name="caretlinebackground"> light grey </colour>
@@ -1839,10 +1840,13 @@ Copyright: (c) 2014, Anton van Wezenbeek
         <def style ="char"> fore:pink </def>
         <def style ="command"> fore:steel blue </def>
         <def style ="comment"> fore:#80a0ff,italic,eol </def>
+        <def style ="commentdockeyword"> fore:medium sea green,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> light blue </def>
         <def style ="identifier"> fore:white</def>
         <def style ="label"> fore:medium slate blue,italic </def>
+        <def style ="keyword1"> fore:yellow </def>
+        <def style ="keyword2"> fore:yellow green </def>
         <def style ="number"> fore:red </def>
         <def style ="operator"> fore:white </def>
         <def style ="preprocessor"> fore:grey </def>
@@ -1852,9 +1856,6 @@ Copyright: (c) 2014, Anton van Wezenbeek
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:cadet blue </def>
         <def style ="variable"> fore:medium blue </def>
-        <def style ="keyword1"> fore:yellow </def>
-        <def style ="keyword2"> fore:yellow green </def>
-        <def style ="commentdockeyword"> fore:medium sea green </def>
         
         <colour name="caretforeground"> white </colour>
         <colour name="caretlinebackground"> dim grey </colour>
@@ -1941,16 +1942,16 @@ Copyright: (c) 2014, Anton van Wezenbeek
       size:1 sort:1 sort_heap:1 stable_partition:1 stable_sort:1 stack:1 string:1
       swap:1 swap_ranges:1 transform:1 unique:1 unique_copy:1 upper_bound:1 
       valarray:1 vector:1
-      a:2 addindex:2 addtogroup:2 anchor:2 arg:2 attention
-      author:2 b:2 brief:2 bug:2 c:2 class:2 code:2 date:2 def:2 defgroup:2 deprecated:2 dontinclude
-      e:2 em:2 endcode:2 endhtmlonly:2 endif:2 endlatexonly:2 endlink:2 endverbatim:2 enum:2 example:2 exception
-      f$:2 f[:2 f]:2 file:2 fn:2 hideinitializer:2 htmlinclude:2 htmlonly
-      if:2 image:2 include:2 ingroup:2 internal:2 invariant:2 interface:2 latexonly:2 li:2 line:2 link
-      mainpage:2 name:2 namespace:2 nosubgrouping:2 note:2 overload
-      p:2 page:2 par:2 param:2 param[in]:2 param[out]
-      post:2 pre:2 ref:2 relates:2 remarks:2 return:2 retval
-      sa:2 section:2 see:2 showinitializer:2 since:2 skip:2 skipline:2 struct:2 subsection
-      test:2 throw:2 throws:2 todo:3 typedef:2 union:2 until
+      a:2 addindex:2 addtogroup:2 anchor:2 arg:2 attention:2
+      author:2 b:2 brief:2 bug:2 c:2 class:2 code:2 date:2 def:2 defgroup:2 deprecated:2 dontinclude:2
+      e:2 em:2 endcode:2 endhtmlonly:2 endif:2 endlatexonly:2 endlink:2 endverbatim:2 enum:2 example:2 exception:2
+      f$:2 f[:2 f]:2 file:2 fn:2 hideinitializer:2 htmlinclude:2 htmlonly:2
+      if:2 image:2 include:2 ingroup:2 internal:2 invariant:2 interface:2 latexonly:2 li:2 line:2 link:2
+      mainpage:2 name:2 namespace:2 nosubgrouping:2 note:2 overload:2
+      p:2 page:2 par:2 param:2 param[in]:2 param[out]:2
+      post:2 pre:2 ref:2 relates:2 remarks:2 return:2 retval:2
+      sa:2 section:2 see:2 showinitializer:2 since:2 skip:2 skipline:2 struct:2 subsection:2
+      test:2 throw:2 throws:2 todo:2 typedef:2 union:2 until:2
       var:2 verbatim:2 verbinclude:2 version:2 warning:2 weakgroup:2
     </set>
     <set name="csh">
