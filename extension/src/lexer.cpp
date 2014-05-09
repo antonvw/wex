@@ -192,12 +192,23 @@ void wxExLexer::AutoMatch(const wxString& lexer)
 {
   for (const auto& it : wxExLexers::Get()->GetMacros(lexer))
   {
-    for (const auto& style : wxExLexers::Get()->GetThemeMacros())
+    const auto& macro = wxExLexers::Get()->GetThemeMacros().find(it.first);
+
+    // First try exact match.
+    if (macro != wxExLexers::Get()->GetThemeMacros().end())
     {
-      if (it.first.Contains(style.first))
+      m_Styles.push_back(wxExStyle(it.second, macro->second));
+    }
+    else
+    {
+      // Then, a partial using Contains.
+      for (const auto& style : wxExLexers::Get()->GetThemeMacros())
       {
-        m_Styles.push_back(wxExStyle(it.second, style.second));
-        break;
+        if (it.first.Contains(style.first))
+        {
+          m_Styles.push_back(wxExStyle(it.second, style.second));
+          break;
+        }
       }
     }
   }
