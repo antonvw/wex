@@ -671,6 +671,8 @@ void Frame::OnCommand(wxCommandEvent& event)
         return;
       }
 
+      SetRecentFile(editor->GetFileName().GetFullPath());
+      
       if (editor->GetFileName() == wxExLexers::Get()->GetFileName())
       {
         wxExLexers::Get()->LoadDocument();
@@ -732,6 +734,8 @@ void Frame::OnCommand(wxCommandEvent& event)
         bitmap);
           
       editor->PropertiesMessage();
+      
+      SetRecentFile(editor->GetFileName().GetFullPath());
     }
     break;
 
