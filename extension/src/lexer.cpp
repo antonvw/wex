@@ -48,9 +48,9 @@ wxExLexer::wxExLexer(const wxExLexer& lexer, wxStyledTextCtrl* stc)
 // Adds the specified keywords to the keywords map and the keywords set.
 // The text might contain the keyword set after a ':'.
 // Returns false if specified set is illegal or value is empty.
-bool wxExLexer::AddKeywords(const wxString& value)
+bool wxExLexer::AddKeywords(const wxString& value, int setno)
 {
-  if (value.empty())
+  if (value.empty() || setno < 0 || setno >= wxSTC_KEYWORDSET_MAX)
   {
     return false;
   }
@@ -58,8 +58,6 @@ bool wxExLexer::AddKeywords(const wxString& value)
   std::set<wxString> keywords_set;
 
   wxStringTokenizer tkz(value, "\r\n ");
-
-  int setno = 0;
 
   while (tkz.HasMoreTokens())
   {
@@ -527,8 +525,11 @@ void wxExLexer::Set(const wxXmlNode* node)
         
         while (att != NULL)
         {
-          if (!AddKeywords(wxExLexers::Get()->GetKeywords(
-            att->GetValue().Strip(wxString::both))))
+          const int setno = atoi(att->GetName().AfterFirst('-'));
+          const wxString keywords = wxExLexers::Get()->GetKeywords(
+            att->GetValue().Strip(wxString::both));
+          
+          if (!AddKeywords(keywords, setno))
           {
             wxLogError(
               "Keywords for %s could not be set on line: %d", 

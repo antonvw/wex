@@ -47,7 +47,7 @@ public:
     wxStyledTextCtrl* stc = NULL);
     
   /// Adds keywords (public for testing only).
-  bool AddKeywords(const wxString& text);
+  bool AddKeywords(const wxString& text, int setno = 0);
   
   /// Applies this lexer to stc component
   /// (and colours the component).
