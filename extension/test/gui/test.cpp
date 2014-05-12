@@ -822,11 +822,16 @@ void wxExGuiTestFixture::testLexer()
   CPPUNIT_ASSERT(!lexer.MakeComment("test", "test").empty());
   CPPUNIT_ASSERT(!lexer.MakeSingleLineComment("test").empty());
 
+  CPPUNIT_ASSERT( lexer.GetKeywordsString(6).empty());
   CPPUNIT_ASSERT( lexer.AddKeywords("hello:1"));
   CPPUNIT_ASSERT( lexer.AddKeywords("more:1"));
   CPPUNIT_ASSERT( lexer.AddKeywords(
     "test11 test21:1 test31:1 test12:2 test22:2"));
+  CPPUNIT_ASSERT( lexer.AddKeywords("final", 6));
   CPPUNIT_ASSERT(!lexer.AddKeywords(""));
+  CPPUNIT_ASSERT(!lexer.AddKeywords("xxx:1", -1));
+  CPPUNIT_ASSERT(!lexer.AddKeywords("xxx:1", 100));
+  CPPUNIT_ASSERT(!lexer.GetKeywordsString(6).empty());
 
   CPPUNIT_ASSERT( lexer.IsKeyword("hello")); 
   CPPUNIT_ASSERT( lexer.IsKeyword("more")); 
@@ -836,6 +841,8 @@ void wxExGuiTestFixture::testLexer()
   CPPUNIT_ASSERT( lexer.IsKeyword("test12"));
   CPPUNIT_ASSERT( lexer.IsKeyword("test22"));
   CPPUNIT_ASSERT( lexer.IsKeyword("test31"));
+  CPPUNIT_ASSERT( lexer.IsKeyword("final"));
+  CPPUNIT_ASSERT(!lexer.IsKeyword("xxx"));
 
   CPPUNIT_ASSERT( lexer.KeywordStartsWith("te"));
   CPPUNIT_ASSERT(!lexer.KeywordStartsWith("xx"));
