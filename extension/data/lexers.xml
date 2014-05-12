@@ -1910,49 +1910,53 @@ Copyright: (c) 2014, Anton van Wezenbeek
       template this throw true try typedef typeid typename
       union unsigned using virtual void volatile wchar_t while 
       wmain
-      adjacent_find:1 array:1 at:1 back:1 back_insert_iterator:1 begin:1 
-      binary_search:1
-      bind1st:1 bind2nd:1 bitset:1 capacity:1 clear:1 const_iterator:1 copy:1 
-      copy_backward:1
-      count:1 count_if:1 deque:1 divides:1 empty:1 end:1 equal:1 equal_range:1 
-      equal_to:1
-      erase:1 fill:1 fill_n:1 find:1 find_end:1 find_first_of:1 find_if:1 
-      for_each:1
-      front:1 front_insert_iterator:1 generate:1 generate_n:1 get_allocator:1 
-      greater:1
-      greater_equal:1 includes:1 inplace_merge:1 insert:1 istream_iterator:1 
-      istreambuf_iterator:1 iter_swap:1 iterator:1 less:1 less_equal:1 
-      lexicographical_compare:1
-      list:1 logical_and:1 logical_not:1 logical_or:1 lower_bound:1 make_heap:1 
-      make_pair:1
-      map:1 max:1 max_element:1 max_size:1  mem_fun:1 mem_fun_ref:1 merge:1
-      min:1 min_element:1 minus:1 mismatch:1 modulus:1 multimap:1 multiplies:1 
-      multiset:1
-      negate:1 next_permutation:1 not1:1 not2:1 not_equal_to:1 nth_element:1
-      ostream_iterator:1 ostreambuf_iterator:1
-      partial_sort:1 partial_sort_copy:1 partition:1
-      plus:1 pop_back:1 pop_front:1 pop_heap:1 prev_permutation:1 priority_queue:1
-      ptr_fun:1 push_back:1 push_front:1 push_heap:1 queue:1
-      random_shuffle:1 rbegin:1 remove:1 remove_copy:1 remove_copy_if:1 
-      remove_if:1
-      rend:1 replace:1 replace_copy:1 replace_copy_if:1 replace_if:1 reserve:1
-      reserve_copy:1 resize:1 reverse:1 reverse_iterator:1 rotate:1 rotate_copy:1
-      search:1 search_n:1 set:1
-      set_difference:1 set_intersection:1 set_symmetric_difference:1 set_union:1
-      size:1 sort:1 sort_heap:1 stable_partition:1 stable_sort:1 stack:1 string:1
-      swap:1 swap_ranges:1 transform:1 unique:1 unique_copy:1 upper_bound:1 
-      valarray:1 vector:1
-      a:2 addindex:2 addtogroup:2 anchor:2 arg:2 attention:2
-      author:2 b:2 brief:2 bug:2 c:2 class:2 code:2 date:2 def:2 defgroup:2 deprecated:2 dontinclude:2
-      e:2 em:2 endcode:2 endhtmlonly:2 endif:2 endlatexonly:2 endlink:2 endverbatim:2 enum:2 example:2 exception:2
-      f$:2 f[:2 f]:2 file:2 fn:2 hideinitializer:2 htmlinclude:2 htmlonly:2
-      if:2 image:2 include:2 ingroup:2 internal:2 invariant:2 interface:2 latexonly:2 li:2 line:2 link:2
-      mainpage:2 name:2 namespace:2 nosubgrouping:2 note:2 overload:2
-      p:2 page:2 par:2 param:2 param[in]:2 param[out]:2
-      post:2 pre:2 ref:2 relates:2 remarks:2 return:2 retval:2
-      sa:2 section:2 see:2 showinitializer:2 since:2 skip:2 skipline:2 struct:2 subsection:2
-      test:2 throw:2 throws:2 todo:2 typedef:2 union:2 until:2
-      var:2 verbatim:2 verbinclude:2 version:2 warning:2 weakgroup:2
+    </set>
+    <set name="cpp-stl">
+      adjacent_find array at back back_insert_iterator begin 
+      binary_search
+      bind1st bind2nd bitset capacity clear const_iterator copy 
+      copy_backward
+      count count_if deque divides empty end equal equal_range 
+      equal_to
+      erase fill fill_n find find_end find_first_of find_if 
+      for_each
+      front front_insert_iterator generate generate_n get_allocator 
+      greater
+      greater_equal includes inplace_merge insert istream_iterator 
+      istreambuf_iterator iter_swap iterator less less_equal 
+      lexicographical_compare
+      list logical_and logical_not logical_or lower_bound make_heap 
+      make_pair
+      map max max_element max_size  mem_fun mem_fun_ref merge
+      min min_element minus mismatch modulus multimap multiplies 
+      multiset
+      negate next_permutation not1 not2 not_equal_to nth_element
+      ostream_iterator ostreambuf_iterator
+      partial_sort partial_sort_copy partition
+      plus pop_back pop_front pop_heap prev_permutation priority_queue
+      ptr_fun push_back push_front push_heap queue
+      random_shuffle rbegin remove remove_copy remove_copy_if 
+      remove_if
+      rend replace replace_copy replace_copy_if replace_if reserve
+      reserve_copy resize reverse reverse_iterator rotate rotate_copy
+      search search_n set
+      set_difference set_intersection set_symmetric_difference set_union
+      size sort sort_heap stable_partition stable_sort stack string
+      swap swap_ranges transform unique unique_copy upper_bound 
+      valarray vector
+    </set>
+    <set name="cpp-doc">
+      a addindex addtogroup anchor arg attention
+      author b brief bug c class code date def defgroup deprecated dontinclude
+      e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception
+      f$ f[ f] file fn hideinitializer htmlinclude htmlonly
+      if image include ingroup internal invariant interface latexonly li line link
+      mainpage name namespace nosubgrouping note overload
+      p page par param param[in] param[out]
+      post pre ref relates remarks return retval
+      sa section see showinitializer since skip skipline struct subsection
+      test throw throws todo typedef union until
+      var verbatim verbinclude version warning weakgroup
     </set>
     <set name="csh">
       <!-- http://sourceforge.net/p/zsh-nt/tcsh-nt/ci/master/tree/csh-mode.el#l159 -->
@@ -2137,11 +2141,11 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <property name="fold.comment"> 1 </property>
       <property name="fold.preprocessor"> 0 </property>
     </properties>
-    <keywords set="cpp"/>
+    <keywords set-0="cpp" set-1="cpp-stl" set-2="cpp-doc"/>
     <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
   <lexer name="cppnocase" macro="cpp">
-    <keywords set="cpp"/>
+    <keywords set-0="cpp" set-1="cpp-stl" set-2="cpp-doc"/>
   </lexer>
   <lexer name="csound"/>
   <lexer display="csh" name="bash" extensions="*.csh"> 
