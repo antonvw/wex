@@ -788,7 +788,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="hp_number"/>
       <def no ="hp_string"/>
       <def no ="hp_character"/>
-      <def no ="hp_word"/>
+      <def no ="hp_keyword1"/>
       <def no ="hp_triple"/>
       <def no ="hp_tripledouble"/>
       <def no ="hp_classname"/>
@@ -802,7 +802,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="hpa_number"/>
       <def no ="hpa_string"/>
       <def no ="hpa_character"/>
-      <def no ="hpa_word"/>
+      <def no ="hpa_keyword1"/>
       <def no ="hpa_triple"/>
       <def no ="hpa_tripledouble"/>
       <def no ="hpa_classname"/>
@@ -812,7 +812,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="hphp_default"/>
       <def no ="hphp_hstring"/>
       <def no ="hphp_simplestring"/>
-      <def no ="hphp_keyword1"/>
+      <def no ="hphp_keyword2"/>
       <def no ="hphp_number"/>
       <def no ="hphp_variable"/>
       <def no ="hphp_comment"/>
@@ -1969,6 +1969,40 @@ Copyright: (c) 2014, Anton van Wezenbeek
       stop suspend switch then time umask unalias
       unhash unlimit unset unsetenv wait while
     </set>
+    <set name="javascript">
+      break 	export 	return
+      case 	for 	switch
+      comment 	function 	this
+      continue 	if 	typeof
+      default 	import 	var
+      delete 	in 	void
+      do 	label 	while
+      else 	new 	with
+      abstract 	implements 	protected
+      boolean 	instanceOf 	public
+      byte 	int 	short
+      char 	interface 	static
+      double 	long 	synchronized
+      false 	native 	throws
+      final 	null 	transient
+      float 	package 	true
+      goto 	private
+    </set>
+    <set name="php">
+      and array as bool boolean break case cfunction class const continue declare 
+      default die directory do double echo else elseif empty enddeclare endfor 
+      endforeach endif endswitch endwhile eval exit extends false float for 
+      foreach function global goto if include include_once int integer isset list namespace 
+      new null object old_function or parent print real require require_once resource 
+      return static stdclass string switch true unset use var while xor 
+      final implements interface php_user_filter 
+      private protected public this throw try
+    </set>
+    <set name="python">
+      and as assert break class continue def del elif 
+      else except exec finally for from global if import in is lambda None 
+      not or pass print raise return try while with yield
+    </set>
   </keyword>
   
   <!--
@@ -2062,7 +2096,6 @@ Copyright: (c) 2014, Anton van Wezenbeek
     <comments begin1=";" />
   </lexer>
   <lexer name="asn1"/>
-  <lexer name="asp" macro="hypertext"/> 
   <lexer name="asy"/>
   <lexer name="au3"/>
   <lexer name="ave"/>
@@ -2186,16 +2219,18 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <style no="tagend"> tag </style>
       <style no="tagunknown"> error </style>
       <style no="attributeunknown"> error </style>
-      <style no="question"> fore:blue,bold </style>
+      <style no="question"> fore:sky blue,bold </style>
       <style no="value"> fore:#ff00ff</style>
       <style no="hphp_default"> styledefault </style>
+      <style no="asp"> fore:sky blue,bold </style>
+      <style no="hpa_triple"> comment </style>
     </styles>
     <properties>
       <property name="fold.html"> 1 </property>
       <!-- Default Language 1 for JS, 2 for VBS, 3 for python -->
       <property name="asp.default.language"> 1 </property>
     </properties>
-    <keywords>
+    <keywords set-1="javascript" set-3="python" set-4="php">
       <!-- See scintilla html.properies -->      
       a abbr acronym address applet area b base basefont
       bdo big blockquote body br button caption center
@@ -2239,35 +2274,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       form formaction formenctype formmethod formnovalidate formtarget
       list manifest max min novalidate pattern placeholder
       required reversed role sandbox scoped seamless sizes spellcheck srcdoc step
-      
-      break:1 	export:1 	return:1
-      case:1 	for:1 	switch:1
-      comment:1 	function:1 	this:1
-      continue:1 	if:1 	typeof:1
-      default:1 	import:1 	var:1
-      delete:1 	in:1 	void:1
-      do:1 	label:1 	while:1
-      else:1 	new:1 	with:1
-      abstract:1 	implements:1 	protected:1
-      boolean:1 	instanceOf:1 	public:1
-      byte:1 	int:1 	short:1
-      char:1 	interface:1 	static:1
-      double:1 	long:1 	synchronized:1
-      false:1 	native:1 	throws:1
-      final:1 	null:1 	transient:1
-      float:1 	package:1 	true:1
-      goto:1 	private:1
-
-      and:4 array:4 as:4 bool:4 boolean:4 break:4 case:4 cfunction:4 class:4 const:4 continue:4 declare:4 
-      default:4 die:4 directory:4 do:4 double:4 echo:4 else:4 elseif:4 empty:4 enddeclare:4 endfor:4 
-      endforeach:4 endif:4 endswitch:4 endwhile:4 eval:4 exit:4 extends:4 false:4 float:4 for:4 
-      foreach:4 function:4 global:4 goto:4 if:4 include:4 include_once:4 int:4 integer:4 isset:4 list:4 namespace:4 
-      new:4 null:4 object:4 old_function:4 or:4 parent:4 print:4 real:4 require:4 require_once:4 resource:4 
-      return:4 static:4 stdclass:4 string:4 switch:4 true:4 unset:4 use:4 var:4 while:4 xor:4 
-      final:4 implements:4 interface:4 php_user_filter:4 
-      private:4 protected:4 public:4 this:4 throw:4 try:4
     </keywords>
-  
   </lexer>
   <lexer name="inno"/>
   <lexer display="java" name="cpp" extensions="*.java">
@@ -2407,11 +2414,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <style no="triple"> comment </style>
       <style no="tripledouble"> comment </style>
     </styles>
-    <keywords>
-      and as assert break class continue def del elif 
-      else except exec finally for from global if import in is lambda None 
-      not or pass print raise return try while with yield
-    </keywords>
+    <keywords set-0="python"/>
     <comments begin1="#"/>
   </lexer>
   <lexer name="r"/>
@@ -2536,5 +2539,4 @@ Copyright: (c) 2014, Anton van Wezenbeek
          they are added in the source -->
   </lexer>
   <lexer name="yaml" extensions="*.yml"/>
- 
 </lexers>
