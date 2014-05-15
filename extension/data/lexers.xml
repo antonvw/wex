@@ -1970,24 +1970,16 @@ Copyright: (c) 2014, Anton van Wezenbeek
       unhash unlimit unset unsetenv wait while
     </set>
     <set name="javascript">
-      break 	export 	return
-      case 	for 	switch
-      comment 	function 	this
-      continue 	if 	typeof
-      default 	import 	var
-      delete 	in 	void
-      do 	label 	while
-      else 	new 	with
-      abstract 	implements 	protected
-      boolean 	instanceOf 	public
-      byte 	int 	short
-      char 	interface 	static
-      double 	long 	synchronized
-      false 	native 	throws
-      final 	null 	transient
-      float 	package 	true
-      goto 	private
-    </set>
+      abstract  boolean  break  byte  case  char 
+      comment  continue  default  delete  do 
+      double  else  export  false  final  float 
+      for  function  goto  if  implements  import 
+      in  instanceOf  int  interface  label  long 
+      native  new  null  package  private protected
+      public return short static switch synchronized
+      this throws transient true typeof var
+      void while with
+ </set>
     <set name="php">
       and array as bool boolean break case cfunction class const continue declare 
       default die directory do double echo else elseif empty enddeclare endfor 
@@ -2022,20 +2014,22 @@ Copyright: (c) 2014, Anton van Wezenbeek
       follows, separated by a comma sign (,).
       The value contains the scintilla style specifier. 
       It can have the next values:
-      bold turns on bold
-      italic turns on italics
-      fore:[name or #RRGGBB] sets the foreground colour
-      back:[name or #RRGGBB] sets the background colour
-      face:[facename] sets the font face name to use
-      size:[num] sets the font size in points
-      eol turns on eol filling
-      underline turns on underlining
+      - bold turns on bold
+      - italic turns on italics
+      - fore:[name or #RRGGBB] sets the foreground colour
+      - back:[name or #RRGGBB] sets the background colour
+      - face:[facename] sets the font face name to use
+      - size:[num] sets the font size in points
+      - eol turns on eol filling
+      - underline turns on underlining
       It can also have the default-font value which is kept in the config
       and can be set using options edit, and substitutes face and size.
    2) <keywords>. Keywords for this lexer. Default they are in set 0, but you can 
       explicitly express the set by adding :<setno> after the keyword.
       You can share keyword sets by adding keyword sets in the keyword section above,
-      and specify the name of the set as attribute here.
+      and specify the name of the set as attribute here. Default the 
+      keywords in the set appear in keyword set 0, but you can specify
+      any set as a number after a - sign in the attribute name (e.g. see cpp).
    3) <properties>. Properties for this lexer. This field
       is built of two fields, separated by an equal sign (=).
       The first field contains the scintilla property key.
@@ -2530,7 +2524,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <style no="tagend"> tag </style>
       <style no="tagunknown"> error </style>
       <style no="attributeunknown"> error </style>
-      <style no="xmlstart,xmlend"> fore:red </style>
+      <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
     </styles>
     <properties>
       <property name="fold.html"> 1 </property>
