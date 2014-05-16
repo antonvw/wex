@@ -1153,7 +1153,27 @@ bool wxExVi::InsertMode(const wxString& command)
       {
         if (!GetSTC()->GetOvertype())
         {
-          GetSTC()->AddText(command);
+          wxStringTokenizer tkz(command, "\r\n", wxTOKEN_RET_EMPTY);
+          
+          if (tkz.HasMoreTokens())
+          {
+            while (tkz.HasMoreTokens())
+            {
+              const wxString token(tkz.GetNextToken());
+              
+              if (!token.empty())
+              {
+                GetSTC()->AddText(token);
+              }
+          
+              GetSTC()->AddText(tkz.GetLastDelimiter());
+              GetSTC()->AutoIndentation(tkz.GetLastDelimiter());
+            }
+          }
+          else
+          {
+            GetSTC()->AddText(command);
+          }
         }
         
         if (!m_Dot)
