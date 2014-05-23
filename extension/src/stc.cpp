@@ -1572,6 +1572,24 @@ void wxExSTC::OnChar(wxKeyEvent& event)
   
     event.Skip();
   }
+
+  if (
+    event.GetUnicodeKey() == '>' && 
+    (m_Lexer.GetScintillaLexer() == "hypertext" ||
+     m_Lexer.GetScintillaLexer() == "xml"))
+   {
+     const int match = FindText(
+       GetCurrentPos() - 1,
+       PositionFromLine(GetCurrentLine()),
+       "<");
+
+     if (match != wxSTC_INVALID_POSITION)
+     {
+       InsertText(
+         GetCurrentPos(),
+         "</" + GetWordAtPos(match + 1) + ">");
+     }
+   }
 }
 
 void wxExSTC::OnCommand(wxCommandEvent& command)
