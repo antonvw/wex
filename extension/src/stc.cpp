@@ -1575,19 +1575,25 @@ void wxExSTC::OnChar(wxKeyEvent& event)
 
   if (
     event.GetUnicodeKey() == '>' && 
-    (m_Lexer.GetScintillaLexer() == "hypertext" ||
-     m_Lexer.GetScintillaLexer() == "xml"))
+    m_Lexer.GetScintillaLexer() == "hypertext")
    {
-     const int match = FindText(
+     const int match_pos = FindText(
        GetCurrentPos() - 1,
        PositionFromLine(GetCurrentLine()),
        "<");
 
-     if (match != wxSTC_INVALID_POSITION)
+     if (match_pos != wxSTC_INVALID_POSITION)
      {
-       InsertText(
-         GetCurrentPos(),
-         "</" + GetWordAtPos(match + 1) + ">");
+       const wxString match(GetWordAtPos(match_pos + 1));
+
+       if (
+         m_Lexer.GetDisplayLexer() == "xml" || 
+         m_Lexer.IsKeyword(match))
+       {
+         InsertText(
+           GetCurrentPos(),
+           "</" + match + ">");
+       }
      }
    }
 }
