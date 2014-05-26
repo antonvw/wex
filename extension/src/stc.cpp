@@ -1590,9 +1590,10 @@ void wxExSTC::OnChar(wxKeyEvent& event)
          m_Lexer.GetDisplayLexer() == "xml" || 
          m_Lexer.IsKeyword(match))
        {
-         InsertText(
-           GetCurrentPos(),
-           "</" + match + ">");
+         const wxString add("</" + match + ">");
+         
+         InsertText(GetCurrentPos(), add);
+         m_vi.AddInsertText(add);
        }
      }
    }
