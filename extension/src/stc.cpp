@@ -1592,8 +1592,19 @@ void wxExSTC::OnChar(wxKeyEvent& event)
        {
          const wxString add("</" + match + ">");
          
-         InsertText(GetCurrentPos(), add);
-         m_vi.AddInsertText(add);
+         if (m_vi.GetIsActive())
+         {
+           AddText(add);
+           m_vi.AddInsertText(add);
+           const int esc = 27;
+           m_vi.Command(wxUniChar(esc));
+           m_vi.Command("%");
+           m_vi.Command("i");
+         }
+         else
+         {
+           InsertText(GetCurrentPos(), add);
+         }
        }
      }
    }
