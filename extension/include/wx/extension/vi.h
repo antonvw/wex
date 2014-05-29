@@ -30,9 +30,6 @@ public:
   /// Constructor.
   wxExVi(wxExSTC* stc);
   
-  /// Adds text to be inserted.
-  void AddInsertText(const wxString& text) {m_InsertText += text;};
-  
   /// Executes vi command.
   /// Returns true if the command was executed.
   virtual bool Command(const wxString& command);
