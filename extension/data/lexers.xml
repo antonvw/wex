@@ -434,10 +434,10 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="default"/>
       <def no ="tag"/>
       <def no ="class"/>
-      <def no ="pseudoclass"/>
+      <def no ="keyword2"/>
       <def no ="unknown_pseudoclass"/>
       <def no ="operator"/>
-      <def no ="identifier"/>
+      <def no ="keyword1"/>
       <def no ="unknown_identifier"/>
       <def no ="value"/>
       <def no ="comment"/>
@@ -446,13 +446,13 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="directive"/>
       <def no ="doublestring"/>
       <def no ="singlestring"/>
-      <def no ="identifier2"/>
+      <def no ="keyword3"/>
       <def no ="attribute"/>
-      <def no ="identifier3"/>
-      <def no ="pseudoelement"/>
-      <def no ="extended_identifier"/>
-      <def no ="extended_pseudoclass"/>
-      <def no ="extended_pseudoelement"/>
+      <def no ="keyword4"/>
+      <def no ="keyword5"/>
+      <def no ="keyword6"/>
+      <def no ="keyword7"/>
+      <def no ="keyword8"/>
       <def no ="media"/>
       <def no ="variable"/>
     </def>
@@ -1815,6 +1815,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
         <def style ="identifier"> fore:black</def>
         <def style ="keyword1"> fore:dark turquoise </def>
         <def style ="keyword2"> fore:dark green </def>
+        <def style ="keyword3"> fore:medium spring green </def>
         <def style ="label"> fore:medium slate blue,italic </def>
         <def style ="number"> fore:red </def>
         <def style ="operator"> fore:brown </def>
@@ -1847,6 +1848,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
         <def style ="label"> fore:medium slate blue,italic </def>
         <def style ="keyword1"> fore:yellow </def>
         <def style ="keyword2"> fore:yellow green </def>
+        <def style ="keyword3"> fore:medium spring green </def>
         <def style ="number"> fore:red </def>
         <def style ="operator"> fore:white </def>
         <def style ="preprocessor"> fore:grey </def>
@@ -1968,6 +1970,40 @@ Copyright: (c) 2014, Anton van Wezenbeek
       pushd rehash repeat set setenv shift source
       stop suspend switch then time umask unalias
       unhash unlimit unset unsetenv wait while
+    </set>
+    <set name="css1">
+      color background-color background-image background-repeat background-attachment background-position background
+      font-family font-style font-variant font-weight font-size font
+      word-spacing letter-spacing text-decoration vertical-align text-transform text-align text-indent line-height
+      margin-top margin-right margin-bottom margin-left margin
+      padding-top padding-right padding-bottom padding-left padding
+      border-top-width border-right-width border-bottom-width border-left-width border-width
+      border-top border-right border-bottom border-left border
+      border-color border-style width height float clear
+      display white-space list-style-type list-style-image list-style-position list-style
+    </set>
+    <set name="css2">
+      border-top-color border-right-color border-bottom-color border-left-color border-color
+      border-top-style border-right-style border-bottom-style border-left-style border-style
+      top right bottom left position z-index direction unicode-bidi
+      min-width max-width min-height max-height overflow clip visibility content quotes
+      counter-reset counter-increment marker-offset
+      size marks page-break-before page-break-after page-break-inside page orphans widows
+      font-stretch font-size-adjust unicode-range units-per-em src
+      panose-1 stemv stemh slope cap-height x-height ascent descent widths bbox definition-src
+      baseline centerline mathline topline text-shadow
+      caption-side table-layout border-collapse border-spacing empty-cells speak-header
+      cursor outline outline-width outline-style outline-color
+      volume speak pause-before pause-after pause cue-before cue-after cue
+      play-during azimuth elevation speech-rate voice-family pitch pitch-range stress richness
+      speak-punctuation speak-numeral 
+    </set>
+    <set name="css3">
+      background-size
+      border-radius border-top-right-radius border-bottom-right-radius border-bottom-left-radius border-top-left-radius
+      box-shadow
+      columns column-width column-count column-rule column-gap column-rule-color column-rule-style column-rule-width
+      resize opacity word-wrap
     </set>
     <set name="javascript">
       abstract  boolean  break  byte  case  char 
@@ -2182,7 +2218,9 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
-  <lexer name="css"/>
+  <lexer name="css" extensions="*.css">
+    <keywords set-0="css1" set-2="css2" set-3="css3"/>
+  </lexer>
   <lexer name="d"/> 
   <lexer name="diff">
     <styles>
