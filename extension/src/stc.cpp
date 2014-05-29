@@ -269,8 +269,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 
   if (sel.empty() && 
-      (m_Lexer.GetScintillaLexer() == "hypertext" ||
-       m_Lexer.GetScintillaLexer() == "xml"))
+      (m_Lexer.GetScintillaLexer() == "hypertext"))
   {
     menu.AppendSeparator();
     menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
