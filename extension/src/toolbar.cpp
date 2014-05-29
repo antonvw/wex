@@ -69,6 +69,7 @@ wxExToolBar::wxExToolBar(wxExManagedFrame* frame,
 
 void wxExToolBar::AddControls()
 {
+  AddTool(wxID_NEW);
   AddTool(wxID_OPEN);
   AddTool(wxID_SAVE);
   AddTool(wxID_PRINT);
