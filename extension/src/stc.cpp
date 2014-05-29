@@ -1594,8 +1594,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
          
          if (m_vi.GetIsActive())
          {
-           AddText(add);
-           m_vi.AddInsertText(add);
+           m_vi.Command(add);
            const int esc = 27;
            m_vi.Command(wxUniChar(esc));
            m_vi.Command("%");
