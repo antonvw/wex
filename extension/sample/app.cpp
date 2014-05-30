@@ -302,6 +302,9 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       }
       break;
     case wxID_EXIT: Close(true); break;
+    case wxID_NEW:
+      m_STC->GetFile().FileNew(wxExFileName());
+      break;
     case wxID_OPEN:
       {
       wxExFileDialog dlg(this, &m_STC->GetFile());
