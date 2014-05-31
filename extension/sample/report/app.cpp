@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of sample classes for wxExRep
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -237,6 +237,10 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     
   case wxID_EXIT: Close(true); break;
   
+  case wxID_NEW:
+    m_STC->GetFile().FileNew(wxExFileName());
+    break;
+    
   case wxID_OPEN:
     event.Skip();
     break;
