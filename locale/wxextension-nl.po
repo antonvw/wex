@@ -482,8 +482,8 @@ msgid "Invisible"
 msgstr "Onzichtbaar"
 
 #: ../extension/src/stc.cpp:467
-msgid "Invisible after ident"
-msgstr "Onzichtbaar na inspringen"
+msgid "Visible after indent"
+msgstr "Zichtbaar na inspringen"
 
 #: ../extension/src/stc.cpp:468
 msgid "Visible always"

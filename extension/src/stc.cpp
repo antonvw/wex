@@ -468,7 +468,7 @@ int wxExSTC::ConfigDialog(
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
   choices.insert(std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, 
-    _("Invisible after ident")));
+    _("Visible after indent")));
   choices.insert(std::make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
   items.push_back(wxExConfigItem(
     _("Whitespace"), choices, true, _("General"), 1));
