@@ -92,6 +92,7 @@ public:
 protected:
   /// Returns the toolbar.
   wxExToolBar* GetToolBar() {return m_ToolBar;};
+  void OnAuiManager(wxAuiManagerEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:

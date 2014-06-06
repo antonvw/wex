@@ -126,12 +126,14 @@ Frame::Frame(const std::vector< wxString > & files)
   GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo()
     .Left()
     .Name("DIRCTRL")
+    .MinSize(150, -1)
     .Caption(_("Explorer")));
 
   GetManager().AddPane(m_Lists, wxAuiPaneInfo()
     .Bottom()
     .MaximizeButton(true)
-    .MinSize(250, 100).Name("OUTPUT")
+    .MinSize(250, 100)
+    .Name("OUTPUT")
     .Row(0)
     .Caption(_("Output")));
 
@@ -236,6 +238,7 @@ void Frame::AddAsciiTable()
   GetManager().AddPane(m_asciiTable, wxAuiPaneInfo()
     .Left()
     .Name("ASCIITABLE")
+    .MinSize(500, -1)
     .Caption(_("Ascii Table")));
         
   GetManager().Update();
@@ -304,6 +307,7 @@ void Frame::AddPaneHistory()
   GetManager().AddPane(m_History, wxAuiPaneInfo()
     .Left()
     .MaximizeButton(true)
+    .BestSize(150, -1)
     .Name("HISTORY")
     .Caption(_("History")));
 }
@@ -324,7 +328,7 @@ void Frame::AddPaneProjects()
       .Left()
       .MaximizeButton(true)
       .Name("PROJECTS")
-      .MinSize(wxSize(150, -1))
+      .MinSize(150, -1)
       .Caption(_("Projects")));
   }
 }
