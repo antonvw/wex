@@ -46,7 +46,8 @@ public:
     
   /// Sets ex component.
   void SetEx(wxExEx* ex, const wxString& range);
-protected:  void OnChar(wxKeyEvent& event);
+protected:  
+  void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnEnter(wxCommandEvent& event);
   void OnFocus(wxFocusEvent& event);
@@ -76,6 +77,7 @@ private:
 };
 
 BEGIN_EVENT_TABLE(wxExManagedFrame, wxExFrame)
+  EVT_AUI_PANE_CLOSE(wxExManagedFrame::OnAuiManager)
   EVT_MENU(wxID_PREFERENCES, wxExManagedFrame::OnCommand)
   EVT_MENU_RANGE(ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnCommand)
   EVT_UPDATE_UI_RANGE(
@@ -193,6 +195,17 @@ void wxExManagedFrame::HideExBar(bool set_focus)
       m_exTextCtrl->GetEx()->GetSTC()->SetFocus();
     }
   }
+}
+  
+void wxExManagedFrame::OnAuiManager(wxAuiManagerEvent& event)
+{
+  // TODO: wxAui should take care of this...
+  wxAuiPaneInfo* info = event.GetPane();  
+  info->BestSize(info->window->GetSize());
+  info->Fixed();
+  m_Manager.Update();
+  info->Resizable();
+  m_Manager.Update();
 }
   
 void wxExManagedFrame::OnCommand(wxCommandEvent& event)
