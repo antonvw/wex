@@ -87,7 +87,9 @@ private:
   int m_SplitId;
 
   Notebook* m_Editors;
-  
+
+  wxCheckBox* m_CheckBoxDirCtrl;
+  wxCheckBox* m_CheckBoxHistory;
   wxExGenericDirCtrl* m_DirCtrl;
   wxExListViewWithFrame* m_History;
   wxExNotebook* m_Lists;
