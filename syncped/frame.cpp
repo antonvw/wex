@@ -135,6 +135,7 @@ Frame::Frame(const std::vector< wxString > & files)
 
   GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo()
     .Left()
+    .MaximizeButton(true)
     .CloseButton(false)
     .Name("DIRCTRL")
     .MinSize(200, 150)
