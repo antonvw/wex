@@ -30,9 +30,11 @@
 #include "defs.h"
 
 BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
-  EVT_CLOSE(Frame::OnClose)
   EVT_AUINOTEBOOK_BG_DCLICK(NOTEBOOK_EDITORS, Frame::OnNotebookEditors)
   EVT_AUINOTEBOOK_BG_DCLICK(NOTEBOOK_PROJECTS, Frame::OnNotebookProjects)
+  EVT_CHECKBOX(ID_CHECKBOX_DIRCTRL, Frame::OnCommand)
+  EVT_CHECKBOX(ID_CHECKBOX_HISTORY, Frame::OnCommand)
+  EVT_CLOSE(Frame::OnClose)
   EVT_MENU(wxID_DELETE, Frame::OnCommand)
   EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
   EVT_MENU(wxID_JUMP_TO, Frame::OnCommand)
@@ -109,6 +111,14 @@ Frame::Frame(const std::vector< wxString > & files)
       wxDefaultSize, 
       m_PaneFlag))
   , m_DirCtrl(new wxExGenericDirCtrl(this, this))
+  , m_CheckBoxDirCtrl(new wxCheckBox(
+      GetToolBar(),
+      ID_CHECKBOX_DIRCTRL,
+      _("Explorer")))
+  , m_CheckBoxHistory(new wxCheckBox(
+      GetToolBar(),
+      ID_CHECKBOX_HISTORY,
+      _("History")))
 {
   wxExViMacros::LoadDocument();
 
@@ -125,8 +135,9 @@ Frame::Frame(const std::vector< wxString > & files)
 
   GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo()
     .Left()
+    .CloseButton(false)
     .Name("DIRCTRL")
-    .MinSize(150, -1)
+    .MinSize(200, 150)
     .Caption(_("Explorer")));
 
   GetManager().AddPane(m_Lists, wxAuiPaneInfo()
@@ -207,6 +218,13 @@ Frame::Frame(const std::vector< wxString > & files)
     m_Editors->GetPage(m_Editors->GetPageCount() - 1)->SetFocus();
   }
 
+  GetToolBar()->AddControl(m_CheckBoxDirCtrl);
+  GetToolBar()->AddControl(m_CheckBoxHistory);
+  GetToolBar()->Realize();
+  m_CheckBoxDirCtrl->SetValue(GetManager().GetPane("DIRCTRL").IsShown());
+  m_CheckBoxHistory->SetValue(
+    wxConfigBase::Get()->ReadBool("ShowHistory", false));
+
   wxAcceleratorEntry entries[1];
   entries[0].Set(wxACCEL_CTRL, (int)'W', wxID_CLOSE);
 
@@ -238,7 +256,7 @@ void Frame::AddAsciiTable()
   GetManager().AddPane(m_asciiTable, wxAuiPaneInfo()
     .Left()
     .Name("ASCIITABLE")
-    .MinSize(500, -1)
+    .MinSize(500, 150)
     .Caption(_("Ascii Table")));
         
   GetManager().Update();
@@ -307,7 +325,8 @@ void Frame::AddPaneHistory()
   GetManager().AddPane(m_History, wxAuiPaneInfo()
     .Left()
     .MaximizeButton(true)
-    .BestSize(150, -1)
+    .CloseButton(false)
+    .MinSize(150, 150)
     .Name("HISTORY")
     .Caption(_("History")));
 }
@@ -328,7 +347,7 @@ void Frame::AddPaneProjects()
       .Left()
       .MaximizeButton(true)
       .Name("PROJECTS")
-      .MinSize(150, -1)
+      .MinSize(150, 150)
       .Caption(_("Projects")));
   }
 }
@@ -925,7 +944,12 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
     
-  case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL"); break;
+  case ID_CHECKBOX_DIRCTRL: 
+    TogglePane("DIRCTRL"); break;
+  case ID_VIEW_DIRCTRL: 
+    TogglePane("DIRCTRL"); 
+    m_CheckBoxDirCtrl->SetValue(GetManager().GetPane("DIRCTRL").IsShown());
+    break;
   
   case ID_VIEW_FILES: 
     TogglePane("FILES"); 
@@ -941,6 +965,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
     
   case ID_VIEW_HISTORY: 
+  case ID_CHECKBOX_HISTORY: 
     if (m_History == NULL)
     {
       AddPaneHistory();
@@ -950,6 +975,8 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
       TogglePane("HISTORY");
     }
+  
+    m_CheckBoxHistory->SetValue(GetManager().GetPane("HISTORY").IsShown());
     
 #if wxUSE_STATUSBAR
     UpdateStatusBar(m_History);
