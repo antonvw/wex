@@ -59,7 +59,7 @@ public:
     /// - . : current line 
     /// - % : entire document
     /// - * : current screen visible area
-    /// x, y: range from begin x and end y address.
+    /// - x, y: range from begin x and end y address.
     const wxString& range);
   
   /// Deletes range.
@@ -85,6 +85,10 @@ public:
   bool Move(const wxExAddress& destination) const;
   
   /// Substitutes range by /pattern/replace/options in command.
+  /// Options can be:
+  /// - c : Ask for confirm
+  /// - i : Case insensitive
+  /// - g : Do global on line, without this flag replace first match only
   bool Substitute(const wxString& command);
     
   /// Writes range to filename.

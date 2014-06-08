@@ -102,7 +102,7 @@ public:
   /// as previous line.
   bool AutoIndentation(int c);
   
-  /// Will a cut paste succeed? 
+  /// Will a cut succeed? 
   virtual bool CanCut() const;
 
   /// Will a paste succeed? 
