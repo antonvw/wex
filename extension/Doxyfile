@@ -1289,14 +1289,16 @@ INCLUDE_FILE_PATTERNS  =
 # undefined via #undef or recursively expanded use the := operator 
 # instead of the = operator.
 
-PREDEFINED             =wxUSE_AUI \
-                        wxUSE_DRAG_AND_DROP \
-                        wxUSE_GUI \
-                        wxUSE_GRID \
-                        wxUSE_HTML \
-                        wxUSE_PRINTING_ARCHITECTURE \
-                        wxUSE_STATUSBAR \
-                        wxExUSE_OTL
+PREDEFINED             = wxUSE_AUI \
+                         wxUSE_DIRDLG \
+                         wxUSE_DRAG_AND_DROP \
+                         wxUSE_GUI \
+                         wxUSE_GRID \
+                         wxUSE_HTML \
+                         wxUSE_PRINTING_ARCHITECTURE \
+                         wxUSE_STATUSBAR \
+                         wxUSE_TOOLTIPS \
+                         wxExUSE_OTL
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then 
 # this tag can be used to specify a list of macro names that should be expanded. 
