@@ -946,10 +946,22 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
     
   case ID_CHECKBOX_DIRCTRL: 
-    TogglePane("DIRCTRL"); break;
   case ID_VIEW_DIRCTRL: 
     TogglePane("DIRCTRL"); 
     m_CheckBoxDirCtrl->SetValue(GetManager().GetPane("DIRCTRL").IsShown());
+    GetToolBar()->Realize();
+    
+    if (GetManager().GetPane("DIRCTRL").IsShown() &&
+        GetManager().GetPane("FILES").IsShown())
+    {
+      wxExSTC* editor = GetSTC();
+      
+      if (editor != NULL)
+      {
+        m_DirCtrl->ExpandAndSelectPath(
+          editor->GetFileName().GetFullPath());
+      }
+    }
     break;
   
   case ID_VIEW_FILES: 
@@ -978,6 +990,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
   
     m_CheckBoxHistory->SetValue(GetManager().GetPane("HISTORY").IsShown());
+    GetToolBar()->Realize();
     
 #if wxUSE_STATUSBAR
     UpdateStatusBar(m_History);
