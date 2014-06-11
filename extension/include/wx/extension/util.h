@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wxExtension utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXUTIL_H
@@ -14,9 +14,11 @@
 #include <wx/filedlg.h> // for wxFD_OPEN etc.
 
 class wxArrayString;
+class wxComboBox;
 class wxFileHistory;
 class wxFileName;
 class wxGenericDirCtrl;
+class wxTextCtrl;
 class wxXmlNode;
 
 class wxExEx;

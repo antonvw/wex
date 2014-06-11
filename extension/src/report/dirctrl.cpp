@@ -5,7 +5,6 @@
 // Copyright: (c) 2013 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/combobox.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/textfile.h>
 #include <wx/extension/filename.h>
