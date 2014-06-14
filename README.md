@@ -1,7 +1,7 @@
 wxExtension contains a wxWidgets extension library, 
 and some applications that show how to use it.
 
-The [syncped](http://antonvw.github.com/syncped) application is 
+The [syncped](http://sourceforge.net/projects/syncped) application is 
 one of these applications, being a full featured source code text editor. 
 
 # Dependencies
