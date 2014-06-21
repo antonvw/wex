@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wxExLink
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -266,6 +266,7 @@ bool wxExLink::SetLink(
     }
       
     link = prefix + link;
+    link.Trim();
     
     return true;
   }
