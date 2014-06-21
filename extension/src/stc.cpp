@@ -268,8 +268,8 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if (sel.empty() && 
-      (m_Lexer.GetScintillaLexer() == "hypertext"))
+  if (( sel.empty() && m_Lexer.GetScintillaLexer() == "hypertext") ||
+      (!sel.empty() && sel.StartsWith("http")))
   {
     menu.AppendSeparator();
     menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
@@ -1673,7 +1673,14 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     case ID_EDIT_MARKER_PREVIOUS: MarkerNext(false); break;
     
     case ID_EDIT_OPEN_BROWSER:
-      wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
+      if (GetSelectedText().empty())
+      {
+        wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
+      }
+      else
+      {
+        wxLaunchDefaultBrowser(GetSelectedText());
+      }
       break;
 
     case ID_EDIT_OPEN_LINK: LinkOpen(); break;
