@@ -25,6 +25,7 @@ before_install:
 
 script:
     - wx-config --cxx
+    - g++ --version
     - pushd build
     - make
     - popd
