@@ -12,14 +12,14 @@ branches:
 
 before_install:
     - sudo apt-key adv --fetch-keys http://repos.codelite.org/CodeLite.asc
-    - sudo apt-add-repository 'deb http://repos.codelite.org/wx3.0/ubuntu/ raring universe'
+    - sudo apt-add-repository 'deb http://repos.codelite.org/wx3.0.1/ubuntu/ raring universe'
     - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
     - sudo apt-get update
     - sudo apt-get install g++-4.8
-    - sudo apt-get install -y libjbig0
-    - sudo apt-get install -y liblzma5 
     - sudo apt-get install -y libwxbase3.0-0-unofficial libwxbase3.0-dev libwxgtk3.0-0-unofficial libwxgtk3.0-dev wx3.0-headers wx-common libwxbase3.0-dbg libwxgtk3.0-dbg wx3.0-i18n    
     - sudo apt-get install -y libcppunit-dev
+    - sudo apt-get install -y libjbig0
+    - sudo apt-get install -y liblzma5 
 
 script:
     - pushd build
