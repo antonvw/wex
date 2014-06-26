@@ -262,23 +262,12 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 #if wxUSE_STATUSBAR
     case ID_UPDATE_STATUS_BAR:
     {
-    wxExSTC* stc = GetSTC();
-    
-    if (stc != NULL && stc->HasFocus()) 
-    {
-      UpdateStatusBar(stc, "PaneInfo"); 
-      UpdateStatusBar(stc, "PaneLexer"); 
-      UpdateStatusBar(stc, "PaneFileType"); 
-    }
-    else
-    {
       wxExListView* lv = GetListView();
       
       if (lv != NULL && lv->HasFocus())
       {
         UpdateStatusBar(lv);
       }
-    }
     }
     break;
 #endif
