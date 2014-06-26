@@ -1214,6 +1214,8 @@ void wxExSTC::GotoLineAndSelect(
     // Reset selection, seems necessary.
     SelectNone();
   }
+
+  wxExFrame::UpdateStatusBar(this, "PaneInfo"); 
 }
 
 void wxExSTC::GuessType()
@@ -1570,6 +1572,16 @@ void wxExSTC::OnChar(wxKeyEvent& event)
     }
   
     event.Skip();
+    
+    if (m_vi.GetIsActive())
+    {
+#if wxUSE_STATUSBAR
+      // Maybe check whether this is a navigate key...
+      wxExFrame::UpdateStatusBar(this, "PaneInfo"); 
+      wxExFrame::UpdateStatusBar(this, "PaneLexer"); 
+      wxExFrame::UpdateStatusBar(this, "PaneFileType"); 
+#endif
+    }
   }
 
   if (
@@ -1758,6 +1770,13 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
   {
     event.Skip();
   }
+
+#if wxUSE_STATUSBAR
+  // Maybe check whether this is a navigate key...
+  wxExFrame::UpdateStatusBar(this, "PaneInfo"); 
+  wxExFrame::UpdateStatusBar(this, "PaneLexer"); 
+  wxExFrame::UpdateStatusBar(this, "PaneFileType"); 
+#endif
 }
 
 void wxExSTC::OnKeyUp(wxKeyEvent& event)
