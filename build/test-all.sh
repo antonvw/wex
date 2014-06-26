@@ -16,6 +16,11 @@ if [ ! -d ~/.wxex-test ]; then
   cp ../extension/data/*.xml ~/.wxex-test
 fi
 
+if [ ! -d ~/.wxex-test-gui ]; then
+  mkdir ~/.wxex-test-gui
+  cp ../extension/data/*.xml ~/.wxex-test-gui
+fi
+
 if [ ! -d ~/.wxex-test-rep ]; then
   mkdir ~/.wxex-test-rep
   cp ../extension/data/*.xml ~/.wxex-test-rep
