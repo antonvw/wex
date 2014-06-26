@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/config.h>
@@ -10,33 +10,6 @@
 
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
-
-void TestFixture::testConfig()
-{
-  wxConfig* cfg = new wxConfig(
-    wxEmptyString, 
-    wxEmptyString, 
-    "test.cfg", 
-    wxEmptyString, 
-    wxCONFIG_USE_LOCAL_FILE);
-    
-  const int max = 100000;
-
-  wxStopWatch sw;
-  sw.Start();
-
-  for (int j = 0; j < max; j++)
-  {
-    cfg->Read("test", 0l);
-  }
-
-  const long config = sw.Time();
-  
-  CPPUNIT_ASSERT(config < 150);
-
-  Report(wxString::Format(
-    "wxConfig::Read %d items in %ld ms", max, config).ToStdString());
-}
 
 void TestFixture::testDir()
 {
@@ -214,10 +187,6 @@ void TestFixture::testTool()
 wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
-  addTest(new CppUnit::TestCaller<TestFixture>(
-    "testConfig",
-    &TestFixture::testConfig));
-    
   addTest(new CppUnit::TestCaller<TestFixture>(
     "testDir",
     &TestFixture::testDir));
