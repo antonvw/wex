@@ -66,6 +66,7 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_START_DRAG(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_UPDATEUI(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
 
 wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
@@ -432,10 +433,6 @@ void wxExSTC::ClearDocument(bool set_savepoint)
   
   ClearAll();
   
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(wxEmptyString, "PaneInfo");
-#endif
-
   if (set_savepoint)
   {
     EmptyUndoBuffer();
@@ -1214,8 +1211,6 @@ void wxExSTC::GotoLineAndSelect(
     // Reset selection, seems necessary.
     SelectNone();
   }
-
-  wxExFrame::UpdateStatusBar(this, "PaneInfo"); 
 }
 
 void wxExSTC::GuessType()
@@ -1572,16 +1567,6 @@ void wxExSTC::OnChar(wxKeyEvent& event)
     }
   
     event.Skip();
-    
-    if (m_vi.GetIsActive())
-    {
-#if wxUSE_STATUSBAR
-      // Maybe check whether this is a navigate key...
-      wxExFrame::UpdateStatusBar(this, "PaneInfo"); 
-      wxExFrame::UpdateStatusBar(this, "PaneLexer"); 
-      wxExFrame::UpdateStatusBar(this, "PaneFileType"); 
-#endif
-    }
   }
 
   if (
@@ -1770,13 +1755,6 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
   {
     event.Skip();
   }
-
-#if wxUSE_STATUSBAR
-  // Maybe check whether this is a navigate key...
-  wxExFrame::UpdateStatusBar(this, "PaneInfo"); 
-  wxExFrame::UpdateStatusBar(this, "PaneLexer"); 
-  wxExFrame::UpdateStatusBar(this, "PaneFileType"); 
-#endif
 }
 
 void wxExSTC::OnKeyUp(wxKeyEvent& event)
@@ -1904,6 +1882,11 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
       m_vi.Command(event.GetText().Mid(m_AutoComplete.size()));
     }
   }
+  else if (event.GetEventType() == wxEVT_STC_UPDATEUI)
+  {
+    event.Skip();
+    wxExFrame::UpdateStatusBar(this, "PaneInfo");
+  }
   else
   {
     wxFAIL;
@@ -1961,7 +1944,6 @@ bool wxExSTC::Open(
   }
   else
   {
-    wxExFrame::StatusText(wxEmptyString, "PaneInfo");
     success = false;
   }
   
