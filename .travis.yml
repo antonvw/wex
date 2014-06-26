@@ -29,4 +29,5 @@ script:
     - g++ --version
     - pushd build
     - make
+    - ./test-all
     - popd
