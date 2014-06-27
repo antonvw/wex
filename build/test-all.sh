@@ -26,13 +26,21 @@ if [ ! -d ~/.wxex-test-rep ]; then
   cp ../extension/data/*.xml ~/.wxex-test-rep
 fi
 
+xclock &
+
 echo "-- test base --"
 $TESTDIR/wxex-test-base > $ORG/test-base.log
+
+xclock &
 
 echo "-- test gui --"
 $TESTDIR/wxex-test-gui > $ORG/test-gui.log
 
+xclock &
+
 echo "-- test gui report --"
 $TESTDIR/wxex-test-gui-report > $ORG/test-gui-report.log
+
+xclock &
 
 cat *.log
