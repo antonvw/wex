@@ -15,7 +15,6 @@ before_install:
     - export DISPLAY=:99.0
 # take care that recently-used.xbel file can be written
     - export XDG_DATA_HOME=$PWD
-    - unsetenv SESSION_MANAGER
     - sh -e /etc/init.d/xvfb start
     - sudo apt-key adv --fetch-keys http://repos.codelite.org/CodeLite.asc
     - sudo apt-add-repository 'deb http://repos.codelite.org/wx3.0.1/ubuntu/ precise universe'

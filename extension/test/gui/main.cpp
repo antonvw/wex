@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013
+// Copyright: (c) 2014
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cppunit/ui/text/TestRunner.h>
@@ -21,42 +21,15 @@ bool wxExTestApp::OnInit()
     return false;
   }
 
-  m_Frame = new wxExTestFrame(NULL, 
-    wxID_ANY, wxTheApp->GetAppDisplayName());
+  wxExManagedFrame* frame = new 
+    wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
     
-  m_Frame->Show(true);
+  frame->Show(true);
   wxLog::SetActiveTarget(new wxLogStderr());
   
   wxLogStatus(GetCatalogDir());
   wxLogStatus(GetLocale().GetLocale());
   
-  return true;
-}
-
-int wxExTestApp::OnRun()
-{
-  wxExApp::OnRun();
-  
-  return !m_Frame->Success();
-}
-
-BEGIN_EVENT_TABLE(wxExTestFrame, wxExManagedFrame)
-  EVT_TIMER(-1, wxExTestFrame::OnTimer)
-END_EVENT_TABLE()
-
-wxExTestFrame::wxExTestFrame(wxWindow* parent,
-  wxWindowID id,
-  const wxString& title,
-  long style)
-  : wxExManagedFrame(parent, id, title, style)
-  , m_Timer(this)
-  , m_Success(false)
-{
-  m_Timer.Start(10, true);
-}
-
-void wxExTestFrame::OnTimer(wxTimerEvent& event)
-{
   CppUnit::TextUi::TestRunner runner;
 
   wxExAppTestSuite* suite = new wxExAppTestSuite;
@@ -64,5 +37,10 @@ void wxExTestFrame::OnTimer(wxTimerEvent& event)
   runner.addTest(suite);
   m_Success = runner.run("", false);
   
-  wxTheApp->ExitMainLoop();
+  return true;
+}
+
+int wxExTestApp::OnRun()
+{
+  return !m_Success;
 }
