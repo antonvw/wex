@@ -19,25 +19,6 @@ public:
   wxExAppTestSuite();
 };
 
-class wxExTestFrame : public wxExManagedFrame
-{
-public:
-  wxExTestFrame(wxWindow* parent,
-    wxWindowID id,
-    const wxString& title,
-    long style = wxDEFAULT_FRAME_STYLE);
-    
-  bool Success() const {return m_Success;};
-private:
-  void OnTimer(wxTimerEvent& event);
-  
-  wxTimer m_Timer;
-  
-  bool m_Success;
-  
-  DECLARE_EVENT_TABLE()
-};
-
 /// Derive your application from wxExApp.
 class wxExTestApp: public wxExApp
 {
@@ -50,7 +31,7 @@ private:
   virtual bool OnInit();
   virtual int OnRun();
   
-  wxExTestFrame* m_Frame;
+  bool m_Success;
 };
 
 /// CppUnit gui test fixture.
