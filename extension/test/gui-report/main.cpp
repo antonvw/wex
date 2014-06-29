@@ -45,8 +45,6 @@ bool wxExTestApp::OnInit()
   SetAppName("wxex-test-gui-report");
   wxSystemOptions::SetOption("gtk.desktop", "GNOME");
   
-  printf("OnInit\n");
-
   if (!wxExApp::OnInit())
   {
     return false;
