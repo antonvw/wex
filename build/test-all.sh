@@ -32,9 +32,10 @@ $TESTDIR/wxex-test-base > $ORG/test-base.log
 echo "-- test gui --"
 $TESTDIR/wxex-test-gui > $ORG/test-gui.log
 
-ps
-
-echo "-- test gui report --"
-$TESTDIR/wxex-test-gui-report > $ORG/test-gui-report.log
+# Skip this test for Travis, it hangs the gui?
+if [ ! $TRAVIS ]; then
+  echo "-- test gui report --"
+  $TESTDIR/wxex-test-gui-report > $ORG/test-gui-report.log
+fi
 
 cat *.log
