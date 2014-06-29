@@ -11,6 +11,7 @@
 #endif
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/TestRunner.h>
+#include <wx/sysopt.h>
 #include <wx/extension/report/frame.h>
 #include "test.h"
 
@@ -42,6 +43,9 @@ wxExListViewFileName* FrameWithHistory::Activate(
 bool wxExTestApp::OnInit()
 {
   SetAppName("wxex-test-gui-report");
+  wxSystemOptions::SetOption("gtk.desktop", "GNOME");
+  
+  printf("OnInit\n");
 
   if (!wxExApp::OnInit())
   {
