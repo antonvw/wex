@@ -199,7 +199,7 @@ bool wxExAddressRange::Filter(const wxString& command) const
     return false;
   }
 
-  const wxString filename("__TMPFILE__" + wxDateTime::Now().FormatTime());
+  const wxString filename("__TMPFILE__");
   
   wxTextFile file(filename);
   
