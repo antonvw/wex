@@ -34,6 +34,8 @@ script:
     - sudo ln -s /usr/bin/g++-4.8 /usr/bin/g++
     - wx-config --cxx
     - g++ --version
+    - uniq --version
+    - sort --version
     - pushd build
     - make
     - ./test-all.sh

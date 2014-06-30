@@ -990,8 +990,16 @@ void wxExGuiTestFixture::link(
     path.c_str(), expect.c_str(), 
     expect_line_no, expect_col_no);
 #endif
+
+  if (!expect.empty())
+  {
+    CPPUNIT_ASSERT(link.GetPath(path, line_no, col_no).Contains(expect));
+  }
+  else
+  {
+    CPPUNIT_ASSERT(link.GetPath(path, line_no, col_no) == expect);
+  }
   
-  CPPUNIT_ASSERT(link.GetPath(path, line_no, col_no) == expect);
   CPPUNIT_ASSERT(line_no == expect_line_no);
   CPPUNIT_ASSERT(col_no == expect_col_no);
 }
