@@ -18,6 +18,8 @@
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
+#define DEBUG 1
+
 void wxExGuiTestFixture::setUp()
 {
   // Create the global lexers object, 

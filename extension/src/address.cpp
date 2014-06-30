@@ -22,6 +22,8 @@
 
 #if wxUSE_GUI
 
+#define DEBUG 1
+
 wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
   : wxString(address)
   , m_Ex(ex)
@@ -191,6 +193,9 @@ bool wxExAddressRange::Filter(const wxString& command) const
 
   if (!IsOk() || end_line < begin_line)
   {
+#ifdef DEBUG
+    wxLogMessage("Range error");
+#endif
     return false;
   }
 
@@ -198,8 +203,15 @@ bool wxExAddressRange::Filter(const wxString& command) const
   
   wxTextFile file(filename);
   
+#ifdef DEBUG
+  wxLogMessage("Working dir: " + wxGetCwd());
+#endif
+  
   if (file.Exists() || !file.Create())
   {
+#ifdef DEBUG
+    wxLogMessage("File error: " + filename);
+#endif
     return false;
   }
 
@@ -210,6 +222,9 @@ bool wxExAddressRange::Filter(const wxString& command) const
   
   if (!file.Write())
   {
+#ifdef DEBUG
+    wxLogMessage("File write error: " + filename);
+#endif
     return false;
   }
     
@@ -241,6 +256,10 @@ bool wxExAddressRange::Filter(const wxString& command) const
     }
   }
   
+#ifdef DEBUG
+    wxLogMessage("Process error: " + command);
+#endif
+
   return false;
 }
 
