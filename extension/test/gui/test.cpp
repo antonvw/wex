@@ -18,8 +18,6 @@
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
-#define DEBUG 1
-
 void wxExGuiTestFixture::setUp()
 {
   // Create the global lexers object, 
@@ -1034,7 +1032,7 @@ void wxExGuiTestFixture::testLink()
   
   // Test output ls -l.
   // -rw-rw-r-- 1 anton anton  2287 nov 17 10:53 test.h
-  link(lnk, "-rw-rw-r-- 1 anton anton 35278 nov 24 16:09 test.h", wxGetHomeDir() + "/wxExtension/build/test.h");
+  link(lnk, "-rw-rw-r-- 1 anton anton 35278 nov 24 16:09 test.h", "/wxExtension/build/test.h");
 
   // Test existing file in the basepath.
   link(lnk, "test", "/usr/bin/test");

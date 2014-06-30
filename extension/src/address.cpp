@@ -22,8 +22,6 @@
 
 #if wxUSE_GUI
 
-#define DEBUG 1
-
 wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
   : wxString(address)
   , m_Ex(ex)
