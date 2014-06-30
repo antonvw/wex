@@ -1027,10 +1027,10 @@ void wxExGuiTestFixture::testLink()
   link(lnk, "on xxxx: not a number");
   
   // Test existing file in current dir.
-  link(lnk, "test.h", wxGetHomeDir() + "/wxExtension/build/test.h");
-  link(lnk, "  test.h", wxGetHomeDir() + "/wxExtension/build/test.h");
-  link(lnk, "test-special.h", wxGetHomeDir() + "/wxExtension/build/test-special.h");
-  link(lnk, "  test-special.h", wxGetHomeDir() + "/wxExtension/build/test-special.h");
+  link(lnk, "test.h", "/wxExtension/build/test.h");
+  link(lnk, "  test.h", "/wxExtension/build/test.h");
+  link(lnk, "test-special.h", "/wxExtension/build/test-special.h");
+  link(lnk, "  test-special.h", "/wxExtension/build/test-special.h");
   
   // Test output ls -l.
   // -rw-rw-r-- 1 anton anton  2287 nov 17 10:53 test.h
@@ -1059,8 +1059,8 @@ void wxExGuiTestFixture::testLink()
   link(lnk, "test:500000", "/usr/bin/test", 500000);
   link(lnk, "test:500000:599", "/usr/bin/test", 500000, 599);
   link(lnk, "skip skip test:50", "/usr/bin/test", 50);
-  link(lnk, "test-special.h:10", wxGetHomeDir() + "/wxExtension/build/test-special.h", 10);
-  link(lnk, "test-special.h:10:2", wxGetHomeDir() + "/wxExtension/build/test-special.h", 10, 2);
+  link(lnk, "test-special.h:10", "/wxExtension/build/test-special.h", 10);
+  link(lnk, "test-special.h:10:2", "/wxExtension/build/test-special.h", 10, 2);
   // po file format
   link(lnk, "#: test:120", "/usr/bin/test", 120);
   
