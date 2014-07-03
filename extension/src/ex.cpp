@@ -229,7 +229,10 @@ bool wxExEx::Command(const wxString& command)
       m_Process = new wxExProcess;
     }
     
-    m_Process->Execute(command.AfterFirst('!'));
+    m_Process->Execute(
+      command.AfterFirst('!'),
+      wxEXEC_ASYNC,
+      m_STC->GetFileName().GetPath());
   }
   else if (CommandRange(command.AfterFirst(':')))
   {
