@@ -15,8 +15,6 @@
 #include <wx/filehistory.h>
 #include "test.h"
 
-#define DEBUG  1
-
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 

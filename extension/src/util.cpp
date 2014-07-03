@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wxExtension utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -161,20 +161,32 @@ bool wxExAutoCompleteFileName(
     v.push_back(filename);
   }
 
+  std::sort(v.begin() + 1, v.end());
+
   if (v.size() > 2)
   {
     int min_equal_size = 0;
     
     for (int i = 0; i < v[1].size(); i++)
     {
-      if (v[1].GetChar(i) == v[2].GetChar(i))
+      bool all_ok = true;
+      
+      for (int j = 1 + 1; j < v.size() && all_ok; j++)
+      {
+        if (v[1].GetChar(i) != v[j].GetChar(i))
+        {
+          all_ok = false;
+        }
+      }
+    
+      if (all_ok)
       {
         min_equal_size++;
       }
     }
   
     v[0] = v[1].Mid(
-      word.length(), min_equal_size -word.length());
+      word.length(), min_equal_size - word.length());
   }
 
   return true;
