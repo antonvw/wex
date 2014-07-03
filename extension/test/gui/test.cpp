@@ -15,6 +15,8 @@
 #include <wx/filehistory.h>
 #include "test.h"
 
+#define DEBUG  1
+
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
@@ -1845,6 +1847,14 @@ void wxExGuiTestFixture::testUtil()
   // wxExAutoCompleteFileName
   std::vector<wxString> v;
   CPPUNIT_ASSERT( wxExAutoCompleteFileName("te", v));
+  
+#ifdef DEBUG  
+  for (int i = 0; i < v.size(); i++)
+  {
+    wxLogMessage(v[i]);
+  }
+#endif
+
   CPPUNIT_ASSERT( v[0] == "st");
   CPPUNIT_ASSERT(!wxExAutoCompleteFileName("XX", v));
   CPPUNIT_ASSERT( v[0] == "st");
