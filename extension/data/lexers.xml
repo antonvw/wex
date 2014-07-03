@@ -1860,7 +1860,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
         <def style ="variable"> fore:green </def>
         
         <colour name="caretforeground"> white </colour>
-        <colour name="caretlinebackground"> dim grey </colour>
+        <colour name="caretlinebackground"> dark slate grey </colour>
         <colour name="edge"> dim grey </colour>
         <colour name="selforeground"> black </colour>
         <colour name="selbackground"> green </colour>
@@ -2446,6 +2446,9 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <style no="triple"> comment </style>
       <style no="tripledouble"> comment </style>
     </styles>
+      <properties>
+      <property name="tab.timmy.whinge.level"> 1 </property>
+    </properties>
     <keywords set-0="python"/>
     <comments begin1="#"/>
   </lexer>
