@@ -28,9 +28,7 @@ fi
 
 echo "-- test base --"
 $TESTDIR/wxex-test-base > $ORG/test-base.log
-
 RC=$?
-echo $RC
 
 echo "-- test gui --"
 $TESTDIR/wxex-test-gui > $ORG/test-gui.log
