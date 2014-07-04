@@ -29,13 +29,30 @@ fi
 echo "-- test base --"
 $TESTDIR/wxex-test-base > $ORG/test-base.log
 
+RC=$?
+echo $RC
+
 echo "-- test gui --"
 $TESTDIR/wxex-test-gui > $ORG/test-gui.log
+NRC=$?
+
+if [ $RC -eq "0" ]; then
+  RC=$NRC
+fi
 
 # Skip this test for Travis, it hangs the gui?
 if [ ! $TRAVIS ]; then
   echo "-- test gui report --"
   $TESTDIR/wxex-test-gui-report > $ORG/test-gui-report.log
+  NRC=$?
+  
+  if [ $RC -eq "0" ]; then
+    RC=$NRC
+  fi
 fi
 
 cat *.log
+
+rm *.log
+
+return $RC
