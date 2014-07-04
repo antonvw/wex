@@ -161,8 +161,6 @@ bool wxExAutoCompleteFileName(
     v.push_back(filename);
   }
 
-  std::sort(v.begin() + 1, v.end());
-
   if (v.size() > 2)
   {
     int min_equal_size = 0;
