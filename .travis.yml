@@ -35,6 +35,6 @@ script:
     - wx-config --cxx
     - g++ --version
     - pushd build
-    - make
+    - make -j 4
     - ./test-all.sh
     - popd
