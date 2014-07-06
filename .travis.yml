@@ -24,7 +24,7 @@ before_install:
 # first add dependencies for libwxgtk3
     - sudo apt-get install -y liblzma5 
     - sudo apt-get install -y libjbig0
-    - sudo apt-get install -y libwxbase3.0-0-unofficial libwxbase3.0-dev libwxgtk3.0-0-unofficial libwxgtk3.0-dev wx3.0-headers wx-common libwxbase3.0-dbg libwxgtk3.0-dbg wx3.0-i18n    
+    - sudo apt-get install -y libwxbase3.0-0-unofficial libwxbase3.0-dev libwxgtk3.0-0-unofficial libwxgtk3.0-dev wx3.0-headers wx-common wx3.0-i18n    
     - sudo apt-get install -y libcppunit-dev
 # coreutils needed for uniq and sort used in testing
     - sudo apt-get install -y coreutils
