@@ -1887,6 +1887,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     <marker no="ex_marknum_vi"> mark_circle,blue,turquoise </marker>
     
     <indicator no="0"> indic_box,styleindicatorfind </indicator>
+    <indicator no="1"> indic_squiggle,red </indicator>
     
     <!-- this style is applied before all other styles -->
     <style no="style_default"> styledefault </style>
