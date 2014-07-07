@@ -30,17 +30,15 @@ bool wxExTestApp::OnInit()
   wxLogStatus(GetCatalogDir());
   wxLogStatus(GetLocale().GetLocale());
   
-  CppUnit::TextUi::TestRunner runner;
-
-  wxExAppTestSuite* suite = new wxExAppTestSuite;
-
-  runner.addTest(suite);
-  m_Success = runner.run("", false);
-  
   return true;
 }
 
 int wxExTestApp::OnRun()
 {
-  return !m_Success;
+  CppUnit::TextUi::TestRunner runner;
+
+  wxExAppTestSuite* suite = new wxExAppTestSuite;
+  runner.addTest(suite);
+  
+  return !runner.run("", false);
 }

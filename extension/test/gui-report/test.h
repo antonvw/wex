@@ -33,13 +33,11 @@ class wxExTestApp: public wxExApp
 {
 public:
   /// Constructor.
-  wxExTestApp() : m_Success(false) {}
+  wxExTestApp() {}
 private:
   /// Override the OnInit.
   virtual bool OnInit();
   virtual int OnRun();
-  
-  bool m_Success;
 };
 
 /// CppUnit test suite.

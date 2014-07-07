@@ -1403,9 +1403,6 @@ void wxExGuiTestFixture::testProcess()
   shell->ProcessChar('d');
   shell->ProcessChar('\r');
   
-  wxLogMessage("SHELL: ");
-  wxLogMessage(shell->GetText());
-  
   CPPUNIT_ASSERT( shell->GetText().Contains("home"));
 //  CPPUNIT_ASSERT( cwd != wxGetCwd());
 

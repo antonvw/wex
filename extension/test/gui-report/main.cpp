@@ -56,18 +56,16 @@ bool wxExTestApp::OnInit()
   frame->Show(true);
 
   wxLog::SetActiveTarget(new wxLogStderr());
-    
-  CppUnit::TextUi::TestRunner runner;
-
-  wxExTestSuite* suite = new wxExTestSuite;
-
-  runner.addTest(suite);
-  m_Success = runner.run("", false);
   
   return true;
 }
 
 int wxExTestApp::OnRun()
 {
-  return !m_Success;
+  CppUnit::TextUi::TestRunner runner;
+
+  wxExTestSuite* suite = new wxExTestSuite;
+  runner.addTest(suite);
+  
+  return !runner.run("", false);
 }
