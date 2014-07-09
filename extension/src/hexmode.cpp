@@ -282,7 +282,7 @@ wxUniChar wxExHexModeLine::Printable(unsigned int c) const
 {
   // We do not want control chars (\n etc.) to be printed,
   // as that disturbs the hex view field.
-  if (isascii(c) && !iscntrl(c))
+  if (wxIsascii(c) && !iscntrl(c))
   {
     return c;
   }
