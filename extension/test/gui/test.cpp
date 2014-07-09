@@ -1306,13 +1306,13 @@ void wxExGuiTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->GetPageCount() == 0);
   
   // Test ForEach. ForEach expects wxExSTC pages.  
-  wxExSTC* stc1 = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
-  wxExSTC* stc2 = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
-  wxExSTC* stc3 = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  wxExSTC* stc_x = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  wxExSTC* stc_y = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  wxExSTC* stc_z = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
   
-  CPPUNIT_ASSERT(notebook->AddPage(stc1, "key1") != NULL);
-  CPPUNIT_ASSERT(notebook->AddPage(stc2, "key2") != NULL);
-  CPPUNIT_ASSERT(notebook->AddPage(stc3, "key3") != NULL);
+  CPPUNIT_ASSERT(notebook->AddPage(stc_x, "key1") != NULL);
+  CPPUNIT_ASSERT(notebook->AddPage(stc_y, "key2") != NULL);
+  CPPUNIT_ASSERT(notebook->AddPage(stc_z, "key3") != NULL);
   
   CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_SET_LEXER));
   CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_SET_LEXER_THEME));

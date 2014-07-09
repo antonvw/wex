@@ -668,7 +668,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
 
 void wxExViMacros::SetRegister(const char name, const wxString& value)
 {
-  if (!isascii(name))
+  if (!wxIsascii(name))
   {
     return;
   }
