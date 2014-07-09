@@ -400,7 +400,7 @@ wxExSTC* wxExProcess::GetSTC()
   return m_Dialog != NULL ? m_Dialog->GetSTC(): NULL;
 }
 
-bool wxExProcess::HandleCommand(const wxString& command) const
+bool wxExProcess::HandleCommand(const wxString& command)
 {
   wxString rest;
   
@@ -429,6 +429,13 @@ bool wxExProcess::HandleCommand(const wxString& command) const
     {
       wxSetWorkingDirectory(rest);
     }
+  }
+  else if (
+    command == "exit" && 
+    m_Dialog->GetSTC()->GetLexer().IsKeyword("exit"))
+  {
+    Kill();
+    return false;
   }
   
   return true;

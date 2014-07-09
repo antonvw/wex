@@ -2,7 +2,7 @@
 // Name:      process.h
 // Purpose:   Declaration of class wxExProcess
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_PROCESS_H
@@ -105,7 +105,7 @@ protected:
   void OnTimer(wxTimerEvent& event);
 private:
   bool CheckInput(const wxString& command = wxEmptyString);
-  bool HandleCommand(const wxString& command) const;
+  bool HandleCommand(const wxString& command);
 
   bool m_Busy;
   bool m_Error;
