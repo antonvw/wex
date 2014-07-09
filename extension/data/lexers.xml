@@ -2321,7 +2321,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     </keywords>
   </lexer>
   <lexer name="kix"/>
-  <lexer name="latex"/>
+  <lexer name="latex" extensions="*.tex"/>
   <lexer name="lisp"/>
   <lexer name="lot"/>
   <lexer name="lout"/>
