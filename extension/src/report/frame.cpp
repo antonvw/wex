@@ -338,11 +338,27 @@ const wxString wxExFrameWithHistory::GetFindInCaption(int id) const
 
 const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
 {
-  wxString log = _("Searching for") + ": " + wxExFindReplaceData::Get()->GetFindString();
-
-  if (replace)
+  wxString log;
+  
+  // Printing a % in wxLogStatus gives assert
+  
+  if (wxExFindReplaceData::Get()->GetFindString().Contains("%"))
   {
-    log += " " + _("replacing with") + ": " + wxExFindReplaceData::Get()->GetReplaceString();
+    log = _("Searching");
+    
+    if (replace && wxExFindReplaceData::Get()->GetReplaceString().Contains("%"))
+    {
+      log += " " + _("replacing");
+    }
+  }
+  else
+  {
+    log = _("Searching for") + ": " + wxExFindReplaceData::Get()->GetFindString();
+
+    if (replace)
+    {
+      log += " " + _("replacing with") + ": " + wxExFindReplaceData::Get()->GetReplaceString();
+    }
   }
 
   return log;
