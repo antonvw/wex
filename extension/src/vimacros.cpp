@@ -2,7 +2,7 @@
 // Name:      vimacros.cpp
 // Purpose:   Implementation of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -719,6 +719,37 @@ void wxExViMacros::StartRecording(const wxString& macro)
   wxLogStatus(_("Macro recording"));
 }
 
+bool wxExViMacros::StartsWith(const wxString& text) const
+{
+  if (text.empty())
+  {
+    return false;
+  }
+
+  if (wxIsdigit(text[0]))
+  {
+    return false;
+  }
+  
+  for (const auto& it : m_Macros)
+  {
+    if (it.first.StartsWith(text))
+    {
+      return true;
+    }
+  }
+   
+  for (const auto& it : m_Variables)
+  {
+    if (it.first.StartsWith(text))
+    {
+      return true;
+    }
+  }
+  
+  return false;
+}
+  
 void wxExViMacros::StopRecording()
 {
   if (!m_IsRecording)

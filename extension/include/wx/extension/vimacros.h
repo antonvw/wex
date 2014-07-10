@@ -2,7 +2,7 @@
 // Name:      vimacros.h
 // Purpose:   Declaration of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVIMACROS_H
@@ -92,6 +92,9 @@ public:
   /// Starts recording a macro (appends to 
   /// existing macro if macro is single upper case character).
   void StartRecording(const wxString& macro);
+  
+  /// Does a recorded macro or variable starts with text.
+  bool StartsWith(const wxString& text) const;
   
   /// Stops recording.
   void StopRecording();

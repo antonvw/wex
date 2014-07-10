@@ -524,10 +524,15 @@ bool wxExVi::Command(const wxString& command)
                 {
                   MacroPlayback(macro, repeat);
                 }
-                else
+                else if (GetMacros().StartsWith(macro))
                 {
                   GetFrame()->StatusText(macro, "PaneMacro");
                   return false;
+                }
+                else
+                {
+                  m_Command.clear();
+                  GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
                 }
               }
               else if (RegAfter(wxUniChar(WXK_CONTROL_R), rest))
@@ -543,7 +548,7 @@ bool wxExVi::Command(const wxString& command)
               {
                 std::vector <wxString> v;
                   
-                if (wxExMatch("@(.+)@", rest, v) > 0)
+                if (wxExMatch("@([a-zA-Z].+)@", rest, v) > 0)
                 {
                   handled = MacroPlayback(v[0], repeat);
                   
@@ -553,10 +558,15 @@ bool wxExVi::Command(const wxString& command)
                     GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
                   }
                 }
-                else
+                else if (GetMacros().StartsWith(rest.Mid(1)))
                 {
                   GetFrame()->StatusText(rest.Mid(1), "PaneMacro");
                   return false;
+                }
+                else
+                {
+                  m_Command.clear();
+                  GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
                 }
               }
               else if (command == ":reg")
