@@ -432,6 +432,8 @@ void wxExGuiTestFixture::testEx()
   
   CPPUNIT_ASSERT(!ex->GetMacros().IsRecording());
   CPPUNIT_ASSERT( ex->GetMacros().IsRecorded("a"));
+  CPPUNIT_ASSERT( ex->GetMacros().StartsWith("a"));
+  CPPUNIT_ASSERT(!ex->GetMacros().StartsWith("b"));
   
   CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded("b"));
   
@@ -443,6 +445,8 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
   CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded("xxx"));
   CPPUNIT_ASSERT( ex->GetMacros().GetCount() > 0);
+  
+  CPPUNIT_ASSERT( ex->GetMacros().StartsWith("da"));
   
   CPPUNIT_ASSERT( ex->GetMacros().Expand(ex, "date"));
 //  CPPUNIT_ASSERT(!ex->GetMacros().Expand(ex, "xxx"));
@@ -1584,6 +1588,7 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT( stc->FindNext(wxString("more text")));
   CPPUNIT_ASSERT( stc->GetFindString() == "more text");
   CPPUNIT_ASSERT( stc->ReplaceAll("more", "less") == 1);
+  CPPUNIT_ASSERT( stc->ReplaceAll("more", "less") == 0);
   CPPUNIT_ASSERT(!stc->FindNext(wxString("more text")));
   CPPUNIT_ASSERT(!stc->FindNext());
   CPPUNIT_ASSERT( stc->FindNext(wxString("less text")));
@@ -1591,6 +1596,7 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(!stc->ReplaceNext());
   CPPUNIT_ASSERT(!stc->FindNext(wxString("less text")));
   CPPUNIT_ASSERT( stc->GetFindString() != "less text");
+  CPPUNIT_ASSERT( stc->ReplaceAll("%", "percent") == 0);
   
   stc->GotoLineAndSelect(1);
   CPPUNIT_ASSERT(stc->GetCurrentLine() == 0);
