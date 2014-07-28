@@ -305,6 +305,7 @@ bool wxExProcess::Execute(
   m_Dialog->SetProcess(this);
   m_Dialog->GetSTCShell()->EnableShell(!m_Sync);
   m_Dialog->GetSTCShell()->SetProcess(this);
+  m_Dialog->GetSTCShell()->SetFocus();
     
   m_HasStdError = false;
   

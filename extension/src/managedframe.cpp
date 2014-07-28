@@ -485,7 +485,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
     if (m_ex->Command(m_Prefix->GetLabel() + GetValue()))
     {
       const bool set_focus = 
-        (GetValue() == "n" || GetValue() == "prev");
+        (GetValue() == "n" || GetValue() == "prev" || GetValue().StartsWith("!"));
           
       m_Commands.remove(GetValue());
       m_Commands.push_front(GetValue());
