@@ -523,6 +523,7 @@ void wxExGuiTestFixture::testFileStatistics()
 void wxExGuiTestFixture::testFrame()
 {
   wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
+  frame->SetFocus(); // otherwise focus is on stc component caused by testEx
 
   std::vector<wxExStatusBarPane> panes;
 
