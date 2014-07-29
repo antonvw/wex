@@ -18,6 +18,8 @@
 #include <wx/extension/process.h>
 #include <wx/extension/util.h>
 
+const char autoCompSep = 3;
+
 #if wxUSE_GUI
 
 BEGIN_EVENT_TABLE(wxExSTCShell, wxExSTC)
@@ -67,6 +69,7 @@ wxExSTCShell::wxExSTCShell(
   ResetMargins(false); // do not reset divider margin
   SetName("SHELL");
   UseAutoComplete(false); // we have our own autocomplete
+  AutoCompSetSeparator(autoCompSep);
 
   // Start with a prompt.
   Prompt();
@@ -190,7 +193,7 @@ void wxExSTCShell::Expand()
       
         for (const auto& it : m_AutoCompleteList)
         {
-          list += it + " ";
+          list += it + autoCompSep;
         }
       
         list.Trim(); // skip last whitespace separator
