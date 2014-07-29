@@ -171,7 +171,8 @@ bool wxExAutoCompleteFileName(
       
       for (int j = 1 + 1; j < v.size() && all_ok; j++)
       {
-        if (v[1].GetChar(i) != v[j].GetChar(i))
+        if (v[1].size() != v[j].size() || 
+            v[1].GetChar(i) != v[j].GetChar(i))
         {
           all_ok = false;
         }
