@@ -1853,7 +1853,7 @@ void wxExGuiTestFixture::testUtil()
 #ifdef DEBUG  
   for (int i = 0; i < v.size(); i++)
   {
-    wxLogMessage(v[i]);
+    wxLogMessage("v[%d]=%s", i, v[i].c_str());
   }
 #endif
 
