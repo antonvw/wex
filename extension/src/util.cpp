@@ -163,15 +163,14 @@ bool wxExAutoCompleteFileName(
 
   if (v.size() > 2)
   {
-    int min_equal_size = 0;
-    
-    for (int i = 0; i < v[1].size(); i++)
-    {
-      bool all_ok = true;
+    int rest_equal_size = 0;
+    bool all_ok = true;
       
-      for (int j = 1 + 1; j < v.size() && all_ok; j++)
+    for (int i = word.length(); i < v[1].size() && all_ok; i++)
+    {
+      for (int j = 2; j < v.size() && all_ok; j++)
       {
-        if (v[1].size() != v[j].size() || 
+        if (i < v[j].size() && 
             v[1].GetChar(i) != v[j].GetChar(i))
         {
           all_ok = false;
@@ -180,12 +179,16 @@ bool wxExAutoCompleteFileName(
     
       if (all_ok)
       {
-        min_equal_size++;
+        rest_equal_size++;
       }
     }
+
+#ifdef DEBUG  
+    wxLogMessage("rest equal size: %d, word: %s", 
+      rest_equal_size, word.c_str());
+#endif
   
-    v[0] = v[1].Mid(
-      word.length(), min_equal_size - word.length());
+    v[0] = v[1].Mid(word.length(), rest_equal_size);
   }
 
   return true;
