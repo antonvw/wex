@@ -81,7 +81,7 @@ const wxString wxExAlignText(
 
 /// Tries to autocomplete text from a vector of strings,
 /// result stored in the string.
-/// Returns true if a match was found.
+/// Returns true if a unique match was found.
 bool wxExAutoComplete(
   /// text to be completed
   const wxString& text, 
