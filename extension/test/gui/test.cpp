@@ -1846,6 +1846,14 @@ void wxExGuiTestFixture::testUtil()
     wxExLexers::Get()->FindByName("cpp")).size() 
       == wxString("// headertest").size());
       
+  // wxExAutoComplete
+  wxString s;
+  CPPUNIT_ASSERT(!wxExAutoComplete("xxxx", 
+    stc->GetVi().GetMacros().Get(), s));
+  CPPUNIT_ASSERT( wxExAutoComplete("copy", 
+    stc->GetVi().GetMacros().Get(), s));
+  CPPUNIT_ASSERT( s == "copyright");
+  
   // wxExAutoCompleteFileName
   std::vector<wxString> v;
   CPPUNIT_ASSERT( wxExAutoCompleteFileName("te", v));
