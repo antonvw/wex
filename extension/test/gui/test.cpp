@@ -1850,9 +1850,9 @@ void wxExGuiTestFixture::testUtil()
   wxString s;
   CPPUNIT_ASSERT(!wxExAutoComplete("xxxx", 
     stc->GetVi().GetMacros().Get(), s));
-  CPPUNIT_ASSERT( wxExAutoComplete("copy", 
+  CPPUNIT_ASSERT( wxExAutoComplete("datet", 
     stc->GetVi().GetMacros().Get(), s));
-  CPPUNIT_ASSERT( s == "copyright");
+  CPPUNIT_ASSERT( s == "datetime");
   
   // wxExAutoCompleteFileName
   std::vector<wxString> v;

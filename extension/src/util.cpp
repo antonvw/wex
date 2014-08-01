@@ -128,16 +128,18 @@ bool wxExAutoComplete(
   const std::vector<wxString> & v,
   wxString& s)
 {
+  int matches = 0;
+  
   for (auto& it : v)
   {
     if (it.StartsWith(text))
     {
       s = it;
-      return true;
+      matches++;
     }
   }
-  
-  return false;
+
+  return (matches == 1);
 }
   
 bool wxExAutoCompleteFileName(
