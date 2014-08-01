@@ -305,7 +305,6 @@ bool wxExProcess::Execute(
   m_Dialog->SetProcess(this);
   m_Dialog->GetSTCShell()->EnableShell(!m_Sync);
   m_Dialog->GetSTCShell()->SetProcess(this);
-  m_Dialog->GetSTCShell()->SetFocus();
     
   m_HasStdError = false;
   
@@ -511,6 +510,11 @@ void wxExProcess::OnTerminate(int pid, int status)
 void wxExProcess::OnTimer(wxTimerEvent& event)
 {
   CheckInput();
+  
+  if (IsRunning())
+  {
+    m_Dialog->GetSTCShell()->SetFocus();
+  }
 }
 
 #if wxUSE_GUI
