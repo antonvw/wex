@@ -560,8 +560,25 @@ bool wxExVi::Command(const wxString& command)
                 }
                 else if (GetMacros().StartsWith(rest.Mid(1)))
                 {
-                  GetFrame()->StatusText(rest.Mid(1), "PaneMacro");
-                  return false;
+                  wxString s;
+                  
+                  if (wxExAutoComplete(rest.Mid(1), GetMacros().Get(), s))
+                  {
+                    GetFrame()->StatusText(s, "PaneMacro");
+                    
+                    handled = MacroPlayback(s, repeat);
+                    
+                    if (!handled)
+                    {
+                      m_Command.clear();
+                      GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
+                    }
+                  }
+                  else
+                  {
+                    GetFrame()->StatusText(rest.Mid(1), "PaneMacro");
+                    return false;
+                  }
                 }
                 else
                 {

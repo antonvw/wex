@@ -123,6 +123,23 @@ const wxString wxExAlignText(
   return out;
 }
 
+bool wxExAutoComplete(
+  const wxString& text, 
+  const std::vector<wxString> & v,
+  wxString& s)
+{
+  for (auto& it : v)
+  {
+    if (it.StartsWith(text))
+    {
+      s = it;
+      return true;
+    }
+  }
+  
+  return false;
+}
+  
 bool wxExAutoCompleteFileName(
   const wxString& text, 
   std::vector<wxString> & v)
