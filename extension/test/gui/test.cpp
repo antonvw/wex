@@ -1850,6 +1850,8 @@ void wxExGuiTestFixture::testUtil()
   wxString s;
   CPPUNIT_ASSERT(!wxExAutoComplete("xxxx", 
     stc->GetVi().GetMacros().Get(), s));
+  CPPUNIT_ASSERT(!wxExAutoComplete("date", // not unique!
+    stc->GetVi().GetMacros().Get(), s));
   CPPUNIT_ASSERT( wxExAutoComplete("datet", 
     stc->GetVi().GetMacros().Get(), s));
   CPPUNIT_ASSERT( s == "datetime");
