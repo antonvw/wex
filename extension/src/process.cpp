@@ -348,10 +348,14 @@ bool wxExProcess::Execute(
       {
         m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
       }
+
+      wxTheApp->Yield();
+      wxMilliSleep(100);
       
       if (IsRunning())
       {
         m_Timer->Start(100); // each 100 milliseconds
+        m_Dialog->GetSTCShell()->SetFocus();
       }
     }
     else
@@ -509,10 +513,7 @@ void wxExProcess::OnTerminate(int pid, int status)
 
 void wxExProcess::OnTimer(wxTimerEvent& event)
 {
-  if (CheckInput() && IsRunning())
-  {
-    m_Dialog->GetSTCShell()->SetFocus();
-  }
+  CheckInput();
 }
 
 #if wxUSE_GUI
