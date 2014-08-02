@@ -509,9 +509,7 @@ void wxExProcess::OnTerminate(int pid, int status)
 
 void wxExProcess::OnTimer(wxTimerEvent& event)
 {
-  CheckInput();
-  
-  if (IsRunning())
+  if (CheckInput() && IsRunning())
   {
     m_Dialog->GetSTCShell()->SetFocus();
   }
