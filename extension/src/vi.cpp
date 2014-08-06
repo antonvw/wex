@@ -727,7 +727,6 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'k': 
     case WXK_UP:
               NAVIGATE(repeat, Line, Up,       GetSTC()->GetCurrentLine() > 0, false); break;
-      break;
     // does not include wrapped lines
     case '+': 
     case WXK_RETURN:
