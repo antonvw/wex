@@ -275,10 +275,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
   {
     case WXK_RETURN:
     case WXK_TAB:
-      {
-      const bool processed = ProcessChar(key);
-      if (m_Echo && processed) event.Skip();
-      }
+      if (m_Echo && ProcessChar(key)) event.Skip();
       break;
     
     // Up or down key pressed, and at the end of document (and autocomplete active)

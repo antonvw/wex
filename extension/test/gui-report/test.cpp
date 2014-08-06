@@ -125,7 +125,7 @@ void wxExGuiReportTestFixture::testSTCWithFrame()
 void wxExGuiReportTestFixture::testTextFileWithListView()
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
-  FrameWithHistory* frame = (FrameWithHistory *)wxTheApp->GetTopWindow();
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   const wxExFileName fn(TEST_FILE);
   
   wxExListViewFileName* report = new wxExListViewFileName(
