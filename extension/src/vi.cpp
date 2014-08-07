@@ -905,7 +905,7 @@ bool wxExVi::CommandChar(int c, int repeat)
     case WXK_TAB:
       // just ignore tab, except on first col, then it indents
       if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) == 0)
-       {
+      {
         m_Command.clear();
         return false;
       }
@@ -914,8 +914,11 @@ bool wxExVi::CommandChar(int c, int repeat)
     case '[': 
     case ']': 
       for (int i = 0; i < repeat; i++) 
-        if (!GetSTC()->FindNext(c == '[' ? "{": "}", GetSearchFlags(), c == ']'))
+        if (!GetSTC()->FindNext("{", GetSearchFlags(), c == ']'))
+        {
+          m_Command.clear();
           return false;
+        }
       break;
       
     default:
