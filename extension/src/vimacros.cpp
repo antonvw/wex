@@ -759,7 +759,15 @@ void wxExViMacros::StopRecording()
   
   m_IsRecording = false;
   
-  wxLogStatus(wxString::Format(_("Macro '%s' is recorded"), m_Macro.c_str()));
+  if (!Get(m_Macro).empty())
+  {
+    wxLogStatus(wxString::Format(_("Macro '%s' is recorded"), m_Macro.c_str()));
+  }
+  else
+  {
+    m_Macro.clear();
+    wxExFrame::StatusText(wxEmptyString, "PaneMacro");
+  }
 }
 
 #endif // wxUSE_GUI
