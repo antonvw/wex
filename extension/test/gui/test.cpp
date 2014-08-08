@@ -2312,6 +2312,17 @@ void wxExGuiTestFixture::testVi()
   event.m_keyCode = WXK_NONE;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
   
+  // Test navigate with [ and ].
+  event.m_uniChar = '[';
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  event.m_uniChar= ']';
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  vi->GetSTC()->AppendText("{}");
+  event.m_uniChar = '[';
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  event.m_uniChar= ']';
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  
   // Vi command tests.
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( vi->Command("i"));
