@@ -871,6 +871,11 @@ bool wxExVi::CommandChar(int c, int repeat)
     case '%': GotoBrace(); break;
     case '*': FindWord(); break;
     case '#': FindWord(false); break;
+
+    case '|': 
+      GetSTC()->GotoPos(
+        GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()) + repeat - 1);
+      break;
     
     case '$': 
       switch (m_Mode)
