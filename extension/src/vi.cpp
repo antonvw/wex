@@ -228,25 +228,27 @@ bool wxExVi::Command(const wxString& command)
       // Handle ESCAPE: deselects and clears command buffer.
       if (!m_Dot && command.Last() == WXK_ESCAPE)
       {
+        bool action = false;
+        
         if (!GetSTC()->GetSelectedText().empty())
         {
           GetSTC()->SelectNone();
+          action = true;
         }
         
         if (m_Mode == MODE_NORMAL)
         {
-          wxBell();
-          
           m_Command.clear();
-
-          if (GetMacros().IsRecording())
-          {
-            GetMacros().StopRecording();
-          }
         }
         else
         {
           m_Mode = MODE_NORMAL;
+          action = true;
+        }
+      
+        if (!action)
+        {
+          wxBell();
         }
       }
       // Handle multichar commands.
