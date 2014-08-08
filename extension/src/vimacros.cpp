@@ -766,6 +766,7 @@ void wxExViMacros::StopRecording()
   else
   {
     m_Macro.clear();
+    wxLogStatus(wxEmptyString);
     wxExFrame::StatusText(wxEmptyString, "PaneMacro");
   }
 }
