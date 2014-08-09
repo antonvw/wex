@@ -783,6 +783,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   {
     char buffer[2];
     buffer[0] = (char)new_value;
+    buffer[1] = 0;
 
     if (m_vi.GetIsActive())
     {
