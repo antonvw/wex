@@ -196,10 +196,10 @@ bool wxExVi::Command(const wxString& command)
       
     case '/':
     case '?':
+      m_SearchForward = command.StartsWith("/");
+          
       if (command.length() > 1)
       {
-        m_SearchForward = command.StartsWith("/");
-          
         // This is a previous entered command.
         handled = GetSTC()->FindNext(
           command.Mid(1),
