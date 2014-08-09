@@ -784,7 +784,14 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
     char buffer[2];
     buffer[0] = (char)new_value;
 
-    AddTextRaw(buffer, 1);
+    if (m_vi.GetIsActive())
+    {
+      m_vi.Command(wxString(buffer));
+    }
+    else
+    {
+      AddTextRaw(buffer, 1);
+    }
     
     ProcessChar(new_value);
   }
