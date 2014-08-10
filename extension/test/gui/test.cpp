@@ -2480,6 +2480,30 @@ void wxExGuiTestFixture::testVi()
     CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   }
 
+  // Test /, ?, n and N.
+  stc->SetText("aaaaa\nbbbbb\nccccc\naaaaa");
+  CPPUNIT_ASSERT( vi->Command("/bbbbb"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 1);
+  CPPUNIT_ASSERT(!vi->Command("/d"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 1);
+  CPPUNIT_ASSERT( vi->Command("/a"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 3);
+  CPPUNIT_ASSERT( vi->Command("n"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 3);
+  CPPUNIT_ASSERT( vi->Command("N"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 3);
+  stc->SetText("aaaaa\nbbbbb\nccccc\naaaaa");
+  CPPUNIT_ASSERT( vi->Command("?bbbbb"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 1);
+  CPPUNIT_ASSERT(!vi->Command("?d"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 1);
+  CPPUNIT_ASSERT( vi->Command("?a"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
+  CPPUNIT_ASSERT( vi->Command("n"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
+  CPPUNIT_ASSERT( vi->Command("N"));
+  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
+  
   // Test substitute command.
   stc->SetText("xxxxxxxxxx\nxxxxxxxx\naaaaaaaaaa\n");
   CPPUNIT_ASSERT( vi->Command(":.="));
