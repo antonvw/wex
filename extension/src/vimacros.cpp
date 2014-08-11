@@ -584,8 +584,6 @@ void wxExViMacros::Record(const wxString& text, bool new_command)
     return;
   }
   
-  m_IsModified = true;
-  
   if (new_command) 
   {
     m_Macros[m_Macro].push_back(text);
@@ -694,6 +692,7 @@ void wxExViMacros::StartRecording(const wxString& macro)
   }
   
   m_IsRecording = true;
+  m_IsModified = true;
   
   if (macro.size() == 1)
   {
