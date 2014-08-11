@@ -2716,11 +2716,13 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT(!macros.IsRecording());
   
   macros.StartRecording("a");
+  CPPUNIT_ASSERT( macros.IsModified());
   CPPUNIT_ASSERT( macros.IsRecording());
   CPPUNIT_ASSERT(!macros.IsRecorded("a"));
   
   macros.StopRecording();
   CPPUNIT_ASSERT(!macros.IsRecording());
+  CPPUNIT_ASSERT( macros.IsModified());
   CPPUNIT_ASSERT(!macros.IsRecorded("a")); // still no macro
   CPPUNIT_ASSERT( macros.GetMacro().empty());
   
@@ -2803,6 +2805,8 @@ void wxExGuiTestFixture::testViMacros()
 
   // So save as last test.
   CPPUNIT_ASSERT( wxExViMacros::SaveDocument());
+  
+  CPPUNIT_ASSERT(!macros.IsModified());
   
   // A second save is not necessary.
   CPPUNIT_ASSERT(!macros.SaveDocument());
