@@ -2,7 +2,7 @@
 // Name:      property.cpp
 // Purpose:   Implementation of wxExProperty class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,20 +14,6 @@
 #include <wx/xml/xml.h>
 #include <wx/extension/property.h>
 
-wxExProperty::wxExProperty(const wxXmlNode* node)
-{
-  if (node != NULL)
-  {
-    Set(node);
-  }
-}
-
-wxExProperty::wxExProperty(const wxString& name, const wxString& value)
-  : m_Name(name)
-  , m_Value(value)
-{
-}
-  
 void wxExProperty::Apply(wxStyledTextCtrl* stc) const
 {
   if (IsOk())
@@ -39,11 +25,6 @@ void wxExProperty::Apply(wxStyledTextCtrl* stc) const
 void wxExProperty::ApplyReset(wxStyledTextCtrl* stc) const
 {
   stc->SetProperty(m_Name, wxEmptyString);
-}
-
-bool wxExProperty::IsOk() const
-{
-  return !m_Name.empty() && !m_Value.empty();
 }
 
 void wxExProperty::Set(const wxXmlNode* node)

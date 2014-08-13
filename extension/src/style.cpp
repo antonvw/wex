@@ -17,20 +17,6 @@
 #include <wx/extension/style.h>
 #include <wx/extension/lexers.h>
 
-wxExStyle::wxExStyle(const wxXmlNode* node, const wxString& macro)
-{
-  Set(node, macro);
-}
-
-wxExStyle::wxExStyle(
-  const wxString& no, 
-  const wxString& value,
-  const wxString& macro)
-  : m_Value(value)
-{
-  SetNo(no, macro);
-}
-
 void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 {
   // Currently the default style is constructed using
@@ -53,11 +39,6 @@ bool wxExStyle::ContainsDefaultStyle() const
 {
   const auto it = m_No.find(wxSTC_STYLE_DEFAULT);
   return (it != m_No.end());
-}
-
-bool wxExStyle::IsOk() const
-{
-  return !m_No.empty() && !m_Value.empty();
 }
 
 void wxExStyle::Set(const wxXmlNode* node, const wxString& macro)
