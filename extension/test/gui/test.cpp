@@ -2437,7 +2437,6 @@ void wxExGuiTestFixture::testVi()
   commands.clear();
   commands.push_back("b");
   commands.push_back("e");
-  commands.push_back("g");
   commands.push_back("h");
   commands.push_back("j");
   commands.push_back("k");
@@ -2557,6 +2556,8 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("fx"));
   CPPUNIT_ASSERT( vi->Command("Fx"));
   CPPUNIT_ASSERT( vi->Command(";"));
+  
+  CPPUNIT_ASSERT( vi->Command("gg"));
   
   CPPUNIT_ASSERT( vi->Command("yw"));
   CPPUNIT_ASSERT( vi->Command("yy"));
@@ -2690,7 +2691,7 @@ void wxExGuiTestFixture::testVi()
   stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
   CPPUNIT_ASSERT( stc->GetLineCount() == 12);
   stc->GotoLine(2);
-  CPPUNIT_ASSERT( vi->Command("g"));
+  CPPUNIT_ASSERT( vi->Command("gg"));
   CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
   CPPUNIT_ASSERT( vi->Command("1G"));
   CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);

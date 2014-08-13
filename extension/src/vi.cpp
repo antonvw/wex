@@ -410,6 +410,9 @@ bool wxExVi::Command(const wxString& command)
                 }
               }
               break;
+              
+            case CHR_TO_NUM('g', 'g'): GetSTC()->DocumentStart(); break;
+            
             case CHR_TO_NUM('y','w'):
               for (int i = 0; i < repeat; i++) GetSTC()->WordRightEnd();
               for (int j = 0; j < repeat; j++) GetSTC()->WordLeftExtend();
@@ -753,9 +756,6 @@ bool wxExVi::CommandChar(int c, int repeat)
     case WXK_PAGEDOWN:
               NAVIGATE(repeat, Page, Down,     true, false); break;
         
-    // Other commands.
-    case 'g': GetSTC()->DocumentStart(); break;
-      
     case 'n': 
       for (int i = 0; i < repeat; i++) 
         if (!GetSTC()->FindNext(
