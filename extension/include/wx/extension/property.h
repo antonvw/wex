@@ -2,7 +2,7 @@
 // Name:      property.h
 // Purpose:   Declaration of wxExProperty class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXPROPERTY_H
@@ -16,10 +16,13 @@ class WXDLLIMPEXP_BASE wxExProperty
 {
 public:
   /// Default constructor.
-  wxExProperty(const wxXmlNode* node = NULL);
+  wxExProperty(const wxXmlNode* node = NULL) {
+    if (node != NULL) Set(node);};
   
   /// Constructor using name, value pair.
-  wxExProperty(const wxString& name, const wxString& value);
+  wxExProperty(const wxString& name, const wxString& value)
+    : m_Name(name)
+    , m_Value(value){;};
 
   /// Applies this property to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
@@ -32,7 +35,8 @@ public:
   const wxString& GetName() const {return m_Name;};
 
   /// Returns true if property is valid.
-  bool IsOk() const;
+  bool IsOk() const {
+    return !m_Name.empty() && !m_Value.empty();};
   
   /// Override this property (so does not apply this property).
   void Set(const wxString& value) {m_Value = value;};

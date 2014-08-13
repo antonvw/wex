@@ -2,7 +2,7 @@
 // Name:      style.h
 // Purpose:   Declaration of wxExStyle class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTYLE_H
@@ -25,13 +25,16 @@ public:
   wxExStyle() {;};
   
   /// Constructor using xml node (sets no from the no attribute).
-  wxExStyle(const wxXmlNode* node, const wxString& macro);
+  wxExStyle(const wxXmlNode* node, const wxString& macro) {
+    Set(node, macro);};
 
   /// Constructor using no and value.
   wxExStyle(
     const wxString& no, 
     const wxString& value,
-    const wxString& macro = "global");
+    const wxString& macro = "global")
+    : m_Value(value) {
+    SetNo(no, macro);};
 
   /// Applies this style to stc component.
   /// If no style is present, STC StyleResetDefault is invoked.
@@ -41,7 +44,8 @@ public:
   bool ContainsDefaultStyle() const;
 
   /// Returns true if this style is valid.
-  bool IsOk() const;
+  bool IsOk() const {
+    return !m_No.empty() && !m_Value.empty();};
 private:
   void Set(const wxXmlNode* node, const wxString& macro);
   void SetNo(const wxString& no, const wxString& macro);
