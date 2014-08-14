@@ -20,6 +20,6 @@ There are also some classes to support database programming using the
 <a href="http://otl.sourceforge.net/">Oracle and ODBC Template Library</a>.
 
 <p>
-For building instruction see 
-<a href="https://github.com/antonvw/wxExtension/blob/master/README.md">README</a>.
+For build instructions see 
+<a href="https://github.com/antonvw/wxExtension/blob/v3.0.1/README.md">README</a>.
 */
