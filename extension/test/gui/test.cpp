@@ -2553,6 +2553,8 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( stc->GetText().Contains("second"));
   
   // Test other commands.
+  CPPUNIT_ASSERT( vi->Command("dG"));
+  CPPUNIT_ASSERT( vi->Command("dgg"));
   CPPUNIT_ASSERT( vi->Command("fx"));
   CPPUNIT_ASSERT( vi->Command("Fx"));
   CPPUNIT_ASSERT( vi->Command(";"));
