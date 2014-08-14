@@ -374,6 +374,7 @@ bool wxExVi::Command(const wxString& command)
                 }
               }
               break;
+            case CHR_TO_NUM('d','G'): Command(".,$d"); break;
             case CHR_TO_NUM('d','0'):
               if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
               {
@@ -411,7 +412,7 @@ bool wxExVi::Command(const wxString& command)
               }
               break;
               
-            case CHR_TO_NUM('g', 'g'): GetSTC()->DocumentStart(); break;
+            case CHR_TO_NUM('g','g'): GetSTC()->DocumentStart(); break;
             
             case CHR_TO_NUM('y','w'):
               for (int i = 0; i < repeat; i++) GetSTC()->WordRightEnd();
@@ -626,6 +627,10 @@ bool wxExVi::Command(const wxString& command)
                 }
                 
                 m_Dialog->Show();
+              }
+              else if (command == "dgg")
+              {
+                Command("1,.d");
               }
               else
               {
