@@ -962,6 +962,19 @@ void wxExGuiTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->GetThemeOk());
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetThemeMacros().empty());
 
+  CPPUNIT_ASSERT(!wxExLexers::Get()->SetTheme("xxx"));
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetTheme().empty());
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetThemeOk());
+  CPPUNIT_ASSERT( wxExLexers::Get()->SetTheme("torte"));
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetTheme() == "torte");
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetThemeOk());
+  wxExLexers::Get()->SetThemeNone();
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetTheme().empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetThemeOk());
+  wxExLexers::Get()->RestoreTheme();
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetTheme() == "torte");
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetThemeOk());
+  
   CPPUNIT_ASSERT(!wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(99, -1)));
   CPPUNIT_ASSERT( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0, -1)));
   CPPUNIT_ASSERT( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0, -1)));
