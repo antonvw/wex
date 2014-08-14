@@ -643,10 +643,18 @@ wxExLexers* wxExLexers::Set(wxExLexers* lexers)
   return old;
 }
 
-void wxExLexers::SetTheme(const wxString& theme)
+bool wxExLexers::SetTheme(const wxString& theme)
 {
-  m_Theme = theme;
-  wxConfigBase::Get()->Write("theme", m_Theme);  
+  const auto it = m_ThemeColours.find(theme);
+  
+  if (it != m_ThemeColours.end())
+  {
+    m_Theme = theme;
+    wxConfigBase::Get()->Write("theme", m_Theme);  
+    return true;
+  }
+
+  return false;  
 }
 
 void wxExLexers::SetThemeNone()
