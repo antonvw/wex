@@ -106,6 +106,9 @@ public:
   /// Returns true if the document is loaded.
   bool LoadDocument();
 
+  /// Restores theme from config (after SetThemeNone).
+  void RestoreTheme();
+  
   /// Returns true if specified marker is available.
   bool MarkerIsLoaded(const wxExMarker& marker) const;
 
@@ -113,7 +116,13 @@ public:
   /// to the previous current object 
   /// (both the parameter and returned value may be NULL). 
   static wxExLexers* Set(wxExLexers* lexers);
+  
+  /// Sets specified theme.
+  void SetTheme(const wxString& theme);
 
+  /// Temporary use the no theme, until you do RestoreTheme.
+  void SetThemeNone();
+  
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true and fills the lexer if you selected one.
   bool ShowDialog(

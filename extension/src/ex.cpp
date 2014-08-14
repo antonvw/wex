@@ -15,6 +15,7 @@
 #include <wx/extension/address.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
@@ -189,18 +190,16 @@ bool wxExEx::Command(const wxString& command)
   
     if (on)
     {
-      m_STC->SetLexer(m_STC->GetLexer().GetDisplayLexer());
+      wxExLexers::Get()->RestoreTheme();
+      m_STC->SetLexer(m_STC->GetFileName().GetLexer().GetDisplayLexer());
     }
     else
     {
       m_STC->ResetLexer();
+      wxExLexers::Get()->SetThemeNone();
     }
 
-//    m_StatusBar->ShowField(
-//      "PaneLexer", 
-//      wxExLexers::Get()->GetThemeOk());
-        
-//    m_Frame->StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
+    m_Frame->StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
   }
   else if (command.StartsWith(":w"))
   {

@@ -631,11 +631,27 @@ void wxExLexers::ParseNodeThemes(const wxXmlNode* node)
   }
 }
       
+void wxExLexers::RestoreTheme()
+{
+  m_Theme = wxConfigBase::Get()->Read("theme", "studio");
+}
+  
 wxExLexers* wxExLexers::Set(wxExLexers* lexers)
 {
   wxExLexers* old = m_Self;
   m_Self = lexers;
   return old;
+}
+
+void wxExLexers::SetTheme(const wxString& theme)
+{
+  m_Theme = theme;
+  wxConfigBase::Get()->Write("theme", m_Theme);  
+}
+
+void wxExLexers::SetThemeNone()
+{
+  m_Theme = m_NoTheme;
 }
 
 bool wxExLexers::ShowDialog(
@@ -713,8 +729,7 @@ bool wxExLexers::ShowThemeDialog(
       return false;
     }
   
-    m_Theme = dlg.GetStringSelection();
-    wxConfigBase::Get()->Write("theme", m_Theme);  
+    SetTheme(dlg.GetStringSelection());
   }
 
   return LoadDocument();
