@@ -179,9 +179,28 @@ bool wxExEx::Command(const wxString& command)
     }
   }
   // e.g. set ts=4
-  else if (command.StartsWith(":set "))
+  else if (command.StartsWith(":set"))
   {
-    result = CommandSet(command.Mid(5));
+    result = CommandSet(command.Mid(4).Trim(false));
+  }
+  else if (command.StartsWith(":syntax"))
+  {
+    const bool on = command.EndsWith("on");
+  
+    if (on)
+    {
+      m_STC->SetLexer(m_STC->GetLexer().GetDisplayLexer());
+    }
+    else
+    {
+      m_STC->ResetLexer();
+    }
+
+//    m_StatusBar->ShowField(
+//      "PaneLexer", 
+//      wxExLexers::Get()->GetThemeOk());
+        
+//    m_Frame->StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
   }
   else if (command.StartsWith(":w"))
   {
@@ -469,15 +488,21 @@ bool wxExEx::CommandSet(const wxString& command)
     wxExFindReplaceData::Get()->SetMatchCase(!on);
     return true;
   }
+  else if (command.StartsWith("li")) // list
+  {
+    m_STC->SetViewEOL(on);
+    m_STC->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+    return true;
+  }
   else if (command.StartsWith("nu")) // number
   {
     m_STC->ShowLineNumbers(on);
     return true;
   }
-  else if (command.StartsWith("li")) // list
+  else if (command.StartsWith("sy")) // syntax
   {
-    m_STC->SetViewEOL(on);
-    m_STC->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+    if (on) m_STC->SetLexer(command.AfterFirst('='));
+    else    m_STC->ResetLexer();
     return true;
   }
   
