@@ -93,7 +93,7 @@ bool RegAfter(const wxString text, const wxString& letter)
 }
 
 wxExSTCEntryDialog* wxExVi::m_Dialog = NULL;
-wxString wxExVi::m_LastFindCharCommand;
+std::string wxExVi::m_LastFindCharCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
   : wxExEx(stc)
@@ -156,7 +156,7 @@ bool wxExVi::ChangeNumber(bool inc)
   return false;
 }
 
-bool wxExVi::Command(const wxString& command)
+bool wxExVi::Command(const std::string& command)
 {
   if (command.empty())
   {
@@ -164,9 +164,9 @@ bool wxExVi::Command(const wxString& command)
   }
   
   if (
-      command.StartsWith("=") ||
+      command.front() == '=' ||
      (GetMacros().IsPlayback() &&
-      command.StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("="))))
+      wxString(command).StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("="))))
   {
     CommandCalc(command);
     return true;
@@ -196,13 +196,13 @@ bool wxExVi::Command(const wxString& command)
       
     case '/':
     case '?':
-      m_SearchForward = command.StartsWith("/");
+      m_SearchForward = command.front() == '/';
           
       if (command.length() > 1)
       {
         // This is a previous entered command.
         handled = GetSTC()->FindNext(
-          command.Mid(1),
+          command.substr(1),
           GetSearchFlags(),
           m_SearchForward);
             
@@ -226,7 +226,7 @@ bool wxExVi::Command(const wxString& command)
 
     default: 
       // Handle ESCAPE: deselects and clears command buffer.
-      if (!m_Dot && command.Last() == WXK_ESCAPE)
+      if (!m_Dot && command.back() == WXK_ESCAPE)
       {
         bool action = false;
         
@@ -643,7 +643,7 @@ bool wxExVi::Command(const wxString& command)
         {
           if (!rest.empty())
           {
-            InsertMode(rest);
+            InsertMode(rest.ToStdString());
           }
           
           return true;
@@ -655,7 +655,7 @@ bool wxExVi::Command(const wxString& command)
   {  
     if (m_Mode == MODE_VISUAL || m_Mode == MODE_VISUAL_LINE)
     {
-      if (!command.Contains("'<,'>"))
+      if (command.find("'<,'>") == std::string::npos)
       {
         return wxExEx::Command(command + "'<,'>");
       }
@@ -695,7 +695,7 @@ void wxExVi::CommandCalc(const wxString& command)
 
   if (m_Mode == MODE_INSERT)
   {
-    if (GetLastCommand().EndsWith("cw"))
+    if (wxString(GetLastCommand()).EndsWith("cw"))
     {
       GetSTC()->ReplaceSelection(wxEmptyString);
     }
@@ -1042,53 +1042,56 @@ void wxExVi::GotoBrace()
   }
 }
 
-bool wxExVi::InsertMode(const wxString& command)
+bool wxExVi::InsertMode(const std::string& command)
 {
   if (command.empty())
   {
     return false;
   }
 
-  if (command.Contains(wxUniChar(WXK_CONTROL_R) + wxString("=")))
+  if (command.find(wxString(wxUniChar(WXK_CONTROL_R) + wxString("="))) !=
+    std::string::npos)
   {
     if (
-      command.StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("=")))
+      command.compare(0, 2, 
+        wxString(wxUniChar(WXK_CONTROL_R) + wxString("="))) == 0)
     {
       CommandCalc(command);
       return true;
     }
     else
     {
-      InsertMode(command.BeforeFirst(wxUniChar(WXK_CONTROL_R)));
-      CommandCalc(command.AfterFirst(wxUniChar(WXK_CONTROL_R)));
+      InsertMode(wxString(command).BeforeFirst(wxUniChar(WXK_CONTROL_R)).ToStdString());
+      CommandCalc(wxString(command).AfterFirst(wxUniChar(WXK_CONTROL_R)).ToStdString());
       return true;
     }
   }
-  else if (command.Contains(wxUniChar(WXK_CONTROL_R)))
+  else if (command.find(wxString(wxUniChar(WXK_CONTROL_R)).ToStdString()) !=
+    std::string::npos)
   {
     wxStringTokenizer tkz(command, wxUniChar(WXK_CONTROL_R));
     
     while (tkz.HasMoreTokens())
     {
-      wxString token = tkz.GetNextToken();
+      const wxString token = tkz.GetNextToken();
       
       if (RegAfter(wxUniChar(WXK_CONTROL_R), 
         wxUniChar(WXK_CONTROL_R) + tkz.GetString().Mid(0, 1)))
       {
-        InsertMode(token);
+        InsertMode(token.ToStdString());
         CommandReg(tkz.GetString().GetChar(0));
-        InsertMode(tkz.GetString().Mid(1));
+        InsertMode(tkz.GetString().Mid(1).ToStdString());
         return true;
       }  
     }
   }
   
-  switch ((int)command.Last())
+  switch ((int)command.back())
   {
     case WXK_BACK:
       if (m_InsertText.size() > 1)
       {
-        m_InsertText.Truncate(m_InsertText.size() - 1);
+        m_InsertText.resize(m_InsertText.size() - 1);
       }
         
       GetSTC()->DeleteBack();
@@ -1111,7 +1114,7 @@ bool wxExVi::InsertMode(const wxString& command)
       // If we have text to be added.
       if (command.size() > 1)
       { 
-        const wxString rest(command.Left(command.size() - 1));
+        const wxString rest(command.substr(0, command.size() - 1));
         
         if (!GetSTC()->GetSelectedText().empty())
         {
@@ -1147,13 +1150,13 @@ bool wxExVi::InsertMode(const wxString& command)
       
       if (!m_Dot)
       {
-        const wxString lc(GetLastCommand() + m_InsertText);
+        const std::string lc(GetLastCommand() + m_InsertText);
         
-        SetLastCommand(lc + wxUniChar(WXK_ESCAPE));
+        SetLastCommand(lc + wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
           
         // Record it (if recording is on).
         GetMacros().Record(lc);
-        GetMacros().Record(wxUniChar(WXK_ESCAPE));
+        GetMacros().Record(wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
       }
       
       m_Mode = MODE_NORMAL;
@@ -1176,18 +1179,18 @@ bool wxExVi::InsertMode(const wxString& command)
       break;
       
     default: 
-      if (GetLastCommand().EndsWith("cw") && m_InsertText.empty())
+      if (wxString(GetLastCommand()).EndsWith("cw") && m_InsertText.empty())
       {
         GetSTC()->ReplaceSelection(wxEmptyString);
       }
 
       if (
        !m_InsertText.empty() &&
-        m_InsertText.Last() == wxUniChar(WXK_CONTROL_R))
+        m_InsertText.back() == wxUniChar(WXK_CONTROL_R))
       {
         GetSTC()->ReplaceSelection(wxEmptyString);
         m_InsertText += command;
-        CommandReg(command.Last());
+        CommandReg(command.back());
         return false;
       }
       else
@@ -1204,7 +1207,7 @@ bool wxExVi::InsertMode(const wxString& command)
               
               if (!token.empty())
               {
-                GetSTC()->AddText(token);
+                GetSTC()->AddTextRaw(token);
               }
           
               GetSTC()->AddText(tkz.GetLastDelimiter());
@@ -1213,7 +1216,7 @@ bool wxExVi::InsertMode(const wxString& command)
           }
           else
           {
-            GetSTC()->AddText(command);
+            GetSTC()->AddTextRaw(command.c_str(), command.length());
           }
         }
         
@@ -1227,7 +1230,7 @@ bool wxExVi::InsertMode(const wxString& command)
   return true;
 }
 
-void wxExVi::MacroRecord(const wxString& text)
+void wxExVi::MacroRecord(const std::string& text)
 {
   if (m_Mode == MODE_INSERT)
   {
@@ -1247,7 +1250,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   }
   else if (m_Mode == MODE_INSERT)
   {
-    const bool result = InsertMode(event.GetUnicodeKey());
+    const bool result = InsertMode(wxString(event.GetUnicodeKey()).ToStdString());
     return result && GetSTC()->GetOvertype();
   }
   else
@@ -1260,9 +1263,10 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
       // because of the NULL).
       if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
       {
-        if (m_Command.StartsWith("@") && event.GetKeyCode() == WXK_BACK)
+        if (!m_Command.empty() && 
+             m_Command.front() == '@' && event.GetKeyCode() == WXK_BACK)
         {
-          m_Command = m_Command.Truncate(m_Command.size() - 1);
+          m_Command.resize(m_Command.size() - 1);
         }
         else
         {
@@ -1309,12 +1313,12 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
         event.GetKeyCode() == WXK_PAGEUP ||
         event.GetKeyCode() == WXK_PAGEDOWN))))
   {
-    if (m_Command.StartsWith("@"))
+    if (!m_Command.empty() && m_Command.front() == '@')
     {
       if (event.GetKeyCode() == WXK_BACK)
       {
-        m_Command = m_Command.Truncate(m_Command.size() - 1);
-        GetFrame()->StatusText(m_Command.Mid(1), "PaneMacro");
+        m_Command.resize(m_Command.size() - 1);
+        GetFrame()->StatusText(m_Command.substr(1), "PaneMacro");
       }
       else if (event.GetKeyCode() == WXK_ESCAPE)
       {
@@ -1398,11 +1402,11 @@ bool wxExVi::SetInsertMode(
   {
     if (repeat > 1)
     {
-      SetLastCommand(wxString::Format("%d%s", repeat, c.c_str()), true);
+      SetLastCommand(wxString::Format("%d%s", repeat, c.c_str()).ToStdString(), true);
     }
     else
     {
-      SetLastCommand(c, true);
+      SetLastCommand(c.ToStdString(), true);
     }
   }
   

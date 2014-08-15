@@ -30,7 +30,7 @@ public:
   const std::vector< wxString > Get() const;
   
   /// Returns contents of macro as a vector of strings.
-  const std::vector< wxString > Get(const wxString& name) const;
+  const std::vector< std::string > Get(const wxString& name) const;
   
   /// Returns number of macros and variables available.
   int GetCount() const;
@@ -39,11 +39,11 @@ public:
   const wxString& GetMacro() const {return m_Macro;};
   
   /// Returns content of register.
-  const wxString GetRegister(const char name) const;
+  const std::string GetRegister(const char name) const;
 
   /// Returns all registers (with content) as a vector of strings.
   /// Does not include macros.
-  const std::vector< wxString > GetRegisters() const;
+  const std::vector< std::string > GetRegisters() const;
   
   /// Have macros been recorded (or variables 
   /// expanded) without calling SaveDocument.
@@ -80,7 +80,7 @@ public:
   /// a valid command.
   void Record(
     /// text to record
-    const wxString& text, 
+    const std::string& text, 
     /// normally each record is a new command, if not,
     /// the text is appended after the last command
     bool new_command = true);
@@ -139,8 +139,8 @@ public:
 private:  
   static void AskForInput();
   static bool Load(wxXmlDocument& doc);
-  static const wxString Encode(const wxString& text);
-  static const wxString Decode(const wxString& text);
+  static const wxString Encode(const std::string& text);
+  static const std::string Decode(const wxString& text);
     
   static bool m_IsExpand;
   static bool m_IsModified;
@@ -151,7 +151,7 @@ private:
   
   /// All macros (and registers), as a map of name and a vector of commands.
   /// Registers are 1 letter macros.
-  static std::map <wxString, std::vector< wxString > > m_Macros;
+  static std::map <wxString, std::vector< std::string > > m_Macros;
   
   /// All variables, as a map of name and variable.
   static std::map<wxString, wxExVariable> m_Variables;

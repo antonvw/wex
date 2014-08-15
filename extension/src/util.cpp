@@ -268,7 +268,7 @@ double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
           value = atof(wxExClipboardGet()); break;
             
         default:
-          value = atof(ex->GetMacros().GetRegister(c));
+          value = atof(ex->GetMacros().GetRegister(c).c_str());
         }
       }
       else

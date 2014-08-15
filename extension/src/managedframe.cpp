@@ -482,7 +482,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   
   if (IsCommand())
   {
-    if (m_ex->Command(m_Prefix->GetLabel() + GetValue()))
+    if (m_ex->Command(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString()))
     {
       const bool set_focus = 
         (GetValue() == "n" || GetValue() == "prev" || GetValue().StartsWith("!"));
@@ -500,11 +500,11 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
         
     if (m_UserInput)
     {
-      m_ex->GetMacros().Record(m_Prefix->GetLabel() + GetValue());
+      m_ex->GetMacros().Record(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString());
     }
     else 
     {
-      m_ex->Command(m_Prefix->GetLabel() + GetValue());
+      m_ex->Command(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString());
     }
     
     m_Frame->HideExBar();
@@ -513,10 +513,10 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   {
     if (m_UserInput)
     {
-      m_ex->MacroRecord(m_Command);
+      m_ex->MacroRecord(m_Command.ToStdString());
     }
       
-    m_ex->Command(m_Prefix->GetLabel() + GetValue());
+    m_ex->Command(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString());
     
     m_Frame->HideExBar();
   }

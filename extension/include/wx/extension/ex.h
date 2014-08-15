@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wxExEx
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXEX_H
@@ -37,7 +37,7 @@ public:
   /// or present as modeline command inside a file.
   /// The command should start with a ':'.
   /// Returns true if the command was executed.
-  virtual bool Command(const wxString& command);
+  virtual bool Command(const std::string& command);
   
   /// Returns frame.
   wxExManagedFrame* GetFrame() {return m_Frame;};
@@ -46,7 +46,7 @@ public:
   bool GetIsActive() const {return m_IsActive;};
   
   /// Returns last entered command.
-  const wxString& GetLastCommand() const {return m_LastCommand;};
+  const std::string& GetLastCommand() const {return m_LastCommand;};
   
   /// Gets the macros.
   wxExViMacros& GetMacros() {return m_Macros;};
@@ -71,7 +71,7 @@ public:
     int repeat = 1);
       
   /// Adds recording to current macro.
-  virtual void MacroRecord(const wxString& text);
+  virtual void MacroRecord(const std::string& text);
   
   /// Start recording a macro.  
   /// If specified macro is empty,
@@ -110,7 +110,7 @@ public:
 protected:
   /// Sets last command.
   void SetLastCommand(
-    const wxString& command,
+    const std::string& command,
     bool always = false);
   
   /// Sets register name.
@@ -127,7 +127,7 @@ private:
 
   std::map<wxUniChar, int> m_Markers;
   
-  static wxString m_LastCommand;
+  static std::string m_LastCommand;
   static wxExViMacros m_Macros;
 
   bool m_IsActive; // are we actively using ex mode?

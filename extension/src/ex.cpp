@@ -25,7 +25,7 @@
 #if wxUSE_GUI
 
 wxExViMacros wxExEx::m_Macros;
-wxString wxExEx::m_LastCommand;
+std::string wxExEx::m_LastCommand;
   
 wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
@@ -65,9 +65,9 @@ void wxExEx::AddText(const wxString& text)
   }
 }
 
-bool wxExEx::Command(const wxString& command)
+bool wxExEx::Command(const std::string& command)
 {
-  if (!m_IsActive || !command.StartsWith(":"))
+  if (!m_IsActive || command.empty() || command.front() != ':')
   {
     return false;
   }
@@ -92,20 +92,20 @@ bool wxExEx::Command(const wxString& command)
   {
     return wxExAddressRange(this, 1).Delete();
   }
-  else if (command.StartsWith(":e"))
+  else if (command.compare(0, 2, ":e") == 0)
   {
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
     
-    if (command.Contains(" "))
+    if (command.find(" ") != std::string::npos)
     {
-      event.SetString(command.AfterFirst(' '));
+      event.SetString(command.substr(command.find(" ")));
     }
     
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command.StartsWith(":g"))
+  else if (command.compare(0, 2, ":g") == 0)
   {
-    result = CommandGlobal(command.AfterFirst('g'));
+    result = CommandGlobal(wxString(command).AfterFirst('g'));
   }
   else if (command == ":n")
   {
@@ -150,9 +150,9 @@ bool wxExEx::Command(const wxString& command)
     event.SetCanVeto(false); 
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command.StartsWith(":r"))
+  else if (command.compare(0, 2, ":r") == 0)
   {
-    wxString arg(command.AfterFirst(' '));
+    wxString arg(wxString(command).AfterFirst(' '));
     arg.Trim(false); // from left
     
     if (arg.empty())
@@ -180,13 +180,13 @@ bool wxExEx::Command(const wxString& command)
     }
   }
   // e.g. set ts=4
-  else if (command.StartsWith(":set"))
+  else if (command.compare(0, 4, ":set") == 0)
   {
-    result = CommandSet(command.Mid(4).Trim(false));
+    result = CommandSet(wxString(command.substr(4)).Trim(false));
   }
-  else if (command.StartsWith(":syntax"))
+  else if (command.compare(0, 7, ":syntax") == 0)
   {
-    const bool on = command.EndsWith("on");
+    const bool on = wxString(command).EndsWith("on");
   
     if (on)
     {
@@ -201,12 +201,12 @@ bool wxExEx::Command(const wxString& command)
 
     m_Frame->StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
   }
-  else if (command.StartsWith(":w"))
+  else if (command.compare(0, 2, ":w") == 0)
   {
-    if (command.Contains(" "))
+    if (command.find(" ") != std::string::npos)
     {
       wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVEAS);
-      event.SetString(command.AfterFirst(' '));
+      event.SetString(command.substr(command.find(" ")));
       wxPostEvent(wxTheApp->GetTopWindow(), event);
     }
     else
@@ -227,9 +227,9 @@ bool wxExEx::Command(const wxString& command)
   {
     wxExAddressRange(this, 1).Yank();
   }
-  else if (command.Last() == '=')
+  else if (command.back() == '=')
   {
-    const wxExAddress address(this, command.AfterFirst(':').BeforeLast('='));
+    const wxExAddress address(this, wxString(command).AfterFirst(':').BeforeLast('='));
     const int no = address.ToLine();
     
     if (no == 0)
@@ -240,7 +240,7 @@ bool wxExEx::Command(const wxString& command)
     m_Frame->ShowExMessage(wxString::Format("%d", no));
     return true;
   }
-  else if (command.StartsWith(":!"))
+  else if (command.compare(0, 2, ":!") == 0)
   {
     if (m_Process == NULL)
     {
@@ -248,17 +248,17 @@ bool wxExEx::Command(const wxString& command)
     }
     
     m_Process->Execute(
-      command.AfterFirst('!'),
+      command.substr(2),
       wxEXEC_ASYNC,
       m_STC->GetFileName().GetPath());
   }
-  else if (CommandRange(command.AfterFirst(':')))
+  else if (CommandRange(command.substr(1)))
   {
     // do nothing
   }
-  else if (wxExAddress(this, command.AfterFirst(':')).ToLine() > 0)
+  else if (wxExAddress(this, command.substr(1)).ToLine() > 0)
   {
-    m_STC->GotoLineAndSelect(wxExAddress(this, command.AfterFirst(':')).ToLine());
+    m_STC->GotoLineAndSelect(wxExAddress(this, command.substr(1)).ToLine());
   }
   else
   {
@@ -403,7 +403,7 @@ bool wxExEx::CommandRange(const wxString& command)
   wxString range_str;  
   wxChar cmd;
 
-  if (command.StartsWith("'<,'>"))
+  if (command.compare(0, 5, "'<,'>") == 0)
   {
     if (m_STC->GetSelectedText().empty())
     {
@@ -578,7 +578,7 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   return ok;
 }
 
-void wxExEx::MacroRecord(const wxString& text)
+void wxExEx::MacroRecord(const std::string& text)
 {
   m_Macros.Record(text);
 }
@@ -700,7 +700,7 @@ int wxExEx::MarkerLine(const wxUniChar& marker) const
 }
 
 void wxExEx::SetLastCommand(
-  const wxString& command,
+  const std::string& command,
   bool always)
 {
   // First test on '.' and ';' these should never be the last command,
@@ -708,7 +708,7 @@ void wxExEx::SetLastCommand(
   // Also, undo or placing a marker should not be a last command.
   if (
     command == "." || command == ";" || 
-    command == "u" || command.Matches("m?"))
+    command == "u" || wxString(command).Matches("m?"))
   {
     return;
   }
@@ -716,8 +716,8 @@ void wxExEx::SetLastCommand(
   if (
       always || 
       command == "~" || 
-    ( command.StartsWith(":") && command.size() > 2) ||
-    (!command.StartsWith(":") && command.size() > 1 && !command.StartsWith("\t")))
+    ( command.size() > 2 && command.front() == ':') ||
+    ( command.size() > 1 && command.front() != ':' && command.front() != '\t'))
   {
     m_LastCommand = command;
   }
