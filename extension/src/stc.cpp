@@ -787,7 +787,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
 
     if (m_vi.GetIsActive())
     {
-      m_vi.Command(wxString(buffer));
+      m_vi.Command(std::string(buffer, 1));
     }
     else
     {
@@ -1234,7 +1234,7 @@ void wxExSTC::GuessType()
     
   if (ex.Matches(text))
   {
-    m_vi.Command(":" + text.AfterFirst(':').Trim(false));
+    m_vi.Command(wxString(":" + text.AfterFirst(':').Trim(false)).ToStdString());
   }
 
   if      (text.Contains("\r\n")) SetEOLMode(wxSTC_EOL_CRLF);
@@ -1598,9 +1598,9 @@ void wxExSTC::OnChar(wxKeyEvent& event)
          
          if (m_vi.GetIsActive())
          {
-           m_vi.Command(add);
+           m_vi.Command(add.ToStdString());
            const int esc = 27;
-           m_vi.Command(wxUniChar(esc));
+           m_vi.Command(wxString(wxUniChar(esc)).ToStdString());
            m_vi.Command("%");
            m_vi.Command("i");
          }
@@ -1887,7 +1887,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   {
     if (m_vi.GetIsActive())
     {
-      m_vi.Command(event.GetText().Mid(m_AutoComplete.size()));
+      m_vi.Command(wxString(event.GetText().Mid(m_AutoComplete.size())).ToStdString());
     }
   }
   else if (event.GetEventType() == wxEVT_STC_UPDATEUI)

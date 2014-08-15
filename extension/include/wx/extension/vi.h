@@ -2,7 +2,7 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wxExVi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVI_H
@@ -32,10 +32,10 @@ public:
   
   /// Executes vi command.
   /// Returns true if the command was executed.
-  virtual bool Command(const wxString& command);
+  virtual bool Command(const std::string& command);
   
   /// Returns text to be inserted.
-  const wxString& GetInsertText() const {return m_InsertText;};
+  const std::string& GetInsertText() const {return m_InsertText;};
   
   /// Returns the mode we are in.
   int GetMode() const {return m_Mode;};
@@ -62,9 +62,9 @@ private:
     const wxString& begin_address, 
     const wxString& end_address, 
     bool forward);
-  bool InsertMode(const wxString& command);
+  bool InsertMode(const std::string& text);
   /// Adds recording to current macro.
-  virtual void MacroRecord(const wxString& text);
+  virtual void MacroRecord(const std::string& text);
   bool Put(bool after);
   bool SetInsertMode(
     const wxString& command,
@@ -73,7 +73,7 @@ private:
   bool YankedLines();   
 
   static wxExSTCEntryDialog* m_Dialog;
-  static wxString m_LastFindCharCommand;
+  static std::string m_LastFindCharCommand;
 
   bool m_Dot;  
   bool m_SearchForward;
@@ -81,8 +81,8 @@ private:
   int m_InsertRepeatCount;
   int m_Mode;
   
-  wxString m_Command;
-  wxString m_InsertText;
+  std::string m_Command;
+  std::string m_InsertText;
 };
 #endif // wxUSE_GUI
 #endif

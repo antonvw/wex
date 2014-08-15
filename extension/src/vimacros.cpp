@@ -28,7 +28,7 @@ bool wxExViMacros::m_IsPlayback = false;
 bool wxExViMacros::m_IsRecording = false;
 wxString wxExViMacros::m_Macro;
 
-std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
+std::map <wxString, std::vector< std::string > > wxExViMacros::m_Macros;
 std::map <wxString, wxExVariable > wxExViMacros::m_Variables;
 
 void wxExViMacros::AskForInput()
@@ -39,9 +39,9 @@ void wxExViMacros::AskForInput()
   }
 }
 
-const wxString wxExViMacros::Decode(const wxString& text)
+const std::string wxExViMacros::Decode(const wxString& text)
 {
-  wxString output;
+  std::string output;
   
   for (int i = 0; i < text.length(); i++)
   {
@@ -86,7 +86,7 @@ const wxString wxExViMacros::Decode(const wxString& text)
   return output;
 }
 
-const wxString wxExViMacros::Encode(const wxString& text)
+const wxString wxExViMacros::Encode(const std::string& text)
 {
   wxString output;
   
@@ -340,7 +340,7 @@ const std::vector< wxString > wxExViMacros::Get() const
   return v;
 }
 
-const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
+const std::vector< std::string > wxExViMacros::Get(const wxString& macro) const
 {
   const auto it = m_Macros.find(macro);
     
@@ -351,11 +351,11 @@ const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
   else
   {
     const auto it = m_Variables.find(macro);
-    std::vector<wxString> v;
+    std::vector<std::string> v;
     
     if (it != m_Variables.end())
     {
-      v.push_back(it->second.GetValue());
+      v.push_back(it->second.GetValue().ToStdString());
     }
   
     return v;
@@ -378,11 +378,11 @@ const wxFileName wxExViMacros::GetFileName()
     "macros.xml");
 }
 
-const wxString wxExViMacros::GetRegister(const char name) const
+const std::string wxExViMacros::GetRegister(const char name) const
 {
   const auto it = m_Macros.find(name);
     
-  wxString output;
+  std::string output;
     
   if (it != m_Macros.end())
   {
@@ -395,9 +395,9 @@ const wxString wxExViMacros::GetRegister(const char name) const
   return output;
 }
 
-const std::vector< wxString > wxExViMacros::GetRegisters() const
+const std::vector< std::string > wxExViMacros::GetRegisters() const
 {
-  std::vector< wxString > r;
+  std::vector< std::string > r;
   
   for (const auto& it : m_Macros)
   {
@@ -410,7 +410,7 @@ const std::vector< wxString > wxExViMacros::GetRegisters() const
         output += it2;
       }
     
-      r.push_back(it.first + ": " + wxExSkipWhiteSpace(output));
+      r.push_back(wxString(wxString(it.first) + ": " + wxExSkipWhiteSpace(output)).ToStdString());
     }
   }
    
@@ -468,7 +468,7 @@ bool wxExViMacros::LoadDocument()
   {
     if (child->GetName() == "macro")
     {
-      std::vector<wxString> v;
+      std::vector<std::string> v;
       
       wxXmlNode* command = child->GetChildren();
   
@@ -577,7 +577,7 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
   return !stop;
 }
 
-void wxExViMacros::Record(const wxString& text, bool new_command)
+void wxExViMacros::Record(const std::string& text, bool new_command)
 {
   if (!m_IsRecording || m_IsPlayback)
   {
@@ -592,7 +592,8 @@ void wxExViMacros::Record(const wxString& text, bool new_command)
   {
     if (m_Macros[m_Macro].empty())
     {
-      m_Macros[m_Macro].push_back(wxEmptyString);
+      std::string s;
+      m_Macros[m_Macro].push_back(s);
     }
     
     m_Macros[m_Macro].back() += text;
@@ -671,12 +672,12 @@ void wxExViMacros::SetRegister(const char name, const wxString& value)
     return;
   }
 
-  std::vector<wxString> v;
+  std::vector<std::string> v;
   
   // The black hole register, everything written to it is discarded.
   if (name != '_')
   {
-    v.push_back(value);
+    v.push_back(value.ToStdString());
   }
   
   m_Macros[name] = v;
