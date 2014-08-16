@@ -81,6 +81,24 @@
   }                                                                      \
 };                                                                       \
 
+char ConvertKeyEvent(const wxKeyEvent& event)
+{
+  char c;
+  
+  switch (event.GetKeyCode())
+  {
+    case WXK_LEFT:     c = 'h'; break;
+    case WXK_DOWN:     c = 'j'; break;
+    case WXK_UP:       c = 'k'; break;
+    case WXK_RIGHT:    c = 'l'; break;
+    case WXK_PAGEUP:   c = WXK_CONTROL_B; break;
+    case WXK_PAGEDOWN: c = WXK_CONTROL_F; break;
+    default: c = event.GetKeyCode();
+  }
+  
+  return c;
+}
+
 // Returns true if after text only one letter is followed.
 bool OneLetterAfter(const wxString text, const wxString& letter)
 {
@@ -1250,7 +1268,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   }
   else if (m_Mode == MODE_INSERT)
   {
-    const bool result = InsertMode(wxString(event.GetUnicodeKey()).ToStdString());
+    const bool result = InsertMode(std::string(1, ConvertKeyEvent(event)));
     return result && GetSTC()->GetOvertype();
   }
   else
@@ -1330,7 +1348,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     }
     else
     {
-      m_Command += event.GetKeyCode();
+      m_Command += ConvertKeyEvent(event);
     }
       
     const bool result = Command(m_Command);
