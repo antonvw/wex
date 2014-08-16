@@ -1125,14 +1125,14 @@ bool wxExVi::InsertMode(const std::string& command)
       {
         for (int i = 1; i < m_InsertRepeatCount; i++)
         {
-          GetSTC()->AddText(m_InsertText);
+          GetSTC()->AddTextRaw(m_InsertText.c_str(), m_InsertText.size());
         }
       }
       
       // If we have text to be added.
       if (command.size() > 1)
       { 
-        const wxString rest(command.substr(0, command.size() - 1));
+        const std::string rest(command.substr(0, command.size() - 1));
         
         if (!GetSTC()->GetSelectedText().empty())
         {
@@ -1144,7 +1144,7 @@ bool wxExVi::InsertMode(const std::string& command)
           {
             for (int i = 1; i <= m_InsertRepeatCount; i++)
             {
-              GetSTC()->AddText(rest);
+              GetSTC()->AddTextRaw(rest.c_str(), rest.size());
             }
           }
           else
@@ -1225,7 +1225,7 @@ bool wxExVi::InsertMode(const std::string& command)
               
               if (!token.empty())
               {
-                GetSTC()->AddTextRaw(token);
+                GetSTC()->AddText(token);
               }
           
               GetSTC()->AddText(tkz.GetLastDelimiter());
