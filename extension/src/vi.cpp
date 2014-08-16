@@ -272,18 +272,18 @@ bool wxExVi::Command(const std::string& command)
       // Handle multichar commands.
       else
       {
-        wxString rest(command);
+        std::string rest(command);
         long int repeat = 1;
         
-        if (rest.StartsWith("\""))
+        if (rest.front() == '"')
         {
           if (rest.size() < 2)
           {
             return false;
           }
           
-          SetRegister(rest.GetChar(1));
-          rest = rest.Mid(2);
+          SetRegister(rest[1]);
+          rest = rest.substr(2);
         }
         else
         {
@@ -300,8 +300,8 @@ bool wxExVi::Command(const std::string& command)
           
           if (seq_size > 0)
           {
-            repeat = strtol(rest.Mid(0, seq_size).c_str(), NULL, 10);
-            rest = rest.Mid(seq_size);
+            repeat = strtol(rest.substr(0, seq_size).c_str(), NULL, 10);
+            rest = rest.substr(seq_size);
           }
         }
   
@@ -309,10 +309,10 @@ bool wxExVi::Command(const std::string& command)
         {
           case 0: return false;
           case 1: 
-            handled = CommandChar((int)rest.GetChar(0), repeat); 
+            handled = CommandChar((int)rest[0], repeat); 
             if (handled)
             {
-              rest = rest.Mid(1);
+              rest = rest.substr(1);
             }
             break;
           default: 
@@ -328,7 +328,7 @@ bool wxExVi::Command(const std::string& command)
                 {
                   return false;
                 }
-                rest = rest.Mid(2);
+                rest = rest.substr(2);
               }
               break;
             case CHR_TO_NUM('c','w'):
@@ -346,7 +346,7 @@ bool wxExVi::Command(const std::string& command)
                 {
                   return false;
                 }
-                rest = rest.Mid(2);
+                rest = rest.substr(2);
               }
               break;
             case CHR_TO_NUM('d','d'): wxExAddressRange(this, repeat).Delete(); break;
@@ -486,26 +486,26 @@ bool wxExVi::Command(const std::string& command)
             case CHR_TO_NUM('@','@'): MacroPlayback(GetMacros().GetMacro(), repeat); break;
               
             default:
-              if (rest.Matches("f?") || rest.Matches("F?"))
+              if (wxString(rest).Matches("f?") || wxString(rest).Matches("F?"))
               {
                 for (int i = 0; i < repeat; i++) 
-                  if (!GetSTC()->FindNext(rest.Last(), GetSearchFlags(), rest[0] == 'f'))
+                  if (!GetSTC()->FindNext(rest.back(), GetSearchFlags(), rest[0] == 'f'))
                     return false;
                 m_LastFindCharCommand = command;
               }
               else if (OneLetterAfter("m", rest))
               {
-                MarkerAdd(rest.Last());
+                MarkerAdd(rest.back());
               }
               else if (OneLetterAfter("q", rest))
               {
                 if (!GetMacros().IsRecording())
                 {
-                  MacroStartRecording(rest.Mid(1));
+                  MacroStartRecording(rest.substr(1));
                   return true; // as we should not do default actions
                 }
               } 
-              else if (rest.Matches("r?"))
+              else if (wxString(rest).Matches("r?"))
               {
                 if (!GetSTC()->GetReadOnly())
                 {
@@ -518,31 +518,31 @@ bool wxExVi::Command(const std::string& command)
                       return false;
                     }
                   
-                    ml.Replace(rest.Last());
+                    ml.Replace(rest.back());
                   }
                   else
                   {
                     GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
                     GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + repeat);
-                    GetSTC()->ReplaceTarget(wxString(rest.Last(), repeat));
+                    GetSTC()->ReplaceTarget(wxString(rest.back(), repeat));
                   }
                 }
               }
-              else if (rest.Matches("t?") || rest.Matches("T?"))
+              else if (wxString(rest).Matches("t?") || wxString(rest).Matches("T?"))
               {
                 for (int i = 0; i < repeat; i++) 
-                  if (!GetSTC()->FindNext(rest.Last(), GetSearchFlags(), rest[0] == 't'))
+                  if (!GetSTC()->FindNext(rest.back(), GetSearchFlags(), rest[0] == 't'))
                     return false;
                 GetSTC()->CharLeft();
                 m_LastFindCharCommand = command;
               }
               else if (OneLetterAfter("'", rest))
               {
-                MarkerGoto(rest.Last());
+                MarkerGoto(rest.back());
               }
               else if (OneLetterAfter("@", rest))
               {
-                const wxString macro = rest.Last();
+                const wxString macro = rest.back();
                 
                 if (GetMacros().IsRecorded(macro))
                 {
@@ -561,14 +561,14 @@ bool wxExVi::Command(const std::string& command)
               }
               else if (RegAfter(wxUniChar(WXK_CONTROL_R), rest))
               {
-                CommandReg(rest.GetChar(1));
+                CommandReg(rest[1]);
                 return true;
               }  
-              else if (CommandChar((int)rest.GetChar(0), repeat))
+              else if (CommandChar((int)rest[0], repeat))
               {
-                rest = rest.Mid(1);
+                rest = rest.substr(1);
               }
-              else if (rest.StartsWith("@"))
+              else if (rest.front() == '@')
               {
                 std::vector <wxString> v;
                   
@@ -582,11 +582,11 @@ bool wxExVi::Command(const std::string& command)
                     GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
                   }
                 }
-                else if (GetMacros().StartsWith(rest.Mid(1)))
+                else if (GetMacros().StartsWith(rest.substr(1)))
                 {
                   wxString s;
                   
-                  if (wxExAutoComplete(rest.Mid(1), GetMacros().Get(), s))
+                  if (wxExAutoComplete(rest.substr(1), GetMacros().Get(), s))
                   {
                     GetFrame()->StatusText(s, "PaneMacro");
                     
@@ -600,7 +600,7 @@ bool wxExVi::Command(const std::string& command)
                   }
                   else
                   {
-                    GetFrame()->StatusText(rest.Mid(1), "PaneMacro");
+                    GetFrame()->StatusText(rest.substr(1), "PaneMacro");
                     return false;
                   }
                 }
@@ -661,7 +661,7 @@ bool wxExVi::Command(const std::string& command)
         {
           if (!rest.empty())
           {
-            InsertMode(rest.ToStdString());
+            InsertMode(rest);
           }
           
           return true;
