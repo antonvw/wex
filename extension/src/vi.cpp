@@ -1217,7 +1217,7 @@ bool wxExVi::InsertMode(const std::string& command)
         {
           wxStringTokenizer tkz(command, "\r\n", wxTOKEN_RET_EMPTY);
           
-          if (tkz.HasMoreTokens())
+          if (command.find('\0') == std::string::npos && tkz.HasMoreTokens())
           {
             while (tkz.HasMoreTokens())
             {
