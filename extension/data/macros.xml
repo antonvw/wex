@@ -3,7 +3,7 @@
 Name:      macros.xml
 Purpose:   vi macros and variables for wxExtension.
 Author:    Anton van Wezenbeek
-Copyright: (c) 2013, Anton van Wezenbeek
+Copyright: (c) 2014, Anton van Wezenbeek
 
 Both variables and macros have a "name" attribute, you call them
 from vi mode using @name@. If the name is a single character c, you can call it
@@ -89,7 +89,7 @@ Comments you add within xml elements are not saved when you edit macros.
   <variable name="cht"              type="TEMPLATE">cht.txt</variable>
   
   <macro name="hdr">
-    <command>g</command>
+    <command>gg</command>
     <command>O</command>
     <command>$!27!</command>
     <command>@cl@</command>
