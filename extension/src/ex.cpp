@@ -510,6 +510,12 @@ bool wxExEx::CommandSet(const wxString& command)
 
 const std::string wxExEx::GetSelectedText() const
 {
+  if (m_STC->GetSelectedText().empty())
+  {
+    std::string none;
+    return none;
+  }
+
   const wxCharBuffer b(m_STC->GetSelectedTextRaw());
   return std::string(b.data(), b.length());
 }

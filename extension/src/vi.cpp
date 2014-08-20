@@ -1380,6 +1380,8 @@ bool wxExVi::Put(bool after)
   
   if (!GetRegister())
   {
+    // TODO: Paste does not add NULL.
+    // AddText(GetMacros().GetRegister('0'));
     GetSTC()->Paste();
   }
   else
