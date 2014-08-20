@@ -665,7 +665,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
   return ok;
 }
 
-void wxExViMacros::SetRegister(const char name, const wxString& value)
+void wxExViMacros::SetRegister(const char name, const std::string& value)
 {
   if (!wxIsascii(name))
   {
@@ -677,7 +677,7 @@ void wxExViMacros::SetRegister(const char name, const wxString& value)
   // The black hole register, everything written to it is discarded.
   if (name != '_')
   {
-    v.push_back(value.ToStdString());
+    v.push_back(value);
   }
   
   m_Macros[name] = v;

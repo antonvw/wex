@@ -57,6 +57,9 @@ public:
   /// Returns search flags.
   int GetSearchFlags() const {return m_SearchFlags;};
   
+  /// Returns selected text as a string.
+  const std::string GetSelectedText() const;
+  
   /// Returns STC component.
   wxExSTC* GetSTC() {return m_STC;};
   
@@ -100,10 +103,10 @@ public:
   int MarkerLine(const wxUniChar& marker) const;
   
   /// Sets delete registers 1 - 9 (if value not empty).
-  void SetRegistersDelete(const wxString& value) const;
+  void SetRegistersDelete(const std::string& value) const;
   
   /// Sets yank register (if value not empty).
-  void SetRegisterYank(const wxString& value) const;
+  void SetRegisterYank(const std::string& value) const;
   
   /// Set using ex mode.
   void Use(bool mode) {m_IsActive = mode;};
