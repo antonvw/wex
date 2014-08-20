@@ -483,9 +483,17 @@ bool wxExVi::Command(const std::string& command)
                     return false;
                 m_LastFindCharCommand = command;
               }
-              else if (OneLetterAfter("m", rest))
+              else if (rest.front() == 'm')
               {
-                MarkerAdd(rest.back());
+                if (OneLetterAfter("m", rest))
+                {
+                  MarkerAdd(rest.back());
+                }
+                else
+                {
+                  m_Command.clear();
+                  return false;
+                }
               }
               else if (OneLetterAfter("q", rest))
               {
