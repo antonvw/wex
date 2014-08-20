@@ -109,10 +109,10 @@ public:
   /// Returns true if specified marker is available.
   bool MarkerIsLoaded(const wxExMarker& marker) const;
 
-  /// Sets the object as the current one, returns the pointer 
   /// Restores theme from config (after SetThemeNone).
   void RestoreTheme();
   
+  /// Sets the object as the current one, returns the pointer 
   /// to the previous current object 
   /// (both the parameter and returned value may be NULL). 
   static wxExLexers* Set(wxExLexers* lexers);
