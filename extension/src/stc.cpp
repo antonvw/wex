@@ -808,7 +808,8 @@ void wxExSTC::Copy()
       
     if (m_vi.GetIsActive())
     {
-      m_vi.SetRegisterYank(GetSelectedText());
+      wxCharBuffer b(GetSelectedTextRaw());
+      m_vi.SetRegisterYank(std::string(b.data(), b.length()));
     }
   }
 }
@@ -819,7 +820,8 @@ void wxExSTC::Cut()
   {
     if (m_vi.GetIsActive())
     {
-      m_vi.SetRegistersDelete(GetSelectedText());
+      wxCharBuffer b(GetSelectedTextRaw());
+      m_vi.SetRegistersDelete(std::string(b.data(), b.length()));
     }
   
     wxStyledTextCtrl::Cut();

@@ -51,7 +51,7 @@ public:
   /// See OnChar.
   bool OnKeyDown(const wxKeyEvent& event);
 private:
-  void AddText(const wxString& text);
+  void AddText(const std::string& text);
   bool ChangeNumber(bool inc);
   void CommandCalc(const wxString& reg);
   bool CommandChar(int c, int repeat);
@@ -69,6 +69,7 @@ private:
   bool SetInsertMode(
     const wxString& command,
     int repeat = 1);
+  void SetRegisterRange(int start, int end);
   bool ToggleCase(); 
   bool YankedLines();   
 

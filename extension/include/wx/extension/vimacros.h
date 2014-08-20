@@ -87,7 +87,7 @@ public:
   
   /// Sets register (overwrites existing register).
   /// The name should be a one letter register.
-  void SetRegister(const char name, const wxString& value);
+  void SetRegister(const char name, const std::string& value);
   
   /// Starts recording a macro (appends to 
   /// existing macro if macro is single upper case character).

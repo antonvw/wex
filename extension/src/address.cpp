@@ -132,7 +132,7 @@ bool wxExAddressRange::Delete(bool show_message) const
     return false;
   }
 
-  if (m_STC->GetSelectedText().empty())
+  if (m_Ex->GetSelectedText().empty())
   {
     if (!SetSelection())
     {
@@ -140,9 +140,9 @@ bool wxExAddressRange::Delete(bool show_message) const
     }
   }
 
-  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
+  const int lines = wxExGetNumberOfLines(m_Ex->GetSelectedText());
   
-  if (m_STC->GetSelectedText().empty())
+  if (m_Ex->GetSelectedText().empty())
   {
     m_STC->DeleteBack();
   }
@@ -151,7 +151,7 @@ bool wxExAddressRange::Delete(bool show_message) const
     if (m_Ex->GetRegister())
     {
       m_Ex->GetMacros().SetRegister(
-        m_Ex->GetRegister(), m_STC->GetSelectedText());
+        m_Ex->GetRegister(), m_Ex->GetSelectedText());
       m_STC->ReplaceSelection(wxEmptyString);
     }
     else
@@ -268,7 +268,7 @@ bool wxExAddressRange::Indent(bool forward) const
     return false;
   }
   
-  if (m_STC->GetSelectedText().empty())
+  if (m_Ex->GetSelectedText().empty())
   {
     if (!SetSelection())
     {
@@ -277,7 +277,7 @@ bool wxExAddressRange::Indent(bool forward) const
   }
   else
   {
-    if (wxExGetNumberOfLines(m_STC->GetSelectedText()) == 1)
+    if (wxExGetNumberOfLines(m_Ex->GetSelectedText()) == 1)
     {
       // TODO: Replaces the selection.
       return false;
@@ -315,7 +315,7 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
     return false;
   }
 
-  if (m_STC->GetSelectedText().empty())
+  if (m_Ex->GetSelectedText().empty())
   {
     if (!SetSelection())
     {
@@ -347,7 +347,7 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
 
   m_STC->EndUndoAction();
   
-  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
+  const int lines = wxExGetNumberOfLines(m_Ex->GetSelectedText());
   
   if (lines >= 2)
   {
@@ -494,7 +494,7 @@ bool wxExAddressRange::Substitute(const wxString& command)
     return false;
   }
 
-  const bool selected = !m_STC->GetSelectedText().empty();
+  const bool selected = !m_Ex->GetSelectedText().empty();
 
   wxExIndicator indicator(0, 0);
 
@@ -619,7 +619,7 @@ bool wxExAddressRange::Write(const wxString& filename) const
     return false;
   }
 
-  if (m_STC->GetSelectedText().empty())
+  if (m_Ex->GetSelectedText().empty())
   {
     if (!SetSelection())
     {
@@ -631,7 +631,7 @@ bool wxExAddressRange::Write(const wxString& filename) const
 
   return 
     file.IsOpened() && 
-    file.Write(m_STC->GetSelectedText());
+    file.Write(m_Ex->GetSelectedText());
 }
 
 bool wxExAddressRange::Yank() const
@@ -641,7 +641,7 @@ bool wxExAddressRange::Yank() const
     return false;
   }
 
-  if (m_STC->GetSelectedText().empty())
+  if (m_Ex->GetSelectedText().empty())
   {
     if (!SetSelection())
     {
@@ -649,17 +649,18 @@ bool wxExAddressRange::Yank() const
     }
   }
 
+  const std::string range(m_Ex->GetSelectedText());
+  
   if (m_Ex->GetRegister())
   {
     m_Ex->GetMacros().SetRegister(
-      m_Ex->GetRegister(), m_STC->GetSelectedText());
+      m_Ex->GetRegister(), range);
   }
   else
   {
     m_STC->Copy();
   }
 
-  const wxString range(m_STC->GetSelectedText());
   m_Ex->SetRegisterYank(range);
   
   const int lines = wxExGetNumberOfLines(range);

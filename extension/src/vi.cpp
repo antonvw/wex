@@ -122,11 +122,11 @@ wxExVi::wxExVi(wxExSTC* stc)
 {
 }
 
-void wxExVi::AddText(const wxString& text)
+void wxExVi::AddText(const std::string& text)
 {
   if (!GetSTC()->GetOvertype())
   {
-    GetSTC()->AddText(text);
+    GetSTC()->AddTextRaw(text.c_str(), text.size());
   }
   else
   {
@@ -364,9 +364,7 @@ bool wxExVi::Command(const std::string& command)
                 }
                 else
                 {
-                  GetMacros().SetRegister(
-                    GetRegister(), 
-                    GetSTC()->GetTextRange(start, GetSTC()->GetCurrentPos()));
+                  SetRegisterRange(start, GetSTC()->GetCurrentPos());
                   GetSTC()->DeleteRange(start, GetSTC()->GetCurrentPos() - start);
                 }
               }
@@ -385,9 +383,7 @@ bool wxExVi::Command(const std::string& command)
                 }
                 else
                 {
-                  GetMacros().SetRegister(
-                    GetRegister(), 
-                    GetSTC()->GetTextRange(start, GetSTC()->GetCurrentPos()));
+                  SetRegisterRange(start, GetSTC()->GetCurrentPos());
                   GetSTC()->DeleteRange(start, GetSTC()->GetCurrentPos() - start);
                 }
               }
@@ -404,9 +400,7 @@ bool wxExVi::Command(const std::string& command)
                 else
                 {
                   const int start = GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine());
-                  GetMacros().SetRegister(
-                    GetRegister(), 
-                    GetSTC()->GetTextRange(start, GetSTC()->GetCurrentPos()));
+                  SetRegisterRange(start, GetSTC()->GetCurrentPos());
                   GetSTC()->DeleteRange(start, GetSTC()->GetCurrentPos() - start);
                 }
               }
@@ -422,9 +416,7 @@ bool wxExVi::Command(const std::string& command)
                 else
                 {
                   const int end = GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine());
-                  GetMacros().SetRegister(
-                    GetRegister(), 
-                    GetSTC()->GetTextRange(GetSTC()->GetCurrentPos(), end));
+                  SetRegisterRange(GetSTC()->GetCurrentPos(), end);
                   GetSTC()->DeleteRange(GetSTC()->GetCurrentPos(), end - GetSTC()->GetCurrentPos());
                 }
               }
@@ -442,9 +434,7 @@ bool wxExVi::Command(const std::string& command)
               }
               else
               {
-                GetMacros().SetRegister(
-                  GetRegister(),
-                  GetSTC()->GetSelectedText());
+                GetMacros().SetRegister(GetRegister(), GetSelectedText());
                 GetSTC()->SelectNone();
               }
               break;
@@ -718,7 +708,7 @@ void wxExVi::CommandCalc(const wxString& command)
       GetSTC()->ReplaceSelection(wxEmptyString);
     }
   
-    AddText(wxString::Format("%.*f", width, sum));
+    AddText(wxString::Format("%.*f", width, sum).ToStdString());
   }
   else
   {
@@ -971,7 +961,7 @@ void wxExVi::CommandReg(const char reg)
     case '%':
       if (m_Mode == MODE_INSERT)
       {
-        AddText(GetSTC()->GetFileName().GetFullName());
+        AddText(GetSTC()->GetFileName().GetFullName().ToStdString());
       }
       else
       {
@@ -1125,7 +1115,7 @@ bool wxExVi::InsertMode(const std::string& command)
       {
         for (int i = 1; i < m_InsertRepeatCount; i++)
         {
-          GetSTC()->AddTextRaw(m_InsertText.c_str(), m_InsertText.size());
+          AddText(m_InsertText);
         }
       }
       
@@ -1144,7 +1134,7 @@ bool wxExVi::InsertMode(const std::string& command)
           {
             for (int i = 1; i <= m_InsertRepeatCount; i++)
             {
-              GetSTC()->AddTextRaw(rest.c_str(), rest.size());
+              AddText(rest);
             }
           }
           else
@@ -1178,6 +1168,7 @@ bool wxExVi::InsertMode(const std::string& command)
       }
       
       m_Mode = MODE_NORMAL;
+      
       GetSTC()->SetOvertype(false);
       
       if (!GetSTC()->GetSelectedText().empty())
@@ -1234,7 +1225,7 @@ bool wxExVi::InsertMode(const std::string& command)
           }
           else
           {
-            GetSTC()->AddTextRaw(command.c_str(), command.length());
+            AddText(command);
           }
         }
         
@@ -1480,6 +1471,15 @@ bool wxExVi::SetInsertMode(
   }
   
   return true;
+}
+
+void  wxExVi::SetRegisterRange(int start, int end)
+{
+  wxCharBuffer b(GetSTC()->GetTextRangeRaw(start, end));
+  
+  GetMacros().SetRegister(
+    GetRegister(), 
+    std::string(b.data(), b.length()));
 }
 
 bool wxExVi::ToggleCase()

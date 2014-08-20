@@ -57,7 +57,7 @@ void wxExEx::AddText(const wxString& text)
 {
   if (m_Register)
   {
-    m_Macros.SetRegister(m_Register, text);
+    m_Macros.SetRegister(m_Register, text.ToStdString());
   }
   else
   {
@@ -508,6 +508,12 @@ bool wxExEx::CommandSet(const wxString& command)
   return false;
 }
 
+const std::string wxExEx::GetSelectedText() const
+{
+  const wxCharBuffer b(m_STC->GetSelectedTextRaw());
+  return std::string(b.data(), b.length());
+}
+
 bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
 {
   if (!m_IsActive)
@@ -723,7 +729,7 @@ void wxExEx::SetLastCommand(
   }
 }
  
-void wxExEx::SetRegistersDelete(const wxString& value) const
+void wxExEx::SetRegistersDelete(const std::string& value) const
 {
   if (value.empty())
   {
@@ -732,7 +738,7 @@ void wxExEx::SetRegistersDelete(const wxString& value) const
   
   for (int i = 9; i >= 2; i--)
   {
-    const wxString value(m_Macros.GetRegister(wxUniChar(48 + i - 1)));
+    const std::string value(m_Macros.GetRegister(wxUniChar(48 + i - 1)));
     
     if (!value.empty())
     {
@@ -743,7 +749,7 @@ void wxExEx::SetRegistersDelete(const wxString& value) const
   m_Macros.SetRegister('1', value);
 }
   
-void wxExEx::SetRegisterYank(const wxString& value) const
+void wxExEx::SetRegisterYank(const std::string& value) const
 {
   if (value.empty())
   {
