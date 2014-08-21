@@ -823,6 +823,7 @@ void wxExSTC::Cut()
     {
       wxCharBuffer b(GetSelectedTextRaw());
       m_vi.SetRegistersDelete(std::string(b.data(), b.length() - 1));
+      m_vi.SetRegisterYank(std::string(b.data(), b.length() - 1));
     }
   
     wxStyledTextCtrl::Cut();
