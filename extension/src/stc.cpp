@@ -31,6 +31,7 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/vi.h>
+#include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
 
@@ -809,7 +810,7 @@ void wxExSTC::Copy()
     if (m_vi.GetIsActive())
     {
       wxCharBuffer b(GetSelectedTextRaw());
-      m_vi.SetRegisterYank(std::string(b.data(), b.length()));
+      m_vi.SetRegisterYank(std::string(b.data(), b.length() - 1));
     }
   }
 }
@@ -821,7 +822,7 @@ void wxExSTC::Cut()
     if (m_vi.GetIsActive())
     {
       wxCharBuffer b(GetSelectedTextRaw());
-      m_vi.SetRegistersDelete(std::string(b.data(), b.length()));
+      m_vi.SetRegistersDelete(std::string(b.data(), b.length() - 1));
     }
   
     wxStyledTextCtrl::Cut();
@@ -1964,7 +1965,15 @@ void wxExSTC::Paste()
 {
   if (CanPaste())
   {
-    wxStyledTextCtrl::Paste();
+    if (m_vi.GetIsActive())
+    {
+      const std::string b(m_vi.GetMacros().GetRegister('0'));
+      AddTextRaw(b.data(), b.length());
+    }
+    else
+    {
+      wxStyledTextCtrl::Paste();
+    }
   }
 }
 

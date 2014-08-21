@@ -103,10 +103,10 @@ public:
   bool AutoIndentation(int c);
   
   /// Will a cut succeed? 
-  virtual bool CanCut() const;
+  virtual bool CanCut() const override;
 
   /// Will a paste succeed? 
-  virtual bool CanPaste() const;
+  virtual bool CanPaste() const override;
   
   // Clears the component: all text is cleared and all styles are reset.
   // Invoked by Open and DoFileNew.
@@ -126,10 +126,10 @@ public:
   void ConfigGet(bool init = false);
 
   /// Copies text to clipboard.
-  virtual void Copy();
+  virtual void Copy() override;
 
   /// Cuts text to clipboard.
-  virtual void Cut();
+  virtual void Cut() override;
 
   /// Shows a menu with current line type checked, and allows you to change it.
   void FileTypeMenu();
@@ -231,7 +231,7 @@ public:
     long flags = 0);
 
   /// Paste text from clipboard.
-  void Paste();
+  virtual void Paste() override;
 
   /// Restores saved position.
   /// Returns true if position was saved before.
@@ -301,7 +301,7 @@ public:
 
   /// Deselects selected text in the control.
   // Reimplemented, since scintilla version sets empty sel at 0, and sets caret on pos 0.
-  virtual void SelectNone();
+  virtual void SelectNone() override;
   
   /// Sets an indicator at specified start and end pos.
   bool SetIndicator(const wxExIndicator& indicator, int start, int end);
