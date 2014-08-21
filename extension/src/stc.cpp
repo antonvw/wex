@@ -1077,6 +1077,7 @@ const wxString wxExSTC::GetFindString()
         if (
           !isalnum(selection[i]) && 
            selection[i] != ' ' && 
+           selection[i] != '.' && 
            selection[i] != '_')
         {
           alnum = false;

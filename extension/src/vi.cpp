@@ -93,6 +93,7 @@ char ConvertKeyEvent(const wxKeyEvent& event)
     case WXK_RIGHT:    c = 'l'; break;
     case WXK_PAGEUP:   c = WXK_CONTROL_B; break;
     case WXK_PAGEDOWN: c = WXK_CONTROL_F; break;
+    case WXK_NUMPAD_ENTER: c = WXK_RETURN; break;
     default: c = event.GetKeyCode();
   }
   
