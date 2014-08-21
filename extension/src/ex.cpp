@@ -517,7 +517,7 @@ const std::string wxExEx::GetSelectedText() const
   }
 
   const wxCharBuffer b(m_STC->GetSelectedTextRaw());
-  return std::string(b.data(), b.length());
+  return std::string(b.data(), b.length() - 1);
 }
 
 bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
