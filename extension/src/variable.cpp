@@ -2,7 +2,7 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wxExVariable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -174,11 +174,11 @@ bool wxExVariable::Expand(wxExEx* ex, wxString& value)
 
 bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
 {
-  if (m_Name == "cb")
+  if (m_Name == "Cb")
   {
     expanded = ex->GetSTC()->GetLexer().GetCommentBegin();
   }
-  else if (m_Name == "cc")
+  else if (m_Name == "Cc")
   {
     const int line = ex->GetSTC()->GetCurrentLine();
     const int startPos = ex->GetSTC()->PositionFromLine(line);
@@ -186,15 +186,15 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
     expanded = ex->GetSTC()->GetLexer().CommentComplete(
       ex->GetSTC()->GetTextRange(startPos, endPos));
   }
-  else if (m_Name == "ce")
+  else if (m_Name == "Ce")
   {
     expanded = ex->GetSTC()->GetLexer().GetCommentEnd();
   }
-  else if (m_Name == "cl")
+  else if (m_Name == "Cl")
   {
     expanded = ex->GetSTC()->GetLexer().MakeComment(wxEmptyString, false);
   }
-  else if (m_Name == "created")
+  else if (m_Name == "Created")
   {
     wxFileName file(ex->GetSTC()->GetFileName());
     wxDateTime dtCreate;
@@ -208,35 +208,35 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
       expanded = wxDateTime::Now().FormatISODate();
     }
   }
-  else if (m_Name == "date")
+  else if (m_Name == "Date")
   {
     expanded = wxDateTime::Now().FormatISODate();
   }
-  else if (m_Name == "datetime")
+  else if (m_Name == "Datetime")
   {
     expanded = wxDateTime::Now().FormatISOCombined(' ');
   }
-  else if (m_Name == "filename")
+  else if (m_Name == "Filename")
   {
     expanded = ex->GetSTC()->GetFileName().GetName();
   }
-  else if (m_Name == "fullpath")
+  else if (m_Name == "Fullpath")
   {
     expanded = ex->GetSTC()->GetFileName().GetFullPath();
   }
-  else if (m_Name == "nl")
+  else if (m_Name == "Nl")
   {
     expanded = ex->GetSTC()->GetEOL();
   }
-  else if (m_Name == "path")
+  else if (m_Name == "Path")
   {
     expanded = ex->GetSTC()->GetFileName().GetPath();
   }
-  else if (m_Name == "time")
+  else if (m_Name == "Time")
   {
     expanded = wxDateTime::Now().FormatISOTime();
   }
-  else if (m_Name == "year")
+  else if (m_Name == "Year")
   {
     expanded = wxDateTime::Now().Format("%Y");
   }

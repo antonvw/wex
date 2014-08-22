@@ -6,8 +6,8 @@ Author:    Anton van Wezenbeek
 Copyright: (c) 2014, Anton van Wezenbeek
 
 Both variables and macros have a "name" attribute, you call them
-from vi mode using @name@. If the name is a single character c, you can call it
-using @c. From vi you can record a macro using q followed by a letter,
+from vi mode using @name@. If the name is a register c, you can call it
+using @c. From vi you can record a register using q followed by a letter,
 and ending with a q as well.
 
 Each macro can have several commands.  
@@ -47,79 +47,79 @@ Comments you add within xml elements are not saved when you edit macros.
 <macros>
   <!-- BUILTIN type -->
   <!-- Expands to Comment Begin according to current lexer -->
-  <variable name="cb"               type="BUILTIN"/>
+  <variable name="Cb"               type="BUILTIN"/>
   <!-- Expands to Comment Complete according to current lexer -->
-  <variable name="cc"               type="BUILTIN"/>
+  <variable name="Cc"               type="BUILTIN"/>
   <!-- Expands to Comment End according to current lexer -->
-  <variable name="ce"               type="BUILTIN"/>
+  <variable name="Ce"               type="BUILTIN"/>
   <!-- Expands to Comment Line according to current lexer -->
-  <variable name="cl"               type="BUILTIN"/>
+  <variable name="Cl"               type="BUILTIN"/>
   <!-- Expands to creation date current filename -->
-  <variable name="created"          type="BUILTIN"/>
+  <variable name="Created"          type="BUILTIN"/>
   <!-- Expands to current date -->
-  <variable name="date"             type="BUILTIN"/>
+  <variable name="Date"             type="BUILTIN"/>
   <!-- Expands to current datetime -->
-  <variable name="datetime"         type="BUILTIN"/>
+  <variable name="Datetime"         type="BUILTIN"/>
   <!-- Expands to current filename without extension-->
-  <variable name="filename"         type="BUILTIN"/>
+  <variable name="Filename"         type="BUILTIN"/>
   <!-- Expands to current filename fullpath -->
-  <variable name="fullpath"         type="BUILTIN"/>
+  <variable name="Fullpath"         type="BUILTIN"/>
   <!-- Expands to new line according to current document type -->
-  <variable name="nl"               type="BUILTIN"/>
+  <variable name="Nl"               type="BUILTIN"/>
   <!-- Expands to current filename path only -->
-  <variable name="path"             type="BUILTIN"/>
+  <variable name="Path"             type="BUILTIN"/>
   <!-- Expands to current time -->
-  <variable name="time"             type="BUILTIN"/>
+  <variable name="Time"             type="BUILTIN"/>
   <!-- Expands to current year -->
-  <variable name="year"             type="BUILTIN"/>
+  <variable name="Year"             type="BUILTIN"/>
   
   <!-- ENVIRONMENT type -->
-  <variable name="home"             type="ENVIRONMENT"/>
+  <variable name="Home"             type="ENVIRONMENT"/>
   
   <!-- INPUT-ONCE type -->
-  <variable name="author"           type="INPUT-ONCE"/>
-  <variable name="copyright"        type="INPUT-ONCE"/>
-  <variable name="author:"          type="INPUT-ONCE" prefix="Author:    "/>
+  <variable name="Author"           type="INPUT-ONCE"/>
+  <variable name="Copyright"        type="INPUT-ONCE"/>
+  <variable name="Author:"          type="INPUT-ONCE" prefix="Author:    "/>
 
   <!-- INPUT-SAVE type -->
-  <variable name="purpose:"         type="INPUT-SAVE" prefix="Purpose:   "/>
+  <variable name="Purpose:"         type="INPUT-SAVE" prefix="Purpose:   "/>
   
   <!-- TEMPLATE type -->
   <!-- A C Header Template -->  
-  <variable name="cht"              type="TEMPLATE">cht.txt</variable>
+  <variable name="Cht"              type="TEMPLATE">cht.txt</variable>
   
-  <macro name="hdr">
+  <macro name="Hdr">
     <command>gg</command>
     <command>O</command>
     <command>$!27!</command>
-    <command>@cl@</command>
+    <command>@Cl@</command>
     <command>o</command>
     <command>$!27!</command>
-    <command>@cb@</command>
+    <command>@Cb@</command>
     <command>i Name:      </command>
     <command>$!27!</command>
     <command>i$!18!%</command>
     <command>$!27!</command>
-    <command>@cc@</command>
+    <command>@Cc@</command>
     <command>o</command>
     <command>$!27!</command>
-    <command>@purpose:@</command>
+    <command>@Purpose:@</command>
     <command>o</command>
     <command>$!27!</command>
-    <command>@author:@</command>
+    <command>@Author:@</command>
     <command>o</command>
     <command>$!27!</command>
     <command>@cb@</command>
     <command>i Copyright: (c) </command>
     <command>$!27!</command>
-    <command>@year@</command>
+    <command>@Year@</command>
     <command>i </command>
     <command>$!27!</command>
-    <command>@copyright@</command>
-    <command>@cc@</command>
+    <command>@Copyright@</command>
+    <command>@Cc@</command>
     <command>o</command>
     <command>$!27!</command>
-    <command>@cl@</command>
+    <command>@Cl@</command>
     <command>o</command>
     <command>$!27!</command>
   </macro>

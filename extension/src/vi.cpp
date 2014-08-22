@@ -539,18 +539,13 @@ bool wxExVi::Command(const std::string& command)
               {
                 MarkerGoto(rest.back());
               }
-              else if (OneLetterAfter("@", rest))
+              else if (RegAfter("@", rest))
               {
                 const wxString macro = rest.back();
                 
                 if (GetMacros().IsRecorded(macro))
                 {
                   MacroPlayback(macro, repeat);
-                }
-                else if (GetMacros().StartsWith(macro))
-                {
-                  GetFrame()->StatusText(macro, "PaneMacro");
-                  return false;
                 }
                 else
                 {
