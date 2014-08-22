@@ -2798,22 +2798,22 @@ void wxExGuiTestFixture::testViMacros()
   //CPPUNIT_ASSERT(!macros.Expand(vi, "xxx"));
 
   // Test all builtin macro variables.
-  CPPUNIT_ASSERT( macros.Expand(vi, "cb"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "cc"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "ce"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "cl"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "created"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "date"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "datetime"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "filename"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "fullpath"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "nl"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "path"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "time"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "year"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Cb"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Cc"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Ce"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Cl"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Created"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Date"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Datetime"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Filename"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Fullpath"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Nl"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Path"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Time"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Year"));
   
   // Test environment macro variables.
-  CPPUNIT_ASSERT( macros.Expand(vi, "home"));
+  CPPUNIT_ASSERT( macros.Expand(vi, "Home"));
 
   // Test input macro variables.
   // Next requires input...    
