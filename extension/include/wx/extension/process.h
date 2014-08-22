@@ -22,7 +22,9 @@ class WXDLLIMPEXP_BASE wxExProcess : public wxProcess
 {
 public:
   /// Default constructor.
-  wxExProcess();
+  wxExProcess(
+    /// parent for output dialog
+    wxWindow* parent = NULL);
   
   /// Destructor.
  ~wxExProcess();
@@ -73,11 +75,11 @@ public:
   /// Returns the shell, for input to the process.
   /// If you did not yet invoke Execute,
   /// NULL is returned.
-  static wxExSTCShell* GetShell();
+  wxExSTCShell* GetShell();
 
   /// Returns the STC component from the dialog
   /// (might be NULL if dialog is NULL).
-  static wxExSTC* GetSTC();
+  wxExSTC* GetSTC() const;
   
   /// Returns true when the command executed resulted in stderr errors.
   bool HasStdError() const {return m_HasStdError;};
@@ -118,9 +120,10 @@ private:
   static wxString m_WorkingDirKey;
 
 #if wxUSE_GUI
-  static wxExSTCEntryDialog* m_Dialog;
+  wxExSTCEntryDialog* m_Dialog;
 #endif  
 
+  wxWindow* m_Parent;
   wxTimer* m_Timer;
 
   DECLARE_EVENT_TABLE()

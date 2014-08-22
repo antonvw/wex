@@ -1434,13 +1434,6 @@ void Frame::StatusBarClicked(const wxString& pane)
     {
       m_Editors->ForEach(ID_ALL_STC_SET_LEXER_THEME);
 
-      wxExSTC* stc = wxExProcess::GetSTC();
-
-      if (stc != NULL)
-      {
-        stc->SetLexer(stc->GetLexer().GetDisplayLexer());
-      }
-      
       m_StatusBar->ShowField(
         "PaneLexer", 
         wxExLexers::Get()->GetThemeOk());

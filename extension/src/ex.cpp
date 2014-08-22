@@ -164,7 +164,7 @@ bool wxExEx::Command(const std::string& command)
     {
       if (m_Process == NULL)
       {
-        m_Process = new wxExProcess;
+        m_Process = new wxExProcess(m_STC);
       }
     
       if (m_Process->Execute(arg.AfterFirst('!'), wxEXEC_SYNC))
@@ -244,7 +244,7 @@ bool wxExEx::Command(const std::string& command)
   {
     if (m_Process == NULL)
     {
-      m_Process = new wxExProcess;
+      m_Process = new wxExProcess(m_STC);
     }
     
     m_Process->Execute(
