@@ -501,6 +501,7 @@ void wxExGuiTestFixture::testEx()
   
   ex->SetRegistersDelete("x");
   ex->SetRegisterYank("test");
+  CPPUNIT_ASSERT( ex->GetMacros().GetRegister('0') == "test");
 }
 
 void wxExGuiTestFixture::testFileDialog()
@@ -2562,6 +2563,9 @@ void wxExGuiTestFixture::testVi()
   // Test back command.
   stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
   CPPUNIT_ASSERT( vi->Command(":1"));
+  CPPUNIT_ASSERT( vi->Command("yw"));
+  CPPUNIT_ASSERT( vi->GetSelectedText() == "xxxxxxxxxx");
+  
   CPPUNIT_ASSERT( vi->Command("w"));
   CPPUNIT_ASSERT( vi->Command("x"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("second"));
@@ -2579,7 +2583,6 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("gg"));
   
   CPPUNIT_ASSERT( vi->Command("yw"));
-  CPPUNIT_ASSERT( vi->Command("yy"));
   
   CPPUNIT_ASSERT( vi->Command("zc"));
   CPPUNIT_ASSERT( vi->Command("zo"));
