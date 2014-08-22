@@ -23,16 +23,17 @@ BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
   EVT_TIMER(-1, wxExProcess::OnTimer)
 END_EVENT_TABLE()
 
-wxExSTCEntryDialog* wxExProcess::m_Dialog = NULL;
 wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 
-wxExProcess::wxExProcess()
+wxExProcess::wxExProcess(wxWindow* parent)
   : wxProcess(wxPROCESS_REDIRECT)
+  , m_Parent(parent)
   , m_Timer(new wxTimer(this))
   , m_Busy(false)
   , m_Error(false)
   , m_HasStdError(false)
   , m_Sync(false)
+  , m_Dialog(NULL)
 {
   m_Command = wxExConfigFirstOf(_("Process"));
 }
@@ -292,7 +293,7 @@ bool wxExProcess::Execute(
   if (m_Dialog == NULL)
   {
     m_Dialog = new wxExSTCEntryDialog(
-      wxTheApp->GetTopWindow(),
+      m_Parent,
       wxEmptyString,
       wxEmptyString,
       wxEmptyString,
@@ -399,7 +400,7 @@ wxExSTCShell* wxExProcess::GetShell()
   return m_Dialog != NULL ? m_Dialog->GetSTCShell(): NULL;
 }
 
-wxExSTC* wxExProcess::GetSTC() 
+wxExSTC* wxExProcess::GetSTC() const
 {
   return m_Dialog != NULL ? m_Dialog->GetSTC(): NULL;
 }
@@ -477,6 +478,7 @@ wxKillError wxExProcess::Kill(wxSignal sig)
       DeletePendingEvents();
       m_Timer->Stop();
       m_Dialog->Hide();
+      m_Parent->SetFocus();
       break;
 
     case wxKILL_BAD_SIGNAL:
