@@ -448,9 +448,9 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded("xxx"));
   CPPUNIT_ASSERT( ex->GetMacros().GetCount() > 0);
   
-  CPPUNIT_ASSERT( ex->GetMacros().StartsWith("da"));
+  CPPUNIT_ASSERT( ex->GetMacros().StartsWith("Da"));
   
-  CPPUNIT_ASSERT( ex->GetMacros().Expand(ex, "date"));
+  CPPUNIT_ASSERT( ex->GetMacros().Expand(ex, "Date"));
 //  CPPUNIT_ASSERT(!ex->GetMacros().Expand(ex, "xxx"));
   
   // Test markers.
@@ -1865,11 +1865,11 @@ void wxExGuiTestFixture::testUtil()
   wxString s;
   CPPUNIT_ASSERT(!wxExAutoComplete("xxxx", 
     stc->GetVi().GetMacros().Get(), s));
-  CPPUNIT_ASSERT(!wxExAutoComplete("date", // not unique!
+  CPPUNIT_ASSERT(!wxExAutoComplete("Date", // not unique!
     stc->GetVi().GetMacros().Get(), s));
-  CPPUNIT_ASSERT( wxExAutoComplete("datet", 
+  CPPUNIT_ASSERT( wxExAutoComplete("Datet", 
     stc->GetVi().GetMacros().Get(), s));
-  CPPUNIT_ASSERT( s == "datetime");
+  CPPUNIT_ASSERT( s == "Datetime");
   
   // wxExAutoCompleteFileName
   std::vector<wxString> v;
@@ -2073,10 +2073,10 @@ void wxExGuiTestFixture::testVariable()
   CPPUNIT_ASSERT(!var.IsModified());
   
   xml.DeleteAttribute("name");
-  xml.AddAttribute("name", "year");
+  xml.AddAttribute("name", "Year");
   
   wxExVariable var2(&xml);
-  CPPUNIT_ASSERT( var2.GetName() == "year");
+  CPPUNIT_ASSERT( var2.GetName() == "Year");
   CPPUNIT_ASSERT( var2.Expand(ex));
   CPPUNIT_ASSERT(!var2.IsModified());
   
@@ -2621,21 +2621,21 @@ void wxExGuiTestFixture::testVi()
   
   // Test variable.
   stc->SetText("");
-  CPPUNIT_ASSERT( vi->Command("@date@"));
-  CPPUNIT_ASSERT(!stc->GetText().Contains("date"));
+  CPPUNIT_ASSERT( vi->Command("@Date@"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("Date"));
   stc->SetText("");
-  CPPUNIT_ASSERT( vi->Command("@year@"));
+  CPPUNIT_ASSERT( vi->Command("@Year@"));
   CPPUNIT_ASSERT( stc->GetText().Contains("20"));
 //  CPPUNIT_ASSERT(!vi->Command("@xxx@"));
   CPPUNIT_ASSERT( stc->SetLexer("cpp"));
   stc->SetText("");
-  CPPUNIT_ASSERT( vi->Command("@cb@"));
-  CPPUNIT_ASSERT( vi->Command("@ce@"));
+  CPPUNIT_ASSERT( vi->Command("@Cb@"));
+  CPPUNIT_ASSERT( vi->Command("@Ce@"));
   CPPUNIT_ASSERT( stc->GetText().Contains("//"));
   stc->SetText("");
-  CPPUNIT_ASSERT( vi->Command("@cl@"));
+  CPPUNIT_ASSERT( vi->Command("@Cl@"));
   CPPUNIT_ASSERT( stc->GetText().Contains("//"));
-  CPPUNIT_ASSERT( vi->Command("@nl@"));
+  CPPUNIT_ASSERT( vi->Command("@Nl@"));
   
   // Test illegal command.
   CPPUNIT_ASSERT(!vi->Command("dx"));
