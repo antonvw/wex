@@ -551,6 +551,7 @@ bool wxExVi::Command(const std::string& command)
                 {
                   m_Command.clear();
                   GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
+                  return false;
                 }
               }
               else if (RegAfter(wxUniChar(WXK_CONTROL_R), rest))
@@ -574,6 +575,7 @@ bool wxExVi::Command(const std::string& command)
                   {
                     m_Command.clear();
                     GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
+                    return false;
                   }
                 }
                 else if (GetMacros().StartsWith(rest.substr(1)))

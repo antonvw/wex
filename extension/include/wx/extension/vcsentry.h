@@ -2,7 +2,7 @@
 // Name:      vcsentry.h
 // Purpose:   Declaration of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVCSENTRY_H
@@ -21,10 +21,10 @@ class WXDLLIMPEXP_BASE wxExVCSEntry : public wxExProcess
 public:
   /// Default constructor.
   /// Adds empty vcs command with id 0.
-  wxExVCSEntry();
+  wxExVCSEntry(wxWindow* parent = NULL);
   
   /// Constructor using xml node.
-  wxExVCSEntry(const wxXmlNode* node);
+  wxExVCSEntry(const wxXmlNode* node, wxWindow* parent = NULL);
 
   /// Returns true if admin dir is only at top level.
   bool AdminDirIsTopLevel() const {return m_AdminDirIsTopLevel;};
