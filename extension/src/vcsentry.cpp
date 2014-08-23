@@ -2,7 +2,7 @@
 // Name:      vcsentry.cpp
 // Purpose:   Implementation of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,8 +17,9 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
-wxExVCSEntry::wxExVCSEntry()
-  : m_CommandIndex(0)
+wxExVCSEntry::wxExVCSEntry(wxWindow* parent)
+  : wxExProcess(parent)
+  , m_CommandIndex(0)
   , m_AdminDir()
   , m_Name()
   , m_FlagsLocation(VCS_FLAGS_LOCATION_POSTFIX)
@@ -27,8 +28,9 @@ wxExVCSEntry::wxExVCSEntry()
   m_Commands.push_back(wxExVCSCommand());
 }
 
-wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
-  : m_CommandIndex(0)
+wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node, wxWindow* parent)
+  : wxExProcess(parent)
+  , m_CommandIndex(0)
   , m_AdminDir(node->GetAttribute("admin-dir"))
   , m_Name(node->GetAttribute("name"))
   , m_FlagsLocation(
