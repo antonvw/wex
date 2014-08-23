@@ -53,11 +53,11 @@ wxExEx::~wxExEx()
   }
 }
 
-void wxExEx::AddText(const wxString& text)
+void wxExEx::AddText(const std::string& text)
 {
   if (m_Register)
   {
-    m_Macros.SetRegister(m_Register, text.ToStdString());
+    m_Macros.SetRegister(m_Register, text);
   }
   else
   {
