@@ -117,7 +117,7 @@ bool wxExVariable::Expand(wxExEx* ex)
     return false;
   }
   
-  ex->AddText(text);
+  ex->AddText(text.ToStdString());
     
   return true;
 }

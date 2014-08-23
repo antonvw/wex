@@ -2,7 +2,7 @@
 // Name:      variable.h
 // Purpose:   Declaration of class wxExVariable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVARIABLE_H

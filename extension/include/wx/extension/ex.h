@@ -31,7 +31,7 @@ public:
  ~wxExEx();
   
   /// Adds text (to STC or register, if register is active).
-  void AddText(const wxString& text);
+  void AddText(const std::string& text);
  
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.
