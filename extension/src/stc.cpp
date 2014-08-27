@@ -37,6 +37,7 @@
 
 BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_CHAR(wxExSTC::OnChar)
+  EVT_ENTER_WINDOW(wxExSTC::OnMouse)
   EVT_FIND(wxID_ANY, wxExSTC::OnFindDialog)
   EVT_FIND_NEXT(wxID_ANY, wxExSTC::OnFindDialog)
   EVT_FIND_REPLACE(wxID_ANY, wxExSTC::OnFindDialog)
@@ -1825,6 +1826,13 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
       
         PopupMenu(&menu);
       }
+    }
+  }
+  else if (event.Entering())
+  {
+    if (m_vi.GetIsActive())
+    {
+      m_vi.SetRegisterYank(wxExClipboardGet().ToStdString());
     }
   }
   else
