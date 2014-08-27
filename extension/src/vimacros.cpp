@@ -579,7 +579,7 @@ bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
 
 void wxExViMacros::Record(const std::string& text, bool new_command)
 {
-  if (!m_IsRecording || m_IsPlayback)
+  if (!m_IsRecording || m_IsPlayback || text.empty())
   {
     return;
   }
