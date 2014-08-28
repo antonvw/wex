@@ -380,19 +380,26 @@ const wxFileName wxExViMacros::GetFileName()
 
 const std::string wxExViMacros::GetRegister(const char name) const
 {
-  const auto it = m_Macros.find(name);
-    
-  std::string output;
-    
-  if (it != m_Macros.end())
+  if (name == '*')
   {
-    for (const auto& it2 : it->second)
-    {
-      output += it2;
-    }
+    return wxExClipboardGet().ToStdString();
   }
+  else
+  {
+    const auto it = m_Macros.find(name);
+    
+    std::string output;
+    
+    if (it != m_Macros.end())
+    {
+      for (const auto& it2 : it->second)
+      {
+        output += it2;
+      }
+    }
 
-  return output;
+    return output;
+  }
 }
 
 const std::vector< std::string > wxExViMacros::GetRegisters() const
@@ -414,6 +421,13 @@ const std::vector< std::string > wxExViMacros::GetRegisters() const
     }
   }
    
+  const wxString clipboard(wxExSkipWhiteSpace(wxExClipboardGet()));
+              
+  if (!clipboard.empty())
+  {
+    r.push_back(wxString("*: " + clipboard).ToStdString());
+  }
+                
   return r;
 }
 
@@ -669,6 +683,12 @@ void wxExViMacros::SetRegister(const char name, const std::string& value)
 {
   if (!wxIsascii(name))
   {
+    return;
+  }
+  
+  if (name == '*')
+  {
+    wxExClipboardAdd(value);
     return;
   }
 

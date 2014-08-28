@@ -431,7 +431,7 @@ bool wxExVi::Command(const std::string& command)
                 
               if (!GetRegister())
               {
-                GetSTC()->Copy();
+                SetRegisterYank(GetSelectedText());
               }
               else
               {
@@ -610,22 +610,13 @@ bool wxExVi::Command(const std::string& command)
               {
                 wxString output;
                 
-                // Currently the " register does not really exist,
-                // but copies clipboard contents instead.
-                const wxString clipboard(wxExSkipWhiteSpace(wxExClipboardGet()));
-              
-                if (!clipboard.empty())
-                {
-                  output += "\": " + clipboard + "\n";
-                }
-                
-                output += "%: " + GetSTC()->GetFileName().GetFullName() + "\n";
-                
                 for (const auto& it : GetMacros().GetRegisters())
                 {
                   output += it + "\n";
                 }
               
+                output += "%: " + GetSTC()->GetFileName().GetFullName() + "\n";
+                
                 if (m_Dialog == NULL)
                 {
                   m_Dialog = new wxExSTCEntryDialog(

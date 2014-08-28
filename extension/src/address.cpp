@@ -658,11 +658,9 @@ bool wxExAddressRange::Yank() const
   }
   else
   {
-    m_STC->Copy();
+    m_Ex->SetRegisterYank(range);
   }
 
-  m_Ex->SetRegisterYank(range);
-  
   const int lines = wxExGetNumberOfLines(range);
   
   if (lines >= 3)

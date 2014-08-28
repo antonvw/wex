@@ -807,12 +807,6 @@ void wxExSTC::Copy()
   if (CanCopy()) 
   {
     wxStyledTextCtrl::Copy();
-      
-    if (m_vi.GetIsActive())
-    {
-      wxCharBuffer b(GetSelectedTextRaw());
-      m_vi.SetRegisterYank(std::string(b.data(), b.length() - 1));
-    }
   }
 }
 
@@ -1976,15 +1970,7 @@ void wxExSTC::Paste()
 {
   if (CanPaste())
   {
-    if (m_vi.GetIsActive())
-    {
-      const std::string b(m_vi.GetMacros().GetRegister('0'));
-      AddTextRaw(b.data(), b.length());
-    }
-    else
-    {
-      wxStyledTextCtrl::Paste();
-    }
+    wxStyledTextCtrl::Paste();
   }
 }
 
