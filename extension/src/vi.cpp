@@ -953,7 +953,7 @@ void wxExVi::CommandReg(const char reg)
     // calc register
     case '=': GetFrame()->GetExCommand(this, reg); break;
     // clipboard register
-    case '\"': Put(true); break;
+    case '*': Put(true); break;
     // filename register
     case '%':
       if (m_Mode == MODE_INSERT)
@@ -1377,7 +1377,7 @@ bool wxExVi::Put(bool after)
   
   if (!GetRegister())
   {
-    GetSTC()->Paste();
+    AddText(GetMacros().GetRegister('*'));
   }
   else
   {

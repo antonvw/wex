@@ -122,7 +122,7 @@ void wxExGuiTestFixture::testAddressRange()
   stc->GotoLine(0);
   CPPUNIT_ASSERT( wxExAddressRange(ex, 2).Yank());
   stc->SelectNone();
-  stc->Paste();
+  stc->AddText(stc->GetVi().GetMacros().GetRegister('0'));
   CPPUNIT_ASSERT( stc->GetLineCount() == 5);
   CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
   stc->GotoLine(0);
