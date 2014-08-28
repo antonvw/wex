@@ -261,15 +261,7 @@ double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
       if (token.StartsWith(wxUniChar(WXK_CONTROL_R)))
       {
         const wxChar c = token[1];
-      
-        switch (c)
-        {
-        case '\"':
-          value = atof(wxExClipboardGet()); break;
-            
-        default:
-          value = atof(ex->GetMacros().GetRegister(c).c_str());
-        }
+        value = atof(ex->GetMacros().GetRegister(c).c_str());
       }
       else
       {
@@ -324,7 +316,7 @@ const wxString wxExClipboardGet()
 
   if (!locker)
   {
-    wxLogError("Cannot open clipboard");
+    wxLogStatus("Cannot open clipboard");
     return wxEmptyString;
   }
 
@@ -334,9 +326,10 @@ const wxString wxExClipboardGet()
   }
 
   wxTextDataObject data;
+  
   if (!wxTheClipboard->GetData(data))
   {
-    wxLogError("Cannot get clipboard data");
+    wxLogStatus("Cannot get clipboard data");
     return wxEmptyString;
   }
 
