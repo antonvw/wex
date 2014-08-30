@@ -508,6 +508,13 @@ bool wxExEx::CommandSet(const wxString& command)
   return false;
 }
 
+const std::string wxExEx::GetRegisterText() 
+{
+  return m_Register ? 
+    GetMacros().GetRegister(m_Register):
+    GetMacros().GetRegister('0');
+}
+  
 const std::string wxExEx::GetSelectedText() const
 {
   if (m_STC->GetSelectedText().empty())

@@ -54,6 +54,9 @@ public:
   /// Returns register name.
   const char GetRegister() const {return m_Register;};
   
+  /// Returns text from current register (or yank register if no register active).
+  const std::string GetRegisterText();
+  
   /// Returns search flags.
   int GetSearchFlags() const {return m_SearchFlags;};
   

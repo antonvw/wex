@@ -1356,7 +1356,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 
 bool wxExVi::Put(bool after)
 {
-  if (!GetSTC()->CanPaste())
+  if (GetRegisterText().empty())
   {
     return false;
   }
@@ -1375,14 +1375,7 @@ bool wxExVi::Put(bool after)
     GetSTC()->Home();
   }
   
-  if (!GetRegister())
-  {
-    AddText(GetMacros().GetRegister('*'));
-  }
-  else
-  {
-    AddText(GetMacros().GetRegister(GetRegister()));
-  }
+  AddText(GetRegisterText());
 
   if (YankedLines() && after)
   {
@@ -1505,12 +1498,8 @@ bool wxExVi::ToggleCase()
 
 bool wxExVi::YankedLines()
 {
-  const wxString txt = (!GetRegister() ?
-    wxExClipboardGet(): 
-    GetMacros().GetRegister(GetRegister()));
-  
   // do not trim
-  return wxExGetNumberOfLines(txt, false) > 1;
+  return wxExGetNumberOfLines(GetRegisterText(), false) > 1;
 }
 
 #endif // wxUSE_GUI

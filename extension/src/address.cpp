@@ -452,6 +452,10 @@ bool wxExAddressRange::SetSelection(
       m_STC->PositionFromLine(end_line));
   }
 
+  const wxCharBuffer b(m_STC->GetSelectedTextRaw());
+  
+  m_Ex->SetRegisterYank(std::string(b.data(), b.length() - 1));
+
   return true;
 }
 
