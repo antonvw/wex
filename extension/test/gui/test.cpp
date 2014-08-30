@@ -502,6 +502,7 @@ void wxExGuiTestFixture::testEx()
   ex->SetRegistersDelete("x");
   ex->SetRegisterYank("test");
   CPPUNIT_ASSERT( ex->GetMacros().GetRegister('0') == "test");
+  CPPUNIT_ASSERT( ex->GetRegisterText() == "test");
 }
 
 void wxExGuiTestFixture::testFileDialog()
@@ -2597,6 +2598,8 @@ void wxExGuiTestFixture::testVi()
   vi->Command("h");
   vi->Command("h");
   vi->Command("yy");
+  CPPUNIT_ASSERT( 
+    wxString(stc->GetVi().GetMacros().GetRegister('0')).Contains("the chances of anything"));
   vi->Command("p");
   vi->Command("P");
   CPPUNIT_ASSERT( stc->GetText().Contains(
