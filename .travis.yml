@@ -6,6 +6,12 @@ language: cpp
 
 compiler: gcc
 
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "NfFzrqbOe59vUzRRoSJYN3wpJk3NEIU8yJyZgO8tuDL34z7GfbnSvy1v49chRneh1w1rwfDMmvSYRD8SmMNYPcs324+Go/Q6jUfSASnN8S/XjK+M+yToLjsMhnl2i2xhwUaXgsrOoFanfpVsIJ+khMPBF7d2JM9XO8FiSBl8aJU="
+
 branches:
     only:
         - v3.0
