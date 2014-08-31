@@ -438,16 +438,13 @@ bool wxExAddressRange::SetSelection(
       m_STC->PositionFromLine(end_line));
   }
 
-  const wxCharBuffer b(m_STC->GetSelectedTextRaw());
-  
   if (m_Ex->GetRegister())
   {
-    m_Ex->GetMacros().SetRegister(
-      m_Ex->GetRegister(), m_Ex->GetSelectedText());
+    m_Ex->GetMacros().SetRegister(m_Ex->GetRegister(), m_Ex->GetSelectedText());
   }
   else
   {
-    m_Ex->SetRegisterYank(std::string(b.data(), b.length() - 1));
+    m_Ex->SetRegisterYank(m_Ex->GetSelectedText());
   }
 
   return true;
@@ -651,8 +648,7 @@ bool wxExAddressRange::Yank() const
   
   if (m_Ex->GetRegister())
   {
-    m_Ex->GetMacros().SetRegister(
-      m_Ex->GetRegister(), range);
+    m_Ex->GetMacros().SetRegister(m_Ex->GetRegister(), range);
   }
   else
   {
