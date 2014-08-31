@@ -142,22 +142,15 @@ bool wxExAddressRange::Delete(bool show_message) const
 
   const int lines = wxExGetNumberOfLines(m_Ex->GetSelectedText());
   
-  if (m_Ex->GetSelectedText().empty())
+  if (m_Ex->GetRegister())
   {
-    m_STC->DeleteBack();
+    m_Ex->GetMacros().SetRegister(
+      m_Ex->GetRegister(), m_Ex->GetSelectedText());
+    m_STC->ReplaceSelection(wxEmptyString);
   }
   else
   {
-    if (m_Ex->GetRegister())
-    {
-      m_Ex->GetMacros().SetRegister(
-        m_Ex->GetRegister(), m_Ex->GetSelectedText());
-      m_STC->ReplaceSelection(wxEmptyString);
-    }
-    else
-    {
-      m_STC->Cut();
-    }
+    m_STC->Cut();
   }
 
   if (m_Begin.StartsWith("'"))
