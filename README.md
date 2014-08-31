@@ -16,11 +16,7 @@ one of these applications, being a full featured source code text editor.
     `yum install unixODBC`  
     `yum install unixODBC-devel`  
 
-# Build process [![Build Status](https://travis-ci.org/antonvw/wxExtension.png?branch=v3.0)](https://travis-ci.org/antonvw/wxExtension)
-<a href="https://scan.coverity.com/projects/2868">
-  <img alt="Coverity Scan Build Status"
-       src="https://scan.coverity.com/projects/2868/badge.svg"/>
-</a>
+# Build process [![Build Status](https://travis-ci.org/antonvw/wxExtension.png?branch=v3.0)](https://travis-ci.org/antonvw/wxExtension) [![Coverity Scan Build Status](https://scan.coverity.com/projects/2868/badge.svg)](https://scan.coverity.com/projects/2868>)
 
 ## Building wxWidgets
 
