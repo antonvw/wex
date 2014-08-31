@@ -140,18 +140,11 @@ bool wxExAddressRange::Delete(bool show_message) const
     }
   }
 
-  const int lines = wxExGetNumberOfLines(m_Ex->GetSelectedText());
-  
-  if (m_Ex->GetRegister())
-  {
-    m_Ex->GetMacros().SetRegister(
-      m_Ex->GetRegister(), m_Ex->GetSelectedText());
-    m_STC->ReplaceSelection(wxEmptyString);
-  }
-  else
-  {
-    m_STC->Cut();
-  }
+  const std::string sel(m_Ex->GetSelectedText());
+  const int lines = wxExGetNumberOfLines(sel);
+
+  m_STC->ReplaceSelection(wxEmptyString);
+  m_Ex->SetRegistersDelete(sel);
 
   if (m_Begin.StartsWith("'"))
   {
@@ -332,15 +325,15 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
     }
   }
 
+  const int lines = wxExGetNumberOfLines(m_Ex->GetSelectedText());
+
   m_STC->BeginUndoAction();
 
-  m_STC->Cut();
+  m_STC->ReplaceSelection(wxEmptyString);
   m_STC->GotoLine(dest_line - 1);
-  m_STC->Paste();
+  m_Ex->AddText(m_Ex->GetRegisterText());
 
   m_STC->EndUndoAction();
-  
-  const int lines = wxExGetNumberOfLines(m_Ex->GetSelectedText());
   
   if (lines >= 2)
   {
@@ -447,7 +440,15 @@ bool wxExAddressRange::SetSelection(
 
   const wxCharBuffer b(m_STC->GetSelectedTextRaw());
   
-  m_Ex->SetRegisterYank(std::string(b.data(), b.length() - 1));
+  if (m_Ex->GetRegister())
+  {
+    m_Ex->GetMacros().SetRegister(
+      m_Ex->GetRegister(), m_Ex->GetSelectedText());
+  }
+  else
+  {
+    m_Ex->SetRegisterYank(std::string(b.data(), b.length() - 1));
+  }
 
   return true;
 }
