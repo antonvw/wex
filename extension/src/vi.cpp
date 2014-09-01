@@ -759,15 +759,7 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'v': m_Mode = MODE_VISUAL; break;
       
     case 'x': 
-      if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
-      {
-        for (int i = 0; i < repeat; i++) 
-        {
-          GetSTC()->CharRightExtend();
-        }  
-      
-        Cut(); 
-      }
+      DeleteRange(GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + repeat);
       break;
         
     case 'D': 
@@ -812,15 +804,7 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'V': m_Mode = MODE_VISUAL_LINE; break;
       
     case 'X': 
-      if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) 
-      {
-        for (int i = 0; i < repeat; i++) 
-        {
-          GetSTC()->CharLeftExtend();
-        }  
-      
-        Cut(); 
-      }
+      DeleteRange(GetSTC()->GetCurrentPos() - repeat, GetSTC()->GetCurrentPos());
       break;
 
     case '.': 
