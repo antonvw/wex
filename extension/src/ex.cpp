@@ -508,6 +508,23 @@ bool wxExEx::CommandSet(const wxString& command)
   return false;
 }
 
+void wxExEx::Cut(bool show_message)
+{
+  const std::string sel(GetSelectedText());
+  const int lines = wxExGetNumberOfLines(sel);
+  
+  Yank(false);
+
+  m_STC->ReplaceSelection(wxEmptyString);
+  
+  SetRegistersDelete(sel);
+  
+  if (lines >= 3 && show_message)
+  {
+    GetFrame()->ShowExMessage(wxString::Format(_("%d fewer lines"), lines - 1));
+  }
+}
+
 const std::string wxExEx::GetRegisterText() 
 {
   return m_Register ? 
@@ -770,6 +787,32 @@ void wxExEx::SetRegisterYank(const std::string& value) const
   }
   
   m_Macros.SetRegister('0', value);
+}
+
+void wxExEx::Yank(bool show_message)
+{
+  const std::string range(GetSelectedText());
+  
+  if (range.empty())
+  {
+    return;
+  }
+  
+  if (GetRegister())
+  {
+    GetMacros().SetRegister(GetRegister(), range);
+  }
+  else
+  {
+    SetRegisterYank(range);
+  }
+  
+  const int lines = wxExGetNumberOfLines(range);
+  
+  if (lines >= 3 && show_message)
+  {
+    GetFrame()->ShowExMessage(wxString::Format(_("%d lines yanked"), lines - 1));
+  }
 }
 
 #endif // wxUSE_GUI

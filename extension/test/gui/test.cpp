@@ -503,6 +503,15 @@ void wxExGuiTestFixture::testEx()
   ex->SetRegisterYank("test");
   CPPUNIT_ASSERT( ex->GetMacros().GetRegister('0') == "test");
   CPPUNIT_ASSERT( ex->GetRegisterText() == "test");
+  
+  stc->SetText("the chances");
+  stc->SelectAll();
+  ex->Yank();
+  CPPUNIT_ASSERT( ex->GetRegisterText() == "the chances");
+  ex->Cut();
+  CPPUNIT_ASSERT( ex->GetRegisterText() == "the chances");
+  CPPUNIT_ASSERT( ex->GetMacros().GetRegister('1') == "the chances");
+  CPPUNIT_ASSERT( ex->GetSelectedText().empty());
 }
 
 void wxExGuiTestFixture::testFileDialog()

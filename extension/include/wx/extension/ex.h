@@ -39,6 +39,10 @@ public:
   /// Returns true if the command was executed.
   virtual bool Command(const std::string& command);
   
+  /// Cuts selected text to yank register,
+  /// and updates delete registers.
+  void Cut(bool show_message = true);
+  
   /// Returns frame.
   wxExManagedFrame* GetFrame() {return m_Frame;};
   
@@ -113,6 +117,9 @@ public:
   
   /// Set using ex mode.
   void Use(bool mode) {m_IsActive = mode;};
+  
+  /// Yanks selected text to yank register.
+  void Yank(bool show_message = true);
 protected:
   /// Sets last command.
   void SetLastCommand(
