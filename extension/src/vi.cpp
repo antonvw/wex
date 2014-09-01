@@ -352,75 +352,33 @@ bool wxExVi::Command(const std::string& command)
               break;
             case CHR_TO_NUM('d','d'): wxExAddressRange(this, repeat).Delete(); break;
             case CHR_TO_NUM('d','e'):
-              if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
               {
                 const int start = GetSTC()->GetCurrentPos();
                 for (int i = 0; i < repeat; i++) 
                   GetSTC()->WordRightEnd();
                   
-                if (!GetRegister())
-                {
-                  GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
-                  GetSTC()->Cut();
-                }
-                else
-                {
-                  SetRegisterRange(start, GetSTC()->GetCurrentPos());
-                  GetSTC()->DeleteRange(start, GetSTC()->GetCurrentPos() - start);
-                }
+                DeleteRange(start, GetSTC()->GetCurrentPos());
               }
               break;
             case CHR_TO_NUM('d','w'):
-              if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
               {
                 const int start = GetSTC()->GetCurrentPos();
                 for (int i = 0; i < repeat; i++) 
                   GetSTC()->WordRight();
                   
-                if (!GetRegister())
-                {
-                  GetSTC()->SetSelection(start, GetSTC()->GetCurrentPos());
-                  GetSTC()->Cut();
-                }
-                else
-                {
-                  SetRegisterRange(start, GetSTC()->GetCurrentPos());
-                  GetSTC()->DeleteRange(start, GetSTC()->GetCurrentPos() - start);
-                }
+                DeleteRange(start, GetSTC()->GetCurrentPos());
               }
               break;
             case CHR_TO_NUM('d','G'): Command(".,$d"); break;
             case CHR_TO_NUM('d','0'):
-              if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
-              {
-                if (!GetRegister())
-                {
-                  GetSTC()->HomeExtend();
-                  GetSTC()->Cut();
-                }
-                else
-                {
-                  const int start = GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine());
-                  SetRegisterRange(start, GetSTC()->GetCurrentPos());
-                  GetSTC()->DeleteRange(start, GetSTC()->GetCurrentPos() - start);
-                }
-              }
+              DeleteRange(
+                GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()), 
+                GetSTC()->GetCurrentPos());
               break;
             case CHR_TO_NUM('d','$'):
-              if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
-              {
-                if (!GetRegister())
-                {
-                  GetSTC()->LineEndExtend();
-                  GetSTC()->Cut();
-                }
-                else
-                {
-                  const int end = GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine());
-                  SetRegisterRange(GetSTC()->GetCurrentPos(), end);
-                  GetSTC()->DeleteRange(GetSTC()->GetCurrentPos(), end - GetSTC()->GetCurrentPos());
-                }
-              }
+              DeleteRange(
+                GetSTC()->GetCurrentPos(), 
+                GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()));
               break;
               
             case CHR_TO_NUM('g','g'): GetSTC()->DocumentStart(); break;
@@ -808,7 +766,7 @@ bool wxExVi::CommandChar(int c, int repeat)
           GetSTC()->CharRightExtend();
         }  
       
-        GetSTC()->Cut(); 
+        Cut(); 
       }
       break;
         
@@ -816,7 +774,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
       {
         GetSTC()->LineEndExtend();
-        GetSTC()->Cut();
+        Cut();
       }
       break;
         
@@ -861,7 +819,7 @@ bool wxExVi::CommandChar(int c, int repeat)
           GetSTC()->CharLeftExtend();
         }  
       
-        GetSTC()->Cut(); 
+        Cut(); 
       }
       break;
 
@@ -983,7 +941,21 @@ void wxExVi::CommandReg(const char reg)
       }
   }
 }
+
+void  wxExVi::DeleteRange(int start, int end)
+{
+  if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
+  {
+    const wxCharBuffer b(GetSTC()->GetTextRangeRaw(start, end));
+  
+    GetMacros().SetRegister(
+      GetRegister() ? GetRegister(): '0', 
+      std::string(b.data(), b.length()));
     
+    GetSTC()->DeleteRange(start, end - start);
+  }
+}
+
 void wxExVi::FindWord(bool find_next)
 {
   const int start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
@@ -1431,7 +1403,7 @@ bool wxExVi::SetInsertMode(
 
     case 'C': 
       GetSTC()->LineEndExtend();
-      GetSTC()->Cut();
+      Cut();
       break;
       
     case 'I': 
@@ -1461,15 +1433,6 @@ bool wxExVi::SetInsertMode(
   }
   
   return true;
-}
-
-void  wxExVi::SetRegisterRange(int start, int end)
-{
-  wxCharBuffer b(GetSTC()->GetTextRangeRaw(start, end));
-  
-  GetMacros().SetRegister(
-    GetRegister(), 
-    std::string(b.data(), b.length()));
 }
 
 bool wxExVi::ToggleCase()

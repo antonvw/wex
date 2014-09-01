@@ -56,6 +56,7 @@ private:
   void CommandCalc(const wxString& reg);
   bool CommandChar(int c, int repeat);
   void CommandReg(const char reg);
+  void DeleteRange(int start, int end);
   void FindWord(bool find_next = true);
   void GotoBrace();
   bool Indent(
@@ -69,7 +70,6 @@ private:
   bool SetInsertMode(
     const wxString& command,
     int repeat = 1);
-  void SetRegisterRange(int start, int end);
   bool ToggleCase(); 
   bool YankedLines();   
 
