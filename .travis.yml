@@ -1,4 +1,4 @@
-# This is the control file for Travis continuous integration system.
+# This is the control file for Travis continuous integration system. TEST
 #
 # It is used automatically for the repositories on Github if it's found in the
 # root directory of the project.
