@@ -2,7 +2,7 @@
 // Name:      printing.h
 // Purpose:   Include file for wxExPrinting class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXPRINTING_H
@@ -67,7 +67,6 @@ private:
   bool OnPrintPage(int pageNum);
   void SetScale(wxDC *dc);
   wxRect m_PageRect, m_PrintRect;
-  int m_CurrentPage;
   std::vector<int> m_PageBreaks;
   wxStyledTextCtrl* m_Owner;
 };

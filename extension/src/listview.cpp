@@ -84,6 +84,7 @@ private:
 
 wxExColumn::wxExColumn()
   : m_Type(COL_INVALID)
+  , m_IsSortedAscending(false)
 {
   SetColumn(-1);
 }
@@ -177,6 +178,7 @@ wxExListView::wxExListView(wxWindow* parent,
   , m_ImageHeight(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
   , m_ImageWidth(16)
   , m_SortedColumnNo(-1)
+  , m_ToBeSortedColumnNo(-1)
 {
 #if wxUSE_DRAG_AND_DROP
   // We can only have one drop target, we use file drop target,
