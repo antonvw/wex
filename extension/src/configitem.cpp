@@ -36,6 +36,14 @@ wxExConfigItem::wxExConfigItem(int size)
   , m_Type(CONFIG_EMPTY)
   , m_AddLabel(false)
   , m_IsRequired(false)
+  , m_Id(-1)
+  , m_MaxItems(0)
+  , m_Min(0)
+  , m_Max(0)
+  , m_Inc(0)
+  , m_MajorDimension(1)
+  , m_UserWindowCreate(NULL)
+  , m_UserWindowToConfig(false)
 {
   Init(wxEmptyString, -1);
 }
@@ -48,6 +56,14 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(style)
   , m_Type(type)
   , m_AddLabel(false)
+  , m_Id(-1)
+  , m_MaxItems(0)
+  , m_Min(0)
+  , m_Max(0)
+  , m_Inc(0)
+  , m_MajorDimension(1)
+  , m_UserWindowCreate(NULL)
+  , m_UserWindowToConfig(false)
   , m_IsRequired(false)
 {
   Init(page, -1);
@@ -79,6 +95,8 @@ wxExConfigItem::wxExConfigItem(
       type == CONFIG_EMPTY ||
       type == CONFIG_TOGGLEBUTTON ? false: add_label)
   , m_Inc(1)
+  , m_UserWindowCreate(NULL)
+  , m_UserWindowToConfig(false)
 {
   Init(page, cols);
 }
@@ -130,6 +148,9 @@ wxExConfigItem::wxExConfigItem(
   , m_AddLabel(true)
   , m_Min(min)
   , m_Max(max)
+  , m_MajorDimension(1)
+  , m_UserWindowCreate(NULL)
+  , m_UserWindowToConfig(false)
 {
   Init(page, cols);
 }
@@ -157,6 +178,9 @@ wxExConfigItem::wxExConfigItem(
        type != CONFIG_HYPERLINKCTRL ? add_label: false))
   , m_Inc(1)
   , m_Default(value)
+  , m_MajorDimension(1)
+  , m_UserWindowCreate(NULL)
+  , m_UserWindowToConfig(false)
 {
   Init(page, cols);
 }
@@ -182,6 +206,8 @@ wxExConfigItem::wxExConfigItem(
   , m_Choices(choices)
   , m_AddLabel(false)
   , m_Inc(1)
+  , m_UserWindowCreate(NULL)
+  , m_UserWindowToConfig(false)
 {
   Init(page, cols);
 }
@@ -202,6 +228,9 @@ wxExConfigItem::wxExConfigItem(
   , m_ChoicesBool(choices) 
   , m_AddLabel(false)
   , m_Inc(1)
+  , m_MajorDimension(1)
+  , m_UserWindowCreate(NULL)
+  , m_UserWindowToConfig(false)
 {
   Init(page, cols);
 }

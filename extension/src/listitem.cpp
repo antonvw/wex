@@ -40,6 +40,7 @@ wxExListItem::wxExListItem(
   : m_ListView(listview)
   , m_FileName(filename)
   , m_FileSpec(filespec)
+  , m_IsReadOnly(false)
 {
   SetId(-1);
 }

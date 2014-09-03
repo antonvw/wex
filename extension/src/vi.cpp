@@ -369,7 +369,7 @@ bool wxExVi::Command(const std::string& command)
                 DeleteRange(start, GetSTC()->GetCurrentPos());
               }
               break;
-            case CHR_TO_NUM('d','G'): Command(".,$d"); break;
+            case CHR_TO_NUM('d','G'): return Command(".,$d"); break;
             case CHR_TO_NUM('d','0'):
               DeleteRange(
                 GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()), 
@@ -593,7 +593,7 @@ bool wxExVi::Command(const std::string& command)
               }
               else if (command == "dgg")
               {
-                Command("1,.d");
+                return Command("1,.d");
               }
               else
               {
@@ -809,13 +809,13 @@ bool wxExVi::CommandChar(int c, int repeat)
 
     case '.': 
       m_Dot = true;
-      Command(GetLastCommand());
+      if (Command(GetLastCommand()));
       m_Dot = false;
       break;
         
     case ';': 
       m_Dot = true;
-      Command(m_LastFindCharCommand); 
+      if (Command(m_LastFindCharCommand)); 
       m_Dot = false;
       break;
         

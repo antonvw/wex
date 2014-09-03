@@ -516,7 +516,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
       m_ex->MacroRecord(m_Command.ToStdString());
     }
       
-    m_ex->Command(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString());
+    if (m_ex->Command(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString()));
     
     m_Frame->HideExBar();
   }

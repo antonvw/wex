@@ -207,7 +207,10 @@ bool wxExAddressRange::Filter(const wxString& command) const
   
   const bool ok = process.Execute(command + " " + filename, wxEXEC_SYNC);
   
-  remove(filename);
+  if (remove(filename) != 0)
+  {
+    wxLogStatus("Could not remove file");
+  }
   
   if (ok)
   {

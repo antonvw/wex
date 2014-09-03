@@ -1234,7 +1234,7 @@ void wxExSTC::GuessType()
     
   if (ex.Matches(text))
   {
-    m_vi.Command(wxString(":" + text.AfterFirst(':').Trim(false)).ToStdString());
+    if (m_vi.Command(wxString(":" + text.AfterFirst(':').Trim(false)).ToStdString()));
   }
 
   if      (text.Contains("\r\n")) SetEOLMode(wxSTC_EOL_CRLF);
@@ -1887,7 +1887,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   {
     if (m_vi.GetIsActive())
     {
-      m_vi.Command(wxString(event.GetText().Mid(m_AutoComplete.size())).ToStdString());
+      if (m_vi.Command(wxString(event.GetText().Mid(m_AutoComplete.size())).ToStdString()));
     }
   }
   else if (event.GetEventType() == wxEVT_STC_UPDATEUI)
