@@ -2441,7 +2441,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
   CPPUNIT_ASSERT( vi->Command("."));
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
-  CPPUNIT_ASSERT( vi->Command(";"));
+  CPPUNIT_ASSERT(!vi->Command(";"));
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
   CPPUNIT_ASSERT( vi->Command("ma"));
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
@@ -2586,6 +2586,7 @@ void wxExGuiTestFixture::testVi()
   // Test other commands.
   CPPUNIT_ASSERT( vi->Command("dG"));
   CPPUNIT_ASSERT( vi->Command("dgg"));
+  stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
   CPPUNIT_ASSERT( vi->Command("fx"));
   CPPUNIT_ASSERT( vi->Command("Fx"));
   CPPUNIT_ASSERT( vi->Command(";"));
