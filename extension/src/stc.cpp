@@ -1890,7 +1890,8 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   {
     if (m_vi.GetIsActive())
     {
-      if (m_vi.Command(wxString(event.GetText().Mid(m_AutoComplete.size())).ToStdString()));
+      m_vi.Command(wxString(
+        event.GetText().Mid(m_AutoComplete.size())).ToStdString());
     }
   }
   else if (event.GetEventType() == wxEVT_STC_UPDATEUI)

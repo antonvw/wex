@@ -697,11 +697,18 @@ void wxExViMacros::SetRegister(const char name, const std::string& value)
   // The black hole register, everything written to it is discarded.
   if (name != '_')
   {
-    v.push_back(value);
+    if (wxIsupper(name))
+    {
+      v.push_back(GetRegister(name) + value);
+    }
+    else
+    {
+      v.push_back(value);
+    }
   }
   
   m_Macros[name] = v;
-  
+
   m_IsModified = true;
 }
 
