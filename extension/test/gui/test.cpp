@@ -2855,6 +2855,10 @@ void wxExGuiTestFixture::testViMacros()
   macros.SetRegister('z', "hello z");
   CPPUNIT_ASSERT(!macros.GetRegister('z').empty());
   CPPUNIT_ASSERT(!macros.Get("z").empty());
+  CPPUNIT_ASSERT( macros.GetRegister('z') == "hello z");
+  macros.SetRegister('Z', " and more");
+  CPPUNIT_ASSERT( macros.GetRegister('Z').empty());
+  CPPUNIT_ASSERT( macros.GetRegister('z') == "hello z and more");
 }
   
 wxExAppTestSuite::wxExAppTestSuite()

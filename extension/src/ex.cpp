@@ -339,6 +339,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
   
     case 'p':
       print += m_STC->GetLine(m_STC->LineFromPosition(m_STC->GetTargetStart()));
+      // fall through
     case ' ':
       m_STC->SetIndicator(
         m_FindIndicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd());

@@ -43,7 +43,7 @@ wxExConfigItem::wxExConfigItem(int size)
   , m_Inc(0)
   , m_MajorDimension(1)
   , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(false)
+  , m_UserWindowToConfig(NULL)
 {
   Init(wxEmptyString, -1);
 }
@@ -63,7 +63,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Inc(0)
   , m_MajorDimension(1)
   , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(false)
+  , m_UserWindowToConfig(NULL)
   , m_IsRequired(false)
 {
   Init(page, -1);
@@ -96,7 +96,7 @@ wxExConfigItem::wxExConfigItem(
       type == CONFIG_TOGGLEBUTTON ? false: add_label)
   , m_Inc(1)
   , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(false)
+  , m_UserWindowToConfig(NULL)
 {
   Init(page, cols);
 }
@@ -150,7 +150,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Max(max)
   , m_MajorDimension(1)
   , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(false)
+  , m_UserWindowToConfig(NULL)
 {
   Init(page, cols);
 }
@@ -180,7 +180,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Default(value)
   , m_MajorDimension(1)
   , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(false)
+  , m_UserWindowToConfig(NULL)
 {
   Init(page, cols);
 }
@@ -207,7 +207,7 @@ wxExConfigItem::wxExConfigItem(
   , m_AddLabel(false)
   , m_Inc(1)
   , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(false)
+  , m_UserWindowToConfig(NULL)
 {
   Init(page, cols);
 }
@@ -230,7 +230,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Inc(1)
   , m_MajorDimension(1)
   , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(false)
+  , m_UserWindowToConfig(NULL)
 {
   Init(page, cols);
 }
