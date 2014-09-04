@@ -699,7 +699,7 @@ void wxExViMacros::SetRegister(const char name, const std::string& value)
   {
     if (wxIsupper(name))
     {
-      v.push_back(GetRegister(name) + value);
+      v.push_back(GetRegister(tolower(name)) + value);
     }
     else
     {
@@ -707,7 +707,7 @@ void wxExViMacros::SetRegister(const char name, const std::string& value)
     }
   }
   
-  m_Macros[name] = v;
+  m_Macros[(char)tolower(name)] = v;
 
   m_IsModified = true;
 }
