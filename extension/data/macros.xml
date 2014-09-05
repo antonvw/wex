@@ -6,9 +6,10 @@ Author:    Anton van Wezenbeek
 Copyright: (c) 2014, Anton van Wezenbeek
 
 Both variables and macros have a "name" attribute, you call them
-from vi mode using @name@. If the name is a register c, you can call it
-using @c. From vi you can record a register using q followed by a letter,
-and ending with a q as well.
+from vi mode using @name@ (if name starts with an
+uppercase letter). If the name is a register c, you can call it
+using @c (lowercase). From vi you can record a register using q 
+followed by a letter, and ending with a q as well.
 
 Each macro can have several commands.  
 
