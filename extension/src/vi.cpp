@@ -920,16 +920,9 @@ void wxExVi::CommandReg(const char reg)
       }
       break;
     default:
-      if (m_Mode == MODE_INSERT)
+      if (!GetMacros().GetRegister(reg).empty())
       {
-        if (!GetMacros().GetRegister(reg).empty())
-        {
-          AddText(GetMacros().GetRegister(reg));
-        }
-        else
-        {
-          wxLogStatus("?" + wxString(reg));
-        }
+        AddText(GetMacros().GetRegister(reg));
       }
       else
       {
