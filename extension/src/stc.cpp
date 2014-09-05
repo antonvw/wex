@@ -1236,7 +1236,11 @@ void wxExSTC::GuessType()
   {
     if (m_vi.GetIsActive())
     {
-      m_vi.Command(wxString(":" + text.AfterFirst(':').Trim(false)).ToStdString());
+      if (!m_vi.Command(wxString(
+        ":" + text.AfterFirst(':').Trim(false)).ToStdString()))
+      {
+        wxLogStatus("Could not apply vi settings");
+      }
     }
   }
 
@@ -1601,11 +1605,16 @@ void wxExSTC::OnChar(wxKeyEvent& event)
          
          if (m_vi.GetIsActive())
          {
-           m_vi.Command(add.ToStdString());
            const int esc = 27;
-           m_vi.Command(wxString(wxUniChar(esc)).ToStdString());
-           m_vi.Command("%");
-           m_vi.Command("i");
+           
+           if (
+             !m_vi.Command(add.ToStdString()) ||
+             !m_vi.Command(wxString(wxUniChar(esc)).ToStdString()) ||
+             !m_vi.Command("%") ||
+             !m_vi.Command("i"))
+           {
+             wxLogStatus("Autocomplete failed");
+           }
          }
          else
          {
@@ -1890,8 +1899,11 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   {
     if (m_vi.GetIsActive())
     {
-      m_vi.Command(wxString(
-        event.GetText().Mid(m_AutoComplete.size())).ToStdString());
+      if (!m_vi.Command(wxString(
+        event.GetText().Mid(m_AutoComplete.size())).ToStdString()))
+      {
+        wxLogStatus("Autocomplete failed");
+      }
     }
   }
   else if (event.GetEventType() == wxEVT_STC_UPDATEUI)

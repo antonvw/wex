@@ -117,7 +117,7 @@ void TestFixture::testFileNameTiming()
 
   for (int i = 0; i < max; i++)
   {
-    exfile.GetStat().IsReadOnly();
+    CPPUNIT_ASSERT(!exfile.GetStat().IsReadOnly());
   }
 
   const long exfile_time = sw.Time();
@@ -128,7 +128,7 @@ void TestFixture::testFileNameTiming()
 
   for (int j = 0; j < max; j++)
   {
-    file.IsFileWritable();
+    CPPUNIT_ASSERT(file.IsFileWritable());
   }
 
   const long file_time = sw.Time();

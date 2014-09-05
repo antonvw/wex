@@ -33,10 +33,6 @@ void wxExGuiTestFixture::setUp()
 void wxExGuiTestFixture::tearDown() 
 {
   wxExTestFixture::tearDown();
-  
-  // Remove files.
-  remove("test-ex.txt");
-  remove("test.hex");
 }
 
 void wxExGuiTestFixture::testAddress()
@@ -2060,6 +2056,8 @@ void wxExGuiTestFixture::testUtil()
   
   // wxExVCSExecute
   // wxExVCSExecute(frame, 0, files); // calls dialog
+  
+  delete ex;
 }
 
 void wxExGuiTestFixture::testVariable()
@@ -3031,4 +3029,11 @@ wxExAppTestSuite::wxExAppTestSuite()
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testViMacros",
     &wxExGuiTestFixture::testViMacros));
+}
+
+wxExAppTestSuite::~wxExAppTestSuite()
+{
+  // Remove files.
+  CPPUNIT_ASSERT(remove("test-ex.txt") == 0);
+  CPPUNIT_ASSERT(remove("test.hex") == 0);
 }
