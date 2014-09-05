@@ -2364,7 +2364,10 @@ void wxExSTC::SetLexerCommon(bool fold)
   if (!HexMode() &&
        m_Lexer.GetScintillaLexer() == "po")
   {
-    m_Link.AddBasePath();
+    if (!m_Link.AddBasePath())
+    {
+      wxLogStatus("Could not add base path");
+    }
   }
     
   wxExFrame::StatusText(m_Lexer.GetDisplayLexer(), "PaneLexer");
