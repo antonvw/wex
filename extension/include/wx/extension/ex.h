@@ -28,7 +28,7 @@ public:
   wxExEx(wxExSTC* stc);
   
   /// Destructor.
- ~wxExEx();
+  virtual ~wxExEx();
   
   /// Adds text (to STC or register, if register is active).
   void AddText(const std::string& text);
