@@ -17,6 +17,8 @@ class wxExAppTestSuite : public CppUnit::TestSuite
 public:
   /// Default constructor.
   wxExAppTestSuite();
+  /// Destructor.
+  ~wxExAppTestSuite();
 };
 
 /// Derive your application from wxExApp.

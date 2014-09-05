@@ -102,7 +102,7 @@ void wxExGuiReportTestFixture::testListViewFile()
 
   CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
   
-  remove("test-rep.prj.bck");
+  CPPUNIT_ASSERT(remove("test-rep.prj.bck") == 0);
 }
 
 void wxExGuiReportTestFixture::testListViewWithFrame()
