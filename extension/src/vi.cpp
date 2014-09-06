@@ -1352,10 +1352,11 @@ bool wxExVi::SetInsertMode(
   }
     
   m_Mode = MODE_INSERT;
-  SetRegisterInsertEmpty();
   
   if (!m_Dot)
   {
+    SetRegisterInsertEmpty();
+    
     if (repeat > 1)
     {
       SetLastCommand(wxString::Format("%d%s", repeat, c.c_str()).ToStdString(), true);
