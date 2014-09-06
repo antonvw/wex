@@ -782,7 +782,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
       wxCheckBox* cb = (wxCheckBox*)m_Window;
       if (save)
-        wxConfigBase::Get()->Write(m_Label, cb->GetValue());
+        wxConfigBase::Get()->Write(m_Label, cb->IsChecked());
       else
         cb->SetValue(wxConfigBase::Get()->ReadBool(m_Label, false));
       }
