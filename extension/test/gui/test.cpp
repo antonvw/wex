@@ -494,11 +494,20 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( stc->GetCurrentLine() == 9);
   CPPUNIT_ASSERT( ex->Command(":10000"));
   CPPUNIT_ASSERT( stc->GetCurrentLine() == 11);
-  
+
+  // Test registers.  
   ex->SetRegistersDelete("x");
   ex->SetRegisterYank("test");
   CPPUNIT_ASSERT( ex->GetMacros().GetRegister('0') == "test");
   CPPUNIT_ASSERT( ex->GetRegisterText() == "test");
+  ex->SetRegisterInsertEmpty();
+  CPPUNIT_ASSERT( ex->GetRegisterInsert().empty());
+  ex->AddTextRegisterInsert("one");
+  CPPUNIT_ASSERT( ex->GetRegisterInsert() == "one");
+  ex->AddTextRegisterInsert("two");
+  CPPUNIT_ASSERT( ex->GetRegisterInsert() == "onetwo");
+  ex->SetRegisterInsertDeleteBack();
+  CPPUNIT_ASSERT( ex->GetRegisterInsert() == "onetw");
   
   stc->SetText("the chances");
   stc->SelectAll();
@@ -2355,7 +2364,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command(ESC));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetText().Contains("xxxxxxxx"));
-  CPPUNIT_ASSERT( vi->GetInsertText() == "xxxxxxxx");
+  CPPUNIT_ASSERT( vi->GetRegisterInsert() == "xxxxxxxx");
   CPPUNIT_ASSERT( vi->GetLastCommand() == wxString("ixxxxxxxx") + wxUniChar(esc));
   
   for (int i = 0; i < 10; i++)

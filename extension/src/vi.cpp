@@ -108,7 +108,7 @@ bool OneLetterAfter(const wxString text, const wxString& letter)
 
 bool RegAfter(const wxString text, const wxString& letter)
 {
-  return wxRegEx("^" + text + "[0-9=\"a-z%]$").Matches(letter);
+  return wxRegEx("^" + text + "[0-9=\"a-z%.]$").Matches(letter);
 }
 
 wxExSTCEntryDialog* wxExVi::m_Dialog = NULL;
@@ -1054,26 +1054,22 @@ bool wxExVi::InsertMode(const std::string& command)
   
   switch ((int)command.back())
   {
-    case WXK_BACK:
-      if (m_InsertText.size() > 1)
-      {
-        m_InsertText.resize(m_InsertText.size() - 1);
-      }
-        
+    case WXK_BACK: 
+      SetRegisterInsertDeleteBack();
       GetSTC()->DeleteBack();
       break;
       
     case WXK_CONTROL_R:
-      m_InsertText += command;
+      AddTextRegisterInsert(command);
       break;
         
     case WXK_ESCAPE:
       // Add extra inserts if necessary.        
-      if (!m_InsertText.empty())
+      if (!GetRegisterInsert().empty())
       {
         for (int i = 1; i < m_InsertRepeatCount; i++)
         {
-          AddText(m_InsertText);
+          AddText(GetRegisterInsert());
         }
       }
       
@@ -1116,7 +1112,7 @@ bool wxExVi::InsertMode(const std::string& command)
       
       if (!m_Dot)
       {
-        const std::string lc(GetLastCommand() + m_InsertText);
+        const std::string lc(GetLastCommand() + GetRegisterInsert());
         
         SetLastCommand(lc + wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
           
@@ -1141,22 +1137,22 @@ bool wxExVi::InsertMode(const std::string& command)
         
       if (!GetSTC()->AutoCompActive())
       {
-        m_InsertText += GetSTC()->GetEOL();
+        AddTextRegisterInsert(GetSTC()->GetEOL().ToStdString());
       }
       break;
       
     default: 
-      if (wxString(GetLastCommand()).EndsWith("cw") && m_InsertText.empty())
+      if (wxString(GetLastCommand()).EndsWith("cw") && GetRegisterInsert().empty())
       {
         GetSTC()->ReplaceSelection(wxEmptyString);
       }
 
       if (
-       !m_InsertText.empty() &&
-        m_InsertText.back() == wxUniChar(WXK_CONTROL_R))
+       !GetRegisterInsert().empty() &&
+        GetRegisterInsert().back() == wxUniChar(WXK_CONTROL_R))
       {
         GetSTC()->ReplaceSelection(wxEmptyString);
-        m_InsertText += command;
+        AddTextRegisterInsert(command);
         CommandReg(command.back());
         return false;
       }
@@ -1189,7 +1185,7 @@ bool wxExVi::InsertMode(const std::string& command)
         
         if (!m_Dot)
         {
-          m_InsertText += command;
+          AddTextRegisterInsert(command);
         }
       }
   }
@@ -1201,7 +1197,7 @@ void wxExVi::MacroRecord(const std::string& text)
 {
   if (m_Mode == MODE_INSERT)
   {
-    m_InsertText += text;
+    AddTextRegisterInsert(text);
   }
   else
   {
@@ -1356,7 +1352,7 @@ bool wxExVi::SetInsertMode(
   }
     
   m_Mode = MODE_INSERT;
-  m_InsertText.clear();
+  SetRegisterInsertEmpty();
   
   if (!m_Dot)
   {

@@ -33,6 +33,9 @@ public:
   /// Adds text (to STC or register, if register is active).
   void AddText(const std::string& text);
  
+  /// Appends to insert register.
+  void AddTextRegisterInsert(const std::string& value) const;
+  
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.
   /// The command should start with a ':'.
@@ -58,8 +61,11 @@ public:
   /// Returns register name.
   const char GetRegister() const {return m_Register;};
   
+  /// Returns text to be inserted.
+  const std::string GetRegisterInsert() const;
+  
   /// Returns text from current register (or yank register if no register active).
-  const std::string GetRegisterText();
+  const std::string GetRegisterText() const;
   
   /// Returns search flags.
   int GetSearchFlags() const {return m_SearchFlags;};
@@ -111,6 +117,12 @@ public:
   
   /// Sets delete registers 1 - 9 (if value not empty).
   void SetRegistersDelete(const std::string& value) const;
+  
+  /// Deletes last char from insert register.
+  void SetRegisterInsertDeleteBack() const;
+  
+  /// Clears insert register.
+  void SetRegisterInsertEmpty() const;
   
   /// Sets yank register (if value not empty).
   void SetRegisterYank(const std::string& value) const;
