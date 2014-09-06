@@ -65,6 +65,11 @@ void wxExEx::AddText(const std::string& text)
   }
 }
 
+void wxExEx::AddTextRegisterInsert(const std::string& value) const
+{
+  m_Macros.SetRegister('.', GetRegisterInsert() + value);
+}
+
 bool wxExEx::Command(const std::string& command)
 {
   if (!m_IsActive || command.empty() || command.front() != ':')
@@ -526,11 +531,16 @@ void wxExEx::Cut(bool show_message)
   }
 }
 
-const std::string wxExEx::GetRegisterText() 
+const std::string wxExEx::GetRegisterInsert() const
+{
+  return m_Macros.GetRegister('.');
+}
+
+const std::string wxExEx::GetRegisterText() const
 {
   return m_Register ? 
-    GetMacros().GetRegister(m_Register):
-    GetMacros().GetRegister('0');
+    m_Macros.GetRegister(m_Register):
+    m_Macros.GetRegister('0');
 }
   
 const std::string wxExEx::GetSelectedText() const
@@ -780,6 +790,24 @@ void wxExEx::SetRegistersDelete(const std::string& value) const
   m_Macros.SetRegister('1', value);
 }
   
+void wxExEx::SetRegisterInsertDeleteBack() const
+{
+  std::string value = GetRegisterInsert();
+  
+  if (!value.empty())
+  {
+    SetRegisterInsertEmpty();
+    value.erase(value.size() - 1);
+    AddTextRegisterInsert(value);
+  }
+}
+
+void wxExEx::SetRegisterInsertEmpty() const
+{
+  std::string value;
+  m_Macros.SetRegister('.', value);
+}
+
 void wxExEx::SetRegisterYank(const std::string& value) const
 {
   if (value.empty())
@@ -801,7 +829,7 @@ void wxExEx::Yank(bool show_message)
   
   if (GetRegister())
   {
-    GetMacros().SetRegister(GetRegister(), range);
+    m_Macros.SetRegister(GetRegister(), range);
   }
   else
   {

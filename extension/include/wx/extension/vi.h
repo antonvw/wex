@@ -34,9 +34,6 @@ public:
   /// Returns true if the command was executed.
   virtual bool Command(const std::string& command);
   
-  /// Returns text to be inserted.
-  const std::string& GetInsertText() const {return m_InsertText;};
-  
   /// Returns the mode we are in.
   int GetMode() const {return m_Mode;};
   
@@ -83,7 +80,6 @@ private:
   int m_Mode;
   
   std::string m_Command;
-  std::string m_InsertText;
 };
 #endif // wxUSE_GUI
 #endif
