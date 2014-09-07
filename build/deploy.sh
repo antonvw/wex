@@ -9,6 +9,8 @@
 # Run this file in the build folder
 
 TOOLKIT=`wx-config --query-toolkit`
+RELEASE=`wx-config --release`
+VERSION=`wx-config --version`
 
 mkdir syncped
 mkdir syncped/fr_FR
@@ -18,15 +20,15 @@ mkdir syncped/nl_NL
 cp gcc$TOOLKIT\_dll/syncped syncped
 
 # Copy the libs.
-cp ~/wxWidgets-3.0.1/buildgtk/lib/libwx*3.0*so*0 syncped
+cp ~/wxWidgets-$VERSION/buildgtk/lib/libwx*$RELEASE*so*0 syncped
 
 # Copy xml and templates data.
 cp ../extension/data/*.txt syncped
 cp ../extension/data/*.xml syncped
 
 # Copy locale files.
-msgfmt ~/wxWidgets-3.0.1/locale/fr.po -o syncped/fr_FR/fr.mo
-msgfmt ~/wxWidgets-3.0.1/locale/nl.po -o syncped/nl_NL/nl.mo
+msgfmt ~/wxWidgets-$VERSION/locale/fr.po -o syncped/fr_FR/fr.mo
+msgfmt ~/wxWidgets-$VERSION/locale/nl.po -o syncped/nl_NL/nl.mo
 
 FILES=( $( /bin/ls ../locale/*fr.po  ) )
 
@@ -51,3 +53,5 @@ done
 strip syncped/syncped
 tar cf syncped.tar syncped
 gzip syncped.tar
+
+rm -rf syncped
