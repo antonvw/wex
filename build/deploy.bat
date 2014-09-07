@@ -6,6 +6,8 @@ rem Copyright: (c) 2014 Anton van Wezenbeek
 
 rem Run this file in the build folder
 
+call config.cmd
+
 mkdir syncped
 mkdir syncped\fr_FR
 mkdir syncped\nl_NL
@@ -23,8 +25,8 @@ copy ..\extension\data\*.txt syncped
 copy ..\extension\data\*.xml syncped
 
 rem Copy locale files.
-"C:\Program Files (x86)\GnuWin32\bin\msgfmt.exe" c:\wxWidgets-3.0.1\locale\nl.po -o syncped\nl_NL\nl.mo
-"C:\Program Files (x86)\GnuWin32\bin\msgfmt.exe" c:\wxWidgets-3.0.1\locale\fr.po -o syncped\fr_FR\fr.mo
+"C:\Program Files (x86)\GnuWin32\bin\msgfmt.exe" %WXWIN%\locale\nl.po -o syncped\nl_NL\nl.mo
+"C:\Program Files (x86)\GnuWin32\bin\msgfmt.exe" %WXWIN%\locale\fr.po -o syncped\fr_FR\fr.mo
 
 "C:\Program Files (x86)\GnuWin32\bin\msgfmt.exe" ..\locale\wxextension-nl.po -o syncped\nl_NL\wxextension-nl.mo
 "C:\Program Files (x86)\GnuWin32\bin\msgfmt.exe" ..\locale\wxextension-fr.po -o syncped\fr_FR\wxextension-fr.mo
