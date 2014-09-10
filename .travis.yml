@@ -30,6 +30,9 @@ branches:
 before_install:
 # we need  a display for the gui tests
     - export DISPLAY=:99.0
+# export settings for coveralls
+    - export CPPFLAGS="-g -O0 -fprofile-arcs -ftest-coverage" 
+    - export LDFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
 # take care that recently-used.xbel file can be written
     - export XDG_DATA_HOME=$PWD
     - sh -e /etc/init.d/xvfb start
@@ -38,6 +41,8 @@ before_install:
     - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
     - sudo apt-get update
     - sudo apt-get install g++-4.8
+    - sudo apt-get install python-pip
+    - sudo pip install cpp-coveralls
 # first add dependencies for libwxgtk3
     - sudo apt-get install -y liblzma5 
     - sudo apt-get install -y libjbig0
@@ -54,4 +59,6 @@ script:
     - pushd build
     - make -j 4
     - ./test-all.sh
-    - popd
+  
+after_success:
+    - coveralls --exclude lib --exclude tests --gcov-options '-lp'
