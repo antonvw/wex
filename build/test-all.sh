@@ -9,8 +9,6 @@
 TOOLKIT=`wx-config --query-toolkit`
 TESTDIR=./gcc$TOOLKIT\_dll/
 
-ORG=$PWD
-
 if [ ! -d ~/.wxex-test ]; then
   mkdir ~/.wxex-test
   cp ../extension/data/*.xml ~/.wxex-test
@@ -27,11 +25,11 @@ if [ ! -d ~/.wxex-test-rep ]; then
 fi
 
 echo "-- test base --"
-$TESTDIR/wxex-test-base > $ORG/test-base.log
+$TESTDIR/wxex-test-base
 RC=$?
 
 echo "-- test gui --"
-$TESTDIR/wxex-test-gui > $ORG/test-gui.log
+$TESTDIR/wxex-test-gui
 NRC=$?
 
 if [ $RC -eq "0" ]; then
@@ -39,18 +37,14 @@ if [ $RC -eq "0" ]; then
 fi
 
 # Skip this test for Travis, it hangs the gui?
-if [ ! $TRAVIS ]; then
+#if [ ! $TRAVIS ]; then
   echo "-- test gui report --"
-  $TESTDIR/wxex-test-gui-report > $ORG/test-gui-report.log
+  $TESTDIR/wxex-test-gui-report
   NRC=$?
   
   if [ $RC -eq "0" ]; then
     RC=$NRC
   fi
-fi
-
-cat *.log
-
-rm *.log
+#fi
 
 return $RC
