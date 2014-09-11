@@ -65,4 +65,4 @@ script:
     - ./test-all.sh
   
 after_success:
-    - coveralls --root $TRAVIS_BUILD_DIR/extension --build-root $TESTDIR --exclude lib --exclude tests --gcov-options '\-lp'
+    - coveralls --root $TRAVIS_BUILD_DIR/extension --build-root $TESTDIR -E 'sample/*' -E 'sample/report/*' -E 'interface/*' -E 'test/*/*' --gcov-options '\-lp'
