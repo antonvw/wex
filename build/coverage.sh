@@ -26,7 +26,7 @@ fi
 echo "-- lcov initializing --"
 lcov --base-directory ~/wxExtension/extension --capture --initial --directory $TESTDIR --output-file app.base
 
-./test-all
+./test-all.sh
 
 if [ $? != 0 ]; then
   echo "test failed"
