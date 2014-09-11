@@ -3,7 +3,7 @@
 # Name:      coverage.sh
 # Purpose:   Coverage file (for wxExtension)
 # Author:    Anton van Wezenbeek
-# Copyright: (c) 2013 Anton van Wezenbeek
+# Copyright: (c) 2014 Anton van Wezenbeek
 ################################################################################
 
 # Run this file in the build folder
@@ -16,7 +16,6 @@ export CPPFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
 export LDFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
 
 echo "-- make test coverage build --"
-
 make
 
 if [ $? != 0 ]; then
@@ -27,28 +26,10 @@ fi
 echo "-- lcov initializing --"
 lcov --base-directory ~/wxExtension/extension --capture --initial --directory $TESTDIR --output-file app.base
 
-# do not call test-all, in order to not overwrite log files
-echo "-- test base --"
-$TESTDIR/wxex-test-base
+./test-all
 
 if [ $? != 0 ]; then
-  echo "test base failed"
-  exit 1
-fi
-
-echo "-- test gui --"
-$TESTDIR/wxex-test-gui
-
-if [ $? != 0 ]; then
-  echo "test gui failed"
-  exit 1
-fi
-
-echo "-- test gui report --"
-$TESTDIR/wxex-test-gui-report
-
-if [ $? != 0 ]; then
-  echo "test gui report failed"
+  echo "test failed"
   exit 1
 fi
 

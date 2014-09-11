@@ -28,37 +28,41 @@ branches:
         - coverity_scan
 
 before_install:
-# we need  a display for the gui tests
-    - export DISPLAY=:99.0
-# export settings for coveralls
-    - export CPPFLAGS="-g -O0 -fprofile-arcs -ftest-coverage" 
-    - export LDFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
-# take care that recently-used.xbel file can be written
-    - export XDG_DATA_HOME=$PWD
-    - sh -e /etc/init.d/xvfb start
     - sudo apt-key adv --fetch-keys http://repos.codelite.org/CodeLite.asc
     - sudo apt-add-repository 'deb http://repos.codelite.org/wx3.0.1/ubuntu/ precise universe'
     - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
     - sudo apt-get update
+
+install:
     - sudo apt-get install g++-4.8
     - sudo apt-get install python-pip
     - sudo pip install cpp-coveralls
-# first add dependencies for libwxgtk3
+    # first add dependencies for libwxgtk3
     - sudo apt-get install -y liblzma5 
     - sudo apt-get install -y libjbig0
     - sudo apt-get install -y libwxbase3.0-0-unofficial libwxbase3.0-dev libwxgtk3.0-0-unofficial libwxgtk3.0-dev wx3.0-headers wx-common wx3.0-i18n    
     - sudo apt-get install -y libcppunit-dev
-# coreutils needed for uniq and sort used in testing
+    # coreutils needed for uniq and sort used in testing
     - sudo apt-get install -y coreutils
 
-script:
+before_script:
+    # export settings for coveralls
+    - export CPPFLAGS="-g -O0 -fprofile-arcs -ftest-coverage" 
+    - export LDFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
+    - export TOOLKIT=`wx-config --query-toolkit` 
+    - export TESTDIR=$TRAVIS_BUILD_DIR/build/gcc$TOOLKIT/_dll
+    # we need  a display for the gui tests
+    - export DISPLAY=:99.0
+    # take care that recently-used.xbel file can be written
+    - export XDG_DATA_HOME=$PWD
+    - sh -e /etc/init.d/xvfb start
     - sudo rm /usr/bin/g++
     - sudo ln -s /usr/bin/g++-4.8 /usr/bin/g++
-    - wx-config --cxx
-    - g++ --version
+
+script:
     - pushd build
     - make -j 4
     - ./test-all.sh
   
 after_success:
-    - coveralls --exclude lib --exclude tests --gcov-options '\-lp'
+    - coveralls --root $TRAVIS_BUILD_DIR/extension --build-root $TESTDIR --exclude lib --exclude tests --gcov-options '\-lp'
