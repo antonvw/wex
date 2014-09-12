@@ -68,8 +68,8 @@ script:
     - ./test-all.sh
   
 after_success:
-#    - lcov --compat-libtool --directory . --capture --output-file coverage.info
-#    - lcov --remove coverage.info "/usr*" --output-file coverage.info
-#    - lcov --remove coverage.info "sample*" --output-file coverage.info
-#    - lcov --remove coverage.info "*wxExtension/sync**" --output-file coverage.info
-#    - coveralls-lcov coverage.info
+    - lcov --compat-libtool --directory . --capture --output-file coverage.info
+    - lcov --remove coverage.info "/usr*" --output-file coverage.info
+    - lcov --remove coverage.info "sample*" --output-file coverage.info
+    - lcov --remove coverage.info "*wxExtension/sync**" --output-file coverage.info
+    - coveralls-lcov coverage.info

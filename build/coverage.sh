@@ -44,9 +44,8 @@ lcov --remove app.total "sample*" --output-file app.total
 lcov --remove app.total "*wxExtension/sync*" --output-file app.total
 
 # when manually updating coveralls
-# which we do, as it does not work using travis
-echo "-- sending to coveralls --"
-coveralls-lcov --repo-token sOcBNDSlOjLSH3vs636zytnjuQtRWKLGP app.total
+#echo "-- sending to coveralls --"
+#coveralls-lcov --repo-token sOcBNDSlOjLSH3vs636zytnjuQtRWKLGP app.total
 
 echo "-- genhtml building report --"
 genhtml --no-branch-coverage --title "wxExtension Library" app.total
