@@ -44,6 +44,8 @@ lcov --remove app.total "sample*" --output-file app.total
 lcov --remove app.total "*wxExtension/sync*" --output-file app.total
 
 echo "-- genhtml building report --"
+# when manually updating coveralls:
+#coveralls-lcov --repo-token MY_REPO app.total
 genhtml --no-branch-coverage --title "wxExtension Library" app.total
 
 rm -f app.base app.run app.total
