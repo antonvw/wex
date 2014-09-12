@@ -36,7 +36,7 @@ before_install:
 install:
     - sudo apt-get install g++-4.8
     - sudo apt-get install ruby
-    - sudo gem install coveralls-lcov
+    - gem install coveralls-lcov
     # first add dependencies for libwxgtk3
     - sudo apt-get install -y liblzma5 
     - sudo apt-get install -y libjbig0
