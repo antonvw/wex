@@ -10,7 +10,8 @@
 # If you did another make before, first do a make clean.
 
 TOOLKIT=`wx-config --query-toolkit`
-TESTDIR=./gcc$TOOLKIT\_dll/
+BASEDIR=../extension
+TESTDIR=./gcc$TOOLKIT\_dll
 
 export CPPFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
 export LDFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
@@ -24,7 +25,7 @@ if [ $? != 0 ]; then
 fi
 
 echo "-- lcov initializing --"
-lcov --base-directory ~/wxExtension/extension --capture --initial --directory $TESTDIR --output-file app.base
+lcov --base-directory $BASEDIR --capture --initial --directory $TESTDIR --output-file app.base
 
 ./test-all.sh
 
@@ -34,7 +35,7 @@ if [ $? != 0 ]; then
 fi
 
 echo "-- lcov collecting data --"
-lcov --base-directory ~/wxExtension/extension --capture --directory $TESTDIR --output-file app.run
+lcov --base-directory $BASEDIR --capture --directory $TESTDIR --output-file app.run
 lcov --add-tracefile app.base --add-tracefile app.run --output-file app.total
 
 # remove output for external and test libraries
