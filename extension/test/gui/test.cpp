@@ -2078,6 +2078,7 @@ void wxExGuiTestFixture::testVariable()
   CPPUNIT_ASSERT( v.Expand(ex));
   CPPUNIT_ASSERT( v.GetName().empty());
   CPPUNIT_ASSERT(!v.IsModified());
+  CPPUNIT_ASSERT(!v.IsInput());
   
   wxXmlNode xml(wxXML_ELEMENT_NODE, "variable");
   xml.AddAttribute("name", "test");
@@ -2088,6 +2089,7 @@ void wxExGuiTestFixture::testVariable()
   CPPUNIT_ASSERT( var.GetValue().IsEmpty());
   CPPUNIT_ASSERT(!var.Expand(ex));
   CPPUNIT_ASSERT(!var.IsModified());
+  CPPUNIT_ASSERT(!var.IsInput());
   
   xml.DeleteAttribute("name");
   xml.AddAttribute("name", "Year");
@@ -2096,9 +2098,12 @@ void wxExGuiTestFixture::testVariable()
   CPPUNIT_ASSERT( var2.GetName() == "Year");
   CPPUNIT_ASSERT( var2.Expand(ex));
   CPPUNIT_ASSERT(!var2.IsModified());
+  CPPUNIT_ASSERT(!var2.IsInput());
   
   wxExVariable var3("added");
   CPPUNIT_ASSERT( var3.GetName() == "added");
+  CPPUNIT_ASSERT( var3.IsInput());
+  var.SkipInput();
   // This is input, we cannot test it at this moment.
 }
 
