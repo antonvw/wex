@@ -184,9 +184,7 @@ bool wxExAddressRange::Filter(const wxString& command) const
   
   if (file.Exists() || !file.Create())
   {
-#ifdef DEBUG
-    wxLogMessage("File error: " + filename);
-#endif
+    wxLogStatus("File error: " + filename);
     return false;
   }
 
