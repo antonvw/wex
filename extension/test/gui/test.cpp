@@ -1733,6 +1733,8 @@ void wxExGuiTestFixture::testSTC()
   wxPostEvent(stc, event);
   event.SetInt(ID_EDIT_ZOOM_OUT);
   wxPostEvent(stc, event);
+  
+  wxYield();
 }
   
 void wxExGuiTestFixture::testSTCEntryDialog()
