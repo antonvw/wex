@@ -235,7 +235,7 @@ bool wxExEx::Command(const std::string& command)
   else if (command.back() == '=')
   {
     const wxExAddress address(this, wxString(command).AfterFirst(':').BeforeLast('='));
-    const int no = address.ToLine();
+    const int no = address.GetLine();
     
     if (no == 0)
     {
@@ -261,9 +261,9 @@ bool wxExEx::Command(const std::string& command)
   {
     // do nothing
   }
-  else if (wxExAddress(this, command.substr(1)).ToLine() > 0)
+  else if (wxExAddress(this, command.substr(1)).GetLine() > 0)
   {
-    m_STC->GotoLineAndSelect(wxExAddress(this, command.substr(1)).ToLine());
+    m_STC->GotoLineAndSelect(wxExAddress(this, command.substr(1)).GetLine());
   }
   else
   {

@@ -45,26 +45,40 @@ void wxExGuiTestFixture::testAddress()
   stc->GotoLineAndSelect(2);
   ex->MarkerAdd('b'); // put marker b on line
   
-  CPPUNIT_ASSERT( wxExAddress(ex, "").ToLine() == 0);
-  CPPUNIT_ASSERT( wxExAddress(ex, "30").ToLine() == lines);
-  CPPUNIT_ASSERT( wxExAddress(ex, "40").ToLine() == lines);
-  CPPUNIT_ASSERT( wxExAddress(ex, "-40").ToLine() == 1);
-  CPPUNIT_ASSERT( wxExAddress(ex, "3-3").ToLine() == 0);
-  CPPUNIT_ASSERT( wxExAddress(ex, "3-1").ToLine() == 2);
-  CPPUNIT_ASSERT( wxExAddress(ex, ".").ToLine() == 2);
-  CPPUNIT_ASSERT( wxExAddress(ex, ".+1").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "$").ToLine() == lines);
-  CPPUNIT_ASSERT( wxExAddress(ex, "$-2").ToLine() == lines - 2);
-  CPPUNIT_ASSERT( wxExAddress(ex, "x").ToLine() == 0);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'x").ToLine() == 0);
-  CPPUNIT_ASSERT( wxExAddress(ex, "1,3s/x/y").ToLine() == 0);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'a").ToLine() == 1);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'b").ToLine() == 2);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'b+10").ToLine() == lines);
-  CPPUNIT_ASSERT( wxExAddress(ex, "10+'b").ToLine() == lines);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'a+'b").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'b+'a").ToLine() == 3);
-  CPPUNIT_ASSERT( wxExAddress(ex, "'b-'a").ToLine() == 1);
+  CPPUNIT_ASSERT( wxExAddress(ex).GetLine() == 0);
+  CPPUNIT_ASSERT( wxExAddress(ex, "30").GetLine() == lines);
+  CPPUNIT_ASSERT( wxExAddress(ex, "40").GetLine() == lines);
+  CPPUNIT_ASSERT( wxExAddress(ex, "-40").GetLine() == 1);
+  CPPUNIT_ASSERT( wxExAddress(ex, "3-3").GetLine() == 0);
+  CPPUNIT_ASSERT( wxExAddress(ex, "3-1").GetLine() == 2);
+  CPPUNIT_ASSERT( wxExAddress(ex, ".").GetLine() == 2);
+  CPPUNIT_ASSERT( wxExAddress(ex, ".+1").GetLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "$").GetLine() == lines);
+  CPPUNIT_ASSERT( wxExAddress(ex, "$-2").GetLine() == lines - 2);
+  CPPUNIT_ASSERT( wxExAddress(ex, "x").GetLine() == 0);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'x").GetLine() == 0);
+  CPPUNIT_ASSERT( wxExAddress(ex, "1,3s/x/y").GetLine() == 0);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'a").GetLine() == 1);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b").GetLine() == 2);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b+10").GetLine() == lines);
+  CPPUNIT_ASSERT( wxExAddress(ex, "10+'b").GetLine() == lines);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'a+'b").GetLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b+'a").GetLine() == 3);
+  CPPUNIT_ASSERT( wxExAddress(ex, "'b-'a").GetLine() == 1);
+  
+  wxExAddress address(ex);
+  CPPUNIT_ASSERT( address.GetLine() == 0);
+  address.SetLine(-1);
+  CPPUNIT_ASSERT( address.GetLine() == 1);
+  address.SetLine(1);
+  CPPUNIT_ASSERT( address.GetLine() == 1);
+  address.SetLine(100);
+  CPPUNIT_ASSERT( address.GetLine() == lines);
+  
+  wxExAddress address2(ex, "'a");
+  CPPUNIT_ASSERT( address2.GetLine() == 1);
+  address2.MarkerDelete();
+  CPPUNIT_ASSERT( address2.GetLine() == 0);
 }
 
 void wxExGuiTestFixture::testAddressRange()
@@ -109,12 +123,16 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/g"));
 
   // Test implementation.  
+  
+  // Test Delete.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   stc->GotoLine(1);
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Delete());
   CPPUNIT_ASSERT( stc->GetLineCount() == 3);
   CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).Delete());
   CPPUNIT_ASSERT( stc->GetLineCount() == 3);
+  
+  // Test Yank.
   stc->GotoLine(0);
   CPPUNIT_ASSERT( wxExAddressRange(ex, 2).Yank());
   stc->SelectNone();
@@ -124,15 +142,41 @@ void wxExGuiTestFixture::testAddressRange()
   stc->GotoLine(0);
   CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
   
+  // Test Filter.
   stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Filter("uniq"));
-  CPPUNIT_ASSERT( stc->GetLineCount() == 6);
+  CPPUNIT_ASSERT( stc->GetLineCount() == 5);
   
+  // Test Move.
   stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "$")));
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
+  
+  // Test Indent.
+  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent(false));
+  
+  // Test Substitute.
+  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  stc->GotoLine(1);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger//"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("tiger"));
+  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/\\U&/"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("TIGER"));
+  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/lion/"));
+  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/~/"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("lion"));
+  
+  // Test Write.
+  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Write("sample.txt"));
+  CPPUNIT_ASSERT( remove("sample.txt") == 0);
 }
 
 void wxExGuiTestFixture::testConfigDialog()
@@ -1913,6 +1957,10 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExCalculator("1 - 1", ex, width) == 0);
   CPPUNIT_ASSERT( width == 0);
   CPPUNIT_ASSERT( wxExCalculator("1 * 1", ex, width) == 1);
+  CPPUNIT_ASSERT( width == 0);
+  CPPUNIT_ASSERT( wxExCalculator("2 / 1", ex, width) == 2);
+  CPPUNIT_ASSERT( width == 0);
+  CPPUNIT_ASSERT( wxExCalculator("2 / 0", ex, width) == 0);
   CPPUNIT_ASSERT( width == 0);
   CPPUNIT_ASSERT( wxExCalculator("1,0 + 1", ex, width) == 2);
   CPPUNIT_ASSERT( width == 1);
