@@ -10,13 +10,13 @@
 
 #if wxUSE_GUI
 
+#include <wx/extension/stc.h>
+
 class wxExEx;
-class wxExAddressRange;
 
 /// Offers an address class to be used by vi address ranges.
 class WXDLLIMPEXP_BASE wxExAddress : public wxString
 {
-  friend class wxExAddressRange;
 public:
   /// Constructor for an address.
   wxExAddress(
@@ -29,27 +29,40 @@ public:
     /// - $ : last line
     /// - . : current line 
     /// - or a combination of these, using + or -
-    const wxString& address);
+    /// - or empty, call SetLine afterwards
+    const wxString& address = "");
   
-  /// Converts the address to a line number.
-  /// Returns 0 and bells on error in address, 
-  /// otherwise returns the vi line number,
+  /// If the line number was set using SetLine, it
+  /// returns this line number, otherwise
+  /// converts the address to a line number.
+  /// This is the vi line number,
   /// so subtract 1 for stc line number.
-  int ToLine() const;
+  /// Returns 0 on error in address. 
+  int GetLine() const;
+  
+  /// Deletes marker (if this address concerns a marker).
+  void MarkerDelete() const;
+  
+  /// Sets (vi) line number.
+  void SetLine(int line);
 private:
   wxExEx* m_Ex;
   int m_Line;
 };
 
-class wxExSTC;
-
 /// Offers an address range for vi (ex).
+/// All methods return false if range cannot be related to line numbers.
 class WXDLLIMPEXP_BASE wxExAddressRange
 {
 public:
   /// Constructor for a range from current position 
-  /// extending with number of lines (1 is current line).
-  wxExAddressRange(wxExEx* ex, int lines = 1);
+  /// extending with number of lines.
+  wxExAddressRange(
+    /// the ex (or vi) component
+    wxExEx* ex, 
+    /// lines 1 is current line only
+    /// lines 0 is illegal
+    int lines = 1);
   
   /// Contructor for a range.
   wxExAddressRange(
@@ -59,11 +72,10 @@ public:
     /// - . : current line 
     /// - % : entire document
     /// - * : current screen visible area
-    /// - x, y: range from begin x and end y address.
+    /// - x,y: range from begin x and end y address.
     const wxString& range);
   
   /// Deletes range.
-  /// Returns false if address cannot be related to a line number.
   bool Delete(bool show_message = true) const;
   
   /// Filters range with command.
@@ -84,11 +96,21 @@ public:
   /// Moves range to destination.
   bool Move(const wxExAddress& destination) const;
   
-  /// Substitutes range by /pattern/replace/options in command.
+  /// Substitutes range by /pattern/replacement/options in command.
+  /// Pattern might contain:
+  /// - $ to match a line end
+  /// Replacement might contain:
+  /// - & or \0 to represent the target in the replacement
+  /// - \U to convert target to uppercase 
+  /// - \L to convert target to lowercase
+  /// - ~ to use previous replacement
   /// Options can be:
   /// - c : Ask for confirm
   /// - i : Case insensitive
   /// - g : Do global on line, without this flag replace first match only
+  /// e.g. /$/EOL appends the string EOL at the end of each line. 
+  /// Merging is not yet possible using a \n target,
+  /// you can create a macro for that.  
   bool Substitute(const wxString& command);
     
   /// Writes range to filename.
@@ -97,18 +119,20 @@ public:
   /// Yanks range.
   bool Yank() const;
 private:  
-  /// Gets substitute values from command.
   bool Parse(const wxString& command, 
     wxString& pattern, wxString& replacement, wxString& options) const;
-  /// Sets begin and end addresses.
-  void Set(const wxString& begin, const wxString& end);
-  /// Sets selection from begin to end address.
-  /// Returns false if address cannot be related to a line number.
-  bool SetSelection(bool line_end_pos = false) const;
-  bool SetSelection(
-    int begin_line, int end_line, bool line_end_pos = false) const;
+  void Set(const wxString& begin, const wxString& end) {
+    m_Begin.assign(begin);
+    m_End.assign(end);};
+  void Set(int begin, int end) {
+    m_Begin.SetLine(begin);
+    m_End.SetLine(end);};
+  void Set(wxExAddress& begin, wxExAddress& end, int lines) {
+    begin.SetLine(m_STC->LineFromPosition(m_STC->GetCurrentPos()) + 1);
+    end.SetLine(begin.GetLine() + lines - 1);};
+  bool SetSelection() const;
 
-  wxString m_Replacement;
+  static wxString m_Replacement;
   
   wxExAddress m_Begin;
   wxExAddress m_End;

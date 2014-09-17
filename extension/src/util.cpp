@@ -274,7 +274,10 @@ double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
         case '+': sum += value; break;
         case '-': sum -= value; break;
         case '*': sum *= value; break;
-        case '/': sum /= value; break;
+        case '/': 
+          if (value == 0) return 0;
+          sum /= value; 
+          break;
         
         case '.': 
           sum += ex->GetSTC()->GetCurrentLine() + 1; 

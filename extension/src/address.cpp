@@ -5,42 +5,33 @@
 // Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <sstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/textfile.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/address.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
-#include <wx/extension/stc.h>
 #include <wx/extension/util.h>
-#include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
 
 wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
   : wxString(address)
   , m_Ex(ex)
-  , m_Line(-1)
+  , m_Line(0)
 {
 }
 
-int wxExAddress::ToLine() const
+int wxExAddress::GetLine() const
 {
-  if (m_Line >= 0)
+  if (m_Line >= 1)
   {
     return m_Line;
   }
    
-  if (Contains("/"))
-  {
-    return 0;
-  }
-
   int width = 0;
   const int sum = wxExCalculator(*this, m_Ex, width);
   
@@ -59,27 +50,63 @@ int wxExAddress::ToLine() const
   }
 }
 
-wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
-  : m_Begin(ex, "")
-  , m_End(ex, "")
+void wxExAddress::MarkerDelete() const
+{
+  if (StartsWith("'") && size() > 1)
+  {
+    m_Ex->MarkerDelete(GetChar(1));
+  }
+}
+
+void wxExAddress::SetLine(int line)
+{
+  if (line > m_Ex->GetSTC()->GetLineCount())
+  {
+    m_Line = m_Ex->GetSTC()->GetLineCount();
+  }
+  else if (line < 1)
+  {
+    m_Line = 1;
+  }
+  else
+  {
+    m_Line = line;
+  }
+}
+
+wxString wxExAddressRange::m_Replacement;
+
+wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
+  : m_Begin(ex)
+  , m_End(ex)
   , m_Ex(ex)
   , m_STC(ex->GetSTC())
 {
-  if (range == ".")
+  if (lines > 0) 
   {
-    Set(".", ".");
+    Set(m_Begin, m_End, lines);
   }
-  else if (range == "%")
+  else if (lines < 0)
+  {
+    Set(m_End, m_Begin, lines);
+  }
+}
+
+wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
+  : m_Begin(ex)
+  , m_End(ex)
+  , m_Ex(ex)
+  , m_STC(ex->GetSTC())
+{
+  if (range == "%")
   {
     Set("1", "$");
   }
   else if (range == "*")
   {
-    std::stringstream ss;
-    ss << m_STC->GetFirstVisibleLine() + 1;
-    std::stringstream tt;
-    tt << m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() + 1;
-    Set(wxString(ss.str()), wxString(tt.str()));
+    Set(
+      m_STC->GetFirstVisibleLine() + 1, 
+      m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() + 1);
   }
   else if (range.Contains(","))
   {
@@ -91,116 +118,30 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
   }
 }
   
-wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
-  : m_Begin(ex, "")
-  , m_End(ex, "")
-  , m_Ex(ex)
-  , m_STC(ex->GetSTC())
-{
-  if (lines > 0)
-  {
-    m_Begin.m_Line = m_STC->LineFromPosition(m_STC->GetCurrentPos()) + 1;
-    m_End.m_Line = m_Begin.m_Line + lines - 1; 
-    
-    if (m_End.m_Line > m_STC->GetLineCount())
-    {
-      m_End.m_Line = m_STC->GetLineCount();
-    }
-  }
-  else if (lines == 0)
-  {
-    // this is illegal
-    m_Begin.m_Line = 0;
-    m_End.m_Line = 0;
-  }
-  else
-  {
-    m_End.m_Line = m_STC->LineFromPosition(m_STC->GetCurrentPos()) + 1;
-    m_Begin.m_Line = m_End.m_Line + lines - 1;
-    
-    if (m_Begin.m_Line < 1)
-    {
-      m_Begin.m_Line = 1;
-    }
-  }
-}
-
 bool wxExAddressRange::Delete(bool show_message) const
 {
-  if (!IsOk() || m_STC->GetReadOnly() || m_STC->HexMode())
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !SetSelection())
   {
     return false;
   }
 
-  if (m_Ex->GetSelectedText().empty())
-  {
-    if (!SetSelection())
-    {
-      return false;
-    }
-  }
-
-  m_Ex->Cut();
-
-  if (m_Begin.StartsWith("'"))
-  {
-    if (m_Begin.size() > 1)
-    {
-      m_Ex->MarkerDelete(m_Begin.GetChar(1));
-    }
-  }
-
-  if (m_End.StartsWith("'"))
-  {
-    if (m_End.size() > 1)
-    {
-      m_Ex->MarkerDelete(m_End.GetChar(1));
-    }
-  }
+  m_Ex->Cut(show_message);
+  
+  m_Begin.MarkerDelete();
+  m_End.MarkerDelete();
 
   return true;
 }
 
 bool wxExAddressRange::Filter(const wxString& command) const
 {
-  const int begin_line = m_Begin.ToLine();
-  const int end_line = m_End.ToLine();
-
-  if (!IsOk() || end_line < begin_line)
-  {
-#ifdef DEBUG
-    wxLogMessage("Range error");
-#endif
-    return false;
-  }
-
   const wxString filename("__TMPFILE__");
   
-  wxTextFile file(filename);
-  
-#ifdef DEBUG
-  wxLogMessage("Working dir: " + wxGetCwd());
-#endif
-  
-  if (file.Exists() || !file.Create())
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !Write(filename))
   {
-    wxLogStatus("File error: " + filename);
     return false;
   }
 
-  for (int i = begin_line - 1; i <= end_line - 1; i++)
-  {
-    file.AddLine(m_STC->GetLine(i).Trim());
-  }
-  
-  if (!file.Write())
-  {
-#ifdef DEBUG
-    wxLogMessage("File write error: " + filename);
-#endif
-    return false;
-  }
-    
   wxExProcess process;
   
   const bool ok = process.Execute(command + " " + filename, wxEXEC_SYNC);
@@ -233,7 +174,7 @@ bool wxExAddressRange::Filter(const wxString& command) const
   }
   
 #ifdef DEBUG
-    wxLogMessage("Process error: " + command);
+  wxLogMessage("Process error: " + command);
 #endif
 
   return false;
@@ -241,26 +182,18 @@ bool wxExAddressRange::Filter(const wxString& command) const
 
 bool wxExAddressRange::Indent(bool forward) const
 {
-  if (!IsOk() || m_STC->GetReadOnly() || m_STC->HexMode())
+  if (m_STC->GetReadOnly() || m_STC->HexMode()|| !IsOk())
   {
     return false;
   }
-  
+
   if (m_Ex->GetSelectedText().empty())
   {
     if (!SetSelection())
     {
       return false;
     }
-  }
-  else
-  {
-    if (wxExGetNumberOfLines(m_Ex->GetSelectedText()) == 1)
-    {
-      // TODO: Replaces the selection.
-      return false;
-    }
-  }
+  }  
 
   m_STC->SendMsg(forward ? wxSTC_CMD_TAB: wxSTC_CMD_BACKTAB);
   
@@ -269,8 +202,13 @@ bool wxExAddressRange::Indent(bool forward) const
 
 bool wxExAddressRange::IsOk() const
 {
-  if (m_Begin.ToLine() == 0 || m_End.ToLine() == 0)
+  if (
+    m_Begin.GetLine() <= 0 || m_End.GetLine() <= 0 || 
+    m_Begin.GetLine() > m_End.GetLine())
   {
+#ifdef DEBUG
+    wxLogMessage("Range error");
+#endif
     return false;
   }
 
@@ -279,54 +217,27 @@ bool wxExAddressRange::IsOk() const
 
 bool wxExAddressRange::Move(const wxExAddress& destination) const
 {
-  if (!IsOk() || m_STC->GetReadOnly() || m_STC->HexMode())
+  const int dest_line = destination.GetLine();
+
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk() ||
+     dest_line == 0 || 
+    (dest_line >= m_Begin.GetLine() && dest_line <= m_End.GetLine()))
   {
     return false;
   }
-
-  const int dest_line = destination.ToLine();
-
-  if (
-    dest_line == 0 || 
-    (dest_line >= m_Begin.ToLine() && dest_line <= m_End.ToLine()))
-  {
-    return false;
-  }
-
-  if (m_Ex->GetSelectedText().empty())
-  {
-    if (!SetSelection())
-    {
-      return false;
-    }
-  }
-
-  if (m_Begin.StartsWith("'"))
-  {
-    if (m_Begin.size() > 1)
-    {
-      m_Ex->MarkerDelete(m_Begin.GetChar(1));
-    }
-  }
-
-  if (m_End.StartsWith("'"))
-  {
-    if (m_End.size() > 1)
-    {
-      m_Ex->MarkerDelete(m_End.GetChar(1));
-    }
-  }
-  
-  const int lines = wxExGetNumberOfLines(m_Ex->GetSelectedText());
 
   m_STC->BeginUndoAction();
 
-  m_Ex->Cut(false);
-  m_STC->GotoLine(dest_line - 1);
-  m_Ex->AddText(m_Ex->GetRegisterText());
+  if (Delete(false))
+  {
+    m_STC->GotoLine(dest_line - 1);
+    m_Ex->AddText(m_Ex->GetRegisterText());
+  }
 
   m_STC->EndUndoAction();
   
+  const int lines = wxExGetNumberOfLines(m_Ex->GetRegisterText());
+
   if (lines >= 2)
   {
     m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("%d lines moved"), lines));
@@ -403,92 +314,64 @@ bool wxExAddressRange::Parse(
   return true;
 }
     
-void wxExAddressRange::Set(const wxString& begin, const wxString& end)
+bool wxExAddressRange::SetSelection() const
 {
-  m_Begin.assign(begin);
-  m_End.assign(end);
-}
-
-bool wxExAddressRange::SetSelection(
-  int begin_line, int end_line, bool line_end_pos) const
-{
-  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
+  if (!IsOk())
   {
     return false;
   }
-
-  if (line_end_pos)
-  {
-    m_STC->SetSelection(
-      m_STC->PositionFromLine(begin_line - 1),
-      m_STC->GetLineEndPosition(end_line - 1));
-  }
-  else 
-  {
-    m_STC->SetSelection(
-      m_STC->PositionFromLine(begin_line - 1),
-      m_STC->PositionFromLine(end_line));
-  }
   
-  return true;
-}
+  m_STC->SetSelection(
+    m_STC->PositionFromLine(m_Begin.GetLine() - 1),
+    m_STC->PositionFromLine(m_End.GetLine()));
 
-bool wxExAddressRange::SetSelection(bool line_end_position) const
-{
-  return IsOk() && 
-    SetSelection(m_Begin.ToLine(), m_End.ToLine(), line_end_position);
+  return true;
 }
 
 bool wxExAddressRange::Substitute(const wxString& command)
 {
-  if (
-    m_STC->GetReadOnly() || m_STC->HexMode() ||
-    // Currently this ignores rectangles, so
-    // better do nothing at all.
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk() || 
     m_STC->SelectionIsRectangle())
   {
     return false;
   }
   
-  wxString patt;
+  wxString pattern;
   wxString repl;
   wxString options;
     
-  if (!Parse(command, patt, repl, options))
+  if (!Parse(command, pattern, repl, options))
   {
     return false;
   }
     
-  const int begin_line = m_Begin.ToLine();
-  const int end_line = m_End.ToLine();
-
-  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
+  if (
+    !m_Ex->MarkerAdd('#', m_Begin.GetLine() - 1) || 
+    !m_Ex->MarkerAdd('$', m_End.GetLine() - 1))
   {
     return false;
   }
-  
-  if (!m_Ex->MarkerAdd('$', end_line - 1))
-  {
-    return false;
-  }
-
-  const bool selected = !m_Ex->GetSelectedText().empty();
 
   wxExIndicator indicator(0, 0);
 
   m_STC->SetIndicatorCurrent(indicator.GetNo());
     
-  const wxString pattern = (patt == "~" ? m_Replacement: patt);
+  if (repl == "~")
+  {
+    repl = m_Replacement;
+  }
+  else
+  {
+    m_Replacement = repl; 
+  }
   
-  m_Replacement = repl; 
-      
   int searchFlags = m_Ex->GetSearchFlags();
   
   if (options.Contains("i")) searchFlags &= ~wxSTC_FIND_MATCHCASE;
     
   m_STC->SetSearchFlags(searchFlags);
   m_STC->BeginUndoAction();
-  m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
+  m_STC->SetTargetStart(m_STC->PositionFromLine(m_Ex->MarkerLine('#')));
   m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('$')));
 
   int nr_replacements = 0;
@@ -574,35 +457,31 @@ bool wxExAddressRange::Substitute(const wxString& command)
     }
   }
 
-
   m_STC->EndUndoAction();
+  
+  if (m_Begin == "'<" && m_End == "'>")
+  {
+    m_STC->SetSelection(
+      m_STC->PositionFromLine(m_Ex->MarkerLine('#')),
+      m_STC->PositionFromLine(m_Ex->MarkerLine('$')));
+  }
+
+  m_Ex->MarkerDelete('#');
   m_Ex->MarkerDelete('$');
+  
   m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
     nr_replacements, pattern.c_str()));
 
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
   
-  if (selected)
-  {
-    SetSelection(begin_line, end_line, true);
-  }
-
   return true;
 }
 
 bool wxExAddressRange::Write(const wxString& filename) const
 {
-  if (!IsOk())
+  if (!SetSelection())
   {
     return false;
-  }
-
-  if (m_Ex->GetSelectedText().empty())
-  {
-    if (!SetSelection())
-    {
-      return false;
-    }
   }
 
   wxFile file(filename, wxFile::write);
@@ -614,17 +493,9 @@ bool wxExAddressRange::Write(const wxString& filename) const
 
 bool wxExAddressRange::Yank() const
 {
-  if (!IsOk())
+  if (!SetSelection())
   {
     return false;
-  }
-
-  if (m_Ex->GetSelectedText().empty())
-  {
-    if (!SetSelection())
-    {
-      return false;
-    }
   }
 
   m_Ex->Yank();
