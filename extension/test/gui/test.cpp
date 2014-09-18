@@ -167,6 +167,14 @@ void wxExGuiTestFixture::testAddressRange()
   stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/\\U&/"));
   CPPUNIT_ASSERT( stc->GetText().Contains("TIGER"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("tiger"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("\\U"));
+  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/\\U&&\\L& & & \\U&/"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("TIGER"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("tiger"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("\\U"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("\\L"));
   stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/lion/"));
   stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");

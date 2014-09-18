@@ -119,6 +119,8 @@ public:
   /// Yanks range.
   bool Yank() const;
 private:  
+  const wxString BuildReplacement(const wxString& text) const;
+  int Confirm(const wxString& pattern, const wxString& replacement, const wxExIndicator& ind);
   bool Parse(const wxString& command, 
     wxString& pattern, wxString& replacement, wxString& options) const;
   void Set(const wxString& begin, const wxString& end) {
