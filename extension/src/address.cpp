@@ -117,7 +117,84 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
     Set(range, range);
   }
 }
+
+const wxString wxExAddressRange::BuildReplacement(const wxString& text) const
+{
+  if (!text.Contains("&"))
+  {
+    return text;
+  }
+
+  wxString target(m_STC->GetTextRange(
+    m_STC->GetTargetStart(), m_STC->GetTargetEnd()));
+    
+  wxString replacement;
+  bool backslash = false;
+    
+  for (int i = 0; i < text.length(); i++)
+  {
+    switch ((int)text.GetChar(i))
+    {
+      case '&': 
+        if (!backslash) 
+          replacement << target; 
+        else
+          replacement << text[i];
+        backslash = false; 
+        break;
+        
+      case 'L': 
+        if (backslash) 
+          target.MakeLower();
+        else
+          replacement << text[i];
+        backslash = false; 
+        break;
+        
+      case 'U': 
+        if (backslash) 
+          target.MakeUpper();
+        else
+          replacement << text[i];
+        backslash = false; 
+        break;
+        
+      case '\\': 
+        if (backslash) 
+          replacement << text[i];
+        backslash = !backslash; 
+        break;
+        
+      default:
+        replacement << text[i];
+        backslash = false; 
+    }
+  }
+
+  return replacement;
+}
   
+int wxExAddressRange::Confirm(
+  const wxString& pattern, const wxString& replacement, const wxExIndicator& indicator)
+{
+  wxMessageDialog msgDialog(m_STC, 
+    _("Replace") + " " + pattern + " " + _("with") + " " + replacement, 
+    _("Replace"), 
+    wxCANCEL | wxYES_NO);
+    
+  const int line = m_STC->LineFromPosition(m_STC->GetTargetStart());
+  
+  msgDialog.SetExtendedMessage(wxString::Format("Line %d: %s", 
+    line + 1, m_STC->GetLineText(line).c_str()));
+    
+  m_STC->GotoLine(line);
+  m_STC->EnsureVisible(line);
+  m_STC->SetIndicator(
+    indicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd());
+  
+  return msgDialog.ShowModal();
+}
+
 bool wxExAddressRange::Delete(bool show_message) const
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !SetSelection())
@@ -379,81 +456,35 @@ bool wxExAddressRange::Substitute(const wxString& command)
        
   while (m_STC->SearchInTarget(pattern) != -1 && result != wxID_CANCEL)
   {
-    wxString replacement(repl);
-    
-    if (replacement.Contains("&"))
-    {
-      wxString target = m_STC->GetTextRange(
-        m_STC->GetTargetStart(),
-        m_STC->GetTargetEnd());
-        
-      if (replacement.StartsWith("\\L"))
-      {
-        target.MakeLower();
-        replacement.Replace("\\L", wxEmptyString);
-      }
-      else if (replacement.StartsWith("\\U"))
-      {
-        target.MakeUpper();
-        replacement.Replace("\\U", wxEmptyString);
-      }
-    
-      replacement.Replace("&", target);
-    }
+    const wxString replacement(BuildReplacement(repl));
     
     if (options.Contains("c"))
     {
-      wxMessageDialog msgDialog(m_STC, 
-        _("Replace") + " " + pattern + " " + _("with") + " " + replacement, 
-        _("Replace"), 
-        wxCANCEL | wxYES_NO);
+      result = Confirm(pattern, replacement, indicator);
+    }
         
-      const int line = m_STC->LineFromPosition(m_STC->GetTargetStart());
-      
-      msgDialog.SetExtendedMessage(wxString::Format("Line %d: %s", 
-        line + 1, m_STC->GetLineText(line).c_str()));
-        
-      m_STC->GotoLine(line);
-      m_STC->EnsureVisible(line);
-      m_STC->SetIndicator(
-        indicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd());
-      
-      result = msgDialog.ShowModal();
-        
-      if (result == wxID_YES)
-      {
-        m_STC->ReplaceTargetRE(replacement); // always RE!
-      }
+    if (result == wxID_YES)
+    {
+      m_STC->ReplaceTargetRE(replacement); // always RE!
+      nr_replacements++;
+    }
+    
+    if (options.Contains("g"))
+    {
+      m_STC->SetTargetStart(m_STC->GetTargetEnd());
     }
     else
     {
-      m_STC->ReplaceTargetRE(replacement); // always RE!
+      m_STC->SetTargetStart(
+        m_STC->GetLineEndPosition(m_STC->LineFromPosition(
+          m_STC->GetTargetEnd())));
     }
-        
-    if (result != wxID_CANCEL)
-    {
-      if (options.Contains("g"))
-      {
-        m_STC->SetTargetStart(m_STC->GetTargetEnd());
-      }
-      else
-      {
-        m_STC->SetTargetStart(
-          m_STC->GetLineEndPosition(m_STC->LineFromPosition(
-            m_STC->GetTargetEnd())));
-      }
+
+    m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('$')));
   
-      m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('$')));
-    
-      if (result == wxID_YES)
-      {
-        nr_replacements++;
-      }
-    
-      if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
-      {
-        result = wxID_CANCEL;
-      }
+    if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
+    {
+      result = wxID_CANCEL;
     }
   }
 
