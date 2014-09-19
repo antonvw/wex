@@ -553,14 +553,8 @@ void wxExGuiTestFixture::testEx()
   ex->SetRegisterYank("test");
   CPPUNIT_ASSERT( ex->GetMacros().GetRegister('0') == "test");
   CPPUNIT_ASSERT( ex->GetRegisterText() == "test");
-  ex->SetRegisterInsertEmpty();
-  CPPUNIT_ASSERT( ex->GetRegisterInsert().empty());
-  ex->AddTextRegisterInsert("one");
-  CPPUNIT_ASSERT( ex->GetRegisterInsert() == "one");
-  ex->AddTextRegisterInsert("two");
-  CPPUNIT_ASSERT( ex->GetRegisterInsert() == "onetwo");
-  ex->SetRegisterInsertDeleteBack();
-  CPPUNIT_ASSERT( ex->GetRegisterInsert() == "onetw");
+  ex->SetRegisterInsert("insert");
+  CPPUNIT_ASSERT( ex->GetRegisterInsert() == "insert");
   
   stc->SetText("the chances");
   stc->SelectAll();

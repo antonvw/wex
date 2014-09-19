@@ -923,6 +923,11 @@ void wxExVi::CommandReg(const char reg)
       if (!GetMacros().GetRegister(reg).empty())
       {
         AddText(GetMacros().GetRegister(reg));
+        
+        if (reg == '.')
+        {
+          m_InsertText += GetRegisterInsert();
+        }
       }
       else
       {
@@ -1055,24 +1060,26 @@ bool wxExVi::InsertMode(const std::string& command)
   switch ((int)command.back())
   {
     case WXK_BACK: 
-      SetRegisterInsertDeleteBack();
+      m_InsertText.erase(m_InsertText.size() - 1);
       GetSTC()->DeleteBack();
       break;
       
     case WXK_CONTROL_R:
-      AddTextRegisterInsert(command);
+      m_InsertText += command;
       break;
         
     case WXK_ESCAPE:
       // Add extra inserts if necessary.        
-      if (!GetRegisterInsert().empty())
+      if (!m_InsertText.empty())
       {
         for (int i = 1; i < m_InsertRepeatCount; i++)
         {
-          AddText(GetRegisterInsert());
+          AddText(m_InsertText);
         }
-      }
       
+        SetRegisterInsert(m_InsertText);
+      }
+    
       // If we have text to be added.
       if (command.size() > 1)
       { 
@@ -1137,22 +1144,31 @@ bool wxExVi::InsertMode(const std::string& command)
         
       if (!GetSTC()->AutoCompActive())
       {
-        AddTextRegisterInsert(GetSTC()->GetEOL().ToStdString());
+        m_InsertText += GetSTC()->GetEOL().ToStdString();
       }
       break;
       
     default: 
-      if (wxString(GetLastCommand()).EndsWith("cw") && GetRegisterInsert().empty())
+      if (wxString(GetLastCommand()).EndsWith("cw") && m_InsertText.empty())
       {
         GetSTC()->ReplaceSelection(wxEmptyString);
       }
 
       if (
-       !GetRegisterInsert().empty() &&
-        GetRegisterInsert().back() == wxUniChar(WXK_CONTROL_R))
+       !m_InsertText.empty() &&
+        m_InsertText.back() == wxUniChar(WXK_CONTROL_R))
       {
         GetSTC()->ReplaceSelection(wxEmptyString);
-        AddTextRegisterInsert(command);
+        
+        if (command.back() != '.')
+        {
+          m_InsertText += command;
+        }
+        else
+        {
+          m_InsertText.erase(m_InsertText.size() - 1);
+        }
+      
         CommandReg(command.back());
         return false;
       }
@@ -1185,7 +1201,7 @@ bool wxExVi::InsertMode(const std::string& command)
         
         if (!m_Dot)
         {
-          AddTextRegisterInsert(command);
+          m_InsertText += command;
         }
       }
   }
@@ -1197,7 +1213,7 @@ void wxExVi::MacroRecord(const std::string& text)
 {
   if (m_Mode == MODE_INSERT)
   {
-    AddTextRegisterInsert(text);
+    m_InsertText += text;
   }
   else
   {
@@ -1355,7 +1371,7 @@ bool wxExVi::SetInsertMode(
   
   if (!m_Dot)
   {
-    SetRegisterInsertEmpty();
+    m_InsertText.clear();
     
     if (repeat > 1)
     {

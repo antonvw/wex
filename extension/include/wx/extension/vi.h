@@ -80,6 +80,7 @@ private:
   int m_Mode;
   
   std::string m_Command;
+  std::string m_InsertText;
 };
 #endif // wxUSE_GUI
 #endif

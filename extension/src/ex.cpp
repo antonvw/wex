@@ -790,21 +790,13 @@ void wxExEx::SetRegistersDelete(const std::string& value) const
   m_Macros.SetRegister('1', value);
 }
   
-void wxExEx::SetRegisterInsertDeleteBack() const
+void wxExEx::SetRegisterInsert(const std::string& value) const
 {
-  std::string value = GetRegisterInsert();
-  
-  if (!value.empty())
+  if (value.empty())
   {
-    SetRegisterInsertEmpty();
-    value.erase(value.size() - 1);
-    AddTextRegisterInsert(value);
+    return;
   }
-}
-
-void wxExEx::SetRegisterInsertEmpty() const
-{
-  std::string value;
+  
   m_Macros.SetRegister('.', value);
 }
 
