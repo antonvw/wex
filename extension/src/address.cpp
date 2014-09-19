@@ -120,7 +120,7 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
 
 const wxString wxExAddressRange::BuildReplacement(const wxString& text) const
 {
-  if (!text.Contains("&"))
+  if (!text.Contains("&") && !text.Contains("\0"))
   {
     return text;
   }
@@ -137,6 +137,14 @@ const wxString wxExAddressRange::BuildReplacement(const wxString& text) const
     {
       case '&': 
         if (!backslash) 
+          replacement << target; 
+        else
+          replacement << text[i];
+        backslash = false; 
+        break;
+        
+      case '0': 
+        if (backslash) 
           replacement << target; 
         else
           replacement << text[i];
