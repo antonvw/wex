@@ -118,11 +118,8 @@ public:
   /// Sets delete registers 1 - 9 (if value not empty).
   void SetRegistersDelete(const std::string& value) const;
   
-  /// Deletes last char from insert register.
-  void SetRegisterInsertDeleteBack() const;
-  
-  /// Clears insert register.
-  void SetRegisterInsertEmpty() const;
+  /// Sets insert register (if value not empty).
+  void SetRegisterInsert(const std::string& value) const;
   
   /// Sets yank register (if value not empty).
   void SetRegisterYank(const std::string& value) const;
