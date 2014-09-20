@@ -94,6 +94,8 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, "*").IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, ".").IsOk());
+  stc->SelectAll();  
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "'<,'>").IsOk());
   
   // Test invalid ranges.
   CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).IsOk());
@@ -131,13 +133,18 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT( stc->GetLineCount() == 3);
   CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).Delete());
   CPPUNIT_ASSERT( stc->GetLineCount() == 3);
+  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
+  stc->SelectAll();
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "'<,'>").Delete());
+  CPPUNIT_ASSERT( stc->GetLineCount() == 1);
   
   // Test Yank.
+  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   stc->GotoLine(0);
   CPPUNIT_ASSERT( wxExAddressRange(ex, 2).Yank());
   stc->SelectNone();
   stc->AddText(stc->GetVi().GetMacros().GetRegister('0'));
-  CPPUNIT_ASSERT( stc->GetLineCount() == 5);
+  CPPUNIT_ASSERT( stc->GetLineCount() == 10);
   CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
   stc->GotoLine(0);
   CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
