@@ -693,19 +693,25 @@ void wxExSampleFrame::ShowConfigItems()
       1007 + l));
   }
 
+  // CONFIG_EMPTY
+  v.push_back(wxExConfigItem(10, "Pickers", CONFIG_EMPTY));
+
   // CONFIG_DIRPICKERCTRL
   v.push_back(wxExConfigItem(
     "Dir Picker", 
     CONFIG_DIRPICKERCTRL, 
     "Pickers"));
 
-  // CONFIG_EMPTY
-  v.push_back(wxExConfigItem(10, "Pickers", CONFIG_EMPTY));
-
   // CONFIG_FILEPICKERCTRL
   v.push_back(wxExConfigItem(
     "File Picker", 
     CONFIG_FILEPICKERCTRL, 
+    "Pickers"));
+
+  // CONFIG_FONTPICKERCTRL
+  v.push_back(wxExConfigItem(
+    "Font Picker", 
+    CONFIG_FONTPICKERCTRL, 
     "Pickers"));
 
   // CONFIG_FLOAT
@@ -715,12 +721,6 @@ void wxExSampleFrame::ShowConfigItems()
     "Floats", 
     true));
       
-  // CONFIG_FONTPICKERCTRL
-  v.push_back(wxExConfigItem(
-    "Font Picker", 
-    CONFIG_FONTPICKERCTRL, 
-    "Pickers"));
-
   // CONFIG_HYPERLINKCTRL
   v.push_back(wxExConfigItem(
     "Hyper Link 1",
