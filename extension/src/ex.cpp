@@ -65,11 +65,6 @@ void wxExEx::AddText(const std::string& text)
   }
 }
 
-void wxExEx::AddTextRegisterInsert(const std::string& value) const
-{
-  m_Macros.SetRegister('.', GetRegisterInsert() + value);
-}
-
 bool wxExEx::Command(const std::string& command)
 {
   if (!m_IsActive || command.empty() || command.front() != ':')
