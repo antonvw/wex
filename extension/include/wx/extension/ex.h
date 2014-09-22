@@ -33,9 +33,6 @@ public:
   /// Adds text (to STC or register, if register is active).
   void AddText(const std::string& text);
  
-  /// Appends to insert register.
-  void AddTextRegisterInsert(const std::string& value) const;
-  
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.
   /// The command should start with a ':'.
