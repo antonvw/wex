@@ -40,11 +40,20 @@ wxExProcess::wxExProcess(wxWindow* parent)
 
 wxExProcess::~wxExProcess()
 {
+  if (m_Parent == NULL)
+  {
+    if (m_Dialog != NULL)
+    {
+      m_Dialog->Destroy();
+    }
+  }
+  
   delete m_Timer;
 }
 
 wxExProcess::wxExProcess(const wxExProcess& process)
   : m_Timer(NULL)
+  , m_Dialog(NULL)
 {
   *this = process;
 }
@@ -59,6 +68,7 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
     }
     
     m_Timer = new wxTimer(this);
+    m_Dialog = NULL;
     
     m_Busy = p.m_Busy;
     m_Command = p.m_Command;
