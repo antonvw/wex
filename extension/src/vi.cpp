@@ -28,7 +28,7 @@
 
 #define CHR_TO_NUM(c1,c2) ((c1 << 8) + c2)
 
-#define NAVIGATE(REPEAT, SCOPE, DIRECTION, COND1, COND2)                 \
+#define NAVIGATE(REPEAT, SCOPE, DIRECTION, COND1, COND2, WRAP)           \
 {                                                                        \
   if (m_Mode == MODE_VISUAL_LINE && GetSTC()->GetSelectedText().empty()) \
   {                                                                      \
@@ -49,7 +49,15 @@
     {                                                                    \
       switch (m_Mode)                                                    \
       {                                                                  \
-        case MODE_NORMAL: GetSTC()->SCOPE##DIRECTION();                  \
+        case MODE_NORMAL:                                                \
+          if (WRAP && (#SCOPE) == "Line")                                \
+          {                                                              \
+            if ((#DIRECTION) == "Down")                                  \
+              GetSTC()->LineEnd();                                       \
+            else                                                         \
+              GetSTC()->Home();                                          \
+          }                                                              \
+          GetSTC()->SCOPE##DIRECTION();                                  \
           break;                                                         \
         case MODE_VISUAL: GetSTC()->SCOPE##DIRECTION##Extend();          \
           break;                                                         \
@@ -681,6 +689,7 @@ bool wxExVi::CommandChar(int c, int repeat)
 {
   switch (c)
   {
+    // Insert commands.
     case 'a': 
     case 'i': 
     case 'o': 
@@ -692,43 +701,50 @@ bool wxExVi::CommandChar(int c, int repeat)
       SetInsertMode((char)c, repeat); 
       break;
 
-    // Navigate commands (B, W, E, treated as b, w, e and (,) as {,} for the moment).
+    // Navigate char and line commands.
     case 'h': 
     case WXK_LEFT:
-              NAVIGATE(repeat, Char, Left,     GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0, false); break;
+              NAVIGATE(repeat, Char, Left,     GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0, false, false); break;
     case 'l': 
     case ' ': 
     case WXK_RIGHT:
-              NAVIGATE(repeat, Char, Right,    GetSTC()->GetCurrentPos() < GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()), false); break;
+              NAVIGATE(repeat, Char, Right,    GetSTC()->GetCurrentPos() < GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()), false, false); break;
     case 'j': 
     case WXK_DOWN:
-              NAVIGATE(repeat, Line, Down,     GetSTC()->GetCurrentLine() < GetSTC()->GetNumberOfLines(), false); break;
+              NAVIGATE(repeat, Line, Down,     GetSTC()->GetCurrentLine() < GetSTC()->GetNumberOfLines(), false, false); break;
     case 'k': 
     case WXK_UP:
-              NAVIGATE(repeat, Line, Up,       GetSTC()->GetCurrentLine() > 0, false); break;
-    // does not include wrapped lines
+              NAVIGATE(repeat, Line, Up,       GetSTC()->GetCurrentLine() > 0, false, false); break;
+              
+    // Navigate line commands that pass wrapped lines.
     case '+': 
     case WXK_RETURN:
     case WXK_NUMPAD_ENTER:
-              NAVIGATE(repeat, Line, Down,     true, true); break;
+              NAVIGATE(repeat, Line, Down,     true, true, true); break;
     case '-': 
-              NAVIGATE(repeat, Line, Up,       GetSTC()->GetCurrentLine() > 0, true); break;    
+              NAVIGATE(repeat, Line, Up,       GetSTC()->GetCurrentLine() > 0, true, true); break;
+              
+    // Navigate word commands (B, W, E, treated as b, w, e for the moment).
     case 'B':
-    case 'b': NAVIGATE(repeat, Word, Left,     true, false); break;
+    case 'b': NAVIGATE(repeat, Word, Left,     true, false, false); break;
     case 'W':
-    case 'w': NAVIGATE(repeat, Word, Right,    true, false); break;
+    case 'w': NAVIGATE(repeat, Word, Right,    true, false, false); break;
     case 'E':
-    case 'e': NAVIGATE(repeat, Word, RightEnd, true, false); break;
+    case 'e': NAVIGATE(repeat, Word, RightEnd, true, false, false); break;
+    
+    // Navigate paragraph commands ((,) treated as as {,}).
     case '(':
-    case '{': NAVIGATE(repeat, Para, Up,       true, false); break;
+    case '{': NAVIGATE(repeat, Para, Up,       true, false, false); break;
     case ')':
-    case '}': NAVIGATE(repeat, Para, Down,     true, false); break;
+    case '}': NAVIGATE(repeat, Para, Down,     true, false, false); break;
     case WXK_CONTROL_B:
+    
+    // Navigate page commands.
     case WXK_PAGEUP:
-              NAVIGATE(repeat, Page, Up,       true, false); break;
+              NAVIGATE(repeat, Page, Up,       true, false, false); break;
     case WXK_CONTROL_F:
     case WXK_PAGEDOWN:
-              NAVIGATE(repeat, Page, Down,     true, false); break;
+              NAVIGATE(repeat, Page, Down,     true, false, false); break;
         
     case 'n': 
       for (int i = 0; i < repeat; i++) 
