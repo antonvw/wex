@@ -2223,14 +2223,14 @@ Copyright: (c) 2014, Anton van Wezenbeek
     <keywords set-0="css1" set-2="css2" set-3="css3"/>
   </lexer>
   <lexer name="d"/> 
-  <lexer name="diff">
+  <lexer name="diff" extensions="*.diff">
     <styles>
-    <style no="header"> fore:blue </style>
-    <style no="position"> fore:brown </style>
-    <style no="deleted"> fore:red </style>
-    <style no="added"> fore:lime green </style>
-    <style no="changed"> fore:yellow </style>
-    </styles>
+    <style no="header"> fore:grey </style> 
+    <style no="position"> fore:steel blue </style> 
+    <style no="deleted"> fore:red </style> 
+    <style no="added"> fore:lime green </style> 
+    <style no="changed"> fore:yellow </style> 
+    </styles> 
   </lexer>
   <lexer name="ecl"/>
   <lexer name="eiffel"/>
