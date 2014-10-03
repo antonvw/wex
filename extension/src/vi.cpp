@@ -869,11 +869,13 @@ bool wxExVi::CommandChar(int c, int repeat)
       for (int i = 0; i < repeat; i++) ChangeNumber(true); 
       break;
     case WXK_CONTROL_G:
-      GetFrame()->ShowExMessage(wxString::Format("%s line %d of %d --%d%%--", 
+      GetFrame()->ShowExMessage(wxString::Format("%s line %d of %d --%d%%-- level %d", 
         GetSTC()->GetFileName().GetFullName().c_str(), 
         GetSTC()->GetCurrentLine() + 1,
         GetSTC()->GetLineCount(),
-        100 * (GetSTC()->GetCurrentLine() + 1)/ GetSTC()->GetLineCount()));
+        100 * (GetSTC()->GetCurrentLine() + 1)/ GetSTC()->GetLineCount(),
+        (GetSTC()->GetFoldLevel(GetSTC()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
+         - wxSTC_FOLDLEVELBASE));
       break;
     case WXK_CONTROL_J: 
       for (int i = 0; i < repeat; i++) ChangeNumber(false); 
