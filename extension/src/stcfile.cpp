@@ -78,7 +78,7 @@ void wxExSTCFile::DoFileNew()
   m_STC->SetName(GetFileName().GetFullPath());
   m_STC->PropertiesMessage();
   m_STC->ClearDocument();
-  m_STC->SetLexer(GetFileName().GetLexer());
+  m_STC->SetLexer(GetFileName().GetLexer(), true); // allow fold
 }
 
 void wxExSTCFile::DoFileSave(bool save_as)
