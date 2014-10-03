@@ -2458,7 +2458,7 @@ void wxExSTC::ShowProperties()
   if (m_EntryDialog == NULL)
   {
     m_EntryDialog = new wxExSTCEntryDialog(
-      this, 
+      wxTheApp->GetTopWindow(), 
       _("Properties"), 
       text, 
       wxEmptyString, 
