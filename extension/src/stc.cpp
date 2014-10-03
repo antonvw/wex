@@ -160,15 +160,22 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_MarginFoldingNumber(stc.m_MarginFoldingNumber)
   , m_MarginLineNumber(stc.m_MarginLineNumber)
   , m_MarkerChange(stc.m_MarkerChange)
-  , m_vi(wxExVi(this)) // do not use stc.m_vi, crash
-  , m_File(this, stc.m_File.GetFileName().GetFullPath())
+  , m_Lexer(stc.m_Lexer)
   , m_Link(wxExLink(this))
+  , m_File(this, stc.m_File.GetFileName().GetFullPath())
+  , m_vi(wxExVi(this)) // do not use stc.m_vi, crash
+  , m_DefaultFont(stc.m_DefaultFont)
+  , m_AutoComplete(stc.m_AutoComplete)
 {
   Initialize(stc.m_File.GetFileName().GetStat().IsOk());
 
   if (stc.m_File.GetFileName().GetStat().IsOk())
   {
     Open(stc.m_File.GetFileName(), -1, wxEmptyString, 0, GetFlags());
+  }
+  else
+  {
+    SetLexer(m_Lexer, true);
   }
 }
 
