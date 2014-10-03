@@ -1906,8 +1906,10 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   {
     if (m_vi.GetIsActive())
     {
-      if (!m_vi.Command(wxString(
-        event.GetText().Mid(m_AutoComplete.size())).ToStdString()))
+      const std::string command(wxString(
+        event.GetText().Mid(m_AutoComplete.size())).ToStdString());
+        
+      if (!command.empty() && !m_vi.Command(command))
       {
         wxLogStatus("Autocomplete failed");
       }
