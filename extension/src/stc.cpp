@@ -176,6 +176,8 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   else
   {
     SetLexer(m_Lexer, true);
+    
+    SetEdgeMode(stc.GetEdgeMode());
   }
 }
 
