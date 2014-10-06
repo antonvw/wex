@@ -207,19 +207,31 @@ bool wxExSTC::AutoIndentation(int c)
   const int level = 
     (GetFoldLevel(currentLine) & wxSTC_FOLDLEVELNUMBERMASK) 
     - wxSTC_FOLDLEVELBASE;
+  
+  int indent = 0;
     
   if (level <= 0)
   {
-    return false;
+    // the current line has yet no indents, so use previous line
+    indent = GetLineIndentation(currentLine - 1);
+    
+    if (indent == 0)
+    {
+      return false;
+    }
+  }
+  else
+  {
+    indent = GetIndent() * level;
   }
   
   BeginUndoAction();
 
-  SetLineIndentation(currentLine, GetIndent() * level);
+  SetLineIndentation(currentLine, indent);
     
   if (level < m_FoldLevel && m_AddingChars)
   {
-    SetLineIndentation(currentLine - 1, GetIndent() * level);
+    SetLineIndentation(currentLine - 1, indent);
   }
   
   EndUndoAction();
