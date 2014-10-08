@@ -1753,8 +1753,25 @@ void wxExGuiTestFixture::testSTC()
   wxExFindReplaceData::Get()->SetMatchCase(false);
   stc->SetSearchFlags(-1);
   CPPUNIT_ASSERT(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
-  
-  stc->AutoIndentation('\n');
+
+  // Test AutoIndentation
+  // first test auto indentation on next line
+  stc->SetText("  \n  line with indentation");
+  stc->DocumentEnd();
+  CPPUNIT_ASSERT(!stc->AutoIndentation('x'));
+  CPPUNIT_ASSERT( stc->GetText() == "  \n  line with indentation");
+  CPPUNIT_ASSERT( stc->GetLineCount() == 2);
+  CPPUNIT_ASSERT( stc->AutoIndentation('\n'));
+  // the \n is not added, but indentation does
+  CPPUNIT_ASSERT( stc->GetText() == "  \n  line with indentation");
+  CPPUNIT_ASSERT( stc->GetLineCount() == 2);
+  // test auto indentation for level change
+  CPPUNIT_ASSERT(stc->SetLexer("cpp"));
+  stc->SetText("if ()");
+  stc->NewLine();
+  stc->AddText("{");
+  // TODO: Fix.
+  CPPUNIT_ASSERT(!stc->AutoIndentation('\n'));
   
   stc->Sync(false);
   stc->Sync(true);
