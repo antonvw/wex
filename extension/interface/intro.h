@@ -21,5 +21,5 @@ There are also some classes to support database programming using the
 
 <p>
 For build instructions see 
-<a href="https://github.com/antonvw/wxExtension/blob/v3.0.1/README.md">README</a>.
+<a href="https://github.com/antonvw/wxExtension/blob/v3.0.2/README.md">README</a>.
 */
