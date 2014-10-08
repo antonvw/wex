@@ -930,7 +930,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="label"/>
     </def>
     
-    <def name = "magik">
+    <def name = "magiksf">
       <def no ="default"/>
       <def no ="comment"/>
       <def no ="hyper_comment"> 16 </def>
@@ -2326,7 +2326,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
   <lexer name="lot"/>
   <lexer name="lout"/>
   <lexer name="lua"/>
-  <lexer name="magik"/>
+  <lexer name="magiksf"/>
   <lexer name="makefile" extensions="Makefile;*makefile;makefile*.*;*.pro">
     <comments begin1="#"/>
   </lexer>
