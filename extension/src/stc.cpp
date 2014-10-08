@@ -193,8 +193,8 @@ bool wxExSTC::AutoIndentation(int c)
   switch (GetEOLMode())
   {
     case wxSTC_EOL_CR:   is_nl = (c == '\r'); break;
-    case wxSTC_EOL_CRLF: is_nl = (c== '\n'); break; // so ignore first \r
-    case wxSTC_EOL_LF:   is_nl = (c== '\n'); break;
+    case wxSTC_EOL_CRLF: is_nl = (c == '\n'); break; // so ignore first \r
+    case wxSTC_EOL_LF:   is_nl = (c == '\n'); break;
   }
   
   const int currentLine = GetCurrentLine();
@@ -204,44 +204,40 @@ bool wxExSTC::AutoIndentation(int c)
     return false;
   }
 
-  // the current line has yet no indents, so use previous line
-  int indent = GetLineIndentation(currentLine - 1);
   const int level = 
     (GetFoldLevel(currentLine) & wxSTC_FOLDLEVELNUMBERMASK) 
     - wxSTC_FOLDLEVELBASE;
-  bool dec = false;
+  
+  int indent = 0;
     
-  if (level != m_FoldLevel)
+  if (level <= 0)
   {
-    if (level > m_FoldLevel)
-    {
-      indent += GetIndent();
-    }
-    else
-    {
-      indent -= GetIndent();
-      dec = true;
-    }
+    // the current line has yet no indents, so use previous line
+    indent = GetLineIndentation(currentLine - 1);
     
-    m_FoldLevel = level;
+    if (indent == 0)
+    {
+      return false;
+    }
   }
-    
-  if (indent == 0 && !dec) 
+  else
   {
-    return false;
+    indent = GetIndent() * level;
   }
   
   BeginUndoAction();
 
   SetLineIndentation(currentLine, indent);
     
-  if (dec && m_AddingChars)
+  if (level < m_FoldLevel && m_AddingChars)
   {
     SetLineIndentation(currentLine - 1, indent);
   }
   
   EndUndoAction();
 
+  m_FoldLevel = level;
+    
   GotoPos(GetLineIndentPosition(currentLine));
 
   return true;
