@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v3.0.1</span>
+   &#160;<span id="projectnumber">v3.0.2</span>
    </div>
   </td>
  </tr>
@@ -146,6 +146,17 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#a7ed491ba58e2e0df77ac22c4e886bca8">MarkerIsLoaded</a> (const <a class="el" href="classwx_ex_marker.html">wxExMarker</a> &amp;marker) const </td></tr>
 <tr class="memdesc:a7ed491ba58e2e0df77ac22c4e886bca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if specified marker is available. <br/></td></tr>
 <tr class="separator:a7ed491ba58e2e0df77ac22c4e886bca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accdc9aef03d49c611263669225950831"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="accdc9aef03d49c611263669225950831"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#accdc9aef03d49c611263669225950831">RestoreTheme</a> ()</td></tr>
+<tr class="memdesc:accdc9aef03d49c611263669225950831"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restores theme from config (after SetThemeNone). <br/></td></tr>
+<tr class="separator:accdc9aef03d49c611263669225950831"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac80012286101035f24557c537222fa9b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#ac80012286101035f24557c537222fa9b">SetTheme</a> (const wxString &amp;theme)</td></tr>
+<tr class="memdesc:ac80012286101035f24557c537222fa9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets specified theme.  <a href="#ac80012286101035f24557c537222fa9b">More...</a><br/></td></tr>
+<tr class="separator:ac80012286101035f24557c537222fa9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a218dfecc0d051074260beac3890f1c78"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a218dfecc0d051074260beac3890f1c78"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#a218dfecc0d051074260beac3890f1c78">SetThemeNone</a> ()</td></tr>
+<tr class="memdesc:a218dfecc0d051074260beac3890f1c78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Temporary use the no theme, until you do RestoreTheme. <br/></td></tr>
+<tr class="separator:a218dfecc0d051074260beac3890f1c78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a420f9f69c0ce002a66784e6c508ab23a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_lexers.html#a420f9f69c0ce002a66784e6c508ab23a">ShowDialog</a> (wxWindow *parent, wxString &amp;lexer, const wxString &amp;caption=_(&quot;Enter Lexer&quot;), bool show_modal=true) const </td></tr>
 <tr class="memdesc:a420f9f69c0ce002a66784e6c508ab23a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a dialog with all lexers, allowing you to choose one.  <a href="#a420f9f69c0ce002a66784e6c508ab23a">More...</a><br/></td></tr>
 <tr class="separator:a420f9f69c0ce002a66784e6c508ab23a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -300,6 +311,25 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the object as the current one, returns the pointer to the previous current object (both the parameter and returned value may be NULL). </p>
+
+</div>
+</div>
+<a class="anchor" id="ac80012286101035f24557c537222fa9b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wxExLexers::SetTheme </td>
+          <td>(</td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>theme</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets specified theme. </p>
+<p>Returns true if theme is an existing theme. </p>
 
 </div>
 </div>

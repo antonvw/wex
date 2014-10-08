@@ -10,7 +10,7 @@ export RELEASE=`wx-config --version`
 export WXWIDGETS=`pwd`
 
 # now run doxygen
-#doxygen
+doxygen
 
 # return to the original folder from which this script was launched
 cd $current

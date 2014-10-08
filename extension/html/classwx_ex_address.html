@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v3.0.1</span>
+   &#160;<span id="projectnumber">v3.0.2</span>
    </div>
   </td>
  </tr>
@@ -46,7 +46,6 @@
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#friends">Friends</a> &#124;
 <a href="classwx_ex_address-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">wxExAddress Class Reference</div>  </div>
@@ -62,23 +61,25 @@
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af47b302f80d4538eb013c3bf5e763cbf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_address.html#af47b302f80d4538eb013c3bf5e763cbf">wxExAddress</a> (<a class="el" href="classwx_ex_ex.html">wxExEx</a> *ex, const wxString &amp;address)</td></tr>
-<tr class="memdesc:af47b302f80d4538eb013c3bf5e763cbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for an address.  <a href="#af47b302f80d4538eb013c3bf5e763cbf">More...</a><br/></td></tr>
-<tr class="separator:af47b302f80d4538eb013c3bf5e763cbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad00ea012e248d4a4662a9d925214d64c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_address.html#ad00ea012e248d4a4662a9d925214d64c">ToLine</a> () const </td></tr>
-<tr class="memdesc:ad00ea012e248d4a4662a9d925214d64c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the address to a line number.  <a href="#ad00ea012e248d4a4662a9d925214d64c">More...</a><br/></td></tr>
-<tr class="separator:ad00ea012e248d4a4662a9d925214d64c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
-Friends</h2></td></tr>
-<tr class="memitem:a7e93b9abad0785a36f0119a524f69256"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e93b9abad0785a36f0119a524f69256"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>wxExAddressRange</b></td></tr>
-<tr class="separator:a7e93b9abad0785a36f0119a524f69256"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b2d889fa5c86dfab261747876bb0a84"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_address.html#a5b2d889fa5c86dfab261747876bb0a84">wxExAddress</a> (<a class="el" href="classwx_ex_ex.html">wxExEx</a> *ex, const wxString &amp;address=&quot;&quot;)</td></tr>
+<tr class="memdesc:a5b2d889fa5c86dfab261747876bb0a84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for an address.  <a href="#a5b2d889fa5c86dfab261747876bb0a84">More...</a><br/></td></tr>
+<tr class="separator:a5b2d889fa5c86dfab261747876bb0a84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f753d9ebccd406310a4503e16b5be6d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_address.html#a9f753d9ebccd406310a4503e16b5be6d">GetLine</a> () const </td></tr>
+<tr class="memdesc:a9f753d9ebccd406310a4503e16b5be6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">If the line number was set using SetLine, it returns this line number, otherwise converts the address to a line number.  <a href="#a9f753d9ebccd406310a4503e16b5be6d">More...</a><br/></td></tr>
+<tr class="separator:a9f753d9ebccd406310a4503e16b5be6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88db7eb2a0ebe7bedce38919b48cca82"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a88db7eb2a0ebe7bedce38919b48cca82"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_address.html#a88db7eb2a0ebe7bedce38919b48cca82">MarkerDelete</a> () const </td></tr>
+<tr class="memdesc:a88db7eb2a0ebe7bedce38919b48cca82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes marker (if this address concerns a marker). <br/></td></tr>
+<tr class="separator:a88db7eb2a0ebe7bedce38919b48cca82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac186ef136dec10bd0475a784c873fd90"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac186ef136dec10bd0475a784c873fd90"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_address.html#ac186ef136dec10bd0475a784c873fd90">SetLine</a> (int line)</td></tr>
+<tr class="memdesc:ac186ef136dec10bd0475a784c873fd90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets (vi) line number. <br/></td></tr>
+<tr class="separator:ac186ef136dec10bd0475a784c873fd90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Offers an address class to be used by vi address ranges. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="af47b302f80d4538eb013c3bf5e763cbf"></a>
+<a class="anchor" id="a5b2d889fa5c86dfab261747876bb0a84"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -92,7 +93,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>wxExAddressRange</b>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const wxString &amp;&#160;</td>
-          <td class="paramname"><em>address</em>&#160;</td>
+          <td class="paramname"><em>address</em> = <code>&quot;&quot;</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -111,7 +112,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>wxExAddressRange</b>
 <li>a defined marker, like 'x, or '&lt;: begin of selection and '&gt;: end of selection</li>
 <li>$ : last line</li>
 <li>. : current line</li>
-<li>or a combination of these, using + or - </li>
+<li>or a combination of these, using + or -</li>
+<li>or empty, call SetLine afterwards </li>
 </ul>
 </td></tr>
   </table>
@@ -121,12 +123,12 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>wxExAddressRange</b>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="ad00ea012e248d4a4662a9d925214d64c"></a>
+<a class="anchor" id="a9f753d9ebccd406310a4503e16b5be6d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int wxExAddress::ToLine </td>
+          <td class="memname">int wxExAddress::GetLine </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -134,8 +136,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>wxExAddressRange</b>
       </table>
 </div><div class="memdoc">
 
-<p>Converts the address to a line number. </p>
-<p>Returns 0 and bells on error in address, otherwise returns the vi line number, so subtract 1 for stc line number. </p>
+<p>If the line number was set using SetLine, it returns this line number, otherwise converts the address to a line number. </p>
+<p>This is the vi line number, so subtract 1 for stc line number. Returns 0 on error in address. </p>
 
 </div>
 </div>

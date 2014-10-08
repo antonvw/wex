@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v3.0.1</span>
+   &#160;<span id="projectnumber">v3.0.2</span>
    </div>
   </td>
  </tr>
@@ -63,10 +63,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa3e360aac525d51dc69e59c543c63412"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; wxString &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#aa3e360aac525d51dc69e59c543c63412">Get</a> () const </td></tr>
 <tr class="memdesc:aa3e360aac525d51dc69e59c543c63412"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns all macro names as a vector of strings.  <a href="#aa3e360aac525d51dc69e59c543c63412">More...</a><br/></td></tr>
 <tr class="separator:aa3e360aac525d51dc69e59c543c63412"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab82bf25c9eda6ebd4ee401f2441a5a3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aab82bf25c9eda6ebd4ee401f2441a5a3"></a>
-const std::vector&lt; wxString &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#aab82bf25c9eda6ebd4ee401f2441a5a3">Get</a> (const wxString &amp;name) const </td></tr>
-<tr class="memdesc:aab82bf25c9eda6ebd4ee401f2441a5a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns contents of macro as a vector of strings. <br/></td></tr>
-<tr class="separator:aab82bf25c9eda6ebd4ee401f2441a5a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c4db14716c46289ce69071e03c42ea1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c4db14716c46289ce69071e03c42ea1"></a>
+const std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a9c4db14716c46289ce69071e03c42ea1">Get</a> (const wxString &amp;name) const </td></tr>
+<tr class="memdesc:a9c4db14716c46289ce69071e03c42ea1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns contents of macro as a vector of strings. <br/></td></tr>
+<tr class="separator:a9c4db14716c46289ce69071e03c42ea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67d4bcf036e73c67450f6024c9ad3ac0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a67d4bcf036e73c67450f6024c9ad3ac0"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a67d4bcf036e73c67450f6024c9ad3ac0">GetCount</a> () const </td></tr>
 <tr class="memdesc:a67d4bcf036e73c67450f6024c9ad3ac0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns number of macros and variables available. <br/></td></tr>
@@ -75,13 +75,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 const wxString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a85e585734c2a7327deeb584dc812d66c">GetMacro</a> () const </td></tr>
 <tr class="memdesc:a85e585734c2a7327deeb584dc812d66c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns current or last macro played back (or variable expanded). <br/></td></tr>
 <tr class="separator:a85e585734c2a7327deeb584dc812d66c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84888a6a8909281031afd95579eeed3d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a84888a6a8909281031afd95579eeed3d"></a>
-const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a84888a6a8909281031afd95579eeed3d">GetRegister</a> (const char name) const </td></tr>
-<tr class="memdesc:a84888a6a8909281031afd95579eeed3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns content of register. <br/></td></tr>
-<tr class="separator:a84888a6a8909281031afd95579eeed3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d0be15f088a461dc41dc4cb309523e8"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; wxString &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a2d0be15f088a461dc41dc4cb309523e8">GetRegisters</a> () const </td></tr>
-<tr class="memdesc:a2d0be15f088a461dc41dc4cb309523e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns all registers (with content) as a vector of strings.  <a href="#a2d0be15f088a461dc41dc4cb309523e8">More...</a><br/></td></tr>
-<tr class="separator:a2d0be15f088a461dc41dc4cb309523e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1214a81c9b93507a8b932d243df12a8f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1214a81c9b93507a8b932d243df12a8f"></a>
+const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a1214a81c9b93507a8b932d243df12a8f">GetRegister</a> (const char name) const </td></tr>
+<tr class="memdesc:a1214a81c9b93507a8b932d243df12a8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns content of register. <br/></td></tr>
+<tr class="separator:a1214a81c9b93507a8b932d243df12a8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08a4f6a9d19d6133e85ce2878760e343"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a08a4f6a9d19d6133e85ce2878760e343">GetRegisters</a> () const </td></tr>
+<tr class="memdesc:a08a4f6a9d19d6133e85ce2878760e343"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns all registers (with content) as a vector of strings.  <a href="#a08a4f6a9d19d6133e85ce2878760e343">More...</a><br/></td></tr>
+<tr class="separator:a08a4f6a9d19d6133e85ce2878760e343"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7926e67d9e5a08ed5dd0907572fcf62e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a7926e67d9e5a08ed5dd0907572fcf62e">IsModified</a> () const </td></tr>
 <tr class="memdesc:a7926e67d9e5a08ed5dd0907572fcf62e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Have macros been recorded (or variables expanded) without calling SaveDocument.  <a href="#a7926e67d9e5a08ed5dd0907572fcf62e">More...</a><br/></td></tr>
 <tr class="separator:a7926e67d9e5a08ed5dd0907572fcf62e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -103,15 +103,19 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:af26589bbc687d36f8ea6998de0aae06c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#af26589bbc687d36f8ea6998de0aae06c">Playback</a> (<a class="el" href="classwx_ex_ex.html">wxExEx</a> *ex, const wxString &amp;macro, int repeat=1)</td></tr>
 <tr class="memdesc:af26589bbc687d36f8ea6998de0aae06c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Plays back macro a number of repeat times on the ex component.  <a href="#af26589bbc687d36f8ea6998de0aae06c">More...</a><br/></td></tr>
 <tr class="separator:af26589bbc687d36f8ea6998de0aae06c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a382f459d3662bbd0c06ba68cc1809716"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a382f459d3662bbd0c06ba68cc1809716">Record</a> (const wxString &amp;text, bool new_command=true)</td></tr>
-<tr class="memdesc:a382f459d3662bbd0c06ba68cc1809716"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records text to current macro (or regiser) as a new command.  <a href="#a382f459d3662bbd0c06ba68cc1809716">More...</a><br/></td></tr>
-<tr class="separator:a382f459d3662bbd0c06ba68cc1809716"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ae7702a498ab90611a42f2fdd662045"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a6ae7702a498ab90611a42f2fdd662045">SetRegister</a> (const char name, const wxString &amp;value)</td></tr>
-<tr class="memdesc:a6ae7702a498ab90611a42f2fdd662045"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets register (overwrites existing register).  <a href="#a6ae7702a498ab90611a42f2fdd662045">More...</a><br/></td></tr>
-<tr class="separator:a6ae7702a498ab90611a42f2fdd662045"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65645af81d6958b6ba7a54699b172f1d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a65645af81d6958b6ba7a54699b172f1d">Record</a> (const std::string &amp;text, bool new_command=true)</td></tr>
+<tr class="memdesc:a65645af81d6958b6ba7a54699b172f1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records text to current macro (or regiser) as a new command.  <a href="#a65645af81d6958b6ba7a54699b172f1d">More...</a><br/></td></tr>
+<tr class="separator:a65645af81d6958b6ba7a54699b172f1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59798fbd2dbdc783679053abfe0dea7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a59798fbd2dbdc783679053abfe0dea7e">SetRegister</a> (const char name, const std::string &amp;value)</td></tr>
+<tr class="memdesc:a59798fbd2dbdc783679053abfe0dea7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets register (overwrites existing register).  <a href="#a59798fbd2dbdc783679053abfe0dea7e">More...</a><br/></td></tr>
+<tr class="separator:a59798fbd2dbdc783679053abfe0dea7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85a17922ca5d1031f5bdd16f01c80718"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#a85a17922ca5d1031f5bdd16f01c80718">StartRecording</a> (const wxString &amp;macro)</td></tr>
 <tr class="memdesc:a85a17922ca5d1031f5bdd16f01c80718"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts recording a macro (appends to existing macro if macro is single upper case character).  <a href="#a85a17922ca5d1031f5bdd16f01c80718">More...</a><br/></td></tr>
 <tr class="separator:a85a17922ca5d1031f5bdd16f01c80718"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2799451f80b914bbd35ebdd4d1cd9e5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae2799451f80b914bbd35ebdd4d1cd9e5"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#ae2799451f80b914bbd35ebdd4d1cd9e5">StartsWith</a> (const wxString &amp;text) const </td></tr>
+<tr class="memdesc:ae2799451f80b914bbd35ebdd4d1cd9e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does a recorded macro or variable starts with text. <br/></td></tr>
+<tr class="separator:ae2799451f80b914bbd35ebdd4d1cd9e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad24a73abd7cef6e99fc9ea96f2b8205a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad24a73abd7cef6e99fc9ea96f2b8205a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_vi_macros.html#ad24a73abd7cef6e99fc9ea96f2b8205a">StopRecording</a> ()</td></tr>
 <tr class="memdesc:ad24a73abd7cef6e99fc9ea96f2b8205a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops recording. <br/></td></tr>
@@ -300,12 +304,12 @@ static const wxFileName&#160;</td><td class="memItemRight" valign="bottom"><a cl
 
 </div>
 </div>
-<a class="anchor" id="a2d0be15f088a461dc41dc4cb309523e8"></a>
+<a class="anchor" id="a08a4f6a9d19d6133e85ce2878760e343"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const std::vector&lt; wxString &gt; wxExViMacros::GetRegisters </td>
+          <td class="memname">const std::vector&lt; std::string &gt; wxExViMacros::GetRegisters </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -431,14 +435,14 @@ static const wxFileName&#160;</td><td class="memItemRight" valign="bottom"><a cl
 
 </div>
 </div>
-<a class="anchor" id="a382f459d3662bbd0c06ba68cc1809716"></a>
+<a class="anchor" id="a65645af81d6958b6ba7a54699b172f1d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void wxExViMacros::Record </td>
           <td>(</td>
-          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>text</em>, </td>
         </tr>
         <tr>
@@ -494,7 +498,7 @@ static const wxFileName&#160;</td><td class="memItemRight" valign="bottom"><a cl
 
 </div>
 </div>
-<a class="anchor" id="a6ae7702a498ab90611a42f2fdd662045"></a>
+<a class="anchor" id="a59798fbd2dbdc783679053abfe0dea7e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -507,7 +511,7 @@ static const wxFileName&#160;</td><td class="memItemRight" valign="bottom"><a cl
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>value</em>&#160;</td>
         </tr>
         <tr>

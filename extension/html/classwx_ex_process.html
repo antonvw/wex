@@ -18,7 +18,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">wxExtension
-   &#160;<span id="projectnumber">v3.0.1</span>
+   &#160;<span id="projectnumber">v3.0.2</span>
    </div>
   </td>
  </tr>
@@ -68,10 +68,9 @@ Inheritance diagram for wxExProcess:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a998541dd2d80d36fa95d9adb2546c9de"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a998541dd2d80d36fa95d9adb2546c9de"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_process.html#a998541dd2d80d36fa95d9adb2546c9de">wxExProcess</a> ()</td></tr>
-<tr class="memdesc:a998541dd2d80d36fa95d9adb2546c9de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. <br/></td></tr>
-<tr class="separator:a998541dd2d80d36fa95d9adb2546c9de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a837524e4829531d19512f2904970f2e5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_process.html#a837524e4829531d19512f2904970f2e5">wxExProcess</a> (wxWindow *parent=NULL)</td></tr>
+<tr class="memdesc:a837524e4829531d19512f2904970f2e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a837524e4829531d19512f2904970f2e5">More...</a><br/></td></tr>
+<tr class="separator:a837524e4829531d19512f2904970f2e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3033597e6cb667d6fd04317db892bb2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af3033597e6cb667d6fd04317db892bb2"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_process.html#af3033597e6cb667d6fd04317db892bb2">~wxExProcess</a> ()</td></tr>
 <tr class="memdesc:af3033597e6cb667d6fd04317db892bb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br/></td></tr>
@@ -99,6 +98,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 const wxString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_process.html#a89defd1d5972b3c2dc29f0b1b9cb52b1">GetOutput</a> () const </td></tr>
 <tr class="memdesc:a89defd1d5972b3c2dc29f0b1b9cb52b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the output from Execute (only filled for wxEXEC_SYNC). <br/></td></tr>
 <tr class="separator:a89defd1d5972b3c2dc29f0b1b9cb52b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63ea25a944b32df7f268a0aa78a00ba8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_ex_s_t_c_shell.html">wxExSTCShell</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_process.html#a63ea25a944b32df7f268a0aa78a00ba8">GetShell</a> ()</td></tr>
+<tr class="memdesc:a63ea25a944b32df7f268a0aa78a00ba8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the shell, for input to the process.  <a href="#a63ea25a944b32df7f268a0aa78a00ba8">More...</a><br/></td></tr>
+<tr class="separator:a63ea25a944b32df7f268a0aa78a00ba8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21052881612250d110b9c7634f658727"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_process.html#a21052881612250d110b9c7634f658727">GetSTC</a> () const </td></tr>
+<tr class="memdesc:a21052881612250d110b9c7634f658727"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the STC component from the dialog (might be NULL if dialog is NULL).  <a href="#a21052881612250d110b9c7634f658727">More...</a><br/></td></tr>
+<tr class="separator:a21052881612250d110b9c7634f658727"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a3a6fd55cf24d59fd1b407b1347f1ab"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9a3a6fd55cf24d59fd1b407b1347f1ab"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_process.html#a9a3a6fd55cf24d59fd1b407b1347f1ab">HasStdError</a> () const </td></tr>
 <tr class="memdesc:a9a3a6fd55cf24d59fd1b407b1347f1ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true when the command executed resulted in stderr errors. <br/></td></tr>
@@ -124,12 +129,6 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ad63daadfc134a3c32c2e1208b0ec3fb4"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_process.html#ad63daadfc134a3c32c2e1208b0ec3fb4">ConfigDialog</a> (wxWindow *parent, const wxString &amp;title=_(&quot;Select Process&quot;), bool modal=true)</td></tr>
 <tr class="memdesc:ad63daadfc134a3c32c2e1208b0ec3fb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a config dialog, allowing you to set the command and folder.  <a href="#ad63daadfc134a3c32c2e1208b0ec3fb4">More...</a><br/></td></tr>
 <tr class="separator:ad63daadfc134a3c32c2e1208b0ec3fb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7dc6f6c74e37abea81518528434a595f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classwx_ex_s_t_c_shell.html">wxExSTCShell</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_process.html#a7dc6f6c74e37abea81518528434a595f">GetShell</a> ()</td></tr>
-<tr class="memdesc:a7dc6f6c74e37abea81518528434a595f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the shell, for input to the process.  <a href="#a7dc6f6c74e37abea81518528434a595f">More...</a><br/></td></tr>
-<tr class="separator:a7dc6f6c74e37abea81518528434a595f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeab7ed9fcc4512d4770507ee05148bf3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_process.html#aeab7ed9fcc4512d4770507ee05148bf3">GetSTC</a> ()</td></tr>
-<tr class="memdesc:aeab7ed9fcc4512d4770507ee05148bf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the STC component from the dialog (might be NULL if dialog is NULL).  <a href="#aeab7ed9fcc4512d4770507ee05148bf3">More...</a><br/></td></tr>
-<tr class="separator:aeab7ed9fcc4512d4770507ee05148bf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -144,7 +143,32 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Offers a wxProcess, capturing execution output depending on sync or async call to Execute. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a837524e4829531d19512f2904970f2e5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wxExProcess::wxExProcess </td>
+          <td>(</td>
+          <td class="paramtype">wxWindow *&#160;</td>
+          <td class="paramname"><em>parent</em> = <code>NULL</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Default constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>parent for output dialog </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="ad63daadfc134a3c32c2e1208b0ec3fb4"></a>
 <div class="memitem">
 <div class="memproto">
@@ -234,25 +258,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a class="anchor" id="a7dc6f6c74e37abea81518528434a595f"></a>
+<a class="anchor" id="a63ea25a944b32df7f268a0aa78a00ba8"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="classwx_ex_s_t_c_shell.html">wxExSTCShell</a>* wxExProcess::GetShell </td>
+          <td class="memname"><a class="el" href="classwx_ex_s_t_c_shell.html">wxExSTCShell</a>* wxExProcess::GetShell </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns the shell, for input to the process. </p>
@@ -260,25 +276,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a class="anchor" id="aeab7ed9fcc4512d4770507ee05148bf3"></a>
+<a class="anchor" id="a21052881612250d110b9c7634f658727"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a>* wxExProcess::GetSTC </td>
+          <td class="memname"><a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a>* wxExProcess::GetSTC </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Returns the STC component from the dialog (might be NULL if dialog is NULL). </p>
