@@ -447,11 +447,19 @@ bool wxExVi::Command(const std::string& command)
             case CHR_TO_NUM('@','@'): MacroPlayback(GetMacros().GetMacro(), repeat); break;
               
             default:
-              if (wxString(rest).Matches("f?") || wxString(rest).Matches("F?"))
+              if (wxString(rest).StartsWith("f") || wxString(rest).StartsWith("F"))
               {
                 for (int i = 0; i < repeat; i++) 
-                  if (!GetSTC()->FindNext(rest.back(), GetSearchFlags(), rest[0] == 'f'))
+                {
+                  const int flags = GetSearchFlags() & ~wxSTC_FIND_REGEXP;
+                  
+                  if (!GetSTC()->FindNext(rest.back(), flags, rest[0] == 'f'))
+                  {
+                    m_Command.clear();
                     return false;
+                  }
+                }
+            
                 m_LastFindCharCommand = command;
               }
               else if (rest.front() == 'm')
