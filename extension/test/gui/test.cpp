@@ -967,7 +967,8 @@ void wxExGuiTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "asm") == "2");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "cpp") == "4");
   
-  CPPUNIT_ASSERT(!wxExLexers::Get()->GetProperties().empty());
+  // At this moment we have no global properties.
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetProperties().empty());
   
   wxExLexers::Get()->ApplyMarkers(stc);
   wxExLexers::Get()->ApplyProperties(stc);
