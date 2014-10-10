@@ -54,6 +54,7 @@ private:
   bool CommandChar(int c, int repeat);
   void CommandReg(const char reg);
   void DeleteRange(int start, int end);
+  bool FindChar(int repeat, const wxString& text, const wxString& start);
   void FindWord(bool find_next = true);
   void GotoBrace();
   bool Indent(
