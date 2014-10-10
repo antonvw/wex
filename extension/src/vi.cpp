@@ -447,19 +447,13 @@ bool wxExVi::Command(const std::string& command)
             case CHR_TO_NUM('@','@'): MacroPlayback(GetMacros().GetMacro(), repeat); break;
               
             default:
-              if (wxString(rest).StartsWith("f") || wxString(rest).StartsWith("F"))
+              if (FindChar(repeat, rest, "f"))
               {
-                for (int i = 0; i < repeat; i++) 
-                {
-                  const int flags = GetSearchFlags() & ~wxSTC_FIND_REGEXP;
-                  
-                  if (!GetSTC()->FindNext(rest.back(), flags, rest[0] == 'f'))
-                  {
-                    m_Command.clear();
-                    return false;
-                  }
-                }
-            
+                m_LastFindCharCommand = command;
+              }
+              else if (FindChar(repeat, rest, "t"))
+              {
+                GetSTC()->CharLeft();
                 m_LastFindCharCommand = command;
               }
               else if (rest.front() == 'm')
@@ -504,14 +498,6 @@ bool wxExVi::Command(const std::string& command)
                     GetSTC()->ReplaceTarget(wxString(rest.back(), repeat));
                   }
                 }
-              }
-              else if (wxString(rest).Matches("t?") || wxString(rest).Matches("T?"))
-              {
-                for (int i = 0; i < repeat; i++) 
-                  if (!GetSTC()->FindNext(rest.back(), GetSearchFlags(), rest[0] == 't'))
-                    return false;
-                GetSTC()->CharLeft();
-                m_LastFindCharCommand = command;
               }
               else if (OneLetterAfter("'", rest))
               {
@@ -976,6 +962,27 @@ void  wxExVi::DeleteRange(int start, int end)
   }
 }
 
+bool wxExVi::FindChar(int repeat, const wxString& text, const wxString& start)
+{
+  if (text.StartsWith(start) || text.StartsWith(start.Upper()))
+  {
+    for (int i = 0; i < repeat; i++) 
+    {
+      const int flags = GetSearchFlags() & ~wxSTC_FIND_REGEXP;
+      
+      if (!GetSTC()->FindNext(text.Last(), flags, wxIslower(text[0])))
+      {
+        m_Command.clear();
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  return false;
+}
+                
 void wxExVi::FindWord(bool find_next)
 {
   const int start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
