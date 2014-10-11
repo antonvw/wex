@@ -35,6 +35,14 @@
 
 #if wxUSE_GUI
 
+enum
+{
+  INDENT_NONE,
+  INDENT_WHITESPACE,
+  INDENT_LEVEL,
+  INDENT_ALL,
+};
+
 BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_CHAR(wxExSTC::OnChar)
   EVT_FIND(wxID_ANY, wxExSTC::OnFindDialog)
@@ -188,6 +196,13 @@ void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
 
 bool wxExSTC::AutoIndentation(int c)
 {
+  const long ai = wxConfigBase::Get()->ReadLong(_("Auto Indent"), INDENT_ALL);
+  
+  if (ai == INDENT_NONE)
+  {
+    return false;
+  }
+  
   bool is_nl = false;
   
   switch (GetEOLMode())
@@ -210,7 +225,7 @@ bool wxExSTC::AutoIndentation(int c)
   
   int indent = 0;
     
-  if (level <= 0)
+  if (level <= 0 || ai == INDENT_WHITESPACE)
   {
     // the current line has yet no indents, so use previous line
     indent = GetLineIndentation(currentLine - 1);
@@ -465,8 +480,8 @@ int wxExSTC::ConfigDialog(
   bchoices.insert(_("Caret line"));
   bchoices.insert(_("Scroll bars"));
   bchoices.insert(_("vi mode"));
-  // use 2 cols here, but 1 for others on this page
-  items.push_back(wxExConfigItem(bchoices, _("General") + ":2")); 
+  // use 3 cols here, but 1 for others on this page
+  items.push_back(wxExConfigItem(bchoices, _("General") + ":3")); 
 
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
@@ -504,6 +519,14 @@ int wxExSTC::ConfigDialog(
   vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
   items.push_back(wxExConfigItem(
     _("Wrap visual flags"), vchoices, true, _("General"), 1));
+    
+  std::map<long, const wxString> ichoices;
+  ichoices.insert(std::make_pair(INDENT_NONE, _("None")));
+  ichoices.insert(std::make_pair(INDENT_WHITESPACE, _("Whitespace")));
+  ichoices.insert(std::make_pair(INDENT_LEVEL, _("Level")));
+  ichoices.insert(std::make_pair(INDENT_ALL, _("Both")));
+  items.push_back(wxExConfigItem(
+    _("Auto Indent"), ichoices, true, _("General"), 1));
     
   if (wxExLexers::Get()->GetCount() > 0)
   {
