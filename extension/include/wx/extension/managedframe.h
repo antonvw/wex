@@ -8,7 +8,9 @@
 #ifndef _EXMANAGEDFRAME_H
 #define _EXMANAGEDFRAME_H
 
+#include <list>
 #include <wx/aui/framemanager.h> // for wxAuiManager
+#include <wx/aui/auibar.h>
 #include <wx/extension/frame.h>
 
 // Only if we have a gui.
@@ -94,6 +96,7 @@ protected:
   wxExToolBar* GetToolBar() {return m_ToolBar;};
   void OnAuiManager(wxAuiManagerEvent& event);
   void OnCommand(wxCommandEvent& event);
+  void OnDropDown(wxAuiToolBarEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   bool AddToolBarPane(
@@ -101,6 +104,8 @@ private:
     const wxString& name, 
     const wxString& caption = wxEmptyString);
   wxPanel* CreateExPanel();
+  void FindPopupMenu(
+    const std::list < wxString > & l, int first_id, const wxPoint& pos = wxDefaultPosition);
   
   wxAuiManager m_Manager;
   wxExToolBar* m_ToolBar;

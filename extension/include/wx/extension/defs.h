@@ -11,6 +11,7 @@
 const int TOOL_MAX = 25;
 const int TOOL_MAX_REPORTS = 10;
 const int VCS_MAX_COMMANDS = 25;
+const int FIND_MAX_FINDS = 25;
 
 /// These are used as window event ID's. Therefore after the highest wxWidgets ID.
 enum wxExId
@@ -32,6 +33,9 @@ enum wxExId
 
   ID_EDIT_FIND_NEXT,
   ID_EDIT_FIND_PREVIOUS,
+  
+  ID_FIND_FIRST,
+  ID_FIND_LAST = ID_FIND_FIRST + FIND_MAX_FINDS,
 
   ID_EDIT_NEXT,
   ID_EDIT_PREVIOUS,

@@ -115,6 +115,11 @@ void wxExFindReplaceData::SetFindRegularExpression()
 
 void wxExFindReplaceData::SetFindString(const wxString& value)
 {
+  if (value.empty())
+  {
+    return;
+  }
+  
   wxFindReplaceData::SetFindString(value);
 
   m_FindStrings.remove(value);

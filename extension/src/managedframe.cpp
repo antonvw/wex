@@ -78,7 +78,9 @@ private:
 
 BEGIN_EVENT_TABLE(wxExManagedFrame, wxExFrame)
   EVT_AUI_PANE_CLOSE(wxExManagedFrame::OnAuiManager)
+  EVT_AUITOOLBAR_TOOL_DROPDOWN(wxID_FIND, wxExManagedFrame::OnDropDown)
   EVT_MENU(wxID_PREFERENCES, wxExManagedFrame::OnCommand)
+  EVT_MENU_RANGE(ID_FIND_FIRST, ID_FIND_LAST, wxExManagedFrame::OnCommand)
   EVT_MENU_RANGE(ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnCommand)
   EVT_UPDATE_UI_RANGE(
     ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnUpdateUI)
@@ -101,6 +103,8 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   AddToolBarPane(CreateExPanel(), "VIBAR");
   
   m_Manager.Update();
+  
+  GetToolBar()->SetToolDropDown(wxID_FIND, true);
 }
 
 wxExManagedFrame::~wxExManagedFrame()
@@ -175,6 +179,32 @@ wxPanel* wxExManagedFrame::CreateExPanel()
   return panel;
 }
 
+void wxExManagedFrame::FindPopupMenu(
+  const std::list < wxString > & l, int first_id, const wxPoint& pos)
+{
+  wxMenu* menu = new wxMenu();
+
+  int i = 0;
+  for (const auto& it : l)
+  {
+    wxMenuItem* item = new wxMenuItem(
+      menu, 
+      first_id + i++, 
+      it);
+
+    menu->Append(item);
+    
+    if (i >= FIND_MAX_FINDS) break;
+  }
+  
+  if (menu->GetMenuItemCount() > 0)
+  {
+    PopupMenu(menu, pos);
+  }
+    
+  delete menu;
+}
+  
 void wxExManagedFrame::GetExCommand(wxExEx* ex, const wxString& command)
 {
   m_exTextCtrl->SetEx(ex, command);
@@ -210,7 +240,36 @@ void wxExManagedFrame::OnAuiManager(wxAuiManagerEvent& event)
   
 void wxExManagedFrame::OnCommand(wxCommandEvent& event)
 {
-  switch (event.GetId())
+  if (event.GetId() >= ID_FIND_FIRST && event.GetId() <= ID_FIND_LAST)
+  {
+    int i = 0;
+    
+    wxString text;
+    
+    for (const auto& it : wxExFindReplaceData::Get()->GetFindStrings())
+    {
+      if (i++ == event.GetId() - ID_FIND_FIRST)
+      {
+        wxExSTC* stc = GetSTC();
+
+        if (stc != NULL)
+        {
+          if (stc->FindNext(it))
+          {
+            text = it;
+          }
+        }
+        
+        break;
+      }
+    }
+    
+    if (!text.empty())
+    {
+      wxExFindReplaceData::Get()->SetFindString(text);
+    }
+  }
+  else switch (event.GetId())
   {
     case wxID_PREFERENCES:
       wxExSTC::ConfigDialog(this,
@@ -227,6 +286,31 @@ void wxExManagedFrame::OnCommand(wxCommandEvent& event)
 
     default:
       wxFAIL;
+  }
+}
+
+void wxExManagedFrame::OnDropDown(wxAuiToolBarEvent& event)
+{
+  if (event.IsDropDownClicked())
+  {
+    wxAuiToolBar* tb = static_cast<wxAuiToolBar*>(event.GetEventObject());
+
+    tb->SetToolSticky(event.GetId(), true);
+
+    // create the popup menu
+    // line up our menu with the button
+    wxRect rect = tb->GetToolRect(event.GetId());
+    wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
+    pt = ScreenToClient(pt);
+    
+    FindPopupMenu(wxExFindReplaceData::Get()->GetFindStrings(), ID_FIND_FIRST, pt);
+
+    // make sure the button is "un-stuck"
+    tb->SetToolSticky(event.GetId(), false);
+  }
+  else
+  {
+    event.Skip();
   }
 }
 
