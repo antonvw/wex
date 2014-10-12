@@ -118,7 +118,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
   Initialize();
 
   wxPersistentRegisterAndRestore(this);
-
+  
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxExPrinting::Get()->GetHtmlPrinter()->SetParentWindow(this);
 #endif
