@@ -51,7 +51,6 @@ do
 done
 
 strip syncped/syncped
-tar cf syncped.tar syncped
-gzip syncped.tar
+tar -zcf syncped-v$VERSION.tar.gz syncped
 
 rm -rf syncped
