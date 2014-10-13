@@ -2830,7 +2830,6 @@ void wxExGuiTestFixture::testViMacros()
 {
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello");
   wxExVi* vi = &stc->GetVi();
-  const int esc = 27;
   
   wxExViMacros macros;
   
