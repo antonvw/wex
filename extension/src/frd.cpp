@@ -134,8 +134,11 @@ void wxExFindReplaceData::SetFindStrings(
   const std::list < wxString > & value)
 {
   m_FindStrings = value;
-
-  wxFindReplaceData::SetFindString(m_FindStrings.front());
+  
+  if (!m_FindStrings.empty())
+  {
+    wxFindReplaceData::SetFindString(m_FindStrings.front());
+  }
 
   wxExListToConfig(m_FindStrings, m_TextFindWhat);
 
