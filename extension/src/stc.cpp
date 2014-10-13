@@ -196,7 +196,7 @@ void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
 
 bool wxExSTC::AutoIndentation(int c)
 {
-  const long ai = wxConfigBase::Get()->ReadLong(_("Auto Indent"), INDENT_ALL);
+  const long ai = wxConfigBase::Get()->ReadLong(_("Auto indent"), INDENT_ALL);
   
   if (ai == INDENT_NONE)
   {
@@ -526,7 +526,7 @@ int wxExSTC::ConfigDialog(
   ichoices.insert(std::make_pair(INDENT_LEVEL, _("Level")));
   ichoices.insert(std::make_pair(INDENT_ALL, _("Both")));
   items.push_back(wxExConfigItem(
-    _("Auto Indent"), ichoices, true, _("General"), 1));
+    _("Auto indent"), ichoices, true, _("General"), 1));
     
   if (wxExLexers::Get()->GetCount() > 0)
   {
@@ -698,6 +698,7 @@ void wxExSTC::ConfigGet(bool init)
   {
     // Set defaults only.
     cfg->ReadLong(_("Auto fold"), 1500);
+    cfg->ReadLong(_("Auto indent"), INDENT_WHITESPACE);
     cfg->ReadLong(_("Folding"), 16);
     cfg->ReadBool(_("Scroll bars"), true);
 
