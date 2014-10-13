@@ -29,10 +29,6 @@ const int NUMBER_RECENT_FILES = 25;
 const int NUMBER_RECENT_PROJECTS = 25;
 const int ID_RECENT_PROJECT_LOWEST =  wxID_FILE1 + NUMBER_RECENT_FILES + 1;
 
-// wxID_CLEAR already pushed to wxExSTC
-const int ID_CLEAR_FILES = 32;
-const int ID_CLEAR_PROJECTS = 33;
-
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_AUITOOLBAR_TOOL_DROPDOWN(wxID_OPEN, wxExFrameWithHistory::OnDropDown)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)

@@ -79,6 +79,7 @@ private:
 BEGIN_EVENT_TABLE(wxExManagedFrame, wxExFrame)
   EVT_AUI_PANE_CLOSE(wxExManagedFrame::OnAuiManager)
   EVT_AUITOOLBAR_TOOL_DROPDOWN(wxID_FIND, wxExManagedFrame::OnDropDown)
+  EVT_MENU(ID_CLEAR_FINDS, wxExManagedFrame::OnCommand)
   EVT_MENU(wxID_PREFERENCES, wxExManagedFrame::OnCommand)
   EVT_MENU_RANGE(ID_FIND_FIRST, ID_FIND_LAST, wxExManagedFrame::OnCommand)
   EVT_MENU_RANGE(ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnCommand)
@@ -185,12 +186,16 @@ void wxExManagedFrame::FindPopupMenu(
   wxMenu* menu = new wxMenu();
 
   int i = 0;
+  const int max_size = 25;
+  
   for (const auto& it : l)
   {
+    const wxString label = 
+      (it.size() >= max_size - 3 ? it.Left(max_size) + "..." : it);
     wxMenuItem* item = new wxMenuItem(
       menu, 
       first_id + i++, 
-      it);
+      label);
 
     menu->Append(item);
     
@@ -199,6 +204,9 @@ void wxExManagedFrame::FindPopupMenu(
   
   if (menu->GetMenuItemCount() > 0)
   {
+    menu->AppendSeparator();
+    menu->Append(ID_CLEAR_FINDS, wxGetStockLabel(wxID_CLEAR));
+      
     PopupMenu(menu, pos);
   }
     
@@ -280,6 +288,13 @@ void wxExManagedFrame::OnCommand(wxCommandEvent& event)
         event.GetId());
     break;
 
+    case ID_CLEAR_FINDS:
+      {
+      std::list < wxString > l; 
+      wxExFindReplaceData::Get()->SetFindStrings(l); 
+      }
+      break;
+    
     case ID_VIEW_FINDBAR: TogglePane("FINDBAR"); break;
     case ID_VIEW_OPTIONSBAR: TogglePane("OPTIONSBAR"); break;
     case ID_VIEW_TOOLBAR: TogglePane("TOOLBAR"); break;
