@@ -337,17 +337,9 @@ const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
   wxString log;
   
   // Printing a % in wxLogStatus gives assert
-  
-  if (wxExFindReplaceData::Get()->GetFindString().Contains("%"))
-  {
-    log = _("Searching");
-    
-    if (replace && wxExFindReplaceData::Get()->GetReplaceString().Contains("%"))
-    {
-      log += " " + _("replacing");
-    }
-  }
-  else
+  if (
+    !wxExFindReplaceData::Get()->GetFindString().Contains("%") &&
+    !wxExFindReplaceData::Get()->GetReplaceString().Contains("%"))
   {
     log = _("Searching for") + ": " + wxExFindReplaceData::Get()->GetFindString();
 
