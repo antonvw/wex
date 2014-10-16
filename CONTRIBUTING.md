@@ -36,6 +36,11 @@
     You can also test other languages using the special LANG config item,
     e.g. setting it to 80 allows you to test french translation
     (see wxWidgets/misc/languages/langtabl.txt).
+    Normally you check the current locale by running locale on the
+    command line. Running locale -a shows all your available locales, if your
+    locale is not present, add it using locale-gen (provided it is in 
+    the list of all locales (/usr/share/i18n/SUPPORTED).
+    Then you do export LANG=..., or change the /etc/default/locale.
     
 ## Test it
 
