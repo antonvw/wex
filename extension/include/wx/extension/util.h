@@ -297,8 +297,10 @@ const wxString wxExPrintHeader(const wxFileName& filename);
 const wxString wxExQuoted(const wxString& text);
 
 #if wxUSE_GUI
-/// Sets a text ctrl value from a list of values.
-void wxExSetTextCtrlValue(
+/// Sets a text ctrl value from a list of values 
+/// according to key movement.
+/// Returns true if key was supported and l not empty.
+bool wxExSetTextCtrlValue(
   /// text ctrl
   wxTextCtrl* ctrl,
   /// UP or DOWN key
