@@ -30,7 +30,7 @@ cp ../extension/data/*.xml syncped
 msgfmt ~/wxWidgets-$VERSION/locale/fr.po -o syncped/fr_FR/fr.mo
 msgfmt ~/wxWidgets-$VERSION/locale/nl.po -o syncped/nl_NL/nl.mo
 
-FILES=( $( /bin/ls ../locale/*fr.po  ) )
+FILES=../locale/*fr.po
 
 for f in $FILES
 do
@@ -40,7 +40,7 @@ do
   msgfmt ../locale/$name.po -o syncped/fr_FR/$name.mo
 done
 
-FILES=( $( /bin/ls ../locale/*nl.po  ) )
+FILES=../locale/*nl.po
 
 for f in $FILES
 do
