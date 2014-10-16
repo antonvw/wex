@@ -13,12 +13,9 @@
 #include <wx/regex.h>
 #include <wx/textctrl.h>
 
-class wxExFindTextCtrl;
-
 /// Adds an existing config to wxFindReplaceData, and some members.
 class WXDLLIMPEXP_BASE wxExFindReplaceData : public wxFindReplaceData
 {
-  friend class wxExFindTextCtrl;
 public:
   // Destructor (not for Doxy).
  ~wxExFindReplaceData();
@@ -55,6 +52,10 @@ public:
 
   /// Gets text.
   const wxString& GetTextSearchDown() const {return m_TextSearchDown;};
+  
+  /// Iterates text ctrl for specified key.
+  /// Returns true if key was handled.
+  bool Iterate(wxTextCtrl* ctrl, int key);
 
   /// Returns true if the flags have match case set.
   bool MatchCase() const {return (GetFlags() & wxFR_MATCHCASE) > 0;};
@@ -77,6 +78,8 @@ public:
   /// Sets the find string.
   /// If UseRegularExpression also sets the regular expression.
   /// This string is used for tool find in files and replace in files.
+  /// Als moves the find string to the beginning of the find
+  /// strings list.
   void SetFindString(const wxString& value);
 
   /// Sets the find strings.
@@ -92,6 +95,8 @@ public:
   void SetReplaceString(const wxString& value);
 
   /// Sets the replace strings.
+  /// Als moves the replace string to the beginning of the replace
+  /// strings list.
   void SetReplaceStrings(const std::list < wxString > & value);
 
   /// Sets using regular expression for find text.
@@ -115,6 +120,7 @@ private:
   const wxString m_TextSearchDown;
 
   std::list < wxString > m_FindStrings;
+  std::list < wxString >::const_iterator m_FindsIterator;
   std::list < wxString > m_ReplaceStrings;
 
   static wxExFindReplaceData* m_Self;
@@ -138,9 +144,7 @@ protected:
   void OnEnter(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
 private:
-  std::list < wxString >::const_iterator m_FindsIterator;
 
   DECLARE_EVENT_TABLE()
 };
-
 #endif

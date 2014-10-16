@@ -33,19 +33,8 @@ wxExFindReplaceData::wxExFindReplaceData()
 
   // Start with this one, as it is used by SetFindString.
   SetUseRegularExpression(wxConfigBase::Get()->ReadBool(m_TextRegEx, false));
-
-  m_FindStrings = wxExListFromConfig(m_TextFindWhat);
-  m_ReplaceStrings = wxExListFromConfig(m_TextReplaceWith);
-
-  if (!m_FindStrings.empty())
-  {
-    wxFindReplaceData::SetFindString(m_FindStrings.front());
-  }
-
-  if (!m_ReplaceStrings.empty())
-  {
-    wxFindReplaceData::SetReplaceString(m_ReplaceStrings.front());
-  }
+  SetFindStrings(wxExListFromConfig(m_TextFindWhat));
+  SetReplaceStrings(wxExListFromConfig(m_TextReplaceWith));
 }
 
 wxExFindReplaceData::~wxExFindReplaceData()
@@ -69,6 +58,11 @@ wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
   return m_Self;
 }
 
+bool wxExFindReplaceData::Iterate(wxTextCtrl* ctrl, int key)
+{
+  return wxExSetTextCtrlValue(ctrl, key, m_FindStrings, m_FindsIterator);
+}
+  
 wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
 {
   wxExFindReplaceData* old = m_Self;
@@ -128,6 +122,8 @@ void wxExFindReplaceData::SetFindString(const wxString& value)
   wxExListToConfig(m_FindStrings, m_TextFindWhat);
 
   SetFindRegularExpression();
+  
+  m_FindsIterator = GetFindStrings().begin();
 }
 
 void wxExFindReplaceData::SetFindStrings(
@@ -139,6 +135,12 @@ void wxExFindReplaceData::SetFindStrings(
   {
     wxFindReplaceData::SetFindString(m_FindStrings.front());
   }
+  else
+  {
+    wxFindReplaceData::SetFindString(wxEmptyString);
+  }
+  
+  m_FindsIterator = m_FindStrings.begin();
 
   wxExListToConfig(m_FindStrings, m_TextFindWhat);
 
@@ -184,7 +186,14 @@ void wxExFindReplaceData::SetReplaceStrings(
 {
   m_ReplaceStrings = value;
 
-  wxFindReplaceData::SetReplaceString(m_ReplaceStrings.front());
+  if (!m_ReplaceStrings.empty())
+  {
+    wxFindReplaceData::SetReplaceString(m_ReplaceStrings.front());
+  }
+  else
+  {
+    wxFindReplaceData::SetReplaceString(wxEmptyString);
+  }
 
   wxExListToConfig(m_ReplaceStrings, m_TextReplaceWith);
 }
@@ -204,31 +213,17 @@ wxExFindTextCtrl::wxExFindTextCtrl(
       wxExFindReplaceData::Get()->GetFindString(), 
       pos, size, wxTE_PROCESS_ENTER)
 {
-  m_FindsIterator = wxExFindReplaceData::Get()->m_FindStrings.begin();
 }
 
 void wxExFindTextCtrl::OnEnter(wxCommandEvent& event)
 {
-  if (!GetValue().empty())
-  {
-    wxExFindReplaceData::Get()->SetFindString(GetValue());
-    m_FindsIterator = wxExFindReplaceData::Get()->GetFindStrings().begin();
-  }
+  wxExFindReplaceData::Get()->SetFindString(GetValue());
 }
 
 void wxExFindTextCtrl::OnKey(wxKeyEvent& event)
 {
-  const int key = event.GetKeyCode();
-
-  switch (key)
+  if (!wxExFindReplaceData::Get()->Iterate(this, event.GetKeyCode()))
   {
-  case WXK_UP: 
-  case WXK_DOWN:
-    wxExSetTextCtrlValue(
-      this, key, wxExFindReplaceData::Get()->m_FindStrings, m_FindsIterator);
-    break;
-    
-  default:  
     event.Skip();
-  }    
+  }
 }    

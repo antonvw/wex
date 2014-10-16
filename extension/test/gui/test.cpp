@@ -694,6 +694,7 @@ void wxExGuiTestFixture::testFrd()
   CPPUNIT_ASSERT(wxExFindReplaceData::Get() != NULL);
   
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
+  wxTextCtrl* tc = new wxTextCtrl(wxTheApp->GetTopWindow(), wxID_ANY, "hello text");
   
   frd->SetMatchCase(true);
   CPPUNIT_ASSERT( frd->MatchCase());
@@ -709,6 +710,10 @@ void wxExGuiTestFixture::testFrd()
   CPPUNIT_ASSERT( frd->GetFindString() == "find[0-9]");
   CPPUNIT_ASSERT( frd->GetRegularExpression().IsValid());
   CPPUNIT_ASSERT( frd->GetRegularExpression().Matches("find9"));
+  
+  CPPUNIT_ASSERT( frd->Iterate(tc, WXK_UP));
+  CPPUNIT_ASSERT( frd->Iterate(tc, WXK_UP));
+  CPPUNIT_ASSERT(!frd->Iterate(tc, WXK_RIGHT));
 
   std::list < wxString > l;
   l.push_back("find3");
@@ -732,6 +737,15 @@ void wxExGuiTestFixture::testFrd()
   CPPUNIT_ASSERT( frd->Set(frd->GetTextMatchWholeWord(), false));
   CPPUNIT_ASSERT(!frd->MatchWord());
   CPPUNIT_ASSERT(!frd->Set("XXXX", false));
+  
+  const std::list< wxString > e;
+  frd->SetFindStrings(e);
+  CPPUNIT_ASSERT( frd->GetFindStrings().empty());
+  CPPUNIT_ASSERT( frd->GetFindString().empty());
+  
+  frd->SetReplaceStrings(e);
+  CPPUNIT_ASSERT( frd->GetReplaceStrings().empty());
+  CPPUNIT_ASSERT( frd->GetReplaceString().empty());
 }
 
 void wxExGuiTestFixture::testGrid()
