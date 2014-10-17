@@ -336,6 +336,10 @@ public:
   /// Default syncing is started during construction.
   void Sync(bool start = true);
   
+  /// If there is an undo facility and the last operation can be undone, 
+  /// undoes the last operation. 
+  virtual void Undo() override;
+
   /// Use autocomplete lists.
   /// Default on.
   void UseAutoComplete(bool use);
