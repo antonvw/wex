@@ -102,6 +102,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_vi(wxExVi(this))
   , m_File(this, title)
   , m_Link(wxExLink(this))
+  , m_HexMode(wxExHexMode(this))
 {
   Initialize(false);
 
@@ -111,7 +112,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   {
     if (HexMode())
     {
-      AppendTextHexMode(value.c_str());
+      m_HexMode.AppendText(value.c_str());
     }
     else
     {
@@ -149,6 +150,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_MenuFlags(menu_flags)
   , m_vi(wxExVi(this))
   , m_Link(wxExLink(this))
+  , m_HexMode(wxExHexMode(this))
 {
   Initialize(filename.GetStat().IsOk());
   
@@ -174,6 +176,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_vi(wxExVi(this)) // do not use stc.m_vi, crash
   , m_DefaultFont(stc.m_DefaultFont)
   , m_AutoComplete(stc.m_AutoComplete)
+  , m_HexMode(wxExHexMode(this))
 {
   Initialize(stc.m_File.GetFileName().GetStat().IsOk());
 
@@ -187,11 +190,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
     
     SetEdgeMode(stc.GetEdgeMode());
   }
-}
-
-void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
-{
-  wxExHexModeLine(this).AppendText(buffer);
 }
 
 bool wxExSTC::AutoIndentation(int c)
@@ -402,11 +400,11 @@ void wxExSTC::CheckBrace()
 {
   if (HexMode())
   {
-    if (!CheckBraceHex(GetCurrentPos()))
+    if (!m_HexMode.HighlightOther(GetCurrentPos()))
     {
       if (PositionFromLine(GetCurrentLine()) != GetCurrentPos())
       {
-        CheckBraceHex(GetCurrentPos() - 1);
+        m_HexMode.HighlightOther(GetCurrentPos() - 1);
       }
     }
   }
@@ -432,22 +430,6 @@ bool wxExSTC::CheckBrace(int pos)
   }
 }
 
-bool wxExSTC::CheckBraceHex(int pos)
-{
-  const int brace_match = wxExHexModeLine(this).OtherField();
-  
-  if (brace_match != wxSTC_INVALID_POSITION)
-  {
-    BraceHighlight(pos, PositionFromLine(LineFromPosition(pos)) + brace_match);
-    return true;
-  }
-  else
-  {
-    BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
-    return false;
-  }
-}
-
 void wxExSTC::ClearDocument(bool set_savepoint)
 {
   SetReadOnly(false);
@@ -459,8 +441,6 @@ void wxExSTC::ClearDocument(bool set_savepoint)
     EmptyUndoBuffer();
     SetSavePoint();
   }
-  
-  m_HexBuffer.clear();
 }
 
 // This is a static method, cannot use normal members here.
@@ -716,7 +696,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   
   if (HexMode())
   {
-    wxExHexModeLine ml(this, GetSelectionStart());
+    wxExHexModeLine ml(&m_HexMode, GetSelectionStart());
     
     if (
       ml.IsAsciiField() &&
@@ -1155,12 +1135,12 @@ bool wxExSTC::GotoDialog()
   {
     long val;
     if ((val = wxGetNumberFromUser(
-      _("Input") + wxString::Format(" 0 - %d:", m_HexBuffer.length() - 1),
+      _("Input") + wxString::Format(" 0 - %d:", m_HexMode.GetBuffer().length() - 1),
       wxEmptyString,
       _("Enter Byte Offset"),
       m_Goto, // initial value
       0,
-      m_HexBuffer.length() - 1,
+      m_HexMode.GetBuffer().length() - 1,
       this)) < 0)
     {
       return false;
@@ -1168,7 +1148,7 @@ bool wxExSTC::GotoDialog()
 
     m_Goto = val;
     
-    wxExHexModeLine(this, val, false).Goto();
+    wxExHexModeLine(&m_HexMode, val, false).Goto();
   }
   else
   {
@@ -1253,11 +1233,11 @@ void wxExSTC::GotoLineAndSelect(
 void wxExSTC::GuessType()
 {
   // Get a small sample from this document to detect the file mode.
-  const int length = (!HexMode() ? GetTextLength(): m_HexBuffer.size());
+  const int length = (!HexMode() ? GetTextLength(): m_HexMode.GetBuffer().size());
   const int sample_size = (length > 255 ? 255: length);
   
   const wxString text = (!HexMode() ? GetTextRange(0, sample_size): 
-    m_HexBuffer.Mid(0, sample_size));
+    m_HexMode.GetBuffer().Mid(0, sample_size));
   
   const wxRegEx ex(".*vi: *set .*");
     
@@ -1292,7 +1272,7 @@ void wxExSTC::HexDecCalltip(int pos)
   
   if (HexMode())
   {
-    CallTipShow(pos, wxExHexModeLine(this).GetInfo());
+    CallTipShow(pos, wxExHexModeLine(&m_HexMode).GetInfo());
     return;
   }
 
@@ -1343,8 +1323,6 @@ void wxExSTC::Initialize(bool file_exists)
 {
   Sync();
   
-  m_HexMode = false;
-  
   if (m_Flags & STC_WIN_HEX)
   {
     SetHexMode(true);
@@ -1353,9 +1331,6 @@ void wxExSTC::Initialize(bool file_exists)
   m_AddingChars = false;
   m_AllowChangeIndicator = !(m_Flags & STC_WIN_NO_INDICATOR);
   m_UseAutoComplete = true;
-  
-  m_HexBuffer.clear(); // always, not only in hex mode
-
   m_FoldLevel = 0;
   m_SavedPos = -1;
   m_SavedSelectionStart = -1;
@@ -1596,7 +1571,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
     {
       if (GetOvertype())
       {
-        if (wxExHexModeLine(this).Replace(event.GetUnicodeKey()))
+        if (wxExHexModeLine(&m_HexMode).Replace(event.GetUnicodeKey()))
         {
           CharRight();
         }
@@ -1666,11 +1641,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     case wxID_SELECTALL: SelectAll(); break;
     case wxID_UNDO: 
       Undo(); 
-      
-      if (m_HexMode)
-      {
-        m_HexBuffer = m_HexBufferOriginal;
-      }
+      m_HexMode.Undo();
       break;
     case wxID_REDO: Redo(); break;
     case wxID_SAVE: m_File.FileSave(); break;
@@ -1796,7 +1767,7 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
       event.GetKeyCode() == WXK_LEFT ||
       event.GetKeyCode() == WXK_RIGHT)
     {
-      wxExHexModeLine(this).SetPos(event);
+      wxExHexModeLine(&m_HexMode).SetPos(event);
     }
   }
 
@@ -2233,7 +2204,7 @@ bool wxExSTC::ReplaceNext(
   {
     for (const auto& it : replace_text)
     {
-      wxExHexModeLine(this, GetTargetStart()).Replace(it);
+      wxExHexModeLine(&m_HexMode, GetTargetStart()).Replace(it);
     }
   }
   else
@@ -2277,69 +2248,42 @@ bool wxExSTC::SetHexMode(
   bool modified,
   const wxCharBuffer& text)
 {
-  if (IsModified() || m_vi.GetMode() == wxExVi::MODE_INSERT)
+  if (m_vi.GetMode() == wxExVi::MODE_INSERT)
   {
     return false;
   }
     
   if (on)
   {
-    m_HexMode = true;
+    m_Goto = 0;
+
+    m_HexMode.Activate(text);
     
-    SetControlCharSymbol('.');
     wxExLexers::Get()->ApplyHexStyles(this);
     wxExLexers::Get()->ApplyMarkers(this);
     
-    m_Goto = 0;
-
-    // Do not show an edge, eol or whitespace in hex mode.
-    SetEdgeMode(wxSTC_EDGE_NONE);
-    SetViewEOL(false);
-    SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
-    
-    if (text.length() > 0)
+    if (!modified)
     {
-      ClearDocument(false);
-      AppendTextHexMode(text);
-
-      if (!modified)
-      {
-        EmptyUndoBuffer();
-        SetSavePoint();
-      }
-
-      // This should be after SetSavePoint.      
-      BeginUndoAction();
+      EmptyUndoBuffer();
+      SetSavePoint();
     }
+
+    // This should be after SetSavePoint.      
+    BeginUndoAction();
   }
   else
   {
-    SetControlCharSymbol(0);
-    
     m_Goto = 1;
     
-    SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
-    SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
-    SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
+    m_HexMode.Deactivate();
     
-    if (!m_HexBuffer.empty())
+    if (!modified)
     {
-      const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
-      ClearDocument(false);
-      AppendText(buffer);
-      
-      if (!modified)
-      {
-        EmptyUndoBuffer();
-        SetSavePoint();
-      }
+      EmptyUndoBuffer();
+      SetSavePoint();
     }
     
-    if (m_HexMode)
-    {
-      EndUndoAction();
-      m_HexMode = false;
-    }
+    EndUndoAction();
   }
  
   return true;

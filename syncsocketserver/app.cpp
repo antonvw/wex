@@ -276,7 +276,7 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, int mode)
   }
   else
   {
-    stc->AppendTextHexMode(text.c_str());
+    stc->GetHexMode().AppendText(text.c_str());
   }
 
   if (!text.EndsWith("\n"))

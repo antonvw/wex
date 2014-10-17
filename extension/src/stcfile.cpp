@@ -86,11 +86,10 @@ void wxExSTCFile::DoFileSave(bool save_as)
   size_t size;
   size_t count;
   
-  if (m_STC->HexMode())
+  if (m_STC->GetHexMode().Active())
   {
-    // TODO: Does this allow NULLs?
-    count = m_STC->m_HexBuffer.size();
-    size = Write(m_STC->m_HexBuffer, count);
+    count = m_STC->GetHexMode().GetBuffer().size();
+    size = Write(m_STC->GetHexMode().GetBuffer(), count);
   }
   else
   {
@@ -175,7 +174,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
   const wxCharBuffer& buffer = wxExFile::Read(offset);
 
-  if (!m_STC->HexMode())
+  if (!m_STC->GetHexMode().Active())
   {
     get_only_new_data ? 
       m_STC->AppendTextRaw((const char *)buffer.data(), buffer.length()):
@@ -183,7 +182,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
   }
   else
   {
-    m_STC->AppendTextHexMode(buffer);
+    m_STC->GetHexMode().AppendText(buffer);
   }
 
   if (get_only_new_data)
