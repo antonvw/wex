@@ -1639,10 +1639,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     case wxID_JUMP_TO: GotoDialog(); break;
     case wxID_PASTE: Paste(); break;
     case wxID_SELECTALL: SelectAll(); break;
-    case wxID_UNDO: 
-      Undo(); 
-      m_HexMode.Undo();
-      break;
+    case wxID_UNDO: Undo(); break;
     case wxID_REDO: Redo(); break;
     case wxID_SAVE: m_File.FileSave(); break;
     case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
@@ -2071,8 +2068,7 @@ void wxExSTC::Reload(long flags)
   {
     if (!HexMode())
     {
-      const wxCharBuffer buffer = GetTextRaw(); // keep buffer
-      SetHexMode(true, modified, buffer);
+      SetHexMode(true, modified, GetTextRaw());
     }
   }
   else
