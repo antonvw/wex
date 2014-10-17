@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      hexmode.h
-// Purpose:   Declaration of class wxExHexModeLine
+// Purpose:   Declaration of class wxExHexMode and wxExHexModeLine
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXHEXMODE_H
@@ -12,6 +12,55 @@
 
 class wxExSTC;
   
+/// Offers a hex mode.
+class WXDLLIMPEXP_BASE wxExHexMode
+{
+public:
+  /// Constructor.
+  wxExHexMode(wxExSTC* stc);
+  
+  /// Activates hex mode, starting with specified text.
+  void Activate(const wxCharBuffer& text = wxCharBuffer());
+  
+  /// Returns true if hex mode is on.
+  bool Active() const {return m_Active;};
+  
+  /// Appends hex mode lines to stc component.  
+  void AppendText(const wxCharBuffer& buffer);
+
+  /// Clears the buffer.
+  void Clear();
+  
+  /// Deactivates hex mode.
+  void Deactivate();
+  
+  /// Returns the buffer.
+  /// The buffer contains the normal text, without hex info.
+  const wxString& GetBuffer() const {return m_Buffer;};
+  
+  /// Returns STC component.
+  wxExSTC* GetSTC() {return m_STC;};
+  
+  /// Highlights the corresponding char for the other field.
+  bool HighlightOther(int pos);
+
+  /// Returns printable char.  
+  wxUniChar Printable(unsigned int c) const;
+
+  /// Sets a byte in the buffer to a value.  
+  /// The original buffer is not changed so it can be undone.  
+  void SetBuffer(int no, int value);
+  
+  /// Undo change, sets the buffer to the original buffer.
+  void Undo();
+private:
+  bool m_Active;
+  
+  wxString m_Buffer;
+  wxString m_BufferOriginal;
+  wxExSTC* m_STC;
+};
+
 /// Offers a hex mode line.
 /*
 e.g.:
@@ -28,18 +77,15 @@ class WXDLLIMPEXP_BASE wxExHexModeLine
 public:
   /// Constructor.
   /// Uses current position and line.
-  wxExHexModeLine(wxExSTC* stc);
+  wxExHexModeLine(wxExHexMode* hex);
   
   /// Constructor.
   /// Specify position or byte offset.
   /// Default assumes you specify a position.
-  wxExHexModeLine(wxExSTC* stc, 
+  wxExHexModeLine(wxExHexMode* hex, 
     int pos_or_offset, 
     bool is_position = true);
 
-  /// Appends hex mode lines to stc  component.  
-  void AppendText(const wxCharBuffer& buffer);
-  
   /// Returns info about current index,
   /// depending on which field is current.
   const wxString GetInfo() const;
@@ -89,11 +135,10 @@ private:
   int GetByte() const;
   int GetHexField() const;
   
-  wxUniChar Printable(unsigned int c) const;
-  
   wxString m_Line;
   int m_LineNo;
   int m_Index;
-  wxExSTC* m_STC;
+  
+  wxExHexMode* m_Hex;
 };
 #endif

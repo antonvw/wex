@@ -10,6 +10,7 @@
 
 #include <vector> 
 #include <wx/stc/stc.h>
+#include <wx/extension/hexmode.h>
 #include <wx/extension/link.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/stcfile.h>
@@ -32,8 +33,6 @@ class wxExMenu;
 /// - printing
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
-  friend class wxExHexModeLine; // might update m_HexBuffer
-  friend class wxExSTCFile; //  might update m_HexBuffer
 public:
   /// Menu and tooltip flags.
   enum wxExMenuFlags
@@ -95,9 +94,6 @@ public:
   /// Is a change indicator allowed.
   bool AllowChangeIndicator() const {return m_AllowChangeIndicator;};
 
-  /// Appends text in hex mode.
-  void AppendTextHexMode(const wxCharBuffer& buffer);
-  
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool AutoIndentation(int c);
@@ -178,6 +174,12 @@ public:
   /// Gets current flags.
   long GetFlags() const {return m_Flags;};
   
+  /// Gets hex mode component.
+  const wxExHexMode& GetHexMode() const {return m_HexMode;};
+  
+  /// Gets writable hex mode component.
+  wxExHexMode& GetHexMode() {return m_HexMode;};
+  
   /// Gets the lexer.
   const wxExLexer& GetLexer() const {return m_Lexer;};
 
@@ -208,9 +210,9 @@ public:
   /// and sets EOL mode and updates statusbar if it found eols.
   void GuessType();
   
-  /// Returns true if we are in hex mode.
-  bool HexMode() const {return m_HexMode;};
-
+   /// Returns true if we are in hex mode.
+   bool HexMode() const {return m_HexMode.Active();};
+ 
   /// Deletes all change markers.
   /// Returns false if marker change is not loaded.
   bool MarkerDeleteAllChange();
@@ -372,7 +374,6 @@ private:
   void CheckAutoComp(const wxUniChar& c);
   void CheckBrace();
   bool CheckBrace(int pos);
-  bool CheckBraceHex(int pos);
   void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
   void EOLModeUpdate(int eol_mode);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
@@ -408,9 +409,9 @@ private:
   
   bool m_AddingChars;
   bool m_AllowChangeIndicator;
-  bool m_HexMode;
   bool m_UseAutoComplete;
 
+  wxExHexMode m_HexMode;
   // We use a separate lexer here as well
   // (though wxExSTCFile offers one), as you can manually override
   // the lexer.
@@ -422,9 +423,6 @@ private:
   wxFont m_DefaultFont;
   
   wxString m_AutoComplete;
-  // Only used in hex mode.
-  wxString m_HexBuffer;
-  wxString m_HexBufferOriginal;
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;

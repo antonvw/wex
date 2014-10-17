@@ -482,14 +482,12 @@ bool wxExVi::Command(const std::string& command)
                 {
                   if (GetSTC()->HexMode())
                   {
-                    wxExHexModeLine ml(GetSTC());
+                    wxExHexModeLine ml(&GetSTC()->GetHexMode());
                   
-                    if (ml.IsReadOnly())
+                    if (!ml.Replace(rest.back()))
                     {
                       return false;
                     }
-                  
-                    ml.Replace(rest.back());
                   }
                   else
                   {

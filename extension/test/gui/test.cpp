@@ -782,7 +782,7 @@ void wxExGuiTestFixture::testGrid()
 
 void wxExGuiTestFixture::testHexMode()
 {
-  // 0000000000111111111222222222233333333334444444444555555555566666666666
+  // 0000000000111111111222222222233333333334444444444555555555556666666666
   // 0123456789012345678901234567890123456789012345678901234567890123456789
   // 00000000 30 31 32 33 34 35 36 37 38 39                   0123456789
   wxExSTC* stc = new wxExSTC(
@@ -792,10 +792,19 @@ void wxExGuiTestFixture::testHexMode()
   
   stc->SetCurrentPos(5); // 0 <-
   
-  wxExHexModeLine hex(stc);
+  wxExHexMode* hm = &stc->GetHexMode();
   
-  hex.AppendText("0123456789");
+  CPPUNIT_ASSERT(hm->Active());
+  CPPUNIT_ASSERT(hm->GetBuffer() == "0123456789");
+    
+  hm->AppendText("0123456789");
+  CPPUNIT_ASSERT( hm->GetBuffer() == "01234567890123456789");
+  CPPUNIT_ASSERT(!hm->HighlightOther(0));
+  CPPUNIT_ASSERT( hm->HighlightOther(10));
+  CPPUNIT_ASSERT( hm->HighlightOther(57));
 
+  wxExHexModeLine hex(hm);
+  
   // Test the offset field.
   CPPUNIT_ASSERT( hex.IsOffsetField());
   CPPUNIT_ASSERT(!hex.IsHexField());
@@ -856,6 +865,10 @@ void wxExGuiTestFixture::testHexMode()
   CPPUNIT_ASSERT( hex.ReplaceHex(32));
   hex.Set(64); // 7 <-
   CPPUNIT_ASSERT(!hex.ReplaceHex(32));
+  
+  hm->Deactivate();
+  CPPUNIT_ASSERT(!hm->Active());
+  CPPUNIT_ASSERT( hm->GetBuffer().empty());
 }
 
 void wxExGuiTestFixture::testIndicator()
@@ -1800,7 +1813,7 @@ void wxExGuiTestFixture::testSTC()
   
   stc->Reload(wxExSTC::STC_WIN_HEX);
   CPPUNIT_ASSERT(stc->HexMode());
-  stc->AppendTextHexMode("in hex mode");
+  stc->GetHexMode().AppendText("in hex mode");
   
   // Test events.
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED);
