@@ -2521,6 +2521,12 @@ void wxExSTC::Sync(bool start)
     Unbind(wxEVT_IDLE, &wxExSTC::OnIdle, this, wxID_ANY);
 }
 
+void wxExSTC::Undo()
+{
+  wxStyledTextCtrl::Undo();
+  m_HexMode.Undo();
+}
+
 void wxExSTC::UseAutoComplete(bool use)
 {
   m_UseAutoComplete = use;
