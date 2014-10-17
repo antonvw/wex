@@ -463,6 +463,14 @@ int wxExSTC::ConfigDialog(
   // use 3 cols here, but 1 for others on this page
   items.push_back(wxExConfigItem(bchoices, _("General") + ":3")); 
 
+  std::map<long, const wxString> ichoices;
+  ichoices.insert(std::make_pair(INDENT_NONE, _("None")));
+  ichoices.insert(std::make_pair(INDENT_WHITESPACE, _("Whitespace")));
+  ichoices.insert(std::make_pair(INDENT_LEVEL, _("Level")));
+  ichoices.insert(std::make_pair(INDENT_ALL, _("Both")));
+  items.push_back(wxExConfigItem(
+    _("Auto indent"), ichoices, true, _("General"), 1));
+    
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
   choices.insert(std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, 
@@ -486,6 +494,11 @@ int wxExSTC::ConfigDialog(
     1));
 */
   
+  if (wxExLexers::Get()->GetCount() > 0)
+  {
+    items.push_back(wxExConfigItem(_("Default font"), CONFIG_FONTPICKERCTRL));
+  }
+
   std::map<long, const wxString> wchoices;
   wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
   wchoices.insert(std::make_pair(wxSTC_WRAP_WORD, _("Word")));
@@ -500,19 +513,6 @@ int wxExSTC::ConfigDialog(
   items.push_back(wxExConfigItem(
     _("Wrap visual flags"), vchoices, true, _("General"), 1));
     
-  std::map<long, const wxString> ichoices;
-  ichoices.insert(std::make_pair(INDENT_NONE, _("None")));
-  ichoices.insert(std::make_pair(INDENT_WHITESPACE, _("Whitespace")));
-  ichoices.insert(std::make_pair(INDENT_LEVEL, _("Level")));
-  ichoices.insert(std::make_pair(INDENT_ALL, _("Both")));
-  items.push_back(wxExConfigItem(
-    _("Auto indent"), ichoices, true, _("General"), 1));
-    
-  if (wxExLexers::Get()->GetCount() > 0)
-  {
-    items.push_back(wxExConfigItem(_("Default font"), CONFIG_FONTPICKERCTRL));
-  }
-
   // Edge page.
   items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
   std::map<long, const wxString> echoices;
