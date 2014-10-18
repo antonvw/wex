@@ -387,10 +387,6 @@ private:
   bool LinkOpen(wxString* filename = NULL); // name of found file
   void MarkerNext(bool next);
   void MarkModified(const wxStyledTextEvent& event);
-  bool SetHexMode(
-    bool on, 
-    bool modified = false, 
-    const wxCharBuffer& text = wxCharBuffer());
   void SetLexerCommon(bool fold);
   void ShowProperties();
   void SortSelectionDialog(
