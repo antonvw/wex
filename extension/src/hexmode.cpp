@@ -272,12 +272,6 @@ bool wxExHexMode::Set(
     return false;
   }
     
-  if (!modified)
-  {
-    m_STC->EmptyUndoBuffer();
-    m_STC->SetSavePoint();
-  }
-  
   if (on) 
   {
     m_STC->BeginUndoAction();
@@ -287,6 +281,12 @@ bool wxExHexMode::Set(
   {
     Deactivate();
     m_STC->EndUndoAction();
+  }
+    
+  if (!modified)
+  {
+    m_STC->EmptyUndoBuffer();
+    m_STC->SetSavePoint();
   }
     
   return true;
