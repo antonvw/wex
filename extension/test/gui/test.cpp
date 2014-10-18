@@ -2527,6 +2527,7 @@ void wxExGuiTestFixture::testVi()
   stc->SetReadOnly(false);
   stc->Reload(wxExSTC::STC_WIN_HEX);
   CPPUNIT_ASSERT( stc->HexMode());
+  CPPUNIT_ASSERT(!stc->GetModify());
   
   for (auto& it3 : commands)
   {
