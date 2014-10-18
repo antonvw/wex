@@ -400,13 +400,7 @@ void wxExSTC::CheckBrace()
 {
   if (HexMode())
   {
-    if (!m_HexMode.HighlightOther(GetCurrentPos()))
-    {
-      if (PositionFromLine(GetCurrentLine()) != GetCurrentPos())
-      {
-        m_HexMode.HighlightOther(GetCurrentPos() - 1);
-      }
-    }
+    m_HexMode.HighlightOther();
   }
   else if (!CheckBrace(GetCurrentPos()))
   {
@@ -696,55 +690,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   
   if (HexMode())
   {
-    wxExHexModeLine ml(&m_HexMode, GetSelectionStart());
-    
-    if (
-      ml.IsAsciiField() &&
-      GetSelectedText().length() == 1)
-    {
-      const wxUniChar value = GetSelectedText().GetChar(0);
-
-      long new_value;
-      if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 00 - FF",
-        wxEmptyString,
-        caption,
-        value,
-        0,
-        255,
-        this)) < 0)
-      {
-        return;
-      }
-      
-      ml.Replace(new_value);
-    }
-    else if (
-      ml.IsHexField() &&
-      GetSelectedText().length() == 2)
-    {
-      long value;
-      
-      if (!GetSelectedText().ToLong(&value, 16))
-      {
-        return;
-      }
-
-      long new_value;
-      if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 00 - FF",
-        wxEmptyString,
-        caption,
-        value,
-        0,
-        255,
-        this)) < 0)
-      {
-        return;
-      }
-      
-      ml.ReplaceHex(new_value);
-    }
-    
-    return;
+    return m_HexMode.ControlCharDialog(caption);
   }
 
   if (GetReadOnly())
@@ -1133,22 +1079,7 @@ bool wxExSTC::GotoDialog()
 {
   if (HexMode())
   {
-    long val;
-    if ((val = wxGetNumberFromUser(
-      _("Input") + wxString::Format(" 0 - %d:", m_HexMode.GetBuffer().length() - 1),
-      wxEmptyString,
-      _("Enter Byte Offset"),
-      m_Goto, // initial value
-      0,
-      m_HexMode.GetBuffer().length() - 1,
-      this)) < 0)
-    {
-      return false;
-    }
-
-    m_Goto = val;
-    
-    wxExHexModeLine(&m_HexMode, val, false).Goto();
+    m_HexMode.GotoDialog();
   }
   else
   {
@@ -1325,7 +1256,7 @@ void wxExSTC::Initialize(bool file_exists)
   
   if (m_Flags & STC_WIN_HEX)
   {
-    SetHexMode(true);
+    m_HexMode.Set(true);
   }
 
   m_AddingChars = false;
@@ -2068,12 +1999,12 @@ void wxExSTC::Reload(long flags)
   {
     if (!HexMode())
     {
-      SetHexMode(true, modified, GetTextRaw());
+      m_HexMode.Set(true, modified, GetTextRaw());
     }
   }
   else
   {
-    SetHexMode(false, modified);
+    m_HexMode.Set(false, modified);
   }
   
   UseModificationMarkers(true);
@@ -2237,52 +2168,6 @@ void wxExSTC::SelectNone()
 {
   // The base styledtextctrl version uses scintilla, sets caret at 0.
   SetSelection(GetCurrentPos(), GetCurrentPos());
-}
-
-bool wxExSTC::SetHexMode(
-  bool on, 
-  bool modified,
-  const wxCharBuffer& text)
-{
-  if (m_vi.GetMode() == wxExVi::MODE_INSERT)
-  {
-    return false;
-  }
-    
-  if (on)
-  {
-    m_Goto = 0;
-
-    m_HexMode.Activate(text);
-    
-    wxExLexers::Get()->ApplyHexStyles(this);
-    wxExLexers::Get()->ApplyMarkers(this);
-    
-    if (!modified)
-    {
-      EmptyUndoBuffer();
-      SetSavePoint();
-    }
-
-    // This should be after SetSavePoint.      
-    BeginUndoAction();
-  }
-  else
-  {
-    m_Goto = 1;
-    
-    m_HexMode.Deactivate();
-    
-    if (!modified)
-    {
-      EmptyUndoBuffer();
-      SetSavePoint();
-    }
-    
-    EndUndoAction();
-  }
- 
-  return true;
 }
 
 bool wxExSTC::SetIndicator(

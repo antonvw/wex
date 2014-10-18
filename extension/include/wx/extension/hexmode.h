@@ -19,20 +19,17 @@ public:
   /// Constructor.
   wxExHexMode(wxExSTC* stc);
   
-  /// Activates hex mode, starting with specified text.
-  void Activate(const wxCharBuffer& text = wxCharBuffer());
-  
   /// Returns true if hex mode is on.
   bool Active() const {return m_Active;};
   
   /// Appends hex mode lines to stc component.  
   void AppendText(const wxCharBuffer& buffer);
-
+  
   /// Clears the buffer.
   void Clear();
-  
-  /// Deactivates hex mode.
-  void Deactivate();
+
+  /// Shows a control char dialog.  
+  void ControlCharDialog(const wxString& caption);
   
   /// Returns the buffer.
   /// The buffer contains the normal text, without hex info.
@@ -41,11 +38,25 @@ public:
   /// Returns STC component.
   wxExSTC* GetSTC() {return m_STC;};
   
+  /// Asks for a byte offset goes to that byte.
+  bool GotoDialog();
+
+  /// Highlights the corresponding char for the other field
+  /// for the current position.
+  bool HighlightOther();
+
   /// Highlights the corresponding char for the other field.
   bool HighlightOther(int pos);
 
   /// Returns printable char.  
   wxUniChar Printable(unsigned int c) const;
+
+  /// Sets hex mode on or off.  
+  bool Set(
+    bool on, 
+    bool modified = false, 
+    /// if on, starts with specified text.
+    const wxCharBuffer& text = wxCharBuffer());
 
   /// Sets a byte in the buffer to a value.  
   /// The original buffer is not changed so it can be undone.  
@@ -54,7 +65,11 @@ public:
   /// Undo change, sets the buffer to the original buffer.
   void Undo();
 private:
+  void Activate(const wxCharBuffer& text = wxCharBuffer());
+  void Deactivate();
+  
   bool m_Active;
+  int m_Goto;
   
   wxString m_Buffer;
   wxString m_BufferOriginal;

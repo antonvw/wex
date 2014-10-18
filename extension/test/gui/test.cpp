@@ -799,6 +799,7 @@ void wxExGuiTestFixture::testHexMode()
     
   hm->AppendText("0123456789");
   CPPUNIT_ASSERT( hm->GetBuffer() == "01234567890123456789");
+  CPPUNIT_ASSERT(!hm->HighlightOther()); // current pos
   CPPUNIT_ASSERT(!hm->HighlightOther(0));
   CPPUNIT_ASSERT( hm->HighlightOther(10));
   CPPUNIT_ASSERT( hm->HighlightOther(57));
@@ -866,7 +867,7 @@ void wxExGuiTestFixture::testHexMode()
   hex.Set(64); // 7 <-
   CPPUNIT_ASSERT(!hex.ReplaceHex(32));
   
-  hm->Deactivate();
+  hm->Set(false);
   CPPUNIT_ASSERT(!hm->Active());
   CPPUNIT_ASSERT( hm->GetBuffer().empty());
 }

@@ -10,8 +10,11 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/numdlg.h>
 #include <wx/extension/hexmode.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/util.h>
 
 const wxFileOffset bytes_per_line = 16;
 const wxFileOffset each_hex_field = 3;
@@ -22,6 +25,7 @@ const wxFileOffset start_ascii_field =
 wxExHexMode::wxExHexMode(wxExSTC* stc)
   : m_STC(stc)
   , m_Active(false)
+  , m_Goto(0)
 {
 }
   
@@ -38,6 +42,9 @@ void wxExHexMode::Activate(const wxCharBuffer& text)
   m_STC->ClearDocument(false);
   
   AppendText(text);
+    
+  wxExLexers::Get()->ApplyHexStyles(m_STC);
+  wxExLexers::Get()->ApplyMarkers(m_STC);
   
   m_Active = true;
 }
@@ -109,6 +116,57 @@ void wxExHexMode::Clear()
   m_BufferOriginal.clear();
 }
 
+void wxExHexMode::ControlCharDialog(const wxString& caption)
+{
+  wxExHexModeLine ml(this, m_STC->GetSelectionStart());
+  
+  if (
+    ml.IsAsciiField() &&
+    m_STC->GetSelectedText().length() == 1)
+  {
+    const wxUniChar value = m_STC->GetSelectedText().GetChar(0);
+
+    long new_value;
+    if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 00 - FF",
+      wxEmptyString,
+      caption,
+      value,
+      0,
+      255,
+      m_STC)) < 0)
+    {
+      return;
+    }
+    
+    ml.Replace(new_value);
+  }
+  else if (
+    ml.IsHexField() &&
+    m_STC->GetSelectedText().length() == 2)
+  {
+    long value;
+    
+    if (!m_STC->GetSelectedText().ToLong(&value, 16))
+    {
+      return;
+    }
+
+    long new_value;
+    if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 00 - FF",
+      wxEmptyString,
+      caption,
+      value,
+      0,
+      255,
+      m_STC)) < 0)
+    {
+      return;
+    }
+    
+    ml.ReplaceHex(new_value);
+  }
+}
+    
 void wxExHexMode::Deactivate() 
 {
   m_STC->SetControlCharSymbol(0);
@@ -125,6 +183,43 @@ void wxExHexMode::Deactivate()
   m_Active = false;
 }
 
+bool wxExHexMode::GotoDialog()
+{
+  long val;
+  if ((val = wxGetNumberFromUser(
+    _("Input") + wxString::Format(" 0 - %d:", m_Buffer.length() - 1),
+    wxEmptyString,
+    _("Enter Byte Offset"),
+    m_Goto, // initial value
+    0,
+    m_Buffer.length() - 1,
+    m_STC)) < 0)
+  {
+    return false;
+  }
+
+  m_Goto = val;
+  
+  wxExHexModeLine(this, val, false).Goto();
+}
+
+bool wxExHexMode::HighlightOther()
+{
+  const int pos = m_STC->GetCurrentPos();
+  
+  if (HighlightOther(pos))
+  {
+    return true;
+  }
+    
+  if (m_STC->PositionFromLine(pos) != pos)
+  {
+    return HighlightOther(pos - 1);
+  }
+  
+  return false;
+}
+    
 bool wxExHexMode::HighlightOther(int pos)
 {
   const int brace_match = wxExHexModeLine(this, pos).OtherField();
@@ -167,6 +262,36 @@ wxUniChar wxExHexMode::Printable(unsigned int c) const
   }
 }
   
+bool wxExHexMode::Set(
+  bool on, 
+  bool modified,
+  const wxCharBuffer& text)
+{
+  if (m_STC->GetVi().GetMode() == wxExVi::MODE_INSERT)
+  {
+    return false;
+  }
+    
+  if (!modified)
+  {
+    m_STC->EmptyUndoBuffer();
+    m_STC->SetSavePoint();
+  }
+  
+  if (on) 
+  {
+    m_STC->BeginUndoAction();
+    Activate(text); 
+  }
+  else
+  {
+    Deactivate();
+    m_STC->EndUndoAction();
+  }
+    
+  return true;
+}
+
 void wxExHexMode::SetBuffer(int byte, int value)
 {
   m_Buffer[byte] = value;
@@ -177,6 +302,7 @@ void wxExHexMode::Undo()
   if (m_Active)
   {
     m_Buffer = m_BufferOriginal;
+    m_Active = false;
   }
 }
       
@@ -503,7 +629,7 @@ bool wxExHexModeLine::ReplaceHex(int value)
 
 void wxExHexModeLine::Set(int pos)
 {
-  wxASSERT(m_Hex->GetSTC()->HexMode());
+  wxASSERT(m_Hex->Active());
   
   m_LineNo = m_Hex->GetSTC()->LineFromPosition(pos);
   m_Line = m_Hex->GetSTC()->GetLine(m_LineNo);
@@ -512,7 +638,7 @@ void wxExHexModeLine::Set(int pos)
 
 void wxExHexModeLine::SetPos(const wxKeyEvent& event)
 {
-  wxASSERT(m_Hex->GetSTC()->HexMode());
+  wxASSERT(m_Hex->Active());
   
   const int start = m_Hex->GetSTC()->PositionFromLine(m_LineNo);
   const bool right = (event.GetKeyCode() == WXK_RIGHT);
