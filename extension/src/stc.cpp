@@ -1991,24 +1991,24 @@ void wxExSTC::PropertiesMessage(long flags)
 
 void wxExSTC::Reload(long flags)
 {
-  const bool modified = GetModify();
-  
-  UseModificationMarkers(false);
-  
   if (flags & STC_WIN_HEX)
   {
     if (!HexMode())
     {
-      m_HexMode.Set(true, modified, GetTextRaw());
+      if (!m_HexMode.Set(true, GetTextRaw()))
+      {
+        return;
+      }
     }
   }
   else
   {
-    m_HexMode.Set(false, modified);
+    if (!m_HexMode.Set(false))
+    {
+      return;
+    }
   }
   
-  UseModificationMarkers(true);
-
   m_Flags = flags;
     
   if (

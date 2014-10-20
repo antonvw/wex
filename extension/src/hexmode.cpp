@@ -264,7 +264,6 @@ wxUniChar wxExHexMode::Printable(unsigned int c) const
   
 bool wxExHexMode::Set(
   bool on, 
-  bool modified,
   const wxCharBuffer& text)
 {
   if (m_STC->GetVi().GetMode() == wxExVi::MODE_INSERT)
@@ -272,23 +271,23 @@ bool wxExHexMode::Set(
     return false;
   }
     
+  m_STC->UseModificationMarkers(false);
+  
   if (on) 
   {
     m_STC->BeginUndoAction();
     Activate(text); 
+    m_STC->EndUndoAction();
   }
   else
   {
+    m_STC->BeginUndoAction();
     Deactivate();
     m_STC->EndUndoAction();
   }
     
-  if (!modified)
-  {
-    m_STC->EmptyUndoBuffer();
-    m_STC->SetSavePoint();
-  }
-    
+  m_STC->UseModificationMarkers(true);
+
   return true;
 }
 
@@ -302,8 +301,11 @@ void wxExHexMode::Undo()
   if (m_Active)
   {
     m_Buffer = m_BufferOriginal;
-    m_Active = false;
   }
+  
+  // Check the mode we are in.
+  m_Active = (
+    m_STC->GetTextLength() > 60 && m_STC->GetTextRange(0, 9) == "00000000 ");
 }
       
 wxExHexModeLine::wxExHexModeLine(wxExHexMode* hex)
