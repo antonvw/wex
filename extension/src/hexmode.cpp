@@ -291,6 +291,7 @@ bool wxExHexMode::Set(
   
   if (!modified)
   {
+    m_STC->EmptyUndoBuffer();
     m_STC->SetSavePoint();
   }
     
