@@ -177,6 +177,7 @@ void wxExHexMode::Deactivate()
   
   m_STC->ClearDocument(false);
   m_STC->AppendText(m_Buffer);
+  m_STC->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
   
   Clear();
   
@@ -273,17 +274,24 @@ bool wxExHexMode::Set(
     
   m_STC->UseModificationMarkers(false);
   
+  const bool modified = (m_STC->GetModify());
+  
+  m_STC->BeginUndoAction();
+  
   if (on) 
   {
-    m_STC->BeginUndoAction();
     Activate(text); 
-    m_STC->EndUndoAction();
   }
   else
   {
-    m_STC->BeginUndoAction();
     Deactivate();
-    m_STC->EndUndoAction();
+  }
+  
+  m_STC->EndUndoAction();
+  
+  if (!modified)
+  {
+    m_STC->SetSavePoint();
   }
     
   m_STC->UseModificationMarkers(true);
