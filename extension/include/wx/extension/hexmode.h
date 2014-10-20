@@ -54,7 +54,6 @@ public:
   /// Sets hex mode on or off.  
   bool Set(
     bool on, 
-    bool modified = false, 
     /// if on, starts with specified text.
     const wxCharBuffer& text = wxCharBuffer());
 
