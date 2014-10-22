@@ -1991,22 +1991,9 @@ void wxExSTC::PropertiesMessage(long flags)
 
 void wxExSTC::Reload(long flags)
 {
-  if (flags & STC_WIN_HEX)
+  if (!m_HexMode.Set(flags & STC_WIN_HEX, GetTextRaw()))
   {
-    if (!HexMode())
-    {
-      if (!m_HexMode.Set(true, GetTextRaw()))
-      {
-        return;
-      }
-    }
-  }
-  else
-  {
-    if (!m_HexMode.Set(false))
-    {
-      return;
-    }
+    return;
   }
   
   m_Flags = flags;
