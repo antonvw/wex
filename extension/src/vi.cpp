@@ -486,6 +486,7 @@ bool wxExVi::Command(const std::string& command)
                   
                     if (!ml.Replace(rest.back()))
                     {
+                      m_Command.clear();
                       return false;
                     }
                   }

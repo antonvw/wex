@@ -271,6 +271,13 @@ bool wxExHexMode::Set(
   {
     return false;
   }
+  
+  if (
+    ( m_Active && on) ||
+    (!m_Active && !on))
+  {
+    return true;
+  }
     
   m_STC->UseModificationMarkers(false);
   
