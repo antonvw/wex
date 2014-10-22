@@ -315,7 +315,8 @@ void wxExHexMode::Undo()
   
   // Check the mode we are in.
   m_Active = (
-    m_STC->GetTextLength() > 60 && m_STC->GetTextRange(0, 9) == "00000000 ");
+    m_STC->GetTextLength() > 60 && 
+    m_STC->GetTextRange(0, 47).Matches("?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??"));
 }
       
 wxExHexModeLine::wxExHexModeLine(wxExHexMode* hex)
