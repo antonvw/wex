@@ -303,7 +303,6 @@ bool wxExHexMode::Set(
 
 void wxExHexMode::SetBuffer(int byte, int value)
 {
-wxLogMessage("%d %d", byte, value);
   m_Buffer[byte] = value;
 }
 
