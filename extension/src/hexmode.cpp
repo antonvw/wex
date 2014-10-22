@@ -303,6 +303,7 @@ bool wxExHexMode::Set(
 
 void wxExHexMode::SetBuffer(int byte, int value)
 {
+wxLogMessage("%d %d", byte, value);
   m_Buffer[byte] = value;
 }
 
@@ -349,18 +350,7 @@ wxExHexModeLine::wxExHexModeLine(wxExHexMode* hex,
 
 int wxExHexModeLine::Convert(int offset) const
 {
-  const wxString address(m_Line.Mid(0, start_hex_field));
-  
-  long val;
-  
-  if (sscanf(address.c_str(), "%lx", &val))
-  {
-    return val + offset;
-  }
-  
-  wxLogError("Cannot convert hex: " + address + " to number");
-      
-  return 0;
+  return (m_LineNo << 4) + offset;
 }
 
 int wxExHexModeLine::GetAsciiField() const
@@ -377,7 +367,7 @@ int wxExHexModeLine::GetAsciiField() const
 
 int wxExHexModeLine::GetByte() const
 {
-  if (m_Index > start_ascii_field + bytes_per_line)
+  if (m_Index >= start_ascii_field + bytes_per_line)
   {
     return wxSTC_INVALID_POSITION;
   }

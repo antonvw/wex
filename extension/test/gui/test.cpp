@@ -784,7 +784,7 @@ void wxExGuiTestFixture::testHexMode()
 {
   // 0000000000111111111222222222233333333334444444444555555555556666666666
   // 0123456789012345678901234567890123456789012345678901234567890123456789
-  // 00000000 30 31 32 33 34 35 36 37 38 39                   0123456789
+  // 30 31 32 33 34 35 36 37 38 39                   0123456789
   wxExSTC* stc = new wxExSTC(
     wxTheApp->GetTopWindow(), "0123456789", wxExSTC::STC_WIN_HEX);
     
@@ -799,8 +799,8 @@ void wxExGuiTestFixture::testHexMode()
     
   hm->AppendText("0123456789");
   CPPUNIT_ASSERT( hm->GetBuffer() == "01234567890123456789");
-  CPPUNIT_ASSERT(!hm->HighlightOther()); // current pos
-  CPPUNIT_ASSERT(!hm->HighlightOther(0));
+  CPPUNIT_ASSERT( hm->HighlightOther()); // current pos
+  CPPUNIT_ASSERT( hm->HighlightOther(0));
   CPPUNIT_ASSERT( hm->HighlightOther(10));
   CPPUNIT_ASSERT( hm->HighlightOther(57));
 
@@ -812,7 +812,7 @@ void wxExGuiTestFixture::testHexMode()
   
   // Test hex field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
-  hex.Set(13); // 31 <- (ascii 1)
+  hex.Set(13); // 31 <- (ascii 4)
   CPPUNIT_ASSERT( hex.IsHexField());
   CPPUNIT_ASSERT(!hex.IsAsciiField());
   CPPUNIT_ASSERT(!hex.IsReadOnly());
@@ -827,11 +827,11 @@ void wxExGuiTestFixture::testHexMode()
   
   stc->GetFile().FileSave(wxExFileName("test.hex"));
   stc->Reload();
-  CPPUNIT_ASSERT(stc->GetText() == "02234567890123456789");
+  CPPUNIT_ASSERT(stc->GetText() == "01232567890123456789");
   
   // Test ascii field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
-  hex.Set(63); // 6 <-
+  hex.Set(54); // 6 <-
   CPPUNIT_ASSERT(!hex.IsHexField());
   CPPUNIT_ASSERT( hex.IsAsciiField());
   CPPUNIT_ASSERT(!hex.IsReadOnly());
@@ -841,19 +841,19 @@ void wxExGuiTestFixture::testHexMode()
   
   stc->GetFile().FileSave();
   stc->Reload();
-  CPPUNIT_ASSERT(stc->GetText() == "022345x7890123456789");
+  CPPUNIT_ASSERT(stc->GetText() == "012325x7890123456789");
   
   stc->Reload(wxExSTC::STC_WIN_HEX);
-  hex.Set(63); // valid
+  hex.Set(54); // valid
   CPPUNIT_ASSERT( hex.Goto());
   hex.Set(9999); // invalid, should result in goto end
   CPPUNIT_ASSERT( hex.Goto());
   
   // Test hex field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
-  hex.Set(13); // 31 <- (ascii 1)
+  hex.Set(13); // 31 <- (ascii 4)
   CPPUNIT_ASSERT( hex.ReplaceHex(32));
-  hex.Set(64); // 7 <-
+  hex.Set(55); // 7 <-
   CPPUNIT_ASSERT(!hex.ReplaceHex(32));
   
   hm->Set(false);
