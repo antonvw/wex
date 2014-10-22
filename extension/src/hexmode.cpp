@@ -18,7 +18,7 @@
 
 const wxFileOffset bytes_per_line = 16;
 const wxFileOffset each_hex_field = 3;
-const wxFileOffset start_hex_field = 9;
+const wxFileOffset start_hex_field = 0;
 const wxFileOffset start_ascii_field =
   start_hex_field + each_hex_field * bytes_per_line;
   
@@ -60,16 +60,13 @@ void wxExHexMode::AppendText(const wxCharBuffer& buffer)
 
   // Allocate space for the string.
   text.Alloc(
-    // offset:      (9 + 1 + 1) * length / 16 bytes, 
+    // offset:      (start_hex_field + 1 + 1) * length / 16 bytes, 
     (start_hex_field + 1 + 1) * buffer.length() / bytes_per_line + 
     // hex field:   3 * length 
     each_hex_field * buffer.length() + 
     // ascii field: just the length
     buffer.length());
 
-  // Using wxString::Format here asserts (wxWidgets-2.9.1).
-  char field_offset[start_hex_field + 1];
-  
   for (
     wxFileOffset offset = 0; 
     offset < buffer.length(); 
@@ -89,14 +86,11 @@ void wxExHexMode::AppendText(const wxCharBuffer& buffer)
       field_ascii += Printable(c);
     }
 
-    sprintf(field_offset, "%08lX ", (unsigned long)start + (unsigned long)offset);
-    
     const wxString field_spaces = wxString(
       ' ', 
       (bytes_per_line - count)* each_hex_field);
 
     text +=  
-      field_offset + 
       field_hex +
       field_spaces +
       field_ascii;
@@ -345,23 +339,11 @@ wxExHexModeLine::wxExHexModeLine(wxExHexMode* hex,
   }
   else
   {
-    char field_offset[start_hex_field];
-  
-    sprintf(field_offset, "%08lX", (unsigned long)(pos_or_offset & ~0x0f));
-  
-    if (m_Hex->GetSTC()->FindNext(field_offset, 0))
-    {
-      m_LineNo = m_Hex->GetSTC()->GetCurrentLine();
-      m_Line = m_Hex->GetSTC()->GetLine(m_LineNo);
-      m_Index = (pos_or_offset & 0x0f);
-      m_Hex->GetSTC()->SelectNone();
-    }
-    else
-    {
-      m_LineNo = -1;
-      m_Line.clear();
-      m_Index = -1;
-    }
+    m_Hex->GetSTC()->GotoLine(pos_or_offset >> 4);
+    m_LineNo = m_Hex->GetSTC()->GetCurrentLine();
+    m_Line = m_Hex->GetSTC()->GetLine(m_LineNo);
+    m_Index = (pos_or_offset & 0x0f);
+    m_Hex->GetSTC()->SelectNone();
   }
 }
 
@@ -416,7 +398,7 @@ int wxExHexModeLine::GetByte() const
   
 const wxString wxExHexModeLine::GetInfo() const
 {
-  if (IsHexField() || IsOffsetField())
+  if (IsHexField())
   {
     const wxString word = m_Hex->GetSTC()->GetWordAtPos(m_Hex->GetSTC()->GetCurrentPos());
     
@@ -427,14 +409,7 @@ const wxString wxExHexModeLine::GetInfo() const
 
       if (base16_ok)
       {
-        if (IsOffsetField())
-        {
-          return wxString::Format("%ld", base16_val);
-        }
-        else
-        {
-          return wxString::Format("byte: %d %ld", GetByte(), base16_val);
-        }
+        return wxString::Format("byte: %d %ld", GetByte(), base16_val);
       }
     }
   }
@@ -481,13 +456,6 @@ bool wxExHexModeLine::IsHexField() const
   return 
     m_Index >= start_hex_field &&
     m_Index < start_ascii_field;
-}
-
-bool wxExHexModeLine::IsOffsetField() const
-{
-  return 
-    m_Index >= 0 &&
-    m_Index < start_hex_field;
 }
 
 bool wxExHexModeLine::IsReadOnly() const
@@ -662,22 +630,7 @@ void wxExHexModeLine::SetPos(const wxKeyEvent& event)
   const bool right = (event.GetKeyCode() == WXK_RIGHT);
   const int pos = m_Hex->GetSTC()->GetCurrentPos();
   
-  if (IsOffsetField())
-  {
-    if (right)
-    {
-      m_Hex->GetSTC()->SetCurrentPos(start + start_hex_field);
-    }
-    else
-    {
-      if (m_LineNo > 0)
-      {
-        m_Hex->GetSTC()->SetCurrentPos(
-          m_Hex->GetSTC()->PositionFromLine(m_LineNo - 1) + start_hex_field);
-      }
-    }
-  }
-  else if (IsHexField())
+  if (IsHexField())
   {
     right ? 
       m_Hex->GetSTC()->SetCurrentPos(pos + 3):

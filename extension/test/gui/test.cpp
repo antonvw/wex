@@ -806,15 +806,6 @@ void wxExGuiTestFixture::testHexMode()
 
   wxExHexModeLine hex(hm);
   
-  // Test the offset field.
-  CPPUNIT_ASSERT( hex.IsOffsetField());
-  CPPUNIT_ASSERT(!hex.IsHexField());
-  CPPUNIT_ASSERT(!hex.IsAsciiField());
-  CPPUNIT_ASSERT( hex.IsReadOnly());
-  CPPUNIT_ASSERT(!hex.GetInfo().empty());
-  CPPUNIT_ASSERT(!hex.Replace('x'));
-  CPPUNIT_ASSERT( hex.OtherField() == wxSTC_INVALID_POSITION);
-
   stc->DiscardEdits();  
   stc->Reload();
   CPPUNIT_ASSERT(stc->GetText() == "01234567890123456789");
@@ -822,7 +813,6 @@ void wxExGuiTestFixture::testHexMode()
   // Test hex field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
   hex.Set(13); // 31 <- (ascii 1)
-  CPPUNIT_ASSERT(!hex.IsOffsetField());
   CPPUNIT_ASSERT( hex.IsHexField());
   CPPUNIT_ASSERT(!hex.IsAsciiField());
   CPPUNIT_ASSERT(!hex.IsReadOnly());
@@ -842,7 +832,6 @@ void wxExGuiTestFixture::testHexMode()
   // Test ascii field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
   hex.Set(63); // 6 <-
-  CPPUNIT_ASSERT(!hex.IsOffsetField());
   CPPUNIT_ASSERT(!hex.IsHexField());
   CPPUNIT_ASSERT( hex.IsAsciiField());
   CPPUNIT_ASSERT(!hex.IsReadOnly());
