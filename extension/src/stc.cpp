@@ -504,7 +504,8 @@ int wxExSTC::ConfigDialog(
   vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
   vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
   vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
-  items.push_back(wxExConfigItem(
+  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")));
+ items.push_back(wxExConfigItem(
     _("Wrap visual flags"), vchoices, true, _("General"), 1));
     
   // Edge page.
