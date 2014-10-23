@@ -40,12 +40,9 @@ wxExProcess::wxExProcess(wxWindow* parent)
 
 wxExProcess::~wxExProcess()
 {
-  if (m_Parent == NULL)
+  if (m_Dialog != NULL && !m_Dialog->IsShown())
   {
-    if (m_Dialog != NULL)
-    {
-      m_Dialog->Destroy();
-    }
+    m_Dialog->Destroy();
   }
   
   delete m_Timer;
@@ -75,6 +72,7 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
     m_Error = p.m_Error;
     m_HasStdError = p.m_HasStdError;
     m_Output = p.m_Output;
+    m_Parent = p.m_Parent;
     m_Sync = p.m_Sync;
   }
 
