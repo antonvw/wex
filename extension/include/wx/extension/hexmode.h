@@ -124,12 +124,11 @@ public:
   int OtherField() const;
   
   /// Replaces current line at current index with char for
-  /// both ascii and hex field. Also updates the hex buffer from stc.
+  /// both ascii and hex field.
   bool Replace(const wxUniChar& c);
   
   /// Replaces current line at current and next index (the hex field) 
   /// with value for both ascii and hex field. 
-  /// Also updates the hex buffer from stc.
   bool ReplaceHex(int value);
   
   /// Sets line and index from specified position on stc component.
