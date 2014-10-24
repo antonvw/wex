@@ -33,7 +33,7 @@ private:
 class Frame : public DecoratedFrame
 {
 public:
-  Frame(const std::vector< wxString > & files);
+  Frame(const std::vector< wxString > & files, int split);
   
   virtual bool OpenFile(
     const wxExFileName& filename,
@@ -84,6 +84,7 @@ private:
 
   bool m_IsClosing;
   int m_NewProjectNo;
+  int m_Split;
   int m_SplitId;
 
   Notebook* m_Editors;
