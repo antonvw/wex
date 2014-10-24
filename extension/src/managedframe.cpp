@@ -262,7 +262,9 @@ void wxExManagedFrame::OnCommand(wxCommandEvent& event)
 
         if (stc != NULL)
         {
-          if (stc->FindNext(it))
+          if (stc->FindNext(
+            it,
+            stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1))
           {
             text = it;
           }
