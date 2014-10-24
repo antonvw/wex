@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of class App
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -39,6 +39,14 @@ bool App::OnCmdLineParsed(wxCmdLineParser& parser)
     wxLogMessage(
       "Locale: " + GetLocale().GetLocale() + " dir: " + GetCatalogDir());
   }
+  else if (parser.Found("s"))
+  {
+    m_Split = wxRIGHT;
+  }
+  else if (parser.Found("t"))
+  {
+    m_Split = wxBOTTOM;
+  }
   else if (parser.Found("v"))
   {
     wxLogMessage(wxExGetVersionInfo().GetVersionOnlyString());
@@ -51,13 +59,15 @@ bool App::OnInit()
 {
   // This must be the first statement, other methods might use the name.
   SetAppName("syncped");
+  
+  m_Split = -1;
 
   if (!wxExApp::OnInit())
   {
     return false;
   }
 
-  Frame* frame = new Frame(m_Files);
+  Frame* frame = new Frame(m_Files, m_Split);
   frame->Show();
   
   return true;
@@ -73,5 +83,7 @@ void App::OnInitCmdLine(wxCmdLineParser& parser)
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
     
   parser.AddSwitch("l", wxEmptyString, _("show locale"));
+  parser.AddSwitch("s", wxEmptyString, _("split tabs vertically"));
+  parser.AddSwitch("t", wxEmptyString, _("split tabs horizontally"));
   parser.AddSwitch("v", wxEmptyString, _("show version"));
 }

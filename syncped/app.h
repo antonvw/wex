@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of class 'App'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2014 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _APP_H
@@ -21,5 +21,6 @@ private:
   virtual void OnInitCmdLine(wxCmdLineParser& parser);
 
   std::vector< wxString > m_Files;
+  int m_Split;
 };
 #endif

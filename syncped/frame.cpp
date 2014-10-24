@@ -80,7 +80,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, Frame::OnUpdateUI)
 END_EVENT_TABLE()
 
-Frame::Frame(const std::vector< wxString > & files)
+Frame::Frame(const std::vector< wxString > & files, int split)
   : DecoratedFrame()
   , m_IsClosing(false)
   , m_NewProjectNo(1)
@@ -119,6 +119,7 @@ Frame::Frame(const std::vector< wxString > & files)
       GetToolBar(),
       ID_CHECKBOX_HISTORY,
       _("History")))
+  , m_Split(split)
 {
   wxExViMacros::LoadDocument();
 
@@ -176,6 +177,7 @@ Frame::Frame(const std::vector< wxString > & files)
   if (files.empty())
   {
     long count = 0;
+    m_Split = -1;
       
     if (wxConfigBase::Get()->Read("OpenFiles", &count))
     {
@@ -207,6 +209,7 @@ Frame::Frame(const std::vector< wxString > & files)
   {
     GetManager().GetPane("PROJECTS").Hide();
     wxExOpenFiles(this, files, 0, wxDIR_FILES); // only files in this dir
+    m_Split = -1;
   }
   
   StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
@@ -1401,6 +1404,11 @@ bool Frame::OpenFile(
         true,
         wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
           wxExGetIconID(filename)));
+          
+      if (notebook->GetPageCount() >= 2 && m_Split != -1)
+      {
+        notebook->Split(notebook->GetPageCount() - 1, m_Split);
+      }
 
       if (GetManager().GetPane("DIRCTRL").IsShown())
       {
