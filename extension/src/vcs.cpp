@@ -384,7 +384,7 @@ bool wxExVCS::LoadDocument()
   {
     if (child->GetName() == "vcs")
     {
-      m_Entries.push_back(wxExVCSEntry(child, wxTheApp->GetTopWindow()));
+      m_Entries.push_back(wxExVCSEntry(child));
     }
 
     child = child->GetNext();

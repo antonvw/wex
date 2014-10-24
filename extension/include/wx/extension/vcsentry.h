@@ -21,10 +21,10 @@ class WXDLLIMPEXP_BASE wxExVCSEntry : public wxExProcess
 public:
   /// Default constructor.
   /// Adds empty vcs command with id 0.
-  wxExVCSEntry(wxWindow* parent = NULL);
+  wxExVCSEntry();
   
   /// Constructor using xml node.
-  wxExVCSEntry(const wxXmlNode* node, wxWindow* parent = NULL);
+  wxExVCSEntry(const wxXmlNode* node);
 
   /// Returns true if admin dir is only at top level.
   bool AdminDirIsTopLevel() const {return m_AdminDirIsTopLevel;};

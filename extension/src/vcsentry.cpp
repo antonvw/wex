@@ -17,8 +17,8 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
-wxExVCSEntry::wxExVCSEntry(wxWindow* parent)
-  : wxExProcess(parent)
+wxExVCSEntry::wxExVCSEntry()
+  : wxExProcess()
   , m_CommandIndex(0)
   , m_AdminDir()
   , m_Name()
@@ -28,8 +28,8 @@ wxExVCSEntry::wxExVCSEntry(wxWindow* parent)
   m_Commands.push_back(wxExVCSCommand());
 }
 
-wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node, wxWindow* parent)
-  : wxExProcess(parent)
+wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
+  : wxExProcess()
   , m_CommandIndex(0)
   , m_AdminDir(node->GetAttribute("admin-dir"))
   , m_Name(node->GetAttribute("name"))
