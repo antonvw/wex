@@ -22,9 +22,7 @@ class WXDLLIMPEXP_BASE wxExProcess : public wxProcess
 {
 public:
   /// Default constructor.
-  wxExProcess(
-    /// parent for output dialog
-    wxWindow* parent = NULL);
+  wxExProcess();
   
   /// Destructor.
  ~wxExProcess();
@@ -120,10 +118,9 @@ private:
   static wxString m_WorkingDirKey;
 
 #if wxUSE_GUI
-  wxExSTCEntryDialog* m_Dialog;
+  static wxExSTCEntryDialog* m_Dialog;
 #endif  
 
-  wxWindow* m_Parent;
   wxTimer* m_Timer;
 
   DECLARE_EVENT_TABLE()
