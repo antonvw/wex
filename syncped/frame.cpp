@@ -910,30 +910,45 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_SPLIT:
+  case ID_SPLIT_HORIZONTALLY:
+  case ID_SPLIT_VERTICALLY:
     {
-    wxExSTCWithFrame* stc = new wxExSTCWithFrame(*editor, this);
-    editor->Sync(false);
-    stc->Sync(false);
+      wxExSTCWithFrame* stc = new wxExSTCWithFrame(*editor, this);
+      editor->Sync(false);
+      stc->Sync(false);
 
-    wxBitmap bitmap(wxNullBitmap);
-    
-    if (stc->GetFileName().FileExists())
-    {
-      bitmap = wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-        wxExGetIconID(stc->GetFileName()));
-    }
-    
-    // Place new page before page for editor.
-    m_Editors->InsertPage(
-      m_Editors->GetPageIndex(editor),
-      stc,
+      wxBitmap bitmap(wxNullBitmap);
+      
+      if (stc->GetFileName().FileExists())
+      {
+        bitmap = wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+          wxExGetIconID(stc->GetFileName()));
+      }
+      
       // key should be unique
-      wxString::Format("split%06d", m_SplitId++),
-      stc->GetFileName().GetFullName(),
-      true,
-      bitmap);
+      const wxString key(wxString::Format("split%06d", m_SplitId++));
+      
+      // Place new page before page for editor.
+      m_Editors->InsertPage(
+        m_Editors->GetPageIndex(editor),
+        stc,
+        key,
+        stc->GetFileName().GetFullName(),
+        true,
+        bitmap);
 
-    stc->SetDocPointer(editor->GetDocPointer());
+      stc->SetDocPointer(editor->GetDocPointer());
+      
+      if (event.GetId() == ID_SPLIT_HORIZONTALLY)
+      {
+        m_Editors->Split(key, wxBOTTOM);
+        m_Editors->SetSelection(editor->GetFileName().GetFullPath());
+      }
+      else if (event.GetId() == ID_SPLIT_VERTICALLY)
+      {
+        m_Editors->Split(key, wxRIGHT);
+        m_Editors->SetSelection(editor->GetFileName().GetFullPath());
+      }
     }
     break;
     
@@ -1376,13 +1391,13 @@ bool Frame::OpenFile(
       GetManager().Update();
     }
 
-    wxExSTCWithFrame* editor = (wxExSTCWithFrame*)page;
-
     if (filename == wxExViMacros::GetFileName().GetFullPath())
     {
       wxExViMacros::SaveDocument();
     }
     
+    wxExSTCWithFrame* editor = (wxExSTCWithFrame*)page;
+
     if (page == NULL)
     {
       if (wxConfigBase::Get()->ReadBool("HexMode", false))
@@ -1396,10 +1411,12 @@ bool Frame::OpenFile(
         col_number,
         flags,
         0xFFFF);
+        
+      const wxString key(filename.GetFullPath());
 
       notebook->AddPage(
         editor,
-        filename.GetFullPath(),
+        key,
         filename.GetFullName(),
         true,
         wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
@@ -1407,12 +1424,12 @@ bool Frame::OpenFile(
           
       if (notebook->GetPageCount() >= 2 && m_Split != -1)
       {
-        notebook->Split(notebook->GetPageCount() - 1, m_Split);
+        notebook->Split(key, m_Split);
       }
 
       if (GetManager().GetPane("DIRCTRL").IsShown())
       {
-        m_DirCtrl->ExpandAndSelectPath(filename.GetFullPath());
+        m_DirCtrl->ExpandAndSelectPath(key);
       }
       
       // Do not show an edge for project files opened as text.
@@ -1619,7 +1636,13 @@ void Notebook::OnNotebook(wxAuiNotebookEvent& event)
   if (event.GetEventType() == wxEVT_AUINOTEBOOK_TAB_RIGHT_UP)
   {
     wxExMenu menu;
-    menu.Append(ID_SPLIT, _("Split"));
+    
+    wxExMenu* split = new wxExMenu;
+    split->Append(ID_SPLIT_VERTICALLY, _("Split Vertically"));
+    split->Append(ID_SPLIT_HORIZONTALLY, _("Split Horizontally"));
+    split->AppendSeparator();
+    split->Append(ID_SPLIT, _("Split"));
+    menu.AppendSubMenu(split, _("Split"), wxEmptyString, ID_SPLIT_MENU);
     menu.AppendSeparator();
     menu.Append(wxID_CLOSE);
     menu.Append(ID_ALL_STC_CLOSE, _("Close A&ll"));
