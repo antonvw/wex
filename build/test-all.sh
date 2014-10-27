@@ -36,15 +36,12 @@ if [ $RC -eq "0" ]; then
   RC=$NRC
 fi
 
-# Skip this test for Travis, it hangs the gui?
-#if [ ! $TRAVIS ]; then
-  echo "-- test gui report --"
-  $TESTDIR/wxex-test-gui-report
-  NRC=$?
-  
-  if [ $RC -eq "0" ]; then
-    RC=$NRC
-  fi
-#fi
+echo "-- test gui report --"
+$TESTDIR/wxex-test-gui-report
+NRC=$?
+
+if [ $RC -eq "0" ]; then
+  RC=$NRC
+fi
 
 return $RC
