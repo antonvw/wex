@@ -183,6 +183,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   if (stc.m_File.GetFileName().GetStat().IsOk())
   {
     Open(stc.m_File.GetFileName(), -1, wxEmptyString, 0, GetFlags());
+    DocumentStart();
   }
   else
   {

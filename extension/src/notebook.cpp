@@ -292,4 +292,16 @@ wxWindow* wxExNotebook::SetSelection(const wxString& key)
   return GetPage(index);
 }
   
+bool wxExNotebook::Split(const wxString& key, int direction)
+{
+  const int index = GetPageIndexByKey(key);
+
+  if (index == wxNOT_FOUND)
+  {
+    return NULL;
+  }
+  
+  wxAuiNotebook::Split(index, direction);
+}
+
 #endif // wxUSE_GUI

@@ -85,6 +85,20 @@ public:
   /// Selects (and returns) the page specified by the given key.
   /// If the key does not exist NULL is returned.
   wxWindow* SetSelection(const wxString& key);
+  
+  /// Split performs a split operation programmatically. 
+  /// If the key does not exist false is returned.
+  bool Split(
+    /// The page that will be split off. 
+    /// This page will also become the active page after the split.
+    const wxString& key, 
+    /// Specify where the pane should go.
+    /// It should be one of the following: 
+    /// - wxTOP
+    /// - wxBOTTOM
+    /// - wxLEFT
+    /// - wxRIGHT
+    int direction);
 protected:
   void OnNotebook(wxAuiNotebookEvent& event);
 private:
