@@ -1431,17 +1431,16 @@ void wxExGuiTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->GetPageCount() == 0);
   
   // Test Split.
-  wxWindow* pagex = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
-  CPPUNIT_ASSERT( notebook->AddPage(pagex, "keyx") != NULL);
+  wxWindow* pagev = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  CPPUNIT_ASSERT( notebook->AddPage(pagev, "keyv") != NULL);
   // split having only one page
-  CPPUNIT_ASSERT( notebook->Split("keyx", wxRIGHT));
-  wxWindow* pagey = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
-  CPPUNIT_ASSERT( notebook->AddPage(pagey, "keyy") != NULL);
+  CPPUNIT_ASSERT( notebook->Split("keyv", wxRIGHT));
+  wxWindow* pagew = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  CPPUNIT_ASSERT( notebook->AddPage(pagew, "keyw") != NULL);
   // split using incorrect key
   CPPUNIT_ASSERT(!notebook->Split("err", wxRIGHT));
-  // TODO: Fix test.
-//  CPPUNIT_ASSERT( notebook->Split("keyx", wxRIGHT));
-//  CPPUNIT_ASSERT(notebook->GetPageCount() == 2);
+  CPPUNIT_ASSERT( notebook->Split("keyv", wxRIGHT));
+  CPPUNIT_ASSERT(notebook->GetPageCount() == 2);
 }
 
 void wxExGuiTestFixture::testOTL()

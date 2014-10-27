@@ -298,10 +298,12 @@ bool wxExNotebook::Split(const wxString& key, int direction)
 
   if (index == wxNOT_FOUND)
   {
-    return NULL;
+    return false;
   }
   
   wxAuiNotebook::Split(index, direction);
+  
+  return true;
 }
 
 #endif // wxUSE_GUI
