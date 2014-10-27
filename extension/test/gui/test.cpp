@@ -1434,7 +1434,7 @@ void wxExGuiTestFixture::testNotebook()
   wxWindow* pagex = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
   CPPUNIT_ASSERT( notebook->AddPage(pagex, "keyx") != NULL);
   // split having only one page
-  CPPUNIT_ASSERT(!notebook->Split("keyx", wxRIGHT));
+  CPPUNIT_ASSERT( notebook->Split("keyx", wxRIGHT));
   wxWindow* pagey = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
   CPPUNIT_ASSERT( notebook->AddPage(pagey, "keyy") != NULL);
   // split using incorrect key
