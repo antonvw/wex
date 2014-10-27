@@ -1429,6 +1429,18 @@ void wxExGuiTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->GetPageCount() == 1);
   CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CLOSE));
   CPPUNIT_ASSERT(notebook->GetPageCount() == 0);
+  
+  // Test Split.
+  wxWindow* pagex = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  CPPUNIT_ASSERT( notebook->AddPage(pagex, "keyx") != NULL);
+  // split having only one page
+  CPPUNIT_ASSERT(!notebook->Split("keyx", wxRIGHT));
+  wxWindow* pagey = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  CPPUNIT_ASSERT( notebook->AddPage(pagey, "keyy") != NULL);
+  // split using incorrect key
+  CPPUNIT_ASSERT(!notebook->Split("err", wxRIGHT));
+  CPPUNIT_ASSERT( notebook->Split("keyx", wxRIGHT));
+  CPPUNIT_ASSERT(notebook->GetPageCount() == 2);
 }
 
 void wxExGuiTestFixture::testOTL()
