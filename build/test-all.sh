@@ -19,9 +19,9 @@ if [ ! -d ~/.wxex-test-gui ]; then
   cp ../extension/data/*.xml ~/.wxex-test-gui
 fi
 
-if [ ! -d ~/.wxex-test-rep ]; then
-  mkdir ~/.wxex-test-rep
-  cp ../extension/data/*.xml ~/.wxex-test-rep
+if [ ! -d ~/.wxex-test-gui-report ]; then
+  mkdir ~/.wxex-test-gui-report
+  cp ../extension/data/*.xml ~/.wxex-test-gui-report
 fi
 
 echo "-- test base --"
