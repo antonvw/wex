@@ -58,7 +58,6 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
     }
     
     m_Timer = new wxTimer(this);
-    m_Dialog = NULL;
     
     m_Busy = p.m_Busy;
     m_Command = p.m_Command;
