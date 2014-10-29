@@ -1472,8 +1472,6 @@ void wxExGuiTestFixture::testProcess()
   CPPUNIT_ASSERT(!process.GetError());
   CPPUNIT_ASSERT( process.GetOutput().empty());
   CPPUNIT_ASSERT(!process.HasStdError());
-  CPPUNIT_ASSERT( process.GetShell() == NULL);
-  CPPUNIT_ASSERT( process.GetSTC() == NULL);
   CPPUNIT_ASSERT(!process.IsRunning());
   
   process.ConfigDialog(wxTheApp->GetTopWindow(), "test process", false);
