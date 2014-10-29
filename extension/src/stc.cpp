@@ -290,7 +290,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 
   if (( sel.empty() && m_Lexer.GetScintillaLexer() == "hypertext") ||
-      (!sel.empty() && sel.StartsWith("http")))
+      (!sel.empty() && (sel.StartsWith("http") || sel.StartsWith("www."))))
   {
     menu.AppendSeparator();
     menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
