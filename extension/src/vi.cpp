@@ -1260,7 +1260,13 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     return true;
   }
   else if (m_Mode == MODE_INSERT)
-  {
+  { 
+    if (GetSTC()->SelectionIsRectangle() || 
+        GetSTC()->GetSelectionMode() == wxSTC_SEL_THIN)
+    {
+      return true;
+    }
+    
     const bool result = InsertMode(std::string(1, ConvertKeyEvent(event)));
     return result && GetSTC()->GetOvertype();
   }

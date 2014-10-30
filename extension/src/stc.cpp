@@ -1283,6 +1283,9 @@ void wxExSTC::Initialize(bool file_exists)
   SetEOLMode(wxSTC_EOL_CR);
 #endif
 
+  SetAdditionalCaretsBlink(true);
+  SetAdditionalCaretsVisible(true);
+  SetAdditionalSelectionTyping(true);  
   SetBackSpaceUnIndents(true);
   SetMouseDwellTime(1000);
   SetMarginType(m_MarginLineNumber, wxSTC_MARGIN_NUMBER);
