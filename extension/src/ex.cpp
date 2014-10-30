@@ -123,6 +123,11 @@ bool wxExEx::Command(const std::string& command)
       result = false;
     }
   }
+  else if (command == ":new")
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_NEW);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
   else if (command == ":prev")
   {
     wxExSTC* stc = m_Frame->ExecExCommand(ID_EDIT_PREVIOUS);
