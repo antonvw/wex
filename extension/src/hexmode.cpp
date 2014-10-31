@@ -56,16 +56,19 @@ void wxExHexMode::AppendText(const wxCharBuffer& buffer)
   m_Buffer += buffer;
   m_BufferOriginal = m_Buffer;
   
-  wxString text;
-
-  // Allocate space for the string.
-  text.Alloc(
+  const int alloc = 
     // offset:      (start_hex_field + 1 + 1) * length / 16 bytes, 
     (start_hex_field + 1 + 1) * buffer.length() / bytes_per_line + 
     // hex field:   3 * length 
     each_hex_field * buffer.length() + 
     // ascii field: just the length
-    buffer.length());
+    buffer.length();
+    
+  wxString text;
+
+  // Allocate space.
+  text.Alloc(alloc);
+  m_STC->Allocate(alloc);
 
   for (
     wxFileOffset offset = 0; 
