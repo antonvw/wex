@@ -228,12 +228,6 @@ Frame::Frame(const std::vector< wxString > & files, int split)
   m_CheckBoxDirCtrl->SetValue(GetManager().GetPane("DIRCTRL").IsShown());
   m_CheckBoxHistory->SetValue(
     wxConfigBase::Get()->ReadBool("ShowHistory", false));
-
-  wxAcceleratorEntry entries[1];
-  entries[0].Set(wxACCEL_CTRL, (int)'W', wxID_CLOSE);
-
-  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
-  SetAcceleratorTable(accel);
 }
 
 wxExListViewFileName* Frame::Activate(
