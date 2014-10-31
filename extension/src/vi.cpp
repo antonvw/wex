@@ -1092,7 +1092,10 @@ bool wxExVi::InsertMode(const std::string& command)
   switch ((int)command.back())
   {
     case WXK_BACK: 
-      m_InsertText.erase(m_InsertText.size() - 1);
+      if (!m_InsertText.empty())
+      {
+        m_InsertText.erase(m_InsertText.size() - 1);
+      }
       GetSTC()->DeleteBack();
       break;
       
