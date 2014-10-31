@@ -176,6 +176,8 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
   if (!m_STC->GetHexMode().Active())
   {
+    m_STC->Allocate(buffer.length());
+    
     get_only_new_data ? 
       m_STC->AppendTextRaw((const char *)buffer.data(), buffer.length()):
       m_STC->AddTextRaw((const char *)buffer.data(), buffer.length());
