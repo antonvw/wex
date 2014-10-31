@@ -80,9 +80,13 @@ public:
   const std::set<wxString>& GetKeywords() const {return m_Keywords;};
 
   /// Gets the keywords as one large string, 
-  /// if keyword_set -1 take all the sets,
-  /// otherwise take the specified set.
-  const wxString GetKeywordsString(int keyword_set = -1) const;
+  const wxString GetKeywordsString(
+    /// if keyword_set -1 take all the sets,
+    /// otherwise take the specified set.
+    int keyword_set = -1,
+    /// if min_size 0, use all keywords,
+    /// otherwise use keywords with minimim size
+    int min_size = 0) const;
 
   /// Gets the properties.
   const std::vector<wxExProperty> & GetProperties() const {return m_Properties;};
@@ -157,7 +161,9 @@ private:
     const wxString& header,
     bool fill_out_with_space,
     bool fill_out) const;
-  const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
+  const wxString GetKeywordsStringSet(
+    const std::set<wxString>& kset, 
+    int min_size = 0) const;
   void Initialize();
   void ApplyWhenSet(const wxString& lexer, wxStyledTextCtrl* stc, bool clear);
   void Set(const wxXmlNode* node);

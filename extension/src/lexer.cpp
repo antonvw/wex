@@ -269,11 +269,11 @@ const wxString wxExLexer::GetFormattedText(
   return out;
 }
 
-const wxString wxExLexer::GetKeywordsString(int keyword_set) const
+const wxString wxExLexer::GetKeywordsString(int keyword_set, int min_size) const
 {
   if (keyword_set == -1)
   {
-    return GetKeywordsStringSet(m_Keywords);
+    return GetKeywordsStringSet(m_Keywords, min_size);
   }
   else
   {
@@ -281,7 +281,7 @@ const wxString wxExLexer::GetKeywordsString(int keyword_set) const
 
     if (it != m_KeywordsSet.end())
     {
-      return GetKeywordsStringSet(it->second);
+      return GetKeywordsStringSet(it->second, min_size);
     }
   }
 
@@ -289,7 +289,7 @@ const wxString wxExLexer::GetKeywordsString(int keyword_set) const
 }
 
 const wxString wxExLexer::GetKeywordsStringSet(
-  const std::set<wxString>& kset) const
+  const std::set<wxString>& kset, int min_size) const
 {
   // accumulate would be nice, but does not add a space, could not do it easily.
   // return accumulate(kset.begin(), kset.end(), wxEmptyString);
@@ -297,7 +297,10 @@ const wxString wxExLexer::GetKeywordsStringSet(
 
   for (const auto& it : kset)
   {
-    keywords += it + " ";
+    if (it.size() >= min_size)
+    {
+      keywords += it + " ";
+    }
   }
 
   return keywords.Trim(); // remove the ending space

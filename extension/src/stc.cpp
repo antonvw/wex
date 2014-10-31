@@ -379,7 +379,7 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
   {
     m_AutoComplete += c;
 
-    if (m_AutoComplete.length() >= 3) // Only autocompletion for large words
+    if (m_AutoComplete.length() > 3) // Only autocompletion for large words
     {
       if (!AutoCompActive())
       {
@@ -390,7 +390,7 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
       if (m_Lexer.KeywordStartsWith(m_AutoComplete))
         AutoCompShow(
           m_AutoComplete.length() - 1,
-          m_Lexer.GetKeywordsString());
+          m_Lexer.GetKeywordsString(-1, 6));
       else
         AutoCompCancel();
     }
