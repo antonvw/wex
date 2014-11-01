@@ -904,6 +904,11 @@ void wxExGuiTestFixture::testLexer()
   CPPUNIT_ASSERT(!lexer.GetCommentEnd2().empty());
   CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
   CPPUNIT_ASSERT(!lexer.GetKeywordsString().empty());
+  CPPUNIT_ASSERT(!lexer.GetKeywordsString(-1, 0).empty());
+  CPPUNIT_ASSERT(!lexer.GetKeywordsString(-1, 6).empty());
+  CPPUNIT_ASSERT( lexer.GetKeywordsString(-1, 8).Contains("for_each"));
+  CPPUNIT_ASSERT(!lexer.GetKeywordsString(-1, 9).Contains("for_each"));
+  CPPUNIT_ASSERT( lexer.GetKeywordsString(-1, 50).empty());
   CPPUNIT_ASSERT( lexer.CommentComplete("// test").empty());
 
   CPPUNIT_ASSERT( lexer.IsKeyword("class"));
