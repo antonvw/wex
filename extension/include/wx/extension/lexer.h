@@ -86,7 +86,9 @@ public:
     int keyword_set = -1,
     /// if min_size 0, use all keywords,
     /// otherwise use keywords with minimim size
-    int min_size = 0) const;
+    int min_size = 0,
+    /// prefix keyword should start with
+    const wxString& prefix = wxEmptyString) const;
 
   /// Gets the properties.
   const std::vector<wxExProperty> & GetProperties() const {return m_Properties;};
@@ -155,6 +157,7 @@ public:
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
+  void ApplyWhenSet(const wxString& lexer, wxStyledTextCtrl* stc, bool clear);
   void AutoMatch(const wxString& lexer);
   const wxString GetFormattedText(
     const wxString& lines,
@@ -163,9 +166,9 @@ private:
     bool fill_out) const;
   const wxString GetKeywordsStringSet(
     const std::set<wxString>& kset, 
-    int min_size = 0) const;
+    int min_size = 0,
+    const wxString& prefix = wxEmptyString) const;
   void Initialize();
-  void ApplyWhenSet(const wxString& lexer, wxStyledTextCtrl* stc, bool clear);
   void Set(const wxXmlNode* node);
 
   wxString m_CommentBegin;
