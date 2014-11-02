@@ -145,15 +145,15 @@ bool wxExTextFile::RunTool()
     return false;
   }
 
-  if (!m_FileName.GetLexer().IsOk())
-  {
-    m_FileName.SetLexer(wxExLexers::Get()->FindByText(GetLine(0)));
-  }
-
   m_Stats.m_Elements.Set(_("Files"), 1);
 
   if (GetLineCount() > 0)
   {
+    if (!m_FileName.GetLexer().IsOk())
+    {
+      m_FileName.SetLexer(wxExLexers::Get()->FindByText(GetLine(0)));
+    }
+
     if (!Parse())
     {
       Close();
