@@ -388,9 +388,15 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
       }
 
       if (m_Lexer.KeywordStartsWith(m_AutoComplete))
-        AutoCompShow(
-          m_AutoComplete.length() - 1,
+      {
+        const wxString comp(
           m_Lexer.GetKeywordsString(-1, 5, m_AutoComplete));
+          
+        if (!comp.empty())
+        {
+          AutoCompShow(m_AutoComplete.length() - 1, comp);
+        }
+      }
       else
         AutoCompCancel();
     }
