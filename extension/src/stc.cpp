@@ -366,7 +366,8 @@ bool wxExSTC::CanPaste() const
 
 void wxExSTC::CheckAutoComp(const wxUniChar& c)
 {
-  if (!m_UseAutoComplete)
+  if (!m_UseAutoComplete || 
+      !wxConfigBase::Get()->ReadBool(_("Auto complete"), true))
   {
     return;
   }
@@ -460,6 +461,7 @@ int wxExSTC::ConfigDialog(
   bchoices.insert(_("Use tabs"));
   bchoices.insert(_("Caret line"));
   bchoices.insert(_("Scroll bars"));
+  bchoices.insert(_("Auto complete"));
   bchoices.insert(_("vi mode"));
   // use 3 cols here, but 1 for others on this page
   items.push_back(wxExConfigItem(bchoices, _("General") + ":3")); 
@@ -472,6 +474,19 @@ int wxExSTC::ConfigDialog(
   items.push_back(wxExConfigItem(
     _("Auto indent"), ichoices, true, _("General"), 1));
     
+  std::map<long, const wxString> vchoices;
+  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
+  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
+  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
+  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")));
+ items.push_back(wxExConfigItem(
+    _("Wrap visual flags"), vchoices, true, _("General"), 1));
+    
+  if (wxExLexers::Get()->GetCount() > 0)
+  {
+    items.push_back(wxExConfigItem(_("Default font"), CONFIG_FONTPICKERCTRL));
+  }
+
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
   choices.insert(std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, 
@@ -480,8 +495,8 @@ int wxExSTC::ConfigDialog(
   items.push_back(wxExConfigItem(
     _("Whitespace"), choices, true, _("General"), 1));
 
-  // Next code does not have any effect (2.9.5, on MSW and GTK)
-/*  
+  // Next code does not have any effect (3.0.2, on MSW and GTK)
+/*
   std::map<long, const wxString> smode;
   smode.insert(std::make_pair(wxSTC_SEL_STREAM, _("Stream")));
   smode.insert(std::make_pair(wxSTC_SEL_RECTANGLE, _("Rectangular")));
@@ -495,11 +510,6 @@ int wxExSTC::ConfigDialog(
     1));
 */
   
-  if (wxExLexers::Get()->GetCount() > 0)
-  {
-    items.push_back(wxExConfigItem(_("Default font"), CONFIG_FONTPICKERCTRL));
-  }
-
   std::map<long, const wxString> wchoices;
   wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
   wchoices.insert(std::make_pair(wxSTC_WRAP_WORD, _("Word")));
@@ -507,14 +517,6 @@ int wxExSTC::ConfigDialog(
   items.push_back(wxExConfigItem(
     _("Wrap line"), wchoices, true, _("General"), 1));
 
-  std::map<long, const wxString> vchoices;
-  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
-  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
-  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
-  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")));
- items.push_back(wxExConfigItem(
-    _("Wrap visual flags"), vchoices, true, _("General"), 1));
-    
   // Edge page.
   items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
   std::map<long, const wxString> echoices;
