@@ -128,8 +128,8 @@ DecoratedFrame::DecoratedFrame()
     menuFind->Append(wxID_REPLACE);
   }
   
-  menuFind->Append(ID_FIND_IN_FILES, wxExEllipsed(_("Find &in Files")));
-  menuFind->Append(ID_REPLACE_IN_FILES, wxExEllipsed(_("Replace in File&s")));
+  menuFind->Append(ID_TOOL_REPORT_FIND, wxExEllipsed(_("Find &in Files")));
+  menuFind->Append(ID_TOOL_REPORT_REPLACE, wxExEllipsed(_("Replace in File&s")));
   menuEdit->AppendSubMenu(menuFind, _("&Find and Replace"));
   menuEdit->AppendSeparator();
   menuEdit->Append(
