@@ -35,16 +35,15 @@ BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
   EVT_MENU(ID_CLEAR_FILES, wxExFrameWithHistory::OnCommand)
   EVT_MENU(ID_CLEAR_PROJECTS, wxExFrameWithHistory::OnCommand)
+  EVT_MENU(ID_PROJECT_SAVE,  wxExFrameWithHistory::OnCommand)
+  EVT_MENU(ID_TOOL_REPORT_FIND, wxExFrameWithHistory::OnCommand)
+  EVT_MENU(ID_TOOL_REPORT_REPLACE, wxExFrameWithHistory::OnCommand)
   EVT_MENU_RANGE(
     wxID_FILE1, 
     wxID_FILE1 + NUMBER_RECENT_FILES, wxExFrameWithHistory::OnCommand)
   EVT_MENU_RANGE(
     ID_RECENT_PROJECT_LOWEST, 
     ID_RECENT_PROJECT_LOWEST + NUMBER_RECENT_PROJECTS, wxExFrameWithHistory::OnCommand)
-  EVT_MENU_RANGE(
-    ID_EXTENSION_REPORT_LOWEST, 
-    ID_EXTENSION_REPORT_HIGHEST, 
-    wxExFrameWithHistory::OnCommand)
 END_EVENT_TABLE()
 
 wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
@@ -427,7 +426,18 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
     case ID_CLEAR_FILES: ClearHistory(m_FileHistory); break;
     case ID_CLEAR_PROJECTS: ClearHistory(m_ProjectHistory); break;
       
-    case ID_FIND_IN_FILES: 
+    case ID_PROJECT_SAVE:
+      {
+        wxExListViewFile* project = GetProject();
+        
+        if (project != NULL)
+        {
+          project->FileSave();
+        }
+      }
+      break;
+      
+    case ID_TOOL_REPORT_FIND: 
       if (m_FiFDialog == NULL)
       {
         CreateDialogs();
@@ -444,7 +454,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       m_FiFDialog->Show(); 
       break;
       
-    case ID_REPLACE_IN_FILES: 
+    case ID_TOOL_REPORT_REPLACE: 
       if (m_RiFDialog == NULL)
       {
         CreateDialogs();
@@ -461,17 +471,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       m_RiFDialog->Show(); 
       break;
 
-    case ID_PROJECT_SAVE:
-      {
-        wxExListViewFile* project = GetProject();
-        
-        if (project != NULL)
-        {
-          project->FileSave();
-        }
-      }
-      break;
-      
     default:
       wxFAIL;
     }

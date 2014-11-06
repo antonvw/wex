@@ -45,7 +45,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_MENU_RANGE(ID_APPL_LOWEST, ID_APPL_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_ALL_LOWEST, ID_ALL_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, Frame::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, Frame::OnCommand)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_STC_SAVE, Frame::OnUpdateUI)
@@ -592,19 +591,6 @@ void Frame::OnCommand(wxCommandEvent& event)
       (event.GetId() >= ID_EDIT_STC_LOWEST && event.GetId() <= ID_EDIT_STC_HIGHEST))
   {
     if (editor != NULL)
-    {
-      wxPostEvent(editor, event);
-    }
-  }
-  // tool commands
-  else if (event.GetId() >= ID_TOOL_LOWEST && event.GetId() <= ID_TOOL_HIGHEST)
-  {
-    wxWindow* focus = wxWindow::FindFocus();
-    if (focus != NULL)
-    {
-      wxPostEvent(focus, event);
-    }
-    else if (editor != NULL)
     {
       wxPostEvent(editor, event);
     }
