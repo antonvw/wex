@@ -592,7 +592,8 @@ bool wxExIsBrace(int c)
          
 bool wxExIsCodewordSeparator(int c) 
 {
-  return (isspace(c) || wxExIsBrace(c) || c == ',' || c == ';' || c == ':');
+  return isspace(c) || wxExIsBrace(c) || 
+         c == ',' || c == ';' || c == ':' || c == '@';
 }
 
 const std::list < wxString > wxExListFromConfig(
