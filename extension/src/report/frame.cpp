@@ -12,6 +12,7 @@
 #include <wx/config.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
+#include <wx/tokenzr.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/listitem.h>
@@ -438,20 +439,39 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       break;
       
     case ID_TOOL_REPORT_FIND: 
-      if (m_FiFDialog == NULL)
+      if (!event.GetString().empty())
       {
-        CreateDialogs();
-      }
+        wxStringTokenizer tkz(event.GetString());
+        const wxString find(tkz.GetNextToken());
+        const wxString folder(tkz.GetNextToken());
+        const wxString extension(tkz.GetNextToken());
+        const wxExTool tool(ID_TOOL_REPORT_FIND);
 
-      if (GetSTC() != NULL)
+        if 
+         (!find.empty() && !folder.empty() && !extension.empty() &&
+           wxExTextFileWithListView::SetupTool(tool, this))
+        {
+          wxLogStatus(GetFindReplaceInfoText());
+          wxExFindReplaceData::Get()->SetFindString(find);
+          wxExDirTool dir(tool, folder, extension, wxDIR_FILES | wxDIR_DIRS);
+          dir.FindFiles();
+          wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+        }
+      }
+      else
       {
-        if (!GetSTC()->GetFindString().empty())
+        if (m_FiFDialog == NULL)
+        {
+          CreateDialogs();
+        }
+
+        if  (GetSTC() != NULL && !GetSTC()->GetFindString().empty())
         {
           m_FiFDialog->Reload(); 
         }
+
+        m_FiFDialog->Show(); 
       }
-        
-      m_FiFDialog->Show(); 
       break;
       
     case ID_TOOL_REPORT_REPLACE: 
@@ -460,14 +480,11 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
         CreateDialogs();
       }
       
-      if (GetSTC() != NULL)
+      if (GetSTC() != NULL && !GetSTC()->GetFindString().empty())
       {
-        if (!GetSTC()->GetFindString().empty())
-        {
-          m_RiFDialog->Reload(); 
-        }
+        m_RiFDialog->Reload(); 
       }
-      
+
       m_RiFDialog->Show(); 
       break;
 
