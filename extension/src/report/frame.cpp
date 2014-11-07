@@ -451,8 +451,11 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
          (!find.empty() && !folder.empty() && !extension.empty() &&
            wxExTextFileWithListView::SetupTool(tool, this))
         {
-          wxLogStatus(GetFindReplaceInfoText());
+          auto* stc = GetSTC();
+          if (stc != NULL)
+            wxSetWorkingDirectory(stc->GetFileName().GetPath());
           wxExFindReplaceData::Get()->SetFindString(find);
+          wxLogStatus(GetFindReplaceInfoText());
           wxExDirTool dir(tool, folder, extension, wxDIR_FILES | wxDIR_DIRS);
           dir.FindFiles();
           wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));

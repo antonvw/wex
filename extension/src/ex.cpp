@@ -103,7 +103,7 @@ bool wxExEx::Command(const std::string& command)
     
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command == ":grep") // before :g
+  else if (command.compare(0, 5, ":grep") == 0) // before :g
   {
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TOOL_REPORT_FIND);
     
