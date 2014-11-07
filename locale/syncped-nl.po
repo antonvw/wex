@@ -5,17 +5,164 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncped v3.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-16 13:46+0100\n"
-"PO-Revision-Date: 2014-10-16 13:47+0100\n"
+"POT-Creation-Date: 2014-11-07 21:15+0100\n"
+"PO-Revision-Date: 2014-11-07 21:19+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
-"Language: Dutch\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: Dutch\n"
 "X-Poedit-Basepath: ./\n"
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: ../syncped\n"
+
+#: ../syncped/app.cpp:81
+msgid "input file:line number:column number"
+msgstr "bestand:regel nummer:kolom nummer"
+
+#: ../syncped/app.cpp:85
+msgid "show locale"
+msgstr "Geef locale"
+
+#: ../syncped/app.cpp:86
+msgid "split tabs vertically"
+msgstr "tabs verticaal splitsen"
+
+#: ../syncped/app.cpp:87
+msgid "split tabs horizontally"
+msgstr "tabs horizontaal splitsen"
+
+#: ../syncped/app.cpp:88
+msgid "show version"
+msgstr "Geef versie"
+
+#: ../syncped/frame.cpp:97
+msgid "Project Files"
+msgstr "Project bestanden"
+
+#: ../syncped/frame.cpp:116
+#: ../syncped/frame.cpp:142
+msgid "Explorer"
+msgstr "Verkenner"
+
+#: ../syncped/frame.cpp:120
+#: ../syncped/frame.cpp:328
+msgid "History"
+msgstr "Geschiedenis"
+
+#: ../syncped/frame.cpp:129
+msgid "Files"
+msgstr "Bestanden"
+
+#: ../syncped/frame.cpp:150
+msgid "Output"
+msgstr "Resultaten"
+
+#: ../syncped/frame.cpp:257
+msgid "Ascii Table"
+msgstr "Ascii tabel"
+
+#: ../syncped/frame.cpp:348
+msgid "Projects"
+msgstr "Projecten"
+
+#: ../syncped/frame.cpp:369
+msgid "Select Projects"
+msgstr "Projecten selecteren"
+
+#: ../syncped/frame.cpp:454
+msgid "Input"
+msgstr "Invoer"
+
+#: ../syncped/frame.cpp:454
+msgid "File Name"
+msgstr "Bestands naam"
+
+#: ../syncped/frame.cpp:491
+msgid "project"
+msgstr "project"
+
+#: ../syncped/frame.cpp:546
+msgid "Process is running"
+msgstr "Process is bezig"
+
+#: ../syncped/frame.cpp:608
+msgid ""
+"This program offers a portable text or binary editor\n"
+"with automatic syncing."
+msgstr ""
+"Dit programma biedt een text of binaire editor\n"
+"met automatische synchronisatie."
+
+#: ../syncped/frame.cpp:613
+msgid ""
+" All its config files are read\n"
+"and saved in the same directory as where the executable is."
+msgstr ""
+" Alle configuratie bestanden worden\n"
+"bewaard en gelezen in dezelfde map als waar het programma zelf staat."
+
+#: ../syncped/frame.cpp:765
+msgid "Editor Options"
+msgstr "Editor opties"
+
+#: ../syncped/frame.cpp:774
+msgid "Comparator"
+msgstr "Vergelijker"
+
+#: ../syncped/frame.cpp:775
+msgid "Set Comparator"
+msgstr "Vergelijker instellen"
+
+#: ../syncped/frame.cpp:782
+#: ../syncped/frame.cpp:786
+msgid "List Font"
+msgstr "Lijst lettertype"
+
+#: ../syncped/frame.cpp:783
+msgid "Set List Font"
+msgstr "Lijst lettertype instellen"
+
+#: ../syncped/frame.cpp:805
+#: ../syncped/frame.cpp:807
+#: ../syncped/frame.cpp:814
+msgid "List Colour"
+msgstr "Lijst kleuren"
+
+#: ../syncped/frame.cpp:815
+msgid "Set List Read Only Colour"
+msgstr "Lijst alleen lezen kleur instellen"
+
+#: ../syncped/frame.cpp:871
+msgid "Project Save As"
+msgstr "Project opslaan als"
+
+#: ../syncped/frame.cpp:1035
+#: ../syncped/support.cpp:84
+msgid "vi mode"
+msgstr "vi modus"
+
+#: ../syncped/frame.cpp:1621
+msgid "Split Vertically"
+msgstr "Verticaal splitsen"
+
+#: ../syncped/frame.cpp:1622
+msgid "Split Horizontally"
+msgstr "Horizontaal splitsen"
+
+#: ../syncped/frame.cpp:1624
+#: ../syncped/frame.cpp:1625
+msgid "Split"
+msgstr "Splitsen"
+
+#: ../syncped/frame.cpp:1628
+msgid "Close A&ll"
+msgstr "A&lles sluiten"
+
+#: ../syncped/frame.cpp:1632
+msgid "Close Others"
+msgstr "Sluit anderen"
 
 #: ../syncped/support.cpp:41
 msgid "File type"
@@ -36,10 +183,6 @@ msgstr "Thema"
 #: ../syncped/support.cpp:62
 msgid "VCS"
 msgstr "VCS"
-
-#: ../syncped/support.cpp:84 ../syncped/frame.cpp:1037
-msgid "vi mode"
-msgstr "vi modus"
 
 #: ../syncped/support.cpp:101
 msgid "Save A&ll"
@@ -164,126 +307,6 @@ msgstr "&Project"
 #: ../syncped/support.cpp:223
 msgid "&Options"
 msgstr "&Opties"
-
-#: ../syncped/app.cpp:71
-msgid "input file:line number:column number"
-msgstr "bestand:regel nummer:kolom nummer"
-
-#: ../syncped/app.cpp:75
-msgid "show locale"
-msgstr "Geef locale"
-
-#: ../syncped/app.cpp:76
-msgid "show version"
-msgstr "Geef versie"
-
-#: ../syncped/frame.cpp:98
-msgid "Project Files"
-msgstr "Project bestanden"
-
-#: ../syncped/frame.cpp:117 ../syncped/frame.cpp:142
-msgid "Explorer"
-msgstr "Verkenner"
-
-#: ../syncped/frame.cpp:121 ../syncped/frame.cpp:332
-msgid "History"
-msgstr "Geschiedenis"
-
-#: ../syncped/frame.cpp:129
-msgid "Files"
-msgstr "Bestanden"
-
-#: ../syncped/frame.cpp:150
-msgid "Output"
-msgstr "Resultaten"
-
-#: ../syncped/frame.cpp:261
-msgid "Ascii Table"
-msgstr "Ascii tabel"
-
-#: ../syncped/frame.cpp:352
-msgid "Projects"
-msgstr "Projecten"
-
-#: ../syncped/frame.cpp:373
-msgid "Select Projects"
-msgstr "Projecten selecteren"
-
-#: ../syncped/frame.cpp:458
-msgid "Input"
-msgstr "Invoer"
-
-#: ../syncped/frame.cpp:458
-msgid "File Name"
-msgstr "Bestands naam"
-
-#: ../syncped/frame.cpp:495
-msgid "project"
-msgstr "project"
-
-#: ../syncped/frame.cpp:550
-msgid "Process is running"
-msgstr "Process is bezig"
-
-#: ../syncped/frame.cpp:625
-msgid ""
-"This program offers a portable text or binary editor\n"
-"with automatic syncing."
-msgstr ""
-"Dit programma biedt een text of binaire editor\n"
-"met automatische synchronisatie."
-
-#: ../syncped/frame.cpp:630
-msgid ""
-" All its config files are read\n"
-"and saved in the same directory as where the executable is."
-msgstr ""
-" Alle configuratie bestanden worden\n"
-"bewaard en gelezen in dezelfde map als waar het programma zelf staat."
-
-#: ../syncped/frame.cpp:782
-msgid "Editor Options"
-msgstr "Editor opties"
-
-#: ../syncped/frame.cpp:791
-msgid "Comparator"
-msgstr "Vergelijker"
-
-#: ../syncped/frame.cpp:792
-msgid "Set Comparator"
-msgstr "Vergelijker instellen"
-
-#: ../syncped/frame.cpp:799 ../syncped/frame.cpp:803
-msgid "List Font"
-msgstr "Lijst lettertype"
-
-#: ../syncped/frame.cpp:800
-msgid "Set List Font"
-msgstr "Lijst lettertype instellen"
-
-#: ../syncped/frame.cpp:822 ../syncped/frame.cpp:824 ../syncped/frame.cpp:831
-msgid "List Colour"
-msgstr "Lijst kleuren"
-
-#: ../syncped/frame.cpp:832
-msgid "Set List Read Only Colour"
-msgstr "Lijst alleen lezen kleur instellen"
-
-#: ../syncped/frame.cpp:888
-msgid "Project Save As"
-msgstr "Project opslaan als"
-
-#: ../syncped/frame.cpp:1614
-msgid "Split"
-msgstr "Splitsen"
-
-#: ../syncped/frame.cpp:1617
-msgid "Close A&ll"
-msgstr "A&lles sluiten"
-
-#: ../syncped/frame.cpp:1621
-msgid "Close Others"
-msgstr "Sluit anderen"
 
 #~ msgid "Cannot open file"
 #~ msgstr "Kan bestand niet openen"
