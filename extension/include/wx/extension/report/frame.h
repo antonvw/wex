@@ -99,6 +99,15 @@ public:
     if (m_ProjectHistory.GetCount() == 0) return wxEmptyString;
     return m_ProjectHistory.GetHistoryFile(0);}
 
+  /// Greps for text.
+  /// The base directory is the directory for the current stc
+  /// component, if available.
+  /// Returns false if line contains too few arguments, or 
+  /// setup failed.
+  bool Grep(
+    /// text folder extension
+    const wxString& line);
+  
   /// Override OnCommandConfigDialog for add, find and replace in files.
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
