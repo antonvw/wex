@@ -83,6 +83,10 @@ void wxExGuiReportTestFixture::testFrameWithHistory()
   
   frame->FileHistoryPopupMenu();
   frame->ProjectHistoryPopupMenu();
+  
+  CPPUNIT_ASSERT(!frame->Grep("xxxxxxx"));
+  CPPUNIT_ASSERT(!frame->Grep("xxxxxxx yyy"));
+  CPPUNIT_ASSERT( frame->Grep("xxxxxxx ./ *.cpp"));
 }
 
 void wxExGuiReportTestFixture::testListViewFile()
