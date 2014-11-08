@@ -352,6 +352,65 @@ const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
   return log;
 }
 
+bool wxExFrameWithHistory::Grep(const wxString& arg)
+{
+  const wxExTool tool(ID_TOOL_REPORT_FIND);
+  
+  wxStringTokenizer tkz(arg, "\"");
+  
+  wxString match;
+  wxString folder;
+  wxString extension;
+  
+  if (tkz.CountTokens() > 1)
+  {
+    tkz.GetNextToken(); // skip empty token
+    match = tkz.GetNextToken();
+    
+    wxStringTokenizer tkz(tkz.GetNextToken());
+    
+    if (match.empty() || tkz.CountTokens() < 2)
+    {
+      wxLogStatus("usage: grep match folder extension");
+      return false;
+    }
+    
+    folder = tkz.GetNextToken();
+    extension = tkz.GetNextToken();
+  }
+  else
+  {
+    wxStringTokenizer tkz(arg);
+    
+    if (tkz.CountTokens() < 3)
+    {
+      wxLogStatus("usage: grep match folder extension");
+      return false;
+    }
+    
+    match = tkz.GetNextToken();
+    folder = tkz.GetNextToken();
+    extension = tkz.GetNextToken();
+  }
+
+  if (!wxExTextFileWithListView::SetupTool(tool, this))
+  {
+    wxLogStatus("setup failed");
+    return false;
+  }
+  
+  auto* stc = GetSTC();
+  if (stc != NULL)
+    wxSetWorkingDirectory(stc->GetFileName().GetPath());
+  wxExFindReplaceData::Get()->SetFindString(match);
+  wxLogStatus(GetFindReplaceInfoText());
+  wxExDirTool dir(tool, folder, extension, wxDIR_FILES | wxDIR_DIRS);
+  dir.FindFiles();
+  wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+    
+  return true;
+}
+
 void wxExFrameWithHistory::HistoryPopupMenu(
   const wxFileHistory& history, int first_id, int clear_id, const wxPoint& pos)
 {
@@ -441,25 +500,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
     case ID_TOOL_REPORT_FIND: 
       if (!event.GetString().empty())
       {
-        wxStringTokenizer tkz(event.GetString());
-        const wxString find(tkz.GetNextToken());
-        const wxString folder(tkz.GetNextToken());
-        const wxString extension(tkz.GetNextToken());
-        const wxExTool tool(ID_TOOL_REPORT_FIND);
-
-        if 
-         (!find.empty() && !folder.empty() && !extension.empty() &&
-           wxExTextFileWithListView::SetupTool(tool, this))
-        {
-          auto* stc = GetSTC();
-          if (stc != NULL)
-            wxSetWorkingDirectory(stc->GetFileName().GetPath());
-          wxExFindReplaceData::Get()->SetFindString(find);
-          wxLogStatus(GetFindReplaceInfoText());
-          wxExDirTool dir(tool, folder, extension, wxDIR_FILES | wxDIR_DIRS);
-          dir.FindFiles();
-          wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
-        }
+        Grep(event.GetString());
       }
       else
       {
