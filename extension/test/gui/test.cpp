@@ -464,6 +464,7 @@ void wxExGuiTestFixture::testEx()
   //CPPUNIT_ASSERT( ex->Command(":e")); // shows dialog
   CPPUNIT_ASSERT(!ex->Command(":n"));
   CPPUNIT_ASSERT(!ex->Command(":prev"));
+  CPPUNIT_ASSERT( ex->Command(":grep test"));
   CPPUNIT_ASSERT( ex->Command(":r test"));
   CPPUNIT_ASSERT( ex->Command(":r !echo qwerty"));
   CPPUNIT_ASSERT( stc->GetText().Contains("qwerty"));
