@@ -403,6 +403,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   if (stc != NULL)
     wxSetWorkingDirectory(stc->GetFileName().GetPath());
   wxExFindReplaceData::Get()->SetFindString(match);
+  wxExFindReplaceData::Get()->SetUseRegularExpression(true);
   wxLogStatus(GetFindReplaceInfoText());
   wxExDirTool dir(tool, folder, extension, wxDIR_FILES | wxDIR_DIRS);
   dir.FindFiles();
