@@ -41,7 +41,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_MENU(wxID_SELECTALL, Frame::OnCommand)
   EVT_MENU(wxID_STOP, Frame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, Frame::OnCommand)
-  EVT_MENU_RANGE(wxID_CLOSE, wxID_PREFERENCES, Frame::OnCommand)
+  EVT_MENU_RANGE(wxID_CLOSE, wxID_CLOSE_ALL, Frame::OnCommand)
   EVT_MENU_RANGE(ID_APPL_LOWEST, ID_APPL_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_ALL_LOWEST, ID_ALL_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, Frame::OnCommand)
@@ -760,13 +760,6 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->GetVi().MacroStartRecording(); break;
   case ID_EDIT_MACRO_STOP_RECORD: if (editor != NULL) editor->GetVi().GetMacros().StopRecording(); break;
   
-  case ID_OPTION_EDITOR:
-    wxExSTC::ConfigDialog(this,
-      _("Editor Options"),
-      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY,
-      event.GetId());
-    break;
-
   case ID_OPTION_COMPARATOR: 
       wxExConfigDialog(
         this,
@@ -1019,7 +1012,7 @@ void Frame::OnCommandConfigDialog(
   wxWindowID dialogid,
   int commandid)
 {
-  if (dialogid == ID_OPTION_EDITOR)
+  if (dialogid == wxID_PREFERENCES)
   {
     if (commandid != wxID_CANCEL)
     {

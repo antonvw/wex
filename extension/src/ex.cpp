@@ -198,7 +198,16 @@ bool wxExEx::Command(const std::string& command)
   // e.g. set ts=4
   else if (command.compare(0, 4, ":set") == 0)
   {
-    result = CommandSet(wxString(command.substr(4)).Trim(false));
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_PREFERENCES);
+    
+    if (command.find(" ") == std::string::npos)
+    {
+      wxPostEvent(wxTheApp->GetTopWindow(), event);
+    }
+    else
+    {
+      result = CommandSet(wxString(command.substr(4)).Trim(false));
+    }
   }
   else if (command.compare(0, 7, ":syntax") == 0)
   {

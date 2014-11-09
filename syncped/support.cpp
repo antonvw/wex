@@ -208,7 +208,7 @@ DecoratedFrame::DecoratedFrame()
   menuListSort->AppendRadioItem(ID_OPTION_LIST_SORT_TOGGLE, _("&Toggle"));
   menuOptions->AppendSubMenu(menuListSort, _("Set &List Sort Method"));
   menuOptions->AppendSeparator();
-  menuOptions->Append(ID_OPTION_EDITOR, wxExEllipsed(_("Set &Editor Options")));
+  menuOptions->Append(wxID_PREFERENCES, wxExEllipsed(_("Set &Editor Options")));
 
   wxExMenu *menuHelp = new wxExMenu(); // use wxExMenu for art with HELP
   menuHelp->Append(wxID_ABOUT);
