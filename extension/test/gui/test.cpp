@@ -450,6 +450,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":'<,'>x")); // gives unknown range command: ok
   
   // Test set.
+  CPPUNIT_ASSERT( ex->Command(":set"));
   CPPUNIT_ASSERT( ex->Command(":set ic"));
   CPPUNIT_ASSERT( ex->Command(":set ic!"));
   CPPUNIT_ASSERT( ex->Command(":set li"));
@@ -465,6 +466,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT(!ex->Command(":n"));
   CPPUNIT_ASSERT(!ex->Command(":prev"));
   CPPUNIT_ASSERT( ex->Command(":grep test"));
+  CPPUNIT_ASSERT( ex->Command(":sed"));
   CPPUNIT_ASSERT( ex->Command(":r test"));
   CPPUNIT_ASSERT( ex->Command(":r !echo qwerty"));
   CPPUNIT_ASSERT( stc->GetText().Contains("qwerty"));

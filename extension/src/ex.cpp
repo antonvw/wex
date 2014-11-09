@@ -24,9 +24,29 @@
 
 #if wxUSE_GUI
 
+#define POST_CLOSE( ID, VETO )                          \
+{                                                       \
+  wxCloseEvent event(ID);                               \
+  event.SetCanVeto(VETO);                               \
+  wxPostEvent(wxTheApp->GetTopWindow(), event);         \
+};                                                      \
+
+#define POST_COMMAND( ID )                              \
+{                                                       \
+  wxCommandEvent event(                                 \
+    wxEVT_COMMAND_MENU_SELECTED, ID);                   \
+                                                        \
+  if (command.find(" ") != std::string::npos)           \
+  {                                                     \
+    event.SetString(command.substr(command.find(" "))); \
+  }                                                     \
+                                                        \
+  wxPostEvent(wxTheApp->GetTopWindow(), event);         \
+};                                                      \
+
 wxExViMacros wxExEx::m_Macros;
 std::string wxExEx::m_LastCommand;
-  
+
 wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
   , m_Process(NULL)
@@ -85,8 +105,7 @@ bool wxExEx::Command(const std::string& command)
   }
   else if (command == ":close")
   {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_CLOSE);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    POST_COMMAND( wxID_CLOSE )
   }
   else if (command == ":d")
   {
@@ -94,25 +113,11 @@ bool wxExEx::Command(const std::string& command)
   }
   else if (command.compare(0, 2, ":e") == 0)
   {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
-    
-    if (command.find(" ") != std::string::npos)
-    {
-      event.SetString(command.substr(command.find(" ")));
-    }
-    
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    POST_COMMAND( wxID_OPEN )
   }
   else if (command.compare(0, 5, ":grep") == 0) // before :g
   {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TOOL_REPORT_FIND);
-    
-    if (command.find(" ") != std::string::npos)
-    {
-      event.SetString(command.substr(command.find(" ")));
-    }
-    
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    POST_COMMAND( ID_TOOL_REPORT_FIND )
   }
   else if (command.compare(0, 2, ":g") == 0)
   {
@@ -136,8 +141,7 @@ bool wxExEx::Command(const std::string& command)
   }
   else if (command == ":new")
   {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_NEW);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    POST_COMMAND( wxID_NEW )
   }
   else if (command == ":prev")
   {
@@ -157,14 +161,11 @@ bool wxExEx::Command(const std::string& command)
   }
   else if (command == ":q")
   {
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    POST_CLOSE( wxEVT_CLOSE_WINDOW, true )
   }
   else if (command == ":q!")
   {
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    event.SetCanVeto(false); 
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    POST_CLOSE( wxEVT_CLOSE_WINDOW, false )
   }
   else if (command.compare(0, 2, ":r") == 0)
   {
@@ -194,6 +195,10 @@ bool wxExEx::Command(const std::string& command)
       event.SetString(arg);
       wxPostEvent(wxTheApp->GetTopWindow(), event);
     }
+  }
+  else if (command.compare(0, 5, ":sed") == 0)
+  {
+    POST_COMMAND( ID_TOOL_REPORT_REPLACE )
   }
   // e.g. set ts=4
   else if (command.compare(0, 4, ":set") == 0)
@@ -230,23 +235,17 @@ bool wxExEx::Command(const std::string& command)
   {
     if (command.find(" ") != std::string::npos)
     {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVEAS);
-      event.SetString(command.substr(command.find(" ")));
-      wxPostEvent(wxTheApp->GetTopWindow(), event);
+      POST_COMMAND( wxID_SAVEAS )
     }
     else
     {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE);
-      wxPostEvent(wxTheApp->GetTopWindow(), event);
+      POST_COMMAND( wxID_SAVE )
     }
   }
   else if (command == ":x")
   {
-    wxPostEvent(wxTheApp->GetTopWindow(), 
-      wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
-      
-    wxPostEvent(wxTheApp->GetTopWindow(), 
-      wxCloseEvent(wxEVT_CLOSE_WINDOW));
+    POST_COMMAND( wxID_SAVE )
+    POST_CLOSE( wxEVT_CLOSE_WINDOW, true )
   }
   else if (command == ":y")
   {
