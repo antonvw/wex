@@ -335,6 +335,7 @@ void Frame::OnCommandConfigDialog(
   {
     m_Query->ConfigGet();
     m_Shell->ConfigGet();
+    m_Shell->GetVi().Use(false);
   }
   else
   {
