@@ -442,7 +442,7 @@ wxExListViewFile* Frame::GetProject()
   }
 }
 
-void Frame::NewFile()
+void Frame::NewFile(const wxString& name)
 {
   if (wxConfigBase::Get()->ReadBool("HexMode", false))
   {
@@ -450,19 +450,6 @@ void Frame::NewFile()
     return;
   }
  
-  static wxString text;
-  wxTextEntryDialog dlg(this, _("Input") + ":", _("File Name"), text);
-  
-  wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
-  validator.SetCharExcludes("/\\?%*:|\"<>");
-  dlg.SetTextValidator(validator);
-  
-  if (dlg.ShowModal() == wxID_CANCEL)
-  {
-    return;
-  }
-  
-  text = dlg.GetValue();
   wxWindow* page = new wxExSTCWithFrame(
     m_Editors, 
     this,
@@ -471,13 +458,13 @@ void Frame::NewFile()
     wxEmptyString,
     0xFFFF);
 
-  ((wxExSTC*)page)->GetFile().FileNew(text);
+  ((wxExSTC*)page)->GetFile().FileNew(name);
 
   // This file does yet exist, so do not give it a bitmap.
   m_Editors->AddPage(
     page,
-    text,
-    text,
+    name,
+    name,
     true);
 
   GetManager().GetPane("FILES").Show();
@@ -644,7 +631,30 @@ void Frame::OnCommand(wxCommandEvent& event)
       "/syncped.htm");
     break;
     
-  case wxID_NEW: NewFile(); break;
+  case wxID_NEW: 
+      if (!event.GetString().empty())
+      {
+        NewFile(event.GetString()); 
+      }
+      else
+      {
+        static wxString text;
+        wxTextEntryDialog dlg(this, _("Input") + ":", _("File Name"), text);
+        
+        wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
+        validator.SetCharExcludes("/\\?%*:|\"<>");
+        dlg.SetTextValidator(validator);
+        
+        if (dlg.ShowModal() == wxID_CANCEL)
+        {
+          return;
+        }
+        
+        text = dlg.GetValue();
+        
+        NewFile(text); 
+      }
+    break;
   
   case wxID_PREVIEW:
     if (editor != NULL)

@@ -61,7 +61,7 @@ private:
   bool DialogProjectOpen();
   wxExSTC* ExecExCommand(int command);
   virtual wxExListViewFile* GetProject();
-  void NewFile();
+  void NewFile(const wxString& name);
   void NewProject();
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,

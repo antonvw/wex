@@ -139,7 +139,7 @@ bool wxExEx::Command(const std::string& command)
       result = false;
     }
   }
-  else if (command == ":new")
+  else if (command.compare(0, 4, ":new") == 0)
   {
     POST_COMMAND( wxID_NEW )
   }
@@ -196,7 +196,7 @@ bool wxExEx::Command(const std::string& command)
       wxPostEvent(wxTheApp->GetTopWindow(), event);
     }
   }
-  else if (command.compare(0, 5, ":sed") == 0)
+  else if (command.compare(0, 4, ":sed") == 0)
   {
     POST_COMMAND( ID_TOOL_REPORT_REPLACE )
   }
