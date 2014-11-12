@@ -405,7 +405,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   wxExFindReplaceData::Get()->SetFindString(match);
   wxExFindReplaceData::Get()->SetUseRegularExpression(true);
   wxLogStatus(GetFindReplaceInfoText());
-  wxExDirTool dir(tool, folder, extension, wxDIR_FILES | wxDIR_DIRS);
+  wxExDirTool dir(tool, folder, extension, wxDIR_FILES); // not recursive
   dir.FindFiles();
   wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
     
