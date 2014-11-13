@@ -181,9 +181,8 @@ Frame::Frame()
 
 void Frame::OnClose(wxCloseEvent& event)
 {
-  wxExFileDialog dlg(this, &m_Query->GetFile());
-
-  if (dlg.ShowModalIfChanged()  == wxID_CANCEL)
+  if (wxExFileDialog(this,
+    &m_Query->GetFile()).ShowModalIfChanged()  == wxID_CANCEL)
   {
     return;
   }

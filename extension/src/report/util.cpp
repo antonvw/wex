@@ -40,22 +40,18 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
     switch (id)
     {
     case ID_LIST_ALL_ITEMS:
+      if (font.IsOk())
       {
-        if (font.IsOk())
-        {
-          lv->SetFont(font);
-        }
-
-        lv->ItemsUpdate();
+        lv->SetFont(font);
       }
+
+      lv->ItemsUpdate();
       break;
 
     case ID_LIST_ALL_CLOSE:
-      {
-      wxExFileDialog dlg(notebook, lv);
-      if (dlg.ShowModalIfChanged() == wxID_CANCEL) return false;
+      if (wxExFileDialog(
+        notebook, lv).ShowModalIfChanged() == wxID_CANCEL) return false;
       if (!notebook->DeletePage(page)) return false;
-      }
       break;
 
     default: wxFAIL;
