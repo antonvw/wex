@@ -859,8 +859,8 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_PROJECT_OPENTEXT:
     if (project != NULL)
     {
-      wxExFileDialog dlg(this, project);
-      if (dlg.ShowModalIfChanged() != wxID_CANCEL)
+      if (wxExFileDialog(
+        this, project).ShowModalIfChanged() != wxID_CANCEL)
       {
         OpenFile(project->GetFileName());
       }

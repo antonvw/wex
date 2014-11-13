@@ -325,9 +325,8 @@ void Frame::OnClose(wxCloseEvent& event)
     return;
   }
 
-  wxExFileDialog dlg(this, &m_DataWindow->GetFile());
-
-  if (dlg.ShowModalIfChanged() == wxID_CANCEL)
+  if (wxExFileDialog(this, 
+    &m_DataWindow->GetFile()).ShowModalIfChanged() == wxID_CANCEL)
   {
     return;
   }

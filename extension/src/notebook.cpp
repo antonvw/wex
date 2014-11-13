@@ -132,9 +132,8 @@ bool wxExNotebook::ForEach(int id)
         if ((id == ID_ALL_STC_CLOSE_OTHERS && sel != page) ||
              id == ID_ALL_STC_CLOSE)
         {
-          wxExFileDialog dlg(this, &stc->GetFile());
-          
-          if (dlg.ShowModalIfChanged() == wxID_CANCEL) 
+          if (wxExFileDialog(
+            this, &stc->GetFile()).ShowModalIfChanged() == wxID_CANCEL) 
           {
             return false;
           }
