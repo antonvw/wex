@@ -404,9 +404,7 @@ bool Frame::OpenFile(
   {
     GetManager().GetPane("QUERY").Show(true);
     GetManager().Update();
-
-    return wxExFrameWithHistory::OpenFile(filename,
-      line_number, match, col_number, flags);
+    return true;
   }
   else
   {
