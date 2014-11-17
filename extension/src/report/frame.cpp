@@ -364,11 +364,6 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
 
   if (cl.Parse() != 0)
   {
-    if (cl.FoundSwitch("h"))
-    {
-      wxLogMessage(cl.GetUsageString());
-    }
-    
     return false;
   }
   
