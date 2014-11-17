@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/cmdline.h>
 #include <wx/config.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
@@ -354,44 +355,24 @@ const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
 
 bool wxExFrameWithHistory::Grep(const wxString& arg)
 {
+  wxCmdLineParser cl(arg);
+  cl.AddParam("match", wxCMD_LINE_VAL_STRING);
+  cl.AddParam("folder", wxCMD_LINE_VAL_STRING);
+  cl.AddParam("extension", wxCMD_LINE_VAL_STRING);
+  cl.AddSwitch("h", wxEmptyString, "help");
+  cl.AddSwitch("r", wxEmptyString, "recursive");
+
+  if (cl.Parse() != 0)
+  {
+    if (cl.FoundSwitch("h"))
+    {
+      wxLogMessage(cl.GetUsageString());
+    }
+    
+    return false;
+  }
+  
   const wxExTool tool(ID_TOOL_REPORT_FIND);
-  
-  wxStringTokenizer tkz(arg, "\"");
-  
-  wxString match;
-  wxString folder;
-  wxString extension;
-  
-  if (tkz.CountTokens() > 1)
-  {
-    tkz.GetNextToken(); // skip empty token
-    match = tkz.GetNextToken();
-    
-    wxStringTokenizer tkz(tkz.GetNextToken());
-    
-    if (match.empty() || tkz.CountTokens() < 2)
-    {
-      wxLogStatus("usage: grep match folder extension");
-      return false;
-    }
-    
-    folder = tkz.GetNextToken();
-    extension = tkz.GetNextToken();
-  }
-  else
-  {
-    wxStringTokenizer tkz(arg);
-    
-    if (tkz.CountTokens() < 3)
-    {
-      wxLogStatus("usage: grep match folder extension");
-      return false;
-    }
-    
-    match = tkz.GetNextToken();
-    folder = tkz.GetNextToken();
-    extension = tkz.GetNextToken();
-  }
 
   if (!wxExTextFileWithListView::SetupTool(tool, this))
   {
@@ -402,10 +383,11 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   auto* stc = GetSTC();
   if (stc != NULL)
     wxSetWorkingDirectory(stc->GetFileName().GetPath());
-  wxExFindReplaceData::Get()->SetFindString(match);
+  wxExFindReplaceData::Get()->SetFindString(cl.GetParam(0));
   wxExFindReplaceData::Get()->SetUseRegularExpression(true);
   wxLogStatus(GetFindReplaceInfoText());
-  wxExDirTool dir(tool, folder, extension, wxDIR_FILES); // not recursive
+  wxExDirTool dir(tool, cl.GetParam(1), cl.GetParam(2), 
+    wxDIR_FILES | (cl.FoundSwitch("r") ? wxDIR_DIRS: 0));
   dir.FindFiles();
   wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
     
