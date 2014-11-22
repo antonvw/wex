@@ -1179,18 +1179,17 @@ void wxExSTC::GuessType()
   
   const wxString text = (!HexMode() ? GetTextRange(0, sample_size): 
     m_HexMode.GetBuffer().Mid(0, sample_size));
-  
-  const wxRegEx ex(".*vi: *set .*");
+
+  std::vector<wxString> v;  
     
-  if (ex.Matches(text))
+  // If we have a modeline comment.
+  if (
+    m_vi.GetIsActive() && 
+    wxExMatch(".*vi: *(set [a-z0-9:=! ]+)", text, v) > 0)
   {
-    if (m_vi.GetIsActive())
+    if (!m_vi.Command(wxString(":" + v[0]).ToStdString()))
     {
-      if (!m_vi.Command(wxString(
-        ":" + text.AfterFirst(':').Trim(false)).ToStdString()))
-      {
-        wxLogStatus("Could not apply vi settings");
-      }
+      wxLogStatus("Could not apply vi settings");
     }
   }
 
