@@ -359,7 +359,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   cl.AddParam("match", wxCMD_LINE_VAL_STRING);
   cl.AddParam("folder", wxCMD_LINE_VAL_STRING);
   cl.AddParam("extension", wxCMD_LINE_VAL_STRING);
-  cl.AddSwitch("h", wxEmptyString, "help");
+  cl.AddSwitch("h", wxEmptyString, "help", wxCMD_LINE_OPTION_HELP);
   cl.AddSwitch("r", wxEmptyString, "recursive");
 
   if (cl.Parse() != 0)
