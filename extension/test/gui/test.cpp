@@ -451,15 +451,21 @@ void wxExGuiTestFixture::testEx()
   
   // Test set.
   CPPUNIT_ASSERT( ex->Command(":set"));
-  CPPUNIT_ASSERT( ex->Command(":set ic"));
-  CPPUNIT_ASSERT( ex->Command(":set ic!"));
-  CPPUNIT_ASSERT( ex->Command(":set li"));
-  CPPUNIT_ASSERT( ex->Command(":set li!"));
-  CPPUNIT_ASSERT( ex->Command(":set nu"));
-  CPPUNIT_ASSERT( ex->Command(":set nu!"));
+  CPPUNIT_ASSERT( ex->Command(":set ec=5"));
+  CPPUNIT_ASSERT( ex->Command(":set sy=cpp"));
   CPPUNIT_ASSERT( ex->Command(":set ts=10"));
-  CPPUNIT_ASSERT( ex->Command(":set tabstop=10"));
   CPPUNIT_ASSERT(!ex->Command(":set xxx"));
+  
+  const std::vector<std::string> switches{
+    "ai", "ac", "el", "ic", "ln", "mw", "re", "wl", "ws"};
+  
+  for (const auto& it : switches)
+  {
+    CPPUNIT_ASSERT( ex->Command(":set " + it));
+    CPPUNIT_ASSERT( ex->Command(":set " + it + "!"));
+  }
+  
+  CPPUNIT_ASSERT( ex->Command(":set ai")); // back to default
   
   CPPUNIT_ASSERT( ex->Command(":d"));
   //CPPUNIT_ASSERT( ex->Command(":e")); // shows dialog
