@@ -152,7 +152,7 @@ void wxExFrameWithHistory::CreateDialogs()
     _("Find In Files"),
     0,
     1,
-    wxOK | wxCANCEL,
+    wxAPPLY | wxCANCEL,
     ID_FIND_IN_FILES);
     
   m_RiFDialog = new wxExConfigDialog(this,
@@ -160,7 +160,7 @@ void wxExFrameWithHistory::CreateDialogs()
     _("Replace In Files"),
     0,
     1,
-    wxOK | wxCANCEL,
+    wxAPPLY | wxCANCEL,
     ID_REPLACE_IN_FILES);
 }
 
@@ -531,6 +531,7 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
       break;
 
     case wxID_OK:
+    case wxID_APPLY:
       switch (dialogid)
       {
         case wxID_ADD:
