@@ -183,6 +183,10 @@ bool wxExEx::Command(const std::string& command)
       result = false;
     }
   }
+  else if (command == ":print")
+  {
+    m_STC->Print(false); // no prompt
+  }
   else if (command == ":q")
   {
     POST_CLOSE( wxEVT_CLOSE_WINDOW, true )
