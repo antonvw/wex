@@ -143,7 +143,7 @@ bool wxExEx::Command(const std::string& command)
   {
     result = CommandGlobal(wxString(command).AfterFirst('g'));
   }
-  else if (command == ":help")
+  else if (command.compare(0, 5, ":help") == 0)
   {
     POST_COMMAND( wxID_HELP )
   }
@@ -185,7 +185,14 @@ bool wxExEx::Command(const std::string& command)
   }
   else if (command == ":print")
   {
-    m_STC->Print(false); // no prompt
+    if (command.find(" ") == std::string::npos)
+    {
+      m_STC->Print();
+    }
+    else
+    {
+      m_STC->Print(false); // no prompt
+    }
   }
   else if (command == ":q")
   {
@@ -234,17 +241,19 @@ bool wxExEx::Command(const std::string& command)
   }
   else if (command.compare(0, 7, ":syntax") == 0)
   {
-    const bool on = wxString(command).EndsWith("on");
-  
-    if (on)
+    if (wxString(command).EndsWith("on"))
     {
       wxExLexers::Get()->RestoreTheme();
       m_STC->SetLexer(m_STC->GetFileName().GetLexer().GetDisplayLexer(), true); // allow folding
     }
-    else
+    else if (wxString(command).EndsWith("off"))
     {
       m_STC->ResetLexer();
       wxExLexers::Get()->SetThemeNone();
+    }
+    else
+    {
+      result = false;
     }
 
     m_Frame->StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
@@ -532,7 +541,7 @@ bool wxExEx::CommandSet(const wxString& arg)
   cl.AddNegatableSwitch("mw", "Match Words");
   cl.AddNegatableSwitch("re", "Regular Expression");
   cl.AddNegatableSwitch("ut", "Use Tabs");
-  cl.AddNegatableSwitch("wl", "Wrap line");
+  cl.AddNegatableSwitch("wl", "Wrap Line");
   cl.AddNegatableSwitch("ws", "show WhiteSpace");
   
   switch (cl.Parse())

@@ -29,6 +29,29 @@
 #include "frame.h"
 #include "defs.h"
 
+void About(wxFrame* frame)
+{
+  wxAboutDialogInfo info;
+  info.SetIcon(frame->GetIcon());
+  info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
+
+  wxString description(
+    _("This program offers a portable text or binary editor\n"
+      "with automatic syncing."));
+
+#ifdef wxExUSE_PORTABLE
+  description +=
+    _(" All its config files are read\n"
+      "and saved in the same directory as where the executable is.");
+#endif
+
+  info.SetDescription(description);
+  info.SetCopyright(wxExGetVersionInfo().GetCopyright());
+  info.SetWebSite("http://sourceforge.net/projects/syncped/");
+    
+  wxAboutBox(info);
+}
+    
 BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_AUINOTEBOOK_BG_DCLICK(NOTEBOOK_EDITORS, Frame::OnNotebookEditors)
   EVT_AUINOTEBOOK_BG_DCLICK(NOTEBOOK_PROJECTS, Frame::OnNotebookProjects)
@@ -228,6 +251,7 @@ Frame::Frame(const std::vector< wxString > & files, int split)
   m_CheckBoxHistory->SetValue(
     wxConfigBase::Get()->ReadBool("ShowHistory", false));
 }
+
 
 wxExListViewFileName* Frame::Activate(
   wxExListViewFileName::wxExListType type, 
@@ -585,29 +609,8 @@ void Frame::OnCommand(wxCommandEvent& event)
   // the rest
   else switch (event.GetId())
   {
-  case wxID_ABOUT:
-    {
-    wxAboutDialogInfo info;
-    info.SetIcon(GetIcon());
-    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
-
-    wxString description(
-      _("This program offers a portable text or binary editor\n"
-        "with automatic syncing."));
-
-#ifdef wxExUSE_PORTABLE
-    description +=
-      _(" All its config files are read\n"
-        "and saved in the same directory as where the executable is.");
-#endif
-
-    info.SetDescription(description);
-    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
-    info.SetWebSite("http://sourceforge.net/projects/syncped/");
-      
-    wxAboutBox(info);
-    }
-    break;
+  case wxID_ABOUT: About(this); break;
+  
   case wxID_CLOSE:
     if (editor != NULL)
     {
@@ -625,10 +628,17 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_EXIT: Close(true); break;
   
   case wxID_HELP:
-    wxLaunchDefaultBrowser(
-      "http://antonvw.github.io/syncped/v" + 
-      wxExGetVersionInfo().GetVersionOnlyString() + 
-      "/syncped.htm");
+    if (!event.GetString().empty())
+    {
+      About(this);
+    }
+    else
+    {
+      wxLaunchDefaultBrowser(
+        "http://antonvw.github.io/syncped/v" + 
+        wxExGetVersionInfo().GetVersionOnlyString() + 
+        "/syncped.htm");
+    }
     break;
     
   case wxID_NEW: 
