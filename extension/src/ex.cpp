@@ -123,6 +123,10 @@ bool wxExEx::Command(const std::string& command)
   {
     m_STC->DocumentEnd();
   }
+  else if (command.compare(0, 6, ":about") == 0)
+  {
+    POST_COMMAND( wxID_ABOUT )
+  }
   else if (command == ":close")
   {
     POST_COMMAND( wxID_CLOSE )
