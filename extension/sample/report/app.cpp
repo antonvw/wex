@@ -37,7 +37,7 @@ BEGIN_EVENT_TABLE(wxExRepSampleFrame, wxExFrameWithHistory)
   EVT_MENU(ID_PROCESS_DIALOG, wxExRepSampleFrame::OnCommand)
   EVT_MENU(ID_PROCESS_RUN, wxExRepSampleFrame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExRepSampleFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, wxExRepSampleFrame::OnCommand)
+  EVT_MENU_RANGE(wxID_OPEN, wxID_CLOSE_ALL, wxExRepSampleFrame::OnCommand)
 END_EVENT_TABLE()
 
 wxIMPLEMENT_APP(wxExRepSampleApp);
@@ -236,6 +236,8 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     break;
     
   case wxID_EXIT: Close(true); break;
+  
+  case wxID_HELP: break; //ignore
   
   case wxID_NEW:
     m_STC->GetFile().FileNew(wxExFileName());

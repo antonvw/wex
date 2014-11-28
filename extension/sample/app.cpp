@@ -102,7 +102,7 @@ void wxExSampleDir::OnFile(const wxString& file)
 BEGIN_EVENT_TABLE(wxExSampleFrame, wxExManagedFrame)
   EVT_MENU(wxID_JUMP_TO, wxExSampleFrame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSampleFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, wxExSampleFrame::OnCommand)
+  EVT_MENU_RANGE(wxID_OPEN, wxID_CLOSE_ALL, wxExSampleFrame::OnCommand)
   EVT_MENU_RANGE(ID_FIRST, ID_LAST, wxExSampleFrame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND, wxExSampleFrame::OnCommand)
   EVT_UPDATE_UI(wxID_PRINT, wxExSampleFrame::OnUpdateUI)
@@ -302,6 +302,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       }
       break;
     case wxID_EXIT: Close(true); break;
+    case wxID_HELP: break; //ignore
     case wxID_NEW:
       m_STC->GetFile().FileNew(wxExFileName());
       break;
