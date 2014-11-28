@@ -363,6 +363,8 @@ void Frame::OnCommand(wxCommandEvent& event)
     Close(true);
     break;
 
+  case wxID_HELP: break; //ignore
+  
   case wxID_NEW:
     m_DataWindow->GetFile().FileNew(wxExFileName());
     GetManager().GetPane("DATA").Show();
