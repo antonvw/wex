@@ -27,6 +27,7 @@
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>
 #include "frame.h"
+#include "app.h"
 #include "defs.h"
 
 void About(wxFrame* frame)
@@ -102,7 +103,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, Frame::OnUpdateUI)
 END_EVENT_TABLE()
 
-Frame::Frame(const std::vector< wxString > & files, int split)
+Frame::Frame(App* app)
   : DecoratedFrame()
   , m_IsClosing(false)
   , m_NewProjectNo(1)
@@ -141,7 +142,7 @@ Frame::Frame(const std::vector< wxString > & files, int split)
       GetToolBar(),
       ID_CHECKBOX_HISTORY,
       _("History")))
-  , m_Split(split)
+  , m_App(app)
 {
   wxExViMacros::LoadDocument();
 
@@ -196,10 +197,10 @@ Frame::Frame(const std::vector< wxString > & files, int split)
   
   HideExBar();
   
-  if (files.empty())
+  if (m_App->GetFiles().empty())
   {
     long count = 0;
-    m_Split = -1;
+    m_App->Reset();
       
     if (wxConfigBase::Get()->Read("OpenFiles", &count))
     {
@@ -230,8 +231,8 @@ Frame::Frame(const std::vector< wxString > & files, int split)
   else
   {
     GetManager().GetPane("PROJECTS").Hide();
-    wxExOpenFiles(this, files, 0, wxDIR_FILES); // only files in this dir
-    m_Split = -1;
+    wxExOpenFiles(this, m_App->GetFiles(), 0, wxDIR_FILES); // only files in this dir
+    m_App->Reset();
   }
   
   StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
@@ -1408,11 +1409,16 @@ bool Frame::OpenFile(
         wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
           wxExGetIconID(filename)));
           
-      if (notebook->GetPageCount() >= 2 && m_Split != -1)
+      if (notebook->GetPageCount() >= 2 && m_App->GetSplit() != -1)
       {
-        notebook->Split(key, m_Split);
+        notebook->Split(key, m_App->GetSplit());
       }
 
+      if (!m_App->GetCommand().empty() && editor->GetVi().GetIsActive())
+      {
+        editor->GetVi().Command(m_App->GetCommand().ToStdString());
+      }
+      
       if (GetManager().GetPane("DIRCTRL").IsShown())
       {
         m_DirCtrl->ExpandAndSelectPath(key);
