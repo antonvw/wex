@@ -14,6 +14,8 @@
 #include <wx/extension/report/listview.h>
 #include "support.h"
 
+class App;
+
 class Notebook : public wxExNotebook
 {
 public:
@@ -33,7 +35,7 @@ private:
 class Frame : public DecoratedFrame
 {
 public:
-  Frame(const std::vector< wxString > & files, int split);
+  Frame(App* app);
   
   virtual bool OpenFile(
     const wxExFileName& filename,
@@ -84,9 +86,9 @@ private:
 
   bool m_IsClosing;
   int m_NewProjectNo;
-  int m_Split;
   int m_SplitId;
 
+  App* m_App;
   Notebook* m_Editors;
 
   wxCheckBox* m_CheckBoxDirCtrl;

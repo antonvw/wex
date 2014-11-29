@@ -34,20 +34,28 @@ bool App::OnCmdLineParsed(wxCmdLineParser& parser)
     m_Files.push_back(parser.GetParam(i));
   }
   
+  if (parser.Found("c"))
+  {
+    parser.Found("c", &m_Command);
+  }
+  
   if (parser.Found("l"))
   {
     wxLogMessage(
       "Locale: " + GetLocale().GetLocale() + " dir: " + GetCatalogDir());
   }
-  else if (parser.Found("s"))
-  {
-    m_Split = wxRIGHT;
-  }
-  else if (parser.Found("t"))
+  
+  if (parser.Found("o"))
   {
     m_Split = wxBOTTOM;
   }
-  else if (parser.Found("v"))
+  
+  if (parser.Found("O"))
+  {
+    m_Split = wxRIGHT;
+  }
+  
+  if (parser.Found("v"))
   {
     wxLogMessage(wxExGetVersionInfo().GetVersionOnlyString());
   }
@@ -67,7 +75,7 @@ bool App::OnInit()
     return false;
   }
 
-  Frame* frame = new Frame(m_Files, m_Split);
+  Frame* frame = new Frame(this);
   frame->Show();
   
   return true;
@@ -82,8 +90,15 @@ void App::OnInitCmdLine(wxCmdLineParser& parser)
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
     
+  parser.AddOption("c", wxEmptyString, _("command"), wxCMD_LINE_VAL_STRING);
   parser.AddSwitch("l", wxEmptyString, _("show locale"));
-  parser.AddSwitch("s", wxEmptyString, _("split tabs vertically"));
-  parser.AddSwitch("t", wxEmptyString, _("split tabs horizontally"));
+  parser.AddSwitch("o", wxEmptyString, _("split tabs horizontally"));
+  parser.AddSwitch("O", wxEmptyString, _("split tabs vertically"));
   parser.AddSwitch("v", wxEmptyString, _("show version"));
+}
+
+void App::Reset()
+{
+  m_Command.clear();
+  m_Split = -1;
 }

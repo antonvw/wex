@@ -12,6 +12,12 @@
 
 class App : public wxExApp
 {
+public:
+  const wxString& GetCommand() const {return m_Command;};
+  const std::vector< wxString > & GetFiles() const {return m_Files;};
+  int GetSplit() const {return m_Split;};
+  
+  void Reset();
 private:
 #ifdef __WXOSX__  
   virtual void MacOpenFiles(const wxArrayString& fileNames);
@@ -21,6 +27,7 @@ private:
   virtual void OnInitCmdLine(wxCmdLineParser& parser);
 
   std::vector< wxString > m_Files;
+  wxString m_Command;
   int m_Split;
 };
 #endif
