@@ -1499,11 +1499,11 @@ void Frame::StatusBarClickedRight(const wxString& pane)
           !stc->GetLexer().GetScintillaLexer().empty() && 
            stc->GetLexer().GetScintillaLexer() == stc->GetLexer().GetDisplayLexer())
         {
-          match = "lexer name=\"" + stc->GetLexer().GetScintillaLexer();
+          match = "lexer name=\"" + stc->GetLexer().GetScintillaLexer() + "\"";
         }
         else if (!stc->GetLexer().GetDisplayLexer().empty())
         {
-          match = "display=\"" + stc->GetLexer().GetDisplayLexer();
+          match = "display=\"" + stc->GetLexer().GetDisplayLexer() + "\"";
         }
       }
     }
@@ -1533,13 +1533,13 @@ void Frame::StatusBarClickedRight(const wxString& pane)
     {
       OpenFile(wxExViMacros::GetFileName(),
         0,
-        "macro name=\"" + macro);
+        "macro name=\"" + macro + "\"");
     }
     else
     {
       OpenFile(wxExViMacros::GetFileName(),
         0,
-        "variable name=\"" + macro);
+        "variable name=\"" + macro + "\"");
     }
   }
   else if (pane == "PaneVCS")
