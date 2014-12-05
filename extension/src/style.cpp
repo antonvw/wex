@@ -41,6 +41,18 @@ bool wxExStyle::ContainsDefaultStyle() const
   return (it != m_No.end());
 }
 
+const wxString wxExStyle::GetNo() const
+{
+  wxString text;
+  
+  for (const auto& it : m_No)
+  {
+    text += wxString::Format("%d ", it);
+  }
+  
+  return text;
+}
+
 void wxExStyle::Set(const wxXmlNode* node, const wxString& macro)
 {
   SetNo(

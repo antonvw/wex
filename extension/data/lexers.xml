@@ -2182,6 +2182,17 @@ Copyright: (c) 2014, Anton van Wezenbeek
   </lexer>
   <lexer name="coffeescript"/>
   <lexer name="conf"/>
+  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
+    <properties>
+      <property name="lexer.cpp.track.preprocessor"> 0 </property>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+      <property name="fold.preprocessor"> 0 </property>
+    </properties>
+    <keywords set-0="cpp" set-1="cpp-stl" set-2="cpp-doc"/>
+    <comments begin1="//" begin2="/*" end2="*/" />
+  </lexer>
   <lexer display="c#" name="cpp" extensions="*.cs">
     <keywords>
       abstract  as        base       bool      break
@@ -2201,22 +2212,6 @@ Copyright: (c) 2014, Anton van Wezenbeek
       unsafe    ushort    using      virtual   void
       volatile  while    
     </keywords>
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-    </properties>
-  </lexer>
-  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
-    <properties>
-      <property name="lexer.cpp.track.preprocessor"> 0 </property>
-      <property name="fold"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-      <property name="fold.preprocessor"> 0 </property>
-    </properties>
-    <keywords set-0="cpp" set-1="cpp-stl" set-2="cpp-doc"/>
-    <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
   <lexer name="cppnocase" macro="cpp">
     <keywords set-0="cpp" set-1="cpp-stl" set-2="cpp-doc"/>
@@ -2224,10 +2219,6 @@ Copyright: (c) 2014, Anton van Wezenbeek
   <lexer name="csound"/>
   <lexer display="csh" name="bash" extensions="*.csh"> 
     <keywords set="csh"/>
-    <comments begin1="#" />
-    <properties>
-      <property name="fold.comment"> 1 </property>
-    </properties>
   </lexer>
   <lexer name="css" extensions="*.css">
     <keywords set-0="css1" set-2="css2" set-3="css3"/>
@@ -2342,11 +2333,6 @@ Copyright: (c) 2014, Anton van Wezenbeek
       return short static strictfp super switch synchronized this throw throws
       transient try var void volatile while
     </keywords>
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-    </properties>
   </lexer>
   <lexer name="kix"/>
   <lexer name="latex" extensions="*.tex"/>
@@ -2499,13 +2485,6 @@ Copyright: (c) 2014, Anton van Wezenbeek
       Precondition Postcondition Force Tags
       Default Test Template Timeout
     </keywords>
-    <comments begin1="#" />
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-      <property name="tab.timmy.whinge.level"> 1 </property>
-    </properties>
   </lexer>
   <lexer name="ruby"/>
   <lexer name="scriptol"/>
@@ -2515,10 +2494,6 @@ Copyright: (c) 2014, Anton van Wezenbeek
       case do done echo elif else esac export fi for function if in
       select then until while time
     </keywords>
-    <comments begin1="#" />
-    <properties>
-      <property name="fold.comment"> 1 </property>
-    </properties>
   </lexer>
   <lexer name="smalltalk"/>
   <lexer name="SML"/>
@@ -2591,10 +2566,6 @@ Copyright: (c) 2014, Anton van Wezenbeek
       filetest hup log ls-F nice nohup sched
       settc setty telltc uncomplete where which      
     </keywords>
-    <comments begin1="#" />
-    <properties>
-      <property name="fold.comment"> 1 </property>
-    </properties>
   </lexer>
   <lexer name="tex"/>
   <lexer name="txt2tags"/>
@@ -2605,18 +2576,8 @@ Copyright: (c) 2014, Anton van Wezenbeek
   <lexer name="visualprolog"/>
   <lexer display="xml" name="hypertext" extensions="*.xml">
     <styles>
-      <style no="tag"> tag </style>
-      <style no="tagend"> tag </style>
-      <style no="tagunknown"> error </style>
-      <style no="attributeunknown"> error </style>
       <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
     </styles>
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-      <property name="fold.html"> 1 </property>
-    </properties>
     <!-- xml comments cannot be added, but don't need to, 
          they are added in the source -->
   </lexer>
