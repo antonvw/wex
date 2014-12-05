@@ -27,25 +27,25 @@
 
 #if wxUSE_GUI
 
-#define POST_CLOSE( ID, VETO )                          \
-{                                                       \
-  wxCloseEvent event(ID);                               \
-  event.SetCanVeto(VETO);                               \
-  wxPostEvent(wxTheApp->GetTopWindow(), event);         \
-};                                                      \
+#define POST_CLOSE( ID, VETO )                              \
+{                                                           \
+  wxCloseEvent event(ID);                                   \
+  event.SetCanVeto(VETO);                                   \
+  wxPostEvent(wxTheApp->GetTopWindow(), event);             \
+};                                                          \
 
-#define POST_COMMAND( ID )                              \
-{                                                       \
-  wxCommandEvent event(                                 \
-    wxEVT_COMMAND_MENU_SELECTED, ID);                   \
-                                                        \
-  if (command.find(" ") != std::string::npos)           \
-  {                                                     \
-    event.SetString(command.substr(command.find(" "))); \
-  }                                                     \
-                                                        \
-  wxPostEvent(wxTheApp->GetTopWindow(), event);         \
-};                                                      \
+#define POST_COMMAND( ID )                                  \
+{                                                           \
+  wxCommandEvent event(                                     \
+    wxEVT_COMMAND_MENU_SELECTED, ID);                       \
+                                                            \
+  if (command.find(" ") != std::string::npos)               \
+  {                                                         \
+    event.SetString(command.substr(command.find(" ") + 1)); \
+  }                                                         \
+                                                            \
+  wxPostEvent(wxTheApp->GetTopWindow(), event);             \
+};                                                          \
 
 class wxExCmdLineParser : public wxCmdLineParser
 {
