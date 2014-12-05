@@ -31,8 +31,11 @@ public:
   /// on the stc component, but does not change the value).
   void ApplyReset(wxStyledTextCtrl* stc) const;
   
-  /// Gets the name of this property.
+  /// Returns the name of this property.
   const wxString& GetName() const {return m_Name;};
+
+  /// Returns the value of this property.
+  const wxString& GetValue() const {return m_Value;};
 
   /// Returns true if property is valid.
   bool IsOk() const {

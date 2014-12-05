@@ -188,27 +188,44 @@ void wxExLexer::ApplyWhenSet(
 
 void wxExLexer::AutoMatch(const wxString& lexer)
 {
-  for (const auto& it : wxExLexers::Get()->GetMacros(lexer))
+  const wxExLexer l(wxExLexers::Get()->FindByName(lexer));
+  
+  if (l.GetScintillaLexer().empty())
   {
-    const auto& macro = wxExLexers::Get()->GetThemeMacros().find(it.first);
+    for (const auto& it : wxExLexers::Get()->GetMacros(lexer))
+    {
+      const auto& macro = wxExLexers::Get()->GetThemeMacros().find(it.first);
 
-    // First try exact match.
-    if (macro != wxExLexers::Get()->GetThemeMacros().end())
-    {
-      m_Styles.push_back(wxExStyle(it.second, macro->second));
-    }
-    else
-    {
-      // Then, a partial using Contains.
-      for (const auto& style : wxExLexers::Get()->GetThemeMacros())
+      // First try exact match.
+      if (macro != wxExLexers::Get()->GetThemeMacros().end())
       {
-        if (it.first.Contains(style.first))
+        m_Styles.push_back(wxExStyle(it.second, macro->second));
+      }
+      else
+      {
+        // Then, a partial using Contains.
+        for (const auto& style : wxExLexers::Get()->GetThemeMacros())
         {
-          m_Styles.push_back(wxExStyle(it.second, style.second));
-          break;
+          if (it.first.Contains(style.first))
+          {
+            m_Styles.push_back(wxExStyle(it.second, style.second));
+            break;
+          }
         }
       }
     }
+  }
+  else
+  {
+    // Copy styles and properties, and not keywords,
+    // so your derived display lexer can have it's own keywords.
+    m_Styles = l.GetStyles();
+    m_Properties = l.GetProperties();
+    
+    m_CommentBegin = l.m_CommentBegin;
+    m_CommentBegin2 = l.m_CommentBegin2;
+    m_CommentEnd = l.m_CommentEnd;
+    m_CommentEnd2 = l.m_CommentEnd2;
   }
 }
 
@@ -561,18 +578,30 @@ void wxExLexer::Set(const wxXmlNode* node)
   }
 
 #ifdef DEBUG
-  wxString keywords;
+  wxString text;
   
+  for (const auto& s : m_Styles)
+  {
+    text += wxString::Format("style: no: %s value: %s\n",
+      s.GetNo().c_str(), s.GetValue().c_str());
+  }
+
+  for (const auto& p : m_Properties)
+  {
+    text += wxString::Format("prop: name: %s value: %s\n",
+      p.GetName().c_str(), p.GetValue().c_str());
+  }
+
   for (const auto& it : m_KeywordsSet)
   {
-    keywords += wxString::Format("set: %d %s\n",
+    text += wxString::Format("set: %d %s\n",
       it.first, GetKeywordsString(it.first).c_str());
   }
 
-  if (!keywords.empty())
+  if (!text.empty())
   {
-    wxLogMessage("Lexer: %s Display: %s Keywords: %s",
-     m_ScintillaLexer.c_str(), m_DisplayLexer.c_str(), keywords.c_str());
+    wxLogMessage("Lexer: %s Display: %s Data:\n%s",
+     m_ScintillaLexer.c_str(), m_DisplayLexer.c_str(), text.c_str());
   }
 #endif
 }

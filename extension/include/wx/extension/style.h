@@ -42,6 +42,12 @@ public:
 
   /// Is the default style part of these styles.
   bool ContainsDefaultStyle() const;
+  
+  /// Returns the no ('s).
+  const wxString GetNo() const;
+  
+  /// Returns the value.
+  const wxString& GetValue() const {return m_Value;};
 
   /// Returns true if this style is valid.
   bool IsOk() const {

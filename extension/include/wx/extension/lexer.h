@@ -96,6 +96,9 @@ public:
   /// Gets the scintilla lexer.
   const wxString& GetScintillaLexer() const {return m_ScintillaLexer;};
 
+  /// Gets the styles.
+  const std::vector<wxExStyle> & GetStyles() const {return m_Styles;};
+  
   /// Is this word a keyword (allways all keywords), case sensitive.
   bool IsKeyword(const wxString& word) const;
 
