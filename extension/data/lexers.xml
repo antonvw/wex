@@ -1896,8 +1896,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     <hex no="style_bracelight"> back:red </hex>
 
     <!-- At this moment we do not have properties -->
-    <properties>
-    </properties>
+    <properties/>
   </global>
 
   <keyword>

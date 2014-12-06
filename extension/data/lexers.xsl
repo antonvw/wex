@@ -6,169 +6,181 @@ Author:    Anton van Wezenbeek
 Copyright: (c) 2014 Anton van Wezenbeek
 -->
 
-<xsl:stylesheet version="1.0"
-xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <!-- match on root and do for all children -->
+  <xsl:template match="/">
+    <html>
+      <body>
+        <table border="1">
+          <xsl:apply-templates select="lexers"/>
+          <xsl:apply-templates select="//global"/>
+          <xsl:apply-templates select="//macro"/>
+        </table>
+      </body>
+    </html>
+  </xsl:template>
+  
+  <!-- lexer elements -->
+  <xsl:template match="lexers">
+    <tr><td><h2>lexers</h2>
+      <table border="1" frame="box" rules="all">
+        <tr bgcolor="#9acd32">
+          <th>name</th>
+          <th>display</th>
+          <th>extensions</th>
+          <th>macro</th>
+          <th>comments</th>
+          <th>properties</th>
+          <th width="100">keywords</th>
+        </tr>
+        <xsl:apply-templates select="lexer"/>
+      </table>
+    </td></tr>
+  </xsl:template>
 
-<xsl:template match="/">
-<html>
-<body>
-
-<table border="1">
-<tr>
-<td>
-  <h2>global</h2>
-  <table border="1">
-  <tr bgcolor="#9acd32">
-    <th align="left">marker no</th>
-    <th align="left">value</th>
-  </tr>
+  <!-- global elements -->
+  <xsl:template match="global">
+    <tr><td><h2>global</h2>
+      <table border="1">
+        <tr bgcolor="#9acd32">
+          <th>marker no</th>
+          <th>value</th>
+        </tr>
+        <xsl:apply-templates select="marker"/>
+        
+        <tr bgcolor="#9acd32">
+          <th>style no</th>
+          <th>value</th>
+        </tr>
+        <xsl:apply-templates select="style"/>
+      
+        <tr bgcolor="#9acd32">
+          <th>hex no</th>
+          <th>value</th>
+        </tr>
+        <xsl:apply-templates select="hex"/>
+      
+        <tr bgcolor="#9acd32">
+          <th>indicator no</th>
+          <th>value</th>
+        </tr>
+        <xsl:apply-templates select="indicator"/>
+      
+        <tr bgcolor="#9acd32">
+          <th>property</th>
+          <th>value</th>
+        </tr>
+        <xsl:apply-templates select="lexers/global/property"/>
+      </table>
+    </td></tr>
+  </xsl:template>
   
-  <xsl:for-each select="lexers/global/marker">
-  <tr>
-    <td><xsl:value-of select="@no"/></td>
-    <td><xsl:value-of select="."/></td>
-  </tr>
-  </xsl:for-each>
+  <!-- macro elements -->
+  <xsl:template match="macro">
+    <tr><td><h2>macros</h2>
+      <table border="1" frame="box" rules="all">
+        <tr bgcolor="#9acd32">
+          <th>name</th>
+          <th>no</th>
+          <th>value</th>
+        </tr>
+        <xsl:apply-templates select="def/def"/>
+      </table>
+    </td></tr>
+  </xsl:template>
   
-  <tr bgcolor="#9acd32">
-    <th align="left">style no</th>
-    <th align="left">value</th>
-  </tr>
+  <!-- keyword sets -->
+  <xsl:template match="macros">
+    <tr><td><h2>keyword sets</h2>
+      <table border="1">
+        <tr bgcolor="#9acd32">
+          <th>keyword set</th>
+          <th>value</th>
+        </tr>
+      <xsl:apply-templates select="macros"/>
+      </table>
+    </td></tr>
+  </xsl:template>
   
-  <xsl:for-each select="lexers/global/style">
-  <tr>
-    <td><xsl:value-of select="@no"/></td>
-    <td><xsl:value-of select="."/></td>
-  </tr>
-  </xsl:for-each>
+  <!-- match on elements -->  
+  <xsl:template match="hex">
+    <tr>
+      <td><xsl:value-of select="@no"/></td>
+      <td><xsl:value-of select="."/></td>
+    </tr>
+  </xsl:template>
   
-  <tr bgcolor="#9acd32">
-    <th align="left">hex no</th>
-    <th align="left">value</th>
-  </tr>
+  <xsl:template match="indicator">
+    <tr>
+      <td><xsl:value-of select="@no"/></td>
+      <td><xsl:value-of select="."/></td>
+    </tr>
+  </xsl:template>
   
-  <xsl:for-each select="lexers/global/hex">
-  <tr>
-    <td><xsl:value-of select="@no"/></td>
-    <td><xsl:value-of select="."/></td>
-  </tr>
-  </xsl:for-each>
+  <xsl:template match="marker">
+    <tr>
+      <td><xsl:value-of select="@no"/></td>
+      <td><xsl:value-of select="."/></td>
+    </tr>
+  </xsl:template>
   
-  <tr bgcolor="#9acd32">
-    <th align="left">indicator no</th>
-    <th align="left">value</th>
-  </tr>
+  <xsl:template match="style">
+    <tr>
+      <td><xsl:value-of select="@no"/></td>
+      <td><xsl:value-of select="."/></td>
+    </tr>
+  </xsl:template>
   
-  <xsl:for-each select="lexers/global/indicator">
-  <tr>
-    <td><xsl:value-of select="@no"/></td>
-    <td><xsl:value-of select="."/></td>
-  </tr>
-  </xsl:for-each>
+  <xsl:template match="global/properties/property">
+    <tr>
+      <td><xsl:value-of select="@name"/></td>
+      <td><xsl:value-of select="."/></td>
+    </tr>
+  </xsl:template>
   
-  <tr bgcolor="#9acd32">
-    <th align="left">property</th>
-    <th align="left">value</th>
-  </tr>
+  <xsl:template match="lexers/lexer">
+    <tr>
+      <td><xsl:value-of select="@name"/></td>
+      <td><xsl:value-of select="@display"/></td>
+      <td><xsl:value-of select="@extensions"/></td>
+      <td><xsl:value-of select="@macro"/></td>
+      <td>
+        <xsl:value-of select="comments/@begin1"/>
+        <xsl:value-of select="comments/@begin2"/>
+        <xsl:value-of select="comments/@end1"/>
+        <xsl:value-of select="comments/@end2"/>
+      </td>
+      <td>
+        <xsl:apply-templates select="properties"/>
+      </td>
+      <td>
+        <xsl:value-of select="keywords"/>
+        <xsl:apply-templates select="keywords/@*"/>
+      </td>
+    </tr>
+  </xsl:template>
   
-  <xsl:for-each select="lexers/global/properties/property">
-  <tr>
-    <td><xsl:value-of select="@name"/></td>
-    <td><xsl:value-of select="."/></td>
-  </tr>
-  </xsl:for-each>
+  <xsl:template match="lexers/lexer/property">
+    <xsl:value-of select="@name"/><br/>
+  </xsl:template>
   
-  </table>
-</td>
-</tr>
+  <xsl:template match="lexers/macro/def/def">
+    <tr>
+      <td><xsl:value-of select="./../@name"/></td>
+      <td><xsl:value-of select="@no"/></td>
+      <td><xsl:value-of select="."/></td>
+    </tr>
+  </xsl:template>
   
-<tr>
-<td>
-  <h2>lexers</h2>
-  <table border="1" frame="box" rules="all">
-  <tr bgcolor="#9acd32">
-    <th align="left">name</th>
-    <th align="left">display</th>
-    <th align="left">extensions</th>
-    <th align="left">macro</th>
-    <th align="left">properties</th>
-    <th align="left">comments</th>
-    <th align="left" width="100">keywords</th>
-  </tr>
-  
-  <xsl:for-each select="lexers/lexer">
-  <tr>
-    <td><xsl:value-of select="@name"/></td>
-    <td><xsl:value-of select="@display"/></td>
-    <td><xsl:value-of select="@extensions"/></td>
-    <td><xsl:value-of select="@macro"/></td>
-    <td>
-      <xsl:for-each select="properties/property">
-        <xsl:value-of select="@name"/><br></br>
-      </xsl:for-each> 
-    </td>
-    <td>
-      <xsl:value-of select="comments/@begin1"/>
-      <xsl:value-of select="comments/@begin2"/>
-      <xsl:value-of select="comments/@end1"/>
-      <xsl:value-of select="comments/@end2"/>
-    </td>
-    <td><xsl:value-of select="keywords"/>
-      <xsl:for-each select="keywords/@*">
-        set: <xsl:value-of select="."/> <xsl:text> </xsl:text>
-      </xsl:for-each> 
-    </td>
-  </tr>
-  </xsl:for-each>
-  
-  </table>
-</td>
-</tr>
-  
-<tr>
-<td>
-  <h2>keyword sets</h2>
-  <table border="1">
-  <tr bgcolor="#9acd32">
-    <th align="left">keyword set</th>
-    <th align="left">value</th>
-  </tr>
-  
-  <xsl:for-each select="lexers/keyword/set">
-  <tr>
-    <td><xsl:value-of select="@name"/></td>
-    <td><xsl:value-of select="."/></td>
-  </tr>
-  </xsl:for-each>
-  </table>
-</td>
-</tr>
+  <xsl:template match="lexers/keyword/set">
+    <tr>
+      <td><xsl:value-of select="@name"/></td>
+      <td><xsl:value-of select="."/></td>
+    </tr>
+  </xsl:template>
     
-<tr>
-<td>
-  <h2>macros</h2>
-  <table border="1" frame="box" rules="all">
-  <tr bgcolor="#9acd32">
-    <th align="left">name</th>
-    <th align="left">no</th>
-    <th align="left">value</th>
-  </tr>
-  
-  <xsl:for-each select="lexers/macro/def/def">
-  <tr>
-    <td><xsl:value-of select="./../@name"/></td>
-    <td><xsl:value-of select="@no"/></td>
-    <td><xsl:value-of select="."/></td>
-  </tr>
-  </xsl:for-each>
-  
-  </table>
-</td>
-</tr>
-  
-</table>
-
-</body>
-</html>
-</xsl:template>
+  <xsl:template match="keyword/set">
+    set: <xsl:value-of select="."/> <xsl:text/>
+  </xsl:template>
+            
 </xsl:stylesheet>
