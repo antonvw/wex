@@ -15,6 +15,7 @@ Copyright: (c) 2014 Anton van Wezenbeek
           <xsl:apply-templates select="lexers"/>
           <xsl:apply-templates select="//global"/>
           <xsl:apply-templates select="//macro"/>
+          <xsl:apply-templates select="//keyword"/>
         </table>
       </body>
     </html>
@@ -90,14 +91,14 @@ Copyright: (c) 2014 Anton van Wezenbeek
   </xsl:template>
   
   <!-- keyword sets -->
-  <xsl:template match="macros">
+  <xsl:template match="keyword">
     <tr><td><h2>keyword sets</h2>
       <table border="1">
         <tr bgcolor="#9acd32">
           <th>keyword set</th>
           <th>value</th>
         </tr>
-      <xsl:apply-templates select="macros"/>
+      <xsl:apply-templates select="set"/>
       </table>
     </td></tr>
   </xsl:template>
@@ -168,19 +169,18 @@ Copyright: (c) 2014 Anton van Wezenbeek
     <tr>
       <td><xsl:value-of select="./../@name"/></td>
       <td><xsl:value-of select="@no"/></td>
-      <td><xsl:value-of select="."/></td>
+      <td>
+        <xsl:number level="single" count="def"/>
+        <xsl:value-of select="."/>
+      </td>
     </tr>
   </xsl:template>
   
-  <xsl:template match="lexers/keyword/set">
+  <xsl:template match="keyword/set">
     <tr>
       <td><xsl:value-of select="@name"/></td>
       <td><xsl:value-of select="."/></td>
     </tr>
   </xsl:template>
     
-  <xsl:template match="keyword/set">
-    set: <xsl:value-of select="."/> <xsl:text/>
-  </xsl:template>
-            
 </xsl:stylesheet>
