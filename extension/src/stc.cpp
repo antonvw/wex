@@ -1545,8 +1545,9 @@ void wxExSTC::OnChar(wxKeyEvent& event)
        const wxString match(GetWordAtPos(match_pos + 1));
 
        if (
-         m_Lexer.GetDisplayLexer() == "xml" || 
-         m_Lexer.IsKeyword(match))
+         GetCharAt(GetCurrentPos() - 2) != '/' &&
+         (m_Lexer.GetDisplayLexer() == "xml" || 
+          m_Lexer.IsKeyword(match)))
        {
          const wxString add("</" + match + ">");
          
