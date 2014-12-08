@@ -1545,7 +1545,8 @@ void wxExSTC::OnChar(wxKeyEvent& event)
        const wxString match(GetWordAtPos(match_pos + 1));
 
        if (
-         GetCharAt(GetCurrentPos() - 2) != '/' &&
+         !match.StartsWith("/") &&
+          GetCharAt(GetCurrentPos() - 2) != '/' &&
          (m_Lexer.GetDisplayLexer() == "xml" || 
           m_Lexer.IsKeyword(match)))
        {

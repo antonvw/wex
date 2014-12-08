@@ -9,9 +9,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/xml/xml.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h> // for STAT_ etc.
 
@@ -108,6 +110,17 @@ void wxExSTCFile::DoFileSave(bool save_as)
   m_STC->MarkerDeleteAllChange();
   
   wxLogStatus(_("Saved") + ": " + GetFileName().GetFullPath());
+  
+  if (
+    wxExLexers::Get()->GetFileName() != GetFileName() &&
+   (GetFileName().GetLexer().GetDisplayLexer() == "xml" ||
+    GetFileName().GetLexer().GetDisplayLexer() == "xsl"))
+  {
+    if (!wxXmlDocument(GetFileName().GetFullPath()).IsOk())
+    {
+      wxLogStatus("not a valid XML document");
+    }
+  }
 }
 
 bool wxExSTCFile::GetContentsChanged() const 
