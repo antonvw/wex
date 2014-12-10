@@ -2117,11 +2117,12 @@ Copyright: (c) 2014, Anton van Wezenbeek
       nop reset rol rolb ror rorb rti rts 
       rtt sbc sbcb s scc sec sen sev sez sob spl sub swab sxt trap tst tstb 
       tstset wait wrtlck xor
-      .ascii .asciz .asect .blkb .byte .cross .csect .dsabl .enabl .end .endc 
-      .even .flt2 .flt4 .globl .ident .if 
-      .iff .ift .iftf .iif .include .library .limit .list .nlist .nocross .odd 
-      .packed .page .psect .rad50 .radix .rem 
-      .restore .sbttl .title .weak .word
+      ascii asciz asect blkb byte cross csect dsabl enabl end endc 
+      even flt2 flt4 globl ident if 
+      iff ift iftf iif include library 
+      limit list nlist nocross odd 
+      packed page psect rad50 radix rem 
+      restore sbttl title weak word
       mn so do pc ms cc sp r1 r2 r3 r4 r5
     </keywords>
     <comments begin1=";" />
@@ -2574,6 +2575,13 @@ Copyright: (c) 2014, Anton van Wezenbeek
   <lexer name="vhdl"/>
   <lexer name="visualprolog"/>
   <lexer display="xml" name="hypertext" extensions="*.xml">
+    <styles>
+      <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
+    </styles>
+    <!-- xml comments cannot be added, but don't need to, 
+         they are added in the source -->
+  </lexer>
+  <lexer display="xsl" name="hypertext" extensions="*.xsl">
     <styles>
       <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
     </styles>
