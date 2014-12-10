@@ -27,14 +27,15 @@ Copyright: (c) 2014 Anton van Wezenbeek
       <table border="1" frame="box" rules="all">
         <tr bgcolor="#9acd32">
           <th>name</th>
-          <th>display</th>
           <th>extensions</th>
           <th>macro</th>
           <th>comments</th>
           <th>properties</th>
-          <th width="100">keywords</th>
+          <th>keywords</th>
         </tr>
-        <xsl:apply-templates select="lexer"/>
+        <xsl:apply-templates select="lexer">
+          <xsl:sort select="@name"/>
+        </xsl:apply-templates>
       </table>
     </td></tr>
   </xsl:template>
@@ -85,7 +86,24 @@ Copyright: (c) 2014 Anton van Wezenbeek
           <th>no</th>
           <th>value</th>
         </tr>
-        <xsl:apply-templates select="def/def"/>
+        
+        <xsl:variable name="offset">-1
+        </xsl:variable>
+        
+        <xsl:for-each select="def/def">
+          <tr>
+            <td><xsl:value-of select="./../@name"/></td>
+            <td><xsl:value-of select="@no"/></td>
+            <td>
+              <xsl:variable name="num">
+                <xsl:number level="single" count="def"/>
+              </xsl:variable>
+              <xsl:number value="$num + $offset"/>
+              <xsl:value-of select="."/>
+            </td>
+          </tr>
+        </xsl:for-each>
+  
       </table>
     </td></tr>
   </xsl:template>
@@ -141,8 +159,14 @@ Copyright: (c) 2014 Anton van Wezenbeek
   
   <xsl:template match="lexers/lexer">
     <tr>
-      <td><xsl:value-of select="@name"/></td>
-      <td><xsl:value-of select="@display"/></td>
+      <td>
+        <xsl:value-of select="@name"/>
+        <xsl:if test="@display">
+          <xsl:text> (</xsl:text>
+          <xsl:value-of select="@display"/>
+          <xsl:text>)</xsl:text>
+        </xsl:if>
+      </td>
       <td><xsl:value-of select="@extensions"/></td>
       <td><xsl:value-of select="@macro"/></td>
       <td>
@@ -154,26 +178,17 @@ Copyright: (c) 2014 Anton van Wezenbeek
       <td>
         <xsl:apply-templates select="properties"/>
       </td>
-      <td>
+      <td width="200">
+        <xsl:for-each select="keywords/@*">
+          set: <xsl:value-of select="."/> <xsl:text> </xsl:text>
+        </xsl:for-each> 
         <xsl:value-of select="keywords"/>
-        <xsl:apply-templates select="keywords/@*"/>
       </td>
     </tr>
   </xsl:template>
   
   <xsl:template match="lexers/lexer/property">
     <xsl:value-of select="@name"/><br/>
-  </xsl:template>
-  
-  <xsl:template match="lexers/macro/def/def">
-    <tr>
-      <td><xsl:value-of select="./../@name"/></td>
-      <td><xsl:value-of select="@no"/></td>
-      <td>
-        <xsl:number level="single" count="def"/>
-        <xsl:value-of select="."/>
-      </td>
-    </tr>
   </xsl:template>
   
   <xsl:template match="keyword/set">

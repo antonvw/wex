@@ -18,6 +18,20 @@
 #include <wx/extension/util.h> // for STAT_ etc.
 
 #if wxUSE_GUI
+void CheckWellFormed(const wxExFileName& fn)
+{
+  if (
+    wxExLexers::Get()->GetFileName() != fn &&
+   (fn.GetLexer().GetDisplayLexer() == "xml" ||
+    fn.GetLexer().GetDisplayLexer() == "xsl"))
+  {
+    if (!wxXmlDocument(fn.GetFullPath()).IsOk())
+    {
+      wxLogStatus("not a valid XML document");
+    }
+  }
+}
+
 wxExSTCFile::wxExSTCFile(wxExSTC* stc, const wxString& filename)
   : m_STC(stc)
   , m_PreviousLength(0)
@@ -62,6 +76,8 @@ bool wxExSTCFile::DoFileLoad(bool synced)
     
     wxLogStatus(_("Opened") + ": " + GetFileName().GetFullPath());
   }
+  
+  CheckWellFormed(GetFileName());
   
   m_STC->PropertiesMessage(synced ? STAT_SYNC: STAT_DEFAULT);
   m_STC->UseModificationMarkers(true);
@@ -110,6 +126,8 @@ void wxExSTCFile::DoFileSave(bool save_as)
   m_STC->MarkerDeleteAllChange();
   
   wxLogStatus(_("Saved") + ": " + GetFileName().GetFullPath());
+  
+  CheckWellFormed(GetFileName());
   
   if (
     wxExLexers::Get()->GetFileName() != GetFileName() &&
