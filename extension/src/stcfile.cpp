@@ -128,17 +128,6 @@ void wxExSTCFile::DoFileSave(bool save_as)
   wxLogStatus(_("Saved") + ": " + GetFileName().GetFullPath());
   
   CheckWellFormed(GetFileName());
-  
-  if (
-    wxExLexers::Get()->GetFileName() != GetFileName() &&
-   (GetFileName().GetLexer().GetDisplayLexer() == "xml" ||
-    GetFileName().GetLexer().GetDisplayLexer() == "xsl"))
-  {
-    if (!wxXmlDocument(GetFileName().GetFullPath()).IsOk())
-    {
-      wxLogStatus("not a valid XML document");
-    }
-  }
 }
 
 bool wxExSTCFile::GetContentsChanged() const 
