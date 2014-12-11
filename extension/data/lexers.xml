@@ -2581,6 +2581,13 @@ Copyright: (c) 2014, Anton van Wezenbeek
     <!-- xml comments cannot be added, but don't need to, 
          they are added in the source -->
   </lexer>
+  <lexer display="xsd" name="hypertext" extensions="*.xsd">
+    <styles>
+      <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
+    </styles>
+    <!-- xml comments cannot be added, but don't need to, 
+         they are added in the source -->
+  </lexer>
   <lexer display="xsl" name="hypertext" extensions="*.xsl">
     <styles>
       <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
