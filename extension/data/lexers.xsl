@@ -10,8 +10,22 @@ Copyright: (c) 2014 Anton van Wezenbeek
   <!-- match on root and do for all children -->
   <xsl:template match="/">
     <html>
+      <head>
+        <style>
+        table, th, td 
+        {
+          border: 1px solid black;
+          border-collapse: collapse;
+          vertical-align: top
+        }
+        th
+        {
+          background-color: #9acd32;
+        }
+        </style>      
+      </head>
       <body>
-        <table border="1">
+        <table>
           <xsl:apply-templates select="lexers"/>
           <xsl:apply-templates select="//global"/>
           <xsl:apply-templates select="//macro"/>
@@ -24,14 +38,14 @@ Copyright: (c) 2014 Anton van Wezenbeek
   <!-- lexer elements -->
   <xsl:template match="lexers">
     <tr><td><h2>lexers</h2>
-      <table border="1" frame="box" rules="all">
-        <tr bgcolor="#9acd32">
+      <table>
+        <tr>
           <th>name</th>
-          <th>extensions</th>
+          <th style="width: 100px">extensions</th>
           <th>macro</th>
           <th>comments</th>
           <th>properties</th>
-          <th>keywords</th>
+          <th style="width: 350px">keywords</th>
         </tr>
         <xsl:apply-templates select="lexer">
           <xsl:sort select="@name"/>
@@ -43,32 +57,32 @@ Copyright: (c) 2014 Anton van Wezenbeek
   <!-- global elements -->
   <xsl:template match="global">
     <tr><td><h2>global</h2>
-      <table border="1">
-        <tr bgcolor="#9acd32">
+      <table>
+        <tr>
           <th>marker no</th>
           <th>value</th>
         </tr>
         <xsl:apply-templates select="marker"/>
         
-        <tr bgcolor="#9acd32">
+        <tr>
           <th>style no</th>
           <th>value</th>
         </tr>
         <xsl:apply-templates select="style"/>
       
-        <tr bgcolor="#9acd32">
+        <tr>
           <th>hex no</th>
           <th>value</th>
         </tr>
         <xsl:apply-templates select="hex"/>
       
-        <tr bgcolor="#9acd32">
+        <tr>
           <th>indicator no</th>
           <th>value</th>
         </tr>
         <xsl:apply-templates select="indicator"/>
       
-        <tr bgcolor="#9acd32">
+        <tr>
           <th>property</th>
           <th>value</th>
         </tr>
@@ -80,8 +94,8 @@ Copyright: (c) 2014 Anton van Wezenbeek
   <!-- macro elements -->
   <xsl:template match="macro">
     <tr><td><h2>macros</h2>
-      <table border="1" frame="box" rules="all">
-        <tr bgcolor="#9acd32">
+      <table>
+        <tr>
           <th>name</th>
           <th>no</th>
           <th>value</th>
@@ -111,8 +125,8 @@ Copyright: (c) 2014 Anton van Wezenbeek
   <!-- keyword sets -->
   <xsl:template match="keyword">
     <tr><td><h2>keyword sets</h2>
-      <table border="1">
-        <tr bgcolor="#9acd32">
+      <table>
+        <tr>
           <th>keyword set</th>
           <th>value</th>
         </tr>
@@ -178,17 +192,19 @@ Copyright: (c) 2014 Anton van Wezenbeek
       <td>
         <xsl:apply-templates select="properties"/>
       </td>
-      <td width="200">
+      <td>
         <xsl:for-each select="keywords/@*">
           set: <xsl:value-of select="."/> <xsl:text> </xsl:text>
         </xsl:for-each> 
+        <br/>
         <xsl:value-of select="keywords"/>
       </td>
     </tr>
   </xsl:template>
   
-  <xsl:template match="lexers/lexer/property">
-    <xsl:value-of select="@name"/><br/>
+  <xsl:template match="lexers/lexer/properties/property">
+    <xsl:value-of select="@name"/>
+    <xsl:value-of select="."/><br/>
   </xsl:template>
   
   <xsl:template match="keyword/set">
