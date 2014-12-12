@@ -90,6 +90,9 @@ public:
     /// prefix keyword should start with
     const wxString& prefix = wxEmptyString) const;
 
+  /// Gets the language.
+  const wxString& GetLanguage() const {return m_Language;};
+  
   /// Gets the properties.
   const std::vector<wxExProperty> & GetProperties() const {return m_Properties;};
   
@@ -179,6 +182,7 @@ private:
   wxString m_CommentEnd;
   wxString m_CommentEnd2;
   wxString m_Extensions;
+  wxString m_Language; // e.g. xml
 
   // The scintilla name for this lexer.
   // Cannot be const, as in wxExFileName the operator= is used on a lexer.

@@ -27,8 +27,9 @@ Copyright: (c) 2014 Anton van Wezenbeek
       <body>
         <table>
           <xsl:apply-templates select="lexers"/>
-          <xsl:apply-templates select="//global"/>
+          <xsl:apply-templates select="//themes"/>
           <xsl:apply-templates select="//macro"/>
+          <xsl:apply-templates select="//global"/>
           <xsl:apply-templates select="//keyword"/>
         </table>
       </body>
@@ -54,6 +55,44 @@ Copyright: (c) 2014 Anton van Wezenbeek
     </td></tr>
   </xsl:template>
 
+  <!-- themes elements -->
+  <xsl:template match="themes">
+    <tr><td><h2>themes</h2>
+      <table>
+        <tr>
+          <th>name</th>
+          <th>def</th>
+        </tr>
+        
+        <xsl:for-each select="theme">
+          <td><xsl:value-of select="@name"/></td>
+          <td>
+            <table>
+              <tr>
+                <th>no</th>
+                <th>value</th>
+              </tr>
+
+              <xsl:variable name="offset">-1
+              </xsl:variable>
+          
+              <xsl:for-each select="def">
+                <tr>
+                  <td><xsl:value-of select="@style"/></td>
+                  <td>
+                    <xsl:value-of select="."/>
+                  </td>
+                </tr>
+              </xsl:for-each>
+            </table>
+            
+          </td>
+        </xsl:for-each>
+  
+      </table>
+    </td></tr>
+  </xsl:template>
+  
   <!-- global elements -->
   <xsl:template match="global">
     <tr><td><h2>global</h2>
@@ -97,25 +136,35 @@ Copyright: (c) 2014 Anton van Wezenbeek
       <table>
         <tr>
           <th>name</th>
-          <th>no</th>
-          <th>value</th>
+          <th>def</th>
         </tr>
         
-        <xsl:variable name="offset">-1
-        </xsl:variable>
-        
-        <xsl:for-each select="def/def">
-          <tr>
-            <td><xsl:value-of select="./../@name"/></td>
-            <td><xsl:value-of select="@no"/></td>
-            <td>
-              <xsl:variable name="num">
-                <xsl:number level="single" count="def"/>
+        <xsl:for-each select="def">
+          <td><xsl:value-of select="@name"/></td>
+          <td>
+            <table>
+              <tr>
+                <th>no</th>
+                <th>value</th>
+              </tr>
+
+              <xsl:variable name="offset">-1
               </xsl:variable>
-              <xsl:number value="$num + $offset"/>
-              <xsl:value-of select="."/>
-            </td>
-          </tr>
+          
+              <xsl:for-each select="def">
+                <tr>
+                  <td><xsl:value-of select="@no"/></td>
+                  <td>
+                    <xsl:variable name="num">
+                      <xsl:number level="single" count="def"/>
+                    </xsl:variable>
+                    <xsl:number value="$num + $offset"/>
+                    <xsl:value-of select="."/>
+                  </td>
+                </tr>
+              </xsl:for-each>
+            </table>
+          </td>
         </xsl:for-each>
   
       </table>

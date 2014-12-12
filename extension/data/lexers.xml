@@ -2042,6 +2042,8 @@ Copyright: (c) 2014, Anton van Wezenbeek
       used for matching with the 'style' macro.
    3) display. Use if you want to use a certain lexer,
       but show it under a different name (see c sharp).
+   4) language. This is currently used to support the xml language,
+      including check on well formed doc, and autocomplete.
    Furthermore it might contain the next tags:
    1) <styles>. Colouring styles for this lexer. 
       The attribute 'no' contains the scintilla styles.
@@ -2574,26 +2576,22 @@ Copyright: (c) 2014, Anton van Wezenbeek
   <lexer name="verilog"/>
   <lexer name="vhdl"/>
   <lexer name="visualprolog"/>
-  <lexer display="xml" name="hypertext" extensions="*.xml">
+  <lexer display="xml" name="hypertext" extensions="*.xml" language = "xml">
     <styles>
       <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
     </styles>
     <!-- xml comments cannot be added, but don't need to, 
          they are added in the source -->
   </lexer>
-  <lexer display="xsd" name="hypertext" extensions="*.xsd">
+  <lexer display="xsd" name="hypertext" extensions="*.xsd" language = "xml">
     <styles>
       <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
     </styles>
-    <!-- xml comments cannot be added, but don't need to, 
-         they are added in the source -->
   </lexer>
-  <lexer display="xsl" name="hypertext" extensions="*.xsl">
+  <lexer display="xsl" name="hypertext" extensions="*.xsl" language = "xml">
     <styles>
       <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
     </styles>
-    <!-- xml comments cannot be added, but don't need to, 
-         they are added in the source -->
   </lexer>
   <lexer name="yaml" extensions="*.yml"/>
 </lexers>
