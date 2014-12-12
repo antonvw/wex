@@ -911,6 +911,7 @@ void wxExGuiTestFixture::testLexer()
   CPPUNIT_ASSERT(!lexer.GetCommentBegin2().empty());
   CPPUNIT_ASSERT( lexer.GetCommentEnd().empty());
   CPPUNIT_ASSERT(!lexer.GetCommentEnd2().empty());
+  CPPUNIT_ASSERT( lexer.GetLanguage().empty());
   CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
   CPPUNIT_ASSERT(!lexer.GetKeywordsString().empty());
   CPPUNIT_ASSERT(!lexer.GetKeywordsString(-1, 0).empty());
@@ -979,6 +980,9 @@ void wxExGuiTestFixture::testLexer()
   lexer.Reset(stc);
   CPPUNIT_ASSERT( lexer.GetDisplayLexer().empty());
   CPPUNIT_ASSERT( lexer.GetScintillaLexer().empty());
+  
+  CPPUNIT_ASSERT( lexer.Set("xsl", stc));
+  CPPUNIT_ASSERT( lexer.GetLanguage() == "xml");
 }
 
 void wxExGuiTestFixture::testLexers()
@@ -1569,6 +1573,7 @@ void wxExGuiTestFixture::testProperty()
   CPPUNIT_ASSERT( prop.IsOk());
   
   CPPUNIT_ASSERT( prop.GetName() == "man");
+  CPPUNIT_ASSERT( prop.GetValue() == "ugly");
 }
 
 void wxExGuiTestFixture::testShell()
@@ -1899,6 +1904,7 @@ void wxExGuiTestFixture::testStyle()
   CPPUNIT_ASSERT(!test1.IsOk());
   CPPUNIT_ASSERT(!test2.IsOk());
   CPPUNIT_ASSERT( test3.IsOk());
+  CPPUNIT_ASSERT( test3.GetValue() == "fore:blue");
   CPPUNIT_ASSERT( test4.IsOk()); // because number, string is ok
   CPPUNIT_ASSERT(!test5.IsOk());
   
