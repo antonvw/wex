@@ -22,9 +22,7 @@ void CheckWellFormed(const wxExFileName& fn)
 {
   if (
     wxExLexers::Get()->GetFileName() != fn &&
-   (fn.GetLexer().GetDisplayLexer() == "xml" ||
-    fn.GetLexer().GetDisplayLexer() == "xsd" ||
-    fn.GetLexer().GetDisplayLexer() == "xsl"))
+    fn.GetLexer().GetLanguage() == "xml")
   {
     if (!wxXmlDocument(fn.GetFullPath()).IsOk())
     {

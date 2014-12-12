@@ -506,8 +506,8 @@ void wxExLexer::Set(const wxXmlNode* node)
     m_DisplayLexer = (!node->GetAttribute("display").empty() ?
       node->GetAttribute("display"):
       m_ScintillaLexer);
-    
     m_Extensions = node->GetAttribute("extensions");
+    m_Language = node->GetAttribute("language");
 
     AutoMatch((!node->GetAttribute("macro").empty() ?
       node->GetAttribute("macro"):
