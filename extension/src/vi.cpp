@@ -65,6 +65,8 @@
           if ((#SCOPE) != "Char" && (#SCOPE) != "Word")                  \
             GetSTC()->SCOPE##DIRECTION##Extend();                        \
           break;                                                         \
+        case MODE_VISUAL_RECT: GetSTC()->SCOPE##DIRECTION##RectExtend(); \
+          break;                                                         \
       }                                                                  \
     }                                                                    \
   }                                                                      \
@@ -217,6 +219,7 @@ bool wxExVi::Command(const std::string& command)
       {
         case MODE_NORMAL: GetSTC()->Home(); break;
         case MODE_VISUAL: GetSTC()->HomeExtend(); break;
+        case MODE_VISUAL_RECT: GetSTC()->HomeRectExtend(); break;
       }
       break;
     case 'G': GetSTC()->DocumentEnd(); break;
@@ -623,7 +626,7 @@ bool wxExVi::Command(const std::string& command)
 
   if (!handled)
   {  
-    if (m_Mode == MODE_VISUAL || m_Mode == MODE_VISUAL_LINE)
+    if (m_Mode >= MODE_VISUAL)
     {
       if (command.find("'<,'>") == std::string::npos)
       {
@@ -822,6 +825,8 @@ bool wxExVi::CommandChar(int c, int repeat)
       DeleteRange(GetSTC()->GetCurrentPos() - repeat, GetSTC()->GetCurrentPos());
       break;
 
+    case 'Z': m_Mode = MODE_VISUAL_RECT; break;
+    
     case '.': 
       {
       m_Dot = true;
@@ -855,6 +860,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       {
         case MODE_NORMAL: GetSTC()->LineEnd(); break;
         case MODE_VISUAL: GetSTC()->LineEndExtend(); break;
+        case MODE_VISUAL_RECT: GetSTC()->LineEndRectExtend(); break;
       }
       break;
     

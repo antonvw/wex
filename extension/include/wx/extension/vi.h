@@ -23,8 +23,10 @@ public:
   {
     MODE_NORMAL,      ///< normal (command or navigation) mode
     MODE_INSERT,      ///< pressing key inserts key
+    // all visual modes after this one
     MODE_VISUAL,      ///< navigation keys extend selection
     MODE_VISUAL_LINE, ///< complete lines are selected
+    MODE_VISUAL_RECT, ///< navigation keys extend rectangular selection
   };
 
   /// Constructor.
@@ -70,7 +72,7 @@ private:
     int repeat = 1);
   bool ToggleCase(); 
   bool YankedLines();   
-
+  
   static wxExSTCEntryDialog* m_Dialog;
   static std::string m_LastFindCharCommand;
 
