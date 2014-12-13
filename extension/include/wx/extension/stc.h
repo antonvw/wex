@@ -347,6 +347,14 @@ public:
   /// Use and show modification markers in the margin.
   /// If you open a file, the modification markers are used.
   void UseModificationMarkers(bool use);
+  
+  // These methods are not yet available in scintilla, create stubs
+  // (for the vi NAVIGATE macro).
+  void ParaUpRectExtend() {;};
+  void ParaDownRectExtend() {;};
+  void WordLeftRectExtend() {;};
+  void WordRightRectExtend() {;};
+  void WordRightEndRectExtend() {;};
 protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
