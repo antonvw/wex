@@ -2834,7 +2834,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command(ESC));
   CPPUNIT_ASSERT( stc->GetText().Contains("XXXXX"));
   
-  // Test MODE_VISUAL and MODE_VISUAL_LINE.
+  // Test visual modes.
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   event.m_uniChar = 'v';
   CPPUNIT_ASSERT(!vi->OnChar(event));
@@ -2844,6 +2844,11 @@ void wxExGuiTestFixture::testVi()
   event.m_uniChar = 'V';
   CPPUNIT_ASSERT(!vi->OnChar(event));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_LINE);
+  CPPUNIT_ASSERT( vi->Command(ESC));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  event.m_uniChar = 'Z';
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_RECT);
   CPPUNIT_ASSERT( vi->Command(ESC));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   
@@ -2857,6 +2862,13 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_LINE);
   CPPUNIT_ASSERT( vi->Command("jjj"));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_LINE);
+  CPPUNIT_ASSERT( vi->Command(ESC));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  
+  CPPUNIT_ASSERT( vi->Command("Z"));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_RECT);
+  CPPUNIT_ASSERT( vi->Command("jjj"));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_RECT);
   CPPUNIT_ASSERT( vi->Command(ESC));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   
