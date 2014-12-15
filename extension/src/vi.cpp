@@ -243,7 +243,7 @@ bool wxExVi::Command(const std::string& command)
       }
       else
       {
-        if (m_Mode == MODE_VISUAL || m_Mode == MODE_VISUAL_LINE)
+        if (m_Mode >= MODE_VISUAL)
         {
           GetFrame()->GetExCommand(this, command + "'<,'>");
         }
@@ -260,7 +260,8 @@ bool wxExVi::Command(const std::string& command)
       {
         bool action = false;
         
-        if (!GetSTC()->GetSelectedText().empty())
+        if (!GetSTC()->GetSelectedText().empty() || 
+             GetSTC()->SelectionIsRectangle())
         {
           GetSTC()->SelectNone();
           action = true;
@@ -444,6 +445,7 @@ bool wxExVi::Command(const std::string& command)
                 case MODE_NORMAL: wxExAddressRange(this, repeat).Indent(rest == ">>"); break;
                 case MODE_VISUAL: 
                 case MODE_VISUAL_LINE: 
+                case MODE_VISUAL_RECT: 
                   wxExAddressRange(this, "'<,'>").Indent(rest == ">>"); break;
               }
               break;

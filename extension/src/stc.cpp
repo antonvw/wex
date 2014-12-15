@@ -938,6 +938,11 @@ bool wxExSTC::FindNext(
         EnsureVisible(LineFromPosition(GetTargetEnd()));
         }
       break;
+      case wxExVi::MODE_VISUAL_RECT:
+        SetSelectionMode(wxSTC_SEL_RECTANGLE);
+        SetSelection(GetTargetStart(), GetTargetEnd());
+        EnsureVisible(LineFromPosition(GetTargetStart()));
+      break;
     }
       
     EnsureCaretVisible();
