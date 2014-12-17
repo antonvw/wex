@@ -31,7 +31,6 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/vi.h>
-#include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
 
@@ -924,27 +923,27 @@ bool wxExSTC::FindNext(
     {
       case wxExVi::MODE_NORMAL:
         SetSelection(GetTargetStart(), GetTargetEnd());
-        EnsureVisible(LineFromPosition(GetTargetStart()));
       break;
+      
       case wxExVi::MODE_VISUAL:
         SetSelection(GetSelectionStart(), GetTargetEnd());
-        EnsureVisible(LineFromPosition(GetTargetEnd()));
       break;
+      
       case wxExVi::MODE_VISUAL_LINE:
-        {
-        int begin = PositionFromLine(LineFromPosition(GetSelectionStart()));
-        int end = PositionFromLine(LineFromPosition(GetTargetEnd()) + 1);
-        SetSelection(begin, end);
-        EnsureVisible(LineFromPosition(GetTargetEnd()));
-        }
+        SetSelection(
+          PositionFromLine(LineFromPosition(GetSelectionStart())), 
+          PositionFromLine(LineFromPosition(GetTargetEnd()) + 1));
       break;
+      
       case wxExVi::MODE_VISUAL_RECT:
-        SetSelectionMode(wxSTC_SEL_RECTANGLE);
-        SetSelection(GetTargetStart(), GetTargetEnd());
-        EnsureVisible(LineFromPosition(GetTargetStart()));
+        while (GetCurrentPos() < GetTargetEnd())
+        {
+          CharRightRectExtend();
+        }
       break;
     }
       
+    EnsureVisible(LineFromPosition(GetTargetStart()));
     EnsureCaretVisible();
 
     return true;
@@ -2035,15 +2034,9 @@ int wxExSTC::ReplaceAll(
     return 0;
   }
   
-  const wxString selection = GetSelectedText();
   int selection_from_end = 0;
-  const int selstart = GetSelectionStart();
-  const int selend = GetSelectionEnd();
 
-  // We cannot use wxExGetNumberOfLines here if we have a rectangular selection.
-  // So do it the other way.
-  if (!selection.empty() &&
-       LineFromPosition(selend) > LineFromPosition(selstart))
+  if (SelectionIsRectangle() || wxExGetNumberOfLines(GetSelectedText()) > 1)
   {
     TargetFromSelection();
     selection_from_end = GetLength() - GetTargetEnd();
@@ -2064,7 +2057,7 @@ int wxExSTC::ReplaceAll(
 
     // Check that the target is within the rectangular selection.
     // If not just continue without replacing.
-    if (SelectionIsRectangle() && selection_from_end != 0)
+    if (SelectionIsRectangle())
     {
       const int line = LineFromPosition(GetTargetStart());
       const int start_pos = GetLineSelStartPosition(line);
@@ -2172,8 +2165,17 @@ void wxExSTC::ResetMargins(bool divider_margin)
 
 void wxExSTC::SelectNone()
 {
-  // The base styledtextctrl version uses scintilla, sets caret at 0.
-  SetSelection(GetCurrentPos(), GetCurrentPos());
+  if (SelectionIsRectangle())
+  {
+    // SetSelection does not work.
+    CharRight();
+    CharLeft();
+  }
+  else
+  {
+    // The base styledtextctrl version uses scintilla, sets caret at 0.
+    SetSelection(GetCurrentPos(), GetCurrentPos());
+  }
 }
 
 bool wxExSTC::SetIndicator(

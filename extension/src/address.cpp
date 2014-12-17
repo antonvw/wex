@@ -14,6 +14,7 @@
 #include <wx/extension/ex.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -183,7 +184,9 @@ const wxString wxExAddressRange::BuildReplacement(const wxString& text) const
 }
   
 int wxExAddressRange::Confirm(
-  const wxString& pattern, const wxString& replacement, const wxExIndicator& indicator)
+  const wxString& pattern, 
+  const wxString& replacement, 
+  const wxExIndicator& indicator)
 {
   wxMessageDialog msgDialog(m_STC, 
     _("Replace") + " " + pattern + " " + _("with") + " " + replacement, 
@@ -267,27 +270,25 @@ bool wxExAddressRange::Filter(const wxString& command) const
 
 bool wxExAddressRange::Indent(bool forward) const
 {
-  if (m_STC->GetReadOnly() || m_STC->HexMode()|| !IsOk())
+  if (m_STC->GetReadOnly() || m_STC->HexMode()|| !SetSelection())
   {
     return false;
   }
-
-  if (m_Ex->GetSelectedText().empty())
-  {
-    if (!SetSelection())
-    {
-      return false;
-    }
-  }  
-
+  
+  m_STC->BeginUndoAction();
   m_STC->SendMsg(forward ? wxSTC_CMD_TAB: wxSTC_CMD_BACKTAB);
+  m_STC->EndUndoAction();
   
   return true;
 }
 
 bool wxExAddressRange::IsOk() const
 {
-  if (
+  if (m_STC->SelectionIsRectangle() || !m_STC->GetSelectedText().empty())
+  {
+    return true;
+  }
+  else if (
     m_Begin.GetLine() <= 0 || m_End.GetLine() <= 0 || 
     m_Begin.GetLine() > m_End.GetLine())
   {
@@ -325,7 +326,8 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
 
   if (lines >= 2)
   {
-    m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("%d lines moved"), lines));
+    m_Ex->GetFrame()->ShowExMessage(
+      wxString::Format(_("%d lines moved"), lines));
   }
 
   return true;
@@ -399,9 +401,19 @@ bool wxExAddressRange::Parse(
   return true;
 }
     
+void wxExAddressRange::Set(wxExAddress& begin, wxExAddress& end, int lines)
+{
+  begin.SetLine(m_STC->LineFromPosition(m_STC->GetCurrentPos()) + 1);
+  end.SetLine(begin.GetLine() + lines - 1);
+}
+
 bool wxExAddressRange::SetSelection() const
 {
-  if (!IsOk())
+  if (m_STC->SelectionIsRectangle() || !m_STC->GetSelectedText().empty())
+  {
+    return true;
+  }
+  else if (!IsOk())
   {
     return false;
   }
@@ -508,8 +520,8 @@ bool wxExAddressRange::Substitute(const wxString& command)
   m_Ex->MarkerDelete('#');
   m_Ex->MarkerDelete('$');
   
-  m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
-    nr_replacements, pattern.c_str()));
+  m_Ex->GetFrame()->ShowExMessage(wxString::Format(
+    _("Replaced: %d occurrences of: %s"), nr_replacements, pattern.c_str()));
 
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
   

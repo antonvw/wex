@@ -1008,47 +1008,55 @@ void wxExVi::GotoBrace()
   int pos = GetSTC()->GetCurrentPos();
   int brace_match = GetSTC()->BraceMatch(pos);
           
+  if (brace_match == wxSTC_INVALID_POSITION)
+  {
+    brace_match = GetSTC()->BraceMatch(--pos);
+  }
+
   if (brace_match != wxSTC_INVALID_POSITION)
   {
     GetSTC()->GotoPos(brace_match);
-  }
-  else
-  {
-    pos = GetSTC()->GetCurrentPos() - 1;
-    brace_match = GetSTC()->BraceMatch(pos);
-            
-    if (brace_match != wxSTC_INVALID_POSITION)
+  
+    switch (m_Mode)
     {
-      GetSTC()->GotoPos(brace_match);
-    }
-  }
-
-  if (m_Mode == MODE_VISUAL)
-  {
-    if (brace_match != wxSTC_INVALID_POSITION)
-    {
-      if (brace_match < pos)
-        GetSTC()->SetSelection(brace_match, pos + 1);
-      else
-        GetSTC()->SetSelection(pos, brace_match + 1);
-    }
-  }
-  else if (m_Mode == MODE_VISUAL_LINE)
-  {
-    if (brace_match != wxSTC_INVALID_POSITION)
-    {
-      if (brace_match < pos)
-      {
-        GetSTC()->SetSelection(
-          GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(brace_match)), 
-          GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(pos) + 1));
-      }
-      else
-      {
-        GetSTC()->SetSelection(
-          GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(pos)), 
-          GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(brace_match) + 1));
-      }
+      case MODE_VISUAL:
+        if (brace_match < pos)
+          GetSTC()->SetSelection(brace_match, pos + 1);
+        else
+          GetSTC()->SetSelection(pos, brace_match + 1);
+      break;
+      
+      case MODE_VISUAL_LINE:
+        if (brace_match < pos)
+        {
+          GetSTC()->SetSelection(
+            GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(brace_match)), 
+            GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(pos) + 1));
+        }
+        else
+        {
+          GetSTC()->SetSelection(
+            GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(pos)), 
+            GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(brace_match) + 1));
+        } 
+      break;
+      
+      case MODE_VISUAL_RECT:
+        if (brace_match < pos)
+        {
+          while (GetSTC()->GetCurrentPos() < pos)
+          {
+            GetSTC()->CharRightRectExtend();
+          }
+        }
+        else
+        {
+          while (GetSTC()->GetCurrentPos() > brace_match)
+          {
+            GetSTC()->CharLeftRectExtend();
+          }
+        }
+      break;
     }
   }
 }
@@ -1175,7 +1183,8 @@ bool wxExVi::InsertMode(const std::string& command)
       
       GetSTC()->SetOvertype(false);
       
-      if (!GetSTC()->GetSelectedText().empty())
+      if (!GetSTC()->GetSelectedText().empty() ||
+           GetSTC()->SelectionIsRectangle())
       {
         GetSTC()->SelectNone();
       }

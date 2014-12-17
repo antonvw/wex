@@ -10,9 +10,9 @@
 
 #if wxUSE_GUI
 
-#include <wx/extension/stc.h>
-
 class wxExEx;
+class wxExIndicator;
+class wxExSTC;
 
 /// Offers an address class to be used by vi address ranges.
 class WXDLLIMPEXP_BASE wxExAddress : public wxString
@@ -51,7 +51,10 @@ private:
 };
 
 /// Offers an address range for vi (ex).
-/// All methods return false if range cannot be related to line numbers.
+/// - If a range is already selected on the STC component, then
+///   that range is used.
+/// - Otherwise the range is derived from line numbers, 
+///   and all methods return false if this is not possible.
 class WXDLLIMPEXP_BASE wxExAddressRange
 {
 public:
@@ -90,7 +93,7 @@ public:
   /// Indents range.
   bool Indent(bool forward = true) const;
   
-  /// Is this range ok.
+  /// Is this range is ok (or a selection is active).
   bool IsOk() const;
   
   /// Moves range to destination.
@@ -120,7 +123,10 @@ public:
   bool Yank() const;
 private:  
   const wxString BuildReplacement(const wxString& text) const;
-  int Confirm(const wxString& pattern, const wxString& replacement, const wxExIndicator& ind);
+  int Confirm(
+    const wxString& pattern, 
+    const wxString& replacement, 
+    const wxExIndicator& ind);
   bool Parse(const wxString& command, 
     wxString& pattern, wxString& replacement, wxString& options) const;
   void Set(const wxString& begin, const wxString& end) {
@@ -129,9 +135,7 @@ private:
   void Set(int begin, int end) {
     m_Begin.SetLine(begin);
     m_End.SetLine(end);};
-  void Set(wxExAddress& begin, wxExAddress& end, int lines) {
-    begin.SetLine(m_STC->LineFromPosition(m_STC->GetCurrentPos()) + 1);
-    end.SetLine(begin.GetLine() + lines - 1);};
+  void Set(wxExAddress& begin, wxExAddress& end, int lines);
   bool SetSelection() const;
 
   static wxString m_Replacement;
