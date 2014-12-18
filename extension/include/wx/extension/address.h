@@ -51,10 +51,10 @@ private:
 };
 
 /// Offers an address range for vi (ex).
-/// - If a range is already selected on the STC component, then
-///   that range is used.
-/// - Otherwise the range is derived from line numbers, 
-///   and all methods return false if this is not possible.
+/// - The range is derived from a number of lines, 
+/// - or by a range string (including visual range for 
+///   already selected text on the STC component).
+/// All methods return false if the range is not ok.
 class WXDLLIMPEXP_BASE wxExAddressRange
 {
 public:
@@ -67,7 +67,7 @@ public:
     /// lines 0 is illegal
     int lines = 1);
   
-  /// Contructor for a range.
+  /// Contructor for a range (including visual range).
   wxExAddressRange(
     /// the ex (or vi) component
     wxExEx* ex, 
@@ -93,7 +93,7 @@ public:
   /// Indents range.
   bool Indent(bool forward = true) const;
   
-  /// Is this range is ok (or a selection is active).
+  /// Is this range is ok.
   bool IsOk() const;
   
   /// Moves range to destination.

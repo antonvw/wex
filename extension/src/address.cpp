@@ -270,7 +270,7 @@ bool wxExAddressRange::Filter(const wxString& command) const
 
 bool wxExAddressRange::Indent(bool forward) const
 {
-  if (m_STC->GetReadOnly() || m_STC->HexMode()|| !SetSelection())
+  if (m_STC->GetReadOnly() || m_STC->HexMode())
   {
     return false;
   }
@@ -284,11 +284,7 @@ bool wxExAddressRange::Indent(bool forward) const
 
 bool wxExAddressRange::IsOk() const
 {
-  if (m_STC->SelectionIsRectangle() || !m_STC->GetSelectedText().empty())
-  {
-    return true;
-  }
-  else if (
+  if (
     m_Begin.GetLine() <= 0 || m_End.GetLine() <= 0 || 
     m_Begin.GetLine() > m_End.GetLine())
   {
@@ -409,7 +405,7 @@ void wxExAddressRange::Set(wxExAddress& begin, wxExAddress& end, int lines)
 
 bool wxExAddressRange::SetSelection() const
 {
-  if (m_STC->SelectionIsRectangle() || !m_STC->GetSelectedText().empty())
+  if (!m_STC->GetSelectedText().empty())
   {
     return true;
   }

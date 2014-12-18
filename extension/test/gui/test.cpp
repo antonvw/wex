@@ -85,19 +85,17 @@ void wxExGuiTestFixture::testAddressRange()
 {
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello\nhello1\nhello2");
   wxExEx* ex = new wxExEx(stc);
-  stc->GotoLineAndSelect(2);
+  stc->GotoLine(2);
 
-  // Test valid ranges.
+  // Test valid ranges when no selection is active.
   CPPUNIT_ASSERT( wxExAddressRange(ex).IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, -1).IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, "*").IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, ".").IsOk());
-  stc->SelectAll();  
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "'<,'>").IsOk());
   
-  // Test invalid ranges.
+  // Test invalid ranges when no selection is active.
   CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).IsOk());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").IsOk());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "x").IsOk());
@@ -111,6 +109,21 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,3").Move(wxExAddress(ex, "2")));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,x").Write("flut"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, " ,").Yank());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "'<,'>").IsOk());
+  
+  stc->SelectAll();
+  
+  // Test valid ranges when selection is active.
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).IsOk());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "'<,'>").IsOk());
+  
+  // Test invalid ranges when selection is active.
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).IsOk());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").IsOk());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "x").IsOk());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "x,3").IsOk());
+  
+  stc->SelectNone();
   
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
@@ -137,6 +150,7 @@ void wxExGuiTestFixture::testAddressRange()
   stc->SelectAll();
   CPPUNIT_ASSERT( wxExAddressRange(ex, "'<,'>").Delete());
   CPPUNIT_ASSERT( stc->GetLineCount() == 1);
+  stc->SelectNone();
   
   // Test Yank.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
@@ -379,10 +393,12 @@ void wxExGuiTestFixture::testDialog()
 
 void wxExGuiTestFixture::testEx()
 {
+  // Test modeline.
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), 
-    "// vi: set ts=120"); // this is a modeline
+    "// vi: set ts=120 ec=40");
     
   CPPUNIT_ASSERT(stc->GetTabWidth() == 120);
+  CPPUNIT_ASSERT(stc->GetEdgeColumn() == 40);
   
   wxExEx* ex = new wxExEx(stc);
   
@@ -392,7 +408,7 @@ void wxExGuiTestFixture::testEx()
   ex->Use(true);
   CPPUNIT_ASSERT( ex->GetIsActive());
   
-  CPPUNIT_ASSERT( ex->GetMacros().GetCount() > 0); // TODO
+  CPPUNIT_ASSERT( ex->GetMacros().GetCount() == 0);
 
   // Test last command.  
   CPPUNIT_ASSERT( ex->Command(":.="));
