@@ -461,7 +461,7 @@ bool wxExEx::CommandRange(const wxString& command)
 
   if (command.compare(0, 5, "'<,'>") == 0)
   {
-    if (m_STC->GetSelectedText().empty())
+    if (GetSelectedText().empty())
     {
       return false;
     }
@@ -642,6 +642,7 @@ const std::string wxExEx::GetRegisterText() const
   
 const std::string wxExEx::GetSelectedText() const
 {
+  // This also supports rectangular text.
   if (m_STC->GetSelectedText().empty())
   {
     std::string none;
