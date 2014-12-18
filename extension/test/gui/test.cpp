@@ -408,15 +408,15 @@ void wxExGuiTestFixture::testEx()
   ex->Use(true);
   CPPUNIT_ASSERT( ex->GetIsActive());
   
-  CPPUNIT_ASSERT( ex->GetMacros().GetCount() == 0);
+  CPPUNIT_ASSERT( ex->GetMacros().GetCount() > 0);
 
   // Test last command.  
   CPPUNIT_ASSERT( ex->Command(":.="));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120");
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120 ec=40");
   CPPUNIT_ASSERT(!ex->Command(":xxx"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120");
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120 ec=40");
   CPPUNIT_ASSERT(!ex->Command(":yyy"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120");
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120 ec=40");
   CPPUNIT_ASSERT( ex->Command(":10"));
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":10");
   CPPUNIT_ASSERT( ex->Command(":1,$s/this/ok"));
