@@ -235,6 +235,10 @@ double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
       width = match.length() - 1;
     }
   }
+  else
+  {
+    width = 0;
+  }
   
   expr.Replace(".", wxString::Format("%d", ex->GetSTC()->GetCurrentLine() + 1));
   expr.Replace("$", wxString::Format("%d", ex->GetSTC()->GetLineCount()));

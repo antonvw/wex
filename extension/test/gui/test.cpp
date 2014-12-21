@@ -463,7 +463,7 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":'<,'>!sort"));
   stc->GotoLine(2);
   stc->LineDownExtend();
-  CPPUNIT_ASSERT( ex->Command(":'<,'>x")); // gives unknown range command: ok
+  CPPUNIT_ASSERT(!ex->Command(":'<,'>x"));
   
   // Test set.
   CPPUNIT_ASSERT( ex->Command(":set"));
@@ -2053,7 +2053,7 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( width == 0);
   CPPUNIT_ASSERT( wxExCalculator("2 / 1", ex, width) == 2);
   CPPUNIT_ASSERT( width == 0);
-  CPPUNIT_ASSERT( wxExCalculator("2 / 0", ex, width) == 0);
+  wxExCalculator("2 / 0", ex, width);
   CPPUNIT_ASSERT( width == 0);
   CPPUNIT_ASSERT( wxExCalculator("1,0 + 1", ex, width) == 2);
   CPPUNIT_ASSERT( width == 1);
