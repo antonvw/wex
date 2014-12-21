@@ -2043,6 +2043,8 @@ void wxExGuiTestFixture::testUtil()
   int width = 0;
   CPPUNIT_ASSERT( wxExCalculator("", ex, width) == 0);
   CPPUNIT_ASSERT( width == 0);
+  CPPUNIT_ASSERT( wxExCalculator("  ", ex, width) == 0);
+  CPPUNIT_ASSERT( width == 0);
   CPPUNIT_ASSERT( wxExCalculator("1 + 1", ex, width) == 2);
   CPPUNIT_ASSERT( width == 0);
   CPPUNIT_ASSERT( wxExCalculator("1 - 1", ex, width) == 0);
@@ -2054,6 +2056,8 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExCalculator("2 / 0", ex, width) == 0);
   CPPUNIT_ASSERT( width == 0);
   CPPUNIT_ASSERT( wxExCalculator("1,0 + 1", ex, width) == 2);
+  CPPUNIT_ASSERT( width == 1);
+  CPPUNIT_ASSERT( wxExCalculator("1,1 + 1,1", ex, width) == 2.2);
   CPPUNIT_ASSERT( width == 1);
   CPPUNIT_ASSERT( wxExCalculator("xxx", ex, width) == 0);
   CPPUNIT_ASSERT( width == 0);

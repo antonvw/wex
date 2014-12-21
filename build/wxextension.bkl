@@ -69,6 +69,7 @@ Copyright: (c) 2013 Anton van Wezenbeek
     <sources>../extension/src/version.cpp</sources>
     <sources>../extension/src/vi.cpp</sources>
     <sources>../extension/src/vimacros.cpp</sources>
+    <sources>../extension/src/shunting-yard/shunting-yard.cpp</sources>
     
     <headers>../extension/include/wx/extension/address.h</headers>
     <headers>../extension/include/wx/extension/app.h</headers>
@@ -97,7 +98,7 @@ Copyright: (c) 2013 Anton van Wezenbeek
     <headers>../extension/include/wx/extension/menu.h</headers>
     <headers>../extension/include/wx/extension/notebook.h</headers>
     <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
-    <headers>../extension/include/wx/extension/otl.h</headers>
+    <headers>../extension/include/otlv4.h</headers>
     </if>
     <headers>../extension/include/wx/extension/printing.h</headers>
     <headers>../extension/include/wx/extension/property.h</headers>
@@ -120,5 +121,6 @@ Copyright: (c) 2013 Anton van Wezenbeek
     <headers>../extension/include/wx/extension/version.h</headers>
     <headers>../extension/include/wx/extension/vi.h</headers>
     <headers>../extension/include/wx/extension/vimacros.h</headers>
+    <headers>../extension/include/shunting-yard/shunting-yard.h</headers>
   </lib>
 </makefile>

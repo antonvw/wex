@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <shunting-yard/shunting-yard.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -215,87 +216,68 @@ bool wxExAutoCompleteFileName(
 
 double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
 {
-  wxStringTokenizer tkz(text, "+-*/.$'", wxTOKEN_RET_EMPTY_ALL);
-
-  double sum = 0;
-  wxChar cmd = 0;
-  width = 0;
+  wxString expr(text);
+  expr.Trim();
+  if (expr.empty())
+  {
+    return 0;
+  }
+  
+  // Determine the width.
+  wxRegEx re(",[0-9]+");
+  
+  if (re.Matches(text))
+  {
+    const wxString match = re.GetMatch(expr);
+    
+    if (!match.empty())
+    {
+      width = match.length() - 1;
+    }
+  }
+  
+  expr.Replace(".", wxString::Format("%d", ex->GetSTC()->GetCurrentLine() + 1));
+  expr.Replace("$", wxString::Format("%d", ex->GetSTC()->GetLineCount()));
+  
+  wxStringTokenizer tkz(expr, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
 
   while (tkz.HasMoreTokens())
   {
-    wxString token = tkz.GetNextToken();
-    token.Trim(true);
-    token.Trim(false);
+    tkz.GetNextToken();
     
-    if (tkz.GetLastDelimiter() == '\'')
-    {
-      if (!tkz.GetString().empty())
-      {
-        const int line = ex->MarkerLine(tkz.GetString().GetChar(0));
-      
-        if (line == -1)
-        {
-          return 0;
-        }
-
-        switch (cmd)
-        {
-          case 0: 
-          case '+': 
-            sum += line + 1;
-            break;
-          
-          case '-': 
-            sum -= line + 1; 
-            break;
-        }
-      }
-    }
-    else
-    {
-      const int new_width = token.AfterFirst(',').length();
-      if (new_width > width) width = new_width;
-      
-      double value;
+    const wxString rest(tkz.GetString());
     
-      if (token.StartsWith(wxUniChar(WXK_CONTROL_R)))
+    if (!rest.empty())
+    {
+      if (tkz.GetLastDelimiter() == '\'')
       {
-        const wxChar c = token[1];
-        value = atof(ex->GetMacros().GetRegister(c).c_str());
+        const int line = ex->MarkerLine(rest.GetChar(0));
+        
+        if (line >= 0)
+        {
+          expr.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
+            wxString::Format("%d", line + 1));
+        }
       }
       else
       {
-        value = atof(token);
-      }
-    
-      switch (cmd)
-      {
-        case 0: 
-        case '+': sum += value; break;
-        case '-': sum -= value; break;
-        case '*': sum *= value; break;
-        case '/': 
-          if (value == 0) return 0;
-          sum /= value; 
-          break;
-        
-        case '.': 
-          sum += ex->GetSTC()->GetCurrentLine() + 1; 
-          break;
-        
-        case '$': 
-          sum += ex->GetSTC()->GetLineCount(); 
-          break;
-      }
-    
-      if (tkz.GetLastDelimiter() != 0 || value == 0)
-      {
-        cmd = tkz.GetLastDelimiter();
+        expr.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
+          ex->GetMacros().GetRegister(rest.GetChar(0)));
       }
     }
   }
 
-  return sum;
+  // https://github.com/bmars/shunting-yard/
+  // https://github.com/bamos/cpp-expression-parser
+  try
+  {
+    return calculator::calculate(expr);
+  }
+  catch(std::domain_error e)
+  {
+    wxLogError(e.what());
+    return 0;
+  }
 }
 
 bool wxExClipboardAdd(const wxString& text)
