@@ -18,6 +18,7 @@
 #include <wx/filename.h>
 #include <wx/filehistory.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
+#include <wx/numformatter.h>
 #include <wx/regex.h>
 #include <wx/stdpaths.h>
 #include <wx/textctrl.h>
@@ -218,13 +219,15 @@ double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
 {
   wxString expr(text);
   expr.Trim();
-  if (expr.empty())
+  if (expr.empty() || expr.Contains("%s"))
   {
     return 0;
   }
   
+  const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
+  
   // Determine the width.
-  wxRegEx re(",[0-9]+");
+  wxRegEx re(ds + "[0-9]+");
   
   if (re.Matches(text))
   {
@@ -238,9 +241,9 @@ double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
   else
   {
     width = 0;
+    expr.Replace(".", wxString::Format("%d", ex->GetSTC()->GetCurrentLine() + 1));
   }
   
-  expr.Replace(".", wxString::Format("%d", ex->GetSTC()->GetCurrentLine() + 1));
   expr.Replace("$", wxString::Format("%d", ex->GetSTC()->GetLineCount()));
   
   wxStringTokenizer tkz(expr, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
