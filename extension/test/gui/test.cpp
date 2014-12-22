@@ -13,6 +13,7 @@
 #include <wx/buffer.h>
 #include <wx/config.h>
 #include <wx/filehistory.h>
+#include <wx/numformatter.h>
 #include "test.h"
 
 #define ESC "\x1b"
@@ -2039,6 +2040,8 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( v[0] == "st");
   
   // wxExCalculator
+  stc->SetText("aaaaa\nbbbbb\nccccc\n");
+  const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
   wxExEx* ex = new wxExEx(stc);
   int width = 0;
   CPPUNIT_ASSERT( wxExCalculator("", ex, width) == 0);
@@ -2055,11 +2058,27 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( width == 0);
   wxExCalculator("2 / 0", ex, width);
   CPPUNIT_ASSERT( width == 0);
-//  CPPUNIT_ASSERT( wxExCalculator("1,0 + 1", ex, width) == 2);
-//  CPPUNIT_ASSERT( width == 1);
-  CPPUNIT_ASSERT( wxExCalculator("1,1 + 1,1", ex, width) == 2.2);
-  CPPUNIT_ASSERT( width == 1);
+  if (ds == '.')
+  {
+    CPPUNIT_ASSERT( wxExCalculator("1.0 + 1", ex, width) == 2);
+    CPPUNIT_ASSERT( width == 1);
+    CPPUNIT_ASSERT( wxExCalculator("1.1 + 1.1", ex, width) == 2.2);
+    CPPUNIT_ASSERT( width == 1);
+    CPPUNIT_ASSERT( wxExCalculator(".", ex, width) == 1);
+    CPPUNIT_ASSERT( width == 0);
+  }
+  else
+  {
+    CPPUNIT_ASSERT( wxExCalculator("1,0 + 1", ex, width) == 2);
+    CPPUNIT_ASSERT( width == 1);
+    CPPUNIT_ASSERT( wxExCalculator("1,1 + 1,1", ex, width) == 2.2);
+    CPPUNIT_ASSERT( width == 1);
+    CPPUNIT_ASSERT( wxExCalculator(".", ex, width) == 1);
+    CPPUNIT_ASSERT( width == 0);
+  }
   CPPUNIT_ASSERT( wxExCalculator("xxx", ex, width) == 0);
+  CPPUNIT_ASSERT( width == 0);
+  CPPUNIT_ASSERT( wxExCalculator("$", ex, width) == 4);
   CPPUNIT_ASSERT( width == 0);
 
   // wxExClipboardAdd
