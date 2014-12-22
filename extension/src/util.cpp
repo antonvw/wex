@@ -227,7 +227,8 @@ double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
   const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
   
   // Determine the width.
-  wxRegEx re(ds + "[0-9]+");
+  const wxString rt((ds == '.' ? "\\.": wxString(ds)) + wxString("[0-9]+"));
+  wxRegEx re(rt);
   
   if (re.Matches(text))
   {
