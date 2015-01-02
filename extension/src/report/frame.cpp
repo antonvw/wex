@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -169,7 +169,7 @@ void wxExFrameWithHistory::DoRecent(
   size_t index, 
   long flags)
 {
-  if (history.GetCount() > 0 && index < history.GetMaxFiles())
+  if (history.GetCount() > 0 && (int)index < history.GetMaxFiles())
   {
     const wxString file(history.GetHistoryFile(index));
 
@@ -394,7 +394,7 @@ void wxExFrameWithHistory::HistoryPopupMenu(
 {
   wxMenu* menu = new wxMenu();
 
-  for (int i = 0; i < history.GetCount(); i++)
+  for (size_t i = 0; i < history.GetCount(); i++)
   {
     const wxFileName file(history.GetHistoryFile(i));
     
@@ -431,7 +431,7 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
   {
     wxConfigBase::Get()->DeleteGroup("RecentProject");
     
-    for (int i = 0; i < m_ProjectHistory.GetCount(); i++)
+    for (size_t i = 0; i < m_ProjectHistory.GetCount(); i++)
     {
       wxConfigBase::Get()->Write(
         wxString::Format("RecentProject/%d", i),

@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wxExtension utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -52,9 +52,9 @@ wxExToVectorString::wxExToVectorString(const wxFileDialog& in)
   FromArrayString(paths);
 }
 
-wxExToVectorString::wxExToVectorString(const wxFileHistory& in, int count)
+wxExToVectorString::wxExToVectorString(const wxFileHistory& in, size_t count)
 {
-  for (int i = 0; i < count && i < in.GetCount(); i++)
+  for (size_t i = 0; i < count && i < in.GetCount(); i++)
   {
     m_VS.push_back(in.GetHistoryFile(i));
   }  
@@ -187,9 +187,9 @@ bool wxExAutoCompleteFileName(
     int rest_equal_size = 0;
     bool all_ok = true;
       
-    for (int i = word.length(); i < v[1].size() && all_ok; i++)
+    for (size_t i = word.length(); i < v[1].size() && all_ok; i++)
     {
-      for (int j = 2; j < v.size() && all_ok; j++)
+      for (size_t j = 2; j < v.size() && all_ok; j++)
       {
         if (i < v[j].size() && 
             v[1].GetChar(i) != v[j].GetChar(i))
@@ -678,7 +678,7 @@ int wxExMatch(
     
     if (res.size() > 1)
     {
-      for (int i = 1; i < res.size(); i++)
+      for (size_t i = 1; i < res.size(); i++)
       {
         v.push_back(wxString(res[i]));
       }

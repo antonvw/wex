@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -2008,7 +2008,7 @@ void wxExSTC::PropertiesMessage(long flags)
 
 void wxExSTC::Reload(long flags)
 {
-  if (!m_HexMode.Set(flags & STC_WIN_HEX, 
+  if (!m_HexMode.Set((flags & STC_WIN_HEX) > 0, 
     flags & STC_WIN_HEX ? GetTextRaw(): wxCharBuffer()))
   {
     return;

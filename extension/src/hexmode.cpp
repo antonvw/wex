@@ -2,7 +2,7 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wxExHexMode and wxExHexModeLine
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -198,7 +198,7 @@ bool wxExHexMode::GotoDialog()
 
   m_Goto = val;
   
-  wxExHexModeLine(this, val, false).Goto();
+  return wxExHexModeLine(this, val, false).Goto();
 }
 
 bool wxExHexMode::HighlightOther()

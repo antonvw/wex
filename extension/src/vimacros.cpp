@@ -2,7 +2,7 @@
 // Name:      vimacros.cpp
 // Purpose:   Implementation of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -43,7 +43,7 @@ const std::string wxExViMacros::Decode(const wxString& text)
 {
   std::string output;
   
-  for (int i = 0; i < text.length(); i++)
+  for (size_t i = 0; i < text.length(); i++)
   {
     if (
       i + 1 < text.length() &&
@@ -90,7 +90,7 @@ const wxString wxExViMacros::Encode(const std::string& text)
 {
   wxString output;
   
-  for (int i = 0; i < text.length(); i++)
+  for (size_t i = 0; i < text.length(); i++)
   {
     const int c = text[i];
   

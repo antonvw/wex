@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wxExtension utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXUTIL_H
@@ -42,7 +42,7 @@ public:
   wxExToVectorString(const wxFileDialog& in);
 
   /// Constructor, using file history and max.
-  wxExToVectorString(const wxFileHistory& in, int max);
+  wxExToVectorString(const wxFileHistory& in, size_t max);
   
   /// Constructor, using generic dirctrl.
   /// Fills the vector with the currently-selected directory or filename. 

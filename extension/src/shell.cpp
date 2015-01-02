@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wxExSTCShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -171,7 +171,7 @@ void wxExSTCShell::Expand()
   {
     const int index = AutoCompGetCurrent();
     
-    if (index >=0 && index < m_AutoCompleteList.size())
+    if (index >= 0 && index < (int)m_AutoCompleteList.size())
     {
       expansion = m_AutoCompleteList[index].Mid(word.length());
     }
@@ -551,7 +551,7 @@ bool wxExSTCShell::ProcessChar(int key)
         const int offset = (key == WXK_BACK ? 1: 0);
         const int index = GetCurrentPos() - m_CommandStartPosition - offset;
         
-        if (index >= 0 && index < m_Command.length() && m_Command.length() > 0)
+        if (index >= 0 && index < (int)m_Command.length() && m_Command.length() > 0)
         {
           m_Command.erase(index, 1);
         }
@@ -581,7 +581,7 @@ void wxExSTCShell::ProcessCharDefault(int key)
   
   if (
     GetCurrentPos() < GetLength() && 
-    index >= 0 && index < m_Command.size())
+    index >= 0 && index < (int)m_Command.size())
   {
     m_Command.insert(index, wxChar(key));
   }
