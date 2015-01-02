@@ -1,10 +1,4 @@
-include(
-  ${wxWidgets_USE_FILE})
-
-set(SRCS 
-  main.cpp 
-  test.cpp 
-  )
+FILE(GLOB SRCS "*.cpp")
   
 add_executable(
   ${PROJECT_NAME} 

@@ -1,59 +1,12 @@
-include(
-  ${wxWidgets_USE_FILE})
-
-set(SRCS 
-  address.cpp
-  app.cpp
-  art.cpp
-  configdlg.cpp
-  configitem.cpp
-  dialog.cpp
-  dir.cpp
-  ex.cpp
-  file.cpp
-  filedlg.cpp
-  filename.cpp
-  frame.cpp
-  frd.cpp
-  grid.cpp
-  hexmode.cpp
-  indicator.cpp
-  lexer.cpp
-  lexers.cpp
-  link.cpp
-  listitem.cpp
-  listview.cpp
-  managedframe.cpp
-  marker.cpp
-  menu.cpp
-  notebook.cpp
-  otl.cpp
-  printing.cpp
-  process.cpp
-  property.cpp
-  shell.cpp
-  stat.cpp
-  statusbar.cpp
-  stc.cpp
-  stcdlg.cpp
-  stcfile.cpp
-  style.cpp
-  textfile.cpp
-  tool.cpp
-  toolbar.cpp
-  util.cpp
-  variable.cpp
-  vcs.cpp
-  vcscommand.cpp
-  vcsentry.cpp
-  version.cpp
-  vi.cpp
-  vimacros.cpp
-  shunting-yard/shunting-yard.cpp)
-  
 include_directories(
   ../include/)
 
+FILE(GLOB SRCS "*.cpp" "shunting-yard/*.cpp")
+  
 add_library(
   wxex 
   ${SRCS})
+  
+set_target_properties(wxex PROPERTIES DEBUG_POSTFIX "d")
+
+install (TARGETS wxex DESTINATION lib)

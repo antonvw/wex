@@ -1,15 +1,4 @@
-include(
-  ${wxWidgets_USE_FILE})
-
-set(SRCS 
- dir.cpp
- dirctrl.cpp
- frame.cpp
- listview.cpp
- listviewfile.cpp
- stc.cpp
- textfile.cpp
- util.cpp)
+FILE(GLOB SRCS "*.cpp")
   
 include_directories(
   ../../include/)
@@ -17,3 +6,7 @@ include_directories(
 add_library(
   wxex-rep
   ${SRCS})
+  
+set_target_properties(wxex-rep PROPERTIES DEBUG_POSTFIX "d")
+
+install (TARGETS wxex-rep DESTINATION lib)

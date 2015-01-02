@@ -57,3 +57,8 @@ in the build dir:
 - under mac:  
     `make -f GNUMakefile-mac`
     
+- using CMakeFiles (requires cmake)
+  - mkdir Debug or Release, cd Debug or Release
+  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug ..
+  - nmake
+  
