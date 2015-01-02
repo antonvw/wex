@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wxExVCS class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <map>
@@ -219,7 +219,7 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
       }
     }
   }
-  else if (vcs >= VCS_START && vcs < m_Entries.size())
+  else if (vcs >= VCS_START && vcs < (int)m_Entries.size())
   {
     return m_Entries[vcs];
   }

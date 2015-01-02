@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wxExStatusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -200,7 +200,7 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
   int* styles = new int[fields.size()];
   int* widths = new int[fields.size()];
 
-  for (int i = 0; i < fields.size(); i++)
+  for (size_t i = 0; i < fields.size(); i++)
   {
     styles[i] = fields[i].GetStyle();
     widths[i] = fields[i].GetWidth();

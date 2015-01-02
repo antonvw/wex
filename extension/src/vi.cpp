@@ -2,7 +2,7 @@
 // Name:      vi.cpp
 // Purpose:   Implementation of class wxExVi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -304,7 +304,7 @@ bool wxExVi::Command(const std::string& command)
 
           int seq_size = 0; // size of sequence of digits from begin in rest
           
-          for (int i = 0; i < rest.size(); i++)
+          for (size_t i = 0; i < rest.size(); i++)
           {
             if (rest[i] > 255 || rest[i] < 0 || !isdigit(rest[i]))
               break;

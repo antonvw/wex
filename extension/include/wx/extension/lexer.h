@@ -2,7 +2,7 @@
 // Name:      lexer.h
 // Purpose:   Declaration of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXLEXER_H
@@ -86,7 +86,7 @@ public:
     int keyword_set = -1,
     /// if min_size 0, use all keywords,
     /// otherwise use keywords with minimim size
-    int min_size = 0,
+    size_t min_size = 0,
     /// prefix keyword should start with
     const wxString& prefix = wxEmptyString) const;
 
@@ -172,7 +172,7 @@ private:
     bool fill_out) const;
   const wxString GetKeywordsStringSet(
     const std::set<wxString>& kset, 
-    int min_size = 0,
+    size_t min_size = 0,
     const wxString& prefix = wxEmptyString) const;
   void Initialize();
   void Set(const wxXmlNode* node);

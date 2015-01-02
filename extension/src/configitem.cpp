@@ -2,7 +2,7 @@
 // Name:      configitem.cpp
 // Purpose:   Implementation of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -683,7 +683,7 @@ void wxExConfigItem::Init(const wxString& page, int cols)
 
     case CONFIG_STATICTEXT:
     case CONFIG_STRING:
-      m_IsRowGrowable = (m_Style & wxTE_MULTILINE);
+      m_IsRowGrowable = (m_Style & wxTE_MULTILINE) > 0;
       break;
   
     case CONFIG_CHECKBOX:

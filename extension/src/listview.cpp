@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wxExListView and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -46,7 +46,7 @@ private:
     // so dropping on your own selection is impossible.
     if (m_ListView->GetSelectedItemCount() == 0)
     {
-      for (int i = 0; i < filenames.GetCount(); i++)
+      for (size_t i = 0; i < filenames.GetCount(); i++)
       {
         m_ListView->ItemFromText(filenames[i]);
       }
@@ -806,7 +806,7 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, wxIntPtr sortData)
 
 bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 {
-  if (column_no == -1 || column_no >= m_Columns.size())
+  if (column_no == -1 || column_no >= (int)m_Columns.size())
   {
     return false;
   }

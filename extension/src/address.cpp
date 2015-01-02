@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wxExAddress and wxExAddressRange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -132,7 +132,7 @@ const wxString wxExAddressRange::BuildReplacement(const wxString& text) const
   wxString replacement;
   bool backslash = false;
     
-  for (int i = 0; i < text.length(); i++)
+  for (size_t i = 0; i < text.length(); i++)
   {
     switch ((int)text.GetChar(i))
     {

@@ -2,7 +2,7 @@
 // Name:      vcsentry.cpp
 // Purpose:   Implementation of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -269,7 +269,7 @@ const wxString wxExVCSEntry::GetFlags() const
 
 bool wxExVCSEntry::SetCommand(int command_no)
 {
-  if (command_no < 0 || command_no >= m_Commands.size())
+  if (command_no < 0 || command_no >= (int)m_Commands.size())
   {
     return false;
   }

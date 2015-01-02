@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -287,7 +287,7 @@ const wxString wxExLexer::GetFormattedText(
 }
 
 const wxString wxExLexer::GetKeywordsString(
-  int keyword_set, int min_size, const wxString& prefix) const
+  int keyword_set, size_t min_size, const wxString& prefix) const
 {
   if (keyword_set == -1)
   {
@@ -307,7 +307,7 @@ const wxString wxExLexer::GetKeywordsString(
 }
 
 const wxString wxExLexer::GetKeywordsStringSet(
-  const std::set<wxString>& kset, int min_size, const wxString& prefix) const
+  const std::set<wxString>& kset, size_t min_size, const wxString& prefix) const
 {
   // accumulate would be nice, but does not add a space, could not do it easily.
   // return accumulate(kset.begin(), kset.end(), wxEmptyString);
