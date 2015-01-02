@@ -1,6 +1,3 @@
-include(
-  ${wxWidgets_USE_FILE})
-
 find_package(cppunit OPTIONAL_COMPONENTS )
 
 if (cppunit_FOUND)

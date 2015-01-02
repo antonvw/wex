@@ -1,21 +1,23 @@
-include(
-  ${wxWidgets_USE_FILE})
+project(wxExSample)
 
-set(SRCS 
-  app.cpp 
-  )
-  
 include_directories(
   ../include/)
 
+FILE(GLOB SRCS "*.cpp")
+
+if(WIN32)
+  set(SRCS ${SRCS} app.rc)
+endif(WIN32)
+  
 add_executable(
-  wxExSample 
+  ${PROJECT_NAME}
+  WIN32 
   ${SRCS})
   
 target_link_libraries(
-  wxExSample 
-  wxex
+  ${PROJECT_NAME}
   ${wxWidgets_LIBRARIES} 
+  wxex
   )
 
 add_subdirectory(report)

@@ -1,19 +1,13 @@
-project(wxExSampleReport)
-
 FILE(GLOB SRCS "*.cpp")
   
-if(WIN32)
-  set(SRCS ${SRCS} app.rc)
-endif(WIN32)
-
 add_executable(
-  ${PROJECT_NAME}
-  WIN32 
+  ${PROJECT_NAME} 
   ${SRCS})
 
 target_link_libraries(
-  ${PROJECT_NAME}
+  ${PROJECT_NAME} 
   wxex-rep
   wxex
   ${wxWidgets_LIBRARIES} 
+  ${CPPUNIT_LIBRARIES}
   )

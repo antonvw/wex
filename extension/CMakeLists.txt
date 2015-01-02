@@ -1,19 +1,29 @@
 project(wxExtension)
 
-cmake_minimum_required(VERSION 2.8.7)
+if (WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_CRT_SECURE_NO_WARNINGS")
+  if (CMAKE_BUILD_TYPE EQUAL "Debug")
+    set(wxWidgets_CONFIGURATION mswud)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D__WXDEBUG__")
+  else (CMAKE_BUILD_TYPE EQUAL "Debug")
+    set(wxWidgets_CONFIGURATION mswu)
+  endif (CMAKE_BUILD_TYPE EQUAL "Debug")
+else (WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+endif(WIN32)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
-find_package(wxWidgets REQUIRED xml aui stc html adv core base)
+find_package(wxWidgets COMPONENTS scintilla aui stc html adv xml core base REQUIRED)
 
 option(wxExUSE_OTL 
-  "Use tutorial provided math implementation" OFF) 
+  "Use Oracle Template Library" OFF) 
         
 option(wxExUSE_PORTABLE 
-  "Use tutorial provided math implementation" OFF) 
+  "Use portable version of this library" ON) 
         
 include(
   ${wxWidgets_USE_FILE})
+
+SET(CMAKE_INSTALL_PREFIX ..)
 
 add_subdirectory(src)
 add_subdirectory(src/report)

@@ -1,42 +1,26 @@
 project(syncsocketserver)
-cmake_minimum_required(VERSION 2.8.7)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+find_package(wxWidgets COMPONENTS scintilla aui stc html adv xml core base net REQUIRED)
 
-find_package(wxWidgets REQUIRED xml aui stc html adv core base net)
-
-option(wxExUSE_OTL 
-  "Use tutorial provided math implementation" OFF) 
-        
-option(wxExUSE_PORTABLE 
-  "Use tutorial provided math implementation" OFF) 
-        
 include(
   ${wxWidgets_USE_FILE})
-
-set(SRCS 
-  app.cpp)
   
-include_directories(
-  ../extension/include/)
+include_directories(../extension/include)
 
-find_library(WXEX
-    NAMES wxex
-    HINTS "../extension/src"
-  )
-
-find_library(WXEX-REP
-    NAMES wxex-rep 
-    HINTS "../extension/src/report"
-  )
-
+FILE(GLOB SRCS "*.cpp")
+  
+if(WIN32)
+  set(SRCS ${SRCS} app.rc)
+endif(WIN32)
+  
 add_executable(
   ${PROJECT_NAME}
+  WIN32 
   ${SRCS})
   
 target_link_libraries(
   ${PROJECT_NAME}
-  ${WXEX-REP}
-  ${WXEX}
+  wxex-rep
+  wxex
   ${wxWidgets_LIBRARIES} 
   )
