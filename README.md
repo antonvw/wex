@@ -8,13 +8,15 @@ one of these applications, being a full featured source code text editor.
 
 - [wxWidgets 3.0](http://www.wxwidgets.org/)
   
-- [cppunit 1.12](http://sourceforge.net/projects/cppunit)    
+- [cppunit 1.12](http://sourceforge.net/projects/cppunit) (only for testing)   
     `sudo apt-get install libcppunit-dev` or   
     `yum install cppunit-devel`  
     
 - [OTL database 4.0.214](http://otl.sourceforge.net/) is used by syncodbcquery  
     `yum install unixODBC`  
     `yum install unixODBC-devel`  
+    
+- [cmake](http://www.cmake.org/) to generate makefiles
 
 # Build process 
   [![Build Status](https://travis-ci.org/antonvw/wxExtension.png?branch=v3.0)](https://travis-ci.org/antonvw/wxExtension) 
@@ -46,19 +48,13 @@ one of these applications, being a full featured source code text editor.
     `../configure --with-mac && make`
 
 ## Building wxExtension        
-in the build dir:   
-  
+    
 - under windows:   
-    `make` or `make-release`   
+    `mkdir Debug or Release, cd Debug or Release`   
+    `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug ..`   
+    `nmake`   
     
-- under Linux:  
-    `make`
-    
-- under mac:  
-    `make -f GNUMakefile-mac`
-    
-- using CMakeFiles (requires cmake)
-  - mkdir Debug or Release, cd Debug or Release
-  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug ..
-  - nmake
-  
+- under Linux:   
+    `cd build`    
+    `cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
+    `make`   

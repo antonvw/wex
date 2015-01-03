@@ -37,6 +37,7 @@ install:
     - sudo apt-get install g++-4.8
     - sudo apt-get install lcov
     - sudo apt-get install ruby
+    - sudo apt-get install cmake
     - gem install coveralls-lcov
     # first add dependencies for libwxgtk3
     - sudo apt-get install -y liblzma5 
@@ -64,6 +65,7 @@ before_script:
 
 script:
     - pushd build
+    - cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
     - make -j 4
     - ./test-all.sh
   

@@ -3,15 +3,14 @@
 # Name:      test-all.sh
 # Purpose:   script to run all tests
 # Author:    Anton van Wezenbeek
-# Copyright: (c) 2014 Anton van Wezenbeek
+# Copyright: (c) 2015 Anton van Wezenbeek
 ################################################################################
 
-TOOLKIT=`wx-config --query-toolkit`
-TESTDIR=./gcc$TOOLKIT\_dll/
+TESTDIR=extension/test
 
-if [ ! -d ~/.wxex-test ]; then
-  mkdir ~/.wxex-test
-  cp ../extension/data/*.xml ~/.wxex-test
+if [ ! -d ~/.wxex-test-base ]; then
+  mkdir ~/.wxex-test-base
+  cp ../extension/data/*.xml ~/.wxex-test-base
 fi
 
 if [ ! -d ~/.wxex-test-gui ]; then
@@ -25,11 +24,11 @@ if [ ! -d ~/.wxex-test-gui-report ]; then
 fi
 
 echo "-- test base --"
-$TESTDIR/wxex-test-base
+$TESTDIR/base/wxex-test-base
 RC=$?
 
 echo "-- test gui --"
-$TESTDIR/wxex-test-gui
+$TESTDIR/gui/wxex-test-gui
 NRC=$?
 
 if [ $RC -eq "0" ]; then
@@ -37,7 +36,7 @@ if [ $RC -eq "0" ]; then
 fi
 
 echo "-- test gui report --"
-$TESTDIR/wxex-test-gui-report
+$TESTDIR/gui-report/wxex-test-gui-report
 NRC=$?
 
 if [ $RC -eq "0" ]; then

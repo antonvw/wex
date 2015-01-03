@@ -1,5 +1,8 @@
 project(wxExSampleReport)
 
+include_directories(
+  ../include/)
+
 FILE(GLOB SRCS "*.cpp")
   
 if(WIN32)

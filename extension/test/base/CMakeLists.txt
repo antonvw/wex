@@ -1,3 +1,5 @@
+project(wxex-test-base)
+
 FILE(GLOB SRCS "*.cpp")
   
 add_executable(
@@ -6,6 +8,7 @@ add_executable(
 
 target_link_libraries(
   ${PROJECT_NAME} 
+  wxex
   ${wxWidgets_LIBRARIES} 
   ${CPPUNIT_LIBRARIES}
   )

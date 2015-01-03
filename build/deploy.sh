@@ -3,32 +3,31 @@
 # Name:      deploy.sh
 # Purpose:   Deploy file (for syncped)
 # Author:    Anton van Wezenbeek
-# Copyright: (c) 2014 Anton van Wezenbeek
+# Copyright: (c) 2015 Anton van Wezenbeek
 ################################################################################
 
 # Run this file in the build folder
 
-TOOLKIT=`wx-config --query-toolkit`
 RELEASE=`wx-config --release`
 VERSION=`wx-config --version`
 
-mkdir syncped
-mkdir syncped/fr_FR
-mkdir syncped/nl_NL
+mkdir app
+mkdir app/fr_FR
+mkdir app/nl_NL
 
 # Copy application.
-cp gcc$TOOLKIT\_dll/syncped syncped
+cp syncped/syncped app
 
 # Copy the libs.
-cp ~/wxWidgets-$VERSION/buildgtk/lib/libwx*$RELEASE*so*0 syncped
+cp ~/wxWidgets-$VERSION/buildgtk/lib/libwx*$RELEASE*so*0 app
 
 # Copy xml and templates data.
-cp ../extension/data/*.txt syncped
-cp ../extension/data/*.xml syncped
+cp ../extension/data/*.txt app
+cp ../extension/data/*.xml app
 
 # Copy locale files.
-msgfmt ~/wxWidgets-$VERSION/locale/fr.po -o syncped/fr_FR/fr.mo
-msgfmt ~/wxWidgets-$VERSION/locale/nl.po -o syncped/nl_NL/nl.mo
+msgfmt ~/wxWidgets-$VERSION/locale/fr.po -o app/fr_FR/fr.mo
+msgfmt ~/wxWidgets-$VERSION/locale/nl.po -o app/nl_NL/nl.mo
 
 FILES=../locale/*fr.po
 
@@ -37,7 +36,7 @@ do
   # name without extension
   name=${f%%.po}
   name=${name##*/}
-  msgfmt ../locale/$name.po -o syncped/fr_FR/$name.mo
+  msgfmt ../locale/$name.po -o app/fr_FR/$name.mo
 done
 
 FILES=../locale/*nl.po
@@ -47,10 +46,10 @@ do
   # name without extension
   name=${f%%.po}
   name=${name##*/}
-  msgfmt ../locale/$name.po -o syncped/nl_NL/$name.mo
+  msgfmt ../locale/$name.po -o app/nl_NL/$name.mo
 done
 
-strip syncped/syncped
-tar -zcf syncped-v$VERSION.tar.gz syncped
+strip app/syncped
+tar -zcf syncped-v$VERSION.tar.gz app
 
-rm -rf syncped
+rm -rf app
