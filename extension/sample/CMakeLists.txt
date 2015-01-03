@@ -16,8 +16,8 @@ add_executable(
   
 target_link_libraries(
   ${PROJECT_NAME}
-  ${wxWidgets_LIBRARIES} 
   wxex
+  ${wxWidgets_LIBRARIES} 
   )
 
 add_subdirectory(report)

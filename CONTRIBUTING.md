@@ -8,8 +8,6 @@
 
 - use STL whenever possible 
 
-- make files are generated using [Bakefile](http://www.bakefile.org/)  
-
 - run [cppcheck](http://cppcheck.sourceforge.net/)
 
 - icons and bitmaps

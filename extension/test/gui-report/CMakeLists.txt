@@ -1,3 +1,5 @@
+project(wxex-test-gui-report)
+
 FILE(GLOB SRCS "*.cpp")
   
 add_executable(
