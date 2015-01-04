@@ -50,9 +50,10 @@ one of these applications, being a full featured source code text editor.
 ## Building wxExtension        
     
 - under windows:   
-    `mkdir Debug or Release, cd Debug or Release`   
-    `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug ..`   
+    `cd build`   
+    `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
     `nmake`   
+  (or make a Debug directory and use -DCMAKE_BUILD_TYPE=Debug)   
     
 - under Linux:   
     `cd build`    
