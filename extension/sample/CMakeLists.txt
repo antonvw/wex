@@ -1,4 +1,4 @@
-project(wxExSample)
+project(wxex-sample)
 
 include_directories(
   ../include/)
