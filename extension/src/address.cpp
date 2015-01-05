@@ -12,6 +12,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/address.h>
 #include <wx/extension/ex.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
@@ -340,7 +341,7 @@ bool wxExAddressRange::Parse(
   
   wxString command(command_org);
   
-  if (command.Contains("\\/"))
+  if (!command.Contains("\\") && command.Contains("\\/"))
   {
     if (!command.Contains(wxChar(1)))
     {
@@ -481,7 +482,10 @@ bool wxExAddressRange::Substitute(const wxString& command)
         
     if (result == wxID_YES)
     {
-      m_STC->ReplaceTargetRE(replacement); // always RE!
+      wxExFindReplaceData::Get()->UseRegularExpression() ?
+        m_STC->ReplaceTargetRE(replacement):
+        m_STC->ReplaceTarget(replacement);
+        
       nr_replacements++;
     }
     

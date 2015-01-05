@@ -2,7 +2,7 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -99,9 +99,11 @@ bool wxExFindReplaceData::Set(const wxString& field, bool value)
 
 void wxExFindReplaceData::SetFindRegularExpression()
 {
-  // We always set the regular expression, in the Find In Files
-  // dialog, the FindString is invoked before matc regex
-  // was set...
+  if (!m_UseRegularExpression)
+  {
+    return;
+  }
+  
   int flags = wxRE_ADVANCED;
   if (!MatchCase()) flags |= wxRE_ICASE;
   m_FindRegularExpression.Compile(GetFindString(), flags);
