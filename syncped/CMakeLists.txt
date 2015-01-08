@@ -11,7 +11,7 @@ if (WIN32)
     set(wxWidgets_CONFIGURATION mswu)
   endif (CMAKE_BUILD_TYPE EQUAL "Debug")
 else (WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wwrite-strings")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-write-strings")
 endif(WIN32)
 
 if (WIN32)

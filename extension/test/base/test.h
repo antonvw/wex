@@ -2,26 +2,31 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXBASETESTUNIT_H
 #define _EXBASETESTUNIT_H
 
-#include <wx/extension/extension.h>
+#include <cppunit/extensions/HelperMacros.h>
 #include "../test.h"
-
-/// CppUnit test suite.
-class wxExTestSuite : public CppUnit::TestSuite
-{
-public:
-  /// Default constructor.
-  wxExTestSuite();
-};
 
 /// CppUnit base test fixture.
 class TestFixture : public wxExTestFixture
 {
+  CPPUNIT_TEST_SUITE( TestFixture );
+  
+  CPPUNIT_TEST( testDir);
+  CPPUNIT_TEST( testFile);
+  CPPUNIT_TEST( testFileTiming);
+  CPPUNIT_TEST( testFileName);
+  CPPUNIT_TEST( testFileNameTiming);
+  CPPUNIT_TEST( testStat);
+  CPPUNIT_TEST( testStatistics);
+  CPPUNIT_TEST( testTool );
+  
+  CPPUNIT_TEST_SUITE_END();
+
 public:
   /// Default constructor.
   TestFixture() : wxExTestFixture() {;};

@@ -2,24 +2,15 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXGUITESTUNIT_H
 #define _EXGUITESTUNIT_H
 
-#include <wx/extension/extension.h>
+#include <cppunit/extensions/HelperMacros.h>
+#include <wx/extension/app.h>
 #include "../test.h"
-
-/// CppUnit test suite.
-class wxExAppTestSuite : public CppUnit::TestSuite
-{
-public:
-  /// Default constructor.
-  wxExAppTestSuite();
-  /// Destructor.
-  ~wxExAppTestSuite();
-};
 
 /// Derive your application from wxExApp.
 class wxExTestApp: public wxExApp
@@ -37,12 +28,59 @@ private:
 /// These classes require either an wxExApp object, or wx to be initialized.
 class wxExGuiTestFixture : public wxExTestFixture
 {
+  CPPUNIT_TEST_SUITE( wxExGuiTestFixture );
+  
+  CPPUNIT_TEST( testAddress );
+  CPPUNIT_TEST( testAddressRange );
+  CPPUNIT_TEST( testConfigDialog );
+  CPPUNIT_TEST( testConfigItem );
+  CPPUNIT_TEST( testDialog );
+  CPPUNIT_TEST( testEx );
+  CPPUNIT_TEST( testFileDialog );
+  CPPUNIT_TEST( testFileStatistics );
+  CPPUNIT_TEST( testFrame );
+  CPPUNIT_TEST( testFrd );
+  CPPUNIT_TEST( testGrid );
+  CPPUNIT_TEST( testHexMode );
+  CPPUNIT_TEST( testIndicator );
+  CPPUNIT_TEST( testLexer );
+  CPPUNIT_TEST( testLexers );
+  CPPUNIT_TEST( testLink );
+  CPPUNIT_TEST( testListItem );
+  CPPUNIT_TEST( testListView );
+  CPPUNIT_TEST( testManagedFrame );
+  CPPUNIT_TEST( testMarker );
+  CPPUNIT_TEST( testMenu );
+  CPPUNIT_TEST( testNotebook );
+  CPPUNIT_TEST( testOTL );
+  CPPUNIT_TEST( testPrinting );
+  CPPUNIT_TEST( testProcess );
+  CPPUNIT_TEST( testProperty );
+  CPPUNIT_TEST( testShell );
+  CPPUNIT_TEST( testStatusBar );
+  CPPUNIT_TEST( testSTC );
+  CPPUNIT_TEST( testSTCEntryDialog );
+  CPPUNIT_TEST( testSTCFile );
+  CPPUNIT_TEST( testStyle );
+  CPPUNIT_TEST( testTextFile );
+  CPPUNIT_TEST( testToVectorString );
+  CPPUNIT_TEST( testUtil );
+  CPPUNIT_TEST( testVariable );
+  CPPUNIT_TEST( testVCS );
+  CPPUNIT_TEST( testVCSCommand );
+  CPPUNIT_TEST( testVCSEntry );
+  CPPUNIT_TEST( testVersion );
+  CPPUNIT_TEST( testVi );
+  CPPUNIT_TEST( testViMacros );
+
+  CPPUNIT_TEST_SUITE_END();
+
 public:
   /// Default constructor.
-  wxExGuiTestFixture() : wxExTestFixture() {;}; 
+  wxExGuiTestFixture(); 
   
   /// Destructor.
- ~wxExGuiTestFixture() {};
+ ~wxExGuiTestFixture();
  
   /// From TestFixture.
   /// Set up context before running a test.
@@ -93,12 +131,5 @@ public:
   void testVersion();
   void testVi();
   void testViMacros();
-private:
-  void link(
-    const wxExLink& link,
-    const wxString& path, 
-    const wxString& expect = wxEmptyString,
-    int expect_line_no = 0,
-    int expect_col_no = 0);
 };
 #endif

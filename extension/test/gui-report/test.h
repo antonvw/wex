@@ -2,13 +2,15 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for wxExtension report cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _FTTESTUNIT_H
 #define _FTTESTUNIT_H
 
-#include <wx/extension/extension.h>
+#include <cppunit/extensions/HelperMacros.h>
+#include <wx/extension/app.h>
+#include <wx/extension/report/frame.h>
 #include "../test.h"
 
 class FrameWithHistory : public wxExFrameWithHistory
@@ -40,18 +42,25 @@ private:
   virtual int OnRun();
 };
 
-/// CppUnit test suite.
-class wxExTestSuite : public CppUnit::TestSuite
-{
-public:
-  /// Default constructor.
-  wxExTestSuite();
-};
-
 /// CppUnit app test fixture.
 /// These classes require either an wxExApp object, or wx to be initialized.
 class wxExGuiReportTestFixture : public wxExTestFixture
 {
+  CPPUNIT_TEST_SUITE( wxExGuiReportTestFixture );
+  
+  CPPUNIT_TEST( testDirCtrl );
+  CPPUNIT_TEST( testDirTool );
+  CPPUNIT_TEST( testDirWithListView );
+  CPPUNIT_TEST( testFrameWithHistory );
+  CPPUNIT_TEST( testListViewFile );
+  CPPUNIT_TEST( testListViewWithFrame );
+  CPPUNIT_TEST( testSTCWithFrame );
+  CPPUNIT_TEST( testTextFileWithListView );
+  CPPUNIT_TEST( testUtil );
+  CPPUNIT_TEST( test );
+  
+  CPPUNIT_TEST_SUITE_END();
+
 public:
   /// Default constructor.
   wxExGuiReportTestFixture() : wxExTestFixture() {;};

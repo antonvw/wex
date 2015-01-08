@@ -12,6 +12,7 @@
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestFixture.h>
 #include <cppunit/TestSuite.h>
+#include <wx/extension/filename.h>
 
 //#define SHOW_REPORT
 
@@ -20,11 +21,16 @@ class wxExTestFixture : public CppUnit::TestFixture
 {
 public:
   /// Default constructor.
-  wxExTestFixture() : TestFixture() {}; 
+  wxExTestFixture() 
+    : TestFixture() 
+    , m_TestFile("./test.h"){}; 
   
   /// Destructor.
  ~wxExTestFixture() {};
  
+  /// Returns the test file.
+  const wxExFileName& GetTestFile() const {return m_TestFile;};
+  
   /// Clean up after the test run.
   /// Prints out report if switch is on.
   virtual void tearDown() {
@@ -40,5 +46,6 @@ public:
     m_Report.append("\n");};
 private:
   std::string m_Report;  
+  wxExFileName m_TestFile;
 };
 #endif

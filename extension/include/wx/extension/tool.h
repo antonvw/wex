@@ -2,13 +2,14 @@
 // Name:      tool.h
 // Purpose:   Declaration of wxExTool classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXTOOL_H
 #define _EXTOOL_H
 
 #include <map>
+#include <wx/string.h>
 #include <wx/extension/defs.h>
 
 /// This class defines our tool info.
