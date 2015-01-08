@@ -2,7 +2,7 @@
 // Name:      textfile.cpp
 // Purpose:   Implementation of wxExTextFile class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -110,7 +110,6 @@ bool wxExTextFile::Parse()
 
   if (wxExFindReplaceData::Get()->GetFindString().empty())
   {
-    wxFAIL;
     return false;
   }
 

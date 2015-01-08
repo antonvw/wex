@@ -2,13 +2,15 @@
 // Name:      stat.h
 // Purpose:   Declaration of wxExStat class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTAT_H
 #define _EXSTAT_H
 
 #include <sys/stat.h> // for stat
+#include <wx/datetime.h>
+#include <wx/filefn.h>
 #include <wx/string.h>
 
 /// Adds IsOk to the stat base class, several methods

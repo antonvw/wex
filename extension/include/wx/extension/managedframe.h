@@ -2,7 +2,7 @@
 // Name:      managedframe.h
 // Purpose:   Declaration of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXMANAGEDFRAME_H
@@ -16,7 +16,7 @@
 // Only if we have a gui.
 #if wxUSE_GUI
 
-class wxPane;
+class wxPanel;
 class wxExEx;
 class wxExExTextCtrl;
 class wxExToolBar;

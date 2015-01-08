@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wxExtension report cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -60,11 +60,16 @@ bool wxExTestApp::OnInit()
   return true;
 }
 
+// Registers the fixture into the 'registry'
+CPPUNIT_TEST_SUITE_REGISTRATION( wxExGuiReportTestFixture );
+
 int wxExTestApp::OnRun()
 {
   CppUnit::TextUi::TestRunner runner;
 
-  wxExTestSuite* suite = new wxExTestSuite;
+  // Get the top level suite from the registry
+  CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
+  
   runner.addTest(suite);
   
   return !runner.run("", false);

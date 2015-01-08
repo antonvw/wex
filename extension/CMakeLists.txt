@@ -8,7 +8,7 @@ if (WIN32)
     set(wxWidgets_CONFIGURATION mswu)
   endif (CMAKE_BUILD_TYPE EQUAL "Debug")
 else (WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wwrite-strings")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-write-strings")
 endif(WIN32)
 
 if (WIN32)
@@ -16,6 +16,12 @@ if (WIN32)
 else (WIN32)
   find_package(wxWidgets COMPONENTS           aui stc html adv xml core base REQUIRED)
 endif (WIN32)
+
+option(wxExUSE_OTL "Oracle Template Library")
+
+if (${wxExUSE_OTL} MATCHES ON)
+  add_definitions(-DwxExUSE_OTL)
+endif ()
 
 include(
   ${wxWidgets_USE_FILE})

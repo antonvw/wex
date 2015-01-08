@@ -2,11 +2,13 @@
 // Name:      defs.h
 // Purpose:   Common defs for all wxExtension classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXDEFS_H
 #define _EXDEFS_H
+
+#include <wx/defs.h>
 
 const int TOOL_MAX = 25;
 const int TOOL_MAX_REPORTS = 10;

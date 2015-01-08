@@ -2,13 +2,14 @@
 // Name:      frame.h
 // Purpose:   Include file for wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_FRAME_H
 #define _EX_REPORT_FRAME_H
 
 #include <set>
+#include <wx/bitmap.h> // for auibar
 #include <wx/aui/auibar.h>
 #include <wx/filehistory.h>
 #include <wx/extension/listview.h> // for wxExListViewFileName::wxExListType 
