@@ -3,18 +3,13 @@
 # Name:      coverage.sh
 # Purpose:   Coverage file (for wxExtension)
 # Author:    Anton van Wezenbeek
-# Copyright: (c) 2014 Anton van Wezenbeek
+# Copyright: (c) 2015 Anton van Wezenbeek
 ################################################################################
 
 # Run this file in the build folder
-# If you did another make before, first do a make clean.
 
-TOOLKIT=`wx-config --query-toolkit`
 BASEDIR=../extension
-TESTDIR=./gcc$TOOLKIT\_dll
-
-export CPPFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
-export LDFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
+TESTDIR=./extension/src/CMakeFiles/wxex.dir
 
 echo "-- make test coverage build --"
 make

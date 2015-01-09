@@ -18,7 +18,7 @@ addons:
       name: "antonvw/wxExtension"
       description: "Build submitted via Travis CI"
     notification_email: a.m.vanwezenbeek@gmail.com
-    build_command_prepend: "sudo rm /usr/bin/g++; sudo ln -s /usr/bin/g++-4.8 /usr/bin/g++; pushd build"
+    build_command_prepend: "sudo rm /usr/bin/g++; sudo ln -s /usr/bin/g++-4.8 /usr/bin/g++; pushd build; cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Coverage .."
     build_command:   "make -j 4"
     branch_pattern: coverity_scan
   
@@ -37,7 +37,6 @@ install:
     - sudo apt-get install g++-4.8
     - sudo apt-get install lcov
     - sudo apt-get install ruby
-    - sudo apt-get install cmake
     - gem install coveralls-lcov
     # first add dependencies for libwxgtk3
     - sudo apt-get install -y liblzma5 
@@ -49,10 +48,7 @@ install:
 
 before_script:
     # export settings for coverage
-    - export CPPFLAGS="-g -O0 -fprofile-arcs -ftest-coverage" 
-    - export LDFLAGS="-g -O0 -fprofile-arcs -ftest-coverage"
-    - export TOOLKIT=`wx-config --query-toolkit` 
-    - export TESTDIR=$TRAVIS_BUILD_DIR/build/gcc$TOOLKIT/_dll
+    - export TESTDIR=$TRAVIS_BUILD_DIR/build
     # we need  a display for the gui tests
     - export DISPLAY=:99.0
     # take care that recently-used.xbel file can be written
