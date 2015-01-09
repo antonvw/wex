@@ -28,7 +28,7 @@ else()
     /usr/local/include
     /usr/local/include/odbc
     /usr/local/odbc/include
-	$ENV{ODBC_DIR}/include
+    $ENV{ODBC_DIR}/include
     DOC "Specify the directory containing sql.h."
   )
 
@@ -39,9 +39,10 @@ else()
     /usr/local/lib
     /usr/local/lib/odbc
     /usr/local/odbc/lib
-	$ENV{ODBC_DIR}/lib
+    $ENV{ODBC_DIR}/lib
     DOC "Specify the ODBC driver manager library here."
   )
+  
   if(ODBC_LIBRARY AND ODBC_INCLUDE_DIR)
     set( ODBC_FOUND 1 )
   endif()
@@ -54,7 +55,7 @@ MARK_AS_ADVANCED( ODBC_FOUND ODBC_LIBRARY ODBC_EXTRA_LIBRARIES ODBC_INCLUDE_DIR 
 if (WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_CRT_SECURE_NO_WARNINGS /DwxExUSE_PORTABLE")
 
-  if (CMAKE_BUILD_TYPE EQUAL "Debug")
+  if (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(wxWidgets_CONFIGURATION mswud)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D__WXDEBUG__")
   else (CMAKE_BUILD_TYPE EQUAL "Debug")

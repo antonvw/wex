@@ -6,10 +6,20 @@ add_executable(
   ${PROJECT_NAME} 
   ${SRCS})
 
-target_link_libraries(
-  ${PROJECT_NAME} 
-  wxex
-  ${wxWidgets_LIBRARIES} 
-  ${CPPUNIT_LIBRARIES}
-  ${ODBC_LIBRARY}
-  )
+if (ODBC_FOUND)
+  target_link_libraries(
+    ${PROJECT_NAME} 
+    wxex
+    ${wxWidgets_LIBRARIES} 
+    ${CPPUNIT_LIBRARIES}
+    ${ODBC_LIBRARY}
+    )
+else (ODBC_FOUND)
+  target_link_libraries(
+    ${PROJECT_NAME} 
+    wxex
+    ${wxWidgets_LIBRARIES} 
+    ${CPPUNIT_LIBRARIES}
+    )
+endif()
+
