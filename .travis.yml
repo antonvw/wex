@@ -18,7 +18,7 @@ addons:
       name: "antonvw/wxExtension"
       description: "Build submitted via Travis CI"
     notification_email: a.m.vanwezenbeek@gmail.com
-    build_command_prepend: "sudo rm /usr/bin/g++; sudo ln -s /usr/bin/g++-4.8 /usr/bin/g++; pushd build; cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Coverage .."
+    build_command_prepend: "sudo rm /usr/bin/g++; sudo ln -s /usr/bin/g++-4.8 /usr/bin/g++; pushd build; cmake -G \"Unix Makefiles\" -DCMAKE_BUILD_TYPE=Coverage .."
     build_command:   "make -j 4"
     branch_pattern: coverity_scan
   
