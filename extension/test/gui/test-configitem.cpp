@@ -10,7 +10,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/extension/configitem.h>
 #include "test.h"
 

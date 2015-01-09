@@ -117,7 +117,6 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/g"));
 
   // Test implementation.  
-  
   // Test Delete.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   stc->GotoLine(1);
@@ -143,47 +142,68 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
   
   // Test Filter.
-  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  const wxString contents("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  
+  stc->SetText(contents);
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Filter("uniq"));
   CPPUNIT_ASSERT( stc->GetLineCount() == 5);
   
   // Test Move.
-  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  stc->SetText(contents);
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "$")));
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
   
   // Test Indent.
-  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  stc->SetText(contents);
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent());
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent(false));
   
   // Test Substitute.
-  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  stc->SetText(contents);
   stc->GotoLine(1);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger//"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
+    Substitute("/tiger//"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("tiger"));
-  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/\\U&/"));
+  
+  stc->SetText(contents);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
+    Substitute("/tiger/\\U&/"));
   CPPUNIT_ASSERT( stc->GetText().Contains("TIGER"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("tiger"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("\\U"));
-  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/\\U&&\\L& \\0 \\0 & & \\U&/"));
+  
+  stc->SetText(contents);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
+    Substitute("/tiger/\\U&&\\L& \\0 \\0 & & \\U&/"));
   CPPUNIT_ASSERT( stc->GetText().Contains("TIGER"));
   CPPUNIT_ASSERT( stc->GetText().Contains("tiger"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("\\U"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("\\L"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("\\0"));
-  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/lion/"));
-  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/~/"));
+  
+  stc->SetText(contents);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
+    Substitute("/tiger/lion/"));
+    
+  stc->SetText(contents);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
+    Substitute("/tiger/~/"));
   CPPUNIT_ASSERT( stc->GetText().Contains("lion"));
   
+  stc->SetText("special char \\ present");
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
+    Substitute("/\\\\//"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("char  present"));
+  
+  stc->SetText("special char / present");
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
+    Substitute("/\\///"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("char  present"));
+  
   // Test Write.
-  stc->SetText("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  stc->SetText(contents);
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Write("sample.txt"));
   CPPUNIT_ASSERT( remove("sample.txt") == 0);
 }

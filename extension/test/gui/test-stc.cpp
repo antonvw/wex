@@ -101,7 +101,7 @@ void wxExGuiTestFixture::testSTC()
   
   stc->GuessType();
   
-  stc->MarkerDeleteAllChange(); // TODO: result
+  CPPUNIT_ASSERT(stc->MarkerDeleteAllChange());
   
   stc->Paste();
   

@@ -11,4 +11,5 @@ target_link_libraries(
   wxex
   ${wxWidgets_LIBRARIES} 
   ${CPPUNIT_LIBRARIES}
+  ${ODBC_LIBRARY}
   )

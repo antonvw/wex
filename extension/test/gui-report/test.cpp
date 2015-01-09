@@ -22,7 +22,7 @@ void wxExGuiReportTestFixture::test()
   wxArrayString files;
   
   CPPUNIT_ASSERT(wxDir::GetAllFiles(
-    "../", 
+    "../extension", 
     &files,
     "*.cpp", 
     wxDIR_FILES | wxDIR_DIRS) > 10);
@@ -59,9 +59,13 @@ void wxExGuiReportTestFixture::test()
     "wxExFrameWithHistory::FindInFiles %d items in: %ld ms", 
     report->GetItemCount(), find).ToStdString());
     
+  wxLogMessage("%d %lu", 
+    report->GetItemCount(), 
+    wxExToVectorString(files).Get().size());
+    
   // Each file has one author (files.GetCount()), add the one in SetFindString 
   // above, and the one that is already present on the 
   // list because of the first FindInFiles.
   CPPUNIT_ASSERT(report->GetItemCount() == (
-    wxExToVectorString(files).Get().size() + 1)); // TODO
+    wxExToVectorString(files).Get().size() + 2));
 }

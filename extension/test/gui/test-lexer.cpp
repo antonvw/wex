@@ -89,9 +89,20 @@ void wxExGuiTestFixture::testLexer()
 
   CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
   
-  // TODO: improve test
   lexer.SetProperty("test", "value");
+  wxString val;
+
+  for (auto p : lexer.GetProperties())
+  {
+    if (p.GetName() == "test")
+    {
+      val = p.GetValue();
+      break;
+    }
+  }
   
+  CPPUNIT_ASSERT(val == "value");
+
   CPPUNIT_ASSERT( lexer.Set("pascal", stc));
   CPPUNIT_ASSERT( lexer.GetDisplayLexer() == "pascal");
   CPPUNIT_ASSERT( lexer.GetScintillaLexer() == "pascal");

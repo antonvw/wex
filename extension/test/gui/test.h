@@ -82,13 +82,6 @@ public:
   /// Destructor.
  ~wxExGuiTestFixture();
  
-  /// From TestFixture.
-  /// Set up context before running a test.
-  virtual void setUp();
-
-  /// Clean up after the test run.
-  virtual void tearDown();
-
   void testAddress();
   void testAddressRange();
   void testConfigDialog();
