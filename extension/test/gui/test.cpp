@@ -16,6 +16,12 @@
 wxExGuiTestFixture::wxExGuiTestFixture()
   : wxExTestFixture() 
 {
+  // Create the global lexers object, 
+  // it should be present in ~/.wxex-test-gui
+  // (depending on platform, configuration).
+  wxExLexers::Get();
+  
+  wxConfigBase::Get()->Write(_("vi mode"), true);
 } 
 
 wxExGuiTestFixture::~wxExGuiTestFixture()
@@ -23,19 +29,4 @@ wxExGuiTestFixture::~wxExGuiTestFixture()
   // Remove files.
   remove("test-ex.txt");
   remove("test.hex");
-}
-
-void wxExGuiTestFixture::setUp()
-{
-  // Create the global lexers object, 
-  // it should be present in ~/.wxex-test-gui
-  // (depending on platform, configuration).
-  wxExLexers::Get();
-  
-  wxConfigBase::Get()->Write(_("vi mode"), true);
-}
-
-void wxExGuiTestFixture::tearDown() 
-{
-  wxExTestFixture::tearDown();
 }

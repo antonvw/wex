@@ -13,9 +13,10 @@ one of these applications, being a full featured source code text editor.
     `yum install cppunit-devel`  
     
 - [OTL database 4.0.214](http://otl.sourceforge.net/) is used by syncodbcquery  
+    `sudo apt-get install unixODBC unixODBC-dev` or   
     `yum install unixODBC`  
     `yum install unixODBC-devel`  
-    
+
 - [cmake](http://www.cmake.org/) to generate makefiles
 
 # Build process 
@@ -53,9 +54,11 @@ one of these applications, being a full featured source code text editor.
     `cd build`   
     `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
     `nmake`   
-  (or make a Debug directory and use -DCMAKE_BUILD_TYPE=Debug)   
+  (or make a `Debug` directory and use `-DCMAKE_BUILD_TYPE=Debug`)   
     
 - under Linux:   
     `cd build`    
     `cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
     `make`   
+
+- for OTL add `-DwxExUSE_OTL=ON`    

@@ -28,18 +28,6 @@ class TestFixture : public wxExTestFixture
   CPPUNIT_TEST_SUITE_END();
 
 public:
-  /// Default constructor.
-  TestFixture() : wxExTestFixture() {;};
-
-  /// Destructor.
- ~TestFixture() {};
- 
-  /// Set up context before running a test.
-  virtual void setUp() {wxExTestFixture::setUp();};
-
-  /// Clean up after the test run.
-  virtual void tearDown() {wxExTestFixture::tearDown();};
-  
   void testDir();
   void testFile();
   void testFileTiming();

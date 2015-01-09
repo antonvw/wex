@@ -1,6 +1,10 @@
 project(syncodbcquery)
 cmake_minimum_required(VERSION 2.8.7)
 
+if (NOT ${ODBC_FOUND})
+  message(FATAL_ERROR "odbc lib not found")
+endif()
+
 if (WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_CRT_SECURE_NO_WARNINGS /DwxExUSE_PORTABLE")
   
@@ -40,4 +44,5 @@ target_link_libraries(
   wxex-rep
   wxex
   ${wxWidgets_LIBRARIES} 
+  ${ODBC_LIBRARY}
   )

@@ -20,6 +20,8 @@
 
 #if wxUSE_GUI
 
+#undef LOGGING
+
 wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
   : wxString(address)
   , m_Ex(ex)
@@ -341,7 +343,7 @@ bool wxExAddressRange::Parse(
   
   wxString command(command_org);
   
-  if (!command.Contains("\\") && command.Contains("\\/"))
+  if (!command.Contains("\\\\/") && command.Contains("\\/"))
   {
     if (!command.Contains(wxChar(1)))
     {
@@ -394,6 +396,11 @@ bool wxExAddressRange::Parse(
     pattern.Replace(wxChar(1), "/");
     replacement.Replace(wxChar(1), "/");
   }
+  
+#ifdef LOGGING
+  wxLogMessage("cmd: %s pattern: %s replacement: %s options: %s", 
+    command_org, pattern, replacement, options);
+#endif  
 
   return true;
 }

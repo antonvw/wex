@@ -266,6 +266,10 @@ double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
           expr.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
             wxString::Format("%d", line + 1));
         }
+        else
+        {
+          return 0;
+        }
       }
       else
       {
