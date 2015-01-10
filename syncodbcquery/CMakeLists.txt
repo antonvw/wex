@@ -16,13 +16,13 @@ if (WIN32)
   endif (CMAKE_BUILD_TYPE EQUAL "Debug")
 else (WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-write-strings")
-endif(WIN32)
+endif()
 
 if (WIN32)
   find_package(wxWidgets COMPONENTS scintilla aui stc html adv xml core base REQUIRED)
 else (WIN32)
   find_package(wxWidgets COMPONENTS           aui stc html adv xml core base REQUIRED)
-endif (WIN32)
+endif ()
 
 include(
   ${wxWidgets_USE_FILE})
@@ -37,6 +37,7 @@ endif(WIN32)
   
 add_executable(
   ${PROJECT_NAME}
+  WIN32 
   ${SRCS})
   
 target_link_libraries(
@@ -44,5 +45,5 @@ target_link_libraries(
   wxex-rep
   wxex
   ${wxWidgets_LIBRARIES} 
-  ${ODBC_LIBRARY}
+  ${ODBC_LIBRARIES}
   )

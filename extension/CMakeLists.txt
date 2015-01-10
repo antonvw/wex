@@ -48,7 +48,7 @@ else()
   endif()
 endif()
 
-set(ODBC_LIBRARIES ${ODBC_LIBRARY})
+set(ODBC_LIBRARIES ${ODBC_LIBRARY} PARENT_SCOPE)
 
 MARK_AS_ADVANCED( ODBC_FOUND ODBC_LIBRARY ODBC_EXTRA_LIBRARIES ODBC_INCLUDE_DIR )
 
@@ -60,7 +60,7 @@ if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D__WXDEBUG__")
   else (CMAKE_BUILD_TYPE EQUAL "Debug")
     set(wxWidgets_CONFIGURATION mswu)
-  endif (CMAKE_BUILD_TYPE EQUAL "Debug")
+  endif()
 else (WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-write-strings")
 endif(WIN32)
