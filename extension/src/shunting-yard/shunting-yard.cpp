@@ -165,6 +165,10 @@ double calculator::calculate(const char* expr,
       } else if (!str.compare("-")) {
         evaluation.push(left - right);
       } else if (!str.compare("/")) {
+        if (right == 0)
+        {
+          throw std::domain_error("Divide by zero");
+        }
         evaluation.push(left / right);
       } else if (!str.compare("<<")) {
         evaluation.push((int) left << (int) right);
