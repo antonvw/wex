@@ -2,7 +2,7 @@
 // Name:      ex.cpp
 // Purpose:   Implementation of class wxExEx
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -861,7 +861,11 @@ void wxExEx::SetLastCommand(
   if (
       always || 
       command == "~" || 
-    ( command.size() > 2 && command.front() == ':') ||
+      ( command.size() > 2 && command.front() == ':' && 
+        !wxString(command).StartsWith(":about") &&
+        !wxString(command).StartsWith(":help") &&
+        !wxString(command).StartsWith(":new")
+      ) ||
     ( command.size() > 1 && command.front() != ':' && command.front() != '\t'))
   {
     m_LastCommand = command;
