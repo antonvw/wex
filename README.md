@@ -40,7 +40,7 @@ one of these applications, being a full featured source code text editor.
     `sudo apt-get install libgtk-3-dev`   
     then in buildgtk (created):   
     `../configure --with-gtk && make`  or   
-    `../configure --with-gtk=3 && make`   and
+    `../configure --with-gtk=3 && make`   and   
     `make install`    
     
 - under SunOS:  
