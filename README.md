@@ -50,15 +50,17 @@ one of these applications, being a full featured source code text editor.
     `../configure --with-mac && make`
 
 ## Building wxExtension        
-    
+
 - under windows:   
+    `mkdir build`   
     `cd build`   
     `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
     `nmake`   
   (or make a `Debug` directory and use `-DCMAKE_BUILD_TYPE=Debug`)   
     
 - under Linux:   
-    `cd build`    
+    `mkdir build`   
+    `cd build`   
     `cmake -DCMAKE_BUILD_TYPE=Release ..`   
     `make`   
 

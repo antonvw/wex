@@ -18,7 +18,7 @@ addons:
       name: "antonvw/wxExtension"
       description: "Build submitted via Travis CI"
     notification_email: a.m.vanwezenbeek@gmail.com
-    build_command_prepend: "sudo rm /usr/bin/g++; sudo ln -s /usr/bin/g++-4.8 /usr/bin/g++; pushd build; cmake .."
+    build_command_prepend: "sudo rm /usr/bin/g++; sudo ln -s /usr/bin/g++-4.8 /usr/bin/g++; mkdir build; pushd build; cmake .."
     build_command:   "make -j 4"
     branch_pattern: coverity_scan
   
@@ -58,6 +58,7 @@ before_script:
     - sudo ln -s /usr/bin/gcov-4.8 /usr/bin/gcov
 
 script:
+    - mkdir build
     - pushd build
     - cmake ..
     - make -j 4
