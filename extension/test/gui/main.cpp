@@ -40,11 +40,20 @@ CPPUNIT_TEST_SUITE_REGISTRATION( wxExGuiTestFixture );
 int wxExTestApp::OnRun()
 {
   CppUnit::TextUi::TestRunner runner;
+  
+  SETUP_ENV();
+  
+  const wxString old = wxGetCwd();
+  wxSetWorkingDirectory("../extension/test/data");
 
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 
   runner.addTest(suite);
   
-  return !runner.run("", false);
+  const bool success = runner.run("", false);
+  
+  wxSetWorkingDirectory(old);
+  
+  return success;
 }

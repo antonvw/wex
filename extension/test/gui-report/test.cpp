@@ -10,6 +10,11 @@
 
 #define TEST_PRJ "./test-rep.prj"
 
+wxExGuiReportTestFixture::wxExGuiReportTestFixture()
+  : m_Project("test-rep.prj")
+{
+}
+
 void wxExGuiReportTestFixture::test()
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
@@ -22,7 +27,7 @@ void wxExGuiReportTestFixture::test()
   wxArrayString files;
   
   CPPUNIT_ASSERT(wxDir::GetAllFiles(
-    "../extension", 
+    "../../../extension", 
     &files,
     "*.cpp", 
     wxDIR_FILES | wxDIR_DIRS) > 10);

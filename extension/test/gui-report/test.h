@@ -62,6 +62,7 @@ class wxExGuiReportTestFixture : public wxExTestFixture
   CPPUNIT_TEST_SUITE_END();
 
 public:
+  wxExGuiReportTestFixture();
   void testDirCtrl();
   void testDirTool();
   void testDirWithListView();
@@ -74,5 +75,7 @@ public:
   
   // integration test
   void test();
+private:
+  const wxString m_Project;
 };
 #endif

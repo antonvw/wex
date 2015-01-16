@@ -59,7 +59,7 @@ one of these applications, being a full featured source code text editor.
     
 - under Linux:   
     `cd build`    
-    `cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
+    `cmake -DCMAKE_BUILD_TYPE=Release ..`   
     `make`   
 
 - for OTL add `-DwxExUSE_OTL=ON`    

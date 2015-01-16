@@ -6,8 +6,6 @@
 # Copyright: (c) 2015 Anton van Wezenbeek
 ################################################################################
 
-# Run this file in the build folder
-
 RELEASE=`wx-config --release`
 VERSION=`wx-config --version`
 
@@ -16,20 +14,20 @@ mkdir app/fr_FR
 mkdir app/nl_NL
 
 # Copy application.
-cp syncped/syncped app
+cp syncped app
 
 # Copy the libs.
 cp ~/wxWidgets-$VERSION/buildgtk/lib/libwx*$RELEASE*so*0 app
 
 # Copy xml and templates data.
-cp ../extension/data/*.txt app
-cp ../extension/data/*.xml app
+cp ../../extension/data/*.txt app
+cp ../../extension/data/*.xml app
 
 # Copy locale files.
 msgfmt ~/wxWidgets-$VERSION/locale/fr.po -o app/fr_FR/fr.mo
 msgfmt ~/wxWidgets-$VERSION/locale/nl.po -o app/nl_NL/nl.mo
 
-FILES=../locale/*fr.po
+FILES=../../locale/*fr.po
 
 for f in $FILES
 do
@@ -39,7 +37,7 @@ do
   msgfmt ../locale/$name.po -o app/fr_FR/$name.mo
 done
 
-FILES=../locale/*nl.po
+FILES=../../locale/*nl.po
 
 for f in $FILES
 do

@@ -8,12 +8,10 @@
 #include <wx/extension/report/listviewfile.h>
 #include "test.h"
 
-#define TEST_PRJ "./test-rep.prj"
-
 void wxExGuiReportTestFixture::testListViewFile()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExListViewFile* listView = new wxExListViewFile(frame, frame, TEST_PRJ);
+  wxExListViewFile* listView = new wxExListViewFile(frame, frame, m_Project);
   
   listView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->AppendColumn(wxExColumn("Number", wxExColumn::COL_INT));
@@ -22,7 +20,7 @@ void wxExGuiReportTestFixture::testListViewFile()
   CPPUNIT_ASSERT(listView->FindColumn("String") > 1);
   CPPUNIT_ASSERT(listView->FindColumn("Number") > 1);
 
-  CPPUNIT_ASSERT(listView->FileLoad(wxExFileName(TEST_PRJ)));
+  CPPUNIT_ASSERT(listView->FileLoad(wxExFileName(m_Project)));
   CPPUNIT_ASSERT(listView->FileSave(wxExFileName("test-rep.prj.bck")));
 
   CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
