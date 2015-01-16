@@ -78,7 +78,7 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT( stc->SetLexer(lexer));
   
   // do the same test as with wxExFile in base for a binary file
-  CPPUNIT_ASSERT(stc->Open(wxExFileName("./test.bin")));
+  CPPUNIT_ASSERT(stc->Open(wxExFileName(GetTestDir() + "test.bin")));
   CPPUNIT_ASSERT(stc->GetFlags() == 0);
   const wxCharBuffer& buffer = stc->GetTextRaw();
   CPPUNIT_ASSERT(buffer.length() == 40);

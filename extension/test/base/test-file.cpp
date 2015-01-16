@@ -22,10 +22,10 @@ void TestFixture::testFile()
   CPPUNIT_ASSERT( file.GetFileName().GetFullPath() != GetTestFile().GetFullPath());
   CPPUNIT_ASSERT(!file.GetFileName().GetStat().IsReadOnly());
 
-  CPPUNIT_ASSERT(!file.FileLoad(wxExFileName("./test.bin")));
+  CPPUNIT_ASSERT(!file.FileLoad(wxExFileName(GetTestDir() + "test.bin")));
   CPPUNIT_ASSERT(!file.IsOpened());
   
-  CPPUNIT_ASSERT( file.Open(wxExFileName("./test.bin").GetFullPath()));
+  CPPUNIT_ASSERT( file.Open(wxExFileName(GetTestDir() + "test.bin").GetFullPath()));
   CPPUNIT_ASSERT( file.IsOpened());
 
   wxCharBuffer buffer = file.Read();

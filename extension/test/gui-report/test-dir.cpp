@@ -40,7 +40,7 @@ void wxExGuiReportTestFixture::testDirTool()
 void wxExGuiReportTestFixture::testDirWithListView()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExListViewFile* listView = new wxExListViewFile(frame, frame, "./test-rep.prj");
+  wxExListViewFile* listView = new wxExListViewFile(frame, frame, m_Project);
   
   wxExDirWithListView* dir = new wxExDirWithListView(listView, "./");
   CPPUNIT_ASSERT(dir->FindFiles());

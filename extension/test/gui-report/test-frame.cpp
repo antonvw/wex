@@ -15,13 +15,13 @@ void wxExGuiReportTestFixture::testFrameWithHistory()
   CPPUNIT_ASSERT(!frame->GetRecentFile().Contains("test.h"));
 
   CPPUNIT_ASSERT(!frame->OpenFile(
-    wxExFileName("./test-rep.prj"),
+    wxExFileName(m_Project),
     0,
     wxEmptyString,
     wxExFrameWithHistory::WIN_IS_PROJECT));
 
   // It does not open, next should fail.
-  CPPUNIT_ASSERT(!frame->GetRecentProject().Contains("test-rep.prj"));
+  CPPUNIT_ASSERT(!frame->GetRecentProject().Contains(m_Project));
   
   CPPUNIT_ASSERT( frame->SetRecentFile("xxx.cpp"));
   CPPUNIT_ASSERT(!frame->SetRecentProject("xxx.prj"));

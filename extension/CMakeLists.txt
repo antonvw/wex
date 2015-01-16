@@ -1,88 +1,25 @@
-# Find the ODBC driver manager includes and library.
-# 
-# ODBC is an open standard for connecting to different databases in a
-# semi-vendor-independent fashion.  First you install the ODBC driver
-# manager.  Then you need a driver for each separate database you want
-# to connect to (unless a generic one works).  VTK includes neither
-# the driver manager nor the vendor-specific drivers: you have to find
-# those yourself.
-#  
-# This module defines
-# ODBC_INCLUDE_DIR where to find sql.h
-# ODBC_LIBRARIES, the libraries to link against to use ODBC
-# ODBC_FOUND.  If false, you cannot build anything that requires MySQL.
-# also defined, but not for general use is
-# ODBC_LIBRARY, where to find the ODBC driver manager library.
-
-SET( ODBC_FOUND 0 )
-
-#---For the windows platform ODBC is located automatically
-if(WIN32)
-  set(ODBC_INCLUDE_DIR "")
-  set(ODBC_LIBRARY odbc32.lib) 
-  set(ODBC_FOUND 1)
-else()
-  find_path(ODBC_INCLUDE_DIR sqlext.h
-    /usr/include
-    /usr/include/odbc
-    /usr/local/include
-    /usr/local/include/odbc
-    /usr/local/odbc/include
-    $ENV{ODBC_DIR}/include
-    DOC "Specify the directory containing sql.h."
-  )
-
-  find_library( ODBC_LIBRARY NAMES iodbc odbc odbc32
-    PATHS
-    /usr/lib
-    /usr/lib/odbc
-    /usr/local/lib
-    /usr/local/lib/odbc
-    /usr/local/odbc/lib
-    $ENV{ODBC_DIR}/lib
-    DOC "Specify the ODBC driver manager library here."
-  )
-  
-  if(ODBC_LIBRARY AND ODBC_INCLUDE_DIR)
-    set( ODBC_FOUND 1 )
-  endif()
-endif()
-
-set(ODBC_LIBRARIES ${ODBC_LIBRARY} PARENT_SCOPE)
-
-MARK_AS_ADVANCED( ODBC_FOUND ODBC_LIBRARY ODBC_EXTRA_LIBRARIES ODBC_INCLUDE_DIR )
-
-if (WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_CRT_SECURE_NO_WARNINGS /DwxExUSE_PORTABLE")
-
-  if (CMAKE_BUILD_TYPE MATCHES "Debug")
-    set(wxWidgets_CONFIGURATION mswud)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D__WXDEBUG__")
-  else (CMAKE_BUILD_TYPE EQUAL "Debug")
-    set(wxWidgets_CONFIGURATION mswu)
-  endif()
-else (WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-write-strings")
-endif(WIN32)
-
-if (WIN32)
-  find_package(wxWidgets COMPONENTS scintilla aui stc html adv xml core base REQUIRED)
-else (WIN32)
-  find_package(wxWidgets COMPONENTS           aui stc html adv xml core base REQUIRED)
-endif (WIN32)
-
-option(wxExUSE_OTL "Oracle Template Library")
-
-if (${wxExUSE_OTL} MATCHES ON)
-  add_definitions(-DwxExUSE_OTL)
-endif ()
-
-include(
-  ${wxWidgets_USE_FILE})
-
 SET(CMAKE_INSTALL_PREFIX ..)
 
 add_subdirectory(src)
 add_subdirectory(src/report)
 add_subdirectory(sample)
 add_subdirectory(test)
+
+if (CMAKE_BUILD_TYPE MATCHES "Coverage")
+  add_custom_target(lcov-prep
+    lcov --base-directory ./ --capture --initial --directory ./ --output-file app.base)
+    
+  add_custom_target(lcov
+    COMMAND lcov --base-directory $BASEDIR --capture --directory ./ --output-file app.run
+    COMMAND lcov --add-tracefile app.base --add-tracefile app.run --output-file app.total
+    # remove output for external and test libraries
+    COMMAND lcov --remove app.total "/usr*" --output-file app.total
+    COMMAND lcov --remove app.total "test/*" --output-file app.total
+    COMMAND lcov --remove app.total "sample*" --output-file app.total
+    COMMAND lcov --remove app.total "*wxExtension/sync*" --output-file app.total
+    # when manually updating coveralls
+    COMMAND coveralls-lcov --repo-token sOcBNDSlOjLSH3vs636zytnjuQtRWKLGP app.total
+    COMMAND genhtml --no-branch-coverage --title "wxExtension Library" app.total
+    COMMAND rm -f app.base app.run app.total
+    COMMENT "Running lcov" VERBATIM)    
+endif ()

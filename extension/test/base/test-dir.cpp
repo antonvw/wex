@@ -10,7 +10,7 @@
 
 void TestFixture::testDir()
 {
-  wxExDir dir("./", "*.h", wxDIR_FILES);
+  wxExDir dir(GetTestDir(), "*.h", wxDIR_FILES);
   CPPUNIT_ASSERT(dir.IsOpened());
   CPPUNIT_ASSERT(dir.GetFileSpec() == "*.h");
   CPPUNIT_ASSERT(dir.FindFiles() == 2);
