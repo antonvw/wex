@@ -22,6 +22,7 @@ cp ~/wxWidgets-$VERSION/buildgtk/lib/libwx*$RELEASE*so*0 app
 # Copy xml and templates data.
 cp ../../extension/data/*.txt app
 cp ../../extension/data/*.xml app
+cp ../../extension/data/*.xsl app
 
 # Copy locale files.
 msgfmt ~/wxWidgets-$VERSION/locale/fr.po -o app/fr_FR/fr.mo
