@@ -21,6 +21,7 @@ copy %WINDIR%\syswow64\msvcr120.dll app
 rem Copy templates and xml data.
 copy ..\..\extension\data\*.txt app
 copy ..\..\extension\data\*.xml app
+copy ..\..\extension\data\*.xsl app
 
 rem Copy locale files.
 "%PROGRAMFILES(X86)%\GnuWin32\bin\msgfmt.exe" %WXWIN%\locale\nl.po -o app\nl_NL\nl.mo
