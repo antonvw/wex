@@ -10,7 +10,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     lcov --base-directory ./ --capture --initial --directory ./ --output-file app.base)
     
   add_custom_target(lcov
-    COMMAND lcov --base-directory $BASEDIR --capture --directory ./ --output-file app.run
+    COMMAND lcov --base-directory ./ --capture --directory ./ --output-file app.run
     COMMAND lcov --add-tracefile app.base --add-tracefile app.run --output-file app.total
     # remove output for external and test libraries
     COMMAND lcov --remove app.total "/usr*" --output-file app.total
