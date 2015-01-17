@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -1416,7 +1416,10 @@ bool Frame::OpenFile(
 
       if (!m_App->GetCommand().empty() && editor->GetVi().GetIsActive())
       {
-        editor->GetVi().Command(m_App->GetCommand().ToStdString());
+        if (!editor->GetVi().Command(m_App->GetCommand().ToStdString()))
+        {
+          wxLogError("Command error: " + m_App->GetCommand());
+        }
       }
       
       if (GetManager().GetPane("DIRCTRL").IsShown())

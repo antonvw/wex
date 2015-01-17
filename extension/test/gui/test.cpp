@@ -27,6 +27,6 @@ wxExGuiTestFixture::wxExGuiTestFixture()
 wxExGuiTestFixture::~wxExGuiTestFixture()
 {
   // Remove files.
-  remove("test-ex.txt");
-  remove("test.hex");
+  (void)remove("test-ex.txt");
+  (void)remove("test.hex");
 }

@@ -135,7 +135,7 @@ void wxExHexMode::ControlCharDialog(const wxString& caption)
       return;
     }
     
-    ml.Replace(new_value);
+    (void)ml.Replace(new_value);
   }
   else if (
     ml.IsHexField() &&
@@ -160,7 +160,7 @@ void wxExHexMode::ControlCharDialog(const wxString& caption)
       return;
     }
     
-    ml.ReplaceHex(new_value);
+    (void)ml.ReplaceHex(new_value);
   }
 }
     
