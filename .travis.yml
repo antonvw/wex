@@ -58,8 +58,6 @@ before_script:
     - sudo ln -s /usr/bin/gcov-4.8 /usr/bin/gcov
 
 script:
-    - mkdir build
-    - pushd build
-    - cmake ..
-    - make -j 4
-    - make test 
+    - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; mkdir build && pushd build; fi
+    - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; cmake ..; fi
+    - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; make -j 4 && make test; fi
