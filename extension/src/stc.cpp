@@ -850,7 +850,7 @@ void wxExSTC::FileTypeMenu()
 bool wxExSTC::FindNext(bool find_next)
 {
   return FindNext(
-    wxExFindReplaceData::Get()->GetFindString(),
+    GetFindString(),
     -1,
     find_next);
 }
@@ -1661,6 +1661,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
 {
   wxExFindReplaceData* frd = wxExFindReplaceData::Get();
+  frd->SetFindString(frd->GetFindString());
 
   if (
     event.GetEventType() == wxEVT_COMMAND_FIND ||
