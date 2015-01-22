@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -48,7 +48,32 @@
     m_FindReplaceDialog->Destroy();                          \
   }                                                          \
                                                              \
-  m_FindFocus = wxWindow::FindFocus();                       \
+  wxWindow* win = wxWindow::FindFocus();                     \
+                                                             \
+  wxExSTC* cl = dynamic_cast<wxExSTC*>(win);                 \
+                                                             \
+  if (cl != NULL)                                            \
+  {                                                          \
+    m_FindFocus = cl;                                        \
+  }                                                          \
+  else                                                       \
+  {                                                          \
+    wxExListView* cl = dynamic_cast<wxExListView*>(win);     \
+                                                             \
+    if (cl != NULL)                                          \
+    {                                                        \
+      m_FindFocus = cl;                                      \
+    }                                                        \
+    else                                                     \
+    {                                                        \
+      wxExGrid* grid = dynamic_cast<wxExGrid*>(win);         \
+                                                             \
+      if (cl != NULL)                                        \
+      {                                                      \
+        m_FindFocus = cl;                                    \
+      }                                                      \
+    }                                                        \
+  }                                                          \
                                                              \
   wxExSTC* stc = GetSTC();                                   \
                                                              \
