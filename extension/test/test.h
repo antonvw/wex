@@ -22,7 +22,9 @@
   if (!wxDirExists(dir))                                       \
   {                                                            \
     system("mkdir "+ dir);                                     \
-    system("cp ../extension/data/*.xml " + dir);               \
+    system("cp ../extension/data/lexers.xml " + dir);          \
+    system("cp ../extension/data/macros.xml " + dir);          \
+    system("cp ../extension/data/vcs.xml " + dir);             \
   }                                                            \
     
 /// CppUnit test fixture.
