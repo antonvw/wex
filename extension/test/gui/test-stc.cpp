@@ -51,6 +51,7 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT( stc->ReplaceAll("more", "less") == 1);
   CPPUNIT_ASSERT( stc->ReplaceAll("more", "less") == 0);
   CPPUNIT_ASSERT(!stc->FindNext(wxString("more text")));
+  stc->SelectNone();
   CPPUNIT_ASSERT(!stc->FindNext());
   CPPUNIT_ASSERT( stc->FindNext(wxString("less text")));
   CPPUNIT_ASSERT( stc->ReplaceNext("less text", ""));
