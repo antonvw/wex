@@ -12,30 +12,20 @@
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestFixture.h>
 #include <cppunit/TestSuite.h>
-#include <wx/stdpaths.h>
 #include <wx/extension/filename.h>
 
-//#define SHOW_REPORT
+/// Sets environment. 
+void SetEnvironment(const wxString& dir);
 
-#define SETUP_ENV()                                            \
-  const wxString dir(wxStandardPaths::Get().GetUserDataDir()); \
-  if (!wxDirExists(dir))                                       \
-  {                                                            \
-    system("mkdir "+ dir);                                     \
-    system("cp ../extension/data/lexers.xml " + dir);          \
-    system("cp ../extension/data/macros.xml " + dir);          \
-    system("cp ../extension/data/vcs.xml " + dir);             \
-  }                                                            \
-    
+/// Sets working directory to test dir, returns current working directory.
+const wxString SetWorkingDirectory();
+
 /// CppUnit test fixture.
 class wxExTestFixture : public CppUnit::TestFixture
 {
 public:
   /// Default constructor.
-  wxExTestFixture() 
-    : TestFixture() 
-    , m_TestDir("./")
-    , m_TestFile(m_TestDir + "test.h"){}; 
+  wxExTestFixture(); 
   
   /// Destructor.
  ~wxExTestFixture() {};
@@ -48,17 +38,10 @@ public:
   
   /// Clean up after the test run.
   /// Prints out report if switch is on.
-  virtual void tearDown() {
-#ifdef SHOW_REPORT
-    if (!m_Report.empty()) 
-      std::cout << m_Report;
-#endif  
-    };
+  virtual void tearDown();
       
   /// Adds text to report.
-  void Report(const std::string& text) {
-    m_Report.append(text);
-    m_Report.append("\n");};
+  void Report(const std::string& text);
 private:
   std::string m_Report;  
   const wxString m_TestDir;

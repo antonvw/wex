@@ -1,6 +1,6 @@
 project(wxex-test-base)
 
-FILE(GLOB SRCS "*.cpp")
+FILE(GLOB SRCS "*.cpp" "../*.cpp")
   
 add_executable(
   ${PROJECT_NAME} 

@@ -11,6 +11,7 @@
 #endif
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/TestRunner.h>
+#include <wx/stdpaths.h>
 #include <wx/sysopt.h>
 #include <wx/extension/report/frame.h>
 #include "test.h"
@@ -53,10 +54,6 @@ bool wxExTestApp::OnInit()
   FrameWithHistory* frame = new 
     FrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
     
-  frame->Show(true);
-
-  wxLog::SetActiveTarget(new wxLogStderr());
-  
   return true;
 }
 
@@ -67,11 +64,9 @@ int wxExTestApp::OnRun()
 {
   CppUnit::TextUi::TestRunner runner;
 
-  SETUP_ENV();
+  const wxString& old = SetWorkingDirectory();
+  SetEnvironment(wxStandardPaths::Get().GetUserDataDir());
   
-  const wxString old = wxGetCwd();
-  wxSetWorkingDirectory("../extension/test/data");
-
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
   
@@ -81,5 +76,5 @@ int wxExTestApp::OnRun()
   
   wxSetWorkingDirectory(old);
   
-  return success;
+  return !success;
 }
