@@ -8,6 +8,7 @@
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/TestRunner.h>
+#include <wx/stdpaths.h>
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
@@ -21,13 +22,10 @@ bool wxExTestApp::OnInit()
   {
     return false;
   }
-
+  
   wxExManagedFrame* frame = new 
     wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
     
-  frame->Show(true);
-  wxLog::SetActiveTarget(new wxLogStderr());
-  
   wxLogStatus(GetCatalogDir());
   wxLogStatus(GetLocale().GetLocale());
   
@@ -39,21 +37,18 @@ CPPUNIT_TEST_SUITE_REGISTRATION( wxExGuiTestFixture );
 
 int wxExTestApp::OnRun()
 {
-  CppUnit::TextUi::TestRunner runner;
+  SetWorkingDirectory();
+  SetEnvironment(wxStandardPaths::Get().GetUserDataDir());
   
-  SETUP_ENV();
-  
-  const wxString old = wxGetCwd();
-  wxSetWorkingDirectory("../extension/test/data");
-
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 
+  CppUnit::TextUi::TestRunner runner;
   runner.addTest(suite);
   
   const bool success = runner.run("", false);
   
-  wxSetWorkingDirectory(old);
+  exit(!success);
   
-  return success;
+  return 0;
 }

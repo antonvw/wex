@@ -20,20 +20,13 @@ int main (int argc, char* argv[])
 {
   CppUnit::TextUi::TestRunner runner;
   
-  wxLog::SetActiveTarget(new wxLogStderr());
+  SetWorkingDirectory();
+  SetEnvironment("~/.wxex-test-base"); // wxStandardPaths::Get().GetUserDataDir())
   
-  wxString dir("~/.wxex-test-base"); // wxStandardPaths::Get().GetUserDataDir())
-  
-  if (!wxDirExists(dir))
-  {
-    system("mkdir "+ dir);
-    system("cp ../extension/data/*.xml " + dir);
-  }
-    
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 
   runner.addTest(suite);
 
-  return runner.run("", false);
+  return !runner.run("", false);
 }
