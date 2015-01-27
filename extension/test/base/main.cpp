@@ -10,6 +10,7 @@
 #include <cppunit/TestRunner.h>
 #include <wx/filename.h>
 #include <wx/log.h>
+#include <wx/utils.h>
 
 #include "test.h"
 
@@ -21,7 +22,8 @@ int main (int argc, char* argv[])
   CppUnit::TextUi::TestRunner runner;
   
   SetWorkingDirectory();
-  SetEnvironment("~/.wxex-test-base"); // wxStandardPaths::Get().GetUserDataDir())
+  SetEnvironment(wxGetHomeDir() + "/.wxex-test-base");
+  
   
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
