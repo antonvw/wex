@@ -18,6 +18,9 @@ bool wxExTestApp::OnInit()
 {
   SetAppName("wxex-test-gui");
 
+  SetWorkingDirectory();
+  SetEnvironment(wxStandardPaths::Get().GetUserDataDir());
+  
   if (!wxExApp::OnInit())
   {
     return false;
@@ -37,9 +40,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION( wxExGuiTestFixture );
 
 int wxExTestApp::OnRun()
 {
-  SetWorkingDirectory();
-  SetEnvironment(wxStandardPaths::Get().GetUserDataDir());
-  
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 

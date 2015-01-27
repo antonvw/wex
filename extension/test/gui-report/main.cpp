@@ -46,6 +46,9 @@ bool wxExTestApp::OnInit()
   SetAppName("wxex-test-gui-report");
   wxSystemOptions::SetOption("gtk.desktop", "GNOME");
   
+  SetWorkingDirectory();
+  SetEnvironment(wxStandardPaths::Get().GetUserDataDir());
+  
   if (!wxExApp::OnInit())
   {
     return false;
@@ -62,19 +65,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION( wxExGuiReportTestFixture );
 
 int wxExTestApp::OnRun()
 {
-  CppUnit::TextUi::TestRunner runner;
-
-  const wxString& old = SetWorkingDirectory();
-  SetEnvironment(wxStandardPaths::Get().GetUserDataDir());
-  
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
   
+  CppUnit::TextUi::TestRunner runner;
   runner.addTest(suite);
   
   const bool success = runner.run("", false);
-  
-  wxSetWorkingDirectory(old);
   
   return !success;
 }
