@@ -19,15 +19,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TestFixture );
 
 int main (int argc, char* argv[])
 {
-  CppUnit::TextUi::TestRunner runner;
-  
   SetWorkingDirectory();
   SetEnvironment(wxGetHomeDir() + "/.wxex-test-base");
-  
   
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 
+  CppUnit::TextUi::TestRunner runner;
   runner.addTest(suite);
 
   return !runner.run("", false);
