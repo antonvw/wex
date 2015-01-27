@@ -8,7 +8,7 @@
 #include <wx/log.h>
 #include "test.h"
 
-//#define SHOW_REPORT
+#define LOGGING ON
 
 void SetEnvironment(const wxString& dir)
 {
@@ -16,38 +16,54 @@ void SetEnvironment(const wxString& dir)
   
   if (!wxDirExists(dir))
   {
-    system("mkdir " + dir);
+    (void)system("mkdir " + dir);
   }
   
-  system("cp ../../data/lexers.xml " + dir);
-  system("cp ../../data/macros.xml " + dir);
-  system("cp ../../data/vcs.xml " + dir);
+  (void)system("cp ../../data/lexers.xml " + dir);
+  (void)system("cp ../../data/macros.xml " + dir);
+  (void)system("cp ../../data/vcs.xml " + dir);
 }
     
 void SetFindExtension(wxFileName& fn)
 {
   const wxArrayString ar(fn.GetDirs());
+  const int index = ar.Index("wxExtension");
   
   fn.Assign("/", "");
-
-  for (int i = 0; i < ar.GetCount(); i++)
+  
+  // If wxExtension is present, copy all subdirectories.
+  if (index != wxNOT_FOUND)
   {
-    if (ar[i] == "build" || ar[i]== "Release" || 
-       ar[i] == "Debug" || ar[i] == "Coverage")
+    for (int i = 0; i <= index; i++)
     {
-      fn.AppendDir("extension");
-      break;      
+      fn.AppendDir(ar[i]);
     }
     
-    fn.AppendDir(ar[i]);
-    
-    if (ar[i] == "extension")
+    fn.AppendDir("extension");
+  }
+  else
+  {
+    for (int i = 0; i < ar.GetCount(); i++)
     {
-      break;
+      if (ar[i] == "build" || ar[i] == "Release" || 
+          ar[i] == "Debug" || ar[i] == "Coverage")
+      {
+        fn.AppendDir("extension");
+        break;      
+      }
+    
+      fn.AppendDir(ar[i]);
+    
+      if (ar[i] == "extension")
+      {
+        break;
+      }
     }
   }
-    
+
+#ifdef LOGGING    
   fprintf(stderr, "EXT: %s\n", (const char *)fn.GetFullPath().c_str());
+#endif  
 }
     
 const wxString SetWorkingDirectory()
@@ -85,10 +101,14 @@ const wxString SetWorkingDirectory()
     exit(1);
   }
   
+#ifdef LOGGING    
   fprintf(stderr, "WD: %s\n", (const char *)fn.GetFullPath().c_str());
+#endif  
   
   return old;
 }
+
+//#define SHOW_REPORT
 
 wxExTestFixture::wxExTestFixture() 
   : TestFixture() 
