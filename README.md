@@ -22,7 +22,7 @@ one of these applications, being a full featured source code text editor.
 # Build process 
   [![Build Status](https://travis-ci.org/antonvw/wxExtension.png?branch=v3.0)](https://travis-ci.org/antonvw/wxExtension) 
   [![Coverity Scan Build Status](https://scan.coverity.com/projects/2868/badge.svg)](https://scan.coverity.com/projects/2868>)
-  [![Coverage Status](https://img.shields.io/coveralls/antonvw/wxExtension.svg)](https://coveralls.io/r/antonvw/wxExtension?branch=v3.0)  
+  [![Coverage Status](https://coveralls.io/repos/antonvw/wxExtension/badge.svg?branch=v3.0%0A)](https://coveralls.io/r/antonvw/wxExtension?branch=v3.0%0A)  
   
 ## Building wxWidgets
 
