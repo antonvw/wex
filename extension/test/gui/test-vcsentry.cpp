@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/vcsentry.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/defs.h>
 #include "test.h"
 
@@ -30,7 +31,7 @@ void wxExGuiTestFixture::testVCSEntry()
   CPPUNIT_ASSERT( test.GetOutput().empty());
   
   CPPUNIT_ASSERT( test.ShowDialog(
-    wxTheApp->GetTopWindow(),
+    m_Frame,
     "vcs",
     false) == wxID_CANCEL);
     

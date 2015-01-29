@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-managedframe.cpp
+// Name:      test-managedm_Frame.cpp
 // Purpose:   Implementation for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
@@ -18,36 +18,34 @@
 // Also test the toolbar (wxExToolBar).
 void wxExGuiTestFixture::testManagedFrame()
 {
-  wxExManagedFrame* frame = (wxExManagedFrame*)wxTheApp->GetTopWindow();
-
-  CPPUNIT_ASSERT(frame->AllowClose(100, NULL));
+  CPPUNIT_ASSERT(m_Frame->AllowClose(100, NULL));
   
-  wxExSTC* stc = new wxExSTC(frame, "hello world");
+  wxExSTC* stc = new wxExSTC(m_Frame, "hello world");
   wxExVi* vi = &stc->GetVi();
   
-  CPPUNIT_ASSERT( frame->ExecExCommand(ID_EDIT_NEXT) == NULL);
+  CPPUNIT_ASSERT( m_Frame->ExecExCommand(ID_EDIT_NEXT) == NULL);
   
-  frame->GetExCommand(vi, "/");
+  m_Frame->GetExCommand(vi, "/");
   
-  frame->HideExBar();
-  frame->HideExBar(false);
+  m_Frame->HideExBar();
+  m_Frame->HideExBar(false);
   
-  CPPUNIT_ASSERT(!frame->GetManager().GetPane("VIBAR").IsShown());
+  CPPUNIT_ASSERT(!m_Frame->GetManager().GetPane("VIBAR").IsShown());
   
-  frame->ShowExMessage("hello from frame");
+  m_Frame->ShowExMessage("hello from m_Frame");
   
-  frame->SyncAll();
-  frame->SyncCloseAll(0);
+  m_Frame->SyncAll();
+  m_Frame->SyncCloseAll(0);
   
-  CPPUNIT_ASSERT( frame->TogglePane("FINDBAR"));
-  CPPUNIT_ASSERT( frame->GetManager().GetPane("FINDBAR").IsShown());
-  CPPUNIT_ASSERT( frame->TogglePane("OPTIONSBAR"));
-  CPPUNIT_ASSERT( frame->GetManager().GetPane("OPTIONSBAR").IsShown());
-  CPPUNIT_ASSERT( frame->TogglePane("TOOLBAR"));
-  CPPUNIT_ASSERT(!frame->GetManager().GetPane("TOOLBAR").IsShown());
-  CPPUNIT_ASSERT( frame->TogglePane("VIBAR"));
-  CPPUNIT_ASSERT( frame->GetManager().GetPane("VIBAR").IsShown());
+  CPPUNIT_ASSERT( m_Frame->TogglePane("FINDBAR"));
+  CPPUNIT_ASSERT( m_Frame->GetManager().GetPane("FINDBAR").IsShown());
+  CPPUNIT_ASSERT( m_Frame->TogglePane("OPTIONSBAR"));
+  CPPUNIT_ASSERT( m_Frame->GetManager().GetPane("OPTIONSBAR").IsShown());
+  CPPUNIT_ASSERT( m_Frame->TogglePane("TOOLBAR"));
+  CPPUNIT_ASSERT(!m_Frame->GetManager().GetPane("TOOLBAR").IsShown());
+  CPPUNIT_ASSERT( m_Frame->TogglePane("VIBAR"));
+  CPPUNIT_ASSERT( m_Frame->GetManager().GetPane("VIBAR").IsShown());
   
-  CPPUNIT_ASSERT(!frame->TogglePane("XXXXBAR"));
-  CPPUNIT_ASSERT(!frame->GetManager().GetPane("XXXXBAR").IsOk());
+  CPPUNIT_ASSERT(!m_Frame->TogglePane("XXXXBAR"));
+  CPPUNIT_ASSERT(!m_Frame->GetManager().GetPane("XXXXBAR").IsOk());
 }

@@ -12,6 +12,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/extension/vcs.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/menu.h>
 #include "test.h"
 
@@ -30,7 +31,7 @@ void wxExGuiTestFixture::testVCS()
   // giving the first command of current vcs, being add.
   wxExVCS vcs(v);
   
-  vcs.ConfigDialog(wxTheApp->GetTopWindow(), "test vcs", false);
+  vcs.ConfigDialog(m_Frame, "test vcs", false);
   
   CPPUNIT_ASSERT( vcs.GetCount() > 0);
   CPPUNIT_ASSERT( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);

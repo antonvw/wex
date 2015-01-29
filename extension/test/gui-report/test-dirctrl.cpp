@@ -11,9 +11,7 @@
 
 void wxExGuiReportTestFixture::testDirCtrl()
 {
-  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  
-  wxExGenericDirCtrl* ctrl = new wxExGenericDirCtrl(frame, frame);
+  wxExGenericDirCtrl* ctrl = new wxExGenericDirCtrl(m_Frame, m_Frame);
   ctrl->ExpandAndSelectPath("test");
 
   wxCommandEvent event(ID_TREE_COPY);  

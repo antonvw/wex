@@ -10,12 +10,13 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/lexers.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testLexers()
 {
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
   
   CPPUNIT_ASSERT( wxExLexers::Get() != NULL);
   
@@ -115,8 +116,8 @@ void wxExGuiTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0, -1)));
   
   wxString lexer("cpp");
-  wxExLexers::Get()->ShowDialog(wxTheApp->GetTopWindow(), lexer, wxEmptyString, false);
-  wxExLexers::Get()->ShowThemeDialog(wxTheApp->GetTopWindow(), wxEmptyString, false);
+  wxExLexers::Get()->ShowDialog(m_Frame, lexer, wxEmptyString, false);
+  wxExLexers::Get()->ShowThemeDialog(m_Frame, wxEmptyString, false);
   
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetKeywords("cpp").empty());
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetKeywords("csh").empty());

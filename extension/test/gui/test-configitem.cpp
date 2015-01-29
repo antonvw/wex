@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/configitem.h>
+#include <wx/extension/managedframe.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testConfigItem()
@@ -144,7 +145,7 @@ void wxExGuiTestFixture::testConfigItem()
     {
       // Testing on not NULL not possible,
       // not all items need a sizer.
-      it.Layout(wxTheApp->GetTopWindow(), &sizer);
+      it.Layout(m_Frame, &sizer);
     }
  
     if (it.GetType() != CONFIG_EMPTY)
@@ -154,8 +155,8 @@ void wxExGuiTestFixture::testConfigItem()
   }
 
   // Now check ToConfig (after Layout).  
-  CPPUNIT_ASSERT( ci_str.Layout(wxTheApp->GetTopWindow(), &sizer) != NULL);
-  CPPUNIT_ASSERT( ci_st.Layout(wxTheApp->GetTopWindow(), &sizer) == NULL);
+  CPPUNIT_ASSERT( ci_str.Layout(m_Frame, &sizer) != NULL);
+  CPPUNIT_ASSERT( ci_st.Layout(m_Frame, &sizer) == NULL);
   CPPUNIT_ASSERT( ci_str.ToConfig(true));
   CPPUNIT_ASSERT( ci_str.ToConfig(false));
   CPPUNIT_ASSERT(!ci_st.ToConfig(true));

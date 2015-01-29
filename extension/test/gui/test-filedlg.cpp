@@ -11,12 +11,13 @@
 #endif
 #include <wx/extension/filedlg.h>
 #include <wx/extension/file.h>
+#include <wx/extension/managedframe.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testFileDialog()
 {
   wxExFile file;
-  wxExFileDialog dlg(wxTheApp->GetTopWindow(), &file);
+  wxExFileDialog dlg(m_Frame, &file);
   
   CPPUNIT_ASSERT(dlg.ShowModalIfChanged(false) == wxID_OK);
 }

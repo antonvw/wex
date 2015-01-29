@@ -10,12 +10,13 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/listitem.h>
+#include <wx/extension/managedframe.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testListItem()
 {
   wxExListViewFileName* listView = new wxExListViewFileName(
-    wxTheApp->GetTopWindow(), wxExListViewFileName::LIST_FILE);
+    m_Frame, wxExListViewFileName::LIST_FILE);
   
   wxStopWatch sw;
   sw.Start();

@@ -10,19 +10,20 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/stcdlg.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/shell.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testSTCEntryDialog()
 {
-  wxExSTCEntryDialog dlg1(wxTheApp->GetTopWindow(), "hello", "testing");
+  wxExSTCEntryDialog dlg1(m_Frame, "hello", "testing");
   CPPUNIT_ASSERT( dlg1.GetText() == "testing");
   //CPPUNIT_ASSERT( dlg1.GetTextRaw() == "testing");
   CPPUNIT_ASSERT( dlg1.SetLexer("cpp"));
   CPPUNIT_ASSERT(!dlg1.SetLexer("xxx"));
   
   wxExSTCEntryDialog dlg2(
-    wxTheApp->GetTopWindow(), 
+    m_Frame, 
       "hello", 
       "testing",
       "hello again",

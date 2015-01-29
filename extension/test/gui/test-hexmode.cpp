@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/hexmode.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
@@ -19,7 +20,7 @@ void wxExGuiTestFixture::testHexMode()
   // 0123456789012345678901234567890123456789012345678901234567890123456789
   // 30 31 32 33 34 35 36 37 38 39                   0123456789
   wxExSTC* stc = new wxExSTC(
-    wxTheApp->GetTopWindow(), "0123456789", wxExSTC::STC_WIN_HEX);
+    m_Frame, "0123456789", wxExSTC::STC_WIN_HEX);
     
   CPPUNIT_ASSERT(stc->GetText() != "0123456789");
   

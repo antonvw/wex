@@ -24,6 +24,9 @@ private:
   virtual int OnRun();
 };
 
+class wxExManagedFrame;
+class wxExStatusBar;
+
 /// CppUnit gui test fixture.
 /// These classes require either an wxExApp object, or wx to be initialized.
 class wxExGuiTestFixture : public wxExTestFixture
@@ -57,6 +60,7 @@ class wxExGuiTestFixture : public wxExTestFixture
   CPPUNIT_TEST( testProcess );
   CPPUNIT_TEST( testProperty );
   CPPUNIT_TEST( testShell );
+  CPPUNIT_TEST( testStatistics );
   CPPUNIT_TEST( testStatusBar );
   CPPUNIT_TEST( testSTC );
   CPPUNIT_TEST( testSTCEntryDialog );
@@ -109,6 +113,7 @@ public:
   void testProcess();
   void testProperty();
   void testShell();
+  void testStatistics();
   void testStatusBar();
   void testSTC();
   void testSTCEntryDialog();
@@ -124,5 +129,8 @@ public:
   void testVersion();
   void testVi();
   void testViMacros();
+private:
+  wxExManagedFrame* m_Frame;
+  static wxExStatusBar* m_StatusBar;
 };
 #endif

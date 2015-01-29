@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/process.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/shell.h>
 #include "test.h"
 
@@ -22,7 +23,7 @@ void wxExGuiTestFixture::testProcess()
   CPPUNIT_ASSERT(!process.HasStdError());
   CPPUNIT_ASSERT(!process.IsRunning());
   
-  process.ConfigDialog(wxTheApp->GetTopWindow(), "test process", false);
+  process.ConfigDialog(m_Frame, "test process", false);
   
   // Test wxEXEC_SYNC process.
   /*

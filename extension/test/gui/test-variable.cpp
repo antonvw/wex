@@ -11,12 +11,13 @@
 #endif
 #include <wx/xml/xml.h>
 #include <wx/extension/variable.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testVariable()
 {
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello again");
+  wxExSTC* stc = new wxExSTC(m_Frame, "hello again");
   wxExEx* ex = new wxExEx(stc);
   
   wxExVariable v;
@@ -37,17 +38,39 @@ void wxExGuiTestFixture::testVariable()
   CPPUNIT_ASSERT(!var.IsInput());
   
   xml.DeleteAttribute("name");
-  xml.AddAttribute("name", "Year");
   
-  wxExVariable var2(&xml);
-  CPPUNIT_ASSERT( var2.GetName() == "Year");
-  CPPUNIT_ASSERT( var2.Expand(ex));
-  CPPUNIT_ASSERT(!var2.IsModified());
-  CPPUNIT_ASSERT(!var2.IsInput());
-  
+  const std::vector<wxString> builtin{
+    "Cb", "Cc", "Ce", "Cl", "Created", "Date", "Datetime",
+    "Filename", "Fullpath", "Nl", "Path", "Time", "Year"};
+    
+  for (const auto& it : builtin)
+  {
+    xml.AddAttribute("name", it);
+
+    wxExVariable var2(&xml);
+    CPPUNIT_ASSERT( var2.GetName() == it);
+    CPPUNIT_ASSERT( var2.GetValue().empty());
+    CPPUNIT_ASSERT( var2.Expand(ex));
+    wxString content;
+    CPPUNIT_ASSERT( var2.Expand(ex, content));
+
+    if (it == "Year")
+    {
+      CPPUNIT_ASSERT( content.StartsWith("20")); // start of year
+    }
+    
+    CPPUNIT_ASSERT(!var2.IsModified());
+    CPPUNIT_ASSERT(!var2.IsInput());
+    
+    xml.DeleteAttribute("name");
+  }
+    
   wxExVariable var3("added");
   CPPUNIT_ASSERT( var3.GetName() == "added");
   CPPUNIT_ASSERT( var3.IsInput());
   var.SkipInput();
   // This is input, we cannot test it at this moment.
+  var.AskForInput();
+  
+  var3.Save(&xml);
 }

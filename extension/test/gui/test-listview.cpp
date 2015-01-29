@@ -12,11 +12,12 @@
 #endif
 #include <wx/artprov.h> // for wxArtID
 #include <wx/extension/listview.h>
+#include <wx/extension/managedframe.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testListView()
 {
-  wxExListView* listView = new wxExListView(wxTheApp->GetTopWindow());
+  wxExListView* listView = new wxExListView(m_Frame);
   
   listView->SetSingleStyle(wxLC_REPORT);
   

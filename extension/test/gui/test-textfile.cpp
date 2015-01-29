@@ -34,6 +34,9 @@ void wxExGuiTestFixture::testTextFile()
   // Test find.
   wxExTextFile textFile(GetTestFile(), ID_TOOL_REPORT_FIND);
   
+  CPPUNIT_ASSERT( textFile.GetFileName() == GetTestFile());
+  CPPUNIT_ASSERT( textFile.GetTool().GetId() == ID_TOOL_REPORT_FIND);
+  
   wxExFindReplaceData::Get()->SetFindString("test");
   wxExFindReplaceData::Get()->SetMatchCase(true);
   wxExFindReplaceData::Get()->SetMatchWord(true);
@@ -41,7 +44,9 @@ void wxExGuiTestFixture::testTextFile()
   
   wxStopWatch sw;
   sw.Start();
+  
   CPPUNIT_ASSERT( textFile.RunTool());
+  
   const long elapsed = sw.Time();
   
   CPPUNIT_ASSERT(elapsed < 20);

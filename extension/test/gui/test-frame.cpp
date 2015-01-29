@@ -10,14 +10,13 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/frame.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testFrame()
 {
-  wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
-  frame->SetFocus(); // otherwise focus is on stc component caused by testEx
+  m_Frame->SetFocus(); // otherwise focus is on stc component caused by testEx
 
   std::vector<wxExStatusBarPane> panes;
 
@@ -32,77 +31,49 @@ void wxExGuiTestFixture::testFrame()
   panes.push_back(wxExStatusBarPane("PaneLexer"));
   panes.push_back(wxExStatusBarPane("PaneFileType"));
   panes.push_back(wxExStatusBarPane("LastPane"));
+
+  m_StatusBar = m_Frame->SetupStatusBar(panes);
   
-  wxExStatusBar* sb = frame->SetupStatusBar(panes);
-  CPPUNIT_ASSERT( sb != NULL);
+  CPPUNIT_ASSERT( m_StatusBar->GetFieldsCount () == panes.size());
   
-  CPPUNIT_ASSERT( sb->GetFieldsCount () == panes.size());
-  CPPUNIT_ASSERT( sb->SetStatusText("hello", ""));
-  CPPUNIT_ASSERT( sb->SetStatusText("hello0", "Pane0"));
-  CPPUNIT_ASSERT( sb->SetStatusText("hello1", "Pane1"));
-  CPPUNIT_ASSERT( sb->SetStatusText("hello2", "Pane2"));
-  CPPUNIT_ASSERT(!sb->SetStatusText("hello3", "Panexxx"));
-  CPPUNIT_ASSERT(!sb->SetStatusText("hello25", "Pane25"));
-  CPPUNIT_ASSERT( sb->SetStatusText("GoodBye", "LastPane"));
+  CPPUNIT_ASSERT(!m_Frame->OpenFile(GetTestFile()));
+  CPPUNIT_ASSERT( m_Frame->OpenFile(GetTestFile().GetFullPath(), "contents"));
   
-  CPPUNIT_ASSERT( sb->GetStatusText("Pane0") == "hello0");
-  CPPUNIT_ASSERT( ((wxStatusBar*) sb)->GetStatusText(1) == "hello0");
-  CPPUNIT_ASSERT( sb->GetStatusText("Pane1") == "hello1");
-  CPPUNIT_ASSERT( sb->GetStatusText("Pane2") == "hello2");
-  CPPUNIT_ASSERT( sb->GetStatusText("Panexxx").empty());
+  CPPUNIT_ASSERT( m_Frame->GetGrid() == NULL);
+  CPPUNIT_ASSERT( m_Frame->GetListView() == NULL);
+  CPPUNIT_ASSERT( m_Frame->GetSTC() == NULL);
   
-  CPPUNIT_ASSERT( sb->ShowField("Pane0", false));
-  CPPUNIT_ASSERT( ((wxStatusBar*) sb)->GetStatusText(1) == "hello1");
-  CPPUNIT_ASSERT(!sb->ShowField("Pane0", false));
-  CPPUNIT_ASSERT( ((wxStatusBar*) sb)->GetStatusText(1) == "hello1");
-  CPPUNIT_ASSERT( sb->GetStatusText("Pane0").empty());
-  CPPUNIT_ASSERT( sb->ShowField("Pane0", true));
-  CPPUNIT_ASSERT( ((wxStatusBar*) sb)->GetStatusText(1) == "hello0");
-  CPPUNIT_ASSERT( sb->GetStatusText("Pane0") == "hello0");
-  CPPUNIT_ASSERT( sb->ShowField("LastPane", false));
-  CPPUNIT_ASSERT( sb->GetStatusText("LastPane").empty());
-  CPPUNIT_ASSERT(!sb->SetStatusText("BackAgain", "LastPane"));
-  CPPUNIT_ASSERT( sb->ShowField("LastPane", true));
-  CPPUNIT_ASSERT( sb->GetStatusText("LastPane") == "BackAgain");
-  
-  CPPUNIT_ASSERT(!frame->OpenFile(GetTestFile()));
-  CPPUNIT_ASSERT( frame->OpenFile(GetTestFile().GetFullPath(), "contents"));
-  
-  CPPUNIT_ASSERT( frame->GetGrid() == NULL);
-  CPPUNIT_ASSERT( frame->GetListView() == NULL);
-  CPPUNIT_ASSERT( frame->GetSTC() == NULL);
-  
-  frame->SetFindFocus(NULL);
-  frame->SetFindFocus(frame);
-  frame->SetFindFocus(frame->GetSTC());
+  m_Frame->SetFindFocus(NULL);
+  m_Frame->SetFindFocus(m_Frame);
+  m_Frame->SetFindFocus(m_Frame->GetSTC());
   
   wxMenuBar* bar = new wxMenuBar();
-  frame->SetMenuBar(bar);
+  m_Frame->SetMenuBar(bar);
   
-  frame->StatusBarClicked("test");
-  frame->StatusBarClicked("Pane1");
-  frame->StatusBarClicked("Pane2");
+  m_Frame->StatusBarClicked("test");
+  m_Frame->StatusBarClicked("Pane1");
+  m_Frame->StatusBarClicked("Pane2");
   
-  frame->StatusBarClickedRight("test");
-  frame->StatusBarClickedRight("Pane1");
-  frame->StatusBarClickedRight("Pane2");
+  m_Frame->StatusBarClickedRight("test");
+  m_Frame->StatusBarClickedRight("Pane1");
+  m_Frame->StatusBarClickedRight("Pane2");
   
-  CPPUNIT_ASSERT(!frame->StatusText("hello", "test"));
-  CPPUNIT_ASSERT( frame->StatusText("hello1", "Pane1"));
-  CPPUNIT_ASSERT( frame->StatusText("hello2", "Pane2"));
-  CPPUNIT_ASSERT( frame->GetStatusText("Pane1") = "hello1");
-  CPPUNIT_ASSERT( frame->GetStatusText("Pane2") = "hello2");
+  CPPUNIT_ASSERT(!m_Frame->StatusText("hello", "test"));
+  CPPUNIT_ASSERT( m_Frame->StatusText("hello1", "Pane1"));
+  CPPUNIT_ASSERT( m_Frame->StatusText("hello2", "Pane2"));
+  CPPUNIT_ASSERT( m_Frame->GetStatusText("Pane1") = "hello1");
+  CPPUNIT_ASSERT( m_Frame->GetStatusText("Pane2") = "hello2");
   
-  CPPUNIT_ASSERT(!frame->UpdateStatusBar(frame->GetSTC(), "test"));
-  CPPUNIT_ASSERT(!frame->UpdateStatusBar(frame->GetSTC(), "Pane1"));
-  CPPUNIT_ASSERT(!frame->UpdateStatusBar(frame->GetSTC(), "Pane2"));
-  CPPUNIT_ASSERT(!frame->UpdateStatusBar(frame->GetSTC(), "PaneInfo"));
+  CPPUNIT_ASSERT(!m_Frame->UpdateStatusBar(m_Frame->GetSTC(), "test"));
+  CPPUNIT_ASSERT(!m_Frame->UpdateStatusBar(m_Frame->GetSTC(), "Pane1"));
+  CPPUNIT_ASSERT(!m_Frame->UpdateStatusBar(m_Frame->GetSTC(), "Pane2"));
+  CPPUNIT_ASSERT(!m_Frame->UpdateStatusBar(m_Frame->GetSTC(), "PaneInfo"));
   
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
   stc->SetFocus();
   
-  CPPUNIT_ASSERT( frame->GetSTC() == stc);
-  CPPUNIT_ASSERT( frame->UpdateStatusBar(stc, "PaneInfo"));
-  CPPUNIT_ASSERT( frame->UpdateStatusBar(stc, "PaneLexer"));
-  CPPUNIT_ASSERT( frame->UpdateStatusBar(stc, "PaneFileType"));
+  CPPUNIT_ASSERT( m_Frame->GetSTC() == stc);
+  CPPUNIT_ASSERT( m_Frame->UpdateStatusBar(stc, "PaneInfo"));
+  CPPUNIT_ASSERT( m_Frame->UpdateStatusBar(stc, "PaneLexer"));
+  CPPUNIT_ASSERT( m_Frame->UpdateStatusBar(stc, "PaneFileType"));
 }

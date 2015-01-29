@@ -10,9 +10,10 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/dialog.h>
+#include <wx/extension/managedframe.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testDialog()
 {
-  wxExDialog(wxTheApp->GetTopWindow(), "hello").Show();
+  wxExDialog(m_Frame, "hello").Show();
 }

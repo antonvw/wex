@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/vimacros.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
@@ -17,7 +18,7 @@
 
 void wxExGuiTestFixture::testViMacros()
 {
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello");
+  wxExSTC* stc = new wxExSTC(m_Frame, "hello");
   wxExVi* vi = &stc->GetVi();
   
   wxExViMacros macros;

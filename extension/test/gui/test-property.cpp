@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/property.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
@@ -22,7 +23,7 @@ void wxExGuiTestFixture::testProperty()
   
   CPPUNIT_ASSERT( prop.IsOk());
   
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
   
   prop.Apply(stc);
   CPPUNIT_ASSERT( prop.IsOk());
