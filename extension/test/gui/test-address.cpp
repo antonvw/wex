@@ -10,13 +10,14 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/address.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vimacros.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testAddress()
 {
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
+  wxExSTC* stc = new wxExSTC(m_Frame, "hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
   const int lines = stc->GetLineCount();
   wxExEx* ex = new wxExEx(stc);
   stc->GotoLineAndSelect(1);
@@ -62,7 +63,7 @@ void wxExGuiTestFixture::testAddress()
 
 void wxExGuiTestFixture::testAddressRange()
 {
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello\nhello1\nhello2");
+  wxExSTC* stc = new wxExSTC(m_Frame, "hello\nhello1\nhello2");
   wxExEx* ex = new wxExEx(stc);
   stc->GotoLine(2);
 

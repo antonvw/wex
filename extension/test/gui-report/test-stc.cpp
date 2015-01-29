@@ -10,10 +10,11 @@
 
 void wxExGuiReportTestFixture::testSTCWithFrame()
 {
-  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExSTCWithFrame stc(frame, frame, GetTestFile());
+  wxExSTCWithFrame stc(m_Frame, m_Frame, GetTestFile());
   
-  CPPUNIT_ASSERT(stc.GetFileName().GetFullPath().Contains("test.h"));
+  CPPUNIT_ASSERT( stc.GetFileName().GetFullPath().Contains("test.h"));
+  CPPUNIT_ASSERT( stc.Open(GetTestFile()));
+  CPPUNIT_ASSERT(!stc.Open(wxExFileName("XXX")));
   
   stc.PropertiesMessage();
 }

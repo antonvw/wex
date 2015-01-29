@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/stc.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
 #include "test.h"
@@ -19,9 +20,9 @@ void wxExGuiTestFixture::testSTC()
   // Some methods do not return values, just call them to 
   // prevent cores, and improve test coverage.
   
-  wxExSTC::ConfigDialog(wxTheApp->GetTopWindow(), "test stc", wxExSTC::STC_CONFIG_MODELESS);
+  wxExSTC::ConfigDialog(m_Frame, "test stc", wxExSTC::STC_CONFIG_MODELESS);
   
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
   
   CPPUNIT_ASSERT( stc->GetText() == "hello stc");
   CPPUNIT_ASSERT( stc->FindNext(wxString("hello")));

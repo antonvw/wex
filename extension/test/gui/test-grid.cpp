@@ -10,11 +10,12 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/grid.h>
+#include <wx/extension/managedframe.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testGrid()
 {
-  wxExGrid* grid = new wxExGrid(wxTheApp->GetTopWindow());
+  wxExGrid* grid = new wxExGrid(m_Frame);
   
   CPPUNIT_ASSERT(grid->CreateGrid(5, 5));
   
@@ -32,14 +33,20 @@ void wxExGuiTestFixture::testGrid()
   grid->SetFocus();
   
   CPPUNIT_ASSERT( grid->FindNext("test1"));
+  CPPUNIT_ASSERT( grid->GetFindString() == "test1");
+  // CPPUNIT_ASSERT( grid->GetSelectedCellsValue() == "test1");
   CPPUNIT_ASSERT(!grid->FindNext("text1"));
   
   CPPUNIT_ASSERT(grid->CopySelectedCellsToClipboard());
   
+  grid->PasteCellsFromClipboard();
+  
 //  grid->Print();
   grid->PrintPreview();
+  
 #if wxUSE_DRAG_AND_DROP
   grid->UseDragAndDrop(true);
+  CPPUNIT_ASSERT(grid->IsAllowedDragSelection());
   grid->UseDragAndDrop(false);
 #endif
 }

@@ -10,18 +10,19 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/notebook.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testNotebook()
 {
-  wxExNotebook* notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
-  wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
-  wxWindow* page2 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
-  wxWindow* page3 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
-  wxWindow* page4 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
-  wxWindow* page5 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  wxExNotebook* notebook = new wxExNotebook(m_Frame, NULL);
+  wxWindow* page1 = new wxWindow(m_Frame, wxID_ANY);
+  wxWindow* page2 = new wxWindow(m_Frame, wxID_ANY);
+  wxWindow* page3 = new wxWindow(m_Frame, wxID_ANY);
+  wxWindow* page4 = new wxWindow(m_Frame, wxID_ANY);
+  wxWindow* page5 = new wxWindow(m_Frame, wxID_ANY);
   
   // Test AddPage. 
   CPPUNIT_ASSERT(notebook->AddPage(page1, "key1") != NULL);
@@ -67,9 +68,9 @@ void wxExGuiTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->GetPageCount() == 0);
   
   // Test ForEach. ForEach expects wxExSTC pages.  
-  wxExSTC* stc_x = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
-  wxExSTC* stc_y = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
-  wxExSTC* stc_z = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  wxExSTC* stc_x = new wxExSTC(m_Frame, "hello stc");
+  wxExSTC* stc_y = new wxExSTC(m_Frame, "hello stc");
+  wxExSTC* stc_z = new wxExSTC(m_Frame, "hello stc");
   
   CPPUNIT_ASSERT(notebook->AddPage(stc_x, "key1") != NULL);
   CPPUNIT_ASSERT(notebook->AddPage(stc_y, "key2") != NULL);
@@ -84,11 +85,11 @@ void wxExGuiTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->GetPageCount() == 0);
   
   // Test Split.
-  wxWindow* pagev = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  wxWindow* pagev = new wxWindow(m_Frame, wxID_ANY);
   CPPUNIT_ASSERT( notebook->AddPage(pagev, "keyv") != NULL);
   // split having only one page
   CPPUNIT_ASSERT( notebook->Split("keyv", wxRIGHT));
-  wxWindow* pagew = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  wxWindow* pagew = new wxWindow(m_Frame, wxID_ANY);
   CPPUNIT_ASSERT( notebook->AddPage(pagew, "keyw") != NULL);
   // split using incorrect key
   CPPUNIT_ASSERT(!notebook->Split("err", wxRIGHT));

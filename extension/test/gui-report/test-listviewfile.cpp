@@ -10,8 +10,7 @@
 
 void wxExGuiReportTestFixture::testListViewFile()
 {
-  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExListViewFile* listView = new wxExListViewFile(frame, frame, m_Project);
+  wxExListViewFile* listView = new wxExListViewFile(m_Frame, m_Frame, m_Project);
   
   listView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->AppendColumn(wxExColumn("Number", wxExColumn::COL_INT));
@@ -24,6 +23,11 @@ void wxExGuiReportTestFixture::testListViewFile()
   CPPUNIT_ASSERT(listView->FileSave(wxExFileName("test-rep.prj.bck")));
 
   CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
+  
+  CPPUNIT_ASSERT(listView->GetContentsChanged());
+  listView->ResetContentsChanged();
+  CPPUNIT_ASSERT(!listView->GetContentsChanged());
+  listView->AfterSorting();
   
   CPPUNIT_ASSERT(remove("test-rep.prj.bck") == 0);
 }

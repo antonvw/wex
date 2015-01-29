@@ -11,10 +11,14 @@
 #endif
 #include <wx/config.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/managedframe.h>
 #include "test.h"
+
+wxExStatusBar* wxExGuiTestFixture::m_StatusBar = NULL;
 
 wxExGuiTestFixture::wxExGuiTestFixture()
   : wxExTestFixture() 
+  , m_Frame((wxExManagedFrame *)wxTheApp->GetTopWindow())
 {
   // Create the global lexers object, 
   // it should be present in ~/.wxex-test-gui

@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/frd.h>
+#include <wx/extension/managedframe.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testFrd()
@@ -17,7 +18,7 @@ void wxExGuiTestFixture::testFrd()
   CPPUNIT_ASSERT(wxExFindReplaceData::Get() != NULL);
   
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
-  wxTextCtrl* tc = new wxTextCtrl(wxTheApp->GetTopWindow(), wxID_ANY, "hello text");
+  wxTextCtrl* tc = new wxTextCtrl(m_Frame, wxID_ANY, "hello text");
   
   frd->SetMatchCase(true);
   CPPUNIT_ASSERT( frd->MatchCase());

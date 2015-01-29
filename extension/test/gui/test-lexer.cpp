@@ -10,13 +10,14 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/lexer.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testLexer()
 {
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
   
   wxExLexer lexer;
   CPPUNIT_ASSERT(!lexer.IsOk());

@@ -77,5 +77,6 @@ public:
   void test();
 private:
   const wxString m_Project;
+  FrameWithHistory* m_Frame;
 };
 #endif

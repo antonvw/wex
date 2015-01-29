@@ -10,11 +10,12 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/shell.h>
+#include <wx/extension/managedframe.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testShell()
 {
-  wxExSTCShell* shell = new wxExSTCShell(wxTheApp->GetTopWindow());
+  wxExSTCShell* shell = new wxExSTCShell(m_Frame);
   
   CPPUNIT_ASSERT(shell->GetShellEnabled());
   

@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/vi.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/vimacros.h>
 #include <wx/extension/stc.h>
 #include "test.h"
@@ -22,7 +23,7 @@ void wxExGuiTestFixture::testVi()
   const int esc = 27;
  
   // Test for modeline support.
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), 
+  wxExSTC* stc = new wxExSTC(m_Frame, 
     "// vi: set ts=120 "
     "// this is a modeline");
     
@@ -456,7 +457,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command(ESC));
   
   // Test registers
-  stc = new wxExSTC(wxTheApp->GetTopWindow(), GetTestFile());
+  stc = new wxExSTC(m_Frame, GetTestFile());
   vi = &stc->GetVi();
   const int ctrl_r = 18;
   CPPUNIT_ASSERT( vi->Command("i"));

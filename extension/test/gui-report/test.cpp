@@ -12,16 +12,16 @@
 
 wxExGuiReportTestFixture::wxExGuiReportTestFixture()
   : m_Project("test-rep.prj")
+  , m_Frame((FrameWithHistory *)wxTheApp->GetTopWindow())
 {
 }
 
 void wxExGuiReportTestFixture::test()
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
-  wxExFrameWithHistory* frame = (
-    wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  
   wxExListViewFileName* report = new wxExListViewFileName(
-    frame, 
+    m_Frame, 
     wxExListViewFileName::LIST_FILE);
     
   wxArrayString files;
@@ -37,7 +37,7 @@ void wxExGuiReportTestFixture::test()
   // This string should occur only once, that is here!
   frd->SetFindString("@@@@@@@@@@@@@@@@@@@");
   
-  CPPUNIT_ASSERT(frame->FindInFiles(
+  CPPUNIT_ASSERT(m_Frame->FindInFiles(
     wxExToVectorString(files).Get(), 
     ID_TOOL_REPORT_FIND, 
     false, 
@@ -50,7 +50,7 @@ void wxExGuiReportTestFixture::test()
   wxStopWatch sw;
   sw.Start();
 
-  CPPUNIT_ASSERT(frame->FindInFiles(
+  CPPUNIT_ASSERT(m_Frame->FindInFiles(
     wxExToVectorString(files).Get(), 
     ID_TOOL_REPORT_FIND, 
     false, 

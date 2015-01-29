@@ -13,8 +13,8 @@
 #include <wx/filehistory.h>
 #include <wx/numformatter.h>
 #include <wx/extension/util.h>
-#include <wx/extension/frame.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vcscommand.h>
 #include <wx/extension/vimacros.h>
@@ -46,8 +46,7 @@ void wxExGuiTestFixture::testToVectorString()
 
 void wxExGuiTestFixture::testUtil()
 {
-  wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
-  wxExSTC* stc = new wxExSTC(frame);
+  wxExSTC* stc = new wxExSTC(m_Frame);
   stc->SetFocus();
   
   // wxExAlignText
@@ -133,7 +132,7 @@ void wxExGuiTestFixture::testUtil()
   l.push_back("x");
   l.push_back("y");
   l.push_back("z");
-  wxComboBox* cb = new wxComboBox(frame, wxID_ANY);
+  wxComboBox* cb = new wxComboBox(m_Frame, wxID_ANY);
   wxExComboBoxFromList(cb, l);
   CPPUNIT_ASSERT( cb->GetCount() == 3);
   
@@ -231,11 +230,11 @@ void wxExGuiTestFixture::testUtil()
   
   // wxExOpenFiles
   std::vector<wxString> files;
-  wxExOpenFiles(frame, files);
+  wxExOpenFiles(m_Frame, files);
   files.push_back(GetTestFile().GetFullPath());
   files.push_back("test.cpp");
   files.push_back("*xxxxxx*.cpp");
-  wxExOpenFiles(frame, files);
+  wxExOpenFiles(m_Frame, files);
   
   // wxExOpenFilesDialog
   
@@ -267,7 +266,7 @@ void wxExGuiTestFixture::testUtil()
   wxExVCSCommandOnSTC(command, wxExLexer("cpp"), stc);
   
   // wxExVCSExecute
-  // wxExVCSExecute(frame, 0, files); // calls dialog
+  // wxExVCSExecute(m_Frame, 0, files); // calls dialog
   
   delete ex;
 }
