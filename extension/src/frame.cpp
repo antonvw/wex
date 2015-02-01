@@ -68,9 +68,9 @@
     {                                                        \
       wxExGrid* grid = dynamic_cast<wxExGrid*>(win);         \
                                                              \
-      if (cl != NULL)                                        \
+      if (grid != NULL)                                      \
       {                                                      \
-        m_FindFocus = cl;                                    \
+        m_FindFocus = grid;                                  \
       }                                                      \
     }                                                        \
   }                                                          \

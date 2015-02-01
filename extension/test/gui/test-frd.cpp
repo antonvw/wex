@@ -15,10 +15,11 @@
 
 void wxExGuiTestFixture::testFrd()
 {
-  CPPUNIT_ASSERT(wxExFindReplaceData::Get() != NULL);
-  
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
-  wxTextCtrl* tc = new wxTextCtrl(m_Frame, wxID_ANY, "hello text");
+  
+  CPPUNIT_ASSERT(frd != NULL);
+  
+  wxExFindTextCtrl* tc = new wxExFindTextCtrl(m_Frame);
   
   frd->SetMatchCase(true);
   CPPUNIT_ASSERT( frd->MatchCase());
@@ -52,6 +53,13 @@ void wxExGuiTestFixture::testFrd()
   CPPUNIT_ASSERT(!frd->GetReplaceStrings().empty());
   CPPUNIT_ASSERT( frd->GetReplaceString() == "replace[0-9]");
   
+  CPPUNIT_ASSERT(!frd->GetTextFindWhat().empty());
+  CPPUNIT_ASSERT(!frd->GetTextMatchCase().empty());
+  CPPUNIT_ASSERT(!frd->GetTextMatchWholeWord().empty());
+  CPPUNIT_ASSERT(!frd->GetTextRegEx().empty());
+  CPPUNIT_ASSERT(!frd->GetTextReplaceWith().empty());
+  CPPUNIT_ASSERT(!frd->GetTextSearchDown().empty());
+  
   frd->SetReplaceStrings(l);
   CPPUNIT_ASSERT( frd->GetFindString() == "find3");
   CPPUNIT_ASSERT( frd->GetReplaceString() == "find3");
@@ -61,6 +69,7 @@ void wxExGuiTestFixture::testFrd()
   CPPUNIT_ASSERT( frd->Set(frd->GetTextMatchWholeWord(), false));
   CPPUNIT_ASSERT(!frd->MatchWord());
   CPPUNIT_ASSERT(!frd->Set("XXXX", false));
+  CPPUNIT_ASSERT( frd->SearchDown());
   
   const std::list< wxString > e;
   frd->SetFindStrings(e);

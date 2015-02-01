@@ -4,7 +4,7 @@ rem Purpose:   Deploy file (for syncped)
 rem Author:    Anton van Wezenbeek
 rem Copyright: (c) 2015 Anton van Wezenbeek
 
-for /f %%g in ('dir c:\wxWidgets-3.0.* /b') do set WXWIN=c:\%%g
+for /f %%g in ('dir c:\wxWidgets-3.1.* /b') do set WXWIN=c:\%%g
 
 mkdir app
 mkdir app\fr_FR

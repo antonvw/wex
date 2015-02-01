@@ -28,6 +28,15 @@ class wxExToolBar;
 class WXDLLIMPEXP_BASE wxExManagedFrame : public wxExFrame
 {
 public:
+  /// Enums for HideExBar.
+  enum 
+  {
+    HIDE_BAR,                 ///< hide bar, unless there is no statusbar
+    HIDE_BAR_FOCUS_STC,       ///< as previous, and focus to stc
+    HIDE_BAR_FORCE,           ///< hide bar, even if there is no statusbar
+    HIDE_BAR_FORCE_FOCUS_STC, ///< as previous, and focus to stc
+  };
+  
   /// Constructor, registers the aui manager, and creates the bars.
   wxExManagedFrame(wxWindow* parent,
     wxWindowID id,
@@ -65,7 +74,7 @@ public:
 
   /// Hides the ex bar.
   /// Default it sets focus back to stc component associated with current ex.
-  void HideExBar(bool set_focus = true);
+  void HideExBar(int hide = HIDE_BAR_FOCUS_STC);
 
   /// Called if the notebook changed page.
   /// Default sets the focus to page.

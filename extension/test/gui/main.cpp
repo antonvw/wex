@@ -26,8 +26,7 @@ bool wxExTestApp::OnInit()
     return false;
   }
   
-  wxExManagedFrame* frame = new 
-    wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
+  new wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
     
   wxLogStatus(GetCatalogDir());
   wxLogStatus(GetLocale().GetLocale());

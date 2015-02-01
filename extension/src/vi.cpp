@@ -679,7 +679,7 @@ void wxExVi::CommandCalc(const wxString& command)
   }
   else
   {
-    wxLogStatus(wxString::Format("%.*f", width, sum));
+    GetFrame()->ShowExMessage(wxString::Format("%.*f", width, sum));
   }
 }
 
@@ -950,7 +950,7 @@ void wxExVi::CommandReg(const char reg)
       }
       else
       {
-        wxLogStatus("?" + wxString(reg));
+        GetFrame()->ShowExMessage("?" + wxString(reg));
       }
   }
 }

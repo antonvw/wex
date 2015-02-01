@@ -17,23 +17,29 @@
 void wxExGuiTestFixture::testConfigDialog()
 {
   // Test config dialog using notebook with pages.
-  std::vector <wxExConfigItem> items;
-  
-  wxExConfigItem ci1("string1", "test", "page0");
-  items.push_back(ci1);
-  wxExConfigItem ci2("string2", "test", "page0");
-  items.push_back(ci2);
-  
-  wxExConfigDialog dlg(m_Frame, items);
-  
-  dlg.ForceCheckBoxChecked();
-  dlg.Show();
-  dlg.Reload();
+  const std::vector <wxExConfigItem>{
+    wxExConfigItem("string1", "test", "page0"),
+    wxExConfigItem("string2", "test", "page1")};
+    
+  for (int style = CONFIG_AUINOTEBOOK; i <= CONFIG_TREEBOOK; i++)
+  {
+    wxExConfigDialog dlg(
+      m_Frame, 
+      items,
+      "title",
+      0,
+      1,
+      wxOK | wxCANCEL,
+      wxID_ANY,
+      style);
+    
+    dlg.ForceCheckBoxChecked();
+    dlg.Show();
+    dlg.Reload();
+  }
   
   // Test config dialog without pages.
-  std::vector <wxExConfigItem> items2;
-  items2.push_back(wxExConfigItem("string1"));
-  
+  const std::vector <wxExConfigItem> items2{wxExConfigItem("string1")};
   wxExConfigDialog dlg2(m_Frame, items2);
   dlg2.Show();
   

@@ -2,7 +2,7 @@
 // Name:      configdlg.h
 // Purpose:   Declaration of wxExConfigDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXCONFIGDIALOG_H
@@ -21,14 +21,16 @@
 class WXDLLIMPEXP_BASE wxExConfigDialog: public wxExDialog
 {
 public:
+  /// Supported notebooks.
   enum
   {
-    CONFIG_NOTEBOOK,    ///< traditional notebook
-    CONFIG_AUINOTEBOOK, ///< aui notebook
-    CONFIG_TREEBOOK,    ///< a tree book
+    CONFIG_AUINOTEBOOK, ///< a aui notebook
     CONFIG_CHOICEBOOK,  ///< a choice book
     CONFIG_LISTBOOK,    ///< a list book
-    CONFIG_TOOLBOOK     ///< a tool book
+    CONFIG_NOTEBOOK,    ///< a traditional notebook
+    CONFIG_SIMPLEBOOK,  ///< a simple notebook
+    CONFIG_TOOLBOOK,    ///< a tool book
+    CONFIG_TREEBOOK,    ///< a tree book
   };
 
   /// Constructor.

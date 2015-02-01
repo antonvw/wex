@@ -2,7 +2,7 @@
 // Name:      printing.cpp
 // Purpose:   Implementation of wxExPrinting class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -163,7 +163,7 @@ bool wxExPrintout::OnPrintPage(int pageNum)
     m_PageRect);
 
   wxFont font = *wxNORMAL_FONT;
-  font.SetWeight(wxBOLD);
+  font.SetWeight(wxFONTWEIGHT_BOLD);
   GetDC()->SetFont(font);
   GetDC()->SetTextForeground(*wxBLACK);
   GetDC()->SetTextBackground(*wxWHITE);
