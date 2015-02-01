@@ -19,7 +19,7 @@ one of these applications, being a full featured source code text editor.
 
 - [cmake](http://www.cmake.org/) to generate makefiles   
   As wxWidgets 3.1 is not yet supported, you have to adjust Modules\FindwxWidgets.cmake, 
-  by adding the 31 libs, and adding 3.1.0 find_path.
+  by adding the 31 libs, and adding 3.1.0 find_path (for windows).
 
 # Build process 
   [![Build Status](https://travis-ci.org/antonvw/wxExtension.png?branch=v3.0)](https://travis-ci.org/antonvw/wxExtension) 

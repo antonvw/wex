@@ -164,15 +164,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
   
   // Test MODE_INSERT commands.
-  std::vector<std::string> commands;
-  commands.push_back("a");
-  commands.push_back("i");
-  commands.push_back("o");
-  commands.push_back("A");
-  commands.push_back("C");
-  commands.push_back("I");
-  commands.push_back("O");
-  commands.push_back("R");
+  std::vector<std::string> commands {"a", "i", "o", "A", "C", "I", "O", "R"};
   
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   
