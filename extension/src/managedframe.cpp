@@ -221,14 +221,19 @@ void wxExManagedFrame::GetExCommand(wxExEx* ex, const wxString& command)
   m_Manager.Update();
 }
 
-void wxExManagedFrame::HideExBar(bool set_focus)
+void wxExManagedFrame::HideExBar(int hide)
 {
   if (m_Manager.GetPane("VIBAR").IsShown())
   {
-    m_Manager.GetPane("VIBAR").Hide();
-    m_Manager.Update();
+    if (hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||
+        (GetStatusBar() != NULL && GetStatusBar()->IsShown()))
+    {
+      m_Manager.GetPane("VIBAR").Hide();
+      m_Manager.Update();
+    }
     
-    if (set_focus && m_exTextCtrl != NULL && m_exTextCtrl->GetEx() != NULL)
+    if ((hide == HIDE_BAR_FOCUS_STC || hide == HIDE_BAR_FORCE_FOCUS_STC) && 
+         m_exTextCtrl != NULL && m_exTextCtrl->GetEx() != NULL)
     {
       m_exTextCtrl->GetEx()->GetSTC()->SetFocus();
     }
@@ -357,22 +362,14 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
 void wxExManagedFrame::ShowExMessage(const wxString& text)
 {
-  HideExBar();
-  
   if (GetStatusBar() != NULL && GetStatusBar()->IsShown())
   {
+    HideExBar();
     GetStatusBar()->SetStatusText(text);
   }
   else
   {
-    wxString t(text);
-    
-    if (t.Contains("%"))
-    {
-      t.Replace("%", "%%");
-    }
-    
-    wxLogMessage(t);
+    m_exTextCtrl->SetValue(text);
   }
 }
 
@@ -533,7 +530,7 @@ void wxExExTextCtrl::OnChar(wxKeyEvent& event)
       m_ex->GetSTC()->PositionRestore();
     }
     
-    m_Frame->HideExBar();
+    m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
     
     m_Controlr = false;
     m_UserInput = false;
@@ -575,7 +572,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
   
   if (GetValue().empty())
   {
-    m_Frame->HideExBar();
+    m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
     return;
   }
   
@@ -590,7 +587,8 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
       m_Commands.push_front(GetValue());
       m_CommandsIterator = m_Commands.begin();
 
-      m_Frame->HideExBar(!set_focus);
+      m_Frame->HideExBar(set_focus ? 
+        wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC: wxExManagedFrame::HIDE_BAR_FOCUS_STC);
     }
   }
   else if (IsFind())
@@ -610,7 +608,7 @@ void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
       }
     }
     
-    m_Frame->HideExBar();
+    m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
   }
   else if (IsCalc())
   {

@@ -3,9 +3,9 @@
 <!--
 Name:      lexers.xml
 Purpose:   Lexers configuration for wxExtension.
-           See scintilla v3.2.1 (www.scintilla.org).
+           See scintilla 3.4.1 (www.scintilla.org).
 Author:    Anton van Wezenbeek
-Copyright: (c) 2014, Anton van Wezenbeek
+Copyright: (c) 2015, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -38,6 +38,12 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="mark_arrows"/>
       <def no ="mark_pixmap"/>
       <def no ="mark_fullrect"/>
+      <def no ="mark_leftrect"/>
+      <def no ="mark_available"/>
+      <def no ="mark_underline"/>
+      <def no ="mark_rgbaimage"/>
+      <def no ="mark_bookmark"/>
+      <def no ="mark_character"> 10000 </def>
       <def no ="marknum_folderend"> 25 </def>
       <def no ="marknum_folderopenmid"/>
       <def no ="marknum_foldermidtail"/>
@@ -409,6 +415,8 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="tripleverbatim"/>
       <def no ="hashquotedstring"/>
       <def no ="preprocessorcomment"/>
+      <def no ="preprocessorcommentdoc"/>
+      <def no ="userliteral"/>
     </def>
     
     <def name = "csound">
@@ -1800,6 +1808,82 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <def no ="operator"/>
     </def>
     
+    <def name ="fcST">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="commentline"/>
+      <def no ="keyword"/>
+      <def no ="type"/>
+      <def no ="function"/>
+      <def no ="fb"/>
+      <def no ="numbe"/>
+      <def no ="hexnumber"/>
+      <def no ="pragm"/>
+      <def no ="operator"/>
+      <def no ="character"/>
+      <def no ="string1"/>
+      <def no ="string2"/>
+      <def no ="stringeol"/>
+      <def no ="identifier"/>
+      <def no ="datetime"/>
+      <def no ="vars"/>
+      <def no ="pragmas"/>
+    </def>
+    
+    <def name = "kvirc">
+      <def no ="default"/>
+      <def no ="commen"/>
+      <def no ="commentblock"/>
+      <def no ="string"/>
+      <def no ="word"/>
+      <def no ="keyword"/>
+      <def no ="function_keyword"/>
+      <def no ="function"/>
+      <def no ="variable"/>
+      <def no ="number"/>
+      <def no ="operator"/>
+      <def no ="string_function"/>
+      <def no ="string_variable"/>
+    </def>
+    
+    <def name = "rust">
+      <def no ="default"/>
+      <def no ="commentblock"/>
+      <def no ="commentline"/>
+      <def no ="commentblockdoc"/>
+      <def no ="commentlinedoc"/>
+      <def no ="number"/>
+      <def no ="word"/>
+      <def no ="word2"/>
+      <def no ="word3"/>
+      <def no ="word4"/>
+      <def no ="word5"/>
+      <def no ="word6"/>
+      <def no ="word7"/>
+      <def no ="string"/>
+      <def no ="stringr"/>
+      <def no ="character"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="lifetime"/>
+      <def no ="macro"/>
+      <def no ="lexerror"/>
+    </def>
+    
+    <def name = "DMAP">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="number"/>
+      <def no ="string1"/>
+      <def no ="string2"/>
+      <def no ="stringeol"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="word"/>
+      <def no ="word2"/>
+      <def no ="word3"/>
+    </def>
+    
     <!-- These are the themes, including style macro's and colours. -->
     <themes>
       <!-- The studio theme, resembles Visual Studio -->
@@ -1884,7 +1968,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     <marker no="marknum_folderopen"> mark_minus,folder </marker>
     
     <marker no="ex_marknum_change">mark_fullrect,green,light blue</marker>
-    <marker no="ex_marknum_vi"> mark_circle,blue,turquoise </marker>
+    <marker no="ex_marknum_vi"> mark_bookmark,blue,turquoise </marker>
     
     <indicator no="0"> indic_box,styleindicatorfind </indicator>
     <indicator no="1"> indic_squiggle,red </indicator>
@@ -2119,7 +2203,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       The second field contains the scintilla property value. 
    4) A <comments> element.
    -->
-  
+   
   <lexer name="a68k"/>
   <lexer name="abaqus"/> 
   <lexer name="ada" extensions="*.a;*.adb;*.ads">
@@ -2175,6 +2259,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     </keywords>
     <comments begin1=";" />
   </lexer>
+  <lexer name="as" macro="asm"/>
   <lexer name="asn1"/>
   <lexer name="asy"/>
   <lexer name="au3"/>
@@ -2293,6 +2378,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
+  <lexer name="DMAP"/>
   <lexer name="ecl"/>
   <lexer name="eiffel"/>
   <lexer name="eiffelkw" macro="eiffel"/>
@@ -2390,8 +2476,16 @@ Copyright: (c) 2014, Anton van Wezenbeek
     </keywords>
   </lexer>
   <lexer name="kix"/>
-  <lexer name="latex" extensions="*.tex"/>
+  <lexer name="kvirc"/>
+  <lexer name="latex" extensions="*.tex">
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+  </lexer>
   <lexer name="lisp"/>
+  <lexer name="literatehaskell" macro="haskell"/>
   <lexer name="lot"/>
   <lexer name="lout"/>
   <lexer name="lua"/>
@@ -2499,6 +2593,11 @@ Copyright: (c) 2014, Anton van Wezenbeek
       <style no ="msgstr"> keyword2 </style>
       <style no ="fuzzy"> fore:yellow </style>
     </styles>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
     <keywords>    
       msgid msgstr
     </keywords>
@@ -2506,7 +2605,13 @@ Copyright: (c) 2014, Anton van Wezenbeek
   <lexer name="pov"/>
   <lexer name="powerbasic" macro="vb"/>
   <lexer name="powerpro"/>
-  <lexer name="powershell" extensions="*.ps1"/>
+  <lexer name="powershell" extensions="*.ps1">
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+  </lexer>
   <lexer name="progress"/>
   <lexer name="props" extensions="*.ini;*.conf">
     <styles>
@@ -2542,6 +2647,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     </keywords>
   </lexer>
   <lexer name="ruby"/>
+  <lexer name="rust"/>
   <lexer name="scriptol"/>
   <lexer display="sh" name="bash"> 
     <keywords>    
@@ -2610,6 +2716,7 @@ Copyright: (c) 2014, Anton van Wezenbeek
     </keywords>
     <comments begin1="--" />
   </lexer>
+  <lexer display="sttxt" name="fcST"/>
   <lexer name="TACL" macro="cpp"/>
   <lexer name="tads3"/>
   <lexer name="TAL" macro="cpp"/>

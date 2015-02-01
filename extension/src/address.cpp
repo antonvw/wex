@@ -431,8 +431,7 @@ bool wxExAddressRange::SetSelection() const
 
 bool wxExAddressRange::Substitute(const wxString& command)
 {
-  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk() || 
-    m_STC->SelectionIsRectangle())
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk())
   {
     return false;
   }

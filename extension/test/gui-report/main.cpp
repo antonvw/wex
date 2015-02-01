@@ -54,8 +54,7 @@ bool wxExTestApp::OnInit()
     return false;
   }
 
-  FrameWithHistory* frame = new 
-    FrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
+  new FrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
     
   return true;
 }

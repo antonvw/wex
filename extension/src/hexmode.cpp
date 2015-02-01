@@ -552,7 +552,7 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
     str[2] = '\0';
     
     unsigned int code;
-    sscanf(str, "%X", &code);
+    sscanf(str, "%3X", &code);
     
     m_Hex->GetSTC()->wxStyledTextCtrl::Replace(
       pos + OtherField(), 

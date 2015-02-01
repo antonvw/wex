@@ -494,21 +494,6 @@ int wxExSTC::ConfigDialog(
   items.push_back(wxExConfigItem(
     _("Whitespace"), choices, true, _("General"), 1));
 
-  // Next code does not have any effect (3.0.2, on MSW and GTK)
-/*
-  std::map<long, const wxString> smode;
-  smode.insert(std::make_pair(wxSTC_SEL_STREAM, _("Stream")));
-  smode.insert(std::make_pair(wxSTC_SEL_RECTANGLE, _("Rectangular")));
-  smode.insert(std::make_pair(wxSTC_SEL_THIN, _("Thin")));
-  smode.insert(std::make_pair(wxSTC_SEL_LINES, _("Lines")));
-  items.push_back(wxExConfigItem(
-    _("Selection mode"), 
-    smode, 
-    true, 
-    _("General"),
-    1));
-*/
-  
   std::map<long, const wxString> wchoices;
   wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
   wchoices.insert(std::make_pair(wxSTC_WRAP_WORD, _("Word")));
@@ -662,8 +647,6 @@ void wxExSTC::ConfigGet(bool init)
     
   ShowLineNumbers(cfg->ReadBool(_("Line numbers"), false));
 
-//  SetSelectionMode(cfg->ReadLong(_("Selection mode"), wxSTC_SEL_STREAM));
-    
   SetTabWidth(cfg->ReadLong(_("Tab width"), def_tab_width));
   SetUseTabs(cfg->ReadBool(_("Use tabs"), false));
   SetViewEOL(cfg->ReadBool(_("End of line"), false));

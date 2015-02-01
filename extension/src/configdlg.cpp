@@ -2,7 +2,7 @@
 // Name:      configdlg.cpp
 // Purpose:   Implementation of wxExtension config dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013
+// Copyright: (c) 2015
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,6 +17,7 @@
 #include <wx/listbook.h>
 #include <wx/filepicker.h>
 #include <wx/persist/treebook.h>
+#include <wx/simplebook.h>
 #include <wx/toolbook.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
@@ -135,6 +136,10 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
 
     case CONFIG_NOTEBOOK:
       bookctrl = new wxNotebook(this, wxID_ANY);
+      break;
+
+    case CONFIG_SIMPLEBOOK:
+      bookctrl = new wxSimplebook(this, wxID_ANY);
       break;
 
     case CONFIG_TOOLBOOK:

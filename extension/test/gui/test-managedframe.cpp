@@ -27,8 +27,10 @@ void wxExGuiTestFixture::testManagedFrame()
   
   m_Frame->GetExCommand(vi, "/");
   
-  m_Frame->HideExBar();
-  m_Frame->HideExBar(false);
+  m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR);
+  m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FOCUS_STC);
+  m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE);
+  m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
   
   CPPUNIT_ASSERT(!m_Frame->GetManager().GetPane("VIBAR").IsShown());
   

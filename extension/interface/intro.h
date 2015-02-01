@@ -2,7 +2,7 @@
 // Name:      intro.h
 // Purpose:   Interface file containing Doxyfile reference for mainpage
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 /*!
@@ -12,7 +12,7 @@ This is a <a href="https://antonvw@github.com/antonvw/wxExtension.git">public so
 containing a collection of wxWidgets extension classes.
 
 <p>
-It uses <a href="http://docs.wxwidgets.org/3.0/">wxWidgets 3.0</a> 
+It uses <a href="http://docs.wxwidgets.org/3.1/">wxWidgets 3.1</a> 
 and <a href="http://www.cplusplus.com/reference/algorithm/">STL classes</a>. 
 
 <p>
@@ -21,5 +21,5 @@ There are also some classes to support database programming using the
 
 <p>
 For build instructions see 
-<a href="https://github.com/antonvw/wxExtension/blob/v3.0.2/README.md">README</a>.
+<a href="https://github.com/antonvw/wxExtension/blob/v3.1.0/README.md">README</a>.
 */
