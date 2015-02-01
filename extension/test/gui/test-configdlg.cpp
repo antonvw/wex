@@ -17,25 +17,36 @@
 void wxExGuiTestFixture::testConfigDialog()
 {
   // Test config dialog using notebook with pages.
-  const std::vector <wxExConfigItem>{
+  const std::vector <wxExConfigItem> items{
     wxExConfigItem("string1", "test", "page0"),
     wxExConfigItem("string2", "test", "page1")};
     
-  for (int style = CONFIG_AUINOTEBOOK; i <= CONFIG_TREEBOOK; i++)
+  for (
+    int style = wxExConfigDialog::CONFIG_AUINOTEBOOK; 
+    style <= wxExConfigDialog::CONFIG_TREEBOOK;
+    style++)
   {
-    wxExConfigDialog dlg(
-      m_Frame, 
-      items,
-      "title",
-      0,
-      1,
-      wxOK | wxCANCEL,
-      wxID_ANY,
-      style);
-    
-    dlg.ForceCheckBoxChecked();
-    dlg.Show();
-    dlg.Reload();
+    if (style == wxExConfigDialog::CONFIG_TOOLBOOK)
+    {
+      // TODO: Requires an image list.
+    }
+    else
+    {
+      wxExConfigDialog* dlg = new wxExConfigDialog(
+        m_Frame, 
+        items,
+        "title",
+        0,
+        1,
+        wxOK | wxCANCEL,
+        wxID_ANY,
+        style);
+      
+      dlg->ForceCheckBoxChecked();
+      dlg->Show();
+      dlg->Reload();
+      dlg->Destroy();
+    }
   }
   
   // Test config dialog without pages.
