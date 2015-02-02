@@ -43,6 +43,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   long flags,
   wxWindowID id,
   int bookctrl_style,
+  wxImageList* imageList,
   const wxPoint& pos,
   const wxSize& size, 
   long style,
@@ -60,7 +61,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   , m_Page(wxEmptyString)
   , m_ConfigItems(v)
 {
-  Layout(rows, cols, bookctrl_style);
+  Layout(rows, cols, bookctrl_style, imageList);
 }
 
 std::vector< wxExConfigItem >::const_iterator 
@@ -100,7 +101,8 @@ void wxExConfigDialog::ForceCheckBoxChecked(
   m_Page = page;
 }
 
-void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
+void wxExConfigDialog::Layout(
+  int rows, int cols, int bookctrl_style, wxImageList* imageList)
 {
   if (m_ConfigItems.empty())
   {
@@ -144,6 +146,12 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
 
     case CONFIG_TOOLBOOK:
       bookctrl = new wxToolbook(this, wxID_ANY);
+      
+      if (imageList == NULL)
+      {
+        wxLogError("toolbook requires image list");
+        return;
+      }
       break;
 
     case CONFIG_TREEBOOK:
@@ -171,10 +179,27 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
         {
           bookctrl->GetCurrentPage()->SetSizer(sizer);
         }
+        
+        int imageId = wxWithImages::NO_IMAGE;
+        
+        if (imageList != NULL)
+        {
+          if (bookctrl->GetPageCount() < imageList->GetImageCount())
+          {
+            imageId = bookctrl->GetPageCount();
+          }
+          else
+          {
+            wxLogError("more pages than images")
+          }
+        }
 
         // And make a new one.
         bookctrl->AddPage(
-          new wxWindow(bookctrl, wxID_ANY), it.GetPage(), true); // select
+          new wxWindow(bookctrl, wxID_ANY), 
+          it.GetPage(), 
+          true, // select
+          imageId); 
       }
 
       previous_page = it.GetPage();

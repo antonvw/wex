@@ -26,27 +26,35 @@ void wxExGuiTestFixture::testConfigDialog()
     style <= wxExConfigDialog::CONFIG_TREEBOOK;
     style++)
   {
+    wxImageList* il = NULL;
+    
     if (style == wxExConfigDialog::CONFIG_TOOLBOOK)
     {
-      // TODO: Requires an image list.
-    }
-    else
-    {
-      wxExConfigDialog* dlg = new wxExConfigDialog(
-        m_Frame, 
-        items,
-        "title",
-        0,
-        1,
-        wxOK | wxCANCEL,
-        wxID_ANY,
-        style);
+      const wxSize imageSize(32, 32);
+
+      il = new wxImageList(imageSize.GetWidth(), imageSize.GetHeight());
       
-      dlg->ForceCheckBoxChecked();
-      dlg->Show();
-      dlg->Reload();
-      dlg->Destroy();
+      il->Add(wxArtProvider::GetIcon(wxART_INFORMATION, wxART_OTHER, imageSize));
+      il->Add(wxArtProvider::GetIcon(wxART_QUESTION, wxART_OTHER, imageSize));
+      il->Add(wxArtProvider::GetIcon(wxART_WARNING, wxART_OTHER, imageSize));
+      il->Add(wxArtProvider::GetIcon(wxART_ERROR, wxART_OTHER, imageSize));
     }
+    
+    wxExConfigDialog* dlg = new wxExConfigDialog(
+      m_Frame, 
+      items,
+      "title",
+      0,
+      1,
+      wxOK | wxCANCEL,
+      wxID_ANY,
+      style,
+      il);
+      
+    dlg->ForceCheckBoxChecked();
+    dlg->Show();
+    dlg->Reload();
+    dlg->Destroy();
   }
   
   // Test config dialog without pages.
