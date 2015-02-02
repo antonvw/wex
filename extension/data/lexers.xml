@@ -371,7 +371,6 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="globalclass"/>
       <def no ="stringraw"/>
       <def no ="tripleverbatim"/>
-      <def no ="hashquotedstring"/>
       <def no ="commentblock"/>
       <def no ="verbose_regex"/>
       <def no ="verbose_regex_comment"/>
@@ -497,6 +496,20 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="changed"/>
     </def>
     
+    <def name = "DMAP">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="number"/>
+      <def no ="string1"/>
+      <def no ="string2"/>
+      <def no ="stringeol"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="word"/>
+      <def no ="word2"/>
+      <def no ="word3"/>
+    </def>
+    
     <def name = "ecl">
       <def no ="default"/>
       <def no ="comment"/>
@@ -581,6 +594,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="tidy"/>
       <def no ="java_stack"/>
       <def no ="value"/>
+      <def no ="gcc_included_from"/>
     </def>
     
     <def name = "escript">
@@ -596,6 +610,28 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="brace"/>
       <def no ="keyword2"/>
       <def no ="keyword3"/>
+    </def>
+    
+    <def name ="fcST">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="commentline"/>
+      <def no ="keyword"/>
+      <def no ="type"/>
+      <def no ="function"/>
+      <def no ="fb"/>
+      <def no ="numbe"/>
+      <def no ="hexnumber"/>
+      <def no ="pragm"/>
+      <def no ="operator"/>
+      <def no ="character"/>
+      <def no ="string1"/>
+      <def no ="string2"/>
+      <def no ="stringeol"/>
+      <def no ="identifier"/>
+      <def no ="datetime"/>
+      <def no ="vars"/>
+      <def no ="pragmas"/>
     </def>
     
     <def name = "flagship">
@@ -713,6 +749,12 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="commentblock"/>
       <def no ="commentblock2"/>
       <def no ="commentblock3"/>
+      <def no ="pragma"/>
+      <def no ="preprocessor"/>
+      <def no ="stringeol"/>
+      <def no ="reserved_operator"/>
+      <def no ="literate_comment"/>
+      <def no ="literate_codelim"/>
     </def>
     
     <def name = "hypertext">
@@ -857,6 +899,22 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="functions"/>
       <def no ="operator"/>
       <def no ="identifier"> 31 </def>
+    </def>
+    
+    <def name = "kvirc">
+      <def no ="default"/>
+      <def no ="commen"/>
+      <def no ="commentblock"/>
+      <def no ="string"/>
+      <def no ="word"/>
+      <def no ="keyword"/>
+      <def no ="function_keyword"/>
+      <def no ="function"/>
+      <def no ="variable"/>
+      <def no ="number"/>
+      <def no ="operator"/>
+      <def no ="string_function"/>
+      <def no ="string_variable"/>
     </def>
     
     <def name = "latex">
@@ -1261,6 +1319,13 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="msgctxt"/>
       <def no ="msgctxt_text"/>
       <def no ="fuzzy"/>
+      <def no ="programmer_comment"/>
+      <def no ="reference"/>
+      <def no ="flags"/>
+      <def no ="msgid_text_eol"/>
+      <def no ="msgstr_text_eol"/>
+      <def no ="msgctxt_text_eol"/>
+      <def no ="error"/>
     </def>
     
     <def name = "pov">
@@ -1318,6 +1383,9 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="function"/>
       <def no ="user1"/>
       <def no ="commentstream"/>
+      <def no ="here_string"/>
+      <def no ="here_character"/>
+      <def no ="commentdockeyword"/>
     </def>
     
     <def name = "progress">
@@ -1484,6 +1552,30 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="stdout"/>
       <def no ="stderr"> 40 </def>
       <def no ="upper_bound"/>
+    </def>
+    
+    <def name = "rust">
+      <def no ="default"/>
+      <def no ="commentblock"/>
+      <def no ="commentline"/>
+      <def no ="commentblockdoc"/>
+      <def no ="commentlinedoc"/>
+      <def no ="number"/>
+      <def no ="word"/>
+      <def no ="word2"/>
+      <def no ="word3"/>
+      <def no ="word4"/>
+      <def no ="word5"/>
+      <def no ="word6"/>
+      <def no ="word7"/>
+      <def no ="string"/>
+      <def no ="stringr"/>
+      <def no ="character"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="lifetime"/>
+      <def no ="macro"/>
+      <def no ="lexerror"/>
     </def>
     
     <def name = "scriptol">
@@ -1733,6 +1825,10 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="error"/>
       <def no ="hexnumber"/>
       <def no ="binnumber"/>
+      <def no ="commentblock"/>
+      <def no ="docline"/>
+      <def no ="docblock"/>
+      <def no ="dockeyword"/>
     </def>
     
     <def name = "verilog">
@@ -1806,82 +1902,6 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="text"/>
       <def no ="error"/>
       <def no ="operator"/>
-    </def>
-    
-    <def name ="fcST">
-      <def no ="default"/>
-      <def no ="comment"/>
-      <def no ="commentline"/>
-      <def no ="keyword"/>
-      <def no ="type"/>
-      <def no ="function"/>
-      <def no ="fb"/>
-      <def no ="numbe"/>
-      <def no ="hexnumber"/>
-      <def no ="pragm"/>
-      <def no ="operator"/>
-      <def no ="character"/>
-      <def no ="string1"/>
-      <def no ="string2"/>
-      <def no ="stringeol"/>
-      <def no ="identifier"/>
-      <def no ="datetime"/>
-      <def no ="vars"/>
-      <def no ="pragmas"/>
-    </def>
-    
-    <def name = "kvirc">
-      <def no ="default"/>
-      <def no ="commen"/>
-      <def no ="commentblock"/>
-      <def no ="string"/>
-      <def no ="word"/>
-      <def no ="keyword"/>
-      <def no ="function_keyword"/>
-      <def no ="function"/>
-      <def no ="variable"/>
-      <def no ="number"/>
-      <def no ="operator"/>
-      <def no ="string_function"/>
-      <def no ="string_variable"/>
-    </def>
-    
-    <def name = "rust">
-      <def no ="default"/>
-      <def no ="commentblock"/>
-      <def no ="commentline"/>
-      <def no ="commentblockdoc"/>
-      <def no ="commentlinedoc"/>
-      <def no ="number"/>
-      <def no ="word"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
-      <def no ="word4"/>
-      <def no ="word5"/>
-      <def no ="word6"/>
-      <def no ="word7"/>
-      <def no ="string"/>
-      <def no ="stringr"/>
-      <def no ="character"/>
-      <def no ="operator"/>
-      <def no ="identifier"/>
-      <def no ="lifetime"/>
-      <def no ="macro"/>
-      <def no ="lexerror"/>
-    </def>
-    
-    <def name = "DMAP">
-      <def no ="default"/>
-      <def no ="comment"/>
-      <def no ="number"/>
-      <def no ="string1"/>
-      <def no ="string2"/>
-      <def no ="stringeol"/>
-      <def no ="operator"/>
-      <def no ="identifier"/>
-      <def no ="word"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
     </def>
     
     <!-- These are the themes, including style macro's and colours. -->

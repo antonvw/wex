@@ -9,6 +9,7 @@
 #define _EXCONFIGDIALOG_H
 
 #include <vector>
+#include <wx/imaglist.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/dialog.h>
 
@@ -53,6 +54,8 @@ public:
     wxWindowID id = wxID_ANY,
     /// bookctrl style, only used if you specified pages for your config items
     int bookctrl_style = CONFIG_AUINOTEBOOK,
+    /// image list to be used by notebook (required for a tool book)
+    wxImageList* imageList = NULL,
     /// position
     const wxPoint& pos = wxDefaultPosition,
     /// size
@@ -79,7 +82,7 @@ protected:
 private:
   void Click(int id) const;
   std::vector< wxExConfigItem >::const_iterator FindConfigItem(int id) const;
-  void Layout(int rows, int cols, int notebook_style);
+  void Layout(int rows, int cols, int notebook_style, wxImageList* imageList);
 
   std::vector<wxExConfigItem> m_ConfigItems;
   bool m_ForceCheckBoxChecked;
