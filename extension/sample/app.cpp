@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of sample classes for wxExtension
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -892,6 +892,7 @@ void wxExSampleFrame::ShowConfigItems()
     wxAPPLY | wxCANCEL,
     wxID_ANY,
     wxExConfigDialog::CONFIG_LISTBOOK,
+    NULL,
     wxDefaultPosition,
 #ifdef __WXMSW__    
     wxSize(500, 500));

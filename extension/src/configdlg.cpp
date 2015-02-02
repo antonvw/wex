@@ -184,13 +184,13 @@ void wxExConfigDialog::Layout(
         
         if (imageList != NULL)
         {
-          if (bookctrl->GetPageCount() < imageList->GetImageCount())
+          if ((int)bookctrl->GetPageCount() < imageList->GetImageCount())
           {
             imageId = bookctrl->GetPageCount();
           }
           else
           {
-            wxLogError("more pages than images")
+            wxLogError("more pages than images");
           }
         }
 
