@@ -364,10 +364,10 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("rz"));
   CPPUNIT_ASSERT( vi->Command("q"));
 
-//  CPPUNIT_ASSERT( vi->Command("@t"));
-//  CPPUNIT_ASSERT( vi->Command("@@"));
+  CPPUNIT_ASSERT( vi->Command("@t"));
+  CPPUNIT_ASSERT( vi->Command("@@"));
   CPPUNIT_ASSERT( vi->Command("."));
-//  CPPUNIT_ASSERT( vi->Command("10@t"));
+  CPPUNIT_ASSERT( vi->Command("10@t"));
 
   // Next should be OK, but crashes due to input expand variable.
   //CPPUNIT_ASSERT( vi->Command("@hdr@"));

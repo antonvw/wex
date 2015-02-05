@@ -251,6 +251,12 @@ bool wxExVi::Command(const std::string& command)
     return true;
   }
   
+  if (GetMacros().IsRecording() && 
+      command != "q" && command != "/" && command != "?")
+  {
+    GetMacros().Record(command);
+  }
+  
   bool handled = true;
 
   const int size = GetSTC()->GetLength();
@@ -414,9 +420,6 @@ bool wxExVi::Command(const std::string& command)
       // Always when in insert mode,
       // or this was a file change command (so size different from before).
       m_Mode == MODE_INSERT || size != GetSTC()->GetLength());
-
-    // Record it (if recording is on).
-    GetMacros().Record(command);
   }
     
   return true;
@@ -802,7 +805,6 @@ bool wxExVi::CommandChars(std::string& command, int repeat)
         if (!GetMacros().IsRecording())
         {
           MacroStartRecording(command.substr(1));
-          return true; // as we should not do default actions
         }
       } 
       else if (wxString(command).Matches("r?"))
@@ -849,7 +851,6 @@ bool wxExVi::CommandChars(std::string& command, int repeat)
       else if (RegAfter(wxUniChar(WXK_CONTROL_R), command))
       {
         CommandReg(command[1]);
-        return true;
       }  
       else if (CommandChar((int)command[0], repeat))
       {
