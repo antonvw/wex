@@ -22,6 +22,7 @@
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vimacros.h>
 
@@ -64,6 +65,7 @@ class wxExCmdLineParser : public wxCmdLineParser
         process((FoundSwitch(name) == wxCMD_SWITCH_ON));};
 };
 
+wxExSTCEntryDialog* wxExEx::m_Dialog = NULL;
 wxExViMacros wxExEx::m_Macros;
 std::string wxExEx::m_LastCommand;
 
@@ -227,6 +229,33 @@ bool wxExEx::Command(const std::string& command)
     {
       POST_COMMAND ( ID_EDIT_READ )
     }
+  }
+  else if (command == ":reg")
+  {
+    wxString output;
+    
+    for (const auto& it : m_Macros.GetRegisters())
+    {
+      output += it + "\n";
+    }
+  
+    output += "%: " + m_STC->GetFileName().GetFullName() + "\n";
+    
+    if (m_Dialog == NULL)
+    {
+      m_Dialog = new wxExSTCEntryDialog(
+        wxTheApp->GetTopWindow(),
+        "Registers", 
+        output,
+        wxEmptyString,
+        wxOK);
+    }
+    else
+    {
+      m_Dialog->GetSTC()->SetText(output);
+    }
+    
+    m_Dialog->Show();
   }
   else if (command.compare(0, 4, ":sed") == 0)
   {

@@ -68,7 +68,7 @@ void wxExGuiTestFixture::testViMacros()
   CPPUNIT_ASSERT(!macros.Playback(vi, "b"));
   
   CPPUNIT_ASSERT(!macros.Get().empty());
-  
+
   // Test append to macro.
   CPPUNIT_ASSERT( vi->Command(ESC));
   macros.StartRecording("A");

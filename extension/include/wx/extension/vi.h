@@ -2,7 +2,7 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wxExVi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVI_H
@@ -11,8 +11,6 @@
 #include <wx/extension/ex.h>
 
 #if wxUSE_GUI
-
-class wxExSTCEntryDialog;
 
 /// Offers a class that extends wxExSTC with vi behaviour.
 class WXDLLIMPEXP_BASE wxExVi : public wxExEx
@@ -54,8 +52,8 @@ private:
   bool ChangeNumber(bool inc);
   void CommandCalc(const wxString& reg);
   bool CommandChar(int c, int repeat);
+  bool CommandChars(std::string& rest, int repeat);
   void CommandReg(const char reg);
-  void DeleteRange(int start, int end);
   bool FindChar(int repeat, const wxString& text, const wxString& start);
   void FindWord(bool find_next = true);
   void GotoBrace();
@@ -71,9 +69,7 @@ private:
     const wxString& command,
     int repeat = 1);
   bool ToggleCase(); 
-  bool YankedLines();   
-  
-  static wxExSTCEntryDialog* m_Dialog;
+
   static std::string m_LastFindCharCommand;
 
   bool m_Dot;  

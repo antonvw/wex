@@ -16,16 +16,19 @@
 #include <wx/extension/vimacros.h>
 #include "test.h"
 
+//#define DEBUGGING ON
+
 void wxExGuiTestFixture::testEx()
 {
   // Test modeline.
   wxExSTC* stc = new wxExSTC(m_Frame, 
     "// vi: set ts=120 ec=40");
     
+  wxExEx* ex = new wxExEx(stc);
+  
   CPPUNIT_ASSERT(stc->GetTabWidth() == 120);
   CPPUNIT_ASSERT(stc->GetEdgeColumn() == 40);
-  
-  wxExEx* ex = new wxExEx(stc);
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120 ec=40");
   
   CPPUNIT_ASSERT( ex->GetIsActive());
   ex->Use(false);
@@ -35,36 +38,36 @@ void wxExGuiTestFixture::testEx()
   
   CPPUNIT_ASSERT( ex->GetMacros().GetCount() > 0);
 
-  // Test last command.  
-  CPPUNIT_ASSERT( ex->Command(":.="));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120 ec=40");
-  CPPUNIT_ASSERT(!ex->Command(":xxx"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120 ec=40");
-  CPPUNIT_ASSERT(!ex->Command(":yyy"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120 ec=40");
-  CPPUNIT_ASSERT( ex->Command(":10"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":10");
-  CPPUNIT_ASSERT( ex->Command(":1,$s/this/ok"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":1,$s/this/ok");
-  CPPUNIT_ASSERT( ex->Command(":g/is/s//ok"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":g/is/s//ok");
-  CPPUNIT_ASSERT( ex->Command(":g/is/d"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":g/is/d");
-  CPPUNIT_ASSERT( ex->Command(":g/is/p"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":g/is/p");
-  CPPUNIT_ASSERT(!ex->Command(":n")); // there is no next
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":g/is/p");
-  CPPUNIT_ASSERT(!ex->Command(":prev")); // there is no previous
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":g/is/p");
-  CPPUNIT_ASSERT( ex->Command(":!ls -l"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":!ls -l");
-  CPPUNIT_ASSERT( ex->Command(":1,$s/s/w/"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":1,$s/s/w/");
-  
-  CPPUNIT_ASSERT( ex->Command(":1,$s/$/ZXXX/"));
-  CPPUNIT_ASSERT( ex->Command(":1,$s/^/Zxxx/"));
-  CPPUNIT_ASSERT( ex->Command(":.s/$/\n"));
-  
+  // Test commands and last command.  
+  // We have only one document, so :n, :prev return false.
+  std::vector<std::pair<std::string, bool>> commands {
+    {":n",false},{":reg",true},{":prev",false},{":xxx",false},
+    {":yyy",false},{":10",true},{":.=",true},
+    {":1,$s/this/ok",true},{":g/is/s//ok",true},{":.s/$/\n",true},
+    {":g/is/d",true},{":g/is/p",true},
+    {":1,$s/$/ZXXX/",true},{":1,$s/$/ZXXX/",true},{":1,$s/^/Zxxx/",true},{":1,$s/s/w/",true}};
+    
+  for (auto& command : commands)
+  {
+#ifdef DEBUGGING
+    wxLogMessage("%s %d", command.first.c_str(), command.second);
+#endif
+    if (command.second)
+    {
+      CPPUNIT_ASSERT( ex->Command(command.first));
+      
+      if (command.first != ":.=")
+      {
+        CPPUNIT_ASSERT( ex->GetLastCommand() == command.first);
+      }
+    }
+    else
+    {
+      CPPUNIT_ASSERT(!ex->Command(command.first));
+      CPPUNIT_ASSERT( ex->GetLastCommand() != command.first);
+    }
+  }
+
   CPPUNIT_ASSERT( ex->Command(":1"));
   CPPUNIT_ASSERT( ex->MarkerAdd('t')); // do not use y or w marker, it is a token!!
   CPPUNIT_ASSERT( ex->Command(":$"));

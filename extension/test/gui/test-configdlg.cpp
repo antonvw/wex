@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/artprov.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/managedframe.h>
 #include "test.h"
