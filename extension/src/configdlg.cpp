@@ -161,6 +161,8 @@ void wxExConfigDialog::Layout(
     default:
       wxFAIL;  
     }
+    
+    bookctrl->SetImageList(imageList);
   }
        
   wxString previous_page = "XXXXXX";

@@ -87,54 +87,33 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   
   // Vi control key tests.
-  event.m_uniChar = WXK_CONTROL_B;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_uniChar = WXK_CONTROL_E;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_uniChar = WXK_CONTROL_F;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_uniChar = WXK_CONTROL_G;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_uniChar = WXK_CONTROL_J;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_uniChar = WXK_CONTROL_P;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  event.m_uniChar = WXK_CONTROL_Q;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  
-  event.m_keyCode = WXK_BACK;
-  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
-  event.m_keyCode = WXK_RETURN;
-  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
-  event.m_keyCode = WXK_TAB;
-  CPPUNIT_ASSERT( vi->OnKeyDown(event));
-  
+  std::vector<int> control_keys{
+    WXK_CONTROL_B,WXK_CONTROL_E,WXK_CONTROL_F,WXK_CONTROL_G,
+    WXK_CONTROL_J,WXK_CONTROL_P,WXK_CONTROL_Q};
+
+  for (auto& control_key : control_keys)
+  {
+    event.m_uniChar = control_key;
+    CPPUNIT_ASSERT( vi->OnKeyDown(event));
+    CPPUNIT_ASSERT(!vi->OnChar(event));
+  }
+
   // Vi navigation command tests.
+  std::vector<int> nav_keys{
+    WXK_BACK,WXK_RETURN,WXK_LEFT,WXK_DOWN,WXK_UP,WXK_RIGHT,WXK_PAGEUP,WXK_PAGEDOWN,WXK_TAB};
+    
+  for (auto& nav_key : nav_keys)
+  {
+    event.m_keyCode = nav_key;
+    CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+  }
+
   CPPUNIT_ASSERT( vi->Command(ESC));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   
-  event.m_keyCode = WXK_LEFT;
-  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
-  event.m_keyCode = WXK_DOWN;
-  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
-  event.m_keyCode = WXK_UP;
-  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
-  event.m_keyCode = WXK_RIGHT;
-  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
-  event.m_keyCode = WXK_PAGEUP;
-  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
-  event.m_keyCode = WXK_PAGEDOWN;
-  CPPUNIT_ASSERT(!vi->OnKeyDown(event));
   event.m_keyCode = WXK_NONE;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
-  
+
   // Test navigate with [ and ].
   event.m_uniChar = '[';
   CPPUNIT_ASSERT(!vi->OnChar(event));
@@ -175,13 +154,9 @@ void wxExGuiTestFixture::testVi()
     CPPUNIT_ASSERT( vi->Command(ESC));
     CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   }
-  
+
   // Test MODE_INSERT commands and delete command on readonly document.
-  commands.push_back("dd");
-  commands.push_back("d0");
-  commands.push_back("d$");
-  commands.push_back("dw");
-  commands.push_back("de");
+  commands.insert(commands.end(), {"dd", "d0", "d$", "dw", "de"});
   
   stc->SetReadOnly(true);
   stc->EmptyUndoBuffer();
@@ -191,7 +166,7 @@ void wxExGuiTestFixture::testVi()
   {
     CPPUNIT_ASSERT( vi->Command(it2) );
   }
-  
+
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT(!stc->GetModify());
   
@@ -205,7 +180,7 @@ void wxExGuiTestFixture::testVi()
   {
     CPPUNIT_ASSERT( vi->Command(it3) );
   }
-  
+
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT(!stc->GetModify());
   
@@ -253,43 +228,14 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   
   // Test commands that do not change mode.
-  commands.clear();
-  commands.push_back("b");
-  commands.push_back("e");
-  commands.push_back("h");
-  commands.push_back("j");
-  commands.push_back("k");
-  commands.push_back("l");
-  commands.push_back(" ");
-  commands.push_back("n");
-  commands.push_back("p");
-  commands.push_back("u");
-  commands.push_back("w");
-  commands.push_back("x");
 //  commands.push_back("y"); // only true if something selected
-  commands.push_back("B");
-  commands.push_back("D");
-  commands.push_back("E");
-  commands.push_back("G");
-  commands.push_back("H");
-  commands.push_back("J");
-  commands.push_back("L");
-  commands.push_back("M");
-  commands.push_back("N");
-  commands.push_back("P");
-  commands.push_back("W");
-  commands.push_back("X");
-  commands.push_back("^");
-  commands.push_back("~");
-  commands.push_back("$");
-  commands.push_back("{");
-  commands.push_back("}");
-  commands.push_back("(");
-  commands.push_back(")");
-  commands.push_back("%");
-  commands.push_back("*");
-  commands.push_back("#");
-  
+  commands.clear();
+
+  commands.insert(commands.end(), {
+    "b","e","h","j","k","l"," ","n","p","u","w","x",
+    "B","D","E","G","H","J","L","M","N","P","W","X",
+    "^","~","$","{","}","(",")","%","*","#"});
+
   for (auto& it4 : commands)
   {
     CPPUNIT_ASSERT( vi->Command(it4) );
@@ -351,46 +297,47 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetLineCount() == 4);
   CPPUNIT_ASSERT( stc->GetLineText(0) == "zzz second");
-  
-  // Test delete command.
-  CPPUNIT_ASSERT( vi->Command("dw"));
-  CPPUNIT_ASSERT( vi->Command("3dw"));
-  CPPUNIT_ASSERT( vi->GetLastCommand() == "3dw");
-  CPPUNIT_ASSERT( vi->Command("dd"));
-  CPPUNIT_ASSERT( vi->Command("de"));
-  CPPUNIT_ASSERT( vi->Command("d0"));
-  CPPUNIT_ASSERT( vi->Command("d$"));
-  
-  // Test back command.
+
+  // Test delete commands.
+  std::vector<std::string> delete_commands {
+    "dd","de","dh","dj","dk","dl","dw","dG","d0","d$","dgg","3dw"};
+    
+  for (auto& delete_command : delete_commands)
+  {
+    CPPUNIT_ASSERT( vi->Command(delete_command));
+    CPPUNIT_ASSERT( vi->GetLastCommand() == delete_command);
+  }
+
+  // Test yank commands.
   stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
   CPPUNIT_ASSERT( vi->Command(":1"));
   CPPUNIT_ASSERT( vi->Command("yw"));
-  CPPUNIT_ASSERT( vi->GetSelectedText() == "xxxxxxxxxx");
+  CPPUNIT_ASSERT( vi->GetSelectedText() == "xxxxxxxxxx ");
   
   CPPUNIT_ASSERT( vi->Command("w"));
   CPPUNIT_ASSERT( vi->Command("x"));
-  CPPUNIT_ASSERT(!stc->GetText().Contains("second"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("second"));
   CPPUNIT_ASSERT( vi->Command("p"));
-  // this is different from vi, that would put back s after e: escond
   CPPUNIT_ASSERT( stc->GetText().Contains("second"));
   
+  std::vector<std::string> yank_commands {
+    "ye","yh","yj","yk","yl","yw","yy","y0","y$","3yw"};
+    
+  for (auto& yank_command : yank_commands)
+  {
+    CPPUNIT_ASSERT( vi->Command(yank_command));
+    CPPUNIT_ASSERT( vi->GetLastCommand() == yank_command);
+  }
+
   // Test other commands.
-  CPPUNIT_ASSERT( vi->Command("dG"));
-  CPPUNIT_ASSERT( vi->Command("dgg"));
   stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
-  CPPUNIT_ASSERT( vi->Command("fx"));
-  CPPUNIT_ASSERT( vi->Command("Fx"));
-  CPPUNIT_ASSERT( vi->Command(";"));
   
-  CPPUNIT_ASSERT( vi->Command("gg"));
-  
-  CPPUNIT_ASSERT( vi->Command("yw"));
-  
-  CPPUNIT_ASSERT( vi->Command("zc"));
-  CPPUNIT_ASSERT( vi->Command("zo"));
-  CPPUNIT_ASSERT( vi->Command("zE"));
-  CPPUNIT_ASSERT( vi->Command(">>"));
-  CPPUNIT_ASSERT( vi->Command("<<"));
+  std::vector<std::string> other_commands {
+    "fx","Fx",";","gg","zc","zo","zE",">>","<<"};
+  for (auto& other_command : other_commands)
+  {
+    CPPUNIT_ASSERT( vi->Command(other_command));
+  }
 
   // Special put test. 
   // Put should not put text within a line, but after it, or before it.
@@ -406,7 +353,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( stc->GetText().Contains(
     "the chances of anything coming from mars"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("mathe"));
- 
+
   // Test macro.
   // First load macros.
   CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
@@ -416,12 +363,12 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("/xx"));
   CPPUNIT_ASSERT( vi->Command("rz"));
   CPPUNIT_ASSERT( vi->Command("q"));
-  
-  CPPUNIT_ASSERT( vi->Command("@t"));
-  CPPUNIT_ASSERT( vi->Command("@@"));
+
+//  CPPUNIT_ASSERT( vi->Command("@t"));
+//  CPPUNIT_ASSERT( vi->Command("@@"));
   CPPUNIT_ASSERT( vi->Command("."));
-  CPPUNIT_ASSERT( vi->Command("10@t"));
-  
+//  CPPUNIT_ASSERT( vi->Command("10@t"));
+
   // Next should be OK, but crashes due to input expand variable.
   //CPPUNIT_ASSERT( vi->Command("@hdr@"));
   
@@ -447,7 +394,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->Command("dx"));
   CPPUNIT_ASSERT( vi->GetLastCommand() != "dx");
   CPPUNIT_ASSERT( vi->Command(ESC));
-  
+
   // Test registers
   stc = new wxExSTC(m_Frame, GetTestFile());
   vi = &stc->GetVi();

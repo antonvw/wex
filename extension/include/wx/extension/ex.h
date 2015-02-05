@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wxExEx
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXEX_H
@@ -17,6 +17,7 @@
 class wxExManagedFrame;
 class wxExProcess;
 class wxExSTC;
+class wxExSTCEntryDialog;
 class wxExViMacros;
 
 /// Offers a class that adds ex editor to wxExSTC.
@@ -147,6 +148,7 @@ private:
   std::map<wxUniChar, int> m_Markers;
   
   static std::string m_LastCommand;
+  static wxExSTCEntryDialog* m_Dialog;
   static wxExViMacros m_Macros;
 
   bool m_IsActive; // are we actively using ex mode?

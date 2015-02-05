@@ -498,7 +498,9 @@ int wxExSTC::ConfigDialog(
   wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
   wchoices.insert(std::make_pair(wxSTC_WRAP_WORD, _("Word")));
   wchoices.insert(std::make_pair(wxSTC_WRAP_CHAR, _("Char")));
+#if wxCHECK_VERSION(3,1,0)
   wchoices.insert(std::make_pair(wxSTC_WRAP_WHITESPACE, _("Whitespace")));
+#endif  
   items.push_back(wxExConfigItem(
     _("Wrap line"), wchoices, true, _("General"), 1));
 
