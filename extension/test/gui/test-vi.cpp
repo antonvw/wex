@@ -18,28 +18,25 @@
 
 #define ESC "\x1b"
 
+void ChangeMode(wxExVi* vi, const std::string& command, int mode)
+{
+  CPPUNIT_ASSERT( vi->Command(command));
+  CPPUNIT_ASSERT( vi->GetMode() == mode);
+}
+
 void wxExGuiTestFixture::testVi()
 {
-  const int esc = 27;
- 
   // Test for modeline support.
   wxExSTC* stc = new wxExSTC(m_Frame, 
     "// vi: set ts=120 "
     "// this is a modeline");
     
-  CPPUNIT_ASSERT(stc->GetTabWidth() == 120);
-  
   wxExVi* vi = &stc->GetVi();
   
+  CPPUNIT_ASSERT(stc->GetTabWidth() == 120);
   CPPUNIT_ASSERT( vi->GetIsActive());
-  
-  // Repeat some ex tests.
-  CPPUNIT_ASSERT( vi->Command(":$"));
-  CPPUNIT_ASSERT( vi->Command(":100"));
-  CPPUNIT_ASSERT(!vi->Command(":xxx"));
-  
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  
+
   wxKeyEvent event(wxEVT_CHAR);
   
   // Test WXK_NONE.
@@ -52,12 +49,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
   
   // Second i (and more) all handled by vi.
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  CPPUNIT_ASSERT(!vi->OnChar(event));
+  for (int i = 0; i < 10; i++) CPPUNIT_ASSERT(!vi->OnChar(event));
 
   // Repeat some macro tests.
   CPPUNIT_ASSERT(!vi->GetMacros().IsRecording());
@@ -72,20 +64,14 @@ void wxExGuiTestFixture::testVi()
   
   vi->MacroStartRecording("a");
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  CPPUNIT_ASSERT( vi->Command(ESC));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   vi->GetMacros().StopRecording();
   CPPUNIT_ASSERT(!vi->GetMacros().IsRecording());
   CPPUNIT_ASSERT( vi->GetMacros().IsRecorded("a"));
-  
   CPPUNIT_ASSERT(!vi->GetMacros().IsRecorded("b"));
-  
   CPPUNIT_ASSERT( vi->MacroPlayback("a"));
-//  CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
 
-  // Be sure we are in normal mode.
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  
   // Vi control key tests.
   std::vector<int> control_keys{
     WXK_CONTROL_B,WXK_CONTROL_E,WXK_CONTROL_F,WXK_CONTROL_G,
@@ -100,17 +86,16 @@ void wxExGuiTestFixture::testVi()
 
   // Vi navigation command tests.
   std::vector<int> nav_keys{
-    WXK_BACK,WXK_RETURN,WXK_LEFT,WXK_DOWN,WXK_UP,WXK_RIGHT,WXK_PAGEUP,WXK_PAGEDOWN,WXK_TAB};
+    WXK_BACK,WXK_DELETE,WXK_RETURN,WXK_LEFT,WXK_DOWN,WXK_UP,WXK_RIGHT,
+    WXK_PAGEUP,WXK_PAGEDOWN,WXK_TAB};
     
   for (auto& nav_key : nav_keys)
   {
     event.m_keyCode = nav_key;
     CPPUNIT_ASSERT(!vi->OnKeyDown(event));
+    ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   }
 
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  
   event.m_keyCode = WXK_NONE;
   CPPUNIT_ASSERT( vi->OnKeyDown(event));
 
@@ -131,11 +116,10 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
   CPPUNIT_ASSERT( vi->Command("xxxxxxxx"));
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetText().Contains("xxxxxxxx"));
   CPPUNIT_ASSERT( vi->GetRegisterInsert() == "xxxxxxxx");
-  CPPUNIT_ASSERT( vi->GetLastCommand() == wxString("ixxxxxxxx") + wxUniChar(esc));
+  CPPUNIT_ASSERT( vi->GetLastCommand() == wxString("ixxxxxxxx") + ESC);
   
   for (int i = 0; i < 10; i++)
     CPPUNIT_ASSERT( vi->Command("."));
@@ -145,14 +129,10 @@ void wxExGuiTestFixture::testVi()
   // Test MODE_INSERT commands.
   std::vector<std::string> commands {"a", "i", "o", "A", "C", "I", "O", "R"};
   
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  
   for (auto& it1 : commands)
   {
-    CPPUNIT_ASSERT( vi->Command(it1) );
-    CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
-    CPPUNIT_ASSERT( vi->Command(ESC));
-    CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+    ChangeMode( vi, it1, wxExVi::MODE_INSERT);
+    ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   }
 
   // Test MODE_INSERT commands and delete command on readonly document.
@@ -164,12 +144,10 @@ void wxExGuiTestFixture::testVi()
   
   for (auto& it2 : commands)
   {
-    CPPUNIT_ASSERT( vi->Command(it2) );
+    ChangeMode( vi, it2, wxExVi::MODE_NORMAL);
+    CPPUNIT_ASSERT(!stc->GetModify());
   }
 
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  CPPUNIT_ASSERT(!stc->GetModify());
-  
   // Test MODE_INSERT commands on hexmode document.
   stc->SetReadOnly(false);
   stc->Reload(wxExSTC::STC_WIN_HEX);
@@ -191,18 +169,15 @@ void wxExGuiTestFixture::testVi()
   stc->SetReadOnly(false);
 
   // Test insert command.  
-  CPPUNIT_ASSERT( vi->Command("i"));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  
-  CPPUNIT_ASSERT( vi->Command("iyyyyy"));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
+  ChangeMode( vi, "i", wxExVi::MODE_INSERT);
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+
+  ChangeMode( vi, "iyyyyy", wxExVi::MODE_INSERT);
   CPPUNIT_ASSERT( stc->GetText().Contains("yyyyy"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("iyyyyy"));
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  
-  const wxString lastcmd = wxString("iyyyyy") + wxUniChar(esc);
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+
+  const wxString lastcmd = wxString("iyyyyy") + ESC;
 
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
   CPPUNIT_ASSERT( vi->Command("."));
@@ -215,20 +190,17 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("100izz"));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
   CPPUNIT_ASSERT(!stc->GetText().Contains("izz"));
-  CPPUNIT_ASSERT( vi->Command(ESC));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetText().Contains(wxString('z', 200)));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  
+
   stc->SetText("999");
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
   CPPUNIT_ASSERT( vi->Command("b"));
-  CPPUNIT_ASSERT( vi->Command(ESC));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetText().Contains("b"));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  
+
   // Test commands that do not change mode.
-//  commands.push_back("y"); // only true if something selected
   commands.clear();
 
   commands.insert(commands.end(), {
@@ -238,36 +210,9 @@ void wxExGuiTestFixture::testVi()
 
   for (auto& it4 : commands)
   {
-    CPPUNIT_ASSERT( vi->Command(it4) );
-// p changes last command    
-//    CPPUNIT_ASSERT( vi.GetLastCommand() == lastcmd);
-    CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+    ChangeMode( vi, it4, wxExVi::MODE_NORMAL);
   }
 
-  // Test /, ?, n and N.
-  stc->SetText("aaaaa\nbbbbb\nccccc\naaaaa");
-  CPPUNIT_ASSERT( vi->Command("/bbbbb"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 1);
-  CPPUNIT_ASSERT(!vi->Command("/d"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 1);
-  CPPUNIT_ASSERT( vi->Command("/a"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 3);
-  CPPUNIT_ASSERT( vi->Command("n"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 3);
-  CPPUNIT_ASSERT( vi->Command("N"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 3);
-  stc->SetText("aaaaa\nbbbbb\nccccc\naaaaa");
-  CPPUNIT_ASSERT( vi->Command("?bbbbb"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 1);
-  CPPUNIT_ASSERT(!vi->Command("?d"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 1);
-  CPPUNIT_ASSERT( vi->Command("?a"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
-  CPPUNIT_ASSERT( vi->Command("n"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
-  CPPUNIT_ASSERT( vi->Command("N"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
-  
   // Test substitute command.
   stc->SetText("xxxxxxxxxx\nxxxxxxxx\naaaaaaaaaa\n");
   CPPUNIT_ASSERT( vi->Command(":.="));
@@ -283,8 +228,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("cc"));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
   CPPUNIT_ASSERT( vi->Command("zzz"));
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetLineCount() == 4);
   CPPUNIT_ASSERT( stc->GetLineText(0) == "zzz");
   
@@ -293,8 +237,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("cw"));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
   CPPUNIT_ASSERT( vi->Command("zzz"));
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetLineCount() == 4);
   CPPUNIT_ASSERT( stc->GetLineText(0) == "zzz second");
 
@@ -334,6 +277,7 @@ void wxExGuiTestFixture::testVi()
   
   std::vector<std::string> other_commands {
     "fx","Fx",";","gg","zc","zo","zE",">>","<<"};
+    
   for (auto& other_command : other_commands)
   {
     CPPUNIT_ASSERT( vi->Command(other_command));
@@ -372,7 +316,7 @@ void wxExGuiTestFixture::testVi()
   // Next should be OK, but crashes due to input expand variable.
   //CPPUNIT_ASSERT( vi->Command("@hdr@"));
   
-  // Test variable.
+  // Test variables.
   stc->SetText("");
   CPPUNIT_ASSERT( vi->Command("@Date@"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("Date"));
@@ -393,7 +337,8 @@ void wxExGuiTestFixture::testVi()
   // Test illegal command.
   CPPUNIT_ASSERT(!vi->Command("dx"));
   CPPUNIT_ASSERT( vi->GetLastCommand() != "dx");
-  CPPUNIT_ASSERT( vi->Command(ESC));
+  CPPUNIT_ASSERT(!vi->Command(":xxx"));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
 
   // Test registers
   stc = new wxExSTC(m_Frame, GetTestFile());
@@ -402,12 +347,12 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->Command(wxString(wxUniChar(ctrl_r)).ToStdString()));
   CPPUNIT_ASSERT( vi->Command("_"));
-  CPPUNIT_ASSERT( vi->Command(ESC));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->Command(wxString(wxUniChar(ctrl_r)).ToStdString()));
   CPPUNIT_ASSERT( vi->Command("%"));
-  CPPUNIT_ASSERT( vi->Command(ESC));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetText().Contains("test.h"));
   
   CPPUNIT_ASSERT( vi->Command("yy"));
@@ -415,7 +360,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->Command(wxString(wxUniChar(ctrl_r)).ToStdString()));
   CPPUNIT_ASSERT( vi->Command("0"));
-  CPPUNIT_ASSERT( vi->Command(ESC));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetText().Contains("test.h"));
   
   stc->SetText("XXXXX");
@@ -423,7 +368,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->Command(wxString(wxUniChar(ctrl_r)).ToStdString()));
   CPPUNIT_ASSERT( vi->Command("1"));
-  CPPUNIT_ASSERT( vi->Command(ESC));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetText().Contains("XXXXX"));
   
   stc->SetText("YYYYY");
@@ -431,57 +376,44 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->Command(wxString(wxUniChar(ctrl_r)).ToStdString()));
   CPPUNIT_ASSERT( vi->Command("2"));
-  CPPUNIT_ASSERT( vi->Command(ESC));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetText().Contains("XXXXX"));
   
   // Test visual modes.
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  event.m_uniChar = 'v';
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL);
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  event.m_uniChar = 'V';
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_LINE);
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  event.m_uniChar = 'Z';
-  CPPUNIT_ASSERT(!vi->OnChar(event));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_RECT);
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  std::vector<std::pair<std::string, int>> visuals {
+    {"v",wxExVi::MODE_VISUAL},
+    {"V",wxExVi::MODE_VISUAL_LINE},
+    {"Z",wxExVi::MODE_VISUAL_RECT}};
+
+  for (auto& visual : visuals)
+  {
+    ChangeMode( vi, visual.first, visual.second);
+    ChangeMode( vi, "jjj", visual.second);
+    ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+    
+    event.m_uniChar = visual.first[0];
+    CPPUNIT_ASSERT(!vi->OnChar(event));
+    CPPUNIT_ASSERT( vi->GetMode() == visual.second);
+    ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  }
   
-  CPPUNIT_ASSERT( vi->Command("v"));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL);
-  CPPUNIT_ASSERT( vi->Command("jjj"));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL);
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  CPPUNIT_ASSERT( vi->Command("V"));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_LINE);
-  CPPUNIT_ASSERT( vi->Command("jjj"));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_LINE);
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  
-  CPPUNIT_ASSERT( vi->Command("Z"));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_RECT);
-  CPPUNIT_ASSERT( vi->Command("jjj"));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_VISUAL_RECT);
-  CPPUNIT_ASSERT( vi->Command(ESC));
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
-  
-  // Test goto.
-  stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+  // Test goto, /, ?, n and N.
+  stc->SetText("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
   CPPUNIT_ASSERT( stc->GetLineCount() == 12);
   stc->GotoLine(2);
-  CPPUNIT_ASSERT( vi->Command("gg"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
-  CPPUNIT_ASSERT( vi->Command("1G"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
-  CPPUNIT_ASSERT( vi->Command("10G"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 9);
-  CPPUNIT_ASSERT( vi->Command("10000G"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 11);
+  
+  std::vector<std::pair<std::string, int>> gotos {
+    {"gg",0},{"1G",0},{"10G",9},{"10000G",11},{":$",11},{":100",11},
+    {"/bbbbb",1},{"/d",1},{"/a",3},{"n",3},{"N",3},
+    {"?bbbbb",1},{"?d",1},{"?a",0},{"n",0},{"N",0}};
+    
+  for (auto& go : gotos)
+  {
+    if (go.first.back() != 'd')
+      CPPUNIT_ASSERT( vi->Command(go.first));
+    else
+      CPPUNIT_ASSERT(!vi->Command(go.first));
+      
+    CPPUNIT_ASSERT( stc->GetCurrentLine() == go.second);
+  }
 }

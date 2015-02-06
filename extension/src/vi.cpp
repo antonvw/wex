@@ -101,6 +101,7 @@ char ConvertKeyEvent(const wxKeyEvent& event)
     case WXK_DOWN:     c = 'j'; break;
     case WXK_UP:       c = 'k'; break;
     case WXK_RIGHT:    c = 'l'; break;
+    case WXK_DELETE:   c = 'x'; break;
     case WXK_PAGEUP:   c = WXK_CONTROL_B; break;
     case WXK_PAGEDOWN: c = WXK_CONTROL_F; break;
     case WXK_NUMPAD_ENTER: c = WXK_RETURN; break;
@@ -1316,6 +1317,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   else if (
     !event.HasAnyModifiers() &&
     (event.GetKeyCode() == WXK_BACK ||
+     event.GetKeyCode() == WXK_DELETE ||
      event.GetKeyCode() == WXK_ESCAPE ||
      event.GetKeyCode() == WXK_RETURN ||
      event.GetKeyCode() == WXK_NUMPAD_ENTER ||
