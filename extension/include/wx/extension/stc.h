@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTC_H
@@ -104,6 +104,9 @@ public:
   /// Will a paste succeed? 
   virtual bool CanPaste() const override;
   
+  /// Clear the selection.
+  virtual void Clear() override;
+
   // Clears the component: all text is cleared and all styles are reset.
   // Invoked by Open and DoFileNew.
   // (Clear is used by scintilla to clear the selection).
