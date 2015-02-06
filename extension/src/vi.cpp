@@ -545,6 +545,7 @@ bool wxExVi::CommandChar(int c, int repeat)
     case 'v': m_Mode = MODE_VISUAL; break;
       
     case 'x': 
+    case WXK_DELETE:
       DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + repeat);
       break;
         

@@ -431,6 +431,18 @@ bool wxExSTC::CheckBrace(int pos)
   }
 }
 
+void wxExSTC::Clear()
+{
+  if (m_vi.GetIsActive() && GetSelectedText().empty())
+  {
+    m_vi.Command("x");
+  }
+  else
+  {
+    wxStyledTextCtrl::Clear();
+  }
+}
+
 void wxExSTC::ClearDocument(bool set_savepoint)
 {
   SetReadOnly(false);
