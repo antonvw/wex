@@ -125,6 +125,28 @@ bool wxExEx::Command(const std::string& command)
   {
     m_STC->DocumentEnd();
   }
+  else if (command.compare(0, 3, ":ab") == 0)
+  {
+    wxStringTokenizer tkz(command, " ");
+    
+    if (tkz.CountTokens() >= 2)
+    {
+      tkz.GetNextToken(); // skip
+      const wxString ab(tkz.GetNextToken());
+      m_Macros.SetAbbreviation(ab, tkz.GetString().ToStdString());
+    }
+    else
+    {
+      wxString output;
+      
+      for (const auto& it : m_Macros.GetAbbreviations())
+      {
+        output += it.first + " " + it.second + "\n";
+      }
+      
+      ShowDialog("Abbreviations", output);
+    }
+  }
   else if (command.compare(0, 6, ":about") == 0)
   {
     POST_COMMAND( wxID_ABOUT )
@@ -208,6 +230,19 @@ bool wxExEx::Command(const std::string& command)
   {
     POST_CLOSE( wxEVT_CLOSE_WINDOW, false )
   }
+  else if (command == ":reg")
+  {
+    wxString output;
+    
+    for (const auto& it : m_Macros.GetRegisters())
+    {
+      output += it + "\n";
+    }
+  
+    output += "%: " + m_STC->GetFileName().GetFullName() + "\n";
+    
+    ShowDialog("Registers", output);
+  }
   else if (command.compare(0, 2, ":r") == 0)
   {
     wxString arg(wxString(command).AfterFirst(' '));
@@ -229,33 +264,6 @@ bool wxExEx::Command(const std::string& command)
     {
       POST_COMMAND ( ID_EDIT_READ )
     }
-  }
-  else if (command == ":reg")
-  {
-    wxString output;
-    
-    for (const auto& it : m_Macros.GetRegisters())
-    {
-      output += it + "\n";
-    }
-  
-    output += "%: " + m_STC->GetFileName().GetFullName() + "\n";
-    
-    if (m_Dialog == NULL)
-    {
-      m_Dialog = new wxExSTCEntryDialog(
-        wxTheApp->GetTopWindow(),
-        "Registers", 
-        output,
-        wxEmptyString,
-        wxOK);
-    }
-    else
-    {
-      m_Dialog->GetSTC()->SetText(output);
-    }
-    
-    m_Dialog->Show();
   }
   else if (command.compare(0, 4, ":sed") == 0)
   {
@@ -939,6 +947,26 @@ void wxExEx::SetRegisterYank(const std::string& value) const
   }
   
   m_Macros.SetRegister('0', value);
+}
+
+void wxExEx::ShowDialog(const wxString& title, const wxString& text)
+{
+  if (m_Dialog == NULL)
+  {
+    m_Dialog = new wxExSTCEntryDialog(
+      wxTheApp->GetTopWindow(),
+      title, 
+      text,
+      wxEmptyString,
+      wxOK);
+  }
+  else
+  {
+    m_Dialog->SetTitle(title);
+    m_Dialog->GetSTC()->SetText(text);
+  }
+  
+  m_Dialog->Show();
 }
 
 void wxExEx::Yank(bool show_message)

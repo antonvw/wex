@@ -138,4 +138,28 @@ void wxExGuiTestFixture::testViMacros()
   macros.SetRegister('Z', " and more");
   CPPUNIT_ASSERT( macros.GetRegister('Z').empty());
   CPPUNIT_ASSERT( macros.GetRegister('z') == "hello z and more");
+  
+  // Test abbreviations.
+  CPPUNIT_ASSERT( macros.GetAbbreviations().empty());
+  
+  std::vector<std::pair<std::string, std::string>> abbrevs {
+    {"XX","this is X"},
+    {"YY","this is X now"},
+    {"YY","this is Y"}};
+
+  for (auto& abbrev : abbrevs)
+  {
+    macros.SetAbbreviation(abbrev.first, abbrev.second);
+    
+    const auto& it = macros.GetAbbreviations().find("XX");
+            
+    if (it != macros.GetAbbreviations().end())
+    {
+      CPPUNIT_ASSERT( abbrev.second == it.second);
+    }
+  }
+  
+  CPPUNIT_ASSERT( macros.GetAbbreviations().size() == 3);
+  CPPUNIT_ASSERT( macros.IsModified());
+  CPPUNIT_ASSERT( wxExViMacros::SaveDocument());
 }

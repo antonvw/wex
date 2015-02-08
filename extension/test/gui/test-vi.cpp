@@ -192,6 +192,12 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!stc->GetText().Contains("izz"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetText().Contains(wxString('z', 200)));
+  
+  CPPUNIT_ASSERT( vi->Command(":ab XX GREAT"));
+  CPPUNIT_ASSERT( vi->Command("iabbreviation XX "));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  CPPUNIT_ASSERT( stc->GetText().Contains("abbreviation GREAT"));
+  CPPUNIT_ASSERT(!stc->GetText().Contains("XX"));
 
   stc->SetText("999");
   CPPUNIT_ASSERT( vi->Command("i"));

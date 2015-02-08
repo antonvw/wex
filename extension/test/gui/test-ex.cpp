@@ -41,7 +41,7 @@ void wxExGuiTestFixture::testEx()
   // Test commands and last command.  
   // We have only one document, so :n, :prev return false.
   std::vector<std::pair<std::string, bool>> commands {
-    {":n",false},{":reg",true},{":prev",false},{":xxx",false},
+    {":n",false},{":reg",true},{":ab",true},{":prev",false},{":xxx",false},
     {":yyy",false},{":10",true},{":.=",true},
     {":1,$s/this/ok",true},{":g/is/s//ok",true},{":.s/$/\n",true},
     {":g/is/d",true},{":g/is/p",true},
@@ -199,14 +199,15 @@ void wxExGuiTestFixture::testEx()
   stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
   CPPUNIT_ASSERT( stc->GetLineCount() == 12);
   stc->GotoLine(2);
-  CPPUNIT_ASSERT( ex->Command(":1"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
-  CPPUNIT_ASSERT( ex->Command(":-10"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 0);
-  CPPUNIT_ASSERT( ex->Command(":10"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 9);
-  CPPUNIT_ASSERT( ex->Command(":10000"));
-  CPPUNIT_ASSERT( stc->GetCurrentLine() == 11);
+
+  std::vector<std::pair<std::string, int>> gotos {
+    {":1",0},{":-10",0},{":10",9},{":10000",11}};
+    
+  for (auto& go : gotos)
+  {
+    CPPUNIT_ASSERT( vi->Command(go.first));
+    CPPUNIT_ASSERT( stc->GetCurrentLine() == go.second);
+  }
 
   // Test registers.  
   ex->SetRegistersDelete("x");

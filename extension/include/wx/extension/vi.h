@@ -62,6 +62,7 @@ private:
     const wxString& end_address, 
     bool forward);
   bool InsertMode(const std::string& text);
+  void InsertModeNormal(const std::string& text);
   /// Adds recording to current macro.
   virtual void MacroRecord(const std::string& text);
   bool Put(bool after);

@@ -28,6 +28,7 @@ bool wxExViMacros::m_IsPlayback = false;
 bool wxExViMacros::m_IsRecording = false;
 wxString wxExViMacros::m_Macro;
 
+std::map <wxString, std::string> wxExViMacros::m_Abbreviations;
 std::map <wxString, std::vector< std::string > > wxExViMacros::m_Macros;
 std::map <wxString, wxExVariable > wxExViMacros::m_Variables;
 
@@ -472,60 +473,93 @@ bool wxExViMacros::LoadDocument()
   // We assume that this is your choice, so we reset the member.
   m_IsModified = false;
   
+  m_Abbreviations.clear();
   m_Macros.clear();
   m_Variables.clear();
   
-  wxXmlNode* root = doc.GetRoot();
-  wxXmlNode* child = root->GetChildren();
+  wxXmlNode* child = doc.GetRoot()->GetChildren();
   
   while (child)
   {
-    if (child->GetName() == "macro")
+    if (child->GetName() == "abbreviation")
     {
-      std::vector<std::string> v;
-      
-      wxXmlNode* command = child->GetChildren();
-  
-      while (command)
-      {
-        v.push_back(Decode(command->GetNodeContent()));
-        command = command->GetNext();
-      }
-      
-      const auto it = m_Macros.find(child->GetAttribute("name"));
-    
-      if (it != m_Macros.end())
-      {
-        wxLogError("Duplicate macro: %s on line: %d", 
-          child->GetAttribute("name"),
-          child->GetLineNumber());
-      }
-      else
-      {
-        m_Macros.insert(std::make_pair(child->GetAttribute("name"), v));
-      }
+      ParseNodeAbbreviation(child);
+    }
+    else if (child->GetName() == "macro")
+    {
+      ParseNodeMacro(child);
     }
     else if (child->GetName() == "variable")
     {
-      const wxExVariable variable(child);
-      const auto it = m_Variables.find(variable.GetName());
-    
-      if (it != m_Variables.end())
-      {
-        wxLogError("Duplicate variable: %s on line: %d", 
-         variable.GetName(),
-         child->GetLineNumber());
-      }
-      else
-      {
-        m_Variables.insert(std::make_pair(variable.GetName(), variable));
-      }
+      ParseNodeVariable(child);
     }
       
     child = child->GetNext();
   }
   
   return true;
+}
+
+void wxExViMacros::ParseNodeAbbreviation(wxXmlNode* node)
+{
+  const wxString abb(node->GetAttribute("name"));
+  const wxString text(node->GetNodeContent().Strip(wxString::both));
+  
+  const auto it = m_Abbreviations.find(abb);
+
+  if (it != m_Abbreviations.end())
+  {
+    wxLogError("Duplicate abbreviation: %s on line: %d", 
+     abb,
+     node->GetLineNumber());
+  }
+  else
+  {
+    m_Abbreviations.insert(std::make_pair(abb, text.ToStdString()));
+  }
+}
+
+void wxExViMacros::ParseNodeMacro(wxXmlNode* node)
+{
+  std::vector<std::string> v;
+  
+  wxXmlNode* command = node->GetChildren();
+
+  while (command)
+  {
+    v.push_back(Decode(command->GetNodeContent()));
+    command = command->GetNext();
+  }
+  
+  const auto it = m_Macros.find(node->GetAttribute("name"));
+
+  if (it != m_Macros.end())
+  {
+    wxLogError("Duplicate macro: %s on line: %d", 
+      node->GetAttribute("name"),
+      node->GetLineNumber());
+  }
+  else
+  {
+    m_Macros.insert(std::make_pair(node->GetAttribute("name"), v));
+  }
+}
+
+void wxExViMacros::ParseNodeVariable(wxXmlNode* node)
+{
+  const wxExVariable variable(node);
+  const auto it = m_Variables.find(variable.GetName());
+
+  if (it != m_Variables.end())
+  {
+    wxLogError("Duplicate variable: %s on line: %d", 
+     variable.GetName(),
+     node->GetLineNumber());
+  }
+  else
+  {
+    m_Variables.insert(std::make_pair(variable.GetName(), variable));
+  }
 }
 
 bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
@@ -669,6 +703,17 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
     it2->second.Save(element);
   }
   
+  for (
+    auto it3 = 
+      m_Abbreviations.rbegin();
+    it3 != m_Abbreviations.rend();
+    ++it3)
+  {
+    wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "abbreviation");
+    element->AddAttribute("name", it3->first);
+    new wxXmlNode(element, wxXML_TEXT_NODE, "", it3->second);
+  }
+  
   const bool ok = doc.Save(GetFileName().GetFullPath());
   
   if (ok)
@@ -677,6 +722,12 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
   }
 
   return ok;
+}
+
+void wxExViMacros::SetAbbreviation(const wxString& ab, const std::string& value)
+{
+  m_Abbreviations[ab] = value;
+  m_IsModified = true;
 }
 
 void wxExViMacros::SetRegister(const char name, const std::string& value)
