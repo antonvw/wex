@@ -2,7 +2,7 @@
 // Name:      vimacros.h
 // Purpose:   Declaration of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVIMACROS_H
@@ -31,6 +31,9 @@ public:
   
   /// Returns contents of macro as a vector of strings.
   const std::vector< std::string > Get(const wxString& name) const;
+  
+  /// Returns abbreviations.
+  const std::map<wxString, std::string>& GetAbbreviations() const {return m_Abbreviations;};
   
   /// Returns number of macros and variables available.
   int GetCount() const;
@@ -84,6 +87,9 @@ public:
     /// normally each record is a new command, if not,
     /// the text is appended after the last command
     bool new_command = true);
+  
+  /// Sets abbreviation (overwrites existing abbreviationi).
+  void SetAbbreviation(const wxString& ab, const std::string& value);
   
   /// Sets register (overwrites existing register).
   /// The name should be a one letter register.
@@ -139,6 +145,9 @@ public:
 private:  
   static void AskForInput();
   static bool Load(wxXmlDocument& doc);
+  static void ParseNodeAbbreviation(wxXmlNode* node);
+  static void ParseNodeMacro(wxXmlNode* node);
+  static void ParseNodeVariable(wxXmlNode* node);
   static const wxString Encode(const std::string& text);
   static const std::string Decode(const wxString& text);
     
@@ -149,9 +158,12 @@ private:
   
   static wxString m_Macro;
   
+  /// All abbreviations, as a map of abbreviation and full text.
+  static std::map<wxString, std::string> m_Abbreviations;
+  
   /// All macros (and registers), as a map of name and a vector of commands.
   /// Registers are 1 letter macros.
-  static std::map <wxString, std::vector< std::string > > m_Macros;
+  static std::map<wxString, std::vector<std::string> > m_Macros;
   
   /// All variables, as a map of name and variable.
   static std::map<wxString, wxExVariable> m_Variables;

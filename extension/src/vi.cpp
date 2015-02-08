@@ -1208,27 +1208,7 @@ bool wxExVi::InsertMode(const std::string& command)
       {
         if (!GetSTC()->GetOvertype())
         {
-          wxStringTokenizer tkz(command, "\r\n", wxTOKEN_RET_EMPTY);
-          
-          if (command.find('\0') == std::string::npos && tkz.HasMoreTokens())
-          {
-            while (tkz.HasMoreTokens())
-            {
-              const wxString token(tkz.GetNextToken());
-              
-              if (!token.empty())
-              {
-                GetSTC()->AddText(token);
-              }
-          
-              GetSTC()->AddText(tkz.GetLastDelimiter());
-              GetSTC()->AutoIndentation(tkz.GetLastDelimiter());
-            }
-          }
-          else
-          {
-            AddText(command);
-          }
+          InsertModeNormal(command);
         }
         
         if (!m_Dot)
@@ -1239,6 +1219,56 @@ bool wxExVi::InsertMode(const std::string& command)
   }
   
   return true;
+}
+
+void wxExVi::InsertModeNormal(const std::string& text)
+{
+  wxStringTokenizer tkz(text, "\r\n", wxTOKEN_RET_EMPTY);
+  
+  if (text.find('\0') == std::string::npos && tkz.HasMoreTokens())
+  {
+    while (tkz.HasMoreTokens())
+    {
+      const wxString token(tkz.GetNextToken());
+      
+      if (!token.empty())
+      {
+        if (token == " " || token == "\t" || token == ";")
+        {
+          const size_t last(m_InsertText.find_last_of(" ;\t"));
+          const auto& it = GetMacros().GetAbbreviations().find(m_InsertText.substr(last + 1));
+          
+          if (it != GetMacros().GetAbbreviations().end())
+          {
+            m_InsertText.replace(last + 1, it->first.length(), it->second);
+            
+            const int pos = GetSTC()->GetCurrentPos();
+            const int match_pos = GetSTC()->FindText(
+              pos,
+              GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()),
+              it->first);
+              
+            if (match_pos != wxSTC_INVALID_POSITION)
+            {
+              GetSTC()->SetTargetStart(match_pos);
+              GetSTC()->SetTargetEnd(match_pos + it->first.length());
+              GetSTC()->ReplaceTarget(it->second);
+              GetSTC()->SetCurrentPos(pos + it->second.length() - it->first.length());
+            }
+          }
+        }
+        
+        GetSTC()->AddText(token);
+      }
+  
+      GetSTC()->AddText(tkz.GetLastDelimiter());
+      GetSTC()->AutoIndentation(tkz.GetLastDelimiter());
+    }
+  }
+  else
+  {
+    AddText(text);
+  }
 }
 
 void wxExVi::MacroRecord(const std::string& text)

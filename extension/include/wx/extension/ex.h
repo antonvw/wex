@@ -53,7 +53,7 @@ public:
   /// Returns last entered command.
   const std::string& GetLastCommand() const {return m_LastCommand;};
   
-  /// Gets the macros.
+  /// Returns the macros.
   wxExViMacros& GetMacros() {return m_Macros;};
 
   /// Returns register name.
@@ -141,6 +141,7 @@ private:
   bool CommandGlobal(const wxString& search);
   bool CommandRange(const wxString& command);
   bool CommandSet(const wxString& command);
+  void ShowDialog(const wxString& title, const wxString& text);
     
   const wxExIndicator m_FindIndicator;
   const wxExMarker m_MarkerSymbol;
