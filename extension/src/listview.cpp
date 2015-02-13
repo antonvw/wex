@@ -607,11 +607,7 @@ const wxString wxExListView::ItemToText(long item_number) const
 
 void wxExListView::OnCommand(wxCommandEvent& event)
 {
-  if (event.GetId() >= ID_COL_FIRST && event.GetId() <= ID_COL_LAST)
-  {
-    SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);
-  }
-  else switch (event.GetId())
+  switch (event.GetId())
   {
   case wxID_CLEAR:
     EditClearAll();
@@ -638,6 +634,9 @@ void wxExListView::OnCommand(wxCommandEvent& event)
   case wxID_SORT_DESCENDING:
     SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING);
     break;
+  case ID_COL_FIRST ... ID_COL_LAST:
+    SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);
+    break;
   case ID_EDIT_SELECT_INVERT:
     EditInvertAll();
     break;
@@ -647,6 +646,7 @@ void wxExListView::OnCommand(wxCommandEvent& event)
       Select(i, false);
     }
     break;
+    
   default: wxFAIL;
   }
 

@@ -68,8 +68,8 @@ void TestFixture::testFileTiming()
 
   const long file_read = sw.Time();
 
-  CPPUNIT_ASSERT(exfile_read < 150);
-  CPPUNIT_ASSERT(file_read < 100);
+  CPPUNIT_ASSERT(exfile_read < 200);
+  CPPUNIT_ASSERT(file_read < 200);
   
   Report(wxString::Format(
     "wxExFile::Read %d items in %ld ms wxFile::Read %d items in %ld ms",

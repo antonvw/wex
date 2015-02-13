@@ -17,13 +17,13 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/listitem.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listviewfile.h>
-#include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>
 
 // The maximal number of files and projects to be supported.
@@ -107,19 +107,13 @@ void wxExFrameWithHistory::ClearHistory(wxFileHistory& history)
 
 void wxExFrameWithHistory::CreateDialogs()
 {
-  std::vector<wxExConfigItem> f;
-  std::vector<wxExConfigItem> r;
-
-  f.push_back(
+  std::vector<wxExConfigItem> f {
     wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
-    CONFIG_COMBOBOX, 
-    wxEmptyString, 
-    true));
-  r.push_back(f.back());
-
-  r.push_back(wxExConfigItem(
-    wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-    CONFIG_COMBOBOX));
+      CONFIG_COMBOBOX, 
+      wxEmptyString, 
+      true)};
+  std::vector<wxExConfigItem> r {f.back(),
+    wxExConfigItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), CONFIG_COMBOBOX)};
   
   f.push_back(wxExConfigItem(
     m_TextInFiles, 
@@ -137,10 +131,10 @@ void wxExFrameWithHistory::CreateDialogs()
   r.push_back(f.back());
 
   // Match whole word does not work with replace.
-  std::set<wxString> s;
-  s.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
-  s.insert(wxExFindReplaceData::Get()->GetTextRegEx());
-  s.insert(m_TextRecursive);
+  const std::set<wxString> s{
+    wxExFindReplaceData::Get()->GetTextMatchCase(),
+    wxExFindReplaceData::Get()->GetTextRegEx(),
+    m_TextRecursive};
   r.push_back(wxExConfigItem(s));
   
   std::set<wxString> t(m_Info);
@@ -444,23 +438,12 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 
 void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
 {
-  if (event.GetId() >= wxID_FILE1 &&
-      event.GetId() <= wxID_FILE1 + NUMBER_RECENT_FILES)
+  switch (event.GetId())
   {
-    DoRecent(m_FileHistory,
-      event.GetId() - wxID_FILE1);
-  }
-  else if (event.GetId() >= ID_RECENT_PROJECT_LOWEST &&
-           event.GetId() <= ID_RECENT_PROJECT_LOWEST + NUMBER_RECENT_PROJECTS)
-  {
-    DoRecent(m_ProjectHistory,
-      event.GetId() - ID_RECENT_PROJECT_LOWEST,
-      WIN_IS_PROJECT);
-  }
-  else
-  {
-    switch (event.GetId())
-    {
+    case wxID_FILE1 ... wxID_FILE1 + NUMBER_RECENT_FILES:
+      DoRecent(m_FileHistory,
+        event.GetId() - wxID_FILE1);
+      break;
     case ID_CLEAR_FILES: ClearHistory(m_FileHistory); break;
     case ID_CLEAR_PROJECTS: ClearHistory(m_ProjectHistory); break;
       
@@ -473,6 +456,12 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
           project->FileSave();
         }
       }
+      break;
+      
+    case ID_RECENT_PROJECT_LOWEST ... ID_RECENT_PROJECT_LOWEST + NUMBER_RECENT_PROJECTS:
+      DoRecent(m_ProjectHistory,
+        event.GetId() - ID_RECENT_PROJECT_LOWEST,
+        WIN_IS_PROJECT);
       break;
       
     case ID_TOOL_REPORT_FIND: 
@@ -512,7 +501,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
 
     default:
       wxFAIL;
-    }
   }
 }
 

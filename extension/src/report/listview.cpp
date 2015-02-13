@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of class wxExListViewWithFrame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -13,9 +13,8 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listitem.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/vcs.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vcs.h>
 #include <wx/extension/report/listview.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
@@ -215,14 +214,12 @@ void wxExListViewWithFrame::ItemActivated(long item_number)
 
 void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
 {
-  if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
+  switch (event.GetId())
   {
-    RunItems(event.GetId());
-  }
-  else if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
+  case ID_EDIT_VCS_LOWEST ... ID_EDIT_VCS_HIGHEST:
   {
     std::vector< wxString > files;
-    
+  
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       files.push_back(wxExListItem(this, i).GetFileName().GetFullPath());
@@ -230,8 +227,8 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   
     wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
   }
-  else switch (event.GetId())
-  {
+  break;
+  
   case ID_LIST_OPEN_ITEM:
   {
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
@@ -287,6 +284,10 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
     wxExMake(wxExListItem(this, GetFirstSelected()).GetFileName());
   break;
 
+  case ID_TOOL_LOWEST ... ID_TOOL_HIGHEST:
+    RunItems(event.GetId());
+  break;
+  
   default: 
     wxFAIL;
     break;

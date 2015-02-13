@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -10,8 +10,8 @@
 #include <wx/taskbar.h>
 #include <wx/extension/app.h>
 #include <wx/extension/shell.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/report/frame.h>
-#include <wx/extension/report/stc.h>
 
 #if wxUSE_SOCKETS
 
@@ -72,7 +72,7 @@ private:
 
   std::list<wxSocketBase*> m_Clients;
 
-  wxExSTCWithFrame* m_DataWindow;
+  wxExSTC* m_DataWindow;
   wxExSTC* m_LogWindow;
   wxExSTCShell* m_Shell;
 

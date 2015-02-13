@@ -112,7 +112,7 @@ public:
   /// Override OnCommandConfigDialog for add, find and replace in files.
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
-    int commandid = wxID_APPLY);
+    int commandid = wxID_APPLY) override;
     
   /// Called if the notebook changed page.
   /// Adds page as recently used (file or project, depending on dynamic cast).
@@ -124,14 +124,14 @@ public:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     int col_number = 0,
-    long flags = 0);
+    long flags = 0) override;
 
   /// Shows a project history popup menu.
   void ProjectHistoryPopupMenu();
 
   /// Updates file history.
   /// Returns true if history was updated.
-  bool SetRecentFile(const wxString& file);
+  virtual bool SetRecentFile(const wxString& file) override;
 
   /// Updates project history.
   /// Returns true if history was updated.

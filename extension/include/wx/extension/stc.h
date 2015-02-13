@@ -21,6 +21,7 @@ class wxFindDialogEvent;
 class wxExConfigDialog;
 class wxExFile;
 class wxExFileName;
+class wxExFrame;
 class wxExIndicator;
 class wxExLexer;
 class wxExMenu;
@@ -64,7 +65,7 @@ public:
   };
 
   /// Constructor.
-  wxExSTC(wxWindow *parent, 
+  wxExSTC(wxWindow* parent, 
     const wxString& value = wxEmptyString,
     long win_flags = STC_WIN_DEFAULT,
     const wxString& title = wxEmptyString,
@@ -431,6 +432,8 @@ private:
   wxExSTCFile m_File;
   wxExVi m_vi;
 
+  wxExFrame* m_Frame;
+  
   wxFont m_DefaultFont;
   
   wxString m_AutoComplete;

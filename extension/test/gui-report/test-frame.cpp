@@ -30,6 +30,8 @@ void wxExGuiReportTestFixture::testFrameWithHistory()
   // It does not open, next should fail.
   CPPUNIT_ASSERT(!m_Frame->GetRecentProject().Contains(m_Project));
   
+  CPPUNIT_ASSERT( m_Frame->GetProject() == NULL);
+  
   CPPUNIT_ASSERT(!m_Frame->Grep("xxxxxxx"));
   CPPUNIT_ASSERT(!m_Frame->Grep("xxxxxxx yyy"));
   CPPUNIT_ASSERT( m_Frame->Grep("xxxxxxx ./ *.cpp"));
@@ -39,6 +41,9 @@ void wxExGuiReportTestFixture::testFrameWithHistory()
   
   CPPUNIT_ASSERT( m_Frame->SetRecentFile("xxx.cpp"));
   CPPUNIT_ASSERT(!m_Frame->SetRecentProject("xxx.prj"));
+  CPPUNIT_ASSERT( m_Frame->GetFileHistory().GetCount() > 0);
+  CPPUNIT_ASSERT( m_Frame->GetRecentFile() == "xxx.cpp");
+  CPPUNIT_ASSERT( m_Frame->GetRecentProject().empty());
   
   wxMenu* menu = new wxMenu();
   m_Frame->UseFileHistory(1000, menu);

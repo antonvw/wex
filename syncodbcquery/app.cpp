@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncodbcquery
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -18,11 +18,11 @@
 #include <wx/extension/grid.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/shell.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include <wx/extension/report/defs.h>
-#include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>
 #include "app.h"
 
@@ -77,9 +77,9 @@ Frame::Frame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
   , m_Running(false)
   , m_Stopped(false)
-  , m_Query( new wxExSTCWithFrame(this, this))
-  , m_Shell( new wxExSTCShell(this, ">", ";", true, 50))
   , m_Results( new wxExGrid(this))
+  , m_Query( new wxExSTC(this))
+  , m_Shell( new wxExSTCShell(this, ">", ";", true, 50))
 {
   SetIcon(wxICON(app));
 
@@ -135,10 +135,9 @@ Frame::Frame()
   m_Shell->SetFocus();
 
 #if wxUSE_STATUSBAR
-  std::vector<wxExStatusBarPane> panes;
-  panes.push_back(wxExStatusBarPane());
-  panes.push_back(wxExStatusBarPane("PaneInfo", 100, _("Lines")));
-  SetupStatusBar(panes);
+  SetupStatusBar(std::vector<wxExStatusBarPane>{
+    wxExStatusBarPane(),
+    wxExStatusBarPane("PaneInfo", 100, _("Lines"))});
 #endif
 
   GetToolBar()->AddTool(wxID_EXECUTE, 

@@ -64,28 +64,13 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
 {
   FileLoad(file);
   
-  std::vector<wxExConfigItem> v;
-
-  v.push_back(wxExConfigItem(
-    m_TextAddWhat, 
-    CONFIG_COMBOBOX, 
-    wxEmptyString, 
-    true));
-
-  v.push_back(wxExConfigItem(
-    m_TextInFolder, 
-    CONFIG_COMBOBOXDIR, 
-    wxEmptyString, 
-    true,
-    1005));
-
-  std::set<wxString> set;
-    
-  set.insert(m_TextAddFiles);
-  set.insert(m_TextAddFolders);
-  set.insert(m_TextAddRecursive);
-
-  v.push_back(wxExConfigItem(set));
+  const std::set<wxString> set{
+      m_TextAddFiles, m_TextAddFolders, m_TextAddRecursive};
+  
+  const std::vector<wxExConfigItem> v{
+    wxExConfigItem(m_TextAddWhat, CONFIG_COMBOBOX, wxEmptyString, true),
+    wxExConfigItem(m_TextInFolder, CONFIG_COMBOBOXDIR, wxEmptyString, true, 1005),
+    wxExConfigItem(set)};
 
   m_AddItemsDialog = new wxExConfigDialog(this,
     v,
