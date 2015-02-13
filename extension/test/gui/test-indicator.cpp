@@ -9,7 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/xml/xml.h>
 #include <wx/extension/indicator.h>
+#include <wx/extension/managedframe.h>
+#include <wx/extension/stc.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testIndicator()
@@ -23,4 +26,16 @@ void wxExGuiTestFixture::testIndicator()
   CPPUNIT_ASSERT( indx.IsOk());
   CPPUNIT_ASSERT( indy.IsOk());
   CPPUNIT_ASSERT( indx < indy );
+  
+  wxXmlNode xml(wxXML_ELEMENT_NODE, "indicator");
+  xml.AddAttribute("no", "5");
+  xml.SetContent("symbol,green");
+
+  wxExIndicator ind2(&xml);
+  CPPUNIT_ASSERT( ind2.GetNo() == 5);
+  CPPUNIT_ASSERT( ind2.IsOk());
+  
+  wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
+  ind2.Apply(stc);
+  CPPUNIT_ASSERT( ind2.IsOk());
 }

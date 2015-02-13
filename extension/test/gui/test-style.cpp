@@ -16,28 +16,39 @@
 
 void wxExGuiTestFixture::testStyle()
 {
-  wxExStyle inv;
-  CPPUNIT_ASSERT(!inv.IsOk() );
+  CPPUNIT_ASSERT(!wxExStyle().IsOk() );
   
-  wxExStyle test1("MARK_CIRCLE", "ugly");
-  wxExStyle test2("512", "ugly");
-  wxExStyle test3("number,string,comment", "fore:blue", "cpp");
-  wxExStyle test4("number,string,xxx", "fore:black", "cpp");
-  wxExStyle test5("xxx", "fore:black", "cpp");
-  
-  CPPUNIT_ASSERT(!test1.IsOk());
-  CPPUNIT_ASSERT(!test2.IsOk());
-  CPPUNIT_ASSERT( test3.IsOk());
-  CPPUNIT_ASSERT( test3.GetValue() == "fore:blue");
-  CPPUNIT_ASSERT( test4.IsOk()); // because number, string is ok
-  CPPUNIT_ASSERT(!test5.IsOk());
-  
-  wxExStyle style("mark_circle", "0");
-  
+  const std::vector<
+    std::pair<
+      std::pair<std::string,std::string>,
+      std::pair<std::string,std::string>>> styles{
+    {{"MARK_CIRCLE",""}, {"ugly","global"}},
+    {{"mark_circle","0 "}, {"ugly","global"}},
+    {{"512",""}, {"ugly","global"}},
+    {{"number,string,comment","1 4 6 "}, {"fore:blue", "cpp"}},
+    {{"number,string,xxx","4 6 "}, {"fore:black", "cpp"}},
+    {{"xxx",""}, {"fore:black", "cpp"}}};
+   
+  for (const auto& style : styles)
+  {
+    const wxExStyle test(
+      style.first.first, style.second.first, style.second.second);
+    
+    if (!style.first.second.empty())
+    {
+      CPPUNIT_ASSERT( test.IsOk());
+      CPPUNIT_ASSERT( test.GetNo() == style.first.second);
+      CPPUNIT_ASSERT( test.GetValue() == style.second.first);
+    }
+    else
+    {
+      CPPUNIT_ASSERT(!test.IsOk());
+    }
+  }
+
   wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
-  
+  wxExStyle style("mark_circle", "0");
   style.Apply(stc);
   CPPUNIT_ASSERT( style.IsOk());
-  
   CPPUNIT_ASSERT(!style.ContainsDefaultStyle());
 }

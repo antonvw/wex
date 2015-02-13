@@ -32,18 +32,15 @@ void wxExGuiTestFixture::testVariable()
     
   wxExVariable var(&xml);
   CPPUNIT_ASSERT( var.GetName() == "test");
-  CPPUNIT_ASSERT( var.GetValue().IsEmpty());
+  CPPUNIT_ASSERT( var.GetValue().empty());
   CPPUNIT_ASSERT(!var.Expand(ex));
   CPPUNIT_ASSERT(!var.IsModified());
   CPPUNIT_ASSERT(!var.IsInput());
   
   xml.DeleteAttribute("name");
   
-  const std::vector<wxString> builtin{
-    "Cb", "Cc", "Ce", "Cl", "Created", "Date", "Datetime",
-    "Filename", "Fullpath", "Nl", "Path", "Time", "Year"};
-    
-  for (const auto& it : builtin)
+  // Test all builtin macro variables.
+  for (const auto& it : m_BuiltinVariables)
   {
     xml.AddAttribute("name", it);
 

@@ -84,42 +84,33 @@ void wxExGuiTestFixture::testUtil()
   const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
   wxExEx* ex = new wxExEx(stc);
   int width = 0;
-  CPPUNIT_ASSERT( wxExCalculator("", ex, width) == 0);
-  CPPUNIT_ASSERT( width == 0);
-  CPPUNIT_ASSERT( wxExCalculator("  ", ex, width) == 0);
-  CPPUNIT_ASSERT( width == 0);
-  CPPUNIT_ASSERT( wxExCalculator("1 + 1", ex, width) == 2);
-  CPPUNIT_ASSERT( width == 0);
-  CPPUNIT_ASSERT( wxExCalculator("1 - 1", ex, width) == 0);
-  CPPUNIT_ASSERT( width == 0);
-  CPPUNIT_ASSERT( wxExCalculator("1 * 1", ex, width) == 1);
-  CPPUNIT_ASSERT( width == 0);
-  CPPUNIT_ASSERT( wxExCalculator("2 / 1", ex, width) == 2);
-  CPPUNIT_ASSERT( width == 0);
-  wxExCalculator("2 / 0", ex, width);
-  CPPUNIT_ASSERT( width == 0);
+  
+  std::vector<std::pair<std::string, std::pair<double, int>>>calcs{
+    {"",      {0,0}},
+    {"  ",    {0,0}},
+    {"1 + 1", {2,0}},
+    {"1 - 1", {0,0}},
+    {"1 * 1", {1,0}},
+    {"2 / 1", {2,0}},
+    {"2 / 0", {0,0}},
+    {".",     {1,0}},
+    {"xxx",   {0,0}},
+    {"$",     {4,0}}};
+    
   if (ds == '.')
   {
-    CPPUNIT_ASSERT( wxExCalculator("1.0 + 1", ex, width) == 2);
-    CPPUNIT_ASSERT( width == 1);
-    CPPUNIT_ASSERT( wxExCalculator("1.1 + 1.1", ex, width) == 2.2);
-    CPPUNIT_ASSERT( width == 1);
-    CPPUNIT_ASSERT( wxExCalculator(".", ex, width) == 1);
-    CPPUNIT_ASSERT( width == 0);
+    calcs.insert(calcs.end(), {{"1.0 + 1",{2,1}},{"1.1 + 1.1",{2.2,1}}});
   }
   else
   {
-    CPPUNIT_ASSERT( wxExCalculator("1,0 + 1", ex, width) == 2);
-    CPPUNIT_ASSERT( width == 1);
-    CPPUNIT_ASSERT( wxExCalculator("1,1 + 1,1", ex, width) == 2.2);
-    CPPUNIT_ASSERT( width == 1);
-    CPPUNIT_ASSERT( wxExCalculator(".", ex, width) == 1);
-    CPPUNIT_ASSERT( width == 0);
+    calcs.insert(calcs.end(), {{"1,0 + 1",{2,1}},{"1,1 + 1,1",{2.2,1}}});
   }
-  CPPUNIT_ASSERT( wxExCalculator("xxx", ex, width) == 0);
-  CPPUNIT_ASSERT( width == 0);
-  CPPUNIT_ASSERT( wxExCalculator("$", ex, width) == 4);
-  CPPUNIT_ASSERT( width == 0);
+    
+  for (const auto& calc : calcs)
+  {
+    CPPUNIT_ASSERT( wxExCalculator(calc.first, ex, width) == calc.second.first);
+    CPPUNIT_ASSERT( width == calc.second.second);
+  }
 
   // wxExClipboardAdd
   CPPUNIT_ASSERT( wxExClipboardAdd("test"));
@@ -128,10 +119,7 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExClipboardGet() == "test");
   
   // wxExComboBoxFromList
-  std::list < wxString > l;
-  l.push_back("x");
-  l.push_back("y");
-  l.push_back("z");
+  std::list < wxString > l{"x","y","z"};
   wxComboBox* cb = new wxComboBox(m_Frame, wxID_ANY);
   wxExComboBoxFromList(cb, l);
   CPPUNIT_ASSERT( cb->GetCount() == 3);
@@ -187,14 +175,23 @@ void wxExGuiTestFixture::testUtil()
   // wxExGetWord
   
   // wxExIsBrace
-  CPPUNIT_ASSERT( wxExIsBrace('('));
-  CPPUNIT_ASSERT( wxExIsBrace(')'));
-  CPPUNIT_ASSERT( wxExIsBrace('{'));
+  std::vector<int> cs{'(',')','{','<','>'};
+  
+  for (const auto& c : cs)
+  {
+    CPPUNIT_ASSERT( wxExIsBrace(c));
+  }
+
   CPPUNIT_ASSERT(!wxExIsBrace('a'));
   
   // wxExIsCodewordSeparator
-  CPPUNIT_ASSERT( wxExIsCodewordSeparator('('));
-  CPPUNIT_ASSERT( wxExIsCodewordSeparator(','));
+  cs.insert(cs.end(), {',',';',':','@'});
+  
+  for (const auto& c : cs)
+  {
+    CPPUNIT_ASSERT( wxExIsCodewordSeparator(c));
+  }
+  
   CPPUNIT_ASSERT(!wxExIsCodewordSeparator('x'));
 
   // wxExListFromConfig

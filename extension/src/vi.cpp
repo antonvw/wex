@@ -1229,31 +1229,45 @@ void wxExVi::InsertModeNormal(const std::string& text)
   {
     while (tkz.HasMoreTokens())
     {
-      const wxString token(tkz.GetNextToken());
+      std::string token(tkz.GetNextToken());
       
       if (!token.empty())
       {
-        if (token == " " || token == "\t" || token == ";")
+        if (token.back() == ' ' || token.back() == '\t' || token.back() == ';')
         {
-          const size_t last(m_InsertText.find_last_of(" ;\t"));
-          const auto& it = GetMacros().GetAbbreviations().find(m_InsertText.substr(last + 1));
-          
-          if (it != GetMacros().GetAbbreviations().end())
+          if (!m_InsertText.empty())
           {
-            m_InsertText.replace(last + 1, it->first.length(), it->second);
+            const size_t last(m_InsertText.find_last_of(" ;\t"));
+            const auto& it = GetMacros().GetAbbreviations().find(m_InsertText.substr(last + 1));
             
-            const int pos = GetSTC()->GetCurrentPos();
-            const int match_pos = GetSTC()->FindText(
-              pos,
-              GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()),
-              it->first);
-              
-            if (match_pos != wxSTC_INVALID_POSITION)
+            if (it != GetMacros().GetAbbreviations().end())
             {
-              GetSTC()->SetTargetStart(match_pos);
-              GetSTC()->SetTargetEnd(match_pos + it->first.length());
-              GetSTC()->ReplaceTarget(it->second);
-              GetSTC()->SetCurrentPos(pos + it->second.length() - it->first.length());
+              m_InsertText.replace(last + 1, it->first.length(), it->second);
+              
+              const int pos = GetSTC()->GetCurrentPos();
+              const int match_pos = GetSTC()->FindText(
+                pos,
+                GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()),
+                it->first);
+                
+              if (match_pos != wxSTC_INVALID_POSITION)
+              {
+                GetSTC()->SetTargetStart(match_pos);
+                GetSTC()->SetTargetEnd(match_pos + it->first.length());
+                GetSTC()->ReplaceTarget(it->second);
+                GetSTC()->SetCurrentPos(pos + it->second.length() - it->first.length());
+              }
+            }
+          }
+          else
+          {
+            const size_t last(token.find_last_of(" ;\t", token.size() - 2));
+            const std::string word(token.substr(last + 1, token.size() - 2 - last));
+            const auto& it = GetMacros().GetAbbreviations().find(word);
+            
+            if (it != GetMacros().GetAbbreviations().end())
+            {
+              token.replace(last + 1, it->first.length(), it->second);
             }
           }
         }

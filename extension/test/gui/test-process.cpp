@@ -59,16 +59,8 @@ void wxExGuiTestFixture::testProcess()
   // Test commands entered in shell.
   const wxString cwd = wxGetCwd();
   
-  shell->ProcessChar('c');
-  shell->ProcessChar('d');
-  shell->ProcessChar(' ');
-  shell->ProcessChar('~');
-  shell->ProcessChar('\r');
-  shell->ProcessChar('p');
-  shell->ProcessChar('w');
-  shell->ProcessChar('d');
-  shell->ProcessChar('\r');
-  
+  Process("cd ~\rpwd\r", shell);
+
   CPPUNIT_ASSERT( shell->GetText().Contains("home"));
 //  CPPUNIT_ASSERT( cwd != wxGetCwd());
 

@@ -8,6 +8,7 @@
 #ifndef _EXGUITESTUNIT_H
 #define _EXGUITESTUNIT_H
 
+#include <vector>
 #include <cppunit/extensions/HelperMacros.h>
 #include <wx/extension/app.h>
 #include "../test.h"
@@ -26,6 +27,7 @@ private:
 
 class wxExManagedFrame;
 class wxExStatusBar;
+class wxExSTCShell;
 
 /// CppUnit gui test fixture.
 /// These classes require either an wxExApp object, or wx to be initialized.
@@ -130,7 +132,12 @@ public:
   void testVi();
   void testViMacros();
 private:
+  void Process(const std::string& str, wxExSTCShell* shell);
+
   wxExManagedFrame* m_Frame;
   static wxExStatusBar* m_StatusBar;
+  
+  const std::vector<std::pair<std::string, std::string>> m_Abbreviations;
+  const std::vector<std::string> m_BuiltinVariables;
 };
 #endif

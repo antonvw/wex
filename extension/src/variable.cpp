@@ -2,7 +2,7 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wxExVariable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -134,7 +134,7 @@ bool wxExVariable::Expand(wxExEx* ex, wxString& value)
       break;
       
     case VARIABLE_ENVIRONMENT:
-      if (!wxGetEnv(m_Name.Upper(), &value))
+      if (!wxGetEnv(m_Name, &value))
       {
         return false;
       }

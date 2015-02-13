@@ -12,6 +12,7 @@
 #include <wx/config.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/shell.h>
 #include "test.h"
 
 wxExStatusBar* wxExGuiTestFixture::m_StatusBar = NULL;
@@ -19,6 +20,13 @@ wxExStatusBar* wxExGuiTestFixture::m_StatusBar = NULL;
 wxExGuiTestFixture::wxExGuiTestFixture()
   : wxExTestFixture() 
   , m_Frame((wxExManagedFrame *)wxTheApp->GetTopWindow())
+  , m_Abbreviations{
+    {"XX","GREAT"},
+    {"YY","WHITE"},
+    {"ZZ","SHARK"}}
+  , m_BuiltinVariables{
+    "Cb", "Cc", "Ce", "Cl", "Created", "Date", "Datetime",
+    "Filename", "Fullpath", "Nl", "Path", "Time", "Year"}
 {
   // Create the global lexers object, 
   // it should be present in ~/.wxex-test-gui
@@ -33,4 +41,12 @@ wxExGuiTestFixture::~wxExGuiTestFixture()
   // Remove files.
   (void)remove("test-ex.txt");
   (void)remove("test.hex");
+}
+
+void wxExGuiTestFixture::Process(const std::string& str, wxExSTCShell* shell)
+{
+  for (unsigned i = 0; i < str.length(); ++i)
+  {
+    shell->ProcessChar(str.at(i));
+  }
 }
