@@ -34,6 +34,9 @@ public:
   /// Returns true if the command was executed.
   virtual bool Command(const std::string& command);
   
+  /// Returns inserted text.
+  const std::string& GetInsertedText() const {return m_InsertText;};
+  
   /// Returns the mode we are in.
   int GetMode() const {return m_Mode;};
   

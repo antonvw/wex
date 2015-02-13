@@ -180,6 +180,7 @@ void wxExGuiTestFixture::testVi()
   const wxString lastcmd = wxString("iyyyyy") + ESC;
 
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
+  CPPUNIT_ASSERT( vi->GetInsertedText() == "yyyyy");
   CPPUNIT_ASSERT( vi->Command("."));
   CPPUNIT_ASSERT( vi->GetLastCommand() == lastcmd);
   CPPUNIT_ASSERT(!vi->Command(";"));
@@ -193,11 +194,15 @@ void wxExGuiTestFixture::testVi()
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetText().Contains(wxString('z', 200)));
   
-  CPPUNIT_ASSERT( vi->Command(":ab XX GREAT"));
-  CPPUNIT_ASSERT( vi->Command("iabbreviation XX "));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
-  CPPUNIT_ASSERT( stc->GetText().Contains("abbreviation GREAT"));
-  CPPUNIT_ASSERT(!stc->GetText().Contains("XX"));
+  for (auto& abbrev : m_Abbreviations)
+  {
+    CPPUNIT_ASSERT( vi->Command(":ab " + abbrev.first + " " + abbrev.second));
+    CPPUNIT_ASSERT( vi->Command("iabbreviation " + abbrev.first + " "));
+    ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+    CPPUNIT_ASSERT( vi->GetInsertedText() == "abbreviation "  + abbrev.first + " ");
+    CPPUNIT_ASSERT( stc->GetText().Contains("abbreviation " + abbrev.second));
+    CPPUNIT_ASSERT(!stc->GetText().Contains(abbrev.first));
+  }
 
   stc->SetText("999");
   CPPUNIT_ASSERT( vi->Command("i"));

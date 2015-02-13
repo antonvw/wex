@@ -40,10 +40,7 @@ void wxExGuiTestFixture::testFrd()
   CPPUNIT_ASSERT( frd->Iterate(tc, WXK_UP));
   CPPUNIT_ASSERT(!frd->Iterate(tc, WXK_RIGHT));
 
-  std::list < wxString > l;
-  l.push_back("find3");
-  l.push_back("find4");
-  l.push_back("find5");
+  const std::list < wxString > l{"find3","find4","find5"};
   frd->SetFindStrings(l);
   CPPUNIT_ASSERT( frd->GetFindString() == "find3");
   

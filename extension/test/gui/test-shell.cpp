@@ -28,28 +28,19 @@ void wxExGuiTestFixture::testShell()
   CPPUNIT_ASSERT(!shell->GetHistory().Contains("test4"));
 
   // Post 3 'a' chars to the shell, and check whether it comes in the history.
-  shell->ProcessChar('a');
-  shell->ProcessChar('a');
-  shell->ProcessChar('a');
-  shell->ProcessChar('\r');
-
+  Process("aaa\r", shell);
   CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
   CPPUNIT_ASSERT(shell->GetPrompt() == ">");
   CPPUNIT_ASSERT(shell->GetCommand() == "aaa");
   
   // Post 3 'b' chars to the shell, and check whether it comes in the history.
-  shell->ProcessChar('b');
-  shell->ProcessChar('b');
-  shell->ProcessChar('b');
-  shell->ProcessChar('\r');
-
+  Process("bbb\r", shell);
   CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
   CPPUNIT_ASSERT(shell->GetHistory().Contains("bbb"));
   CPPUNIT_ASSERT(shell->GetPrompt() == ">");
   CPPUNIT_ASSERT(shell->GetCommand() == "bbb");
   
-  shell->ProcessChar('b');
-  shell->ProcessChar('\t'); // tests Expand
+  Process("b\t", shell); // tests Expand
   shell->ProcessChar(WXK_BACK);
   shell->ProcessChar(WXK_BACK);
   shell->ProcessChar(WXK_BACK);
@@ -80,28 +71,17 @@ void wxExGuiTestFixture::testShell()
   // Test shell commands.
   shell->SetText("");
   shell->Undo(); // to reset command in shell
-  shell->ProcessChar('h');
-  shell->ProcessChar('i');
-  shell->ProcessChar('s');
-  shell->ProcessChar('t');
-  shell->ProcessChar('o');
-  shell->ProcessChar('r');
-  shell->ProcessChar('y');
-  shell->ProcessChar('\r');
+  Process("history\r", shell);
   CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
   CPPUNIT_ASSERT( shell->GetText().Contains("bbb"));
   
   shell->SetText("");
-  shell->ProcessChar('!');
-  shell->ProcessChar('1');
-  shell->ProcessChar('\r');
+  Process("!1\r", shell);
   CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
   CPPUNIT_ASSERT(!shell->GetText().Contains("bbb"));
   
   shell->SetText("");
-  shell->ProcessChar('!');
-  shell->ProcessChar('a');
-  shell->ProcessChar('\r');
+  Process("!a\r", shell);
   CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
   CPPUNIT_ASSERT(!shell->GetText().Contains("bbb"));
 }

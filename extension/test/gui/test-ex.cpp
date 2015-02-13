@@ -41,11 +41,14 @@ void wxExGuiTestFixture::testEx()
   // Test commands and last command.  
   // We have only one document, so :n, :prev return false.
   std::vector<std::pair<std::string, bool>> commands {
-    {":n",false},{":reg",true},{":ab",true},{":prev",false},{":xxx",false},
-    {":yyy",false},{":10",true},{":.=",true},
-    {":1,$s/this/ok",true},{":g/is/s//ok",true},{":.s/$/\n",true},
-    {":g/is/d",true},{":g/is/p",true},
-    {":1,$s/$/ZXXX/",true},{":1,$s/$/ZXXX/",true},{":1,$s/^/Zxxx/",true},{":1,$s/s/w/",true}};
+    {":ab",true},{":n",false},{":prev",false},{":reg",true},
+    {":set",true},{":set xxx",false},
+    {":xxx",false},{":yyy",false},
+    {":10",true},{":.=",true},
+    {":g/is/s//ok",true},{":g/is/d",true},{":g/is/p",true},
+    {":.s/$/\n",true},
+    {":1,$s/this/ok",true},{":1,$s/$/ZXXX/",true},
+    {":1,$s/$/ZXXX/",true},{":1,$s/^/Zxxx/",true},{":1,$s/s/w/",true}};
     
   for (auto& command : commands)
   {
@@ -93,13 +96,16 @@ void wxExGuiTestFixture::testEx()
   stc->LineDownExtend();
   CPPUNIT_ASSERT(!ex->Command(":'<,'>x"));
   
-  // Test set.
-  CPPUNIT_ASSERT( ex->Command(":set"));
-  CPPUNIT_ASSERT( ex->Command(":set ec=5"));
-  CPPUNIT_ASSERT( ex->Command(":set sy=cpp"));
-  CPPUNIT_ASSERT( ex->Command(":set ts=10"));
-  CPPUNIT_ASSERT(!ex->Command(":set xxx"));
+  // Test set options.
+  const std::vector<std::pair<std::string, std::string>> options{
+    {"ec","5"},{"sy","cpp"},{"ts","10"}};
   
+  for (const auto& option : options)
+  {
+    CPPUNIT_ASSERT( ex->Command(":set " + option.first + "=" + option.second));
+  }
+  
+  // Test set switches.
   const std::vector<std::string> switches{
     "ai", "ac", "el", "ic", "ln", "mw", "re", "wl", "ws"};
   
@@ -171,17 +177,12 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT(!ex->MarkerGoto('a'));
   CPPUNIT_ASSERT(!ex->MarkerDelete('a'));
   
-  // Test global delete (previous delete was on ont found text).
-  stc->AppendText("line xxxx 1 added\n");
-  stc->AppendText("line xxxx 2 added\n");
-  stc->AppendText("line xxxx 3 added\n");
-  stc->AppendText("line xxxx 4 added\n");
-  stc->AppendText("line xxxx 5 added\n");
-  stc->AppendText("line xxxx 6 added\n");
-  
+  // Test global delete (previous delete was on found text).
+  const int max = 10;
+  for (int i = 0; i < max; i++) stc->AppendText("line xxxx added\n");
   const int lines = stc->GetLineCount();
   CPPUNIT_ASSERT( ex->Command(":g/xxxx/d"));
-  CPPUNIT_ASSERT( stc->GetLineCount() == lines - 6);
+  CPPUNIT_ASSERT( stc->GetLineCount() == lines - max);
   
   // Test global print.
   stc->AppendText("line xxxx 3 added\n");
@@ -205,7 +206,7 @@ void wxExGuiTestFixture::testEx()
     
   for (auto& go : gotos)
   {
-    CPPUNIT_ASSERT( vi->Command(go.first));
+    CPPUNIT_ASSERT(  ex->Command(go.first));
     CPPUNIT_ASSERT( stc->GetCurrentLine() == go.second);
   }
 

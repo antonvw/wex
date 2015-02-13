@@ -19,18 +19,28 @@ void wxExGuiTestFixture::testLexers()
   wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
   
   CPPUNIT_ASSERT( wxExLexers::Get() != NULL);
-  
-  // Test global macro.
   CPPUNIT_ASSERT( wxExLexers::Get()->GetCount() > 0);
-  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("XXX") == "XXX");
-  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("mark_lcorner") == "10");
-  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("mark_circle") == "0");
-  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("iv_none") == "0");
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle());
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().IsOk());
   
-  // Test lexer macro.
-  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "asm") == "2");
-  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "cpp") == "4");
+  // Test lexer and global macros.
+  const std::vector<
+    std::pair<
+      std::pair<std::string,std::string>,
+      std::string>> macros{
+    {{"number","asm"},"2"},
+    {{"number","cpp"},"4"},
+    {{"XXX","global"},"XXX"},
+    {{"mark_lcorner","global"},"10"},
+    {{"mark_circle","global"},"0"},
+    {{"iv_none","global"},"0"}};
   
+  for (const auto& macro : macros)
+  {
+    CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro(
+      macro.first.first, macro.first.second) == macro.second);
+  }
+
   // At this moment we have no global properties.
   CPPUNIT_ASSERT( wxExLexers::Get()->GetProperties().empty());
   
@@ -44,49 +54,31 @@ void wxExGuiTestFixture::testLexers()
     GetTestFile()).GetScintillaLexer() == "cpp");
     
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
-    "cpp").GetScintillaLexer() == "cpp");
-    
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "// this is a cpp comment text").GetScintillaLexer() == "cpp");
-    
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "#!/bin/sh").GetScintillaLexer() == "bash");
-    
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "#!/bin/sh").GetDisplayLexer() == "sh");
-    
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "#!/bin/csh").GetScintillaLexer() == "bash");
-    
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "#!/bin/csh").GetDisplayLexer() == "csh");
-    
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "#!/bin/tcsh").GetScintillaLexer() == "bash");
-    
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "#!/bin/tcsh").GetDisplayLexer() == "tcsh");
-    
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "#!/bin/bash").GetScintillaLexer() == "bash");
-    
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "#!/usr/bin/csh").GetScintillaLexer() == "bash");
-    
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "<html>").GetScintillaLexer() == "hypertext");
-    
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
-    "<?xml").GetScintillaLexer() == "hypertext");
-    
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
     "xxx").GetScintillaLexer().empty());
     
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetCount() > 0);
-
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle());
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().IsOk());
-
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
+    "cpp").GetScintillaLexer() == "cpp");
+    
+  const std::vector<std::pair<
+    std::string, 
+    std::pair<std::string, std::string>>> findbys{
+    {"// this is a cpp comment text",{"cpp","cpp"}},
+    {"#!/bin/sh",{"bash","sh"}},
+    {"#!/bin/csh",{"bash","csh"}},
+    {"#!/bin/tcsh",{"bash","tcsh"}},
+    {"#!/bin/bash",{"bash","bash"}},
+    {"#!/usr/bin/csh",{"bash","bash"}},
+    {"<html>",{"hypertext","hypertext"}},
+    {"<?xml",{"hypertext","xml"}}};
+    
+  for (const auto& findby : findbys)
+  {
+    CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+      findby.first).GetScintillaLexer() == findby.second.first);
+    CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+      findby.first).GetDisplayLexer() == findby.second.second);
+  }
+    
   CPPUNIT_ASSERT( wxExLexers::Get()->GetFileName().IsOk());
 
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros("global").empty());

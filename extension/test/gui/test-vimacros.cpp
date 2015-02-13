@@ -88,35 +88,22 @@ void wxExGuiTestFixture::testViMacros()
   
   CPPUNIT_ASSERT(!macros.Playback(vi, "a"));
   
-  // Test variables.
-  //CPPUNIT_ASSERT(!macros.Expand(vi, "xxx"));
-
   // Test all builtin macro variables.
-  CPPUNIT_ASSERT( macros.Expand(vi, "Cb"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "Cc"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "Ce"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "Cl"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "Created"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "Date"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "Datetime"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "Filename"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "Fullpath"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "Nl"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "Path"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "Time"));
-  CPPUNIT_ASSERT( macros.Expand(vi, "Year"));
+  for (auto& builtin : m_BuiltinVariables)
+  {
+    CPPUNIT_ASSERT( macros.Expand(vi, builtin));
+  }
+
+  // Test all environment macro variables.
+  const std::vector<std::string> envs{"HOME","PWD"};
   
-  // Test environment macro variables.
-  CPPUNIT_ASSERT( macros.Expand(vi, "Home"));
-
-  // Test input macro variables.
-  // Next requires input...    
-  //  CPPUNIT_ASSERT( macros.Expand(vi, "author"));
-
-  // Test template macro variables.
-  //wxString value;
-  //CPPUNIT_ASSERT( macros.Expand(vi, "cht", value));
-  //CPPUNIT_ASSERT( value.Contains("Template example"));
+  for (auto& env : envs)
+  {
+    CPPUNIT_ASSERT( macros.Expand(vi, env));
+  }
+  
+  // Test input macro variables (requires input).
+  // Test template macro variables (requires input).
 
   // So save as last test.
   CPPUNIT_ASSERT( wxExViMacros::SaveDocument());
@@ -142,24 +129,19 @@ void wxExGuiTestFixture::testViMacros()
   // Test abbreviations.
   CPPUNIT_ASSERT( macros.GetAbbreviations().empty());
   
-  std::vector<std::pair<std::string, std::string>> abbrevs {
-    {"XX","this is X"},
-    {"YY","this is X now"},
-    {"YY","this is Y"}};
-
-  for (auto& abbrev : abbrevs)
+  for (auto& abbrev : m_Abbreviations)
   {
     macros.SetAbbreviation(abbrev.first, abbrev.second);
     
-    const auto& it = macros.GetAbbreviations().find("XX");
+    const auto& it = macros.GetAbbreviations().find(abbrev.first);
             
     if (it != macros.GetAbbreviations().end())
     {
-      CPPUNIT_ASSERT( abbrev.second == it.second);
+      CPPUNIT_ASSERT( abbrev.second == it->second);
     }
   }
   
-  CPPUNIT_ASSERT( macros.GetAbbreviations().size() == 3);
+  CPPUNIT_ASSERT( macros.GetAbbreviations().size() == m_Abbreviations.size());
   CPPUNIT_ASSERT( macros.IsModified());
   CPPUNIT_ASSERT( wxExViMacros::SaveDocument());
 }

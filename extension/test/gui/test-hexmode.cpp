@@ -16,7 +16,7 @@
 
 void wxExGuiTestFixture::testHexMode()
 {
-  // 0000000000111111111222222222233333333334444444444555555555556666666666
+  // 0000000000111111111122222222223333333333444444444455555555555666666666
   // 0123456789012345678901234567890123456789012345678901234567890123456789
   // 30 31 32 33 34 35 36 37 38 39                   0123456789
   wxExSTC* stc = new wxExSTC(
@@ -24,7 +24,7 @@ void wxExGuiTestFixture::testHexMode()
     
   CPPUNIT_ASSERT(stc->GetText() != "0123456789");
   
-  stc->SetCurrentPos(5); // 0 <-
+  stc->SetCurrentPos(48); // 0 <-
   
   wxExHexMode* hm = &stc->GetHexMode();
   
@@ -46,7 +46,7 @@ void wxExGuiTestFixture::testHexMode()
   
   // Test hex field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
-  hex.Set(13); // 31 <- (ascii 4)
+  hex.Set(13); // 34 <- (ascii 4)
   CPPUNIT_ASSERT( hex.IsHexField());
   CPPUNIT_ASSERT(!hex.IsAsciiField());
   CPPUNIT_ASSERT(!hex.IsReadOnly());
@@ -85,7 +85,7 @@ void wxExGuiTestFixture::testHexMode()
   
   // Test hex field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
-  hex.Set(13); // 31 <- (ascii 4)
+  hex.Set(13); // 34 <- (ascii 4)
   CPPUNIT_ASSERT( hex.ReplaceHex(32));
   hex.Set(55); // 7 <-
   CPPUNIT_ASSERT(!hex.ReplaceHex(32));

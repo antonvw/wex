@@ -3,7 +3,7 @@
 Name:      macros.xml
 Purpose:   vi macros and variables for wxExtension.
 Author:    Anton van Wezenbeek
-Copyright: (c) 2014, Anton van Wezenbeek
+Copyright: (c) 2015, Anton van Wezenbeek
 
 Both variables and macros have a "name" attribute, you call them
 from vi mode using @name@ (if name starts with an
@@ -75,7 +75,8 @@ Comments you add within xml elements are not saved when you edit macros.
   <variable name="Year"             type="BUILTIN"/>
   
   <!-- ENVIRONMENT type -->
-  <variable name="Home"             type="ENVIRONMENT"/>
+  <variable name="HOME"             type="ENVIRONMENT"/>
+  <variable name="PWD"              type="ENVIRONMENT"/>
   
   <!-- INPUT-ONCE type -->
   <variable name="Author"           type="INPUT-ONCE"/>
