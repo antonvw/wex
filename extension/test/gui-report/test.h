@@ -54,7 +54,6 @@ class wxExGuiReportTestFixture : public wxExTestFixture
   CPPUNIT_TEST( testFrameWithHistory );
   CPPUNIT_TEST( testListViewFile );
   CPPUNIT_TEST( testListViewWithFrame );
-  CPPUNIT_TEST( testSTCWithFrame );
   CPPUNIT_TEST( testTextFileWithListView );
   CPPUNIT_TEST( testUtil );
   CPPUNIT_TEST( test );
@@ -69,7 +68,6 @@ public:
   void testFrameWithHistory();
   void testListViewFile();
   void testListViewWithFrame();
-  void testSTCWithFrame();
   void testTextFileWithListView();
   void testUtil();
   

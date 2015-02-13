@@ -102,6 +102,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_File(this, title)
   , m_Link(wxExLink(this))
   , m_HexMode(wxExHexMode(this))
+  , m_Frame(dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow()))
 {
   Initialize(false);
 
@@ -150,6 +151,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_vi(wxExVi(this))
   , m_Link(wxExLink(this))
   , m_HexMode(wxExHexMode(this))
+  , m_Frame(dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow()))
 {
   Initialize(filename.GetStat().IsOk());
   
@@ -171,17 +173,18 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_MarkerChange(stc.m_MarkerChange)
   , m_Lexer(stc.m_Lexer)
   , m_Link(wxExLink(this))
-  , m_File(this, stc.m_File.GetFileName().GetFullPath())
+  , m_File(this, stc.GetFileName().GetFullPath())
   , m_vi(wxExVi(this)) // do not use stc.m_vi, crash
   , m_DefaultFont(stc.m_DefaultFont)
   , m_AutoComplete(stc.m_AutoComplete)
+  , m_Frame(stc.m_Frame)
   , m_HexMode(wxExHexMode(this))
 {
-  Initialize(stc.m_File.GetFileName().GetStat().IsOk());
+  Initialize(stc.GetFileName().GetStat().IsOk());
 
-  if (stc.m_File.GetFileName().GetStat().IsOk())
+  if (stc.GetFileName().GetStat().IsOk())
   {
-    Open(stc.m_File.GetFileName(), -1, wxEmptyString, 0, GetFlags());
+    Open(stc.GetFileName(), -1, wxEmptyString, 0, GetFlags());
     DocumentStart();
   }
   else
@@ -278,12 +281,12 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
   if (m_MenuFlags & STC_MENU_VCS)
   {
-    if (m_File.GetFileName().FileExists() && sel.empty())
+    if (GetFileName().FileExists() && sel.empty())
     {
-      if (wxExVCS::DirExists(m_File.GetFileName()))
+      if (wxExVCS::DirExists(GetFileName()))
       {
         menu.AppendSeparator();
-        menu.AppendVCS(m_File.GetFileName());
+        menu.AppendVCS(GetFileName());
       }
     }
   }
@@ -463,122 +466,117 @@ int wxExSTC::ConfigDialog(
   long flags,
   wxWindowID id)
 {
-  std::vector<wxExConfigItem> items;
-
-  // General page.
-  std::set<wxString> bchoices;
-  bchoices.insert(_("End of line"));
-  bchoices.insert(_("Line numbers"));
-  bchoices.insert(_("Use tabs"));
-  bchoices.insert(_("Caret line"));
-  bchoices.insert(_("Scroll bars"));
-  bchoices.insert(_("Auto complete"));
-  bchoices.insert(_("vi mode"));
-  // use 3 cols here, but 1 for others on this page
-  items.push_back(wxExConfigItem(bchoices, _("General") + ":3")); 
-
-  std::map<long, const wxString> ichoices;
-  ichoices.insert(std::make_pair(INDENT_NONE, _("None")));
-  ichoices.insert(std::make_pair(INDENT_WHITESPACE, _("Whitespace")));
-  ichoices.insert(std::make_pair(INDENT_LEVEL, _("Level")));
-  ichoices.insert(std::make_pair(INDENT_ALL, _("Both")));
-  items.push_back(wxExConfigItem(
-    _("Auto indent"), ichoices, true, _("General"), 1));
+  const std::set<wxString> bchoices{
+    _("End of line"),
+    _("Line numbers"),
+    _("Use tabs"),
+    _("Caret line"),
+    _("Scroll bars"),
+    _("Auto complete"),
+    _("vi mode")};
     
-  std::map<long, const wxString> vchoices;
-  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
-  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
-  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
-  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")));
- items.push_back(wxExConfigItem(
-    _("Wrap visual flags"), vchoices, true, _("General"), 1));
+  const std::map<long, const wxString> ichoices{
+    std::make_pair(INDENT_NONE, _("None")),
+    std::make_pair(INDENT_WHITESPACE, _("Whitespace")),
+    std::make_pair(INDENT_LEVEL, _("Level")),
+    std::make_pair(INDENT_ALL, _("Both"))};
+    
+  const std::map<long, const wxString> vchoices{
+    std::make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")),
+    std::make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")),
+    std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")),
+    std::make_pair(wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin"))};
+    
+  const std::map<long, const wxString> choices{
+    std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")),
+    std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Visible after indent")),
+    std::make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always"))};
+    
+  const std::map<long, const wxString> wchoices{
+    std::make_pair(wxSTC_WRAP_NONE, _("None")),
+    std::make_pair(wxSTC_WRAP_WORD, _("Word")),
+    std::make_pair(wxSTC_WRAP_CHAR, _("Char"))
+#if wxCHECK_VERSION(3,1,0)
+    ,std::make_pair(wxSTC_WRAP_WHITESPACE, _("Whitespace"))};
+#else
+    };
+#endif  
+
+  const std::map<long, const wxString> echoices{
+    std::make_pair(wxSTC_EDGE_NONE, _("None")),
+    std::make_pair(wxSTC_EDGE_LINE, _("Line")),
+    std::make_pair(wxSTC_EDGE_BACKGROUND, _("Background"))};
+    
+  const std::map<long, const wxString> pchoices{
+    std::make_pair(wxSTC_PRINT_NORMAL, _("Normal")),
+    std::make_pair(wxSTC_PRINT_INVERTLIGHT, _("Invert on white")),
+    std::make_pair(wxSTC_PRINT_BLACKONWHITE, _("Black on white")),
+    std::make_pair(wxSTC_PRINT_COLOURONWHITE, _("Colour on white")),
+    std::make_pair(wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal"))};
+      
+  const std::map<long, const wxString> fchoices{
+    std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, 
+      _("Line before expanded")),
+    std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED,
+      _("Line before contracted")),
+    std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED,
+      _("Line after expanded")),
+    std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED,
+      _("Line after contracted"))};
+        
+  std::vector<wxExConfigItem> items{
+  // General page.
+    // use 3 cols here, but 1 for others on this page
+    wxExConfigItem(bchoices, _("General") + ":3"),
+    wxExConfigItem(_("Auto indent"), ichoices, true, _("General"), 1),
+    wxExConfigItem(_("Wrap visual flags"), vchoices, true, _("General"), 1)};
     
   if (wxExLexers::Get()->GetCount() > 0)
   {
     items.push_back(wxExConfigItem(_("Default font"), CONFIG_FONTPICKERCTRL));
   }
 
-  std::map<long, const wxString> choices;
-  choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
-  choices.insert(std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, 
-    _("Visible after indent")));
-  choices.insert(std::make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
-  items.push_back(wxExConfigItem(
-    _("Whitespace"), choices, true, _("General"), 1));
-
-  std::map<long, const wxString> wchoices;
-  wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
-  wchoices.insert(std::make_pair(wxSTC_WRAP_WORD, _("Word")));
-  wchoices.insert(std::make_pair(wxSTC_WRAP_CHAR, _("Char")));
-#if wxCHECK_VERSION(3,1,0)
-  wchoices.insert(std::make_pair(wxSTC_WRAP_WHITESPACE, _("Whitespace")));
-#endif  
-  items.push_back(wxExConfigItem(
-    _("Wrap line"), wchoices, true, _("General"), 1));
-
+  items.insert(items.end(), {
+    wxExConfigItem(_("Whitespace"), choices, true, _("General"), 1),
+    wxExConfigItem(_("Wrap line"), wchoices, true, _("General"), 1),
   // Edge page.
-  items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
-  std::map<long, const wxString> echoices;
-  echoices.insert(std::make_pair(wxSTC_EDGE_NONE, _("None")));
-  echoices.insert(std::make_pair(wxSTC_EDGE_LINE, _("Line")));
-  echoices.insert(std::make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
-  items.push_back(wxExConfigItem(
-    _("Edge line"), echoices, true, _("Edge"), 1));
-
+    wxExConfigItem(_("Edge column"), 0, 500, _("Edge")),
+    wxExConfigItem( _("Edge line"), echoices, true, _("Edge"), 1),
   // Margin page.
-  items.push_back(wxExConfigItem(
-    _("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), 
-    _("Margin")));
-  items.push_back(wxExConfigItem(
-    _("Indent"), 0, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
-  items.push_back(wxExConfigItem(
-    _("Divider"), 0, 40, _("Margin")));
+    wxExConfigItem(_("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")),
+    wxExConfigItem(_("Indent"), 0, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")),
+    wxExConfigItem(_("Divider"), 0, 40, _("Margin"))});
+    
   if (wxExLexers::Get()->GetCount() > 0)
   {
     items.push_back(wxExConfigItem(
       _("Folding"), 0, 40, _("Margin")));
   }
+  
   items.push_back(wxExConfigItem(
     _("Line number"), 0, 100, _("Margin")));
 
   if (wxExLexers::Get()->GetCount() > 0)
   {
-    // Folding page.
-    items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX,
-      _("Folding")));
-    items.push_back(wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")));
-
-    std::map<long, const wxString> fchoices;
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED,
-      _("Line before expanded")));
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED,
-      _("Line before contracted")));
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED,
-      _("Line after expanded")));
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED,
-      _("Line after contracted")));
-    // next is experimental, wait for scintilla
-    //fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
-    items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false,
-      _("Folding")));
+  // Folding page.
+    items.insert(items.end(),{
+      wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")),
+      wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")),
+      // next is experimental, wait for scintilla
+      //fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
+      wxExConfigItem(_("Fold flags"), fchoices, false,_("Folding"))});
   }
   
   if (!(flags & STC_CONFIG_SIMPLE))
   {
-    // Printer page
-    std::map<long, const wxString> pchoices;
-    pchoices.insert(std::make_pair(wxSTC_PRINT_NORMAL, _("Normal")));
-    pchoices.insert(std::make_pair(wxSTC_PRINT_INVERTLIGHT, _("Invert on white")));
-    pchoices.insert(std::make_pair(wxSTC_PRINT_BLACKONWHITE, _("Black on white")));
-    pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITE, _("Colour on white")));
-    pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")));
+  // Printer page
     items.push_back(wxExConfigItem(
       _("Print flags"), pchoices, true, _("Printer"), 1));
   }
 
   if (!(flags & STC_CONFIG_SIMPLE) && wxExLexers::Get()->GetCount() > 0)
   {
-    // Directory page.
+  // Directory page.
     items.push_back(wxExConfigItem(
       _("Include directory"), CONFIG_LISTVIEW_FOLDER, _("Directory"), false, wxID_ANY, 25, false)); // no label
   }
@@ -633,7 +631,7 @@ void wxExSTC::ConfigGet(bool init)
     SetLexer(m_Lexer);
   }
 
-  if (m_File.GetFileName().GetExt().CmpNoCase("log") == 0)
+  if (GetFileName().GetExt().CmpNoCase("log") == 0)
   {
     SetEdgeMode(wxSTC_EDGE_NONE);
   }
@@ -815,7 +813,7 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
 
 bool wxExSTC::FileReadOnlyAttributeChanged()
 {
-  SetReadOnly(!m_File.GetFileName().IsFileWritable()); // does not return anything
+  SetReadOnly(!GetFileName().IsFileWritable()); // does not return anything
   wxLogStatus(_("Readonly attribute changed"));
 
   return true;
@@ -1364,11 +1362,9 @@ bool wxExSTC::LinkOpen(wxString* filename)
   {
     if (filename == NULL)
     {
-      wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
-      
-      if (frame != NULL)
+      if (m_Frame != NULL)
       {
-        return frame->OpenFile(
+        return m_Frame->OpenFile(
           path,
           line_no, 
           wxEmptyString,
@@ -1635,7 +1631,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     case ID_EDIT_OPEN_BROWSER:
       if (GetSelectedText().empty())
       {
-        wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
+        wxLaunchDefaultBrowser(GetFileName().GetFullPath());
       }
       else
       {
@@ -1648,7 +1644,14 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     case ID_EDIT_READ: m_File.Read(command.GetString()); break;
       
     case ID_EDIT_SHOW_PROPERTIES: ShowProperties(); break;
-      
+
+    case ID_EDIT_VCS_LOWEST ... ID_EDIT_VCS_HIGHEST:
+    {
+      wxExVCSExecute(m_Frame, command.GetId() - ID_EDIT_VCS_LOWEST - 1, 
+        std::vector< wxString >{GetFileName().GetFullPath()});
+    }
+    break;
+  
     case ID_EDIT_ZOOM_IN: SetZoom(++m_Zoom); break;
     case ID_EDIT_ZOOM_OUT: SetZoom(--m_Zoom);  break;
 
@@ -1692,7 +1695,7 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
     !(m_Flags & STC_WIN_READ_ONLY) &&
-      m_File.GetFileName().GetStat().IsReadOnly() != GetReadOnly())
+      GetFileName().GetStat().IsReadOnly() != GetReadOnly())
   {
     FileReadOnlyAttributeChanged();
   }
@@ -1870,7 +1873,7 @@ bool wxExSTC::Open(
   int col_number,
   long flags)
 {
-  if (m_File.GetFileName() == filename && line_number > 0)
+  if (GetFileName() == filename && line_number > 0)
   {
     GotoLineAndSelect(line_number, match, col_number);
     PropertiesMessage();
@@ -1915,6 +1918,11 @@ bool wxExSTC::Open(
   else
   {
     success = false;
+  }
+  
+  if (success)
+  {
+    m_Frame->SetRecentFile(filename.GetFullPath());
   }
   
   return success;
@@ -1992,7 +2000,7 @@ void wxExSTC::PrintPreview()
 
 void wxExSTC::PropertiesMessage(long flags)
 {
-  wxExLogStatus(m_File.GetFileName(), flags);
+  wxExLogStatus(GetFileName(), flags);
   
 #if wxUSE_STATUSBAR
   if (flags != STAT_SYNC)
@@ -2003,6 +2011,21 @@ void wxExSTC::PropertiesMessage(long flags)
   
   wxExFrame::UpdateStatusBar(this, "PaneInfo");
 #endif
+
+  if (!(flags & STAT_SYNC) && m_Frame != NULL)
+  {
+    const wxString file = GetName() + 
+      (GetReadOnly() ? " [" + _("Readonly") + "]": wxString(wxEmptyString));
+    
+    if (file.empty())
+    {
+      m_Frame->SetTitle(wxTheApp->GetAppName());
+    }
+    else
+    {
+      m_Frame->SetTitle(file);
+    }
+  }
 }
 
 void wxExSTC::Reload(long flags)

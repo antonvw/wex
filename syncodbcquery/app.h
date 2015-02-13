@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of classes for syncodbcquery
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #define wxExUSE_OTL 1
@@ -24,8 +24,8 @@ enum
 };
 
 class wxExGrid;
+class wxExSTC;
 class wxExSTCShell;
-class wxExSTCWithFrame;
 
 class App: public wxExApp
 {
@@ -58,8 +58,8 @@ private:
   void RunQueries(const wxString& text);
   void UpdateStatistics(long time, long rpc);
 
-  wxExSTCWithFrame* m_Query;
   wxExGrid* m_Results;
+  wxExSTC* m_Query;
   wxExSTCShell* m_Shell;
   
   wxExStatistics <int> m_Statistics;

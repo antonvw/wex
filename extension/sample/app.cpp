@@ -237,12 +237,11 @@ wxExSampleFrame::wxExSampleFrame()
   }
 
 #if wxUSE_STATUSBAR
-  std::vector<wxExStatusBarPane> panes;
-  panes.push_back(wxExStatusBarPane());
-  panes.push_back(wxExStatusBarPane("PaneFileType", 50, "File type"));
-  panes.push_back(wxExStatusBarPane("PaneInfo", 100, "Lines or items"));
-  panes.push_back(wxExStatusBarPane("PaneLexer", 60, "Lexer"));
-  SetupStatusBar(panes);
+  SetupStatusBar(std::vector<wxExStatusBarPane>{
+    wxExStatusBarPane(),
+    wxExStatusBarPane("PaneFileType", 50, "File type"),
+    wxExStatusBarPane("PaneInfo", 100, "Lines or items"),
+    wxExStatusBarPane("PaneLexer", 60, "Lexer")});
 #endif
 
   if (wxExLexers::Get()->GetCount() > 0)
@@ -267,31 +266,8 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   auto* grid = GetGrid();
   auto* listview = GetListView();
 
-  if (
-    (event.GetId() == wxID_UNDO ||
-     event.GetId() == wxID_REDO ||
-     event.GetId() == wxID_DELETE ||
-     event.GetId() == wxID_SELECTALL ||
-     event.GetId() == wxID_JUMP_TO) ||
-    (event.GetId() >= wxID_CUT && event.GetId() <= wxID_CLEAR))
+  switch (event.GetId())
   {
-    if (editor != NULL)
-    {
-      wxPostEvent(editor, event);
-    }
-    else if (grid != NULL)
-    {
-      wxPostEvent(grid, event);
-    }
-    else if (listview != NULL)
-    {
-      wxPostEvent(listview, event);
-    }
-  }
-  else
-  {
-    switch (event.GetId())
-    {
     case wxID_ABOUT:
       {
       wxAboutDialogInfo info;
@@ -340,6 +316,26 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       }
       break;
   
+    case wxID_UNDO:
+    case wxID_REDO:
+    case wxID_DELETE:
+    case wxID_SELECTALL:
+    case wxID_JUMP_TO:
+    case wxID_CUT ... wxID_CLEAR:
+      if (editor != NULL)
+      {
+        wxPostEvent(editor, event);
+      }
+      else if (grid != NULL)
+      {
+        wxPostEvent(grid, event);
+      }
+      else if (listview != NULL)
+      {
+        wxPostEvent(listview, event);
+      }
+    break;
+    
     case ID_CONFIG_DLG: ShowConfigItems(); break;
     
     case ID_CONFIG_DLG_1_COL:
@@ -427,15 +423,14 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     
     case ID_CONFIG_DLG_READONLY:
       {
-      std::vector<wxExConfigItem> v;
-  
-      v.push_back(wxExConfigItem());
-      v.push_back(wxExConfigItem());
-      v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
-      v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
-      v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
-      v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
-      v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
+      std::vector<wxExConfigItem> v{
+        wxExConfigItem(),
+        wxExConfigItem(),
+        wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL),
+        wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL),
+        wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL),
+        wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL),
+        wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL)};
   
       for (int j = 1; j <= 10; j++)
       {
@@ -546,7 +541,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       wxFAIL;
       break;
     }
-  }
 }
 
 void wxExSampleFrame::OnCommandConfigDialog(
@@ -619,11 +613,12 @@ void wxExSampleFrame::ShowConfigItems()
     "Checkboxes"));
 
   // CONFIG_CHECKLISTBOX
-  std::map<long, const wxString> clb;
-  clb.insert(std::make_pair(0, "Bit One"));
-  clb.insert(std::make_pair(1, "Bit Two"));
-  clb.insert(std::make_pair(2, "Bit Three"));
-  clb.insert(std::make_pair(4, "Bit Four"));
+  const std::map<long, const wxString> clb{
+    std::make_pair(0, "Bit One"),
+    std::make_pair(1, "Bit Two"),
+    std::make_pair(2, "Bit Three"),
+    std::make_pair(4, "Bit Four")};
+    
   v.push_back(wxExConfigItem(
     "Bin Choices", 
     clb, 
@@ -631,10 +626,8 @@ void wxExSampleFrame::ShowConfigItems()
     "Checkbox lists"));
 
   // CONFIG_CHECKLISTBOX_NONAME
-  std::set<wxString> bchoices;
-  bchoices.insert("This");
-  bchoices.insert("Or");
-  bchoices.insert("Other");
+  std::set<wxString> bchoices{"This","Or","Other"};
+  
   v.push_back(wxExConfigItem(
     bchoices, 
     "Checkbox lists"));
@@ -754,10 +747,11 @@ void wxExSampleFrame::ShowConfigItems()
     "ListView"));
 
   // CONFIG_RADIOBOX
-  std::map<long, const wxString> echoices;
-  echoices.insert(std::make_pair(0, "Zero"));
-  echoices.insert(std::make_pair(1, "One"));
-  echoices.insert(std::make_pair(2, "Two"));
+  const std::map<long, const wxString> echoices{
+    std::make_pair(0, "Zero"),
+    std::make_pair(1, "One"),
+    std::make_pair(2, "Two")};
+    
   v.push_back(wxExConfigItem(
     "Radio Box", 
     echoices, 

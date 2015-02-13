@@ -47,7 +47,7 @@ void wxExGuiTestFixture::testListItem()
   
   const long sort = sw.Time();
   
-  CPPUNIT_ASSERT(sort < 1000);
+  CPPUNIT_ASSERT(sort < 2000);
   
   Report(wxString::Format(
     "wxExListView::Sort %d items in %ld ms", 3 * max, sort).ToStdString());

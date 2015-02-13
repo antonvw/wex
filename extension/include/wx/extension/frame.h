@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wxExFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFRAME_H
@@ -82,7 +82,10 @@ public:
   void SetFindFocus(wxWindow* focus);
   
   /// Override from base class.
-  virtual void SetMenuBar(wxMenuBar* bar);
+  virtual void SetMenuBar(wxMenuBar* bar) override;
+  
+  /// Allows derived class to update file history.
+  virtual bool SetRecentFile(const wxString& file) {return false;};
 
 #if wxUSE_STATUSBAR
   /// Sets up the status bar if you want to use StatusText.

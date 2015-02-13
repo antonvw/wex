@@ -166,6 +166,15 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(stc->HexMode());
   stc->GetHexMode().AppendText("in hex mode");
   
+  // Test stc with file (not yet done ???).
+  wxExSTC stc2(m_Frame, GetTestFile());
+  
+  CPPUNIT_ASSERT( stc2.GetFileName().GetFullPath().Contains("test.h"));
+  CPPUNIT_ASSERT( stc2.Open(GetTestFile()));
+  CPPUNIT_ASSERT(!stc2.Open(wxExFileName("XXX")));
+  
+  stc2.PropertiesMessage();
+  
   // Test events.
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED);
   

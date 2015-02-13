@@ -2,7 +2,7 @@
 // Name:      otl.cpp
 // Purpose:   Implementation of wxExOTL class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -56,19 +56,18 @@ bool wxExOTL::Logon(
 {
   auto* config = wxConfigBase::Get(); 
 
-  std::vector<wxExConfigItem> v;
-
-  v.push_back(wxExConfigItem(_("Datasource"),
-    CONFIG_COMBOBOX,
-    wxEmptyString, // page
-    true,          // is_required
-    wxID_ANY,
-    max_items));
-  v.push_back(wxExConfigItem(_("User")));
-  v.push_back(wxExConfigItem(_("Password"), 
-    wxEmptyString, 
-    wxEmptyString,
-    wxTE_PASSWORD));
+  const std::vector<wxExConfigItem> v{
+    wxExConfigItem(_("Datasource"),
+      CONFIG_COMBOBOX,
+      wxEmptyString, // page
+      true,          // is_required
+      wxID_ANY,
+      max_items),
+    wxExConfigItem(_("User")),
+    wxExConfigItem(_("Password"), 
+      wxEmptyString, 
+      wxEmptyString,
+      wxTE_PASSWORD)};
 
   // Always show the dialog.
   if (wxExConfigDialog(parent,

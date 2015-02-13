@@ -7,8 +7,8 @@
 
 #include <wx/extension/app.h>
 #include <wx/extension/notebook.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/report/frame.h>
-#include <wx/extension/report/stc.h>
 
 /// Derive your application from wxExApp.
 class wxExRepSampleApp: public wxExApp
@@ -44,6 +44,6 @@ protected:
 private:
   wxExNotebook* m_NotebookWithLists; ///< all listviews
   wxExProcess* m_Process;
-  wxExSTCWithFrame* m_STC;           ///< an stc
+  wxExSTC* m_STC;
   DECLARE_EVENT_TABLE()
 };

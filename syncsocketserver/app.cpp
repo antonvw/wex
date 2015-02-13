@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -98,7 +98,7 @@ Frame::Frame()
   , m_SocketServer(NULL)
   , m_Timer(this)
   , m_Answer(ANSWER_OFF)
-  , m_DataWindow(new wxExSTCWithFrame(this, this))
+  , m_DataWindow(new wxExSTC(this))
   , m_LogWindow(new wxExSTC(this, wxEmptyString, wxExSTC::STC_WIN_NO_INDICATOR))
   , m_Shell(new wxExSTCShell(this))
 {
@@ -112,14 +112,13 @@ Frame::Frame()
 
 #if wxUSE_STATUSBAR
   // Statusbar setup before STC construction.
-  std::vector<wxExStatusBarPane> panes;
-  panes.push_back(wxExStatusBarPane());
-  panes.push_back(wxExStatusBarPane("PaneClients", 75, _("Number of clients connected")));
-  panes.push_back(wxExStatusBarPane("PaneTimer", 75, _("Repeat timer")));
-  panes.push_back(wxExStatusBarPane("PaneBytes", 150, _("Number of bytes received and sent")));
-  panes.push_back(wxExStatusBarPane("PaneFileType", 50, _("File type")));
-  panes.push_back(wxExStatusBarPane("PaneInfo", 100, _("Lines")));
-  SetupStatusBar(panes);
+  SetupStatusBar(std::vector<wxExStatusBarPane>{
+    wxExStatusBarPane(),
+    wxExStatusBarPane("PaneClients", 75, _("Number of clients connected")),
+    wxExStatusBarPane("PaneTimer", 75, _("Repeat timer")),
+    wxExStatusBarPane("PaneBytes", 150, _("Number of bytes received and sent")),
+    wxExStatusBarPane("PaneFileType", 50, _("File type")),
+    wxExStatusBarPane("PaneInfo", 100, _("Lines"))});
 #endif
 
   m_LogWindow->ResetMargins();
@@ -483,28 +482,23 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   case ID_SERVER_CONFIG:
     {
-    std::vector<wxExConfigItem> v;
-    v.push_back(wxExConfigItem(_("Hostname"), 
-      wxEmptyString, 
-      wxEmptyString,
-      0, 
-      CONFIG_STRING,
-      true));
-      
-    // Well known ports are in the range from 0 to 1023.
-    // Just allow here for most flexibility.
-    v.push_back(wxExConfigItem(_("Port"), 1, 65536));
-
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
-    const long flags = (m_SocketServer == NULL ? wxOK|wxCANCEL: wxCANCEL);
-
     wxExConfigDialog(this,
-      v,
+      std::vector<wxExConfigItem>{
+        wxExConfigItem(_("Hostname"), 
+          wxEmptyString, 
+          wxEmptyString,
+          0, 
+          CONFIG_STRING,
+          true),
+        // Well known ports are in the range from 0 to 1023.
+        // Just allow here for most flexibility.
+        wxExConfigItem(_("Port"), 1, 65536)},
       _("Server Config"),
       0,
       1,
-      flags).ShowModal();
+      m_SocketServer == NULL ? wxOK|wxCANCEL: wxCANCEL).ShowModal();
     }
     break;
 

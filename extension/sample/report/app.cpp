@@ -91,12 +91,11 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   SetMenuBar(menubar);
 
 #if wxUSE_STATUSBAR
-  std::vector<wxExStatusBarPane> panes;
-  panes.push_back(wxExStatusBarPane());
-  panes.push_back(wxExStatusBarPane("PaneFileType", 50));
-  panes.push_back(wxExStatusBarPane("PaneInfo", 100));
-  panes.push_back(wxExStatusBarPane("PaneLexer", 60));
-  SetupStatusBar(panes);
+  SetupStatusBar(std::vector<wxExStatusBarPane>{
+    wxExStatusBarPane(),
+    wxExStatusBarPane("PaneFileType", 50),
+    wxExStatusBarPane("PaneInfo", 100),
+    wxExStatusBarPane("PaneLexer", 60)});
 #endif
 
   m_NotebookWithLists = new wxExNotebook(
@@ -105,7 +104,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
     wxAUI_NB_DEFAULT_STYLE |
     wxAUI_NB_WINDOWLIST_BUTTON);
 
-  m_STC = new wxExSTCWithFrame(this, this); // use all flags (default)
+  m_STC = new wxExSTC(this); // use all flags (default)
 
   const wxExLexer lexer = wxExLexers::Get()->FindByName("cpp");
 

@@ -18,13 +18,13 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/printing.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/version.h>
 #include <wx/extension/vimacros.h>
 #include <wx/extension/report/listviewfile.h>
-#include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>
 #include "frame.h"
 #include "app.h"
@@ -475,9 +475,8 @@ void Frame::NewFile(const wxString& name)
     return;
   }
  
-  wxWindow* page = new wxExSTCWithFrame(
+  wxWindow* page = new wxExSTC(
     m_Editors, 
-    this,
     wxEmptyString,
     wxExSTC::STC_WIN_DEFAULT,
     wxEmptyString,
@@ -583,33 +582,25 @@ void Frame::OnCommand(wxCommandEvent& event)
   wxExSTC* editor = GetSTC();
   wxExListViewFile* project = GetProject();
 
-  // VCS commands.
-  if (event.GetId() > ID_VCS_LOWEST && 
-      event.GetId() < ID_VCS_HIGHEST)
+  switch (event.GetId())
   {
-    wxExVCS(std::vector< wxString >(), event.GetId() - ID_VCS_LOWEST - 1).Request(this);
-  }
   // edit commands
   // Do not change the wxID* in wxID_LOWEST and wdID_HIGHEST,
   // as wxID_ABOUT etc. is used here and not in the editor.
   // That causes appl to hang.
-  else if ((
-       event.GetId() == wxID_UNDO ||
-       event.GetId() == wxID_REDO ||
-       event.GetId() == wxID_DELETE ||
-       event.GetId() == wxID_SELECTALL ||
-       event.GetId() == wxID_JUMP_TO) ||
-      (event.GetId() >= wxID_CUT && event.GetId() <= wxID_CLEAR) ||
-      (event.GetId() >= ID_EDIT_STC_LOWEST && event.GetId() <= ID_EDIT_STC_HIGHEST))
-  {
+  case wxID_UNDO:
+  case wxID_REDO:
+  case wxID_DELETE:
+  case wxID_SELECTALL:
+  case wxID_JUMP_TO:
+  case wxID_CUT ... wxID_CLEAR:
+  case ID_EDIT_STC_LOWEST ... ID_EDIT_STC_HIGHEST:
     if (editor != NULL)
     {
       wxPostEvent(editor, event);
     }
-  }
-  // the rest
-  else switch (event.GetId())
-  {
+  break;
+
   case wxID_ABOUT: About(this); break;
   
   case wxID_CLOSE:
@@ -900,7 +891,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_SPLIT_HORIZONTALLY:
   case ID_SPLIT_VERTICALLY:
     {
-      wxExSTCWithFrame* stc = new wxExSTCWithFrame(*editor, this);
+      wxExSTC* stc = new wxExSTC(*editor);
       editor->Sync(false);
       stc->Sync(false);
 
@@ -939,6 +930,12 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
     
+  case ID_VCS_LOWEST ... ID_VCS_HIGHEST:
+  {
+    wxExVCS(std::vector< wxString >(), event.GetId() - ID_VCS_LOWEST - 1).Request(this);
+  }
+  break;
+  
   case ID_VIEW_ASCII_TABLE: 
     if (m_asciiTable == NULL)
     {
@@ -1251,9 +1248,8 @@ bool Frame::OpenFile(
   
   if (page == NULL)
   {
-    wxExSTCWithFrame* editor = new wxExSTCWithFrame(
+    wxExSTC* editor = new wxExSTC(
       m_Editors, 
-      this,
       vcs.GetOutput(),
       flags,
       filename.GetFullName() + " " + unique);
@@ -1294,13 +1290,12 @@ bool Frame::OpenFile(
 {
   const wxString key = filename;
 
-  wxExSTCWithFrame* page = (wxExSTCWithFrame*)m_Editors->SetSelection(key);
+  wxExSTC* page = (wxExSTC*)m_Editors->SetSelection(key);
 
   if (page == NULL)
   {
-    wxExSTCWithFrame* editor = new wxExSTCWithFrame(
+    wxExSTC* editor = new wxExSTC(
       m_Editors, 
-      this,
       text,
       flags,
       filename);
@@ -1383,15 +1378,14 @@ bool Frame::OpenFile(
       wxExViMacros::SaveDocument();
     }
     
-    wxExSTCWithFrame* editor = (wxExSTCWithFrame*)page;
+    wxExSTC* editor = (wxExSTC*)page;
 
     if (page == NULL)
     {
       if (wxConfigBase::Get()->ReadBool("HexMode", false))
         flags |= wxExSTC::STC_WIN_HEX;
 
-      editor = new wxExSTCWithFrame(m_Editors,
-        this,
+      editor = new wxExSTC(m_Editors,
         filename,
         line_number,
         match,
