@@ -593,8 +593,10 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_DELETE:
   case wxID_SELECTALL:
   case wxID_JUMP_TO:
-  case wxID_CUT ... wxID_CLEAR:
-  case ID_EDIT_STC_LOWEST ... ID_EDIT_STC_HIGHEST:
+  case wxID_CUT:
+  case wxID_COPY:
+  case wxID_PASTE:
+  case wxID_CLEAR:
     if (editor != NULL)
     {
       wxPostEvent(editor, event);
@@ -930,12 +932,6 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
     
-  case ID_VCS_LOWEST ... ID_VCS_HIGHEST:
-  {
-    wxExVCS(std::vector< wxString >(), event.GetId() - ID_VCS_LOWEST - 1).Request(this);
-  }
-  break;
-  
   case ID_VIEW_ASCII_TABLE: 
     if (m_asciiTable == NULL)
     {
@@ -1014,8 +1010,21 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
     
   default: 
-    wxFAIL;
+    if (event.GetId() > ID_VCS_LOWEST && event.GetId() < ID_VCS_HIGHEST)
+    {
+      wxExVCS(std::vector< wxString >(), event.GetId() - ID_VCS_LOWEST - 1).Request(this);
+    }
+    else if (event.GetId() > ID_EDIT_STC_LOWEST && event.GetId() < ID_EDIT_STC_HIGHEST)
+    {
+      if (editor != NULL)
+      {
+        wxPostEvent(editor, event);
+      }
+    }
+    else
+      wxFAIL;
     break;
+  break;
   }
 }
 

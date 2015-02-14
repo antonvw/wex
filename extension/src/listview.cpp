@@ -634,9 +634,6 @@ void wxExListView::OnCommand(wxCommandEvent& event)
   case wxID_SORT_DESCENDING:
     SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING);
     break;
-  case ID_COL_FIRST ... ID_COL_LAST:
-    SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);
-    break;
   case ID_EDIT_SELECT_INVERT:
     EditInvertAll();
     break;
@@ -647,7 +644,10 @@ void wxExListView::OnCommand(wxCommandEvent& event)
     }
     break;
     
-  default: wxFAIL;
+  default: 
+    if (event.GetId() > ID_COL_FIRST && event.GetId() < ID_COL_LAST)
+      SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);
+    else wxFAIL;
   }
 
 #if wxUSE_STATUSBAR

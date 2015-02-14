@@ -216,19 +216,6 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
-  case ID_EDIT_VCS_LOWEST ... ID_EDIT_VCS_HIGHEST:
-  {
-    std::vector< wxString > files;
-  
-    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-    {
-      files.push_back(wxExListItem(this, i).GetFileName().GetFullPath());
-    }
-  
-    wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
-  }
-  break;
-  
   case ID_LIST_OPEN_ITEM:
   {
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
@@ -284,12 +271,21 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
     wxExMake(wxExListItem(this, GetFirstSelected()).GetFileName());
   break;
 
-  case ID_TOOL_LOWEST ... ID_TOOL_HIGHEST:
-    RunItems(event.GetId());
-  break;
-  
   default: 
-    wxFAIL;
+    if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
+    {
+      std::vector< wxString > files;
+    
+      for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+      {
+        files.push_back(wxExListItem(this, i).GetFileName().GetFullPath());
+      }
+    
+      wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
+    }
+    else if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
+      RunItems(event.GetId());
+    else wxFAIL;
     break;
   }
 }
