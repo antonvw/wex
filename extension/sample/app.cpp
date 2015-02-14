@@ -321,21 +321,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     case wxID_DELETE:
     case wxID_SELECTALL:
     case wxID_JUMP_TO:
-    case wxID_CUT ... wxID_CLEAR:
-      if (editor != NULL)
-      {
-        wxPostEvent(editor, event);
-      }
-      else if (grid != NULL)
-      {
-        wxPostEvent(grid, event);
-      }
-      else if (listview != NULL)
-      {
-        wxPostEvent(listview, event);
-      }
-    break;
-    
+
     case ID_CONFIG_DLG: ShowConfigItems(); break;
     
     case ID_CONFIG_DLG_1_COL:
@@ -538,7 +524,23 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       break;
       
     default:
-      wxFAIL;
+      if (event.GetId() >= wxID_CUT && event.GetId() <= wxID_CLEAR)
+      {
+        if (editor != NULL)
+        {
+          wxPostEvent(editor, event);
+        }
+        else if (grid != NULL)
+        {
+          wxPostEvent(grid, event);
+        }
+        else if (listview != NULL)
+        {
+          wxPostEvent(listview, event);
+        }
+      }
+      else
+          wxFAIL;
       break;
     }
 }

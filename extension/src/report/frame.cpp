@@ -440,10 +440,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
-    case wxID_FILE1 ... wxID_FILE1 + NUMBER_RECENT_FILES:
-      DoRecent(m_FileHistory,
-        event.GetId() - wxID_FILE1);
-      break;
     case ID_CLEAR_FILES: ClearHistory(m_FileHistory); break;
     case ID_CLEAR_PROJECTS: ClearHistory(m_ProjectHistory); break;
       
@@ -456,12 +452,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
           project->FileSave();
         }
       }
-      break;
-      
-    case ID_RECENT_PROJECT_LOWEST ... ID_RECENT_PROJECT_LOWEST + NUMBER_RECENT_PROJECTS:
-      DoRecent(m_ProjectHistory,
-        event.GetId() - ID_RECENT_PROJECT_LOWEST,
-        WIN_IS_PROJECT);
       break;
       
     case ID_TOOL_REPORT_FIND: 
@@ -500,7 +490,15 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       break;
 
     default:
-      wxFAIL;
+      if (event.GetId() >= wxID_FILE1 && event.GetId() <= wxID_FILE1 + NUMBER_RECENT_FILES)
+        DoRecent(m_FileHistory,
+          event.GetId() - wxID_FILE1);
+      else if (event.GetId() >= ID_RECENT_PROJECT_LOWEST && event.GetId() <= ID_RECENT_PROJECT_LOWEST + NUMBER_RECENT_PROJECTS)
+        DoRecent(m_ProjectHistory,
+          event.GetId() - ID_RECENT_PROJECT_LOWEST,
+          WIN_IS_PROJECT);
+      else wxFAIL;
+      break;
   }
 }
 

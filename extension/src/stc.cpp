@@ -1645,17 +1645,18 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
       
     case ID_EDIT_SHOW_PROPERTIES: ShowProperties(); break;
 
-    case ID_EDIT_VCS_LOWEST ... ID_EDIT_VCS_HIGHEST:
-    {
-      wxExVCSExecute(m_Frame, command.GetId() - ID_EDIT_VCS_LOWEST - 1, 
-        std::vector< wxString >{GetFileName().GetFullPath()});
-    }
-    break;
-  
     case ID_EDIT_ZOOM_IN: SetZoom(++m_Zoom); break;
     case ID_EDIT_ZOOM_OUT: SetZoom(--m_Zoom);  break;
 
-    default: wxFAIL; break;
+    default: 
+      if (command.GetId() > ID_EDIT_VCS_LOWEST && command.GetId() < ID_EDIT_VCS_HIGHEST)
+      {
+        wxExVCSExecute(m_Frame, command.GetId() - ID_EDIT_VCS_LOWEST - 1, 
+          std::vector< wxString >{GetFileName().GetFullPath()});
+      }
+      else
+        wxFAIL;
+    break;
   }
 }
 
