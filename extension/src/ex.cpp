@@ -572,6 +572,7 @@ bool wxExEx::CommandSet(const wxString& arg)
   wxExCmdLineParser cl(text);
   cl.AddSwitch("h", wxEmptyString, "help", wxCMD_LINE_OPTION_HELP);
   cl.AddOption("ec", wxEmptyString, "Edge Column", wxCMD_LINE_VAL_NUMBER);
+  cl.AddOption("in", wxEmptyString, "INdentation", wxCMD_LINE_VAL_NUMBER);
   cl.AddOption("sy", wxEmptyString, "SYntax (off)", wxCMD_LINE_VAL_STRING);
   cl.AddOption("ts", wxEmptyString, "Tab Stop", wxCMD_LINE_VAL_NUMBER);
   cl.AddNegatableSwitch("ai", "Auto Indent");
@@ -598,6 +599,13 @@ bool wxExEx::CommandSet(const wxString& arg)
     cl.Found("ec", &val);
     m_STC->SetEdgeColumn(val);
     wxConfigBase::Get()->Write(_("Edge column"), val);
+  }
+  if (cl.Found("in"))
+  {
+    long val;
+    cl.Found("in", &val);
+    m_STC->SetIndent(val);
+    wxConfigBase::Get()->Write(_("Indent"), val);
   }
   if (cl.Found("sy"))
   {
