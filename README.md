@@ -53,7 +53,7 @@ one of these applications, being a full featured source code text editor.
 
 ## Building wxExtension        
 
-- under windows:   
+- under windows (Visual Studio 2013 Update 4 is required):   
     `mkdir build`   
     `cd build`   
     `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
