@@ -2,11 +2,10 @@
 // Name:      listviewfile.h
 // Purpose:   Declaration of class wxExListViewFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EX_REPORT_LISTVIEWFILE_H
-#define _EX_REPORT_LISTVIEWFILE_H
+#pragma once
 
 #include <wx/extension/file.h>
 #include <wx/extension/report/listview.h>
@@ -34,38 +33,51 @@ public:
   /// Destructor.
  ~wxExListViewFile();
 
-  /// Adds items.
-  void AddItems();
+  /// Adds items. The items are added using a separate thread,
+  /// deault this thread runs detached, otherwise this method
+  /// waits for the thread to finish.
+  void AddItems(
+    const wxString& folder,
+    const wxString& files,
+    long flags,
+    bool detach = true);
 
   // Interface, for wxExListView overriden methods.
   /// Sets contents changed if we are not syncing.
-  virtual void AfterSorting();
+  virtual void AfterSorting() override;
 
   /// Returns member.
   virtual bool GetContentsChanged() const {return m_ContentsChanged;};
 
-  virtual bool ItemFromText(const wxString& text);
+  // Access to members.
+  const wxString GetTextAddFiles() const {return m_TextAddFiles;};
+  const wxString GetTextAddFolders() const {return m_TextAddFolders;};
+  const wxString GetTextAddRecursive() const {return m_TextAddRecursive;};
+  const wxString GetTextAddWhat() const {return m_TextAddWhat;};
+  const wxString GetTextInFolder() const {return m_TextInFolder;};
+
+  /// Adds item from text.
+  virtual bool ItemFromText(const wxString& text) override;
 
   /// Resets the member.
-  virtual void ResetContentsChanged() {m_ContentsChanged = false;};
+  virtual void ResetContentsChanged() override {m_ContentsChanged = false;};
 protected:
-  virtual void BuildPopupMenu(wxExMenu& menu);
-  virtual bool DoFileLoad(bool synced = false);
-  virtual void DoFileNew();
-  virtual void DoFileSave(bool save_as = false);
+  virtual void BuildPopupMenu(wxExMenu& menu) override;
+  virtual bool DoFileLoad(bool synced = false) override;
+  virtual void DoFileNew() override;
+  virtual void DoFileSave(bool save_as = false) override;
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:
   bool m_ContentsChanged;
-  wxExConfigDialog* m_AddItemsDialog;
-
   const wxString m_TextAddFiles;
   const wxString m_TextAddFolders;
   const wxString m_TextAddRecursive;
   const wxString m_TextAddWhat;
   const wxString m_TextInFolder;
   
+  wxExConfigDialog* m_AddItemsDialog;
+
   DECLARE_EVENT_TABLE()
 };
-#endif

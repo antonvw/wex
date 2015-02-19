@@ -113,7 +113,6 @@ void wxExConfigDialog::Layout(
     return;
   }
   
-  bool first_time = true;
   wxFlexGridSizer* sizer = NULL;
   wxFlexGridSizer* previous_item_sizer = NULL;
   int previous_item_type = -1;
@@ -165,10 +164,14 @@ void wxExConfigDialog::Layout(
     bookctrl->SetImageList(imageList);
   }
        
+  bool first_time = true;
   wxString previous_page = "XXXXXX";
 
   for (auto& it : m_ConfigItems)
   {
+    if (it.GetType() == CONFIG_EMPTY) 
+      continue; //skip
+    
     if (first_time ||
        (it.GetPage() != previous_page && !it.GetPage().empty()))
     {

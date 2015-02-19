@@ -2,7 +2,7 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of class wxExDir and wxExDirOpenFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -20,9 +20,6 @@ public:
   wxExDirTraverser(wxExDir& dir)
     : m_Dir(dir){;}
   
-  // Calling Yield on Linux Mint causes the app to hang,
-  // so enabled it only for MSW.
-
   virtual wxDirTraverseResult OnDir(const wxString& dirname) override
   {
     if (m_Dir.Cancelled())
@@ -33,13 +30,6 @@ public:
     if (m_Dir.GetFlags() & wxDIR_DIRS)
     {
       m_Dir.OnDir(dirname);
-    }
-
-    if (wxTheApp != NULL)
-    {
-#ifdef __WXMSW__      
-      wxTheApp->Yield();
-#endif      
     }
 
     return wxDIR_CONTINUE;
@@ -57,22 +47,12 @@ public:
       m_Dir.OnFile(filename);
     }
 
-    if (wxTheApp != NULL)
-    {
-#ifdef __WXMSW__
-      wxTheApp->Yield();
-#endif      
-    }
-
     return wxDIR_CONTINUE;
   }
 
 private:
   wxExDir& m_Dir;
 };
-
-bool wxExDir::m_Cancelled = false;
-bool wxExDir::m_IsBusy = false;
 
 wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec, int flags)
   : wxDir(fullpath)
@@ -83,13 +63,17 @@ wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec, int flags)
 
 size_t wxExDir::FindFiles()
 {
-  if (!IsOpened() || m_IsBusy)
+  if (!IsOpened() || Running())
   {
+    if (Running())
+    {
+      wxLogStatus(_("Busy"));
+    }
+  
     return 0;
   }
-
-  m_Cancelled = false;
-  m_IsBusy = true;
+  
+  Start();
 
   wxExDirTraverser traverser(*this);
   
@@ -100,7 +84,7 @@ size_t wxExDir::FindFiles()
     (m_FileSpec.Contains(";") ? wxString(wxEmptyString): m_FileSpec), 
     m_Flags);
 
-  m_IsBusy = false;
+  Stop();
 
   return retValue;
 }

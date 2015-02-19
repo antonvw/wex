@@ -2,18 +2,18 @@
 // Name:      dir.h
 // Purpose:   Declaration of class wxExDir and wxExDirOpenFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXDIR_H
-#define _EXDIR_H
+#pragma once
 
 #include <wx/dir.h>
+#include <wx/extension/interruptable.h>
 
 /// Adds FindFiles to a wxDir.
 /// By overriding OnDir and OnFile you can take care
 /// of what to do with the result.
-class WXDLLIMPEXP_BASE wxExDir : public wxDir
+class WXDLLIMPEXP_BASE wxExDir : public wxDir, public wxExInterruptable
 {
 public:
   /// Constructor.
@@ -30,15 +30,6 @@ public:
   /// Finds matching files.
   /// This results in recursive calls for OnDir and OnFile.
   size_t FindFiles();
-
-  /// Allows you to cancel the FindFiles.
-  static void Cancel() {m_Cancelled = true;}
-
-  /// Check whether operation was cancelled.
-  static bool Cancelled() {return m_Cancelled;};
-
-  /// Is FindFiles already active.
-  static bool GetIsBusy() {return m_IsBusy;};
 
   /// Gets the file spec.
   const wxString& GetFileSpec() const {return m_FileSpec;};
@@ -58,8 +49,6 @@ public:
 private:
   const wxString m_FileSpec;
   const int m_Flags;
-  static bool m_Cancelled;
-  static bool m_IsBusy;
 };
 
 #if wxUSE_GUI
@@ -85,5 +74,4 @@ private:
   wxExFrame* m_Frame;
   const long m_Flags;
 };
-#endif
 #endif
