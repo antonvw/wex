@@ -689,8 +689,8 @@ void wxExSampleFrame::ShowConfigItems()
       1007 + l));
   }
 
-  // CONFIG_EMPTY
-  v.push_back(wxExConfigItem(10, "Pickers", CONFIG_EMPTY));
+  // CONFIG_SPACER on pickers page
+  v.push_back(wxExConfigItem(10, "Pickers", CONFIG_SPACER));
 
   // CONFIG_DIRPICKERCTRL
   v.push_back(wxExConfigItem(

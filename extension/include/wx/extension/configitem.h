@@ -2,7 +2,7 @@
 // Name:      configitem.h
 // Purpose:   Declaration of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXCONFIGITEM_H
@@ -81,6 +81,9 @@ enum wxExConfigType
   /// a slider item
   CONFIG_SLIDER,
 
+  /// a spacer item
+  CONFIG_SPACER,
+
   /// a spinctrl item
   CONFIG_SPINCTRL,
 
@@ -136,8 +139,12 @@ typedef bool (*wxExUserWindowToConfig)(wxWindow* user, bool save);
 class WXDLLIMPEXP_BASE wxExConfigItem
 {
 public:
-  /// Default constructor for empty config item.
-  wxExConfigItem(int size = 10);
+  /// Default constructor.
+  wxExConfigItem();
+  
+  /// Constructor for spacer config item.
+  /// The size is the size for the spacer used.
+  wxExConfigItem(int size);
   
   /// Constuctor for a static horizontal or vertical line.
   /// Or for an empty config item on specified page.

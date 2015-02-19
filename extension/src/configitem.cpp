@@ -30,10 +30,28 @@
 
 #if wxUSE_GUI
 
+wxExConfigItem::wxExConfigItem()
+  : m_Window(NULL)
+  , m_Style(0)
+  , m_Type(CONFIG_EMPTY)
+  , m_AddLabel(false)
+  , m_IsRequired(false)
+  , m_Id(-1)
+  , m_MaxItems(0)
+  , m_Min(0)
+  , m_Max(0)
+  , m_Inc(0)
+  , m_MajorDimension(1)
+  , m_UserWindowCreate(NULL)
+  , m_UserWindowToConfig(NULL)
+{
+  Init(wxEmptyString, -1);
+}
+
 wxExConfigItem::wxExConfigItem(int size)
   : m_Window(NULL)
   , m_Style(size)
-  , m_Type(CONFIG_EMPTY)
+  , m_Type(CONFIG_SPACER)
   , m_AddLabel(false)
   , m_IsRequired(false)
   , m_Id(-1)
@@ -93,6 +111,7 @@ wxExConfigItem::wxExConfigItem(
       type == CONFIG_CHECKBOX ||
       type == CONFIG_COMMAND_LINK_BUTTON ||
       type == CONFIG_EMPTY ||
+      type == CONFIG_SPACER ||
       type == CONFIG_TOGGLEBUTTON ? false: add_label)
   , m_Inc(1)
   , m_UserWindowCreate(NULL)
@@ -506,6 +525,9 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Style);
       break;
 
+    case CONFIG_SPACER:
+      break;
+      
     case CONFIG_SPINCTRL:
     case CONFIG_SPINCTRL_HEX:
       {
@@ -607,7 +629,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
     default: wxFAIL;
   }
 
-  if (m_Type != CONFIG_EMPTY)
+  if (m_Type != CONFIG_EMPTY && m_Type != CONFIG_SPACER)
   {
     wxASSERT(m_Window != NULL);
   }
@@ -692,6 +714,7 @@ void wxExConfigItem::Init(const wxString& page, int cols)
     case CONFIG_DIRPICKERCTRL:
     case CONFIG_EMPTY:
     case CONFIG_FILEPICKERCTRL:
+    case CONFIG_SPACER:
     case CONFIG_STATICLINE:
     case CONFIG_USER:
       break;
@@ -717,12 +740,20 @@ wxFlexGridSizer* wxExConfigItem::Layout(
   
   wxFlexGridSizer* use = fgz;
 
-  if (m_Type == CONFIG_COMBOBOXDIR)
+  switch (m_Type)
   {
-    use = AddBrowseButton(sizer);
-  }
-  else
-  {
+    case CONFIG_COMBOBOXDIR:
+      use = AddBrowseButton(sizer);
+      break;
+      
+    case CONFIG_EMPTY:
+      break;
+      
+    case CONFIG_SPACER:
+      sizer->AddSpacer(m_Style);
+      break;
+
+    default:
     if (m_AddLabel)
     {
       // Construct a child flex grid sizer.
@@ -758,14 +789,7 @@ wxFlexGridSizer* wxExConfigItem::Layout(
     }
     else
     {
-      if (m_Window != NULL)
-      {
-        sizer->Add(m_Window, m_SizerFlags);
-      }
-      else
-      {
-        sizer->AddSpacer(m_Style);
-      }
+      sizer->Add(m_Window, m_SizerFlags);
     }
   }
   

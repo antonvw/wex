@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXBASETESTUNIT_H
-#define _EXBASETESTUNIT_H
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 #include "../test.h"
@@ -21,6 +20,7 @@ class TestFixture : public wxExTestFixture
   CPPUNIT_TEST( testFileTiming);
   CPPUNIT_TEST( testFileName);
   CPPUNIT_TEST( testFileNameTiming);
+  CPPUNIT_TEST( testInterruptable);
   CPPUNIT_TEST( testStat);
   CPPUNIT_TEST( testStatistics);
   CPPUNIT_TEST( testTool );
@@ -33,9 +33,8 @@ public:
   void testFileTiming();
   void testFileName();
   void testFileNameTiming();
+  void testInterruptable();
   void testStat();
   void testStatistics();
   void testTool();
 };
-
-#endif

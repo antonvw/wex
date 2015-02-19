@@ -5,6 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -107,39 +108,24 @@ void wxExFrameWithHistory::ClearHistory(wxFileHistory& history)
 
 void wxExFrameWithHistory::CreateDialogs()
 {
-  std::vector<wxExConfigItem> f {
+  std::set<wxString> t(m_Info);
+  t.insert(m_TextRecursive);
+  
+  const std::vector<wxExConfigItem> f {
     wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
       CONFIG_COMBOBOX, 
       wxEmptyString, 
-      true)};
-  std::vector<wxExConfigItem> r {f.back(),
-    wxExConfigItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), CONFIG_COMBOBOX)};
-  
-  f.push_back(wxExConfigItem(
-    m_TextInFiles, 
-    CONFIG_COMBOBOX, 
-    wxEmptyString, 
-    true));
-  r.push_back(f.back());
-
-  f.push_back(wxExConfigItem(
-    m_TextInFolder, 
-    CONFIG_COMBOBOXDIR, 
-    wxEmptyString, 
-    true,
-    1005));
-  r.push_back(f.back());
-
-  // Match whole word does not work with replace.
-  const std::set<wxString> s{
-    wxExFindReplaceData::Get()->GetTextMatchCase(),
-    wxExFindReplaceData::Get()->GetTextRegEx(),
-    m_TextRecursive};
-  r.push_back(wxExConfigItem(s));
-  
-  std::set<wxString> t(m_Info);
-  t.insert(m_TextRecursive);
-  f.push_back(wxExConfigItem(t));
+      true),
+    wxExConfigItem(m_TextInFiles, 
+      CONFIG_COMBOBOX, 
+      wxEmptyString, 
+      true),
+    wxExConfigItem(m_TextInFolder, 
+      CONFIG_COMBOBOXDIR, 
+      wxEmptyString, 
+      true,
+      1005),
+    wxExConfigItem(t)};
   
   m_FiFDialog = new wxExConfigDialog(this,
     f,
@@ -150,7 +136,17 @@ void wxExFrameWithHistory::CreateDialogs()
     ID_FIND_IN_FILES);
     
   m_RiFDialog = new wxExConfigDialog(this,
-    r,
+    std::vector<wxExConfigItem> {f.at(0),
+      wxExConfigItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), 
+        CONFIG_COMBOBOX),
+      f.at(1),
+      f.at(2),
+      wxExConfigItem(
+        // Match whole word does not work with replace.
+        std::set<wxString>{
+        wxExFindReplaceData::Get()->GetTextMatchCase(),
+        wxExFindReplaceData::Get()->GetTextRegEx(),
+        m_TextRecursive})},
     _("Replace In Files"),
     0,
     1,
@@ -188,6 +184,11 @@ void wxExFrameWithHistory::DoRecent(
 void wxExFrameWithHistory::FileHistoryPopupMenu()
 {
   HistoryPopupMenu(m_FileHistory, wxID_FILE1, ID_CLEAR_FILES);
+}
+
+void wxExFrameWithHistory::FiF(wxWindowID dialogid)
+{
+  FindInFiles(dialogid);
 }
 
 void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
@@ -282,31 +283,21 @@ int wxExFrameWithHistory::FindInFilesDialog(
     GetSTC()->GetFindString();
   }
 
-  std::vector<wxExConfigItem> v;
-
-  v.push_back(wxExConfigItem(
-    wxExFindReplaceData::Get()->GetTextFindWhat(), 
-    CONFIG_COMBOBOX, 
-    wxEmptyString, 
-    true));
-
-  if (add_in_files)
-  {
-    v.push_back(wxExConfigItem(
+  const std::vector<wxExConfigItem> v {
+    wxExConfigItem(
+      wxExFindReplaceData::Get()->GetTextFindWhat(), 
+      CONFIG_COMBOBOX, 
+      wxEmptyString, 
+      true),
+    (add_in_files ? wxExConfigItem(
       m_TextInFiles, 
       CONFIG_COMBOBOX, 
       wxEmptyString, 
-      true));
-  }
-    
-  if (id == ID_TOOL_REPORT_REPLACE) 
-  {
-    v.push_back(wxExConfigItem(
+      true) : wxExConfigItem()),
+    (id == ID_TOOL_REPORT_REPLACE ? wxExConfigItem(
       wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-      CONFIG_COMBOBOX));
-  }
-
-  v.push_back(wxExConfigItem(m_Info));
+      CONFIG_COMBOBOX): wxExConfigItem()),
+    wxExConfigItem(m_Info)};
 
   if (wxExConfigDialog(this,
     v,
@@ -375,10 +366,17 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   wxExFindReplaceData::Get()->SetFindString(cl.GetParam(0));
   wxExFindReplaceData::Get()->SetUseRegularExpression(true);
   wxLogStatus(GetFindReplaceInfoText());
-  wxExDirTool dir(tool, cl.GetParam(1), cl.GetParam(2), 
-    wxDIR_FILES | (cl.FoundSwitch("r") ? wxDIR_DIRS: 0));
-  dir.FindFiles();
-  wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+  
+  const wxString arg1(cl.GetParam(1));
+  const wxString arg2(cl.GetParam(2));
+  const int arg3(wxDIR_FILES | (cl.FoundSwitch("r") ? wxDIR_DIRS: 0));
+  
+  std::thread t([=]{
+    wxExDirTool dir(tool, arg1, arg2, arg3);
+    dir.FindFiles();
+    wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));});
+  
+  t.detach();
     
   return true;
 }
@@ -509,9 +507,8 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
   switch (commandid)
   {
     case wxID_CANCEL:
-      if (wxExDir::GetIsBusy())
+      if (wxExInterruptable::Cancel())
       {
-        wxExDir::Cancel();
         wxLogStatus(_("Cancelled"));
       }
       break;
@@ -521,12 +518,32 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
       switch (dialogid)
       {
         case wxID_ADD:
-          GetProject()->AddItems();
+          {
+          int flags = 0;
+        
+          if (wxConfigBase::Get()->ReadBool(GetProject()->GetTextAddFiles(), true)) 
+          {
+            flags |= wxDIR_FILES;
+          }
+        
+          if (wxConfigBase::Get()->ReadBool(GetProject()->GetTextAddRecursive(), true)) 
+          {
+            flags |= wxDIR_DIRS;
+          }
+
+          GetProject()->AddItems(
+            wxExConfigFirstOf(GetProject()->GetTextInFolder()),
+            wxExConfigFirstOf(GetProject()->GetTextAddWhat()),
+            flags);
+          }
           break;
 
         case ID_FIND_IN_FILES:
         case ID_REPLACE_IN_FILES:
-          FindInFiles(dialogid);
+          {
+          std::thread t(&wxExFrameWithHistory::FiF, this, dialogid);
+          t.detach();
+          }
           break;
 
         default: wxFAIL;

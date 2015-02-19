@@ -295,57 +295,37 @@ int wxExVCSEntry::ShowDialog(
     return wxID_CANCEL;
   }
   
-  std::vector<wxExConfigItem> v;
-
-  if (GetCommand().IsCommit())
-  {
-    v.push_back(wxExConfigItem(
-      _("Revision comment"), 
-      CONFIG_COMBOBOX,
-      wxEmptyString,
-      true)); // required
-  }
-
-  if (add_folder && !GetCommand().IsHelp())
-  {
-    v.push_back(wxExConfigItem(
-      _("Base folder"), 
-      CONFIG_COMBOBOXDIR, 
-      wxEmptyString, 
-      true,
-      1005));
-
-    if (GetCommand().IsAdd())
-    {
-      v.push_back(wxExConfigItem(
-        _("Path"), 
-        CONFIG_COMBOBOX,
-        wxEmptyString, 
-        true)); // required
-    }
-  }
-
   if (GetCommand().UseFlags())
   {
     wxConfigBase::Get()->Write(
       _("Flags"), 
       wxConfigBase::Get()->Read(m_FlagsKey));
-
-    v.push_back(wxExConfigItem(_("Flags"), wxEmptyString));
-  }
-
-  if (m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX)
-  {
-    v.push_back(wxExConfigItem(_("Prefix flags"), wxEmptyString));
-  }
-  
-  if (GetCommand().UseSubcommand())
-  {
-    v.push_back(wxExConfigItem(_("Subcommand"), wxEmptyString));
   }
   
   const int retValue = wxExConfigDialog(parent,
-    v,
+    std::vector<wxExConfigItem> {
+      (GetCommand().IsCommit() ? wxExConfigItem(
+        _("Revision comment"), 
+        CONFIG_COMBOBOX,
+        wxEmptyString,
+        true) : wxExConfigItem()),
+      (add_folder && !GetCommand().IsHelp() ? wxExConfigItem(
+        _("Base folder"), 
+        CONFIG_COMBOBOXDIR, 
+        wxEmptyString, 
+        true,
+        1005) : wxExConfigItem()),
+      (add_folder && !GetCommand().IsHelp() && GetCommand().IsAdd() ? wxExConfigItem(
+        _("Path"), 
+        CONFIG_COMBOBOX,
+        wxEmptyString, 
+        true) : wxExConfigItem()),
+      (GetCommand().UseFlags() ?  wxExConfigItem(
+        _("Flags"), wxEmptyString): wxExConfigItem()),
+      (m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX ? wxExConfigItem(
+        _("Prefix flags"), wxEmptyString): wxExConfigItem()),
+      (GetCommand().UseSubcommand() ? wxExConfigItem(
+        _("Subcommand"), wxEmptyString): wxExConfigItem())},
     caption).ShowModal();
     
   if (retValue == wxID_OK)

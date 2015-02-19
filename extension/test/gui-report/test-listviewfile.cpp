@@ -5,6 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/dir.h>
 #include <wx/extension/report/listviewfile.h>
 #include "test.h"
 
@@ -28,6 +29,12 @@ void wxExGuiReportTestFixture::testListViewFile()
   listView->ResetContentsChanged();
   CPPUNIT_ASSERT(!listView->GetContentsChanged());
   listView->AfterSorting();
+  
+  listView->AddItems(
+    "../extension/test",
+    "*.cpp", 
+    wxDIR_FILES, 
+    false); // join the thread
   
   CPPUNIT_ASSERT(remove("test-rep.prj.bck") == 0);
 }

@@ -2,9 +2,10 @@
 // Name:      listviewfile.cpp
 // Purpose:   Implementation of class wxExListViewFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -54,31 +55,25 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
       validator, 
       name)
   , wxExFile(false) // do not open files in FileLoad and Save
-  , m_AddItemsDialog(NULL)
   , m_ContentsChanged(false)
   , m_TextAddFiles(_("Add files"))
   , m_TextAddFolders(_("Add folders"))
   , m_TextAddRecursive(_("Recursive"))
   , m_TextAddWhat(_("Add what"))
   , m_TextInFolder(_("In folder"))
+  , m_AddItemsDialog(new wxExConfigDialog(this,
+      std::vector<wxExConfigItem> {
+        wxExConfigItem(m_TextAddWhat, CONFIG_COMBOBOX, wxEmptyString, true),
+        wxExConfigItem(m_TextInFolder, CONFIG_COMBOBOXDIR, wxEmptyString, true, 1005),
+        wxExConfigItem(std::set<wxString> {
+          m_TextAddFiles, m_TextAddFolders, m_TextAddRecursive})},
+      _("Add Items"),
+      0,
+      1,
+      wxOK | wxCANCEL,
+      wxID_ADD))
 {
   FileLoad(file);
-  
-  const std::set<wxString> set{
-      m_TextAddFiles, m_TextAddFolders, m_TextAddRecursive};
-  
-  const std::vector<wxExConfigItem> v{
-    wxExConfigItem(m_TextAddWhat, CONFIG_COMBOBOX, wxEmptyString, true),
-    wxExConfigItem(m_TextInFolder, CONFIG_COMBOBOXDIR, wxEmptyString, true, 1005),
-    wxExConfigItem(set)};
-
-  m_AddItemsDialog = new wxExConfigDialog(this,
-    v,
-    _("Add Items"),
-    0,
-    1,
-    wxOK | wxCANCEL,
-    wxID_ADD);
 }
 
 wxExListViewFile::~wxExListViewFile()
@@ -86,52 +81,40 @@ wxExListViewFile::~wxExListViewFile()
   m_AddItemsDialog->Destroy();
 }
 
-void wxExListViewFile::AddItems()
+void wxExListViewFile::AddItems(
+  const wxString& folder,
+  const wxString& files,
+  long flags,
+  bool detached)
 {
-  if (wxExDir::GetIsBusy())
-  {
-    wxLogStatus(_("Busy"));
-    return;
-  }
+  std::thread t([=] {
+    wxExDirWithListView dir(this, folder, files, flags);
   
-  int flags = 0;
-
-  if (wxConfigBase::Get()->ReadBool(m_TextAddFiles, true)) 
-  {
-    flags |= wxDIR_FILES;
-  }
-
-  if (wxConfigBase::Get()->ReadBool(m_TextAddRecursive, true)) 
-  {
-    flags |= wxDIR_DIRS;
-  }
-
-  wxExDirWithListView dir(
-    this,
-    wxExConfigFirstOf(m_TextInFolder),
-    wxExConfigFirstOf(m_TextAddWhat),
-    flags);
-
-  const int old_count = GetItemCount();
-
-  dir.FindFiles();
-
-  const int added = GetItemCount() - old_count;
-
-  if (added > 0)
-  {
-    m_ContentsChanged = true;
-
-    if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+    const int old_count = GetItemCount();
+  
+    dir.FindFiles();
+  
+    const int added = GetItemCount() - old_count;
+  
+    if (added > 0)
     {
-      SortColumn(GetSortedColumnNo(), SORT_KEEP);
+      m_ContentsChanged = true;
+  
+      if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+      {
+        SortColumn(GetSortedColumnNo(), SORT_KEEP);
+      }
     }
-  }
+  
+    const wxString text = 
+      _("Added") + wxString::Format(" %d ", added) + _("file(s)");
+  
+    wxLogStatus(text);});
 
-  const wxString text = 
-    _("Added") + wxString::Format(" %d ", added) + _("file(s)");
-
-  wxLogStatus(text);
+  if (detached)  
+    t.detach();
+  else
+    t.join();
 }
 
 void wxExListViewFile::AfterSorting()
