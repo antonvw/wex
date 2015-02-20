@@ -88,14 +88,13 @@ void wxExListViewFile::AddItems(
   bool detached)
 {
   std::thread t([=] {
+    const int old_count = GetItemCount();
     wxExDirWithListView dir(this, folder, files, flags);
   
-    const int old_count = GetItemCount();
-  
     dir.FindFiles();
-  
+    
     const int added = GetItemCount() - old_count;
-  
+    
     if (added > 0)
     {
       m_ContentsChanged = true;
