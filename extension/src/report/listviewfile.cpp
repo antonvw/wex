@@ -70,7 +70,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
       _("Add Items"),
       0,
       1,
-      wxOK | wxCANCEL,
+      wxAPPLY | wxCANCEL,
       wxID_ADD))
 {
   FileLoad(file);
