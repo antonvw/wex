@@ -31,8 +31,8 @@ void wxExGuiReportTestFixture::testListViewFile()
   listView->AfterSorting();
   
   listView->AddItems(
-    "../extension/test",
-    "*.cpp", 
+    "./",
+    "*.h", 
     wxDIR_FILES, 
     false); // join the thread
   
