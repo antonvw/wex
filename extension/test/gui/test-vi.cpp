@@ -394,7 +394,7 @@ void wxExGuiTestFixture::testVi()
   std::vector<std::pair<std::string, int>> visuals {
     {"v",wxExVi::MODE_VISUAL},
     {"V",wxExVi::MODE_VISUAL_LINE},
-    {"Z",wxExVi::MODE_VISUAL_RECT}};
+    {"F",wxExVi::MODE_VISUAL_RECT}};
 
   for (auto& visual : visuals)
   {

@@ -557,6 +557,8 @@ bool wxExVi::CommandChar(int c, int repeat)
       }
       break;
         
+    case 'F': m_Mode = MODE_VISUAL_RECT; break;
+    
     case 'G': GetSTC()->GotoLineAndSelect(repeat); break;
     case 'H': GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine()); break;
         
@@ -594,8 +596,6 @@ bool wxExVi::CommandChar(int c, int repeat)
       DeleteRange(this, GetSTC()->GetCurrentPos() - repeat, GetSTC()->GetCurrentPos());
       break;
 
-    case 'Z': m_Mode = MODE_VISUAL_RECT; break;
-    
     case '.': 
       {
       m_Dot = true;
