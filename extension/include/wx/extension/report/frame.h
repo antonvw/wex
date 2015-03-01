@@ -163,7 +163,6 @@ private:
   void ClearHistory(wxFileHistory& history);
   void CreateDialogs();
   void DoRecent(wxFileHistory& history, size_t index, long flags = 0);
-  void FiF(wxWindowID dialogid);
   void FindInFiles(wxWindowID dialogid);
   const wxString GetFindReplaceInfoText(bool replace = false) const;
   void HistoryPopupMenu(
