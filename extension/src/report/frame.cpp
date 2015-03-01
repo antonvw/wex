@@ -186,11 +186,6 @@ void wxExFrameWithHistory::FileHistoryPopupMenu()
   HistoryPopupMenu(m_FileHistory, wxID_FILE1, ID_CLEAR_FILES);
 }
 
-void wxExFrameWithHistory::FiF(wxWindowID dialogid)
-{
-  FindInFiles(dialogid);
-}
-
 void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 {
   const bool replace = (dialogid == ID_REPLACE_IN_FILES);
@@ -213,15 +208,18 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     flags |= wxDIR_DIRS;
   }
 
-  wxExDirTool dir(
-    tool,
-    wxExConfigFirstOf(m_TextInFolder),
-    wxExConfigFirstOf(m_TextInFiles),
-    flags);
+  std::thread t([=] {
+    wxExDirTool dir(
+      tool,
+      wxExConfigFirstOf(m_TextInFolder),
+      wxExConfigFirstOf(m_TextInFiles),
+      flags);
 
-  dir.FindFiles();
+    dir.FindFiles();
 
-  wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+    wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));});
+  
+  t.detach();
 }
 
 bool wxExFrameWithHistory::FindInFiles(
@@ -540,10 +538,7 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
 
         case ID_FIND_IN_FILES:
         case ID_REPLACE_IN_FILES:
-          {
-          std::thread t(&wxExFrameWithHistory::FiF, this, dialogid);
-          t.detach();
-          }
+          FindInFiles(dialogid);
           break;
 
         default: wxFAIL;
