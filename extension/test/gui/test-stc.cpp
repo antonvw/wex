@@ -10,9 +10,9 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/stc.h>
-#include <wx/extension/managedframe.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/managedframe.h>
 #include "test.h"
 
 void wxExGuiTestFixture::testSTC()
@@ -34,8 +34,9 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT( stc->FindNext(wxString("hello"), wxSTC_FIND_WHOLEWORD));
   CPPUNIT_ASSERT(!stc->FindNext(wxString("HELLO"), wxSTC_FIND_MATCHCASE));
   CPPUNIT_ASSERT( stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE);
-  // uses flags from frd
-  CPPUNIT_ASSERT( stc->FindNext(wxString("HELLO")));
+  
+  wxExFindReplaceData::Get()->SetMatchCase(false);
+  CPPUNIT_ASSERT( stc->FindNext(wxString("HELLO"))); // uses flags from frd
   
   CPPUNIT_ASSERT( stc->AllowChangeIndicator());
   
@@ -47,6 +48,7 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT( stc->CanPaste());
   
   stc->DocumentStart();
+  wxExFindReplaceData::Get()->SetMatchWord(false);
   CPPUNIT_ASSERT( stc->FindNext(wxString("more text")));
   CPPUNIT_ASSERT( stc->GetFindString() == "more text");
   CPPUNIT_ASSERT( stc->ReplaceAll("more", "less") == 1);

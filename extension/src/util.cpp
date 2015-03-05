@@ -19,7 +19,6 @@
 #include <wx/filehistory.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/numformatter.h>
-#include <wx/regex.h>
 #include <wx/stdpaths.h>
 #include <wx/textctrl.h>
 #include <wx/tokenzr.h>
@@ -215,7 +214,7 @@ bool wxExAutoCompleteFileName(
   return true;
 }
 
-double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
+double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
 {
   wxString expr(text);
   expr.Trim();
@@ -228,12 +227,14 @@ double wxExCalculator(const wxString& text, wxExEx* ex, int& width)
   
   // Determine the width.
   const wxString rt((ds == '.' ? "\\.": wxString(ds)) + wxString("[0-9]+"));
-  wxRegEx re(rt);
-  
-  if (re.Matches(text))
+  std::regex re(rt);
+  auto words_begin = std::sregex_iterator(text.begin(), text.end(), re);
+  auto words_end = std::sregex_iterator();  
+
+  if (words_begin != words_end)
   {
-    const wxString match = re.GetMatch(expr);
-    
+    std::smatch match = *words_begin; 
+
     if (!match.empty())
     {
       width = match.length() - 1;
@@ -665,20 +666,17 @@ long wxExMake(const wxFileName& makefile)
 }
 
 int wxExMatch(
-  const wxString& reg, 
-  const wxString& text, 
+  const std::string& reg, 
+  const std::string& text, 
   std::vector < wxString > & v)
 {
   v.clear();
   
-#ifdef __WXMSW__
-// gcc 4.7.3 gives error code: 4
   try 
   {
     std::match_results<std::string::const_iterator> res;
     std::regex rx(reg);
-    std::string str(text.c_str());
-    std::regex_search(str, res, rx);
+    std::regex_search(text, res, rx);
     
     if (res.size() > 1)
     {
@@ -693,17 +691,6 @@ int wxExMatch(
     wxLogError(wxString::Format("%s: in: %s code: %d",
       e.what(), reg.c_str(), e.code()));
   }
-#else
-  wxRegEx regex(reg, wxRE_ADVANCED);
-
-  if (regex.Matches(text))
-  {
-    for (int i = 0; i < regex.GetMatchCount() - 1; i++)
-    {
-      v.push_back(regex.GetMatch(text, i + 1));
-    }
-  }
-#endif
 
   return v.size();
 }
@@ -883,8 +870,13 @@ const wxString wxExSkipWhiteSpace(
   const wxString& text,
   const wxString& replace_with)
 {
-  wxString output = text;
-  wxRegEx("[ \t\n\v\f\r]+").ReplaceAll(&output, replace_with);
+  std::regex re("[ \t\n\v\f\r]+");
+  wxString output = std::regex_replace(
+    text.ToStdString(), 
+    re, 
+    replace_with.ToStdString(), 
+    std::regex_constants::format_sed);
+  
   output.Trim(true);
   output.Trim(false);
   return output;

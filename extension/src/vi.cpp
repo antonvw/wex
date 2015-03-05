@@ -6,13 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/address.h>
@@ -160,12 +160,14 @@ bool YankedLines(wxExVi* vi)
 // Returns true if after text only one letter is followed.
 bool OneLetterAfter(const wxString text, const wxString& letter)
 {
-  return wxRegEx("^" + text + "[a-zA-Z]$").Matches(letter);
+  std::regex re("^" + text.ToStdString() + "[a-zA-Z]$");
+  return std::regex_match(letter.ToStdString(), re);
 }
 
 bool RegAfter(const wxString text, const wxString& letter)
 {
-  return wxRegEx("^" + text + "[0-9=\"a-z%.]$").Matches(letter);
+  std::regex re("^" + text.ToStdString() + "[0-9=\"a-z%.]$");
+  return std::regex_match(letter.ToStdString(), re);
 }
 
 std::string wxExVi::m_LastFindCharCommand;
@@ -432,7 +434,7 @@ void wxExVi::CommandCalc(const wxString& command)
   
   // Calculation register.
   int width = 0;
-  const double sum = wxExCalculator(command.Mid(index), this, width);
+  const double sum = wxExCalculator(command.Mid(index).ToStdString(), this, width);
 
   if (m_Mode == MODE_INSERT)
   {

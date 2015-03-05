@@ -2,15 +2,15 @@
 // Name:      frd.h
 // Purpose:   Declaration of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXFRD_H
-#define _EXFRD_H
+#pragma once
 
 #include <list>
+#include <regex>
+#include <string>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
-#include <wx/regex.h>
 #include <wx/textctrl.h>
 
 /// Adds an existing config to wxFindReplaceData, and some members.
@@ -26,10 +26,6 @@ public:
   /// Gets the find strings.
   const std::list < wxString > & GetFindStrings() const {
     return m_FindStrings;};
-
-  /// Gets the regular expression.
-  const wxRegEx& GetRegularExpression() const {
-    return m_FindRegularExpression;};
 
   /// Gets the replace strings.
   const std::list < wxString > & GetReplaceStrings() const {
@@ -62,6 +58,14 @@ public:
 
   /// Returns true if the flags have whole word set.
   bool MatchWord() const {return (GetFlags() & wxFR_WHOLEWORD) > 0;};
+  
+  /// Returns true if GetFindString as regular expression matches text.
+  bool RegExMatches(const std::string& text) const;
+  
+  /// Replaces all occurrences of GetFindString as regular expression
+  /// in text by GetReplaceString.
+  /// Returns number of replacements done in text.
+  int RegExReplaceAll(std::string& text) const;
 
   /// Returns true if the flags have search down set.
   bool SearchDown() const {return (GetFlags() & wxFR_DOWN) > 0;};
@@ -71,12 +75,8 @@ public:
   /// (both the parameter and returned value may be NULL). 
   static wxExFindReplaceData* Set(wxExFindReplaceData* frd);
 
-  /// Sets field member if the specified text matches 
-  /// one of the (boolean) text fields.
-  bool Set(const wxString& field, bool value);
-
   /// Sets the find string.
-  /// If UseRegularExpression also sets the regular expression.
+  /// If UseRegEx also sets the regular expression.
   /// This string is used for tool find in files and replace in files.
   /// Als moves the find string to the beginning of the find
   /// strings list.
@@ -100,17 +100,16 @@ public:
   void SetReplaceStrings(const std::list < wxString > & value);
 
   /// Sets using regular expression for find text.
-  void SetUseRegularExpression(bool value) {
-    m_UseRegularExpression = value;};
+  /// If GetFindString does not contain a valid regular expression
+  /// the use member is not set.
+  void SetUseRegEx(bool value);
 
   /// Returns true if find text is used as a regular expression.
-  bool UseRegularExpression() const {return m_UseRegularExpression;};
+  bool UseRegEx() const {return m_UseRegEx;};
 private:
   wxExFindReplaceData();
-  void SetFindRegularExpression();
 
-  wxRegEx m_FindRegularExpression;
-  bool m_UseRegularExpression;
+  bool m_UseRegEx;
 
   const wxString m_TextFindWhat;
   const wxString m_TextMatchCase;
@@ -122,6 +121,7 @@ private:
   std::list < wxString > m_FindStrings;
   std::list < wxString >::const_iterator m_FindsIterator;
   std::list < wxString > m_ReplaceStrings;
+  std::regex m_FindRegEx;
 
   static wxExFindReplaceData* m_Self;
 };
@@ -147,4 +147,3 @@ private:
 
   DECLARE_EVENT_TABLE()
 };
-#endif

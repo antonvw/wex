@@ -36,7 +36,7 @@ one of these applications, being a full featured source code text editor.
     in buildmsw (created):
     `../configure --with-msw --disable-shared && make`  
     
-- under Linux g++ 4.7.3:   
+- under Linux g++ 4.9.2:   
     install gtk:   
     `sudo apt-get install libgtk2.0-dev`   or   
     `sudo apt-get install libgtk-3-dev`   

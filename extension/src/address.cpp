@@ -37,7 +37,7 @@ int wxExAddress::GetLine() const
   }
    
   int width = 0;
-  const int sum = wxExCalculator(*this, m_Ex, width);
+  const int sum = wxExCalculator(ToStdString(), m_Ex, width);
   
   // Limit the range of what is returned.
   if (sum < 0)
@@ -488,7 +488,7 @@ bool wxExAddressRange::Substitute(const wxString& command)
         
     if (result == wxID_YES)
     {
-      wxExFindReplaceData::Get()->UseRegularExpression() ?
+      wxExFindReplaceData::Get()->UseRegEx() ?
         m_STC->ReplaceTargetRE(replacement):
         m_STC->ReplaceTarget(replacement);
         

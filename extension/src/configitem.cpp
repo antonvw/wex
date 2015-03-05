@@ -30,6 +30,32 @@
 
 #if wxUSE_GUI
 
+bool Set(wxExFindReplaceData* frd, const wxString& field, bool value)
+{
+  if (field == frd->GetTextMatchCase())
+  {
+    frd->SetMatchCase(value);
+  }
+  else if (field == frd->GetTextMatchWholeWord())
+  {
+    frd->SetMatchWord(value);
+  }
+  else if (field == frd->GetTextRegEx())
+  {
+    frd->SetUseRegEx(value);
+  }
+  else if (field == frd->GetTextSearchDown())
+  {
+    frd->SetFlags(value ? wxFR_DOWN: ~wxFR_DOWN);
+  }
+  else
+  {
+    return false;
+  }
+
+  return true;
+}
+
 wxExConfigItem::wxExConfigItem()
   : m_Window(NULL)
   , m_Style(0)
@@ -650,7 +676,7 @@ bool wxExConfigItem::Get(
   }
   else if (field == wxExFindReplaceData::Get()->GetTextRegEx())
   {
-    clb->Check(item, wxExFindReplaceData::Get()->UseRegularExpression());
+    clb->Check(item, wxExFindReplaceData::Get()->UseRegEx());
   }
   else
   {
@@ -851,7 +877,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
         if (save)
         {
-          if (!wxExFindReplaceData::Get()->Set(
+          if (!Set(wxExFindReplaceData::Get(),
             clb->GetString(i),
             clb->IsChecked(i)))
           {

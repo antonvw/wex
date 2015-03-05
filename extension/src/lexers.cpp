@@ -11,8 +11,8 @@
 #endif
 #include <algorithm>
 #include <functional>
+#include <regex>
 #include <wx/config.h>
-#include <wx/regex.h>
 #include <wx/stdpaths.h>
 #include <wx/stc/stc.h>
 #include <wx/xml/xml.h>
@@ -242,9 +242,9 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
   {
     // If there is another Shell Language Indicator,
     // match with bash.
-    const wxRegEx re("#!.*/bin/.*");
+    std::regex re("#!.*/bin/.*");
     
-    if (re.Matches(text_lowercase))
+    if (std::regex_match(text_lowercase.ToStdString(), re))
     {
       return FindByName("bash");
     }
