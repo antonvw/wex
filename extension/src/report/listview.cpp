@@ -11,6 +11,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/extension/configdlg.h>
+#include <wx/extension/interruptable.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listitem.h>
 #include <wx/extension/util.h>
@@ -174,6 +175,16 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     menu.AppendSeparator();
     menu.AppendTools();
   }
+}
+
+bool wxExListViewWithFrame::Destroy()	
+{
+  if (wxExInterruptable::Running())
+  {
+    wxExInterruptable::Cancel();
+  }
+    
+  return wxExListViewFileName::Destroy();
 }
 
 wxExListViewWithFrame::wxExListType wxExListViewWithFrame::GetTypeTool(
