@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXUTIL_H
-#define _EXUTIL_H
+#pragma once
 
 #include <list>
 #include <vector>
@@ -107,7 +106,7 @@ bool wxExAutoCompleteFileName(
 /// Returns calculated value of text.
 double wxExCalculator(
   /// text used for calculation
-  const wxString& text, 
+  const std::string& text, 
   /// a marker, or line no referenced in text is solved using this ex
   wxExEx* ex, 
   /// width, or precision, for doubles
@@ -228,9 +227,9 @@ long wxExMake(
 /// Returns number of submatches present in vector.
 int wxExMatch(
   /// regular expression
-  const wxString& regex,
+  const std::string& regex,
   /// text to match
-  const wxString& text, 
+  const std::string& text, 
   /// vector is filled with submatches
   std::vector<wxString>& v);
 
@@ -340,6 +339,4 @@ void wxExVCSExecute(
   int id,
   /// files on which to operate
   const std::vector< wxString > & files);
-#endif
-
 #endif

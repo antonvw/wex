@@ -1185,7 +1185,7 @@ void wxExSTC::GuessType()
   // If we have a modeline comment.
   if (
     m_vi.GetIsActive() && 
-    wxExMatch(".*vi: *(set [a-z0-9:=! ]+)", text, v) > 0)
+    wxExMatch(".*vi: *(set [a-z0-9:=! ]+)", text.ToStdString(), v) > 0)
   {
     if (!m_vi.Command(wxString(":" + v[0]).ToStdString()))
     {
@@ -2098,7 +2098,7 @@ int wxExSTC::ReplaceAll(
 
     if (!skip_replace)
     {
-      wxExFindReplaceData::Get()->UseRegularExpression() ?
+      wxExFindReplaceData::Get()->UseRegEx() ?
         ReplaceTargetRE(replace_text):
         ReplaceTarget(replace_text);
 
@@ -2158,7 +2158,7 @@ bool wxExSTC::ReplaceNext(
   }
   else
   {
-    wxExFindReplaceData::Get()->UseRegularExpression() ?
+    wxExFindReplaceData::Get()->UseRegEx() ?
       ReplaceTargetRE(replace_text):
       ReplaceTarget(replace_text);
   }
@@ -2273,7 +2273,7 @@ void wxExSTC::SetSearchFlags(int flags)
     flags = 0;
     
     wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-    if (frd->UseRegularExpression()) flags |= wxSTC_FIND_REGEXP;
+    if (frd->UseRegEx()) flags |= wxSTC_FIND_REGEXP;
     if (frd->MatchWord()) flags |= wxSTC_FIND_WHOLEWORD;
     if (frd->MatchCase()) flags |= wxSTC_FIND_MATCHCASE;
   }

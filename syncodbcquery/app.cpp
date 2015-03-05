@@ -5,13 +5,13 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <regex>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
-#include <wx/regex.h>
 #include <wx/stockitem.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/filedlg.h>
@@ -466,8 +466,8 @@ void Frame::RunQueries(const wxString& text)
   }
 
   // Skip sql comments.
-  wxString output = text;
-  wxRegEx("--.*$", wxRE_NEWLINE).ReplaceAll(&output, "");
+  std::regex re("--.*$");
+  wxString output = std::regex_replace(text.ToStdString(), re, "", std::regex_constants::format_sed);
 
   // Queries are seperated by ; character.
   wxStringTokenizer tkz(output, ";");

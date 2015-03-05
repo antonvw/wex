@@ -13,10 +13,32 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
 
+#define SET_STRING( ACTION, STRINGS, VALUE, TEXT)             \
+  wxFindReplaceData::Set##ACTION##String(VALUE);              \
+  STRINGS.remove(VALUE);                                      \
+  STRINGS.push_front(VALUE);                                  \
+  wxExListToConfig(STRINGS, TEXT);                            
+
+#define SET_STRINGS( ACTION, STRINGS, VALUE, TEXT)            \
+  STRINGS = VALUE;                                            \
+                                                              \
+  if (!STRINGS.empty())                                       \
+  {                                                           \
+    wxFindReplaceData::Set##ACTION##String(STRINGS.front());  \
+  }                                                           \
+  else                                                        \
+  {                                                           \
+    wxFindReplaceData::Set##ACTION##String(wxEmptyString);    \
+  }                                                           \
+                                                              \
+  wxExListToConfig(STRINGS, TEXT);                            
+
+
 wxExFindReplaceData* wxExFindReplaceData::m_Self = NULL;
 
 wxExFindReplaceData::wxExFindReplaceData()
   : wxFindReplaceData()
+  , m_UseRegEx(false)
   , m_TextFindWhat(_("Find what"))
   , m_TextMatchCase(_("Match case"))
   , m_TextMatchWholeWord(_("Match whole word"))
@@ -32,7 +54,7 @@ wxExFindReplaceData::wxExFindReplaceData()
   SetFlags(flags);
 
   // Start with this one, as it is used by SetFindString.
-  SetUseRegularExpression(wxConfigBase::Get()->ReadBool(m_TextRegEx, false));
+  SetUseRegEx(wxConfigBase::Get()->ReadBool(m_TextRegEx, m_UseRegEx));
   SetFindStrings(wxExListFromConfig(m_TextFindWhat));
   SetReplaceStrings(wxExListFromConfig(m_TextReplaceWith));
 }
@@ -44,7 +66,7 @@ wxExFindReplaceData::~wxExFindReplaceData()
 
   wxConfigBase::Get()->Write(m_TextMatchCase, MatchCase());
   wxConfigBase::Get()->Write(m_TextMatchWholeWord, MatchWord());
-  wxConfigBase::Get()->Write(m_TextRegEx, m_UseRegularExpression);
+  wxConfigBase::Get()->Write(m_TextRegEx, m_UseRegEx);
   wxConfigBase::Get()->Write(m_TextSearchDown, SearchDown());
 }
 
@@ -63,50 +85,29 @@ bool wxExFindReplaceData::Iterate(wxTextCtrl* ctrl, int key)
   return wxExSetTextCtrlValue(ctrl, key, m_FindStrings, m_FindsIterator);
 }
   
+bool wxExFindReplaceData::RegExMatches(const std::string& text) const
+{
+   return std::regex_match(text, m_FindRegEx);
+}
+  
+int wxExFindReplaceData::RegExReplaceAll(std::string& text) const
+{
+  auto words_begin = std::sregex_iterator(text.begin(), text.end(), m_FindRegEx);
+  auto words_end = std::sregex_iterator();  
+  
+  text = std::regex_replace(text, 
+    m_FindRegEx, 
+    GetReplaceString().ToStdString(), 
+    std::regex_constants::format_sed);
+  
+  return std::distance(words_begin, words_end);
+}
+  
 wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
 {
   wxExFindReplaceData* old = m_Self;
   m_Self = frd;
   return old;
-}
-
-bool wxExFindReplaceData::Set(const wxString& field, bool value)
-{
-  if (field == m_TextMatchCase)
-  {
-    SetMatchCase(value);
-  }
-  else if (field == m_TextMatchWholeWord)
-  {
-    SetMatchWord(value);
-  }
-  else if (field == m_TextRegEx)
-  {
-    SetUseRegularExpression(value);
-  }
-  else if (field == m_TextSearchDown)
-  {
-    SetFlags(value ? wxFR_DOWN: ~wxFR_DOWN);
-  }
-  else
-  {
-    // No wxFAIL, see configitem.
-    return false;
-  }
-
-  return true;
-}
-
-void wxExFindReplaceData::SetFindRegularExpression()
-{
-  if (!m_UseRegularExpression)
-  {
-    return;
-  }
-  
-  int flags = wxRE_ADVANCED;
-  if (!MatchCase()) flags |= wxRE_ICASE;
-  m_FindRegularExpression.Compile(GetFindString(), flags);
 }
 
 void wxExFindReplaceData::SetFindString(const wxString& value)
@@ -116,14 +117,9 @@ void wxExFindReplaceData::SetFindString(const wxString& value)
     return;
   }
   
-  wxFindReplaceData::SetFindString(value);
-
-  m_FindStrings.remove(value);
-  m_FindStrings.push_front(value);
-
-  wxExListToConfig(m_FindStrings, m_TextFindWhat);
-
-  SetFindRegularExpression();
+  SET_STRING( Find, m_FindStrings, value, m_TextFindWhat);
+  
+  SetUseRegEx(m_UseRegEx);
   
   m_FindsIterator = GetFindStrings().begin();
 }
@@ -131,22 +127,11 @@ void wxExFindReplaceData::SetFindString(const wxString& value)
 void wxExFindReplaceData::SetFindStrings(
   const std::list < wxString > & value)
 {
-  m_FindStrings = value;
-  
-  if (!m_FindStrings.empty())
-  {
-    wxFindReplaceData::SetFindString(m_FindStrings.front());
-  }
-  else
-  {
-    wxFindReplaceData::SetFindString(wxEmptyString);
-  }
+  SET_STRINGS( Find, m_FindStrings, value, m_TextFindWhat);
   
   m_FindsIterator = m_FindStrings.begin();
 
-  wxExListToConfig(m_FindStrings, m_TextFindWhat);
-
-  SetFindRegularExpression();
+  SetUseRegEx(m_UseRegEx);
 }
 
 void wxExFindReplaceData::SetMatchCase(bool value)
@@ -169,35 +154,41 @@ void wxExFindReplaceData::SetMatchWord(bool value)
   // Match word and regular expression do not work together.
   if (value)
   {
-    SetUseRegularExpression(false);
+    SetUseRegEx(false);
   }
 }
 
 void wxExFindReplaceData::SetReplaceString(const wxString& value)
 {
-  wxFindReplaceData::SetReplaceString(value);
-
-  m_ReplaceStrings.remove(value);
-  m_ReplaceStrings.push_front(value);
-
-  wxExListToConfig(m_ReplaceStrings, m_TextReplaceWith);
+  SET_STRING( Replace, m_ReplaceStrings, value, m_TextReplaceWith);
 }
 
 void wxExFindReplaceData::SetReplaceStrings(
   const std::list < wxString > & value)
 {
-  m_ReplaceStrings = value;
+  SET_STRINGS( Replace, m_ReplaceStrings, value, m_TextReplaceWith);
+}
 
-  if (!m_ReplaceStrings.empty())
+void wxExFindReplaceData::SetUseRegEx(bool value) 
+{
+  if (!value)
   {
-    wxFindReplaceData::SetReplaceString(m_ReplaceStrings.front());
+    m_UseRegEx = false;
+    return;
   }
-  else
+  
+  try 
   {
-    wxFindReplaceData::SetReplaceString(wxEmptyString);
+    std::regex::flag_type flags = std::regex::basic;
+    if (!MatchCase()) flags |= std::regex::icase;
+  
+    m_FindRegEx = std::regex(GetFindString().ToStdString(), flags);
+    m_UseRegEx = true;
   }
-
-  wxExListToConfig(m_ReplaceStrings, m_TextReplaceWith);
+  catch (std::regex_error& e) 
+  {
+    m_UseRegEx = false;
+  }
 }
 
 BEGIN_EVENT_TABLE(wxExFindTextCtrl, wxTextCtrl)

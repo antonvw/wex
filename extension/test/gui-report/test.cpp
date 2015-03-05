@@ -35,6 +35,7 @@ void wxExGuiReportTestFixture::test()
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
   
   // This string should occur only once, that is here!
+  frd->SetUseRegEx(false);
   frd->SetFindString("@@@@@@@@@@@@@@@@@@@");
   
   CPPUNIT_ASSERT(m_Frame->FindInFiles(

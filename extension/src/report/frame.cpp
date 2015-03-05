@@ -362,7 +362,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   if (stc != NULL)
     wxSetWorkingDirectory(stc->GetFileName().GetPath());
   wxExFindReplaceData::Get()->SetFindString(cl.GetParam(0));
-  wxExFindReplaceData::Get()->SetUseRegularExpression(true);
+  wxExFindReplaceData::Get()->SetUseRegEx(true);
   wxLogStatus(GetFindReplaceInfoText());
   
   const wxString arg1(cl.GetParam(1));

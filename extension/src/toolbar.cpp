@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wxExToolBar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -173,7 +173,7 @@ void wxExFindToolBar::Initialize()
 
   m_MatchCase->SetValue(wxExFindReplaceData::Get()->MatchCase());
   m_MatchWholeWord->SetValue(wxExFindReplaceData::Get()->MatchWord());
-  m_IsRegularExpression->SetValue(wxExFindReplaceData::Get()->UseRegularExpression());
+  m_IsRegularExpression->SetValue(wxExFindReplaceData::Get()->UseRegEx());
 }
 
 void wxExFindToolBar::OnCommand(wxCommandEvent& event)
@@ -193,7 +193,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
       m_MatchCase->GetValue());
     break;
   case ID_REGULAR_EXPRESSION:
-    wxExFindReplaceData::Get()->SetUseRegularExpression(
+    wxExFindReplaceData::Get()->SetUseRegEx(
       m_IsRegularExpression->GetValue());
     break;
   default:

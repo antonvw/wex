@@ -21,12 +21,12 @@ wxExGuiTestFixture::wxExGuiTestFixture()
   : wxExTestFixture() 
   , m_Frame((wxExManagedFrame *)wxTheApp->GetTopWindow())
   , m_Abbreviations{
-    {"XX","GREAT"},
-    {"YY","WHITE"},
-    {"ZZ","SHARK"}}
+      {"XX","GREAT"},
+      {"YY","WHITE"},
+      {"ZZ","SHARK"}}
   , m_BuiltinVariables{
-    "Cb", "Cc", "Ce", "Cl", "Created", "Date", "Datetime",
-    "Filename", "Fullpath", "Nl", "Path", "Time", "Year"}
+      "Cb", "Cc", "Ce", "Cl", "Created", "Date", "Datetime",
+      "Filename", "Fullpath", "Nl", "Path", "Time", "Year"}
 {
   // Create the global lexers object, 
   // it should be present in ~/.wxex-test-gui

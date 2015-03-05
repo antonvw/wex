@@ -25,19 +25,19 @@ void wxExGuiTestFixture::testFrd()
   CPPUNIT_ASSERT( frd->MatchCase());
   frd->SetMatchWord(true);
   CPPUNIT_ASSERT( frd->MatchWord());
-  frd->SetUseRegularExpression(true);
-  CPPUNIT_ASSERT( frd->UseRegularExpression());
+  frd->SetUseRegEx(true);
+  CPPUNIT_ASSERT( frd->UseRegEx());
 
   frd->SetFindString("find1");
   frd->SetFindString("find2");
   frd->SetFindString("find[0-9]");
   CPPUNIT_ASSERT(!frd->GetFindStrings().empty());
   CPPUNIT_ASSERT( frd->GetFindString() == "find[0-9]");
-  CPPUNIT_ASSERT( frd->GetRegularExpression().IsValid());
-  CPPUNIT_ASSERT( frd->GetRegularExpression().Matches("find9"));
+  CPPUNIT_ASSERT( frd->RegExMatches("find9"));
   
   CPPUNIT_ASSERT( frd->Iterate(tc, WXK_UP));
   CPPUNIT_ASSERT( frd->Iterate(tc, WXK_UP));
+  CPPUNIT_ASSERT( frd->Iterate(tc, WXK_DOWN));
   CPPUNIT_ASSERT(!frd->Iterate(tc, WXK_RIGHT));
 
   const std::list < wxString > l{"find3","find4","find5"};
@@ -60,20 +60,23 @@ void wxExGuiTestFixture::testFrd()
   frd->SetReplaceStrings(l);
   CPPUNIT_ASSERT( frd->GetFindString() == "find3");
   CPPUNIT_ASSERT( frd->GetReplaceString() == "find3");
-  
-  CPPUNIT_ASSERT( frd->Set(frd->GetTextMatchCase(), false));
-  CPPUNIT_ASSERT(!frd->MatchCase());
-  CPPUNIT_ASSERT( frd->Set(frd->GetTextMatchWholeWord(), false));
-  CPPUNIT_ASSERT(!frd->MatchWord());
-  CPPUNIT_ASSERT(!frd->Set("XXXX", false));
   CPPUNIT_ASSERT( frd->SearchDown());
   
   const std::list< wxString > e;
   frd->SetFindStrings(e);
+  frd->SetReplaceStrings(e);
   CPPUNIT_ASSERT( frd->GetFindStrings().empty());
   CPPUNIT_ASSERT( frd->GetFindString().empty());
-  
-  frd->SetReplaceStrings(e);
   CPPUNIT_ASSERT( frd->GetReplaceStrings().empty());
   CPPUNIT_ASSERT( frd->GetReplaceString().empty());
+  
+  frd->SetFindString("find[0-9]");
+  frd->SetReplaceString("xxx");
+  std::string text("find1 find2 find3 find4");
+  CPPUNIT_ASSERT( frd->RegExReplaceAll(text) == 4);
+  
+  frd->SetFindString("find[0-9");
+  CPPUNIT_ASSERT(!frd->UseRegEx());
+  frd->SetUseRegEx(true);
+  CPPUNIT_ASSERT(!frd->UseRegEx());
 }

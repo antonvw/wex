@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wxExLink
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -249,7 +249,7 @@ bool wxExLink::SetLink(
   // file[:line[:column]]
   std::vector <wxString> v;
   
-  if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link, v))
+  if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link.ToStdString(), v))
   {
     link = v[0];
     line_no = 0;

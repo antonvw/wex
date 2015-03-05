@@ -6,13 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
+#include <regex>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <wx/cmdline.h>
 #include <wx/config.h>
-#include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/address.h>
@@ -564,7 +564,8 @@ bool wxExEx::CommandSet(const wxString& arg)
   {
     // Convert modeline to commandline arg (add - to each group, remove all =).
     // ts=120 ac ic sy=cpp -> -ts 120 -ac -ic -sy cpp
-    wxRegEx("[0-9a-z=]+").ReplaceAll(&text, "-&");
+    std::regex re("[0-9a-z=]+");
+    text = std::regex_replace(text.ToStdString(), re, "-&", std::regex_constants::format_sed);
     text.Replace("=", " ");
     text.Replace("!", "-"); // change negatable char
   }
@@ -641,7 +642,7 @@ bool wxExEx::CommandSet(const wxString& arg)
   cl.Switch("re", [&](bool on){
     if (on) m_SearchFlags |= wxSTC_FIND_REGEXP;
     else    m_SearchFlags &= ~wxSTC_FIND_REGEXP;
-    wxExFindReplaceData::Get()->SetUseRegularExpression(on);});
+    wxExFindReplaceData::Get()->SetUseRegEx(on);});
   cl.Switch("ut", [&](bool on){
     m_STC->SetUseTabs(on);
     wxConfigBase::Get()->Write(_("Use tabs"), on);});

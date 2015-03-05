@@ -40,7 +40,7 @@ void wxExGuiTestFixture::testTextFile()
   wxExFindReplaceData::Get()->SetFindString("test");
   wxExFindReplaceData::Get()->SetMatchCase(true);
   wxExFindReplaceData::Get()->SetMatchWord(true);
-  wxExFindReplaceData::Get()->SetUseRegularExpression(false);
+  wxExFindReplaceData::Get()->SetUseRegEx(false);
   
   wxStopWatch sw;
   sw.Start();

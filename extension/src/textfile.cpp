@@ -30,7 +30,7 @@ bool wxExTextFile::MatchLine(wxString& line)
 
   wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
-  if (!frd->UseRegularExpression() || !frd->GetRegularExpression().IsValid())
+  if (!frd->UseRegEx())
   {
     if (m_Tool.GetId() == ID_TOOL_REPORT_FIND)
     {
@@ -79,14 +79,13 @@ bool wxExTextFile::MatchLine(wxString& line)
   }
   else
   {
-    match = frd->GetRegularExpression().Matches(line);
+    match = frd->RegExMatches(line.ToStdString());
 
     if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
     {
-      count = frd->GetRegularExpression().ReplaceAll(
-        &line, 
-        frd->GetReplaceString());
-
+      std::string s(line);
+      count = frd->RegExReplaceAll(s);
+      line = s;
       m_Modified = true;
     }
   }
