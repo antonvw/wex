@@ -2,11 +2,10 @@
 // Name:      listview.h
 // Purpose:   Declaration of class wxExListViewWithFrame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EX_REPORT_LISTVIEW_H
-#define _EX_REPORT_LISTVIEW_H
+#pragma once
 
 #include <wx/extension/listview.h>
 #include <wx/extension/tool.h>
@@ -45,8 +44,10 @@ public:
   /// Returns list type from tool id.
   static wxExListType GetTypeTool(const wxExTool& tool);
 protected:
-  virtual void BuildPopupMenu(wxExMenu& menu);
+  virtual void BuildPopupMenu(wxExMenu& menu) override;
+  virtual bool Destroy() override;
   wxExFrameWithHistory* GetFrame() {return m_Frame;};
+  
   void OnCommand(wxCommandEvent& event);
 private:
   void ItemActivated(long item_number);
@@ -57,5 +58,3 @@ private:
 
   DECLARE_EVENT_TABLE()
 };
-
-#endif

@@ -281,24 +281,22 @@ int wxExFrameWithHistory::FindInFilesDialog(
     GetSTC()->GetFindString();
   }
 
-  const std::vector<wxExConfigItem> v {
-    wxExConfigItem(
-      wxExFindReplaceData::Get()->GetTextFindWhat(), 
-      CONFIG_COMBOBOX, 
-      wxEmptyString, 
-      true),
-    (add_in_files ? wxExConfigItem(
-      m_TextInFiles, 
-      CONFIG_COMBOBOX, 
-      wxEmptyString, 
-      true) : wxExConfigItem()),
-    (id == ID_TOOL_REPORT_REPLACE ? wxExConfigItem(
-      wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-      CONFIG_COMBOBOX): wxExConfigItem()),
-    wxExConfigItem(m_Info)};
-
   if (wxExConfigDialog(this,
-    v,
+    std::vector<wxExConfigItem> {
+      wxExConfigItem(
+        wxExFindReplaceData::Get()->GetTextFindWhat(), 
+        CONFIG_COMBOBOX, 
+        wxEmptyString, 
+        true),
+      (add_in_files ? wxExConfigItem(
+        m_TextInFiles, 
+        CONFIG_COMBOBOX, 
+        wxEmptyString, 
+        true) : wxExConfigItem()),
+      (id == ID_TOOL_REPORT_REPLACE ? wxExConfigItem(
+        wxExFindReplaceData::Get()->GetTextReplaceWith(), 
+        CONFIG_COMBOBOX): wxExConfigItem()),
+      wxExConfigItem(m_Info)},
     GetFindInCaption(id)).ShowModal() == wxID_CANCEL)
   {
     return wxID_CANCEL;
