@@ -5,7 +5,9 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/report/report.h>
+#include <wx/extension/frd.h>
+#include <wx/extension/tool.h>
+#include <wx/extension/util.h>
 #include "test.h"
 
 #define TEST_PRJ "./test-rep.prj"

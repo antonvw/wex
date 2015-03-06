@@ -31,9 +31,12 @@ void wxExGuiTestFixture::testFrd()
   frd->SetFindString("find1");
   frd->SetFindString("find2");
   frd->SetFindString("find[0-9]");
+  CPPUNIT_ASSERT( frd->UseRegEx());
   CPPUNIT_ASSERT(!frd->GetFindStrings().empty());
   CPPUNIT_ASSERT( frd->GetFindString() == "find[0-9]");
-  CPPUNIT_ASSERT( frd->RegExMatches("find9"));
+  
+  CPPUNIT_ASSERT( frd->RegExMatches("some text find9 other text"));
+  CPPUNIT_ASSERT(!frd->RegExMatches("some text finda other text"));
   
   CPPUNIT_ASSERT( frd->Iterate(tc, WXK_UP));
   CPPUNIT_ASSERT( frd->Iterate(tc, WXK_UP));

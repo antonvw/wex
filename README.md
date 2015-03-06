@@ -22,9 +22,9 @@ one of these applications, being a full featured source code text editor.
   by adding the 31 libs, and adding 3.1.0 find_path (for windows).
 
 # Build process 
-  [![Build Status](https://travis-ci.org/antonvw/wxExtension.png?branch=v3.0)](https://travis-ci.org/antonvw/wxExtension) 
+  [![Build Status](https://travis-ci.org/antonvw/wxExtension.png?branch=master)](https://travis-ci.org/antonvw/wxExtension) 
   [![Coverity Scan Build Status](https://scan.coverity.com/projects/2868/badge.svg)](https://scan.coverity.com/projects/2868>)
-  [![Coverage Status](https://coveralls.io/repos/antonvw/wxExtension/badge.svg?branch=v3.0%0A)](https://coveralls.io/r/antonvw/wxExtension?branch=v3.0%0A)  
+  [![Coverage Status](https://coveralls.io/repos/antonvw/wxExtension/badge.svg?branch=master%0A)](https://coveralls.io/r/antonvw/wxExtension?branch=master%0A)  
   
 ## Building wxWidgets
 
