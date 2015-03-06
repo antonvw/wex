@@ -34,11 +34,11 @@ void SetFindExtension(wxFileName& fn)
   // If wxExtension is present, copy all subdirectories.
   if (index != wxNOT_FOUND)
   {
-    for (const auto& it : ar)
+    for (int i = 0; i <= index; i++)
     {
-      fn.AppendDir(it);
+      fn.AppendDir(ar[i]);
     }
-    
+
     fn.AppendDir("extension");
   }
   else

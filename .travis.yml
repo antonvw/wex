@@ -25,7 +25,6 @@ addons:
 branches:
     only:
         - master
-        - v3.0
         - coverity_scan
 
 before_install:
