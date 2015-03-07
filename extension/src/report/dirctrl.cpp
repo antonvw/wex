@@ -2,7 +2,7 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wxExGenericDirCtrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stockitem.h> // for wxGetStockLabel
@@ -61,17 +61,7 @@ void wxExGenericDirCtrl::ExpandAndSelectPath(const wxString& path)
 
 void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
 {
-  if (event.GetId() > ID_EDIT_VCS_LOWEST && 
-      event.GetId() < ID_EDIT_VCS_HIGHEST)
-  {
-    wxExVCSExecute(m_Frame, 
-      event.GetId() - ID_EDIT_VCS_LOWEST - 1, wxExToVectorString(*this).Get());
-  }
-  else if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
-  {
-    m_Frame->FindInFiles(wxExToVectorString(*this).Get(), event.GetId());
-  }
-  else switch (event.GetId())
+  switch (event.GetId())
   {
   case ID_TREE_COPY: 
     {
@@ -98,7 +88,18 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
     }
     break;
     
-  default: wxFAIL;
+  default: 
+    if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
+    {
+      wxExVCSExecute(m_Frame, 
+        event.GetId() - ID_EDIT_VCS_LOWEST - 1, wxExToVectorString(*this).Get());
+    }
+    else if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
+    {
+      m_Frame->FindInFiles(wxExToVectorString(*this).Get(), event.GetId());
+    }
+    else
+      wxFAIL;
   }
 }
 
