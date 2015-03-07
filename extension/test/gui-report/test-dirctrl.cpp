@@ -12,8 +12,16 @@
 void wxExGuiReportTestFixture::testDirCtrl()
 {
   wxExGenericDirCtrl* ctrl = new wxExGenericDirCtrl(m_Frame, m_Frame);
-  ctrl->ExpandAndSelectPath("test");
-
-  wxCommandEvent event(ID_TREE_COPY);  
-  wxPostEvent(ctrl, event);
+  
+  ctrl->ExpandAndSelectPath("./");
+  
+  const std::vector<int> ids {
+    ID_EDIT_VCS_LOWEST + 1, ID_TOOL_LOWEST + 1, 
+    ID_TREE_COPY, ID_TREE_OPEN, ID_TREE_RUN_MAKE};
+  
+  for (auto id : ids)
+  {
+    wxCommandEvent event(id);  
+    wxPostEvent(ctrl, event);
+  }
 }
