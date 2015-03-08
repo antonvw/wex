@@ -2381,9 +2381,9 @@ void wxExSTC::Sync(bool start)
 {
   // do not use ?, compile error for gcc, as Bind is void, Unbind is bool
   if (start)
-    Bind(wxEVT_IDLE, &wxExSTC::OnIdle, this, wxID_ANY);
+    Bind(wxEVT_IDLE, &wxExSTC::OnIdle, this);
   else
-    Unbind(wxEVT_IDLE, &wxExSTC::OnIdle, this, wxID_ANY);
+    Unbind(wxEVT_IDLE, &wxExSTC::OnIdle, this);
 }
 
 void wxExSTC::Undo()
@@ -2400,9 +2400,9 @@ void wxExSTC::UseAutoComplete(bool use)
 void wxExSTC::UseModificationMarkers(bool use)
 {
   if (use)
-    Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this, wxID_ANY);
+    Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this);
   else
-    Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this, wxID_ANY);
+    Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this);
 }
 
 #endif // wxUSE_GUI
