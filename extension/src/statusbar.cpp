@@ -212,9 +212,9 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
   delete[] styles;
   delete[] widths;
 
-  Bind(wxEVT_LEFT_UP, &wxExStatusBar::OnMouse, this, wxID_ANY);
-  Bind(wxEVT_RIGHT_UP, &wxExStatusBar::OnMouse, this, wxID_ANY);
-  Bind(wxEVT_MOTION, &wxExStatusBar::OnMouse, this, wxID_ANY);
+  Bind(wxEVT_LEFT_UP, &wxExStatusBar::OnMouse, this);
+  Bind(wxEVT_RIGHT_UP, &wxExStatusBar::OnMouse, this);
+  Bind(wxEVT_MOTION, &wxExStatusBar::OnMouse, this);
 }
 
 bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)

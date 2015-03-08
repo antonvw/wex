@@ -23,13 +23,11 @@
 #include <wx/extension/report/frame.h>
 
 BEGIN_EVENT_TABLE(wxExListViewFile, wxExListViewWithFrame)
-  EVT_IDLE(wxExListViewFile::OnIdle)
   EVT_MENU(wxID_ADD, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_CUT, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_CLEAR, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_DELETE, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_PASTE, wxExListViewFile::OnCommand)
-  EVT_LEFT_DOWN(wxExListViewFile::OnMouse)
 END_EVENT_TABLE()
 
 wxExListViewFile::wxExListViewFile(wxWindow* parent,
@@ -74,6 +72,21 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
       wxID_ADD))
 {
   FileLoad(file);
+  
+  Bind(wxEVT_IDLE, &wxExListViewFile::OnIdle, this);
+  Bind(wxEVT_LEFT_DOWN, [=](wxMouseEvent& event) {
+    event.Skip();
+
+    // If no item has been selected, then show 
+    // filename mod time in the statusbar.
+    int flags = wxLIST_HITTEST_ONITEM;
+    const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
+
+    if (index < 0)
+    {
+      wxExLogStatus(GetFileName());
+    }
+  });
 }
 
 wxExListViewFile::~wxExListViewFile()
@@ -87,6 +100,8 @@ void wxExListViewFile::AddItems(
   long flags,
   bool detached)
 {
+  Unbind(wxEVT_IDLE, &wxExListViewFile::OnIdle, this);
+  
   std::thread t([=] {
     const int old_count = GetItemCount();
     wxExDirWithListView dir(this, folder, files, flags);
@@ -108,7 +123,10 @@ void wxExListViewFile::AddItems(
     const wxString text = 
       _("Added") + wxString::Format(" %d ", added) + _("file(s)");
   
-    wxLogStatus(text);});
+    wxLogStatus(text);
+    
+    Bind(wxEVT_IDLE, &wxExListViewFile::OnIdle, this);
+    });
 
   if (detached)  
     t.detach();
@@ -290,27 +308,5 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
     wxConfigBase::Get()->ReadBool("AllowSync", true))
   {
     CheckSync();
-  }
-}
-
-void wxExListViewFile::OnMouse(wxMouseEvent& event)
-{
-  if (event.LeftDown())
-  {
-    event.Skip();
-
-    // If no item has been selected, then show 
-    // filename mod time in the statusbar.
-    int flags = wxLIST_HITTEST_ONITEM;
-    const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
-
-    if (index < 0)
-    {
-      wxExLogStatus(GetFileName());
-    }
-  }
-  else
-  {
-    wxFAIL;
   }
 }

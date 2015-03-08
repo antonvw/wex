@@ -68,7 +68,6 @@ protected:
   virtual void DoFileSave(bool save_as = false) override;
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
-  void OnMouse(wxMouseEvent& event);
 private:
   bool m_ContentsChanged;
   const wxString m_TextAddFiles;

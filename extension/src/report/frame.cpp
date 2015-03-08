@@ -35,7 +35,6 @@ const int ID_RECENT_PROJECT_LOWEST =  wxID_FILE1 + NUMBER_RECENT_FILES + 1;
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_AUITOOLBAR_TOOL_DROPDOWN(wxID_OPEN, wxExFrameWithHistory::OnDropDown)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
-  EVT_IDLE(wxExFrameWithHistory::OnIdle)
   EVT_MENU(ID_CLEAR_FILES, wxExFrameWithHistory::OnCommand)
   EVT_MENU(ID_CLEAR_PROJECTS, wxExFrameWithHistory::OnCommand)
   EVT_MENU(ID_PROJECT_SAVE,  wxExFrameWithHistory::OnCommand)
@@ -89,6 +88,8 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   
   GetToolBar()->SetToolDropDown(wxID_OPEN, true);
   GetToolBar()->Realize();
+  
+  Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
 }
 
 wxExFrameWithHistory::~wxExFrameWithHistory()
@@ -208,6 +209,8 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     flags |= wxDIR_DIRS;
   }
 
+  Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+    
   std::thread t([=] {
     wxExDirTool dir(
       tool,
@@ -217,7 +220,10 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 
     dir.FindFiles();
 
-    wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));});
+    wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+    
+    Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+    });
   
   t.detach();
 }
@@ -367,10 +373,15 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   const wxString arg2(cl.GetParam(2));
   const int arg3(wxDIR_FILES | (cl.FoundSwitch("r") ? wxDIR_DIRS: 0));
   
+  Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+    
   std::thread t([=]{
     wxExDirTool dir(tool, arg1, arg2, arg3);
     dir.FindFiles();
-    wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));});
+    wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+    
+    Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+    });
   
   t.detach();
     
