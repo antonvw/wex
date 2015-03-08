@@ -210,8 +210,10 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
   }
 
   Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
-    
+
+#ifndef __WXGTK__    
   std::thread t([=] {
+#endif
     wxExDirTool dir(
       tool,
       wxExConfigFirstOf(m_TextInFolder),
@@ -223,9 +225,10 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
     
     Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+#ifndef __WXGTK__    
     });
-  
   t.detach();
+#endif
 }
 
 bool wxExFrameWithHistory::FindInFiles(
@@ -375,15 +378,18 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   
   Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
     
+#ifndef __WXGTK__    
   std::thread t([=]{
+#endif
     wxExDirTool dir(tool, arg1, arg2, arg3);
     dir.FindFiles();
     wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
     
     Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+#ifndef __WXGTK__    
     });
-  
   t.detach();
+#endif
     
   return true;
 }

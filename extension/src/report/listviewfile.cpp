@@ -102,7 +102,9 @@ void wxExListViewFile::AddItems(
 {
   Unbind(wxEVT_IDLE, &wxExListViewFile::OnIdle, this);
   
+#ifndef __WXGTK__ 
   std::thread t([=] {
+#endif
     const int old_count = GetItemCount();
     wxExDirWithListView dir(this, folder, files, flags);
   
@@ -126,12 +128,13 @@ void wxExListViewFile::AddItems(
     wxLogStatus(text);
     
     Bind(wxEVT_IDLE, &wxExListViewFile::OnIdle, this);
+#ifndef __WXGTK__ 
     });
-
   if (detached)  
     t.detach();
   else
     t.join();
+#endif
 }
 
 void wxExListViewFile::AfterSorting()
