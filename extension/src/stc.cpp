@@ -44,16 +44,6 @@ enum
 
 BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_CHAR(wxExSTC::OnChar)
-  EVT_FIND(wxID_ANY, wxExSTC::OnFindDialog)
-  EVT_FIND_NEXT(wxID_ANY, wxExSTC::OnFindDialog)
-  EVT_FIND_REPLACE(wxID_ANY, wxExSTC::OnFindDialog)
-  EVT_FIND_REPLACE_ALL(wxID_ANY, wxExSTC::OnFindDialog)
-  EVT_KEY_DOWN(wxExSTC::OnKeyDown)
-  EVT_KEY_UP(wxExSTC::OnKeyUp)
-  EVT_LEFT_UP(wxExSTC::OnMouse)
-  EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_READ, wxExSTC::OnCommand)
   EVT_MENU(wxID_DELETE, wxExSTC::OnCommand)
   EVT_MENU(wxID_FIND, wxExSTC::OnCommand)
   EVT_MENU(wxID_REPLACE, wxExSTC::OnCommand)
@@ -64,17 +54,12 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU(ID_EDIT_FIND_NEXT, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_FIND_PREVIOUS, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_SHOW_PROPERTIES, wxExSTC::OnCommand)  
+  EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_READ, wxExSTC::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
-  EVT_RIGHT_UP(wxExSTC::OnMouse)
-  EVT_STC_AUTOCOMP_SELECTION(wxID_ANY, wxExSTC::OnStyledText)  
-  EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
-  EVT_STC_DO_DROP(wxID_ANY, wxExSTC::OnStyledText)  
-  EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
-  EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
-  EVT_STC_START_DRAG(wxID_ANY, wxExSTC::OnStyledText)
-  EVT_STC_UPDATEUI(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
 
 wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
@@ -1301,6 +1286,139 @@ void wxExSTC::Initialize(bool file_exists)
   }
   
   ConfigGet(true);
+  
+  Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
+    if (event.GetModifiers() != wxMOD_ALT)
+    {
+      if (HexMode())
+      {  
+        if (
+          event.GetKeyCode() == WXK_LEFT ||
+          event.GetKeyCode() == WXK_RIGHT)
+        {
+          wxExHexModeLine(&m_HexMode).SetPos(event);
+        }
+      }
+    
+      if (m_vi.OnKeyDown(event))
+      {
+        event.Skip();
+      }}});
+
+  Bind(wxEVT_KEY_UP, [=](wxKeyEvent& event) {
+    event.Skip();
+    CheckBrace();
+    m_FoldLevel = 
+      (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
+      - wxSTC_FOLDLEVELBASE;});
+      
+  Bind(wxEVT_LEFT_UP, [=](wxMouseEvent& event) {
+    PropertiesMessage();
+    event.Skip();
+    CheckBrace();
+    m_AddingChars = false;
+    m_FoldLevel = 
+      (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
+      - wxSTC_FOLDLEVELBASE;});
+  
+  if (m_MenuFlags != STC_MENU_NONE)
+  {
+    Bind(wxEVT_RIGHT_UP, [=](wxMouseEvent& event) {
+      int style = 0; // otherwise CAN_PASTE already on
+      
+      if ( GetReadOnly() || HexMode()) style |= wxExMenu::MENU_IS_READ_ONLY;
+      if (!GetSelectedText().empty())  style |= wxExMenu::MENU_IS_SELECTED;
+      if ( GetTextLength() == 0)       style |= wxExMenu::MENU_IS_EMPTY;
+      if ( CanPaste())                 style |= wxExMenu::MENU_CAN_PASTE;
+
+      wxExMenu menu(style);
+      
+      BuildPopupMenu(menu);
+      
+      if (menu.GetMenuItemCount() > 0)
+      {
+        // If last item is a separator, delete it.
+        wxMenuItem* item = menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
+      
+        if (item->IsSeparator())
+        {
+          menu.Delete(item->GetId());
+        }
+      
+        PopupMenu(&menu);
+      }});
+  }
+  
+  Bind(wxEVT_STC_AUTOCOMP_SELECTION, [=](wxStyledTextEvent& event) {
+    if (m_vi.GetIsActive())
+    {
+      const std::string command(wxString(
+        event.GetText().Mid(m_AutoComplete.size())).ToStdString());
+        
+      if (!command.empty() && !m_vi.Command(command))
+      {
+        wxLogStatus("Autocomplete failed");
+      }
+    }});
+    
+  Bind(wxEVT_STC_CHARADDED, [=](wxStyledTextEvent& event) {
+    event.Skip();
+    AutoIndentation(event.GetKey());});
+    
+  Bind(wxEVT_STC_DO_DROP, [=](wxStyledTextEvent& event) {
+#if wxUSE_DRAG_AND_DROP
+    if (HexMode() || GetReadOnly())
+    {
+      event.SetDragResult(wxDragNone);
+    }
+#endif    
+    event.Skip();});
+    
+  Bind(wxEVT_STC_DWELLEND, [=](wxStyledTextEvent& event) {
+    if (CallTipActive())
+    {
+      CallTipCancel();
+    }});
+    
+  Bind(wxEVT_STC_MARGINCLICK, [=](wxStyledTextEvent& event) {
+    if (event.GetMargin() == m_MarginFoldingNumber)
+    {
+      const int line = LineFromPosition(event.GetPosition());
+      const int level = GetFoldLevel(line);
+      if ((level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
+      {
+        ToggleFold(line);
+      }
+    }});
+    
+  Bind(wxEVT_STC_START_DRAG, [=](wxStyledTextEvent& event) {
+#if wxUSE_DRAG_AND_DROP
+    if (HexMode() || GetReadOnly())
+    {
+      event.SetDragAllowMove(false);
+    }
+#endif    
+    event.Skip();});
+    
+  Bind(wxEVT_STC_UPDATEUI, [=](wxStyledTextEvent& event) {
+    event.Skip();
+    wxExFrame::UpdateStatusBar(this, "PaneInfo");});
+    
+  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
+  
+  Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
+    frd->SetFindString(frd->GetFindString());
+    FindNext(frd->SearchDown());});
+    
+  Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
+    frd->SetFindString(frd->GetFindString());
+    FindNext(frd->SearchDown());});
+    
+  Bind(wxEVT_FIND_REPLACE, [=](wxFindDialogEvent& event) {
+    ReplaceNext(wxExFindReplaceData::Get()->SearchDown());});
+    
+  Bind(wxEVT_FIND_REPLACE_ALL, [=](wxFindDialogEvent& event) {
+    ReplaceAll(frd->GetFindString(), frd->GetReplaceString());});
 }
 
 bool wxExSTC::LinkOpen(wxString* filename)
@@ -1613,33 +1731,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   }
 }
 
-void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
-{
-  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-  frd->SetFindString(frd->GetFindString());
-
-  if (
-    event.GetEventType() == wxEVT_COMMAND_FIND ||
-    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-  {
-    FindNext(frd->SearchDown());
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
-  {
-    ReplaceNext(frd->SearchDown());
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
-  {
-    ReplaceAll(
-      frd->GetFindString(), 
-      frd->GetReplaceString());
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
 void wxExSTC::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
@@ -1652,171 +1743,6 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
       GetFileName().GetStat().IsReadOnly() != GetReadOnly())
   {
     FileReadOnlyAttributeChanged();
-  }
-}
-
-void wxExSTC::OnKeyDown(wxKeyEvent& event)
-{
-  if (event.GetModifiers() == wxMOD_ALT)
-  {
-    return;
-  }
-  
-  if (HexMode())
-  {  
-    if (
-      event.GetKeyCode() == WXK_LEFT ||
-      event.GetKeyCode() == WXK_RIGHT)
-    {
-      wxExHexModeLine(&m_HexMode).SetPos(event);
-    }
-  }
-
-  if (m_vi.OnKeyDown(event))
-  {
-    event.Skip();
-  }
-}
-
-void wxExSTC::OnKeyUp(wxKeyEvent& event)
-{
-  event.Skip();
-    
-  CheckBrace();
-    m_FoldLevel = 
-      (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
-      - wxSTC_FOLDLEVELBASE;
-}
-
-void wxExSTC::OnMouse(wxMouseEvent& event)
-{
-  if (event.LeftUp())
-  {
-    PropertiesMessage();
-    event.Skip();
-    CheckBrace();
-      
-    m_AddingChars = false;
-    m_FoldLevel = 
-      (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
-      - wxSTC_FOLDLEVELBASE;
-  }
-  else if (event.RightUp())
-  {
-    if (m_MenuFlags == STC_MENU_NONE)
-    {
-      event.Skip();
-    }
-    else
-    {
-      int style = 0; // otherwise CAN_PASTE already on
-      
-      if ( GetReadOnly() || HexMode()) style |= wxExMenu::MENU_IS_READ_ONLY;
-      if (!GetSelectedText().empty())  style |= wxExMenu::MENU_IS_SELECTED;
-      if ( GetTextLength() == 0)       style |= wxExMenu::MENU_IS_EMPTY;
-      if ( CanPaste())                 style |= wxExMenu::MENU_CAN_PASTE;
-
-      wxExMenu menu(style);
-      
-      BuildPopupMenu(menu);
-      
-      if (menu.GetMenuItemCount() > 0)
-      {
-        // If last item is a separator, delete it.
-        wxMenuItem* item = menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
-      
-        if (item->IsSeparator())
-        {
-          menu.Delete(item->GetId());
-        }
-      
-        PopupMenu(&menu);
-      }
-    }
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
-void wxExSTC::OnStyledText(wxStyledTextEvent& event)
-{
-  if (event.GetEventType() == wxEVT_STC_MODIFIED)
-  {
-    MarkModified(event); 
-      
-    event.Skip();
-  }
-  else if (event.GetEventType() == wxEVT_STC_CHARADDED)
-  {
-    event.Skip();
-    
-    AutoIndentation(event.GetKey());
-  }
-  else if (event.GetEventType() == wxEVT_STC_START_DRAG)
-  {
-#if wxUSE_DRAG_AND_DROP
-    if (HexMode() || GetReadOnly())
-    {
-      event.SetDragAllowMove(false);
-    }
-#endif    
-    
-    event.Skip();
-  }
-  else if (event.GetEventType() == wxEVT_STC_DO_DROP)
-  {
-#if wxUSE_DRAG_AND_DROP
-    if (HexMode() || GetReadOnly())
-    {
-      event.SetDragResult(wxDragNone);
-    }
-#endif    
-    
-    event.Skip();
-  }
-  else if (event.GetEventType() == wxEVT_STC_DWELLEND)
-  {
-    if (CallTipActive())
-    {
-      CallTipCancel();
-    }
-  }
-  else if (event.GetEventType() == wxEVT_STC_MARGINCLICK)
-  {
-    if (event.GetMargin() == m_MarginFoldingNumber)
-    {
-      const int line = LineFromPosition(event.GetPosition());
-      const int level = GetFoldLevel(line);
-
-      if ((level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
-      {
-        ToggleFold(line);
-      }
-    }
-  }
-  else if (event.GetEventType() == wxEVT_STC_AUTOCOMP_SELECTION)
-  {
-    if (m_vi.GetIsActive())
-    {
-      const std::string command(wxString(
-        event.GetText().Mid(m_AutoComplete.size())).ToStdString());
-        
-      if (!command.empty() && !m_vi.Command(command))
-      {
-        wxLogStatus("Autocomplete failed");
-      }
-    }
-  }
-  else if (event.GetEventType() == wxEVT_STC_UPDATEUI)
-  {
-    event.Skip();
-    wxExFrame::UpdateStatusBar(this, "PaneInfo");
-  }
-  else
-  {
-    wxFAIL;
   }
 }
 
@@ -2400,9 +2326,12 @@ void wxExSTC::UseAutoComplete(bool use)
 void wxExSTC::UseModificationMarkers(bool use)
 {
   if (use)
-    Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this);
+    Bind(wxEVT_STC_MODIFIED, [=](wxStyledTextEvent& event) {
+      MarkModified(event); 
+      event.Skip();});
   else
-    Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this);
+    Unbind(wxEVT_STC_MODIFIED, [=](wxStyledTextEvent& event) {
+      MarkModified(event); 
+      event.Skip();});
 }
-
 #endif // wxUSE_GUI

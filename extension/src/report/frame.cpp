@@ -33,8 +33,6 @@ const int NUMBER_RECENT_PROJECTS = 25;
 const int ID_RECENT_PROJECT_LOWEST =  wxID_FILE1 + NUMBER_RECENT_FILES + 1;
 
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
-  EVT_AUITOOLBAR_TOOL_DROPDOWN(wxID_OPEN, wxExFrameWithHistory::OnDropDown)
-  EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_MENU(ID_CLEAR_FILES, wxExFrameWithHistory::OnCommand)
   EVT_MENU(ID_CLEAR_PROJECTS, wxExFrameWithHistory::OnCommand)
   EVT_MENU(ID_PROJECT_SAVE,  wxExFrameWithHistory::OnCommand)
@@ -90,6 +88,43 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   GetToolBar()->Realize();
   
   Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+  Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
+    if (event.IsDropDownClicked())
+    {
+      wxAuiToolBar* tb = static_cast<wxAuiToolBar*>(event.GetEventObject());
+  
+      tb->SetToolSticky(event.GetId(), true);
+  
+      // create the popup menu
+      // line up our menu with the button
+      wxRect rect = tb->GetToolRect(event.GetId());
+      wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
+      pt = ScreenToClient(pt);
+      HistoryPopupMenu(m_FileHistory, wxID_FILE1, ID_CLEAR_FILES, pt);
+  
+      // make sure the button is "un-stuck"
+      tb->SetToolSticky(event.GetId(), false);
+    }
+    else
+    {
+      event.Skip();
+    }}, wxID_OPEN);
+  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
+    m_FileHistory.Save(*wxConfigBase::Get());
+  
+    if (m_ProjectHistory.GetCount() > 0 && m_ProjectModified)
+    {
+      wxConfigBase::Get()->DeleteGroup("RecentProject");
+      
+      for (size_t i = 0; i < m_ProjectHistory.GetCount(); i++)
+      {
+        wxConfigBase::Get()->Write(
+          wxString::Format("RecentProject/%d", i),
+          m_ProjectHistory.GetHistoryFile((size_t)i));
+      }
+    }
+  
+    event.Skip();});
 }
 
 wxExFrameWithHistory::~wxExFrameWithHistory()
@@ -428,25 +463,6 @@ void wxExFrameWithHistory::HistoryPopupMenu(
   delete menu;
 }
   
-void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
-{
-  m_FileHistory.Save(*wxConfigBase::Get());
-
-  if (m_ProjectHistory.GetCount() > 0 && m_ProjectModified)
-  {
-    wxConfigBase::Get()->DeleteGroup("RecentProject");
-    
-    for (size_t i = 0; i < m_ProjectHistory.GetCount(); i++)
-    {
-      wxConfigBase::Get()->Write(
-        wxString::Format("RecentProject/%d", i),
-        m_ProjectHistory.GetHistoryFile((size_t)i));
-    }
-  }
-
-  event.Skip();
-}
-
 void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
@@ -561,30 +577,6 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
       break;
 
     default: wxFAIL;
-  }
-}
-
-void wxExFrameWithHistory::OnDropDown(wxAuiToolBarEvent& event)
-{
-  if (event.IsDropDownClicked())
-  {
-    wxAuiToolBar* tb = static_cast<wxAuiToolBar*>(event.GetEventObject());
-
-    tb->SetToolSticky(event.GetId(), true);
-
-    // create the popup menu
-    // line up our menu with the button
-    wxRect rect = tb->GetToolRect(event.GetId());
-    wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
-    pt = ScreenToClient(pt);
-    HistoryPopupMenu(m_FileHistory, wxID_FILE1, ID_CLEAR_FILES, pt);
-
-    // make sure the button is "un-stuck"
-    tb->SetToolSticky(event.GetId(), false);
-  }
-  else
-  {
-    event.Skip();
   }
 }
 

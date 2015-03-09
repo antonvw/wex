@@ -902,11 +902,8 @@ void wxExListView::SortColumnReset()
 }
 
 BEGIN_EVENT_TABLE(wxExListViewFileName, wxExListView)
-  EVT_IDLE(wxExListViewFileName::OnIdle)
   EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewFileName::OnList)
   EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewFileName::OnList)
-  EVT_MENU(wxID_ADD, wxExListViewFileName::OnCommand)
-  EVT_RIGHT_DOWN(wxExListViewFileName::OnMouse)
 END_EVENT_TABLE()
 
 wxExListViewFileName::wxExListViewFileName(wxWindow* parent,
@@ -932,6 +929,98 @@ wxExListViewFileName::wxExListViewFileName(wxWindow* parent,
   , m_ItemNumber(0)
 {
   Initialize(lexer);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxString defaultPath;
+    
+    if (GetSelectedItemCount() > 0)
+    {
+      defaultPath = wxExListItem(
+        this, GetFirstSelected()).GetFileName().GetFullPath();
+    }
+    
+    wxDirDialog dir_dlg(
+      this,
+      _(wxDirSelectorPromptStr),
+      defaultPath,
+      wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+    if (dir_dlg.ShowModal() == wxID_OK)
+    {
+      const int no = (GetSelectedItemCount() > 0 ? 
+        GetFirstSelected(): GetItemCount());
+       
+      wxExListItem(this, dir_dlg.GetPath()).Insert(no);
+    }}, wxID_ADD);
+
+  Bind(wxEVT_IDLE, [=](wxIdleEvent& event) {
+    event.Skip();
+  
+    if (
+      !IsShown() ||
+       GetItemCount() == 0 ||
+       !wxConfigBase::Get()->ReadBool("AllowSync", true))
+    {
+      return;
+    }
+  
+    if (m_ItemNumber < GetItemCount())
+    {
+      wxExListItem item(this, m_ItemNumber);
+  
+      if ( item.GetFileName().FileExists() &&
+          (item.GetFileName().GetStat().GetModificationTime() != 
+           GetItemText(m_ItemNumber, _("Modified")) ||
+           item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
+          )
+      {
+        item.Update();
+        wxExLogStatus(item.GetFileName(), STAT_SYNC | STAT_FULLPATH);
+        m_ItemUpdated = true;
+      }
+  
+      m_ItemNumber++;
+    }
+    else
+    {
+      m_ItemNumber = 0;
+  
+      if (m_ItemUpdated)
+      {
+        if (m_Type == LIST_FILE)
+        {
+          if (
+            wxConfigBase::Get()->ReadBool("List/SortSync", true) &&
+            GetSortedColumnNo() == FindColumn(_("Modified")))
+          {
+            SortColumn(_("Modified"), SORT_KEEP);
+          }
+        }
+  
+        m_ItemUpdated = false;
+      }
+    }});
+
+  Bind(wxEVT_RIGHT_DOWN, [=](wxMouseEvent& event) {
+    long style = 0; // otherwise CAN_PASTE already on
+    
+    if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
+    if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
+    if (m_Type != LIST_FIND && m_Type != LIST_REPLACE) style |= wxExMenu::MENU_CAN_PASTE;
+    
+    if (GetSelectedItemCount() == 0 && GetItemCount() > 0) 
+    {
+      style |= wxExMenu::MENU_ALLOW_CLEAR;
+    }
+
+    wxExMenu menu(style);
+
+    BuildPopupMenu(menu);
+
+    if (menu.GetMenuItemCount() > 0)
+    {
+      PopupMenu(&menu);
+    }});
 }
 
 void wxExListViewFileName::AddColumns(const wxExLexer* lexer)
@@ -1184,92 +1273,6 @@ void wxExListViewFileName::ItemsUpdate()
   }
 }
 
-void wxExListViewFileName::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case wxID_ADD:   
-    {
-      wxString defaultPath;
-      
-      if (GetSelectedItemCount() > 0)
-      {
-        defaultPath = wxExListItem(
-          this, GetFirstSelected()).GetFileName().GetFullPath();
-      }
-      
-      wxDirDialog dir_dlg(
-        this,
-        _(wxDirSelectorPromptStr),
-        defaultPath,
-        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-      if (dir_dlg.ShowModal() == wxID_OK)
-      {
-        const int no = (GetSelectedItemCount() > 0 ? 
-          GetFirstSelected(): GetItemCount());
-         
-        wxExListItem(this, dir_dlg.GetPath()).Insert(no);
-      }
-    }
-    break;
-
-  default: 
-    wxFAIL;
-    break;
-  }
-}
-
-void wxExListViewFileName::OnIdle(wxIdleEvent& event)
-{
-  event.Skip();
-
-  if (
-    !IsShown() ||
-     GetItemCount() == 0 ||
-     !wxConfigBase::Get()->ReadBool("AllowSync", true))
-  {
-    return;
-  }
-
-  if (m_ItemNumber < GetItemCount())
-  {
-    wxExListItem item(this, m_ItemNumber);
-
-    if ( item.GetFileName().FileExists() &&
-        (item.GetFileName().GetStat().GetModificationTime() != 
-         GetItemText(m_ItemNumber, _("Modified")) ||
-         item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
-        )
-    {
-      item.Update();
-      wxExLogStatus(item.GetFileName(), STAT_SYNC | STAT_FULLPATH);
-      m_ItemUpdated = true;
-    }
-
-    m_ItemNumber++;
-  }
-  else
-  {
-    m_ItemNumber = 0;
-
-    if (m_ItemUpdated)
-    {
-      if (m_Type == LIST_FILE)
-      {
-        if (
-          wxConfigBase::Get()->ReadBool("List/SortSync", true) &&
-          GetSortedColumnNo() == FindColumn(_("Modified")))
-        {
-          SortColumn(_("Modified"), SORT_KEEP);
-        }
-      }
-
-      m_ItemUpdated = false;
-    }
-  }
-}
-
 void wxExListViewFileName::OnList(wxListEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
@@ -1299,35 +1302,4 @@ void wxExListViewFileName::OnList(wxListEvent& event)
     wxFAIL;
   }
 }
-
-void wxExListViewFileName::OnMouse(wxMouseEvent& event)
-{
-  if (event.RightDown())
-  {
-    long style = 0; // otherwise CAN_PASTE already on
-    
-    if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
-    if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
-    if (m_Type != LIST_FIND && m_Type != LIST_REPLACE) style |= wxExMenu::MENU_CAN_PASTE;
-    
-    if (GetSelectedItemCount() == 0 && GetItemCount() > 0) 
-    {
-      style |= wxExMenu::MENU_ALLOW_CLEAR;
-    }
-
-    wxExMenu menu(style);
-
-    BuildPopupMenu(menu);
-
-    if (menu.GetMenuItemCount() > 0)
-    {
-      PopupMenu(&menu);
-    }
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
 #endif // wxUSE_GUI

@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXSTC_H
-#define _EXSTC_H
+#pragma once
 
 #include <vector> 
 #include <wx/stc/stc.h>
@@ -363,29 +362,9 @@ protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
 
-  /// Char event handler.  
   void OnChar(wxKeyEvent& event);
-  
-  /// Command event handler.
   void OnCommand(wxCommandEvent& event);
-  
-  /// Find dialog event handler.
-  void OnFindDialog(wxFindDialogEvent& event);
-  
-  /// Idle event handler.
   void OnIdle(wxIdleEvent& event);
-  
-  /// Key down event handler.
-  void OnKeyDown(wxKeyEvent& event);
-  
-  /// Key up event handler.
-  void OnKeyUp(wxKeyEvent& event);
-  
-  // Mouse event handler.
-  void OnMouse(wxMouseEvent& event);
-  
-  /// Styled text event handler.
-  void OnStyledText(wxStyledTextEvent& event);
 private:
   void CheckAutoComp(const wxUniChar& c);
   void CheckBrace();
@@ -446,4 +425,3 @@ private:
   DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI
-#endif

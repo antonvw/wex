@@ -23,9 +23,7 @@ const char autoCompSep = 3;
 #if wxUSE_GUI
 
 BEGIN_EVENT_TABLE(wxExSTCShell, wxExSTC)
-  EVT_CHAR(wxExSTCShell::OnChar)
   EVT_KEY_DOWN(wxExSTCShell::OnKey)
-  EVT_MIDDLE_UP(wxExSTCShell::OnMouse)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTCShell::OnStyledText)
   EVT_STC_DO_DROP(wxID_ANY, wxExSTCShell::OnStyledText)  
   EVT_STC_START_DRAG(wxID_ANY, wxExSTCShell::OnStyledText)
@@ -93,6 +91,31 @@ wxExSTCShell::wxExSTCShell(
   EnableShell(true);
 
   SetLexer(lexer);
+  
+  Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
+    if (m_Enabled)
+    {
+      ProcessChar(event.GetKeyCode());
+    }
+    
+    if (m_Echo)
+    {
+      event.Skip();
+    }});
+
+  Bind(wxEVT_MIDDLE_UP, [=](wxMouseEvent& event) {
+    if (event.MiddleUp())
+    {
+      if (CanCopy())
+      {
+        Copy();
+        Paste();
+      }
+    }
+    else
+    {
+      event.Skip();
+    }});
 }
 
 wxExSTCShell::~wxExSTCShell()
@@ -248,19 +271,6 @@ void wxExSTCShell::KeepCommand()
   m_Commands.push_back(m_Command);
 }
 
-void wxExSTCShell::OnChar(wxKeyEvent& event)
-{
-  if (m_Enabled)
-  {
-    ProcessChar(event.GetKeyCode());
-  }
-  
-  if (m_Echo)
-  {
-    event.Skip();
-  }
-}
-
 void wxExSTCShell::OnKey(wxKeyEvent& event)
 {
   if (!m_Enabled)
@@ -373,22 +383,6 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
       m_CommandsIterator = m_Commands.end();
 
       if (m_Echo) event.Skip();
-  }
-}
-
-void wxExSTCShell::OnMouse(wxMouseEvent& event)
-{
-  if (event.MiddleUp())
-  {
-    if (CanCopy())
-    {
-      Copy();
-      Paste();
-    }
-  }
-  else
-  {
-    event.Skip();
   }
 }
 
