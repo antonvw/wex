@@ -77,14 +77,10 @@ private:
 };
 
 BEGIN_EVENT_TABLE(wxExManagedFrame, wxExFrame)
-  EVT_AUI_PANE_CLOSE(wxExManagedFrame::OnAuiManager)
-  EVT_AUITOOLBAR_TOOL_DROPDOWN(wxID_FIND, wxExManagedFrame::OnDropDown)
   EVT_MENU(ID_CLEAR_FINDS, wxExManagedFrame::OnCommand)
   EVT_MENU(wxID_PREFERENCES, wxExManagedFrame::OnCommand)
   EVT_MENU_RANGE(ID_FIND_FIRST, ID_FIND_LAST, wxExManagedFrame::OnCommand)
   EVT_MENU_RANGE(ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnCommand)
-  EVT_UPDATE_UI_RANGE(
-    ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnUpdateUI)
 END_EVENT_TABLE()
 
 wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
@@ -106,6 +102,46 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   m_Manager.Update();
   
   GetToolBar()->SetToolDropDown(wxID_FIND, true);
+  
+  Bind(wxEVT_AUI_PANE_CLOSE, [=](wxAuiManagerEvent& event) {
+    // TODO: wxAui should take care of this...
+    wxAuiPaneInfo* info = event.GetPane();  
+    info->BestSize(info->window->GetSize());
+    info->Fixed();
+    m_Manager.Update();
+    info->Resizable();
+    m_Manager.Update();
+    });
+  
+  Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
+    if (event.IsDropDownClicked())
+    {
+      wxAuiToolBar* tb = static_cast<wxAuiToolBar*>(event.GetEventObject());
+  
+      tb->SetToolSticky(event.GetId(), true);
+  
+      // create the popup menu
+      // line up our menu with the button
+      wxRect rect = tb->GetToolRect(event.GetId());
+      wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
+      pt = ScreenToClient(pt);
+      
+      FindPopupMenu(wxExFindReplaceData::Get()->GetFindStrings(), ID_FIND_FIRST, pt);
+  
+      // make sure the button is "un-stuck"
+      tb->SetToolSticky(event.GetId(), false);
+    }
+    else
+    {
+      event.Skip();
+    }}, wxID_FIND);
+
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(m_Manager.GetPane("FINDBAR").IsShown());}, ID_VIEW_FINDBAR);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(m_Manager.GetPane("OPTIONSBAR").IsShown());}, ID_VIEW_OPTIONSBAR);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(m_Manager.GetPane("TOOLBAR").IsShown());}, ID_VIEW_TOOLBAR);
 }
 
 wxExManagedFrame::~wxExManagedFrame()
@@ -240,17 +276,6 @@ void wxExManagedFrame::HideExBar(int hide)
   }
 }
   
-void wxExManagedFrame::OnAuiManager(wxAuiManagerEvent& event)
-{
-  // TODO: wxAui should take care of this...
-  wxAuiPaneInfo* info = event.GetPane();  
-  info->BestSize(info->window->GetSize());
-  info->Fixed();
-  m_Manager.Update();
-  info->Resizable();
-  m_Manager.Update();
-}
-  
 void wxExManagedFrame::OnCommand(wxCommandEvent& event)
 {
   if (event.GetId() >= ID_FIND_FIRST && event.GetId() <= ID_FIND_LAST)
@@ -309,55 +334,9 @@ void wxExManagedFrame::OnCommand(wxCommandEvent& event)
   }
 }
 
-void wxExManagedFrame::OnDropDown(wxAuiToolBarEvent& event)
-{
-  if (event.IsDropDownClicked())
-  {
-    wxAuiToolBar* tb = static_cast<wxAuiToolBar*>(event.GetEventObject());
-
-    tb->SetToolSticky(event.GetId(), true);
-
-    // create the popup menu
-    // line up our menu with the button
-    wxRect rect = tb->GetToolRect(event.GetId());
-    wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
-    pt = ScreenToClient(pt);
-    
-    FindPopupMenu(wxExFindReplaceData::Get()->GetFindStrings(), ID_FIND_FIRST, pt);
-
-    // make sure the button is "un-stuck"
-    tb->SetToolSticky(event.GetId(), false);
-  }
-  else
-  {
-    event.Skip();
-  }
-}
-
 void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 {
   SetFindFocus(page);
-}
-
-void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
-{
-  switch (event.GetId())
-  {
-    case ID_VIEW_FINDBAR:
-      event.Check(m_Manager.GetPane("FINDBAR").IsShown());
-    break;
-
-    case ID_VIEW_OPTIONSBAR:
-      event.Check(m_Manager.GetPane("OPTIONSBAR").IsShown());
-    break;
-
-    case ID_VIEW_TOOLBAR:
-      event.Check(m_Manager.GetPane("TOOLBAR").IsShown());
-    break;
-
-    default:
-      wxFAIL;
-  }
 }
 
 void wxExManagedFrame::ShowExMessage(const wxString& text)

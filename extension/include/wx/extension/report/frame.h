@@ -154,9 +154,6 @@ protected:
   /// you might want prevent closing it.
   wxExListView* GetFileHistoryList() {return m_FileHistoryList;};
   
-  void OnDropDown(wxAuiToolBarEvent& event);
-  // Cleans up all as well.
-  void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
 private:

@@ -22,6 +22,7 @@ public:
 private:
   /// Override the OnInit.
   virtual bool OnInit();
+  virtual void OnInitCmdLine(wxCmdLineParser& parser);
   virtual int OnRun();
 };
 

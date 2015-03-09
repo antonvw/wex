@@ -2,11 +2,10 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wxExSTCShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXSTCSHELL_H
-#define _EXSTCSHELL_H
+#pragma once
 
 #include <list>
 #include <vector>
@@ -108,9 +107,7 @@ public:
   /// Undo one action in the undo history.  
   virtual void Undo();
 protected:
-  void OnChar(wxKeyEvent& event);
   void OnKey(wxKeyEvent& event);
-  void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:
   void Expand();
@@ -143,4 +140,3 @@ private:
   DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI
-#endif

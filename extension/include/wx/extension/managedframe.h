@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXMANAGEDFRAME_H
-#define _EXMANAGEDFRAME_H
+#pragma once
 
 #include <list>
 #include <wx/aui/framemanager.h> // for wxAuiManager
@@ -103,10 +102,7 @@ public:
 protected:
   /// Returns the toolbar.
   wxExToolBar* GetToolBar() {return m_ToolBar;};
-  void OnAuiManager(wxAuiManagerEvent& event);
   void OnCommand(wxCommandEvent& event);
-  void OnDropDown(wxAuiToolBarEvent& event);
-  void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   bool AddToolBarPane(
     wxWindow* window, 
@@ -123,4 +119,3 @@ private:
   DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI
-#endif

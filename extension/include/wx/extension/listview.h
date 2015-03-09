@@ -2,11 +2,10 @@
 // Name:      listview.h
 // Purpose:   Declaration of wxExListView and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXLISTVIEW_H
-#define _EXLISTVIEW_H
+#pragma once
 
 #include <map>
 #include <vector>
@@ -271,10 +270,7 @@ public:
   virtual const wxString ItemToText(long item_number) const;
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
-  void OnCommand(wxCommandEvent& event);
-  void OnIdle(wxIdleEvent& event);
   void OnList(wxListEvent& event);
-  void OnMouse(wxMouseEvent& event);
 private:
   void AddColumns(const wxExLexer* lexer);
   void Initialize(const wxExLexer* lexer);
@@ -285,6 +281,4 @@ private:
 
   DECLARE_EVENT_TABLE()
 };
-
 #endif // wx_USE_GUI
-#endif
