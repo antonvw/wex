@@ -1746,6 +1746,12 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
   }
 }
 
+void wxExSTC::OnStyledText(wxStyledTextEvent& event)
+{
+  MarkModified(event); 
+  event.Skip();
+}
+
 bool wxExSTC::Open(
   const wxExFileName& filename,
   int line_number,
@@ -2326,12 +2332,8 @@ void wxExSTC::UseAutoComplete(bool use)
 void wxExSTC::UseModificationMarkers(bool use)
 {
   if (use)
-    Bind(wxEVT_STC_MODIFIED, [=](wxStyledTextEvent& event) {
-      MarkModified(event); 
-      event.Skip();});
+    Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this);
   else
-    Unbind(wxEVT_STC_MODIFIED, [=](wxStyledTextEvent& event) {
-      MarkModified(event); 
-      event.Skip();});
+    Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this);
 }
 #endif // wxUSE_GUI

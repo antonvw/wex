@@ -365,6 +365,7 @@ protected:
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
+  void OnStyledText(wxStyledTextEvent& event);
 private:
   void CheckAutoComp(const wxUniChar& c);
   void CheckBrace();
