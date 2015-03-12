@@ -243,7 +243,9 @@ Frame::Frame(App* app)
   }
 
   GetToolBar()->AddControl(m_CheckBoxDirCtrl);
+  m_CheckBoxDirCtrl->SetToolTip(_("Explorer"));
   GetToolBar()->AddControl(m_CheckBoxHistory);
+  m_CheckBoxHistory->SetToolTip(_("History"));
   GetToolBar()->Realize();
   m_CheckBoxDirCtrl->SetValue(GetManager().GetPane("DIRCTRL").IsShown());
   m_CheckBoxHistory->SetValue(
