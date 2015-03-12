@@ -1399,22 +1399,23 @@ void wxExSTC::Initialize(bool file_exists)
     ReplaceAll(frd->GetFindString(), frd->GetReplaceString());});
     
   Bind(wxEVT_CHAR, &wxExSTC::OnChar, this);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_CUT, wxID_CLEAR);
   Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_DELETE);
   Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_FIND);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_REPLACE);
   Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_JUMP_TO);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_REPLACE);
   Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_SELECTALL);
   Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_SORT_ASCENDING);
   Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_SORT_DESCENDING);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_UNDO, wxID_REDO);
   Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_FIND_NEXT);
   Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_FIND_PREVIOUS);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_SHOW_PROPERTIES);
   Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_OPEN_BROWSER);
   Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_OPEN_LINK);
   Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_READ);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_SHOW_PROPERTIES);
   Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_CUT, wxID_CLEAR);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_UNDO, wxID_REDO);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
 }
 
 bool wxExSTC::LinkOpen(wxString* filename)
