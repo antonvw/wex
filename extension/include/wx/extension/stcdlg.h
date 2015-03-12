@@ -2,11 +2,10 @@
 // Name:      stcdlg.h
 // Purpose:   Declaration of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXSTCDLG_H
-#define _EXSTCDLG_H
+#pragma once
 
 #include <wx/extension/dialog.h>
 
@@ -69,15 +68,8 @@ public:
   
   /// Set process callback.
   void SetProcess(wxExProcess* process) {m_Process = process;};
-protected:
-  void OnClose(wxCloseEvent& event);
-  void OnCommand(wxCommandEvent& command);
 private:
   wxExSTC* m_STC;
   wxExProcess* m_Process;
-
-  DECLARE_EVENT_TABLE()
 };
-
 #endif // wxUSE_GUI
-#endif

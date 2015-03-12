@@ -22,13 +22,6 @@ const char autoCompSep = 3;
 
 #if wxUSE_GUI
 
-BEGIN_EVENT_TABLE(wxExSTCShell, wxExSTC)
-  EVT_KEY_DOWN(wxExSTCShell::OnKey)
-  EVT_STC_CHARADDED(wxID_ANY, wxExSTCShell::OnStyledText)
-  EVT_STC_DO_DROP(wxID_ANY, wxExSTCShell::OnStyledText)  
-  EVT_STC_START_DRAG(wxID_ANY, wxExSTCShell::OnStyledText)
-END_EVENT_TABLE()
-
 wxExSTCShell::wxExSTCShell(
   wxWindow* parent,
   const wxString& prompt,
@@ -116,6 +109,149 @@ wxExSTCShell::wxExSTCShell(
     {
       event.Skip();
     }});
+    
+  Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
+    if (!m_Enabled)
+    {
+      event.Skip();
+      return;
+    }
+    
+    const int key = event.GetKeyCode();
+    
+    switch (key)
+    {
+      case WXK_RETURN:
+      case WXK_TAB:
+        if (m_Echo && ProcessChar(key)) event.Skip();
+        break;
+      
+      // Up or down key pressed, and at the end of document (and autocomplete active)
+      case WXK_UP:
+      case WXK_DOWN:
+        if (GetCurrentPos() == GetTextLength() && !AutoCompActive())
+        {
+          ShowCommand(key);
+        }
+        else
+        {
+          event.Skip();
+        }
+        break;
+        
+      case WXK_HOME:
+        Home();
+  
+        if (GetLine(GetCurrentLine()).StartsWith(m_Prompt))
+        {
+          GotoPos(GetCurrentPos() + m_Prompt.length());
+        }
+        break;
+        
+      // Shift-Insert key pressed, used for pasting.
+      case WXK_INSERT:
+        if (event.GetModifiers() == wxMOD_SHIFT)
+        {
+          Paste();
+        }
+        break;
+        
+      // Middle mouse button, to paste, though actually OnMouse is used.
+      case WXK_MBUTTON:
+        Paste();
+        break;
+        
+      // Backspace or delete key pressed.
+      case WXK_BACK:
+      case WXK_DELETE:
+        if (GetCurrentPos() <= m_CommandStartPosition)
+        {
+          // Ignore, so do nothing.
+        }
+        else
+        {
+          // Allow.
+          ProcessChar(key);
+          if (m_Echo) event.Skip();
+        }
+        break;
+        
+      case WXK_ESCAPE:
+        if (AutoCompActive())
+        {
+          AutoCompCancel();
+        }
+        else
+        {
+          event.Skip();
+        }
+        break;
+        
+      default:
+        // Ctrl-V pressed, used for pasting.
+        if (key == 'V' && event.GetModifiers() == wxMOD_CONTROL)
+        {
+          Paste();
+        }
+        // Ctrl-Q pressed, used to stop processing.
+        // Ctrl-C pressed and no text selected (otherwise copy), also used to stop processing.
+        else if (
+          event.GetModifiers() == wxMOD_CONTROL && 
+          (key == 'Q' || 
+          (key == 'C' && GetSelectedText().empty())))
+        {
+          if (m_Process != NULL)
+          {
+            m_Process->Command(ID_SHELL_COMMAND_STOP, wxEmptyString);
+          }
+          else
+          {
+            wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
+            wxPostEvent(GetParent(), event);
+          }
+        }
+        // If we enter regular text and not already building a command, first goto end.
+        else if (event.GetModifiers() == wxMOD_NONE &&
+          key < WXK_START &&
+          GetCurrentPos() < m_CommandStartPosition)
+        {
+          DocumentEnd();
+        }
+  
+        m_CommandsIterator = m_Commands.end();
+  
+        if (m_Echo) event.Skip();
+    }});
+
+  Bind(wxEVT_STC_CHARADDED, [=](wxStyledTextEvent& event) {
+    if (!m_Enabled)
+    {
+      event.Skip();
+    }
+    // do nothing, keep event from sent to wxExSTC.
+    });
+  
+  Bind(wxEVT_STC_DO_DROP, [=](wxStyledTextEvent& event) {
+    if (!m_Enabled)
+    {
+      event.Skip();
+    }
+#if wxUSE_DRAG_AND_DROP
+    event.SetDragResult(wxDragNone);
+#endif    
+    event.Skip();});
+  
+  Bind(wxEVT_STC_START_DRAG,  [=](wxStyledTextEvent& event) {
+    if (!m_Enabled)
+    {
+      event.Skip();
+    }
+    // Currently no drag/drop, though we might be able to
+    // drag/drop copy to command line.
+#if wxUSE_DRAG_AND_DROP
+    event.SetDragAllowMove(false);
+#endif    
+    event.Skip();});
 }
 
 wxExSTCShell::~wxExSTCShell()
@@ -269,151 +405,6 @@ void wxExSTCShell::KeepCommand()
   
   m_Commands.remove(m_Command);
   m_Commands.push_back(m_Command);
-}
-
-void wxExSTCShell::OnKey(wxKeyEvent& event)
-{
-  if (!m_Enabled)
-  {
-    event.Skip();
-    return;
-  }
-  
-  const int key = event.GetKeyCode();
-  
-  switch (key)
-  {
-    case WXK_RETURN:
-    case WXK_TAB:
-      if (m_Echo && ProcessChar(key)) event.Skip();
-      break;
-    
-    // Up or down key pressed, and at the end of document (and autocomplete active)
-    case WXK_UP:
-    case WXK_DOWN:
-      if (GetCurrentPos() == GetTextLength() && !AutoCompActive())
-      {
-        ShowCommand(key);
-      }
-      else
-      {
-        event.Skip();
-      }
-      break;
-      
-    case WXK_HOME:
-      Home();
-
-      if (GetLine(GetCurrentLine()).StartsWith(m_Prompt))
-      {
-        GotoPos(GetCurrentPos() + m_Prompt.length());
-      }
-      break;
-      
-    // Shift-Insert key pressed, used for pasting.
-    case WXK_INSERT:
-      if (event.GetModifiers() == wxMOD_SHIFT)
-      {
-        Paste();
-      }
-      break;
-      
-    // Middle mouse button, to paste, though actually OnMouse is used.
-    case WXK_MBUTTON:
-      Paste();
-      break;
-      
-    // Backspace or delete key pressed.
-    case WXK_BACK:
-    case WXK_DELETE:
-      if (GetCurrentPos() <= m_CommandStartPosition)
-      {
-        // Ignore, so do nothing.
-      }
-      else
-      {
-        // Allow.
-        ProcessChar(key);
-        if (m_Echo) event.Skip();
-      }
-      break;
-      
-    case WXK_ESCAPE:
-      if (AutoCompActive())
-      {
-        AutoCompCancel();
-      }
-      else
-      {
-        event.Skip();
-      }
-      break;
-      
-    default:
-      // Ctrl-V pressed, used for pasting.
-      if (key == 'V' && event.GetModifiers() == wxMOD_CONTROL)
-      {
-        Paste();
-      }
-      // Ctrl-Q pressed, used to stop processing.
-      // Ctrl-C pressed and no text selected (otherwise copy), also used to stop processing.
-      else if (
-        event.GetModifiers() == wxMOD_CONTROL && 
-        (key == 'Q' || 
-        (key == 'C' && GetSelectedText().empty())))
-      {
-        if (m_Process != NULL)
-        {
-          m_Process->Command(ID_SHELL_COMMAND_STOP, wxEmptyString);
-        }
-        else
-        {
-          wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
-          wxPostEvent(GetParent(), event);
-        }
-      }
-      // If we enter regular text and not already building a command, first goto end.
-      else if (event.GetModifiers() == wxMOD_NONE &&
-        key < WXK_START &&
-        GetCurrentPos() < m_CommandStartPosition)
-      {
-        DocumentEnd();
-      }
-
-      m_CommandsIterator = m_Commands.end();
-
-      if (m_Echo) event.Skip();
-  }
-}
-
-void wxExSTCShell::OnStyledText(wxStyledTextEvent& event)
-{
-  if (!m_Enabled)
-  {
-    event.Skip();
-  }
-  else if (event.GetEventType() == wxEVT_STC_CHARADDED)
-  {
-    // do nothing, keep event from sent to wxExSTC.
-  }
-  // Currently no drag/drop, though we might be able to
-  // drag/drop copy to command line.
-  else if (event.GetEventType() == wxEVT_STC_START_DRAG)
-  {
-#if wxUSE_DRAG_AND_DROP
-    event.SetDragAllowMove(false);
-#endif    
-    
-    event.Skip();
-  }
-  else if (event.GetEventType() == wxEVT_STC_DO_DROP)
-  {
-#if wxUSE_DRAG_AND_DROP
-      event.SetDragResult(wxDragNone);
-#endif    
-    
-    event.Skip();
-  }
 }
 
 void wxExSTCShell::Paste()

@@ -111,25 +111,6 @@ private:
 };
 #endif
 
-BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
-  EVT_FIND(wxID_ANY, wxExFrame::OnFindDialog)
-  EVT_FIND_CLOSE(wxID_ANY, wxExFrame::OnFindDialog)
-  EVT_FIND_NEXT(wxID_ANY, wxExFrame::OnFindDialog)
-  EVT_FIND_REPLACE(wxID_ANY, wxExFrame::OnFindDialog)
-  EVT_FIND_REPLACE_ALL(wxID_ANY, wxExFrame::OnFindDialog)
-  EVT_MENU(wxID_FIND, wxExFrame::OnCommand)
-  EVT_MENU(wxID_REPLACE, wxExFrame::OnCommand)
-  EVT_MENU(wxID_OPEN, wxExFrame::OnCommand)
-  EVT_MENU(ID_VIEW_MENUBAR, wxExFrame::OnCommand)
-  EVT_MENU(ID_VIEW_STATUSBAR, wxExFrame::OnCommand)
-  EVT_MENU(ID_VIEW_TITLEBAR, wxExFrame::OnCommand)
-  EVT_UPDATE_UI(ID_VIEW_MENUBAR, wxExFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_STATUSBAR, wxExFrame::OnUpdateUI)
-#if wxUSE_STATUSBAR
-  EVT_UPDATE_UI(ID_UPDATE_STATUS_BAR, wxExFrame::OnUpdateUI)
-#endif
-END_EVENT_TABLE()
-
 wxExFrame::wxExFrame(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
@@ -147,6 +128,46 @@ wxExFrame::wxExFrame(wxWindow* parent,
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxExPrinting::Get()->GetHtmlPrinter()->SetParentWindow(this);
 #endif
+
+  Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, wxID_FIND);
+  Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, wxID_REPLACE);
+  Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, wxID_OPEN);
+  Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, ID_VIEW_MENUBAR);
+  Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, ID_VIEW_STATUSBAR);
+  Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, ID_VIEW_TITLEBAR);
+
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    (GetMenuBar() != NULL ? event.Check(GetMenuBar()->IsShown()): event.Check(false));},
+    ID_VIEW_MENUBAR);
+
+#if wxUSE_STATUSBAR
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    (GetStatusBar() != NULL ? event.Check(GetStatusBar()->IsShown()): event.Check(false));},
+    ID_VIEW_STATUSBAR);
+    
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    wxExListView* lv = GetListView();
+    if (lv != NULL && lv->HasFocus())
+    {
+      UpdateStatusBar(lv);
+    }}, ID_UPDATE_STATUS_BAR);
+#endif
+
+  Bind(wxEVT_FIND_CLOSE, [=](wxFindDialogEvent& event) {
+    wxASSERT(m_FindReplaceDialog != NULL);
+    // Hiding instead of destroying, does not 
+    // show the dialog next time.
+    m_FindReplaceDialog->Destroy();
+    m_FindReplaceDialog = NULL;});
+    
+  Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
+    if (m_FindFocus != NULL) wxPostEvent(m_FindFocus, event);});
+  Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
+    if (m_FindFocus != NULL) wxPostEvent(m_FindFocus, event);});
+  Bind(wxEVT_FIND_REPLACE, [=](wxFindDialogEvent& event) {
+    if (m_FindFocus != NULL) wxPostEvent(m_FindFocus, event);});
+  Bind(wxEVT_FIND_REPLACE_ALL, [=](wxFindDialogEvent& event) {
+    if (m_FindFocus != NULL) wxPostEvent(m_FindFocus, event);});
 }
 
 wxExFrame::~wxExFrame()
@@ -259,59 +280,6 @@ wxStatusBar* wxExFrame::OnCreateStatusBar(
   return m_StatusBar;
 }
 #endif
-
-void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
-{
-  if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
-  {
-    wxASSERT(m_FindReplaceDialog != NULL);
-
-    // Hiding instead of destroying, does not 
-    // show the dialog next time.
-    m_FindReplaceDialog->Destroy();
-    m_FindReplaceDialog = NULL;
-  }
-  else
-  {
-    if (m_FindFocus != NULL)
-    {
-      wxPostEvent(m_FindFocus, event);
-    }
-  }
-}
-
-void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
-{
-  switch (event.GetId())
-  {
-#if wxUSE_STATUSBAR
-    case ID_UPDATE_STATUS_BAR:
-    {
-      wxExListView* lv = GetListView();
-      
-      if (lv != NULL && lv->HasFocus())
-      {
-        UpdateStatusBar(lv);
-      }
-    }
-    break;
-#endif
-
-  case ID_VIEW_MENUBAR:
-    (GetMenuBar() != NULL ? event.Check(GetMenuBar()->IsShown()): event.Check(false));
-    break;
-
-#if wxUSE_STATUSBAR
-  case ID_VIEW_STATUSBAR:
-    (GetStatusBar() != NULL ? event.Check(GetStatusBar()->IsShown()): event.Check(false));
-    break;
-#endif
-      
-  default:
-    wxFAIL;
-    break;
-  }
-}
 
 bool wxExFrame::OpenFile(
   const wxExFileName& filename,

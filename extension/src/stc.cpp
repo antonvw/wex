@@ -42,26 +42,6 @@ enum
   INDENT_ALL,
 };
 
-BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
-  EVT_CHAR(wxExSTC::OnChar)
-  EVT_MENU(wxID_DELETE, wxExSTC::OnCommand)
-  EVT_MENU(wxID_FIND, wxExSTC::OnCommand)
-  EVT_MENU(wxID_REPLACE, wxExSTC::OnCommand)
-  EVT_MENU(wxID_JUMP_TO, wxExSTC::OnCommand)
-  EVT_MENU(wxID_SELECTALL, wxExSTC::OnCommand)
-  EVT_MENU(wxID_SORT_ASCENDING, wxExSTC::OnCommand)
-  EVT_MENU(wxID_SORT_DESCENDING, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_FIND_NEXT, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_FIND_PREVIOUS, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_SHOW_PROPERTIES, wxExSTC::OnCommand)  
-  EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_READ, wxExSTC::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
-  EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
-END_EVENT_TABLE()
-
 wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
 wxExSTCEntryDialog* wxExSTC::m_EntryDialog = NULL;
 int wxExSTC::m_Zoom = -1;
@@ -1365,14 +1345,21 @@ void wxExSTC::Initialize(bool file_exists)
     event.Skip();
     AutoIndentation(event.GetKey());});
     
-  Bind(wxEVT_STC_DO_DROP, [=](wxStyledTextEvent& event) {
 #if wxUSE_DRAG_AND_DROP
+  Bind(wxEVT_STC_DO_DROP, [=](wxStyledTextEvent& event) {
     if (HexMode() || GetReadOnly())
     {
       event.SetDragResult(wxDragNone);
     }
-#endif    
     event.Skip();});
+
+  Bind(wxEVT_STC_START_DRAG, [=](wxStyledTextEvent& event) {
+    if (HexMode() || GetReadOnly())
+    {
+      event.SetDragAllowMove(false);
+    }
+    event.Skip();});
+#endif    
     
   Bind(wxEVT_STC_DWELLEND, [=](wxStyledTextEvent& event) {
     if (CallTipActive())
@@ -1390,15 +1377,6 @@ void wxExSTC::Initialize(bool file_exists)
         ToggleFold(line);
       }
     }});
-    
-  Bind(wxEVT_STC_START_DRAG, [=](wxStyledTextEvent& event) {
-#if wxUSE_DRAG_AND_DROP
-    if (HexMode() || GetReadOnly())
-    {
-      event.SetDragAllowMove(false);
-    }
-#endif    
-    event.Skip();});
     
   Bind(wxEVT_STC_UPDATEUI, [=](wxStyledTextEvent& event) {
     event.Skip();
@@ -1419,6 +1397,24 @@ void wxExSTC::Initialize(bool file_exists)
     
   Bind(wxEVT_FIND_REPLACE_ALL, [=](wxFindDialogEvent& event) {
     ReplaceAll(frd->GetFindString(), frd->GetReplaceString());});
+    
+  Bind(wxEVT_CHAR, &wxExSTC::OnChar, this);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_DELETE);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_FIND);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_REPLACE);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_JUMP_TO);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_SELECTALL);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_SORT_ASCENDING);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_SORT_DESCENDING);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_FIND_NEXT);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_FIND_PREVIOUS);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_SHOW_PROPERTIES);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_OPEN_BROWSER);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_OPEN_LINK);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_READ);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_CUT, wxID_CLEAR);
+  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_UNDO, wxID_REDO);
 }
 
 bool wxExSTC::LinkOpen(wxString* filename)

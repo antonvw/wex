@@ -2,7 +2,7 @@
 // Name:      grid.cpp
 // Purpose:   Implementation of wxExGrid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -61,21 +61,6 @@ bool wxExTextDropTarget::OnDropText(
 }
 #endif // wxUSE_DRAG_AND_DROP
 
-BEGIN_EVENT_TABLE(wxExGrid, wxGrid)
-  EVT_FIND(wxID_ANY, wxExGrid::OnFindDialog)
-  EVT_FIND_NEXT(wxID_ANY, wxExGrid::OnFindDialog)
-  EVT_GRID_CELL_LEFT_CLICK(wxExGrid::OnGrid)
-  EVT_GRID_CELL_RIGHT_CLICK(wxExGrid::OnGrid)
-  EVT_GRID_CELL_BEGIN_DRAG(wxExGrid::OnGrid)
-  EVT_GRID_SELECT_CELL(wxExGrid::OnGrid)
-  EVT_GRID_RANGE_SELECT(wxExGrid::OnGridRange)
-  EVT_MENU(wxID_DELETE, wxExGrid::OnCommand)
-  EVT_MENU(wxID_SELECTALL, wxExGrid::OnCommand)
-  EVT_MENU(ID_EDIT_SELECT_NONE, wxExGrid::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExGrid::OnCommand)
-  EVT_MOUSE_EVENTS(wxExGrid::OnMouse)
-END_EVENT_TABLE()
-
 wxExGrid::wxExGrid(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
@@ -88,6 +73,122 @@ wxExGrid::wxExGrid(wxWindow* parent,
   SetDropTarget(new wxExTextDropTarget(this));
   m_UseDragAndDrop = true;
 #endif
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    EmptySelection();}, wxID_DELETE);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    SelectAll();}, wxID_SELECTALL);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    ClearSelection();}, ID_EDIT_SELECT_NONE);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    CopySelectedCellsToClipboard();}, wxID_COPY);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    CopySelectedCellsToClipboard();
+    EmptySelection();}, wxID_CUT);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    PasteCellsFromClipboard();}, wxID_PASTE);
+
+  Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
+    FindNext(
+      wxExFindReplaceData::Get()->GetFindString(), 
+      wxExFindReplaceData::Get()->SearchDown());});
+      
+  Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
+    FindNext(
+      wxExFindReplaceData::Get()->GetFindString(), 
+      wxExFindReplaceData::Get()->SearchDown());});
+
+  Bind(wxEVT_GRID_CELL_LEFT_CLICK, [=](wxGridEvent& event) {
+    // Removed extra check for !IsEditable(),
+    // drag/drop is different from editing, so allow that.
+    if (!IsSelection())
+    {
+      event.Skip();
+      return;
+    }
+
+#if wxUSE_DRAG_AND_DROP
+    if (m_UseDragAndDrop)
+    {
+      // This is because drag/drop is not really supported by the wxGrid.
+      // Even the wxEVT_GRID_CELL_BEGIN_DRAG does not seem to come in.
+      // Therefore, we are really dragging if you click again in
+      // your selection and move mouse and drop elsewhere.
+      // So, if not clicked in the selection, do nothing, this was no drag.
+      if (!IsInSelection(event.GetRow(), event.GetCol()))
+      {
+        event.Skip();
+        return;
+      }
+
+      // Is it allowed to drag current selection??
+      if (!IsAllowedDragSelection())
+      {
+        event.Skip();
+        return;
+      }
+
+      // Start drag operation.
+      wxTextDataObject textData(GetSelectedCellsValue());
+      wxDropSource source(textData, this);
+      wxDragResult result = source.DoDragDrop(wxDrag_DefaultMove);
+
+      if (result != wxDragError &&
+          result != wxDragNone &&
+          result != wxDragCancel)
+      {
+        // The old contents is not deleted, as should be by moving.
+        // To fix this, do not call Skip so selection remains active,
+        // and call EmptySelection.
+        //  event.Skip();
+        EmptySelection();
+        ClearSelection();
+      }
+      else
+      {
+        // Do not call Skip so selection remains active.
+        // event.Skip();
+      }
+    }
+    else
+    {
+      event.Skip();
+    }
+#else
+    event.Skip();
+#endif
+    });
+  
+  Bind(wxEVT_GRID_CELL_RIGHT_CLICK, [=](wxGridEvent& event) {
+    int style = (IsEditable() ? wxExMenu::MENU_DEFAULT: wxExMenu::MENU_IS_READ_ONLY);
+    if (IsSelection()) style |= wxExMenu::MENU_IS_SELECTED;
+
+    wxExMenu menu(style);
+    BuildPopupMenu(menu);
+    PopupMenu(&menu);
+    });
+    
+  Bind(wxEVT_GRID_SELECT_CELL, [=](wxGridEvent& event) {
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(
+      wxString::Format("%d,%d", 1 + event.GetCol(), 1 + event.GetRow()),
+      "PaneInfo");
+#endif
+    event.Skip();});
+
+  Bind(wxEVT_GRID_RANGE_SELECT, [=](wxGridRangeSelectEvent& event) {
+    event.Skip();
+  #if wxUSE_STATUSBAR
+    wxExFrame::StatusText(
+      wxString::Format("%ld", GetSelectedCells().GetCount()),
+      "PaneInfo");
+  #endif
+    });
 }
 
 const wxString wxExGrid::BuildPage()
@@ -411,150 +512,6 @@ bool wxExGrid::IsAllowedDropSelection(const wxGridCellCoords& drop_coords, const
   return true;
 }
 #endif
-
-void wxExGrid::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case wxID_COPY: CopySelectedCellsToClipboard(); break;
-  case wxID_CUT: CopySelectedCellsToClipboard(); EmptySelection(); break;
-  case wxID_DELETE: EmptySelection(); break;
-  case wxID_PASTE: PasteCellsFromClipboard(); break;
-  case wxID_SELECTALL: SelectAll(); break;
-  case ID_EDIT_SELECT_NONE: ClearSelection(); break;
-  default: wxFAIL;
-  }
-}
-
-void wxExGrid::OnFindDialog(wxFindDialogEvent& event)
-{
-  if (
-    event.GetEventType() == wxEVT_COMMAND_FIND ||
-    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-  {
-    FindNext(
-      wxExFindReplaceData::Get()->GetFindString(), 
-      wxExFindReplaceData::Get()->SearchDown());
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
-void wxExGrid::OnGrid(wxGridEvent& event)
-{
-  if (event.GetEventType() == wxEVT_GRID_CELL_RIGHT_CLICK)
-  {
-    int style = (IsEditable() ? wxExMenu::MENU_DEFAULT: wxExMenu::MENU_IS_READ_ONLY);
-    if (IsSelection()) style |= wxExMenu::MENU_IS_SELECTED;
-
-    wxExMenu menu(style);
-    BuildPopupMenu(menu);
-    PopupMenu(&menu);
-  }
-  else if (event.GetEventType() == wxEVT_GRID_CELL_LEFT_CLICK)
-  {
-    // Removed extra check for !IsEditable(),
-    // drag/drop is different from editing, so allow that.
-    if (!IsSelection())
-    {
-      event.Skip();
-      return;
-    }
-
-#if wxUSE_DRAG_AND_DROP
-    if (m_UseDragAndDrop)
-    {
-      // This is because drag/drop is not really supported by the wxGrid.
-      // Even the wxEVT_GRID_CELL_BEGIN_DRAG does not seem to come in.
-      // Therefore, we are really dragging if you click again in
-      // your selection and move mouse and drop elsewhere.
-      // So, if not clicked in the selection, do nothing, this was no drag.
-      if (!IsInSelection(event.GetRow(), event.GetCol()))
-      {
-        event.Skip();
-        return;
-      }
-
-      // Is it allowed to drag current selection??
-      if (!IsAllowedDragSelection())
-      {
-        event.Skip();
-        return;
-      }
-
-      // Start drag operation.
-      wxTextDataObject textData(GetSelectedCellsValue());
-      wxDropSource source(textData, this);
-      wxDragResult result = source.DoDragDrop(wxDrag_DefaultMove);
-
-      if (result != wxDragError &&
-          result != wxDragNone &&
-          result != wxDragCancel)
-      {
-        // The old contents is not deleted, as should be by moving.
-        // To fix this, do not call Skip so selection remains active,
-        // and call EmptySelection.
-        //  event.Skip();
-        EmptySelection();
-        ClearSelection();
-      }
-      else
-      {
-        // Do not call Skip so selection remains active.
-        // event.Skip();
-      }
-    }
-    else
-    {
-      event.Skip();
-    }
-#else
-    event.Skip();
-#endif
-  }
-  else if (event.GetEventType() == wxEVT_GRID_SELECT_CELL)
-  {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(
-      wxString::Format("%d,%d", 1 + event.GetCol(), 1 + event.GetRow()),
-      "PaneInfo");
-#endif
-
-    event.Skip();
-  }
-  else if (event.GetEventType() == wxEVT_GRID_CELL_BEGIN_DRAG)
-  {
-    // Readme: Not yet implemented.
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
-void wxExGrid::OnGridRange(wxGridRangeSelectEvent& event)
-{
-  event.Skip();
-
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(
-    wxString::Format("%ld", GetSelectedCells().GetCount()),
-    "PaneInfo");
-#endif
-}
-
-void wxExGrid::OnMouse(wxMouseEvent& event)
-{
-  if (event.Dragging())
-  {
-    // Readme: This event is not coming in as well.
-    // Could be used to trigger a real drag.
-  }
-
-  event.Skip();
-}
 
 void wxExGrid::PasteCellsFromClipboard()
 {

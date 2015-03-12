@@ -33,11 +33,7 @@ public:
   bool ServerNotListening() const {
     return m_SocketServer == NULL;}
 protected:
-  void OnClose(wxCloseEvent& event);
-  void OnCommand(wxCommandEvent& event);
   void OnSocket(wxSocketEvent& event);
-  void OnTimer(wxTimerEvent& event);
-  void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   void AppendText(
     wxExSTC* stc, 
@@ -86,27 +82,17 @@ private:
 #endif
 
   int m_Answer;
-
-  DECLARE_EVENT_TABLE()
 };
 
 #if wxUSE_TASKBARICON
 class TaskBarIcon: public wxTaskBarIcon
 {
 public:
-  TaskBarIcon(Frame* frame)
-    : m_Frame(frame) {}
+  TaskBarIcon(Frame* frame);
 protected:
   virtual wxMenu* CreatePopupMenu();
-  void OnCommand(wxCommandEvent& event);
-  void OnTaskBarIcon(wxTaskBarIconEvent&) {
-    m_Frame->Show();}
-  void OnUpdateUI(wxUpdateUIEvent& event) {
-    event.Enable(m_Frame->ServerNotListening());}
 private:
   Frame* m_Frame;
-
-  DECLARE_EVENT_TABLE()
 };
 #endif
 
@@ -140,4 +126,3 @@ enum
 };
 
 #endif // wxUSE_SOCKETS
-

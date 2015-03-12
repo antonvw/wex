@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of sample classes for wxExtension
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013
+// Copyright: (c) 2015
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/app.h>
@@ -74,5 +74,4 @@ private:
   wxExProcess m_Process;
 
   DECLARE_NO_COPY_CLASS(wxExSampleFrame)
-  DECLARE_EVENT_TABLE()
 };

@@ -422,7 +422,5 @@ private:
   static wxExConfigDialog* m_ConfigDialog;
   static wxExSTCEntryDialog* m_EntryDialog;
   static int m_Zoom;
-
-  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI

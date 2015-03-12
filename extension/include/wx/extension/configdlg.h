@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXCONFIGDIALOG_H
-#define _EXCONFIGDIALOG_H
+#pragma once
 
 #include <vector>
 #include <wx/imaglist.h>
@@ -88,8 +87,5 @@ private:
   bool m_ForceCheckBoxChecked;
   wxString m_Contains;
   wxString m_Page;
-
-  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI
-#endif

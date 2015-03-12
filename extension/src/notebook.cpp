@@ -2,7 +2,7 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wxExNotebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -32,11 +32,6 @@ void LogKeys(const map < wxString wxWindow* >& keys)
 }
 #endif
   
-BEGIN_EVENT_TABLE(wxExNotebook, wxAuiNotebook)
-  EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, wxExNotebook::OnNotebook)
-  EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, wxExNotebook::OnNotebook)
-END_EVENT_TABLE()
-
 wxExNotebook::wxExNotebook(wxWindow* parent,
   wxExManagedFrame* frame,
   wxWindowID id,
@@ -48,6 +43,37 @@ wxExNotebook::wxExNotebook(wxWindow* parent,
 {
   // Here you could use another art provider.
   // SetArtProvider(new wxAuiSimpleTabArt); 
+  
+  Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, [=](wxAuiNotebookEvent& event) {
+    event.Skip(); // call base
+    if (m_Frame != NULL)
+    {
+      m_Frame->OnNotebook(GetId(), GetPage(event.GetSelection()));
+    }});
+  
+  Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, [=](wxAuiNotebookEvent& event) {
+    const int sel = event.GetSelection();
+    if (sel != wxNOT_FOUND)
+    {
+      if (m_Frame != NULL && !m_Frame->AllowClose(GetId(), GetPage(sel)))
+      {
+        event.Veto();
+      }
+      else
+      {
+        wxWindow* page = GetPage(sel);
+        const wxString key = m_Windows[page];
+        m_Windows.erase(page);
+        m_Keys.erase(key);
+        event.Skip(); // call base
+        
+        if (m_Frame != NULL)
+        {
+          if (m_Keys.empty()) m_Frame->SyncCloseAll(GetId());
+          m_Frame->HideExBar();
+        }
+      }
+    }});
 }
 
 wxWindow* wxExNotebook::AddPage(
@@ -207,49 +233,6 @@ wxWindow* wxExNotebook::InsertPage(
 #endif
 
   return page;
-}
-
-void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
-{
-  if (event.GetEventType() == wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED)
-  {
-    event.Skip(); // call base
-
-    if (m_Frame != NULL)
-    {
-      m_Frame->OnNotebook(GetId(), GetPage(event.GetSelection()));
-    }
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE)
-  {
-    const int sel = event.GetSelection();
-    
-    if (sel != wxNOT_FOUND)
-    {
-      if (m_Frame != NULL && !m_Frame->AllowClose(GetId(), GetPage(sel)))
-      {
-        event.Veto();
-      }
-      else
-      {
-        wxWindow* page = GetPage(sel);
-        const wxString key = m_Windows[page];
-        m_Windows.erase(page);
-        m_Keys.erase(key);
-        event.Skip(); // call base
-        
-        if (m_Frame != NULL)
-        {
-          if (m_Keys.empty()) m_Frame->SyncCloseAll(GetId());
-          m_Frame->HideExBar();
-        }
-      }
-    }
-  }
-  else
-  {
-    wxFAIL;
-  }
 }
 
 bool wxExNotebook::SetPageText(

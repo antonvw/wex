@@ -191,11 +191,6 @@ void wxExFindReplaceData::SetUseRegEx(bool value)
   }
 }
 
-BEGIN_EVENT_TABLE(wxExFindTextCtrl, wxTextCtrl)
-  EVT_CHAR(wxExFindTextCtrl::OnKey)
-  EVT_TEXT_ENTER(wxID_ANY, wxExFindTextCtrl::OnEnter)
-END_EVENT_TABLE()
-
 wxExFindTextCtrl::wxExFindTextCtrl(
   wxWindow* parent,
   wxWindowID id,
@@ -206,17 +201,12 @@ wxExFindTextCtrl::wxExFindTextCtrl(
       wxExFindReplaceData::Get()->GetFindString(), 
       pos, size, wxTE_PROCESS_ENTER)
 {
+  Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
+    if (!wxExFindReplaceData::Get()->Iterate(this, event.GetKeyCode()))
+    {
+      event.Skip();
+    }});
+  
+  Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
+    wxExFindReplaceData::Get()->SetFindString(GetValue());});
 }
-
-void wxExFindTextCtrl::OnEnter(wxCommandEvent& event)
-{
-  wxExFindReplaceData::Get()->SetFindString(GetValue());
-}
-
-void wxExFindTextCtrl::OnKey(wxKeyEvent& event)
-{
-  if (!wxExFindReplaceData::Get()->Iterate(this, event.GetKeyCode()))
-  {
-    event.Skip();
-  }
-}    

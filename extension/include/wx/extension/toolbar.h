@@ -2,11 +2,10 @@
 // Name:      toolbar.h
 // Purpose:   Declaration of wxExToolBar classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014
+// Copyright: (c) 2015
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXTOOLBAR_H
-#define _EXTOOLBAR_H
+#pragma once
 
 #include <wx/aui/auibar.h> 
 
@@ -59,9 +58,6 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxAUI_TB_DEFAULT_STYLE);
-protected:
-  void OnCommand(wxCommandEvent& event);
-  void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   void Initialize();
 
@@ -69,8 +65,6 @@ private:
   wxCheckBox* m_IsRegularExpression;
   wxCheckBox* m_MatchCase;
   wxCheckBox* m_MatchWholeWord;
-
-  DECLARE_EVENT_TABLE()
 };
 
 /// Offers a options toolbar, containing checkboxes.
@@ -83,13 +77,8 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxAUI_TB_DEFAULT_STYLE);
-protected:
-  void OnCommand(wxCommandEvent& event);
 private:
   wxCheckBox* m_HexMode;
   wxCheckBox* m_SyncMode;
-
-  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI
-#endif

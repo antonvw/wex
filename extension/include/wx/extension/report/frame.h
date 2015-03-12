@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EX_REPORT_FRAME_H
-#define _EX_REPORT_FRAME_H
+#pragma once
 
 #include <set>
 #include <wx/bitmap.h> // for auibar
@@ -154,7 +153,6 @@ protected:
   /// you might want prevent closing it.
   wxExListView* GetFileHistoryList() {return m_FileHistoryList;};
   
-  void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
 private:
   void ClearHistory(wxFileHistory& history);
@@ -180,7 +178,4 @@ private:
   std::set < wxString > m_Info;
 
   bool m_ProjectModified;
-
-  DECLARE_EVENT_TABLE()
 };
-#endif

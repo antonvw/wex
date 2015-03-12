@@ -47,32 +47,6 @@ bool App::OnInit()
   return true;
 }
 
-BEGIN_EVENT_TABLE(Frame, wxExFrameWithHistory)
-  EVT_CLOSE(Frame::OnClose)
-  EVT_MENU(wxID_ABOUT, Frame::OnCommand)
-  EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
-  EVT_MENU(wxID_EXIT, Frame::OnCommand)
-  EVT_MENU(wxID_NEW, Frame::OnCommand)
-  EVT_MENU(wxID_OPEN, Frame::OnCommand)
-  EVT_MENU(wxID_SAVE, Frame::OnCommand)
-  EVT_MENU(wxID_SAVEAS, Frame::OnCommand)
-  EVT_MENU(wxID_STOP, Frame::OnCommand)
-  EVT_MENU(ID_SHELL_COMMAND, Frame::OnCommand)
-  EVT_MENU(ID_SHELL_COMMAND_STOP, Frame::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, Frame::OnCommand)
-  EVT_MENU_RANGE(ID_FIRST, ID_LAST, Frame::OnCommand)
-  EVT_UPDATE_UI(wxID_SAVE, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_SAVEAS, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_STOP, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_DATABASE_CLOSE, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_DATABASE_OPEN, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_RECENTFILE_MENU, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_QUERY, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_RESULTS, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_STATISTICS, Frame::OnUpdateUI)
-END_EVENT_TABLE()
-
 Frame::Frame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
   , m_Running(false)
@@ -176,21 +150,29 @@ Frame::Frame()
   GetManager().GetPane("QUERY").Show(false);
 
   GetManager().Update();
-}
+  
+  Bind(wxEVT_CLOSE, [=](wxCloseEvent& event) {
+    if (wxExFileDialog(this,
+      &m_Query->GetFile()).ShowModalIfChanged()  != wxID_CANCEL)
+    {
+      wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
+      event.Skip();
+    }});
+    
+  EVT_MENU(wxID_ABOUT, Frame::OnCommand)
+  EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
+  EVT_MENU(wxID_EXIT, Frame::OnCommand)
+  EVT_MENU(wxID_NEW, Frame::OnCommand)
+  EVT_MENU(wxID_OPEN, Frame::OnCommand)
+  EVT_MENU(wxID_SAVE, Frame::OnCommand)
+  EVT_MENU(wxID_SAVEAS, Frame::OnCommand)
+  EVT_MENU(wxID_STOP, Frame::OnCommand)
+  EVT_MENU(ID_SHELL_COMMAND, Frame::OnCommand)
+  EVT_MENU(ID_SHELL_COMMAND_STOP, Frame::OnCommand)
+  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, Frame::OnCommand)
+  EVT_MENU_RANGE(ID_FIRST, ID_LAST, Frame::OnCommand)
 
-void Frame::OnClose(wxCloseEvent& event)
-{
-  if (wxExFileDialog(this,
-    &m_Query->GetFile()).ShowModalIfChanged()  == wxID_CANCEL)
-  {
-    return;
-  }
-
-  wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
-
-  event.Skip();
-}
-
+  void OnCommand(wxCommandEvent& event);
 void Frame::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
@@ -325,6 +307,29 @@ void Frame::OnCommand(wxCommandEvent& event)
   }
 }
 
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(m_Query->GetModify());}, wxID_SAVE);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(m_Query->GetLength() > 0);}, wxID_SAVEAS);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(m_Running);}, wxID_STOP);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(m_otl.IsConnected());}, ID_DATABASE_CLOSE);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(!m_otl.IsConnected());}, ID_DATABASE_OPEN);
+  Bind(wxEVT_UPDATE_UI(, [=](wxUpdateUIEvent& event) {
+    // If we have a query, you can hide it, but still run it.
+    event.Enable(m_Query->GetLength() > 0 && m_otl.IsConnected());}, wxID_EXECUTE);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(!GetRecentFile().empty());}, ID_RECENTFILE_MENU);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(GetManager().GetPane("QUERY").IsShown());}, ID_VIEW_QUERY);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(GetManager().GetPane("RESULTS").IsShown());}, ID_VIEW_RESULTS);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(GetManager().GetPane("STATISTICS").IsShown());}, ID_VIEW_STATISTICS);
+}
+
 void Frame::OnCommandConfigDialog(
   wxWindowID dialogid,
   int commandid)
@@ -338,56 +343,6 @@ void Frame::OnCommandConfigDialog(
   else
   {
     wxExFrameWithHistory::OnCommandConfigDialog(dialogid, commandid);
-  }
-}
-
-void Frame::OnUpdateUI(wxUpdateUIEvent& event)
-{
-  switch (event.GetId())
-  {
-  case wxID_EXECUTE:
-    // If we have a query, you can hide it, but still run it.
-    event.Enable(m_Query->GetLength() > 0 && m_otl.IsConnected());
-    break;
-
-  case wxID_SAVE:
-    event.Enable(m_Query->GetModify());
-    break;
-
-  case wxID_SAVEAS:
-    event.Enable(m_Query->GetLength() > 0);
-    break;
-
-  case wxID_STOP:
-    event.Enable(m_Running);
-    break;
-
-  case ID_DATABASE_CLOSE:
-    event.Enable(m_otl.IsConnected());
-    break;
-
-  case ID_DATABASE_OPEN:
-    event.Enable(!m_otl.IsConnected());
-    break;
-
-  case ID_RECENTFILE_MENU:
-    event.Enable(!GetRecentFile().empty());
-    break;
-
-  case ID_VIEW_QUERY:
-    event.Check(GetManager().GetPane("QUERY").IsShown());
-    break;
-
-  case ID_VIEW_RESULTS:
-    event.Check(GetManager().GetPane("RESULTS").IsShown());
-    break;
-
-  case ID_VIEW_STATISTICS:
-    event.Check(GetManager().GetPane("STATISTICS").IsShown());
-    break;
-
-  default:
-    wxFAIL;
   }
 }
 

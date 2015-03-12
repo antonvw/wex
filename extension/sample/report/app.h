@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of sample classes for wxExtension report
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/app.h>
@@ -40,10 +40,8 @@ protected:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0);
-  void OnCommand(wxCommandEvent& event);
 private:
   wxExNotebook* m_NotebookWithLists; ///< all listviews
   wxExProcess* m_Process;
   wxExSTC* m_STC;
-  DECLARE_EVENT_TABLE()
 };

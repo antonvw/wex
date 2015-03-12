@@ -99,16 +99,6 @@ void wxExSampleDir::OnFile(const wxString& file)
 }
 #endif
 
-BEGIN_EVENT_TABLE(wxExSampleFrame, wxExManagedFrame)
-  EVT_MENU(wxID_JUMP_TO, wxExSampleFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSampleFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_OPEN, wxID_CLOSE_ALL, wxExSampleFrame::OnCommand)
-  EVT_MENU_RANGE(ID_FIRST, ID_LAST, wxExSampleFrame::OnCommand)
-  EVT_MENU(ID_SHELL_COMMAND, wxExSampleFrame::OnCommand)
-  EVT_UPDATE_UI(wxID_PRINT, wxExSampleFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_PREVIEW, wxExSampleFrame::OnUpdateUI)
-END_EVENT_TABLE()
-
 wxExSampleFrame::wxExSampleFrame()
   : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
   , m_FlagsSTC(0)
@@ -256,6 +246,14 @@ wxExSampleFrame::wxExSampleFrame()
       wxMessageBox("lexers default style does not contain default style");
     }
   }
+  
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_JUMP_TO);
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_CUT, wxID_CLEAR);
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_OPEN, wxID_CLOSE_ALL);
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, ID_FIRST, ID_LAST);
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, ID_SHELL_COMMAND);
+  Bind(wxEVT_UPDATE_UI, &wxExSampleFrame::OnUpdateUI, this, wxID_PRINT);
+  Bind(wxEVT_UPDATE_UI, &wxExSampleFrame::OnUpdateUI, this, wxID_PREVIEW);
 }
 
 void wxExSampleFrame::OnCommand(wxCommandEvent& event)

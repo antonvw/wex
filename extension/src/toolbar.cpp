@@ -46,14 +46,8 @@ public:
     
   /// Finds current value in control.
   void Find(bool find_next = true, bool restore_position = false);
-protected:
-  void OnCommand(wxCommandEvent& event);
-  void OnEnter(wxCommandEvent& event);
-  void OnFocus(wxFocusEvent& event);
 private:
   wxExFrame* m_Frame;
-
-  DECLARE_EVENT_TABLE()
 };
 
 wxExToolBar::wxExToolBar(wxExManagedFrame* frame,
@@ -111,16 +105,6 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
   }
 }
 
-BEGIN_EVENT_TABLE(wxExFindToolBar, wxExToolBar)
-  EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, wxExFindToolBar::OnCommand)
-  EVT_CHECKBOX(ID_MATCH_CASE, wxExFindToolBar::OnCommand)
-  EVT_CHECKBOX(ID_REGULAR_EXPRESSION, wxExFindToolBar::OnCommand)
-  EVT_MENU(wxID_DOWN, wxExFindToolBar::OnCommand)
-  EVT_MENU(wxID_UP, wxExFindToolBar::OnCommand)
-  EVT_UPDATE_UI(wxID_DOWN, wxExFindToolBar::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_UP, wxExFindToolBar::OnUpdateUI)
-END_EVENT_TABLE()
-
 wxExFindToolBar::wxExFindToolBar(
   wxExManagedFrame* frame,
   wxWindowID id,
@@ -150,6 +134,26 @@ wxExFindToolBar::wxExFindToolBar(
   AddControl(m_IsRegularExpression);
 
   Realize();
+  
+  Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
+    wxExFindReplaceData::Get()->SetMatchWord(
+      m_MatchWholeWord->GetValue());}, ID_MATCH_WHOLE_WORD);
+  Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
+    wxExFindReplaceData::Get()->SetMatchCase(
+      m_MatchCase->GetValue());}, ID_MATCH_CASE);
+  Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
+    wxExFindReplaceData::Get()->SetUseRegEx(
+      m_IsRegularExpression->GetValue());}, ID_REGULAR_EXPRESSION);
+      
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_FindCtrl->Find(true);}, wxID_DOWN);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_FindCtrl->Find(false);}, wxID_UP);
+
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(!m_FindCtrl->GetValue().empty());}, wxID_DOWN);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(!m_FindCtrl->GetValue().empty());}, wxID_UP);
 }
 
 void wxExFindToolBar::Initialize()
@@ -175,42 +179,6 @@ void wxExFindToolBar::Initialize()
   m_MatchWholeWord->SetValue(wxExFindReplaceData::Get()->MatchWord());
   m_IsRegularExpression->SetValue(wxExFindReplaceData::Get()->UseRegEx());
 }
-
-void wxExFindToolBar::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case wxID_DOWN:
-  case wxID_UP:
-    m_FindCtrl->Find(event.GetId() == wxID_DOWN);
-    break;
-  case ID_MATCH_WHOLE_WORD:
-    wxExFindReplaceData::Get()->SetMatchWord(
-      m_MatchWholeWord->GetValue());
-    break;
-  case ID_MATCH_CASE:
-    wxExFindReplaceData::Get()->SetMatchCase(
-      m_MatchCase->GetValue());
-    break;
-  case ID_REGULAR_EXPRESSION:
-    wxExFindReplaceData::Get()->SetUseRegEx(
-      m_IsRegularExpression->GetValue());
-    break;
-  default:
-    wxFAIL;
-    break;
-  }
-}
-
-void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
-{
-  event.Enable(!m_FindCtrl->GetValue().empty());
-}
-
-BEGIN_EVENT_TABLE(wxExOptionsToolBar, wxExToolBar)
-  EVT_CHECKBOX(ID_HEX_MODE, wxExOptionsToolBar::OnCommand)
-  EVT_CHECKBOX(ID_SYNC_MODE, wxExOptionsToolBar::OnCommand)
-END_EVENT_TABLE()
 
 wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
   wxWindowID id,
@@ -239,34 +207,15 @@ wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
   m_SyncMode->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
   
   Realize();
-}
-
-void wxExOptionsToolBar::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case ID_HEX_MODE:
-    wxConfigBase::Get()->Write("HexMode", m_HexMode->GetValue());
-    break;
-
-  case ID_SYNC_MODE:
+  
+  Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
+    wxConfigBase::Get()->Write("HexMode", m_HexMode->GetValue());}, ID_HEX_MODE);
+  Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
     wxConfigBase::Get()->Write("AllowSync", m_SyncMode->GetValue());
-    GetFrame()->SyncAll();
-    break;
-
-  default: 
-    wxFAIL;
-    break;
-  }
+    GetFrame()->SyncAll();}, ID_SYNC_MODE);
 }
 
 // Implementation of support class.
-
-BEGIN_EVENT_TABLE(wxExTextCtrl, wxExFindTextCtrl)
-  EVT_SET_FOCUS(wxExTextCtrl::OnFocus)
-  EVT_TEXT(wxID_ANY, wxExTextCtrl::OnCommand)
-  EVT_TEXT_ENTER(wxID_ANY, wxExTextCtrl::OnEnter)
-END_EVENT_TABLE()
 
 wxExTextCtrl::wxExTextCtrl(
   wxWindow* parent,
@@ -282,6 +231,25 @@ wxExTextCtrl::wxExTextCtrl(
   entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
   wxAcceleratorTable accel(accels, entries);
   SetAcceleratorTable(accel);
+  
+  Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
+    wxExSTC* stc = m_Frame->GetSTC();
+    if (stc != NULL)
+    {
+      stc->PositionSave();
+    }
+    event.Skip();});
+
+  Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
+    event.Skip();
+    Find(true, true);});
+
+  Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
+    event.Skip();
+    if (!GetValue().empty())
+    {
+      Find();
+    }});
 }
 
 void wxExTextCtrl::Find(bool find_next, bool restore_position)
@@ -304,33 +272,5 @@ void wxExTextCtrl::Find(bool find_next, bool restore_position)
       -1,
       find_next);
   }
-}
-
-void wxExTextCtrl::OnCommand(wxCommandEvent& event)
-{
-  event.Skip();
-  Find(true, true);
-}
-
-void wxExTextCtrl::OnEnter(wxCommandEvent& event)
-{
-  event.Skip();
-    
-  if (!GetValue().empty())
-  {
-    Find();
-  }
-}
-
-void wxExTextCtrl::OnFocus(wxFocusEvent& event)
-{
-  wxExSTC* stc = m_Frame->GetSTC();
-
-  if (stc != NULL)
-  {
-    stc->PositionSave();
-  }
-  
-  event.Skip();
 }
 #endif // wxUSE_GUI

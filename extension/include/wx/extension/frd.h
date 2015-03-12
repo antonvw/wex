@@ -140,10 +140,4 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize);
-protected:
-  void OnEnter(wxCommandEvent& event);
-  void OnKey(wxKeyEvent& event);
-private:
-
-  DECLARE_EVENT_TABLE()
 };

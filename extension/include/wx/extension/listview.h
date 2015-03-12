@@ -171,12 +171,6 @@ protected:
 
   /// Gets the field separator.
   const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
-
-  // Events.
-  void OnCommand(wxCommandEvent& event);
-  void OnFindDialog(wxFindDialogEvent& event);
-  void OnList(wxListEvent& event);
-  void OnShow(wxShowEvent& event);
 private:
   const wxString BuildPage();
   
@@ -213,8 +207,6 @@ private:
   
   std::map<wxArtID, unsigned int> m_ArtIDs;
   std::vector<wxExColumn> m_Columns;
-
-  DECLARE_EVENT_TABLE()
 };
 
 /// Adds some standard lists, all these lists
@@ -270,7 +262,6 @@ public:
   virtual const wxString ItemToText(long item_number) const;
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
-  void OnList(wxListEvent& event);
 private:
   void AddColumns(const wxExLexer* lexer);
   void Initialize(const wxExLexer* lexer);
@@ -278,7 +269,5 @@ private:
 
   bool m_ItemUpdated;
   long m_ItemNumber;
-
-  DECLARE_EVENT_TABLE()
 };
 #endif // wx_USE_GUI

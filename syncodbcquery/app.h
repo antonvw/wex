@@ -40,10 +40,6 @@ class Frame: public wxExFrameWithHistory
 {
 public:
   Frame();
-protected:
-  void OnClose(wxCloseEvent& event);
-  void OnCommand(wxCommandEvent& event);
-  void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
@@ -69,5 +65,4 @@ private:
   bool m_Stopped;
 
   DECLARE_NO_COPY_CLASS(Frame)
-  DECLARE_EVENT_TABLE()
 };

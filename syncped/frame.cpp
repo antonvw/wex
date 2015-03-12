@@ -54,11 +54,8 @@ void About(wxFrame* frame)
 }
     
 BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
-  EVT_AUINOTEBOOK_BG_DCLICK(NOTEBOOK_EDITORS, Frame::OnNotebookEditors)
-  EVT_AUINOTEBOOK_BG_DCLICK(NOTEBOOK_PROJECTS, Frame::OnNotebookProjects)
   EVT_CHECKBOX(ID_CHECKBOX_DIRCTRL, Frame::OnCommand)
   EVT_CHECKBOX(ID_CHECKBOX_HISTORY, Frame::OnCommand)
-  EVT_CLOSE(Frame::OnClose)
   EVT_MENU(wxID_DELETE, Frame::OnCommand)
   EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
   EVT_MENU(wxID_JUMP_TO, Frame::OnCommand)
@@ -251,8 +248,57 @@ Frame::Frame(App* app)
   m_CheckBoxDirCtrl->SetValue(GetManager().GetPane("DIRCTRL").IsShown());
   m_CheckBoxHistory->SetValue(
     wxConfigBase::Get()->ReadBool("ShowHistory", false));
-}
-
+    
+  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
+    m_IsClosing = true; 
+    long count = 0;
+    for (size_t i = 0; i < m_Editors->GetPageCount(); i++)
+    {
+      wxExSTC* stc = wxDynamicCast(m_Editors->GetPage(i), wxExSTC);
+      
+      if (stc->GetFileName().FileExists())
+      {
+        count++;
+      }
+    }
+    if (event.CanVeto())
+    {
+      if (
+         m_Process->IsRunning() || 
+        !m_Editors->ForEach(ID_ALL_STC_CLOSE) || 
+        !wxExForEach(m_Projects, ID_LIST_ALL_CLOSE))
+      {
+        event.Veto();
+        
+        if (m_Process->IsRunning())
+        {
+          wxLogStatus(_("Process is running"));
+        }
+        
+        m_IsClosing = false;
+        
+        return;
+      }
+    }
+    
+    wxExViMacros::SaveDocument();
+  
+    wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
+    wxConfigBase::Get()->Write("OpenFiles", count);
+    wxConfigBase::Get()->Write("ShowHistory", 
+      m_History != NULL && m_History->IsShown());
+    wxConfigBase::Get()->Write("ShowProjects", 
+      m_Projects != NULL && m_Projects->IsShown());
+  
+    wxDELETE(m_Process);
+    event.Skip();});
+    
+  Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=](wxAuiNotebookEvent& event) {
+    FileHistoryPopupMenu();}, NOTEBOOK_EDITORS);
+    
+  Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=] (wxAuiNotebookEvent& event) {
+    ProjectHistoryPopupMenu();}, NOTEBOOK_PROJECTS);
+}    
 
 wxExListViewFileName* Frame::Activate(
   wxExListViewFileName::wxExListType type, 
@@ -372,20 +418,6 @@ void Frame::AddPaneProjects()
       .MinSize(150, 150)
       .Caption(_("Projects")));
   }
-}
-
-bool Frame::AllowCloseAll(wxWindowID id)
-{
-  switch (id)
-  {
-  case NOTEBOOK_EDITORS: return m_Editors->ForEach(ID_ALL_STC_CLOSE); 
-  case NOTEBOOK_PROJECTS: return wxExForEach(m_Projects, ID_LIST_ALL_CLOSE); 
-  default:
-    wxFAIL;
-    break;
-  }
-
-  return true;
 }
 
 bool Frame::DialogProjectOpen()
@@ -525,56 +557,6 @@ void Frame::NewProject()
 
   GetManager().GetPane("PROJECTS").Show();
   GetManager().Update();
-}
-
-void Frame::OnClose(wxCloseEvent& event)
-{
-  m_IsClosing = true; 
-  
-  long count = 0;
-  
-  for (size_t i = 0; i < m_Editors->GetPageCount(); i++)
-  {
-    wxExSTC* stc = wxDynamicCast(m_Editors->GetPage(i), wxExSTC);
-    
-    if (stc->GetFileName().FileExists())
-    {
-      count++;
-    }
-  }
-  
-  if (event.CanVeto())
-  {
-    if (
-       m_Process->IsRunning() || 
-      !AllowCloseAll(NOTEBOOK_PROJECTS) || 
-      !AllowCloseAll(NOTEBOOK_EDITORS))
-    {
-      event.Veto();
-      
-      if (m_Process->IsRunning())
-      {
-        wxLogStatus(_("Process is running"));
-      }
-      
-      m_IsClosing = false;
-      
-      return;
-    }
-  }
-  
-  wxExViMacros::SaveDocument();
-
-  wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
-  wxConfigBase::Get()->Write("OpenFiles", count);
-  wxConfigBase::Get()->Write("ShowHistory", 
-    m_History != NULL && m_History->IsShown());
-  wxConfigBase::Get()->Write("ShowProjects", 
-    m_Projects != NULL && m_Projects->IsShown());
-
-  wxDELETE(m_Process);
-  
-  event.Skip();
 }
 
 void Frame::OnCommand(wxCommandEvent& event)
@@ -1052,16 +1034,6 @@ void Frame::OnCommandConfigDialog(
   {
     DecoratedFrame::OnCommandConfigDialog(dialogid, commandid);
   }
-}
-
-void Frame::OnNotebookEditors(wxAuiNotebookEvent& event)
-{
-  FileHistoryPopupMenu();
-}
-
-void Frame::OnNotebookProjects(wxAuiNotebookEvent& event)
-{
-  ProjectHistoryPopupMenu();
 }
 
 void Frame::OnUpdateUI(wxUpdateUIEvent& event)
@@ -1605,11 +1577,6 @@ void Frame::SyncCloseAll(wxWindowID id)
   }
 }
 
-BEGIN_EVENT_TABLE(Notebook, wxExNotebook)
-  EVT_AUINOTEBOOK_TAB_RIGHT_UP(wxID_ANY, Notebook::OnNotebook)
-  EVT_MENU_RANGE(ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST, Notebook::OnCommand)
-END_EVENT_TABLE()
-
 Notebook::Notebook(wxWindow* parent,
   wxExManagedFrame* frame,
   wxWindowID id,
@@ -1618,21 +1585,11 @@ Notebook::Notebook(wxWindow* parent,
   long style)
   : wxExNotebook(parent, frame, id, pos, size, style)
 {
-}
-
-void Notebook::OnCommand(wxCommandEvent& event)
-{
-  if (event.GetId() > ID_EDIT_VCS_LOWEST && 
-      event.GetId() < ID_EDIT_VCS_HIGHEST)
-  {
-    wxPostEvent(GetCurrentPage(), event);
-  }
-}
-
-void Notebook::OnNotebook(wxAuiNotebookEvent& event)
-{
-  if (event.GetEventType() == wxEVT_AUINOTEBOOK_TAB_RIGHT_UP)
-  {
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+      wxPostEvent(GetCurrentPage(), event);
+    }, ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
+  
+  Bind(wxEVT_AUINOTEBOOK_TAB_RIGHT_UP, [=](wxAuiNotebookEvent& event) {
     wxExMenu menu;
     
     wxExMenu* split = new wxExMenu;
@@ -1659,10 +1616,5 @@ void Notebook::OnNotebook(wxAuiNotebookEvent& event)
       menu.AppendVCS(stc->GetFile().GetFileName());
     }
     
-    PopupMenu(&menu);
-  }
-  else
-  {
-    wxExNotebook::OnNotebook(event);
-  }
+    PopupMenu(&menu);});
 }

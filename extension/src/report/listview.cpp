@@ -22,15 +22,6 @@
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>
 
-BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewFileName)
-  EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewWithFrame::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewWithFrame::OnCommand)
-  EVT_MENU_RANGE(
-    ID_EDIT_VCS_LOWEST, 
-    ID_EDIT_VCS_HIGHEST, 
-    wxExListViewWithFrame::OnCommand)
-END_EVENT_TABLE()
-
 wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   wxExFrameWithHistory* frame,
   wxExListType type,
@@ -70,6 +61,64 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
 
   wxAcceleratorTable accel(WXSIZEOF(entries), entries);
   SetAcceleratorTable(accel);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+      ItemActivated(i);}, ID_LIST_OPEN_ITEM);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    bool first = true;
+    wxString file1,file2;
+    wxExListViewFileName* list = NULL;
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    {
+      wxExListItem li(this, i);
+      const wxFileName* filename = &li.GetFileName();
+      if (wxFileName::DirExists(filename->GetFullPath())) continue; // IsDir no ok
+      switch (event.GetId())
+      {
+        case ID_LIST_COMPARE:
+        {
+          if (GetSelectedItemCount() == 1)
+          {
+            list = m_Frame->Activate(LIST_FILE);
+            if (list == NULL) return;
+            const int main_selected = list->GetFirstSelected();
+            wxExCompareFile(wxExListItem(list, main_selected).GetFileName(), *filename);
+          }
+          else
+          {
+            if (first)
+            {
+              first = false;
+              file1 = filename->GetFullPath();
+            }
+            else
+            {
+              first = true;
+              file2 = filename->GetFullPath();
+            }
+            if (first) wxExCompareFile(wxFileName(file1), wxFileName(file2));
+          }
+        }
+        break;
+      }
+    }}, ID_LIST_COMPARE);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExMake(wxExListItem(this, GetFirstSelected()).GetFileName());}, ID_LIST_RUN_MAKE);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    RunItems(event.GetId());}, ID_TOOL_LOWEST, ID_TOOL_HIGHEST);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    std::vector< wxString > files;
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    {
+      files.push_back(wxExListItem(this, i).GetFileName().GetFullPath());
+    }
+    wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
+    }, ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
 }
 
 void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
@@ -220,84 +269,6 @@ void wxExListViewWithFrame::ItemActivated(long item_number)
   else
   { 
     wxExListViewFileName::ItemActivated(item_number);
-  }
-}
-
-void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case ID_LIST_OPEN_ITEM:
-  {
-    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-      ItemActivated(i);
-  }
-  break;
-
-  case ID_LIST_COMPARE:
-  {
-    bool first = true;
-    wxString file1,file2;
-
-    wxExListViewFileName* list = NULL;
-
-    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-    {
-      wxExListItem li(this, i);
-      const wxFileName* filename = &li.GetFileName();
-      if (wxFileName::DirExists(filename->GetFullPath())) continue; // IsDir no ok
-      switch (event.GetId())
-      {
-        case ID_LIST_COMPARE:
-        {
-          if (GetSelectedItemCount() == 1)
-          {
-            list = m_Frame->Activate(LIST_FILE);
-            if (list == NULL) return;
-            const int main_selected = list->GetFirstSelected();
-            wxExCompareFile(wxExListItem(list, main_selected).GetFileName(), *filename);
-          }
-          else
-          {
-            if (first)
-            {
-              first = false;
-              file1 = filename->GetFullPath();
-            }
-            else
-            {
-              first = true;
-              file2 = filename->GetFullPath();
-            }
-            if (first) wxExCompareFile(wxFileName(file1), wxFileName(file2));
-          }
-        }
-        break;
-      }
-    }
-  }
-  break;
-
-  case ID_LIST_RUN_MAKE:
-    wxExMake(wxExListItem(this, GetFirstSelected()).GetFileName());
-  break;
-
-  default: 
-    if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
-    {
-      std::vector< wxString > files;
-    
-      for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-      {
-        files.push_back(wxExListItem(this, i).GetFileName().GetFullPath());
-      }
-    
-      wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
-    }
-    else if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
-      RunItems(event.GetId());
-    else wxFAIL;
-    break;
   }
 }
 

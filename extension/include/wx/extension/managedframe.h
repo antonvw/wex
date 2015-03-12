@@ -102,7 +102,6 @@ public:
 protected:
   /// Returns the toolbar.
   wxExToolBar* GetToolBar() {return m_ToolBar;};
-  void OnCommand(wxCommandEvent& event);
 private:
   bool AddToolBarPane(
     wxWindow* window, 
@@ -115,7 +114,5 @@ private:
   wxAuiManager m_Manager;
   wxExToolBar* m_ToolBar;
   wxExExTextCtrl* m_exTextCtrl;
-  
-  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI

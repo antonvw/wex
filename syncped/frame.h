@@ -2,11 +2,10 @@
 // Name:      frame.h
 // Purpose:   Declaration of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _FRAME_H
-#define _FRAME_H
+#pragma once
 
 #include <wx/extension/notebook.h>
 #include <wx/extension/process.h>
@@ -25,11 +24,6 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxAUI_NB_DEFAULT_STYLE);
-protected:
-  void OnCommand(wxCommandEvent& event);
-  void OnNotebook(wxAuiNotebookEvent& event);
-private:    
-  DECLARE_EVENT_TABLE()
 };
 
 class Frame : public DecoratedFrame
@@ -44,10 +38,7 @@ public:
     int col_number = 0,
     long flags = 0);
 protected:
-  void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
-  void OnNotebookEditors(wxAuiNotebookEvent& event);
-  void OnNotebookProjects(wxAuiNotebookEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual wxExListViewFileName* Activate(
@@ -59,7 +50,6 @@ private:
   wxExListViewWithFrame* AddPage(
     wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL);
-  bool AllowCloseAll(wxWindowID id);
   bool DialogProjectOpen();
   wxExSTC* ExecExCommand(int command);
   virtual wxExListViewFile* GetProject();
@@ -102,4 +92,3 @@ private:
 
   DECLARE_EVENT_TABLE()
 };
-#endif

@@ -32,20 +32,6 @@ const int NUMBER_RECENT_FILES = 25;
 const int NUMBER_RECENT_PROJECTS = 25;
 const int ID_RECENT_PROJECT_LOWEST =  wxID_FILE1 + NUMBER_RECENT_FILES + 1;
 
-BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
-  EVT_MENU(ID_CLEAR_FILES, wxExFrameWithHistory::OnCommand)
-  EVT_MENU(ID_CLEAR_PROJECTS, wxExFrameWithHistory::OnCommand)
-  EVT_MENU(ID_PROJECT_SAVE,  wxExFrameWithHistory::OnCommand)
-  EVT_MENU(ID_TOOL_REPORT_FIND, wxExFrameWithHistory::OnCommand)
-  EVT_MENU(ID_TOOL_REPORT_REPLACE, wxExFrameWithHistory::OnCommand)
-  EVT_MENU_RANGE(
-    wxID_FILE1, 
-    wxID_FILE1 + NUMBER_RECENT_FILES, wxExFrameWithHistory::OnCommand)
-  EVT_MENU_RANGE(
-    ID_RECENT_PROJECT_LOWEST, 
-    ID_RECENT_PROJECT_LOWEST + NUMBER_RECENT_PROJECTS, wxExFrameWithHistory::OnCommand)
-END_EVENT_TABLE()
-
 wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
@@ -88,6 +74,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   GetToolBar()->Realize();
   
   Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+  
   Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
     if (event.IsDropDownClicked())
     {
@@ -109,6 +96,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     {
       event.Skip();
     }}, wxID_OPEN);
+    
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     m_FileHistory.Save(*wxConfigBase::Get());
   
@@ -125,6 +113,60 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     }
   
     event.Skip();});
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    ClearHistory(m_FileHistory);}, ID_CLEAR_FILES);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    ClearHistory(m_ProjectHistory);}, ID_CLEAR_PROJECTS);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExListViewFile* project = GetProject();
+    if (project != NULL)
+    {
+      project->FileSave();
+    }}, ID_PROJECT_SAVE);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (!event.GetString().empty())
+    {
+      Grep(event.GetString());
+    }
+    else
+    {
+      if (m_FiFDialog == NULL)
+      {
+        CreateDialogs();
+      }
+
+      if  (GetSTC() != NULL && !GetSTC()->GetFindString().empty())
+      {
+        m_FiFDialog->Reload(); 
+      }
+
+      m_FiFDialog->Show(); 
+    }}, ID_TOOL_REPORT_FIND);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (m_RiFDialog == NULL)
+    {
+      CreateDialogs();
+    }
+    if (GetSTC() != NULL && !GetSTC()->GetFindString().empty())
+    {
+      m_RiFDialog->Reload(); 
+    }
+    m_RiFDialog->Show();}, ID_TOOL_REPORT_REPLACE);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    DoRecent(m_FileHistory, event.GetId() - wxID_FILE1);},
+    wxID_FILE1, 
+    wxID_FILE1 + NUMBER_RECENT_FILES);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    DoRecent(m_ProjectHistory, event.GetId() - ID_RECENT_PROJECT_LOWEST, WIN_IS_PROJECT);},
+    ID_RECENT_PROJECT_LOWEST, 
+    ID_RECENT_PROJECT_LOWEST + NUMBER_RECENT_PROJECTS);
 }
 
 wxExFrameWithHistory::~wxExFrameWithHistory()
@@ -463,72 +505,6 @@ void wxExFrameWithHistory::HistoryPopupMenu(
   delete menu;
 }
   
-void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-    case ID_CLEAR_FILES: ClearHistory(m_FileHistory); break;
-    case ID_CLEAR_PROJECTS: ClearHistory(m_ProjectHistory); break;
-      
-    case ID_PROJECT_SAVE:
-      {
-        wxExListViewFile* project = GetProject();
-        
-        if (project != NULL)
-        {
-          project->FileSave();
-        }
-      }
-      break;
-      
-    case ID_TOOL_REPORT_FIND: 
-      if (!event.GetString().empty())
-      {
-        Grep(event.GetString());
-      }
-      else
-      {
-        if (m_FiFDialog == NULL)
-        {
-          CreateDialogs();
-        }
-
-        if  (GetSTC() != NULL && !GetSTC()->GetFindString().empty())
-        {
-          m_FiFDialog->Reload(); 
-        }
-
-        m_FiFDialog->Show(); 
-      }
-      break;
-      
-    case ID_TOOL_REPORT_REPLACE: 
-      if (m_RiFDialog == NULL)
-      {
-        CreateDialogs();
-      }
-      
-      if (GetSTC() != NULL && !GetSTC()->GetFindString().empty())
-      {
-        m_RiFDialog->Reload(); 
-      }
-
-      m_RiFDialog->Show(); 
-      break;
-
-    default:
-      if (event.GetId() >= wxID_FILE1 && event.GetId() <= wxID_FILE1 + NUMBER_RECENT_FILES)
-        DoRecent(m_FileHistory,
-          event.GetId() - wxID_FILE1);
-      else if (event.GetId() >= ID_RECENT_PROJECT_LOWEST && event.GetId() <= ID_RECENT_PROJECT_LOWEST + NUMBER_RECENT_PROJECTS)
-        DoRecent(m_ProjectHistory,
-          event.GetId() - ID_RECENT_PROJECT_LOWEST,
-          WIN_IS_PROJECT);
-      else wxFAIL;
-      break;
-  }
-}
-
 void wxExFrameWithHistory::OnCommandConfigDialog(
   wxWindowID dialogid,
   int commandid)
