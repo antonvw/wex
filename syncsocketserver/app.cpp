@@ -66,33 +66,6 @@ bool App::OnInit()
   return true;
 }
 
-BEGIN_EVENT_TABLE(Frame, wxExFrameWithHistory)
-  EVT_CLOSE(Frame::OnClose)
-  EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
-  EVT_MENU(wxID_STOP, Frame::OnCommand)
-  EVT_MENU(ID_SHELL_COMMAND, Frame::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, Frame::OnCommand)
-  EVT_MENU_RANGE(wxID_OPEN, wxID_CLOSE_ALL, Frame::OnCommand)
-  EVT_MENU_RANGE(ID_MENU_FIRST, ID_MENU_LAST, Frame::OnCommand)
-  EVT_SOCKET(ID_SERVER, Frame::OnSocket)
-  EVT_SOCKET(ID_CLIENT, Frame::OnSocket)
-  EVT_TIMER(-1, Frame::OnTimer)
-  EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_SAVE, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_STOP, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_CLEAR_STATISTICS, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_CLIENT_LOG_DATA, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_CLIENT_LOG_DATA_COUNT_ONLY, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_RECENT_FILE_MENU, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_SERVER_CONFIG, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_TIMER_STOP, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_DATA, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_LOG, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_SHELL, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_STATISTICS, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_WRITE_DATA, Frame::OnUpdateUI)
-END_EVENT_TABLE()
-
 Frame::Frame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
   , m_SocketServer(NULL)
@@ -240,6 +213,234 @@ Frame::Frame()
   GetToolBar()->Realize();
     
   GetManager().Update();
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    SetupSocketServer();}, wxID_EXECUTE);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (wxMessageBox(_("Stop server?"),
+      _("Confirm"),
+      wxOK | wxCANCEL | wxICON_QUESTION) == wxCANCEL)
+    {
+      return;
+    }
+
+    for (auto& it : m_Clients)
+    {
+      wxSocketBase* sock = it;
+      SocketLost(sock, false);
+    }
+
+    m_Clients.clear();
+
+    m_SocketServer->Destroy();
+    m_SocketServer = NULL;
+
+    const wxString text = _("server stopped");
+
+#if wxUSE_TASKBARICON
+    m_TaskBarIcon->SetIcon(wxICON(notready), text);
+#endif
+#if wxUSE_STATUSBAR
+    StatusText(
+      wxString::Format(_("%ld clients"), m_Clients.size()),
+      "PaneClients");
+#endif
+
+    wxLogStatus(text);
+    AppendText(m_LogWindow, text, DATA_MESSAGE);
+
+    const wxString statistics = m_Statistics.Get();
+
+    if (!statistics.empty())
+    {
+      AppendText(m_LogWindow, statistics, DATA_MESSAGE);
+    }}, wxID_STOP);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxAboutDialogInfo info;
+    info.SetIcon(GetIcon());
+    info.SetDescription(_("This program offers a general socket server."));
+    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
+    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
+    wxAboutBox(info);
+    }, wxID_ABOUT);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    Close(true);}, wxID_EXIT);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {;}, wxID_HELP);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_DataWindow->GetFile().FileNew(wxExFileName());
+    GetManager().GetPane("DATA").Show();
+    GetManager().Update();}, wxID_NEW);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExOpenFilesDialog(
+      this, 
+      wxFD_OPEN | wxFD_CHANGE_DIR, 
+      wxFileSelectorDefaultWildcardStr, 
+      true);}, wxID_OPEN);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_DataWindow->GetFile().FileSave();}, wxID_SAVE);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExFileDialog dlg(
+      this, 
+      &m_DataWindow->GetFile(), 
+      wxGetStockLabel(wxID_SAVEAS), 
+      wxFileSelectorDefaultWildcardStr, 
+      wxFD_SAVE);
+      
+    if (dlg.ShowModal())
+    {
+      m_DataWindow->GetFile().FileSave(dlg.GetPath());
+    }}, wxID_SAVEAS);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Statistics.Clear();}, ID_CLEAR_STATISTICS);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Answer = ANSWER_COMMAND;}, ID_CLIENT_ANSWER_COMMAND);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Answer = ANSWER_ECHO;}, ID_CLIENT_ANSWER_ECHO);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) { 
+    m_Answer = ANSWER_FILE;}, ID_CLIENT_ANSWER_FILE);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Answer = ANSWER_OFF;}, ID_CLIENT_ANSWER_OFF);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    long val;
+    if ((val = wxGetNumberFromUser(
+      _("Input") + ":",
+      wxEmptyString,
+      _("Buffer Size"),
+      wxConfigBase::Get()->ReadLong(_("Buffer Size"), 4096),
+      1,
+      65536)) > 0)
+      {
+        wxConfigBase::Get()->Write(_("Buffer Size"), val);
+      }
+    }, ID_CLIENT_BUFFER_SIZE);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxConfigBase::Get()->Write(_("Log Data"), 
+      !wxConfigBase::Get()->ReadBool(_("Log Data"), true));}, ID_CLIENT_LOG_DATA);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxConfigBase::Get()->Write(_("Count Only"), 
+      !wxConfigBase::Get()->ReadBool(_("Count Only"), true));}, ID_CLIENT_LOG_DATA_COUNT_ONLY);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    Close(false);}, ID_HIDE);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    // Configuring only possible if server is stopped,
+    // otherwise just show settings readonly mode.
+    wxExConfigDialog(this,
+      std::vector<wxExConfigItem>{
+        wxExConfigItem(_("Hostname"), 
+          wxEmptyString, 
+          wxEmptyString,
+          0, 
+          CONFIG_STRING,
+          true),
+        // Well known ports are in the range from 0 to 1023.
+        // Just allow here for most flexibility.
+        wxExConfigItem(_("Port"), 1, 65536)},
+      _("Server Config"),
+      0,
+      1,
+      m_SocketServer == NULL ? wxOK|wxCANCEL: wxCANCEL).ShowModal();
+    }, ID_SERVER_CONFIG);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    const wxString str = event.GetString() + wxTextFile::GetEOL();
+    const wxCharBuffer& buffer(str.c_str());
+
+    for (auto& it : m_Clients)
+    {
+      wxSocketBase* sock = it;
+      WriteDataToClient(buffer, sock);
+    }
+
+    m_Shell->Prompt();}, ID_SHELL_COMMAND);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TimerDialog();}, ID_TIMER_START);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Timer.Stop();
+    AppendText(m_LogWindow, _("timer stopped"), DATA_MESSAGE);
+#if wxUSE_STATUSBAR
+    StatusText(wxEmptyString, "PaneTimer");
+#endif
+   }, ID_TIMER_STOP);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("DATA");}, ID_VIEW_DATA);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("LOG");}, ID_VIEW_LOG);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("SHELL");}, ID_VIEW_SHELL);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("STATISTICS");}, ID_VIEW_STATISTICS);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    WriteDataWindowToClients();}, ID_WRITE_DATA);
+
+  Bind(wxEVT_SOCKET, &Frame::OnSocket, this, ID_SERVER);
+  Bind(wxEVT_SOCKET, &Frame::OnSocket, this, ID_CLIENT);
+
+  Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
+    WriteDataWindowToClients();});
+    
+  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
+    if (event.CanVeto())
+    {
+      Hide();
+      return;
+    }
+    if (wxExFileDialog(this, 
+      &m_DataWindow->GetFile()).ShowModalIfChanged() == wxID_CANCEL)
+    {
+      return;
+    }
+    for_each (m_Clients.begin(), m_Clients.end(), 
+      std::mem_fun(&wxSocketBase::Destroy));
+    m_Clients.clear();
+    wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
+    event.Skip();});
+    
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(m_SocketServer == NULL);}, wxID_EXECUTE);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(m_DataWindow->GetModify());}, wxID_SAVE);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(m_SocketServer != NULL);}, wxID_STOP);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(!m_Statistics.GetItems().empty());}, ID_CLEAR_STATISTICS);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(wxConfigBase::Get()->ReadBool(_("Log Data"), true));}, ID_CLIENT_LOG_DATA);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
+    event.Check(wxConfigBase::Get()->ReadBool(_("Count Only"), true));}, ID_CLIENT_LOG_DATA_COUNT_ONLY);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(!GetRecentFile().empty());}, ID_RECENT_FILE_MENU);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(m_Timer.IsRunning());}, ID_TIMER_STOP);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(GetManager().GetPane("DATA").IsShown());}, ID_VIEW_DATA);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(GetManager().GetPane("LOG").IsShown());}, ID_VIEW_LOG);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(GetManager().GetPane("SHELL").IsShown());}, ID_VIEW_SHELL);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(GetManager().GetPane("STATISTICS").IsShown());}, ID_VIEW_STATISTICS);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(!m_Clients.empty() && m_DataWindow->GetLength() > 0);}, ID_WRITE_DATA);
 }
 
 Frame::~Frame()
@@ -314,231 +515,6 @@ void Frame::LogConnection(
   }
 
   AppendText(m_LogWindow, text, DATA_MESSAGE);
-}
-
-void Frame::OnClose(wxCloseEvent& event)
-{
-  if (event.CanVeto())
-  {
-    Hide();
-    return;
-  }
-
-  if (wxExFileDialog(this, 
-    &m_DataWindow->GetFile()).ShowModalIfChanged() == wxID_CANCEL)
-  {
-    return;
-  }
-
-  for_each (m_Clients.begin(), m_Clients.end(), 
-    std::mem_fun(&wxSocketBase::Destroy));
-
-  m_Clients.clear();
-
-  wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
-  event.Skip();
-}
-
-void Frame::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case wxID_ABOUT:
-    {
-    wxAboutDialogInfo info;
-    info.SetIcon(GetIcon());
-    info.SetDescription(_("This program offers a general socket server."));
-    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
-    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
-    wxAboutBox(info);
-    }
-    break;
-
-  case wxID_EXECUTE:
-    SetupSocketServer();
-    break;
-
-  case wxID_EXIT:
-    Close(true);
-    break;
-
-  case wxID_HELP: break; //ignore
-  
-  case wxID_NEW:
-    m_DataWindow->GetFile().FileNew(wxExFileName());
-    GetManager().GetPane("DATA").Show();
-    GetManager().Update();
-    break;
-
-  case wxID_OPEN:
-    wxExOpenFilesDialog(
-      this, 
-      wxFD_OPEN | wxFD_CHANGE_DIR, 
-      wxFileSelectorDefaultWildcardStr, 
-      true);
-    break;
-
-  case wxID_SAVE:
-    m_DataWindow->GetFile().FileSave();
-    break;
-
-  case wxID_SAVEAS:
-    {
-      wxExFileDialog dlg(
-        this, 
-        &m_DataWindow->GetFile(), 
-        wxGetStockLabel(wxID_SAVEAS), 
-        wxFileSelectorDefaultWildcardStr, 
-        wxFD_SAVE);
-        
-      if (dlg.ShowModal())
-      {
-        m_DataWindow->GetFile().FileSave(dlg.GetPath());
-      }
-    }
-    break;
-
-  case wxID_STOP:
-    {
-      if (wxMessageBox(_("Stop server?"),
-        _("Confirm"),
-        wxOK | wxCANCEL | wxICON_QUESTION) == wxCANCEL)
-      {
-        return;
-      }
-
-      for (auto& it : m_Clients)
-      {
-        wxSocketBase* sock = it;
-        SocketLost(sock, false);
-      }
-
-      m_Clients.clear();
-
-      m_SocketServer->Destroy();
-      m_SocketServer = NULL;
-
-      const wxString text = _("server stopped");
-
-#if wxUSE_TASKBARICON
-      m_TaskBarIcon->SetIcon(wxICON(notready), text);
-#endif
-#if wxUSE_STATUSBAR
-      StatusText(
-        wxString::Format(_("%ld clients"), m_Clients.size()),
-        "PaneClients");
-#endif
-
-      wxLogStatus(text);
-      AppendText(m_LogWindow, text, DATA_MESSAGE);
-
-      const wxString statistics = m_Statistics.Get();
-
-      if (!statistics.empty())
-      {
-        AppendText(m_LogWindow, statistics, DATA_MESSAGE);
-      }
-    }
-    break;
-
-  case ID_CLEAR_STATISTICS:
-    m_Statistics.Clear();
-    break;
-
-  case ID_CLIENT_ANSWER_COMMAND: m_Answer = ANSWER_COMMAND; break;
-  case ID_CLIENT_ANSWER_ECHO: m_Answer = ANSWER_ECHO; break;
-  case ID_CLIENT_ANSWER_FILE: m_Answer = ANSWER_FILE; break;
-  case ID_CLIENT_ANSWER_OFF: m_Answer = ANSWER_OFF; break;
-
-  case ID_CLIENT_BUFFER_SIZE:
-    {
-    long val;
-    if ((val = wxGetNumberFromUser(
-      _("Input") + ":",
-      wxEmptyString,
-      _("Buffer Size"),
-      wxConfigBase::Get()->ReadLong(_("Buffer Size"), 4096),
-      1,
-      65536)) > 0)
-      {
-        wxConfigBase::Get()->Write(_("Buffer Size"), val);
-      }
-    }
-    break;
-
-  case ID_CLIENT_LOG_DATA:
-    wxConfigBase::Get()->Write(_("Log Data"), 
-      !wxConfigBase::Get()->ReadBool(_("Log Data"), true));
-    break;
-
-  case ID_CLIENT_LOG_DATA_COUNT_ONLY:
-    wxConfigBase::Get()->Write(_("Count Only"), 
-      !wxConfigBase::Get()->ReadBool(_("Count Only"), true));
-    break;
-
-  case ID_HIDE:
-    Close(false);
-    break;
-
-  case ID_SERVER_CONFIG:
-    {
-    // Configuring only possible if server is stopped,
-    // otherwise just show settings readonly mode.
-    wxExConfigDialog(this,
-      std::vector<wxExConfigItem>{
-        wxExConfigItem(_("Hostname"), 
-          wxEmptyString, 
-          wxEmptyString,
-          0, 
-          CONFIG_STRING,
-          true),
-        // Well known ports are in the range from 0 to 1023.
-        // Just allow here for most flexibility.
-        wxExConfigItem(_("Port"), 1, 65536)},
-      _("Server Config"),
-      0,
-      1,
-      m_SocketServer == NULL ? wxOK|wxCANCEL: wxCANCEL).ShowModal();
-    }
-    break;
-
-  case ID_SHELL_COMMAND:
-    {
-      const wxString str = event.GetString() + wxTextFile::GetEOL();
-      const wxCharBuffer& buffer(str.c_str());
-
-      for (auto& it : m_Clients)
-      {
-        wxSocketBase* sock = it;
-        WriteDataToClient(buffer, sock);
-      }
-
-      m_Shell->Prompt();
-    }
-    break;
-
-  case ID_TIMER_START: TimerDialog(); break;
-
-  case ID_TIMER_STOP:
-    m_Timer.Stop();
-    AppendText(m_LogWindow, _("timer stopped"), DATA_MESSAGE);
-#if wxUSE_STATUSBAR
-    StatusText(wxEmptyString, "PaneTimer");
-#endif
-    break;
-
-  case ID_VIEW_DATA: TogglePane("DATA"); break;
-  case ID_VIEW_LOG: TogglePane("LOG"); break;
-  case ID_VIEW_SHELL: TogglePane("SHELL"); break;
-  case ID_VIEW_STATISTICS: TogglePane("STATISTICS"); break;
-
-  case ID_WRITE_DATA:
-    WriteDataWindowToClients();
-    break;
-
-  default:
-    wxFAIL;
-  }
 }
 
 void Frame::OnCommandConfigDialog(
@@ -707,76 +683,6 @@ void Frame::OnSocket(wxSocketEvent& event)
   }
   else
   {
-    wxFAIL;
-  }
-}
-
-void Frame::OnTimer(wxTimerEvent& /* event */)
-{
-  WriteDataWindowToClients();
-}
-
-void Frame::OnUpdateUI(wxUpdateUIEvent& event)
-{
-  switch (event.GetId())
-  {
-  case wxID_SAVE:
-    event.Enable(m_DataWindow->GetModify());
-    break;
-
-  case wxID_EXECUTE:
-    event.Enable(m_SocketServer == NULL);
-    break;
-
-  case wxID_STOP:
-    event.Enable(m_SocketServer != NULL);
-    break;
-
-  case ID_CLIENT_LOG_DATA:
-    event.Check(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
-    break;
-
-  case ID_CLIENT_LOG_DATA_COUNT_ONLY:
-    event.Enable(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
-    event.Check(wxConfigBase::Get()->ReadBool(_("Count Only"), true));
-    break;
-
-  case ID_CLEAR_STATISTICS:
-    event.Enable(!m_Statistics.GetItems().empty());
-    break;
-
-  case ID_RECENT_FILE_MENU:
-    event.Enable(!GetRecentFile().empty());
-    break;
-
-  case ID_SERVER_CONFIG:
-    break;
-
-  case ID_TIMER_STOP:
-    event.Enable(m_Timer.IsRunning());
-    break;
-
-  case ID_VIEW_DATA:
-    event.Check(GetManager().GetPane("DATA").IsShown());
-    break;
-
-  case ID_VIEW_LOG:
-    event.Check(GetManager().GetPane("LOG").IsShown());
-    break;
-
-  case ID_VIEW_SHELL:
-    event.Check(GetManager().GetPane("SHELL").IsShown());
-    break;
-
-  case ID_VIEW_STATISTICS:
-    event.Check(GetManager().GetPane("STATISTICS").IsShown());
-    break;
-
-  case ID_WRITE_DATA:
-    event.Enable(!m_Clients.empty() && m_DataWindow->GetLength() > 0);
-    break;
-
-  default:
     wxFAIL;
   }
 }
@@ -1080,12 +986,21 @@ enum
 };
 
 #if wxUSE_TASKBARICON
-BEGIN_EVENT_TABLE(TaskBarIcon, wxTaskBarIcon)
-  EVT_MENU(wxID_EXIT, TaskBarIcon::OnCommand)
-  EVT_MENU(ID_OPEN, TaskBarIcon::OnCommand)
-  EVT_TASKBAR_LEFT_DCLICK(TaskBarIcon::OnTaskBarIcon)
-  EVT_UPDATE_UI(wxID_EXIT, TaskBarIcon::OnUpdateUI)
-END_EVENT_TABLE()
+TaskBarIcon::TaskBarIcon(Frame* frame)
+  : m_Frame(frame) 
+{
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Frame->Close(true);}, wxID_EXIT);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Frame->Show();}, ID_OPEN);
+
+  Bind(wxEVT_TASKBAR_LEFT_DCLICK, [=](wxTaskBarIconEvent&) {
+    m_Frame->Show();});
+    
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Enable(m_Frame->ServerNotListening());}, wxID_EXIT);
+}
 
 wxMenu *TaskBarIcon::CreatePopupMenu()
 {
@@ -1094,22 +1009,6 @@ wxMenu *TaskBarIcon::CreatePopupMenu()
   menu->AppendSeparator();
   menu->Append(wxID_EXIT);
   return menu;
-}
-
-void TaskBarIcon::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case wxID_EXIT:
-    m_Frame->Close(true);
-    break;
-  case ID_OPEN:
-    m_Frame->Show();
-    break;
-  default:
-    wxFAIL;
-    break;
-  }
 }
 #endif // wxUSE_TASKBARICON
 #endif // wxUSE_SOCKETS

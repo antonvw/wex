@@ -22,14 +22,6 @@
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/frame.h>
 
-BEGIN_EVENT_TABLE(wxExListViewFile, wxExListViewWithFrame)
-  EVT_MENU(wxID_ADD, wxExListViewFile::OnCommand)
-  EVT_MENU(wxID_CUT, wxExListViewFile::OnCommand)
-  EVT_MENU(wxID_CLEAR, wxExListViewFile::OnCommand)
-  EVT_MENU(wxID_DELETE, wxExListViewFile::OnCommand)
-  EVT_MENU(wxID_PASTE, wxExListViewFile::OnCommand)
-END_EVENT_TABLE()
-
 wxExListViewFile::wxExListViewFile(wxWindow* parent,
   wxExFrameWithHistory* frame,
   const wxString& file,
@@ -74,6 +66,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   FileLoad(file);
   
   Bind(wxEVT_IDLE, &wxExListViewFile::OnIdle, this);
+  
   Bind(wxEVT_LEFT_DOWN, [=](wxMouseEvent& event) {
     event.Skip();
 
@@ -87,6 +80,21 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
       wxExLogStatus(GetFileName());
     }
   });
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    // Force at least one of the checkboxes to be checked.
+    m_AddItemsDialog->ForceCheckBoxChecked(_("Add"));
+    m_AddItemsDialog->Show();}, wxID_ADD);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (!GetFileName().FileExists() || GetFileName().IsFileWritable())
+    {
+      event.Skip();
+      m_ContentsChanged = true;
+#if wxUSE_STATUSBAR
+      wxExFrame::UpdateStatusBar(this);
+#endif
+    }}, wxID_EDIT, wxID_REPLACE_ALL);
 }
 
 wxExListViewFile::~wxExListViewFile()
@@ -267,38 +275,6 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
   }
   
   return result;
-}
-
-void wxExListViewFile::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  // These are added to disable changing this listview if it is read-only.
-  case wxID_CLEAR:
-  case wxID_CUT:
-  case wxID_DELETE:
-  case wxID_PASTE:
-    if (!GetFileName().FileExists() || GetFileName().IsFileWritable())
-    {
-      event.Skip();
-      m_ContentsChanged = true;
-    }
-    break;
-
-  case wxID_ADD:   
-    // Force at least one of the checkboxes to be checked.
-    m_AddItemsDialog->ForceCheckBoxChecked(_("Add"));
-    m_AddItemsDialog->Show();
-    break;
-
-  default: 
-    wxFAIL;
-    break;
-  }
-
-#if wxUSE_STATUSBAR
-  wxExFrame::UpdateStatusBar(this);
-#endif
 }
 
 void wxExListViewFile::OnIdle(wxIdleEvent& event)

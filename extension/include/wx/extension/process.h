@@ -2,11 +2,10 @@
 // Name:      process.h
 // Purpose:   Declaration of class wxExProcess
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EX_PROCESS_H
-#define _EX_PROCESS_H
+#pragma once
 
 #include <wx/process.h>
 
@@ -100,9 +99,6 @@ public:
 protected:
   /// Overriden from wxProcess.
   virtual void OnTerminate(int pid, int status);
-  
-  /// Handles timer events.
-  void OnTimer(wxTimerEvent& event);
 private:
   bool CheckInput(const wxString& command = wxEmptyString);
   bool HandleCommand(const wxString& command);
@@ -122,8 +118,4 @@ private:
 #endif  
 
   wxTimer* m_Timer;
-
-  DECLARE_EVENT_TABLE()
 };
-
-#endif

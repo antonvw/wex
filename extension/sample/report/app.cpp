@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of sample classes for wxExRep
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -31,14 +31,6 @@ enum
   ID_PROCESS_RUN,
   ID_RECENTFILE_MENU
 };
-
-BEGIN_EVENT_TABLE(wxExRepSampleFrame, wxExFrameWithHistory)
-  EVT_MENU(wxID_STOP, wxExRepSampleFrame::OnCommand)
-  EVT_MENU(ID_PROCESS_DIALOG, wxExRepSampleFrame::OnCommand)
-  EVT_MENU(ID_PROCESS_RUN, wxExRepSampleFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExRepSampleFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_OPEN, wxID_CLOSE_ALL, wxExRepSampleFrame::OnCommand)
-END_EVENT_TABLE()
 
 wxIMPLEMENT_APP(wxExRepSampleApp);
 
@@ -156,6 +148,64 @@ wxExRepSampleFrame::wxExRepSampleFrame()
     wxFileName("NOT EXISTING ITEM"));
 
   item.Insert();
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExProcess::ConfigDialog(this);}, ID_PROCESS_DIALOG);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Process->Execute();}, ID_PROCESS_RUN);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Process->Kill();}, wxID_STOP);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxAboutDialogInfo info;
+    info.SetIcon(GetIcon());
+    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
+    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
+    wxAboutBox(info);}, wxID_ABOUT);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    Close(true);}, wxID_EXIT);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {;}, wxID_HELP);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_STC->GetFile().FileNew(wxExFileName());}, wxID_NEW);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (m_STC->HasCapture())
+    {
+      m_STC->PrintPreview();
+    }
+    else
+    {
+      auto* lv = GetListView();
+
+      if (lv != NULL)
+      {
+        lv->PrintPreview();
+      }
+      else
+      {
+        wxLogStatus("No focus");
+      }
+    }}, wxID_PREVIEW);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    auto* lv = GetListView();
+
+    if (lv != NULL)
+    {
+      lv->Print();
+    }
+    else
+    {
+      wxLogStatus("No focus");
+    }}, wxID_PRINT);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+	  wxExPrinting::Get()->GetHtmlPrinter()->PageSetup();}, wxID_PRINT_SETUP);
 }
 
 wxExListViewFileName* wxExRepSampleFrame::Activate(
@@ -220,89 +270,6 @@ wxExSTC* wxExRepSampleFrame::GetSTC()
   return m_STC;
 }
   
-void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case wxID_ABOUT:
-    {
-    wxAboutDialogInfo info;
-    info.SetIcon(GetIcon());
-    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
-    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
-    wxAboutBox(info);
-    }
-    break;
-    
-  case wxID_EXIT: Close(true); break;
-  
-  case wxID_HELP: break; //ignore
-  
-  case wxID_NEW:
-    m_STC->GetFile().FileNew(wxExFileName());
-    break;
-    
-  case wxID_OPEN:
-    event.Skip();
-    break;
-    
-  case wxID_PREVIEW:
-    if (m_STC->HasCapture())
-    {
-      m_STC->PrintPreview();
-    }
-    else
-    {
-      auto* lv = GetListView();
-
-      if (lv != NULL)
-      {
-        lv->PrintPreview();
-      }
-      else
-      {
-        wxLogStatus("No focus");
-      }
-    }
-    break;
-    
-  case wxID_PRINT:
-    {
-      auto* lv = GetListView();
-
-      if (lv != NULL)
-      {
-        lv->Print();
-      }
-      else
-      {
-        wxLogStatus("No focus");
-      }
-    }
-    break;
-    
-  case wxID_PRINT_SETUP:
-	  wxExPrinting::Get()->GetHtmlPrinter()->PageSetup();
-    break;
-
-  case wxID_STOP:
-    m_Process->Kill();
-    break;
-
-  case ID_PROCESS_DIALOG:
-    wxExProcess::ConfigDialog(this);
-    break;
-
-  case ID_PROCESS_RUN:
-    m_Process->Execute();
-    break;
-
-  default: 
-    wxFAIL;
-    break;
-  }
-}
-
 bool wxExRepSampleFrame::OpenFile(const wxExFileName& file,
   int line_number,
   const wxString& match,

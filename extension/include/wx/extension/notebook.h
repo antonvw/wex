@@ -2,11 +2,10 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wxExNotebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXNOTEBOOK_H
-#define _EXNOTEBOOK_H
+#pragma once
 
 #include <map>
 #include <wx/aui/auibook.h>
@@ -99,15 +98,10 @@ public:
     /// - wxLEFT
     /// - wxRIGHT
     int direction);
-protected:
-  void OnNotebook(wxAuiNotebookEvent& event);
 private:
   wxExManagedFrame* m_Frame;
   // In bookctrl.h: m_pages
   std::map<wxString, wxWindow*> m_Keys;
   std::map<wxWindow*, wxString> m_Windows;
-
-  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI
-#endif

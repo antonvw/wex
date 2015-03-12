@@ -2,11 +2,10 @@
 // Name:      dirctrl.h
 // Purpose:   Declaration of class wxExGenericDirCtrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _DIRCTRL_H
-#define _DIRCTRL_H
+#pragma once
 
 #include <wx/generic/dirctrlg.h>
 
@@ -32,13 +31,5 @@ public:
     const wxString& name = wxTreeCtrlNameStr);
   /// Expands path and selects it.
   void ExpandAndSelectPath(const wxString& path);
-protected:
-  void OnCommand(wxCommandEvent& event);
-  void OnTree(wxTreeEvent& event);
-private:
-  wxExFrameWithHistory* m_Frame;
-  
-  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_DIRDLG
-#endif

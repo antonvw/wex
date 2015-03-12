@@ -23,6 +23,7 @@
 #include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/interruptable.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/printing.h>
@@ -143,26 +144,6 @@ void wxExColumn::SetIsSortedAscending(wxExSortType type)
 }
 
 const int ID_COL_FIRST = 1000;
-const int ID_COL_LAST = ID_COL_FIRST + 255;
-
-BEGIN_EVENT_TABLE(wxExListView, wxListView)
-  EVT_FIND(wxID_ANY, wxExListView::OnFindDialog)
-  EVT_FIND_NEXT(wxID_ANY, wxExListView::OnFindDialog)
-  EVT_LIST_BEGIN_DRAG(wxID_ANY, wxExListView::OnList)
-  EVT_LIST_COL_CLICK(wxID_ANY, wxExListView::OnList)
-  EVT_LIST_COL_RIGHT_CLICK(wxID_ANY, wxExListView::OnList)
-  EVT_LIST_ITEM_DESELECTED(wxID_ANY, wxExListView::OnList)
-  EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListView::OnList)
-  EVT_MENU(wxID_DELETE, wxExListView::OnCommand)
-  EVT_MENU(wxID_SELECTALL, wxExListView::OnCommand)
-  EVT_MENU(wxID_SORT_ASCENDING, wxExListView::OnCommand)
-  EVT_MENU(wxID_SORT_DESCENDING, wxExListView::OnCommand)
-  EVT_MENU(ID_EDIT_SELECT_INVERT, wxExListView::OnCommand)
-  EVT_MENU(ID_EDIT_SELECT_NONE, wxExListView::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExListView::OnCommand)
-  EVT_MENU_RANGE(ID_COL_FIRST, ID_COL_LAST, wxExListView::OnCommand)
-  EVT_SHOW(wxExListView::OnShow)
-END_EVENT_TABLE()
 
 wxExListView::wxExListView(wxWindow* parent,
   wxWindowID id,
@@ -184,6 +165,26 @@ wxExListView::wxExListView(wxWindow* parent,
   // We can only have one drop target, we use file drop target,
   // as list items can also be copied and pasted.
   SetDropTarget(new DropTarget(this));
+  
+  Bind(wxEVT_LIST_BEGIN_DRAG, [=](wxListEvent& event) {
+    // Start drag operation.
+    wxString text;
+
+    for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+      text += ItemToText(i) + wxTextFile::GetEOL();
+      
+    if (!text.empty())
+    {
+      wxTextDataObject textData(text);
+      wxDropSource source(textData, this);
+      wxDragResult result = source.DoDragDrop(wxDragCopy);
+
+      if (result != wxDragError &&
+          result != wxDragNone &&
+           result != wxDragCancel)
+      {
+      }
+    }});
 #endif
 
   if (image_type != IMAGE_NONE)
@@ -210,7 +211,86 @@ wxExListView::wxExListView(wxWindow* parent,
 
   SetFont(wxConfigBase::Get()->ReadObject(
     _("List Font"), wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
-}
+    
+#if wxUSE_STATUSBAR
+  wxExFrame::UpdateStatusBar(this);
+
+  Bind(wxEVT_SHOW, [=](wxShowEvent& event) {
+    event.Skip();
+    wxExFrame::UpdateStatusBar(this);});
+  Bind(wxEVT_LIST_ITEM_DESELECTED, [=](wxListEvent& event) {
+    wxExFrame::UpdateStatusBar(this);});
+  Bind(wxEVT_LIST_ITEM_SELECTED, [=](wxListEvent& event) {
+    wxExFrame::UpdateStatusBar(this);});
+#endif  
+    
+  Bind(wxEVT_LIST_COL_CLICK, [=](wxListEvent& event) {
+    SortColumn(
+      event.GetColumn(),
+      (wxExSortType)wxConfigBase::Get()->ReadLong("List/SortMethod", 
+         SORT_TOGGLE));});
+
+  Bind(wxEVT_LIST_COL_RIGHT_CLICK, [=](wxListEvent& event) {
+    m_ToBeSortedColumnNo = event.GetColumn();
+
+    wxExMenu menu(GetSelectedItemCount() > 0 ? 
+      wxExMenu::MENU_IS_SELECTED: 
+      wxExMenu::MENU_DEFAULT);
+      
+    menu.Append(wxID_SORT_ASCENDING);
+    menu.Append(wxID_SORT_DESCENDING);
+
+    PopupMenu(&menu);});
+    
+  Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
+    FindNext(
+      wxExFindReplaceData::Get()->GetFindString(), 
+      wxExFindReplaceData::Get()->SearchDown());});
+      
+  Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
+    FindNext(
+      wxExFindReplaceData::Get()->GetFindString(), 
+      wxExFindReplaceData::Get()->SearchDown());});
+      
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    EditDelete();}, wxID_DELETE);
+    
+  Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
+    EditSelectAll();}, wxID_SELECTALL);
+    
+  Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
+    SortColumn(m_ToBeSortedColumnNo, SORT_ASCENDING);}, wxID_SORT_ASCENDING);
+    
+  Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
+    SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING);}, wxID_SORT_DESCENDING);
+    
+  Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
+    EditInvertAll();}, ID_EDIT_SELECT_INVERT);
+    
+  Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
+    for (int i = 0; i < GetItemCount(); i++)
+    {
+      Select(i, false);
+    }}, ID_EDIT_SELECT_NONE);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    CopySelectedItemsToClipboard();
+    EditDelete();}, wxID_CUT);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    EditClearAll();}, wxID_CLEAR);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    CopySelectedItemsToClipboard();}, wxID_COPY);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    ItemFromText(wxExClipboardGet());}, wxID_PASTE);
+
+  const int ID_COL_LAST = ID_COL_FIRST + 255;
+  Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
+    SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);},
+    ID_COL_FIRST, ID_COL_LAST);
+}    
 
 long wxExListView::AppendColumn(const wxExColumn& col)
 {
@@ -605,143 +685,6 @@ const wxString wxExListView::ItemToText(long item_number) const
   return text.Trim();
 }
 
-void wxExListView::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case wxID_CLEAR:
-    EditClearAll();
-  break;
-  case wxID_CUT:
-    CopySelectedItemsToClipboard();
-    EditDelete();
-    break;
-  case wxID_COPY:
-    CopySelectedItemsToClipboard();
-    break;
-  case wxID_DELETE:
-    EditDelete();
-    break;
-  case wxID_PASTE:
-    ItemFromText(wxExClipboardGet());
-    break;
-  case wxID_SELECTALL:
-    EditSelectAll();
-    break;
-  case wxID_SORT_ASCENDING:
-    SortColumn(m_ToBeSortedColumnNo, SORT_ASCENDING);
-    break;
-  case wxID_SORT_DESCENDING:
-    SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING);
-    break;
-  case ID_EDIT_SELECT_INVERT:
-    EditInvertAll();
-    break;
-  case ID_EDIT_SELECT_NONE:
-    for (int i = 0; i < GetItemCount(); i++)
-    {
-      Select(i, false);
-    }
-    break;
-    
-  default: 
-    if (event.GetId() > ID_COL_FIRST && event.GetId() < ID_COL_LAST)
-      SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);
-    else wxFAIL;
-  }
-
-#if wxUSE_STATUSBAR
-  wxExFrame::UpdateStatusBar(this);
-#endif
-}
-
-void wxExListView::OnFindDialog(wxFindDialogEvent& event)
-{
-  if (
-    event.GetEventType() == wxEVT_COMMAND_FIND ||
-    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-  {
-    FindNext(
-      wxExFindReplaceData::Get()->GetFindString(), 
-      wxExFindReplaceData::Get()->SearchDown());
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
-void wxExListView::OnList(wxListEvent& event)
-{
-  if (event.GetEventType() == wxEVT_COMMAND_LIST_COL_CLICK)
-  {
-    SortColumn(
-      event.GetColumn(),
-      (wxExSortType)wxConfigBase::Get()->ReadLong("List/SortMethod", 
-         SORT_TOGGLE));
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_LIST_COL_RIGHT_CLICK)
-  {
-    m_ToBeSortedColumnNo = event.GetColumn();
-
-    wxExMenu menu(GetSelectedItemCount() > 0 ? 
-      wxExMenu::MENU_IS_SELECTED: 
-      wxExMenu::MENU_DEFAULT);
-      
-    menu.Append(wxID_SORT_ASCENDING);
-    menu.Append(wxID_SORT_DESCENDING);
-
-    PopupMenu(&menu);
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_DESELECTED)
-  {
-#if wxUSE_STATUSBAR
-  wxExFrame::UpdateStatusBar(this);
-#endif
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
-  {
-#if wxUSE_STATUSBAR
-  wxExFrame::UpdateStatusBar(this);
-#endif
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_LIST_BEGIN_DRAG)
-  {
-#if wxUSE_DRAG_AND_DROP
-    // Start drag operation.
-    wxString text;
-
-    for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-      text += ItemToText(i) + wxTextFile::GetEOL();
-      
-    if (!text.empty())
-    {
-      wxTextDataObject textData(text);
-      wxDropSource source(textData, this);
-      wxDragResult result = source.DoDragDrop(wxDragCopy);
-
-      if (result != wxDragError &&
-          result != wxDragNone &&
-           result != wxDragCancel)
-      {
-      }
-    }
-#endif
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
-void wxExListView::OnShow(wxShowEvent& event)
-{
-  event.Skip();
-#if wxUSE_STATUSBAR
-  wxExFrame::UpdateStatusBar(this);
-#endif  
-}
-
 void wxExListView::Print()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
@@ -901,11 +844,6 @@ void wxExListView::SortColumnReset()
   }
 }
 
-BEGIN_EVENT_TABLE(wxExListViewFileName, wxExListView)
-  EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewFileName::OnList)
-  EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewFileName::OnList)
-END_EVENT_TABLE()
-
 wxExListViewFileName::wxExListViewFileName(wxWindow* parent,
   wxExListType type,
   wxWindowID id,
@@ -958,8 +896,9 @@ wxExListViewFileName::wxExListViewFileName(wxWindow* parent,
   
     if (
       !IsShown() ||
+       wxExInterruptable::Running() ||
        GetItemCount() == 0 ||
-       !wxConfigBase::Get()->ReadBool("AllowSync", true))
+      !wxConfigBase::Get()->ReadBool("AllowSync", true))
     {
       return;
     }
@@ -1021,6 +960,25 @@ wxExListViewFileName::wxExListViewFileName(wxWindow* parent,
     {
       PopupMenu(&menu);
     }});
+    
+  Bind(wxEVT_LIST_ITEM_ACTIVATED, [=] (wxListEvent& event) {
+    ItemActivated(event.GetIndex());});
+    
+  Bind(wxEVT_LIST_ITEM_SELECTED, [=] (wxListEvent& event) {
+    if (GetSelectedItemCount() == 1)
+    {
+      const wxExFileName fn(wxExListItem(this, event.GetIndex()).GetFileName());
+      
+      if (fn.GetStat().IsOk())
+      {
+        wxExLogStatus(fn, STAT_FULLPATH);
+      }
+      else
+      {
+        wxLogStatus(GetItemText(GetFirstSelected()));
+      }
+    }
+    event.Skip();});
 }
 
 void wxExListViewFileName::AddColumns(const wxExLexer* lexer)
@@ -1270,36 +1228,6 @@ void wxExListViewFileName::ItemsUpdate()
   for (long i = 0; i < GetItemCount(); i++)
   {
     wxExListItem(this, i).Update();
-  }
-}
-
-void wxExListViewFileName::OnList(wxListEvent& event)
-{
-  if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
-  {
-    if (GetSelectedItemCount() == 1)
-    {
-      const wxExFileName fn(wxExListItem(this, event.GetIndex()).GetFileName());
-      
-      if (fn.GetStat().IsOk())
-      {
-        wxExLogStatus(fn, STAT_FULLPATH);
-      }
-      else
-      {
-        wxLogStatus(GetItemText(GetFirstSelected()));
-      }
-    }
-
-    event.Skip();
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_ACTIVATED)
-  {
-    ItemActivated(event.GetIndex());
-  }
-  else
-  {
-    wxFAIL;
   }
 }
 #endif // wxUSE_GUI

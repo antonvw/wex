@@ -2,11 +2,10 @@
 // Name:      grid.h
 // Purpose:   Declaration of wxExGrid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXGRID_H
-#define _EXGRID_H
+#pragma once
 
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/grid.h>
@@ -89,19 +88,9 @@ protected:
 
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
-
-  void OnCommand(wxCommandEvent& event);
-  void OnFindDialog(wxFindDialogEvent& event);
-  void OnGrid(wxGridEvent& event);
-  void OnGridRange(wxGridRangeSelectEvent& event);
-  void OnMouse(wxMouseEvent& event);
 private:
 #if wxUSE_DRAG_AND_DROP
   bool m_UseDragAndDrop;
 #endif
-
-  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GRID
-
-#endif

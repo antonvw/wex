@@ -19,10 +19,6 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h> // for wxExConfigFirstOf
 
-BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
-  EVT_TIMER(-1, wxExProcess::OnTimer)
-END_EVENT_TABLE()
-
 wxExSTCEntryDialog* wxExProcess::m_Dialog = NULL;
 wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 
@@ -35,6 +31,8 @@ wxExProcess::wxExProcess()
   , m_Sync(false)
 {
   m_Command = wxExConfigFirstOf(_("Process"));
+  
+  Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {CheckInput();});
 }
 
 wxExProcess::~wxExProcess()
@@ -496,11 +494,6 @@ void wxExProcess::OnTerminate(int pid, int status)
   wxLogStatus(_("Ready"));
   
   // Collect remaining input.
-  CheckInput();
-}
-
-void wxExProcess::OnTimer(wxTimerEvent& event)
-{
   CheckInput();
 }
 

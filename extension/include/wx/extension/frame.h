@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXFRAME_H
-#define _EXFRAME_H
+#pragma once
 
 #include <vector>
 #include <wx/frame.h>
@@ -131,8 +130,6 @@ protected:
 #endif
 
   void OnCommand(wxCommandEvent& command);
-  void OnFindDialog(wxFindDialogEvent& event);
-  void OnUpdateUI(wxUpdateUIEvent& event);  
   
 #if wxUSE_STATUSBAR
   static wxExStatusBar* m_StatusBar;
@@ -145,8 +142,5 @@ private:
   wxMenuBar* m_MenuBar;
   
   bool m_IsCommand;
-
-  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI
-#endif

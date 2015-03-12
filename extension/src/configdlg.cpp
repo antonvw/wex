@@ -24,15 +24,6 @@
 
 #if wxUSE_GUI
 
-BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
-  EVT_BUTTON(wxID_APPLY, wxExConfigDialog::OnCommand)
-  EVT_BUTTON(wxID_CANCEL, wxExConfigDialog::OnCommand)
-  EVT_BUTTON(wxID_CLOSE, wxExConfigDialog::OnCommand)
-  EVT_BUTTON(wxID_OK, wxExConfigDialog::OnCommand)
-  EVT_UPDATE_UI(wxID_APPLY, wxExConfigDialog::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_OK, wxExConfigDialog::OnUpdateUI)
-END_EVENT_TABLE()
-
 // wxPropertySheetDialog has been tried as well,
 // then you always have a notebook, and apply button is not supported.
 wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
@@ -62,6 +53,13 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   , m_ConfigItems(v)
 {
   Layout(rows, cols, bookctrl_style, imageList);
+  
+  Bind(wxEVT_BUTTON, &wxExConfigDialog::OnCommand, this, wxID_APPLY);
+  Bind(wxEVT_BUTTON, &wxExConfigDialog::OnCommand, this, wxID_CANCEL);
+  Bind(wxEVT_BUTTON, &wxExConfigDialog::OnCommand, this, wxID_CLOSE);
+  Bind(wxEVT_BUTTON, &wxExConfigDialog::OnCommand, this, wxID_OK);
+  Bind(wxEVT_UPDATE_UI, &wxExConfigDialog::OnUpdateUI, this, wxID_APPLY);
+  Bind(wxEVT_UPDATE_UI, &wxExConfigDialog::OnUpdateUI, this, wxID_OK);
 }
 
 std::vector< wxExConfigItem >::const_iterator 

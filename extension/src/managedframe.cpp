@@ -2,7 +2,7 @@
 // Name:      managedframe.cpp
 // Purpose:   Implementation of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -46,11 +46,6 @@ public:
     
   /// Sets ex component.
   void SetEx(wxExEx* ex, const wxString& range);
-protected:  
-  void OnChar(wxKeyEvent& event);
-  void OnCommand(wxCommandEvent& event);
-  void OnEnter(wxCommandEvent& event);
-  void OnFocus(wxFocusEvent& event);
 private:  
   void Expand();
   void Handle(wxKeyEvent& event);
@@ -72,16 +67,7 @@ private:
   
   std::list < wxString > m_Commands;
   std::list < wxString >::const_iterator m_CommandsIterator;
-
-  DECLARE_EVENT_TABLE()
 };
-
-BEGIN_EVENT_TABLE(wxExManagedFrame, wxExFrame)
-  EVT_MENU(ID_CLEAR_FINDS, wxExManagedFrame::OnCommand)
-  EVT_MENU(wxID_PREFERENCES, wxExManagedFrame::OnCommand)
-  EVT_MENU_RANGE(ID_FIND_FIRST, ID_FIND_LAST, wxExManagedFrame::OnCommand)
-  EVT_MENU_RANGE(ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnCommand)
-END_EVENT_TABLE()
 
 wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   wxWindowID id,
@@ -142,6 +128,50 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     event.Check(m_Manager.GetPane("OPTIONSBAR").IsShown());}, ID_VIEW_OPTIONSBAR);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(m_Manager.GetPane("TOOLBAR").IsShown());}, ID_VIEW_TOOLBAR);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    std::list < wxString > l; 
+    wxExFindReplaceData::Get()->SetFindStrings(l);}, ID_CLEAR_FINDS);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExSTC::ConfigDialog(this,
+      _("Editor Options"),
+      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY,
+      event.GetId());}, wxID_PREFERENCES);
+      
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    int i = 0;
+    wxString text;
+    for (const auto& it : wxExFindReplaceData::Get()->GetFindStrings())
+    {
+      if (i++ == event.GetId() - ID_FIND_FIRST)
+      {
+        wxExSTC* stc = GetSTC();
+
+        if (stc != NULL)
+        {
+          if (stc->FindNext(
+            it,
+            stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1))
+          {
+            text = it;
+          }
+        }
+        
+        break;
+      }
+    }
+    if (!text.empty())
+    {
+      wxExFindReplaceData::Get()->SetFindString(text);
+    }}, ID_FIND_FIRST, ID_FIND_LAST);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("FINDBAR");}, ID_VIEW_FINDBAR);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("OPTIONSBAR");}, ID_VIEW_OPTIONSBAR);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("TOOLBAR");}, ID_VIEW_TOOLBAR);
 }
 
 wxExManagedFrame::~wxExManagedFrame()
@@ -276,64 +306,6 @@ void wxExManagedFrame::HideExBar(int hide)
   }
 }
   
-void wxExManagedFrame::OnCommand(wxCommandEvent& event)
-{
-  if (event.GetId() >= ID_FIND_FIRST && event.GetId() <= ID_FIND_LAST)
-  {
-    int i = 0;
-    
-    wxString text;
-    
-    for (const auto& it : wxExFindReplaceData::Get()->GetFindStrings())
-    {
-      if (i++ == event.GetId() - ID_FIND_FIRST)
-      {
-        wxExSTC* stc = GetSTC();
-
-        if (stc != NULL)
-        {
-          if (stc->FindNext(
-            it,
-            stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1))
-          {
-            text = it;
-          }
-        }
-        
-        break;
-      }
-    }
-    
-    if (!text.empty())
-    {
-      wxExFindReplaceData::Get()->SetFindString(text);
-    }
-  }
-  else switch (event.GetId())
-  {
-    case wxID_PREFERENCES:
-      wxExSTC::ConfigDialog(this,
-        _("Editor Options"),
-        wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY,
-        event.GetId());
-      break;
-
-    case ID_CLEAR_FINDS:
-      {
-      std::list < wxString > l; 
-      wxExFindReplaceData::Get()->SetFindStrings(l); 
-      }
-      break;
-    
-    case ID_VIEW_FINDBAR: TogglePane("FINDBAR"); break;
-    case ID_VIEW_OPTIONSBAR: TogglePane("OPTIONSBAR"); break;
-    case ID_VIEW_TOOLBAR: TogglePane("TOOLBAR"); break;
-
-    default:
-      wxFAIL;
-  }
-}
-
 void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 {
   SetFindFocus(page);
@@ -385,13 +357,6 @@ bool wxExManagedFrame::TogglePane(const wxString& pane)
 
 // Implementation of support class.
 
-BEGIN_EVENT_TABLE(wxExExTextCtrl, wxExFindTextCtrl)
-  EVT_CHAR(wxExExTextCtrl::OnChar)
-  EVT_SET_FOCUS(wxExExTextCtrl::OnFocus)
-  EVT_TEXT(wxID_ANY, wxExExTextCtrl::OnCommand)
-  EVT_TEXT_ENTER(wxID_ANY, wxExExTextCtrl::OnEnter)
-END_EVENT_TABLE()
-
 wxExExTextCtrl::wxExExTextCtrl(
   wxWindow* parent,
   wxExManagedFrame* frame,
@@ -409,6 +374,137 @@ wxExExTextCtrl::wxExExTextCtrl(
   , m_Commands(wxExListFromConfig("excommand"))
 {
   m_CommandsIterator = m_Commands.begin();
+
+  Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
+    if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
+    {
+      if (event.GetKeyCode() == WXK_BACK)
+      {
+        m_Command = m_Command.Truncate(m_Command.size() - 1);
+      }
+      else if (event.GetKeyCode() != WXK_TAB)
+      {
+        m_Command += event.GetUnicodeKey();
+      }
+    }
+        
+    const int key = event.GetKeyCode();
+  
+    switch (key)
+    {
+    case WXK_UP: 
+    case WXK_DOWN:
+      if (IsCommand())
+      {
+        wxExSetTextCtrlValue(this, key, m_Commands, m_CommandsIterator);
+      }
+      else if (IsFind())
+      {
+        event.Skip();
+      }
+      break;
+      
+    case WXK_ESCAPE:
+      if (m_ex != NULL)
+      {
+        m_ex->GetSTC()->PositionRestore();
+      }
+      
+      m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
+      
+      m_Controlr = false;
+      m_UserInput = false;
+    break;
+    
+    case WXK_CONTROL_R:
+      m_Controlr = true;
+      break;
+  
+    case WXK_TAB:
+      Expand();
+      break;
+        
+    default: Handle(event);
+    }});
+
+  Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
+    event.Skip();
+    if (
+       m_UserInput && m_ex != NULL && IsFind())
+    {
+      m_ex->GetSTC()->PositionRestore();
+      m_ex->GetSTC()->FindNext(
+        GetValue(),
+        m_ex->GetSearchFlags(),
+        m_Prefix->GetLabel() == "/");
+    }});
+
+  Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
+    if (m_ex == NULL)
+    {
+      return;
+    }
+    
+    if (GetValue().empty())
+    {
+      m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
+      return;
+    }
+    
+    if (IsCommand())
+    {
+      if (m_ex->Command(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString()))
+      {
+        const bool set_focus = 
+          (GetValue() == "n" || GetValue() == "prev" || GetValue().StartsWith("!"));
+            
+        m_Commands.remove(GetValue());
+        m_Commands.push_front(GetValue());
+        m_CommandsIterator = m_Commands.begin();
+  
+        m_Frame->HideExBar(set_focus ? 
+          wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC: wxExManagedFrame::HIDE_BAR_FOCUS_STC);
+      }
+    }
+    else if (IsFind())
+    {
+      event.Skip();    
+          
+      if (m_UserInput)
+      {
+        m_ex->GetMacros().Record(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString());
+      }
+      else 
+      {
+        if (!m_ex->Command(wxString(
+          m_Prefix->GetLabel() + GetValue()).ToStdString()))
+        {
+          return;
+        }
+      }
+      
+      m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
+    }
+    else if (IsCalc())
+    {
+      if (m_UserInput)
+      {
+        m_ex->MacroRecord(m_Command.ToStdString());
+      }
+        
+      if (m_ex->Command(wxString(
+        m_Prefix->GetLabel() + GetValue()).ToStdString()))
+      {
+        m_Frame->HideExBar();
+      }
+    }});
+
+  Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
+    event.Skip();
+    if (m_ex != NULL)
+    {
+      m_ex->GetSTC()->PositionSave();
+    }});
 }
 
 wxExExTextCtrl::~wxExExTextCtrl()
@@ -473,151 +569,6 @@ void wxExExTextCtrl::Handle(wxKeyEvent& event)
   m_Controlr = false;
 }
     
-void wxExExTextCtrl::OnChar(wxKeyEvent& event)
-{
-  if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
-  {
-    if (event.GetKeyCode() == WXK_BACK)
-    {
-      m_Command = m_Command.Truncate(m_Command.size() - 1);
-    }
-    else if (event.GetKeyCode() != WXK_TAB)
-    {
-      m_Command += event.GetUnicodeKey();
-    }
-  }
-      
-  const int key = event.GetKeyCode();
-
-  switch (key)
-  {
-  case WXK_UP: 
-  case WXK_DOWN:
-    if (IsCommand())
-    {
-      wxExSetTextCtrlValue(this, key, m_Commands, m_CommandsIterator);
-    }
-    else if (IsFind())
-    {
-      event.Skip();
-    }
-    break;
-    
-  case WXK_ESCAPE:
-    if (m_ex != NULL)
-    {
-      m_ex->GetSTC()->PositionRestore();
-    }
-    
-    m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
-    
-    m_Controlr = false;
-    m_UserInput = false;
-  break;
-  
-  case WXK_CONTROL_R:
-    m_Controlr = true;
-    break;
-
-  case WXK_TAB:
-    Expand();
-    break;
-      
-  default: Handle(event);
-  }
-}
-
-void wxExExTextCtrl::OnCommand(wxCommandEvent& event)
-{
-  event.Skip();
-  
-  if (
-     m_UserInput && m_ex != NULL && IsFind())
-  {
-    m_ex->GetSTC()->PositionRestore();
-    m_ex->GetSTC()->FindNext(
-      GetValue(),
-      m_ex->GetSearchFlags(),
-      m_Prefix->GetLabel() == "/");
-  }
-}
-
-void wxExExTextCtrl::OnEnter(wxCommandEvent& event)
-{
-  if (m_ex == NULL)
-  {
-    return;
-  }
-  
-  if (GetValue().empty())
-  {
-    m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
-    return;
-  }
-  
-  if (IsCommand())
-  {
-    if (m_ex->Command(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString()))
-    {
-      const bool set_focus = 
-        (GetValue() == "n" || GetValue() == "prev" || GetValue().StartsWith("!"));
-          
-      m_Commands.remove(GetValue());
-      m_Commands.push_front(GetValue());
-      m_CommandsIterator = m_Commands.begin();
-
-      m_Frame->HideExBar(set_focus ? 
-        wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC: wxExManagedFrame::HIDE_BAR_FOCUS_STC);
-    }
-  }
-  else if (IsFind())
-  {
-    event.Skip();    
-        
-    if (m_UserInput)
-    {
-      m_ex->GetMacros().Record(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString());
-    }
-    else 
-    {
-      if (!m_ex->Command(wxString(
-        m_Prefix->GetLabel() + GetValue()).ToStdString()))
-      {
-        return;
-      }
-    }
-    
-    m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
-  }
-  else if (IsCalc())
-  {
-    if (m_UserInput)
-    {
-      m_ex->MacroRecord(m_Command.ToStdString());
-    }
-      
-    if (m_ex->Command(wxString(
-      m_Prefix->GetLabel() + GetValue()).ToStdString()))
-    {
-      m_Frame->HideExBar();
-    }
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
-void wxExExTextCtrl::OnFocus(wxFocusEvent& event)
-{
-  event.Skip();
-
-  if (m_ex != NULL)
-  {
-    m_ex->GetSTC()->PositionSave();
-  }
-}
-
 void wxExExTextCtrl::SetEx(wxExEx* ex, const wxString& command) 
 {
   m_Prefix->SetLabel(command.Left(1));

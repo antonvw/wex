@@ -106,9 +106,6 @@ public:
   
   /// Undo one action in the undo history.  
   virtual void Undo();
-protected:
-  void OnKey(wxKeyEvent& event);
-  void OnStyledText(wxStyledTextEvent& event);
 private:
   void Expand();
   void KeepCommand();
@@ -136,7 +133,5 @@ private:
   wxString m_Prompt;
   
   wxExProcess* m_Process;
-
-  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI

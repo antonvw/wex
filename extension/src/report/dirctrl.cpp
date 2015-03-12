@@ -17,17 +17,13 @@
 
 #if wxUSE_DIRDLG
 
-BEGIN_EVENT_TABLE(wxExGenericDirCtrl, wxGenericDirCtrl)
-  EVT_MENU_RANGE(
-    ID_EDIT_VCS_LOWEST, 
-    ID_EDIT_VCS_HIGHEST, 
-    wxExGenericDirCtrl::OnCommand)
-  EVT_MENU_RANGE(ID_TREE_OPEN, ID_TREE_RUN_MAKE, wxExGenericDirCtrl::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExGenericDirCtrl::OnCommand)
-  EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, wxExGenericDirCtrl::OnTree)
-  EVT_TREE_ITEM_MENU(wxID_TREECTRL, wxExGenericDirCtrl::OnTree)
-  EVT_TREE_SEL_CHANGED(wxID_TREECTRL, wxExGenericDirCtrl::OnTree)
-END_EVENT_TABLE()
+#define GET_VECTOR_FILES \
+  const std::vector< wxString > files(wxExToVectorString(*this).Get()); \
+  if (files.empty()) \
+  {                  \
+    event.Skip();    \
+    return;          \
+  }
 
 wxExGenericDirCtrl::wxExGenericDirCtrl(
   wxWindow *parent, 
@@ -49,72 +45,57 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
       (filter.empty() ? "*": filter),
       defaultFilter,
       name)
-  , m_Frame(frame)
 {
-}
-
-void wxExGenericDirCtrl::ExpandAndSelectPath(const wxString& path)
-{
-  ExpandPath(path);
-  SelectPath(path);
-}
-
-void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case ID_TREE_COPY: 
-    {
-    const std::vector<wxString> files(wxExToVectorString(*this).Get());
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+      wxExVCSExecute(frame, 
+        event.GetId() - ID_EDIT_VCS_LOWEST - 1, wxExToVectorString(*this).Get());},
+    ID_EDIT_VCS_LOWEST, 
+    ID_EDIT_VCS_HIGHEST);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxBusyCursor wait;
     wxString clipboard;
-    for (const auto& it : files)
+    for (const auto& it : wxExToVectorString(*this).Get())
     {
       clipboard += it + wxTextFile::GetEOL();
     }
-    wxExClipboardAdd(clipboard);
-    }
-  break;
-  
-  case ID_TREE_OPEN: 
-    wxExOpenFiles(m_Frame, 
+    wxExClipboardAdd(clipboard);}, ID_TREE_COPY);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExOpenFiles(frame, 
       wxExToVectorString(*this).Get(), 0, wxDIR_FILES); // only files in this dir
-  break;
-  
-  case ID_TREE_RUN_MAKE: 
-    {
+    }, ID_TREE_OPEN);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const std::vector<wxString> files(wxExToVectorString(*this).Get());
-    wxExMake(files[0]);
-    }
-    break;
+    wxExMake(files[0]);}, ID_TREE_RUN_MAKE);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    frame->FindInFiles(wxExToVectorString(*this).Get(), event.GetId());}, 
+    ID_TOOL_LOWEST, ID_TOOL_HIGHEST);
     
-  default: 
-    if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
+  Bind(wxEVT_TREE_ITEM_ACTIVATED, [=](wxTreeEvent& event) {
+    GET_VECTOR_FILES
+    const wxFileName fn(files[0]);
+    
+    if (!fn.FileExists() && fn.DirExists())
     {
-      wxExVCSExecute(m_Frame, 
-        event.GetId() - ID_EDIT_VCS_LOWEST - 1, wxExToVectorString(*this).Get());
-    }
-    else if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
-    {
-      m_Frame->FindInFiles(wxExToVectorString(*this).Get(), event.GetId());
+      if (!GetTreeCtrl()->IsExpanded(event.GetItem()))
+      {
+        ExpandAndSelectPath(files[0]);
+      }
+      else
+      {
+        CollapsePath(files[0]);
+      }
     }
     else
-      wxFAIL;
-  }
-}
-
-void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
-{
-  const std::vector< wxString > files(wxExToVectorString(*this).Get());
-
-  if (files.empty()) 
-  {
-    event.Skip();
-    return;
-  }
-
-  if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_MENU)
-  {
+    {
+      wxExOpenFiles(frame, files, 0, wxDIR_FILES); // only files in this dir
+    }});
+  
+  Bind(wxEVT_TREE_ITEM_MENU, [=](wxTreeEvent& event) {
+    GET_VECTOR_FILES
     const wxExFileName filename(files[0]);
   
     wxExMenu menu; // uses AppendVCS
@@ -142,40 +123,21 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
 
     menu.AppendSeparator();
     menu.Append(ID_TOOL_REPORT_FIND, 
-      wxExEllipsed(m_Frame->GetFindInCaption(ID_TOOL_REPORT_FIND)));
+      wxExEllipsed(frame->GetFindInCaption(ID_TOOL_REPORT_FIND)));
 
     menu.Append(ID_TOOL_REPORT_REPLACE, 
-      wxExEllipsed(m_Frame->GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
+      wxExEllipsed(frame->GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
       
-    PopupMenu(&menu);
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_ACTIVATED)
-  {
-    const wxFileName fn(files[0]);
-    
-    if (!fn.FileExists() && fn.DirExists())
-    {
-      if (!GetTreeCtrl()->IsExpanded(event.GetItem()))
-      {
-        ExpandAndSelectPath(files[0]);
-      }
-      else
-      {
-        CollapsePath(files[0]);
-      }
-    }
-    else
-    {
-      wxExOpenFiles(m_Frame, files, 0, wxDIR_FILES); // only files in this dir
-    }
-  }
-  else if (event.GetEventType() ==  wxEVT_COMMAND_TREE_SEL_CHANGED)
-  {
-    wxExLogStatus(wxFileName(files[0]), STAT_FULLPATH);
-  }
-  else
-  {
-    wxFAIL;
-  }
+    PopupMenu(&menu);});
+  
+  Bind(wxEVT_TREE_SEL_CHANGED, [=](wxTreeEvent& event) {
+    GET_VECTOR_FILES
+    wxExLogStatus(wxFileName(files[0]), STAT_FULLPATH);});
+}
+
+void wxExGenericDirCtrl::ExpandAndSelectPath(const wxString& path)
+{
+  ExpandPath(path);
+  SelectPath(path);
 }
 #endif

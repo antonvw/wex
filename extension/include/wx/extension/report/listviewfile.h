@@ -66,7 +66,6 @@ protected:
   virtual bool DoFileLoad(bool synced = false) override;
   virtual void DoFileNew() override;
   virtual void DoFileSave(bool save_as = false) override;
-  void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
 private:
   bool m_ContentsChanged;
@@ -77,6 +76,4 @@ private:
   const wxString m_TextInFolder;
   
   wxExConfigDialog* m_AddItemsDialog;
-
-  DECLARE_EVENT_TABLE()
 };

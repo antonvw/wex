@@ -16,12 +16,6 @@
 
 #if wxUSE_GUI
 
-BEGIN_EVENT_TABLE(wxExSTCEntryDialog, wxExDialog)
-  EVT_BUTTON(wxID_OK, wxExSTCEntryDialog::OnCommand)
-  EVT_MENU(wxID_FIND, wxExSTCEntryDialog::OnCommand)
-  EVT_MENU(wxID_REPLACE, wxExSTCEntryDialog::OnCommand)
-END_EVENT_TABLE()
-
 wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   const wxString& caption,
   const wxString& text,
@@ -60,6 +54,30 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   AddUserSizer(m_STC);
 
   LayoutSizers();
+  
+  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event){
+    if (m_Process != NULL)
+    {
+      if (m_Process->IsRunning())
+      {
+        m_Process->Kill();
+      }
+    }});
+
+  Bind(wxEVT_BUTTON, [=](wxCommandEvent& event) {
+      if (m_Process != NULL)
+      {
+        if (m_Process->IsRunning())
+        {
+          m_Process->Kill();
+        }
+      }
+      event.Skip();}, wxID_OK);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+      wxPostEvent(wxTheApp->GetTopWindow(), event);}, wxID_FIND);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+      wxPostEvent(wxTheApp->GetTopWindow(), event);}, wxID_REPLACE);
 }
 
 const wxExLexer* wxExSTCEntryDialog::GetLexer() const
@@ -87,46 +105,8 @@ const wxCharBuffer wxExSTCEntryDialog::GetTextRaw() const
   return m_STC->GetTextRaw();
 }
 
-void wxExSTCEntryDialog::OnClose(wxCloseEvent& event)
-{
-  if (m_Process != NULL)
-  {
-    if (m_Process->IsRunning())
-    {
-      m_Process->Kill();
-    }
-  }
-}
-
-void wxExSTCEntryDialog::OnCommand(wxCommandEvent& command)
-{
-  switch (command.GetId())
-  {
-    // Without these, events are not handled by the frame.
-    case wxID_FIND: 
-    case wxID_REPLACE: 
-      wxPostEvent(wxTheApp->GetTopWindow(), command);
-      break;
-
-    case wxID_OK: 
-      if (m_Process != NULL)
-      {
-        if (m_Process->IsRunning())
-        {
-          m_Process->Kill();
-        }
-      }
-      
-      command.Skip();
-      break;
-      
-    default: wxFAIL;
-  }
-}
-
 bool wxExSTCEntryDialog::SetLexer(const wxString& lexer) 
 {
   return m_STC->SetLexer(lexer);
 }
-
 #endif // wxUSE_GUI
