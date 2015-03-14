@@ -28,9 +28,9 @@
 
 #define CHR_TO_NUM(c1,c2) ((c1 << 8) + c2)
 
-#define NAVIGATE(REPEAT, SCOPE, DIRECTION, COND1, COND2, WRAP)           \
+#define NAVIGATE(SCOPE, DIRECTION, COND1, COND2, WRAP)                   \
 {                                                                        \
-  if (m_Mode == MODE_VISUAL_LINE && GetSTC()->GetSelectedText().empty()) \
+  if (GetMode() == MODE_VISUAL_LINE && GetSTC()->GetSelectedText().empty()) \
   {                                                                      \
     if ((#DIRECTION) == "Left" || (#DIRECTION) == "Up")                  \
     {                                                                    \
@@ -43,11 +43,11 @@
       GetSTC()->LineEndExtend();                                         \
     }                                                                    \
   }                                                                      \
-  for (int i = 0; i < REPEAT; i++)                                       \
+  for (int i = 0; i < m_Repeat; i++)                                     \
   {                                                                      \
     if (COND1)                                                           \
     {                                                                    \
-      switch (m_Mode)                                                    \
+      switch (GetMode())                                                 \
       {                                                                  \
         case MODE_NORMAL:                                                \
           if (WRAP && (#SCOPE) == "Line")                                \
@@ -72,7 +72,7 @@
   }                                                                      \
   if ((#SCOPE) == "Line")                                                \
   {                                                                      \
-    switch (m_Mode)                                                      \
+    switch (GetMode())                                                   \
     {                                                                    \
       case MODE_NORMAL:                                                  \
         if ((COND2) &&                                                   \
@@ -175,8 +175,56 @@ std::string wxExVi::m_LastFindCharCommand;
 wxExVi::wxExVi(wxExSTC* stc)
   : wxExEx(stc)
   , m_Dot(false)
-  , m_Mode(MODE_NORMAL)
-  , m_InsertRepeatCount(1)
+  , m_FSM(this, MODE_NORMAL, [=](const std::string& command){
+    if (!m_Dot)
+    {
+      m_InsertText.clear();
+      if (m_Repeat > 1)
+      {
+        SetLastCommand(wxString::Format("%d%s", m_Repeat, command.c_str()).ToStdString(), true);
+      }
+      else
+      {
+        SetLastCommand(command, true);
+      }
+    }
+    GetSTC()->BeginUndoAction();
+    switch ((int)command[0])
+    {
+      case 'a': 
+        GetSTC()->CharRight(); 
+        break;
+      case 'c': 
+      case 'i': 
+        break;
+      case 'o': 
+        GetSTC()->LineEnd(); 
+        GetSTC()->NewLine(); 
+        break;
+      case 'A': GetSTC()->LineEnd(); 
+        break;
+      case 'C': 
+        GetSTC()->LineEndExtend();
+        Cut();
+        break;
+      case 'I': 
+        GetSTC()->Home(); 
+        break;
+      case 'O': 
+        GetSTC()->Home(); 
+        GetSTC()->NewLine(); 
+        GetSTC()->LineUp(); 
+        break;
+      case 'R': 
+        GetSTC()->SetOvertype(true);
+        break;
+      default: wxFAIL;
+    }
+    if (command[0] == 'c')
+    {
+      m_Repeat = 1;
+    }})
+  , m_Repeat(1)
   , m_SearchForward(true)
 {
 }
@@ -248,7 +296,7 @@ bool wxExVi::Command(const std::string& command)
     CommandCalc(command);
     return true;
   }
-  else if (m_Mode == MODE_INSERT)
+  else if (ModeInsert())
   {
     InsertMode(command);
     return true;
@@ -269,7 +317,7 @@ bool wxExVi::Command(const std::string& command)
     // Cannot be at CommandChar, as 0 is stripped from rest.
     case '0':
     case '^':
-      switch (m_Mode)
+      switch (GetMode())
       {
         case MODE_NORMAL: GetSTC()->Home(); break;
         case MODE_VISUAL: GetSTC()->HomeExtend(); break;
@@ -297,7 +345,7 @@ bool wxExVi::Command(const std::string& command)
       }
       else
       {
-        if (m_Mode >= MODE_VISUAL)
+        if (ModeVisual())
         {
           GetFrame()->GetExCommand(this, command + "'<,'>");
         }
@@ -321,13 +369,13 @@ bool wxExVi::Command(const std::string& command)
           action = true;
         }
         
-        if (m_Mode == MODE_NORMAL)
+        if (ModeNormal())
         {
           m_Command.clear();
         }
         else
         {
-          m_Mode = MODE_NORMAL;
+          m_FSM.Transition("\x1b");
           action = true;
         }
       
@@ -340,7 +388,7 @@ bool wxExVi::Command(const std::string& command)
       else
       {
         std::string rest(command);
-        long int repeat = 1;
+        m_Repeat = 1;
         
         if (rest.front() == '"')
         {
@@ -367,7 +415,7 @@ bool wxExVi::Command(const std::string& command)
           
           if (seq_size > 0)
           {
-            repeat = strtol(rest.substr(0, seq_size).c_str(), NULL, 10);
+            m_Repeat = strtol(rest.substr(0, seq_size).c_str(), NULL, 10);
             rest = rest.substr(seq_size);
           }
         }
@@ -376,16 +424,16 @@ bool wxExVi::Command(const std::string& command)
         {
           case 0: return false;
           case 1: 
-            handled = CommandChar((int)rest[0], repeat); 
+            handled = CommandChar((int)rest[0]); 
             if (handled)
             {
               rest = rest.substr(1);
             }
             break;
-          default: handled = CommandChars(rest, repeat);
+          default: handled = CommandChars(rest);
         }
       
-        if (handled && m_Mode == MODE_INSERT)
+        if (handled && ModeInsert())
         {
           if (!rest.empty())
           {
@@ -399,7 +447,7 @@ bool wxExVi::Command(const std::string& command)
 
   if (!handled)
   {  
-    if (m_Mode >= MODE_VISUAL)
+    if (ModeVisual())
     {
       if (command.find("'<,'>") == std::string::npos)
       {
@@ -422,7 +470,7 @@ bool wxExVi::Command(const std::string& command)
     SetLastCommand(command, 
       // Always when in insert mode,
       // or this was a file change command (so size different from before).
-      m_Mode == MODE_INSERT || size != GetSTC()->GetLength());
+      ModeInsert() || size != GetSTC()->GetLength());
   }
     
   return true;
@@ -436,7 +484,7 @@ void wxExVi::CommandCalc(const wxString& command)
   int width = 0;
   const double sum = wxExCalculator(command.Mid(index).ToStdString(), this, width);
 
-  if (m_Mode == MODE_INSERT)
+  if (ModeInsert())
   {
     if (wxString(GetLastCommand()).EndsWith("cw"))
     {
@@ -451,69 +499,65 @@ void wxExVi::CommandCalc(const wxString& command)
   }
 }
 
-bool wxExVi::CommandChar(int c, int repeat)
+bool wxExVi::CommandChar(int c)
 {
+  if (m_FSM.Transition(std::to_string(c)))
+  {
+    if (ModeInsert())
+    {
+      return true;
+    }
+  }
+  
   switch (c)
   {
-    // Insert commands.
-    case 'a': 
-    case 'i': 
-    case 'o': 
-    case 'A': 
-    case 'C': 
-    case 'I': 
-    case 'O': 
-    case 'R': 
-      SetInsertMode((char)c, repeat); 
-      break;
-
     // Navigate char and line commands.
     case 'h': 
     case WXK_LEFT:
-              NAVIGATE(repeat, Char, Left,     GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0, false, false); break;
+              NAVIGATE(Char, Left,     GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0, false, false); break;
     case 'l': 
     case ' ': 
     case WXK_RIGHT:
-              NAVIGATE(repeat, Char, Right,    GetSTC()->GetCurrentPos() < GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()), false, false); break;
+              NAVIGATE(Char, Right,    GetSTC()->GetCurrentPos() < GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine()), false, false); break;
     case 'j': 
     case WXK_DOWN:
-              NAVIGATE(repeat, Line, Down,     GetSTC()->GetCurrentLine() < GetSTC()->GetNumberOfLines(), false, false); break;
+              NAVIGATE(Line, Down,     GetSTC()->GetCurrentLine() < GetSTC()->GetNumberOfLines(), false, false); break;
     case 'k': 
     case WXK_UP:
-              NAVIGATE(repeat, Line, Up,       GetSTC()->GetCurrentLine() > 0, false, false); break;
+              NAVIGATE(Line, Up,       GetSTC()->GetCurrentLine() > 0, false, false); break;
               
     // Navigate line commands that pass wrapped lines.
     case '+': 
     case WXK_RETURN:
     case WXK_NUMPAD_ENTER:
-              NAVIGATE(repeat, Line, Down,     true, true, true); break;
+              NAVIGATE(Line, Down,     true, true, true); break;
     case '-': 
-              NAVIGATE(repeat, Line, Up,       GetSTC()->GetCurrentLine() > 0, true, true); break;
+              NAVIGATE(Line, Up,       GetSTC()->GetCurrentLine() > 0, true, true); break;
               
     // Navigate word commands (B, W, E, treated as b, w, e for the moment).
     case 'B':
-    case 'b': NAVIGATE(repeat, Word, Left,     true, false, false); break;
+    case 'b': NAVIGATE(Word, Left,     true, false, false); break;
     case 'W':
-    case 'w': NAVIGATE(repeat, Word, Right,    true, false, false); break;
+    case 'w': NAVIGATE(Word, Right,    true, false, false); break;
     case 'E':
-    case 'e': NAVIGATE(repeat, Word, RightEnd, true, false, false); break;
+    case 'e': NAVIGATE(Word, RightEnd, true, false, false); break;
     
     // Navigate paragraph commands ((,) treated as as {,}).
     case '(':
-    case '{': NAVIGATE(repeat, Para, Up,       true, false, false); break;
+    case '{': NAVIGATE(Para, Up,       true, false, false); break;
     case ')':
-    case '}': NAVIGATE(repeat, Para, Down,     true, false, false); break;
+    case '}': NAVIGATE(Para, Down,     true, false, false); break;
     case WXK_CONTROL_B:
     
     // Navigate page commands.
     case WXK_PAGEUP:
-              NAVIGATE(repeat, Page, Up,       true, false, false); break;
+              NAVIGATE(Page, Up,       true, false, false); break;
     case WXK_CONTROL_F:
     case WXK_PAGEDOWN:
-              NAVIGATE(repeat, Page, Down,     true, false, false); break;
+              NAVIGATE(Page, Down,     true, false, false); break;
         
     case 'n': 
-      for (int i = 0; i < repeat; i++) 
+      for (int i = 0; i < m_Repeat; i++) 
         if (!GetSTC()->FindNext(
           wxExFindReplaceData::Get()->GetFindString(), 
           GetSearchFlags(), 
@@ -544,11 +588,15 @@ bool wxExVi::CommandChar(int c, int repeat)
       }
       break;
     
-    case 'v': m_Mode = MODE_VISUAL; break;
-      
+    case 'v':
+    case 'F': 
+    case 'V':
+      m_FSM.Transition(std::to_string(c)); 
+      break;
+
     case 'x': 
     case WXK_DELETE:
-      DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + repeat);
+      DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Repeat);
       break;
         
     case 'D': 
@@ -559,9 +607,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       }
       break;
         
-    case 'F': m_Mode = MODE_VISUAL_RECT; break;
-    
-    case 'G': GetSTC()->GotoLineAndSelect(repeat); break;
+    case 'G': GetSTC()->GotoLineAndSelect(m_Repeat); break;
     case 'H': GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine()); break;
         
     case 'J':
@@ -569,7 +615,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       {
         GetSTC()->BeginUndoAction();
         GetSTC()->SetTargetStart(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));
-        GetSTC()->SetTargetEnd(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine() + repeat));
+        GetSTC()->SetTargetEnd(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine() + m_Repeat));
         GetSTC()->LinesJoin();
         GetSTC()->EndUndoAction();
       }
@@ -584,7 +630,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case 'N': 
-      for (int i = 0; i < repeat; i++) 
+      for (int i = 0; i < m_Repeat; i++) 
         if (!GetSTC()->FindNext(
           wxExFindReplaceData::Get()->GetFindString(), 
           GetSearchFlags(), 
@@ -592,10 +638,9 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
         
     case 'P': Put(false); break;
-    case 'V': m_Mode = MODE_VISUAL_LINE; break;
       
     case 'X': 
-      DeleteRange(this, GetSTC()->GetCurrentPos() - repeat, GetSTC()->GetCurrentPos());
+      DeleteRange(this, GetSTC()->GetCurrentPos() - m_Repeat, GetSTC()->GetCurrentPos());
       break;
 
     case '.': 
@@ -623,11 +668,11 @@ bool wxExVi::CommandChar(int c, int repeat)
 
     case '|': 
       GetSTC()->GotoPos(
-        GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()) + repeat - 1);
+        GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()) + m_Repeat - 1);
       break;
     
     case '$': 
-      switch (m_Mode)
+      switch (GetMode())
       {
         case MODE_NORMAL: GetSTC()->LineEnd(); break;
         case MODE_VISUAL: GetSTC()->LineEndExtend(); break;
@@ -636,7 +681,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       break;
     
     case WXK_CONTROL_E: 
-      for (int i = 0; i < repeat; i++) ChangeNumber(true); 
+      for (int i = 0; i < m_Repeat; i++) ChangeNumber(true); 
       break;
     case WXK_CONTROL_G:
       GetFrame()->ShowExMessage(wxString::Format("%s line %d of %d --%d%%-- level %d", 
@@ -648,13 +693,13 @@ bool wxExVi::CommandChar(int c, int repeat)
          - wxSTC_FOLDLEVELBASE));
       break;
     case WXK_CONTROL_J: 
-      for (int i = 0; i < repeat; i++) ChangeNumber(false); 
+      for (int i = 0; i < m_Repeat; i++) ChangeNumber(false); 
       break;
     case WXK_CONTROL_P: // (^y is not possible, already redo accel key)
-      for (int i = 0; i < repeat; i++) GetSTC()->LineScrollUp(); 
+      for (int i = 0; i < m_Repeat; i++) GetSTC()->LineScrollUp(); 
       break;
     case WXK_CONTROL_Q: // (^n is not possible, already new doc accel key)
-      for (int i = 0; i < repeat; i++) GetSTC()->LineScrollDown(); 
+      for (int i = 0; i < m_Repeat; i++) GetSTC()->LineScrollDown(); 
       break;
         
     case WXK_BACK:
@@ -672,7 +717,7 @@ bool wxExVi::CommandChar(int c, int repeat)
       
     case '[': 
     case ']': 
-      for (int i = 0; i < repeat; i++) 
+      for (int i = 0; i < m_Repeat; i++) 
         if (!GetSTC()->FindNext("{", GetSearchFlags(), c == ']'))
         {
           m_Command.clear();
@@ -687,7 +732,7 @@ bool wxExVi::CommandChar(int c, int repeat)
   return true;
 }
 
-bool wxExVi::CommandChars(std::string& command, int repeat)
+bool wxExVi::CommandChars(std::string& command)
 {
   switch (CHR_TO_NUM((int)command[0], (int)command[1]))
   {
@@ -697,7 +742,7 @@ bool wxExVi::CommandChars(std::string& command, int repeat)
          GetSTC()->Home();
          GetSTC()->DelLineRight();
   
-         if (!SetInsertMode("cc", repeat))
+         if (!m_FSM.Transition("cc"))
          {
            return false;
          }
@@ -713,9 +758,9 @@ bool wxExVi::CommandChars(std::string& command, int repeat)
           GetSTC()->SetCurrentPos(GetSTC()->GetSelectionStart());
         }
  
-        for (int i = 0; i < repeat; i++) GetSTC()->WordRightEndExtend();
+        for (int i = 0; i < m_Repeat; i++) GetSTC()->WordRightEndExtend();
  
-        if (!SetInsertMode("cw", repeat))
+        if (!m_FSM.Transition("cw"))
         {
           return false;
         }
@@ -723,28 +768,28 @@ bool wxExVi::CommandChars(std::string& command, int repeat)
       }
       break;
           
-    case CHR_TO_NUM('d','d'): wxExAddressRange(this, repeat).Delete(); break;
-    case CHR_TO_NUM('d','e'): DeleteRange(this, repeat, [&](){GetSTC()->WordRightEnd();}); break;
-    case CHR_TO_NUM('d','h'): DeleteRange(this, repeat, [&](){GetSTC()->CharLeft();}); break;
-    case CHR_TO_NUM('d','j'): DeleteRange(this, repeat, [&](){GetSTC()->LineDown();}); break;
-    case CHR_TO_NUM('d','k'): DeleteRange(this, repeat, [&](){GetSTC()->LineUp();}); break;
-    case CHR_TO_NUM('d','l'): DeleteRange(this, repeat, [&](){GetSTC()->CharRight();}); break;
-    case CHR_TO_NUM('d','w'): DeleteRange(this, repeat, [&](){GetSTC()->WordRight();}); break;
+    case CHR_TO_NUM('d','d'): wxExAddressRange(this, m_Repeat).Delete(); break;
+    case CHR_TO_NUM('d','e'): DeleteRange(this, m_Repeat, [&](){GetSTC()->WordRightEnd();}); break;
+    case CHR_TO_NUM('d','h'): DeleteRange(this, m_Repeat, [&](){GetSTC()->CharLeft();}); break;
+    case CHR_TO_NUM('d','j'): DeleteRange(this, m_Repeat, [&](){GetSTC()->LineDown();}); break;
+    case CHR_TO_NUM('d','k'): DeleteRange(this, m_Repeat, [&](){GetSTC()->LineUp();}); break;
+    case CHR_TO_NUM('d','l'): DeleteRange(this, m_Repeat, [&](){GetSTC()->CharRight();}); break;
+    case CHR_TO_NUM('d','w'): DeleteRange(this, m_Repeat, [&](){GetSTC()->WordRight();}); break;
     case CHR_TO_NUM('d','G'): DeleteRange(this, GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()), GetSTC()->GetLastPosition()); break;
     case CHR_TO_NUM('d','0'): DeleteRange(this, GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()), GetSTC()->GetCurrentPos()); break;
     case CHR_TO_NUM('d','$'): DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine())); break;
      
     case CHR_TO_NUM('g','g'): GetSTC()->DocumentStart(); break;
     
-    case CHR_TO_NUM('y','e'): YankRange(this, repeat, [&](){GetSTC()->WordRightEndExtend();}); break;
-    case CHR_TO_NUM('y','h'): YankRange(this, repeat, [&](){GetSTC()->CharLeftExtend();}); break;
-    case CHR_TO_NUM('y','j'): YankRange(this, repeat, [&](){GetSTC()->LineDownExtend();}); break;
-    case CHR_TO_NUM('y','k'): YankRange(this, repeat, [&](){GetSTC()->LineUpExtend();}); break;
-    case CHR_TO_NUM('y','l'): YankRange(this, repeat, [&](){GetSTC()->CharRightExtend();}); break;
-    case CHR_TO_NUM('y','w'): YankRange(this, repeat, [&](){GetSTC()->WordRightExtend();}); break;
-    case CHR_TO_NUM('y','y'): wxExAddressRange(this, repeat).Yank(); break;
-    case CHR_TO_NUM('y','0'): YankRange(this, repeat, [&](){GetSTC()->HomeExtend();}); break;
-    case CHR_TO_NUM('y','$'): YankRange(this, repeat, [&](){GetSTC()->LineEndExtend();}); break;
+    case CHR_TO_NUM('y','e'): YankRange(this, m_Repeat, [&](){GetSTC()->WordRightEndExtend();}); break;
+    case CHR_TO_NUM('y','h'): YankRange(this, m_Repeat, [&](){GetSTC()->CharLeftExtend();}); break;
+    case CHR_TO_NUM('y','j'): YankRange(this, m_Repeat, [&](){GetSTC()->LineDownExtend();}); break;
+    case CHR_TO_NUM('y','k'): YankRange(this, m_Repeat, [&](){GetSTC()->LineUpExtend();}); break;
+    case CHR_TO_NUM('y','l'): YankRange(this, m_Repeat, [&](){GetSTC()->CharRightExtend();}); break;
+    case CHR_TO_NUM('y','w'): YankRange(this, m_Repeat, [&](){GetSTC()->WordRightExtend();}); break;
+    case CHR_TO_NUM('y','y'): wxExAddressRange(this, m_Repeat).Yank(); break;
+    case CHR_TO_NUM('y','0'): YankRange(this, m_Repeat, [&](){GetSTC()->HomeExtend();}); break;
+    case CHR_TO_NUM('y','$'): YankRange(this, m_Repeat, [&](){GetSTC()->LineEndExtend();}); break;
     
     case CHR_TO_NUM('z','c'):
     case CHR_TO_NUM('z','o'):
@@ -771,23 +816,23 @@ bool wxExVi::CommandChars(std::string& command, int repeat)
       break;
     case CHR_TO_NUM('>','>'):
     case CHR_TO_NUM('<','<'):
-      switch (m_Mode)
+      switch (GetMode())
       {
-        case MODE_NORMAL: wxExAddressRange(this, repeat).Indent(command == ">>"); break;
+        case MODE_NORMAL: wxExAddressRange(this, m_Repeat).Indent(command == ">>"); break;
         case MODE_VISUAL: 
         case MODE_VISUAL_LINE: 
         case MODE_VISUAL_RECT: 
           wxExAddressRange(this, "'<,'>").Indent(command == ">>"); break;
       }
       break;
-    case CHR_TO_NUM('@','@'): MacroPlayback(GetMacros().GetMacro(), repeat); break;
+    case CHR_TO_NUM('@','@'): MacroPlayback(GetMacros().GetMacro(), m_Repeat); break;
          
     default:
-      if (FindChar(repeat, command, "f"))
+      if (FindChar(command, "f"))
       {
         m_LastFindCharCommand = command;
       }
-      else if (FindChar(repeat, command, "t"))
+      else if (FindChar(command, "t"))
       {
         GetSTC()->CharLeft();
         m_LastFindCharCommand = command;
@@ -828,8 +873,8 @@ bool wxExVi::CommandChars(std::string& command, int repeat)
           else
           {
             GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
-            GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + repeat);
-            GetSTC()->ReplaceTarget(wxString(command.back(), repeat));
+            GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + m_Repeat);
+            GetSTC()->ReplaceTarget(wxString(command.back(), m_Repeat));
           }
         }
       }
@@ -843,7 +888,7 @@ bool wxExVi::CommandChars(std::string& command, int repeat)
         
         if (GetMacros().IsRecorded(macro))
         {
-          MacroPlayback(macro, repeat);
+          MacroPlayback(macro, m_Repeat);
         }
         else
         {
@@ -856,7 +901,7 @@ bool wxExVi::CommandChars(std::string& command, int repeat)
       {
         CommandReg(command[1]);
       }  
-      else if (CommandChar((int)command[0], repeat))
+      else if (CommandChar((int)command[0]))
       {
         command = command.substr(1);
       }
@@ -866,7 +911,7 @@ bool wxExVi::CommandChars(std::string& command, int repeat)
           
         if (wxExMatch("@([a-zA-Z].+)@", command, v) > 0)
         {
-          if (!MacroPlayback(v[0], repeat))
+          if (!MacroPlayback(v[0], m_Repeat))
           {
             m_Command.clear();
             GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
@@ -881,7 +926,7 @@ bool wxExVi::CommandChars(std::string& command, int repeat)
           {
             GetFrame()->StatusText(s, "PaneMacro");
             
-            if (!MacroPlayback(s, repeat))
+            if (!MacroPlayback(s, m_Repeat))
             {
               m_Command.clear();
               GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
@@ -925,7 +970,7 @@ void wxExVi::CommandReg(const char reg)
     case '*': Put(true); break;
     // filename register
     case '%':
-      if (m_Mode == MODE_INSERT)
+      if (ModeInsert())
       {
         AddText(GetSTC()->GetFileName().GetFullName().ToStdString());
       }
@@ -951,11 +996,11 @@ void wxExVi::CommandReg(const char reg)
   }
 }
 
-bool wxExVi::FindChar(int repeat, const wxString& text, const wxString& start)
+bool wxExVi::FindChar(const wxString& text, const wxString& start)
 {
   if (text.StartsWith(start) || text.StartsWith(start.Upper()))
   {
-    for (int i = 0; i < repeat; i++) 
+    for (int i = 0; i < m_Repeat; i++) 
     {
       const int flags = GetSearchFlags() & ~wxSTC_FIND_REGEXP;
       
@@ -999,7 +1044,7 @@ void wxExVi::GotoBrace()
   {
     GetSTC()->GotoPos(brace_match);
   
-    switch (m_Mode)
+    switch (GetMode())
     {
       case MODE_VISUAL:
         if (brace_match < pos)
@@ -1105,7 +1150,7 @@ bool wxExVi::InsertMode(const std::string& command)
       // Add extra inserts if necessary.        
       if (!m_InsertText.empty())
       {
-        for (int i = 1; i < m_InsertRepeatCount; i++)
+        for (int i = 1; i < m_Repeat; i++)
         {
           AddText(m_InsertText);
         }
@@ -1126,7 +1171,7 @@ bool wxExVi::InsertMode(const std::string& command)
         {
           if (!GetSTC()->GetOvertype())
           {
-            for (int i = 1; i <= m_InsertRepeatCount; i++)
+            for (int i = 1; i <= m_Repeat; i++)
             {
               AddText(rest);
             }
@@ -1137,7 +1182,7 @@ bool wxExVi::InsertMode(const std::string& command)
             
             GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
             
-            for (int i = 1; i <= m_InsertRepeatCount; i++)
+            for (int i = 1; i <= m_Repeat; i++)
             {
               text += rest;
             }
@@ -1161,7 +1206,7 @@ bool wxExVi::InsertMode(const std::string& command)
         GetMacros().Record(wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
       }
       
-      m_Mode = MODE_NORMAL;
+      m_FSM.Transition("\x1b");
       
       GetSTC()->SetOvertype(false);
       
@@ -1289,7 +1334,7 @@ void wxExVi::InsertModeNormal(const std::string& text)
 
 void wxExVi::MacroRecord(const std::string& text)
 {
-  if (m_Mode == MODE_INSERT)
+  if (ModeInsert())
   {
     m_InsertText += text;
   }
@@ -1305,7 +1350,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   {
     return true;
   }
-  else if (m_Mode == MODE_INSERT)
+  else if (ModeInsert())
   { 
     if (GetSTC()->SelectionIsRectangle() || 
         GetSTC()->GetSelectionMode() == wxSTC_SEL_THIN)
@@ -1369,7 +1414,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
      event.GetKeyCode() == WXK_RETURN ||
      event.GetKeyCode() == WXK_NUMPAD_ENTER ||
      event.GetKeyCode() == WXK_TAB ||
-     (m_Mode != MODE_INSERT &&
+     (!ModeInsert() &&
        (event.GetKeyCode() == WXK_LEFT ||
         event.GetKeyCode() == WXK_DOWN ||
         event.GetKeyCode() == WXK_UP ||
@@ -1443,85 +1488,6 @@ bool wxExVi::Put(bool after)
   return true;
 }        
 
-bool wxExVi::SetInsertMode(
-  const wxString& c, 
-  int repeat)
-{
-  if (GetSTC()->GetReadOnly() || GetSTC()->HexMode())
-  {
-    return false;
-  }
-    
-  m_Mode = MODE_INSERT;
-  
-  if (!m_Dot)
-  {
-    m_InsertText.clear();
-    
-    if (repeat > 1)
-    {
-      SetLastCommand(wxString::Format("%d%s", repeat, c.c_str()).ToStdString(), true);
-    }
-    else
-    {
-      SetLastCommand(c.ToStdString(), true);
-    }
-  }
-  
-  GetSTC()->BeginUndoAction();
-  
-  switch ((int)c.GetChar(0))
-  {
-    case 'a': 
-      GetSTC()->CharRight(); 
-      break;
-
-    case 'c': 
-    case 'i': 
-      break;
-
-    case 'o': 
-      GetSTC()->LineEnd(); 
-      GetSTC()->NewLine(); 
-      break;
-      
-    case 'A': GetSTC()->LineEnd(); 
-      break;
-
-    case 'C': 
-      GetSTC()->LineEndExtend();
-      Cut();
-      break;
-      
-    case 'I': 
-      GetSTC()->Home(); 
-      break;
-
-    case 'O': 
-      GetSTC()->Home(); 
-      GetSTC()->NewLine(); 
-      GetSTC()->LineUp(); 
-      break;
-
-    case 'R': 
-      GetSTC()->SetOvertype(true);
-      break;
-
-    default: wxFAIL;
-  }
-
-  if (c.GetChar(0) == 'c')
-  {
-    m_InsertRepeatCount = 1;
-  }
-  else
-  {
-    m_InsertRepeatCount = repeat;
-  }
-  
-  return true;
-}
-
 bool wxExVi::ToggleCase()
 {
   // Toggle case in hex mode not yet supported.
@@ -1545,5 +1511,4 @@ bool wxExVi::ToggleCase()
   
   return true;
 }
-
 #endif // wxUSE_GUI
