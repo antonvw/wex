@@ -503,10 +503,7 @@ bool wxExVi::CommandChar(int c)
 {
   if (m_FSM.Transition(std::string(1, c)))
   {
-    if (ModeInsert())
-    {
-      return true;
-    }
+    return true;
   }
   
   switch (c)
@@ -588,12 +585,6 @@ bool wxExVi::CommandChar(int c)
       }
       break;
     
-    case 'v':
-    case 'F': 
-    case 'V':
-      m_FSM.Transition(std::string(1, c)); 
-      break;
-
     case 'x': 
     case WXK_DELETE:
       DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Repeat);
