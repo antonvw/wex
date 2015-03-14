@@ -38,4 +38,11 @@ void wxExGuiTestFixture::testViFSM()
   
   CPPUNIT_ASSERT( fsm.Transition("cc"));
   CPPUNIT_ASSERT( fsm.State() == wxExVi::MODE_INSERT);
+  
+  CPPUNIT_ASSERT( fsm.Transition(ESC));
+  CPPUNIT_ASSERT( fsm.State() == wxExVi::MODE_NORMAL);
+  
+  stc->SetReadOnly(true);
+  CPPUNIT_ASSERT( fsm.Transition("i"));
+  CPPUNIT_ASSERT( fsm.State() == wxExVi::MODE_NORMAL);
 }

@@ -144,7 +144,9 @@ void wxExGuiTestFixture::testVi()
   
   for (auto& it2 : commands)
   {
-    ChangeMode( vi, it2, wxExVi::MODE_NORMAL);
+  printf("it2: %s\n", it2.c_str());
+    CPPUNIT_ASSERT( vi->Command(it2));
+    CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
     CPPUNIT_ASSERT(!stc->GetModify());
   }
 

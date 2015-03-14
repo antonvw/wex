@@ -42,7 +42,8 @@ public:
   int State() const {return m_State;};
   
   /// Transitions to next state depending on command.
-  /// Returns true if state changed, otherwise false.
+  /// Returns true if command represents a state change, otherwise false.
+  /// That does not mean that state was changed, in case of readonly doc.
   bool Transition(const std::string& command);
 private:  
   wxExVi* m_vi;
