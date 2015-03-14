@@ -18,25 +18,26 @@ enum
   KEY_ESCAPE
 };
 
+#define MAKE_ENTRY( STATE, ACTION, NEXT )                               \
+  m_FSM.push_back(wxExViFSMEntry(wxExVi::STATE, ACTION, wxExVi::NEXT)); \
+
 wxExViFSM::wxExViFSM(wxExVi* vi, 
   int state, std::function<void(const std::string&)> process)
   : m_vi(vi)
   , m_State(state)
   , m_Process(process)
-  , m_FSM {
-    wxExViFSMEntry(wxExVi::MODE_NORMAL,      KEY_INSERT,      wxExVi::MODE_INSERT),
-    wxExViFSMEntry(wxExVi::MODE_NORMAL,      KEY_VISUAL,      wxExVi::MODE_VISUAL),
-    wxExViFSMEntry(wxExVi::MODE_NORMAL,      KEY_VISUAL_LINE, wxExVi::MODE_VISUAL_LINE),
-    wxExViFSMEntry(wxExVi::MODE_NORMAL,      KEY_VISUAL_RECT, wxExVi::MODE_VISUAL_RECT),
-    wxExViFSMEntry(wxExVi::MODE_NORMAL,      KEY_ESCAPE,      wxExVi::MODE_NORMAL),
-    wxExViFSMEntry(wxExVi::MODE_INSERT,      KEY_ESCAPE,      wxExVi::MODE_NORMAL),
-    wxExViFSMEntry(wxExVi::MODE_INSERT_RECT, KEY_ESCAPE,      wxExVi::MODE_VISUAL_RECT),
-    wxExViFSMEntry(wxExVi::MODE_VISUAL,      KEY_ESCAPE,      wxExVi::MODE_NORMAL),
-    wxExViFSMEntry(wxExVi::MODE_VISUAL_LINE, KEY_ESCAPE,      wxExVi::MODE_NORMAL),
-    wxExViFSMEntry(wxExVi::MODE_VISUAL_RECT, KEY_ESCAPE,      wxExVi::MODE_NORMAL),
-    wxExViFSMEntry(wxExVi::MODE_VISUAL_RECT, KEY_INSERT,      wxExVi::MODE_INSERT_RECT)
-    }
 {
+   MAKE_ENTRY ( MODE_NORMAL,      KEY_INSERT,      MODE_INSERT)
+   MAKE_ENTRY ( MODE_NORMAL,      KEY_VISUAL,      MODE_VISUAL)
+   MAKE_ENTRY ( MODE_NORMAL,      KEY_VISUAL_LINE, MODE_VISUAL_LINE)
+   MAKE_ENTRY ( MODE_NORMAL,      KEY_VISUAL_RECT, MODE_VISUAL_RECT)
+   MAKE_ENTRY ( MODE_NORMAL,      KEY_ESCAPE,      MODE_NORMAL)
+   MAKE_ENTRY ( MODE_INSERT,      KEY_ESCAPE,      MODE_NORMAL)
+   MAKE_ENTRY ( MODE_INSERT_RECT, KEY_ESCAPE,      MODE_VISUAL_RECT)
+   MAKE_ENTRY ( MODE_VISUAL,      KEY_ESCAPE,      MODE_NORMAL)
+   MAKE_ENTRY ( MODE_VISUAL_LINE, KEY_ESCAPE,      MODE_NORMAL)
+   MAKE_ENTRY ( MODE_VISUAL_RECT, KEY_ESCAPE,      MODE_NORMAL)
+   MAKE_ENTRY ( MODE_VISUAL_RECT, KEY_INSERT,      MODE_INSERT_RECT)
 }
 
 bool wxExViFSM::Transition(const std::string& command)

@@ -50,5 +50,5 @@ private:
   int m_State;
   
   std::function<void(const std::string&)> m_Process;
-  const std::vector<wxExViFSMEntry> m_FSM;
+  std::vector<wxExViFSMEntry> m_FSM;
 };

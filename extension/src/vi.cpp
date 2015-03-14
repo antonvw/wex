@@ -501,7 +501,7 @@ void wxExVi::CommandCalc(const wxString& command)
 
 bool wxExVi::CommandChar(int c)
 {
-  if (m_FSM.Transition(std::to_string(c)))
+  if (m_FSM.Transition(std::string(1, c)))
   {
     if (ModeInsert())
     {
@@ -591,7 +591,7 @@ bool wxExVi::CommandChar(int c)
     case 'v':
     case 'F': 
     case 'V':
-      m_FSM.Transition(std::to_string(c)); 
+      m_FSM.Transition(std::string(1, c)); 
       break;
 
     case 'x': 

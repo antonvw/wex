@@ -35,7 +35,7 @@ void wxExGuiTestFixture::testVi()
   
   CPPUNIT_ASSERT(stc->GetTabWidth() == 120);
   CPPUNIT_ASSERT( vi->GetIsActive());
-  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
+  CPPUNIT_ASSERT( vi->ModeNormal());
 
   wxKeyEvent event(wxEVT_CHAR);
   
