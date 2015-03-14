@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXGUITESTUNIT_H
-#define _EXGUITESTUNIT_H
+#pragma once
 
 #include <vector>
 #include <cppunit/extensions/HelperMacros.h>
@@ -78,6 +77,7 @@ class wxExGuiTestFixture : public wxExTestFixture
   CPPUNIT_TEST( testVCSEntry );
   CPPUNIT_TEST( testVersion );
   CPPUNIT_TEST( testVi );
+  CPPUNIT_TEST( testViFSM );
   CPPUNIT_TEST( testViMacros );
 
   CPPUNIT_TEST_SUITE_END();
@@ -131,6 +131,7 @@ public:
   void testVCSEntry();
   void testVersion();
   void testVi();
+  void testViFSM();
   void testViMacros();
 private:
   void Process(const std::string& str, wxExSTCShell* shell);
@@ -141,4 +142,3 @@ private:
   const std::vector<std::pair<std::string, std::string>> m_Abbreviations;
   const std::vector<std::string> m_BuiltinVariables;
 };
-#endif

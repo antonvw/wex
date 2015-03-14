@@ -5,10 +5,11 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXVI_H
-#define _EXVI_H
+#pragma once
 
+#include <wx/event.h>
 #include <wx/extension/ex.h>
+#include <wx/extension/vifsm.h>
 
 #if wxUSE_GUI
 
@@ -21,6 +22,7 @@ public:
   {
     MODE_NORMAL,      ///< normal (command or navigation) mode
     MODE_INSERT,      ///< pressing key inserts key
+    MODE_INSERT_RECT, ///< as insert, while in visual rect mode
     // all visual modes after this one
     MODE_VISUAL,      ///< navigation keys extend selection
     MODE_VISUAL_LINE, ///< complete lines are selected
@@ -38,7 +40,10 @@ public:
   const std::string& GetInsertedText() const {return m_InsertText;};
   
   /// Returns the mode we are in.
-  int GetMode() const {return m_Mode;};
+  int GetMode() const {return m_FSM.State();};
+  int ModeInsert() const {return GetMode() == MODE_INSERT || GetMode() == MODE_INSERT_RECT;};
+  int ModeNormal() const {return GetMode() == MODE_NORMAL;};
+  int ModeVisual() const {return GetMode() >= MODE_VISUAL;};
   
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
@@ -54,10 +59,10 @@ private:
   void AddText(const std::string& text);
   bool ChangeNumber(bool inc);
   void CommandCalc(const wxString& reg);
-  bool CommandChar(int c, int repeat);
-  bool CommandChars(std::string& rest, int repeat);
+  bool CommandChar(int c);
+  bool CommandChars(std::string& rest);
   void CommandReg(const char reg);
-  bool FindChar(int repeat, const wxString& text, const wxString& start);
+  bool FindChar(const wxString& text, const wxString& start);
   void FindWord(bool find_next = true);
   void GotoBrace();
   bool Indent(
@@ -69,9 +74,6 @@ private:
   /// Adds recording to current macro.
   virtual void MacroRecord(const std::string& text);
   bool Put(bool after);
-  bool SetInsertMode(
-    const wxString& command,
-    int repeat = 1);
   bool ToggleCase(); 
 
   static std::string m_LastFindCharCommand;
@@ -79,11 +81,11 @@ private:
   bool m_Dot;  
   bool m_SearchForward;
   
-  int m_InsertRepeatCount;
-  int m_Mode;
+  int m_Repeat;
+  
+  wxExViFSM m_FSM;
   
   std::string m_Command;
   std::string m_InsertText;
 };
 #endif // wxUSE_GUI
-#endif
