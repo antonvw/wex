@@ -554,13 +554,18 @@ bool wxExVi::CommandChar(int c)
               NAVIGATE(Page, Down,     true, false, false); break;
         
     case 'n': 
+    case 'N': 
       for (int i = 0; i < m_Repeat; i++) 
         if (!GetSTC()->FindNext(
           wxExFindReplaceData::Get()->GetFindString(), 
           GetSearchFlags(), 
-          m_SearchForward)) break;
+          (c == 'n' ? m_SearchForward: !m_SearchForward))) 
+         {
+           m_Command.clear();
+           return false;
+         }
       break;
-
+        
     case 'p': Put(true); break;
       
     case 'q': 
@@ -618,14 +623,6 @@ bool wxExVi::CommandChar(int c)
         
     case 'M': GetSTC()->GotoLine(
       GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() / 2);
-      break;
-        
-    case 'N': 
-      for (int i = 0; i < m_Repeat; i++) 
-        if (!GetSTC()->FindNext(
-          wxExFindReplaceData::Get()->GetFindString(), 
-          GetSearchFlags(), 
-          !m_SearchForward)) break;
       break;
         
     case 'P': Put(false); break;
