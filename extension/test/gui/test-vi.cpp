@@ -73,11 +73,9 @@ void wxExGuiTestFixture::testVi()
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
 
   // Vi control key tests.
-  std::vector<int> control_keys{
+  for (auto& control_key : std::vector<int> {
     WXK_CONTROL_B,WXK_CONTROL_E,WXK_CONTROL_F,WXK_CONTROL_G,
-    WXK_CONTROL_J,WXK_CONTROL_P,WXK_CONTROL_Q};
-
-  for (auto& control_key : control_keys)
+    WXK_CONTROL_J,WXK_CONTROL_P,WXK_CONTROL_Q})
   {
     event.m_uniChar = control_key;
     CPPUNIT_ASSERT( vi->OnKeyDown(event));
@@ -85,11 +83,9 @@ void wxExGuiTestFixture::testVi()
   }
 
   // Vi navigation command tests.
-  std::vector<int> nav_keys{
+  for (auto& nav_key : std::vector<int> {
     WXK_BACK,WXK_DELETE,WXK_RETURN,WXK_LEFT,WXK_DOWN,WXK_UP,WXK_RIGHT,
-    WXK_PAGEUP,WXK_PAGEDOWN,WXK_TAB};
-    
-  for (auto& nav_key : nav_keys)
+    WXK_PAGEUP,WXK_PAGEDOWN,WXK_TAB})
   {
     event.m_keyCode = nav_key;
     CPPUNIT_ASSERT(!vi->OnKeyDown(event));
@@ -144,7 +140,6 @@ void wxExGuiTestFixture::testVi()
   
   for (auto& it2 : commands)
   {
-  printf("it2: %s\n", it2.c_str());
     CPPUNIT_ASSERT( vi->Command(it2));
     CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
     CPPUNIT_ASSERT(!stc->GetModify());
@@ -213,12 +208,11 @@ void wxExGuiTestFixture::testVi()
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( stc->GetText().Contains("b"));
 
-  // Test commands that do not change mode.
+  // Test commands that do not change mode, and all return true.
   commands.clear();
-
   commands.insert(commands.end(), {
-    "b","e","h","j","k","l"," ","n","p","u","w","x",
-    "B","D","E","G","H","J","L","M","N","P","W","X",
+    "b","e","h","j","k","l"," ","p","u","w","x",
+    "B","D","E","G","H","J","L","M","P","W","X",
     "^","~","$","{","}","(",")","%","*","#"});
 
   for (auto& it4 : commands)
@@ -255,10 +249,8 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( stc->GetLineText(0) == "zzz second");
 
   // Test delete commands.
-  std::vector<std::string> delete_commands {
-    "dd","de","dh","dj","dk","dl","dw","dG","d0","d$","dgg","3dw"};
-    
-  for (auto& delete_command : delete_commands)
+  for (auto& delete_command : std::vector<std::string> {
+    "dd","de","dh","dj","dk","dl","dw","dG","d0","d$","dgg","3dw"})
   {
     CPPUNIT_ASSERT( vi->Command(delete_command));
     CPPUNIT_ASSERT( vi->GetLastCommand() == delete_command);
@@ -276,10 +268,8 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("p"));
   CPPUNIT_ASSERT( stc->GetText().Contains("second"));
   
-  std::vector<std::string> yank_commands {
-    "ye","yh","yj","yk","yl","yw","yy","y0","y$","3yw"};
-    
-  for (auto& yank_command : yank_commands)
+  for (auto& yank_command : std::vector<std::string> {
+    "ye","yh","yj","yk","yl","yw","yy","y0","y$","3yw"})
   {
     CPPUNIT_ASSERT( vi->Command(yank_command));
     CPPUNIT_ASSERT( vi->GetLastCommand() == yank_command);
@@ -287,11 +277,9 @@ void wxExGuiTestFixture::testVi()
 
   // Test other commands.
   stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
-  
-  std::vector<std::string> other_commands {
-    "fx","Fx",";","gg","zc","zo","zE",">>","<<"};
     
-  for (auto& other_command : other_commands)
+  for (auto& other_command : std::vector<std::string> {
+    "fx","Fx",";","gg","zc","zo","zE",">>","<<"})
   {
     CPPUNIT_ASSERT( vi->Command(other_command));
   }
@@ -393,12 +381,10 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( stc->GetText().Contains("XXXXX"));
   
   // Test visual modes.
-  std::vector<std::pair<std::string, int>> visuals {
+  for (auto& visual : std::vector<std::pair<std::string, int>> {
     {"v",wxExVi::MODE_VISUAL},
     {"V",wxExVi::MODE_VISUAL_LINE},
-    {"F",wxExVi::MODE_VISUAL_RECT}};
-
-  for (auto& visual : visuals)
+    {"F",wxExVi::MODE_VISUAL_RECT}})
   {
     ChangeMode( vi, visual.first, visual.second);
     ChangeMode( vi, "jjj", visual.second);
@@ -415,12 +401,10 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( stc->GetLineCount() == 12);
   stc->GotoLine(2);
   
-  std::vector<std::pair<std::string, int>> gotos {
+  for (auto& go : std::vector<std::pair<std::string, int>> {
     {"gg",0},{"1G",0},{"10G",9},{"10000G",11},{":$",11},{":100",11},
     {"/bbbbb",1},{"/d",1},{"/a",3},{"n",3},{"N",3},
-    {"?bbbbb",1},{"?d",1},{"?a",0},{"n",0},{"N",0}};
-    
-  for (auto& go : gotos)
+    {"?bbbbb",1},{"?d",1},{"?a",0},{"n",0},{"N",0}})
   {
     if (go.first.back() != 'd')
       CPPUNIT_ASSERT( vi->Command(go.first));

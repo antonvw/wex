@@ -340,6 +340,7 @@ bool wxExVi::Command(const std::string& command)
             
         if (handled)
         {
+          wxExFindReplaceData::Get()->SetFindString(command.substr(1));
           GetMacros().Record(command);
         }
       }
