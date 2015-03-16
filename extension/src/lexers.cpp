@@ -206,7 +206,7 @@ const wxExLexer wxExLexers::FindByName(const wxString& name) const
 const wxExLexer wxExLexers::FindByText(const wxString& text) const
 {
   // Add automatic lexers if text starts with some special tokens.
-  const wxString text_lowercase = text.Lower();
+  const wxString text_lowercase = text.Lower().Trim();
 
   if (text_lowercase.StartsWith("<html>"))
   {
