@@ -18,25 +18,28 @@ enum
   KEY_ESCAPE
 };
 
-#define MAKE_ENTRY( STATE, ACTION, NEXT )                               \
-  m_FSM.push_back(wxExViFSMEntry(wxExVi::STATE, ACTION, wxExVi::NEXT)); \
+#define EMPTY [](const std::string& command){;}
+
+#define MAKE_ENTRY( STATE, ACTION, NEXT, PROCESS )                 \
+  m_FSM.push_back(                                                 \
+    wxExViFSMEntry(wxExVi::STATE, ACTION, wxExVi::NEXT, PROCESS)); \
 
 wxExViFSM::wxExViFSM(wxExVi* vi, 
-  int state, std::function<void(const std::string&)> process)
+  std::function<void(const std::string&)> insert,
+  std::function<void(const std::string&)> normal)
   : m_vi(vi)
-  , m_State(state)
-  , m_Process(process)
+  , m_State(wxExVi::MODE_NORMAL)
 {
-   MAKE_ENTRY ( MODE_NORMAL,      KEY_INSERT,      MODE_INSERT)
-   MAKE_ENTRY ( MODE_NORMAL,      KEY_VISUAL,      MODE_VISUAL)
-   MAKE_ENTRY ( MODE_NORMAL,      KEY_VISUAL_LINE, MODE_VISUAL_LINE)
-   MAKE_ENTRY ( MODE_NORMAL,      KEY_VISUAL_RECT, MODE_VISUAL_RECT)
-   MAKE_ENTRY ( MODE_INSERT,      KEY_ESCAPE,      MODE_NORMAL)
-   MAKE_ENTRY ( MODE_INSERT_RECT, KEY_ESCAPE,      MODE_VISUAL_RECT)
-   MAKE_ENTRY ( MODE_VISUAL,      KEY_ESCAPE,      MODE_NORMAL)
-   MAKE_ENTRY ( MODE_VISUAL_LINE, KEY_ESCAPE,      MODE_NORMAL)
-   MAKE_ENTRY ( MODE_VISUAL_RECT, KEY_ESCAPE,      MODE_NORMAL)
-   MAKE_ENTRY ( MODE_VISUAL_RECT, KEY_INSERT,      MODE_INSERT_RECT)
+   MAKE_ENTRY ( MODE_NORMAL,      KEY_INSERT,      MODE_INSERT,      insert)
+   MAKE_ENTRY ( MODE_NORMAL,      KEY_VISUAL,      MODE_VISUAL,      EMPTY)
+   MAKE_ENTRY ( MODE_NORMAL,      KEY_VISUAL_LINE, MODE_VISUAL_LINE, EMPTY)
+   MAKE_ENTRY ( MODE_NORMAL,      KEY_VISUAL_RECT, MODE_VISUAL_RECT, EMPTY)
+   MAKE_ENTRY ( MODE_INSERT,      KEY_ESCAPE,      MODE_NORMAL,      normal)
+   MAKE_ENTRY ( MODE_INSERT_RECT, KEY_ESCAPE,      MODE_VISUAL_RECT, EMPTY)
+   MAKE_ENTRY ( MODE_VISUAL,      KEY_ESCAPE,      MODE_NORMAL,      normal)
+   MAKE_ENTRY ( MODE_VISUAL_LINE, KEY_ESCAPE,      MODE_NORMAL,      normal)
+   MAKE_ENTRY ( MODE_VISUAL_RECT, KEY_ESCAPE,      MODE_NORMAL,      normal)
+   MAKE_ENTRY ( MODE_VISUAL_RECT, KEY_INSERT,      MODE_INSERT_RECT, EMPTY)
 }
 
 bool wxExViFSM::Transition(const std::string& command)
@@ -90,12 +93,8 @@ bool wxExViFSM::Transition(const std::string& command)
       }
   
       m_State = fsm.Next();
-      
-      if (m_State == wxExVi::MODE_INSERT)
-      {
-        m_Process(command);
-      }
-      
+      fsm.Process(command);
+
       return true;
     }
   }
@@ -103,9 +102,16 @@ bool wxExViFSM::Transition(const std::string& command)
   return false;
 }
 
-wxExViFSMEntry::wxExViFSMEntry(int state, int action, int next)
+wxExViFSMEntry::wxExViFSMEntry(int state, int action, int next, 
+  std::function<void(const std::string&)> process)
   : m_State(state)
   , m_Action(action)
   , m_NextState(next)
+  , m_Process(process)
 {
+}
+
+std::function<void(const std::string&)> & wxExViFSMEntry::Process(const std::string& command)
+{
+  m_Process(command);
 }

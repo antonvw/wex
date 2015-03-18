@@ -24,18 +24,16 @@ void wxExGuiTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().IsOk());
   
   // Test lexer and global macros.
-  const std::vector<
+  for (const auto& macro : std::vector<
     std::pair<
       std::pair<std::string,std::string>,
-      std::string>> macros{
+      std::string>> {
     {{"number","asm"},"2"},
     {{"number","cpp"},"4"},
     {{"XXX","global"},"XXX"},
     {{"mark_lcorner","global"},"10"},
     {{"mark_circle","global"},"0"},
-    {{"iv_none","global"},"0"}};
-  
-  for (const auto& macro : macros)
+    {{"iv_none","global"},"0"}})
   {
     CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro(
       macro.first.first, macro.first.second) == macro.second);
@@ -59,19 +57,18 @@ void wxExGuiTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
     "cpp").GetScintillaLexer() == "cpp");
     
-  const std::vector<std::pair<
+  for (const auto& findby : std::vector<std::pair<
     std::string, 
-    std::pair<std::string, std::string>>> findbys{
+    std::pair<std::string, std::string>>> {
     {"// this is a cpp comment text",{"cpp","cpp"}},
     {"#!/bin/sh",{"bash","sh"}},
     {"#!/bin/csh",{"bash","csh"}},
     {"#!/bin/tcsh",{"bash","tcsh"}},
     {"#!/bin/bash",{"bash","bash"}},
+    {"#!/bin/bash\n",{"bash","bash"}},
     {"#!/usr/bin/csh",{"bash","bash"}},
     {"<html>",{"hypertext","hypertext"}},
-    {"<?xml",{"hypertext","xml"}}};
-    
-  for (const auto& findby : findbys)
+    {"<?xml",{"hypertext","xml"}}})
   {
     CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
       findby.first).GetScintillaLexer() == findby.second.first);

@@ -243,10 +243,10 @@ double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
   else
   {
     width = 0;
-    expr.Replace(".", wxString::Format("%d", ex->GetSTC()->GetCurrentLine() + 1));
+    expr.Replace(".", std::to_string(ex->GetSTC()->GetCurrentLine() + 1));
   }
   
-  expr.Replace("$", wxString::Format("%d", ex->GetSTC()->GetLineCount()));
+  expr.Replace("$", std::to_string(ex->GetSTC()->GetLineCount()));
   
   wxStringTokenizer tkz(expr, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
 
@@ -265,7 +265,7 @@ double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
         if (line >= 0)
         {
           expr.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
-            wxString::Format("%d", line + 1));
+            std::to_string(line + 1));
         }
         else
         {
