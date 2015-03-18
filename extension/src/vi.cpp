@@ -230,6 +230,14 @@ wxExVi::wxExVi(wxExSTC* stc)
     {
       GetSTC()->SelectNone();
     }
+    if (!m_Dot)
+    {
+      const std::string lc(GetLastCommand() + GetRegisterInsert());
+      SetLastCommand(lc + wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
+      // Record it (if recording is on).
+      GetMacros().Record(lc);
+      GetMacros().Record(wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
+    }
     m_Command.clear();
     GetSTC()->EndUndoAction();})
   , m_Repeat(1)
@@ -488,6 +496,11 @@ bool wxExVi::CommandChar(int c)
   {
     return true;
   }
+  
+  if (GetMacros().IsRecording() && c != 'q')
+  {
+    GetMacros().Record(std::string(1, c));
+  }  
   
   switch (c)
   {
@@ -1151,17 +1164,6 @@ bool wxExVi::InsertMode(const std::string& command)
         }
       }
         
-      if (!m_Dot)
-      {
-        const std::string lc(GetLastCommand() + GetRegisterInsert());
-        
-        SetLastCommand(lc + wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
-          
-        // Record it (if recording is on).
-        GetMacros().Record(lc);
-        GetMacros().Record(wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
-      }
-      
       m_FSM.Transition("\x1b");
       
       GetSTC()->SetOvertype(false);
