@@ -22,10 +22,17 @@ public:
   wxExViFSMEntry(int state, int action, int next, 
     std::function<void(const std::string&)>);
   
+  /// Returns key action.
   int Action() const {return m_Action;};
+  
+  /// Returns next state.
   int Next() const {return m_NextState;};
+  
+  /// Invokes the process.
+  void Process(const std::string& command);
+  
+  /// Returns current state.
   int State() const {return m_State;};
-  std::function<void(const std::string&)> & Process(const std::string& command);
 private:  
   const int m_State;
   const int m_Action;

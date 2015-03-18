@@ -111,7 +111,7 @@ wxExViFSMEntry::wxExViFSMEntry(int state, int action, int next,
 {
 }
 
-std::function<void(const std::string&)> & wxExViFSMEntry::Process(const std::string& command)
+void wxExViFSMEntry::Process(const std::string& command)
 {
   m_Process(command);
 }

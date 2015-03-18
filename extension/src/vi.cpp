@@ -310,12 +310,6 @@ bool wxExVi::Command(const std::string& command)
     return true;
   }
   
-  if (GetMacros().IsRecording() && 
-      command != "q" && command != "/" && command != "?")
-  {
-    GetMacros().Record(command);
-  }
-  
   bool handled = true;
 
   const int size = GetSTC()->GetLength();
@@ -1100,6 +1094,10 @@ bool wxExVi::InsertMode(const std::string& command)
         m_InsertText.erase(m_InsertText.size() - 1);
       }
       GetSTC()->DeleteBack();
+      break;
+      
+    case WXK_DELETE: 
+      GetSTC()->DeleteRange(GetSTC()->GetCurrentPos(), 1);
       break;
       
     case WXK_CONTROL_R:
