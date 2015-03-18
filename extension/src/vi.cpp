@@ -175,7 +175,7 @@ std::string wxExVi::m_LastFindCharCommand;
 wxExVi::wxExVi(wxExSTC* stc)
   : wxExEx(stc)
   , m_Dot(false)
-  , m_FSM(this, MODE_NORMAL, [=](const std::string& command){
+  , m_FSM(this, [=](const std::string& command) {
     if (!m_Dot)
     {
       m_InsertText.clear();
@@ -223,7 +223,15 @@ wxExVi::wxExVi(wxExSTC* stc)
     if (command[0] == 'c')
     {
       m_Repeat = 1;
-    }})
+    }},
+    [=](const std::string& command) {
+    if (!GetSTC()->GetSelectedText().empty() || 
+         GetSTC()->SelectionIsRectangle())
+    {
+      GetSTC()->SelectNone();
+    }
+    m_Command.clear();
+    GetSTC()->EndUndoAction();})
   , m_Repeat(1)
   , m_SearchForward(true)
 {
@@ -358,29 +366,9 @@ bool wxExVi::Command(const std::string& command)
       return handled;
 
     default: 
-      // Handle ESCAPE: deselects and clears command buffer.
       if (!m_Dot && command.back() == WXK_ESCAPE)
       {
-        bool action = false;
-        
-        if (!GetSTC()->GetSelectedText().empty() || 
-             GetSTC()->SelectionIsRectangle())
-        {
-          GetSTC()->SelectNone();
-          action = true;
-        }
-        
-        if (ModeNormal())
-        {
-          m_Command.clear();
-        }
-        else
-        {
-          m_FSM.Transition("\x1b");
-          action = true;
-        }
-      
-        if (!action)
+        if (!m_FSM.Transition("\x1b"))
         {
           wxBell();
         }
@@ -633,23 +621,15 @@ bool wxExVi::CommandChar(int c)
       break;
 
     case '.': 
-      {
-      m_Dot = true;
-      const bool result = Command(GetLastCommand());
-      m_Dot = false;
-      return result;
-      }
-      break;
-        
     case ';': 
       {
       m_Dot = true;
-      const bool result = Command(m_LastFindCharCommand); 
+      const bool result = (c == '.' ? Command(GetLastCommand()): Command(m_LastFindCharCommand));
       m_Dot = false;
       return result;
       }
       break;
-        
+
     case '~': return ToggleCase();
     case '%': GotoBrace(); break;
     case '*': FindWord(); break;
@@ -726,35 +706,26 @@ bool wxExVi::CommandChars(std::string& command)
   switch (CHR_TO_NUM((int)command[0], (int)command[1]))
   {
     case CHR_TO_NUM('c','c'):
-      if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
+      if (!m_FSM.Transition("cc"))
       {
-         GetSTC()->Home();
-         GetSTC()->DelLineRight();
-  
-         if (!m_FSM.Transition("cc"))
-         {
-           return false;
-         }
-         command = command.substr(2);
+        return false;
       }
+      GetSTC()->Home();
+      GetSTC()->DelLineRight();
+      command = command.substr(2);
       break;
     case CHR_TO_NUM('c','w'):
-      // do not use CanCopy 
-      if (!GetSTC()->HexMode() && !GetSTC()->GetReadOnly())
+      if (!m_FSM.Transition("cw"))
       {
-        if (!GetSTC()->GetSelectedText().empty())
-        {
-          GetSTC()->SetCurrentPos(GetSTC()->GetSelectionStart());
-        }
- 
-        for (int i = 0; i < m_Repeat; i++) GetSTC()->WordRightEndExtend();
- 
-        if (!m_FSM.Transition("cw"))
-        {
-          return false;
-        }
-        command = command.substr(2);
+        return false;
       }
+      // do not use CanCopy 
+      if (!GetSTC()->GetSelectedText().empty())
+      {
+        GetSTC()->SetCurrentPos(GetSTC()->GetSelectionStart());
+      }
+      for (int i = 0; i < m_Repeat; i++) GetSTC()->WordRightEndExtend();
+      command = command.substr(2);
       break;
           
     case CHR_TO_NUM('d','d'): wxExAddressRange(this, m_Repeat).Delete(); break;
@@ -1182,8 +1153,6 @@ bool wxExVi::InsertMode(const std::string& command)
         }
       }
         
-      GetSTC()->EndUndoAction();
-      
       if (!m_Dot)
       {
         const std::string lc(GetLastCommand() + GetRegisterInsert());
@@ -1198,12 +1167,6 @@ bool wxExVi::InsertMode(const std::string& command)
       m_FSM.Transition("\x1b");
       
       GetSTC()->SetOvertype(false);
-      
-      if (!GetSTC()->GetSelectedText().empty() ||
-           GetSTC()->SelectionIsRectangle())
-      {
-        GetSTC()->SelectNone();
-      }
       break;
 
     case WXK_RETURN:
@@ -1398,13 +1361,13 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   else if (
     !event.HasAnyModifiers() &&
     (event.GetKeyCode() == WXK_BACK ||
-     event.GetKeyCode() == WXK_DELETE ||
      event.GetKeyCode() == WXK_ESCAPE ||
      event.GetKeyCode() == WXK_RETURN ||
      event.GetKeyCode() == WXK_NUMPAD_ENTER ||
      event.GetKeyCode() == WXK_TAB ||
      (!ModeInsert() &&
        (event.GetKeyCode() == WXK_LEFT ||
+        event.GetKeyCode() == WXK_DELETE ||
         event.GetKeyCode() == WXK_DOWN ||
         event.GetKeyCode() == WXK_UP ||
         event.GetKeyCode() == WXK_RIGHT ||

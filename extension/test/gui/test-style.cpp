@@ -18,18 +18,16 @@ void wxExGuiTestFixture::testStyle()
 {
   CPPUNIT_ASSERT(!wxExStyle().IsOk() );
   
-  const std::vector<
+  for (const auto& style : std::vector<
     std::pair<
       std::pair<std::string,std::string>,
-      std::pair<std::string,std::string>>> styles{
+      std::pair<std::string,std::string>>> {
     {{"MARK_CIRCLE",""}, {"ugly","global"}},
     {{"mark_circle","0 "}, {"ugly","global"}},
     {{"512",""}, {"ugly","global"}},
     {{"number,string,comment","1 4 6 "}, {"fore:blue", "cpp"}},
     {{"number,string,xxx","4 6 "}, {"fore:black", "cpp"}},
-    {{"xxx",""}, {"fore:black", "cpp"}}};
-   
-  for (const auto& style : styles)
+    {{"xxx",""}, {"fore:black", "cpp"}}})
   {
     const wxExStyle test(
       style.first.first, style.second.first, style.second.second);

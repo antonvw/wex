@@ -40,7 +40,7 @@ void wxExGuiTestFixture::testEx()
 
   // Test commands and last command.  
   // We have only one document, so :n, :prev return false.
-  std::vector<std::pair<std::string, bool>> commands {
+  for (auto& command : std::vector<std::pair<std::string, bool>> {
     {":ab",true},{":n",false},{":prev",false},{":reg",true},
     {":set",true},{":set xxx",false},
     {":xxx",false},{":yyy",false},
@@ -48,9 +48,7 @@ void wxExGuiTestFixture::testEx()
     {":g/is/s//ok",true},{":g/is/d",true},{":g/is/p",true},
     {":.s/$/\n",true},
     {":1,$s/this/ok",true},{":1,$s/$/ZXXX/",true},
-    {":1,$s/$/ZXXX/",true},{":1,$s/^/Zxxx/",true},{":1,$s/s/w/",true}};
-    
-  for (auto& command : commands)
+    {":1,$s/$/ZXXX/",true},{":1,$s/^/Zxxx/",true},{":1,$s/s/w/",true}})
   {
 #ifdef DEBUGGING
     wxLogMessage("%s %d", command.first.c_str(), command.second);
@@ -97,19 +95,15 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT(!ex->Command(":'<,'>x"));
   
   // Test set options.
-  const std::vector<std::pair<std::string, std::string>> options{
-    {"ec","5"},{"sy","cpp"},{"ts","10"}};
-  
-  for (const auto& option : options)
+  for (const auto& option : std::vector<std::pair<std::string, std::string>> {
+    {"ec","5"},{"sy","cpp"},{"ts","10"}})
   {
     CPPUNIT_ASSERT( ex->Command(":set " + option.first + "=" + option.second));
   }
   
   // Test set switches.
-  const std::vector<std::string> switches{
-    "ai", "ac", "el", "ic", "ln", "mw", "re", "wl", "ws"};
-  
-  for (const auto& it : switches)
+  for (const auto& it :  std::vector<std::string> {
+    "ai", "ac", "el", "ic", "ln", "mw", "re", "wl", "ws"})
   {
     CPPUNIT_ASSERT( ex->Command(":set " + it));
     CPPUNIT_ASSERT( ex->Command(":set " + it + "!"));
@@ -201,10 +195,8 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( stc->GetLineCount() == 12);
   stc->GotoLine(2);
 
-  std::vector<std::pair<std::string, int>> gotos {
-    {":1",0},{":-10",0},{":10",9},{":10000",11}};
-    
-  for (auto& go : gotos)
+  for (auto& go : std::vector<std::pair<std::string, int>> {
+    {":1",0},{":-10",0},{":10",9},{":10000",11}})
   {
     CPPUNIT_ASSERT(  ex->Command(go.first));
     CPPUNIT_ASSERT( stc->GetCurrentLine() == go.second);

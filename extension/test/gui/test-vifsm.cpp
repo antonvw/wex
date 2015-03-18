@@ -22,7 +22,8 @@ void wxExGuiTestFixture::testViFSM()
 {
   wxExSTC* stc = new wxExSTC(m_Frame);
   wxExViFSM fsm(&stc->GetVi(), 
-    wxExVi::MODE_NORMAL, [=](const std::string& command){;});
+    [=](const std::string& command){;},
+    [=](const std::string& command){;});
   
   CPPUNIT_ASSERT( fsm.State() == wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT(!fsm.Transition("x"));

@@ -57,7 +57,7 @@ void wxExGuiTestFixture::testViMacros()
   stc->SetText("");
   CPPUNIT_ASSERT( macros.Playback(vi, "a"));
   CPPUNIT_ASSERT( macros.Get("a").front() == "a");
-  CPPUNIT_ASSERT( stc->GetText().Contains("test"));
+  CPPUNIT_ASSERT( stc->GetText() == "test");
   stc->SetText("");
   CPPUNIT_ASSERT(!macros.Playback(vi, "a", 0));
   CPPUNIT_ASSERT(!macros.Playback(vi, "a", -8));
@@ -95,9 +95,7 @@ void wxExGuiTestFixture::testViMacros()
   }
 
   // Test all environment macro variables.
-  const std::vector<std::string> envs{"HOME","PWD"};
-  
-  for (auto& env : envs)
+  for (auto& env : std::vector<std::string> {"HOME","PWD"})
   {
     CPPUNIT_ASSERT( macros.Expand(vi, env));
   }
