@@ -403,7 +403,7 @@ void wxExSTC::Clear()
 {
   if (m_vi.GetIsActive() && GetSelectedText().empty())
   {
-    m_vi.Command("x");
+    m_vi.Command(std::string(1, WXK_DELETE));
   }
   else
   {
