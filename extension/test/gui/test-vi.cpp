@@ -308,12 +308,20 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("/xx"));
   CPPUNIT_ASSERT( vi->Command("rz"));
   CPPUNIT_ASSERT( vi->Command("q"));
+  CPPUNIT_ASSERT( 
+    wxString(stc->GetVi().GetMacros().GetRegister('t')).Contains("/xx"));
 
   CPPUNIT_ASSERT( vi->Command("@t"));
   CPPUNIT_ASSERT( vi->Command("@@"));
   CPPUNIT_ASSERT( vi->Command("."));
   CPPUNIT_ASSERT( vi->Command("10@t"));
 
+  CPPUNIT_ASSERT( vi->Command("qt"));
+  CPPUNIT_ASSERT( vi->Command("10w"));
+  CPPUNIT_ASSERT( vi->Command("q"));
+  CPPUNIT_ASSERT( 
+    wxString(stc->GetVi().GetMacros().GetRegister('t')).Contains("10w"));
+  
   // Next should be OK, but crashes due to input expand variable.
   //CPPUNIT_ASSERT( vi->Command("@hdr@"));
   

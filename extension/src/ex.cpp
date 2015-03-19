@@ -329,7 +329,7 @@ bool wxExEx::Command(const std::string& command)
       return false;
     }
     
-    m_Frame->ShowExMessage(wxString::Format("%d", no));
+    m_Frame->ShowExMessage(std::to_string(no));
     return true;
   }
   else if (command.compare(0, 2, ":!") == 0)

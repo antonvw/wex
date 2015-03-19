@@ -2,7 +2,7 @@
 // Name:      textfile.cpp
 // Purpose:   Implementation of class wxExTextFileWithListView
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype> // for isspace
@@ -210,7 +210,7 @@ bool wxExTextFileWithListView::Parse()
         m_Report->SetItem(
           item.GetId(), 
           col, 
-          wxString::Format("%d", it->second));
+          std::to_string(it->second));
           
         total += it->second;
       }
@@ -221,7 +221,7 @@ bool wxExTextFileWithListView::Parse()
     m_Report->SetItem(
       item.GetId(),
       col,
-      wxString::Format("%d", total));
+      std::to_string(total));
   }
 
   return true;
@@ -333,7 +333,7 @@ void wxExTextFileWithListView::Report(size_t line)
   wxExListItem item(m_Report, GetFileName());
   item.Insert();
 
-  item.SetItem(_("Line No"), wxString::Format("%d", (int)line + 1));
+  item.SetItem(_("Line No"), std::to_string((int)line + 1));
 
   switch (GetTool().GetId())
   {

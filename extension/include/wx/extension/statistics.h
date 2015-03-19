@@ -2,11 +2,10 @@
 // Name:      statistics.h
 // Purpose:   Include file for statistics classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXSTATISTICS_H
-#define _EXSTATISTICS_H
+#pragma once
 
 #include <map>
 #include <wx/extension/grid.h>
@@ -145,7 +144,7 @@ public:
 
       if (it != m_Rows.end())
       {
-        m_Grid->SetCellValue(it->second, 1, wxString::Format("%d", value));
+        m_Grid->SetCellValue(it->second, 1, std::to_string(value));
       }
       else
       {
@@ -155,7 +154,7 @@ public:
         m_Rows.insert(std::make_pair(key, row));
 
         m_Grid->SetCellValue(row, 0, key);
-        m_Grid->SetCellValue(row, 1, wxString::Format("%d", value));
+        m_Grid->SetCellValue(row, 1, std::to_string(value));
 
         m_Grid->AutoSizeColumn(0);
       }
@@ -215,7 +214,7 @@ public:
         const int row = m_Grid->GetNumberRows() - 1;
 
         m_Grid->SetCellValue(row, 0, it.first);
-        m_Grid->SetCellValue(row, 1, wxString::Format("%d", it.second));
+        m_Grid->SetCellValue(row, 1, std::to_string(it.second));
 
         m_Rows[it.first] = row;
       }
@@ -234,4 +233,3 @@ private:
   wxExGridStatistics<T>* m_Grid;
 #endif
 };
-#endif
