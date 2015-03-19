@@ -288,7 +288,7 @@ double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
   }
   catch(std::domain_error& e)
   {
-    wxLogError(e.what());
+    wxMessageBox(e.what());
     return 0;
   }
 }
