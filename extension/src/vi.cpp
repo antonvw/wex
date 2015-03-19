@@ -158,13 +158,13 @@ bool YankedLines(wxExVi* vi)
 }
 
 // Returns true if after text only one letter is followed.
-bool OneLetterAfter(const wxString text, const wxString& letter)
+bool OneLetterAfter(const std::string& text, const std::string& letter)
 {
-  std::regex re("^" + text.ToStdString() + "[a-zA-Z]$");
-  return std::regex_match(letter.ToStdString(), re);
+  std::regex re("^" + text + "[a-zA-Z]$");
+  return std::regex_match(letter, re);
 }
 
-bool RegAfter(const wxString text, const wxString& letter)
+bool RegAfter(const wxString& text, const wxString& letter)
 {
   std::regex re("^" + text.ToStdString() + "[0-9=\"a-z%.]$");
   return std::regex_match(letter.ToStdString(), re);
@@ -181,7 +181,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       m_InsertText.clear();
       if (m_Repeat > 1)
       {
-        SetLastCommand(wxString::Format("%d%s", m_Repeat, command.c_str()).ToStdString(), true);
+        SetLastCommand(std::to_string(m_Repeat) + command, true);
       }
       else
       {
@@ -287,8 +287,7 @@ bool wxExVi::ChangeNumber(bool inc)
     }
     else
     {
-      GetSTC()->wxStyledTextCtrl::Replace(start, end, 
-        wxString::Format("%d", next));
+      GetSTC()->wxStyledTextCtrl::Replace(start, end, std::to_string(next));
     }
     
     return true;
@@ -407,6 +406,12 @@ bool wxExVi::Command(const std::string& command)
           if (seq_size > 0)
           {
             m_Repeat = strtol(rest.substr(0, seq_size).c_str(), NULL, 10);
+            
+            if (m_Repeat > 1 && GetMacros().IsRecording())
+            {
+              GetMacros().Record(std::to_string(m_Repeat));
+            }
+            
             rest = rest.substr(seq_size);
           }
         }

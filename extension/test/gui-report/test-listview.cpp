@@ -24,7 +24,7 @@ void wxExGuiReportTestFixture::testListViewWithFrame()
   CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
   
   listView->InsertItem(1, wxString::Format("item%d", 1));
-  listView->SetItem(1, 2, wxString::Format("%d", 2));
+  listView->SetItem(1, 2, std::to_string(2));
   listView->Select(0);
   listView->Select(1);
   

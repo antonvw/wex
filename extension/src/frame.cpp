@@ -423,7 +423,7 @@ bool wxExFrame::UpdateStatusBar(const wxListView* lv)
   if (lv->IsShown())
   {
     const wxString text = (lv->GetSelectedItemCount() == 0 ?
-      wxString::Format("%d", lv->GetItemCount()):
+      std::to_string(lv->GetItemCount()):
       wxString::Format("%d,%d", lv->GetItemCount(), lv->GetSelectedItemCount()));
       
     return StatusText(text, "PaneInfo");
@@ -446,7 +446,7 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
   {
     if (stc->GetCurrentPos() == 0)
     {
-      text = wxString::Format("%d", stc->GetLineCount());
+      text = std::to_string(stc->GetLineCount());
     }
     else
     {
