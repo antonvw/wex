@@ -179,14 +179,7 @@ wxExVi::wxExVi(wxExSTC* stc)
     if (!m_Dot)
     {
       m_InsertText.clear();
-      if (m_Repeat > 1)
-      {
-        SetLastCommand(std::to_string(m_Repeat) + command, true);
-      }
-      else
-      {
-        SetLastCommand(command, true);
-      }
+      SetLastCommand((m_Repeat > 1 ? std::to_string(m_Repeat): "") + command, true);
     }
     GetSTC()->BeginUndoAction();
     switch ((int)command[0])
@@ -406,12 +399,6 @@ bool wxExVi::Command(const std::string& command)
           if (seq_size > 0)
           {
             m_Repeat = strtol(rest.substr(0, seq_size).c_str(), NULL, 10);
-            
-            if (m_Repeat > 1 && GetMacros().IsRecording())
-            {
-              GetMacros().Record(std::to_string(m_Repeat));
-            }
-            
             rest = rest.substr(seq_size);
           }
         }
@@ -504,7 +491,7 @@ bool wxExVi::CommandChar(int c)
   
   if (GetMacros().IsRecording() && c != 'q')
   {
-    GetMacros().Record(std::string(1, c));
+    GetMacros().Record((m_Repeat > 1 ? std::to_string(m_Repeat): "") + std::string(1, c));
   }  
   
   switch (c)
