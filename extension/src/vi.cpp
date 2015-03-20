@@ -1356,7 +1356,8 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
      event.GetKeyCode() == WXK_ESCAPE ||
      event.GetKeyCode() == WXK_RETURN ||
      event.GetKeyCode() == WXK_NUMPAD_ENTER ||
-     event.GetKeyCode() == WXK_TAB ||
+     (!ModeVisual() && 
+        event.GetKeyCode() == WXK_TAB) ||
      (!ModeInsert() &&
        (event.GetKeyCode() == WXK_LEFT ||
         event.GetKeyCode() == WXK_DELETE ||

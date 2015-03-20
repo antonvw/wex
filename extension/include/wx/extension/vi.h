@@ -23,7 +23,6 @@ public:
     MODE_NORMAL,      ///< normal (command or navigation) mode
     MODE_INSERT,      ///< pressing key inserts key
     MODE_INSERT_RECT, ///< as insert, while in visual rect mode
-    // all visual modes after this one
     MODE_VISUAL,      ///< navigation keys extend selection
     MODE_VISUAL_LINE, ///< complete lines are selected
     MODE_VISUAL_RECT, ///< navigation keys extend rectangular selection
@@ -43,7 +42,7 @@ public:
   int GetMode() const {return m_FSM.State();};
   int ModeInsert() const {return GetMode() == MODE_INSERT || GetMode() == MODE_INSERT_RECT;};
   int ModeNormal() const {return GetMode() == MODE_NORMAL;};
-  int ModeVisual() const {return GetMode() >= MODE_VISUAL;};
+  int ModeVisual() const {return GetMode() >= MODE_INSERT_RECT;};
   
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
