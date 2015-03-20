@@ -219,7 +219,7 @@ double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
   wxString expr(text);
   expr.Trim();
 
-  if (expr.empty())
+  if (expr.empty() || expr.Contains("%s"))
   {
     return 0;
   }
