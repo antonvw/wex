@@ -320,7 +320,7 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->Command("10w"));
   CPPUNIT_ASSERT( vi->Command("q"));
   CPPUNIT_ASSERT( 
-    wxString(stc->GetVi().GetMacros().GetRegister('t')).Contains("10w"));
+    stc->GetVi().GetMacros().GetRegister('t') == "10w");
   
   // Next should be OK, but crashes due to input expand variable.
   //CPPUNIT_ASSERT( vi->Command("@hdr@"));
