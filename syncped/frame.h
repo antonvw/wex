@@ -36,40 +36,41 @@ public:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     int col_number = 0,
-    long flags = 0);
+    long flags = 0) override;
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual wxExListViewFileName* Activate(
     wxExListViewFileName::wxExListType type, 
-    const wxExLexer* lexer = NULL);
-  void AddAsciiTable();
-  void AddPaneHistory();
-  void AddPaneProjects();
-  wxExListViewWithFrame* AddPage(
-    wxExListViewFileName::wxExListType type, 
-    const wxExLexer* lexer = NULL);
-  bool DialogProjectOpen();
-  wxExSTC* ExecExCommand(int command);
-  virtual wxExListViewFile* GetProject();
-  void NewFile(const wxString& name);
-  void NewProject();
+    const wxExLexer* lexer = NULL) override;
+  virtual wxExSTC* ExecExCommand(int command) override;
+  virtual wxExListViewFile* GetProject() override;
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
-    int commandid = wxID_APPLY);
+    int commandid = wxID_APPLY) override;
   virtual bool OpenFile(
     const wxExFileName& filename,
     const wxExVCSEntry& vcs,
-    long flags = 0);
+    long flags = 0) override;
   virtual bool OpenFile(
     const wxString& filename,
     const wxString& text,
-    long flags = 0);
-  virtual void StatusBarClicked(const wxString& pane);
-  virtual void StatusBarClickedRight(const wxString& pane);
-  virtual void SyncAll();
-  virtual void SyncCloseAll(wxWindowID id);
+    long flags = 0) override;
+  virtual void StatusBarClicked(const wxString& pane) override;
+  virtual void StatusBarClickedRight(const wxString& pane) override;
+  virtual void SyncAll() override;
+  virtual void SyncCloseAll(wxWindowID id) override;
+  
+  void AddAsciiTable();
+  wxExListViewWithFrame* AddPage(
+    wxExListViewFileName::wxExListType type, 
+    const wxExLexer* lexer = NULL);
+  void AddPaneHistory();
+  void AddPaneProjects();
+  bool DialogProjectOpen();
+  void NewFile(const wxString& name);
+  void NewProject();
 
   const long m_PaneFlag;
   const wxString m_ProjectWildcard;

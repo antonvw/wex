@@ -97,7 +97,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI_RANGE(
     ID_OPTION_LIST_SORT_ASCENDING, ID_OPTION_LIST_SORT_TOGGLE, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_PROJECT_OPENTEXT, ID_PROJECT_SAVEAS, Frame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, Frame::OnUpdateUI)
 END_EVENT_TABLE()
 
 Frame::Frame(App* app)
@@ -300,6 +299,21 @@ Frame::Frame(App* app)
     
   Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=] (wxAuiNotebookEvent& event) {
     ProjectHistoryPopupMenu();}, NOTEBOOK_PROJECTS);
+    
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(
+      m_asciiTable != NULL && 
+      GetManager().GetPane("ASCIITABLE").IsShown());}, ID_VIEW_ASCII_TABLE);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(GetManager().GetPane("DIRCTRL").IsShown());}, ID_VIEW_DIRCTRL);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(GetManager().GetPane("FILES").IsShown());}, ID_VIEW_FILES);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(m_History != NULL && GetManager().GetPane("HISTORY").IsShown());}, ID_VIEW_HISTORY);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(GetManager().GetPane("OUTPUT").IsShown());}, ID_VIEW_OUTPUT);
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    event.Check(m_Projects != NULL && GetManager().GetPane("PROJECTS").IsShown());}, ID_VIEW_PROJECTS);
 }    
 
 wxExListViewFileName* Frame::Activate(
@@ -1097,27 +1111,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
     case ID_SORT_SYNC:
       event.Check(wxConfigBase::Get()->ReadBool("List/SortSync", true));
-      break;
-
-    case ID_VIEW_ASCII_TABLE:
-      event.Check(
-        m_asciiTable != NULL && 
-        GetManager().GetPane("ASCIITABLE").IsShown());
-      break;
-    case ID_VIEW_DIRCTRL:
-      event.Check(GetManager().GetPane("DIRCTRL").IsShown());
-      break;
-    case ID_VIEW_FILES:
-      event.Check(GetManager().GetPane("FILES").IsShown());
-      break;
-    case ID_VIEW_HISTORY:
-      event.Check(m_History != NULL && GetManager().GetPane("HISTORY").IsShown());
-      break;
-    case ID_VIEW_OUTPUT:
-      event.Check(GetManager().GetPane("OUTPUT").IsShown());
-      break;
-    case ID_VIEW_PROJECTS:
-      event.Check(m_Projects != NULL && GetManager().GetPane("PROJECTS").IsShown());
       break;
 
     default:

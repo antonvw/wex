@@ -218,15 +218,16 @@ double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
 {
   wxString expr(text);
   expr.Trim();
-  if (expr.empty() || expr.Contains("%s"))
+
+  if (expr.empty())
   {
     return 0;
   }
   
-  const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
+  const char ds(wxNumberFormatter::GetDecimalSeparator());
   
   // Determine the width.
-  const wxString rt((ds == '.' ? "\\.": wxString(ds)) + wxString("[0-9]+"));
+  const std::string rt((ds == '.' ? "\\.": std::string(1, ds)) + std::string("[0-9]+"));
   std::regex re(rt);
   auto words_begin = std::sregex_iterator(text.begin(), text.end(), re);
   auto words_end = std::sregex_iterator();  
@@ -243,11 +244,15 @@ double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
   else
   {
     width = 0;
+    
+    // Replace . with current line.
     expr.Replace(".", std::to_string(ex->GetSTC()->GetCurrentLine() + 1));
   }
   
+  // Replace $ with line count.
   expr.Replace("$", std::to_string(ex->GetSTC()->GetLineCount()));
   
+  // Replace all markers and registers.
   wxStringTokenizer tkz(expr, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
 
   while (tkz.HasMoreTokens())
@@ -258,6 +263,7 @@ double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
     
     if (!rest.empty())
     {
+      // Replace marker.
       if (tkz.GetLastDelimiter() == '\'')
       {
         const int line = ex->MarkerLine(rest.GetChar(0));
@@ -272,6 +278,7 @@ double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
           return 0;
         }
       }
+      // Replace register.
       else
       {
         expr.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
@@ -288,7 +295,12 @@ double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
   }
   catch(std::domain_error& e)
   {
+#ifdef __WXMSW__    
+    // Under MSW wxLogError has problems if % occurs in argument.
     wxMessageBox(e.what());
+#else
+    wxLogError(e.what());
+#endif
     return 0;
   }
 }
