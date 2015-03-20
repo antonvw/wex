@@ -36,13 +36,6 @@ wxExGuiTestFixture::wxExGuiTestFixture()
   wxConfigBase::Get()->Write(_("vi mode"), true);
 } 
 
-wxExGuiTestFixture::~wxExGuiTestFixture()
-{
-  // Remove files.
-  (void)remove("test-ex.txt");
-  (void)remove("test.hex");
-}
-
 void wxExGuiTestFixture::Process(const std::string& str, wxExSTCShell* shell)
 {
   for (unsigned i = 0; i < str.length(); ++i)

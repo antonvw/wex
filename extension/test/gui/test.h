@@ -19,7 +19,7 @@ public:
   /// Constructor.
   wxExTestApp() {}
 private:
-  /// Override the OnInit.
+  virtual int OnExit();
   virtual bool OnInit();
   virtual void OnInitCmdLine(wxCmdLineParser& parser);
   virtual int OnRun();
@@ -86,9 +86,6 @@ public:
   /// Default constructor.
   wxExGuiTestFixture(); 
   
-  /// Destructor.
- ~wxExGuiTestFixture();
- 
   void testAddress();
   void testAddressRange();
   void testConfigDialog();

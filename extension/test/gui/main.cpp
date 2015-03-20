@@ -35,6 +35,12 @@ bool wxExTestApp::OnInit()
   return true;
 }
 
+int wxExTestApp::OnExit()
+{
+  // Is not invoked...
+  return wxExApp::OnExit();
+}
+  
 void wxExTestApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
   wxExApp::OnInitCmdLine(parser);
@@ -65,6 +71,10 @@ int wxExTestApp::OnRun()
     runner.addTest(suite);
     
     const bool success = runner.run(name, false);
+    
+    // Remove files.
+    (void)remove("test-ex.txt");
+    (void)remove("test.hex");
   
     exit(!success);
   }
