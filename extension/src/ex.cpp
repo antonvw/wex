@@ -899,8 +899,9 @@ void wxExEx::SetLastCommand(
   // even if always were true.
   // Also, undo or placing a marker should not be a last command.
   if (
-    command == "." || command == ";" || 
-    command == "u" || wxString(command).Matches("m?"))
+    command.empty() ||
+    command[0] == '.' || command[0] == ';' || 
+    command[0] == 'u' || wxString(command).Matches("m?"))
   {
     return;
   }
