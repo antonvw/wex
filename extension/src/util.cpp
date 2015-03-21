@@ -1009,7 +1009,7 @@ bool wxExSortSelection(
   
   const int start_pos_line = stc->PositionFromLine(stc->LineFromPosition(start_pos));
   const wxString text(wxExSort(
-    stc->GetSelectedText(), sort_ascending, false, keep_unique, stc->GetEOL()));
+    stc->GetSelectedText(), sort_ascending, keep_unique, val, stc->GetEOL()));
      
   stc->ReplaceSelection(text);
   stc->SetSelection(start_pos_line, start_pos_line + text.size());
