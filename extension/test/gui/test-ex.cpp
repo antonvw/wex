@@ -48,6 +48,10 @@ void wxExGuiTestFixture::testEx()
     {":g/is/s//ok",true},{":g/is/d",true},{":g/is/p",true},
     {":%s/x/y",true},{":%/test//",false},
     {":.s/$/\n",true},
+    {":.S",true},
+    {":.Sx",false},
+//    {":.Sr",true},
+    {":.Su",true},
     {":1,$s/this/ok",true},{":1,$s/$/ZXXX/",true},
     {":1,$s/$/ZXXX/",true},{":1,$s/^/Zxxx/",true},{":1,$s/s/w/",true}})
   {
