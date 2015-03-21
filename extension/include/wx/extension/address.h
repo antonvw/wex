@@ -2,11 +2,10 @@
 // Name:      address.h
 // Purpose:   Declaration of class wxExAddress and wxExAddressRange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXADDRESS_H
-#define _EXADDRESS_H
+#pragma once
 
 #if wxUSE_GUI
 
@@ -99,6 +98,9 @@ public:
   /// Moves range to destination.
   bool Move(const wxExAddress& destination) const;
   
+  /// Sorts range.
+  bool Sort(const wxString& command);
+  
   /// Substitutes range by /pattern/replacement/options in command.
   /// Pattern might contain:
   /// - $ to match a line end
@@ -146,4 +148,3 @@ private:
   wxExSTC* m_STC;
 };
 #endif // wxUSE_GUI
-#endif

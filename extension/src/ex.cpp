@@ -509,7 +509,7 @@ bool wxExEx::CommandRange(const wxString& command)
   }
   else
   {
-    const wxString tokens("dmsyw><!");
+    const wxString tokens("dmsSyw><!");
       
     // We cannot yet handle a command containing tokens as markers.
     if (command.Contains("'"))
@@ -550,6 +550,7 @@ bool wxExEx::CommandRange(const wxString& command)
   case '<': return range.Indent(false); break;
   case '!': return range.Filter(rest); break;
   case 's': return range.Substitute(rest); break;
+  case 'S': return range.Sort(rest); break;
   default:
     wxLogStatus("Unknown range command: %c", cmd);
     return false;

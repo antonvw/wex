@@ -929,6 +929,94 @@ bool wxExSetTextCtrlValue(
   return true;
 }
 
+const wxString wxExSort(
+  const wxString& input, 
+  bool sort_ascending, 
+  bool keep_unique,
+  int val, 
+  const wxString& eol)
+{
+  wxBusyCursor wait;
+
+  // Empty lines are not kept after sorting, as they are used as separator.
+  wxStringTokenizer tkz(input, eol);
+  std::map<wxString, wxString> m;
+  std::multimap<wxString, wxString> mm;
+  
+  while (tkz.HasMoreTokens())
+  {
+    const wxString line = tkz.GetNextToken() + eol;
+
+    // Use an empty key if line is to short.
+    wxString key;
+
+    if (val - 1 < (long)line.length())
+    {
+      key = line.substr(val - 1);
+    }
+    
+    if (keep_unique)
+      m.insert(std::make_pair(key, line));
+    else
+      mm.insert(std::make_pair(key, line));
+  }
+
+  // The map is already sorted, just iterate to get all lines back.
+  wxString text;
+
+  if (sort_ascending)
+  {
+    if (keep_unique)
+      for (const auto& it : m)
+      {
+        text += it.second;
+      }
+    else 
+      for (const auto& it : mm)
+      {
+        text += it.second;
+      }
+  }
+  else
+  {
+    if (keep_unique)
+      for (auto it = m.rbegin(); it != m.rend(); ++it)
+      {
+        text += it->second;
+      }
+    else
+      for (auto it = mm.rbegin(); it != mm.rend(); ++it)
+      {
+        text += it->second;
+      }
+  }
+  
+  return text;
+}
+
+bool wxExSortSelection(
+  wxExSTC* stc,
+  bool sort_ascending, 
+  bool keep_unique,
+  int val)
+{
+  const int start_pos = stc->GetSelectionStart();
+  
+  if (start_pos == -1)
+  {
+    return false;
+  }
+  
+  const int start_pos_line = stc->PositionFromLine(stc->LineFromPosition(start_pos));
+  const wxString text(wxExSort(
+    stc->GetSelectedText(), sort_ascending, false, keep_unique, stc->GetEOL()));
+     
+  stc->ReplaceSelection(text);
+  stc->SetSelection(start_pos_line, start_pos_line + text.size());
+  
+  return true;
+}
+  
 const wxString wxExTranslate(const wxString& text, int pageNum, int numPages)
 {
   wxString translation = text;

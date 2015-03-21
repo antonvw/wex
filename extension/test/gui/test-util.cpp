@@ -257,7 +257,20 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExQuoted(wxExSkipWhiteSpace(wxString(" %d "))) == "'%d'");
   
   // wxExSetTextCtrlValue
-
+  
+  // wxExSort
+  int val = 1;
+  CPPUNIT_ASSERT(wxExSort("z\ny\nx\n", true, false, val, "\n") == "x\ny\nz\n");
+  CPPUNIT_ASSERT(wxExSort("z\ny\nx\n", false, false, val, "\n") == "z\ny\nx\n");
+  CPPUNIT_ASSERT(wxExSort("z\nz\ny\nx\n", true, false, val, "\n") == "x\ny\nz\nz\n");
+  CPPUNIT_ASSERT(wxExSort("z\nz\ny\nx\n", true, true, val, "\n") == "x\ny\nz\n");
+  
+  // wxExSortSelection
+  wxExSortSelection(stc, true, false, val);
+  stc->SelectAll();
+//  wxExSortSelection(stc, true, false, val);
+  stc->SelectNone();
+  
   // wxExSkipWhiteSpace
   CPPUNIT_ASSERT( wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
   

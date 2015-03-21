@@ -429,6 +429,34 @@ bool wxExAddressRange::SetSelection() const
   return true;
 }
 
+bool wxExAddressRange::Sort(const wxString& command)
+{
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !SetSelection())
+  {
+    return false;
+  }
+
+  if (!command.empty())
+  {
+    if (!command.StartsWith("u") && !command.StartsWith("r"))
+    {
+      return false;
+    }
+    
+    const bool sort_ascending = !command.Contains("r");
+    const bool unique = command.Contains("u");
+    const int val = (atoi(command) > 0 ? atoi(command) : 1);
+    
+    wxExSortSelection(m_STC, sort_ascending, unique, val);
+  }
+  else
+  {
+    wxExSortSelection(m_STC, true, true, 1);
+  }
+  
+  return true;
+}
+  
 bool wxExAddressRange::Substitute(const wxString& command)
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk())

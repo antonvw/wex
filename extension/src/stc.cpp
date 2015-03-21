@@ -2250,60 +2250,10 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
     GetCurrentPos() + 1 - PositionFromLine(GetCurrentLine()),
     1,
     GetLineEndPosition(GetCurrentLine()),
-    this)) <= 0)
+    this)) > 0)
   {
-    return;
+    wxExSortSelection(this, sort_ascending, false, val);
   }
-
-  wxBusyCursor wait;
-
-  const int start_line = LineFromPosition(GetSelectionStart());
-  const int start_pos = PositionFromLine(start_line);
-  SetSelection(start_pos, PositionFromLine(LineFromPosition(GetSelectionEnd())));
-
-  // Empty lines are not kept after sorting, as they are used as separator.
-  wxStringTokenizer tkz(GetSelectedText(), GetEOL());
-  std::multimap<wxString, wxString> mm;
-  while (tkz.HasMoreTokens())
-  {
-    const wxString line = tkz.GetNextToken() + GetEOL();
-
-    // Use an empty key if line is to short.
-    wxString key;
-
-    if (val - 1 < (long)line.length())
-    {
-      key = line.substr(val - 1);
-    }
-
-    mm.insert(std::make_pair(key, line));
-  }
-
-  // The multimap is already sorted, just iterate to get all lines back.
-  wxString text;
-
-  if (sort_ascending)
-  {
-    for (const auto& it : mm)
-    {
-      text += it.second;
-    }
-  }
-  else
-  {
-    for (
-      auto it = mm.rbegin();
-      it != mm.rend();
-      ++it)
-    {
-      text += it->second;
-    }
-  }
-
-  ReplaceSelection(text);
-
-  // Set selection back, without removed empty lines.
-  SetSelection(start_pos, GetLineEndPosition(start_line + mm.size()));
 }
 
 void wxExSTC::Sync(bool start)

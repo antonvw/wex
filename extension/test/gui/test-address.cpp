@@ -113,6 +113,12 @@ void wxExGuiTestFixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
   
+  // Test Sort and flags.
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1").Sort("x"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("u"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("r"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("ur"));
+  
   // Test Substitute and flags.
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "1").Substitute("//y"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").Substitute("/x/y"));
