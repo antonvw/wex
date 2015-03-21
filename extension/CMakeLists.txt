@@ -14,7 +14,6 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     COMMAND lcov --add-tracefile app.base --add-tracefile app.run --output-file app.total
     # remove output for external and test libraries
     COMMAND lcov --remove app.total "/usr*" --output-file app.total
-    COMMAND lcov --remove app.total "test/*" --output-file app.total
     COMMAND lcov --remove app.total "sample*" --output-file app.total
     COMMAND lcov --remove app.total "*wxExtension/sync*" --output-file app.total
     # when manually updating coveralls
