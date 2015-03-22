@@ -273,7 +273,7 @@ bool wxExAddressRange::Filter(const wxString& command) const
 
 bool wxExAddressRange::Indent(bool forward) const
 {
-  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk())
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk() || !SetSelection())
   {
     return false;
   }
