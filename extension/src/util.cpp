@@ -931,10 +931,10 @@ bool wxExSetTextCtrlValue(
 
 const wxString wxExSort(
   const wxString& input, 
-  bool sort_ascending, 
-  bool keep_unique,
-  int val, 
-  const wxString& eol)
+  int sort_type,
+  int start_col, 
+  const wxString& eol,
+  int end_col)
 {
   wxBusyCursor wait;
 
@@ -950,12 +950,12 @@ const wxString wxExSort(
     // Use an empty key if line is to short.
     wxString key;
 
-    if (val - 1 < (long)line.length())
+    if (start_col - 1 < (long)line.length())
     {
-      key = line.substr(val - 1);
+      key = line.substr(start_col);
     }
     
-    if (keep_unique)
+    if (sort_type & STRING_SORT_UNIQUE)
       m.insert(std::make_pair(key, line));
     else
       mm.insert(std::make_pair(key, line));
@@ -964,22 +964,9 @@ const wxString wxExSort(
   // The map is already sorted, just iterate to get all lines back.
   wxString text;
 
-  if (sort_ascending)
+  if (sort_type & STRING_SORT_DESCENDING)
   {
-    if (keep_unique)
-      for (const auto& it : m)
-      {
-        text += it.second;
-      }
-    else 
-      for (const auto& it : mm)
-      {
-        text += it.second;
-      }
-  }
-  else
-  {
-    if (keep_unique)
+    if (sort_type & STRING_SORT_UNIQUE)
       for (auto it = m.rbegin(); it != m.rend(); ++it)
       {
         text += it->second;
@@ -990,15 +977,28 @@ const wxString wxExSort(
         text += it->second;
       }
   }
+  else
+  {
+    if (sort_type & STRING_SORT_UNIQUE)
+      for (const auto& it : m)
+      {
+        text += it.second;
+      }
+    else 
+      for (const auto& it : mm)
+      {
+        text += it.second;
+      }
+  }
   
   return text;
 }
 
 bool wxExSortSelection(
   wxExSTC* stc,
-  bool sort_ascending, 
-  bool keep_unique,
-  int val)
+  int sort_type,
+  int start_col,
+  int end_col)
 {
   const int start_pos = stc->GetSelectionStart();
   
@@ -1009,7 +1009,7 @@ bool wxExSortSelection(
   
   const int start_pos_line = stc->PositionFromLine(stc->LineFromPosition(start_pos));
   const wxString text(wxExSort(
-    stc->GetSelectedText(), sort_ascending, keep_unique, val, stc->GetEOL()));
+    stc->GetSelectedText(), sort_type, start_col, stc->GetEOL()));
      
   stc->ReplaceSelection(text);
   stc->SetSelection(start_pos_line, start_pos_line + text.size());

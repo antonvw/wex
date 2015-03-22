@@ -329,30 +329,37 @@ void wxExVCSCommandOnSTC(
   wxExSTC* stc);
 #endif
 
+enum
+{
+  STRING_SORT_ASCENDING  = 0x000, ///< default, keep doubles
+  STRING_SORT_DESCENDING = 0x001, ///< sort descending order
+  STRING_SORT_UNIQUE     = 0x010, ///< flag to remove doubles
+};
+
 /// Sorts specified text, returns string with sorted text.
 const wxString wxExSort(
   /// text to sort
   const wxString& input, 
-  /// sort ascending or descending
-  bool sort_ascending, 
-  /// keep unique lines
-  bool keep_unique,
-  /// start position
-  int val, 
+  /// sort type
+  int sort_type,
+  /// start column
+  int start_col, 
   /// eol to split lines
-  const wxString& eol);
+  const wxString& eol,
+  /// end colun (default not used)
+  int end_col = -1);
   
 #if wxUSE_GUI
 /// Sorts specified component, returns true if sorted ok.
 bool wxExSortSelection(
   /// Component with selected text to be sorted
   wxExSTC* stc,
-  /// sort ascending or descending
-  bool sort_ascending, 
-  /// keep unique lines
-  bool keep_unique,
-  /// start position
-  int val);
+  /// sort type
+  int sort_type = STRING_SORT_ASCENDING,
+  /// start column (0 is first columnd)
+  int start_col = 0,
+  /// end columnd (default not used)
+  int end_col = -1);
   
 /// Executes VCS command id for specified files
 /// and opens component if necessary.

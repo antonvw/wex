@@ -2243,8 +2243,8 @@ void wxExSTC::ShowProperties()
 
 void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 {
-  long val;
-  if ((val = wxGetNumberFromUser(_("Input") + ":",
+  long start_col;
+  if ((start_col = wxGetNumberFromUser(_("Input") + ":",
     wxEmptyString,
     caption,
     GetCurrentPos() + 1 - PositionFromLine(GetCurrentLine()),
@@ -2252,7 +2252,7 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
     GetLineEndPosition(GetCurrentLine()),
     this)) > 0)
   {
-    wxExSortSelection(this, sort_ascending, false, val);
+    wxExSortSelection(this, sort_ascending ? STRING_SORT_ASCENDING: STRING_SORT_DESCENDING, start_col - 1);
   }
 }
 

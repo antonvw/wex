@@ -443,15 +443,16 @@ bool wxExAddressRange::Sort(const wxString& command)
       return false;
     }
     
-    const bool sort_ascending = !command.Contains("r");
-    const bool unique = command.Contains("u");
-    const int val = (atoi(command) > 0 ? atoi(command) : 1);
+    int sort_type = STRING_SORT_ASCENDING;
+    sort_type |= (command.Contains("r") ? STRING_SORT_DESCENDING: 0);
+    sort_type |= (command.Contains("u") ? STRING_SORT_UNIQUE: 0);
+    const int start_col = (atoi(command) > 0 ? atoi(command) : 0);
     
-    wxExSortSelection(m_STC, sort_ascending, unique, val);
+    wxExSortSelection(m_STC, sort_type, start_col);
   }
   else
   {
-    wxExSortSelection(m_STC, true, true, 1);
+    wxExSortSelection(m_STC);
   }
   
   return true;
