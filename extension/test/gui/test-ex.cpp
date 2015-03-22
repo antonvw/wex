@@ -49,6 +49,7 @@ void wxExGuiTestFixture::testEx()
     {":%s/x/y",true},{":%/test//",false},
     {":.s/$/\n",true},
     {":.S",true},
+    {":.S10",true},
     {":.Sx",false},
     {":.Sr",true},
     {":.Su",true},

@@ -438,7 +438,9 @@ bool wxExAddressRange::Sort(const wxString& command)
 
   if (!command.empty())
   {
-    if (!command.StartsWith("u") && !command.StartsWith("r"))
+    if (!command.StartsWith("u") && 
+        !command.StartsWith("r") && 
+        !isdigit(command[0]))
     {
       return false;
     }
@@ -448,14 +450,12 @@ bool wxExAddressRange::Sort(const wxString& command)
     sort_type |= (command.Contains("u") ? STRING_SORT_UNIQUE: 0);
     const int start_col = (atoi(command) > 0 ? atoi(command) : 0);
     
-    wxExSortSelection(m_STC, sort_type, start_col);
+    return wxExSortSelection(m_STC, sort_type, start_col);
   }
   else
   {
-    wxExSortSelection(m_STC);
+    return wxExSortSelection(m_STC);
   }
-  
-  return true;
 }
   
 bool wxExAddressRange::Substitute(const wxString& command)

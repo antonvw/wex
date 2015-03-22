@@ -950,7 +950,7 @@ const wxString wxExSort(
     // Use an empty key if line is to short.
     wxString key;
 
-    if (start_col - 1 < (long)line.length())
+    if (start_col >= 0 && start_col < (long)line.length())
     {
       key = line.substr(start_col);
     }
@@ -1002,7 +1002,7 @@ bool wxExSortSelection(
 {
   const int start_pos = stc->GetSelectionStart();
   
-  if (start_pos == -1)
+  if (start_pos == -1 || start_col < 0)
   {
     return false;
   }
