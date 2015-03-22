@@ -259,16 +259,16 @@ void wxExGuiTestFixture::testUtil()
   // wxExSetTextCtrlValue
   
   // wxExSort
-  int val = 1;
-  CPPUNIT_ASSERT(wxExSort("z\ny\nx\n", true, false, val, "\n") == "x\ny\nz\n");
-  CPPUNIT_ASSERT(wxExSort("z\ny\nx\n", false, false, val, "\n") == "z\ny\nx\n");
-  CPPUNIT_ASSERT(wxExSort("z\nz\ny\nx\n", true, false, val, "\n") == "x\ny\nz\nz\n");
-  CPPUNIT_ASSERT(wxExSort("z\nz\ny\nx\n", true, true, val, "\n") == "x\ny\nz\n");
+  int start_col = 0;
+  CPPUNIT_ASSERT(wxExSort("z\ny\nx\n", STRING_SORT_ASCENDING, start_col, "\n") == "x\ny\nz\n");
+  CPPUNIT_ASSERT(wxExSort("z\ny\nx\n", STRING_SORT_DESCENDING, start_col, "\n") == "z\ny\nx\n");
+  CPPUNIT_ASSERT(wxExSort("z\nz\ny\nx\n", STRING_SORT_ASCENDING, start_col, "\n") == "x\ny\nz\nz\n");
+  CPPUNIT_ASSERT(wxExSort("z\nz\ny\nx\n", STRING_SORT_ASCENDING | STRING_SORT_UNIQUE, start_col, "\n") == "x\ny\nz\n");
   
   // wxExSortSelection
-  wxExSortSelection(stc, true, false, val);
+  wxExSortSelection(stc);
   stc->SelectAll();
-//  wxExSortSelection(stc, true, false, val);
+//  wxExSortSelection(stc);
   stc->SelectNone();
   
   // wxExSkipWhiteSpace
