@@ -39,9 +39,11 @@ void wxExGuiTestFixture::testEx()
   CPPUNIT_ASSERT( ex->GetMacros().GetCount() > 0);
 
   // Test commands and last command.  
-  // We have only one document, so :n, :prev return false.
   for (auto& command : std::vector<std::pair<std::string, bool>> {
-    {":ab",true},{":n",false},{":prev",false},{":reg",true},
+    {":ab",true},
+    // We have only one document, so :n, :prev return false.
+    {":n",false},{":prev",false},
+    {":reg",true},
     {":set",true},{":set xxx",false},
     {":xxx",false},{":yyy",false},
     {":10",true},{":.=",true},
@@ -49,12 +51,20 @@ void wxExGuiTestFixture::testEx()
     {":%s/x/y",true},{":%/test//",false},
     {":.s/$/\n",true},
     {":.S",true},
+    {":.S0",false},
     {":.S10",true},
     {":.Sx",false},
     {":.Sr",true},
     {":.Su",true},
-    {":1,$s/this/ok",true},{":1,$s/$/ZXXX/",true},
-    {":1,$s/$/ZXXX/",true},{":1,$s/^/Zxxx/",true},{":1,$s/s/w/",true}})
+    {":.Sru",true},
+    {":.S10r",true},
+    {":.S10u",true},
+    {":.S1,5u",true},
+    {":1,$s/this/ok",true},
+    {":1,$s/$/ZXXX/",true},
+    {":1,$s/$/ZXXX/",true},
+    {":1,$s/^/Zxxx/",true},
+    {":1,$s/s/w/",true}})
   {
 #ifdef DEBUGGING
     wxLogMessage("%s %d", command.first.c_str(), command.second);

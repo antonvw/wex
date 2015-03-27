@@ -341,13 +341,14 @@ const wxString wxExSort(
   /// text to sort
   const wxString& input, 
   /// sort type
-  int sort_type,
-  /// start column
-  int start_col, 
+  size_t sort_type,
+  /// position of the first character to be replaced
+  size_t pos, 
   /// eol to split lines
   const wxString& eol,
-  /// end colun (default not used)
-  int end_col = -1);
+  /// number of characters to replace
+  /// string::npos indicates all characters until eol
+  size_t len = std::string::npos);
   
 #if wxUSE_GUI
 /// Sorts specified component, returns true if sorted ok.
@@ -355,11 +356,12 @@ bool wxExSortSelection(
   /// Component with selected text to be sorted
   wxExSTC* stc,
   /// sort type
-  int sort_type = STRING_SORT_ASCENDING,
-  /// start column (0 is first columnd)
-  int start_col = 0,
-  /// end columnd (default not used)
-  int end_col = -1);
+  size_t sort_type = STRING_SORT_ASCENDING,
+  /// position of the first character to be replaced
+  size_t pos = 0,
+  /// number of characters to replace
+  /// string::npos indicates all characters until eol
+  size_t len = std::string::npos);
   
 /// Executes VCS command id for specified files
 /// and opens component if necessary.

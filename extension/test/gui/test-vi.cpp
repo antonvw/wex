@@ -248,6 +248,15 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( stc->GetLineCount() == 4);
   CPPUNIT_ASSERT( stc->GetLineText(0) == "zzz second");
 
+  stc->SetText("xxxxxxxxxx second third\nxxxxxxxx\naaaaaaaaaa\n");
+  CPPUNIT_ASSERT( vi->Command(":1"));
+  CPPUNIT_ASSERT( vi->Command("2cw"));
+  CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
+  CPPUNIT_ASSERT( vi->Command("zzz"));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  CPPUNIT_ASSERT( stc->GetLineCount() == 4);
+  CPPUNIT_ASSERT( stc->GetLineText(0) == "zzz third");
+
   // Test delete commands.
   for (auto& delete_command : std::vector<std::string> {
     "dd","de","dh","dj","dk","dl","dw","dG","d0","d$","dgg","3dw"})
@@ -302,26 +311,35 @@ void wxExGuiTestFixture::testVi()
   // Test macro.
   // First load macros.
   CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
-  
   stc->SetText("this text contains xx");
-  CPPUNIT_ASSERT( vi->Command("qt"));
-  CPPUNIT_ASSERT( vi->Command("/xx"));
-  CPPUNIT_ASSERT( vi->Command("rz"));
-  CPPUNIT_ASSERT( vi->Command("q"));
-  CPPUNIT_ASSERT( 
-    wxString(stc->GetVi().GetMacros().GetRegister('t')).Contains("/xx"));
 
+  for (auto& macro : std::vector< std::vector< std::string> > {
+    {"10w"},
+    {"dw"},
+    {"de"},
+    {"yw"},
+    {"yk"},
+    {"/xx","rz"}})  
+  {
+    CPPUNIT_ASSERT( vi->Command("qt"));
+    
+    std::string all;
+    
+    for (auto& command : macro)
+    {
+      CPPUNIT_ASSERT( vi->Command(command));
+      all += command;
+    }
+    
+    CPPUNIT_ASSERT( vi->Command("q"));
+    CPPUNIT_ASSERT( stc->GetVi().GetMacros().GetRegister('t') == all);
+  }
+  
   CPPUNIT_ASSERT( vi->Command("@t"));
   CPPUNIT_ASSERT( vi->Command("@@"));
   CPPUNIT_ASSERT( vi->Command("."));
   CPPUNIT_ASSERT( vi->Command("10@t"));
 
-  CPPUNIT_ASSERT( vi->Command("qt"));
-  CPPUNIT_ASSERT( vi->Command("10w"));
-  CPPUNIT_ASSERT( vi->Command("q"));
-  CPPUNIT_ASSERT( 
-    stc->GetVi().GetMacros().GetRegister('t') == "10w");
-  
   // Next should be OK, but crashes due to input expand variable.
   //CPPUNIT_ASSERT( vi->Command("@hdr@"));
   

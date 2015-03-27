@@ -259,12 +259,27 @@ void wxExGuiTestFixture::testUtil()
   // wxExSetTextCtrlValue
   
   // wxExSort
-  int start_col = 0;
-  CPPUNIT_ASSERT(wxExSort("z\ny\nx\n", STRING_SORT_ASCENDING, start_col, "\n") == "x\ny\nz\n");
-  CPPUNIT_ASSERT(wxExSort("z\ny\nx\n", STRING_SORT_DESCENDING, start_col, "\n") == "z\ny\nx\n");
-  CPPUNIT_ASSERT(wxExSort("z\nz\ny\nx\n", STRING_SORT_ASCENDING, start_col, "\n") == "x\ny\nz\nz\n");
-  CPPUNIT_ASSERT(wxExSort("z\nz\ny\nx\n", STRING_SORT_ASCENDING | STRING_SORT_UNIQUE, start_col, "\n") == "x\ny\nz\n");
+  CPPUNIT_ASSERT(wxExSort("z\ny\nx\n", STRING_SORT_ASCENDING, 0, "\n") == "x\ny\nz\n");
+  CPPUNIT_ASSERT(wxExSort("z\ny\nx\n", STRING_SORT_DESCENDING, 0, "\n") == "z\ny\nx\n");
+  CPPUNIT_ASSERT(wxExSort("z\nz\ny\nx\n", STRING_SORT_ASCENDING, 0, "\n") == "x\ny\nz\nz\n");
+  CPPUNIT_ASSERT(wxExSort("z\nz\ny\nx\n", STRING_SORT_ASCENDING | STRING_SORT_UNIQUE, 0, "\n") == "x\ny\nz\n");
   
+  const wxString rect("\
+012z45678901234567890\n\
+123y56789012345678901\n\
+234x67890123456789012\n\
+345a78901234567890123\n\
+456b89012345678901234\n");
+
+wxLogMessage(wxExSort(rect, STRING_SORT_ASCENDING, 3, "\n", 5));
+  
+  CPPUNIT_ASSERT(wxExSort(rect, STRING_SORT_ASCENDING, 3, "\n", 5) == "\
+012a78908901234567890\n\
+123b89019012345678901\n\
+234x67890123456789012\n\
+345y56781234567890123\n\
+456z45672345678901234\n");
+
   // wxExSortSelection
   wxExSortSelection(stc);
   stc->SelectAll();

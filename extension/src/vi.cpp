@@ -184,9 +184,10 @@ wxExVi::wxExVi(wxExSTC* stc)
     GetSTC()->BeginUndoAction();
     switch ((int)command[0])
     {
-      case 'a': 
-        GetSTC()->CharRight(); 
-        break;
+      case 'a': GetSTC()->CharRight(); break;
+      case 'A': GetSTC()->LineEnd(); break;
+      case 'R': GetSTC()->SetOvertype(true); break;
+      case 'I': GetSTC()->Home(); break;
       case 'c': 
       case 'i': 
         break;
@@ -194,28 +195,16 @@ wxExVi::wxExVi(wxExSTC* stc)
         GetSTC()->LineEnd(); 
         GetSTC()->NewLine(); 
         break;
-      case 'A': GetSTC()->LineEnd(); 
-        break;
       case 'C': 
         GetSTC()->LineEndExtend();
         Cut();
-        break;
-      case 'I': 
-        GetSTC()->Home(); 
         break;
       case 'O': 
         GetSTC()->Home(); 
         GetSTC()->NewLine(); 
         GetSTC()->LineUp(); 
         break;
-      case 'R': 
-        GetSTC()->SetOvertype(true);
-        break;
       default: wxFAIL;
-    }
-    if (command[0] == 'c')
-    {
-      m_Repeat = 1;
     }},
     [=](const std::string& command) {
     if (!GetSTC()->GetSelectedText().empty() || 
@@ -411,7 +400,7 @@ bool wxExVi::Command(const std::string& command)
             if (handled)
             {
               rest = rest.substr(1);
-            }
+            } 
             break;
           default: handled = CommandChars(rest);
         }
@@ -456,6 +445,11 @@ bool wxExVi::Command(const std::string& command)
       ModeInsert() || size != GetSTC()->GetLength());
   }
     
+  if (GetMacros().IsRecording() && command[0] != 'q')
+  {
+    GetMacros().Record(command);
+  }  
+  
   return true;
 }
 
@@ -488,11 +482,6 @@ bool wxExVi::CommandChar(int c)
   {
     return true;
   }
-  
-  if (GetMacros().IsRecording() && c != 'q')
-  {
-    GetMacros().Record((m_Repeat > 1 ? std::to_string(m_Repeat): "") + std::string(1, c));
-  }  
   
   switch (c)
   {
@@ -724,6 +713,7 @@ bool wxExVi::CommandChars(std::string& command)
         GetSTC()->SetCurrentPos(GetSTC()->GetSelectionStart());
       }
       for (int i = 0; i < m_Repeat; i++) GetSTC()->WordRightEndExtend();
+      m_Repeat = 1;
       command = command.substr(2);
       break;
           

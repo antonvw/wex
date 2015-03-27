@@ -435,27 +435,42 @@ bool wxExAddressRange::Sort(const wxString& command)
   {
     return false;
   }
+  
+  size_t sort_type = STRING_SORT_ASCENDING;
+  size_t pos = 0;
+  size_t len = std::string::npos;
+
+  if (m_STC->SelectionIsRectangle())
+  {
+    pos = m_STC->GetColumn(m_STC->GetSelectionStart());
+    len = m_STC->GetColumn(m_STC->GetSelectionEnd() - pos);
+  }
 
   if (!command.empty())
   {
-    if (!command.StartsWith("u") && 
-        !command.StartsWith("r") && 
-        !isdigit(command[0]))
+    if (  (command[0] == '0') ||
+         (!command.StartsWith("u") && 
+          !command.StartsWith("r") && 
+          !isdigit(command[0])))
     {
       return false;
     }
     
-    int sort_type = STRING_SORT_ASCENDING;
     sort_type |= (command.Contains("r") ? STRING_SORT_DESCENDING: 0);
     sort_type |= (command.Contains("u") ? STRING_SORT_UNIQUE: 0);
-    const int start_col = (atoi(command) > 0 ? atoi(command) : 0);
     
-    return wxExSortSelection(m_STC, sort_type, start_col);
+    if (isdigit(command[0]))
+    {
+      pos = (atoi(command) > 0 ? atoi(command) - 1: 0);
+      
+      if (command.Contains(","))
+      {
+        len = atoi(command.AfterFirst(',')) - pos + 1;
+      }
+    }
   }
-  else
-  {
-    return wxExSortSelection(m_STC);
-  }
+
+  return wxExSortSelection(m_STC, sort_type, pos, len);
 }
   
 bool wxExAddressRange::Substitute(const wxString& command)
