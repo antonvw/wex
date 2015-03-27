@@ -16,7 +16,7 @@
 
 #define ESC "\x1b"
 
-void wxExGuiTestFixture::testViMacros()
+void fixture::testViMacros()
 {
   wxExSTC* stc = new wxExSTC(m_Frame, "hello");
   wxExVi* vi = &stc->GetVi();

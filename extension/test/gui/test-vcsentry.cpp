@@ -14,7 +14,7 @@
 #include <wx/extension/defs.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testVCSEntry()
+void fixture::testVCSEntry()
 {
   wxExVCSEntry test;
   

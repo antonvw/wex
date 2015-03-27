@@ -12,7 +12,7 @@
 #include <wx/extension/vcscommand.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testVCSCommand()
+void fixture::testVCSCommand()
 {
   const wxExVCSCommand add("a&dd");
   const wxExVCSCommand blame("blame");

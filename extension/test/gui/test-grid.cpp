@@ -13,7 +13,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testGrid()
+void fixture::testGrid()
 {
   wxExGrid* grid = new wxExGrid(m_Frame);
   

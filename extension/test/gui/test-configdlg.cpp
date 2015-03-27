@@ -15,7 +15,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testConfigDialog()
+void fixture::testConfigDialog()
 {
   // Test config dialog using notebook with pages.
   const std::vector <wxExConfigItem> items{

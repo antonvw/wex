@@ -13,7 +13,7 @@
 #include <wx/extension/marker.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testMarker()
+void fixture::testMarker()
 {
   wxExMarker marker;
   CPPUNIT_ASSERT( !marker.IsOk() );

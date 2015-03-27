@@ -5,11 +5,11 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXTESTUNIT_H
-#define _EXTESTUNIT_H
+#pragma once
 
 #include <string>
 #include <cppunit/TestFixture.h>
+#include <wx/extension/app.h>
 #include <wx/extension/filename.h>
 
 /// Sets environment. 
@@ -17,6 +17,19 @@ void SetEnvironment(const wxString& dir);
 
 /// Sets working directory to test dir, returns current working directory.
 const wxString SetWorkingDirectory();
+
+/// Derive your application from wxExApp.
+class wxExTestApp: public wxExApp
+{
+public:
+  /// Constructor.
+  wxExTestApp() {}
+private:
+  virtual int OnExit();
+  virtual bool OnInit();
+  virtual void OnInitCmdLine(wxCmdLineParser& parser);
+  virtual int OnRun();
+};
 
 /// CppUnit test fixture.
 class wxExTestFixture : public CppUnit::TestFixture
@@ -42,4 +55,3 @@ private:
   const wxString m_TestDir;
   wxExFileName m_TestFile;
 };
-#endif

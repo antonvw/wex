@@ -5,48 +5,17 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _FTTESTUNIT_H
-#define _FTTESTUNIT_H
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <wx/extension/app.h>
 #include <wx/extension/report/frame.h>
 #include "../test.h"
 
-class FrameWithHistory : public wxExFrameWithHistory
-{
-public:
-  FrameWithHistory(wxWindow* parent,
-    wxWindowID id,
-    const wxString& title,
-    size_t maxFiles = 9,
-    size_t maxProjects = 0,
-    int style = wxDEFAULT_FRAME_STYLE);
-
-  virtual wxExListViewFileName* Activate(
-    wxExListViewFileName::wxExListType list_type, 
-    const wxExLexer* lexer);
-private:
-  wxExListViewFileName* m_Report;
-};
-
-/// Derive your application from wxExApp.
-class wxExTestApp: public wxExApp
-{
-public:
-  /// Constructor.
-  wxExTestApp() {}
-private:
-  /// Override the OnInit.
-  virtual bool OnInit();
-  virtual int OnRun();
-};
-
 /// CppUnit app test fixture.
 /// These classes require either an wxExApp object, or wx to be initialized.
-class wxExGuiReportTestFixture : public wxExTestFixture
+class fixture : public wxExTestFixture
 {
-  CPPUNIT_TEST_SUITE( wxExGuiReportTestFixture );
+  CPPUNIT_TEST_SUITE( fixture );
   
   CPPUNIT_TEST( testDirCtrl );
   CPPUNIT_TEST( testDirTool );
@@ -61,7 +30,7 @@ class wxExGuiReportTestFixture : public wxExTestFixture
   CPPUNIT_TEST_SUITE_END();
 
 public:
-  wxExGuiReportTestFixture();
+  fixture();
   void testDirCtrl();
   void testDirTool();
   void testDirWithListView();
@@ -75,6 +44,5 @@ public:
   void test();
 private:
   const wxString m_Project;
-  FrameWithHistory* m_Frame;
+  wxExFrameWithHistory* m_Frame;
 };
-#endif

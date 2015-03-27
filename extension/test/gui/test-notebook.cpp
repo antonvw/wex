@@ -15,7 +15,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testNotebook()
+void fixture::testNotebook()
 {
   wxExNotebook* notebook = new wxExNotebook(m_Frame, NULL);
   wxWindow* page1 = new wxWindow(m_Frame, wxID_ANY);

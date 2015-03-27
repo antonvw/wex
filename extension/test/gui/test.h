@@ -9,21 +9,7 @@
 
 #include <vector>
 #include <cppunit/extensions/HelperMacros.h>
-#include <wx/extension/app.h>
 #include "../test.h"
-
-/// Derive your application from wxExApp.
-class wxExTestApp: public wxExApp
-{
-public:
-  /// Constructor.
-  wxExTestApp() {}
-private:
-  virtual int OnExit();
-  virtual bool OnInit();
-  virtual void OnInitCmdLine(wxCmdLineParser& parser);
-  virtual int OnRun();
-};
 
 class wxExManagedFrame;
 class wxExStatusBar;
@@ -31,9 +17,9 @@ class wxExSTCShell;
 
 /// CppUnit gui test fixture.
 /// These classes require either an wxExApp object, or wx to be initialized.
-class wxExGuiTestFixture : public wxExTestFixture
+class fixture : public wxExTestFixture
 {
-  CPPUNIT_TEST_SUITE( wxExGuiTestFixture );
+  CPPUNIT_TEST_SUITE( fixture );
   
   CPPUNIT_TEST( testAddress );
   CPPUNIT_TEST( testAddressRange );
@@ -84,7 +70,7 @@ class wxExGuiTestFixture : public wxExTestFixture
 
 public:
   /// Default constructor.
-  wxExGuiTestFixture(); 
+  fixture(); 
   
   void testAddress();
   void testAddressRange();

@@ -20,7 +20,7 @@
 #include <wx/extension/vimacros.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testToVectorString()
+void fixture::testToVectorString()
 {
   wxArrayString a;
   a.Add("x");
@@ -44,7 +44,7 @@ void wxExGuiTestFixture::testToVectorString()
   CPPUNIT_ASSERT( v3.Get().size() == 3);
 }
 
-void wxExGuiTestFixture::testUtil()
+void fixture::testUtil()
 {
   wxExSTC* stc = new wxExSTC(m_Frame);
   stc->SetFocus();

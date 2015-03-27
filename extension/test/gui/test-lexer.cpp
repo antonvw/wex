@@ -15,7 +15,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testLexer()
+void fixture::testLexer()
 {
   wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
   

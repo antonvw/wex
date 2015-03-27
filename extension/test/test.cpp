@@ -5,6 +5,11 @@
 // Copyright: (c) 2015
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cppunit/ui/text/TestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/TestRunner.h>
+#include <wx/cmdline.h> // for wxCmdLineParser
+#include <wx/stdpaths.h>
 #include <wx/log.h>
 #include "test.h"
 
@@ -106,6 +111,72 @@ const wxString SetWorkingDirectory()
 #endif  
   
   return old;
+}
+
+int wxExTestApp::OnExit()
+{
+  // Is not invoked...
+  return wxExApp::OnExit();
+}
+  
+bool wxExTestApp::OnInit()
+{
+  SetAppName("wxex-test-gui");
+  SetWorkingDirectory();
+  SetEnvironment(wxStandardPaths::Get().GetUserDataDir());
+  
+  if (!wxExApp::OnInit())
+  {
+    return false;
+  }
+  
+  wxLogStatus(GetCatalogDir());
+  wxLogStatus(GetLocale().GetLocale());
+  
+  return true;
+}
+
+void wxExTestApp::OnInitCmdLine(wxCmdLineParser& parser)
+{
+  wxExApp::OnInitCmdLine(parser);
+
+  parser.AddParam(
+    "test",
+    wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
+}
+
+int wxExTestApp::OnRun()
+{
+  std::string name = "";
+  
+  if (argc > 1)
+  {
+    name = argv[1];
+  }
+      
+  try
+  {
+    CppUnit::Test* suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
+    
+    CppUnit::TextUi::TestRunner runner;
+    runner.addTest(suite);
+    
+    const bool success = runner.run(name, false);
+    
+    // Remove files.
+    (void)remove("test-ex.txt");
+    (void)remove("test.hex");
+  
+    exit(!success);
+  }
+  catch (std::invalid_argument e)
+  {
+    printf("invalid test: %s\n", name.c_str());
+    return 0;
+  }
+  
+  return 0;
 }
 
 //#define SHOW_REPORT

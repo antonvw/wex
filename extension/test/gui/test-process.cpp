@@ -14,7 +14,7 @@
 #include <wx/extension/shell.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testProcess()
+void fixture::testProcess()
 {
   wxExProcess process;
   

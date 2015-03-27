@@ -18,7 +18,7 @@
 
 #define ESC "\x1b"
 
-void wxExGuiTestFixture::testViFSM()
+void fixture::testViFSM()
 {
   wxExSTC* stc = new wxExSTC(m_Frame);
   wxExViFSM fsm(&stc->GetVi(), 

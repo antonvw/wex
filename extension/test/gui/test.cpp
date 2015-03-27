@@ -15,11 +15,11 @@
 #include <wx/extension/shell.h>
 #include "test.h"
 
-wxExStatusBar* wxExGuiTestFixture::m_StatusBar = NULL;
+wxExStatusBar* fixture::m_StatusBar = NULL;
 
-wxExGuiTestFixture::wxExGuiTestFixture()
+fixture::fixture()
   : wxExTestFixture() 
-  , m_Frame((wxExManagedFrame *)wxTheApp->GetTopWindow())
+  , m_Frame(new wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName()))
   , m_Abbreviations{
       {"XX","GREAT"},
       {"YY","WHITE"},
@@ -36,7 +36,7 @@ wxExGuiTestFixture::wxExGuiTestFixture()
   wxConfigBase::Get()->Write(_("vi mode"), true);
 } 
 
-void wxExGuiTestFixture::Process(const std::string& str, wxExSTCShell* shell)
+void fixture::Process(const std::string& str, wxExSTCShell* shell)
 {
   for (unsigned i = 0; i < str.length(); ++i)
   {

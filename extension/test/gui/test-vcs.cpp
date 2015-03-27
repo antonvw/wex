@@ -16,7 +16,7 @@
 #include <wx/extension/menu.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testVCS()
+void fixture::testVCS()
 {
   CPPUNIT_ASSERT(wxExVCS::GetCount() > 0);
   

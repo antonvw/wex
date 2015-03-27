@@ -8,7 +8,7 @@
 #include <wx/menu.h>
 #include "test.h"
 
-void wxExGuiReportTestFixture::testFrameWithHistory()
+void fixture::testFrameWithHistory()
 {
   wxExListView* list = new wxExListView(m_Frame);
 

@@ -9,7 +9,7 @@
 #include <wx/extension/report/listviewfile.h>
 #include "test.h"
 
-void wxExGuiReportTestFixture::testListViewFile()
+void fixture::testListViewFile()
 {
   wxExListViewFile* listView = new wxExListViewFile(m_Frame, m_Frame, m_Project);
   

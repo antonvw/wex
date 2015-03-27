@@ -12,7 +12,7 @@
 
 #define TEST_PRJ "./test-rep.prj"
 
-void wxExGuiReportTestFixture::testUtil()
+void fixture::testUtil()
 {
   wxExNotebook* notebook = new wxExNotebook(m_Frame, m_Frame);
   

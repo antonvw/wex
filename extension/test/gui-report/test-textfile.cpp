@@ -9,7 +9,7 @@
 #include <wx/extension/report/textfile.h>
 #include "test.h"
 
-void wxExGuiReportTestFixture::testTextFileWithListView()
+void fixture::testTextFileWithListView()
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
 

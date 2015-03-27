@@ -11,66 +11,9 @@
 #endif
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/TestRunner.h>
-#include <wx/stdpaths.h>
-#include <wx/sysopt.h>
-#include <wx/extension/report/frame.h>
 #include "test.h"
 
 wxIMPLEMENT_APP(wxExTestApp);
 
-FrameWithHistory::FrameWithHistory(wxWindow* parent,
-  wxWindowID id,
-  const wxString& title,
-  size_t maxFiles,
-  size_t maxProjects,
-  int style)
-  : wxExFrameWithHistory(parent, id, title, maxFiles, maxProjects, style)
-{
-  wxExLexer lexer("cpp");
-  m_Report = new wxExListViewFileName(
-    this, 
-    wxExListViewFileName::LIST_KEYWORD,
-    wxID_ANY,
-    &lexer);
-}
-
-wxExListViewFileName* FrameWithHistory::Activate(
-  wxExListViewFileName::wxExListType list_type, 
-  const wxExLexer* lexer)
-{
-  return m_Report;
-}
-
-bool wxExTestApp::OnInit()
-{
-  SetAppName("wxex-test-gui-report");
-  wxSystemOptions::SetOption("gtk.desktop", "GNOME");
-  
-  SetWorkingDirectory();
-  SetEnvironment(wxStandardPaths::Get().GetUserDataDir());
-  
-  if (!wxExApp::OnInit())
-  {
-    return false;
-  }
-
-  new FrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
-    
-  return true;
-}
-
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( wxExGuiReportTestFixture );
-
-int wxExTestApp::OnRun()
-{
-  // Get the top level suite from the registry
-  CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
-  
-  CppUnit::TextUi::TestRunner runner;
-  runner.addTest(suite);
-  
-  const bool success = runner.run("", false);
-  
-  return !success;
-}
+CPPUNIT_TEST_SUITE_REGISTRATION( fixture );

@@ -15,7 +15,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testSTC()
+void fixture::testSTC()
 {
   // Some methods do not return values, just call them to 
   // prevent cores, and improve test coverage.

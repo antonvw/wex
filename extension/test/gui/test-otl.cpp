@@ -12,7 +12,7 @@
 #include <wx/extension/otl.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testOTL()
+void fixture::testOTL()
 {
 #if wxExUSE_OTL
   wxExOTL otl;

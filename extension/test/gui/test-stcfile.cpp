@@ -14,7 +14,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testSTCFile()
+void fixture::testSTCFile()
 {
   wxExSTC* stc = new wxExSTC(m_Frame, GetTestFile());
   wxExSTCFile file(stc);

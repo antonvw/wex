@@ -9,7 +9,7 @@
 #include <wx/extension/report/dirctrl.h>
 #include "test.h"
 
-void wxExGuiReportTestFixture::testDirCtrl()
+void fixture::testDirCtrl()
 {
   wxExGenericDirCtrl* ctrl = new wxExGenericDirCtrl(m_Frame, m_Frame);
   

@@ -13,7 +13,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testDialog()
+void fixture::testDialog()
 {
   wxExDialog(m_Frame, "hello").Show();
 }

@@ -14,7 +14,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testFileDialog()
+void fixture::testFileDialog()
 {
   wxExFile file;
   wxExFileDialog dlg(m_Frame, &file);
