@@ -14,7 +14,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testPrinting()
+void fixture::testPrinting()
 {
   CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
   CPPUNIT_ASSERT(wxExPrinting::Get()->GetPrinter() != NULL);

@@ -13,7 +13,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testStatistics()
+void fixture::testStatistics()
 {
   wxExStatistics<int> statistics1;
   wxExStatistics<int> statistics2;

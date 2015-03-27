@@ -16,7 +16,7 @@
 #include "test.h"
 
 // Also test the toolbar (wxExToolBar).
-void wxExGuiTestFixture::testManagedFrame()
+void fixture::testManagedFrame()
 {
   CPPUNIT_ASSERT(m_Frame->AllowClose(100, NULL));
   

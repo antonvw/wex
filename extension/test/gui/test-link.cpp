@@ -52,7 +52,7 @@ void link(
   CPPUNIT_ASSERT(col_no == expect_col_no);
 }
 
-void wxExGuiTestFixture::testLink()
+void fixture::testLink()
 {
   wxExSTC* stc = new wxExSTC(
     m_Frame, 

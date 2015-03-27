@@ -18,7 +18,7 @@
 
 //#define DEBUGGING ON
 
-void wxExGuiTestFixture::testEx()
+void fixture::testEx()
 {
   // Test modeline.
   wxExSTC* stc = new wxExSTC(m_Frame, 

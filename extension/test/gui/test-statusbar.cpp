@@ -13,7 +13,7 @@
 #include <wx/extension/statusbar.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testStatusBar()
+void fixture::testStatusBar()
 {
   // See also testFrame, where the status bar is setup.
   

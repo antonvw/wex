@@ -14,7 +14,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testConfigItem()
+void fixture::testConfigItem()
 {
   // Use specific constructors.
   const wxExConfigItem ci_empty;

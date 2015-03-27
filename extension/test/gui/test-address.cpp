@@ -15,7 +15,7 @@
 #include <wx/extension/vimacros.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testAddress()
+void fixture::testAddress()
 {
   wxExSTC* stc = new wxExSTC(m_Frame, "hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
   const int lines = stc->GetLineCount();
@@ -66,7 +66,7 @@ void wxExGuiTestFixture::testAddress()
   CPPUNIT_ASSERT( address2.GetLine() == 0);
 }
 
-void wxExGuiTestFixture::testAddressRange()
+void fixture::testAddressRange()
 {
   wxExSTC* stc = new wxExSTC(m_Frame, "hello\nhello1\nhello2");
   wxExEx* ex = new wxExEx(stc);

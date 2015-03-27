@@ -15,7 +15,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testVariable()
+void fixture::testVariable()
 {
   wxExSTC* stc = new wxExSTC(m_Frame, "hello again");
   wxExEx* ex = new wxExEx(stc);

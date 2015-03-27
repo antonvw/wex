@@ -14,7 +14,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testStyle()
+void fixture::testStyle()
 {
   CPPUNIT_ASSERT(!wxExStyle().IsOk() );
   

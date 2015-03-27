@@ -13,7 +13,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testListItem()
+void fixture::testListItem()
 {
   wxExListViewFileName* listView = new wxExListViewFileName(
     m_Frame, wxExListViewFileName::LIST_FILE);

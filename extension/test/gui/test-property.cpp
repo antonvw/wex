@@ -15,7 +15,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testProperty()
+void fixture::testProperty()
 {
   wxExProperty inv;
   CPPUNIT_ASSERT( !inv.IsOk() );

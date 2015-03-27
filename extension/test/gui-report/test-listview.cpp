@@ -8,7 +8,7 @@
 #include <wx/extension/report/listview.h>
 #include "test.h"
 
-void wxExGuiReportTestFixture::testListViewWithFrame()
+void fixture::testListViewWithFrame()
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
   

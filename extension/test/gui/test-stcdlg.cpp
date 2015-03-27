@@ -14,7 +14,7 @@
 #include <wx/extension/shell.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testSTCEntryDialog()
+void fixture::testSTCEntryDialog()
 {
   wxExSTCEntryDialog dlg1(m_Frame, "hello", "testing");
   CPPUNIT_ASSERT( dlg1.GetText() == "testing");

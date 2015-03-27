@@ -12,7 +12,7 @@
 #include <wx/extension/menu.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testMenu()
+void fixture::testMenu()
 {
   wxExMenu menu;
   

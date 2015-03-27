@@ -12,13 +12,30 @@
 
 #define TEST_PRJ "./test-rep.prj"
 
-wxExGuiReportTestFixture::wxExGuiReportTestFixture()
+class FrameWithHistory : public wxExFrameWithHistory
+{
+public:
+  FrameWithHistory(wxWindow* parent,
+    wxWindowID id,
+    const wxString& title,
+    size_t maxFiles = 9,
+    size_t maxProjects = 0,
+    int style = wxDEFAULT_FRAME_STYLE);
+
+  virtual wxExListViewFileName* Activate(
+    wxExListViewFileName::wxExListType list_type, 
+    const wxExLexer* lexer);
+private:
+  wxExListViewFileName* m_Report;
+};
+
+fixture::fixture()
   : m_Project("test-rep.prj")
-  , m_Frame((FrameWithHistory *)wxTheApp->GetTopWindow())
+  , m_Frame(new FrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName()))
 {
 }
 
-void wxExGuiReportTestFixture::test()
+void fixture::test()
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
   
@@ -76,4 +93,27 @@ void wxExGuiReportTestFixture::test()
   // list because of the first FindInFiles.
   CPPUNIT_ASSERT(report->GetItemCount() == (
     wxExToVectorString(files).Get().size() + 2));
+}
+
+FrameWithHistory::FrameWithHistory(wxWindow* parent,
+  wxWindowID id,
+  const wxString& title,
+  size_t maxFiles,
+  size_t maxProjects,
+  int style)
+  : wxExFrameWithHistory(parent, id, title, maxFiles, maxProjects, style)
+{
+  wxExLexer lexer("cpp");
+  m_Report = new wxExListViewFileName(
+    this, 
+    wxExListViewFileName::LIST_KEYWORD,
+    wxID_ANY,
+    &lexer);
+}
+
+wxExListViewFileName* FrameWithHistory::Activate(
+  wxExListViewFileName::wxExListType list_type, 
+  const wxExLexer* lexer)
+{
+  return m_Report;
 }

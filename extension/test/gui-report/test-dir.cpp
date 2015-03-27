@@ -9,7 +9,7 @@
 #include <wx/extension/report/listviewfile.h>
 #include "test.h"
 
-void wxExGuiReportTestFixture::testDirTool()
+void fixture::testDirTool()
 {
   const wxExTool tool = ID_TOOL_REPORT_FIND;
 
@@ -35,7 +35,7 @@ void wxExGuiReportTestFixture::testDirTool()
   wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
 }
 
-void wxExGuiReportTestFixture::testDirWithListView()
+void fixture::testDirWithListView()
 {
   wxExListViewFile* listView = new wxExListViewFile(m_Frame, m_Frame, m_Project);
   wxExDirWithListView* dir = new wxExDirWithListView(listView, GetTestDir());

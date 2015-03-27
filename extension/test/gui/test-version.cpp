@@ -12,7 +12,7 @@
 #include <wx/extension/version.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testVersion()
+void fixture::testVersion()
 {
   CPPUNIT_ASSERT(!wxExVersionInfo().GetVersionOnlyString().empty());
   CPPUNIT_ASSERT(!wxExGetVersionInfo().GetVersionOnlyString().empty());

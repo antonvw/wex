@@ -15,7 +15,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testListView()
+void fixture::testListView()
 {
   wxExListView* listView = new wxExListView(m_Frame);
   

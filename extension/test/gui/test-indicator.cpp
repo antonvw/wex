@@ -15,7 +15,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testIndicator()
+void fixture::testIndicator()
 {
   wxExIndicator ind;
   CPPUNIT_ASSERT(!ind.IsOk() );

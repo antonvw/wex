@@ -24,7 +24,7 @@ void ChangeMode(wxExVi* vi, const std::string& command, int mode)
   CPPUNIT_ASSERT( vi->GetMode() == mode);
 }
 
-void wxExGuiTestFixture::testVi()
+void fixture::testVi()
 {
   // Test for modeline support.
   wxExSTC* stc = new wxExSTC(m_Frame, 

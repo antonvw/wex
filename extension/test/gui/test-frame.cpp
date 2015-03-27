@@ -14,7 +14,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testFrame()
+void fixture::testFrame()
 {
   m_Frame->SetFocus(); // otherwise focus is on stc component caused by testEx
 

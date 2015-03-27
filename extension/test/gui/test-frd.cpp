@@ -13,7 +13,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testFrd()
+void fixture::testFrd()
 {
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
   

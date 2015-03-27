@@ -13,7 +13,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testShell()
+void fixture::testShell()
 {
   wxExSTCShell* shell = new wxExSTCShell(m_Frame);
   

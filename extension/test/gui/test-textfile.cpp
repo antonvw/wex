@@ -14,7 +14,7 @@
 #include <wx/extension/frd.h>
 #include "test.h"
 
-void wxExGuiTestFixture::testFileStatistics()
+void fixture::testFileStatistics()
 {
   wxExFileStatistics fileStatistics;
   
@@ -29,7 +29,7 @@ void wxExGuiTestFixture::testFileStatistics()
   CPPUNIT_ASSERT(fileStatistics.Get().empty());
 }
 
-void wxExGuiTestFixture::testTextFile()
+void fixture::testTextFile()
 {
   // Test find.
   wxExTextFile textFile(GetTestFile(), ID_TOOL_REPORT_FIND);
