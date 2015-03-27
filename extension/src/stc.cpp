@@ -702,33 +702,6 @@ void wxExSTC::Cut()
   }
 }
   
-void wxExSTC::EOLModeUpdate(int eol_mode)
-{
-  if (GetReadOnly())
-  {
-    wxLogStatus(_("Document is readonly"));
-    return;
-  }
-  else
-  {
-    if (HexMode())
-    {
-      wxLogStatus(_("Not allowed in hex mode"));
-      return;
-    }
-    else
-    {
-      ConvertEOLs(eol_mode);
-    }
-  }
-  
-  SetEOLMode(eol_mode);
-  
-#if wxUSE_STATUSBAR
-  wxExFrame::UpdateStatusBar(this, "PaneFileType");
-#endif
-}
-
 bool wxExSTC::FileReadOnlyAttributeChanged()
 {
   SetReadOnly(!GetFileName().IsFileWritable()); // does not return anything
@@ -1391,7 +1364,7 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
     frd->SetFindString(frd->GetFindString());
     FindNext(frd->SearchDown());});
-    
+
   Bind(wxEVT_FIND_REPLACE, [=](wxFindDialogEvent& event) {
     ReplaceNext(wxExFindReplaceData::Get()->SearchDown());});
     
@@ -1399,23 +1372,118 @@ void wxExSTC::Initialize(bool file_exists)
     ReplaceAll(frd->GetFindString(), frd->GetReplaceString());});
     
   Bind(wxEVT_CHAR, &wxExSTC::OnChar, this);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_CUT, wxID_CLEAR);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_DELETE);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_FIND);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_JUMP_TO);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_REPLACE);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_SELECTALL);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_SORT_ASCENDING);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_SORT_DESCENDING);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, wxID_UNDO, wxID_REDO);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_FIND_NEXT);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_FIND_PREVIOUS);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_OPEN_BROWSER);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_OPEN_LINK);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_READ);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_SHOW_PROPERTIES);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST);
-  Bind(wxEVT_MENU, &wxExSTC::OnCommand, this, ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Copy();}, wxID_COPY);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Cut();}, wxID_CUT);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Paste();}, wxID_PASTE);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Undo();}, wxID_UNDO);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Redo();}, wxID_REDO);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SelectAll();}, wxID_SELECTALL);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {if (!GetReadOnly() && !HexMode()) Clear();}, wxID_DELETE);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GotoDialog();}, wxID_JUMP_TO);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); event.Skip();}, wxID_FIND);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); event.Skip();}, wxID_REPLACE);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_File.Read(event.GetString());}, ID_EDIT_READ);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen();}, ID_EDIT_OPEN_LINK);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {ShowProperties();}, ID_EDIT_SHOW_PROPERTIES);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {ControlCharDialog();}, ID_EDIT_CONTROL_CHAR);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {HexDecCalltip(GetCurrentPos());}, ID_EDIT_HEX_DEC_CALLTIP);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LowerCase();}, ID_EDIT_LOWERCASE);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {UpperCase();}, ID_EDIT_UPPERCASE);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FoldAll();}, ID_EDIT_FOLD_ALL);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);}, ID_EDIT_UNFOLD_ALL);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Reload(m_Flags ^ STC_WIN_HEX);}, ID_EDIT_HEX);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_Zoom);}, ID_EDIT_ZOOM_IN);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_Zoom);}, ID_EDIT_ZOOM_OUT);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(true);}, ID_EDIT_FIND_NEXT);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(false);}, ID_EDIT_FIND_PREVIOUS);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (GetSelectedText().empty())
+    {
+      wxLaunchDefaultBrowser(GetFileName().GetFullPath());
+    }
+    else
+    {
+      wxLaunchDefaultBrowser(GetSelectedText());}}, ID_EDIT_OPEN_BROWSER);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    const int level = GetFoldLevel(GetCurrentLine());
+    const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+      GetCurrentLine(): GetFoldParent(GetCurrentLine());
+    ToggleFold(line_to_fold);}, ID_EDIT_TOGGLE_FOLD);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, 
+      std::vector< wxString >{GetFileName().GetFullPath()});},
+      ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
+      
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (GetReadOnly())
+    {
+      wxLogStatus(_("Document is readonly"));
+    }
+    else
+    {
+      if (HexMode())
+      {
+        wxLogStatus(_("Not allowed in hex mode"));
+        return;
+      }
+      else
+      {
+        int eol_mode;
+        
+        switch (event.GetId())
+        {
+          case ID_EDIT_EOL_DOS: eol_mode = wxSTC_EOL_CRLF; break;
+          case ID_EDIT_EOL_UNIX: eol_mode = wxSTC_EOL_LF; break;
+          case ID_EDIT_EOL_MAC: eol_mode = wxSTC_EOL_CR; break;
+        }
+    
+        ConvertEOLs(eol_mode);
+        SetEOLMode(eol_mode);
+#if wxUSE_STATUSBAR
+        wxExFrame::UpdateStatusBar(this, "PaneFileType");
+#endif
+      }
+    }
+    }, ID_EDIT_EOL_DOS, ID_EDIT_EOL_MAC);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    int line = (event.GetId() == ID_EDIT_MARKER_NEXT ? 
+      wxStyledTextCtrl::MarkerNext(GetCurrentLine() + 1, 0xFFFF):
+      wxStyledTextCtrl::MarkerPrevious(GetCurrentLine() - 1, 0xFFFF));
+      
+    if (line == -1)
+    {
+      line = (event.GetId() == ID_EDIT_MARKER_NEXT ?
+        wxStyledTextCtrl::MarkerNext(0, 0xFFFF):
+        wxStyledTextCtrl::MarkerPrevious(GetLineCount() - 1, 0xFFFF));
+    }
+      
+    if (line != -1)
+    {
+      GotoLine(line);
+    }
+    else
+    {
+      wxLogStatus(_("No markers present"));
+    }}, ID_EDIT_MARKER_NEXT, ID_EDIT_MARKER_PREVIOUS);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    long pos;
+    if ((pos = wxGetNumberFromUser(_("Input") + ":",
+      wxEmptyString,
+      _("Enter Sort Position"),
+      GetCurrentPos() + 1 - PositionFromLine(GetCurrentLine()),
+      1,
+      GetLineEndPosition(GetCurrentLine()),
+      this)) > 0)
+    {
+      wxExSortSelection(this, event.GetId() == wxID_SORT_ASCENDING ? STRING_SORT_ASCENDING: STRING_SORT_DESCENDING, pos - 1);
+    }}, wxID_SORT_ASCENDING, wxID_SORT_DESCENDING);
 }
 
 bool wxExSTC::LinkOpen(wxString* filename)
@@ -1520,29 +1588,6 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
   UseModificationMarkers(true);
 }
   
-void wxExSTC::MarkerNext(bool next)
-{
-  int line = (next ? 
-    wxStyledTextCtrl::MarkerNext(GetCurrentLine() + 1, 0xFFFF):
-    wxStyledTextCtrl::MarkerPrevious(GetCurrentLine() - 1, 0xFFFF));
-    
-  if (line == -1)
-  {
-    line = (next ?
-      wxStyledTextCtrl::MarkerNext(0, 0xFFFF):
-      wxStyledTextCtrl::MarkerPrevious(GetLineCount() - 1, 0xFFFF));
-  }
-    
-  if (line != -1)
-  {
-    GotoLine(line);
-  }
-  else
-  {
-    wxLogStatus(_("No markers present"));
-  }
-}
-
 void wxExSTC::OnChar(wxKeyEvent& event)
 {
   if (!m_vi.GetIsActive())
@@ -1637,95 +1682,6 @@ void wxExSTC::OnChar(wxKeyEvent& event)
        }
      }
    }
-}
-
-void wxExSTC::OnCommand(wxCommandEvent& command)
-{
-  switch (command.GetId())
-  {
-    case wxID_COPY: Copy(); break;
-    case wxID_CUT: Cut(); break;
-    case wxID_DELETE: if (!GetReadOnly() && !HexMode()) Clear(); break;
-    case wxID_JUMP_TO: GotoDialog(); break;
-    case wxID_PASTE: Paste(); break;
-    case wxID_SELECTALL: SelectAll(); break;
-    case wxID_UNDO: Undo(); break;
-    case wxID_REDO: Redo(); break;
-    case wxID_SAVE: m_File.FileSave(); break;
-    case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
-    case wxID_SORT_DESCENDING: SortSelectionDialog(false); break;
-    
-    case wxID_FIND: 
-    case wxID_REPLACE: 
-      GetFindString();
-      command.Skip();
-      break;
-
-    case ID_EDIT_FIND_NEXT: 
-    case ID_EDIT_FIND_PREVIOUS: 
-      GetFindString();
-      FindNext(command.GetId() == ID_EDIT_FIND_NEXT); 
-      break;
-      
-    case ID_EDIT_CONTROL_CHAR: ControlCharDialog(); break;
-    case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
-    case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
-    case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
-    case ID_EDIT_HEX: Reload(m_Flags ^ STC_WIN_HEX); break;
-
-    case ID_EDIT_FOLD_ALL: FoldAll(); break;
-    case ID_EDIT_UNFOLD_ALL:
-      for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);
-    break;
-    case ID_EDIT_TOGGLE_FOLD:
-    {
-      const int level = GetFoldLevel(GetCurrentLine());
-      const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
-        GetCurrentLine(): GetFoldParent(GetCurrentLine());
-      ToggleFold(line_to_fold);
-    }
-    break;
-
-    case ID_EDIT_HEX_DEC_CALLTIP:
-      HexDecCalltip(GetCurrentPos());
-    break;
-
-    case ID_EDIT_LOWERCASE: LowerCase(); break;
-    case ID_EDIT_UPPERCASE: UpperCase(); break;
-    
-    case ID_EDIT_MARKER_NEXT: MarkerNext(true); break;
-    case ID_EDIT_MARKER_PREVIOUS: MarkerNext(false); break;
-    
-    case ID_EDIT_OPEN_BROWSER:
-      if (GetSelectedText().empty())
-      {
-        wxLaunchDefaultBrowser(GetFileName().GetFullPath());
-      }
-      else
-      {
-        wxLaunchDefaultBrowser(GetSelectedText());
-      }
-      break;
-
-    case ID_EDIT_OPEN_LINK: LinkOpen(); break;
-
-    case ID_EDIT_READ: m_File.Read(command.GetString()); break;
-      
-    case ID_EDIT_SHOW_PROPERTIES: ShowProperties(); break;
-
-    case ID_EDIT_ZOOM_IN: SetZoom(++m_Zoom); break;
-    case ID_EDIT_ZOOM_OUT: SetZoom(--m_Zoom);  break;
-
-    default: 
-      if (command.GetId() > ID_EDIT_VCS_LOWEST && command.GetId() < ID_EDIT_VCS_HIGHEST)
-      {
-        wxExVCSExecute(m_Frame, command.GetId() - ID_EDIT_VCS_LOWEST - 1, 
-          std::vector< wxString >{GetFileName().GetFullPath()});
-      }
-      else
-        wxFAIL;
-    break;
-  }
 }
 
 void wxExSTC::OnIdle(wxIdleEvent& event)
@@ -2239,21 +2195,6 @@ void wxExSTC::ShowProperties()
   }
   
   m_EntryDialog->Show();
-}
-
-void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
-{
-  long start_col;
-  if ((start_col = wxGetNumberFromUser(_("Input") + ":",
-    wxEmptyString,
-    caption,
-    GetCurrentPos() + 1 - PositionFromLine(GetCurrentLine()),
-    1,
-    GetLineEndPosition(GetCurrentLine()),
-    this)) > 0)
-  {
-    wxExSortSelection(this, sort_ascending ? STRING_SORT_ASCENDING: STRING_SORT_DESCENDING, start_col - 1);
-  }
 }
 
 void wxExSTC::Sync(bool start)

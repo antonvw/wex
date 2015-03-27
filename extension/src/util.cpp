@@ -929,12 +929,27 @@ bool wxExSetTextCtrlValue(
   return true;
 }
 
+template <typename InputIterator>
+const wxString GetColumn(
+  size_t pos, size_t len,
+  InputIterator first, InputIterator last)
+{
+  wxString text;
+  
+  for (InputIterator it = first; it != last; ++it) 
+  {
+    text += it->second;
+  }
+
+  return text;
+}
+    
 const wxString wxExSort(
   const wxString& input, 
-  int sort_type,
-  int start_col, 
+  size_t sort_type,
+  size_t pos, 
   const wxString& eol,
-  int end_col)
+  size_t len)
 {
   wxBusyCursor wait;
 
@@ -942,53 +957,60 @@ const wxString wxExSort(
   wxStringTokenizer tkz(input, eol);
   std::map<wxString, wxString> m;
   std::multimap<wxString, wxString> mm;
+  std::multiset<wxString> ms;
+  std::vector<wxString> lines;
   
   while (tkz.HasMoreTokens())
   {
     const wxString line = tkz.GetNextToken() + eol;
-
+    
     // Use an empty key if line is to short.
     wxString key;
-
-    if (start_col >= 0 && start_col < (long)line.length())
+    
+    if (pos < line.length())
     {
-      key = line.substr(start_col);
+      key = line.substr(pos, len);
     }
     
-    if (sort_type & STRING_SORT_UNIQUE)
-      m.insert(std::make_pair(key, line));
+    if (len == std::string::npos)
+    {
+      if (sort_type & STRING_SORT_UNIQUE)
+        m.insert(std::make_pair(key, line));
+      else
+        mm.insert(std::make_pair(key, line));
+    }
     else
-      mm.insert(std::make_pair(key, line));
+    {
+      lines.push_back(line);
+      ms.insert(key);
+    }
   }
 
-  // The map is already sorted, just iterate to get all lines back.
   wxString text;
 
-  if (sort_type & STRING_SORT_DESCENDING)
+  if (len == std::string::npos)
   {
-    if (sort_type & STRING_SORT_UNIQUE)
-      for (auto it = m.rbegin(); it != m.rend(); ++it)
-      {
-        text += it->second;
-      }
+    if (sort_type & STRING_SORT_DESCENDING)
+    {
+      text = (sort_type & STRING_SORT_UNIQUE ?
+        GetColumn(pos, len, m.rbegin(), m.rend()):
+        GetColumn(pos, len, mm.rbegin(), mm.rend()));
+    }
     else
-      for (auto it = mm.rbegin(); it != mm.rend(); ++it)
-      {
-        text += it->second;
-      }
+    {
+      text = (sort_type & STRING_SORT_UNIQUE ?
+        GetColumn(pos, len, m.begin(), m.end()):
+        GetColumn(pos, len, mm.begin(), mm.end()));
+    }
   }
   else
   {
-    if (sort_type & STRING_SORT_UNIQUE)
-      for (const auto& it : m)
-      {
-        text += it.second;
-      }
-    else 
-      for (const auto& it : mm)
-      {
-        text += it.second;
-      }
+    auto ms_it = ms.begin();
+    for (auto it : lines)
+    {
+      text += it.replace(pos, len, *ms_it);
+      ++ms_it;
+    }
   }
   
   return text;
@@ -996,20 +1018,20 @@ const wxString wxExSort(
 
 bool wxExSortSelection(
   wxExSTC* stc,
-  int sort_type,
-  int start_col,
-  int end_col)
+  size_t sort_type,
+  size_t pos,
+  size_t len)
 {
   const int start_pos = stc->GetSelectionStart();
   
-  if (start_pos == -1 || start_col < 0)
+  if (start_pos == -1 || pos == std::string::npos)
   {
     return false;
   }
   
   const int start_pos_line = stc->PositionFromLine(stc->LineFromPosition(start_pos));
   const wxString text(wxExSort(
-    stc->GetSelectedText(), sort_type, start_col, stc->GetEOL()));
+    stc->GetSelectedText(), sort_type, pos, stc->GetEOL(), len));
      
   stc->ReplaceSelection(text);
   stc->SetSelection(start_pos_line, start_pos_line + text.size());

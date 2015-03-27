@@ -359,31 +359,23 @@ public:
   void WordRightRectExtend() {;};
   void WordRightEndRectExtend() {;};
 protected:
-  /// Builds the popup menu.
-  virtual void BuildPopupMenu(wxExMenu& menu);
-
   void OnChar(wxKeyEvent& event);
-  void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:
+  void BuildPopupMenu(wxExMenu& menu);
   void CheckAutoComp(const wxUniChar& c);
   void CheckBrace();
   bool CheckBrace(int pos);
   void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
-  void EOLModeUpdate(int eol_mode);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void FoldAll();
   void HexDecCalltip(int pos);
   void Initialize(bool file_exists);
   bool LinkOpen(wxString* filename = NULL); // name of found file
-  void MarkerNext(bool next);
   void MarkModified(const wxStyledTextEvent& event);
   void SetLexerCommon(bool fold);
   void ShowProperties();
-  void SortSelectionDialog(
-    bool sort_ascending,
-    const wxString& caption = _("Enter Sort Position"));
 
   const int m_MarginDividerNumber;
   const int m_MarginFoldingNumber;
