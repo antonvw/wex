@@ -30,29 +30,32 @@
 
 #define NAVIGATE(SCOPE, DIRECTION, COND1, COND2, WRAP)                   \
 {                                                                        \
-  if (GetMode() == MODE_VISUAL_LINE && GetSTC()->GetSelectedText().empty()) \
+  if (GetMode() == MODE_VISUAL_LINE &&                                   \
+      GetSTC()->GetSelectedText().empty())                               \
   {                                                                      \
-    if ((#DIRECTION) == "Left" || (#DIRECTION) == "Up")                  \
+    if (strcmp((#DIRECTION), "Left") == 0 ||                             \
+        strcmp((#DIRECTION), "Up") == 0)                                 \
     {                                                                    \
-      GetSTC()->LineEnd();                                               \
-      GetSTC()->HomeExtend();                                            \
+      GetSTC()->LineDown();                                              \
+      GetSTC()->Home();                                                  \
+      GetSTC()->LineUpExtend();                                          \
     }                                                                    \
     else                                                                 \
     {                                                                    \
       GetSTC()->Home();                                                  \
-      GetSTC()->LineEndExtend();                                         \
+      GetSTC()->LineDownExtend();                                        \
     }                                                                    \
   }                                                                      \
-  for (int i = 0; i < m_Repeat; i++)                                     \
+  if (COND1)                                                             \
   {                                                                      \
-    if (COND1)                                                           \
+    for (int i = 0; i < m_Repeat; i++)                                   \
     {                                                                    \
       switch (GetMode())                                                 \
       {                                                                  \
         case MODE_NORMAL:                                                \
-          if (WRAP && (#SCOPE) == "Line")                                \
+          if (WRAP && strcmp((#SCOPE), "Line") ==0)                      \
           {                                                              \
-            if ((#DIRECTION) == "Down")                                  \
+            if (strcmp((#DIRECTION), "Down") == 0)                       \
               GetSTC()->LineEnd();                                       \
             else                                                         \
               GetSTC()->Home();                                          \
@@ -62,7 +65,8 @@
         case MODE_VISUAL: GetSTC()->SCOPE##DIRECTION##Extend();          \
           break;                                                         \
         case MODE_VISUAL_LINE:                                           \
-          if ((#SCOPE) != "Char" && (#SCOPE) != "Word")                  \
+          if (strcmp((#SCOPE), "Char") != 0 &&                           \
+              strcmp((#SCOPE), "Word") != 0)                             \
             GetSTC()->SCOPE##DIRECTION##Extend();                        \
           break;                                                         \
         case MODE_VISUAL_RECT: GetSTC()->SCOPE##DIRECTION##RectExtend(); \
@@ -70,7 +74,7 @@
       }                                                                  \
     }                                                                    \
   }                                                                      \
-  if ((#SCOPE) == "Line")                                                \
+  if (strcmp((#SCOPE), "Line") == 0)                                     \
   {                                                                      \
     switch (GetMode())                                                   \
     {                                                                    \
@@ -81,12 +85,6 @@
           GetSTC()->VCHome(); break;                                     \
       case MODE_VISUAL:                                                  \
         if (COND2) GetSTC()->VCHomeExtend(); break;                      \
-      case MODE_VISUAL_LINE:                                             \
-        if ((#DIRECTION) == "Up")                                        \
-          GetSTC()->HomeExtend();                                        \
-        else                                                             \
-          GetSTC()->LineEndExtend();                                     \
-        break;                                                           \
     }                                                                    \
   }                                                                      \
 };                                                                       \
