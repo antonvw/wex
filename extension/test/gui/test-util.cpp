@@ -271,20 +271,34 @@ void fixture::testUtil()
 345a78901234567890123\n\
 456b89012345678901234\n");
 
-wxLogMessage(wxExSort(rect, STRING_SORT_ASCENDING, 3, "\n", 5));
-  
-  CPPUNIT_ASSERT(wxExSort(rect, STRING_SORT_ASCENDING, 3, "\n", 5) == "\
+  const wxString sorted("\
 012a78908901234567890\n\
 123b89019012345678901\n\
 234x67890123456789012\n\
 345y56781234567890123\n\
 456z45672345678901234\n");
 
+  CPPUNIT_ASSERT(wxExSort(rect, STRING_SORT_ASCENDING, 3, "\n", 5) == sorted);
+
   // wxExSortSelection
-  wxExSortSelection(stc);
-  stc->SelectAll();
-//  wxExSortSelection(stc);
   stc->SelectNone();
+  CPPUNIT_ASSERT( wxExSortSelection(stc));
+  stc->SetText("aaaaa\nbbbbb\nccccc\n");
+  stc->SelectAll();
+  CPPUNIT_ASSERT( wxExSortSelection(stc));
+  CPPUNIT_ASSERT( wxExSortSelection(stc, STRING_SORT_ASCENDING, 3, 10));
+  CPPUNIT_ASSERT(!wxExSortSelection(stc, STRING_SORT_ASCENDING, 20, 10));
+  stc->SelectNone();
+  stc->SetText(rect);
+  // force rectangular selection.
+  stc->GetVi().Command("3 ");
+  stc->GetVi().Command("F");
+  stc->GetVi().Command("4j");
+  stc->GetVi().Command("5l");
+  CPPUNIT_ASSERT( wxExSortSelection(stc, STRING_SORT_ASCENDING, 3, 5));
+  CPPUNIT_ASSERT( stc->GetText() == sorted);
+  CPPUNIT_ASSERT( wxExSortSelection(stc, STRING_SORT_DESCENDING, 3, 5));
+  CPPUNIT_ASSERT( stc->GetText() != sorted);
   
   // wxExSkipWhiteSpace
   CPPUNIT_ASSERT( wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");

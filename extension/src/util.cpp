@@ -930,15 +930,28 @@ bool wxExSetTextCtrlValue(
 }
 
 template <typename InputIterator>
-const wxString GetColumn(
-  size_t pos, size_t len,
-  InputIterator first, InputIterator last)
+const wxString GetColumn(InputIterator first, InputIterator last)
 {
   wxString text;
   
   for (InputIterator it = first; it != last; ++it) 
   {
     text += it->second;
+  }
+
+  return text;
+}
+    
+template <typename InputIterator>
+const wxString GetLines(std::vector<wxString> & lines,
+  size_t pos, size_t len, InputIterator ii)
+{
+  wxString text;
+  
+  for (auto it : lines)
+  {
+    text += it.replace(pos, len, *ii);
+    ++ii;
   }
 
   return text;
@@ -993,24 +1006,21 @@ const wxString wxExSort(
     if (sort_type & STRING_SORT_DESCENDING)
     {
       text = (sort_type & STRING_SORT_UNIQUE ?
-        GetColumn(pos, len, m.rbegin(), m.rend()):
-        GetColumn(pos, len, mm.rbegin(), mm.rend()));
+        GetColumn(m.rbegin(), m.rend()):
+        GetColumn(mm.rbegin(), mm.rend()));
     }
     else
     {
       text = (sort_type & STRING_SORT_UNIQUE ?
-        GetColumn(pos, len, m.begin(), m.end()):
-        GetColumn(pos, len, mm.begin(), mm.end()));
+        GetColumn(m.begin(), m.end()):
+        GetColumn(mm.begin(), mm.end()));
     }
   }
   else
   {
-    auto ms_it = ms.begin();
-    for (auto it : lines)
-    {
-      text += it.replace(pos, len, *ms_it);
-      ++ms_it;
-    }
+    text = (sort_type & STRING_SORT_DESCENDING ? 
+      GetLines(lines, pos, len, ms.rbegin()):
+      GetLines(lines, pos, len, ms.begin()));
   }
   
   return text;
@@ -1029,14 +1039,51 @@ bool wxExSortSelection(
     return false;
   }
   
-  const int start_pos_line = stc->PositionFromLine(stc->LineFromPosition(start_pos));
-  const wxString text(wxExSort(
-    stc->GetSelectedText(), sort_type, pos, stc->GetEOL(), len));
-     
-  stc->ReplaceSelection(text);
-  stc->SetSelection(start_pos_line, start_pos_line + text.size());
+  bool error = false;
+  stc->BeginUndoAction();
   
-  return true;
+  try
+  {
+    if (stc->SelectionIsRectangle())
+    {
+      const int start_pos_line = stc->PositionFromLine(stc->LineFromPosition(start_pos));
+      const int end_pos_line = stc->PositionFromLine(stc->LineFromPosition(stc->GetSelectionEnd()) + 1);
+      const int nr_lines = 
+        stc->LineFromPosition(stc->GetSelectionEnd()) - 
+        stc->LineFromPosition(start_pos);
+        
+      const wxString sel = stc->GetTextRange(start_pos_line, end_pos_line); 
+      stc->DeleteRange(start_pos_line, end_pos_line - start_pos_line);
+      const wxString text(wxExSort(sel, sort_type, pos, stc->GetEOL(), len));
+      stc->InsertText(start_pos_line, text);
+
+      stc->SetCurrentPos(start_pos);
+      stc->SelectNone();      
+      for (int j = 0; j < len; j++)
+      {
+        stc->CharRightRectExtend();
+      }
+      for (int i = 0; i < nr_lines; i++)
+      {
+        stc->LineDownRectExtend();
+      }
+    }
+    else
+    {
+      const wxString text(wxExSort(stc->GetSelectedText(), sort_type, pos, stc->GetEOL(), len));
+      stc->ReplaceSelection(text);
+      stc->SetSelection(start_pos, start_pos + text.size());
+    }
+  }
+  catch (std::exception& e)
+  {
+    wxLogError(e.what());
+    error = true;
+  }
+  
+  stc->BeginUndoAction();
+  
+  return !error;
 }
   
 const wxString wxExTranslate(const wxString& text, int pageNum, int numPages)

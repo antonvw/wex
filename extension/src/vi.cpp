@@ -303,16 +303,6 @@ bool wxExVi::Command(const std::string& command)
  
   switch ((int)command[0])
   {
-    // Cannot be at CommandChar, as 0 is stripped from rest.
-    case '0':
-    case '^':
-      switch (GetMode())
-      {
-        case MODE_NORMAL: GetSTC()->Home(); break;
-        case MODE_VISUAL: GetSTC()->HomeExtend(); break;
-        case MODE_VISUAL_RECT: GetSTC()->HomeRectExtend(); break;
-      }
-      break;
     case 'G': GetSTC()->DocumentEnd(); break;
       
     case '/':
@@ -385,8 +375,13 @@ bool wxExVi::Command(const std::string& command)
           
           if (seq_size > 0)
           {
-            m_Repeat = strtol(rest.substr(0, seq_size).c_str(), NULL, 10);
-            rest = rest.substr(seq_size);
+            const long val = strtol(rest.substr(0, seq_size).c_str(), NULL, 10);
+            
+            if (val != 0)
+            {
+              m_Repeat = val;
+              rest = rest.substr(seq_size);
+            }
           }
         }
   
@@ -497,7 +492,19 @@ bool wxExVi::CommandChar(int c)
     case 'k': 
     case WXK_UP:
               NAVIGATE(Line, Up,       GetSTC()->GetCurrentLine() > 0, false, false); break;
-              
+    case '$': 
+              NAVIGATE(Line, End,      true, false, false); break;
+    
+    case '0':
+    case '^':
+      switch (GetMode())
+      {
+        case MODE_NORMAL: GetSTC()->Home(); break;
+        case MODE_VISUAL: GetSTC()->HomeExtend(); break;
+        case MODE_VISUAL_RECT: GetSTC()->HomeRectExtend(); break;
+      }
+      break;
+      
     // Navigate line commands that pass wrapped lines.
     case '+': 
     case WXK_RETURN:
@@ -624,15 +631,6 @@ bool wxExVi::CommandChar(int c)
     case '|': 
       GetSTC()->GotoPos(
         GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()) + m_Repeat - 1);
-      break;
-    
-    case '$': 
-      switch (GetMode())
-      {
-        case MODE_NORMAL: GetSTC()->LineEnd(); break;
-        case MODE_VISUAL: GetSTC()->LineEndExtend(); break;
-        case MODE_VISUAL_RECT: GetSTC()->LineEndRectExtend(); break;
-      }
       break;
     
     case WXK_CONTROL_E: 
