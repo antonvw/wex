@@ -14,7 +14,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-#define DEBUG ON
+//#define DEBUG ON
 
 void link(
     const wxExLink& link,
