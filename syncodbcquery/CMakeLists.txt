@@ -1,5 +1,4 @@
 project(syncodbcquery)
-cmake_minimum_required(VERSION 2.8.7)
 
 if (NOT ${ODBC_FOUND})
   message(FATAL_ERROR "odbc lib not found")

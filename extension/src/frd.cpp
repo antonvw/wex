@@ -188,6 +188,7 @@ void wxExFindReplaceData::SetUseRegEx(bool value)
   catch (std::regex_error& e) 
   {
     m_UseRegEx = false;
+    wxLogStatus("regex error: %s", e.what());
   }
 }
 
