@@ -1059,7 +1059,7 @@ bool wxExSortSelection(
 
       stc->SetCurrentPos(start_pos);
       stc->SelectNone();      
-      for (int j = 0; j < len; j++)
+      for (size_t j = 0; j < len; j++)
       {
         stc->CharRightRectExtend();
       }
