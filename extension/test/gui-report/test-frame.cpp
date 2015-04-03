@@ -12,6 +12,11 @@ void fixture::testFrameWithHistory()
 {
   wxExListView* list = new wxExListView(m_Frame);
 
+  wxMenu* menu = new wxMenu();
+  m_Frame->UseFileHistory(1000, menu);
+  m_Frame->UseFileHistoryList(list);
+  m_Frame->UseProjectHistory(1000, menu);
+  
   CPPUNIT_ASSERT(!m_Frame->OpenFile(GetTestFile())); // as we have no focused stc
   CPPUNIT_ASSERT(!m_Frame->GetRecentFile().Contains("test.h"));
 
@@ -44,9 +49,4 @@ void fixture::testFrameWithHistory()
   CPPUNIT_ASSERT( m_Frame->GetFileHistory().GetCount() > 0);
   CPPUNIT_ASSERT( m_Frame->GetRecentFile() == "xxx.cpp");
   CPPUNIT_ASSERT( m_Frame->GetRecentProject().empty());
-  
-  wxMenu* menu = new wxMenu();
-  m_Frame->UseFileHistory(1000, menu);
-  m_Frame->UseFileHistoryList(list);
-  m_Frame->UseProjectHistory(1000, menu);
 }

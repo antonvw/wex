@@ -2,7 +2,7 @@
 // Name:      stcfile.cpp
 // Purpose:   Implementation of class wxExSTCFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -65,7 +65,11 @@ bool wxExSTCFile::DoFileLoad(bool synced)
 
   if (!synced)
   {
-    m_STC->SetLexer(GetFileName().GetLexer(), true);
+    // ReadFromFile might already have set the lexer using a modeline.
+    if (m_STC->GetLexer().GetScintillaLexer().empty())
+    {
+      m_STC->SetLexer(GetFileName().GetLexer(), true);
+    }
 
     // No edges for log files.
     if (isLog)

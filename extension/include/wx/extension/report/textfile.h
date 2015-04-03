@@ -2,11 +2,10 @@
 // Name:      textfile.h
 // Purpose:   Declaration of class 'wxExTextFileWithListView'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EX_REPORT_TEXTFILE_H
-#define _EX_REPORT_TEXTFILE_H
+#pragma once
 
 #include <wx/extension/textfile.h>
 
@@ -72,10 +71,6 @@ private:
   void CommentStatementEnd();
   void CommentStatementStart();
   
-  /// Inserts a line at current line (or at end if at end),
-  /// make that line current and sets modified.
-  void InsertLine(const wxString& line);
-
   /// Parses the specified line, and invokes actions depending on the tool,
   /// and fills the comments if any on the line.
   /// At the end it calls ParseComments.
@@ -96,4 +91,3 @@ private:
   wxExSyntaxType m_LastSyntaxType;
   wxExSyntaxType m_SyntaxType;
 };
-#endif

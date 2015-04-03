@@ -1072,11 +1072,11 @@ void wxExSTC::GuessType()
     m_HexMode.GetBuffer().Mid(0, sample_size));
 
   std::vector<wxString> v;  
-    
+  
   // If we have a modeline comment.
   if (
     m_vi.GetIsActive() && 
-    wxExMatch(".*vi: *(set [a-z0-9:=! ]+)", text.ToStdString(), v) > 0)
+    wxExMatch("vi: *(set [a-z0-9:=! ]+)", text.ToStdString(), v) > 0)
   {
     if (!m_vi.Command(wxString(":" + v[0]).ToStdString()))
     {

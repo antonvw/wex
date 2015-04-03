@@ -2325,6 +2325,12 @@ Copyright: (c) 2015, Anton van Wezenbeek
   <lexer name="clarion"/>
   <lexer name="clarionnocase" macro="clarion"/>
   <lexer name="cmake" extensions="CMakeLists.txt;*.cmake">
+    <styles>
+      <style no="ifdefinedef"> fore:brown </style> 
+      <style no="whiledef"> fore:brown </style> 
+      <style no="foreachdef"> fore:brown </style> 
+      <style no="ifdefinedef"> fore:brown </style> 
+    </styles> 
     <properties>
       <property name="fold"> 1 </property>
       <property name="fold.compact"> 1 </property>

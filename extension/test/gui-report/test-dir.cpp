@@ -22,13 +22,11 @@ void fixture::testDirTool()
     return;
   }
 
-  int flags = wxDIR_FILES | wxDIR_HIDDEN | wxDIR_DIRS;;
-  
   wxExDirTool dir(
     tool,
     "./",
-    "*.cpp",
-    flags);
+    "*.cpp;*.h",
+    wxDIR_FILES | wxDIR_HIDDEN | wxDIR_DIRS);
 
   dir.FindFiles();
 

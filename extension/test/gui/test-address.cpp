@@ -114,6 +114,7 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
   
   // Test Sort and flags.
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "1").Sort("x"));
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("u"));
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("r"));

@@ -30,22 +30,6 @@
 
 #define NAVIGATE(SCOPE, DIRECTION, COND1, COND2, WRAP)                   \
 {                                                                        \
-  if (GetMode() == MODE_VISUAL_LINE &&                                   \
-      GetSTC()->GetSelectedText().empty())                               \
-  {                                                                      \
-    if (strcmp((#DIRECTION), "Left") == 0 ||                             \
-        strcmp((#DIRECTION), "Up") == 0)                                 \
-    {                                                                    \
-      GetSTC()->LineDown();                                              \
-      GetSTC()->Home();                                                  \
-      GetSTC()->LineUpExtend();                                          \
-    }                                                                    \
-    else                                                                 \
-    {                                                                    \
-      GetSTC()->Home();                                                  \
-      GetSTC()->LineDownExtend();                                        \
-    }                                                                    \
-  }                                                                      \
   if (COND1)                                                             \
   {                                                                      \
     for (int i = 0; i < m_Repeat; i++)                                   \
@@ -303,8 +287,6 @@ bool wxExVi::Command(const std::string& command)
  
   switch ((int)command[0])
   {
-    case 'G': GetSTC()->DocumentEnd(); break;
-      
     case '/':
     case '?':
       m_SearchForward = command.front() == '/';
@@ -492,26 +474,17 @@ bool wxExVi::CommandChar(int c)
     case 'k': 
     case WXK_UP:
               NAVIGATE(Line, Up,       GetSTC()->GetCurrentLine() > 0, false, false); break;
-    case '$': 
-              NAVIGATE(Line, End,      true, false, false); break;
+    case '$': NAVIGATE(Line, End,      true, false, false); break;
     
     case '0':
-    case '^':
-      switch (GetMode())
-      {
-        case MODE_NORMAL: GetSTC()->Home(); break;
-        case MODE_VISUAL: GetSTC()->HomeExtend(); break;
-        case MODE_VISUAL_RECT: GetSTC()->HomeRectExtend(); break;
-      }
-      break;
+    case '^': NAVIGATE(Line, Home,     true, false, false); break;
       
     // Navigate line commands that pass wrapped lines.
     case '+': 
     case WXK_RETURN:
     case WXK_NUMPAD_ENTER:
               NAVIGATE(Line, Down,     true, true, true); break;
-    case '-': 
-              NAVIGATE(Line, Up,       GetSTC()->GetCurrentLine() > 0, true, true); break;
+    case '-': NAVIGATE(Line, Up,       GetSTC()->GetCurrentLine() > 0, true, true); break;
               
     // Navigate word commands (B, W, E, treated as b, w, e for the moment).
     case 'B':
@@ -526,9 +499,9 @@ bool wxExVi::CommandChar(int c)
     case '{': NAVIGATE(Para, Up,       true, false, false); break;
     case ')':
     case '}': NAVIGATE(Para, Down,     true, false, false); break;
-    case WXK_CONTROL_B:
     
     // Navigate page commands.
+    case WXK_CONTROL_B:
     case WXK_PAGEUP:
               NAVIGATE(Page, Up,       true, false, false); break;
     case WXK_CONTROL_F:
@@ -585,7 +558,11 @@ bool wxExVi::CommandChar(int c)
       }
       break;
         
-    case 'G': GetSTC()->GotoLineAndSelect(m_Repeat); break;
+    case 'G': 
+      (m_Repeat == 1 ? 
+         GetSTC()->DocumentEnd():
+         GetSTC()->GotoLineAndSelect(m_Repeat)); break;
+      
     case 'H': GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine()); break;
         
     case 'J':

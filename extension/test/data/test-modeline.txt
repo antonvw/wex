@@ -1,0 +1,4 @@
+-- vi: set sy=sql
+-- test modeline inside a file
+
+select * from universe;
