@@ -353,6 +353,9 @@ public:
   
   // These methods are not yet available in scintilla, create stubs
   // (for the vi NAVIGATE macro).
+  void LineHome() {Home();};
+  void LineHomeExtend() {HomeExtend();};
+  void LineHomeRectExtend() {HomeRectExtend();};
   void ParaUpRectExtend() {;};
   void ParaDownRectExtend() {;};
   void WordLeftRectExtend() {;};

@@ -33,7 +33,7 @@ public:
   
   /// Executes vi command.
   /// Returns true if the command was executed.
-  virtual bool Command(const std::string& command);
+  virtual bool Command(const std::string& command) override;
   
   /// Returns inserted text.
   const std::string& GetInsertedText() const {return m_InsertText;};

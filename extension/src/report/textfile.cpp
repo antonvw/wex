@@ -136,22 +136,6 @@ void wxExTextFileWithListView::CommentStatementStart()
   m_IsCommentStatement = true;
 }
 
-void wxExTextFileWithListView::InsertLine(const wxString& line)
-{
-  if (GetCurrentLine() == GetLineCount())
-  {
-    AddLine(line);
-  }
-  else
-  {
-    wxTextFile::InsertLine(line, GetCurrentLine());
-  }
-
-  m_Modified = true;
-
-  GoToLine(GetCurrentLine() + 1);
-}
-
 bool wxExTextFileWithListView::Parse()
 {
   if (GetTool().IsFindType())

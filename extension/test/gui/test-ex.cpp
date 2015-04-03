@@ -21,14 +21,17 @@
 void fixture::testEx()
 {
   // Test modeline.
-  wxExSTC* stc = new wxExSTC(m_Frame, 
-    "// vi: set ts=120 ec=40");
-    
+  const wxString modeline("set ts=120 ec=40 sy=sql");
+  wxExSTC* stc = new wxExSTC(m_Frame, "-- vi: " + modeline);
   wxExEx* ex = new wxExEx(stc);
-  
+    
   CPPUNIT_ASSERT(stc->GetTabWidth() == 120);
   CPPUNIT_ASSERT(stc->GetEdgeColumn() == 40);
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":set ts=120 ec=40");
+  CPPUNIT_ASSERT(stc->GetLexer().GetScintillaLexer() == "sql");
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":" + modeline);
+  wxExSTC* stc2 = new wxExSTC(m_Frame, wxExFileName("test-modeline.txt"));
+  CPPUNIT_ASSERT(stc2->GetLexer().GetScintillaLexer() == "sql");
+  
   
   CPPUNIT_ASSERT( ex->GetIsActive());
   ex->Use(false);

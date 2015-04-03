@@ -19,11 +19,11 @@ cmake_minimum_required(VERSION 2.8.7)
 SET( ODBC_FOUND 0 )
 
 #---For the windows platform ODBC is located automatically
-if(WIN32)
+if (WIN32)
   set(ODBC_INCLUDE_DIR "")
   set(ODBC_LIBRARY odbc32.lib) 
   set(ODBC_FOUND 1)
-else()
+else ()
   find_path(ODBC_INCLUDE_DIR sqlext.h
     /usr/include
     /usr/include/odbc
@@ -45,7 +45,7 @@ else()
     DOC "Specify the ODBC driver manager library here."
   )
   
-  if(ODBC_LIBRARY AND ODBC_INCLUDE_DIR)
+  if (ODBC_LIBRARY AND ODBC_INCLUDE_DIR)
     set( ODBC_FOUND 1 )
   endif()
 endif()
@@ -62,11 +62,11 @@ if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D__WXDEBUG__")
   else ()
     set(wxWidgets_CONFIGURATION mswu)
-  endif()
+  endif ()
 else ()
   if (CMAKE_BUILD_TYPE MATCHES "Coverage")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -O0 --coverage")
   endif ()
   
   if (CMAKE_BUILD_TYPE MATCHES "Profile")
@@ -75,7 +75,7 @@ else ()
   endif ()
   
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-write-strings")
-endif()
+endif ()
 
 if (WIN32)
   find_package(wxWidgets COMPONENTS scintilla aui stc html adv xml core base net REQUIRED)

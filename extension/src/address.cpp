@@ -429,7 +429,7 @@ bool wxExAddressRange::SetSelection() const
   return true;
 }
 
-bool wxExAddressRange::Sort(const wxString& command)
+bool wxExAddressRange::Sort(const wxString& parameters)
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !SetSelection())
   {
@@ -446,26 +446,26 @@ bool wxExAddressRange::Sort(const wxString& command)
     len = m_STC->GetColumn(m_STC->GetSelectionEnd() - pos);
   }
 
-  if (!command.empty())
+  if (!parameters.empty())
   {
-    if (  (command[0] == '0') ||
-         (!command.StartsWith("u") && 
-          !command.StartsWith("r") && 
-          !isdigit(command[0])))
+    if (  (parameters[0] == '0') ||
+         (!parameters.StartsWith("u") && 
+          !parameters.StartsWith("r") && 
+          !isdigit(parameters[0])))
     {
       return false;
     }
     
-    sort_type |= (command.Contains("r") ? STRING_SORT_DESCENDING: 0);
-    sort_type |= (command.Contains("u") ? STRING_SORT_UNIQUE: 0);
+    sort_type |= (parameters.Contains("r") ? STRING_SORT_DESCENDING: 0);
+    sort_type |= (parameters.Contains("u") ? STRING_SORT_UNIQUE: 0);
     
-    if (isdigit(command[0]))
+    if (isdigit(parameters[0]))
     {
-      pos = (atoi(command) > 0 ? atoi(command) - 1: 0);
+      pos = (atoi(parameters) > 0 ? atoi(parameters) - 1: 0);
       
-      if (command.Contains(","))
+      if (parameters.Contains(","))
       {
-        len = atoi(command.AfterFirst(',')) - pos + 1;
+        len = atoi(parameters.AfterFirst(',')) - pos + 1;
       }
     }
   }

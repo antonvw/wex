@@ -100,7 +100,28 @@ bool wxExViFSM::Transition(const std::string& command)
   
       m_State = fsm.Next();
       fsm.Process(command);
-
+      
+      if (m_State == wxExVi::MODE_VISUAL_LINE)
+      {
+        if (m_vi->GetSTC()->SelectionIsRectangle())
+        {
+          m_vi->GetSTC()->Home();
+          m_vi->GetSTC()->LineDownExtend();
+        }
+        else if (m_vi->GetSTC()->GetSelectedText().empty())
+        {
+          m_vi->GetSTC()->Home();
+          m_vi->GetSTC()->LineDownExtend();
+        }
+        else
+        {
+          const int selstart = m_vi->GetSTC()->PositionFromLine(m_vi->GetSTC()->LineFromPosition(m_vi->GetSTC()->GetSelectionStart()));
+          const int selend = m_vi->GetSTC()->PositionFromLine(m_vi->GetSTC()->LineFromPosition(m_vi->GetSTC()->GetSelectionEnd()) + 1);
+          m_vi->GetSTC()->SetSelection(selstart, selend);
+          m_vi->GetSTC()->HomeExtend();
+        }
+      }
+      
       return true;
     }
   }
