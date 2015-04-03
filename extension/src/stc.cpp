@@ -431,6 +431,13 @@ int wxExSTC::ConfigDialog(
   long flags,
   wxWindowID id)
 {
+  wxConfigBase* cfg = wxConfigBase::Get();
+  
+  if (!cfg->Exists(_("Caret line")))
+  {
+    cfg->SetRecordDefaults(true);
+  }
+  
   const std::vector<wxExConfigItem> items{
     // General page.
     // use 3 cols here, but 1 for others on this page
@@ -474,8 +481,8 @@ int wxExSTC::ConfigDialog(
       std::make_pair(wxSTC_EDGE_LINE, _("Line")),
       std::make_pair(wxSTC_EDGE_BACKGROUND, _("Background"))}, true, _("Edge"), 1),
     // Margin page.
-    wxExConfigItem(_("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")),
-    wxExConfigItem(_("Indent"), 0, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")),
+    wxExConfigItem(_("Tab width"), 1, cfg->ReadLong(_("Edge column"), 80), _("Margin")),
+    wxExConfigItem(_("Indent"), 0, cfg->ReadLong(_("Edge column"), 80), _("Margin")),
     wxExConfigItem(_("Divider"), 0, 40, _("Margin")),
     (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Folding"), 0, 40, _("Margin")): wxExConfigItem()),
     wxExConfigItem(_("Line number"), 0, 100, _("Margin")),
@@ -499,6 +506,17 @@ int wxExSTC::ConfigDialog(
     // Directory page.
     (!(flags & STC_CONFIG_SIMPLE) && wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Include directory"), CONFIG_LISTVIEW_FOLDER, _("Directory"), false, wxID_ANY, 25, false): wxExConfigItem())};
 
+  if (cfg->IsRecordingDefaults())
+  {
+    // Set defaults only.
+    cfg->ReadLong(_("Auto fold"), 1500);
+    cfg->ReadLong(_("Auto indent"), INDENT_WHITESPACE);
+    cfg->ReadLong(_("Folding"), 16);
+    cfg->ReadBool(_("Scroll bars"), true);
+    cfg->ReadLong(_("Edge column"), 80);
+    cfg->SetRecordDefaults(false);
+  }
+  
   int buttons = wxOK | wxCANCEL;
 
   if (flags & STC_CONFIG_WITH_APPLY)
@@ -1759,7 +1777,7 @@ bool wxExSTC::Open(
     success = false;
   }
   
-  if (success)
+  if (success && m_Frame != NULL)
   {
     m_Frame->SetRecentFile(filename.GetFullPath());
   }
