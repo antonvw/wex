@@ -604,6 +604,10 @@ void wxExExTextCtrl::SetEx(wxExEx* ex, const wxString& command)
         SetValue(current);
       }
     }
+    else
+    {
+      SetValue(range); 
+    }
   }
     
   Show();
