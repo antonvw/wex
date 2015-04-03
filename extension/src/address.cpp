@@ -489,9 +489,24 @@ bool wxExAddressRange::Substitute(const wxString& command)
     return false;
   }
     
-  if (
-    !m_Ex->MarkerAdd('#', m_Begin.GetLine() - 1) || 
-    !m_Ex->MarkerAdd('$', m_End.GetLine() - 1))
+  if (!m_Ex->MarkerAdd('#', m_Begin.GetLine() - 1))
+  {
+    return false;
+  }
+
+  int corrected = 0;
+  int end_line = m_End.GetLine() - 1;
+  
+  if (!m_STC->GetSelectedText().empty())
+  {
+    if (m_STC->GetLineSelEndPosition(end_line) == m_STC->PositionFromLine(end_line))
+    {
+      end_line--;
+      corrected = 1;
+    }
+  }
+  
+  if (!m_Ex->MarkerAdd('$', end_line))
   {
     return false;
   }
@@ -564,7 +579,7 @@ bool wxExAddressRange::Substitute(const wxString& command)
   {
     m_STC->SetSelection(
       m_STC->PositionFromLine(m_Ex->MarkerLine('#')),
-      m_STC->PositionFromLine(m_Ex->MarkerLine('$')));
+      m_STC->PositionFromLine(m_Ex->MarkerLine('$') + corrected));
   }
 
   m_Ex->MarkerDelete('#');
