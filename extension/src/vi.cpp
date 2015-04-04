@@ -157,53 +157,27 @@ std::string wxExVi::m_LastFindCharCommand;
 wxExVi::wxExVi(wxExSTC* stc)
   : wxExEx(stc)
   , m_Dot(false)
-  , m_FSM(this, [=](const std::string& command) {
-    if (!m_Dot)
-    {
-      m_InsertText.clear();
-      SetLastCommand((m_Repeat > 1 ? std::to_string(m_Repeat): "") + command, true);
-    }
-    GetSTC()->BeginUndoAction();
-    switch ((int)command[0])
-    {
-      case 'a': GetSTC()->CharRight(); break;
-      case 'A': GetSTC()->LineEnd(); break;
-      case 'R': GetSTC()->SetOvertype(true); break;
-      case 'I': GetSTC()->Home(); break;
-      case 'c': 
-      case 'i': 
-        break;
-      case 'o': 
-        GetSTC()->LineEnd(); 
-        GetSTC()->NewLine(); 
-        break;
-      case 'C': 
-        GetSTC()->LineEndExtend();
-        Cut();
-        break;
-      case 'O': 
-        GetSTC()->Home(); 
-        GetSTC()->NewLine(); 
-        GetSTC()->LineUp(); 
-        break;
-      default: wxFAIL;
-    }},
+  , m_FSM(this, 
+     // insert mode process
+     [=](const std::string& command) {
+        if (!m_Dot)
+        {
+          m_InsertText.clear();
+          SetLastCommand((m_Repeat > 1 ? std::to_string(m_Repeat): "") + command, true);
+        }
+        GetSTC()->BeginUndoAction();},
+    // back to normal mode process
     [=](const std::string& command) {
-    if (!GetSTC()->GetSelectedText().empty() || 
-         GetSTC()->SelectionIsRectangle())
-    {
-      GetSTC()->SelectNone();
-    }
-    if (!m_Dot)
-    {
-      const std::string lc(GetLastCommand() + GetRegisterInsert());
-      SetLastCommand(lc + wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
-      // Record it (if recording is on).
-      GetMacros().Record(lc);
-      GetMacros().Record(wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
-    }
-    m_Command.clear();
-    GetSTC()->EndUndoAction();})
+        if (!m_Dot)
+        {
+          const std::string lc(GetLastCommand() + GetRegisterInsert());
+          SetLastCommand(lc + wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
+          // Record it (if recording is on).
+          GetMacros().Record(lc);
+          GetMacros().Record(wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
+        }
+        m_Command.clear();
+        GetSTC()->EndUndoAction();})
   , m_Repeat(1)
   , m_SearchForward(true)
 {
