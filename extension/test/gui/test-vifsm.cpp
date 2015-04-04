@@ -21,6 +21,7 @@
 void fixture::testViFSM()
 {
   wxExSTC* stc = new wxExSTC(m_Frame);
+  
   wxExViFSM fsm(&stc->GetVi(), 
     [=](const std::string& command){;},
     [=](const std::string& command){;});
@@ -46,4 +47,9 @@ void fixture::testViFSM()
   stc->SetReadOnly(true);
   CPPUNIT_ASSERT( fsm.Transition("i"));
   CPPUNIT_ASSERT( fsm.State() == wxExVi::MODE_NORMAL);
+  
+  wxExViFSMEntry entry(0, 1, 2, [=](const std::string& command){;});
+  CPPUNIT_ASSERT( entry.State() == 0);
+  CPPUNIT_ASSERT( entry.Action() == 1);
+  CPPUNIT_ASSERT( entry.Next("test") == 2);
 }

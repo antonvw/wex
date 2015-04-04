@@ -24,6 +24,9 @@ enum
   m_FSM.push_back(                                                 \
     wxExViFSMEntry(wxExVi::STATE, ACTION, wxExVi::NEXT, PROCESS)); \
 
+#define NAVIGATE(SCOPE, DIRECTION)                                 \
+  m_vi->GetSTC()->SCOPE##DIRECTION();                              \
+  
 wxExViFSM::wxExViFSM(wxExVi* vi, 
   std::function<void(const std::string&)> insert,
   std::function<void(const std::string&)> normal)
@@ -35,17 +38,17 @@ wxExViFSM::wxExViFSM(wxExVi* vi,
    MAKE_ENTRY ( MODE_NORMAL,      KEY_VISUAL_LINE, MODE_VISUAL_LINE, EMPTY)
    MAKE_ENTRY ( MODE_NORMAL,      KEY_VISUAL_RECT, MODE_VISUAL_RECT, EMPTY)
    MAKE_ENTRY ( MODE_INSERT,      KEY_ESCAPE,      MODE_NORMAL,      normal)
-   MAKE_ENTRY ( MODE_INSERT_RECT, KEY_ESCAPE,      MODE_VISUAL_RECT, EMPTY)
+   MAKE_ENTRY ( MODE_INSERT_RECT, KEY_ESCAPE,      MODE_VISUAL_RECT, normal)
    MAKE_ENTRY ( MODE_VISUAL,      KEY_ESCAPE,      MODE_NORMAL,      EMPTY)
    MAKE_ENTRY ( MODE_VISUAL,      KEY_VISUAL_LINE, MODE_VISUAL_LINE, EMPTY)
    MAKE_ENTRY ( MODE_VISUAL,      KEY_VISUAL_RECT, MODE_VISUAL_RECT, EMPTY)
    MAKE_ENTRY ( MODE_VISUAL_LINE, KEY_ESCAPE,      MODE_NORMAL,      EMPTY)
    MAKE_ENTRY ( MODE_VISUAL_LINE, KEY_VISUAL,      MODE_VISUAL,      EMPTY)
    MAKE_ENTRY ( MODE_VISUAL_LINE, KEY_VISUAL_RECT, MODE_VISUAL_RECT, EMPTY)
+   MAKE_ENTRY ( MODE_VISUAL_RECT, KEY_INSERT,      MODE_INSERT_RECT, insert)
    MAKE_ENTRY ( MODE_VISUAL_RECT, KEY_ESCAPE,      MODE_NORMAL,      EMPTY)
    MAKE_ENTRY ( MODE_VISUAL_RECT, KEY_VISUAL,      MODE_VISUAL,      EMPTY)
    MAKE_ENTRY ( MODE_VISUAL_RECT, KEY_VISUAL_LINE, MODE_VISUAL_LINE, EMPTY)
-   MAKE_ENTRY ( MODE_VISUAL_RECT, KEY_INSERT,      MODE_INSERT_RECT, EMPTY)
 }
 
 bool wxExViFSM::Transition(const std::string& command)
@@ -98,28 +101,52 @@ bool wxExViFSM::Transition(const std::string& command)
         return true;
       }
   
-      m_State = fsm.Next();
-      fsm.Process(command);
+      m_State = fsm.Next(command);
       
-      if (m_State == wxExVi::MODE_VISUAL_LINE)
+      switch (m_State)
       {
-        if (m_vi->GetSTC()->SelectionIsRectangle())
-        {
-          m_vi->GetSTC()->Home();
-          m_vi->GetSTC()->LineDownExtend();
-        }
-        else if (m_vi->GetSTC()->GetSelectedText().empty())
-        {
-          m_vi->GetSTC()->Home();
-          m_vi->GetSTC()->LineDownExtend();
-        }
-        else
-        {
-          const int selstart = m_vi->GetSTC()->PositionFromLine(m_vi->GetSTC()->LineFromPosition(m_vi->GetSTC()->GetSelectionStart()));
-          const int selend = m_vi->GetSTC()->PositionFromLine(m_vi->GetSTC()->LineFromPosition(m_vi->GetSTC()->GetSelectionEnd()) + 1);
-          m_vi->GetSTC()->SetSelection(selstart, selend);
-          m_vi->GetSTC()->HomeExtend();
-        }
+        case wxExVi::MODE_INSERT:
+          switch ((int)command[0])
+          {
+            case 'a': NAVIGATE(Char, Right); break;
+            case 'A': NAVIGATE(Line, End); break;
+            case 'R': m_vi->GetSTC()->SetOvertype(true); break;
+            case 'I': NAVIGATE(Line, Home); break;
+            case 'o': 
+              NAVIGATE(Line, End);
+              m_vi->GetSTC()->NewLine(); 
+              break;
+            case 'C': 
+              m_vi->GetSTC()->LineEndExtend();
+              m_vi->Cut();
+              break;
+            case 'O': 
+              NAVIGATE(Line, Home); 
+              m_vi->GetSTC()->NewLine(); 
+              NAVIGATE(Line, Up); 
+              break;
+          }
+          break;
+          
+        case wxExVi::MODE_VISUAL_LINE:
+          if (m_vi->GetSTC()->SelectionIsRectangle())
+          {
+            m_vi->GetSTC()->Home();
+            m_vi->GetSTC()->LineDownExtend();
+          }
+          else if (m_vi->GetSTC()->GetSelectedText().empty())
+          {
+            m_vi->GetSTC()->Home();
+            m_vi->GetSTC()->LineDownExtend();
+          }
+          else
+          {
+            const int selstart = m_vi->GetSTC()->PositionFromLine(m_vi->GetSTC()->LineFromPosition(m_vi->GetSTC()->GetSelectionStart()));
+            const int selend = m_vi->GetSTC()->PositionFromLine(m_vi->GetSTC()->LineFromPosition(m_vi->GetSTC()->GetSelectionEnd()) + 1);
+            m_vi->GetSTC()->SetSelection(selstart, selend);
+            m_vi->GetSTC()->HomeExtend();
+          }
+          break;
       }
       
       return true;
@@ -138,7 +165,8 @@ wxExViFSMEntry::wxExViFSMEntry(int state, int action, int next,
 {
 }
 
-void wxExViFSMEntry::Process(const std::string& command)
+int wxExViFSMEntry::Next(const std::string& command)
 {
   m_Process(command);
+  return m_NextState;
 }
