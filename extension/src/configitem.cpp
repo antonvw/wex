@@ -954,7 +954,16 @@ bool wxExConfigItem::ToConfig(bool save) const
       }
       else
       {
-        const wxString val(wxConfigBase::Get()->Read(m_Label));
+        wxString initial;
+
+#ifdef __WXGTK__
+        initial = "/usr/bin/" + m_Label;
+        if (!wxFileExists(initial))
+        {
+          initial.clear();
+        }
+#endif
+        const wxString val(wxConfigBase::Get()->Read(m_Label, initial));
         
         if (!val.empty())
         {

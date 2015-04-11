@@ -42,6 +42,42 @@ enum
   INDENT_ALL,
 };
 
+class Defaults
+{
+public:
+  Defaults()
+    : m_Config(wxConfigBase::Get()) {
+    if (!m_Config->Exists(_("Scroll bars")))
+    {
+      m_Config->SetRecordDefaults(true);
+      
+      m_Config->ReadBool(_("Caret line"), true);
+      m_Config->ReadBool(_("Scroll bars"), true);
+      m_Config->ReadLong(_("Auto fold"), 1500);
+      m_Config->ReadLong(_("Auto indent"), INDENT_ALL);
+      m_Config->ReadLong(_("Divider"), 16);
+      m_Config->ReadLong(_("Edge column"), 80);
+      m_Config->ReadLong(_("Edge line"), wxSTC_EDGE_NONE);
+      m_Config->ReadLong(_("Fold flags"), wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED);
+      m_Config->ReadLong(_("Folding"), 16);
+      m_Config->ReadLong(_("Indent"), 2);
+      m_Config->ReadLong(_("Line number"), 16);
+      m_Config->ReadLong(_("Print flags"), wxSTC_PRINT_BLACKONWHITE);
+      m_Config->ReadLong(_("Tab width"), 2);
+      m_Config->ReadObject(_("Default font"), wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
+    }};
+  
+  wxConfigBase* Get() {return m_Config;};
+  
+ ~Defaults() {
+    if (m_Config->IsRecordingDefaults())
+    {
+      m_Config->SetRecordDefaults(false);
+    }};
+private:
+  wxConfigBase* m_Config;
+};
+  
 wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
 wxExSTCEntryDialog* wxExSTC::m_EntryDialog = NULL;
 int wxExSTC::m_Zoom = -1;
@@ -431,12 +467,8 @@ int wxExSTC::ConfigDialog(
   long flags,
   wxWindowID id)
 {
-  wxConfigBase* cfg = wxConfigBase::Get();
-  
-  if (!cfg->Exists(_("Caret line")))
-  {
-    cfg->SetRecordDefaults(true);
-  }
+  Defaults use;
+  wxConfigBase* cfg = use.Get();
   
   const std::vector<wxExConfigItem> items{
     // General page.
@@ -481,8 +513,8 @@ int wxExSTC::ConfigDialog(
       std::make_pair(wxSTC_EDGE_LINE, _("Line")),
       std::make_pair(wxSTC_EDGE_BACKGROUND, _("Background"))}, true, _("Edge"), 1),
     // Margin page.
-    wxExConfigItem(_("Tab width"), 1, cfg->ReadLong(_("Edge column"), 80), _("Margin")),
-    wxExConfigItem(_("Indent"), 0, cfg->ReadLong(_("Edge column"), 80), _("Margin")),
+    wxExConfigItem(_("Tab width"), 1, cfg->ReadLong(_("Edge column"), 0), _("Margin")),
+    wxExConfigItem(_("Indent"), 0, cfg->ReadLong(_("Edge column"), 0), _("Margin")),
     wxExConfigItem(_("Divider"), 0, 40, _("Margin")),
     (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Folding"), 0, 40, _("Margin")): wxExConfigItem()),
     wxExConfigItem(_("Line number"), 0, 100, _("Margin")),
@@ -506,17 +538,6 @@ int wxExSTC::ConfigDialog(
     // Directory page.
     (!(flags & STC_CONFIG_SIMPLE) && wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Include directory"), CONFIG_LISTVIEW_FOLDER, _("Directory"), false, wxID_ANY, 25, false): wxExConfigItem())};
 
-  if (cfg->IsRecordingDefaults())
-  {
-    // Set defaults only.
-    cfg->ReadLong(_("Auto fold"), 1500);
-    cfg->ReadLong(_("Auto indent"), INDENT_WHITESPACE);
-    cfg->ReadLong(_("Folding"), 16);
-    cfg->ReadBool(_("Scroll bars"), true);
-    cfg->ReadLong(_("Edge column"), 80);
-    cfg->SetRecordDefaults(false);
-  }
-  
   int buttons = wxOK | wxCANCEL;
 
   if (flags & STC_CONFIG_WITH_APPLY)
@@ -545,12 +566,8 @@ int wxExSTC::ConfigDialog(
 
 void wxExSTC::ConfigGet(bool init)
 {
-  wxConfigBase* cfg = wxConfigBase::Get();
-  
-  if (!cfg->Exists(_("Caret line")))
-  {
-    cfg->SetRecordDefaults(true);
-  }
+  Defaults use;
+  wxConfigBase* cfg = use.Get();
   
   const wxFont font(cfg->ReadObject(
     _("Default font"), wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
@@ -573,52 +590,37 @@ void wxExSTC::ConfigGet(bool init)
   }
   else
   {
-    SetEdgeColumn(cfg->ReadLong(_("Edge column"), 80));
+    SetEdgeColumn(cfg->ReadLong(_("Edge column"), 0));
     SetEdgeMode(cfg->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
   }
   
-  SetUseHorizontalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
-  SetUseVerticalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
-  SetPrintColourMode(cfg->ReadLong(_("Print flags"), wxSTC_PRINT_BLACKONWHITE));
-  SetCaretLineVisible(cfg->ReadBool(_("Caret line"), true));
-    
-  SetFoldFlags(cfg->ReadLong( _("Fold flags"),
-    wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
-  const long def_tab_width = 2;
-  SetIndent(cfg->ReadLong(_("Indent"), def_tab_width));
-  SetIndentationGuides( cfg->ReadBool(_("Indentation guide"), false));
-  SetMarginWidth(m_MarginDividerNumber,  cfg->ReadLong(_("Divider"), 16));
-
   if (init)
   {
     Fold();
   }
-    
-  ShowLineNumbers(cfg->ReadBool(_("Line numbers"), false));
 
-  SetTabWidth(cfg->ReadLong(_("Tab width"), def_tab_width));
+  SetCaretLineVisible(cfg->ReadBool(_("Caret line"), true));
+  SetFoldFlags(cfg->ReadLong( _("Fold flags"), 0));
+  SetIndent(cfg->ReadLong(_("Indent"), 0));
+  SetIndentationGuides( cfg->ReadBool(_("Indentation guide"), false));
+  SetMarginWidth(m_MarginDividerNumber,  cfg->ReadLong(_("Divider"), 0));
+  SetPrintColourMode(cfg->ReadLong(_("Print flags"), 0));
+  SetTabWidth(cfg->ReadLong(_("Tab width"), 0));
+  SetUseHorizontalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
   SetUseTabs(cfg->ReadBool(_("Use tabs"), false));
+  SetUseVerticalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
   SetViewEOL(cfg->ReadBool(_("End of line"), false));
   SetViewWhiteSpace(cfg->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
   SetWrapMode(cfg->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
   SetWrapVisualFlags(cfg->ReadLong(_("Wrap visual flags"),  wxSTC_WRAPVISUALFLAG_END));
+  
+  ShowLineNumbers(cfg->ReadBool(_("Line numbers"), false));
 
   // Here the default vi mode is set, and used if the application
   // is run for the first time.
   m_vi.Use(cfg->ReadBool(_("vi mode"), false));
 
   m_Link.SetFromConfig();
-
-  if (cfg->IsRecordingDefaults())
-  {
-    // Set defaults only.
-    cfg->ReadLong(_("Auto fold"), 1500);
-    cfg->ReadLong(_("Auto indent"), INDENT_WHITESPACE);
-    cfg->ReadLong(_("Folding"), 16);
-    cfg->ReadBool(_("Scroll bars"), true);
-
-    cfg->SetRecordDefaults(false);
-  }
 }
 
 void wxExSTC::ControlCharDialog(const wxString& caption)
@@ -863,7 +865,7 @@ void wxExSTC::Fold(bool foldall)
     !m_Lexer.GetScintillaLexer().empty())
   {
     SetMarginWidth(m_MarginFoldingNumber, 
-      wxConfigBase::Get()->ReadLong(_("Folding"), 16));
+      wxConfigBase::Get()->ReadLong(_("Folding"), 0));
     SetFoldFlags(
       wxConfigBase::Get()->ReadLong(_("Fold flags"),
       wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
@@ -871,7 +873,7 @@ void wxExSTC::Fold(bool foldall)
         
     if (
       foldall || 
-      GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500))
+      GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), 0))
     {
       FoldAll();
     }

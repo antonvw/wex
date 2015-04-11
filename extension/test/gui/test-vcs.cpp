@@ -34,9 +34,8 @@ void fixture::testVCS()
   CPPUNIT_ASSERT( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);
   CPPUNIT_ASSERT( vcs.DirExists(file));
     
-  // We do not have a vcs bin, so execute fails.
-// TODO: next crashes due to select file dialog.
-//  CPPUNIT_ASSERT( vcs.Execute() == -1);
+  // Segmentation fault
+//  CPPUNIT_ASSERT( vcs.Execute());
   CPPUNIT_ASSERT( vcs.GetEntry().GetOutput().empty());
 
   CPPUNIT_ASSERT( vcs.GetEntry().GetCommand().GetCommand() == "add");

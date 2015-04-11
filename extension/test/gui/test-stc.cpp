@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
@@ -137,6 +138,8 @@ void fixture::testSTC()
 
   // Test AutoIndentation
   // first test auto indentation on next line
+  wxConfigBase::Get()->Write(_("Auto indent"), 3);
+  CPPUNIT_ASSERT( wxConfigBase::Get()->ReadLong(_("Auto indent"), 1) == 3);
   stc->SetText("  \n  line with indentation");
   stc->DocumentEnd();
   CPPUNIT_ASSERT(!stc->AutoIndentation('x'));
@@ -147,11 +150,11 @@ void fixture::testSTC()
   CPPUNIT_ASSERT( stc->GetText() == "  \n  line with indentation");
   CPPUNIT_ASSERT( stc->GetLineCount() == 2);
   // test auto indentation for level change
-  CPPUNIT_ASSERT(stc->SetLexer("cpp"));
-  stc->SetText("if ()");
-  stc->NewLine();
-  stc->AddText("{");
-  // TODO: Fix.
+  CPPUNIT_ASSERT( stc->SetLexer("cpp"));
+  stc->SetText("\nif ()\n{\n");
+  stc->DocumentEnd();
+  // Somehow the fold level for current line is 0, so AutoIndentation
+  // fails. Is OK when playback in syncped.
   CPPUNIT_ASSERT(!stc->AutoIndentation('\n'));
   
   stc->Sync(false);

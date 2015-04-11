@@ -26,7 +26,6 @@ void fixture::testProcess()
   process.ConfigDialog(m_Frame, "test process", false);
   
   // Test wxEXEC_SYNC process.
-  /*
   CPPUNIT_ASSERT( process.Execute("ls -l", wxEXEC_SYNC));
   CPPUNIT_ASSERT(!process.GetError());
   CPPUNIT_ASSERT(!process.GetOutput().empty());
@@ -34,19 +33,19 @@ void fixture::testProcess()
   CPPUNIT_ASSERT(!process.IsRunning());
   CPPUNIT_ASSERT( process.IsSelected());
   CPPUNIT_ASSERT( process.GetSTC() != NULL);
-  CPPUNIT_ASSERT(!process.GetSTC()->GetText().empty());
+  CPPUNIT_ASSERT( process.GetSTC()->GetText().empty());
   CPPUNIT_ASSERT( process.Kill() == wxKILL_NO_PROCESS);
   
   process.ShowOutput();
 
-  // Repeat last wxEXEC_SYNC process.
+  // Repeat last wxEXEC_SYNC process (using "" only for dialogs).
   // Currently dialog might be cancelled, so do not check return value.
-  //  process.Execute("", wxEXEC_SYNC);
+  CPPUNIT_ASSERT( process.Execute("ls -l", wxEXEC_SYNC));
   CPPUNIT_ASSERT(!process.GetError());
   CPPUNIT_ASSERT(!process.GetOutput().empty());
-*/
-  // TODO:
+
   // Test invalid wxEXEC_SYNC process.
+  CPPUNIT_ASSERT(!process.Execute("xxxx", wxEXEC_SYNC));
   
   // Test wxEXEC_ASYNC process.
   // wxExecute hangs for wxEXEC_ASYNC
@@ -62,17 +61,14 @@ void fixture::testProcess()
   Process("cd ~\rpwd\r", shell);
 
   CPPUNIT_ASSERT( shell->GetText().Contains("home"));
-//  CPPUNIT_ASSERT( cwd != wxGetCwd());
+  CPPUNIT_ASSERT( cwd != wxGetCwd());
 
-  // Test invalid wxEXEC_ASYNC process (TODO: but it is started??).
+  // Test invalid wxEXEC_ASYNC process (the process gets a process id, and exits immediately).
   CPPUNIT_ASSERT( process.Execute("xxxx"));
   CPPUNIT_ASSERT(!process.GetError());
   // The output is not touched by the async process, so if it was not empty,
   // it still is not empty.
-//  CPPUNIT_ASSERT(!process.GetOutput().empty());
-  
-  // TODO:
-  // Repeat last process (wxEXEC_ASYNC).
+  CPPUNIT_ASSERT( process.GetOutput().empty());
   
   // Go back to where we were, necessary for other tests.
   wxSetWorkingDirectory(cwd);
