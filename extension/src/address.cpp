@@ -536,6 +536,10 @@ bool wxExAddressRange::Substitute(const wxString& command)
   int nr_replacements = 0;
   int result = wxID_YES;
        
+#ifdef LOGGING
+  wxLogMessage("search flags: %d pattern: %s", searchFlags, pattern);
+#endif  
+  
   while (m_STC->SearchInTarget(pattern) != -1 && result != wxID_CANCEL)
   {
     const wxString replacement(BuildReplacement(repl));
@@ -547,7 +551,7 @@ bool wxExAddressRange::Substitute(const wxString& command)
         
     if (result == wxID_YES)
     {
-      wxExFindReplaceData::Get()->UseRegEx() ?
+      (searchFlags & wxSTC_FIND_REGEXP) ?
         m_STC->ReplaceTargetRE(replacement):
         m_STC->ReplaceTarget(replacement);
         
@@ -589,6 +593,10 @@ bool wxExAddressRange::Substitute(const wxString& command)
     _("Replaced: %d occurrences of: %s"), nr_replacements, pattern.c_str()));
 
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
+  
+#ifdef LOGGING
+  wxLogMessage("replaced: %d", nr_replacements);
+#endif  
   
   return true;
 }

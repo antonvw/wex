@@ -336,7 +336,7 @@ bool wxExProcess::Execute(
       }
 
       wxTheApp->Yield();
-      wxMilliSleep(100);
+      wxMilliSleep(200);
       
       if (IsRunning())
       {

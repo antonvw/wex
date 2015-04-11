@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/filehistory.h>
 #include <wx/numformatter.h>
 #include <wx/extension/util.h>
@@ -55,6 +56,7 @@ void fixture::testUtil()
       == wxString("// headertest").size());
       
   // wxExAutoComplete
+  CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
   wxString s;
   CPPUNIT_ASSERT(!wxExAutoComplete("xxxx", 
     stc->GetVi().GetMacros().Get(), s));
@@ -209,7 +211,9 @@ void fixture::testUtil()
   l.push_back("1");
   l.push_back("2");
   wxExListToConfig(l, "list_items");
-  CPPUNIT_ASSERT( l.size() == 2); // TODO: improve, test on config
+  CPPUNIT_ASSERT( l.size() == 2);
+  CPPUNIT_ASSERT(wxConfigBase::Get()->Read("list_items", "").Contains("1"));
+  CPPUNIT_ASSERT(wxConfigBase::Get()->Read("list_items", "").Contains("2"));
   
   // wxExLogStatus
   wxExLogStatus( GetTestFile());

@@ -259,7 +259,7 @@ bool wxExVCSEntry::Execute(
 
 const wxString wxExVCSEntry::GetBin() const
 {
-  return wxConfigBase::Get()->Read(m_Name, "");
+  return wxConfigBase::Get()->Read(m_Name, "/usr/bin/" + m_Name);
 }
 
 const wxString wxExVCSEntry::GetFlags() const

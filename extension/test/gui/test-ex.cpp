@@ -209,6 +209,12 @@ void fixture::testEx()
   CPPUNIT_ASSERT( stc->GetText().Contains("yyyy"));
   CPPUNIT_ASSERT( ex->Command(":g//"));
   
+  // Test substitute.
+  stc->SetText("we have xxxx yyyy zzzz");
+  CPPUNIT_ASSERT( ex->Command(":set re"));
+  CPPUNIT_ASSERT( ex->Command(":%s/\\(x+\\) *\\(y+\\)/\\\\2 \\\\1"));
+  CPPUNIT_ASSERT( stc->GetText() == "we have yyyy xxxx zzzz");
+  
   // Test goto.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
   CPPUNIT_ASSERT( stc->GetLineCount() == 12);
