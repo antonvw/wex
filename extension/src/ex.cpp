@@ -492,7 +492,7 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
 bool wxExEx::CommandRange(const wxString& command)
 {
-  wxString rest;
+  wxString rest(command);
   wxString range_str;  
   wxChar cmd;
 
@@ -509,23 +509,12 @@ bool wxExEx::CommandRange(const wxString& command)
   }
   else
   {
-    const wxString tokens("dmsSyw><!");
-      
-    // We cannot yet handle a command containing tokens as markers.
-    if (command.Contains("'"))
+    if (!wxExReplaceMarkers(rest, this))
     {
-      const wxString markerfirst = command.AfterFirst('\'');
-      const wxString markerlast = command.AfterLast('\'');
-    
-      if (
-        tokens.Contains(markerfirst.Left(1)) ||
-        tokens.Contains(markerlast.Left(1)))
-      {
-        return false;
-      }
+      return false;
     }
-  
-    wxStringTokenizer tkz(command, tokens);
+    
+    wxStringTokenizer tkz(rest, "dmsStwy><!");
   
     if (!tkz.HasMoreTokens())
     {
@@ -544,13 +533,14 @@ bool wxExEx::CommandRange(const wxString& command)
   case 0: return false; break;
   case 'd': return range.Delete(); break;
   case 'm': return range.Move(wxExAddress(this, rest)); break;
-  case 'y': return range.Yank(); break;
+  case 's': return range.Substitute(rest); break;
+  case 'S': return range.Sort(rest); break;
+  case 't': return range.Copy(wxExAddress(this, rest)); break;
   case 'w': return range.Write(rest); break;
+  case 'y': return range.Yank(); break;
   case '>': return range.Indent(true); break;
   case '<': return range.Indent(false); break;
   case '!': return range.Filter(rest); break;
-  case 's': return range.Substitute(rest); break;
-  case 'S': return range.Sort(rest); break;
   default:
     wxLogStatus("Unknown range command: %c", cmd);
     return false;
@@ -909,7 +899,7 @@ void wxExEx::SetLastCommand(
   if (
       always || 
       command == "~" || 
-      ( command.size() > 2 && command.front() == ':' && 
+      ( command.size() > 1 && command.front() == ':' && 
         !wxString(command).StartsWith(":about") &&
         !wxString(command).StartsWith(":help") &&
         !wxString(command).StartsWith(":new")

@@ -32,7 +32,6 @@ void fixture::testEx()
   wxExSTC* stc2 = new wxExSTC(m_Frame, wxExFileName("test-modeline.txt"));
   CPPUNIT_ASSERT(stc2->GetLexer().GetScintillaLexer() == "sql");
   
-  
   CPPUNIT_ASSERT( ex->GetIsActive());
   ex->Use(false);
   CPPUNIT_ASSERT(!ex->GetIsActive());
@@ -40,6 +39,9 @@ void fixture::testEx()
   CPPUNIT_ASSERT( ex->GetIsActive());
   
   CPPUNIT_ASSERT( ex->GetMacros().GetCount() > 0);
+  
+  stc->SetText("xx\nyy\nzz\n");
+  stc->DocumentStart();
 
   // Test commands and last command.  
   for (auto& command : std::vector<std::pair<std::string, bool>> {
@@ -51,6 +53,10 @@ void fixture::testEx()
     {":xxx",false},{":yyy",false},
     {":10",true},{":.=",true},
     {":g/is/s//ok",true},{":g/is/d",true},{":g/is/p",true},
+    {":2",true},
+    {":.m$",true},
+    {":2",true},
+    {":.t$",true},
     {":%s/x/y",true},{":%/test//",false},
     {":.s/$/\n",true},
     {":.S",true},
@@ -89,7 +95,7 @@ void fixture::testEx()
   }
 
   CPPUNIT_ASSERT( ex->Command(":1"));
-  CPPUNIT_ASSERT( ex->MarkerAdd('t')); // do not use y or w marker, it is a token!!
+  CPPUNIT_ASSERT( ex->MarkerAdd('t'));
   CPPUNIT_ASSERT( ex->Command(":$"));
   CPPUNIT_ASSERT( ex->MarkerAdd('u'));
   CPPUNIT_ASSERT( ex->Command(":'t,'us/s/w/"));

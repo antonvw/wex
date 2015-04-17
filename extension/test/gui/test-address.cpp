@@ -92,6 +92,7 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,@").Move(wxExAddress(ex, "2")));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "x")));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,3").Move(wxExAddress(ex, "2")));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,@").Copy(wxExAddress(ex, "2")));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,x").Write("flut"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, " ,").Yank());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "'<,'>").IsOk());
@@ -167,6 +168,12 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "$")));
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
+  
+  // Test Copy.
+  stc->SetText(contents);
+  CPPUNIT_ASSERT( stc->GetLineCount() == 8);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Copy(wxExAddress(ex, "$")));
+  CPPUNIT_ASSERT( stc->GetLineCount() == 10);
   
   // Test Indent.
   stc->SetText(contents);

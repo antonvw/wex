@@ -77,6 +77,9 @@ public:
     /// - x,y: range from begin x and end y address.
     const wxString& range);
   
+  /// Copies range to destination.
+  bool Copy(const wxExAddress& destination) const;
+  
   /// Deletes range.
   bool Delete(bool show_message = true) const;
   

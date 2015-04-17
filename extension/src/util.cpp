@@ -253,38 +253,9 @@ double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
   expr.Replace("$", std::to_string(ex->GetSTC()->GetLineCount()));
   
   // Replace all markers and registers.
-  wxStringTokenizer tkz(expr, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
-
-  while (tkz.HasMoreTokens())
+  if (!wxExReplaceMarkers(expr, ex))
   {
-    tkz.GetNextToken();
-    
-    const wxString rest(tkz.GetString());
-    
-    if (!rest.empty())
-    {
-      // Replace marker.
-      if (tkz.GetLastDelimiter() == '\'')
-      {
-        const int line = ex->MarkerLine(rest.GetChar(0));
-        
-        if (line >= 0)
-        {
-          expr.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
-            std::to_string(line + 1));
-        }
-        else
-        {
-          return 0;
-        }
-      }
-      // Replace register.
-      else
-      {
-        expr.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
-          ex->GetMacros().GetRegister(rest.GetChar(0)));
-      }
-    }
+    return false;
   }
 
   // https://github.com/bmars/shunting-yard/
@@ -878,6 +849,45 @@ const wxString wxExQuoted(const wxString& text)
   return "'" + text + "'";
 }
 
+bool wxExReplaceMarkers(wxString& text, wxExEx* ex)
+{
+  wxStringTokenizer tkz(text, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
+
+  while (tkz.HasMoreTokens())
+  {
+    tkz.GetNextToken();
+    
+    const wxString rest(tkz.GetString());
+    
+    if (!rest.empty())
+    {
+      // Replace marker.
+      if (tkz.GetLastDelimiter() == '\'')
+      {
+        const int line = ex->MarkerLine(rest.GetChar(0));
+        
+        if (line >= 0)
+        {
+          text.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
+            std::to_string(line + 1));
+        }
+        else
+        {
+          return false;
+        }
+      }
+      // Replace register.
+      else
+      {
+        text.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
+          ex->GetMacros().GetRegister(rest.GetChar(0)));
+      }
+    }
+  }
+  
+  return true;
+}
+  
 const wxString wxExSkipWhiteSpace(
   const wxString& text,
   const wxString& replace_with)

@@ -44,5 +44,5 @@ public:
   void test();
 private:
   const wxString m_Project;
-  wxExFrameWithHistory* m_Frame;
+  static wxExFrameWithHistory* m_Frame;
 };

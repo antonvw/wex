@@ -209,6 +209,38 @@ int wxExAddressRange::Confirm(
   return msgDialog.ShowModal();
 }
 
+bool wxExAddressRange::Copy(const wxExAddress& destination) const
+{
+  const int dest_line = destination.GetLine();
+
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk() ||
+     dest_line == 0 || 
+    (dest_line >= m_Begin.GetLine() && dest_line <= m_End.GetLine()))
+  {
+    return false;
+  }
+
+  m_STC->BeginUndoAction();
+
+  if (Yank())
+  {
+    m_STC->GotoLine(dest_line - 1);
+    m_Ex->AddText(m_Ex->GetRegisterText());
+  }
+
+  m_STC->EndUndoAction();
+  
+  const int lines = wxExGetNumberOfLines(m_Ex->GetRegisterText());
+
+  if (lines >= 2)
+  {
+    m_Ex->GetFrame()->ShowExMessage(
+      wxString::Format(_("%d lines copied"), lines - 1));
+  }
+
+  return true;
+}
+  
 bool wxExAddressRange::Delete(bool show_message) const
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !SetSelection())
@@ -326,7 +358,7 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
   if (lines >= 2)
   {
     m_Ex->GetFrame()->ShowExMessage(
-      wxString::Format(_("%d lines moved"), lines));
+      wxString::Format(_("%d lines moved"), lines - 1));
   }
 
   return true;

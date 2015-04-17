@@ -295,6 +295,11 @@ const wxString wxExPrintHeader(const wxFileName& filename);
 /// Returns quotes around the text.
 const wxString wxExQuoted(const wxString& text);
 
+/// Replace markers and registers present in text by value
+/// according to ex component.
+/// Returns false if invalid marker is present.
+bool wxExReplaceMarkers(wxString& text, wxExEx* ex);
+
 #if wxUSE_GUI
 /// Sets a text ctrl value from a list of values 
 /// according to key movement.
@@ -308,33 +313,14 @@ bool wxExSetTextCtrlValue(
   const std::list < wxString > & l,
   /// iterator on the list
   std::list < wxString >::const_iterator & it);
-#endif
-
-/// Returns a string without all white space in specified input.
-const wxString wxExSkipWhiteSpace(
-  const wxString& text,
-  const wxString& replace_with = " ");
-
-/// This takes care of the translation.
-const wxString wxExTranslate(const wxString& text, int pageNum, int numPages);
-
-#if wxUSE_GUI
-/// Use specified VCS command to set lexer on STC document.
-void wxExVCSCommandOnSTC(
-  /// VCS command, used to check for diff or open command
-  const wxExVCSCommand& command, 
-  /// lexer to be used
-  const wxExLexer& lexer,
-  /// stc on which lexer is set
-  wxExSTC* stc);
-#endif
-
+  
 enum
 {
   STRING_SORT_ASCENDING  = 0x000, ///< default, keep doubles
   STRING_SORT_DESCENDING = 0x001, ///< sort descending order
   STRING_SORT_UNIQUE     = 0x010, ///< flag to remove doubles
 };
+#endif
 
 /// Sorts specified text, returns string with sorted text.
 const wxString wxExSort(
@@ -362,7 +348,28 @@ bool wxExSortSelection(
   /// number of characters to replace
   /// string::npos indicates all characters until eol
   size_t len = std::string::npos);
-  
+#endif
+
+/// Returns a string without all white space in specified input.
+const wxString wxExSkipWhiteSpace(
+  const wxString& text,
+  const wxString& replace_with = " ");
+
+/// This takes care of the translation.
+const wxString wxExTranslate(const wxString& text, int pageNum, int numPages);
+
+#if wxUSE_GUI
+/// Use specified VCS command to set lexer on STC document.
+void wxExVCSCommandOnSTC(
+  /// VCS command, used to check for diff or open command
+  const wxExVCSCommand& command, 
+  /// lexer to be used
+  const wxExLexer& lexer,
+  /// stc on which lexer is set
+  wxExSTC* stc);
+#endif
+
+#if wxUSE_GUI
 /// Executes VCS command id for specified files
 /// and opens component if necessary.
 void wxExVCSExecute(
