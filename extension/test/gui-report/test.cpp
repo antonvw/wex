@@ -29,10 +29,15 @@ private:
   wxExListViewFileName* m_Report;
 };
 
-fixture::fixture()
-  : m_Project("test-rep.prj")
-  , m_Frame(new FrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName()))
+wxExFrameWithHistory* fixture::m_Frame = NULL;
+
+fixture::fixture() : m_Project("test-rep.prj")
 {
+  if (m_Frame == NULL)
+  {
+    m_Frame = new FrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
+    m_Frame->Show();
+  }
 }
 
 void fixture::test()

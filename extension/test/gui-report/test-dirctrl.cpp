@@ -15,11 +15,9 @@ void fixture::testDirCtrl()
   
   ctrl->ExpandAndSelectPath("./");
   
-  const std::vector<int> ids {
+  for (auto id : std::vector<int> {
     ID_EDIT_VCS_LOWEST + 1, ID_TOOL_LOWEST + 1, 
-    ID_TREE_COPY, ID_TREE_OPEN, ID_TREE_RUN_MAKE};
-  
-  for (auto id : ids)
+    ID_TREE_COPY, ID_TREE_OPEN, ID_TREE_RUN_MAKE})
   {
     wxCommandEvent event(id);  
     wxPostEvent(ctrl, event);

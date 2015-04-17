@@ -466,7 +466,7 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
       {
         if (stc->SelectionIsRectangle())
         {
-          text = wxString::Format("%d,%d,%d", line, pos, stc->GetSelectedText().length());
+          text = wxString::Format("%d,%d,%d", line, pos, (int)stc->GetSelectedText().length());
         }
         else
         {

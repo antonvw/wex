@@ -148,11 +148,14 @@ void wxExTestApp::OnInitCmdLine(wxCmdLineParser& parser)
 
 int wxExTestApp::OnRun()
 {
-  std::string name = "";
+  std::vector<wxString> names;
   
   if (argc > 1)
   {
-    name = argv[1];
+    for (int i = 1; i < argc; i++)
+    {
+      names.push_back(argv[i]);
+    }
   }
       
   try
@@ -162,21 +165,38 @@ int wxExTestApp::OnRun()
     CppUnit::TextUi::TestRunner runner;
     runner.addTest(suite);
     
-    const bool success = runner.run(name, false);
+    bool success = true;
+    
+    if (names.empty())
+    {
+      success = !runner.run("", false);
+    }
+    else
+    {
+      for (auto it : names)
+      {
+        runner.run(it.ToStdString(), false);
+      }
+    }
     
     // Remove files.
     (void)remove("test-ex.txt");
     (void)remove("test.hex");
-  
-    exit(!success);
+
+    if (argc <= 1)
+    {
+      exit(success);
+    }
+    else
+    {
+      return wxExApp::OnRun();
+    }
   }
   catch (std::invalid_argument e)
   {
-    printf("invalid test: %s\n", name.c_str());
+    printf("invalid test: %s\n", e.what());
     return 0;
   }
-  
-  return 0;
 }
 
 //#define SHOW_REPORT

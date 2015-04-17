@@ -491,7 +491,7 @@ int wxExSTC::ConfigDialog(
       std::make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")),
       std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")),
       std::make_pair(wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin"))}, true, _("General"), 1),
-    (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Default font"), CONFIG_FONTPICKERCTRL): wxExConfigItem()),
+    (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Default font"), CONFIG_FONTPICKERCTRL, _("General")): wxExConfigItem()),
     wxExConfigItem(_("Whitespace"), std::map<long, const wxString> {
       std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")),
       std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Visible after indent")),

@@ -138,4 +138,9 @@ void fixture::testConfigItem()
   CPPUNIT_ASSERT( ci_str.ToConfig(false));
   CPPUNIT_ASSERT(!ci_st.ToConfig(true));
   CPPUNIT_ASSERT(!ci_st.ToConfig(false));
+  
+  // And check pages.
+  const wxExConfigItem ci_str_page("ci-string-page", "test1", "page:3");
+  CPPUNIT_ASSERT( ci_str_page.GetPage() == "page");
+  CPPUNIT_ASSERT( ci_str_page.GetColumns() == 3);
 }

@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXCONFIGITEM_H
-#define _EXCONFIGITEM_H
+#pragma once
 
 #include <map>
 #include <set>
@@ -139,7 +138,7 @@ typedef bool (*wxExUserWindowToConfig)(wxWindow* user, bool save);
 class WXDLLIMPEXP_BASE wxExConfigItem
 {
 public:
-  /// Default constructor.
+  /// Default constructor (for empty config item).
   wxExConfigItem();
   
   /// Constructor for spacer config item.
@@ -201,8 +200,6 @@ public:
     int cols = -1);
 
   /// Constructor for a string, a hyperlink ctrl, a static text or a STC.
-  /// The extra style argument is the style for the control used
-  /// (e.g. wxTE_MULTILINE or wxTE_PASSWORD).
   wxExConfigItem(
     /// label for the control as on the dialog and in the config
     const wxString& label,
@@ -210,7 +207,7 @@ public:
     const wxString& value = wxEmptyString,
     /// page on notebook
     const wxString& page = wxEmptyString,
-    /// the style
+    /// the style for the control used (e.g. wxTE_MULTILINE or wxTE_PASSWORD)
     long style = 0,
     /// the type
     wxExConfigType type = CONFIG_STRING,
@@ -365,4 +362,3 @@ private:
   wxWindow* m_Window;
 };
 #endif // wxUSE_GUI
-#endif

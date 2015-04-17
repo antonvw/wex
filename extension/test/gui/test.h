@@ -119,7 +119,7 @@ public:
 private:
   void Process(const std::string& str, wxExSTCShell* shell);
 
-  wxExManagedFrame* m_Frame;
+  static wxExManagedFrame* m_Frame;
   static wxExStatusBar* m_StatusBar;
   
   const std::vector<std::pair<std::string, std::string>> m_Abbreviations;

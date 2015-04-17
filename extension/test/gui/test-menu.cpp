@@ -9,30 +9,36 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/extension/managedframe.h>
 #include <wx/extension/menu.h>
 #include "test.h"
 
 void fixture::testMenu()
 {
-  wxExMenu menu;
+  wxExMenu* menu = new wxExMenu;
   
-  menu.AppendSeparator();
-  menu.AppendSeparator();
-  menu.AppendSeparator();
-  menu.AppendSeparator();
-  CPPUNIT_ASSERT(menu.GetMenuItemCount() == 0);
+  menu->AppendSeparator();
+  menu->AppendSeparator();
+  menu->AppendSeparator();
+  menu->AppendSeparator();
+  CPPUNIT_ASSERT(menu->GetMenuItemCount() == 0);
   
-  menu.AppendBars();
-  CPPUNIT_ASSERT(menu.GetMenuItemCount() > 0);
+  menu->AppendBars();
+  CPPUNIT_ASSERT(menu->GetMenuItemCount() > 0);
   
-  menu.Append(wxID_SAVE);
-  menu.Append(wxID_SAVE, "mysave");
-  menu.AppendEdit();
-  menu.AppendEdit(true);
-  menu.AppendPrint();
+  menu->Append(wxID_SAVE);
+  menu->Append(wxID_SAVE, "mysave");
+  menu->AppendEdit();
+  menu->AppendEdit(true);
+  menu->AppendPrint();
   
   wxMenu* submenu = new wxMenu("submenu");
-  menu.AppendSubMenu(submenu, "submenu");
-  CPPUNIT_ASSERT(menu.AppendTools());
-  menu.AppendVCS(wxFileName(), false); // see alo testVCS
+  menu->AppendSubMenu(submenu, "submenu");
+  CPPUNIT_ASSERT(menu->AppendTools());
+  menu->AppendVCS(wxFileName(), false); // see alo testVCS
+
+  wxMenuBar *menubar = new wxMenuBar;
+  menubar->Append(menu, "&Menu");
+  m_Frame->SetMenuBar(menubar);
+  m_Frame->Update();
 }

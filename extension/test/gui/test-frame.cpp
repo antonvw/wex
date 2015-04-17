@@ -18,24 +18,6 @@ void fixture::testFrame()
 {
   m_Frame->SetFocus(); // otherwise focus is on stc component caused by testEx
 
-  std::vector<wxExStatusBarPane> panes;
-
-  panes.push_back(wxExStatusBarPane());
-  
-  for (int i = 0; i < 25; i++)
-  {
-    panes.push_back(wxExStatusBarPane(wxString::Format("Pane%d", i)));
-  }
-  
-  panes.push_back(wxExStatusBarPane("PaneInfo"));
-  panes.push_back(wxExStatusBarPane("PaneLexer"));
-  panes.push_back(wxExStatusBarPane("PaneFileType"));
-  panes.push_back(wxExStatusBarPane("LastPane"));
-
-  m_StatusBar = m_Frame->SetupStatusBar(panes);
-  
-  CPPUNIT_ASSERT( m_StatusBar->GetFieldsCount () == panes.size());
-  
   CPPUNIT_ASSERT(!m_Frame->OpenFile(GetTestFile()));
   CPPUNIT_ASSERT( m_Frame->OpenFile(GetTestFile().GetFullPath(), "contents"));
   

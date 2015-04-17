@@ -102,44 +102,18 @@ void wxExConfigDialog::ForceCheckBoxChecked(
 void wxExConfigDialog::Layout(
   int rows, int cols, int bookctrl_style, wxImageList* imageList)
 {
-  if (m_ConfigItems.empty())
-  {
-    AddUserSizer(CreateTextSizer(
-      _("No further info available")),
-      wxSizerFlags().Center());
-    LayoutSizers();
-    return;
-  }
-  
-  wxFlexGridSizer* sizer = NULL;
-  wxFlexGridSizer* previous_item_sizer = NULL;
-  int previous_item_type = -1;
-  
   wxBookCtrlBase* bookctrl = NULL;
   
-  if (!m_ConfigItems.begin()->GetPage().empty())
+  if (!m_ConfigItems.empty() && !m_ConfigItems.begin()->GetPage().empty())
   {
     switch (bookctrl_style)
     {
-    case CONFIG_AUINOTEBOOK:
-      bookctrl = new wxAuiNotebook(this);
-      break;
-
-    case CONFIG_CHOICEBOOK:
-      bookctrl = new wxChoicebook(this, wxID_ANY);
-      break;
-
-    case CONFIG_LISTBOOK:
-      bookctrl = new wxListbook(this, wxID_ANY);
-      break;
-
-    case CONFIG_NOTEBOOK:
-      bookctrl = new wxNotebook(this, wxID_ANY);
-      break;
-
-    case CONFIG_SIMPLEBOOK:
-      bookctrl = new wxSimplebook(this, wxID_ANY);
-      break;
+    case CONFIG_AUINOTEBOOK: bookctrl = new wxAuiNotebook(this); break;
+    case CONFIG_CHOICEBOOK: bookctrl = new wxChoicebook(this, wxID_ANY); break;
+    case CONFIG_LISTBOOK: bookctrl = new wxListbook(this, wxID_ANY); break;
+    case CONFIG_NOTEBOOK: bookctrl = new wxNotebook(this, wxID_ANY); break;
+    case CONFIG_SIMPLEBOOK: bookctrl = new wxSimplebook(this, wxID_ANY); break;
+    case CONFIG_TREEBOOK: bookctrl = new wxTreebook(this, wxID_ANY); break;
 
     case CONFIG_TOOLBOOK:
       bookctrl = new wxToolbook(this, wxID_ANY);
@@ -151,12 +125,7 @@ void wxExConfigDialog::Layout(
       }
       break;
 
-    case CONFIG_TREEBOOK:
-      bookctrl = new wxTreebook(this, wxID_ANY);
-      break;
-
-    default:
-      wxFAIL;  
+    default: wxFAIL;  
     }
     
     bookctrl->SetImageList(imageList);
@@ -164,6 +133,9 @@ void wxExConfigDialog::Layout(
        
   bool first_time = true;
   wxString previous_page = "XXXXXX";
+  wxFlexGridSizer* previous_item_sizer = NULL;
+  wxFlexGridSizer* sizer = NULL;
+  int previous_item_type = -1;
 
   for (auto& it : m_ConfigItems)
   {
@@ -183,6 +155,7 @@ void wxExConfigDialog::Layout(
           bookctrl->GetCurrentPage()->SetSizer(sizer);
         }
         
+        // And make a new one.
         int imageId = wxWithImages::NO_IMAGE;
         
         if (imageList != NULL)
@@ -197,15 +170,12 @@ void wxExConfigDialog::Layout(
           }
         }
 
-        // And make a new one.
         bookctrl->AddPage(
           new wxWindow(bookctrl, wxID_ANY), 
           it.GetPage(), 
           true, // select
           imageId); 
       }
-
-      previous_page = it.GetPage();
 
       const int use_cols = (it.GetColumns() != -1 ? it.GetColumns(): cols);
 
@@ -219,8 +189,9 @@ void wxExConfigDialog::Layout(
       }
     }
 
-    wxFlexGridSizer* use_item_sizer = (it.GetType() == previous_item_type ?
-      previous_item_sizer: NULL);
+    wxFlexGridSizer* use_item_sizer = (
+      it.GetType() == previous_item_type &&
+      it.GetPage() == previous_page ? previous_item_sizer: NULL);
 
     // Layout the config item.
     previous_item_sizer = it.Layout(
@@ -228,8 +199,8 @@ void wxExConfigDialog::Layout(
       sizer, 
       GetButtonFlags() == wxCANCEL,
       use_item_sizer);
-
     previous_item_type = it.GetType();
+    previous_page = it.GetPage();
 
     if (
       it.GetType() == CONFIG_BUTTON ||
@@ -264,7 +235,7 @@ void wxExConfigDialog::Layout(
 
     AddUserSizer(bookctrl);
   }
-  else
+  else if (sizer != NULL)
   {
     AddUserSizer(sizer);
   }

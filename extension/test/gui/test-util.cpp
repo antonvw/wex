@@ -260,6 +260,22 @@ void fixture::testUtil()
   CPPUNIT_ASSERT( wxExQuoted("%d") == "'%d'");
   CPPUNIT_ASSERT( wxExQuoted(wxExSkipWhiteSpace(wxString(" %d "))) == "'%d'");
   
+  // wxExReplaceMarkers.
+  stc->SetText("aaaaa\nbbbbb\nccccc\n");
+  CPPUNIT_ASSERT(ex->MarkerAdd('a', 1));
+  CPPUNIT_ASSERT(ex->MarkerAdd('t', 1));
+  CPPUNIT_ASSERT(ex->MarkerAdd('u', 2));
+  wxString text;
+  CPPUNIT_ASSERT( wxExReplaceMarkers(text, ex));
+  text = "'a";
+  CPPUNIT_ASSERT( wxExReplaceMarkers(text, ex));
+  CPPUNIT_ASSERT( text == "2");
+  text = "'t,'u,therest";
+  CPPUNIT_ASSERT( wxExReplaceMarkers(text, ex));
+  CPPUNIT_ASSERT( text == "2,3,therest");
+  text = "'z";
+  CPPUNIT_ASSERT(!wxExReplaceMarkers(text, ex));
+
   // wxExSetTextCtrlValue
   
   // wxExSort

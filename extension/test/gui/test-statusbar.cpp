@@ -15,13 +15,13 @@
 
 void fixture::testStatusBar()
 {
-  // See also testFrame, where the status bar is setup.
-  
   CPPUNIT_ASSERT( m_StatusBar->SetStatusText("hello", ""));
   CPPUNIT_ASSERT( m_StatusBar->SetStatusText("hello0", "Pane0"));
   CPPUNIT_ASSERT( m_StatusBar->SetStatusText("hello1", "Pane1"));
   CPPUNIT_ASSERT( m_StatusBar->SetStatusText("hello2", "Pane2"));
-  CPPUNIT_ASSERT(!m_StatusBar->SetStatusText("hello3", "Panexxx"));
+  CPPUNIT_ASSERT( m_StatusBar->SetStatusText("hello3", "Pane3"));
+  CPPUNIT_ASSERT( m_StatusBar->SetStatusText("hello4", "Pane4"));
+  CPPUNIT_ASSERT(!m_StatusBar->SetStatusText("helloxxx", "Panexxx"));
   CPPUNIT_ASSERT(!m_StatusBar->SetStatusText("hello25", "Pane25"));
   CPPUNIT_ASSERT( m_StatusBar->SetStatusText("GoodBye", "LastPane"));
 
@@ -34,6 +34,7 @@ void fixture::testStatusBar()
   CPPUNIT_ASSERT( m_StatusBar->ShowField("Pane0", false));
   CPPUNIT_ASSERT( ((wxStatusBar*) m_StatusBar)->GetStatusText(1) == "hello1");
   CPPUNIT_ASSERT(!m_StatusBar->ShowField("Pane0", false));
+  CPPUNIT_ASSERT( m_StatusBar->ShowField("Pane3", false));
   CPPUNIT_ASSERT( ((wxStatusBar*) m_StatusBar)->GetStatusText(1) == "hello1");
   CPPUNIT_ASSERT( m_StatusBar->GetStatusText("Pane0").empty());
   CPPUNIT_ASSERT( m_StatusBar->ShowField("Pane0", true));
