@@ -40,6 +40,8 @@ void fixture::testAddress()
     {"x", 0},
     {"'x", 0},
     {"1,3s/x/y", 0},
+    {"/2/", 3},
+    {"?2?", 3},
     {"'a", 1},
     {"'b", 2},
     {"'b+10", lines},
@@ -79,6 +81,9 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, "*").IsOk());
   CPPUNIT_ASSERT( wxExAddressRange(ex, ".").IsOk());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").IsOk());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "/1/,/2/").IsOk());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "?1?,?2?").IsOk());
   
   // Test invalid ranges when no selection is active.
   CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).IsOk());
@@ -96,6 +101,8 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,x").Write("flut"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, " ,").Yank());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "'<,'>").IsOk());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "/xx/,/2/").IsOk());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "?2?,?1?").IsOk());
   
   stc->SelectAll();
   
@@ -204,22 +211,22 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT(!stc->GetText().Contains("\\0"));
   
   stc->SetText(contents);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
-    Substitute("/tiger/lion/"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/lion/"));
     
   stc->SetText(contents);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
-    Substitute("/tiger/~/"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/~/"));
   CPPUNIT_ASSERT( stc->GetText().Contains("lion"));
   
   stc->SetText("special char \\ present");
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
-    Substitute("/\\\\//"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/\\\\//"));
   CPPUNIT_ASSERT( stc->GetText().Contains("char  present"));
   
   stc->SetText("special char / present");
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
-    Substitute("/\\///"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/\\///"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("char  present"));
+  
+  stc->SetText("special char ' present");
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/'///"));
   CPPUNIT_ASSERT( stc->GetText().Contains("char  present"));
   
   // Test Write.

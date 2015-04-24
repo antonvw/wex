@@ -226,6 +226,7 @@ void fixture::testUtil()
   CPPUNIT_ASSERT( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
   CPPUNIT_ASSERT( wxExMatch("(\\d+)ok(\\d+)nice", "19999ok245nice", v) == 2);
   CPPUNIT_ASSERT( wxExMatch(" ([\\d\\w]+)", " 19999ok245nice ", v) == 1);
+  CPPUNIT_ASSERT( wxExMatch("([?/].*[?/])(,[?/].*[?/])([msy])", "/xx/,/yy/y", v) == 3);
   
   // wxExMatchesOneOf
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));

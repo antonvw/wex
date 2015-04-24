@@ -490,13 +490,13 @@ bool wxExEx::CommandGlobal(const wxString& search)
   return true;
 }
 
-bool wxExEx::CommandRange(const wxString& command)
+bool wxExEx::CommandRange(const std::string& command)
 {
   wxString rest(command);
   wxString range_str;  
   wxChar cmd;
 
-  if (command.compare(0, 5, "'<,'>") == 0)
+  if (rest.compare(0, 5, "'<,'>") == 0)
   {
     if (GetSelectedText().empty())
     {
@@ -504,26 +504,49 @@ bool wxExEx::CommandRange(const wxString& command)
     }
 
     range_str = "'<,'>";
-    cmd = command.GetChar(5);
-    rest = command.Mid(6);
+    cmd = rest.GetChar(5);
+    rest = rest.Mid(6);
   }
   else
-  {
-    if (!wxExReplaceMarkers(rest, this))
-    {
-      return false;
-    }
+  { 
+    const std::string addr1("[0-9\\.\\$\\+\\-]");
+    const std::string addrs("[\\?/].*[\\?/]");
+    const std::string addrm("'[a-z]");
+    const std::string cmd_group("([dmsStywy<>\\!])(.*)");
+    std::vector <wxString> v;
     
-    wxStringTokenizer tkz(rest, "dmsStwy><!");
-  
-    if (!tkz.HasMoreTokens())
+    if (
+      // If we have a % address range
+      wxExMatch("^%" + cmd_group, rest.ToStdString(), v) == 2 ||
+      // If we have a search address range.
+      wxExMatch("^(" + addrs + ")(," + addrs + ")" + cmd_group, rest.ToStdString(), v) == 4 ||
+      // If we have a address range containing markers.
+      wxExMatch("^(" + addrm + ")(," + addrm + ")?" + cmd_group, rest.ToStdString(), v) == 4 ||
+      // If we have a addr range.
+      wxExMatch("^(" + addr1 + ")(," + addr1 + ")?" + cmd_group, rest.ToStdString(), v) == 4)
+    {
+      switch (v.size() )
+      {
+        case 2:
+          range_str = "%";
+          cmd = v[0].GetChar(0);
+          rest = v[1];
+          break;
+        default:
+          range_str = v[0] + v[1];
+          cmd = v[2].GetChar(0);
+          rest = v[3];
+      }
+
+      if (!wxExReplaceMarkers(range_str, this))
+      {
+        return false;
+      }
+    }
+    else 
     {
       return false;
     }
-
-    range_str = tkz.GetNextToken();
-    cmd = tkz.GetLastDelimiter();
-    rest = tkz.GetString();
   }
 
   wxExAddressRange range(this, range_str);
