@@ -58,6 +58,7 @@ void fixture::testEx()
     {":2",true},
     {":.t$",true},
     {":%s/x/y",true},{":%/test//",false},
+    {":%s/z/z",true},
     {":.s/$/\n",true},
     {":.S",true},
     {":.S0",false},
@@ -75,12 +76,9 @@ void fixture::testEx()
     {":1,$s/^/Zxxx/",true},
     {":1,$s/s/w/",true}})
   {
-#ifdef DEBUGGING
-    wxLogMessage("%s %d", command.first.c_str(), command.second);
-#endif
     if (command.second)
     {
-      CPPUNIT_ASSERT( ex->Command(command.first));
+      CPPUNIT_ASSERT_MESSAGE( command.first, ex->Command(command.first));
       
       if (command.first != ":.=")
       {
@@ -89,11 +87,14 @@ void fixture::testEx()
     }
     else
     {
-      CPPUNIT_ASSERT(!ex->Command(command.first));
+      CPPUNIT_ASSERT_MESSAGE(command.first, !ex->Command(command.first));
       CPPUNIT_ASSERT( ex->GetLastCommand() != command.first);
     }
   }
 
+  stc->SetText("xx\nyy\nzz\n");
+  CPPUNIT_ASSERT( ex->Command(":/xx/,/yy/y"));
+  
   CPPUNIT_ASSERT( ex->Command(":1"));
   CPPUNIT_ASSERT( ex->MarkerAdd('t'));
   CPPUNIT_ASSERT( ex->Command(":$"));
@@ -218,8 +219,13 @@ void fixture::testEx()
   // Test substitute.
   stc->SetText("we have xxxx yyyy zzzz");
   CPPUNIT_ASSERT( ex->Command(":set re"));
+  CPPUNIT_ASSERT( ex->Command(":%s/ccccc/ddd"));
   CPPUNIT_ASSERT( ex->Command(":%s/\\(x+\\) *\\(y+\\)/\\\\2 \\\\1"));
   CPPUNIT_ASSERT( stc->GetText() == "we have yyyy xxxx zzzz");
+  stc->SetText("we have xxxx 'zzzz'");
+  CPPUNIT_ASSERT( ex->Command(":%s/'//g"));
+  CPPUNIT_ASSERT_MESSAGE(stc->GetText().ToStdString(), stc->GetText() == "we have xxxx zzzz" );
+//  CPPUNIT_ASSERT( ex->Command(":.s/ *//g"));
   
   // Test goto.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");

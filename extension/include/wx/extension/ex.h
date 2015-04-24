@@ -139,7 +139,7 @@ protected:
   void SetRegister(const char name) {m_Register = name;};
 private:
   bool CommandGlobal(const wxString& search);
-  bool CommandRange(const wxString& command);
+  bool CommandRange(const std::string& command);
   bool CommandSet(const wxString& command);
   void ShowDialog(const wxString& title, const wxString& text);
     

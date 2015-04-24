@@ -20,7 +20,7 @@
 
 #if wxUSE_GUI
 
-#undef LOGGING
+//#define LOGGING
 
 wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
   : wxString(address)
@@ -31,15 +31,62 @@ wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
 
 int wxExAddress::GetLine() const
 {
+  // We already have a line number, return that one.
   if (m_Line >= 1)
   {
     return m_Line;
   }
-   
+
+  // If this is a // address, return line with first forward match.
+  std::vector <wxString> v;
+  
+  if (wxExMatch("/(.*)/", ToStdString(), v))
+  {
+    m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
+    m_Ex->GetSTC()->SetTargetEnd(m_Ex->GetSTC()->GetTextLength());
+    
+    if (m_Ex->GetSTC()->SearchInTarget(v[0]) != -1)
+    {
+      return m_Ex->GetSTC()->LineFromPosition(m_Ex->GetSTC()->GetTargetStart()) + 1;
+    }
+    
+    m_Ex->GetSTC()->SetTargetStart(0);
+    m_Ex->GetSTC()->SetTargetEnd(m_Ex->GetSTC()->GetCurrentPos());
+    
+    if (m_Ex->GetSTC()->SearchInTarget(v[0]) != -1)
+    {
+      return m_Ex->GetSTC()->LineFromPosition(m_Ex->GetSTC()->GetTargetStart()) + 1;
+    }
+    
+    return 0;
+  }
+
+  // If this is a ?? address, return line with first backward match.
+  if (wxExMatch("\\?(.*)\\?", ToStdString(), v))
+  {
+    m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
+    m_Ex->GetSTC()->SetTargetEnd(0);
+    
+    if (m_Ex->GetSTC()->SearchInTarget(v[0]) != -1)
+    {
+      return m_Ex->GetSTC()->LineFromPosition(m_Ex->GetSTC()->GetTargetStart()) + 1;
+    }
+    
+    m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetTextLength());
+    m_Ex->GetSTC()->SetTargetEnd(m_Ex->GetSTC()->GetCurrentPos());
+    
+    if (m_Ex->GetSTC()->SearchInTarget(v[0]) != -1)
+    {
+      return m_Ex->GetSTC()->LineFromPosition(m_Ex->GetSTC()->GetTargetStart()) + 1;
+    }
+    
+    return 0;
+  }
+  
+  // Try address calculation.
   int width = 0;
   const int sum = wxExCalculator(ToStdString(), m_Ex, width);
   
-  // Limit the range of what is returned.
   if (sum < 0)
   {
     return 1;
