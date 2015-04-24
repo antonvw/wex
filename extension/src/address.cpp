@@ -20,8 +20,6 @@
 
 #if wxUSE_GUI
 
-//#define LOGGING
-
 wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
   : wxString(address)
   , m_Ex(ex)
@@ -476,11 +474,6 @@ bool wxExAddressRange::Parse(
     replacement.Replace(wxChar(1), "/");
   }
   
-#ifdef LOGGING
-  wxLogMessage("cmd: %s pattern: %s replacement: %s options: %s", 
-    command_org, pattern, replacement, options);
-#endif  
-
   return true;
 }
     
@@ -568,6 +561,25 @@ bool wxExAddressRange::Substitute(const wxString& command)
     return false;
   }
     
+  if (repl == "~")
+  {
+    repl = m_Replacement;
+  }
+  else
+  {
+    m_Replacement = repl; 
+  }
+  
+  int searchFlags = m_Ex->GetSearchFlags();
+  if (options.Contains("i")) searchFlags &= ~wxSTC_FIND_MATCHCASE;
+    
+  if ((searchFlags & wxSTC_FIND_REGEXP) && 
+    pattern.size() == 2 && pattern.Last() == '*' && repl.empty())
+  {
+    wxLogStatus("Replacement leads to infinite loop");
+    return false;
+  }
+       
   if (!m_Ex->MarkerAdd('#', m_Begin.GetLine() - 1))
   {
     return false;
@@ -593,20 +605,6 @@ bool wxExAddressRange::Substitute(const wxString& command)
   wxExIndicator indicator(0, 0);
 
   m_STC->SetIndicatorCurrent(indicator.GetNo());
-    
-  if (repl == "~")
-  {
-    repl = m_Replacement;
-  }
-  else
-  {
-    m_Replacement = repl; 
-  }
-  
-  int searchFlags = m_Ex->GetSearchFlags();
-  
-  if (options.Contains("i")) searchFlags &= ~wxSTC_FIND_MATCHCASE;
-    
   m_STC->SetSearchFlags(searchFlags);
   m_STC->BeginUndoAction();
   m_STC->SetTargetStart(m_STC->PositionFromLine(m_Ex->MarkerLine('#')));
@@ -614,10 +612,6 @@ bool wxExAddressRange::Substitute(const wxString& command)
 
   int nr_replacements = 0;
   int result = wxID_YES;
-       
-#ifdef LOGGING
-  wxLogMessage("search flags: %d pattern: %s", searchFlags, pattern);
-#endif  
   
   while (m_STC->SearchInTarget(pattern) != -1 && result != wxID_CANCEL)
   {
@@ -672,10 +666,6 @@ bool wxExAddressRange::Substitute(const wxString& command)
     _("Replaced: %d occurrences of: %s"), nr_replacements, pattern.c_str()));
 
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
-  
-#ifdef LOGGING
-  wxLogMessage("replaced: %d", nr_replacements);
-#endif  
   
   return true;
 }

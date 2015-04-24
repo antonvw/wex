@@ -225,7 +225,8 @@ void fixture::testEx()
   stc->SetText("we have xxxx 'zzzz'");
   CPPUNIT_ASSERT( ex->Command(":%s/'//g"));
   CPPUNIT_ASSERT_MESSAGE(stc->GetText().ToStdString(), stc->GetText() == "we have xxxx zzzz" );
-//  CPPUNIT_ASSERT( ex->Command(":.s/ *//g"));
+  CPPUNIT_ASSERT(!ex->Command(":.s/x*//g"));
+  CPPUNIT_ASSERT(!ex->Command(":.s/ *//g"));
   
   // Test goto.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
