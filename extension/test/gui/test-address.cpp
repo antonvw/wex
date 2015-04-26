@@ -219,7 +219,7 @@ void fixture::testAddressRange()
   
   stc->SetText("special char \\ present");
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/\\\\//"));
-  CPPUNIT_ASSERT( stc->GetText().Contains("char  present"));
+  CPPUNIT_ASSERT_MESSAGE( stc->GetText().ToStdString(), stc->GetText().Contains("char  present"));
   
   stc->SetText("special char / present");
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/\\///"));
