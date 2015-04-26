@@ -370,9 +370,9 @@ bool wxExEx::Command(const std::string& command)
   return result;
 }
 
-bool wxExEx::CommandGlobal(const wxString& search)
+bool wxExEx::CommandGlobal(const wxString& text)
 {
-  wxStringTokenizer next(search, "/");
+  wxStringTokenizer next(text, "/");
 
   if (!next.HasMoreTokens())
   {
@@ -381,22 +381,40 @@ bool wxExEx::CommandGlobal(const wxString& search)
 
   next.GetNextToken(); // skip empty token
   const wxString pattern = next.GetNextToken();
-  const int command =
-    (next.HasMoreTokens() ? (int)next.GetNextToken().GetChar(0): (int)' ');
-  const wxString skip = next.GetNextToken();
-  const wxString replacement = next.GetNextToken();
-  const int linecount = m_STC->GetLineCount();
+  int command;
+  std::string rest;
   
-  int hits = 0;
+  if (next.HasMoreTokens())
+  {
+    const wxString token(next.GetNextToken());
+    command = token.GetChar(0);
+    wxString arg(token.Mid(1));
+    
+    if (next.HasMoreTokens())
+    {
+      wxString subpattern = next.GetNextToken();
+      const wxString replacement = next.GetNextToken();
+      
+      if (subpattern.empty())
+      {
+        subpattern = pattern;
+      }
+      
+      arg += "/" + subpattern + "/" + replacement;
+    }
+    
+    rest = std::string(1, command) + arg;
+  }
+  else
+  {
+    command = (int)' ';
+  }
 
-  wxString print;
-  
-  m_STC->SetIndicatorCurrent(m_FindIndicator.GetNo());
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
   
   if (pattern.empty())
   {
-    if (!replacement.empty())
+    if (!rest.empty())
     {
       wxLogStatus("Cannot replace, pattern is empty");
       return false;
@@ -405,87 +423,71 @@ bool wxExEx::CommandGlobal(const wxString& search)
     // Silently cleared indicators.
     return true;  
   }
-    
+  
+  const bool infinite = (command == 'm' && rest != "$" && rest != "1");
+  int hits = 0;
+  wxString print;
+  MarkerAdd('%', m_STC->GetLineCount() - 2);
   m_STC->SetSearchFlags(m_SearchFlags);
-
+  m_STC->SetIndicatorCurrent(m_FindIndicator.GetNo());
   m_STC->BeginUndoAction();
   m_STC->SetTargetStart(0);
-  m_STC->SetTargetEnd(m_STC->GetTextLength());
+  m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('%')));
 
   while (m_STC->SearchInTarget(pattern) != -1)
   {
+    const int line = m_STC->LineFromPosition(m_STC->GetTargetStart());
+    
     switch (command)
     {
-      case 'd':
+      case 'p': print += m_STC->GetLine(line); // fall through
+      case ' ': m_STC->SetIndicator(m_FindIndicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd()); break;
+      default:
       {
-        const int begin = m_STC->PositionFromLine(
-          m_STC->LineFromPosition(m_STC->GetTargetStart()));
-        const int end = m_STC->PositionFromLine(
-          m_STC->LineFromPosition(m_STC->GetTargetEnd()) + 1);
+        const std::string cmd(":" + std::to_string(line + 1) + rest);
+
+        if (!Command(cmd))
+        {
+          m_Frame->ShowExMessage(wxString::Format("%s failed", cmd.c_str()));
+          m_STC->EndUndoAction();
+          MarkerDelete('%');
+          return false;
+        }
         
-        m_STC->Remove(begin, end);
-        m_STC->SetTargetStart(begin);
-        m_STC->SetTargetEnd(m_STC->GetTextLength());
+        if (hits > 50 && infinite)
+        {
+          m_Frame->ShowExMessage(wxString::Format("%s possible infinite loop", cmd.c_str()));
+          m_STC->EndUndoAction();
+          MarkerDelete('%');
+          return false;
+        }
       }
-      break;
-  
-    case 'p':
-      print += m_STC->GetLine(m_STC->LineFromPosition(m_STC->GetTargetStart()));
-      // fall through
-    case ' ':
-      m_STC->SetIndicator(
-        m_FindIndicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd());
-      
-      m_STC->SetTargetStart(m_STC->GetTargetEnd());
-      m_STC->SetTargetEnd(m_STC->GetTextLength());
-      hits++;
-      break;
-      
-    case 's':
-      m_STC->ReplaceTargetRE(replacement); // always RE!
-      m_STC->SetTargetStart(m_STC->GetTargetEnd());
-      m_STC->SetTargetEnd(m_STC->GetTextLength());
-      hits++;
-      break;
-      
-    default:
-      m_STC->EndUndoAction();
-      return false;
     }
+    
+    m_STC->SetTargetStart(command == 'd' || command == 'm' ? m_STC->PositionFromLine(line): m_STC->GetTargetEnd());
+    m_STC->SetTargetEnd(m_STC->GetLineEndPosition(MarkerLine('%')));
   
     if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
     {
       break;
     }
+    
+    hits++;
   }
   
-  switch (command)
+  if (hits > 0)
   {
-    case ' ':
-      m_Frame->ShowExMessage(wxString::Format(_("Found: %d occurrences of: %s"),
-        hits, pattern.c_str()));
-      break;
-    case 'd': 
-      if (linecount - m_STC->GetLineCount() > 0)
-      {
-        m_Frame->ShowExMessage(
-          wxString::Format(_("%d fewer lines"), 
-          linecount - m_STC->GetLineCount()));
-      }
-      break;
-    case 'p':
-      if (!print.empty())
-      {
-        m_Frame->OpenFile("print", print);
-      }
-      break;
-    case 's':
-      m_Frame->ShowExMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
-        hits, pattern.c_str()));
-      break;
+    m_Frame->ShowExMessage(wxString::Format(_("Found: %d occurrences of: %s"),
+      hits, pattern.c_str()));
+  }
+  
+  if (command == 'p' && !print.empty())
+  {
+    m_Frame->OpenFile("print", print);
   }
 
   m_STC->EndUndoAction();
+  MarkerDelete('%');
 
   return true;
 }
@@ -509,7 +511,7 @@ bool wxExEx::CommandRange(const std::string& command)
   }
   else
   { 
-    const std::string addr1("[0-9\\.\\$\\+\\-]");
+    const std::string addr1("[0-9\\.\\$\\+\\-]+");
     const std::string addrs("[\\?/].*[\\?/]");
     const std::string addrm("'[a-z]");
     const std::string cmd_group("([dmsStywy<>\\!])(.*)");
