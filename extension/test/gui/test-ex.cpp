@@ -197,17 +197,23 @@ void fixture::testEx()
   CPPUNIT_ASSERT(!ex->MarkerGoto('a'));
   CPPUNIT_ASSERT(!ex->MarkerDelete('a'));
   
+  // Test delete.
+  stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+  CPPUNIT_ASSERT( ex->Command(":10d"));
+
   // Test global delete (previous delete was on found text).
   const int max = 10;
   for (int i = 0; i < max; i++) stc->AppendText("line xxxx added\n");
   const int lines = stc->GetLineCount();
   CPPUNIT_ASSERT( ex->Command(":g/xxxx/d"));
-  CPPUNIT_ASSERT( stc->GetLineCount() == lines - max);
+  CPPUNIT_ASSERT_MESSAGE(std::to_string(stc->GetLineCount()) + "!=" + 
+    std::to_string(lines - max), stc->GetLineCount() == lines - max);
   
   // Test global print.
   stc->AppendText("line xxxx 3 added\n");
   stc->AppendText("line xxxx 4 added\n");
   CPPUNIT_ASSERT( ex->Command(":g/xxxx/p"));
+  CPPUNIT_ASSERT( ex->Command(":g//"));
   
   // Test global substitute.
   stc->AppendText("line xxxx 6 added\n");
@@ -215,6 +221,11 @@ void fixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":g/xxxx/s//yyyy"));
   CPPUNIT_ASSERT( stc->GetText().Contains("yyyy"));
   CPPUNIT_ASSERT( ex->Command(":g//"));
+  
+  // Test global move.
+  stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
+  CPPUNIT_ASSERT( ex->Command(":g/d/m$"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("d"));
   
   // Test substitute.
   stc->SetText("we have xxxx yyyy zzzz");
@@ -239,7 +250,7 @@ void fixture::testEx()
     CPPUNIT_ASSERT(  ex->Command(go.first));
     CPPUNIT_ASSERT( stc->GetCurrentLine() == go.second);
   }
-
+  
   // Test registers.  
   ex->SetRegistersDelete("x");
   ex->SetRegisterYank("test");
