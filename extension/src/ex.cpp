@@ -393,14 +393,13 @@ bool wxExEx::CommandGlobal(const wxString& text)
     if (next.HasMoreTokens())
     {
       wxString subpattern = next.GetNextToken();
-      const wxString replacement = next.GetNextToken();
       
       if (subpattern.empty())
       {
         subpattern = pattern;
       }
       
-      arg += "/" + subpattern + "/" + replacement;
+      arg += "/" + subpattern + "/" + next.GetString();
     }
     
     rest = std::string(1, command) + arg;
