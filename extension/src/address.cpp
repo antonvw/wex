@@ -646,7 +646,7 @@ bool wxExAddressRange::Substitute(const wxString& command)
   
     if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
     {
-      result = wxID_CANCEL;
+      break;
     }
   }
 
@@ -667,7 +667,7 @@ bool wxExAddressRange::Substitute(const wxString& command)
 
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
   
-  return true;
+  return result != wxID_CANCEL;
 }
 
 bool wxExAddressRange::Write(const wxString& filename) const
