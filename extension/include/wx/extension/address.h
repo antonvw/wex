@@ -31,6 +31,9 @@ public:
     /// - or empty, call SetLine afterwards
     const wxString& address = "");
   
+  /// Appends text to this address.
+  bool Append(const wxString& text) const;
+  
   /// If the line number was set using SetLine, it
   /// returns this line number, otherwise
   /// converts the address to a line number.
@@ -39,8 +42,18 @@ public:
   /// Returns 0 on error in address. 
   int GetLine() const;
   
+  /// Inserts text at this address.
+  bool Insert(const wxString& text) const;
+  
+  /// Marks this address.
+  bool MarkerAdd(const wxUniChar& marker) const;
+  
   /// Deletes marker (if this address concerns a marker).
-  void MarkerDelete() const;
+  bool MarkerDelete() const;
+  
+  /// Append text from the specified register at this address, 
+  /// default uses yank register.
+  bool Put(const char name = '0') const;
   
   /// Sets (vi) line number.
   void SetLine(int line);
@@ -77,6 +90,9 @@ public:
     /// - x,y: range from begin x and end y address.
     const wxString& range);
   
+  /// Changes range.
+  bool Change(const wxString& command) const;
+  
   /// Copies range to destination.
   bool Copy(const wxExAddress& destination) const;
   
@@ -99,8 +115,14 @@ public:
   /// Is this range ok.
   bool IsOk() const;
   
+  /// Joins range.
+  bool Join() const;
+  
   /// Moves range to destination.
   bool Move(const wxExAddress& destination) const;
+  
+  /// Prints range to print file.
+  bool Print(const wxString& flags = wxEmptyString) const;
   
   /// Sorts range, with optional parameters:
   /// -u to sort unique lines
@@ -128,8 +150,8 @@ public:
   /// Writes range to filename.
   bool Write(const wxString& filename) const;
   
-  /// Yanks range.
-  bool Yank() const;
+  /// Yanks range to register, default to yank register.
+  bool Yank(const char name = '0') const;
 private:  
   const wxString BuildReplacement(const wxString& text) const;
   int Confirm(
