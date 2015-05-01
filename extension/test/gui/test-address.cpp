@@ -66,6 +66,15 @@ void fixture::testAddress()
   CPPUNIT_ASSERT( address2.GetLine() == 1);
   address2.MarkerDelete();
   CPPUNIT_ASSERT( address2.GetLine() == 0);
+  wxExAddress address3(ex, "5");
+  CPPUNIT_ASSERT( address3.MarkerAdd('x'));
+  CPPUNIT_ASSERT( address3.Append("appended text"));
+  CPPUNIT_ASSERT( address3.Insert("inserted text"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("appended text"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("inserted text"));
+  ex->GetMacros().SetRegister('z', "zzzzz");
+  CPPUNIT_ASSERT( address3.Put('z'));
+  CPPUNIT_ASSERT( stc->GetText().Contains("zzzz"));
 }
 
 void fixture::testAddressRange()
@@ -151,6 +160,17 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( stc->GetLineCount() == 1);
   stc->SelectNone();
   
+  // Test Change.
+  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 4).Change("changed"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("changed"));
+  
+  // Test Join.
+  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Join());
+  CPPUNIT_ASSERT( stc->GetText().Contains("a"));
+  CPPUNIT_ASSERT_MESSAGE( std::to_string(stc->GetLineCount()), stc->GetLineCount() == 1);
+  
   // Test Yank.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   stc->GotoLine(0);
@@ -186,6 +206,10 @@ void fixture::testAddressRange()
   stc->SetText(contents);
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent());
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent(false));
+  
+  // Test Print.
+  stc->SetText(contents);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Print());
   
   // Test Substitute.
   stc->SetText(contents);

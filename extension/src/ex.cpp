@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      ex.cpp
 // Purpose:   Implementation of class wxExEx
+//            http://pubs.opengroup.org/onlinepubs/9699919799/
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,6 +25,7 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
+#include <wx/extension/version.h>
 #include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
@@ -147,9 +149,9 @@ bool wxExEx::Command(const std::string& command)
       ShowDialog("Abbreviations", output);
     }
   }
-  else if (command.compare(0, 6, ":about") == 0)
+  else if (command.compare(0, 3, ":ve") == 0)
   {
-    POST_COMMAND( wxID_ABOUT )
+    ShowDialog("Version", wxExGetVersionInfo().GetVersionOnlyString());
   }
   else if (command == ":close")
   {
@@ -299,6 +301,17 @@ bool wxExEx::Command(const std::string& command)
 
     m_Frame->StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
   }
+  else if (command.compare(0, 4, ":una") == 0)
+  {
+    wxStringTokenizer tkz(command, " ");
+    
+    if (tkz.CountTokens() >= 2)
+    {
+      tkz.GetNextToken(); // skip
+      const wxString ab(tkz.GetNextToken());
+      m_Macros.SetAbbreviation(ab, "");
+    }
+  }
   else if (command.compare(0, 2, ":w") == 0)
   {
     if (command.find(" ") != std::string::npos)
@@ -344,7 +357,7 @@ bool wxExEx::Command(const std::string& command)
       wxEXEC_ASYNC,
       m_STC->GetFileName().GetPath());
   }
-  else if (CommandRange(command.substr(1)))
+  else if (CommandAddress(command.substr(1)))
   {
     // do nothing
   }
@@ -370,6 +383,121 @@ bool wxExEx::Command(const std::string& command)
   return result;
 }
 
+bool wxExEx::CommandAddress(const std::string& command)
+{
+  wxString rest(command);
+  wxString range_str;  
+  wxString cmd;
+  bool addr1 = false; // single address
+
+  if (rest.compare(0, 5, "'<,'>") == 0)
+  {
+    if (GetSelectedText().empty())
+    {
+      return false;
+    }
+
+    range_str = "'<,'>";
+    cmd = rest.Mid(5);
+    rest = rest.Mid(6);
+  }
+  else
+  { 
+    const std::string addr("[0-9\\.\\$\\+\\-]+");
+    const std::string addrs("[\\?/].*[\\?/]");
+    const std::string addrm("'[a-z]");
+    const std::string cmd_group1("([aik]|pu)(.*)");
+    const std::string cmd_group2("([cdjmpsStywy<>\\!])(.*)");
+    std::vector <wxString> v;
+    
+    if (
+      // If we have a % address range
+      wxExMatch("^%" + cmd_group2, rest.ToStdString(), v) == 2 ||
+      // If we have a search address range.
+      wxExMatch("^(" + addrs + ")(," + addrs + ")" + cmd_group2, rest.ToStdString(), v) == 4 ||
+      // If we have a address range containing markers.
+      wxExMatch("^(" + addrm + ")(," + addrm + ")?" + cmd_group2, rest.ToStdString(), v) == 4 ||
+      // If we have a addr1 range.
+      wxExMatch("^(" + addr + ")" + cmd_group1, rest.ToStdString(), v) == 3 ||
+      // If we have a addr2 range.
+      wxExMatch("^(" + addr + ")(," + addr + ")?" + cmd_group2, rest.ToStdString(), v) == 4)
+    {
+      switch (v.size())
+      {
+        case 2:
+          range_str = "%";
+          cmd = v[0];
+          rest = v[1];
+          break;
+        case 3:
+          addr1 = true;
+          range_str = v[0];
+          cmd = v[1];
+          rest = v[2];
+          break;
+        case 4:
+          range_str = v[0] + v[1];
+          cmd = v[2];
+          rest = v[3];
+          break;
+        default: wxFAIL; break;
+      }
+
+      if (!wxExReplaceMarkers(range_str, this))
+      {
+        return false;
+      }
+    }
+    else 
+    {
+      return false;
+    }
+  }
+  
+  if (addr1)
+  {
+    wxExAddress addr(this, range_str);
+    
+    switch ((int)cmd.GetChar(0))
+    {
+    case 0: return false; break;
+    case 'a': return addr.Append(rest); break;
+    case 'i': return addr.Insert(rest); break;
+    case 'k': return addr.MarkerAdd(rest.GetChar(0)); break;
+    case 'p': return addr.Put(rest.GetChar(0));
+      break;
+    default:
+      wxLogStatus("Unknown address command: %s", cmd);
+      return false;
+    }
+  }
+  else
+  {
+    wxExAddressRange range(this, range_str);
+    
+    switch ((int)cmd.GetChar(0))
+    {
+    case 0: return false; break;
+    case 'c': return range.Change(rest); break;
+    case 'd': return range.Delete(); break;
+    case 'j': return range.Join(); break;
+    case 'm': return range.Move(wxExAddress(this, rest)); break;
+    case 'p': return range.Print(rest); break;
+    case 's': return range.Substitute(rest); break;
+    case 'S': return range.Sort(rest); break;
+    case 't': return range.Copy(wxExAddress(this, rest)); break;
+    case 'w': return range.Write(rest); break;
+    case 'y': return range.Yank(rest.GetChar(0)); break;
+    case '>': return range.Indent(true); break;
+    case '<': return range.Indent(false); break;
+    case '!': return range.Filter(rest); break;
+    default:
+      wxLogStatus("Unknown range command: %s", cmd);
+      return false;
+    }
+  }
+}
+
 bool wxExEx::CommandGlobal(const wxString& text)
 {
   wxStringTokenizer next(text, "/");
@@ -381,7 +509,7 @@ bool wxExEx::CommandGlobal(const wxString& text)
 
   next.GetNextToken(); // skip empty token
   const wxString pattern = next.GetNextToken();
-  int command;
+  int command = 0;
   std::string rest;
   
   if (next.HasMoreTokens())
@@ -404,10 +532,6 @@ bool wxExEx::CommandGlobal(const wxString& text)
     
     rest = std::string(1, command) + arg;
   }
-  else
-  {
-    command = (int)' ';
-  }
 
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
   
@@ -425,7 +549,6 @@ bool wxExEx::CommandGlobal(const wxString& text)
   
   const bool infinite = (command == 'm' && rest != "$" && rest != "1");
   int hits = 0;
-  wxString print;
   MarkerAdd('%', m_STC->GetLineCount() - 2);
   m_STC->SetSearchFlags(m_SearchFlags);
   m_STC->SetIndicatorCurrent(m_FindIndicator.GetNo());
@@ -437,30 +560,29 @@ bool wxExEx::CommandGlobal(const wxString& text)
   {
     const int line = m_STC->LineFromPosition(m_STC->GetTargetStart());
     
-    switch (command)
+    if (command)
     {
-      case 'p': print += m_STC->GetLine(line); // fall through
-      case ' ': m_STC->SetIndicator(m_FindIndicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd()); break;
-      default:
-      {
-        const std::string cmd(":" + std::to_string(line + 1) + rest);
+      const std::string cmd(":" + std::to_string(line + 1) + rest);
 
-        if (!Command(cmd))
-        {
-          m_Frame->ShowExMessage(wxString::Format("%s failed", cmd.c_str()));
-          m_STC->EndUndoAction();
-          MarkerDelete('%');
-          return false;
-        }
-        
-        if (hits > 50 && infinite)
-        {
-          m_Frame->ShowExMessage(wxString::Format("%s possible infinite loop", cmd.c_str()));
-          m_STC->EndUndoAction();
-          MarkerDelete('%');
-          return false;
-        }
+      if (!Command(cmd))
+      {
+        m_Frame->ShowExMessage(wxString::Format("%s failed", cmd.c_str()));
+        m_STC->EndUndoAction();
+        MarkerDelete('%');
+        return false;
       }
+      
+      if (hits > 50 && infinite)
+      {
+        m_Frame->ShowExMessage(wxString::Format("%s possible infinite loop", cmd.c_str()));
+        m_STC->EndUndoAction();
+        MarkerDelete('%');
+        return false;
+      }
+    }
+    else
+    {
+      m_STC->SetIndicator(m_FindIndicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd());
     }
     
     m_STC->SetTargetStart(command == 'd' || command == 'm' ? m_STC->PositionFromLine(line): m_STC->GetTargetEnd());
@@ -480,95 +602,10 @@ bool wxExEx::CommandGlobal(const wxString& text)
       hits, pattern.c_str()));
   }
   
-  if (command == 'p' && !print.empty())
-  {
-    m_Frame->OpenFile("print", print);
-  }
-
   m_STC->EndUndoAction();
   MarkerDelete('%');
 
   return true;
-}
-
-bool wxExEx::CommandRange(const std::string& command)
-{
-  wxString rest(command);
-  wxString range_str;  
-  wxChar cmd;
-
-  if (rest.compare(0, 5, "'<,'>") == 0)
-  {
-    if (GetSelectedText().empty())
-    {
-      return false;
-    }
-
-    range_str = "'<,'>";
-    cmd = rest.GetChar(5);
-    rest = rest.Mid(6);
-  }
-  else
-  { 
-    const std::string addr1("[0-9\\.\\$\\+\\-]+");
-    const std::string addrs("[\\?/].*[\\?/]");
-    const std::string addrm("'[a-z]");
-    const std::string cmd_group("([dmsStywy<>\\!])(.*)");
-    std::vector <wxString> v;
-    
-    if (
-      // If we have a % address range
-      wxExMatch("^%" + cmd_group, rest.ToStdString(), v) == 2 ||
-      // If we have a search address range.
-      wxExMatch("^(" + addrs + ")(," + addrs + ")" + cmd_group, rest.ToStdString(), v) == 4 ||
-      // If we have a address range containing markers.
-      wxExMatch("^(" + addrm + ")(," + addrm + ")?" + cmd_group, rest.ToStdString(), v) == 4 ||
-      // If we have a addr range.
-      wxExMatch("^(" + addr1 + ")(," + addr1 + ")?" + cmd_group, rest.ToStdString(), v) == 4)
-    {
-      switch (v.size() )
-      {
-        case 2:
-          range_str = "%";
-          cmd = v[0].GetChar(0);
-          rest = v[1];
-          break;
-        default:
-          range_str = v[0] + v[1];
-          cmd = v[2].GetChar(0);
-          rest = v[3];
-      }
-
-      if (!wxExReplaceMarkers(range_str, this))
-      {
-        return false;
-      }
-    }
-    else 
-    {
-      return false;
-    }
-  }
-
-  wxExAddressRange range(this, range_str);
-  
-  switch (cmd)
-  {
-  case 0: return false; break;
-  case 'd': return range.Delete(); break;
-  case 'm': return range.Move(wxExAddress(this, rest)); break;
-  case 's': return range.Substitute(rest); break;
-  case 'S': return range.Sort(rest); break;
-  case 't': return range.Copy(wxExAddress(this, rest)); break;
-  case 'w': return range.Write(rest); break;
-  case 'y': return range.Yank(); break;
-  case '>': return range.Indent(true); break;
-  case '<': return range.Indent(false); break;
-  case '!': return range.Filter(rest); break;
-  default:
-    wxLogStatus("Unknown range command: %c", cmd);
-    return false;
-  }
 }
 
 bool wxExEx::CommandSet(const wxString& arg)
@@ -905,6 +942,11 @@ int wxExEx::MarkerLine(const wxUniChar& marker) const
   }
 }
 
+void wxExEx::Print(const wxString& text)
+{
+  ShowDialog("Print", text);
+}
+  
 void wxExEx::SetLastCommand(
   const std::string& command,
   bool always)
@@ -924,7 +966,7 @@ void wxExEx::SetLastCommand(
       always || 
       command == "~" || 
       ( command.size() > 1 && command.front() == ':' && 
-        !wxString(command).StartsWith(":about") &&
+        !wxString(command).StartsWith(":ve") &&
         !wxString(command).StartsWith(":help") &&
         !wxString(command).StartsWith(":new")
       ) ||
@@ -987,8 +1029,24 @@ void wxExEx::ShowDialog(const wxString& title, const wxString& text)
   }
   else
   {
+    if (title == "Print")
+    { 
+      if (title != m_Dialog->GetTitle())
+      {
+        m_Dialog->GetSTC()->SetText(text);
+      }
+      else
+      {
+        m_Dialog->GetSTC()->AppendText(text);
+        m_Dialog->GetSTC()->DocumentEnd();
+      }
+    }
+    else
+    {
+      m_Dialog->GetSTC()->SetText(text);
+    }
+    
     m_Dialog->SetTitle(title);
-    m_Dialog->GetSTC()->SetText(text);
   }
   
   m_Dialog->Show();

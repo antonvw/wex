@@ -43,27 +43,26 @@ void fixture::testEx()
   stc->SetText("xx\nyy\nzz\n");
   stc->DocumentStart();
 
-  // Test commands and last command.  
+  // Test valid commands and last command.  
   for (auto& command : std::vector<std::pair<std::string, bool>> {
     {":ab",true},
-    // We have only one document, so :n, :prev return false.
-    {":n",false},{":prev",false},
+    {":ve",false},
     {":reg",true},
-    {":set",true},{":set xxx",false},
-    {":xxx",false},{":yyy",false},
-    {":10",true},{":.=",true},
-    {":g/is/s//ok",true},{":g/is/d",true},{":g/is/p",true},
+    {":set",true},
+    {":10",true},
+    {":.=",true},
+    {":g/is/s//ok",true},
+    {":g/is/d",true},
+    {":g/is/p",true},
     {":2",true},
     {":.m$",true},
     {":2",true},
     {":.t$",true},
-    {":%s/x/y",true},{":%/test//",false},
+    {":%s/x/y",true},
     {":%s/z/z",true},
     {":.s/$/\n",true},
     {":.S",true},
-    {":.S0",false},
     {":.S10",true},
-    {":.Sx",false},
     {":.Sr",true},
     {":.Su",true},
     {":.Sru",true},
@@ -76,22 +75,37 @@ void fixture::testEx()
     {":1,$s/^/Zxxx/",true},
     {":1,$s/s/w/",true}})
   {
+    CPPUNIT_ASSERT_MESSAGE( command.first, ex->Command(command.first));
+      
     if (command.second)
     {
-      CPPUNIT_ASSERT_MESSAGE( command.first, ex->Command(command.first));
-      
       if (command.first != ":.=")
       {
-        CPPUNIT_ASSERT( ex->GetLastCommand() == command.first);
+        CPPUNIT_ASSERT_MESSAGE( command.first, ex->GetLastCommand() == command.first);
       }
     }
     else
     {
-      CPPUNIT_ASSERT_MESSAGE(command.first, !ex->Command(command.first));
       CPPUNIT_ASSERT( ex->GetLastCommand() != command.first);
     }
   }
-
+    
+  // Test invalid commands.  
+  for (auto& command : std::vector<std::string> {
+    // We have only one document, so :n, :prev return false.
+    ":n",
+    ":prev",
+    "set xxx",
+    ":xxx",
+    ":yyy",
+    ":%/test//",
+    ":.S0",
+    ":.Sx"})
+  {
+    CPPUNIT_ASSERT_MESSAGE(command, !ex->Command(command));
+    CPPUNIT_ASSERT( ex->GetLastCommand() != command);
+  }
+  
   stc->SetText("xx\nyy\nzz\n");
   CPPUNIT_ASSERT( ex->Command(":/xx/,/yy/y"));
   
@@ -101,6 +115,16 @@ void fixture::testEx()
   CPPUNIT_ASSERT( ex->MarkerAdd('u'));
   CPPUNIT_ASSERT( ex->Command(":'t,'us/s/w/"));
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":'t,'us/s/w/");
+  
+  // Test abbreviations.
+  stc->SetText("xx\n");
+  CPPUNIT_ASSERT( ex->Command(":ab t TTTT"));
+  const auto& it1 = ex->GetMacros().GetAbbreviations().find("t");
+  CPPUNIT_ASSERT (it1 != ex->GetMacros().GetAbbreviations().end());
+  CPPUNIT_ASSERT( it1->second == "TTTT");
+  CPPUNIT_ASSERT( ex->Command(":una t"));
+  const auto& it2 = ex->GetMacros().GetAbbreviations().find("t");
+  CPPUNIT_ASSERT (it2 == ex->GetMacros().GetAbbreviations().end());
   
   // Test range.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
@@ -149,6 +173,9 @@ void fixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":y"));
   CPPUNIT_ASSERT( ex->Command(":1,$s/^/BEGIN-OF-LINE"));
   CPPUNIT_ASSERT( ex->Command(":w test-ex.txt"));
+  CPPUNIT_ASSERT( ex->Command(":1,2w test-ex.txt"));
+  CPPUNIT_ASSERT( ex->Command(":1,2w >> test-ex.txt"));
+  CPPUNIT_ASSERT( ex->Command(":1,2w >> test-ex.txt"));
 
   // Test macros.
   // Do not load macros yet, to test IsRecorded.
@@ -197,6 +224,9 @@ void fixture::testEx()
   CPPUNIT_ASSERT(!ex->MarkerGoto('a'));
   CPPUNIT_ASSERT(!ex->MarkerDelete('a'));
   
+  // Test print.
+  ex->Print("This is printed");
+  
   // Test delete.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
   CPPUNIT_ASSERT( ex->Command(":10d"));
@@ -213,6 +243,7 @@ void fixture::testEx()
   stc->AppendText("line xxxx 3 added\n");
   stc->AppendText("line xxxx 4 added\n");
   CPPUNIT_ASSERT( ex->Command(":g/xxxx/p"));
+  CPPUNIT_ASSERT( ex->Command(":g/xxxx/p#"));
   CPPUNIT_ASSERT( ex->Command(":g//"));
   
   // Test global substitute.

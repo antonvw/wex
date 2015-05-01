@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXEX_H
-#define _EXEX_H
+#pragma once
 
 #include <map>
 #include <wx/extension/indicator.h>
@@ -113,6 +112,9 @@ public:
   /// Returns -1 if marker does not exist.
   int MarkerLine(const wxUniChar& marker) const;
   
+  /// Prints text in the dialog.
+  void Print(const wxString& text);
+  
   /// Sets delete registers 1 - 9 (if value not empty).
   void SetRegistersDelete(const std::string& value) const;
   
@@ -138,8 +140,8 @@ protected:
   /// disabling current register.
   void SetRegister(const char name) {m_Register = name;};
 private:
+  bool CommandAddress(const std::string& command);
   bool CommandGlobal(const wxString& search);
-  bool CommandRange(const std::string& command);
   bool CommandSet(const wxString& command);
   void ShowDialog(const wxString& title, const wxString& text);
     
@@ -163,4 +165,3 @@ private:
   wxExSTC* m_STC;
 };
 #endif // wxUSE_GUI
-#endif

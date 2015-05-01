@@ -539,16 +539,7 @@ bool wxExVi::CommandChar(int c)
       
     case 'H': GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine()); break;
         
-    case 'J':
-      if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
-      {
-        GetSTC()->BeginUndoAction();
-        GetSTC()->SetTargetStart(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));
-        GetSTC()->SetTargetEnd(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine() + m_Repeat));
-        GetSTC()->LinesJoin();
-        GetSTC()->EndUndoAction();
-      }
-      break;
+    case 'J': wxExAddressRange(this, m_Repeat).Join(); break;
         
     case 'L': GetSTC()->GotoLine(
       GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() - 1); 

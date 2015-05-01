@@ -17,6 +17,7 @@
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
 
@@ -27,6 +28,18 @@ wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
 {
 }
 
+bool wxExAddress::Append(const wxString& text) const
+{
+  if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode())
+  {
+    return false;
+  }
+  
+  m_Ex->GetSTC()->AddText(text);
+  
+  return true;
+}
+  
 int wxExAddress::GetLine() const
 {
   // We already have a line number, return that one.
@@ -99,14 +112,45 @@ int wxExAddress::GetLine() const
   }
 }
 
-void wxExAddress::MarkerDelete() const
+bool wxExAddress::Insert(const wxString& text) const
+{
+  if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode())
+  {
+    return false;
+  }
+  
+  m_Ex->GetSTC()->InsertText(m_Ex->GetSTC()->PositionFromLine(GetLine() - 1), text);
+  
+  return true;
+}
+  
+bool wxExAddress::MarkerAdd(const wxUniChar& marker) const
+{
+  if (GetLine() <= 0)
+  {
+    return false;
+  }
+  
+  return m_Ex->MarkerAdd(marker, GetLine() - 1);
+}
+  
+bool wxExAddress::MarkerDelete() const
 {
   if (StartsWith("'") && size() > 1)
   {
-    m_Ex->MarkerDelete(GetChar(1));
+    return m_Ex->MarkerDelete(GetChar(1));
   }
+  
+  return false;
 }
 
+bool wxExAddress::Put(const char name) const
+{
+  m_Ex->GetSTC()->AddText(m_Ex->GetMacros().GetRegister(name));
+
+  return true;
+}
+  
 void wxExAddress::SetLine(int line)
 {
   if (line > m_Ex->GetSTC()->GetLineCount())
@@ -229,6 +273,18 @@ const wxString wxExAddressRange::BuildReplacement(const wxString& text) const
   }
 
   return replacement;
+}
+  
+bool wxExAddressRange::Change(const wxString& command) const
+{
+  if (!Delete())
+  {
+    return false;
+  }
+  
+  m_Ex->GetSTC()->AddText(command);
+  
+  return true;
 }
   
 int wxExAddressRange::Confirm(
@@ -377,6 +433,22 @@ bool wxExAddressRange::IsOk() const
   return true;
 }
 
+bool wxExAddressRange::Join() const
+{
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk())
+  {
+    return false;
+  }
+  
+  m_STC->BeginUndoAction();
+  m_STC->SetTargetStart(m_STC->PositionFromLine(m_Begin.GetLine() - 1));
+  m_STC->SetTargetEnd(m_STC->PositionFromLine(m_End.GetLine()));
+  m_STC->LinesJoin();
+  m_STC->EndUndoAction();
+  
+  return true;
+}
+  
 bool wxExAddressRange::Move(const wxExAddress& destination) const
 {
   const int dest_line = destination.GetLine();
@@ -477,6 +549,26 @@ bool wxExAddressRange::Parse(
   return true;
 }
     
+bool wxExAddressRange::Print(const wxString& flags) const
+{
+  if (m_STC->GetReadOnly() || m_STC->HexMode() || !SetSelection())
+  {
+    return false;
+  }
+  
+  wxString line_number;
+  
+  if (flags.Contains("#"))
+  {
+    line_number = wxString::Format("%6d  ", m_STC->GetCurrentLine() + 1);
+  }
+  
+  m_Ex->Print(line_number + m_STC->GetSelectedText());
+  m_STC->SelectNone();
+  
+  return true;
+}
+  
 void wxExAddressRange::Set(wxExAddress& begin, wxExAddress& end, int lines)
 {
   begin.SetLine(m_STC->LineFromPosition(m_STC->GetCurrentPos()) + 1);
@@ -670,28 +762,31 @@ bool wxExAddressRange::Substitute(const wxString& command)
   return result != wxID_CANCEL;
 }
 
-bool wxExAddressRange::Write(const wxString& filename) const
+bool wxExAddressRange::Write(const wxString& text) const
 {
   if (!SetSelection())
   {
     return false;
   }
+  
+  const wxString filename(wxString(text.Contains(">>") ? text.AfterLast('>'): text).Trim(false));
+  const wxFile::OpenMode mode(text.Contains(">>") ? wxFile::write_append: wxFile::write);
 
-  wxFile file(filename, wxFile::write);
+  wxFile file(filename, mode);
 
   return 
     file.IsOpened() && 
     file.Write(m_Ex->GetSelectedText());
 }
 
-bool wxExAddressRange::Yank() const
+bool wxExAddressRange::Yank(const char name) const
 {
   if (!SetSelection())
   {
     return false;
   }
-
-  m_Ex->Yank();
+  
+  m_Ex->GetMacros().SetRegister(name, m_Ex->GetSelectedText());
 
   return true;
 }

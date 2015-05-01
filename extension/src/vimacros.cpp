@@ -726,7 +726,15 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
 
 void wxExViMacros::SetAbbreviation(const wxString& ab, const std::string& value)
 {
-  m_Abbreviations[ab] = value;
+  if (value.empty())
+  {
+    m_Abbreviations.erase(ab);
+  }
+  else
+  {
+    m_Abbreviations[ab] = value;
+  }
+  
   m_IsModified = true;
 }
 
