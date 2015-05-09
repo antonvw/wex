@@ -118,6 +118,9 @@ void fixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":'t,'us/s/w/"));
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":'t,'us/s/w/");
   
+  // Test read (file does not exist).
+  CPPUNIT_ASSERT(!ex->Command(":r test-ex.txt"));
+  
   // Test abbreviations.
   stc->SetText("xx\n");
   CPPUNIT_ASSERT( ex->Command(":ab t TTTT"));
@@ -172,7 +175,6 @@ void fixture::testEx()
   CPPUNIT_ASSERT(!ex->Command(":prev"));
   CPPUNIT_ASSERT( ex->Command(":grep test"));
   CPPUNIT_ASSERT( ex->Command(":sed"));
-  CPPUNIT_ASSERT( ex->Command(":r test"));
   CPPUNIT_ASSERT( ex->Command(":r !echo qwerty"));
   CPPUNIT_ASSERT( stc->GetText().Contains("qwerty"));
   CPPUNIT_ASSERT( ex->Command(":y"));
@@ -181,6 +183,7 @@ void fixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":1,2w test-ex.txt"));
   CPPUNIT_ASSERT( ex->Command(":1,2w >> test-ex.txt"));
   CPPUNIT_ASSERT( ex->Command(":1,2w >> test-ex.txt"));
+  CPPUNIT_ASSERT( ex->Command(":r test-ex.txt"));
 
   // Test macros.
   // Do not load macros yet, to test IsRecorded.
