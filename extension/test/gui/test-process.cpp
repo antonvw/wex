@@ -22,6 +22,8 @@ void fixture::testProcess()
   CPPUNIT_ASSERT( process.GetOutput().empty());
   CPPUNIT_ASSERT(!process.HasStdError());
   CPPUNIT_ASSERT(!process.IsRunning());
+  if (process.GetSTC() != NULL)
+    process.GetSTC()->SetText(wxEmptyString);
   
   process.ConfigDialog(m_Frame, "test process", false);
   

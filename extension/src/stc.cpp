@@ -1404,7 +1404,6 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); event.Skip();}, wxID_FIND);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); event.Skip();}, wxID_REPLACE);
     
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_File.Read(event.GetString());}, ID_EDIT_READ);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen();}, ID_EDIT_OPEN_LINK);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {ShowProperties();}, ID_EDIT_SHOW_PROPERTIES);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {ControlCharDialog();}, ID_EDIT_CONTROL_CHAR);

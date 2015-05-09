@@ -164,7 +164,7 @@ public:
   const wxString GetEOL() const;
 
   /// Gets the file.
-  wxExFile& GetFile() {return m_File;};
+  wxExSTCFile& GetFile() {return m_File;};
 
   /// Gets the filename, as used by the file.
   const wxExFileName& GetFileName() const {return m_File.GetFileName();};

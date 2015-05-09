@@ -8,13 +8,11 @@
 #pragma once
 
 #include <map>
-#include <wx/extension/indicator.h>
 #include <wx/extension/marker.h>
 
 #if wxUSE_GUI
 
 class wxExManagedFrame;
-class wxExProcess;
 class wxExSTC;
 class wxExSTCEntryDialog;
 class wxExViMacros;
@@ -141,11 +139,9 @@ protected:
   void SetRegister(const char name) {m_Register = name;};
 private:
   bool CommandAddress(const std::string& command);
-  bool CommandGlobal(const wxString& search);
   bool CommandSet(const wxString& command);
   void ShowDialog(const wxString& title, const wxString& text);
     
-  const wxExIndicator m_FindIndicator;
   const wxExMarker m_MarkerSymbol;
 
   std::map<wxUniChar, int> m_Markers;
@@ -161,7 +157,6 @@ private:
   char m_Register;
   
   wxExManagedFrame* m_Frame;  
-  wxExProcess* m_Process;
   wxExSTC* m_STC;
 };
 #endif // wxUSE_GUI
