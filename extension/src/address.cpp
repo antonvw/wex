@@ -162,14 +162,18 @@ bool wxExAddress::Read(const wxString& arg) const
     if (process.Execute(arg.AfterFirst('!'), wxEXEC_SYNC))
     {
       m_Ex->GetSTC()->AddText(process.GetOutput());
+      
+      return true;
+    }
+    else
+    {
+      return false;
     }
   }
   else
   {
-    m_Ex->GetSTC()->GetFile().Read(arg);
+    return m_Ex->GetSTC()->GetFile().Read(arg);
   }
-  
-  return true;
 }
   
 bool wxExAddress::Show() const
