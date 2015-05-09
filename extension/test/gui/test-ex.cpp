@@ -54,6 +54,8 @@ void fixture::testEx()
     {":g/is/s//ok",true},
     {":g/is/d",true},
     {":g/is/p",true},
+    {":%g/is/p",true},
+    {":1,2g/is/p",true},
     {":2",true},
     {":.m$",true},
     {":2",true},
@@ -97,7 +99,7 @@ void fixture::testEx()
     ":prev",
     "set xxx",
     ":xxx",
-    ":yyy",
+    ":zzz",
     ":%/test//",
     ":.S0",
     ":.Sx"})
@@ -143,6 +145,9 @@ void fixture::testEx()
   stc->GotoLine(2);
   stc->LineDownExtend();
   CPPUNIT_ASSERT(!ex->Command(":'<,'>x"));
+  
+  // Test execute.
+  CPPUNIT_ASSERT( ex->Command(":!pwd"));
   
   // Test set options.
   for (const auto& option : std::vector<std::pair<std::string, std::string>> {

@@ -15,7 +15,7 @@
 #endif
 #include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
-#include <wx/extension/address.h>
+#include <wx/extension/addressrange.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/lexers.h>
