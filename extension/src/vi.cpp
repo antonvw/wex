@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      vi.cpp
 // Purpose:   Implementation of class wxExVi
+//            http://pubs.opengroup.org/onlinepubs/9699919799/
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -555,6 +556,8 @@ bool wxExVi::CommandChar(int c)
       DeleteRange(this, GetSTC()->GetCurrentPos() - m_Repeat, GetSTC()->GetCurrentPos());
       break;
 
+    case 'Y': wxExAddressRange(this, m_Repeat).Yank(); break;
+
     case '.': 
     case ';': 
       {
@@ -565,8 +568,9 @@ bool wxExVi::CommandChar(int c)
       }
       break;
 
-    case '~': return ToggleCase();
+    case '~': ReverseCase(); break;
     case '%': GotoBrace(); break;
+    case '&': Command(":.&"); break;
     case '*': FindWord(); break;
     case '#': FindWord(false); break;
 
@@ -1361,9 +1365,9 @@ bool wxExVi::Put(bool after)
   return true;
 }        
 
-bool wxExVi::ToggleCase()
+bool wxExVi::ReverseCase()
 {
-  // Toggle case in hex mode not yet supported.
+  // Reverse case in hex mode not yet supported.
   if (GetSTC()->GetReadOnly() || GetSTC()->HexMode())
   {
     return false;

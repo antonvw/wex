@@ -83,6 +83,9 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/i"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Substitute("/x/y/f"));
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/g"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("g", '&'));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("g", '~'));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Substitute("g", 'x'));
 
   // Test implementation.  
   // Test Delete.
@@ -177,6 +180,14 @@ void fixture::testAddressRange()
     
   stc->SetText(contents);
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/~/"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("lion"));
+  
+  stc->SetText(contents);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("", '&'));
+  CPPUNIT_ASSERT( stc->GetText().Contains("lion"));
+  
+  stc->SetText(contents);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("", '~'));
   CPPUNIT_ASSERT( stc->GetText().Contains("lion"));
   
   stc->SetText("special char \\ present");

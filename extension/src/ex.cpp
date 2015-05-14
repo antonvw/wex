@@ -327,7 +327,7 @@ bool wxExEx::CommandAddress(const std::string& command)
     const std::string addrs("[\\?/].*?[\\?/]"); // non-greedy!
     const std::string addrm("'[a-z]");
     const std::string cmd_group1("([aikr=]|pu)(.*)");
-    const std::string cmd_group2("([cdgjmpsStywy<>\\!])(.*)");
+    const std::string cmd_group2("([cdgjmpsStywy<>\\!&~])(.*)");
     std::vector <wxString> v;
     
     if (
@@ -410,7 +410,9 @@ bool wxExEx::CommandAddress(const std::string& command)
     case 'j': return range.Join(); break;
     case 'm': return range.Move(wxExAddress(this, rest)); break;
     case 'p': return range.Print(rest); break;
-    case 's': return range.Substitute(rest); break;
+    case 's':
+    case '&':
+    case '~': return range.Substitute(rest, cmd.GetChar(0)); break;
     case 'S': return range.Sort(rest); break;
     case 't': return range.Copy(wxExAddress(this, rest)); break;
     case 'w': 
@@ -459,8 +461,8 @@ bool wxExEx::CommandSet(const wxString& arg)
   cl.AddNegatableSwitch("ac", "Auto Complete");
   cl.AddNegatableSwitch("el", "Edge Line");
   cl.AddNegatableSwitch("ic", "Ignore Case");
-  cl.AddNegatableSwitch("ln", "show LineNumbers");
   cl.AddNegatableSwitch("mw", "Match Words");
+  cl.AddNegatableSwitch("nu", "show LineNumbers");
   cl.AddNegatableSwitch("re", "Regular Expression");
   cl.AddNegatableSwitch("ut", "Use Tabs");
   cl.AddNegatableSwitch("wl", "Wrap Line");
@@ -511,13 +513,13 @@ bool wxExEx::CommandSet(const wxString& arg)
   cl.Switch("el", [&](bool on){
     m_STC->SetEdgeMode(on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);
     wxConfigBase::Get()->Write(_("Edge line"), on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);});
-  cl.Switch("ln", [&](bool on){
-    m_STC->ShowLineNumbers(on);
-    wxConfigBase::Get()->Write(_("Line numbers"), on);});
   cl.Switch("mw", [&](bool on){
     if (on) m_SearchFlags |= wxSTC_FIND_WHOLEWORD;
     else    m_SearchFlags &= ~wxSTC_FIND_WHOLEWORD;
     wxExFindReplaceData::Get()->SetMatchWord(on);});
+  cl.Switch("nu", [&](bool on){
+    m_STC->ShowLineNumbers(on);
+    wxConfigBase::Get()->Write(_("Line numbers"), on);});
   cl.Switch("re", [&](bool on){
     if (on) m_SearchFlags |= wxSTC_FIND_REGEXP;
     else    m_SearchFlags &= ~wxSTC_FIND_REGEXP;
