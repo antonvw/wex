@@ -665,17 +665,6 @@ bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
     return false;
   }
 
-  if (repl == "~")
-  {
-    m_Pattern = wxExFindReplaceData::Get()->GetFindString();
-    repl = m_Replacement;
-  }
-  else
-  {
-    m_Pattern = pattern;
-    m_Replacement = repl; 
-  }
-  
   int searchFlags = m_Ex->GetSearchFlags();
   if (options.Contains("i")) searchFlags &= ~wxSTC_FIND_MATCHCASE;
     
@@ -710,6 +699,9 @@ bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
 
   wxExIndicator indicator(0, 0);
 
+  m_Pattern = pattern;
+  m_Replacement = repl; 
+  
   m_STC->SetIndicatorCurrent(indicator.GetNo());
   m_STC->SetSearchFlags(searchFlags);
   m_STC->BeginUndoAction();

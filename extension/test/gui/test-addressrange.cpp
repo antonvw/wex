@@ -177,11 +177,8 @@ void fixture::testAddressRange()
   
   stc->SetText(contents);
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/lion/"));
-    
-  stc->SetText(contents);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/~/"));
   CPPUNIT_ASSERT( stc->GetText().Contains("lion"));
-  
+    
   stc->SetText(contents);
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("", '&'));
   CPPUNIT_ASSERT( stc->GetText().Contains("lion"));
