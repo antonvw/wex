@@ -20,8 +20,8 @@
 
 void ChangeMode(wxExVi* vi, const std::string& command, int mode)
 {
-  CPPUNIT_ASSERT( vi->Command(command));
-  CPPUNIT_ASSERT( vi->GetMode() == mode);
+  CPPUNIT_ASSERT_MESSAGE( command, vi->Command(command));
+  CPPUNIT_ASSERT_MESSAGE( command, vi->GetMode() == mode);
 }
 
 void fixture::testVi()
@@ -202,6 +202,7 @@ void fixture::testVi()
   }
 
   stc->SetText("999");
+  CPPUNIT_ASSERT( vi->Command(":1,$s/xx/yy/g")); // so &, ~ are ok
   CPPUNIT_ASSERT( vi->Command("i"));
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_INSERT);
   CPPUNIT_ASSERT( vi->Command("b"));
@@ -212,8 +213,8 @@ void fixture::testVi()
   commands.clear();
   commands.insert(commands.end(), {
     "b","e","h","j","k","l"," ","p","u","w","x",
-    "B","D","E","G","H","J","L","M","P","W","X",
-    "^","~","$","{","}","(",")","%","*","#"});
+    "B","D","E","G","H","J","L","M","P","W","X","Y",
+    "^","~","$","{","}","(",")","%","&","*","#"});
 
   for (auto& it4 : commands)
   {

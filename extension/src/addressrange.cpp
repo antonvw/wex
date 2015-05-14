@@ -21,6 +21,7 @@
 
 #if wxUSE_GUI
 
+wxString wxExAddressRange::m_Pattern;
 wxString wxExAddressRange::m_Replacement;
 
 wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
@@ -329,7 +330,7 @@ bool wxExAddressRange::Global(const wxString& text) const
   {
     if (!rest.empty())
     {
-      wxLogStatus("Cannot replace, pattern is empty");
+      wxLogStatus("Pattern is empty");
       return false;
     }
     
@@ -495,7 +496,7 @@ bool wxExAddressRange::Parse(
     }
     else
     {
-      wxLogStatus("Cannot substitute, internal char exists");
+      wxLogStatus("Internal char exists");
       return false;
     }
   }
@@ -504,7 +505,7 @@ bool wxExAddressRange::Parse(
 
   if (!next.HasMoreTokens())
   {
-    wxLogStatus("Cannot substitute, missing slash");
+    wxLogStatus("Missing slash");
     return false;
   }
 
@@ -512,26 +513,6 @@ bool wxExAddressRange::Parse(
   pattern = next.GetNextToken();
   replacement = next.GetNextToken();
   options = next.GetNextToken();
-  
-  if (pattern.empty())
-  {
-    wxLogStatus("Cannot substitute, pattern is empty");
-    return false;
-  }
-
-  if (!options.empty())
-  {
-    wxString filter(options);
-    filter.Replace("c", "");
-    filter.Replace("g", "");
-    filter.Replace("i", "");
-    
-    if (!filter.empty())
-    {
-      wxLogStatus("Cannot substitute, unsupported flags: " + filter);
-      return false;
-    }
-  }
   
   // Restore a / for all occurrences of the special char.
   if (escaped)
@@ -554,7 +535,7 @@ bool wxExAddressRange::Print(const wxString& flags) const
   
   if (flags.Contains("#"))
   {
-    line_number = wxString::Format("%6d  ", m_STC->GetCurrentLine() + 1);
+    line_number = wxString::Format("%6d ", m_STC->GetCurrentLine() + 1);
   }
   
   m_Ex->Print(line_number + m_STC->GetSelectedText());
@@ -631,7 +612,7 @@ bool wxExAddressRange::Sort(const wxString& parameters)
   return wxExSortSelection(m_STC, sort_type, pos, len);
 }
   
-bool wxExAddressRange::Substitute(const wxString& command)
+bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk())
   {
@@ -641,18 +622,57 @@ bool wxExAddressRange::Substitute(const wxString& command)
   wxString pattern;
   wxString repl;
   wxString options;
-    
-  if (!Parse(command, pattern, repl, options))
+  
+  switch (cmd)
   {
-    return false;
+    case 's':
+      if (!Parse(text, pattern, repl, options))
+      {
+        return false;
+      }
+      break;
+    case '&':
+      repl = m_Replacement;
+      pattern = m_Pattern;
+      options = text;
+      break;
+    case '~':
+      repl = m_Replacement;
+      pattern = m_Pattern;
+      options = text;
+      break;
+    default:
+      return false;
   }
     
+  if (!options.empty())
+  {
+    wxString filter(options);
+    filter.Replace("c", "");
+    filter.Replace("g", "");
+    filter.Replace("i", "");
+    
+    if (!filter.empty())
+    {
+      wxLogStatus("Unsupported flags: " + filter);
+      return false;
+    }
+  }
+  
+  if (pattern.empty())
+  {
+    wxLogStatus("Pattern is empty");
+    return false;
+  }
+
   if (repl == "~")
   {
+    m_Pattern = wxExFindReplaceData::Get()->GetFindString();
     repl = m_Replacement;
   }
   else
   {
+    m_Pattern = pattern;
     m_Replacement = repl; 
   }
   

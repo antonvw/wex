@@ -89,7 +89,7 @@ public:
   ///  - x,y sorts rectangle within range: x start col, y end col (exclusive).
   bool Sort(const wxString& parameters = wxEmptyString);
   
-  /// Substitutes range by /pattern/replacement/options in command.
+  /// Substitutes range by /pattern/replacement/options in text.
   /// Pattern might contain:
   /// - $ to match a line end
   /// Replacement might contain:
@@ -104,7 +104,10 @@ public:
   /// e.g. /$/EOL appends the string EOL at the end of each line. 
   /// Merging is not yet possible using a \n target,
   /// you can create a macro for that.  
-  bool Substitute(const wxString& command);
+  bool Substitute(
+    const wxString& text,
+    /// cmd is s, & or ~
+    const char cmd = 's');
     
   /// Writes range to filename.
   bool Write(const wxString& filename) const;
@@ -128,6 +131,7 @@ private:
   void Set(wxExAddress& begin, wxExAddress& end, int lines);
   bool SetSelection() const;
 
+  static wxString m_Pattern;
   static wxString m_Replacement;
   
   const wxExIndicator m_FindIndicator;

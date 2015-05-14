@@ -44,7 +44,7 @@ void fixture::testEx()
   stc->DocumentStart();
 
   // Test valid commands and last command.  
-  for (auto& command : std::vector<std::pair<std::string, bool>> {
+  for (const auto& command : std::vector<std::pair<std::string, bool>> {
     {":ab",true},
     {":ve",false},
     {":reg",true},
@@ -75,6 +75,10 @@ void fixture::testEx()
     {":1,$s/$/ZXXX/",true},
     {":1,$s/$/ZXXX/",true},
     {":1,$s/^/Zxxx/",true},
+    {":1,$&",true},
+    {":1,$&g",true},
+    {":1,$~",true},
+    {":1,$~g",true},
     {":1,$s/s/w/",true}})
   {
     CPPUNIT_ASSERT_MESSAGE( command.first, ex->Command(command.first));
@@ -93,7 +97,7 @@ void fixture::testEx()
   }
     
   // Test invalid commands.  
-  for (auto& command : std::vector<std::string> {
+  for (const auto& command : std::vector<std::string> {
     // We have only one document, so :n, :prev return false.
     ":n",
     ":prev",
@@ -101,6 +105,7 @@ void fixture::testEx()
     ":xxx",
     ":zzz",
     ":%/test//",
+    ":1,$k",
     ":.S0",
     ":.Sx"})
   {
@@ -161,10 +166,10 @@ void fixture::testEx()
   
   // Test set switches.
   for (const auto& it :  std::vector<std::string> {
-    "ai", "ac", "el", "ic", "ln", "mw", "re", "wl", "ws"})
+    "ai", "ac", "el", "ic", "mw", "nu", "re", "wl", "ws"})
   {
-    CPPUNIT_ASSERT( ex->Command(":set " + it));
-    CPPUNIT_ASSERT( ex->Command(":set " + it + "!"));
+    CPPUNIT_ASSERT_MESSAGE( it, ex->Command(":set " + it));
+    CPPUNIT_ASSERT_MESSAGE( it, ex->Command(":set " + it + "!"));
   }
   
   CPPUNIT_ASSERT( ex->Command(":set ai")); // back to default

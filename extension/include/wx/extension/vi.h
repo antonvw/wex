@@ -73,7 +73,7 @@ private:
   /// Adds recording to current macro.
   virtual void MacroRecord(const std::string& text);
   bool Put(bool after);
-  bool ToggleCase(); 
+  bool ReverseCase(); 
 
   static std::string m_LastFindCharCommand;
 
