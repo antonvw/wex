@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      address.h
+// Name:      addressrange.h
 // Purpose:   Declaration of class wxExAddressRange
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
@@ -89,24 +89,27 @@ public:
   ///  - x,y sorts rectangle within range: x start col, y end col (exclusive).
   bool Sort(const wxString& parameters = wxEmptyString);
   
-  /// Substitutes range by /pattern/replacement/options in text.
-  /// Pattern might contain:
-  /// - $ to match a line end
-  /// Replacement might contain:
-  /// - & or \0 to represent the target in the replacement
-  /// - \U to convert target to uppercase 
-  /// - \L to convert target to lowercase
-  /// - ~ to use previous replacement
-  /// Options can be:
-  /// - c : Ask for confirm
-  /// - i : Case insensitive
-  /// - g : Do global on line, without this flag replace first match only
-  /// e.g. /$/EOL appends the string EOL at the end of each line. 
-  /// Merging is not yet possible using a \n target,
-  /// you can create a macro for that.  
+  /// Substitutes range.
   bool Substitute(
+    /// text format: /pattern/replacement/options
+    /// Pattern might contain:
+    /// - $ to match a line end
+    /// Replacement might contain:
+    /// - & or \0 to represent the target in the replacement
+    /// - \U to convert target to uppercase 
+    /// - \L to convert target to lowercase
+    /// Options can be:
+    /// - c : Ask for confirm
+    /// - i : Case insensitive
+    /// - g : Do global on line, without this flag replace first match only
+    /// e.g. /$/EOL appends the string EOL at the end of each line. 
+    /// Merging is not yet possible using a \n target,
+    /// you can create a macro for that.  
     const wxString& text,
-    /// cmd is s, & or ~
+    /// cmd is one of s, & or ~
+    /// - s : default, normal substitute
+    /// - & : repeat last substitute (text contains options)
+    /// - ~ : repeat last substitute with pattern from find replace data (text contains options)
     const char cmd = 's');
     
   /// Writes range to filename.
