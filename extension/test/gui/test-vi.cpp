@@ -321,7 +321,7 @@ void fixture::testVi()
   CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
   stc->SetText("this text contains xx");
 
-  for (auto& macro : std::vector< std::vector< std::string> > {
+  for (const auto& macro : std::vector< std::vector< std::string> > {
     {"10w"},
     {"dw"},
     {"de"},
@@ -415,7 +415,7 @@ void fixture::testVi()
   CPPUNIT_ASSERT( stc->GetText().Contains("XXXXX"));
   
   // Test visual modes.
-  for (auto& visual : std::vector<std::pair<std::string, int>> {
+  for (const auto& visual : std::vector<std::pair<std::string, int>> {
     {"v",wxExVi::MODE_VISUAL},
     {"V",wxExVi::MODE_VISUAL_LINE},
     {"F",wxExVi::MODE_VISUAL_RECT}})
@@ -435,12 +435,24 @@ void fixture::testVi()
   CPPUNIT_ASSERT( stc->GetLineCount() == 12);
   stc->GotoLine(2);
   
-  for (auto& go : std::vector<std::pair<std::string, int>> {
-    {"gg",0},{"G",11},{"1G",11},{"10G",9},{"10000G",11},
-    {":$",11},{":100",11},
-    {"/bbbbb",1},{"/d",1},{"/a",3},{"n",3},{"N",3},
-    {"?bbbbb",1},{"?d",1},{"?a",0},{"n",0},{"N",0}})
-  {
+  for (const auto& go : std::vector<std::pair<std::string, int>> {
+    {"gg",0},
+    {"G",11},
+    {"1G",11},
+    {"10G",9},
+    {"10000G",11},
+    {":$",11},
+    {":100",11},
+    {"/bbbbb",1},
+    {"/d",1},
+    {"/a",3},
+    {"n",3},
+    {"N",3},
+    {"?bbbbb",1},
+    {"?d",1},
+    {"?a",0},
+    {"n",0},
+    {"N",0}}) {
     if (go.first.back() != 'd')
       CPPUNIT_ASSERT( vi->Command(go.first));
     else
