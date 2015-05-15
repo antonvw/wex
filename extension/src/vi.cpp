@@ -242,10 +242,8 @@ bool wxExVi::Command(const std::string& command)
     return false;
   }
   
-  if (
-      command.front() == '=' ||
-     (GetMacros().IsPlayback() &&
-      wxString(command).StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("="))))
+  if (command.front() == '=' ||
+      wxString(command).StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("=")))
   {
     CommandCalc(command);
     return true;
@@ -407,7 +405,6 @@ void wxExVi::CommandCalc(const wxString& command)
 {
   const int index = command.StartsWith("=") ? 1: 2;
   
-  // Calculation register.
   int width = 0;
   const double sum = wxExCalculator(command.Mid(index).ToStdString(), this, width);
 

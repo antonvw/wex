@@ -51,6 +51,7 @@ void fixture::testEx()
     {":set",true},
     {":10",true},
     {":.=",true},
+    {":/yy/=",true},
     {":g/is/s//ok",true},
     {":g/is/d",true},
     {":g/is/p",true},
@@ -289,7 +290,11 @@ void fixture::testEx()
   stc->GotoLine(2);
 
   for (auto& go : std::vector<std::pair<std::string, int>> {
-    {":1",0},{":-10",0},{":10",9},{":10000",11}})
+    {":1",0},
+    {":-10",0},
+    {":10",9},
+    {":/c/",2},
+    {":10000",11}})
   {
     CPPUNIT_ASSERT(  ex->Command(go.first));
     CPPUNIT_ASSERT( stc->GetCurrentLine() == go.second);
