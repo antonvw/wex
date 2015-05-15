@@ -331,15 +331,17 @@ bool wxExEx::CommandAddress(const std::string& command)
     std::vector <wxString> v;
     
     if (
-      // If we have a % address range
+      // a % address range
       wxExMatch("^%" + cmd_group2, rest.ToStdString(), v) == 2 ||
-      // If we have a search address range.
+      // a search address range
       wxExMatch("^(" + addrs + ")(," + addrs + ")" + cmd_group2, rest.ToStdString(), v) == 4 ||
-      // If we have a address range containing markers.
+      // a search address =
+      wxExMatch("^(" + addrs + ")(=)(.*)", rest.ToStdString(), v) == 3 ||
+      // an address range containing markers
       wxExMatch("^(" + addrm + ")(," + addrm + ")?" + cmd_group2, rest.ToStdString(), v) == 4 ||
-      // If we have a addr1 range.
+      // an addr1 range
       wxExMatch("^(" + addr + ")?" + cmd_group1, rest.ToStdString(), v) == 3 ||
-      // If we have a addr2 range.
+      // an addr2 range
       wxExMatch("^(" + addr + ")?(," + addr + ")?" + cmd_group2, rest.ToStdString(), v) == 4)
     {
       switch (v.size())

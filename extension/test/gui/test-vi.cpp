@@ -72,8 +72,8 @@ void fixture::testVi()
   CPPUNIT_ASSERT( vi->MacroPlayback("a"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
 
-  // Vi control key tests.
-  for (auto& control_key : std::vector<int> {
+  // Test control keys.
+  for (const auto& control_key : std::vector<int> {
     WXK_CONTROL_B,WXK_CONTROL_E,WXK_CONTROL_F,WXK_CONTROL_G,
     WXK_CONTROL_J,WXK_CONTROL_P,WXK_CONTROL_Q})
   {
@@ -82,8 +82,8 @@ void fixture::testVi()
     CPPUNIT_ASSERT(!vi->OnChar(event));
   }
 
-  // Vi navigation command tests.
-  for (auto& nav_key : std::vector<int> {
+  // Test navigate command keys.
+  for (const auto& nav_key : std::vector<int> {
     WXK_BACK,WXK_DELETE,WXK_RETURN,WXK_LEFT,WXK_DOWN,WXK_UP,WXK_RIGHT,
     WXK_PAGEUP,WXK_PAGEDOWN,WXK_TAB})
   {
@@ -106,7 +106,7 @@ void fixture::testVi()
   event.m_uniChar= ']';
   CPPUNIT_ASSERT(!vi->OnChar(event));
   
-  // Vi command tests.
+  // Test insert command.
   stc->SetText("aaaaa");
   CPPUNIT_ASSERT( vi->GetMode() == wxExVi::MODE_NORMAL);
   CPPUNIT_ASSERT( vi->Command("i"));
@@ -212,9 +212,9 @@ void fixture::testVi()
   // Test commands that do not change mode, and all return true.
   commands.clear();
   commands.insert(commands.end(), {
-    "b","e","h","j","k","l"," ","p","u","w","x",
+    "b","e","h","j","k","l","p","u","w","x"," ",
     "B","D","E","G","H","J","L","M","P","W","X","Y",
-    "^","~","$","{","}","(",")","%","&","*","#"});
+    "^","-","+","|","~","$","{","}","(",")","%","&","*","#"});
 
   for (auto& it4 : commands)
   {
@@ -309,6 +309,13 @@ void fixture::testVi()
     "the chances of anything coming from mars"));
   CPPUNIT_ASSERT(!stc->GetText().Contains("mathe"));
 
+  // Test calc.
+  stc->SetText("this text contains xx");
+  vi->Command("i");
+  vi->Command("=5+5");
+  vi->Command("");
+  CPPUNIT_ASSERT( stc->GetText().Contains("10"));
+  
   // Test macro.
   // First load macros.
   CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
