@@ -242,8 +242,8 @@ bool wxExVi::Command(const std::string& command)
     return false;
   }
   
-  if (command.front() == '=' ||
-      wxString(command).StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("=")))
+  if ( command.front() == '=' ||
+      (command.size() > 2 && wxString(command).StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("="))))
   {
     CommandCalc(command);
     return true;
