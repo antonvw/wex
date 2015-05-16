@@ -87,7 +87,7 @@ public:
   /// -u to sort unique lines
   /// -r to sort reversed (descending)
   ///  - x,y sorts rectangle within range: x start col, y end col (exclusive).
-  bool Sort(const wxString& parameters = wxEmptyString);
+  bool Sort(const wxString& parameters = wxEmptyString) const;
   
   /// Substitutes range.
   bool Substitute(

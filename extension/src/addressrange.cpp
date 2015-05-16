@@ -581,7 +581,7 @@ bool wxExAddressRange::SetSelection() const
   return true;
 }
 
-bool wxExAddressRange::Sort(const wxString& parameters)
+bool wxExAddressRange::Sort(const wxString& parameters) const
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !SetSelection())
   {
