@@ -68,26 +68,20 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
   
-  // Test Sort and flags.
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1").Sort("x"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("u"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("r"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("ur"));
-  
-  // Test Substitute and flags.
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1").Substitute("//y"));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").Substitute("/x/y"));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "2").Substitute("/x/y/f"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/i"));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Substitute("/x/y/f"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/g"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("g", '&'));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("g", '~'));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Substitute("g", 'x'));
-
   // Test implementation.  
+  const wxString contents("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  
+  // Test Change.
+  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 4).Change("changed"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("changed"));
+  
+  // Test Copy.
+  stc->SetText(contents);
+  CPPUNIT_ASSERT( stc->GetLineCount() == 8);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Copy(wxExAddress(ex, "$")));
+  CPPUNIT_ASSERT( stc->GetLineCount() == 10);
+  
   // Test Delete.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   stc->GotoLine(1);
@@ -101,10 +95,26 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( stc->GetLineCount() == 1);
   stc->SelectNone();
   
-  // Test Change.
-  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 4).Change("changed"));
-  CPPUNIT_ASSERT( stc->GetText().Contains("changed"));
+  // Test Filter.
+  stc->SetText(contents);
+  CPPUNIT_ASSERT( stc->GetLineCount() == 8);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Filter("uniq"));
+  CPPUNIT_ASSERT( stc->GetLineCount() == 5);
+  
+  // Test Global.
+  stc->SetText(contents);
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global(wxEmptyString));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global("XXX"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/s/a/XX"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/s/b/XX|s/c/yy"));
+  
+  // Test Indent.
+  stc->SetText(contents);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent());
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent(false));
+  
+  // Test IsOk.
+  // See above.
   
   // Test Join.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
@@ -112,45 +122,22 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( stc->GetText().Contains("a"));
   CPPUNIT_ASSERT_MESSAGE( std::to_string(stc->GetLineCount()), stc->GetLineCount() == 1);
   
-  // Test Yank.
-  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
-  stc->GotoLine(0);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 2).Yank());
-  stc->SelectNone();
-  stc->AddText(stc->GetVi().GetMacros().GetRegister('0'));
-  CPPUNIT_ASSERT( stc->GetLineCount() == 10);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
-  stc->GotoLine(0);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
-  
-  // Test Filter.
-  const wxString contents("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
-  
-  stc->SetText(contents);
-  CPPUNIT_ASSERT( stc->GetLineCount() == 8);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Filter("uniq"));
-  CPPUNIT_ASSERT( stc->GetLineCount() == 5);
-  
   // Test Move.
   stc->SetText(contents);
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
   CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "$")));
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
   
-  // Test Copy.
-  stc->SetText(contents);
-  CPPUNIT_ASSERT( stc->GetLineCount() == 8);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Copy(wxExAddress(ex, "$")));
-  CPPUNIT_ASSERT( stc->GetLineCount() == 10);
-  
-  // Test Indent.
-  stc->SetText(contents);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent(false));
-  
   // Test Print.
   stc->SetText(contents);
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Print());
+  
+  // Test Sort.
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort());
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1").Sort("x"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("u"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("r"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("ur"));
   
   // Test Substitute.
   stc->SetText(contents);
@@ -199,8 +186,31 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/'///"));
   CPPUNIT_ASSERT( stc->GetText().Contains("char  present"));
   
+  // Test Substitute and flags.
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1").Substitute("//y"));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").Substitute("/x/y"));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "2").Substitute("/x/y/f"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/i"));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Substitute("/x/y/f"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/g"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("g", '&'));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("g", '~'));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Substitute("g", 'x'));
+
   // Test Write.
   stc->SetText(contents);
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Write("sample.txt"));
   CPPUNIT_ASSERT( remove("sample.txt") == 0);
+  
+  // Test Yank.
+  stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
+  stc->GotoLine(0);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 2).Yank());
+  stc->SelectNone();
+  stc->AddText(stc->GetVi().GetMacros().GetRegister('0'));
+  CPPUNIT_ASSERT( stc->GetLineCount() == 10);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
+  stc->GotoLine(0);
+  CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
 }
