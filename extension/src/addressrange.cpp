@@ -5,6 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <vector>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -293,7 +294,7 @@ bool wxExAddressRange::Global(const wxString& text) const
 {
   wxStringTokenizer next(text, "/");
 
-  if (!next.HasMoreTokens())
+  if (next.CountTokens() <= 1)
   {
     return false;
   }
@@ -347,28 +348,39 @@ bool wxExAddressRange::Global(const wxString& text) const
   m_STC->SetTargetStart(m_STC->PositionFromLine(m_Begin.GetLine() - 1));
   m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('%')));
   
+  std::vector<std::string> commands;
+  wxStringTokenizer tkz(rest, "|");
+  
+  while (tkz.HasMoreTokens())
+  {
+    commands.push_back(tkz.GetNextToken().ToStdString());
+  }
+  
   while (m_STC->SearchInTarget(pattern) != -1)
   {
     const int line = m_STC->LineFromPosition(m_STC->GetTargetStart());
     
     if (command)
     {
-      const std::string cmd(":" + std::to_string(line + 1) + rest);
+      for (const auto& it : commands)
+      {
+        const std::string cmd(":" + std::to_string(line + 1) + it);
 
-      if (!m_Ex->Command(cmd))
-      {
-        m_Ex->GetFrame()->ShowExMessage(wxString::Format("%s failed", cmd.c_str()));
-        m_STC->EndUndoAction();
-        m_Ex->MarkerDelete('%');
-        return false;
-      }
-      
-      if (hits > 50 && infinite)
-      {
-        m_Ex->GetFrame()->ShowExMessage(wxString::Format("%s possible infinite loop", cmd.c_str()));
-        m_STC->EndUndoAction();
-        m_Ex->MarkerDelete('%');
-        return false;
+        if (!m_Ex->Command(cmd))
+        {
+          m_Ex->GetFrame()->ShowExMessage(wxString::Format("%s failed", cmd.c_str()));
+          m_STC->EndUndoAction();
+          m_Ex->MarkerDelete('%');
+          return false;
+        }
+        
+        if (hits > 50 && infinite)
+        {
+          m_Ex->GetFrame()->ShowExMessage(wxString::Format("%s possible infinite loop", cmd.c_str()));
+          m_STC->EndUndoAction();
+          m_Ex->MarkerDelete('%');
+          return false;
+        }
       }
     }
     else
