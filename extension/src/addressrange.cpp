@@ -283,10 +283,6 @@ bool wxExAddressRange::Filter(const wxString& command)
     }
   }
   
-#ifdef DEBUG
-  wxLogMessage("Process error: " + command);
-#endif
-
   return false;
 }
 
@@ -353,7 +349,15 @@ bool wxExAddressRange::Global(const wxString& text) const
   
   while (tkz.HasMoreTokens())
   {
-    commands.push_back(tkz.GetNextToken().ToStdString());
+    const std::string cmd(tkz.GetNextToken().ToStdString());
+
+    // Prevent recursive global.
+    if (cmd[0] == 'g')
+    {
+      return false;
+    }
+    
+    commands.push_back(cmd);
   }
   
   while (m_STC->SearchInTarget(pattern) != -1)
@@ -431,9 +435,6 @@ bool wxExAddressRange::IsOk() const
     m_Begin.GetLine() <= 0 || m_End.GetLine() <= 0 || 
     m_Begin.GetLine() > m_End.GetLine())
   {
-#ifdef DEBUG
-    wxLogMessage("Range error");
-#endif
     return false;
   }
 
