@@ -370,7 +370,8 @@ bool wxExSTC::CanPaste() const
 void wxExSTC::CheckAutoComp(const wxUniChar& c)
 {
   if (!m_UseAutoComplete || 
-      !wxConfigBase::Get()->ReadBool(_("Auto complete"), true))
+      !wxConfigBase::Get()->ReadBool(_("Auto complete"), true) ||
+      SelectionIsRectangle())
   {
     return;
   }
@@ -1677,7 +1678,8 @@ void wxExSTC::OnChar(wxKeyEvent& event)
        if (
          !match.StartsWith("/") &&
           GetCharAt(GetCurrentPos() - 2) != '/' &&
-         (m_Lexer.GetLanguage() == "xml" || m_Lexer.IsKeyword(match)))
+         (m_Lexer.GetLanguage() == "xml" || m_Lexer.IsKeyword(match)) &&
+         !SelectionIsRectangle())
        {
          const wxString add("</" + match + ">");
          

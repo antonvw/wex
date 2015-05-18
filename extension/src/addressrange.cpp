@@ -288,6 +288,8 @@ bool wxExAddressRange::Filter(const wxString& command)
 
 bool wxExAddressRange::Global(const wxString& text) const
 {
+  m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
+  
   wxStringTokenizer next(text, "/");
 
   if (next.CountTokens() <= 1)
@@ -321,8 +323,6 @@ bool wxExAddressRange::Global(const wxString& text) const
     rest = std::string(1, command) + arg;
   }
 
-  m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
-  
   if (pattern.empty())
   {
     if (!rest.empty())
@@ -331,7 +331,6 @@ bool wxExAddressRange::Global(const wxString& text) const
       return false;
     }
     
-    // Silently cleared indicators.
     return true;  
   }
   

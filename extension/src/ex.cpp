@@ -391,7 +391,18 @@ bool wxExEx::CommandAddress(const std::string& command)
     case 'a': return addr.Append(rest); break;
     case 'i': return addr.Insert(rest); break;
     case 'k': return addr.MarkerAdd(rest.GetChar(0)); break;
-    case 'p': return addr.Put(rest.GetChar(0)); break;
+    case 'p': 
+      if (cmd == "pu")
+      { 
+        return !rest.empty() ? 
+          addr.Put(rest.GetChar(0)):
+          addr.Put();
+      }
+      else
+      {
+        return false;
+      }
+      break;
     case 'r': return addr.Read(rest); break;
     case '=': return addr.Show(); break;
     default:
