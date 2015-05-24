@@ -32,12 +32,12 @@ wxExAddress::~wxExAddress()
   
 bool wxExAddress::Append(const wxString& text) const
 {
-  if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode())
+  if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
   {
     return false;
   }
   
-  m_Ex->GetSTC()->AddText(text);
+  m_Ex->GetSTC()->InsertText(m_Ex->GetSTC()->PositionFromLine(GetLine()), text);
   
   return true;
 }
@@ -116,7 +116,7 @@ int wxExAddress::GetLine() const
 
 bool wxExAddress::Insert(const wxString& text) const
 {
-  if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode())
+  if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
   {
     return false;
   }
@@ -148,31 +148,67 @@ bool wxExAddress::MarkerDelete() const
 
 bool wxExAddress::Put(const char name) const
 {
-  m_Ex->GetSTC()->AddText(m_Ex->GetMacros().GetRegister(name));
+  if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
+  {
+    return false;
+  }
+  
+  m_Ex->GetSTC()->InsertText(
+    m_Ex->GetSTC()->PositionFromLine(GetLine()), 
+    m_Ex->GetMacros().GetRegister(name));
 
   return true;
 }
 
 bool wxExAddress::Read(const wxString& arg) const
 {
+  if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
+  {
+    return false;
+  }
+  
   if (arg.StartsWith("!"))
   {
     wxExProcess process;
     
-    if (process.Execute(arg.AfterFirst('!'), wxEXEC_SYNC))
-    {
-      m_Ex->GetSTC()->AddText(process.GetOutput());
-      
-      return true;
-    }
-    else
+    if (!process.Execute(arg.AfterFirst('!'), wxEXEC_SYNC))
     {
       return false;
     }
+    
+    return Append(process.GetOutput());
   }
   else
   {
-    return m_Ex->GetSTC()->GetFile().Read(arg);
+    wxFileName fn(arg);
+
+    if (fn.IsRelative())
+    {
+      fn.Normalize(wxPATH_NORM_ALL, m_Ex->GetSTC()->GetFileName().GetPath());
+    }
+    
+    wxExFile file;
+
+    if (!file.Exists(fn.GetFullPath()) || !file.Open(fn.GetFullPath()))
+    {
+      wxLogStatus(_("file: %s does not exist"), arg);
+      return false;
+    }
+    
+    const wxCharBuffer& buffer = file.Read();
+    
+    if (*this == ".")
+    {
+      m_Ex->GetSTC()->AddTextRaw((const char *)buffer.data(), buffer.length());
+    }
+    else
+    {
+      // README: InsertTextRaw does not have length argument.
+      m_Ex->GetSTC()->InsertTextRaw(
+        m_Ex->GetSTC()->PositionFromLine(GetLine()), (const char *)buffer.data());
+    }
+      
+    return true;
   }
 }
   
@@ -203,5 +239,4 @@ void wxExAddress::SetLine(int line)
     m_Line = line;
   }
 }
-
 #endif // wxUSE_GUI

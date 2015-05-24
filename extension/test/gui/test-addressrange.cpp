@@ -38,7 +38,7 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "x").IsOk());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "x,3").IsOk());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "x,3").Delete());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,x").Filter("ls"));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,x").Escape("ls"));
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,x").Indent());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,!").IsOk());
   CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,@").Move(wxExAddress(ex, "2")));
@@ -95,10 +95,10 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( stc->GetLineCount() == 1);
   stc->SelectNone();
   
-  // Test Filter.
+  // Test Escape.
   stc->SetText(contents);
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Filter("uniq"));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Escape("uniq"));
   CPPUNIT_ASSERT( stc->GetLineCount() == 5);
   
   // Test Global.

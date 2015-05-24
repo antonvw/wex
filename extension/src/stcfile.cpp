@@ -138,33 +138,6 @@ bool wxExSTCFile::GetContentsChanged() const
   return m_STC->GetModify();
 }
 
-bool wxExSTCFile::Read(const wxString& name) const
-{
-  wxFileName fn(name);
-
-  if (fn.IsRelative())
-  {
-    fn.Normalize(wxPATH_NORM_ALL, GetFileName().GetPath());
-  }
-  
-  wxExFile file;
-
-  if (file.Exists(fn.GetFullPath()))
-  {
-    if (file.Open(fn.GetFullPath()))
-    {
-      const wxCharBuffer& buffer = file.Read();
-      m_STC->AddTextRaw((const char *)buffer.data(), buffer.length());
-      
-      return true;
-    }
-  }
-  
-  wxLogStatus(_("file: %s does not exist"), name);
-  
-  return false;
-}
-
 void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 {
   // Be sure we can add text.

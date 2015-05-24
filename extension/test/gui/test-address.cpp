@@ -66,6 +66,7 @@ void fixture::testAddress()
   CPPUNIT_ASSERT( address2.GetLine() == 1);
   address2.MarkerDelete();
   CPPUNIT_ASSERT( address2.GetLine() == 0);
+  
   wxExAddress address3(ex, "5");
   CPPUNIT_ASSERT( address3.MarkerAdd('x'));
   CPPUNIT_ASSERT( address3.Append("appended text"));
@@ -77,4 +78,5 @@ void fixture::testAddress()
   CPPUNIT_ASSERT( stc->GetText().Contains("zzzz"));
   CPPUNIT_ASSERT( address3.Show());
   CPPUNIT_ASSERT(!address3.Read("XXXXX"));
+  CPPUNIT_ASSERT( address3.Read(GetTestDir() + "test.bin"));
 }

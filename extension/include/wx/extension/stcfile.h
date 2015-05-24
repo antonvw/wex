@@ -2,11 +2,10 @@
 // Name:      stcfile.h
 // Purpose:   Declaration of class wxExSTCFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXSTCFILE_H
-#define _EXSTCFILE_H
+#pragma once
 
 #include <wx/extension/file.h> // for wxExFile
 
@@ -26,16 +25,12 @@ public:
     const wxString& filename = wxEmptyString);
   
   /// Override virtual methods.
-  virtual bool GetContentsChanged() const;
-  virtual void ResetContentsChanged();
-  
-  /// Reads other file and adds contents to STC.
-  /// Returns true if file was read.
-  bool Read(const wxString& file) const;
+  virtual bool GetContentsChanged() const override;
+  virtual void ResetContentsChanged() override;
 protected:
-  virtual bool DoFileLoad(bool synced = false);
-  virtual void DoFileNew();
-  virtual void DoFileSave(bool save_as = false);
+  virtual bool DoFileLoad(bool synced = false) override;
+  virtual void DoFileNew() override;
+  virtual void DoFileSave(bool save_as = false) override;
 private:
   void ReadFromFile(bool get_only_new_data);
 
@@ -43,4 +38,3 @@ private:
   wxFileOffset m_PreviousLength;
 };
 #endif // wxUSE_GUI
-#endif

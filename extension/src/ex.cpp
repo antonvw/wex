@@ -238,6 +238,32 @@ bool wxExEx::Command(const std::string& command)
       result = CommandSet(wxString(command.substr(4)).Trim(false));
     }
   }
+  else if (command.compare(0, 3, ":so") == 0)
+  {
+    if (command.find(" ") != std::string::npos)
+    {
+      const wxString filename(wxString(command.substr(3)).Trim(false));
+      
+      wxTextFile file(filename);
+
+      if (!file.Open())
+      {
+        return false;
+      }
+      
+      for (size_t i = 0; i < file.GetLineCount(); i++)
+      {
+        if (!Command(file.GetLine(i).ToStdString()))
+        {
+          return false;
+        }
+      }
+    }
+    else
+    {
+      return false;
+    }
+  }
   else if (command.compare(0, 7, ":syntax") == 0)
   {
     if (wxString(command).EndsWith("on"))
@@ -390,7 +416,9 @@ bool wxExEx::CommandAddress(const std::string& command)
     case 0: return false; break;
     case 'a': return addr.Append(rest); break;
     case 'i': return addr.Insert(rest); break;
-    case 'k': return addr.MarkerAdd(rest.GetChar(0)); break;
+    case 'k': 
+      return !rest.empty() ? addr.MarkerAdd(rest.GetChar(0)): false;
+      break;
     case 'p': 
       if (cmd == "pu")
       { 
@@ -442,7 +470,7 @@ bool wxExEx::CommandAddress(const std::string& command)
     case 'y': return range.Yank(rest.empty() ? '0': (char)rest.GetChar(0)); break;
     case '>': return range.Indent(true); break;
     case '<': return range.Indent(false); break;
-    case '!': return range.Filter(rest); break;
+    case '!': return range.Escape(rest); break;
     default:
       wxLogStatus("Unknown range command: %s", cmd);
       return false;

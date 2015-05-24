@@ -58,12 +58,12 @@ public:
   /// Filters range with command.
   /// The address range is used as input for the command,
   /// and the output of the command replaces the address range.
-  /// For example: wxAddressRange(96, 99).Filter("sort")
+  /// For example: wxAddressRange(96, 99).Escape("sort")
   /// or (ex command::96,99!sort)
   /// will pass lines 96 through 99 through the sort filter and 
   /// replace those lines with the output of sort.  
   /// Of course, you could also do: wxAddressRange(96,99).Sort().
-  bool Filter(const wxString& command);
+  bool Escape(const wxString& command);
   
   /// Performs the global command on this range.
   bool Global(const wxString& command) const;

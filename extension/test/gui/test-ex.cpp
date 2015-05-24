@@ -23,22 +23,23 @@ void fixture::testEx()
   // Test modeline.
   const wxString modeline("set ts=120 ec=40 sy=sql");
   wxExSTC* stc = new wxExSTC(m_Frame, "-- vi: " + modeline);
+  m_Frame->GetManager().AddPane(stc, wxAuiPaneInfo().CenterPane());
   wxExEx* ex = new wxExEx(stc);
     
-  CPPUNIT_ASSERT(stc->GetTabWidth() == 120);
+  CPPUNIT_ASSERT_MESSAGE(std::to_string(stc->GetTabWidth()), stc->GetTabWidth() == 120);
   CPPUNIT_ASSERT(stc->GetEdgeColumn() == 40);
   CPPUNIT_ASSERT(stc->GetLexer().GetScintillaLexer() == "sql");
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":" + modeline);
   wxExSTC* stc2 = new wxExSTC(m_Frame, wxExFileName("test-modeline.txt"));
+  m_Frame->GetManager().AddPane(stc2, wxAuiPaneInfo().Bottom().Caption("STC"));
   CPPUNIT_ASSERT(stc2->GetLexer().GetScintillaLexer() == "sql");
+  m_Frame->GetManager().Update();
   
   CPPUNIT_ASSERT( ex->GetIsActive());
   ex->Use(false);
   CPPUNIT_ASSERT(!ex->GetIsActive());
   ex->Use(true);
   CPPUNIT_ASSERT( ex->GetIsActive());
-  
-  CPPUNIT_ASSERT( ex->GetMacros().GetCount() > 0);
   
   stc->SetText("xx\nyy\nzz\n");
   stc->DocumentStart();
@@ -52,6 +53,9 @@ void fixture::testEx()
     {":10",true},
     {":.=",true},
     {":/yy/=",true},
+    {":.kz",true},
+    {":.pu",true},
+    {":.puz",true},
     {":g/is/s//ok",true},
     {":g/is/d",true},
     {":g/is/p",true},
@@ -102,7 +106,10 @@ void fixture::testEx()
     // We have only one document, so :n, :prev return false.
     ":n",
     ":prev",
+    ":.k",
     "set xxx",
+    "so",
+    "so xxx",
     ":xxx",
     ":zzz",
     ":%/test//",
@@ -157,6 +164,7 @@ void fixture::testEx()
   
   // Test execute.
   CPPUNIT_ASSERT( ex->Command(":!pwd"));
+//  CPPUNIT_ASSERT( ex->Command(":!bash"));
   
   // Test set options.
   for (const auto& option : std::vector<std::pair<std::string, std::string>> {
@@ -175,6 +183,9 @@ void fixture::testEx()
   
   CPPUNIT_ASSERT( ex->Command(":set ai")); // back to default
   
+  // Test source.
+  CPPUNIT_ASSERT( ex->Command(":so test-source.txt"));
+  
   CPPUNIT_ASSERT( ex->Command(":d"));
   //CPPUNIT_ASSERT( ex->Command(":e")); // shows dialog
   CPPUNIT_ASSERT(!ex->Command(":n"));
@@ -190,6 +201,7 @@ void fixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":1,2w >> test-ex.txt"));
   CPPUNIT_ASSERT( ex->Command(":1,2w >> test-ex.txt"));
   CPPUNIT_ASSERT( ex->Command(":r test-ex.txt"));
+  CPPUNIT_ASSERT( ex->Command(":$r test-ex.txt"));
 
   // Test macros.
   // Do not load macros yet, to test IsRecorded.

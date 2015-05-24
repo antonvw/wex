@@ -225,7 +225,7 @@ bool wxExAddressRange::Delete(bool show_message) const
   return true;
 }
 
-bool wxExAddressRange::Filter(const wxString& command)
+bool wxExAddressRange::Escape(const wxString& command)
 {
   if (m_Begin.empty() && m_End.empty())
   {
@@ -233,7 +233,7 @@ bool wxExAddressRange::Filter(const wxString& command)
     {
       m_Process = new wxExProcess();
     }
-    
+  
     return m_Process->Execute(
       command,
       wxEXEC_ASYNC,
@@ -551,7 +551,6 @@ bool wxExAddressRange::Print(const wxString& flags) const
   }
   
   m_Ex->Print(line_number + m_STC->GetSelectedText());
-  m_STC->SelectNone();
   
   return true;
 }
