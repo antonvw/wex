@@ -23,7 +23,5 @@ void fixture::testSTCFile()
   CPPUNIT_ASSERT(!file.GetFileName().GetStat().IsOk());
   CPPUNIT_ASSERT(!file.GetContentsChanged());
 
-  CPPUNIT_ASSERT( file.Read(GetTestDir() + "test.bin"));
-  
   file.FileNew(wxExFileName("xxxx"));
 }

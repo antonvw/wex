@@ -68,5 +68,4 @@ private:
   wxExEx* m_Ex;
   int m_Line;
 };
-
 #endif // wxUSE_GUI
