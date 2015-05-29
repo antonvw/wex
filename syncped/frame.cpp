@@ -440,10 +440,12 @@ bool Frame::DialogProjectOpen()
 {
   wxFileDialog dlg(this,
     _("Select Projects"),
+     (!GetRecentProject().empty() ? 
+         wxPathOnly(GetRecentProject()):
 #ifdef wxExUSE_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
+         wxPathOnly(wxStandardPaths::Get().GetExecutablePath())),
 #else
-      wxStandardPaths::Get().GetUserDataDir(),
+         wxStandardPaths::Get().GetUserDataDir()),
 #endif
     wxEmptyString,
     m_ProjectWildcard,
@@ -549,10 +551,12 @@ void Frame::NewProject()
   
   const wxString text = wxString::Format("%s%d", _("project"), m_NewProjectNo++);
   const wxFileName fn(
+     (!GetRecentProject().empty() ? 
+         wxPathOnly(GetRecentProject()):
 #ifdef wxExUSE_PORTABLE
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())),
 #else
-    wxStandardPaths::Get().GetUserDataDir(),
+      wxStandardPaths::Get().GetUserDataDir()),
 #endif
     text + ".prj");
 
@@ -570,6 +574,8 @@ void Frame::NewProject()
     fn.GetFullPath(),
     text,
     true);
+    
+  SetRecentProject(fn.GetFullPath());
 
   GetManager().GetPane("PROJECTS").Show();
   GetManager().Update();

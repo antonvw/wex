@@ -1091,7 +1091,7 @@ bool wxExSortSelection(
     error = true;
   }
   
-  stc->BeginUndoAction();
+  stc->EndUndoAction();
   
   return !error;
 }

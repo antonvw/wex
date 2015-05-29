@@ -164,7 +164,7 @@ void fixture::testEx()
   
   // Test execute.
   CPPUNIT_ASSERT( ex->Command(":!pwd"));
-//  CPPUNIT_ASSERT( ex->Command(":!bash"));
+  CPPUNIT_ASSERT( ex->Command(":!bash"));
   
   // Test set options.
   for (const auto& option : std::vector<std::pair<std::string, std::string>> {

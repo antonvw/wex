@@ -31,7 +31,6 @@ wxExProcess::wxExProcess()
   , m_Sync(false)
 {
   m_Command = wxExConfigFirstOf(_("Process"));
-  
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {CheckInput();});
 }
 
@@ -314,7 +313,7 @@ bool wxExProcess::Execute(
     {
       m_Dialog->GetSTCShell()->SetPrompt("");
       
-      if (m_Command == "cmd")
+      if (m_Command == "cmd" || m_Command == "cmd.exe")
       {
         m_Dialog->SetLexer("batch");
       }
@@ -330,14 +329,14 @@ bool wxExProcess::Execute(
     {
       m_Dialog->Show();
       
+      wxTheApp->Yield();
+      wxMilliSleep(200);
+      
       if (!CheckInput())
       {
         m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false);
       }
 
-      wxTheApp->Yield();
-      wxMilliSleep(200);
-      
       if (IsRunning())
       {
         m_Timer->Start(100); // each 100 milliseconds

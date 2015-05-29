@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      ex.cpp
 // Purpose:   Implementation of class wxExEx
-//            http://pubs.opengroup.org/onlinepubs/9699919799/
+//            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,6 +14,7 @@
 #endif
 #include <wx/cmdline.h>
 #include <wx/config.h>
+#include <wx/textfile.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/address.h>
