@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      vi.cpp
 // Purpose:   Implementation of class wxExVi
-//            http://pubs.opengroup.org/onlinepubs/9699919799/
+//            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////

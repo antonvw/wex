@@ -141,7 +141,7 @@ private:
   wxExAddress m_Begin;
   wxExAddress m_End;
   wxExEx* m_Ex;
-  wxExProcess* m_Process;
+  static wxExProcess* m_Process;
   wxExSTC* m_STC;
 };
 #endif // wxUSE_GUI

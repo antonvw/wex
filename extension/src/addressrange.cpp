@@ -23,6 +23,7 @@
 #if wxUSE_GUI
 
 wxString wxExAddressRange::m_Pattern;
+wxExProcess* wxExAddressRange::m_Process = NULL;
 wxString wxExAddressRange::m_Replacement;
 
 wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
@@ -31,7 +32,6 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
   , m_Ex(ex)
   , m_STC(ex->GetSTC())
   , m_FindIndicator(0, 0)
-  , m_Process(NULL)
 {
   if (lines > 0) 
   {
@@ -49,7 +49,6 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
   , m_Ex(ex)
   , m_STC(ex->GetSTC())
   , m_FindIndicator(0, 0)
-  , m_Process(NULL)
 {
   if (range == "%")
   {
@@ -73,10 +72,6 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
 
 wxExAddressRange::~wxExAddressRange()
 {
-  if (m_Process != NULL)
-  {
-    delete m_Process;
-  }
 }
   
 const wxString wxExAddressRange::BuildReplacement(const wxString& text) const
@@ -538,19 +533,20 @@ bool wxExAddressRange::Parse(
     
 bool wxExAddressRange::Print(const wxString& flags) const
 {
-  if (m_STC->GetReadOnly() || m_STC->HexMode() || !SetSelection())
+  if (!IsOk())
   {
     return false;
   }
   
-  wxString line_number;
+  wxString text;
   
-  if (flags.Contains("#"))
+  for (int i = m_Begin.GetLine() - 1; i < m_End.GetLine(); i++)
   {
-    line_number = wxString::Format("%6d ", m_STC->GetCurrentLine() + 1);
+    text += (flags.Contains("#") ? wxString::Format("%6d ", i + 1): "") + 
+      m_STC->GetLine(i);
   }
-  
-  m_Ex->Print(line_number + m_STC->GetSelectedText());
+    
+  m_Ex->Print(text);
   
   return true;
 }
