@@ -115,7 +115,7 @@ bool wxExAddress::Flags(const wxString& flags) const
   
   std::vector<wxString> v;
   
-  if (!wxExMatch("([+,-#pl])", flags.ToStdString(), v))
+  if (!wxExMatch("([-+#pl])", flags.ToStdString(), v))
   {
     wxLogStatus("Unsupported flags: " + flags);
     return false;
