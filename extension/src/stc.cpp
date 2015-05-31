@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <vector>
 #include <wx/config.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/numdlg.h>

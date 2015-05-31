@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <vector> 
 #include <wx/stc/stc.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/link.h>
