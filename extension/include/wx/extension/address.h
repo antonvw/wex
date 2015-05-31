@@ -32,8 +32,14 @@ public:
   /// Destructor.
  ~wxExAddress();
   
+  /// Prints this address, with context.
+  bool AdjustWindow(const wxString& text) const;
+  
   /// Appends text to this address.
   bool Append(const wxString& text) const;
+  
+  /// Returns false if flags are unsupported.
+  bool Flags(const wxString& flags) const;
   
   /// If the line number was set using SetLine, it
   /// returns this line number, otherwise

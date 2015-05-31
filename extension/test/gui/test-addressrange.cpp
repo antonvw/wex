@@ -110,6 +110,15 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/a/s/a/XX"));
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/b/s/b/XX|s/c/yy"));
   
+  // Test Global inverse.
+  stc->SetText(contents);
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global(wxEmptyString, true));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global("XXX", true));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/xx/p", true));
+  CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global("/xx/g", true));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/a/s/a/XX", true));
+  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/b/s/b/XX|s/c/yy", true));
+  
   // Test Indent.
   stc->SetText(contents);
   CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent());
