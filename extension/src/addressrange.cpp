@@ -281,7 +281,26 @@ bool wxExAddressRange::Escape(const wxString& command)
   return false;
 }
 
-bool wxExAddressRange::Global(const wxString& text) const
+bool wxExAddressRange::ForEach(
+  const std::vector<std::string>& commands, int line) const
+{
+  for (const auto& it : commands)
+  {
+    const std::string cmd(":" + std::to_string(line + 1) + it);
+
+    if (!m_Ex->Command(cmd))
+    {
+      m_Ex->GetFrame()->ShowExMessage(wxString::Format("%s failed", cmd.c_str()));
+      m_STC->EndUndoAction();
+      m_Ex->MarkerDelete('%');
+      return false;
+    }
+  }
+  
+  return true;
+}
+  
+bool wxExAddressRange::Global(const wxString& text, bool inverse) const
 {
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
   
@@ -294,11 +313,11 @@ bool wxExAddressRange::Global(const wxString& text) const
 
   next.GetNextToken(); // skip empty token
   const wxString pattern = next.GetNextToken();
-  int command = 0;
   std::string rest;
   
   if (next.HasMoreTokens())
   {
+    int command = 0;
     const wxString token(next.GetNextToken());
     command = token.GetChar(0);
     wxString arg(token.Mid(1));
@@ -329,8 +348,33 @@ bool wxExAddressRange::Global(const wxString& text) const
     return true;  
   }
   
-  const bool infinite = (command == 'm' && rest != "$" && rest != "1");
-  int hits = 0;
+  std::vector<std::string> commands;
+  wxStringTokenizer tkz(rest, "|");
+  int changes = 0;
+  
+  while (tkz.HasMoreTokens())
+  {
+    const std::string cmd(tkz.GetNextToken().ToStdString());
+    
+    if (cmd.empty())
+    {
+      return false;
+    }
+
+    // Prevent recursive global.
+    if (cmd[0] == 'g' || cmd[0] == 'v')
+    {
+      return false;
+    }
+    
+    if (cmd[0] == 'd' || cmd[0] == 'm')
+    {
+      changes++;
+    }
+    
+    commands.push_back(cmd);
+  }
+  
   m_Ex->MarkerAdd('%', m_End.GetLine() - 1);
   m_STC->SetSearchFlags(m_Ex->GetSearchFlags());
   m_STC->SetIndicatorCurrent(m_FindIndicator.GetNo());
@@ -338,69 +382,90 @@ bool wxExAddressRange::Global(const wxString& text) const
   m_STC->SetTargetStart(m_STC->PositionFromLine(m_Begin.GetLine() - 1));
   m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('%')));
   
-  std::vector<std::string> commands;
-  wxStringTokenizer tkz(rest, "|");
-  
-  while (tkz.HasMoreTokens())
-  {
-    const std::string cmd(tkz.GetNextToken().ToStdString());
-
-    // Prevent recursive global.
-    if (cmd[0] == 'g')
-    {
-      return false;
-    }
-    
-    commands.push_back(cmd);
-  }
+  const bool infinite = (changes > 0 && rest != "$" && rest != "1");
+  int hits = 0;
+  int start = 0;
   
   while (m_STC->SearchInTarget(pattern) != -1)
   {
-    const int line = m_STC->LineFromPosition(m_STC->GetTargetStart());
+    int match = m_STC->LineFromPosition(m_STC->GetTargetStart());
     
-    if (command)
+    if (!commands.empty())
     {
-      for (const auto& it : commands)
+      if (!inverse)
       {
-        const std::string cmd(":" + std::to_string(line + 1) + it);
-
-        if (!m_Ex->Command(cmd))
+        if (!ForEach(commands, match)) return false;
+        
+        hits++;
+      }
+      else
+      {
+        if (start < match)
         {
-          m_Ex->GetFrame()->ShowExMessage(wxString::Format("%s failed", cmd.c_str()));
-          m_STC->EndUndoAction();
-          m_Ex->MarkerDelete('%');
-          return false;
+          int i = start; 
+          while (i < match && i < m_STC->GetLineCount() - 1)
+          {
+            if (!ForEach(commands, i)) return false;
+            
+            if (changes == 0) 
+            {
+              i++;
+            }
+            else 
+            {
+              match -= changes;
+            }
+            
+            hits++;
+          }
+        }
+        else
+        {
+          match++;
         }
         
-        if (hits > 50 && infinite)
-        {
-          m_Ex->GetFrame()->ShowExMessage(wxString::Format("%s possible infinite loop", cmd.c_str()));
-          m_STC->EndUndoAction();
-          m_Ex->MarkerDelete('%');
-          return false;
-        }
+        start = match;
+      }
+        
+      if (hits > 50 && infinite)
+      {
+        m_Ex->GetFrame()->ShowExMessage(wxString::Format(
+          "possible infinite loop at %d", match));
+        m_STC->EndUndoAction();
+        m_Ex->MarkerDelete('%');
+        return false;
       }
     }
     else
     {
-      m_STC->SetIndicator(m_FindIndicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd());
+      m_STC->SetIndicator(
+        m_FindIndicator, 
+        m_STC->GetTargetStart(), m_STC->GetTargetEnd());
     }
     
-    m_STC->SetTargetStart(command == 'd' || command == 'm' ? m_STC->PositionFromLine(line): m_STC->GetTargetEnd());
+    m_STC->SetTargetStart(changes > 0 ? m_STC->PositionFromLine(match): m_STC->GetTargetEnd());
     m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('%')));
   
     if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
     {
       break;
     }
-    
-    hits++;
+  }
+  
+  if (inverse && !commands.empty())
+  {
+    int i = start;
+    while (i < m_STC->GetLineCount() - 1)
+    {
+      if (!ForEach(commands, i)) return false;
+      if (changes == 0) i++;
+      hits++;
+    }
   }
   
   if (hits > 0)
   {
-    m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("Found: %d occurrences of: %s"),
-      hits, pattern.c_str()));
+    m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("Executed: %d commands"), hits));
   }
   
   m_STC->EndUndoAction();
@@ -533,7 +598,7 @@ bool wxExAddressRange::Parse(
     
 bool wxExAddressRange::Print(const wxString& flags) const
 {
-  if (!IsOk())
+  if (!IsOk() || !m_Begin.Flags(flags))
   {
     return false;
   }

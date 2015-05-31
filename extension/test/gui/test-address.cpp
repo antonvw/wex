@@ -53,6 +53,22 @@ void fixture::testAddress()
     CPPUNIT_ASSERT( wxExAddress(ex, it.first).GetLine() == it.second);
   }
 
+  wxExAddress address3(ex, "5");
+  
+  // Test AdjustWindow.
+  CPPUNIT_ASSERT( address3.AdjustWindow(""));
+  CPPUNIT_ASSERT(!address3.AdjustWindow("xxx"));
+  
+  // Test Append.
+  CPPUNIT_ASSERT( address3.Append("appended text"));
+  CPPUNIT_ASSERT( stc->GetText().Contains("appended text"));
+  
+  // Test Flags.
+  CPPUNIT_ASSERT( address3.Flags(""));
+  CPPUNIT_ASSERT( address3.Flags("#"));
+  CPPUNIT_ASSERT(!address3.Flags("x"));
+
+  // Test GetLine.
   wxExAddress address(ex);
   CPPUNIT_ASSERT( address.GetLine() == 0);
   address.SetLine(-1);
@@ -67,16 +83,26 @@ void fixture::testAddress()
   address2.MarkerDelete();
   CPPUNIT_ASSERT( address2.GetLine() == 0);
   
-  wxExAddress address3(ex, "5");
-  CPPUNIT_ASSERT( address3.MarkerAdd('x'));
-  CPPUNIT_ASSERT( address3.Append("appended text"));
+  // Test Insert.
   CPPUNIT_ASSERT( address3.Insert("inserted text"));
-  CPPUNIT_ASSERT( stc->GetText().Contains("appended text"));
   CPPUNIT_ASSERT( stc->GetText().Contains("inserted text"));
+  
+  // Test MarkerAdd.
+  CPPUNIT_ASSERT( address3.MarkerAdd('x'));
+  
+  // Test MarkerDelete.
+  CPPUNIT_ASSERT(!address3.MarkerDelete());
+  CPPUNIT_ASSERT( wxExAddress(ex, "'x").MarkerDelete());
+  
+  // Test Put.
   ex->GetMacros().SetRegister('z', "zzzzz");
   CPPUNIT_ASSERT( address3.Put('z'));
   CPPUNIT_ASSERT( stc->GetText().Contains("zzzz"));
-  CPPUNIT_ASSERT( address3.Show());
+  
+  // Test Read.
   CPPUNIT_ASSERT(!address3.Read("XXXXX"));
   CPPUNIT_ASSERT( address3.Read(GetTestDir() + "test.bin"));
+  
+  // Test Show.
+  CPPUNIT_ASSERT( address3.Show());
 }

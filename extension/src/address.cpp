@@ -30,6 +30,70 @@ wxExAddress::~wxExAddress()
 {
 }
   
+bool wxExAddress::AdjustWindow(const wxString& text) const
+{
+  std::vector<wxString> v;
+  
+  if (wxExMatch("([-+=.^]*)([0-9]+)?(.*)", text.ToStdString(), v) != 3)
+  {
+    return false;
+  }
+  
+  const wxString type(v[0]);
+  int count = (v[1].empty() ? 2: std::stoi(v[1].ToStdString()));
+  const wxString flags(v[2]);
+  
+  if (!Flags(flags))
+  {
+    return false;
+  }
+  
+  int begin = GetLine();
+  bool separator = false;
+  
+  if (!type.empty())
+  {
+    switch ((int)type.GetChar(0))
+     {
+      case '-': begin -= ((type.length() * count) - 1); break;
+      case '+': begin += (((type.length()  - 1) * count) + 1); break;
+      case '^': begin += (((type.length()  + 1) * count) - 1); break;
+      case '=': 
+      case '.': 
+        if (count == 0)
+        {
+          return false;
+        }
+        separator = (type.GetChar(0) == '=');
+        begin -= (count - 1) / 2;
+        break;
+      default: return false;
+    }
+  }
+  
+  wxString output;
+  
+  if (separator)
+  {
+    output += wxString('-', 40) + m_Ex->GetSTC()->GetEOL();
+  }
+  
+  for (int i = begin; i < begin + count; i++)
+  {
+    output += (flags.Contains("#") ? wxString::Format("%6d ", i): "") + 
+      m_Ex->GetSTC()->GetLine(i - 1);
+  }
+  
+  if (separator)
+  {
+    output += wxString('-', 40) + m_Ex->GetSTC()->GetEOL();
+  }
+    
+  m_Ex->Print(output);
+  
+  return true;
+}
+  
 bool wxExAddress::Append(const wxString& text) const
 {
   if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
@@ -38,6 +102,24 @@ bool wxExAddress::Append(const wxString& text) const
   }
   
   m_Ex->GetSTC()->InsertText(m_Ex->GetSTC()->PositionFromLine(GetLine()), text);
+  
+  return true;
+}
+  
+bool wxExAddress::Flags(const wxString& flags) const
+{
+  if (flags.empty())
+  {
+    return true;
+  }
+  
+  std::vector<wxString> v;
+  
+  if (!wxExMatch("([+,-#pl])", flags.ToStdString(), v))
+  {
+    wxLogStatus("Unsupported flags: " + flags);
+    return false;
+  }
   
   return true;
 }
@@ -223,7 +305,7 @@ bool wxExAddress::Show() const
   
   return true;
 }
-  
+
 void wxExAddress::SetLine(int line)
 {
   if (line > m_Ex->GetSTC()->GetLineCount())

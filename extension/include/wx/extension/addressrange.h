@@ -66,7 +66,12 @@ public:
   bool Escape(const wxString& command);
   
   /// Performs the global command on this range.
-  bool Global(const wxString& command) const;
+  bool Global(
+    /// command
+    const wxString& command, 
+    /// normally performs command on each match, if inverse 
+    /// performs command if line does not match
+    bool inverse = false) const;
   
   /// Indents range.
   bool Indent(bool forward = true) const;
@@ -123,6 +128,7 @@ private:
     const wxString& pattern, 
     const wxString& replacement, 
     const wxExIndicator& ind);
+  bool ForEach(const std::vector<std::string>& commands, int line) const;
   bool Parse(const wxString& command, 
     wxString& pattern, wxString& replacement, wxString& options) const;
   void Set(const wxString& begin, const wxString& end) {

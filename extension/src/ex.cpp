@@ -353,8 +353,8 @@ bool wxExEx::CommandAddress(const std::string& command)
     const std::string addr("[0-9\\.\\$\\+\\-]+");
     const std::string addrs("[\\?/].*?[\\?/]"); // non-greedy!
     const std::string addrm("'[a-z]");
-    const std::string cmd_group1("([aikr=]|pu)(.*)");
-    const std::string cmd_group2("([cdgjmpsStywy<>\\!&~])(.*)");
+    const std::string cmd_group1("([aikrz=]|pu)(.*)");
+    const std::string cmd_group2("([cdgjmpsStvywy<>\\!&~])(.*)");
     std::vector <wxString> v;
     
     if (
@@ -404,7 +404,7 @@ bool wxExEx::CommandAddress(const std::string& command)
     
     if (range_str.empty() && cmd != '!') 
     {
-      range_str = (cmd == "g" || cmd == 'w' ? "%": ".");
+      range_str = (cmd == "g" || cmd == 'v' || cmd == 'w' ? "%": ".");
     }
   }
   
@@ -433,6 +433,7 @@ bool wxExEx::CommandAddress(const std::string& command)
       }
       break;
     case 'r': return addr.Read(rest); break;
+    case 'z': return addr.AdjustWindow(rest); break;
     case '=': return addr.Show(); break;
     default:
       wxLogStatus("Unknown address command: %s", cmd);
@@ -448,7 +449,8 @@ bool wxExEx::CommandAddress(const std::string& command)
     case 0: return false; break;
     case 'c': return range.Change(rest); break;
     case 'd': return range.Delete(); break;
-    case 'g': return range.Global(rest); break;
+    case 'v':
+    case 'g': return range.Global(rest, cmd.GetChar(0) == 'v'); break;
     case 'j': return range.Join(); break;
     case 'm': return range.Move(wxExAddress(this, rest)); break;
     case 'p': return range.Print(rest); break;

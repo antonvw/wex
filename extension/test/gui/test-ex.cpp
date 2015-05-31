@@ -41,7 +41,7 @@ void fixture::testEx()
   ex->Use(true);
   CPPUNIT_ASSERT( ex->GetIsActive());
   
-  stc->SetText("xx\nyy\nzz\n");
+  stc->SetText("xx\nxx\nyy\nzz\n");
   stc->DocumentStart();
 
   // Test valid commands and last command.  
@@ -54,14 +54,28 @@ void fixture::testEx()
     {":.=",true},
     {":/yy/=",true},
     {":.kz",true},
+    {":.p",true},
+    {":.p#",true},
     {":.pu",true},
     {":.puz",true},
+    {":.z",true},
+    {":.z-",true},
+    {":.z--",true},
+    {":.z+",true},
+    {":.z++",true},
+    {":.z=",true},
+    {":.z=5",true},
+    {":.z=5#",true},
+    {":.z.5",true},
+    {":.z^5",true},
     {":g/is/s//ok",true},
     {":g/is/d",true},
     {":g/is/p",true},
+    {":v/is/p",true},
+    {":v/xx/d",true},
     {":%g/is/p",true},
     {":1,2g/is/p",true},
-    {":2",true},
+    {":1",true},
     {":.m$",true},
     {":2",true},
     {":.t$",true},
@@ -107,6 +121,8 @@ void fixture::testEx()
     ":n",
     ":prev",
     ":.k",
+    ":pk",
+    ":.pk",
     "set xxx",
     "so",
     "so xxx",
