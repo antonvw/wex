@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <vector> 
 #include <wx/extension/address.h>
 #include <wx/extension/indicator.h>
 
