@@ -2,11 +2,10 @@
 // Name:      defs.h
 // Purpose:   Constant definitions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _SYNCDEFS_H
-#define _SYNCDEFS_H
+#pragma once
 
 #include <wx/extension/report/defs.h>
 
@@ -35,6 +34,8 @@ enum
   ID_PROJECT_OPENTEXT,
   ID_PROJECT_CLOSE,
   ID_PROJECT_SAVEAS,
+  ID_REARRANGE_HORIZONTALLY,
+  ID_REARRANGE_VERTICALLY,
   ID_RECENT_FILE_MENU,
   ID_RECENT_PROJECT_MENU,
   ID_SORT_SYNC,
@@ -60,4 +61,3 @@ enum
   NOTEBOOK_LISTS,
   NOTEBOOK_PROJECTS
 };
-#endif

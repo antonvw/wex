@@ -893,6 +893,9 @@ void Frame::OnCommand(wxCommandEvent& event)
       !wxConfigBase::Get()->ReadBool("List/SortSync", true)); 
     break;
 
+  case ID_REARRANGE_HORIZONTALLY: m_Editors->Rearrange(wxTOP); break;
+  case ID_REARRANGE_VERTICALLY: m_Editors->Rearrange(wxLEFT); break;
+    
   case ID_SPLIT:
   case ID_SPLIT_HORIZONTALLY:
   case ID_SPLIT_VERTICALLY:
@@ -1598,6 +1601,14 @@ Notebook::Notebook(wxWindow* parent,
     split->Append(ID_SPLIT_HORIZONTALLY, _("Split Horizontally"));
     split->AppendSeparator();
     split->Append(ID_SPLIT, _("Split"));
+    
+    if (GetPageCount() > 1)
+    {
+      split->AppendSeparator();
+      split->Append(ID_REARRANGE_VERTICALLY, _("Rearrange Vertically"));
+      split->Append(ID_REARRANGE_HORIZONTALLY, _("Rearrange Horizontally"));
+    }
+
     menu.AppendSubMenu(split, _("Split"), wxEmptyString, ID_SPLIT_MENU);
     menu.AppendSeparator();
     menu.Append(wxID_CLOSE);

@@ -235,6 +235,14 @@ wxWindow* wxExNotebook::InsertPage(
   return page;
 }
 
+void wxExNotebook::Rearrange(int direction)
+{
+  for (int i = 0; i < GetPageCount(); ++i)
+  {
+    wxAuiNotebook::Split(i, direction);
+  }
+}
+
 bool wxExNotebook::SetPageText(
   const wxString& key,
   const wxString& new_key,

@@ -6,7 +6,7 @@ one of these applications, being a full featured source code text editor.
 
 # Dependencies
 
-- [wxWidgets 3.1](http://www.wxwidgets.org/)
+- [wxWidgets 3.0](http://www.wxwidgets.org/)
   
 - [cppunit 1.12](http://sourceforge.net/projects/cppunit) (only for testing)   
     `sudo apt-get install libcppunit-dev` or   
@@ -18,7 +18,7 @@ one of these applications, being a full featured source code text editor.
     `yum install unixODBC-devel`  
 
 - [cmake](http://www.cmake.org/) to generate makefiles   
-  As wxWidgets 3.1 is not yet supported, you have to adjust Modules\FindwxWidgets.cmake, 
+  When using wxWidgets 3.1 you have to adjust Modules\FindwxWidgets.cmake, 
   by adding the 31 libs, and adding 3.1.0 find_path (for windows).
 
 # Build process 

@@ -72,6 +72,16 @@ public:
     bool select = false,
     const wxBitmap& bitmap = wxNullBitmap);
 
+  /// Rearranges all pages.
+  void Rearrange(
+    /// Specify where the pane should go.
+    /// It should be one of the following: 
+    /// - wxTOP
+    /// - wxBOTTOM
+    /// - wxLEFT
+    /// - wxRIGHT
+    int direction);
+
   /// Sets the pagetext for the given new key,
   /// on the page for the given key.
   /// If the key does not exist false is returned.
