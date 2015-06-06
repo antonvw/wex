@@ -13,6 +13,7 @@
 #include <wx/extension/addressrange.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/indicator.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
@@ -20,6 +21,120 @@
 #include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
+
+class GlobalEnv
+{
+public:
+  GlobalEnv(wxExEx* ex, const wxString& commands)
+  : m_Ex(ex)
+  , m_Changes(0)
+  , m_FindIndicator(0, 0)
+  {
+    m_Ex->GetSTC()->SetIndicatorCurrent(m_FindIndicator.GetNo());
+    m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
+    m_Ex->GetSTC()->BeginUndoAction();
+    
+    wxStringTokenizer tkz(commands, "|");
+    
+    while (tkz.HasMoreTokens())
+    {
+      const std::string cmd(tkz.GetNextToken().ToStdString());
+      
+      if (!cmd.empty())
+      {
+        // Prevent recursive global.
+        if (cmd[0] != 'g' && cmd[0] != 'v')
+        {
+          if (cmd[0] == 'd' || cmd[0] == 'm')
+          {
+            m_Changes++;
+          }
+          
+          m_Commands.push_back(cmd);
+        }
+      }
+    }
+  }
+  
+ ~GlobalEnv()
+  {
+    m_Ex->GetSTC()->EndUndoAction();
+    m_Ex->MarkerDelete('%');
+  }
+  
+  int Changes() const {return m_Changes;};
+  
+  bool Commands() const {return !m_Commands.empty();};
+  
+  bool ForEach(int line) const
+  {
+    if (!Commands())
+    {
+      m_Ex->GetSTC()->SetIndicator(m_FindIndicator, 
+        m_Ex->GetSTC()->GetTargetStart(), m_Ex->GetSTC()->GetTargetEnd());
+    }
+    else
+    {
+      for (const auto& it : m_Commands)
+      {
+        const std::string cmd(":" + std::to_string(line + 1) + it);
+
+        if (!m_Ex->Command(cmd))
+        {
+          m_Ex->GetFrame()->ShowExMessage(wxString::Format("%s failed", cmd.c_str()));
+          return false;
+        }
+      }
+    }
+    
+    return true;
+  }
+
+  bool ForEach(int start, int& end, int& hits) const
+  {
+    if (start < end)
+    {
+      int i = start; 
+      
+      while (i < end && i < m_Ex->GetSTC()->GetLineCount() - 1)
+      {
+        if (Commands())
+        {
+          if (!ForEach(i)) return false;
+        }
+        else
+        {
+          m_Ex->GetSTC()->SetIndicator(
+            m_FindIndicator, 
+            m_Ex->GetSTC()->PositionFromLine(i), 
+            m_Ex->GetSTC()->GetLineEndPosition(i));
+        }
+        
+        if (m_Changes == 0) 
+        {
+          i++;
+        }
+        else 
+        {
+          end -= m_Changes;
+        }
+        
+        hits++;
+      }
+    }
+    else
+    {
+      end++;
+    }
+    
+    return true;
+  }        
+private:
+  const wxExIndicator m_FindIndicator;
+  std::vector<std::string> m_Commands;
+  int m_Changes;
+  wxExEx* m_Ex;
+};
 
 wxString wxExAddressRange::m_Pattern;
 wxExProcess* wxExAddressRange::m_Process = NULL;
@@ -30,7 +145,6 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
   , m_End(ex)
   , m_Ex(ex)
   , m_STC(ex->GetSTC())
-  , m_FindIndicator(0, 0)
 {
   if (lines > 0) 
   {
@@ -47,7 +161,6 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
   , m_End(ex)
   , m_Ex(ex)
   , m_STC(ex->GetSTC())
-  , m_FindIndicator(0, 0)
 {
   if (range == "%")
   {
@@ -280,25 +393,6 @@ bool wxExAddressRange::Escape(const wxString& command)
   return false;
 }
 
-bool wxExAddressRange::ForEach(
-  const std::vector<std::string>& commands, int line) const
-{
-  for (const auto& it : commands)
-  {
-    const std::string cmd(":" + std::to_string(line + 1) + it);
-
-    if (!m_Ex->Command(cmd))
-    {
-      m_Ex->GetFrame()->ShowExMessage(wxString::Format("%s failed", cmd.c_str()));
-      m_STC->EndUndoAction();
-      m_Ex->MarkerDelete('%');
-      return false;
-    }
-  }
-  
-  return true;
-}
-  
 bool wxExAddressRange::Global(const wxString& text, bool inverse) const
 {
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
@@ -347,41 +441,12 @@ bool wxExAddressRange::Global(const wxString& text, bool inverse) const
     return true;  
   }
   
-  std::vector<std::string> commands;
-  wxStringTokenizer tkz(rest, "|");
-  int changes = 0;
-  
-  while (tkz.HasMoreTokens())
-  {
-    const std::string cmd(tkz.GetNextToken().ToStdString());
-    
-    if (cmd.empty())
-    {
-      return false;
-    }
-
-    // Prevent recursive global.
-    if (cmd[0] == 'g' || cmd[0] == 'v')
-    {
-      return false;
-    }
-    
-    if (cmd[0] == 'd' || cmd[0] == 'm')
-    {
-      changes++;
-    }
-    
-    commands.push_back(cmd);
-  }
-  
+  const GlobalEnv g(m_Ex, rest);
   m_Ex->MarkerAdd('%', m_End.GetLine() - 1);
-  m_STC->SetSearchFlags(m_Ex->GetSearchFlags());
-  m_STC->SetIndicatorCurrent(m_FindIndicator.GetNo());
-  m_STC->BeginUndoAction();
   m_STC->SetTargetStart(m_STC->PositionFromLine(m_Begin.GetLine() - 1));
   m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('%')));
   
-  const bool infinite = (changes > 0 && rest != "$" && rest != "1");
+  const bool infinite = (g.Changes() > 0 && rest != "$" && rest != "1");
   int hits = 0;
   int start = 0;
   
@@ -389,60 +454,25 @@ bool wxExAddressRange::Global(const wxString& text, bool inverse) const
   {
     int match = m_STC->LineFromPosition(m_STC->GetTargetStart());
     
-    if (!commands.empty())
+    if (!inverse)
     {
-      if (!inverse)
-      {
-        if (!ForEach(commands, match)) return false;
-        
-        hits++;
-      }
-      else
-      {
-        if (start < match)
-        {
-          int i = start; 
-          while (i < match && i < m_STC->GetLineCount() - 1)
-          {
-            if (!ForEach(commands, i)) return false;
-            
-            if (changes == 0) 
-            {
-              i++;
-            }
-            else 
-            {
-              match -= changes;
-            }
-            
-            hits++;
-          }
-        }
-        else
-        {
-          match++;
-        }
-        
-        start = match;
-      }
-        
-      if (hits > 50 && infinite)
-      {
-        m_Ex->GetFrame()->ShowExMessage(wxString::Format(
-          "possible infinite loop at %d", match));
-        m_STC->EndUndoAction();
-        m_Ex->MarkerDelete('%');
-        return false;
-      }
+      if (!g.ForEach(match)) return false;
+      hits++;
     }
     else
     {
-      m_STC->SetIndicator(
-        m_FindIndicator, 
-        m_STC->GetTargetStart(), m_STC->GetTargetEnd());
+      if (!g.ForEach(start, match, hits)) return false;
+      start = match + 1;
+    }
+        
+    if (hits > 50 && infinite)
+    {
+      m_Ex->GetFrame()->ShowExMessage(wxString::Format(
+        "possible infinite loop at %d", match));
+      return false;
     }
     
-    m_STC->SetTargetStart(changes > 0 ? m_STC->PositionFromLine(match): m_STC->GetTargetEnd());
+    m_STC->SetTargetStart(g.Changes() > 0 ? m_STC->PositionFromLine(match): m_STC->GetTargetEnd());
     m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('%')));
   
     if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())
@@ -451,25 +481,20 @@ bool wxExAddressRange::Global(const wxString& text, bool inverse) const
     }
   }
   
-  if (inverse && !commands.empty())
+  if (inverse)
   {
-    int i = start;
-    while (i < m_STC->GetLineCount() - 1)
-    {
-      if (!ForEach(commands, i)) return false;
-      if (changes == 0) i++;
-      hits++;
-    }
+    int match = m_STC->GetLineCount();
+    if (!g.ForEach(start, match, hits)) return false;
   }
   
   if (hits > 0)
   {
-    m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("Executed: %d commands"), hits));
+    if (g.Commands())
+      m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("Executed: %d commands"), hits));
+    else
+      m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("Found: %d matches"), hits));
   }
   
-  m_STC->EndUndoAction();
-  m_Ex->MarkerDelete('%');
-
   return true;
 }
 

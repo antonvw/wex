@@ -9,10 +9,10 @@
 
 #include <vector> 
 #include <wx/extension/address.h>
-#include <wx/extension/indicator.h>
 
 #if wxUSE_GUI
 
+class wxExIndicator;
 class wxExProcess;
 class wxExSTC;
 
@@ -129,7 +129,6 @@ private:
     const wxString& pattern, 
     const wxString& replacement, 
     const wxExIndicator& ind);
-  bool ForEach(const std::vector<std::string>& commands, int line) const;
   bool Parse(const wxString& command, 
     wxString& pattern, wxString& replacement, wxString& options) const;
   void Set(const wxString& begin, const wxString& end) {
@@ -144,7 +143,6 @@ private:
   static wxString m_Pattern;
   static wxString m_Replacement;
   
-  const wxExIndicator m_FindIndicator;
   wxExAddress m_Begin;
   wxExAddress m_End;
   wxExEx* m_Ex;
