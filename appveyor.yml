@@ -13,10 +13,11 @@ configuration:
   - Release
 
 install:
-   -ps: Start-FileDownload 'http://sourceforge.net/projects/wxwindows/files/3.0.2/binaries/wxMSW-3.0.2_vc120_x64_Dev.7z/download'
-   -ps: Start-FileDownload 'http://sourceforge.net/projects/wxwindows/files/3.0.2/binaries/wxMSW-3.0.2_vc120_x64_ReleaseDLL.7z/download'
-  - ps: 7z x C:\projects\wxex\wxMSW-3.0.2_vc120_x64_Dev.7z -oc:\wxWidgets-3.0.2
-  - ps: 7z x C:\projects\wxex\wxMSW-3.0.2_vc120_x64_ReleaseDLL.7z -oc:\wxWidgets-3.0.2
+  - cmd: cinst wget -x86
+  - cmd: wget -q --no-check-certificate https://drive.google.com/file/d/0B-wCWzTbTKTMcjdZaGhNbXhfM1U/view?usp=sharing -O c:\projects\wxex\wxwidgets1.7z
+  - cmd: wget -q --no-check-certificate https://drive.google.com/file/d/0B-wCWzTbTKTMR2Q3UGc0S2VDaVk/view?usp=sharing -O c:\projects\wxex\wxwidgets2.7z 
+  - cmd: 7z x C:\projects\wxex\wxwidgets1.7z -oc:\wxWidgets-3.0.2
+  - cmd: 7z x C:\projects\wxex\wxwidgets2.7z -oc:\wxWidgets-3.0.2
   
 before_build:
   mkdir build
