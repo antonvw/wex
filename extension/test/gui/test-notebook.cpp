@@ -84,6 +84,10 @@ void fixture::testNotebook()
   CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CLOSE));
   CPPUNIT_ASSERT(notebook->GetPageCount() == 0);
   
+  // Test Rearrange.
+  notebook->Rearrange(wxLEFT);
+  notebook->Rearrange(wxBOTTOM);
+  
   // Test Split.
   wxWindow* pagev = new wxWindow(m_Frame, wxID_ANY);
   CPPUNIT_ASSERT( notebook->AddPage(pagev, "keyv") != NULL);

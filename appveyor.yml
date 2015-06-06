@@ -1,0 +1,29 @@
+version: 3.1.0.{build}
+
+branches:
+  only:
+    - master
+
+clone_folder: c:\projects\wxex
+
+platform:
+  - x64
+
+configuration:
+  - Release
+
+install:
+   -ps: Start-FileDownload 'http://sourceforge.net/projects/wxwindows/files/3.0.2/binaries/wxMSW-3.0.2_vc120_x64_Dev.7z/download'
+   -ps: Start-FileDownload 'http://sourceforge.net/projects/wxwindows/files/3.0.2/binaries/wxMSW-3.0.2_vc120_x64_ReleaseDLL.7z/download'
+  - ps: 7z x C:\projects\wxex\wxMSW-3.0.2_vc120_x64_Dev.7z -oc:\wxWidgets-3.0.2
+  - ps: 7z x C:\projects\wxex\wxMSW-3.0.2_vc120_x64_ReleaseDLL.7z -oc:\wxWidgets-3.0.2
+  
+before_build:
+  mkdir build
+  cd build
+  cmake ..
+
+test: OFF
+
+artifacts:
+- path: 'syncped\syncped.exe'
