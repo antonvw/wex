@@ -101,23 +101,19 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Escape("uniq"));
   CPPUNIT_ASSERT( stc->GetLineCount() == 5);
   
-  // Test Global.
-  stc->SetText(contents);
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global(wxEmptyString));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global("XXX"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/xx/p"));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global("/xx/g"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/a/s/a/XX"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/b/s/b/XX|s/c/yy"));
-  
-  // Test Global inverse.
-  stc->SetText(contents);
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global(wxEmptyString, true));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global("XXX", true));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/xx/p", true));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global("/xx/g", true));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/a/s/a/XX", true));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/b/s/b/XX|s/c/yy", true));
+  // Test Global and Global inverse.
+  for (int i = 0; i < 2; i++)
+  {
+    stc->SetText(contents);
+    CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global(wxEmptyString, i));
+    CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global("XXX", i));
+    CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global("/", i));
+    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/xx/p", i));
+    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/xx/p#", i));
+    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/xx/g", i));
+    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/a/s/a/XX", i));
+    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/b/s/b/XX|s/c/yy", i));
+  }
   
   // Test Indent.
   stc->SetText(contents);
