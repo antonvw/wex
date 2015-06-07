@@ -16,9 +16,9 @@ install:
   - cmd: cinst wxwidgets
   
 before_build:
-  mkdir build
-  cd build
-  cmake ..
+  - mkdir build
+  - ps: cd build
+  - cmake ..
 
 test: OFF
 
