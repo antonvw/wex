@@ -13,7 +13,7 @@ configuration:
   - Release
 
 install:
-  - cmd: cinst wxwidgets
+  - cmd: cinst -y wxwidgets
   
 before_build:
   - mkdir build
