@@ -14,11 +14,10 @@ configuration:
   - Release
 
 install:
-  - cmd: cinst -y wget -x86
-  - cmd: wget -q --no-check-certificate 'http://sourceforge.net/projects/wxwindows/files/3.0.2/wxWidgets-3.0.2_headers.7z/download' -O c:\projects\wxex\wxwidgets1.7z
-  - cmd: wget -q --no-check-certificate 'http://sourceforge.net/projects/wxwindows/files/3.0.2/binaries/wxMSW-3.0.2_vc120_x64_Dev.7z/download' -O c:\projects\wxex\wxwidgets2.7z
-  - cmd: 7z x c:\projects\wxex\wxwidgets1.7z -oc:\wxWidgets
-  - cmd: 7z x c:\projects\wxex\wxwidgets2.7z -oc:\wxWidgets
+  - ps: Start-FileDownload 'http://sourceforge.net/projects/wxwindows/files/3.0.2/wxWidgets-3.0.2_headers.7z/download'
+  - ps: Start-FileDownload 'http://sourceforge.net/projects/wxwindows/files/3.0.2/binaries/wxMSW-3.0.2_vc120_x64_Dev.7z/download'
+  - cmd: 7z x c:\projects\wxex\wxWidgets-3.0.2_headers.7z -oc:\wxWidgets
+  - cmd: 7z x c:\projects\wxex\wxMSW-3.0.2_vc120_x64_Dev.7z -oc:\wxWidgets
   
 before_build:
   - mkdir build
