@@ -14,8 +14,8 @@ configuration:
   - Release
 
 install:
-  - ps: Start-FileDownload 'http://sourceforge.net/projects/wxwindows/files/3.0.2/wxWidgets-3.0.2_headers.7z/download'
-  - ps: Start-FileDownload 'http://sourceforge.net/projects/wxwindows/files/3.0.2/binaries/wxMSW-3.0.2_vc120_x64_Dev.7z/download'
+  - ps: Start-FileDownload 'http://sourceforge.net/projects/wxwindows/files/3.0.2/wxWidgets-3.0.2_headers.7z'
+  - ps: Start-FileDownload 'http://sourceforge.net/projects/wxwindows/files/3.0.2/binaries/wxMSW-3.0.2_vc120_x64_Dev.7z'
   - cmd: 7z x wxWidgets-3.0.2_headers.7z -oc:\wxWidgets
   - cmd: 7z x wxMSW-3.0.2_vc120_x64_Dev.7z -oc:\wxWidgets
   
