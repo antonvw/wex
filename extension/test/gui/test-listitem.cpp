@@ -53,4 +53,17 @@ void fixture::testListItem()
     "wxExListView::Sort %d items in %ld ms", 3 * max, sort).ToStdString());
     
   CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
+  
+  wxExListItem item(listView, wxExFileName("./test.h"));
+  item.Insert();
+  CPPUNIT_ASSERT( item.GetFileName().GetFullPath() == "./test.h");
+  CPPUNIT_ASSERT( item.GetFileSpec().empty());
+  CPPUNIT_ASSERT( wxExListItem(listView, 
+    wxExFileName("./test.h"), "*.txt").GetFileSpec() == "*.txt");
+  CPPUNIT_ASSERT( item.GetListView() == listView);
+  CPPUNIT_ASSERT(!item.IsReadOnly());
+  
+  item.SetItem("xx", "yy");
+  item.Update();
+  item.Delete();
 }

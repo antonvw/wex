@@ -313,10 +313,10 @@ void fixture::testUtil()
   stc->SelectNone();
   stc->SetText(rect);
   // force rectangular selection.
-  stc->GetVi().Command("3 ");
-  stc->GetVi().Command("F");
-  stc->GetVi().Command("4j");
-  stc->GetVi().Command("5l");
+  (void)stc->GetVi().Command("3 ");
+  (void)stc->GetVi().Command("F");
+  (void)stc->GetVi().Command("4j");
+  (void)stc->GetVi().Command("5l");
   CPPUNIT_ASSERT( wxExSortSelection(stc, STRING_SORT_ASCENDING, 3, 5));
   CPPUNIT_ASSERT( stc->GetText() == sorted);
   CPPUNIT_ASSERT( wxExSortSelection(stc, STRING_SORT_DESCENDING, 3, 5));

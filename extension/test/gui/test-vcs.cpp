@@ -40,6 +40,7 @@ void fixture::testVCS()
 
   CPPUNIT_ASSERT( vcs.GetEntry().GetCommand().GetCommand() == "add");
   CPPUNIT_ASSERT( vcs.GetFileName().IsOk());
+  CPPUNIT_ASSERT( vcs.GetName() == "Auto");
   CPPUNIT_ASSERT(!vcs.GetEntry().GetCommand().IsOpen());
   CPPUNIT_ASSERT( wxExVCS::LoadDocument());
   CPPUNIT_ASSERT( vcs.Use());

@@ -22,6 +22,10 @@ void fixture::testMenu()
   menu->AppendSeparator();
   menu->AppendSeparator();
   CPPUNIT_ASSERT(menu->GetMenuItemCount() == 0);
+  CPPUNIT_ASSERT(menu->GetStyle() == wxExMenu::MENU_DEFAULT);
+  
+  menu->SetStyle(wxExMenu::MENU_IS_READ_ONLY);
+  CPPUNIT_ASSERT(menu->GetStyle() == wxExMenu::MENU_IS_READ_ONLY);
   
   menu->AppendBars();
   CPPUNIT_ASSERT(menu->GetMenuItemCount() > 0);

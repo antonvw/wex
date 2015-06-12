@@ -567,7 +567,7 @@ bool wxExVi::CommandChar(int c)
 
     case '~': ReverseCase(); break;
     case '%': GotoBrace(); break;
-    case '&': Command(":.&"); break;
+    case '&': (void)Command(":.&"); break;
     case '*': FindWord(); break;
     case '#': FindWord(false); break;
 
@@ -656,7 +656,7 @@ bool wxExVi::CommandChars(std::string& command)
       command = command.substr(2);
       break;
           
-    case CHR_TO_NUM('d','d'): wxExAddressRange(this, m_Repeat).Delete(); break;
+    case CHR_TO_NUM('d','d'): (void)wxExAddressRange(this, m_Repeat).Delete(); break;
     case CHR_TO_NUM('d','e'): DeleteRange(this, m_Repeat, [&](){GetSTC()->WordRightEnd();}); break;
     case CHR_TO_NUM('d','h'): DeleteRange(this, m_Repeat, [&](){GetSTC()->CharLeft();}); break;
     case CHR_TO_NUM('d','j'): DeleteRange(this, m_Repeat, [&](){GetSTC()->LineDown();}); break;
@@ -1085,9 +1085,10 @@ bool wxExVi::InsertMode(const std::string& command)
         }
       }
         
-      m_FSM.Transition("\x1b");
-      
-      GetSTC()->SetOvertype(false);
+      if (m_FSM.Transition("\x1b"))
+      {
+        GetSTC()->SetOvertype(false);
+      }
       break;
 
     case WXK_RETURN:

@@ -85,16 +85,16 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
   {
     return wxAuiToolBar::AddTool(
       toolId, 
-      wxEmptyString,
+      wxEmptyString, // no label
 #ifdef __WXGTK__
       art.GetBitmap(wxART_TOOLBAR),
 #else
       art.GetBitmap(wxART_MENU, wxSize(16, 16)),
 #endif
-      wxGetStockLabel(toolId, wxSTOCK_NOFLAGS),
+      wxGetStockLabel(toolId, wxSTOCK_NOFLAGS), // short help
       kind);
   }
-  else
+  else if (bitmap.IsOk())
   {
     return wxAuiToolBar::AddTool(
       toolId, 
@@ -103,6 +103,8 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
       shortHelp,
       kind);
   }
+
+  return NULL;
 }
 
 wxExFindToolBar::wxExFindToolBar(
