@@ -237,7 +237,7 @@ wxWindow* wxExNotebook::InsertPage(
 
 void wxExNotebook::Rearrange(int direction)
 {
-  for (int i = 0; i < GetPageCount(); ++i)
+  for (size_t i = 0; i < GetPageCount(); ++i)
   {
     wxAuiNotebook::Split(i, direction);
   }
