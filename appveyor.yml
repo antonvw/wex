@@ -16,8 +16,9 @@ configuration:
 install:
   - ps: Start-FileDownload 'http://sourceforge.net/projects/wxwindows/files/3.0.2/wxWidgets-3.0.2_headers.7z'
   - ps: Start-FileDownload 'http://sourceforge.net/projects/wxwindows/files/3.0.2/binaries/wxMSW-3.0.2_vc120_x64_Dev.7z'
-  - cmd: 7z x wxWidgets-3.0.2_headers.7z -oC:\wxWidgets-3.0.2
-  - cmd: 7z x wxMSW-3.0.2_vc120_x64_Dev.7z -oC:\wxWidgets-3.0.2
+  - cmd: 7z x wxWidgets-3.0.2_headers.7z -oC:\wxWidgets
+  - cmd: 7z x wxMSW-3.0.2_vc120_x64_Dev.7z -oC:\wxWidgets
+  - cmd: ren C:\wxWidgets\lib\vc120_x64_dll vc_lib
   
 before_build:
   - mkdir build
