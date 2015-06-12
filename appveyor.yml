@@ -24,8 +24,11 @@ before_build:
   - mkdir build
   - ps: cd build
   - cmake ..
+  
+build_script:
+  - msbuild ALL_BUILD.vcxproj
 
 test: OFF
 
 artifacts:
-- path: 'syncped\syncped.exe'
+- path: 'syncped\Debug\syncped.exe'
