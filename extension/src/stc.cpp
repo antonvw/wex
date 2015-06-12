@@ -441,7 +441,7 @@ void wxExSTC::Clear()
 {
   if (m_vi.GetIsActive() && GetSelectedText().empty())
   {
-    m_vi.Command(std::string(1, WXK_DELETE));
+    (void)m_vi.Command(std::string(1, WXK_DELETE));
   }
   else
   {
@@ -1454,12 +1454,11 @@ void wxExSTC::Initialize(bool file_exists)
       }
       else
       {
-        int eol_mode;
+        int eol_mode = wxSTC_EOL_LF; // default ID_EDIT_EOL_UNIX
         
         switch (event.GetId())
         {
           case ID_EDIT_EOL_DOS: eol_mode = wxSTC_EOL_CRLF; break;
-          case ID_EDIT_EOL_UNIX: eol_mode = wxSTC_EOL_LF; break;
           case ID_EDIT_EOL_MAC: eol_mode = wxSTC_EOL_CR; break;
         }
     
