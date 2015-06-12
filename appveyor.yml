@@ -8,7 +8,7 @@ branches:
 clone_folder: c:\projects\wxex
 
 platform:
-  - x64
+  - x86
 
 configuration:
   - Release
