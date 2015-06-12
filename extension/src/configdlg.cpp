@@ -108,27 +108,30 @@ void wxExConfigDialog::Layout(
   {
     switch (bookctrl_style)
     {
-    case CONFIG_AUINOTEBOOK: bookctrl = new wxAuiNotebook(this); break;
-    case CONFIG_CHOICEBOOK: bookctrl = new wxChoicebook(this, wxID_ANY); break;
-    case CONFIG_LISTBOOK: bookctrl = new wxListbook(this, wxID_ANY); break;
-    case CONFIG_NOTEBOOK: bookctrl = new wxNotebook(this, wxID_ANY); break;
-    case CONFIG_SIMPLEBOOK: bookctrl = new wxSimplebook(this, wxID_ANY); break;
-    case CONFIG_TREEBOOK: bookctrl = new wxTreebook(this, wxID_ANY); break;
-
-    case CONFIG_TOOLBOOK:
-      bookctrl = new wxToolbook(this, wxID_ANY);
-      
-      if (imageList == NULL)
-      {
-        wxLogError("toolbook requires image list");
-        return;
-      }
-      break;
-
-    default: wxFAIL;  
+      case CONFIG_AUINOTEBOOK: bookctrl = new wxAuiNotebook(this); break;
+      case CONFIG_CHOICEBOOK: bookctrl = new wxChoicebook(this, wxID_ANY); break;
+      case CONFIG_LISTBOOK: bookctrl = new wxListbook(this, wxID_ANY); break;
+      case CONFIG_NOTEBOOK: bookctrl = new wxNotebook(this, wxID_ANY); break;
+      case CONFIG_SIMPLEBOOK: bookctrl = new wxSimplebook(this, wxID_ANY); break;
+      case CONFIG_TREEBOOK: bookctrl = new wxTreebook(this, wxID_ANY); break;
+  
+      case CONFIG_TOOLBOOK:
+        bookctrl = new wxToolbook(this, wxID_ANY);
+        
+        if (imageList == NULL)
+        {
+          wxLogError("toolbook requires image list");
+          return;
+        }
+        break;
+  
+      default: wxLogError("unknown bookctrl style");  
     }
     
-    bookctrl->SetImageList(imageList);
+    if (bookctrl != NULL)
+    {
+      bookctrl->SetImageList(imageList);
+    }
   }
        
   bool first_time = true;

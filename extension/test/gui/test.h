@@ -23,6 +23,7 @@ class fixture : public wxExTestFixture
   
   CPPUNIT_TEST( testAddress );
   CPPUNIT_TEST( testAddressRange );
+  CPPUNIT_TEST( testArt );
   CPPUNIT_TEST( testConfigDialog );
   CPPUNIT_TEST( testConfigItem );
   CPPUNIT_TEST( testDialog );
@@ -55,6 +56,7 @@ class fixture : public wxExTestFixture
   CPPUNIT_TEST( testSTCFile );
   CPPUNIT_TEST( testStyle );
   CPPUNIT_TEST( testTextFile );
+  CPPUNIT_TEST( testToolBar );
   CPPUNIT_TEST( testToVectorString );
   CPPUNIT_TEST( testUtil );
   CPPUNIT_TEST( testVariable );
@@ -74,6 +76,7 @@ public:
   
   void testAddress();
   void testAddressRange();
+  void testArt();
   void testConfigDialog();
   void testConfigItem();
   void testDialog();
@@ -106,6 +109,7 @@ public:
   void testSTCFile();
   void testStyle();
   void testTextFile();
+  void testToolBar();
   void testToVectorString();
   void testUtil();
   void testVariable();
