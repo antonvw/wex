@@ -21,12 +21,12 @@ install:
 before_build:
   - mkdir build
   - ps: cd build
-  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug ..
+  - cmake -DCMAKE_BUILD_TYPE=Debug ..
 
 build_script:
-  - nmake
+  - msbuild ALL_BUILD.vcxproj 
 
 test: OFF
 
 artifacts:
-- path: 'syncped\syncped.exe'
+- path: 'syncped\Debug\syncped.exe'
