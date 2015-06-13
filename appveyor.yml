@@ -21,12 +21,12 @@ install:
 before_build:
   - mkdir build
   - ps: cd build
-  - cmake -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 12 2013" ..
+  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug ..
 
 build_script:
-  - msbuild ALL_BUILD.vcxproj
+  - nmake
 
 test: OFF
 
 artifacts:
-- path: 'syncped\Debug\syncped.exe'
+- path: 'syncped\syncped.exe'
