@@ -18,8 +18,7 @@ one of these applications, being a full featured source code text editor.
     `yum install unixODBC-devel`  
 
 - [cmake](http://www.cmake.org/) to generate makefiles   
-  When using wxWidgets 3.1 you have to adjust Modules\FindwxWidgets.cmake, 
-  by adding the 31 libs, and adding 3.1.0 find_path (for windows).
+  When using wxWidgets 3.1 you can clone wxWidgets to c:\wxWidgets.
 
 # Build process 
   [![Travis Build Status](https://travis-ci.org/antonvw/wxExtension.png?branch=master)](https://travis-ci.org/antonvw/wxExtension)

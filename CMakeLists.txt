@@ -82,6 +82,9 @@ else ()
 endif ()
 
 if (WIN32)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/FindwxWidgets.cmake
+      "C:/Program Files (x86)/CMake/share/cmake-${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}/Modules/FindwxWidgets.cmake" COPYONLY)
+
   find_package(wxWidgets COMPONENTS scintilla aui stc html adv xml core base net REQUIRED)
 else ()
   find_package(wxWidgets COMPONENTS           aui stc html adv xml core base net REQUIRED)
