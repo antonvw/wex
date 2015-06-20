@@ -24,7 +24,7 @@ before_build:
   - cmake -DCMAKE_BUILD_TYPE=Debug ..
 
 build_script:
-  - msbuild ALL_BUILD.vcxproj 
+  - msbuild syncped\ALL_BUILD.vcxproj 
 
 test: OFF
 
