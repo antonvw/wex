@@ -45,7 +45,12 @@ one of these applications, being a full featured source code text editor.
     `../configure --with-gtk=3 && make`   and   
     `make install`    
     
-- under SunOS:  
+- under Linux clang 3.5.0:   
+    `export CC=clang`   
+    `export CXX=clang++`    
+    see g++   
+
+- under SunOS:   
     `../configure --with-gtk --disable-shared --without-opengl --disable-mediactrl && make`  
   
 - under mac os 10.4 use gcc 4.0.1 (use v2.9.3 tag) (part of xcode25_8m2258_developerdvd.dmg):   

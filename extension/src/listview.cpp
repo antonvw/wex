@@ -707,7 +707,7 @@ int wxCALLBACK CompareFunctionCB(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortDa
 {
   const bool ascending = (sortData > 0);
   const wxExColumn::wxExColumnType type = 
-    (wxExColumn::wxExColumnType)abs(sortData);
+    (wxExColumn::wxExColumnType)std::abs(sortData);
 
   switch (type)
   {

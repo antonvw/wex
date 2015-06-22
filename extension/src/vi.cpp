@@ -321,9 +321,9 @@ bool wxExVi::Command(const std::string& command)
 
           int seq_size = 0; // size of sequence of digits from begin in rest
           
-          for (size_t i = 0; i < rest.size(); i++)
+          for (auto it : rest)
           {
-            if (rest[i] > 255 || rest[i] < 0 || !isdigit(rest[i]))
+            if (!isdigit(it))
               break;
             seq_size++;
           }

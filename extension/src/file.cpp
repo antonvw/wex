@@ -131,8 +131,8 @@ bool wxExFile::Get(bool synced)
     wxLogNull logNo;
   
     if ( 
-       synced && !Open(m_FileName.GetFullPath()) ||
-      !synced && m_OpenFile && !Open(m_FileName.GetFullPath()))
+       (synced && !Open(m_FileName.GetFullPath())) ||
+      (!synced && m_OpenFile && !Open(m_FileName.GetFullPath())))
     {
       return false;
     }

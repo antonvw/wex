@@ -81,7 +81,7 @@ void wxExHexMode::AppendText(const wxCharBuffer& buffer)
 
     wxString field_hex, field_ascii;
 
-    for (register wxFileOffset byte = 0; byte < count; byte++)
+    for (wxFileOffset byte = 0; byte < count; byte++)
     {
       const unsigned char c = buffer.data()[offset + byte];
 
