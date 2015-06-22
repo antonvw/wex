@@ -410,6 +410,8 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
       }
       }
       break;
+
+    default: ; // do nothing
     }
   }
 
