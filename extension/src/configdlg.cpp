@@ -71,7 +71,7 @@ wxExConfigDialog::FindConfigItem(int id) const
     it != m_ConfigItems.end();
     ++it)
   {
-    if (it->GetWindow()->GetId() == id)
+    if (it->GetWindow() != NULL && it->GetWindow()->GetId() == id)
     {
       return it;
     }

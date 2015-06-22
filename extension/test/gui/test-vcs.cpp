@@ -10,10 +10,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
+#include <wx/menu.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/managedframe.h>
-#include <wx/extension/menu.h>
 #include "test.h"
 
 void fixture::testVCS()
@@ -30,23 +29,31 @@ void fixture::testVCS()
   
   vcs.ConfigDialog(m_Frame, "test vcs", false);
   
-  CPPUNIT_ASSERT( vcs.GetCount() > 0);
-  CPPUNIT_ASSERT( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);
+  // DirExists
   CPPUNIT_ASSERT( vcs.DirExists(file));
-    
+  
+  // Execute
   // Segmentation fault
-//  CPPUNIT_ASSERT( vcs.Execute());
-  CPPUNIT_ASSERT( vcs.GetEntry().GetOutput().empty());
+  //  CPPUNIT_ASSERT( vcs.Execute());
 
+  // GetCount
+  CPPUNIT_ASSERT( vcs.GetCount() > 0);
+
+  // GetEntry  
+  CPPUNIT_ASSERT( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);
+  CPPUNIT_ASSERT( vcs.GetEntry().GetOutput().empty());
   CPPUNIT_ASSERT( vcs.GetEntry().GetCommand().GetCommand() == "add");
+  
+  // GetFileName
   CPPUNIT_ASSERT( vcs.GetFileName().IsOk());
+  
+  // GetName
   CPPUNIT_ASSERT( vcs.GetName() == "Auto");
   CPPUNIT_ASSERT(!vcs.GetEntry().GetCommand().IsOpen());
+  
+  // LoadDocument
   CPPUNIT_ASSERT( wxExVCS::LoadDocument());
+  
+  // Use
   CPPUNIT_ASSERT( vcs.Use());
-  
-  wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());
-  
-  wxExMenu menu;
-  CPPUNIT_ASSERT( menu.AppendVCS(wxFileName(), false) );
 }
