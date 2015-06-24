@@ -243,7 +243,7 @@ bool wxExEx::Command(const std::string& command)
   {
     if (command.find(" ") != std::string::npos)
     {
-      const wxString filename(wxString(command.substr(3)).Trim(false));
+      const wxString filename(wxString(command).AfterFirst(' ').Trim(false));
       
       wxTextFile file(filename);
 
@@ -254,8 +254,11 @@ bool wxExEx::Command(const std::string& command)
       
       for (size_t i = 0; i < file.GetLineCount(); i++)
       {
-        if (!Command(file.GetLine(i).ToStdString()))
+        const std::string command(file.GetLine(i).ToStdString());
+
+        if (!command.empty() && !Command(command))
         {
+          m_Frame->ShowExMessage(wxString::Format("%s failed", command.c_str()));
           return false;
         }
       }
