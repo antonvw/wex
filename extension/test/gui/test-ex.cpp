@@ -35,16 +35,24 @@ void fixture::testEx()
   CPPUNIT_ASSERT(stc2->GetLexer().GetScintillaLexer() == "sql");
   m_Frame->GetManager().Update();
   
+  stc->SetText("xx\nxx\nyy\nzz\n");
+  stc->DocumentStart();
+  
+  // AddText
+  ex->AddText(" added");
+  CPPUNIT_ASSERT( stc->GetText().Contains("added"));
+  
+  // GetFrame
+  CPPUNIT_ASSERT( ex->GetFrame() == m_Frame);
+
+  // GetIsActive
   CPPUNIT_ASSERT( ex->GetIsActive());
   ex->Use(false);
   CPPUNIT_ASSERT(!ex->GetIsActive());
   ex->Use(true);
   CPPUNIT_ASSERT( ex->GetIsActive());
   
-  stc->SetText("xx\nxx\nyy\nzz\n");
-  stc->DocumentStart();
-
-  // Test valid commands and last command.  
+  // Test valid Commands and GetLastCommand.  
   for (const auto& command : std::vector<std::pair<std::string, bool>> {
     {":ab",true},
     {":ve",false},
@@ -201,6 +209,7 @@ void fixture::testEx()
   
   // Test source.
   CPPUNIT_ASSERT( ex->Command(":so test-source.txt"));
+  CPPUNIT_ASSERT( ex->Command(":source test-source.txt"));
   
   CPPUNIT_ASSERT( ex->Command(":d"));
   //CPPUNIT_ASSERT( ex->Command(":e")); // shows dialog
