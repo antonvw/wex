@@ -210,6 +210,8 @@ void fixture::testEx()
   // Test source.
   CPPUNIT_ASSERT( ex->Command(":so test-source.txt"));
   CPPUNIT_ASSERT( ex->Command(":source test-source.txt"));
+  CPPUNIT_ASSERT(!ex->Command(":so test-surce.txt"));
+  CPPUNIT_ASSERT(!ex->Command(":so test-source-2.txt"));
   
   CPPUNIT_ASSERT( ex->Command(":d"));
   //CPPUNIT_ASSERT( ex->Command(":e")); // shows dialog

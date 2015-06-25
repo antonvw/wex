@@ -254,12 +254,21 @@ bool wxExEx::Command(const std::string& command)
       
       for (size_t i = 0; i < file.GetLineCount(); i++)
       {
-        const std::string command(file.GetLine(i).ToStdString());
+        const std::string line(file.GetLine(i).ToStdString());
 
-        if (!command.empty() && !Command(command))
+        if (!line.empty())
         {
-          m_Frame->ShowExMessage(wxString::Format("%s failed", command.c_str()));
-          return false;
+          if (line == command)
+          {
+            m_Frame->ShowExMessage(wxString::Format("recursive %s", line.c_str()));
+            return false;
+          }
+          
+          if (!Command(line))
+          {
+            m_Frame->ShowExMessage(wxString::Format("%s failed", line.c_str()));
+            return false;
+          }
         }
       }
     }
