@@ -1,0 +1,4 @@
+:1,5yy
+:$pu
+:1
+:source test-source-2.txt
