@@ -249,9 +249,9 @@ void wxExNodeStyles(
   std::vector<wxExStyle>& styles);
 
 #if wxUSE_GUI
-/// Opens files.
 /// Opens all files specified by files.
-void wxExOpenFiles(
+/// Returns false if one of the specified files could not be opened.
+bool wxExOpenFiles(
   /// frame on which OpenFile for each file is called,
   /// and wxExDirOpenFile for each dir
   wxExFrame* frame,
