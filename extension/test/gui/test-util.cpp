@@ -81,6 +81,10 @@ void fixture::testUtil()
   CPPUNIT_ASSERT(!wxExAutoCompleteFileName("XX", v));
   CPPUNIT_ASSERT( v[0] == "st");
   
+  CPPUNIT_ASSERT( wxExAutoCompleteFileName("/usr/include/s", v));
+  CPPUNIT_ASSERT( wxExAutoCompleteFileName("../../../extension/src/v", v));
+  CPPUNIT_ASSERT( wxExAutoCompleteFileName("~/", v));
+  
   // wxExCalculator
   stc->SetText("aaaaa\nbbbbb\nccccc\n");
   const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
@@ -239,13 +243,12 @@ void fixture::testUtil()
   // wxExNodeStyles
   
   // wxExOpenFiles
-  std::vector<wxString> files;
-  wxExOpenFiles(m_Frame, files);
-  files.push_back(GetTestFile().GetFullPath());
-  files.push_back("test.cpp");
-  files.push_back("*xxxxxx*.cpp");
-  wxExOpenFiles(m_Frame, files);
-  
+  CPPUNIT_ASSERT(!wxExOpenFiles(m_Frame, std::vector<wxString>()));
+  CPPUNIT_ASSERT(!wxExOpenFiles(m_Frame, std::vector<wxString> {
+    GetTestFile().GetFullPath(), "test.cpp", "*xxxxxx*.cpp"}));
+  CPPUNIT_ASSERT( wxExOpenFiles(m_Frame, std::vector<wxString> {GetTestFile().GetFullPath()}));
+  CPPUNIT_ASSERT( wxExOpenFiles(m_Frame, std::vector<wxString> {"../../data/vcs.xml"}));
+
   // wxExOpenFilesDialog
   
   // wxExPrintCaption

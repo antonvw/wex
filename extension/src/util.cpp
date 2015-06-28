@@ -147,17 +147,34 @@ bool wxExAutoCompleteFileName(
   const wxString& text, 
   std::vector<wxString> & v)
 {
-  const wxString path(text.AfterLast(' '));
-  const wxString word(path.AfterLast(wxFileName::GetPathSeparator()));
+  // E.g.:
+  // 1) text: src/vi
+  // -> should build list with files in ./src starting with vi
+  // path:   src
+  // word:   vi
+  // 2) text: /usr/include/s
+  // ->should build list with files in /usr/include starting with s
+  // path:   /usr/include
+  // word:   s
+  // And text might be prefixed by a command, e.g.: e src/vi
+  wxFileName path(text.AfterLast(' '));
   
-  wxString subdir = path.BeforeLast(wxFileName::GetPathSeparator());
-  
-  if (!subdir.empty())
+  if (path.IsRelative())
   {
-    subdir = wxFileName::GetPathSeparator() + subdir;
+    if (!path.MakeAbsolute())
+    {
+      return false;
+    }
   }
   
-  wxDir dir(wxGetCwd() + subdir);
+  if (!path.DirExists())
+  {
+    return false;
+  }
+  
+  const wxString word(
+    text.AfterLast(' ').AfterLast(wxFileName::GetPathSeparator()));
+  wxDir dir(path.GetPath());
   wxString filename;
 
   if (!dir.IsOpened() || !dir.GetFirst(&filename, word + "*"))
@@ -732,43 +749,67 @@ void wxExNodeStyles(
 }
 
 #if wxUSE_GUI
-void wxExOpenFiles(
+bool wxExOpenFiles(
   wxExFrame* frame,
   const std::vector< wxString > & files,
   long file_flags,
   int dir_flags)
 {
+  if (files.empty())
+  {
+    return false;
+  }
+  
   wxWindowUpdateLocker locker(frame);
+  
+  bool error = false;
   
   for (const auto& it : files)
   {
     if (it.Contains("*") || it.Contains("?"))
     {
       wxExDirOpenFile dir(frame, wxGetCwd(), it, file_flags, dir_flags);
-      dir.FindFiles();
+      
+      if (dir.FindFiles() == 0)
+      {
+        error = true;
+      }
     }
     else
     {
       wxString file(it);
       int line_no = 0;
       int col_no = 0;
+      
+      wxFileName fn(file);
 
-      if (!wxFileName(file).FileExists() && file.Contains(":"))
+      if (!fn.FileExists() && file.Contains(":"))
       {
         const wxString val = wxExLink().GetPath(file, line_no, col_no);
         
         if (!val.empty())
         {
-          file = val;
+          fn.Assign(val);
         }
       }
 
-      if (wxFileName(file).FileExists())
+      if (!fn.FileExists())
       {
-        frame->OpenFile(file, line_no, wxEmptyString, col_no, file_flags);
+        fn.MakeAbsolute();
+      }
+      
+      if (fn.FileExists())
+      {
+        frame->OpenFile(fn.GetFullPath(), line_no, wxEmptyString, col_no, file_flags);
+      }
+      else
+      {
+        error = true;
       }
     }
   }
+  
+  return !error;
 }
 
 void wxExOpenFilesDialog(
