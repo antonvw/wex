@@ -47,6 +47,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
     new wxExSTC(this, text));
   
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
+  m_STC->SetName(caption);
   m_STC->ResetMargins();
   m_STC->SetViewEOL(false);
   m_STC->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
