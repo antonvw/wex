@@ -243,9 +243,14 @@ bool wxExEx::Command(const std::string& command)
   {
     if (command.find(" ") != std::string::npos)
     {
-      const wxString filename(wxString(command).AfterFirst(' ').Trim(false));
+      wxFileName filename(wxString(command).AfterFirst(' ').Trim(false));
       
-      wxTextFile file(filename);
+      if (filename.IsRelative())
+      {
+        filename.MakeAbsolute();
+      }
+      
+      wxTextFile file(filename.GetFullPath());
 
       if (!file.Open())
       {
@@ -422,7 +427,7 @@ bool wxExEx::CommandAddress(const std::string& command)
   
   if (addr1)
   {
-    wxExAddress addr(this, range_str);
+    const wxExAddress addr(this, range_str);
     
     switch ((int)cmd.GetChar(0))
     {
@@ -465,7 +470,15 @@ bool wxExEx::CommandAddress(const std::string& command)
     case 'g': return range.Global(rest, cmd.GetChar(0) == 'v'); break;
     case 'j': return range.Join(); break;
     case 'm': return range.Move(wxExAddress(this, rest)); break;
-    case 'p': return range.Print(rest); break;
+    case 'p': 
+      if (m_STC->GetName() != "Print")
+      {
+        return range.Print(rest); break;
+      }
+      else
+      {
+        return false;
+      }
     case 's':
     case '&':
     case '~': return range.Substitute(rest, cmd.GetChar(0)); break;

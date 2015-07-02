@@ -514,7 +514,7 @@ wxExExTextCtrl::~wxExExTextCtrl()
 
 void wxExExTextCtrl::Expand()
 {
-  if (m_ex != NULL)
+  if (m_ex != NULL && m_ex->GetSTC()->GetFileName().FileExists())
   {
     wxSetWorkingDirectory(m_ex->GetSTC()->GetFileName().GetPath());
   }
