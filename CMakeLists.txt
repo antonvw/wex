@@ -40,8 +40,8 @@ function(pack)
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
   
   if (WIN32)
-    install(DIRECTORY $ENV{WINDIR}\syswow64\msvcp120.dll ${CONFIG_INSTALL_DIR})
-    install(DIRECTORY $ENV{WINDIR}\syswow64\msvcr120.dll ${CONFIG_INSTALL_DIR})
+    install(DIRECTORY C:/Windows/syswow64/msvcp120.dll ${CONFIG_INSTALL_DIR})
+    install(DIRECTORY C:/Windows/syswow64/msvcr120.dll ${CONFIG_INSTALL_DIR})
   endif()
 
   install(DIRECTORY extension/data/ DESTINATION ${CONFIG_INSTALL_DIR})
