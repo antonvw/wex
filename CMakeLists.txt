@@ -7,28 +7,29 @@ else()
 endif()
 
 function(process_po_files)
-  if (GETTEXT_FOUND)
-    file(GLOB files *.po)
-    
-    foreach(filename ${files})
-    
-      string(FIND ${filename} "-" pos1 REVERSE)
-      string(FIND ${filename} "." pos2 REVERSE)
+  # travis has problem with gettext
+  if (GETTEXT_FOUND AND NOT DEFINED ENV{TRAVIS})
+      file(GLOB files *.po)
       
-      math(EXPR pos1 "${pos1} + 1")
-      math(EXPR len "${pos2} - ${pos1}")
+      foreach(filename ${files})
       
-      string(SUBSTRING ${filename} ${pos1} ${len} lang)
-      
-      gettext_process_po_files(${lang} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
-        PO_FILES ${filename})
-    
-      if (wxWidgets_ROOT_DIR AND ${ARGC} GREATER 0)
+        string(FIND ${filename} "-" pos1 REVERSE)
+        string(FIND ${filename} "." pos2 REVERSE)
+        
+        math(EXPR pos1 "${pos1} + 1")
+        math(EXPR len "${pos2} - ${pos1}")
+        
+        string(SUBSTRING ${filename} ${pos1} ${len} lang)
+        
         gettext_process_po_files(${lang} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
-          PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
-      endif ()
+          PO_FILES ${filename})
       
-    endforeach()
+        if (wxWidgets_ROOT_DIR AND ${ARGC} GREATER 0)
+          gettext_process_po_files(${lang} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+            PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
+        endif ()
+      
+      endforeach()
   endif()
 endfunction()  
 
