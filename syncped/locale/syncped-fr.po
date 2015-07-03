@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ./\n"
 "X-Generator: Poedit 1.5.4\n"
-"X-Poedit-SearchPath-0: ../syncped\n"
+"X-Poedit-SearchPath-0: ../\n"
 
 #: ../syncped/frame.cpp:94
 msgid "Project Files"

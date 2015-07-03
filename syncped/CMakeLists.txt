@@ -2,9 +2,9 @@ project(syncped)
 
 include_directories(../extension/include)
 
-FILE(GLOB SRCS "*.cpp")
+file(GLOB SRCS "*.cpp")
   
-if(WIN32)
+if (WIN32)
   set(SRCS ${SRCS} app.rc)
 endif()
   
@@ -19,15 +19,8 @@ target_link_libraries(
   wxex
   ${wxWidgets_LIBRARIES} 
   )
-  
-if (CMAKE_BUILD_TYPE MATCHES "Release")
-  if(WIN32)
-    add_custom_command(TARGET ${PROJECT_NAME}
-      POST_BUILD
-      COMMAND ../../bin/deploy.bat)
-  else ()
-    add_custom_command(TARGET ${PROJECT_NAME}
-      POST_BUILD
-      COMMAND ../../bin/deploy.sh)
-  endif ()
-endif ()
+
+add_subdirectory(locale)
+
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+#install(TARGETS ${PROJECT_NAME}.manifest DESTINATION bin)
