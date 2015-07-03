@@ -25,8 +25,9 @@ before_build:
 
 build_script:
   - msbuild syncped\ALL_BUILD.vcxproj 
+  - cpack
 
 test: OFF
 
 artifacts:
-- path: 'build\syncped\Debug\syncped.exe'
+  - path: 'build\wxExtension-v3.1.0.zip'

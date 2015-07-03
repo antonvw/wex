@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ./\n"
 "X-Poedit-Country: NETHERLANDS\n"
-"X-Poedit-SearchPath-0: ../syncodbcquery\n"
+"X-Poedit-SearchPath-0: ../\n"
 
 #: ../syncodbcquery/app.cpp:89
 msgid "&Open"

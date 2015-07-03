@@ -1,9 +1,10 @@
-SET(CMAKE_INSTALL_PREFIX ..)
+project(wxExtensionLibrary)
 
 add_subdirectory(src)
 add_subdirectory(src/report)
 add_subdirectory(sample)
 add_subdirectory(test)
+add_subdirectory(locale)
 
 if (CMAKE_BUILD_TYPE MATCHES "Coverage")
   add_custom_target(lcov-prep
@@ -18,7 +19,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     COMMAND lcov --remove app.total "*wxExtension/sync*" --output-file app.total
     # when manually updating coveralls
     COMMAND coveralls-lcov --repo-token sOcBNDSlOjLSH3vs636zytnjuQtRWKLGP app.total
-    COMMAND genhtml --no-branch-coverage --title "wxExtension Library" app.total
+    COMMAND genhtml --no-branch-coverage --title "${PROJECT_NAME}" app.total
     COMMAND rm -f app.base app.run app.total
     COMMENT "Running lcov" VERBATIM)    
 endif ()

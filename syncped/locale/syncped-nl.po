@@ -15,7 +15,7 @@ msgstr ""
 "Language: Dutch\n"
 "X-Poedit-Basepath: ./\n"
 "X-Generator: Poedit 1.5.4\n"
-"X-Poedit-SearchPath-0: ../syncped\n"
+"X-Poedit-SearchPath-0: ../\n"
 
 #: ../syncped/app.cpp:81
 msgid "input file:line number:column number"

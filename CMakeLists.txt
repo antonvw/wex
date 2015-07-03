@@ -1,8 +1,53 @@
+project(wxExtension)
+
 if (WIN32)
   cmake_minimum_required(VERSION 3.0.0)
 else()
   cmake_minimum_required(VERSION 2.8.7)
 endif()
+
+function(process_po_files)
+  file(GLOB files *.po)
+  
+  foreach(filename ${files})
+  
+    string(FIND ${filename} "-" pos1 REVERSE)
+    string(FIND ${filename} "." pos2 REVERSE)
+    
+    math(EXPR pos1 "${pos1} + 1")
+    math(EXPR len "${pos2} - ${pos1}")
+    
+    string(SUBSTRING ${filename} ${pos1} ${len} lang)
+    
+    gettext_process_po_files(${lang} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+      PO_FILES ${filename})
+  
+    if (wxWidgets_ROOT_DIR AND ${ARGC} GREATER 0)
+      gettext_process_po_files(${lang} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+        PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
+    endif ()
+    
+  endforeach()
+endfunction()  
+
+function(pack)
+  set(CPACK_GENERATOR "ZIP")
+  set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+  set(CPACK_PACKAGE_VERSION 3.1.0)
+  set(CPACK_PACKAGE_CONTACT "Anton van Wezenbeek")
+  set(CPACK_PACKAGE_VENDOR "Coffee Tigers")
+  set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+  set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
+  
+  if (WIN32)
+    install(DIRECTORY $ENV{WINDIR}/syswow64/msvcp120.dll ${CONFIG_INSTALL_DIR})
+    install(DIRECTORY $ENV{WINDIR}/syswow64/msvcr120.dll ${CONFIG_INSTALL_DIR})
+  endif()
+
+  install(DIRECTORY extension/data/ DESTINATION ${CONFIG_INSTALL_DIR})
+
+  include(CPack)
+endfunction()  
 
 # Find the ODBC driver manager includes and library.
 # 
@@ -20,7 +65,7 @@ endif()
 # also defined, but not for general use is
 # ODBC_LIBRARY, where to find the ODBC driver manager library.
 
-SET( ODBC_FOUND 0 )
+set( ODBC_FOUND 0 )
 
 #---For the windows platform ODBC is located automatically
 if (WIN32)
@@ -56,10 +101,12 @@ endif()
 
 set(ODBC_LIBRARIES ${ODBC_LIBRARY})
 
-MARK_AS_ADVANCED( ODBC_FOUND ODBC_LIBRARY ODBC_EXTRA_LIBRARIES ODBC_INCLUDE_DIR )
+mark_as_advanced( ODBC_FOUND ODBC_LIBRARY ODBC_EXTRA_LIBRARIES ODBC_INCLUDE_DIR )
 
 if (WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_CRT_SECURE_NO_WARNINGS /D_SCL_SECURE_NO_WARNINGS /DwxExUSE_PORTABLE")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} 
+    /D_CRT_SECURE_NO_WARNINGS 
+    /D_SCL_SECURE_NO_WARNINGS /DwxExUSE_PORTABLE")
 
   if (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(wxWidgets_CONFIGURATION mswud)
@@ -91,13 +138,22 @@ else ()
 endif ()
 
 option(wxExUSE_OTL "Oracle Template Library")
+option(wxExUSE_SSS "Sync Socket Server")
 
 if (${wxExUSE_OTL} MATCHES ON)
   add_definitions(-DwxExUSE_OTL)
 endif ()
 
-include(
-  ${wxWidgets_USE_FILE})
+if (WIN32)
+  set(CONFIG_INSTALL_DIR bin)
+  set(LOCALE_INSTALL_DIR bin)
+else ()
+  set(CONFIG_INSTALL_DIR $ENV{HOME}/.${PROJECT_NAME})
+  set(LOCALE_INSTALL_DIR share/locale/)
+endif ()
+
+include(${wxWidgets_USE_FILE})
+include(FindGettext)
 
 enable_testing()
 
@@ -105,9 +161,14 @@ add_subdirectory(extension)
 
 include_directories(../extension/include)
 
+add_subdirectory(syncped)
+
 if (wxExUSE_OTL)
   add_subdirectory(syncodbcquery)
-endif (wxExUSE_OTL)
+endif ()
 
-add_subdirectory(syncped)
-add_subdirectory(syncsocketserver)
+if (wxExUSE_SSS)
+  add_subdirectory(syncsocketserver)
+endif ()
+
+pack()

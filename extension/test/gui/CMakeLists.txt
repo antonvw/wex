@@ -23,6 +23,4 @@ else (ODBC_FOUND)
     )
 endif()
 
-install(FILES "../../data/lexers.xml" DESTINATION ~/.${PROJECT_NAME})
-
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
