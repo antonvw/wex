@@ -3,7 +3,7 @@
 <!--
 Name:      lexers.xml
 Purpose:   Lexers configuration for wxExtension.
-           See scintilla 3.4.1 (www.scintilla.org).
+           See scintilla 3.5.5 (www.scintilla.org).
 Author:    Anton van Wezenbeek
 Copyright: (c) 2015, Anton van Wezenbeek
 -->
@@ -292,6 +292,16 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="operator"/>
     </def>
     
+    <def name = "bib">
+      <def no = "default"/>
+      <def no = "entry"/>
+      <def no = "unknown_entry"/>
+      <def no = "key"/>
+      <def no = "parameter"/>
+      <def no = "value"/>
+      <def no = "comment"/>
+    </def>
+    
     <def name = "caml">
       <def no ="default"/>
       <def no ="identifier"/>
@@ -416,6 +426,8 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="preprocessorcomment"/>
       <def no ="preprocessorcommentdoc"/>
       <def no ="userliteral"/>
+      <def no ="taskmarker"/>
+      <def no ="escapesequence"/>
     </def>
     
     <def name = "csound">
@@ -508,6 +520,19 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="word"/>
       <def no ="word2"/>
       <def no ="word3"/>
+    </def>
+    
+    <def name = "DMIS">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="string"/>
+      <def no ="number"/>
+      <def no ="keyword"/>
+      <def no ="majorword"/>
+      <def no ="minorword"/>
+      <def no ="unsupported_major"/>
+      <def no ="unsupported_minor"/>
+      <def no ="label"/>
     </def>
     
     <def name = "ecl">
@@ -869,6 +894,28 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="hphp_commentline"/>
       <def no ="hphp_hstring_variable"/>
       <def no ="hphp_operator"/>
+    </def>
+    
+    <def name = "ihex">
+      <def no = "default"/>
+      <def no = "recstart"/>
+      <def no = "rectype"/>
+      <def no = "rectype_unknown"/>
+      <def no = "bytecount"/>
+      <def no = "bytecount_wrong"/>
+      <def no = "noaddress"/>
+      <def no = "dataaddress"/>
+      <def no = "reccount"/>
+      <def no = "startaddress"/>
+      <def no = "addressfield_unknown"/>
+      <def no = "extendedaddress"/>
+      <def no = "data_odd"/>
+      <def no = "data_even"/>
+      <def no = "data_unknown"/>
+      <def no = "data_empty"/>
+      <def no = "checksum"/>
+      <def no = "checksum_wrong"/>
+      <def no = "garbage"/>
     </def>
     
     <def name = "inno">
@@ -1517,6 +1564,22 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="keyword8"/>
     </def>
     
+    <def name = "registry">
+      <def no = "default"/>
+      <def no = "comment"/>
+      <def no = "valuename"/>
+      <def no = "string"/>
+      <def no = "hexdigit"/>
+      <def no = "valuetype"/>
+      <def no = "addedkey"/>
+      <def no = "deletedkey"/>
+      <def no = "escaped"/>
+      <def no = "keypath_guid"/>
+      <def no = "string_guid"/>
+      <def no = "parameter"/>
+      <def no = "operator"/>
+    </def>
+    
     <def name = "ruby">
       <def no ="default"/>
       <def no ="error"/>
@@ -1576,6 +1639,9 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="lifetime"/>
       <def no ="macro"/>
       <def no ="lexerror"/>
+      <def no ="bytestring"/>
+      <def no ="bytestringr"/>
+      <def no ="bytecharacter"/>
     </def>
     
     <def name = "scriptol">
@@ -1702,6 +1768,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="user3"/>
       <def no ="user4"/>
       <def no ="quotedidentifier"/>
+      <def no ="qoperator"/>
     </def>
     
     <def name = "tads3">
@@ -1846,6 +1913,11 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="identifier"/>
       <def no ="stringeol"/>
       <def no ="user"/>
+      <def no ="COMMENT_WORD"/>
+      <def no ="INPUT"/>
+      <def no ="OUTPUT"/>
+      <def no ="INOUT"/>
+      <def no ="PORT_CONNECT"/>
     </def>
     
     <def name = "vhdl">
@@ -1864,6 +1936,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <def no ="stdpackage"/>
       <def no ="stdtype"/>
       <def no ="userword"/>
+      <def no ="block_comment"/>
     </def>
     
     <def name = "visualprolog">
@@ -2319,6 +2392,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
       ver verify vol wmic xcopy 
     </keywords>
   </lexer>
+  <lexer name="bib" extensions="*.bib"/>
   <lexer name="blitzbasic" macro="vb"/>
   <lexer name="bullant"/>
   <lexer name="caml"/>
@@ -2405,6 +2479,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
     </properties>
   </lexer>
   <lexer name="DMAP"/>
+  <lexer name="DMIS"/>
   <lexer name="ecl"/>
   <lexer name="eiffel"/>
   <lexer name="eiffelkw" macro="eiffel"/>
@@ -2490,6 +2565,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
+  <lexer name="ihex"/>
   <lexer name="inno"/>
   <lexer display="java" name="cpp" extensions="*.java">
     <keywords>
@@ -2665,6 +2741,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
   </lexer>
   <lexer name="r"/>
   <lexer name="rebol"/>
+  <lexer name="registry"/>
   <lexer display="rfw" name="bash" extensions="TCS*.txt"> 
     <keywords> 
       Library Resource Variables Documentation Metadata Setup Suite Teardown 
@@ -2742,6 +2819,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
     </keywords>
     <comments begin1="--" />
   </lexer>
+  <lexer name="srec" macro="ihex"/>
   <lexer display="sttxt" name="fcST"/>
   <lexer name="TACL" macro="cpp"/>
   <lexer name="tads3"/>
@@ -2755,6 +2833,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
       settc setty telltc uncomplete where which      
     </keywords>
   </lexer>
+  <lexer name="tehex" macro="ihex"/>
   <lexer name="tex"/>
   <lexer name="txt2tags"/>
   <lexer name="vb"/>
