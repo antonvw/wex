@@ -49,12 +49,12 @@ protected:
   /// Adds to the user sizer using the sizer flags.
   wxSizerItem* AddUserSizer(
     wxWindow* window,
-    const wxSizerFlags& flags = wxSizerFlags().Expand().Center());
+    const wxSizerFlags& flags = wxSizerFlags().Expand());
 
   /// Adds to the user sizer using the sizer flags.
   wxSizerItem* AddUserSizer(
     wxSizer* sizer,
-    const wxSizerFlags& flags = wxSizerFlags().Expand().Center());
+    const wxSizerFlags& flags = wxSizerFlags().Expand());
 
   /// Gets the button flags (as specified in the constructor).
   long GetButtonFlags() const {return m_ButtonFlags;};
