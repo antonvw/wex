@@ -25,7 +25,7 @@
 class wxExTextDropTarget : public wxTextDropTarget
 {
 public:
-  wxExTextDropTarget(wxExGrid* grid);
+  explicit wxExTextDropTarget(wxExGrid* grid);
 private:
   virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& data);
   wxExGrid* m_Grid;

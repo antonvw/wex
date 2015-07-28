@@ -1031,7 +1031,6 @@ void Frame::OnCommand(wxCommandEvent& event)
     else
       wxFAIL;
     break;
-  break;
   }
 }
 
@@ -1312,7 +1311,7 @@ bool Frame::OpenFile(
     GetManager().Update();
   }
   
-  wxExNotebook* notebook = (flags & WIN_IS_PROJECT
+  wxExNotebook* notebook = ((flags & WIN_IS_PROJECT)
     ? m_Projects : m_Editors);
     
   wxASSERT(notebook != NULL);

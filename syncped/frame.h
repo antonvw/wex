@@ -29,7 +29,7 @@ public:
 class Frame : public DecoratedFrame
 {
 public:
-  Frame(App* app);
+  explicit Frame(App* app);
   
   virtual bool OpenFile(
     const wxExFileName& filename,

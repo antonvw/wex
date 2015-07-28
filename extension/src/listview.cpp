@@ -36,7 +36,7 @@
 class DropTarget : public wxFileDropTarget
 {
 public:
-  DropTarget(wxExListView* lv) {m_ListView = lv;}
+  explicit DropTarget(wxExListView* lv) {m_ListView = lv;}
 private:
   virtual bool OnDropFiles(
     wxCoord x, 
@@ -68,7 +68,7 @@ private:
 class TextDropTarget : public wxTextDropTarget
 {
 public:
-  TextDropTarget(wxExListView* lv) {m_ListView = lv;}
+  explicit TextDropTarget(wxExListView* lv) {m_ListView = lv;}
 private:
   virtual bool OnDropText(
     wxCoord x, 

@@ -17,7 +17,7 @@
 class wxExDirTraverser: public wxDirTraverser
 {
 public:
-  wxExDirTraverser(wxExDir& dir)
+  explicit wxExDirTraverser(wxExDir& dir)
     : m_Dir(dir){;}
   
   virtual wxDirTraverseResult OnDir(const wxString& dirname) override

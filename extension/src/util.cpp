@@ -637,7 +637,7 @@ void wxExLogStatus(const wxExFileName& fn, long flags)
     return;
   }
   
-  wxString text = (flags & STAT_FULLPATH ? 
+  wxString text = ((flags & STAT_FULLPATH) ? 
     fn.GetFullPath(): 
     fn.GetFullName());
 
@@ -1056,20 +1056,20 @@ const wxString wxExSort(
   {
     if (sort_type & STRING_SORT_DESCENDING)
     {
-      text = (sort_type & STRING_SORT_UNIQUE ?
+      text = ((sort_type & STRING_SORT_UNIQUE) ?
         GetColumn(m.rbegin(), m.rend()):
         GetColumn(mm.rbegin(), mm.rend()));
     }
     else
     {
-      text = (sort_type & STRING_SORT_UNIQUE ?
+      text = ((sort_type & STRING_SORT_UNIQUE) ?
         GetColumn(m.begin(), m.end()):
         GetColumn(mm.begin(), mm.end()));
     }
   }
   else
   {
-    text = (sort_type & STRING_SORT_DESCENDING ? 
+    text = ((sort_type & STRING_SORT_DESCENDING) ? 
       GetLines(lines, pos, len, ms.rbegin()):
       GetLines(lines, pos, len, ms.begin()));
   }
