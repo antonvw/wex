@@ -10,7 +10,7 @@ platform:
   - x86
 
 configuration:
-  - Debug
+  - Release
 
 install:
   - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.0-include.7z'
@@ -21,14 +21,13 @@ install:
 before_build:
   - mkdir build
   - ps: cd build
-  - cmake -DCMAKE_BUILD_TYPE=Debug ..
+  - cmake ..
 
 build_script:
-  - msbuild syncped\ALL_BUILD.vcxproj 
-#  - cpack
+  - msbuild syncped\ALL_BUILD.vcxproj /p:Configuration=Release
+  - "C:\Program Files(x86)\CMake\bin\cpack.exe"
 
 test: OFF
 
 artifacts:
-#  - path: 'build\wxExtension-v3.1.0.zip'
-  - path: 'build\syncped\Debug\syncped.exe'
+  - path: 'build\syncped-v3.1.0.zip'

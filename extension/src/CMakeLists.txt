@@ -8,5 +8,3 @@ add_library(
   ${SRCS})
   
 set_target_properties(wxex PROPERTIES DEBUG_POSTFIX "d")
-
-install (TARGETS wxex DESTINATION lib)

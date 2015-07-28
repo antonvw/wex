@@ -8,5 +8,3 @@ add_library(
   ${SRCS})
   
 set_target_properties(wxex-rep PROPERTIES DEBUG_POSTFIX "d")
-
-install (TARGETS wxex-rep DESTINATION lib)
