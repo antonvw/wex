@@ -317,7 +317,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     event.Enable(m_otl.IsConnected());}, ID_DATABASE_CLOSE);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(!m_otl.IsConnected());}, ID_DATABASE_OPEN);
-  Bind(wxEVT_UPDATE_UI(, [=](wxUpdateUIEvent& event) {
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     // If we have a query, you can hide it, but still run it.
     event.Enable(m_Query->GetLength() > 0 && m_otl.IsConnected());}, wxID_EXECUTE);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {

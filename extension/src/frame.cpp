@@ -97,7 +97,7 @@ wxExStatusBar* wxExFrame::m_StatusBar = NULL;
 class FileDropTarget : public wxFileDropTarget
 {
 public:
-  FileDropTarget(wxExFrame* frame) 
+  explicit FileDropTarget(wxExFrame* frame) 
     : m_Frame(frame){;};
 private:
   virtual bool OnDropFiles(

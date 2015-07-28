@@ -1892,7 +1892,7 @@ void wxExSTC::PropertiesMessage(long flags)
 void wxExSTC::Reload(long flags)
 {
   if (!m_HexMode.Set((flags & STC_WIN_HEX) > 0, 
-    flags & STC_WIN_HEX ? GetTextRaw(): wxCharBuffer()))
+     (flags & STC_WIN_HEX) ? GetTextRaw(): wxCharBuffer()))
   {
     return;
   }

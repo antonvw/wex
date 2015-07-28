@@ -88,7 +88,7 @@ private:
 class TaskBarIcon: public wxTaskBarIcon
 {
 public:
-  TaskBarIcon(Frame* frame);
+  explicit TaskBarIcon(Frame* frame);
 protected:
   virtual wxMenu* CreatePopupMenu();
 private:

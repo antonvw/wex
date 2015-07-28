@@ -55,7 +55,7 @@ class wxExCmdLineParser : public wxCmdLineParser
 {
   public:
     // Contructor.
-    wxExCmdLineParser(const wxString& cmdline) 
+    explicit wxExCmdLineParser(const wxString& cmdline) 
       : wxCmdLineParser(cmdline) {;};
 
     // Adds a negatable switch.
@@ -473,7 +473,7 @@ bool wxExEx::CommandAddress(const std::string& command)
     case 'p': 
       if (m_STC->GetName() != "Print")
       {
-        return range.Print(rest); break;
+        return range.Print(rest);
       }
       else
       {

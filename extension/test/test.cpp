@@ -192,7 +192,7 @@ int wxExTestApp::OnRun()
       return wxExApp::OnRun();
     }
   }
-  catch (std::invalid_argument e)
+  catch (std::invalid_argument& e)
   {
     printf("invalid test: %s\n", e.what());
     return 0;

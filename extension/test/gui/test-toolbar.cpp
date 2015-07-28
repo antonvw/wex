@@ -25,4 +25,6 @@ void fixture::testToolBar()
   tb->AddControls();
   
   CPPUNIT_ASSERT(tb->GetFrame() == m_Frame);
+  CPPUNIT_ASSERT(fb->GetFrame() == m_Frame);
+  CPPUNIT_ASSERT(ob->GetFrame() == m_Frame);
 }
