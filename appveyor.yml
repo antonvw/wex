@@ -21,7 +21,7 @@ install:
 before_build:
   - mkdir build
   - ps: cd build
-  - cmake ..
+  - cmake -DCMAKE_BUILD_TYPE=Release ..
 
 build_script:
   - msbuild syncped\ALL_BUILD.vcxproj /p:Configuration=Release
