@@ -22,7 +22,9 @@ void fixture::testUtil()
   CPPUNIT_ASSERT( notebook->AddPage(page1, "page1") != NULL);
   CPPUNIT_ASSERT( notebook->AddPage(page2, "page2") != NULL);
   
+  CPPUNIT_ASSERT( wxExForEach(NULL, ID_LIST_ALL_ITEMS));
   CPPUNIT_ASSERT( wxExForEach(notebook, ID_LIST_ALL_ITEMS));
+  CPPUNIT_ASSERT( wxExForEach(notebook, ID_LIST_ALL_ITEMS, wxFont("Monospace")));
   
   wxExListViewFileName* listView = new wxExListViewFileName(
     m_Frame, wxExListViewFileName::LIST_FILE);

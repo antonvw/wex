@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/managedframe.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
@@ -57,4 +58,15 @@ void fixture::testFrame()
   CPPUNIT_ASSERT( m_Frame->UpdateStatusBar(stc, "PaneInfo"));
   CPPUNIT_ASSERT( m_Frame->UpdateStatusBar(stc, "PaneLexer"));
   CPPUNIT_ASSERT( m_Frame->UpdateStatusBar(stc, "PaneFileType"));
+  
+  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED);
+  
+  for (auto id : std::vector<int> {
+    wxID_FIND, wxID_REPLACE, 
+    wxID_OPEN,
+    ID_VIEW_MENUBAR, ID_VIEW_STATUSBAR, ID_VIEW_TITLEBAR}) 
+  {
+    event.SetInt(id);
+    wxPostEvent(m_Frame, event);
+  }
 }

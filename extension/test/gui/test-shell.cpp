@@ -84,4 +84,6 @@ void fixture::testShell()
   Process("!a\r", shell);
   CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
   CPPUNIT_ASSERT(!shell->GetText().Contains("bbb"));
+  
+  shell->ProcessChar(WXK_UP);
 }
