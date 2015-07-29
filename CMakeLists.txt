@@ -6,40 +6,17 @@ else()
   cmake_minimum_required(VERSION 2.8.7)
 endif()
 
-function(process_po_files)
-  # travis has problem with gettext
-  if (GETTEXT_FOUND AND NOT DEFINED ENV{TRAVIS})
-      file(GLOB files *.po)
-      
-      foreach(filename ${files})
-      
-        string(FIND ${filename} "-" pos1 REVERSE)
-        string(FIND ${filename} "." pos2 REVERSE)
-        
-        math(EXPR pos1 "${pos1} + 1")
-        math(EXPR len "${pos2} - ${pos1}")
-        
-        string(SUBSTRING ${filename} ${pos1} ${len} lang)
-        
-        gettext_process_po_files(${lang} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
-          PO_FILES ${filename})
-      
-        if (wxWidgets_ROOT_DIR AND ${ARGC} GREATER 0)
-          gettext_process_po_files(${lang} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
-            PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
-        endif ()
-      
-      endforeach()
-  endif()
-endfunction()  
+if (WIN32)
+  set(LOCALE_INSTALL_DIR bin)
+else ()
+  set(LOCALE_INSTALL_DIR share/locale/)
+endif ()
 
 function(pack)
   if (WIN32)
     set(CONFIG_INSTALL_DIR bin)
-    set(LOCALE_INSTALL_DIR bin)
   else ()
     set(CONFIG_INSTALL_DIR $ENV{HOME}/.${PROJECT_NAME})
-    set(LOCALE_INSTALL_DIR share/locale/)
   endif ()
 
   set(CPACK_GENERATOR "ZIP")
@@ -144,6 +121,33 @@ if (WIN32)
 else ()
   find_package(wxWidgets COMPONENTS           aui stc html adv xml core base net REQUIRED)
 endif ()
+
+function(process_po_files)
+  # travis has problem with gettext
+  if (GETTEXT_FOUND AND NOT DEFINED ENV{TRAVIS})
+      file(GLOB files *.po)
+      
+      foreach(filename ${files})
+      
+        string(FIND ${filename} "-" pos1 REVERSE)
+        string(FIND ${filename} "." pos2 REVERSE)
+        
+        math(EXPR pos1 "${pos1} + 1")
+        math(EXPR len "${pos2} - ${pos1}")
+        
+        string(SUBSTRING ${filename} ${pos1} ${len} lang)
+        
+        gettext_process_po_files(${lang} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+          PO_FILES ${filename})
+
+        if (wxWidgets_ROOT_DIR AND ${ARGC} GREATER 0)
+          gettext_process_po_files(${lang} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+            PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
+        endif ()
+      
+      endforeach()
+  endif()
+endfunction()  
 
 option(wxExUSE_OTL "Oracle Template Library")
 option(wxExUSE_SSS "Sync Socket Server")
