@@ -1989,7 +1989,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
         <def style ="commentdockeyword"> fore:medium sea green,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> light blue </def>
-        <def style ="identifier"> fore:black</def>
+        <def style ="identifier"> fore:black,bold</def>
         <def style ="keyword1"> fore:dark turquoise </def>
         <def style ="keyword2"> fore:dark green </def>
         <def style ="keyword3"> fore:medium spring green </def>
@@ -2021,7 +2021,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
         <def style ="commentdockeyword"> fore:medium sea green,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> light blue </def>
-        <def style ="identifier"> fore:white</def>
+        <def style ="identifier"> fore:white,bold</def>
         <def style ="label"> fore:medium slate blue,italic </def>
         <def style ="keyword1"> fore:yellow </def>
         <def style ="keyword2"> fore:yellow green </def>
@@ -2857,6 +2857,14 @@ Copyright: (c) 2015, Anton van Wezenbeek
     <styles>
       <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
     </styles>
+    <keywords>
+    </keywords>
   </lexer>
-  <lexer name="yaml" extensions="*.yml"/>
+  <lexer name="yaml" extensions="*.yml">
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+  </lexer>
 </lexers>
