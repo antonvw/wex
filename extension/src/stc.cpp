@@ -228,7 +228,7 @@ bool wxExSTC::AutoIndentation(int c)
   
   int indent = 0;
     
-  if (level <= 0 || ai == INDENT_WHITESPACE)
+  if (level <= 0)
   {
     // the current line has yet no indents, so use previous line
     indent = GetLineIndentation(currentLine - 1);
