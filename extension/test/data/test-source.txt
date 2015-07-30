@@ -1,5 +1,68 @@
+:ab
+:ve
+:reg
+:set
+:10
+:y
+:.=
+:/yy/=
+:.kz
+:.p
+:.p#
+:.pu
+:.puz
+:.z
+:.z-
+:.z--
+:.z+
+:.z++
+:.z=
+:.z=5
+:.z=5#
+:.z.5
+:.z^5
+:g/is/s//ok
+:g/is/d
+:g/is/p
+:v/is/p
+:v/xx/d
+:%g/is/p
+:1,2g/is/p
+:1
+:.m$
+:2
+:.t$
+:%s/x/y
+:%s/z/z
+:.s/$/\n
+:.S
+:.S10
+:.Sr
+:.Su
+:.Sru
+:.S10r
+:.S10u
+:.S1,5u
+:1,$s/this/ok
+:1,$s/this/ok/g
+:1,$s/$/ZXXX/
+:1,$s/$/ZXXX/
+:1,$s/^/Zxxx/
+:1,$&
+:1,$&g
+:1,$~
+:1,$~g
+:1,$s/s/w/
+:1,$s/^/BEGIN-OF-LINE
+:w test-ex.txt
+:1,2w test-ex.txt
+:1,2w >> test-ex.txt
+:1,2w >> test-ex.txt
+:r test-ex.txt
+:$r test-ex.txt
+:grep test
+:sed
+
 :1,5yy
 
 :$pu
-
-:1

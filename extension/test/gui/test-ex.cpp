@@ -52,60 +52,11 @@ void fixture::testEx()
   ex->Use(true);
   CPPUNIT_ASSERT( ex->GetIsActive());
   
-  // Test valid Commands and GetLastCommand.  
+  // Test valid Commands and GetLastCommand. 
+  // Most valid commands are tested using the :so command.
   for (const auto& command : std::vector<std::pair<std::string, bool>> {
     {":ab",true},
     {":ve",false},
-    {":reg",true},
-    {":set",true},
-    {":10",true},
-    {":.=",true},
-    {":/yy/=",true},
-    {":.kz",true},
-    {":.p",true},
-    {":.p#",true},
-    {":.pu",true},
-    {":.puz",true},
-    {":.z",true},
-    {":.z-",true},
-    {":.z--",true},
-    {":.z+",true},
-    {":.z++",true},
-    {":.z=",true},
-    {":.z=5",true},
-    {":.z=5#",true},
-    {":.z.5",true},
-    {":.z^5",true},
-    {":g/is/s//ok",true},
-    {":g/is/d",true},
-    {":g/is/p",true},
-    {":v/is/p",true},
-    {":v/xx/d",true},
-    {":%g/is/p",true},
-    {":1,2g/is/p",true},
-    {":1",true},
-    {":.m$",true},
-    {":2",true},
-    {":.t$",true},
-    {":%s/x/y",true},
-    {":%s/z/z",true},
-    {":.s/$/\n",true},
-    {":.S",true},
-    {":.S10",true},
-    {":.Sr",true},
-    {":.Su",true},
-    {":.Sru",true},
-    {":.S10r",true},
-    {":.S10u",true},
-    {":.S1,5u",true},
-    {":1,$s/this/ok",true},
-    {":1,$s/$/ZXXX/",true},
-    {":1,$s/$/ZXXX/",true},
-    {":1,$s/^/Zxxx/",true},
-    {":1,$&",true},
-    {":1,$&g",true},
-    {":1,$~",true},
-    {":1,$~g",true},
     {":1,$s/s/w/",true}})
   {
     CPPUNIT_ASSERT_MESSAGE( command.first, ex->Command(command.first));
@@ -208,27 +159,21 @@ void fixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":set ai")); // back to default
   
   // Test source.
+  stc->SetText("xx\nxx\nyy\nzz\n");
   CPPUNIT_ASSERT( ex->Command(":so test-source.txt"));
+  stc->SetText("xx\nxx\nyy\nzz\n");
   CPPUNIT_ASSERT( ex->Command(":source test-source.txt"));
+  stc->SetText("xx\nxx\nyy\nzz\n");
   CPPUNIT_ASSERT(!ex->Command(":so test-surce.txt"));
+  stc->SetText("xx\nxx\nyy\nzz\n");
   CPPUNIT_ASSERT(!ex->Command(":so test-source-2.txt"));
   
   CPPUNIT_ASSERT( ex->Command(":d"));
   //CPPUNIT_ASSERT( ex->Command(":e")); // shows dialog
   CPPUNIT_ASSERT(!ex->Command(":n"));
   CPPUNIT_ASSERT(!ex->Command(":prev"));
-  CPPUNIT_ASSERT( ex->Command(":grep test"));
-  CPPUNIT_ASSERT( ex->Command(":sed"));
   CPPUNIT_ASSERT( ex->Command(":r !echo qwerty"));
   CPPUNIT_ASSERT( stc->GetText().Contains("qwerty"));
-  CPPUNIT_ASSERT( ex->Command(":y"));
-  CPPUNIT_ASSERT( ex->Command(":1,$s/^/BEGIN-OF-LINE"));
-  CPPUNIT_ASSERT( ex->Command(":w test-ex.txt"));
-  CPPUNIT_ASSERT( ex->Command(":1,2w test-ex.txt"));
-  CPPUNIT_ASSERT( ex->Command(":1,2w >> test-ex.txt"));
-  CPPUNIT_ASSERT( ex->Command(":1,2w >> test-ex.txt"));
-  CPPUNIT_ASSERT( ex->Command(":r test-ex.txt"));
-  CPPUNIT_ASSERT( ex->Command(":$r test-ex.txt"));
 
   // Test macros.
   // Do not load macros yet, to test IsRecorded.
