@@ -2,11 +2,10 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wxExLexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXLEXERS_H
-#define _EXLEXERS_H
+#pragma once
 
 #include <map>
 #include <set>
@@ -92,13 +91,16 @@ public:
   /// Returns the current theme.
   const wxString& GetTheme() const {return m_Theme;};
   
-  /// Returns whether the current theme is not the empty theme.
-  bool GetThemeOk() const {return GetTheme() != m_NoTheme;};
-  
   /// Gets the theme macros for the current theme.
   const std::map<wxString, wxString>& GetThemeMacros() {
     return m_ThemeMacros[m_Theme];};
 
+  /// Returns whether the current theme is not the empty theme.
+  bool GetThemeOk() const {return GetTheme() != m_NoTheme;};
+  
+  /// Returns number of themes (should at least contain empty theme).
+  size_t GetThemes() const {return m_ThemeMacros.size();};
+  
   /// Returns true if specified indicator is available.
   bool IndicatorIsLoaded(const wxExIndicator& indic) const;
 
@@ -179,4 +181,3 @@ private:
 
   static wxExLexers* m_Self;
 };
-#endif

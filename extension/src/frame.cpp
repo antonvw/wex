@@ -485,7 +485,10 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
   }
   else if (pane == "PaneLexer")
   {
-    text = stc->GetLexer().GetDisplayLexer();
+    if (wxExLexers::Get()->GetThemeOk())
+    {
+      text = stc->GetLexer().GetDisplayLexer();
+    }
   }
   else if (pane == "PaneFileType")
   {

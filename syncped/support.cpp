@@ -49,10 +49,9 @@ DecoratedFrame::DecoratedFrame()
     const int lexer_size = 75;
 #endif
 
-    panes.push_back(wxExStatusBarPane("PaneLexer", lexer_size, _("Lexer")));
-    
-    if (wxExLexers::Get()->GetThemeMacros().size() > 1)
+    if (wxExLexers::Get()->GetThemes() > 1)
     {
+      panes.push_back(wxExStatusBarPane("PaneLexer", lexer_size, _("Lexer")));
       panes.push_back(wxExStatusBarPane("PaneTheme", lexer_size, _("Theme")));
     }
   }

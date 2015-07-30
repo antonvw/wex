@@ -86,6 +86,7 @@ void fixture::testLexers()
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetTheme().empty());
   CPPUNIT_ASSERT( wxExLexers::Get()->GetThemeOk());
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetThemeMacros().empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetThemes() > 1);
 
   CPPUNIT_ASSERT(!wxExLexers::Get()->SetTheme("xxx"));
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetTheme().empty());
