@@ -593,7 +593,17 @@ void wxExSTC::ConfigGet(bool init)
   else
   {
     SetEdgeColumn(cfg->ReadLong(_("Edge column"), 0));
-    SetEdgeMode(cfg->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
+  
+    const int el = cfg->ReadLong(_("Edge line"), wxSTC_EDGE_NONE);
+  
+    if (el != wxSTC_EDGE_NONE)
+    {
+      SetEdgeMode(font.IsFixedWidth() ? el: wxSTC_EDGE_BACKGROUND);
+    }
+    else
+    {
+      SetEdgeMode(el);
+    }
   }
   
   if (init)
