@@ -136,12 +136,22 @@ function(process_po_files)
         math(EXPR len "${pos2} - ${pos1}")
         
         string(SUBSTRING ${filename} ${pos1} ${len} lang)
+    
+        set(locale ${lang})
+    
+        if (${locale} MATCHES "nl")
+          set(locale "nl_NL")
+        endif ()
+    
+        if (${locale} MATCHES "fr")
+          set(locale "fr_FR")
+        endif ()
         
-        gettext_process_po_files(${lang} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+        gettext_process_po_files(${locale} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
           PO_FILES ${filename})
 
         if (wxWidgets_ROOT_DIR AND ${ARGC} GREATER 0)
-          gettext_process_po_files(${lang} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
+          gettext_process_po_files(${locale} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
             PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po)
         endif ()
       
