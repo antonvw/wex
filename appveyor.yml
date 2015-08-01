@@ -15,13 +15,15 @@ configuration:
 install:
   - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.0-include.7z'
   - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.0-lib.7z'
+  - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.0-locale.7z'
   - cmd: 7z x wxWidgets-3.1.0-include.7z -oC:\wxWidgets
   - cmd: 7z x wxWidgets-3.1.0-lib.7z -oC:\wxWidgets
+  - cmd: 7z x wxWidgets-3.1.0-locale.7z -oC:\wxWidgets
 
 before_build:
   - mkdir build
   - ps: cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PROGRAM_PATH=C:\cygwin\bin ..
 
 build_script:
   - msbuild syncped\ALL_BUILD.vcxproj /p:Configuration=Release
