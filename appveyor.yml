@@ -25,7 +25,7 @@ before_build:
 
 build_script:
   - msbuild syncped\ALL_BUILD.vcxproj /p:Configuration=Release
-  - ps: 'C:\Program Files (x86)\CMake\bin\cpack.exe'
+  - cmd: 'C:\Program Files (x86)\CMake\bin\cpack.exe'
 
 test: OFF
 
