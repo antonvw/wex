@@ -252,34 +252,35 @@ bool wxExEx::Command(const std::string& command)
       
       wxTextFile file(filename.GetFullPath());
 
-      if (!file.Open())
+      if (file.Open())
       {
-        return false;
-      }
-      
-      for (size_t i = 0; i < file.GetLineCount(); i++)
-      {
-        const std::string line(file.GetLine(i).ToStdString());
-
-        if (!line.empty())
+        for (int i = 0; i < (int)file.GetLineCount(); i++)
         {
-          if (line == command)
+          const std::string line(file.GetLine(i).ToStdString());
+
+          if (!line.empty())
           {
-            m_Frame->ShowExMessage(wxString::Format("recursive %s", line.c_str()));
-            return false;
-          }
-          
-          if (!Command(line))
-          {
-            m_Frame->ShowExMessage(wxString::Format("%s failed", line.c_str()));
-            return false;
+            if (line == command)
+            {
+              wxLogMessage("skip recursive %s on line %d", line.c_str(), i);
+              result = false;
+            }
+            else if (!Command(line))
+            {
+              wxLogMessage("%s on line %d failed", line.c_str(), i);
+              result = false;
+            }
           }
         }
+      }
+      else
+      {
+        result = false;
       }
     }
     else
     {
-      return false;
+      result = false;
     }
   }
   else if (command.compare(0, 7, ":syntax") == 0)
