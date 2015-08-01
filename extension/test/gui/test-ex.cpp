@@ -51,7 +51,7 @@ void fixture::testEx()
   CPPUNIT_ASSERT( ex->GetIsActive());
   
   // GetSearchFlags
-  CPPUNIT_ASSERT( ex->GetSearchFlags() == (wxSTC_FIND_REGEXP | wxSTC_FIND_MATCHCASE));
+  CPPUNIT_ASSERT( ex->GetSearchFlags() & wxSTC_FIND_REGEXP);
   
   // Test valid Commands and GetLastCommand. 
   // Most valid commands are tested using the :so command.
