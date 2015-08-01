@@ -16,8 +16,6 @@
 #include <wx/extension/vimacros.h>
 #include "test.h"
 
-//#define DEBUGGING ON
-
 void fixture::testEx()
 {
   // Test modeline.
@@ -51,6 +49,9 @@ void fixture::testEx()
   CPPUNIT_ASSERT(!ex->GetIsActive());
   ex->Use(true);
   CPPUNIT_ASSERT( ex->GetIsActive());
+  
+  // GetSearchFlags
+  CPPUNIT_ASSERT( ex->GetSearchFlags() == (wxSTC_FIND_REGEXP | wxSTC_FIND_MATCHCASE));
   
   // Test valid Commands and GetLastCommand. 
   // Most valid commands are tested using the :so command.
@@ -90,24 +91,12 @@ void fixture::testEx()
     ":%/test//",
     ":1,$k",
     ":.S0",
-    ":.Sx"})
+    ":.Sx",
+    ":r test-ex.txt"})
   {
     CPPUNIT_ASSERT_MESSAGE(command, !ex->Command(command));
     CPPUNIT_ASSERT( ex->GetLastCommand() != command);
   }
-  
-  stc->SetText("xx\nyy\nzz\n");
-  CPPUNIT_ASSERT( ex->Command(":/xx/,/yy/y"));
-  
-  CPPUNIT_ASSERT( ex->Command(":1"));
-  CPPUNIT_ASSERT( ex->MarkerAdd('t'));
-  CPPUNIT_ASSERT( ex->Command(":$"));
-  CPPUNIT_ASSERT( ex->MarkerAdd('u'));
-  CPPUNIT_ASSERT( ex->Command(":'t,'us/s/w/"));
-  CPPUNIT_ASSERT( ex->GetLastCommand() == ":'t,'us/s/w/");
-  
-  // Test read (file does not exist).
-  CPPUNIT_ASSERT(!ex->Command(":r test-ex.txt"));
   
   // Test abbreviations.
   stc->SetText("xx\n");
@@ -137,27 +126,6 @@ void fixture::testEx()
   stc->LineDownExtend();
   CPPUNIT_ASSERT(!ex->Command(":'<,'>x"));
   
-  // Test execute.
-  CPPUNIT_ASSERT( ex->Command(":!pwd"));
-  CPPUNIT_ASSERT( ex->Command(":!bash"));
-  
-  // Test set options.
-  for (const auto& option : std::vector<std::pair<std::string, std::string>> {
-    {"ec","5"},{"sy","cpp"},{"ts","10"}})
-  {
-    CPPUNIT_ASSERT( ex->Command(":set " + option.first + "=" + option.second));
-  }
-  
-  // Test set switches.
-  for (const auto& it :  std::vector<std::string> {
-    "ai", "ac", "el", "ic", "mw", "nu", "re", "wl", "ws"})
-  {
-    CPPUNIT_ASSERT_MESSAGE( it, ex->Command(":set " + it));
-    CPPUNIT_ASSERT_MESSAGE( it, ex->Command(":set " + it + "!"));
-  }
-  
-  CPPUNIT_ASSERT( ex->Command(":set ai")); // back to default
-  
   // Test source.
   stc->SetText("xx\nxx\nyy\nzz\n");
   CPPUNIT_ASSERT( ex->Command(":so test-source.txt"));
@@ -169,9 +137,6 @@ void fixture::testEx()
   CPPUNIT_ASSERT(!ex->Command(":so test-source-2.txt"));
   
   CPPUNIT_ASSERT( ex->Command(":d"));
-  //CPPUNIT_ASSERT( ex->Command(":e")); // shows dialog
-  CPPUNIT_ASSERT(!ex->Command(":n"));
-  CPPUNIT_ASSERT(!ex->Command(":prev"));
   CPPUNIT_ASSERT( ex->Command(":r !echo qwerty"));
   CPPUNIT_ASSERT( stc->GetText().Contains("qwerty"));
 
@@ -221,14 +186,17 @@ void fixture::testEx()
   CPPUNIT_ASSERT(!ex->MarkerDelete('b'));
   CPPUNIT_ASSERT(!ex->MarkerGoto('a'));
   CPPUNIT_ASSERT(!ex->MarkerDelete('a'));
+  stc->SetText("xx\nyy\nzz\n");
+  CPPUNIT_ASSERT( ex->Command(":1"));
+  CPPUNIT_ASSERT( ex->MarkerAdd('t'));
+  CPPUNIT_ASSERT( ex->Command(":$"));
+  CPPUNIT_ASSERT( ex->MarkerAdd('u'));
+  CPPUNIT_ASSERT( ex->Command(":'t,'us/s/w/"));
+  CPPUNIT_ASSERT( ex->GetLastCommand() == ":'t,'us/s/w/");
   
   // Test print.
   ex->Print("This is printed");
   
-  // Test delete.
-  stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
-  CPPUNIT_ASSERT( ex->Command(":10d"));
-
   // Test global delete (previous delete was on found text).
   const int max = 10;
   for (int i = 0; i < max; i++) stc->AppendText("line xxxx added\n");
@@ -236,13 +204,6 @@ void fixture::testEx()
   CPPUNIT_ASSERT( ex->Command(":g/xxxx/d"));
   CPPUNIT_ASSERT_MESSAGE(std::to_string(stc->GetLineCount()) + "!=" + 
     std::to_string(lines - max), stc->GetLineCount() == lines - max);
-  
-  // Test global print.
-  stc->AppendText("line xxxx 3 added\n");
-  stc->AppendText("line xxxx 4 added\n");
-  CPPUNIT_ASSERT( ex->Command(":g/xxxx/p"));
-  CPPUNIT_ASSERT( ex->Command(":g/xxxx/p#"));
-  CPPUNIT_ASSERT( ex->Command(":g//"));
   
   // Test global substitute.
   stc->AppendText("line xxxx 6 added\n");
