@@ -26,7 +26,7 @@ before_build:
   - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PROGRAM_PATH=C:\cygwin\bin ..
 
 build_script:
-  - msbuild syncped\ALL_BUILD.vcxproj /p:Configuration=Release
+  - msbuild ALL_BUILD.vcxproj /p:Configuration=Release
   - ..\build.bat
 
 test: OFF
