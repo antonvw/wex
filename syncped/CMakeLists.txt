@@ -23,6 +23,5 @@ target_link_libraries(
 add_subdirectory(locale)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-#install(TARGETS ${PROJECT_NAME}.manifest DESTINATION bin)
 
 pack()
