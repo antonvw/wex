@@ -329,32 +329,40 @@ bool wxExFrameWithHistory::FindInFiles(
     return false;
   }
   
-  wxExStatistics<int> stats;
-  
-  for (const auto& it : files)
-  {
-    const wxExFileName fn(it);
+#ifndef __WXGTK__    
+  std::thread t([=] {
+#endif
+    wxExStatistics<int> stats;
     
-    if (fn.FileExists())
+    for (const auto& it : files)
     {
-      wxExTextFileWithListView file(fn, tool);
-      file.RunTool();
-      stats += file.GetStatistics().GetElements();
+      const wxExFileName fn(it);
+      
+      if (fn.FileExists())
+      {
+        wxExTextFileWithListView file(fn, tool);
+        file.RunTool();
+        stats += file.GetStatistics().GetElements();
+      }
+      else
+      {
+        wxExDirTool dir(
+          tool, 
+          fn.GetFullPath(), 
+          wxExConfigFirstOf(m_TextInFiles));
+          
+        dir.FindFiles();
+        stats += dir.GetStatistics().GetElements();
+      }
     }
-    else
-    {
-      wxExDirTool dir(
-        tool, 
-        fn.GetFullPath(), 
-        wxExConfigFirstOf(m_TextInFiles));
-        
-      dir.FindFiles();
-      stats += dir.GetStatistics().GetElements();
-    }
-  }
+    
+    wxLogStatus(tool.Info(&stats));
   
-  wxLogStatus(tool.Info(&stats));
-  
+#ifndef __WXGTK__    
+    });
+  t.detach();
+#endif
+
   return true;
 }
 

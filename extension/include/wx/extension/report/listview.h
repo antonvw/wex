@@ -48,9 +48,6 @@ protected:
   virtual bool Destroy() override;
   wxExFrameWithHistory* GetFrame() {return m_Frame;};
 private:
-  void ItemActivated(long item_number);
-  void RunItems(const wxExTool& tool);
-
   const long m_MenuFlags;
   wxExFrameWithHistory* m_Frame;
 };

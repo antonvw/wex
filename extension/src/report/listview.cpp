@@ -5,6 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -64,7 +65,27 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-      ItemActivated(i);}, ID_LIST_OPEN_ITEM);
+    {
+      const wxExListItem item(this, i);
+      if (item.GetFileName().FileExists())
+      {
+        const wxString line_number_str = GetItemText(i, _("Line No"));
+        const int line_number = atoi(line_number_str.c_str());
+        const wxString match =
+          (GetType() == LIST_REPLACE ?
+             GetItemText(i, _("Replaced")):
+             GetItemText(i, _("Match")));
+
+        m_Frame->OpenFile(
+          item.GetFileName().GetFullPath(),
+          line_number, 
+          match);
+      }
+      else
+      { 
+        wxExListViewFileName::ItemActivated(i);
+      }
+    }}, ID_LIST_OPEN_ITEM);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     bool first = true;
@@ -109,7 +130,29 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
     wxExMake(wxExListItem(this, GetFirstSelected()).GetFileName());}, ID_LIST_RUN_MAKE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    RunItems(event.GetId());}, ID_TOOL_LOWEST, ID_TOOL_HIGHEST);
+    const wxExTool& tool(event.GetId());
+    if (tool.GetId() == ID_TOOL_REPORT_KEYWORD && GetType() == LIST_KEYWORD) return;
+    if (tool.IsFindType() && m_Frame->FindInFilesDialog(tool.GetId()) == wxID_CANCEL) return;
+    if (!wxExTextFileWithListView::SetupTool(tool, m_Frame)) return;
+
+#ifndef __WXGTK__    
+    std::thread t([=] {
+#endif
+
+    wxExStatistics<int> stats;
+
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    {
+      stats += wxExRun(wxExListItem(this, i), tool).GetElements();
+    }
+
+    wxLogStatus(tool.Info(&stats));
+
+#ifndef __WXGTK__    
+    });
+    t.detach();
+#endif
+    }, ID_TOOL_LOWEST, ID_TOOL_HIGHEST);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     std::vector< wxString > files;
@@ -246,58 +289,4 @@ wxExListViewWithFrame::wxExListType wxExListViewWithFrame::GetTypeTool(
     case ID_TOOL_REPORT_REPLACE: return LIST_REPLACE; break;
     default: wxFAIL; return LIST_FILE;
   }
-}
-
-void wxExListViewWithFrame::ItemActivated(long item_number)
-{
-  const wxExListItem item(this, item_number);
-
-  if (item.GetFileName().FileExists())
-  {
-    const wxString line_number_str = GetItemText(item_number, _("Line No"));
-    const int line_number = atoi(line_number_str.c_str());
-    const wxString match =
-      (GetType() == LIST_REPLACE ?
-         GetItemText(item_number, _("Replaced")):
-         GetItemText(item_number, _("Match")));
-
-    m_Frame->OpenFile(
-      item.GetFileName().GetFullPath(),
-      line_number, 
-      match);
-  }
-  else
-  { 
-    wxExListViewFileName::ItemActivated(item_number);
-  }
-}
-
-void wxExListViewWithFrame::RunItems(const wxExTool& tool)
-{
-  if (tool.GetId() == ID_TOOL_REPORT_KEYWORD && GetType() == LIST_KEYWORD)
-  {
-    return;
-  }
-
-  if (tool.IsFindType())
-  {
-    if (m_Frame->FindInFilesDialog(tool.GetId()) == wxID_CANCEL)
-    {
-      return;
-    }
-  }
-
-  if (!wxExTextFileWithListView::SetupTool(tool, m_Frame))
-  {
-    return;
-  }
-
-  wxExStatistics<int> stats;
-
-  for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-  {
-    stats += wxExRun(wxExListItem(this, i), tool).GetElements();
-  }
-
-  wxLogStatus(tool.Info(&stats));
 }
