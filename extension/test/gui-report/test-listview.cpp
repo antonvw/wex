@@ -17,6 +17,7 @@ void fixture::testListViewWithFrame()
     
   wxExListViewWithFrame* listView = new wxExListViewWithFrame(m_Frame, m_Frame, 
     wxExListViewFileName::LIST_FIND);
+  listView->Show();
   
   listView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->AppendColumn(wxExColumn("Number", wxExColumn::COL_INT));
@@ -31,8 +32,8 @@ void fixture::testListViewWithFrame()
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED);
   
   for (auto id : std::vector<int> {
-    ID_LIST_OPEN_ITEM, ID_LIST_COMPARE, ID_LIST_RUN_MAKE,
-    ID_EDIT_VCS_LOWEST + 1, ID_TOOL_LOWEST + 1}) 
+    ID_EDIT_OPEN, ID_LIST_COMPARE, ID_LIST_RUN_MAKE,
+    ID_EDIT_VCS_LOWEST + 1, ID_TOOL_REPORT_FIND}) 
   {
     event.SetInt(id);
     wxPostEvent(listView, event);

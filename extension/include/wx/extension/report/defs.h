@@ -2,11 +2,10 @@
 // Name:      defs.h
 // Purpose:   Common definitions for wxExtension report
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EX_REPORT_DEFS_H
-#define _EX_REPORT_DEFS_H
+#pragma once
 
 #include <wx/extension/defs.h>
 
@@ -17,11 +16,9 @@ enum
 
   ID_LIST_LOWEST = ID_TOOL_HIGHEST + 1,
   ID_LIST_COMPARE,
-  ID_LIST_OPEN_ITEM,
   ID_LIST_RUN_MAKE,
   ID_LIST_HIGHEST,
   ID_LIST_ALL_ITEMS, // not a real command, used by exForEach
-  ID_TREE_OPEN,
   ID_TREE_COPY,
   ID_TREE_FIND,
   ID_TREE_REPLACE,
@@ -33,5 +30,3 @@ enum
 
   ID_EXTENSION_REPORT_HIGHEST
 };
-
-#endif

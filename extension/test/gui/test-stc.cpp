@@ -25,6 +25,9 @@ void fixture::testSTC()
   wxExSTC::ConfigDialog(m_Frame, "test stc", wxExSTC::STC_CONFIG_MODELESS);
   
   wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
+  m_Frame->GetManager().AddPane(stc, 
+    wxAuiPaneInfo().Bottom().Caption("STC"));
+  m_Frame->GetManager().Update();
   
   CPPUNIT_ASSERT( stc->GetText() == "hello stc");
   CPPUNIT_ASSERT( stc->FindNext(wxString("hello")));
@@ -154,9 +157,9 @@ void fixture::testSTC()
   CPPUNIT_ASSERT( stc->SetLexer("cpp"));
   stc->SetText("\nif ()\n{\n");
   stc->DocumentEnd();
-  // Somehow the fold level for current line is 0, so AutoIndentation
-  // fails. Is OK when playback in syncped.
-  CPPUNIT_ASSERT(!stc->AutoIndentation('\n'));
+#if wxCHECK_VERSION(3,1,0)
+  CPPUNIT_ASSERT( stc->AutoIndentation('\n'));
+#endif
   
   stc->Sync(false);
   stc->Sync(true);
@@ -184,20 +187,13 @@ void fixture::testSTC()
   // Test events.
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED);
   
-  event.SetInt(ID_EDIT_HEX_DEC_CALLTIP);
-  wxPostEvent(stc, event);
-  event.SetInt(ID_EDIT_MARKER_NEXT);
-  wxPostEvent(stc, event);
-  event.SetInt(ID_EDIT_MARKER_PREVIOUS);
-  wxPostEvent(stc, event);
-  event.SetInt(ID_EDIT_OPEN_LINK);
-  wxPostEvent(stc, event);
-  event.SetInt(ID_EDIT_SHOW_PROPERTIES);
-  wxPostEvent(stc, event);
-  event.SetInt(ID_EDIT_ZOOM_IN);
-  wxPostEvent(stc, event);
-  event.SetInt(ID_EDIT_ZOOM_OUT);
-  wxPostEvent(stc, event);
+  for (auto id : std::vector<int> {
+    ID_EDIT_HEX_DEC_CALLTIP, ID_EDIT_MARKER_NEXT, ID_EDIT_MARKER_PREVIOUS,
+    ID_EDIT_OPEN_LINK + 1, ID_EDIT_SHOW_PROPERTIES, ID_EDIT_ZOOM_IN, ID_EDIT_ZOOM_OUT}) 
+  {
+    event.SetInt(id);
+    wxPostEvent(stc, event);
+  }
   
   wxYield();
 }

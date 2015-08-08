@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/artprov.h> // for wxArtID
+#include <wx/artprov.h> // for wxArt
 #include <wx/extension/listview.h>
 #include <wx/extension/managedframe.h>
 #include "test.h"
@@ -17,6 +17,9 @@
 void fixture::testListView()
 {
   wxExListView* listView = new wxExListView(m_Frame);
+  m_Frame->GetManager().AddPane(listView, 
+    wxAuiPaneInfo().Bottom().Caption("ListView"));
+  m_Frame->GetManager().Update();
   
   listView->SetSingleStyle(wxLC_REPORT);
   
@@ -72,4 +75,12 @@ void fixture::testListView()
   CPPUNIT_ASSERT(!listView->SortColumn("Date"));
   
   listView->SetItemImage(0, wxART_WARNING);
+  
+  wxListEvent event(wxEVT_LIST_ITEM_ACTIVATED);
+  
+  for (auto id : std::vector<int> {0}) 
+  {
+    event.m_itemIndex = id;
+    wxPostEvent(listView, event);
+  }
 }

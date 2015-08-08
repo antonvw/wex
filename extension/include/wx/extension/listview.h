@@ -249,22 +249,20 @@ public:
   static const wxString GetTypeDescription(wxExListType type);
 
   /// Updates all items.
-  virtual void ItemsUpdate();
+  virtual void ItemsUpdate() override;
 
-  /// When item is double clicked.
-  virtual void ItemActivated(long item_number);
-  
   /// Tries to insert items from specified text.
   /// Returns true if successfull.
-  virtual bool ItemFromText(const wxString& text);
+  virtual bool ItemFromText(const wxString& text) override;
 
   /// Returns column text for specified item.
-  virtual const wxString ItemToText(long item_number) const;
+  virtual const wxString ItemToText(long item_number) const override;
 protected:
-  virtual void BuildPopupMenu(wxExMenu& menu);
+  virtual void BuildPopupMenu(wxExMenu& menu) override;
 private:
   void AddColumns(const wxExLexer* lexer);
   void Initialize(const wxExLexer* lexer);
+  void ItemActivated(long item_number);
   const wxExListType m_Type;
 
   bool m_ItemUpdated;

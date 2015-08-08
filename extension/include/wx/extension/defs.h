@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXDEFS_H
-#define _EXDEFS_H
+#pragma once
 
 #include <wx/defs.h>
 
@@ -48,6 +47,8 @@ enum wxExId
 
   ID_EDIT_SELECT_NONE,
   ID_EDIT_SELECT_INVERT,
+  
+  ID_EDIT_OPEN,
 
   // Here are the STC file commands,
   // add them to stc file event macro as well.
@@ -108,4 +109,3 @@ enum wxExToolId
   ID_TOOL_REPORT_LAST = ID_TOOL_REPORT_FIRST_USER + TOOL_MAX_REPORTS,  // before this is the last report
   ID_TOOL_HIGHEST
 };
-#endif
