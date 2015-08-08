@@ -241,11 +241,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 
 bool wxExListViewWithFrame::Destroy()	
 {
-  if (wxExInterruptable::Running())
-  {
-    wxExInterruptable::Cancel();
-  }
-    
+  wxExInterruptable::Cancel();
   return wxExListViewFileName::Destroy();
 }
 

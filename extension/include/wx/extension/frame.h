@@ -39,7 +39,7 @@ public:
     const wxString& title,
     long style = wxDEFAULT_FRAME_STYLE);
 
-  /// Destructor, deletes the statusbar.
+  /// Destructor.
  ~wxExFrame();
 
   /// Returns a grid.

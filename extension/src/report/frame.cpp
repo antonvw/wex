@@ -169,10 +169,6 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     ID_RECENT_PROJECT_LOWEST + NUMBER_RECENT_PROJECTS);
 }
 
-wxExFrameWithHistory::~wxExFrameWithHistory()
-{
-}
-
 void wxExFrameWithHistory::ClearHistory(wxFileHistory& history)
 {
   if (history.GetCount() > 0)
