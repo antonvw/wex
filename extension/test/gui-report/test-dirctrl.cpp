@@ -17,7 +17,8 @@ void fixture::testDirCtrl()
   
   for (auto id : std::vector<int> {
     ID_EDIT_VCS_LOWEST + 1, ID_TOOL_LOWEST + 1, 
-    ID_TREE_COPY, ID_TREE_OPEN, ID_TREE_RUN_MAKE})
+    ID_TREE_COPY, ID_EDIT_OPEN, ID_TREE_RUN_MAKE,
+    ID_TOOL_REPORT_FIND})
   {
     wxCommandEvent event(id);  
     wxPostEvent(ctrl, event);

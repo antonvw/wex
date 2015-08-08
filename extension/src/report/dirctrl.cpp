@@ -64,7 +64,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExOpenFiles(frame, 
       wxExToVectorString(*this).Get(), 0, wxDIR_FILES); // only files in this dir
-    }, ID_TREE_OPEN);
+    }, ID_EDIT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const std::vector<wxString> files(wxExToVectorString(*this).Get());
@@ -102,7 +102,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
     
     if (filename.FileExists())
     {
-      menu.Append(ID_TREE_OPEN, _("&Open"));
+      menu.Append(ID_EDIT_OPEN, _("&Open"));
       menu.AppendSeparator();
     }
     

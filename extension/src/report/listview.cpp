@@ -64,30 +64,6 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   SetAcceleratorTable(accel);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-    {
-      const wxExListItem item(this, i);
-      if (item.GetFileName().FileExists())
-      {
-        const wxString line_number_str = GetItemText(i, _("Line No"));
-        const int line_number = atoi(line_number_str.c_str());
-        const wxString match =
-          (GetType() == LIST_REPLACE ?
-             GetItemText(i, _("Replaced")):
-             GetItemText(i, _("Match")));
-
-        m_Frame->OpenFile(
-          item.GetFileName().GetFullPath(),
-          line_number, 
-          match);
-      }
-      else
-      { 
-        wxExListViewFileName::ItemActivated(i);
-      }
-    }}, ID_LIST_OPEN_ITEM);
-  
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     bool first = true;
     wxString file1,file2;
     wxExListViewFileName* list = NULL;
@@ -179,12 +155,6 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     is_folder = wxFileName::DirExists(item.GetFileName().GetFullPath());
     read_only = item.GetFileName().GetStat().IsReadOnly();
     is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
-  }
-
-  if (GetSelectedItemCount() >= 1 && exists)
-  {
-    menu.Append(ID_LIST_OPEN_ITEM, _("&Open"), wxART_FILE_OPEN);
-    menu.AppendSeparator();
   }
 
   wxExListViewFileName::BuildPopupMenu(menu);

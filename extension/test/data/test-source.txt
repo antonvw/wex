@@ -95,6 +95,7 @@
 :.S1,5u
 :1,$s/this/ok
 :1,$s/this/ok/g
+:1,$s/this/ok/gi
 :1,$s/$/ZXXX/
 :1,$s/$/ZXXX/
 :1,$s/^/Zxxx/

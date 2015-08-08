@@ -5,8 +5,7 @@
 // Copyright: (c) @Year@ @Copyright@
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _@Filename@_H
-#define _@Filename@_H
+#pragma once
 
 /// @Purpose@
 class @Myclass@
@@ -17,5 +16,3 @@ public:
 protected:
 private:
 };
-
-#endif

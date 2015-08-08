@@ -891,6 +891,12 @@ wxExListViewFileName::wxExListViewFileName(wxWindow* parent,
       wxExListItem(this, dir_dlg.GetPath()).Insert(no);
     }}, wxID_ADD);
 
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    {
+      ItemActivated(i);
+    }}, ID_EDIT_OPEN);
+  
   Bind(wxEVT_IDLE, [=](wxIdleEvent& event) {
     event.Skip();
   
@@ -1019,6 +1025,13 @@ void wxExListViewFileName::AddColumns(const wxExLexer* lexer)
 
 void wxExListViewFileName::BuildPopupMenu(wxExMenu& menu)
 {
+  if (GetSelectedItemCount() >= 1 && 
+    wxExListItem(this, GetFirstSelected()).GetFileName().GetStat().IsOk())
+  {
+    menu.Append(ID_EDIT_OPEN, _("&Open"), wxART_FILE_OPEN);
+    menu.AppendSeparator();
+  }
+
   wxExListView::BuildPopupMenu(menu);
 
   if (m_Type == LIST_FOLDER && GetSelectedItemCount() <= 1)
@@ -1096,8 +1109,25 @@ void wxExListViewFileName::ItemActivated(long item_number)
     // Cannot be const because of SetItem later on.
     wxExListItem item(this, item_number);
   
-    if (!item.GetFileName().FileExists() &&
-         wxDirExists(item.GetFileName().GetFullPath()))
+    if (item.GetFileName().FileExists())
+    {
+      wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
+      if (frame != NULL)
+      {
+        const wxString line_number_str = GetItemText(item_number, _("Line No"));
+        const int line_number = atoi(line_number_str.c_str());
+        const wxString match =
+          (m_Type == LIST_REPLACE ?
+             GetItemText(item_number, _("Replaced")):
+             GetItemText(item_number, _("Match")));
+
+        frame->OpenFile(
+          item.GetFileName().GetFullPath(),
+          line_number, 
+          match);
+      }
+    }
+    else if (wxDirExists(item.GetFileName().GetFullPath()))
     {
       wxTextEntryDialog dlg(this,
         _("Input") + ":",
@@ -1109,6 +1139,7 @@ void wxExListViewFileName::ItemActivated(long item_number)
         item.SetItem(_("Type"), dlg.GetValue());
       }
     }
+    
   }
 }
 
