@@ -861,7 +861,7 @@ bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
 
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
   
-  return result != wxID_CANCEL;
+  return true;
 }
 
 bool wxExAddressRange::Write(const wxString& text) const
