@@ -198,6 +198,7 @@ bool wxExManagedFrame::AddToolBarPane(
     pane
       .Top()
       .ToolbarPane()
+      .Resizable()
       .Caption(caption);
       
     // Initially hide special bars.

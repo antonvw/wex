@@ -60,7 +60,7 @@ void fixture::testConfigDialog()
       titles[style - wxExConfigDialog::CONFIG_AUINOTEBOOK],
       0,
       1,
-      wxOK | wxCANCEL,
+      wxOK | wxCANCEL | wxAPPLY,
       wxID_ANY,
       style,
       il);
@@ -68,6 +68,9 @@ void fixture::testConfigDialog()
     dlg->ForceCheckBoxChecked();
     dlg->Show();
     dlg->Reload();
+    
+    wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxID_APPLY));
+    wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));
   }
   
   // Test config dialog without pages.

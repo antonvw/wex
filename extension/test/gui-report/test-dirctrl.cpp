@@ -20,7 +20,6 @@ void fixture::testDirCtrl()
     ID_TREE_COPY, ID_EDIT_OPEN, ID_TREE_RUN_MAKE,
     ID_TOOL_REPORT_FIND})
   {
-    wxCommandEvent event(id);  
-    wxPostEvent(ctrl, event);
+    wxPostEvent(ctrl, wxCommandEvent(wxEVT_MENU, id));
   }
 }

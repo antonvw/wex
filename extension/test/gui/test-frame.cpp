@@ -59,14 +59,11 @@ void fixture::testFrame()
   CPPUNIT_ASSERT( m_Frame->UpdateStatusBar(stc, "PaneLexer"));
   CPPUNIT_ASSERT( m_Frame->UpdateStatusBar(stc, "PaneFileType"));
   
-  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED);
-  
   for (auto id : std::vector<int> {
     wxID_FIND, wxID_REPLACE, 
-    wxID_OPEN,
+    // wxID_OPEN,shows dialog..
     ID_VIEW_MENUBAR, ID_VIEW_STATUSBAR, ID_VIEW_TITLEBAR}) 
   {
-    event.SetInt(id);
-    wxPostEvent(m_Frame, event);
+    wxPostEvent(m_Frame, wxCommandEvent(wxEVT_MENU, id));
   }
 }
