@@ -166,6 +166,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
 wxExSTC::wxExSTC(const wxExSTC& stc)
   : wxStyledTextCtrl(stc.GetParent(), 
       wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, stc.GetName())
+  // use default constructor for m_Lexer      
   , m_Flags(stc.m_Flags)
   , m_Goto(stc.m_Goto)
   , m_MenuFlags(stc.m_MenuFlags)
@@ -173,7 +174,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_MarginFoldingNumber(stc.m_MarginFoldingNumber)
   , m_MarginLineNumber(stc.m_MarginLineNumber)
   , m_MarkerChange(stc.m_MarkerChange)
-  , m_Lexer(stc.m_Lexer)
   , m_Link(wxExLink(this))
   , m_File(this, stc.GetFileName().GetFullPath())
   , m_vi(wxExVi(this)) // do not use stc.m_vi, crash

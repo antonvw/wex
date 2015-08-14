@@ -56,7 +56,7 @@ wxExToolBar::wxExToolBar(wxExManagedFrame* frame,
   const wxSize& size,
   long style)
   : wxAuiToolBar(frame, id, pos, size, 
-    style | wxAUI_TB_HORZ_TEXT)
+    style | wxAUI_TB_HORZ_TEXT | wxAUI_TB_PLAIN_BACKGROUND)
   , m_Frame(frame)
 {
 }

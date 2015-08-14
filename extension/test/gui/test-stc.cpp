@@ -25,6 +25,8 @@ void fixture::testSTC()
   wxExSTC::ConfigDialog(m_Frame, "test stc", wxExSTC::STC_CONFIG_MODELESS);
   
   wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
+  wxExSTC* stccopy = new wxExSTC(*stc);
+  
   m_Frame->GetManager().AddPane(stc, 
     wxAuiPaneInfo().Bottom().Caption("STC"));
   m_Frame->GetManager().Update();
@@ -50,6 +52,7 @@ void fixture::testSTC()
   CPPUNIT_ASSERT( stc->GetText() != "hello stc");
   
   CPPUNIT_ASSERT( stc->CanCut());
+  stc->Copy();
   CPPUNIT_ASSERT( stc->CanPaste());
   
   stc->DocumentStart();
@@ -185,15 +188,10 @@ void fixture::testSTC()
   stc2.PropertiesMessage();
   
   // Test events.
-  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED);
-  
   for (auto id : std::vector<int> {
     ID_EDIT_HEX_DEC_CALLTIP, ID_EDIT_MARKER_NEXT, ID_EDIT_MARKER_PREVIOUS,
     ID_EDIT_OPEN_LINK + 1, ID_EDIT_SHOW_PROPERTIES, ID_EDIT_ZOOM_IN, ID_EDIT_ZOOM_OUT}) 
   {
-    event.SetInt(id);
-    wxPostEvent(stc, event);
+    wxPostEvent(stc, wxCommandEvent(wxEVT_MENU, id));
   }
-  
-  wxYield();
 }

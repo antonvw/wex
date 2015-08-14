@@ -31,7 +31,11 @@ function(pack)
     install(FILES C:/Windows/syswow64/msvcp120.dll C:/Windows/syswow64/msvcr120.dll DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
-  install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR})
+  install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} USE_SOURCE_PERMISSIONS)
+  
+  if (NOT WIN32)
+    install(CODE "EXECUTE_PROCESS(COMMAND chown -R $ENV{USERNAME} ${CONFIG_INSTALL_DIR})")
+  endif()
 
   include(CPack)
 endfunction()  

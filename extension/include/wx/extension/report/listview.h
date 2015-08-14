@@ -41,11 +41,13 @@ public:
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);    
     
+  /// Destroys the window safely.
+  virtual bool Destroy() override;
+
   /// Returns list type from tool id.
   static wxExListType GetTypeTool(const wxExTool& tool);
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu) override;
-  virtual bool Destroy() override;
   wxExFrameWithHistory* GetFrame() {return m_Frame;};
 private:
   const long m_MenuFlags;
