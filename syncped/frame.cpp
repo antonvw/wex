@@ -1418,7 +1418,7 @@ void Frame::PrintEx(wxExEx* ex, const wxString& text)
 
   if (page == NULL)
   {
-    m_Editors->AddPage(new wxExSTC(m_Editors, text, 0, wxString("Print")), "Print", "Print", true);
+    m_Editors->AddPage(new wxExSTC(m_Editors, text, (long)wxExSTC::STC_WIN_DEFAULT, "Print"), "Print", "Print", true);
   }
   else
   {
