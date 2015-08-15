@@ -16,10 +16,15 @@ void fixture::testDirCtrl()
   ctrl->ExpandAndSelectPath("./");
   
   for (auto id : std::vector<int> {
-    ID_EDIT_VCS_LOWEST + 1, ID_TOOL_LOWEST + 1, 
-    ID_TREE_COPY, ID_EDIT_OPEN, ID_TREE_RUN_MAKE,
-    ID_TOOL_REPORT_FIND})
+    ID_EDIT_VCS_LOWEST + 1, 
+    ID_TREE_COPY, 
+    ID_EDIT_OPEN, 
+    ID_TREE_RUN_MAKE,
+    ID_TOOL_REPORT_FIND, 
+  })
   {
     wxPostEvent(ctrl, wxCommandEvent(wxEVT_MENU, id));
   }
+  
+  ctrl->Destroy();
 }

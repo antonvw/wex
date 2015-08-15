@@ -69,7 +69,7 @@ void fixture::testConfigDialog()
     dlg->Show();
     dlg->Reload();
     
-    wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxID_APPLY));
+    wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
     wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));
   }
   

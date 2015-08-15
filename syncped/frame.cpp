@@ -1422,7 +1422,9 @@ void Frame::PrintEx(wxExEx* ex, const wxString& text)
   }
   else
   {
-    page->AddText(text);
+    page->AppendText(text);
+    page->DocumentEnd();
+    page->SetSavePoint();
   }
 }
   
