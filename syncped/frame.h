@@ -57,6 +57,7 @@ private:
     const wxString& filename,
     const wxString& text,
     long flags = 0) override;
+  virtual void PrintEx(wxExEx* ex, const wxString& text) override;
   virtual void StatusBarClicked(const wxString& pane) override;
   virtual void StatusBarClickedRight(const wxString& pane) override;
   virtual void SyncAll() override;

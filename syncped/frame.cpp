@@ -1272,23 +1272,11 @@ bool Frame::OpenFile(
   const wxString& text,
   long flags)
 {
-  const wxString key = filename;
-
-  wxExSTC* page = (wxExSTC*)m_Editors->SetSelection(key);
+  wxExSTC* page = (wxExSTC*)m_Editors->SetSelection(filename);
 
   if (page == NULL)
   {
-    wxExSTC* editor = new wxExSTC(
-      m_Editors, 
-      text,
-      flags,
-      filename);
-
-    m_Editors->AddPage(
-      editor,
-      key,
-      filename,
-      true);
+    m_Editors->AddPage(new wxExSTC(m_Editors, text, flags, filename), filename, filename, true);
   }
   else
   {
@@ -1424,6 +1412,20 @@ bool Frame::OpenFile(
   return true;
 }
 
+void Frame::PrintEx(wxExEx* ex, const wxString& text)
+{
+  wxExSTC* page = (wxExSTC*)m_Editors->SetSelection("Print");
+
+  if (page == NULL)
+  {
+    m_Editors->AddPage(new wxExSTC(m_Editors, text, 0, wxString("Print")), "Print", "Print", true);
+  }
+  else
+  {
+    page->AddText(text);
+  }
+}
+  
 void Frame::StatusBarClicked(const wxString& pane)
 {
   if (pane == "PaneTheme")
