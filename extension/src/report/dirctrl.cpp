@@ -49,8 +49,8 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
       wxExVCSExecute(frame, 
         event.GetId() - ID_EDIT_VCS_LOWEST - 1, wxExToVectorString(*this).Get());},
-    ID_EDIT_VCS_LOWEST, 
-    ID_EDIT_VCS_HIGHEST);
+    ID_EDIT_VCS_LOWEST + 1, 
+    ID_EDIT_VCS_HIGHEST - 1);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxBusyCursor wait;
@@ -72,7 +72,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     frame->FindInFiles(wxExToVectorString(*this).Get(), event.GetId());}, 
-    ID_TOOL_LOWEST, ID_TOOL_HIGHEST);
+    ID_TOOL_REPORT_FIND, ID_TOOL_REPORT_REPLACE);
     
   Bind(wxEVT_TREE_ITEM_ACTIVATED, [=](wxTreeEvent& event) {
     GET_VECTOR_FILES
