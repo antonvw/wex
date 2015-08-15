@@ -635,7 +635,7 @@ bool wxExAddressRange::Print(const wxString& flags) const
       m_STC->GetLine(i);
   }
     
-  m_Ex->Print(text);
+  m_Ex->GetFrame()->PrintEx(m_Ex, text);
   
   return true;
 }

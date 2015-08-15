@@ -312,6 +312,11 @@ void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
   SetFindFocus(page);
 }
 
+void wxExManagedFrame::PrintEx(wxExEx* ex, const wxString& text)
+{
+  ex->Print(text);
+}
+
 void wxExManagedFrame::ShowExMessage(const wxString& text)
 {
   if (GetStatusBar() != NULL && GetStatusBar()->IsShown())

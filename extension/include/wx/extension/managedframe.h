@@ -79,6 +79,13 @@ public:
   /// Default sets the focus to page.
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
+  /// Prints text in ex dialog.
+  virtual void PrintEx(
+    /// the ex for the dialog
+    wxExEx* ex,
+    /// the text to be printed
+    const wxString& text);
+  
   /// Shows text in ex bar.
   void ShowExMessage(const wxString& text);
   
