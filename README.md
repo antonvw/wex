@@ -29,7 +29,7 @@ one of these applications, being a full featured source code text editor.
 ## Building wxWidgets
 
 - under windows:   
-    using Microsoft Visual Studio 2013 nmake in build/msw:    
+    using Microsoft Visual Studio 2015 nmake in build/msw:    
     `nmake -f makefile.vc` or   
     `nmake -f makefile.vc BUILD=release`   
     using cygwin 1.7.9:   
@@ -58,7 +58,7 @@ one of these applications, being a full featured source code text editor.
 
 ## Building wxExtension        
 
-- under windows (Visual Studio 2013 Update 4 is required):   
+- under windows:   
     `mkdir build`   
     `cd build`   
     `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
