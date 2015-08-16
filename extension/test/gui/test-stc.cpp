@@ -190,7 +190,7 @@ void fixture::testSTC()
   // Test events.
   for (auto id : std::vector<int> {
     ID_EDIT_HEX_DEC_CALLTIP, ID_EDIT_MARKER_NEXT, ID_EDIT_MARKER_PREVIOUS,
-    ID_EDIT_OPEN_LINK + 1, ID_EDIT_SHOW_PROPERTIES, ID_EDIT_ZOOM_IN, ID_EDIT_ZOOM_OUT}) 
+    ID_EDIT_OPEN_LINK, ID_EDIT_SHOW_PROPERTIES, ID_EDIT_ZOOM_IN, ID_EDIT_ZOOM_OUT}) 
   {
     wxPostEvent(stc, wxCommandEvent(wxEVT_MENU, id));
   }
