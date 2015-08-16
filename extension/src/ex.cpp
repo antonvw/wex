@@ -162,10 +162,7 @@ bool wxExEx::Command(const std::string& command)
     
     if (stc != NULL)
     {
-      if (m_Macros.IsPlayback())
-      {
-        m_STC = stc;
-      }
+      m_STC = stc;
     }
     else
     {
@@ -182,10 +179,7 @@ bool wxExEx::Command(const std::string& command)
     
     if (stc != NULL)
     {
-      if (m_Macros.IsPlayback())
-      {
-        m_STC = stc;
-      }
+      m_STC = stc;
     }
     else
     {
