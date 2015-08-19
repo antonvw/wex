@@ -2824,7 +2824,30 @@ Copyright: (c) 2015, Anton van Wezenbeek
   <lexer name="TACL" macro="cpp"/>
   <lexer name="tads3"/>
   <lexer name="TAL" macro="cpp"/>
-  <lexer name="tcl" extensions="*.tcl"/>
+  <lexer name="tcl" extensions="*.tcl">
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+    <keywords set ="csh">
+      after append array auto_execok
+      auto_import auto_load auto_load_index auto_qualify
+      beep bgerror binary break case catch cd clock
+      close concat continue dde default echo else elseif
+      encoding eof error eval exec exit expr fblocked
+      fconfigure fcopy file fileevent flush for foreach format
+      gets glob global history http if incr info
+      interp join lappend lindex linsert list llength load
+      loadTk lrange lreplace lsearch lset lsort memory msgcat
+      namespace open package pid pkg pkg_mkIndex Platform-specific proc
+      puts pwd re_syntax read regexp registry regsub rename
+      resource return scan seek set socket source split
+      string subst switch tclLog tclMacPkgSearch tclPkgSetup tclPkgUnknown tell
+      time trace unknown unset update uplevel upvar variable
+      vwait while
+    </keywords>
+  </lexer>
   <lexer name="tcmd"/>
   <lexer display="tcsh" name="bash" extensions="*.tcsh"> 
     <keywords set ="csh">    
