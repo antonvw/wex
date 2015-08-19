@@ -1224,6 +1224,7 @@ void wxExSTC::Initialize(bool file_exists)
   SetMarginMask(m_MarginFoldingNumber, wxSTC_MASK_FOLDERS);
   SetMarginSensitive(m_MarginFoldingNumber, true);
   SetMultiPaste(wxSTC_MULTIPASTE_EACH);
+  SetMultipleSelection(true);
   
   if (m_Zoom == -1)
   {
