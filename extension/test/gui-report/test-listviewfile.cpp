@@ -37,4 +37,10 @@ void fixture::testListViewFile()
     false); // join the thread
   
   CPPUNIT_ASSERT(remove("test-rep.prj.bck") == 0);
+  
+  for (auto id : std::vector<int> {
+    wxID_ADD, wxID_EDIT, wxID_REPLACE_ALL}) 
+  {
+    wxPostEvent(listView, wxCommandEvent(wxEVT_MENU, id));
+  }
 }

@@ -31,7 +31,7 @@ void fixture::testListViewWithFrame()
   
   for (auto id : std::vector<int> {
     ID_EDIT_OPEN, ID_LIST_COMPARE, ID_LIST_RUN_MAKE,
-    ID_EDIT_VCS_LOWEST + 1, ID_TOOL_REPORT_FIND}) 
+    ID_EDIT_VCS_LOWEST, ID_TOOL_REPORT_FIND}) 
   {
     wxPostEvent(listView, wxCommandEvent(wxEVT_MENU, id));
   }
