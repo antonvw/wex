@@ -28,7 +28,10 @@ function(pack)
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
   
   if (WIN32)
-    install(FILES C:/Windows/syswow64/msvcp140.dll DESTINATION ${CONFIG_INSTALL_DIR})
+    install(FILES 
+      "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/redist/x86/Microsoft.VC140.CRT/msvcp140.dll"
+      "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/redist/x86/Microsoft.VC140.CRT/vcruntime140.dll"
+      DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
   install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} USE_SOURCE_PERMISSIONS)
