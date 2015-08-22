@@ -24,4 +24,9 @@ add_subdirectory(locale)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 
+if (NOT WIN32)
+  install(FILES syncped.desktop DESTINATION /usr/share/applications)
+  install(FILES syncped.png DESTINATION /usr/share/icons/hicolor/32x32/)
+endif()
+
 pack()

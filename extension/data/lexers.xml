@@ -2715,7 +2715,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
     </properties>
   </lexer>
   <lexer name="progress"/>
-  <lexer name="props" extensions="*.ini;*.conf">
+  <lexer name="props" extensions="*.ini;*.conf;*.desktop">
     <styles>
     <style no="section"> fore:blue </style>
     <style no="assignment"> fore:brown </style>
