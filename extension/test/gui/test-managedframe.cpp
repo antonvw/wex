@@ -50,4 +50,11 @@ void fixture::testManagedFrame()
   
   CPPUNIT_ASSERT(!m_Frame->TogglePane("XXXXBAR"));
   CPPUNIT_ASSERT(!m_Frame->GetManager().GetPane("XXXXBAR").IsOk());
+  
+  for (auto id : std::vector<int> {
+    wxID_PREFERENCES, ID_FIND_FIRST, 
+    ID_VIEW_FINDBAR, ID_VIEW_OPTIONSBAR, ID_VIEW_TOOLBAR}) 
+  {
+    wxPostEvent(m_Frame, wxCommandEvent(wxEVT_MENU, id));
+  }
 }
