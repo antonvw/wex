@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wxExApp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -81,12 +81,7 @@ bool wxExApp::OnInit()
 
     for (const auto& it : files)
     {
-      const wxFileName fn(it);
-
-      if (!m_Locale.AddCatalog(fn.GetName()))
-      {
-        wxLogError("Catalog could not be added: " + fn.GetName());
-      }
+      m_Locale.AddCatalog(wxFileName(it).GetName());
     }
   }
 
