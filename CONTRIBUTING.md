@@ -32,7 +32,7 @@
 
   - The place where to put your po files can be found by adding -l command line switch.
     You can also test other languages using the special LANG config item,
-    e.g. setting it to 80 allows you to test french translation
+    e.g. setting it to 79 allows you to test french translation
     (see wxWidgets/misc/languages/langtabl.txt).
     Normally you check the current locale by running locale on the
     command line. Running locale -a shows all your available locales, if your
