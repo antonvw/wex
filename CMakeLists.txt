@@ -28,10 +28,18 @@ function(pack)
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
   
   if (WIN32)
-    install(FILES 
-      "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/redist/x86/Microsoft.VC140.CRT/msvcp140.dll"
-      "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/redist/x86/Microsoft.VC140.CRT/vcruntime140.dll"
-      DESTINATION ${CONFIG_INSTALL_DIR})
+    if (MSVC14)
+      set(msvc "14")
+    elseif (MSVC12)
+      set(msvc "12")
+    elseif (MSVC11)
+      set(msvc "11")
+    elseif (MSVC10)
+      set(msvc "10")
+    endif()
+  
+    file(GLOB dlls "C:/Program Files (x86)/Microsoft Visual Studio ${msvc}.0/VC/redist/x86/Microsoft.VC${msvc}0.CRT/*.dll")
+    install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
   install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} USE_SOURCE_PERMISSIONS)
