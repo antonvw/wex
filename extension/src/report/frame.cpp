@@ -527,23 +527,24 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
       switch (dialogid)
       {
         case wxID_ADD:
+          if (GetProject() != NULL)
           {
-          int flags = 0;
-        
-          if (wxConfigBase::Get()->ReadBool(GetProject()->GetTextAddFiles(), true)) 
-          {
-            flags |= wxDIR_FILES;
-          }
-        
-          if (wxConfigBase::Get()->ReadBool(GetProject()->GetTextAddRecursive(), true)) 
-          {
-            flags |= wxDIR_DIRS;
-          }
+            int flags = 0;
+          
+            if (wxConfigBase::Get()->ReadBool(GetProject()->GetTextAddFiles(), true)) 
+            {
+              flags |= wxDIR_FILES;
+            }
+          
+            if (wxConfigBase::Get()->ReadBool(GetProject()->GetTextAddRecursive(), true)) 
+            {
+              flags |= wxDIR_DIRS;
+            }
 
-          GetProject()->AddItems(
-            wxExConfigFirstOf(GetProject()->GetTextInFolder()),
-            wxExConfigFirstOf(GetProject()->GetTextAddWhat()),
-            flags);
+            GetProject()->AddItems(
+              wxExConfigFirstOf(GetProject()->GetTextInFolder()),
+              wxExConfigFirstOf(GetProject()->GetTextAddWhat()),
+              flags);
           }
           break;
 

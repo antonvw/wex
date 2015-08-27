@@ -41,8 +41,14 @@ bool App::OnCmdLineParsed(wxCmdLineParser& parser)
   
   if (parser.Found("l"))
   {
-    wxLogMessage(
-      "Locale: " + GetLocale().GetLocale() + " dir: " + GetCatalogDir());
+    wxLogMessage("Catalog dir: %s\nName: %s\nCanonical name: %s\nLanguage: %d\nLocale: %s\nIs ok: %d\nIs available: %d",
+      GetCatalogDir().c_str(),
+      GetLocale().GetName().c_str(),
+      GetLocale().GetCanonicalName().c_str(),
+      GetLocale().GetLanguage(), 
+      GetLocale().GetLocale().c_str(),
+      GetLocale().IsOk(),
+      GetLocale().IsAvailable(GetLocale().GetLanguage())); 
   }
   
   if (parser.Found("o"))

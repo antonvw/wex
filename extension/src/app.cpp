@@ -57,14 +57,19 @@ bool wxExApp::OnInit()
 #endif
   wxConfigBase::Set(config);
   
-  const int lang = (wxConfigBase::Get()->Exists("LANG") ?
-    wxConfigBase::Get()->ReadLong("LANG", wxLANGUAGE_DEFAULT):
-    wxLANGUAGE_DEFAULT);
+  const wxLanguageInfo* info = (wxConfigBase::Get()->Exists("LANG") ?
+    wxLocale::FindLanguageInfo(wxConfigBase::Get()->Read("LANG")):
+    NULL);
+  
+  const int lang = (info != NULL ? info->Language: wxLANGUAGE_DEFAULT); 
     
   // Init the localization, from now on things will be translated.
   // Do not load wxstd, we load all files ourselved,
   // and do not want messages about loading non existing wxstd files.
-  m_Locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT);
+  if (!m_Locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT))
+  {
+    wxLogMessage("Could not init locale for: " + GetLocale().GetName());
+  }
   
   // If there are catalogs in the catalog_dir, then add them to the m_Locale.
   // README: We use the canonical name, also for windows, not sure whether that is
@@ -83,6 +88,10 @@ bool wxExApp::OnInit()
     {
       m_Locale.AddCatalog(wxFileName(it).GetName());
     }
+  }
+  else if (info != NULL)
+  {
+    wxLogMessage("Missing locale files for: " + GetLocale().GetName());
   }
 
   wxExVCS::LoadDocument();
