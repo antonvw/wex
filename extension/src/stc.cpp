@@ -2257,4 +2257,24 @@ void wxExSTC::UseModificationMarkers(bool use)
   else
     Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this);
 }
+
+void wxExSTC::WordLeftRectExtend() 
+{
+  const int repeat = GetCurrentPos() - WordStartPosition(GetCurrentPos(), false);
+  
+  for (int i = 0; i < repeat ; i++)
+  {
+    CharLeftRectExtend();
+  }
+}
+
+void wxExSTC::WordRightRectExtend() 
+{
+  const int repeat = WordEndPosition(GetCurrentPos(), false) - GetCurrentPos();
+  
+  for (int i = 0; i < repeat; i++)
+  {
+    CharRightRectExtend();
+  }
+}
 #endif // wxUSE_GUI

@@ -357,8 +357,8 @@ public:
   void LineHomeRectExtend() {HomeRectExtend();};
   void ParaUpRectExtend() {;};
   void ParaDownRectExtend() {;};
-  void WordLeftRectExtend() {;};
-  void WordRightRectExtend() {;};
+  void WordLeftRectExtend();
+  void WordRightRectExtend();
   void WordRightEndRectExtend() {;};
 protected:
   void OnChar(wxKeyEvent& event);

@@ -161,6 +161,13 @@ function(process_po_files)
         if (${locale} MATCHES "fr")
           set(locale "fr_FR")
         endif ()
+          
+        if (NOT WIN32)
+          # TODO: this should be part of cmake,
+          # however wxWidgets_ROOT_DIR is empty for linux, so set it here,
+          # search at several places...
+          set(wxWidgets_ROOT_DIR ~/wxWidgets)
+        endif()
         
         gettext_process_po_files(${locale} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
           PO_FILES ${filename})
