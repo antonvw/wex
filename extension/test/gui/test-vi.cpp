@@ -434,6 +434,17 @@ void fixture::testVi()
   stc->SetText("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
   CPPUNIT_ASSERT( stc->GetLineCount() == 12);
   stc->GotoLine(2);
+
+  // Test navigate while in rect mode.
+  ChangeMode( vi, "F", wxExVi::MODE_VISUAL_RECT);
+  
+  for (const auto& rect : std::vector<std::string> {
+    "w", "b", "h", "j", "k", "l"})
+  {
+    CPPUNIT_ASSERT( vi->Command(rect) );
+  }
+  
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   
   for (const auto& go : std::vector<std::pair<std::string, int>> {
     {"gg",0},

@@ -86,7 +86,10 @@ bool wxExApp::OnInit()
 
     for (const auto& it : files)
     {
-      m_Locale.AddCatalog(wxFileName(it).GetName());
+      if (!m_Locale.AddCatalog(wxFileName(it).GetName()))
+      {
+        wxLogMessage("Could not add catalog: " + wxFileName(it).GetName());
+      }
     }
   }
   else if (info != NULL)
