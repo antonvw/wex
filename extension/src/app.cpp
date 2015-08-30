@@ -57,9 +57,17 @@ bool wxExApp::OnInit()
 #endif
   wxConfigBase::Set(config);
   
-  const wxLanguageInfo* info = (wxConfigBase::Get()->Exists("LANG") ?
-    wxLocale::FindLanguageInfo(wxConfigBase::Get()->Read("LANG")):
-    NULL);
+  const wxLanguageInfo* info = NULL;
+  
+  if (wxConfigBase::Get()->Exists("LANG"))
+  {
+    info = wxLocale::FindLanguageInfo(wxConfigBase::Get()->Read("LANG"));
+    
+    if (info == NULL)
+    {
+      wxLogMessage("Unknown language: " + wxConfigBase::Get()->Read("LANG"));
+    }
+  }
   
   const int lang = (info != NULL ? info->Language: wxLANGUAGE_DEFAULT); 
     
