@@ -1,0 +1,305 @@
+# syncped localization file syncped.pot
+# Copyright (C) 2015 A.M. van Wezenbeek
+# This file is distributed under the same license as the syncped package.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: syncped 3.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-09-02 19:19+0200\n"
+"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../app.cpp:95
+msgid "input file:line number:column number"
+msgstr ""
+
+#: ../app.cpp:99
+msgid "command"
+msgstr ""
+
+#: ../app.cpp:100
+msgid "show locale"
+msgstr ""
+
+#: ../app.cpp:101
+msgid "split tabs horizontally"
+msgstr ""
+
+#: ../app.cpp:102
+msgid "split tabs vertically"
+msgstr ""
+
+#: ../app.cpp:103
+msgid "show version"
+msgstr ""
+
+#: ../frame.cpp:40
+msgid ""
+"This program offers a portable text or binary editor\n"
+"with automatic syncing."
+msgstr ""
+
+#: ../frame.cpp:45
+msgid ""
+" All its config files are read\n"
+"and saved in the same directory as where the executable is."
+msgstr ""
+
+#: ../frame.cpp:117
+msgid "Project Files"
+msgstr ""
+
+#: ../frame.cpp:136 ../frame.cpp:162 ../frame.cpp:245
+msgid "Explorer"
+msgstr ""
+
+#: ../frame.cpp:140 ../frame.cpp:247 ../frame.cpp:415
+msgid "History"
+msgstr ""
+
+#: ../frame.cpp:149
+msgid "Files"
+msgstr ""
+
+#: ../frame.cpp:170
+msgid "Output"
+msgstr ""
+
+#: ../frame.cpp:276
+msgid "Process is running"
+msgstr ""
+
+#: ../frame.cpp:344
+msgid "Ascii Table"
+msgstr ""
+
+#: ../frame.cpp:435
+msgid "Projects"
+msgstr ""
+
+#: ../frame.cpp:442
+msgid "Select Projects"
+msgstr ""
+
+#: ../frame.cpp:552
+msgid "project"
+msgstr ""
+
+#: ../frame.cpp:643
+msgid "File Name"
+msgstr ""
+
+#: ../frame.cpp:643
+msgid "Input"
+msgstr ""
+
+#: ../frame.cpp:778
+msgid "Comparator"
+msgstr ""
+
+#: ../frame.cpp:779
+msgid "Set Comparator"
+msgstr ""
+
+#: ../frame.cpp:786 ../frame.cpp:790
+msgid "List Font"
+msgstr ""
+
+#: ../frame.cpp:787
+msgid "Set List Font"
+msgstr ""
+
+#: ../frame.cpp:809 ../frame.cpp:811 ../frame.cpp:818
+msgid "List Colour"
+msgstr ""
+
+#: ../frame.cpp:819
+msgid "Set List Read Only Colour"
+msgstr ""
+
+#: ../frame.cpp:875
+msgid "Project Save As"
+msgstr ""
+
+#: ../frame.cpp:1054 ../support.cpp:83
+msgid "vi mode"
+msgstr ""
+
+#: ../frame.cpp:1605
+msgid "Split Vertically"
+msgstr ""
+
+#: ../frame.cpp:1606
+msgid "Split Horizontally"
+msgstr ""
+
+#: ../frame.cpp:1608 ../frame.cpp:1617
+msgid "Split"
+msgstr ""
+
+#: ../frame.cpp:1613
+msgid "Rearrange Vertically"
+msgstr ""
+
+#: ../frame.cpp:1614
+msgid "Rearrange Horizontally"
+msgstr ""
+
+#: ../frame.cpp:1620
+msgid "Close A&ll"
+msgstr ""
+
+#: ../frame.cpp:1624
+msgid "Close Others"
+msgstr ""
+
+#: ../support.cpp:41
+msgid "File type"
+msgstr ""
+
+#: ../support.cpp:42
+msgid "Lines or items"
+msgstr ""
+
+#: ../support.cpp:54
+msgid "Lexer"
+msgstr ""
+
+#: ../support.cpp:55
+msgid "Theme"
+msgstr ""
+
+#: ../support.cpp:61
+msgid "VCS"
+msgstr ""
+
+#: ../support.cpp:100
+msgid "Save A&ll"
+msgstr ""
+
+#: ../support.cpp:130
+msgid "Find &in Files"
+msgstr ""
+
+#: ../support.cpp:131
+msgid "Replace in File&s"
+msgstr ""
+
+#: ../support.cpp:132
+msgid "&Find and Replace"
+msgstr ""
+
+#: ../support.cpp:135
+msgid "&Control Char"
+msgstr ""
+
+#: ../support.cpp:139
+msgid "Start Record"
+msgstr ""
+
+#: ../support.cpp:140
+msgid "Stop Record"
+msgstr ""
+
+#: ../support.cpp:142
+msgid "Playback"
+msgstr ""
+
+#: ../support.cpp:150
+msgid "&Macro"
+msgstr ""
+
+#: ../support.cpp:155
+msgid "&Files"
+msgstr ""
+
+#: ../support.cpp:156
+msgid "&Projects"
+msgstr ""
+
+#: ../support.cpp:157
+msgid "&Explorer"
+msgstr ""
+
+#: ../support.cpp:158
+msgid "&History"
+msgstr ""
+
+#: ../support.cpp:159
+msgid "&Output"
+msgstr ""
+
+#: ../support.cpp:161
+msgid "&Ascii Table"
+msgstr ""
+
+#: ../support.cpp:164
+msgid "&Select"
+msgstr ""
+
+#: ../support.cpp:175
+msgid "&Open as Text"
+msgstr ""
+
+#: ../support.cpp:186
+msgid "&Auto Sort"
+msgstr ""
+
+#: ../support.cpp:192
+msgid "Set &VCS"
+msgstr ""
+
+#: ../support.cpp:197
+msgid "Set &Comparator"
+msgstr ""
+
+#: ../support.cpp:200
+msgid "Set &List Font"
+msgstr ""
+
+#: ../support.cpp:203
+msgid "Set List &Read Only Colour"
+msgstr ""
+
+#: ../support.cpp:205
+msgid "&Ascending"
+msgstr ""
+
+#: ../support.cpp:206
+msgid "&Descending"
+msgstr ""
+
+#: ../support.cpp:207
+msgid "&Toggle"
+msgstr ""
+
+#: ../support.cpp:208
+msgid "Set &List Sort Method"
+msgstr ""
+
+#: ../support.cpp:210
+msgid "Set &Editor Options"
+msgstr ""
+
+#: ../support.cpp:219
+msgid "&View"
+msgstr ""
+
+#: ../support.cpp:220
+msgid "&Process"
+msgstr ""
+
+#: ../support.cpp:221
+msgid "&Project"
+msgstr ""
+
+#: ../support.cpp:222
+msgid "&Options"
+msgstr ""

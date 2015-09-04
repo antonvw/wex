@@ -24,11 +24,9 @@
   
 - add a test and update sample
  
-- translation is done using [poedit](http://www.poedit.net/)    
-  - wxExtension has it's own localization file, your application should
-    also add it's own one (add '_()' around text strings), 
-    and also put the standard wxWidgets localization file
-    in the localization dir.  
+- translation is done using xgettext by invoking po-sync.sh   
+  - to translate wxExtension copy the wxex.pot file to the correct language po 
+    file, and fill in the translation (e.g. using [poedit](http://www.poedit.net/).    
 
   - The place where to put your po files can be found by adding -l command line switch.
     You can also test other languages using the special LANG config item,

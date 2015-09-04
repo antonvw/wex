@@ -1,93 +1,46 @@
-# File:    syncped-nl.po
-# Purpose: Translation for syncped to dutch.
-# Copyright (c) 2014 Anton van Wezenbeek
+# syncped localization file syncped-nl.po
+# Copyright (C) 2015 A.M. van Wezenbeek
+# This file is distributed under the same license as the syncped package.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: syncped v3.0.1\n"
+"Project-Id-Version: syncped 3.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-07 21:15+0100\n"
-"PO-Revision-Date: 2014-11-07 21:19+0100\n"
-"Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
-"Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
+"POT-Creation-Date: 2015-09-02 19:19+0200\n"
+"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: Dutch\n"
-"X-Poedit-Basepath: ./\n"
-"X-Generator: Poedit 1.5.4\n"
-"X-Poedit-SearchPath-0: ../\n"
 
-#: ../syncped/app.cpp:81
+#: ../app.cpp:95 ../syncped/app.cpp:81
 msgid "input file:line number:column number"
 msgstr "bestand:regel nummer:kolom nummer"
 
-#: ../syncped/app.cpp:85
+#: ../app.cpp:99
+msgid "command"
+msgstr ""
+
+#: ../app.cpp:100 ../syncped/app.cpp:85
 msgid "show locale"
 msgstr "Geef locale"
 
-#: ../syncped/app.cpp:86
-msgid "split tabs vertically"
-msgstr "tabs verticaal splitsen"
-
-#: ../syncped/app.cpp:87
+#: ../app.cpp:101 ../syncped/app.cpp:87
 msgid "split tabs horizontally"
 msgstr "tabs horizontaal splitsen"
 
-#: ../syncped/app.cpp:88
+#: ../app.cpp:102 ../syncped/app.cpp:86
+msgid "split tabs vertically"
+msgstr "tabs verticaal splitsen"
+
+#: ../app.cpp:103 ../syncped/app.cpp:88
 msgid "show version"
 msgstr "Geef versie"
 
-#: ../syncped/frame.cpp:97
-msgid "Project Files"
-msgstr "Project bestanden"
-
-#: ../syncped/frame.cpp:116
-#: ../syncped/frame.cpp:142
-msgid "Explorer"
-msgstr "Verkenner"
-
-#: ../syncped/frame.cpp:120
-#: ../syncped/frame.cpp:328
-msgid "History"
-msgstr "Geschiedenis"
-
-#: ../syncped/frame.cpp:129
-msgid "Files"
-msgstr "Bestanden"
-
-#: ../syncped/frame.cpp:150
-msgid "Output"
-msgstr "Resultaten"
-
-#: ../syncped/frame.cpp:257
-msgid "Ascii Table"
-msgstr "Ascii tabel"
-
-#: ../syncped/frame.cpp:348
-msgid "Projects"
-msgstr "Projecten"
-
-#: ../syncped/frame.cpp:369
-msgid "Select Projects"
-msgstr "Projecten selecteren"
-
-#: ../syncped/frame.cpp:454
-msgid "Input"
-msgstr "Invoer"
-
-#: ../syncped/frame.cpp:454
-msgid "File Name"
-msgstr "Bestands naam"
-
-#: ../syncped/frame.cpp:491
-msgid "project"
-msgstr "project"
-
-#: ../syncped/frame.cpp:546
-msgid "Process is running"
-msgstr "Process is bezig"
-
-#: ../syncped/frame.cpp:608
+#: ../frame.cpp:40 ../syncped/frame.cpp:608
 msgid ""
 "This program offers a portable text or binary editor\n"
 "with automatic syncing."
@@ -95,7 +48,7 @@ msgstr ""
 "Dit programma biedt een text of binaire editor\n"
 "met automatische synchronisatie."
 
-#: ../syncped/frame.cpp:613
+#: ../frame.cpp:45 ../syncped/frame.cpp:613
 msgid ""
 " All its config files are read\n"
 "and saved in the same directory as where the executable is."
@@ -103,408 +56,264 @@ msgstr ""
 " Alle configuratie bestanden worden\n"
 "bewaard en gelezen in dezelfde map als waar het programma zelf staat."
 
-#: ../syncped/frame.cpp:765
-msgid "Editor Options"
-msgstr "Editor opties"
+#: ../frame.cpp:117 ../syncped/frame.cpp:97
+msgid "Project Files"
+msgstr "Project bestanden"
 
-#: ../syncped/frame.cpp:774
+#: ../frame.cpp:136 ../frame.cpp:162 ../frame.cpp:245 ../syncped/frame.cpp:116
+#: ../syncped/frame.cpp:142
+msgid "Explorer"
+msgstr "Verkenner"
+
+#: ../frame.cpp:140 ../frame.cpp:247 ../frame.cpp:415 ../syncped/frame.cpp:120
+#: ../syncped/frame.cpp:328
+msgid "History"
+msgstr "Geschiedenis"
+
+#: ../frame.cpp:149 ../syncped/frame.cpp:129
+msgid "Files"
+msgstr "Bestanden"
+
+#: ../frame.cpp:170 ../syncped/frame.cpp:150
+msgid "Output"
+msgstr "Resultaten"
+
+#: ../frame.cpp:276 ../syncped/frame.cpp:546
+msgid "Process is running"
+msgstr "Process is bezig"
+
+#: ../frame.cpp:344 ../syncped/frame.cpp:257
+msgid "Ascii Table"
+msgstr "Ascii tabel"
+
+#: ../frame.cpp:435 ../syncped/frame.cpp:348
+msgid "Projects"
+msgstr "Projecten"
+
+#: ../frame.cpp:442 ../syncped/frame.cpp:369
+msgid "Select Projects"
+msgstr "Projecten selecteren"
+
+#: ../frame.cpp:552 ../syncped/frame.cpp:491
+msgid "project"
+msgstr "project"
+
+#: ../frame.cpp:643 ../syncped/frame.cpp:454
+msgid "File Name"
+msgstr "Bestands naam"
+
+#: ../frame.cpp:643 ../syncped/frame.cpp:454
+msgid "Input"
+msgstr "Invoer"
+
+#: ../frame.cpp:778 ../syncped/frame.cpp:774
 msgid "Comparator"
 msgstr "Vergelijker"
 
-#: ../syncped/frame.cpp:775
+#: ../frame.cpp:779 ../syncped/frame.cpp:775
 msgid "Set Comparator"
 msgstr "Vergelijker instellen"
 
-#: ../syncped/frame.cpp:782
+#: ../frame.cpp:786 ../frame.cpp:790 ../syncped/frame.cpp:782
 #: ../syncped/frame.cpp:786
 msgid "List Font"
 msgstr "Lijst lettertype"
 
-#: ../syncped/frame.cpp:783
+#: ../frame.cpp:787 ../syncped/frame.cpp:783
 msgid "Set List Font"
 msgstr "Lijst lettertype instellen"
 
-#: ../syncped/frame.cpp:805
-#: ../syncped/frame.cpp:807
-#: ../syncped/frame.cpp:814
+#: ../frame.cpp:809 ../frame.cpp:811 ../frame.cpp:818 ../syncped/frame.cpp:805
+#: ../syncped/frame.cpp:807 ../syncped/frame.cpp:814
 msgid "List Colour"
 msgstr "Lijst kleuren"
 
-#: ../syncped/frame.cpp:815
+#: ../frame.cpp:819 ../syncped/frame.cpp:815
 msgid "Set List Read Only Colour"
 msgstr "Lijst alleen lezen kleur instellen"
 
-#: ../syncped/frame.cpp:871
+#: ../frame.cpp:875 ../syncped/frame.cpp:871
 msgid "Project Save As"
 msgstr "Project opslaan als"
 
-#: ../syncped/frame.cpp:1035
+#: ../frame.cpp:1054 ../support.cpp:83 ../syncped/frame.cpp:1035
 #: ../syncped/support.cpp:84
 msgid "vi mode"
 msgstr "vi modus"
 
-#: ../syncped/frame.cpp:1621
+#: ../frame.cpp:1605 ../syncped/frame.cpp:1621
 msgid "Split Vertically"
 msgstr "Verticaal splitsen"
 
-#: ../syncped/frame.cpp:1622
+#: ../frame.cpp:1606 ../syncped/frame.cpp:1622
 msgid "Split Horizontally"
 msgstr "Horizontaal splitsen"
 
-#: ../syncped/frame.cpp:1624
+#: ../frame.cpp:1608 ../frame.cpp:1617 ../syncped/frame.cpp:1624
 #: ../syncped/frame.cpp:1625
 msgid "Split"
 msgstr "Splitsen"
 
-#: ../syncped/frame.cpp:1628
+#: ../frame.cpp:1613
+msgid "Rearrange Vertically"
+msgstr ""
+
+#: ../frame.cpp:1614
+msgid "Rearrange Horizontally"
+msgstr ""
+
+#: ../frame.cpp:1620 ../syncped/frame.cpp:1628
 msgid "Close A&ll"
 msgstr "A&lles sluiten"
 
-#: ../syncped/frame.cpp:1632
+#: ../frame.cpp:1624 ../syncped/frame.cpp:1632
 msgid "Close Others"
 msgstr "Sluit anderen"
 
-#: ../syncped/support.cpp:41
+#: ../support.cpp:41 ../syncped/support.cpp:41
 msgid "File type"
 msgstr "Bestands type"
 
-#: ../syncped/support.cpp:42
+#: ../support.cpp:42 ../syncped/support.cpp:42
 msgid "Lines or items"
 msgstr "Regels of items"
 
-#: ../syncped/support.cpp:52
+#: ../support.cpp:54 ../syncped/support.cpp:52
 msgid "Lexer"
 msgstr "Lexer"
 
-#: ../syncped/support.cpp:56
+#: ../support.cpp:55 ../syncped/support.cpp:56
 msgid "Theme"
 msgstr "Thema"
 
-#: ../syncped/support.cpp:62
+#: ../support.cpp:61 ../syncped/support.cpp:62
 msgid "VCS"
 msgstr "VCS"
 
-#: ../syncped/support.cpp:101
+#: ../support.cpp:100 ../syncped/support.cpp:101
 msgid "Save A&ll"
 msgstr "A&lles opslaan"
 
-#: ../syncped/support.cpp:131
+#: ../support.cpp:130 ../syncped/support.cpp:131
 msgid "Find &in Files"
 msgstr "&Zoeken in bestanden"
 
-#: ../syncped/support.cpp:132
+#: ../support.cpp:131 ../syncped/support.cpp:132
 msgid "Replace in File&s"
 msgstr "Vervangen in bestande&n"
 
-#: ../syncped/support.cpp:133
+#: ../support.cpp:132 ../syncped/support.cpp:133
 msgid "&Find and Replace"
 msgstr "Zoeken en &vervangen"
 
-#: ../syncped/support.cpp:136
+#: ../support.cpp:135 ../syncped/support.cpp:136
 msgid "&Control Char"
 msgstr "&Controle karakter"
 
-#: ../syncped/support.cpp:140
+#: ../support.cpp:139 ../syncped/support.cpp:140
 msgid "Start Record"
 msgstr "Start opname"
 
-#: ../syncped/support.cpp:141
+#: ../support.cpp:140 ../syncped/support.cpp:141
 msgid "Stop Record"
 msgstr "Stop opname"
 
-#: ../syncped/support.cpp:143
+#: ../support.cpp:142 ../syncped/support.cpp:143
 msgid "Playback"
 msgstr "Afspelen"
 
-#: ../syncped/support.cpp:151
+#: ../support.cpp:150 ../syncped/support.cpp:151
 msgid "&Macro"
 msgstr "&Macro"
 
-#: ../syncped/support.cpp:156
+#: ../support.cpp:155 ../syncped/support.cpp:156
 msgid "&Files"
 msgstr "&Bestanden"
 
-#: ../syncped/support.cpp:157
+#: ../support.cpp:156 ../syncped/support.cpp:157
 msgid "&Projects"
 msgstr "&Projecten"
 
-#: ../syncped/support.cpp:158
+#: ../support.cpp:157 ../syncped/support.cpp:158
 msgid "&Explorer"
 msgstr "&Verkenner"
 
-#: ../syncped/support.cpp:159
+#: ../support.cpp:158 ../syncped/support.cpp:159
 msgid "&History"
 msgstr "&Geschiedenis"
 
-#: ../syncped/support.cpp:160
+#: ../support.cpp:159 ../syncped/support.cpp:160
 msgid "&Output"
 msgstr "&Resultaten"
 
-#: ../syncped/support.cpp:162
+#: ../support.cpp:161 ../syncped/support.cpp:162
 msgid "&Ascii Table"
 msgstr "&Ascii tabel"
 
-#: ../syncped/support.cpp:165
+#: ../support.cpp:164 ../syncped/support.cpp:165
 msgid "&Select"
 msgstr "&Selecteren"
 
-#: ../syncped/support.cpp:176
+#: ../support.cpp:175 ../syncped/support.cpp:176
 msgid "&Open as Text"
 msgstr "&Als tekst openen"
 
-#: ../syncped/support.cpp:187
+#: ../support.cpp:186 ../syncped/support.cpp:187
 msgid "&Auto Sort"
 msgstr "&Automatisch sorteren"
 
-#: ../syncped/support.cpp:193
+#: ../support.cpp:192 ../syncped/support.cpp:193
 msgid "Set &VCS"
 msgstr "&VCS Instellen"
 
-#: ../syncped/support.cpp:198
+#: ../support.cpp:197 ../syncped/support.cpp:198
 msgid "Set &Comparator"
 msgstr "Vergelijker &instellen"
 
-#: ../syncped/support.cpp:201
+#: ../support.cpp:200 ../syncped/support.cpp:201
 msgid "Set &List Font"
 msgstr "&Lijst lettertype instellen"
 
-#: ../syncped/support.cpp:204
+#: ../support.cpp:203 ../syncped/support.cpp:204
 msgid "Set List &Read Only Colour"
 msgstr "Lijst &alleen lezen kleur instellen"
 
-#: ../syncped/support.cpp:206
+#: ../support.cpp:205 ../syncped/support.cpp:206
 msgid "&Ascending"
 msgstr "&Oplopend"
 
-#: ../syncped/support.cpp:207
+#: ../support.cpp:206 ../syncped/support.cpp:207
 msgid "&Descending"
 msgstr "&Aflopend"
 
-#: ../syncped/support.cpp:208
+#: ../support.cpp:207 ../syncped/support.cpp:208
 msgid "&Toggle"
 msgstr "&Afwisselen"
 
-#: ../syncped/support.cpp:209
+#: ../support.cpp:208 ../syncped/support.cpp:209
 msgid "Set &List Sort Method"
 msgstr "&Lijst sorteer methode instellen"
 
-#: ../syncped/support.cpp:211
+#: ../support.cpp:210 ../syncped/support.cpp:211
 msgid "Set &Editor Options"
 msgstr "&Editor opties"
 
-#: ../syncped/support.cpp:220
+#: ../support.cpp:219 ../syncped/support.cpp:220
 msgid "&View"
 msgstr "&Beeld"
 
-#: ../syncped/support.cpp:221
+#: ../support.cpp:220 ../syncped/support.cpp:221
 msgid "&Process"
 msgstr "&Proces"
 
-#: ../syncped/support.cpp:222
+#: ../support.cpp:221 ../syncped/support.cpp:222
 msgid "&Project"
 msgstr "&Project"
 
-#: ../syncped/support.cpp:223
+#: ../support.cpp:222 ../syncped/support.cpp:223
 msgid "&Options"
 msgstr "&Opties"
 
-#~ msgid "Cannot open file"
-#~ msgstr "Kan bestand niet openen"
-
-#~ msgid "textfile"
-#~ msgstr "bestand"
-
-#~ msgid "&Window"
-#~ msgstr "&Venster"
-
-#~ msgid "Start Of Sequence"
-#~ msgstr "Begin van rij"
-
-#~ msgid "End Of Sequence"
-#~ msgstr "Eind van rij"
-
-#~ msgid "Start and end sequence should have same length"
-#~ msgstr "Begin en einde rij moetne zelfde lengte hebben"
-
-#~ msgid "Generate %ld lines"
-#~ msgstr "Genereer %ld regels"
-
-#~ msgid "Confirm"
-#~ msgstr "Bevestigen"
-
-#~ msgid "Log"
-#~ msgstr "Log"
-
-#~ msgid "&Add Header"
-#~ msgstr "&Koptekst toevoegen"
-
-#~ msgid "Insert Sequence"
-#~ msgstr "&Rij toevoegen"
-
-#~ msgid "More"
-#~ msgstr "Meer"
-
-#~ msgid "All rights reserved."
-#~ msgstr "Alle rechten voorbehouden."
-
-#~ msgid "File Save As"
-#~ msgstr "Opslaan als"
-
-#~ msgid "Find &Next\tF3"
-#~ msgstr "&Volgende zoeken\tF3"
-
-#~ msgid "&Lexers File"
-#~ msgstr "&Lexers bestand"
-
-#~ msgid "&Log File"
-#~ msgstr "&Log bestand"
-
-#~ msgid "&VCS File"
-#~ msgstr "&VCS bestand"
-
-#~ msgid "Open"
-#~ msgstr "Openen"
-
-#~ msgid "Lines"
-#~ msgstr "Regels"
-
-#~ msgid "Items"
-#~ msgstr "Items"
-
-#~ msgid "Open &Lexers"
-#~ msgstr "&Lexers file openen"
-
-#~ msgid "Open &Logfile"
-#~ msgstr "&Logfile openen"
-
-#~ msgid "Extra"
-#~ msgstr "Extra"
-
-#~ msgid "Findbar"
-#~ msgstr "Zoekbalk"
-
-#~ msgid "&Statusbar"
-#~ msgstr "&Statusbalk"
-
-#~ msgid "&Toolbar"
-#~ msgstr "&Werkbalk"
-
-#~ msgid "&Menubar"
-#~ msgstr "&Menubalk"
-
-#~ msgid "&Findbar"
-#~ msgstr "&Zoekbalk"
-
-#~ msgid "Open project"
-#~ msgstr "Project openen"
-
-#~ msgid "Save project"
-#~ msgstr "Project opslaan"
-
-#~ msgid "View in hex mode"
-#~ msgstr "Bekijk hexadecimaal"
-
-#~ msgid "Synchronize modified files"
-#~ msgstr "Synchronizeer gewijzigde bestanden"
-
-#~ msgid "&List"
-#~ msgstr "&Lijst"
-
-#~ msgid "&Detail"
-#~ msgstr "&Details"
-
-#~ msgid "&Small Icon"
-#~ msgstr "&Pictogrammen"
-
-#~ msgid "&Lists"
-#~ msgstr "&Lijstweergave"
-
-#~ msgid "View in list mode"
-#~ msgstr "Lijst weergave"
-
-#~ msgid "View in detail mode"
-#~ msgstr "Details weergave"
-
-#~ msgid "Set &List Read Only Colour"
-#~ msgstr "&Lijst kleuren instellen"
-
-#~ msgid "Perspective"
-#~ msgstr "Perspektief"
-
-#~ msgid "&Edit"
-#~ msgstr "Be&werken"
-
-#~ msgid "Flags"
-#~ msgstr "Vlaggen"
-
-#~ msgid "&Contents"
-#~ msgstr "Inhoud"
-
-#~ msgid "Make"
-#~ msgstr "Maken"
-
-#~ msgid "Print all files"
-#~ msgstr "Alle bestanden afdrukken"
-
-#~ msgid "Print A&ll"
-#~ msgstr "&Alles afdrukken"
-
-#~ msgid "&Update"
-#~ msgstr "&Update"
-
-#~ msgid "C&ommit"
-#~ msgstr "C&ommit"
-
-#~ msgid "&Diff"
-#~ msgstr "&Diff"
-
-#~ msgid "&Cat"
-#~ msgstr "&Cat"
-
-#~ msgid "&Make"
-#~ msgstr "&Maken"
-
-#~ msgid "&Stat"
-#~ msgstr "&Stat"
-
-#~ msgid "&Info"
-#~ msgstr "&Info"
-
-#~ msgid "&Goto"
-#~ msgstr "&Ga naar"
-
-#~ msgid "&Run"
-#~ msgstr "Uitvoeren"
-
-#~ msgid "&SVN"
-#~ msgstr "&SVN"
-
-#~ msgid "Toolbar"
-#~ msgstr "Werkbalk"
-
-#~ msgid "Browse"
-#~ msgstr "Overzicht"
-
-#~ msgid "&Browse"
-#~ msgstr "&Overzicht"
-
-#~ msgid "day"
-#~ msgstr "dag"
-
-#~ msgid "week"
-#~ msgstr "week"
-
-#~ msgid "month"
-#~ msgstr "maand"
-
-#~ msgid "year"
-#~ msgstr "jaar"
-
-#~ msgid "link"
-#~ msgstr "koppeling"
-
-#~ msgid "help"
-#~ msgstr "help"
-
-#~ msgid "show this help"
-#~ msgstr "geeft deze help"
+#: ../syncped/frame.cpp:765
+msgid "Editor Options"
+msgstr "Editor opties"
