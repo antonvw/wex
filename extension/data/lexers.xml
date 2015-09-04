@@ -2782,7 +2782,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
   <lexer name="PL/M"/>
   <lexer display="php" name="phpscript" macro="hypertext" extensions="*.php"/> 
   <lexer name="phpscript" macro="hypertext"/> 
-  <lexer name="po" extensions="*.po">
+  <lexer name="po" extensions="*.po;*.pot">
     <styles>
       <style no ="msgid"> keyword1 </style>
       <style no ="msgstr"> keyword2 </style>
