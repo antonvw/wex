@@ -2,7 +2,7 @@
 // Name:      stat.cpp
 // Purpose:   Implementation of wxExStat class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -24,10 +24,10 @@ bool wxExStat::Sync()
   }
   else
   {
-#ifdef __UNIX__
-    m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
-#else
+#ifdef _MSC_VER
     m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
+#else
+    m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
 #endif
   }
   

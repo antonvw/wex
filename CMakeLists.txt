@@ -25,7 +25,7 @@ function(pack)
   set(CPACK_PACKAGING_INSTALL_PREFIX ".")
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
   
-  if (WIN32)
+  if (MSVC)
     if (MSVC14)
       set(msvc "14")
     elseif (MSVC12)
@@ -103,7 +103,7 @@ set(ODBC_LIBRARIES ${ODBC_LIBRARY})
 
 mark_as_advanced( ODBC_FOUND ODBC_LIBRARY ODBC_EXTRA_LIBRARIES ODBC_INCLUDE_DIR )
 
-if (WIN32)
+if (MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_CRT_SECURE_NO_WARNINGS /D_SCL_SECURE_NO_WARNINGS /DwxExUSE_PORTABLE")
 
   if (CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -128,11 +128,11 @@ endif ()
 
 if (WIN32)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/FindwxWidgets.cmake
-      "C:/Program Files (x86)/CMake/share/cmake-${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}/Modules/FindwxWidgets.cmake" COPYONLY)
+    "${CMAKE_ROOT}/Modules/FindwxWidgets.cmake" COPYONLY)
 
-  find_package(wxWidgets COMPONENTS scintilla aui stc html adv xml core base net REQUIRED)
+  find_package(wxWidgets COMPONENTS stc scintilla aui html adv xml core base net REQUIRED)
 else ()
-  find_package(wxWidgets COMPONENTS           aui stc html adv xml core base net REQUIRED)
+  find_package(wxWidgets COMPONENTS aui stc html adv xml core base net REQUIRED)
 endif ()
 
 function(process_po_files)
