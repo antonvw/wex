@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXSTAT_H
-#define _EXSTAT_H
+#pragma once
 
 #include <sys/stat.h> // for stat
 #include <wx/datetime.h>
@@ -20,7 +19,8 @@ class WXDLLIMPEXP_BASE wxExStat : public stat
 {
 public:
   /// Default constructor. Calls sync.
-  wxExStat(const wxString& fullpath = wxEmptyString);
+  wxExStat(const wxString& fullpath = wxEmptyString){
+    Sync(fullpath);};
 
   /// Gets the modification time.
   /// From wxFileName class GetModificationTime is available as well,
@@ -36,7 +36,20 @@ public:
     return (m_IsOk && ((st_mode & wxS_IWUSR) == 0));};
 
   /// Sets (syncs) this stat, returns result and keeps it in IsOk.
-  bool Sync();
+  bool Sync() {
+    if (m_FullPath.empty())
+    {
+      m_IsOk = false;
+    }
+    else
+    {
+  #ifdef _MSC_VER
+      m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
+  #else
+      m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
+  #endif
+    }
+    return m_IsOk;};
 
   /// Sets the fullpath member, then syncs.
   bool Sync(const wxString& fullpath) {
@@ -46,4 +59,3 @@ private:
   wxString m_FullPath;
   bool m_IsOk;
 };
-#endif
