@@ -6,6 +6,8 @@ else()
   cmake_minimum_required(VERSION 2.8.7)
 endif()
 
+set(user $ENV{USER} CACHE INTERNAL "keep user")
+
 if (WIN32)
   set(LOCALE_INSTALL_DIR bin)
 else ()
@@ -16,7 +18,7 @@ function(pack)
   if (WIN32)
     set(CONFIG_INSTALL_DIR bin)
   else ()
-    set(CONFIG_INSTALL_DIR /home/$ENV{USERNAME}/.${PROJECT_NAME})
+    set(CONFIG_INSTALL_DIR /home/${user}/.${PROJECT_NAME})
   endif ()
 
   set(CPACK_GENERATOR "ZIP")
@@ -43,7 +45,7 @@ function(pack)
   install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} USE_SOURCE_PERMISSIONS)
   
   if (NOT WIN32)
-    install(CODE "EXECUTE_PROCESS(COMMAND chown -R $ENV{USERNAME} ${CONFIG_INSTALL_DIR})")
+    install(CODE "EXECUTE_PROCESS(COMMAND chown -R ${user} ${CONFIG_INSTALL_DIR})")
   endif()
 
   include(CPack)
@@ -168,7 +170,7 @@ function(process_po_files)
           # TODO: this should be part of cmake,
           # however wxWidgets_ROOT_DIR is empty for linux, so set it here,
           # search at several places...
-          set(wxWidgets_ROOT_DIR /home/$ENV{USERNAME}/wxWidgets)
+          set(wxWidgets_ROOT_DIR /home/${user}/wxWidgets)
         endif()
         
         gettext_process_po_files(${locale} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
