@@ -16,7 +16,7 @@ function(pack)
   if (WIN32)
     set(CONFIG_INSTALL_DIR bin)
   else ()
-    set(CONFIG_INSTALL_DIR /home/$ENV{SUDO_USER}/.${PROJECT_NAME})
+    set(CONFIG_INSTALL_DIR /home/$ENV{USERNAME}/.${PROJECT_NAME})
   endif ()
 
   set(CPACK_GENERATOR "ZIP")
@@ -24,7 +24,7 @@ function(pack)
   set(CPACK_PACKAGE_VERSION 3.1.0)
   set(CPACK_PACKAGING_INSTALL_PREFIX ".")
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
-  
+
   if (MSVC)
     if (MSVC14)
       set(msvc "14")
@@ -35,7 +35,7 @@ function(pack)
     elseif (MSVC10)
       set(msvc "10")
     endif()
-  
+
     file(GLOB dlls "C:/Program Files (x86)/Microsoft Visual Studio ${msvc}.0/VC/redist/x86/Microsoft.VC${msvc}0.CRT/*.dll")
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
@@ -43,8 +43,7 @@ function(pack)
   install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} USE_SOURCE_PERMISSIONS)
   
   if (NOT WIN32)
-    message(STATUS "chown -R $ENV{SUDO_USER} ${CONFIG_INSTALL_DIR})")
-    install(CODE "EXECUTE_PROCESS(COMMAND chown -R $ENV{SUDO_USER} ${CONFIG_INSTALL_DIR})")
+    install(CODE "EXECUTE_PROCESS(COMMAND chown -R $ENV{USERNAME} ${CONFIG_INSTALL_DIR})")
   endif()
 
   include(CPack)
@@ -169,7 +168,7 @@ function(process_po_files)
           # TODO: this should be part of cmake,
           # however wxWidgets_ROOT_DIR is empty for linux, so set it here,
           # search at several places...
-          set(wxWidgets_ROOT_DIR /home/$ENV{SUDO_USER}/wxWidgets)
+          set(wxWidgets_ROOT_DIR /home/$ENV{USERNAME}/wxWidgets)
         endif()
         
         gettext_process_po_files(${locale} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
