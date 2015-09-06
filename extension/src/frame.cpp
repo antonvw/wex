@@ -319,7 +319,7 @@ bool wxExFrame::OpenFile(
 }
 
 bool wxExFrame::OpenFile(
-  const wxString& filename,
+  const wxExFileName& filename,
   const wxString& text,
   long flags)
 {

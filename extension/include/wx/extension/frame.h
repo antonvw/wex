@@ -73,7 +73,7 @@ public:
     
   /// Allows you to open a filename with specified contents.
   virtual bool OpenFile(
-    const wxString& filename,
+    const wxExFileName& filename,
     const wxString& text,
     long flags = 0);
     

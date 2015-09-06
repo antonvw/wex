@@ -800,10 +800,11 @@ bool wxExOpenFiles(
       
       if (fn.FileExists())
       {
-        frame->OpenFile(fn.GetFullPath(), line_no, wxEmptyString, col_no, file_flags);
+        frame->OpenFile(fn, line_no, wxEmptyString, col_no, file_flags);
       }
       else
       {
+        frame->OpenFile(fn, wxEmptyString, file_flags);
         error = true;
       }
     }

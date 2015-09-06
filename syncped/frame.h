@@ -54,7 +54,7 @@ private:
     const wxExVCSEntry& vcs,
     long flags = 0) override;
   virtual bool OpenFile(
-    const wxString& filename,
+    const wxExFileName& filename,
     const wxString& text,
     long flags = 0) override;
   virtual void PrintEx(wxExEx* ex, const wxString& text) override;
