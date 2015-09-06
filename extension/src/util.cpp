@@ -655,9 +655,9 @@ void wxExLogStatus(const wxExFileName& fn, long flags)
 
 long wxExMake(const wxFileName& makefile)
 {
-  wxExProcess process;
+  wxExProcess* process = new wxExProcess;
 
-  return process.Execute(
+  return process->Execute(
     wxConfigBase::Get()->Read("Make", "make") + " " +
       wxConfigBase::Get()->Read("MakeSwitch", "-f") + " " +
       makefile.GetFullPath(),
