@@ -1268,15 +1268,22 @@ bool Frame::OpenFile(
 }
 
 bool Frame::OpenFile(
-  const wxString& filename,
+  const wxExFileName& filename,
   const wxString& text,
   long flags)
 {
-  wxExSTC* page = (wxExSTC*)m_Editors->SetSelection(filename);
+  wxExSTC* page = (wxExSTC*)m_Editors->SetSelection(filename.GetFullPath());
 
   if (page == NULL)
   {
-    m_Editors->AddPage(new wxExSTC(m_Editors, text, flags, filename), filename, filename, true);
+    page = new wxExSTC(m_Editors, text, flags, filename.GetFullPath());
+    page->SetLexer(filename.GetLexer());
+    
+    m_Editors->AddPage(
+      page, 
+      filename.GetFullPath(), 
+      filename.GetFullName(), 
+      true);
   }
   else
   {
