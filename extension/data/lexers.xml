@@ -2182,16 +2182,22 @@ Copyright: (c) 2015, Anton van Wezenbeek
       WRAP_EXCLUDE WRITE XCODE_VERSION
     </set>
     <set name="cpp">
-      argc argv auto bool break case catch char class const
-      const_cast continue default delete do double dynamic_cast
-      else enum envp explicit extern false float for friend
-      fstream goto if inline int istream istrstream istringstream
-      long main mutable namespace new operator ostream ostrstream
-      ostringstream private protected public register reinterpret_cast
-      return short signed sizeof static static_cast struct switch
-      template this throw true try typedef typeid typename
-      union unsigned using virtual void volatile wchar_t while 
-      wmain
+      argc argv
+      alignas alignof and and_eq asm auto
+      bitand bitor bool break case catch
+      char char16_t char32_t class compl concept
+      const constexpr const_cast continue decltype default
+      delete do double dynamic_cast else enum
+      explicit export extern false final float
+      for friend goto if inline int
+      long mutable namespace new noexcept not
+      not_eq nullptr operator or or_eq override
+      private protected public register reinterpret_cast requires
+      return short signed sizeof static static_assert
+      static_cast struct switch template this thread_local
+      throw true try typedef typeid typename
+      union unsigned using virtual void volatile
+      wchar_t while xor xor_eq
     </set>
     <set name="cpp-stl">
       adjacent_find array at back back_insert_iterator begin 
