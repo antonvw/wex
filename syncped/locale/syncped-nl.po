@@ -22,7 +22,7 @@ msgstr "bestand:regel nummer:kolom nummer"
 
 #: ../app.cpp:99
 msgid "command"
-msgstr ""
+msgstr "commando"
 
 #: ../app.cpp:100 ../syncped/app.cpp:85
 msgid "show locale"
@@ -156,11 +156,11 @@ msgstr "Splitsen"
 
 #: ../frame.cpp:1613
 msgid "Rearrange Vertically"
-msgstr ""
+msgstr "Verticaal rangschikken"
 
 #: ../frame.cpp:1614
 msgid "Rearrange Horizontally"
-msgstr ""
+msgstr "Horizontaal rangschikken"
 
 #: ../frame.cpp:1620 ../syncped/frame.cpp:1628
 msgid "Close A&ll"
