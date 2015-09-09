@@ -75,6 +75,8 @@ void fixture::testEx()
     }
   }
     
+  ex->AddText("XXX");
+  
   // Test invalid commands.  
   for (const auto& command : std::vector<std::string> {
     // We have only one document, so :n, :prev return false.
@@ -92,6 +94,7 @@ void fixture::testEx()
     ":1,$k",
     ":.S0",
     ":.Sx",
+    ":/XXX/x",
     ":r test-ex.txt"})
   {
     CPPUNIT_ASSERT_MESSAGE(command, !ex->Command(command));
@@ -214,7 +217,7 @@ void fixture::testEx()
   
   // Test global move.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
-  CPPUNIT_ASSERT( ex->Command(":g/d/m$"));
+  CPPUNIT_ASSERT(!ex->Command(":g/d/m$")); // possible infinite loop
   CPPUNIT_ASSERT( stc->GetText().Contains("d"));
   
   // Test substitute.

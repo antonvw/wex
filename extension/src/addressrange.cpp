@@ -401,7 +401,7 @@ bool wxExAddressRange::Global(const wxString& text, bool inverse) const
 
   if (next.CountTokens() <= 1)
   {
-    return false;
+    return true;
   }
 
   next.GetNextToken(); // skip empty token

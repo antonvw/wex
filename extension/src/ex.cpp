@@ -261,7 +261,7 @@ bool wxExEx::Command(const std::string& command)
             }
             else if (!Command(line))
             {
-              wxLogMessage("%s on line %d failed", line.c_str(), i);
+              wxLogMessage("%s on line %d failed", line.c_str(), i + 1);
               result = false;
             }
           }
@@ -316,15 +316,7 @@ bool wxExEx::Command(const std::string& command)
     POST_COMMAND( wxID_SAVE )
     POST_CLOSE( wxEVT_CLOSE_WINDOW, true )
   }
-  else if (CommandAddress(command.substr(1)))
-  {
-    // do nothing
-  }
-  else if (wxExAddress(this, command.substr(1)).GetLine() > 0)
-  {
-    m_STC->GotoLineAndSelect(wxExAddress(this, command.substr(1)).GetLine());
-  }
-  else
+  else if (!CommandAddress(command.substr(1)))
   {
     result = false;
   }
@@ -365,6 +357,7 @@ bool wxExEx::CommandAddress(const std::string& command)
     const std::string addr("[0-9\\.\\$\\+\\-]+");
     const std::string addrs("[\\?/].*?[\\?/]"); // non-greedy!
     const std::string addrm("'[a-z]");
+    const std::string cmd_group0("([=kj])");
     const std::string cmd_group1("([aikrz=]|pu)(.*)");
     const std::string cmd_group2("([cdgjmpsStvywy<>\\!&~])(.*)");
     std::vector <wxString> v;
@@ -375,7 +368,7 @@ bool wxExEx::CommandAddress(const std::string& command)
       // a search address range
       wxExMatch("^(" + addrs + ")(," + addrs + ")" + cmd_group2, rest.ToStdString(), v) == 4 ||
       // a search address =
-      wxExMatch("^(" + addrs + ")(=)(.*)", rest.ToStdString(), v) == 3 ||
+      wxExMatch("^(" + addrs + ")" + cmd_group0 + "(.*)", rest.ToStdString(), v) == 3 ||
       // an address range containing markers
       wxExMatch("^(" + addrm + ")(," + addrm + ")?" + cmd_group2, rest.ToStdString(), v) == 4 ||
       // an addr1 range
@@ -411,7 +404,15 @@ bool wxExEx::CommandAddress(const std::string& command)
     }
     else 
     {
-      return false;
+      if (wxExAddress(this, rest).GetLine() > 0)
+      {
+        m_STC->GotoLineAndSelect(wxExAddress(this, rest).GetLine());
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
     
     if (range_str.empty() && cmd != '!') 

@@ -41,7 +41,9 @@
 :y
 :.=
 :/yy/=
+:/yy/ka
 :/xx/,/yy/y
+:/xx/,/yy/j
 :.kz
 :.p
 :.p#
@@ -68,6 +70,7 @@
 :g/is/s//ok
 :g/is/d
 :g/is/p
+:g/xx/
 :g/xx/p
 :g/xx/p|p|p
 :g/xx/p#
