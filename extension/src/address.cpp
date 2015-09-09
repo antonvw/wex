@@ -135,7 +135,7 @@ int wxExAddress::GetLine() const
   // If this is a // address, return line with first forward match.
   std::vector <wxString> v;
   
-  if (wxExMatch("/(.*)/", ToStdString(), v))
+  if (wxExMatch("/(.*)/$", ToStdString(), v))
   {
     m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
     m_Ex->GetSTC()->SetTargetEnd(m_Ex->GetSTC()->GetTextLength());

@@ -105,9 +105,9 @@ void fixture::testAddressRange()
   for (int i = 0; i < 2; i++)
   {
     stc->SetText(contents);
-    CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global(wxEmptyString, i));
-    CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global("XXX", i));
-    CPPUNIT_ASSERT(!wxExAddressRange(ex, 5).Global("/", i));
+    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global(wxEmptyString, i));
+    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("XXX", i));
+    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/", i));
     CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/xx/p", i));
     CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/xx/p#", i));
     CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/xx/g", i));
