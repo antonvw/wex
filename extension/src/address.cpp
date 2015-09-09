@@ -89,7 +89,7 @@ bool wxExAddress::AdjustWindow(const wxString& text) const
     output += wxString('-', 40) + m_Ex->GetSTC()->GetEOL();
   }
     
-  m_Ex->Print(output);
+  m_Ex->GetFrame()->PrintEx(m_Ex, output);
   
   return true;
 }
