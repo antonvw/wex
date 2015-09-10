@@ -133,7 +133,11 @@ private:
     wxString& pattern, wxString& replacement, wxString& options) const;
   void Set(const wxString& begin, const wxString& end) {
     m_Begin.assign(begin);
-    m_End.assign(end);};
+    const int begin_line = m_Begin.GetLine();
+    if (begin_line > 0) m_Begin.SetLine(begin_line);
+    m_End.assign(end);
+    const int end_line = m_End.GetLine();
+    if (end_line > 0) m_End.SetLine(end_line);};
   void Set(int begin, int end) {
     m_Begin.SetLine(begin);
     m_End.SetLine(end);};
