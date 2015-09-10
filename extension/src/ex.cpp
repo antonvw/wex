@@ -357,23 +357,22 @@ bool wxExEx::CommandAddress(const std::string& command)
     const std::string addr("[0-9\\.\\$\\+\\-]+");
     const std::string addrs("[\\?/].*?[\\?/]"); // non-greedy!
     const std::string addrm("'[a-z]");
-    const std::string cmd_group0("([=kj])");
-    const std::string cmd_group1("([aikrz=]|pu)(.*)");
-    const std::string cmd_group2("([cdgjmpsStvywy<>\\!&~])(.*)");
+    const std::string cmd_group1("([aikrz=]|pu)(.*)"); // 1 addr command
+    const std::string cmd_group2("([cdgjmpsStvywy<>\\!&~])(.*)"); // 2 addr command
     std::vector <wxString> v;
     
     if (
       // a % address range
       wxExMatch("^%" + cmd_group2, rest.ToStdString(), v) == 2 ||
-      // a search address range
+      // addr2 search
       wxExMatch("^(" + addrs + ")(," + addrs + ")" + cmd_group2, rest.ToStdString(), v) == 4 ||
-      // a search address =
-      wxExMatch("^(" + addrs + ")" + cmd_group0 + "(.*)", rest.ToStdString(), v) == 3 ||
-      // an address range containing markers
+      // addr1 search
+      wxExMatch("^(" + addrs + ")" + cmd_group1, rest.ToStdString(), v) == 3 ||
+      // addr2 markers
       wxExMatch("^(" + addrm + ")(," + addrm + ")?" + cmd_group2, rest.ToStdString(), v) == 4 ||
-      // an addr1 range
+      // addr1
       wxExMatch("^(" + addr + ")?" + cmd_group1, rest.ToStdString(), v) == 3 ||
-      // an addr2 range
+      // addr2
       wxExMatch("^(" + addr + ")?(," + addr + ")?" + cmd_group2, rest.ToStdString(), v) == 4)
     {
       switch (v.size())
