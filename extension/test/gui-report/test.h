@@ -24,7 +24,6 @@ class fixture : public wxExTestFixture
   CPPUNIT_TEST( testListViewFile );
   CPPUNIT_TEST( testListViewWithFrame );
   CPPUNIT_TEST( testTextFileWithListView );
-  CPPUNIT_TEST( testUtil );
   CPPUNIT_TEST( test );
   
   CPPUNIT_TEST_SUITE_END();
@@ -38,7 +37,6 @@ public:
   void testListViewFile();
   void testListViewWithFrame();
   void testTextFileWithListView();
-  void testUtil();
   
   // integration test
   void test();
