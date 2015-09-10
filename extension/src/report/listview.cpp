@@ -19,9 +19,9 @@
 #include <wx/extension/vcs.h>
 #include <wx/extension/report/listview.h>
 #include <wx/extension/report/defs.h>
+#include <wx/extension/report/dir.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/textfile.h>
-#include <wx/extension/report/util.h>
 
 wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   wxExFrameWithHistory* frame,
@@ -119,7 +119,23 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
 
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
-      stats += wxExRun(wxExListItem(this, i), tool).GetElements();
+      const wxExListItem item(this, i);
+
+      wxLogStatus(item.GetFileName().GetFullPath());
+
+      if (item.GetFileName().FileExists())
+      {
+        wxExTextFileWithListView file(item.GetFileName(), tool);
+        file.RunTool();
+        stats += file.GetStatistics().GetElements();
+      }
+      else
+      {
+        wxExDirTool dir(tool, item.GetFileName().GetFullPath(), item.GetFileSpec());
+        dir.FindFiles();
+
+        stats += dir.GetStatistics().GetElements();
+      }
     }
 
     wxLogStatus(tool.Info(&stats));

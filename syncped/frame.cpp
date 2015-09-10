@@ -16,6 +16,7 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/menu.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stc.h>
@@ -25,7 +26,6 @@
 #include <wx/extension/version.h>
 #include <wx/extension/vimacros.h>
 #include <wx/extension/report/listviewfile.h>
-#include <wx/extension/report/util.h>
 #include "frame.h"
 #include "app.h"
 #include "defs.h"
@@ -53,6 +53,46 @@ void About(wxFrame* frame)
   wxAboutBox(info);
 }
     
+bool ForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont())
+{
+  if (notebook == NULL)
+  {
+    return true;
+  }
+  
+  wxExListViewFile* lv;
+  for (
+    int page = notebook->GetPageCount() - 1;
+    page >= 0;
+    page--)
+  {
+    if ((lv = (wxExListViewFile*)notebook->GetPage(page)) != NULL)
+    {
+      switch (id)
+      {
+      case ID_LIST_ALL_ITEMS:
+        if (font.IsOk())
+        {
+          lv->SetFont(font);
+        }
+
+        lv->ItemsUpdate();
+        break;
+
+      case ID_LIST_ALL_CLOSE:
+        if (wxExFileDialog(
+          notebook, lv).ShowModalIfChanged() == wxID_CANCEL) return false;
+        if (!notebook->DeletePage(page)) return false;
+        break;
+
+      default: wxFAIL;
+      }
+    }
+  }
+
+  return true;
+};
+
 BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_CHECKBOX(ID_CHECKBOX_DIRCTRL, Frame::OnCommand)
   EVT_CHECKBOX(ID_CHECKBOX_HISTORY, Frame::OnCommand)
@@ -267,7 +307,7 @@ Frame::Frame(App* app)
       if (
          m_Process->IsRunning() || 
         !m_Editors->ForEach(ID_ALL_STC_CLOSE) || 
-        !wxExForEach(m_Projects, ID_LIST_ALL_CLOSE))
+        !ForEach(m_Projects, ID_LIST_ALL_CLOSE))
       {
         event.Veto();
         
@@ -792,10 +832,10 @@ void Frame::OnCommand(wxCommandEvent& event)
 
         if (m_Projects != NULL)
         {
-          wxExForEach(m_Projects, ID_LIST_ALL_ITEMS, font);
+          ForEach(m_Projects, ID_LIST_ALL_ITEMS, font);
         }
         
-        wxExForEach(m_Lists, ID_LIST_ALL_ITEMS, font);
+        ForEach(m_Lists, ID_LIST_ALL_ITEMS, font);
         
         if (m_History != NULL)
         {

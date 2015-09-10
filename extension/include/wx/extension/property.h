@@ -2,14 +2,14 @@
 // Name:      property.h
 // Purpose:   Declaration of wxExProperty class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXPROPERTY_H
-#define _EXPROPERTY_H
+#pragma once
 
-class wxXmlNode;
-class wxStyledTextCtrl;
+#include <wx/log.h> 
+#include <wx/stc/stc.h>
+#include <wx/xml/xml.h>
 
 /// This class defines our scintilla properties.
 class WXDLLIMPEXP_BASE wxExProperty
@@ -25,11 +25,13 @@ public:
     , m_Value(value){;};
 
   /// Applies this property to stc component.
-  void Apply(wxStyledTextCtrl* stc) const;
+  void Apply(wxStyledTextCtrl* stc) const {
+    if (IsOk()) stc->SetProperty(m_Name, m_Value);};
 
   /// Resets this property (resets the value of this property
   /// on the stc component, but does not change the value).
-  void ApplyReset(wxStyledTextCtrl* stc) const;
+  void ApplyReset(wxStyledTextCtrl* stc) const {
+    stc->SetProperty(m_Name, wxEmptyString);};
   
   /// Returns the name of this property.
   const wxString& GetName() const {return m_Name;};
@@ -44,9 +46,17 @@ public:
   /// Override this property (so does not apply this property).
   void Set(const wxString& value) {m_Value = value;};
 private:
-  void Set(const wxXmlNode* node);
+  void Set(const wxXmlNode* node) {
+    m_Name = node->GetAttribute("name", "0");
+    m_Value = node->GetNodeContent().Strip(wxString::both);
+    if (!IsOk())
+    {
+      wxLogError("Illegal property name: %s or value: %s on line: %d",
+        m_Name.c_str(),
+        m_Value.c_str(),
+        node->GetLineNumber());
+    }};
   
   wxString m_Name;
   wxString m_Value;
 };
-#endif

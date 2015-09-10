@@ -25,7 +25,6 @@
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listviewfile.h>
-#include <wx/extension/report/util.h>
 
 // The maximal number of files and projects to be supported.
 const int NUMBER_RECENT_FILES = 25;
