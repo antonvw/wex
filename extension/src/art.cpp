@@ -2,7 +2,7 @@
 // Name:      art.cpp
 // Purpose:   Implementation of wxExStockArt class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -26,6 +26,9 @@ wxExStockArt::wxExStockArt(wxWindowID id)
     Add(wxID_CUT, wxART_CUT);
     Add(wxID_DELETE, wxART_DELETE);
     Add(wxID_DOWN, wxART_GO_DOWN);
+#if wxCHECK_VERSION(3,1,0)
+    Add(wxID_EDIT, wxART_EDIT);
+#endif
     Add(wxID_EXIT, wxART_QUIT);
     Add(wxID_FIND, wxART_FIND);
     Add(wxID_FIRST, wxART_GOTO_FIRST);

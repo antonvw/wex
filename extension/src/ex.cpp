@@ -54,18 +54,25 @@
 class wxExCmdLineParser : public wxCmdLineParser
 {
   public:
-    // Contructor.
-    explicit wxExCmdLineParser(const wxString& cmdline) 
-      : wxCmdLineParser(cmdline) {;};
-
-    // Adds a negatable switch.
-    void AddNegatableSwitch(const wxString& name, const wxString& desc) {
-      AddSwitch(name, wxEmptyString, desc, wxCMD_LINE_SWITCH_NEGATABLE);};
+    // Contructor, adds negatable switches.
+    explicit wxExCmdLineParser(
+      const wxString& cmdline,
+      const std::vector<std::pair<std::pair<wxString, wxString>, std::function<void(bool)>>> & v) 
+      : wxCmdLineParser(cmdline) 
+      , m_Switches(v) {
+      for (const auto it : v) {
+        AddSwitch(it.first.first, wxEmptyString, it.first.second, wxCMD_LINE_SWITCH_NEGATABLE);};}
     
-    // Calls process if switch found.
-    void Switch(const wxString& name, std::function<void(bool)> process ) const {
-      if (Found(name))
-        process((FoundSwitch(name) == wxCMD_SWITCH_ON));};
+    // Handles the switches.
+    void Switch() {
+      for (const auto it : m_Switches) {
+        Switch(it.first.first, it.second);};};
+private:
+  void Switch(const wxString& name, std::function<void(bool)> process ) const {
+    if (Found(name))
+      process((FoundSwitch(name) == wxCMD_SWITCH_ON));};
+  
+  const std::vector<std::pair<std::pair<wxString, wxString>, std::function<void(bool)>>> m_Switches; 
 };
 
 wxExSTCEntryDialog* wxExEx::m_Dialog = NULL;
@@ -515,22 +522,43 @@ bool wxExEx::CommandSet(const wxString& arg)
     text.Replace("!", "-"); // change negatable char
   }
   
-  wxExCmdLineParser cl(text);
+  wxExCmdLineParser cl(text, std::vector<std::pair<std::pair<wxString, wxString>, std::function<void(bool)>>> { 
+    {{"ai", "Auto Indent"}, [](bool on){wxConfigBase::Get()->Write(_("Auto indent"), on ? 2: 0);}},
+    {{"ac", "Auto Complete"},[](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);}},
+    {{"el", "Edge Line"}, [&](bool on){
+      m_STC->SetEdgeMode(on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);     
+      wxConfigBase::Get()->Write(_("Edge line"), on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);}},
+    {{"ic", "Ignore Case"}, [&](bool on){
+      if (!on) m_SearchFlags |= wxSTC_FIND_MATCHCASE;
+      else     m_SearchFlags &= ~wxSTC_FIND_MATCHCASE;
+      wxExFindReplaceData::Get()->SetMatchCase(!on);}},
+    {{"mw", "Match Words"}, [&](bool on){
+      if (on) m_SearchFlags |= wxSTC_FIND_WHOLEWORD;
+      else    m_SearchFlags &= ~wxSTC_FIND_WHOLEWORD;
+      wxExFindReplaceData::Get()->SetMatchWord(on);}},
+    {{"nu", "show LineNumbers"}, [&](bool on){
+      m_STC->ShowLineNumbers(on);
+      wxConfigBase::Get()->Write(_("Line numbers"), on);}},
+    {{"re", "Regular Expression"}, [&](bool on){
+      if (on) m_SearchFlags |= wxSTC_FIND_REGEXP;
+      else    m_SearchFlags &= ~wxSTC_FIND_REGEXP;
+      wxExFindReplaceData::Get()->SetUseRegEx(on);}},
+    {{"ut", "Use Tabs"}, [&](bool on){
+      m_STC->SetUseTabs(on);
+      wxConfigBase::Get()->Write(_("Use tabs"), on);}},
+    {{"wl", "Wrap Line"}, [&](bool on){
+      m_STC->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
+      wxConfigBase::Get()->Write(_("Wrap line"), on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}},
+    {{"ws", "show WhiteSpace"}, [&](bool on){
+      m_STC->SetViewEOL(on);
+      m_STC->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+      wxConfigBase::Get()->Write(_("Whitespace"), on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}}});
+  
   cl.AddSwitch("h", wxEmptyString, "help", wxCMD_LINE_OPTION_HELP);
   cl.AddOption("ec", wxEmptyString, "Edge Column", wxCMD_LINE_VAL_NUMBER);
   cl.AddOption("in", wxEmptyString, "INdentation", wxCMD_LINE_VAL_NUMBER);
   cl.AddOption("sy", wxEmptyString, "SYntax (off)", wxCMD_LINE_VAL_STRING);
   cl.AddOption("ts", wxEmptyString, "Tab Stop", wxCMD_LINE_VAL_NUMBER);
-  cl.AddNegatableSwitch("ai", "Auto Indent");
-  cl.AddNegatableSwitch("ac", "Auto Complete");
-  cl.AddNegatableSwitch("el", "Edge Line");
-  cl.AddNegatableSwitch("ic", "Ignore Case");
-  cl.AddNegatableSwitch("mw", "Match Words");
-  cl.AddNegatableSwitch("nu", "show LineNumbers");
-  cl.AddNegatableSwitch("re", "Regular Expression");
-  cl.AddNegatableSwitch("ut", "Use Tabs");
-  cl.AddNegatableSwitch("wl", "Wrap Line");
-  cl.AddNegatableSwitch("ws", "show WhiteSpace");
   
   switch (cl.Parse())
   {
@@ -568,36 +596,7 @@ bool wxExEx::CommandSet(const wxString& arg)
     wxConfigBase::Get()->Write(_("Tab width"), val);
   }
   
-  cl.Switch("ai", [](bool on){wxConfigBase::Get()->Write(_("Auto indent"), on ? 2: 0);});
-  cl.Switch("ac", [](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);});
-  cl.Switch("ic", [&](bool on){
-    if (!on) m_SearchFlags |= wxSTC_FIND_MATCHCASE;
-    else     m_SearchFlags &= ~wxSTC_FIND_MATCHCASE;
-    wxExFindReplaceData::Get()->SetMatchCase(!on);});
-  cl.Switch("el", [&](bool on){
-    m_STC->SetEdgeMode(on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);
-    wxConfigBase::Get()->Write(_("Edge line"), on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);});
-  cl.Switch("mw", [&](bool on){
-    if (on) m_SearchFlags |= wxSTC_FIND_WHOLEWORD;
-    else    m_SearchFlags &= ~wxSTC_FIND_WHOLEWORD;
-    wxExFindReplaceData::Get()->SetMatchWord(on);});
-  cl.Switch("nu", [&](bool on){
-    m_STC->ShowLineNumbers(on);
-    wxConfigBase::Get()->Write(_("Line numbers"), on);});
-  cl.Switch("re", [&](bool on){
-    if (on) m_SearchFlags |= wxSTC_FIND_REGEXP;
-    else    m_SearchFlags &= ~wxSTC_FIND_REGEXP;
-    wxExFindReplaceData::Get()->SetUseRegEx(on);});
-  cl.Switch("ut", [&](bool on){
-    m_STC->SetUseTabs(on);
-    wxConfigBase::Get()->Write(_("Use tabs"), on);});
-  cl.Switch("wl", [&](bool on){
-    m_STC->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
-    wxConfigBase::Get()->Write(_("Wrap line"), on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);});
-  cl.Switch("ws", [&](bool on){
-    m_STC->SetViewEOL(on);
-    m_STC->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
-    wxConfigBase::Get()->Write(_("Whitespace"), on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);});
+  cl.Switch();
   
   return true;
 }
