@@ -24,6 +24,7 @@ class fixture : public wxExTestFixture
   CPPUNIT_TEST( testAddress );
   CPPUNIT_TEST( testAddressRange );
   CPPUNIT_TEST( testArt );
+  CPPUNIT_TEST( testCmdLineParser );
   CPPUNIT_TEST( testConfigDialog );
   CPPUNIT_TEST( testConfigItem );
   CPPUNIT_TEST( testDialog );
@@ -78,6 +79,7 @@ public:
   void testAddress();
   void testAddressRange();
   void testArt();
+  void testCmdLineParser();
   void testConfigDialog();
   void testConfigItem();
   void testDialog();
