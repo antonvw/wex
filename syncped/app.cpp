@@ -58,8 +58,8 @@ bool App::OnInit()
         wxLogMessage(wxExGetVersionInfo().GetVersionOnlyString());
         version = true;}}}},
     wxExCmdLineParser::CmdOptions {
-      {{"c", _("command")}, {wxCMD_LINE_VAL_STRING, [&]() {
-        cl.Found("c", &m_Command);}}}});
+      {{"c", _("command")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
+        any.GetAs(&m_Command);}}}});
 
   cl.AddParam(
     _("input file:line number:column number"),

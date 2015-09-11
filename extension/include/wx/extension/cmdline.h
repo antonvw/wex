@@ -10,7 +10,9 @@
 #include <functional>
 #include <utility>
 #include <vector>
+#include <wx/any.h>
 #include <wx/cmdline.h>
+#include <wx/datetime.h>
 
 /// This class offers a command line parser.
 class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
@@ -28,7 +30,7 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
     /// - pair of command line param type and process callback of option is found
     typedef std::vector<std::pair<
       std::pair<wxString, wxString>, 
-      std::pair<wxCmdLineParamType, std::function<void()>>>> CmdOptions;
+      std::pair<wxCmdLineParamType, std::function<void(wxAny)>>>> CmdOptions;
 
     /// Contructor, specify switches and options.
     wxExCmdLineParser(
@@ -68,7 +70,41 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
         for (const auto it : m_Options) 
         {
           if (Found(it.first.first))
-            it.second.second();
+          {
+            wxAny any;
+            switch (it.second.first)
+            {
+              case wxCMD_LINE_VAL_DATE:
+              {
+                wxDateTime val;
+                Found(it.first.first, &val);
+                any = val;
+              }
+              break;
+              case wxCMD_LINE_VAL_DOUBLE:
+              {
+                double val;
+                Found(it.first.first, &val);
+                any = val;
+              }
+              break;
+              case wxCMD_LINE_VAL_NUMBER:
+              {
+                long val;
+                Found(it.first.first, &val);
+                any = val;
+              }
+              break;
+              case wxCMD_LINE_VAL_STRING:
+              {
+                wxString val;
+                Found(it.first.first, &val);
+                any = val;
+              }
+              break;
+            }
+            it.second.second(any);
+          }
         }
       }
       return res;};

@@ -497,7 +497,7 @@ bool wxExEx::CommandSet(const wxString& arg)
     text.Replace("!", "-"); // change negatable char
   }
   
-  wxExCmdLineParser cl(text, 
+  return wxExCmdLineParser(text, 
     wxExCmdLineParser::CmdSwitches { 
       {{"ai", "Auto Indent"}, {wxCMD_LINE_SWITCH_NEGATABLE, [](bool on){wxConfigBase::Get()->Write(_("Auto indent"), on ? 2: 0);}}},
       {{"ac", "Auto Complete"}, {wxCMD_LINE_SWITCH_NEGATABLE, [](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);}}},
@@ -530,28 +530,26 @@ bool wxExEx::CommandSet(const wxString& arg)
         m_STC->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
         wxConfigBase::Get()->Write(_("Whitespace"), on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}}}},
     wxExCmdLineParser::CmdOptions {
-      {{"ec", "Edge Column"}, {wxCMD_LINE_VAL_NUMBER, [&]() {
+      {{"ec", "Edge Column"}, {wxCMD_LINE_VAL_NUMBER, [&](wxAny any) {
         long val;
-        cl.Found("ec", &val);
+        any.GetAs(&val);
         m_STC->SetEdgeColumn(val);
         wxConfigBase::Get()->Write(_("Edge column"), val);}}},
-      {{"in", "INdentation"}, {wxCMD_LINE_VAL_NUMBER, [&]() {
+      {{"in", "INdentation"}, {wxCMD_LINE_VAL_NUMBER, [&](wxAny any) {
         long val;
-        cl.Found("in", &val);
+        any.GetAs(&val);
         m_STC->SetIndent(val);
         wxConfigBase::Get()->Write(_("Indent"), val);}}},
-      {{"sy", "SYntax (off)"}, {wxCMD_LINE_VAL_STRING, [&]() {
+      {{"sy", "SYntax (off)"}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
         wxString val;
-        cl.Found("sy", &val);
+        any.GetAs(&val);
         if (val != "off") m_STC->SetLexer(val, true); // allow folding
         else              m_STC->ResetLexer();}}},
-      {{"ts", "Tab Stop"}, {wxCMD_LINE_VAL_NUMBER, [&]() {
+      {{"ts", "Tab Stop"}, {wxCMD_LINE_VAL_NUMBER, [&](wxAny any) {
         long val;
-        cl.Found("ts", &val);
+        any.GetAs(&val);
         m_STC->SetTabWidth(val);
-        wxConfigBase::Get()->Write(_("Tab width"), val);}}}});
-
-  return cl.Parse() <= 0;
+        wxConfigBase::Get()->Write(_("Tab width"), val);}}}}).Parse() <= 0;
 }
 
 void wxExEx::Cut(bool show_message)
