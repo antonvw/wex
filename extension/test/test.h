@@ -27,7 +27,6 @@ public:
 private:
   virtual int OnExit();
   virtual bool OnInit();
-  virtual void OnInitCmdLine(wxCmdLineParser& parser);
   virtual int OnRun();
 };
 

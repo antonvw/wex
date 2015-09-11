@@ -107,5 +107,5 @@ bool wxExApp::OnInit()
 
   wxExVCS::LoadDocument();
 
-  return wxApp::OnInit();
+  return true; // wxApp::OnInit(); // we have our own cmd line processing
 }

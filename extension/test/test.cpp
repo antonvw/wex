@@ -136,16 +136,6 @@ bool wxExTestApp::OnInit()
   return true;
 }
 
-void wxExTestApp::OnInitCmdLine(wxCmdLineParser& parser)
-{
-  wxExApp::OnInitCmdLine(parser);
-
-  parser.AddParam(
-    "test",
-    wxCMD_LINE_VAL_STRING,
-    wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
-}
-
 int wxExTestApp::OnRun()
 {
   std::vector<wxString> names;
