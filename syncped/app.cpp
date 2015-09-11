@@ -31,6 +31,13 @@ bool App::OnInit()
   SetAppName("syncped");
   
   m_Split = -1;
+  
+  if (!wxExApp::OnInit())
+  {
+    return false;
+  }
+  
+  bool version = false;
 
   wxExCmdLineParser cl(argc, argv, 
     wxExCmdLineParser::CmdSwitches {
@@ -48,7 +55,8 @@ bool App::OnInit()
       {{"O", _("split tabs vertically")}, {0, [&](bool on) {
         m_Split = wxRIGHT;}}},
       {{"v", _("show version")}, {0, [&](bool on) {
-        wxLogMessage(wxExGetVersionInfo().GetVersionOnlyString());}}}},
+        wxLogMessage(wxExGetVersionInfo().GetVersionOnlyString());
+        version = true;}}}},
     wxExCmdLineParser::CmdOptions {
       {{"c", _("command")}, {wxCMD_LINE_VAL_STRING, [&]() {
         cl.Found("c", &m_Command);}}}});
@@ -58,7 +66,7 @@ bool App::OnInit()
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
     
-  if (!cl.Parse())
+  if (cl.Parse() != 0 || version)
   {
     return false;
   }

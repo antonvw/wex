@@ -6,7 +6,6 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <functional>
 #include <regex>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -552,7 +551,7 @@ bool wxExEx::CommandSet(const wxString& arg)
         m_STC->SetTabWidth(val);
         wxConfigBase::Get()->Write(_("Tab width"), val);}}}});
 
-  return cl.Parse();
+  return cl.Parse() <= 0;
 }
 
 void wxExEx::Cut(bool show_message)

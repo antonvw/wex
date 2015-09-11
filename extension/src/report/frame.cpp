@@ -434,7 +434,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   cl.AddParam("folder", wxCMD_LINE_VAL_STRING);
   cl.AddParam("extension", wxCMD_LINE_VAL_STRING);
 
-  if (!cl.Parse())
+  if (cl.Parse() > 0)
   {
     return false;
   }

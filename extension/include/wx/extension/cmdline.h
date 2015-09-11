@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <functional>
 #include <utility>
 #include <vector>
 #include <wx/cmdline.h>
@@ -15,9 +16,16 @@
 class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
 {
   public:
+    /// Switches: 
+    /// - pair of option name and description
+    /// - pair of flags and process callback of option is found
     typedef std::vector<std::pair<
       std::pair<wxString, wxString>, 
       std::pair<int, std::function<void(bool)>>>> CmdSwitches;
+
+    /// Options: 
+    /// - pair of option name and description
+    /// - pair of command line param type and process callback of option is found
     typedef std::vector<std::pair<
       std::pair<wxString, wxString>, 
       std::pair<wxCmdLineParamType, std::function<void()>>>> CmdOptions;
@@ -46,29 +54,25 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
       int argc, char **argv, const CmdSwitches & s, const CmdOptions & o)
       : wxExCmdLineParser(wxEmptyString, s, o) {SetCmdLine(argc, argv);};
     
-    /// Parse the command line and invokes callbacks, return false if error occurred. 
-    bool Parse(bool giveUsage = true) {
-      switch (wxCmdLineParser::Parse(giveUsage))
+    /// Parses the command line and invokes callbacks, returns -1 for help, 
+    /// 0 if ok, and a positive value if error occurred. 
+    int Parse(bool giveUsage = true) {
+      const int res = wxCmdLineParser::Parse(giveUsage);
+      if (res == 0) // ok
       {
-        case -1: return true; // help
-        case 0: break; // ok 
-        default: return false; // error
+        for (const auto it : m_Switches) 
+        {
+          if (Found(it.first.first))
+            it.second.second(FoundSwitch(it.first.first) == wxCMD_SWITCH_ON);
+        }
+        for (const auto it : m_Options) 
+        {
+          if (Found(it.first.first))
+            it.second.second();
+        }
       }
-      for (const auto it : m_Switches) 
-      {
-        Switch(it.first.first, it.second.second);
-      }
-      for (const auto it : m_Options) 
-      {
-        if (Found(it.first.first))
-          it.second.second();
-      }
-      return true;};
+      return res;};
 private:
-  void Switch(const wxString& name, std::function<void(bool)> process ) const {
-    if (Found(name))
-      process((FoundSwitch(name) == wxCMD_SWITCH_ON));};
-  
   const CmdOptions m_Options; 
   const CmdSwitches m_Switches; 
 };
