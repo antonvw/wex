@@ -10,11 +10,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/cmdline.h>
 #include <wx/config.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
 #include <wx/tokenzr.h>
+#include <wx/extension/cmdline.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/listitem.h>
@@ -425,14 +425,16 @@ const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
 
 bool wxExFrameWithHistory::Grep(const wxString& arg)
 {
-  wxCmdLineParser cl(arg);
+  int arg3;
+  wxExCmdLineParser cl(arg, 
+    wxExCmdLineParser::CmdSwitches {
+      {{"r", "recursive"}, {0, [&](bool on) {arg3 = wxDIR_FILES | (on ? wxDIR_DIRS: 0);}}}},
+    wxExCmdLineParser::CmdOptions());
   cl.AddParam("match", wxCMD_LINE_VAL_STRING);
   cl.AddParam("folder", wxCMD_LINE_VAL_STRING);
   cl.AddParam("extension", wxCMD_LINE_VAL_STRING);
-  cl.AddSwitch("h", wxEmptyString, "help", wxCMD_LINE_OPTION_HELP);
-  cl.AddSwitch("r", wxEmptyString, "recursive");
 
-  if (cl.Parse() != 0)
+  if (!cl.Parse())
   {
     return false;
   }
@@ -454,7 +456,6 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   
   const wxString arg1(cl.GetParam(1));
   const wxString arg2(cl.GetParam(2));
-  const int arg3(wxDIR_FILES | (cl.FoundSwitch("r") ? wxDIR_DIRS: 0));
   
   Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
     

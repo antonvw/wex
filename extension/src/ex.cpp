@@ -12,13 +12,13 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/cmdline.h>
 #include <wx/config.h>
 #include <wx/textfile.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/address.h>
 #include <wx/extension/addressrange.h>
+#include <wx/extension/cmdline.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
@@ -50,30 +50,6 @@
                                                             \
   wxPostEvent(wxTheApp->GetTopWindow(), event);             \
 };                                                          \
-
-class wxExCmdLineParser : public wxCmdLineParser
-{
-  public:
-    // Contructor, adds negatable switches.
-    explicit wxExCmdLineParser(
-      const wxString& cmdline,
-      const std::vector<std::pair<std::pair<wxString, wxString>, std::function<void(bool)>>> & v) 
-      : wxCmdLineParser(cmdline) 
-      , m_Switches(v) {
-      for (const auto it : v) {
-        AddSwitch(it.first.first, wxEmptyString, it.first.second, wxCMD_LINE_SWITCH_NEGATABLE);};}
-    
-    // Handles the switches.
-    void Switch() {
-      for (const auto it : m_Switches) {
-        Switch(it.first.first, it.second);};};
-private:
-  void Switch(const wxString& name, std::function<void(bool)> process ) const {
-    if (Found(name))
-      process((FoundSwitch(name) == wxCMD_SWITCH_ON));};
-  
-  const std::vector<std::pair<std::pair<wxString, wxString>, std::function<void(bool)>>> m_Switches; 
-};
 
 wxExSTCEntryDialog* wxExEx::m_Dialog = NULL;
 wxExViMacros wxExEx::m_Macros;
@@ -522,83 +498,61 @@ bool wxExEx::CommandSet(const wxString& arg)
     text.Replace("!", "-"); // change negatable char
   }
   
-  wxExCmdLineParser cl(text, std::vector<std::pair<std::pair<wxString, wxString>, std::function<void(bool)>>> { 
-    {{"ai", "Auto Indent"}, [](bool on){wxConfigBase::Get()->Write(_("Auto indent"), on ? 2: 0);}},
-    {{"ac", "Auto Complete"},[](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);}},
-    {{"el", "Edge Line"}, [&](bool on){
-      m_STC->SetEdgeMode(on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);     
-      wxConfigBase::Get()->Write(_("Edge line"), on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);}},
-    {{"ic", "Ignore Case"}, [&](bool on){
-      if (!on) m_SearchFlags |= wxSTC_FIND_MATCHCASE;
-      else     m_SearchFlags &= ~wxSTC_FIND_MATCHCASE;
-      wxExFindReplaceData::Get()->SetMatchCase(!on);}},
-    {{"mw", "Match Words"}, [&](bool on){
-      if (on) m_SearchFlags |= wxSTC_FIND_WHOLEWORD;
-      else    m_SearchFlags &= ~wxSTC_FIND_WHOLEWORD;
-      wxExFindReplaceData::Get()->SetMatchWord(on);}},
-    {{"nu", "show LineNumbers"}, [&](bool on){
-      m_STC->ShowLineNumbers(on);
-      wxConfigBase::Get()->Write(_("Line numbers"), on);}},
-    {{"re", "Regular Expression"}, [&](bool on){
-      if (on) m_SearchFlags |= wxSTC_FIND_REGEXP;
-      else    m_SearchFlags &= ~wxSTC_FIND_REGEXP;
-      wxExFindReplaceData::Get()->SetUseRegEx(on);}},
-    {{"ut", "Use Tabs"}, [&](bool on){
-      m_STC->SetUseTabs(on);
-      wxConfigBase::Get()->Write(_("Use tabs"), on);}},
-    {{"wl", "Wrap Line"}, [&](bool on){
-      m_STC->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
-      wxConfigBase::Get()->Write(_("Wrap line"), on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}},
-    {{"ws", "show WhiteSpace"}, [&](bool on){
-      m_STC->SetViewEOL(on);
-      m_STC->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
-      wxConfigBase::Get()->Write(_("Whitespace"), on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}}});
-  
-  cl.AddSwitch("h", wxEmptyString, "help", wxCMD_LINE_OPTION_HELP);
-  cl.AddOption("ec", wxEmptyString, "Edge Column", wxCMD_LINE_VAL_NUMBER);
-  cl.AddOption("in", wxEmptyString, "INdentation", wxCMD_LINE_VAL_NUMBER);
-  cl.AddOption("sy", wxEmptyString, "SYntax (off)", wxCMD_LINE_VAL_STRING);
-  cl.AddOption("ts", wxEmptyString, "Tab Stop", wxCMD_LINE_VAL_NUMBER);
-  
-  switch (cl.Parse())
-  {
-    case -1: return true; // help
-    case 0: break; // ok 
-    default: return false; // error
-  }
-  
-  if (cl.Found("ec"))
-  {
-    long val;
-    cl.Found("ec", &val);
-    m_STC->SetEdgeColumn(val);
-    wxConfigBase::Get()->Write(_("Edge column"), val);
-  }
-  if (cl.Found("in"))
-  {
-    long val;
-    cl.Found("in", &val);
-    m_STC->SetIndent(val);
-    wxConfigBase::Get()->Write(_("Indent"), val);
-  }
-  if (cl.Found("sy"))
-  {
-    wxString val;
-    cl.Found("sy", &val);
-    if (val != "off") m_STC->SetLexer(val, true); // allow folding
-    else              m_STC->ResetLexer();
-  }
-  if (cl.Found("ts"))
-  {
-    long val;
-    cl.Found("ts", &val);
-    m_STC->SetTabWidth(val);
-    wxConfigBase::Get()->Write(_("Tab width"), val);
-  }
-  
-  cl.Switch();
-  
-  return true;
+  wxExCmdLineParser cl(text, 
+    wxExCmdLineParser::CmdSwitches { 
+      {{"ai", "Auto Indent"}, {wxCMD_LINE_SWITCH_NEGATABLE, [](bool on){wxConfigBase::Get()->Write(_("Auto indent"), on ? 2: 0);}}},
+      {{"ac", "Auto Complete"}, {wxCMD_LINE_SWITCH_NEGATABLE, [](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);}}},
+      {{"el", "Edge Line"}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){
+        m_STC->SetEdgeMode(on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);     
+        wxConfigBase::Get()->Write(_("Edge line"), on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);}}},
+      {{"ic", "Ignore Case"}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){
+        if (!on) m_SearchFlags |= wxSTC_FIND_MATCHCASE;
+        else     m_SearchFlags &= ~wxSTC_FIND_MATCHCASE;
+        wxExFindReplaceData::Get()->SetMatchCase(!on);}}},
+      {{"mw", "Match Words"}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){
+        if (on) m_SearchFlags |= wxSTC_FIND_WHOLEWORD;
+        else    m_SearchFlags &= ~wxSTC_FIND_WHOLEWORD;
+        wxExFindReplaceData::Get()->SetMatchWord(on);}}},
+      {{"nu", "show LineNumbers"}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){
+        m_STC->ShowLineNumbers(on);
+        wxConfigBase::Get()->Write(_("Line numbers"), on);}}},
+      {{"re", "Regular Expression"}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){
+        if (on) m_SearchFlags |= wxSTC_FIND_REGEXP;
+        else    m_SearchFlags &= ~wxSTC_FIND_REGEXP;
+        wxExFindReplaceData::Get()->SetUseRegEx(on);}}},
+      {{"ut", "Use Tabs"}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){
+        m_STC->SetUseTabs(on);
+        wxConfigBase::Get()->Write(_("Use tabs"), on);}}},
+      {{"wl", "Wrap Line"}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){
+        m_STC->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
+        wxConfigBase::Get()->Write(_("Wrap line"), on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}}},
+      {{"ws", "show WhiteSpace"}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){
+        m_STC->SetViewEOL(on);
+        m_STC->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+        wxConfigBase::Get()->Write(_("Whitespace"), on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}}}},
+    wxExCmdLineParser::CmdOptions {
+      {{"ec", "Edge Column"}, {wxCMD_LINE_VAL_NUMBER, [&]() {
+        long val;
+        cl.Found("ec", &val);
+        m_STC->SetEdgeColumn(val);
+        wxConfigBase::Get()->Write(_("Edge column"), val);}}},
+      {{"in", "INdentation"}, {wxCMD_LINE_VAL_NUMBER, [&]() {
+        long val;
+        cl.Found("in", &val);
+        m_STC->SetIndent(val);
+        wxConfigBase::Get()->Write(_("Indent"), val);}}},
+      {{"sy", "SYntax (off)"}, {wxCMD_LINE_VAL_STRING, [&]() {
+        wxString val;
+        cl.Found("sy", &val);
+        if (val != "off") m_STC->SetLexer(val, true); // allow folding
+        else              m_STC->ResetLexer();}}},
+      {{"ts", "Tab Stop"}, {wxCMD_LINE_VAL_NUMBER, [&]() {
+        long val;
+        cl.Found("ts", &val);
+        m_STC->SetTabWidth(val);
+        wxConfigBase::Get()->Write(_("Tab width"), val);}}}});
+
+  return cl.Parse();
 }
 
 void wxExEx::Cut(bool show_message)
