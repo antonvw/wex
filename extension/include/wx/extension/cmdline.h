@@ -11,6 +11,7 @@
 #include <utility>
 #include <vector>
 #include <wx/any.h>
+#include <wx/app.h>
 #include <wx/cmdline.h>
 #include <wx/datetime.h>
 
@@ -51,10 +52,11 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
         AddSwitch("h", wxEmptyString, "help", wxCMD_LINE_OPTION_HELP);
       }}
 
-    /// Constructor from argc and argv.
+    /// Constructor using command line from  wxTheApp.
     wxExCmdLineParser(
-      int argc, char **argv, const CmdSwitches & s, const CmdOptions & o)
-      : wxExCmdLineParser(wxEmptyString, s, o) {SetCmdLine(argc, argv);};
+      const CmdSwitches & s, const CmdOptions & o)
+      : wxExCmdLineParser(wxEmptyString, s, o) {
+      SetCmdLine(wxTheApp->argc, wxTheApp->argv);};
     
     /// Parses the command line and invokes callbacks, returns -1 for help, 
     /// 0 if ok, and a positive value if error occurred. 
