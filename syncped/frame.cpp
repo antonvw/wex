@@ -1409,7 +1409,7 @@ bool Frame::OpenFile(
         line_number,
         match,
         col_number,
-        flags,
+        flags | m_App->GetFlags(),
         0xFFFF);
         
       const wxString key(filename.GetFullPath());
