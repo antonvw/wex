@@ -425,16 +425,16 @@ const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
 
 bool wxExFrameWithHistory::Grep(const wxString& arg)
 {
+  wxString arg1, arg2;
   int arg3;
-  wxExCmdLineParser cl(arg, 
+  if (wxExCmdLineParser(arg, 
     wxExCmdLineParser::CmdSwitches {
       {{"r", "recursive"}, {0, [&](bool on) {arg3 = wxDIR_FILES | (on ? wxDIR_DIRS: 0);}}}},
-    wxExCmdLineParser::CmdOptions());
-  cl.AddParam("match", wxCMD_LINE_VAL_STRING);
-  cl.AddParam("folder", wxCMD_LINE_VAL_STRING);
-  cl.AddParam("extension", wxCMD_LINE_VAL_STRING);
-
-  if (cl.Parse() > 0)
+    wxExCmdLineParser::CmdOptions(),
+    wxExCmdLineParser::CmdParams {
+      {"match", {0, [&](std::vector<wxString> & v) {wxExFindReplaceData::Get()->SetFindString(v[0]);}}},
+      {"folder", {0, [&](std::vector<wxString> & v) {arg1 = v[1];}}},
+      {"extension", {0, [&](std::vector<wxString> & v) {arg2 = v[2];}}}}).Parse() != 0)
   {
     return false;
   }
@@ -450,12 +450,8 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   auto* stc = GetSTC();
   if (stc != NULL)
     wxSetWorkingDirectory(stc->GetFileName().GetPath());
-  wxExFindReplaceData::Get()->SetFindString(cl.GetParam(0));
   wxExFindReplaceData::Get()->SetUseRegEx(true);
   wxLogStatus(GetFindReplaceInfoText());
-  
-  const wxString arg1(cl.GetParam(1));
-  const wxString arg2(cl.GetParam(2));
   
   Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
     
