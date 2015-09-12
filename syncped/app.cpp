@@ -39,8 +39,7 @@ bool App::OnInit()
   
   bool version = false;
 
-  wxExCmdLineParser cl(argc, argv, 
-    wxExCmdLineParser::CmdSwitches {
+  wxExCmdLineParser cl(wxExCmdLineParser::CmdSwitches {
       {{"l", _("show locale")}, {0, [&](bool on) {
         wxLogMessage("Catalog dir: %s\nName: %s\nCanonical name: %s\nLanguage: %d\nLocale: %s\nIs ok: %d\nIs available: %d",
           GetCatalogDir().c_str(),
