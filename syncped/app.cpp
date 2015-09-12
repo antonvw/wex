@@ -39,7 +39,7 @@ bool App::OnInit()
   
   bool version = false;
 
-  wxExCmdLineParser cl(wxExCmdLineParser::CmdSwitches {
+  if (wxExCmdLineParser(wxExCmdLineParser::CmdSwitches {
       {{"l", _("show locale")}, {0, [&](bool on) {
         wxLogMessage("Catalog dir: %s\nName: %s\nCanonical name: %s\nLanguage: %d\nLocale: %s\nIs ok: %d\nIs available: %d",
           GetCatalogDir().c_str(),
@@ -58,23 +58,14 @@ bool App::OnInit()
         version = true;}}}},
     wxExCmdLineParser::CmdOptions {
       {{"c", _("command")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
-        any.GetAs(&m_Command);}}}});
-
-  cl.AddParam(
-    _("input file:line number:column number"),
-    wxCMD_LINE_VAL_STRING,
-    wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
-    
-  if (cl.Parse() != 0 || version)
+        any.GetAs(&m_Command);}}}},
+    wxExCmdLineParser::CmdParams {
+      {_("input file:line number:column number"), {wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE, [&](std::vector<wxString> & v) {
+        m_Files = v;}}}}).Parse() != 0 || version)
   {
     return false;
   }
 
-  for (size_t i = 0; i < cl.GetParamCount(); i++)
-  {
-    m_Files.push_back(cl.GetParam(i));
-  }
-  
   Frame* frame = new Frame(this);
   frame->Show();
   

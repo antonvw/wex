@@ -21,24 +21,35 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
   public:
     /// Switches: 
     /// - pair of option name and description
-    /// - pair of flags and process callback of option is found
+    /// - pair of flags and process callback if option is found
     typedef std::vector<std::pair<
       std::pair<wxString, wxString>, 
       std::pair<int, std::function<void(bool)>>>> CmdSwitches;
 
     /// Options: 
     /// - pair of option name and description
-    /// - pair of command line param type and process callback of option is found
+    /// - pair of command line param type and process callback if option is found
     typedef std::vector<std::pair<
       std::pair<wxString, wxString>, 
       std::pair<wxCmdLineParamType, std::function<void(wxAny)>>>> CmdOptions;
 
-    /// Contructor, specify switches and options.
+    /// Params (currently only string value supported): 
+    /// - description
+    /// - pair of flags and process callback if param is present
+    typedef std::vector<std::pair<
+      wxString, 
+      std::pair<int, std::function<void(std::vector<wxString> &)>>>> CmdParams;
+  
+    /// Contructor, 
     wxExCmdLineParser(
-      const wxString& cmdline, const CmdSwitches & s, const CmdOptions & o) 
+      /// the command line to be parsed
+      const wxString& cmdline, 
+      /// switches, options and params
+      const CmdSwitches & s, const CmdOptions & o, const CmdParams & p = CmdParams()) 
       : wxCmdLineParser(cmdline) 
       , m_Switches(s) 
-      , m_Options(o) {
+      , m_Options(o)
+      , m_Params(p) {
       for (const auto it : s) 
       {
         AddSwitch(it.first.first, wxEmptyString, it.first.second, it.second.first);
@@ -47,19 +58,25 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
       {
         AddOption(it.first.first, wxEmptyString, it.first.second, it.second.first);
       };
-      if (!s.empty() || !o.empty())
+      for (const auto it : p) 
+      {
+        AddParam(it.first, wxCMD_LINE_VAL_STRING, it.second.first);
+      };
+      if (!s.empty() || !o.empty() || !p.empty())
       {
         AddSwitch("h", wxEmptyString, "help", wxCMD_LINE_OPTION_HELP);
       }}
 
-    /// Constructor using command line from  wxTheApp.
+    /// Constructor using command line from wxTheApp.
     wxExCmdLineParser(
-      const CmdSwitches & s, const CmdOptions & o)
-      : wxExCmdLineParser(wxEmptyString, s, o) {
+      const CmdSwitches & s, const CmdOptions & o, const CmdParams & p = CmdParams())
+      : wxExCmdLineParser(wxEmptyString, s, o, p) {
       SetCmdLine(wxTheApp->argc, wxTheApp->argv);};
     
-    /// Parses the command line and invokes callbacks, returns -1 for help, 
-    /// 0 if ok, and a positive value if error occurred. 
+    /// Parses the command line and invokes callbacks, returns:
+    /// - -1 for help, 
+    /// - 0 if ok, 
+    /// - a positive value if an error occurred. 
     int Parse(bool giveUsage = true) {
       const int res = wxCmdLineParser::Parse(giveUsage);
       if (res == 0) // ok
@@ -108,9 +125,19 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
             it.second.second(any);
           }
         }
+        for (const auto it : m_Params) 
+        {
+          std::vector<wxString> v;
+          for (size_t i = 0; i < GetParamCount(); i++)
+          {
+            v.push_back(GetParam(i));
+          }
+          it.second.second(v);
+        }
       }
       return res;};
 private:
   const CmdOptions m_Options; 
+  const CmdParams m_Params; 
   const CmdSwitches m_Switches; 
 };
