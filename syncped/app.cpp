@@ -62,7 +62,10 @@ bool App::OnInit()
         version = true;}}}},
     wxExCmdLineParser::CmdOptions {
       {{"c", _("command")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
-        any.GetAs(&m_Command);}}}},
+        any.GetAs(&m_Command);}}},
+      {{"S", _("source file")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
+        any.GetAs(&m_Command);
+        m_Command = ":so " + m_Command;}}}},
     wxExCmdLineParser::CmdParams {
       {_("input file:line number:column number"), {wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE, [&](std::vector<wxString> & v) {
         m_Files = v;}}}}).Parse() != 0 || version)
