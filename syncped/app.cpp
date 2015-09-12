@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/cmdline.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include "app.h"
@@ -21,7 +22,7 @@ wxIMPLEMENT_APP(App);
 void App::MacOpenFiles(const wxArrayString& fileNames)
 {
   Frame* frame = wxDynamicCast(GetTopWindow(), Frame);
-  wxExOpenFiles(frame, wxExToVectorString(fileNames).Get());
+  wxExOpenFiles(frame, wxExToVectorString(fileNames).Get(), m_Flags);
 }
 #endif
 
@@ -30,6 +31,7 @@ bool App::OnInit()
   // This must be the first statement, other methods might use the name.
   SetAppName("syncped");
   
+  m_Flags = 0;
   m_Split = -1;
   
   if (!wxExApp::OnInit())
@@ -53,6 +55,8 @@ bool App::OnInit()
         m_Split = wxBOTTOM;}}},
       {{"O", _("split tabs vertically")}, {0, [&](bool on) {
         m_Split = wxRIGHT;}}},
+      {{"R", _("readonly mode")}, {0, [&](bool on) {
+        m_Flags = wxExSTC::STC_WIN_READ_ONLY;}}},
       {{"v", _("show version")}, {0, [&](bool on) {
         wxLogMessage(wxExGetVersionInfo().GetVersionOnlyString());
         version = true;}}}},
