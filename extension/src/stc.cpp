@@ -1405,8 +1405,93 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_FIND_REPLACE_ALL, [=](wxFindDialogEvent& event) {
     ReplaceAll(frd->GetFindString(), frd->GetReplaceString());});
     
-  Bind(wxEVT_CHAR, &wxExSTC::OnChar, this);
-  
+  Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
+    if (!m_vi.GetIsActive())
+    {
+      if (wxIsalnum(event.GetUnicodeKey()))
+      {
+        m_AddingChars = true;
+      }
+    }
+    else if (m_vi.GetMode() == wxExVi::MODE_INSERT)
+    {
+      if (wxIsalnum(event.GetUnicodeKey()))
+      {
+        m_AddingChars = true;
+      }
+    
+      CheckAutoComp(event.GetUnicodeKey());
+    }
+    else
+    {
+      m_AddingChars = false;
+    }
+
+    if (m_vi.OnChar(event))
+    {
+      if (
+        GetReadOnly() && 
+        wxIsalnum(event.GetUnicodeKey()))
+      {
+        wxLogStatus(_("Document is readonly"));
+        return;
+      }
+      if (HexMode())
+      {
+        if (GetOvertype())
+        {
+          if (wxExHexModeLine(&m_HexMode).Replace(event.GetUnicodeKey()))
+          {
+            CharRight();
+          }
+        }
+        return;
+      }
+      if (!m_vi.GetIsActive())
+      {
+        CheckAutoComp(event.GetUnicodeKey());
+      }
+      event.Skip();
+    }
+
+    if (
+      event.GetUnicodeKey() == '>' && 
+      m_Lexer.GetScintillaLexer() == "hypertext")
+     {
+       const int match_pos = FindText(
+         GetCurrentPos() - 1,
+         PositionFromLine(GetCurrentLine()),
+         "<");
+       if (match_pos != wxSTC_INVALID_POSITION)
+       {
+         const wxString match(GetWordAtPos(match_pos + 1));
+         if (
+           !match.StartsWith("/") &&
+            GetCharAt(GetCurrentPos() - 2) != '/' &&
+           (m_Lexer.GetLanguage() == "xml" || m_Lexer.IsKeyword(match)) &&
+           !SelectionIsRectangle())
+         {
+           const wxString add("</" + match + ">");
+           if (m_vi.GetIsActive())
+           {
+             const int esc = 27;
+             if (
+               !m_vi.Command(add.ToStdString()) ||
+               !m_vi.Command(wxString(wxUniChar(esc)).ToStdString()) ||
+               !m_vi.Command("%") ||
+               !m_vi.Command("i"))
+             {
+               wxLogStatus("Autocomplete failed");
+             }
+           }
+           else
+           {
+             InsertText(GetCurrentPos(), add);
+           }
+         }
+       }
+     }});
+	  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Copy();}, wxID_COPY);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Cut();}, wxID_CUT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Paste();}, wxID_PASTE);
@@ -1431,15 +1516,9 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_Zoom);}, ID_EDIT_ZOOM_OUT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(true);}, ID_EDIT_FIND_NEXT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(false);}, ID_EDIT_FIND_PREVIOUS);
-  
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (GetSelectedText().empty())
-    {
-      wxLaunchDefaultBrowser(GetFileName().GetFullPath());
-    }
-    else
-    {
-      wxLaunchDefaultBrowser(GetSelectedText());}}, ID_EDIT_OPEN_BROWSER);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetSelectedText().empty() ?
+      wxLaunchDefaultBrowser(GetFileName().GetFullPath()):
+      wxLaunchDefaultBrowser(GetSelectedText());}, ID_EDIT_OPEN_BROWSER);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const int level = GetFoldLevel(GetCurrentLine());
@@ -1480,21 +1559,18 @@ void wxExSTC::Initialize(bool file_exists)
         wxExFrame::UpdateStatusBar(this, "PaneFileType");
 #endif
       }
-    }
-    }, ID_EDIT_EOL_DOS, ID_EDIT_EOL_MAC);
+    }}, ID_EDIT_EOL_DOS, ID_EDIT_EOL_MAC);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     int line = (event.GetId() == ID_EDIT_MARKER_NEXT ? 
       wxStyledTextCtrl::MarkerNext(GetCurrentLine() + 1, 0xFFFF):
       wxStyledTextCtrl::MarkerPrevious(GetCurrentLine() - 1, 0xFFFF));
-      
     if (line == -1)
     {
       line = (event.GetId() == ID_EDIT_MARKER_NEXT ?
         wxStyledTextCtrl::MarkerNext(0, 0xFFFF):
         wxStyledTextCtrl::MarkerPrevious(GetLineCount() - 1, 0xFFFF));
     }
-      
     if (line != -1)
     {
       GotoLine(line);
@@ -1620,102 +1696,6 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
   UseModificationMarkers(true);
 }
   
-void wxExSTC::OnChar(wxKeyEvent& event)
-{
-  if (!m_vi.GetIsActive())
-  {
-    if (wxIsalnum(event.GetUnicodeKey()))
-    {
-      m_AddingChars = true;
-    }
-  }
-  else if (m_vi.GetMode() == wxExVi::MODE_INSERT)
-  {
-    if (wxIsalnum(event.GetUnicodeKey()))
-    {
-      m_AddingChars = true;
-    }
-  
-    CheckAutoComp(event.GetUnicodeKey());
-  }
-  else
-  {
-    m_AddingChars = false;
-  }
-
-  if (m_vi.OnChar(event))
-  {
-    if (
-      GetReadOnly() && 
-      wxIsalnum(event.GetUnicodeKey()))
-    {
-      wxLogStatus(_("Document is readonly"));
-      return;
-    }
-
-    if (HexMode())
-    {
-      if (GetOvertype())
-      {
-        if (wxExHexModeLine(&m_HexMode).Replace(event.GetUnicodeKey()))
-        {
-          CharRight();
-        }
-      }
-      
-      return;
-    }
-    
-    if (!m_vi.GetIsActive())
-    {
-      CheckAutoComp(event.GetUnicodeKey());
-    }
-  
-    event.Skip();
-  }
-
-  if (
-    event.GetUnicodeKey() == '>' && 
-    m_Lexer.GetScintillaLexer() == "hypertext")
-   {
-     const int match_pos = FindText(
-       GetCurrentPos() - 1,
-       PositionFromLine(GetCurrentLine()),
-       "<");
-
-     if (match_pos != wxSTC_INVALID_POSITION)
-     {
-       const wxString match(GetWordAtPos(match_pos + 1));
-
-       if (
-         !match.StartsWith("/") &&
-          GetCharAt(GetCurrentPos() - 2) != '/' &&
-         (m_Lexer.GetLanguage() == "xml" || m_Lexer.IsKeyword(match)) &&
-         !SelectionIsRectangle())
-       {
-         const wxString add("</" + match + ">");
-         
-         if (m_vi.GetIsActive())
-         {
-           const int esc = 27;
-           
-           if (
-             !m_vi.Command(add.ToStdString()) ||
-             !m_vi.Command(wxString(wxUniChar(esc)).ToStdString()) ||
-             !m_vi.Command("%") ||
-             !m_vi.Command("i"))
-           {
-             wxLogStatus("Autocomplete failed");
-           }
-         }
-         else
-         {
-           InsertText(GetCurrentPos(), add);
-         }
-       }
-     }
-   }
-}
 
 void wxExSTC::OnIdle(wxIdleEvent& event)
 {
