@@ -31,6 +31,7 @@ class Frame : public DecoratedFrame
 public:
   explicit Frame(App* app);
   
+  bool IsClosing() const {return m_IsClosing;};
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,

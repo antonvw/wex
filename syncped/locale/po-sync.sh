@@ -19,6 +19,7 @@ substitute syncped.pot
 
 # merge (join) all po files
 for f in *.po; do
+#  xgettext --no-location -j -k_ -o $f --copyright-holder="A.M. van Wezenbeek" $locs
   xgettext -F -j -k_ -o $f --copyright-holder="A.M. van Wezenbeek" $locs
   substitute $f
 done  

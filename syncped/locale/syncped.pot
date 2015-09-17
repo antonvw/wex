@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncped 3.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-02 19:19+0200\n"
+"POT-Creation-Date: 2015-09-17 19:21+0200\n"
 "PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,28 +16,36 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../app.cpp:95
-msgid "input file:line number:column number"
-msgstr ""
-
-#: ../app.cpp:99
-msgid "command"
-msgstr ""
-
-#: ../app.cpp:100
+#: ../app.cpp:45
 msgid "show locale"
 msgstr ""
 
-#: ../app.cpp:101
+#: ../app.cpp:54
 msgid "split tabs horizontally"
 msgstr ""
 
-#: ../app.cpp:102
+#: ../app.cpp:56
 msgid "split tabs vertically"
 msgstr ""
 
-#: ../app.cpp:103
+#: ../app.cpp:58
+msgid "readonly mode"
+msgstr ""
+
+#: ../app.cpp:60
 msgid "show version"
+msgstr ""
+
+#: ../app.cpp:64
+msgid "vi command"
+msgstr ""
+
+#: ../app.cpp:66
+msgid "source file"
+msgstr ""
+
+#: ../app.cpp:70
+msgid "input file:line number:column number"
 msgstr ""
 
 #: ../frame.cpp:40
@@ -52,111 +60,111 @@ msgid ""
 "and saved in the same directory as where the executable is."
 msgstr ""
 
-#: ../frame.cpp:117
+#: ../frame.cpp:157
 msgid "Project Files"
 msgstr ""
 
-#: ../frame.cpp:136 ../frame.cpp:162 ../frame.cpp:245
+#: ../frame.cpp:176 ../frame.cpp:202 ../frame.cpp:283
 msgid "Explorer"
 msgstr ""
 
-#: ../frame.cpp:140 ../frame.cpp:247 ../frame.cpp:415
+#: ../frame.cpp:180 ../frame.cpp:285 ../frame.cpp:458
 msgid "History"
 msgstr ""
 
-#: ../frame.cpp:149
+#: ../frame.cpp:189
 msgid "Files"
 msgstr ""
 
-#: ../frame.cpp:170
+#: ../frame.cpp:210
 msgid "Output"
 msgstr ""
 
-#: ../frame.cpp:276
+#: ../frame.cpp:314
 msgid "Process is running"
 msgstr ""
 
-#: ../frame.cpp:344
+#: ../frame.cpp:387
 msgid "Ascii Table"
 msgstr ""
 
-#: ../frame.cpp:435
+#: ../frame.cpp:478
 msgid "Projects"
 msgstr ""
 
-#: ../frame.cpp:442
+#: ../frame.cpp:485
 msgid "Select Projects"
 msgstr ""
 
-#: ../frame.cpp:552
+#: ../frame.cpp:595
 msgid "project"
 msgstr ""
 
-#: ../frame.cpp:643
+#: ../frame.cpp:686
 msgid "File Name"
 msgstr ""
 
-#: ../frame.cpp:643
+#: ../frame.cpp:686
 msgid "Input"
 msgstr ""
 
-#: ../frame.cpp:778
+#: ../frame.cpp:821
 msgid "Comparator"
 msgstr ""
 
-#: ../frame.cpp:779
+#: ../frame.cpp:822
 msgid "Set Comparator"
 msgstr ""
 
-#: ../frame.cpp:786 ../frame.cpp:790
+#: ../frame.cpp:829 ../frame.cpp:833
 msgid "List Font"
 msgstr ""
 
-#: ../frame.cpp:787
+#: ../frame.cpp:830
 msgid "Set List Font"
 msgstr ""
 
-#: ../frame.cpp:809 ../frame.cpp:811 ../frame.cpp:818
+#: ../frame.cpp:852 ../frame.cpp:854 ../frame.cpp:861
 msgid "List Colour"
 msgstr ""
 
-#: ../frame.cpp:819
+#: ../frame.cpp:862
 msgid "Set List Read Only Colour"
 msgstr ""
 
-#: ../frame.cpp:875
+#: ../frame.cpp:918
 msgid "Project Save As"
 msgstr ""
 
-#: ../frame.cpp:1054 ../support.cpp:83
+#: ../frame.cpp:1097 ../support.cpp:83
 msgid "vi mode"
 msgstr ""
 
-#: ../frame.cpp:1605
+#: ../frame.cpp:1655
 msgid "Split Vertically"
 msgstr ""
 
-#: ../frame.cpp:1606
+#: ../frame.cpp:1656
 msgid "Split Horizontally"
 msgstr ""
 
-#: ../frame.cpp:1608 ../frame.cpp:1617
+#: ../frame.cpp:1658 ../frame.cpp:1667
 msgid "Split"
 msgstr ""
 
-#: ../frame.cpp:1613
+#: ../frame.cpp:1663
 msgid "Rearrange Vertically"
 msgstr ""
 
-#: ../frame.cpp:1614
+#: ../frame.cpp:1664
 msgid "Rearrange Horizontally"
 msgstr ""
 
-#: ../frame.cpp:1620
+#: ../frame.cpp:1670
 msgid "Close A&ll"
 msgstr ""
 
-#: ../frame.cpp:1624
+#: ../frame.cpp:1674
 msgid "Close Others"
 msgstr ""
 

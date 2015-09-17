@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/msgout.h>
 #include <wx/extension/cmdline.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
@@ -31,13 +32,12 @@ bool App::OnInit()
   // This must be the first statement, other methods might use the name.
   SetAppName("syncped");
   
-  m_Flags = 0;
-  m_Split = -1;
-  
   if (!wxExApp::OnInit())
   {
     return false;
   }
+  
+  Reset();
   
   bool version = false;
 
@@ -58,10 +58,10 @@ bool App::OnInit()
       {{"R", _("readonly mode")}, {0, [&](bool on) {
         m_Flags = wxExSTC::STC_WIN_READ_ONLY;}}},
       {{"v", _("show version")}, {0, [&](bool on) {
-        wxLogMessage(wxExGetVersionInfo().GetVersionOnlyString());
+        wxMessageOutput::Get()->Printf("%s", wxExGetVersionInfo().GetVersionOnlyString().c_str());
         version = true;}}}},
     wxExCmdLineParser::CmdOptions {
-      {{"c", _("command")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
+      {{"c", _("vi command")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
         any.GetAs(&m_Command);}}},
       {{"S", _("source file")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
         any.GetAs(&m_Command);
@@ -74,7 +74,11 @@ bool App::OnInit()
   }
 
   Frame* frame = new Frame(this);
-  frame->Show();
+  
+  if (!frame->IsClosing())
+  {
+    frame->Show();
+  }
   
   return true;
 }
@@ -82,5 +86,6 @@ bool App::OnInit()
 void App::Reset()
 {
   m_Command.clear();
+  m_Flags = 0;
   m_Split = -1;
 }
