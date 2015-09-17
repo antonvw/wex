@@ -361,7 +361,6 @@ public:
   void WordRightRectExtend();
   void WordRightEndRectExtend() {;};
 protected:
-  void OnChar(wxKeyEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:
