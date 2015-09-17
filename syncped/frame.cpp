@@ -236,7 +236,6 @@ Frame::Frame(App* app)
   if (m_App->GetFiles().empty())
   {
     long count = 0;
-    m_App->Reset();
       
     if (wxConfigBase::Get()->Read("OpenFiles", &count))
     {
@@ -268,7 +267,6 @@ Frame::Frame(App* app)
   {
     GetManager().GetPane("PROJECTS").Hide();
     wxExOpenFiles(this, m_App->GetFiles(), 0, wxDIR_FILES); // only files in this dir
-    m_App->Reset();
   }
   
   StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
@@ -305,13 +303,13 @@ Frame::Frame(App* app)
     if (event.CanVeto())
     {
       if (
-         m_Process->IsRunning() || 
+         (m_Process != NULL && m_Process->IsRunning()) || 
         !m_Editors->ForEach(ID_ALL_STC_CLOSE) || 
         !ForEach(m_Projects, ID_LIST_ALL_CLOSE))
       {
         event.Veto();
         
-        if (m_Process->IsRunning())
+        if (m_Process != NULL && m_Process->IsRunning())
         {
           wxLogStatus(_("Process is running"));
         }
@@ -331,8 +329,11 @@ Frame::Frame(App* app)
     wxConfigBase::Get()->Write("ShowProjects", 
       m_Projects != NULL && m_Projects->IsShown());
   
-    wxDELETE(m_Process);
-    event.Skip();});
+    if (m_App->GetCommand().empty())
+    {
+      wxDELETE(m_Process);
+      event.Skip();
+    }});
     
   Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=](wxAuiNotebookEvent& event) {
     FileHistoryPopupMenu();}, NOTEBOOK_EDITORS);
@@ -354,6 +355,8 @@ Frame::Frame(App* app)
     event.Check(GetManager().GetPane("OUTPUT").IsShown());}, ID_VIEW_OUTPUT);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(m_Projects != NULL && GetManager().GetPane("PROJECTS").IsShown());}, ID_VIEW_PROJECTS);
+
+  m_App->Reset();
 }    
 
 wxExListViewFileName* Frame::Activate(
