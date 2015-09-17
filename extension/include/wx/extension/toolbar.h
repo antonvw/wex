@@ -13,7 +13,6 @@
 #if wxUSE_GUI
 
 class wxExManagedFrame;
-class wxExTextCtrl;
 
 /// Offers a toolbar together with stock art.
 /// Default no controls are added, you have to call AddControls to do that.
@@ -58,13 +57,6 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxAUI_TB_DEFAULT_STYLE);
-private:
-  void Initialize();
-
-  wxExTextCtrl* m_FindCtrl;
-  wxCheckBox* m_IsRegularExpression;
-  wxCheckBox* m_MatchCase;
-  wxCheckBox* m_MatchWholeWord;
 };
 
 /// Offers a options toolbar, containing checkboxes.
@@ -77,8 +69,5 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxAUI_TB_DEFAULT_STYLE);
-private:
-  wxCheckBox* m_HexMode;
-  wxCheckBox* m_SyncMode;
 };
 #endif // wxUSE_GUI

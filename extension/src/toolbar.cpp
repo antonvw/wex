@@ -15,7 +15,6 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
-//#include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
@@ -32,12 +31,12 @@ enum
 // Support class.
 // Offers a find text ctrl that allows you to find text
 // on a current STC on an wxExFrame.
-class wxExTextCtrl : public wxExFindTextCtrl
+class FindTextCtrl : public wxExFindTextCtrl
 {
 public:
   /// Constructor. Fills the text ctrl with value 
   /// from FindReplace from config.
-  wxExTextCtrl(
+  FindTextCtrl(
     wxWindow* parent,
     wxExFrame* frame,
     wxWindowID id = wxID_ANY,
@@ -115,10 +114,26 @@ wxExFindToolBar::wxExFindToolBar(
   long style)
   : wxExToolBar(frame, id, pos, size, style)
 {
-  Initialize();
+  FindTextCtrl* findCtrl = new FindTextCtrl(this, GetFrame());
+  wxCheckBox* matchCase = new wxCheckBox(this, 
+    ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
+  wxCheckBox* matchWholeWord = new wxCheckBox(this, 
+    ID_MATCH_WHOLE_WORD, wxExFindReplaceData::Get()->GetTextMatchWholeWord());
+  wxCheckBox* isRegularExpression = new wxCheckBox(this, 
+    ID_REGULAR_EXPRESSION, wxExFindReplaceData::Get()->GetTextRegEx());
+
+#if wxUSE_TOOLTIPS
+  matchCase->SetToolTip(_("Search case sensitive"));
+  matchWholeWord->SetToolTip(_("Search matching words"));
+  isRegularExpression->SetToolTip(_("Search using regular expressions"));
+#endif
+
+  matchCase->SetValue(wxExFindReplaceData::Get()->MatchCase());
+  matchWholeWord->SetValue(wxExFindReplaceData::Get()->MatchWord());
+  isRegularExpression->SetValue(wxExFindReplaceData::Get()->UseRegEx());
 
   // And place the controls on the toolbar.
-  AddControl(m_FindCtrl);
+  AddControl(findCtrl);
 
   AddTool(
     wxID_DOWN, 
@@ -131,55 +146,31 @@ wxExFindToolBar::wxExFindToolBar(
     wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR),
     _("Find previous"));
 
-  AddControl(m_MatchWholeWord);
-  AddControl(m_MatchCase);
-  AddControl(m_IsRegularExpression);
+  AddControl(matchWholeWord);
+  AddControl(matchCase);
+  AddControl(isRegularExpression);
 
   Realize();
   
   Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
     wxExFindReplaceData::Get()->SetMatchWord(
-      m_MatchWholeWord->GetValue());}, ID_MATCH_WHOLE_WORD);
+      matchWholeWord->GetValue());}, ID_MATCH_WHOLE_WORD);
   Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
     wxExFindReplaceData::Get()->SetMatchCase(
-      m_MatchCase->GetValue());}, ID_MATCH_CASE);
+      matchCase->GetValue());}, ID_MATCH_CASE);
   Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
     wxExFindReplaceData::Get()->SetUseRegEx(
-      m_IsRegularExpression->GetValue());}, ID_REGULAR_EXPRESSION);
+      isRegularExpression->GetValue());}, ID_REGULAR_EXPRESSION);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_FindCtrl->Find(true);}, wxID_DOWN);
+    findCtrl->Find(true);}, wxID_DOWN);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_FindCtrl->Find(false);}, wxID_UP);
+    findCtrl->Find(false);}, wxID_UP);
 
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(!m_FindCtrl->GetValue().empty());}, wxID_DOWN);
+    event.Enable(!findCtrl->GetValue().empty());}, wxID_DOWN);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(!m_FindCtrl->GetValue().empty());}, wxID_UP);
-}
-
-void wxExFindToolBar::Initialize()
-{
-  m_FindCtrl = new wxExTextCtrl(this, GetFrame());
-
-  m_MatchCase = new wxCheckBox(this, 
-    ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
-
-  m_MatchWholeWord = new wxCheckBox(this, 
-    ID_MATCH_WHOLE_WORD, wxExFindReplaceData::Get()->GetTextMatchWholeWord());
-
-  m_IsRegularExpression = new wxCheckBox(this, 
-    ID_REGULAR_EXPRESSION, wxExFindReplaceData::Get()->GetTextRegEx());
-
-#if wxUSE_TOOLTIPS
-  m_MatchCase->SetToolTip(_("Search case sensitive"));
-  m_MatchWholeWord->SetToolTip(_("Search matching words"));
-  m_IsRegularExpression->SetToolTip(_("Search using regular expressions"));
-#endif
-
-  m_MatchCase->SetValue(wxExFindReplaceData::Get()->MatchCase());
-  m_MatchWholeWord->SetValue(wxExFindReplaceData::Get()->MatchWord());
-  m_IsRegularExpression->SetValue(wxExFindReplaceData::Get()->UseRegEx());
+    event.Enable(!findCtrl->GetValue().empty());}, wxID_UP);
 }
 
 wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
@@ -188,38 +179,39 @@ wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
   const wxSize& size,
   long style)
   : wxExToolBar(frame, id, pos, size, style)
-  , m_HexMode(new wxCheckBox(
+{
+  wxCheckBox* hexMode = new wxCheckBox(
     this,
     ID_HEX_MODE,
-    "Hex"))
-  , m_SyncMode(new wxCheckBox(
+    "Hex");
+  wxCheckBox* syncMode = new wxCheckBox(
     this,
     ID_SYNC_MODE,
-    "Sync"))
-{
-  AddControl(m_HexMode);
-  AddControl(m_SyncMode);
+    "Sync");
 
 #if wxUSE_TOOLTIPS
-  m_HexMode->SetToolTip(_("Open in hex mode"));
-  m_SyncMode->SetToolTip(_("Synchronize modified files"));
+  hexMode->SetToolTip(_("Open in hex mode"));
+  syncMode->SetToolTip(_("Synchronize modified files"));
 #endif
 
-  m_HexMode->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false));
-  m_SyncMode->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
+  hexMode->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false));
+  syncMode->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
   
+  AddControl(hexMode);
+  AddControl(syncMode);
+
   Realize();
   
   Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
-    wxConfigBase::Get()->Write("HexMode", m_HexMode->GetValue());}, ID_HEX_MODE);
+    wxConfigBase::Get()->Write("HexMode", hexMode->GetValue());}, ID_HEX_MODE);
   Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
-    wxConfigBase::Get()->Write("AllowSync", m_SyncMode->GetValue());
+    wxConfigBase::Get()->Write("AllowSync", syncMode->GetValue());
     GetFrame()->SyncAll();}, ID_SYNC_MODE);
 }
 
 // Implementation of support class.
 
-wxExTextCtrl::wxExTextCtrl(
+FindTextCtrl::FindTextCtrl(
   wxWindow* parent,
   wxExFrame* frame,
   wxWindowID id,
@@ -254,7 +246,7 @@ wxExTextCtrl::wxExTextCtrl(
     }});
 }
 
-void wxExTextCtrl::Find(bool find_next, bool restore_position)
+void FindTextCtrl::Find(bool find_next, bool restore_position)
 {
   // We cannot use events here, as OnFindDialog in stc uses frd data,
   // whereas we need the GetValue here.
