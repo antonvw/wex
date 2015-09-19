@@ -74,20 +74,15 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   const wxString& title,
   long style)
   : wxExFrame(parent, id, title, style)
+  , m_ToolBar(new wxExToolBar(this))
+
 {
   m_Manager.SetManagedWindow(this);
-
-  m_ToolBar = new wxExToolBar(this);
-  m_ToolBar->AddControls();
-
   AddToolBarPane(m_ToolBar, "TOOLBAR", _("Toolbar"));
   AddToolBarPane(new wxExFindToolBar(this), "FINDBAR", _("Findbar"));
   AddToolBarPane(new wxExOptionsToolBar(this), "OPTIONSBAR", _("Optionsbar"));
   AddToolBarPane(CreateExPanel(), "VIBAR");
-  
   m_Manager.Update();
-  
-  GetToolBar()->SetToolDropDown(wxID_FIND, true);
   
   Bind(wxEVT_AUI_PANE_CLOSE, [=](wxAuiManagerEvent& event) {
     // TODO: wxAui should take care of this...
@@ -99,29 +94,6 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     m_Manager.Update();
     });
   
-  Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
-    if (event.IsDropDownClicked())
-    {
-      wxAuiToolBar* tb = static_cast<wxAuiToolBar*>(event.GetEventObject());
-  
-      tb->SetToolSticky(event.GetId(), true);
-  
-      // create the popup menu
-      // line up our menu with the button
-      wxRect rect = tb->GetToolRect(event.GetId());
-      wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
-      pt = ScreenToClient(pt);
-      
-      FindPopupMenu(wxExFindReplaceData::Get()->GetFindStrings(), ID_FIND_FIRST, pt);
-  
-      // make sure the button is "un-stuck"
-      tb->SetToolSticky(event.GetId(), false);
-    }
-    else
-    {
-      event.Skip();
-    }}, wxID_FIND);
-
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(m_Manager.GetPane("FINDBAR").IsShown());}, ID_VIEW_FINDBAR);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
@@ -247,39 +219,6 @@ wxPanel* wxExManagedFrame::CreateExPanel()
   return panel;
 }
 
-void wxExManagedFrame::FindPopupMenu(
-  const std::list < wxString > & l, int first_id, const wxPoint& pos)
-{
-  wxMenu* menu = new wxMenu();
-
-  int i = 0;
-  const int max_size = 25;
-  
-  for (const auto& it : l)
-  {
-    const wxString label = 
-      (it.size() >= max_size - 3 ? it.Left(max_size) + "..." : it);
-    wxMenuItem* item = new wxMenuItem(
-      menu, 
-      first_id + i++, 
-      label);
-
-    menu->Append(item);
-    
-    if (i >= FIND_MAX_FINDS) break;
-  }
-  
-  if (menu->GetMenuItemCount() > 0)
-  {
-    menu->AppendSeparator();
-    menu->Append(ID_CLEAR_FINDS, wxGetStockLabel(wxID_CLEAR));
-      
-    PopupMenu(menu, pos);
-  }
-    
-  delete menu;
-}
-  
 void wxExManagedFrame::GetExCommand(wxExEx* ex, const wxString& command)
 {
   m_exTextCtrl->SetEx(ex, command);

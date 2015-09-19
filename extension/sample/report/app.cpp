@@ -13,7 +13,6 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/listitem.h>
 #include <wx/extension/printing.h>
-#include <wx/extension/process.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
@@ -27,8 +26,6 @@
 
 enum
 {
-  ID_PROCESS_DIALOG,
-  ID_PROCESS_RUN,
   ID_RECENTFILE_MENU
 };
 
@@ -51,7 +48,6 @@ bool wxExRepSampleApp::OnInit()
 
 wxExRepSampleFrame::wxExRepSampleFrame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
-  , m_Process(new wxExProcess())
 {
   SetIcon(wxICON(app));
 
@@ -63,12 +59,6 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
-  wxExMenu *menuProcess = new wxExMenu;
-  menuProcess->Append(ID_PROCESS_DIALOG, wxExEllipsed("Dialog"));
-  menuProcess->Append(ID_PROCESS_RUN, "Run");
-  menuProcess->AppendSeparator();
-  menuProcess->Append(wxID_STOP);
-
   wxExMenu *menuView = new wxExMenu;
   menuView->AppendBars();
 
@@ -78,7 +68,6 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   wxMenuBar *menubar = new wxMenuBar;
   menubar->Append(menuFile, "&File");
   menubar->Append(menuView, "&View");
-  menubar->Append(menuProcess, "&Process");
   menubar->Append(menuHelp, "&Help");
   SetMenuBar(menubar);
 
@@ -149,15 +138,6 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   item.Insert();
   
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExProcess::ConfigDialog(this);}, ID_PROCESS_DIALOG);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Process->Execute();}, ID_PROCESS_RUN);
-
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Process->Kill();}, wxID_STOP);
-    
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
@@ -273,6 +253,7 @@ wxExSTC* wxExRepSampleFrame::GetSTC()
 bool wxExRepSampleFrame::OpenFile(const wxExFileName& file,
   int line_number,
   const wxString& match,
+  int col_number,
   long flags)
 {
   // We cannot use the wxExFrameWithHistory::OpenFile, as that uses GetSTC.
@@ -282,5 +263,5 @@ bool wxExRepSampleFrame::OpenFile(const wxExFileName& file,
     flags = 0;
   }
 
-  return m_STC->Open(file, line_number, match, flags);
+  return m_STC->Open(file, line_number, match, col_number, flags);
 }

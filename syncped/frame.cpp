@@ -279,11 +279,13 @@ Frame::Frame(App* app)
     m_Editors->GetPage(m_Editors->GetPageCount() - 1)->SetFocus();
   }
 
+  GetToolBar()->AddControls(false); // no realize yet
   GetToolBar()->AddControl(m_CheckBoxDirCtrl);
   m_CheckBoxDirCtrl->SetToolTip(_("Explorer"));
   GetToolBar()->AddControl(m_CheckBoxHistory);
   m_CheckBoxHistory->SetToolTip(_("History"));
   GetToolBar()->Realize();
+  
   m_CheckBoxDirCtrl->SetValue(GetManager().GetPane("DIRCTRL").IsShown());
   m_CheckBoxHistory->SetValue(
     wxConfigBase::Get()->ReadBool("ShowHistory", false));

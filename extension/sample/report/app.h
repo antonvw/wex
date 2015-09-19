@@ -17,7 +17,7 @@ public:
   wxExRepSampleApp() {}
 private:
   /// Override the OnInit.
-  virtual bool OnInit();
+  virtual bool OnInit() override;
   DECLARE_NO_COPY_CLASS(wxExRepSampleApp)
 };
 
@@ -32,16 +32,16 @@ protected:
   virtual wxExListViewFileName* Activate(
     wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL);
-  virtual bool AllowClose(wxWindowID id, wxWindow* page);
-  virtual wxExListView* GetListView();
-  virtual wxExSTC* GetSTC();
+  virtual bool AllowClose(wxWindowID id, wxWindow* page) override;
+  virtual wxExListView* GetListView() override;
+  virtual wxExSTC* GetSTC() override;
   virtual bool OpenFile(
     const wxExFileName& file,
     int line_number = 0,
     const wxString& match = wxEmptyString,
-    long flags = 0);
+    int col_number = 0,
+    long flags = 0) override;
 private:
   wxExNotebook* m_NotebookWithLists; ///< all listviews
-  wxExProcess* m_Process;
   wxExSTC* m_STC;
 };

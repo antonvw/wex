@@ -10,21 +10,20 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/toolbar.h>
+#include <wx/extension/managedframe.h>
 #include "test.h"
 
 void fixture::testToolBar()
 {
-  wxExToolBar* tb = new wxExToolBar(m_Frame);
-  wxExFindToolBar* fb = new wxExFindToolBar(m_Frame);
-  wxExOptionsToolBar* ob = new wxExOptionsToolBar(m_Frame);
+  m_Frame->GetToolBar()->AddControls(false);
+  m_Frame->GetToolBar()->AddControls();
   
-  tb->AddTool(wxID_FIND);
-  tb->AddTool(wxID_CLEAR);
-  tb->AddTool(wxID_PREFERENCES);
+  m_Frame->GetToolBar()->AddTool(wxID_FIND);
+  m_Frame->GetToolBar()->AddTool(wxID_CLEAR);
+  m_Frame->GetToolBar()->AddTool(wxID_PREFERENCES);
+  m_Frame->GetToolBar()->Realize();
   
-  tb->AddControls();
-  
-  CPPUNIT_ASSERT(tb->GetFrame() == m_Frame);
-  CPPUNIT_ASSERT(fb->GetFrame() == m_Frame);
-  CPPUNIT_ASSERT(ob->GetFrame() == m_Frame);
+  m_Frame->GetManager().GetPane("FINDBAR").Show();
+  m_Frame->GetManager().GetPane("OPTIONSBAR").Show();
+  m_Frame->GetManager().Update();
 }

@@ -21,6 +21,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stcdlg.h>
+#include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/version.h>
@@ -38,7 +39,6 @@ enum
   ID_CONFIG_DLG_READONLY,
   ID_SHOW_VCS,
   ID_PROCESS_SELECT,
-  ID_PROCESS_RUN,
   ID_STATISTICS_SHOW,
   ID_STC_CONFIG_DLG,
   ID_STC_ENTRY_DLG,
@@ -101,6 +101,7 @@ void wxExSampleDir::OnFile(const wxString& file)
 
 wxExSampleFrame::wxExSampleFrame()
   : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
+  , m_Process(new wxExProcess())
   , m_FlagsSTC(0)
 {
   SetIcon(wxICON(app));
@@ -112,7 +113,8 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
   menuFile->Append(ID_PROCESS_SELECT, "Select Process");
-  menuFile->Append(ID_PROCESS_RUN, "Run Process");
+  menuFile->Append(wxID_EXECUTE);
+  menuFile->Append(wxID_STOP);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
@@ -247,11 +249,29 @@ wxExSampleFrame::wxExSampleFrame()
     }
   }
   
-  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_JUMP_TO);
+  GetToolBar()->AddControls();
+  
+  // The OnCommand keeps statistics.
   Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_CUT, wxID_CLEAR);
-  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_OPEN, wxID_CLOSE_ALL);
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_EXECUTE);
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_JUMP_TO);
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_OPEN, wxID_HELP);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_ListView->Print();}, wxID_PRINT);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_ListView->PrintPreview();}, wxID_PREVIEW);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExPrinting::Get()->GetHtmlPrinter()->PageSetup();}, wxID_PRINT_SETUP);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExProcess::ConfigDialog(this);}, ID_PROCESS_SELECT);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Process->Execute();}, wxID_EXECUTE);
+  
   Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, ID_FIRST, ID_LAST);
   Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, ID_SHELL_COMMAND);
+  
   Bind(wxEVT_UPDATE_UI, &wxExSampleFrame::OnUpdateUI, this, wxID_PRINT);
   Bind(wxEVT_UPDATE_UI, &wxExSampleFrame::OnUpdateUI, this, wxID_PREVIEW);
 }
@@ -294,10 +314,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
         "wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength());
       }
       break;
-  
-    case wxID_PREVIEW: m_ListView->PrintPreview(); break;
-    case wxID_PRINT: m_ListView->Print(); break;
-    case wxID_PRINT_SETUP: wxExPrinting::Get()->GetHtmlPrinter()->PageSetup(); break;
   
     case wxID_SAVE:
       m_STC->GetFile().FileSave();
@@ -450,13 +466,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       }
       break;
       
-    case ID_PROCESS_SELECT:
-      wxExProcess::ConfigDialog(this);
-      break;
-  
-    case ID_PROCESS_RUN:
-      m_Process.Execute(wxEmptyString);
-      break;
       
     case ID_SHELL_COMMAND:
         m_STCShell->Prompt("\nHello '" + event.GetString() + "' from the shell");

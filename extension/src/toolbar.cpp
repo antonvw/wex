@@ -5,6 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <list>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -12,6 +13,7 @@
 #include <wx/config.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/art.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
@@ -49,6 +51,39 @@ private:
   wxExFrame* m_Frame;
 };
 
+void FindPopupMenu(wxWindow* win,
+  const std::list < wxString > & l, int first_id, const wxPoint& pos)
+{
+  wxMenu* menu = new wxMenu();
+
+  int i = 0;
+  const int max_size = 25;
+  
+  for (const auto& it : l)
+  {
+    const wxString label = 
+      (it.size() >= max_size - 3 ? it.Left(max_size) + "..." : it);
+    wxMenuItem* item = new wxMenuItem(
+      menu, 
+      first_id + i++, 
+      label);
+
+    menu->Append(item);
+    
+    if (i >= FIND_MAX_FINDS) break;
+  }
+  
+  if (menu->GetMenuItemCount() > 0)
+  {
+    menu->AppendSeparator();
+    menu->Append(ID_CLEAR_FINDS, wxGetStockLabel(wxID_CLEAR));
+      
+    win->PopupMenu(menu, pos);
+  }
+    
+  delete menu;
+}
+  
 wxExToolBar::wxExToolBar(wxExManagedFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
@@ -60,15 +95,41 @@ wxExToolBar::wxExToolBar(wxExManagedFrame* frame,
 {
 }
 
-void wxExToolBar::AddControls()
+void wxExToolBar::AddControls(bool realize)
 {
   AddTool(wxID_NEW);
   AddTool(wxID_OPEN);
   AddTool(wxID_SAVE);
   AddTool(wxID_PRINT);
   AddTool(wxID_FIND);
+  AddTool(wxID_EXECUTE);
 
-  Realize();
+  SetToolDropDown(wxID_FIND, true);
+  
+  m_Frame->Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
+    if (event.IsDropDownClicked())
+    {
+      wxAuiToolBar* tb = static_cast<wxAuiToolBar*>(event.GetEventObject());
+  
+      tb->SetToolSticky(event.GetId(), true);
+  
+      // create the popup menu
+      // line up our menu with the button
+      wxRect rect = tb->GetToolRect(event.GetId());
+      wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
+      pt = ScreenToClient(pt);
+      
+      FindPopupMenu(this, wxExFindReplaceData::Get()->GetFindStrings(), ID_FIND_FIRST, pt);
+  
+      // make sure the button is "un-stuck"
+      tb->SetToolSticky(event.GetId(), false);
+    }
+    else
+    {
+      event.Skip();
+    }}, wxID_FIND);
+
+  if (realize) Realize();
 }
 
 wxAuiToolBarItem* wxExToolBar::AddTool(

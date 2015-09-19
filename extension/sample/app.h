@@ -24,7 +24,7 @@ public:
   wxExSampleApp() {}
 private:
   /// Override the OnInit.
-  virtual bool OnInit();
+  virtual bool OnInit() override;
   DECLARE_NO_COPY_CLASS(wxExSampleApp)
 };
 
@@ -40,7 +40,7 @@ public:
     wxExGrid* grid);
 private:
   /// Override the OnFile.
-  virtual void OnFile(const wxString& file);
+  virtual void OnFile(const wxString& file) override;
   wxExGrid* m_Grid;
 };
 #endif
@@ -54,7 +54,7 @@ public:
 protected:
   virtual void OnCommandConfigDialog(
     wxWindowID id, 
-    int commandid = wxID_APPLY);
+    int commandid = wxID_APPLY) override;
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
@@ -65,13 +65,13 @@ private:
 #endif
   wxExListView* m_ListView;
   wxExNotebook* m_Notebook;
+  wxExProcess* m_Process;
   wxExSTC* m_STC;
   wxExSTC* m_STCLexers;
   wxExSTCShell* m_STCShell;
 
   long m_FlagsSTC;
   wxExStatistics <int> m_Statistics;
-  wxExProcess m_Process;
 
   DECLARE_NO_COPY_CLASS(wxExSampleFrame)
 };

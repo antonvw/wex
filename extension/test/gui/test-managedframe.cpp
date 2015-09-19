@@ -39,6 +39,7 @@ void fixture::testManagedFrame()
   m_Frame->SyncAll();
   m_Frame->SyncCloseAll(0);
   
+  CPPUNIT_ASSERT( m_Frame->GetToolBar() != NULL);
   CPPUNIT_ASSERT( m_Frame->TogglePane("FINDBAR"));
   CPPUNIT_ASSERT( m_Frame->GetManager().GetPane("FINDBAR").IsShown());
   CPPUNIT_ASSERT( m_Frame->TogglePane("OPTIONSBAR"));
