@@ -16,6 +16,9 @@
 
 void fixture::testProcess()
 {
+  // Test commands entered in shell.
+  const wxString cwd = wxGetCwd();
+  
   wxExProcess process;
   
   CPPUNIT_ASSERT(!process.GetError());
@@ -46,24 +49,29 @@ void fixture::testProcess()
   CPPUNIT_ASSERT(!process.GetError());
   CPPUNIT_ASSERT(!process.GetOutput().empty());
 
+  // Test working directory for wxEXEC_SYNC process (should not change).
+  CPPUNIT_ASSERT( process.Execute("ls -l", wxEXEC_SYNC, ".."));
+  CPPUNIT_ASSERT(!process.GetError());
+  CPPUNIT_ASSERT(!process.GetOutput().empty());
+  CPPUNIT_ASSERT( wxGetCwd().Contains("data"));
+
   // Test invalid wxEXEC_SYNC process.
   CPPUNIT_ASSERT(!process.Execute("xxxx", wxEXEC_SYNC));
   
   // Test wxEXEC_ASYNC process.
-  // wxExecute hangs for wxEXEC_ASYNC
   CPPUNIT_ASSERT( process.Execute("bash"));
   CPPUNIT_ASSERT( process.IsRunning());
   wxExSTCShell* shell = process.GetShell();  
-  
   CPPUNIT_ASSERT( shell != NULL);
-  
-  // Test commands entered in shell.
-  const wxString cwd = wxGetCwd();
-  
   Process("cd ~\rpwd\r", shell);
-
   CPPUNIT_ASSERT( shell->GetText().Contains("home"));
   CPPUNIT_ASSERT( cwd != wxGetCwd());
+
+  // Test working directory for wxEXEC_ASYNC process (should change).
+  CPPUNIT_ASSERT( process.Execute("ls -l", wxEXEC_ASYNC, ".."));
+  CPPUNIT_ASSERT(!process.GetError());
+  CPPUNIT_ASSERT(!wxGetCwd().Contains("data"));
+  wxSetWorkingDirectory(cwd);
 
   // Test invalid wxEXEC_ASYNC process (the process gets a process id, and exits immediately).
   CPPUNIT_ASSERT( process.Execute("xxxx"));
