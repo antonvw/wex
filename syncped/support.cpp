@@ -160,7 +160,7 @@ DecoratedFrame::DecoratedFrame()
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_ASCII_TABLE, _("&Ascii Table"));
 
-  wxMenu *menuProcess = new wxMenu();
+  wxExMenu *menuProcess = new wxExMenu();
   menuProcess->Append(ID_PROCESS_SELECT, wxExEllipsed(_("&Select")));
   menuProcess->AppendSeparator();
   menuProcess->Append(wxID_EXECUTE);
