@@ -29,6 +29,7 @@ wxExStockArt::wxExStockArt(wxWindowID id)
 #if wxCHECK_VERSION(3,1,0)
     Add(wxID_EDIT, wxART_EDIT);
 #endif
+    Add(wxID_EXECUTE, wxART_EXECUTABLE_FILE);
     Add(wxID_EXIT, wxART_QUIT);
     Add(wxID_FIND, wxART_FIND);
     Add(wxID_FIRST, wxART_GOTO_FIRST);

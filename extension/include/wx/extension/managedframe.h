@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <list>
 #include <wx/aui/framemanager.h> // for wxAuiManager
 #include <wx/aui/auibar.h>
 #include <wx/extension/frame.h>
@@ -71,6 +70,9 @@ public:
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};
 
+  /// Returns the toolbar.
+  wxExToolBar* GetToolBar() {return m_ToolBar;};
+  
   /// Hides the ex bar.
   /// Default it sets focus back to stc component associated with current ex.
   void HideExBar(int hide = HIDE_BAR_FOCUS_STC);
@@ -106,17 +108,12 @@ public:
     /// - TOOLBAR
     /// - VIBAR (same as the ex bar)
     const wxString& pane);
-protected:
-  /// Returns the toolbar.
-  wxExToolBar* GetToolBar() {return m_ToolBar;};
 private:
   bool AddToolBarPane(
     wxWindow* window, 
     const wxString& name, 
     const wxString& caption = wxEmptyString);
   wxPanel* CreateExPanel();
-  void FindPopupMenu(
-    const std::list < wxString > & l, int first_id, const wxPoint& pos = wxDefaultPosition);
   
   wxAuiManager m_Manager;
   wxExToolBar* m_ToolBar;

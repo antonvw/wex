@@ -13,6 +13,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/shell.h>
+#include <wx/extension/toolbar.h>
 #include "test.h"
 
 wxExStatusBar* fixture::m_StatusBar = NULL;

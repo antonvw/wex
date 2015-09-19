@@ -36,7 +36,7 @@ public:
 
   /// Adds the standard controls.
   /// This adds a file open, save and print and find control.
-  void AddControls();
+  void AddControls(bool realize = true);
   
   /// Gets the frame.
   wxExManagedFrame* GetFrame() {return m_Frame;};
