@@ -273,7 +273,7 @@ bool wxExProcess::Execute(
   // Construct the dialog.
   // This is necessary both in sync and async mode,
   // as for sync mode the dialog is used for presenting the 
-  // output member.
+  // output.
   if (m_Dialog == NULL)
   {
     m_Dialog = new wxExSTCEntryDialog(
@@ -290,7 +290,7 @@ bool wxExProcess::Execute(
   m_Dialog->SetProcess(this);
   m_Dialog->GetSTCShell()->EnableShell(!m_Sync);
   m_Dialog->GetSTCShell()->SetProcess(this);
-    
+
   m_HasStdError = false;
   
   if (!m_Sync)
@@ -322,12 +322,19 @@ bool wxExProcess::Execute(
         m_Dialog->SetLexer("powershell");
       }
     }
-
+    
     // For asynchronous execution the return value is the process id and zero 
     // value indicates that the command could not be executed.
     if (wxExecute(m_Command, flags, this, &env) > 0)
     {
       m_Dialog->Show();
+      
+      if (!env.cwd.empty())
+      {
+        wxFileName fn(env.cwd);
+        fn.Normalize();
+        wxSetWorkingDirectory(fn.GetFullPath());
+      }
       
       wxTheApp->Yield();
       wxMilliSleep(200);
