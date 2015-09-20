@@ -37,6 +37,7 @@ enum
   ID_CONFIG_DLG_1_COL,
   ID_CONFIG_DLG_4_COL,
   ID_CONFIG_DLG_READONLY,
+  ID_RECENTFILE_MENU,
   ID_SHOW_VCS,
   ID_PROCESS_SELECT,
   ID_STATISTICS_SHOW,
@@ -45,11 +46,6 @@ enum
   ID_STC_FLAGS,
   ID_STC_SPLIT,
   ID_LAST 
-};
-
-enum
-{
-  ID_RECENTFILE_MENU
 };
 
 void myHtmlCreate(wxWindow* user, wxWindow* parent, bool readonly)
@@ -113,6 +109,7 @@ wxExSampleFrame::wxExSampleFrame()
 
   wxExMenu* menuFile = new wxExMenu;
   menuFile->Append(wxID_OPEN);
+  GetFileHistory().UseMenu(ID_RECENTFILE_MENU, menuFile);
   menuFile->AppendSeparator();
   menuFile->Append(ID_SHOW_VCS, "Show VCS");
   menuFile->AppendPrint();
@@ -122,7 +119,6 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->Append(wxID_STOP);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
-  GetFileHistory().UseMenu(ID_RECENTFILE_MENU, menuFile);
 
   wxExMenu *menuEdit = new wxExMenu();
   menuEdit->Append(wxID_UNDO);
