@@ -19,7 +19,7 @@ void fixture::testFrame()
   m_Frame->SetFocus(); // otherwise focus is on stc component caused by testEx
 
   CPPUNIT_ASSERT(!m_Frame->OpenFile(GetTestFile()));
-  CPPUNIT_ASSERT( m_Frame->OpenFile(GetTestFile().GetFullPath(), "contents"));
+  CPPUNIT_ASSERT( ((wxExFrame *)m_Frame)->OpenFile(GetTestFile().GetFullPath(), "contents"));
   
   CPPUNIT_ASSERT( m_Frame->GetGrid() == NULL);
   CPPUNIT_ASSERT( m_Frame->GetListView() == NULL);
@@ -31,6 +31,14 @@ void fixture::testFrame()
   
   wxMenuBar* bar = new wxMenuBar();
   m_Frame->SetMenuBar(bar);
+  
+  wxMenu* menu = new wxMenu();
+  m_Frame->GetFileHistory().UseMenu(1000, menu);
+  CPPUNIT_ASSERT(!m_Frame->GetFileHistory().GetRecentFile().Contains("test.h"));
+  CPPUNIT_ASSERT( m_Frame->GetFileHistory().GetCount() == 0);
+  CPPUNIT_ASSERT( m_Frame->SetRecentFile("xxx.cpp"));
+  CPPUNIT_ASSERT( m_Frame->GetFileHistory().GetRecentFile() == "xxx.cpp");
+  CPPUNIT_ASSERT( m_Frame->GetFileHistory().GetCount() == 1);
   
   m_Frame->StatusBarClicked("test");
   m_Frame->StatusBarClicked("Pane1");

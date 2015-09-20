@@ -1,0 +1,130 @@
+////////////////////////////////////////////////////////////////////////////////
+// Name:      filehistory.cpp
+// Purpose:   Implementation of wxExFileHistory class methods
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
+
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+#include <wx/config.h>
+#include <wx/filename.h>
+#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
+#include <wx/imaglist.h>
+#include <wx/extension/filehistory.h>
+#include <wx/extension/util.h>
+
+wxExFileHistory::wxExFileHistory(size_t maxFiles, wxWindowID idBase, const wxString& key)
+  : wxFileHistory(maxFiles, idBase)
+  , m_Key(key)
+{
+  // There is only support for one history in the config.
+  // We use file history for this, so update project history ourselves.
+  // The order should be inverted, as the last one added is the most recent used.
+  if (!key.empty())
+  {
+    for (int i = GetMaxFiles() - 1 ; i >=0 ; i--)
+    {
+      SetRecentFile(
+        wxConfigBase::Get()->Read(wxString::Format("%s/%d", key, i)));
+    }
+  }
+}
+  
+void wxExFileHistory::Clear()
+{
+  if (GetCount() > 0)
+  {
+    for (int i = GetCount() - 1; i >= 0; i--)
+    {
+      RemoveFileFromHistory(i);
+    }
+  }
+}
+
+void wxExFileHistory::PopupMenu(wxWindow* win,
+  int first_id, int clear_id, const wxPoint& pos) const
+{
+  wxMenu* menu = new wxMenu();
+
+  for (size_t i = 0; i < GetCount(); i++)
+  {
+    const wxFileName file(GetHistoryFile(i));
+    
+    if (file.FileExists())
+    {
+      wxMenuItem* item = new wxMenuItem(
+        menu, 
+        first_id + i, 
+        file.GetFullName());
+
+      item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+        wxExGetIconID(file)));
+    
+      menu->Append(item);
+    }
+  }
+  
+  if (menu->GetMenuItemCount() > 0)
+  {
+    menu->AppendSeparator();
+    menu->Append(clear_id, wxGetStockLabel(wxID_CLEAR));
+      
+    win->PopupMenu(menu, pos);
+  }
+    
+  delete menu;
+}
+
+void wxExFileHistory::Save()
+{
+  if (m_Key.empty())
+  {
+    wxFileHistory::Save(*wxConfigBase::Get());
+  }
+  else
+  {
+    if (GetCount() > 0)
+    {
+      wxConfigBase::Get()->DeleteGroup(m_Key);
+      
+      for (size_t i = 0; i < GetCount(); i++)
+      {
+        wxConfigBase::Get()->Write(
+          wxString::Format("%s/%d", m_Key, i),
+          GetHistoryFile((size_t)i));
+      }
+    }
+  }
+}
+  
+bool wxExFileHistory::SetRecentFile(const wxString& file)
+{
+  if (file.empty() || GetMaxFiles() <= 0)
+  {
+    return false;
+  }
+  
+  AddFileToHistory(file);
+  
+  return true;
+}
+
+void wxExFileHistory::UseMenu(wxWindowID id, wxMenu* menu)
+{
+  wxMenu* submenu = new wxMenu;
+  menu->Append(id, _("Open &Recent"), submenu);
+  wxFileHistory::UseMenu(submenu);
+
+  if (m_Key.empty())
+  {
+    // We can load file history now.
+    Load(*wxConfigBase::Get());
+  }
+  else
+  {
+    AddFilesToMenu();
+  }
+}
