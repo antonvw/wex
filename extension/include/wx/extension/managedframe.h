@@ -9,6 +9,8 @@
 
 #include <wx/aui/framemanager.h> // for wxAuiManager
 #include <wx/aui/auibar.h>
+#include <wx/extension/filehistory.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 
 // Only if we have a gui.
@@ -39,6 +41,7 @@ public:
   wxExManagedFrame(wxWindow* parent,
     wxWindowID id,
     const wxString& title,
+    size_t maxFiles = 9,
     long style = wxDEFAULT_FRAME_STYLE);
 
   /// Destructor, uninits the aui manager.
@@ -67,6 +70,9 @@ public:
     /// label for the ex bar (like / or ? or :)
     const wxString& label);
   
+  /// Returns file history.
+  wxExFileHistory& GetFileHistory() {return m_FileHistory;};
+  
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};
 
@@ -81,12 +87,23 @@ public:
   /// Default sets the focus to page.
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
+  /// Interface from wxExFrame.
+  virtual bool OpenFile(
+    const wxExFileName& filename,
+    int line_number = 0,
+    const wxString& match = wxEmptyString,
+    int col_number = 0,
+    long flags = 0) override;
+
   /// Prints text in ex dialog.
   virtual void PrintEx(
     /// the ex for the dialog
     wxExEx* ex,
     /// the text to be printed
     const wxString& text);
+  
+  virtual bool SetRecentFile(const wxString& file) override {
+    return m_FileHistory.SetRecentFile(file);};
   
   /// Shows text in ex bar.
   void ShowExMessage(const wxString& text);
@@ -108,6 +125,8 @@ public:
     /// - TOOLBAR
     /// - VIBAR (same as the ex bar)
     const wxString& pane);
+protected:
+  void DoRecent(wxFileHistory& history, size_t index, long flags = 0);
 private:
   bool AddToolBarPane(
     wxWindow* window, 
@@ -116,6 +135,7 @@ private:
   wxPanel* CreateExPanel();
   
   wxAuiManager m_Manager;
+  wxExFileHistory m_FileHistory;
   wxExToolBar* m_ToolBar;
   wxExExTextCtrl* m_exTextCtrl;
 };

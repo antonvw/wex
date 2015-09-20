@@ -24,11 +24,6 @@
 #include "app.xpm"
 #endif
 
-enum
-{
-  ID_RECENTFILE_MENU
-};
-
 wxIMPLEMENT_APP(wxExRepSampleApp);
 
 bool wxExRepSampleApp::OnInit()
@@ -53,7 +48,6 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   wxExMenu *menuFile = new wxExMenu;
   menuFile->Append(wxID_OPEN);
-  UseFileHistory(ID_RECENTFILE_MENU, menuFile);
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
   menuFile->AppendSeparator();

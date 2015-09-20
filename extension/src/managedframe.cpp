@@ -72,8 +72,10 @@ private:
 wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
+  size_t maxFiles,
   long style)
   : wxExFrame(parent, id, title, style)
+  , m_FileHistory(maxFiles, wxID_FILE1)
   , m_ToolBar(new wxExToolBar(this))
 
 {
@@ -84,6 +86,10 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   AddToolBarPane(CreateExPanel(), "VIBAR");
   m_Manager.Update();
   
+  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
+    m_FileHistory.Save();
+    event.Skip();});
+
   Bind(wxEVT_AUI_PANE_CLOSE, [=](wxAuiManagerEvent& event) {
     // TODO: wxAui should take care of this...
     wxAuiPaneInfo* info = event.GetPane();  
@@ -94,6 +100,10 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     m_Manager.Update();
     });
   
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    DoRecent(m_FileHistory, event.GetId() - wxID_FILE1);},
+    wxID_FILE1, wxID_FILE1 + maxFiles);
+    
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(m_Manager.GetPane("FINDBAR").IsShown());}, ID_VIEW_FINDBAR);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
@@ -111,6 +121,9 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
       wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY,
       event.GetId());}, wxID_PREFERENCES);
       
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_FileHistory.Clear();}, ID_CLEAR_FILES);
+    
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     int i = 0;
     wxString text;
@@ -219,6 +232,28 @@ wxPanel* wxExManagedFrame::CreateExPanel()
   return panel;
 }
 
+void wxExManagedFrame::DoRecent(
+  wxFileHistory& history, 
+  size_t index, 
+  long flags)
+{
+  if (history.GetCount() > 0 && (int)index < history.GetMaxFiles())
+  {
+    const wxString file(history.GetHistoryFile(index));
+
+    if (!wxFileExists(file))
+    {
+      history.RemoveFileFromHistory(index);
+      wxLogStatus(_("Removed not existing file: %s from history"), 
+        file.c_str());
+    }
+    else
+    {
+      OpenFile(file, 0, wxEmptyString, 0, flags);
+    }
+  }
+}
+
 void wxExManagedFrame::GetExCommand(wxExEx* ex, const wxString& command)
 {
   m_exTextCtrl->SetEx(ex, command);
@@ -254,6 +289,22 @@ void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 void wxExManagedFrame::PrintEx(wxExEx* ex, const wxString& text)
 {
   ex->Print(text);
+}
+
+bool wxExManagedFrame::OpenFile(
+  const wxExFileName& filename,
+  int line_number,
+  const wxString& match,
+  int col_number,
+  long flags)
+{
+  if (wxExFrame::OpenFile(filename, line_number, match, col_number, flags))
+  {
+    SetRecentFile(filename.GetFullPath());
+    return true;
+  }
+
+  return false;
 }
 
 void wxExManagedFrame::ShowExMessage(const wxString& text)

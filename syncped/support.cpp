@@ -89,7 +89,7 @@ DecoratedFrame::DecoratedFrame()
   menuFile->Append(wxID_NEW,
     wxExEllipsed(wxGetStockLabel(wxID_NEW, wxSTOCK_NOFLAGS), "\tCtrl+N"));
   menuFile->Append(wxID_OPEN);
-  UseFileHistory(ID_RECENT_FILE_MENU, menuFile);
+  GetFileHistory().UseMenu(ID_RECENT_FILE_MENU, menuFile);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_CLOSE,
     wxGetStockLabel(wxID_CLOSE, wxSTOCK_NOFLAGS) + "\tCtrl+W");
@@ -171,7 +171,7 @@ DecoratedFrame::DecoratedFrame()
     ID_PROJECT_NEW, wxGetStockLabel(wxID_NEW), wxEmptyString, wxART_NEW);
   menuProject->Append(
     ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), wxEmptyString, wxART_FILE_OPEN);
-  UseProjectHistory(ID_RECENT_PROJECT_MENU, menuProject);
+  GetProjectHistory().UseMenu(ID_RECENT_PROJECT_MENU, menuProject);
   menuProject->Append(ID_PROJECT_OPENTEXT, _("&Open as Text"));
   menuProject->AppendSeparator();
   menuProject->Append(
@@ -209,7 +209,7 @@ DecoratedFrame::DecoratedFrame()
   menuOptions->AppendSeparator();
   menuOptions->Append(wxID_PREFERENCES, wxExEllipsed(_("Set &Editor Options")));
 
-  wxExMenu *menuHelp = new wxExMenu(); // use wxExMenu for art with HELP
+  wxExMenu *menuHelp = new wxExMenu();
   menuHelp->Append(wxID_ABOUT);
   menuHelp->Append(wxID_HELP);
 

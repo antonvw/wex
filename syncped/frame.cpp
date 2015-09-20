@@ -248,10 +248,10 @@ Frame::Frame(App* app)
       
     if (GetManager().GetPane("PROJECTS").IsShown() && m_Projects != NULL)
     {
-      if (!GetRecentProject().empty())
+      if (!GetProjectHistory().GetRecentFile().empty())
       {
         OpenFile(
-          wxExFileName(GetRecentProject()),
+          wxExFileName(GetProjectHistory().GetRecentFile()),
           0,
           wxEmptyString,
           0,
@@ -338,10 +338,10 @@ Frame::Frame(App* app)
     }});
     
   Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=](wxAuiNotebookEvent& event) {
-    FileHistoryPopupMenu();}, NOTEBOOK_EDITORS);
+    GetFileHistory().PopupMenu(this, wxID_FILE1, ID_CLEAR_FILES);}, NOTEBOOK_EDITORS);
     
   Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=] (wxAuiNotebookEvent& event) {
-    ProjectHistoryPopupMenu();}, NOTEBOOK_PROJECTS);
+    GetProjectHistory().PopupMenu(this, ID_RECENT_PROJECT_LOWEST, ID_CLEAR_PROJECTS);}, NOTEBOOK_PROJECTS);
     
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(
@@ -485,8 +485,8 @@ bool Frame::DialogProjectOpen()
 {
   wxFileDialog dlg(this,
     _("Select Projects"),
-     (!GetRecentProject().empty() ? 
-         wxPathOnly(GetRecentProject()):
+     (!GetProjectHistory().GetRecentFile().empty() ? 
+         wxPathOnly(GetProjectHistory().GetRecentFile()):
 #ifdef wxExUSE_PORTABLE
          wxPathOnly(wxStandardPaths::Get().GetExecutablePath())),
 #else
@@ -596,8 +596,8 @@ void Frame::NewProject()
   
   const wxString text = wxString::Format("%s%d", _("project"), m_NewProjectNo++);
   const wxFileName fn(
-     (!GetRecentProject().empty() ? 
-         wxPathOnly(GetRecentProject()):
+     (!GetProjectHistory().GetRecentFile().empty() ? 
+         wxPathOnly(GetProjectHistory().GetRecentFile()):
 #ifdef wxExUSE_PORTABLE
       wxPathOnly(wxStandardPaths::Get().GetExecutablePath())),
 #else
@@ -1156,10 +1156,10 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       break;
 
     case ID_RECENT_FILE_MENU:
-      event.Enable(!GetRecentFile().empty());
+      event.Enable(!GetFileHistory().GetRecentFile().empty());
       break;
     case ID_RECENT_PROJECT_MENU:
-      event.Enable(!GetRecentProject().empty());
+      event.Enable(!GetProjectHistory().GetRecentFile().empty());
       break;
 
     case ID_SORT_SYNC:

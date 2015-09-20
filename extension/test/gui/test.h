@@ -30,6 +30,7 @@ class fixture : public wxExTestFixture
   CPPUNIT_TEST( testDialog );
   CPPUNIT_TEST( testEx );
   CPPUNIT_TEST( testFileDialog );
+  CPPUNIT_TEST( testFileHistory );
   CPPUNIT_TEST( testFileStatistics );
   CPPUNIT_TEST( testFrame );
   CPPUNIT_TEST( testFrd );
@@ -85,6 +86,7 @@ public:
   void testDialog();
   void testEx();
   void testFileDialog();
+  void testFileHistory();
   void testFileStatistics();
   void testFrame();
   void testFrd();

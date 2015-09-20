@@ -10,7 +10,7 @@
 #include <set>
 #include <wx/bitmap.h> // for auibar
 #include <wx/aui/auibar.h>
-#include <wx/filehistory.h>
+#include <wx/extension/filehistory.h>
 #include <wx/extension/listview.h> // for wxExListViewFileName::wxExListType 
 #include <wx/extension/managedframe.h>
 #include <wx/extension/report/defs.h>
@@ -49,9 +49,6 @@ public:
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
     
-  /// Shows a file history popup menu.
-  void FileHistoryPopupMenu();
-
   /// Finds (or replaces) in specified files.
   /// Returns false if dialog was shown, and cancelled,
   /// or SetupTool returned false.
@@ -81,21 +78,9 @@ public:
   /// Default it returns NULL.
   virtual wxExListViewFile* GetProject() {return NULL;};
 
-  /// Returns the recent opened file.
-  // Returning a reference here gives a warning.
-  const wxString GetRecentFile() const {
-    if (m_FileHistory.GetCount() == 0) return wxEmptyString;
-    return m_FileHistory.GetHistoryFile(0);}
-
-  /// Returns file history.
-  const wxFileHistory& GetFileHistory() const {return m_FileHistory;};
+  /// Returns project history.
+  wxExFileHistory& GetProjectHistory() {return m_ProjectHistory;};
   
-  /// Returns the recent opened project.
-  // Returning a reference here gives a warning.
-  const wxString GetRecentProject() const {
-    if (m_ProjectHistory.GetCount() == 0) return wxEmptyString;
-    return m_ProjectHistory.GetHistoryFile(0);}
-
   /// Greps for text.
   /// The base directory is the directory for the current stc
   /// component, if available.
@@ -114,36 +99,18 @@ public:
   /// Adds page as recently used (file or project, depending on dynamic cast).
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
-  /// Interface from wxExFrame.
-  virtual bool OpenFile(
-    const wxExFileName& filename,
-    int line_number = 0,
-    const wxString& match = wxEmptyString,
-    int col_number = 0,
-    long flags = 0) override;
-
-  /// Shows a project history popup menu.
-  void ProjectHistoryPopupMenu();
-
   /// Updates file history.
   /// Returns true if history was updated.
   virtual bool SetRecentFile(const wxString& file) override;
 
   /// Updates project history.
   /// Returns true if history was updated.
-  bool SetRecentProject(const wxString& project);
-
-  /// Adds a recent file menu to specified menu,
-  /// and sets the file history to use it.
-  void UseFileHistory(wxWindowID id, wxMenu* menu);
+  bool SetRecentProject(const wxString& project) {
+    return m_ProjectHistory.SetRecentFile(project);};
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
   void UseFileHistoryList(wxExListView* list);
-
-  /// Adds a recent project menu to specified menu,
-  /// and sets the project history to use it.
-  void UseProjectHistory(wxWindowID id, wxMenu* menu);
 protected:
   /// Access to file history list, 
   /// if you use this as a page in a notebook,
@@ -152,27 +119,18 @@ protected:
   
   void OnIdle(wxIdleEvent& event);
 private:
-  void ClearHistory(wxFileHistory& history);
   void CreateDialogs();
-  void DoRecent(wxFileHistory& history, size_t index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);
   const wxString GetFindReplaceInfoText(bool replace = false) const;
-  void HistoryPopupMenu(
-    const wxFileHistory& history, int first_id, int clear_id,
-    const wxPoint& pos = wxDefaultPosition);
-  void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
   wxExConfigDialog* m_FiFDialog;
   wxExConfigDialog* m_RiFDialog;
-  wxFileHistory m_FileHistory;
   wxExListView* m_FileHistoryList;
-  wxFileHistory m_ProjectHistory;
+  wxExFileHistory m_ProjectHistory;
 
   const wxString m_TextInFiles;
   const wxString m_TextInFolder;
   const wxString m_TextRecursive;
   
   std::set < wxString > m_Info;
-
-  bool m_ProjectModified;
 };

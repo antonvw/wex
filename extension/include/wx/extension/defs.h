@@ -13,6 +13,11 @@ const int TOOL_MAX_REPORTS = 10;
 const int VCS_MAX_COMMANDS = 25;
 const int FIND_MAX_FINDS = 25;
 
+// The maximal number of files and projects to be supported.
+const int NUMBER_RECENT_FILES = 25;
+const int NUMBER_RECENT_PROJECTS = 25;
+const int ID_RECENT_PROJECT_LOWEST =  wxID_FILE1 + NUMBER_RECENT_FILES + 1;
+
 /// These are used as window event ID's. Therefore after the highest wxWidgets ID.
 enum wxExId
 {

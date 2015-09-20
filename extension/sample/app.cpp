@@ -47,6 +47,11 @@ enum
   ID_LAST 
 };
 
+enum
+{
+  ID_RECENTFILE_MENU
+};
+
 void myHtmlCreate(wxWindow* user, wxWindow* parent, bool readonly)
 {
   ((wxHtmlWindow *)user)->Create(parent, 100);
@@ -117,6 +122,7 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->Append(wxID_STOP);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
+  GetFileHistory().UseMenu(ID_RECENTFILE_MENU, menuFile);
 
   wxExMenu *menuEdit = new wxExMenu();
   menuEdit->Append(wxID_UNDO);

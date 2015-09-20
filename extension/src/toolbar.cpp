@@ -17,6 +17,7 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
@@ -105,6 +106,7 @@ void wxExToolBar::AddControls(bool realize)
   AddTool(wxID_EXECUTE);
 
   SetToolDropDown(wxID_FIND, true);
+  SetToolDropDown(wxID_OPEN, true);
   
   m_Frame->Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
     if (event.IsDropDownClicked())
@@ -129,6 +131,28 @@ void wxExToolBar::AddControls(bool realize)
       event.Skip();
     }}, wxID_FIND);
 
+  Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
+    if (event.IsDropDownClicked())
+    {
+      wxAuiToolBar* tb = static_cast<wxAuiToolBar*>(event.GetEventObject());
+  
+      tb->SetToolSticky(event.GetId(), true);
+  
+      // create the popup menu
+      // line up our menu with the button
+      wxRect rect = tb->GetToolRect(event.GetId());
+      wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
+      pt = ScreenToClient(pt);
+      m_Frame->GetFileHistory().PopupMenu(this, wxID_FILE1, ID_CLEAR_FILES, pt);
+  
+      // make sure the button is "un-stuck"
+      tb->SetToolSticky(event.GetId(), false);
+    }
+    else
+    {
+      event.Skip();
+    }}, wxID_OPEN);
+    
   if (realize) Realize();
 }
 
