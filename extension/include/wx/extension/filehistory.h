@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <vector>
 #include <wx/filehistory.h>
 #include <wx/window.h>
 
@@ -24,20 +25,20 @@ public:
     /// are loaded / saved to default keys, otherwise to specified key.
     const wxString& key = wxEmptyString);
 
-  /// Clears history list.
+  /// Clears history.
   void Clear();
 
   /// Returns the recent opened file.
-  // Returning a reference here gives a warning.
-  const wxString GetRecentFile() const {
-    if (GetCount() == 0) return wxEmptyString;
-    return GetHistoryFile(0);}
+  const wxString GetRecentFile(size_t index = 0);
 
-  /// Shows popup menu.
-  void PopupMenu(wxWindow* win, int first_id, int clear_id, 
-    const wxPoint& pos = wxDefaultPosition) const;
+  /// Returns a vector of max recent opened files.
+  std::vector<wxString> GetVector(size_t max);
   
-  /// Saves files. 
+  /// Shows popup menu.
+  void PopupMenu(wxWindow* win, 
+    int clear_id, const wxPoint& pos = wxDefaultPosition) const;
+  
+  /// Saves the recent opened files to config. 
   void Save();
 
   /// Sets recent opened file.

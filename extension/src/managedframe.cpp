@@ -101,8 +101,8 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     });
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    DoRecent(m_FileHistory, event.GetId() - wxID_FILE1);},
-    wxID_FILE1, wxID_FILE1 + maxFiles);
+    DoRecent(m_FileHistory, event.GetId() - m_FileHistory.GetBaseId());},
+    m_FileHistory.GetBaseId(), m_FileHistory.GetBaseId() + m_FileHistory.GetMaxFiles());
     
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(m_Manager.GetPane("FINDBAR").IsShown());}, ID_VIEW_FINDBAR);
@@ -237,20 +237,11 @@ void wxExManagedFrame::DoRecent(
   size_t index, 
   long flags)
 {
-  if (history.GetCount() > 0 && (int)index < history.GetMaxFiles())
+  const wxString file(history.GetHistoryFile(index));
+  
+  if (!file.empty())
   {
-    const wxString file(history.GetHistoryFile(index));
-
-    if (!wxFileExists(file))
-    {
-      history.RemoveFileFromHistory(index);
-      wxLogStatus(_("Removed not existing file: %s from history"), 
-        file.c_str());
-    }
-    else
-    {
-      OpenFile(file, 0, wxEmptyString, 0, flags);
-    }
+    OpenFile(file, 0, wxEmptyString, 0, flags);
   }
 }
 
@@ -283,6 +274,16 @@ void wxExManagedFrame::HideExBar(int hide)
   
 void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 {
+  wxExSTC* stc = wxDynamicCast(page, wxExSTC);
+
+  if (stc != NULL)
+  {
+    if (stc->GetFileName().FileExists())
+    {
+      SetRecentFile(stc->GetFileName().GetFullPath());
+    }
+  }
+  
   SetFindFocus(page);
 }
 

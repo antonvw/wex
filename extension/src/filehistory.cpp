@@ -32,6 +32,18 @@ wxExFileHistory::wxExFileHistory(size_t maxFiles, wxWindowID idBase, const wxStr
     }
   }
 }
+
+std::vector<wxString> wxExFileHistory::GetVector(size_t count)
+{
+  std::vector<wxString> v;
+  
+  for (size_t i = 0; i < count && i < GetCount(); i++)
+  {
+    v.push_back(GetHistoryFile(i));
+  }  
+  
+  return v;
+}
   
 void wxExFileHistory::Clear()
 {
@@ -44,8 +56,29 @@ void wxExFileHistory::Clear()
   }
 }
 
+const wxString wxExFileHistory::GetRecentFile(size_t index)
+{
+  if (GetCount() > 0 && index < GetMaxFiles())
+  {
+    const wxString file(GetHistoryFile(index));
+
+    if (!wxFileExists(file))
+    {
+      RemoveFileFromHistory(index);
+      wxLogStatus(_("Removed not existing file: %s from history"), 
+        file.c_str());
+    }
+    else
+    {
+      return GetHistoryFile(index);
+    }
+  }
+  
+  return wxEmptyString;
+}
+    
 void wxExFileHistory::PopupMenu(wxWindow* win,
-  int first_id, int clear_id, const wxPoint& pos) const
+  int clear_id, const wxPoint& pos) const
 {
   wxMenu* menu = new wxMenu();
 
@@ -57,7 +90,7 @@ void wxExFileHistory::PopupMenu(wxWindow* win,
     {
       wxMenuItem* item = new wxMenuItem(
         menu, 
-        first_id + i, 
+        GetBaseId() + i, 
         file.GetFullName());
 
       item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
@@ -102,7 +135,7 @@ void wxExFileHistory::Save()
   
 bool wxExFileHistory::SetRecentFile(const wxString& file)
 {
-  if (file.empty() || GetMaxFiles() <= 0)
+  if (file.empty() || GetMaxFiles() <= 0 || !wxFileExists(file))
   {
     return false;
   }

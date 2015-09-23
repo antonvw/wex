@@ -143,7 +143,7 @@ void wxExToolBar::AddControls(bool realize)
       wxRect rect = tb->GetToolRect(event.GetId());
       wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
       pt = ScreenToClient(pt);
-      m_Frame->GetFileHistory().PopupMenu(this, wxID_FILE1, ID_CLEAR_FILES, pt);
+      m_Frame->GetFileHistory().PopupMenu(this, ID_CLEAR_FILES, pt);
   
       // make sure the button is "un-stuck"
       tb->SetToolSticky(event.GetId(), false);

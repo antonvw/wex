@@ -51,10 +51,12 @@ class wxExSampleFrame: public wxExManagedFrame
 public:
   /// Constructor.
   wxExSampleFrame();
-protected:
+  virtual wxExSTC* GetSTC() override {
+    return m_STC;};
   virtual void OnCommandConfigDialog(
     wxWindowID id, 
     int commandid = wxID_APPLY) override;
+protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:

@@ -16,7 +16,6 @@
 #include <wx/combobox.h>
 #include <wx/config.h>
 #include <wx/filename.h>
-#include <wx/filehistory.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/numformatter.h>
 #include <wx/stdpaths.h>
@@ -49,14 +48,6 @@ wxExToVectorString::wxExToVectorString(const wxFileDialog& in)
   wxArrayString paths;
   in.GetPaths(paths);
   FromArrayString(paths);
-}
-
-wxExToVectorString::wxExToVectorString(const wxFileHistory& in, size_t count)
-{
-  for (size_t i = 0; i < count && i < in.GetCount(); i++)
-  {
-    m_VS.push_back(in.GetHistoryFile(i));
-  }  
 }
 
 wxExToVectorString::wxExToVectorString(const wxGenericDirCtrl& in)

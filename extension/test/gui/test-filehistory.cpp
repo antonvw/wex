@@ -20,19 +20,28 @@ void fixture::testFileHistory()
   
   CPPUNIT_ASSERT( history.GetCount() == 0);
   
-  CPPUNIT_ASSERT( history.SetRecentFile("xxx.cpp"));
+  CPPUNIT_ASSERT(!history.SetRecentFile("xxx.cpp"));
   CPPUNIT_ASSERT(!history.SetRecentFile(""));
-  CPPUNIT_ASSERT( history.GetCount() > 0);
-  CPPUNIT_ASSERT( history.GetRecentFile() == "xxx.cpp");
+  CPPUNIT_ASSERT( history.GetCount() == 0);
+  CPPUNIT_ASSERT( history.GetRecentFile().empty());
+  
+  CPPUNIT_ASSERT( history.SetRecentFile(GetTestFile().GetFullPath()));
+  CPPUNIT_ASSERT( history.GetCount() == 1);
+  CPPUNIT_ASSERT( history.GetVector(0).size() == 0);
+  CPPUNIT_ASSERT( history.GetVector(5).size() == 1);
   
   history.Clear();
   CPPUNIT_ASSERT( history.GetCount() == 0);
   CPPUNIT_ASSERT( history.GetRecentFile().empty());
+  CPPUNIT_ASSERT( history.GetRecentFile(100).empty());
   
   wxMenu* menu = new wxMenu();
+  menu->Append(1, "x");
+  menu->Append(2, "y");
 
-  history.PopupMenu(m_Frame, 1, 5);
+  history.PopupMenu(m_Frame, 5);
   
   history.UseMenu(100, menu);
+  
   history.Save();
 }
