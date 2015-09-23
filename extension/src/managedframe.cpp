@@ -452,15 +452,15 @@ wxExExTextCtrl::wxExExTextCtrl(
     {
       if (m_ex->Command(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString()))
       {
-        const bool set_focus = 
-          (GetValue() == "n" || GetValue() == "prev" || GetValue().StartsWith("!"));
+        int focus = wxExManagedFrame::HIDE_BAR_FOCUS_STC;
+        if (GetValue() == "n" || GetValue() == "prev") focus = wxExManagedFrame::HIDE_BAR_FORCE;
+        if (GetValue().StartsWith("!")) focus = wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC;
             
         m_Commands.remove(GetValue());
         m_Commands.push_front(GetValue());
         m_CommandsIterator = m_Commands.begin();
   
-        m_Frame->HideExBar(set_focus ? 
-          wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC: wxExManagedFrame::HIDE_BAR_FOCUS_STC);
+        m_Frame->HideExBar(focus);
       }
     }
     else if (IsFind())
