@@ -55,9 +55,8 @@ public:
     /// page
     wxWindow* page);
   
-  /// Executes a ex command that can result
-  /// in changing stc, if command is being played back.
-  virtual wxExSTC* ExecExCommand(int command) {return NULL;};
+  /// Executes a ex command.
+  virtual bool ExecExCommand(int command) {return NULL;};
 
   /// Gets a command line ex command.
   /// Default shows the ex bar, sets the label and 

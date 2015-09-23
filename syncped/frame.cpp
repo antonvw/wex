@@ -502,44 +502,38 @@ bool Frame::DialogProjectOpen()
   return true;
 }
 
-wxExSTC* Frame::ExecExCommand(int command)
+bool Frame::ExecExCommand(int command)
 {
   if (m_Editors->GetPageCount() == 0)
   {
-    return NULL;
+    return false;
   }
 
   switch (command)
   {
   case ID_EDIT_NEXT:
-    if (m_Editors->GetSelection() == 
-        m_Editors->GetPageCount() - 1)
+    if (m_Editors->GetSelection() == m_Editors->GetPageCount() - 1)
     {
-      return NULL;
+      return false;
     }
-    else
-    {
-      m_Editors->AdvanceSelection();
-    }
+    
+    m_Editors->AdvanceSelection();
     break;
     
   case ID_EDIT_PREVIOUS:
     if (m_Editors->GetSelection() == 0)
     {
-      return NULL;
+      return false;
     }
-    else
-    {
-      m_Editors->AdvanceSelection(false);
-    }
+    
+    m_Editors->AdvanceSelection(false);
     break;
     
   default:
     wxFAIL;
   }
   
-  return (wxExSTC*)m_Editors->
-    GetPage(m_Editors->GetSelection());
+  return true;
 }
 
 wxExListViewFile* Frame::GetProject()

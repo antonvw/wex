@@ -140,16 +140,7 @@ bool wxExEx::Command(const std::string& command)
   }
   else if (command == ":n")
   {
-    wxExSTC* stc = m_Frame->ExecExCommand(ID_EDIT_NEXT);
-    
-    if (stc != NULL)
-    {
-      m_STC = stc;
-    }
-    else
-    {
-      result = false;
-    }
+    result = m_Frame->ExecExCommand(ID_EDIT_NEXT);
   }
   else if (command.compare(0, 4, ":new") == 0)
   {
@@ -157,16 +148,7 @@ bool wxExEx::Command(const std::string& command)
   }
   else if (command == ":prev")
   {
-    wxExSTC* stc = m_Frame->ExecExCommand(ID_EDIT_PREVIOUS);
-    
-    if (stc != NULL)
-    {
-      m_STC = stc;
-    }
-    else
-    {
-      result = false;
-    }
+    result = m_Frame->ExecExCommand(ID_EDIT_PREVIOUS);
   }
   else if (command == ":print")
   {
