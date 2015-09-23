@@ -95,10 +95,6 @@ public:
     wxWindowID dialogid,
     int commandid = wxID_APPLY) override;
     
-  /// Called if the notebook changed page.
-  /// Adds page as recently used (file or project, depending on dynamic cast).
-  virtual void OnNotebook(wxWindowID id, wxWindow* page);
-
   /// Updates file history.
   /// Returns true if history was updated.
   virtual bool SetRecentFile(const wxString& file) override;

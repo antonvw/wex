@@ -84,7 +84,7 @@ public:
   void HideExBar(int hide = HIDE_BAR_FOCUS_STC);
 
   /// Called if the notebook changed page.
-  /// Default sets the focus to page.
+  /// Default sets the focus to page and adds page as recently used.
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
   /// Interface from wxExFrame.

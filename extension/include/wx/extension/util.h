@@ -14,7 +14,6 @@
 
 class wxArrayString;
 class wxComboBox;
-class wxFileHistory;
 class wxFileName;
 class wxGenericDirCtrl;
 class wxTextCtrl;
@@ -40,9 +39,6 @@ public:
   /// Fills the vector with the full paths of the files chosen.
   wxExToVectorString(const wxFileDialog& in);
 
-  /// Constructor, using file history and max.
-  wxExToVectorString(const wxFileHistory& in, size_t max);
-  
   /// Constructor, using generic dirctrl.
   /// Fills the vector with the currently-selected directory or filename. 
   wxExToVectorString(const wxGenericDirCtrl& in);

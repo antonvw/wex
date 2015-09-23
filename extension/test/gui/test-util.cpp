@@ -31,16 +31,6 @@ void fixture::testToVectorString()
   wxExToVectorString v1(a);
   CPPUNIT_ASSERT( v1.Get().size() == 4);
   
-  wxMenu menu;
-  menu.Append(1, "x");
-  menu.Append(2, "y");
-  wxFileHistory history;
-  history.UseMenu(&menu);
-  history.AddFileToHistory("test1");
-  history.AddFileToHistory("test2");
-  wxExToVectorString v2(history, 5);
-  CPPUNIT_ASSERT( v2.Get().size() == 2);
-  
   wxExToVectorString v3("test test test");
   CPPUNIT_ASSERT( v3.Get().size() == 3);
 }

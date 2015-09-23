@@ -101,8 +101,8 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     m_RiFDialog->Show();}, ID_TOOL_REPORT_REPLACE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    DoRecent(m_ProjectHistory, event.GetId() - ID_RECENT_PROJECT_LOWEST, WIN_IS_PROJECT);},
-    ID_RECENT_PROJECT_LOWEST, ID_RECENT_PROJECT_LOWEST + maxProjects);
+    DoRecent(m_ProjectHistory, event.GetId() - m_ProjectHistory.GetBaseId(), WIN_IS_PROJECT);},
+    m_ProjectHistory.GetBaseId(), m_ProjectHistory.GetBaseId() + m_ProjectHistory.GetMaxFiles());
 }
 
 void wxExFrameWithHistory::CreateDialogs()
@@ -450,31 +450,6 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
     {
       SetTitle(title.substr(0, title.length() - 2));
     }
-  }
-}
-
-void wxExFrameWithHistory::OnNotebook(wxWindowID id, wxWindow* page)
-{
-  wxExManagedFrame::OnNotebook(id, page);
-  
-  wxExSTC* stc = wxDynamicCast(page, wxExSTC);
-
-  if (stc != NULL)
-  {
-    if (stc->GetFileName().FileExists())
-    {
-      SetRecentFile(stc->GetFileName().GetFullPath());
-    }
-  }
-  else
-  {
-      // TODO: crash for FiF, new page is not a wxExListViewFile
-//    wxExListViewFile* lv = wxDynamicCast(page, wxExListViewFile);
-    
-//    if (lv != NULL)
-//    {
-//      SetRecentProject(lv->GetFileName().GetFullPath());
-//    }
   }
 }
 

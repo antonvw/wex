@@ -241,8 +241,7 @@ Frame::Frame(App* app)
     {
       if (count > 0)
       {
-        wxExOpenFiles(this, 
-          wxExToVectorString(GetFileHistory(), count).Get());
+        wxExOpenFiles(this, GetFileHistory().GetVector(count));
       }
     }
       
@@ -338,10 +337,10 @@ Frame::Frame(App* app)
     }});
     
   Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=](wxAuiNotebookEvent& event) {
-    GetFileHistory().PopupMenu(this, wxID_FILE1, ID_CLEAR_FILES);}, NOTEBOOK_EDITORS);
+    GetFileHistory().PopupMenu(this, ID_CLEAR_FILES);}, NOTEBOOK_EDITORS);
     
   Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=] (wxAuiNotebookEvent& event) {
-    GetProjectHistory().PopupMenu(this, ID_RECENT_PROJECT_LOWEST, ID_CLEAR_PROJECTS);}, NOTEBOOK_PROJECTS);
+    GetProjectHistory().PopupMenu(this, ID_CLEAR_PROJECTS);}, NOTEBOOK_PROJECTS);
     
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(

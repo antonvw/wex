@@ -101,7 +101,7 @@ void wxExSampleDir::OnFile(const wxString& file)
 #endif
 
 wxExSampleFrame::wxExSampleFrame()
-  : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
+  : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName(), 4)
   , m_Process(new wxExProcess())
   , m_FlagsSTC(0)
 {
