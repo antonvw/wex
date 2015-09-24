@@ -136,8 +136,8 @@ void wxExFileHistory::Save()
       for (size_t i = 0; i < GetCount(); i++)
       {
         wxConfigBase::Get()->Write(
-          wxString::Format("%s/%d", m_Key, i),
-          GetHistoryFile((size_t)i));
+          wxString::Format("%s/%lu", m_Key, i),
+          GetHistoryFile(i));
       }
     }
   }
