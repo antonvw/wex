@@ -95,7 +95,10 @@ bool wxExEx::Command(const std::string& command)
   
   bool result = true;
 
-  if (command == ":" || command == ":'<,'>")
+  if (m_Frame->ExecExCommand(command))
+  {
+  }
+  else if (command == ":" || command == ":'<,'>")
   {
     m_Frame->GetExCommand(this, command);
     return true;
@@ -138,17 +141,9 @@ bool wxExEx::Command(const std::string& command)
   {
     POST_COMMAND( wxID_HELP )
   }
-  else if (command == ":n")
-  {
-    result = m_Frame->ExecExCommand(ID_EDIT_NEXT);
-  }
   else if (command.compare(0, 4, ":new") == 0)
   {
     POST_COMMAND( wxID_NEW )
-  }
-  else if (command == ":prev")
-  {
-    result = m_Frame->ExecExCommand(ID_EDIT_PREVIOUS);
   }
   else if (command == ":print")
   {

@@ -56,7 +56,7 @@ public:
     wxWindow* page);
   
   /// Executes a ex command.
-  virtual bool ExecExCommand(int command) {return NULL;};
+  virtual bool ExecExCommand(const std::string& command) {return false;};
 
   /// Gets a command line ex command.
   /// Default shows the ex bar, sets the label and 

@@ -17,7 +17,7 @@ void fixture::testFrameWithHistory()
   m_Frame->GetProjectHistory().UseMenu(1000, menu);
   
   CPPUNIT_ASSERT(!m_Frame->OpenFile(GetTestFile())); // as we have no focused stc
-  CPPUNIT_ASSERT(!m_Frame->GetFileHistory().GetRecentFile().Contains("test.h"));
+  CPPUNIT_ASSERT(!m_Frame->GetFileHistory().GetHistoryFile().Contains("test.h"));
 
   CPPUNIT_ASSERT(!m_Frame->OpenFile(
     wxExFileName(m_Project),
@@ -32,7 +32,7 @@ void fixture::testFrameWithHistory()
   CPPUNIT_ASSERT(!m_Frame->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
   
   // It does not open, next should fail.
-  CPPUNIT_ASSERT(!m_Frame->GetProjectHistory().GetRecentFile().Contains(m_Project));
+  CPPUNIT_ASSERT(!m_Frame->GetProjectHistory().GetHistoryFile().Contains(m_Project));
   
   CPPUNIT_ASSERT( m_Frame->GetProject() == NULL);
   
@@ -40,6 +40,6 @@ void fixture::testFrameWithHistory()
   CPPUNIT_ASSERT(!m_Frame->Grep("xxxxxxx yyy"));
   CPPUNIT_ASSERT( m_Frame->Grep("xxxxxxx ./ *.cpp"));
   
-  CPPUNIT_ASSERT(!m_Frame->SetRecentProject("xxx.prj"));
-  CPPUNIT_ASSERT( m_Frame->GetProjectHistory().GetRecentFile().empty());
+  m_Frame->SetRecentProject("xxx.prj");
+  CPPUNIT_ASSERT( m_Frame->GetProjectHistory().GetHistoryFile().empty());
 }

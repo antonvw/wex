@@ -34,10 +34,10 @@ void fixture::testFrame()
   
   wxMenu* menu = new wxMenu();
   m_Frame->GetFileHistory().UseMenu(1000, menu);
-  CPPUNIT_ASSERT(!m_Frame->GetFileHistory().GetRecentFile().Contains("test.h"));
+  CPPUNIT_ASSERT(!m_Frame->GetFileHistory().GetHistoryFile().Contains("test.h"));
   CPPUNIT_ASSERT( m_Frame->GetFileHistory().GetCount() == 0);
   m_Frame->SetRecentFile(GetTestFile().GetFullPath());
-  CPPUNIT_ASSERT(!m_Frame->GetFileHistory().GetRecentFile().empty());
+  CPPUNIT_ASSERT(!m_Frame->GetFileHistory().GetHistoryFile().empty());
   CPPUNIT_ASSERT( m_Frame->GetFileHistory().GetCount() == 1);
   
   m_Frame->StatusBarClicked("test");

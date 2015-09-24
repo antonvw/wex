@@ -25,7 +25,7 @@ void fixture::testFileHistory()
   CPPUNIT_ASSERT( history.GetCount() == 0);
   CPPUNIT_ASSERT( history.GetHistoryFile().empty());
   
-  CPPUNIT_ASSERT( history.AddFileToHistory(GetTestFile().GetFullPath()));
+  history.AddFileToHistory(GetTestFile().GetFullPath());
   CPPUNIT_ASSERT( history.GetCount() == 1);
   CPPUNIT_ASSERT( history.GetVector(0).size() == 0);
   CPPUNIT_ASSERT( history.GetVector(5).size() == 1);
@@ -44,4 +44,9 @@ void fixture::testFileHistory()
   history.UseMenu(100, menu);
   
   history.Save();
+  
+  wxExFileHistory history2(4, 1000, "MY-KEY");
+  history2.AddFileToHistory(GetTestFile().GetFullPath());
+  CPPUNIT_ASSERT( history2.GetCount() == 1);
+  history2.Save();
 }
