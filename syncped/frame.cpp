@@ -502,38 +502,35 @@ bool Frame::DialogProjectOpen()
   return true;
 }
 
-bool Frame::ExecExCommand(int command)
+bool Frame::ExecExCommand(const std::string& command)
 {
-  if (m_Editors->GetPageCount() == 0)
+  if (m_Editors->GetPageCount() > 0)
   {
-    return false;
-  }
+    if (command == ":n")
+    {
+      if (m_Editors->GetSelection() == m_Editors->GetPageCount() - 1)
+      {
+        return false;
+      }
+      
+      m_Editors->AdvanceSelection();
+      
+      return true;
+    }
+    else if (command == ":prev")
+    {
+      if (m_Editors->GetSelection() == 0)
+      {
+        return false;
+      }
+      
+      m_Editors->AdvanceSelection(false);
 
-  switch (command)
-  {
-  case ID_EDIT_NEXT:
-    if (m_Editors->GetSelection() == m_Editors->GetPageCount() - 1)
-    {
-      return false;
+      return true;
     }
-    
-    m_Editors->AdvanceSelection();
-    break;
-    
-  case ID_EDIT_PREVIOUS:
-    if (m_Editors->GetSelection() == 0)
-    {
-      return false;
-    }
-    
-    m_Editors->AdvanceSelection(false);
-    break;
-    
-  default:
-    wxFAIL;
   }
   
-  return true;
+  return false;
 }
 
 wxExListViewFile* Frame::GetProject()

@@ -99,10 +99,8 @@ public:
   virtual void SetRecentFile(const wxString& file) override;
 
   /// Updates project history.
-  /// Returns true if history was updated.
-  bool SetRecentProject(const wxString& project) {
-    m_ProjectHistory.AddFileToHistory(project);
-    return true;};
+  void SetRecentProject(const wxString& project) {
+    m_ProjectHistory.AddFileToHistory(project);};
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
