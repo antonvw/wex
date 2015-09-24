@@ -84,7 +84,7 @@ public:
   virtual void SetMenuBar(wxMenuBar* bar) override;
   
   /// Allows derived class to update file history.
-  virtual bool SetRecentFile(const wxString& file) {return false;};
+  virtual void SetRecentFile(const wxString& file) {;};
 
 #if wxUSE_STATUSBAR
   /// Sets up the status bar if you want to use StatusText.

@@ -27,24 +27,22 @@ wxExFileHistory::wxExFileHistory(size_t maxFiles, wxWindowID idBase, const wxStr
   {
     for (int i = GetMaxFiles() - 1 ; i >=0 ; i--)
     {
-      SetRecentFile(
+      AddFileToHistory(
         wxConfigBase::Get()->Read(wxString::Format("%s/%d", key, i)));
     }
   }
 }
 
-std::vector<wxString> wxExFileHistory::GetVector(size_t count)
+void wxExFileHistory::AddFileToHistory(const wxString& file)
 {
-  std::vector<wxString> v;
-  
-  for (size_t i = 0; i < count && i < GetCount(); i++)
+  if (file.empty() || GetMaxFiles() <= 0 || !wxFileExists(file))
   {
-    v.push_back(GetHistoryFile(i));
-  }  
+    return;
+  }
   
-  return v;
+  wxFileHistory::AddFileToHistory(file);
 }
-  
+
 void wxExFileHistory::Clear()
 {
   if (GetCount() > 0)
@@ -56,27 +54,39 @@ void wxExFileHistory::Clear()
   }
 }
 
-const wxString wxExFileHistory::GetRecentFile(size_t index)
+wxString wxExFileHistory::GetHistoryFile(size_t index) const
 {
   if (GetCount() > 0 && index < GetMaxFiles())
   {
-    const wxString file(GetHistoryFile(index));
+    const wxString file(wxFileHistory::GetHistoryFile(index));
 
     if (!wxFileExists(file))
     {
-      RemoveFileFromHistory(index);
+      const_cast< wxExFileHistory * >( this )->RemoveFileFromHistory(index);
       wxLogStatus(_("Removed not existing file: %s from history"), 
         file.c_str());
     }
     else
     {
-      return GetHistoryFile(index);
+      return wxFileHistory::GetHistoryFile(index);
     }
   }
   
   return wxEmptyString;
 }
     
+std::vector<wxString> wxExFileHistory::GetVector(size_t count) const
+{
+  std::vector<wxString> v;
+  
+  for (size_t i = 0; i < count && i < GetCount(); i++)
+  {
+    v.push_back(GetHistoryFile(i));
+  }  
+  
+  return v;
+}
+  
 void wxExFileHistory::PopupMenu(wxWindow* win,
   int clear_id, const wxPoint& pos) const
 {
@@ -133,18 +143,6 @@ void wxExFileHistory::Save()
   }
 }
   
-bool wxExFileHistory::SetRecentFile(const wxString& file)
-{
-  if (file.empty() || GetMaxFiles() <= 0 || !wxFileExists(file))
-  {
-    return false;
-  }
-  
-  AddFileToHistory(file);
-  
-  return true;
-}
-
 void wxExFileHistory::UseMenu(wxWindowID id, wxMenu* menu)
 {
   wxMenu* submenu = new wxMenu;
