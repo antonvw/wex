@@ -36,7 +36,7 @@ void fixture::testFrame()
   m_Frame->GetFileHistory().UseMenu(1000, menu);
   CPPUNIT_ASSERT(!m_Frame->GetFileHistory().GetRecentFile().Contains("test.h"));
   CPPUNIT_ASSERT( m_Frame->GetFileHistory().GetCount() == 0);
-  CPPUNIT_ASSERT( m_Frame->SetRecentFile(GetTestFile().GetFullPath()));
+  m_Frame->SetRecentFile(GetTestFile().GetFullPath());
   CPPUNIT_ASSERT(!m_Frame->GetFileHistory().GetRecentFile().empty());
   CPPUNIT_ASSERT( m_Frame->GetFileHistory().GetCount() == 1);
   

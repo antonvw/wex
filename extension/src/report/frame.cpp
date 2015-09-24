@@ -453,12 +453,9 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
   }
 }
 
-bool wxExFrameWithHistory::SetRecentFile(const wxString& file)
+void wxExFrameWithHistory::SetRecentFile(const wxString& file)
 {
-  if (!wxExManagedFrame::SetRecentFile(file))
-  {
-    return false;
-  }
+  wxExManagedFrame::SetRecentFile(file);
   
   if (m_FileHistoryList != NULL)
   {
@@ -478,8 +475,6 @@ bool wxExFrameWithHistory::SetRecentFile(const wxString& file)
       }
     }
   }
-  
-  return true;
 }
 
 void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)

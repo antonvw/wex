@@ -101,8 +101,9 @@ public:
     /// the text to be printed
     const wxString& text);
   
-  virtual bool SetRecentFile(const wxString& file) override {
-    return m_FileHistory.SetRecentFile(file);};
+  /// Allows derived class to update file history.
+  virtual void SetRecentFile(const wxString& file) override {
+    m_FileHistory.AddFileToHistory(file);};
   
   /// Shows text in ex bar.
   void ShowExMessage(const wxString& text);

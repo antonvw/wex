@@ -33,6 +33,8 @@ void fixture::testManagedFrame()
   m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
   
   CPPUNIT_ASSERT(!m_Frame->GetManager().GetPane("VIBAR").IsShown());
+
+  m_Frame->SetRecentFile("testing");
   
   m_Frame->ShowExMessage("hello from m_Frame");
   

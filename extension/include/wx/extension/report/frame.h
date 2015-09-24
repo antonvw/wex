@@ -96,13 +96,13 @@ public:
     int commandid = wxID_APPLY) override;
     
   /// Updates file history.
-  /// Returns true if history was updated.
-  virtual bool SetRecentFile(const wxString& file) override;
+  virtual void SetRecentFile(const wxString& file) override;
 
   /// Updates project history.
   /// Returns true if history was updated.
   bool SetRecentProject(const wxString& project) {
-    return m_ProjectHistory.SetRecentFile(project);};
+    m_ProjectHistory.AddFileToHistory(project);
+    return true;};
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.

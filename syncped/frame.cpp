@@ -247,10 +247,10 @@ Frame::Frame(App* app)
       
     if (GetManager().GetPane("PROJECTS").IsShown() && m_Projects != NULL)
     {
-      if (!GetProjectHistory().GetRecentFile().empty())
+      if (!GetProjectHistory().GetHistoryFile().empty())
       {
         OpenFile(
-          wxExFileName(GetProjectHistory().GetRecentFile()),
+          wxExFileName(GetProjectHistory().GetHistoryFile()),
           0,
           wxEmptyString,
           0,
@@ -484,8 +484,8 @@ bool Frame::DialogProjectOpen()
 {
   wxFileDialog dlg(this,
     _("Select Projects"),
-     (!GetProjectHistory().GetRecentFile().empty() ? 
-         wxPathOnly(GetProjectHistory().GetRecentFile()):
+     (!GetProjectHistory().GetHistoryFile().empty() ? 
+         wxPathOnly(GetProjectHistory().GetHistoryFile()):
 #ifdef wxExUSE_PORTABLE
          wxPathOnly(wxStandardPaths::Get().GetExecutablePath())),
 #else
@@ -589,8 +589,8 @@ void Frame::NewProject()
   
   const wxString text = wxString::Format("%s%d", _("project"), m_NewProjectNo++);
   const wxFileName fn(
-     (!GetProjectHistory().GetRecentFile().empty() ? 
-         wxPathOnly(GetProjectHistory().GetRecentFile()):
+     (!GetProjectHistory().GetHistoryFile().empty() ? 
+         wxPathOnly(GetProjectHistory().GetHistoryFile()):
 #ifdef wxExUSE_PORTABLE
       wxPathOnly(wxStandardPaths::Get().GetExecutablePath())),
 #else
@@ -1149,10 +1149,10 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       break;
 
     case ID_RECENT_FILE_MENU:
-      event.Enable(!GetFileHistory().GetRecentFile().empty());
+      event.Enable(!GetFileHistory().GetHistoryFile().empty());
       break;
     case ID_RECENT_PROJECT_MENU:
-      event.Enable(!GetProjectHistory().GetRecentFile().empty());
+      event.Enable(!GetProjectHistory().GetHistoryFile().empty());
       break;
 
     case ID_SORT_SYNC:

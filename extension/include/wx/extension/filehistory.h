@@ -25,26 +25,27 @@ public:
     /// are loaded / saved to default keys, otherwise to specified key.
     const wxString& key = wxEmptyString);
 
+  /// Adds a file to the file history list, if the object has a pointer to 
+  /// an appropriate file menu. 
+  virtual void AddFileToHistory(const wxString& file) override;
+  
   /// Clears history.
   void Clear();
 
-  /// Returns the recent opened file.
-  const wxString GetRecentFile(size_t index = 0);
+  /// Returns the file at this index (zero-based).
+  virtual wxString GetHistoryFile(size_t index = 0) const override;
 
   /// Returns a vector of max recent opened files.
-  std::vector<wxString> GetVector(size_t max);
+  std::vector<wxString> GetVector(size_t max) const;
   
   /// Shows popup menu.
   void PopupMenu(wxWindow* win, 
     int clear_id, const wxPoint& pos = wxDefaultPosition) const;
   
-  /// Saves the recent opened files to config. 
+  /// Saves the file history into the config. 
   void Save();
 
-  /// Sets recent opened file.
-  bool SetRecentFile(const wxString& file);
-  
-  /// Adds a recent file menu to specified menu,
+  /// Adds a recent file submenu to specified menu,
   /// and sets the file history to use it.
   void UseMenu(wxWindowID id, wxMenu* menu);
 private:
