@@ -51,7 +51,7 @@ public:
   const std::string& GetLastCommand() const {return m_LastCommand;};
   
   /// Returns the macros.
-  wxExViMacros& GetMacros() {return m_Macros;};
+  static wxExViMacros& GetMacros() {return m_Macros;};
 
   /// Returns register name.
   const char GetRegister() const {return m_Register;};

@@ -502,7 +502,7 @@ bool Frame::DialogProjectOpen()
   return true;
 }
 
-bool Frame::ExecExCommand(const std::string& command)
+bool Frame::ExecExCommand(const std::string& command, wxExSTC* & stc)
 {
   if (m_Editors->GetPageCount() > 0)
   {
@@ -514,6 +514,11 @@ bool Frame::ExecExCommand(const std::string& command)
       }
       
       m_Editors->AdvanceSelection();
+
+      if (wxExEx::GetMacros().IsPlayback())
+      {
+        stc = (wxExSTC *)m_Editors->GetPage(m_Editors->GetSelection());
+      }
       
       return true;
     }
@@ -525,6 +530,11 @@ bool Frame::ExecExCommand(const std::string& command)
       }
       
       m_Editors->AdvanceSelection(false);
+
+      if (wxExEx::GetMacros().IsPlayback())
+      {
+        stc = (wxExSTC *)m_Editors->GetPage(m_Editors->GetSelection());
+      }
 
       return true;
     }
@@ -1541,45 +1551,20 @@ void Frame::StatusBarClickedRight(const wxString& pane)
       match = wxExLexers::Get()->GetTheme();
     }
     
-    OpenFile(
-      wxExLexers::Get()->GetFileName(),
-      0,
-      match);
+    OpenFile(wxExLexers::Get()->GetFileName(), 0, match);
   }
   else if (pane == "PaneMacro")
   {
-    wxExSTC* stc = GetSTC();
-    
-    if ((stc != NULL && !stc->GetVi().GetIsActive()) || 
-        !wxExViMacros::GetFileName().FileExists())
+    if (wxExViMacros::GetFileName().FileExists())
     {
-      return;
-    }
-    
-    const wxString  macro(GetStatusText(pane));
-      
-    if (stc->GetVi().GetMacros().IsRecordedMacro(macro))
-    {
-      OpenFile(wxExViMacros::GetFileName(),
-        0,
-        "macro name=\"" + macro + "\"");
-    }
-    else
-    {
-      OpenFile(wxExViMacros::GetFileName(),
-        0,
-        "variable name=\"" + macro + "\"");
+      OpenFile(wxExViMacros::GetFileName(), 0, 
+        " name=\"" + GetStatusText(pane) + "\"");
     }
   }
   else if (pane == "PaneVCS")
   {
-    const wxString match = (GetStatusText(pane) != "Auto" ? 
-      GetStatusText(pane): wxString(wxEmptyString));
-      
-    OpenFile(
-      wxExVCS::GetFileName(),
-      0,
-      match);
+    OpenFile(wxExVCS::GetFileName(), 0, (GetStatusText(pane) != "Auto" ? 
+      GetStatusText(pane): wxString(wxEmptyString)));
   }
   else
   {

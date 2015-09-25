@@ -1759,7 +1759,7 @@ bool wxExSTC::Open(
       }
       else if (!match.empty())
       {
-        FindNext(match);
+        FindNext(match, 0);
       }
     }
 
