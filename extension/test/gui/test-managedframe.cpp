@@ -23,7 +23,9 @@ void fixture::testManagedFrame()
   wxExSTC* stc = new wxExSTC(m_Frame, "hello world");
   wxExVi* vi = &stc->GetVi();
   
-  CPPUNIT_ASSERT(!m_Frame->ExecExCommand(":n", NULL));
+  wxExSTC* stc2 = NULL;  
+  CPPUNIT_ASSERT(!m_Frame->ExecExCommand(":n", stc2));
+  CPPUNIT_ASSERT( stc2 == NULL);
   
   m_Frame->GetExCommand(vi, "/");
   
