@@ -55,8 +55,15 @@ public:
     /// page
     wxWindow* page);
   
-  /// Executes a ex command.
-  virtual bool ExecExCommand(const std::string& command) {return false;};
+  /// Executes a ex command. Returns true if
+  /// this command is handled. This method is invoked
+  /// at the beginning of the wxExEx command handling,
+  /// allowing you to override any command.
+  virtual bool ExecExCommand(
+    /// the command to execute
+    const std::string& command, 
+    /// if the command changes stc, update it, otherwise NULL
+    wxExSTC* & stc) {return false;};
 
   /// Gets a command line ex command.
   /// Default shows the ex bar, sets the label and 

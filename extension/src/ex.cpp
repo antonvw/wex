@@ -94,9 +94,14 @@ bool wxExEx::Command(const std::string& command)
   }
   
   bool result = true;
+  wxExSTC* stc = NULL;
 
-  if (m_Frame->ExecExCommand(command))
+  if (m_Frame->ExecExCommand(command, stc))
   {
+    if (stc != NULL)
+    {
+      m_STC = stc;
+    }
   }
   else if (command == ":" || command == ":'<,'>")
   {
@@ -613,7 +618,13 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
     choice = dialog.GetStringSelection();
   }
   
+  // The STC pointer might change because of playback.
+  // Normally that is ok, but if playback fails, and
+  // the m_STC was changed (because of e.g. :n), 
+  // you would end up with an incorrect pointer.
+  // Therefore set it back after the playback.
   wxExSTC* stc = m_STC;
+
   bool ok = true;
   
   if (m_Macros.IsRecordedMacro(choice))
@@ -632,7 +643,7 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   }
     
   m_STC = stc;
-  
+
   if (ok)
   {
     m_Frame->StatusText(m_Macros.GetMacro(), "PaneMacro");

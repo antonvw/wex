@@ -45,7 +45,7 @@ private:
   virtual wxExListViewFileName* Activate(
     wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL) override;
-  virtual bool ExecExCommand(const std::string& command) override;
+  virtual bool ExecExCommand(const std::string& command, wxExSTC* & stc) override;
   virtual wxExListViewFile* GetProject() override;
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
