@@ -150,7 +150,7 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->AppendSubMenu(menuMacro, _("&Macro"), wxEmptyString, ID_EDIT_MACRO_MENU);
 
   wxExMenu *menuView = new wxExMenu;
-  menuView->AppendBars();
+  AppendPanes(menuView);
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_FILES, _("&Files"));
   menuView->AppendCheckItem(ID_VIEW_PROJECTS, _("&Projects"));

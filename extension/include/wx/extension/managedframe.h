@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <utility>
+#include <vector>
 #include <wx/aui/framemanager.h> // for wxAuiManager
 #include <wx/aui/auibar.h>
 #include <wx/extension/filehistory.h>
@@ -25,6 +27,12 @@ class wxExToolBar;
 /// used by the notebook classes, and toolbar, findbar and vibar support.
 /// - The toolbar and findbar are added as wxExToolbarPanes to the aui manager.
 /// - The vibar is added as normal aui panel to the aui manager.
+/// The next panes are supported:
+/// - FINDBAR
+/// - OPTIONSBAR
+/// - PROCESS
+/// - TOOLBAR
+/// - VIBAR (same as the ex bar)
 class WXDLLIMPEXP_BASE wxExManagedFrame : public wxExFrame
 {
 public:
@@ -54,6 +62,9 @@ public:
     wxWindowID id, 
     /// page
     wxWindow* page);
+  
+  /// Appends the toggle panes to the specified menu.
+  void AppendPanes(wxMenu* menu) const;
   
   /// Executes a ex command. Returns true if
   /// this command is handled. This method is invoked
@@ -115,6 +126,10 @@ public:
   /// Shows text in ex bar.
   void ShowExMessage(const wxString& text);
   
+  /// Shows or hides the managed pane.
+  /// Returns false if pane is not managed.
+  bool ShowPane(const wxString& pane, bool show = true);
+  
   /// Called after you checked the Sync checkbox on the options toolbar.
   /// Default syncs current stc.
   virtual void SyncAll();
@@ -126,12 +141,7 @@ public:
   /// Toggles the managed pane: if shown hides it, otherwise shows it.
   /// Returns false if pane is not managed.
   bool TogglePane(
-    /// pane to be toggled:
-    /// - FINDBAR
-    /// - OPTIONSBAR
-    /// - TOOLBAR
-    /// - VIBAR (same as the ex bar)
-    const wxString& pane);
+    const wxString& pane) {return ShowPane(pane, !m_Manager.GetPane(pane).IsShown());};
 protected:
   void DoRecent(wxFileHistory& history, size_t index, long flags = 0);
 private:
@@ -140,6 +150,8 @@ private:
     const wxString& name, 
     const wxString& caption = wxEmptyString);
   wxPanel* CreateExPanel();
+  
+  const std::vector<std::pair<std::pair<wxString,wxString>, int>> m_ToggledPanes;
   
   wxAuiManager m_Manager;
   wxExFileHistory m_FileHistory;

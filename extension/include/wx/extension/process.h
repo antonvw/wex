@@ -10,9 +10,6 @@
 #include <wx/process.h>
 
 class wxTimer;
-class wxTimerEvent;
-class wxExSTC;
-class wxExSTCEntryDialog;
 class wxExSTCShell;
 
 /// Offers a wxProcess, capturing execution output depending
@@ -41,14 +38,12 @@ public:
     wxWindow* parent,
     const wxString& title = _("Select Process"),
     bool modal = true);
-
+  
   /// Executes the process.
   /// - In case asynchronously (wxEXEC_ASYNC) this call immediately returns.
-  ///   The dialog will be shown, with STC component shell enabled,
-  ///   and will be filled with output from the process.
+  ///   The STC component will be filled with output from the process.
   /// - In case synchronously (wxEXEC_SYNC) this call returns after execute ends, 
   ///   and the output is available using GetOutput.
-  ///   The dialog is not shown (call ShowOutput).
   /// Return value is false if process could not execute (and GetError is true), 
   /// or if config dialog was invoked and cancelled (and GetError is false).
   /// Normally the reason for not being able to run the process is logged
@@ -69,14 +64,9 @@ public:
   /// Gets the output from Execute (only filled for wxEXEC_SYNC).
   const wxString& GetOutput() const {return m_Output;};
   
-  /// Returns the shell, for input to the process.
-  /// If you did not yet invoke Execute,
-  /// NULL is returned.
-  wxExSTCShell* GetShell();
-
-  /// Returns the STC component from the dialog
-  /// (might be NULL if dialog is NULL).
-  wxExSTC* GetSTC() const;
+  /// Returns the STC component 
+  /// (might be NULL if PrepareOutput is not yet invoked).
+  wxExSTCShell* GetSTC() const {return m_STC;};
   
   /// Returns true when the command executed resulted in stderr errors.
   bool HasStdError() const {return m_HasStdError;};
@@ -90,6 +80,9 @@ public:
   /// Kills the process (sends specified signal if process still running).
   wxKillError Kill(wxSignal sig = wxSIGKILL);
   
+  /// Construct the STC component.
+  static void PrepareOutput(wxWindow* parent);
+
 #if wxUSE_GUI
   /// Shows output from Execute (wxEXEC_SYNC) on the STC component.
   /// You can override this method to e.g. prepare a lexer on GetSTC
@@ -114,7 +107,7 @@ private:
   static wxString m_WorkingDirKey;
 
 #if wxUSE_GUI
-  static wxExSTCEntryDialog* m_Dialog;
+  static wxExSTCShell* m_STC;
 #endif  
 
   wxTimer* m_Timer;

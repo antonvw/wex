@@ -19,6 +19,7 @@
 #include <wx/extension/menu.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/printing.h>
+#include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
@@ -181,6 +182,7 @@ Frame::Frame(App* app)
   , m_App(app)
 {
   wxExViMacros::LoadDocument();
+  wxExProcess::PrepareOutput(this);
 
   GetManager().AddPane(m_Editors, wxAuiPaneInfo()
     .CenterPane()
@@ -209,6 +211,12 @@ Frame::Frame(App* app)
     .Row(0)
     .Caption(_("Output")));
 
+  GetManager().AddPane(m_Process->GetSTC(), wxAuiPaneInfo()
+    .Bottom()
+    .Name("PROCESS")
+    .MinSize(250, 100)
+    .Caption(_("Process")));
+        
   const wxString perspective = wxConfigBase::Get()->Read("Perspective");
 
   if (perspective.empty())
@@ -216,6 +224,7 @@ Frame::Frame(App* app)
     GetManager().GetPane("DIRCTRL").Hide();
     GetManager().GetPane("HISTORY").Hide();
     GetManager().GetPane("LOG").Hide();
+    GetManager().GetPane("PROCESS").Hide();
     GetManager().GetPane("PROJECTS").Hide();
   }
   else
@@ -356,7 +365,7 @@ Frame::Frame(App* app)
     event.Check(GetManager().GetPane("OUTPUT").IsShown());}, ID_VIEW_OUTPUT);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(m_Projects != NULL && GetManager().GetPane("PROJECTS").IsShown());}, ID_VIEW_PROJECTS);
-
+  
   m_App->Reset();
 }    
 
@@ -458,7 +467,7 @@ void Frame::AddPaneHistory()
     .Name("HISTORY")
     .Caption(_("History")));
 }
-       
+
 void Frame::AddPaneProjects()
 {
   if (m_Projects == NULL)
@@ -802,8 +811,16 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
 
-  case wxID_EXECUTE: m_Process->Execute(); break;
-  case wxID_STOP: m_Process->Kill(); break;
+  case wxID_EXECUTE: 
+    GetManager().GetPane("PROCESS").Show(); 
+    GetManager().Update();
+    m_Process->Execute();
+    break;
+  case wxID_STOP: 
+    m_Process->Kill(); 
+    GetManager().GetPane("PROCESS").Hide();
+    GetManager().Update();
+    break;
 
   case ID_ALL_STC_CLOSE:
   case ID_ALL_STC_CLOSE_OTHERS:
@@ -888,6 +905,8 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_PROCESS_SELECT: 
     if (wxExProcess::ConfigDialog(this) == wxID_OK)
     {
+      GetManager().GetPane("PROCESS").Show();
+      GetManager().Update();
       m_Process->Execute();
     }
     break;

@@ -2,7 +2,7 @@
 // Name:      stcdlg.cpp
 // Purpose:   Implementation of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,8 +11,7 @@
 #endif
 #include <wx/persist/toplevel.h>
 #include <wx/extension/stcdlg.h>
-#include <wx/extension/process.h>
-#include <wx/extension/shell.h>
+#include <wx/extension/stc.h>
 
 #if wxUSE_GUI
 
@@ -21,14 +20,13 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   const wxString& text,
   const wxString& prompt,
   long button_style,
-  bool use_shell,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size, 
   long style,
   const wxString& name)
   : wxExDialog(parent, caption, button_style, id, pos, size, style, name)
-  , m_Process(NULL)
+  , m_STC(new wxExSTC(this, text))
 {
 #if wxUSE_STATTEXT
   if (!prompt.empty())
@@ -40,11 +38,6 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
 #endif
 
   wxPersistentRegisterAndRestore(this);
-
-  m_STC = (use_shell ?
-    new wxExSTCShell(this, text, wxEmptyString, true, -1, wxEmptyString,
-      wxExSTC::STC_MENU_DEFAULT | wxExSTC::STC_MENU_OPEN_LINK):
-    new wxExSTC(this, text));
   
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
   m_STC->SetName(caption);
@@ -55,30 +48,6 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   AddUserSizer(m_STC);
 
   LayoutSizers();
-  
-  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event){
-    if (m_Process != NULL)
-    {
-      if (m_Process->IsRunning())
-      {
-        m_Process->Kill();
-      }
-    }});
-
-  Bind(wxEVT_BUTTON, [=](wxCommandEvent& event) {
-      if (m_Process != NULL)
-      {
-        if (m_Process->IsRunning())
-        {
-          m_Process->Kill();
-        }
-      }
-      event.Skip();}, wxID_OK);
-  
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-      wxPostEvent(wxTheApp->GetTopWindow(), event);}, wxID_FIND);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-      wxPostEvent(wxTheApp->GetTopWindow(), event);}, wxID_REPLACE);
 }
 
 const wxExLexer* wxExSTCEntryDialog::GetLexer() const
@@ -89,11 +58,6 @@ const wxExLexer* wxExSTCEntryDialog::GetLexer() const
 wxExSTC* wxExSTCEntryDialog::GetSTC()
 {
   return m_STC;
-}
-
-wxExSTCShell* wxExSTCEntryDialog::GetSTCShell()
-{
-  return (wxExSTCShell *)m_STC;
 }
 
 const wxString wxExSTCEntryDialog::GetText() const 

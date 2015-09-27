@@ -105,6 +105,8 @@ wxExSampleFrame::wxExSampleFrame()
   , m_Process(new wxExProcess())
   , m_FlagsSTC(0)
 {
+  wxExProcess::PrepareOutput(this);
+  
   SetIcon(wxICON(app));
 
   wxExMenu* menuFile = new wxExMenu;
@@ -152,7 +154,7 @@ wxExSampleFrame::wxExSampleFrame()
   menuSTC->Append(ID_STC_SPLIT, "Split");
 
   wxExMenu *menuView = new wxExMenu;
-  menuView->AppendBars();
+  AppendPanes(menuView);
   menuView->AppendSeparator();
   menuView->Append(ID_STATISTICS_SHOW, "Statistics");
   

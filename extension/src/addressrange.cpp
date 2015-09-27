@@ -341,10 +341,17 @@ bool wxExAddressRange::Escape(const wxString& command)
       m_Process = new wxExProcess();
     }
   
-    return m_Process->Execute(
+    const bool ok = m_Process->Execute(
       command,
       wxEXEC_ASYNC,
       m_STC->GetFileName().GetPath());
+    
+    if (ok)
+    {
+      m_Ex->GetFrame()->ShowPane("PROCESS");
+    }
+    
+    return ok;
   }
   
   if (!IsOk())
