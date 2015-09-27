@@ -12,6 +12,7 @@
 #include <wx/config.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/process.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/toolbar.h>
 #include "test.h"
@@ -38,6 +39,18 @@ fixture::fixture()
     // it should be present in ~/.wxex-test-gui
     // (depending on platform, configuration).
     wxExLexers::Get();
+    
+    wxExProcess* process = new wxExProcess;
+    
+    wxExProcess::PrepareOutput(m_Frame);
+    
+    m_Frame->GetManager().AddPane(process->GetSTC(), wxAuiPaneInfo()
+      .Bottom()
+      .Name("PROCESS")
+      .MinSize(250, 100)
+      .Caption(_("Process")));
+    
+    m_Frame->GetManager().Update();
     
     wxConfigBase::Get()->Write(_("vi mode"), true);
     

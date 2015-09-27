@@ -54,7 +54,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   menuFile->Append(wxID_EXIT);
 
   wxExMenu *menuView = new wxExMenu;
-  menuView->AppendBars();
+  AppendPanes(menuView);
 
   wxExMenu* menuHelp = new wxExMenu;
   menuHelp->Append(wxID_ABOUT);

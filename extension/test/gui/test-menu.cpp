@@ -37,9 +37,6 @@ void fixture::testMenu()
   // AppendPrint
   menu->AppendPrint();
   
-  // AppendBars
-  menu->AppendBars();
-
   // AppendSubMenu
   menu->AppendSubMenu(new wxMenu("submenu"), "submenu");
   

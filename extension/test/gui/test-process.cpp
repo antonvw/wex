@@ -61,7 +61,7 @@ void fixture::testProcess()
   // Test wxEXEC_ASYNC process.
   CPPUNIT_ASSERT( process.Execute("bash"));
   CPPUNIT_ASSERT( process.IsRunning());
-  wxExSTCShell* shell = process.GetShell();  
+  wxExSTCShell* shell = process.GetSTC();  
   CPPUNIT_ASSERT( shell != NULL);
   Process("cd ~\rpwd\r", shell);
   CPPUNIT_ASSERT( shell->GetText().Contains("home"));

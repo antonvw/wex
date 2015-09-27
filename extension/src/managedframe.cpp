@@ -77,7 +77,11 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   : wxExFrame(parent, id, title, style)
   , m_FileHistory(maxFiles, wxID_FILE1)
   , m_ToolBar(new wxExToolBar(this))
-
+  , m_ToggledPanes({
+    {{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
+    {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
+    {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
+    {{"PROCESS", _("&Process")}, ID_VIEW_LOWEST + 4}})
 {
   m_Manager.SetManagedWindow(this);
   AddToolBarPane(m_ToolBar, "TOOLBAR", _("Toolbar"));
@@ -103,13 +107,14 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     DoRecent(m_FileHistory, event.GetId() - m_FileHistory.GetBaseId());},
     m_FileHistory.GetBaseId(), m_FileHistory.GetBaseId() + m_FileHistory.GetMaxFiles());
-    
-  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(m_Manager.GetPane("FINDBAR").IsShown());}, ID_VIEW_FINDBAR);
-  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(m_Manager.GetPane("OPTIONSBAR").IsShown());}, ID_VIEW_OPTIONSBAR);
-  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(m_Manager.GetPane("TOOLBAR").IsShown());}, ID_VIEW_TOOLBAR);
+
+  for (auto it : m_ToggledPanes)
+  {
+    Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+      event.Check(m_Manager.GetPane(it.first.first).IsShown());}, it.second);
+    Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+      TogglePane(it.first.first);}, it.second);
+  }
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     std::list < wxString > l; 
@@ -150,13 +155,6 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     {
       wxExFindReplaceData::Get()->SetFindString(text);
     }}, ID_FIND_FIRST, ID_FIND_LAST);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    TogglePane("FINDBAR");}, ID_VIEW_FINDBAR);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    TogglePane("OPTIONSBAR");}, ID_VIEW_OPTIONSBAR);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    TogglePane("TOOLBAR");}, ID_VIEW_TOOLBAR);
 }
 
 wxExManagedFrame::~wxExManagedFrame()
@@ -214,6 +212,19 @@ bool wxExManagedFrame::AllowClose(wxWindowID id, wxWindow* page)
   return true;
 }
 
+void wxExManagedFrame::AppendPanes(wxMenu* menu) const
+{
+#ifdef __WXMSW__
+  // See wxExFrame::Initialize
+  AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar\tCtrl+I"));
+#endif
+
+  for (auto it : m_ToggledPanes)
+  {
+    menu->AppendCheckItem(it.second, it.first.second);
+  }
+}
+  
 wxPanel* wxExManagedFrame::CreateExPanel()
 {
   // An ex panel starts with small static text for : or /, then
@@ -321,6 +332,22 @@ void wxExManagedFrame::ShowExMessage(const wxString& text)
   }
 }
 
+bool wxExManagedFrame::ShowPane(const wxString& pane, bool show)
+{
+  wxAuiPaneInfo& info = m_Manager.GetPane(pane);
+
+  if (!info.IsOk())
+  {
+    return false;
+  }
+
+  show ? info.Show(): info.Hide();
+
+  m_Manager.Update();
+  
+  return true;
+}
+  
 void wxExManagedFrame::SyncAll()
 {
   wxExSTC* stc = GetSTC();
@@ -334,22 +361,6 @@ void wxExManagedFrame::SyncAll()
 void wxExManagedFrame::SyncCloseAll(wxWindowID id)
 {
   SetFindFocus(NULL);
-}
-
-bool wxExManagedFrame::TogglePane(const wxString& pane)
-{
-  wxAuiPaneInfo& info = m_Manager.GetPane(pane);
-
-  if (!info.IsOk())
-  {
-    return false;
-  }
-
-  info.IsShown() ? info.Hide(): info.Show();
-
-  m_Manager.Update();
-  
-  return true;
 }
 
 // Implementation of support class.
