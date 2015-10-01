@@ -82,11 +82,12 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
     {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
     {{"PROCESS", _("&Process")}, ID_VIEW_LOWEST + 4}})
+  , m_OptionsBar(new wxExOptionsToolBar(this))
 {
   m_Manager.SetManagedWindow(this);
   AddToolBarPane(m_ToolBar, "TOOLBAR", _("Toolbar"));
   AddToolBarPane(new wxExFindToolBar(this), "FINDBAR", _("Findbar"));
-  AddToolBarPane(new wxExOptionsToolBar(this), "OPTIONSBAR", _("Optionsbar"));
+  AddToolBarPane(m_OptionsBar, "OPTIONSBAR", _("Optionsbar"));
   AddToolBarPane(CreateExPanel(), "VIBAR");
   m_Manager.Update();
   
@@ -215,8 +216,7 @@ bool wxExManagedFrame::AllowClose(wxWindowID id, wxWindow* page)
 void wxExManagedFrame::AppendPanes(wxMenu* menu) const
 {
 #ifdef __WXMSW__
-  // See wxExFrame::Initialize
-  AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar\tCtrl+I"));
+  menu->AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar\tCtrl+I"));
 #endif
 
   for (auto it : m_ToggledPanes)
@@ -259,9 +259,7 @@ void wxExManagedFrame::DoRecent(
 void wxExManagedFrame::GetExCommand(wxExEx* ex, const wxString& command)
 {
   m_exTextCtrl->SetEx(ex, command);
-  
-  m_Manager.GetPane("VIBAR").Show();
-  m_Manager.Update();
+  ShowPane("VIBAR");
 }
 
 void wxExManagedFrame::HideExBar(int hide)
@@ -271,8 +269,7 @@ void wxExManagedFrame::HideExBar(int hide)
     if (hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||
         (GetStatusBar() != NULL && GetStatusBar()->IsShown()))
     {
-      m_Manager.GetPane("VIBAR").Hide();
-      m_Manager.Update();
+      ShowPane("VIBAR", false);
     }
     
     if ((hide == HIDE_BAR_FOCUS_STC || hide == HIDE_BAR_FORCE_FOCUS_STC) && 
@@ -344,6 +341,8 @@ bool wxExManagedFrame::ShowPane(const wxString& pane, bool show)
   show ? info.Show(): info.Hide();
 
   m_Manager.Update();
+  
+  m_OptionsBar->Update(pane, show);
   
   return true;
 }

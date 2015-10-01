@@ -403,7 +403,6 @@ void wxExSTCShell::KeepCommand()
     m_Command = wxExSkipWhiteSpace(m_Command);
   }
   
-  m_Commands.remove(m_Command);
   m_Commands.push_back(m_Command);
 }
 
@@ -482,9 +481,8 @@ bool wxExSTCShell::ProcessChar(int key)
           if (SetCommandFromHistory(m_Command.substr(1)))
           {
             AppendText(GetEOL() + m_Command);
-
-            // We don't keep the command, so commands are not rearranged and
-            // repeatingly calling !5 always gives the same command, just as bash does.
+            KeepCommand();
+          
             if (m_Process != NULL)
             {
               m_Process->Command(ID_SHELL_COMMAND, m_Command);

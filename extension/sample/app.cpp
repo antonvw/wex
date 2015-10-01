@@ -39,7 +39,6 @@ enum
   ID_CONFIG_DLG_READONLY,
   ID_RECENTFILE_MENU,
   ID_SHOW_VCS,
-  ID_PROCESS_SELECT,
   ID_STATISTICS_SHOW,
   ID_STC_CONFIG_DLG,
   ID_STC_ENTRY_DLG,
@@ -116,7 +115,6 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->Append(ID_SHOW_VCS, "Show VCS");
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
-  menuFile->Append(ID_PROCESS_SELECT, "Select Process");
   menuFile->Append(wxID_EXECUTE);
   menuFile->Append(wxID_STOP);
   menuFile->AppendSeparator();
@@ -190,6 +188,11 @@ wxExSampleFrame::wxExSampleFrame()
     wxAuiPaneInfo().Bottom().Caption("STC"));
   GetManager().AddPane(m_STCShell, 
     wxAuiPaneInfo().Bottom().Caption("Shell").MinSize(wxSize(250, 250)));
+  GetManager().AddPane(m_Process->GetSTC(), wxAuiPaneInfo()
+    .Bottom()
+    .Name("PROCESS")
+    .MinSize(250, 100)
+    .Caption(_("Process")));
 
   GetManager().Update();
 
@@ -267,8 +270,6 @@ wxExSampleFrame::wxExSampleFrame()
     m_ListView->PrintPreview();}, wxID_PREVIEW);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExPrinting::Get()->GetHtmlPrinter()->PageSetup();}, wxID_PRINT_SETUP);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExProcess::ConfigDialog(this);}, ID_PROCESS_SELECT);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Process->Execute();}, wxID_EXECUTE);
