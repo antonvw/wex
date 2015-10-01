@@ -90,18 +90,14 @@ public:
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
 protected:
-  /// Overriden from wxProcess.
-  virtual void OnTerminate(int pid, int status);
+  virtual void OnTerminate(int pid, int status) override;
 private:
-  bool CheckInput(const wxString& command = wxEmptyString);
-  bool HandleCommand(const wxString& command);
-
-  bool m_Busy;
   bool m_Error;
   bool m_HasStdError;
   bool m_Sync;
 
   wxString m_Command;  
+  wxString m_Input;  
   wxString m_Output;
   
   static wxString m_WorkingDirKey;

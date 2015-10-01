@@ -453,6 +453,12 @@ bool wxExLexer::Set(
   wxStyledTextCtrl* stc,
   bool clear)
 {
+  // If there are no lexers, just return, to prevent error message.
+  if (wxExLexers::Get()->GetCount() == 0)
+  {
+    return false;
+  }
+
   (*this) = wxExLexers::Get()->FindByName(lexer);
   
   if (!m_IsOk && stc != NULL)

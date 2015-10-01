@@ -21,6 +21,7 @@
 class wxPanel;
 class wxExEx;
 class wxExExTextCtrl;
+class wxExOptionsToolBar;
 class wxExToolBar;
 
 /// Offers an aui managed frame with a notebook multiple document interface,
@@ -155,6 +156,7 @@ private:
   
   wxAuiManager m_Manager;
   wxExFileHistory m_FileHistory;
+  wxExOptionsToolBar* m_OptionsBar;
   wxExToolBar* m_ToolBar;
   wxExExTextCtrl* m_exTextCtrl;
 };

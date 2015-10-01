@@ -379,10 +379,8 @@ wxExListViewFileName* Frame::Activate(
   }
   else
   {
-    wxExListViewWithFrame* list = AddPage(type, lexer);
-    GetManager().GetPane("OUTPUT").Show();
-    GetManager().Update();
-    return list;
+    ShowPane("OUTPUT");
+    return AddPage(type, lexer);
   }
 }
 
@@ -595,8 +593,7 @@ void Frame::NewFile(const wxString& name)
     name,
     true);
 
-  GetManager().GetPane("FILES").Show();
-  GetManager().Update();
+  ShowPane("FILES");
 }
 
 void Frame::NewProject()
@@ -631,8 +628,7 @@ void Frame::NewProject()
     
   SetRecentProject(fn.GetFullPath());
 
-  GetManager().GetPane("PROJECTS").Show();
-  GetManager().Update();
+  ShowPane("PROJECTS");
 }
 
 void Frame::OnCommand(wxCommandEvent& event)
@@ -812,14 +808,12 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_EXECUTE: 
-    GetManager().GetPane("PROCESS").Show(); 
-    GetManager().Update();
+    ShowPane("PROCESS"); 
     m_Process->Execute();
     break;
   case wxID_STOP: 
     m_Process->Kill(); 
-    GetManager().GetPane("PROCESS").Hide();
-    GetManager().Update();
+    ShowPane("PROCESS", false);
     break;
 
   case ID_ALL_STC_CLOSE:
@@ -905,8 +899,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_PROCESS_SELECT: 
     if (wxExProcess::ConfigDialog(this) == wxID_OK)
     {
-      GetManager().GetPane("PROCESS").Show();
-      GetManager().Update();
+      ShowPane("PROCESS");
       m_Process->Execute();
     }
     break;
@@ -1398,22 +1391,19 @@ bool Frame::OpenFile(
 
     if (!GetManager().GetPane("PROJECTS").IsShown())
     {
-      GetManager().GetPane("PROJECTS").Show();
-      GetManager().Update();
+      ShowPane("PROJECTS");
     }
   }
   else
   {
     if (!GetManager().GetPane("FILES").IsShown())
     {
-      GetManager().GetPane("FILES").Show();
-
       if (GetManager().GetPane("PROJECTS").IsMaximized())
       {
         GetManager().GetPane("PROJECTS").Restore();
       }
 
-      GetManager().Update();
+      ShowPane("FILES");
     }
 
     if (filename == wxExViMacros::GetFileName().GetFullPath())
@@ -1621,12 +1611,10 @@ void Frame::SyncCloseAll(wxWindowID id)
     }
     break;
   case NOTEBOOK_LISTS:
-    GetManager().GetPane("OUTPUT").Hide();
-    GetManager().Update();
+    ShowPane("OUTPUT", false);
     break;
   case NOTEBOOK_PROJECTS:
-    GetManager().GetPane("PROJECTS").Hide();
-    GetManager().Update();
+    ShowPane("PROJECTS", false);
     break;
   default: wxFAIL;
   }

@@ -65,6 +65,8 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   menubar->Append(menuHelp, "&Help");
   SetMenuBar(menubar);
 
+  GetToolBar()->AddControls();
+  
 #if wxUSE_STATUSBAR
   SetupStatusBar(std::vector<wxExStatusBarPane>{
     wxExStatusBarPane(),
