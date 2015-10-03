@@ -25,7 +25,7 @@ void fixture::testSTC()
   wxExSTC::ConfigDialog(m_Frame, "test stc", wxExSTC::STC_CONFIG_MODELESS);
   
   wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
-  wxExSTC* stccopy = new wxExSTC(*stc);
+  new wxExSTC(*stc);
   
   m_Frame->GetManager().AddPane(stc, 
     wxAuiPaneInfo().Bottom().Caption("STC"));

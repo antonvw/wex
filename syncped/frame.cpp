@@ -60,12 +60,12 @@ bool ForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont())
     return true;
   }
   
-  wxExListViewFile* lv;
   for (
     int page = notebook->GetPageCount() - 1;
     page >= 0;
     page--)
   {
+    wxExListViewFile* lv;
     if ((lv = (wxExListViewFile*)notebook->GetPage(page)) != NULL)
     {
       switch (id)
