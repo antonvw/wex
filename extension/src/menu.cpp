@@ -84,18 +84,6 @@ wxMenuItem* wxExMenu::Append(
   return wxMenu::Append(item);
 }
 
-void wxExMenu::AppendBars()
-{
-#ifdef __WXMSW__
-  // See wxExFrame::Initialize
-  AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar\tCtrl+I"));
-#endif
-  AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
-  AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
-  AppendCheckItem(ID_VIEW_FINDBAR, _("&Findbar"));
-  AppendCheckItem(ID_VIEW_OPTIONSBAR, _("&Optionsbar"));
-}
-
 void wxExMenu::AppendEdit(bool add_invert)
 {
   if (!(m_Style & MENU_IS_READ_ONLY) &&

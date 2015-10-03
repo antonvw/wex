@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
+#include <tuple>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -27,6 +28,7 @@ enum
   ID_MATCH_WHOLE_WORD = 100,
   ID_MATCH_CASE,
   ID_REGULAR_EXPRESSION,
+  ID_VIEW_PROCESS,
   ID_HEX_MODE,
   ID_SYNC_MODE 
 };
@@ -265,33 +267,41 @@ wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
   long style)
   : wxExToolBar(frame, id, pos, size, style)
 {
-  wxCheckBox* hexMode = new wxCheckBox(
-    this,
-    ID_HEX_MODE,
-    "Hex");
-  wxCheckBox* syncMode = new wxCheckBox(
-    this,
-    ID_SYNC_MODE,
-    "Sync");
-
+  // id, name, config, tooltip, default
+  for (auto it : std::vector<std::tuple<int, wxString, wxString, wxString, bool>> {
+    std::make_tuple(ID_VIEW_PROCESS, _("Process"), "ViewProcess", _("View Process"), false),
+    std::make_tuple(ID_HEX_MODE, "Hex", "HexMode", _("Open in hex mode"), false),
+    std::make_tuple(ID_SYNC_MODE, "Sync", "AllowSync", _("Synchronize modified files"), true)})
+  {
+    wxCheckBox* cb = new wxCheckBox(this, std::get<0>(it), std::get<1>(it));
+    m_CheckBoxes.push_back(cb);
 #if wxUSE_TOOLTIPS
-  hexMode->SetToolTip(_("Open in hex mode"));
-  syncMode->SetToolTip(_("Synchronize modified files"));
+    cb->SetToolTip(std::get<3>(it));
 #endif
-
-  hexMode->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false));
-  syncMode->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
-  
-  AddControl(hexMode);
-  AddControl(syncMode);
+    cb->SetValue(wxConfigBase::Get()->ReadBool(std::get<2>(it), std::get<4>(it)));
+    AddControl(cb);
+    Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
+      wxConfigBase::Get()->Write(std::get<2>(it), cb->GetValue());
+      if (event.GetId() == ID_VIEW_PROCESS)
+      {
+        GetFrame()->ShowPane("PROCESS", cb->GetValue());};}, std::get<0>(it));
+  }
 
   Realize();
+}
+
+bool wxExOptionsToolBar::Update(const wxString& label, bool show)
+{
+  for (auto it : m_CheckBoxes)
+  {
+    if (it->GetLabel().Lower() == label.Lower())
+    {
+      it->SetValue(show);
+      return true;
+    }
+  }
   
-  Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
-    wxConfigBase::Get()->Write("HexMode", hexMode->GetValue());}, ID_HEX_MODE);
-  Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
-    wxConfigBase::Get()->Write("AllowSync", syncMode->GetValue());
-    GetFrame()->SyncAll();}, ID_SYNC_MODE);
+  return false;
 }
 
 // Implementation of support class.

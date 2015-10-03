@@ -2,11 +2,10 @@
 // Name:      menu.h
 // Purpose:   Declaration of wxExMenu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXMENU_H
-#define _EXMENU_H
+#pragma once
 
 #include <wx/artprov.h> // for wxArtID
 #include <wx/menu.h>
@@ -49,9 +48,6 @@ public:
     const wxString& helptext = wxEmptyString,
     const wxArtID& artid = wxEmptyString);
 
-  /// Appends bar menu items (like status bar etc.).
-  void AppendBars();
-
   /// Appends edit menu items, depending on the style 
   /// specified during construction.
   void AppendEdit(bool add_invert = false);
@@ -93,4 +89,3 @@ private:
   long m_Style;
 };
 #endif // wxUSE_GUI
-#endif

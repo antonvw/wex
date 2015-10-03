@@ -13,7 +13,7 @@
 #include <wx/extension/vcsentry.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h> // for VCS_MAX_COMMANDS
-#include <wx/extension/stc.h>
+#include <wx/extension/shell.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 

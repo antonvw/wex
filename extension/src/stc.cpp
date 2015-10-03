@@ -1047,7 +1047,8 @@ bool wxExSTC::GotoDialog()
 void wxExSTC::GotoLineAndSelect(
   int line_number, 
   const wxString& text,
-  int col_number)
+  int col_number,
+  long flags)
 {
   // line_number and m_Goto start with 1 and is allowed to be 
   // equal to number of lines.
@@ -1091,6 +1092,16 @@ void wxExSTC::GotoLineAndSelect(
     
     // Reset selection, seems necessary.
     SelectNone();
+  }
+  
+  if (flags & STC_WIN_FROM_OTHER)
+  {
+    IndicatorClearRange(0, GetTextLength() - 1);
+    SetIndicator(wxExIndicator(0, 0), 
+      PositionFromLine(line_number - 1), 
+      col_number > 0 ? 
+        PositionFromLine(line_number - 1) + col_number - 1:
+        GetLineEndPosition(line_number - 1));
   }
 }
 
@@ -1727,7 +1738,7 @@ bool wxExSTC::Open(
 {
   if (GetFileName() == filename && line_number > 0)
   {
-    GotoLineAndSelect(line_number, match, col_number);
+    GotoLineAndSelect(line_number, match, col_number, flags);
     PropertiesMessage();
     return true;
   }
@@ -1742,7 +1753,7 @@ bool wxExSTC::Open(
 
     if (line_number > 0)
     {
-      GotoLineAndSelect(line_number, match, col_number);
+      GotoLineAndSelect(line_number, match, col_number, flags);
     }
     else
     {

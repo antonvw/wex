@@ -206,7 +206,8 @@ public:
   void GotoLineAndSelect(
     int line_number, 
     const wxString& text = wxEmptyString,
-    int col_number = 0);
+    int col_number = 0,
+    long flags = 0);
 
   /// Guesses the file type using a small sample size from this document, 
   /// and sets EOL mode and updates statusbar if it found eols.
