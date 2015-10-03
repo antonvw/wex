@@ -547,7 +547,7 @@ void wxExEx::Cut(bool show_message)
   
   if (lines >= 3 && show_message)
   {
-    GetFrame()->ShowExMessage(wxString::Format(_("%d fewer lines"), lines - 1));
+    m_Frame->ShowExMessage(wxString::Format(_("%d fewer lines"), lines - 1));
   }
 }
 
@@ -905,7 +905,7 @@ void wxExEx::Yank(bool show_message)
   
   if (lines >= 3 && show_message)
   {
-    GetFrame()->ShowExMessage(wxString::Format(_("%d lines yanked"), lines - 1));
+    m_Frame->ShowExMessage(wxString::Format(_("%d lines yanked"), lines - 1));
   }
 }
 

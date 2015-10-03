@@ -11,9 +11,7 @@
 
 #if wxUSE_GUI
 class wxExLexer;
-class wxExProcess;
 class wxExSTC;
-class wxExSTCShell;
 
 /// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
 /// The prompt (if not empty) is first added as a text sizer to the user sizer.
@@ -33,9 +31,6 @@ public:
     const wxString& prompt = wxEmptyString,
     /// buttons
     long button_style = wxOK | wxCANCEL,
-    /// normally a normal STC is used for entry,
-    /// if you set this flag, an STCShell is used
-    bool use_shell = false,
     /// window id
     wxWindowID id = wxID_ANY,
     /// pos
@@ -53,10 +48,6 @@ public:
   /// Gets the STC.
   wxExSTC* GetSTC();
 
-  /// Gets the STC Shell (only if use_shell was true when constructed).
-  /// Therefore might be NULL.
-  wxExSTCShell* GetSTCShell();
-
   /// Gets the normal STC text value.
   const wxString GetText() const;
 
@@ -65,11 +56,7 @@ public:
 
   /// Sets the STC lexer.
   bool SetLexer(const wxString& lexer);
-  
-  /// Set process callback.
-  void SetProcess(wxExProcess* process) {m_Process = process;};
 private:
   wxExSTC* m_STC;
-  wxExProcess* m_Process;
 };
 #endif // wxUSE_GUI

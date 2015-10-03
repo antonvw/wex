@@ -69,6 +69,7 @@ private:
     wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL);
   void AddPaneHistory();
+  void AddPaneProcess();
   void AddPaneProjects();
   bool DialogProjectOpen();
   void NewFile(const wxString& name);

@@ -12,6 +12,7 @@
 const int TOOL_MAX_REPORTS = 10;
 const int VCS_MAX_COMMANDS = 25;
 const int FIND_MAX_FINDS = 25;
+const int VIEW_MAX_PANES = 10;
 
 // The maximal number of files and projects to be supported.
 const int NUMBER_RECENT_FILES = 25;
@@ -62,10 +63,7 @@ enum wxExId
   ID_VIEW_TITLEBAR,
 
   ID_VIEW_LOWEST,        // aui panes that can be toggled
-  ID_VIEW_FINDBAR,
-  ID_VIEW_TOOLBAR,
-  ID_VIEW_OPTIONSBAR,
-  ID_VIEW_HIGHEST,
+  ID_VIEW_HIGHEST = ID_VIEW_LOWEST + VIEW_MAX_PANES,
 
   ID_EDIT_STC_LOWEST,    // all STC commands after this one
   ID_EDIT_READ,

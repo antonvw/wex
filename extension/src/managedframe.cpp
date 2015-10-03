@@ -14,9 +14,12 @@
 #include <wx/panel.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/addressrange.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/process.h>
+#include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
@@ -26,11 +29,11 @@
 
 // Support class.
 // Offers a text ctrl related to a ex object.
-class wxExExTextCtrl: public wxExFindTextCtrl
+class wxExTextCtrl: public wxExFindTextCtrl
 {
 public:
   /// Constructor. Creates empty control.
-  wxExExTextCtrl(
+  wxExTextCtrl(
     wxWindow* parent,
     wxExManagedFrame* frame,
     wxStaticText* prefix,
@@ -39,7 +42,7 @@ public:
     const wxSize& size = wxDefaultSize);
     
   /// Destructor.
- ~wxExExTextCtrl();
+ ~wxExTextCtrl();
     
   /// Returns ex component.
   wxExEx* GetEx() {return m_ex;};
@@ -77,12 +80,17 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   : wxExFrame(parent, id, title, style)
   , m_FileHistory(maxFiles, wxID_FILE1)
   , m_ToolBar(new wxExToolBar(this))
-
+  , m_ToggledPanes({
+    {{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
+    {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
+    {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
+    {{"PROCESS", _("&Process")}, ID_VIEW_LOWEST + 4}})
+  , m_OptionsBar(new wxExOptionsToolBar(this))
 {
   m_Manager.SetManagedWindow(this);
   AddToolBarPane(m_ToolBar, "TOOLBAR", _("Toolbar"));
   AddToolBarPane(new wxExFindToolBar(this), "FINDBAR", _("Findbar"));
-  AddToolBarPane(new wxExOptionsToolBar(this), "OPTIONSBAR", _("Optionsbar"));
+  AddToolBarPane(m_OptionsBar, "OPTIONSBAR", _("Optionsbar"));
   AddToolBarPane(CreateExPanel(), "VIBAR");
   m_Manager.Update();
   
@@ -103,13 +111,14 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     DoRecent(m_FileHistory, event.GetId() - m_FileHistory.GetBaseId());},
     m_FileHistory.GetBaseId(), m_FileHistory.GetBaseId() + m_FileHistory.GetMaxFiles());
-    
-  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(m_Manager.GetPane("FINDBAR").IsShown());}, ID_VIEW_FINDBAR);
-  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(m_Manager.GetPane("OPTIONSBAR").IsShown());}, ID_VIEW_OPTIONSBAR);
-  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(m_Manager.GetPane("TOOLBAR").IsShown());}, ID_VIEW_TOOLBAR);
+
+  for (auto it : m_ToggledPanes)
+  {
+    Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+      event.Check(m_Manager.GetPane(it.first.first).IsShown());}, it.second);
+    Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+      TogglePane(it.first.first);}, it.second);
+  }
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     std::list < wxString > l; 
@@ -150,13 +159,6 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     {
       wxExFindReplaceData::Get()->SetFindString(text);
     }}, ID_FIND_FIRST, ID_FIND_LAST);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    TogglePane("FINDBAR");}, ID_VIEW_FINDBAR);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    TogglePane("OPTIONSBAR");}, ID_VIEW_OPTIONSBAR);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    TogglePane("TOOLBAR");}, ID_VIEW_TOOLBAR);
 }
 
 wxExManagedFrame::~wxExManagedFrame()
@@ -214,18 +216,30 @@ bool wxExManagedFrame::AllowClose(wxWindowID id, wxWindow* page)
   return true;
 }
 
+void wxExManagedFrame::AppendPanes(wxMenu* menu) const
+{
+#ifdef __WXMSW__
+  menu->AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar\tCtrl+I"));
+#endif
+
+  for (auto it : m_ToggledPanes)
+  {
+    menu->AppendCheckItem(it.second, it.first.second);
+  }
+}
+  
 wxPanel* wxExManagedFrame::CreateExPanel()
 {
   // An ex panel starts with small static text for : or /, then
   // comes the ex ctrl for getting user input.
   wxPanel* panel = new wxPanel(this);
   wxStaticText* text = new wxStaticText(panel, wxID_ANY, wxEmptyString);
-  m_exTextCtrl = new wxExExTextCtrl(panel, this, text, wxID_ANY);
+  m_TextCtrl = new wxExTextCtrl(panel, this, text, wxID_ANY);
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
   sizer->AddGrowableCol(1);
   sizer->Add(text, wxSizerFlags().Expand());
-  sizer->Add(m_exTextCtrl, wxSizerFlags().Expand());
+  sizer->Add(m_TextCtrl, wxSizerFlags().Expand());
   
   panel->SetSizerAndFit(sizer);
 
@@ -247,10 +261,8 @@ void wxExManagedFrame::DoRecent(
 
 void wxExManagedFrame::GetExCommand(wxExEx* ex, const wxString& command)
 {
-  m_exTextCtrl->SetEx(ex, command);
-  
-  m_Manager.GetPane("VIBAR").Show();
-  m_Manager.Update();
+  m_TextCtrl->SetEx(ex, command);
+  ShowPane("VIBAR");
 }
 
 void wxExManagedFrame::HideExBar(int hide)
@@ -260,14 +272,24 @@ void wxExManagedFrame::HideExBar(int hide)
     if (hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||
         (GetStatusBar() != NULL && GetStatusBar()->IsShown()))
     {
-      m_Manager.GetPane("VIBAR").Hide();
-      m_Manager.Update();
+      ShowPane("VIBAR", false);
     }
     
-    if ((hide == HIDE_BAR_FOCUS_STC || hide == HIDE_BAR_FORCE_FOCUS_STC) && 
-         m_exTextCtrl != NULL && m_exTextCtrl->GetEx() != NULL)
+    if ((hide == HIDE_BAR_FOCUS_STC || 
+         hide == HIDE_BAR_FORCE_FOCUS_STC) && 
+         m_TextCtrl != NULL && 
+         m_TextCtrl->GetEx() != NULL)
     {
-      m_exTextCtrl->GetEx()->GetSTC()->SetFocus();
+      if (m_TextCtrl->GetValue().StartsWith("!") && 
+        wxExAddressRange::GetProcess() != NULL &&
+        wxExAddressRange::GetProcess()->IsRunning())
+      {
+        wxExAddressRange::GetProcess()->GetSTC()->SetFocus();
+      }
+      else
+      {
+        m_TextCtrl->GetEx()->GetSTC()->SetFocus();
+      }
     }
   }
 }
@@ -317,10 +339,28 @@ void wxExManagedFrame::ShowExMessage(const wxString& text)
   }
   else
   {
-    m_exTextCtrl->SetValue(text);
+    m_TextCtrl->SetValue(text);
   }
 }
 
+bool wxExManagedFrame::ShowPane(const wxString& pane, bool show)
+{
+  wxAuiPaneInfo& info = m_Manager.GetPane(pane);
+
+  if (!info.IsOk())
+  {
+    return false;
+  }
+
+  show ? info.Show(): info.Hide();
+
+  m_Manager.Update();
+  
+  m_OptionsBar->Update(pane, show);
+  
+  return true;
+}
+  
 void wxExManagedFrame::SyncAll()
 {
   wxExSTC* stc = GetSTC();
@@ -336,25 +376,9 @@ void wxExManagedFrame::SyncCloseAll(wxWindowID id)
   SetFindFocus(NULL);
 }
 
-bool wxExManagedFrame::TogglePane(const wxString& pane)
-{
-  wxAuiPaneInfo& info = m_Manager.GetPane(pane);
-
-  if (!info.IsOk())
-  {
-    return false;
-  }
-
-  info.IsShown() ? info.Hide(): info.Show();
-
-  m_Manager.Update();
-  
-  return true;
-}
-
 // Implementation of support class.
 
-wxExExTextCtrl::wxExExTextCtrl(
+wxExTextCtrl::wxExTextCtrl(
   wxWindow* parent,
   wxExManagedFrame* frame,
   wxStaticText* prefix,
@@ -504,12 +528,12 @@ wxExExTextCtrl::wxExExTextCtrl(
     }});
 }
 
-wxExExTextCtrl::~wxExExTextCtrl()
+wxExTextCtrl::~wxExTextCtrl()
 {
   wxExListToConfig(m_Commands, "excommand");
 }
 
-void wxExExTextCtrl::Expand()
+void wxExTextCtrl::Expand()
 {
   if (m_ex != NULL && m_ex->GetSTC()->GetFileName().FileExists())
   {
@@ -525,7 +549,7 @@ void wxExExTextCtrl::Expand()
   }
 }
 
-void wxExExTextCtrl::Handle(wxKeyEvent& event)
+void wxExTextCtrl::Handle(wxKeyEvent& event)
 {
   bool skip = true;
   
@@ -566,7 +590,7 @@ void wxExExTextCtrl::Handle(wxKeyEvent& event)
   m_Controlr = false;
 }
     
-void wxExExTextCtrl::SetEx(wxExEx* ex, const wxString& command) 
+void wxExTextCtrl::SetEx(wxExEx* ex, const wxString& command) 
 {
   m_Prefix->SetLabel(command.Left(1));
   const wxString range(command.Mid(1));

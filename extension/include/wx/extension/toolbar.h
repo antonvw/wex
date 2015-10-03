@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <vector>
 #include <wx/aui/auibar.h> 
 
 // Only if we have a gui.
@@ -69,5 +70,11 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxAUI_TB_DEFAULT_STYLE);
+  
+  /// Updates checkbox state.
+  /// Returns true if checkbox was found.
+  bool Update(const wxString& label, bool show);
+private:
+  std::vector<wxCheckBox*> m_CheckBoxes;
 };
 #endif // wxUSE_GUI
