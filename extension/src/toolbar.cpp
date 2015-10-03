@@ -269,7 +269,7 @@ wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
 {
   // id, name, config, tooltip, default
   for (auto it : std::vector<std::tuple<int, wxString, wxString, wxString, bool>> {
-    std::make_tuple(ID_VIEW_PROCESS, "Process", "ViewProcess", _("View Process"), false),
+    std::make_tuple(ID_VIEW_PROCESS, _("Process"), "ViewProcess", _("View Process"), false),
     std::make_tuple(ID_HEX_MODE, "Hex", "HexMode", _("Open in hex mode"), false),
     std::make_tuple(ID_SYNC_MODE, "Sync", "AllowSync", _("Synchronize modified files"), true)})
   {

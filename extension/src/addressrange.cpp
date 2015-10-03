@@ -16,6 +16,7 @@
 #include <wx/extension/indicator.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
+#include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vimacros.h>
@@ -137,8 +138,8 @@ private:
 };
 
 wxString wxExAddressRange::m_Pattern;
-wxExProcess* wxExAddressRange::m_Process = NULL;
 wxString wxExAddressRange::m_Replacement;
+wxExProcess* wxExAddressRange::m_Process = NULL;
 
 wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
   : m_Begin(ex)
@@ -349,6 +350,7 @@ bool wxExAddressRange::Escape(const wxString& command)
     if (ok)
     {
       m_Ex->GetFrame()->ShowPane("PROCESS");
+      m_Process->GetSTC()->SetFocus();
     }
     
     return ok;

@@ -38,10 +38,11 @@ public:
     /// the ex (or vi) component
     wxExEx* ex, 
     /// the range, being a string containing:
-    /// - . : current line 
-    /// - % : entire document
-    /// - * : current screen visible area
-    /// - x,y: range from begin x and end y address.
+    /// - .   : current line 
+    /// - %   : entire document
+    /// - *   : current screen visible area
+    /// - x,y : range from begin x and end y address.
+    /// -     : (empty), the range is empty
     const wxString& range);
 
   /// Destructor.
@@ -64,7 +65,13 @@ public:
   /// will pass lines 96 through 99 through the sort filter and 
   /// replace those lines with the output of sort.  
   /// Of course, you could also do: wxAddressRange(96,99).Sort().
+  /// If you did not specify an address range,
+  /// the command is run as an asynchronous process.
   bool Escape(const wxString& command);
+
+  /// Acccess to the process.
+  /// Returns NULLL if escape without range was not yet invoked.
+  static wxExProcess* GetProcess() {return m_Process;};
   
   /// Performs the global command on this range.
   bool Global(
@@ -146,11 +153,11 @@ private:
 
   static wxString m_Pattern;
   static wxString m_Replacement;
+  static wxExProcess* m_Process;
   
   wxExAddress m_Begin;
   wxExAddress m_End;
   wxExEx* m_Ex;
-  static wxExProcess* m_Process;
   wxExSTC* m_STC;
 };
 #endif // wxUSE_GUI

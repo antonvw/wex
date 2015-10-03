@@ -20,7 +20,7 @@
 
 class wxPanel;
 class wxExEx;
-class wxExExTextCtrl;
+class wxExTextCtrl;
 class wxExOptionsToolBar;
 class wxExToolBar;
 
@@ -157,7 +157,7 @@ private:
   wxAuiManager m_Manager;
   wxExFileHistory m_FileHistory;
   wxExOptionsToolBar* m_OptionsBar;
+  wxExTextCtrl* m_TextCtrl;
   wxExToolBar* m_ToolBar;
-  wxExExTextCtrl* m_exTextCtrl;
 };
 #endif // wxUSE_GUI

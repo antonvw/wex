@@ -100,6 +100,9 @@ void fixture::testAddressRange()
   CPPUNIT_ASSERT( stc->GetLineCount() == 8);
   CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Escape("uniq"));
   CPPUNIT_ASSERT( stc->GetLineCount() == 5);
+  CPPUNIT_ASSERT( wxExAddressRange::GetProcess() == NULL);
+  CPPUNIT_ASSERT( wxExAddressRange(ex).Escape("ls -l"));
+  CPPUNIT_ASSERT( wxExAddressRange::GetProcess() != NULL);
   
   // Test Global and Global inverse.
   for (int i = 0; i < 2; i++)

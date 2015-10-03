@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <vector>
 #include <wx/aui/auibar.h> 
 
 // Only if we have a gui.

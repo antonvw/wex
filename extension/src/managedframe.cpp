@@ -14,9 +14,12 @@
 #include <wx/panel.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/addressrange.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/process.h>
+#include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
@@ -26,11 +29,11 @@
 
 // Support class.
 // Offers a text ctrl related to a ex object.
-class wxExExTextCtrl: public wxExFindTextCtrl
+class wxExTextCtrl: public wxExFindTextCtrl
 {
 public:
   /// Constructor. Creates empty control.
-  wxExExTextCtrl(
+  wxExTextCtrl(
     wxWindow* parent,
     wxExManagedFrame* frame,
     wxStaticText* prefix,
@@ -39,7 +42,7 @@ public:
     const wxSize& size = wxDefaultSize);
     
   /// Destructor.
- ~wxExExTextCtrl();
+ ~wxExTextCtrl();
     
   /// Returns ex component.
   wxExEx* GetEx() {return m_ex;};
@@ -231,12 +234,12 @@ wxPanel* wxExManagedFrame::CreateExPanel()
   // comes the ex ctrl for getting user input.
   wxPanel* panel = new wxPanel(this);
   wxStaticText* text = new wxStaticText(panel, wxID_ANY, wxEmptyString);
-  m_exTextCtrl = new wxExExTextCtrl(panel, this, text, wxID_ANY);
+  m_TextCtrl = new wxExTextCtrl(panel, this, text, wxID_ANY);
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
   sizer->AddGrowableCol(1);
   sizer->Add(text, wxSizerFlags().Expand());
-  sizer->Add(m_exTextCtrl, wxSizerFlags().Expand());
+  sizer->Add(m_TextCtrl, wxSizerFlags().Expand());
   
   panel->SetSizerAndFit(sizer);
 
@@ -258,7 +261,7 @@ void wxExManagedFrame::DoRecent(
 
 void wxExManagedFrame::GetExCommand(wxExEx* ex, const wxString& command)
 {
-  m_exTextCtrl->SetEx(ex, command);
+  m_TextCtrl->SetEx(ex, command);
   ShowPane("VIBAR");
 }
 
@@ -272,10 +275,21 @@ void wxExManagedFrame::HideExBar(int hide)
       ShowPane("VIBAR", false);
     }
     
-    if ((hide == HIDE_BAR_FOCUS_STC || hide == HIDE_BAR_FORCE_FOCUS_STC) && 
-         m_exTextCtrl != NULL && m_exTextCtrl->GetEx() != NULL)
+    if ((hide == HIDE_BAR_FOCUS_STC || 
+         hide == HIDE_BAR_FORCE_FOCUS_STC) && 
+         m_TextCtrl != NULL && 
+         m_TextCtrl->GetEx() != NULL)
     {
-      m_exTextCtrl->GetEx()->GetSTC()->SetFocus();
+      if (m_TextCtrl->GetValue().StartsWith("!") && 
+        wxExAddressRange::GetProcess() != NULL &&
+        wxExAddressRange::GetProcess()->IsRunning())
+      {
+        wxExAddressRange::GetProcess()->GetSTC()->SetFocus();
+      }
+      else
+      {
+        m_TextCtrl->GetEx()->GetSTC()->SetFocus();
+      }
     }
   }
 }
@@ -325,7 +339,7 @@ void wxExManagedFrame::ShowExMessage(const wxString& text)
   }
   else
   {
-    m_exTextCtrl->SetValue(text);
+    m_TextCtrl->SetValue(text);
   }
 }
 
@@ -364,7 +378,7 @@ void wxExManagedFrame::SyncCloseAll(wxWindowID id)
 
 // Implementation of support class.
 
-wxExExTextCtrl::wxExExTextCtrl(
+wxExTextCtrl::wxExTextCtrl(
   wxWindow* parent,
   wxExManagedFrame* frame,
   wxStaticText* prefix,
@@ -514,12 +528,12 @@ wxExExTextCtrl::wxExExTextCtrl(
     }});
 }
 
-wxExExTextCtrl::~wxExExTextCtrl()
+wxExTextCtrl::~wxExTextCtrl()
 {
   wxExListToConfig(m_Commands, "excommand");
 }
 
-void wxExExTextCtrl::Expand()
+void wxExTextCtrl::Expand()
 {
   if (m_ex != NULL && m_ex->GetSTC()->GetFileName().FileExists())
   {
@@ -535,7 +549,7 @@ void wxExExTextCtrl::Expand()
   }
 }
 
-void wxExExTextCtrl::Handle(wxKeyEvent& event)
+void wxExTextCtrl::Handle(wxKeyEvent& event)
 {
   bool skip = true;
   
@@ -576,7 +590,7 @@ void wxExExTextCtrl::Handle(wxKeyEvent& event)
   m_Controlr = false;
 }
     
-void wxExExTextCtrl::SetEx(wxExEx* ex, const wxString& command) 
+void wxExTextCtrl::SetEx(wxExEx* ex, const wxString& command) 
 {
   m_Prefix->SetLabel(command.Left(1));
   const wxString range(command.Mid(1));

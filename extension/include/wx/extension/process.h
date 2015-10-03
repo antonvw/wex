@@ -8,6 +8,7 @@
 #pragma once
 
 #include <wx/process.h>
+#include <wx/thread.h>
 
 class wxTimer;
 class wxExSTCShell;
@@ -92,10 +93,13 @@ public:
 protected:
   virtual void OnTerminate(int pid, int status) override;
 private:
+  void CheckInput();
+
   bool m_Error;
   bool m_HasStdError;
   bool m_Sync;
 
+  wxCriticalSection m_Critical;
   wxString m_Command;  
   wxString m_Input;  
   wxString m_Output;
