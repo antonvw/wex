@@ -95,30 +95,8 @@ wxExProcess::wxExProcess()
   , m_Sync(false)
 {
   m_Command = wxExConfigFirstOf(_("Process"));
-  Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
-    wxString output;
-    GET_STREAM(Input);
-    GET_STREAM(Error);
-    if (!output.empty())
-    {
-      if (!m_Input.empty() && output.StartsWith(m_Input))
-      {
-        // prevent echo of last input
-        m_STC->AppendText(output.substr(m_Input.length()));
-      }
-      else
-      {
-        m_STC->AppendText(output);
-        m_Input.clear();
-      }
-    }
-    else
-    {
-      if (m_Input.empty())
-      {
-        m_STC->Prompt(wxEmptyString, false);
-      }
-    }});
+  
+  Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {CheckInput();});
 }
 
 wxExProcess::~wxExProcess()
@@ -153,16 +131,70 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
   return *this;
 }
 
+void wxExProcess::CheckInput()
+{
+  wxCriticalSectionLocker lock(m_Critical);
+  
+  wxString output;
+  GET_STREAM(Input);
+  GET_STREAM(Error);
+  
+  if (!output.empty())
+  {
+    if (!m_Input.empty())
+    {
+      if (output.StartsWith(m_Input))
+      {
+        // prevent echo of last input
+        m_STC->AppendText(output.substr(m_Input.length()));
+      }
+      else
+      {
+        m_STC->AppendText(output);
+      }
+    }
+    else
+    {
+      m_STC->AppendText(output);
+    }
+    
+    if (!m_Input.empty())
+    {
+      m_Input.clear();
+      m_STC->Prompt(wxEmptyString, false);
+    }
+  }
+}
+
 bool wxExProcess::Command(int id, const wxString& command)
 {
+  if (!IsRunning()) 
+  {
+    wxLogStatus("Process is not running");
+    return false;
+  }
+  
   switch (id)
   {
   case ID_SHELL_COMMAND:
-    m_Timer->Stop();
-    m_STC->LineEnd();
-    
-    if (IsRunning()) 
     {
+      m_Timer->Stop();
+      m_STC->LineEnd();
+      
+      if (
+         !m_Command.StartsWith("cmd") && 
+         !m_Command.StartsWith("powershell"))
+      {
+        if (command.empty())
+        {
+          m_STC->Prompt(wxEmptyString, true);
+        }
+        else
+        {
+          m_STC->AppendText(m_STC->GetEOL());
+        }
+      }
+        
       // Send command to process and restart timer.
       wxOutputStream* os = GetOutputStream();
     
@@ -171,6 +203,8 @@ bool wxExProcess::Command(int id, const wxString& command)
         HandleCommand(command);
         wxTextOutputStream(*os).WriteString(command + "\n");
         m_Input = command;
+        wxMilliSleep(10);
+        CheckInput();
         m_Timer->Start();
       }
 
@@ -179,21 +213,10 @@ bool wxExProcess::Command(int id, const wxString& command)
         ShowProcess(false, m_Timer);
       }
     }
-    else
-    {
-      wxLogStatus("Process is not running");
-      return false;
-    }
     break;
 
   case ID_SHELL_COMMAND_STOP:
-    if (IsRunning())
-    {
-      if (Kill() == wxKILL_OK)
-      {
-        wxBell();
-      }
-    }
+    Kill();
     break;
     
   default: wxFAIL; 
@@ -292,14 +315,13 @@ bool wxExProcess::Execute(
     
     // If we have entered a shell, then the shell
     // itself has no prompt. So put one here.
-    if (m_Command == "bash" ||
-        m_Command == "csh" ||
-        m_Command == "ksh" ||
-        m_Command == "tcsh" ||
-        m_Command == "sh")
+    if (m_Command.StartsWith("bash") ||
+        m_Command.StartsWith("csh") ||
+        m_Command.StartsWith("ksh") ||
+        m_Command.StartsWith("tcsh") ||
+        m_Command.StartsWith("sh"))
     {
-      m_STC->SetPrompt(">", false);
-      m_STC->SetLexer(m_Command);
+      m_STC->SetPrompt(">", true);
     }
     else
     {
@@ -324,7 +346,7 @@ bool wxExProcess::Execute(
       
       if (IsRunning())
       {
-        m_Timer->Start(100); // each 100 milliseconds
+        m_Timer->Start(100); // milliseconds
         m_STC->SetFocus();
       }
     }
@@ -387,33 +409,27 @@ wxKillError wxExProcess::Kill(wxSignal sig)
   
   const wxKillError result = wxProcess::Kill(GetPid(), sig);
   
+  DeletePendingEvents();
+  ShowProcess(false, m_Timer);
+  
   switch (result)
   {
-    case wxKILL_OK:
-      DeletePendingEvents();
-      ShowProcess(false, m_Timer);
-      break;
-
-    case wxKILL_BAD_SIGNAL:
-      wxLogStatus("no such signal");
-      break;
-
-    case wxKILL_ACCESS_DENIED:
-    	wxLogStatus("permission denied");
-      break;
-
-    case wxKILL_NO_PROCESS: 
-      wxLogStatus("no such process");
-      break;
-
-    case wxKILL_ERROR:
-      wxLogStatus("another, unspecified error");
-      break;
-    
+    case wxKILL_OK: break;
+    case wxKILL_BAD_SIGNAL:    wxLogStatus("no such signal"); break;
+    case wxKILL_ACCESS_DENIED: wxLogStatus("permission denied"); break;
+    case wxKILL_NO_PROCESS:    wxLogStatus("no such process"); break;
+    case wxKILL_ERROR:         wxLogStatus("another, unspecified error"); break;
     default: wxFAIL;
   }
   
   return result;
+}
+
+void wxExProcess::OnTerminate(int pid, int status)
+{
+  m_Timer->Stop();
+  CheckInput();
+  wxLogStatus(_("Ready"));
 }
 
 void wxExProcess::PrepareOutput(wxWindow* parent)
@@ -423,12 +439,6 @@ void wxExProcess::PrepareOutput(wxWindow* parent)
     m_STC = new wxExSTCShell(parent, wxEmptyString, wxEmptyString, true, 25, wxEmptyString,
       wxExSTC::STC_MENU_DEFAULT | wxExSTC::STC_MENU_OPEN_LINK);
   }
-}
-
-void wxExProcess::OnTerminate(int pid, int status)
-{
-  m_Timer->Stop();
-  wxLogStatus(_("Ready"));
 }
 
 #if wxUSE_GUI

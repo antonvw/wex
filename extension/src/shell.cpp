@@ -116,7 +116,8 @@ wxExSTCShell::wxExSTCShell(
       event.Skip();
       return;
     }
-    
+
+    bool skip = true;
     const int key = event.GetKeyCode();
     
     switch (key)
@@ -200,6 +201,8 @@ wxExSTCShell::wxExSTCShell(
           (key == 'Q' || 
           (key == 'C' && GetSelectedText().empty())))
         {
+          skip = false;
+        
           if (m_Process != NULL)
           {
             m_Process->Command(ID_SHELL_COMMAND_STOP, wxEmptyString);
@@ -220,7 +223,7 @@ wxExSTCShell::wxExSTCShell(
   
         m_CommandsIterator = m_Commands.end();
   
-        if (m_Echo) event.Skip();
+        if (m_Echo && skip) event.Skip();
     }});
 
   Bind(wxEVT_STC_CHARADDED, [=](wxStyledTextEvent& event) {

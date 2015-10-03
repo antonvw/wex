@@ -34,7 +34,7 @@ void fixture::testListItem()
   
   const long add = sw.Time();
 
-  CPPUNIT_ASSERT(add < 2500);
+  CPPUNIT_ASSERT(add < 3000);
   
   Report(wxString::Format(
     "wxExListTiem::Insert %d items in %ld ms", 3 * max, add).ToStdString());
