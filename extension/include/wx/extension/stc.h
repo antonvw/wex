@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wx/prntbase.h>
 #include <wx/stc/stc.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/link.h>
@@ -250,7 +251,7 @@ public:
   void Print(bool prompt = true);
 
   /// Shows a print preview.
-  void PrintPreview();
+  void PrintPreview(wxPreviewFrameModalityKind kind = wxPreviewFrame_AppModal);
 #endif
 
   /// Processes specified char.

@@ -1838,7 +1838,7 @@ void wxExSTC::Print(bool prompt)
 #endif
 
 #if wxUSE_PRINTING_ARCHITECTURE
-void wxExSTC::PrintPreview()
+void wxExSTC::PrintPreview(wxPreviewFrameModalityKind kind)
 {
   wxPrintPreview* preview = new wxPrintPreview(
     new wxExPrintout(this), 
@@ -1856,7 +1856,7 @@ void wxExSTC::PrintPreview()
     this,
     wxExPrintCaption(GetName()));
 
-  frame->Initialize();
+  frame->InitializeWithModality(kind);
   frame->Show();
 }
 #endif
