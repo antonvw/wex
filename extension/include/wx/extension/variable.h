@@ -2,11 +2,10 @@
 // Name:      variable.h
 // Purpose:   Declaration of class wxExVariable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXVARIABLE_H
-#define _EXVARIABLE_H
+#pragma once
 
 #if wxUSE_GUI
 
@@ -20,11 +19,26 @@ class wxXmlNode;
 class WXDLLIMPEXP_BASE wxExVariable
 {
 public:
+  // Several types of variables are supported.
+  // See xml file.
+  enum
+  {
+    VARIABLE_BUILTIN,     // a builtin variable like "Created"
+    VARIABLE_ENVIRONMENT, // an environment variable like ENV
+    VARIABLE_INPUT,       // input from user
+    VARIABLE_INPUT_ONCE,  // input once from user, save value in xml file
+    VARIABLE_INPUT_SAVE,  // input from user, save value in xml file
+    VARIABLE_READ,        // read value from macros xml file
+    VARIABLE_TEMPLATE     // read value from a template file
+  };
+
   /// Default constructor.
-  wxExVariable();
-  
-  /// Constructor using name.
-  wxExVariable(const wxString& name);
+  wxExVariable(
+    const wxString& name = wxEmptyString,
+    const wxString& value = wxEmptyString,
+    const wxString& prefix = wxEmptyString,
+    int type = VARIABLE_INPUT_SAVE,
+    bool ask_for_input = true);
   
   /// Constructor using xml node, setting name, type, value,
   /// prefix using node attributes.
@@ -80,6 +94,4 @@ private:
   // The dialog used.
   static wxExSTCEntryDialog* m_Dialog;
 };
-
 #endif // wxUSE_GUI
-#endif

@@ -44,7 +44,7 @@ void fixture::testMenu()
   CPPUNIT_ASSERT( menu->AppendTools());
 
   // AppendVCS  
-  CPPUNIT_ASSERT(!menu->AppendVCS(wxFileName(), false));
+  menu->AppendVCS(wxFileName(), false);
   wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());
   CPPUNIT_ASSERT( menu->AppendVCS(wxFileName(), false));
   CPPUNIT_ASSERT( menu->AppendVCS(wxGetCwd(), false));

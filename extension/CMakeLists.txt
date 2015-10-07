@@ -8,18 +8,21 @@ add_subdirectory(locale)
 
 if (CMAKE_BUILD_TYPE MATCHES "Coverage")
   add_custom_target(lcov-prep
+    # prepare initial tracefile
     lcov --base-directory ./ --capture --initial --directory ./ --output-file app.base)
     
   add_custom_target(lcov
+    # capture results
     COMMAND lcov --base-directory ./ --capture --directory ./ --output-file app.run
-    COMMAND lcov --add-tracefile app.base --add-tracefile app.run --output-file app.total
-    # remove output for external and test libraries
-    COMMAND lcov --remove app.total "/usr*" --output-file app.total
-    COMMAND lcov --remove app.total "sample*" --output-file app.total
-    COMMAND lcov --remove app.total "*wxExtension/sync*" --output-file app.total
-    # when manually updating coveralls
-    COMMAND coveralls-lcov --repo-token sOcBNDSlOjLSH3vs636zytnjuQtRWKLGP app.total
-    COMMAND genhtml --no-branch-coverage --title "${PROJECT_NAME}" app.total
-    COMMAND rm -f app.base app.run app.total
+    # combine tracefiles
+    COMMAND lcov --add-tracefile app.base --add-tracefile app.run --output-file app.run
+    # remove output that we are not interested in
+    COMMAND lcov --remove app.run "/usr*" "sample*" "*wxExtension/sync*" --output-file app.run
+    # generate local files
+    COMMAND genhtml --no-branch-coverage --title "${PROJECT_NAME}" app.run
+    # update coveralls
+    COMMAND coveralls-lcov --repo-token sOcBNDSlOjLSH3vs636zytnjuQtRWKLGP app.run
+    # cleanup
+    COMMAND rm -f app.base app.run
     COMMENT "Running lcov" VERBATIM)    
 endif ()

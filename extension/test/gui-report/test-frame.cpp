@@ -42,4 +42,6 @@ void fixture::testFrameWithHistory()
   
   m_Frame->SetRecentProject("xxx.prj");
   CPPUNIT_ASSERT( m_Frame->GetProjectHistory().GetHistoryFile().empty());
+  
+  m_Frame->SetRecentFile(GetTestFile().GetFullPath());
 }

@@ -85,5 +85,14 @@ void fixture::testShell()
   CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
   CPPUNIT_ASSERT(!shell->GetText().Contains("bbb"));
   
-  shell->ProcessChar(WXK_UP);
+  shell->DocumentEnd();
+  
+  wxKeyEvent event(wxEVT_KEY_DOWN);
+  
+  for (auto id : std::vector<int> {
+    WXK_DOWN, WXK_UP, WXK_HOME, WXK_BACK, WXK_DELETE}) 
+  {
+    event.m_keyCode = id;
+    wxPostEvent(shell, event);
+  }
 }

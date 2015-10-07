@@ -18,28 +18,23 @@
 
 #if wxUSE_GUI
 
-// Several types of variables are supported.
-// See xml file.
-enum
-{
-  VARIABLE_BUILTIN,     // a builtin variable
-  VARIABLE_ENVIRONMENT, // an environment variable
-  VARIABLE_INPUT,       // input from user
-  VARIABLE_INPUT_ONCE,  // input once from user, save value in xml file
-  VARIABLE_INPUT_SAVE,  // input from user, save value in xml file
-  VARIABLE_READ,        // read value from macros xml  file
-  VARIABLE_TEMPLATE     // read value from a template file
-};
-
 wxExSTCEntryDialog* wxExVariable::m_Dialog = NULL;
 
-wxExVariable::wxExVariable()
-  : m_Type(VARIABLE_READ)
-  , m_AskForInput(true)
-  , m_IsModified(false)
+wxExVariable::wxExVariable(
+  const wxString& name,
+  const wxString& value,
+  const wxString& prefix,
+  int type,
+  bool ask_for_input)
+  : m_IsModified(false)
+  , m_Type(type)
+  , m_AskForInput(ask_for_input)
+  , m_Name(name)
+  , m_Prefix(prefix)
+  , m_Value(value)
 {
 }
-  
+
 wxExVariable::wxExVariable(const wxXmlNode* node)
   : m_Type(VARIABLE_READ)
   , m_AskForInput(true)
@@ -83,16 +78,6 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
   m_Name = node->GetAttribute("name");
   m_Prefix = node->GetAttribute("prefix");
   m_Value = node->GetNodeContent().Strip(wxString::both);
-}
-
-wxExVariable::wxExVariable(const wxString& name)
-  : m_IsModified(false)
-  , m_Type(VARIABLE_INPUT_SAVE)
-  , m_AskForInput(true)
-  , m_Name(name)
-  , m_Prefix()
-  , m_Value()
-{
 }
 
 void wxExVariable::AskForInput() 

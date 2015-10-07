@@ -205,7 +205,7 @@ wxExSTCShell::wxExSTCShell(
         
           if (m_Process != NULL)
           {
-            m_Process->Command(ID_SHELL_COMMAND_STOP, wxEmptyString);
+            m_Process->Kill();
           }
           else
           {
@@ -454,7 +454,7 @@ bool wxExSTCShell::ProcessChar(int key)
       {
         if (m_Process != NULL)
         {
-          m_Process->Command(ID_SHELL_COMMAND, m_Command);
+          m_Process->Command(m_Command);
         }
         else
         {
@@ -488,7 +488,7 @@ bool wxExSTCShell::ProcessChar(int key)
           
             if (m_Process != NULL)
             {
-              m_Process->Command(ID_SHELL_COMMAND, m_Command);
+              m_Process->Command(m_Command);
             }
             else
             {
@@ -509,7 +509,7 @@ bool wxExSTCShell::ProcessChar(int key)
           
           if (m_Process != NULL)
           {
-            m_Process->Command(ID_SHELL_COMMAND, m_Command);
+            m_Process->Command(m_Command);
           }
           else
           {

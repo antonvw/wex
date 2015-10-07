@@ -2,11 +2,10 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wxExVCS class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXVCS_H
-#define _EXVCS_H
+#pragma once
 
 #include <vector>
 #include <wx/extension/vcsentry.h>
@@ -22,7 +21,7 @@ public:
   /// Default constructor.
   wxExVCS(
     /// Specify several files for which you want vcs action.
-    /// Sets vcs entry for first of the specified files, or
+    /// Sets the vcs entry for first of the specified files, or
     /// to the base folder if array is empty.
     const std::vector< wxString > & files = std::vector< wxString >(),
     /// The command no that is used to set the current vcs command
@@ -42,7 +41,8 @@ public:
   /// Returns true if specified filename (a path) is a vcs directory.
   static bool DirExists(const wxFileName& filename);
 
-  /// Executes the current vcs command, and collects the output.
+  /// Executes the current vcs command for the current
+  /// vcs entry, and collects the output.
   /// Returns return code from vcs entry Execute.
   bool Execute();
   
@@ -71,7 +71,7 @@ public:
   wxStandardID Request(wxWindow* parent);
 #endif  
 
-  /// Sets the entry using base folder.
+  /// Sets the vcs entry using base folder.
   /// If not, it will show
   /// a dialog for selecting a vcs folder (if parent is not NULL).
   /// Returns true if entry is under vcs control.
@@ -86,7 +86,7 @@ public:
     return m_Entry.ShowDialog(parent, m_Caption, m_Files.empty());};
 #endif
 
-  /// Returns true if VCS usage is set in the config.
+  /// Returns true if vcs usage is set in the config.
   bool Use() const;
 private:
   static const wxExVCSEntry FindEntry(const wxFileName& filename);
@@ -112,4 +112,3 @@ private:
 
   static std::vector<wxExVCSEntry> m_Entries;
 };
-#endif

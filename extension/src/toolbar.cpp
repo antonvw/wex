@@ -267,21 +267,23 @@ wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
   long style)
   : wxExToolBar(frame, id, pos, size, style)
 {
-  // id, name, config, tooltip, default
-  for (auto it : std::vector<std::tuple<int, wxString, wxString, wxString, bool>> {
-    std::make_tuple(ID_VIEW_PROCESS, _("Process"), "ViewProcess", _("View Process"), false),
-    std::make_tuple(ID_HEX_MODE, "Hex", "HexMode", _("Open in hex mode"), false),
-    std::make_tuple(ID_SYNC_MODE, "Sync", "AllowSync", _("Synchronize modified files"), true)})
+  // 0   1      2    3       4        5
+  // id, label, name, config, tooltip, default
+  for (auto it : std::vector<std::tuple<int, wxString, wxString, wxString, wxString, bool>> {
+    std::make_tuple(ID_VIEW_PROCESS, _("Process"), "PROCESS", "ViewProcess", _("View Process"), false),
+    std::make_tuple(ID_HEX_MODE, "Hex", "HEX", "HexMode", _("Open in hex mode"), false),
+    std::make_tuple(ID_SYNC_MODE, "Sync", "SYNC", "AllowSync", _("Synchronize modified files"), true)})
   {
     wxCheckBox* cb = new wxCheckBox(this, std::get<0>(it), std::get<1>(it));
     m_CheckBoxes.push_back(cb);
 #if wxUSE_TOOLTIPS
-    cb->SetToolTip(std::get<3>(it));
+    cb->SetToolTip(std::get<4>(it));
 #endif
-    cb->SetValue(wxConfigBase::Get()->ReadBool(std::get<2>(it), std::get<4>(it)));
+    cb->SetValue(wxConfigBase::Get()->ReadBool(std::get<3>(it), std::get<5>(it)));
+    cb->SetName(std::get<2>(it));
     AddControl(cb);
     Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& event) {
-      wxConfigBase::Get()->Write(std::get<2>(it), cb->GetValue());
+      wxConfigBase::Get()->Write(std::get<3>(it), cb->GetValue());
       if (event.GetId() == ID_VIEW_PROCESS)
       {
         GetFrame()->ShowPane("PROCESS", cb->GetValue());};}, std::get<0>(it));
@@ -290,11 +292,11 @@ wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
   Realize();
 }
 
-bool wxExOptionsToolBar::Update(const wxString& label, bool show)
+bool wxExOptionsToolBar::Update(const wxString& name, bool show)
 {
   for (auto it : m_CheckBoxes)
   {
-    if (it->GetLabel().Lower() == label.Lower())
+    if (it->GetName() == name)
     {
       it->SetValue(show);
       return true;

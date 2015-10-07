@@ -73,7 +73,7 @@ public:
   
   /// Updates checkbox state.
   /// Returns true if checkbox was found.
-  bool Update(const wxString& label, bool show);
+  bool Update(const wxString& name, bool show);
 private:
   std::vector<wxCheckBox*> m_CheckBoxes;
 };

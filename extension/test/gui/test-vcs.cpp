@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/menu.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/managedframe.h>
@@ -33,8 +34,7 @@ void fixture::testVCS()
   CPPUNIT_ASSERT( vcs.DirExists(file));
   
   // Execute
-  // Segmentation fault
-  //  CPPUNIT_ASSERT( vcs.Execute());
+  CPPUNIT_ASSERT( vcs.Execute());
 
   // GetCount
   CPPUNIT_ASSERT( vcs.GetCount() > 0);
@@ -53,6 +53,10 @@ void fixture::testVCS()
   
   // LoadDocument
   CPPUNIT_ASSERT( wxExVCS::LoadDocument());
+  
+  // SetEntryFromBase
+  wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());
+  CPPUNIT_ASSERT( vcs.SetEntryFromBase());
   
   // Use
   CPPUNIT_ASSERT( vcs.Use());

@@ -150,6 +150,7 @@ bool wxExVCS::Execute()
     return m_Entry.Execute(
       args, 
       wxExLexer(), 
+      wxEXEC_SYNC,
       wxExConfigFirstOf(_("Base folder")));
   }
   else
@@ -191,7 +192,7 @@ bool wxExVCS::Execute()
       args = "\"" + filename.GetFullPath() + "\"";
     }
     
-    return m_Entry.Execute(args, filename.GetLexer(), wd);
+    return m_Entry.Execute(args, filename.GetLexer(), wxEXEC_SYNC, wd);
   }
 }
 
