@@ -5,9 +5,7 @@
 // Copyright: (c) 2015
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <cppunit/ui/text/TestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/TestRunner.h>
+#include <cppunit/extensions/HelperMacros.h>
 #include "test.h"
 
 wxIMPLEMENT_APP(wxExTestApp);

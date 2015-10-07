@@ -9,8 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <cppunit/ui/text/TestRunner.h>
-#include <cppunit/TestRunner.h>
+#include <cppunit/extensions/HelperMacros.h>
 #include "test.h"
 
 wxIMPLEMENT_APP(wxExTestApp);
