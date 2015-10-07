@@ -2,11 +2,10 @@
 // Name:      vcsentry.h
 // Purpose:   Declaration of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXVCSENTRY_H
-#define _EXVCSENTRY_H
+#pragma once
 
 #include <vector>
 #include <wx/menu.h>
@@ -19,9 +18,23 @@
 class WXDLLIMPEXP_BASE wxExVCSEntry : public wxExProcess
 {
 public:
+  enum
+  {
+    VCS_FLAGS_LOCATION_POSTFIX,
+    VCS_FLAGS_LOCATION_PREFIX 
+  };
+  
   /// Default constructor.
-  /// Adds empty vcs command with id 0.
-  wxExVCSEntry();
+  wxExVCSEntry(
+    /// name of the vcs
+    const wxString& name = wxEmptyString,
+    /// which dir is used for vcs admin (like .svn, .git)
+    const wxString& admin_dir = wxEmptyString,
+    /// commands for this vcs,
+    /// default adds empty vcs command with id 0
+    std::vector<wxExVCSCommand> commands = std::vector<wxExVCSCommand>{wxExVCSCommand()},
+    /// vcs flags
+    int flags_location = VCS_FLAGS_LOCATION_POSTFIX);
   
   /// Constructor using xml node.
   wxExVCSEntry(const wxXmlNode* node);
@@ -41,15 +54,18 @@ public:
     bool is_popup = true) const;
 #endif
 
-  /// Executes the current vcs command.
+  /// Executes the current vcs command (from SetCommand), or
+  /// the first command if SetCommand was not yet invoked.
   /// Might ask for vcs binary if it is not yet known.
   /// Return code is code from process Execute,
   /// and also can be false if dialog for vcs bin was cancelled.
   bool Execute(
-    /// args
-    const wxString& args,
+    /// args, like filenames, or vcs flags
+    const wxString& args = wxEmptyString,
     /// lexer that is used for presenting the output
-    const wxExLexer& lexer,
+    const wxExLexer& lexer = wxExLexer(),
+    /// flags for wxExecute
+    int flags = wxEXEC_SYNC,
     /// working directory
     const wxString& wd = wxEmptyString);
   
@@ -86,16 +102,9 @@ public:
 #endif
 
 #if wxUSE_GUI
-  /// Overriden from base class.
-  virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
+  virtual void ShowOutput(const wxString& caption = wxEmptyString) const override;
 #endif
 private:
-  enum
-  {
-    VCS_FLAGS_LOCATION_POSTFIX,
-    VCS_FLAGS_LOCATION_PREFIX 
-  };
-  
   void AddCommands(const wxXmlNode* node);
   const wxString GetBin() const;
 
@@ -113,4 +122,3 @@ private:
 
   std::vector<wxExVCSCommand> m_Commands;
 };
-#endif

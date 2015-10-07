@@ -20,11 +20,24 @@ void fixture::testVariable()
   wxExSTC* stc = new wxExSTC(m_Frame, "hello again");
   wxExEx* ex = new wxExEx(stc);
   
-  wxExVariable v;
-  CPPUNIT_ASSERT( v.Expand(ex));
-  CPPUNIT_ASSERT( v.GetName().empty());
-  CPPUNIT_ASSERT(!v.IsModified());
-  CPPUNIT_ASSERT(!v.IsInput());
+  for (auto it : std::vector<std::pair<char*, int>> {
+    {"Created", wxExVariable::VARIABLE_BUILTIN},     
+    {"HOME", wxExVariable::VARIABLE_ENVIRONMENT}, 
+    {"aa", wxExVariable::VARIABLE_READ},
+//    {"template", wxExVariable::VARIABLE_TEMPLATE},
+    {"cc", wxExVariable::VARIABLE_INPUT},       
+    {"dd", wxExVariable::VARIABLE_INPUT_ONCE},
+    {"ee", wxExVariable::VARIABLE_INPUT_SAVE}})
+  {
+    wxExVariable v(it.first, "cht.txt", "zzz", it.second, false);
+    CPPUNIT_ASSERT_MESSAGE( it.first, v.Expand(ex));
+    CPPUNIT_ASSERT( v.GetName() == it.first);
+    CPPUNIT_ASSERT(!v.IsModified());
+    if (it.second >= wxExVariable::VARIABLE_INPUT && it.second <= wxExVariable::VARIABLE_INPUT_SAVE)
+      CPPUNIT_ASSERT( v.IsInput());
+    else
+      CPPUNIT_ASSERT(!v.IsInput());
+  }
   
   wxXmlNode xml(wxXML_ELEMENT_NODE, "variable");
   xml.AddAttribute("name", "test");

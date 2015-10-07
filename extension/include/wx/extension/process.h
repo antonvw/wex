@@ -31,7 +31,7 @@ public:
   wxExProcess& operator=(const wxExProcess& p);
 
   /// Handles shell commands.
-  bool Command(int id, const wxString& command);
+  bool Command(const wxString& command);
   
   /// Shows a config dialog, allowing you to set the command and folder.
   /// Returns dialog return code.
@@ -67,7 +67,7 @@ public:
   
   /// Returns the STC component 
   /// (might be NULL if PrepareOutput is not yet invoked).
-  wxExSTCShell* GetSTC() const {return m_STC;};
+  static wxExSTCShell* GetSTC() {return m_STC;};
   
   /// Returns true when the command executed resulted in stderr errors.
   bool HasStdError() const {return m_HasStdError;};

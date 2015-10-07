@@ -166,7 +166,7 @@ void wxExProcess::CheckInput()
   }
 }
 
-bool wxExProcess::Command(int id, const wxString& command)
+bool wxExProcess::Command(const wxString& command)
 {
   if (!IsRunning()) 
   {
@@ -174,56 +174,41 @@ bool wxExProcess::Command(int id, const wxString& command)
     return false;
   }
   
-  switch (id)
-  {
-  case ID_SHELL_COMMAND:
-    {
-      m_Timer->Stop();
-      m_STC->LineEnd();
-      
-      if (
-         !m_Command.StartsWith("cmd") && 
-         !m_Command.StartsWith("powershell"))
-      {
-        if (command.empty())
-        {
-          m_STC->Prompt(wxEmptyString, true);
-        }
-        else
-        {
-          m_STC->AppendText(m_STC->GetEOL());
-        }
-      }
-        
-      // Send command to process and restart timer.
-      wxOutputStream* os = GetOutputStream();
-    
-      if (os != NULL)
-      {
-        HandleCommand(command);
-        wxTextOutputStream(*os).WriteString(command + "\n");
-        m_Input = command;
-        wxMilliSleep(10);
-        CheckInput();
-        m_Timer->Start();
-      }
-
-      if (!IsRunning())
-      {
-        ShowProcess(false, m_Timer);
-      }
-    }
-    break;
-
-  case ID_SHELL_COMMAND_STOP:
-    Kill();
-    break;
-    
-  default: wxFAIL; 
-    return false;
-    break;
-  }
+  m_Timer->Stop();
+  m_STC->LineEnd();
   
+  if (
+     !m_Command.StartsWith("cmd") && 
+     !m_Command.StartsWith("powershell"))
+  {
+    if (command.empty())
+    {
+      m_STC->Prompt(wxEmptyString, true);
+    }
+    else
+    {
+      m_STC->AppendText(m_STC->GetEOL());
+    }
+  }
+    
+  // Send command to process and restart timer.
+  wxOutputStream* os = GetOutputStream();
+
+  if (os != NULL)
+  {
+    HandleCommand(command);
+    wxTextOutputStream(*os).WriteString(command + "\n");
+    m_Input = command;
+    wxMilliSleep(10);
+    CheckInput();
+    m_Timer->Start();
+  }
+
+  if (!IsRunning())
+  {
+    ShowProcess(false, m_Timer);
+  }
+
   return true;
 }
   

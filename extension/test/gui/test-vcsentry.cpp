@@ -16,25 +16,25 @@
 
 void fixture::testVCSEntry()
 {
-  wxExVCSEntry test;
+  CPPUNIT_ASSERT( wxExVCSEntry().GetCommands() == 1); // the empty command
   
-  CPPUNIT_ASSERT( test.GetCommands() == 1);
+  wxExVCSEntry test("my-vcs", "./",
+    {wxExVCSCommand("one", "main"), wxExVCSCommand("two", "main")},
+    wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX);
   
-  wxExVCSEntry test2;
-  
-  CPPUNIT_ASSERT( test2.GetCommands() == 1);
-  
-  CPPUNIT_ASSERT( test.GetCommand().GetCommand().empty());
+  CPPUNIT_ASSERT( test.GetCommands() == 2);
+  CPPUNIT_ASSERT(!test.GetCommand().GetCommand().empty());
   CPPUNIT_ASSERT(!test.AdminDirIsTopLevel());
+  CPPUNIT_ASSERT( test.GetAdminDir() == "./");
   CPPUNIT_ASSERT( test.GetFlags().empty());
-  CPPUNIT_ASSERT( test.GetName().empty());
+  CPPUNIT_ASSERT( test.GetName() == "my-vcs");
   CPPUNIT_ASSERT( test.GetOutput().empty());
   
-  CPPUNIT_ASSERT( test.ShowDialog(
+  CPPUNIT_ASSERT( wxExVCSEntry().ShowDialog(
     m_Frame,
     "vcs",
     false) == wxID_CANCEL);
-    
+  
   test.ShowOutput();
   
   wxMenu menu;
@@ -45,8 +45,17 @@ void fixture::testVCSEntry()
   CPPUNIT_ASSERT(!test.SetCommand(ID_EDIT_VCS_LOWEST));
   CPPUNIT_ASSERT(!test.SetCommand(ID_VCS_LOWEST));
   
-  CPPUNIT_ASSERT( test.GetCommand().GetCommand().empty());
+  CPPUNIT_ASSERT( test.GetCommands() == 2);
   CPPUNIT_ASSERT( test.GetFlags().empty());
-  CPPUNIT_ASSERT( test.GetName().empty());
+  CPPUNIT_ASSERT( test.GetName() == "my-vcs");
   CPPUNIT_ASSERT( test.GetOutput().empty());
+  CPPUNIT_ASSERT(!test.Execute());
+  
+  wxExVCSEntry git("git");
+  CPPUNIT_ASSERT( git.Execute()); // executes just git, shows help
+  git.ShowOutput();
+  
+  wxExVCSEntry* git_async = new wxExVCSEntry("git", wxEmptyString, {wxExVCSCommand("status")});
+  CPPUNIT_ASSERT( git_async->Execute(wxEmptyString, wxExLexer(), wxEXEC_ASYNC));
+  git_async->ShowOutput();
 }

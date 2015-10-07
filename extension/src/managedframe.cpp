@@ -106,6 +106,10 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     m_Manager.Update();
     info->Resizable();
     m_Manager.Update();
+    
+    // If this pane is a toolbar pane, it might have a checkbox,
+    // update that as well.
+    m_OptionsBar->Update(info->name, false);
     });
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {

@@ -17,15 +17,19 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
-wxExVCSEntry::wxExVCSEntry()
+wxExVCSEntry::wxExVCSEntry(
+  const wxString& name,
+  const wxString& admin_dir,
+  std::vector<wxExVCSCommand> commands,
+  int flags_location)
   : wxExProcess()
   , m_CommandIndex(0)
-  , m_AdminDir()
-  , m_Name()
-  , m_FlagsLocation(VCS_FLAGS_LOCATION_POSTFIX)
+  , m_AdminDir(admin_dir)
+  , m_Name(name)
+  , m_FlagsLocation(flags_location)
   , m_AdminDirIsTopLevel(false)
+  , m_Commands(commands)
 {
-  m_Commands.push_back(wxExVCSCommand());
 }
 
 wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
@@ -166,6 +170,7 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 bool wxExVCSEntry::Execute(
   const wxString& args,
   const wxExLexer& lexer,
+  int exec_flags,
   const wxString& wd)
 {
   if (GetBin().empty())
@@ -253,7 +258,7 @@ bool wxExVCSEntry::Execute(
       prefix +
       GetCommand().GetCommand() + " " + 
       subcommand + flags + comment + my_args, 
-    wxEXEC_SYNC, // for the moment (problems with wxTimer when ASYC is used)
+    exec_flags,
     wd);
 }
 

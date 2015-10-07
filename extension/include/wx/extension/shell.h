@@ -86,7 +86,7 @@ public:
   
   /// Processes specified char.
   /// Returns true if char was processed.
-  virtual bool ProcessChar(int c);
+  virtual bool ProcessChar(int c) override;
   
   /// Puts the text (if not empty) and a prompt at the end, goes to the end,
   /// and empties the undo buffer. 

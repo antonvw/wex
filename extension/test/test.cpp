@@ -24,6 +24,7 @@ void SetEnvironment(const wxString& dir)
     (void)system("mkdir " + dir);
   }
   
+  (void)system("cp ../../data/cht.txt " + dir);
   (void)system("cp ../../data/lexers.xml " + dir);
   (void)system("cp ../../data/macros.xml " + dir);
   (void)system("cp ../../data/vcs.xml " + dir);
@@ -115,7 +116,10 @@ const wxString SetWorkingDirectory()
 
 int wxExTestApp::OnExit()
 {
-  // Is not invoked...
+  // Remove files.
+  (void)remove("test-ex.txt");
+  (void)remove("test.hex");
+
   return wxExApp::OnExit();
 }
   
@@ -169,12 +173,9 @@ int wxExTestApp::OnRun()
       }
     }
     
-    // Remove files.
-    (void)remove("test-ex.txt");
-    (void)remove("test.hex");
-
     if (argc <= 1)
     {
+      OnExit();
       exit(success);
     }
     else
