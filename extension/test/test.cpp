@@ -5,9 +5,11 @@
 // Copyright: (c) 2015
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <cppunit/ui/text/TestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/BriefTestProgressListener.h>
+#include <cppunit/TestResult.h>
+#include <cppunit/TestResultCollector.h>
 #include <cppunit/TestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <wx/cmdline.h> // for wxCmdLineParser
 #include <wx/stdpaths.h>
 #include <wx/log.h>
@@ -154,33 +156,35 @@ int wxExTestApp::OnRun()
       
   try
   {
-    CppUnit::Test* suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
+    CppUnit::TestResult result;
+    CppUnit::TestResultCollector collector;
+    result.addListener( &collector );        
+    CppUnit::BriefTestProgressListener progressListener;
+    result.addListener( &progressListener );    
     
-    CppUnit::TextUi::TestRunner runner;
-    runner.addTest(suite);
-    
-    bool success = true;
+    CppUnit::TestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
     
     if (names.empty())
     {
-      success = !runner.run("", false);
+      runner.run(result);
     }
     else
     {
       for (auto it : names)
       {
-        runner.run(it.ToStdString(), false);
+        runner.run(result, it.ToStdString());
       }
     }
     
     if (argc <= 1)
     {
       OnExit();
-      exit(success);
+      exit(EXIT_SUCCESS);
     }
     else
     {
-      return wxExApp::OnRun();
+      wxExApp::OnRun();
     }
   }
   catch (std::invalid_argument& e)

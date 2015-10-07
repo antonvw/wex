@@ -5,11 +5,11 @@
 // Copyright: (c) 2015
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <cppunit/ui/text/TestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/BriefTestProgressListener.h>
+#include <cppunit/TestResult.h>
+#include <cppunit/TestResultCollector.h>
 #include <cppunit/TestRunner.h>
-#include <wx/filename.h>
-#include <wx/log.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <wx/utils.h>
 
 #include "test.h"
@@ -22,11 +22,13 @@ int main (int argc, char* argv[])
   SetWorkingDirectory();
   SetEnvironment(wxGetHomeDir() + "/.wxex-test-base");
   
-  // Get the top level suite from the registry
-  CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
+  CppUnit::TestResult result;
+  CppUnit::TestResultCollector collector;
+  result.addListener( &collector );        
+  CppUnit::BriefTestProgressListener progressListener;
+  result.addListener( &progressListener );    
+  CppUnit::TestRunner runner;
+  runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-  CppUnit::TextUi::TestRunner runner;
-  runner.addTest(suite);
-
-  return !runner.run("", false);
+  runner.run(result);
 }
