@@ -29,5 +29,5 @@ void fixture::testPrinting()
   new wxExPrintout(stc);
   
   stc->Print(false);
-  stc->PrintPreview(wxPreviewFrame_NonModal);
+//  stc->PrintPreview(wxPreviewFrame_NonModal);
 }
