@@ -34,6 +34,8 @@ DecoratedFrame::DecoratedFrame()
       4)                             // maxProjects
 {
   SetIcon(wxICON(app));
+  
+  wxExProcess::PrepareOutput(this);
 
 #if wxUSE_STATUSBAR
   std::vector<wxExStatusBarPane> panes{

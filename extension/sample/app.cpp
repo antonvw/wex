@@ -257,6 +257,7 @@ wxExSampleFrame::wxExSampleFrame()
   }
   
   GetToolBar()->AddControls();
+  GetOptionsToolBar()->AddControls();
   
   // The OnCommand keeps statistics.
   Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_CUT, wxID_CLEAR);

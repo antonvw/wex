@@ -60,7 +60,7 @@ Frame::Frame()
   wxExMenu* menuFile = new wxExMenu;
   menuFile->Append(wxID_NEW);
   menuFile->Append(wxID_OPEN);
-  UseFileHistory(ID_RECENTFILE_MENU, menuFile);
+  GetFileHistory().UseMenu(ID_RECENTFILE_MENU, menuFile);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_SAVE);
   menuFile->Append(wxID_SAVEAS);
@@ -79,7 +79,7 @@ Frame::Frame()
   menuOptions->Append(wxID_PREFERENCES);
 
   wxExMenu* menuView = new wxExMenu();
-  menuView->AppendBars();
+  AppendPanes(menuView);
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_QUERY, _("Query"));
   menuView->AppendCheckItem(ID_VIEW_RESULTS, _("Results"));
@@ -114,6 +114,7 @@ Frame::Frame()
     wxExStatusBarPane("PaneInfo", 100, _("Lines"))});
 #endif
 
+  GetToolBar()->AddControls(false); // no realize yet
   GetToolBar()->AddTool(wxID_EXECUTE, 
     wxEmptyString,
     wxArtProvider::GetBitmap(
@@ -207,8 +208,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     
     m_Query->SetFocus();
-    GetManager().GetPane("QUERY").Show();
-    GetManager().Update();
+    ShowPane("QUERY");
     break;
 
   case wxID_OPEN:
@@ -321,7 +321,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     // If we have a query, you can hide it, but still run it.
     event.Enable(m_Query->GetLength() > 0 && m_otl.IsConnected());}, wxID_EXECUTE);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(!GetRecentFile().empty());}, ID_RECENTFILE_MENU);
+    event.Enable(!GetFileHistory().GetHistoryFile().empty());}, ID_RECENTFILE_MENU);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(GetManager().GetPane("QUERY").IsShown());}, ID_VIEW_QUERY);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {

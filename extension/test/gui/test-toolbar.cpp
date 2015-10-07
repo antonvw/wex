@@ -23,6 +23,8 @@ void fixture::testToolBar()
   m_Frame->GetToolBar()->AddTool(wxID_PREFERENCES);
   m_Frame->GetToolBar()->Realize();
   
+  m_Frame->GetOptionsToolBar()->AddControls();
+  
   m_Frame->GetManager().GetPane("FINDBAR").Show();
   m_Frame->GetManager().GetPane("OPTIONSBAR").Show();
   m_Frame->GetManager().Update();

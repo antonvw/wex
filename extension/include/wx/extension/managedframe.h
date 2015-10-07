@@ -94,6 +94,9 @@ public:
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};
 
+  /// Returns the options toolbar.
+  wxExOptionsToolBar* GetOptionsToolBar() {return m_OptionsBar;};
+  
   /// Returns the toolbar.
   wxExToolBar* GetToolBar() {return m_ToolBar;};
   

@@ -182,7 +182,6 @@ Frame::Frame(App* app)
   , m_App(app)
 {
   wxExViMacros::LoadDocument();
-  wxExProcess::PrepareOutput(this);
 
   GetManager().AddPane(m_Editors, wxAuiPaneInfo()
     .CenterPane()
@@ -293,6 +292,8 @@ Frame::Frame(App* app)
   GetToolBar()->AddControl(m_CheckBoxHistory);
   m_CheckBoxHistory->SetToolTip(_("History"));
   GetToolBar()->Realize();
+  
+  GetOptionsToolBar()->AddControls();
   
   m_CheckBoxDirCtrl->SetValue(GetManager().GetPane("DIRCTRL").IsShown());
   m_CheckBoxHistory->SetValue(
