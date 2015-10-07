@@ -71,6 +71,11 @@ public:
     const wxSize& size = wxDefaultSize,
     long style = wxAUI_TB_DEFAULT_STYLE);
   
+  /// Adds the standard checkboxes.
+  /// This is a hex and a sync checkbox, and a process check box
+  /// if you called PrepareOutput previously.
+  void AddControls(bool realize = true);
+  
   /// Updates checkbox state.
   /// Returns true if checkbox was found.
   bool Update(const wxString& name, bool show);

@@ -17,6 +17,7 @@
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
@@ -267,13 +268,22 @@ wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
   long style)
   : wxExToolBar(frame, id, pos, size, style)
 {
-  // 0   1      2    3       4        5
+}
+
+void wxExOptionsToolBar::AddControls(bool realize)
+{
+  // 0   1      2     3       4        5
   // id, label, name, config, tooltip, default
   for (auto it : std::vector<std::tuple<int, wxString, wxString, wxString, wxString, bool>> {
     std::make_tuple(ID_VIEW_PROCESS, _("Process"), "PROCESS", "ViewProcess", _("View Process"), false),
     std::make_tuple(ID_HEX_MODE, "Hex", "HEX", "HexMode", _("Open in hex mode"), false),
     std::make_tuple(ID_SYNC_MODE, "Sync", "SYNC", "AllowSync", _("Synchronize modified files"), true)})
   {
+    if (std::get<0>(it) == ID_VIEW_PROCESS && wxExProcess::GetSTC() == NULL)
+    {
+      continue;
+    }
+    
     wxCheckBox* cb = new wxCheckBox(this, std::get<0>(it), std::get<1>(it));
     m_CheckBoxes.push_back(cb);
 #if wxUSE_TOOLTIPS
@@ -289,7 +299,10 @@ wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
         GetFrame()->ShowPane("PROCESS", cb->GetValue());};}, std::get<0>(it));
   }
 
-  Realize();
+  if (realize)
+  {
+    Realize();
+  }
 }
 
 bool wxExOptionsToolBar::Update(const wxString& name, bool show)

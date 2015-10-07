@@ -228,6 +228,11 @@ void wxExManagedFrame::AppendPanes(wxMenu* menu) const
 
   for (auto it : m_ToggledPanes)
   {
+    if (it.first.first == "PROCESS" && wxExProcess::GetSTC() == NULL)
+    {
+      continue;
+    }
+    
     menu->AppendCheckItem(it.second, it.first.second);
   }
 }

@@ -99,7 +99,7 @@ Frame::Frame()
   wxExMenu* menuFile = new wxExMenu();
   menuFile->Append(wxID_NEW);
   menuFile->Append(wxID_OPEN);
-  UseFileHistory(ID_RECENT_FILE_MENU, menuFile);
+  GetFileHistory().UseMenu(ID_RECENT_FILE_MENU, menuFile);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_SAVE);
   menuFile->Append(wxID_SAVEAS);
@@ -120,10 +120,7 @@ Frame::Frame()
   menuServer->Append(wxID_EXECUTE);
   menuServer->Append(wxID_STOP);
 
-  wxMenu* menuClient = new wxMenu();
-  
   wxMenu* menuAnswer = new wxMenu();
-  
   menuAnswer->AppendRadioItem(ID_CLIENT_ANSWER_OFF, _("Off"),
     _("No answer back to client"));
   menuAnswer->AppendRadioItem(ID_CLIENT_ANSWER_ECHO, _("Echo"),
@@ -133,6 +130,7 @@ Frame::Frame()
   menuAnswer->AppendRadioItem(ID_CLIENT_ANSWER_FILE, _("File"),
     _("Send file contents back to client"));
     
+  wxMenu* menuClient = new wxMenu();
   menuClient->AppendSubMenu(menuAnswer, _("&Answer"));
   menuClient->AppendSeparator();
   menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA, _("Log Data"),
@@ -151,7 +149,7 @@ Frame::Frame()
   menuClient->Append(ID_WRITE_DATA, _("Write"), _("Writes data to all clients"));
 
   wxExMenu* menuView = new wxExMenu();
-  menuView->AppendBars();
+  AppendPanes(menuView);
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_LOG, _("Log"));
   menuView->AppendCheckItem(ID_VIEW_DATA, _("Data"));
@@ -193,9 +191,9 @@ Frame::Frame()
 #endif
   }
 
-  if (!GetRecentFile().empty() && GetManager().GetPane("DATA").IsShown())
+  if (!GetFileHistory().GetHistoryFile().empty() && GetManager().GetPane("DATA").IsShown())
   {
-    OpenFile(GetRecentFile());
+    OpenFile(GetFileHistory().GetHistoryFile());
   }
 
   if (GetManager().GetPane("SHELL").IsShown())
@@ -204,6 +202,7 @@ Frame::Frame()
     m_Shell->DocumentEnd();
   }
 
+  GetToolBar()->AddControls(false); // no realize yet
   GetToolBar()->AddTool(
     ID_WRITE_DATA,
     wxEmptyString,
@@ -212,6 +211,8 @@ Frame::Frame()
     _("Write data"));
   GetToolBar()->Realize();
     
+  GetOptionsToolBar()->AddControls();
+  
   GetManager().Update();
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -273,8 +274,7 @@ Frame::Frame()
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_DataWindow->GetFile().FileNew(wxExFileName());
-    GetManager().GetPane("DATA").Show();
-    GetManager().Update();}, wxID_NEW);
+    ShowPane("DATA");}, wxID_NEW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExOpenFilesDialog(
@@ -428,7 +428,7 @@ Frame::Frame()
     event.Enable(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
     event.Check(wxConfigBase::Get()->ReadBool(_("Count Only"), true));}, ID_CLIENT_LOG_DATA_COUNT_ONLY);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(!GetRecentFile().empty());}, ID_RECENT_FILE_MENU);
+    event.Enable(!GetFileHistory().GetHistoryFile().empty());}, ID_RECENT_FILE_MENU);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(m_Timer.IsRunning());}, ID_TIMER_STOP);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
@@ -696,8 +696,7 @@ bool Frame::OpenFile(
 {
   if (m_DataWindow->Open(filename, line_number, match, col_number, flags))
   {
-    GetManager().GetPane("DATA").Show();
-    GetManager().Update();
+    ShowPane("DATA");
     return true;
   }
   else
