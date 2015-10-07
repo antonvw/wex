@@ -876,7 +876,7 @@ void Frame::TimerDialog()
     m_Timer.Start(1000 * val);
     
     AppendText(m_LogWindow,
-      wxString::Format(_("timer set to: %d seconds (%s)"),
+      wxString::Format(_("timer set to: %ld seconds (%s)"),
       val,
       wxTimeSpan(0, 0, val, 0).Format().c_str()),
       DATA_MESSAGE);
