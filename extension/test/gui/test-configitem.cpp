@@ -50,6 +50,7 @@ void fixture::testConfigItem()
   const wxExConfigItem ci_user("ci-usr", new wxTextCtrl(), NULL);
   
   CPPUNIT_ASSERT(ci_empty.GetType() == CONFIG_EMPTY);
+  CPPUNIT_ASSERT(!ci_empty.IsRowGrowable());
   CPPUNIT_ASSERT(ci_spacer.GetType() == CONFIG_SPACER);
   CPPUNIT_ASSERT(ci_sl.GetLabel() == "ci-sl");
   CPPUNIT_ASSERT(ci_sl.GetType() == CONFIG_SLIDER);
@@ -110,6 +111,9 @@ void fixture::testConfigItem()
     CPPUNIT_ASSERT(
       it.GetType() > CONFIG_ITEM_MIN &&
       it.GetType() < CONFIG_ITEM_MAX);
+    
+    it.SetRowGrowable(true);
+    it.SetValidator(NULL);
   }
 
   wxGridSizer sizer(3);

@@ -60,11 +60,11 @@ public:
   /// Filters range with command.
   /// The address range is used as input for the command,
   /// and the output of the command replaces the address range.
-  /// For example: wxAddressRange(96, 99).Escape("sort")
+  /// For example: wxExAddressRange(96, 99).Escape("sort")
   /// or (ex command::96,99!sort)
   /// will pass lines 96 through 99 through the sort filter and 
   /// replace those lines with the output of sort.  
-  /// Of course, you could also do: wxAddressRange(96,99).Sort().
+  /// Of course, you could also do: wxExAddressRange(96,99).Sort().
   /// If you did not specify an address range,
   /// the command is run as an asynchronous process.
   bool Escape(const wxString& command);

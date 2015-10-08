@@ -183,13 +183,13 @@ bool wxExManagedFrame::AddToolBarPane(
     .Name(name);
 
   // If the toolbar has a caption, it is at the top, 
-  // otherwise fixed at the bottom and initially hidden.  
   if (!caption.empty())
   {
     pane
       .Top()
       .ToolbarPane()
       .Resizable()
+      .MinSize(-1, 30)
       .Caption(caption);
       
     // Initially hide special bars.
@@ -198,6 +198,7 @@ bool wxExManagedFrame::AddToolBarPane(
       pane.Hide();
     }
   }
+  // otherwise (vi) fixed at the bottom and initially hidden.  
   else
   {
     pane
