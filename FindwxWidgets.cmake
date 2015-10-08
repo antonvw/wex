@@ -446,7 +446,7 @@ if(wxWidgets_FIND_STYLE STREQUAL "win32")
       list(APPEND wxWidgets_LIBRARIES opengl32 glu32)
     endif()
 
-    list(APPEND wxWidgets_LIBRARIES winmm comctl32 rpcrt4 wsock32)
+    list(APPEND wxWidgets_LIBRARIES winmm comctl32 rpcrt4 wsock32 shlwapi version)
   endmacro()
 
   #-------------------------------------------------------------------
