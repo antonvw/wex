@@ -90,6 +90,20 @@ Comments you add within xml elements are not saved when you edit macros.
   <!-- A C Header Template -->  
   <variable name="Cht"              type="TEMPLATE">cht.txt</variable>
   
+  <!-- A macro to test coverage: run in a .h file,
+       it finds corresponding method in a test.cpp file -->
+  <macro name="Coverage">
+    <command>/$!32!+[a-z]+(</command>
+    <command>b</command>
+    <command>b</command>
+    <command>*</command>
+    <command>:prev</command>
+    <command>n</command>
+    <command>:n</command>
+    <command>$!13!</command>
+  </macro>
+  
+  <!-- A header macro -->
   <macro name="Hdr">
     <command>gg</command>
     <command>O</command>

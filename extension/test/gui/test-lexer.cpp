@@ -21,6 +21,7 @@ void fixture::testLexer()
   
   wxExLexer lexer;
   CPPUNIT_ASSERT(!lexer.IsOk());
+  CPPUNIT_ASSERT( lexer.GetStyles().empty());
   
   CPPUNIT_ASSERT( wxExLexer("cpp").IsOk());
   CPPUNIT_ASSERT( wxExLexer("pascal").IsOk());
@@ -38,6 +39,7 @@ void fixture::testLexer()
   CPPUNIT_ASSERT( wxExLexer(lexer).IsOk());
   CPPUNIT_ASSERT( lexer.GetDisplayLexer() == "cpp");
   CPPUNIT_ASSERT( lexer.GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT( lexer.UsableCharactersPerLine() > 0);
   CPPUNIT_ASSERT(!lexer.GetExtensions().empty());
   CPPUNIT_ASSERT(!lexer.GetCommentBegin().empty());
   CPPUNIT_ASSERT(!lexer.GetCommentBegin2().empty());
@@ -45,6 +47,7 @@ void fixture::testLexer()
   CPPUNIT_ASSERT(!lexer.GetCommentEnd2().empty());
   CPPUNIT_ASSERT( lexer.GetLanguage().empty());
   CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
+  CPPUNIT_ASSERT(!lexer.GetStyles().empty());
   CPPUNIT_ASSERT(!lexer.GetKeywordsString().empty());
   CPPUNIT_ASSERT(!lexer.GetKeywordsString(-1, 0).empty());
   CPPUNIT_ASSERT(!lexer.GetKeywordsString(-1, 6).empty());
@@ -126,4 +129,6 @@ void fixture::testLexer()
   
   CPPUNIT_ASSERT( lexer.Set("xsl", stc));
   CPPUNIT_ASSERT( lexer.GetLanguage() == "xml");
+  
+  lexer.Apply(stc);
 }

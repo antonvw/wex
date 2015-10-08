@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-stc.cpp
+// Name:      test-stc->cpp
 // Purpose:   Implementation for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
@@ -33,6 +33,7 @@ void fixture::testSTC()
   
   CPPUNIT_ASSERT( stc->GetText() == "hello stc");
   CPPUNIT_ASSERT( stc->FindNext(wxString("hello")));
+  CPPUNIT_ASSERT( stc->GetWordAtPos(0) == "hello");
   
   CPPUNIT_ASSERT(!stc->FindNext(wxString("%d")));
   CPPUNIT_ASSERT(!stc->FindNext(wxString("%ld")));
@@ -78,10 +79,18 @@ void fixture::testSTC()
   CPPUNIT_ASSERT(stc->GetCurrentLine() == 0);
   CPPUNIT_ASSERT(stc->GetCurrentPos() == 4);
   
+  stc->SetText("more text\notherline");
+  stc->GetVi().Command("V");
+  stc->GetVi().GetMode() == wxExVi::MODE_VISUAL_LINE;
+  CPPUNIT_ASSERT( stc->FindNext(wxString("more text")));
+  
   stc->SetText("new text");
   CPPUNIT_ASSERT(stc->GetText() == "new text");
   
   CPPUNIT_ASSERT(stc->SetLexer("cpp"));
+  CPPUNIT_ASSERT(stc->GetLexer().GetScintillaLexer() == "cpp");
+  stc->ResetLexer();
+  CPPUNIT_ASSERT(stc->GetLexer().GetScintillaLexer().empty());
 
   wxExLexer lexer;
   CPPUNIT_ASSERT( lexer.Reset(stc));
@@ -167,7 +176,13 @@ void fixture::testSTC()
   stc->Sync(false);
   stc->Sync(true);
   
+  stc->ShowLineNumbers(false);
+  stc->ShowLineNumbers(true);
+  
   stc->Undo();
+  
+  stc->UseAutoComplete(true);
+  stc->UseAutoComplete(false);
   
   stc->UseModificationMarkers(true);
   stc->UseModificationMarkers(false);
@@ -187,6 +202,8 @@ void fixture::testSTC()
   
   stc2.PropertiesMessage();
   
+  stc->Reload();
+  
   // Test events.
   for (auto id : std::vector<int> {
     ID_EDIT_HEX_DEC_CALLTIP, ID_EDIT_MARKER_NEXT, ID_EDIT_MARKER_PREVIOUS,
@@ -194,4 +211,15 @@ void fixture::testSTC()
   {
     wxPostEvent(stc, wxCommandEvent(wxEVT_MENU, id));
   }
+  
+  stc->LineHome();
+  stc->LineHomeExtend();
+  stc->LineHomeRectExtend();
+  stc->ParaUpRectExtend();
+  stc->ParaDownRectExtend();
+  stc->WordLeftRectExtend();
+  stc->WordRightRectExtend();
+  stc->WordRightEndRectExtend();
+  
+  stc->Clear();
 }
