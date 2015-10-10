@@ -13,7 +13,7 @@
 
 class wxExManagedFrame;
 class wxExStatusBar;
-class wxExSTCShell;
+class wxExShell;
 
 /// CppUnit gui test fixture.
 /// These classes require either an wxExApp object, or wx to be initialized.
@@ -127,7 +127,7 @@ public:
   void testViFSM();
   void testViMacros();
 private:
-  void Process(const std::string& str, wxExSTCShell* shell);
+  void Process(const std::string& str, wxExShell* shell);
 
   static wxExManagedFrame* m_Frame;
   static wxExStatusBar* m_StatusBar;

@@ -210,7 +210,7 @@ Frame::Frame(App* app)
     .Row(0)
     .Caption(_("Output")));
 
-  GetManager().AddPane(m_Process->GetSTC(), wxAuiPaneInfo()
+  GetManager().AddPane(m_Process->GetShell(), wxAuiPaneInfo()
     .Bottom()
     .Name("PROCESS")
     .MinSize(250, 100)
@@ -1102,9 +1102,9 @@ void Frame::OnCommandConfigDialog(
     {
       m_Editors->ForEach(ID_ALL_STC_CONFIG_GET);
       
-      if (m_Process->GetSTC() != NULL)
+      if (m_Process->GetShell() != NULL)
       {
-        m_Process->GetSTC()->ConfigGet();
+        m_Process->GetShell()->ConfigGet();
       }
       
       m_StatusBar->ShowField(

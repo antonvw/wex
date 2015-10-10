@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      shell.h
-// Purpose:   Declaration of class wxExSTCShell
+// Purpose:   Declaration of class wxExShell
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -27,11 +27,11 @@ class wxExProcess;
 /// - If you enter !\<abbreviation\> the last command starting with 
 ///   \<abbreviation\> is entered.
 /// - Tab expansion is available for text entered matching existing files.
-class WXDLLIMPEXP_BASE wxExSTCShell: public wxExSTC
+class WXDLLIMPEXP_BASE wxExShell: public wxExSTC
 {
 public:
   /// Constructor.
-  wxExSTCShell(
+  wxExShell(
     /// Parent.
     wxWindow* parent,
     /// Give the command used to end a line.
@@ -58,7 +58,7 @@ public:
     long style = 0);
 
   /// Destructor, keeps the commands in the config, if required.
- ~wxExSTCShell();
+ ~wxExShell();
  
   /// Appends text, and updates the command start position.
   void AppendText(const wxString& text);

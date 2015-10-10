@@ -53,7 +53,7 @@ Frame::Frame()
   , m_Stopped(false)
   , m_Results( new wxExGrid(this))
   , m_Query( new wxExSTC(this))
-  , m_Shell( new wxExSTCShell(this, ">", ";", true, 50))
+  , m_Shell( new wxExShell(this, ">", ";", true, 50))
 {
   SetIcon(wxICON(app));
 

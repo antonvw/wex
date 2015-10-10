@@ -25,7 +25,7 @@ enum
 
 class wxExGrid;
 class wxExSTC;
-class wxExSTCShell;
+class wxExShell;
 
 class App: public wxExApp
 {
@@ -56,7 +56,7 @@ private:
 
   wxExGrid* m_Results;
   wxExSTC* m_Query;
-  wxExSTCShell* m_Shell;
+  wxExShell* m_Shell;
   
   wxExStatistics <int> m_Statistics;
   wxExOTL m_otl;

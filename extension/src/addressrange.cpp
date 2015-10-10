@@ -350,7 +350,7 @@ bool wxExAddressRange::Escape(const wxString& command)
     if (ok)
     {
       m_Ex->GetFrame()->ShowPane("PROCESS");
-      m_Process->GetSTC()->SetFocus();
+      wxExProcess::GetShell()->SetFocus();
     }
     
     return ok;

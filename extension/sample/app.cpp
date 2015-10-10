@@ -180,15 +180,15 @@ wxExSampleFrame::wxExSampleFrame()
 #endif
   m_ListView = new wxExListView(m_Notebook);
   m_STC = new wxExSTC(this);
-  m_STCShell = new wxExSTCShell(this, ">", wxTextFile::GetEOL(), true, 10);
+  m_Shell = new wxExShell(this, ">", wxTextFile::GetEOL(), true, 10);
 
   GetManager().AddPane(m_Notebook, 
     wxAuiPaneInfo().CenterPane().MinSize(wxSize(250, 250)));
   GetManager().AddPane(m_STC, 
     wxAuiPaneInfo().Bottom().Caption("STC"));
-  GetManager().AddPane(m_STCShell, 
+  GetManager().AddPane(m_Shell, 
     wxAuiPaneInfo().Bottom().Caption("Shell").MinSize(wxSize(250, 250)));
-  GetManager().AddPane(m_Process->GetSTC(), wxAuiPaneInfo()
+  GetManager().AddPane(m_Process->GetShell(), wxAuiPaneInfo()
     .Bottom()
     .Name("PROCESS")
     .MinSize(250, 100)
@@ -474,7 +474,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       
       
     case ID_SHELL_COMMAND:
-        m_STCShell->Prompt("\nHello '" + event.GetString() + "' from the shell");
+        m_Shell->Prompt("\nHello '" + event.GetString() + "' from the shell");
       break;
       
     case ID_SHOW_VCS:

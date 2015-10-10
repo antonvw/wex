@@ -348,18 +348,18 @@ int wxExVCSEntry::ShowDialog(
 #if wxUSE_GUI
 void wxExVCSEntry::ShowOutput(const wxString& caption) const
 {
-  if (!GetError() && GetSTC() != NULL)
+  if (!GetError() && GetShell() != NULL)
   {
     if (GetFlags().Contains("xml"))
     {
-      GetSTC()->SetLexer("xml");
+      GetShell()->SetLexer("xml");
     }
     else
     {
       wxExVCSCommandOnSTC(
         GetCommand(), 
         m_Lexer, 
-        GetSTC());
+        GetShell());
     }
   }
 
