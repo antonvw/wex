@@ -29,7 +29,10 @@ void fixture::testHexMode()
   wxExHexMode* hm = &stc->GetHexMode();
   
   CPPUNIT_ASSERT(hm->Active());
+  CPPUNIT_ASSERT(hm->GetSTC() == stc);
   CPPUNIT_ASSERT(hm->GetBuffer() == "0123456789");
+  CPPUNIT_ASSERT(hm->Printable('a') == 'a');
+  CPPUNIT_ASSERT(hm->Printable(0) == '.');
     
   hm->AppendText("0123456789");
   CPPUNIT_ASSERT( hm->GetBuffer() == "01234567890123456789");
@@ -37,7 +40,11 @@ void fixture::testHexMode()
   CPPUNIT_ASSERT( hm->HighlightOther(0));
   CPPUNIT_ASSERT( hm->HighlightOther(10));
   CPPUNIT_ASSERT( hm->HighlightOther(57));
-
+  CPPUNIT_ASSERT( hm->SetBuffer(0, ' '));
+  CPPUNIT_ASSERT( hm->GetBuffer() == " 1234567890123456789");
+  hm->Undo();
+  CPPUNIT_ASSERT( hm->GetBuffer() == "01234567890123456789");
+  
   wxExHexModeLine hex(hm);
   
   stc->DiscardEdits();  
@@ -92,5 +99,17 @@ void fixture::testHexMode()
   
   hm->Set(false);
   CPPUNIT_ASSERT(!hm->Active());
+  CPPUNIT_ASSERT( hm->GetBuffer().empty());
+  
+  hm->AppendText("0123456789");
+  CPPUNIT_ASSERT(!hm->GetBuffer().empty());
+  hm->Clear();
+  CPPUNIT_ASSERT( hm->GetBuffer().empty());
+
+  hm->Set(false);
+  CPPUNIT_ASSERT(!hm->Active());
+  hm->Set(true);
+  CPPUNIT_ASSERT( hm->Active());
+  CPPUNIT_ASSERT(!hm->SetBuffer(0, 30)); // should have no effect
   CPPUNIT_ASSERT( hm->GetBuffer().empty());
 }

@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cppunit/BriefTestProgressListener.h>
+#include <cppunit/CompilerOutputter.h>
 #include <cppunit/TestResult.h>
 #include <cppunit/TestResultCollector.h>
 #include <cppunit/TestRunner.h>
@@ -176,6 +177,10 @@ int wxExTestApp::OnRun()
         runner.run(result, it.ToStdString());
       }
     }
+    
+    // Print test in a compiler compatible format.
+    CppUnit::CompilerOutputter outputter(&collector, std::cerr);
+    outputter.write();                      
     
     if (argc <= 1)
     {

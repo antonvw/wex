@@ -81,6 +81,8 @@ void fixture::testProcess()
   // it still is not empty.
   CPPUNIT_ASSERT( process->GetOutput().empty());
   CPPUNIT_ASSERT( process->Kill() == wxKILL_OK);
+  
+  wxExProcess::PrepareOutput(m_Frame); // in fact already done
 
   // Go back to where we were, necessary for other tests.
   wxSetWorkingDirectory(cwd);

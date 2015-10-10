@@ -59,7 +59,7 @@ public:
 
   /// Sets a byte in the buffer to a value.  
   /// The original buffer is not changed so it can be undone.  
-  void SetBuffer(int no, int value);
+  bool SetBuffer(size_t index, int value);
   
   /// Undo change, sets the buffer to the original buffer.
   void Undo();

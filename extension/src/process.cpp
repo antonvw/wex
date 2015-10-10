@@ -141,6 +141,8 @@ void wxExProcess::CheckInput()
   
   if (!output.empty())
   {
+    const bool pos_at_end = (m_STC->GetCurrentPos() >= m_STC->GetTextLength() - 1);
+
     if (!m_Input.empty())
     {
       if (output.StartsWith(m_Input))
@@ -150,18 +152,22 @@ void wxExProcess::CheckInput()
       }
       else
       {
-        m_STC->AppendText(output);
+        m_STC->AppendTextRaw(output.c_str(), output.size());
       }
     }
     else
     {
-      m_STC->AppendText(output);
+      m_STC->AppendTextRaw(output.c_str(), output.size());
     }
     
     if (!m_Input.empty())
     {
       m_Input.clear();
       m_STC->Prompt(wxEmptyString, false);
+    }
+    else if (pos_at_end)
+    {
+      m_STC->DocumentEnd();
     }
   }
 }

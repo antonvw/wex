@@ -73,6 +73,8 @@ void fixture::testManagedFrame()
   m_Frame->SyncCloseAll(0);
   
   CPPUNIT_ASSERT( m_Frame->GetToolBar() != NULL);
+  CPPUNIT_ASSERT( m_Frame->GetOptionsToolBar() != NULL);
+  
   m_Frame->GetToolBar()->AddControls();
   CPPUNIT_ASSERT( m_Frame->TogglePane("FINDBAR"));
   CPPUNIT_ASSERT( m_Frame->GetManager().GetPane("FINDBAR").IsShown());
@@ -86,6 +88,8 @@ void fixture::testManagedFrame()
   
   CPPUNIT_ASSERT(!m_Frame->TogglePane("XXXXBAR"));
   CPPUNIT_ASSERT(!m_Frame->GetManager().GetPane("XXXXBAR").IsOk());
+  
+  m_Frame->OnNotebook(100, stc);
   
   m_Frame->AppendPanes(menu);
 

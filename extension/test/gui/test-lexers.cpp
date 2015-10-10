@@ -115,4 +115,8 @@ void fixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->GetKeywords(wxEmptyString).empty());
 
   CPPUNIT_ASSERT( wxExLexers::Get()->LoadDocument());
+  
+  wxExLexers::Get()->ApplyGlobalStyles(stc);
+  wxExLexers::Get()->ApplyHexStyles(stc);
+  wxExLexers::Get()->ApplyIndicators(stc);
 }
