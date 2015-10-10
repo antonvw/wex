@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      shell.cpp
-// Purpose:   Implementation of class wxExSTCShell
+// Purpose:   Implementation of class wxExShell
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ const char autoCompSep = 3;
 
 #if wxUSE_GUI
 
-wxExSTCShell::wxExSTCShell(
+wxExShell::wxExShell(
   wxWindow* parent,
   const wxString& prompt,
   const wxString& command_end,
@@ -257,7 +257,7 @@ wxExSTCShell::wxExSTCShell(
     event.Skip();});
 }
 
-wxExSTCShell::~wxExSTCShell()
+wxExShell::~wxExShell()
 {
   if (m_CommandsSaveInConfig > 0)
   {
@@ -277,7 +277,7 @@ wxExSTCShell::~wxExSTCShell()
   }
 }
 
-void wxExSTCShell::AppendText(const wxString& text)
+void wxExShell::AppendText(const wxString& text)
 {
   wxExSTC::AppendText(text);
   DocumentEnd();
@@ -290,7 +290,7 @@ void wxExSTCShell::AppendText(const wxString& text)
 #endif
 }
 
-void wxExSTCShell::EnableShell(bool enabled)
+void wxExShell::EnableShell(bool enabled)
 {
   m_Enabled = enabled;
   
@@ -306,7 +306,7 @@ void wxExSTCShell::EnableShell(bool enabled)
   }
 }
 
-void wxExSTCShell::Expand()
+void wxExShell::Expand()
 {
   // We might have commands:
   // 1) ls -l s
@@ -381,7 +381,7 @@ void wxExSTCShell::Expand()
 #endif
 }
     
-const wxString wxExSTCShell::GetCommand() const
+const wxString wxExShell::GetCommand() const
 {
   if (!m_Commands.empty())
   {
@@ -393,12 +393,12 @@ const wxString wxExSTCShell::GetCommand() const
   }
 }
 
-const wxString wxExSTCShell::GetHistory() const
+const wxString wxExShell::GetHistory() const
 {
   return accumulate(m_Commands.begin(), m_Commands.end(), wxString());
 }
 
-void wxExSTCShell::KeepCommand()
+void wxExShell::KeepCommand()
 {
   // Prevent large commands, in case command end is not eol.
   if (m_CommandEnd != GetEOL())
@@ -409,7 +409,7 @@ void wxExSTCShell::KeepCommand()
   m_Commands.push_back(m_Command);
 }
 
-void wxExSTCShell::Paste()
+void wxExShell::Paste()
 {
   if (!CanPaste())
   {
@@ -431,7 +431,7 @@ void wxExSTCShell::Paste()
 #endif
 }
 
-bool wxExSTCShell::ProcessChar(int key)
+bool wxExShell::ProcessChar(int key)
 {
   bool processed = false;
   
@@ -560,7 +560,7 @@ bool wxExSTCShell::ProcessChar(int key)
   return processed;
 }
 
-void wxExSTCShell::ProcessCharDefault(int key)
+void wxExShell::ProcessCharDefault(int key)
 {
   // Insert the key at current position.
   const int index = GetCurrentPos() - m_CommandStartPosition;
@@ -577,7 +577,7 @@ void wxExSTCShell::ProcessCharDefault(int key)
   }
 }
   
-bool wxExSTCShell::Prompt(const wxString& text, bool add_eol)
+bool wxExShell::Prompt(const wxString& text, bool add_eol)
 {
   if (!m_Enabled)
   {
@@ -618,7 +618,7 @@ bool wxExSTCShell::Prompt(const wxString& text, bool add_eol)
   return true;
 }
 
-bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
+bool wxExShell::SetCommandFromHistory(const wxString& short_command)
 {
   const int no_asked_for = atoi(short_command.c_str());
 
@@ -671,12 +671,12 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
   return false;
 }
 
-void wxExSTCShell::SetProcess(wxExProcess* process)
+void wxExShell::SetProcess(wxExProcess* process)
 {
   m_Process = process;
 }
 
-bool wxExSTCShell::SetPrompt(const wxString& prompt, bool do_prompt) 
+bool wxExShell::SetPrompt(const wxString& prompt, bool do_prompt) 
 {
   if (!m_Enabled)
   {
@@ -693,7 +693,7 @@ bool wxExSTCShell::SetPrompt(const wxString& prompt, bool do_prompt)
   return true;
 }
 
-void wxExSTCShell::ShowCommand(int key)
+void wxExShell::ShowCommand(int key)
 {
   SetTargetStart(m_CommandStartPosition);
   SetTargetEnd(GetTextLength());
@@ -726,7 +726,7 @@ void wxExSTCShell::ShowCommand(int key)
   DocumentEnd();
 }
 
-void wxExSTCShell::ShowHistory()
+void wxExShell::ShowHistory()
 {
   int command_no = 1;
 
@@ -740,7 +740,7 @@ void wxExSTCShell::ShowHistory()
 #endif
 }
 
-void wxExSTCShell::Undo()
+void wxExShell::Undo()
 {
   if (CanUndo())
   {

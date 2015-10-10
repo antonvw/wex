@@ -84,7 +84,7 @@ bool ShowProcess(bool show, wxTimer* timer = NULL)
   return false;  
 }
       
-wxExSTCShell* wxExProcess::m_STC = NULL;
+wxExShell* wxExProcess::m_Shell = NULL;
 wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 
 wxExProcess::wxExProcess()
@@ -141,33 +141,33 @@ void wxExProcess::CheckInput()
   
   if (!output.empty())
   {
-    const bool pos_at_end = (m_STC->GetCurrentPos() >= m_STC->GetTextLength() - 1);
+    const bool pos_at_end = (m_Shell->GetCurrentPos() >= m_Shell->GetTextLength() - 1);
 
     if (!m_Input.empty())
     {
       if (output.StartsWith(m_Input))
       {
         // prevent echo of last input
-        m_STC->AppendText(output.substr(m_Input.length()));
+        m_Shell->AppendText(output.substr(m_Input.length()));
       }
       else
       {
-        m_STC->AppendTextRaw(output.c_str(), output.size());
+        m_Shell->AppendTextRaw(output.c_str(), output.size());
       }
     }
     else
     {
-      m_STC->AppendTextRaw(output.c_str(), output.size());
+      m_Shell->AppendTextRaw(output.c_str(), output.size());
     }
     
     if (!m_Input.empty())
     {
       m_Input.clear();
-      m_STC->Prompt(wxEmptyString, false);
+      m_Shell->Prompt(wxEmptyString, false);
     }
     else if (pos_at_end)
     {
-      m_STC->DocumentEnd();
+      m_Shell->DocumentEnd();
     }
   }
 }
@@ -181,7 +181,7 @@ bool wxExProcess::Command(const wxString& command)
   }
   
   m_Timer->Stop();
-  m_STC->LineEnd();
+  m_Shell->LineEnd();
   
   if (
      !m_Command.StartsWith("cmd") && 
@@ -189,11 +189,11 @@ bool wxExProcess::Command(const wxString& command)
   {
     if (command.empty())
     {
-      m_STC->Prompt(wxEmptyString, true);
+      m_Shell->Prompt(wxEmptyString, true);
     }
     else
     {
-      m_STC->AppendText(m_STC->GetEOL());
+      m_Shell->AppendText(m_Shell->GetEOL());
     }
   }
     
@@ -294,15 +294,15 @@ bool wxExProcess::Execute(
   
   m_Sync = (flags & wxEXEC_SYNC);
 
-  m_STC->EnableShell(!m_Sync);
-  m_STC->SetProcess(this);
+  m_Shell->EnableShell(!m_Sync);
+  m_Shell->SetProcess(this);
 
   m_HasStdError = false;
   
   if (!m_Sync)
   { 
-    m_STC->SetName(m_Command);
-    m_STC->ClearAll();
+    m_Shell->SetName(m_Command);
+    m_Shell->ClearAll();
     
     // If we have entered a shell, then the shell
     // itself has no prompt. So put one here.
@@ -312,15 +312,15 @@ bool wxExProcess::Execute(
         m_Command.StartsWith("tcsh") ||
         m_Command.StartsWith("sh"))
     {
-      m_STC->SetPrompt(">", true);
+      m_Shell->SetPrompt(">", true);
     }
     else
     {
-      m_STC->SetPrompt("");
+      m_Shell->SetPrompt("");
       
       if (m_Command == "powershell")
       {
-        m_STC->SetLexer("powershell");
+        m_Shell->SetLexer("powershell");
       }
     }
     
@@ -338,7 +338,7 @@ bool wxExProcess::Execute(
       if (IsRunning())
       {
         m_Timer->Start(100); // milliseconds
-        m_STC->SetFocus();
+        m_Shell->SetFocus();
       }
     }
     else
@@ -382,7 +382,7 @@ bool wxExProcess::IsRunning() const
     // so it is not running.
     m_Sync || 
     // If we have not yet run Execute, process is not running
-    m_STC == NULL ||
+    m_Shell == NULL ||
     GetPid() <= 0)
   {
     return false;
@@ -425,9 +425,9 @@ void wxExProcess::OnTerminate(int pid, int status)
 
 void wxExProcess::PrepareOutput(wxWindow* parent)
 {
-  if (m_STC == NULL)
+  if (m_Shell == NULL)
   {
-    m_STC = new wxExSTCShell(parent, wxEmptyString, wxEmptyString, true, 25, wxEmptyString,
+    m_Shell = new wxExShell(parent, wxEmptyString, wxEmptyString, true, 25, wxEmptyString,
       wxExSTC::STC_MENU_DEFAULT | wxExSTC::STC_MENU_OPEN_LINK);
   }
 }
@@ -441,10 +441,10 @@ void wxExProcess::ShowOutput(const wxString& caption) const
   }  
   else if (!m_Error)
   {
-    if (m_STC != NULL && ShowProcess(true))
+    if (m_Shell != NULL && ShowProcess(true))
     {
-      m_STC->SetText(m_Output);
-      m_STC->SetName(caption.empty() ? m_Command: caption);
+      m_Shell->SetText(m_Output);
+      m_Shell->SetName(caption.empty() ? m_Command: caption);
     }
     else if (!m_Output.empty())
     {

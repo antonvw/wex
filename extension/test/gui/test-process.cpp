@@ -25,8 +25,8 @@ void fixture::testProcess()
   CPPUNIT_ASSERT( process->GetOutput().empty());
   CPPUNIT_ASSERT(!process->HasStdError());
   CPPUNIT_ASSERT(!process->IsRunning());
-  if (process->GetSTC() != NULL)
-    process->GetSTC()->SetText(wxEmptyString);
+  if (process->GetShell() != NULL)
+    process->GetShell()->SetText(wxEmptyString);
   
   process->ConfigDialog(m_Frame, "test process", false);
   
@@ -37,8 +37,8 @@ void fixture::testProcess()
   
   CPPUNIT_ASSERT(!process->IsRunning());
   CPPUNIT_ASSERT( process->IsSelected());
-  CPPUNIT_ASSERT( process->GetSTC() != NULL);
-  CPPUNIT_ASSERT( process->GetSTC()->GetText().empty());
+  CPPUNIT_ASSERT( process->GetShell() != NULL);
+  CPPUNIT_ASSERT( process->GetShell()->GetText().empty());
   CPPUNIT_ASSERT( process->Kill() == wxKILL_NO_PROCESS);
   
   process->ShowOutput();
@@ -60,7 +60,7 @@ void fixture::testProcess()
   // Test wxEXEC_ASYNC process->
   CPPUNIT_ASSERT( process->Execute("bash"));
   CPPUNIT_ASSERT( process->IsRunning());
-  wxExSTCShell* shell = process->GetSTC();  
+  wxExShell* shell = process->GetShell();  
   CPPUNIT_ASSERT( shell != NULL);
   Process("cd ~\rpwd\r", shell);
   CPPUNIT_ASSERT( shell->GetText().Contains("home"));

@@ -229,7 +229,7 @@ void wxExManagedFrame::AppendPanes(wxMenu* menu) const
 
   for (auto it : m_ToggledPanes)
   {
-    if (it.first.first == "PROCESS" && wxExProcess::GetSTC() == NULL)
+    if (it.first.first == "PROCESS" && wxExProcess::GetShell() == NULL)
     {
       continue;
     }
@@ -294,7 +294,7 @@ void wxExManagedFrame::HideExBar(int hide)
         wxExAddressRange::GetProcess() != NULL &&
         wxExAddressRange::GetProcess()->IsRunning())
       {
-        wxExAddressRange::GetProcess()->GetSTC()->SetFocus();
+        wxExAddressRange::GetProcess()->GetShell()->SetFocus();
       }
       else
       {

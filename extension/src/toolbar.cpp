@@ -279,7 +279,7 @@ void wxExOptionsToolBar::AddControls(bool realize)
     std::make_tuple(ID_HEX_MODE, "Hex", "HEX", "HexMode", _("Open in hex mode"), false),
     std::make_tuple(ID_SYNC_MODE, "Sync", "SYNC", "AllowSync", _("Synchronize modified files"), true)})
   {
-    if (std::get<0>(it) == ID_VIEW_PROCESS && wxExProcess::GetSTC() == NULL)
+    if (std::get<0>(it) == ID_VIEW_PROCESS && wxExProcess::GetShell() == NULL)
     {
       continue;
     }

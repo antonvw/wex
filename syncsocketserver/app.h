@@ -70,7 +70,7 @@ private:
 
   wxExSTC* m_DataWindow;
   wxExSTC* m_LogWindow;
-  wxExSTCShell* m_Shell;
+  wxExShell* m_Shell;
 
   wxExStatistics < int > m_Statistics;
 

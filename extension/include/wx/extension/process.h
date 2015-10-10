@@ -11,7 +11,7 @@
 #include <wx/thread.h>
 
 class wxTimer;
-class wxExSTCShell;
+class wxExShell;
 
 /// Offers a wxProcess, capturing execution output depending
 /// on sync or async call to Execute.
@@ -65,9 +65,9 @@ public:
   /// Gets the output from Execute (only filled for wxEXEC_SYNC).
   const wxString& GetOutput() const {return m_Output;};
   
-  /// Returns the STC component 
+  /// Returns the shell component 
   /// (might be NULL if PrepareOutput is not yet invoked).
-  static wxExSTCShell* GetSTC() {return m_STC;};
+  static wxExShell* GetShell() {return m_Shell;};
   
   /// Returns true when the command executed resulted in stderr errors.
   bool HasStdError() const {return m_HasStdError;};
@@ -107,8 +107,7 @@ private:
   static wxString m_WorkingDirKey;
 
 #if wxUSE_GUI
-  static wxExSTCShell* m_STC;
+  static wxExShell* m_Shell;
 #endif  
-
   wxTimer* m_Timer;
 };

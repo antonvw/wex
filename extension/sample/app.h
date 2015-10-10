@@ -70,7 +70,7 @@ private:
   wxExProcess* m_Process;
   wxExSTC* m_STC;
   wxExSTC* m_STCLexers;
-  wxExSTCShell* m_STCShell;
+  wxExShell* m_Shell;
 
   long m_FlagsSTC;
   wxExStatistics <int> m_Statistics;

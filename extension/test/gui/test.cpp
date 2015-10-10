@@ -44,7 +44,7 @@ fixture::fixture()
     
     wxExProcess::PrepareOutput(m_Frame);
     
-    m_Frame->GetManager().AddPane(process->GetSTC(), wxAuiPaneInfo()
+    m_Frame->GetManager().AddPane(process->GetShell(), wxAuiPaneInfo()
       .Bottom()
       .Name("PROCESS")
       .MinSize(250, 100)
@@ -74,7 +74,7 @@ fixture::fixture()
   }
 } 
 
-void fixture::Process(const std::string& str, wxExSTCShell* shell)
+void fixture::Process(const std::string& str, wxExShell* shell)
 {
   for (unsigned i = 0; i < str.length(); ++i)
   {
