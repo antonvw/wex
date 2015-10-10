@@ -85,6 +85,8 @@ void fixture::testShell()
   CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
   CPPUNIT_ASSERT(!shell->GetText().Contains("bbb"));
   
+  shell->SetProcess(NULL);
+  
   shell->DocumentEnd();
   
   wxKeyEvent event(wxEVT_KEY_DOWN);

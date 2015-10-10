@@ -304,9 +304,15 @@ bool wxExHexMode::Set(
   return true;
 }
 
-void wxExHexMode::SetBuffer(int byte, int value)
+bool wxExHexMode::SetBuffer(size_t index, int value)
 {
-  m_Buffer[byte] = value;
+  if (index < m_Buffer.size())
+  {
+    m_Buffer[index] = value;
+    return true;
+  }
+  
+  return false;
 }
 
 void wxExHexMode::Undo()
@@ -566,9 +572,7 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
     return false;
   }
 
-  m_Hex->SetBuffer(byte, val);
-  
-  return true;
+  return m_Hex->SetBuffer(byte, val);
 }
 
 bool wxExHexModeLine::ReplaceHex(int value)
@@ -601,9 +605,7 @@ bool wxExHexModeLine::ReplaceHex(int value)
     pos + OtherField() + 1, 
     m_Hex->Printable(value));
       
-  m_Hex->SetBuffer(byte, value);
-  
-  return true;
+  return m_Hex->SetBuffer(byte, value);
 }
 
 void wxExHexModeLine::Set(int pos)

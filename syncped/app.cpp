@@ -39,18 +39,19 @@ bool App::OnInit()
   
   Reset();
   
-  bool version = false;
+  bool exit = false;
 
   if (wxExCmdLineParser(wxExCmdLineParser::CmdSwitches {
       {{"l", _("show locale")}, {0, [&](bool on) {
-        wxLogMessage("Catalog dir: %s\nName: %s\nCanonical name: %s\nLanguage: %d\nLocale: %s\nIs ok: %d\nIs available: %d",
+        wxMessageOutput::Get()->Printf("Catalog dir: %s\nName: %s\nCanonical name: %s\nLanguage: %d\nLocale: %s\nIs ok: %d\nIs available: %d",
           GetCatalogDir().c_str(),
           GetLocale().GetName().c_str(),
           GetLocale().GetCanonicalName().c_str(),
           GetLocale().GetLanguage(), 
           GetLocale().GetLocale().c_str(),
           GetLocale().IsOk(),
-          GetLocale().IsAvailable(GetLocale().GetLanguage()));}}},
+          GetLocale().IsAvailable(GetLocale().GetLanguage()));
+          exit = true;}}},
       {{"o", _("split tabs horizontally")}, {0, [&](bool on) {
         m_Split = wxBOTTOM;}}},
       {{"O", _("split tabs vertically")}, {0, [&](bool on) {
@@ -59,7 +60,7 @@ bool App::OnInit()
         m_Flags = wxExSTC::STC_WIN_READ_ONLY;}}},
       {{"v", _("show version")}, {0, [&](bool on) {
         wxMessageOutput::Get()->Printf("%s", wxExGetVersionInfo().GetVersionOnlyString().c_str());
-        version = true;}}}},
+        exit = true;}}}},
     wxExCmdLineParser::CmdOptions {
       {{"c", _("vi command")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
         any.GetAs(&m_Command);}}},
@@ -68,7 +69,7 @@ bool App::OnInit()
         m_Command = ":so " + m_Command;}}}},
     wxExCmdLineParser::CmdParams {
       {_("input file:line number:column number"), {wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE, [&](std::vector<wxString> & v) {
-        m_Files = v;}}}}).Parse() != 0 || version)
+        m_Files = v;}}}}).Parse() != 0 || exit)
   {
     return false;
   }

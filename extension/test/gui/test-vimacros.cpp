@@ -26,6 +26,7 @@ void fixture::testViMacros()
   // Load, save document is last test, to be able to check contents.
   CPPUNIT_ASSERT(!macros.GetFileName().GetFullPath().empty());
   CPPUNIT_ASSERT( wxExViMacros::LoadDocument());
+  CPPUNIT_ASSERT( macros.GetCount() > 0);
   
   CPPUNIT_ASSERT(!macros.IsModified());
   CPPUNIT_ASSERT(!macros.IsRecording());
@@ -34,6 +35,7 @@ void fixture::testViMacros()
   CPPUNIT_ASSERT( macros.IsModified());
   CPPUNIT_ASSERT( macros.IsRecording());
   CPPUNIT_ASSERT(!macros.IsRecorded("a"));
+  CPPUNIT_ASSERT(!macros.IsRecordedMacro("a"));
   
   macros.StopRecording();
   CPPUNIT_ASSERT(!macros.IsRecording());
@@ -50,12 +52,17 @@ void fixture::testViMacros()
   CPPUNIT_ASSERT( macros.IsModified());
   CPPUNIT_ASSERT(!macros.IsRecording());
   CPPUNIT_ASSERT( macros.IsRecorded("a"));
+  CPPUNIT_ASSERT( macros.StartsWith("a"));
+  CPPUNIT_ASSERT(!macros.StartsWith("xx"));
+  CPPUNIT_ASSERT(!macros.IsRecordedMacro("a"));
   CPPUNIT_ASSERT( macros.GetMacro() == "a");
   
   CPPUNIT_ASSERT(!macros.IsRecorded("b"));
   
   stc->SetText("");
+  CPPUNIT_ASSERT(!macros.IsPlayback());
   CPPUNIT_ASSERT( macros.Playback(vi, "a"));
+  CPPUNIT_ASSERT(!macros.IsPlayback());
   CPPUNIT_ASSERT( macros.Get("a").front() == "a");
 
   CPPUNIT_ASSERT( stc->GetText() == "test");
@@ -94,6 +101,9 @@ void fixture::testViMacros()
   {
     CPPUNIT_ASSERT( macros.Expand(vi, builtin));
   }
+
+  wxString expanded;
+  CPPUNIT_ASSERT(!wxExViMacros::ExpandTemplate(vi, wxExVariable(), expanded));
 
   // Test all environment macro variables.
   for (auto& env : std::vector<std::string> {"HOME","PWD"})
