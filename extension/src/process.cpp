@@ -141,28 +141,21 @@ void wxExProcess::CheckInput()
   
   if (!output.empty())
   {
-    if (!m_Input.empty())
+    if (!m_Input.empty() && output.StartsWith(m_Input))
     {
-      if (output.StartsWith(m_Input))
-      {
-        // prevent echo of last input
-        m_Shell->AppendText(output.substr(m_Input.length()));
-      }
-      else
-      {
-        m_Shell->AppendText(output);
-      }
+      // prevent echo of last input
+      m_Shell->AppendText(output.substr(m_Input.length()));
     }
     else
     {
       m_Shell->AppendText(output);
     }
+  }
     
-    if (!m_Input.empty())
-    {
-      m_Input.clear();
-      m_Shell->Prompt(wxEmptyString, false);
-    }
+  if (!m_Input.empty())
+  {
+    m_Input.clear();
+    m_Shell->Prompt(wxEmptyString, false);
   }
 }
 
