@@ -141,8 +141,6 @@ void wxExProcess::CheckInput()
   
   if (!output.empty())
   {
-    const bool pos_at_end = (m_Shell->GetCurrentPos() >= m_Shell->GetTextLength() - 1);
-
     if (!m_Input.empty())
     {
       if (output.StartsWith(m_Input))
@@ -152,22 +150,18 @@ void wxExProcess::CheckInput()
       }
       else
       {
-        m_Shell->AppendTextRaw(output.c_str(), output.size());
+        m_Shell->AppendText(output);
       }
     }
     else
     {
-      m_Shell->AppendTextRaw(output.c_str(), output.size());
+      m_Shell->AppendText(output);
     }
     
     if (!m_Input.empty())
     {
       m_Input.clear();
       m_Shell->Prompt(wxEmptyString, false);
-    }
-    else if (pos_at_end)
-    {
-      m_Shell->DocumentEnd();
     }
   }
 }

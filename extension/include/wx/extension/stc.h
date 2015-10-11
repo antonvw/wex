@@ -63,7 +63,7 @@ public:
     STC_CONFIG_SIMPLE     = 0x0004  ///< only 'simple' options on dialog
   };
 
-  /// Constructor.
+  /// Constructor. The title is used for name.
   wxExSTC(wxWindow* parent, 
     const wxString& value = wxEmptyString,
     long win_flags = STC_WIN_DEFAULT,
@@ -75,7 +75,7 @@ public:
     long style = 0);
 
   /// Constructor, opens the file if it exists.
-  /// See also Open.
+  /// The filename is used for name. See also Open.
   wxExSTC(wxWindow* parent,
     const wxExFileName& filename,
     int line_number = 0,

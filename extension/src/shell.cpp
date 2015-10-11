@@ -38,7 +38,7 @@ wxExShell::wxExShell(
       parent, 
       wxEmptyString,
       STC_WIN_NO_INDICATOR,
-      wxEmptyString, // title
+      wxEmptyString, // title, used for name
       menu_flags, 
       id, 
       pos, 
@@ -58,7 +58,6 @@ wxExShell::wxExShell(
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
   ResetMargins(false); // do not reset divider margin
-  SetName("SHELL");
   UseAutoComplete(false); // we have our own autocomplete
   AutoCompSetSeparator(autoCompSep);
 
@@ -279,15 +278,19 @@ wxExShell::~wxExShell()
 
 void wxExShell::AppendText(const wxString& text)
 {
+  const bool pos_at_end = (GetCurrentPos() >= GetTextLength() - 1);
+
   wxExSTC::AppendText(text);
-  DocumentEnd();
-  EnsureCaretVisible();
-  m_CommandStartPosition = GetCurrentPos();
+  
+  m_CommandStartPosition = GetTextLength() - 1;
+  
   EmptyUndoBuffer();
   
-#ifdef DEBUG
-  wxLogMessage("AppendText::" + GetText() + "::");
-#endif
+  if (pos_at_end)
+  {
+    DocumentEnd();
+    EnsureCaretVisible();
+  }
 }
 
 void wxExShell::EnableShell(bool enabled)
@@ -604,9 +607,10 @@ bool wxExShell::Prompt(const wxString& text, bool add_eol)
     AppendText(m_Prompt);
   }
   
+  DocumentEnd();
+  
   if (!appended)
   {
-    DocumentEnd();
     EmptyUndoBuffer();
     m_CommandStartPosition = GetCurrentPos();
   }
