@@ -61,6 +61,8 @@ public:
  ~wxExShell();
  
   /// Appends text, and updates the command start position.
+  /// Only if the cursor was at the end, the cursos is 
+  /// repositioned at the end after appending the text, 
   void AppendText(const wxString& text);
  
   /// Enable/disable shell processing.
@@ -70,6 +72,11 @@ public:
   
   /// Gets last entered command.
   const wxString GetCommand() const;
+  
+  /// Gets the command start position, that is the
+  /// position after the prompt from where
+  /// commands can be inserted.
+  int GetCommandStartPosition() const {return m_CommandStartPosition;};
   
   /// Gets all history commands as a string, 
   /// separated by a newline (for testing).
