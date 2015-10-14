@@ -17,7 +17,12 @@
 /// If you only specify a wxCANCEL button, the dialog is readonly.
 /// You can also use the dialog modeless (then you can use wxAPPLY
 /// to store the items in the config).
-/// When pressing the apply button OnCommandConfigDialog is invoked from wxExFrame.
+/// When pressing the:
+/// - wxAPPLY button
+/// - wxOK, wxCANCEL button for a modeless dialog
+/// - a CONFIG_BUTTON
+/// - a CONFIG_COMBOBOXDIR
+/// the method wxExFrame::OnCommandConfigDialog is invoked.
 class WXDLLIMPEXP_BASE wxExConfigDialog: public wxExDialog
 {
 public:
@@ -80,7 +85,6 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   void Click(int id) const;
-  std::vector< wxExConfigItem >::const_iterator FindConfigItem(int id) const;
   void Layout(int rows, int cols, int notebook_style, wxImageList* imageList);
 
   std::vector<wxExConfigItem> m_ConfigItems;

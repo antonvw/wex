@@ -278,11 +278,11 @@ wxExShell::~wxExShell()
 
 void wxExShell::AppendText(const wxString& text)
 {
-  const bool pos_at_end = (GetCurrentPos() >= GetTextLength() - 1);
+  const bool pos_at_end = (GetCurrentPos() >= GetTextLength());
 
   wxExSTC::AppendText(text);
   
-  m_CommandStartPosition = GetTextLength() - 1;
+  m_CommandStartPosition = GetTextLength();
   
   EmptyUndoBuffer();
   
@@ -612,8 +612,9 @@ bool wxExShell::Prompt(const wxString& text, bool add_eol)
   if (!appended)
   {
     EmptyUndoBuffer();
-    m_CommandStartPosition = GetCurrentPos();
   }
+  
+  m_CommandStartPosition = GetCurrentPos();
   
 #ifdef DEBUG
   wxLogMessage("Prompt::" + GetText() + "::");

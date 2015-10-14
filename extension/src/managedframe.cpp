@@ -52,12 +52,9 @@ public:
 private:  
   void Expand();
   void Handle(wxKeyEvent& event);
-  bool IsCalc() const {return 
-    m_Prefix->GetLabel() == "=";};
-  bool IsCommand() const {return 
-    m_Prefix->GetLabel() == ":";};
-  bool IsFind() const {return 
-    m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?";};
+  bool IsCalc() const {return m_Prefix->GetLabel() == "=";};
+  bool IsCommand() const {return m_Prefix->GetLabel() == ":";};
+  bool IsFind() const {return m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?";};
   
   wxExManagedFrame* m_Frame;
   wxExEx* m_ex;
@@ -138,30 +135,18 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     m_FileHistory.Clear();}, ID_CLEAR_FILES);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    int i = 0;
-    wxString text;
-    for (const auto& it : wxExFindReplaceData::Get()->GetFindStrings())
+    wxExSTC* stc = GetSTC();
+    if (stc != NULL)
     {
-      if (i++ == event.GetId() - ID_FIND_FIRST)
+      auto it = wxExFindReplaceData::Get()->GetFindStrings().begin();
+      std::advance(it, event.GetId() - ID_FIND_FIRST);
+    
+      if (stc->FindNext(
+        *it,
+        stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1))
       {
-        wxExSTC* stc = GetSTC();
-
-        if (stc != NULL)
-        {
-          if (stc->FindNext(
-            it,
-            stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1))
-          {
-            text = it;
-          }
-        }
-        
-        break;
+        wxExFindReplaceData::Get()->SetFindString(*it);
       }
-    }
-    if (!text.empty())
-    {
-      wxExFindReplaceData::Get()->SetFindString(text);
     }}, ID_FIND_FIRST, ID_FIND_LAST);
 }
 
@@ -471,12 +456,7 @@ wxExTextCtrl::wxExTextCtrl(
     }});
 
   Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
-    if (m_ex == NULL)
-    {
-      return;
-    }
-    
-    if (GetValue().empty())
+    if (m_ex == NULL || GetValue().empty())
     {
       m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
       return;

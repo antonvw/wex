@@ -319,7 +319,7 @@ int wxExVCSEntry::ShowDialog(
         CONFIG_COMBOBOXDIR, 
         wxEmptyString, 
         true,
-        1005) : wxExConfigItem()),
+        wxWindow::NewControlId()) : wxExConfigItem()),
       (add_folder && !GetCommand().IsHelp() && GetCommand().IsAdd() ? wxExConfigItem(
         _("Path"), 
         CONFIG_COMBOBOX,

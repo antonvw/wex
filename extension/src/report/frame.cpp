@@ -123,7 +123,7 @@ void wxExFrameWithHistory::CreateDialogs()
       CONFIG_COMBOBOXDIR, 
       wxEmptyString, 
       true,
-      1005),
+      NewControlId()),
     wxExConfigItem(t)};
   
   m_FiFDialog = new wxExConfigDialog(this,
