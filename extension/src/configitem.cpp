@@ -159,13 +159,13 @@ wxExConfigItem::wxExConfigItem(
   }
 }
 
-wxExConfigItem::wxExConfigItem(int size)
-  : wxExConfigItem(CONFIG_SPACER, size)
+wxExConfigItem::wxExConfigItem(int size, const wxString& page)
+  : wxExConfigItem(CONFIG_SPACER, size, page)
 {
 }
 
-wxExConfigItem::wxExConfigItem(long style, const wxString& page)
-  : wxExConfigItem(CONFIG_STATICLINE, style, page)
+wxExConfigItem::wxExConfigItem(wxOrientation orientation, const wxString& page)
+  : wxExConfigItem(CONFIG_STATICLINE, orientation, page)
 {
 }
     
@@ -183,7 +183,6 @@ wxExConfigItem::wxExConfigItem(
       type == CONFIG_CHECKBOX ||
       type == CONFIG_COMMAND_LINK_BUTTON ||
       type == CONFIG_EMPTY ||
-      type == CONFIG_SPACER ||
       type == CONFIG_TOGGLEBUTTON ? false: add_label, id, cols, max_items)
 {
 }
@@ -197,7 +196,7 @@ wxExConfigItem::wxExConfigItem(
   bool is_required,
   bool add_label,
   int cols)
-  : wxExConfigItem(CONFIG_USER, 0, page, label, wxEmptyString, is_required, add_label, wxID_ANY, -1, 25, 1, 0, 0, 0, window, create, config)
+  : wxExConfigItem(CONFIG_USER, 0, page, label, wxEmptyString, is_required, add_label, wxID_ANY, cols, 25, 1, 0, 0, 0, window, create, config)
 {
 }
     
@@ -225,7 +224,7 @@ wxExConfigItem::wxExConfigItem(
   int cols)
   : wxExConfigItem(type, style, page, label, wxEmptyString, is_required, 
     (type != CONFIG_STATICTEXT && 
-     type != CONFIG_HYPERLINKCTRL ? add_label: false))
+     type != CONFIG_HYPERLINKCTRL ? add_label: false), wxID_ANY, cols)
 {
 }
 

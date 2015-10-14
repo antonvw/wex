@@ -26,34 +26,34 @@ enum wxExConfigType
   /// Used for automatic testing only.
   CONFIG_ITEM_MIN,
   
-  CONFIG_BUTTON,               /// a wxButton item
-  CONFIG_CHECKBOX,             /// a wxCheckBox item (use ReadBool to retrieve value)
-  CONFIG_CHECKLISTBOX,         /// a wxCheckListBox item
-  CONFIG_CHECKLISTBOX_NONAME,  /// a wxCheckListBox item using boolean choices
-  CONFIG_COLOUR,               /// a wxColourPickerWidget item
-  CONFIG_COMBOBOX,             /// a wxComboBox item
-  CONFIG_COMBOBOXDIR,          /// a wxComboBox item with a browse button
-  CONFIG_COMMAND_LINK_BUTTON,  /// a wxCommandLinkButton button
-  CONFIG_DIRPICKERCTRL,        /// a wxDirPickerCtrl ctrl item
-  CONFIG_EMPTY,                /// an empty item
-  CONFIG_FILEPICKERCTRL,       /// a wxFilePickerCtrl ctrl item
-  CONFIG_FLOAT,                /// a wxTextCtrl item that only accepts a float (double)
-  CONFIG_FONTPICKERCTRL,       /// a wxFontPickerCtrl ctrl item
-  CONFIG_HYPERLINKCTRL,        /// a wxHyperlinkCtrl ctrl item
-  CONFIG_INT,                  /// a wxTextCtrl item that only accepts an integer (long)
-  CONFIG_LISTVIEW_FOLDER,      /// a wxExListViewFileName ctrl item (a list view standard file)
-  CONFIG_RADIOBOX,             /// a wxRadioBox item
-  CONFIG_SLIDER,               /// a wxSlider item
-  CONFIG_SPACER,               /// a spacer item
-  CONFIG_SPINCTRL,             /// a wxSpinCtrl item
-  CONFIG_SPINCTRL_DOUBLE,      /// a wxSpinCtrlDouble item
-  CONFIG_SPINCTRL_HEX,         /// a wxSpinCtrl hex item
-  CONFIG_STATICLINE,           /// a wxStaticLine item (default horizontal)
-  CONFIG_STATICTEXT,           /// a wxStaticText item
-  CONFIG_STC,                  /// a wxExSTC ctrl item  
-  CONFIG_STRING,               /// a wxTextCtrl item
-  CONFIG_TOGGLEBUTTON,         /// a wxToggleButton item
-  CONFIG_USER,                 /// provide your own window
+  CONFIG_BUTTON,               ///< a wxButton item
+  CONFIG_CHECKBOX,             ///< a wxCheckBox item (use ReadBool to retrieve value)
+  CONFIG_CHECKLISTBOX,         ///< a wxCheckListBox item
+  CONFIG_CHECKLISTBOX_NONAME,  ///< a wxCheckListBox item using boolean choices
+  CONFIG_COLOUR,               ///< a wxColourPickerWidget item
+  CONFIG_COMBOBOX,             ///< a wxComboBox item
+  CONFIG_COMBOBOXDIR,          ///< a wxComboBox item with a browse button
+  CONFIG_COMMAND_LINK_BUTTON,  ///< a wxCommandLinkButton button
+  CONFIG_DIRPICKERCTRL,        ///< a wxDirPickerCtrl ctrl item
+  CONFIG_EMPTY,                ///< an empty item
+  CONFIG_FILEPICKERCTRL,       ///< a wxFilePickerCtrl ctrl item
+  CONFIG_FLOAT,                ///< a wxTextCtrl item that only accepts a float (double)
+  CONFIG_FONTPICKERCTRL,       ///< a wxFontPickerCtrl ctrl item
+  CONFIG_HYPERLINKCTRL,        ///< a wxHyperlinkCtrl ctrl item
+  CONFIG_INT,                  ///< a wxTextCtrl item that only accepts an integer (long)
+  CONFIG_LISTVIEW_FOLDER,      ///< a wxExListViewFileName ctrl item (a list view standard file)
+  CONFIG_RADIOBOX,             ///< a wxRadioBox item
+  CONFIG_SLIDER,               ///< a wxSlider item
+  CONFIG_SPACER,               ///< a spacer item
+  CONFIG_SPINCTRL,             ///< a wxSpinCtrl item
+  CONFIG_SPINCTRL_DOUBLE,      ///< a wxSpinCtrlDouble item
+  CONFIG_SPINCTRL_HEX,         ///< a wxSpinCtrl hex item
+  CONFIG_STATICLINE,           ///< a wxStaticLine item (default horizontal)
+  CONFIG_STATICTEXT,           ///< a wxStaticText item
+  CONFIG_STC,                  ///< a wxExSTC ctrl item  
+  CONFIG_STRING,               ///< a wxTextCtrl item
+  CONFIG_TOGGLEBUTTON,         ///< a wxToggleButton item
+  CONFIG_USER,                 ///< provide your own window
 
   /// Used for automatic testing only.
   CONFIG_ITEM_MAX
@@ -83,7 +83,7 @@ typedef bool (*wxExUserWindowToConfig)(wxWindow* user, bool save);
 class WXDLLIMPEXP_BASE wxExConfigItem
 {
 public:
-  /// Default constructor (for empty config item).
+  /// Default constructor (for CONFIG_EMPTY item).
   wxExConfigItem(
     /// type
     wxExConfigType type = CONFIG_EMPTY,
@@ -102,7 +102,7 @@ public:
     bool is_required = false,
     /// will the label be displayed as a static text
     /// ignored for a static text
-    bool add_label = true,
+    bool add_label = false,
     /// the id as used by the window, see wxExFrame::OnCommandConfigDialog, 
     int id = wxID_ANY,
     /// the number of cols
@@ -114,9 +114,9 @@ public:
     /// minimum value
     double min = 0,
     /// maximum value
-    double max = 0,
+    double max = 1,
     /// incrment value
-    double inc = 0,
+    double inc = 1,
     /// the window (use default constructor for it)
     wxWindow* window = NULL,
     /// callback for window creation (required, useless without one)
@@ -124,16 +124,17 @@ public:
     /// callback for load and save to config
     /// default it has no relation to the config
     wxExUserWindowToConfig config = NULL,
+    /// validator
     wxValidator* validator = NULL);
   
-  /// Constructor for spacer config item.
+  /// Constructor for a CONFIG_SPACER item.
   /// The size is the size for the spacer used.
-  wxExConfigItem(int size);
+  wxExConfigItem(int size, const wxString& page = wxEmptyString);
   
-  /// Constuctor for a static horizontal or vertical line.
+  /// Constuctor for a CONFIG_STATICLINE item.
   wxExConfigItem(
-    /// style: wxLI_HORIZONTAL or wxLI_VERTICAL
-    long style, 
+    /// style: wxHORIZONTAL or wxVERTICAL
+    wxOrientation orientation, 
     const wxString& page = wxEmptyString);
     
   /// Constuctor for most types.
@@ -147,7 +148,7 @@ public:
     bool add_label = true,
     int cols = -1);
     
-  /// Constructor for a user window.
+  /// Constructor for a CONFIG_USER item.
   wxExConfigItem(
     const wxString& label,
     wxWindow* window,
@@ -158,7 +159,8 @@ public:
     bool add_label = true,
     int cols = -1);
 
-  /// Constructor for a string, a hyperlink ctrl, a static text or a STC.
+  /// Constructor for a CONFIG_STRING, CONFIG_STC, CONFIG_STATICTEXT, 
+  /// a CONFIG_HYPERLINKCTRL, a CONFIG_STATICTEXT item.
   wxExConfigItem(
     const wxString& label,
     const wxString& value = wxEmptyString,
@@ -169,8 +171,8 @@ public:
     bool add_label = true,
     int cols = -1);
 
-  /// Constructor for a spin ctrl, a spin ctrl double,
-  /// a spin ctrl hex, or a slider.
+  /// Constructor for a CONFIG_SPINCTRL, a CONFIG_SPINCTRL_DOUBLE,
+  /// a CONFIG_SPINCTRL_HEX or a CONFIG_SPINCTRL item.
   wxExConfigItem(
     const wxString& label,
     double min, 
@@ -181,7 +183,7 @@ public:
     double inc = 1,
     int cols = -1);
 
-  /// Constructor for a checklistbox without a label. 
+  /// Constructor for a CONFIG_RADIOBOX or a CONFIG_CHECKLISTBOX item without a label. 
   /// This checklistbox can be used to get/set several boolean values.
   wxExConfigItem(
     /// the set with names of boolean items
@@ -189,7 +191,7 @@ public:
     const wxString& page = wxEmptyString,
     int cols = -1);
 
-  /// Constructor for a radiobox or a checklistbox. 
+  /// Constructor for a CONFIG_RADIOBOX, a CONFIG_CHECKLISTBOX item. 
   /// This checklistbox (not mutually exclusive choices)
   /// can be used to get/set individual bits in a long.
   /// A radiobox (mutually exclusive choices)
