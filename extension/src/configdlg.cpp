@@ -39,15 +39,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   const wxSize& size, 
   long style,
   const wxString& name)
-  : wxExDialog(
-      parent, 
-      title, 
-      flags, 
-      id, 
-      pos, 
-      size, 
-      style,
-      name)
+  : wxExDialog(parent, title, flags, id, pos, size, style, name)
   , m_ForceCheckBoxChecked(false)
   , m_Page(wxEmptyString)
   , m_ConfigItems(v)
@@ -58,26 +50,9 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   Bind(wxEVT_BUTTON, &wxExConfigDialog::OnCommand, this, wxID_CANCEL);
   Bind(wxEVT_BUTTON, &wxExConfigDialog::OnCommand, this, wxID_CLOSE);
   Bind(wxEVT_BUTTON, &wxExConfigDialog::OnCommand, this, wxID_OK);
+
   Bind(wxEVT_UPDATE_UI, &wxExConfigDialog::OnUpdateUI, this, wxID_APPLY);
   Bind(wxEVT_UPDATE_UI, &wxExConfigDialog::OnUpdateUI, this, wxID_OK);
-}
-
-std::vector< wxExConfigItem >::const_iterator 
-wxExConfigDialog::FindConfigItem(int id) const
-{
-  // using a range for gives compile error
-  for (
-    auto it = m_ConfigItems.begin();
-    it != m_ConfigItems.end();
-    ++it)
-  {
-    if (it->GetWindow() != NULL && it->GetWindow()->GetId() == id)
-    {
-      return it;
-    }
-  }
-
-  return m_ConfigItems.end();
 }
 
 void wxExConfigDialog::Click(int id) const
@@ -142,8 +117,7 @@ void wxExConfigDialog::Layout(
 
   for (auto& it : m_ConfigItems)
   {
-    if (it.GetType() == CONFIG_EMPTY) 
-      continue; //skip
+    if (it.GetType() == CONFIG_EMPTY) continue; //skip
     
     if (first_time ||
        (it.GetPage() != previous_page && !it.GetPage().empty()))
@@ -205,23 +179,36 @@ void wxExConfigDialog::Layout(
     previous_item_type = it.GetType();
     previous_page = it.GetPage();
 
-    if (
-      it.GetType() == CONFIG_BUTTON ||
-      it.GetType() == CONFIG_COMBOBOXDIR)
-    {
-      Bind(
-        wxEVT_COMMAND_BUTTON_CLICKED, 
-        &wxExConfigDialog::OnCommand, 
-        this, 
-        it.GetWindow()->GetId());
-    }
-
     if (sizer != NULL &&
         sizer->GetEffectiveRowsCount() >= 1 &&
        !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
         it.IsRowGrowable())
     {
       sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
+    }
+
+    switch (it.GetType())
+    {
+      case CONFIG_BUTTON:
+        Bind(wxEVT_COMMAND_BUTTON_CLICKED,  [=](wxCommandEvent& event) {
+          Click(event.GetId());}, it.GetWindow()->GetId());
+        break;
+      
+      case CONFIG_COMBOBOXDIR:
+        Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent& event) {
+          wxComboBox* browse = (wxComboBox*)it.GetWindow();
+          wxDirDialog dir_dlg(
+            this,
+            _(wxDirSelectorPromptStr),
+            browse->GetValue(),
+            wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+          if (dir_dlg.ShowModal() == wxID_OK)
+          {
+            const wxString value = dir_dlg.GetPath();
+            const int item = browse->FindString(value);
+            browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
+          }}, it.GetWindow()->GetId());
+        break;
     }
   }
 
@@ -248,48 +235,7 @@ void wxExConfigDialog::Layout(
 
 void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 {
-  if (command.GetId() < wxID_LOWEST)
-  {
-    auto it = FindConfigItem(command.GetId());
-      
-    if (it != m_ConfigItems.end())
-    {
-      if (it->GetType() == CONFIG_COMBOBOXDIR)
-      {
-        wxComboBox* browse = (wxComboBox*)it->GetWindow();
-
-        wxDirDialog dir_dlg(
-          this,
-          _(wxDirSelectorPromptStr),
-          browse->GetValue(),
-          wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-        if (dir_dlg.ShowModal() == wxID_OK)
-        {
-          const wxString value = dir_dlg.GetPath();
-          const int item = browse->FindString(value);
-          
-          if (item == wxNOT_FOUND)
-          {
-            browse->SetSelection(browse->Append(value));
-          }
-          else
-          {
-            browse->SetSelection(item);
-          }
-        }
-      }
-      else if (it->GetType() == CONFIG_BUTTON)
-      {
-        Click(command.GetId());
-      }
-      else
-      {
-        wxFAIL;
-      }
-    }
-  }
-  else if (command.GetId() == wxID_CANCEL)
+  if (command.GetId() == wxID_CANCEL)
   {
     Reload();
   }

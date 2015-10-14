@@ -673,7 +673,7 @@ void wxExSampleFrame::ShowConfigItems()
     "Comboboxes",
     false,
     wxID_ANY,
-    25,
+    NewControlId(),
     false));
 
   // CONFIG_COMBOBOXDIR
@@ -682,7 +682,7 @@ void wxExSampleFrame::ShowConfigItems()
     CONFIG_COMBOBOXDIR, 
     "Comboboxes",
     true,
-    1005));
+    NewControlId()));
 
   // CONFIG_COMBOBOXDIR
   v.push_back(wxExConfigItem(
@@ -690,7 +690,7 @@ void wxExSampleFrame::ShowConfigItems()
     CONFIG_COMBOBOXDIR, 
     "Comboboxes",
     false,
-    1006));
+    NewControlId()));
 
   // CONFIG_COMMAND_LINK_BUTTON
   for (int l = 1; l <= 4; l++)
@@ -700,11 +700,11 @@ void wxExSampleFrame::ShowConfigItems()
       CONFIG_COMMAND_LINK_BUTTON,
       "Command Link Buttons",
       false,
-      1007 + l));
+      NewControlId()));
   }
 
   // CONFIG_SPACER on pickers page
-  v.push_back(wxExConfigItem(10, "Pickers", CONFIG_SPACER));
+//  v.push_back(wxExConfigItem(10, "Pickers", CONFIG_SPACER));
 
   // CONFIG_DIRPICKERCTRL
   v.push_back(wxExConfigItem(

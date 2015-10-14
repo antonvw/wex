@@ -23,17 +23,6 @@
 
 #if wxUSE_GUI
 
-// Cannot use wxNewId here, as these are used in a switch statement.
-enum
-{
-  ID_MATCH_WHOLE_WORD = 100,
-  ID_MATCH_CASE,
-  ID_REGULAR_EXPRESSION,
-  ID_VIEW_PROCESS,
-  ID_HEX_MODE,
-  ID_SYNC_MODE 
-};
-
 // Support class.
 // Offers a find text ctrl that allows you to find text
 // on a current STC on an wxExFrame.
@@ -106,7 +95,11 @@ void wxExToolBar::AddControls(bool realize)
   AddTool(wxID_SAVE);
   AddTool(wxID_PRINT);
   AddTool(wxID_FIND);
-  AddTool(wxID_EXECUTE);
+  
+  if (wxExProcess::GetShell() != NULL)
+  {
+    AddTool(wxID_EXECUTE);
+  }
 
   SetToolDropDown(wxID_FIND, true);
   SetToolDropDown(wxID_OPEN, true);
@@ -132,8 +125,8 @@ void wxExToolBar::AddControls(bool realize)
     else
     {
       event.Skip();
-    }}, wxID_FIND);
-
+  }}, wxID_FIND);
+  
   Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
     if (event.IsDropDownClicked())
     {
@@ -146,6 +139,7 @@ void wxExToolBar::AddControls(bool realize)
       wxRect rect = tb->GetToolRect(event.GetId());
       wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
       pt = ScreenToClient(pt);
+
       m_Frame->GetFileHistory().PopupMenu(this, ID_CLEAR_FILES, pt);
   
       // make sure the button is "un-stuck"
@@ -202,6 +196,10 @@ wxExFindToolBar::wxExFindToolBar(
   long style)
   : wxExToolBar(frame, id, pos, size, style)
 {
+  const wxWindowID ID_MATCH_WHOLE_WORD = NewControlId();
+  const wxWindowID ID_MATCH_CASE = NewControlId();
+  const wxWindowID ID_REGULAR_EXPRESSION = NewControlId();
+
   FindTextCtrl* findCtrl = new FindTextCtrl(this, GetFrame());
   wxCheckBox* matchCase = new wxCheckBox(this, 
     ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
@@ -272,12 +270,14 @@ wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
 
 void wxExOptionsToolBar::AddControls(bool realize)
 {
+  const wxWindowID ID_VIEW_PROCESS = NewControlId();
+  
   // 0   1      2     3       4        5
   // id, label, name, config, tooltip, default
   for (auto it : std::vector<std::tuple<int, wxString, wxString, wxString, wxString, bool>> {
     std::make_tuple(ID_VIEW_PROCESS, _("Process"), "PROCESS", "ViewProcess", _("View Process"), false),
-    std::make_tuple(ID_HEX_MODE, "Hex", "HEX", "HexMode", _("Open in hex mode"), false),
-    std::make_tuple(ID_SYNC_MODE, "Sync", "SYNC", "AllowSync", _("Synchronize modified files"), true)})
+    std::make_tuple(NewControlId(), "Hex", "HEX", "HexMode", _("Open in hex mode"), false),
+    std::make_tuple(NewControlId(), "Sync", "SYNC", "AllowSync", _("Synchronize modified files"), true)})
   {
     if (std::get<0>(it) == ID_VIEW_PROCESS && wxExProcess::GetShell() == NULL)
     {

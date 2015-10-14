@@ -168,7 +168,6 @@ bool wxExProcess::Command(const wxString& command)
   }
   
   m_Timer->Stop();
-  m_Shell->LineEnd();
   
   if (
      !m_Command.StartsWith("cmd") && 
@@ -182,6 +181,10 @@ bool wxExProcess::Command(const wxString& command)
     {
       m_Shell->AppendText(m_Shell->GetEOL());
     }
+  }
+  else
+  {
+    m_Shell->DocumentEnd();
   }
     
   // Send command to process and restart timer.
@@ -227,7 +230,7 @@ int wxExProcess::ConfigDialog(
       CONFIG_COMBOBOXDIR, 
       wxEmptyString,
       true,
-      1005)};
+      wxWindow::NewControlId())};
 
   if (modal)
   {
@@ -291,25 +294,13 @@ bool wxExProcess::Execute(
     m_Shell->SetName(m_Command);
     m_Shell->ClearAll();
     
-    // If we have entered a shell, then the shell
-    // itself has no prompt. So put one here.
-    if (m_Command.StartsWith("bash") ||
-        m_Command.StartsWith("csh") ||
-        m_Command.StartsWith("ksh") ||
-        m_Command.StartsWith("tcsh") ||
-        m_Command.StartsWith("sh"))
-    {
-      m_Shell->SetPrompt(">", true);
-    }
-    else
-    {
-      m_Shell->SetPrompt("");
-      
-      if (m_Command == "powershell")
-      {
-        m_Shell->SetLexer("powershell");
-      }
-    }
+    m_Shell->SetPrompt(
+      // a unix shell itself has no prompt, s put one here
+      m_Command.StartsWith("bash") ||
+      m_Command.StartsWith("csh") ||
+      m_Command.StartsWith("ksh") ||
+      m_Command.StartsWith("tcsh") ||
+      m_Command.StartsWith("sh") ? ">" : "");
     
     // For asynchronous execution the return value is the process id and zero 
     // value indicates that the command could not be executed.

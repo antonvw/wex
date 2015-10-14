@@ -143,7 +143,7 @@ void wxExColumn::SetIsSortedAscending(wxExSortType type)
   }
 }
 
-const int ID_COL_FIRST = 1000;
+const wxWindowID ID_COL_FIRST = wxWindow::NewControlId();
 
 wxExListView::wxExListView(wxWindow* parent,
   wxWindowID id,
@@ -285,11 +285,6 @@ wxExListView::wxExListView(wxWindow* parent,
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     ItemFromText(wxExClipboardGet());}, wxID_PASTE);
-
-  const int ID_COL_LAST = ID_COL_FIRST + 255;
-  Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
-    SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);},
-    ID_COL_FIRST, ID_COL_LAST);
 }    
 
 long wxExListView::AppendColumn(const wxExColumn& col)
@@ -305,6 +300,10 @@ long wxExListView::AppendColumn(const wxExColumn& col)
   {
     mycol.SetColumn(GetColumnCount() - 1);
     m_Columns.push_back(mycol);
+    
+    Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
+      SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);},
+      ID_COL_FIRST + GetColumnCount() - 1);
   }
   
   return index;

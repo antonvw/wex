@@ -21,6 +21,7 @@
 #include <wx/statline.h>
 #include <wx/tglbtn.h>
 #include <wx/valnum.h>
+#include <wx/valtext.h>
 #include <wx/window.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
@@ -56,61 +57,116 @@ bool Set(wxExFindReplaceData* frd, const wxString& field, bool value)
   return true;
 }
 
-wxExConfigItem::wxExConfigItem()
-  : m_Window(NULL)
-  , m_Style(0)
-  , m_Type(CONFIG_EMPTY)
-  , m_AddLabel(false)
-  , m_IsRequired(false)
-  , m_Id(-1)
-  , m_MaxItems(0)
-  , m_Min(0)
-  , m_Max(0)
-  , m_Inc(0)
-  , m_MajorDimension(1)
-  , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(NULL)
+wxExConfigItem::wxExConfigItem(
+  wxExConfigType type,
+  long style,
+  const wxString& page,
+  const wxString& label,
+  const wxString& value,
+  bool is_required,
+  bool add_label,
+  int id,
+  int cols,
+  int max_items,
+  int major_dimension,
+  double min,
+  double max,
+  double inc,
+  wxWindow* window,
+  wxExUserWindowCreate create,
+  wxExUserWindowToConfig config,
+  wxValidator* validator)
+  : m_Type(type)
+  , m_Style(style)
+  , m_AddLabel(add_label)
+  , m_Label(label)
+  , m_Default(value)
+  , m_IsRequired(is_required)
+  , m_Id(id)
+  , m_Min(min)
+  , m_Max(max)
+  , m_Inc(inc)
+  , m_MajorDimension(major_dimension)
+  , m_UserWindowCreate(create)
+  , m_UserWindowToConfig(config)
+  , m_Validator(validator)
+  , m_Window(window)
+  , m_Cols(cols)
+  , m_MaxItems(max_items)
+  , m_IsRowGrowable(false)
+  , m_Page(page)
+  , m_PageCols(-1)
 {
-  Init(wxEmptyString, -1);
+  if (m_Page.Contains(":"))
+  {
+    m_PageCols = atoi(m_Page.AfterFirst(':'));
+    m_Page = m_Page.BeforeFirst(':');
+  }
+  
+  // Default control is expanded when laid out, 
+  // override in switch if not wanted.
+  bool expand = true;
+
+  switch (m_Type)
+  {
+    case CONFIG_BUTTON:
+    case CONFIG_COLOUR:
+    case CONFIG_COMMAND_LINK_BUTTON:
+    case CONFIG_FLOAT:
+    case CONFIG_FONTPICKERCTRL:
+    case CONFIG_HYPERLINKCTRL:
+    case CONFIG_INT:
+    case CONFIG_SLIDER:
+    case CONFIG_SPINCTRL:
+    case CONFIG_SPINCTRL_HEX:
+    case CONFIG_SPINCTRL_DOUBLE:
+    case CONFIG_TOGGLEBUTTON:
+      expand = false;
+      break;
+
+    case CONFIG_CHECKLISTBOX:
+    case CONFIG_CHECKLISTBOX_NONAME:
+    case CONFIG_LISTVIEW_FOLDER:
+    case CONFIG_RADIOBOX:
+    case CONFIG_STC:
+      m_IsRowGrowable = true;
+      break;
+
+    case CONFIG_STATICTEXT:
+    case CONFIG_STRING:
+      m_IsRowGrowable = (m_Style & wxTE_MULTILINE) > 0;
+      break;
+  
+    case CONFIG_CHECKBOX:
+    case CONFIG_COMBOBOX:
+    case CONFIG_COMBOBOXDIR:
+    case CONFIG_DIRPICKERCTRL:
+    case CONFIG_EMPTY:
+    case CONFIG_FILEPICKERCTRL:
+    case CONFIG_SPACER:
+    case CONFIG_STATICLINE:
+    case CONFIG_USER:
+      break;
+
+    default: wxFAIL;
+  }
+
+  m_SizerFlags = wxSizerFlags().Border().Left();
+  
+  if (expand) 
+  {
+    m_SizerFlags.Expand();
+  }
 }
 
 wxExConfigItem::wxExConfigItem(int size)
-  : m_Window(NULL)
-  , m_Style(size)
-  , m_Type(CONFIG_SPACER)
-  , m_AddLabel(false)
-  , m_IsRequired(false)
-  , m_Id(-1)
-  , m_MaxItems(0)
-  , m_Min(0)
-  , m_Max(0)
-  , m_Inc(0)
-  , m_MajorDimension(1)
-  , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(NULL)
+  : wxExConfigItem(CONFIG_SPACER, size)
 {
-  Init(wxEmptyString, -1);
 }
 
-wxExConfigItem::wxExConfigItem(
-  long style,
-  const wxString& page,
-  wxExConfigType type)
-  : m_Window(NULL)
-  , m_Style(style)
-  , m_Type(type)
-  , m_AddLabel(false)
-  , m_Id(-1)
-  , m_MaxItems(0)
-  , m_Min(0)
-  , m_Max(0)
-  , m_Inc(0)
-  , m_MajorDimension(1)
-  , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(NULL)
-  , m_IsRequired(false)
+wxExConfigItem::wxExConfigItem(long style, const wxString& page)
+  : wxExConfigItem(CONFIG_STATICLINE, style, page)
 {
-  Init(page, -1);
 }
     
 wxExConfigItem::wxExConfigItem(
@@ -122,55 +178,27 @@ wxExConfigItem::wxExConfigItem(
   int max_items,
   bool add_label,
   int cols)
-  : m_Window(NULL)
-  , m_Id(id)
-  , m_IsRequired(is_required)
-  , m_Min(0)
-  , m_Max(1)
-  , m_MaxItems(max_items)
-  , m_MajorDimension(1)
-  , m_Label(label)
-  , m_Style(0)
-  , m_Type(type)
-  , m_AddLabel(
+  : wxExConfigItem(type, 0, page, label, wxEmptyString, is_required, 
       type == CONFIG_BUTTON ||
       type == CONFIG_CHECKBOX ||
       type == CONFIG_COMMAND_LINK_BUTTON ||
       type == CONFIG_EMPTY ||
       type == CONFIG_SPACER ||
-      type == CONFIG_TOGGLEBUTTON ? false: add_label)
-  , m_Inc(1)
-  , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(NULL)
+      type == CONFIG_TOGGLEBUTTON ? false: add_label, id, cols, max_items)
 {
-  Init(page, cols);
 }
 
 wxExConfigItem::wxExConfigItem(
   const wxString& label,
   wxWindow* window,
-  wxExUserWindowCreate user,
-  wxExUserWindowToConfig cfg,
+  wxExUserWindowCreate create,
+  wxExUserWindowToConfig config,
   const wxString& page,
   bool is_required,
   bool add_label,
   int cols)
-  : m_Window(window)
-  , m_Id(wxID_ANY)
-  , m_IsRequired(is_required)
-  , m_Min(0)
-  , m_Max(1)
-  , m_MaxItems(1)
-  , m_MajorDimension(1)
-  , m_Label(label)
-  , m_Style(0)
-  , m_Type(CONFIG_USER)
-  , m_AddLabel(add_label)
-  , m_Inc(1)
-  , m_UserWindowCreate(user)
-  , m_UserWindowToConfig(cfg)
+  : wxExConfigItem(CONFIG_USER, 0, page, label, wxEmptyString, is_required, add_label, wxID_ANY, -1, 25, 1, 0, 0, 0, window, create, config)
 {
-  Init(page, cols);
 }
     
 wxExConfigItem::wxExConfigItem(
@@ -182,22 +210,8 @@ wxExConfigItem::wxExConfigItem(
   long style,
   double inc,
   int cols)
-  : m_Window(NULL)
-  , m_Id(wxID_ANY)
-  , m_IsRequired(false)
-  , m_MaxItems(0)
-  , m_Inc(inc)
-  , m_Label(label)
-  , m_Style(style)
-  , m_Type(type)
-  , m_AddLabel(true)
-  , m_Min(min)
-  , m_Max(max)
-  , m_MajorDimension(1)
-  , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(NULL)
+  : wxExConfigItem(type, style, page, label, wxEmptyString, false, true, wxID_ANY, cols, min, max, inc)
 {
-  Init(page, cols);
 }
 
 wxExConfigItem::wxExConfigItem(
@@ -209,25 +223,10 @@ wxExConfigItem::wxExConfigItem(
   bool is_required,
   bool add_label,
   int cols)
-  : m_Window(NULL)
-  , m_Id(wxID_ANY)
-  , m_IsRequired(is_required)
-  , m_Min(0)
-  , m_Max(0)
-  , m_MaxItems(0)
-  , m_Label(label)
-  , m_Style(style)
-  , m_Type(type)
-  , m_AddLabel(
-      (type != CONFIG_STATICTEXT && 
-       type != CONFIG_HYPERLINKCTRL ? add_label: false))
-  , m_Inc(1)
-  , m_Default(value)
-  , m_MajorDimension(1)
-  , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(NULL)
+  : wxExConfigItem(type, style, page, label, wxEmptyString, is_required, 
+    (type != CONFIG_STATICTEXT && 
+     type != CONFIG_HYPERLINKCTRL ? add_label: false))
 {
-  Init(page, cols);
 }
 
 wxExConfigItem::wxExConfigItem(
@@ -238,46 +237,18 @@ wxExConfigItem::wxExConfigItem(
   int majorDimension,
   long style,
   int cols)
-  : m_Window(NULL)
-  , m_Id(wxID_ANY)
-  , m_IsRequired(false)
-  , m_MajorDimension(majorDimension)
-  , m_Min(0)
-  , m_Max(0)
-  , m_MaxItems(0)
-  , m_Label(label)
-  , m_Style(style)
-  , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX)
-  , m_Choices(choices)
-  , m_AddLabel(false)
-  , m_Inc(1)
-  , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(NULL)
+  : wxExConfigItem(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX, style, page, label, wxEmptyString, false, false, wxID_ANY, cols, 25, majorDimension)
 {
-  Init(page, cols);
+  m_Choices = choices;
 }
 
 wxExConfigItem::wxExConfigItem(
   const std::set<wxString> & choices,
   const wxString& page,
   int cols)
-  : m_Window(NULL)
-  , m_Id(wxID_ANY)
-  , m_IsRequired(false)
-  , m_Min(0)
-  , m_Max(0)
-  , m_MaxItems(0)
-  , m_Label("checklistbox_noname")
-  , m_Style(0)
-  , m_Type(CONFIG_CHECKLISTBOX_NONAME)
-  , m_ChoicesBool(choices) 
-  , m_AddLabel(false)
-  , m_Inc(1)
-  , m_MajorDimension(1)
-  , m_UserWindowCreate(NULL)
-  , m_UserWindowToConfig(NULL)
+  : wxExConfigItem(CONFIG_CHECKLISTBOX_NONAME, 0, page, "checklistbox_noname", wxEmptyString, false, false, wxID_ANY, cols)
 {
-  Init(page, cols);
+  m_ChoicesBool = choices;
 }
 
 wxFlexGridSizer* wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
@@ -684,76 +655,6 @@ bool wxExConfigItem::Get(
   }
 
   return true;
-}
-
-void wxExConfigItem::Init(const wxString& page, int cols)
-{
-  m_Cols = cols;
-  m_IsRowGrowable = false;
-  m_Page = page;
-  m_PageCols = -1;
-  m_Validator = NULL;
-
-  if (m_Page.Contains(":"))
-  {
-    m_PageCols = atoi(m_Page.AfterFirst(':'));
-    m_Page = m_Page.BeforeFirst(':');
-  }
-  
-  // Default control is expanded when laid out, 
-  // override in switch if not wanted.
-  bool expand = true;
-
-  switch (m_Type)
-  {
-    case CONFIG_BUTTON:
-    case CONFIG_COLOUR:
-    case CONFIG_COMMAND_LINK_BUTTON:
-    case CONFIG_FLOAT:
-    case CONFIG_FONTPICKERCTRL:
-    case CONFIG_HYPERLINKCTRL:
-    case CONFIG_INT:
-    case CONFIG_SLIDER:
-    case CONFIG_SPINCTRL:
-    case CONFIG_SPINCTRL_HEX:
-    case CONFIG_SPINCTRL_DOUBLE:
-    case CONFIG_TOGGLEBUTTON:
-      expand = false;
-      break;
-
-    case CONFIG_CHECKLISTBOX:
-    case CONFIG_CHECKLISTBOX_NONAME:
-    case CONFIG_LISTVIEW_FOLDER:
-    case CONFIG_RADIOBOX:
-    case CONFIG_STC:
-      m_IsRowGrowable = true;
-      break;
-
-    case CONFIG_STATICTEXT:
-    case CONFIG_STRING:
-      m_IsRowGrowable = (m_Style & wxTE_MULTILINE) > 0;
-      break;
-  
-    case CONFIG_CHECKBOX:
-    case CONFIG_COMBOBOX:
-    case CONFIG_COMBOBOXDIR:
-    case CONFIG_DIRPICKERCTRL:
-    case CONFIG_EMPTY:
-    case CONFIG_FILEPICKERCTRL:
-    case CONFIG_SPACER:
-    case CONFIG_STATICLINE:
-    case CONFIG_USER:
-      break;
-
-    default: wxFAIL;
-  }
-
-  m_SizerFlags = wxSizerFlags().Border().Left();
-  
-  if (expand) 
-  {
-    m_SizerFlags.Expand();
-  }
 }
 
 wxFlexGridSizer* wxExConfigItem::Layout(

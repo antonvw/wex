@@ -444,7 +444,7 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
     CONFIG_COMBOBOXDIR, 
     wxEmptyString, 
     true,
-    1005)};
+    wxWindow::NewControlId())};
       
   if (wxExConfigFirstOf(_("Base folder")).empty()) 
   {
