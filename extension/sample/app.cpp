@@ -382,7 +382,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       v.push_back(wxExConfigItem(
         "STC cpp", 
         "cpp",
-        wxEmptyString,
+        "initial value",
         0,
         CONFIG_STC));
     
@@ -700,7 +700,7 @@ void wxExSampleFrame::ShowConfigItems()
       CONFIG_COMMAND_LINK_BUTTON,
       "Command Link Buttons",
       false,
-      NewControlId()));
+      1010 + l));
   }
 
   // CONFIG_SPACER on pickers page

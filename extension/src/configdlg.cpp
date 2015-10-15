@@ -190,6 +190,7 @@ void wxExConfigDialog::Layout(
     switch (it.GetType())
     {
       case CONFIG_BUTTON:
+      case CONFIG_COMMAND_LINK_BUTTON:
         Bind(wxEVT_COMMAND_BUTTON_CLICKED,  [=](wxCommandEvent& event) {
           Click(event.GetId());}, it.GetWindow()->GetId());
         break;
