@@ -704,7 +704,7 @@ void wxExSampleFrame::ShowConfigItems()
   }
 
   // CONFIG_SPACER on pickers page
-//  v.push_back(wxExConfigItem(10, "Pickers", CONFIG_SPACER));
+  v.push_back(wxExConfigItem(10, "Pickers"));
 
   // CONFIG_DIRPICKERCTRL
   v.push_back(wxExConfigItem(
@@ -832,10 +832,10 @@ void wxExSampleFrame::ShowConfigItems()
   }
 
   // CONFIG_STATICLINE (horizontal)
-  v.push_back(wxExConfigItem(wxLI_HORIZONTAL, "Static Line"));
+  v.push_back(wxExConfigItem(wxHORIZONTAL, "Static Line"));
 
   // CONFIG_STATICLINE (vertical)
-  v.push_back(wxExConfigItem(wxLI_VERTICAL, "Static Line"));
+  v.push_back(wxExConfigItem(wxVERTICAL, "Static Line"));
 
   // CONFIG_STC
   v.push_back(wxExConfigItem(

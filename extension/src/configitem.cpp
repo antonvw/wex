@@ -31,19 +31,30 @@
 
 #if wxUSE_GUI
 
-bool Set(wxExFindReplaceData* frd, const wxString& field, bool value)
+#define PERSISTENT(CONTROL, VALUE, READ, DEFAULT)                   \
+{                                                                   \
+  CONTROL* ctrl = (CONTROL*)m_Window;                               \
+  if (save)                                                         \
+    wxConfigBase::Get()->Write(m_Label, ctrl->VALUE());             \
+  else                                                              \
+    ctrl->SetValue(wxConfigBase::Get()->READ(m_Label, DEFAULT));    \
+}                                                                   \
+
+bool Update(wxExFindReplaceData* frd, wxCheckListBox* clb, int item, bool save, bool value)
 {
-  if (field == frd->GetTextMatchCase())
+  const wxString field(clb->GetString(item));
+  
+  if (field == frd->GetTextMatchWholeWord())
   {
-    frd->SetMatchCase(value);
+    !save ? clb->Check(item, frd->MatchWord()): frd->SetMatchWord(value);
   }
-  else if (field == frd->GetTextMatchWholeWord())
+  else if (field == frd->GetTextMatchCase())
   {
-    frd->SetMatchWord(value);
+    !save ? clb->Check(item, frd->MatchCase()): frd->SetMatchCase(value);
   }
   else if (field == frd->GetTextRegEx())
   {
-    frd->SetUseRegEx(value);
+    !save ? clb->Check(item, frd->UseRegEx()): frd->SetUseRegEx(value);
   }
   else if (field == frd->GetTextSearchDown())
   {
@@ -57,25 +68,12 @@ bool Set(wxExFindReplaceData* frd, const wxString& field, bool value)
   return true;
 }
 
-wxExConfigItem::wxExConfigItem(
-  wxExConfigType type,
-  long style,
-  const wxString& page,
-  const wxString& label,
-  const wxString& value,
-  bool is_required,
-  bool add_label,
-  int id,
-  int cols,
-  int max_items,
-  int major_dimension,
-  double min,
-  double max,
-  double inc,
-  wxWindow* window,
-  wxExUserWindowCreate create,
-  wxExUserWindowToConfig config,
-  wxValidator* validator)
+wxExConfigItem::wxExConfigItem(wxExConfigType type, long style,
+  const wxString& page, const wxString& label, const wxString& value,
+  bool is_required, bool add_label,
+  int id, int cols, int max_items, int major_dimension,
+  double min, double max, double inc,
+  wxWindow* window, wxExUserWindowCreate create, wxExUserWindowToConfig config)
   : m_Type(type)
   , m_Style(style)
   , m_AddLabel(add_label)
@@ -89,13 +87,14 @@ wxExConfigItem::wxExConfigItem(
   , m_MajorDimension(major_dimension)
   , m_UserWindowCreate(create)
   , m_UserWindowToConfig(config)
-  , m_Validator(validator)
+  , m_Validator(NULL)
   , m_Window(window)
   , m_Cols(cols)
   , m_MaxItems(max_items)
   , m_IsRowGrowable(false)
   , m_Page(page)
   , m_PageCols(-1)
+  , m_SizerFlags(wxSizerFlags().Border().Left())
 {
   if (m_Page.Contains(":"))
   {
@@ -103,151 +102,34 @@ wxExConfigItem::wxExConfigItem(
     m_Page = m_Page.BeforeFirst(':');
   }
   
-  // Default control is expanded when laid out, 
-  // override in switch if not wanted.
-  bool expand = true;
-
   switch (m_Type)
   {
-    case CONFIG_BUTTON:
-    case CONFIG_COLOUR:
-    case CONFIG_COMMAND_LINK_BUTTON:
-    case CONFIG_FLOAT:
-    case CONFIG_FONTPICKERCTRL:
-    case CONFIG_HYPERLINKCTRL:
-    case CONFIG_INT:
-    case CONFIG_SLIDER:
-    case CONFIG_SPINCTRL:
-    case CONFIG_SPINCTRL_HEX:
-    case CONFIG_SPINCTRL_DOUBLE:
-    case CONFIG_TOGGLEBUTTON:
-      expand = false;
-      break;
-
     case CONFIG_CHECKLISTBOX:
     case CONFIG_CHECKLISTBOX_NONAME:
     case CONFIG_LISTVIEW_FOLDER:
     case CONFIG_RADIOBOX:
     case CONFIG_STC:
       m_IsRowGrowable = true;
+      m_SizerFlags.Expand();
       break;
 
     case CONFIG_STATICTEXT:
     case CONFIG_STRING:
       m_IsRowGrowable = (m_Style & wxTE_MULTILINE) > 0;
+      m_SizerFlags.Expand();
       break;
   
     case CONFIG_CHECKBOX:
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
     case CONFIG_DIRPICKERCTRL:
-    case CONFIG_EMPTY:
     case CONFIG_FILEPICKERCTRL:
     case CONFIG_SPACER:
     case CONFIG_STATICLINE:
     case CONFIG_USER:
+      m_SizerFlags.Expand();
       break;
-
-    default: wxFAIL;
   }
-
-  m_SizerFlags = wxSizerFlags().Border().Left();
-  
-  if (expand) 
-  {
-    m_SizerFlags.Expand();
-  }
-}
-
-wxExConfigItem::wxExConfigItem(int size, const wxString& page)
-  : wxExConfigItem(CONFIG_SPACER, size, page)
-{
-}
-
-wxExConfigItem::wxExConfigItem(wxOrientation orientation, const wxString& page)
-  : wxExConfigItem(CONFIG_STATICLINE, orientation, page)
-{
-}
-    
-wxExConfigItem::wxExConfigItem(
-  const wxString& label,
-  wxExConfigType type,
-  const wxString& page,
-  bool is_required,
-  int id,
-  int max_items,
-  bool add_label,
-  int cols)
-  : wxExConfigItem(type, 0, page, label, wxEmptyString, is_required, 
-      type == CONFIG_BUTTON ||
-      type == CONFIG_CHECKBOX ||
-      type == CONFIG_COMMAND_LINK_BUTTON ||
-      type == CONFIG_EMPTY ||
-      type == CONFIG_TOGGLEBUTTON ? false: add_label, id, cols, max_items)
-{
-}
-
-wxExConfigItem::wxExConfigItem(
-  const wxString& label,
-  wxWindow* window,
-  wxExUserWindowCreate create,
-  wxExUserWindowToConfig config,
-  const wxString& page,
-  bool is_required,
-  bool add_label,
-  int cols)
-  : wxExConfigItem(CONFIG_USER, 0, page, label, wxEmptyString, is_required, add_label, wxID_ANY, cols, 25, 1, 0, 0, 0, window, create, config)
-{
-}
-    
-wxExConfigItem::wxExConfigItem(
-  const wxString& label,
-  double min,
-  double max,
-  const wxString& page,
-  wxExConfigType type,
-  long style,
-  double inc,
-  int cols)
-  : wxExConfigItem(type, style, page, label, wxEmptyString, false, true, wxID_ANY, cols, min, max, inc)
-{
-}
-
-wxExConfigItem::wxExConfigItem(
-  const wxString& label,
-  const wxString& value,
-  const wxString& page,
-  long style,
-  wxExConfigType type,
-  bool is_required,
-  bool add_label,
-  int cols)
-  : wxExConfigItem(type, style, page, label, wxEmptyString, is_required, 
-    (type != CONFIG_STATICTEXT && 
-     type != CONFIG_HYPERLINKCTRL ? add_label: false), wxID_ANY, cols)
-{
-}
-
-wxExConfigItem::wxExConfigItem(
-  const wxString& label,
-  const std::map<long, const wxString> & choices,
-  bool use_radiobox,
-  const wxString& page,
-  int majorDimension,
-  long style,
-  int cols)
-  : wxExConfigItem(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX, style, page, label, wxEmptyString, false, false, wxID_ANY, cols, 25, majorDimension)
-{
-  m_Choices = choices;
-}
-
-wxExConfigItem::wxExConfigItem(
-  const std::set<wxString> & choices,
-  const wxString& page,
-  int cols)
-  : wxExConfigItem(CONFIG_CHECKLISTBOX_NONAME, 0, page, "checklistbox_noname", wxEmptyString, false, false, wxID_ANY, cols)
-{
-  m_ChoicesBool = choices;
 }
 
 wxFlexGridSizer* wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
@@ -297,6 +179,10 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
   
   switch (m_Type)
   {
+    case CONFIG_EMPTY:
+    case CONFIG_SPACER:
+      break;
+      
     case CONFIG_BUTTON:
       // Using a label is necessary for wxGTK.
       m_Window = new wxButton(parent, m_Id, "default");
@@ -337,12 +223,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
 
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
-      m_Window = new wxComboBox(
-        parent, 
-        m_Id,
-        wxEmptyString,
-        wxDefaultPosition,
-        wxSize(250, wxDefaultCoord),
+      m_Window = new wxComboBox(parent, m_Id, wxEmptyString,
+        wxDefaultPosition, wxSize(250, wxDefaultCoord),
         0,
         NULL,
         0,
@@ -350,21 +232,14 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_COMMAND_LINK_BUTTON:
-      m_Window = new wxCommandLinkButton(
-        parent, 
-        m_Id, 
-        m_Label.BeforeFirst('\t'), 
-        m_Label.AfterFirst('\t'));
+      m_Window = new wxCommandLinkButton(parent, m_Id, 
+        m_Label.BeforeFirst('\t'), m_Label.AfterFirst('\t'));
       break;
 
     case CONFIG_DIRPICKERCTRL:
       {
-      wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent,
-        m_Id,
-        wxEmptyString,
-        wxDirSelectorPromptStr,
-        wxDefaultPosition,
-        wxSize(width, wxDefaultCoord));
+      wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent, m_Id, wxEmptyString,
+        wxDirSelectorPromptStr, wxDefaultPosition, wxSize(width, wxDefaultCoord));
 
       m_Window = pc;
 
@@ -375,9 +250,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case CONFIG_EMPTY:
-      break;
-      
     case CONFIG_FILEPICKERCTRL:
       {
 #if defined(__WXMSW__) || defined(__OS2__)
@@ -386,13 +258,9 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       const wxString wc(wxFileSelectorDefaultWildcardStr);
 #endif
 
-      wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent,
-        m_Id,
-        wxEmptyString,
-        wxFileSelectorPromptStr,
-        wc,
-        wxDefaultPosition,
-        wxSize(width, wxDefaultCoord));
+      wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent, m_Id, wxEmptyString,
+        wxFileSelectorPromptStr, wc,
+        wxDefaultPosition, wxSize(width, wxDefaultCoord));
 
       m_Window = pc;
 
@@ -407,21 +275,15 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       // See also CONFIG_INT, validator cannot be set using ?.
       if (m_Validator == NULL)
       {
-        m_Window = new wxTextCtrl(parent,
-          m_Id,
-          wxEmptyString,
-          wxDefaultPosition,
-          wxSize(width_numeric, wxDefaultCoord),
+        m_Window = new wxTextCtrl(parent, m_Id, wxEmptyString,
+          wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
           m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
           wxFloatingPointValidator<float>());
       }
       else
       {
-        m_Window = new wxTextCtrl(parent,
-          m_Id,
-          wxEmptyString,
-          wxDefaultPosition,
-          wxSize(width_numeric, wxDefaultCoord),
+        m_Window = new wxTextCtrl(parent, m_Id, wxEmptyString,
+          wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
           m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
           *m_Validator);
       }
@@ -429,11 +291,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       
     case CONFIG_FONTPICKERCTRL:
       {
-      wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent,
-        m_Id,
-        wxNullFont,
-        wxDefaultPosition,
-        wxDefaultSize,
+      wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent, m_Id, wxNullFont,
+        wxDefaultPosition, wxDefaultSize,
         wxFNTP_FONTDESC_AS_LABEL); // no wxFNTP_USEFONT_FOR_LABEL
 
       m_Window = pc;
@@ -448,12 +307,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
     case CONFIG_HYPERLINKCTRL:
       {
 #if wxUSE_HYPERLINKCTRL
-      m_Window = new wxHyperlinkCtrl(parent,
-        m_Id,
-        m_Label,
-        m_Default,
-        wxDefaultPosition,
-        wxSize(width, wxDefaultCoord));
+      m_Window = new wxHyperlinkCtrl(parent, m_Id, m_Label,
+        m_Default, wxDefaultPosition, wxSize(width, wxDefaultCoord));
 #endif      
       }
       break;
@@ -461,33 +316,24 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
     case CONFIG_INT:
       if (m_Validator == NULL)
       {
-        m_Window = new wxTextCtrl(parent,
-          m_Id,
-          wxEmptyString,
-          wxDefaultPosition,
-          wxSize(width_numeric, wxDefaultCoord),
+        m_Window = new wxTextCtrl(parent, m_Id, wxEmptyString,
+          wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
           m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
           wxTextValidator(wxFILTER_NUMERIC));
       }
       else
       {
-        m_Window = new wxTextCtrl(parent,
-          m_Id,
-          wxEmptyString,
-          wxDefaultPosition,
-          wxSize(width_numeric, wxDefaultCoord),
+        m_Window = new wxTextCtrl(parent, m_Id, wxEmptyString,
+          wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
           m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
           *m_Validator);
       }
       break;
 
     case CONFIG_LISTVIEW_FOLDER:
-      m_Window = new wxExListViewFileName(parent,
-        wxExListViewFileName::LIST_FOLDER,
-        m_Id,
+      m_Window = new wxExListViewFileName(parent, wxExListViewFileName::LIST_FOLDER, m_Id,
         NULL,
-        wxDefaultPosition,
-        wxSize(width, 200));
+        wxDefaultPosition, wxSize(width, 200));
       break;
 
     case CONFIG_RADIOBOX:
@@ -499,78 +345,43 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         arraychoices.Add(it.second);
       } 
 
-      m_Window = new wxRadioBox(parent,
-        m_Id, 
-        m_Label, 
-        wxDefaultPosition, 
-        wxDefaultSize, 
-        arraychoices, 
-        m_MajorDimension,
-        m_Style);
+      m_Window = new wxRadioBox(parent, m_Id, m_Label, 
+        wxDefaultPosition, wxDefaultSize, arraychoices, m_MajorDimension, m_Style);
       }
       break;
 
     case CONFIG_SLIDER:
-      m_Window = new wxSlider(parent,
-        m_Id,
-        0,
-        m_Min,
-        m_Max,
-        wxDefaultPosition,
-        wxSize(width_numeric, wxDefaultCoord),
-        m_Style);
+      m_Window = new wxSlider(parent, m_Id, 0,
+        m_Min, m_Max,
+        wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord), m_Style);
       break;
 
-    case CONFIG_SPACER:
-      break;
-      
     case CONFIG_SPINCTRL:
     case CONFIG_SPINCTRL_HEX:
-      {
-      wxSpinCtrl* sp = new wxSpinCtrl(parent,
-        m_Id,
-        wxEmptyString,
-        wxDefaultPosition,
-        wxSize(width_numeric_spin, wxDefaultCoord),
+      m_Window = new wxSpinCtrl(parent, m_Id, wxEmptyString,
+        wxDefaultPosition, wxSize(width_numeric_spin, wxDefaultCoord),
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
-        m_Min,
-        m_Max);
-        
-      m_Window = sp;
-      
+        m_Min, m_Max, m_Min);
       if (m_Type == CONFIG_SPINCTRL_HEX)
       {
-        sp->SetBase(16);
-      }
+        ((wxSpinCtrl* )m_Window)->SetBase(16);
       }
       break;
 
     case CONFIG_SPINCTRL_DOUBLE:
-      m_Window = new wxSpinCtrlDouble(parent,
-        m_Id,
-        wxEmptyString,
-        wxDefaultPosition,
-        wxSize(width_numeric_spin, wxDefaultCoord),
+      m_Window = new wxSpinCtrlDouble(parent, m_Id, wxEmptyString,
+        wxDefaultPosition, wxSize(width_numeric_spin, wxDefaultCoord),
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
-        m_Min,
-        m_Max,
-        m_Min,
-        m_Inc);
+        m_Min, m_Max, m_Min, m_Inc);
       break;
 
     case CONFIG_STATICLINE:
-      m_Window = new wxStaticLine(
-        parent,
-        wxID_ANY,
-        wxDefaultPosition,
-        wxDefaultSize,
-        m_Style);
+      m_Window = new wxStaticLine(parent, m_Id,
+        wxDefaultPosition, wxDefaultSize, m_Style);
       break;
 
     case CONFIG_STATICTEXT:
-      m_Window = new wxStaticText(parent,
-        m_Id,
-        wxEmptyString,
+      m_Window = new wxStaticText(parent, m_Id, wxEmptyString,
         wxDefaultPosition,
         (m_Style & wxTE_MULTILINE ?
            wxSize(width, 200):
@@ -580,12 +391,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_STC:
-      m_Window = new wxExSTC(parent,
-        wxEmptyString,
-        0,
-        wxEmptyString,
-        wxExSTC::STC_MENU_DEFAULT,
-        m_Id);
+      m_Window = new wxExSTC(parent, wxEmptyString, 0,
+        wxEmptyString, wxExSTC::STC_MENU_DEFAULT, m_Id);
       
       // Do not use vi mode, as ESC should cancel the dialog,
       // and would not be interpreted by vi.
@@ -598,9 +405,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_STRING:
-      m_Window = new wxTextCtrl(parent,
-        m_Id,
-        wxEmptyString,
+      m_Window = new wxTextCtrl(parent, m_Id, wxEmptyString,
         wxDefaultPosition,
         (m_Style & wxTE_MULTILINE ?
            wxSize(width, 200):
@@ -631,31 +436,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
   }
 }
 
-bool wxExConfigItem::Get(
-  const wxString& field, 
-  wxCheckListBox* clb, 
-  int item) const
-{
-  if (field == wxExFindReplaceData::Get()->GetTextMatchWholeWord())
-  {
-    clb->Check(item, wxExFindReplaceData::Get()->MatchWord());
-  }
-  else if (field == wxExFindReplaceData::Get()->GetTextMatchCase())
-  {
-    clb->Check(item, wxExFindReplaceData::Get()->MatchCase());
-  }
-  else if (field == wxExFindReplaceData::Get()->GetTextRegEx())
-  {
-    clb->Check(item, wxExFindReplaceData::Get()->UseRegEx());
-  }
-  else
-  {
-    return false;
-  }
-
-  return true;
-}
-
 wxFlexGridSizer* wxExConfigItem::Layout(
   wxWindow* parent, 
   wxSizer* sizer, 
@@ -668,16 +448,9 @@ wxFlexGridSizer* wxExConfigItem::Layout(
 
   switch (m_Type)
   {
-    case CONFIG_COMBOBOXDIR:
-      use = AddBrowseButton(sizer);
-      break;
-      
-    case CONFIG_EMPTY:
-      break;
-      
-    case CONFIG_SPACER:
-      sizer->AddSpacer(m_Style);
-      break;
+    case CONFIG_COMBOBOXDIR: use = AddBrowseButton(sizer); break;
+    case CONFIG_EMPTY: break;
+    case CONFIG_SPACER: sizer->AddSpacer(m_Style); break;
 
     default:
     if (m_AddLabel)
@@ -728,16 +501,15 @@ bool wxExConfigItem::ToConfig(bool save) const
 {
   switch (m_Type)
   {
-    case CONFIG_CHECKBOX:
-      {
-      wxCheckBox* cb = (wxCheckBox*)m_Window;
-      if (save)
-        wxConfigBase::Get()->Write(m_Label, cb->IsChecked());
-      else
-        cb->SetValue(wxConfigBase::Get()->ReadBool(m_Label, false));
-      }
-      break;
-
+    case CONFIG_CHECKBOX:        PERSISTENT(wxCheckBox, IsChecked, ReadBool, false); break;
+    case CONFIG_SLIDER:          PERSISTENT(wxSlider, GetValue, ReadLong, m_Min); break;
+    case CONFIG_SPINCTRL:
+    case CONFIG_SPINCTRL_HEX:    PERSISTENT(wxSpinCtrl, GetValue, ReadLong, m_Min); break;
+    case CONFIG_SPINCTRL_DOUBLE: PERSISTENT(wxSpinCtrlDouble, GetValue, ReadDouble, m_Min); break;
+    case CONFIG_STC:             PERSISTENT(wxExSTC, GetValue, Read, ""); break;
+    case CONFIG_STRING:          PERSISTENT(wxTextCtrl, GetValue, Read, ""); break;
+    case CONFIG_TOGGLEBUTTON:    PERSISTENT(wxToggleButton, GetValue, ReadBool, false); break;
+      
     case CONFIG_CHECKLISTBOX:
       {
       wxCheckListBox* clb = (wxCheckListBox*)m_Window;
@@ -775,24 +547,14 @@ bool wxExConfigItem::ToConfig(bool save) const
 
       for (size_t i = 0; i < clb->GetCount(); i++)
       {
-        if (save)
+        if (!Update(wxExFindReplaceData::Get(), clb, i, save, clb->IsChecked(i)))
         {
-          if (!Set(wxExFindReplaceData::Get(),
-            clb->GetString(i),
-            clb->IsChecked(i)))
-          {
+          if (save)
             wxConfigBase::Get()->Write(clb->GetString(i), clb->IsChecked(i));
-          }
-        }
-        else
-        {
-          if (!Get(clb->GetString(i), clb, i))
-          {
+          else
             clb->Check(i, wxConfigBase::Get()->ReadBool(clb->GetString(i), false));
-          }
         }
-      }
-      }
+      }}
       break;
 
     case CONFIG_COLOUR:
@@ -900,7 +662,6 @@ bool wxExConfigItem::ToConfig(bool save) const
     case CONFIG_INT:
       {
       wxTextCtrl* tc = (wxTextCtrl*)m_Window;
-      
       if (save)
         wxConfigBase::Get()->Write(m_Label, atol(tc->GetValue().c_str()));
       else
@@ -912,7 +673,6 @@ bool wxExConfigItem::ToConfig(bool save) const
     case CONFIG_LISTVIEW_FOLDER:
       {
       wxExListViewFileName* win = (wxExListViewFileName*)m_Window;
-      
       if (save)
         wxConfigBase::Get()->Write(m_Label, win->ItemToText(-1));
       else
@@ -926,7 +686,6 @@ bool wxExConfigItem::ToConfig(bool save) const
     case CONFIG_RADIOBOX:
       {
       wxRadioBox* rb = (wxRadioBox*)m_Window;
-
       if (save)
       {
         for (const auto& b : m_Choices)
@@ -950,67 +709,6 @@ bool wxExConfigItem::ToConfig(bool save) const
       }
       break;
 
-    case CONFIG_SLIDER:
-      {
-      wxSlider* sl = (wxSlider*)m_Window;
-      if (save)
-        wxConfigBase::Get()->Write(m_Label, sl->GetValue());
-      else
-        sl->SetValue(wxConfigBase::Get()->ReadLong(m_Label, m_Min));
-      }
-      break;
-
-    case CONFIG_SPINCTRL:
-    case CONFIG_SPINCTRL_HEX:
-      {
-      wxSpinCtrl* sc = (wxSpinCtrl*)m_Window;
-      if (save)
-        wxConfigBase::Get()->Write(m_Label, sc->GetValue());
-      else
-        sc->SetValue(wxConfigBase::Get()->ReadLong(m_Label, m_Min));
-      }
-      break;
-
-    case CONFIG_SPINCTRL_DOUBLE:
-      {
-      wxSpinCtrlDouble* sc = (wxSpinCtrlDouble*)m_Window;
-      if (save)
-        wxConfigBase::Get()->Write(m_Label, sc->GetValue());
-      else
-        sc->SetValue(wxConfigBase::Get()->ReadDouble(m_Label, m_Min));
-      }
-      break;
-
-    case CONFIG_STC:
-      {
-      wxExSTC* tc = (wxExSTC*)m_Window;
-      if (save)
-        wxConfigBase::Get()->Write(m_Label, tc->GetValue());
-      else
-        tc->SetValue(wxConfigBase::Get()->Read(m_Label));
-      }
-      break;
-
-    case CONFIG_STRING:
-      {
-      wxTextCtrl* tc = (wxTextCtrl*)m_Window;
-      if (save)
-        wxConfigBase::Get()->Write(m_Label, tc->GetValue());
-      else
-        tc->SetValue(wxConfigBase::Get()->Read(m_Label));
-      }
-      break;
-
-    case CONFIG_TOGGLEBUTTON:
-      {
-      wxToggleButton* ctrl = (wxToggleButton*)m_Window;
-      if (save)
-        wxConfigBase::Get()->Write(m_Label, ctrl->GetValue());
-      else
-        ctrl->SetValue(wxConfigBase::Get()->ReadBool(m_Label, false));
-      }
-      break;
-      
     case CONFIG_USER:
       if (m_UserWindowToConfig != NULL)
       {
