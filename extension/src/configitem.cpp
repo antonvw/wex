@@ -31,13 +31,13 @@
 
 #if wxUSE_GUI
 
-#define PERSISTENT(CONTROL, VALUE, READ, DEFAULT)                   \
+#define PERSISTENT(CONTROL, SETVALUE, GETVALUE, READ, DEFAULT)      \
 {                                                                   \
   CONTROL* ctrl = (CONTROL*)m_Window;                               \
   if (save)                                                         \
-    wxConfigBase::Get()->Write(m_Label, ctrl->VALUE());             \
+    wxConfigBase::Get()->Write(m_Label, ctrl->GETVALUE());          \
   else                                                              \
-    ctrl->SetValue(wxConfigBase::Get()->READ(m_Label, DEFAULT));    \
+    ctrl->SETVALUE(wxConfigBase::Get()->READ(m_Label, DEFAULT));    \
 }                                                                   \
 
 bool Update(wxExFindReplaceData* frd, wxCheckListBox* clb, int item, bool save, bool value)
@@ -501,15 +501,18 @@ bool wxExConfigItem::ToConfig(bool save) const
 {
   switch (m_Type)
   {
-    case CONFIG_CHECKBOX:        PERSISTENT(wxCheckBox, IsChecked, ReadBool, false); break;
-    case CONFIG_SLIDER:          PERSISTENT(wxSlider, GetValue, ReadLong, m_Min); break;
+    case CONFIG_CHECKBOX:        PERSISTENT(wxCheckBox, SetValue, IsChecked, ReadBool, false); break;
+    case CONFIG_COLOUR:          PERSISTENT(wxColourPickerWidget, SetColour, GetColour, ReadObject, *wxWHITE); break;
+    case CONFIG_DIRPICKERCTRL:   PERSISTENT(wxDirPickerCtrl, SetPath, GetPath, Read, m_Label); break;
+    case CONFIG_FONTPICKERCTRL:  PERSISTENT(wxFontPickerCtrl, SetSelectedFont, GetSelectedFont, ReadObject, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
+    case CONFIG_SLIDER:          PERSISTENT(wxSlider, SetValue, GetValue, ReadLong, m_Min); break;
     case CONFIG_SPINCTRL:
-    case CONFIG_SPINCTRL_HEX:    PERSISTENT(wxSpinCtrl, GetValue, ReadLong, m_Min); break;
-    case CONFIG_SPINCTRL_DOUBLE: PERSISTENT(wxSpinCtrlDouble, GetValue, ReadDouble, m_Min); break;
-    case CONFIG_STC:             PERSISTENT(wxExSTC, GetValue, Read, ""); break;
-    case CONFIG_STRING:          PERSISTENT(wxTextCtrl, GetValue, Read, ""); break;
-    case CONFIG_TOGGLEBUTTON:    PERSISTENT(wxToggleButton, GetValue, ReadBool, false); break;
-      
+    case CONFIG_SPINCTRL_HEX:    PERSISTENT(wxSpinCtrl, SetValue, GetValue, ReadLong, m_Min); break;
+    case CONFIG_SPINCTRL_DOUBLE: PERSISTENT(wxSpinCtrlDouble, SetValue, GetValue, ReadDouble, m_Min); break;
+    case CONFIG_STC:             PERSISTENT(wxExSTC, SetValue, GetValue, Read, ""); break;
+    case CONFIG_STRING:          PERSISTENT(wxTextCtrl,SetValue,  GetValue, Read, ""); break;
+    case CONFIG_TOGGLEBUTTON:    PERSISTENT(wxToggleButton, SetValue, GetValue, ReadBool, false); break;
+
     case CONFIG_CHECKLISTBOX:
       {
       wxCheckListBox* clb = (wxCheckListBox*)m_Window;
@@ -557,16 +560,6 @@ bool wxExConfigItem::ToConfig(bool save) const
       }}
       break;
 
-    case CONFIG_COLOUR:
-      {
-      wxColourPickerWidget* gcb = (wxColourPickerWidget*)m_Window;
-      if (save)
-        wxConfigBase::Get()->Write(m_Label, gcb->GetColour());
-      else
-        gcb->SetColour(wxConfigBase::Get()->ReadObject(m_Label, *wxWHITE));
-      }
-      break;
-
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
       {
@@ -593,16 +586,6 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
         wxExComboBoxFromList(cb, wxExListFromConfig(m_Label));
       }
-      }
-      break;
-
-    case CONFIG_DIRPICKERCTRL:
-      {
-      wxDirPickerCtrl* pc = (wxDirPickerCtrl*)m_Window;
-      if (save)
-        wxConfigBase::Get()->Write(m_Label, pc->GetPath());
-      else
-        pc->SetPath(wxConfigBase::Get()->Read(m_Label));
       }
       break;
 
@@ -647,18 +630,6 @@ bool wxExConfigItem::ToConfig(bool save) const
       }
       break;
       
-    case CONFIG_FONTPICKERCTRL:
-      {
-      wxFontPickerCtrl* pc = (wxFontPickerCtrl*)m_Window;
-      if (save)
-        wxConfigBase::Get()->Write(m_Label, pc->GetSelectedFont());
-      else
-        pc->SetSelectedFont(
-          wxConfigBase::Get()->ReadObject(m_Label, 
-          wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
-      }
-      break;
-
     case CONFIG_INT:
       {
       wxTextCtrl* tc = (wxTextCtrl*)m_Window;

@@ -76,8 +76,8 @@ void fixture::testConfigDialog()
   // Test config dialog without pages.
   wxExConfigDialog* dlg2 = new wxExConfigDialog(m_Frame, 
     std::vector <wxExConfigItem> {
-      wxExConfigItem("string1"),
-      wxExConfigItem("string2")},
+      wxExConfigItem("string1", ""),
+      wxExConfigItem("string2", "")},
     "no pages");
   dlg2->Show();
   

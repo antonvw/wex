@@ -19,19 +19,14 @@ void fixture::testConfigItem()
   // Use specific constructors.
   const wxExConfigItem ci_empty;
   const wxExConfigItem ci_spacer(5);
-  const wxExConfigItem ci_sl("ci-sl", 1, 5, 
-    wxEmptyString, CONFIG_SLIDER);
+  const wxExConfigItem ci_sl("ci-sl", 1, 5, wxEmptyString, CONFIG_SLIDER);
   const wxExConfigItem ci_vl(wxLI_HORIZONTAL);
   const wxExConfigItem ci_sp("ci-sp", 1, 5);
-  const wxExConfigItem ci_sp_d("ci-sp-d", 1.0, 5.0,
-    wxEmptyString, CONFIG_SPINCTRL_DOUBLE);
-  const wxExConfigItem ci_sp_h("ci-sp-h", 1.0, 5.0,
-    wxEmptyString, CONFIG_SPINCTRL_HEX);
-  wxExConfigItem ci_str("ci-string");
-  const wxExConfigItem ci_hl("ci-hyper",
-    "www.wxwidgets.org", wxEmptyString, 0, CONFIG_HYPERLINKCTRL);
-  wxExConfigItem ci_st("ci-static",
-    "HELLO", wxEmptyString, 0, CONFIG_STATICTEXT);
+  const wxExConfigItem ci_sp_d("ci-sp-d", 1.0, 5.0, wxEmptyString, CONFIG_SPINCTRL_DOUBLE);
+  const wxExConfigItem ci_sp_h("ci-sp-h", 1.0, 5.0, wxEmptyString, CONFIG_SPINCTRL_HEX);
+  wxExConfigItem ci_str("ci-string", wxEmptyString);
+  const wxExConfigItem ci_hl("ci-hyper", "www.wxwidgets.org", wxEmptyString, 0, CONFIG_HYPERLINKCTRL);
+  wxExConfigItem ci_st("ci-static", "HELLO", wxEmptyString, 0, CONFIG_STATICTEXT);
   const wxExConfigItem ci_int("ci-int", CONFIG_INT);
   const wxExConfigItem ci_rb("ci-rb", 
     std::map<long, const wxString> {
