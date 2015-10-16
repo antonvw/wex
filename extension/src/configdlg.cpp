@@ -18,6 +18,7 @@
 #include <wx/filepicker.h>
 #include <wx/persist/treebook.h>
 #include <wx/simplebook.h>
+#include <wx/tglbtn.h> // for wxEVT_TOGGLEBUTTON
 #include <wx/toolbook.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
@@ -55,13 +56,13 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   Bind(wxEVT_UPDATE_UI, &wxExConfigDialog::OnUpdateUI, this, wxID_OK);
 }
 
-void wxExConfigDialog::Click(int id) const
+void wxExConfigDialog::Click(const wxCommandEvent& event) const
 {
   wxExFrame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExFrame);
   
   if (frame != NULL)
   {
-    frame->OnCommandConfigDialog(GetId(), id);
+    frame->OnCommandConfigDialog(GetId(), event);
   }
 }
 
@@ -191,8 +192,8 @@ void wxExConfigDialog::Layout(
     {
       case CONFIG_BUTTON:
       case CONFIG_COMMAND_LINK_BUTTON:
-        Bind(wxEVT_COMMAND_BUTTON_CLICKED,  [=](wxCommandEvent& event) {
-          Click(event.GetId());}, it.GetWindow()->GetId());
+        Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent& event) {
+          Click(event);}, it.GetWindow()->GetId());
         break;
       
       case CONFIG_COMBOBOXDIR:
@@ -209,6 +210,11 @@ void wxExConfigDialog::Layout(
             const int item = browse->FindString(value);
             browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
           }}, it.GetWindow()->GetId());
+        break;
+      
+      case CONFIG_TOGGLEBUTTON:
+        Bind(wxEVT_TOGGLEBUTTON, [=](wxCommandEvent& event) {
+          Click(event);}, it.GetWindow()->GetId());
         break;
     }
   }
@@ -252,7 +258,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
       ((command.GetId() == wxID_OK ||
         command.GetId() == wxID_CANCEL) && !IsModal()))
   {
-    Click(command.GetId());
+    Click(command);
   }
 
   command.Skip();

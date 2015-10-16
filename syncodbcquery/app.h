@@ -43,7 +43,7 @@ public:
 private:
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
-    int commandid);
+    const wxCommandEvent& event) override;
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,

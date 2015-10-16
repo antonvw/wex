@@ -519,11 +519,11 @@ void Frame::LogConnection(
 
 void Frame::OnCommandConfigDialog(
   wxWindowID dialogid,
-  int commandid)
+  const wxCommandEvent& event)
 {
   if (dialogid == wxID_PREFERENCES)
   {
-    if (commandid != wxID_CANCEL)
+    if (event.GetId() != wxID_CANCEL)
     {
       m_DataWindow->ConfigGet();
       m_LogWindow->ConfigGet();
@@ -532,7 +532,7 @@ void Frame::OnCommandConfigDialog(
   }
   else
   {
-    wxExFrameWithHistory::OnCommandConfigDialog(dialogid, commandid);
+    wxExFrameWithHistory::OnCommandConfigDialog(dialogid, event);
   }
 }
 

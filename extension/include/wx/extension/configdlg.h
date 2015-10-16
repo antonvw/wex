@@ -84,7 +84,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  void Click(int id) const;
+  void Click(const wxCommandEvent& event) const;
   void Layout(int rows, int cols, int notebook_style, wxImageList* imageList);
 
   std::vector<wxExConfigItem> m_ConfigItems;

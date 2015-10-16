@@ -364,7 +364,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     case ID_CONFIG_DLG_1_COL:
       {
       std::vector<wxExConfigItem> v;
-  
+
       for (int sl = 1; sl <= 3; sl++)
       {
         v.push_back(wxExConfigItem(
@@ -374,36 +374,35 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
           wxEmptyString,
           CONFIG_SLIDER,
           wxSL_HORIZONTAL,
-          1,
           1));
       }
-      
+
       v.push_back(wxExConfigItem("Group Checkbox1", CONFIG_CHECKBOX));
       v.push_back(wxExConfigItem(
         "STC cpp", 
         "cpp",
-        "initial value",
+        wxEmptyString,
         0,
         CONFIG_STC));
-    
+
       v.push_back(wxExConfigItem(
         "STC pascal", 
         "pascal",
         wxEmptyString,
         0,
         CONFIG_STC));
-    
+
       wxExConfigItem item(
         "STC lisp", 
         "lisp",
         wxEmptyString,
         0,
         CONFIG_STC);
-        
+
       item.SetRowGrowable(false);
-      
+
       v.push_back(item);
-    
+
       wxExConfigDialog* dlg = new wxExConfigDialog(
         this,
         v,
@@ -561,23 +560,23 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 
 void wxExSampleFrame::OnCommandConfigDialog(
   wxWindowID dialogid,
-  int commandid)
+  const wxCommandEvent& event)
 {
   if (dialogid == wxID_PREFERENCES)
   {
-    if (commandid != wxID_CANCEL)
+    if (event.GetId() != wxID_CANCEL)
     {
       m_STC->ConfigGet();
       m_STCLexers->ConfigGet();
     }
   }
-  else if (commandid > 1000 && commandid < 1020)
+  else if (event.GetId() > 1000 && event.GetId() < 1050)
   {
-    wxLogMessage(wxString::Format("hello%d", commandid));
+    wxLogMessage(wxString::Format("hello button: %d checked: %d", event.GetId(), event.IsChecked()));
   }
   else
   {
-    wxExManagedFrame::OnCommandConfigDialog(dialogid, commandid);
+    wxExManagedFrame::OnCommandConfigDialog(dialogid, event);
   }
 }
 
@@ -629,23 +628,19 @@ void wxExSampleFrame::ShowConfigItems()
     "Checkboxes"));
 
   // CONFIG_CHECKLISTBOX
-  const std::map<long, const wxString> clb{
-    std::make_pair(0, "Bit One"),
-    std::make_pair(1, "Bit Two"),
-    std::make_pair(2, "Bit Three"),
-    std::make_pair(4, "Bit Four")};
-    
   v.push_back(wxExConfigItem(
     "Bin Choices", 
-    clb, 
+    std::map<long, const wxString> {
+      std::make_pair(0, "Bit One"),
+      std::make_pair(1, "Bit Two"),
+      std::make_pair(2, "Bit Three"),
+      std::make_pair(4, "Bit Four")},
     false, 
     "Checkbox lists"));
 
   // CONFIG_CHECKLISTBOX_NONAME
-  std::set<wxString> bchoices{"This","Or","Other"};
-  
   v.push_back(wxExConfigItem(
-    bchoices, 
+    std::set<wxString>{"This","Or","Other"},
     "Checkbox lists"));
 
   // CONFIG_COLOUR
@@ -763,14 +758,12 @@ void wxExSampleFrame::ShowConfigItems()
     "ListView"));
 
   // CONFIG_RADIOBOX
-  const std::map<long, const wxString> echoices{
-    std::make_pair(0, "Zero"),
-    std::make_pair(1, "One"),
-    std::make_pair(2, "Two")};
-    
   v.push_back(wxExConfigItem(
     "Radio Box", 
-    echoices, 
+    std::map<long, const wxString> {
+      std::make_pair(0, "Zero"),
+      std::make_pair(1, "One"),
+      std::make_pair(2, "Two")},
     true, 
     "Radioboxes"));
 
@@ -875,7 +868,9 @@ void wxExSampleFrame::ShowConfigItems()
     v.push_back(wxExConfigItem(
       wxString::Format("Toggle Button%d", tb),
       CONFIG_TOGGLEBUTTON,
-      "Toggle buttons"));
+      "Toggle buttons",
+      false,
+      1020 + tb));
   }
 
   /// CONFIG_USER
