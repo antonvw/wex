@@ -185,12 +185,14 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       
     case CONFIG_BUTTON:
       // Using a label is necessary for wxGTK.
-      m_Window = new wxButton(parent, m_Id, "default");
+      m_Window = new wxButton(parent, m_Id, "default", 
+        wxDefaultPosition, wxDefaultSize, m_Style);
       ((wxButton *)m_Window)->SetLabelMarkup(m_Label);
       break;
 
     case CONFIG_CHECKBOX:
-      m_Window = new wxCheckBox(parent, m_Id, m_Label);
+      m_Window = new wxCheckBox(parent, m_Id, m_Label, 
+        wxDefaultPosition, wxDefaultSize, m_Style);
       break;
 
     case CONFIG_CHECKLISTBOX:
@@ -203,7 +205,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       }
 
       m_Window = new wxCheckListBox(parent,
-        m_Id, wxDefaultPosition, wxDefaultSize, arraychoices);
+        m_Id, wxDefaultPosition, wxDefaultSize, arraychoices, m_Style);
       }
       break;
 
@@ -213,12 +215,13 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       arraychoices.resize(m_ChoicesBool.size()); // required!
       copy (m_ChoicesBool.begin(), m_ChoicesBool.end(), arraychoices.begin());
       m_Window = new wxCheckListBox(parent,
-        m_Id, wxDefaultPosition, wxDefaultSize, arraychoices);
+        m_Id, wxDefaultPosition, wxDefaultSize, arraychoices, m_Style);
       }
       break;
 
     case CONFIG_COLOUR:
-      m_Window = new wxColourPickerWidget(parent, m_Id);
+      m_Window = new wxColourPickerWidget(parent, m_Id, 
+        *wxBLACK, wxDefaultPosition, wxDefaultSize, m_Style);
       break;
 
     case CONFIG_COMBOBOX:
@@ -233,13 +236,14 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
 
     case CONFIG_COMMAND_LINK_BUTTON:
       m_Window = new wxCommandLinkButton(parent, m_Id, 
-        m_Label.BeforeFirst('\t'), m_Label.AfterFirst('\t'));
+        m_Label.BeforeFirst('\t'), m_Label.AfterFirst('\t'),
+        wxDefaultPosition, wxDefaultSize, m_Style);
       break;
 
     case CONFIG_DIRPICKERCTRL:
       {
       wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent, m_Id, wxEmptyString,
-        wxDirSelectorPromptStr, wxDefaultPosition, wxSize(width, wxDefaultCoord));
+        wxDirSelectorPromptStr, wxDefaultPosition, wxSize(width, wxDefaultCoord), m_Style);
 
       m_Window = pc;
 
@@ -260,7 +264,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
 
       wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent, m_Id, wxEmptyString,
         wxFileSelectorPromptStr, wc,
-        wxDefaultPosition, wxSize(width, wxDefaultCoord));
+        wxDefaultPosition, wxSize(width, wxDefaultCoord), m_Style);
 
       m_Window = pc;
 
@@ -308,7 +312,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       {
 #if wxUSE_HYPERLINKCTRL
       m_Window = new wxHyperlinkCtrl(parent, m_Id, m_Label,
-        m_Info, wxDefaultPosition, wxSize(width, wxDefaultCoord));
+        m_Info, wxDefaultPosition, wxSize(width, wxDefaultCoord), wxHL_DEFAULT_STYLE); // no m_Style
 #endif      
       }
       break;
@@ -416,7 +420,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_TOGGLEBUTTON:
-      m_Window = new wxToggleButton(parent, m_Id, m_Label);
+      m_Window = new wxToggleButton(parent, m_Id, m_Label,
+        wxDefaultPosition, wxDefaultSize, m_Style);
       break;
 
     case CONFIG_USER:
