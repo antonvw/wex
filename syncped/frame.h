@@ -49,7 +49,7 @@ private:
   virtual wxExListViewFile* GetProject() override;
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
-    int commandid = wxID_APPLY) override;
+    const wxCommandEvent& event) override;
   virtual bool OpenFile(
     const wxExFileName& filename,
     const wxExVCSEntry& vcs,
