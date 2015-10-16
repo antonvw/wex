@@ -43,7 +43,7 @@ DecoratedFrame::DecoratedFrame()
     wxExStatusBarPane("PaneFileType", 50, _("File type")),
     wxExStatusBarPane("PaneInfo", 100, _("Lines or items"))};
 
-  if (wxExLexers::Get()->GetCount() > 0)
+  if (wxExLexers::Get()->GetCount() > 0 && wxExLexers::Get()->GetThemes() > 1)
   {
 #ifdef __WXMSW__
     const int lexer_size = 60;
@@ -51,11 +51,8 @@ DecoratedFrame::DecoratedFrame()
     const int lexer_size = 75;
 #endif
 
-    if (wxExLexers::Get()->GetThemes() > 1)
-    {
-      panes.push_back(wxExStatusBarPane("PaneLexer", lexer_size, _("Lexer")));
-      panes.push_back(wxExStatusBarPane("PaneTheme", lexer_size, _("Theme")));
-    }
+    panes.push_back(wxExStatusBarPane("PaneLexer", lexer_size, _("Lexer")));
+    panes.push_back(wxExStatusBarPane("PaneTheme", lexer_size, _("Theme")));
   }
 
   if (wxExVCS::GetCount() > 0)
