@@ -55,7 +55,7 @@ public:
     return m_STC;};
   virtual void OnCommandConfigDialog(
     wxWindowID id, 
-    int commandid = wxID_APPLY) override;
+    const wxCommandEvent& event) override;
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);

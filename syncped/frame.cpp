@@ -1094,11 +1094,11 @@ void Frame::OnCommand(wxCommandEvent& event)
 
 void Frame::OnCommandConfigDialog(
   wxWindowID dialogid,
-  int commandid)
+  const wxCommandEvent& event)
 {
   if (dialogid == wxID_PREFERENCES)
   {
-    if (commandid != wxID_CANCEL)
+    if (event.GetId() != wxID_CANCEL)
     {
       m_Editors->ForEach(ID_ALL_STC_CONFIG_GET);
       
@@ -1114,7 +1114,7 @@ void Frame::OnCommandConfigDialog(
   }
   else
   {
-    DecoratedFrame::OnCommandConfigDialog(dialogid, commandid);
+    DecoratedFrame::OnCommandConfigDialog(dialogid, event);
   }
 }
 

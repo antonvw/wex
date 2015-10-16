@@ -93,7 +93,7 @@ public:
   /// Override OnCommandConfigDialog for add, find and replace in files.
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
-    int commandid = wxID_APPLY) override;
+    const wxCommandEvent& event) override;
     
   /// Updates file history.
   virtual void SetRecentFile(const wxString& file) override;

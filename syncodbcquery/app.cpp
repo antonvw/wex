@@ -160,26 +160,7 @@ Frame::Frame()
       event.Skip();
     }});
     
-  EVT_MENU(wxID_ABOUT, Frame::OnCommand)
-  EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
-  EVT_MENU(wxID_EXIT, Frame::OnCommand)
-  EVT_MENU(wxID_NEW, Frame::OnCommand)
-  EVT_MENU(wxID_OPEN, Frame::OnCommand)
-  EVT_MENU(wxID_SAVE, Frame::OnCommand)
-  EVT_MENU(wxID_SAVEAS, Frame::OnCommand)
-  EVT_MENU(wxID_STOP, Frame::OnCommand)
-  EVT_MENU(ID_SHELL_COMMAND, Frame::OnCommand)
-  EVT_MENU(ID_SHELL_COMMAND_STOP, Frame::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, Frame::OnCommand)
-  EVT_MENU_RANGE(ID_FIRST, ID_LAST, Frame::OnCommand)
-
-  void OnCommand(wxCommandEvent& event);
-void Frame::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  case wxID_ABOUT:
-    {
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general ODBC query."));
@@ -187,78 +168,63 @@ void Frame::OnCommand(wxCommandEvent& event)
     info.SetCopyright(wxExGetVersionInfo().GetCopyright());
     info.AddDeveloper(wxExOTL::VersionInfo().GetVersionString());
     wxAboutBox(info);
-    }
-    break;
+    }, wxID_ABOUT);
 
-  case wxID_EXECUTE:
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Stopped = false;
-    RunQueries(m_Query->GetText());
-    break;
+    RunQueries(m_Query->GetText());}, wxID_EXECUTE);
 
-  case wxID_EXIT:
-    Close(true);
-    break;
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    Close(true);}, wxID_EXIT);
 
-  case wxID_NEW:
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Query->GetFile().FileNew(wxExFileName());
-    
     if (wxExLexers::Get()->GetCount() > 0)
     {
       m_Query->SetLexer("sql");
     }
-    
     m_Query->SetFocus();
-    ShowPane("QUERY");
-    break;
+    ShowPane("QUERY");}, wxID_NEW);
 
-  case wxID_OPEN:
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExOpenFilesDialog(
       this, 
       wxFD_OPEN | wxFD_CHANGE_DIR, 
       "sql files (*.sql)|*.sql", 
-      true);
-    break;
+      true);}, wxID_OPEN);
 
-  case wxID_SAVE:
-    m_Query->GetFile().FileSave();
-    break;
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Query->GetFile().FileSave();}, wxID_SAVE);
 
-  case wxID_SAVEAS:
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExFileDialog dlg(
+      this, 
+      &m_Query->GetFile(), 
+      wxGetStockLabel(wxID_SAVEAS), 
+      wxFileSelectorDefaultWildcardStr, 
+      wxFD_SAVE);
+    if (dlg.ShowModal() == wxID_OK)
     {
-      wxExFileDialog dlg(
-        this, 
-        &m_Query->GetFile(), 
-        wxGetStockLabel(wxID_SAVEAS), 
-        wxFileSelectorDefaultWildcardStr, 
-        wxFD_SAVE);
+       m_Query->GetFile().FileSave(dlg.GetPath());
+    }}, wxID_SAVE_AS);
 
-      if (dlg.ShowModal() == wxID_OK)
-      {
-         m_Query->GetFile().FileSave(dlg.GetPath());
-      }
-    }
-    break;
-
-  case wxID_STOP:
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Running = false;
-    m_Stopped = true;
-    break;
+    m_Stopped = true;}, wxID_STOP);
 
-  case ID_DATABASE_CLOSE:
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_otl.Logoff())
     {
       m_Shell->SetPrompt(">");
-    }
-    break;
+    }}, ID_DATABASE_CLOSE);
 
-  case ID_DATABASE_OPEN:
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_otl.Logon(this))
     {
       m_Shell->SetPrompt(m_otl.Datasource() + ">");
-    }
-    break;
+    }}, ID_DATABASE_OPEN);
 
-  case ID_SHELL_COMMAND:
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_otl.IsConnected())
     {
       try
@@ -289,24 +255,19 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
       m_Shell->AppendText(_("\nnot connected"));
     }
+    m_Shell->Prompt();}, ID_SHELL_COMMAND);
 
-    m_Shell->Prompt();
-    break;
-
-  case ID_SHELL_COMMAND_STOP:
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Stopped = true;
-    m_Shell->Prompt(_("cancelled"));
-    break;
+    m_Shell->Prompt(_("cancelled"));}, ID_SHELL_COMMAND_STOP);
 
-  case ID_VIEW_QUERY: TogglePane("QUERY"); break;
-  case ID_VIEW_RESULTS: TogglePane("RESULTS"); break;
-  case ID_VIEW_STATISTICS: TogglePane("STATISTICS"); break;
-
-  default: 
-    wxFAIL;
-  }
-}
-
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("QUERY");}, ID_VIEW_QUERY);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("RESULTS");}, ID_VIEW_RESULTS);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("STATISTICS");}, ID_VIEW_STATISTICS);
+  
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(m_Query->GetModify());}, wxID_SAVE);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
@@ -332,7 +293,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
 void Frame::OnCommandConfigDialog(
   wxWindowID dialogid,
-  int commandid)
+  const wxCommandEvent& event)
 {
   if (dialogid == wxID_PREFERENCES)
   {
@@ -342,7 +303,7 @@ void Frame::OnCommandConfigDialog(
   }
   else
   {
-    wxExFrameWithHistory::OnCommandConfigDialog(dialogid, commandid);
+    wxExFrameWithHistory::OnCommandConfigDialog(dialogid, event);
   }
 }
 

@@ -367,9 +367,9 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
 
 void wxExFrameWithHistory::OnCommandConfigDialog(
   wxWindowID dialogid,
-  int commandid)
+  const wxCommandEvent& event)
 {
-  switch (commandid)
+  switch (event.GetId())
   {
     case wxID_CANCEL:
       if (wxExInterruptable::Cancel())

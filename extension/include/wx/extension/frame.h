@@ -52,10 +52,9 @@ public:
   virtual wxExSTC* GetSTC();
 
   /// Called when a config dialog command event is triggered.
-  /// Default it fires when the apply button was pressed.
   virtual void OnCommandConfigDialog(
     wxWindowID WXUNUSED(dialogid),
-    int WXUNUSED(commandid) = wxID_APPLY) {};
+    const wxCommandEvent& WXUNUSED(event)) {};
 
   /// Default opens the file using GetSTC.
   virtual bool OpenFile(

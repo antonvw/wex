@@ -69,7 +69,7 @@ bool Update(wxExFindReplaceData* frd, wxCheckListBox* clb, int item, bool save, 
 }
 
 wxExConfigItem::wxExConfigItem(wxExConfigType type, long style,
-  const wxString& page, const wxString& label, const wxString& value,
+  const wxString& page, const wxString& label, const wxString& info,
   bool is_required, bool add_label,
   int id, int cols, int max_items, int major_dimension,
   double min, double max, double inc,
@@ -78,7 +78,7 @@ wxExConfigItem::wxExConfigItem(wxExConfigType type, long style,
   , m_Style(style)
   , m_AddLabel(add_label)
   , m_Label(label)
-  , m_Default(value)
+  , m_Info(info)
   , m_IsRequired(is_required)
   , m_Id(id)
   , m_Min(min)
@@ -308,7 +308,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       {
 #if wxUSE_HYPERLINKCTRL
       m_Window = new wxHyperlinkCtrl(parent, m_Id, m_Label,
-        m_Default, wxDefaultPosition, wxSize(width, wxDefaultCoord));
+        m_Info, wxDefaultPosition, wxSize(width, wxDefaultCoord));
 #endif      
       }
       break;
@@ -398,9 +398,9 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       // and would not be interpreted by vi.
       ((wxExSTC* )m_Window)->GetVi().Use(false);
 
-      if (!m_Default.empty())
+      if (!m_Info.empty())
       {
-        ((wxExSTC* )m_Window)->SetLexer(m_Default);
+        ((wxExSTC* )m_Window)->SetLexer(m_Info);
       }
       break;
 

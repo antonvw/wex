@@ -89,32 +89,19 @@ public:
     : wxExConfigItem(CONFIG_SPACER, size, page, wxEmptyString) {;};
 
   /// Constuctor for a CONFIG_STATICLINE item.
-  wxExConfigItem(
-    /// wxHORIZONTAL or wxVERTICAL
-    wxOrientation orientation, 
-    const wxString& page = wxEmptyString)
+  /// The orientation is wxHORIZONTAL or wxVERTICAL.
+  wxExConfigItem(wxOrientation orientation, const wxString& page = wxEmptyString)
     : wxExConfigItem(CONFIG_STATICLINE, orientation, page, wxEmptyString) {;};
     
-  /// Constructor for a CONFIG_USER item.
-  wxExConfigItem(const wxString& label,
-    /// the window (use default constructor for it)
-    wxWindow* window,
-    /// callback for window creation (required, useless without one)
-    wxExUserWindowCreate create,
-    /// callback for load and save to config
-    /// default it has no relation to the config
-    wxExUserWindowToConfig config = NULL,
-    const wxString& page = wxEmptyString,
-    bool is_required = false,
-    bool add_label = true,
-    int cols = -1)
-    : wxExConfigItem(CONFIG_USER, 0, page, label, wxEmptyString, is_required, add_label, wxID_ANY, cols, 25, 1, 0, 0, 0, window, create, config) {;};
-
   /// Constructor for a CONFIG_STRING, CONFIG_STC, CONFIG_STATICTEXT, 
-  /// CONFIG_HYPERLINKCTRL, or a CONFIG_STATICTEXT item.
-  wxExConfigItem(const wxString& label,
-    /// used as default for a hyperlink ctrl, or as lexer for STC
-    const wxString& value = wxEmptyString,
+  /// or a CONFIG_HYPERLINKCTRL item.
+  wxExConfigItem(
+    /// label for the window as on the dialog and in the config,
+    /// - might also contain the note after a tab for a command link button
+    /// - if the window supports it you can use a markup label
+    const wxString& label,
+    /// extra info, used as default for a hyperlink ctrl, or as lexer for STC
+    const wxString& info,
     const wxString& page = wxEmptyString,
     /// the style for the control used (e.g. wxTE_MULTILINE or wxTE_PASSWORD)
     long style = 0,
@@ -124,7 +111,7 @@ public:
     /// ignored for a static text
     bool add_label = true,
     int cols = -1)
-    : wxExConfigItem(type, style, page, label, value, is_required, 
+    : wxExConfigItem(type, style, page, label, info, is_required, 
       (type != CONFIG_STATICTEXT && 
        type != CONFIG_HYPERLINKCTRL ? add_label: false), wxID_ANY, cols) {;};
 
@@ -135,6 +122,7 @@ public:
     double max,
     const wxString& page = wxEmptyString,
     wxExConfigType type = CONFIG_SPINCTRL,
+    /// style for a CONFIG_SLIDER item
     long style = wxSL_HORIZONTAL,
     double inc = 1,
     int cols = -1)
@@ -173,11 +161,23 @@ public:
     m_Choices = choices;
   }
 
-  /// Constuctor for the other types.
+  /// Constructor for a CONFIG_USER item.
+  wxExConfigItem(const wxString& label,
+    /// the window (use default constructor for it)
+    wxWindow* window,
+    /// callback for window creation (required, useless without one)
+    wxExUserWindowCreate create,
+    /// callback for load and save to config
+    /// default it has no relation to the config
+    wxExUserWindowToConfig config = NULL,
+    const wxString& page = wxEmptyString,
+    bool is_required = false,
+    bool add_label = true,
+    int cols = -1)
+    : wxExConfigItem(CONFIG_USER, 0, page, label, wxEmptyString, is_required, add_label, wxID_ANY, cols, 25, 1, 0, 0, 0, window, create, config) {;};
+
+  /// Constuctor for the other types (as CONFIG_BUTTON item).
   wxExConfigItem(
-    /// label for the window as on the dialog and in the config,
-    /// - might also contain the note after a tab for a command link button
-    /// - if the window supports it you can use a markup label
     const wxString& label,
     wxExConfigType type,
     const wxString& page = wxEmptyString,
@@ -246,7 +246,7 @@ public:
 private:
   /// Delegate constructor.
   wxExConfigItem(wxExConfigType type, long style,
-    const wxString& page, const wxString& label, const wxString& value = wxEmptyString,
+    const wxString& page, const wxString& label, const wxString& info = wxEmptyString,
     bool is_required = false, bool add_label = false,
     int id = wxID_ANY, int cols = -1, int max_items = 25, int major_dimension = 1,
     double min = 0, double max = 1, double inc = 1,
@@ -256,9 +256,6 @@ private:
   void AddStaticText(wxSizer* sizer) const;
   void CreateWindow(wxWindow* parent, bool readonly);
 
-  // The members are allowed to be const using
-  // MS Visual Studio 2010, not using gcc, so
-  // removed again (operator= seems to be used).
   bool m_AddLabel;
   bool m_IsRequired;
   bool m_IsRowGrowable;
@@ -274,8 +271,8 @@ private:
   double m_Inc;
 
   wxString m_Label;
+  wxString m_Info;
   wxString m_Page;
-  wxString m_Default; // used by hyperlink as default web address
 
   long m_Style;
 
