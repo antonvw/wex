@@ -143,7 +143,8 @@ void wxExColumn::SetIsSortedAscending(wxExSortType type)
   }
 }
 
-const wxWindowID ID_COL_FIRST = wxWindow::NewControlId();
+// wxWindow::NewControlId() is negative...
+const wxWindowID ID_COL_FIRST = 1000;
 
 wxExListView::wxExListView(wxWindow* parent,
   wxWindowID id,

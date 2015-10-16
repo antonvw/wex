@@ -134,8 +134,9 @@ public:
     /// the set with names of boolean items
     const std::set<wxString> & choices,
     const wxString& page = wxEmptyString,
+    long style = 0,
     int cols = -1)
-    : wxExConfigItem(CONFIG_CHECKLISTBOX_NONAME, 0, page, "checklistbox_noname", wxEmptyString, false, false, wxID_ANY, cols)
+    : wxExConfigItem(CONFIG_CHECKLISTBOX_NONAME, style, page, "checklistbox_noname", wxEmptyString, false, false, wxID_ANY, cols)
   {
     m_ChoicesBool = choices;
   }
@@ -187,8 +188,9 @@ public:
     /// used by CONFIG_COMBOBOX
     int max_items = 25,
     bool add_label = true,
+    long style = 0,
     int cols = -1)
-    : wxExConfigItem(type, 0, page, label, wxEmptyString, is_required, 
+    : wxExConfigItem(type, style, page, label, wxEmptyString, is_required, 
         type == CONFIG_BUTTON ||
         type == CONFIG_CHECKBOX ||
         type == CONFIG_COMMAND_LINK_BUTTON ||

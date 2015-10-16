@@ -640,7 +640,8 @@ void wxExSampleFrame::ShowConfigItems()
 
   // CONFIG_CHECKLISTBOX_NONAME
   v.push_back(wxExConfigItem(
-    std::set<wxString>{"This","Or","Other"},
+    std::set<wxString>{"This","Or","Other", "a", "b", "c", "d",
+    "e", "f", "g", "h"},
     "Checkbox lists"));
 
   // CONFIG_COLOUR

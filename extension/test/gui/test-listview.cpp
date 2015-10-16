@@ -42,7 +42,7 @@ void fixture::testListView()
   
   CPPUNIT_ASSERT(listView->ItemToText(0) == "test");
   
-  //listView->Print(); // TODO: asserts
+  //listView->Print(); // waits for input
   //listView->PrintPreview();
 
   // Delete all items, to test sorting later on.  
