@@ -73,11 +73,6 @@ public:
   /// Gets last entered command.
   const wxString GetCommand() const;
   
-  /// Gets the command start position, that is the
-  /// position after the prompt from where
-  /// commands can be inserted.
-  int GetCommandStartPosition() const {return m_CommandStartPosition;};
-  
   /// Gets all history commands as a string, 
   /// separated by a newline (for testing).
   const wxString GetHistory() const;
@@ -102,7 +97,7 @@ public:
   bool Prompt(
     const wxString& text = wxEmptyString,
     bool add_eol = true);
-    
+  
   /// Sets the process to which commands are sent.
   /// If you do not set this, commands are sent to the parent.
   void SetProcess(wxExProcess* process);
@@ -132,7 +127,7 @@ private:
 
   wxString m_Command;
   const wxString m_CommandEnd;
-  int m_CommandStartPosition;
+  int m_CommandStartPosition; /// position after the prompt from where commands can be inserted
   const bool m_Echo;
   bool m_Enabled;
   const wxString m_CommandsInConfigDelimiter;

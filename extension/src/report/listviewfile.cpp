@@ -53,8 +53,8 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   , m_TextInFolder(_("In folder"))
   , m_AddItemsDialog(new wxExConfigDialog(this,
       std::vector<wxExConfigItem> {
-        wxExConfigItem(m_TextAddWhat, CONFIG_COMBOBOX, wxEmptyString, true),
-        wxExConfigItem(m_TextInFolder, CONFIG_COMBOBOXDIR, wxEmptyString, true, NewControlId()),
+        wxExConfigItem(m_TextAddWhat,ITEM_COMBOBOX, wxEmptyString, true),
+        wxExConfigItem(m_TextInFolder,ITEM_COMBOBOXDIR, wxEmptyString, true, NewControlId()),
         wxExConfigItem(std::set<wxString> {
           m_TextAddFiles, m_TextAddFolders, m_TextAddRecursive})},
       _("Add Items"),

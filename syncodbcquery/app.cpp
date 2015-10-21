@@ -291,7 +291,7 @@ Frame::Frame()
     event.Check(GetManager().GetPane("STATISTICS").IsShown());}, ID_VIEW_STATISTICS);
 }
 
-void Frame::OnCommandConfigDialog(
+void Frame::OnCommandItemDialog(
   wxWindowID dialogid,
   const wxCommandEvent& event)
 {
@@ -303,7 +303,7 @@ void Frame::OnCommandConfigDialog(
   }
   else
   {
-    wxExFrameWithHistory::OnCommandConfigDialog(dialogid, event);
+    wxExFrameWithHistory::OnCommandItemDialog(dialogid, event);
   }
 }
 

@@ -157,7 +157,7 @@ void fixture::testEx()
   CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded("a")); // still no macro
   
   ex->MacroRecord("a");
-  CPPUNIT_ASSERT( ex->GetMacros().IsRecording());
+  CPPUNIT_ASSERT(!ex->GetMacros().IsRecording()); // if not recording it does not start it
   CPPUNIT_ASSERT(!ex->GetMacros().IsRecorded("a"));
   
   ex->MacroStartRecording("a");

@@ -90,8 +90,8 @@ public:
     /// text folder extension
     const wxString& line);
   
-  /// Override OnCommandConfigDialog for add, find and replace in files.
-  virtual void OnCommandConfigDialog(
+  /// Override OnCommandItemDialog for add, find and replace in files.
+  virtual void OnCommandItemDialog(
     wxWindowID dialogid,
     const wxCommandEvent& event) override;
     

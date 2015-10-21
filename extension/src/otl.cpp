@@ -58,7 +58,7 @@ bool wxExOTL::Logon(
 
   const std::vector<wxExConfigItem> v{
     wxExConfigItem(_("Datasource"),
-      CONFIG_COMBOBOX,
+      ITEM_COMBOBOX,
       wxEmptyString, // page
       true,          // is_required
       wxID_ANY,

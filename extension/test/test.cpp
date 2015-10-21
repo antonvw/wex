@@ -185,7 +185,7 @@ int wxExTestApp::OnRun()
     if (argc <= 1)
     {
       OnExit();
-      exit(EXIT_SUCCESS);
+      exit(collector.testFailures() > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
     }
     else
     {

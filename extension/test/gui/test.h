@@ -37,6 +37,9 @@ class fixture : public wxExTestFixture
   CPPUNIT_TEST( testGrid );
   CPPUNIT_TEST( testHexMode );
   CPPUNIT_TEST( testIndicator );
+  CPPUNIT_TEST( testItem );
+  CPPUNIT_TEST( testItemDialog );
+  CPPUNIT_TEST( testItemTemplateDialog );
   CPPUNIT_TEST( testLexer );
   CPPUNIT_TEST( testLexers );
   CPPUNIT_TEST( testLink );
@@ -93,6 +96,9 @@ public:
   void testGrid();
   void testHexMode();
   void testIndicator();
+  void testItem();
+  void testItemDialog();
+  void testItemTemplateDialog();
   void testLexer();
   void testLexers();
   void testLink();

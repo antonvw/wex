@@ -47,7 +47,7 @@ private:
     const wxExLexer* lexer = NULL) override;
   virtual bool ExecExCommand(const std::string& command, wxExSTC* & stc) override;
   virtual wxExListViewFile* GetProject() override;
-  virtual void OnCommandConfigDialog(
+  virtual void OnCommandItemDialog(
     wxWindowID dialogid,
     const wxCommandEvent& event) override;
   virtual bool OpenFile(

@@ -514,7 +514,7 @@ long wxExGetHexNumberFromUser(
       min, 
       max, 
       wxEmptyString,
-      CONFIG_SPINCTRL_HEX)},
+      ITEM_SPINCTRL_HEX)},
     caption,
     0,
     1,

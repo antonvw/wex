@@ -103,7 +103,7 @@ int wxExVCS::ConfigDialog(
 
   for (const auto& it2 : m_Entries)
   {
-    v.push_back(wxExConfigItem(it2.GetName(), CONFIG_FILEPICKERCTRL));
+    v.push_back(wxExConfigItem(it2.GetName(), ITEM_FILEPICKERCTRL));
   }
 
   if (modal)
@@ -441,7 +441,7 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   // See also vcsentry, same item is used there.
   const std::vector<wxExConfigItem> v{wxExConfigItem(
     _("Base folder"), 
-    CONFIG_COMBOBOXDIR, 
+    ITEM_COMBOBOXDIR, 
     wxEmptyString, 
     true,
     wxWindow::NewControlId())};

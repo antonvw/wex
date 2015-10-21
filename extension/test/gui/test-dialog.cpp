@@ -16,4 +16,7 @@
 void fixture::testDialog()
 {
   wxExDialog(m_Frame, "hello").Show();
+  
+  wxExDialog* dlg = new wxExDialog(m_Frame, "no buttons", 0);
+  dlg->Show();
 }

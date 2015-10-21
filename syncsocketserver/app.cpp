@@ -345,7 +345,7 @@ Frame::Frame()
           wxEmptyString, 
           wxEmptyString,
           0, 
-          CONFIG_STRING,
+          ITEM_STRING,
           true),
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
@@ -517,7 +517,7 @@ void Frame::LogConnection(
   AppendText(m_LogWindow, text, DATA_MESSAGE);
 }
 
-void Frame::OnCommandConfigDialog(
+void Frame::OnCommandItemDialog(
   wxWindowID dialogid,
   const wxCommandEvent& event)
 {
@@ -532,7 +532,7 @@ void Frame::OnCommandConfigDialog(
   }
   else
   {
-    wxExFrameWithHistory::OnCommandConfigDialog(dialogid, event);
+    wxExFrameWithHistory::OnCommandItemDialog(dialogid, event);
   }
 }
 

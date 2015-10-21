@@ -215,7 +215,7 @@ int wxExProcess::ConfigDialog(
 {
   wxExConfigItem ci(
     _("Process"), 
-    CONFIG_COMBOBOX, 
+    ITEM_COMBOBOX, 
     wxEmptyString,
     true);
     
@@ -227,7 +227,7 @@ int wxExProcess::ConfigDialog(
     ci,
     wxExConfigItem(
       m_WorkingDirKey, 
-      CONFIG_COMBOBOXDIR, 
+      ITEM_COMBOBOXDIR, 
       wxEmptyString,
       true,
       wxWindow::NewControlId())};
@@ -399,6 +399,8 @@ void wxExProcess::OnTerminate(int pid, int status)
   m_Timer->Stop();
   CheckInput();
   wxLogStatus(_("Ready"));
+  
+  m_Shell->EnableShell(false);
 }
 
 void wxExProcess::PrepareOutput(wxWindow* parent)

@@ -19,15 +19,15 @@ void fixture::testConfigItem()
   // Use specific constructors.
   const wxExConfigItem ci_empty;
   const wxExConfigItem ci_spacer(5);
-  const wxExConfigItem ci_sl("ci-sl", 1, 5, wxEmptyString, CONFIG_SLIDER);
+  const wxExConfigItem ci_sl("ci-sl", 1, 5, wxEmptyString,ITEM_SLIDER);
   const wxExConfigItem ci_vl(wxLI_HORIZONTAL);
   const wxExConfigItem ci_sp("ci-sp", 1, 5);
-  const wxExConfigItem ci_sp_d("ci-sp-d", 1.0, 5.0, wxEmptyString, CONFIG_SPINCTRL_DOUBLE);
-  const wxExConfigItem ci_sp_h("ci-sp-h", 1.0, 5.0, wxEmptyString, CONFIG_SPINCTRL_HEX);
+  const wxExConfigItem ci_sp_d("ci-sp-d", 1.0, 5.0, wxEmptyString,ITEM_SPINCTRL_DOUBLE);
+  const wxExConfigItem ci_sp_h("ci-sp-h", 1.0, 5.0, wxEmptyString,ITEM_SPINCTRL_HEX);
   wxExConfigItem ci_str("ci-string", wxEmptyString);
-  const wxExConfigItem ci_hl("ci-hyper", "www.wxwidgets.org", wxEmptyString, 0, CONFIG_HYPERLINKCTRL);
-  wxExConfigItem ci_st("ci-static", "HELLO", wxEmptyString, 0, CONFIG_STATICTEXT);
-  const wxExConfigItem ci_int("ci-int", CONFIG_INT);
+  const wxExConfigItem ci_hl("ci-hyper", "www.wxwidgets.org", wxEmptyString, 0,ITEM_HYPERLINKCTRL);
+  wxExConfigItem ci_st("ci-static", "HELLO", wxEmptyString, 0,ITEM_STATICTEXT);
+  const wxExConfigItem ci_int("ci-int",ITEM_INT);
   const wxExConfigItem ci_rb("ci-rb", 
     std::map<long, const wxString> {
       std::make_pair(0, "Zero"),
@@ -44,24 +44,24 @@ void fixture::testConfigItem()
   const wxExConfigItem ci_cl_n(std::set<wxString> {"This","Or","Other"});
   const wxExConfigItem ci_user("ci-usr", new wxTextCtrl(), NULL);
   
-  CPPUNIT_ASSERT(ci_empty.GetType() == CONFIG_EMPTY);
+  CPPUNIT_ASSERT(ci_empty.GetType() == ITEM_EMPTY);
   CPPUNIT_ASSERT(!ci_empty.IsRowGrowable());
-  CPPUNIT_ASSERT(ci_spacer.GetType() == CONFIG_SPACER);
+  CPPUNIT_ASSERT(ci_spacer.GetType() == ITEM_SPACER);
   CPPUNIT_ASSERT(ci_sl.GetLabel() == "ci-sl");
-  CPPUNIT_ASSERT(ci_sl.GetType() == CONFIG_SLIDER);
-  CPPUNIT_ASSERT(ci_vl.GetType() == CONFIG_STATICLINE);
+  CPPUNIT_ASSERT(ci_sl.GetType() == ITEM_SLIDER);
+  CPPUNIT_ASSERT(ci_vl.GetType() == ITEM_STATICLINE);
   CPPUNIT_ASSERT(ci_sp.GetLabel() == "ci-sp");
-  CPPUNIT_ASSERT(ci_sp.GetType() == CONFIG_SPINCTRL);
-  CPPUNIT_ASSERT(ci_sp_d.GetType() == CONFIG_SPINCTRL_DOUBLE);
-  CPPUNIT_ASSERT(ci_sp_h.GetType() == CONFIG_SPINCTRL_HEX);
-  CPPUNIT_ASSERT(ci_str.GetType() == CONFIG_STRING);
-  CPPUNIT_ASSERT(ci_hl.GetType() == CONFIG_HYPERLINKCTRL);
-  CPPUNIT_ASSERT(ci_st.GetType() == CONFIG_STATICTEXT);
-  CPPUNIT_ASSERT(ci_int.GetType() == CONFIG_INT);
-  CPPUNIT_ASSERT(ci_rb.GetType() == CONFIG_RADIOBOX);
-  CPPUNIT_ASSERT(ci_bc.GetType() == CONFIG_CHECKLISTBOX);
-  CPPUNIT_ASSERT(ci_cl_n.GetType() == CONFIG_CHECKLISTBOX_NONAME);
-  CPPUNIT_ASSERT(ci_user.GetType() == CONFIG_USER);
+  CPPUNIT_ASSERT(ci_sp.GetType() == ITEM_SPINCTRL);
+  CPPUNIT_ASSERT(ci_sp_d.GetType() == ITEM_SPINCTRL_DOUBLE);
+  CPPUNIT_ASSERT(ci_sp_h.GetType() == ITEM_SPINCTRL_HEX);
+  CPPUNIT_ASSERT(ci_str.GetType() == ITEM_STRING);
+  CPPUNIT_ASSERT(ci_hl.GetType() == ITEM_HYPERLINKCTRL);
+  CPPUNIT_ASSERT(ci_st.GetType() == ITEM_STATICTEXT);
+  CPPUNIT_ASSERT(ci_int.GetType() == ITEM_INT);
+  CPPUNIT_ASSERT(ci_rb.GetType() == ITEM_RADIOBOX);
+  CPPUNIT_ASSERT(ci_bc.GetType() == ITEM_CHECKLISTBOX);
+  CPPUNIT_ASSERT(ci_cl_n.GetType() == ITEM_CHECKLISTBOX_NONAME);
+  CPPUNIT_ASSERT(ci_user.GetType() == ITEM_USER);
 
   std::vector <wxExConfigItem> items {
     ci_empty, ci_spacer, ci_sl, ci_vl, ci_sp, ci_sp_d, ci_sp_h,
@@ -69,15 +69,15 @@ void fixture::testConfigItem()
   
   // Use general constructor, and add all items.
   for (
-    int i = CONFIG_ITEM_MIN + 1;
-    i < CONFIG_ITEM_MAX;
+    int i = ITEM_ITEM_MIN + 1;
+    i < ITEM_ITEM_MAX;
     i++)
   {
-    if (i != CONFIG_USER)
+    if (i != ITEM_USER)
     {
       items.push_back(wxExConfigItem(
         wxString::Format("item%d", i), 
-        (wxExConfigType)i));
+        (wxExItemType)i));
     }
   }
 
@@ -86,7 +86,7 @@ void fixture::testConfigItem()
   {
     CPPUNIT_ASSERT( it.GetColumns() == -1);
     
-    if (it.GetType() == CONFIG_USER)
+    if (it.GetType() == ITEM_USER)
       CPPUNIT_ASSERT( it.GetWindow() != NULL);
     else 
       CPPUNIT_ASSERT( it.GetWindow() == NULL);
@@ -94,9 +94,9 @@ void fixture::testConfigItem()
     CPPUNIT_ASSERT(!it.GetIsRequired());
     
     if (
-      it.GetType() != CONFIG_STATICLINE &&
-      it.GetType() != CONFIG_SPACER &&
-      it.GetType() != CONFIG_EMPTY)
+      it.GetType() != ITEM_STATICLINE &&
+      it.GetType() != ITEM_SPACER &&
+      it.GetType() != ITEM_EMPTY)
     {
       CPPUNIT_ASSERT(!it.GetLabel().empty());
     }
@@ -104,8 +104,8 @@ void fixture::testConfigItem()
     CPPUNIT_ASSERT( it.GetPage().empty());
 
     CPPUNIT_ASSERT(
-      it.GetType() > CONFIG_ITEM_MIN &&
-      it.GetType() < CONFIG_ITEM_MAX);
+      it.GetType() > ITEM_ITEM_MIN &&
+      it.GetType() < ITEM_ITEM_MAX);
     
     it.SetRowGrowable(true);
     it.SetValidator(NULL);
@@ -116,15 +116,15 @@ void fixture::testConfigItem()
   // Layout the items and check control is created.
   for (auto& it : items)
   {
-    // CONFIG_USER is not yet laid out ok, gives errors.
-    if (it.GetType() != CONFIG_USER)
+    //ITEM_USER is not yet laid out ok, gives errors.
+    if (it.GetType() != ITEM_USER)
     {
       // Testing on not NULL not possible,
       // not all items need a sizer.
       it.Layout(m_Frame, &sizer);
     }
  
-    if (it.GetType() != CONFIG_EMPTY && it.GetType() != CONFIG_SPACER)
+    if (it.GetType() != ITEM_EMPTY && it.GetType() != ITEM_SPACER)
     {
       CPPUNIT_ASSERT(it.GetWindow() != NULL);
     }

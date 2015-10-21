@@ -7,89 +7,48 @@
 
 #pragma once
 
-#include <vector>
-#include <wx/imaglist.h>
 #include <wx/extension/configitem.h>
-#include <wx/extension/dialog.h>
+#include <wx/extension/itemtpldlg.h>
 
 #if wxUSE_GUI
-/// Offers a dialog to set several items in the config.
-/// If you only specify a wxCANCEL button, the dialog is readonly.
+/// Offers an item dialog to set several items that load and
+/// store to the config.
 /// You can also use the dialog modeless (then you can use wxAPPLY
 /// to store the items in the config).
-/// When pressing the:
-/// - wxAPPLY button
-/// - wxOK, wxCANCEL button for a modeless dialog
-/// - a CONFIG_BUTTON
-/// - a CONFIG_COMBOBOXDIR
-/// the method wxExFrame::OnCommandConfigDialog is invoked.
-class WXDLLIMPEXP_BASE wxExConfigDialog: public wxExDialog
+class WXDLLIMPEXP_BASE wxExConfigDialog: public wxExItemTemplateDialog <wxExConfigItem>
 {
 public:
-  /// Supported notebooks.
-  enum
-  {
-    CONFIG_AUINOTEBOOK, ///< a aui notebook
-    CONFIG_CHOICEBOOK,  ///< a choice book
-    CONFIG_LISTBOOK,    ///< a list book
-    CONFIG_NOTEBOOK,    ///< a traditional notebook
-    CONFIG_SIMPLEBOOK,  ///< a simple notebook
-    CONFIG_TOOLBOOK,    ///< a tool book
-    CONFIG_TREEBOOK,    ///< a tree book
-  };
-
   /// Constructor.
   wxExConfigDialog(
-    /// parent
     wxWindow* parent,
-    /// vector with config items 
-    const std::vector<wxExConfigItem>& v,
-    /// title
+    const std::vector< wxExConfigItem >& v,
     const wxString& title = _("Options"),
-    /// number of rows
     int rows = 0,
-    /// number of columns
     int cols = 1,
-    /// dialog flags for buttons
-    /// When wxOK or wxAPPLY is pressed, any change in one of the
-    /// config items is saved in the config.
     long flags = wxOK | wxCANCEL,
-    /// the window id
     wxWindowID id = wxID_ANY,
-    /// bookctrl style, only used if you specified pages for your config items
-    int bookctrl_style = CONFIG_AUINOTEBOOK,
-    /// image list to be used by notebook (required for a tool book)
+    int bookctrl_style = ITEM_AUINOTEBOOK,
     wxImageList* imageList = NULL,
-    /// position
     const wxPoint& pos = wxDefaultPosition,
-    /// size
     const wxSize& size = wxDefaultSize, 
-    /// dialog style
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
-    /// name
-    const wxString& name = "wxExConfigDialog");
+    const wxString& name = "wxExConfigItemDialog")
+  : wxExItemTemplateDialog(parent, v, title, rows, cols, flags, id, bookctrl_style,
+      imageList, pos, size, style, name) {
+    Bind(wxEVT_BUTTON, &wxExConfigDialog::OnCommand, this, wxID_APPLY);
+    Bind(wxEVT_BUTTON, &wxExConfigDialog::OnCommand, this, wxID_CANCEL);
+    Bind(wxEVT_BUTTON, &wxExConfigDialog::OnCommand, this, wxID_CLOSE);
+    Bind(wxEVT_BUTTON, &wxExConfigDialog::OnCommand, this, wxID_OK);};
 
-  /// If you specified some checkboxes, calling this method
-  /// requires that one of them should be checked for the OK button
-  /// to be enabled.
-  void ForceCheckBoxChecked(
-    /// specify the (part of) the name of the checkbox
-    const wxString& contains = wxEmptyString,
-    /// specify on which page
-    const wxString& page = wxEmptyString);
-    
   /// Reloads dialog from config.
-  void Reload() const;
+  void Reload(bool save = false) const {
+    for (const auto& it : GetItems())
+    {
+      it.ToConfig(save);
+    }};
 protected:
-  void OnCommand(wxCommandEvent& event);
-  void OnUpdateUI(wxUpdateUIEvent& event);
-private:
-  void Click(const wxCommandEvent& event) const;
-  void Layout(int rows, int cols, int notebook_style, wxImageList* imageList);
-
-  std::vector<wxExConfigItem> m_ConfigItems;
-  bool m_ForceCheckBoxChecked;
-  wxString m_Contains;
-  wxString m_Page;
+  void OnCommand(wxCommandEvent& event) {
+    Reload(event.GetId() != wxID_CANCEL);
+    event.Skip();};
 };
 #endif // wxUSE_GUI
