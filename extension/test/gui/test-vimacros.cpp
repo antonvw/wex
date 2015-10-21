@@ -34,13 +34,12 @@ void fixture::testViMacros()
   macros.StartRecording("a");
   CPPUNIT_ASSERT( macros.IsModified());
   CPPUNIT_ASSERT( macros.IsRecording());
-  CPPUNIT_ASSERT(!macros.IsRecorded("a"));
-  CPPUNIT_ASSERT(!macros.IsRecordedMacro("a"));
   
   macros.StopRecording();
   CPPUNIT_ASSERT(!macros.IsRecording());
   CPPUNIT_ASSERT( macros.IsModified());
   CPPUNIT_ASSERT(!macros.IsRecorded("a")); // still no macro
+  CPPUNIT_ASSERT(!macros.IsRecordedMacro("a"));
   CPPUNIT_ASSERT( macros.GetMacro().empty());
   
   macros.StartRecording("a");
@@ -54,7 +53,7 @@ void fixture::testViMacros()
   CPPUNIT_ASSERT( macros.IsRecorded("a"));
   CPPUNIT_ASSERT( macros.StartsWith("a"));
   CPPUNIT_ASSERT(!macros.StartsWith("xx"));
-  CPPUNIT_ASSERT(!macros.IsRecordedMacro("a"));
+  CPPUNIT_ASSERT( macros.IsRecordedMacro("a"));
   CPPUNIT_ASSERT( macros.GetMacro() == "a");
   
   CPPUNIT_ASSERT(!macros.IsRecorded("b"));
@@ -103,7 +102,7 @@ void fixture::testViMacros()
   }
 
   wxString expanded;
-  CPPUNIT_ASSERT(!wxExViMacros::ExpandTemplate(vi, wxExVariable(), expanded));
+  CPPUNIT_ASSERT( wxExViMacros::ExpandTemplate(vi, wxExVariable(), expanded));
 
   // Test all environment macro variables.
   for (auto& env : std::vector<std::string> {"HOME","PWD"})

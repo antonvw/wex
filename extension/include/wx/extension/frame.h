@@ -51,8 +51,8 @@ public:
   /// Returns an STC.
   virtual wxExSTC* GetSTC();
 
-  /// Called when a config dialog command event is triggered.
-  virtual void OnCommandConfigDialog(
+  /// Called when an item dialog command event is triggered.
+  virtual void OnCommandItemDialog(
     wxWindowID WXUNUSED(dialogid),
     const wxCommandEvent& WXUNUSED(event)) {};
 

@@ -53,7 +53,7 @@ public:
   wxExSampleFrame();
   virtual wxExSTC* GetSTC() override {
     return m_STC;};
-  virtual void OnCommandConfigDialog(
+  virtual void OnCommandItemDialog(
     wxWindowID id, 
     const wxCommandEvent& event) override;
 protected:

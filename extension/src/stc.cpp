@@ -493,7 +493,7 @@ int wxExSTC::ConfigDialog(
       std::make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")),
       std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")),
       std::make_pair(wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin"))}, true, _("General"), 1),
-    (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Default font"), CONFIG_FONTPICKERCTRL, _("General")): wxExConfigItem()),
+    (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Default font"),ITEM_FONTPICKERCTRL, _("General")): wxExConfigItem()),
     wxExConfigItem(_("Whitespace"), std::map<long, const wxString> {
       std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")),
       std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Visible after indent")),
@@ -521,7 +521,7 @@ int wxExSTC::ConfigDialog(
     (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Folding"), 0, 40, _("Margin")): wxExConfigItem()),
     wxExConfigItem(_("Line number"), 0, 100, _("Margin")),
     // Folding page.
-    (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")): wxExConfigItem()),
+    (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Indentation guide"),ITEM_CHECKBOX, _("Folding")): wxExConfigItem()),
     (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")): wxExConfigItem()),
       // next is experimental, wait for scintilla
       //fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
@@ -538,7 +538,7 @@ int wxExSTC::ConfigDialog(
       std::make_pair(wxSTC_PRINT_COLOURONWHITE, _("Colour on white")),
       std::make_pair(wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal"))}, true, _("Printer"), 1):  wxExConfigItem()),
     // Directory page.
-    (!(flags & STC_CONFIG_SIMPLE) && wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Include directory"), CONFIG_LISTVIEW_FOLDER, _("Directory"), false, wxID_ANY, 25, false): wxExConfigItem())};
+    (!(flags & STC_CONFIG_SIMPLE) && wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Include directory"),ITEM_LISTVIEW_FOLDER, _("Directory"), false, wxID_ANY, 25, false): wxExConfigItem())};
 
   int buttons = wxOK | wxCANCEL;
 
@@ -547,7 +547,7 @@ int wxExSTC::ConfigDialog(
     buttons |= wxAPPLY;
   }
   
-  const int style = wxExConfigDialog::CONFIG_NOTEBOOK;
+  const int style = wxExConfigDialog::ITEM_NOTEBOOK;
 
   if (!(flags & STC_CONFIG_MODELESS))
   {
@@ -1310,6 +1310,14 @@ void wxExSTC::Initialize(bool file_exists)
       (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
       - wxSTC_FOLDLEVELBASE;});
       
+  Bind(wxEVT_LEFT_DCLICK,  [=](wxMouseEvent& event) {
+    wxString filename;
+    if (LinkOpen(&filename))
+    {
+      LinkOpen();
+    }
+    });
+  
   Bind(wxEVT_LEFT_UP, [=](wxMouseEvent& event) {
     PropertiesMessage();
     event.Skip();

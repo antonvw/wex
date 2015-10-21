@@ -112,15 +112,15 @@ void wxExFrameWithHistory::CreateDialogs()
   
   const std::vector<wxExConfigItem> f {
     wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
-      CONFIG_COMBOBOX, 
+      ITEM_COMBOBOX, 
       wxEmptyString, 
       true),
     wxExConfigItem(m_TextInFiles, 
-      CONFIG_COMBOBOX, 
+      ITEM_COMBOBOX, 
       wxEmptyString, 
       true),
     wxExConfigItem(m_TextInFolder, 
-      CONFIG_COMBOBOXDIR, 
+      ITEM_COMBOBOXDIR, 
       wxEmptyString, 
       true,
       NewControlId()),
@@ -137,7 +137,7 @@ void wxExFrameWithHistory::CreateDialogs()
   m_RiFDialog = new wxExConfigDialog(this,
     std::vector<wxExConfigItem> {f.at(0),
       wxExConfigItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-        CONFIG_COMBOBOX),
+      ITEM_COMBOBOX),
       f.at(1),
       f.at(2),
       wxExConfigItem(
@@ -268,17 +268,17 @@ int wxExFrameWithHistory::FindInFilesDialog(
     std::vector<wxExConfigItem> {
       wxExConfigItem(
         wxExFindReplaceData::Get()->GetTextFindWhat(), 
-        CONFIG_COMBOBOX, 
+        ITEM_COMBOBOX, 
         wxEmptyString, 
         true),
       (add_in_files ? wxExConfigItem(
         m_TextInFiles, 
-        CONFIG_COMBOBOX, 
+        ITEM_COMBOBOX, 
         wxEmptyString, 
         true) : wxExConfigItem()),
       (id == ID_TOOL_REPORT_REPLACE ? wxExConfigItem(
         wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-        CONFIG_COMBOBOX): wxExConfigItem()),
+        ITEM_COMBOBOX): wxExConfigItem()),
       wxExConfigItem(m_Info)},
     GetFindInCaption(id)).ShowModal() == wxID_CANCEL)
   {
@@ -365,7 +365,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   return true;
 }
 
-void wxExFrameWithHistory::OnCommandConfigDialog(
+void wxExFrameWithHistory::OnCommandItemDialog(
   wxWindowID dialogid,
   const wxCommandEvent& event)
 {

@@ -168,12 +168,11 @@ wxExVi::wxExVi(wxExSTC* stc)
           SetLastCommand((m_Repeat > 1 ? std::to_string(m_Repeat): "") + command, true);
         }
         GetSTC()->BeginUndoAction();
-        /*
         wxExShell* shell = dynamic_cast<wxExShell*>(GetSTC());
         if (shell != NULL)
         { 
           shell->DocumentEnd();
-        }*/},
+        }},
     // back to normal mode process
     [=](const std::string& command) {
         if (!m_Dot)

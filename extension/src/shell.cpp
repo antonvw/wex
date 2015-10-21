@@ -112,8 +112,24 @@ wxExShell::wxExShell(
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
     if (!m_Enabled)
     {
-      event.Skip();
-      return;
+      if (GetCurrentPos() >= m_CommandStartPosition)
+      {
+        EnableShell(true);
+      }
+      else
+      {
+        event.Skip();
+        return;
+      }
+    }
+    else
+    {
+      if (wxConfigBase::Get()->ReadBool(_("vi mode"), true) && (GetCurrentPos() < m_CommandStartPosition))
+      {
+        EnableShell(false);
+        event.Skip();
+        return;
+      }
     }
 
     bool skip = true;

@@ -311,18 +311,18 @@ int wxExVCSEntry::ShowDialog(
     std::vector<wxExConfigItem> {
       (GetCommand().IsCommit() ? wxExConfigItem(
         _("Revision comment"), 
-        CONFIG_COMBOBOX,
+        ITEM_COMBOBOX,
         wxEmptyString,
         true) : wxExConfigItem()),
       (add_folder && !GetCommand().IsHelp() ? wxExConfigItem(
         _("Base folder"), 
-        CONFIG_COMBOBOXDIR, 
+        ITEM_COMBOBOXDIR, 
         wxEmptyString, 
         true,
         wxWindow::NewControlId()) : wxExConfigItem()),
       (add_folder && !GetCommand().IsHelp() && GetCommand().IsAdd() ? wxExConfigItem(
         _("Path"), 
-        CONFIG_COMBOBOX,
+        ITEM_COMBOBOX,
         wxEmptyString, 
         true) : wxExConfigItem()),
       (GetCommand().UseFlags() ?  wxExConfigItem(

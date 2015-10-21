@@ -41,7 +41,7 @@ class Frame: public wxExFrameWithHistory
 public:
   Frame();
 private:
-  virtual void OnCommandConfigDialog(
+  virtual void OnCommandItemDialog(
     wxWindowID dialogid,
     const wxCommandEvent& event) override;
   virtual bool OpenFile(

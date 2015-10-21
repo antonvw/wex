@@ -832,7 +832,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxExConfigDialog(
         this,
         std::vector<wxExConfigItem>
-          {wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL)},
+          {wxExConfigItem(_("Comparator"),ITEM_FILEPICKERCTRL)},
         _("Set Comparator")).ShowModal();
     break;
 
@@ -840,7 +840,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       if (wxExConfigDialog(
         this,
         std::vector<wxExConfigItem>
-          {wxExConfigItem(_("List Font"), CONFIG_FONTPICKERCTRL)},
+          {wxExConfigItem(_("List Font"),ITEM_FONTPICKERCTRL)},
         _("Set List Font")).ShowModal() == wxID_OK)
       {
         const wxFont font(
@@ -872,7 +872,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxExConfigDialog(
         this,
         std::vector<wxExConfigItem>
-          {wxExConfigItem(_("List Colour"), CONFIG_COLOUR)},
+          {wxExConfigItem(_("List Colour"),ITEM_COLOUR)},
         _("Set List Read Only Colour")).ShowModal();
     break;
 
@@ -1092,7 +1092,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   }
 }
 
-void Frame::OnCommandConfigDialog(
+void Frame::OnCommandItemDialog(
   wxWindowID dialogid,
   const wxCommandEvent& event)
 {
@@ -1114,7 +1114,7 @@ void Frame::OnCommandConfigDialog(
   }
   else
   {
-    DecoratedFrame::OnCommandConfigDialog(dialogid, event);
+    DecoratedFrame::OnCommandItemDialog(dialogid, event);
   }
 }
 
@@ -1463,7 +1463,7 @@ bool Frame::OpenFile(
     }
     else if (line_number > 0)
     {
-      editor->GotoLineAndSelect(line_number, match);
+      editor->GotoLineAndSelect(line_number, match, col_number, flags);
     }
     else if (!match.empty())
     {
