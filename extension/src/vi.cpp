@@ -21,7 +21,6 @@
 #include <wx/extension/hexmode.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
-#include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vimacros.h>
@@ -167,12 +166,7 @@ wxExVi::wxExVi(wxExSTC* stc)
           m_InsertText.clear();
           SetLastCommand((m_Repeat > 1 ? std::to_string(m_Repeat): "") + command, true);
         }
-        GetSTC()->BeginUndoAction();
-        wxExShell* shell = dynamic_cast<wxExShell*>(GetSTC());
-        if (shell != NULL)
-        { 
-          shell->DocumentEnd();
-        }},
+        GetSTC()->BeginUndoAction();},
     // back to normal mode process
     [=](const std::string& command) {
         if (!m_Dot)

@@ -16,14 +16,12 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/grid.h>
-#include <wx/extension/lexers.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include <wx/extension/report/defs.h>
-#include <wx/extension/report/util.h>
 #include "app.h"
 
 #ifndef __WXMSW__
@@ -51,9 +49,9 @@ Frame::Frame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
   , m_Running(false)
   , m_Stopped(false)
-  , m_Results( new wxExGrid(this))
-  , m_Query( new wxExSTC(this))
-  , m_Shell( new wxExShell(this, ">", ";", true, 50))
+  , m_Results(new wxExGrid(this))
+  , m_Query(new wxExSTC(this))
+  , m_Shell(new wxExShell(this, "", ";", true, 50))
 {
   SetIcon(wxICON(app));
 
@@ -99,12 +97,6 @@ Frame::Frame()
 
   m_Results->CreateGrid(0, 0);
   m_Results->EnableEditing(false); // this is a read-only grid
-
-  if (wxExLexers::Get()->GetCount() > 0)
-  {
-    m_Query->SetLexer("sql");
-    m_Shell->SetLexer("sql");
-  }
 
   m_Shell->SetFocus();
 
@@ -152,7 +144,7 @@ Frame::Frame()
 
   GetManager().Update();
   
-  Bind(wxEVT_CLOSE, [=](wxCloseEvent& event) {
+  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     if (wxExFileDialog(this,
       &m_Query->GetFile()).ShowModalIfChanged()  != wxID_CANCEL)
     {
@@ -179,10 +171,6 @@ Frame::Frame()
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Query->GetFile().FileNew(wxExFileName());
-    if (wxExLexers::Get()->GetCount() > 0)
-    {
-      m_Query->SetLexer("sql");
-    }
     m_Query->SetFocus();
     ShowPane("QUERY");}, wxID_NEW);
 
@@ -190,7 +178,10 @@ Frame::Frame()
     wxExOpenFilesDialog(
       this, 
       wxFD_OPEN | wxFD_CHANGE_DIR, 
-      "sql files (*.sql)|*.sql", 
+      "sql files (*.sql)|*.sql|" + 
+      _("All Files") + wxString::Format(" (%s)|%s",
+        wxFileSelectorDefaultWildcardStr,
+        wxFileSelectorDefaultWildcardStr),
       true);}, wxID_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -206,7 +197,7 @@ Frame::Frame()
     if (dlg.ShowModal() == wxID_OK)
     {
        m_Query->GetFile().FileSave(dlg.GetPath());
-    }}, wxID_SAVE_AS);
+    }}, wxID_SAVEAS);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Running = false;
@@ -289,6 +280,16 @@ Frame::Frame()
     event.Check(GetManager().GetPane("RESULTS").IsShown());}, ID_VIEW_RESULTS);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(GetManager().GetPane("STATISTICS").IsShown());}, ID_VIEW_STATISTICS);
+  
+  // Do automatic connect.
+  if (!m_otl.Datasource().empty() && m_otl.Logon())
+  {
+    m_Shell->SetPrompt(m_otl.Datasource() + ">");
+  }
+  else
+  {
+    m_Shell->SetPrompt(">");
+  }
 }
 
 void Frame::OnCommandItemDialog(
@@ -299,7 +300,6 @@ void Frame::OnCommandItemDialog(
   {
     m_Query->ConfigGet();
     m_Shell->ConfigGet();
-    m_Shell->GetVi().Use(false);
   }
   else
   {
@@ -316,8 +316,7 @@ bool Frame::OpenFile(
 {
   if (m_Query->Open(filename, line_number, match, col_number, flags))
   {
-    GetManager().GetPane("QUERY").Show(true);
-    GetManager().Update();
+    ShowPane("QUERY");
     return true;
   }
   else

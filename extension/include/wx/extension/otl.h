@@ -2,11 +2,10 @@
 // Name:      otl.h
 // Purpose:   Declaration of wxExOTL class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXOTL_H
-#define _EXOTL_H
+#pragma once
 
 #if wxExUSE_OTL
 #define OTL_ODBC
@@ -46,11 +45,12 @@ public:
   /// Returns true if you were connected.
   bool Logoff();
 
-  /// Logons to the datasource (shows a connection dialog).
+  /// Logons to the datasource (shows a connection dialog if parent 
+  /// is not NULL).
   /// max_items specifies max number of datasources in the combobox and config.
   /// Returns false if dialog cancelled or logon fails.
   bool Logon(
-    wxWindow* parent,
+    wxWindow* parent = NULL,
     int max_items = 4,
     const wxString& title = _("Open ODBC Connection"));
 
@@ -80,6 +80,4 @@ public:
 private:
   otl_connect m_Connect;
 };
-
 #endif // wxExUSE_OTL
-#endif

@@ -1310,11 +1310,15 @@ void wxExSTC::Initialize(bool file_exists)
       (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
       - wxSTC_FOLDLEVELBASE;});
       
-  Bind(wxEVT_LEFT_DCLICK,  [=](wxMouseEvent& event) {
+  Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
     wxString filename;
     if (LinkOpen(&filename))
     {
       LinkOpen();
+    }
+    else
+    {
+      event.Skip();
     }
     });
   

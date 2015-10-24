@@ -49,7 +49,7 @@ private:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     int col_number = 0,
-    long flags = 0);
+    long flags = 0) override;
   void RunQuery(const wxString& query, bool empty_results = false);
   void RunQueries(const wxString& text);
   void UpdateStatistics(long time, long rpc);
