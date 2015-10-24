@@ -35,9 +35,6 @@ public:
   /// Returns the datasource connected to or to connect to.
   const wxString Datasource() const;
 
-  /// Returns member.
-  otl_connect& GetConnect() {return m_Connect;};
-  
   /// Returns true if we are connected.
   bool IsConnected() const {return m_Connect.connected > 0;};
 
