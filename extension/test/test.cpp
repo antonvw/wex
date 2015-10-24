@@ -31,6 +31,10 @@ void SetEnvironment(const wxString& dir)
   (void)system("cp ../../data/lexers.xml " + dir);
   (void)system("cp ../../data/macros.xml " + dir);
   (void)system("cp ../../data/vcs.xml " + dir);
+  
+#if wxExUSE_OTL
+  (void)system("cp .odbc.ini " + wxGetHomeDir());
+#endif
 }
     
 void SetFindExtension(wxFileName& fn)

@@ -8,9 +8,9 @@ compiler: gcc
 
 env:
   global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "eVY65PUeX5LiNzJCAiTVI1+Az4xBIzdTFTg/y9VVsfb2atyZDxejbIKCTMXX1noWiVm0+sUiNkqbYHkxku4Eay7KQ8xZp7F8GN6dQFdRkYPYPaEfLPeMn5C/mM+mqZ3ssSHe9HUQT8i3LcseqcYVDf3IeG1z5Sgh0NgbQLvcJr8="
+    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+    #   via the "travis encrypt" command using the project repo's public key
+    - secure: "eVY65PUeX5LiNzJCAiTVI1+Az4xBIzdTFTg/y9VVsfb2atyZDxejbIKCTMXX1noWiVm0+sUiNkqbYHkxku4Eay7KQ8xZp7F8GN6dQFdRkYPYPaEfLPeMn5C/mM+mqZ3ssSHe9HUQT8i3LcseqcYVDf3IeG1z5Sgh0NgbQLvcJr8="
 
 addons:
   coverity_scan:
@@ -24,10 +24,11 @@ addons:
   
 branches:
     only:
-        - master
-        - coverity_scan
+      - master
+      - coverity_scan
 
 before_install:
+    - mysql -e "create database IF NOT EXISTS test;" -uroot
     - sudo apt-key adv --fetch-keys http://repos.codelite.org/CodeLite.asc
     - sudo apt-add-repository 'deb http://repos.codelite.org/wx3.0.2/ubuntu/ precise universe'
     - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
@@ -45,6 +46,7 @@ install:
     - sudo apt-get install -y libcppunit-dev
     # coreutils needed for uniq and sort used in testing
     - sudo apt-get install -y coreutils
+    - sudo apt-get install -y unixODBC libmyodbc
 
 before_script:
     # we need  a display for the gui tests
@@ -59,5 +61,5 @@ before_script:
 
 script:
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then mkdir build && pushd build; fi
-    - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then cmake ..; fi
+    - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then cmake -DwxExUSE_SSS=ON -DwxExUSE_OTL=ON ..; fi
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then make -j 4 && ctest -V ..; fi

@@ -112,6 +112,11 @@ wxExShell::wxExShell(
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
     if (!m_Enabled)
     {
+      if (GetVi().ModeInsert())
+      {
+        DocumentEnd();
+        GetVi().Command("\x1b"); // ESC, normal mode
+      }
       if (GetCurrentPos() >= m_CommandStartPosition)
       {
         EnableShell(true);

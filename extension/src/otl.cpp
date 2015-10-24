@@ -54,37 +54,38 @@ bool wxExOTL::Logon(
   int max_items,
   const wxString& title)
 {
-  auto* config = wxConfigBase::Get(); 
-
-  const std::vector<wxExConfigItem> v{
-    wxExConfigItem(_("Datasource"),
-      ITEM_COMBOBOX,
-      wxEmptyString, // page
-      true,          // is_required
-      wxID_ANY,
-      max_items),
-    wxExConfigItem(_("User")),
-    wxExConfigItem(_("Password"), 
-      wxEmptyString, 
-      wxEmptyString,
-      wxTE_PASSWORD)};
-
-  // Always show the dialog.
-  if (wxExConfigDialog(parent,
-    v,
-    title).ShowModal() == wxID_CANCEL)
+  if (parent != NULL)
   {
-    return false;
+    if (wxExConfigDialog(parent,
+      std::vector<wxExConfigItem> {
+        wxExConfigItem(_("Datasource"),
+          ITEM_COMBOBOX,
+          wxEmptyString, // page
+          true,          // is_required
+          wxID_ANY,
+          max_items),
+        wxExConfigItem(_("User"),
+          wxEmptyString),
+        wxExConfigItem(_("Password"), 
+          wxEmptyString, 
+          wxEmptyString,
+          wxTE_PASSWORD)},
+        title).ShowModal() == wxID_CANCEL)
+    {
+      return false;
+    }
   }
+
+  auto* config = wxConfigBase::Get(); 
 
   try
   {
     const wxString connect =
-      config->Read(_("User")) + "/" + config->Read(_("Password")) + "@" +
+      config->Read(_("User"), "") + "/" + 
+      config->Read(_("Password"), "") + "@" +
       Datasource();
 
-    m_Connect.rlogon(
-      connect.c_str(),
+    m_Connect.rlogon(connect.c_str(),
       1); // autocommit-flag
   }
   catch (otl_exception& p)
@@ -98,6 +99,11 @@ bool wxExOTL::Logon(
 
 long wxExOTL::Query(const wxString& query)
 {
+  if (!IsConnected())
+  {
+    return 0;
+  }
+  
   return otl_cursor::direct_exec(m_Connect, query.c_str());
 }
 
@@ -110,6 +116,11 @@ long wxExOTL::Query(
   bool empty_results,
   int buffer_size)
 {
+  if (!IsConnected())
+  {
+    return 0;
+  }
+  
   wxASSERT(grid != NULL);
 
   otl_stream i;
@@ -202,6 +213,11 @@ long wxExOTL::Query(
   bool& stopped,
   int buffer_size)
 {
+  if (!IsConnected())
+  {
+    return 0;
+  }
+  
   wxASSERT(stc != NULL);
 
   otl_stream i;
