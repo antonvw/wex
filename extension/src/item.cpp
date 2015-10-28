@@ -425,7 +425,10 @@ const wxAny wxExItem::GetValue() const
   {
     case ITEM_CHECKBOX: any = ((wxCheckBox* )m_Window)->GetValue(); break;
     case ITEM_COLOUR: any = ((wxColourPickerWidget* )m_Window)->GetColour(); break;
+    case ITEM_DIRPICKERCTRL: any = ((wxDirPickerCtrl* )m_Window)->GetPath(); break;
+    case ITEM_FILEPICKERCTRL: any = ((wxFilePickerCtrl* )m_Window)->GetPath(); break;
     case ITEM_FLOAT: any = atof(((wxTextCtrl* )m_Window)->GetValue()); break;
+    case ITEM_FONTPICKERCTRL: any = ((wxFontPickerCtrl* )m_Window)->GetSelectedFont(); break;
     case ITEM_INT: any = atoi(((wxTextCtrl* )m_Window)->GetValue()); break;
     case ITEM_SLIDER: any = ((wxSlider* )m_Window)->GetValue(); break;
     case ITEM_SPINCTRL: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
@@ -433,6 +436,7 @@ const wxAny wxExItem::GetValue() const
     case ITEM_SPINCTRL_HEX: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
     case ITEM_STC: any = ((wxStyledTextCtrl* )m_Window)->GetValue(); break;
     case ITEM_STRING: any = ((wxTextCtrl* )m_Window)->GetValue(); break;
+    case ITEM_TOGGLEBUTTON: any = ((wxToggleButton* )m_Window)->GetValue(); break;
   }
   
   return any;
