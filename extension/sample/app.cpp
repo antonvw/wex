@@ -105,6 +105,14 @@ wxExSampleFrame::wxExSampleFrame()
   : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName(), 4)
   , m_Process(new wxExProcess())
   , m_FlagsSTC(0)
+  , m_Notebook(new wxExNotebook(
+    this, 
+    this,
+    wxID_ANY,
+    wxDefaultPosition,
+    wxDefaultSize,
+    wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS))
+  , m_STCLexers(new wxExSTC(this, wxExLexers::Get()->GetFileName()))
 {
   wxExProcess::PrepareOutput(this);
   
@@ -173,13 +181,6 @@ wxExSampleFrame::wxExSampleFrame()
   menubar->Append(menuHelp, "&Help");
   SetMenuBar(menubar);
 
-  m_Notebook = new wxExNotebook(
-    this, 
-    NULL,
-    wxID_ANY,
-    wxDefaultPosition,
-    wxDefaultSize,
-    wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS);
 #if wxUSE_GRID
   m_Grid = new wxExGrid(m_Notebook);
 #endif
@@ -201,7 +202,6 @@ wxExSampleFrame::wxExSampleFrame()
 
   GetManager().Update();
 
-  m_STCLexers = new wxExSTC(this, wxExLexers::Get()->GetFileName());
   m_Notebook->AddPage(m_STCLexers, wxExLexers::Get()->GetFileName().GetFullName());
   m_Notebook->AddPage(m_ListView, "wxExListView");
 

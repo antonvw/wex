@@ -286,6 +286,14 @@ wxExListView::wxExListView(wxWindow* parent,
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     ItemFromText(wxExClipboardGet());}, wxID_PASTE);
+  
+  Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
+    wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
+    if (frame != NULL)
+    {
+      frame->SetFindFocus(this);
+    }
+    event.Skip();});
 }    
 
 long wxExListView::AppendColumn(const wxExColumn& col)

@@ -51,8 +51,6 @@ class wxExSampleFrame: public wxExManagedFrame
 public:
   /// Constructor.
   wxExSampleFrame();
-  virtual wxExSTC* GetSTC() override {
-    return m_STC;};
   virtual void OnCommandItemDialog(
     wxWindowID id, 
     const wxCommandEvent& event) override;

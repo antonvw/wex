@@ -77,7 +77,7 @@ public:
     long flags = 0);
     
   /// Sets the find focus to specified window.
-  void SetFindFocus(wxWindow* focus);
+  void SetFindFocus(wxWindow* focus) {m_FindFocus = focus;};
   
   /// Override from base class.
   virtual void SetMenuBar(wxMenuBar* bar) override;

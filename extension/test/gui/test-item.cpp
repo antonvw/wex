@@ -25,13 +25,14 @@ void fixture::testItem()
   CPPUNIT_ASSERT( item.GetPage() == "page1");
   CPPUNIT_ASSERT( item.GetType() == ITEM_STRING);
   CPPUNIT_ASSERT( item.GetWindow() == NULL);
+  CPPUNIT_ASSERT( item.GetValue().IsNull());
   CPPUNIT_ASSERT(!item.IsRowGrowable());
-  CPPUNIT_ASSERT(!item.ToConfig(true));
 
   wxGridSizer sizer(3);
 
   CPPUNIT_ASSERT( item.Layout(m_Frame, &sizer) != NULL);
   CPPUNIT_ASSERT( item.GetWindow() != NULL);
+  CPPUNIT_ASSERT( item.GetValue() == "hello string");
   CPPUNIT_ASSERT( item.GetWindow()->GetWindowStyleFlag() == 1);
   
   item.SetRowGrowable(true);

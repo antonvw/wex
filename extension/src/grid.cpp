@@ -189,6 +189,14 @@ wxExGrid::wxExGrid(wxWindow* parent,
       "PaneInfo");
   #endif
     });
+  
+  Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
+    wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
+    if (frame != NULL)
+    {
+      frame->SetFindFocus(this);
+    }
+    event.Skip();});
 }
 
 const wxString wxExGrid::BuildPage()

@@ -1359,6 +1359,10 @@ void wxExSTC::Initialize(bool file_exists)
       }});
   }
   
+  Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
+    m_Frame->SetFindFocus(this);
+    event.Skip();});
+
   Bind(wxEVT_STC_AUTOCOMP_SELECTION, [=](wxStyledTextEvent& event) {
     if (m_vi.GetIsActive())
     {
@@ -1816,17 +1820,17 @@ bool wxExSTC::PositionRestore()
   if (m_SavedSelectionStart != -1 && m_SavedSelectionEnd != -1)
   {
     SetSelection(m_SavedSelectionStart, m_SavedSelectionEnd);
+    SetCurrentPos(m_SavedSelectionStart);
   }
   else if (m_SavedPos != -1)
   {
     SetSelection(m_SavedPos, m_SavedPos);
+    SetCurrentPos(m_SavedPos);
   }
   else
   {
     return false;
   }
-  
-  SetCurrentPos(m_SavedPos);
   
   EnsureCaretVisible();
   

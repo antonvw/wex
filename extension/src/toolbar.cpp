@@ -16,6 +16,8 @@
 #include <wx/extension/art.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/grid.h>
+#include <wx/extension/listview.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
@@ -25,7 +27,7 @@
 
 // Support class.
 // Offers a find text ctrl that allows you to find text
-// on a current STC on an wxExFrame.
+// on a current Grid, ListView or STC on an wxExFrame.
 class FindTextCtrl : public wxExFindTextCtrl
 {
 public:
@@ -361,11 +363,11 @@ void FindTextCtrl::Find(bool find_next, bool restore_position)
   // We cannot use events here, as OnFindDialog in stc uses frd data,
   // whereas we need the GetValue here.
   wxExSTC* stc = m_Frame->GetSTC();
+  wxExGrid* grid = m_Frame->GetGrid();
+  wxExListView* lv = m_Frame->GetListView();
 
   if (stc != NULL)
   {
-    m_Frame->SetFindFocus(stc);
-  
     if (restore_position)
     {
       stc->PositionRestore();
@@ -375,6 +377,14 @@ void FindTextCtrl::Find(bool find_next, bool restore_position)
       GetValue(), 
       -1,
       find_next);
+  }
+  else if (grid != NULL)
+  {
+    grid->FindNext(GetValue(), find_next);
+  }
+  else if (lv != NULL)
+  {
+    lv->FindNext(GetValue(), find_next);
   }
 }
 #endif // wxUSE_GUI

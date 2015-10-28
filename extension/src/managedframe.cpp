@@ -300,8 +300,6 @@ void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
       SetRecentFile(stc->GetFileName().GetFullPath());
     }
   }
-  
-  SetFindFocus(page);
 }
 
 void wxExManagedFrame::PrintEx(wxExEx* ex, const wxString& text)

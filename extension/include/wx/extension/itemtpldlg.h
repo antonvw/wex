@@ -110,19 +110,9 @@ public:
     };
     return T();};
   /// Return the item actual value for specified label, or 
-  /// empty string if item does not exist.
-  const wxString GetItemValue(const wxString& label) const {
-    const T item(GetItem(label));
-    switch (item.GetType())
-    {
-      case ITEM_FLOAT:
-      case ITEM_INT:
-      case ITEM_STRING:
-        return ((wxTextCtrl* )item.GetWindow())->GetValue(); break;
-      case ITEM_STC:
-        return ((wxStyledTextCtrl* )item.GetWindow())->GetValue(); break;
-    }
-    return wxEmptyString;};
+  /// IsNull value if item does not exist.
+  const wxAny GetItemValue(const wxString& label) const {
+    return GetItem(label).GetValue();};
 protected:
   const std::vector< T > & GetItems() const {return m_Items;};
   
