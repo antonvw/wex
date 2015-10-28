@@ -98,7 +98,7 @@ void fixture::testItemTemplateDialog()
   CPPUNIT_ASSERT(!dlg0->GetItem("fruit").GetLabel().empty());
   CPPUNIT_ASSERT( dlg0->GetItemValue("fruit") == "apple");
   CPPUNIT_ASSERT( dlg0->GetItem("xxx").GetLabel().empty());
-  CPPUNIT_ASSERT( dlg0->GetItemValue("yyy").empty());
+  CPPUNIT_ASSERT( dlg0->GetItemValue("yyy").IsNull());
   
   dlg0->Show();
 

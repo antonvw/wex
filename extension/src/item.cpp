@@ -412,6 +412,32 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
   }
 }
 
+const wxAny wxExItem::GetValue() const
+{
+  wxAny any;
+  
+  if (m_Window == NULL)
+  {
+    return any;
+  }
+  
+  switch (m_Type)
+  {
+    case ITEM_CHECKBOX: any = ((wxCheckBox* )m_Window)->GetValue(); break;
+    case ITEM_COLOUR: any = ((wxColourPickerWidget* )m_Window)->GetColour(); break;
+    case ITEM_FLOAT: any = atof(((wxTextCtrl* )m_Window)->GetValue()); break;
+    case ITEM_INT: any = atoi(((wxTextCtrl* )m_Window)->GetValue()); break;
+    case ITEM_SLIDER: any = ((wxSlider* )m_Window)->GetValue(); break;
+    case ITEM_SPINCTRL: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
+    case ITEM_SPINCTRL_DOUBLE: any = ((wxSpinCtrlDouble* )m_Window)->GetValue(); break;
+    case ITEM_SPINCTRL_HEX: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
+    case ITEM_STC: any = ((wxStyledTextCtrl* )m_Window)->GetValue(); break;
+    case ITEM_STRING: any = ((wxTextCtrl* )m_Window)->GetValue(); break;
+  }
+  
+  return any;
+}
+  
 wxFlexGridSizer* wxExItem::Layout(
   wxWindow* parent, 
   wxSizer* sizer, 

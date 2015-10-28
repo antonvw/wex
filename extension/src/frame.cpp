@@ -330,11 +330,6 @@ bool wxExFrame::OpenFile(
   return true;
 }
     
-void wxExFrame::SetFindFocus(wxWindow* focus)
-{
-  m_FindFocus = focus;
-}
-
 void wxExFrame::SetMenuBar(wxMenuBar* bar)
 {
   if (bar != NULL)

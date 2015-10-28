@@ -9,6 +9,7 @@
 
 #include <map>
 #include <set>
+#include <wx/any.h>
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 #include <wx/string.h>
 #include <wx/validate.h>
@@ -209,6 +210,10 @@ public:
 
   /// Gets the type.
   wxExItemType GetType() const {return m_Type;};
+  
+  /// Gets actual value, or IsNull if type
+  /// has no (or not yet) associated window, or conversion is not implemented.
+  const wxAny GetValue() const;
 
   /// Gets the window (first call Layout, to create it, otherwise it is NULL).
   wxWindow* GetWindow() const {return m_Window;};
@@ -305,7 +310,7 @@ private:
   wxString m_Label;
   wxString m_Info;
   wxString m_Page;
-  wxString m_Value; // initial, actual available using GetItem from dialog template
+  wxString m_Value; // initial value
 
   long m_Style;
 

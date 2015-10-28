@@ -28,9 +28,9 @@ void fixture::testItemDialog()
     "no pages");
   dlg1->Show();
   
-  CPPUNIT_ASSERT(atol(dlg1->GetItemValue("int1").c_str()) == 10);
-  CPPUNIT_ASSERT(atol(dlg1->GetItemValue("int2").c_str()) == 20);
-  CPPUNIT_ASSERT(atol(dlg1->GetItemValue("float1").c_str()) == 20);
+  CPPUNIT_ASSERT(dlg1->GetItemValue("int1") == 10);
+  CPPUNIT_ASSERT(dlg1->GetItemValue("int2") == 20);
+  CPPUNIT_ASSERT(dlg1->GetItemValue("float1") == 20.0);
   
   // Test dialog without items.
   wxExItemDialog* dlg2 = new wxExItemDialog(m_Frame, 
