@@ -166,12 +166,9 @@ bool wxExConfigItem::ToConfig(bool save) const
       break;
 
     case ITEM_FILEPICKERCTRL:
-      {
-      wxFilePickerCtrl* pc = (wxFilePickerCtrl*)GetWindow();
-      
       if (save)
       {
-        wxConfigBase::Get()->Write(GetLabel(), pc->GetPath());
+        wxConfigBase::Get()->Write(GetLabel(), GetValue().As<wxString>());
       }
       else
       {
@@ -188,33 +185,25 @@ bool wxExConfigItem::ToConfig(bool save) const
         
         if (!val.empty())
         {
-          pc->SetPath(val);
+          ((wxFilePickerCtrl*)GetWindow())->SetPath(val);
         }
-      }
       }
       break;
 
     case ITEM_FLOAT:
-      {
-      wxTextCtrl* tc = (wxTextCtrl*)GetWindow();
-      
       if (save)
-        wxConfigBase::Get()->Write(GetLabel(), atof(tc->GetValue().c_str()));
+        wxConfigBase::Get()->Write(GetLabel(), GetValue().As<float>());
       else
-        tc->SetValue(
+        ((wxTextCtrl*)GetWindow())->SetValue(
           wxString::Format("%lf", wxConfigBase::Get()->ReadDouble(GetLabel(), 0)));
-      }
       break;
       
     case ITEM_INT:
-      {
-      wxTextCtrl* tc = (wxTextCtrl*)GetWindow();
       if (save)
-        wxConfigBase::Get()->Write(GetLabel(), atol(tc->GetValue().c_str()));
+        wxConfigBase::Get()->Write(GetLabel(), GetValue().As<int>());
       else
-        tc->SetValue(
+        ((wxTextCtrl*)GetWindow())->SetValue(
           wxString::Format("%ld", wxConfigBase::Get()->ReadLong(GetLabel(), 0)));
-      }
       break;
 
     case ITEM_LISTVIEW_FOLDER:
