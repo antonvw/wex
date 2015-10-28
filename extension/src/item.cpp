@@ -211,7 +211,8 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
     case ITEM_DIRPICKERCTRL:
       {
       wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent, m_Id, wxEmptyString,
-        wxDirSelectorPromptStr, wxDefaultPosition, wxSize(width, wxDefaultCoord), m_Style);
+        wxDirSelectorPromptStr, wxDefaultPosition, wxSize(width, wxDefaultCoord), 
+        m_Style == 0 ? wxDIRP_DEFAULT_STYLE: m_Style);
 
       m_Window = pc;
 
@@ -232,7 +233,8 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
       wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent, m_Id, wxEmptyString,
         wxFileSelectorPromptStr, wc,
-        wxDefaultPosition, wxSize(width, wxDefaultCoord), m_Style);
+        wxDefaultPosition, wxSize(width, wxDefaultCoord),
+        m_Style == 0 ? wxFLP_DEFAULT_STYLE: m_Style);
 
       m_Window = pc;
 
@@ -465,8 +467,6 @@ wxFlexGridSizer* wxExItem::Layout(
       sizer->Add(m_Window, m_SizerFlags);
     }
   }
-  
-  ToConfig(false);
   
   return use;
 }

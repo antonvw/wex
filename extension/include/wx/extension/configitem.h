@@ -47,7 +47,7 @@ public:
     wxExItemType type = ITEM_STRING,
     bool is_required = false,
     /// will the label be displayed as a static text
-    /// ignored for a static text
+    /// (ignored for a static text item itself)
     bool add_label = true,
     int cols = -1)
     : wxExConfigItem(type, style, page, label, info, is_required, 
@@ -144,10 +144,17 @@ public:
         type == ITEM_COMMAND_LINK_BUTTON ||
         type == ITEM_TOGGLEBUTTON ? false: add_label, id, cols, max_items) {;};
     
+  /// Layouts this item and calls ToConfig.
+  virtual wxFlexGridSizer* Layout(
+    wxWindow* parent, 
+    wxSizer* sizer,
+    bool readonly = false,
+    wxFlexGridSizer* fgz = NULL) override;
+
   /// Loads or saves this item to the config.
   /// Returns true if the config was accessed, as not all
   /// config items associate with the config.
-  virtual bool ToConfig(bool save) const override;
+  bool ToConfig(bool save) const;
 private:
   /// Delegate constructor.
   wxExConfigItem(wxExItemType type, long style,

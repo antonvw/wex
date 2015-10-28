@@ -63,6 +63,16 @@ bool Update(wxExFindReplaceData* frd, wxCheckListBox* clb, int item, bool save, 
   return true;
 }
 
+wxFlexGridSizer* wxExConfigItem::Layout(
+  wxWindow* parent, wxSizer* sizer, bool readonly, wxFlexGridSizer* fgz)
+{
+  wxFlexGridSizer* ret = wxExItem::Layout(parent, sizer, readonly, fgz);
+  
+  ToConfig(false);
+  
+  return ret;
+}
+  
 bool wxExConfigItem::ToConfig(bool save) const
 {
   switch (GetType())
