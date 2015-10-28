@@ -81,7 +81,7 @@ public:
   /// Constructor for a ITEM_STRING, ITEM_STC, ITEM_STATICTEXT, 
   /// or a ITEM_HYPERLINKCTRL item.
   wxExItem(
-    /// label for the window as on the dialog and in the config,
+    /// label for the window as on the dialog,
     /// might also contain the note after a tab for a command link button
     /// if the window supports it you can use a markup label
     const wxString& label,
@@ -170,7 +170,8 @@ public:
       std::set<wxString>(),
       window, create) {;};
 
-  /// Constuctor for the other types (as ITEM_INT, ITEM_BUTTON item).
+  /// Constuctor for the other types (as ITEM_BUTTON, ITEM_DIRPICKERCTRL,
+  /// ITEM_FILEPICKERCTRL, ITEM_INT).
   wxExItem(
     const wxString& label,
     wxExItemType type,
@@ -181,6 +182,8 @@ public:
     /// the id as used by the window, see wxExFrame::OnCommandItemDialog, 
     int id = wxID_ANY,
     bool add_label = true,
+    /// the style, this default value is translated to correct default
+    /// for corresponging window (such as wxFLP_DEFAULT_STYLE for ITEM_FILEPICKERCTRL).
     long style = 0,
     int cols = -1)
     : wxExItem(type, style, page, label, value, wxEmptyString, is_required, 
@@ -213,11 +216,10 @@ public:
   /// Is this item allowed to be expanded on a row.
   bool IsRowGrowable() const {return m_IsRowGrowable;};
 
-  /// Layouts this item (creates the window) on the specified sizer, and calls
-  /// ToConfig, to optionally fill it with config value.
+  /// Layouts this item (creates the window) on the specified sizer.
   /// It returns the flex grid sizer that was used for creating the item sizer.
   /// Or it returns NULL if no flex grid sizer was used.
-  wxFlexGridSizer* Layout(
+  virtual wxFlexGridSizer* Layout(
     /// the parent
     wxWindow* parent, 
     /// the sizer
@@ -238,9 +240,6 @@ public:
   /// Default a normal wxDefaultValidator is used, except for ITEM_INT,
   /// and ITEM_FLOAT.
   void SetValidator(wxValidator* validator) {m_Validator = validator;};
-    
-  /// Loads or saves this item to the config (not implemented).
-  virtual bool ToConfig(bool save) const {return false;};
 protected:
   /// Delegate constructor.
   wxExItem(
@@ -261,9 +260,8 @@ protected:
     const wxString& info = wxEmptyString,
     /// support for the underlying control
     bool is_required = false, 
-    /// If you specify add label, then the label is added as a label to
-    /// the item as well, otherwise the label is not added (and only used
-    /// for loading and saving from config).
+    /// If you specify add label, then the label is added as a label in front of
+    /// the item, otherwise the label is not added
     bool add_label = false,
     /// the window id
     int id = wxID_ANY, 

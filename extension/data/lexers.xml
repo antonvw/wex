@@ -2005,7 +2005,7 @@ Copyright: (c) 2015, Anton van Wezenbeek
         <def style ="variable"> fore:medium blue </def>
         
         <colour name="caretforeground"> black </colour>
-        <colour name="caretlinebackground"> light grey </colour>
+        <colour name="caretlinebackground"> wheat </colour>
         <colour name="edge"> light blue </colour>
         <colour name="selforeground"> white </colour>
         <colour name="selbackground"> green </colour>
