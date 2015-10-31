@@ -2,11 +2,10 @@
 // Name:      textfile.h
 // Purpose:   Declaration of wxExTextFile class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXTEXTFILE_H
-#define _EXTEXTFILE_H
+#pragma once
 
 #include <wx/textfile.h>
 #include <wx/extension/filename.h>
@@ -26,17 +25,17 @@ public:
     m_Elements += s.m_Elements;
     return *this;}
 
-  /// Gets all items as a string. All items are returned as a string,
+  /// Returns all items as a string. All items are returned as a string,
   /// with newlines separating items.
   const wxString Get() const {return m_Elements.Get();};
 
-  /// Gets the key, if not present 0 is returned.
+  /// Returns the key, if not present 0 is returned.
   int Get(const wxString& key) const {
     const auto it = m_Elements.GetItems().find(key);
     return (it != m_Elements.GetItems().end() ? it->second: 0);};
 
-  /// Gets the elements.
-  const wxExStatistics<int>& GetElements() const {return m_Elements;};
+  /// Returns the elements.
+  const auto & GetElements() const {return m_Elements;};
 private:
   wxExStatistics<int> m_Elements;
 };
@@ -52,13 +51,13 @@ public:
     const wxExFileName& filename,
     const wxExTool& tool);
 
-  /// Gets the filename.
+  /// Returns the filename.
   const wxExFileName& GetFileName() const {return m_FileName;};
 
-  /// Gets the statistics.
+  /// Returns the statistics.
   const wxExFileStatistics& GetStatistics() const {return m_Stats;}
 
-  /// Gets the tool.
+  /// Returns the tool.
   const wxExTool& GetTool() const {return m_Tool;};
 
   /// Runs the tool (opens the file before running and closes afterwards).
@@ -95,4 +94,3 @@ private:
 
   std::string m_FindString;
 };
-#endif

@@ -60,8 +60,8 @@ public:
   /// Returns whether sorting is ascending.
   bool GetIsSortedAscending() const {return m_IsSortedAscending;}
 
-  /// Gets the column type.
-  wxExColumnType GetType() const {return m_Type;}
+  /// Returns the column type.
+  auto GetType() const {return m_Type;}
 
   /// Sets the sort ascending member.
   void SetIsSortedAscending(wxExSortType type);
@@ -104,7 +104,7 @@ public:
   /// Finds next.
   bool FindNext(const wxString& text, bool find_next = true);
 
-  /// Gets the item text using item number and column name.
+  /// Returns the item text using item number and column name.
   /// If you do not specify a column, the item label is returned
   /// (this is also valid in non report mode).
   const wxString GetItemText(
@@ -169,7 +169,7 @@ protected:
   /// Clears all items.
   void EditClearAll();
 
-  /// Gets the field separator.
+  /// Returns the field separator.
   const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
 private:
   const wxString BuildPage();
@@ -238,14 +238,14 @@ public:
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
 
-  /// Gets the list type.
+  /// Returns the list type.
   const wxExListType GetType() const {return m_Type;};
 
-  /// Gets the list type as a string.
+  /// Returns the list type as a string.
   const wxString GetTypeDescription() const {
     return GetTypeDescription(m_Type);};
 
-  /// Gets the list type as a string for specified type.
+  /// Returns the list type as a string for specified type.
   static const wxString GetTypeDescription(wxExListType type);
 
   /// Updates all items.

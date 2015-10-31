@@ -93,7 +93,7 @@ public:
 #endif
   };
 
-  /// Gets all items as a string. All items are returned as a string,
+  /// Returns all items as a string. All items are returned as a string,
   /// with comma's separating items, and a : separating key and value.
   const wxString Get() const {
     wxString text;
@@ -108,10 +108,10 @@ public:
     }
     return text;};
 
-  /// Gets the items.
+  /// Returns the items.
   const auto & GetItems() const {return m_Items;};
 
-  /// Gets value for specified key.
+  /// Returns value for specified key.
   const T Get(const wxString& key) const {
     const auto it = m_Items.find(key);
     if (it != m_Items.end())

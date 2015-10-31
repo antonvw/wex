@@ -2,11 +2,10 @@
 // Name:      app.h
 // Purpose:   Include file for wxExApp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXAPP_H
-#define _EXAPP_H
+#pragma once
 
 #include <wx/app.h>
 #include <wx/intl.h> // for wxLocale
@@ -17,11 +16,11 @@
 class WXDLLIMPEXP_BASE wxExApp : public wxApp
 {
 public:
-  /// Gets the catalog dir.
+  /// Returns the catalog dir.
   const wxString& GetCatalogDir() const {return m_CatalogDir;};
   
-  /// Gets the locale.
-  const wxLocale& GetLocale() const {return m_Locale;};
+  /// Returns the locale.
+  const auto & GetLocale() const {return m_Locale;};
 
   /// Constructs the config, initializes the locale, loads the VCS file.
   /// In your own OnInit first set the app name,
@@ -36,4 +35,3 @@ private:
   wxString m_CatalogDir;
   wxLocale m_Locale;
 };
-#endif

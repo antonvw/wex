@@ -20,31 +20,31 @@ public:
   // Destructor (not for Doxy).
  ~wxExFindReplaceData();
  
-  /// Gets the find replace data.
+  /// Returns the find replace data.
   static wxExFindReplaceData* Get(bool createOnDemand = true);
 
-  /// Gets the find strings.
+  /// Returns the find strings.
   const auto & GetFindStrings() const {return m_FindStrings;};
 
-  /// Gets the replace strings.
+  /// Returns the replace strings.
   const auto & GetReplaceStrings() const {return m_ReplaceStrings;};
 
-  /// Gets text.
+  /// Returns text.
   const wxString& GetTextFindWhat() const {return m_TextFindWhat;};
 
-  /// Gets text.
+  /// Returns text.
   const wxString& GetTextMatchCase() const {return m_TextMatchCase;};
 
-  /// Gets text.
+  /// Returns text.
   const wxString& GetTextMatchWholeWord() const {return m_TextMatchWholeWord;};
 
-  /// Gets text.
+  /// Returns text.
   const wxString& GetTextRegEx() const {return m_TextRegEx;};
 
-  /// Gets text.
+  /// Returns text.
   const wxString& GetTextReplaceWith() const {return m_TextReplaceWith;};
 
-  /// Gets text.
+  /// Returns text.
   const wxString& GetTextSearchDown() const {return m_TextSearchDown;};
   
   /// Iterates text ctrl for specified key.

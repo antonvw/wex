@@ -2,11 +2,10 @@
 // Name:      file.h
 // Purpose:   Declaration of class wxExFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXFILE_H
-#define _EXFILE_H
+#pragma once
 
 #include <wx/file.h>
 #include <wx/extension/filename.h>
@@ -58,8 +57,8 @@ public:
   /// Returns whether contents have been changed.
   virtual bool GetContentsChanged() const {return false;};
 
-  /// Gets the file name.
-  const wxExFileName& GetFileName() const {return m_FileName;}
+  /// Returns the file name.
+  const auto & GetFileName() const {return m_FileName;}
 
   /// Reads this file into a buffer.
   const wxCharBuffer Read(wxFileOffset seek_position = 0);
@@ -99,4 +98,3 @@ private:
   wxExFileName m_FileName;
   wxExStat m_Stat; // used for syncing, no public access
 };
-#endif

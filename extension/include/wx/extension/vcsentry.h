@@ -69,21 +69,21 @@ public:
     /// working directory
     const wxString& wd = wxEmptyString);
   
-  /// Gets the administrative directory.
+  /// Returns the administrative directory.
   const wxString& GetAdminDir() const {return m_AdminDir;};
 
-  /// Gets the current vcs command.  
-  const wxExVCSCommand& GetCommand() const {
+  /// Returns the current vcs command.  
+  const auto& GetCommand() const {
     return m_Commands.at(m_CommandIndex);};
 
-  /// Gets the number of vcs commands.
+  /// Returns the number of vcs commands.
   const size_t GetCommands() const {
     return m_Commands.size();};
   
-  /// Gets the flags used to run the command.
+  /// Returns the flags used to run the command.
   const wxString GetFlags() const;
 
-  /// Gets the name for this vcs entry.
+  /// Returns the name for this vcs entry.
   const wxString& GetName() const {return m_Name;};
 
   /// Sets the current vcs command.

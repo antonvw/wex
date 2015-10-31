@@ -192,29 +192,29 @@ public:
         type == ITEM_COMMAND_LINK_BUTTON ||
         type == ITEM_TOGGLEBUTTON ? false: add_label, id, cols) {;};
 
-  /// Gets the choices.
+  /// Returns the choices.
   const auto & GetChoices() const {return m_Choices;};
   
-  /// Gets the number of columns for the current page.
+  /// Returns the number of columns for the current page.
   int GetColumns() const {return m_PageCols;};
 
-  /// Gets is required.
+  /// Returns is required.
   bool GetIsRequired() const {return m_IsRequired;};
 
-  /// Gets the label.
+  /// Returns the label.
   const wxString& GetLabel() const {return m_Label;};
 
-  /// Gets the page.
+  /// Returns the page.
   const wxString& GetPage() const {return m_Page;};
 
-  /// Gets the type.
-  wxExItemType GetType() const {return m_Type;};
+  /// Returns the type.
+  auto GetType() const {return m_Type;};
   
-  /// Gets actual value, or IsNull if type
+  /// Returns actual value, or IsNull if type
   /// has no (or not yet) associated window, or conversion is not implemented.
   const wxAny GetValue() const;
 
-  /// Gets the window (first call Layout, to create it, otherwise it is NULL).
+  /// Returns the window (first call Layout, to create it, otherwise it is NULL).
   wxWindow* GetWindow() const {return m_Window;};
   
   /// Is this item allowed to be expanded on a row.

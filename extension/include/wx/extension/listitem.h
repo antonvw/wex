@@ -2,11 +2,10 @@
 // Name:      listitem.h
 // Purpose:   Declaration of class 'wxExListItem'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EX_LISTITEM_H
-#define _EX_LISTITEM_H
+#pragma once
 
 #include <wx/extension/filename.h>
 #include <wx/extension/listview.h>
@@ -26,14 +25,14 @@ public:
   // Deletes this item from the listview.
   void Delete() {m_ListView->DeleteItem(GetId());};
 
-  /// Gets the filename.
-  const wxExFileName& GetFileName() const {return m_FileName;};
+  /// Returns the filename.
+  const auto & GetFileName() const {return m_FileName;};
 
-  /// Gets the file spec.
-  const wxString GetFileSpec() const {return m_FileSpec;};
+  /// Returns the file spec.
+  const auto GetFileSpec() const {return m_FileSpec;};
   
-  /// Gets the listview.
-  wxExListView* GetListView() const {return m_ListView;};
+  /// Returns the listview.
+  auto* GetListView() const {return m_ListView;};
   
   /// Inserts the item at index (if -1 at the end of the listview),
   /// and sets all attributes.
@@ -58,4 +57,3 @@ private:
   const wxString m_FileSpec;
   bool m_IsReadOnly;
 };
-#endif

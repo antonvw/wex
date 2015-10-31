@@ -46,11 +46,11 @@ public:
     return *this;
   };
 
-  /// Gets the lexer.
-  const wxExLexer& GetLexer() const {return m_Lexer;};
+  /// Returns the lexer.
+  const auto & GetLexer() const {return m_Lexer;};
 
-  /// Gets the stat.
-  const wxExStat& GetStat() const {return m_Stat;};
+  /// Returns the stat.
+  const auto & GetStat() const {return m_Stat;};
   
   /// Sets the lexer.
   void SetLexer(const wxExLexer& lexer) {m_Lexer = lexer;};

@@ -54,13 +54,13 @@ private:
     const wxString& syntax_end,
     const wxString& text) const;
 
-  /// Gets the actual begin of comment, depending on the syntax type.
+  /// Returns the actual begin of comment, depending on the syntax type.
   const wxString CommentBegin() const {
     return (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE) ?
       GetFileName().GetLexer().GetCommentBegin() :
       GetFileName().GetLexer().GetCommentBegin2();};
 
-  /// Gets the last end of comment detected, depending on the last syntax type.
+  /// Returns the last end of comment detected, depending on the last syntax type.
   const wxString CommentEnd() const {
     return (m_LastSyntaxType == SYNTAX_NONE || m_LastSyntaxType == SYNTAX_ONE) ?
       GetFileName().GetLexer().GetCommentEnd() :

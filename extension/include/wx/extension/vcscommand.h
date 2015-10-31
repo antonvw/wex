@@ -2,11 +2,10 @@
 // Name:      vcscommand.h
 // Purpose:   Declaration of wxExVCSCommand class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXVCSCOMMAND_H
-#define _EXVCSCOMMAND_H
+#pragma once
 
 #include <wx/string.h>
 
@@ -38,7 +37,7 @@ public:
     /// The subcommand (used as submenu, but also used for executing).
     const wxString& subcommand = wxEmptyString);
 
-  /// Gets the command (and subcommand and accelerators if necessary).
+  /// Returns the command (and subcommand and accelerators if necessary).
   const wxString GetCommand(
     bool include_subcommand = true,
     bool include_accelerators = false) const;
@@ -46,7 +45,7 @@ public:
   /// Returns the submenu.
   const wxString& GetSubMenu() const {return m_SubMenu;};
 
-  /// Gets the type.
+  /// Returns the type.
   long GetType() const {return m_Type;};
   
   /// Returns true if this is a add like command.
@@ -91,4 +90,3 @@ private:
   bool m_SubMenuIsCommand;
   long m_Type;
 };
-#endif

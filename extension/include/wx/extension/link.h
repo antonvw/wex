@@ -2,11 +2,10 @@
 // Name:      link.h
 // Purpose:   Declaration of class wxExLink
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXLINK_H
-#define _EXLINK_H
+#pragma once
 
 #include <wx/filefn.h> // for wxPathList
 
@@ -25,7 +24,7 @@ public:
   /// Returns false if basepath was not found in stc (or stc is NULL).
   bool AddBasePath();
   
-  /// Gets a path from text, using pathlist if necessary.
+  /// Returns a path from text, using pathlist if necessary.
   /// Returns empty string if no path could be found.
   const wxString GetPath(
     /// text containing a path somewhere
@@ -49,4 +48,3 @@ private:
   wxExSTC* m_STC;
 };
 #endif // wxUSE_GUI
-#endif
