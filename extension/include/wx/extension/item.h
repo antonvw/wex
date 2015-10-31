@@ -193,7 +193,7 @@ public:
         type == ITEM_TOGGLEBUTTON ? false: add_label, id, cols) {;};
 
   /// Gets the choices.
-  const std::map<long, const wxString> & GetChoices() const {return m_Choices;};
+  const auto & GetChoices() const {return m_Choices;};
   
   /// Gets the number of columns for the current page.
   int GetColumns() const {return m_PageCols;};

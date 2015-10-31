@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXVIMACROS_H
-#define _EXVIMACROS_H
+#pragma once
 
 #include <map>
 #include <vector>
@@ -33,7 +32,7 @@ public:
   const std::vector< std::string > Get(const wxString& name) const;
   
   /// Returns abbreviations.
-  const std::map<wxString, std::string>& GetAbbreviations() const {return m_Abbreviations;};
+  const auto & GetAbbreviations() const {return m_Abbreviations;};
   
   /// Returns number of macros and variables available.
   int GetCount() const;
@@ -169,4 +168,3 @@ private:
   static std::map<wxString, wxExVariable> m_Variables;
 };
 #endif // wxUSE_GUI
-#endif

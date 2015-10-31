@@ -109,7 +109,7 @@ public:
     return text;};
 
   /// Gets the items.
-  const std::map<wxString, T> & GetItems() const {return m_Items;};
+  const auto & GetItems() const {return m_Items;};
 
   /// Gets value for specified key.
   const T Get(const wxString& key) const {

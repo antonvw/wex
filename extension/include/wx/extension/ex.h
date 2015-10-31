@@ -48,10 +48,10 @@ public:
   bool GetIsActive() const {return m_IsActive;};
   
   /// Returns last entered command.
-  const std::string& GetLastCommand() const {return m_LastCommand;};
+  const auto & GetLastCommand() const {return m_LastCommand;};
   
   /// Returns the macros.
-  static wxExViMacros& GetMacros() {return m_Macros;};
+  static auto & GetMacros() {return m_Macros;};
 
   /// Returns register name.
   const char GetRegister() const {return m_Register;};

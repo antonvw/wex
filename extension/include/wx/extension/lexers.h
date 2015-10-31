@@ -71,29 +71,26 @@ public:
   size_t GetCount() const {return m_Lexers.size();};
 
   /// Returns the default style.
-  const wxExStyle& GetDefaultStyle() const {return m_DefaultStyle;};
+  const auto & GetDefaultStyle() const {return m_DefaultStyle;};
 
   /// Gets the filename.
-  const wxFileName& GetFileName() const {return m_FileName;};
+  const auto & GetFileName() const {return m_FileName;};
   
   /// Gets the keywords for the specified named set of keywords.
   /// Returns empty string if set does not exist.
   const wxString GetKeywords(const wxString& set) const;
 
   /// Gets the macros for specified lexer.
-  const std::map<wxString, wxString>& GetMacros(const wxString& lexer) {
-    return m_Macros[lexer];};
+  const auto & GetMacros(const wxString& lexer) {return m_Macros[lexer];};
 
   /// Gets global properties.
-  const std::vector<wxExProperty> & GetProperties() const {
-    return m_GlobalProperties;};
+  const auto & GetProperties() const {return m_GlobalProperties;};
 
   /// Returns the current theme.
-  const wxString& GetTheme() const {return m_Theme;};
+  const auto & GetTheme() const {return m_Theme;};
   
   /// Gets the theme macros for the current theme.
-  const std::map<wxString, wxString>& GetThemeMacros() {
-    return m_ThemeMacros[m_Theme];};
+  const auto & GetThemeMacros() {return m_ThemeMacros[m_Theme];};
 
   /// Returns whether the current theme is not the empty theme.
   bool GetThemeOk() const {return GetTheme() != m_NoTheme;};

@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXLEXER_H
-#define _EXLEXER_H
+#pragma once
 
 #include <map>
 #include <set>
@@ -77,7 +76,7 @@ public:
   const wxString& GetExtensions() const {return m_Extensions;};
 
   /// Gets the keywords.
-  const std::set<wxString>& GetKeywords() const {return m_Keywords;};
+  const auto & GetKeywords() const {return m_Keywords;};
 
   /// Gets the keywords as one large string, 
   const wxString GetKeywordsString(
@@ -94,13 +93,13 @@ public:
   const wxString& GetLanguage() const {return m_Language;};
   
   /// Gets the properties.
-  const std::vector<wxExProperty> & GetProperties() const {return m_Properties;};
+  const auto & GetProperties() const {return m_Properties;};
   
   /// Gets the scintilla lexer.
   const wxString& GetScintillaLexer() const {return m_ScintillaLexer;};
 
   /// Gets the styles.
-  const std::vector<wxExStyle> & GetStyles() const {return m_Styles;};
+  const auto & GetStyles() const {return m_Styles;};
   
   /// Is this word a keyword (allways all keywords), case sensitive.
   bool IsKeyword(const wxString& word) const;
@@ -203,4 +202,3 @@ private:
   
   bool m_IsOk;
 };
-#endif
