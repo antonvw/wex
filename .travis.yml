@@ -2,6 +2,9 @@
 #
 # It is used automatically for the repositories on Github if it's found in the
 # root directory of the project.
+sudo: required
+dist: trusty
+
 language: cpp
 
 compiler: gcc
@@ -18,7 +21,7 @@ addons:
       name: "antonvw/wxExtension"
       description: "Build submitted via Travis CI"
     notification_email: a.m.vanwezenbeek@gmail.com
-    build_command_prepend: "sudo rm /usr/bin/g++; sudo ln -s /usr/bin/g++-4.9 /usr/bin/g++; mkdir build; pushd build; cmake .."
+    build_command_prepend: "mkdir build; pushd build; cmake .."
     build_command:   "make -j 4"
     branch_pattern: coverity_scan
   
@@ -29,24 +32,17 @@ branches:
 
 before_install:
     - mysql -e "create database IF NOT EXISTS test;" -uroot
-    - sudo apt-key adv --fetch-keys http://repos.codelite.org/CodeLite.asc
-    - sudo apt-add-repository 'deb http://repos.codelite.org/wx3.0.2/ubuntu/ precise universe'
-    - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
-    - sudo apt-get update
 
 install:
-    - sudo apt-get install g++-4.9
-    - sudo apt-get install lcov
     - sudo apt-get install ruby
     - gem install coveralls-lcov
     # first add dependencies for libwxgtk3
-    - sudo apt-get install -y liblzma5 
-    - sudo apt-get install -y libjbig0
-    - sudo apt-get install -y libwxbase3.0-0-unofficial libwxbase3.0-dev libwxgtk3.0-0-unofficial libwxgtk3.0-dev wx3.0-headers wx-common wx3.0-i18n    
-    - sudo apt-get install -y libcppunit-dev
+    - sudo apt-get install liblzma5 libjbig0
+    - sudo apt-get install libwxgtk3.0-dev wx3.0-headers wx-common wx3.0-i18n    
+    - sudo apt-get install libcppunit-dev
     # coreutils needed for uniq and sort used in testing
-    - sudo apt-get install -y coreutils
-    - sudo apt-get install -y unixodbc unixodbc-dev libmyodbc
+    - sudo apt-get install coreutils
+    - sudo apt-get install unixodbc unixodbc-dev libmyodbc
 
 before_script:
     # we need  a display for the gui tests
@@ -54,10 +50,6 @@ before_script:
     # take care that recently-used.xbel file can be written
     - export XDG_DATA_HOME=$PWD
     - sh -e /etc/init.d/xvfb start
-    - sudo rm /usr/bin/g++
-    - sudo ln -s /usr/bin/g++-4.9 /usr/bin/g++
-    - sudo rm /usr/bin/gcov
-    - sudo ln -s /usr/bin/gcov-4.9 /usr/bin/gcov
 
 script:
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then mkdir build && pushd build; fi
