@@ -73,23 +73,23 @@ public:
   /// Returns the default style.
   const auto & GetDefaultStyle() const {return m_DefaultStyle;};
 
-  /// Gets the filename.
+  /// Returns the filename.
   const auto & GetFileName() const {return m_FileName;};
   
-  /// Gets the keywords for the specified named set of keywords.
+  /// Returns the keywords for the specified named set of keywords.
   /// Returns empty string if set does not exist.
   const wxString GetKeywords(const wxString& set) const;
 
-  /// Gets the macros for specified lexer.
+  /// Returns the macros for specified lexer.
   const auto & GetMacros(const wxString& lexer) {return m_Macros[lexer];};
 
-  /// Gets global properties.
+  /// Returns global properties.
   const auto & GetProperties() const {return m_GlobalProperties;};
 
   /// Returns the current theme.
   const auto & GetTheme() const {return m_Theme;};
   
-  /// Gets the theme macros for the current theme.
+  /// Returns the theme macros for the current theme.
   const auto & GetThemeMacros() {return m_ThemeMacros[m_Theme];};
 
   /// Returns whether the current theme is not the empty theme.

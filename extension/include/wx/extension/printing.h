@@ -2,11 +2,10 @@
 // Name:      printing.h
 // Purpose:   Include file for wxExPrinting class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXPRINTING_H
-#define _EXPRINTING_H
+#pragma once
 
 #include <vector> 
 #include <wx/html/htmprint.h>
@@ -23,13 +22,13 @@ public:
   static wxExPrinting* Get(bool createOnDemand = true);
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  /// Gets the html printer.
-  wxHtmlEasyPrinting* GetHtmlPrinter() {return m_HtmlPrinter;};
+  /// Returns the html printer.
+  auto* GetHtmlPrinter() {return m_HtmlPrinter;};
 #endif
 
 #if wxUSE_PRINTING_ARCHITECTURE
-  /// Gets the printer.
-  wxPrinter* GetPrinter() {return m_Printer;};
+  /// Returns the printer.
+  auto* GetPrinter() {return m_Printer;};
 #endif
 
   /// Sets the object as the current one, returns the pointer 
@@ -70,5 +69,4 @@ private:
   std::vector<int> m_PageBreaks;
   wxStyledTextCtrl* m_Owner;
 };
-#endif
 #endif

@@ -22,7 +22,7 @@ public:
   wxExStat(const wxString& fullpath = wxEmptyString){
     Sync(fullpath);};
 
-  /// Gets the modification time.
+  /// Returns the modification time.
   /// From wxFileName class GetModificationTime is available as well,
   /// this one returns string and only uses the stat member, and is fast.
   const wxString GetModificationTime() const {

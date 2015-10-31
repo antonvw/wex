@@ -42,16 +42,16 @@ public:
     /// name
     const wxString& name = "wxExSTCEntryDialog");
     
-  /// Gets the STC lexer.
+  /// Returns the STC lexer.
   const wxExLexer* GetLexer() const;
   
-  /// Gets the STC.
+  /// Returns the STC.
   wxExSTC* GetSTC();
 
-  /// Gets the normal STC text value.
+  /// Returns the normal STC text value.
   const wxString GetText() const;
 
-  /// Gets raw STC text value.
+  /// Returns raw STC text value.
   const wxCharBuffer GetTextRaw() const;
 
   /// Sets the STC lexer.

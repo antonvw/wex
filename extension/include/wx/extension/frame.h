@@ -105,7 +105,7 @@ public:
   /// Do something when statusbar is (right) clicked.
   virtual void StatusBarClickedRight(const wxString& ) {};
 
-  /// Gets text on specified pane.
+  /// Returns text on specified pane.
   /// Don't forget to call SetupStatusBar first.
   static wxString GetStatusText(const wxString& pane);
   

@@ -77,7 +77,7 @@ public:
     /// if the command changes stc, update it, otherwise NULL
     wxExSTC* & stc) {return false;};
 
-  /// Gets a command line ex command.
+  /// Returns a command line ex command.
   /// Default shows the ex bar, sets the label and 
   /// sets focus to it, allowing
   /// you to enter a command.
@@ -89,16 +89,16 @@ public:
     const wxString& label);
   
   /// Returns file history.
-  wxExFileHistory& GetFileHistory() {return m_FileHistory;};
+  auto & GetFileHistory() {return m_FileHistory;};
   
-  /// Gets the manager.
-  wxAuiManager& GetManager() {return m_Manager;};
+  /// Returns the manager.
+  auto & GetManager() {return m_Manager;};
 
   /// Returns the options toolbar.
-  wxExOptionsToolBar* GetOptionsToolBar() {return m_OptionsBar;};
+  auto * GetOptionsToolBar() {return m_OptionsBar;};
   
   /// Returns the toolbar.
-  wxExToolBar* GetToolBar() {return m_ToolBar;};
+  auto * GetToolBar() {return m_ToolBar;};
   
   /// Hides the ex bar.
   /// Default it sets focus back to stc component associated with current ex.

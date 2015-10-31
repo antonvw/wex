@@ -25,13 +25,13 @@ public:
     , m_HelpText(helptext)
     , m_Text(text){};
 
-  /// Gets the info.
+  /// Returns the info.
   const wxString& GetInfo() const {return m_Info;};
 
-  /// Gets the helptext.
+  /// Returns the helptext.
   const wxString& GetHelpText() const {return m_HelpText;};
 
-  /// Gets the text.
+  /// Returns the text.
   const wxString& GetText() const {return m_Text;};
 private:
   wxString m_Info;
@@ -59,16 +59,16 @@ public:
     const wxString& helptext = wxEmptyString) {
     m_ToolInfo[tool_id] = wxExToolInfo(info, text, helptext);};
 
-  /// Gets the tool id.
+  /// Returns the tool id.
   int GetId() const {return m_Id;};
 
-  /// Gets all the tool info.
+  /// Returns all the tool info.
   const auto & GetToolInfo() const {return m_ToolInfo;};
 
-  /// Gets info about current tool.
+  /// Returns info about current tool.
   const wxString Info() const;
 
-  /// Gets info about current tool using specified statistics.
+  /// Returns info about current tool using specified statistics.
   const wxString Info(const wxExStatistics<int>* stat) const;
   
   /// Is this tool a find type.

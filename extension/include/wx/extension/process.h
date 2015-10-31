@@ -62,12 +62,12 @@ public:
   /// Returns true if the command could not be executed.
   bool GetError() const {return m_Error;};
 
-  /// Gets the output from Execute (only filled for wxEXEC_SYNC).
+  /// Returns the output from Execute (only filled for wxEXEC_SYNC).
   const wxString& GetOutput() const {return m_Output;};
   
   /// Returns the shell component 
   /// (might be NULL if PrepareOutput is not yet invoked).
-  static wxExShell* GetShell() {return m_Shell;};
+  static auto* GetShell() {return m_Shell;};
   
   /// Returns true when the command executed resulted in stderr errors.
   bool HasStdError() const {return m_HasStdError;};

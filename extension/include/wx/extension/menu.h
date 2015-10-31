@@ -80,8 +80,8 @@ public:
     /// shows modal dialog if necessary
     bool show_modal = true);
 
-  /// Gets the style.
-  long GetStyle() const {return m_Style;};
+  /// Returns the style.
+  auto GetStyle() const {return m_Style;};
 
   /// Sets the style.
   void SetStyle(long style) {m_Style = style;};

@@ -70,14 +70,14 @@ public:
   /// When disabled, shell is a normal STC.
   void EnableShell(bool enable = true);
   
-  /// Gets last entered command.
+  /// Returns last entered command.
   const wxString GetCommand() const;
   
-  /// Gets all history commands as a string, 
+  /// Returns all history commands as a string, 
   /// separated by a newline (for testing).
   const wxString GetHistory() const;
 
-  /// Gets the prompt.
+  /// Returns the prompt.
   const wxString& GetPrompt() const {return m_Prompt;};
 
   /// Returns whether shell processing is enabled.

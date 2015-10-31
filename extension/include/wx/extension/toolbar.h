@@ -39,7 +39,7 @@ public:
   /// This adds a file open, save and print and find control.
   void AddControls(bool realize = true);
   
-  /// Gets the frame.
+  /// Returns the frame.
   wxExManagedFrame* GetFrame() {return m_Frame;};
 private:
   wxExManagedFrame* m_Frame;

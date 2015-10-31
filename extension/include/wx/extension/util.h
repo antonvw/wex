@@ -46,7 +46,7 @@ public:
   /// Constructor, using string, each word results in a vector element.
   wxExToVectorString(const wxString& in);
   
-  /// Gets the vector string.
+  /// Returns the vector string.
   const auto & Get() const {return m_VS;};
 private:
   void FromArrayString(const wxArrayString& in);
@@ -111,7 +111,7 @@ double wxExCalculator(
 /// Adds data to the clipboard.
 bool wxExClipboardAdd(const wxString& text);
 
-/// Gets data from the clipboard.
+/// Returns data from the clipboard.
 const wxString wxExClipboardGet();
 
 #if wxUSE_GUI
@@ -147,7 +147,7 @@ const wxString wxExGetEndOfText(
   const wxString& text,
   size_t max_chars = 15);
 
-/// Gets field separator.
+/// Returns field separator.
 const wxUniChar wxExGetFieldSeparator();
 
 /// Returns a search result, that might be shown in the statusbar.
@@ -157,7 +157,7 @@ const wxString wxExGetFindResult(
   bool recursive);
 
 #if wxUSE_GUI
-/// Gets a number from user, using hex display.
+/// Returns a number from user, using hex display.
 long wxExGetHexNumberFromUser(
   const wxString& message,
   const wxString& prompt,
@@ -169,17 +169,17 @@ long wxExGetHexNumberFromUser(
   const wxPoint& pos = wxDefaultPosition);
 #endif
 
-/// Gets the icon index for this filename (uses the file extension to get it).
+/// Returns the icon index for this filename (uses the file extension to get it).
 /// The return value is an index in wxTheFileIconsTable.
 /// You can use this index as a bitmap using:
 /// wxTheFileIconsTable->GetSmallImageList()->GetBitmap(wxExGetIconID(file))
 int wxExGetIconID(const wxFileName& filename);
 
-/// Gets the number of lines in a (trimmed) string.
+/// Returns the number of lines in a (trimmed) string.
 /// If text is empty, 0 is returned, otherwise at least 1.
 int wxExGetNumberOfLines(const wxString& text, bool trimmed = false);
 
-/// Gets a word from a string.
+/// Returns a word from a string.
 const wxString wxExGetWord(
   wxString& text,
   bool use_other_field_separators = false,

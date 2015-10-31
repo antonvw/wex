@@ -31,10 +31,10 @@ public:
   /// This results in recursive calls for OnDir and OnFile.
   size_t FindFiles();
 
-  /// Gets the file spec.
+  /// Returns the file spec.
   const wxString& GetFileSpec() const {return m_FileSpec;};
 
-  /// Gets the flags.
+  /// Returns the flags.
   int GetFlags() const {return m_Flags;};
 
   /// Do something with the dir.

@@ -158,45 +158,45 @@ public:
     /// always all lines are folded.
     bool foldall = false);
 
-  /// Gets EOL string.
+  /// Returns EOL string.
   /// If you only want to insert a newline, use NewLine()
   /// (from wxStyledTextCtrl).
   const wxString GetEOL() const;
 
-  /// Gets the file.
+  /// Returns the file.
   wxExSTCFile& GetFile() {return m_File;};
 
-  /// Gets the filename, as used by the file.
+  /// Returns the filename, as used by the file.
   const wxExFileName& GetFileName() const {return m_File.GetFileName();};
 
-  /// Gets find string, from selected text or from config.
+  /// Returns find string, from selected text or from config.
   /// The search flags are taken from frd.
   /// If text is selected, it also sets the find string.
   const wxString GetFindString();
 
-  /// Gets current flags.
+  /// Returns current flags.
   long GetFlags() const {return m_Flags;};
   
-  /// Gets hex mode component.
+  /// Returns hex mode component.
   const wxExHexMode& GetHexMode() const {return m_HexMode;};
   
-  /// Gets writable hex mode component.
+  /// Returns writable hex mode component.
   wxExHexMode& GetHexMode() {return m_HexMode;};
   
-  /// Gets the lexer.
+  /// Returns the lexer.
   const wxExLexer& GetLexer() const {return m_Lexer;};
 
-  /// Gets vi component.
+  /// Returns vi component.
   const wxExVi& GetVi() const {return m_vi;};
   
-  /// Gets writable vi component.
+  /// Returns writable vi component.
   /// This allows you to do vi like editing:
   /// - GetVi().Command(":1,$s/xx/yy/g")
   /// - GetVi().Command(":w")
   /// to replace all xx by yy, and save the file.
   wxExVi& GetVi() {return m_vi;};
   
-  /// Gets word at position.
+  /// Returns word at position.
   const wxString GetWordAtPos(int pos) const;
 
   /// Asks for a line number and goes to the line.

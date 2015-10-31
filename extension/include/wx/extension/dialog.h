@@ -2,11 +2,10 @@
 // Name:      dialog.h
 // Purpose:   Declaration of wxExDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXDIALOG_H
-#define _EXDIALOG_H
+#pragma once
 
 #include <wx/dialog.h>
 #include <wx/sizer.h>
@@ -56,8 +55,8 @@ protected:
     wxSizer* sizer,
     const wxSizerFlags& flags = wxSizerFlags().Expand());
 
-  /// Gets the button flags (as specified in the constructor).
-  long GetButtonFlags() const {return m_ButtonFlags;};
+  /// Returns the button flags (as specified in the constructor).
+  auto GetButtonFlags() const {return m_ButtonFlags;};
 
   /// Layouts the sizers. Should be invoked after adding to sizers.
   /// If you specified button flags,
@@ -72,4 +71,3 @@ private:
   wxFlexGridSizer* m_UserSizer;
 };
 #endif // wxUSE_GUI
-#endif

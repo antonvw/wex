@@ -2,11 +2,10 @@
 // Name:      dir.h
 // Purpose:   Include file for wxExDirWithListView and wxExDirTool classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EX_REPORT_DIR_H
-#define _EX_REPORT_DIR_H
+#pragma once
 
 #include <wx/extension/dir.h>
 #include <wx/extension/statistics.h>
@@ -25,8 +24,8 @@ public:
     const wxString& filespec = wxEmptyString,
     int flags = wxDIR_DEFAULT);
     
-  /// Gets the statistics.
-  wxExFileStatistics& GetStatistics() {return m_Statistics;};
+  /// Returns the statistics.
+  auto & GetStatistics() {return m_Statistics;};
 protected:  
   void OnFile(const wxString& file);
 private:    
@@ -52,4 +51,3 @@ protected:
 private:
   wxExListView* m_ListView;
 };
-#endif

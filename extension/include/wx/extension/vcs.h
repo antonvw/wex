@@ -46,13 +46,13 @@ public:
   /// Returns return code from vcs entry Execute.
   bool Execute();
   
-  /// Gets the number of vcs entries.
+  /// Returns the number of vcs entries.
   static int GetCount() {return m_Entries.size();};
 
-  /// Gets the current vcs entry.
-  const wxExVCSEntry& GetEntry() const {return m_Entry;};
+  /// Returns the current vcs entry.
+  const auto& GetEntry() const {return m_Entry;};
   
-  /// Gets the xml filename.
+  /// Returns the xml filename.
   static const wxFileName GetFileName();
   
   /// Returns name for current vcs entry, or empty string

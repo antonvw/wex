@@ -57,28 +57,28 @@ public:
   /// If the comment end string is empty, it returns empty string.
   const wxString CommentComplete(const wxString& comment) const;
     
-  /// Gets the comment begin.
+  /// Returns the comment begin.
   const wxString& GetCommentBegin() const {return m_CommentBegin;};
 
-  /// Gets the comment begin 2.
+  /// Returns the comment begin 2.
   const wxString& GetCommentBegin2() const {return m_CommentBegin2;};
 
-  /// Gets the comment end.
+  /// Returns the comment end.
   const wxString& GetCommentEnd() const {return m_CommentEnd;};
 
-  /// Gets the comment end 2.
+  /// Returns the comment end 2.
   const wxString& GetCommentEnd2() const {return m_CommentEnd2;};
 
-  /// Gets the display lexer (as shown in dialog).
+  /// Returns the display lexer (as shown in dialog).
   const wxString& GetDisplayLexer() const {return m_DisplayLexer;};
 
-  /// Gets the extensions.
+  /// Returns the extensions.
   const wxString& GetExtensions() const {return m_Extensions;};
 
-  /// Gets the keywords.
+  /// Returns the keywords.
   const auto & GetKeywords() const {return m_Keywords;};
 
-  /// Gets the keywords as one large string, 
+  /// Returns the keywords as one large string, 
   const wxString GetKeywordsString(
     /// if keyword_set -1 take all the sets,
     /// otherwise take the specified set.
@@ -89,16 +89,16 @@ public:
     /// prefix keyword should start with
     const wxString& prefix = wxEmptyString) const;
 
-  /// Gets the language.
+  /// Returns the language.
   const wxString& GetLanguage() const {return m_Language;};
   
-  /// Gets the properties.
+  /// Returns the properties.
   const auto & GetProperties() const {return m_Properties;};
   
-  /// Gets the scintilla lexer.
+  /// Returns the scintilla lexer.
   const wxString& GetScintillaLexer() const {return m_ScintillaLexer;};
 
-  /// Gets the styles.
+  /// Returns the styles.
   const auto & GetStyles() const {return m_Styles;};
   
   /// Is this word a keyword (allways all keywords), case sensitive.
