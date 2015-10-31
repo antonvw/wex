@@ -26,14 +26,13 @@
 
 #if wxUSE_GUI
 
-#define PERSISTENT(CONTROL, SETVALUE, GETVALUE, READ, DEFAULT)      \
-{                                                                   \
-  CONTROL* ctrl = (CONTROL*)GetWindow();                            \
-  if (save)                                                         \
-    wxConfigBase::Get()->Write(GetLabel(), ctrl->GETVALUE());       \
-  else                                                              \
-    ctrl->SETVALUE(wxConfigBase::Get()->READ(GetLabel(), DEFAULT)); \
-}                                                                   \
+#define PERSISTENT(READ, TYPE, DEFAULT)                            \
+{                                                                  \
+  if (save)                                                        \
+    wxConfigBase::Get()->Write(GetLabel(), GetValue().As<TYPE>()); \
+  else                                                             \
+    SetValue(wxConfigBase::Get()->READ(GetLabel(), DEFAULT));      \
+}                                                                  \
 
 bool Update(wxExFindReplaceData* frd, wxCheckListBox* clb, int item, bool save, bool value)
 {
@@ -77,50 +76,23 @@ bool wxExConfigItem::ToConfig(bool save) const
 {
   switch (GetType())
   {
-    case ITEM_CHECKBOX:        PERSISTENT(wxCheckBox, SetValue, IsChecked, ReadBool, false); break;
-    case ITEM_COLOUR:          PERSISTENT(wxColourPickerWidget, SetColour, GetColour, ReadObject, *wxWHITE); break;
-    case ITEM_DIRPICKERCTRL:   PERSISTENT(wxDirPickerCtrl, SetPath, GetPath, Read, GetLabel()); break;
-    case ITEM_FONTPICKERCTRL:  PERSISTENT(wxFontPickerCtrl, SetSelectedFont, GetSelectedFont, ReadObject, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
-    case ITEM_SLIDER:          PERSISTENT(wxSlider, SetValue, GetValue, ReadLong, ctrl->GetMin()); break;
-    case ITEM_SPINCTRL:
-    case ITEM_SPINCTRL_HEX:    PERSISTENT(wxSpinCtrl, SetValue, GetValue, ReadLong, ctrl->GetMin()); break;
-    case ITEM_SPINCTRL_DOUBLE: PERSISTENT(wxSpinCtrlDouble, SetValue, GetValue, ReadDouble, ctrl->GetMin()); break;
-    case ITEM_STC:             PERSISTENT(wxExSTC, SetValue, GetValue, Read, ""); break;
-    case ITEM_STRING:          PERSISTENT(wxTextCtrl,SetValue,  GetValue, Read, ""); break;
-    case ITEM_TOGGLEBUTTON:    PERSISTENT(wxToggleButton, SetValue, GetValue, ReadBool, false); break;
+    case ITEM_CHECKBOX:         PERSISTENT(ReadBool, bool, false); break;
+    case ITEM_CHECKLISTBOX_BIT: PERSISTENT(ReadLong, long, 0); break;
+    case ITEM_COLOUR:           PERSISTENT(ReadObject, wxColour, *wxWHITE); break;
+    case ITEM_DIRPICKERCTRL:    PERSISTENT(Read, wxString, GetLabel()); break;
+    case ITEM_FLOAT:            PERSISTENT(ReadDouble, double, 0); break;
+    case ITEM_FONTPICKERCTRL:   PERSISTENT(ReadObject, wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
+    case ITEM_INT:              PERSISTENT(ReadLong, long, 0); break;
+    case ITEM_LISTVIEW_FOLDER:  PERSISTENT(Read, wxString, ""); break;
+    case ITEM_SLIDER:           PERSISTENT(ReadLong, int, ((wxSlider* )GetWindow())->GetMin()); break;
+    case ITEM_SPINCTRL: 
+    case ITEM_SPINCTRL_HEX:     PERSISTENT(ReadLong, int, ((wxSpinCtrl* )GetWindow())->GetMin()); break;
+    case ITEM_SPINCTRL_DOUBLE:  PERSISTENT(ReadDouble, double, ((wxSpinCtrlDouble* )GetWindow())->GetMin()); break;
+    case ITEM_STC:              PERSISTENT(Read, wxString, ""); break;
+    case ITEM_STRING:           PERSISTENT(Read, wxString, ""); break;
+    case ITEM_TOGGLEBUTTON:     PERSISTENT(ReadBool, bool, false); break;
 
-    case ITEM_CHECKLISTBOX:
-      {
-      wxCheckListBox* clb = (wxCheckListBox*)GetWindow();
-
-      long value = 0;
-      if (!save)
-        value = wxConfigBase::Get()->ReadLong(GetLabel(), 0);
-      int item = 0;
-
-      for (const auto& b : GetChoices())
-      {
-        if (save)
-        {
-          if (clb->IsChecked(item))
-          {
-            value |= b.first;
-          }
-        }
-        else
-        {
-          clb->Check(item, (value & b.first) > 0);
-        }
-
-        item++;
-      }
-
-      if (save)
-        wxConfigBase::Get()->Write(GetLabel(), value);
-      }
-      break;
-
-    case ITEM_CHECKLISTBOX_NONAME:
+    case ITEM_CHECKLISTBOX_BOOL:
       {
       wxCheckListBox* clb = (wxCheckListBox*)GetWindow();
 
@@ -181,41 +153,7 @@ bool wxExConfigItem::ToConfig(bool save) const
           initial.clear();
         }
 #endif
-        const wxString val(wxConfigBase::Get()->Read(GetLabel(), initial));
-        
-        if (!val.empty())
-        {
-          ((wxFilePickerCtrl*)GetWindow())->SetPath(val);
-        }
-      }
-      break;
-
-    case ITEM_FLOAT:
-      if (save)
-        wxConfigBase::Get()->Write(GetLabel(), GetValue().As<float>());
-      else
-        ((wxTextCtrl*)GetWindow())->SetValue(
-          wxString::Format("%lf", wxConfigBase::Get()->ReadDouble(GetLabel(), 0)));
-      break;
-      
-    case ITEM_INT:
-      if (save)
-        wxConfigBase::Get()->Write(GetLabel(), GetValue().As<int>());
-      else
-        ((wxTextCtrl*)GetWindow())->SetValue(
-          wxString::Format("%ld", wxConfigBase::Get()->ReadLong(GetLabel(), 0)));
-      break;
-
-    case ITEM_LISTVIEW_FOLDER:
-      {
-      wxExListViewFileName* win = (wxExListViewFileName*)GetWindow();
-      if (save)
-        wxConfigBase::Get()->Write(GetLabel(), win->ItemToText(-1));
-      else
-      {
-        win->DeleteAllItems();
-        win->ItemFromText(wxConfigBase::Get()->Read(GetLabel()));
-      }
+        SetValue(wxConfigBase::Get()->Read(GetLabel(), initial));
       }
       break;
 

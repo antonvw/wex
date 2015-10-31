@@ -20,8 +20,8 @@ void fixture::testItemDialog()
   // Test dialog without pages.
   wxExItemDialog* dlg1 = new wxExItemDialog(m_Frame, 
     std::vector <wxExItem> {
-      wxExItem("string1", "hello1", wxEmptyString),
-      wxExItem("string2", "hello2", wxEmptyString),
+      wxExItem("string1", "hello1"),
+      wxExItem("string2", "hello2"),
       wxExItem("int1", ITEM_INT, "10"),
       wxExItem("int2", ITEM_INT, "20"),
       wxExItem("float1", ITEM_FLOAT, "20.0")},

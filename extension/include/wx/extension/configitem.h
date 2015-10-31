@@ -19,18 +19,17 @@ class WXDLLIMPEXP_BASE wxExConfigItem : public wxExItem
 {
 public:
   /// Default constructor for a ITEM_EMPTY item.
-  wxExConfigItem(const wxString& page = wxEmptyString)
-    : wxExConfigItem(ITEM_EMPTY, 0, page, wxEmptyString) {;};
+  wxExConfigItem() : wxExConfigItem(ITEM_EMPTY, 0) {;};
 
   /// Constructor for a ITEM_SPACER item.
   /// The size is the size for the spacer used.
   wxExConfigItem(int size, const wxString& page = wxEmptyString)
-    : wxExConfigItem(ITEM_SPACER, size, page, wxEmptyString) {;};
+    : wxExConfigItem(ITEM_SPACER, size, page) {;};
 
   /// Constuctor for a ITEM_STATICLINE item.
   /// The orientation is wxHORIZONTAL or wxVERTICAL.
   wxExConfigItem(wxOrientation orientation, const wxString& page = wxEmptyString)
-    : wxExConfigItem(ITEM_STATICLINE, orientation, page, wxEmptyString) {;};
+    : wxExConfigItem(ITEM_STATICLINE, orientation, page) {;};
     
   /// Constructor for a ITEM_STRING, ITEM_STC, ITEM_STATICTEXT, 
   /// or a ITEM_HYPERLINKCTRL item.
@@ -40,7 +39,7 @@ public:
     /// if the window supports it you can use a markup label
     const wxString& label,
     /// extra info, used as default for a hyperlink ctrl, or as lexer for STC
-    const wxString& info,
+    const wxString& info = wxEmptyString,
     const wxString& page = wxEmptyString,
     /// the style for the control used (e.g. wxTE_MULTILINE or wxTE_PASSWORD)
     long style = 0,
@@ -69,7 +68,7 @@ public:
       wxEmptyString, false, true, wxID_ANY, cols, 25, 1, 
       min, max, inc) {;};
 
-  /// Constructor for a ITEM_CHECKLISTBOX_NONAME item. 
+  /// Constructor for a ITEM_CHECKLISTBOX_BOOL item. 
   /// This checklistbox can be used to get/set several boolean values.
   wxExConfigItem(
     /// the set with names of boolean items
@@ -77,13 +76,13 @@ public:
     const wxString& page = wxEmptyString,
     long style = 0,
     int cols = -1)
-    : wxExConfigItem(ITEM_CHECKLISTBOX_NONAME, style, page, "checklistbox_noname", 
+    : wxExConfigItem(ITEM_CHECKLISTBOX_BOOL, style, page, "checklistbox_noname", 
       wxEmptyString, false, false, wxID_ANY, cols, 25, 1,
       0, 1, 1,
       std::map<long, const wxString>(),
       choices_bool) {;};
 
-  /// Constructor for a ITEM_RADIOBOX, or a ITEM_CHECKLISTBOX item. 
+  /// Constructor for a ITEM_RADIOBOX, or a ITEM_CHECKLISTBOX_BIT item. 
   /// This checklistbox (not mutually exclusive choices)
   /// can be used to get/set individual bits in a long.
   /// A radiobox (mutually exclusive choices)
@@ -99,7 +98,7 @@ public:
     int majorDimension = 0,
     long style = wxRA_SPECIFY_COLS,
     int cols = -1)
-    : wxExConfigItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX, style, page, label, 
+    : wxExConfigItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX_BIT, style, page, label, 
       wxEmptyString, false, false, wxID_ANY, cols, 25, majorDimension, 
       0, 1, 1, 
       choices,
@@ -158,7 +157,7 @@ public:
 private:
   /// Delegate constructor.
   wxExConfigItem(wxExItemType type, long style,
-    const wxString& page, const wxString& label, const wxString& info = wxEmptyString,
+    const wxString& page = wxEmptyString, const wxString& label = wxEmptyString, const wxString& info = wxEmptyString,
     bool is_required = false, bool add_label = false,
     int id = wxID_ANY, int cols = -1, int max_items = 25, int major_dimension = 1,
     double min = 0, double max = 1, double inc = 1,

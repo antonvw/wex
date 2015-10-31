@@ -59,8 +59,8 @@ void fixture::testConfigItem()
   CPPUNIT_ASSERT(ci_st.GetType() == ITEM_STATICTEXT);
   CPPUNIT_ASSERT(ci_int.GetType() == ITEM_INT);
   CPPUNIT_ASSERT(ci_rb.GetType() == ITEM_RADIOBOX);
-  CPPUNIT_ASSERT(ci_bc.GetType() == ITEM_CHECKLISTBOX);
-  CPPUNIT_ASSERT(ci_cl_n.GetType() == ITEM_CHECKLISTBOX_NONAME);
+  CPPUNIT_ASSERT(ci_bc.GetType() == ITEM_CHECKLISTBOX_BIT);
+  CPPUNIT_ASSERT(ci_cl_n.GetType() == ITEM_CHECKLISTBOX_BOOL);
   CPPUNIT_ASSERT(ci_user.GetType() == ITEM_USER);
 
   std::vector <wxExConfigItem> items {
