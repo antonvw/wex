@@ -99,9 +99,12 @@ void fixture::testItemTemplateDialog()
   CPPUNIT_ASSERT( dlg0->GetItemValue("fruit", "xxx").IsNull());
   CPPUNIT_ASSERT( dlg0->GetItem("xxx").GetLabel().empty());
   CPPUNIT_ASSERT( dlg0->GetItemValue("yyy").IsNull());
+  // asserts in 3.0
+#if wxCHECK_VERSION(3,1,0)
   CPPUNIT_ASSERT( dlg0->SetItemValue("fruit", "strawberry"));
   CPPUNIT_ASSERT(!dlg0->SetItemValue("fruit", "blueberry", "xxxx"));
   CPPUNIT_ASSERT( dlg0->GetItemValue("fruit") == "strawberry");
+#endif
   
   dlg0->Show();
 
