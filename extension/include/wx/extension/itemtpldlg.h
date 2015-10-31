@@ -138,7 +138,7 @@ public:
     };
     return false;};
 protected:
-  const std::vector< T > & GetItems() const {return m_Items;};
+  const auto & GetItems() const {return m_Items;};
   
   void OnCommand(wxCommandEvent& event) {
     if (  event.GetId() == wxID_APPLY ||

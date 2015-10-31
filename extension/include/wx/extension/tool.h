@@ -5,8 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXTOOL_H
-#define _EXTOOL_H
+#pragma once
 
 #include <map>
 #include <wx/string.h>
@@ -64,7 +63,7 @@ public:
   int GetId() const {return m_Id;};
 
   /// Gets all the tool info.
-  const std::map < int, wxExToolInfo > & GetToolInfo() const {return m_ToolInfo;};
+  const auto & GetToolInfo() const {return m_ToolInfo;};
 
   /// Gets info about current tool.
   const wxString Info() const;
@@ -83,4 +82,3 @@ private:
   const int m_Id;
   static std::map < int, wxExToolInfo > m_ToolInfo;
 };
-#endif

@@ -36,7 +36,7 @@ public:
   virtual bool Command(const std::string& command) override;
   
   /// Returns inserted text.
-  const std::string& GetInsertedText() const {return m_InsertText;};
+  const auto & GetInsertedText() const {return m_InsertText;};
   
   /// Returns the mode we are in.
   int GetMode() const {return m_FSM.State();};

@@ -24,12 +24,10 @@ public:
   static wxExFindReplaceData* Get(bool createOnDemand = true);
 
   /// Gets the find strings.
-  const std::list < wxString > & GetFindStrings() const {
-    return m_FindStrings;};
+  const auto & GetFindStrings() const {return m_FindStrings;};
 
   /// Gets the replace strings.
-  const std::list < wxString > & GetReplaceStrings() const {
-    return m_ReplaceStrings;};
+  const auto & GetReplaceStrings() const {return m_ReplaceStrings;};
 
   /// Gets text.
   const wxString& GetTextFindWhat() const {return m_TextFindWhat;};

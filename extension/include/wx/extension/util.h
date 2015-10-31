@@ -47,7 +47,7 @@ public:
   wxExToVectorString(const wxString& in);
   
   /// Gets the vector string.
-  const std::vector< wxString > & Get() const {return m_VS;};
+  const auto & Get() const {return m_VS;};
 private:
   void FromArrayString(const wxArrayString& in);
   
