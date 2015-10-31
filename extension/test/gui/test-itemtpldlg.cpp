@@ -19,15 +19,14 @@
 class wxExTestItem : public wxExItem
 {
 public:
-  wxExTestItem(const wxString& page = wxEmptyString): wxExItem(page) {;};
-  wxExTestItem(const wxString& label, const wxString& value, const wxString& page)
+  wxExTestItem(): wxExItem() {;};
+  wxExTestItem(const wxString& label, const wxString& value = wxEmptyString, const wxString& page = wxEmptyString)
     : wxExItem(label, value, wxEmptyString, page) {;};
 };
 
 class wxExOtherTestItem : public wxExItem
 {
 public:
-  wxExOtherTestItem(): wxExItem() {;};
   wxExOtherTestItem(const wxString& label): wxExItem(label, wxEmptyString, wxEmptyString) {;};
 };
 
@@ -97,8 +96,12 @@ void fixture::testItemTemplateDialog()
   
   CPPUNIT_ASSERT(!dlg0->GetItem("fruit").GetLabel().empty());
   CPPUNIT_ASSERT( dlg0->GetItemValue("fruit") == "apple");
+  CPPUNIT_ASSERT( dlg0->GetItemValue("fruit", "xxx").IsNull());
   CPPUNIT_ASSERT( dlg0->GetItem("xxx").GetLabel().empty());
   CPPUNIT_ASSERT( dlg0->GetItemValue("yyy").IsNull());
+  CPPUNIT_ASSERT( dlg0->SetItemValue("fruit", "strawberry"));
+  CPPUNIT_ASSERT(!dlg0->SetItemValue("fruit", "blueberry", "xxxx"));
+  CPPUNIT_ASSERT( dlg0->GetItemValue("fruit") == "strawberry");
   
   dlg0->Show();
 

@@ -67,8 +67,8 @@ wxExItem::wxExItem(wxExItemType type, long style,
   
   switch (m_Type)
   {
-    case ITEM_CHECKLISTBOX:
-    case ITEM_CHECKLISTBOX_NONAME:
+    case ITEM_CHECKLISTBOX_BIT:
+    case ITEM_CHECKLISTBOX_BOOL:
     case ITEM_LISTVIEW_FOLDER:
     case ITEM_RADIOBOX:
     case ITEM_STC:
@@ -163,7 +163,7 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
         wxDefaultPosition, wxDefaultSize, m_Style);
       break;
 
-    case ITEM_CHECKLISTBOX:
+    case ITEM_CHECKLISTBOX_BIT:
       {
       wxArrayString arraychoices;
 
@@ -177,7 +177,7 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_CHECKLISTBOX_NONAME:
+    case ITEM_CHECKLISTBOX_BOOL:
       {
       wxArrayString arraychoices;
       arraychoices.resize(m_ChoicesBool.size()); // required!
@@ -210,7 +210,7 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
     case ITEM_DIRPICKERCTRL:
       {
-      wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent, m_Id, wxEmptyString,
+      wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent, m_Id, m_Value,
         wxDirSelectorPromptStr, wxDefaultPosition, wxSize(width, wxDefaultCoord), 
         m_Style == 0 ? wxDIRP_DEFAULT_STYLE: m_Style);
 
@@ -231,7 +231,7 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       const wxString wc(wxFileSelectorDefaultWildcardStr);
 #endif
 
-      wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent, m_Id, wxEmptyString,
+      wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent, m_Id, m_Value,
         wxFileSelectorPromptStr, wc,
         wxDefaultPosition, wxSize(width, wxDefaultCoord),
         m_Style == 0 ? wxFLP_DEFAULT_STYLE: m_Style);
@@ -430,6 +430,7 @@ const wxAny wxExItem::GetValue() const
     case ITEM_FLOAT: any = atof(((wxTextCtrl* )m_Window)->GetValue()); break;
     case ITEM_FONTPICKERCTRL: any = ((wxFontPickerCtrl* )m_Window)->GetSelectedFont(); break;
     case ITEM_INT: any = atoi(((wxTextCtrl* )m_Window)->GetValue()); break;
+    case ITEM_LISTVIEW_FOLDER: any = ((wxExListViewFileName* )m_Window)->ItemToText(-1); break;
     case ITEM_SLIDER: any = ((wxSlider* )m_Window)->GetValue(); break;
     case ITEM_SPINCTRL: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
     case ITEM_SPINCTRL_DOUBLE: any = ((wxSpinCtrlDouble* )m_Window)->GetValue(); break;
@@ -437,6 +438,26 @@ const wxAny wxExItem::GetValue() const
     case ITEM_STC: any = ((wxStyledTextCtrl* )m_Window)->GetValue(); break;
     case ITEM_STRING: any = ((wxTextCtrl* )m_Window)->GetValue(); break;
     case ITEM_TOGGLEBUTTON: any = ((wxToggleButton* )m_Window)->GetValue(); break;
+    
+    case ITEM_CHECKLISTBOX_BIT:
+      {
+      wxCheckListBox* clb = (wxCheckListBox*)GetWindow();
+
+      long value = 0;
+      int item = 0;
+
+      for (const auto& b : GetChoices())
+      {
+        if (clb->IsChecked(item))
+        {
+          value |= b.first;
+        }
+
+        item++;
+      }
+      any = value;
+      }
+      break;
   }
   
   return any;
@@ -499,5 +520,56 @@ wxFlexGridSizer* wxExItem::Layout(
   }
   
   return use;
+}
+
+bool wxExItem::SetValue(const wxAny& value) const
+{
+  if (m_Window == NULL)
+  {
+    return false;
+  }
+
+  switch (m_Type)
+  {
+    case ITEM_CHECKBOX: ((wxCheckBox* )m_Window)->SetValue(value.As<bool>()); break;
+    case ITEM_COLOUR: ((wxColourPickerWidget* )m_Window)->SetColour(value.As<wxColour>()); break;
+    case ITEM_DIRPICKERCTRL: ((wxDirPickerCtrl* )m_Window)->SetPath(value.As<wxString>()); break;
+    case ITEM_FILEPICKERCTRL: ((wxFilePickerCtrl* )m_Window)->SetPath(value.As<wxString>()); break;
+    case ITEM_FLOAT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%lf", value.As<float>())); break;
+    case ITEM_FONTPICKERCTRL: ((wxFontPickerCtrl* )m_Window)->SetSelectedFont(value.As<wxFont>()); break;
+    case ITEM_INT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%ld", value.As<long>())); break;
+    case ITEM_SLIDER: ((wxSlider* )m_Window)->SetValue(value.As<int>()); break;
+    case ITEM_SPINCTRL: ((wxSpinCtrl* )m_Window)->SetValue(value.As<int>()); break;
+    case ITEM_SPINCTRL_DOUBLE: ((wxSpinCtrlDouble* )m_Window)->SetValue(value.As<double>()); break;
+    case ITEM_SPINCTRL_HEX: ((wxSpinCtrl* )m_Window)->SetValue(value.As<int>()); break;
+    case ITEM_STC: ((wxStyledTextCtrl* )m_Window)->SetValue(value.As<wxString>()); break;
+    case ITEM_STRING: ((wxTextCtrl* )m_Window)->SetValue(value.As<wxString>()); break;
+    case ITEM_TOGGLEBUTTON: ((wxToggleButton* )m_Window)->SetValue(value.As<bool>()); break;
+
+    case ITEM_CHECKLISTBOX_BIT:
+      {
+      wxCheckListBox* clb = (wxCheckListBox*)m_Window;
+      int item = 0;
+
+      for (const auto& b : m_Choices)
+      {
+        clb->Check(item, (value.As<long>() & b.first) > 0);
+        item++;
+      }
+      }
+      break;
+    
+    case ITEM_LISTVIEW_FOLDER:
+      {
+      wxExListViewFileName* win = (wxExListViewFileName*)GetWindow();
+      win->DeleteAllItems();
+      win->ItemFromText(value.As<wxString>());
+      }
+      break;
+
+    default: return false;
+  }
+  
+  return true;
 }
 #endif // wxUSE_GUI

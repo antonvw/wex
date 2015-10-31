@@ -154,7 +154,6 @@ wxExSampleFrame::wxExSampleFrame()
     wxExEllipsed("Config Dialog Readonly"));
   menuConfig->AppendSeparator();
   menuConfig->Append(ID_ITEM_DLG, wxExEllipsed("Item Dialog"));
-  menuConfig->AppendSeparator();
 
   wxExMenu* menuSTC = new wxExMenu;
   menuSTC->Append(ID_STC_FLAGS, wxExEllipsed("Open Flag"));
@@ -651,14 +650,14 @@ void wxExSampleFrame::ShowConfigItems()
   v.push_back(wxExConfigItem(
     "Bin Choices", 
     std::map<long, const wxString> {
-      std::make_pair(0, "Bit One"),
-      std::make_pair(1, "Bit Two"),
-      std::make_pair(2, "Bit Three"),
-      std::make_pair(4, "Bit Four")},
+      std::make_pair(1, "Bit One"),
+      std::make_pair(2, "Bit Two"),
+      std::make_pair(4, "Bit Three"),
+      std::make_pair(8, "Bit Four")},
     false, 
     "Checkbox lists"));
 
-  // ITEM_CHECKLISTBOX_NONAME
+  // ITEM_CHECKLISTBOX_BOOL
   v.push_back(wxExConfigItem(
     std::set<wxString>{"This","Or","Other", "a", "b", "c", "d",
     "e", "f", "g", "h"},

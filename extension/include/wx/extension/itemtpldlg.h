@@ -98,21 +98,45 @@ public:
     m_Contains = contains;
     m_Page = page;};
   
-  /// Returns the (first) item that has specified label,
+  /// Returns the (first) item (on specified page) that has specified label,
   /// or empty item if item does not exist.
-  const T GetItem(const wxString& label) const {
+  const T GetItem(const wxString& label, const wxString& page = wxEmptyString) const {
     for (const auto& it : m_Items)
     {
       if (it.GetLabel() == label)
       {
-        return it;
+        if (page.empty())
+        {
+          return it;
+        }
+        else if (it.GetPage() == page)
+        {
+          return it;
+        }
       }
     };
     return T();};
-  /// Return the item actual value for specified label, or 
+  /// Returns the item actual value for specified label, or 
   /// IsNull value if item does not exist.
-  const wxAny GetItemValue(const wxString& label) const {
-    return GetItem(label).GetValue();};
+  const wxAny GetItemValue(const wxString& label, const wxString& page = wxEmptyString) const {
+    return GetItem(label, page).GetValue();};
+  /// Sets the item actual value for specified label.
+  bool SetItemValue(const wxString& label, const wxAny& value, const wxString& page = wxEmptyString) const {
+    for (auto& it : m_Items)
+    {
+      if (it.GetLabel() == label)
+      {
+        if (page.empty())
+        {
+          return it.SetValue(value);
+        }
+        else if (it.GetPage() == page)
+        {
+          return it.SetValue(value);
+        }
+      }
+    };
+    return false;};
 protected:
   const std::vector< T > & GetItems() const {return m_Items;};
   
@@ -144,7 +168,7 @@ protected:
         }
         break;
 
-      case ITEM_CHECKLISTBOX_NONAME:
+      case ITEM_CHECKLISTBOX_BOOL:
         if (m_ForceCheckBoxChecked)
         {
           wxCheckListBox* clb = (wxCheckListBox*)it.GetWindow();

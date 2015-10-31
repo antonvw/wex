@@ -27,6 +27,10 @@ void fixture::testItem()
   CPPUNIT_ASSERT( item.GetWindow() == NULL);
   CPPUNIT_ASSERT( item.GetValue().IsNull());
   CPPUNIT_ASSERT(!item.IsRowGrowable());
+  
+  // setting value if window is NULL should have no effect.
+  CPPUNIT_ASSERT(!item.SetValue(wxString("test")));
+  CPPUNIT_ASSERT( item.GetValue().IsNull());
 
   wxGridSizer sizer(3);
 
@@ -35,6 +39,21 @@ void fixture::testItem()
   CPPUNIT_ASSERT( item.GetValue() == "hello string");
   CPPUNIT_ASSERT( item.GetWindow()->GetWindowStyleFlag() == 1);
   
+  CPPUNIT_ASSERT( item.SetValue(wxString("value changed")));
+  CPPUNIT_ASSERT( item.GetValue() == "value changed");
+  
   item.SetRowGrowable(true);
   CPPUNIT_ASSERT( item.IsRowGrowable());
+  
+  wxExItem item_int("int", ITEM_INT, "100");
+  CPPUNIT_ASSERT( item_int.GetType() == ITEM_INT);
+  CPPUNIT_ASSERT( item_int.Layout(m_Frame, &sizer) != NULL);
+  CPPUNIT_ASSERT( item_int.GetWindow() != NULL);
+  CPPUNIT_ASSERT( item_int.GetValue() == 100);
+  CPPUNIT_ASSERT( item_int.SetValue(300));
+  CPPUNIT_ASSERT( item_int.GetValue() == 300);
+  
+  wxExItem item_picker("picker", ITEM_FILEPICKERCTRL, "/usr/bin/git");
+  CPPUNIT_ASSERT( item_picker.Layout(m_Frame, &sizer) != NULL);
+  CPPUNIT_ASSERT( item_picker.GetValue() == "/usr/bin/git");
 }
