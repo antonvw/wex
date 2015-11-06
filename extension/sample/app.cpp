@@ -368,10 +368,17 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     case ID_ITEM_DLG: 
       {
       std::vector<wxExItem> v;
+      wxArrayString as;
+      as.push_back("test1");
+      as.push_back("test2");
+      as.push_back("test3");
   
+      v.push_back(wxExItem("Spin control", 10, 5, 15));
+      
       v.push_back(wxExItem("Group Checkbox1", ITEM_CHECKBOX));
       v.push_back(wxExItem("Group Checkbox2", ITEM_CHECKBOX));
       v.push_back(wxExItem("Group Checkbox3", ITEM_CHECKBOX));
+      v.push_back(wxExItem("ComboBox", ITEM_COMBOBOX, as));
     
       wxExItemDialog* dlg = new wxExItemDialog(
         this, v, "Item Dialog");
@@ -907,7 +914,7 @@ void wxExSampleFrame::ShowConfigItems()
     myTextCreate,
     NULL,
     "User Controls"));
-    
+
   wxExConfigDialog* dlg = new wxExConfigDialog(
     this,
     v,

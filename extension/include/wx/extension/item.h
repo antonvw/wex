@@ -102,9 +102,22 @@ public:
       (type != ITEM_STATICTEXT && 
        type != ITEM_HYPERLINKCTRL ? add_label: false), wxID_ANY, cols) {;};
 
-  /// Constructor for a ITEM_SPINCTRL, ITEM_SPINCTRL_DOUBLE,
-  /// ITEM_SPINCTRL_HEX or a ITEM_SLIDER item.
+  /// Constructor for a ITEM_SPINCTRL, ITEM_SPINCTRL_HEX or a ITEM_SLIDER item.
   wxExItem(const wxString& label,
+    int value,
+    int min, 
+    int max,
+    const wxString& page = wxEmptyString,
+    wxExItemType type = ITEM_SPINCTRL,
+    /// style for a ITEM_SLIDER item
+    long style = wxSL_HORIZONTAL,
+    int cols = -1)
+    : wxExItem(type, style, page, label, value,
+      wxEmptyString, false, true, wxID_ANY, cols, 1, min, max) {;};
+
+  /// Constructor for a ITEM_SPINCTRL_DOUBLE item.
+  wxExItem(const wxString& label,
+    double value,
     double min, 
     double max,
     const wxString& page = wxEmptyString,
@@ -113,23 +126,19 @@ public:
     long style = wxSL_HORIZONTAL,
     double inc = 1,
     int cols = -1)
-    : wxExItem(type, style, page, label, wxEmptyString,
-      wxEmptyString, false, true, wxID_ANY, cols, 1, 
-      min, max, inc) {;};
+    : wxExItem(type, style, page, label, value,
+      wxEmptyString, false, true, wxID_ANY, cols, 1, min, max, inc) {;};
 
   /// Constructor for a ITEM_CHECKLISTBOX_BOOL item. 
   /// This checklistbox can be used to get/set several boolean values.
   wxExItem(
     /// the set with names of boolean items
-    const std::set<wxString> & choices_bool,
+    const std::set<wxString> & choices,
     const wxString& page = wxEmptyString,
     long style = 0,
     int cols = -1)
-    : wxExItem(ITEM_CHECKLISTBOX_BOOL, style, page, "checklistbox_bool", wxEmptyString,
-      wxEmptyString, false, false, wxID_ANY, cols, 1,
-      0, 1, 1,
-      std::map<long, const wxString>(),
-      choices_bool) {;};
+    : wxExItem(ITEM_CHECKLISTBOX_BOOL, style, page, "checklistbox_bool", choices,
+      wxEmptyString, false, false, wxID_ANY, cols, 1, 0, 1, 1) {;};
 
   /// Constructor for a ITEM_RADIOBOX, or a ITEM_CHECKLISTBOX_BIT item. 
   /// This checklistbox (not mutually exclusive choices)
@@ -147,11 +156,8 @@ public:
     int majorDimension = 0,
     long style = wxRA_SPECIFY_COLS,
     int cols = -1)
-    : wxExItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX_BIT, style, page, label, wxEmptyString,
-      wxEmptyString, false, false, wxID_ANY, cols, majorDimension, 
-      0, 1, 1, 
-      choices,
-      std::set<wxString>()) {;};
+    : wxExItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX_BIT, style, page, label, choices,
+      wxEmptyString, false, false, wxID_ANY, cols, majorDimension, 0, 1, 1) {;};
 
   /// Constructor for a ITEM_USER item.
   wxExItem(const wxString& label,
@@ -164,11 +170,7 @@ public:
     bool add_label = true,
     int cols = -1)
     : wxExItem(ITEM_USER, 0, page, label, wxEmptyString,
-      wxEmptyString, is_required, add_label, wxID_ANY, cols, 1, 
-      0, 1, 1, 
-      std::map<long, const wxString>(),
-      std::set<wxString>(),
-      window, create) {;};
+      wxEmptyString, is_required, add_label, wxID_ANY, cols, 1, 0, 1, 1, window, create) {;};
 
   /// Constuctor for the other types (as ITEM_BUTTON, ITEM_DIRPICKERCTRL,
   /// ITEM_FILEPICKERCTRL, ITEM_INT).
@@ -176,7 +178,7 @@ public:
     const wxString& label,
     wxExItemType type,
     /// initial value for the control, if appropriate
-    const wxString& value = wxEmptyString,
+    const wxAny& value = wxAny(),
     const wxString& page = wxEmptyString,
     bool is_required = false,
     /// the id as used by the window, see wxExFrame::OnCommandItemDialog, 
@@ -192,12 +194,12 @@ public:
         type == ITEM_COMMAND_LINK_BUTTON ||
         type == ITEM_TOGGLEBUTTON ? false: add_label, id, cols) {;};
 
-  /// Returns the choices.
-  const auto & GetChoices() const {return m_Choices;};
-  
   /// Returns the number of columns for the current page.
   int GetColumns() const {return m_PageCols;};
 
+  /// Returns the initial value.
+  const auto & GetInitial() const {return m_Initial;};
+  
   /// Returns is required.
   bool GetIsRequired() const {return m_IsRequired;};
 
@@ -263,7 +265,7 @@ protected:
     /// the label to appear in front of the item
     const wxString& label = wxEmptyString, 
     /// intitial value if appropriate
-    const wxString& value = wxEmptyString,
+    const wxAny& value = wxAny(),
     /// some extra info
     const wxString& info = wxEmptyString,
     /// support for the underlying control
@@ -279,15 +281,11 @@ protected:
     /// major dimention for radio boxes
     int major_dimension = 1,
     /// min value if appropriate
-    double min = 0, 
+    const wxAny& min = wxAny(), 
     /// max value if appropriate
-    double max = 1, 
+    const wxAny& max = wxAny(), 
     /// increment value if appropriate
-    double inc = 1,
-    /// choices
-    const std::map<long, const wxString> & choices = std::map<long, const wxString>(),
-    /// boolean choices
-    const std::set<wxString> & choices_bool = std::set<wxString>(),
+    const wxAny& inc = wxAny(),
     /// window, normally created by Layout, but may be supplied here
     wxWindow* window = NULL, 
     /// the process callback for window creation
@@ -297,24 +295,10 @@ private:
   void AddStaticText(wxSizer* sizer) const;
   void CreateWindow(wxWindow* parent, bool readonly);
 
-  bool m_AddLabel;
-  bool m_IsRequired;
-  bool m_IsRowGrowable;
-
-  int m_Cols;
-  int m_Id;
-  int m_MajorDimension;
-  int m_PageCols;
-  
-  double m_Min;
-  double m_Max;
-  double m_Inc;
-
-  wxString m_Label;
-  wxString m_Info;
-  wxString m_Page;
-  wxString m_Value; // initial value
-
+  bool m_AddLabel, m_IsRequired, m_IsRowGrowable;
+  int m_Cols, m_Id, m_MajorDimension, m_PageCols;
+  wxAny m_Initial, m_Min, m_Max, m_Inc;
+  wxString m_Label, m_Info, m_Page;
   long m_Style;
 
   wxExUserWindowCreate m_UserWindowCreate;
@@ -323,8 +307,5 @@ private:
   wxSizerFlags m_SizerFlags;
   wxValidator* m_Validator;
   wxWindow* m_Window;
-  
-  std::map<long, const wxString> m_Choices;
-  std::set<wxString> m_ChoicesBool;
 };
 #endif // wxUSE_GUI

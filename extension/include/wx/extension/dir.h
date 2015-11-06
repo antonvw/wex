@@ -69,7 +69,7 @@ public:
     int dir_flags = wxDIR_DEFAULT);
 
   /// Opens each found file.
-  virtual void OnFile(const wxString& file);
+  virtual void OnFile(const wxString& file) override;
 private:
   wxExFrame* m_Frame;
   const long m_Flags;

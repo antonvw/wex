@@ -25,22 +25,21 @@
 #include <wx/extension/item.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
 wxExItem::wxExItem(wxExItemType type, long style,
-  const wxString& page, const wxString& label, const wxString& value, const wxString& info,
+  const wxString& page, const wxString& label, const wxAny& value, const wxString& info,
   bool is_required, bool add_label,
   int id, int cols, int major_dimension,
-  double min, double max, double inc,
-  const std::map<long, const wxString> & choices,
-  const std::set<wxString> & choices_bool,
+  const wxAny& min, const wxAny& max, const wxAny& inc,
   wxWindow* window, wxExUserWindowCreate create)
   : m_Type(type)
   , m_Style(style)
   , m_AddLabel(add_label)
   , m_Label(label)
-  , m_Value(value)
+  , m_Initial(value)
   , m_Info(info)
   , m_IsRequired(is_required)
   , m_Id(id)
@@ -56,8 +55,6 @@ wxExItem::wxExItem(wxExItemType type, long style,
   , m_Page(page)
   , m_PageCols(-1)
   , m_SizerFlags(wxSizerFlags().Border().Left())
-  , m_Choices(choices)
-  , m_ChoicesBool(choices_bool)
 {
   if (m_Page.Contains(":"))
   {
@@ -167,7 +164,7 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       {
       wxArrayString arraychoices;
 
-      for (const auto& it : m_Choices)
+      for (const auto& it : m_Initial.As<std::map<long, const wxString>>())
       {
         arraychoices.Add(it.second);
       }
@@ -180,8 +177,9 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
     case ITEM_CHECKLISTBOX_BOOL:
       {
       wxArrayString arraychoices;
-      arraychoices.resize(m_ChoicesBool.size()); // required!
-      copy (m_ChoicesBool.begin(), m_ChoicesBool.end(), arraychoices.begin());
+      const std::set<wxString> & choices(m_Initial.As<std::set<wxString>>());
+      arraychoices.resize(choices.size()); // required!
+      copy (choices.begin(), choices.end(), arraychoices.begin());
       m_Window = new wxCheckListBox(parent,
         m_Id, wxDefaultPosition, wxDefaultSize, arraychoices, m_Style);
       }
@@ -196,8 +194,7 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
     case ITEM_COMBOBOXDIR:
       m_Window = new wxComboBox(parent, m_Id, wxEmptyString,
         wxDefaultPosition, wxSize(250, wxDefaultCoord),
-        0,
-        NULL,
+        m_Initial.IsNull() ? wxArrayString(): m_Initial.As<wxArrayString>(),
         0,
         (m_Validator != NULL ? *m_Validator: wxDefaultValidator));
       break;
@@ -210,7 +207,7 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
     case ITEM_DIRPICKERCTRL:
       {
-      wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent, m_Id, m_Value,
+      wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent, m_Id, m_Initial.As<wxString>(),
         wxDirSelectorPromptStr, wxDefaultPosition, wxSize(width, wxDefaultCoord), 
         m_Style == 0 ? wxDIRP_DEFAULT_STYLE: m_Style);
 
@@ -231,7 +228,7 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       const wxString wc(wxFileSelectorDefaultWildcardStr);
 #endif
 
-      wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent, m_Id, m_Value,
+      wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent, m_Id, m_Initial.As<wxString>(),
         wxFileSelectorPromptStr, wc,
         wxDefaultPosition, wxSize(width, wxDefaultCoord),
         m_Style == 0 ? wxFLP_DEFAULT_STYLE: m_Style);
@@ -249,14 +246,14 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       // See also ITEM_INT, validator cannot be set using ?.
       if (m_Validator == NULL)
       {
-        m_Window = new wxTextCtrl(parent, m_Id, m_Value,
+        m_Window = new wxTextCtrl(parent, m_Id, m_Initial.As<wxString>(),
           wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
           m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
           wxFloatingPointValidator<float>());
       }
       else
       {
-        m_Window = new wxTextCtrl(parent, m_Id, m_Value,
+        m_Window = new wxTextCtrl(parent, m_Id, m_Initial.As<wxString>(),
           wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
           m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
           *m_Validator);
@@ -290,14 +287,14 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
     case ITEM_INT:
       if (m_Validator == NULL)
       {
-        m_Window = new wxTextCtrl(parent, m_Id, m_Value,
+        m_Window = new wxTextCtrl(parent, m_Id, m_Initial.As<wxString>(),
           wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
           m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
           wxIntegerValidator<int>());
       }
       else
       {
-        m_Window = new wxTextCtrl(parent, m_Id, m_Value,
+        m_Window = new wxTextCtrl(parent, m_Id, m_Initial.As<wxString>(),
           wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
           m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
           *m_Validator);
@@ -314,7 +311,7 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       {
       wxArrayString arraychoices;
 
-      for (const auto& it : m_Choices)
+      for (const auto& it : m_Initial.As<std::map<long, const wxString>>())
       {
         arraychoices.Add(it.second);
       } 
@@ -325,8 +322,8 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_SLIDER:
-      m_Window = new wxSlider(parent, m_Id, 0,
-        m_Min, m_Max,
+      m_Window = new wxSlider(parent, m_Id, m_Initial.As<int>(),
+        m_Min.As<int>(), m_Max.As<int>(),
         wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord), m_Style);
       break;
 
@@ -335,7 +332,7 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       m_Window = new wxSpinCtrl(parent, m_Id, wxEmptyString,
         wxDefaultPosition, wxSize(width_numeric_spin, wxDefaultCoord),
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
-        m_Min, m_Max, m_Min);
+        m_Min.As<int>(), m_Max.As<int>(), m_Initial.As<int>());
       if (m_Type == ITEM_SPINCTRL_HEX)
       {
         ((wxSpinCtrl* )m_Window)->SetBase(16);
@@ -346,7 +343,7 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       m_Window = new wxSpinCtrlDouble(parent, m_Id, wxEmptyString,
         wxDefaultPosition, wxSize(width_numeric_spin, wxDefaultCoord),
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
-        m_Min, m_Max, m_Min, m_Inc);
+        m_Min.As<double>(), m_Max.As<double>(), m_Initial.As<double>(), m_Inc.As<double>());
       break;
 
     case ITEM_STATICLINE:
@@ -379,7 +376,7 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_STRING:
-      m_Window = new wxTextCtrl(parent, m_Id, m_Value,
+      m_Window = new wxTextCtrl(parent, m_Id, m_Initial.As<wxString>(),
         wxDefaultPosition,
         (m_Style & wxTE_MULTILINE ?
            wxSize(width, 200):
@@ -425,6 +422,7 @@ const wxAny wxExItem::GetValue() const
   {
     case ITEM_CHECKBOX: any = ((wxCheckBox* )m_Window)->GetValue(); break;
     case ITEM_COLOUR: any = ((wxColourPickerWidget* )m_Window)->GetColour(); break;
+    case ITEM_COMBOBOX: any = wxExComboBoxAs<wxArrayString>((wxComboBox*)m_Window); break;
     case ITEM_DIRPICKERCTRL: any = ((wxDirPickerCtrl* )m_Window)->GetPath(); break;
     case ITEM_FILEPICKERCTRL: any = ((wxFilePickerCtrl* )m_Window)->GetPath(); break;
     case ITEM_FLOAT: any = atof(((wxTextCtrl* )m_Window)->GetValue()); break;
@@ -442,17 +440,14 @@ const wxAny wxExItem::GetValue() const
     case ITEM_CHECKLISTBOX_BIT:
       {
       wxCheckListBox* clb = (wxCheckListBox*)GetWindow();
-
       long value = 0;
       int item = 0;
-
-      for (const auto& b : GetChoices())
+      for (const auto& b : m_Initial.As<std::map<long, const wxString>>())
       {
         if (clb->IsChecked(item))
         {
           value |= b.first;
         }
-
         item++;
       }
       any = value;
@@ -533,6 +528,7 @@ bool wxExItem::SetValue(const wxAny& value) const
   {
     case ITEM_CHECKBOX: ((wxCheckBox* )m_Window)->SetValue(value.As<bool>()); break;
     case ITEM_COLOUR: ((wxColourPickerWidget* )m_Window)->SetColour(value.As<wxColour>()); break;
+    case ITEM_COMBOBOX: wxExComboBoxAs((wxComboBox* )m_Window, value.As<wxArrayString>()); break;
     case ITEM_DIRPICKERCTRL: ((wxDirPickerCtrl* )m_Window)->SetPath(value.As<wxString>()); break;
     case ITEM_FILEPICKERCTRL: ((wxFilePickerCtrl* )m_Window)->SetPath(value.As<wxString>()); break;
     case ITEM_FLOAT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%lf", value.As<float>())); break;
@@ -551,7 +547,7 @@ bool wxExItem::SetValue(const wxAny& value) const
       wxCheckListBox* clb = (wxCheckListBox*)m_Window;
       int item = 0;
 
-      for (const auto& b : m_Choices)
+      for (const auto& b : m_Initial.As<std::map<long, const wxString>>())
       {
         clb->Check(item, (value.As<long>() & b.first) > 0);
         item++;
