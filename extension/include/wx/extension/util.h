@@ -9,11 +9,11 @@
 
 #include <list>
 #include <vector>
+#include <wx/combobox.h>
 #include <wx/dir.h> // for wxDIR_DEFAULT
 #include <wx/filedlg.h> // for wxFD_OPEN etc.
 
 class wxArrayString;
-class wxComboBox;
 class wxFileName;
 class wxGenericDirCtrl;
 class wxTextCtrl;
@@ -115,13 +115,64 @@ bool wxExClipboardAdd(const wxString& text);
 const wxString wxExClipboardGet();
 
 #if wxUSE_GUI
+/// Adds entries from a combobox to a container.
+template <typename T> 
+const T wxExComboBoxAs(const wxComboBox* cb, size_t max_items = UINT_MAX)
+{
+  T  a;
+
+  a.push_back(cb->GetValue());
+
+  switch (cb->FindString(cb->GetValue(), true)) // case sensitive
+  {
+    case 0: 
+      // No change necessary, the string is already present as the first one.
+      for (size_t i = 1; i < cb->GetCount() && i < max_items; i++)
+        a.push_back(cb->GetString(i));
+      break;
+
+    case wxNOT_FOUND:
+      // Add the string, as it is not in the combobox, to the text,
+      // simply by appending all combobox items.
+      for (size_t i = 0; i < cb->GetCount() && i < max_items; i++)
+        a.push_back(cb->GetString(i));
+    break;
+
+    default:
+      // Reorder. The new first element already present, just add all others.
+      for (size_t i = 0; i < cb->GetCount() && i < max_items; i++)
+      {
+        const wxString cb_element = cb->GetString(i);
+        if (cb_element != cb->GetValue())
+          a.push_back(cb_element);
+      }
+  }
+  
+  return a;
+}
+
+/// Adds entries to a combobox from a container.
+template <typename T> 
+void wxExComboBoxAs(wxComboBox* cb, const T& t)
+{
+  if (!t.empty())
+  {
+    cb->Clear();
+
+    wxArrayString as;
+    as.resize(t.size());
+    std::copy(t.begin(), t.end(), as.begin());
+    
+    cb->Append(as);
+    cb->SetValue(cb->GetString(0));
+  }
+}
+
 /// Adds entries to a combobox from a list with strings.
 void wxExComboBoxFromList(
   wxComboBox* cb,
   const std::list < wxString > & text);
-#endif
-
-#if wxUSE_GUI
+  
 /// Adds entries from a combobox to a list with strings.
 const std::list < wxString > wxExComboBoxToList(
   const wxComboBox* cb,
@@ -158,13 +209,13 @@ const wxString wxExGetFindResult(
 
 #if wxUSE_GUI
 /// Returns a number from user, using hex display.
-long wxExGetHexNumberFromUser(
+int wxExGetHexNumberFromUser(
   const wxString& message,
   const wxString& prompt,
   const wxString& caption,
-  long value = 0,
-  long min = 0,
-  long max = 255,
+  int value,
+  int min = 0,
+  int max = 255,
   wxWindow *parent = NULL,
   const wxPoint& pos = wxDefaultPosition);
 #endif

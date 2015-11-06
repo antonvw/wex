@@ -9,19 +9,12 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/clrpicker.h> // for wxColourPickerWidget
 #include <wx/checklst.h>
 #include <wx/config.h>
-#include <wx/filepicker.h>
-#include <wx/fontpicker.h>
-#include <wx/hyperlink.h>
 #include <wx/spinctrl.h>
-#include <wx/tglbtn.h>
 #include <wx/window.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/listview.h>
-#include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -162,7 +155,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       wxRadioBox* rb = (wxRadioBox*)GetWindow();
       if (save)
       {
-        for (const auto& b : GetChoices())
+        for (const auto& b : GetInitial().As<std::map<long, const wxString>>())
         {
           if (b.second == rb->GetStringSelection())
           {
@@ -172,9 +165,9 @@ bool wxExConfigItem::ToConfig(bool save) const
       }
       else
       {
-        const auto c = GetChoices().find(wxConfigBase::Get()->ReadLong(GetLabel(), 0));
-
-        if (c != GetChoices().end())
+        const std::map<long, const wxString> & choices(GetInitial().As<std::map<long, const wxString>>());
+        const auto c = choices.find(wxConfigBase::Get()->ReadLong(GetLabel(), 0));
+        if (c != choices.end())
         {
           rb->SetStringSelection(c->second);
         }

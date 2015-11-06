@@ -13,7 +13,6 @@
 #endif
 #include <regex>
 #include <wx/clipbrd.h>
-#include <wx/combobox.h>
 #include <wx/config.h>
 #include <wx/filename.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
@@ -24,14 +23,14 @@
 #include <wx/wupdlock.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/util.h>
-#include <wx/extension/configitem.h>
-#include <wx/extension/configdlg.h>
 #include <wx/extension/dir.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/item.h>
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
@@ -330,58 +329,15 @@ void wxExComboBoxFromList(
   wxComboBox* cb,
   const std::list < wxString > & text)
 {
-  if (!text.empty())
-  {
-    wxASSERT(cb != NULL);
-    cb->Clear();
-
-    wxArrayString as;
-    as.resize(text.size());
-    copy(text.begin(), text.end(), as.begin());
-    
-    cb->Append(as);
-    cb->SetValue(cb->GetString(0));
-  }
+  wxExComboBoxAs<const std::list < wxString >>(cb, text);
 }
 
 const std::list < wxString > wxExComboBoxToList(
   const wxComboBox* cb,
   size_t max_items)
 {
-  wxASSERT(cb != NULL);
-
-  std::list < wxString > l{cb->GetValue()};
-
-  switch (cb->FindString(
-    cb->GetValue(),
-    true)) // case sensitive
-  {
-    case 0: 
-      // No change necessary, the string is already present as the first one.
-      for (size_t i = 1; i < cb->GetCount() && i < max_items; i++)
-        l.push_back(cb->GetString(i));
-      break;
-
-    case wxNOT_FOUND:
-      // Add the string, as it is not in the combo box, to the text,
-      // simply by appending all combobox items.
-      for (size_t i = 0; i < cb->GetCount() && i < max_items - 1; i++)
-        l.push_back(cb->GetString(i));
-    break;
-
-    default:
-      // Reorder. The new first element already present, just add all others.
-      for (size_t i = 0; i < cb->GetCount(); i++)
-      {
-        const wxString cb_element = cb->GetString(i);
-        if (cb_element != cb->GetValue())
-          l.push_back(cb_element);
-      }
-  }
-
-  return l;
+  return wxExComboBoxAs<std::list < wxString >>(cb, max_items);
 }
-
 #endif // wxUSE_GUI
 
 bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
@@ -471,6 +427,38 @@ const wxUniChar wxExGetFieldSeparator()
   return '\x0B';
 }
 
+int wxExGetHexNumberFromUser(
+  const wxString& message,
+  const wxString& prompt,
+  const wxString& caption,
+  int value,
+  int min,
+  int max,
+  wxWindow *parent,
+  const wxPoint& pos)
+{
+  wxExItemDialog dlg(
+    parent,
+    std::vector<wxExItem>{wxExItem(
+      message, 
+      value,
+      min, 
+      max, 
+      wxEmptyString,
+      ITEM_SPINCTRL_HEX)},
+    caption,
+    0,
+    1,
+    wxOK | wxCANCEL);
+  
+  if (dlg.ShowModal() == wxID_CANCEL)
+  {
+    return -1;
+  }
+  
+  return dlg.GetItemValue(message).As<int>();
+}
+
 int wxExGetIconID(const wxFileName& filename)
 {
   if (filename.FileExists() || 
@@ -493,39 +481,6 @@ int wxExGetIconID(const wxFileName& filename)
   {
     return wxFileIconsTable::computer;
   }
-}
-
-long wxExGetHexNumberFromUser(
-  const wxString& message,
-  const wxString& prompt,
-  const wxString& caption,
-  long value,
-  long min,
-  long max,
-  wxWindow *parent,
-  const wxPoint& pos)
-{
-  wxConfigBase::Get()->Write(message, value);
-
-  wxExConfigDialog dlg(
-    parent,
-    std::vector<wxExConfigItem>{wxExConfigItem(
-      message, 
-      min, 
-      max, 
-      wxEmptyString,
-      ITEM_SPINCTRL_HEX)},
-    caption,
-    0,
-    1,
-    wxOK | wxCANCEL);
-  
-  if (dlg.ShowModal() == wxID_CANCEL)
-  {
-    return -1;
-  }
-  
-  return wxConfigBase::Get()->ReadLong(message, 80);
 }
 
 int wxExGetNumberOfLines(const wxString& text, bool trim)

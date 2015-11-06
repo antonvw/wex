@@ -18,7 +18,6 @@ void fixture::testItem()
   wxExItem item("label1", "hello string", "info1", "page1", 1, ITEM_STRING,
     true, true, 2);
   
-  CPPUNIT_ASSERT( item.GetChoices().empty());
   CPPUNIT_ASSERT( item.GetColumns() == -1); // page cols
   CPPUNIT_ASSERT( item.GetIsRequired());
   CPPUNIT_ASSERT( item.GetLabel() == "label1");

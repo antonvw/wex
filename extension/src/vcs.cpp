@@ -140,15 +140,8 @@ bool wxExVCS::Execute()
 
   if (!filename.IsOk())
   {
-    wxString args;
-
-    if (m_Entry.GetCommand().IsAdd())
-    {
-      args = wxExConfigFirstOf(_("Path"));
-    }
-    
     return m_Entry.Execute(
-      args, 
+      m_Entry.GetCommand().IsAdd() ? wxExConfigFirstOf(_("Path")): wxString(), 
       wxExLexer(), 
       wxEXEC_SYNC,
       wxExConfigFirstOf(_("Base folder")));

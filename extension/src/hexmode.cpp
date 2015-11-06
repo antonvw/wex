@@ -123,7 +123,7 @@ void wxExHexMode::ControlCharDialog(const wxString& caption)
   {
     const wxUniChar value = m_STC->GetSelectedText().GetChar(0);
 
-    long new_value;
+    int new_value;
     if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 00 - FF",
       wxEmptyString,
       caption,
