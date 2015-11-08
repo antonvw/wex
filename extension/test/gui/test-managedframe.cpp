@@ -46,7 +46,7 @@ void fixture::testManagedFrame()
   wxMenu* menu = new wxMenu();
   m_Frame->GetFileHistory().UseMenu(1000, menu);
   m_Frame->SetFindFocus(m_Frame->GetSTC());
-  CPPUNIT_ASSERT( m_Frame->OpenFile(GetTestFile()));
+  m_Frame->OpenFile(GetTestFile());
   
   m_Frame->SetRecentFile(GetTestFile().GetFullPath());
   m_Frame->SetRecentFile("testing");
