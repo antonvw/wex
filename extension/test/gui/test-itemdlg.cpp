@@ -16,7 +16,7 @@
 
 void fixture::testItemDialog()
 {
-  
+#if wxCHECK_VERSION(3,1,0)
   // Test dialog without pages.
   wxExItemDialog* dlg1 = new wxExItemDialog(m_Frame, 
     std::vector <wxExItem> {
@@ -44,4 +44,5 @@ void fixture::testItemDialog()
       wxExItem(), wxExItem(), wxExItem()},
     "empty items");
   dlg3->Show();
+#endif
 }
