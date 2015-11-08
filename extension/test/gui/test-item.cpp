@@ -50,6 +50,7 @@ void fixture::testItem()
   
   wxExItem item_picker("picker", ITEM_FILEPICKERCTRL, "/usr/bin/git");
   
+#if wxCHECK_VERSION(3,1,0)
   item.Layout(panel, sizer);
   CPPUNIT_ASSERT( item.GetWindow() != NULL);
   CPPUNIT_ASSERT( item.GetValue() == "hello string");
@@ -66,6 +67,7 @@ void fixture::testItem()
   
   item_picker.Layout(panel, sizer);
   CPPUNIT_ASSERT( item_picker.GetValue() == "/usr/bin/git");
+#endif
   
   std::vector <wxExItem> items {
     item, item_int, item_spin, item_picker};
@@ -75,6 +77,7 @@ void fixture::testItem()
   const auto more2(TestItems(true));
   items.insert(items.end(), more2.begin(), more2.end());
   
+#if wxCHECK_VERSION(3,1,0)
   // Layout the items and check control is created.
   for (auto& it : items)
   {
@@ -91,4 +94,5 @@ void fixture::testItem()
       CPPUNIT_ASSERT(it.GetWindow() != NULL);
     }
   }
+#endif
 }
