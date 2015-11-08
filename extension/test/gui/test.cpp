@@ -44,13 +44,7 @@ fixture::fixture()
     
     wxExProcess::PrepareOutput(m_Frame);
     
-    m_Frame->GetManager().AddPane(process->GetShell(), wxAuiPaneInfo()
-      .Bottom()
-      .Name("PROCESS")
-      .MinSize(250, 100)
-      .Caption(_("Process")));
-    
-    m_Frame->GetManager().Update();
+    AddPane(m_Frame, process->GetShell());
     
     wxConfigBase::Get()->Write(_("vi mode"), true);
     

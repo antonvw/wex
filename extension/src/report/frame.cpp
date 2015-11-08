@@ -203,6 +203,11 @@ bool wxExFrameWithHistory::FindInFiles(
   bool show_dialog,
   wxExListView* report)
 {
+  if (files.empty())
+  {
+    return false;
+  }
+  
   const wxExFileName filename(files[0]);
   const wxExTool tool(id);
   
@@ -477,8 +482,10 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
   }
 }
 
-void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
+void wxExFrameWithHistory::UseFileHistoryList(wxExListViewFileName* list)
 {
+  wxASSERT(list->GetType() == wxExListViewFileName::LIST_HISTORY);
+  
   m_FileHistoryList = list;
   m_FileHistoryList->Hide();
 

@@ -63,20 +63,17 @@ public:
     long style = wxSL_HORIZONTAL,
     int cols = -1)
     : wxExConfigItem(type, style, page, label, 
-      wxEmptyString, false, true, wxID_ANY, cols, 25, 1, min, max) {;};
+      wxEmptyString, false, true, wxID_ANY, cols, 25, 1, min, max, 1, min) {;};
 
   /// Constructor for a ITEM_SPINCTRL_DOUBLE item.
   wxExConfigItem(const wxString& label,
     double min, 
     double max,
     const wxString& page = wxEmptyString,
-    wxExItemType type = ITEM_SPINCTRL,
-    /// style for a ITEM_SLIDER item
-    long style = wxSL_HORIZONTAL,
     double inc = 1,
     int cols = -1)
-    : wxExConfigItem(type, style, page, label, 
-      wxEmptyString, false, true, wxID_ANY, cols, 25, 1, min, max, inc) {;};
+    : wxExConfigItem(ITEM_SPINCTRL_DOUBLE , 0, page, label, 
+      wxEmptyString, false, true, wxID_ANY, cols, 25, 1, min, max, inc, min) {;};
 
   /// Constructor for a ITEM_CHECKLISTBOX_BOOL item. 
   /// This checklistbox can be used to get/set several boolean values.
@@ -160,9 +157,9 @@ private:
     const wxString& page = wxEmptyString, const wxString& label = wxEmptyString, const wxString& info = wxEmptyString,
     bool is_required = false, bool add_label = false,
     int id = wxID_ANY, int cols = -1, int max_items = 25, int major_dimension = 1,
-    const wxAny& min = 0, const wxAny& max = 1, const wxAny& inc = 1, const wxAny& choices = wxAny(),
+    const wxAny& min = 0, const wxAny& max = 1, const wxAny& inc = 1, const wxAny& initial = wxAny(),
     wxWindow* window = NULL, wxExUserWindowCreate create = NULL, wxExUserWindowToConfig config = NULL)
-    : wxExItem(type, style, page, label, choices, info, is_required, add_label, id,
+    : wxExItem(type, style, page, label, initial, info, is_required, add_label, id,
         cols, major_dimension, min, max, inc, window, create)
     , m_MaxItems(max_items)
     , m_UserWindowToConfig(config) {;};

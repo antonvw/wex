@@ -131,11 +131,11 @@ void wxExItem::AddStaticText(wxSizer* sizer) const
       wxSizerFlags().Right().Border().Align(wxALIGN_LEFT));
 }
 
-void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
+bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 {
-  if (m_Type != ITEM_USER)
+  if (m_Window != NULL)
   {
-    wxASSERT(m_Window == NULL);
+    return false;
   }
   
   const int width = 200;
@@ -207,7 +207,8 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
     case ITEM_DIRPICKERCTRL:
       {
-      wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent, m_Id, m_Initial.As<wxString>(),
+      wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent, m_Id, 
+        m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
         wxDirSelectorPromptStr, wxDefaultPosition, wxSize(width, wxDefaultCoord), 
         m_Style == 0 ? wxDIRP_DEFAULT_STYLE: m_Style);
 
@@ -228,7 +229,8 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       const wxString wc(wxFileSelectorDefaultWildcardStr);
 #endif
 
-      wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent, m_Id, m_Initial.As<wxString>(),
+      wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent, m_Id, 
+        m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
         wxFileSelectorPromptStr, wc,
         wxDefaultPosition, wxSize(width, wxDefaultCoord),
         m_Style == 0 ? wxFLP_DEFAULT_STYLE: m_Style);
@@ -246,14 +248,16 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       // See also ITEM_INT, validator cannot be set using ?.
       if (m_Validator == NULL)
       {
-        m_Window = new wxTextCtrl(parent, m_Id, m_Initial.As<wxString>(),
+        m_Window = new wxTextCtrl(parent, m_Id, 
+          m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
           wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
           m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
           wxFloatingPointValidator<float>());
       }
       else
       {
-        m_Window = new wxTextCtrl(parent, m_Id, m_Initial.As<wxString>(),
+        m_Window = new wxTextCtrl(parent, m_Id, 
+          m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
           wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
           m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
           *m_Validator);
@@ -287,14 +291,16 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
     case ITEM_INT:
       if (m_Validator == NULL)
       {
-        m_Window = new wxTextCtrl(parent, m_Id, m_Initial.As<wxString>(),
+        m_Window = new wxTextCtrl(parent, m_Id, 
+          m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
           wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
           m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
           wxIntegerValidator<int>());
       }
       else
       {
-        m_Window = new wxTextCtrl(parent, m_Id, m_Initial.As<wxString>(),
+        m_Window = new wxTextCtrl(parent, m_Id, 
+          m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
           wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
           m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
           *m_Validator);
@@ -376,7 +382,8 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_STRING:
-      m_Window = new wxTextCtrl(parent, m_Id, m_Initial.As<wxString>(),
+      m_Window = new wxTextCtrl(parent, m_Id, 
+        m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
         wxDefaultPosition,
         (m_Style & wxTE_MULTILINE ?
            wxSize(width, 200):
@@ -407,6 +414,8 @@ void wxExItem::CreateWindow(wxWindow* parent, bool readonly)
   {
     wxASSERT(m_Window != NULL);
   }
+  
+  return true;
 }
 
 const wxAny wxExItem::GetValue() const
@@ -464,7 +473,10 @@ wxFlexGridSizer* wxExItem::Layout(
   bool readonly,
   wxFlexGridSizer* fgz)
 {
-  CreateWindow(parent, readonly);
+  if (!CreateWindow(parent, readonly))
+  {
+    return NULL;
+  }
   
   wxFlexGridSizer* use = fgz;
 

@@ -13,10 +13,13 @@ void fixture::testDirCtrl()
 {
   wxExGenericDirCtrl* ctrl = new wxExGenericDirCtrl(m_Frame, m_Frame);
   
+  AddPane(m_Frame, ctrl);
+
+  // Select directory.
   ctrl->ExpandAndSelectPath("./");
   
   for (auto id : std::vector<int> {
-    ID_EDIT_VCS_LOWEST + 1, 
+    ID_EDIT_VCS_LOWEST + 2, 
     ID_TREE_COPY, 
     ID_EDIT_OPEN, 
     ID_TREE_RUN_MAKE,
@@ -26,5 +29,17 @@ void fixture::testDirCtrl()
     wxPostEvent(ctrl, wxCommandEvent(wxEVT_MENU, id));
   }
   
-  ctrl->Destroy();
+  // Select file.
+  ctrl->ExpandAndSelectPath("/usr/bin/git");
+  
+  for (auto id : std::vector<int> {
+    ID_EDIT_VCS_LOWEST + 2, 
+    ID_TREE_COPY, 
+    ID_EDIT_OPEN, 
+    ID_TREE_RUN_MAKE,
+    ID_TOOL_REPORT_FIND, 
+  })
+  {
+    wxPostEvent(ctrl, wxCommandEvent(wxEVT_MENU, id));
+  }
 }

@@ -17,8 +17,9 @@ void fixture::testListViewWithFrame()
     
   wxExListViewWithFrame* listView = new wxExListViewWithFrame(m_Frame, m_Frame, 
     wxExListViewFileName::LIST_FIND);
-  listView->Show();
   
+  AddPane(m_Frame, listView);
+
   listView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->AppendColumn(wxExColumn("Number", wxExColumn::COL_INT));
   
@@ -35,6 +36,4 @@ void fixture::testListViewWithFrame()
   {
     wxPostEvent(listView, wxCommandEvent(wxEVT_MENU, id));
   }
-  
-  listView->Destroy();
 }

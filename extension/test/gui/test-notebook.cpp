@@ -18,6 +18,8 @@
 void fixture::testNotebook()
 {
   wxExNotebook* notebook = new wxExNotebook(m_Frame, NULL);
+  AddPane(m_Frame, notebook);
+  
   wxWindow* page1 = new wxWindow(m_Frame, wxID_ANY);
   wxWindow* page2 = new wxWindow(m_Frame, wxID_ANY);
   wxWindow* page3 = new wxWindow(m_Frame, wxID_ANY);

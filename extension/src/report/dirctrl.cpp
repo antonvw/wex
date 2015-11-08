@@ -67,7 +67,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
     }, ID_EDIT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    const std::vector<wxString> files(wxExToVectorString(*this).Get());
+    GET_VECTOR_FILES
     wxExMake(files[0]);}, ID_TREE_RUN_MAKE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {

@@ -24,7 +24,7 @@ public:
 
   virtual wxExListViewFileName* Activate(
     wxExListViewFileName::wxExListType list_type, 
-    const wxExLexer* lexer);
+    const wxExLexer* lexer) override;
 private:
   wxExListViewFileName* m_Report;
 };

@@ -104,7 +104,7 @@ public:
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
-  void UseFileHistoryList(wxExListView* list);
+  void UseFileHistoryList(wxExListViewFileName* list);
 protected:
   /// Access to file history list, 
   /// if you use this as a page in a notebook,

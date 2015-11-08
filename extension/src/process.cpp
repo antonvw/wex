@@ -135,6 +135,11 @@ void wxExProcess::CheckInput()
 {
   wxCriticalSectionLocker lock(m_Critical);
   
+  if (m_Shell == NULL)
+  {
+    return;
+  }
+  
   wxString output;
   GET_STREAM(Input);
   GET_STREAM(Error);
@@ -254,6 +259,12 @@ bool wxExProcess::Execute(
   int flags,
   const wxString& wd)
 {
+  // We need a shell for output.
+  if (m_Shell == NULL)
+  {
+    return false;
+  }
+  
   m_Error = false;
     
   struct wxExecuteEnv env;
@@ -399,8 +410,11 @@ void wxExProcess::OnTerminate(int pid, int status)
   m_Timer->Stop();
   CheckInput();
   wxLogStatus(_("Ready"));
-  
-  m_Shell->EnableShell(false);
+
+  if (m_Shell != NULL)
+  {
+    m_Shell->EnableShell(false);
+  }
 }
 
 void wxExProcess::PrepareOutput(wxWindow* parent)
