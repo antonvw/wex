@@ -22,9 +22,6 @@ class wxWindow;
 /// The item types supported.
 enum wxExItemType
 {
-  /// Used for automatic testing only.
-  ITEM_ITEM_MIN,
-  
   ITEM_BUTTON,               ///< a wxButton item
   ITEM_CHECKBOX,             ///< a wxCheckBox item
   ITEM_CHECKLISTBOX_BIT,     ///< a wxCheckListBox item to set individual bits in a long
@@ -53,9 +50,6 @@ enum wxExItemType
   ITEM_STRING,               ///< a wxTextCtrl item
   ITEM_TOGGLEBUTTON,         ///< a wxToggleButton item
   ITEM_USER,                 ///< provide your own window
-
-  /// Used for automatic testing only.
-  ITEM_ITEM_MAX
 };
 
 /// Callback for user window creation.
@@ -121,12 +115,9 @@ public:
     double min, 
     double max,
     const wxString& page = wxEmptyString,
-    wxExItemType type = ITEM_SPINCTRL,
-    /// style for a ITEM_SLIDER item
-    long style = wxSL_HORIZONTAL,
     double inc = 1,
     int cols = -1)
-    : wxExItem(type, style, page, label, value,
+    : wxExItem(ITEM_SPINCTRL_DOUBLE, 0, page, label, value,
       wxEmptyString, false, true, wxID_ANY, cols, 1, min, max, inc) {;};
 
   /// Constructor for a ITEM_CHECKLISTBOX_BOOL item. 
@@ -265,7 +256,7 @@ protected:
     /// the label to appear in front of the item
     const wxString& label = wxEmptyString, 
     /// intitial value if appropriate
-    const wxAny& value = wxAny(),
+    const wxAny& value = wxString(),
     /// some extra info
     const wxString& info = wxEmptyString,
     /// support for the underlying control
@@ -281,11 +272,11 @@ protected:
     /// major dimention for radio boxes
     int major_dimension = 1,
     /// min value if appropriate
-    const wxAny& min = wxAny(), 
+    const wxAny& min = 0, 
     /// max value if appropriate
-    const wxAny& max = wxAny(), 
+    const wxAny& max = 1, 
     /// increment value if appropriate
-    const wxAny& inc = wxAny(),
+    const wxAny& inc = 1,
     /// window, normally created by Layout, but may be supplied here
     wxWindow* window = NULL, 
     /// the process callback for window creation
@@ -293,7 +284,7 @@ protected:
 private:
   wxFlexGridSizer* AddBrowseButton(wxSizer* sizer) const;
   void AddStaticText(wxSizer* sizer) const;
-  void CreateWindow(wxWindow* parent, bool readonly);
+  bool CreateWindow(wxWindow* parent, bool readonly);
 
   bool m_AddLabel, m_IsRequired, m_IsRowGrowable;
   int m_Cols, m_Id, m_MajorDimension, m_PageCols;

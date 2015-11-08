@@ -52,6 +52,7 @@ void fixture::testFrame()
   CPPUNIT_ASSERT(!m_Frame->UpdateStatusBar(m_Frame->GetSTC(), "PaneInfo"));
   
   wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
+  AddPane(m_Frame, stc);
   stc->SetFocus();
   
   CPPUNIT_ASSERT( m_Frame->GetSTC() == stc);

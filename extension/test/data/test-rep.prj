@@ -1,24 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files>
-  <!--wxex-test-gui-report project test-rep.prj zo 06 okt 2013 15:38:01 CEST-->
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/aui</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/generic</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/gtk/gnome</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/gtk</folder>
-  <folder extensions="">/usr/local/include/wx-2.9/wx/gtk/hildon</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/html</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/meta</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/persist</folder>
-  <folder extensions="">/usr/local/include/wx-2.9/wx/gtk/private</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/propgrid</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/protocol</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/ribbon</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/richtext</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/stc</folder>
-  <file>/usr/local/include/wx-2.9/wx/stc/stc.h</file>
-  <folder>univ</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/unix</folder>
-  <folder>x11</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/xml</folder>
-  <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/xrc</folder>
+  <!--syncped project test-rep.prj Wed 04 Nov 2015 20:43:22 CET-->
+  <file>/usr/include/cppunit/AdditionalMessage.h</file>
+  <file>/usr/include/cppunit/Asserter.h</file>
+  <file>/usr/include/cppunit/BriefTestProgressListener.h</file>
+  <file>/usr/include/cppunit/CompilerOutputter.h</file>
+  <file>/usr/include/cppunit/Exception.h</file>
+  <file>/usr/include/cppunit/Message.h</file>
+  <file>/usr/include/cppunit/Outputter.h</file>
+  <file>/usr/include/cppunit/Portability.h</file>
+  <file>/usr/include/cppunit/Protector.h</file>
+  <file>/usr/include/cppunit/SourceLine.h</file>
+  <file>/usr/include/cppunit/SynchronizedObject.h</file>
+  <file>/usr/include/cppunit/Test.h</file>
+  <file>/usr/include/cppunit/TestAssert.h</file>
+  <file>/usr/include/cppunit/TestCaller.h</file>
+  <file>/usr/include/cppunit/TestCase.h</file>
+  <file>/usr/include/cppunit/TestComposite.h</file>
+  <file>/usr/include/cppunit/TestFailure.h</file>
+  <file>/usr/include/cppunit/TestFixture.h</file>
+  <file>/usr/include/cppunit/TestLeaf.h</file>
+  <file>/usr/include/cppunit/TestListener.h</file>
+  <file>/usr/include/cppunit/TestPath.h</file>
+  <file>/usr/include/cppunit/TestResult.h</file>
+  <file>/usr/include/cppunit/TestResultCollector.h</file>
+  <file>/usr/include/cppunit/TestRunner.h</file>
+  <file>/usr/include/cppunit/TestSuccessListener.h</file>
+  <file>/usr/include/cppunit/TestSuite.h</file>
+  <file>/usr/include/cppunit/TextOutputter.h</file>
+  <file>/usr/include/cppunit/TextTestProgressListener.h</file>
+  <file>/usr/include/cppunit/TextTestResult.h</file>
+  <file>/usr/include/cppunit/TextTestRunner.h</file>
+  <file>/usr/include/cppunit/XmlOutputter.h</file>
+  <file>/usr/include/cppunit/XmlOutputterHook.h</file>
+  <file>/usr/include/cppunit/config-auto.h</file>
 </files>

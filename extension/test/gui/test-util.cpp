@@ -214,9 +214,12 @@ void fixture::testUtil()
   wxExLogStatus( GetTestFile());
 
   // wxExMake  
+  const wxString wd = wxGetCwd(); // as /usr/bin/git changes wd
   CPPUNIT_ASSERT( wxExMake(wxFileName("xxx")) != -1);
   CPPUNIT_ASSERT( wxExMake(wxFileName("make.tst")) != -1);
-
+  CPPUNIT_ASSERT( wxExMake(wxFileName("/usr/bin/git")) != -1);
+  wxSetWorkingDirectory(wd);
+  
   // wxExMatch
   CPPUNIT_ASSERT( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
   CPPUNIT_ASSERT( wxExMatch("(\\d+)ok(\\d+)nice", "19999ok245nice", v) == 2);
@@ -236,7 +239,8 @@ void fixture::testUtil()
   CPPUNIT_ASSERT(!wxExOpenFiles(m_Frame, std::vector<wxString>()));
   CPPUNIT_ASSERT(!wxExOpenFiles(m_Frame, std::vector<wxString> {
     GetTestFile().GetFullPath(), "test.cpp", "*xxxxxx*.cpp"}));
-  CPPUNIT_ASSERT( wxExOpenFiles(m_Frame, std::vector<wxString> {GetTestFile().GetFullPath()}));
+wxLogMessage(wxGetCwd());
+  CPPUNIT_ASSERT_MESSAGE( GetTestFile().GetFullPath().ToStdString(), wxExOpenFiles(m_Frame, std::vector<wxString> {GetTestFile().GetFullPath()}));
   CPPUNIT_ASSERT( wxExOpenFiles(m_Frame, std::vector<wxString> {"../../data/vcs.xml"}));
 
   // wxExOpenFilesDialog

@@ -12,6 +12,7 @@
 #endif
 #include <wx/extension/configitem.h>
 #include <wx/extension/managedframe.h>
+#include "../test-configitem.h"
 #include "test.h"
 
 void fixture::testConfigItem()
@@ -19,14 +20,15 @@ void fixture::testConfigItem()
   // Use specific constructors.
   const wxExConfigItem ci_empty;
   const wxExConfigItem ci_spacer(5);
-  const wxExConfigItem ci_sl("ci-sl", 1, 5, wxEmptyString,ITEM_SLIDER);
-  const wxExConfigItem ci_vl(wxLI_HORIZONTAL);
+  const wxExConfigItem ci_cb("ci-cb", ITEM_COMBOBOX);
   const wxExConfigItem ci_sp("ci-sp", 1, 5);
-  const wxExConfigItem ci_sp_d("ci-sp-d", 1.0, 5.0, wxEmptyString,ITEM_SPINCTRL_DOUBLE);
-  const wxExConfigItem ci_sp_h("ci-sp-h", 1.0, 5.0, wxEmptyString,ITEM_SPINCTRL_HEX);
+  const wxExConfigItem ci_sp_d("ci-sp-d", 1.0, 5.0);
+  const wxExConfigItem ci_sp_h("ci-sp-h", 1, 5, wxEmptyString, ITEM_SPINCTRL_HEX);
+  const wxExConfigItem ci_sl("ci-sl", 1, 5, wxEmptyString, ITEM_SLIDER);
+  const wxExConfigItem ci_vl(wxLI_HORIZONTAL);
   wxExConfigItem ci_str("ci-string", wxEmptyString);
   const wxExConfigItem ci_hl("ci-hyper", "www.wxwidgets.org", wxEmptyString, 0,ITEM_HYPERLINKCTRL);
-  wxExConfigItem ci_st("ci-static", "HELLO", wxEmptyString, 0,ITEM_STATICTEXT);
+  wxExConfigItem ci_st("ci-static", "HELLO", wxEmptyString, 0, ITEM_STATICTEXT);
   const wxExConfigItem ci_int("ci-int",ITEM_INT);
   const wxExConfigItem ci_rb("ci-rb", 
     std::map<long, const wxString> {
@@ -46,6 +48,7 @@ void fixture::testConfigItem()
   
   CPPUNIT_ASSERT(ci_empty.GetType() == ITEM_EMPTY);
   CPPUNIT_ASSERT(!ci_empty.IsRowGrowable());
+  CPPUNIT_ASSERT(ci_cb.GetType() == ITEM_COMBOBOX);
   CPPUNIT_ASSERT(ci_spacer.GetType() == ITEM_SPACER);
   CPPUNIT_ASSERT(ci_sl.GetLabel() == "ci-sl");
   CPPUNIT_ASSERT(ci_sl.GetType() == ITEM_SLIDER);
@@ -64,23 +67,12 @@ void fixture::testConfigItem()
   CPPUNIT_ASSERT(ci_user.GetType() == ITEM_USER);
 
   std::vector <wxExConfigItem> items {
-    ci_empty, ci_spacer, ci_sl, ci_vl, ci_sp, ci_sp_d, ci_sp_h,
+    ci_empty, ci_spacer, ci_cb, ci_sl, ci_vl, ci_sp, ci_sp_d, ci_sp_h,
     ci_str, ci_hl, ci_st, ci_int, ci_rb, ci_bc, ci_cl_n, ci_user};
   
-  // Use general constructor, and add all items.
-  for (
-    int i = ITEM_ITEM_MIN + 1;
-    i < ITEM_ITEM_MAX;
-    i++)
-  {
-    if (i != ITEM_USER)
-    {
-      items.push_back(wxExConfigItem(
-        wxString::Format("item%d", i), 
-        (wxExItemType)i));
-    }
-  }
-
+  const auto more(TestConfigItems());
+  items.insert(items.end(), more.begin(), more.end());
+  
   // Check members are initialized.
   for (auto& it : items)
   {
@@ -91,8 +83,6 @@ void fixture::testConfigItem()
     else 
       CPPUNIT_ASSERT( it.GetWindow() == NULL);
       
-    CPPUNIT_ASSERT(!it.GetIsRequired());
-    
     if (
       it.GetType() != ITEM_STATICLINE &&
       it.GetType() != ITEM_SPACER &&
@@ -100,12 +90,6 @@ void fixture::testConfigItem()
     {
       CPPUNIT_ASSERT(!it.GetLabel().empty());
     }
-    
-    CPPUNIT_ASSERT( it.GetPage().empty());
-
-    CPPUNIT_ASSERT(
-      it.GetType() > ITEM_ITEM_MIN &&
-      it.GetType() < ITEM_ITEM_MAX);
     
     it.SetRowGrowable(true);
     it.SetValidator(NULL);
@@ -116,7 +100,7 @@ void fixture::testConfigItem()
   // Layout the items and check control is created.
   for (auto& it : items)
   {
-    //ITEM_USER is not yet laid out ok, gives errors.
+    // ITEM_USER is not yet laid out ok, gives errors.
     if (it.GetType() != ITEM_USER)
     {
       // Testing on not NULL not possible,

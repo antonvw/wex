@@ -17,9 +17,7 @@ void fixture::testListViewFileName()
 {
   wxExListViewFileName* listView = new wxExListViewFileName(
     m_Frame, wxExListViewFileName::LIST_FILE);
-  m_Frame->GetManager().AddPane(listView, 
-    wxAuiPaneInfo().Bottom().Caption("ListViewFileName"));
-  m_Frame->GetManager().Update();
+  AddPane(m_Frame, listView);
   
   CPPUNIT_ASSERT(!listView->GetTypeDescription().empty());
   CPPUNIT_ASSERT(!listView->wxExListViewFileName::GetTypeDescription(

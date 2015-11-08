@@ -17,9 +17,7 @@
 void fixture::testListView()
 {
   wxExListView* listView = new wxExListView(m_Frame);
-  m_Frame->GetManager().AddPane(listView, 
-    wxAuiPaneInfo().Bottom().Caption("ListView"));
-  m_Frame->GetManager().Update();
+  AddPane(m_Frame, listView);
   
   listView->SetSingleStyle(wxLC_REPORT);
   

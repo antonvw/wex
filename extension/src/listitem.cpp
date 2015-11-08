@@ -55,6 +55,7 @@ void wxExListItem::Insert(long index)
   if (m_ListView->InReportView())
   {
     col = m_ListView->FindColumn(_("File Name"));
+    wxASSERT(col >= 0);
     filename = (
       m_FileName.Exists() ?
         m_FileName.GetFullName():

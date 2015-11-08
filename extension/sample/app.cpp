@@ -13,7 +13,6 @@
 #endif
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
-#include <wx/html/htmlwin.h>
 #include <wx/textfile.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
@@ -31,12 +30,14 @@
 #include "app.xpm"
 #endif
 
+#include "../test/test-configitem.h"
+#include "../test/test-item.h"
+
 enum
 {
   ID_FIRST = 15000,
   ID_CONFIG_DLG,
-  ID_CONFIG_DLG_1_COL,
-  ID_CONFIG_DLG_4_COL,
+  ID_CONFIG_DLG_COL,
   ID_CONFIG_DLG_READONLY,
   ID_ITEM_DLG,
   ID_RECENTFILE_MENU,
@@ -48,16 +49,6 @@ enum
   ID_STC_SPLIT,
   ID_LAST 
 };
-
-void myHtmlCreate(wxWindow* user, wxWindow* parent, bool readonly)
-{
-  ((wxHtmlWindow *)user)->Create(parent, 100);
-}
-
-void myTextCreate(wxWindow* user, wxWindow* parent, bool readonly)
-{
-  ((wxTextCtrl *)user)->Create(parent, 100);
-}
 
 wxIMPLEMENT_APP(wxExSampleApp);
 
@@ -112,6 +103,8 @@ wxExSampleFrame::wxExSampleFrame()
     wxDefaultPosition,
     wxDefaultSize,
     wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS))
+  , m_STC(new wxExSTC(this))
+  , m_Shell(new wxExShell(this, ">", wxTextFile::GetEOL(), true, 10))
   , m_STCLexers(new wxExSTC(this, wxExLexers::Get()->GetFileName()))
 {
   wxExProcess::PrepareOutput(this);
@@ -147,8 +140,7 @@ wxExSampleFrame::wxExSampleFrame()
   
   wxExMenu* menuConfig = new wxExMenu;
   menuConfig->Append(ID_CONFIG_DLG, wxExEllipsed("Config Dialog"));
-  menuConfig->Append(ID_CONFIG_DLG_1_COL, wxExEllipsed("Config Dialog 1 Col"));
-  menuConfig->Append(ID_CONFIG_DLG_4_COL, wxExEllipsed("Config Dialog 4 Col"));
+  menuConfig->Append(ID_CONFIG_DLG_COL, wxExEllipsed("Config Dialog Columns"));
   menuConfig->Append(
     ID_CONFIG_DLG_READONLY, 
     wxExEllipsed("Config Dialog Readonly"));
@@ -184,8 +176,6 @@ wxExSampleFrame::wxExSampleFrame()
   m_Grid = new wxExGrid(m_Notebook);
 #endif
   m_ListView = new wxExListView(m_Notebook);
-  m_STC = new wxExSTC(this);
-  m_Shell = new wxExShell(this, ">", wxTextFile::GetEOL(), true, 10);
 
   GetManager().AddPane(m_Notebook, 
     wxAuiPaneInfo().CenterPane().MinSize(wxSize(250, 250)));
@@ -365,143 +355,36 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 
     case ID_CONFIG_DLG: ShowConfigItems(); break;
     
-    case ID_ITEM_DLG: 
+    case ID_CONFIG_DLG_COL:
       {
-      std::vector<wxExItem> v;
-      wxArrayString as;
-      as.push_back("test1");
-      as.push_back("test2");
-      as.push_back("test3");
-  
-      v.push_back(wxExItem("Spin control", 10, 5, 15));
-      
-      v.push_back(wxExItem("Group Checkbox1", ITEM_CHECKBOX));
-      v.push_back(wxExItem("Group Checkbox2", ITEM_CHECKBOX));
-      v.push_back(wxExItem("Group Checkbox3", ITEM_CHECKBOX));
-      v.push_back(wxExItem("ComboBox", ITEM_COMBOBOX, as));
-    
-      wxExItemDialog* dlg = new wxExItemDialog(
-        this, v, "Item Dialog");
-  
-      dlg->Show();
-      }
-      break;
-    
-    case ID_CONFIG_DLG_1_COL:
-      {
-      std::vector<wxExConfigItem> v;
-
-      for (int sl = 1; sl <= 3; sl++)
-      {
-        v.push_back(wxExConfigItem(
-          wxString::Format("Slider%d", sl),
-          1,
-          10,
-          wxEmptyString,
-          ITEM_SLIDER,
-          wxSL_HORIZONTAL,
-          1));
-      }
-
-      v.push_back(wxExConfigItem("Group Checkbox1", ITEM_CHECKBOX));
-      v.push_back(wxExConfigItem(
-        "STC cpp", 
-        "cpp",
+      const long val = wxGetNumberFromUser("Input columns:",
         wxEmptyString,
-        0,
-        ITEM_STC));
-
-      v.push_back(wxExConfigItem(
-        "STC pascal", 
-        "pascal",
-        wxEmptyString,
-        0,
-        ITEM_STC));
-
-      wxExConfigItem item(
-        "STC lisp", 
-        "lisp",
-        wxEmptyString,
-        0,
-        ITEM_STC);
-
-      item.SetRowGrowable(false);
-
-      v.push_back(item);
-
-      wxExConfigDialog* dlg = new wxExConfigDialog(
-        this,
-        v,
-        "Config Dialog 1 Col",
-        0,
-        1);
-  
-      dlg->Show();
-      }
-      break;
-    
-    case ID_CONFIG_DLG_4_COL:
+        _("Repeat Timer"),
+        1,
+        1,
+        100);
+      if (val >= 0)
       {
-      std::vector<wxExConfigItem> v;
-  
-      for (int sl = 1; sl <= 6; sl++)
-      {
-        v.push_back(wxExConfigItem(
-          wxString::Format("Slider%d", sl),
-          1,
-          10,
-          wxEmptyString,
-          ITEM_SLIDER));
+        wxExConfigDialog(this, TestConfigItems(), "Config Dialog Columns",
+          0, val).ShowModal();
       }
-      
-      v.push_back(wxExConfigItem("Group Checkbox1", ITEM_CHECKBOX));
-      v.push_back(wxExConfigItem("Group Checkbox2", ITEM_CHECKBOX));
-      v.push_back(wxExConfigItem("Group Checkbox3", ITEM_CHECKBOX));
-    
-      wxExConfigDialog* dlg = new wxExConfigDialog(
-        this,
-        v,
-        "Config Dialog 4 Col",
-        0,
-        4);
-  
-      dlg->Show();
       }
       break;
     
     case ID_CONFIG_DLG_READONLY:
-      {
-      std::vector<wxExConfigItem> v{
-        wxExConfigItem(),
-        wxExConfigItem(),
-        wxExConfigItem("File Picker", ITEM_FILEPICKERCTRL),
-        wxExConfigItem("File Picker", ITEM_FILEPICKERCTRL),
-        wxExConfigItem("File Picker", ITEM_FILEPICKERCTRL),
-        wxExConfigItem("File Picker", ITEM_FILEPICKERCTRL),
-        wxExConfigItem("File Picker", ITEM_FILEPICKERCTRL)};
-  
-      for (int j = 1; j <= 10; j++)
-      {
-        v.push_back(wxExConfigItem(wxString::Format("Integer%d", j), ITEM_INT));
-      }
-  
-      wxExConfigDialog* dlg = new wxExConfigDialog(
-        this,
-        v,
-        "Config Dialog Readonly",
-        0,
-        4,
-        wxCANCEL);
-  
-        dlg->Show();
-      }
+      wxExConfigDialog(this, TestConfigItems(), "Config Dialog Readonly",
+        0, 4, wxCANCEL).ShowModal();
       break;
-      
       
     case ID_SHELL_COMMAND:
         m_Shell->Prompt("\nHello '" + event.GetString() + "' from the shell");
       break;
       
+    case ID_ITEM_DLG: 
+      wxExItemDialog(this, TestItems()).ShowModal();
+      wxExItemDialog(this, TestItems(true)).ShowModal();
+      break;
+    
     case ID_SHOW_VCS:
       {
       wxFileDialog openFileDialog(this, _("Open File"), "", "",
@@ -621,303 +504,9 @@ void wxExSampleFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
 void wxExSampleFrame::ShowConfigItems()
 {
-  std::vector<wxExConfigItem> v;
-
-  // ITEM_BUTTON
-  for (int b = 1; b <= 4; b++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("<span size='x-large' color='blue'>Big</span> <b>bold</b> button %d", b),
-      ITEM_BUTTON,
-      "Buttons",
-      false,
-      1000 + b));
-  }
-
-  // ITEM_CHECKBOX
-  for (int h = 1; h <= 4; h++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("Checkbox%d", h), 
-      ITEM_CHECKBOX, 
-      "Checkboxes"));
-  }
-
-  v.push_back(wxExConfigItem(
-    "Group Checkbox1",
-    ITEM_CHECKBOX, 
-    "Checkboxes"));
-
-  v.push_back(wxExConfigItem(
-    "Group Checkbox2",
-    ITEM_CHECKBOX, 
-    "Checkboxes"));
-
-  // ITEM_CHECKLISTBOX
-  v.push_back(wxExConfigItem(
-    "Bin Choices", 
-    std::map<long, const wxString> {
-      std::make_pair(1, "Bit One"),
-      std::make_pair(2, "Bit Two"),
-      std::make_pair(4, "Bit Three"),
-      std::make_pair(8, "Bit Four")},
-    false, 
-    "Checkbox lists"));
-
-  // ITEM_CHECKLISTBOX_BOOL
-  v.push_back(wxExConfigItem(
-    std::set<wxString>{"This","Or","Other", "a", "b", "c", "d",
-    "e", "f", "g", "h"},
-    "Checkbox lists"));
-
-  // ITEM_COLOUR
-  for (int i = 1; i <= 5; i++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("Colour%d", i), 
-      ITEM_COLOUR, 
-      "Colours"));
-  }
-
-  // ITEM_COMBOBOX
-  for (int m = 1; m <= 5; m++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("Combobox%d", m), 
-      ITEM_COMBOBOX, 
-      "Comboboxes"));
-  }
-
-  // ITEM_COMBOBOX without a name
-  v.push_back(wxExConfigItem(
-    "Combobox No Name",
-    ITEM_COMBOBOX, 
-    "Comboboxes",
-    false,
-    wxID_ANY,
-    NewControlId(),
-    false));
-
-  // ITEM_COMBOBOXDIR
-  v.push_back(wxExConfigItem(
-    "Combobox Dir Required",
-    ITEM_COMBOBOXDIR, 
-    "Comboboxes",
-    true,
-    NewControlId()));
-
-  // ITEM_COMBOBOXDIR
-  v.push_back(wxExConfigItem(
-    "Combobox Dir", 
-    ITEM_COMBOBOXDIR, 
-    "Comboboxes",
-    false,
-    NewControlId()));
-
-  // ITEM_COMMAND_LINK_BUTTON
-  for (int l = 1; l <= 4; l++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("Command Link Button%d\tThis text describes what the button does", l),
-      ITEM_COMMAND_LINK_BUTTON,
-      "Command Link Buttons",
-      false,
-      1010 + l));
-  }
-
-  // ITEM_SPACER on pickers page
-  v.push_back(wxExConfigItem(10, "Pickers"));
-
-  // ITEM_DIRPICKERCTRL
-  v.push_back(wxExConfigItem(
-    "Dir Picker", 
-    ITEM_DIRPICKERCTRL, 
-    "Pickers"));
-
-  // ITEM_FILEPICKERCTRL
-  v.push_back(wxExConfigItem(
-    "File Picker", 
-    ITEM_FILEPICKERCTRL, 
-    "Pickers"));
-
-  // ITEM_FONTPICKERCTRL
-  v.push_back(wxExConfigItem(
-    "Font Picker", 
-    ITEM_FONTPICKERCTRL, 
-    "Pickers"));
-
-  // ITEM_FLOAT
-  v.push_back(wxExConfigItem(
-    "Float", 
-    ITEM_FLOAT, 
-    "Floats", 
-    true));
-      
-  // ITEM_HYPERLINKCTRL
-  v.push_back(wxExConfigItem(
-    "Hyper Link 1",
-    "www.wxwidgets.org",
-    "Hyperlinks",
-    0,
-    ITEM_HYPERLINKCTRL));
-
-  v.push_back(wxExConfigItem(
-    "Hyper Link 2",
-    "www.scintilla.org",
-    "Hyperlinks",
-    0,
-    ITEM_HYPERLINKCTRL));
-
-  // ITEM_INT
-  for (int j = 1; j <= 5; j++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("Integer%d", j), 
-      ITEM_INT, 
-      "Integers", 
-      true));
-  }
-
-  // ITEM_LISTVIEW_FOLDER
-  v.push_back(wxExConfigItem(
-    "ListView",
-    ITEM_LISTVIEW_FOLDER,
-    "ListView"));
-
-  // ITEM_RADIOBOX
-  v.push_back(wxExConfigItem(
-    "Radio Box", 
-    std::map<long, const wxString> {
-      std::make_pair(0, "Zero"),
-      std::make_pair(1, "One"),
-      std::make_pair(2, "Two")},
-    true, 
-    "Radioboxes"));
-
-  // ITEM_SLIDER
-  const int start = 1;
-  for (int sl = start + 1; sl <= start + 3; sl++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("Slider%d", sl),
-      start,
-      sl,
-      "Spin controls",
-      ITEM_SLIDER));
-  }
-
-  // ITEM_SPINCTRL
-  for (int s = 1; s <= 2; s++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("Spin Control%d", s), 
-      1, 
-      s, 
-      "Spin controls"));
-  }
-
-  // ITEM_SPINCTRL_DOUBLE
-  for (int sd = 1; sd <= 2; sd++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("Spin Control Double%d", sd), 
-      1.0,
-      (double)sd, 
-      "Spin controls",
-      ITEM_SPINCTRL_DOUBLE,
-      wxSL_HORIZONTAL,
-      0.01));
-  }
-
-  // ITEM_SPINCTRL_HEX
-  for (int s = 1; s <= 2; s++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("Spin Control Hex%d", s), 
-      0, 
-      255, 
-      "Spin controls",
-      ITEM_SPINCTRL_HEX));
-  }
-
-  for (int st = 1; st <= 5; st++)
-  {
-    // ITEM_STATICTEXT
-    v.push_back(wxExConfigItem(
-      wxString::Format("Static Text%d", st),
-      "this is my static text",
-      "Static Text",
-      0,
-      ITEM_STATICTEXT));
-  }
-
-  // ITEM_STATICLINE (horizontal)
-  v.push_back(wxExConfigItem(wxHORIZONTAL, "Static Line"));
-
-  // ITEM_STATICLINE (vertical)
-  v.push_back(wxExConfigItem(wxVERTICAL, "Static Line"));
-
-  // ITEM_STC
-  v.push_back(wxExConfigItem(
-    "STC", 
-    "cpp",
-    "STC",
-    0,
-    ITEM_STC));
-
-  // ITEM_STRING
-  for (int l = 1; l <= 5; l++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("String%d", l), 
-      wxEmptyString,
-      "Strings"));
-  }
-  
-  wxExConfigItem ci(
-    "String Validator", 
-    wxEmptyString,
-    "Strings");
-  wxTextValidator validator(wxFILTER_INCLUDE_CHAR_LIST);
-  validator.SetCharIncludes("0123");
-  ci.SetValidator(&validator);
-  v.push_back(ci);
-      
-  v.push_back(wxExConfigItem(
-    "String Multiline", 
-    wxEmptyString,
-    "Strings",
-    wxTE_MULTILINE));
-
-  // ITEM_TOGGLEBUTTON
-  for (int tb = 1; tb <= 4; tb++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("Toggle Button%d", tb),
-      ITEM_TOGGLEBUTTON,
-      "Toggle buttons",
-      false,
-      1020 + tb));
-  }
-
-  /// ITEM_USER
-  v.push_back(wxExConfigItem(
-    "HTML Control", 
-    new wxHtmlWindow(),
-    myHtmlCreate,
-    NULL,
-    "User Controls"));
-
-  v.push_back(wxExConfigItem(
-    "Text Control", 
-    new wxTextCtrl(),
-    myTextCreate,
-    NULL,
-    "User Controls"));
-
   wxExConfigDialog* dlg = new wxExConfigDialog(
     this,
-    v,
+    TestConfigItems(),
     "Config Dialog",
     0,
     1,

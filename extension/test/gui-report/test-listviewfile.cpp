@@ -13,6 +13,8 @@ void fixture::testListViewFile()
 {
   wxExListViewFile* listView = new wxExListViewFile(m_Frame, m_Frame, m_Project);
   
+  AddPane(m_Frame, listView);
+
   listView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->AppendColumn(wxExColumn("Number", wxExColumn::COL_INT));
 

@@ -22,14 +22,7 @@ void fixture::testManagedFrame()
   CPPUNIT_ASSERT(m_Frame->AllowClose(100, NULL));
   
   wxExSTC* stc = new wxExSTC(m_Frame, "hello world");
-  
-  m_Frame->GetManager().AddPane(stc, wxAuiPaneInfo()
-    .Bottom()
-    .Name("STC")
-    .MinSize(250, 100)
-    .Caption("STC"));
-    
-  m_Frame->GetManager().Update();
+  AddPane(m_Frame, stc);
   
   stc->SetFocus();
   stc->Show();
@@ -53,7 +46,7 @@ void fixture::testManagedFrame()
   wxMenu* menu = new wxMenu();
   m_Frame->GetFileHistory().UseMenu(1000, menu);
   m_Frame->SetFindFocus(m_Frame->GetSTC());
-  CPPUNIT_ASSERT(!m_Frame->OpenFile(GetTestFile()));
+  CPPUNIT_ASSERT( m_Frame->OpenFile(GetTestFile()));
   
   m_Frame->SetRecentFile(GetTestFile().GetFullPath());
   m_Frame->SetRecentFile("testing");
@@ -65,8 +58,6 @@ void fixture::testManagedFrame()
   m_Frame->ShowExMessage("hello from m_Frame");
   CPPUNIT_ASSERT(!m_Frame->ShowPane("xxxx"));
   CPPUNIT_ASSERT(!m_Frame->ShowPane("xxxx", false));
-  CPPUNIT_ASSERT( m_Frame->ShowPane("PROCESS", false));
-  CPPUNIT_ASSERT( m_Frame->ShowPane("PROCESS"));
   m_Frame->PrintEx(vi, "hello vi");
   
   m_Frame->SyncAll();

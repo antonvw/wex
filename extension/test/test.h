@@ -12,6 +12,11 @@
 #include <wx/extension/app.h>
 #include <wx/extension/filename.h>
 
+class wxExManagedFrame;
+
+/// Adds managed pane.
+void AddPane(wxExManagedFrame* frame, wxWindow* pane);
+
 /// Sets environment. 
 void SetEnvironment(const wxString& dir);
 

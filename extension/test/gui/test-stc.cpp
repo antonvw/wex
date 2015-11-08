@@ -19,17 +19,13 @@
 
 void fixture::testSTC()
 {
-  // Some methods do not return values, just call them to 
-  // prevent cores, and improve test coverage.
-  
   wxExSTC::ConfigDialog(m_Frame, "test stc", wxExSTC::STC_CONFIG_MODELESS);
   
   wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
-  new wxExSTC(*stc);
+  wxExSTC* copy = new wxExSTC(*stc);
   
-  m_Frame->GetManager().AddPane(stc, 
-    wxAuiPaneInfo().Bottom().Caption("STC"));
-  m_Frame->GetManager().Update();
+  AddPane(m_Frame, stc);
+  AddPane(m_Frame, copy);
   
   CPPUNIT_ASSERT( stc->GetText() == "hello stc");
   CPPUNIT_ASSERT( stc->FindNext(wxString("hello")));
