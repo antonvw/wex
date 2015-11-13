@@ -86,8 +86,8 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   const wxExLexer lexer = wxExLexers::Get()->FindByName("cpp");
 
   for (
-    int i = wxExListViewFileName::LIST_BEFORE_FIRST + 1;
-    i < wxExListViewFileName::LIST_AFTER_LAST;
+    int i = wxExListViewFileName::LIST_FOLDER;
+    i <= wxExListViewFileName::LIST_FILE;
     i++)
   {
     wxExListViewWithFrame* vw = new wxExListViewWithFrame(

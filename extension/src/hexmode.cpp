@@ -11,7 +11,10 @@
 #endif
 #include <wx/config.h>
 #include <wx/numdlg.h>
+#include <wx/spinctrl.h>
 #include <wx/extension/hexmode.h>
+#include <wx/extension/item.h>
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
@@ -22,6 +25,35 @@ const wxFileOffset start_hex_field = 0;
 const wxFileOffset start_ascii_field =
   start_hex_field + each_hex_field * bytes_per_line;
   
+int GetHexNumberFromUser(
+  const wxString& message,
+  const wxString& caption,
+  int value,
+  int min,
+  int max,
+  wxWindow *parent)
+{
+  wxExItemDialog dlg(parent,
+    std::vector<wxExItem>{wxExItem(
+      message, 
+      value,
+      min, 
+      max)},
+    caption,
+    0,
+    1,
+    wxOK | wxCANCEL);
+  
+  ((wxSpinCtrl* )dlg.GetItem(message).GetWindow())->SetBase(16);
+  
+  if (dlg.ShowModal() == wxID_CANCEL)
+  {
+    return -1;
+  }
+  
+  return dlg.GetItemValue(message).As<int>();
+}
+
 wxExHexMode::wxExHexMode(wxExSTC* stc)
   : m_STC(stc)
   , m_Active(false)
@@ -124,8 +156,7 @@ void wxExHexMode::ControlCharDialog(const wxString& caption)
     const wxUniChar value = m_STC->GetSelectedText().GetChar(0);
 
     int new_value;
-    if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 00 - FF",
-      wxEmptyString,
+    if ((new_value = GetHexNumberFromUser(_("Input") + " 00 - FF",
       caption,
       value,
       0,
@@ -149,8 +180,7 @@ void wxExHexMode::ControlCharDialog(const wxString& caption)
     }
 
     long new_value;
-    if ((new_value = wxExGetHexNumberFromUser(_("Input") + " 00 - FF",
-      wxEmptyString,
+    if ((new_value = GetHexNumberFromUser(_("Input") + " 00 - FF",
       caption,
       value,
       0,

@@ -217,14 +217,12 @@ public:
   /// The supported lists.
   enum wxExListType
   {
-    LIST_BEFORE_FIRST, ///< for iterating
     LIST_FOLDER,       ///< a list containing folders only
     LIST_FIND,         ///< a list to show find results
     LIST_HISTORY,      ///< a list to show history items
     LIST_KEYWORD,      ///< a list to show keywords
     LIST_REPLACE,      ///< a list to show replace results
     LIST_FILE,         ///< a list associated with a file
-    LIST_AFTER_LAST    ///< for iterating
   };
 
   /// Constructor.

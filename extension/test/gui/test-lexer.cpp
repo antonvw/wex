@@ -18,6 +18,7 @@
 void fixture::testLexer()
 {
   wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
+  AddPane(m_Frame, stc);
   
   wxExLexer lexer;
   CPPUNIT_ASSERT(!lexer.IsOk());

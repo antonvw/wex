@@ -20,6 +20,7 @@
 void fixture::testViFSM()
 {
   wxExSTC* stc = new wxExSTC(m_Frame);
+  AddPane(m_Frame, stc);
   
   wxExViFSM fsm(&stc->GetVi(), 
     [=](const std::string& command){;},

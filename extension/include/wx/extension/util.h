@@ -207,19 +207,6 @@ const wxString wxExGetFindResult(
   bool find_next, 
   bool recursive);
 
-#if wxUSE_GUI
-/// Returns a number from user, using hex display.
-int wxExGetHexNumberFromUser(
-  const wxString& message,
-  const wxString& prompt,
-  const wxString& caption,
-  int value,
-  int min = 0,
-  int max = 255,
-  wxWindow *parent = NULL,
-  const wxPoint& pos = wxDefaultPosition);
-#endif
-
 /// Returns the icon index for this filename (uses the file extension to get it).
 /// The return value is an index in wxTheFileIconsTable.
 /// You can use this index as a bitmap using:

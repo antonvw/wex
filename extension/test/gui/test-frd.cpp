@@ -20,6 +20,7 @@ void fixture::testFrd()
   CPPUNIT_ASSERT(frd != NULL);
   
   wxExFindTextCtrl* tc = new wxExFindTextCtrl(m_Frame);
+  AddPane(m_Frame, tc);
   
   frd->SetMatchCase(true);
   CPPUNIT_ASSERT( frd->MatchCase());
@@ -76,10 +77,15 @@ void fixture::testFrd()
   frd->SetFindString("find[0-9]");
   frd->SetReplaceString("xxx");
   std::string text("find1 find2 find3 find4");
-  CPPUNIT_ASSERT( frd->RegExReplaceAll(text) == 4);
+  const int res = frd->RegExReplaceAll(text);
+  CPPUNIT_ASSERT_MESSAGE( std::to_string(res), res == 4);
   
   frd->SetFindString("find[0-9");
   CPPUNIT_ASSERT(!frd->UseRegEx());
   frd->SetUseRegEx(true);
   CPPUNIT_ASSERT(!frd->UseRegEx());
+  // take care we end with valid regex
+  frd->SetFindString("find[0-9]");
+  frd->SetUseRegEx(true);
+  CPPUNIT_ASSERT( frd->UseRegEx());
 }

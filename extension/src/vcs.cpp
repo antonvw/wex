@@ -61,19 +61,19 @@ int wxExVCS::ConfigDialog(
     return wxID_CANCEL;
   }
   
-  std::map<long, const wxString> choices{std::make_pair((long)VCS_NONE, _("None"))};
+  std::map<long, const wxString> choices{{(long)VCS_NONE, _("None")}};
   
   // Using auto vcs is not useful if we only have one vcs.
   if (m_Entries.size() != 1)
   {
-    choices.insert(std::make_pair((long)VCS_AUTO, "Auto"));
+    choices.insert({(long)VCS_AUTO, "Auto"});
   }
   
   long i = VCS_START;
 
   for (const auto& it : m_Entries)
   {
-    choices.insert(std::make_pair(i++, it.GetName()));
+    choices.insert({i++, it.GetName()});
   }
 
   // Estimate number of columns used by the radiobox.

@@ -18,6 +18,7 @@
 void fixture::testAddressRange()
 {
   wxExSTC* stc = new wxExSTC(m_Frame, "hello\nhello1\nhello2");
+  AddPane(m_Frame, stc);
   wxExEx* ex = new wxExEx(stc);
   stc->GotoLine(2);
 

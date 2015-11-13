@@ -17,6 +17,7 @@ void fixture::testListItem()
 {
   wxExListViewFileName* listView = new wxExListViewFileName(
     m_Frame, wxExListViewFileName::LIST_FILE);
+  AddPane(m_Frame, listView);
   
   wxStopWatch sw;
   sw.Start();
@@ -34,7 +35,7 @@ void fixture::testListItem()
   
   const long add = sw.Time();
 
-  CPPUNIT_ASSERT(add < 3000);
+  CPPUNIT_ASSERT_MESSAGE(std::to_string(add), add < 3100);
   
   Report(wxString::Format(
     "wxExListTiem::Insert %d items in %ld ms", 3 * max, add).ToStdString());

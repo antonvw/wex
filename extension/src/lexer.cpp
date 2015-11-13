@@ -81,7 +81,7 @@ bool wxExLexer::AddKeywords(const wxString& value, int setno)
       {
         if (!keywords_set.empty())
         {
-          m_KeywordsSet.insert(make_pair(setno, keywords_set));
+          m_KeywordsSet.insert({setno, keywords_set});
           keywords_set.clear();
         }
 
@@ -101,7 +101,7 @@ bool wxExLexer::AddKeywords(const wxString& value, int setno)
   
   if (it == m_KeywordsSet.end())
   {
-    m_KeywordsSet.insert(make_pair(setno, keywords_set));
+    m_KeywordsSet.insert({setno, keywords_set});
   }
   else
   {

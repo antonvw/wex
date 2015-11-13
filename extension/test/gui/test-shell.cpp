@@ -16,6 +16,7 @@
 void fixture::testShell()
 {
   wxExShell* shell = new wxExShell(m_Frame);
+  AddPane(m_Frame, shell);
   
   CPPUNIT_ASSERT(shell->GetShellEnabled());
   

@@ -484,26 +484,26 @@ int wxExSTC::ConfigDialog(
       _("Auto complete"),
       _("vi mode")}, _("General") + ":3"),
     wxExConfigItem(_("Auto indent"), std::map<long, const wxString> {
-      std::make_pair(INDENT_NONE, _("None")),
-      std::make_pair(INDENT_WHITESPACE, _("Whitespace")),
-      std::make_pair(INDENT_LEVEL, _("Level")),
-      std::make_pair(INDENT_ALL, _("Both"))}, true, _("General"), 1),
+      {INDENT_NONE, _("None")},
+      {INDENT_WHITESPACE, _("Whitespace")},
+      {INDENT_LEVEL, _("Level")},
+      {INDENT_ALL, _("Both")}}, true, _("General"), 1),
     wxExConfigItem(_("Wrap visual flags"), std::map<long, const wxString> {
-      std::make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")),
-      std::make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")),
-      std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")),
-      std::make_pair(wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin"))}, true, _("General"), 1),
+      {wxSTC_WRAPVISUALFLAG_NONE, _("None")},
+      {wxSTC_WRAPVISUALFLAG_END, _("End")},
+      {wxSTC_WRAPVISUALFLAG_START, _("Start")},
+      {wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")}}, true, _("General"), 1),
     (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Default font"),ITEM_FONTPICKERCTRL, _("General")): wxExConfigItem()),
     wxExConfigItem(_("Whitespace"), std::map<long, const wxString> {
-      std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")),
-      std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Visible after indent")),
-      std::make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always"))}, true, _("General"), 1),
+      {wxSTC_WS_INVISIBLE, _("Invisible")},
+      {wxSTC_WS_VISIBLEAFTERINDENT, _("Visible after indent")},
+      {wxSTC_WS_VISIBLEALWAYS, _("Visible always")}}, true, _("General"), 1),
     wxExConfigItem(_("Wrap line"), std::map<long, const wxString> {
-      std::make_pair(wxSTC_WRAP_NONE, _("None")),
-      std::make_pair(wxSTC_WRAP_WORD, _("Word")),
-      std::make_pair(wxSTC_WRAP_CHAR, _("Char"))
+      {wxSTC_WRAP_NONE, _("None")},
+      {wxSTC_WRAP_WORD, _("Word")},
+      {wxSTC_WRAP_CHAR, _("Char")}
 #if wxCHECK_VERSION(3,1,0)
-      ,std::make_pair(wxSTC_WRAP_WHITESPACE, _("Whitespace"))}
+      ,{wxSTC_WRAP_WHITESPACE, _("Whitespace")}}
 #else
       }
 #endif  
@@ -511,9 +511,9 @@ int wxExSTC::ConfigDialog(
     // Edge page.
     wxExConfigItem(_("Edge column"), 0, 500, _("Edge")),
     wxExConfigItem( _("Edge line"),  std::map<long, const wxString> {
-      std::make_pair(wxSTC_EDGE_NONE, _("None")),
-      std::make_pair(wxSTC_EDGE_LINE, _("Line")),
-      std::make_pair(wxSTC_EDGE_BACKGROUND, _("Background"))}, true, _("Edge"), 1),
+      {wxSTC_EDGE_NONE, _("None")},
+      {wxSTC_EDGE_LINE, _("Line")},
+      {wxSTC_EDGE_BACKGROUND, _("Background")}}, true, _("Edge"), 1),
     // Margin page.
     wxExConfigItem(_("Tab width"), 1, cfg->ReadLong(_("Edge column"), 0), _("Margin")),
     wxExConfigItem(_("Indent"), 0, cfg->ReadLong(_("Edge column"), 0), _("Margin")),
@@ -524,21 +524,21 @@ int wxExSTC::ConfigDialog(
     (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Indentation guide"),ITEM_CHECKBOX, _("Folding")): wxExConfigItem()),
     (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")): wxExConfigItem()),
       // next is experimental, wait for scintilla
-      //fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
+      //fchoices.insert(std::{ _("Level numbers")});
     (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Fold flags"), std::map<long, const wxString> {
-      std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")),
-      std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")),
-      std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")),
-      std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted"))}, false,_("Folding")): wxExConfigItem()),
+      {wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")},
+      {wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")},
+      {wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")},
+      {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")}}, false,_("Folding")): wxExConfigItem()),
     // Printer page
     (!(flags & STC_CONFIG_SIMPLE) ? wxExConfigItem(_("Print flags"), std::map<long, const wxString> {
-      std::make_pair(wxSTC_PRINT_NORMAL, _("Normal")),
-      std::make_pair(wxSTC_PRINT_INVERTLIGHT, _("Invert on white")),
-      std::make_pair(wxSTC_PRINT_BLACKONWHITE, _("Black on white")),
-      std::make_pair(wxSTC_PRINT_COLOURONWHITE, _("Colour on white")),
-      std::make_pair(wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal"))}, true, _("Printer"), 1):  wxExConfigItem()),
+      {wxSTC_PRINT_NORMAL, _("Normal")},
+      {wxSTC_PRINT_INVERTLIGHT, _("Invert on white")},
+      {wxSTC_PRINT_BLACKONWHITE, _("Black on white")},
+      {wxSTC_PRINT_COLOURONWHITE, _("Colour on white")},
+      {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}}, true, _("Printer"), 1):  wxExConfigItem()),
     // Directory page.
-    (!(flags & STC_CONFIG_SIMPLE) && wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Include directory"),ITEM_LISTVIEW_FOLDER, _("Directory"), false, wxID_ANY, 25, false): wxExConfigItem())};
+    (!(flags & STC_CONFIG_SIMPLE) && wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Include directory"),ITEM_LISTVIEW, _("Directory"), false, wxID_ANY, 25, false): wxExConfigItem())};
 
   int buttons = wxOK | wxCANCEL;
 

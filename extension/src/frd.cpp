@@ -94,13 +94,15 @@ int wxExFindReplaceData::RegExReplaceAll(std::string& text) const
 {
   auto words_begin = std::sregex_iterator(text.begin(), text.end(), m_FindRegEx);
   auto words_end = std::sregex_iterator();  
+
+  const int result = std::distance(words_begin, words_end);
   
   text = std::regex_replace(text, 
     m_FindRegEx, 
     GetReplaceString().ToStdString(), 
     std::regex_constants::format_sed);
-  
-  return std::distance(words_begin, words_end);
+
+  return result;
 }
   
 wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
@@ -188,7 +190,7 @@ void wxExFindReplaceData::SetUseRegEx(bool value)
   catch (std::regex_error& e) 
   {
     m_UseRegEx = false;
-    wxLogStatus("regex error: %s", e.what());
+    wxLogStatus("regex error: %s %s", e.what(), GetFindString().ToStdString());
   }
 }
 
