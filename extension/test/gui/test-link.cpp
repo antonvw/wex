@@ -57,6 +57,7 @@ void fixture::testLink()
   wxExSTC* stc = new wxExSTC(
     m_Frame, 
     "hello stc, \"X-Poedit-Basepath: /usr/bin\\n\"");
+  AddPane(m_Frame, stc);
   
   wxExLink lnk(stc);  
   

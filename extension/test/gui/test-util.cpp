@@ -159,8 +159,6 @@ void fixture::testUtil()
   CPPUNIT_ASSERT( wxExGetFindResult("%d", false, true).Contains("%d"));
   CPPUNIT_ASSERT( wxExGetFindResult("%d", false, false).Contains("%d"));
   
-  // wxExGetHexNumberFromUser
-  
   // wxExGetIconID
   CPPUNIT_ASSERT( wxExGetIconID( GetTestFile()) != -1);
 

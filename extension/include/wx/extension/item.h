@@ -37,13 +37,12 @@ enum wxExItemType
   ITEM_FONTPICKERCTRL,       ///< a wxFontPickerCtrl ctrl item
   ITEM_HYPERLINKCTRL,        ///< a wxHyperlinkCtrl ctrl item
   ITEM_INT,                  ///< a wxTextCtrl item that only accepts an integer (long)
-  ITEM_LISTVIEW_FOLDER,      ///< a wxExListViewFileName ctrl item (a list view standard file)
+  ITEM_LISTVIEW,             ///< a wxExListViewFileName ctrl item (a list view standard file)
   ITEM_RADIOBOX,             ///< a wxRadioBox item
   ITEM_SLIDER,               ///< a wxSlider item
   ITEM_SPACER,               ///< a spacer item
   ITEM_SPINCTRL,             ///< a wxSpinCtrl item
   ITEM_SPINCTRL_DOUBLE,      ///< a wxSpinCtrlDouble item
-  ITEM_SPINCTRL_HEX,         ///< a wxSpinCtrl hex item
   ITEM_STATICLINE,           ///< a wxStaticLine item
   ITEM_STATICTEXT,           ///< a wxStaticText item
   ITEM_STC,                  ///< a wxExSTC ctrl item  
@@ -96,7 +95,7 @@ public:
       (type != ITEM_STATICTEXT && 
        type != ITEM_HYPERLINKCTRL ? add_label: false), wxID_ANY, cols) {;};
 
-  /// Constructor for a ITEM_SPINCTRL, ITEM_SPINCTRL_HEX or a ITEM_SLIDER item.
+  /// Constructor for a ITEM_SPINCTRL or a ITEM_SLIDER item.
   wxExItem(const wxString& label,
     int value,
     int min, 
@@ -176,7 +175,7 @@ public:
     int id = wxID_ANY,
     bool add_label = true,
     /// the style, this default value is translated to correct default
-    /// for corresponging window (such as wxFLP_DEFAULT_STYLE for ITEM_FILEPICKERCTRL).
+    /// for corresponding window (such as wxFLP_DEFAULT_STYLE for ITEM_FILEPICKERCTRL).
     long style = 0,
     int cols = -1)
     : wxExItem(type, style, page, label, value, wxEmptyString, is_required, 

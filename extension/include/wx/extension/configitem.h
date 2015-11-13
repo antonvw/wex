@@ -53,7 +53,7 @@ public:
       (type != ITEM_STATICTEXT && 
        type != ITEM_HYPERLINKCTRL ? add_label: false), wxID_ANY, cols) {;};
 
-  /// Constructor for a ITEM_SPINCTRL, ITEM_SPINCTRL_HEX or a ITEM_SLIDER item.
+  /// Constructor for a ITEM_SPINCTRL or a ITEM_SLIDER item.
   wxExConfigItem(const wxString& label,
     int min, 
     int max,

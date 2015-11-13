@@ -18,6 +18,8 @@
 void fixture::testAddress()
 {
   wxExSTC* stc = new wxExSTC(m_Frame, "hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
+  AddPane(m_Frame, stc);
+  
   const int lines = stc->GetLineCount();
   wxExEx* ex = new wxExEx(stc);
   stc->GotoLineAndSelect(1);

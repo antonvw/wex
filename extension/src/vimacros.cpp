@@ -118,7 +118,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
   if (it == m_Variables.end())
   {
     std::pair<std::map<wxString, wxExVariable>::iterator, bool> ret = 
-      m_Variables.insert(std::make_pair(variable, wxExVariable(variable)));
+      m_Variables.insert({variable, wxExVariable(variable)});
       
     wxLogStatus(_("Added variable") + ": "  +  variable);
     
@@ -171,7 +171,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
   if (it == m_Variables.end())
   {
     std::pair<std::map<wxString, wxExVariable>::iterator, bool> ret = 
-      m_Variables.insert(std::make_pair(variable, wxExVariable(variable)));
+      m_Variables.insert({variable, wxExVariable(variable)});
       
     wxLogStatus(_("Added variable") + ": "  +  variable);
     
@@ -515,7 +515,7 @@ void wxExViMacros::ParseNodeAbbreviation(wxXmlNode* node)
   }
   else
   {
-    m_Abbreviations.insert(std::make_pair(abb, text.ToStdString()));
+    m_Abbreviations.insert({abb, text.ToStdString()});
   }
 }
 
@@ -541,7 +541,7 @@ void wxExViMacros::ParseNodeMacro(wxXmlNode* node)
   }
   else
   {
-    m_Macros.insert(std::make_pair(node->GetAttribute("name"), v));
+    m_Macros.insert({node->GetAttribute("name"), v});
   }
 }
 
@@ -558,7 +558,7 @@ void wxExViMacros::ParseNodeVariable(wxXmlNode* node)
   }
   else
   {
-    m_Variables.insert(std::make_pair(variable.GetName(), variable));
+    m_Variables.insert({variable.GetName(), variable});
   }
 }
 

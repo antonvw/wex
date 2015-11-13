@@ -30,6 +30,7 @@ void fixture::testVi()
   wxExSTC* stc = new wxExSTC(m_Frame, 
     "// vi: set ts=120 "
     "// this is a modeline");
+  AddPane(m_Frame, stc);
     
   wxExVi* vi = &stc->GetVi();
   
@@ -377,6 +378,7 @@ void fixture::testVi()
 
   // Test registers
   stc = new wxExSTC(m_Frame, GetTestFile());
+  AddPane(m_Frame, stc);
   vi = &stc->GetVi();
   const int ctrl_r = 18;
   CPPUNIT_ASSERT( vi->Command("i"));

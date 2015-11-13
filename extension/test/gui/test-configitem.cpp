@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/vscroll.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/managedframe.h>
 #include "../test-configitem.h"
@@ -17,13 +18,18 @@
 
 void fixture::testConfigItem()
 {
+  wxScrolledWindow* panel = new wxScrolledWindow(m_Frame);
+  AddPane(m_Frame, panel);
+  wxFlexGridSizer* sizer = new wxFlexGridSizer(4);
+  panel->SetSizer(sizer);
+  panel->SetScrollbars(20, 20, 50, 50);
+  
   // Use specific constructors.
   const wxExConfigItem ci_empty;
   const wxExConfigItem ci_spacer(5);
   const wxExConfigItem ci_cb("ci-cb", ITEM_COMBOBOX);
   const wxExConfigItem ci_sp("ci-sp", 1, 5);
   const wxExConfigItem ci_sp_d("ci-sp-d", 1.0, 5.0);
-  const wxExConfigItem ci_sp_h("ci-sp-h", 1, 5, wxEmptyString, ITEM_SPINCTRL_HEX);
   const wxExConfigItem ci_sl("ci-sl", 1, 5, wxEmptyString, ITEM_SLIDER);
   const wxExConfigItem ci_vl(wxLI_HORIZONTAL);
   wxExConfigItem ci_str("ci-string", wxEmptyString);
@@ -32,19 +38,19 @@ void fixture::testConfigItem()
   const wxExConfigItem ci_int("ci-int",ITEM_INT);
   const wxExConfigItem ci_rb("ci-rb", 
     std::map<long, const wxString> {
-      std::make_pair(0, "Zero"),
-      std::make_pair(1, "One"),
-      std::make_pair(2, "Two")},
+      {0, "Zero"},
+      {1, "One"},
+      {2, "Two"}},
     true);
   const wxExConfigItem ci_bc("ci-cl", 
     std::map<long, const wxString> {
-      std::make_pair(0, "Bit One"),
-      std::make_pair(1, "Bit Two"),
-      std::make_pair(2, "Bit Three"),
-      std::make_pair(4, "Bit Four")},
+      {0, "Bit One"},
+      {1, "Bit Two"},
+      {2, "Bit Three"},
+      {4, "Bit Four"}},
     false);
   const wxExConfigItem ci_cl_n(std::set<wxString> {"This","Or","Other"});
-  const wxExConfigItem ci_user("ci-usr", new wxTextCtrl(), NULL);
+  const wxExConfigItem ci_user("ci-usr", new wxTextCtrl(), myTextCreate);
   
   CPPUNIT_ASSERT(ci_empty.GetType() == ITEM_EMPTY);
   CPPUNIT_ASSERT(!ci_empty.IsRowGrowable());
@@ -56,7 +62,6 @@ void fixture::testConfigItem()
   CPPUNIT_ASSERT(ci_sp.GetLabel() == "ci-sp");
   CPPUNIT_ASSERT(ci_sp.GetType() == ITEM_SPINCTRL);
   CPPUNIT_ASSERT(ci_sp_d.GetType() == ITEM_SPINCTRL_DOUBLE);
-  CPPUNIT_ASSERT(ci_sp_h.GetType() == ITEM_SPINCTRL_HEX);
   CPPUNIT_ASSERT(ci_str.GetType() == ITEM_STRING);
   CPPUNIT_ASSERT(ci_hl.GetType() == ITEM_HYPERLINKCTRL);
   CPPUNIT_ASSERT(ci_st.GetType() == ITEM_STATICTEXT);
@@ -67,7 +72,7 @@ void fixture::testConfigItem()
   CPPUNIT_ASSERT(ci_user.GetType() == ITEM_USER);
 
   std::vector <wxExConfigItem> items {
-    ci_empty, ci_spacer, ci_cb, ci_sl, ci_vl, ci_sp, ci_sp_d, ci_sp_h,
+    ci_empty, ci_spacer, ci_cb, ci_sl, ci_vl, ci_sp, ci_sp_d,
     ci_str, ci_hl, ci_st, ci_int, ci_rb, ci_bc, ci_cl_n, ci_user};
   
   const auto more(TestConfigItems());
@@ -95,8 +100,6 @@ void fixture::testConfigItem()
     it.SetValidator(NULL);
   }
 
-  wxGridSizer sizer(3);
-
   // Layout the items and check control is created.
   for (auto& it : items)
   {
@@ -105,7 +108,7 @@ void fixture::testConfigItem()
     {
       // Testing on not NULL not possible,
       // not all items need a sizer.
-      it.Layout(m_Frame, &sizer);
+      it.Layout(panel, sizer);
     }
  
     if (it.GetType() != ITEM_EMPTY && it.GetType() != ITEM_SPACER)
@@ -115,8 +118,8 @@ void fixture::testConfigItem()
   }
 
   // Now check ToConfig (after Layout).  
-  CPPUNIT_ASSERT( ci_str.Layout(m_Frame, &sizer) != NULL);
-  CPPUNIT_ASSERT( ci_st.Layout(m_Frame, &sizer) == NULL);
+  CPPUNIT_ASSERT( ci_str.Layout(panel, sizer) != NULL);
+  CPPUNIT_ASSERT( ci_st.Layout(panel, sizer) == NULL);
   CPPUNIT_ASSERT( ci_str.ToConfig(true));
   CPPUNIT_ASSERT( ci_str.ToConfig(false));
   CPPUNIT_ASSERT(!ci_st.ToConfig(true));

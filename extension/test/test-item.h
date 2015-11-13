@@ -8,6 +8,7 @@
 #pragma once
 
 #include <wx/extension/item.h>
+#include <wx/extension/listview.h>
 
 /// Returns a vector with all items available.
 const auto TestItems(bool use_notebook = false)
@@ -37,6 +38,8 @@ const auto TestItems(bool use_notebook = false)
     wxExItem("checkbox1", ITEM_CHECKBOX),
     wxExItem("checkbox2", ITEM_CHECKBOX),
     wxExItem("checkbox3", ITEM_CHECKBOX),
+    wxExItem("listview-folder", ITEM_LISTVIEW),
+    wxExItem("listview-file", ITEM_LISTVIEW, wxAny(), wxEmptyString, false, wxID_ANY, true, (long)wxExListViewFileName::LIST_FILE),
     wxExItem("button", ITEM_BUTTON),
     wxExItem("STC", "cpp", wxEmptyString, wxEmptyString, 0, ITEM_STC),
     wxExItem("combobox", ITEM_COMBOBOX, as)};

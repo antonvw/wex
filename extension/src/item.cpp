@@ -66,7 +66,7 @@ wxExItem::wxExItem(wxExItemType type, long style,
   {
     case ITEM_CHECKLISTBOX_BIT:
     case ITEM_CHECKLISTBOX_BOOL:
-    case ITEM_LISTVIEW_FOLDER:
+    case ITEM_LISTVIEW:
     case ITEM_RADIOBOX:
     case ITEM_STC:
       m_IsRowGrowable = true;
@@ -307,9 +307,8 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_LISTVIEW_FOLDER:
-      m_Window = new wxExListViewFileName(parent, wxExListViewFileName::LIST_FOLDER, m_Id,
-        NULL,
+    case ITEM_LISTVIEW:
+      m_Window = new wxExListViewFileName(parent, (wxExListViewFileName::wxExListType)m_Style, m_Id, NULL,
         wxDefaultPosition, wxSize(width, 200));
       break;
 
@@ -334,15 +333,10 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_SPINCTRL:
-    case ITEM_SPINCTRL_HEX:
       m_Window = new wxSpinCtrl(parent, m_Id, wxEmptyString,
         wxDefaultPosition, wxSize(width_numeric_spin, wxDefaultCoord),
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
         m_Min.As<int>(), m_Max.As<int>(), m_Initial.As<int>());
-      if (m_Type == ITEM_SPINCTRL_HEX)
-      {
-        ((wxSpinCtrl* )m_Window)->SetBase(16);
-      }
       break;
 
     case ITEM_SPINCTRL_DOUBLE:
@@ -437,11 +431,10 @@ const wxAny wxExItem::GetValue() const
     case ITEM_FLOAT: any = atof(((wxTextCtrl* )m_Window)->GetValue()); break;
     case ITEM_FONTPICKERCTRL: any = ((wxFontPickerCtrl* )m_Window)->GetSelectedFont(); break;
     case ITEM_INT: any = atoi(((wxTextCtrl* )m_Window)->GetValue()); break;
-    case ITEM_LISTVIEW_FOLDER: any = ((wxExListViewFileName* )m_Window)->ItemToText(-1); break;
+    case ITEM_LISTVIEW: any = ((wxExListViewFileName* )m_Window)->ItemToText(-1); break;
     case ITEM_SLIDER: any = ((wxSlider* )m_Window)->GetValue(); break;
     case ITEM_SPINCTRL: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
     case ITEM_SPINCTRL_DOUBLE: any = ((wxSpinCtrlDouble* )m_Window)->GetValue(); break;
-    case ITEM_SPINCTRL_HEX: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
     case ITEM_STC: any = ((wxStyledTextCtrl* )m_Window)->GetValue(); break;
     case ITEM_STRING: any = ((wxTextCtrl* )m_Window)->GetValue(); break;
     case ITEM_TOGGLEBUTTON: any = ((wxToggleButton* )m_Window)->GetValue(); break;
@@ -549,7 +542,6 @@ bool wxExItem::SetValue(const wxAny& value) const
     case ITEM_SLIDER: ((wxSlider* )m_Window)->SetValue(value.As<int>()); break;
     case ITEM_SPINCTRL: ((wxSpinCtrl* )m_Window)->SetValue(value.As<int>()); break;
     case ITEM_SPINCTRL_DOUBLE: ((wxSpinCtrlDouble* )m_Window)->SetValue(value.As<double>()); break;
-    case ITEM_SPINCTRL_HEX: ((wxSpinCtrl* )m_Window)->SetValue(value.As<int>()); break;
     case ITEM_STC: ((wxStyledTextCtrl* )m_Window)->SetValue(value.As<wxString>()); break;
     case ITEM_STRING: ((wxTextCtrl* )m_Window)->SetValue(value.As<wxString>()); break;
     case ITEM_TOGGLEBUTTON: ((wxToggleButton* )m_Window)->SetValue(value.As<bool>()); break;
@@ -567,7 +559,7 @@ bool wxExItem::SetValue(const wxAny& value) const
       }
       break;
     
-    case ITEM_LISTVIEW_FOLDER:
+    case ITEM_LISTVIEW:
       {
       wxExListViewFileName* win = (wxExListViewFileName*)GetWindow();
       win->DeleteAllItems();

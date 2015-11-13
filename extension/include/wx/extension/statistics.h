@@ -151,7 +151,7 @@ public:
         m_Grid->AppendRows(1);
 
         const int row = m_Grid->GetNumberRows() - 1;
-        m_Rows.insert(std::make_pair(key, row));
+        m_Rows.insert({key, row});
 
         m_Grid->SetCellValue(row, 0, key);
         m_Grid->SetCellValue(row, 1, std::to_string(value));

@@ -19,6 +19,7 @@
 void fixture::testViMacros()
 {
   wxExSTC* stc = new wxExSTC(m_Frame, "hello");
+  AddPane(m_Frame, stc);
   wxExVi* vi = &stc->GetVi();
   
   wxExViMacros macros;

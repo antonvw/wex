@@ -16,6 +16,7 @@
 void fixture::testGrid()
 {
   wxExGrid* grid = new wxExGrid(m_Frame);
+  AddPane(m_Frame, grid);
   
   CPPUNIT_ASSERT(grid->CreateGrid(5, 5));
   

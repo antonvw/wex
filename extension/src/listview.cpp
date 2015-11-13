@@ -567,7 +567,7 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
       return 0;
     }
 
-    m_ArtIDs.insert(std::make_pair(artid, il->GetImageCount()));
+    m_ArtIDs.insert({artid, il->GetImageCount()});
 
     return il->Add(wxArtProvider::GetBitmap(
       artid, wxART_OTHER, wxSize(m_ImageWidth, m_ImageHeight)));

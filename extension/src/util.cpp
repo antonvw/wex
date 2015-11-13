@@ -29,8 +29,6 @@
 #include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/item.h>
-#include <wx/extension/itemdlg.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
@@ -425,38 +423,6 @@ const wxString wxExGetFindResult(
 const wxUniChar wxExGetFieldSeparator()
 {
   return '\x0B';
-}
-
-int wxExGetHexNumberFromUser(
-  const wxString& message,
-  const wxString& prompt,
-  const wxString& caption,
-  int value,
-  int min,
-  int max,
-  wxWindow *parent,
-  const wxPoint& pos)
-{
-  wxExItemDialog dlg(
-    parent,
-    std::vector<wxExItem>{wxExItem(
-      message, 
-      value,
-      min, 
-      max, 
-      wxEmptyString,
-      ITEM_SPINCTRL_HEX)},
-    caption,
-    0,
-    1,
-    wxOK | wxCANCEL);
-  
-  if (dlg.ShowModal() == wxID_CANCEL)
-  {
-    return -1;
-  }
-  
-  return dlg.GetItemValue(message).As<int>();
 }
 
 int wxExGetIconID(const wxFileName& filename)
@@ -986,9 +952,9 @@ const wxString wxExSort(
     if (len == std::string::npos)
     {
       if (sort_type & STRING_SORT_UNIQUE)
-        m.insert(std::make_pair(key, line));
+        m.insert({key, line});
       else
-        mm.insert(std::make_pair(key, line));
+        mm.insert({key, line});
     }
     else
     {

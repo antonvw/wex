@@ -277,7 +277,7 @@ void wxExOptionsToolBar::AddControls(bool realize)
   // 0   1      2     3       4        5
   // id, label, name, config, tooltip, default
   for (auto it : std::vector<std::tuple<int, wxString, wxString, wxString, wxString, bool>> {
-    std::make_tuple(ID_VIEW_PROCESS, _("Process"), "PROCESS", "ViewProcess", _("View Process"), false),
+    std::make_tuple(ID_VIEW_PROCESS, _("Process"), "PROCESS", "ViewProcess", _("View process"), false),
     std::make_tuple(NewControlId(), "Hex", "HEX", "HexMode", _("Open in hex mode"), false),
     std::make_tuple(NewControlId(), "Sync", "SYNC", "AllowSync", _("Synchronize modified files"), true)})
   {

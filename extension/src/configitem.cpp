@@ -76,10 +76,9 @@ bool wxExConfigItem::ToConfig(bool save) const
     case ITEM_FLOAT:            PERSISTENT(ReadDouble, double, 0); break;
     case ITEM_FONTPICKERCTRL:   PERSISTENT(ReadObject, wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
     case ITEM_INT:              PERSISTENT(ReadLong, long, 0); break;
-    case ITEM_LISTVIEW_FOLDER:  PERSISTENT(Read, wxString, ""); break;
+    case ITEM_LISTVIEW:  PERSISTENT(Read, wxString, ""); break;
     case ITEM_SLIDER:           PERSISTENT(ReadLong, int, ((wxSlider* )GetWindow())->GetMin()); break;
-    case ITEM_SPINCTRL: 
-    case ITEM_SPINCTRL_HEX:     PERSISTENT(ReadLong, int, ((wxSpinCtrl* )GetWindow())->GetMin()); break;
+    case ITEM_SPINCTRL:         PERSISTENT(ReadLong, int, ((wxSpinCtrl* )GetWindow())->GetMin()); break;
     case ITEM_SPINCTRL_DOUBLE:  PERSISTENT(ReadDouble, double, ((wxSpinCtrlDouble* )GetWindow())->GetMin()); break;
     case ITEM_STC:              PERSISTENT(Read, wxString, ""); break;
     case ITEM_STRING:           PERSISTENT(Read, wxString, ""); break;

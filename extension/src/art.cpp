@@ -55,7 +55,7 @@ wxExStockArt::wxExStockArt(wxWindowID id)
 
 void wxExStockArt::Add(int id, const wxArtID art)
 {    
-  m_ArtIDs.insert(std::make_pair((wxWindowID)id, art));
+  m_ArtIDs.insert({(wxWindowID)id, art});
 }
 
 const wxBitmap wxExStockArt::GetBitmap(

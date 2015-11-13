@@ -59,10 +59,10 @@ const auto TestConfigItems()
   v.push_back(wxExConfigItem(
     "Bin Choices", 
     std::map<long, const wxString> {
-      std::make_pair(1, "Bit One"),
-      std::make_pair(2, "Bit Two"),
-      std::make_pair(4, "Bit Three"),
-      std::make_pair(8, "Bit Four")},
+      {1, "Bit One"},
+      {2, "Bit Two"},
+      {4, "Bit Three"},
+      {8, "Bit Four"}},
     false, 
     "Checkbox lists"));
 
@@ -180,22 +180,22 @@ const auto TestConfigItems()
       true));
   }
 
-  // ITEM_LISTVIEW_FOLDER
+  // ITEM_LISTVIEW
   v.push_back(wxExConfigItem(
     "ListView",
-    ITEM_LISTVIEW_FOLDER,
+    ITEM_LISTVIEW,
     "ListView"));
 
   // ITEM_RADIOBOX
   v.push_back(wxExConfigItem(
     "Radio Box", 
     std::map<long, const wxString> {
-      std::make_pair(0, "Zero"),
-      std::make_pair(1, "One"),
-      std::make_pair(2, "Two"),
-      std::make_pair(3, "Three"),
-      std::make_pair(4, "Four"),
-      std::make_pair(5, "Five")},
+      {0, "Zero"},
+      {1, "One"},
+      {2, "Two"},
+      {3, "Three"},
+      {4, "Four"},
+      {5, "Five"}},
     true, 
     "Radioboxes"));
 
@@ -230,17 +230,6 @@ const auto TestConfigItems()
       (double)sd, 
       "Spin controls",
       0.01));
-  }
-
-  // ITEM_SPINCTRL_HEX
-  for (int s = 1; s <= 2; s++)
-  {
-    v.push_back(wxExConfigItem(
-      wxString::Format("Spin Control Hex%d", s), 
-      0, 
-      255, 
-      "Spin controls",
-      ITEM_SPINCTRL_HEX));
   }
 
   for (int st = 1; st <= 5; st++)
