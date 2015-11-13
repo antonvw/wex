@@ -303,8 +303,6 @@ bool wxExProcess::Execute(
   if (!m_Sync)
   { 
     m_Shell->SetName(m_Command);
-    m_Shell->ClearAll();
-    
     m_Shell->SetPrompt(
       // a unix shell itself has no prompt, s put one here
       m_Command.StartsWith("bash") ||
@@ -437,8 +435,7 @@ void wxExProcess::ShowOutput(const wxString& caption) const
   {
     if (m_Shell != NULL && ShowProcess(true))
     {
-      m_Shell->SetText(m_Output);
-      m_Shell->SetName(caption.empty() ? m_Command: caption);
+      m_Shell->AppendText(m_Output);
     }
     else if (!m_Output.empty())
     {
