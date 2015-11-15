@@ -112,7 +112,9 @@ void wxExListItem::SetReadOnly(bool readonly)
 
 void wxExListItem::Update()
 {
-  SetImage(m_FileName.GetStat().IsOk() ? wxExGetIconID(m_FileName): -1);
+  SetImage(
+    m_ListView->GetImageType() == wxExListView::IMAGE_FILE_ICON && 
+    m_FileName.GetStat().IsOk() ? wxExGetIconID(m_FileName): -1);
 
   m_ListView->SetItem(*this);
 

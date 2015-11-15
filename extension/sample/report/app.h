@@ -29,8 +29,8 @@ public:
   wxExRepSampleFrame();
 protected:
   // Interface from wxExFrameWithHistory.
-  virtual wxExListViewFileName* Activate(
-    wxExListViewFileName::wxExListType type, 
+  virtual wxExListView* Activate(
+    wxExListView::wxExListType type, 
     const wxExLexer* lexer = NULL);
   virtual bool AllowClose(wxWindowID id, wxWindow* page) override;
   virtual wxExListView* GetListView() override;

@@ -22,11 +22,11 @@ public:
     size_t maxProjects = 0,
     int style = wxDEFAULT_FRAME_STYLE);
 
-  virtual wxExListViewFileName* Activate(
-    wxExListViewFileName::wxExListType list_type, 
+  virtual wxExListView* Activate(
+    wxExListView::wxExListType list_type, 
     const wxExLexer* lexer) override;
 private:
-  wxExListViewFileName* m_Report;
+  wxExListView* m_Report;
 };
 
 wxExFrameWithHistory* fixture::m_Frame = NULL;
@@ -44,9 +44,9 @@ void fixture::test()
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
   
-  wxExListViewFileName* report = new wxExListViewFileName(
+  wxExListView* report = new wxExListView(
     m_Frame, 
-    wxExListViewFileName::LIST_FILE);
+    wxExListView::LIST_FILE);
     
   wxArrayString files;
   
@@ -109,15 +109,15 @@ FrameWithHistory::FrameWithHistory(wxWindow* parent,
   : wxExFrameWithHistory(parent, id, title, maxFiles, maxProjects, style)
 {
   wxExLexer lexer("cpp");
-  m_Report = new wxExListViewFileName(
+  m_Report = new wxExListView(
     this, 
-    wxExListViewFileName::LIST_KEYWORD,
+    wxExListView::LIST_KEYWORD,
     wxID_ANY,
     &lexer);
 }
 
-wxExListViewFileName* FrameWithHistory::Activate(
-  wxExListViewFileName::wxExListType list_type, 
+wxExListView* FrameWithHistory::Activate(
+  wxExListView::wxExListType list_type, 
   const wxExLexer* lexer)
 {
   return m_Report;

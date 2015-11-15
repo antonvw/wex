@@ -482,9 +482,9 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
   }
 }
 
-void wxExFrameWithHistory::UseFileHistoryList(wxExListViewFileName* list)
+void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
 {
-  wxASSERT(list->GetType() == wxExListViewFileName::LIST_HISTORY);
+  wxASSERT(list->GetType() == wxExListView::LIST_HISTORY);
   
   m_FileHistoryList = list;
   m_FileHistoryList->Hide();

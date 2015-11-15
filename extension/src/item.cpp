@@ -308,8 +308,12 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_LISTVIEW:
-      m_Window = new wxExListViewFileName(parent, (wxExListViewFileName::wxExListType)m_Style, m_Id, NULL,
+      {
+      wxExListView* lv = new wxExListView(parent, (wxExListView::wxExListType)m_Style, m_Id, NULL,
         wxDefaultPosition, wxSize(width, 200));
+      lv->ItemFromText(m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>());
+      m_Window = lv;
+      }
       break;
 
     case ITEM_RADIOBOX:
@@ -431,7 +435,7 @@ const wxAny wxExItem::GetValue() const
     case ITEM_FLOAT: any = atof(((wxTextCtrl* )m_Window)->GetValue()); break;
     case ITEM_FONTPICKERCTRL: any = ((wxFontPickerCtrl* )m_Window)->GetSelectedFont(); break;
     case ITEM_INT: any = atoi(((wxTextCtrl* )m_Window)->GetValue()); break;
-    case ITEM_LISTVIEW: any = ((wxExListViewFileName* )m_Window)->ItemToText(-1); break;
+    case ITEM_LISTVIEW: any = ((wxExListView* )m_Window)->ItemToText(-1); break;
     case ITEM_SLIDER: any = ((wxSlider* )m_Window)->GetValue(); break;
     case ITEM_SPINCTRL: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
     case ITEM_SPINCTRL_DOUBLE: any = ((wxSpinCtrlDouble* )m_Window)->GetValue(); break;
@@ -561,7 +565,7 @@ bool wxExItem::SetValue(const wxAny& value) const
     
     case ITEM_LISTVIEW:
       {
-      wxExListViewFileName* win = (wxExListViewFileName*)GetWindow();
+      wxExListView* win = (wxExListView*)GetWindow();
       win->DeleteAllItems();
       win->ItemFromText(value.As<wxString>());
       }

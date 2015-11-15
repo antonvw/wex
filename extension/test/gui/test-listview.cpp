@@ -16,8 +16,10 @@
 
 void fixture::testListView()
 {
-  wxExListView* listView = new wxExListView(m_Frame);
+  wxExListView* listView = new wxExListView(m_Frame, wxExListView::LIST_NONE);
   AddPane(m_Frame, listView);
+  
+  CPPUNIT_ASSERT(listView->GetImageType() == wxExListView::IMAGE_ART);
   
   listView->SetSingleStyle(wxLC_REPORT);
   
@@ -30,7 +32,7 @@ void fixture::testListView()
   CPPUNIT_ASSERT(listView->FindColumn("Date") == 1);
   CPPUNIT_ASSERT(listView->FindColumn("Float") == 2);
   CPPUNIT_ASSERT(listView->FindColumn("String") == 3);
-
+  
   listView->InsertItem(0, "test");
   
   CPPUNIT_ASSERT(listView->FindNext("test"));
@@ -38,7 +40,8 @@ void fixture::testListView()
   CPPUNIT_ASSERT(listView->ItemFromText("a new item"));
   CPPUNIT_ASSERT(listView->FindNext("a new item"));
   
-  CPPUNIT_ASSERT(listView->ItemToText(0) == "test");
+  CPPUNIT_ASSERT( listView->ItemToText(0) == "test");
+  CPPUNIT_ASSERT(!listView->ItemToText(-1).empty());
   
   //listView->Print(); // waits for input
   //listView->PrintPreview();
@@ -68,11 +71,24 @@ void fixture::testListView()
   CPPUNIT_ASSERT( listView->SortColumn("Date"));
   CPPUNIT_ASSERT( listView->SortColumn("Float"));
   CPPUNIT_ASSERT( listView->SortColumn("String"));
-  
+
   listView->SetItem(0, 1, "incorrect date");
   CPPUNIT_ASSERT(!listView->SortColumn("Date"));
   
   listView->SetItemImage(0, wxART_WARNING);
+  
+  wxExListView* listView2 = new wxExListView(m_Frame, wxExListView::LIST_FILE);
+  AddPane(m_Frame, listView2);
+  
+  CPPUNIT_ASSERT( listView2->GetImageType() == wxExListView::IMAGE_FILE_ICON);
+  CPPUNIT_ASSERT(!listView2->GetTypeDescription().empty());
+  CPPUNIT_ASSERT(!listView2->wxExListView::GetTypeDescription(wxExListView::LIST_FILE).empty());
+  
+  CPPUNIT_ASSERT( listView2->ItemFromText("test.h\ntest.h"));
+  CPPUNIT_ASSERT(!listView2->ItemToText(0).empty());
+  CPPUNIT_ASSERT(!listView2->ItemToText(-1).empty());
+  
+  listView->ItemsUpdate();
   
   wxListEvent event(wxEVT_LIST_ITEM_ACTIVATED);
   
@@ -80,5 +96,6 @@ void fixture::testListView()
   {
     event.m_itemIndex = id;
     wxPostEvent(listView, event);
+    wxPostEvent(listView2, event);
   }
 }

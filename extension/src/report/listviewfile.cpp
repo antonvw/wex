@@ -259,7 +259,7 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
 {
   bool result = false;
   
-  if (wxExListViewFileName::ItemFromText(text))
+  if (wxExListView::ItemFromText(text))
   {
     m_ContentsChanged = true;
     result = true;

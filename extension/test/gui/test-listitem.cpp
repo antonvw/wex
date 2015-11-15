@@ -15,9 +15,11 @@
 
 void fixture::testListItem()
 {
-  wxExListViewFileName* listView = new wxExListViewFileName(
-    m_Frame, wxExListViewFileName::LIST_FILE);
+  wxExListView* listView = new wxExListView(m_Frame, wxExListView::LIST_FILE);
   AddPane(m_Frame, listView);
+  
+  wxExListView* listView2 = new wxExListView(m_Frame, wxExListView::LIST_NONE);
+  AddPane(m_Frame, listView2);
   
   wxStopWatch sw;
   sw.Start();
@@ -31,14 +33,16 @@ void fixture::testListItem()
     item2.Insert();
     wxExListItem item3(listView, wxExFileName("./main.cpp"));
     item3.Insert();
+    wxExListItem item4(listView2, wxExFileName("./test.h"));
+    item4.Insert();
   }
-  
+
   const long add = sw.Time();
 
-  CPPUNIT_ASSERT_MESSAGE(std::to_string(add), add < 3100);
+  CPPUNIT_ASSERT_MESSAGE(std::to_string(add), add < 4000);
   
   Report(wxString::Format(
-    "wxExListTiem::Insert %d items in %ld ms", 3 * max, add).ToStdString());
+    "wxExListItem::Insert %d items in %ld ms", 3 * max, add).ToStdString());
   
   sw.Start();
   
