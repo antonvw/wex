@@ -38,6 +38,7 @@ void fixture::testToVectorString()
 void fixture::testUtil()
 {
   wxExSTC* stc = new wxExSTC(m_Frame);
+  AddPane(m_Frame, stc);
   stc->SetFocus();
   
   // wxExAlignText
@@ -125,6 +126,7 @@ void fixture::testUtil()
   // wxExComboBoxFromList
   std::list < wxString > l{"x","y","z"};
   wxComboBox* cb = new wxComboBox(m_Frame, wxID_ANY);
+  AddPane(m_Frame, cb);
   wxExComboBoxFromList(cb, l);
   CPPUNIT_ASSERT( cb->GetCount() == 3);
   
