@@ -23,7 +23,7 @@ void AddPane(wxExManagedFrame* frame, wxWindow* pane)
 {
   static int no = 0;
   
-  wxAuiPaneInfo info(frame->GetManager().GetAllPanes().GetCount() == 4 ?
+  wxAuiPaneInfo info(frame->GetManager().GetAllPanes().GetCount() == 5 ?
     wxAuiPaneInfo().Center():
     wxAuiPaneInfo().Bottom());
   

@@ -21,7 +21,7 @@ void fixture::testEx()
   // Test modeline.
   const wxString modeline("set ts=120 ec=40 sy=sql");
   wxExSTC* stc = new wxExSTC(m_Frame, "-- vi: " + modeline);
-  m_Frame->GetManager().AddPane(stc, wxAuiPaneInfo().CenterPane());
+  AddPane(m_Frame, stc);
   wxExEx* ex = new wxExEx(stc);
     
   CPPUNIT_ASSERT_MESSAGE(std::to_string(stc->GetTabWidth()), stc->GetTabWidth() == 120);
@@ -29,9 +29,8 @@ void fixture::testEx()
   CPPUNIT_ASSERT(stc->GetLexer().GetScintillaLexer() == "sql");
   CPPUNIT_ASSERT( ex->GetLastCommand() == ":" + modeline);
   wxExSTC* stc2 = new wxExSTC(m_Frame, wxExFileName("test-modeline.txt"));
-  m_Frame->GetManager().AddPane(stc2, wxAuiPaneInfo().Bottom().Caption("STC"));
+  AddPane(m_Frame, stc2);
   CPPUNIT_ASSERT(stc2->GetLexer().GetScintillaLexer() == "sql");
-  m_Frame->GetManager().Update();
   
   stc->SetText("xx\nxx\nyy\nzz\n");
   stc->DocumentStart();
