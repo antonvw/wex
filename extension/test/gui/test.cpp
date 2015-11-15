@@ -40,11 +40,8 @@ fixture::fixture()
     // (depending on platform, configuration).
     wxExLexers::Get();
     
-    wxExProcess* process = new wxExProcess;
-    
     wxExProcess::PrepareOutput(m_Frame);
-    
-    AddPane(m_Frame, process->GetShell());
+    AddPane(m_Frame, wxExProcess::GetShell());
     
     wxConfigBase::Get()->Write(_("vi mode"), true);
     
