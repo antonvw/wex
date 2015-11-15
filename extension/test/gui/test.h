@@ -45,7 +45,6 @@ class fixture : public wxExTestFixture
   CPPUNIT_TEST( testLink );
   CPPUNIT_TEST( testListItem );
   CPPUNIT_TEST( testListView );
-  CPPUNIT_TEST( testListViewFileName );
   CPPUNIT_TEST( testManagedFrame );
   CPPUNIT_TEST( testMarker );
   CPPUNIT_TEST( testMenu );
@@ -104,7 +103,6 @@ public:
   void testLink();
   void testListItem();
   void testListView();
-  void testListViewFileName();
   void testManagedFrame();
   void testMarker();
   void testMenu();

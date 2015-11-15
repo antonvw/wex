@@ -12,9 +12,9 @@
 
 class wxExFrameWithHistory;
 
-/// Adds a wxExFrameWithHistory to wxExListViewFileName.
+/// Adds a wxExFrameWithHistory to wxExListView.
 /// It also adds a tool menu if appropriate.
-class WXDLLIMPEXP_BASE wxExListViewWithFrame : public wxExListViewFileName
+class WXDLLIMPEXP_BASE wxExListViewWithFrame : public wxExListView
 {
 public:
   /// Menu flags, they determine how the context menu will appear.

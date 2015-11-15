@@ -16,7 +16,7 @@ void fixture::testListViewWithFrame()
     wxExListViewWithFrame::GetTypeTool(tool) == wxExListViewWithFrame::LIST_FIND);
     
   wxExListViewWithFrame* listView = new wxExListViewWithFrame(m_Frame, m_Frame, 
-    wxExListViewFileName::LIST_FIND);
+    wxExListView::LIST_FIND);
   
   AddPane(m_Frame, listView);
 

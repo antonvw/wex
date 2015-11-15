@@ -37,7 +37,7 @@ enum wxExItemType
   ITEM_FONTPICKERCTRL,       ///< a wxFontPickerCtrl ctrl item
   ITEM_HYPERLINKCTRL,        ///< a wxHyperlinkCtrl ctrl item
   ITEM_INT,                  ///< a wxTextCtrl item that only accepts an integer (long)
-  ITEM_LISTVIEW,             ///< a wxExListViewFileName ctrl item (a list view standard file)
+  ITEM_LISTVIEW,             ///< a wxExListView ctrl item (a list view standard file)
   ITEM_RADIOBOX,             ///< a wxRadioBox item
   ITEM_SLIDER,               ///< a wxSlider item
   ITEM_SPACER,               ///< a spacer item

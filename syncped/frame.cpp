@@ -370,11 +370,11 @@ Frame::Frame(App* app)
   m_App->Reset();
 }    
 
-wxExListViewFileName* Frame::Activate(
-  wxExListViewFileName::wxExListType type, 
+wxExListView* Frame::Activate(
+  wxExListView::wxExListType type, 
   const wxExLexer* lexer)
 {
-  if (type == wxExListViewFileName::LIST_FILE)
+  if (type == wxExListView::LIST_FILE)
   {
     return GetProject();
   }
@@ -426,16 +426,16 @@ void Frame::AddAsciiTable()
 }
 
 wxExListViewWithFrame* Frame::AddPage(
-  wxExListViewFileName::wxExListType type, 
+  wxExListView::wxExListType type, 
   const wxExLexer* lexer)
 {
-  const wxString name = wxExListViewFileName::GetTypeDescription(type) +
+  const wxString name = wxExListView::GetTypeDescription(type) +
     (lexer != NULL ?  " " + lexer->GetDisplayLexer(): wxString(wxEmptyString));
 
   wxExListViewWithFrame* list = 
     (wxExListViewWithFrame*)m_Lists->GetPageByKey(name);
 
-  if (list == NULL && type != wxExListViewFileName::LIST_FILE)
+  if (list == NULL && type != wxExListView::LIST_FILE)
   {
     list = new wxExListViewWithFrame(
       m_Lists, this,
@@ -455,7 +455,7 @@ void Frame::AddPaneHistory()
   wxASSERT(m_History == NULL);
   
   m_History = new wxExListViewWithFrame(this, this,
-    wxExListViewFileName::LIST_HISTORY,
+    wxExListView::LIST_HISTORY,
     wxExListViewWithFrame::LIST_MENU_DEFAULT);
         
   GetManager().AddPane(m_History, wxAuiPaneInfo()

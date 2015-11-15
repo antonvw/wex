@@ -34,7 +34,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   long style,
   const wxValidator& validator,
   const wxString &name)
-  : wxExListViewFileName(
+  : wxExListView(
       parent, 
       type, 
       id, 
@@ -42,6 +42,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
       pos, 
       size, 
       style, 
+      IMAGE_ART,
       validator, 
       name)
   , m_Frame(frame)
@@ -66,7 +67,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     bool first = true;
     wxString file1,file2;
-    wxExListViewFileName* list = NULL;
+    wxExListView* list = NULL;
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       wxExListItem li(this, i);
@@ -173,7 +174,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
   }
 
-  wxExListViewFileName::BuildPopupMenu(menu);
+  wxExListView::BuildPopupMenu(menu);
 
   if (GetSelectedItemCount() > 1 && exists &&
      !wxConfigBase::Get()->Read(_("Comparator")).empty())
@@ -258,7 +259,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 bool wxExListViewWithFrame::Destroy()	
 {
   wxExInterruptable::Cancel();
-  return wxExListViewFileName::Destroy();
+  return wxExListView::Destroy();
 }
 
 wxExListViewWithFrame::wxExListType wxExListViewWithFrame::GetTypeTool(

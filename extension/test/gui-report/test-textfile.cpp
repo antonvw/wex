@@ -13,9 +13,9 @@ void fixture::testTextFileWithListView()
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
 
-  wxExListViewFileName* report = new wxExListViewFileName(
+  wxExListView* report = new wxExListView(
     m_Frame, 
-    wxExListViewFileName::LIST_FIND);
+    wxExListView::LIST_FIND);
     
   wxExFindReplaceData::Get()->SetFindString("xx");
   

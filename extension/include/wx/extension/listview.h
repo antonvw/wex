@@ -72,6 +72,8 @@ private:
 
 /// Adds printing, popup menu, images, columns and items to wxListView.
 /// Allows for sorting on any column.
+/// Adds some standard lists, all these lists
+/// have items associated with files or folders.
 class WXDLLIMPEXP_BASE wxExListView : public wxListView
 {
 public:
@@ -84,9 +86,23 @@ public:
     IMAGE_OWN        ///< use your own images
   };
 
+  /// The supported lists.
+  enum wxExListType
+  {
+    LIST_FOLDER,     ///< a list containing folders only
+    LIST_FIND,       ///< a list to show find results
+    LIST_HISTORY,    ///< a list to show history items
+    LIST_KEYWORD,    ///< a list to show keywords
+    LIST_REPLACE,    ///< a list to show replace results
+    LIST_FILE,       ///< a list associated with a file
+    LIST_NONE,       ///< a list without predefined columns
+  };
+
   /// Constructor.
   wxExListView(wxWindow* parent,
+    wxExListType type = LIST_FILE,
     wxWindowID id = wxID_ANY,
+    const wxExLexer* lexer = NULL,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxLC_LIST | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
@@ -104,6 +120,9 @@ public:
   /// Finds next.
   bool FindNext(const wxString& text, bool find_next = true);
 
+  /// Returns image type.
+  auto GetImageType() const {return m_ImageType;};
+  
   /// Returns the item text using item number and column name.
   /// If you do not specify a column, the item label is returned
   /// (this is also valid in non report mode).
@@ -114,17 +133,30 @@ public:
   /// Returns current sorted column no.
   int GetSortedColumnNo() const {return m_SortedColumnNo;};
 
+  /// Returns the list type.
+  auto GetType() const {return m_Type;};
+
+  /// Returns the list type as a string.
+  const wxString GetTypeDescription() const {
+    return GetTypeDescription(m_Type);};
+
+  /// Returns the list type as a string for specified type.
+  static const wxString GetTypeDescription(wxExListType type);
+
   /// Asks for an item number and goes to the item.
   bool GotoDialog(const wxString& caption = _("Enter Item Number"));
 
-  /// Inserts a new item with column values from text.
+  /// Inserts new item swith column values from text.
+  /// Items are separated by newlines, columns by a field separator.
+  /// Returns true if successfull.
   virtual bool ItemFromText(const wxString& text);
 
-  /// Copies this item (all columns) to text.
+  /// Copies the specified item (all columns) to text.
+  /// If item_number = -1, copies all items.
   virtual const wxString ItemToText(long item_number) const;
 
   /// Implement this one if you have images that might be changed after sorting etc.
-  virtual void ItemsUpdate() {;};
+  virtual void ItemsUpdate();
 
   /// Prints the list.
   void Print();
@@ -170,7 +202,7 @@ protected:
   void EditClearAll();
 
   /// Returns the field separator.
-  const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
+  const auto& GetFieldSeparator() const {return m_FieldSeparator;};
 private:
   const wxString BuildPage();
   
@@ -197,73 +229,23 @@ private:
     return (m_ImageType == IMAGE_FILE_ICON ?
       wxListView::SetItemImage(item_number, iconid): false);};
 
+  void AddColumns(const wxExLexer* lexer);
+  void Initialize(const wxExLexer* lexer);
+  void ItemActivated(long item_number);
+  
   const wxUniChar m_FieldSeparator;
   const wxExImageType m_ImageType;
   const int m_ImageHeight;
   const int m_ImageWidth;
+  const wxExListType m_Type;
 
+  bool m_ItemUpdated;
+  long m_ItemNumber;
+  
   int m_SortedColumnNo;
   int m_ToBeSortedColumnNo;
   
   std::map<wxArtID, unsigned int> m_ArtIDs;
   std::vector<wxExColumn> m_Columns;
-};
-
-/// Adds some standard lists, all these lists
-/// have items associated with files or folders.
-class WXDLLIMPEXP_BASE wxExListViewFileName : public wxExListView
-{
-public:
-  /// The supported lists.
-  enum wxExListType
-  {
-    LIST_FOLDER,       ///< a list containing folders only
-    LIST_FIND,         ///< a list to show find results
-    LIST_HISTORY,      ///< a list to show history items
-    LIST_KEYWORD,      ///< a list to show keywords
-    LIST_REPLACE,      ///< a list to show replace results
-    LIST_FILE,         ///< a list associated with a file
-  };
-
-  /// Constructor.
-  wxExListViewFileName(wxWindow* parent,
-    wxExListType type,
-    wxWindowID id = wxID_ANY,
-    const wxExLexer* lexer = NULL,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
-    const wxValidator& validator = wxDefaultValidator,
-    const wxString &name = wxListCtrlNameStr);
-
-  /// Returns the list type.
-  const wxExListType GetType() const {return m_Type;};
-
-  /// Returns the list type as a string.
-  const wxString GetTypeDescription() const {
-    return GetTypeDescription(m_Type);};
-
-  /// Returns the list type as a string for specified type.
-  static const wxString GetTypeDescription(wxExListType type);
-
-  /// Updates all items.
-  virtual void ItemsUpdate() override;
-
-  /// Tries to insert items from specified text.
-  /// Returns true if successfull.
-  virtual bool ItemFromText(const wxString& text) override;
-
-  /// Returns column text for specified item.
-  virtual const wxString ItemToText(long item_number) const override;
-protected:
-  virtual void BuildPopupMenu(wxExMenu& menu) override;
-private:
-  void AddColumns(const wxExLexer* lexer);
-  void Initialize(const wxExLexer* lexer);
-  void ItemActivated(long item_number);
-  const wxExListType m_Type;
-
-  bool m_ItemUpdated;
-  long m_ItemNumber;
 };
 #endif // wx_USE_GUI

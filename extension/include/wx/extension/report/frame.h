@@ -11,7 +11,7 @@
 #include <wx/bitmap.h> // for auibar
 #include <wx/aui/auibar.h>
 #include <wx/extension/filehistory.h>
-#include <wx/extension/listview.h> // for wxExListViewFileName::wxExListType 
+#include <wx/extension/listview.h> // for wxExListView::wxExListType 
 #include <wx/extension/managedframe.h>
 #include <wx/extension/report/defs.h>
 
@@ -44,8 +44,8 @@ public:
 
   /// This method is called to activate a certain listview.
   /// Default it returns NULL.
-  virtual wxExListViewFileName* Activate(
-    wxExListViewFileName::wxExListType WXUNUSED(list_type), 
+  virtual wxExListView* Activate(
+    wxExListView::wxExListType WXUNUSED(list_type), 
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
     
@@ -104,7 +104,7 @@ public:
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
-  void UseFileHistoryList(wxExListViewFileName* list);
+  void UseFileHistoryList(wxExListView* list);
 protected:
   /// Access to file history list, 
   /// if you use this as a page in a notebook,

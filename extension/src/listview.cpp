@@ -19,12 +19,12 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/listview.h>
-#include <wx/extension/listitem.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/interruptable.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/listitem.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
@@ -147,7 +147,9 @@ void wxExColumn::SetIsSortedAscending(wxExSortType type)
 const wxWindowID ID_COL_FIRST = 1000;
 
 wxExListView::wxExListView(wxWindow* parent,
+  wxExListType type,
   wxWindowID id,
+  const wxExLexer* lexer,
   const wxPoint& pos,
   const wxSize& size,
   long style,
@@ -156,17 +158,113 @@ wxExListView::wxExListView(wxWindow* parent,
   const wxString &name)
   : wxListView(parent, id, pos, size, style, validator, name)
   , m_FieldSeparator('\t')
-  , m_ImageType(image_type)
+  , m_ImageType(type == LIST_NONE ? image_type: IMAGE_FILE_ICON) 
   , m_ImageHeight(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
   , m_ImageWidth(16)
   , m_SortedColumnNo(-1)
   , m_ToBeSortedColumnNo(-1)
+  , m_Type(type)
+  , m_ItemUpdated(false)
+  , m_ItemNumber(0)
 {
+  Initialize(lexer);
+  
 #if wxUSE_DRAG_AND_DROP
   // We can only have one drop target, we use file drop target,
   // as list items can also be copied and pasted.
   SetDropTarget(new DropTarget(this));
+#endif
   
+  if (m_ImageType != IMAGE_NONE)
+  {
+    if (m_ImageType == IMAGE_ART || m_ImageType == IMAGE_OWN)
+    {
+      AssignImageList(
+        new wxImageList(
+          m_ImageWidth, 
+          m_ImageHeight, true, 0), 
+        wxIMAGE_LIST_SMALL);
+    }
+    else if (m_ImageType == IMAGE_FILE_ICON)
+    {
+      SetImageList(
+        wxTheFileIconsTable->GetSmallImageList(), 
+        wxIMAGE_LIST_SMALL);
+    }
+    else
+    {
+      wxFAIL;
+    }
+  }
+
+  SetFont(wxConfigBase::Get()->ReadObject(
+    _("List Font"), wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
+
+#if wxUSE_STATUSBAR
+  wxExFrame::UpdateStatusBar(this);
+#endif  
+
+  Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
+    FindNext(
+      wxExFindReplaceData::Get()->GetFindString(), 
+      wxExFindReplaceData::Get()->SearchDown());});
+      
+  Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
+    FindNext(
+      wxExFindReplaceData::Get()->GetFindString(), 
+      wxExFindReplaceData::Get()->SearchDown());});
+      
+  if (m_Type != LIST_NONE)
+  {
+    Bind(wxEVT_IDLE, [=](wxIdleEvent& event) {
+      event.Skip();
+      if (
+        !IsShown() ||
+         wxExInterruptable::Running() ||
+         GetItemCount() == 0 ||
+        !wxConfigBase::Get()->ReadBool("AllowSync", true))
+      {
+        return;
+      }
+      if (m_ItemNumber < GetItemCount())
+      {
+        wxExListItem item(this, m_ItemNumber);
+    
+        if ( item.GetFileName().FileExists() &&
+            (item.GetFileName().GetStat().GetModificationTime() != 
+             GetItemText(m_ItemNumber, _("Modified")) ||
+             item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
+            )
+        {
+          item.Update();
+          wxExLogStatus(item.GetFileName(), STAT_SYNC | STAT_FULLPATH);
+          m_ItemUpdated = true;
+        }
+    
+        m_ItemNumber++;
+      }
+      else
+      {
+        m_ItemNumber = 0;
+    
+        if (m_ItemUpdated)
+        {
+          if (m_Type == LIST_FILE)
+          {
+            if (
+              wxConfigBase::Get()->ReadBool("List/SortSync", true) &&
+              GetSortedColumnNo() == FindColumn(_("Modified")))
+            {
+              SortColumn(_("Modified"), SORT_KEEP);
+            }
+          }
+    
+          m_ItemUpdated = false;
+        }
+      }});
+    }
+
+#if wxUSE_DRAG_AND_DROP
   Bind(wxEVT_LIST_BEGIN_DRAG, [=](wxListEvent& event) {
     // Start drag operation.
     wxString text;
@@ -188,42 +286,28 @@ wxExListView::wxExListView(wxWindow* parent,
     }});
 #endif
 
-  if (image_type != IMAGE_NONE)
-  {
-    if (image_type == IMAGE_ART || image_type == IMAGE_OWN)
-    {
-      AssignImageList(
-        new wxImageList(
-          m_ImageWidth, 
-          m_ImageHeight, true, 0), 
-        wxIMAGE_LIST_SMALL);
-    }
-    else if (image_type == IMAGE_FILE_ICON)
-    {
-      SetImageList(
-        wxTheFileIconsTable->GetSmallImageList(), 
-        wxIMAGE_LIST_SMALL);
-    }
-    else
-    {
-      wxFAIL;
-    }
-  }
-
-  SetFont(wxConfigBase::Get()->ReadObject(
-    _("List Font"), wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
-    
+  Bind(wxEVT_LIST_ITEM_ACTIVATED, [=] (wxListEvent& event) {
+    ItemActivated(event.GetIndex());});
+  
 #if wxUSE_STATUSBAR
-  wxExFrame::UpdateStatusBar(this);
-
-  Bind(wxEVT_SHOW, [=](wxShowEvent& event) {
-    event.Skip();
-    wxExFrame::UpdateStatusBar(this);});
   Bind(wxEVT_LIST_ITEM_DESELECTED, [=](wxListEvent& event) {
     wxExFrame::UpdateStatusBar(this);});
-  Bind(wxEVT_LIST_ITEM_SELECTED, [=](wxListEvent& event) {
-    wxExFrame::UpdateStatusBar(this);});
 #endif  
+  
+  Bind(wxEVT_LIST_ITEM_SELECTED, [=](wxListEvent& event) {
+    if (m_Type != LIST_NONE && GetSelectedItemCount() == 1)
+    {
+      const wxExFileName fn(wxExListItem(this, event.GetIndex()).GetFileName());
+      if (fn.GetStat().IsOk())
+      {
+        wxExLogStatus(fn, STAT_FULLPATH);
+      }
+      else
+      {
+        wxLogStatus(GetItemText(GetFirstSelected()));
+      }
+    }
+    wxExFrame::UpdateStatusBar(this);});
     
   Bind(wxEVT_LIST_COL_CLICK, [=](wxListEvent& event) {
     SortColumn(
@@ -243,16 +327,6 @@ wxExListView::wxExListView(wxWindow* parent,
 
     PopupMenu(&menu);});
     
-  Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
-    FindNext(
-      wxExFindReplaceData::Get()->GetFindString(), 
-      wxExFindReplaceData::Get()->SearchDown());});
-      
-  Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
-    FindNext(
-      wxExFindReplaceData::Get()->GetFindString(), 
-      wxExFindReplaceData::Get()->SearchDown());});
-      
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     EditDelete();}, wxID_DELETE);
     
@@ -287,6 +361,56 @@ wxExListView::wxExListView(wxWindow* parent,
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     ItemFromText(wxExClipboardGet());}, wxID_PASTE);
   
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxString defaultPath;
+    
+    if (GetSelectedItemCount() > 0)
+    {
+      defaultPath = wxExListItem(
+        this, GetFirstSelected()).GetFileName().GetFullPath();
+    }
+    
+    wxDirDialog dir_dlg(
+      this,
+      _(wxDirSelectorPromptStr),
+      defaultPath,
+      wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+    if (dir_dlg.ShowModal() == wxID_OK)
+    {
+      const int no = (GetSelectedItemCount() > 0 ? 
+        GetFirstSelected(): GetItemCount());
+       
+      wxExListItem(this, dir_dlg.GetPath()).Insert(no);
+    }}, wxID_ADD);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    {
+      ItemActivated(i);
+    }}, ID_EDIT_OPEN);
+
+  Bind(wxEVT_RIGHT_DOWN, [=](wxMouseEvent& event) {
+    long style = 0; // otherwise CAN_PASTE already on
+    
+    if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
+    if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
+    if (m_Type != LIST_FIND && m_Type != LIST_REPLACE) style |= wxExMenu::MENU_CAN_PASTE;
+    
+    if (GetSelectedItemCount() == 0 && GetItemCount() > 0) 
+    {
+      style |= wxExMenu::MENU_ALLOW_CLEAR;
+    }
+
+    wxExMenu menu(style);
+
+    BuildPopupMenu(menu);
+
+    if (menu.GetMenuItemCount() > 0)
+    {
+      PopupMenu(&menu);
+    }});
+    
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
     wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
     if (frame != NULL)
@@ -294,7 +418,49 @@ wxExListView::wxExListView(wxWindow* parent,
       frame->SetFindFocus(this);
     }
     event.Skip();});
+  
+#if wxUSE_STATUSBAR
+  Bind(wxEVT_SHOW, [=](wxShowEvent& event) {
+    event.Skip();
+    wxExFrame::UpdateStatusBar(this);});
+#endif  
 }    
+
+void wxExListView::AddColumns(const wxExLexer* lexer)
+{
+  const int col_line_width = 250;
+
+  AppendColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
+
+  switch (m_Type)
+  {
+  case LIST_FIND:
+  case LIST_REPLACE:
+    AppendColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
+    AppendColumn(wxExColumn(_("Match"), wxExColumn::COL_STRING));
+    AppendColumn(wxExColumn(_("Line No")));
+    
+    if (m_Type == LIST_REPLACE)
+    {
+      AppendColumn(wxExColumn(_("Replaced")));
+    }
+  break;
+  case LIST_KEYWORD:
+    for (const auto& it : lexer->GetKeywords())
+    {
+      AppendColumn(wxExColumn(it));
+    }
+
+    AppendColumn(wxExColumn(_("Keywords")));
+  break;
+  default: break; // to prevent warnings
+  }
+
+  AppendColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
+  AppendColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
+  AppendColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
+  AppendColumn(wxExColumn(_("Size")));
+}
 
 long wxExListView::AppendColumn(const wxExColumn& col)
 {
@@ -358,6 +524,13 @@ const wxString wxExListView::BuildPage()
 
 void wxExListView::BuildPopupMenu(wxExMenu& menu)
 {
+  if (GetSelectedItemCount() >= 1 && 
+    wxExListItem(this, GetFirstSelected()).GetFileName().GetStat().IsOk())
+  {
+    menu.Append(ID_EDIT_OPEN, _("&Open"), wxART_FILE_OPEN);
+    menu.AppendSeparator();
+  }
+
   menu.AppendSeparator();
   menu.AppendEdit(true);
   
@@ -376,6 +549,12 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
     }
 
     menu.AppendSubMenu(menuSort, _("Sort On"));
+  }
+  
+  if (m_Type == LIST_FOLDER && GetSelectedItemCount() <= 1)
+  {
+    menu.AppendSeparator();
+    menu.Append(wxID_ADD);
   }
 }
 
@@ -593,6 +772,25 @@ const wxString wxExListView::GetItemText(
   return wxListView::GetItemText(item_number, col);
 }
 
+const wxString wxExListView::GetTypeDescription(wxExListType type)
+{
+  wxString value;
+
+  switch (type)
+  {
+  case LIST_FOLDER: value = _("Folder"); break;
+  case LIST_FIND: value = _("Find Results"); break;
+  case LIST_HISTORY: value = _("History"); break;
+  case LIST_KEYWORD: value = _("Keywords"); break;
+  case LIST_FILE: value = _("File"); break;
+  case LIST_REPLACE: value = _("Replace Results"); break;
+  case LIST_NONE: value = _("None"); break;
+  default: wxFAIL;
+  }
+
+  return value;
+}
+
 bool wxExListView::GotoDialog(const wxString& caption)
 {
   if (!IsShown() || GetItemCount() == 0)
@@ -635,6 +833,85 @@ bool wxExListView::GotoDialog(const wxString& caption)
   return true;
 }
 
+void wxExListView::Initialize(const wxExLexer* lexer)
+{
+  SetName(GetTypeDescription());
+  
+  switch (m_Type)
+  {
+    case LIST_FOLDER:
+    case LIST_NONE:
+      SetSingleStyle(wxLC_LIST);
+      break;
+    
+    case LIST_KEYWORD:
+      wxASSERT(lexer != NULL);
+      SetName(GetName() + " " + lexer->GetDisplayLexer());
+      // fall through
+    default:
+      SetSingleStyle(wxLC_REPORT);
+      AddColumns(lexer);
+      break;
+  }
+}
+
+void wxExListView::ItemActivated(long item_number)
+{
+  wxASSERT(item_number >= 0);
+  
+  if (m_Type == LIST_FOLDER)
+  {
+    wxDirDialog dir_dlg(
+      this,
+      _(wxDirSelectorPromptStr),
+      wxListView::GetItemText(item_number),
+      wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+    if (dir_dlg.ShowModal() == wxID_OK)
+    {
+      SetItemText(item_number, dir_dlg.GetPath());
+      wxExListItem(this, item_number).Update();
+    }
+  }
+  else
+  {
+    // Cannot be const because of SetItem later on.
+    wxExListItem item(this, item_number);
+  
+    if (item.GetFileName().FileExists())
+    {
+      wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
+      if (frame != NULL)
+      {
+        const wxString line_number_str = GetItemText(item_number, _("Line No"));
+        const int line_number = atoi(line_number_str.c_str());
+        const wxString match =
+          (m_Type == LIST_REPLACE ?
+             GetItemText(item_number, _("Replaced")):
+             GetItemText(item_number, _("Match")));
+
+        frame->OpenFile(
+          item.GetFileName().GetFullPath(),
+          line_number, 
+          match);
+      }
+    }
+    else if (wxDirExists(item.GetFileName().GetFullPath()))
+    {
+      wxTextEntryDialog dlg(this,
+        _("Input") + ":",
+        _("Folder Type"),
+        GetItemText(item_number, _("Type")));
+  
+      if (dlg.ShowModal() == wxID_OK)
+      {
+        item.SetItem(_("Type"), dlg.GetValue());
+      }
+    }
+    
+  }
+}
+
 bool wxExListView::ItemFromText(const wxString& text)
 {
   if (text.empty())
@@ -643,33 +920,93 @@ bool wxExListView::ItemFromText(const wxString& text)
   }
 
   bool modified = false;
+  
   wxStringTokenizer tkz(text, wxTextFile::GetEOL());
 
   while (tkz.HasMoreTokens())
   {
     modified = true;
     
-    const wxString line = tkz.GetNextToken();
-    
-    wxStringTokenizer tkz(line, m_FieldSeparator);
-    
-    if (tkz.HasMoreTokens())
+    if (m_Type != LIST_NONE)
     {
-      const wxString value = tkz.GetNextToken();
-
-      InsertItem(GetItemCount(), value);
-
-      // And set the rest of the columns.
-      int col = 1;
-      while (tkz.HasMoreTokens() && col < GetColumnCount())
+      if (!InReportView())
       {
-        SetItem(GetItemCount(), col, tkz.GetNextToken());
-        col++;
+        wxExListItem(this, tkz.GetNextToken()).Insert();
+      }
+      else
+      {
+        const wxString token(tkz.GetNextToken());
+        wxStringTokenizer tk(token, GetFieldSeparator());
+        
+        if (tk.HasMoreTokens())
+        {
+          const wxString value = tk.GetNextToken();
+          wxFileName fn(value);
+    
+          if (fn.FileExists())
+          {
+            wxExListItem item(this, fn);
+            item.Insert();
+    
+            // And try to set the rest of the columns 
+            // (that are not already set by inserting).
+            int col = 1;
+            while (tk.HasMoreTokens() && col < GetColumnCount() - 1)
+            {
+              const wxString value = tk.GetNextToken();
+    
+              if (col != FindColumn(_("Type")) &&
+                  col != FindColumn(_("In Folder")) &&
+                  col != FindColumn(_("Size")) &&
+                  col != FindColumn(_("Modified")))
+              {
+                SetItem(item.GetId(), col, value);
+              }
+    
+              col++;
+            }
+          }
+          else
+          {
+            // Now we need only the first column (containing findfiles). If more
+            // columns are present, these are ignored.
+            const wxString findfiles =
+              (tk.HasMoreTokens() ? tk.GetNextToken(): tk.GetString());
+    
+            wxExListItem(this, value, findfiles).Insert();
+          }
+        }
+        else
+        {
+          wxExListItem(this, token).Insert();
+        }
       }
     }
     else
     {
-      InsertItem(GetItemCount(), line);
+      const wxString line = tkz.GetNextToken();
+wxLogMessage(line);
+      
+      wxStringTokenizer tkz(line, m_FieldSeparator);
+      
+      if (tkz.HasMoreTokens())
+      {
+        const wxString value = tkz.GetNextToken();
+
+        InsertItem(GetItemCount(), value);
+
+        // And set the rest of the columns.
+        int col = 1;
+        while (tkz.HasMoreTokens() && col < GetColumnCount())
+        {
+          SetItem(GetItemCount(), col, tkz.GetNextToken());
+          col++;
+        }
+      }
+      else
+      {
+        InsertItem(GetItemCount(), line);
+      }
     }
   }
 
@@ -679,18 +1016,61 @@ bool wxExListView::ItemFromText(const wxString& text)
 const wxString wxExListView::ItemToText(long item_number) const
 {
   wxString text;
-
-  for (int col = 0; col < GetColumnCount(); col++)
+    
+  if (item_number == -1)
   {
-    text += wxListView::GetItemText(item_number, col);
-
-    if (col < GetColumnCount() - 1)
+    for (long i = 0; i < GetItemCount(); i++)
     {
-      text += m_FieldSeparator;
+      text += wxListView::GetItemText(i) + wxTextFile::GetEOL();
     }
+    
+    return text;
   }
 
+  switch (m_Type)
+  {
+    case LIST_FILE:
+    case LIST_HISTORY:
+      {
+      const wxExListItem item(const_cast< wxExListView * >(this), item_number);
+      wxString text = (item.GetFileName().GetStat().IsOk() ? 
+        item.GetFileName().GetFullPath(): 
+        item.GetFileName().GetFullName());
+
+      if (item.GetFileName().DirExists() && !item.GetFileName().FileExists())
+      {
+        text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
+      }
+      }
+
+    case LIST_FOLDER:
+      return wxListView::GetItemText(item_number);
+      break;
+    
+    default:
+      for (int col = 0; col < GetColumnCount(); col++)
+      {
+        text += wxListView::GetItemText(item_number, col);
+
+        if (col < GetColumnCount() - 1)
+        {
+          text += m_FieldSeparator;
+        }
+      }
+    }
+
   return text.Trim();
+}
+
+void wxExListView::ItemsUpdate()
+{
+  if (m_Type != LIST_NONE)
+  {
+    for (long i = 0; i < GetItemCount(); i++)
+    {
+      wxExListItem(this, i).Update();
+    }
+  }
 }
 
 void wxExListView::Print()
@@ -849,424 +1229,6 @@ void wxExListView::SortColumnReset()
   if (m_SortedColumnNo != -1 && !m_ArtIDs.empty()) // only if we are using images
   {
     ClearColumnImage(m_SortedColumnNo);
-  }
-}
-
-wxExListViewFileName::wxExListViewFileName(wxWindow* parent,
-  wxExListType type,
-  wxWindowID id,
-  const wxExLexer* lexer,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style,
-  const wxValidator& validator,
-  const wxString &name)
-  : wxExListView(
-      parent, 
-      id, 
-      pos, 
-      size, 
-      style, 
-      IMAGE_FILE_ICON, 
-      validator, 
-      name)
-  , m_Type(type)
-  , m_ItemUpdated(false)
-  , m_ItemNumber(0)
-{
-  Initialize(lexer);
-  
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxString defaultPath;
-    
-    if (GetSelectedItemCount() > 0)
-    {
-      defaultPath = wxExListItem(
-        this, GetFirstSelected()).GetFileName().GetFullPath();
-    }
-    
-    wxDirDialog dir_dlg(
-      this,
-      _(wxDirSelectorPromptStr),
-      defaultPath,
-      wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-    if (dir_dlg.ShowModal() == wxID_OK)
-    {
-      const int no = (GetSelectedItemCount() > 0 ? 
-        GetFirstSelected(): GetItemCount());
-       
-      wxExListItem(this, dir_dlg.GetPath()).Insert(no);
-    }}, wxID_ADD);
-
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-    {
-      ItemActivated(i);
-    }}, ID_EDIT_OPEN);
-  
-  Bind(wxEVT_IDLE, [=](wxIdleEvent& event) {
-    event.Skip();
-  
-    if (
-      !IsShown() ||
-       wxExInterruptable::Running() ||
-       GetItemCount() == 0 ||
-      !wxConfigBase::Get()->ReadBool("AllowSync", true))
-    {
-      return;
-    }
-  
-    if (m_ItemNumber < GetItemCount())
-    {
-      wxExListItem item(this, m_ItemNumber);
-  
-      if ( item.GetFileName().FileExists() &&
-          (item.GetFileName().GetStat().GetModificationTime() != 
-           GetItemText(m_ItemNumber, _("Modified")) ||
-           item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
-          )
-      {
-        item.Update();
-        wxExLogStatus(item.GetFileName(), STAT_SYNC | STAT_FULLPATH);
-        m_ItemUpdated = true;
-      }
-  
-      m_ItemNumber++;
-    }
-    else
-    {
-      m_ItemNumber = 0;
-  
-      if (m_ItemUpdated)
-      {
-        if (m_Type == LIST_FILE)
-        {
-          if (
-            wxConfigBase::Get()->ReadBool("List/SortSync", true) &&
-            GetSortedColumnNo() == FindColumn(_("Modified")))
-          {
-            SortColumn(_("Modified"), SORT_KEEP);
-          }
-        }
-  
-        m_ItemUpdated = false;
-      }
-    }});
-
-  Bind(wxEVT_RIGHT_DOWN, [=](wxMouseEvent& event) {
-    long style = 0; // otherwise CAN_PASTE already on
-    
-    if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
-    if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
-    if (m_Type != LIST_FIND && m_Type != LIST_REPLACE) style |= wxExMenu::MENU_CAN_PASTE;
-    
-    if (GetSelectedItemCount() == 0 && GetItemCount() > 0) 
-    {
-      style |= wxExMenu::MENU_ALLOW_CLEAR;
-    }
-
-    wxExMenu menu(style);
-
-    BuildPopupMenu(menu);
-
-    if (menu.GetMenuItemCount() > 0)
-    {
-      PopupMenu(&menu);
-    }});
-    
-  Bind(wxEVT_LIST_ITEM_ACTIVATED, [=] (wxListEvent& event) {
-    ItemActivated(event.GetIndex());});
-    
-  Bind(wxEVT_LIST_ITEM_SELECTED, [=] (wxListEvent& event) {
-    if (GetSelectedItemCount() == 1)
-    {
-      const wxExFileName fn(wxExListItem(this, event.GetIndex()).GetFileName());
-      
-      if (fn.GetStat().IsOk())
-      {
-        wxExLogStatus(fn, STAT_FULLPATH);
-      }
-      else
-      {
-        wxLogStatus(GetItemText(GetFirstSelected()));
-      }
-    }
-    event.Skip();});
-}
-
-void wxExListViewFileName::AddColumns(const wxExLexer* lexer)
-{
-  const int col_line_width = 250;
-
-  AppendColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
-
-  switch (m_Type)
-  {
-  case LIST_FIND:
-  case LIST_REPLACE:
-    AppendColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
-    AppendColumn(wxExColumn(_("Match"), wxExColumn::COL_STRING));
-    AppendColumn(wxExColumn(_("Line No")));
-    
-    if (m_Type == LIST_REPLACE)
-    {
-      AppendColumn(wxExColumn(_("Replaced")));
-    }
-  break;
-  case LIST_KEYWORD:
-    for (const auto& it : lexer->GetKeywords())
-    {
-      AppendColumn(wxExColumn(it));
-    }
-
-    AppendColumn(wxExColumn(_("Keywords")));
-  break;
-  default: break; // to prevent warnings
-  }
-
-  AppendColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
-  AppendColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
-  AppendColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
-  AppendColumn(wxExColumn(_("Size")));
-}
-
-void wxExListViewFileName::BuildPopupMenu(wxExMenu& menu)
-{
-  if (GetSelectedItemCount() >= 1 && 
-    wxExListItem(this, GetFirstSelected()).GetFileName().GetStat().IsOk())
-  {
-    menu.Append(ID_EDIT_OPEN, _("&Open"), wxART_FILE_OPEN);
-    menu.AppendSeparator();
-  }
-
-  wxExListView::BuildPopupMenu(menu);
-
-  if (m_Type == LIST_FOLDER && GetSelectedItemCount() <= 1)
-  {
-    menu.AppendSeparator();
-    menu.Append(wxID_ADD);
-  }
-}
-
-const wxString wxExListViewFileName::GetTypeDescription(wxExListType type)
-{
-  wxString value;
-
-  switch (type)
-  {
-  case LIST_FOLDER: value = _("Folder"); break;
-  case LIST_FIND: value = _("Find Results"); break;
-  case LIST_HISTORY: value = _("History"); break;
-  case LIST_KEYWORD: value = _("Keywords"); break;
-  case LIST_FILE: value = _("File"); break;
-  case LIST_REPLACE: value = _("Replace Results"); break;
-  default: wxFAIL;
-  }
-
-  return value;
-}
-
-void wxExListViewFileName::Initialize(const wxExLexer* lexer)
-{
-  SetName(GetTypeDescription());
-
-  if (m_Type == LIST_KEYWORD)
-  {
-    if (lexer == NULL)
-    {
-      wxFAIL;
-      return;
-    }
-
-    SetName(GetName() + " " + lexer->GetDisplayLexer());
-  }
-  
-  if (m_Type != LIST_FOLDER)
-  {
-    SetSingleStyle(wxLC_REPORT);
-    
-    AddColumns(lexer);
-  }
-  else
-  {
-    SetSingleStyle(wxLC_LIST);
-  }
-}
-
-void wxExListViewFileName::ItemActivated(long item_number)
-{
-  wxASSERT(item_number >= 0);
-  
-  if (m_Type == LIST_FOLDER)
-  {
-    wxDirDialog dir_dlg(
-      this,
-      _(wxDirSelectorPromptStr),
-      wxListView::GetItemText(item_number),
-      wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-    if (dir_dlg.ShowModal() == wxID_OK)
-    {
-      SetItemText(item_number, dir_dlg.GetPath());
-      wxExListItem(this, item_number).Update();
-    }
-  }
-  else
-  {
-    // Cannot be const because of SetItem later on.
-    wxExListItem item(this, item_number);
-  
-    if (item.GetFileName().FileExists())
-    {
-      wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
-      if (frame != NULL)
-      {
-        const wxString line_number_str = GetItemText(item_number, _("Line No"));
-        const int line_number = atoi(line_number_str.c_str());
-        const wxString match =
-          (m_Type == LIST_REPLACE ?
-             GetItemText(item_number, _("Replaced")):
-             GetItemText(item_number, _("Match")));
-
-        frame->OpenFile(
-          item.GetFileName().GetFullPath(),
-          line_number, 
-          match);
-      }
-    }
-    else if (wxDirExists(item.GetFileName().GetFullPath()))
-    {
-      wxTextEntryDialog dlg(this,
-        _("Input") + ":",
-        _("Folder Type"),
-        GetItemText(item_number, _("Type")));
-  
-      if (dlg.ShowModal() == wxID_OK)
-      {
-        item.SetItem(_("Type"), dlg.GetValue());
-      }
-    }
-    
-  }
-}
-
-bool wxExListViewFileName::ItemFromText(const wxString& text)
-{
-  if (text.empty())
-  {
-    return false;
-  }
-
-  bool modified = false;
-  wxStringTokenizer tk(text, wxTextFile::GetEOL());
-
-  while (tk.HasMoreTokens())
-  {
-    modified = true;
-    
-    if (!InReportView())
-    {
-      wxExListItem(this, tk.GetNextToken()).Insert();
-    }
-    else
-    {
-      const wxString token(tk.GetNextToken());
-      wxStringTokenizer tkz(token, GetFieldSeparator());
-      
-      if (tkz.HasMoreTokens())
-      {
-        const wxString value = tkz.GetNextToken();
-        wxFileName fn(value);
-  
-        if (fn.FileExists())
-        {
-          wxExListItem item(this, fn);
-          item.Insert();
-  
-          // And try to set the rest of the columns 
-          // (that are not already set by inserting).
-          int col = 1;
-          while (tkz.HasMoreTokens() && col < GetColumnCount() - 1)
-          {
-            const wxString value = tkz.GetNextToken();
-  
-            if (col != FindColumn(_("Type")) &&
-                col != FindColumn(_("In Folder")) &&
-                col != FindColumn(_("Size")) &&
-                col != FindColumn(_("Modified")))
-            {
-              SetItem(item.GetId(), col, value);
-            }
-  
-            col++;
-          }
-        }
-        else
-        {
-          // Now we need only the first column (containing findfiles). If more
-          // columns are present, these are ignored.
-          const wxString findfiles =
-            (tkz.HasMoreTokens() ? tkz.GetNextToken(): tkz.GetString());
-  
-          wxExListItem(this, value, findfiles).Insert();
-        }
-      }
-      else
-      {
-        wxExListItem(this, token).Insert();
-      }
-    }
-  }
-
-  return modified;
-}
-
-const wxString wxExListViewFileName::ItemToText(long item_number) const
-{
-  if (item_number == -1)
-  {
-    wxString text;
-    
-    for (long i = 0; i < GetItemCount(); i++)
-    {
-      text += wxListView::GetItemText(i) + wxTextFile::GetEOL();
-    }
-    
-    return text;
-  }
-  else if (m_Type == LIST_FOLDER)
-  {
-    return wxListView::GetItemText(item_number);
-  }
-  else
-  {
-    wxExListItem item(
-      const_cast< wxExListViewFileName * >(this), item_number);
-
-    wxString text = (item.GetFileName().GetStat().IsOk() ? 
-      item.GetFileName().GetFullPath(): 
-      item.GetFileName().GetFullName());
-
-    if (item.GetFileName().DirExists() && !item.GetFileName().FileExists())
-    {
-      text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
-    }
-
-    if (m_Type != LIST_FILE && m_Type != LIST_HISTORY)
-    {
-      text += GetFieldSeparator() + wxExListView::ItemToText(item_number);
-    }
-    
-    return text;
-  }
-}
-
-void wxExListViewFileName::ItemsUpdate()
-{
-  for (long i = 0; i < GetItemCount(); i++)
-  {
-    wxExListItem(this, i).Update();
   }
 }
 #endif // wxUSE_GUI

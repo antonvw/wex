@@ -10,8 +10,8 @@
 
 void fixture::testFrameWithHistory()
 {
-  wxExListViewFileName* list = new wxExListViewFileName(
-    m_Frame, wxExListViewFileName::LIST_HISTORY);
+  wxExListView* list = new wxExListView(
+    m_Frame, wxExListView::LIST_HISTORY);
 
   AddPane(m_Frame, list);
 

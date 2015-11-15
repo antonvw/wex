@@ -86,14 +86,14 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   const wxExLexer lexer = wxExLexers::Get()->FindByName("cpp");
 
   for (
-    int i = wxExListViewFileName::LIST_FOLDER;
-    i <= wxExListViewFileName::LIST_FILE;
+    int i = wxExListView::LIST_FOLDER;
+    i <= wxExListView::LIST_FILE;
     i++)
   {
     wxExListViewWithFrame* vw = new wxExListViewWithFrame(
       this,
       this, 
-      (wxExListViewFileName::wxExListType)i, 
+      (wxExListView::wxExListType)i, 
       wxID_ANY,
       0xFF, 
       &lexer); // set all flags
@@ -121,7 +121,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   wxExDirWithListView dir(
     (wxExListView*)m_NotebookWithLists->GetPageByKey(
-      wxExListViewFileName::GetTypeDescription(wxExListViewFileName::LIST_FILE)),
+      wxExListView::GetTypeDescription(wxExListView::LIST_FILE)),
     wxGetCwd(),
     "*.cpp;*.h");
 
@@ -129,7 +129,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   wxExListItem item(
     (wxExListView*)m_NotebookWithLists->GetPageByKey(
-      wxExListViewFileName::GetTypeDescription(wxExListViewFileName::LIST_FILE)),
+      wxExListView::GetTypeDescription(wxExListView::LIST_FILE)),
     wxFileName("NOT EXISTING ITEM"));
 
   item.Insert();
@@ -184,8 +184,8 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 	  wxExPrinting::Get()->GetHtmlPrinter()->PageSetup();}, wxID_PRINT_SETUP);
 }
 
-wxExListViewFileName* wxExRepSampleFrame::Activate(
-  wxExListViewFileName::wxExListType type, 
+wxExListView* wxExRepSampleFrame::Activate(
+  wxExListView::wxExListType type, 
   const wxExLexer* lexer)
 {
   for (
@@ -193,11 +193,11 @@ wxExListViewFileName* wxExRepSampleFrame::Activate(
     i < m_NotebookWithLists->GetPageCount();
     i++)
   {
-    wxExListViewFileName* vw = (wxExListViewFileName*)m_NotebookWithLists->GetPage(i);
+    wxExListView* vw = (wxExListView*)m_NotebookWithLists->GetPage(i);
 
     if (vw->GetType() == type)
     {
-      if (type == wxExListViewFileName::LIST_KEYWORD)
+      if (type == wxExListView::LIST_KEYWORD)
       {
         if (lexer != NULL)
         {
