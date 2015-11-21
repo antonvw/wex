@@ -9,6 +9,12 @@
 
 #include <map>
 #include <wx/aui/auibook.h>
+#include <wx/config.h>
+#include <wx/wupdlock.h>
+#include <wx/extension/defs.h>
+#include <wx/extension/filedlg.h>
+#include <wx/extension/managedframe.h>
+#include <wx/extension/stc.h>
 
 #if wxUSE_GUI
 
@@ -40,10 +46,69 @@ public:
   bool DeletePage(const wxString& key);
 
   /// Do something for each page in the notebook.
-  /// The pages should all be castable to wxExSTC pages.
   /// The id should be inbetween ID_ALL_LOWEST and ID_ALL_HIGHEST.
   /// Cannot be const as it can call DeletePage.
-  bool ForEach(int id);
+  template <class T> 
+  bool ForEach(int id) {
+    wxWindowUpdateLocker locker(m_Frame != NULL ? (wxWindow*)m_Frame: (wxWindow*)this);
+    
+    // The page should be an int (no), otherwise page >= 0 never fails!
+    for (int page = GetPageCount() - 1; page >= 0; page--)
+    {
+      T* win = (T*)GetPage(page);
+      switch (id)
+      {
+      case ID_ALL_CLOSE:
+      case ID_ALL_CLOSE_OTHERS:
+        if ((id == ID_ALL_CLOSE_OTHERS && GetSelection() != page) ||
+             id == ID_ALL_CLOSE)
+        {
+          if (wxExFileDialog(
+            this, &win->GetFile()).ShowModalIfChanged() == wxID_CANCEL) 
+          {
+            return false;
+          }
+          const wxString key = m_Windows[GetPage(page)];
+          m_Windows.erase(GetPage(page));
+          m_Keys.erase(key);
+          wxAuiNotebook::DeletePage(page);
+        }
+        break;
+
+      case ID_ALL_CONFIG_GET: win->ConfigGet(); break;
+        
+      case ID_ALL_SAVE:
+        if (win->GetFile().GetContentsChanged())
+        {
+          win->GetFile().FileSave();
+        }
+        break;
+
+      // STC only!!!
+      case ID_ALL_STC_SET_LEXER: 
+        // At this moment same as themed change,
+        // as we want default colour updates as well.
+        ((wxExSTC*)GetPage(page))->SetLexer(((wxExSTC*)GetPage(page))->GetLexer().GetDisplayLexer());
+        break;
+
+      case ID_ALL_STC_SET_LEXER_THEME: 
+        ((wxExSTC*)GetPage(page))->SetLexer(((wxExSTC*)GetPage(page))->GetLexer().GetDisplayLexer());
+        break;
+
+      case ID_ALL_STC_SYNC: 
+        ((wxExSTC*)GetPage(page))->Sync(wxConfigBase::Get()->ReadBool("AllowSync", true)); 
+        break;
+        
+      default: 
+        wxFAIL; 
+        break;
+      }
+    }
+    if (m_Frame != NULL && m_Keys.empty())
+    {
+      m_Frame->SyncCloseAll(GetId());
+    }
+    return true;};
 
   /// Returns the key specified by the given page.
   /// If the page does not exist an empty string is returned.

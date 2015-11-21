@@ -69,7 +69,7 @@ void fixture::testNotebook()
   CPPUNIT_ASSERT(notebook->DeletePage("key3"));
   CPPUNIT_ASSERT(notebook->GetPageCount() == 0);
   
-  // Test ForEach. ForEach expects wxExSTC pages.  
+  // Test ForEach.
   wxExSTC* stc_x = new wxExSTC(m_Frame, "hello stc");
   wxExSTC* stc_y = new wxExSTC(m_Frame, "hello stc");
   wxExSTC* stc_z = new wxExSTC(m_Frame, "hello stc");
@@ -78,12 +78,12 @@ void fixture::testNotebook()
   CPPUNIT_ASSERT(notebook->AddPage(stc_y, "key2") != NULL);
   CPPUNIT_ASSERT(notebook->AddPage(stc_z, "key3") != NULL);
   
-  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_SET_LEXER));
-  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_SET_LEXER_THEME));
-  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CONFIG_GET));
-  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CLOSE_OTHERS));
+  CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER));
+  CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER_THEME));
+  CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_CONFIG_GET));
+  CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_CLOSE_OTHERS));
   CPPUNIT_ASSERT(notebook->GetPageCount() == 1);
-  CPPUNIT_ASSERT(notebook->ForEach(ID_ALL_STC_CLOSE));
+  CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_CLOSE));
   CPPUNIT_ASSERT(notebook->GetPageCount() == 0);
   
   // Test Rearrange.

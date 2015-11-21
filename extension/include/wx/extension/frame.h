@@ -40,7 +40,7 @@ public:
     long style = wxDEFAULT_FRAME_STYLE);
 
   /// Destructor.
- ~wxExFrame();
+  virtual ~wxExFrame();
 
   /// Returns a grid.
   virtual wxExGrid* GetGrid();

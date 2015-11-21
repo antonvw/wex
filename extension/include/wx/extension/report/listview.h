@@ -37,7 +37,7 @@ public:
     const wxExLexer* lexer = NULL,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
+    long style = wxLC_REPORT,
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);    
     

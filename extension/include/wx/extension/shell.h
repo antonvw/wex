@@ -58,7 +58,7 @@ public:
     long style = 0);
 
   /// Destructor, keeps the commands in the config, if required.
- ~wxExShell();
+  virtual ~wxExShell();
  
   /// Appends text, and updates the command start position.
   /// Only if the cursor was at the end, the cursos is 

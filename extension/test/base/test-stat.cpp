@@ -15,5 +15,8 @@ void TestFixture::testStat()
   CPPUNIT_ASSERT( stat.IsOk());
   CPPUNIT_ASSERT(!stat.IsReadOnly());
   CPPUNIT_ASSERT( stat.Sync(GetTestDir() + "test-base.link"));
+  CPPUNIT_ASSERT( stat.Sync());
   CPPUNIT_ASSERT(!stat.GetModificationTime().empty());
+  
+  CPPUNIT_ASSERT( wxExStat("/etc/hosts").IsReadOnly());
 }

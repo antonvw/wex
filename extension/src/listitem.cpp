@@ -100,8 +100,8 @@ void wxExListItem::SetItem(const wxString& col_name, const wxString& text)
 void wxExListItem::SetReadOnly(bool readonly)
 {
   SetTextColour(readonly ? 
-    wxConfigBase::Get()->ReadObject(_("List Colour"), wxColour("RED")):
-    *wxBLACK);
+    wxConfigBase::Get()->ReadObject(_("Readonly colour"), *wxRED):
+    wxConfigBase::Get()->ReadObject(_("Foreground colour"), *wxBLACK));
 
   m_ListView->SetItem(*this);
 
