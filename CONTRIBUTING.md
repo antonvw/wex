@@ -55,4 +55,4 @@
   `make test`  
   `make lcov`  
   And, if you want to upload results to coveralls.    
-  `make lcov-coverage`   
+  `make lcov-coveralls`   
