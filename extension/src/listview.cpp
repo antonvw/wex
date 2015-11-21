@@ -33,6 +33,31 @@
 
 #if wxUSE_GUI
 
+class ListViewDefaults
+{
+public:
+  ListViewDefaults()
+    : m_Config(wxConfigBase::Get()) {
+    if (!m_Config->Exists(_("Background colour")))
+    {
+      m_Config->SetRecordDefaults(true);
+      
+      m_Config->ReadObject(_("Background colour"), *wxWHITE);
+      m_Config->ReadObject(_("Foreground colour"), *wxBLACK);
+      m_Config->ReadObject(_("Readonly colour"), *wxLIGHT_GREY);
+    }};
+  
+  wxConfigBase* Get() {return m_Config;};
+  
+ ~ListViewDefaults() {
+    if (m_Config->IsRecordingDefaults())
+    {
+      m_Config->SetRecordDefaults(false);
+    }};
+private:
+  wxConfigBase* m_Config;
+};
+  
 #if wxUSE_DRAG_AND_DROP
 // FileDropTarget is already used by wxExFrame.
 class DropTarget : public wxFileDropTarget
@@ -200,9 +225,6 @@ wxExListView::wxExListView(wxWindow* parent,
       wxFAIL;
     }
   }
-
-  SetFont(wxConfigBase::Get()->ReadObject(
-    _("List font"), wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
 
 #if wxUSE_STATUSBAR
   wxExFrame::UpdateStatusBar(this);
@@ -584,6 +606,8 @@ int wxExListView::ConfigDialog(
   long button_flags,
   wxWindowID id)
 {
+  ListViewDefaults use;
+  
   const std::vector<wxExConfigItem> items {
     wxExConfigItem(_("List font"), ITEM_FONTPICKERCTRL),
     wxExConfigItem(_("Background colour"), ITEM_COLOUR),
@@ -616,17 +640,14 @@ int wxExListView::ConfigDialog(
           
 void wxExListView::ConfigGet(bool init)
 {
-  SetBackgroundColour(
-    wxConfigBase::Get()->ReadObject(_("Background colour"), wxColour("WHITE")));
-  SetFont(
-    wxConfigBase::Get()->ReadObject(_("List font"), 
-      wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
-  SetSingleStyle(wxLC_HRULES, 
-    wxConfigBase::Get()->ReadLong(_("Rulers"), 0) & wxLC_HRULES);
-  SetSingleStyle(wxLC_VRULES, 
-    wxConfigBase::Get()->ReadLong(_("Rulers"), 0) & wxLC_VRULES);
-  SetSingleStyle(wxLC_NO_HEADER, 
-    !wxConfigBase::Get()->ReadLong(_("Header"), 0) & wxLC_VRULES);
+  ListViewDefaults use;
+  wxConfigBase* cfg = use.Get();
+  
+  SetBackgroundColour(cfg->ReadObject(_("Background colour"), wxColour("WHITE")));
+  SetFont(cfg->ReadObject(_("List font"), wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
+  SetSingleStyle(wxLC_HRULES, cfg->ReadLong(_("Rulers"), 0) & wxLC_HRULES);
+  SetSingleStyle(wxLC_VRULES, cfg->ReadLong(_("Rulers"), 0) & wxLC_VRULES);
+  SetSingleStyle(wxLC_NO_HEADER, !cfg->ReadLong(_("Header"), 0) & wxLC_VRULES);
   
   ItemsUpdate();
 }
