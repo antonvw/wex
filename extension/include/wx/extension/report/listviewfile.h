@@ -26,12 +26,12 @@ public:
     long menu_flags = LIST_MENU_DEFAULT,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
+    long style = wxLC_REPORT,
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
 
   /// Destructor.
- ~wxExListViewFile();
+  virtual ~wxExListViewFile();
 
   /// Adds items. The items are added using a separate thread,
   /// deault this thread runs detached, otherwise this method
@@ -45,9 +45,12 @@ public:
   // Interface, for wxExListView overriden methods.
   /// Sets contents changed if we are not syncing.
   virtual void AfterSorting() override;
-
+  
   /// Returns member.
-  virtual bool GetContentsChanged() const {return m_ContentsChanged;};
+  virtual bool GetContentsChanged() const override {return m_ContentsChanged;};
+
+  /// Returns the file.
+  wxExFile& GetFile() {return *this;};
 
   // Access to members.
   const wxString GetTextAddFiles() const {return m_TextAddFiles;};

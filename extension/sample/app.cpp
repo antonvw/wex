@@ -36,15 +36,17 @@
 enum
 {
   ID_FIRST = 15000,
-  ID_CONFIG_DLG,
-  ID_CONFIG_DLG_COL,
-  ID_CONFIG_DLG_READONLY,
-  ID_ITEM_DLG,
+  ID_DLG_CONFIG_ITEM,
+  ID_DLG_CONFIG_ITEM_COL,
+  ID_DLG_CONFIG_ITEM_READONLY,
+  ID_DLG_ITEM,
+  ID_DLG_LISTVIEW,
+  ID_DLG_STC_CONFIG,
+  ID_DLG_STC_ENTRY,
+  ID_DLG_VCS,
   ID_RECENTFILE_MENU,
   ID_SHOW_VCS,
   ID_STATISTICS_SHOW,
-  ID_STC_CONFIG_DLG,
-  ID_STC_ENTRY_DLG,
   ID_STC_FLAGS,
   ID_STC_SPLIT,
   ID_LAST 
@@ -138,20 +140,22 @@ wxExSampleFrame::wxExSampleFrame()
   menuFind->Append(wxID_REPLACE);
   menuEdit->AppendSubMenu(menuFind, _("&Find And Replace"));
   
-  wxExMenu* menuConfig = new wxExMenu;
-  menuConfig->Append(ID_CONFIG_DLG, wxExEllipsed("Config Dialog"));
-  menuConfig->Append(ID_CONFIG_DLG_COL, wxExEllipsed("Config Dialog Columns"));
-  menuConfig->Append(
-    ID_CONFIG_DLG_READONLY, 
-    wxExEllipsed("Config Dialog Readonly"));
-  menuConfig->AppendSeparator();
-  menuConfig->Append(ID_ITEM_DLG, wxExEllipsed("Item Dialog"));
+  wxExMenu* menuDialog = new wxExMenu;
+  menuDialog->Append(ID_DLG_ITEM, wxExEllipsed("Item Dialog"));
+  menuDialog->AppendSeparator();
+  menuDialog->Append(ID_DLG_CONFIG_ITEM, wxExEllipsed("Config Dialog"));
+  menuDialog->Append(ID_DLG_CONFIG_ITEM_COL, wxExEllipsed("Config Dialog Columns"));
+  menuDialog->Append(ID_DLG_CONFIG_ITEM_READONLY, wxExEllipsed("Config Dialog Readonly"));
+  menuDialog->AppendSeparator();
+  menuDialog->Append(ID_DLG_LISTVIEW, wxExEllipsed("List Dialog"));
+  menuDialog->AppendSeparator();
+  menuDialog->Append(ID_DLG_STC_CONFIG, wxExEllipsed("STC Dialog"));
+  menuDialog->Append(ID_DLG_STC_ENTRY, wxExEllipsed("STC Entry Dialog"));
+  menuDialog->AppendSeparator();
+  menuDialog->Append(ID_DLG_VCS, wxExEllipsed("VCS Dialog"));
 
   wxExMenu* menuSTC = new wxExMenu;
   menuSTC->Append(ID_STC_FLAGS, wxExEllipsed("Open Flag"));
-  menuSTC->AppendSeparator();
-  menuSTC->Append(ID_STC_CONFIG_DLG, wxExEllipsed("Config Dialog"));
-  menuSTC->Append(ID_STC_ENTRY_DLG, wxExEllipsed("Entry Dialog"));
   menuSTC->AppendSeparator();
   menuSTC->Append(ID_STC_SPLIT, "Split");
 
@@ -167,15 +171,15 @@ wxExSampleFrame::wxExSampleFrame()
   menubar->Append(menuFile, "&File");
   menubar->Append(menuEdit, "&Edit");
   menubar->Append(menuView, "&View");
+  menubar->Append(menuDialog, "&Dialog");
   menubar->Append(menuSTC, "&STC");
-  menubar->Append(menuConfig, "&Config");
   menubar->Append(menuHelp, "&Help");
   SetMenuBar(menubar);
 
 #if wxUSE_GRID
   m_Grid = new wxExGrid(m_Notebook);
 #endif
-  m_ListView = new wxExListView(m_Notebook);
+  m_ListView = new wxExListView(m_Notebook, wxExListView::LIST_NONE);
 
   GetManager().AddPane(m_Notebook, 
     wxAuiPaneInfo().CenterPane().MinSize(wxSize(250, 250)));
@@ -257,8 +261,17 @@ wxExSampleFrame::wxExSampleFrame()
   Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_CUT, wxID_CLEAR);
   Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_EXECUTE);
   Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_JUMP_TO);
-  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_OPEN, wxID_HELP);
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_OPEN, wxID_SAVEAS);
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_UNDO, wxID_REDO);
   
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxAboutDialogInfo info;
+    info.SetIcon(GetIcon());
+    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
+    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
+    wxAboutBox(info);}, wxID_ABOUT);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    Close(true);}, wxID_EXIT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_ListView->Print();}, wxID_PRINT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -286,17 +299,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 
   switch (event.GetId())
   {
-    case wxID_ABOUT:
-      {
-      wxAboutDialogInfo info;
-      info.SetIcon(GetIcon());
-      info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
-      info.SetCopyright(wxExGetVersionInfo().GetCopyright());
-      wxAboutBox(info);
-      }
-      break;
-    case wxID_EXIT: Close(true); break;
-    case wxID_HELP: break; //ignore
     case wxID_NEW:
       m_STC->GetFile().FileNew(wxExFileName());
       break;
@@ -353,9 +355,9 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       }
     break;
 
-    case ID_CONFIG_DLG: ShowConfigItems(); break;
+    case ID_DLG_CONFIG_ITEM: ShowConfigItems(); break;
     
-    case ID_CONFIG_DLG_COL:
+    case ID_DLG_CONFIG_ITEM_COL:
       {
       const long val = wxGetNumberFromUser("Input columns:",
         wxEmptyString,
@@ -371,50 +373,27 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       }
       break;
     
-    case ID_CONFIG_DLG_READONLY:
+    case ID_DLG_CONFIG_ITEM_READONLY:
       wxExConfigDialog(this, TestConfigItems(), "Config Dialog Readonly",
         0, 4, wxCANCEL).ShowModal();
       break;
       
-    case ID_SHELL_COMMAND:
-        m_Shell->Prompt("\nHello '" + event.GetString() + "' from the shell");
-      break;
-      
-    case ID_ITEM_DLG: 
+    case ID_DLG_ITEM: 
       wxExItemDialog(this, TestItems()).ShowModal();
       wxExItemDialog(this, TestItems(true)).ShowModal();
       break;
     
-    case ID_SHOW_VCS:
-      {
-      wxFileDialog openFileDialog(this, _("Open File"), "", "",
-        "All files (*.*)|*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
-  
-      if (openFileDialog.ShowModal() == wxID_CANCEL)
-        return;     // the user changed idea...
-          
-      std::vector< wxString > v;
-      v.push_back(openFileDialog.GetPath());
-      wxExVCS vcs(v);
-      wxLogMessage(vcs.GetName());
-      }
+    case ID_DLG_LISTVIEW: m_ListView->ConfigDialog(this);
       break;
   
-    case ID_STATISTICS_SHOW:
-      if (m_Notebook->SetSelection("Statistics") == NULL)
-      {
-        m_Notebook->AddPage(m_Statistics.Show(m_Notebook), "Statistics");
-      }
-      break;
-  
-    case ID_STC_CONFIG_DLG:
+    case ID_DLG_STC_CONFIG:
       wxExSTC::ConfigDialog(
         this,
         "Editor Options",
         wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY);
       break;
       
-    case ID_STC_ENTRY_DLG:
+    case ID_DLG_STC_ENTRY:
       {
       wxString text;
       
@@ -433,6 +412,33 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       }
       break;
       
+    case ID_DLG_VCS: 
+      wxExVCS().ConfigDialog(this);
+      break;
+    
+    case ID_SHELL_COMMAND:
+        m_Shell->Prompt("\nHello '" + event.GetString() + "' from the shell");
+      break;
+      
+    case ID_SHOW_VCS:
+      {
+      wxFileDialog dlg(this, _("Open File"), "", "",
+        "All files (*.*)|*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+  
+      if (dlg.ShowModal() == wxID_CANCEL) return;
+          
+      const wxExVCS vcs(std::vector< wxString > {dlg.GetPath()});
+      wxLogMessage(vcs.GetName());
+      }
+      break;
+    
+    case ID_STATISTICS_SHOW:
+      if (m_Notebook->SetSelection("Statistics") == NULL)
+      {
+        m_Notebook->AddPage(m_Statistics.Show(m_Notebook), "Statistics");
+      }
+      break;
+  
     case ID_STC_FLAGS:
       {
       long value = wxGetNumberFromUser(

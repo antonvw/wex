@@ -33,7 +33,11 @@ public:
 
   /// Returns true if this stat is readonly.
   bool IsReadOnly() const {
+#ifdef _MSC_VER
     return (m_IsOk && ((st_mode & wxS_IWUSR) == 0));};
+#else
+    return (m_IsOk && access(m_FullPath.c_str(), W_OK) == -1);};
+#endif
 
   /// Sets (syncs) this stat, returns result and keeps it in IsOk.
   bool Sync() {
@@ -43,11 +47,11 @@ public:
     }
     else
     {
-  #ifdef _MSC_VER
+#ifdef _MSC_VER
       m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
-  #else
+#else
       m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
-  #endif
+#endif
     }
     return m_IsOk;};
 

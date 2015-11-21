@@ -40,7 +40,7 @@ bool wxExAddress::AdjustWindow(const wxString& text) const
   }
   
   const wxString type(v[0]);
-  int count = (v[1].empty() ? 2: std::stoi(v[1].ToStdString()));
+  const int count = (v[1].empty() ? 2: std::stoi(v[1].ToStdString()));
   const wxString flags(v[2]);
   
   if (!Flags(flags))

@@ -22,7 +22,7 @@ public:
   wxExProcess();
   
   /// Destructor.
- ~wxExProcess();
+  virtual ~wxExProcess();
 
   /// Copy constructor.
   wxExProcess(const wxExProcess& process);

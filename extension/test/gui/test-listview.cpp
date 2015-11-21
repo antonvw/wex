@@ -19,8 +19,11 @@ void fixture::testListView()
   wxExListView* listView = new wxExListView(m_Frame, wxExListView::LIST_NONE);
   AddPane(m_Frame, listView);
   
+  wxExListView::ConfigDialog(m_Frame, "test listview", wxAPPLY | wxCANCEL);
+  
   CPPUNIT_ASSERT(listView->GetImageType() == wxExListView::IMAGE_ART);
   
+  listView->ConfigGet();
   listView->SetSingleStyle(wxLC_REPORT);
   
   CPPUNIT_ASSERT(listView->AppendColumn(wxExColumn("Int", wxExColumn::COL_INT)) == 0);

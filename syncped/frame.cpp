@@ -54,46 +54,6 @@ void About(wxFrame* frame)
   wxAboutBox(info);
 }
     
-bool ForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont())
-{
-  if (notebook == NULL)
-  {
-    return true;
-  }
-  
-  for (
-    int page = notebook->GetPageCount() - 1;
-    page >= 0;
-    page--)
-  {
-    wxExListViewFile* lv;
-    if ((lv = (wxExListViewFile*)notebook->GetPage(page)) != NULL)
-    {
-      switch (id)
-      {
-      case ID_LIST_ALL_ITEMS:
-        if (font.IsOk())
-        {
-          lv->SetFont(font);
-        }
-
-        lv->ItemsUpdate();
-        break;
-
-      case ID_LIST_ALL_CLOSE:
-        if (wxExFileDialog(
-          notebook, lv).ShowModalIfChanged() == wxID_CANCEL) return false;
-        if (!notebook->DeletePage(page)) return false;
-        break;
-
-      default: wxFAIL;
-      }
-    }
-  }
-
-  return true;
-};
-
 BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_CHECKBOX(ID_CHECKBOX_DIRCTRL, Frame::OnCommand)
   EVT_CHECKBOX(ID_CHECKBOX_HISTORY, Frame::OnCommand)
@@ -108,8 +68,8 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_MENU_RANGE(ID_ALL_LOWEST, ID_ALL_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, Frame::OnCommand)
-  EVT_UPDATE_UI(ID_ALL_STC_CLOSE, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_ALL_STC_SAVE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_ALL_CLOSE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_ALL_SAVE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_CLOSE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_FIND, Frame::OnUpdateUI)
@@ -135,8 +95,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(ID_SORT_SYNC, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_FIND_NEXT, ID_EDIT_FIND_PREVIOUS, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_TOGGLE_FOLD, ID_EDIT_UNFOLD_ALL, Frame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(
-    ID_OPTION_LIST_SORT_ASCENDING, ID_OPTION_LIST_SORT_TOGGLE, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_PROJECT_OPENTEXT, ID_PROJECT_SAVEAS, Frame::OnUpdateUI)
 END_EVENT_TABLE()
 
@@ -315,8 +273,8 @@ Frame::Frame(App* app)
     {
       if (
          (m_Process != NULL && m_Process->IsRunning()) || 
-        !m_Editors->ForEach(ID_ALL_STC_CLOSE) || 
-        !ForEach(m_Projects, ID_LIST_ALL_CLOSE))
+        !m_Editors->ForEach<wxExSTC>(ID_ALL_CLOSE) || 
+        (m_Projects != NULL && !m_Projects->ForEach<wxExListViewFile>(ID_ALL_CLOSE)))
       {
         event.Veto();
         
@@ -745,7 +703,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       if (editor->GetFileName() == wxExLexers::Get()->GetFileName())
       {
         wxExLexers::Get()->LoadDocument();
-        m_Editors->ForEach(ID_ALL_STC_SET_LEXER);
+        m_Editors->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER);
 
         // As the lexer might have changed, update status bar field as well.
 #if wxUSE_STATUSBAR
@@ -817,10 +775,10 @@ void Frame::OnCommand(wxCommandEvent& event)
     ShowPane("PROCESS", false);
     break;
 
-  case ID_ALL_STC_CLOSE:
-  case ID_ALL_STC_CLOSE_OTHERS:
-  case ID_ALL_STC_SAVE:
-    m_Editors->ForEach(event.GetId());
+  case ID_ALL_CLOSE:
+  case ID_ALL_CLOSE_OTHERS:
+  case ID_ALL_SAVE:
+    m_Editors->ForEach<wxExSTC>(event.GetId());
     break;
 
   case ID_EDIT_MACRO: OpenFile(wxExViMacros::GetFileName()); break;
@@ -828,60 +786,9 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->GetVi().MacroStartRecording(); break;
   case ID_EDIT_MACRO_STOP_RECORD: if (editor != NULL) editor->GetVi().GetMacros().StopRecording(); break;
   
-  case ID_OPTION_COMPARATOR: 
-      wxExConfigDialog(
-        this,
-        std::vector<wxExConfigItem>
-          {wxExConfigItem(_("Comparator"),ITEM_FILEPICKERCTRL)},
-        _("Set Comparator")).ShowModal();
+  case ID_OPTION_LIST: wxExListView::ConfigDialog(this, 
+    _("List Options"), wxOK | wxCANCEL | wxAPPLY, ID_OPTION_LIST); 
     break;
-
-  case ID_OPTION_LIST_FONT:
-      if (wxExConfigDialog(
-        this,
-        std::vector<wxExConfigItem>
-          {wxExConfigItem(_("List Font"),ITEM_FONTPICKERCTRL)},
-        _("Set List Font")).ShowModal() == wxID_OK)
-      {
-        const wxFont font(
-          wxConfigBase::Get()->ReadObject(_("List Font"), 
-            wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
-
-        if (m_Projects != NULL)
-        {
-          ForEach(m_Projects, ID_LIST_ALL_ITEMS, font);
-        }
-        
-        ForEach(m_Lists, ID_LIST_ALL_ITEMS, font);
-        
-        if (m_History != NULL)
-        {
-          m_History->SetFont(font);
-          m_History->ItemsUpdate();
-        }
-      }
-    break;
-
-  case ID_OPTION_LIST_READONLY_COLOUR:
-      if (!wxConfigBase::Get()->Exists(_("List Colour")))
-      {
-        wxConfigBase::Get()->Write(_("List Colour"), wxColour("RED"));
-      }
-
-      // text also used in menu
-      wxExConfigDialog(
-        this,
-        std::vector<wxExConfigItem>
-          {wxExConfigItem(_("List Colour"),ITEM_COLOUR)},
-        _("Set List Read Only Colour")).ShowModal();
-    break;
-
-  case ID_OPTION_LIST_SORT_ASCENDING:
-    wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_ASCENDING); break;
-  case ID_OPTION_LIST_SORT_DESCENDING:
-    wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_DESCENDING); break;
-  case ID_OPTION_LIST_SORT_TOGGLE:
-    wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_TOGGLE); break;
 
   case ID_OPTION_VCS: 
     if (wxExVCS().ConfigDialog(this) == wxID_OK)
@@ -1096,25 +1003,35 @@ void Frame::OnCommandItemDialog(
   wxWindowID dialogid,
   const wxCommandEvent& event)
 {
-  if (dialogid == wxID_PREFERENCES)
+  switch (dialogid)
   {
-    if (event.GetId() != wxID_CANCEL)
-    {
-      m_Editors->ForEach(ID_ALL_STC_CONFIG_GET);
-      
-      if (m_Process->GetShell() != NULL)
+    case wxID_PREFERENCES:
+      if (event.GetId() != wxID_CANCEL)
       {
-        m_Process->GetShell()->ConfigGet();
+        m_Editors->ForEach<wxExSTC>(ID_ALL_CONFIG_GET);
+        
+        if (m_Process->GetShell() != NULL)
+        {
+          m_Process->GetShell()->ConfigGet();
+        }
+        
+        m_StatusBar->ShowField(
+          "PaneMacro", 
+          wxConfigBase::Get()->ReadBool(_("vi mode"), true));
       }
-      
-      m_StatusBar->ShowField(
-        "PaneMacro", 
-        wxConfigBase::Get()->ReadBool(_("vi mode"), true));
-    }
-  }
-  else
-  {
-    DecoratedFrame::OnCommandItemDialog(dialogid, event);
+      break;
+
+    case ID_OPTION_LIST:
+      if (event.GetId() != wxID_CANCEL)
+      {
+        m_Lists->ForEach<wxExListViewFile>(ID_ALL_CONFIG_GET);
+        if (m_Projects != NULL) m_Projects->ForEach<wxExListViewFile>(ID_ALL_CONFIG_GET);
+        if (m_History != NULL) m_History->ConfigGet();
+      }
+      break;
+    
+    default:
+      DecoratedFrame::OnCommandItemDialog(dialogid, event);
   }
 }
 
@@ -1139,19 +1056,11 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Enable(m_Editors->IsShown() && m_Editors->GetPageCount() > 0);
     break;
     
-    case ID_ALL_STC_CLOSE:
-    case ID_ALL_STC_SAVE:
+    case ID_ALL_CLOSE:
+    case ID_ALL_SAVE:
       event.Enable(m_Editors->GetPageCount() > 2);
     break;
 
-    case ID_OPTION_LIST_SORT_ASCENDING:
-    case ID_OPTION_LIST_SORT_DESCENDING:
-    case ID_OPTION_LIST_SORT_TOGGLE:
-      event.Check(
-        event.GetId() - ID_OPTION_LIST_SORT_ASCENDING == 
-        wxConfigBase::Get()->ReadLong("List/SortMethod", SORT_TOGGLE) - SORT_ASCENDING);
-    break;
-    
     case ID_OPTION_VCS:
       event.Enable(wxExVCS::GetCount() > 0);
       break;
@@ -1498,7 +1407,7 @@ void Frame::StatusBarClicked(const wxString& pane)
   {
     if (wxExLexers::Get()->ShowThemeDialog(m_Editors))
     {
-      m_Editors->ForEach(ID_ALL_STC_SET_LEXER_THEME);
+      m_Editors->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER_THEME);
 
       m_StatusBar->ShowField(
         "PaneLexer", 
@@ -1584,7 +1493,7 @@ void Frame::StatusBarClickedRight(const wxString& pane)
 
 void Frame::SyncAll()
 {
-  m_Editors->ForEach(ID_ALL_STC_SYNC);
+  m_Editors->ForEach<wxExSTC>(ID_ALL_STC_SYNC);
 }
 
 void Frame::SyncCloseAll(wxWindowID id)
@@ -1652,11 +1561,11 @@ Notebook::Notebook(wxWindow* parent,
     menu.AppendSubMenu(split, _("Split"), wxEmptyString, ID_SPLIT_MENU);
     menu.AppendSeparator();
     menu.Append(wxID_CLOSE);
-    menu.Append(ID_ALL_STC_CLOSE, _("Close A&ll"));
+    menu.Append(ID_ALL_CLOSE, _("Close A&ll"));
     
     if (GetPageCount() > 2)
     {
-      menu.Append(ID_ALL_STC_CLOSE_OTHERS, _("Close Others"));
+      menu.Append(ID_ALL_CLOSE_OTHERS, _("Close Others"));
     }
 
     wxExSTC* stc = wxDynamicCast(GetCurrentPage(), wxExSTC);

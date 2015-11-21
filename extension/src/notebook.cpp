@@ -9,12 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/wupdlock.h>
 #include <wx/extension/notebook.h>
-#include <wx/extension/defs.h>
-#include <wx/extension/filedlg.h>
-#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
@@ -124,91 +119,6 @@ bool wxExNotebook::DeletePage(const wxString& key)
   {
     return false;
   }
-}
-
-bool wxExNotebook::ForEach(int id)
-{
-  wxWindowUpdateLocker locker(m_Frame != NULL ? (wxWindow*)m_Frame: (wxWindow*)this);
-  
-  // The page should be an int (no), otherwise page >= 0 never fails!
-  for (int page = GetPageCount() - 1; page >= 0; page--)
-  {
-    // When trying to cast to wxExFile, there is an error:
-    // src\notebook.cpp(96): error C2440: 'static_cast' : cannot convert from 'wxWindow *' to 'const wxExFile *'
-    // src\notebook.cpp(96): error C2039: 'ms_classInfo' : is not a member of 'wxExFile'
-    // include\wx\extension\file.h(95) : see declaration of 'wxExFile'
-
-    // Try to get an wxExSTC out of the page.
-    wxExSTC* stc = wxDynamicCast(GetPage(page), wxExSTC);
-
-    if (stc == NULL)
-    {
-      wxFAIL;
-      // Do not return false, otherwise close all would not finish.
-      continue;
-    }
-
-    switch (id)
-    {
-    case ID_ALL_STC_CLOSE:
-    case ID_ALL_STC_CLOSE_OTHERS:
-      {
-        const int sel = GetSelection();
-
-        if ((id == ID_ALL_STC_CLOSE_OTHERS && sel != page) ||
-             id == ID_ALL_STC_CLOSE)
-        {
-          if (wxExFileDialog(
-            this, &stc->GetFile()).ShowModalIfChanged() == wxID_CANCEL) 
-          {
-            return false;
-          }
-        
-          const wxString key = m_Windows[GetPage(page)];
-          m_Windows.erase(GetPage(page));
-          m_Keys.erase(key);
-          wxAuiNotebook::DeletePage(page);
-        }
-      }
-      break;
-
-    case ID_ALL_STC_CONFIG_GET: 
-      stc->ConfigGet(); 
-      break;
-      
-    case ID_ALL_STC_SAVE:
-      if (stc->GetFile().GetContentsChanged())
-      {
-        stc->GetFile().FileSave();
-      }
-      break;
-
-    case ID_ALL_STC_SET_LEXER: 
-      // At this moment same as themed change,
-      // as we want default colour updates as well.
-      stc->SetLexer(stc->GetLexer().GetDisplayLexer());
-      break;
-
-    case ID_ALL_STC_SET_LEXER_THEME: 
-      stc->SetLexer(stc->GetLexer().GetDisplayLexer());
-      break;
-
-    case ID_ALL_STC_SYNC: 
-      stc->Sync(wxConfigBase::Get()->ReadBool("AllowSync", true)); 
-      break;
-      
-    default: 
-      wxFAIL; 
-      break;
-    }
-  }
-
-  if (m_Frame != NULL && m_Keys.empty())
-  {
-    m_Frame->SyncCloseAll(GetId());
-  }
-
-  return true;
 }
 
 wxWindow* wxExNotebook::InsertPage(

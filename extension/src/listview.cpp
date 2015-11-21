@@ -19,6 +19,8 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/listview.h>
+#include <wx/extension/configitem.h>
+#include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
@@ -146,6 +148,8 @@ void wxExColumn::SetIsSortedAscending(wxExSortType type)
 // wxWindow::NewControlId() is negative...
 const wxWindowID ID_COL_FIRST = 1000;
 
+wxExConfigDialog* wxExListView::m_ConfigDialog = NULL;
+
 wxExListView::wxExListView(wxWindow* parent,
   wxExListType type,
   wxWindowID id,
@@ -198,7 +202,7 @@ wxExListView::wxExListView(wxWindow* parent,
   }
 
   SetFont(wxConfigBase::Get()->ReadObject(
-    _("List Font"), wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
+    _("List font"), wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
 
 #if wxUSE_STATUSBAR
   wxExFrame::UpdateStatusBar(this);
@@ -312,7 +316,7 @@ wxExListView::wxExListView(wxWindow* parent,
   Bind(wxEVT_LIST_COL_CLICK, [=](wxListEvent& event) {
     SortColumn(
       event.GetColumn(),
-      (wxExSortType)wxConfigBase::Get()->ReadLong("List/SortMethod", 
+      (wxExSortType)wxConfigBase::Get()->ReadLong(_("Sort method"), 
          SORT_TOGGLE));});
 
   Bind(wxEVT_LIST_COL_RIGHT_CLICK, [=](wxListEvent& event) {
@@ -331,7 +335,7 @@ wxExListView::wxExListView(wxWindow* parent,
     EditDelete();}, wxID_DELETE);
     
   Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
-    EditSelectAll();}, wxID_SELECTALL);
+    SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);}, wxID_SELECTALL);
     
   Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
     SortColumn(m_ToBeSortedColumnNo, SORT_ASCENDING);}, wxID_SORT_ASCENDING);
@@ -340,7 +344,10 @@ wxExListView::wxExListView(wxWindow* parent,
     SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING);}, wxID_SORT_DESCENDING);
     
   Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
-    EditInvertAll();}, ID_EDIT_SELECT_INVERT);
+    for (int i = 0; i < GetItemCount(); i++)
+    {
+      Select(i, !IsSelected(i));
+    }}, ID_EDIT_SELECT_INVERT);
     
   Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
     for (int i = 0; i < GetItemCount(); i++)
@@ -571,6 +578,59 @@ const wxExColumn wxExListView::Column(const wxString& name) const
   return wxExColumn();
 }
 
+int wxExListView::ConfigDialog(
+  wxWindow* parent,
+  const wxString& title,
+  long button_flags,
+  wxWindowID id)
+{
+  const std::vector<wxExConfigItem> items {
+    wxExConfigItem(_("List font"), ITEM_FONTPICKERCTRL),
+    wxExConfigItem(_("Background colour"), ITEM_COLOUR),
+    wxExConfigItem(_("Foreground colour"), ITEM_COLOUR),
+    wxExConfigItem(_("Readonly colour"), ITEM_COLOUR),
+    wxExConfigItem(_("Header"), ITEM_CHECKBOX),
+    wxExConfigItem(_("Comparator"), ITEM_FILEPICKERCTRL),
+    wxExConfigItem(_("Sort method"), std::map<long, const wxString> {
+      {SORT_ASCENDING, _("Sort ascending")},
+      {SORT_DESCENDING, _("Sort descending")},
+      {SORT_TOGGLE, _("Sort toggle")}}),
+    wxExConfigItem(_("Rulers"),  std::map<long, const wxString> {
+      {wxLC_HRULES, _("Horizontal rulers")},
+      {wxLC_VRULES, _("Vertical rulers")}}, false)};
+  
+  if (button_flags & wxAPPLY)
+  {
+    if (m_ConfigDialog == NULL)
+    {
+      m_ConfigDialog = new wxExConfigDialog(parent, items, title, 0, 1, button_flags, id);
+    }
+    
+    return m_ConfigDialog->Show();
+  }
+  else
+  {
+    return wxExConfigDialog(parent, items, title, 0, 1, button_flags, id).ShowModal();
+  }
+}
+          
+void wxExListView::ConfigGet(bool init)
+{
+  SetBackgroundColour(
+    wxConfigBase::Get()->ReadObject(_("Background colour"), wxColour("WHITE")));
+  SetFont(
+    wxConfigBase::Get()->ReadObject(_("List font"), 
+      wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
+  SetSingleStyle(wxLC_HRULES, 
+    wxConfigBase::Get()->ReadLong(_("Rulers"), 0) & wxLC_HRULES);
+  SetSingleStyle(wxLC_VRULES, 
+    wxConfigBase::Get()->ReadLong(_("Rulers"), 0) & wxLC_VRULES);
+  SetSingleStyle(wxLC_NO_HEADER, 
+    !wxConfigBase::Get()->ReadLong(_("Header"), 0) & wxLC_VRULES);
+  
+  ItemsUpdate();
+}
+  
 void wxExListView::CopySelectedItemsToClipboard()
 {
   if (GetSelectedItemCount() == 0) return;
@@ -835,6 +895,8 @@ bool wxExListView::GotoDialog(const wxString& caption)
 
 void wxExListView::Initialize(const wxExLexer* lexer)
 {
+  ConfigGet(true);
+  
   SetName(GetTypeDescription());
   
   switch (m_Type)
@@ -985,7 +1047,6 @@ bool wxExListView::ItemFromText(const wxString& text)
     else
     {
       const wxString line = tkz.GetNextToken();
-wxLogMessage(line);
       
       wxStringTokenizer tkz(line, m_FieldSeparator);
       

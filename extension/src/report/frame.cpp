@@ -40,6 +40,10 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   , m_TextRecursive(_("Recursive"))
   , m_FileHistoryList(NULL)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST, "RecentProject")
+  , m_Info({
+      wxExFindReplaceData::Get()->GetTextMatchWholeWord(),
+      wxExFindReplaceData::Get()->GetTextMatchCase(),
+      wxExFindReplaceData::Get()->GetTextRegEx()})
 {
   // Take care of default value.
   if (!wxConfigBase::Get()->Exists(m_TextRecursive))
@@ -47,12 +51,6 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     wxConfigBase::Get()->Write(m_TextRecursive, true); 
   }
 
-  // This set determines what fields are placed on the Find Files dialogs
-  // as a list of checkboxes.
-  m_Info.insert(wxExFindReplaceData::Get()->GetTextMatchWholeWord());
-  m_Info.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
-  m_Info.insert(wxExFindReplaceData::Get()->GetTextRegEx());
-  
   Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {

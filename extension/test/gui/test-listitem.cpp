@@ -39,7 +39,7 @@ void fixture::testListItem()
 
   const long add = sw.Time();
 
-  CPPUNIT_ASSERT_MESSAGE(std::to_string(add), add < 4000);
+  CPPUNIT_ASSERT_MESSAGE(std::to_string(add), add < 5000);
   
   Report(wxString::Format(
     "wxExListItem::Insert %d items in %ld ms", 3 * max, add).ToStdString());

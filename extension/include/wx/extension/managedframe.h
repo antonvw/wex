@@ -54,7 +54,7 @@ public:
     long style = wxDEFAULT_FRAME_STYLE);
 
   /// Destructor, uninits the aui manager.
- ~wxExManagedFrame();
+  virtual ~wxExManagedFrame();
 
   /// Returns true if the page can be closed.
   /// Default resets the find focus.

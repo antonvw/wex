@@ -14,6 +14,7 @@
 class wxFindDialogEvent;
 typedef wxString wxArtID;
 
+class wxExConfigDialog;
 class wxExLexer;
 class wxExMenu;
 
@@ -105,7 +106,7 @@ public:
     const wxExLexer* lexer = NULL,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = wxLC_LIST | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
+    long style = wxLC_REPORT,
     wxExImageType image_type = IMAGE_ART,
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
@@ -113,6 +114,18 @@ public:
   /// Adds a new column.
   /// Returns the index of the inserted column or -1 if adding it failed.
   long AppendColumn(const wxExColumn& col);
+
+  /// Shows a dialog with options, returns dialog return code.
+  /// If used modeless, it uses the dialog id as specified,
+  /// so you can use that id in wxExFrame::OnCommandItemDialog.
+  static int ConfigDialog(
+    wxWindow* parent,
+    const wxString& title = _("List Options"),
+    long button_flags = wxOK | wxCANCEL,
+    wxWindowID id = wxID_ANY);
+
+  /// Sets the configurable parameters to values currently in config.
+  void ConfigGet(bool init = false);
 
   /// If column is not found, -1 is returned,
   int FindColumn(const wxString& name) const;
@@ -204,35 +217,25 @@ protected:
   /// Returns the field separator.
   const auto& GetFieldSeparator() const {return m_FieldSeparator;};
 private:
+  void AddColumns(const wxExLexer* lexer);
   const wxString BuildPage();
-  
-  /// Returns col.
   const wxExColumn Column(const wxString& name) const;
-  
   void CopySelectedItemsToClipboard();
   void EditDelete();
-  void EditInvertAll() {
-    for (int i = 0; i < GetItemCount(); i++)
-    {
-      Select(i, !IsSelected(i));
-    }}
-  void EditSelectAll() {
-    SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);};
     
   /// Returns the index of the bitmap in the image list used by this list view.
   /// If the artid is not yet on the image lists, it is added to the image list.
   /// Use only if you setup for IMAGE_ART.
   unsigned int GetArtID(const wxArtID& artid);
 
+  void Initialize(const wxExLexer* lexer);
+  void ItemActivated(long item_number);
+  
   /// Sets the item file icon image.
   bool SetItemImage(long item_number, int iconid) {
     return (m_ImageType == IMAGE_FILE_ICON ?
       wxListView::SetItemImage(item_number, iconid): false);};
 
-  void AddColumns(const wxExLexer* lexer);
-  void Initialize(const wxExLexer* lexer);
-  void ItemActivated(long item_number);
-  
   const wxUniChar m_FieldSeparator;
   const wxExImageType m_ImageType;
   const int m_ImageHeight;
@@ -247,5 +250,7 @@ private:
   
   std::map<wxArtID, unsigned int> m_ArtIDs;
   std::vector<wxExColumn> m_Columns;
+  
+  static wxExConfigDialog* m_ConfigDialog;
 };
 #endif // wx_USE_GUI

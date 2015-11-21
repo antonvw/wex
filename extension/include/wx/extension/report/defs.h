@@ -17,7 +17,6 @@ enum
   ID_LIST_COMPARE,
   ID_LIST_RUN_MAKE,
   ID_LIST_HIGHEST,
-  ID_LIST_ALL_ITEMS, // not a real command, used by exForEach
   ID_TREE_COPY,
   ID_TREE_FIND,
   ID_TREE_REPLACE,

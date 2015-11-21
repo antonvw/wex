@@ -125,6 +125,7 @@ private:
   const wxString m_TextInFiles;
   const wxString m_TextInFolder;
   const wxString m_TextRecursive;
-  
-  std::set < wxString > m_Info;
+  // This set determines what fields are placed on the Find Files dialogs
+  // as a list of checkboxes.
+  const std::set < wxString > m_Info;
 };

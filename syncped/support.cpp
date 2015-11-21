@@ -95,7 +95,7 @@ DecoratedFrame::DecoratedFrame()
   menuFile->AppendSeparator();
   menuFile->Append(wxID_SAVE);
   menuFile->Append(wxID_SAVEAS);
-  menuFile->Append(ID_ALL_STC_SAVE,
+  menuFile->Append(ID_ALL_SAVE,
     _("Save A&ll"), wxEmptyString, wxART_FILE_SAVE);
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
@@ -192,21 +192,9 @@ DecoratedFrame::DecoratedFrame()
     menuOptions->AppendSeparator();
   }
   
-  menuOptions->Append(
-    ID_OPTION_COMPARATOR, wxExEllipsed(_("Set &Comparator")));
-  menuOptions->AppendSeparator();
-  
-  menuOptions->Append(ID_OPTION_LIST_FONT, wxExEllipsed(_("Set &List Font")));
-  // text also used as caption
-  menuOptions->Append(
-    ID_OPTION_LIST_READONLY_COLOUR, wxExEllipsed(_("Set List &Read Only Colour")));
-  wxMenu *menuListSort = new wxMenu;
-  menuListSort->AppendRadioItem(ID_OPTION_LIST_SORT_ASCENDING, _("&Ascending"));
-  menuListSort->AppendRadioItem(ID_OPTION_LIST_SORT_DESCENDING, _("&Descending"));
-  menuListSort->AppendRadioItem(ID_OPTION_LIST_SORT_TOGGLE, _("&Toggle"));
-  menuOptions->AppendSubMenu(menuListSort, _("Set &List Sort Method"));
-  menuOptions->AppendSeparator();
   menuOptions->Append(wxID_PREFERENCES, wxExEllipsed(_("Set &Editor Options")));
+  menuOptions->AppendSeparator();
+  menuOptions->Append(ID_OPTION_LIST, wxExEllipsed(_("Set &List Options")));
 
   wxExMenu *menuHelp = new wxExMenu();
   menuHelp->Append(wxID_ABOUT);
