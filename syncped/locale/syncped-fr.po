@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncped 3.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-17 19:21+0200\n"
+"POT-Creation-Date: 2015-11-21 19:01+0100\n"
 "PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,35 +20,35 @@ msgstr ""
 msgid "show locale"
 msgstr ""
 
-#: ../app.cpp:54
+#: ../app.cpp:54 ../app.cpp:55
 msgid "split tabs horizontally"
 msgstr ""
 
-#: ../app.cpp:56
+#: ../app.cpp:56 ../app.cpp:57
 msgid "split tabs vertically"
 msgstr ""
 
-#: ../app.cpp:58
+#: ../app.cpp:58 ../app.cpp:59
 msgid "readonly mode"
 msgstr ""
 
-#: ../app.cpp:60
+#: ../app.cpp:60 ../app.cpp:61
 msgid "show version"
 msgstr ""
 
-#: ../app.cpp:64
+#: ../app.cpp:64 ../app.cpp:65
 msgid "vi command"
 msgstr ""
 
-#: ../app.cpp:66
+#: ../app.cpp:66 ../app.cpp:67
 msgid "source file"
 msgstr ""
 
-#: ../app.cpp:70
+#: ../app.cpp:70 ../app.cpp:71
 msgid "input file:line number:column number"
 msgstr ""
 
-#: ../frame.cpp:40
+#: ../frame.cpp:40 ../frame.cpp:41
 msgid ""
 "This program offers a portable text or binary editor\n"
 "with automatic syncing."
@@ -56,7 +56,7 @@ msgstr ""
 "Ce programme offre un texte portable ou éditeur binaire\n"
 "avec la synchronisation automatique."
 
-#: ../frame.cpp:45
+#: ../frame.cpp:45 ../frame.cpp:46
 msgid ""
 " All its config files are read\n"
 "and saved in the same directory as where the executable is."
@@ -64,52 +64,62 @@ msgstr ""
 "Tous les fichiers de configuration\n"
 "stockés et lus dans le même dossier que le programme lui-même est."
 
-#: ../frame.cpp:157
+#: ../frame.cpp:116 ../frame.cpp:157
 msgid "Project Files"
 msgstr "Fichiers de Projet"
 
-#: ../frame.cpp:176 ../frame.cpp:202 ../frame.cpp:283
+#: ../frame.cpp:135 ../frame.cpp:161 ../frame.cpp:176 ../frame.cpp:202
+#: ../frame.cpp:249 ../frame.cpp:283
 msgid "Explorer"
 msgstr "Explorer"
 
-#: ../frame.cpp:180 ../frame.cpp:285 ../frame.cpp:458
+#: ../frame.cpp:139 ../frame.cpp:180 ../frame.cpp:251 ../frame.cpp:285
+#: ../frame.cpp:425 ../frame.cpp:458
 msgid "History"
 msgstr "Histoire"
 
-#: ../frame.cpp:189
+#: ../frame.cpp:148 ../frame.cpp:189
 msgid "Files"
 msgstr "Fichiers"
 
-#: ../frame.cpp:210
+#: ../frame.cpp:169 ../frame.cpp:210
 msgid "Output"
 msgstr "Résultats"
 
-#: ../frame.cpp:314
+#: ../frame.cpp:175
+msgid "Process"
+msgstr ""
+
+#: ../frame.cpp:283 ../frame.cpp:314
 msgid "Process is running"
 msgstr "Processus passe"
 
-#: ../frame.cpp:387
+#: ../frame.cpp:354 ../frame.cpp:387
 msgid "Ascii Table"
 msgstr "Ascii Tableu"
 
-#: ../frame.cpp:478
+#: ../frame.cpp:445 ../frame.cpp:478
 msgid "Projects"
 msgstr "Projets"
 
-#: ../frame.cpp:485
+#: ../frame.cpp:452 ../frame.cpp:485
 msgid "Select Projects"
 msgstr "Sélectionner des Projets"
 
-#: ../frame.cpp:595
+#: ../frame.cpp:562 ../frame.cpp:595
 msgid "project"
 msgstr "projet"
 
-#: ../frame.cpp:686
+#: ../frame.cpp:652 ../frame.cpp:686
 msgid "File Name"
 msgstr ""
 
-#: ../frame.cpp:686
+#: ../frame.cpp:652 ../frame.cpp:686
 msgid "Input"
+msgstr ""
+
+#: ../frame.cpp:790
+msgid "List Options"
 msgstr ""
 
 #: ../frame.cpp:821
@@ -128,6 +138,10 @@ msgstr "Liste des Types de caractère"
 msgid "Set List Font"
 msgstr "Lijst lettertype instellen"
 
+#: ../frame.cpp:840 ../frame.cpp:918
+msgid "Project Save As"
+msgstr "Enregistrer le Projet comme"
+
 #: ../frame.cpp:852 ../frame.cpp:854 ../frame.cpp:861
 msgid "List Colour"
 msgstr "Liste des Couleurs"
@@ -136,47 +150,43 @@ msgstr "Liste des Couleurs"
 msgid "Set List Read Only Colour"
 msgstr "Régler une Liste des Coulerurs"
 
-#: ../frame.cpp:918
-msgid "Project Save As"
-msgstr "Enregistrer le Projet comme"
-
-#: ../frame.cpp:1097 ../support.cpp:83
+#: ../frame.cpp:1020 ../frame.cpp:1097 ../support.cpp:82 ../support.cpp:83
 msgid "vi mode"
 msgstr "mode vi"
 
-#: ../frame.cpp:1655
+#: ../frame.cpp:1549 ../frame.cpp:1655
 msgid "Split Vertically"
 msgstr ""
 
-#: ../frame.cpp:1656
+#: ../frame.cpp:1550 ../frame.cpp:1656
 msgid "Split Horizontally"
 msgstr ""
 
-#: ../frame.cpp:1658 ../frame.cpp:1667
+#: ../frame.cpp:1552 ../frame.cpp:1561 ../frame.cpp:1658 ../frame.cpp:1667
 msgid "Split"
 msgstr "Diviser"
 
-#: ../frame.cpp:1663
+#: ../frame.cpp:1557 ../frame.cpp:1663
 msgid "Rearrange Vertically"
 msgstr ""
 
-#: ../frame.cpp:1664
+#: ../frame.cpp:1558 ../frame.cpp:1664
 msgid "Rearrange Horizontally"
 msgstr ""
 
-#: ../frame.cpp:1670
+#: ../frame.cpp:1564 ../frame.cpp:1670
 msgid "Close A&ll"
 msgstr "Fermer T&ous"
 
-#: ../frame.cpp:1674
+#: ../frame.cpp:1568 ../frame.cpp:1674
 msgid "Close Others"
 msgstr ""
 
-#: ../support.cpp:41
+#: ../support.cpp:41 ../support.cpp:43
 msgid "File type"
 msgstr "Type de Fichier"
 
-#: ../support.cpp:42
+#: ../support.cpp:42 ../support.cpp:44
 msgid "Lines or items"
 msgstr "Des lignes ou des articles"
 
@@ -188,89 +198,97 @@ msgstr "Lexer"
 msgid "Theme"
 msgstr "Thème"
 
-#: ../support.cpp:61
+#: ../support.cpp:60 ../support.cpp:61
 msgid "VCS"
 msgstr "VCS"
 
-#: ../support.cpp:100
+#: ../support.cpp:99 ../support.cpp:100
 msgid "Save A&ll"
 msgstr "Enregistrer T&ous"
 
-#: ../support.cpp:130
+#: ../support.cpp:129 ../support.cpp:130
 msgid "Find &in Files"
 msgstr "Chercher &dans Fichiers"
 
-#: ../support.cpp:131
+#: ../support.cpp:130 ../support.cpp:131
 msgid "Replace in File&s"
 msgstr "Remplacer dans Fichier&s"
 
-#: ../support.cpp:132
+#: ../support.cpp:131 ../support.cpp:132
 msgid "&Find and Replace"
 msgstr "&Chercher et Remplacer"
 
-#: ../support.cpp:135
+#: ../support.cpp:134 ../support.cpp:135
 msgid "&Control Char"
 msgstr "&Contrôler Caractère"
 
-#: ../support.cpp:139
+#: ../support.cpp:138 ../support.cpp:139
 msgid "Start Record"
 msgstr "Commencer l'enregistrement"
 
-#: ../support.cpp:140
+#: ../support.cpp:139 ../support.cpp:140
 msgid "Stop Record"
 msgstr "Arrêter l'enregistrement"
 
-#: ../support.cpp:142
+#: ../support.cpp:141 ../support.cpp:142
 msgid "Playback"
 msgstr "Joue"
 
-#: ../support.cpp:150
+#: ../support.cpp:149 ../support.cpp:150
 msgid "&Macro"
 msgstr "&Macro"
 
-#: ../support.cpp:155
+#: ../support.cpp:154 ../support.cpp:155
 msgid "&Files"
 msgstr "&Fichiers"
 
-#: ../support.cpp:156
+#: ../support.cpp:155 ../support.cpp:156
 msgid "&Projects"
 msgstr "&Projets"
 
-#: ../support.cpp:157
+#: ../support.cpp:156 ../support.cpp:157
 msgid "&Explorer"
 msgstr "&Explorateur"
 
-#: ../support.cpp:158
+#: ../support.cpp:157 ../support.cpp:158
 msgid "&History"
 msgstr "&Histoire"
 
-#: ../support.cpp:159
+#: ../support.cpp:158 ../support.cpp:159
 msgid "&Output"
 msgstr "&Résultates"
 
-#: ../support.cpp:161
+#: ../support.cpp:160 ../support.cpp:161
 msgid "&Ascii Table"
 msgstr "&Ascii Tableau"
 
-#: ../support.cpp:164
+#: ../support.cpp:163 ../support.cpp:164
 msgid "&Select"
 msgstr "&Sélectionner"
 
-#: ../support.cpp:175
+#: ../support.cpp:174 ../support.cpp:175
 msgid "&Open as Text"
 msgstr "&Ouvrir comme Texte"
 
-#: ../support.cpp:186
+#: ../support.cpp:185 ../support.cpp:186
 msgid "&Auto Sort"
 msgstr "&Trier Automatique"
 
-#: ../support.cpp:192
+#: ../support.cpp:191 ../support.cpp:192
 msgid "Set &VCS"
 msgstr "Set &VCS"
+
+#: ../support.cpp:195 ../support.cpp:210
+msgid "Set &Editor Options"
+msgstr "&Options de l'editeur"
 
 #: ../support.cpp:197
 msgid "Set &Comparator"
 msgstr "régler SVN et Comparateur"
+
+#: ../support.cpp:197
+msgid "Set &List Options"
+msgstr ""
 
 #: ../support.cpp:200
 msgid "Set &List Font"
@@ -288,30 +306,26 @@ msgstr "&Monter"
 msgid "&Descending"
 msgstr "&Descendre"
 
+#: ../support.cpp:206 ../support.cpp:219
+msgid "&View"
+msgstr "&Voir"
+
+#: ../support.cpp:207 ../support.cpp:220
+msgid "&Process"
+msgstr "&Processus"
+
 #: ../support.cpp:207
 msgid "&Toggle"
 msgstr "&Alterner"
+
+#: ../support.cpp:208 ../support.cpp:221
+msgid "&Project"
+msgstr "&Projet"
 
 #: ../support.cpp:208
 msgid "Set &List Sort Method"
 msgstr "Régler &Liste méthode de tri"
 
-#: ../support.cpp:210
-msgid "Set &Editor Options"
-msgstr "&Options de l'editeur"
-
-#: ../support.cpp:219
-msgid "&View"
-msgstr "&Voir"
-
-#: ../support.cpp:220
-msgid "&Process"
-msgstr "&Processus"
-
-#: ../support.cpp:221
-msgid "&Project"
-msgstr "&Projet"
-
-#: ../support.cpp:222
+#: ../support.cpp:209 ../support.cpp:222
 msgid "&Options"
 msgstr "&Options"
