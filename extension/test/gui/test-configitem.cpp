@@ -130,6 +130,7 @@ void fixture::testConfigItem()
   CPPUNIT_ASSERT( ci_str_page.GetPage() == "page");
   CPPUNIT_ASSERT( ci_str_page.GetColumns() == 3);
   
+#if wxCHECK_VERSION(3,1,0)
   // Test wxExConfigDefaults
   wxExConfigDefaults def(std::vector<std::tuple<wxString, wxExItemType, wxAny>> {
     std::make_tuple("def-colour", ITEM_COLOUR, *wxWHITE),
@@ -140,4 +141,5 @@ void fixture::testConfigItem()
   
   CPPUNIT_ASSERT( def.Get() != NULL);
   CPPUNIT_ASSERT( def.Get()->Exists("def-colour"));
+#endif
 }
