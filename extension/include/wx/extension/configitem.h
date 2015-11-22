@@ -8,6 +8,7 @@
 #pragma once
 
 #include <tuple>
+#include <vector>
 #include <wx/slider.h> // for wxSL_HORIZONTAL
 #include <wx/extension/item.h>
 
