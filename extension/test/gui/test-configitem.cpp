@@ -129,4 +129,15 @@ void fixture::testConfigItem()
   const wxExConfigItem ci_str_page("ci-string-page", "test1", "page:3");
   CPPUNIT_ASSERT( ci_str_page.GetPage() == "page");
   CPPUNIT_ASSERT( ci_str_page.GetColumns() == 3);
+  
+  // Test wxExConfigDefaults
+  wxExConfigDefaults def(std::vector<std::tuple<wxString, wxExItemType, wxAny>> {
+    std::make_tuple("def-colour", ITEM_COLOUR, *wxWHITE),
+    std::make_tuple("def-font", ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)),
+    std::make_tuple("def-double", ITEM_FLOAT, 8.8),
+    std::make_tuple("def-string", ITEM_STRING, "a string"),
+    std::make_tuple("def-int", ITEM_INT, 10)});
+  
+  CPPUNIT_ASSERT( def.Get() != NULL);
+  CPPUNIT_ASSERT( def.Get()->Exists("def-colour"));
 }

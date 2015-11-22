@@ -33,29 +33,14 @@
 
 #if wxUSE_GUI
 
-class ListViewDefaults
+class ListViewDefaults : public wxExConfigDefaults
 {
 public:
-  ListViewDefaults()
-    : m_Config(wxConfigBase::Get()) {
-    if (!m_Config->Exists(_("Background colour")))
-    {
-      m_Config->SetRecordDefaults(true);
-      
-      m_Config->ReadObject(_("Background colour"), *wxWHITE);
-      m_Config->ReadObject(_("Foreground colour"), *wxBLACK);
-      m_Config->ReadObject(_("Readonly colour"), *wxLIGHT_GREY);
-    }};
-  
-  wxConfigBase* Get() {return m_Config;};
-  
- ~ListViewDefaults() {
-    if (m_Config->IsRecordingDefaults())
-    {
-      m_Config->SetRecordDefaults(false);
-    }};
-private:
-  wxConfigBase* m_Config;
+  ListViewDefaults() 
+  : wxExConfigDefaults(std::vector<std::tuple<wxString, wxExItemType, wxAny>> {
+    std::make_tuple(_("Background colour"), ITEM_COLOUR, *wxWHITE),
+    std::make_tuple(_("Foreground colour"), ITEM_COLOUR, *wxBLACK),
+    std::make_tuple(_("Readonly colour"), ITEM_COLOUR, *wxLIGHT_GREY)}) {;};
 };
   
 #if wxUSE_DRAG_AND_DROP
@@ -645,9 +630,9 @@ void wxExListView::ConfigGet(bool init)
   
   SetBackgroundColour(cfg->ReadObject(_("Background colour"), wxColour("WHITE")));
   SetFont(cfg->ReadObject(_("List font"), wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
-  SetSingleStyle(wxLC_HRULES, cfg->ReadLong(_("Rulers"), 0) & wxLC_HRULES);
-  SetSingleStyle(wxLC_VRULES, cfg->ReadLong(_("Rulers"), 0) & wxLC_VRULES);
-  SetSingleStyle(wxLC_NO_HEADER, !cfg->ReadLong(_("Header"), 0) & wxLC_VRULES);
+  SetSingleStyle(wxLC_HRULES, cfg->ReadBool(_("Rulers"), 0) & wxLC_HRULES);
+  SetSingleStyle(wxLC_VRULES, cfg->ReadBool(_("Rulers"), 0) & wxLC_VRULES);
+  SetSingleStyle(wxLC_NO_HEADER, !cfg->ReadBool(_("Header"), 0) & wxLC_VRULES);
   
   ItemsUpdate();
 }

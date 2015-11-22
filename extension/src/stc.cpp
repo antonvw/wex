@@ -43,40 +43,25 @@ enum
   INDENT_ALL,
 };
 
-class Defaults
+class STCDefaults : public wxExConfigDefaults
 {
 public:
-  Defaults()
-    : m_Config(wxConfigBase::Get()) {
-    if (!m_Config->Exists(_("Scroll bars")))
-    {
-      m_Config->SetRecordDefaults(true);
-      
-      m_Config->ReadBool(_("Caret line"), true);
-      m_Config->ReadBool(_("Scroll bars"), true);
-      m_Config->ReadLong(_("Auto fold"), 1500);
-      m_Config->ReadLong(_("Auto indent"), INDENT_ALL);
-      m_Config->ReadLong(_("Divider"), 16);
-      m_Config->ReadLong(_("Edge column"), 80);
-      m_Config->ReadLong(_("Edge line"), wxSTC_EDGE_NONE);
-      m_Config->ReadLong(_("Fold flags"), wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED);
-      m_Config->ReadLong(_("Folding"), 16);
-      m_Config->ReadLong(_("Indent"), 2);
-      m_Config->ReadLong(_("Line number"), 16);
-      m_Config->ReadLong(_("Print flags"), wxSTC_PRINT_BLACKONWHITE);
-      m_Config->ReadLong(_("Tab width"), 2);
-      m_Config->ReadObject(_("Default font"), wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
-    }};
-  
-  wxConfigBase* Get() {return m_Config;};
-  
- ~Defaults() {
-    if (m_Config->IsRecordingDefaults())
-    {
-      m_Config->SetRecordDefaults(false);
-    }};
-private:
-  wxConfigBase* m_Config;
+  STCDefaults() 
+  : wxExConfigDefaults(std::vector<std::tuple<wxString, wxExItemType, wxAny>> {
+    std::make_tuple(_("Caret line"), ITEM_CHECKBOX, true),
+    std::make_tuple(_("Scroll bars"), ITEM_CHECKBOX, true),
+    std::make_tuple(_("Auto fold"), ITEM_INT, 1500),
+    std::make_tuple(_("Auto indent"), ITEM_INT, (long)INDENT_ALL),
+    std::make_tuple(_("Divider"), ITEM_INT, 16),
+    std::make_tuple(_("Edge column"), ITEM_INT, 80),
+    std::make_tuple(_("Edge line"), ITEM_INT, wxSTC_EDGE_NONE),
+    std::make_tuple(_("Fold flags"), ITEM_INT, wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED),
+    std::make_tuple(_("Folding"), ITEM_INT, 16),
+    std::make_tuple(_("Indent"), ITEM_INT, 2),
+    std::make_tuple(_("Line number"), ITEM_INT, 16),
+    std::make_tuple(_("Print flags"), ITEM_INT, wxSTC_PRINT_BLACKONWHITE),
+    std::make_tuple(_("Tab width"), ITEM_INT, 2),
+    std::make_tuple(_("Default font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT))}) {;};
 };
   
 wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
@@ -469,7 +454,7 @@ int wxExSTC::ConfigDialog(
   long flags,
   wxWindowID id)
 {
-  Defaults use;
+  STCDefaults use;
   wxConfigBase* cfg = use.Get();
   
   const std::vector<wxExConfigItem> items{
@@ -568,7 +553,7 @@ int wxExSTC::ConfigDialog(
 
 void wxExSTC::ConfigGet(bool init)
 {
-  Defaults use;
+  STCDefaults use;
   wxConfigBase* cfg = use.Get();
   
   const wxFont font(cfg->ReadObject(
