@@ -189,4 +189,49 @@ bool wxExConfigItem::ToConfig(bool save) const
 
   return true;
 }
+
+wxExConfigDefaults::wxExConfigDefaults(
+  const std::vector<std::tuple<wxString, wxExItemType, wxAny>> & items)
+  : m_Config(wxConfigBase::Get())
+{
+  if (!m_Config->Exists(std::get<0>(items.front())))
+  {
+    m_Config->SetRecordDefaults(true);
+    
+    for (auto it : items)
+    {
+      switch (std::get<1>(it))
+      {
+        case ITEM_CHECKBOX:
+          m_Config->ReadBool(std::get<0>(it), std::get<2>(it).As<bool>());
+          break;
+        case ITEM_COLOUR:
+          m_Config->ReadObject(std::get<0>(it), std::get<2>(it).As<wxColour>());
+          break;
+        case ITEM_FLOAT:
+          m_Config->ReadDouble(std::get<0>(it), std::get<2>(it).As<double>());
+          break;
+        case ITEM_FONTPICKERCTRL:
+          m_Config->ReadObject(std::get<0>(it), std::get<2>(it).As<wxFont>());
+          break;
+        case ITEM_INT:
+          m_Config->ReadLong(std::get<0>(it), std::get<2>(it).As<long>());
+          break;
+        case ITEM_STRING:
+          m_Config->Read(std::get<0>(it), std::get<2>(it).As<wxString>());
+          break;
+        default:
+          wxLogMessage("Unsupported default type for: %s", std::get<0>(it).c_str());
+      }
+    }
+  }
+}
+
+wxExConfigDefaults::~wxExConfigDefaults()
+{
+  if (m_Config->IsRecordingDefaults())
+  {
+    m_Config->SetRecordDefaults(false);
+  }
+}
 #endif // wxUSE_GUI

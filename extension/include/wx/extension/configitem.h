@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <tuple>
 #include <wx/slider.h> // for wxSL_HORIZONTAL
 #include <wx/extension/item.h>
 
@@ -166,5 +167,26 @@ private:
   
   wxExUserWindowToConfig m_UserWindowToConfig;
   int m_MaxItems;
+};
+
+class wxConfigBase;
+
+/// Support class for keeping defaults in the config.
+class WXDLLIMPEXP_BASE wxExConfigDefaults
+{
+public:
+  /// Constructor, records default values,
+  /// if not yet in the config.
+  wxExConfigDefaults(
+    /// supply name, item type, and default value
+    const std::vector<std::tuple<wxString, wxExItemType, wxAny>> & items);
+  
+  /// Destructor, stops recording.
+ ~wxExConfigDefaults();
+  
+  /// Access to config.
+  wxConfigBase* Get() {return m_Config;};
+private:
+  wxConfigBase* m_Config;
 };
 #endif // wxUSE_GUI
