@@ -56,8 +56,8 @@ public:
     const wxString& title = _("Options"),
     /// number of rows
     int rows = 0,
-    /// number of columns
-    int cols = 1,
+    /// number of columns (if -1 use number of cols from items)
+    int cols = -1,
     /// dialog flags for buttons
     long flags = wxOK | wxCANCEL,
     /// the window id
@@ -65,7 +65,7 @@ public:
     /// bookctrl style, only used if you specified pages for your items
     int bookctrl_style = ITEM_AUINOTEBOOK,
     /// image list to be used by notebook (required for a tool book)
-    wxImageList* imageList = NULL,
+    wxImageList* imageList = nullptr,
     /// position
     const wxPoint& pos = wxDefaultPosition,
     /// size
@@ -117,7 +117,7 @@ public:
     };
     return T();};
   /// Returns the item actual value for specified label, or 
-  /// IsNull value if item does not exist.
+  /// Isnullptr value if item does not exist.
   const wxAny GetItemValue(const wxString& label, const wxString& page = wxEmptyString) const {
     return GetItem(label, page).GetValue();};
   /// Sets the item actual value for specified label.
@@ -252,13 +252,13 @@ protected:
 private:
   void Click(const wxCommandEvent& event) const {
     wxExFrame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExFrame);
-    if (frame != NULL)
+    if (frame != nullptr)
     {
       frame->OnCommandItemDialog(GetId(), event);
     }};
   
   void Layout(int rows, int cols, int notebook_style, wxImageList* imageList) {
-    wxBookCtrlBase* bookctrl = NULL;
+    wxBookCtrlBase* bookctrl = nullptr;
     if (!m_Items.empty() && !m_Items.begin()->GetPage().empty())
     {
       switch (notebook_style)
@@ -271,7 +271,7 @@ private:
         case ITEM_TREEBOOK: bookctrl = new wxTreebook(this, wxID_ANY); break;
         case ITEM_TOOLBOOK:
           bookctrl = new wxToolbook(this, wxID_ANY);
-          if (imageList == NULL)
+          if (imageList == nullptr)
           {
             wxLogError("toolbook requires image list");
             return;
@@ -280,15 +280,15 @@ private:
     
         default: wxLogError("unknown bookctrl style");  
       }
-      if (bookctrl != NULL)
+      if (bookctrl != nullptr)
       {
         bookctrl->SetImageList(imageList);
       }
     }
     bool first_time = true;
     wxString previous_page = "XXXXXX";
-    wxFlexGridSizer* previous_item_sizer = NULL;
-    wxFlexGridSizer* sizer = NULL;
+    wxFlexGridSizer* previous_item_sizer = nullptr;
+    wxFlexGridSizer* sizer = nullptr;
     int previous_item_type = -1;
     for (auto& it : m_Items)
     {
@@ -297,16 +297,16 @@ private:
          (it.GetPage() != previous_page && !it.GetPage().empty()))
       {
         first_time = false;
-        if (bookctrl != NULL)
+        if (bookctrl != nullptr)
         {
           // Finish the current page.
-          if (bookctrl->GetCurrentPage() != NULL)
+          if (bookctrl->GetCurrentPage() != nullptr)
           {
             bookctrl->GetCurrentPage()->SetSizer(sizer);
           }
           // And make a new one.
           int imageId = wxWithImages::NO_IMAGE;
-          if (imageList != NULL)
+          if (imageList != nullptr)
           {
             if ((int)bookctrl->GetPageCount() < imageList->GetImageCount())
             {
@@ -323,7 +323,9 @@ private:
             true, // select
             imageId); 
         }
-        const int use_cols = (it.GetColumns() != -1 ? it.GetColumns(): cols);
+        int use_cols = 1;
+        if (it.GetColumns() != -1) use_cols = it.GetColumns();
+        else if (cols != -1) use_cols = cols;
         sizer = (rows != 0 ? 
           new wxFlexGridSizer(rows, use_cols, 0, 0):
           new wxFlexGridSizer(use_cols));
@@ -334,16 +336,16 @@ private:
       }
       wxFlexGridSizer* use_item_sizer = (
         it.GetType() == previous_item_type && it.GetPage() == previous_page ? previous_item_sizer: 
-        NULL);
+        nullptr);
       // Layout the item.
       previous_item_sizer = it.Layout(
-        (bookctrl != NULL ? bookctrl->GetCurrentPage(): this), 
+        (bookctrl != nullptr ? bookctrl->GetCurrentPage(): this), 
         sizer, 
         GetButtonFlags() == wxCANCEL,
         use_item_sizer);
       previous_item_type = it.GetType();
       previous_page = it.GetPage();
-      if (sizer != NULL &&
+      if (sizer != nullptr &&
           sizer->GetEffectiveRowsCount() >= 1 &&
          !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
           it.IsRowGrowable())
@@ -378,9 +380,9 @@ private:
           break;
       }
     }
-    if (bookctrl != NULL)
+    if (bookctrl != nullptr)
     {
-      if (bookctrl->GetCurrentPage() != NULL)
+      if (bookctrl->GetCurrentPage() != nullptr)
       {
         bookctrl->GetCurrentPage()->SetSizer(sizer);
       }
@@ -392,11 +394,11 @@ private:
       }
       AddUserSizer(bookctrl);
     }
-    else if (sizer != NULL)
+    else if (sizer != nullptr)
     {
       AddUserSizer(sizer);
     }
-    LayoutSizers(bookctrl == NULL); // add separator line if no bookctrl
+    LayoutSizers(bookctrl == nullptr); // add separator line if no bookctrl
   };
 
   std::vector< T > m_Items;

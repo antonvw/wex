@@ -96,9 +96,9 @@ const auto TestConfigItems()
     ITEM_COMBOBOX, 
     "Comboboxes",
     false,
-    wxID_ANY,
     wxWindow::NewControlId(),
-    false));
+    25,
+    LABEL_NONE));
 
   // ITEM_COMBOBOXDIR
   v.push_back(wxExConfigItem(
@@ -204,7 +204,7 @@ const auto TestConfigItems()
   for (int sl = start + 1; sl <= start + 3; sl++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Slider%d", sl),
+      wxString::Format("Slider%d", sl - start),
       start,
       sl,
       "Spin controls",

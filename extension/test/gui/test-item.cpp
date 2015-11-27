@@ -21,7 +21,7 @@ void fixture::testItem()
   wxGridSizer* sizer = new wxGridSizer(3);
   panel->SetSizer(sizer);
   
-  wxExItem item("item", "hello string", "info1", "page1", 1, ITEM_STRING, true, true, 2);
+  wxExItem item("item", "hello string", "page1", 1, ITEM_STRING, true);
   
   CPPUNIT_ASSERT( item.GetColumns() == -1); // page cols
   CPPUNIT_ASSERT( item.GetInitial().As<wxString>() == "hello string");

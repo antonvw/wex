@@ -379,7 +379,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       break;
       
     case ID_DLG_ITEM: 
-      wxExItemDialog(this, TestItems()).ShowModal();
+      wxExItemDialog(this, TestItems(), "Options", 0, 2).ShowModal();
       wxExItemDialog(this, TestItems(true)).ShowModal();
       break;
     

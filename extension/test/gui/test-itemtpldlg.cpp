@@ -21,7 +21,7 @@ class wxExTestItem : public wxExItem
 public:
   wxExTestItem(): wxExItem() {;};
   wxExTestItem(const wxString& label, const wxString& value = wxEmptyString, const wxString& page = wxEmptyString)
-    : wxExItem(label, value, wxEmptyString, page) {;};
+    : wxExItem(label, value, page) {;};
 };
 
 class wxExOtherTestItem : public wxExItem
