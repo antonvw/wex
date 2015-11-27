@@ -40,20 +40,19 @@ public:
     /// might also contain the note after a tab for a command link button
     /// if the window supports it you can use a markup label
     const wxString& label,
-    /// extra info, used as default for a hyperlink ctrl, or as lexer for STC
-    const wxString& info = wxEmptyString,
-    const wxString& page = wxEmptyString,
+    /// used as default for a hyperlink ctrl, or as lexer for STC
     /// the style for the control used (e.g. wxTE_MULTILINE or wxTE_PASSWORD)
+    const wxString& value = wxEmptyString,
+    const wxString& page = wxEmptyString,
     long style = 0,
     wxExItemType type = ITEM_STRING,
     bool is_required = false,
     /// will the label be displayed as a static text
     /// (ignored for a static text item itself)
-    bool add_label = true,
-    int cols = -1)
-    : wxExConfigItem(type, style, page, label, info, is_required, 
+    wxExLabelType label_type = LABEL_LEFT)
+    : wxExConfigItem(type, style, page, label, is_required, 
       (type != ITEM_STATICTEXT && 
-       type != ITEM_HYPERLINKCTRL ? add_label: false), wxID_ANY, cols) {;};
+       type != ITEM_HYPERLINKCTRL ? label_type: LABEL_NONE), wxID_ANY, 25, 1, 0, 1, 1, value) {;};
 
   /// Constructor for a ITEM_SPINCTRL or a ITEM_SLIDER item.
   wxExConfigItem(const wxString& label,
@@ -62,20 +61,18 @@ public:
     const wxString& page = wxEmptyString,
     wxExItemType type = ITEM_SPINCTRL,
     /// style for a ITEM_SLIDER item
-    long style = wxSL_HORIZONTAL,
-    int cols = -1)
+    long style = wxSL_HORIZONTAL)
     : wxExConfigItem(type, style, page, label, 
-      wxEmptyString, false, true, wxID_ANY, cols, 25, 1, min, max, 1, min) {;};
+      false, LABEL_LEFT, wxID_ANY, 25, 1, min, max, 1, min) {;};
 
   /// Constructor for a ITEM_SPINCTRL_DOUBLE item.
   wxExConfigItem(const wxString& label,
     double min, 
     double max,
     const wxString& page = wxEmptyString,
-    double inc = 1,
-    int cols = -1)
+    double inc = 1)
     : wxExConfigItem(ITEM_SPINCTRL_DOUBLE , 0, page, label, 
-      wxEmptyString, false, true, wxID_ANY, cols, 25, 1, min, max, inc, min) {;};
+      false, LABEL_LEFT, wxID_ANY, 25, 1, min, max, inc, min) {;};
 
   /// Constructor for a ITEM_CHECKLISTBOX_BOOL item. 
   /// This checklistbox can be used to get/set several boolean values.
@@ -83,10 +80,9 @@ public:
     /// the set with names of boolean items
     const std::set<wxString> & choices,
     const wxString& page = wxEmptyString,
-    long style = 0,
-    int cols = -1)
+    long style = 0)
     : wxExConfigItem(ITEM_CHECKLISTBOX_BOOL, style, page, "checklistbox_noname", 
-      wxEmptyString, false, false, wxID_ANY, cols, 25, 1, 0, 1, 1, choices) {;};
+      false, LABEL_NONE, wxID_ANY, 25, 1, 0, 1, 1, choices) {;};
 
   /// Constructor for a ITEM_RADIOBOX, or a ITEM_CHECKLISTBOX_BIT item. 
   /// This checklistbox (not mutually exclusive choices)
@@ -102,10 +98,9 @@ public:
     const wxString& page = wxEmptyString,
     /// major dimension for the radiobox
     int majorDimension = 0,
-    long style = wxRA_SPECIFY_COLS,
-    int cols = -1)
+    long style = wxRA_SPECIFY_COLS)
     : wxExConfigItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX_BIT, style, page, label, 
-      wxEmptyString, false, false, wxID_ANY, cols, 25, majorDimension, 0, 1, 1, choices) {;};
+      false, LABEL_NONE, wxID_ANY, 25, majorDimension, 0, 1, 1, choices) {;};
 
   /// Constructor for a ITEM_USER item.
   wxExConfigItem(const wxString& label,
@@ -115,13 +110,12 @@ public:
     wxExUserWindowCreate create,
     /// callback for load and save to config
     /// default it has no relation to the config
-    wxExUserWindowToConfig config = NULL,
+    wxExUserWindowToConfig config = nullptr,
     const wxString& page = wxEmptyString,
     bool is_required = false,
-    bool add_label = true,
-    int cols = -1)
+    wxExLabelType label_type = LABEL_LEFT)
     : wxExConfigItem(ITEM_USER, 0, page, label, 
-      wxEmptyString, is_required, add_label, wxID_ANY, cols, 25, 1, 0, 1, 1, wxAny(), window, create, config) {;};
+      is_required, label_type, wxID_ANY, 25, 1, 0, 1, 1, wxAny(), window, create, config) {;};
 
   /// Constuctor for the other types (as ITEM_BUTTON item).
   wxExConfigItem(
@@ -133,21 +127,20 @@ public:
     int id = wxID_ANY,
     /// used by ITEM_COMBOBOX
     int max_items = 25,
-    bool add_label = true,
-    long style = 0,
-    int cols = -1)
-    : wxExConfigItem(type, style, page, label, wxEmptyString, is_required, 
+    wxExLabelType label_type = LABEL_LEFT,
+    long style = 0)
+    : wxExConfigItem(type, style, page, label, is_required, 
         type == ITEM_BUTTON ||
         type == ITEM_CHECKBOX ||
         type == ITEM_COMMAND_LINK_BUTTON ||
-        type == ITEM_TOGGLEBUTTON ? false: add_label, id, cols, max_items) {;};
+        type == ITEM_TOGGLEBUTTON ? LABEL_NONE: label_type, id, max_items) {;};
     
   /// Layouts this item and calls ToConfig.
   virtual wxFlexGridSizer* Layout(
     wxWindow* parent, 
     wxSizer* sizer,
     bool readonly = false,
-    wxFlexGridSizer* fgz = NULL) override;
+    wxFlexGridSizer* fgz = nullptr) override;
 
   /// Loads or saves this item to the config.
   /// Returns true if the config was accessed, as not all
@@ -156,13 +149,13 @@ public:
 private:
   /// Delegate constructor.
   wxExConfigItem(wxExItemType type, long style,
-    const wxString& page = wxEmptyString, const wxString& label = wxEmptyString, const wxString& info = wxEmptyString,
-    bool is_required = false, bool add_label = false,
-    int id = wxID_ANY, int cols = -1, int max_items = 25, int major_dimension = 1,
+    const wxString& page = wxEmptyString, const wxString& label = wxEmptyString,
+    bool is_required = false, wxExLabelType label_type = LABEL_NONE,
+    int id = wxID_ANY, int max_items = 25, int major_dimension = 1,
     const wxAny& min = 0, const wxAny& max = 1, const wxAny& inc = 1, const wxAny& initial = wxAny(),
-    wxWindow* window = NULL, wxExUserWindowCreate create = NULL, wxExUserWindowToConfig config = NULL)
-    : wxExItem(type, style, page, label, initial, info, is_required, add_label, id,
-        cols, major_dimension, min, max, inc, window, create)
+    wxWindow* window = nullptr, wxExUserWindowCreate create = nullptr, wxExUserWindowToConfig config = nullptr)
+    : wxExItem(type, style, page, label, initial, is_required, label_type, id,
+        major_dimension, min, max, inc, window, create)
     , m_MaxItems(max_items)
     , m_UserWindowToConfig(config) {;};
   

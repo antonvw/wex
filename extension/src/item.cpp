@@ -30,17 +30,16 @@
 #if wxUSE_GUI
 
 wxExItem::wxExItem(wxExItemType type, long style,
-  const wxString& page, const wxString& label, const wxAny& value, const wxString& info,
-  bool is_required, bool add_label,
-  int id, int cols, int major_dimension,
+  const wxString& page, const wxString& label, const wxAny& value,
+  bool is_required, wxExLabelType label_type,
+  int id, int major_dimension,
   const wxAny& min, const wxAny& max, const wxAny& inc,
   wxWindow* window, wxExUserWindowCreate create)
   : m_Type(type)
   , m_Style(style)
-  , m_AddLabel(add_label)
+  , m_LabelType(label_type)
   , m_Label(label)
   , m_Initial(value)
-  , m_Info(info)
   , m_IsRequired(is_required)
   , m_Id(id)
   , m_Min(min)
@@ -48,9 +47,8 @@ wxExItem::wxExItem(wxExItemType type, long style,
   , m_Inc(inc)
   , m_MajorDimension(major_dimension)
   , m_UserWindowCreate(create)
-  , m_Validator(NULL)
+  , m_Validator(nullptr)
   , m_Window(window)
-  , m_Cols(cols)
   , m_IsRowGrowable(false)
   , m_Page(page)
   , m_PageCols(-1)
@@ -92,12 +90,37 @@ wxExItem::wxExItem(wxExItemType type, long style,
   }
 }
 
+wxFlexGridSizer* wxExItem::Add(wxSizer* sizer, wxFlexGridSizer* current) const
+{
+  wxASSERT(m_Window != nullptr);
+
+  if (current == nullptr)
+  {
+    current = new wxFlexGridSizer(m_LabelType == LABEL_LEFT ? 2: 1);
+    current->AddGrowableCol(current->GetCols() - 1); // make last col growable
+    sizer->Add(current, wxSizerFlags().Expand());
+  }
+
+  if (m_LabelType != LABEL_NONE)
+  {
+    AddStaticText(current);
+  }
+  
+  current->Add(m_Window, m_SizerFlags);
+  
+  if (m_IsRowGrowable && current->GetEffectiveRowsCount() >= 1)
+  {
+    current->AddGrowableRow(current->GetEffectiveRowsCount() - 1);
+  }
+  
+  return current;
+}
+      
 wxFlexGridSizer* wxExItem::AddBrowseButton(wxSizer* sizer) const
 {
-  wxASSERT(m_Window != NULL);
+  wxASSERT(m_Window != nullptr);
 
-  wxFlexGridSizer* fgz = new wxFlexGridSizer(3, 0, 0);
-
+  wxFlexGridSizer* fgz = new wxFlexGridSizer(3);
   fgz->AddGrowableCol(1);
 
   AddStaticText(fgz);
@@ -119,21 +142,23 @@ wxFlexGridSizer* wxExItem::AddBrowseButton(wxSizer* sizer) const
   return fgz;
 }
 
-void wxExItem::AddStaticText(wxSizer* sizer) const
+wxFlexGridSizer* wxExItem::AddStaticText(wxSizer* sizer) const
 {
   wxASSERT(!m_Label.empty());
-  wxASSERT(m_Window != NULL);
+  wxASSERT(m_Window != nullptr);
 
   sizer->Add(
     new wxStaticText(m_Window->GetParent(), 
       wxID_ANY, 
       m_Label + ":"), 
       wxSizerFlags().Right().Border().Align(wxALIGN_LEFT));
+  
+  return nullptr;
 }
 
 bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 {
-  if (m_Window != NULL)
+  if (m_Window != nullptr)
   {
     return false;
   }
@@ -196,7 +221,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
         wxDefaultPosition, wxSize(250, wxDefaultCoord),
         m_Initial.IsNull() ? wxArrayString(): m_Initial.As<wxArrayString>(),
         0,
-        (m_Validator != NULL ? *m_Validator: wxDefaultValidator));
+        (m_Validator != nullptr ? *m_Validator: wxDefaultValidator));
       break;
 
     case ITEM_COMMAND_LINK_BUTTON:
@@ -214,7 +239,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
       m_Window = pc;
 
-      if (pc->GetTextCtrl() != NULL && readonly)
+      if (pc->GetTextCtrl() != nullptr && readonly)
       {
         pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
       }
@@ -237,7 +262,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
       m_Window = pc;
 
-      if (pc->GetTextCtrl() != NULL && readonly)
+      if (pc->GetTextCtrl() != nullptr && readonly)
       {
         pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
       }
@@ -246,7 +271,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
     case ITEM_FLOAT:
       // See also ITEM_INT, validator cannot be set using ?.
-      if (m_Validator == NULL)
+      if (m_Validator == nullptr)
       {
         m_Window = new wxTextCtrl(parent, m_Id, 
           m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
@@ -272,7 +297,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
       m_Window = pc;
 
-      if (pc->GetTextCtrl() != NULL && readonly)
+      if (pc->GetTextCtrl() != nullptr && readonly)
       {
         pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
       }
@@ -283,13 +308,13 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       {
 #if wxUSE_HYPERLINKCTRL
       m_Window = new wxHyperlinkCtrl(parent, m_Id, m_Label,
-        m_Info, wxDefaultPosition, wxSize(width, wxDefaultCoord), wxHL_DEFAULT_STYLE); // no m_Style
+        m_Initial.As<wxString>(), wxDefaultPosition, wxSize(width, wxDefaultCoord), wxHL_DEFAULT_STYLE); // no m_Style
 #endif      
       }
       break;
 
     case ITEM_INT:
-      if (m_Validator == NULL)
+      if (m_Validator == nullptr)
       {
         m_Window = new wxTextCtrl(parent, m_Id, 
           m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
@@ -309,7 +334,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
     case ITEM_LISTVIEW:
       {
-      wxExListView* lv = new wxExListView(parent, (wxExListView::wxExListType)m_Style, m_Id, NULL,
+      wxExListView* lv = new wxExListView(parent, (wxExListView::wxExListType)m_Style, m_Id, nullptr,
         wxDefaultPosition, wxSize(width, 200));
       lv->ItemFromText(m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>());
       m_Window = lv;
@@ -373,9 +398,9 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       // and would not be interpreted by vi.
       ((wxExSTC* )m_Window)->GetVi().Use(false);
 
-      if (!m_Info.empty())
+      if (!m_Initial.IsNull())
       {
-        ((wxExSTC* )m_Window)->SetLexer(m_Info);
+        ((wxExSTC* )m_Window)->SetLexer(m_Initial.As<wxString>());
       }
       break;
 
@@ -388,7 +413,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
            wxSize(width, wxDefaultCoord)),
         m_Style | 
           (readonly ? wxTE_READONLY: 0),
-        (m_Validator != NULL ? *m_Validator: wxDefaultValidator));
+        (m_Validator != nullptr ? *m_Validator: wxDefaultValidator));
       break;
 
     case ITEM_TOGGLEBUTTON:
@@ -397,9 +422,9 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_USER:
-      wxASSERT(m_Window != NULL);
+      wxASSERT(m_Window != nullptr);
     
-      if (m_UserWindowCreate != NULL)
+      if (m_UserWindowCreate != nullptr)
       {
         (m_UserWindowCreate)(m_Window, parent, readonly);
       }
@@ -410,7 +435,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
   if (m_Type != ITEM_EMPTY && m_Type != ITEM_SPACER)
   {
-    wxASSERT(m_Window != NULL);
+    wxASSERT(m_Window != nullptr);
   }
   
   return true;
@@ -420,7 +445,7 @@ const wxAny wxExItem::GetValue() const
 {
   wxAny any;
   
-  if (m_Window == NULL)
+  if (m_Window == nullptr)
   {
     return any;
   }
@@ -472,63 +497,21 @@ wxFlexGridSizer* wxExItem::Layout(
 {
   if (!CreateWindow(parent, readonly))
   {
-    return NULL;
+    return nullptr;
   }
   
-  wxFlexGridSizer* use = fgz;
-
   switch (m_Type)
   {
-    case ITEM_COMBOBOXDIR: use = AddBrowseButton(sizer); break;
-    case ITEM_EMPTY: break;
-    case ITEM_SPACER: sizer->AddSpacer(m_Style); break;
-
-    default:
-    if (m_AddLabel)
-    {
-      // Construct a child flex grid sizer.
-      if (fgz == NULL)
-      {
-        use = new wxFlexGridSizer(
-          (m_Cols == 1 ? 1: 2), 0, 0);
-        
-        use->AddGrowableCol(use->GetCols() - 1); // the control
-        
-        if (m_IsRowGrowable)
-        {
-          use->AddGrowableRow(0);
-        }
-      
-        // Add label and control.
-        AddStaticText(use);
-        use->Add(m_Window, m_SizerFlags);
-
-        // Add to the sizer.
-        sizer->Add(use, wxSizerFlags().Expand());
-      }
-      else
-      {
-        AddStaticText(fgz);
-        fgz->Add(m_Window, m_SizerFlags);
-        
-        if (m_IsRowGrowable && fgz->GetEffectiveRowsCount() >= 1)
-        {
-          fgz->AddGrowableRow(fgz->GetEffectiveRowsCount() - 1);
-        }
-      }
-    }
-    else
-    {
-      sizer->Add(m_Window, m_SizerFlags);
-    }
+    case ITEM_COMBOBOXDIR: return AddBrowseButton(sizer);
+    case ITEM_EMPTY: return fgz;
+    case ITEM_SPACER: sizer->AddSpacer(m_Style); return fgz;
+    default: return Add(sizer, fgz);
   }
-  
-  return use;
 }
 
 bool wxExItem::SetValue(const wxAny& value) const
 {
-  if (m_Window == NULL)
+  if (m_Window == nullptr)
   {
     return false;
   }

@@ -119,7 +119,7 @@ void fixture::testConfigItem()
 
   // Now check ToConfig (after Layout).  
   CPPUNIT_ASSERT( ci_str.Layout(panel, sizer) != NULL);
-  CPPUNIT_ASSERT( ci_st.Layout(panel, sizer) == NULL);
+  CPPUNIT_ASSERT( ci_st.Layout(panel, sizer) != NULL);
   CPPUNIT_ASSERT( ci_str.ToConfig(true));
   CPPUNIT_ASSERT( ci_str.ToConfig(false));
   CPPUNIT_ASSERT(!ci_st.ToConfig(true));

@@ -51,6 +51,13 @@ enum wxExItemType
   ITEM_USER,                 ///< provide your own window
 };
 
+enum wxExLabelType
+{
+  LABEL_NONE,                ///< no label
+  LABEL_LEFT,                ///< label left from window
+  LABEL_ABOVE,               ///< label above window
+};
+
 /// Callback for user window creation.
 typedef void (*wxExUserWindowCreate)(wxWindow* user, wxWindow* parent, bool readonly);
 
@@ -78,10 +85,8 @@ public:
     /// might also contain the note after a tab for a command link button
     /// if the window supports it you can use a markup label
     const wxString& label,
-    /// initial value
+    /// initial value, also used as default for a hyperlink ctrl, or as lexer for STC
     const wxString& value = wxEmptyString,
-    /// extra info, used as default for a hyperlink ctrl, or as lexer for STC
-    const wxString& info = wxEmptyString,
     const wxString& page = wxEmptyString,
     /// the style for the control used (e.g. wxTE_MULTILINE or wxTE_PASSWORD)
     long style = 0,
@@ -89,11 +94,10 @@ public:
     bool is_required = false,
     /// will the label be displayed as a static text
     /// ignored for a static text
-    bool add_label = true,
-    int cols = -1)
-    : wxExItem(type, style, page, label, value, info, is_required, 
+    wxExLabelType label_type = LABEL_LEFT)
+    : wxExItem(type, style, page, label, value, is_required, 
       (type != ITEM_STATICTEXT && 
-       type != ITEM_HYPERLINKCTRL ? add_label: false), wxID_ANY, cols) {;};
+       type != ITEM_HYPERLINKCTRL ? label_type: LABEL_NONE), wxID_ANY) {;};
 
   /// Constructor for a ITEM_SPINCTRL or a ITEM_SLIDER item.
   wxExItem(const wxString& label,
@@ -103,10 +107,9 @@ public:
     const wxString& page = wxEmptyString,
     wxExItemType type = ITEM_SPINCTRL,
     /// style for a ITEM_SLIDER item
-    long style = wxSL_HORIZONTAL,
-    int cols = -1)
+    long style = wxSL_HORIZONTAL)
     : wxExItem(type, style, page, label, value,
-      wxEmptyString, false, true, wxID_ANY, cols, 1, min, max) {;};
+      false, LABEL_LEFT, wxID_ANY, 1, min, max) {;};
 
   /// Constructor for a ITEM_SPINCTRL_DOUBLE item.
   wxExItem(const wxString& label,
@@ -114,10 +117,9 @@ public:
     double min, 
     double max,
     const wxString& page = wxEmptyString,
-    double inc = 1,
-    int cols = -1)
+    double inc = 1)
     : wxExItem(ITEM_SPINCTRL_DOUBLE, 0, page, label, value,
-      wxEmptyString, false, true, wxID_ANY, cols, 1, min, max, inc) {;};
+      false, LABEL_LEFT, wxID_ANY, 1, min, max, inc) {;};
 
   /// Constructor for a ITEM_CHECKLISTBOX_BOOL item. 
   /// This checklistbox can be used to get/set several boolean values.
@@ -125,10 +127,9 @@ public:
     /// the set with names of boolean items
     const std::set<wxString> & choices,
     const wxString& page = wxEmptyString,
-    long style = 0,
-    int cols = -1)
+    long style = 0)
     : wxExItem(ITEM_CHECKLISTBOX_BOOL, style, page, "checklistbox_bool", choices,
-      wxEmptyString, false, false, wxID_ANY, cols, 1, 0, 1, 1) {;};
+      false, LABEL_NONE, wxID_ANY, 1, 0, 1, 1) {;};
 
   /// Constructor for a ITEM_RADIOBOX, or a ITEM_CHECKLISTBOX_BIT item. 
   /// This checklistbox (not mutually exclusive choices)
@@ -144,10 +145,9 @@ public:
     const wxString& page = wxEmptyString,
     /// major dimension for the radiobox
     int majorDimension = 0,
-    long style = wxRA_SPECIFY_COLS,
-    int cols = -1)
+    long style = wxRA_SPECIFY_COLS)
     : wxExItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX_BIT, style, page, label, choices,
-      wxEmptyString, false, false, wxID_ANY, cols, majorDimension, 0, 1, 1) {;};
+      false, LABEL_NONE, wxID_ANY, majorDimension, 0, 1, 1) {;};
 
   /// Constructor for a ITEM_USER item.
   wxExItem(const wxString& label,
@@ -157,13 +157,13 @@ public:
     wxExUserWindowCreate create,
     const wxString& page = wxEmptyString,
     bool is_required = false,
-    bool add_label = true,
-    int cols = -1)
+    wxExLabelType label_type = LABEL_LEFT)
     : wxExItem(ITEM_USER, 0, page, label, wxEmptyString,
-      wxEmptyString, is_required, add_label, wxID_ANY, cols, 1, 0, 1, 1, window, create) {;};
+      is_required, label_type, wxID_ANY, 1, 0, 1, 1, window, create) {;};
 
-  /// Constuctor for the other types (as ITEM_BUTTON, ITEM_DIRPICKERCTRL,
-  /// ITEM_FILEPICKERCTRL, ITEM_INT).
+  /// Constuctor for the other types (as ITEM_BUTTON, 
+  /// ITEM_COMBOBOX, ITEM_DIRPICKERCTRL,
+  /// ITEM_FILEPICKERCTRL, ITEM_INT, ITEM_LISTVIEW).
   wxExItem(
     const wxString& label,
     wxExItemType type,
@@ -173,16 +173,15 @@ public:
     bool is_required = false,
     /// the id as used by the window, see wxExFrame::OnCommandItemDialog, 
     int id = wxID_ANY,
-    bool add_label = true,
+    wxExLabelType label_type = LABEL_LEFT,
     /// the style, this default value is translated to correct default
     /// for corresponding window (such as wxFLP_DEFAULT_STYLE for ITEM_FILEPICKERCTRL).
-    long style = 0,
-    int cols = -1)
-    : wxExItem(type, style, page, label, value, wxEmptyString, is_required, 
+    long style = 0)
+    : wxExItem(type, style, page, label, value, is_required, 
         type == ITEM_BUTTON ||
         type == ITEM_CHECKBOX ||
         type == ITEM_COMMAND_LINK_BUTTON ||
-        type == ITEM_TOGGLEBUTTON ? false: add_label, id, cols) {;};
+        type == ITEM_TOGGLEBUTTON ? LABEL_NONE: label_type, id) {;};
 
   /// Returns the number of columns for the current page.
   int GetColumns() const {return m_PageCols;};
@@ -206,7 +205,7 @@ public:
   /// has no (or not yet) associated window, or conversion is not implemented.
   const wxAny GetValue() const;
 
-  /// Returns the window (first call Layout, to create it, otherwise it is NULL).
+  /// Returns the window (first call Layout, to create it, otherwise it is nullptr).
   wxWindow* GetWindow() const {return m_Window;};
   
   /// Is this item allowed to be expanded on a row.
@@ -214,7 +213,7 @@ public:
 
   /// Layouts this item (creates the window) on the specified sizer.
   /// It returns the flex grid sizer that was used for creating the item sizer.
-  /// Or it returns NULL if no flex grid sizer was used.
+  /// Or it returns nullptr if no flex grid sizer was used.
   virtual wxFlexGridSizer* Layout(
     /// the parent
     wxWindow* parent, 
@@ -223,9 +222,9 @@ public:
     /// specify the item will be readonly, it will not be changeable
     /// if underlying control supports this
     bool readonly = false,
-    /// specify the sizer for creating the item, or NULL,
+    /// specify the sizer for creating the item, or nullptr,
     /// than a new one is created
-    wxFlexGridSizer* fgz = NULL);
+    wxFlexGridSizer* fgz = nullptr);
     
   /// Sets this item to be growable.
   /// Default whether the item row is growable is determined
@@ -238,7 +237,7 @@ public:
   void SetValidator(wxValidator* validator) {m_Validator = validator;};
   
   /// Sets actual value for the associated window.
-  /// Returns false if window is NULL, or value was not set.
+  /// Returns false if window is nullptr, or value was not set.
   bool SetValue(const wxAny& value) const;
 protected:
   /// Delegate constructor.
@@ -256,18 +255,13 @@ protected:
     const wxString& label = wxEmptyString, 
     /// intitial value if appropriate
     const wxAny& value = wxString(),
-    /// some extra info
-    const wxString& info = wxEmptyString,
     /// support for the underlying control
     bool is_required = false, 
     /// If you specify add label, then the label is added as a label in front of
     /// the item, otherwise the label is not added
-    bool add_label = false,
+    wxExLabelType label_type = LABEL_NONE,
     /// the window id
     int id = wxID_ANY, 
-    /// If you use the default for cols, then the number of cols used
-    /// is determined by the dialog, otherwise this number is used.
-    int cols = -1, 
     /// major dimention for radio boxes
     int major_dimension = 1,
     /// min value if appropriate
@@ -277,23 +271,29 @@ protected:
     /// increment value if appropriate
     const wxAny& inc = 1,
     /// window, normally created by Layout, but may be supplied here
-    wxWindow* window = NULL, 
+    wxWindow* window = nullptr, 
     /// the process callback for window creation
-    wxExUserWindowCreate create = NULL);
+    wxExUserWindowCreate create = nullptr);
 private:
+  wxFlexGridSizer* Add(wxSizer* sizer, wxFlexGridSizer* current) const;
   wxFlexGridSizer* AddBrowseButton(wxSizer* sizer) const;
-  void AddStaticText(wxSizer* sizer) const;
+  wxFlexGridSizer* AddStaticText(wxSizer* sizer) const;
   bool CreateWindow(wxWindow* parent, bool readonly);
 
-  bool m_AddLabel, m_IsRequired, m_IsRowGrowable;
-  int m_Cols, m_Id, m_MajorDimension, m_PageCols;
-  wxAny m_Initial, m_Min, m_Max, m_Inc;
-  wxString m_Label, m_Info, m_Page;
+  bool m_IsRequired;
+  int m_Id, m_MajorDimension;
   long m_Style;
+  wxExItemType m_Type;
+  wxExLabelType m_LabelType;
+  wxAny m_Initial, m_Min, m_Max, m_Inc;
+  wxString m_Label;
+
+  bool m_IsRowGrowable;
+  int m_PageCols;
+  wxString m_Page;
 
   wxExUserWindowCreate m_UserWindowCreate;
   
-  wxExItemType m_Type;
   wxSizerFlags m_SizerFlags;
   wxValidator* m_Validator;
   wxWindow* m_Window;

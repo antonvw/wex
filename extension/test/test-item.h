@@ -17,31 +17,33 @@ const auto TestItems(bool use_notebook = false)
   as.push_back("test1");
   as.push_back("test2");
   as.push_back("test3");
-  
-  if (use_notebook)
-  {
-    return std::vector<wxExItem> {
-      wxExItem("notebook", wxEmptyString, wxEmptyString, "page1"),
-      wxExItem(20, "page1"),
-      wxExItem(wxHORIZONTAL, "page1"),
-      wxExItem()};
-  }
-  
-  return std::vector<wxExItem> {
+
+  return use_notebook ? std::vector<wxExItem> {
+    wxExItem("notebook", wxEmptyString, "page1"),
+    wxExItem(20, "page1"),
+    wxExItem(wxHORIZONTAL, "page1"),
+    wxExItem("listview-folder", ITEM_LISTVIEW, wxEmptyString, "page2"),
+    wxExItem("listview-file", ITEM_LISTVIEW, wxAny(), "page2", false, wxID_ANY, LABEL_LEFT, (long)wxExListView::LIST_FILE),
+    wxExItem("listview-none", ITEM_LISTVIEW, ("1\n2\n3\n4\n"), "page2", false, wxID_ANY, LABEL_LEFT, (long)wxExListView::LIST_NONE),
+    wxExItem("STC", "cpp", "page2", 0, ITEM_STC),
+    wxExItem()}
+    : std::vector<wxExItem> {
     wxExItem(),
     wxExItem(20),
     wxExItem(wxHORIZONTAL),
-    wxExItem("string"),
-    wxExItem("spin control", 10, 5, 15),
+    wxExItem("string1"),
+    wxExItem("string2"),
+    wxExItem("string3"),
+    wxExItem("spin control1", 10, 5, 15),
+    wxExItem("spin control2", 10, 5, 15),
     wxExItem("spin control double", 10.1, 5.0, 15.0, wxEmptyString, 0.1),
-    wxExItem("slider", 10, 5, 15, wxEmptyString, ITEM_SLIDER),
+    wxExItem("slider1", 10, 5, 15, wxEmptyString, ITEM_SLIDER),
+    wxExItem("slider2", 10, 5, 15, wxEmptyString, ITEM_SLIDER),
     wxExItem("checkbox1", ITEM_CHECKBOX),
     wxExItem("checkbox2", ITEM_CHECKBOX),
     wxExItem("checkbox3", ITEM_CHECKBOX),
-    wxExItem("listview-folder", ITEM_LISTVIEW),
-    wxExItem("listview-file", ITEM_LISTVIEW, wxAny(), wxEmptyString, false, wxID_ANY, true, (long)wxExListView::LIST_FILE),
-    wxExItem("listview-none", ITEM_LISTVIEW, wxString("1\n2\n3\n4\n"), wxEmptyString, false, wxID_ANY, true, (long)wxExListView::LIST_NONE),
-    wxExItem("button", ITEM_BUTTON),
-    wxExItem("STC", "cpp", wxEmptyString, wxEmptyString, 0, ITEM_STC),
+    wxExItem("checkbox4", ITEM_CHECKBOX),
+    wxExItem("button1", ITEM_BUTTON),
+    wxExItem("button2", ITEM_BUTTON),
     wxExItem("combobox", ITEM_COMBOBOX, as)};
 }

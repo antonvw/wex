@@ -459,7 +459,6 @@ int wxExSTC::ConfigDialog(
   
   const std::vector<wxExConfigItem> items{
     // General page.
-    // use 3 cols here, but 1 for others on this page
     wxExConfigItem(std::set<wxString> {
       _("End of line"),
       _("Line numbers"),
@@ -467,32 +466,33 @@ int wxExSTC::ConfigDialog(
       _("Caret line"),
       _("Scroll bars"),
       _("Auto complete"),
-      _("vi mode")}, _("General") + ":3"),
+      _("vi mode")}, _("General")),
     wxExConfigItem(_("Auto indent"), std::map<long, const wxString> {
       {INDENT_NONE, _("None")},
       {INDENT_WHITESPACE, _("Whitespace")},
       {INDENT_LEVEL, _("Level")},
-      {INDENT_ALL, _("Both")}}, true, _("General"), 1),
+      {INDENT_ALL, _("Both")}}, true, _("General"), 4),
     wxExConfigItem(_("Wrap visual flags"), std::map<long, const wxString> {
       {wxSTC_WRAPVISUALFLAG_NONE, _("None")},
       {wxSTC_WRAPVISUALFLAG_END, _("End")},
       {wxSTC_WRAPVISUALFLAG_START, _("Start")},
-      {wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")}}, true, _("General"), 1),
-    (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Default font"),ITEM_FONTPICKERCTRL, _("General")): wxExConfigItem()),
+      {wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")}}, true, _("General"), 4),
     wxExConfigItem(_("Whitespace"), std::map<long, const wxString> {
       {wxSTC_WS_INVISIBLE, _("Invisible")},
       {wxSTC_WS_VISIBLEAFTERINDENT, _("Visible after indent")},
-      {wxSTC_WS_VISIBLEALWAYS, _("Visible always")}}, true, _("General"), 1),
+      {wxSTC_WS_VISIBLEALWAYS, _("Visible always")}}, true, _("General"), 4),
     wxExConfigItem(_("Wrap line"), std::map<long, const wxString> {
       {wxSTC_WRAP_NONE, _("None")},
       {wxSTC_WRAP_WORD, _("Word")},
       {wxSTC_WRAP_CHAR, _("Char")}
 #if wxCHECK_VERSION(3,1,0)
-      ,{wxSTC_WRAP_WHITESPACE, _("Whitespace")}}
+      ,{wxSTC_WRAP_WHITESPACE, _("Whitespace")}},
 #else
-      }
+      },
 #endif  
-      ,true, _("General"), 1),
+      true, _("General"), 4),
+    (wxExLexers::Get()->GetCount() > 0 ? 
+       wxExConfigItem(_("Default font"), ITEM_FONTPICKERCTRL, _("General")): wxExConfigItem()), 
     // Edge page.
     wxExConfigItem(_("Edge column"), 0, 500, _("Edge")),
     wxExConfigItem( _("Edge line"),  std::map<long, const wxString> {
@@ -515,7 +515,7 @@ int wxExSTC::ConfigDialog(
       {wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")},
       {wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")},
       {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")}}, false,_("Folding")): wxExConfigItem()),
-    // Printer page
+    // Printer page.
     (!(flags & STC_CONFIG_SIMPLE) ? wxExConfigItem(_("Print flags"), std::map<long, const wxString> {
       {wxSTC_PRINT_NORMAL, _("Normal")},
       {wxSTC_PRINT_INVERTLIGHT, _("Invert on white")},
@@ -523,7 +523,7 @@ int wxExSTC::ConfigDialog(
       {wxSTC_PRINT_COLOURONWHITE, _("Colour on white")},
       {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}}, true, _("Printer"), 1):  wxExConfigItem()),
     // Directory page.
-    (!(flags & STC_CONFIG_SIMPLE) && wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Include directory"),ITEM_LISTVIEW, _("Directory"), false, wxID_ANY, 25, false): wxExConfigItem())};
+    (!(flags & STC_CONFIG_SIMPLE) && wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Include directory"), ITEM_LISTVIEW, _("Directory"), false, wxID_ANY, 25, LABEL_NONE): wxExConfigItem())};
 
   int buttons = wxOK | wxCANCEL;
 
@@ -532,19 +532,19 @@ int wxExSTC::ConfigDialog(
     buttons |= wxAPPLY;
   }
   
-  const int style = wxExConfigDialog::ITEM_NOTEBOOK;
+  const int style = wxExConfigDialog::ITEM_LISTBOOK;
 
   if (!(flags & STC_CONFIG_MODELESS))
   {
     return wxExConfigDialog(
-      parent, items, title, 0, 1, buttons, id, style).ShowModal();
+      parent, items, title, 0, -1, buttons, id, style).ShowModal();
   }
   else
   {
     if (m_ConfigDialog == NULL)
     {
       m_ConfigDialog = new wxExConfigDialog(
-        parent, items, title, 0, 1, buttons, id, style);
+        parent, items, title, 0, -1, buttons, id, style);
     }
 
     return m_ConfigDialog->Show();
