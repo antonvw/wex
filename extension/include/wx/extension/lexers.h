@@ -113,7 +113,7 @@ public:
   
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object 
-  /// (both the parameter and returned value may be NULL). 
+  /// (both the parameter and returned value may be nullptr). 
   static wxExLexers* Set(wxExLexers* lexers);
   
   /// Sets specified theme.

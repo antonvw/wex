@@ -136,7 +136,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExSTC* stc = GetSTC();
-    if (stc != NULL)
+    if (stc != nullptr)
     {
       auto it = wxExFindReplaceData::Get()->GetFindStrings().begin();
       std::advance(it, event.GetId() - ID_FIND_FIRST);
@@ -202,7 +202,7 @@ bool wxExManagedFrame::AddToolBarPane(
 bool wxExManagedFrame::AllowClose(wxWindowID id, wxWindow* page)
 {
   // The page will be closed, so do not update find focus now.
-  SetFindFocus(NULL);
+  SetFindFocus(nullptr);
   return true;
 }
 
@@ -214,7 +214,7 @@ void wxExManagedFrame::AppendPanes(wxMenu* menu) const
 
   for (auto it : m_ToggledPanes)
   {
-    if (it.first.first == "PROCESS" && wxExProcess::GetShell() == NULL)
+    if (it.first.first == "PROCESS" && wxExProcess::GetShell() == nullptr)
     {
       continue;
     }
@@ -265,18 +265,18 @@ void wxExManagedFrame::HideExBar(int hide)
   if (m_Manager.GetPane("VIBAR").IsShown())
   {
     if (hide == HIDE_BAR_FORCE || hide == HIDE_BAR_FORCE_FOCUS_STC ||
-        (GetStatusBar() != NULL && GetStatusBar()->IsShown()))
+        (GetStatusBar() != nullptr && GetStatusBar()->IsShown()))
     {
       ShowPane("VIBAR", false);
     }
     
     if ((hide == HIDE_BAR_FOCUS_STC || 
          hide == HIDE_BAR_FORCE_FOCUS_STC) && 
-         m_TextCtrl != NULL && 
-         m_TextCtrl->GetEx() != NULL)
+         m_TextCtrl != nullptr && 
+         m_TextCtrl->GetEx() != nullptr)
     {
       if (m_TextCtrl->GetValue().StartsWith("!") && 
-        wxExAddressRange::GetProcess() != NULL &&
+        wxExAddressRange::GetProcess() != nullptr &&
         wxExAddressRange::GetProcess()->IsRunning())
       {
         wxExAddressRange::GetProcess()->GetShell()->SetFocus();
@@ -293,7 +293,7 @@ void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 {
   wxExSTC* stc = wxDynamicCast(page, wxExSTC);
 
-  if (stc != NULL)
+  if (stc != nullptr)
   {
     if (stc->GetFileName().FileExists())
     {
@@ -325,7 +325,7 @@ bool wxExManagedFrame::OpenFile(
 
 void wxExManagedFrame::ShowExMessage(const wxString& text)
 {
-  if (GetStatusBar() != NULL && GetStatusBar()->IsShown())
+  if (GetStatusBar() != nullptr && GetStatusBar()->IsShown())
   {
     HideExBar();
     GetStatusBar()->SetStatusText(text);
@@ -358,7 +358,7 @@ void wxExManagedFrame::SyncAll()
 {
   wxExSTC* stc = GetSTC();
   
-  if (stc != NULL)
+  if (stc != nullptr)
   {
     stc->Sync(wxConfigBase::Get()->ReadBool("AllowSync", true));
   }
@@ -366,7 +366,7 @@ void wxExManagedFrame::SyncAll()
 
 void wxExManagedFrame::SyncCloseAll(wxWindowID id)
 {
-  SetFindFocus(NULL);
+  SetFindFocus(nullptr);
 }
 
 // Implementation of support class.
@@ -380,7 +380,7 @@ wxExTextCtrl::wxExTextCtrl(
   const wxSize& size)
   : wxExFindTextCtrl(parent, id, pos, size)
   , m_Frame(frame)
-  , m_ex(NULL)
+  , m_ex(nullptr)
   , m_Controlr(false)
   , m_ModeVisual(false)
   , m_UserInput(false)
@@ -419,7 +419,7 @@ wxExTextCtrl::wxExTextCtrl(
       break;
       
     case WXK_ESCAPE:
-      if (m_ex != NULL)
+      if (m_ex != nullptr)
       {
         m_ex->GetSTC()->PositionRestore();
       }
@@ -444,7 +444,7 @@ wxExTextCtrl::wxExTextCtrl(
   Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
     event.Skip();
     if (
-       m_UserInput && m_ex != NULL && IsFind())
+       m_UserInput && m_ex != nullptr && IsFind())
     {
       m_ex->GetSTC()->PositionRestore();
       m_ex->GetSTC()->FindNext(
@@ -454,7 +454,7 @@ wxExTextCtrl::wxExTextCtrl(
     }});
 
   Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
-    if (m_ex == NULL || GetValue().empty())
+    if (m_ex == nullptr || GetValue().empty())
     {
       m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
       return;
@@ -510,7 +510,7 @@ wxExTextCtrl::wxExTextCtrl(
 
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
     event.Skip();
-    if (m_ex != NULL)
+    if (m_ex != nullptr)
     {
       m_ex->GetSTC()->PositionSave();
     }});
@@ -523,7 +523,7 @@ wxExTextCtrl::~wxExTextCtrl()
 
 void wxExTextCtrl::Expand()
 {
-  if (m_ex != NULL && m_ex->GetSTC()->GetFileName().FileExists())
+  if (m_ex != nullptr && m_ex->GetSTC()->GetFileName().FileExists())
   {
     wxSetWorkingDirectory(m_ex->GetSTC()->GetFileName().GetPath());
   }
@@ -559,7 +559,7 @@ void wxExTextCtrl::Handle(wxKeyEvent& event)
           
       default:
         if (
-           m_ex != NULL &&
+           m_ex != nullptr &&
           !m_ex->GetMacros().GetRegister(c).empty())
         {
           AppendText(m_ex->GetMacros().GetRegister(c));

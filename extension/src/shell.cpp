@@ -52,7 +52,7 @@ wxExShell::wxExShell(
   , m_CommandsInConfigDelimiter(wxUniChar(0x03))
   , m_CommandsSaveInConfig(commands_save_in_config)
   , m_Prompt(prompt)
-  , m_Process(NULL)
+  , m_Process(nullptr)
   , m_Enabled(true)
 {
   // Override defaults from config.
@@ -223,7 +223,7 @@ wxExShell::wxExShell(
         {
           skip = false;
         
-          if (m_Process != NULL)
+          if (m_Process != nullptr)
           {
             m_Process->Kill();
           }
@@ -476,7 +476,7 @@ bool wxExShell::ProcessChar(int key)
       }
       else if (m_Command.empty())
       {
-        if (m_Process != NULL)
+        if (m_Process != nullptr)
         {
           m_Process->Command(m_Command);
         }
@@ -510,7 +510,7 @@ bool wxExShell::ProcessChar(int key)
             AppendText(GetEOL() + m_Command);
             KeepCommand();
           
-            if (m_Process != NULL)
+            if (m_Process != nullptr)
             {
               m_Process->Command(m_Command);
             }
@@ -531,7 +531,7 @@ bool wxExShell::ProcessChar(int key)
         {
           KeepCommand();
           
-          if (m_Process != NULL)
+          if (m_Process != nullptr)
           {
             m_Process->Command(m_Command);
           }

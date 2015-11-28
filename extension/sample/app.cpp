@@ -95,7 +95,7 @@ void wxExSampleDir::OnFile(const wxString& file)
 #endif
 
 wxExSampleFrame::wxExSampleFrame()
-  : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName(), 4)
+  : wxExManagedFrame(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName(), 4)
   , m_Process(new wxExProcess())
   , m_FlagsSTC(0)
   , m_Notebook(new wxExNotebook(
@@ -341,15 +341,15 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     case wxID_COPY:
     case wxID_PASTE:
     case wxID_CLEAR:
-      if (editor != NULL)
+      if (editor != nullptr)
       {
         wxPostEvent(editor, event);
       }
-      else if (grid != NULL)
+      else if (grid != nullptr)
       {
         wxPostEvent(grid, event);
       }
-      else if (listview != NULL)
+      else if (listview != nullptr)
       {
         wxPostEvent(listview, event);
       }
@@ -433,7 +433,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       break;
     
     case ID_STATISTICS_SHOW:
-      if (m_Notebook->SetSelection("Statistics") == NULL)
+      if (m_Notebook->SetSelection("Statistics") == nullptr)
       {
         m_Notebook->AddPage(m_Statistics.Show(m_Notebook), "Statistics");
       }
@@ -502,8 +502,8 @@ void wxExSampleFrame::OnUpdateUI(wxUpdateUIEvent& event)
     case wxID_PREVIEW:
     case wxID_PRINT:
       event.Enable(
-        (GetListView() != NULL && GetListView()->GetItemCount() > 0) ||
-        (GetSTC() != NULL && GetSTC()->GetLength() > 0));
+        (GetListView() != nullptr && GetListView()->GetItemCount() > 0) ||
+        (GetSTC() != nullptr && GetSTC()->GetLength() > 0));
       break;
   }
 }
@@ -519,7 +519,7 @@ void wxExSampleFrame::ShowConfigItems()
     wxAPPLY | wxCANCEL,
     wxID_ANY,
     wxExConfigDialog::ITEM_LISTBOOK,
-    NULL,
+    nullptr,
     wxDefaultPosition,
 #ifdef __WXMSW__    
     wxSize(500, 500));

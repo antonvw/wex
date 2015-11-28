@@ -31,7 +31,7 @@ protected:
   // Interface from wxExFrameWithHistory.
   virtual wxExListView* Activate(
     wxExListView::wxExListType type, 
-    const wxExLexer* lexer = NULL);
+    const wxExLexer* lexer = nullptr);
   virtual bool AllowClose(wxWindowID id, wxWindow* page) override;
   virtual wxExListView* GetListView() override;
   virtual wxExSTC* GetSTC() override;

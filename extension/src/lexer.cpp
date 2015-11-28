@@ -158,7 +158,7 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
 void wxExLexer::ApplyWhenSet(
   const wxString& lexer, wxStyledTextCtrl* stc, bool clear)
 {
-  if (stc == NULL)
+  if (stc == nullptr)
   {
     return;
   }
@@ -461,7 +461,7 @@ bool wxExLexer::Set(
 
   (*this) = wxExLexers::Get()->FindByName(lexer);
   
-  if (!m_IsOk && stc != NULL)
+  if (!m_IsOk && stc != nullptr)
   {
     (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
   }
@@ -478,7 +478,7 @@ bool wxExLexer::Set(
 
 bool wxExLexer::Set(const wxExLexer& lexer, wxStyledTextCtrl* stc)
 {
-  if (lexer.GetScintillaLexer().empty() && stc != NULL)
+  if (lexer.GetScintillaLexer().empty() && stc != nullptr)
   {
     (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
   }
@@ -550,7 +550,7 @@ void wxExLexer::Set(const wxXmlNode* node)
         // Add all keywords that point to a keyword set.
         wxXmlAttribute* att = child->GetAttributes();
         
-        while (att != NULL)
+        while (att != nullptr)
         {
           const int setno = atoi(att->GetName().AfterFirst('-'));
           const wxString keywords = wxExLexers::Get()->GetKeywords(

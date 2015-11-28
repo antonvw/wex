@@ -30,8 +30,8 @@ void fixture::testStatistics()
   CPPUNIT_ASSERT(!statistics1.Get().empty());
   CPPUNIT_ASSERT(statistics1.Get("xx") == 2);
   
-  CPPUNIT_ASSERT(statistics1.Show(m_Frame) != NULL);
-  CPPUNIT_ASSERT(statistics1.Show(m_Frame) != NULL);
+  CPPUNIT_ASSERT(statistics1.Show(m_Frame) != nullptr);
+  CPPUNIT_ASSERT(statistics1.Show(m_Frame) != nullptr);
   CPPUNIT_ASSERT(statistics2.Set("xx", 10) == 10);
   
   statistics1.Clear();

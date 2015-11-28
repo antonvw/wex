@@ -27,9 +27,9 @@ public:
     const wxExTool& tool, 
     /// frame
     wxExFrameWithHistory* frame,
-    /// listview to which is reported, if NULL,
+    /// listview to which is reported, if nullptr,
     /// calls Activate on frame to find report
-    wxExListView* report = NULL);
+    wxExListView* report = nullptr);
 private:
   /// The comment type.
   enum wxExCommentType

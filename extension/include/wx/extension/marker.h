@@ -18,7 +18,7 @@ class WXDLLIMPEXP_BASE wxExMarker
 {
 public:
   /// Default constructor.
-  wxExMarker(const wxXmlNode* node = NULL);
+  wxExMarker(const wxXmlNode* node = nullptr);
 
   /// Constructor.
   wxExMarker(int no, int symbol);

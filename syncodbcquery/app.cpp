@@ -46,7 +46,7 @@ bool App::OnInit()
 }
 
 Frame::Frame()
-  : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
+  : wxExFrameWithHistory(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
   , m_Running(false)
   , m_Stopped(false)
   , m_Results(new wxExGrid(this))

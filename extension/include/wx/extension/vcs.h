@@ -73,12 +73,12 @@ public:
 
   /// Sets the vcs entry using base folder.
   /// If not, it will show
-  /// a dialog for selecting a vcs folder (if parent is not NULL).
+  /// a dialog for selecting a vcs folder (if parent is not nullptr).
   /// Returns true if entry is under vcs control.
   bool SetEntryFromBase(
     /// Parent window for showing dir dialog if 
     /// there is not a current directory.
-    wxWindow* parent = NULL);
+    wxWindow* parent = nullptr);
 
 #if wxUSE_GUI
   /// Calls show dialog for the current vcs entry.

@@ -442,7 +442,7 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   if (wxExConfigFirstOf(_("Base folder")).empty()) 
   {
     if (
-      parent != NULL && 
+      parent != nullptr && 
       wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
     {
       return false;
@@ -457,7 +457,7 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
     if (m_Entry.GetName().empty())
     {
       if (
-        parent != NULL &&
+        parent != nullptr &&
         wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
       {
         return false;

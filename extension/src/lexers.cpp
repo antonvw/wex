@@ -19,7 +19,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h> // for wxExMatchesOneOf
 
-wxExLexers* wxExLexers::m_Self = NULL;
+wxExLexers* wxExLexers::m_Self = nullptr;
 
 // Constructor for lexers from specified filename.
 // This must be an existing xml file containing all lexers.
@@ -255,7 +255,7 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
 
 wxExLexers* wxExLexers::Get(bool createOnDemand)
 {
-  if (m_Self == NULL && createOnDemand)
+  if (m_Self == nullptr && createOnDemand)
   {
     m_Self = new wxExLexers(wxFileName(
 #ifdef wxExUSE_PORTABLE
@@ -382,7 +382,7 @@ bool wxExLexers::LoadDocument()
   // Check config, but do not create one.
   wxConfigBase* config = wxConfigBase::Get(false);
 
-  if (config != NULL)
+  if (config != nullptr)
   {
     if (!config->Exists(_("Add what")))
     {

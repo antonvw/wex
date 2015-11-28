@@ -78,7 +78,7 @@ void wxExDialog::LayoutSizers(bool add_separator_line)
       CreateSeparatedButtonSizer(m_ButtonFlags):
       CreateButtonSizer(m_ButtonFlags));
 
-    if (sizer != NULL)
+    if (sizer != nullptr)
     {
       m_TopSizer->Add(sizer, flag);
     }

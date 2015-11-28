@@ -43,11 +43,11 @@ public:
   bool Logoff();
 
   /// Logons to the datasource (shows a connection dialog if parent 
-  /// is not NULL).
+  /// is not nullptr).
   /// max_items specifies max number of datasources in the combobox and config.
   /// Returns false if dialog cancelled or logon fails.
   bool Logon(
-    wxWindow* parent = NULL,
+    wxWindow* parent = nullptr,
     int max_items = 4,
     const wxString& title = _("Open ODBC Connection"));
 

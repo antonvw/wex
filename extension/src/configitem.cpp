@@ -175,7 +175,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       break;
 
     case ITEM_USER:
-      if (m_UserWindowToConfig != NULL)
+      if (m_UserWindowToConfig != nullptr)
       {
         return (m_UserWindowToConfig)(GetWindow(), save);
       }

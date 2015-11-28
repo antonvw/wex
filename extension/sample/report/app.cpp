@@ -42,7 +42,7 @@ bool wxExRepSampleApp::OnInit()
 }
 
 wxExRepSampleFrame::wxExRepSampleFrame()
-  : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
+  : wxExFrameWithHistory(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
 {
   SetIcon(wxICON(app));
 
@@ -158,7 +158,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
     {
       auto* lv = GetListView();
 
-      if (lv != NULL)
+      if (lv != nullptr)
       {
         lv->PrintPreview();
       }
@@ -171,7 +171,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     auto* lv = GetListView();
 
-    if (lv != NULL)
+    if (lv != nullptr)
     {
       lv->Print();
     }
@@ -199,7 +199,7 @@ wxExListView* wxExRepSampleFrame::Activate(
     {
       if (type == wxExListView::LIST_KEYWORD)
       {
-        if (lexer != NULL)
+        if (lexer != nullptr)
         {
           if (lexer->GetScintillaLexer() != "cpp")
           {
@@ -208,7 +208,7 @@ wxExListView* wxExRepSampleFrame::Activate(
               wxLogMessage(lexer->GetDisplayLexer() + ", only cpp for the sample");
             }
               
-            return NULL;
+            return nullptr;
           }
         }
       }
@@ -217,7 +217,7 @@ wxExListView* wxExRepSampleFrame::Activate(
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 bool wxExRepSampleFrame::AllowClose(wxWindowID id, wxWindow* page)

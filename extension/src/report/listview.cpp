@@ -67,7 +67,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     bool first = true;
     wxString file1,file2;
-    wxExListView* list = NULL;
+    wxExListView* list = nullptr;
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       wxExListItem li(this, i);
@@ -80,7 +80,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
           if (GetSelectedItemCount() == 1)
           {
             list = m_Frame->Activate(LIST_FILE);
-            if (list == NULL) return;
+            if (list == nullptr) return;
             const int main_selected = list->GetFirstSelected();
             wxExCompareFile(wxExListItem(list, main_selected).GetFileName(), *filename);
           }
@@ -197,7 +197,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     {
       wxExListView* list = m_Frame->Activate(LIST_FILE);
 
-      if (list != NULL && list->GetSelectedItemCount() == 1)
+      if (list != nullptr && list->GetSelectedItemCount() == 1)
       {
         wxExListItem thislist(this, GetFirstSelected());
         const wxString current_file = thislist.GetFileName().GetFullPath();

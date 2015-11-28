@@ -25,7 +25,7 @@ wxExLink::wxExLink(wxExSTC* stc)
 
 bool wxExLink::AddBasePath()
 {
-  if (m_STC == NULL)
+  if (m_STC == nullptr)
   {
     return false;
   }
@@ -64,7 +64,7 @@ const wxString wxExLink::FindPath(const wxString& text) const
 
   // Path in .po files.
   if (
-    m_STC != NULL &&
+    m_STC != nullptr &&
     m_STC->GetLexer().GetScintillaLexer() == "po" && text.StartsWith("#: "))
   {
     return text.Mid(3);
@@ -156,7 +156,7 @@ const wxString wxExLink::GetPath(
 #endif
     if (
       file.IsRelative() && 
-      m_STC != NULL && 
+      m_STC != nullptr && 
       m_STC->GetFileName().FileExists())
     {
       if (file.MakeAbsolute(m_STC->GetFileName().GetPath()))

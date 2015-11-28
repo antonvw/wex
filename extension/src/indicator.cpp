@@ -21,7 +21,7 @@ wxExIndicator::wxExIndicator(const wxXmlNode* node)
   , m_Style(-1)
   , m_Under(false)
 {
-  if (node != NULL)
+  if (node != nullptr)
   {
     Set(node);
   }

@@ -23,9 +23,9 @@
 
 int wxExApp::OnExit()
 {
-  delete wxExFindReplaceData::Set(NULL);
-  delete wxExLexers::Set(NULL);
-  delete wxExPrinting::Set(NULL);
+  delete wxExFindReplaceData::Set(nullptr);
+  delete wxExLexers::Set(nullptr);
+  delete wxExPrinting::Set(nullptr);
 
   return wxApp::OnExit(); // this destroys the config
 }
@@ -57,19 +57,19 @@ bool wxExApp::OnInit()
 #endif
   wxConfigBase::Set(config);
   
-  const wxLanguageInfo* info = NULL;
+  const wxLanguageInfo* info = nullptr;
   
   if (wxConfigBase::Get()->Exists("LANG"))
   {
     info = wxLocale::FindLanguageInfo(wxConfigBase::Get()->Read("LANG"));
     
-    if (info == NULL)
+    if (info == nullptr)
     {
       wxLogMessage("Unknown language: " + wxConfigBase::Get()->Read("LANG"));
     }
   }
   
-  const int lang = (info != NULL ? info->Language: wxLANGUAGE_DEFAULT); 
+  const int lang = (info != nullptr ? info->Language: wxLANGUAGE_DEFAULT); 
     
   // Init the localization, from now on things will be translated.
   // Do not load wxstd, we load all files ourselved,
@@ -100,7 +100,7 @@ bool wxExApp::OnInit()
       }
     }
   }
-  else if (info != NULL)
+  else if (info != nullptr)
   {
     wxLogMessage("Missing locale files for: " + GetLocale().GetName());
   }

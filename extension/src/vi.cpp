@@ -330,7 +330,7 @@ bool wxExVi::Command(const std::string& command)
           
           if (seq_size > 0)
           {
-            const long val = strtol(rest.substr(0, seq_size).c_str(), NULL, 10);
+            const long val = strtol(rest.substr(0, seq_size).c_str(), nullptr, 10);
             
             if (val != 0)
             {
@@ -1240,9 +1240,9 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     if (!(event.GetModifiers() & wxMOD_ALT))
     {
       // This check is important, as WXK_NONE (0)
-      // would add NULL terminator at the end of m_Command,
+      // would add nullptr terminator at the end of m_Command,
       // and pressing ESC would not help, (rest is empty
-      // because of the NULL).
+      // because of the nullptr).
       if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
       {
         if (!m_Command.empty() && 

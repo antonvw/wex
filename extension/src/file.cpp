@@ -40,7 +40,7 @@ bool wxExFile::CheckSync()
 
   if ( IsOpened() ||
       !m_FileName.m_Stat.IsOk() ||
-      (config != NULL && !config->ReadBool("AllowSync", true)))
+      (config != nullptr && !config->ReadBool("AllowSync", true)))
   {
     return false;
   }

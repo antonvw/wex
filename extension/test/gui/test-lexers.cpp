@@ -19,7 +19,7 @@ void fixture::testLexers()
   wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
   AddPane(m_Frame, stc);
   
-  CPPUNIT_ASSERT( wxExLexers::Get() != NULL);
+  CPPUNIT_ASSERT( wxExLexers::Get() != nullptr);
   CPPUNIT_ASSERT( wxExLexers::Get()->GetCount() > 0);
   CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle());
   CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().IsOk());

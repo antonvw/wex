@@ -84,9 +84,9 @@ void fixture::testConfigItem()
     CPPUNIT_ASSERT( it.GetColumns() == -1);
     
     if (it.GetType() == ITEM_USER)
-      CPPUNIT_ASSERT( it.GetWindow() != NULL);
+      CPPUNIT_ASSERT( it.GetWindow() != nullptr);
     else 
-      CPPUNIT_ASSERT( it.GetWindow() == NULL);
+      CPPUNIT_ASSERT( it.GetWindow() == nullptr);
       
     if (
       it.GetType() != ITEM_STATICLINE &&
@@ -97,7 +97,7 @@ void fixture::testConfigItem()
     }
     
     it.SetRowGrowable(true);
-    it.SetValidator(NULL);
+    it.SetValidator(nullptr);
   }
 
   // Layout the items and check control is created.
@@ -106,20 +106,20 @@ void fixture::testConfigItem()
     // ITEM_USER is not yet laid out ok, gives errors.
     if (it.GetType() != ITEM_USER)
     {
-      // Testing on not NULL not possible,
+      // Testing on not nullptr not possible,
       // not all items need a sizer.
       it.Layout(panel, sizer);
     }
  
     if (it.GetType() != ITEM_EMPTY && it.GetType() != ITEM_SPACER)
     {
-      CPPUNIT_ASSERT(it.GetWindow() != NULL);
+      CPPUNIT_ASSERT(it.GetWindow() != nullptr);
     }
   }
 
   // Now check ToConfig (after Layout).  
-  CPPUNIT_ASSERT( ci_str.Layout(panel, sizer) != NULL);
-  CPPUNIT_ASSERT( ci_st.Layout(panel, sizer) != NULL);
+  CPPUNIT_ASSERT( ci_str.Layout(panel, sizer) != nullptr);
+  CPPUNIT_ASSERT( ci_st.Layout(panel, sizer) != nullptr);
   CPPUNIT_ASSERT( ci_str.ToConfig(true));
   CPPUNIT_ASSERT( ci_str.ToConfig(false));
   CPPUNIT_ASSERT(!ci_st.ToConfig(true));
@@ -139,7 +139,7 @@ void fixture::testConfigItem()
     std::make_tuple("def-string", ITEM_STRING, "a string"),
     std::make_tuple("def-int", ITEM_INT, 10)});
   
-  CPPUNIT_ASSERT( def.Get() != NULL);
+  CPPUNIT_ASSERT( def.Get() != nullptr);
   CPPUNIT_ASSERT( def.Get()->Exists("def-colour"));
 #endif
 }

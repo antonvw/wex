@@ -64,8 +64,8 @@ public:
     std::make_tuple(_("Default font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT))}) {;};
 };
   
-wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
-wxExSTCEntryDialog* wxExSTC::m_EntryDialog = NULL;
+wxExConfigDialog* wxExSTC::m_ConfigDialog = nullptr;
+wxExSTCEntryDialog* wxExSTC::m_EntryDialog = nullptr;
 int wxExSTC::m_Zoom = -1;
 
 wxExSTC::wxExSTC(wxWindow *parent, 
@@ -541,7 +541,7 @@ int wxExSTC::ConfigDialog(
   }
   else
   {
-    if (m_ConfigDialog == NULL)
+    if (m_ConfigDialog == nullptr)
     {
       m_ConfigDialog = new wxExConfigDialog(
         parent, items, title, 0, -1, buttons, id, style);
@@ -646,7 +646,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
     return;
   }
 
-  static int value = ' '; // don't use 0 as default as NULL is not handled
+  static int value = ' '; // don't use 0 as default as nullptr is not handled
 
   if (GetSelectedText().length() == 1)
   {
@@ -1616,9 +1616,9 @@ bool wxExSTC::LinkOpen(wxString* filename)
   
   if (!path.empty())
   {
-    if (filename == NULL)
+    if (filename == nullptr)
     {
-      if (m_Frame != NULL)
+      if (m_Frame != nullptr)
       {
         return m_Frame->OpenFile(
           path,
@@ -1784,7 +1784,7 @@ bool wxExSTC::Open(
     success = false;
   }
   
-  if (success && m_Frame != NULL)
+  if (success && m_Frame != nullptr)
   {
     m_Frame->SetRecentFile(filename.GetFullPath());
   }
@@ -1876,7 +1876,7 @@ void wxExSTC::PropertiesMessage(long flags)
   wxExFrame::UpdateStatusBar(this, "PaneInfo");
 #endif
 
-  if (!(flags & STAT_SYNC) && m_Frame != NULL)
+  if (!(flags & STAT_SYNC) && m_Frame != nullptr)
   {
     const wxString file = GetName() + 
       (GetReadOnly() ? " [" + _("Readonly") + "]": wxString(wxEmptyString));
@@ -2205,7 +2205,7 @@ void wxExSTC::ShowProperties()
     }
   }
   
-  if (m_EntryDialog == NULL)
+  if (m_EntryDialog == nullptr)
   {
     m_EntryDialog = new wxExSTCEntryDialog(
       wxTheApp->GetTopWindow(), 

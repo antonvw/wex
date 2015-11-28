@@ -50,7 +50,7 @@ void fixture::testItemTemplateDialog()
     style <= wxExItemTemplateDialog<wxExTestItem>::ITEM_TREEBOOK;
     style++)
   {
-    wxImageList* il = NULL;
+    wxImageList* il = nullptr;
     
     if (style == wxExItemTemplateDialog<wxExTestItem>::ITEM_TOOLBOOK)
     {

@@ -41,7 +41,7 @@ wxExNotebook::wxExNotebook(wxWindow* parent,
   
   Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, [=](wxAuiNotebookEvent& event) {
     event.Skip(); // call base
-    if (m_Frame != NULL)
+    if (m_Frame != nullptr)
     {
       m_Frame->OnNotebook(GetId(), GetPage(event.GetSelection()));
     }});
@@ -50,7 +50,7 @@ wxExNotebook::wxExNotebook(wxWindow* parent,
     const int sel = event.GetSelection();
     if (sel != wxNOT_FOUND)
     {
-      if (m_Frame != NULL && !m_Frame->AllowClose(GetId(), GetPage(sel)))
+      if (m_Frame != nullptr && !m_Frame->AllowClose(GetId(), GetPage(sel)))
       {
         event.Veto();
       }
@@ -62,7 +62,7 @@ wxExNotebook::wxExNotebook(wxWindow* parent,
         m_Keys.erase(key);
         event.Skip(); // call base
         
-        if (m_Frame != NULL)
+        if (m_Frame != nullptr)
         {
           if (m_Keys.empty()) m_Frame->SyncCloseAll(GetId());
           m_Frame->HideExBar();
@@ -80,7 +80,7 @@ wxWindow* wxExNotebook::AddPage(
 {
   if (!wxAuiNotebook::AddPage(page, (text.empty() ? key: text), select, bitmap))
   {
-    return NULL;
+    return nullptr;
   }
   
   m_Keys[key] = page;
@@ -104,7 +104,7 @@ bool wxExNotebook::DeletePage(const wxString& key)
     m_Keys.erase(key);
     m_Windows.erase(page);
     
-    if (m_Frame != NULL && m_Keys.empty())
+    if (m_Frame != nullptr && m_Keys.empty())
     {
       m_Frame->SyncCloseAll(GetId());
     }
@@ -131,7 +131,7 @@ wxWindow* wxExNotebook::InsertPage(
 {
   if (!wxAuiNotebook::InsertPage(page_idx, page, (text.empty() ? key: text), select, bitmap))
   {
-    return NULL;
+    return nullptr;
   }
 
   m_Keys[key] = page;
@@ -185,7 +185,7 @@ wxWindow* wxExNotebook::SetSelection(const wxString& key)
 
   if (index == wxNOT_FOUND)
   {
-    return NULL;
+    return nullptr;
   }
 
   wxAuiNotebook::SetSelection(index);

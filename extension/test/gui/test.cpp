@@ -17,8 +17,8 @@
 #include <wx/extension/toolbar.h>
 #include "test.h"
 
-wxExStatusBar* fixture::m_StatusBar = NULL;
-wxExManagedFrame* fixture::m_Frame = NULL;
+wxExStatusBar* fixture::m_StatusBar = nullptr;
+wxExManagedFrame* fixture::m_Frame = nullptr;
 
 fixture::fixture()
   : wxExTestFixture() 
@@ -30,9 +30,9 @@ fixture::fixture()
       "Cb", "Cc", "Ce", "Cl", "Created", "Date", "Datetime",
       "Filename", "Fullpath", "Nl", "Path", "Time", "Year"}
 {
-  if (m_Frame == NULL)
+  if (m_Frame == nullptr)
   {
-    m_Frame = new wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
+    m_Frame = new wxExManagedFrame(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName());
     m_Frame->Show();
     
     // Create the global lexers object, 

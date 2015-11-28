@@ -16,8 +16,8 @@ class WXDLLIMPEXP_BASE wxExProperty
 {
 public:
   /// Default constructor.
-  wxExProperty(const wxXmlNode* node = NULL) {
-    if (node != NULL) Set(node);};
+  wxExProperty(const wxXmlNode* node = nullptr) {
+    if (node != nullptr) Set(node);};
   
   /// Constructor using name, value pair.
   wxExProperty(const wxString& name, const wxString& value)

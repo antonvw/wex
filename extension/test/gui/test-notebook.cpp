@@ -17,7 +17,7 @@
 
 void fixture::testNotebook()
 {
-  wxExNotebook* notebook = new wxExNotebook(m_Frame, NULL);
+  wxExNotebook* notebook = new wxExNotebook(m_Frame, nullptr);
   AddPane(m_Frame, notebook);
   
   wxWindow* page1 = new wxWindow(m_Frame, wxID_ANY);
@@ -27,9 +27,9 @@ void fixture::testNotebook()
   wxWindow* page5 = new wxWindow(m_Frame, wxID_ANY);
   
   // Test AddPage. 
-  CPPUNIT_ASSERT(notebook->AddPage(page1, "key1") != NULL);
-  CPPUNIT_ASSERT(notebook->AddPage(page2, "key2") != NULL);
-  CPPUNIT_ASSERT(notebook->AddPage(page3, "key3") != NULL);
+  CPPUNIT_ASSERT(notebook->AddPage(page1, "key1") != nullptr);
+  CPPUNIT_ASSERT(notebook->AddPage(page2, "key2") != nullptr);
+  CPPUNIT_ASSERT(notebook->AddPage(page3, "key3") != nullptr);
   // pages: 0,1,2 keys: key1, key2, key3 pages page1,page2,page3.
   
   // Test GetKeyByPage, GetPageByKey, GetPageIndexByKey.
@@ -46,14 +46,14 @@ void fixture::testNotebook()
   
   // Test DeletePage.
   CPPUNIT_ASSERT(notebook->DeletePage("keyx"));
-  CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == NULL);
+  CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == nullptr);
   CPPUNIT_ASSERT(notebook->DeletePage("key2"));
   CPPUNIT_ASSERT(!notebook->DeletePage("xxx"));
   // pages: 0 keys: key3 pages:page3.
 
   // Test InsertPage.
-  CPPUNIT_ASSERT(notebook->InsertPage(0, page4, "KEY1") != NULL);
-  CPPUNIT_ASSERT(notebook->InsertPage(0, page5, "KEY0") != NULL);
+  CPPUNIT_ASSERT(notebook->InsertPage(0, page4, "KEY1") != nullptr);
+  CPPUNIT_ASSERT(notebook->InsertPage(0, page5, "KEY0") != nullptr);
   // pages: 0,1,2 keys: KEY0, KEY1, key3 pages: page5,page4,page3.
   CPPUNIT_ASSERT(notebook->GetPageIndexByKey("KEY0") == 0);
   CPPUNIT_ASSERT(notebook->GetPageIndexByKey("KEY1") == 1);
@@ -61,7 +61,7 @@ void fixture::testNotebook()
   // Test SetSelection.
   CPPUNIT_ASSERT(notebook->SetSelection("KEY1") == page4);
   CPPUNIT_ASSERT(notebook->SetSelection("key3") == page3);
-  CPPUNIT_ASSERT(notebook->SetSelection("XXX") == NULL);
+  CPPUNIT_ASSERT(notebook->SetSelection("XXX") == nullptr);
   
   // Prepare next test, delete all pages.
   CPPUNIT_ASSERT(notebook->DeletePage("KEY0"));
@@ -74,9 +74,9 @@ void fixture::testNotebook()
   wxExSTC* stc_y = new wxExSTC(m_Frame, "hello stc");
   wxExSTC* stc_z = new wxExSTC(m_Frame, "hello stc");
   
-  CPPUNIT_ASSERT(notebook->AddPage(stc_x, "key1") != NULL);
-  CPPUNIT_ASSERT(notebook->AddPage(stc_y, "key2") != NULL);
-  CPPUNIT_ASSERT(notebook->AddPage(stc_z, "key3") != NULL);
+  CPPUNIT_ASSERT(notebook->AddPage(stc_x, "key1") != nullptr);
+  CPPUNIT_ASSERT(notebook->AddPage(stc_y, "key2") != nullptr);
+  CPPUNIT_ASSERT(notebook->AddPage(stc_z, "key3") != nullptr);
   
   CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER));
   CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER_THEME));
@@ -92,11 +92,11 @@ void fixture::testNotebook()
   
   // Test Split.
   wxWindow* pagev = new wxWindow(m_Frame, wxID_ANY);
-  CPPUNIT_ASSERT( notebook->AddPage(pagev, "keyv") != NULL);
+  CPPUNIT_ASSERT( notebook->AddPage(pagev, "keyv") != nullptr);
   // split having only one page
   CPPUNIT_ASSERT( notebook->Split("keyv", wxRIGHT));
   wxWindow* pagew = new wxWindow(m_Frame, wxID_ANY);
-  CPPUNIT_ASSERT( notebook->AddPage(pagew, "keyw") != NULL);
+  CPPUNIT_ASSERT( notebook->AddPage(pagew, "keyw") != nullptr);
   // split using incorrect key
   CPPUNIT_ASSERT(!notebook->Split("err", wxRIGHT));
   CPPUNIT_ASSERT( notebook->Split("keyv", wxRIGHT));

@@ -103,7 +103,7 @@ public:
   wxExListView(wxWindow* parent,
     wxExListType type = LIST_FILE,
     wxWindowID id = wxID_ANY,
-    const wxExLexer* lexer = NULL,
+    const wxExLexer* lexer = nullptr,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxLC_REPORT,

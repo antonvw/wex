@@ -38,7 +38,7 @@ void fixture::testFrameWithHistory()
   // It does not open, next should fail.
   CPPUNIT_ASSERT(!m_Frame->GetProjectHistory().GetHistoryFile().Contains(m_Project));
   
-  CPPUNIT_ASSERT( m_Frame->GetProject() == NULL);
+  CPPUNIT_ASSERT( m_Frame->GetProject() == nullptr);
 
   CPPUNIT_ASSERT(!m_Frame->Grep("xxxxxxx"));
   CPPUNIT_ASSERT(!m_Frame->Grep("xxxxxxx yyy"));

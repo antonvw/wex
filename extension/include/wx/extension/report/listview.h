@@ -34,7 +34,7 @@ public:
     wxExListType type,
     wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,
-    const wxExLexer* lexer = NULL,
+    const wxExLexer* lexer = nullptr,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxLC_REPORT,

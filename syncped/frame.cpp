@@ -103,10 +103,10 @@ Frame::Frame(App* app)
   , m_IsClosing(false)
   , m_NewProjectNo(1)
   , m_SplitId(1)
-  , m_History(NULL)
+  , m_History(nullptr)
   , m_Process(new wxExProcess())
-  , m_Projects(NULL)
-  , m_asciiTable(NULL)
+  , m_Projects(nullptr)
+  , m_asciiTable(nullptr)
   , m_PaneFlag(
       wxAUI_NB_DEFAULT_STYLE |
       wxAUI_NB_CLOSE_ON_ALL_TABS |
@@ -211,7 +211,7 @@ Frame::Frame(App* app)
       }
     }
       
-    if (GetManager().GetPane("PROJECTS").IsShown() && m_Projects != NULL)
+    if (GetManager().GetPane("PROJECTS").IsShown() && m_Projects != nullptr)
     {
       if (!GetProjectHistory().GetHistoryFile().empty())
       {
@@ -272,13 +272,13 @@ Frame::Frame(App* app)
     if (event.CanVeto())
     {
       if (
-         (m_Process != NULL && m_Process->IsRunning()) || 
+         (m_Process != nullptr && m_Process->IsRunning()) || 
         !m_Editors->ForEach<wxExSTC>(ID_ALL_CLOSE) || 
-        (m_Projects != NULL && !m_Projects->ForEach<wxExListViewFile>(ID_ALL_CLOSE)))
+        (m_Projects != nullptr && !m_Projects->ForEach<wxExListViewFile>(ID_ALL_CLOSE)))
       {
         event.Veto();
         
-        if (m_Process != NULL && m_Process->IsRunning())
+        if (m_Process != nullptr && m_Process->IsRunning())
         {
           wxLogStatus(_("Process is running"));
         }
@@ -294,9 +294,9 @@ Frame::Frame(App* app)
     wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
     wxConfigBase::Get()->Write("OpenFiles", count);
     wxConfigBase::Get()->Write("ShowHistory", 
-      m_History != NULL && m_History->IsShown());
+      m_History != nullptr && m_History->IsShown());
     wxConfigBase::Get()->Write("ShowProjects", 
-      m_Projects != NULL && m_Projects->IsShown());
+      m_Projects != nullptr && m_Projects->IsShown());
   
     if (m_App->GetCommand().empty())
     {
@@ -312,18 +312,18 @@ Frame::Frame(App* app)
     
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(
-      m_asciiTable != NULL && 
+      m_asciiTable != nullptr && 
       GetManager().GetPane("ASCIITABLE").IsShown());}, ID_VIEW_ASCII_TABLE);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(GetManager().GetPane("DIRCTRL").IsShown());}, ID_VIEW_DIRCTRL);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(GetManager().GetPane("FILES").IsShown());}, ID_VIEW_FILES);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(m_History != NULL && GetManager().GetPane("HISTORY").IsShown());}, ID_VIEW_HISTORY);
+    event.Check(m_History != nullptr && GetManager().GetPane("HISTORY").IsShown());}, ID_VIEW_HISTORY);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(GetManager().GetPane("OUTPUT").IsShown());}, ID_VIEW_OUTPUT);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Check(m_Projects != NULL && GetManager().GetPane("PROJECTS").IsShown());}, ID_VIEW_PROJECTS);
+    event.Check(m_Projects != nullptr && GetManager().GetPane("PROJECTS").IsShown());}, ID_VIEW_PROJECTS);
   
   m_App->Reset();
 }    
@@ -388,12 +388,12 @@ wxExListViewWithFrame* Frame::AddPage(
   const wxExLexer* lexer)
 {
   const wxString name = wxExListView::GetTypeDescription(type) +
-    (lexer != NULL ?  " " + lexer->GetDisplayLexer(): wxString(wxEmptyString));
+    (lexer != nullptr ?  " " + lexer->GetDisplayLexer(): wxString(wxEmptyString));
 
   wxExListViewWithFrame* list = 
     (wxExListViewWithFrame*)m_Lists->GetPageByKey(name);
 
-  if (list == NULL && type != wxExListView::LIST_FILE)
+  if (list == nullptr && type != wxExListView::LIST_FILE)
   {
     list = new wxExListViewWithFrame(
       m_Lists, this,
@@ -410,7 +410,7 @@ wxExListViewWithFrame* Frame::AddPage(
 
 void Frame::AddPaneHistory()
 {
-  wxASSERT(m_History == NULL);
+  wxASSERT(m_History == nullptr);
   
   m_History = new wxExListViewWithFrame(this, this,
     wxExListView::LIST_HISTORY,
@@ -427,7 +427,7 @@ void Frame::AddPaneHistory()
 
 void Frame::AddPaneProjects()
 {
-  if (m_Projects == NULL)
+  if (m_Projects == nullptr)
   {
     m_Projects = new wxExNotebook(
       this, 
@@ -511,15 +511,15 @@ bool Frame::ExecExCommand(const std::string& command, wxExSTC* & stc)
 
 wxExListViewFile* Frame::GetProject()
 {
-  if (m_Projects == NULL)
+  if (m_Projects == nullptr)
   {
-    return NULL;
+    return nullptr;
   }
 
   if (!m_Projects->IsShown() || 
        m_Projects->GetPageCount() == 0)
   {
-    return NULL;
+    return nullptr;
   }
   else
   {
@@ -610,7 +610,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_COPY:
   case wxID_PASTE:
   case wxID_CLEAR:
-    if (editor != NULL)
+    if (editor != nullptr)
     {
       wxPostEvent(editor, event);
     }
@@ -619,7 +619,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_ABOUT: About(this); break;
   
   case wxID_CLOSE:
-    if (editor != NULL)
+    if (editor != nullptr)
     {
       if (!AllowClose(
         m_Editors->GetId(),
@@ -667,21 +667,21 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
   
   case wxID_PREVIEW:
-    if (editor != NULL)
+    if (editor != nullptr)
     {
       editor->PrintPreview();
     }
-    else if (GetListView() != NULL)
+    else if (GetListView() != nullptr)
     {
       GetListView()->PrintPreview();
     }
     break;
   case wxID_PRINT:
-    if (editor != NULL)
+    if (editor != nullptr)
     {
       editor->Print();
     }
-    else if (GetListView() != NULL)
+    else if (GetListView() != nullptr)
     {
       GetListView()->Print();
     }
@@ -691,7 +691,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_SAVE:
-    if (editor != NULL)
+    if (editor != nullptr)
     {
       if (!editor->GetFile().FileSave())
       {
@@ -721,7 +721,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
   case wxID_SAVEAS:
-    if (editor != NULL)
+    if (editor != nullptr)
     {
       if (!event.GetString().empty())
       {
@@ -782,9 +782,9 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_EDIT_MACRO: OpenFile(wxExViMacros::GetFileName()); break;
-  case ID_EDIT_MACRO_PLAYBACK: if (editor != NULL) editor->GetVi().MacroPlayback(); break;
-  case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->GetVi().MacroStartRecording(); break;
-  case ID_EDIT_MACRO_STOP_RECORD: if (editor != NULL) editor->GetVi().GetMacros().StopRecording(); break;
+  case ID_EDIT_MACRO_PLAYBACK: if (editor != nullptr) editor->GetVi().MacroPlayback(); break;
+  case ID_EDIT_MACRO_START_RECORD: if (editor != nullptr) editor->GetVi().MacroStartRecording(); break;
+  case ID_EDIT_MACRO_STOP_RECORD: if (editor != nullptr) editor->GetVi().GetMacros().StopRecording(); break;
   
   case ID_OPTION_LIST: wxExListView::ConfigDialog(this, 
     _("List Options"), wxOK | wxCANCEL | wxAPPLY, ID_OPTION_LIST); 
@@ -813,7 +813,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_PROJECT_CLOSE:
-    if (project != NULL && m_Projects != NULL)
+    if (project != nullptr && m_Projects != nullptr)
     {
       m_Projects->DeletePage(project->GetFileName().GetFullPath());
     }
@@ -823,7 +823,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     DialogProjectOpen();
     break;
   case ID_PROJECT_OPENTEXT:
-    if (project != NULL)
+    if (project != nullptr)
     {
       if (wxExFileDialog(
         this, project).ShowModalIfChanged() != wxID_CANCEL)
@@ -833,7 +833,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
   case ID_PROJECT_SAVEAS:
-    if (project != NULL && m_Projects != NULL)
+    if (project != nullptr && m_Projects != nullptr)
     {
       wxExFileDialog dlg(
         this, project, 
@@ -905,7 +905,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
     
   case ID_VIEW_ASCII_TABLE: 
-    if (m_asciiTable == NULL)
+    if (m_asciiTable == nullptr)
     {
       AddAsciiTable();
     }
@@ -926,7 +926,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
       wxExSTC* editor = GetSTC();
       
-      if (editor != NULL)
+      if (editor != nullptr)
       {
         m_DirCtrl->ExpandAndSelectPath(
           editor->GetFileName().GetFullPath());
@@ -949,7 +949,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     
   case ID_VIEW_HISTORY: 
   case ID_CHECKBOX_HISTORY: 
-    if (m_History == NULL)
+    if (m_History == nullptr)
     {
       AddPaneHistory();
       GetManager().Update();
@@ -971,7 +971,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
     
   case ID_VIEW_PROJECTS: 
-    if (m_Projects == NULL)
+    if (m_Projects == nullptr)
     {
       NewProject();
     }
@@ -988,7 +988,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     else if (event.GetId() > ID_EDIT_STC_LOWEST && event.GetId() < ID_EDIT_STC_HIGHEST)
     {
-      if (editor != NULL)
+      if (editor != nullptr)
       {
         wxPostEvent(editor, event);
       }
@@ -1010,7 +1010,7 @@ void Frame::OnCommandItemDialog(
       {
         m_Editors->ForEach<wxExSTC>(ID_ALL_CONFIG_GET);
         
-        if (m_Process->GetShell() != NULL)
+        if (m_Process->GetShell() != nullptr)
         {
           m_Process->GetShell()->ConfigGet();
         }
@@ -1025,8 +1025,8 @@ void Frame::OnCommandItemDialog(
       if (event.GetId() != wxID_CANCEL)
       {
         m_Lists->ForEach<wxExListViewFile>(ID_ALL_CONFIG_GET);
-        if (m_Projects != NULL) m_Projects->ForEach<wxExListViewFile>(ID_ALL_CONFIG_GET);
-        if (m_History != NULL) m_History->ConfigGet();
+        if (m_Projects != nullptr) m_Projects->ForEach<wxExListViewFile>(ID_ALL_CONFIG_GET);
+        if (m_History != nullptr) m_History->ConfigGet();
       }
       break;
     
@@ -1047,8 +1047,8 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     case wxID_PREVIEW:
     case wxID_PRINT:
       event.Enable(
-        (GetSTC() != NULL && GetSTC()->GetLength() > 0) ||
-        (GetListView() != NULL && GetListView()->GetItemCount() > 0));
+        (GetSTC() != nullptr && GetSTC()->GetLength() > 0) ||
+        (GetListView() != nullptr && GetListView()->GetItemCount() > 0));
       break;
 
     case wxID_CLOSE:
@@ -1067,14 +1067,14 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
     case ID_PROJECT_CLOSE:
     case ID_PROJECT_SAVEAS:
-      event.Enable(GetProject() != NULL && GetProject()->IsShown());
+      event.Enable(GetProject() != nullptr && GetProject()->IsShown());
       break;
     case ID_PROJECT_OPENTEXT:
       event.Enable(
-        GetProject() != NULL && !GetProject()->GetFileName().GetFullPath().empty());
+        GetProject() != nullptr && !GetProject()->GetFileName().GetFullPath().empty());
       break;
     case ID_PROJECT_SAVE:
-      event.Enable(GetProject() != NULL && GetProject()->GetContentsChanged());
+      event.Enable(GetProject() != nullptr && GetProject()->GetContentsChanged());
       break;
 
     case ID_RECENT_FILE_MENU:
@@ -1093,7 +1093,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       wxExSTC* editor = GetSTC();
       wxExListViewFile* list = (wxExListViewFile*)GetListView();
 
-      if (editor != NULL)
+      if (editor != nullptr)
       {
         event.Enable(true);
 
@@ -1162,7 +1162,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           wxFAIL;
         }
       }
-      else if (list != NULL && list->IsShown())
+      else if (list != nullptr && list->IsShown())
       {
         event.Enable(false);
 
@@ -1197,7 +1197,7 @@ bool Frame::OpenFile(
 
   wxWindow* page = m_Editors->SetSelection(key);
   
-  if (page == NULL)
+  if (page == nullptr)
   {
     wxExSTC* editor = new wxExSTC(
       m_Editors, 
@@ -1241,7 +1241,7 @@ bool Frame::OpenFile(
 {
   wxExSTC* page = (wxExSTC*)m_Editors->SetSelection(filename.GetFullPath());
 
-  if (page == NULL)
+  if (page == nullptr)
   {
     page = new wxExSTC(m_Editors, text, flags, filename.GetFullPath());
     page->SetLexer(filename.GetLexer());
@@ -1267,7 +1267,7 @@ bool Frame::OpenFile(
   int col_number,
   long flags)
 {
-  if ((flags & WIN_IS_PROJECT) && m_Projects == NULL)
+  if ((flags & WIN_IS_PROJECT) && m_Projects == nullptr)
   {
     AddPaneProjects();
     GetManager().Update();
@@ -1276,13 +1276,13 @@ bool Frame::OpenFile(
   wxExNotebook* notebook = ((flags & WIN_IS_PROJECT)
     ? m_Projects : m_Editors);
     
-  wxASSERT(notebook != NULL);
+  wxASSERT(notebook != nullptr);
   
   wxWindow* page = notebook->SetSelection(filename.GetFullPath());
 
   if (flags & WIN_IS_PROJECT)
   {
-    if (page == NULL)
+    if (page == nullptr)
     {
       wxExListViewFile* project = new wxExListViewFile(m_Projects,
         this,
@@ -1323,7 +1323,7 @@ bool Frame::OpenFile(
     
     wxExSTC* editor = (wxExSTC*)page;
 
-    if (page == NULL)
+    if (page == nullptr)
     {
       if (wxConfigBase::Get()->ReadBool("HexMode", false))
         flags |= wxExSTC::STC_WIN_HEX;
@@ -1387,7 +1387,7 @@ void Frame::PrintEx(wxExEx* ex, const wxString& text)
 {
   wxExSTC* page = (wxExSTC*)m_Editors->SetSelection("Print");
 
-  if (page == NULL)
+  if (page == nullptr)
   {
     wxExSTC* stc = new wxExSTC(m_Editors, text, (long)wxExSTC::STC_WIN_DEFAULT, "Print");
     m_Editors->AddPage(stc, "Print", "Print", true);
@@ -1419,7 +1419,7 @@ void Frame::StatusBarClicked(const wxString& pane)
   else if (pane == "PaneMacro")
   {
     wxExSTC* editor = GetSTC();
-    if (editor != NULL) editor->GetVi().MacroPlayback();
+    if (editor != nullptr) editor->GetVi().MacroPlayback();
   }
   else if (pane == "PaneVCS")
   {
@@ -1451,7 +1451,7 @@ void Frame::StatusBarClickedRight(const wxString& pane)
     {
       wxExSTC* stc = GetSTC();
     
-      if (stc != NULL)
+      if (stc != nullptr)
       {
         if (
           !stc->GetLexer().GetScintillaLexer().empty() && 
@@ -1514,7 +1514,7 @@ void Frame::SyncCloseAll(wxWindowID id)
     StatusText(wxEmptyString, "PaneInfo");
     StatusText(wxEmptyString, "PaneLexer");
     
-    if (GetManager().GetPane("PROJECTS").IsShown() && m_Projects != NULL)
+    if (GetManager().GetPane("PROJECTS").IsShown() && m_Projects != nullptr)
     {
       GetManager().GetPane("PROJECTS").Maximize();
       GetManager().Update();

@@ -44,7 +44,7 @@ protected:
 private:
   virtual wxExListView* Activate(
     wxExListView::wxExListType type, 
-    const wxExLexer* lexer = NULL) override;
+    const wxExLexer* lexer = nullptr) override;
   virtual bool ExecExCommand(const std::string& command, wxExSTC* & stc) override;
   virtual wxExListViewFile* GetProject() override;
   virtual void OnCommandItemDialog(
@@ -67,7 +67,7 @@ private:
   void AddAsciiTable();
   wxExListViewWithFrame* AddPage(
     wxExListView::wxExListType type, 
-    const wxExLexer* lexer = NULL);
+    const wxExLexer* lexer = nullptr);
   void AddPaneHistory();
   void AddPaneProcess();
   void AddPaneProjects();

@@ -13,7 +13,7 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
 
-wxExPrinting* wxExPrinting::m_Self = NULL;
+wxExPrinting* wxExPrinting::m_Self = nullptr;
 
 wxExPrinting::wxExPrinting()
 {
@@ -46,7 +46,7 @@ wxExPrinting::~wxExPrinting()
 
 wxExPrinting* wxExPrinting::Get(bool createOnDemand)
 {
-  if (m_Self == NULL && createOnDemand)
+  if (m_Self == nullptr && createOnDemand)
   {
     m_Self = new wxExPrinting();
   }
@@ -73,7 +73,7 @@ wxExPrintout::wxExPrintout(wxStyledTextCtrl* owner)
 
 void wxExPrintout::CountPages()
 {
-  wxASSERT(GetDC() != NULL);
+  wxASSERT(GetDC() != nullptr);
 
   wxBusyCursor wait;
 
@@ -143,7 +143,7 @@ void wxExPrintout::OnPreparePrinting()
 
 bool wxExPrintout::OnPrintPage(int pageNum)
 {
-  wxASSERT(GetDC() != NULL);
+  wxASSERT(GetDC() != nullptr);
 
   if (pageNum > (int)m_PageBreaks.size())
   {

@@ -203,7 +203,7 @@ bool wxExMenu::AppendVCS(const wxFileName& filename, bool show_modal)
     wxExVCS vcs;
        
     if (vcs.SetEntryFromBase(
-      show_modal ? wxTheApp->GetTopWindow(): NULL))
+      show_modal ? wxTheApp->GetTopWindow(): nullptr))
     {
       return vcs.GetEntry().BuildMenu(
         ID_VCS_LOWEST + 1, 

@@ -18,10 +18,10 @@ class WXDLLIMPEXP_BASE wxExLink
 {
 public:
   /// Default constructor.
-  wxExLink(wxExSTC* stc = NULL);
+  wxExLink(wxExSTC* stc = nullptr);
   
   /// Adds a possible base path to pathlist, present in the stc component.
-  /// Returns false if basepath was not found in stc (or stc is NULL).
+  /// Returns false if basepath was not found in stc (or stc is nullptr).
   bool AddBasePath();
   
   /// Returns a path from text, using pathlist if necessary.

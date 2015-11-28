@@ -54,7 +54,7 @@ bool wxExOTL::Logon(
   int max_items,
   const wxString& title)
 {
-  if (parent != NULL)
+  if (parent != nullptr)
   {
     if (wxExConfigDialog(parent,
       std::vector<wxExConfigItem> {
@@ -121,7 +121,7 @@ long wxExOTL::Query(
     return 0;
   }
   
-  wxASSERT(grid != NULL);
+  wxASSERT(grid != nullptr);
 
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
@@ -218,7 +218,7 @@ long wxExOTL::Query(
     return 0;
   }
   
-  wxASSERT(stc != NULL);
+  wxASSERT(stc != nullptr);
 
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);

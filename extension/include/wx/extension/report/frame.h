@@ -43,11 +43,11 @@ public:
     int style = wxDEFAULT_FRAME_STYLE);
 
   /// This method is called to activate a certain listview.
-  /// Default it returns NULL.
+  /// Default it returns nullptr.
   virtual wxExListView* Activate(
     wxExListView::wxExListType WXUNUSED(list_type), 
-    const wxExLexer* WXUNUSED(lexer) = NULL) {
-    return NULL;};
+    const wxExLexer* WXUNUSED(lexer) = nullptr) {
+    return nullptr;};
     
   /// Finds (or replaces) in specified files.
   /// Returns false if dialog was shown, and cancelled,
@@ -60,7 +60,7 @@ public:
     /// Default shows a dialog.
     bool show_dialog = true,
     /// report for output
-    wxExListView* report = NULL);
+    wxExListView* report = nullptr);
 
   /// Shows a modal find (or replace) in files dialog.
   /// Returns result from ShowModal.
@@ -75,8 +75,8 @@ public:
   
   /// If there is a project somewhere, 
   /// your implementation should return that one.
-  /// Default it returns NULL.
-  virtual wxExListViewFile* GetProject() {return NULL;};
+  /// Default it returns nullptr.
+  virtual wxExListViewFile* GetProject() {return nullptr;};
 
   /// Returns project history.
   wxExFileHistory& GetProjectHistory() {return m_ProjectHistory;};

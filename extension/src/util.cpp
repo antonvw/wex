@@ -737,7 +737,7 @@ void wxExOpenFilesDialog(
   wxArrayString paths;
   const wxString caption(_("Select Files"));
       
-  if (stc != NULL)
+  if (stc != nullptr)
   {
     wxExFileDialog dlg(frame,
       &stc->GetFile(),

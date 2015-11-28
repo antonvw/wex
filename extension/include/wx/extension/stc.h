@@ -375,7 +375,7 @@ private:
   void FoldAll();
   void HexDecCalltip(int pos);
   void Initialize(bool file_exists);
-  bool LinkOpen(wxString* filename = NULL); // name of found file
+  bool LinkOpen(wxString* filename = nullptr); // name of found file
   void MarkModified(const wxStyledTextEvent& event);
   void SetLexerCommon(bool fold);
   void ShowProperties();
