@@ -181,7 +181,7 @@ void wxExFindReplaceData::SetUseRegEx(bool value)
   
   try 
   {
-    std::regex::flag_type flags = std::regex::basic;
+    std::regex::flag_type flags = std::regex::ECMAScript;
     if (!MatchCase()) flags |= std::regex::icase;
   
     m_FindRegEx = std::regex(GetFindString().ToStdString(), flags);
