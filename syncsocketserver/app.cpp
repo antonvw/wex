@@ -67,8 +67,8 @@ bool App::OnInit()
 }
 
 Frame::Frame()
-  : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
-  , m_SocketServer(NULL)
+  : wxExFrameWithHistory(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
+  , m_SocketServer(nullptr)
   , m_Timer(this)
   , m_Answer(ANSWER_OFF)
   , m_DataWindow(new wxExSTC(this))
@@ -235,7 +235,7 @@ Frame::Frame()
     m_Clients.clear();
 
     m_SocketServer->Destroy();
-    m_SocketServer = NULL;
+    m_SocketServer = nullptr;
 
     const wxString text = _("server stopped");
 
@@ -353,7 +353,7 @@ Frame::Frame()
       _("Server Config"),
       0,
       1,
-      m_SocketServer == NULL ? wxOK|wxCANCEL: wxCANCEL).ShowModal();
+      m_SocketServer == nullptr ? wxOK|wxCANCEL: wxCANCEL).ShowModal();
     }, ID_SERVER_CONFIG);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -415,11 +415,11 @@ Frame::Frame()
     event.Skip();});
     
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(m_SocketServer == NULL);}, wxID_EXECUTE);
+    event.Enable(m_SocketServer == nullptr);}, wxID_EXECUTE);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(m_DataWindow->GetModify());}, wxID_SAVE);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(m_SocketServer != NULL);}, wxID_STOP);
+    event.Enable(m_SocketServer != nullptr);}, wxID_STOP);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(!m_Statistics.GetItems().empty());}, ID_CLEAR_STATISTICS);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
@@ -500,7 +500,7 @@ void Frame::LogConnection(
 {
   wxString text;
 
-  if (sock != NULL)
+  if (sock != nullptr)
   {
     text << (accepted ? _("accepted"): _("lost")) << " " << SocketDetails(sock);
   }
@@ -548,7 +548,7 @@ void Frame::OnSocket(wxSocketEvent& event)
     // should ALWAYS be a pending connection).
     sock = m_SocketServer->Accept(false);
 
-    if (sock == NULL)
+    if (sock == nullptr)
     {
       AppendText(m_LogWindow,
         _("error: couldn't accept a new connection"),
@@ -707,7 +707,7 @@ bool Frame::OpenFile(
 
 bool Frame::SetupSocketServer()
 {
-  if (m_SocketServer != NULL)
+  if (m_SocketServer != nullptr)
   {
     // In fact, this should not happen, 
     // but using Ubuntu the OnUpdateUI does not prevent this...
@@ -746,7 +746,7 @@ bool Frame::SetupSocketServer()
 #endif
 
     m_SocketServer->Destroy();
-    m_SocketServer = NULL;
+    m_SocketServer = nullptr;
     
     wxLogStatus(text);
     AppendText(m_LogWindow, text, DATA_MESSAGE);
@@ -794,8 +794,8 @@ bool Frame::SocketCheckError(const wxSocketBase* sock)
 const wxString Frame::SocketDetails(const wxSocketBase* sock) const
 {
   // See invocation at SocketLost.
-  // If that is solved we can wxASSERT(sock != NULL) again.
-  if (sock == NULL)
+  // If that is solved we can wxASSERT(sock != nullptr) again.
+  if (sock == nullptr)
   {
     return wxEmptyString;
   }
@@ -828,7 +828,7 @@ const wxString Frame::SocketDetails(const wxSocketBase* sock) const
 
 void Frame::SocketLost(wxSocketBase* sock, bool remove_from_clients)
 {
-  wxASSERT(sock != NULL);
+  wxASSERT(sock != nullptr);
 
   if (remove_from_clients)
   {
@@ -838,7 +838,7 @@ void Frame::SocketLost(wxSocketBase* sock, bool remove_from_clients)
 #ifdef __WXMSW__
   LogConnection(sock, false, remove_from_clients);
 #else
-  LogConnection(NULL, false, remove_from_clients); // otherwise a crash!
+  LogConnection(nullptr, false, remove_from_clients); // otherwise a crash!
 #endif
 
   sock->Destroy();

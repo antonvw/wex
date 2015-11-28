@@ -27,7 +27,7 @@
 
 DecoratedFrame::DecoratedFrame()
   : wxExFrameWithHistory(
-      NULL,
+      nullptr,
       wxID_ANY,
       wxTheApp->GetAppDisplayName(), // title
       25,                            // maxFiles

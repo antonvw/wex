@@ -33,12 +33,12 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   size_t maxProjects,
   int style)
   : wxExManagedFrame(parent, id, title, maxFiles, style)
-  , m_FiFDialog(NULL)
-  , m_RiFDialog(NULL)
+  , m_FiFDialog(nullptr)
+  , m_RiFDialog(nullptr)
   , m_TextInFiles(_("In files"))
   , m_TextInFolder(_("In folder"))
   , m_TextRecursive(_("Recursive"))
-  , m_FileHistoryList(NULL)
+  , m_FileHistoryList(nullptr)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST, "RecentProject")
   , m_Info({
       wxExFindReplaceData::Get()->GetTextMatchWholeWord(),
@@ -62,7 +62,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExListViewFile* project = GetProject();
-    if (project != NULL)
+    if (project != nullptr)
     {
       project->FileSave();
     }}, ID_PROJECT_SAVE);
@@ -74,12 +74,12 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     }
     else
     {
-      if (m_FiFDialog == NULL)
+      if (m_FiFDialog == nullptr)
       {
         CreateDialogs();
       }
 
-      if  (GetSTC() != NULL && !GetSTC()->GetFindString().empty())
+      if  (GetSTC() != nullptr && !GetSTC()->GetFindString().empty())
       {
         m_FiFDialog->Reload(); 
       }
@@ -88,11 +88,11 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     }}, ID_TOOL_REPORT_FIND);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (m_RiFDialog == NULL)
+    if (m_RiFDialog == nullptr)
     {
       CreateDialogs();
     }
-    if (GetSTC() != NULL && !GetSTC()->GetFindString().empty())
+    if (GetSTC() != nullptr && !GetSTC()->GetFindString().empty())
     {
       m_RiFDialog->Reload(); 
     }
@@ -262,7 +262,7 @@ int wxExFrameWithHistory::FindInFilesDialog(
   int id,
   bool add_in_files)
 {
-  if (GetSTC() != NULL)
+  if (GetSTC() != nullptr)
   {
     GetSTC()->GetFindString();
   }
@@ -345,7 +345,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg)
   }
   
   auto* stc = GetSTC();
-  if (stc != NULL)
+  if (stc != nullptr)
     wxSetWorkingDirectory(stc->GetFileName().GetPath());
   wxExFindReplaceData::Get()->SetUseRegEx(true);
   wxLogStatus(GetFindReplaceInfoText());
@@ -386,7 +386,7 @@ void wxExFrameWithHistory::OnCommandItemDialog(
       switch (dialogid)
       {
         case wxID_ADD:
-          if (GetProject() != NULL)
+          if (GetProject() != nullptr)
           {
             int flags = 0;
           
@@ -436,9 +436,9 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
 
   const wxUniChar indicator('*');
 
-  if ((project != NULL && project->GetContentsChanged()) ||
+  if ((project != nullptr && project->GetContentsChanged()) ||
        // using GetContentsChanged gives assert in vcs dialog
-      (stc != NULL && stc->GetModify() && stc->AllowChangeIndicator()))
+      (stc != nullptr && stc->GetModify() && stc->AllowChangeIndicator()))
   {
     // Project or editor changed, add indicator if not yet done.
     if (title.Last() != indicator)
@@ -460,7 +460,7 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
 {
   wxExManagedFrame::SetRecentFile(file);
   
-  if (m_FileHistoryList != NULL)
+  if (m_FileHistoryList != nullptr)
   {
     wxExListItem item(m_FileHistoryList, file);
     item.Insert((long)0);

@@ -18,7 +18,7 @@
 
 #if wxUSE_GUI
 
-wxExSTCEntryDialog* wxExVariable::m_Dialog = NULL;
+wxExSTCEntryDialog* wxExVariable::m_Dialog = nullptr;
 
 wxExVariable::wxExVariable(
   const wxString& name,
@@ -184,7 +184,7 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
     wxFileName file(ex->GetSTC()->GetFileName());
     wxDateTime dtCreate;
     
-    if (file.GetTimes (NULL, NULL, &dtCreate))
+    if (file.GetTimes (nullptr, nullptr, &dtCreate))
     {
       expanded = dtCreate.FormatISODate();
     }
@@ -237,7 +237,7 @@ bool wxExVariable::ExpandInput(wxString& expanded)
 {
   if (m_AskForInput || m_Value.empty())
   {
-    if (m_Dialog == NULL)
+    if (m_Dialog == nullptr)
     {
       m_Dialog = new wxExSTCEntryDialog(
         wxTheApp->GetTopWindow(),

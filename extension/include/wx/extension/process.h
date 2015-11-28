@@ -66,7 +66,7 @@ public:
   const wxString& GetOutput() const {return m_Output;};
   
   /// Returns the shell component 
-  /// (might be NULL if PrepareOutput is not yet invoked).
+  /// (might be nullptr if PrepareOutput is not yet invoked).
   static auto* GetShell() {return m_Shell;};
   
   /// Returns true when the command executed resulted in stderr errors.

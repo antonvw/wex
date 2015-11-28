@@ -27,11 +27,11 @@
 #if wxUSE_GUI
 
 #define wxCAST_TO(classname)                                 \
-  if (m_FindFocus != NULL && m_FindFocus->IsShown())         \
+  if (m_FindFocus != nullptr && m_FindFocus->IsShown())         \
   {                                                          \
     classname* win = dynamic_cast<classname*>(m_FindFocus);  \
                                                              \
-    if (win != NULL)                                         \
+    if (win != nullptr)                                         \
     {                                                        \
       return win;                                            \
     }                                                        \
@@ -43,7 +43,7 @@
   
 #define FIND_REPLACE( text, dlg)                             \
 {                                                            \
-  if (m_FindReplaceDialog != NULL)                           \
+  if (m_FindReplaceDialog != nullptr)                           \
   {                                                          \
     m_FindReplaceDialog->Destroy();                          \
   }                                                          \
@@ -52,7 +52,7 @@
                                                              \
   wxExSTC* cl = dynamic_cast<wxExSTC*>(win);                 \
                                                              \
-  if (cl != NULL)                                            \
+  if (cl != nullptr)                                            \
   {                                                          \
     m_FindFocus = cl;                                        \
   }                                                          \
@@ -60,7 +60,7 @@
   {                                                          \
     wxExListView* cl = dynamic_cast<wxExListView*>(win);     \
                                                              \
-    if (cl != NULL)                                          \
+    if (cl != nullptr)                                          \
     {                                                        \
       m_FindFocus = cl;                                      \
     }                                                        \
@@ -68,7 +68,7 @@
     {                                                        \
       wxExGrid* grid = dynamic_cast<wxExGrid*>(win);         \
                                                              \
-      if (grid != NULL)                                      \
+      if (grid != nullptr)                                      \
       {                                                      \
         m_FindFocus = grid;                                  \
       }                                                      \
@@ -77,7 +77,7 @@
                                                              \
   wxExSTC* stc = GetSTC();                                   \
                                                              \
-  if (stc != NULL)                                           \
+  if (stc != nullptr)                                           \
   {                                                          \
     stc->GetFindString();                                    \
   }                                                          \
@@ -90,7 +90,7 @@
 const int ID_UPDATE_STATUS_BAR = 900;
 
 #if wxUSE_STATUSBAR
-wxExStatusBar* wxExFrame::m_StatusBar = NULL;
+wxExStatusBar* wxExFrame::m_StatusBar = nullptr;
 #endif
 
 #if wxUSE_DRAG_AND_DROP
@@ -116,9 +116,9 @@ wxExFrame::wxExFrame(wxWindow* parent,
   const wxString& title,
   long style)
   : wxFrame(parent, id, title, wxDefaultPosition, wxDefaultSize, style, "wxExFrame")
-  , m_FindReplaceDialog(NULL)
-  , m_MenuBar(NULL)
-  , m_FindFocus(NULL)
+  , m_FindReplaceDialog(nullptr)
+  , m_MenuBar(nullptr)
+  , m_FindFocus(nullptr)
   , m_IsCommand(false)
 {
   Initialize();
@@ -137,48 +137,48 @@ wxExFrame::wxExFrame(wxWindow* parent,
   Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, ID_VIEW_TITLEBAR);
 
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    (GetMenuBar() != NULL ? event.Check(GetMenuBar()->IsShown()): event.Check(false));},
+    (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()): event.Check(false));},
     ID_VIEW_MENUBAR);
 
 #if wxUSE_STATUSBAR
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    (GetStatusBar() != NULL ? event.Check(GetStatusBar()->IsShown()): event.Check(false));},
+    (GetStatusBar() != nullptr ? event.Check(GetStatusBar()->IsShown()): event.Check(false));},
     ID_VIEW_STATUSBAR);
     
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     wxExListView* lv = GetListView();
-    if (lv != NULL && lv->HasFocus())
+    if (lv != nullptr && lv->HasFocus())
     {
       UpdateStatusBar(lv);
     }}, ID_UPDATE_STATUS_BAR);
 #endif
 
   Bind(wxEVT_FIND_CLOSE, [=](wxFindDialogEvent& event) {
-    wxASSERT(m_FindReplaceDialog != NULL);
+    wxASSERT(m_FindReplaceDialog != nullptr);
     // Hiding instead of destroying, does not 
     // show the dialog next time.
     m_FindReplaceDialog->Destroy();
-    m_FindReplaceDialog = NULL;});
+    m_FindReplaceDialog = nullptr;});
     
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
-    if (m_FindFocus != NULL) wxPostEvent(m_FindFocus, event);});
+    if (m_FindFocus != nullptr) wxPostEvent(m_FindFocus, event);});
   Bind(wxEVT_FIND_NEXT, [=](wxFindDialogEvent& event) {
-    if (m_FindFocus != NULL) wxPostEvent(m_FindFocus, event);});
+    if (m_FindFocus != nullptr) wxPostEvent(m_FindFocus, event);});
   Bind(wxEVT_FIND_REPLACE, [=](wxFindDialogEvent& event) {
-    if (m_FindFocus != NULL) wxPostEvent(m_FindFocus, event);});
+    if (m_FindFocus != nullptr) wxPostEvent(m_FindFocus, event);});
   Bind(wxEVT_FIND_REPLACE_ALL, [=](wxFindDialogEvent& event) {
-    if (m_FindFocus != NULL) wxPostEvent(m_FindFocus, event);});
+    if (m_FindFocus != nullptr) wxPostEvent(m_FindFocus, event);});
 }
 
 wxExFrame::~wxExFrame()
 {
-  if (m_FindReplaceDialog != NULL)
+  if (m_FindReplaceDialog != nullptr)
   {
     m_FindReplaceDialog->Destroy();
   }
   
   wxConfigBase::Get()->Write("ShowMenuBar", 
-    GetMenuBar() != NULL && GetMenuBar()->IsShown());
+    GetMenuBar() != nullptr && GetMenuBar()->IsShown());
 }
 
 wxExGrid* wxExFrame::GetGrid()
@@ -193,7 +193,7 @@ wxExListView* wxExFrame::GetListView()
 
 wxString wxExFrame::GetStatusText(const wxString& pane)
 {
-  return (m_StatusBar == NULL ? wxString(wxEmptyString): m_StatusBar->GetStatusText(pane));
+  return (m_StatusBar == nullptr ? wxString(wxEmptyString): m_StatusBar->GetStatusText(pane));
 }
 
 wxExSTC* wxExFrame::GetSTC()
@@ -230,7 +230,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     {
       wxExSTC* stc = GetSTC();
 
-      if (stc != NULL)
+      if (stc != nullptr)
       {
         wxSetWorkingDirectory(stc->GetFileName().GetPath());
       }
@@ -244,12 +244,12 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
       
   case ID_VIEW_MENUBAR:
-    SetMenuBar(GetMenuBar() != NULL ? NULL: m_MenuBar);
+    SetMenuBar(GetMenuBar() != nullptr ? nullptr: m_MenuBar);
     break;
 
   case ID_VIEW_STATUSBAR:
 #if wxUSE_STATUSBAR
-    if (GetStatusBar() != NULL)
+    if (GetStatusBar() != nullptr)
     {
       GetStatusBar()->Show(!GetStatusBar()->IsShown());
       SendSizeEvent();
@@ -290,7 +290,7 @@ bool wxExFrame::OpenFile(
 {
   wxExSTC* stc = GetSTC();
 
-  if (stc != NULL)
+  if (stc != nullptr)
   {
     return stc->Open(filename, line_number, match, col_number, flags);
   }
@@ -305,7 +305,7 @@ bool wxExFrame::OpenFile(
 {
   wxExSTC* stc = GetSTC();
 
-  if (stc != NULL)
+  if (stc != nullptr)
   {
     stc->SetText(vcs.GetOutput());
     wxExVCSCommandOnSTC(vcs.GetCommand(), filename.GetLexer(), stc);
@@ -325,20 +325,20 @@ bool wxExFrame::OpenFile(
 {
   wxExSTC* stc = GetSTC();
 
-  if (stc != NULL) stc->SetText(text); else wxLogMessage(text);
+  if (stc != nullptr) stc->SetText(text); else wxLogMessage(text);
 
   return true;
 }
     
 void wxExFrame::SetMenuBar(wxMenuBar* bar)
 {
-  if (bar != NULL)
+  if (bar != nullptr)
   {
     m_MenuBar = bar;
   }
   
   wxFrame::SetMenuBar(
-   !m_IsCommand && !wxConfigBase::Get()->ReadBool("ShowMenuBar", true) ? NULL: bar);
+   !m_IsCommand && !wxConfigBase::Get()->ReadBool("ShowMenuBar", true) ? nullptr: bar);
 }
 
 #if wxUSE_STATUSBAR
@@ -360,7 +360,7 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
   {
     wxExSTC* stc = GetSTC();
     
-    if (stc != NULL) 
+    if (stc != nullptr) 
     {
       stc->GotoDialog();
     }
@@ -368,14 +368,14 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
     {
       wxExListView* lv = GetListView();
       
-      if (lv != NULL) lv->GotoDialog();
+      if (lv != nullptr) lv->GotoDialog();
     }
   }
   else if (pane == "PaneLexer")
   {
     wxExSTC* stc = GetSTC();
 
-    if (stc != NULL)
+    if (stc != nullptr)
     {
       wxString lexer = stc->GetLexer().GetDisplayLexer();
 
@@ -396,7 +396,7 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
   {
     wxExSTC* stc = GetSTC();
     
-    if (stc != NULL) stc->FileTypeMenu();
+    if (stc != nullptr) stc->FileTypeMenu();
   }
   else
   {
@@ -408,7 +408,7 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
 #if wxUSE_STATUSBAR
 bool wxExFrame::StatusText(const wxString& text, const wxString& pane)
 {
-  return (m_StatusBar == NULL ? false: m_StatusBar->SetStatusText(text, pane));
+  return (m_StatusBar == nullptr ? false: m_StatusBar->SetStatusText(text, pane));
 }
 #endif // wxUSE_STATUSBAR
 
@@ -430,7 +430,7 @@ bool wxExFrame::UpdateStatusBar(const wxListView* lv)
 // Do not make it const, too many const_casts needed,
 bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
 {
-  if (stc == NULL)
+  if (stc == nullptr)
   {
     return false;
   }
@@ -465,7 +465,7 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
         }
         else
         {
-          // There might be NULL's inside selection.
+          // There might be nullptr's inside selection.
           // So use the GetSelectedTextRaw variant.
           const int number_of_lines = 
             wxExGetNumberOfLines(stc->GetSelectedTextRaw());

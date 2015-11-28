@@ -20,7 +20,7 @@ wxExMarker::wxExMarker(const wxXmlNode* node)
   : m_No(-1)
   , m_Symbol(-1)
 {
-  if (node != NULL)
+  if (node != nullptr)
   {
     Set(node);
   }

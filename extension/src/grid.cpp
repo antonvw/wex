@@ -192,7 +192,7 @@ wxExGrid::wxExGrid(wxWindow* parent,
   
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
     wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
-    if (frame != NULL)
+    if (frame != nullptr)
     {
       frame->SetFindFocus(this);
     }

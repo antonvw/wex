@@ -27,7 +27,7 @@ class WXDLLIMPEXP_BASE wxExNotebook : public wxAuiNotebook
 public:
   /// Constructor.
   wxExNotebook(wxWindow* parent,
-    wxExManagedFrame* frame, // NULL is allowed
+    wxExManagedFrame* frame, // nullptr is allowed
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
@@ -50,7 +50,7 @@ public:
   /// Cannot be const as it can call DeletePage.
   template <class T> 
   bool ForEach(int id) {
-    wxWindowUpdateLocker locker(m_Frame != NULL ? (wxWindow*)m_Frame: (wxWindow*)this);
+    wxWindowUpdateLocker locker(m_Frame != nullptr ? (wxWindow*)m_Frame: (wxWindow*)this);
     
     // The page should be an int (no), otherwise page >= 0 never fails!
     for (int page = GetPageCount() - 1; page >= 0; page--)
@@ -104,7 +104,7 @@ public:
         break;
       }
     }
-    if (m_Frame != NULL && m_Keys.empty())
+    if (m_Frame != nullptr && m_Keys.empty())
     {
       m_Frame->SyncCloseAll(GetId());
     }
@@ -117,16 +117,16 @@ public:
     return (it != m_Windows.end() ? it->second: wxString(wxEmptyString));};
   
   /// Returns the page specified by the given key.
-  /// If the key does not exist NULL is returned.
+  /// If the key does not exist nullptr is returned.
   wxWindow* GetPageByKey(const wxString& key) const {
     const auto it = m_Keys.find(key);
-    return (it != m_Keys.end() ? it->second: NULL);};
+    return (it != m_Keys.end() ? it->second: nullptr);};
   
   /// Returns the page index specified by the given key.
   /// If the key does not exist wxNOT_FOUND is returned.
   int GetPageIndexByKey(const wxString& key) const {
     wxWindow* page = GetPageByKey(key);
-    return (page != NULL ? GetPageIndex(page): wxNOT_FOUND);};
+    return (page != nullptr ? GetPageIndex(page): wxNOT_FOUND);};
   
   /// Inserts the page with given key and fills the keys.
   wxWindow* InsertPage(
@@ -157,7 +157,7 @@ public:
     const wxBitmap& bitmap = wxNullBitmap);
       
   /// Selects (and returns) the page specified by the given key.
-  /// If the key does not exist NULL is returned.
+  /// If the key does not exist nullptr is returned.
   wxWindow* SetSelection(const wxString& key);
   
   /// Split performs a split operation programmatically. 

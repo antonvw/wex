@@ -19,7 +19,7 @@
 // Also test the toolbar (wxExToolBar).
 void fixture::testManagedFrame()
 {
-  CPPUNIT_ASSERT(m_Frame->AllowClose(100, NULL));
+  CPPUNIT_ASSERT(m_Frame->AllowClose(100, nullptr));
   
   wxExSTC* stc = new wxExSTC(m_Frame, "hello world");
   AddPane(m_Frame, stc);
@@ -28,9 +28,9 @@ void fixture::testManagedFrame()
   stc->Show();
   wxExVi* vi = &stc->GetVi();
   
-  wxExSTC* stc2 = NULL;  
+  wxExSTC* stc2 = nullptr;  
   CPPUNIT_ASSERT(!m_Frame->ExecExCommand(":n", stc2));
-  CPPUNIT_ASSERT( stc2 == NULL);
+  CPPUNIT_ASSERT( stc2 == nullptr);
   
   m_Frame->GetExCommand(vi, "/");
   
@@ -63,8 +63,8 @@ void fixture::testManagedFrame()
   m_Frame->SyncAll();
   m_Frame->SyncCloseAll(0);
   
-  CPPUNIT_ASSERT( m_Frame->GetToolBar() != NULL);
-  CPPUNIT_ASSERT( m_Frame->GetOptionsToolBar() != NULL);
+  CPPUNIT_ASSERT( m_Frame->GetToolBar() != nullptr);
+  CPPUNIT_ASSERT( m_Frame->GetOptionsToolBar() != nullptr);
   
   m_Frame->GetToolBar()->AddControls();
   CPPUNIT_ASSERT( m_Frame->TogglePane("FINDBAR"));

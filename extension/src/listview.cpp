@@ -158,7 +158,7 @@ void wxExColumn::SetIsSortedAscending(wxExSortType type)
 // wxWindow::NewControlId() is negative...
 const wxWindowID ID_COL_FIRST = 1000;
 
-wxExConfigDialog* wxExListView::m_ConfigDialog = NULL;
+wxExConfigDialog* wxExListView::m_ConfigDialog = nullptr;
 
 wxExListView::wxExListView(wxWindow* parent,
   wxExListType type,
@@ -427,7 +427,7 @@ wxExListView::wxExListView(wxWindow* parent,
     
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
     wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
-    if (frame != NULL)
+    if (frame != nullptr)
     {
       frame->SetFindFocus(this);
     }
@@ -610,7 +610,7 @@ int wxExListView::ConfigDialog(
   
   if (button_flags & wxAPPLY)
   {
-    if (m_ConfigDialog == NULL)
+    if (m_ConfigDialog == nullptr)
     {
       m_ConfigDialog = new wxExConfigDialog(parent, items, title, 0, 1, button_flags, id);
     }
@@ -806,7 +806,7 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
   {
     wxImageList* il = GetImageList(wxIMAGE_LIST_SMALL);
     
-    if (il == NULL)
+    if (il == nullptr)
     {
       wxFAIL;
       return 0;
@@ -913,7 +913,7 @@ void wxExListView::Initialize(const wxExLexer* lexer)
       break;
     
     case LIST_KEYWORD:
-      wxASSERT(lexer != NULL);
+      wxASSERT(lexer != nullptr);
       SetName(GetName() + " " + lexer->GetDisplayLexer());
       // fall through
     default:
@@ -949,7 +949,7 @@ void wxExListView::ItemActivated(long item_number)
     if (item.GetFileName().FileExists())
     {
       wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
-      if (frame != NULL)
+      if (frame != nullptr)
       {
         const wxString line_number_str = GetItemText(item_number, _("Line No"));
         const int line_number = atoi(line_number_str.c_str());

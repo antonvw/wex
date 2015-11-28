@@ -31,7 +31,7 @@ public:
   Frame();
  ~Frame();
   bool ServerNotListening() const {
-    return m_SocketServer == NULL;}
+    return m_SocketServer == nullptr;}
 protected:
   void OnSocket(wxSocketEvent& event);
 private:

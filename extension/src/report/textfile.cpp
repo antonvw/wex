@@ -19,8 +19,8 @@
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listview.h>
 
-wxExListView* wxExTextFileWithListView::m_Report = NULL;
-wxExFrameWithHistory* wxExTextFileWithListView::m_Frame = NULL;
+wxExListView* wxExTextFileWithListView::m_Report = nullptr;
+wxExFrameWithHistory* wxExTextFileWithListView::m_Frame = nullptr;
 
 wxExTextFileWithListView::wxExTextFileWithListView(
   const wxExFileName& filename,
@@ -144,7 +144,7 @@ bool wxExTextFileWithListView::Parse()
   }
   else if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
   {
-    if (m_Frame == NULL)
+    if (m_Frame == nullptr)
     {
       return false;
     }
@@ -153,7 +153,7 @@ bool wxExTextFileWithListView::Parse()
       wxExListViewWithFrame::GetTypeTool(GetTool()),
       &GetFileName().GetLexer());
 
-    if (m_Report == NULL)
+    if (m_Report == nullptr)
     {
       return false;
     }
@@ -312,7 +312,7 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
 
 void wxExTextFileWithListView::Report(size_t line)
 {
-  wxASSERT(m_Report != NULL);
+  wxASSERT(m_Report != nullptr);
 
   wxExListItem item(m_Report, GetFileName());
   item.Insert();
@@ -340,7 +340,7 @@ bool wxExTextFileWithListView::SetupTool(
 {
   m_Frame = frame;
 
-  if (report == NULL)
+  if (report == nullptr)
   {
     if (tool.IsReportType())
     {
@@ -348,7 +348,7 @@ bool wxExTextFileWithListView::SetupTool(
       {
         m_Report = m_Frame->Activate(wxExListViewWithFrame::GetTypeTool(tool));
   
-        if (m_Report == NULL)
+        if (m_Report == nullptr)
         {
           return false;
         }

@@ -74,7 +74,7 @@ public:
   virtual bool ExecExCommand(
     /// the command to execute
     const std::string& command, 
-    /// if the command changes stc, update it, otherwise NULL
+    /// if the command changes stc, update it, otherwise nullptr
     wxExSTC* & stc) {return false;};
 
   /// Returns a command line ex command.

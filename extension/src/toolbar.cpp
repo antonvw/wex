@@ -98,7 +98,7 @@ void wxExToolBar::AddControls(bool realize)
   AddTool(wxID_PRINT);
   AddTool(wxID_FIND);
   
-  if (wxExProcess::GetShell() != NULL)
+  if (wxExProcess::GetShell() != nullptr)
   {
     AddTool(wxID_EXECUTE);
   }
@@ -187,7 +187,7 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
       kind);
   }
 
-  return NULL;
+  return nullptr;
 }
 
 wxExFindToolBar::wxExFindToolBar(
@@ -281,7 +281,7 @@ void wxExOptionsToolBar::AddControls(bool realize)
     std::make_tuple(NewControlId(), "Hex", "HEX", "HexMode", _("Open in hex mode"), false),
     std::make_tuple(NewControlId(), "Sync", "SYNC", "AllowSync", _("Synchronize modified files"), true)})
   {
-    if (std::get<0>(it) == ID_VIEW_PROCESS && wxExProcess::GetShell() == NULL)
+    if (std::get<0>(it) == ID_VIEW_PROCESS && wxExProcess::GetShell() == nullptr)
     {
       continue;
     }
@@ -340,7 +340,7 @@ FindTextCtrl::FindTextCtrl(
   
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
     wxExSTC* stc = m_Frame->GetSTC();
-    if (stc != NULL)
+    if (stc != nullptr)
     {
       stc->PositionSave();
     }
@@ -366,7 +366,7 @@ void FindTextCtrl::Find(bool find_next, bool restore_position)
   wxExGrid* grid = m_Frame->GetGrid();
   wxExListView* lv = m_Frame->GetListView();
 
-  if (stc != NULL)
+  if (stc != nullptr)
   {
     if (restore_position)
     {
@@ -378,11 +378,11 @@ void FindTextCtrl::Find(bool find_next, bool restore_position)
       -1,
       find_next);
   }
-  else if (grid != NULL)
+  else if (grid != nullptr)
   {
     grid->FindNext(GetValue(), find_next);
   }
-  else if (lv != NULL)
+  else if (lv != nullptr)
   {
     lv->FindNext(GetValue(), find_next);
   }

@@ -29,13 +29,13 @@ private:
   wxExListView* m_Report;
 };
 
-wxExFrameWithHistory* fixture::m_Frame = NULL;
+wxExFrameWithHistory* fixture::m_Frame = nullptr;
 
 fixture::fixture() : m_Project("test-rep.prj")
 {
-  if (m_Frame == NULL)
+  if (m_Frame == nullptr)
   {
-    m_Frame = new FrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
+    m_Frame = new FrameWithHistory(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName());
     m_Frame->Show();
   }
 }

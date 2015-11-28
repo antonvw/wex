@@ -66,16 +66,16 @@ void HandleCommand(const wxString& command)
   }
 }
 
-bool ShowProcess(bool show, wxTimer* timer = NULL)
+bool ShowProcess(bool show, wxTimer* timer = nullptr)
 {
-  if (!show && timer != NULL)
+  if (!show && timer != nullptr)
   {
     timer->Stop();
   }
 
   wxExManagedFrame* frame = (dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()));
 
-  if (frame != NULL)
+  if (frame != nullptr)
   {
     frame->ShowPane("PROCESS", show);
     return true;
@@ -84,7 +84,7 @@ bool ShowProcess(bool show, wxTimer* timer = NULL)
   return false;  
 }
       
-wxExShell* wxExProcess::m_Shell = NULL;
+wxExShell* wxExProcess::m_Shell = nullptr;
 wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 
 wxExProcess::wxExProcess()
@@ -105,7 +105,7 @@ wxExProcess::~wxExProcess()
 }
 
 wxExProcess::wxExProcess(const wxExProcess& process)
-  : m_Timer(NULL)
+  : m_Timer(nullptr)
 {
   *this = process;
 }
@@ -114,7 +114,7 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
 {
   if (this != &p)
   {
-    if (m_Timer != NULL)
+    if (m_Timer != nullptr)
     {
       delete m_Timer;
     }
@@ -135,7 +135,7 @@ void wxExProcess::CheckInput()
 {
   wxCriticalSectionLocker lock(m_Critical);
   
-  if (m_Shell == NULL)
+  if (m_Shell == nullptr)
   {
     return;
   }
@@ -195,7 +195,7 @@ bool wxExProcess::Command(const wxString& command)
   // Send command to process and restart timer.
   wxOutputStream* os = GetOutputStream();
 
-  if (os != NULL)
+  if (os != nullptr)
   {
     HandleCommand(command);
     wxTextOutputStream(*os).WriteString(command + "\n");
@@ -260,7 +260,7 @@ bool wxExProcess::Execute(
   const wxString& wd)
 {
   // We need a shell for output.
-  if (m_Shell == NULL)
+  if (m_Shell == nullptr)
   {
     return false;
   }
@@ -369,7 +369,7 @@ bool wxExProcess::IsRunning() const
     // so it is not running.
     m_Sync || 
     // If we have not yet run Execute, process is not running
-    m_Shell == NULL ||
+    m_Shell == nullptr ||
     GetPid() <= 0)
   {
     return false;
@@ -409,7 +409,7 @@ void wxExProcess::OnTerminate(int pid, int status)
   CheckInput();
   wxLogStatus(_("Ready"));
 
-  if (m_Shell != NULL)
+  if (m_Shell != nullptr)
   {
     m_Shell->EnableShell(false);
   }
@@ -417,7 +417,7 @@ void wxExProcess::OnTerminate(int pid, int status)
 
 void wxExProcess::PrepareOutput(wxWindow* parent)
 {
-  if (m_Shell == NULL)
+  if (m_Shell == nullptr)
   {
     m_Shell = new wxExShell(parent, wxEmptyString, wxEmptyString, true, 25, wxEmptyString,
       wxExSTC::STC_MENU_DEFAULT | wxExSTC::STC_MENU_OPEN_LINK);
@@ -433,7 +433,7 @@ void wxExProcess::ShowOutput(const wxString& caption) const
   }  
   else if (!m_Error)
   {
-    if (m_Shell != NULL && ShowProcess(true))
+    if (m_Shell != nullptr && ShowProcess(true))
     {
       m_Shell->AppendText(m_Output);
     }

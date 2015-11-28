@@ -18,7 +18,7 @@ class WXDLLIMPEXP_BASE wxExIndicator
 {
 public:
   /// Default constructor.
-  wxExIndicator(const wxXmlNode* node = NULL);
+  wxExIndicator(const wxXmlNode* node = nullptr);
 
   /// Constructor.
   wxExIndicator(int no, int style);

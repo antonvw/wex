@@ -32,7 +32,7 @@ public:
 #endif
 
   /// Sets the object as the current one, returns the pointer 
-  /// to the previous current object (both the parameter and returned value may be NULL). 
+  /// to the previous current object (both the parameter and returned value may be nullptr). 
   static wxExPrinting* Set(wxExPrinting* printing);
 private:
   wxExPrinting();

@@ -64,7 +64,7 @@ public:
   /// Default constructor.
   wxExStatistics() 
 #if wxUSE_GRID
-    : m_Grid(NULL)
+    : m_Grid(nullptr)
 #endif
     {};
 
@@ -85,7 +85,7 @@ public:
 #if wxUSE_GRID
     m_Rows.clear();
 
-    if (m_Grid != NULL)
+    if (m_Grid != nullptr)
     {
       m_Grid->ClearGrid();
       m_Grid->DeleteRows(0, m_Grid->GetNumberRows());
@@ -138,7 +138,7 @@ public:
     m_Items[key] = value;
 
 #if wxUSE_GRID
-    if (m_Grid != NULL)
+    if (m_Grid != nullptr)
     {
       const auto it = m_Rows.find(key);
 
@@ -180,7 +180,7 @@ public:
     /// the id of the grid component
     wxWindowID id = wxID_ANY)
     {
-    if (m_Grid == NULL)
+    if (m_Grid == nullptr)
     {
       m_Grid = new wxExGridStatistics<T>(parent, this, id);
       m_Grid->CreateGrid(0, 0);
@@ -222,7 +222,7 @@ public:
     m_Grid->Show();
     return m_Grid;}
 
-  /// Access to the grid, returns NULL if the grid has not been shown yet.
+  /// Access to the grid, returns nullptr if the grid has not been shown yet.
   const wxExGrid* GetGrid() const {return m_Grid;}
 #endif
 private:

@@ -34,7 +34,7 @@
   wxExListToConfig(STRINGS, TEXT);                            
 
 
-wxExFindReplaceData* wxExFindReplaceData::m_Self = NULL;
+wxExFindReplaceData* wxExFindReplaceData::m_Self = nullptr;
 
 wxExFindReplaceData::wxExFindReplaceData()
   : wxFindReplaceData()
@@ -72,7 +72,7 @@ wxExFindReplaceData::~wxExFindReplaceData()
 
 wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
 {
-  if (m_Self == NULL && createOnDemand)
+  if (m_Self == nullptr && createOnDemand)
   {
     m_Self = new wxExFindReplaceData();
   }

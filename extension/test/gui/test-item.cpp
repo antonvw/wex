@@ -29,13 +29,13 @@ void fixture::testItem()
   CPPUNIT_ASSERT( item.GetLabel() == "item");
   CPPUNIT_ASSERT( item.GetPage() == "page1");
   CPPUNIT_ASSERT( item.GetType() == ITEM_STRING);
-  CPPUNIT_ASSERT( item.GetWindow() == NULL);
+  CPPUNIT_ASSERT( item.GetWindow() == nullptr);
   CPPUNIT_ASSERT( item.GetValue().IsNull());
   CPPUNIT_ASSERT(!item.IsRowGrowable());
   
-  item.SetValidator(NULL);
+  item.SetValidator(nullptr);
   
-  // setting value if window is NULL should have no effect.
+  // setting value if window is nullptr should have no effect.
   CPPUNIT_ASSERT(!item.SetValue(wxString("test")));
   CPPUNIT_ASSERT( item.GetValue().IsNull());
   
@@ -52,7 +52,7 @@ void fixture::testItem()
   
 #if wxCHECK_VERSION(3,1,0)
   item.Layout(panel, sizer);
-  CPPUNIT_ASSERT( item.GetWindow() != NULL);
+  CPPUNIT_ASSERT( item.GetWindow() != nullptr);
   CPPUNIT_ASSERT( item.GetValue() == "hello string");
   CPPUNIT_ASSERT( item.SetValue(wxString("value changed")));
   CPPUNIT_ASSERT( item.GetValue() == "value changed");
@@ -60,7 +60,7 @@ void fixture::testItem()
   CPPUNIT_ASSERT( item.GetWindow()->GetWindowStyleFlag() == 1);
   
   item_int.Layout(panel, sizer);
-  CPPUNIT_ASSERT( item_int.GetWindow() != NULL);
+  CPPUNIT_ASSERT( item_int.GetWindow() != nullptr);
   CPPUNIT_ASSERT( item_int.GetValue() == 100);
   CPPUNIT_ASSERT( item_int.SetValue(300));
   CPPUNIT_ASSERT( item_int.GetValue() == 300);
@@ -84,14 +84,14 @@ void fixture::testItem()
     // ITEM_USER is not yet laid out ok, gives errors.
     if (it.GetType() != ITEM_USER)
     {
-      // Testing on not NULL not possible,
+      // Testing on not nullptr not possible,
       // not all items need a sizer.
       it.Layout(panel, sizer);
     }
  
     if (it.GetType() != ITEM_EMPTY && it.GetType() != ITEM_SPACER)
     {
-      CPPUNIT_ASSERT(it.GetWindow() != NULL);
+      CPPUNIT_ASSERT(it.GetWindow() != nullptr);
     }
   }
 #endif

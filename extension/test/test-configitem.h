@@ -297,14 +297,14 @@ const auto TestConfigItems()
     "HTML Control", 
     new wxHtmlWindow(),
     myHtmlCreate,
-    NULL,
+    nullptr,
     "User Controls"));
 
   v.push_back(wxExConfigItem(
     "Text Control", 
     new wxTextCtrl(),
     myTextCreate,
-    NULL,
+    nullptr,
     "User Controls"));
   
   return v;

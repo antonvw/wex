@@ -17,7 +17,7 @@ void fixture::testFrd()
 {
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
   
-  CPPUNIT_ASSERT(frd != NULL);
+  CPPUNIT_ASSERT(frd != nullptr);
   
   wxExFindTextCtrl* tc = new wxExFindTextCtrl(m_Frame);
   AddPane(m_Frame, tc);

@@ -16,13 +16,13 @@
 
 void fixture::testPrinting()
 {
-  CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
-  CPPUNIT_ASSERT(wxExPrinting::Get()->GetPrinter() != NULL);
-  CPPUNIT_ASSERT(wxExPrinting::Get()->GetHtmlPrinter() != NULL);
+  CPPUNIT_ASSERT(wxExPrinting::Get() != nullptr);
+  CPPUNIT_ASSERT(wxExPrinting::Get()->GetPrinter() != nullptr);
+  CPPUNIT_ASSERT(wxExPrinting::Get()->GetHtmlPrinter() != nullptr);
   wxExPrinting* old = wxExPrinting::Get();
-  CPPUNIT_ASSERT(wxExPrinting::Get()->Set(NULL) == old);
-  CPPUNIT_ASSERT(wxExPrinting::Get(false) == NULL);
-  CPPUNIT_ASSERT(wxExPrinting::Get(true) != NULL);
+  CPPUNIT_ASSERT(wxExPrinting::Get()->Set(nullptr) == old);
+  CPPUNIT_ASSERT(wxExPrinting::Get(false) == nullptr);
+  CPPUNIT_ASSERT(wxExPrinting::Get(true) != nullptr);
   
   wxExSTC* stc = new wxExSTC(m_Frame, "hello printing");
     

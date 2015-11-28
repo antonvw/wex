@@ -28,7 +28,7 @@ public:
     , m_Stat(fullpath) {
       // This construct prevents an assert in the test base.
       wxExLexers* lexers = wxExLexers::Get(false);
-      if (lexers != NULL)
+      if (lexers != nullptr)
       {
         m_Lexer = lexers->FindByFileName(*this);
       }};

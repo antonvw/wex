@@ -35,7 +35,7 @@ TokenQueue_t calculator::toRPN(const char* expr,
       // add the parsed number to the output queue.
       if (!vars) {
         throw std::domain_error(
-            "Detected variable, but the variable map is null.");
+            "Detected variable, but the variable map is nullptr.");
       }
 
       std::stringstream ss;

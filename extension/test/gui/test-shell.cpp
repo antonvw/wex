@@ -86,7 +86,7 @@ void fixture::testShell()
   CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
   CPPUNIT_ASSERT(!shell->GetText().Contains("bbb"));
   
-  shell->SetProcess(NULL);
+  shell->SetProcess(nullptr);
   
   shell->DocumentEnd();
   

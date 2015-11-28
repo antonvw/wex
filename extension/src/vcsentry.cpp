@@ -104,7 +104,7 @@ void wxExVCSEntry::AddCommands(const wxXmlNode* node)
 #if wxUSE_GUI
 int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 {
-  wxMenu* submenu = NULL;
+  wxMenu* submenu = nullptr;
 
   const wxString unused = "XXXXX";  
   wxString prev_menu = unused;
@@ -130,7 +130,7 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
         menu->AppendSeparator();
       }
 
-      submenu = NULL;
+      submenu = nullptr;
     }
     
     const long type = it.GetType() & 0x000F;
@@ -146,7 +146,7 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 
     if (add)
     {
-      wxMenu* usemenu = (submenu == NULL ? menu: submenu);
+      wxMenu* usemenu = (submenu == nullptr ? menu: submenu);
       usemenu->Append(
         base_id + i, 
         wxExEllipsed(it.GetCommand(false, true))); // use no sub and do accel
@@ -181,7 +181,7 @@ bool wxExVCSEntry::Execute(
     const wxString wc(wxFileSelectorDefaultWildcardStr);
 #endif
 
-    wxFileDialog dlg(NULL, 
+    wxFileDialog dlg(nullptr, 
       _("Select") + " " + m_Name + " bin", 
       "", 
       "", 
@@ -348,7 +348,7 @@ int wxExVCSEntry::ShowDialog(
 #if wxUSE_GUI
 void wxExVCSEntry::ShowOutput(const wxString& caption) const
 {
-  if (!GetError() && GetShell() != NULL)
+  if (!GetError() && GetShell() != nullptr)
   {
     if (GetFlags().Contains("xml"))
     {

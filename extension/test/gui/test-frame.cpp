@@ -21,11 +21,11 @@ void fixture::testFrame()
   CPPUNIT_ASSERT(!m_Frame->OpenFile(GetTestFile()));
   CPPUNIT_ASSERT( ((wxExFrame *)m_Frame)->OpenFile(GetTestFile().GetFullPath(), "contents"));
   
-  CPPUNIT_ASSERT( m_Frame->GetGrid() == NULL);
-  CPPUNIT_ASSERT( m_Frame->GetListView() == NULL);
-  CPPUNIT_ASSERT( m_Frame->GetSTC() == NULL);
+  CPPUNIT_ASSERT( m_Frame->GetGrid() == nullptr);
+  CPPUNIT_ASSERT( m_Frame->GetListView() == nullptr);
+  CPPUNIT_ASSERT( m_Frame->GetSTC() == nullptr);
   
-  m_Frame->SetFindFocus(NULL);
+  m_Frame->SetFindFocus(nullptr);
   m_Frame->SetFindFocus(m_Frame);
   m_Frame->SetFindFocus(m_Frame->GetSTC());
   

@@ -139,7 +139,7 @@ private:
 
 wxString wxExAddressRange::m_Pattern;
 wxString wxExAddressRange::m_Replacement;
-wxExProcess* wxExAddressRange::m_Process = NULL;
+wxExProcess* wxExAddressRange::m_Process = nullptr;
 
 wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
   : m_Begin(ex)
@@ -337,7 +337,7 @@ bool wxExAddressRange::Escape(const wxString& command)
 {
   if (m_Begin.empty() && m_End.empty())
   {
-    if (m_Process == NULL)
+    if (m_Process == nullptr)
     {
       m_Process = new wxExProcess();
     }

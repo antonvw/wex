@@ -50,7 +50,7 @@
   wxPostEvent(wxTheApp->GetTopWindow(), event);             \
 };                                                          \
 
-wxExSTCEntryDialog* wxExEx::m_Dialog = NULL;
+wxExSTCEntryDialog* wxExEx::m_Dialog = nullptr;
 wxExViMacros wxExEx::m_Macros;
 std::string wxExEx::m_LastCommand;
 
@@ -62,7 +62,7 @@ wxExEx::wxExEx(wxExSTC* stc)
   , m_MarkerSymbol(0, -1)
   , m_Register(0)
 {
-  wxASSERT(m_Frame != NULL);
+  wxASSERT(m_Frame != nullptr);
   
   if (wxExFindReplaceData::Get()->MatchCase())
   {
@@ -94,11 +94,11 @@ bool wxExEx::Command(const std::string& command)
   }
   
   bool result = true;
-  wxExSTC* stc = NULL;
+  wxExSTC* stc = nullptr;
 
   if (m_Frame->ExecExCommand(command, stc))
   {
-    if (stc != NULL)
+    if (stc != nullptr)
     {
       m_STC = stc;
     }
@@ -849,7 +849,7 @@ void wxExEx::SetRegisterYank(const std::string& value) const
 
 void wxExEx::ShowDialog(const wxString& title, const wxString& text)
 {
-  if (m_Dialog == NULL)
+  if (m_Dialog == nullptr)
   {
     m_Dialog = new wxExSTCEntryDialog(
       wxTheApp->GetTopWindow(),

@@ -34,7 +34,7 @@ public:
     /// lexer to use
     const wxString& lexer, 
     /// stc component on which to apply
-    wxStyledTextCtrl* stc = NULL,
+    wxStyledTextCtrl* stc = nullptr,
     /// if clear is true, old styles are reset (including folding)
     bool clear = true);
     
@@ -43,7 +43,7 @@ public:
     /// lexer to use
     const wxExLexer& lexer, 
     /// stc component on which to apply
-    wxStyledTextCtrl* stc = NULL);
+    wxStyledTextCtrl* stc = nullptr);
     
   /// Adds keywords (public for testing only).
   bool AddKeywords(const wxString& text, int setno = 0);
