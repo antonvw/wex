@@ -38,7 +38,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
       LIST_FILE, 
       id, 
       menu_flags, 
-      NULL, 
+      nullptr, 
       pos, 
       size, 
       style, 
@@ -84,6 +84,12 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     // Force at least one of the checkboxes to be checked.
     m_AddItemsDialog->ForceCheckBoxChecked(_("Add"));
+    if (GetSelectedItemCount() > 0)
+    {
+      wxExItem item(m_AddItemsDialog->GetItem(m_TextInFolder));
+      wxComboBox* cb = (wxComboBox* )item.GetWindow();
+      cb->SetValue(wxExListItem(this, GetFirstSelected()).GetFileName().GetPath());
+    }
     m_AddItemsDialog->Show();}, wxID_ADD);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -166,7 +172,7 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 
   wxExListViewWithFrame::BuildPopupMenu(menu);
     
-  if (GetSelectedItemCount() == 0 && ok)
+  if (ok)
   {
     menu.AppendSeparator();
     menu.Append(wxID_ADD);

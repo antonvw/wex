@@ -87,7 +87,7 @@ bool wxExFindReplaceData::Iterate(wxTextCtrl* ctrl, int key)
   
 bool wxExFindReplaceData::RegExMatches(const std::string& text) const
 {
-   return std::regex_search(text, m_FindRegEx, std::regex_constants::format_sed);
+  return std::regex_search(text, m_FindRegEx, std::regex_constants::format_default);
 }
   
 int wxExFindReplaceData::RegExReplaceAll(std::string& text) const
@@ -99,8 +99,8 @@ int wxExFindReplaceData::RegExReplaceAll(std::string& text) const
   
   text = std::regex_replace(text, 
     m_FindRegEx, 
-    GetReplaceString().ToStdString(), 
-    std::regex_constants::format_sed);
+    GetReplaceString().ToStdString(),
+    std::regex_constants::format_default);
 
   return result;
 }
