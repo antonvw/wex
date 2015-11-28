@@ -117,7 +117,7 @@ public:
     };
     return T();};
   /// Returns the item actual value for specified label, or 
-  /// Isnullptr value if item does not exist.
+  /// IsNull value if item does not exist.
   const wxAny GetItemValue(const wxString& label, const wxString& page = wxEmptyString) const {
     return GetItem(label, page).GetValue();};
   /// Sets the item actual value for specified label.
@@ -289,7 +289,7 @@ private:
     wxString previous_page = "XXXXXX";
     wxFlexGridSizer* previous_item_sizer = nullptr;
     wxFlexGridSizer* sizer = nullptr;
-    int previous_item_type = -1;
+    int previous_type = -1;
     for (auto& it : m_Items)
     {
       if (it.GetType() == ITEM_EMPTY) continue; //skip
@@ -334,17 +334,21 @@ private:
           sizer->AddGrowableCol(i);
         }
       }
-      wxFlexGridSizer* use_item_sizer = (
-        it.GetType() == previous_item_type && it.GetPage() == previous_page ? previous_item_sizer: 
-        nullptr);
+      // If this item has same type as previous type
+      // (and on the same page), use previous sizer,
+      // otherwise use no sizer (Layout will create a new one).
+      wxFlexGridSizer* current_item_sizer = (
+        it.GetType() == previous_type && it.GetPage() == previous_page ? 
+          previous_item_sizer: 
+          nullptr);
       // Layout the item.
       previous_item_sizer = it.Layout(
         (bookctrl != nullptr ? bookctrl->GetCurrentPage(): this), 
         sizer, 
         GetButtonFlags() == wxCANCEL,
-        use_item_sizer);
-      previous_item_type = it.GetType();
+        current_item_sizer);
       previous_page = it.GetPage();
+      previous_type = it.GetType();
       if (sizer != nullptr &&
           sizer->GetEffectiveRowsCount() >= 1 &&
          !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
