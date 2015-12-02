@@ -9,6 +9,7 @@
 
 #include <map>
 #include <set>
+#include <utility>
 #include <wx/any.h>
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 #include <wx/string.h>
@@ -38,6 +39,14 @@ enum wxExItemType
   ITEM_HYPERLINKCTRL,        ///< a wxHyperlinkCtrl ctrl item
   ITEM_INT,                  ///< a wxTextCtrl item that only accepts an integer (long)
   ITEM_LISTVIEW,             ///< a wxExListView ctrl item (a list view standard file)
+  ITEM_NOTEBOOK,             ///< a traditional notebook item
+  ITEM_NOTEBOOK_AUI,         ///< a aui notebook
+  ITEM_NOTEBOOK_CHOICE,      ///< a choice book
+  ITEM_NOTEBOOK_EX,          ///< a wxExNotebook 
+  ITEM_NOTEBOOK_LIST,        ///< a list book
+  ITEM_NOTEBOOK_SIMPLE,      ///< a simple notebook
+  ITEM_NOTEBOOK_TOOL,        ///< a tool book
+  ITEM_NOTEBOOK_TREE,        ///< a tree book
   ITEM_RADIOBOX,             ///< a wxRadioBox item
   ITEM_SLIDER,               ///< a wxSlider item
   ITEM_SPACER,               ///< a spacer item
@@ -65,8 +74,10 @@ typedef void (*wxExUserWindowCreate)(wxWindow* user, wxWindow* parent, bool read
 class WXDLLIMPEXP_BASE wxExItem
 {
 public:
+  typedef std::vector<std::pair<wxString, std::vector<wxExItem>>> ItemsNotebook;
+  
   /// Default constructor for a ITEM_EMPTY item.
-  wxExItem() : wxExItem(ITEM_EMPTY, 0) {;};
+  wxExItem() : wxExItem(ITEM_EMPTY, 0, wxEmptyString) {;};
 
   /// Constructor for a ITEM_SPACER item.
   /// The size is the size for the spacer used.
@@ -131,6 +142,27 @@ public:
     : wxExItem(ITEM_CHECKLISTBOX_BOOL, style, page, "checklistbox_bool", choices,
       false, LABEL_NONE, wxID_ANY, 1, 0, 1, 1) {;};
 
+  /// Constuctor for a ITEM_NOTEBOOK item, being a vector
+  /// of a pair of pages with a vector of items.
+  /// e.g.:
+  /// wxExItem(ItemsNotebook {
+  ///   {"page1", 
+  ///     {wxExItem("string1"),
+  ///      wxExItem("string2"),
+  ///      wxExItem("string3")}},
+  ///   {"page2", 
+  ///     {wxExItem("spin1", 5, 0, 10),
+  ///      wxExItem("spin2", 5, 0, 10),
+  ///      wxExItem("spin3", 5, 0, 10)}}}
+  wxExItem(
+    const ItemsNotebook & v,
+    wxExItemType type,
+    long style,
+    int rows,
+    int cols)
+  : wxExItem(type, style, wxEmptyString, wxEmptyString, v, false, 
+    LABEL_NONE, wxID_ANY, cols) {;};
+  
   /// Constructor for a ITEM_RADIOBOX, or a ITEM_CHECKLISTBOX_BIT item. 
   /// This checklistbox (not mutually exclusive choices)
   /// can be used to get/set individual bits in a long.
@@ -144,7 +176,7 @@ public:
     bool use_radiobox = true,
     const wxString& page = wxEmptyString,
     /// major dimension for the radiobox
-    int majorDimension = 0,
+    int majorDimension = 1,
     long style = wxRA_SPECIFY_COLS)
     : wxExItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX_BIT, style, page, label, choices,
       false, LABEL_NONE, wxID_ANY, majorDimension, 0, 1, 1) {;};
@@ -184,7 +216,7 @@ public:
         type == ITEM_TOGGLEBUTTON ? LABEL_NONE: label_type, id) {;};
 
   /// Returns the number of columns for the current page.
-  int GetColumns() const {return m_PageCols;};
+  int GetColumns() const {return m_MajorDimension;};
 
   /// Returns the initial value.
   const auto & GetInitial() const {return m_Initial;};
@@ -280,22 +312,17 @@ private:
   wxFlexGridSizer* AddStaticText(wxSizer* sizer) const;
   bool CreateWindow(wxWindow* parent, bool readonly);
 
-  bool m_IsRequired;
+  bool m_IsRequired, m_IsRowGrowable;
   int m_Id, m_MajorDimension;
   long m_Style;
+  
   wxExItemType m_Type;
   wxExLabelType m_LabelType;
   wxAny m_Initial, m_Min, m_Max, m_Inc;
-  wxString m_Label;
-
-  bool m_IsRowGrowable;
-  int m_PageCols;
-  wxString m_Page;
-
-  wxExUserWindowCreate m_UserWindowCreate;
-  
+  wxString m_Label, m_Page;
   wxSizerFlags m_SizerFlags;
   wxValidator* m_Validator;
   wxWindow* m_Window;
+  wxExUserWindowCreate m_UserWindowCreate;
 };
 #endif // wxUSE_GUI

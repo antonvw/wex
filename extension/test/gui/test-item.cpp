@@ -23,7 +23,7 @@ void fixture::testItem()
   
   wxExItem item("item", "hello string", "page1", 1, ITEM_STRING, true);
   
-  CPPUNIT_ASSERT( item.GetColumns() == -1); // page cols
+  CPPUNIT_ASSERT( item.GetColumns() == 1);
   CPPUNIT_ASSERT( item.GetInitial().As<wxString>() == "hello string");
   CPPUNIT_ASSERT( item.GetIsRequired());
   CPPUNIT_ASSERT( item.GetLabel() == "item");
