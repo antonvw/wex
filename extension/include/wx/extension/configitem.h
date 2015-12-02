@@ -84,6 +84,17 @@ public:
     : wxExConfigItem(ITEM_CHECKLISTBOX_BOOL, style, page, "checklistbox_noname", 
       false, LABEL_NONE, wxID_ANY, 25, 1, 0, 1, 1, choices) {;};
 
+  /// Constuctor for a ITEM_NOTEBOOK item, being a vector
+  /// of a pair of pages with a vector of items.
+  wxExConfigItem(
+    const ItemsNotebook & v,
+    wxExItemType type,
+    long style,
+    int rows,
+    int cols)
+    : wxExConfigItem(type, style, wxEmptyString, wxEmptyString, 
+      false, LABEL_NONE, wxID_ANY, 25, cols, 0, 1, 1, v) {;};
+  
   /// Constructor for a ITEM_RADIOBOX, or a ITEM_CHECKLISTBOX_BIT item. 
   /// This checklistbox (not mutually exclusive choices)
   /// can be used to get/set individual bits in a long.
@@ -97,7 +108,7 @@ public:
     bool use_radiobox = true,
     const wxString& page = wxEmptyString,
     /// major dimension for the radiobox
-    int majorDimension = 0,
+    int majorDimension = 1,
     long style = wxRA_SPECIFY_COLS)
     : wxExConfigItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX_BIT, style, page, label, 
       false, LABEL_NONE, wxID_ANY, 25, majorDimension, 0, 1, 1, choices) {;};

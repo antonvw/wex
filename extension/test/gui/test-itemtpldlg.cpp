@@ -85,13 +85,15 @@ void fixture::testItemTemplateDialog()
     dlg->ForceCheckBoxChecked();
     dlg->Show();
     
+#if wxCHECK_VERSION(3,1,0)
     CPPUNIT_ASSERT(dlg->GetItem("string1").GetValue() == "nice");
     CPPUNIT_ASSERT(dlg->GetItem("string1", "page0").GetValue() == "nice");
     CPPUNIT_ASSERT(dlg->GetItem("string1", "page1").GetValue() == "other");
     CPPUNIT_ASSERT(dlg->SetItemValue("string1", "xxx", "page1"));
     CPPUNIT_ASSERT(dlg->GetItem("string1").GetValue() == "nice");
     CPPUNIT_ASSERT(dlg->GetItem("string1", "page1").GetValue() == "xxx");
-    
+#endif
+
     wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
     wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));
   }

@@ -22,6 +22,17 @@
 #include <wx/valnum.h>
 #include <wx/valtext.h>
 #include <wx/window.h>
+
+#include <wx/aui/auibook.h>
+#include <wx/bookctrl.h> 
+#include <wx/choicebk.h>
+#include <wx/imaglist.h>
+#include <wx/listbook.h>
+#include <wx/notebook.h>
+#include <wx/persist/treebook.h>
+#include <wx/simplebook.h>
+#include <wx/toolbook.h>
+
 #include <wx/extension/item.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/stc.h>
@@ -51,12 +62,11 @@ wxExItem::wxExItem(wxExItemType type, long style,
   , m_Window(window)
   , m_IsRowGrowable(false)
   , m_Page(page)
-  , m_PageCols(-1)
   , m_SizerFlags(wxSizerFlags().Border().Left())
 {
   if (m_Page.Contains(":"))
   {
-    m_PageCols = atoi(m_Page.AfterFirst(':'));
+    m_MajorDimension = atoi(m_Page.AfterFirst(':'));
     m_Page = m_Page.BeforeFirst(':');
   }
   
@@ -65,6 +75,14 @@ wxExItem::wxExItem(wxExItemType type, long style,
     case ITEM_CHECKLISTBOX_BIT:
     case ITEM_CHECKLISTBOX_BOOL:
     case ITEM_LISTVIEW:
+    case ITEM_NOTEBOOK: 
+    case ITEM_NOTEBOOK_AUI: 
+    case ITEM_NOTEBOOK_EX: 
+    case ITEM_NOTEBOOK_LIST: 
+    case ITEM_NOTEBOOK_SIMPLE: 
+    case ITEM_NOTEBOOK_TOOL: 
+    case ITEM_NOTEBOOK_TREE: 
+    case ITEM_RADIOBOX:
     case ITEM_STC:
       m_IsRowGrowable = true;
       m_SizerFlags.Expand();
@@ -340,6 +358,23 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
+    case ITEM_NOTEBOOK: m_Window = new wxNotebook(parent, wxID_ANY); break;
+    case ITEM_NOTEBOOK_AUI: m_Window = new wxAuiNotebook(parent); break;
+    case ITEM_NOTEBOOK_CHOICE: m_Window = new wxChoicebook(parent, wxID_ANY); break;
+    case ITEM_NOTEBOOK_EX: break;
+    case ITEM_NOTEBOOK_LIST: m_Window = new wxListbook(parent, wxID_ANY); break;
+    case ITEM_NOTEBOOK_SIMPLE: m_Window = new wxSimplebook(parent, wxID_ANY); break;
+    case ITEM_NOTEBOOK_TREE: m_Window = new wxTreebook(parent, wxID_ANY); break;
+    
+    case ITEM_NOTEBOOK_TOOL: m_Window = new wxToolbook(parent, wxID_ANY);
+/*    
+      if (imageList == nullptr)
+      {
+        wxLogError("toolbook requires image list");
+      }
+*/      
+      break;
+    
     case ITEM_RADIOBOX:
       {
       wxArrayString arraychoices;
@@ -436,6 +471,14 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
   {
     wxASSERT(m_Window != nullptr);
   }
+
+/*
+  wxImageList* imageList = nullptr;
+  if (bookctrl != nullptr)
+  {
+    m_Window->SetImageList(imageList);
+  }
+*/
   
   return true;
 }
@@ -505,6 +548,72 @@ wxFlexGridSizer* wxExItem::Layout(
     case ITEM_EMPTY: return fgz;
     case ITEM_SPACER: sizer->AddSpacer(m_Style); return fgz;
     default: return Add(sizer, fgz);
+    
+    case ITEM_NOTEBOOK: 
+    case ITEM_NOTEBOOK_AUI: 
+    case ITEM_NOTEBOOK_EX: 
+    case ITEM_NOTEBOOK_LIST: 
+    case ITEM_NOTEBOOK_SIMPLE: 
+    case ITEM_NOTEBOOK_TOOL: 
+    case ITEM_NOTEBOOK_TREE: 
+    {
+      wxFlexGridSizer* basic = Add(sizer, fgz);
+      wxBookCtrlBase* bookctrl = (wxBookCtrlBase*)m_Window;
+      wxFlexGridSizer* previous_item_sizer = nullptr;
+      int previous_type = -1;
+
+      // Add all pages and recursive layout the subitems.
+      for (auto page : m_Initial.As<ItemsNotebook>())
+      {
+        wxString name(page.first);
+        int use_cols = 1;
+        if (m_MajorDimension != -1) use_cols = m_MajorDimension;
+        if (name.Contains(":"))
+        {
+          use_cols = atoi(page.first.AfterFirst(':'));
+          name = page.first.BeforeFirst(':');
+        }
+  
+        bookctrl->AddPage(
+          new wxWindow(bookctrl, wxID_ANY), 
+          name,
+          true // select
+          ); // no image yet
+        
+        wxFlexGridSizer* booksizer = new wxFlexGridSizer(use_cols);
+        bookctrl->GetCurrentPage()->SetSizer(booksizer);
+        for (int i = 0; i < use_cols; i++)
+        {
+          booksizer->AddGrowableCol(i);
+        }
+        
+        for (auto item: page.second)
+        {
+          // If this item has same type as previous type use previous sizer,
+          // otherwise use no sizer (Layout will create a new one).
+          wxFlexGridSizer* current_item_sizer = (
+            item.GetType() == previous_type ? previous_item_sizer: nullptr);
+
+          previous_item_sizer = item.Layout(
+            bookctrl->GetCurrentPage(),
+            booksizer,
+            readonly,
+            current_item_sizer);
+          
+          previous_type = item.GetType();
+
+          if (booksizer->GetEffectiveRowsCount() >= 1 &&
+             !booksizer->IsRowGrowable(booksizer->GetEffectiveRowsCount() - 1) &&
+              item.IsRowGrowable())
+          {
+            booksizer->AddGrowableRow(booksizer->GetEffectiveRowsCount() - 1);
+          }
+        }
+      }
+      
+      bookctrl->SetSelection(0);
+      return basic;
+    }
   }
 }
 

@@ -81,7 +81,7 @@ void fixture::testConfigItem()
   // Check members are initialized.
   for (auto& it : items)
   {
-    CPPUNIT_ASSERT( it.GetColumns() == -1);
+    CPPUNIT_ASSERT( it.GetColumns() == 1);
     
     if (it.GetType() == ITEM_USER)
       CPPUNIT_ASSERT( it.GetWindow() != nullptr);
