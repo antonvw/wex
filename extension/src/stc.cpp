@@ -505,6 +505,7 @@ int wxExSTC::ConfigDialog(
     wxExConfigItem(_("Divider"), 0, 40, _("Margin")),
     (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Folding"), 0, 40, _("Margin")): wxExConfigItem()),
     wxExConfigItem(_("Line number"), 0, 100, _("Margin")),
+    wxExConfigItem(_("Auto complete maxwidth"), 0, 100, _("Margin")),
     // Folding page.
     (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Indentation guide"),ITEM_CHECKBOX, _("Folding")): wxExConfigItem()),
     (wxExLexers::Get()->GetCount() > 0 ? wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")): wxExConfigItem()),
@@ -596,6 +597,7 @@ void wxExSTC::ConfigGet(bool init)
     Fold();
   }
 
+  AutoCompSetMaxWidth(cfg->ReadLong(_("Auto complete maxwidth"), 0));
   SetCaretLineVisible(cfg->ReadBool(_("Caret line"), true));
   SetFoldFlags(cfg->ReadLong( _("Fold flags"), 0));
   SetIndent(cfg->ReadLong(_("Indent"), 0));

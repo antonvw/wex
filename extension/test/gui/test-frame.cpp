@@ -40,6 +40,8 @@ void fixture::testFrame()
   m_Frame->StatusBarClickedRight("Pane1");
   m_Frame->StatusBarClickedRight("Pane2");
   
+  m_Frame->SetRecentFile("testing");
+  
   CPPUNIT_ASSERT(!m_Frame->StatusText("hello", "test"));
   CPPUNIT_ASSERT( m_Frame->StatusText("hello1", "Pane1"));
   CPPUNIT_ASSERT( m_Frame->StatusText("hello2", "Pane2"));

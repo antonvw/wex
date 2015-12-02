@@ -25,8 +25,10 @@ void fixture::testItemDialog()
       wxExItem("int1", ITEM_INT, "10"),
       wxExItem("int2", ITEM_INT, "20"),
       wxExItem("float1", ITEM_FLOAT, "20.0")},
-    "no pages");
+    "no pages", 0, 1, wxOK | wxCANCEL | wxAPPLY);
   dlg1->Show();
+  
+  wxPostEvent(dlg1, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
   
   CPPUNIT_ASSERT(dlg1->GetItemValue("int1") == 10);
   CPPUNIT_ASSERT(dlg1->GetItemValue("int2") == 20);

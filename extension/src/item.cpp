@@ -65,7 +65,6 @@ wxExItem::wxExItem(wxExItemType type, long style,
     case ITEM_CHECKLISTBOX_BIT:
     case ITEM_CHECKLISTBOX_BOOL:
     case ITEM_LISTVIEW:
-    case ITEM_RADIOBOX:
     case ITEM_STC:
       m_IsRowGrowable = true;
       m_SizerFlags.Expand();
