@@ -632,7 +632,7 @@ void wxExListView::ConfigGet(bool init)
   SetFont(cfg->ReadObject(_("List font"), wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
   SetSingleStyle(wxLC_HRULES, cfg->ReadLong(_("Rulers"), 0) & wxLC_HRULES);
   SetSingleStyle(wxLC_VRULES, cfg->ReadLong(_("Rulers"), 0) & wxLC_VRULES);
-  SetSingleStyle(wxLC_NO_HEADER, !cfg->ReadBool(_("Header"), 0) & wxLC_VRULES);
+  SetSingleStyle(wxLC_NO_HEADER, !cfg->ReadBool(_("Header"), false));
   
   ItemsUpdate();
 }

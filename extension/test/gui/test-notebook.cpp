@@ -80,7 +80,9 @@ void fixture::testNotebook()
   
   CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER));
   CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER_THEME));
+  CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_STC_SYNC));
   CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_CONFIG_GET));
+  CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_SAVE));
   CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_CLOSE_OTHERS));
   CPPUNIT_ASSERT(notebook->GetPageCount() == 1);
   CPPUNIT_ASSERT(notebook->ForEach<wxExSTC>(ID_ALL_CLOSE));

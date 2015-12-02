@@ -29,21 +29,9 @@ public:
     : wxExGrid(parent, id, pos, size, style, name)
     , m_Statistics(statistics)
   {
-    Connect(
-      wxID_CLEAR, 
-      wxEVT_COMMAND_MENU_SELECTED, 
-      wxCommandEventHandler(wxExGridStatistics::OnCommand));
+    Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_Statistics->Clear();}, wxID_CLEAR);
   }
 protected:
-  void OnCommand(wxCommandEvent& event) {
-    if (event.GetId() == wxID_CLEAR)
-    {
-      m_Statistics->Clear();
-    }
-    else
-    {
-      event.Skip();
-    }};
   void BuildPopupMenu(wxExMenu& menu) {
     int style = wxExMenu::MENU_ALLOW_CLEAR;
     if (IsSelection()) style |= wxExMenu::MENU_IS_SELECTED;
@@ -74,21 +62,22 @@ public:
     {
       Inc(it.first, it.second);
     }
-	
     return *this;}
 
   /// Clears the items. If you have Shown the statistics
   /// the window is updated as well.
   void Clear() {
     m_Items.clear();
-
 #if wxUSE_GRID
     m_Rows.clear();
 
     if (m_Grid != nullptr)
     {
       m_Grid->ClearGrid();
-      m_Grid->DeleteRows(0, m_Grid->GetNumberRows());
+      if (m_Grid->GetNumberRows() > 0)
+      {
+        m_Grid->DeleteRows(0, m_Grid->GetNumberRows());
+      }
     }
 #endif
   };
@@ -114,15 +103,7 @@ public:
   /// Returns value for specified key.
   const T Get(const wxString& key) const {
     const auto it = m_Items.find(key);
-    if (it != m_Items.end())
-    {
-      return it->second;
-    }
-    else
-    {
-      return T();
-    }
-  }
+    return it != m_Items.end() ? it->second: T();};
 
   /// Decrements key with value.
   const T Dec(const wxString& key, T dec_value = 1) {
@@ -136,12 +117,10 @@ public:
   /// the window is updated as well.
   const T Set(const wxString& key, T value) {
     m_Items[key] = value;
-
 #if wxUSE_GRID
     if (m_Grid != nullptr)
     {
       const auto it = m_Rows.find(key);
-
       if (it != m_Rows.end())
       {
         m_Grid->SetCellValue(it->second, 1, std::to_string(value));
@@ -162,7 +141,6 @@ public:
       m_Grid->ForceRefresh();
     }
 #endif
-
     return value;};
 
 #if wxUSE_GRID
@@ -195,10 +173,8 @@ public:
       {
         m_Grid->HideRowLabels();
       }
-
       m_Grid->SetColLabelValue(0, _("Item"));
       m_Grid->SetColLabelValue(1, _("Value"));
-
       // Values are numbers.
       m_Grid->SetColFormatNumber(1);
 
@@ -206,16 +182,12 @@ public:
       {
         m_Grid->HideColLabels();
       }
-
       for (const auto& it : m_Items)
       {
         m_Grid->AppendRows(1);
-
         const int row = m_Grid->GetNumberRows() - 1;
-
         m_Grid->SetCellValue(row, 0, it.first);
         m_Grid->SetCellValue(row, 1, std::to_string(it.second));
-
         m_Rows[it.first] = row;
       }
     }

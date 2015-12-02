@@ -239,7 +239,6 @@ void fixture::testUtil()
   CPPUNIT_ASSERT(!wxExOpenFiles(m_Frame, std::vector<wxString>()));
   CPPUNIT_ASSERT(!wxExOpenFiles(m_Frame, std::vector<wxString> {
     GetTestFile().GetFullPath(), "test.cpp", "*xxxxxx*.cpp"}));
-wxLogMessage(wxGetCwd());
   CPPUNIT_ASSERT_MESSAGE( GetTestFile().GetFullPath().ToStdString(), wxExOpenFiles(m_Frame, std::vector<wxString> {GetTestFile().GetFullPath()}));
   CPPUNIT_ASSERT( wxExOpenFiles(m_Frame, std::vector<wxString> {"../../data/vcs.xml"}));
 

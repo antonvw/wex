@@ -20,14 +20,16 @@ class wxExTestItem : public wxExItem
 {
 public:
   wxExTestItem(): wxExItem() {;};
-  wxExTestItem(const wxString& label, const wxString& value = wxEmptyString, const wxString& page = wxEmptyString)
+  wxExTestItem(const wxString& label, 
+    const wxString& value = wxEmptyString, const wxString& page = wxEmptyString)
     : wxExItem(label, value, page) {;};
 };
 
 class wxExOtherTestItem : public wxExItem
 {
 public:
-  wxExOtherTestItem(const wxString& label): wxExItem(label, wxEmptyString, wxEmptyString) {;};
+  wxExOtherTestItem(const wxString& label)
+    : wxExItem(label, wxEmptyString, wxEmptyString) {;};
 };
 
 void fixture::testItemTemplateDialog()
@@ -67,11 +69,11 @@ void fixture::testItemTemplateDialog()
     wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(
       m_Frame, 
       std::vector <wxExTestItem> {
-        wxExTestItem("string1", "", "page0:0"),
+        wxExTestItem("string1", "nice", "page0:0"),
         wxExTestItem("string2", "", "page0:1"),
-        wxExTestItem("string3", "", "page1"),
-        wxExTestItem("string4", "", "page1"),
-        wxExTestItem("string5", "", "page2")},
+        wxExTestItem("string1", "other", "page1"),
+        wxExTestItem("string2", "", "page1"),
+        wxExTestItem("string1", "", "page2")},
       titles[style - wxExItemTemplateDialog<wxExTestItem>::ITEM_AUINOTEBOOK],
       0,
       1,
@@ -82,6 +84,13 @@ void fixture::testItemTemplateDialog()
       
     dlg->ForceCheckBoxChecked();
     dlg->Show();
+    
+    CPPUNIT_ASSERT(dlg->GetItem("string1").GetValue() == "nice");
+    CPPUNIT_ASSERT(dlg->GetItem("string1", "page0").GetValue() == "nice");
+    CPPUNIT_ASSERT(dlg->GetItem("string1", "page1").GetValue() == "other");
+    CPPUNIT_ASSERT(dlg->SetItemValue("string1", "xxx", "page1"));
+    CPPUNIT_ASSERT(dlg->GetItem("string1").GetValue() == "nice");
+    CPPUNIT_ASSERT(dlg->GetItem("string1", "page1").GetValue() == "xxx");
     
     wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
     wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));
@@ -94,7 +103,7 @@ void fixture::testItemTemplateDialog()
       wxExTestItem("more fruit", "citron", "")},
     "labels, no buttons", 0, 1, 0);
   
-  CPPUNIT_ASSERT(!dlg0->GetItem("fruit").GetLabel().empty());
+  CPPUNIT_ASSERT( dlg0->GetItem("fruit").GetLabel() == "fruit");
   CPPUNIT_ASSERT( dlg0->GetItemValue("fruit") == "apple");
   CPPUNIT_ASSERT( dlg0->GetItemValue("fruit", "xxx").IsNull());
   CPPUNIT_ASSERT( dlg0->GetItem("xxx").GetLabel().empty());
