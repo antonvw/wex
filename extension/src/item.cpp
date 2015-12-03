@@ -69,7 +69,7 @@ wxExItem::wxExItem(wxExItemType type, long style,
     m_MajorDimension = atoi(m_Page.AfterFirst(':'));
     m_Page = m_Page.BeforeFirst(':');
   }
-  
+
   switch (m_Type)
   {
     case ITEM_CHECKLISTBOX_BIT:
@@ -557,6 +557,12 @@ wxFlexGridSizer* wxExItem::Layout(
     case ITEM_NOTEBOOK_TOOL: 
     case ITEM_NOTEBOOK_TREE: 
     {
+      if (m_Initial.IsNull())
+      {
+        wxLogError("Illegal notebook");
+        return nullptr;
+      }
+      
       wxFlexGridSizer* basic = Add(sizer, fgz);
       wxBookCtrlBase* bookctrl = (wxBookCtrlBase*)m_Window;
       wxFlexGridSizer* previous_item_sizer = nullptr;
@@ -611,7 +617,19 @@ wxFlexGridSizer* wxExItem::Layout(
         }
       }
       
-      bookctrl->SetSelection(0);
+      if (bookctrl->GetCurrentPage() != nullptr)
+      {
+        bookctrl->GetCurrentPage()->SetSizer(sizer);
+      }
+      
+      bookctrl->SetName("book" + m_Label);
+      
+      if (!wxPersistenceManager::Get().RegisterAndRestore(bookctrl))
+      {
+        // nothing was restored, so choose the default page ourselves
+        bookctrl->SetSelection(0);
+      }
+      
       return basic;
     }
   }

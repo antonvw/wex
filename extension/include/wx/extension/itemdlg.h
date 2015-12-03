@@ -24,7 +24,7 @@ public:
     int cols = -1,
     long flags = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
-    int bookctrl_style = ITEM_AUINOTEBOOK,
+    int bookctrl_style = 0,
     wxImageList* imageList = nullptr,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize, 

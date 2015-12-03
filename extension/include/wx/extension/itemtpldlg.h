@@ -8,17 +8,10 @@
 #pragma once
 
 #include <vector>
-#include <wx/aui/auibook.h>
-#include <wx/bookctrl.h> 
-#include <wx/choicebk.h>
 #include <wx/filepicker.h>
 #include <wx/imaglist.h>
-#include <wx/listbook.h>
-#include <wx/persist/treebook.h>
-#include <wx/simplebook.h>
 #include <wx/stc/stc.h>
 #include <wx/tglbtn.h> // for wxEVT_TOGGLEBUTTON
-#include <wx/toolbook.h>
 #include <wx/extension/dialog.h>
 #include <wx/extension/frame.h>
 
@@ -34,18 +27,6 @@
 template <class T> class WXDLLIMPEXP_BASE wxExItemTemplateDialog: public wxExDialog
 {
 public:
-  /// Supported notebooks.
-  enum
-  {
-    ITEM_AUINOTEBOOK, ///< a aui notebook
-    ITEM_CHOICEBOOK,  ///< a choice book
-    ITEM_LISTBOOK,    ///< a list book
-    ITEM_NOTEBOOK,    ///< a traditional notebook
-    ITEM_SIMPLEBOOK,  ///< a simple notebook
-    ITEM_TOOLBOOK,    ///< a tool book
-    ITEM_TREEBOOK,    ///< a tree book
-  };
-
   /// Constructor.
   wxExItemTemplateDialog(
     /// parent
@@ -63,7 +44,7 @@ public:
     /// the window id
     wxWindowID id = wxID_ANY,
     /// bookctrl style, only used if you specified pages for your items
-    int bookctrl_style = ITEM_AUINOTEBOOK,
+    int bookctrl_style = 0,
     /// image list to be used by notebook (required for a tool book)
     wxImageList* imageList = nullptr,
     /// position
@@ -78,7 +59,7 @@ public:
   , m_ForceCheckBoxChecked(false)
   , m_Page(wxEmptyString)
   , m_Items(v) {
-    Layout(rows, cols, bookctrl_style, imageList);
+    Layout(rows, cols, imageList);
     Bind(wxEVT_BUTTON, &wxExItemTemplateDialog::OnCommand, this, wxID_APPLY);
     Bind(wxEVT_BUTTON, &wxExItemTemplateDialog::OnCommand, this, wxID_CANCEL);
     Bind(wxEVT_BUTTON, &wxExItemTemplateDialog::OnCommand, this, wxID_CLOSE);
@@ -101,17 +82,17 @@ public:
   /// Returns the (first) item (on specified page) that has specified label,
   /// or empty item if item does not exist.
   const T GetItem(const wxString& label, const wxString& page = wxEmptyString) const {
-    for (const auto& it : m_Items)
+    for (const auto& item : m_Items)
     {
-      if (it.GetLabel() == label)
+      if (item.GetLabel() == label)
       {
         if (page.empty())
         {
-          return it;
+          return item;
         }
-        else if (it.GetPage() == page)
+        else if (item.GetPage() == page)
         {
-          return it;
+          return item;
         }
       }
     };
@@ -122,17 +103,17 @@ public:
     return GetItem(label, page).GetValue();};
   /// Sets the item actual value for specified label.
   bool SetItemValue(const wxString& label, const wxAny& value, const wxString& page = wxEmptyString) const {
-    for (auto& it : m_Items)
+    for (auto& item : m_Items)
     {
-      if (it.GetLabel() == label)
+      if (item.GetLabel() == label)
       {
         if (page.empty())
         {
-          return it.SetValue(value);
+          return item.SetValue(value);
         }
-        else if (it.GetPage() == page)
+        else if (item.GetPage() == page)
         {
-          return it.SetValue(value);
+          return item.SetValue(value);
         }
       }
     };
@@ -151,17 +132,17 @@ protected:
   
   void OnUpdateUI(wxUpdateUIEvent& event) {
     bool one_checkbox_checked = false;
-    for (const auto& it : m_Items)
+    for (const auto& item : m_Items)
     {
-      switch (it.GetType())
+      switch (item.GetType())
       {
       case ITEM_CHECKBOX:
         if (m_ForceCheckBoxChecked)
         {
-          wxCheckBox* cb = (wxCheckBox*)it.GetWindow();
-          if (it.GetLabel().Lower().Contains(m_Contains.Lower()) && 
+          wxCheckBox* cb = (wxCheckBox*)item.GetWindow();
+          if (item.GetLabel().Lower().Contains(m_Contains.Lower()) && 
               cb->IsChecked() &&
-              it.GetPage() == m_Page)
+              item.GetPage() == m_Page)
           {
             one_checkbox_checked = true;
           }
@@ -171,7 +152,7 @@ protected:
       case ITEM_CHECKLISTBOX_BOOL:
         if (m_ForceCheckBoxChecked)
         {
-          wxCheckListBox* clb = (wxCheckListBox*)it.GetWindow();
+          wxCheckListBox* clb = (wxCheckListBox*)item.GetWindow();
           for (
             size_t i = 0;
             i < clb->GetCount();
@@ -179,7 +160,7 @@ protected:
           {
             if (clb->GetString(i).Lower().Contains(m_Contains.Lower()) && 
                 clb->IsChecked(i) &&
-                it.GetPage() == m_Page)
+                item.GetPage() == m_Page)
             {
               one_checkbox_checked = true;
             }
@@ -190,8 +171,8 @@ protected:
       case ITEM_COMBOBOX:
       case ITEM_COMBOBOXDIR:
         {
-        wxComboBox* cb = (wxComboBox*)it.GetWindow();
-        if (it.GetIsRequired())
+        wxComboBox* cb = (wxComboBox*)item.GetWindow();
+        if (item.GetIsRequired())
         {
           if (cb->GetValue().empty())
           {
@@ -205,8 +186,8 @@ protected:
       case ITEM_INT:
       case ITEM_STRING:
         {
-        wxTextCtrl* tc = (wxTextCtrl*)it.GetWindow();
-        if (it.GetIsRequired())
+        wxTextCtrl* tc = (wxTextCtrl*)item.GetWindow();
+        if (item.GetIsRequired())
         {
           if (tc->GetValue().empty())
           {
@@ -219,8 +200,8 @@ protected:
 
       case ITEM_DIRPICKERCTRL:
         {
-        wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it.GetWindow();
-        if (it.GetIsRequired())
+        wxDirPickerCtrl* pc = (wxDirPickerCtrl*)item.GetWindow();
+        if (item.GetIsRequired())
         {
           if (pc->GetPath().empty())
           {
@@ -233,8 +214,8 @@ protected:
 
       case ITEM_FILEPICKERCTRL:
         {
-        wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it.GetWindow();
-        if (it.GetIsRequired())
+        wxFilePickerCtrl* pc = (wxFilePickerCtrl*)item.GetWindow();
+        if (item.GetIsRequired())
         {
           if (pc->GetPath().empty())
           {
@@ -257,115 +238,40 @@ private:
       frame->OnCommandItemDialog(GetId(), event);
     }};
   
-  void Layout(int rows, int cols, int notebook_style, wxImageList* imageList) {
-    wxBookCtrlBase* bookctrl = nullptr;
-    if (!m_Items.empty() && !m_Items.begin()->GetPage().empty())
-    {
-      switch (notebook_style)
-      {
-        case ITEM_AUINOTEBOOK: bookctrl = new wxAuiNotebook(this); break;
-        case ITEM_CHOICEBOOK: bookctrl = new wxChoicebook(this, wxID_ANY); break;
-        case ITEM_LISTBOOK: bookctrl = new wxListbook(this, wxID_ANY); break;
-        case ITEM_NOTEBOOK: bookctrl = new wxNotebook(this, wxID_ANY); break;
-        case ITEM_SIMPLEBOOK: bookctrl = new wxSimplebook(this, wxID_ANY); break;
-        case ITEM_TREEBOOK: bookctrl = new wxTreebook(this, wxID_ANY); break;
-        case ITEM_TOOLBOOK:
-          bookctrl = new wxToolbook(this, wxID_ANY);
-          if (imageList == nullptr)
-          {
-            wxLogError("toolbook requires image list");
-            return;
-          }
-          break;
-    
-        default: wxLogError("unknown bookctrl style");  
-      }
-      if (bookctrl != nullptr)
-      {
-        bookctrl->SetImageList(imageList);
-      }
-    }
-    bool first_time = true;
-    wxString previous_page = "XXXXXX";
+  void Layout(int rows, int cols, wxImageList* imageList) {
     wxFlexGridSizer* previous_item_sizer = nullptr;
-    wxFlexGridSizer* sizer = nullptr;
+    wxFlexGridSizer* sizer = new wxFlexGridSizer(1);
     int previous_type = -1;
-    for (auto& it : m_Items)
+    for (auto& item : m_Items)
     {
-      if (it.GetType() == ITEM_EMPTY) continue; //skip
-      if (first_time ||
-         (it.GetPage() != previous_page && !it.GetPage().empty()))
-      {
-        first_time = false;
-        if (bookctrl != nullptr)
-        {
-          // Finish the current page.
-          if (bookctrl->GetCurrentPage() != nullptr)
-          {
-            bookctrl->GetCurrentPage()->SetSizer(sizer);
-          }
-          // And make a new one.
-          int imageId = wxWithImages::NO_IMAGE;
-          if (imageList != nullptr)
-          {
-            if ((int)bookctrl->GetPageCount() < imageList->GetImageCount())
-            {
-              imageId = bookctrl->GetPageCount();
-            }
-            else
-            {
-              wxLogError("more pages than images");
-            }
-          }
-          bookctrl->AddPage(
-            new wxWindow(bookctrl, wxID_ANY), 
-            it.GetPage(), 
-            true, // select
-            imageId); 
-        }
-        int use_cols = 1;
-        if (it.GetColumns() != -1) use_cols = it.GetColumns();
-        else if (cols != -1) use_cols = cols;
-        sizer = (rows != 0 ? 
-          new wxFlexGridSizer(rows, use_cols, 0, 0):
-          new wxFlexGridSizer(use_cols));
-        for (int i = 0; i < use_cols; i++)
-        {
-          sizer->AddGrowableCol(i);
-        }
-      }
-      // If this item has same type as previous type
-      // (and on the same page), use previous sizer,
+      if (item.GetType() == ITEM_EMPTY) continue; //skip
+
+      // If this item has same type as previous type use previous sizer,
       // otherwise use no sizer (Layout will create a new one).
-      wxFlexGridSizer* current_item_sizer = (
-        it.GetType() == previous_type && it.GetPage() == previous_page ? 
-          previous_item_sizer: 
-          nullptr);
+      wxFlexGridSizer* current_item_sizer = (item.GetType() == previous_type ? previous_item_sizer: nullptr);
       // Layout the item.
-      previous_item_sizer = it.Layout(
-        (bookctrl != nullptr ? bookctrl->GetCurrentPage(): this), 
+      previous_item_sizer = item.Layout(
+        this, 
         sizer, 
         GetButtonFlags() == wxCANCEL,
         current_item_sizer);
-      previous_page = it.GetPage();
-      previous_type = it.GetType();
-      if (sizer != nullptr &&
-          sizer->GetEffectiveRowsCount() >= 1 &&
+      previous_type = item.GetType();
+      if (sizer->GetEffectiveRowsCount() >= 1 &&
          !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
-          it.IsRowGrowable())
+          item.IsRowGrowable())
       {
         sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
       }
-      switch (it.GetType())
+      switch (item.GetType())
       {
         case ITEM_BUTTON:
         case ITEM_COMMAND_LINK_BUTTON:
           Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent& event) {
-            Click(event);}, it.GetWindow()->GetId());
+            Click(event);}, item.GetWindow()->GetId());
           break;
         case ITEM_COMBOBOXDIR:
           Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent& event) {
-            wxComboBox* browse = (wxComboBox*)it.GetWindow();
+            wxComboBox* browse = (wxComboBox*)item.GetWindow();
             wxDirDialog dir_dlg(
               this,
               _(wxDirSelectorPromptStr),
@@ -376,33 +282,16 @@ private:
               const wxString value = dir_dlg.GetPath();
               const int item = browse->FindString(value);
               browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
-            }}, it.GetWindow()->GetId());
+            }}, item.GetWindow()->GetId());
           break;
         case ITEM_TOGGLEBUTTON:
           Bind(wxEVT_TOGGLEBUTTON, [=](wxCommandEvent& event) {
-            Click(event);}, it.GetWindow()->GetId());
+            Click(event);}, item.GetWindow()->GetId());
           break;
       }
     }
-    if (bookctrl != nullptr)
-    {
-      if (bookctrl->GetCurrentPage() != nullptr)
-      {
-        bookctrl->GetCurrentPage()->SetSizer(sizer);
-      }
-      bookctrl->SetName("book" + GetName());
-      if (!wxPersistenceManager::Get().RegisterAndRestore(bookctrl))
-      {
-        // nothing was restored, so choose the default page ourselves
-        bookctrl->SetSelection(0);
-      }
-      AddUserSizer(bookctrl);
-    }
-    else if (sizer != nullptr)
-    {
-      AddUserSizer(sizer);
-    }
-    LayoutSizers(bookctrl == nullptr); // add separator line if no bookctrl
+    AddUserSizer(sizer);
+    LayoutSizers();
   };
 
   std::vector< T > m_Items;

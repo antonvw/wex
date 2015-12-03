@@ -533,7 +533,7 @@ int wxExSTC::ConfigDialog(
     buttons |= wxAPPLY;
   }
   
-  const int style = wxExConfigDialog::ITEM_LISTBOOK;
+  const int style = 0;
 
   if (!(flags & STC_CONFIG_MODELESS))
   {

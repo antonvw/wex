@@ -518,7 +518,7 @@ void wxExSampleFrame::ShowConfigItems()
     1,
     wxAPPLY | wxCANCEL,
     wxID_ANY,
-    wxExConfigDialog::ITEM_LISTBOOK,
+    0,
     nullptr,
     wxDefaultPosition,
 #ifdef __WXMSW__    
