@@ -10,13 +10,16 @@
 #include <map>
 #include <set>
 #include <utility>
+#include <vector>
 #include <wx/any.h>
+#include <wx/imaglist.h>
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 #include <wx/string.h>
 #include <wx/validate.h>
 
 class wxFlexGridSizer;
 class wxWindow;
+template <class T> class wxExItemTemplateDialog;
 
 #if wxUSE_GUI
 /*! \file */
@@ -27,35 +30,35 @@ enum wxExItemType
   ITEM_CHECKBOX,             ///< a wxCheckBox item
   ITEM_CHECKLISTBOX_BIT,     ///< a wxCheckListBox item to set individual bits in a long
   ITEM_CHECKLISTBOX_BOOL,    ///< a wxCheckListBox item using boolean choices
-  ITEM_COLOUR,               ///< a wxColourPickerWidget item
+  ITEM_COLOURPICKERWIDGET,   ///< a wxColourPickerWidget item
   ITEM_COMBOBOX,             ///< a wxComboBox item
-  ITEM_COMBOBOXDIR,          ///< a wxComboBox item with a browse button
-  ITEM_COMMAND_LINK_BUTTON,  ///< a wxCommandLinkButton button
-  ITEM_DIRPICKERCTRL,        ///< a wxDirPickerCtrl ctrl item
+  ITEM_COMBOBOX_DIR,         ///< a wxComboBox item with a browse button
+  ITEM_COMMANDLINKBUTTON,    ///< a wxCommandLinkButton button
+  ITEM_DIRPICKERCTRL,        ///< a wxDirPickerCtrl item
   ITEM_EMPTY,                ///< an empty item
-  ITEM_FILEPICKERCTRL,       ///< a wxFilePickerCtrl ctrl item
-  ITEM_FLOAT,                ///< a wxTextCtrl item that only accepts a float (double)
-  ITEM_FONTPICKERCTRL,       ///< a wxFontPickerCtrl ctrl item
-  ITEM_HYPERLINKCTRL,        ///< a wxHyperlinkCtrl ctrl item
-  ITEM_INT,                  ///< a wxTextCtrl item that only accepts an integer (long)
-  ITEM_LISTVIEW,             ///< a wxExListView ctrl item (a list view standard file)
-  ITEM_NOTEBOOK,             ///< a traditional notebook item
-  ITEM_NOTEBOOK_AUI,         ///< a aui notebook
-  ITEM_NOTEBOOK_CHOICE,      ///< a choice book
-  ITEM_NOTEBOOK_EX,          ///< a wxExNotebook 
-  ITEM_NOTEBOOK_LIST,        ///< a list book
-  ITEM_NOTEBOOK_SIMPLE,      ///< a simple notebook
-  ITEM_NOTEBOOK_TOOL,        ///< a tool book
-  ITEM_NOTEBOOK_TREE,        ///< a tree book
+  ITEM_FILEPICKERCTRL,       ///< a wxFilePickerCtrl item
+  ITEM_FONTPICKERCTRL,       ///< a wxFontPickerCtrl item
+  ITEM_HYPERLINKCTRL,        ///< a wxHyperlinkCtrl item
+  ITEM_LISTVIEW,             ///< a wxExListView item
+  ITEM_NOTEBOOK,             ///< a wxNotebook item
+  ITEM_NOTEBOOK_AUI,         ///< a wxAuiNotebook item
+  ITEM_NOTEBOOK_CHOICE,      ///< a wxChoicebook item
+  ITEM_NOTEBOOK_EX,          ///< a wxExNotebook  item
+  ITEM_NOTEBOOK_LIST,        ///< a wxListbook item
+  ITEM_NOTEBOOK_SIMPLE,      ///< a wxSimpleNotebook item
+  ITEM_NOTEBOOK_TOOL,        ///< a wxToolbook item
+  ITEM_NOTEBOOK_TREE,        ///< a wxTreebook item
   ITEM_RADIOBOX,             ///< a wxRadioBox item
   ITEM_SLIDER,               ///< a wxSlider item
   ITEM_SPACER,               ///< a spacer item
   ITEM_SPINCTRL,             ///< a wxSpinCtrl item
-  ITEM_SPINCTRL_DOUBLE,      ///< a wxSpinCtrlDouble item
+  ITEM_SPINCTRLDOUBLE,       ///< a wxSpinCtrlDouble item
   ITEM_STATICLINE,           ///< a wxStaticLine item
   ITEM_STATICTEXT,           ///< a wxStaticText item
   ITEM_STC,                  ///< a wxExSTC ctrl item  
-  ITEM_STRING,               ///< a wxTextCtrl item
+  ITEM_TEXTCTRL,             ///< a wxTextCtrl item
+  ITEM_TEXTCTRL_FLOAT,       ///< a wxTextCtrl item that only accepts a float (double)
+  ITEM_TEXTCTRL_INT,         ///< a wxTextCtrl item that only accepts an integer (long)
   ITEM_TOGGLEBUTTON,         ///< a wxToggleButton item
   ITEM_USER,                 ///< provide your own window
 };
@@ -68,7 +71,10 @@ enum wxExLabelType
 };
 
 /// Callback for user window creation.
-typedef void (*wxExUserWindowCreate)(wxWindow* user, wxWindow* parent, bool readonly);
+using wxExUserWindowCreate = void (*)(wxWindow* user, wxWindow* parent, bool readonly);
+
+/// Callback for load or save data for user window.
+using wxExUserWindowToConfig = bool (*)(wxWindow* user, bool save);
 
 /// Container class for using with wxExItemDialog.
 class WXDLLIMPEXP_BASE wxExItem
@@ -81,15 +87,13 @@ public:
 
   /// Constructor for a ITEM_SPACER item.
   /// The size is the size for the spacer used.
-  wxExItem(int size, const wxString& page = wxEmptyString)
-    : wxExItem(ITEM_SPACER, size, page) {;};
+  wxExItem(int size) : wxExItem(ITEM_SPACER, size) {;};
 
   /// Constuctor for a ITEM_STATICLINE item.
   /// The orientation is wxHORIZONTAL or wxVERTICAL.
-  wxExItem(wxOrientation orientation, const wxString& page = wxEmptyString)
-    : wxExItem(ITEM_STATICLINE, orientation, page) {;};
+  wxExItem(wxOrientation orientation) : wxExItem(ITEM_STATICLINE, orientation) {;};
     
-  /// Constructor for a ITEM_STRING, ITEM_STC, ITEM_STATICTEXT, 
+  /// Constructor for a ITEM_TEXTCTRL, ITEM_STC, ITEM_STATICTEXT, 
   /// or a ITEM_HYPERLINKCTRL item.
   wxExItem(
     /// label for the window as on the dialog,
@@ -98,38 +102,35 @@ public:
     const wxString& label,
     /// initial value, also used as default for a hyperlink ctrl, or as lexer for STC
     const wxString& value = wxEmptyString,
-    const wxString& page = wxEmptyString,
     /// the style for the control used (e.g. wxTE_MULTILINE or wxTE_PASSWORD)
     long style = 0,
-    wxExItemType type = ITEM_STRING,
+    wxExItemType type = ITEM_TEXTCTRL,
     bool is_required = false,
     /// will the label be displayed as a static text
     /// ignored for a static text
     wxExLabelType label_type = LABEL_LEFT)
-    : wxExItem(type, style, page, label, value, is_required, 
+    : wxExItem(type, style, label, value, is_required, 
       (type != ITEM_STATICTEXT && 
        type != ITEM_HYPERLINKCTRL ? label_type: LABEL_NONE), wxID_ANY) {;};
 
   /// Constructor for a ITEM_SPINCTRL or a ITEM_SLIDER item.
   wxExItem(const wxString& label,
-    int value,
     int min, 
     int max,
-    const wxString& page = wxEmptyString,
+    const wxAny& value = wxAny(),
     wxExItemType type = ITEM_SPINCTRL,
     /// style for a ITEM_SLIDER item
     long style = wxSL_HORIZONTAL)
-    : wxExItem(type, style, page, label, value,
+    : wxExItem(type, style, label, value,
       false, LABEL_LEFT, wxID_ANY, 1, min, max) {;};
 
-  /// Constructor for a ITEM_SPINCTRL_DOUBLE item.
+  /// Constructor for a ITEM_SPINCTRLDOUBLE item.
   wxExItem(const wxString& label,
-    double value,
     double min, 
     double max,
-    const wxString& page = wxEmptyString,
+    const wxAny& value = wxAny(),
     double inc = 1)
-    : wxExItem(ITEM_SPINCTRL_DOUBLE, 0, page, label, value,
+    : wxExItem(ITEM_SPINCTRLDOUBLE, 0, label, value,
       false, LABEL_LEFT, wxID_ANY, 1, min, max, inc) {;};
 
   /// Constructor for a ITEM_CHECKLISTBOX_BOOL item. 
@@ -137,15 +138,14 @@ public:
   wxExItem(
     /// the set with names of boolean items
     const std::set<wxString> & choices,
-    const wxString& page = wxEmptyString,
     long style = 0)
-    : wxExItem(ITEM_CHECKLISTBOX_BOOL, style, page, "checklistbox_bool", choices,
+    : wxExItem(ITEM_CHECKLISTBOX_BOOL, style, "checklistbox_bool", choices,
       false, LABEL_NONE, wxID_ANY, 1, 0, 1, 1) {;};
 
   /// Constuctor for a ITEM_NOTEBOOK item, being a vector
   /// of a pair of pages with a vector of items.
   /// e.g.:
-  /// wxExItem(ItemsNotebook {
+  /// wxExItem("notebook", ItemsNotebook {
   ///   {"page1", 
   ///     {wxExItem("string1"),
   ///      wxExItem("string2"),
@@ -153,15 +153,19 @@ public:
   ///   {"page2", 
   ///     {wxExItem("spin1", 5, 0, 10),
   ///      wxExItem("spin2", 5, 0, 10),
-  ///      wxExItem("spin3", 5, 0, 10)}}}
+  ///      wxExItem("spin3", 5, 0, 10)}}}, ITEM_NOTEBOOK)
   wxExItem(
+    const wxString& label,
     const ItemsNotebook & v,
     wxExItemType type,
-    long style,
-    int rows,
-    int cols)
-  : wxExItem(type, style, wxEmptyString, wxEmptyString, v, false, 
-    LABEL_NONE, wxID_ANY, cols) {;};
+    long style = 0,
+    int rows = 0,
+    int cols = 1,
+    wxExLabelType label_type = LABEL_NONE,
+    /// image list to be used (required for a tool book)
+    wxImageList* imageList = nullptr)
+  : wxExItem(type, style, label, v, false, 
+    label_type, wxID_ANY, cols, 0, 1, 1, nullptr, nullptr, nullptr, imageList) {;};
   
   /// Constructor for a ITEM_RADIOBOX, or a ITEM_CHECKLISTBOX_BIT item. 
   /// This checklistbox (not mutually exclusive choices)
@@ -174,11 +178,10 @@ public:
     const std::map<long, const wxString> & choices,
     /// indicates whether to use a radiobox or a checklistbox.
     bool use_radiobox = true,
-    const wxString& page = wxEmptyString,
     /// major dimension for the radiobox
     int majorDimension = 1,
     long style = wxRA_SPECIFY_COLS)
-    : wxExItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX_BIT, style, page, label, choices,
+    : wxExItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX_BIT, style, label, choices,
       false, LABEL_NONE, wxID_ANY, majorDimension, 0, 1, 1) {;};
 
   /// Constructor for a ITEM_USER item.
@@ -187,21 +190,22 @@ public:
     wxWindow* window,
     /// callback for window creation (required, useless without one)
     wxExUserWindowCreate create,
-    const wxString& page = wxEmptyString,
+    /// callback for load and save to config
+    /// default it has no relation to the config
+    wxExUserWindowToConfig config = nullptr,
     bool is_required = false,
     wxExLabelType label_type = LABEL_LEFT)
-    : wxExItem(ITEM_USER, 0, page, label, wxEmptyString,
-      is_required, label_type, wxID_ANY, 1, 0, 1, 1, window, create) {;};
+    : wxExItem(ITEM_USER, 0, label, wxEmptyString,
+      is_required, label_type, wxID_ANY, 1, 0, 1, 1, window, create, config) {;};
 
   /// Constuctor for the other types (as ITEM_BUTTON, 
   /// ITEM_COMBOBOX, ITEM_DIRPICKERCTRL,
-  /// ITEM_FILEPICKERCTRL, ITEM_INT, ITEM_LISTVIEW).
+  /// ITEM_FILEPICKERCTRL, ITEM_TEXTCTRL_INT, ITEM_LISTVIEW).
   wxExItem(
     const wxString& label,
     wxExItemType type,
     /// initial value for the control, if appropriate
     const wxAny& value = wxAny(),
-    const wxString& page = wxEmptyString,
     bool is_required = false,
     /// the id as used by the window, see wxExFrame::OnCommandItemDialog, 
     int id = wxID_ANY,
@@ -209,12 +213,21 @@ public:
     /// the style, this default value is translated to correct default
     /// for corresponding window (such as wxFLP_DEFAULT_STYLE for ITEM_FILEPICKERCTRL).
     long style = 0)
-    : wxExItem(type, style, page, label, value, is_required, 
+    : wxExItem(type, style, label, value, is_required, 
         type == ITEM_BUTTON ||
         type == ITEM_CHECKBOX ||
-        type == ITEM_COMMAND_LINK_BUTTON ||
+        type == ITEM_COMMANDLINKBUTTON ||
         type == ITEM_TOGGLEBUTTON ? LABEL_NONE: label_type, id) {;};
+  
+  /// Copy constructor.
+  wxExItem(const wxExItem& item);
 
+  /// Assignment operator.
+  wxExItem& operator=(const wxExItem& i);
+
+  /// Destructor.
+ ~wxExItem();
+ 
   /// Returns the number of columns for the current page.
   int GetColumns() const {return m_MajorDimension;};
 
@@ -239,6 +252,9 @@ public:
 
   /// Returns the window (first call Layout, to create it, otherwise it is nullptr).
   wxWindow* GetWindow() const {return m_Window;};
+
+  /// Returns true if this item is a notebook.
+  bool IsNotebook() const {return m_Type >= ITEM_NOTEBOOK && m_Type <= ITEM_NOTEBOOK_TREE;};
   
   /// Is this item allowed to be expanded on a row.
   bool IsRowGrowable() const {return m_IsRowGrowable;};
@@ -246,7 +262,7 @@ public:
   /// Layouts this item (creates the window) on the specified sizer.
   /// It returns the flex grid sizer that was used for creating the item sizer.
   /// Or it returns nullptr if no flex grid sizer was used.
-  virtual wxFlexGridSizer* Layout(
+  wxFlexGridSizer* Layout(
     /// the parent
     wxWindow* parent, 
     /// the sizer
@@ -257,20 +273,36 @@ public:
     /// specify the sizer for creating the item, or nullptr,
     /// than a new one is created
     wxFlexGridSizer* fgz = nullptr);
+  
+  /// Sets dialog to parent, to allow subitems to be added
+  /// to the template dialog.
+  void SetDialog(wxExItemTemplateDialog<wxExItem>* dlg);
     
+  /// Sets image list.
+  void SetImageList(wxImageList* il) {m_ImageList = il;};
+  
   /// Sets this item to be growable.
   /// Default whether the item row is growable is determined
   /// by the kind of item. You can ovverride this using SetRowGrowable.
   void SetRowGrowable(bool value) {m_IsRowGrowable = value;};
   
   /// Sets the validator to be used by the item, if appropriate.
-  /// Default a normal wxDefaultValidator is used, except for ITEM_INT,
-  /// and ITEM_FLOAT.
+  /// Default a normal wxDefaultValidator is used, except for ITEM_TEXTCTRL_INT,
+  /// and ITEM_TEXTCTRL_FLOAT.
   void SetValidator(wxValidator* validator) {m_Validator = validator;};
   
   /// Sets actual value for the associated window.
   /// Returns false if window is nullptr, or value was not set.
   bool SetValue(const wxAny& value) const;
+  
+  /// Loads or saves this item to the config.
+  /// Returns true if the config was accessed, as not all
+  /// config items associate with the config.
+  bool ToConfig(bool save) const;
+  
+  /// Use config for getting and retrieving values.
+  /// Default the config is used.
+  static void UseConfig(bool use) {m_UseConfig = use;};
 protected:
   /// Delegate constructor.
   wxExItem(
@@ -278,11 +310,6 @@ protected:
     wxExItemType type, 
     /// the style for the control
     long style,
-    /// If you specify a page, then all items are placed on that page 
-    /// in a book ctrl on the item dialog.
-    /// You can specify the number of columns for the page after :
-    /// in the page name.
-    const wxString& page = wxEmptyString, 
     /// the label to appear in front of the item
     const wxString& label = wxEmptyString, 
     /// intitial value if appropriate
@@ -305,15 +332,18 @@ protected:
     /// window, normally created by Layout, but may be supplied here
     wxWindow* window = nullptr, 
     /// the process callback for window creation
-    wxExUserWindowCreate create = nullptr);
+    wxExUserWindowCreate create = nullptr, 
+    wxExUserWindowToConfig config = nullptr,
+    wxImageList* imageList = nullptr);
 private:
   wxFlexGridSizer* Add(wxSizer* sizer, wxFlexGridSizer* current) const;
   wxFlexGridSizer* AddBrowseButton(wxSizer* sizer) const;
+  void AddItems(auto & items, bool readonly);
   wxFlexGridSizer* AddStaticText(wxSizer* sizer) const;
   bool CreateWindow(wxWindow* parent, bool readonly);
 
   bool m_IsRequired, m_IsRowGrowable;
-  int m_Id, m_MajorDimension;
+  int m_Id, m_MajorDimension, m_MaxItems;
   long m_Style;
   
   wxExItemType m_Type;
@@ -323,6 +353,32 @@ private:
   wxSizerFlags m_SizerFlags;
   wxValidator* m_Validator;
   wxWindow* m_Window;
+  wxImageList* m_ImageList;
+  wxExItemTemplateDialog<wxExItem>* m_Dialog;
   wxExUserWindowCreate m_UserWindowCreate;
+  wxExUserWindowToConfig m_UserWindowToConfig;
+  
+  static bool m_UseConfig;
+};
+
+class wxConfigBase;
+
+/// Support class for keeping defaults in the config.
+class WXDLLIMPEXP_BASE wxExConfigDefaults
+{
+public:
+  /// Constructor, records default values,
+  /// if not yet in the config.
+  wxExConfigDefaults(
+    /// supply name, item type, and default value
+    const std::vector<std::tuple<wxString, wxExItemType, wxAny>> & items);
+  
+  /// Destructor, stops recording.
+ ~wxExConfigDefaults();
+  
+  /// Access to config.
+  wxConfigBase* Get() {return m_Config;};
+private:
+  wxConfigBase* m_Config;
 };
 #endif // wxUSE_GUI

@@ -34,18 +34,25 @@
 #include <wx/toolbook.h>
 
 #include <wx/extension/item.h>
+#include <wx/extension/itemtpldlg.h>
 #include <wx/extension/listview.h>
+#include <wx/extension/managedframe.h>
+#include <wx/extension/notebook.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
+bool wxExItem::m_UseConfig = true;
+
 wxExItem::wxExItem(wxExItemType type, long style,
-  const wxString& page, const wxString& label, const wxAny& value,
+  const wxString& label, const wxAny& value,
   bool is_required, wxExLabelType label_type,
   int id, int major_dimension,
   const wxAny& min, const wxAny& max, const wxAny& inc,
-  wxWindow* window, wxExUserWindowCreate create)
+  wxWindow* window, wxExUserWindowCreate create,
+  wxExUserWindowToConfig config,
+  wxImageList* imageList)
   : m_Type(type)
   , m_Style(style)
   , m_LabelType(label_type)
@@ -61,15 +68,13 @@ wxExItem::wxExItem(wxExItemType type, long style,
   , m_Validator(nullptr)
   , m_Window(window)
   , m_IsRowGrowable(false)
-  , m_Page(page)
+  , m_Page()
   , m_SizerFlags(wxSizerFlags().Border().Left())
+  , m_MaxItems(25)
+  , m_UserWindowToConfig(config)
+  , m_ImageList(imageList)
+  , m_Dialog(nullptr)
 {
-  if (m_Page.Contains(":"))
-  {
-    m_MajorDimension = atoi(m_Page.AfterFirst(':'));
-    m_Page = m_Page.BeforeFirst(':');
-  }
-
   switch (m_Type)
   {
     case ITEM_CHECKLISTBOX_BIT:
@@ -89,14 +94,14 @@ wxExItem::wxExItem(wxExItemType type, long style,
       break;
 
     case ITEM_STATICTEXT:
-    case ITEM_STRING:
+    case ITEM_TEXTCTRL:
       m_IsRowGrowable = (m_Style & wxTE_MULTILINE) > 0;
       m_SizerFlags.Expand();
       break;
   
     case ITEM_CHECKBOX:
     case ITEM_COMBOBOX:
-    case ITEM_COMBOBOXDIR:
+    case ITEM_COMBOBOX_DIR:
     case ITEM_DIRPICKERCTRL:
     case ITEM_FILEPICKERCTRL:
     case ITEM_SPACER:
@@ -107,6 +112,45 @@ wxExItem::wxExItem(wxExItemType type, long style,
   }
 }
 
+wxExItem::wxExItem(const wxExItem& item)
+{
+  (*this) = item;
+}
+  
+wxExItem& wxExItem::operator=(const wxExItem& i)
+{
+  if (this != &i)
+  {
+    m_Dialog = i.m_Dialog;
+    m_Id = i.m_Id;
+    m_ImageList = i.m_ImageList;
+    m_Inc = i.m_Inc;
+    m_Initial = i.m_Initial;
+    m_IsRequired = i.m_IsRequired;
+    m_IsRowGrowable = i.m_IsRowGrowable;
+    m_Label = i.m_Label;
+    m_LabelType = i.m_LabelType;
+    m_MajorDimension = i.m_MajorDimension;
+    m_Max = i.m_Max;
+    m_MaxItems = i.m_MaxItems;
+    m_Min = i.m_Min;
+    m_Page = i.m_Page;
+    m_SizerFlags = i.m_SizerFlags;
+    m_Style = i.m_Style;
+    m_Type = i.m_Type;
+    m_UserWindowCreate = i.m_UserWindowCreate;
+    m_UserWindowToConfig = i.m_UserWindowToConfig;
+    m_Validator = i.m_Validator;
+    m_Window = i.m_Window;
+  }
+
+  return *this;
+}
+  
+wxExItem::~wxExItem()
+{
+}
+  
 wxFlexGridSizer* wxExItem::Add(wxSizer* sizer, wxFlexGridSizer* current) const
 {
   wxASSERT(m_Window != nullptr);
@@ -159,6 +203,80 @@ wxFlexGridSizer* wxExItem::AddBrowseButton(wxSizer* sizer) const
   return fgz;
 }
 
+void wxExItem::AddItems(auto & page, bool readonly)
+{
+  wxFlexGridSizer* previous_item_sizer = nullptr;
+  int previous_type = -1;
+  m_Page = page.first;
+  int use_cols = 1;
+  if (m_MajorDimension != -1) use_cols = m_MajorDimension;
+  if (m_Page.Contains(":"))
+  {
+    use_cols = atoi(page.first.AfterFirst(':'));
+    m_Page = page.first.BeforeFirst(':');
+  }
+
+  wxBookCtrlBase* bookctrl = (wxBookCtrlBase*)m_Window;
+  
+  int imageId = wxWithImages::NO_IMAGE;
+  if (m_ImageList != nullptr)
+  {
+    if ((int)bookctrl->GetPageCount() < m_ImageList->GetImageCount())
+    {
+      imageId = bookctrl->GetPageCount();
+    }
+    else
+    {
+      wxLogError("more pages than images");
+    }
+  }
+  
+  bookctrl->AddPage(
+    new wxWindow(bookctrl, wxID_ANY), 
+    m_Page,
+    true, // select
+    imageId);
+  
+  wxFlexGridSizer* booksizer = new wxFlexGridSizer(use_cols);
+  bookctrl->GetCurrentPage()->SetSizer(booksizer);
+  
+  for (int i = 0; i < use_cols; i++)
+  {
+    booksizer->AddGrowableCol(i);
+  }
+  
+  for (auto & item: page.second)
+  {
+    // If this item has same type as previous type use previous sizer,
+    // otherwise use no sizer (Layout will create a new one).
+    wxFlexGridSizer* current_item_sizer = (
+      item.GetType() == previous_type ? previous_item_sizer: nullptr);
+    
+    item.SetDialog(m_Dialog);
+    item.SetImageList(m_ImageList);
+
+    previous_item_sizer = item.Layout(
+      bookctrl->GetCurrentPage(),
+      booksizer,
+      readonly,
+      current_item_sizer);
+    
+    previous_type = item.GetType();
+    
+    if (m_Dialog != nullptr)
+    {
+      m_Dialog->Add(item);
+    }
+
+    if (booksizer->GetEffectiveRowsCount() >= 1 &&
+       !booksizer->IsRowGrowable(booksizer->GetEffectiveRowsCount() - 1) &&
+        item.IsRowGrowable())
+    {
+      booksizer->AddGrowableRow(booksizer->GetEffectiveRowsCount() - 1);
+    }
+  }
+}
+        
 wxFlexGridSizer* wxExItem::AddStaticText(wxSizer* sizer) const
 {
   wxASSERT(!m_Label.empty());
@@ -183,6 +301,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
   const int width = 200;
   const int width_numeric = 75;
   const int width_numeric_spin = 125;
+  wxBookCtrlBase* bookctrl = nullptr;
   
   switch (m_Type)
   {
@@ -206,7 +325,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       {
       wxArrayString arraychoices;
 
-      for (const auto& it : m_Initial.As<std::map<long, const wxString>>())
+      for (const auto & it : m_Initial.As<std::map<long, const wxString>>())
       {
         arraychoices.Add(it.second);
       }
@@ -227,13 +346,13 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_COLOUR:
+    case ITEM_COLOURPICKERWIDGET:
       m_Window = new wxColourPickerWidget(parent, m_Id, 
         *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRBTN_DEFAULT_STYLE); // no m_Style
       break;
 
     case ITEM_COMBOBOX:
-    case ITEM_COMBOBOXDIR:
+    case ITEM_COMBOBOX_DIR:
       m_Window = new wxComboBox(parent, m_Id, wxEmptyString,
         wxDefaultPosition, wxSize(250, wxDefaultCoord),
         m_Initial.IsNull() ? wxArrayString(): m_Initial.As<wxArrayString>(),
@@ -241,7 +360,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
         (m_Validator != nullptr ? *m_Validator: wxDefaultValidator));
       break;
 
-    case ITEM_COMMAND_LINK_BUTTON:
+    case ITEM_COMMANDLINKBUTTON:
       m_Window = new wxCommandLinkButton(parent, m_Id, 
         m_Label.BeforeFirst('\t'), m_Label.AfterFirst('\t'),
         wxDefaultPosition, wxDefaultSize, m_Style);
@@ -286,8 +405,8 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_FLOAT:
-      // See also ITEM_INT, validator cannot be set using ?.
+    case ITEM_TEXTCTRL_FLOAT:
+      // See also ITEM_TEXTCTRL_INT, validator cannot be set using ?.
       if (m_Validator == nullptr)
       {
         m_Window = new wxTextCtrl(parent, m_Id, 
@@ -330,7 +449,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_INT:
+    case ITEM_TEXTCTRL_INT:
       if (m_Validator == nullptr)
       {
         m_Window = new wxTextCtrl(parent, m_Id, 
@@ -358,21 +477,21 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_NOTEBOOK: m_Window = new wxNotebook(parent, wxID_ANY); break;
-    case ITEM_NOTEBOOK_AUI: m_Window = new wxAuiNotebook(parent); break;
-    case ITEM_NOTEBOOK_CHOICE: m_Window = new wxChoicebook(parent, wxID_ANY); break;
-    case ITEM_NOTEBOOK_EX: break;
-    case ITEM_NOTEBOOK_LIST: m_Window = new wxListbook(parent, wxID_ANY); break;
-    case ITEM_NOTEBOOK_SIMPLE: m_Window = new wxSimplebook(parent, wxID_ANY); break;
-    case ITEM_NOTEBOOK_TREE: m_Window = new wxTreebook(parent, wxID_ANY); break;
+    case ITEM_NOTEBOOK: bookctrl = new wxNotebook(parent, wxID_ANY); break;
+    case ITEM_NOTEBOOK_AUI: bookctrl = new wxAuiNotebook(parent); break;
+    case ITEM_NOTEBOOK_CHOICE: bookctrl = new wxChoicebook(parent, wxID_ANY); break;
+    case ITEM_NOTEBOOK_EX: bookctrl = new wxExNotebook(parent, 
+      dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow())); break;
+    case ITEM_NOTEBOOK_LIST: bookctrl = new wxListbook(parent, wxID_ANY); break;
+    case ITEM_NOTEBOOK_SIMPLE: bookctrl = new wxSimplebook(parent, wxID_ANY); break;
+    case ITEM_NOTEBOOK_TREE: bookctrl = new wxTreebook(parent, wxID_ANY); break;
     
-    case ITEM_NOTEBOOK_TOOL: m_Window = new wxToolbook(parent, wxID_ANY);
-/*    
-      if (imageList == nullptr)
+    case ITEM_NOTEBOOK_TOOL: bookctrl = new wxToolbook(parent, wxID_ANY);
+      if (m_ImageList == nullptr)
       {
         wxLogError("toolbook requires image list");
+        return false;
       }
-*/      
       break;
     
     case ITEM_RADIOBOX:
@@ -399,14 +518,16 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       m_Window = new wxSpinCtrl(parent, m_Id, wxEmptyString,
         wxDefaultPosition, wxSize(width_numeric_spin, wxDefaultCoord),
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
-        m_Min.As<int>(), m_Max.As<int>(), m_Initial.As<int>());
+        m_Min.As<int>(), m_Max.As<int>(), 
+        m_Initial.IsNull() ? m_Min.As<int>(): m_Initial.As<int>());
       break;
 
-    case ITEM_SPINCTRL_DOUBLE:
+    case ITEM_SPINCTRLDOUBLE:
       m_Window = new wxSpinCtrlDouble(parent, m_Id, wxEmptyString,
         wxDefaultPosition, wxSize(width_numeric_spin, wxDefaultCoord),
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
-        m_Min.As<double>(), m_Max.As<double>(), m_Initial.As<double>(), m_Inc.As<double>());
+        m_Min.As<double>(), m_Max.As<double>(), 
+        m_Initial.IsNull() ? m_Min.As<double>(): m_Initial.As<double>(), m_Inc.As<double>());
       break;
 
     case ITEM_STATICLINE:
@@ -438,7 +559,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_STRING:
+    case ITEM_TEXTCTRL:
       m_Window = new wxTextCtrl(parent, m_Id, 
         m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
         wxDefaultPosition,
@@ -467,19 +588,21 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
     default: wxFAIL;
   }
 
+  if (bookctrl != nullptr)
+  {
+    m_Window = bookctrl;
+
+    if (m_ImageList != nullptr)
+    {
+      bookctrl->SetImageList(m_ImageList);
+    }
+  }
+  
   if (m_Type != ITEM_EMPTY && m_Type != ITEM_SPACER)
   {
     wxASSERT(m_Window != nullptr);
   }
 
-/*
-  wxImageList* imageList = nullptr;
-  if (bookctrl != nullptr)
-  {
-    m_Window->SetImageList(imageList);
-  }
-*/
-  
   return true;
 }
 
@@ -495,19 +618,19 @@ const wxAny wxExItem::GetValue() const
   switch (m_Type)
   {
     case ITEM_CHECKBOX: any = ((wxCheckBox* )m_Window)->GetValue(); break;
-    case ITEM_COLOUR: any = ((wxColourPickerWidget* )m_Window)->GetColour(); break;
+    case ITEM_COLOURPICKERWIDGET: any = ((wxColourPickerWidget* )m_Window)->GetColour(); break;
     case ITEM_COMBOBOX: any = wxExComboBoxAs<wxArrayString>((wxComboBox*)m_Window); break;
     case ITEM_DIRPICKERCTRL: any = ((wxDirPickerCtrl* )m_Window)->GetPath(); break;
     case ITEM_FILEPICKERCTRL: any = ((wxFilePickerCtrl* )m_Window)->GetPath(); break;
-    case ITEM_FLOAT: any = atof(((wxTextCtrl* )m_Window)->GetValue()); break;
+    case ITEM_TEXTCTRL_FLOAT: any = atof(((wxTextCtrl* )m_Window)->GetValue()); break;
     case ITEM_FONTPICKERCTRL: any = ((wxFontPickerCtrl* )m_Window)->GetSelectedFont(); break;
-    case ITEM_INT: any = atoi(((wxTextCtrl* )m_Window)->GetValue()); break;
+    case ITEM_TEXTCTRL_INT: any = atoi(((wxTextCtrl* )m_Window)->GetValue()); break;
     case ITEM_LISTVIEW: any = ((wxExListView* )m_Window)->ItemToText(-1); break;
     case ITEM_SLIDER: any = ((wxSlider* )m_Window)->GetValue(); break;
     case ITEM_SPINCTRL: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
-    case ITEM_SPINCTRL_DOUBLE: any = ((wxSpinCtrlDouble* )m_Window)->GetValue(); break;
+    case ITEM_SPINCTRLDOUBLE: any = ((wxSpinCtrlDouble* )m_Window)->GetValue(); break;
     case ITEM_STC: any = ((wxStyledTextCtrl* )m_Window)->GetValue(); break;
-    case ITEM_STRING: any = ((wxTextCtrl* )m_Window)->GetValue(); break;
+    case ITEM_TEXTCTRL: any = ((wxTextCtrl* )m_Window)->GetValue(); break;
     case ITEM_TOGGLEBUTTON: any = ((wxToggleButton* )m_Window)->GetValue(); break;
     
     case ITEM_CHECKLISTBOX_BIT:
@@ -537,102 +660,70 @@ wxFlexGridSizer* wxExItem::Layout(
   bool readonly,
   wxFlexGridSizer* fgz)
 {
+  wxASSERT(sizer != nullptr);
+  
   if (!CreateWindow(parent, readonly))
   {
     return nullptr;
   }
   
+  wxFlexGridSizer* return_sizer;
+  
   switch (m_Type)
   {
-    case ITEM_COMBOBOXDIR: return AddBrowseButton(sizer);
+    case ITEM_COMBOBOX_DIR: return_sizer = AddBrowseButton(sizer); break;
     case ITEM_EMPTY: return fgz;
     case ITEM_SPACER: sizer->AddSpacer(m_Style); return fgz;
-    default: return Add(sizer, fgz);
     
-    case ITEM_NOTEBOOK: 
-    case ITEM_NOTEBOOK_AUI: 
-    case ITEM_NOTEBOOK_EX: 
-    case ITEM_NOTEBOOK_LIST: 
-    case ITEM_NOTEBOOK_SIMPLE: 
-    case ITEM_NOTEBOOK_TOOL: 
-    case ITEM_NOTEBOOK_TREE: 
-    {
-      if (m_Initial.IsNull())
+    default: 
+      if (IsNotebook())
       {
-        wxLogError("Illegal notebook");
-        return nullptr;
-      }
-      
-      wxFlexGridSizer* basic = Add(sizer, fgz);
-      wxBookCtrlBase* bookctrl = (wxBookCtrlBase*)m_Window;
-      wxFlexGridSizer* previous_item_sizer = nullptr;
-      int previous_type = -1;
-
-      // Add all pages and recursive layout the subitems.
-      for (auto page : m_Initial.As<ItemsNotebook>())
-      {
-        wxString name(page.first);
-        int use_cols = 1;
-        if (m_MajorDimension != -1) use_cols = m_MajorDimension;
-        if (name.Contains(":"))
+        if (m_Initial.IsNull() || !m_Initial.CheckType<ItemsNotebook>())
         {
-          use_cols = atoi(page.first.AfterFirst(':'));
-          name = page.first.BeforeFirst(':');
-        }
-  
-        bookctrl->AddPage(
-          new wxWindow(bookctrl, wxID_ANY), 
-          name,
-          true // select
-          ); // no image yet
-        
-        wxFlexGridSizer* booksizer = new wxFlexGridSizer(use_cols);
-        bookctrl->GetCurrentPage()->SetSizer(booksizer);
-        for (int i = 0; i < use_cols; i++)
-        {
-          booksizer->AddGrowableCol(i);
+          wxLogError("Illegal notebook");
+          return nullptr;
         }
         
-        for (auto item: page.second)
+        wxBookCtrlBase* bookctrl = (wxBookCtrlBase*)m_Window;
+        bookctrl->SetName("book-" + m_Label);
+        
+        return_sizer = Add(sizer, fgz);
+        
+        // Add all pages and recursive layout the subitems.
+        for (auto & page : m_Initial.As<ItemsNotebook>())
         {
-          // If this item has same type as previous type use previous sizer,
-          // otherwise use no sizer (Layout will create a new one).
-          wxFlexGridSizer* current_item_sizer = (
-            item.GetType() == previous_type ? previous_item_sizer: nullptr);
+          AddItems(page, readonly);
+        }
 
-          previous_item_sizer = item.Layout(
-            bookctrl->GetCurrentPage(),
-            booksizer,
-            readonly,
-            current_item_sizer);
-          
-          previous_type = item.GetType();
-
-          if (booksizer->GetEffectiveRowsCount() >= 1 &&
-             !booksizer->IsRowGrowable(booksizer->GetEffectiveRowsCount() - 1) &&
-              item.IsRowGrowable())
+        if (!wxPersistenceManager::Get().RegisterAndRestore(bookctrl))
+        {
+          if (bookctrl->GetPageCount() > 0)
           {
-            booksizer->AddGrowableRow(booksizer->GetEffectiveRowsCount() - 1);
+            // nothing was restored, so choose the default page ourselves
+            bookctrl->SetSelection(0);
           }
         }
-      }
       
-      if (bookctrl->GetCurrentPage() != nullptr)
+        /* TODO: next causes inifinite recursion, use different sizers for each page.
+        if (bookctrl->GetCurrentPage() != nullptr)
+        {
+          bookctrl->GetCurrentPage()->SetSizer(sizer);
+        } */      
+      }
+      else 
       {
-        bookctrl->GetCurrentPage()->SetSizer(sizer);
+        return_sizer = Add(sizer, fgz);
       }
-      
-      bookctrl->SetName("book" + m_Label);
-      
-      if (!wxPersistenceManager::Get().RegisterAndRestore(bookctrl))
-      {
-        // nothing was restored, so choose the default page ourselves
-        bookctrl->SetSelection(0);
-      }
-      
-      return basic;
-    }
   }
+  
+  ToConfig(false);
+  
+  return return_sizer;
+}
+
+void wxExItem::SetDialog(wxExItemTemplateDialog<wxExItem>* dlg)
+{
+  m_Dialog = dlg;
 }
 
 bool wxExItem::SetValue(const wxAny& value) const
@@ -645,18 +736,18 @@ bool wxExItem::SetValue(const wxAny& value) const
   switch (m_Type)
   {
     case ITEM_CHECKBOX: ((wxCheckBox* )m_Window)->SetValue(value.As<bool>()); break;
-    case ITEM_COLOUR: ((wxColourPickerWidget* )m_Window)->SetColour(value.As<wxColour>()); break;
+    case ITEM_COLOURPICKERWIDGET: ((wxColourPickerWidget* )m_Window)->SetColour(value.As<wxColour>()); break;
     case ITEM_COMBOBOX: wxExComboBoxAs((wxComboBox* )m_Window, value.As<wxArrayString>()); break;
     case ITEM_DIRPICKERCTRL: ((wxDirPickerCtrl* )m_Window)->SetPath(value.As<wxString>()); break;
     case ITEM_FILEPICKERCTRL: ((wxFilePickerCtrl* )m_Window)->SetPath(value.As<wxString>()); break;
-    case ITEM_FLOAT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%lf", value.As<float>())); break;
+    case ITEM_TEXTCTRL_FLOAT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%lf", value.As<float>())); break;
     case ITEM_FONTPICKERCTRL: ((wxFontPickerCtrl* )m_Window)->SetSelectedFont(value.As<wxFont>()); break;
-    case ITEM_INT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%ld", value.As<long>())); break;
+    case ITEM_TEXTCTRL_INT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%ld", value.As<long>())); break;
     case ITEM_SLIDER: ((wxSlider* )m_Window)->SetValue(value.As<int>()); break;
     case ITEM_SPINCTRL: ((wxSpinCtrl* )m_Window)->SetValue(value.As<int>()); break;
-    case ITEM_SPINCTRL_DOUBLE: ((wxSpinCtrlDouble* )m_Window)->SetValue(value.As<double>()); break;
+    case ITEM_SPINCTRLDOUBLE: ((wxSpinCtrlDouble* )m_Window)->SetValue(value.As<double>()); break;
     case ITEM_STC: ((wxStyledTextCtrl* )m_Window)->SetValue(value.As<wxString>()); break;
-    case ITEM_STRING: ((wxTextCtrl* )m_Window)->SetValue(value.As<wxString>()); break;
+    case ITEM_TEXTCTRL: ((wxTextCtrl* )m_Window)->SetValue(value.As<wxString>()); break;
     case ITEM_TOGGLEBUTTON: ((wxToggleButton* )m_Window)->SetValue(value.As<bool>()); break;
 
     case ITEM_CHECKLISTBOX_BIT:

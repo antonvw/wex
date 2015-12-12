@@ -17,6 +17,8 @@ void fixture::testTextFileWithListView()
     m_Frame, 
     wxExListView::LIST_FIND);
     
+  AddPane(m_Frame, report);
+
   wxExFindReplaceData::Get()->SetFindString("xx");
   
   CPPUNIT_ASSERT(wxExTextFileWithListView::SetupTool(tool, m_Frame, report));

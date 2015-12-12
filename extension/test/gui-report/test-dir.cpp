@@ -22,6 +22,8 @@ void fixture::testDirTool()
     return;
   }
 
+  AddPane(m_Frame, report);
+  
   wxExDirTool dir(
     tool,
     "./",
@@ -36,6 +38,7 @@ void fixture::testDirTool()
 void fixture::testDirWithListView()
 {
   wxExListViewFile* listView = new wxExListViewFile(m_Frame, m_Frame, m_Project);
+  AddPane(m_Frame, listView);
   wxExDirWithListView* dir = new wxExDirWithListView(listView, GetTestDir());
   CPPUNIT_ASSERT(dir->FindFiles());
 }

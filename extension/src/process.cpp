@@ -13,7 +13,7 @@
 #include <wx/timer.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/process.h>
-#include <wx/extension/configdlg.h>
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/shell.h>
@@ -218,34 +218,25 @@ int wxExProcess::ConfigDialog(
   const wxString& title,
   bool modal)
 {
-  wxExConfigItem ci(
-    _("Process"), 
-    ITEM_COMBOBOX, 
-    wxEmptyString,
-    true);
+  wxExItem ci(_("Process"), ITEM_COMBOBOX, wxAny(), true);
     
   wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
   validator.SetCharExcludes("?%*\"");
   ci.SetValidator(&validator);
   
-  const std::vector<wxExConfigItem> v {
+  const std::vector<wxExItem> v {
     ci,
-    wxExConfigItem(
-      m_WorkingDirKey, 
-      ITEM_COMBOBOXDIR, 
-      wxEmptyString,
-      true,
-      wxWindow::NewControlId())};
+    wxExItem(m_WorkingDirKey, ITEM_COMBOBOX_DIR, wxAny(), true, wxWindow::NewControlId())};
 
   if (modal)
   {
-    return wxExConfigDialog(parent,
+    return wxExItemDialog(parent,
       v,
       title).ShowModal();
   }
   else
   {
-    wxExConfigDialog* dlg = new wxExConfigDialog(
+    wxExItemDialog* dlg = new wxExItemDialog(
       parent,
       v,
       title);

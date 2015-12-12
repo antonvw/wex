@@ -10,7 +10,7 @@
 #include <wx/extension/file.h>
 #include <wx/extension/report/listview.h>
 
-class wxExConfigDialog;
+class wxExItemDialog;
 
 /// Combines wxExListViewWithFrame and wxExFile,
 /// giving you a list control with file synchronization support.
@@ -78,5 +78,5 @@ private:
   const wxString m_TextAddWhat;
   const wxString m_TextInFolder;
   
-  wxExConfigDialog* m_AddItemsDialog;
+  wxExItemDialog* m_AddItemsDialog;
 };

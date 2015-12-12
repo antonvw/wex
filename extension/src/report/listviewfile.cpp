@@ -13,8 +13,8 @@
 #include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/xml/xml.h>
-#include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/listitem.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/listviewfile.h>
@@ -51,11 +51,11 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   , m_TextAddRecursive(_("Recursive"))
   , m_TextAddWhat(_("Add what"))
   , m_TextInFolder(_("In folder"))
-  , m_AddItemsDialog(new wxExConfigDialog(this,
-      std::vector<wxExConfigItem> {
-        wxExConfigItem(m_TextAddWhat,ITEM_COMBOBOX, wxEmptyString, true),
-        wxExConfigItem(m_TextInFolder,ITEM_COMBOBOXDIR, wxEmptyString, true, NewControlId()),
-        wxExConfigItem(std::set<wxString> {
+  , m_AddItemsDialog(new wxExItemDialog(this,
+      std::vector<wxExItem> {
+        wxExItem(m_TextAddWhat,ITEM_COMBOBOX, wxAny(), true),
+        wxExItem(m_TextInFolder,ITEM_COMBOBOX_DIR, wxAny(), true, NewControlId()),
+        wxExItem(std::set<wxString> {
           m_TextAddFiles, m_TextAddFolders, m_TextAddRecursive})},
       _("Add Items"),
       0,

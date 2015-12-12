@@ -11,8 +11,8 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/extension/configdlg.h>
 #include <wx/extension/interruptable.h>
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listitem.h>
 #include <wx/extension/util.h>

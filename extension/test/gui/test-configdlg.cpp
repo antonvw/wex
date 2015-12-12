@@ -10,45 +10,51 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/configdlg.h>
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
 void fixture::testConfigDialog()
 {
-  wxExConfigDialog* dlg = new wxExConfigDialog(m_Frame, 
-    std::vector <wxExConfigItem> {
-      wxExConfigItem("string1", "test1", "page0:0"),
-      wxExConfigItem("string2", "test2", "page0:1"),
-      wxExConfigItem("string3", "test3", "page1"),
-      wxExConfigItem("string4", "test4", "page1"),
-      wxExConfigItem("string5", "test5", "page2")},
+  wxExItem::UseConfig(true);
+  
+  wxExItemDialog* dlg = new wxExItemDialog(m_Frame, 
+    std::vector <wxExItem> {
+      wxExItem("string1", "test1"),
+      wxExItem("string2", "test2"),
+      wxExItem("string3", "test3"),
+      wxExItem("string4", "test4"),
+      wxExItem("string5", "test5")},
     "config dialog", 0, 1, wxOK | wxCANCEL | wxAPPLY);
-  dlg->ForceCheckBoxChecked();
   dlg->Show();
+  
+  CPPUNIT_ASSERT(dlg->GetItemValue("string1").As<wxString>().empty());
+  
   dlg->Reload();
   
-  wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
-  wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));
+  wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxCANCEL));
   
   // Test config dialog without pages.
-  wxExConfigDialog* dlg1 = new wxExConfigDialog(m_Frame, 
-    std::vector <wxExConfigItem> {
-      wxExConfigItem("string1", ""),
-      wxExConfigItem("string2", "")},
-    "no pages");
+  wxExItemDialog* dlg1 = new wxExItemDialog(m_Frame, 
+    std::vector <wxExItem> {
+      wxExItem("string1"),
+      wxExItem("string2")},
+    "no pages", 0, 1, wxOK | wxCANCEL | wxAPPLY);
   dlg1->Show();
   
+  wxPostEvent(dlg1, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
+  wxPostEvent(dlg1, wxCommandEvent(wxEVT_BUTTON, wxOK));
+  
   // Test config dialog without items.
-  wxExConfigDialog* dlg2 = new wxExConfigDialog(m_Frame, 
-    std::vector <wxExConfigItem>(),
+  wxExItemDialog* dlg2 = new wxExItemDialog(m_Frame, 
+    std::vector <wxExItem>(),
     "no items");
   dlg2->Show();
   
   // Test config dialog with empty items.
-  wxExConfigDialog* dlg3 = new wxExConfigDialog(m_Frame, 
-    std::vector <wxExConfigItem> {
-      wxExConfigItem(), wxExConfigItem(), wxExConfigItem()},
+  wxExItemDialog* dlg3 = new wxExItemDialog(m_Frame, 
+    std::vector <wxExItem> {
+      wxExItem(), wxExItem(), wxExItem()},
     "empty items");
   dlg3->Show();
 }

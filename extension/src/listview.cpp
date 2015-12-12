@@ -19,12 +19,12 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/listview.h>
-#include <wx/extension/configitem.h>
-#include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/interruptable.h>
+#include <wx/extension/item.h>
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/listitem.h>
 #include <wx/extension/menu.h>
@@ -38,9 +38,9 @@ class ListViewDefaults : public wxExConfigDefaults
 public:
   ListViewDefaults() 
   : wxExConfigDefaults(std::vector<std::tuple<wxString, wxExItemType, wxAny>> {
-    std::make_tuple(_("Background colour"), ITEM_COLOUR, *wxWHITE),
-    std::make_tuple(_("Foreground colour"), ITEM_COLOUR, *wxBLACK),
-    std::make_tuple(_("Readonly colour"), ITEM_COLOUR, *wxLIGHT_GREY)}) {;};
+    std::make_tuple(_("Background colour"), ITEM_COLOURPICKERWIDGET, *wxWHITE),
+    std::make_tuple(_("Foreground colour"), ITEM_COLOURPICKERWIDGET, *wxBLACK),
+    std::make_tuple(_("Readonly colour"), ITEM_COLOURPICKERWIDGET, *wxLIGHT_GREY)}) {;};
 };
   
 #if wxUSE_DRAG_AND_DROP
@@ -158,7 +158,7 @@ void wxExColumn::SetIsSortedAscending(wxExSortType type)
 // wxWindow::NewControlId() is negative...
 const wxWindowID ID_COL_FIRST = 1000;
 
-wxExConfigDialog* wxExListView::m_ConfigDialog = nullptr;
+wxExItemDialog* wxExListView::m_ConfigDialog = nullptr;
 
 wxExListView::wxExListView(wxWindow* parent,
   wxExListType type,
@@ -593,18 +593,18 @@ int wxExListView::ConfigDialog(
 {
   ListViewDefaults use;
   
-  const std::vector<wxExConfigItem> items {
-    wxExConfigItem(_("List font"), ITEM_FONTPICKERCTRL),
-    wxExConfigItem(_("Background colour"), ITEM_COLOUR),
-    wxExConfigItem(_("Foreground colour"), ITEM_COLOUR),
-    wxExConfigItem(_("Readonly colour"), ITEM_COLOUR),
-    wxExConfigItem(_("Header"), ITEM_CHECKBOX),
-    wxExConfigItem(_("Comparator"), ITEM_FILEPICKERCTRL),
-    wxExConfigItem(_("Sort method"), std::map<long, const wxString> {
+  static const std::vector<wxExItem> items {
+    wxExItem(_("List font"), ITEM_FONTPICKERCTRL),
+    wxExItem(_("Background colour"), ITEM_COLOURPICKERWIDGET),
+    wxExItem(_("Foreground colour"), ITEM_COLOURPICKERWIDGET),
+    wxExItem(_("Readonly colour"), ITEM_COLOURPICKERWIDGET),
+    wxExItem(_("Header"), ITEM_CHECKBOX),
+    wxExItem(_("Comparator"), ITEM_FILEPICKERCTRL),
+    wxExItem(_("Sort method"), std::map<long, const wxString> {
       {SORT_ASCENDING, _("Sort ascending")},
       {SORT_DESCENDING, _("Sort descending")},
       {SORT_TOGGLE, _("Sort toggle")}}),
-    wxExConfigItem(_("Rulers"),  std::map<long, const wxString> {
+    wxExItem(_("Rulers"),  std::map<long, const wxString> {
       {wxLC_HRULES, _("Horizontal rulers")},
       {wxLC_VRULES, _("Vertical rulers")}}, false)};
   
@@ -612,14 +612,14 @@ int wxExListView::ConfigDialog(
   {
     if (m_ConfigDialog == nullptr)
     {
-      m_ConfigDialog = new wxExConfigDialog(parent, items, title, 0, 1, button_flags, id);
+      m_ConfigDialog = new wxExItemDialog(parent, items, title, 0, 1, button_flags, id);
     }
     
     return m_ConfigDialog->Show();
   }
   else
   {
-    return wxExConfigDialog(parent, items, title, 0, 1, button_flags, id).ShowModal();
+    return wxExItemDialog(parent, items, title, 0, 1, button_flags, id).ShowModal();
   }
 }
           
@@ -1296,6 +1296,7 @@ void wxExListView::SortColumnReset()
   if (m_SortedColumnNo != -1 && !m_ArtIDs.empty()) // only if we are using images
   {
     ClearColumnImage(m_SortedColumnNo);
+    m_SortedColumnNo = -1;
   }
 }
 #endif // wxUSE_GUI

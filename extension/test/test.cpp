@@ -31,7 +31,7 @@ void AddPane(wxExManagedFrame* frame, wxWindow* pane)
   
   frame->GetManager().AddPane(pane, wxAuiPaneInfo(info)
     .Name(name)
-    .MinSize(250, 300)
+    .MinSize(250, 200)
     .Caption(name));
   
   frame->GetManager().Update();

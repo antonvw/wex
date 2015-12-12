@@ -15,7 +15,7 @@
 #include <wx/extension/managedframe.h>
 #include <wx/extension/report/defs.h>
 
-class wxExConfigDialog;
+class wxExItemDialog;
 class wxExListView;
 class wxExListViewFile;
 
@@ -117,8 +117,8 @@ private:
   void FindInFiles(wxWindowID dialogid);
   const wxString GetFindReplaceInfoText(bool replace = false) const;
 
-  wxExConfigDialog* m_FiFDialog;
-  wxExConfigDialog* m_RiFDialog;
+  wxExItemDialog* m_FiFDialog;
+  wxExItemDialog* m_RiFDialog;
   wxExListView* m_FileHistoryList;
   wxExFileHistory m_ProjectHistory;
 

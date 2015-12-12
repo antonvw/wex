@@ -14,7 +14,6 @@
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
 #include <wx/textfile.h>
-#include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/itemdlg.h>
@@ -367,20 +366,19 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
         100);
       if (val >= 0)
       {
-        wxExConfigDialog(this, TestConfigItems(), "Config Dialog Columns",
+        wxExItemDialog(this, TestConfigItems(), "Config Dialog Columns",
           0, val).ShowModal();
       }
       }
       break;
     
     case ID_DLG_CONFIG_ITEM_READONLY:
-      wxExConfigDialog(this, TestConfigItems(), "Config Dialog Readonly",
+      wxExItemDialog(this, TestConfigItems(), "Config Dialog Readonly",
         0, 4, wxCANCEL).ShowModal();
       break;
       
     case ID_DLG_ITEM: 
       wxExItemDialog(this, TestItems(), "Options", 0, 2).ShowModal();
-      wxExItemDialog(this, TestItems(true)).ShowModal();
       break;
     
     case ID_DLG_LISTVIEW: m_ListView->ConfigDialog(this);
@@ -510,7 +508,7 @@ void wxExSampleFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
 void wxExSampleFrame::ShowConfigItems()
 {
-  wxExConfigDialog* dlg = new wxExConfigDialog(
+  wxExItemDialog* dlg = new wxExItemDialog(
     this,
     TestConfigItems(),
     "Config Dialog",
@@ -518,8 +516,6 @@ void wxExSampleFrame::ShowConfigItems()
     1,
     wxAPPLY | wxCANCEL,
     wxID_ANY,
-    0,
-    nullptr,
     wxDefaultPosition,
 #ifdef __WXMSW__    
     wxSize(500, 500));

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      configitem.cpp
-// Purpose:   Implementation of wxExConfigItem class
+// Purpose:   Implementation of wxExItem class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #include <wx/config.h>
 #include <wx/spinctrl.h>
 #include <wx/window.h>
-#include <wx/extension/configitem.h>
+#include <wx/extension/item.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
 
@@ -55,38 +55,34 @@ bool Update(wxExFindReplaceData* frd, wxCheckListBox* clb, int item, bool save, 
   return true;
 }
 
-wxFlexGridSizer* wxExConfigItem::Layout(
-  wxWindow* parent, wxSizer* sizer, bool readonly, wxFlexGridSizer* fgz)
+bool wxExItem::ToConfig(bool save) const
 {
-  wxFlexGridSizer* ret = wxExItem::Layout(parent, sizer, readonly, fgz);
+  if (!m_UseConfig)
+  {
+    return false;
+  }
   
-  ToConfig(false);
-  
-  return ret;
-}
-  
-bool wxExConfigItem::ToConfig(bool save) const
-{
   switch (GetType())
   {
     case ITEM_CHECKBOX:         PERSISTENT(ReadBool, bool, false); break;
     case ITEM_CHECKLISTBOX_BIT: PERSISTENT(ReadLong, long, 0); break;
-    case ITEM_COLOUR:           PERSISTENT(ReadObject, wxColour, *wxWHITE); break;
+    case ITEM_COLOURPICKERWIDGET:           PERSISTENT(ReadObject, wxColour, *wxWHITE); break;
     case ITEM_DIRPICKERCTRL:    PERSISTENT(Read, wxString, GetLabel()); break;
-    case ITEM_FLOAT:            PERSISTENT(ReadDouble, double, 0); break;
+    case ITEM_TEXTCTRL_FLOAT:            PERSISTENT(ReadDouble, double, 0); break;
     case ITEM_FONTPICKERCTRL:   PERSISTENT(ReadObject, wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
-    case ITEM_INT:              PERSISTENT(ReadLong, long, 0); break;
-    case ITEM_LISTVIEW:  PERSISTENT(Read, wxString, ""); break;
+    case ITEM_TEXTCTRL_INT:              PERSISTENT(ReadLong, long, 0); break;
+    case ITEM_LISTVIEW:         PERSISTENT(Read, wxString, ""); break;
     case ITEM_SLIDER:           PERSISTENT(ReadLong, int, ((wxSlider* )GetWindow())->GetMin()); break;
     case ITEM_SPINCTRL:         PERSISTENT(ReadLong, int, ((wxSpinCtrl* )GetWindow())->GetMin()); break;
-    case ITEM_SPINCTRL_DOUBLE:  PERSISTENT(ReadDouble, double, ((wxSpinCtrlDouble* )GetWindow())->GetMin()); break;
+    case ITEM_SPINCTRLDOUBLE:  PERSISTENT(ReadDouble, double, ((wxSpinCtrlDouble* )GetWindow())->GetMin()); break;
     case ITEM_STC:              PERSISTENT(Read, wxString, ""); break;
-    case ITEM_STRING:           PERSISTENT(Read, wxString, ""); break;
+    case ITEM_TEXTCTRL:           PERSISTENT(Read, wxString, ""); break;
     case ITEM_TOGGLEBUTTON:     PERSISTENT(ReadBool, bool, false); break;
 
     case ITEM_CHECKLISTBOX_BOOL:
       {
       wxCheckListBox* clb = (wxCheckListBox*)GetWindow();
+      wxASSERT(clb != nullptr);
 
       for (size_t i = 0; i < clb->GetCount(); i++)
       {
@@ -101,7 +97,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       break;
 
     case ITEM_COMBOBOX:
-    case ITEM_COMBOBOXDIR:
+    case ITEM_COMBOBOX_DIR:
       {
       wxComboBox* cb = (wxComboBox*)GetWindow();
 
@@ -205,19 +201,19 @@ wxExConfigDefaults::wxExConfigDefaults(
         case ITEM_CHECKBOX:
           m_Config->ReadBool(std::get<0>(it), std::get<2>(it).As<bool>());
           break;
-        case ITEM_COLOUR:
+        case ITEM_COLOURPICKERWIDGET:
           m_Config->ReadObject(std::get<0>(it), std::get<2>(it).As<wxColour>());
           break;
-        case ITEM_FLOAT:
+        case ITEM_TEXTCTRL_FLOAT:
           m_Config->ReadDouble(std::get<0>(it), std::get<2>(it).As<double>());
           break;
         case ITEM_FONTPICKERCTRL:
           m_Config->ReadObject(std::get<0>(it), std::get<2>(it).As<wxFont>());
           break;
-        case ITEM_INT:
+        case ITEM_TEXTCTRL_INT:
           m_Config->ReadLong(std::get<0>(it), std::get<2>(it).As<long>());
           break;
-        case ITEM_STRING:
+        case ITEM_TEXTCTRL:
           m_Config->Read(std::get<0>(it), std::get<2>(it).As<wxString>());
           break;
         default:
