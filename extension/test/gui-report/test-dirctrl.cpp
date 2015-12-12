@@ -12,7 +12,6 @@
 void fixture::testDirCtrl()
 {
   wxExGenericDirCtrl* ctrl = new wxExGenericDirCtrl(m_Frame, m_Frame);
-  
   AddPane(m_Frame, ctrl);
 
   // Select directory.

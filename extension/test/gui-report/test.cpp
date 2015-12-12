@@ -114,6 +114,7 @@ FrameWithHistory::FrameWithHistory(wxWindow* parent,
     wxExListView::LIST_KEYWORD,
     wxID_ANY,
     &lexer);
+  AddPane(this, m_Report);
 }
 
 wxExListView* FrameWithHistory::Activate(

@@ -11,8 +11,8 @@
 #endif
 #include <wx/config.h>
 #include <wx/extension/vcsentry.h>
-#include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h> // for VCS_MAX_COMMANDS
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
@@ -307,30 +307,30 @@ int wxExVCSEntry::ShowDialog(
       wxConfigBase::Get()->Read(m_FlagsKey));
   }
   
-  const int retValue = wxExConfigDialog(parent,
-    std::vector<wxExConfigItem> {
-      (GetCommand().IsCommit() ? wxExConfigItem(
+  const int retValue = wxExItemDialog(parent,
+    std::vector<wxExItem> {
+      (GetCommand().IsCommit() ? wxExItem(
         _("Revision comment"), 
         ITEM_COMBOBOX,
         wxEmptyString,
-        true) : wxExConfigItem()),
-      (add_folder && !GetCommand().IsHelp() ? wxExConfigItem(
+        true) : wxExItem()),
+      (add_folder && !GetCommand().IsHelp() ? wxExItem(
         _("Base folder"), 
-        ITEM_COMBOBOXDIR, 
+        ITEM_COMBOBOX_DIR, 
         wxEmptyString, 
         true,
-        wxWindow::NewControlId()) : wxExConfigItem()),
-      (add_folder && !GetCommand().IsHelp() && GetCommand().IsAdd() ? wxExConfigItem(
+        wxWindow::NewControlId()) : wxExItem()),
+      (add_folder && !GetCommand().IsHelp() && GetCommand().IsAdd() ? wxExItem(
         _("Path"), 
         ITEM_COMBOBOX,
         wxEmptyString, 
-        true) : wxExConfigItem()),
-      (GetCommand().UseFlags() ?  wxExConfigItem(
-        _("Flags"), wxEmptyString): wxExConfigItem()),
-      (m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX ? wxExConfigItem(
-        _("Prefix flags"), wxEmptyString): wxExConfigItem()),
-      (GetCommand().UseSubcommand() ? wxExConfigItem(
-        _("Subcommand"), wxEmptyString): wxExConfigItem())},
+        true) : wxExItem()),
+      (GetCommand().UseFlags() ?  wxExItem(
+        _("Flags"), wxEmptyString): wxExItem()),
+      (m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX ? wxExItem(
+        _("Prefix flags"), wxEmptyString): wxExItem()),
+      (GetCommand().UseSubcommand() ? wxExItem(
+        _("Subcommand"), wxEmptyString): wxExItem())},
     caption).ShowModal();
     
   if (retValue == wxID_OK)

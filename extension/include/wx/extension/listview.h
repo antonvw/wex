@@ -14,7 +14,7 @@
 class wxFindDialogEvent;
 typedef wxString wxArtID;
 
-class wxExConfigDialog;
+class wxExItemDialog;
 class wxExLexer;
 class wxExMenu;
 
@@ -251,6 +251,6 @@ private:
   std::map<wxArtID, unsigned int> m_ArtIDs;
   std::vector<wxExColumn> m_Columns;
   
-  static wxExConfigDialog* m_ConfigDialog;
+  static wxExItemDialog* m_ConfigDialog;
 };
 #endif // wx_USE_GUI

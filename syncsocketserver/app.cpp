@@ -339,17 +339,17 @@ Frame::Frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
-    wxExConfigDialog(this,
-      std::vector<wxExConfigItem>{
-        wxExConfigItem(_("Hostname"), 
+    wxExItemDialog(this,
+      std::vector<wxExItem>{
+        wxExItem(_("Hostname"), 
           wxEmptyString, 
           wxEmptyString,
           0, 
-          ITEM_STRING,
+          ITEM_TEXTCTRL,
           true),
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
-        wxExConfigItem(_("Port"), 1, 65536)},
+        wxExItem(_("Port"), 1, 65536)},
       _("Server Config"),
       0,
       1,

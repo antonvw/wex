@@ -15,8 +15,8 @@
 #include <wx/imaglist.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/cmdline.h>
-#include <wx/extension/configdlg.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/listitem.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
@@ -108,23 +108,16 @@ void wxExFrameWithHistory::CreateDialogs()
   std::set<wxString> t(m_Info);
   t.insert(m_TextRecursive);
   
-  const std::vector<wxExConfigItem> f {
-    wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
-      ITEM_COMBOBOX, 
-      wxEmptyString, 
-      true),
-    wxExConfigItem(m_TextInFiles, 
-      ITEM_COMBOBOX, 
-      wxEmptyString, 
-      true),
-    wxExConfigItem(m_TextInFolder, 
-      ITEM_COMBOBOXDIR, 
-      wxEmptyString, 
-      true,
-      NewControlId()),
-    wxExConfigItem(t)};
+  const std::vector<wxExItem> f {
+    wxExItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
+      ITEM_COMBOBOX, wxAny(), true),
+    wxExItem(m_TextInFiles, 
+      ITEM_COMBOBOX, wxAny(), true),
+    wxExItem(m_TextInFolder, 
+      ITEM_COMBOBOX_DIR, wxAny(), true, NewControlId()),
+    wxExItem(t)};
   
-  m_FiFDialog = new wxExConfigDialog(this,
+  m_FiFDialog = new wxExItemDialog(this,
     f,
     _("Find In Files"),
     0,
@@ -132,13 +125,13 @@ void wxExFrameWithHistory::CreateDialogs()
     wxAPPLY | wxCANCEL,
     ID_FIND_IN_FILES);
     
-  m_RiFDialog = new wxExConfigDialog(this,
-    std::vector<wxExConfigItem> {f.at(0),
-      wxExConfigItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), 
+  m_RiFDialog = new wxExItemDialog(this,
+    std::vector<wxExItem> {f.at(0),
+      wxExItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), 
       ITEM_COMBOBOX),
       f.at(1),
       f.at(2),
-      wxExConfigItem(
+      wxExItem(
         // Match whole word does not work with replace.
         std::set<wxString>{
         wxExFindReplaceData::Get()->GetTextMatchCase(),
@@ -267,22 +260,18 @@ int wxExFrameWithHistory::FindInFilesDialog(
     GetSTC()->GetFindString();
   }
 
-  if (wxExConfigDialog(this,
-    std::vector<wxExConfigItem> {
-      wxExConfigItem(
+  if (wxExItemDialog(this,
+    std::vector<wxExItem> {
+      wxExItem(
         wxExFindReplaceData::Get()->GetTextFindWhat(), 
-        ITEM_COMBOBOX, 
-        wxEmptyString, 
-        true),
-      (add_in_files ? wxExConfigItem(
+        ITEM_COMBOBOX, wxAny(), true),
+      (add_in_files ? wxExItem(
         m_TextInFiles, 
-        ITEM_COMBOBOX, 
-        wxEmptyString, 
-        true) : wxExConfigItem()),
-      (id == ID_TOOL_REPORT_REPLACE ? wxExConfigItem(
+        ITEM_COMBOBOX, wxAny(), true) : wxExItem()),
+      (id == ID_TOOL_REPORT_REPLACE ? wxExItem(
         wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-        ITEM_COMBOBOX): wxExConfigItem()),
-      wxExConfigItem(m_Info)},
+        ITEM_COMBOBOX): wxExItem()),
+      wxExItem(m_Info)},
     GetFindInCaption(id)).ShowModal() == wxID_CANCEL)
   {
     return wxID_CANCEL;

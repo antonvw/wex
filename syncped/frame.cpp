@@ -13,8 +13,8 @@
 #include <wx/config.h>
 #include <wx/imaglist.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
-#include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/otl.h>

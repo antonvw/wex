@@ -9,8 +9,6 @@
 
 #include <vector>
 #include <wx/filepicker.h>
-#include <wx/imaglist.h>
-#include <wx/stc/stc.h>
 #include <wx/tglbtn.h> // for wxEVT_TOGGLEBUTTON
 #include <wx/extension/dialog.h>
 #include <wx/extension/frame.h>
@@ -22,7 +20,7 @@
 /// - wxAPPLY button
 /// - wxOK, wxCANCEL button for a modeless dialog
 /// - a ITEM_BUTTON
-/// - a ITEM_COMBOBOXDIR
+/// - a ITEM_COMBOBOX_DIR
 /// the method wxExFrame::OnCommandItemDialog is invoked.
 template <class T> class WXDLLIMPEXP_BASE wxExItemTemplateDialog: public wxExDialog
 {
@@ -43,10 +41,6 @@ public:
     long flags = wxOK | wxCANCEL,
     /// the window id
     wxWindowID id = wxID_ANY,
-    /// bookctrl style, only used if you specified pages for your items
-    int bookctrl_style = 0,
-    /// image list to be used by notebook (required for a tool book)
-    wxImageList* imageList = nullptr,
     /// position
     const wxPoint& pos = wxDefaultPosition,
     /// size
@@ -59,13 +53,16 @@ public:
   , m_ForceCheckBoxChecked(false)
   , m_Page(wxEmptyString)
   , m_Items(v) {
-    Layout(rows, cols, imageList);
+    Layout(rows, cols);
     Bind(wxEVT_BUTTON, &wxExItemTemplateDialog::OnCommand, this, wxID_APPLY);
     Bind(wxEVT_BUTTON, &wxExItemTemplateDialog::OnCommand, this, wxID_CANCEL);
     Bind(wxEVT_BUTTON, &wxExItemTemplateDialog::OnCommand, this, wxID_CLOSE);
     Bind(wxEVT_BUTTON, &wxExItemTemplateDialog::OnCommand, this, wxID_OK);
     Bind(wxEVT_UPDATE_UI, &wxExItemTemplateDialog::OnUpdateUI, this, wxID_APPLY);
     Bind(wxEVT_UPDATE_UI, &wxExItemTemplateDialog::OnUpdateUI, this, wxID_OK);};
+  
+  /// Adds an item to the temp vector.
+  void Add(const T & item) {m_ItemsTemp.push_back(item);};
 
   /// If you specified some checkboxes, calling this method
   /// requires that one of them should be checked for the OK button
@@ -79,42 +76,28 @@ public:
     m_Contains = contains;
     m_Page = page;};
   
-  /// Returns the (first) item (on specified page) that has specified label,
+  /// Returns the (first) item that has specified label,
   /// or empty item if item does not exist.
-  const T GetItem(const wxString& label, const wxString& page = wxEmptyString) const {
+  const T GetItem(const wxString& label) const {
     for (const auto& item : m_Items)
     {
       if (item.GetLabel() == label)
       {
-        if (page.empty())
-        {
-          return item;
-        }
-        else if (item.GetPage() == page)
-        {
-          return item;
-        }
+        return item;
       }
     };
     return T();};
   /// Returns the item actual value for specified label, or 
   /// IsNull value if item does not exist.
-  const wxAny GetItemValue(const wxString& label, const wxString& page = wxEmptyString) const {
-    return GetItem(label, page).GetValue();};
+  const wxAny GetItemValue(const wxString& label) const {
+    return GetItem(label).GetValue();};
   /// Sets the item actual value for specified label.
-  bool SetItemValue(const wxString& label, const wxAny& value, const wxString& page = wxEmptyString) const {
+  bool SetItemValue(const wxString& label, const wxAny& value) const {
     for (auto& item : m_Items)
     {
       if (item.GetLabel() == label)
       {
-        if (page.empty())
-        {
-          return item.SetValue(value);
-        }
-        else if (item.GetPage() == page)
-        {
-          return item.SetValue(value);
-        }
+        return item.SetValue(value);
       }
     };
     return false;};
@@ -169,7 +152,7 @@ protected:
         break;
 
       case ITEM_COMBOBOX:
-      case ITEM_COMBOBOXDIR:
+      case ITEM_COMBOBOX_DIR:
         {
         wxComboBox* cb = (wxComboBox*)item.GetWindow();
         if (item.GetIsRequired())
@@ -183,8 +166,8 @@ protected:
         }
         break;
 
-      case ITEM_INT:
-      case ITEM_STRING:
+      case ITEM_TEXTCTRL_INT:
+      case ITEM_TEXTCTRL:
         {
         wxTextCtrl* tc = (wxTextCtrl*)item.GetWindow();
         if (item.GetIsRequired())
@@ -231,6 +214,35 @@ protected:
     }
     event.Enable(m_ForceCheckBoxChecked ? one_checkbox_checked: true);};
 private:
+  void BindButton(const T& item) {
+    switch (item.GetType())
+    {
+      case ITEM_BUTTON:
+      case ITEM_COMMANDLINKBUTTON:
+        Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent& event) {
+          Click(event);}, item.GetWindow()->GetId());
+        break;
+      case ITEM_COMBOBOX_DIR:
+        Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent& event) {
+          wxComboBox* browse = (wxComboBox*)item.GetWindow();
+          wxDirDialog dir_dlg(
+            this,
+            _(wxDirSelectorPromptStr),
+            browse->GetValue(),
+            wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+          if (dir_dlg.ShowModal() == wxID_OK)
+          {
+            const wxString value = dir_dlg.GetPath();
+            const int item = browse->FindString(value);
+            browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
+          }}, item.GetWindow()->GetId());
+        break;
+      case ITEM_TOGGLEBUTTON:
+        Bind(wxEVT_TOGGLEBUTTON, [=](wxCommandEvent& event) {
+          Click(event);}, item.GetWindow()->GetId());
+        break;
+    }};
+
   void Click(const wxCommandEvent& event) const {
     wxExFrame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExFrame);
     if (frame != nullptr)
@@ -238,14 +250,21 @@ private:
       frame->OnCommandItemDialog(GetId(), event);
     }};
   
-  void Layout(int rows, int cols, wxImageList* imageList) {
+  void Layout(int rows, int cols) {
     wxFlexGridSizer* previous_item_sizer = nullptr;
-    wxFlexGridSizer* sizer = new wxFlexGridSizer(1);
+    int use_cols = 1;
+    wxFlexGridSizer* sizer = new wxFlexGridSizer(use_cols);
+    for (int i = 0; i < use_cols; i++)
+    {
+      sizer->AddGrowableCol(i);
+    }
     int previous_type = -1;
     for (auto& item : m_Items)
     {
       if (item.GetType() == ITEM_EMPTY) continue; //skip
 
+      item.SetDialog(this);
+      
       // If this item has same type as previous type use previous sizer,
       // otherwise use no sizer (Layout will create a new one).
       wxFlexGridSizer* current_item_sizer = (item.GetType() == previous_type ? previous_item_sizer: nullptr);
@@ -262,39 +281,16 @@ private:
       {
         sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
       }
-      switch (item.GetType())
-      {
-        case ITEM_BUTTON:
-        case ITEM_COMMAND_LINK_BUTTON:
-          Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent& event) {
-            Click(event);}, item.GetWindow()->GetId());
-          break;
-        case ITEM_COMBOBOXDIR:
-          Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent& event) {
-            wxComboBox* browse = (wxComboBox*)item.GetWindow();
-            wxDirDialog dir_dlg(
-              this,
-              _(wxDirSelectorPromptStr),
-              browse->GetValue(),
-              wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-            if (dir_dlg.ShowModal() == wxID_OK)
-            {
-              const wxString value = dir_dlg.GetPath();
-              const int item = browse->FindString(value);
-              browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
-            }}, item.GetWindow()->GetId());
-          break;
-        case ITEM_TOGGLEBUTTON:
-          Bind(wxEVT_TOGGLEBUTTON, [=](wxCommandEvent& event) {
-            Click(event);}, item.GetWindow()->GetId());
-          break;
-      }
+      BindButton(item);
     }
     AddUserSizer(sizer);
     LayoutSizers();
-  };
+    m_Items.insert(m_Items.end(), m_ItemsTemp.begin(), m_ItemsTemp.end());
+    m_ItemsTemp.clear();
+    };
 
   std::vector< T > m_Items;
+  std::vector< T > m_ItemsTemp;
   bool m_ForceCheckBoxChecked;
   wxString m_Contains;
   wxString m_Page;

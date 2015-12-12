@@ -17,7 +17,7 @@
 
 #if wxUSE_GUI
 class wxFindDialogEvent;
-class wxExConfigDialog;
+class wxExItemDialog;
 class wxExFile;
 class wxExFileName;
 class wxExFrame;
@@ -414,7 +414,7 @@ private:
   wxString m_AutoComplete;
 
   // All objects share the following:
-  static wxExConfigDialog* m_ConfigDialog;
+  static wxExItemDialog* m_ConfigDialog;
   static wxExSTCEntryDialog* m_EntryDialog;
   static int m_Zoom;
 };

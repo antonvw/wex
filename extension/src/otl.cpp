@@ -17,7 +17,7 @@
 #include <wx/grid.h>
 #include <wx/stc/stc.h>
 #include <wx/extension/otl.h>
-#include <wx/extension/configdlg.h>
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/util.h>
 
 #if wxExUSE_OTL
@@ -56,17 +56,17 @@ bool wxExOTL::Logon(
 {
   if (parent != nullptr)
   {
-    if (wxExConfigDialog(parent,
-      std::vector<wxExConfigItem> {
-        wxExConfigItem(_("Datasource"),
+    if (wxExItemDialog(parent,
+      std::vector<wxExItem> {
+        wxExItem(_("Datasource"),
           ITEM_COMBOBOX,
           wxEmptyString, // page
           true,          // is_required
           wxID_ANY,
           max_items),
-        wxExConfigItem(_("User"),
+        wxExItem(_("User"),
           wxEmptyString),
-        wxExConfigItem(_("Password"), 
+        wxExItem(_("Password"), 
           wxEmptyString, 
           wxEmptyString,
           wxTE_PASSWORD)},

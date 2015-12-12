@@ -26,7 +26,12 @@ void fixture::testListView()
   listView->ConfigGet();
   listView->SetSingleStyle(wxLC_REPORT);
   
-  CPPUNIT_ASSERT(listView->AppendColumn(wxExColumn("Int", wxExColumn::COL_INT)) == 0);
+  wxExColumn intcol(wxExColumn("Int", wxExColumn::COL_INT));
+  CPPUNIT_ASSERT(!intcol.GetIsSortedAscending());
+  intcol.SetIsSortedAscending(SORT_ASCENDING);
+  CPPUNIT_ASSERT( intcol.GetIsSortedAscending());
+  
+  CPPUNIT_ASSERT(listView->AppendColumn(intcol) == 0);
   CPPUNIT_ASSERT(listView->AppendColumn(wxExColumn("Date", wxExColumn::COL_DATE)) == 1);
   CPPUNIT_ASSERT(listView->AppendColumn(wxExColumn("Float", wxExColumn::COL_FLOAT)) == 2);
   CPPUNIT_ASSERT(listView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING)) == 3);
@@ -74,7 +79,11 @@ void fixture::testListView()
   CPPUNIT_ASSERT( listView->SortColumn("Date"));
   CPPUNIT_ASSERT( listView->SortColumn("Float"));
   CPPUNIT_ASSERT( listView->SortColumn("String"));
-
+  
+  CPPUNIT_ASSERT( listView->GetSortedColumnNo() == 3);
+  listView->SortColumnReset();
+  CPPUNIT_ASSERT( listView->GetSortedColumnNo() == -1);
+  
   listView->SetItem(0, 1, "incorrect date");
   CPPUNIT_ASSERT(!listView->SortColumn("Date"));
   
