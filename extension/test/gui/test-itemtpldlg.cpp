@@ -12,6 +12,7 @@
 #endif
 #include <wx/extension/item.h>
 #include <wx/extension/itemtpldlg.h>
+#include <wx/extension/report/defs.h>
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
@@ -37,12 +38,13 @@ void fixture::testItemTemplateDialog()
 {
   wxExItem::UseConfig(false);
 
-  // Test dialog without buttons.
   wxExItemTemplateDialog<wxExTestItem>* dlg0 = new wxExItemTemplateDialog<wxExTestItem>(m_Frame, 
     std::vector <wxExTestItem> {
       wxExTestItem("fruit", "apple"),
+      wxExTestItem("string1"),
+      wxExTestItem("string2"),
       wxExTestItem("more fruit", "citron")},
-    "labels, no buttons", 0, 1, 0);
+    "3 columns", 0, 3);
   
   dlg0->Show();
   
@@ -61,32 +63,24 @@ void fixture::testItemTemplateDialog()
   
   dlg0->ForceCheckBoxChecked();
   
-  // Test dialog with empty pages (and no buttons).
+  // Test dialog without buttons.
   wxExItemTemplateDialog<wxExTestItem>* dlg1 = new wxExItemTemplateDialog<wxExTestItem>(m_Frame, 
     std::vector <wxExTestItem> {
       wxExTestItem("string1"),
       wxExTestItem("string2")},
-    "empty pages, no buttons", 0, 1);
+    "no buttons", 0, 1, 0);
   dlg1->Show();
 
-  // Using other items.
-  wxExItemTemplateDialog<wxExOtherTestItem>* dlg2 = new wxExItemTemplateDialog<wxExOtherTestItem>(m_Frame, 
-    std::vector <wxExOtherTestItem> {
-      wxExOtherTestItem("string1"),
-      wxExOtherTestItem("string2")},
-    "empty pages");
-  dlg2->Show();
-  
   // Test dialog without items.
-  wxExItemTemplateDialog<wxExTestItem>* dlg3 = new wxExItemTemplateDialog<wxExTestItem>(m_Frame, 
+  wxExItemTemplateDialog<wxExTestItem>* dlg2 = new wxExItemTemplateDialog<wxExTestItem>(m_Frame, 
     std::vector <wxExTestItem>(),
     "no items");
-  dlg3->Show();
+  dlg2->Show();
   
   // Test dialog with empty items.
-  wxExItemTemplateDialog<wxExTestItem>* dlg4 = new wxExItemTemplateDialog<wxExTestItem>(m_Frame, 
+  wxExItemTemplateDialog<wxExTestItem>* dlg3 = new wxExItemTemplateDialog<wxExTestItem>(m_Frame, 
     std::vector <wxExTestItem> {
       wxExTestItem(), wxExTestItem(), wxExTestItem()},
     "empty items");
-  dlg4->Show();
+  dlg3->Show();
 }

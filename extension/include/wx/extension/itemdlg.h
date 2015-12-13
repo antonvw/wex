@@ -21,7 +21,7 @@ public:
     const std::vector< wxExItem >& v,
     const wxString& title = _("Options"),
     int rows = 0,
-    int cols = -1,
+    int cols = 1,
     long flags = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,

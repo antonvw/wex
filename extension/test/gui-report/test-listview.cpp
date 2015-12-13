@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/report/listview.h>
+#include <wx/extension/report/defs.h>
 #include "test.h"
 
 void fixture::testListViewWithFrame()

@@ -29,8 +29,8 @@ void fixture::testFrameWithHistory()
     wxEmptyString,
     wxExFrameWithHistory::WIN_IS_PROJECT));
 
-  std::vector<wxString> v{GetTestFile().GetFullPath()};
-  CPPUNIT_ASSERT(m_Frame->FindInFiles(v, ID_TOOL_REPORT_FIND, false));
+  CPPUNIT_ASSERT(m_Frame->FindInFiles(
+    std::vector<wxString> {GetTestFile().GetFullPath()}, ID_TOOL_REPORT_FIND, false));
 
   // m_Frame->FindInFilesDialog(ID_TOOL_REPORT_FIND);
   CPPUNIT_ASSERT(!m_Frame->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
@@ -40,10 +40,12 @@ void fixture::testFrameWithHistory()
   
   CPPUNIT_ASSERT( m_Frame->GetProject() == nullptr);
 
-  CPPUNIT_ASSERT(!m_Frame->Grep("xxxxxxx"));
-  CPPUNIT_ASSERT(!m_Frame->Grep("xxxxxxx yyy"));
-  CPPUNIT_ASSERT( m_Frame->Grep("xxxxxxx ./ *.cpp"));
+  CPPUNIT_ASSERT( m_Frame->Grep("xxxxxxx"));
+  CPPUNIT_ASSERT( m_Frame->Grep("xxxxxxx yyy"));
+  CPPUNIT_ASSERT( m_Frame->Grep("xxxxxxx *.cpp ."));
 
+  CPPUNIT_ASSERT(!m_Frame->Sed("xxxxxxx"));
+  
   m_Frame->SetRecentProject("xxx.prj");
   CPPUNIT_ASSERT( m_Frame->GetProjectHistory().GetHistoryFile().empty());
 

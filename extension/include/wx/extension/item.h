@@ -218,16 +218,7 @@ public:
         type == ITEM_CHECKBOX ||
         type == ITEM_COMMANDLINKBUTTON ||
         type == ITEM_TOGGLEBUTTON ? LABEL_NONE: label_type, id) {;};
-  
-  /// Copy constructor.
-  wxExItem(const wxExItem& item);
 
-  /// Assignment operator.
-  wxExItem& operator=(const wxExItem& i);
-
-  /// Destructor.
- ~wxExItem();
- 
   /// Returns the number of columns for the current page.
   int GetColumns() const {return m_MajorDimension;};
 
