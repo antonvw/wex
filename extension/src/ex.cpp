@@ -796,7 +796,7 @@ void wxExEx::SetLastCommand(
   if (
       always || 
       command == "~" || 
-      ( command.size() > 1 && command.front() == ':' && 
+      ( command.size() > 2 && command.front() == ':' && 
         !wxString(command).StartsWith(":ve") &&
         !wxString(command).StartsWith(":help") &&
         !wxString(command).StartsWith(":new")

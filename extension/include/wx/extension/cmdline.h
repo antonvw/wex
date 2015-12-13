@@ -60,7 +60,10 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
       };
       for (const auto it : p) 
       {
-        AddParam(it.first, wxCMD_LINE_VAL_STRING, it.second.first);
+        if (!it.first.empty())
+        {
+          AddParam(it.first, wxCMD_LINE_VAL_STRING, it.second.first);
+        }
       };
       if (!s.empty() || !o.empty() || !p.empty())
       {
@@ -127,12 +130,15 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
         }
         for (const auto it : m_Params) 
         {
-          std::vector<wxString> v;
-          for (size_t i = 0; i < GetParamCount(); i++)
+          if (!it.first.empty())
           {
-            v.push_back(GetParam(i));
+            std::vector<wxString> v;
+            for (size_t i = 0; i < GetParamCount(); i++)
+            {
+              v.push_back(GetParam(i));
+            }
+            it.second.second(v);
           }
-          it.second.second(v);
         }
       }
       return res;};

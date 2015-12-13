@@ -7,6 +7,7 @@
 
 #include <wx/extension/report/dir.h> // necessary?
 #include <wx/extension/report/dirctrl.h>
+#include <wx/extension/report/defs.h>
 #include "test.h"
 
 void fixture::testDirCtrl()

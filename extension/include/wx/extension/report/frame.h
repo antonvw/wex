@@ -8,12 +8,9 @@
 #pragma once
 
 #include <set>
-#include <wx/bitmap.h> // for auibar
-#include <wx/aui/auibar.h>
 #include <wx/extension/filehistory.h>
 #include <wx/extension/listview.h> // for wxExListView::wxExListType 
 #include <wx/extension/managedframe.h>
-#include <wx/extension/report/defs.h>
 
 class wxExItemDialog;
 class wxExListView;
@@ -87,13 +84,24 @@ public:
   /// Returns false if line contains too few arguments, or 
   /// setup failed.
   bool Grep(
-    /// text folder extension
-    const wxString& line);
+    /// text [extension] [folder]
+    const wxString& line,
+    /// normally grep does not replace, by setting sed, it can
+    bool sed = false);
   
   /// Override OnCommandItemDialog for add, find and replace in files.
   virtual void OnCommandItemDialog(
     wxWindowID dialogid,
     const wxCommandEvent& event) override;
+  
+  /// Sed (replace in files).
+  /// The base directory is the directory for the current stc
+  /// component, if available.
+  /// Returns false if line contains too few arguments, or 
+  /// setup failed.
+  bool Sed(
+    /// text replacement [extension] [folder]
+    const wxString& line) {return Grep(line, true);};
     
   /// Updates file history.
   virtual void SetRecentFile(const wxString& file) override;

@@ -33,10 +33,10 @@ public:
     const std::vector< T >& v,
     /// title
     const wxString& title = _("Options"),
-    /// number of rows
+    /// number of rows (if 0 add similar items on next row)
     int rows = 0,
-    /// number of columns (if -1 use number of cols from items)
-    int cols = -1,
+    /// number of columns
+    int cols = 1,
     /// dialog flags for buttons
     long flags = wxOK | wxCANCEL,
     /// the window id
@@ -252,9 +252,11 @@ private:
   
   void Layout(int rows, int cols) {
     wxFlexGridSizer* previous_item_sizer = nullptr;
-    int use_cols = 1;
-    wxFlexGridSizer* sizer = new wxFlexGridSizer(use_cols);
-    for (int i = 0; i < use_cols; i++)
+    wxFlexGridSizer* sizer = (rows > 0 ? 
+      new wxFlexGridSizer(rows, cols, 0, 0): 
+      new wxFlexGridSizer(cols));
+
+    for (int i = 0; i < cols; i++)
     {
       sizer->AddGrowableCol(i);
     }
@@ -267,7 +269,10 @@ private:
       
       // If this item has same type as previous type use previous sizer,
       // otherwise use no sizer (Layout will create a new one).
-      wxFlexGridSizer* current_item_sizer = (item.GetType() == previous_type ? previous_item_sizer: nullptr);
+      wxFlexGridSizer* current_item_sizer = (item.GetType() == previous_type && cols == 1 ? 
+        previous_item_sizer: 
+        nullptr);
+
       // Layout the item.
       previous_item_sizer = item.Layout(
         this, 
@@ -275,6 +280,7 @@ private:
         GetButtonFlags() == wxCANCEL,
         current_item_sizer);
       previous_type = item.GetType();
+      
       if (sizer->GetEffectiveRowsCount() >= 1 &&
          !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
           item.IsRowGrowable())

@@ -461,7 +461,7 @@ int wxExSTC::ConfigDialog(
     wxExItem("stc-notebook", wxExItem::ItemsNotebook {
       {_("General"),
       {wxExItem("stc-subnotebook", wxExItem::ItemsNotebook {
-        {"Bools", 
+        {_("Page1"), 
           {wxExItem(std::set<wxString> {
              _("End of line"),
              _("Line numbers"),
@@ -470,7 +470,7 @@ int wxExSTC::ConfigDialog(
              _("Scroll bars"),
              _("Auto complete"),
              _("vi mode")})}},
-        {"Choices", 
+        {_("Page2"), 
           {wxExItem(_("Auto indent"), std::map<long, const wxString> {
              {INDENT_NONE, _("None")},
              {INDENT_WHITESPACE, _("Whitespace")},
@@ -507,7 +507,6 @@ int wxExSTC::ConfigDialog(
        wxExItem(_("Indent"), 0, (int)cfg->ReadLong(_("Edge column"), 0)),
        wxExItem(_("Divider"), 0, 40),
        wxExItem(_("Folding"), 0, 40),
-       wxExItem(_("Emma"), 0, 40),
        wxExItem(_("Line number"), 0, 100),
        wxExItem(_("Auto complete maxwidth"), 0, 100)}},
       {_("Folding"),
@@ -540,14 +539,14 @@ int wxExSTC::ConfigDialog(
   if (!(flags & STC_CONFIG_MODELESS))
   {
     return wxExItemDialog(
-      parent, items, title, 0, -1, buttons, id).ShowModal();
+      parent, items, title, 0, 1, buttons, id).ShowModal();
   }
   else
   {
     if (m_ConfigDialog == nullptr)
     {
       m_ConfigDialog = new wxExItemDialog(
-        parent, items, title, 0, -1, buttons, id);
+        parent, items, title, 0, 1, buttons, id);
     }
 
     return m_ConfigDialog->Show();

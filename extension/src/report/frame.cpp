@@ -88,15 +88,22 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     }}, ID_TOOL_REPORT_FIND);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (m_RiFDialog == nullptr)
+    if (!event.GetString().empty())
     {
-      CreateDialogs();
+      Sed(event.GetString());
     }
-    if (GetSTC() != nullptr && !GetSTC()->GetFindString().empty())
+    else
     {
-      m_RiFDialog->Reload(); 
-    }
-    m_RiFDialog->Show();}, ID_TOOL_REPORT_REPLACE);
+      if (m_RiFDialog == nullptr)
+      {
+        CreateDialogs();
+      }
+      if (GetSTC() != nullptr && !GetSTC()->GetFindString().empty())
+      {
+        m_RiFDialog->Reload(); 
+      }
+      m_RiFDialog->Show();
+    }}, ID_TOOL_REPORT_REPLACE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     DoRecent(m_ProjectHistory, event.GetId() - m_ProjectHistory.GetBaseId(), WIN_IS_PROJECT);},
@@ -309,23 +316,30 @@ const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
   return log;
 }
 
-bool wxExFrameWithHistory::Grep(const wxString& arg)
+bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
 {
   wxString arg1, arg2;
-  int arg3;
+  int arg3 = wxDIR_FILES;
+
   if (wxExCmdLineParser(arg, 
     wxExCmdLineParser::CmdSwitches {
-      {{"r", "recursive"}, {0, [&](bool on) {arg3 = wxDIR_FILES | (on ? wxDIR_DIRS: 0);}}}},
+      {{"r", "recursive"}, {0, [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}}},
     wxExCmdLineParser::CmdOptions(),
     wxExCmdLineParser::CmdParams {
       {"match", {0, [&](std::vector<wxString> & v) {wxExFindReplaceData::Get()->SetFindString(v[0]);}}},
-      {"folder", {0, [&](std::vector<wxString> & v) {arg1 = v[1];}}},
-      {"extension", {0, [&](std::vector<wxString> & v) {arg2 = v[2];}}}}).Parse() != 0)
+      {sed ? "replace": "", {0, [&](std::vector<wxString> & v) {
+        wxExFindReplaceData::Get()->SetReplaceString(v[0]);}}},
+      {"extension", {wxCMD_LINE_PARAM_OPTIONAL, [&](std::vector<wxString> & v) {
+        arg2 = (v.size() > 1 ? v[1]: wxExConfigFirstOf(m_TextInFiles));}}},
+      {"folder", {wxCMD_LINE_PARAM_OPTIONAL, [&](std::vector<wxString> & v) {
+        arg1 = (v.size() == 3 ? v[2]: wxExConfigFirstOf(m_TextInFolder));}}}}).Parse() != 0)
   {
     return false;
   }
   
-  const wxExTool tool(ID_TOOL_REPORT_FIND);
+  const wxExTool tool = (sed ?
+    ID_TOOL_REPORT_REPLACE:
+    ID_TOOL_REPORT_FIND);
 
   if (!wxExTextFileWithListView::SetupTool(tool, this))
   {

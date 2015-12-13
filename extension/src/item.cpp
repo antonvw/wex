@@ -112,45 +112,6 @@ wxExItem::wxExItem(wxExItemType type, long style,
   }
 }
 
-wxExItem::wxExItem(const wxExItem& item)
-{
-  (*this) = item;
-}
-  
-wxExItem& wxExItem::operator=(const wxExItem& i)
-{
-  if (this != &i)
-  {
-    m_Dialog = i.m_Dialog;
-    m_Id = i.m_Id;
-    m_ImageList = i.m_ImageList;
-    m_Inc = i.m_Inc;
-    m_Initial = i.m_Initial;
-    m_IsRequired = i.m_IsRequired;
-    m_IsRowGrowable = i.m_IsRowGrowable;
-    m_Label = i.m_Label;
-    m_LabelType = i.m_LabelType;
-    m_MajorDimension = i.m_MajorDimension;
-    m_Max = i.m_Max;
-    m_MaxItems = i.m_MaxItems;
-    m_Min = i.m_Min;
-    m_Page = i.m_Page;
-    m_SizerFlags = i.m_SizerFlags;
-    m_Style = i.m_Style;
-    m_Type = i.m_Type;
-    m_UserWindowCreate = i.m_UserWindowCreate;
-    m_UserWindowToConfig = i.m_UserWindowToConfig;
-    m_Validator = i.m_Validator;
-    m_Window = i.m_Window;
-  }
-
-  return *this;
-}
-  
-wxExItem::~wxExItem()
-{
-}
-  
 wxFlexGridSizer* wxExItem::Add(wxSizer* sizer, wxFlexGridSizer* current) const
 {
   wxASSERT(m_Window != nullptr);

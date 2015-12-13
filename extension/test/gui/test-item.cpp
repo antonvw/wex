@@ -45,6 +45,7 @@ void fixture::testItem()
   wxExItem::UseConfig(false);
   
   item.SetDialog(nullptr);
+  item.SetImageList(nullptr);
   item.SetValidator(nullptr);
   
   // setting value if window is nullptr should have no effect.
