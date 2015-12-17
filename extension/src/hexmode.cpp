@@ -33,16 +33,17 @@ int GetHexNumberFromUser(
   int max,
   wxWindow *parent)
 {
+  wxExItem::UseConfig(false);
+
   wxExItemDialog dlg(parent,
     std::vector<wxExItem>{wxExItem(
       message, 
-      value,
-      min, 
-      max)},
-    caption,
-    0,
-    1,
-    wxOK | wxCANCEL);
+      min,
+      max,
+      value)},
+    caption);
+  
+  wxExItem::UseConfig(true);
   
   ((wxSpinCtrl* )dlg.GetItem(message).GetWindow())->SetBase(16);
   

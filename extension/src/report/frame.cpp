@@ -318,8 +318,8 @@ const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
 
 bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
 {
-  wxString arg1, arg2;
-  int arg3 = wxDIR_FILES;
+  static wxString arg1, arg2;
+  static int arg3 = wxDIR_FILES;
 
   if (wxExCmdLineParser(arg, 
     wxExCmdLineParser::CmdSwitches {
@@ -330,9 +330,13 @@ bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
       {sed ? "replace": "", {0, [&](std::vector<wxString> & v) {
         wxExFindReplaceData::Get()->SetReplaceString(v[0]);}}},
       {"extension", {wxCMD_LINE_PARAM_OPTIONAL, [&](std::vector<wxString> & v) {
-        arg2 = (v.size() > 1 ? v[1]: wxExConfigFirstOf(m_TextInFiles));}}},
+        arg2 = (v.size() > 1 ? 
+          wxExConfigFirstOfWrite(m_TextInFiles, v[1]): 
+          wxExConfigFirstOf(m_TextInFiles));}}},
       {"folder", {wxCMD_LINE_PARAM_OPTIONAL, [&](std::vector<wxString> & v) {
-        arg1 = (v.size() == 3 ? v[2]: wxExConfigFirstOf(m_TextInFolder));}}}}).Parse() != 0)
+        arg1 = (v.size() == 3 ? 
+          wxExConfigFirstOfWrite(m_TextInFolder, v[2]): 
+          wxExConfigFirstOf(m_TextInFolder));}}}}).Parse() != 0)
   {
     return false;
   }
@@ -346,10 +350,14 @@ bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
     wxLogStatus("setup failed");
     return false;
   }
-  
-  auto* stc = GetSTC();
+
+  wxExSTC* stc = GetSTC();
+
   if (stc != nullptr)
+  {
     wxSetWorkingDirectory(stc->GetFileName().GetPath());
+  }
+
   wxExFindReplaceData::Get()->SetUseRegEx(true);
   wxLogStatus(GetFindReplaceInfoText());
   
