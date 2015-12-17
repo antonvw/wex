@@ -494,7 +494,7 @@ int wxExSTC::ConfigDialog(
 #else
              },
 #endif  
-             true, 4)}}}, ITEM_NOTEBOOK),
+             true, 4)}}}, ITEM_NOTEBOOK_AUI),
        wxExItem(_("Default font"), ITEM_FONTPICKERCTRL)}},
       {_("Edge"),
       {wxExItem(_("Edge column"), 0, 500),
@@ -546,7 +546,8 @@ int wxExSTC::ConfigDialog(
     if (m_ConfigDialog == nullptr)
     {
       m_ConfigDialog = new wxExItemDialog(
-        parent, items, title, 0, 1, buttons, id);
+        parent, items, title, 0, 1, buttons, id, 
+        wxDefaultPosition, wxSize(550,500));
     }
 
     return m_ConfigDialog->Show();

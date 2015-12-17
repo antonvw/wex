@@ -185,6 +185,10 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2);
 /// Returns first of a list of values from config key.
 const wxString wxExConfigFirstOf(const wxString& key);
 
+/// Sets first of a list of values in config key.
+/// And returns the value.
+const wxString wxExConfigFirstOfWrite(const wxString& key, const wxString& value);
+
 /// Adds an ellipses after text.
 /// The control, if present is postfixed, after a tab character (for accels).
 const wxString wxExEllipsed(

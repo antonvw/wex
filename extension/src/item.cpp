@@ -439,10 +439,12 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_NOTEBOOK: bookctrl = new wxNotebook(parent, wxID_ANY); break;
-    case ITEM_NOTEBOOK_AUI: bookctrl = new wxAuiNotebook(parent); break;
+    case ITEM_NOTEBOOK_AUI: bookctrl = new wxAuiNotebook(parent,
+      wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_TOP); break;
     case ITEM_NOTEBOOK_CHOICE: bookctrl = new wxChoicebook(parent, wxID_ANY); break;
     case ITEM_NOTEBOOK_EX: bookctrl = new wxExNotebook(parent, 
-      dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow())); break;
+      dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()),
+      wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_TOP); break;
     case ITEM_NOTEBOOK_LIST: bookctrl = new wxListbook(parent, wxID_ANY); break;
     case ITEM_NOTEBOOK_SIMPLE: bookctrl = new wxSimplebook(parent, wxID_ANY); break;
     case ITEM_NOTEBOOK_TREE: bookctrl = new wxTreebook(parent, wxID_ANY); break;

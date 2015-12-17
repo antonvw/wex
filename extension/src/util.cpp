@@ -366,6 +366,35 @@ const wxString wxExConfigFirstOf(const wxString& key)
     wxConfigBase::Get()->Read(key).BeforeFirst(wxExGetFieldSeparator());
 }
 
+const wxString wxExConfigFirstOfWrite(const wxString& key, const wxString& value)
+{
+  wxStringTokenizer tkz(wxConfigBase::Get()->Read(key),
+    wxExGetFieldSeparator());
+  
+  std::vector<wxString> v{value};
+
+  while (tkz.HasMoreTokens())
+  {
+    const wxString val = tkz.GetNextToken();
+    
+    if (val != value)
+    {
+      v.push_back(val);
+    }
+  }
+
+  wxString text;
+  
+  for (auto it: v)
+  {
+    text += it + wxExGetFieldSeparator();
+  }
+
+  wxConfigBase::Get()->Write(key, text);
+  
+  return value;
+}
+  
 const wxString wxExEllipsed(const wxString& text, const wxString& control)
 {
   return 

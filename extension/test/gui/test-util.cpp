@@ -138,7 +138,10 @@ void fixture::testUtil()
   // wxExCompareFile
   
   // wxExConfigFirstOf
-  CPPUNIT_ASSERT( wxExConfigFirstOf("xxxx").empty());
+  wxExConfigFirstOf("xxxx");
+  
+  // wxExConfigFirstOfWrite
+  CPPUNIT_ASSERT( wxExConfigFirstOfWrite("xxxx","zz") == "zz");
   
   // wxExEllipsed  
   CPPUNIT_ASSERT( wxExEllipsed("xxx").Contains("..."));

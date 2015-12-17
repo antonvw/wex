@@ -63,16 +63,17 @@ wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec, int flags)
 
 size_t wxExDir::FindFiles()
 {
-  if (!IsOpened() || Running())
+  if (!IsOpened())
   {
-    if (Running())
-    {
-      wxLogStatus(_("Busy"));
-    }
-  
+    wxLogError("Could not open: " + GetName());
     return 0;
   }
-  
+  else if (Running())
+  {
+    wxLogStatus(_("Busy"));
+    return 0;
+  }
+
   Start();
 
   wxExDirTraverser traverser(*this);
