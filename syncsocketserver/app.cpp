@@ -15,9 +15,9 @@
 #include <wx/config.h>
 #include <wx/numdlg.h>
 #include <wx/textfile.h>
-#include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/grid.h>
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
@@ -339,14 +339,8 @@ Frame::Frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
-    wxExItemDialog(this,
-      std::vector<wxExItem>{
-        wxExItem(_("Hostname"), 
-          wxEmptyString, 
-          wxEmptyString,
-          0, 
-          ITEM_TEXTCTRL,
-          true),
+    wxExItemDialog(this, std::vector<wxExItem>{
+        wxExItem(_("Hostname"), wxEmptyString, 0, ITEM_TEXTCTRL, true),
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
         wxExItem(_("Port"), 1, 65536)},
