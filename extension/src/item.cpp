@@ -164,7 +164,8 @@ wxFlexGridSizer* wxExItem::AddBrowseButton(wxSizer* sizer) const
   return fgz;
 }
 
-void wxExItem::AddItems(auto & page, bool readonly)
+void wxExItem::AddItems(
+  std::pair<wxString, std::vector<wxExItem>> & page, bool readonly)
 {
   wxFlexGridSizer* previous_item_sizer = nullptr;
   int previous_type = -1;
