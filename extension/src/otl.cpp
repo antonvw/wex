@@ -56,20 +56,10 @@ bool wxExOTL::Logon(
 {
   if (parent != nullptr)
   {
-    if (wxExItemDialog(parent,
-      std::vector<wxExItem> {
-        wxExItem(_("Datasource"),
-          ITEM_COMBOBOX,
-          wxEmptyString, // page
-          true,          // is_required
-          wxID_ANY,
-          max_items),
-        wxExItem(_("User"),
-          wxEmptyString),
-        wxExItem(_("Password"), 
-          wxEmptyString, 
-          wxEmptyString,
-          wxTE_PASSWORD)},
+    if (wxExItemDialog(parent, std::vector<wxExItem> {
+        wxExItem(_("Datasource"), ITEM_COMBOBOX, wxAny(), true),
+        wxExItem(_("User")),
+        wxExItem(_("Password"), wxEmptyString, wxTE_PASSWORD)},
         title).ShowModal() == wxID_CANCEL)
     {
       return false;
