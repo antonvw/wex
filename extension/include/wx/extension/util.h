@@ -288,8 +288,8 @@ void wxExNodeStyles(
 
 #if wxUSE_GUI
 /// Opens all files specified by files.
-/// Returns false if one of the specified files could not be opened.
-bool wxExOpenFiles(
+/// Returns number of files opened.
+int wxExOpenFiles(
   /// frame on which OpenFile for each file is called,
   /// and wxExDirOpenFile for each dir
   wxExFrame* frame,

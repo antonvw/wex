@@ -11,15 +11,11 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
-#include <wx/imaglist.h>
-#include <wx/tokenzr.h>
 #include <wx/extension/cmdline.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/itemdlg.h>
 #include <wx/extension/listitem.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/defs.h>
@@ -164,20 +160,20 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     return;
   }
 
-  wxLogStatus(GetFindReplaceInfoText(replace));
-    
-  int flags = wxDIR_FILES | wxDIR_HIDDEN;
-  
-  if (wxConfigBase::Get()->ReadBool(m_TextRecursive, true)) 
-  {
-    flags |= wxDIR_DIRS;
-  }
-
-  Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
-
-#ifndef __WXGTK__    
-  std::thread t([=] {
+#ifndef __WXGTK__
+  std::thread t([=]{
 #endif
+    wxLogStatus(GetFindReplaceInfoText(replace));
+      
+    int flags = wxDIR_FILES | wxDIR_HIDDEN;
+    
+    if (wxConfigBase::Get()->ReadBool(m_TextRecursive, true)) 
+    {
+      flags |= wxDIR_DIRS;
+    }
+
+    Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+
     wxExDirTool dir(
       tool,
       wxExConfigFirstOf(m_TextInFolder),
@@ -189,7 +185,8 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
     
     Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
-#ifndef __WXGTK__    
+
+#ifndef __WXGTK__
     });
   t.detach();
 #endif
@@ -221,8 +218,8 @@ bool wxExFrameWithHistory::FindInFiles(
     return false;
   }
   
-#ifndef __WXGTK__    
-  std::thread t([=] {
+#ifndef __WXGTK__
+  std::thread t([=]{
 #endif
     wxExStatistics<int> stats;
     
@@ -249,12 +246,12 @@ bool wxExFrameWithHistory::FindInFiles(
     }
     
     wxLogStatus(tool.Info(&stats));
-  
-#ifndef __WXGTK__    
+    
+#ifndef __WXGTK__
     });
   t.detach();
 #endif
-
+  
   return true;
 }
 
@@ -351,31 +348,27 @@ bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
     return false;
   }
 
-  wxExSTC* stc = GetSTC();
-
-  if (stc != nullptr)
-  {
-    wxSetWorkingDirectory(stc->GetFileName().GetPath());
-  }
-
-  wxExFindReplaceData::Get()->SetUseRegEx(true);
-  wxLogStatus(GetFindReplaceInfoText());
-  
-  Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
-    
-#ifndef __WXGTK__    
+#ifndef __WXGTK__
   std::thread t([=]{
 #endif
+    wxExSTC* stc = GetSTC();
+    if (stc != nullptr)
+      wxSetWorkingDirectory(stc->GetFileName().GetPath());
+    wxExFindReplaceData::Get()->SetUseRegEx(true);
+    wxLogStatus(GetFindReplaceInfoText());
+    Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+    
     wxExDirTool dir(tool, arg1, arg2, arg3);
     dir.FindFiles();
+
     wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
-    
     Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
-#ifndef __WXGTK__    
+  
+#ifndef __WXGTK__
     });
   t.detach();
 #endif
-    
+  
   return true;
 }
 

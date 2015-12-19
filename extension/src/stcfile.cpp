@@ -162,7 +162,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
   m_PreviousLength = Length();
 
-  const wxCharBuffer& buffer = wxExFile::Read(offset);
+  const wxCharBuffer& buffer = Read(offset);
 
   if (!m_STC->GetHexMode().Active())
   {

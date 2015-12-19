@@ -47,8 +47,7 @@ public:
     return nullptr;};
     
   /// Finds (or replaces) in specified files.
-  /// Returns false if dialog was shown, and cancelled,
-  /// or SetupTool returned false.
+  /// Returns true if process started.
   bool FindInFiles(
     /// the files
     const std::vector< wxString > & files,
@@ -81,8 +80,7 @@ public:
   /// Greps for text.
   /// The base directory is the directory for the current stc
   /// component, if available.
-  /// Returns false if line contains too few arguments, or 
-  /// setup failed.
+  /// Returns true if process started.
   bool Grep(
     /// text [extension] [folder]
     const wxString& line,
@@ -97,8 +95,7 @@ public:
   /// Sed (replace in files).
   /// The base directory is the directory for the current stc
   /// component, if available.
-  /// Returns false if line contains too few arguments, or 
-  /// setup failed.
+  /// Returns true if process started.
   bool Sed(
     /// text replacement [extension] [folder]
     const wxString& line) {return Grep(line, true);};

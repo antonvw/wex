@@ -61,17 +61,17 @@ wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec, int flags)
 {
 }
 
-size_t wxExDir::FindFiles()
+int wxExDir::FindFiles()
 {
   if (!IsOpened())
   {
     wxLogError("Could not open: " + GetName());
-    return 0;
+    return -1;
   }
   else if (Running())
   {
     wxLogStatus(_("Busy"));
-    return 0;
+    return -1;
   }
 
   Start();

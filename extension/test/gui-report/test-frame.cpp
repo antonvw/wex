@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/menu.h>
+#include <wx/extension/frd.h>
 #include "test.h"
 
 void fixture::testFrameWithHistory()
@@ -28,9 +29,12 @@ void fixture::testFrameWithHistory()
     0,
     wxEmptyString,
     wxExFrameWithHistory::WIN_IS_PROJECT));
+  
+  wxExFindReplaceData::Get()->SetFindString("wxExTestApp");
 
   CPPUNIT_ASSERT(m_Frame->FindInFiles(
-    std::vector<wxString> {GetTestFile().GetFullPath()}, ID_TOOL_REPORT_FIND, false));
+    std::vector<wxString> {GetTestFile().GetFullPath()}, 
+    ID_TOOL_REPORT_FIND, false));
 
   // m_Frame->FindInFilesDialog(ID_TOOL_REPORT_FIND);
   CPPUNIT_ASSERT(!m_Frame->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
