@@ -19,7 +19,9 @@
 
 void fixture::testSTC()
 {
+#if wxCHECK_VERSION(3,1,0)
   wxExSTC::ConfigDialog(m_Frame, "test stc", wxExSTC::STC_CONFIG_MODELESS);
+#endif
   
   wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
   wxExSTC* copy = new wxExSTC(*stc);

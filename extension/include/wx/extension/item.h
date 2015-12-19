@@ -329,7 +329,7 @@ protected:
 private:
   wxFlexGridSizer* Add(wxSizer* sizer, wxFlexGridSizer* current) const;
   wxFlexGridSizer* AddBrowseButton(wxSizer* sizer) const;
-  void AddItems(auto & items, bool readonly);
+  void AddItems(std::pair<wxString, std::vector<wxExItem>> & items, bool readonly);
   wxFlexGridSizer* AddStaticText(wxSizer* sizer) const;
   bool CreateWindow(wxWindow* parent, bool readonly);
 
