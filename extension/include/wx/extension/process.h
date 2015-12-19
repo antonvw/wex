@@ -8,7 +8,6 @@
 #pragma once
 
 #include <wx/process.h>
-#include <wx/thread.h>
 
 class wxTimer;
 class wxExShell;

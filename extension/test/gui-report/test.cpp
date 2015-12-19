@@ -66,7 +66,7 @@ void fixture::test()
     wxExToVectorString(files).Get(), 
     ID_TOOL_REPORT_FIND, 
     false, 
-    report));
+    report) == 1);
     
   CPPUNIT_ASSERT(report->GetItemCount() == 1);
   

@@ -29,7 +29,8 @@ public:
 
   /// Finds matching files.
   /// This results in recursive calls for OnDir and OnFile.
-  size_t FindFiles();
+  /// Returns number of files matching, or -1 if error.
+  int FindFiles();
 
   /// Returns the file spec.
   const wxString& GetFileSpec() const {return m_FileSpec;};

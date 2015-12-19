@@ -58,7 +58,7 @@ public:
     std::make_tuple(_("Fold flags"), ITEM_TEXTCTRL_INT, wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED),
     std::make_tuple(_("Folding"), ITEM_TEXTCTRL_INT, 16),
     std::make_tuple(_("Indent"), ITEM_TEXTCTRL_INT, 2),
-    std::make_tuple(_("Line number"), ITEM_TEXTCTRL_INT, 16),
+    std::make_tuple(_("Line number"), ITEM_TEXTCTRL_INT, 60),
     std::make_tuple(_("Print flags"), ITEM_TEXTCTRL_INT, wxSTC_PRINT_BLACKONWHITE),
     std::make_tuple(_("Tab width"), ITEM_TEXTCTRL_INT, 2),
     std::make_tuple(_("Default font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT))}) {;};
@@ -481,10 +481,10 @@ int wxExSTC::ConfigDialog(
              {wxSTC_WRAPVISUALFLAG_END, _("End")},
              {wxSTC_WRAPVISUALFLAG_START, _("Start")},
              {wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")}}, true, 4),
-           wxExItem(_("Whitespace"), std::map<long, const wxString> {
-             {wxSTC_WS_INVISIBLE, _("Invisible")},
-             {wxSTC_WS_VISIBLEAFTERINDENT, _("Visible after indent")},
-             {wxSTC_WS_VISIBLEALWAYS, _("Visible always")}}, true, 3),
+           wxExItem(_("Whitespace visible"), std::map<long, const wxString> {
+             {wxSTC_WS_INVISIBLE, _("Off")},
+             {wxSTC_WS_VISIBLEAFTERINDENT, _("After indent")},
+             {wxSTC_WS_VISIBLEALWAYS, _("Always")}}, true, 3),
            wxExItem(_("Wrap line"), std::map<long, const wxString> {
              {wxSTC_WRAP_NONE, _("None")},
              {wxSTC_WRAP_WORD, _("Word")},
@@ -495,7 +495,8 @@ int wxExSTC::ConfigDialog(
              },
 #endif  
              true, 4)}}}, ITEM_NOTEBOOK_AUI),
-       wxExItem(_("Default font"), ITEM_FONTPICKERCTRL)}},
+        wxExLexers::Get()->GetCount() > 0 ?
+          wxExItem(_("Default font"), ITEM_FONTPICKERCTRL): wxExItem()}},
       {_("Edge"),
       {wxExItem(_("Edge column"), 0, 500),
        wxExItem( _("Edge line"),  std::map<long, const wxString> {
@@ -506,19 +507,22 @@ int wxExSTC::ConfigDialog(
       {wxExItem(_("Tab width"), 1, (int)cfg->ReadLong(_("Edge column"), 0)),
        wxExItem(_("Indent"), 0, (int)cfg->ReadLong(_("Edge column"), 0)),
        wxExItem(_("Divider"), 0, 40),
-       wxExItem(_("Folding"), 0, 40),
+       wxExLexers::Get()->GetCount() > 0 ?
+         wxExItem(_("Folding"), 0, 40): wxExItem(),
        wxExItem(_("Line number"), 0, 100),
        wxExItem(_("Auto complete maxwidth"), 0, 100)}},
       {_("Folding"),
       {wxExItem(_("Indentation guide"),ITEM_CHECKBOX),
-       wxExItem(_("Auto fold"), 0, INT_MAX),
+       wxExLexers::Get()->GetCount() > 0 ?
+         wxExItem(_("Auto fold"), 0, INT_MAX): wxExItem(),
        // next is experimental, wait for scintilla
        //fchoices.insert(std::{ _("Level numbers")});
-       wxExItem(_("Fold flags"), std::map<long, const wxString> {
-         {wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")},
-         {wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")},
-         {wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")},
-         {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")}}, false)}},
+       wxExLexers::Get()->GetCount() > 0 ?
+         wxExItem(_("Fold flags"), std::map<long, const wxString> {
+           {wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")},
+           {wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")},
+           {wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")},
+           {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")}}, false): wxExItem()}},
       {_("Printer"),
       {wxExItem(_("Print flags"), std::map<long, const wxString> {
          {wxSTC_PRINT_NORMAL, _("Normal")},
@@ -527,7 +531,8 @@ int wxExSTC::ConfigDialog(
          {wxSTC_PRINT_COLOURONWHITE, _("Colour on white")},
          {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}}, true, 1)}},
       {_("Directory"),
-      {wxExItem(_("Include directory"), ITEM_LISTVIEW, false, wxID_ANY, 25, LABEL_NONE)}}}, ITEM_NOTEBOOK_LIST)};
+      {!(flags & STC_CONFIG_SIMPLE) ?
+         wxExItem(_("Include directory"), ITEM_LISTVIEW, false, wxID_ANY, 25, LABEL_NONE): wxExItem()}}}, ITEM_NOTEBOOK_LIST)};
 
   int buttons = wxOK | wxCANCEL;
 
@@ -547,7 +552,7 @@ int wxExSTC::ConfigDialog(
     {
       m_ConfigDialog = new wxExItemDialog(
         parent, items, title, 0, 1, buttons, id, 
-        wxDefaultPosition, wxSize(550,500));
+        wxDefaultPosition, wxSize(500,500));
     }
 
     return m_ConfigDialog->Show();
@@ -2162,13 +2167,7 @@ void wxExSTC::SetText(const wxString& value)
 
 void wxExSTC::ShowLineNumbers(bool show)
 {
-  const int margin = wxConfigBase::Get()->ReadLong(
-    _("Line number"), 
-    TextWidth(wxSTC_STYLE_DEFAULT, "999999"));
-
-  SetMarginWidth(
-    m_MarginLineNumber, 
-    show ? margin: 0);
+  SetMarginWidth(m_MarginLineNumber, show ? wxConfigBase::Get()->ReadLong(_("Line number"), 0): 0);
 }
 
 void wxExSTC::ShowProperties()

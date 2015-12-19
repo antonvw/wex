@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <future>
 #include <shunting-yard/shunting-yard.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -690,68 +691,58 @@ void wxExNodeStyles(
 }
 
 #if wxUSE_GUI
-bool wxExOpenFiles(
-  wxExFrame* frame,
+int wxExOpenFiles(wxExFrame* frame,
   const std::vector< wxString > & files,
   long file_flags,
   int dir_flags)
 {
-  if (files.empty())
-  {
-    return false;
-  }
-  
   wxWindowUpdateLocker locker(frame);
   
-  bool error = false;
+  int count = 0;
   
   for (const auto& it : files)
   {
-    if (it.Contains("*") || it.Contains("?"))
+    auto fut = std::async([=]
     {
-      wxExDirOpenFile dir(frame, wxGetCwd(), it, file_flags, dir_flags);
-      
-      if (dir.FindFiles() == 0)
+      if (it.Contains("*") || it.Contains("?"))
       {
-        error = true;
-      }
-    }
-    else
-    {
-      wxString file(it);
-      int line_no = 0;
-      int col_no = 0;
-      
-      wxFileName fn(file);
-
-      if (!fn.FileExists() && file.Contains(":"))
-      {
-        const wxString val = wxExLink().GetPath(file, line_no, col_no);
-        
-        if (!val.empty())
-        {
-          fn.Assign(val);
-        }
-      }
-
-      if (!fn.FileExists())
-      {
-        fn.MakeAbsolute();
-      }
-      
-      if (fn.FileExists())
-      {
-        frame->OpenFile(fn, line_no, wxEmptyString, col_no, file_flags);
+        return wxExDirOpenFile(frame, 
+          wxGetCwd(), it, file_flags, dir_flags).FindFiles();
       }
       else
       {
-        frame->OpenFile(fn, wxEmptyString, file_flags);
-        error = true;
-      }
-    }
+        wxString file(it);
+        int line_no = 0;
+        int col_no = 0;
+        
+        wxFileName fn(file);
+
+        if (!fn.FileExists() && file.Contains(":"))
+        {
+          const wxString val = wxExLink().GetPath(file, line_no, col_no);
+          
+          if (!val.empty())
+          {
+            fn.Assign(val);
+          }
+        }
+
+        if (!fn.FileExists())
+        {
+          fn.MakeAbsolute();
+        }
+        
+        fn.FileExists() ?
+          frame->OpenFile(fn, line_no, wxEmptyString, col_no, file_flags):
+          frame->OpenFile(fn, wxEmptyString, file_flags);
+        
+        return 1;
+      }});
+    
+    count += fut.get();
   }
   
-  return !error;
+  return count;
 }
 
 void wxExOpenFilesDialog(

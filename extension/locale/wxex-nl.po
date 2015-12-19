@@ -156,12 +156,15 @@ msgstr "Gebruik tabs"
 msgid "Wrap line"
 msgstr "Regel doorloop"
 
+msgid "Whitespace"
+msgstr "Spaties"
+
 #: ../src/ex.cpp:513 ../src/hexmode.cpp:173 ../src/hexmode.cpp:203
 #: ../src/stc.cpp:476 ../src/stc.cpp:484 ../src/stc.cpp:488 ../src/stc.cpp:493
 #: ../src/stc.cpp:497 ../src/stc.cpp:506 ../src/stc.cpp:613 ../src/stc.cpp:614
 #: ../src/stc.cpp:625
-msgid "Whitespace"
-msgstr "Spaties"
+msgid "Whitespace visible"
+msgstr "Spaties zichtbaar"
 
 #: ../src/ex.cpp:519 ../src/stc.cpp:56 ../src/stc.cpp:60 ../src/stc.cpp:500
 #: ../src/stc.cpp:506 ../src/stc.cpp:507 ../src/stc.cpp:512 ../src/stc.cpp:518
@@ -771,16 +774,16 @@ msgid "Margin"
 msgstr "Marges"
 
 #: ../src/stc.cpp:485 ../src/stc.cpp:498
-msgid "Invisible"
-msgstr "Onzichtbaar"
+msgid "Off"
+msgstr "Uit"
 
 #: ../src/stc.cpp:486 ../src/stc.cpp:499
-msgid "Visible after indent"
-msgstr "Zichtbaar na inspringen"
+msgid "After indent"
+msgstr "Na inspringen"
 
 #: ../src/stc.cpp:487 ../src/stc.cpp:500
-msgid "Visible always"
-msgstr "Altijd zichtbaar"
+msgid "Always"
+msgstr "Altijd"
 
 #: ../src/stc.cpp:490 ../src/stc.cpp:503
 msgid "Word"
