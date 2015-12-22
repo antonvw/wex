@@ -28,9 +28,9 @@ TEST_CASE("wxExManagedFrame", "[stc]")
   stc->Show();
   wxExVi* vi = &stc->GetVi();
   
-  wxExSTC* stc2 = nullptr;  
-  REQUIRE(!GetFrame()->ExecExCommand(":n", stc2));
-  REQUIRE( stc2 == nullptr);
+  wxExSTC* stco = nullptr;  
+  REQUIRE(!GetFrame()->ExecExCommand(":n", stco));
+  REQUIRE( stco == nullptr);
   
   GetFrame()->GetExCommand(vi, "/");
   

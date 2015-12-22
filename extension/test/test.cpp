@@ -32,7 +32,7 @@ void AddPane(wxExManagedFrame* frame, wxWindow* pane)
 
 const wxString GetTestDir()
 {
-  return "./";
+  return wxString(".") + wxFileName::GetPathSeparator();
 }
   
 const wxExFileName GetTestFile()
@@ -40,13 +40,25 @@ const wxExFileName GetTestFile()
   return GetTestDir() + "test.h";
 }
   
+const wxString BuildArg(const wxString& file)
+{
+  return 
+    wxString(" ..") + wxFileName::GetPathSeparator() + 
+    ".." + wxFileName::GetPathSeparator() + 
+    "data" + wxFileName::GetPathSeparator() + 
+    file + " ";
+}
+  
 void SetEnvironment(const wxString& dir)
 {
   if (wxTheApp != NULL)
   {
-    if (wxConfigBase::Get()->ReadLong("verbose", 0) == 1)
+    const long verbose(wxConfigBase::Get()->ReadLong("verbose", 0));
+    
+    switch (verbose)
     {
-      wxLog::SetActiveTarget(new wxLogStderr());
+      case 1: wxLog::SetActiveTarget(new wxLogStderr()); break;
+      case 2: new wxLogNull(); break;
     }
     
     wxConfigBase::Get()->Write(_("vi mode"), true);
@@ -61,14 +73,20 @@ void SetEnvironment(const wxString& dir)
   {
     (void)system("mkdir " + dir);
   }
+
+#ifdef __UNIX__
+  const wxString cp("cp");
+#else
+  const wxString cp("COPY");
+#endif
   
-  (void)system("cp ../../data/cht.txt " + dir);
-  (void)system("cp ../../data/lexers.xml " + dir);
-  (void)system("cp ../../data/macros.xml " + dir);
-  (void)system("cp ../../data/vcs.xml " + dir);
+  (void)system(cp + BuildArg("cht.txt") + dir);
+  (void)system(cp + BuildArg("lexers.xml") + dir);
+  (void)system(cp + BuildArg("macros.xml") + dir);
+  (void)system(cp + BuildArg("vcs.xml") + dir);
   
 #if wxExUSE_OTL
-  (void)system("cp .odbc.ini " + wxGetHomeDir());
+  (void)system(cp + " .odbc.ini " + wxGetHomeDir());
 #endif
 }
     
@@ -77,7 +95,7 @@ void SetFindExtension(wxFileName& fn)
   const wxArrayString ar(fn.GetDirs());
   const int index = ar.Index("wxExtension");
   
-  fn.Assign("/", "");
+  fn.Assign(wxFileName::GetPathSeparator(), "");
   
   // If wxExtension is present, copy all subdirectories.
   if (index != wxNOT_FOUND)
@@ -167,7 +185,13 @@ bool wxExTestApp::OnInit()
   }
   
   SetWorkingDirectory();
-  SetEnvironment(wxStandardPaths::Get().GetUserDataDir());
+  
+  SetEnvironment(
+#ifdef wxExUSE_PORTABLE
+    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()));
+#else
+    wxStandardPaths::Get().GetUserDataDir());
+#endif
   
   return true;
 }

@@ -79,7 +79,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   
   stc->SetText("more text\notherline");
   stc->GetVi().Command("V");
-  stc->GetVi().GetMode() == wxExVi::MODE_VISUAL_LINE;
+  REQUIRE( stc->GetVi().GetMode() == wxExVi::MODE_VISUAL_LINE);
   REQUIRE( stc->FindNext(wxString("more text")));
   
   stc->SetText("new text");
@@ -190,16 +190,6 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   stc->Reload(wxExSTC::STC_WIN_HEX);
   REQUIRE(stc->HexMode());
   stc->GetHexMode().AppendText("in hex mode");
-  
-  // Test stc with file (not yet done ???).
-  wxExSTC stc2(GetFrame(), GetTestFile());
-  
-  REQUIRE( stc2.GetFileName().GetFullPath().Contains("test.h"));
-  REQUIRE( stc2.Open(GetTestFile()));
-  REQUIRE(!stc2.Open(wxExFileName("XXX")));
-  
-  stc2.PropertiesMessage();
-  
   stc->Reload();
   
   // Test events.
@@ -220,4 +210,13 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   stc->WordRightEndRectExtend();
   
   stc->Clear();
+  
+  SECTION("load file")
+  {
+    wxExSTC stc(GetFrame(), GetTestFile());
+    REQUIRE( stc.GetFileName().GetFullPath().Contains("test.h"));
+    REQUIRE( stc.Open(GetTestFile()));
+    REQUIRE(!stc.Open(wxExFileName("XXX")));
+    stc.PropertiesMessage();
+  }
 }

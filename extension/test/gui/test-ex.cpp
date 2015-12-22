@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/ex.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vimacros.h>
@@ -23,15 +24,15 @@ TEST_CASE("wxExEx", "[stc][vi]")
   wxExSTC* stc = new wxExSTC(GetFrame(), "-- vi: " + modeline);
   AddPane(GetFrame(), stc);
   wxExEx* ex = new wxExEx(stc);
-    
+
   INFO(std::to_string(stc->GetTabWidth()));
   REQUIRE(stc->GetTabWidth() == 120);
   REQUIRE(stc->GetEdgeColumn() == 40);
   REQUIRE(stc->GetLexer().GetScintillaLexer() == "sql");
-  REQUIRE( ex->GetLastCommand() == ":" + modeline);
-  wxExSTC* stc2 = new wxExSTC(GetFrame(), wxExFileName("test-modeline.txt"));
-  AddPane(GetFrame(), stc2);
-  REQUIRE(stc2->GetLexer().GetScintillaLexer() == "sql");
+  REQUIRE( ex->GetLastCommand() == wxString(":" + modeline));
+  wxExSTC* stco = new wxExSTC(GetFrame(), wxExFileName("test-modeline.txt"));
+  AddPane(GetFrame(), stco);
+  REQUIRE(stco->GetLexer().GetScintillaLexer() == "sql");
   
   stc->SetText("xx\nxx\nyy\nzz\n");
   stc->DocumentStart();
