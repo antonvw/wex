@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-listview.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,42 +14,42 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void fixture::testListView()
+TEST_CASE("wxExListView")
 {
-  wxExListView* listView = new wxExListView(m_Frame, wxExListView::LIST_NONE);
-  AddPane(m_Frame, listView);
+  wxExListView* listView = new wxExListView(GetFrame(), wxExListView::LIST_NONE);
+  AddPane(GetFrame(), listView);
   
-  wxExListView::ConfigDialog(m_Frame, "test listview", wxAPPLY | wxCANCEL);
+  wxExListView::ConfigDialog(GetFrame(), "test listview", wxAPPLY | wxCANCEL);
   
-  CPPUNIT_ASSERT(listView->GetImageType() == wxExListView::IMAGE_ART);
+  REQUIRE(listView->GetImageType() == wxExListView::IMAGE_ART);
   
   listView->ConfigGet();
   listView->SetSingleStyle(wxLC_REPORT);
   
   wxExColumn intcol(wxExColumn("Int", wxExColumn::COL_INT));
-  CPPUNIT_ASSERT(!intcol.GetIsSortedAscending());
+  REQUIRE(!intcol.GetIsSortedAscending());
   intcol.SetIsSortedAscending(SORT_ASCENDING);
-  CPPUNIT_ASSERT( intcol.GetIsSortedAscending());
+  REQUIRE( intcol.GetIsSortedAscending());
   
-  CPPUNIT_ASSERT(listView->AppendColumn(intcol) == 0);
-  CPPUNIT_ASSERT(listView->AppendColumn(wxExColumn("Date", wxExColumn::COL_DATE)) == 1);
-  CPPUNIT_ASSERT(listView->AppendColumn(wxExColumn("Float", wxExColumn::COL_FLOAT)) == 2);
-  CPPUNIT_ASSERT(listView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING)) == 3);
+  REQUIRE(listView->AppendColumn(intcol) == 0);
+  REQUIRE(listView->AppendColumn(wxExColumn("Date", wxExColumn::COL_DATE)) == 1);
+  REQUIRE(listView->AppendColumn(wxExColumn("Float", wxExColumn::COL_FLOAT)) == 2);
+  REQUIRE(listView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING)) == 3);
 
-  CPPUNIT_ASSERT(listView->FindColumn("Int") == 0);
-  CPPUNIT_ASSERT(listView->FindColumn("Date") == 1);
-  CPPUNIT_ASSERT(listView->FindColumn("Float") == 2);
-  CPPUNIT_ASSERT(listView->FindColumn("String") == 3);
+  REQUIRE(listView->FindColumn("Int") == 0);
+  REQUIRE(listView->FindColumn("Date") == 1);
+  REQUIRE(listView->FindColumn("Float") == 2);
+  REQUIRE(listView->FindColumn("String") == 3);
   
   listView->InsertItem(0, "test");
   
-  CPPUNIT_ASSERT(listView->FindNext("test"));
+  REQUIRE(listView->FindNext("test"));
   
-  CPPUNIT_ASSERT(listView->ItemFromText("a new item"));
-  CPPUNIT_ASSERT(listView->FindNext("a new item"));
+  REQUIRE(listView->ItemFromText("a new item"));
+  REQUIRE(listView->FindNext("a new item"));
   
-  CPPUNIT_ASSERT( listView->ItemToText(0) == "test");
-  CPPUNIT_ASSERT(!listView->ItemToText(-1).empty());
+  REQUIRE( listView->ItemToText(0) == "test");
+  REQUIRE(!listView->ItemToText(-1).empty());
   
   //listView->Print(); // waits for input
   //listView->PrintPreview();
@@ -68,37 +68,37 @@ void fixture::testListView()
   }
   
   // Test sorting.
-  CPPUNIT_ASSERT(!listView->SortColumn("xxx"));
-  CPPUNIT_ASSERT( listView->SortColumn("Int", SORT_ASCENDING));
-  CPPUNIT_ASSERT( listView->GetItemText(0, "Int") == "0");
-  CPPUNIT_ASSERT( listView->GetItemText(1, "Int") == "1");
-  CPPUNIT_ASSERT( listView->SortColumn("Int", SORT_DESCENDING));
-  CPPUNIT_ASSERT( listView->GetItemText(0, "Int") == "9");
-  CPPUNIT_ASSERT( listView->GetItemText(1, "Int") == "8");
+  REQUIRE(!listView->SortColumn("xxx"));
+  REQUIRE( listView->SortColumn("Int", SORT_ASCENDING));
+  REQUIRE( listView->GetItemText(0, "Int") == "0");
+  REQUIRE( listView->GetItemText(1, "Int") == "1");
+  REQUIRE( listView->SortColumn("Int", SORT_DESCENDING));
+  REQUIRE( listView->GetItemText(0, "Int") == "9");
+  REQUIRE( listView->GetItemText(1, "Int") == "8");
 
-  CPPUNIT_ASSERT( listView->SortColumn("Date"));
-  CPPUNIT_ASSERT( listView->SortColumn("Float"));
-  CPPUNIT_ASSERT( listView->SortColumn("String"));
+  REQUIRE( listView->SortColumn("Date"));
+  REQUIRE( listView->SortColumn("Float"));
+  REQUIRE( listView->SortColumn("String"));
   
-  CPPUNIT_ASSERT( listView->GetSortedColumnNo() == 3);
+  REQUIRE( listView->GetSortedColumnNo() == 3);
   listView->SortColumnReset();
-  CPPUNIT_ASSERT( listView->GetSortedColumnNo() == -1);
+  REQUIRE( listView->GetSortedColumnNo() == -1);
   
   listView->SetItem(0, 1, "incorrect date");
-  CPPUNIT_ASSERT(!listView->SortColumn("Date"));
+  REQUIRE(!listView->SortColumn("Date"));
   
   listView->SetItemImage(0, wxART_WARNING);
   
-  wxExListView* listView2 = new wxExListView(m_Frame, wxExListView::LIST_FILE);
-  AddPane(m_Frame, listView2);
+  wxExListView* listView2 = new wxExListView(GetFrame(), wxExListView::LIST_FILE);
+  AddPane(GetFrame(), listView2);
   
-  CPPUNIT_ASSERT( listView2->GetImageType() == wxExListView::IMAGE_FILE_ICON);
-  CPPUNIT_ASSERT(!listView2->GetTypeDescription().empty());
-  CPPUNIT_ASSERT(!listView2->wxExListView::GetTypeDescription(wxExListView::LIST_FILE).empty());
+  REQUIRE( listView2->GetImageType() == wxExListView::IMAGE_FILE_ICON);
+  REQUIRE(!listView2->GetTypeDescription().empty());
+  REQUIRE(!listView2->wxExListView::GetTypeDescription(wxExListView::LIST_FILE).empty());
   
-  CPPUNIT_ASSERT( listView2->ItemFromText("test.h\ntest.h"));
-  CPPUNIT_ASSERT(!listView2->ItemToText(0).empty());
-  CPPUNIT_ASSERT(!listView2->ItemToText(-1).empty());
+  REQUIRE( listView2->ItemFromText("test.h\ntest.h"));
+  REQUIRE(!listView2->ItemToText(0).empty());
+  REQUIRE(!listView2->ItemToText(-1).empty());
   
   listView->ItemsUpdate();
   

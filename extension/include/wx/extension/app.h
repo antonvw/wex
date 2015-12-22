@@ -26,11 +26,11 @@ public:
   /// In your own OnInit first set the app name,
   /// as it uses this name for the config,
   /// and then call this base class method.
-  virtual bool OnInit();
+  virtual bool OnInit() override;
 
   /// Deletes all global objects and cleans up things if necessary.
   /// You should normally don't need to override it.
-  virtual int OnExit();
+  virtual int OnExit() override;
 private:
   wxString m_CatalogDir;
   wxLocale m_Locale;

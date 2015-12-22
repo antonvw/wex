@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-address.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,10 +15,10 @@
 #include <wx/extension/vimacros.h>
 #include "test.h"
 
-void fixture::testAddress()
+TEST_CASE("wxExAddress", "[stc][vi]")
 {
-  wxExSTC* stc = new wxExSTC(m_Frame, "hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
-  AddPane(m_Frame, stc);
+  wxExSTC* stc = GetSTC();
+  stc->SetText("hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
   
   const int lines = stc->GetLineCount();
   wxExEx* ex = new wxExEx(stc);
@@ -27,7 +27,7 @@ void fixture::testAddress()
   stc->GotoLineAndSelect(2);
   ex->MarkerAdd('b'); // put marker b on line
   
-  CPPUNIT_ASSERT( wxExAddress(ex).GetLine() == 0);
+  REQUIRE( wxExAddress(ex).GetLine() == 0);
   
   for (const auto& it : std::vector< std::pair<std::string, int>> {
     {"30", lines},
@@ -52,59 +52,59 @@ void fixture::testAddress()
     {"'b+'a", 3},
     {"'b-'a", 1}})
   {
-    CPPUNIT_ASSERT( wxExAddress(ex, it.first).GetLine() == it.second);
+    REQUIRE( wxExAddress(ex, it.first).GetLine() == it.second);
   }
 
   wxExAddress address3(ex, "5");
   
   // Test AdjustWindow.
-  CPPUNIT_ASSERT( address3.AdjustWindow(""));
-  CPPUNIT_ASSERT(!address3.AdjustWindow("xxx"));
+  REQUIRE( address3.AdjustWindow(""));
+  REQUIRE(!address3.AdjustWindow("xxx"));
   
   // Test Append.
-  CPPUNIT_ASSERT( address3.Append("appended text"));
-  CPPUNIT_ASSERT( stc->GetText().Contains("appended text"));
+  REQUIRE( address3.Append("appended text"));
+  REQUIRE( stc->GetText().Contains("appended text"));
   
   // Test Flags.
-  CPPUNIT_ASSERT( address3.Flags(""));
-  CPPUNIT_ASSERT( address3.Flags("#"));
-  CPPUNIT_ASSERT(!address3.Flags("x"));
+  REQUIRE( address3.Flags(""));
+  REQUIRE( address3.Flags("#"));
+  REQUIRE(!address3.Flags("x"));
 
   // Test GetLine.
   wxExAddress address(ex);
-  CPPUNIT_ASSERT( address.GetLine() == 0);
+  REQUIRE( address.GetLine() == 0);
   address.SetLine(-1);
-  CPPUNIT_ASSERT( address.GetLine() == 1);
+  REQUIRE( address.GetLine() == 1);
   address.SetLine(1);
-  CPPUNIT_ASSERT( address.GetLine() == 1);
+  REQUIRE( address.GetLine() == 1);
   address.SetLine(100);
-  CPPUNIT_ASSERT( address.GetLine() == lines);
+  REQUIRE( address.GetLine() == lines);
   
   wxExAddress address2(ex, "'a");
-  CPPUNIT_ASSERT( address2.GetLine() == 1);
+  REQUIRE( address2.GetLine() == 1);
   address2.MarkerDelete();
-  CPPUNIT_ASSERT( address2.GetLine() == 0);
+  REQUIRE( address2.GetLine() == 0);
   
   // Test Insert.
-  CPPUNIT_ASSERT( address3.Insert("inserted text"));
-  CPPUNIT_ASSERT( stc->GetText().Contains("inserted text"));
+  REQUIRE( address3.Insert("inserted text"));
+  REQUIRE( stc->GetText().Contains("inserted text"));
   
   // Test MarkerAdd.
-  CPPUNIT_ASSERT( address3.MarkerAdd('x'));
+  REQUIRE( address3.MarkerAdd('x'));
   
   // Test MarkerDelete.
-  CPPUNIT_ASSERT(!address3.MarkerDelete());
-  CPPUNIT_ASSERT( wxExAddress(ex, "'x").MarkerDelete());
+  REQUIRE(!address3.MarkerDelete());
+  REQUIRE( wxExAddress(ex, "'x").MarkerDelete());
   
   // Test Put.
   ex->GetMacros().SetRegister('z', "zzzzz");
-  CPPUNIT_ASSERT( address3.Put('z'));
-  CPPUNIT_ASSERT( stc->GetText().Contains("zzzz"));
+  REQUIRE( address3.Put('z'));
+  REQUIRE( stc->GetText().Contains("zzzz"));
   
   // Test Read.
-  CPPUNIT_ASSERT(!address3.Read("XXXXX"));
-  CPPUNIT_ASSERT( address3.Read(GetTestDir() + "test.bin"));
+  REQUIRE(!address3.Read("XXXXX"));
+  REQUIRE( address3.Read(GetTestDir() + "test.bin"));
   
   // Test Show.
-  CPPUNIT_ASSERT( address3.Show());
+  REQUIRE( address3.Show());
 }

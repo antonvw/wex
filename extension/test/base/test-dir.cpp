@@ -1,25 +1,26 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-dir.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/dir.h>
-#include "test.h"
+#include "../catch.hpp"
+#include "../test.h"
 
-void TestFixture::testDir()
+TEST_CASE( "wxExDir" ) 
 {
   wxExDir dir(GetTestDir(), "*.h", wxDIR_FILES);
-  CPPUNIT_ASSERT(dir.IsOpened());
-  CPPUNIT_ASSERT(dir.GetFileSpec() == "*.h");
-  CPPUNIT_ASSERT(dir.FindFiles() == 2);
+  REQUIRE(dir.IsOpened());
+  REQUIRE(dir.GetFileSpec() == "*.h");
+  REQUIRE(dir.FindFiles() == 2);
   
   // we could use *.h;*.cpp, however wxDir handles only
   // one type, so all files would be found (wxExDir uses empty spec,
   // and checks each file on a match)
   wxExDir dir2("../../", "*.h", wxDIR_FILES | wxDIR_DIRS);
-  CPPUNIT_ASSERT(dir2.IsOpened());
-  CPPUNIT_ASSERT(dir2.GetFileSpec() == "*.h");
-  CPPUNIT_ASSERT(dir2.FindFiles() > 50);
+  REQUIRE(dir2.IsOpened());
+  REQUIRE(dir2.GetFileSpec() == "*.h");
+  REQUIRE(dir2.FindFiles() > 50);
 }

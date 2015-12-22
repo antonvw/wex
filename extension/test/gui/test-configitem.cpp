@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-configitem.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,10 @@
 #include "../test-configitem.h"
 #include "test.h"
 
-void fixture::testConfigItem()
+TEST_CASE("wxExConfigItem", "[item]")
 {
-  wxScrolledWindow* panel = new wxScrolledWindow(m_Frame);
-  AddPane(m_Frame, panel);
+  wxScrolledWindow* panel = new wxScrolledWindow(GetFrame());
+  AddPane(GetFrame(), panel);
   wxFlexGridSizer* sizer = new wxFlexGridSizer(4);
   panel->SetSizer(sizer);
   panel->SetScrollbars(20, 20, 50, 50);
@@ -54,24 +54,24 @@ void fixture::testConfigItem()
   const wxExItem ci_cl_n(std::set<wxString> {"This","Or","Other"});
   const wxExItem ci_user("ci-usr", new wxTextCtrl(), myTextCreate);
   
-  CPPUNIT_ASSERT(ci_empty.GetType() == ITEM_EMPTY);
-  CPPUNIT_ASSERT(!ci_empty.IsRowGrowable());
-  CPPUNIT_ASSERT(ci_cb.GetType() == ITEM_COMBOBOX);
-  CPPUNIT_ASSERT(ci_spacer.GetType() == ITEM_SPACER);
-  CPPUNIT_ASSERT(ci_sl.GetLabel() == "ci-sl");
-  CPPUNIT_ASSERT(ci_sl.GetType() == ITEM_SLIDER);
-  CPPUNIT_ASSERT(ci_vl.GetType() == ITEM_STATICLINE);
-  CPPUNIT_ASSERT(ci_sp.GetLabel() == "ci-sp");
-  CPPUNIT_ASSERT(ci_sp.GetType() == ITEM_SPINCTRL);
-  CPPUNIT_ASSERT(ci_sp_d.GetType() == ITEM_SPINCTRLDOUBLE);
-  CPPUNIT_ASSERT(ci_str.GetType() == ITEM_TEXTCTRL);
-  CPPUNIT_ASSERT(ci_hl.GetType() == ITEM_HYPERLINKCTRL);
-  CPPUNIT_ASSERT(ci_st.GetType() == ITEM_STATICTEXT);
-  CPPUNIT_ASSERT(ci_int.GetType() == ITEM_TEXTCTRL_INT);
-  CPPUNIT_ASSERT(ci_rb.GetType() == ITEM_RADIOBOX);
-  CPPUNIT_ASSERT(ci_bc.GetType() == ITEM_CHECKLISTBOX_BIT);
-  CPPUNIT_ASSERT(ci_cl_n.GetType() == ITEM_CHECKLISTBOX_BOOL);
-  CPPUNIT_ASSERT(ci_user.GetType() == ITEM_USER);
+  REQUIRE(ci_empty.GetType() == ITEM_EMPTY);
+  REQUIRE(!ci_empty.IsRowGrowable());
+  REQUIRE(ci_cb.GetType() == ITEM_COMBOBOX);
+  REQUIRE(ci_spacer.GetType() == ITEM_SPACER);
+  REQUIRE(ci_sl.GetLabel() == "ci-sl");
+  REQUIRE(ci_sl.GetType() == ITEM_SLIDER);
+  REQUIRE(ci_vl.GetType() == ITEM_STATICLINE);
+  REQUIRE(ci_sp.GetLabel() == "ci-sp");
+  REQUIRE(ci_sp.GetType() == ITEM_SPINCTRL);
+  REQUIRE(ci_sp_d.GetType() == ITEM_SPINCTRLDOUBLE);
+  REQUIRE(ci_str.GetType() == ITEM_TEXTCTRL);
+  REQUIRE(ci_hl.GetType() == ITEM_HYPERLINKCTRL);
+  REQUIRE(ci_st.GetType() == ITEM_STATICTEXT);
+  REQUIRE(ci_int.GetType() == ITEM_TEXTCTRL_INT);
+  REQUIRE(ci_rb.GetType() == ITEM_RADIOBOX);
+  REQUIRE(ci_bc.GetType() == ITEM_CHECKLISTBOX_BIT);
+  REQUIRE(ci_cl_n.GetType() == ITEM_CHECKLISTBOX_BOOL);
+  REQUIRE(ci_user.GetType() == ITEM_USER);
 
   std::vector <wxExItem> items {
     ci_empty, ci_spacer, ci_cb, ci_sl, ci_vl, ci_sp, ci_sp_d,
@@ -83,19 +83,19 @@ void fixture::testConfigItem()
   // Check members are initialized.
   for (auto& it : items)
   {
-    CPPUNIT_ASSERT( it.GetColumns() == 1);
+    REQUIRE( it.GetColumns() == 1);
     
     if (it.GetType() == ITEM_USER)
-      CPPUNIT_ASSERT( it.GetWindow() != nullptr);
+      REQUIRE( it.GetWindow() != nullptr);
     else 
-      CPPUNIT_ASSERT( it.GetWindow() == nullptr);
+      REQUIRE( it.GetWindow() == nullptr);
       
     if (
        it.GetType() != ITEM_STATICLINE &&
        it.GetType() != ITEM_SPACER &&
        it.GetType() != ITEM_EMPTY)
     {
-      CPPUNIT_ASSERT(!it.GetLabel().empty());
+      REQUIRE(!it.GetLabel().empty());
     }
     
     it.SetRowGrowable(true);
@@ -115,17 +115,17 @@ void fixture::testConfigItem()
  
     if (it.GetType() != ITEM_EMPTY && it.GetType() != ITEM_SPACER)
     {
-      CPPUNIT_ASSERT(it.GetWindow() != nullptr);
+      REQUIRE(it.GetWindow() != nullptr);
     }
   }
 
   // Now check ToConfig (after Layout).  
-  CPPUNIT_ASSERT( ci_str.Layout(panel, sizer) != nullptr);
-  CPPUNIT_ASSERT( ci_st.Layout(panel, sizer) != nullptr);
-  CPPUNIT_ASSERT( ci_str.ToConfig(true));
-  CPPUNIT_ASSERT( ci_str.ToConfig(false));
-  CPPUNIT_ASSERT(!ci_st.ToConfig(true));
-  CPPUNIT_ASSERT(!ci_st.ToConfig(false));
+  REQUIRE( ci_str.Layout(panel, sizer) != nullptr);
+  REQUIRE( ci_st.Layout(panel, sizer) != nullptr);
+  REQUIRE( ci_str.ToConfig(true));
+  REQUIRE( ci_str.ToConfig(false));
+  REQUIRE(!ci_st.ToConfig(true));
+  REQUIRE(!ci_st.ToConfig(false));
   
 #if wxCHECK_VERSION(3,1,0)
   // Test wxExConfigDefaults
@@ -136,7 +136,7 @@ void fixture::testConfigItem()
     std::make_tuple("def-string", ITEM_TEXTCTRL, "a string"),
     std::make_tuple("def-int", ITEM_TEXTCTRL_INT, 10)});
   
-  CPPUNIT_ASSERT( def.Get() != nullptr);
-  CPPUNIT_ASSERT( def.Get()->Exists("def-colour"));
+  REQUIRE( def.Get() != nullptr);
+  REQUIRE( def.Get()->Exists("def-colour"));
 #endif
 }

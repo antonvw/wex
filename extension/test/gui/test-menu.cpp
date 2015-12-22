@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-menu.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #include <wx/extension/menu.h>
 #include "test.h"
 
-void fixture::testMenu()
+TEST_CASE("wxExMenu")
 {
   wxExMenu* menu = new wxExMenu;
   
@@ -23,11 +23,11 @@ void fixture::testMenu()
   menu->AppendSeparator();
   menu->AppendSeparator();
   menu->AppendSeparator();
-  CPPUNIT_ASSERT(menu->GetMenuItemCount() == 0);
+  REQUIRE(menu->GetMenuItemCount() == 0);
   
   // Append  
   menu->Append(wxID_SAVE);
-  CPPUNIT_ASSERT(menu->GetMenuItemCount() > 0);
+  REQUIRE(menu->GetMenuItemCount() > 0);
   menu->Append(wxID_SAVE, "mysave");
   
   // AppendEdit
@@ -41,23 +41,23 @@ void fixture::testMenu()
   menu->AppendSubMenu(new wxMenu("submenu"), "submenu");
   
   // AppendTools
-  CPPUNIT_ASSERT( menu->AppendTools());
+  REQUIRE( menu->AppendTools());
 
   // AppendVCS  
   menu->AppendVCS(wxFileName(), false);
   wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());
-  CPPUNIT_ASSERT( menu->AppendVCS(wxFileName(), false));
-  CPPUNIT_ASSERT( menu->AppendVCS(wxGetCwd(), false));
+  REQUIRE( menu->AppendVCS(wxFileName(), false));
+  REQUIRE( menu->AppendVCS(wxGetCwd(), false));
 
   // GetStyle
-  CPPUNIT_ASSERT(menu->GetStyle() == wxExMenu::MENU_DEFAULT);
+  REQUIRE(menu->GetStyle() == wxExMenu::MENU_DEFAULT);
   
   // SetStyle
   menu->SetStyle(wxExMenu::MENU_IS_READ_ONLY);
-  CPPUNIT_ASSERT(menu->GetStyle() == wxExMenu::MENU_IS_READ_ONLY);
+  REQUIRE(menu->GetStyle() == wxExMenu::MENU_IS_READ_ONLY);
 
   wxMenuBar *menubar = new wxMenuBar;
   menubar->Append(menu, "&Menu");
-  m_Frame->SetMenuBar(menubar);
-  m_Frame->Update();
+  GetFrame()->SetMenuBar(menubar);
+  GetFrame()->Update();
 }

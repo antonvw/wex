@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-shell.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,12 +13,12 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void fixture::testShell()
+TEST_CASE("wxExShell", "[stc]")
 {
-  wxExShell* shell = new wxExShell(m_Frame);
-  AddPane(m_Frame, shell);
+  wxExShell* shell = new wxExShell(GetFrame());
+  AddPane(GetFrame(), shell);
   
-  CPPUNIT_ASSERT(shell->GetShellEnabled());
+  REQUIRE(shell->GetShellEnabled());
   
   shell->Prompt("test1");
   shell->Prompt("test2");
@@ -26,20 +26,20 @@ void fixture::testShell()
   shell->Prompt("test4");
 
   // Prompting does not add a command to history.
-  CPPUNIT_ASSERT(!shell->GetHistory().Contains("test4"));
+  REQUIRE(!shell->GetHistory().Contains("test4"));
 
   // Post 3 'a' chars to the shell, and check whether it comes in the history.
   Process("aaa\r", shell);
-  CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
-  CPPUNIT_ASSERT(shell->GetPrompt() == ">");
-  CPPUNIT_ASSERT(shell->GetCommand() == "aaa");
+  REQUIRE(shell->GetHistory().Contains("aaa"));
+  REQUIRE(shell->GetPrompt() == ">");
+  REQUIRE(shell->GetCommand() == "aaa");
   
   // Post 3 'b' chars to the shell, and check whether it comes in the history.
   Process("bbb\r", shell);
-  CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
-  CPPUNIT_ASSERT(shell->GetHistory().Contains("bbb"));
-  CPPUNIT_ASSERT(shell->GetPrompt() == ">");
-  CPPUNIT_ASSERT(shell->GetCommand() == "bbb");
+  REQUIRE(shell->GetHistory().Contains("aaa"));
+  REQUIRE(shell->GetHistory().Contains("bbb"));
+  REQUIRE(shell->GetPrompt() == ">");
+  REQUIRE(shell->GetCommand() == "bbb");
   
   Process("b\t", shell); // tests Expand
   shell->ProcessChar(WXK_BACK);
@@ -55,17 +55,17 @@ void fixture::testShell()
   
   // Test shell enable/disable.
   shell->EnableShell(false);
-  CPPUNIT_ASSERT(!shell->GetShellEnabled());
+  REQUIRE(!shell->GetShellEnabled());
   
-  CPPUNIT_ASSERT(!shell->SetPrompt("---------->"));
-  CPPUNIT_ASSERT( shell->GetPrompt() == ">");
+  REQUIRE(!shell->SetPrompt("---------->"));
+  REQUIRE( shell->GetPrompt() == ">");
   
-  CPPUNIT_ASSERT(!shell->Prompt("test1"));
-  CPPUNIT_ASSERT(!shell->Prompt("test2"));
-  CPPUNIT_ASSERT( shell->GetPrompt() == ">");
+  REQUIRE(!shell->Prompt("test1"));
+  REQUIRE(!shell->Prompt("test2"));
+  REQUIRE( shell->GetPrompt() == ">");
   
   shell->EnableShell(true);
-  CPPUNIT_ASSERT( shell->GetShellEnabled());
+  REQUIRE( shell->GetShellEnabled());
   
   shell->Paste();
   
@@ -73,18 +73,18 @@ void fixture::testShell()
   shell->SetText("");
   shell->Undo(); // to reset command in shell
   Process("history\r", shell);
-  CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
-  CPPUNIT_ASSERT( shell->GetText().Contains("bbb"));
+  REQUIRE( shell->GetText().Contains("aaa"));
+  REQUIRE( shell->GetText().Contains("bbb"));
   
   shell->SetText("");
   Process("!1\r", shell);
-  CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
-  CPPUNIT_ASSERT(!shell->GetText().Contains("bbb"));
+  REQUIRE( shell->GetText().Contains("aaa"));
+  REQUIRE(!shell->GetText().Contains("bbb"));
   
   shell->SetText("");
   Process("!a\r", shell);
-  CPPUNIT_ASSERT( shell->GetText().Contains("aaa"));
-  CPPUNIT_ASSERT(!shell->GetText().Contains("bbb"));
+  REQUIRE( shell->GetText().Contains("aaa"));
+  REQUIRE(!shell->GetText().Contains("bbb"));
   
   shell->SetProcess(nullptr);
   

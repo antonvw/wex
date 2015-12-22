@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-dir.cpp
-// Purpose:   Implementation for wxExtension report cpp unit testing
+// Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,20 +9,20 @@
 #include <wx/extension/report/listviewfile.h>
 #include "test.h"
 
-void fixture::testDirTool()
+TEST_CASE("wxExDirTool")
 {
   const wxExTool tool = ID_TOOL_REPORT_FIND;
 
   wxExListView* report = new wxExListView(
-    m_Frame, 
+    GetFrame(), 
     wxExListView::LIST_FIND);
     
-  if (!wxExTextFileWithListView::SetupTool(tool, m_Frame, report))
+  if (!wxExTextFileWithListView::SetupTool(tool, GetFrame(), report))
   {
     return;
   }
 
-  AddPane(m_Frame, report);
+  AddPane(GetFrame(), report);
   
   wxExDirTool dir(
     tool,
@@ -35,10 +35,10 @@ void fixture::testDirTool()
   wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
 }
 
-void fixture::testDirWithListView()
+TEST_CASE("wxExDirWithListView")
 {
-  wxExListViewFile* listView = new wxExListViewFile(m_Frame, m_Frame, m_Project);
-  AddPane(m_Frame, listView);
+  wxExListViewFile* listView = new wxExListViewFile(GetFrame(), GetFrame(), GetProject());
+  AddPane(GetFrame(), listView);
   wxExDirWithListView* dir = new wxExDirWithListView(listView, GetTestDir());
-  CPPUNIT_ASSERT(dir->FindFiles());
+  REQUIRE(dir->FindFiles());
 }

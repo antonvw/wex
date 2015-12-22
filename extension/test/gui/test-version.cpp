@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-version.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,8 +12,8 @@
 #include <wx/extension/version.h>
 #include "test.h"
 
-void fixture::testVersion()
+TEST_CASE("wxExVersion")
 {
-  CPPUNIT_ASSERT(!wxExVersionInfo().GetVersionOnlyString().empty());
-  CPPUNIT_ASSERT(!wxExGetVersionInfo().GetVersionOnlyString().empty());
+  REQUIRE(!wxExVersionInfo().GetVersionOnlyString().empty());
+  REQUIRE(!wxExGetVersionInfo().GetVersionOnlyString().empty());
 }

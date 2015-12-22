@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-stcdlg.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,24 +14,24 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void fixture::testSTCEntryDialog()
+TEST_CASE("wxExSTCEntryDialog", "[stc]")
 {
-  wxExSTCEntryDialog* dlg1 = new wxExSTCEntryDialog(m_Frame, "hello", "testing");
+  wxExSTCEntryDialog* dlg1 = new wxExSTCEntryDialog(GetFrame(), "hello", "testing");
   
-  CPPUNIT_ASSERT( dlg1->GetText() == "testing");
-  //CPPUNIT_ASSERT( dlg1.GetTextRaw() == "testing");
-  CPPUNIT_ASSERT(!dlg1->SetLexer("xxx"));
-  CPPUNIT_ASSERT( dlg1->SetLexer("cpp"));
+  REQUIRE( dlg1->GetText() == "testing");
+  //REQUIRE( dlg1.GetTextRaw() == "testing");
+  REQUIRE(!dlg1->SetLexer("xxx"));
+  REQUIRE( dlg1->SetLexer("cpp"));
   
   dlg1->Show();
   
   wxExSTCEntryDialog dlg2(
-    m_Frame, 
+    GetFrame(), 
       "hello", 
       "testing",
       "hello again",
       wxOK);
 
-  CPPUNIT_ASSERT(!dlg2.GetText().empty());
-  CPPUNIT_ASSERT( dlg2.GetTextRaw().length() > 0);
+  REQUIRE(!dlg2.GetText().empty());
+  REQUIRE( dlg2.GetTextRaw().length() > 0);
 }

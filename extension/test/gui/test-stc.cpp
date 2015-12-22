@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-stc->cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,95 +17,95 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void fixture::testSTC()
+TEST_CASE("wxExSTC", "[stc][vi]")
 {
 #if wxCHECK_VERSION(3,1,0)
-  wxExSTC::ConfigDialog(m_Frame, "test stc", wxExSTC::STC_CONFIG_MODELESS);
+  wxExSTC::ConfigDialog(GetFrame(), "test stc", wxExSTC::STC_CONFIG_MODELESS);
 #endif
   
-  wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
+  wxExSTC* stc = GetSTC();
+  stc->SetText("hello stc");
   wxExSTC* copy = new wxExSTC(*stc);
   
-  AddPane(m_Frame, stc);
-  AddPane(m_Frame, copy);
+  AddPane(GetFrame(), copy);
   
-  CPPUNIT_ASSERT( stc->GetText() == "hello stc");
-  CPPUNIT_ASSERT( stc->FindNext(wxString("hello")));
-  CPPUNIT_ASSERT( stc->GetWordAtPos(0) == "hello");
+  REQUIRE( copy->GetText() == "hello stc");
+  REQUIRE( stc->FindNext(wxString("hello")));
+  REQUIRE( stc->GetWordAtPos(0) == "hello");
   
-  CPPUNIT_ASSERT(!stc->FindNext(wxString("%d")));
-  CPPUNIT_ASSERT(!stc->FindNext(wxString("%ld")));
-  CPPUNIT_ASSERT(!stc->FindNext(wxString("%q")));
+  REQUIRE(!stc->FindNext(wxString("%d")));
+  REQUIRE(!stc->FindNext(wxString("%ld")));
+  REQUIRE(!stc->FindNext(wxString("%q")));
   
-  CPPUNIT_ASSERT( stc->FindNext(wxString("hello"), wxSTC_FIND_WHOLEWORD));
-  CPPUNIT_ASSERT(!stc->FindNext(wxString("HELLO"), wxSTC_FIND_MATCHCASE));
-  CPPUNIT_ASSERT( stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE);
+  REQUIRE( stc->FindNext(wxString("hello"), wxSTC_FIND_WHOLEWORD));
+  REQUIRE(!stc->FindNext(wxString("HELLO"), wxSTC_FIND_MATCHCASE));
+  REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
   
   wxExFindReplaceData::Get()->SetMatchCase(false);
-  CPPUNIT_ASSERT( stc->FindNext(wxString("HELLO"))); // uses flags from frd
+  REQUIRE( stc->FindNext(wxString("HELLO"))); // uses flags from frd
   
-  CPPUNIT_ASSERT( stc->AllowChangeIndicator());
+  REQUIRE( stc->AllowChangeIndicator());
   
   stc->AppendText("more text");
   
-  CPPUNIT_ASSERT( stc->GetText() != "hello stc");
+  REQUIRE( stc->GetText() != "hello stc");
   
-  CPPUNIT_ASSERT( stc->CanCut());
+  REQUIRE( stc->CanCut());
   stc->Copy();
-  CPPUNIT_ASSERT( stc->CanPaste());
+  REQUIRE( stc->CanPaste());
   
   stc->DocumentStart();
   wxExFindReplaceData::Get()->SetMatchWord(false);
-  CPPUNIT_ASSERT( stc->FindNext(wxString("more text")));
-  CPPUNIT_ASSERT( stc->GetFindString() == "more text");
-  CPPUNIT_ASSERT( stc->ReplaceAll("more", "less") == 1);
-  CPPUNIT_ASSERT( stc->ReplaceAll("more", "less") == 0);
-  CPPUNIT_ASSERT(!stc->FindNext(wxString("more text")));
+  REQUIRE( stc->FindNext(wxString("more text")));
+  REQUIRE( stc->GetFindString() == "more text");
+  REQUIRE( stc->ReplaceAll("more", "less") == 1);
+  REQUIRE( stc->ReplaceAll("more", "less") == 0);
+  REQUIRE(!stc->FindNext(wxString("more text")));
   stc->SelectNone();
-  CPPUNIT_ASSERT(!stc->FindNext());
-  CPPUNIT_ASSERT( stc->FindNext(wxString("less text")));
-  CPPUNIT_ASSERT( stc->ReplaceNext("less text", ""));
-  CPPUNIT_ASSERT(!stc->ReplaceNext());
-  CPPUNIT_ASSERT(!stc->FindNext(wxString("less text")));
-  CPPUNIT_ASSERT( stc->GetFindString() != "less text");
-  CPPUNIT_ASSERT( stc->ReplaceAll("%", "percent") == 0);
+  REQUIRE(!stc->FindNext());
+  REQUIRE( stc->FindNext(wxString("less text")));
+  REQUIRE( stc->ReplaceNext("less text", ""));
+  REQUIRE(!stc->ReplaceNext());
+  REQUIRE(!stc->FindNext(wxString("less text")));
+  REQUIRE( stc->GetFindString() != "less text");
+  REQUIRE( stc->ReplaceAll("%", "percent") == 0);
   
   stc->GotoLineAndSelect(1);
-  CPPUNIT_ASSERT(stc->GetCurrentLine() == 0);
-  CPPUNIT_ASSERT(stc->GetCurrentPos() == 0);
+  REQUIRE(stc->GetCurrentLine() == 0);
+  REQUIRE(stc->GetCurrentPos() == 0);
   stc->GotoLineAndSelect(1, wxEmptyString, 5);
-  CPPUNIT_ASSERT(stc->GetCurrentLine() == 0);
-  CPPUNIT_ASSERT(stc->GetCurrentPos() == 4);
+  REQUIRE(stc->GetCurrentLine() == 0);
+  REQUIRE(stc->GetCurrentPos() == 4);
   
   stc->SetText("more text\notherline");
   stc->GetVi().Command("V");
   stc->GetVi().GetMode() == wxExVi::MODE_VISUAL_LINE;
-  CPPUNIT_ASSERT( stc->FindNext(wxString("more text")));
+  REQUIRE( stc->FindNext(wxString("more text")));
   
   stc->SetText("new text");
-  CPPUNIT_ASSERT(stc->GetText() == "new text");
+  REQUIRE(stc->GetText() == "new text");
   
-  CPPUNIT_ASSERT(stc->SetLexer("cpp"));
-  CPPUNIT_ASSERT(stc->GetLexer().GetScintillaLexer() == "cpp");
+  REQUIRE(stc->SetLexer("cpp"));
+  REQUIRE(stc->GetLexer().GetScintillaLexer() == "cpp");
   stc->ResetLexer();
-  CPPUNIT_ASSERT(stc->GetLexer().GetScintillaLexer().empty());
+  REQUIRE(stc->GetLexer().GetScintillaLexer().empty());
 
   wxExLexer lexer;
-  CPPUNIT_ASSERT( lexer.Reset(stc));
-  CPPUNIT_ASSERT( lexer.Set("cpp", stc, false));
-  CPPUNIT_ASSERT(!lexer.Set("xyz", stc, false));
-  CPPUNIT_ASSERT( stc->SetLexer(lexer));
+  REQUIRE( lexer.Reset(stc));
+  REQUIRE( lexer.Set("cpp", stc, false));
+  REQUIRE(!lexer.Set("xyz", stc, false));
+  REQUIRE( stc->SetLexer(lexer));
   
   // do the same test as with wxExFile in base for a binary file
-  CPPUNIT_ASSERT(stc->Open(wxExFileName(GetTestDir() + "test.bin")));
-  CPPUNIT_ASSERT(stc->GetFlags() == 0);
+  REQUIRE(stc->Open(wxExFileName(GetTestDir() + "test.bin")));
+  REQUIRE(stc->GetFlags() == 0);
   const wxCharBuffer& buffer = stc->GetTextRaw();
-  CPPUNIT_ASSERT(buffer.length() == 40);
+  REQUIRE(buffer.length() == 40);
 
   stc->AddText("hello");
-  CPPUNIT_ASSERT( stc->GetFile().GetContentsChanged());
+  REQUIRE( stc->GetFile().GetContentsChanged());
   stc->GetFile().ResetContentsChanged();
-  CPPUNIT_ASSERT(!stc->GetFile().GetContentsChanged());
+  REQUIRE(!stc->GetFile().GetContentsChanged());
   
   stc->ConfigGet();
   
@@ -116,17 +116,17 @@ void fixture::testSTC()
   stc->Fold();
   stc->Fold(true); // FoldAll
   
-  CPPUNIT_ASSERT(!stc->GetEOL().empty());
+  REQUIRE(!stc->GetEOL().empty());
   
   stc->GuessType();
   
-  CPPUNIT_ASSERT(stc->MarkerDeleteAllChange());
+  REQUIRE(stc->MarkerDeleteAllChange());
   
   stc->Paste();
   
-  CPPUNIT_ASSERT(!stc->PositionRestore());
+  REQUIRE(!stc->PositionRestore());
   stc->PositionSave();
-  CPPUNIT_ASSERT( stc->PositionRestore());
+  REQUIRE( stc->PositionRestore());
   
   //  stc->Print();
   stc->PrintPreview();
@@ -141,34 +141,34 @@ void fixture::testSTC()
   
   stc->SelectNone();
   
-  CPPUNIT_ASSERT(!stc->SetIndicator(wxExIndicator(4,5), 100, 200));
+  REQUIRE(!stc->SetIndicator(wxExIndicator(4,5), 100, 200));
   
   stc->SetLexerProperty("xx", "yy");
   
-  CPPUNIT_ASSERT(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
+  REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
   wxExFindReplaceData::Get()->SetMatchCase(false);
   stc->SetSearchFlags(-1);
-  CPPUNIT_ASSERT(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
+  REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
 
   // Test AutoIndentation
   // first test auto indentation on next line
   wxConfigBase::Get()->Write(_("Auto indent"), 3);
-  CPPUNIT_ASSERT( wxConfigBase::Get()->ReadLong(_("Auto indent"), 1) == 3);
+  REQUIRE( wxConfigBase::Get()->ReadLong(_("Auto indent"), 1) == 3);
   stc->SetText("  \n  line with indentation");
   stc->DocumentEnd();
-  CPPUNIT_ASSERT(!stc->AutoIndentation('x'));
-  CPPUNIT_ASSERT( stc->GetText() == "  \n  line with indentation");
-  CPPUNIT_ASSERT( stc->GetLineCount() == 2);
-  CPPUNIT_ASSERT( stc->AutoIndentation('\n'));
+  REQUIRE(!stc->AutoIndentation('x'));
+  REQUIRE( stc->GetText() == "  \n  line with indentation");
+  REQUIRE( stc->GetLineCount() == 2);
+  REQUIRE( stc->AutoIndentation('\n'));
   // the \n is not added, but indentation does
-  CPPUNIT_ASSERT( stc->GetText() == "  \n  line with indentation");
-  CPPUNIT_ASSERT( stc->GetLineCount() == 2);
+  REQUIRE( stc->GetText() == "  \n  line with indentation");
+  REQUIRE( stc->GetLineCount() == 2);
   // test auto indentation for level change
-  CPPUNIT_ASSERT( stc->SetLexer("cpp"));
+  REQUIRE( stc->SetLexer("cpp"));
   stc->SetText("\nif ()\n{\n");
   stc->DocumentEnd();
 #if wxCHECK_VERSION(3,1,0)
-//  CPPUNIT_ASSERT( stc->AutoIndentation('\n'));
+//  REQUIRE( stc->AutoIndentation('\n'));
 #endif
   
   stc->Sync(false);
@@ -188,15 +188,15 @@ void fixture::testSTC()
   stc->ClearDocument();
   
   stc->Reload(wxExSTC::STC_WIN_HEX);
-  CPPUNIT_ASSERT(stc->HexMode());
+  REQUIRE(stc->HexMode());
   stc->GetHexMode().AppendText("in hex mode");
   
   // Test stc with file (not yet done ???).
-  wxExSTC stc2(m_Frame, GetTestFile());
+  wxExSTC stc2(GetFrame(), GetTestFile());
   
-  CPPUNIT_ASSERT( stc2.GetFileName().GetFullPath().Contains("test.h"));
-  CPPUNIT_ASSERT( stc2.Open(GetTestFile()));
-  CPPUNIT_ASSERT(!stc2.Open(wxExFileName("XXX")));
+  REQUIRE( stc2.GetFileName().GetFullPath().Contains("test.h"));
+  REQUIRE( stc2.Open(GetTestFile()));
+  REQUIRE(!stc2.Open(wxExFileName("XXX")));
   
   stc2.PropertiesMessage();
   

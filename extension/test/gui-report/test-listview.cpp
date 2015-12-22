@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-listview.cpp
-// Purpose:   Implementation for wxExtension report cpp unit testing
+// Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,22 +9,22 @@
 #include <wx/extension/report/defs.h>
 #include "test.h"
 
-void fixture::testListViewWithFrame()
+TEST_CASE("wxExListViewWithFrame")
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
   
-  CPPUNIT_ASSERT(
+  REQUIRE(
     wxExListViewWithFrame::GetTypeTool(tool) == wxExListViewWithFrame::LIST_FIND);
     
-  wxExListViewWithFrame* listView = new wxExListViewWithFrame(m_Frame, m_Frame, 
+  wxExListViewWithFrame* listView = new wxExListViewWithFrame(GetFrame(), GetFrame(), 
     wxExListView::LIST_FIND);
   
-  AddPane(m_Frame, listView);
+  AddPane(GetFrame(), listView);
 
   listView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->AppendColumn(wxExColumn("Number", wxExColumn::COL_INT));
   
-  CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
+  REQUIRE(listView->ItemFromText("test1\ntest2\n"));
   
   listView->InsertItem(1, wxString::Format("item%d", 1));
   listView->SetItem(1, 2, std::to_string(2));

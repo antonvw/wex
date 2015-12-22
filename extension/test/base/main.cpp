@@ -1,34 +1,25 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      main.cpp
-// Purpose:   main for wxExtension cpp unit testing
+// Purpose:   main for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <cppunit/BriefTestProgressListener.h>
-#include <cppunit/TestResult.h>
-#include <cppunit/TestResultCollector.h>
-#include <cppunit/TestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <wx/utils.h>
+#define CATCH_CONFIG_RUNNER
 
-#include "test.h"
-
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( TestFixture );
+#include "../catch.hpp"
+#include "../test.h"
 
 int main (int argc, char* argv[])
 {
+  Catch::Session session; // There must be exactly once instance
+
+  int returnCode = session.applyCommandLine( argc, argv );
+  if( returnCode != 0 ) // Indicates a command line error
+    return returnCode;
+
   SetWorkingDirectory();
   SetEnvironment(wxGetHomeDir() + "/.wxex-test-base");
   
-  CppUnit::TestResult result;
-  CppUnit::TestResultCollector collector;
-  result.addListener( &collector );        
-  CppUnit::BriefTestProgressListener progressListener;
-  result.addListener( &progressListener );    
-  CppUnit::TestRunner runner;
-  runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-  runner.run(result);
-}
+  return session.run();
+}  

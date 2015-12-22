@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-itemtpldlg.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -34,11 +34,11 @@ public:
   void SetDialog(wxExItemTemplateDialog<wxExOtherTestItem>* dlg) {;};
 };
 
-void fixture::testItemTemplateDialog()
+TEST_CASE("wxExItemTemplateDialog", "[item]")
 {
   wxExItem::UseConfig(false);
 
-  wxExItemTemplateDialog<wxExTestItem>* dlg0 = new wxExItemTemplateDialog<wxExTestItem>(m_Frame, 
+  wxExItemTemplateDialog<wxExTestItem>* dlg0 = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
     std::vector <wxExTestItem> {
       wxExTestItem("fruit", "apple"),
       wxExTestItem("string1"),
@@ -48,23 +48,23 @@ void fixture::testItemTemplateDialog()
   
   dlg0->Show();
   
-  CPPUNIT_ASSERT( dlg0->GetItem("fruit").GetLabel() == "fruit");
-  CPPUNIT_ASSERT( dlg0->GetItemValue("fruit") == "apple");
-  CPPUNIT_ASSERT( dlg0->GetItemValue("xxx").IsNull());
-  CPPUNIT_ASSERT( dlg0->GetItem("xxx").GetLabel().empty());
-  CPPUNIT_ASSERT( dlg0->GetItemValue("yyy").IsNull());
+  REQUIRE( dlg0->GetItem("fruit").GetLabel() == "fruit");
+  REQUIRE( dlg0->GetItemValue("fruit") == "apple");
+  REQUIRE( dlg0->GetItemValue("xxx").IsNull());
+  REQUIRE( dlg0->GetItem("xxx").GetLabel().empty());
+  REQUIRE( dlg0->GetItemValue("yyy").IsNull());
   
   // asserts in 3.0
 #if wxCHECK_VERSION(3,1,0)
-  CPPUNIT_ASSERT( dlg0->SetItemValue("fruit", "strawberry"));
-  CPPUNIT_ASSERT(!dlg0->SetItemValue("xxx", "blueberry"));
-  CPPUNIT_ASSERT( dlg0->GetItemValue("fruit") == "strawberry");
+  REQUIRE( dlg0->SetItemValue("fruit", "strawberry"));
+  REQUIRE(!dlg0->SetItemValue("xxx", "blueberry"));
+  REQUIRE( dlg0->GetItemValue("fruit") == "strawberry");
 #endif
   
   dlg0->ForceCheckBoxChecked();
   
   // Test dialog without buttons.
-  wxExItemTemplateDialog<wxExTestItem>* dlg1 = new wxExItemTemplateDialog<wxExTestItem>(m_Frame, 
+  wxExItemTemplateDialog<wxExTestItem>* dlg1 = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
     std::vector <wxExTestItem> {
       wxExTestItem("string1"),
       wxExTestItem("string2")},
@@ -72,13 +72,13 @@ void fixture::testItemTemplateDialog()
   dlg1->Show();
 
   // Test dialog without items.
-  wxExItemTemplateDialog<wxExTestItem>* dlg2 = new wxExItemTemplateDialog<wxExTestItem>(m_Frame, 
+  wxExItemTemplateDialog<wxExTestItem>* dlg2 = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
     std::vector <wxExTestItem>(),
     "no items");
   dlg2->Show();
   
   // Test dialog with empty items.
-  wxExItemTemplateDialog<wxExTestItem>* dlg3 = new wxExItemTemplateDialog<wxExTestItem>(m_Frame, 
+  wxExItemTemplateDialog<wxExTestItem>* dlg3 = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
     std::vector <wxExTestItem> {
       wxExTestItem(), wxExTestItem(), wxExTestItem()},
     "empty items");

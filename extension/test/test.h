@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test.h
-// Purpose:   Declaration of classes for cpp unit testing
+// Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -8,7 +8,6 @@
 #pragma once
 
 #include <string>
-#include <cppunit/TestFixture.h>
 #include <wx/extension/app.h>
 #include <wx/extension/filename.h>
 
@@ -17,6 +16,12 @@ class wxExManagedFrame;
 /// Adds managed pane.
 void AddPane(wxExManagedFrame* frame, wxWindow* pane);
 
+/// Returns test dir.
+const wxString GetTestDir();
+
+/// Returns test file.
+const wxExFileName GetTestFile();
+  
 /// Sets environment. 
 void SetEnvironment(const wxString& dir);
 
@@ -29,33 +34,10 @@ class wxExTestApp: public wxExApp
 public:
   /// Constructor.
   wxExTestApp() {}
-private:
-  virtual int OnExit();
-  virtual bool OnInit();
-  virtual int OnRun();
-};
 
-/// CppUnit test fixture.
-class wxExTestFixture : public CppUnit::TestFixture
-{
-public:
-  /// Default constructor.
-  wxExTestFixture(); 
+  /// Cleanup.
+  virtual int OnExit() override;
   
-  /// Returns the test dir.
-  const wxString& GetTestDir() const {return m_TestDir;};
-  
-  /// Returns the test file.
-  const wxExFileName& GetTestFile() const {return m_TestFile;};
-  
-  /// Adds text to report.
-  void Report(const std::string& text);
-  
-  /// Clean up after the test run.
-  /// Prints out report if switch is on.
-  virtual void tearDown();
-private:
-  std::string m_Report;  
-  const wxString m_TestDir;
-  wxExFileName m_TestFile;
+  /// Prepare environment.
+  virtual bool OnInit() override;
 };

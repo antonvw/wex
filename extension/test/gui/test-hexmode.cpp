@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-hexmode.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,102 +14,102 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void fixture::testHexMode()
+TEST_CASE("wxExHexMode", "[stc]")
 {
   // 0000000000111111111122222222223333333333444444444455555555555666666666
   // 0123456789012345678901234567890123456789012345678901234567890123456789
   // 30 31 32 33 34 35 36 37 38 39                   0123456789
   wxExSTC* stc = new wxExSTC(
-    m_Frame, "0123456789", wxExSTC::STC_WIN_HEX);
+    GetFrame(), "0123456789", wxExSTC::STC_WIN_HEX);
     
-  CPPUNIT_ASSERT(stc->GetText() != "0123456789");
+  REQUIRE(stc->GetText() != "0123456789");
   
   stc->SetCurrentPos(48); // 0 <-
   
   wxExHexMode* hm = &stc->GetHexMode();
   
-  CPPUNIT_ASSERT(hm->Active());
-  CPPUNIT_ASSERT(hm->GetSTC() == stc);
-  CPPUNIT_ASSERT(hm->GetBuffer() == "0123456789");
-  CPPUNIT_ASSERT(hm->Printable('a') == 'a');
-  CPPUNIT_ASSERT(hm->Printable(0) == '.');
+  REQUIRE( hm->Active());
+  REQUIRE( hm->GetSTC() == stc);
+  REQUIRE( hm->GetBuffer() == "0123456789");
+  REQUIRE((hm->Printable('a') == 'a'));
+  REQUIRE((hm->Printable(0) == '.'));
     
   hm->AppendText("0123456789");
-  CPPUNIT_ASSERT( hm->GetBuffer() == "01234567890123456789");
-  CPPUNIT_ASSERT( hm->HighlightOther()); // current pos
-  CPPUNIT_ASSERT( hm->HighlightOther(0));
-  CPPUNIT_ASSERT( hm->HighlightOther(10));
-  CPPUNIT_ASSERT( hm->HighlightOther(57));
-  CPPUNIT_ASSERT( hm->SetBuffer(0, ' '));
-  CPPUNIT_ASSERT( hm->GetBuffer() == " 1234567890123456789");
+  REQUIRE( hm->GetBuffer() == "01234567890123456789");
+  REQUIRE( hm->HighlightOther()); // current pos
+  REQUIRE( hm->HighlightOther(0));
+  REQUIRE( hm->HighlightOther(10));
+  REQUIRE( hm->HighlightOther(57));
+  REQUIRE( hm->SetBuffer(0, ' '));
+  REQUIRE( hm->GetBuffer() == " 1234567890123456789");
   hm->Undo();
-  CPPUNIT_ASSERT( hm->GetBuffer() == "01234567890123456789");
+  REQUIRE( hm->GetBuffer() == "01234567890123456789");
   
   wxExHexModeLine hex(hm);
   
   stc->DiscardEdits();  
   stc->Reload();
-  CPPUNIT_ASSERT(stc->GetText() == "01234567890123456789");
+  REQUIRE(stc->GetText() == "01234567890123456789");
   
   // Test hex field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
   hex.Set(13); // 34 <- (ascii 4)
-  CPPUNIT_ASSERT( hex.IsHexField());
-  CPPUNIT_ASSERT(!hex.IsAsciiField());
-  CPPUNIT_ASSERT(!hex.IsReadOnly());
-  CPPUNIT_ASSERT(!hex.GetInfo().empty());
-  CPPUNIT_ASSERT(!hex.Replace('x'));
-  CPPUNIT_ASSERT(!hex.Replace('y'));
-  CPPUNIT_ASSERT(!hex.Replace('g'));
-  CPPUNIT_ASSERT( hex.Replace('a'));
-  CPPUNIT_ASSERT( hex.Replace('9'));
-  CPPUNIT_ASSERT( hex.Replace('2'));
-  CPPUNIT_ASSERT( hex.OtherField() != wxSTC_INVALID_POSITION);
+  REQUIRE( hex.IsHexField());
+  REQUIRE(!hex.IsAsciiField());
+  REQUIRE(!hex.IsReadOnly());
+  REQUIRE(!hex.GetInfo().empty());
+  REQUIRE(!hex.Replace('x'));
+  REQUIRE(!hex.Replace('y'));
+  REQUIRE(!hex.Replace('g'));
+  REQUIRE( hex.Replace('a'));
+  REQUIRE( hex.Replace('9'));
+  REQUIRE( hex.Replace('2'));
+  REQUIRE( hex.OtherField() != wxSTC_INVALID_POSITION);
   
   stc->GetFile().FileSave(wxExFileName("test.hex"));
   stc->Reload();
-  CPPUNIT_ASSERT(stc->GetText() == "01232567890123456789");
+  REQUIRE(stc->GetText() == "01232567890123456789");
   
   // Test ascii field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
   hex.Set(54); // 6 <-
-  CPPUNIT_ASSERT(!hex.IsHexField());
-  CPPUNIT_ASSERT( hex.IsAsciiField());
-  CPPUNIT_ASSERT(!hex.IsReadOnly());
-  CPPUNIT_ASSERT(!hex.GetInfo().empty());
-  CPPUNIT_ASSERT( hex.Replace('x'));
-  CPPUNIT_ASSERT( hex.OtherField() != wxSTC_INVALID_POSITION);
+  REQUIRE(!hex.IsHexField());
+  REQUIRE( hex.IsAsciiField());
+  REQUIRE(!hex.IsReadOnly());
+  REQUIRE(!hex.GetInfo().empty());
+  REQUIRE( hex.Replace('x'));
+  REQUIRE( hex.OtherField() != wxSTC_INVALID_POSITION);
   
   stc->GetFile().FileSave();
   stc->Reload();
-  CPPUNIT_ASSERT(stc->GetText() == "012325x7890123456789");
+  REQUIRE(stc->GetText() == "012325x7890123456789");
   
   stc->Reload(wxExSTC::STC_WIN_HEX);
   hex.Set(54); // valid
-  CPPUNIT_ASSERT( hex.Goto());
+  REQUIRE( hex.Goto());
   hex.Set(9999); // invalid, should result in goto end
-  CPPUNIT_ASSERT( hex.Goto());
+  REQUIRE( hex.Goto());
   
   // Test hex field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
   hex.Set(13); // 34 <- (ascii 4)
-  CPPUNIT_ASSERT( hex.ReplaceHex(32));
+  REQUIRE( hex.ReplaceHex(32));
   hex.Set(55); // 7 <-
-  CPPUNIT_ASSERT(!hex.ReplaceHex(32));
+  REQUIRE(!hex.ReplaceHex(32));
   
   hm->Set(false);
-  CPPUNIT_ASSERT(!hm->Active());
-  CPPUNIT_ASSERT( hm->GetBuffer().empty());
+  REQUIRE(!hm->Active());
+  REQUIRE( hm->GetBuffer().empty());
   
   hm->AppendText("0123456789");
-  CPPUNIT_ASSERT(!hm->GetBuffer().empty());
+  REQUIRE(!hm->GetBuffer().empty());
   hm->Clear();
-  CPPUNIT_ASSERT( hm->GetBuffer().empty());
+  REQUIRE( hm->GetBuffer().empty());
 
   hm->Set(false);
-  CPPUNIT_ASSERT(!hm->Active());
+  REQUIRE(!hm->Active());
   hm->Set(true);
-  CPPUNIT_ASSERT( hm->Active());
-  CPPUNIT_ASSERT(!hm->SetBuffer(0, 30)); // should have no effect
-  CPPUNIT_ASSERT( hm->GetBuffer().empty());
+  REQUIRE( hm->Active());
+  REQUIRE(!hm->SetBuffer(0, 30)); // should have no effect
+  REQUIRE( hm->GetBuffer().empty());
 }

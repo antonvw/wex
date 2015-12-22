@@ -288,7 +288,7 @@ bool wxExProcess::Execute(
 
   m_Shell->EnableShell(!m_Sync);
   m_Shell->SetProcess(this);
-
+  
   m_HasStdError = false;
   
   if (!m_Sync)

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-marker.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,23 +13,23 @@
 #include <wx/extension/marker.h>
 #include "test.h"
 
-void fixture::testMarker()
+TEST_CASE("wxExMarker","[lexer]")
 {
   wxExMarker marker;
-  CPPUNIT_ASSERT( !marker.IsOk() );
+  REQUIRE( !marker.IsOk() );
   
   wxExMarker markerx(5, 2);
   wxExMarker markery(7, 5);
   
-  CPPUNIT_ASSERT( markerx.IsOk());
-  CPPUNIT_ASSERT( markery.IsOk());
-  CPPUNIT_ASSERT( markerx < markery );
+  REQUIRE( markerx.IsOk());
+  REQUIRE( markery.IsOk());
+  REQUIRE( markerx < markery );
   
   wxXmlNode xml(wxXML_ELEMENT_NODE, "marker");
   xml.AddAttribute("no", "5");
   xml.SetContent("symbol,green,white");
 
   wxExMarker marker2(&xml);
-  CPPUNIT_ASSERT( marker2.GetNo() == 5);
-  CPPUNIT_ASSERT( marker2.IsOk());
+  REQUIRE( marker2.GetNo() == 5);
+  REQUIRE( marker2.IsOk());
 }

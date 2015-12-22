@@ -434,7 +434,7 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   const std::vector<wxExItem> v{wxExItem(
     _("Base folder"), 
     ITEM_COMBOBOX_DIR, 
-    wxEmptyString, 
+    wxAny(), 
     true,
     wxWindow::NewControlId())};
       

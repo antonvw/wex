@@ -312,18 +312,18 @@ int wxExVCSEntry::ShowDialog(
       (GetCommand().IsCommit() ? wxExItem(
         _("Revision comment"), 
         ITEM_COMBOBOX,
-        wxEmptyString,
+        wxAny(),
         true) : wxExItem()),
       (add_folder && !GetCommand().IsHelp() ? wxExItem(
         _("Base folder"), 
         ITEM_COMBOBOX_DIR, 
-        wxEmptyString, 
+        wxAny(), 
         true,
         wxWindow::NewControlId()) : wxExItem()),
       (add_folder && !GetCommand().IsHelp() && GetCommand().IsAdd() ? wxExItem(
         _("Path"), 
         ITEM_COMBOBOX,
-        wxEmptyString, 
+        wxAny(), 
         true) : wxExItem()),
       (GetCommand().UseFlags() ?  wxExItem(
         _("Flags"), wxEmptyString): wxExItem()),

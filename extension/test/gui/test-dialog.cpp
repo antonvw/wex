@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-dialog.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,10 +13,10 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void fixture::testDialog()
+TEST_CASE("wxExDialog")
 {
-  wxExDialog(m_Frame, "hello").Show();
+  wxExDialog(GetFrame(), "hello").Show();
   
-  wxExDialog* dlg = new wxExDialog(m_Frame, "no buttons", 0);
+  wxExDialog* dlg = new wxExDialog(GetFrame(), "no buttons", 0);
   dlg->Show();
 }

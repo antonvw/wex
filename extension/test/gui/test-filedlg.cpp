@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-filedlg.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,10 +14,10 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void fixture::testFileDialog()
+TEST_CASE("wxExFileDialog")
 {
   wxExFile file;
-  wxExFileDialog dlg(m_Frame, &file);
+  wxExFileDialog dlg(GetFrame(), &file);
   
-  CPPUNIT_ASSERT(dlg.ShowModalIfChanged(false) == wxID_OK);
+  REQUIRE(dlg.ShowModalIfChanged(false) == wxID_OK);
 }

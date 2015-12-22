@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-vcscommand.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #include <wx/extension/vcscommand.h>
 #include "test.h"
 
-void fixture::testVCSCommand()
+TEST_CASE("wxExVCSCommand", "[vcs]")
 {
   const wxExVCSCommand add("a&dd");
   const wxExVCSCommand blame("blame");
@@ -24,34 +24,34 @@ void fixture::testVCSCommand()
   const wxExVCSCommand update("update");
   const wxExVCSCommand none;
 
-  CPPUNIT_ASSERT(add.GetCommand() == "add");
-  CPPUNIT_ASSERT(add.GetCommand(true, true) == "a&dd");
-  CPPUNIT_ASSERT(help.GetCommand() == "help me");
-  CPPUNIT_ASSERT(help.GetCommand(true, true) == "h&elp m&e");
-  CPPUNIT_ASSERT(help.GetCommand(false, true) == "h&elp");
-  CPPUNIT_ASSERT(help.GetCommand(false, false) == "help");
+  REQUIRE(add.GetCommand() == "add");
+  REQUIRE(add.GetCommand(true, true) == "a&dd");
+  REQUIRE(help.GetCommand() == "help me");
+  REQUIRE(help.GetCommand(true, true) == "h&elp m&e");
+  REQUIRE(help.GetCommand(false, true) == "h&elp");
+  REQUIRE(help.GetCommand(false, false) == "help");
   
-  CPPUNIT_ASSERT(add.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
-  CPPUNIT_ASSERT(blame.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
-  CPPUNIT_ASSERT(commit.GetType() == wxExVCSCommand::VCS_COMMAND_IS_MAIN);
-  CPPUNIT_ASSERT(diff.GetType() == wxExVCSCommand::VCS_COMMAND_IS_POPUP);
-  CPPUNIT_ASSERT(help.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
+  REQUIRE(add.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
+  REQUIRE(blame.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
+  REQUIRE(commit.GetType() == wxExVCSCommand::VCS_COMMAND_IS_MAIN);
+  REQUIRE(diff.GetType() == wxExVCSCommand::VCS_COMMAND_IS_POPUP);
+  REQUIRE(help.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
 
-  CPPUNIT_ASSERT(add.IsAdd());
-  CPPUNIT_ASSERT(blame.IsBlame());
-  CPPUNIT_ASSERT(co.IsCheckout());
-  CPPUNIT_ASSERT(commit.IsCommit());
-  CPPUNIT_ASSERT(diff.IsDiff());
-  CPPUNIT_ASSERT(help.IsHelp());
-  CPPUNIT_ASSERT(log.IsHistory());
-  CPPUNIT_ASSERT(blame.IsOpen());
-  CPPUNIT_ASSERT(update.IsUpdate());
-  CPPUNIT_ASSERT(!help.UseFlags());
-  CPPUNIT_ASSERT(help.UseSubcommand());
+  REQUIRE(add.IsAdd());
+  REQUIRE(blame.IsBlame());
+  REQUIRE(co.IsCheckout());
+  REQUIRE(commit.IsCommit());
+  REQUIRE(diff.IsDiff());
+  REQUIRE(help.IsHelp());
+  REQUIRE(log.IsHistory());
+  REQUIRE(blame.IsOpen());
+  REQUIRE(update.IsUpdate());
+  REQUIRE(!help.UseFlags());
+  REQUIRE(help.UseSubcommand());
 
-  CPPUNIT_ASSERT(add.GetSubMenu().empty());
-  CPPUNIT_ASSERT(diff.GetSubMenu() == "submenu");
-  CPPUNIT_ASSERT(help.GetSubMenu() == "m&e");
+  REQUIRE(add.GetSubMenu().empty());
+  REQUIRE(diff.GetSubMenu() == "submenu");
+  REQUIRE(help.GetSubMenu() == "m&e");
 
-  CPPUNIT_ASSERT(none.GetType() == wxExVCSCommand::VCS_COMMAND_IS_NONE);
+  REQUIRE(none.GetType() == wxExVCSCommand::VCS_COMMAND_IS_NONE);
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-grid.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,32 +13,32 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void fixture::testGrid()
+TEST_CASE("wxExGrid")
 {
-  wxExGrid* grid = new wxExGrid(m_Frame);
-  AddPane(m_Frame, grid);
+  wxExGrid* grid = new wxExGrid(GetFrame());
+  AddPane(GetFrame(), grid);
   
-  CPPUNIT_ASSERT(grid->CreateGrid(5, 5));
+  REQUIRE(grid->CreateGrid(5, 5));
   
   grid->SetGridCellValue(wxGridCellCoords(0, 0), "test");
   
   grid->GoToCell(0, 0);
-  CPPUNIT_ASSERT( grid->GetSelectedCellsValue().empty());
-  CPPUNIT_ASSERT( grid->GetCellValue(0, 0) == "test");
+  REQUIRE( grid->GetSelectedCellsValue().empty());
+  REQUIRE( grid->GetCellValue(0, 0) == "test");
   
   grid->SetCellsValue(wxGridCellCoords(0, 0), "test1\ttest2\ntest3\ttest4\n");
-  CPPUNIT_ASSERT(grid->GetCellValue(0, 0) == "test1");
+  REQUIRE(grid->GetCellValue(0, 0) == "test1");
   
   grid->ClearSelection();
   grid->EmptySelection();
   grid->SetFocus();
   
-  CPPUNIT_ASSERT( grid->FindNext("test1"));
-  CPPUNIT_ASSERT( grid->GetFindString() == "test1");
-  // CPPUNIT_ASSERT( grid->GetSelectedCellsValue() == "test1");
-  CPPUNIT_ASSERT(!grid->FindNext("text1"));
+  REQUIRE( grid->FindNext("test1"));
+  REQUIRE( grid->GetFindString() == "test1");
+  // REQUIRE( grid->GetSelectedCellsValue() == "test1");
+  REQUIRE(!grid->FindNext("text1"));
   
-  CPPUNIT_ASSERT(grid->CopySelectedCellsToClipboard());
+  REQUIRE(grid->CopySelectedCellsToClipboard());
   
   grid->PasteCellsFromClipboard();
   
@@ -47,7 +47,7 @@ void fixture::testGrid()
   
 #if wxUSE_DRAG_AND_DROP
   grid->UseDragAndDrop(true);
-  CPPUNIT_ASSERT(grid->IsAllowedDragSelection());
+  REQUIRE(grid->IsAllowedDragSelection());
   grid->UseDragAndDrop(false);
 #endif
 }

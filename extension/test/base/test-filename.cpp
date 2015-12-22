@@ -1,56 +1,60 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-filename.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stopwatch.h>
-#include "test.h"
+#include "../catch.hpp"
+#include "../test.h"
 
-void TestFixture::testFileName()
+TEST_CASE( "wxExFileName" ) 
 {
   wxExFileName fileName(GetTestFile());
   
-  CPPUNIT_ASSERT(fileName.GetLexer().GetScintillaLexer().empty());
-  CPPUNIT_ASSERT(fileName.GetStat().IsOk());
-  fileName.Assign("xxx");
-  CPPUNIT_ASSERT(fileName.GetStat().IsOk());
-}
-
-void TestFixture::testFileNameTiming()
-{
-  const int max = 1000;
-
-  wxStopWatch sw;
-
-  const wxExFileName exfile(GetTestFile());
-
-  for (int i = 0; i < max; i++)
+  SECTION( "basic" ) 
   {
-    CPPUNIT_ASSERT(!exfile.GetStat().IsReadOnly());
+    REQUIRE(fileName.GetLexer().GetScintillaLexer().empty());
+    REQUIRE(fileName.GetStat().IsOk());
+    fileName.Assign("xxx");
+    REQUIRE(fileName.GetStat().IsOk());
   }
 
-  const long exfile_time = sw.Time();
-
-  sw.Start();
-
-  const wxFileName file(GetTestFile());
-
-  for (int j = 0; j < max; j++)
+  SECTION( "timing" ) 
   {
-    CPPUNIT_ASSERT(file.IsFileWritable());
+    const int max = 1000;
+
+    wxStopWatch sw;
+
+    const wxExFileName exfile(GetTestFile());
+
+    for (int i = 0; i < max; i++)
+    {
+      REQUIRE(!exfile.GetStat().IsReadOnly());
+    }
+
+    const long exfile_time = sw.Time();
+
+    sw.Start();
+
+    const wxFileName file(GetTestFile());
+
+    for (int j = 0; j < max; j++)
+    {
+      REQUIRE(file.IsFileWritable());
+    }
+
+    const long file_time = sw.Time();
+
+    REQUIRE(exfile_time < 10);
+    REQUIRE(file_time < 100);
+    
+    INFO(wxString::Format(
+      "wxExFileName::IsReadOnly %d files in %ld ms wxFileName::IsFileWritable %d files in %ld ms",
+      max,
+      exfile_time,
+      max,
+      file_time).ToStdString());
   }
-
-  const long file_time = sw.Time();
-
-  CPPUNIT_ASSERT(exfile_time < 10);
-  CPPUNIT_ASSERT(file_time < 10);
-  
-  Report(wxString::Format(
-    "wxExFileName::IsReadOnly %d files in %ld ms wxFileName::IsFileWritable %d files in %ld ms",
-    max,
-    exfile_time,
-    max,
-    file_time).ToStdString());
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-link.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -41,28 +41,28 @@ void link(
 
   if (!expect.empty())
   {
-    CPPUNIT_ASSERT(link.GetPath(path, line_no, col_no).Contains(expect));
+    REQUIRE(link.GetPath(path, line_no, col_no).Contains(expect));
   }
   else
   {
-    CPPUNIT_ASSERT(link.GetPath(path, line_no, col_no) == expect);
+    REQUIRE(link.GetPath(path, line_no, col_no) == expect);
   }
   
-  CPPUNIT_ASSERT(line_no == expect_line_no);
-  CPPUNIT_ASSERT(col_no == expect_col_no);
+  REQUIRE(line_no == expect_line_no);
+  REQUIRE(col_no == expect_col_no);
 }
 
-void fixture::testLink()
+TEST_CASE("wxExLink", "[stc]")
 {
   wxExSTC* stc = new wxExSTC(
-    m_Frame, 
+    GetFrame(), 
     "hello stc, \"X-Poedit-Basepath: /usr/bin\\n\"");
-  AddPane(m_Frame, stc);
+  AddPane(GetFrame(), stc);
   
   wxExLink lnk(stc);  
   
-  CPPUNIT_ASSERT( lnk.AddBasePath());
-  CPPUNIT_ASSERT( lnk.AddBasePath());
+  REQUIRE( lnk.AddBasePath());
+  REQUIRE( lnk.AddBasePath());
   
   const wxString test("/extension/test/data/test.h");
   const wxString special("/extension/test/data/test-special.h");
@@ -124,8 +124,8 @@ void fixture::testLink()
   // Test link with default contructor.
   wxExLink lnk2;
   
-  CPPUNIT_ASSERT(!lnk2.AddBasePath());
-  CPPUNIT_ASSERT(!lnk2.AddBasePath());
+  REQUIRE(!lnk2.AddBasePath());
+  REQUIRE(!lnk2.AddBasePath());
   
   link(lnk2, "test");
 }

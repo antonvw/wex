@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-property.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,31 +15,31 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void fixture::testProperty()
+TEST_CASE("wxExProperty", "[stc][lexer]")
 {
   wxExProperty inv;
-  CPPUNIT_ASSERT( !inv.IsOk() );
+  REQUIRE( !inv.IsOk() );
   
   wxExProperty prop("man", "ugly");
   
-  CPPUNIT_ASSERT( prop.IsOk());
-  CPPUNIT_ASSERT( prop.GetName() == "man");
-  CPPUNIT_ASSERT( prop.GetValue() == "ugly");
+  REQUIRE( prop.IsOk());
+  REQUIRE( prop.GetName() == "man");
+  REQUIRE( prop.GetValue() == "ugly");
   
-  wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
+  wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
   
   prop.Apply(stc);
-  CPPUNIT_ASSERT( prop.IsOk());
+  REQUIRE( prop.IsOk());
   
   prop.ApplyReset(stc);
-  CPPUNIT_ASSERT( prop.IsOk());
+  REQUIRE( prop.IsOk());
   
   wxXmlNode xml(wxXML_ELEMENT_NODE, "property");
   xml.AddAttribute("name", "fold.comment");
 //  wxXmlNode child(&xml, wxXML_TEXT_NODE , "","2");
 
   wxExProperty prop2(&xml);
-  CPPUNIT_ASSERT( prop2.GetName() == "fold.comment");
-//  CPPUNIT_ASSERT( prop2.GetValue() == "2");
-  CPPUNIT_ASSERT(!prop2.IsOk());
+  REQUIRE( prop2.GetName() == "fold.comment");
+//  REQUIRE( prop2.GetValue() == "2");
+  REQUIRE(!prop2.IsOk());
 }

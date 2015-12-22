@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-art.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,10 +12,10 @@
 #include <wx/extension/art.h>
 #include "test.h"
 
-void fixture::testArt()
+TEST_CASE("wxExArt")
 {
-  CPPUNIT_ASSERT(!wxExStockArt(0).GetBitmap().IsOk());
-  CPPUNIT_ASSERT(!wxExStockArt(wxID_ANY).GetBitmap().IsOk());
-  CPPUNIT_ASSERT( wxExStockArt(wxID_NEW).GetBitmap().IsOk());
-  CPPUNIT_ASSERT( wxExStockArt(wxID_OPEN).GetBitmap().IsOk());
+  REQUIRE(!wxExStockArt(0).GetBitmap().IsOk());
+  REQUIRE(!wxExStockArt(wxID_ANY).GetBitmap().IsOk());
+  REQUIRE( wxExStockArt(wxID_NEW).GetBitmap().IsOk());
+  REQUIRE( wxExStockArt(wxID_OPEN).GetBitmap().IsOk());
 }
