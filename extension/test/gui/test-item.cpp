@@ -60,8 +60,10 @@ TEST_CASE("wxExItem", "[item]")
   
   wxExItem item_spin("spindouble", 20.0, 30.0, 25.0, 0.1);
   REQUIRE( item_spin.GetType() == ITEM_SPINCTRLDOUBLE);
-  
+
+#ifdef __UNIX__
   wxExItem item_picker("picker", ITEM_FILEPICKERCTRL, "/usr/bin/git");
+#endif
   
 #if wxCHECK_VERSION(3,1,0)
   item.Layout(panel, sizer);
@@ -78,12 +80,18 @@ TEST_CASE("wxExItem", "[item]")
   REQUIRE( item_int.SetValue(300));
   REQUIRE( item_int.GetValue() == 300);
   
+#ifdef __UNIX__
   item_picker.Layout(panel, sizer);
   REQUIRE( item_picker.GetValue() == "/usr/bin/git");
 #endif
+#endif
   
   std::vector <wxExItem> items {
-    item, item_int, item_spin, item_picker};
+    item, item_int, item_spin
+#ifdef __UNIX__
+    , item_picker
+#endif
+    };
   
   const auto more(TestItems());
   items.insert(items.end(), more.begin(), more.end());

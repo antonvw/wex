@@ -84,7 +84,7 @@ void SetEnvironment(const wxString& dir)
   (void)system(cp + BuildArg("lexers.xml") + dir);
   (void)system(cp + BuildArg("macros.xml") + dir);
   (void)system(cp + BuildArg("vcs.xml") + dir);
-  
+
 #if wxExUSE_OTL
   (void)system(cp + " .odbc.ini " + wxGetHomeDir());
 #endif
@@ -179,11 +179,6 @@ bool wxExTestApp::OnInit()
 {
   SetAppName("wxex-test-gui");
   
-  if (!wxExApp::OnInit())
-  {
-    return false;
-  }
-  
   SetWorkingDirectory();
   
   SetEnvironment(
@@ -192,6 +187,11 @@ bool wxExTestApp::OnInit()
 #else
     wxStandardPaths::Get().GetUserDataDir());
 #endif
+  
+  if (!wxExApp::OnInit())
+  {
+    return false;
+  }
   
   return true;
 }
