@@ -89,7 +89,6 @@ const wxString GetProject()
 }
   
 IMPLEMENT_APP_NO_MAIN(wxExTestGuiApp);
-IMPLEMENT_WX_THEME_SUPPORT;
 
 int main(int argc, char *argv[])
 {

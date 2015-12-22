@@ -23,21 +23,23 @@ TEST_CASE("wxExDirCtrl")
     ID_TREE_COPY, 
     ID_EDIT_OPEN, 
     ID_TREE_RUN_MAKE,
-//    ID_TOOL_REPORT_FIND, 
+    ID_TOOL_REPORT_FIND, 
   })
   {
     wxPostEvent(ctrl, wxCommandEvent(wxEVT_MENU, id));
   }
   
+#ifdef __UNIX__
   // Select file.
   ctrl->ExpandAndSelectPath("/usr/bin/git");
+#endif
   
   for (auto id : std::vector<int> {
     ID_EDIT_VCS_LOWEST + 2, 
     ID_TREE_COPY, 
     ID_EDIT_OPEN, 
     ID_TREE_RUN_MAKE,
-//    ID_TOOL_REPORT_FIND, 
+    ID_TOOL_REPORT_FIND, 
   })
   {
     wxPostEvent(ctrl, wxCommandEvent(wxEVT_MENU, id));

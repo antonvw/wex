@@ -109,7 +109,6 @@ void Process(const std::string& str, wxExShell* shell)
 }
 
 IMPLEMENT_APP_NO_MAIN(wxExTestGuiApp);
-IMPLEMENT_WX_THEME_SUPPORT;
 
 int main(int argc, char *argv[])
 {
@@ -120,19 +119,20 @@ int main(int argc, char *argv[])
   if (returnCode != 0 || session.configData().showHelp)
     return returnCode;
 
-  wxApp::SetInstance( new wxExTestGuiApp() );
+  wxExTestGuiApp* app = new wxExTestGuiApp();
+  wxApp::SetInstance( app );
   wxEntryStart( argc, argv );
-  wxTheApp->OnInit();
+  app->OnInit();
   
   const int fails = session.run();
 
   if (argc < 2)
   {
-    wxTheApp->OnExit();
+    app->OnExit();
     exit(fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
   }
   
-  wxTheApp->OnRun();
+  app->OnRun();
   
   return 1;
 }

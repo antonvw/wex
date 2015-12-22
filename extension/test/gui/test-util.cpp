@@ -88,7 +88,9 @@ TEST_CASE("wxEx", "[stc][vi]")
     REQUIRE(!wxExAutoCompleteFileName("XX", v));
     REQUIRE( v[0] == "st");
     
+#ifdef __UNIX__
     REQUIRE( wxExAutoCompleteFileName("/usr/include/s", v));
+#endif
     REQUIRE( wxExAutoCompleteFileName("../../../extension/src/v", v));
     REQUIRE( wxExAutoCompleteFileName("~/", v));
   }
@@ -275,6 +277,7 @@ TEST_CASE("wxEx", "[stc][vi]")
     wxExLogStatus( GetTestFile());
   }
 
+#ifdef __UNIX__
   SECTION("wxExMake")
   {
     const wxString wd = wxGetCwd(); // as /usr/bin/git changes wd
@@ -283,6 +286,7 @@ TEST_CASE("wxEx", "[stc][vi]")
     REQUIRE( wxExMake(wxFileName("/usr/bin/git")) != -1);
     wxSetWorkingDirectory(wd);
   }
+#endif
   
   SECTION("wxExMatch")
   {

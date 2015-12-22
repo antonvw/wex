@@ -52,6 +52,7 @@ void link(
   REQUIRE(col_no == expect_col_no);
 }
 
+#ifdef __UNIX__
 TEST_CASE("wxExLink", "[stc]")
 {
   wxExSTC* stc = new wxExSTC(
@@ -129,3 +130,4 @@ TEST_CASE("wxExLink", "[stc]")
   
   link(lnk2, "test");
 }
+#endif

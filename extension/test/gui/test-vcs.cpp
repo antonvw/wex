@@ -18,8 +18,9 @@
 
 TEST_CASE("wxExVCS", "[vcs]")
 {
-  REQUIRE(wxExVCS::GetCount() > 0);
-  
+  // GetCount
+  REQUIRE( wxExVCS::GetCount() > 0);
+
   wxFileName file(GetTestFile());
   file.Normalize();
   
@@ -35,9 +36,6 @@ TEST_CASE("wxExVCS", "[vcs]")
   
   // Execute
   REQUIRE( vcs.Execute());
-
-  // GetCount
-  REQUIRE( vcs.GetCount() > 0);
 
   // GetEntry  
   REQUIRE( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);
