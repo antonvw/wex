@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <future>
 #include <shunting-yard/shunting-yard.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -274,7 +273,16 @@ double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
   {
 #ifdef __WXMSW__    
     // Under MSW wxLogError has problems if % occurs in argument.
-    wxMessageBox(e.what());
+    const wxString error(e.what());
+    
+    if (error.Contains("%"))
+    {
+      wxMessageBox(e.what());
+    }
+    else
+    {
+      wxLogError(e.what());
+    }
 #else
     wxLogError(e.what());
 #endif
@@ -701,44 +709,40 @@ int wxExOpenFiles(wxExFrame* frame,
   
   for (const auto& it : files)
   {
-    auto fut = std::async([=]
+    if (it.Contains("*") || it.Contains("?"))
     {
-      if (it.Contains("*") || it.Contains("?"))
+      count += wxExDirOpenFile(frame, 
+        wxGetCwd(), it, file_flags, dir_flags).FindFiles();
+    }
+    else
+    {
+      wxString file(it);
+      int line_no = 0;
+      int col_no = 0;
+      
+      wxFileName fn(file);
+
+      if (!fn.FileExists() && file.Contains(":"))
       {
-        return wxExDirOpenFile(frame, 
-          wxGetCwd(), it, file_flags, dir_flags).FindFiles();
+        const wxString val = wxExLink().GetPath(file, line_no, col_no);
+        
+        if (!val.empty())
+        {
+          fn.Assign(val);
+        }
       }
-      else
+
+      if (!fn.FileExists())
       {
-        wxString file(it);
-        int line_no = 0;
-        int col_no = 0;
-        
-        wxFileName fn(file);
-
-        if (!fn.FileExists() && file.Contains(":"))
-        {
-          const wxString val = wxExLink().GetPath(file, line_no, col_no);
-          
-          if (!val.empty())
-          {
-            fn.Assign(val);
-          }
-        }
-
-        if (!fn.FileExists())
-        {
-          fn.MakeAbsolute();
-        }
-        
-        fn.FileExists() ?
-          frame->OpenFile(fn, line_no, wxEmptyString, col_no, file_flags):
-          frame->OpenFile(fn, wxEmptyString, file_flags);
-        
-        return 1;
-      }});
-    
-    count += fut.get();
+        fn.MakeAbsolute();
+      }
+      
+      fn.FileExists() ?
+        frame->OpenFile(fn, line_no, wxEmptyString, col_no, file_flags):
+        frame->OpenFile(fn, wxEmptyString, file_flags);
+      
+      count++;
+    }
   }
   
   return count;
