@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-process->cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,75 +14,72 @@
 #include <wx/extension/shell.h>
 #include "test.h"
 
-void fixture::testProcess()
+TEST_CASE("wxExProcess")
 {
   // Test commands entered in shell.
   const wxString cwd = wxGetCwd();
   
   wxExProcess* process = new wxExProcess;
   
-  CPPUNIT_ASSERT(!process->GetError());
-  CPPUNIT_ASSERT( process->GetOutput().empty());
-  CPPUNIT_ASSERT(!process->HasStdError());
-  CPPUNIT_ASSERT(!process->IsRunning());
-  if (process->GetShell() != nullptr)
-    process->GetShell()->SetText(wxEmptyString);
+  REQUIRE(!process->GetError());
+  REQUIRE( process->GetOutput().empty());
+  REQUIRE(!process->HasStdError());
+  REQUIRE(!process->IsRunning());
+  process->GetShell()->SetText(wxEmptyString);
   
-  process->ConfigDialog(m_Frame, "test process", false);
+  process->ConfigDialog(GetFrame(), "test process", false);
   
-  // Test wxEXEC_SYNC process->
-  CPPUNIT_ASSERT( process->Execute("ls -l", wxEXEC_SYNC));
-  CPPUNIT_ASSERT(!process->GetError());
-  CPPUNIT_ASSERT(!process->GetOutput().empty());
+  // Test wxEXEC_SYNC process
+  REQUIRE( process->Execute("ls -l", wxEXEC_SYNC));
+  REQUIRE(!process->GetError());
+  REQUIRE(!process->GetOutput().empty());
   
-  CPPUNIT_ASSERT(!process->IsRunning());
-  CPPUNIT_ASSERT( process->IsSelected());
-  CPPUNIT_ASSERT( process->GetShell() != nullptr);
-  CPPUNIT_ASSERT( process->GetShell()->GetText().empty());
-  CPPUNIT_ASSERT( process->Kill() == wxKILL_NO_PROCESS);
+  REQUIRE(!process->IsRunning());
+  REQUIRE( process->IsSelected());
+  REQUIRE( process->Kill() == wxKILL_NO_PROCESS);
   
   process->ShowOutput();
 
   // Repeat last wxEXEC_SYNC process (using "" only for dialogs).
-  CPPUNIT_ASSERT( process->Execute("ls -l", wxEXEC_SYNC));
-  CPPUNIT_ASSERT(!process->GetError());
-  CPPUNIT_ASSERT(!process->GetOutput().empty());
+  REQUIRE( process->Execute("ls -l", wxEXEC_SYNC));
+  REQUIRE(!process->GetError());
+  REQUIRE(!process->GetOutput().empty());
 
   // Test working directory for wxEXEC_SYNC process (should not change).
-  CPPUNIT_ASSERT( process->Execute("ls -l", wxEXEC_SYNC, ".."));
-  CPPUNIT_ASSERT(!process->GetError());
-  CPPUNIT_ASSERT(!process->GetOutput().empty());
-  CPPUNIT_ASSERT( wxGetCwd().Contains("data"));
+  REQUIRE( process->Execute("ls -l", wxEXEC_SYNC, ".."));
+  REQUIRE(!process->GetError());
+  REQUIRE(!process->GetOutput().empty());
+  REQUIRE( wxGetCwd().Contains("data"));
 
-  // Test invalid wxEXEC_SYNC process->
-  CPPUNIT_ASSERT(!process->Execute("xxxx", wxEXEC_SYNC));
+  // Test invalid wxEXEC_SYNC process
+  REQUIRE(!process->Execute("xxxx", wxEXEC_SYNC));
   
-  // Test wxEXEC_ASYNC process->
-  CPPUNIT_ASSERT( process->Execute("bash"));
-  CPPUNIT_ASSERT( process->IsRunning());
+  // Test wxEXEC_ASYNC process
+  REQUIRE( process->Execute("bash"));
+  REQUIRE( process->IsRunning());
   wxExShell* shell = process->GetShell();  
-  CPPUNIT_ASSERT( shell != nullptr);
+  REQUIRE( shell != nullptr);
   Process("cd ~\rpwd\r", shell);
-  CPPUNIT_ASSERT( shell->GetText().Contains("home"));
-  CPPUNIT_ASSERT( cwd != wxGetCwd());
-  CPPUNIT_ASSERT( process->Kill() == wxKILL_OK);
+  REQUIRE( shell->GetText().Contains("home"));
+  REQUIRE( cwd != wxGetCwd());
+  REQUIRE( process->Kill() == wxKILL_OK);
 
   // Test working directory for wxEXEC_ASYNC process (should change).
-  CPPUNIT_ASSERT( process->Execute("ls -l", wxEXEC_ASYNC, ".."));
-  CPPUNIT_ASSERT(!process->GetError());
-  CPPUNIT_ASSERT(!wxGetCwd().Contains("data"));
+  REQUIRE( process->Execute("ls -l", wxEXEC_ASYNC, ".."));
+  REQUIRE(!process->GetError());
+  REQUIRE(!wxGetCwd().Contains("data"));
   wxSetWorkingDirectory(cwd);
-  CPPUNIT_ASSERT( process->Kill() == wxKILL_OK);
+  REQUIRE( process->Kill() == wxKILL_OK);
 
   // Test invalid wxEXEC_ASYNC process (the process gets a process id, and exits immediately).
-  CPPUNIT_ASSERT( process->Execute("xxxx"));
-  CPPUNIT_ASSERT(!process->GetError());
+  REQUIRE( process->Execute("xxxx"));
+  REQUIRE(!process->GetError());
   // The output is not touched by the async process, so if it was not empty,
   // it still is not empty.
-  CPPUNIT_ASSERT( process->GetOutput().empty());
-  CPPUNIT_ASSERT( process->Kill() == wxKILL_OK);
+  REQUIRE( process->GetOutput().empty());
+  REQUIRE( process->Kill() == wxKILL_OK);
   
-  wxExProcess::PrepareOutput(m_Frame); // in fact already done
+  wxExProcess::PrepareOutput(GetFrame()); // in fact already done
 
   // Go back to where we were, necessary for other tests.
   wxSetWorkingDirectory(cwd);

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-interruptable.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,27 +10,28 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/interruptable.h>
-#include "test.h"
+#include "../catch.hpp"
+#include "../test.h"
 
-void TestFixture::testInterruptable()
+TEST_CASE( "wxExInterruptable" ) 
 {
   wxExInterruptable interruptable;
   
-  CPPUNIT_ASSERT(!interruptable.Running());
-  CPPUNIT_ASSERT(!interruptable.Cancelled());
-  CPPUNIT_ASSERT(!interruptable.Cancel());
+  REQUIRE(!interruptable.Running());
+  REQUIRE(!interruptable.Cancelled());
+  REQUIRE(!interruptable.Cancel());
   
   interruptable.Start();
-  CPPUNIT_ASSERT( interruptable.Running());
-  CPPUNIT_ASSERT(!interruptable.Cancelled());
+  REQUIRE( interruptable.Running());
+  REQUIRE(!interruptable.Cancelled());
   
   interruptable.Stop();
-  CPPUNIT_ASSERT(!interruptable.Running());
-  CPPUNIT_ASSERT(!interruptable.Cancelled());
-  CPPUNIT_ASSERT(!interruptable.Cancel());
+  REQUIRE(!interruptable.Running());
+  REQUIRE(!interruptable.Cancelled());
+  REQUIRE(!interruptable.Cancel());
   
   interruptable.Start();
-  CPPUNIT_ASSERT( interruptable.Cancel());
-  CPPUNIT_ASSERT(!interruptable.Running());
-  CPPUNIT_ASSERT( interruptable.Cancelled());
+  REQUIRE( interruptable.Cancel());
+  REQUIRE(!interruptable.Running());
+  REQUIRE( interruptable.Cancelled());
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-vifsm.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,39 +17,39 @@
 
 #define ESC "\x1b"
 
-void fixture::testViFSM()
+TEST_CASE("wxExViFSM", "[stc][vi]")
 {
-  wxExSTC* stc = new wxExSTC(m_Frame);
-  AddPane(m_Frame, stc);
+  wxExSTC* stc = new wxExSTC(GetFrame());
+  AddPane(GetFrame(), stc);
   
   wxExViFSM fsm(&stc->GetVi(), 
     [=](const std::string& command){;},
     [=](const std::string& command){;});
   
-  CPPUNIT_ASSERT( fsm.State() == wxExVi::MODE_NORMAL);
-  CPPUNIT_ASSERT(!fsm.Transition("x"));
-  CPPUNIT_ASSERT(!fsm.Transition("y"));
+  REQUIRE( fsm.State() == wxExVi::MODE_NORMAL);
+  REQUIRE(!fsm.Transition("x"));
+  REQUIRE(!fsm.Transition("y"));
   
-  CPPUNIT_ASSERT( fsm.Transition("i"));
-  CPPUNIT_ASSERT( fsm.State() == wxExVi::MODE_INSERT);
-  CPPUNIT_ASSERT(!fsm.Transition("i"));
-  CPPUNIT_ASSERT( fsm.State() == wxExVi::MODE_INSERT);
+  REQUIRE( fsm.Transition("i"));
+  REQUIRE( fsm.State() == wxExVi::MODE_INSERT);
+  REQUIRE(!fsm.Transition("i"));
+  REQUIRE( fsm.State() == wxExVi::MODE_INSERT);
   
-  CPPUNIT_ASSERT( fsm.Transition(ESC));
-  CPPUNIT_ASSERT( fsm.State() == wxExVi::MODE_NORMAL);
+  REQUIRE( fsm.Transition(ESC));
+  REQUIRE( fsm.State() == wxExVi::MODE_NORMAL);
   
-  CPPUNIT_ASSERT( fsm.Transition("cc"));
-  CPPUNIT_ASSERT( fsm.State() == wxExVi::MODE_INSERT);
+  REQUIRE( fsm.Transition("cc"));
+  REQUIRE( fsm.State() == wxExVi::MODE_INSERT);
   
-  CPPUNIT_ASSERT( fsm.Transition(ESC));
-  CPPUNIT_ASSERT( fsm.State() == wxExVi::MODE_NORMAL);
+  REQUIRE( fsm.Transition(ESC));
+  REQUIRE( fsm.State() == wxExVi::MODE_NORMAL);
   
   stc->SetReadOnly(true);
-  CPPUNIT_ASSERT( fsm.Transition("i"));
-  CPPUNIT_ASSERT( fsm.State() == wxExVi::MODE_NORMAL);
+  REQUIRE( fsm.Transition("i"));
+  REQUIRE( fsm.State() == wxExVi::MODE_NORMAL);
   
   wxExViFSMEntry entry(0, 1, 2, [=](const std::string& command){;});
-  CPPUNIT_ASSERT( entry.State() == 0);
-  CPPUNIT_ASSERT( entry.Action() == 1);
-  CPPUNIT_ASSERT( entry.Next("test") == 2);
+  REQUIRE( entry.State() == 0);
+  REQUIRE( entry.Action() == 1);
+  REQUIRE( entry.Next("test") == 2);
 }

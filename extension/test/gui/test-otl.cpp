@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-otl.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void fixture::testOTL()
+TEST_CASE("wxExOTL")
 {
 #if wxExUSE_OTL
   // Ensure we have a database and a table.
@@ -28,19 +28,19 @@ void fixture::testOTL()
   
   wxExOTL otl;
   
-  CPPUNIT_ASSERT(!otl.Datasource().empty());
+  REQUIRE(!otl.Datasource().empty());
   
   otl.Logon();
   
   if (!otl.IsConnected())
   {
-    CPPUNIT_ASSERT( otl.Query("select * from one") == 0);
-    CPPUNIT_ASSERT(!otl.Logoff());
+    REQUIRE( otl.Query("select * from one") == 0);
+    REQUIRE(!otl.Logoff());
   }
   else
   {
-    CPPUNIT_ASSERT( otl.Query("select * from one") == 9);
-    CPPUNIT_ASSERT( otl.Logoff());
+    REQUIRE( otl.Query("select * from one") == 9);
+    REQUIRE( otl.Logoff());
   }
 #endif
 }

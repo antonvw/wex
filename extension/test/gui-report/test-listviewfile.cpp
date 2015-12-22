@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-listviewfile.cpp
-// Purpose:   Implementation for wxExtension report cpp unit testing
+// Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,27 +9,27 @@
 #include <wx/extension/report/listviewfile.h>
 #include "test.h"
 
-void fixture::testListViewFile()
+TEST_CASE("wxExListViewFile")
 {
-  wxExListViewFile* listView = new wxExListViewFile(m_Frame, m_Frame, m_Project);
+  wxExListViewFile* listView = new wxExListViewFile(GetFrame(), GetFrame(), GetProject());
   
-  AddPane(m_Frame, listView);
+  AddPane(GetFrame(), listView);
 
   listView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->AppendColumn(wxExColumn("Number", wxExColumn::COL_INT));
 
   // Remember that listview file already has columns.
-  CPPUNIT_ASSERT(listView->FindColumn("String") > 1);
-  CPPUNIT_ASSERT(listView->FindColumn("Number") > 1);
+  REQUIRE(listView->FindColumn("String") > 1);
+  REQUIRE(listView->FindColumn("Number") > 1);
 
-  CPPUNIT_ASSERT(listView->FileLoad(wxExFileName(m_Project)));
-  CPPUNIT_ASSERT(listView->FileSave(wxExFileName("test-rep.prj.bck")));
+  REQUIRE(listView->FileLoad(wxExFileName(GetProject())));
+  REQUIRE(listView->FileSave(wxExFileName("test-rep.prj.bck")));
 
-  CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
+  REQUIRE(listView->ItemFromText("test1\ntest2\n"));
   
-  CPPUNIT_ASSERT(listView->GetContentsChanged());
+  REQUIRE(listView->GetContentsChanged());
   listView->ResetContentsChanged();
-  CPPUNIT_ASSERT(!listView->GetContentsChanged());
+  REQUIRE(!listView->GetContentsChanged());
   listView->AfterSorting();
   
   listView->AddItems(
@@ -38,7 +38,7 @@ void fixture::testListViewFile()
     wxDIR_FILES, 
     false); // join the thread
   
-  CPPUNIT_ASSERT(remove("test-rep.prj.bck") == 0);
+  REQUIRE(remove("test-rep.prj.bck") == 0);
   
   for (auto id : std::vector<int> {
     wxID_ADD, wxID_EDIT, wxID_REPLACE_ALL}) 

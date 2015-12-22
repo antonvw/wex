@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-lexers.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,15 +14,15 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void fixture::testLexers()
+TEST_CASE("wxExLexers", "[stc][lexer]")
 {
-  wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
-  AddPane(m_Frame, stc);
+  wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
+  AddPane(GetFrame(), stc);
   
-  CPPUNIT_ASSERT( wxExLexers::Get() != nullptr);
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetCount() > 0);
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle());
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().IsOk());
+  REQUIRE( wxExLexers::Get() != nullptr);
+  REQUIRE( wxExLexers::Get()->GetCount() > 0);
+  REQUIRE( wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle());
+  REQUIRE( wxExLexers::Get()->GetDefaultStyle().IsOk());
   
   // Test lexer and global macros.
   for (const auto& macro : std::vector<
@@ -36,26 +36,26 @@ void fixture::testLexers()
     {{"mark_circle","global"},"0"},
     {{"iv_none","global"},"0"}})
   {
-    CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro(
+    REQUIRE( wxExLexers::Get()->ApplyMacro(
       macro.first.first, macro.first.second) == macro.second);
   }
 
   // At this moment we have no global properties.
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetProperties().empty());
+  REQUIRE( wxExLexers::Get()->GetProperties().empty());
   
   wxExLexers::Get()->ApplyMarkers(stc);
   wxExLexers::Get()->ApplyProperties(stc);
 
-  CPPUNIT_ASSERT(!wxExLexers::Get()->BuildWildCards(  GetTestFile()).empty());
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetCount() > 0);
+  REQUIRE(!wxExLexers::Get()->BuildWildCards(  GetTestFile()).empty());
+  REQUIRE( wxExLexers::Get()->GetCount() > 0);
 
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByFileName(
+  REQUIRE( wxExLexers::Get()->FindByFileName(
     GetTestFile()).GetScintillaLexer() == "cpp");
     
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
+  REQUIRE( wxExLexers::Get()->FindByName(
     "xxx").GetScintillaLexer().empty());
     
-  CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
+  REQUIRE( wxExLexers::Get()->FindByName(
     "cpp").GetScintillaLexer() == "cpp");
     
   for (const auto& findby : std::vector<std::pair<
@@ -71,51 +71,51 @@ void fixture::testLexers()
     {"<html>",{"hypertext","hypertext"}},
     {"<?xml",{"hypertext","xml"}}})
   {
-    CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    REQUIRE( wxExLexers::Get()->FindByText(
       findby.first).GetScintillaLexer() == findby.second.first);
-    CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
+    REQUIRE( wxExLexers::Get()->FindByText(
       findby.first).GetDisplayLexer() == findby.second.second);
   }
     
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetFileName().IsOk());
+  REQUIRE( wxExLexers::Get()->GetFileName().IsOk());
 
-  CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros("global").empty());
-  CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros("cpp").empty());
-  CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros("pascal").empty());
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetMacros("XXX").empty());
+  REQUIRE(!wxExLexers::Get()->GetMacros("global").empty());
+  REQUIRE(!wxExLexers::Get()->GetMacros("cpp").empty());
+  REQUIRE(!wxExLexers::Get()->GetMacros("pascal").empty());
+  REQUIRE( wxExLexers::Get()->GetMacros("XXX").empty());
   
-  CPPUNIT_ASSERT(!wxExLexers::Get()->GetTheme().empty());
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetThemeOk());
-  CPPUNIT_ASSERT(!wxExLexers::Get()->GetThemeMacros().empty());
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetThemes() > 1);
+  REQUIRE(!wxExLexers::Get()->GetTheme().empty());
+  REQUIRE( wxExLexers::Get()->GetThemeOk());
+  REQUIRE(!wxExLexers::Get()->GetThemeMacros().empty());
+  REQUIRE( wxExLexers::Get()->GetThemes() > 1);
 
-  CPPUNIT_ASSERT(!wxExLexers::Get()->SetTheme("xxx"));
-  CPPUNIT_ASSERT(!wxExLexers::Get()->GetTheme().empty());
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetThemeOk());
-  CPPUNIT_ASSERT( wxExLexers::Get()->SetTheme("torte"));
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetTheme() == "torte");
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetThemeOk());
+  REQUIRE(!wxExLexers::Get()->SetTheme("xxx"));
+  REQUIRE(!wxExLexers::Get()->GetTheme().empty());
+  REQUIRE( wxExLexers::Get()->GetThemeOk());
+  REQUIRE( wxExLexers::Get()->SetTheme("torte"));
+  REQUIRE( wxExLexers::Get()->GetTheme() == "torte");
+  REQUIRE( wxExLexers::Get()->GetThemeOk());
   wxExLexers::Get()->SetThemeNone();
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetTheme().empty());
-  CPPUNIT_ASSERT(!wxExLexers::Get()->GetThemeOk());
+  REQUIRE( wxExLexers::Get()->GetTheme().empty());
+  REQUIRE(!wxExLexers::Get()->GetThemeOk());
   wxExLexers::Get()->RestoreTheme();
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetTheme() == "torte");
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetThemeOk());
+  REQUIRE( wxExLexers::Get()->GetTheme() == "torte");
+  REQUIRE( wxExLexers::Get()->GetThemeOk());
   
-  CPPUNIT_ASSERT(!wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(99, -1)));
-  CPPUNIT_ASSERT( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0, -1)));
-  CPPUNIT_ASSERT( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0, -1)));
+  REQUIRE(!wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(99, -1)));
+  REQUIRE( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0, -1)));
+  REQUIRE( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0, -1)));
   
   wxString lexer("cpp");
-  wxExLexers::Get()->ShowDialog(m_Frame, lexer, wxEmptyString, false);
-  wxExLexers::Get()->ShowThemeDialog(m_Frame, wxEmptyString, false);
+  wxExLexers::Get()->ShowDialog(GetFrame(), lexer, wxEmptyString, false);
+  wxExLexers::Get()->ShowThemeDialog(GetFrame(), wxEmptyString, false);
   
-  CPPUNIT_ASSERT(!wxExLexers::Get()->GetKeywords("cpp").empty());
-  CPPUNIT_ASSERT(!wxExLexers::Get()->GetKeywords("csh").empty());
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetKeywords("xxx").empty());
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetKeywords(wxEmptyString).empty());
+  REQUIRE(!wxExLexers::Get()->GetKeywords("cpp").empty());
+  REQUIRE(!wxExLexers::Get()->GetKeywords("csh").empty());
+  REQUIRE( wxExLexers::Get()->GetKeywords("xxx").empty());
+  REQUIRE( wxExLexers::Get()->GetKeywords(wxEmptyString).empty());
 
-  CPPUNIT_ASSERT( wxExLexers::Get()->LoadDocument());
+  REQUIRE( wxExLexers::Get()->LoadDocument());
   
   wxExLexers::Get()->ApplyGlobalStyles(stc);
   wxExLexers::Get()->ApplyHexStyles(stc);

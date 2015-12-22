@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-itemdlg.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,13 +14,13 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void fixture::testItemDialog()
+TEST_CASE("wxExItemDialog", "[item]")
 {
 #if wxCHECK_VERSION(3,1,0)
   wxExItem::UseConfig(false);
   
   // Test dialog without pages.
-  wxExItemDialog* dlg1 = new wxExItemDialog(m_Frame, 
+  wxExItemDialog* dlg1 = new wxExItemDialog(GetFrame(), 
     std::vector <wxExItem> {
       wxExItem("string1", "hello1"),
       wxExItem("string2", "hello2"),
@@ -35,18 +35,18 @@ void fixture::testItemDialog()
   
   wxPostEvent(dlg1, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
   
-  CPPUNIT_ASSERT(dlg1->GetItemValue("int1") == 10);
-  CPPUNIT_ASSERT(dlg1->GetItemValue("int2") == 20);
-  CPPUNIT_ASSERT(dlg1->GetItemValue("float1") == 20.0);
+  REQUIRE(dlg1->GetItemValue("int1") == 10);
+  REQUIRE(dlg1->GetItemValue("int2") == 20);
+  REQUIRE(dlg1->GetItemValue("float1") == 20.0);
   
   // Test dialog without items.
-  wxExItemDialog* dlg2 = new wxExItemDialog(m_Frame, 
+  wxExItemDialog* dlg2 = new wxExItemDialog(GetFrame(), 
     std::vector <wxExItem>(),
     "no items");
   dlg2->Show();
   
   // Test dialog with empty items.
-  wxExItemDialog* dlg3 = new wxExItemDialog(m_Frame, 
+  wxExItemDialog* dlg3 = new wxExItemDialog(GetFrame(), 
     std::vector <wxExItem> {
       wxExItem(), wxExItem(), wxExItem()},
     "empty items");

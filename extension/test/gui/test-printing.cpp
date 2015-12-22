@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-printing.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,17 +14,17 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void fixture::testPrinting()
+TEST_CASE("wxExPrinting")
 {
-  CPPUNIT_ASSERT(wxExPrinting::Get() != nullptr);
-  CPPUNIT_ASSERT(wxExPrinting::Get()->GetPrinter() != nullptr);
-  CPPUNIT_ASSERT(wxExPrinting::Get()->GetHtmlPrinter() != nullptr);
+  REQUIRE(wxExPrinting::Get() != nullptr);
+  REQUIRE(wxExPrinting::Get()->GetPrinter() != nullptr);
+  REQUIRE(wxExPrinting::Get()->GetHtmlPrinter() != nullptr);
   wxExPrinting* old = wxExPrinting::Get();
-  CPPUNIT_ASSERT(wxExPrinting::Get()->Set(nullptr) == old);
-  CPPUNIT_ASSERT(wxExPrinting::Get(false) == nullptr);
-  CPPUNIT_ASSERT(wxExPrinting::Get(true) != nullptr);
+  REQUIRE(wxExPrinting::Get()->Set(nullptr) == old);
+  REQUIRE(wxExPrinting::Get(false) == nullptr);
+  REQUIRE(wxExPrinting::Get(true) != nullptr);
   
-  wxExSTC* stc = new wxExSTC(m_Frame, "hello printing");
+  wxExSTC* stc = new wxExSTC(GetFrame(), "hello printing");
     
   new wxExPrintout(stc);
   

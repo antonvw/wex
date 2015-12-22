@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-address.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,213 +15,214 @@
 #include <wx/extension/vimacros.h>
 #include "test.h"
 
-void fixture::testAddressRange()
+TEST_CASE("wxExAddressRange", "[stc][vi]")
 {
-  wxExSTC* stc = new wxExSTC(m_Frame, "hello\nhello1\nhello2");
-  AddPane(m_Frame, stc);
+  wxExSTC* stc = GetSTC();
+  stc->SetText("hello\nhello1\nhello2");
   wxExEx* ex = new wxExEx(stc);
   stc->GotoLine(2);
 
   // Test valid ranges when no selection is active.
-  CPPUNIT_ASSERT( wxExAddressRange(ex).IsOk());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, -1).IsOk());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).IsOk());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").IsOk());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "*").IsOk());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, ".").IsOk());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").IsOk());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "/1/,/2/").IsOk());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "?1?,?2?").IsOk());
+  REQUIRE( wxExAddressRange(ex).IsOk());
+  REQUIRE( wxExAddressRange(ex, -1).IsOk());
+  REQUIRE( wxExAddressRange(ex, 5).IsOk());
+  REQUIRE( wxExAddressRange(ex, "%").IsOk());
+  REQUIRE( wxExAddressRange(ex, "*").IsOk());
+  REQUIRE( wxExAddressRange(ex, ".").IsOk());
+  REQUIRE( wxExAddressRange(ex, "1,2").IsOk());
+  REQUIRE( wxExAddressRange(ex, "/1/,/2/").IsOk());
+  REQUIRE( wxExAddressRange(ex, "?1?,?2?").IsOk());
   
   // Test invalid ranges when no selection is active.
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "x").IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "x,3").IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "x,3").Delete());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,x").Escape("ls"));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,x").Indent());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,!").IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,@").Move(wxExAddress(ex, "2")));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "x")));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,3").Move(wxExAddress(ex, "2")));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,@").Copy(wxExAddress(ex, "2")));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "3,x").Write("flut"));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, " ,").Yank());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "'<,'>").IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "/xx/,/2/").IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "?2?,?1?").IsOk());
+  REQUIRE(!wxExAddressRange(ex, 0).IsOk());
+  REQUIRE(!wxExAddressRange(ex, "0").IsOk());
+  REQUIRE(!wxExAddressRange(ex, "x").IsOk());
+  REQUIRE(!wxExAddressRange(ex, "x,3").IsOk());
+  REQUIRE(!wxExAddressRange(ex, "x,3").Delete());
+  REQUIRE(!wxExAddressRange(ex, "3,x").Escape("ls"));
+  REQUIRE(!wxExAddressRange(ex, "3,x").Indent());
+  REQUIRE(!wxExAddressRange(ex, "3,!").IsOk());
+  REQUIRE(!wxExAddressRange(ex, "3,@").Move(wxExAddress(ex, "2")));
+  REQUIRE(!wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "x")));
+  REQUIRE(!wxExAddressRange(ex, "1,3").Move(wxExAddress(ex, "2")));
+  REQUIRE(!wxExAddressRange(ex, "3,@").Copy(wxExAddress(ex, "2")));
+  REQUIRE(!wxExAddressRange(ex, "3,x").Write("flut"));
+  REQUIRE(!wxExAddressRange(ex, " ,").Yank());
+  REQUIRE(!wxExAddressRange(ex, "'<,'>").IsOk());
+  REQUIRE(!wxExAddressRange(ex, "/xx/,/2/").IsOk());
+  REQUIRE(!wxExAddressRange(ex, "?2?,?1?").IsOk());
   
   stc->SelectAll();
   
   // Test valid ranges when selection is active.
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).IsOk());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "'<,'>").IsOk());
+  REQUIRE( wxExAddressRange(ex, 5).IsOk());
+  REQUIRE( wxExAddressRange(ex, "'<,'>").IsOk());
   
   // Test invalid ranges when selection is active.
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "x").IsOk());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "x,3").IsOk());
+  REQUIRE(!wxExAddressRange(ex, 0).IsOk());
+  REQUIRE(!wxExAddressRange(ex, "0").IsOk());
+  REQUIRE(!wxExAddressRange(ex, "x").IsOk());
+  REQUIRE(!wxExAddressRange(ex, "x,3").IsOk());
   
   stc->SelectNone();
   
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,3").Delete());
+  REQUIRE( wxExAddressRange(ex, "1,3").Delete());
+  REQUIRE( wxExAddressRange(ex, "1,3").Delete());
   
   // Test implementation.  
   const wxString contents("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
   
   // Test Change.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 4).Change("changed"));
-  CPPUNIT_ASSERT( stc->GetText().Contains("changed"));
+  REQUIRE( wxExAddressRange(ex, 4).Change("changed"));
+  REQUIRE( stc->GetText().Contains("changed"));
   
   // Test Copy.
   stc->SetText(contents);
-  CPPUNIT_ASSERT( stc->GetLineCount() == 8);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Copy(wxExAddress(ex, "$")));
-  CPPUNIT_ASSERT( stc->GetLineCount() == 10);
+  REQUIRE( stc->GetLineCount() == 8);
+  REQUIRE( wxExAddressRange(ex, "1,2").Copy(wxExAddress(ex, "$")));
+  REQUIRE( stc->GetLineCount() == 10);
   
   // Test Delete.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   stc->GotoLine(1);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Delete());
-  CPPUNIT_ASSERT( stc->GetLineCount() == 3);
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, 0).Delete());
-  CPPUNIT_ASSERT( stc->GetLineCount() == 3);
+  REQUIRE( wxExAddressRange(ex, 5).Delete());
+  REQUIRE( stc->GetLineCount() == 3);
+  REQUIRE(!wxExAddressRange(ex, 0).Delete());
+  REQUIRE( stc->GetLineCount() == 3);
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   stc->SelectAll();
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "'<,'>").Delete());
-  CPPUNIT_ASSERT( stc->GetLineCount() == 1);
+  REQUIRE( wxExAddressRange(ex, "'<,'>").Delete());
+  REQUIRE( stc->GetLineCount() == 1);
   stc->SelectNone();
   
   // Test Escape.
   stc->SetText(contents);
-  CPPUNIT_ASSERT( stc->GetLineCount() == 8);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Escape("uniq"));
-  CPPUNIT_ASSERT( stc->GetLineCount() == 5);
-  CPPUNIT_ASSERT( wxExAddressRange::GetProcess() == nullptr);
-  CPPUNIT_ASSERT( wxExAddressRange(ex).Escape("ls -l"));
-  CPPUNIT_ASSERT( wxExAddressRange::GetProcess() != nullptr);
+  REQUIRE( stc->GetLineCount() == 8);
+  REQUIRE( wxExAddressRange(ex, "%").Escape("uniq"));
+  REQUIRE( stc->GetLineCount() == 5);
+  REQUIRE( wxExAddressRange(ex).Escape("ls -l"));
+  REQUIRE( wxExAddressRange::GetProcess() != nullptr);
   
   // Test Global and Global inverse.
   for (int i = 0; i < 2; i++)
   {
     stc->SetText(contents);
-    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global(wxEmptyString, i));
-    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("XXX", i));
-    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/", i));
-    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/xx/p", i));
-    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/xx/p#", i));
-    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/xx/g", i));
-    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/a/s/a/XX", i));
-    CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Global("/b/s/b/XX|s/c/yy", i));
+    REQUIRE( wxExAddressRange(ex, 5).Global(wxEmptyString, i));
+    REQUIRE( wxExAddressRange(ex, 5).Global("XXX", i));
+    REQUIRE( wxExAddressRange(ex, 5).Global("/", i));
+    REQUIRE( wxExAddressRange(ex, 5).Global("/xx/p", i));
+    REQUIRE( wxExAddressRange(ex, 5).Global("/xx/p#", i));
+    REQUIRE( wxExAddressRange(ex, 5).Global("/xx/g", i));
+    REQUIRE( wxExAddressRange(ex, 5).Global("/a/s/a/XX", i));
+    REQUIRE( wxExAddressRange(ex, 5).Global("/b/s/b/XX|s/c/yy", i));
   }
   
   // Test Indent.
   stc->SetText(contents);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent());
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Indent(false));
+  REQUIRE( wxExAddressRange(ex, 5).Indent());
+  REQUIRE( wxExAddressRange(ex, 5).Indent(false));
   
   // Test IsOk.
   // See above.
   
   // Test Join.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Join());
-  CPPUNIT_ASSERT( stc->GetText().Contains("a"));
-  CPPUNIT_ASSERT_MESSAGE( std::to_string(stc->GetLineCount()), stc->GetLineCount() == 1);
+  REQUIRE( wxExAddressRange(ex, "%").Join());
+  REQUIRE( stc->GetText().Contains("a"));
+  INFO( std::to_string(stc->GetLineCount()));
+  REQUIRE( stc->GetLineCount() == 1);
   
   // Test Move.
   stc->SetText(contents);
-  CPPUNIT_ASSERT( stc->GetLineCount() == 8);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "$")));
-  CPPUNIT_ASSERT( stc->GetLineCount() == 8);
+  REQUIRE( stc->GetLineCount() == 8);
+  REQUIRE( wxExAddressRange(ex, "1,2").Move(wxExAddress(ex, "$")));
+  REQUIRE( stc->GetLineCount() == 8);
   
   // Test Print.
   stc->SetText(contents);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Print());
+  REQUIRE( wxExAddressRange(ex, 5).Print());
   
   // Test Sort.
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort());
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1").Sort("x"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("u"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("r"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1").Sort("ur"));
+  REQUIRE( wxExAddressRange(ex, "1").Sort());
+  REQUIRE(!wxExAddressRange(ex, "1").Sort("x"));
+  REQUIRE( wxExAddressRange(ex, "1").Sort("u"));
+  REQUIRE( wxExAddressRange(ex, "1").Sort("r"));
+  REQUIRE( wxExAddressRange(ex, "1").Sort("ur"));
   
   // Test Substitute.
   stc->SetText(contents);
   stc->GotoLine(1);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
+  REQUIRE( wxExAddressRange(ex, "%").
     Substitute("/tiger//"));
-  CPPUNIT_ASSERT(!stc->GetText().Contains("tiger"));
+  REQUIRE(!stc->GetText().Contains("tiger"));
   
   stc->SetText(contents);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
+  REQUIRE( wxExAddressRange(ex, "%").
     Substitute("/tiger/\\U&/"));
-  CPPUNIT_ASSERT( stc->GetText().Contains("TIGER"));
-  CPPUNIT_ASSERT(!stc->GetText().Contains("tiger"));
-  CPPUNIT_ASSERT(!stc->GetText().Contains("\\U"));
+  REQUIRE( stc->GetText().Contains("TIGER"));
+  REQUIRE(!stc->GetText().Contains("tiger"));
+  REQUIRE(!stc->GetText().Contains("\\U"));
   
   stc->SetText(contents);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").
+  REQUIRE( wxExAddressRange(ex, "%").
     Substitute("/tiger/\\U&&\\L& \\0 \\0 & & \\U&/"));
-  CPPUNIT_ASSERT( stc->GetText().Contains("TIGER"));
-  CPPUNIT_ASSERT( stc->GetText().Contains("tiger"));
-  CPPUNIT_ASSERT(!stc->GetText().Contains("\\U"));
-  CPPUNIT_ASSERT(!stc->GetText().Contains("\\L"));
-  CPPUNIT_ASSERT(!stc->GetText().Contains("\\0"));
+  REQUIRE( stc->GetText().Contains("TIGER"));
+  REQUIRE( stc->GetText().Contains("tiger"));
+  REQUIRE(!stc->GetText().Contains("\\U"));
+  REQUIRE(!stc->GetText().Contains("\\L"));
+  REQUIRE(!stc->GetText().Contains("\\0"));
   
   stc->SetText(contents);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/tiger/lion/"));
-  CPPUNIT_ASSERT( stc->GetText().Contains("lion"));
+  REQUIRE( wxExAddressRange(ex, "%").Substitute("/tiger/lion/"));
+  REQUIRE( stc->GetText().Contains("lion"));
     
   stc->SetText(contents);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("", '&'));
-  CPPUNIT_ASSERT( stc->GetText().Contains("lion"));
+  REQUIRE( wxExAddressRange(ex, "%").Substitute("", '&'));
+  REQUIRE( stc->GetText().Contains("lion"));
   
   stc->SetText(contents);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("", '~'));
-  CPPUNIT_ASSERT( stc->GetText().Contains("lion"));
+  REQUIRE( wxExAddressRange(ex, "%").Substitute("", '~'));
+  REQUIRE( stc->GetText().Contains("lion"));
   
   stc->SetText("special char \\ present");
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/\\\\//"));
-  CPPUNIT_ASSERT_MESSAGE( stc->GetText().ToStdString(), stc->GetText().Contains("char  present"));
+  REQUIRE( wxExAddressRange(ex, "%").Substitute("/\\\\//"));
+  INFO( stc->GetText().ToStdString() );
+  REQUIRE( stc->GetText().Contains("char  present"));
   
   stc->SetText("special char / present");
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/\\///"));
-  CPPUNIT_ASSERT( stc->GetText().Contains("char  present"));
+  REQUIRE( wxExAddressRange(ex, "%").Substitute("/\\///"));
+  REQUIRE( stc->GetText().Contains("char  present"));
   
   stc->SetText("special char ' present");
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "%").Substitute("/'///"));
-  CPPUNIT_ASSERT( stc->GetText().Contains("char  present"));
+  REQUIRE( wxExAddressRange(ex, "%").Substitute("/'///"));
+  REQUIRE( stc->GetText().Contains("char  present"));
   
   // Test Substitute and flags.
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1").Substitute("//y"));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "0").Substitute("/x/y"));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "2").Substitute("/x/y/f"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/i"));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Substitute("/x/y/f"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("/x/y/g"));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("g", '&'));
-  CPPUNIT_ASSERT( wxExAddressRange(ex, "1,2").Substitute("g", '~'));
-  CPPUNIT_ASSERT(!wxExAddressRange(ex, "1,2").Substitute("g", 'x'));
+  REQUIRE(!wxExAddressRange(ex, "1").Substitute("//y"));
+  REQUIRE(!wxExAddressRange(ex, "0").Substitute("/x/y"));
+  REQUIRE(!wxExAddressRange(ex, "2").Substitute("/x/y/f"));
+  REQUIRE( wxExAddressRange(ex, "1,2").Substitute("/x/y"));
+  REQUIRE( wxExAddressRange(ex, "1,2").Substitute("/x/y/i"));
+  REQUIRE(!wxExAddressRange(ex, "1,2").Substitute("/x/y/f"));
+  REQUIRE( wxExAddressRange(ex, "1,2").Substitute("/x/y/g"));
+  REQUIRE( wxExAddressRange(ex, "1,2").Substitute("g", '&'));
+  REQUIRE( wxExAddressRange(ex, "1,2").Substitute("g", '~'));
+  REQUIRE(!wxExAddressRange(ex, "1,2").Substitute("g", 'x'));
 
   // Test Write.
   stc->SetText(contents);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 5).Write("sample.txt"));
-  CPPUNIT_ASSERT( remove("sample.txt") == 0);
+  REQUIRE( wxExAddressRange(ex, 5).Write("sample.txt"));
+  REQUIRE( remove("sample.txt") == 0);
   
   // Test Yank.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   stc->GotoLine(0);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, 2).Yank());
+  REQUIRE( wxExAddressRange(ex, 2).Yank());
   stc->SelectNone();
   stc->AddText(stc->GetVi().GetMacros().GetRegister('0'));
-  CPPUNIT_ASSERT( stc->GetLineCount() == 10);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
+  REQUIRE( stc->GetLineCount() == 10);
+  REQUIRE( wxExAddressRange(ex, -2).Delete());
   stc->GotoLine(0);
-  CPPUNIT_ASSERT( wxExAddressRange(ex, -2).Delete());
+  REQUIRE( wxExAddressRange(ex, -2).Delete());
 }

@@ -5,19 +5,12 @@
 // Copyright: (c) 2015
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <cppunit/BriefTestProgressListener.h>
-#include <cppunit/CompilerOutputter.h>
-#include <cppunit/TestResult.h>
-#include <cppunit/TestResultCollector.h>
-#include <cppunit/TestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <wx/cmdline.h> // for wxCmdLineParser
+#include <wx/config.h>
 #include <wx/stdpaths.h>
 #include <wx/log.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include "test.h"
-
-#define LOGGING ON
 
 void AddPane(wxExManagedFrame* frame, wxWindow* pane)
 {
@@ -37,10 +30,33 @@ void AddPane(wxExManagedFrame* frame, wxWindow* pane)
   frame->GetManager().Update();
 }
 
+const wxString GetTestDir()
+{
+  return "./";
+}
+  
+const wxExFileName GetTestFile()
+{
+  return GetTestDir() + "test.h";
+}
+  
 void SetEnvironment(const wxString& dir)
 {
-  wxLog::SetActiveTarget(new wxLogStderr());
-  
+  if (wxTheApp != NULL)
+  {
+    if (wxConfigBase::Get()->ReadLong("verbose", 0) == 1)
+    {
+      wxLog::SetActiveTarget(new wxLogStderr());
+    }
+    
+    wxConfigBase::Get()->Write(_("vi mode"), true);
+    
+    // Create the global lexers object, 
+    // it should be present in ~/.wxex-test-gui
+    // (depending on platform, configuration).
+    wxExLexers::Get();
+  }
+    
   if (!wxDirExists(dir))
   {
     (void)system("mkdir " + dir);
@@ -92,10 +108,6 @@ void SetFindExtension(wxFileName& fn)
       }
     }
   }
-
-#ifdef LOGGING    
-  fprintf(stderr, "EXT: %s\n", (const char *)fn.GetFullPath().c_str());
-#endif  
 }
     
 const wxString SetWorkingDirectory()
@@ -133,10 +145,6 @@ const wxString SetWorkingDirectory()
     exit(1);
   }
   
-#ifdef LOGGING    
-  fprintf(stderr, "WD: %s\n", (const char *)fn.GetFullPath().c_str());
-#endif  
-  
   return old;
 }
 
@@ -152,95 +160,14 @@ int wxExTestApp::OnExit()
 bool wxExTestApp::OnInit()
 {
   SetAppName("wxex-test-gui");
-  SetWorkingDirectory();
-  SetEnvironment(wxStandardPaths::Get().GetUserDataDir());
   
   if (!wxExApp::OnInit())
   {
     return false;
   }
   
-  wxLogStatus(GetCatalogDir());
-  wxLogStatus(GetLocale().GetLocale());
+  SetWorkingDirectory();
+  SetEnvironment(wxStandardPaths::Get().GetUserDataDir());
   
   return true;
-}
-
-int wxExTestApp::OnRun()
-{
-  std::vector<wxString> names;
-  
-  if (argc > 1)
-  {
-    for (int i = 1; i < argc; i++)
-    {
-      names.push_back(argv[i]);
-    }
-  }
-      
-  try
-  {
-    CppUnit::TestResult result;
-    CppUnit::TestResultCollector collector;
-    result.addListener( &collector );        
-    CppUnit::BriefTestProgressListener progressListener;
-    result.addListener( &progressListener );    
-    
-    CppUnit::TestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-    
-    if (names.empty())
-    {
-      runner.run(result);
-    }
-    else
-    {
-      for (auto it : names)
-      {
-        runner.run(result, it.ToStdString());
-      }
-    }
-    
-    // Print test in a compiler compatible format.
-    CppUnit::CompilerOutputter outputter(&collector, std::cerr);
-    outputter.write();                      
-    
-    if (argc <= 1)
-    {
-      OnExit();
-      exit(collector.testFailures() > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
-    }
-    else
-    {
-      wxExApp::OnRun();
-    }
-  }
-  catch (std::invalid_argument& e)
-  {
-    printf("invalid test: %s\n", e.what());
-    return 0;
-  }
-}
-
-//#define SHOW_REPORT
-
-wxExTestFixture::wxExTestFixture() 
-  : TestFixture() 
-  , m_TestDir("./")
-  , m_TestFile(m_TestDir + "test.h")
-{
-}
-
-void wxExTestFixture::tearDown() 
-{
-#ifdef SHOW_REPORT
-  if (!m_Report.empty()) 
-    std::cout << m_Report;
-#endif  
-}
-      
-void wxExTestFixture::Report(const std::string& text) 
-{
-  m_Report.append(text);
-  m_Report.append("\n");
 }

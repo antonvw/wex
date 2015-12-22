@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-variable.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,9 +15,9 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void fixture::testVariable()
+TEST_CASE("wxExVariable", "[stc][vi]")
 {
-  wxExSTC* stc = new wxExSTC(m_Frame, "hello again");
+  wxExSTC* stc = new wxExSTC(GetFrame(), "hello again");
   wxExEx* ex = new wxExEx(stc);
   
   for (auto it : std::vector<std::pair<char*, int>> {
@@ -30,13 +30,14 @@ void fixture::testVariable()
     {"ee", wxExVariable::VARIABLE_INPUT_SAVE}})
   {
     wxExVariable v(it.first, "cht.txt", "zzz", it.second, false);
-    CPPUNIT_ASSERT_MESSAGE( it.first, v.Expand(ex));
-    CPPUNIT_ASSERT( v.GetName() == it.first);
-    CPPUNIT_ASSERT(!v.IsModified());
+    REQUIRE( v.Expand(ex));
+    INFO( it.first);
+    REQUIRE( v.GetName() == it.first);
+    REQUIRE(!v.IsModified());
     if (it.second >= wxExVariable::VARIABLE_INPUT && it.second <= wxExVariable::VARIABLE_INPUT_SAVE)
-      CPPUNIT_ASSERT( v.IsInput());
+      REQUIRE( v.IsInput());
     else
-      CPPUNIT_ASSERT(!v.IsInput());
+      REQUIRE(!v.IsInput());
   }
   
   wxXmlNode xml(wxXML_ELEMENT_NODE, "variable");
@@ -44,40 +45,40 @@ void fixture::testVariable()
   xml.AddAttribute("type", "BUILTIN");
     
   wxExVariable var(&xml);
-  CPPUNIT_ASSERT( var.GetName() == "test");
-  CPPUNIT_ASSERT( var.GetValue().empty());
-  CPPUNIT_ASSERT(!var.Expand(ex));
-  CPPUNIT_ASSERT(!var.IsModified());
-  CPPUNIT_ASSERT(!var.IsInput());
+  REQUIRE( var.GetName() == "test");
+  REQUIRE( var.GetValue().empty());
+  REQUIRE(!var.Expand(ex));
+  REQUIRE(!var.IsModified());
+  REQUIRE(!var.IsInput());
   
   xml.DeleteAttribute("name");
   
   // Test all builtin macro variables.
-  for (const auto& it : m_BuiltinVariables)
+  for (const auto& it : GetBuiltinVariables())
   {
     xml.AddAttribute("name", it);
 
     wxExVariable var2(&xml);
-    CPPUNIT_ASSERT( var2.GetName() == it);
-    CPPUNIT_ASSERT( var2.GetValue().empty());
-    CPPUNIT_ASSERT( var2.Expand(ex));
+    REQUIRE( var2.GetName() == it);
+    REQUIRE( var2.GetValue().empty());
+    REQUIRE( var2.Expand(ex));
     wxString content;
-    CPPUNIT_ASSERT( var2.Expand(ex, content));
+    REQUIRE( var2.Expand(ex, content));
 
     if (it == "Year")
     {
-      CPPUNIT_ASSERT( content.StartsWith("20")); // start of year
+      REQUIRE( content.StartsWith("20")); // start of year
     }
     
-    CPPUNIT_ASSERT(!var2.IsModified());
-    CPPUNIT_ASSERT(!var2.IsInput());
+    REQUIRE(!var2.IsModified());
+    REQUIRE(!var2.IsInput());
     
     xml.DeleteAttribute("name");
   }
     
   wxExVariable var3("added");
-  CPPUNIT_ASSERT( var3.GetName() == "added");
-  CPPUNIT_ASSERT( var3.IsInput());
+  REQUIRE( var3.GetName() == "added");
+  REQUIRE( var3.IsInput());
   var.SkipInput();
   // This is input, we cannot test it at this moment.
   var.AskForInput();

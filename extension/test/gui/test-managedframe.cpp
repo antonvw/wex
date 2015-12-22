@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-managedframe.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,77 +17,77 @@
 #include "test.h"
 
 // Also test the toolbar (wxExToolBar).
-void fixture::testManagedFrame()
+TEST_CASE("wxExManagedFrame", "[stc]")
 {
-  CPPUNIT_ASSERT(m_Frame->AllowClose(100, nullptr));
+  REQUIRE(GetFrame()->AllowClose(100, nullptr));
   
-  wxExSTC* stc = new wxExSTC(m_Frame, "hello world");
-  AddPane(m_Frame, stc);
+  wxExSTC* stc = new wxExSTC(GetFrame(), "hello world");
+  AddPane(GetFrame(), stc);
   
   stc->SetFocus();
   stc->Show();
   wxExVi* vi = &stc->GetVi();
   
   wxExSTC* stc2 = nullptr;  
-  CPPUNIT_ASSERT(!m_Frame->ExecExCommand(":n", stc2));
-  CPPUNIT_ASSERT( stc2 == nullptr);
+  REQUIRE(!GetFrame()->ExecExCommand(":n", stc2));
+  REQUIRE( stc2 == nullptr);
   
-  m_Frame->GetExCommand(vi, "/");
+  GetFrame()->GetExCommand(vi, "/");
   
-  m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR);
-  m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FOCUS_STC);
-  m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE);
-  m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
+  GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR);
+  GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR_FOCUS_STC);
+  GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE);
+  GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
   
-  CPPUNIT_ASSERT(!m_Frame->GetManager().GetPane("VIBAR").IsShown());
+  REQUIRE(!GetFrame()->GetManager().GetPane("VIBAR").IsShown());
   
-  m_Frame->GetFileHistory().Clear();
+  GetFrame()->GetFileHistory().Clear();
   
   wxMenu* menu = new wxMenu();
-  m_Frame->GetFileHistory().UseMenu(1000, menu);
-  m_Frame->SetFindFocus(m_Frame->GetSTC());
-  m_Frame->OpenFile(GetTestFile());
+  GetFrame()->GetFileHistory().UseMenu(1000, menu);
+  GetFrame()->SetFindFocus(GetFrame()->GetSTC());
+  GetFrame()->OpenFile(GetTestFile());
   
-  m_Frame->SetRecentFile(GetTestFile().GetFullPath());
-  m_Frame->SetRecentFile("testing");
+  GetFrame()->SetRecentFile(GetTestFile().GetFullPath());
+  GetFrame()->SetRecentFile("testing");
   
-  CPPUNIT_ASSERT( m_Frame->GetFileHistory().GetHistoryFile().Contains("test.h"));
-  CPPUNIT_ASSERT( m_Frame->GetFileHistory().GetCount() > 0);
-  CPPUNIT_ASSERT(!m_Frame->GetFileHistory().GetVector(5).empty());
+  REQUIRE( GetFrame()->GetFileHistory().GetHistoryFile().Contains("test.h"));
+  REQUIRE( GetFrame()->GetFileHistory().GetCount() > 0);
+  REQUIRE(!GetFrame()->GetFileHistory().GetVector(5).empty());
   
-  m_Frame->ShowExMessage("hello from m_Frame");
-  CPPUNIT_ASSERT(!m_Frame->ShowPane("xxxx"));
-  CPPUNIT_ASSERT(!m_Frame->ShowPane("xxxx", false));
-  m_Frame->PrintEx(vi, "hello vi");
+  GetFrame()->ShowExMessage("hello from GetFrame()");
+  REQUIRE(!GetFrame()->ShowPane("xxxx"));
+  REQUIRE(!GetFrame()->ShowPane("xxxx", false));
+  GetFrame()->PrintEx(vi, "hello vi");
   
-  m_Frame->SyncAll();
-  m_Frame->SyncCloseAll(0);
+  GetFrame()->SyncAll();
+  GetFrame()->SyncCloseAll(0);
   
-  CPPUNIT_ASSERT( m_Frame->GetToolBar() != nullptr);
-  CPPUNIT_ASSERT( m_Frame->GetOptionsToolBar() != nullptr);
+  REQUIRE( GetFrame()->GetToolBar() != nullptr);
+  REQUIRE( GetFrame()->GetOptionsToolBar() != nullptr);
   
-  m_Frame->GetToolBar()->AddControls();
-  CPPUNIT_ASSERT( m_Frame->TogglePane("FINDBAR"));
-  CPPUNIT_ASSERT( m_Frame->GetManager().GetPane("FINDBAR").IsShown());
-  CPPUNIT_ASSERT( m_Frame->TogglePane("OPTIONSBAR"));
-  CPPUNIT_ASSERT( m_Frame->GetManager().GetPane("OPTIONSBAR").IsShown());
-  CPPUNIT_ASSERT( m_Frame->TogglePane("TOOLBAR"));
-  CPPUNIT_ASSERT(!m_Frame->GetManager().GetPane("TOOLBAR").IsShown());
-  CPPUNIT_ASSERT( m_Frame->ShowPane("TOOLBAR"));
-  CPPUNIT_ASSERT( m_Frame->TogglePane("VIBAR"));
-  CPPUNIT_ASSERT( m_Frame->GetManager().GetPane("VIBAR").IsShown());
+  GetFrame()->GetToolBar()->AddControls();
+  REQUIRE( GetFrame()->TogglePane("FINDBAR"));
+  REQUIRE( GetFrame()->GetManager().GetPane("FINDBAR").IsShown());
+  REQUIRE( GetFrame()->TogglePane("OPTIONSBAR"));
+  REQUIRE( GetFrame()->GetManager().GetPane("OPTIONSBAR").IsShown());
+  REQUIRE( GetFrame()->TogglePane("TOOLBAR"));
+  REQUIRE(!GetFrame()->GetManager().GetPane("TOOLBAR").IsShown());
+  REQUIRE( GetFrame()->ShowPane("TOOLBAR"));
+  REQUIRE( GetFrame()->TogglePane("VIBAR"));
+  REQUIRE( GetFrame()->GetManager().GetPane("VIBAR").IsShown());
   
-  CPPUNIT_ASSERT(!m_Frame->TogglePane("XXXXBAR"));
-  CPPUNIT_ASSERT(!m_Frame->GetManager().GetPane("XXXXBAR").IsOk());
+  REQUIRE(!GetFrame()->TogglePane("XXXXBAR"));
+  REQUIRE(!GetFrame()->GetManager().GetPane("XXXXBAR").IsOk());
   
-  m_Frame->OnNotebook(100, stc);
+  GetFrame()->OnNotebook(100, stc);
   
-  m_Frame->AppendPanes(menu);
+  GetFrame()->AppendPanes(menu);
 
   for (auto id : std::vector<int> {
     wxID_PREFERENCES, ID_FIND_FIRST, 
     ID_VIEW_LOWEST + 1, ID_VIEW_LOWEST + 2}) 
   {
-    wxPostEvent(m_Frame, wxCommandEvent(wxEVT_MENU, id));
+    wxPostEvent(GetFrame(), wxCommandEvent(wxEVT_MENU, id));
   }
 }

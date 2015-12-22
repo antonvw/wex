@@ -185,6 +185,7 @@ function(process_po_files)
   endif()
 endfunction()  
 
+option(BUILD_TEST "Build tests")
 option(wxExUSE_OTL "Oracle Template Library")
 option(wxExUSE_SSS "Sync Socket Server")
 

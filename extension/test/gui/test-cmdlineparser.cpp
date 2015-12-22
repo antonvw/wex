@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-cmdlineparser.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #include <wx/extension/cmdline.h>
 #include "test.h"
 
-void fixture::testCmdLineParser()
+TEST_CASE("wxExCmdLineParser")
 {
   long a;
   double b;
@@ -38,16 +38,16 @@ void fixture::testCmdLineParser()
       {"q", {0, [&](std::vector<wxString> & v) {q = v[1];}}},
       {"r", {0, [&](std::vector<wxString> & v) {r = v[2];}}}});
     
-  CPPUNIT_ASSERT( clp.Parse() == 0 );
+  REQUIRE( clp.Parse() == 0 );
 
-  CPPUNIT_ASSERT( a == 10 );
-  CPPUNIT_ASSERT( b == 10.1 );
-  CPPUNIT_ASSERT( c == "test" );
-  CPPUNIT_ASSERT( d.IsValid() );
-  CPPUNIT_ASSERT( s );
-  CPPUNIT_ASSERT(!t );
-  CPPUNIT_ASSERT( u );
-  CPPUNIT_ASSERT( p == "one" );
-  CPPUNIT_ASSERT( q == "two" );
-  CPPUNIT_ASSERT( r == "three" );
+  REQUIRE( a == 10 );
+  REQUIRE( b == 10.1 );
+  REQUIRE( c == "test" );
+  REQUIRE( d.IsValid() );
+  REQUIRE( s );
+  REQUIRE(!t );
+  REQUIRE( u );
+  REQUIRE( p == "one" );
+  REQUIRE( q == "two" );
+  REQUIRE( r == "three" );
 }

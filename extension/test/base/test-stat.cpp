@@ -1,22 +1,23 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-stat.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/stat.h>
-#include "test.h"
+#include "../catch.hpp"
+#include "../test.h"
 
-void TestFixture::testStat()
+TEST_CASE( "wxExStat" ) 
 {
   wxExStat stat(GetTestFile().GetFullPath());
 
-  CPPUNIT_ASSERT( stat.IsOk());
-  CPPUNIT_ASSERT(!stat.IsReadOnly());
-  CPPUNIT_ASSERT( stat.Sync(GetTestDir() + "test-base.link"));
-  CPPUNIT_ASSERT( stat.Sync());
-  CPPUNIT_ASSERT(!stat.GetModificationTime().empty());
+  REQUIRE( stat.IsOk());
+  REQUIRE(!stat.IsReadOnly());
+  REQUIRE( stat.Sync(GetTestDir() + "test-base.link"));
+  REQUIRE( stat.Sync());
+  REQUIRE(!stat.GetModificationTime().empty());
   
-  CPPUNIT_ASSERT( wxExStat("/etc/hosts").IsReadOnly());
+  REQUIRE( wxExStat("/etc/hosts").IsReadOnly());
 }

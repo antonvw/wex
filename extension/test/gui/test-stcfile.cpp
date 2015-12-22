@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-stcfile.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,14 +14,17 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void fixture::testSTCFile()
+TEST_CASE("wxExSTCFile", "[stc]")
 {
-  wxExSTC* stc = new wxExSTC(m_Frame, GetTestFile());
+  wxExSTC* stc = new wxExSTC(GetFrame(), GetTestFile());
+  
+  AddPane(GetFrame(), stc);
+  
   wxExSTCFile file(stc);
 
   // The file itself is not assigned.  
-  CPPUNIT_ASSERT(!file.GetFileName().GetStat().IsOk());
-  CPPUNIT_ASSERT(!file.GetContentsChanged());
+  REQUIRE(!file.GetFileName().GetStat().IsOk());
+  REQUIRE(!file.GetContentsChanged());
 
   file.FileNew(wxExFileName("xxxx"));
 }

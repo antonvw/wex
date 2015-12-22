@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-vcsentry.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,48 +14,48 @@
 #include <wx/extension/defs.h>
 #include "test.h"
 
-void fixture::testVCSEntry()
+TEST_CASE("wxExVCSEntry", "[vcs]")
 {
-  CPPUNIT_ASSERT( wxExVCSEntry().GetCommands() == 1); // the empty command
+  REQUIRE( wxExVCSEntry().GetCommands() == 1); // the empty command
   
   wxExVCSEntry test("my-vcs", "./",
     {wxExVCSCommand("one", "main"), wxExVCSCommand("two", "main")},
     wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX);
   
-  CPPUNIT_ASSERT( test.GetCommands() == 2);
-  CPPUNIT_ASSERT(!test.GetCommand().GetCommand().empty());
-  CPPUNIT_ASSERT(!test.AdminDirIsTopLevel());
-  CPPUNIT_ASSERT( test.GetAdminDir() == "./");
-  CPPUNIT_ASSERT( test.GetFlags().empty());
-  CPPUNIT_ASSERT( test.GetName() == "my-vcs");
-  CPPUNIT_ASSERT( test.GetOutput().empty());
+  REQUIRE( test.GetCommands() == 2);
+  REQUIRE(!test.GetCommand().GetCommand().empty());
+  REQUIRE(!test.AdminDirIsTopLevel());
+  REQUIRE( test.GetAdminDir() == "./");
+  REQUIRE( test.GetFlags().empty());
+  REQUIRE( test.GetName() == "my-vcs");
+  REQUIRE( test.GetOutput().empty());
   
-  CPPUNIT_ASSERT( wxExVCSEntry().ShowDialog(
-    m_Frame,
+  REQUIRE( wxExVCSEntry().ShowDialog(
+    GetFrame(),
     "vcs",
     false) == wxID_CANCEL);
   
   test.ShowOutput();
   
   wxMenu menu;
-  CPPUNIT_ASSERT( test.BuildMenu(0, &menu) == 0);
+  REQUIRE( test.BuildMenu(0, &menu) == 0);
   
   // This should have no effect.  
-  CPPUNIT_ASSERT(!test.SetCommand(5));
-  CPPUNIT_ASSERT(!test.SetCommand(ID_EDIT_VCS_LOWEST));
-  CPPUNIT_ASSERT(!test.SetCommand(ID_VCS_LOWEST));
+  REQUIRE(!test.SetCommand(5));
+  REQUIRE(!test.SetCommand(ID_EDIT_VCS_LOWEST));
+  REQUIRE(!test.SetCommand(ID_VCS_LOWEST));
   
-  CPPUNIT_ASSERT( test.GetCommands() == 2);
-  CPPUNIT_ASSERT( test.GetFlags().empty());
-  CPPUNIT_ASSERT( test.GetName() == "my-vcs");
-  CPPUNIT_ASSERT( test.GetOutput().empty());
-  CPPUNIT_ASSERT(!test.Execute());
+  REQUIRE( test.GetCommands() == 2);
+  REQUIRE( test.GetFlags().empty());
+  REQUIRE( test.GetName() == "my-vcs");
+  REQUIRE( test.GetOutput().empty());
+  REQUIRE(!test.Execute());
   
   wxExVCSEntry git("git");
-  CPPUNIT_ASSERT( git.Execute()); // executes just git, shows help
+  REQUIRE( git.Execute()); // executes just git, shows help
   git.ShowOutput();
   
   wxExVCSEntry* git_async = new wxExVCSEntry("git", wxEmptyString, {wxExVCSCommand("status")});
-  CPPUNIT_ASSERT( git_async->Execute(wxEmptyString, wxExLexer(), wxEXEC_ASYNC));
+  REQUIRE( git_async->Execute(wxEmptyString, wxExLexer(), wxEXEC_ASYNC));
   git_async->ShowOutput();
 }

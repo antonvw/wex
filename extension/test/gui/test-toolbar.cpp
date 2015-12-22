@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-toolbar.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,19 +13,23 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void fixture::testToolBar()
+TEST_CASE("wxExToolBar")
 {
-  m_Frame->GetToolBar()->AddControls(false);
-  m_Frame->GetToolBar()->AddControls();
+  GetFrame()->GetToolBar()->AddControls(false);
+  GetFrame()->GetToolBar()->AddControls();
   
-  m_Frame->GetToolBar()->AddTool(wxID_FIND);
-  m_Frame->GetToolBar()->AddTool(wxID_CLEAR);
-  m_Frame->GetToolBar()->AddTool(wxID_PREFERENCES);
-  m_Frame->GetToolBar()->Realize();
+  GetFrame()->GetToolBar()->AddTool(wxID_FIND);
+  GetFrame()->GetToolBar()->AddTool(wxID_CLEAR);
+  GetFrame()->GetToolBar()->AddTool(wxID_PREFERENCES);
+  GetFrame()->GetToolBar()->Realize();
   
-  m_Frame->GetOptionsToolBar()->AddControls();
+  GetFrame()->GetOptionsToolBar()->AddControls();
   
-  m_Frame->GetManager().GetPane("FINDBAR").Show();
-  m_Frame->GetManager().GetPane("OPTIONSBAR").Show();
-  m_Frame->GetManager().Update();
+  GetFrame()->GetManager().GetPane("FINDBAR").Show();
+  GetFrame()->GetManager().GetPane("OPTIONSBAR").Show();
+  GetFrame()->GetManager().Update();
+  
+  GetFrame()->GetManager().GetPane("FINDBAR").Hide();
+  GetFrame()->GetManager().GetPane("OPTIONSBAR").Hide();
+  GetFrame()->GetManager().Update();
 }

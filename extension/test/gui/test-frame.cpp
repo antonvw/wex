@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,59 +14,59 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void fixture::testFrame()
+TEST_CASE("wxExFrame")
 {
-  m_Frame->SetFocus(); // otherwise focus is on stc component caused by testEx
+  GetFrame()->SetFocus(); // otherwise focus is on stc component caused by testEx
 
-  CPPUNIT_ASSERT(!m_Frame->OpenFile(GetTestFile()));
-  CPPUNIT_ASSERT( ((wxExFrame *)m_Frame)->OpenFile(GetTestFile().GetFullPath(), "contents"));
+  REQUIRE(!GetFrame()->OpenFile(GetTestFile()));
+  REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestFile().GetFullPath(), "contents"));
   
-  CPPUNIT_ASSERT( m_Frame->GetGrid() == nullptr);
-  CPPUNIT_ASSERT( m_Frame->GetListView() == nullptr);
-  CPPUNIT_ASSERT( m_Frame->GetSTC() == nullptr);
+  REQUIRE( GetFrame()->GetGrid() == nullptr);
+  REQUIRE( GetFrame()->GetListView() == nullptr);
+  REQUIRE( GetFrame()->GetSTC() == nullptr);
   
-  m_Frame->SetFindFocus(nullptr);
-  m_Frame->SetFindFocus(m_Frame);
-  m_Frame->SetFindFocus(m_Frame->GetSTC());
+  GetFrame()->SetFindFocus(nullptr);
+  GetFrame()->SetFindFocus(GetFrame());
+  GetFrame()->SetFindFocus(GetFrame()->GetSTC());
   
   wxMenuBar* bar = new wxMenuBar();
-  m_Frame->SetMenuBar(bar);
+  GetFrame()->SetMenuBar(bar);
   
-  m_Frame->StatusBarClicked("test");
-  m_Frame->StatusBarClicked("Pane1");
-  m_Frame->StatusBarClicked("Pane2");
+  GetFrame()->StatusBarClicked("test");
+  GetFrame()->StatusBarClicked("Pane1");
+  GetFrame()->StatusBarClicked("Pane2");
   
-  m_Frame->StatusBarClickedRight("test");
-  m_Frame->StatusBarClickedRight("Pane1");
-  m_Frame->StatusBarClickedRight("Pane2");
+  GetFrame()->StatusBarClickedRight("test");
+  GetFrame()->StatusBarClickedRight("Pane1");
+  GetFrame()->StatusBarClickedRight("Pane2");
   
-  m_Frame->SetRecentFile("testing");
+  GetFrame()->SetRecentFile("testing");
   
-  CPPUNIT_ASSERT(!m_Frame->StatusText("hello", "test"));
-  CPPUNIT_ASSERT( m_Frame->StatusText("hello1", "Pane1"));
-  CPPUNIT_ASSERT( m_Frame->StatusText("hello2", "Pane2"));
-  CPPUNIT_ASSERT( m_Frame->GetStatusText("Pane1") = "hello1");
-  CPPUNIT_ASSERT( m_Frame->GetStatusText("Pane2") = "hello2");
+  REQUIRE(!GetFrame()->StatusText("hello", "test"));
+  REQUIRE( GetFrame()->StatusText("hello1", "Pane1"));
+  REQUIRE( GetFrame()->StatusText("hello2", "Pane2"));
+  REQUIRE( GetFrame()->GetStatusText("Pane1") == "hello1");
+  REQUIRE( GetFrame()->GetStatusText("Pane2") == "hello2");
   
-  CPPUNIT_ASSERT(!m_Frame->UpdateStatusBar(m_Frame->GetSTC(), "test"));
-  CPPUNIT_ASSERT(!m_Frame->UpdateStatusBar(m_Frame->GetSTC(), "Pane1"));
-  CPPUNIT_ASSERT(!m_Frame->UpdateStatusBar(m_Frame->GetSTC(), "Pane2"));
-  CPPUNIT_ASSERT(!m_Frame->UpdateStatusBar(m_Frame->GetSTC(), "PaneInfo"));
+  REQUIRE(!GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "test"));
+  REQUIRE(!GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "Pane1"));
+  REQUIRE(!GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "Pane2"));
+  REQUIRE(!GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "PaneInfo"));
   
-  wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
-  AddPane(m_Frame, stc);
+  wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
+  AddPane(GetFrame(), stc);
   stc->SetFocus();
   
-  CPPUNIT_ASSERT( m_Frame->GetSTC() == stc);
-  CPPUNIT_ASSERT( m_Frame->UpdateStatusBar(stc, "PaneInfo"));
-  CPPUNIT_ASSERT( m_Frame->UpdateStatusBar(stc, "PaneLexer"));
-  CPPUNIT_ASSERT( m_Frame->UpdateStatusBar(stc, "PaneFileType"));
+  REQUIRE( GetFrame()->GetSTC() == stc);
+  REQUIRE( GetFrame()->UpdateStatusBar(stc, "PaneInfo"));
+  REQUIRE( GetFrame()->UpdateStatusBar(stc, "PaneLexer"));
+  REQUIRE( GetFrame()->UpdateStatusBar(stc, "PaneFileType"));
   
   for (auto id : std::vector<int> {
     wxID_FIND, wxID_REPLACE, 
     // wxID_OPEN,shows dialog..
     ID_VIEW_MENUBAR, ID_VIEW_STATUSBAR, ID_VIEW_TITLEBAR}) 
   {
-    wxPostEvent(m_Frame, wxCommandEvent(wxEVT_MENU, id));
+    wxPostEvent(GetFrame(), wxCommandEvent(wxEVT_MENU, id));
   }
 }

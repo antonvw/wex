@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-configdlg.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,11 +14,11 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-void fixture::testConfigDialog()
+TEST_CASE("wxExConfigDialog", "[item]")
 {
   wxExItem::UseConfig(true);
   
-  wxExItemDialog* dlg = new wxExItemDialog(m_Frame, 
+  wxExItemDialog* dlg = new wxExItemDialog(GetFrame(), 
     std::vector <wxExItem> {
       wxExItem("string1", "test1"),
       wxExItem("string2", "test2"),
@@ -28,14 +28,14 @@ void fixture::testConfigDialog()
     "config dialog", 0, 1, wxOK | wxCANCEL | wxAPPLY);
   dlg->Show();
   
-  CPPUNIT_ASSERT(dlg->GetItemValue("string1").As<wxString>().empty());
+  REQUIRE(dlg->GetItemValue("string1").As<wxString>().empty());
   
   dlg->Reload();
   
   wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxCANCEL));
   
   // Test config dialog without pages.
-  wxExItemDialog* dlg1 = new wxExItemDialog(m_Frame, 
+  wxExItemDialog* dlg1 = new wxExItemDialog(GetFrame(), 
     std::vector <wxExItem> {
       wxExItem("string1"),
       wxExItem("string2")},
@@ -46,13 +46,13 @@ void fixture::testConfigDialog()
   wxPostEvent(dlg1, wxCommandEvent(wxEVT_BUTTON, wxOK));
   
   // Test config dialog without items.
-  wxExItemDialog* dlg2 = new wxExItemDialog(m_Frame, 
+  wxExItemDialog* dlg2 = new wxExItemDialog(GetFrame(), 
     std::vector <wxExItem>(),
     "no items");
   dlg2->Show();
   
   // Test config dialog with empty items.
-  wxExItemDialog* dlg3 = new wxExItemDialog(m_Frame, 
+  wxExItemDialog* dlg3 = new wxExItemDialog(GetFrame(), 
     std::vector <wxExItem> {
       wxExItem(), wxExItem(), wxExItem()},
     "empty items");

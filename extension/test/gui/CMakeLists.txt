@@ -11,7 +11,6 @@ if (ODBC_FOUND)
     ${PROJECT_NAME} 
     wxex
     ${wxWidgets_LIBRARIES} 
-    ${CPPUNIT_LIBRARIES}
     ${ODBC_LIBRARY}
     )
 else (ODBC_FOUND)
@@ -19,7 +18,6 @@ else (ODBC_FOUND)
     ${PROJECT_NAME} 
     wxex
     ${wxWidgets_LIBRARIES} 
-    ${CPPUNIT_LIBRARIES}
     )
 endif()
 

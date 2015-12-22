@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-style.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,9 +14,9 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void fixture::testStyle()
+TEST_CASE("wxExStyle", "[stc][lexer]")
 {
-  CPPUNIT_ASSERT(!wxExStyle().IsOk() );
+  REQUIRE(!wxExStyle().IsOk() );
   
   for (const auto& style : std::vector<
     std::pair<
@@ -34,19 +34,22 @@ void fixture::testStyle()
     
     if (!style.first.second.empty())
     {
-      CPPUNIT_ASSERT( test.IsOk());
-      CPPUNIT_ASSERT( test.GetNo() == style.first.second);
-      CPPUNIT_ASSERT( test.GetValue() == style.second.first);
+      REQUIRE( test.IsOk());
+      REQUIRE( test.GetNo() == style.first.second);
+      REQUIRE( test.GetValue() == style.second.first);
     }
     else
     {
-      CPPUNIT_ASSERT(!test.IsOk());
+      REQUIRE(!test.IsOk());
     }
   }
 
-  wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
+  wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
+  
+  AddPane(GetFrame(), stc);
+  
   wxExStyle style("mark_circle", "0");
   style.Apply(stc);
-  CPPUNIT_ASSERT( style.IsOk());
-  CPPUNIT_ASSERT(!style.ContainsDefaultStyle());
+  REQUIRE( style.IsOk());
+  REQUIRE(!style.ContainsDefaultStyle());
 }

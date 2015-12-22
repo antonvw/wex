@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      test-indicator.cpp
-// Purpose:   Implementation for wxExtension cpp unit testing
+// Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,27 +15,27 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-void fixture::testIndicator()
+TEST_CASE("wxExIndicator")
 {
   wxExIndicator ind;
-  CPPUNIT_ASSERT(!ind.IsOk() );
+  REQUIRE(!ind.IsOk() );
   
   wxExIndicator indx(5, 2);
   wxExIndicator indy(7, 5);
   
-  CPPUNIT_ASSERT( indx.IsOk());
-  CPPUNIT_ASSERT( indy.IsOk());
-  CPPUNIT_ASSERT( indx < indy );
+  REQUIRE( indx.IsOk());
+  REQUIRE( indy.IsOk());
+  REQUIRE( indx < indy );
   
   wxXmlNode xml(wxXML_ELEMENT_NODE, "indicator");
   xml.AddAttribute("no", "5");
   xml.SetContent("symbol,green");
 
   wxExIndicator ind2(&xml);
-  CPPUNIT_ASSERT( ind2.GetNo() == 5);
-  CPPUNIT_ASSERT( ind2.IsOk());
+  REQUIRE( ind2.GetNo() == 5);
+  REQUIRE( ind2.IsOk());
   
-  wxExSTC* stc = new wxExSTC(m_Frame, "hello stc");
+  wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
   ind2.Apply(stc);
-  CPPUNIT_ASSERT( ind2.IsOk());
+  REQUIRE( ind2.IsOk());
 }
