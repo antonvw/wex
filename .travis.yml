@@ -60,5 +60,5 @@ before_script:
 
 script:
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then mkdir build && pushd build; fi
-    - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then cmake -DwxExUSE_SSS=ON -DwxExUSE_OTL=ON -DBUILD_TEST=ON..; fi
+    - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then cmake -DwxExUSE_SSS=ON -DwxExUSE_OTL=ON -DBUILD_TEST=ON ..; fi
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then make -j 4 && ctest -V ..; fi
