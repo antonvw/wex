@@ -26,8 +26,10 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   wxExSTC* stc = GetSTC();
   stc->SetText("hello stc");
   wxExSTC* copy = new wxExSTC(*stc);
-  
   AddPane(GetFrame(), copy);
+  
+  stc->GetVi().Command("\x1b");
+  REQUIRE(stc->GetVi().GetMode() == wxExVi::MODE_NORMAL);
   
   REQUIRE( copy->GetText() == "hello stc");
   REQUIRE( stc->FindNext(wxString("hello")));
@@ -57,6 +59,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   stc->DocumentStart();
   wxExFindReplaceData::Get()->SetMatchWord(false);
   REQUIRE( stc->FindNext(wxString("more text")));
+  INFO (stc->GetSelectedText() << stc->GetVi().GetMode());
   REQUIRE( stc->GetFindString() == "more text");
   REQUIRE( stc->ReplaceAll("more", "less") == 1);
   REQUIRE( stc->ReplaceAll("more", "less") == 0);
