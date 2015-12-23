@@ -25,7 +25,7 @@ TEST_CASE("wxExEx", "[stc][vi]")
   AddPane(GetFrame(), stc);
   wxExEx* ex = new wxExEx(stc);
 
-  INFO(std::to_string(stc->GetTabWidth()));
+  REQUIRE(stc->GetVi().GetIsActive());
   REQUIRE(stc->GetTabWidth() == 120);
   REQUIRE(stc->GetEdgeColumn() == 40);
   REQUIRE(stc->GetLexer().GetScintillaLexer() == "sql");

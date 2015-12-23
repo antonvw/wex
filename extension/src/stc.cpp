@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc.cpp
+
 // Purpose:   Implementation of class wxExSTC
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2015 Anton van Wezenbeek
@@ -61,6 +61,7 @@ public:
     std::make_tuple(_("Line number"), ITEM_TEXTCTRL_INT, 60),
     std::make_tuple(_("Print flags"), ITEM_TEXTCTRL_INT, wxSTC_PRINT_BLACKONWHITE),
     std::make_tuple(_("Tab width"), ITEM_TEXTCTRL_INT, 2),
+    std::make_tuple(_("vi mode"), ITEM_CHECKBOX, true),
     std::make_tuple(_("Default font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT))}) {;};
 };
   
@@ -619,12 +620,9 @@ void wxExSTC::ConfigGet(bool init)
   SetViewWhiteSpace(cfg->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
   SetWrapMode(cfg->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
   SetWrapVisualFlags(cfg->ReadLong(_("Wrap visual flags"),  wxSTC_WRAPVISUALFLAG_END));
+  m_vi.Use(cfg->ReadBool(_("vi mode"), false));
   
   ShowLineNumbers(cfg->ReadBool(_("Line numbers"), false));
-
-  // Here the default vi mode is set, and used if the application
-  // is run for the first time.
-  m_vi.Use(cfg->ReadBool(_("vi mode"), false));
 
   m_Link.SetFromConfig();
 }

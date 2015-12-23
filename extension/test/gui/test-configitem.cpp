@@ -126,9 +126,11 @@ TEST_CASE("wxExConfigItem", "[item]")
   REQUIRE( ci_str.ToConfig(false));
   REQUIRE(!ci_st.ToConfig(true));
   REQUIRE(!ci_st.ToConfig(false));
-  
+}
+
 #if wxCHECK_VERSION(3,1,0)
-  // Test wxExConfigDefaults
+TEST_CASE("wxExConfigDefaults")
+{
   wxExConfigDefaults def(std::vector<std::tuple<wxString, wxExItemType, wxAny>> {
     std::make_tuple("def-colour", ITEM_COLOURPICKERWIDGET, *wxWHITE),
     std::make_tuple("def-font", ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)),
@@ -138,5 +140,5 @@ TEST_CASE("wxExConfigItem", "[item]")
   
   REQUIRE( def.Get() != nullptr);
   REQUIRE( def.Get()->Exists("def-colour"));
-#endif
 }
+#endif
