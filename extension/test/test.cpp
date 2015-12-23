@@ -61,11 +61,6 @@ void SetEnvironment(const wxString& dir)
   
   wxConfigBase::Get()->Write(_("vi mode"), true);
   
-  // Create the global lexers object, 
-  // it should be present in ~/.wxex-test-gui
-  // (depending on platform, configuration).
-  wxExLexers::Get();
-    
   if (!wxDirExists(dir))
   {
     (void)system("mkdir " + dir);
@@ -85,6 +80,11 @@ void SetEnvironment(const wxString& dir)
 #if wxExUSE_OTL
   (void)system(cp + " .odbc.ini " + wxGetHomeDir());
 #endif
+
+  // Create the global lexers object (after copying lexers.xml), 
+  // it should be present in ~/.wxex-test-gui
+  // (depending on platform, configuration).
+  wxExLexers::Get();
 }
     
 void SetFindExtension(wxFileName& fn)
