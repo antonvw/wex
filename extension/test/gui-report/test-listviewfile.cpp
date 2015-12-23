@@ -12,7 +12,6 @@
 TEST_CASE("wxExListViewFile")
 {
   wxExListViewFile* listView = new wxExListViewFile(GetFrame(), GetFrame(), GetProject());
-  
   AddPane(GetFrame(), listView);
 
   listView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING));
@@ -24,22 +23,23 @@ TEST_CASE("wxExListViewFile")
 
   REQUIRE(listView->FileLoad(wxExFileName(GetProject())));
   REQUIRE(listView->FileSave(wxExFileName("test-rep.prj.bck")));
+  REQUIRE(remove("test-rep.prj.bck") == 0);
 
   REQUIRE(listView->ItemFromText("test1\ntest2\n"));
   
-  REQUIRE(listView->GetContentsChanged());
+  REQUIRE( listView->GetContentsChanged());
   listView->ResetContentsChanged();
   REQUIRE(!listView->GetContentsChanged());
   listView->AfterSorting();
-  
+
+#ifdef __UNIX__
   listView->AddItems(
     "./",
     "*.h", 
     wxDIR_FILES, 
     false); // join the thread
-  
-  REQUIRE(remove("test-rep.prj.bck") == 0);
-  
+#endif
+
   for (auto id : std::vector<int> {
     wxID_ADD, wxID_EDIT, wxID_REPLACE_ALL}) 
   {

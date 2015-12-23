@@ -15,7 +15,8 @@ TEST_CASE( "wxExFileName" )
   
   SECTION( "basic" ) 
   {
-    REQUIRE(fileName.GetLexer().GetScintillaLexer().empty());
+    INFO(fileName.GetLexer().GetScintillaLexer());
+    REQUIRE(fileName.GetLexer().GetScintillaLexer() == "cpp");
     REQUIRE(fileName.GetStat().IsOk());
     fileName.Assign("xxx");
     REQUIRE(fileName.GetStat().IsOk());
@@ -47,8 +48,8 @@ TEST_CASE( "wxExFileName" )
 
     const long file_time = sw.Time();
 
-    REQUIRE(exfile_time < 10);
-    REQUIRE(file_time < 100);
+    CHECK(exfile_time < 100);
+    CHECK(file_time < 300);
     
     INFO(wxString::Format(
       "wxExFileName::IsReadOnly %d files in %ld ms wxFileName::IsFileWritable %d files in %ld ms",

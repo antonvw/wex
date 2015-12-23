@@ -51,23 +51,20 @@ const wxString BuildArg(const wxString& file)
   
 void SetEnvironment(const wxString& dir)
 {
-  if (wxTheApp != NULL)
+  const long verbose(wxConfigBase::Get()->ReadLong("verbose", 0));
+  
+  switch (verbose)
   {
-    const long verbose(wxConfigBase::Get()->ReadLong("verbose", 0));
-    
-    switch (verbose)
-    {
-      case 1: wxLog::SetActiveTarget(new wxLogStderr()); break;
-      case 2: new wxLogNull(); break;
-    }
-    
-    wxConfigBase::Get()->Write(_("vi mode"), true);
-    
-    // Create the global lexers object, 
-    // it should be present in ~/.wxex-test-gui
-    // (depending on platform, configuration).
-    wxExLexers::Get();
+    case 1: wxLog::SetActiveTarget(new wxLogStderr()); break;
+    case 2: new wxLogNull(); break;
   }
+  
+  wxConfigBase::Get()->Write(_("vi mode"), true);
+  
+  // Create the global lexers object, 
+  // it should be present in ~/.wxex-test-gui
+  // (depending on platform, configuration).
+  wxExLexers::Get();
     
   if (!wxDirExists(dir))
   {
