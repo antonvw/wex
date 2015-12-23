@@ -18,6 +18,8 @@ TEST_CASE( "wxExStat" )
   REQUIRE( stat.Sync(GetTestDir() + "test-base.link"));
   REQUIRE( stat.Sync());
   REQUIRE(!stat.GetModificationTime().empty());
-  
+
+#ifdef __UNIX__
   REQUIRE( wxExStat("/etc/hosts").IsReadOnly());
+#endif
 }
