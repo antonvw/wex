@@ -25,13 +25,7 @@ public:
   /// Constructor taking a full filename.
   wxExFileName(const wxString& fullpath, wxPathFormat format = wxPATH_NATIVE)
     : wxFileName(fullpath, format)
-    , m_Stat(fullpath) {
-      // This construct prevents an assert in the test base.
-      wxExLexers* lexers = wxExLexers::Get(false);
-      if (lexers != nullptr)
-      {
-        m_Lexer = lexers->FindByFileName(*this);
-      }};
+    , m_Stat(fullpath) {m_Lexer = wxExLexers::Get()->FindByFileName(*this);};
 
   /// Copy constructor from a wxFileName.
   wxExFileName(const wxFileName& filename)
