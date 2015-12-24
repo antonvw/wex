@@ -90,9 +90,9 @@ TEST_CASE("wxEx", "[stc][vi]")
     
 #ifdef __UNIX__
     REQUIRE( wxExAutoCompleteFileName("/usr/include/s", v));
-#endif
     REQUIRE( wxExAutoCompleteFileName("../../../extension/src/v", v));
     REQUIRE( wxExAutoCompleteFileName("~/", v));
+#endif
   }
   
   SECTION("wxExCalculator")

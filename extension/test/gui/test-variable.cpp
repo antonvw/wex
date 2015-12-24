@@ -22,7 +22,9 @@ TEST_CASE("wxExVariable", "[stc][vi]")
   
   for (auto it : std::vector<std::pair<char*, int>> {
     {"Created", wxExVariable::VARIABLE_BUILTIN},     
+#ifdef __UNIX__
     {"HOME", wxExVariable::VARIABLE_ENVIRONMENT}, 
+#endif
     {"aa", wxExVariable::VARIABLE_READ},
 //    {"template", wxExVariable::VARIABLE_TEMPLATE},
     {"cc", wxExVariable::VARIABLE_INPUT},       
@@ -30,8 +32,8 @@ TEST_CASE("wxExVariable", "[stc][vi]")
     {"ee", wxExVariable::VARIABLE_INPUT_SAVE}})
   {
     wxExVariable v(it.first, "cht.txt", "zzz", it.second, false);
-    REQUIRE( v.Expand(ex));
     INFO( it.first);
+    REQUIRE( v.Expand(ex));
     REQUIRE( v.GetName() == it.first);
     REQUIRE(!v.IsModified());
     if (it.second >= wxExVariable::VARIABLE_INPUT && it.second <= wxExVariable::VARIABLE_INPUT_SAVE)

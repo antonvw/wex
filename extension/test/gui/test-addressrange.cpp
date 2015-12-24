@@ -97,12 +97,14 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
   stc->SelectNone();
   
   // Test Escape.
+#ifdef __UNIX
   stc->SetText(contents);
   REQUIRE( stc->GetLineCount() == 8);
   REQUIRE( wxExAddressRange(ex, "%").Escape("uniq"));
   REQUIRE( stc->GetLineCount() == 5);
   REQUIRE( wxExAddressRange(ex).Escape("ls -l"));
   REQUIRE( wxExAddressRange::GetProcess() != nullptr);
+#endif
   
   // Test Global and Global inverse.
   for (int i = 0; i < 2; i++)
