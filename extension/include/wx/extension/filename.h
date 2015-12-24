@@ -27,6 +27,10 @@ public:
     : wxFileName(fullpath, format)
     , m_Stat(fullpath) {m_Lexer = wxExLexers::Get()->FindByFileName(*this);};
 
+  /// Copy constructor.
+  wxExFileName(const wxExFileName& f)
+    : wxFileName(f) {*this = f;};
+
   /// Copy constructor from a wxFileName.
   wxExFileName(const wxFileName& filename)
     : wxExFileName(filename.GetFullPath()) {;};
@@ -34,9 +38,10 @@ public:
   /// Assignment operator.
   wxExFileName& operator=(const wxExFileName& f)
   {
-    m_Lexer = f.m_Lexer;
-    m_Stat = f.m_Stat;
-    Assign(f.GetFullPath());
+    if (this != &f) {
+      m_Lexer = f.m_Lexer;
+      m_Stat = f.m_Stat;
+      Assign(f.GetFullPath());};
     return *this;
   };
 

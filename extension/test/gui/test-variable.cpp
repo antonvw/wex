@@ -18,8 +18,9 @@
 TEST_CASE("wxExVariable", "[stc][vi]")
 {
   wxExSTC* stc = new wxExSTC(GetFrame(), "hello again");
+  AddPane(GetFrame(), stc);
   wxExEx* ex = new wxExEx(stc);
-  
+
   for (auto it : std::vector<std::pair<char*, int>> {
     {"Created", wxExVariable::VARIABLE_BUILTIN},     
 #ifdef __UNIX__
@@ -41,7 +42,7 @@ TEST_CASE("wxExVariable", "[stc][vi]")
     else
       REQUIRE(!v.IsInput());
   }
-  
+
   wxXmlNode xml(wxXML_ELEMENT_NODE, "variable");
   xml.AddAttribute("name", "test");
   xml.AddAttribute("type", "BUILTIN");
