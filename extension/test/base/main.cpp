@@ -22,7 +22,18 @@ int main (int argc, char* argv[])
   
   wxApp::SetInstance( new wxExTestApp() );
   wxEntryStart( argc, argv );
-  wxTheApp->OnInit();
+
+  wxGetApp().OnInit();
   
-  return session.run();
+  int ret = session.run();
+
+  wxGetApp().OnExit();
+  
+  return ret;
 }  
+
+TEST_CASE( "wxExTestApp" ) 
+{
+  REQUIRE(!wxGetApp().GetCatalogDir().empty());
+  REQUIRE(!wxGetApp().GetLocale().GetName().empty());
+}

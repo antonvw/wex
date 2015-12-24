@@ -10,7 +10,8 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/cmdline.h>
-#include "test.h"
+#include "../catch.hpp"
+#include "../test.h"
 
 TEST_CASE("wxExCmdLineParser")
 {

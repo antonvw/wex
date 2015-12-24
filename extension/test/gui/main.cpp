@@ -119,20 +119,19 @@ int main(int argc, char *argv[])
   if (returnCode != 0 || session.configData().showHelp)
     return returnCode;
 
-  wxExTestGuiApp* app = new wxExTestGuiApp();
-  wxApp::SetInstance( app );
+  wxApp::SetInstance( new wxExTestGuiApp() );
   wxEntryStart( argc, argv );
-  app->OnInit();
+  wxGetApp().OnInit();
   
   const int fails = session.run();
 
   if (argc < 2)
   {
-    app->OnExit();
+    wxGetApp().OnExit();
     exit(fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
   }
   
-  app->OnRun();
+  wxGetApp().OnRun();
   
   return 1;
 }

@@ -19,6 +19,10 @@ TEST_CASE( "wxExFile" )
     REQUIRE(!file.CheckSync());
 
     REQUIRE(!file.GetContentsChanged());
+    
+    file.ResetContentsChanged();
+
+    REQUIRE(!file.FileSave());
 
     REQUIRE( file.GetFileName().GetStat().IsOk());
     // The fullpath should be normalized, test it.
@@ -72,12 +76,5 @@ TEST_CASE( "wxExFile" )
 
     CHECK(exfile_read < 1000);
     CHECK(file_read < 1000);
-    
-    INFO(wxString::Format(
-      "wxExFile::Read %d items in %ld ms wxFile::Read %d items in %ld ms",
-      max,
-      exfile_read,
-      max,
-      file_read).ToStdString());
   }
 }

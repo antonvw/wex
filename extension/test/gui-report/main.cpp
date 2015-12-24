@@ -101,17 +101,17 @@ int main(int argc, char *argv[])
 
   wxApp::SetInstance( new wxExTestGuiApp() );
   wxEntryStart( argc, argv );
-  wxTheApp->OnInit();
+  wxGetApp().OnInit();
   
   const int fails = session.run();
 
   if (argc < 2)
   {
-    wxTheApp->OnExit();
+    wxGetApp().OnExit();
     exit(fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
   }
   
-  wxTheApp->OnRun();
+  wxGetApp().OnRun();
   
   return 1;
 }

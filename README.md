@@ -8,7 +8,7 @@ one of these applications, being a full featured source code text editor.
 
 - [wxWidgets 3.0](http://www.wxwidgets.org/)
   
-- [catch lib](http:https://github.com/philsquared/Catch/) (only for testing, no installation necessary)   
+- [catch lib 1.3.0](http:https://github.com/philsquared/Catch/) (only for testing, no installation necessary)   
     
 - [OTL database 4.0.214](http://otl.sourceforge.net/) is used by syncodbcquery  
     `sudo apt-get install unixODBC unixODBC-dev` or   
