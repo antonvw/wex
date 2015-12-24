@@ -103,13 +103,15 @@ TEST_CASE("wxExViMacros", "[stc][vi]")
   }
 
   wxString expanded;
-  REQUIRE( wxExViMacros::ExpandTemplate(vi, wxExVariable(), expanded));
+  REQUIRE(!wxExViMacros::ExpandTemplate(vi, wxExVariable(), expanded));
 
+#ifdef __UNIX__
   // Test all environment macro variables.
   for (auto& env : std::vector<std::string> {"HOME","PWD"})
   {
     REQUIRE( macros.Expand(vi, env));
   }
+#endif
   
   // Test input macro variables (requires input).
   // Test template macro variables (requires input).

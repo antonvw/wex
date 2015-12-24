@@ -134,6 +134,7 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE(!ex->Command(":'<,'>x"));
   
   // Test source.
+#ifdef __UNIX
   stc->SetText("xx\nxx\nyy\nzz\n");
   REQUIRE( ex->Command(":so test-source.txt"));
   stc->SetText("xx\nxx\nyy\nzz\n");
@@ -146,7 +147,8 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE( ex->Command(":d"));
   REQUIRE( ex->Command(":r !echo qwerty"));
   REQUIRE( stc->GetText().Contains("qwerty"));
-
+#endif
+  
   // Test macros.
   // Do not load macros yet, to test IsRecorded.
   REQUIRE(!ex->GetMacros().IsRecording());

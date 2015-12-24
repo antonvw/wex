@@ -62,7 +62,7 @@ TEST_CASE("wxExListItem")
   
   wxExListItem item(listView, wxExFileName("./test.h"));
   item.Insert();
-  REQUIRE( item.GetFileName().GetFullPath() == "./test.h");
+  REQUIRE( item.GetFileName().GetFullName() == "test.h");
   REQUIRE( item.GetFileSpec().empty());
   REQUIRE( wxExListItem(listView, 
     wxExFileName("./test.h"), "*.txt").GetFileSpec() == "*.txt");

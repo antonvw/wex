@@ -24,12 +24,15 @@ TEST_CASE("wxExSTC", "[stc][vi]")
 #endif
   
   wxExSTC* stc = GetSTC();
-  stc->SetText("hello stc");
-  wxExSTC* copy = new wxExSTC(*stc);
-  AddPane(GetFrame(), copy);
-  
+
   stc->GetVi().Command("\x1b");
   REQUIRE(stc->GetVi().GetMode() == wxExVi::MODE_NORMAL);
+  
+  stc->SetText("hello stc");
+  REQUIRE( stc->GetText() == "hello stc");
+
+  wxExSTC* copy = new wxExSTC(*stc);
+  AddPane(GetFrame(), copy);
   
   REQUIRE( copy->GetText() == "hello stc");
   REQUIRE( stc->FindNext(wxString("hello")));

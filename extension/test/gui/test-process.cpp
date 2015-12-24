@@ -30,6 +30,7 @@ TEST_CASE("wxExProcess")
   process->ConfigDialog(GetFrame(), "test process", false);
   
   // Test wxEXEC_SYNC process
+#ifdef __UNIX
   REQUIRE( process->Execute("ls -l", wxEXEC_SYNC));
   REQUIRE(!process->GetError());
   REQUIRE(!process->GetOutput().empty());
@@ -70,7 +71,7 @@ TEST_CASE("wxExProcess")
   REQUIRE(!wxGetCwd().Contains("data"));
   wxSetWorkingDirectory(cwd);
   REQUIRE( process->Kill() == wxKILL_OK);
-
+  
   // Test invalid wxEXEC_ASYNC process (the process gets a process id, and exits immediately).
   REQUIRE( process->Execute("xxxx"));
   REQUIRE(!process->GetError());
@@ -78,6 +79,7 @@ TEST_CASE("wxExProcess")
   // it still is not empty.
   REQUIRE( process->GetOutput().empty());
   REQUIRE( process->Kill() == wxKILL_OK);
+#endif
   
   wxExProcess::PrepareOutput(GetFrame()); // in fact already done
 

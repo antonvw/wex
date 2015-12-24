@@ -224,13 +224,18 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
 bool wxExViMacros::ExpandTemplate(
   wxExEx* ex, const wxExVariable& v, wxString& expanded)
 {
+  if (v.GetValue().empty())
+  {
+    return false;
+  }
+  
   if (!m_IsExpand)
   {
     m_IsExpand = true;
     AskForInput();
   }
 
-  // Read the file (file name is in m_Value), expand
+  // Read the file (file name is in v.GetValue()), expand
   // all macro variables in it, and set expanded.
   const wxFileName filename(
 #ifdef wxExUSE_PORTABLE
