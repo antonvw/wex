@@ -26,10 +26,13 @@ public:
   /// Default constructor.
   wxExLexer();
 
+  /// Copy constructor.
+  wxExLexer(const wxExLexer& l);
+    
   /// Constructor using xml node.
   wxExLexer(const wxXmlNode* node);
 
-  /// Constructor using lexer.
+  /// Constructor using other lexer.
   wxExLexer(
     /// lexer to use
     const wxString& lexer, 
@@ -38,13 +41,9 @@ public:
     /// if clear is true, old styles are reset (including folding)
     bool clear = true);
     
-  /// Constructor using lexer.
-  wxExLexer(
-    /// lexer to use
-    const wxExLexer& lexer, 
-    /// stc component on which to apply
-    wxStyledTextCtrl* stc = nullptr);
-    
+  /// Assignment operator.
+  wxExLexer& operator=(const wxExLexer& l);
+
   /// Adds keywords (public for testing only).
   bool AddKeywords(const wxString& text, int setno = 0);
   

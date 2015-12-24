@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/numformatter.h>
 #include <wx/extension/cmdline.h>
 #include "../catch.hpp"
 #include "../test.h"
@@ -23,8 +24,13 @@ TEST_CASE("wxExCmdLineParser")
   bool t;
   bool u;
   wxString p,q,r;
+  const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
   
-  wxExCmdLineParser clp("-a 10 -b 10.1 -c test -d 01-jan-2000 -s -t- -u one two three", 
+  const wxString str(ds == '.' ?
+    "-a 10 -b 10.1 -c test -d 01-jan-2000 -s -t- -u one two three":
+    "-a 10 -b 10,1 -c test -d 01-jan-2000 -s -t- -u one two three");
+  
+  wxExCmdLineParser clp(str,
     wxExCmdLineParser::CmdSwitches { 
       {{"s", ""}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){s = on;}}},
       {{"t", ""}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){t = on;}}},

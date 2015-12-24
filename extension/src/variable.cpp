@@ -184,7 +184,8 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
     wxFileName file(ex->GetSTC()->GetFileName());
     wxDateTime dtCreate;
     
-    if (file.GetTimes (nullptr, nullptr, &dtCreate))
+    if (ex->GetSTC()->GetFileName().GetStat().IsOk() &&
+        file.GetTimes (nullptr, nullptr, &dtCreate))
     {
       expanded = dtCreate.FormatISODate();
     }
