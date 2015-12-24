@@ -15,6 +15,7 @@
 wxExFile::wxExFile(bool open_file)
   : m_OpenFile(open_file)
   , m_HasRead(false)
+  , m_IsLoaded(false)
   , m_FileName()
   , m_Stat()
 {
@@ -27,6 +28,7 @@ wxExFile::wxExFile(
   : wxFile(filename.GetFullPath(), mode)
   , m_OpenFile(open_file)
   , m_HasRead(false)
+  , m_IsLoaded(false)
   , m_Stat(filename.GetFullPath())
 {
   m_FileName.Assign(filename);
@@ -68,7 +70,7 @@ bool wxExFile::CheckSync()
       // Update the stat member, so next time no sync.
       if (!m_Stat.Sync())
       {
-        // This might be reported in an OnIdele, so do not use wxLogError.
+        // This might be reported in an OnIdle, so do not use wxLogError.
         wxLogStatus("Could not sync: " + m_FileName.GetFullPath());
       }
         
@@ -95,6 +97,12 @@ void wxExFile::FileNew(const wxExFileName& filename)
 
 bool wxExFile::FileSave(const wxExFileName& filename)
 {
+  if (!m_IsLoaded)
+  {
+    wxLogStatus("File has not been loaded");
+    return false;
+  }
+
   bool save_as = false;
 
   if (filename.IsOk())
@@ -152,6 +160,8 @@ bool wxExFile::Get(bool synced)
   {
     Close();
   }
+  
+  m_IsLoaded = true;
 
   ResetContentsChanged();
 

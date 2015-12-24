@@ -93,7 +93,9 @@ private:
       m_Stat.Sync(m_FileName.GetFullPath());};
 
   const bool m_OpenFile;
+  
   bool m_HasRead;
+  bool m_IsLoaded;
 
   wxExFileName m_FileName;
   wxExStat m_Stat; // used for syncing, no public access
