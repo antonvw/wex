@@ -23,10 +23,11 @@ install:
 before_build:
   - mkdir build
   - ps: cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PROGRAM_PATH=C:\cygwin\bin ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PROGRAM_PATH=C:\cygwin\bin -DBUILD_TEST=ON ..
 
 build_script:
   - msbuild ALL_BUILD.vcxproj /p:Configuration=Release
+  - ctest -V
   - ..\build.bat
 
 test: OFF
