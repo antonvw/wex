@@ -325,9 +325,9 @@ bool wxExFrame::OpenFile(
 {
   wxExSTC* stc = GetSTC();
 
-  if (stc != nullptr) stc->SetText(text); else wxLogMessage(text);
+  if (stc != nullptr) stc->SetText(text);
 
-  return true;
+  return stc != nullptr;
 }
     
 void wxExFrame::SetMenuBar(wxMenuBar* bar)
@@ -338,7 +338,9 @@ void wxExFrame::SetMenuBar(wxMenuBar* bar)
   }
   
   wxFrame::SetMenuBar(
-   !m_IsCommand && !wxConfigBase::Get()->ReadBool("ShowMenuBar", true) ? nullptr: bar);
+   !m_IsCommand && !wxConfigBase::Get()->ReadBool("ShowMenuBar", true) ? 
+      nullptr: 
+      bar);
 }
 
 #if wxUSE_STATUSBAR

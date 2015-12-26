@@ -9,17 +9,18 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/managedframe.h>
 #include <wx/extension/defs.h>
+#include <wx/extension/managedframe.h>
+#include <wx/extension/menu.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
 TEST_CASE("wxExFrame")
 {
-  GetFrame()->SetFocus(); // otherwise focus is on stc component caused by testEx
+  GetFrame()->SetFocus(); // otherwise focus might be on stc component
 
-  REQUIRE(!GetFrame()->OpenFile(GetTestFile()));
-  REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestFile().GetFullPath(), "contents"));
+  REQUIRE(!((wxExFrame *)GetFrame())->OpenFile(GetTestFile()));
+  REQUIRE(!((wxExFrame *)GetFrame())->OpenFile(GetTestFile().GetFullPath(), "contents"));
   
   REQUIRE( GetFrame()->GetGrid() == nullptr);
   REQUIRE( GetFrame()->GetListView() == nullptr);
@@ -30,6 +31,9 @@ TEST_CASE("wxExFrame")
   GetFrame()->SetFindFocus(GetFrame()->GetSTC());
   
   wxMenuBar* bar = new wxMenuBar();
+  wxExMenu* menu = new wxExMenu();
+  menu->AppendEdit();
+  bar->Append(menu, "Edit");
   GetFrame()->SetMenuBar(bar);
   
   GetFrame()->StatusBarClicked("test");
