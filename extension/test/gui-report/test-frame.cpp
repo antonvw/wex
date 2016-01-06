@@ -2,7 +2,7 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/menu.h>
@@ -48,7 +48,9 @@ TEST_CASE("wxExFrameWithHistory")
   REQUIRE( GetFrame()->Grep("xxxxxxx yyy"));
   REQUIRE( GetFrame()->Grep("xxxxxxx *.cpp ."));
 
+#ifndef __WXMSW__
   REQUIRE(!GetFrame()->Sed("xxxxxxx"));
+#endif
   
   GetFrame()->SetRecentProject("xxx.prj");
   REQUIRE( GetFrame()->GetProjectHistory().GetHistoryFile().empty());

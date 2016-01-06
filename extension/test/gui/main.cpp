@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015
+// Copyright: (c) 2016
 ////////////////////////////////////////////////////////////////////////////////
 
 #define CATCH_CONFIG_RUNNER
@@ -54,7 +54,8 @@ public:
     
     m_STC = new wxExSTC(m_Frame);
     AddPane(m_Frame, m_STC);
-    m_STC->SetFocus();
+    
+    return true;
   }
   
   static wxExManagedFrame* GetFrame() {return m_Frame;};
@@ -125,7 +126,7 @@ int main(int argc, char *argv[])
   
   const int fails = session.run();
 
-  if (argc < 2)
+  if (argc < 2 || fails == 0)
   {
     wxGetApp().OnExit();
     exit(fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS);

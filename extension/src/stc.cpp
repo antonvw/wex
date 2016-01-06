@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-
+// Name:      stc.cpp
 // Purpose:   Implementation of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -525,7 +525,7 @@ int wxExSTC::ConfigDialog(
          {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}}, true, 1)}},
       {_("Directory"),
       {!(flags & STC_CONFIG_SIMPLE) ?
-         wxExItem(_("Include directory"), ITEM_LISTVIEW, false, wxID_ANY, 25, LABEL_NONE): wxExItem()}}}, ITEM_NOTEBOOK_LIST)};
+         wxExItem(_("Include directory"), ITEM_LISTVIEW, wxAny(), false, wxID_ANY, LABEL_NONE): wxExItem()}}}, ITEM_NOTEBOOK_LIST)};
 
   int buttons = wxOK | wxCANCEL;
 

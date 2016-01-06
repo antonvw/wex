@@ -27,7 +27,7 @@ before_build:
 
 build_script:
   - msbuild ALL_BUILD.vcxproj /p:Configuration=Release
-  - ctest -V
+  - ctest -V -C Release
   - ..\build.bat
 
 test: OFF

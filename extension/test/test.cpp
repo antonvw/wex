@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015
+// Copyright: (c) 2016
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/config.h>
@@ -51,16 +51,6 @@ const wxString BuildArg(const wxString& file)
   
 void SetEnvironment(const wxString& dir)
 {
-  const long verbose(wxConfigBase::Get()->ReadLong("verbose", 0));
-  
-  switch (verbose)
-  {
-    case 1: wxLog::SetActiveTarget(new wxLogStderr()); break;
-    case 2: new wxLogNull(); break;
-  }
-  
-  wxConfigBase::Get()->Write(_("vi mode"), true);
-  
   if (!wxDirExists(dir))
   {
     (void)system("mkdir " + dir);
@@ -189,6 +179,16 @@ bool wxExTestApp::OnInit()
   {
     return false;
   }
+  
+  const long verbose(wxConfigBase::Get()->ReadLong("verbose", 2));
+  
+  switch (verbose)
+  {
+    case 1: wxLog::SetActiveTarget(new wxLogStderr()); break;
+    case 2: new wxLogNull(); break;
+  }
+  
+  wxConfigBase::Get()->Write(_("vi mode"), true);
   
   return true;
 }

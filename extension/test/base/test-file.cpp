@@ -2,7 +2,7 @@
 // Name:      test-file.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stopwatch.h>
@@ -74,7 +74,7 @@ TEST_CASE( "wxExFile" )
 
     const long file_read = sw.Time();
 
-    CHECK(exfile_read < 1000);
-    CHECK(file_read < 1000);
+    CHECK(exfile_read < 2000);
+    CHECK(file_read < 2000);
   }
 }

@@ -2,7 +2,7 @@
 // Name:      test-hexmode.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -21,6 +21,7 @@ TEST_CASE("wxExHexMode", "[stc]")
   // 30 31 32 33 34 35 36 37 38 39                   0123456789
   wxExSTC* stc = new wxExSTC(
     GetFrame(), "0123456789", wxExSTC::STC_WIN_HEX);
+  AddPane(GetFrame(), stc);
     
   REQUIRE(stc->GetText() != "0123456789");
   

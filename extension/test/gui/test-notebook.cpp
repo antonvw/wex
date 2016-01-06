@@ -15,7 +15,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExNotebook", "[stc]")
+TEST_CASE("wxExNotebook", "[stc][!throws]")
 {
   wxExNotebook* notebook = new wxExNotebook(GetFrame(), nullptr);
   AddPane(GetFrame(), notebook);
