@@ -2,7 +2,7 @@
 // Name:      test-filename.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stopwatch.h>
@@ -49,8 +49,8 @@ TEST_CASE( "wxExFileName" )
 
     const long file_time = sw.Time();
 
-    CHECK(exfile_time < 100);
-    CHECK(file_time < 300);
+    CHECK(exfile_time < 1000);
+    CHECK(file_time < 1000);
     
     INFO(wxString::Format(
       "wxExFileName::IsReadOnly %d files in %ld ms wxFileName::IsFileWritable %d files in %ld ms",

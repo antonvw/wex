@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wxExListView and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -630,8 +630,8 @@ void wxExListView::ConfigGet(bool init)
   
   SetBackgroundColour(cfg->ReadObject(_("Background colour"), wxColour("WHITE")));
   SetFont(cfg->ReadObject(_("List font"), wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
-  SetSingleStyle(wxLC_HRULES, cfg->ReadLong(_("Rulers"), 0) & wxLC_HRULES);
-  SetSingleStyle(wxLC_VRULES, cfg->ReadLong(_("Rulers"), 0) & wxLC_VRULES);
+  SetSingleStyle(wxLC_HRULES, (cfg->ReadLong(_("Rulers"), 0) & wxLC_HRULES) > 0);
+  SetSingleStyle(wxLC_VRULES, (cfg->ReadLong(_("Rulers"), 0) & wxLC_VRULES) > 0);
   SetSingleStyle(wxLC_NO_HEADER, !cfg->ReadBool(_("Header"), false));
   
   ItemsUpdate();

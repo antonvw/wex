@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #define CATCH_CONFIG_RUNNER
@@ -69,6 +69,8 @@ public:
   
     m_Frame = new FrameWithHistory(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName());
     m_Frame->Show();
+    
+    return true;
   }
   
   static wxExFrameWithHistory* GetFrame() {return m_Frame;};

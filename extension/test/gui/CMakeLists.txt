@@ -13,7 +13,7 @@ if (ODBC_FOUND)
     ${wxWidgets_LIBRARIES} 
     ${ODBC_LIBRARY}
     )
-else (ODBC_FOUND)
+else ()
   target_link_libraries(
     ${PROJECT_NAME} 
     wxex
@@ -21,4 +21,8 @@ else (ODBC_FOUND)
     )
 endif()
 
-add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+if (WIN32)
+  add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME} -e)
+else ()
+  add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+endif ()

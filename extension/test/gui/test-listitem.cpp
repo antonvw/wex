@@ -2,7 +2,7 @@
 // Name:      test-listitem.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -40,7 +40,7 @@ TEST_CASE("wxExListItem")
   const long add = sw.Time();
 
   INFO(std::to_string(add));
-  REQUIRE(add < 5000);
+  REQUIRE(add < 15000);
   
   INFO(wxString::Format(
     "wxExListItem::Insert %d items in %ld ms", 3 * max, add).ToStdString());
@@ -53,11 +53,10 @@ TEST_CASE("wxExListItem")
   
   const long sort = sw.Time();
   
-  REQUIRE(sort < 2000);
+  REQUIRE(sort < 10000);
   
   INFO(wxString::Format(
     "wxExListView::Sort %d items in %ld ms", 3 * max, sort).ToStdString());
-    
   REQUIRE(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
   
   wxExListItem item(listView, wxExFileName("./test.h"));

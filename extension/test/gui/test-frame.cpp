@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,18 +17,19 @@
 
 TEST_CASE("wxExFrame")
 {
-  GetFrame()->SetFocus(); // otherwise focus might be on stc component
+  GetSTC()->SetFocus();
+  GetSTC()->GetFile().ResetContentsChanged();
 
-  REQUIRE(!((wxExFrame *)GetFrame())->OpenFile(GetTestFile()));
-  REQUIRE(!((wxExFrame *)GetFrame())->OpenFile(GetTestFile().GetFullPath(), "contents"));
+  REQUIRE(((wxExFrame *)GetFrame())->OpenFile(GetTestFile()));
+  REQUIRE(((wxExFrame *)GetFrame())->OpenFile(GetTestFile().GetFullPath(), "contents"));
   
   REQUIRE( GetFrame()->GetGrid() == nullptr);
   REQUIRE( GetFrame()->GetListView() == nullptr);
-  REQUIRE( GetFrame()->GetSTC() == nullptr);
+  REQUIRE( GetFrame()->GetSTC() != nullptr);
   
+  GetFrame()->SetFindFocus(GetFrame()->GetSTC());
   GetFrame()->SetFindFocus(nullptr);
   GetFrame()->SetFindFocus(GetFrame());
-  GetFrame()->SetFindFocus(GetFrame()->GetSTC());
   
   wxMenuBar* bar = new wxMenuBar();
   wxExMenu* menu = new wxExMenu();
@@ -55,7 +56,7 @@ TEST_CASE("wxExFrame")
   REQUIRE(!GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "test"));
   REQUIRE(!GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "Pane1"));
   REQUIRE(!GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "Pane2"));
-  REQUIRE(!GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "PaneInfo"));
+  REQUIRE( GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "PaneInfo"));
   
   wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
   AddPane(GetFrame(), stc);
@@ -71,6 +72,7 @@ TEST_CASE("wxExFrame")
     // wxID_OPEN,shows dialog..
     ID_VIEW_MENUBAR, ID_VIEW_STATUSBAR, ID_VIEW_TITLEBAR}) 
   {
+    wxPostEvent(GetFrame(), wxCommandEvent(wxEVT_MENU, id));
     wxPostEvent(GetFrame(), wxCommandEvent(wxEVT_MENU, id));
   }
 }

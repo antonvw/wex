@@ -2,7 +2,7 @@
 // Name:      test-textfile.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -49,7 +49,7 @@ TEST_CASE("wxExTextFile")
   
   const long elapsed = sw.Time();
   
-  REQUIRE(elapsed < 20);
+  REQUIRE(elapsed < 100);
   
   INFO(wxString::Format(
     "wxExTextFile::matching %d items in %ld ms", 

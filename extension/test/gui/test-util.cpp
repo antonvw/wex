@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -35,7 +35,7 @@ TEST_CASE("wxExToVectorString")
   REQUIRE( v3.Get().size() == 3);
 }
 
-TEST_CASE("wxEx", "[stc][vi]")
+TEST_CASE("wxEx", "[stc][vi][!throws]")
 {
   std::list < wxString > l{"x","y","z"};
   std::vector<int> cs{'(',')','{','<','>'};
@@ -118,7 +118,7 @@ TEST_CASE("wxEx", "[stc][vi]")
       {".",      {1,0}},
       {"xxx",    {0,0}},
       {"%s",     {0,0}},
-      {"%/xx/",  {0,0}},
+      {"%s/xx/", {0,0}},
       {"$",      {4,0}}};
       
     if (ds == '.')
@@ -403,7 +403,7 @@ TEST_CASE("wxEx", "[stc][vi]")
     (void)GetSTC()->GetVi().Command("4j");
     (void)GetSTC()->GetVi().Command("5l");
     REQUIRE( wxExSortSelection(GetSTC(), STRING_SORT_ASCENDING, 3, 5));
-    REQUIRE( GetSTC()->GetText() == sorted);
+    REQUIRE( wxString(GetSTC()->GetText()).Trim() == wxString(sorted).Trim());
     REQUIRE( wxExSortSelection(GetSTC(), STRING_SORT_DESCENDING, 3, 5));
     REQUIRE( GetSTC()->GetText() != sorted);
   }
