@@ -114,16 +114,14 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
 {
   if (this != &p)
   {
-    if (m_Timer != nullptr)
-    {
-      delete m_Timer;
-    }
+    delete m_Timer;
     
     m_Timer = new wxTimer(this);
     
     m_Command = p.m_Command;
     m_Error = p.m_Error;
     m_HasStdError = p.m_HasStdError;
+    m_Input = p.m_Input;
     m_Output = p.m_Output;
     m_Sync = p.m_Sync;
   }

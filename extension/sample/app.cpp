@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of sample classes for wxExtension
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -456,7 +456,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       
     case ID_STC_SPLIT:
       {
-      wxExSTC* stc = new wxExSTC(*m_STC);
+      wxExSTC* stc = new wxExSTC(m_Notebook, stc->GetFileName());
       m_Notebook->AddPage(
         stc,
         wxString::Format("stc%d", stc->GetId()),

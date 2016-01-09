@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -27,11 +27,6 @@ wxExLexer::wxExLexer()
   Initialize();
 }
 
-wxExLexer::wxExLexer(const wxExLexer& lexer) 
-{
-  *this = lexer;
-}
-    
 wxExLexer::wxExLexer(const wxXmlNode* node)
 {
   Initialize();
@@ -42,28 +37,6 @@ wxExLexer::wxExLexer(const wxString& lexer, wxStyledTextCtrl* stc, bool clear)
 {
   Initialize();
   Set(lexer, stc, true);
-}
-  
-wxExLexer& wxExLexer::operator=(const wxExLexer& l)
-{
-  if (this != &l)
-  {
-    m_CommentBegin = l.m_CommentBegin;
-    m_CommentBegin2 = l.m_CommentBegin2;
-    m_CommentEnd = l.m_CommentEnd;
-    m_CommentEnd2 = l.m_CommentEnd2;
-    m_DisplayLexer = l.m_DisplayLexer;
-    m_Extensions = l.m_Extensions;
-    m_IsOk = l.m_IsOk;
-    m_Keywords = l.m_Keywords;
-    m_KeywordsSet = l.m_KeywordsSet;
-    m_Language = l.m_Language;
-    m_Properties = l.m_Properties;
-    m_ScintillaLexer = l.m_ScintillaLexer;
-    m_Styles = l.m_Styles;
-  }
-
-  return *this;
 }
 
 // Adds the specified keywords to the keywords map and the keywords set.

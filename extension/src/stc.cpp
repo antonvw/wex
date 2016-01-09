@@ -149,32 +149,6 @@ wxExSTC::wxExSTC(wxWindow* parent,
   }
 }
 
-wxExSTC::wxExSTC(const wxExSTC& stc)
-  : wxStyledTextCtrl(stc.GetParent(), 
-      wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, stc.GetName())
-  , m_Lexer(stc.m_Lexer)
-  , m_Flags(stc.m_Flags)
-  , m_Goto(stc.m_Goto)
-  , m_MenuFlags(stc.m_MenuFlags)
-  , m_MarginDividerNumber(stc.m_MarginDividerNumber)
-  , m_MarginFoldingNumber(stc.m_MarginFoldingNumber)
-  , m_MarginLineNumber(stc.m_MarginLineNumber)
-  , m_MarkerChange(stc.m_MarkerChange)
-  , m_Link(wxExLink(this))
-  , m_File(this, stc.GetFileName().GetFullPath())
-  , m_vi(wxExVi(this)) // do not use stc.m_vi, crash
-  , m_DefaultFont(stc.m_DefaultFont)
-  , m_AutoComplete(stc.m_AutoComplete)
-  , m_Frame(stc.m_Frame)
-  , m_HexMode(wxExHexMode(this))
-{
-  Initialize(stc.GetFileName().GetStat().IsOk());
-
-  SetText(stc.GetText());
-  m_Lexer.Apply(this);
-  SetEdgeMode(stc.GetEdgeMode());
-}
-
 bool wxExSTC::AutoIndentation(int c)
 {
   const long ai = wxConfigBase::Get()->ReadLong(_("Auto indent"), INDENT_ALL);
@@ -296,13 +270,13 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   {
     if (!sel.empty())
     {
-      wxExMenu* menuSelection = new wxExMenu(menu);
+      wxExMenu* menuSelection = new wxExMenu(menu.GetStyle());
       menuSelection->Append(ID_EDIT_UPPERCASE, _("&Uppercase\tF11"));
       menuSelection->Append(ID_EDIT_LOWERCASE, _("&Lowercase\tF12"));
 
       if (wxExGetNumberOfLines(sel) > 1)
       {
-        wxExMenu* menuSort = new wxExMenu(menu);
+        wxExMenu* menuSort = new wxExMenu(menu.GetStyle());
         menuSort->Append(wxID_SORT_ASCENDING);
         menuSort->Append(wxID_SORT_DESCENDING);
         menuSelection->AppendSeparator();

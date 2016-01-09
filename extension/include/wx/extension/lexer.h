@@ -2,7 +2,7 @@
 // Name:      lexer.h
 // Purpose:   Declaration of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,9 +26,6 @@ public:
   /// Default constructor.
   wxExLexer();
 
-  /// Copy constructor.
-  wxExLexer(const wxExLexer& l);
-    
   /// Constructor using xml node.
   wxExLexer(const wxXmlNode* node);
 
@@ -41,9 +38,6 @@ public:
     /// if clear is true, old styles are reset (including folding)
     bool clear = true);
     
-  /// Assignment operator.
-  wxExLexer& operator=(const wxExLexer& l);
-
   /// Adds keywords (public for testing only).
   bool AddKeywords(const wxString& text, int setno = 0);
   

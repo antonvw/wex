@@ -88,9 +88,6 @@ public:
     const wxSize& size = wxDefaultSize,
     long style = 0);
 
-  /// Copy constructor.
-  wxExSTC(const wxExSTC& stc);
-  
   /// Is a change indicator allowed.
   bool AllowChangeIndicator() const {return m_AllowChangeIndicator;};
 
