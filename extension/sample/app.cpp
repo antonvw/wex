@@ -455,13 +455,14 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       break;
       
     case ID_STC_SPLIT:
+      if (editor != nullptr)
       {
-      wxExSTC* stc = new wxExSTC(m_Notebook, stc->GetFileName());
-      m_Notebook->AddPage(
-        stc,
-        wxString::Format("stc%d", stc->GetId()),
-        m_STC->GetFileName().GetFullName());
-      stc->SetDocPointer(m_STC->GetDocPointer());
+        wxExSTC* stc = new wxExSTC(m_Notebook, editor->GetFileName());
+        m_Notebook->AddPage(
+          stc,
+          wxString::Format("stc%d", stc->GetId()),
+          m_STC->GetFileName().GetFullName());
+        stc->SetDocPointer(m_STC->GetDocPointer());
       }
       break;
       
