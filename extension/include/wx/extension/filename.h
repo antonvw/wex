@@ -2,7 +2,7 @@
 // Name:      filename.h
 // Purpose:   Declaration of class wxExFileName
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,23 +27,9 @@ public:
     : wxFileName(fullpath, format)
     , m_Stat(fullpath) {m_Lexer = wxExLexers::Get()->FindByFileName(*this);};
 
-  /// Copy constructor.
-  wxExFileName(const wxExFileName& f)
-    : wxFileName(f) {*this = f;};
-
-  /// Copy constructor from a wxFileName.
+  /// Constructor from a wxFileName.
   wxExFileName(const wxFileName& filename)
     : wxExFileName(filename.GetFullPath()) {;};
-
-  /// Assignment operator.
-  wxExFileName& operator=(const wxExFileName& f)
-  {
-    if (this != &f) {
-      m_Lexer = f.m_Lexer;
-      m_Stat = f.m_Stat;
-      Assign(f.GetFullPath());};
-    return *this;
-  };
 
   /// Returns the lexer.
   const auto & GetLexer() const {return m_Lexer;};

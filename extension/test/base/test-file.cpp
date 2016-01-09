@@ -38,7 +38,13 @@ TEST_CASE( "wxExFile" )
     wxCharBuffer buffer = file.Read();
     REQUIRE(buffer.length() == 40);
     
-    file.FileNew(wxExFileName("xxx"));
+    file.FileNew(wxExFileName("test-xxx"));
+    
+    REQUIRE(!file.IsOpened());
+    REQUIRE( file.Open(wxFile::write));
+    REQUIRE( file.Write(buffer, 10) == 10);
+    REQUIRE( file.Write(wxString("OK")));
+    REQUIRE( file.Close());
   }
 
   SECTION( "timing" ) 

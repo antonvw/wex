@@ -2,7 +2,7 @@
 // Name:      menu.h
 // Purpose:   Declaration of wxExMenu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -33,9 +33,6 @@ public:
 
   /// Default constructor.
   wxExMenu(long style = MENU_DEFAULT);
-
-  /// Copy constructor.
-  wxExMenu(const wxExMenu& menu);
 
   /// Appends a menu item for stock menu id's
   /// using automatic naming, help text and art id.

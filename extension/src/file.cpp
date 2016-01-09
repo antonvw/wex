@@ -18,6 +18,7 @@ wxExFile::wxExFile(bool open_file)
   , m_IsLoaded(false)
   , m_FileName()
   , m_Stat()
+  , m_File(new wxFile())
 {
 }
 
@@ -25,14 +26,45 @@ wxExFile::wxExFile(
   const wxFileName& filename,
   wxFile::OpenMode mode,
   bool open_file)
-  : wxFile(filename.GetFullPath(), mode)
+  : m_File(new wxFile(filename.GetFullPath(), mode))
   , m_OpenFile(open_file)
   , m_HasRead(false)
   , m_IsLoaded(false)
   , m_Stat(filename.GetFullPath())
+  , m_FileName(filename)
 {
-  m_FileName.Assign(filename);
   MakeAbsolute();
+}
+
+wxExFile::~wxExFile()
+{
+  Close();
+  delete m_File;
+}
+  
+wxExFile::wxExFile(const wxExFile& rhs)
+  : m_File(nullptr)
+{
+  *this = rhs;
+}
+  
+wxExFile& wxExFile::operator=(const wxExFile& f)
+{
+  if (this != &f)
+  {
+    delete m_File;
+    
+    m_HasRead = f.m_HasRead;
+    m_IsLoaded = f.m_IsLoaded;
+    m_OpenFile = f.m_OpenFile;
+    
+    m_FileName = f.m_FileName;
+    m_Stat = f.m_Stat;
+
+    m_File = new wxFile(m_FileName.GetFullPath());
+  }
+
+  return *this;
 }
 
 bool wxExFile::CheckSync()
@@ -119,10 +151,7 @@ bool wxExFile::FileSave(const wxExFileName& filename)
 
   DoFileSave(save_as);
 
-  if (IsOpened())
-  {
-    Close();
-  }
+  Close();
 
   ResetContentsChanged();
   
@@ -148,18 +177,11 @@ bool wxExFile::Get(bool synced)
 
   if (!DoFileLoad(synced))
   {
-    if (IsOpened())
-    {
-      Close();
-    }
-    
+    Close();
     return false;
   }
 
-  if (IsOpened())
-  {
-    Close();
-  }
+  Close();
   
   m_IsLoaded = true;
 
@@ -173,16 +195,16 @@ const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
   wxASSERT(IsOpened());
   
   if ((!m_HasRead && seek_position > 0) || 
-      ( m_HasRead && Tell() != seek_position))
+      ( m_HasRead && m_File->Tell() != seek_position))
   {
-    Seek(seek_position);
+    m_File->Seek(seek_position);
   }
 
   const wxFileOffset bytes_to_read = Length() - seek_position;
 
   wxCharBuffer buffer(bytes_to_read);
 
-  if (wxFile::Read(buffer.data(), bytes_to_read) != bytes_to_read)
+  if (m_File->Read(buffer.data(), bytes_to_read) != bytes_to_read)
   {
     wxFAIL;
   }

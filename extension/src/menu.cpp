@@ -24,11 +24,6 @@ wxExMenu::wxExMenu(long style)
 {
 }
 
-wxExMenu::wxExMenu(const wxExMenu& menu)
-  : m_Style(menu.m_Style)
-{
-}
-
 wxMenuItem* wxExMenu::Append(int id)
 {
   // Using wxMenu::Append(id)
@@ -178,7 +173,7 @@ bool wxExMenu::AppendTools(int itemid)
     return false;
   }
 
-  wxExMenu* menuTool = new wxExMenu(*this);
+  wxExMenu* menuTool = new wxExMenu(m_Style);
 
   for (const auto& it : wxExTool().GetToolInfo())
   {

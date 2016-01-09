@@ -2,7 +2,7 @@
 // Name:      test-stc->cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -31,10 +31,6 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   stc->SetText("hello stc");
   REQUIRE( stc->GetText() == "hello stc");
 
-  wxExSTC* copy = new wxExSTC(*stc);
-  AddPane(GetFrame(), copy);
-  
-  REQUIRE( copy->GetText() == "hello stc");
   REQUIRE( stc->FindNext(wxString("hello")));
   REQUIRE( stc->GetWordAtPos(0) == "hello");
   

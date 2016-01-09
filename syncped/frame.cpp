@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -864,8 +864,13 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_SPLIT:
   case ID_SPLIT_HORIZONTALLY:
   case ID_SPLIT_VERTICALLY:
+    if (editor == nullptr)
     {
-      wxExSTC* stc = new wxExSTC(*editor);
+      wxLogStatus("no valid focus");
+    }
+    else
+    {
+      wxExSTC* stc = new wxExSTC(m_Editors, editor->GetFileName());
       editor->Sync(false);
       stc->Sync(false);
 

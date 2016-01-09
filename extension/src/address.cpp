@@ -271,7 +271,7 @@ bool wxExAddress::Read(const wxString& arg) const
     
     wxExFile file;
 
-    if (!file.Exists(fn.GetFullPath()) || !file.Open(fn.GetFullPath()))
+    if (!wxFile::Exists(fn.GetFullPath()) || !file.Open(fn.GetFullPath()))
     {
       wxLogStatus(_("file: %s does not exist"), arg);
       return false;
