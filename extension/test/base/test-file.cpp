@@ -38,6 +38,7 @@ TEST_CASE( "wxExFile" )
     wxCharBuffer buffer = file.Read();
     REQUIRE(buffer.length() == 40);
     
+    file.Close();
     file.FileNew(wxExFileName("test-xxx"));
     
     REQUIRE(!file.IsOpened());

@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -350,10 +350,14 @@ public:
   void UseModificationMarkers(bool use);
   
   // These methods are not yet available in scintilla, create stubs
-  // (for the vi NAVIGATE macro).
+  // (for the vi MOTION macro).
   void LineHome() {Home();};
   void LineHomeExtend() {HomeExtend();};
   void LineHomeRectExtend() {HomeRectExtend();};
+  void LineScrollDownExtend() {;};
+  void LineScrollDownRectExtend() {;};
+  void LineScrollUpExtend() {;};
+  void LineScrollUpRectExtend() {;};
   void ParaUpRectExtend() {;};
   void ParaDownRectExtend() {;};
   void WordLeftRectExtend();

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <utility>
 #include <wx/extension/item.h>
 #include <wx/extension/itemtpldlg.h>
 

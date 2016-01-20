@@ -94,8 +94,11 @@ public:
   /// Writes file from string.
   bool Write(const wxString &s) {return m_File->Write(s);}; 
 protected:
-  /// Assigns the filename.  
-  void Assign(const wxExFileName& filename) {*this = filename;};
+  /// Assigns the filename.
+  /// Does not open the file.
+  void Assign(const wxExFileName& filename) {
+    m_FileName = filename;
+    m_Stat = filename.GetFullPath();};
 
   /// Invoked by FileLoad, allows you to load the file.
   /// The file is already opened, so you can call Read.

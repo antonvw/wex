@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/vi.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/vimacros.h>
 #include <wx/extension/stc.h>
@@ -63,9 +64,14 @@ TEST_CASE("wxExVi", "[stc][vi]")
   vi->GetMacros().StopRecording();
   REQUIRE(!vi->GetMacros().IsRecording());
   REQUIRE(!vi->GetMacros().IsRecorded("a")); // still no macro
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   
   vi->MacroStartRecording("a");
+  REQUIRE( vi->GetMacros().IsRecording());
   REQUIRE(!vi->OnChar(event));
+  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  REQUIRE(!vi->OnChar(event));
+  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   vi->GetMacros().StopRecording();
   REQUIRE(!vi->GetMacros().IsRecording());
@@ -113,9 +119,11 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
   REQUIRE( vi->Command("i"));
   REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  REQUIRE( vi->GetLastCommand() == "i");
   REQUIRE( vi->Command("xxxxxxxx"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   REQUIRE( stc->GetText().Contains("xxxxxxxx"));
+  REQUIRE( vi->GetLastCommand() == "i");
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   REQUIRE( vi->GetRegisterInsert() == "xxxxxxxx");
   REQUIRE( vi->GetLastCommand() == wxString("ixxxxxxxx") + ESC);
   
@@ -142,6 +150,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   
   for (auto& it2 : commands)
   {
+    INFO( it2);
     REQUIRE( vi->Command(it2));
     REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
     REQUIRE(!stc->GetModify());
@@ -244,7 +253,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   
   stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
   REQUIRE( vi->Command(":1"));
-  REQUIRE( vi->Command("cw"));
+  REQUIRE( vi->Command("ce"));
   REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
   REQUIRE( vi->Command("zzz"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
@@ -253,16 +262,15 @@ TEST_CASE("wxExVi", "[stc][vi]")
 
   stc->SetText("xxxxxxxxxx second third\nxxxxxxxx\naaaaaaaaaa\n");
   REQUIRE( vi->Command(":1"));
-  REQUIRE( vi->Command("2cw"));
+  REQUIRE( vi->Command("2ce"));
   REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
   REQUIRE( vi->Command("zzz"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   REQUIRE( stc->GetLineCount() == 4);
   REQUIRE( stc->GetLineText(0) == "zzz third");
 
-  // Test delete commands.
-  for (auto& delete_command : std::vector<std::string> {
-    "dd","de","dh","dj","dk","dl","dw","dG","d0","d$","dgg","3dw"})
+  // Test special delete commands.
+  for (auto& delete_command : std::vector<std::string> {"dgg","3dw"})
   {
     REQUIRE( vi->Command(delete_command));
     REQUIRE( vi->GetLastCommand() == delete_command);
@@ -280,11 +288,38 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( vi->Command("p"));
   REQUIRE( stc->GetText().Contains("second"));
   
-  for (auto& yank_command : std::vector<std::string> {
-    "ye","yh","yj","yk","yl","yw","yy","y0","y$","3yw"})
+  // Test motion commands: yank, delete, and change.
+  wxExFindReplaceData::Get()->SetFindString("xx");
+  for (auto& motion_command : vi->GetMotionCommands())
   {
-    REQUIRE( vi->Command(yank_command));
-    REQUIRE( vi->GetLastCommand() == yank_command);
+    if (motion_command.first <= 255)
+    {
+      stc->SetText("xxxxxxxxxx\nyyyyyyyyyy\nzzzzzzzzzz\n");
+
+      // test yank
+      std::string mc(
+        motion_command.first == 'f' || motion_command.first == 't' ||
+        motion_command.first == 'F' || motion_command.first == 'T' ||
+        motion_command.first == '\'' ? 3: 2, 'y');
+      mc[0] = 'y';
+      mc[1] = motion_command.first;
+      INFO( mc);
+      REQUIRE( vi->Command(mc));
+      REQUIRE( vi->GetLastCommand() == mc);
+
+      // test delete
+      mc[0] = 'd';
+      INFO( mc);
+      REQUIRE( vi->Command(mc));
+      REQUIRE( vi->GetLastCommand() == mc);
+      
+      // test change
+      mc[0] = 'c';
+      INFO( mc);
+      REQUIRE( vi->Command(mc));
+      REQUIRE( vi->GetLastCommand() == mc);
+      ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+    }
   }
 
   // Test other commands.
@@ -471,7 +506,8 @@ TEST_CASE("wxExVi", "[stc][vi]")
       REQUIRE( vi->Command(go.first));
     else
       REQUIRE(!vi->Command(go.first));
-      
+
+    INFO( go.first);
     REQUIRE( stc->GetCurrentLine() == go.second);
   }
 }
