@@ -2,7 +2,7 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wxExNotebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,7 +10,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/notebook.h>
-#include <wx/extension/stc.h>
 
 #if wxUSE_GUI
 

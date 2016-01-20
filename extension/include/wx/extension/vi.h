@@ -2,11 +2,13 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wxExVi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <functional>
+#include <vector>
 #include <wx/event.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/vifsm.h>
@@ -38,11 +40,14 @@ public:
   /// Returns inserted text.
   const auto & GetInsertedText() const {return m_InsertText;};
   
+  /// Returns motion commands.
+  const auto & GetMotionCommands() const {return m_MotionCommands;};
+
   /// Returns the mode we are in.
   int GetMode() const {return m_FSM.State();};
-  int ModeInsert() const {return GetMode() == MODE_INSERT || GetMode() == MODE_INSERT_RECT;};
-  int ModeNormal() const {return GetMode() == MODE_NORMAL;};
-  int ModeVisual() const {return GetMode() >= MODE_INSERT_RECT;};
+  bool ModeInsert() const {return GetMode() == MODE_INSERT || GetMode() == MODE_INSERT_RECT;};
+  bool ModeNormal() const {return GetMode() == MODE_NORMAL;};
+  bool ModeVisual() const {return GetMode() >= MODE_INSERT_RECT;};
   
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
@@ -61,7 +66,7 @@ private:
   bool CommandChar(int c);
   bool CommandChars(std::string& rest);
   void CommandReg(const char reg);
-  bool FindChar(const wxString& text, const wxString& start);
+  bool FindChar(const std::string& text, char c);
   void FindWord(bool find_next = true);
   void GotoBrace();
   bool Indent(
@@ -72,6 +77,7 @@ private:
   void InsertModeNormal(const std::string& text);
   /// Adds recording to current macro.
   virtual void MacroRecord(const std::string& text);
+  bool MotionCommand(int type, const std::string& command);
   bool Put(bool after);
   bool ReverseCase(); 
 
@@ -86,5 +92,6 @@ private:
   
   std::string m_Command;
   std::string m_InsertText;
+  std::vector<std::pair<int, std::function<bool(const std::string& command)>>> m_MotionCommands;
 };
 #endif // wxUSE_GUI
