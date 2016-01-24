@@ -178,21 +178,21 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_Repeat(1)
   , m_SearchForward(true)
   , m_MotionCommands {
-    {'b',  [&](const std::string& command){MOTION(Word, Left, false, false);    }},
-    {'e',  [&](const std::string& command){MOTION(Word, RightEnd, false, false);}},
-    {'f',  [&](const std::string& command){return FindChar(command, 'f');}},
-    {'h',  [&](const std::string& command){
+    {'b', [&](const std::string& command){MOTION(Word, Left, false, false);}},
+    {'e', [&](const std::string& command){MOTION(Word, RightEnd, false, false);}},
+    {'f', [&](const std::string& command){return FindChar(command);}},
+    {'h', [&](const std::string& command){
       if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0) 
         MOTION(Char, Left, false, false); 
       return true;}},
-    {'j',  [&](const std::string& command){MOTION(Line, Down, false, false);    }},
-    {'k',  [&](const std::string& command){MOTION(Line, Up, false, false);      }},
-    {'l',  [&](const std::string& command){
+    {'j', [&](const std::string& command){MOTION(Line, Down, false, false);}},
+    {'k', [&](const std::string& command){MOTION(Line, Up, false, false);}},
+    {'l', [&](const std::string& command){
       if (GetSTC()->GetCurrentPos() < 
           GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine())) 
         MOTION(Char, Right, false, false);
       return true;}},
-    {'n',  [&](const std::string& command){REPEAT(
+    {'n', [&](const std::string& command){REPEAT(
       if (!GetSTC()->FindNext(
         wxExFindReplaceData::Get()->GetFindString(), GetSearchFlags(), 
         m_SearchForward))
@@ -201,32 +201,26 @@ wxExVi::wxExVi(wxExSTC* stc)
         return false;
       });
       return true;}},
-    {'t',  [&](const std::string& command) {
-      if (FindChar(command, 't')) 
-      {
-        GetSTC()->CharLeft(); 
-        return true;
-      }; 
-      return false;}},
-    {'w',  [&](const std::string& command){MOTION(Word, Right, false, false);}},
-    {'B',  [&](const std::string& command){MOTION(Word, Left, false, false);}},
-    {'E',  [&](const std::string& command){MOTION(Word, RightEnd, false, false);}},
-    {'F',  [&](const std::string& command){return FindChar(command, 'F');}},
-    {'G',  [&](const std::string& command){
+    {'t', [&](const std::string& command){return FindChar(command);}}, 
+    {'w', [&](const std::string& command){MOTION(Word, Right, false, false);}},
+    {'B', [&](const std::string& command){MOTION(Word, Left, false, false);}},
+    {'E', [&](const std::string& command){MOTION(Word, RightEnd, false, false);}},
+    {'F', [&](const std::string& command){return FindChar(command);}},
+    {'G', [&](const std::string& command){
       (m_Repeat == 1 ? 
          GetSTC()->DocumentEnd(): 
          GetSTC()->GotoLineAndSelect(m_Repeat));
        return true;}},
-    {'H',  [&](const std::string& command){
+    {'H', [&](const std::string& command){
        GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine());
        return true;}},
-    {'L',  [&](const std::string& command){
+    {'L', [&](const std::string& command){
        GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() - 1);
        return true;}},
-    {'M',  [&](const std::string& command){
+    {'M', [&](const std::string& command){
        GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() / 2);
        return true;}},
-    {'N',  [&](const std::string& command){REPEAT(
+    {'N', [&](const std::string& command){REPEAT(
       if (!GetSTC()->FindNext(
         wxExFindReplaceData::Get()->GetFindString(), GetSearchFlags(), 
         !m_SearchForward))
@@ -235,14 +229,8 @@ wxExVi::wxExVi(wxExSTC* stc)
         return false;
       });
       return true;}},
-    {'T',  [&](const std::string& command) {
-      if (FindChar(command, 'T')) 
-      {
-        GetSTC()->CharLeft(); 
-        return true;
-      }; 
-      return false;}},
-    {'W',  [&](const std::string& command){MOTION(Word, Right,false, false); }},
+    {'T', [&](const std::string& command) {return FindChar(command);}},
+    {'W', [&](const std::string& command){MOTION(Word, Right,false, false);}},
     {'\'', [&](const std::string& command){
       if (OneLetterAfter("'", command)) 
       {
@@ -251,56 +239,49 @@ wxExVi::wxExVi(wxExSTC* stc)
       } 
       else return false;}},
     {'\n', [&](const std::string& command){MOTION(Line, Down, false, false);}},
-    {',',  [&](const std::string& command){
-      if (!m_LastFindCharCommand.empty())
-      {
-        std::string cmd(m_LastFindCharCommand);
-        if (islower(cmd[0])) cmd[0] = toupper(cmd[0]);
-        if (isupper(cmd[0])) cmd[0] = tolower(cmd[0]);
-        return Command(cmd);
-      }
-      else
-      {
-        m_Command.clear();
-        return false;
-      };}},
-    {' ',  [&](const std::string& command){MOTION(Char, Right,false, false); }},
-    {'0',  [&](const std::string& command){MOTION(Line, Home, false, false); }},
-    {'(',  [&](const std::string& command){MOTION(Para, Up,   false, false); }},
-    {')',  [&](const std::string& command){MOTION(Para, Down, false, false); }},
-    {'{',  [&](const std::string& command){MOTION(Para, Up,   false, false); }},
-    {'}',  [&](const std::string& command){MOTION(Para, Down, false, false); }},
-    {'^',  [&](const std::string& command){MOTION(Line, Home, false, false); }},
-    {'+',  [&](const std::string& command){MOTION(Line, Down, true,  true);  }},
-    {'|',  [&](const std::string& command){
+    {',', [&](const std::string& command){return FindChar(command);}}, 
+    {' ', [&](const std::string& command){MOTION(Char, Right,false, false);}},
+    {'0', [&](const std::string& command){MOTION(Line, Home, false, false);}},
+    {'[', [&](const std::string& command){REPEAT(
+        if (!GetSTC()->FindNext("{", GetSearchFlags(), false))
+        {
+          m_Command.clear();
+          return false;
+        })
+        return true;}},
+    {']', [&](const std::string& command){REPEAT(
+        if (!GetSTC()->FindNext("{", GetSearchFlags(), true))
+        {
+          m_Command.clear();
+          return false;
+        })
+        return true;}},
+    {'(', [&](const std::string& command){MOTION(Para, Up,   false, false);}},
+    {')', [&](const std::string& command){MOTION(Para, Down, false, false);}},
+    {'{', [&](const std::string& command){MOTION(Para, Up,   false, false);}},
+    {'}', [&](const std::string& command){MOTION(Para, Down, false, false);}},
+    {'^', [&](const std::string& command){MOTION(Line, Home, false, false);}},
+    {'+', [&](const std::string& command){MOTION(Line, Down, true,  true); }},
+    {'|', [&](const std::string& command){
       GetSTC()->GotoPos(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()) + m_Repeat - 1);
       return true;}},
-    {'-',  [&](const std::string& command){MOTION(Line, Up,  true, true); }},
-    {'$',  [&](const std::string& command){MOTION(Line, End, false, false);}},
-    {'%',  [&](const std::string& command){GotoBrace();return true;}},
-    {'_',  [&](const std::string& command){MOTION(Line, Down, false, false);}},
-    {';',  [&](const std::string& command){
-      if (!m_LastFindCharCommand.empty())
-      {
-        return Command(m_LastFindCharCommand);
-      }
-      else
-      {
-        m_Command.clear();
-        return false;
-      };}},
-    {WXK_CONTROL_B,    [&](const std::string& command){MOTION(Page, Up,         false, false); }},
-    {WXK_CONTROL_F,    [&](const std::string& command){MOTION(Page, Down,       false, false); }},
-    {WXK_CONTROL_P,    [&](const std::string& command){MOTION(Line, ScrollUp,   false, false); }},
-    {WXK_CONTROL_Q,    [&](const std::string& command){MOTION(Line, ScrollDown, false, false); }},
-    {WXK_LEFT,         [&](const std::string& command){MOTION(Char, Left,       false, false); }},
-    {WXK_RIGHT,        [&](const std::string& command){MOTION(Char, Right,      false, false); }},
-    {WXK_DOWN,         [&](const std::string& command){MOTION(Line, Down,       false, false); }},
-    {WXK_UP,           [&](const std::string& command){MOTION(Line, Up,         false, false); }},
-    {WXK_RETURN,       [&](const std::string& command){MOTION(Line, Down,       false, false); }},
-    {WXK_NUMPAD_ENTER, [&](const std::string& command){MOTION(Line, Down,       true,  true);  }},
-    {WXK_PAGEUP,       [&](const std::string& command){MOTION(Page, Up,         false, false); }},
-    {WXK_PAGEDOWN,     [&](const std::string& command){MOTION(Page, Down,       false, false); }}}
+    {'-', [&](const std::string& command){MOTION(Line, Up,  true, true);}},
+    {'$', [&](const std::string& command){MOTION(Line, End, false, false);}},
+    {'%', [&](const std::string& command){GotoBrace();return true;}},
+    {'_', [&](const std::string& command){MOTION(Line, Down, false, false);}},
+    {';', [&](const std::string& command){return FindChar(command);}},
+    {WXK_CONTROL_B,    [&](const std::string& command){MOTION(Page, Up,         false, false);}},
+    {WXK_CONTROL_F,    [&](const std::string& command){MOTION(Page, Down,       false, false);}},
+    {WXK_CONTROL_P,    [&](const std::string& command){MOTION(Line, ScrollUp,   false, false);}},
+    {WXK_CONTROL_Q,    [&](const std::string& command){MOTION(Line, ScrollDown, false, false);}},
+    {WXK_LEFT,         [&](const std::string& command){MOTION(Char, Left,       false, false);}},
+    {WXK_RIGHT,        [&](const std::string& command){MOTION(Char, Right,      false, false);}},
+    {WXK_DOWN,         [&](const std::string& command){MOTION(Line, Down,       false, false);}},
+    {WXK_UP,           [&](const std::string& command){MOTION(Line, Up,         false, false);}},
+    {WXK_RETURN,       [&](const std::string& command){MOTION(Line, Down,       false, false);}},
+    {WXK_NUMPAD_ENTER, [&](const std::string& command){MOTION(Line, Down,       true,  true); }},
+    {WXK_PAGEUP,       [&](const std::string& command){MOTION(Page, Up,         false, false);}},
+    {WXK_PAGEDOWN,     [&](const std::string& command){MOTION(Page, Down,       false, false);}}}
 {
 }
 
@@ -618,6 +599,18 @@ bool wxExVi::CommandChar(int c)
     case '*': FindWord(); break;
     case '#': FindWord(false); break;
 
+    case '>':
+    case '<':
+      switch (GetMode())
+      {
+        case MODE_NORMAL: wxExAddressRange(this, m_Repeat).Indent(c == '>'); break;
+        case MODE_VISUAL: 
+        case MODE_VISUAL_LINE: 
+        case MODE_VISUAL_RECT: 
+          wxExAddressRange(this, "'<,'>").Indent(c == '>'); break;
+      }
+      break;
+    
     case WXK_CONTROL_E: REPEAT_WITH_UNDO(ChangeNumber(true)); break;
     
     case WXK_CONTROL_G:
@@ -642,15 +635,6 @@ bool wxExVi::CommandChar(int c)
         m_Command.clear();
         return false;
       }
-      break;
-      
-    case '[': 
-    case ']': REPEAT(
-        if (!GetSTC()->FindNext("{", GetSearchFlags(), c == ']'))
-        {
-          m_Command.clear();
-          return false;
-        });
       break;
       
     default:
@@ -716,17 +700,6 @@ bool wxExVi::CommandChars(std::string& command)
         wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
       wxPostEvent(wxTheApp->GetTopWindow(), 
         wxCloseEvent(wxEVT_CLOSE_WINDOW));
-      break;
-    case CHR_TO_NUM('>','>'):
-    case CHR_TO_NUM('<','<'):
-      switch (GetMode())
-      {
-        case MODE_NORMAL: wxExAddressRange(this, m_Repeat).Indent(command == ">>"); break;
-        case MODE_VISUAL: 
-        case MODE_VISUAL_LINE: 
-        case MODE_VISUAL_RECT: 
-          wxExAddressRange(this, "'<,'>").Indent(command == ">>"); break;
-      }
       break;
     case CHR_TO_NUM('@','@'): MacroPlayback(GetMacros().GetMacro(), m_Repeat); break;
          
@@ -886,26 +859,64 @@ void wxExVi::CommandReg(const char reg)
   }
 }
 
-bool wxExVi::FindChar(const std::string& text, char c)
+bool wxExVi::FindChar(const std::string& text)
 {
-  if (text.size() > 1 && (
-    text[text.size() - 2] == c || 
-    text[text.size() - 2] == toupper(c)))
+  if (text.empty()) 
   {
-    m_LastFindCharCommand = text;
-
-    REPEAT(
-      if (!GetSTC()->FindNext(text.back(), 
-        GetSearchFlags() & ~wxSTC_FIND_REGEXP, wxIslower(c)))
-      {
-        m_Command.clear();
-        return false;
-      });
-    
-    return true;
+    return false;
   }
   
-  return false;
+  char c; // char to find
+  
+  if ((text[0] == ';' || text[0] == ',') && text.size() == 1)
+  {
+    if (m_LastFindCharCommand.empty())
+    {
+      return false;
+    }
+    
+    c = m_LastFindCharCommand.back();
+  }
+  else if (text.size() == 1)
+  {
+    return false;
+  }
+  else
+  {
+    c = text[1];
+  }
+  
+  char d; // char specifying direction
+  
+  switch (text[0])
+  {
+    case ';': d = m_LastFindCharCommand.front(); break;
+    case ',': 
+      d = m_LastFindCharCommand.front();
+      if (islower(d)) d = toupper(d);
+      else d = tolower(d);
+      break;
+    default: 
+      if (text.size() > 1) d = text.front();
+      else d = m_LastFindCharCommand.front();
+  }
+  
+  REPEAT(
+    if (!GetSTC()->FindNext(c, 
+      GetSearchFlags() & ~wxSTC_FIND_REGEXP, wxIslower(d)))
+    {
+      m_Command.clear();
+      return false;
+    });
+
+  if (text[0] != ',' && text[0] != ';')
+  {
+    m_LastFindCharCommand = text;
+  }
+
+  if (tolower(d) == 't') GetSTC()->CharLeft();
+  
+  return true;
 }
                 
 void wxExVi::FindWord(bool find_next)

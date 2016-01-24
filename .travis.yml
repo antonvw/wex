@@ -57,11 +57,16 @@ before_script:
     - sudo ln -s /usr/bin/g++-4.9 /usr/bin/g++
     - sudo rm /usr/bin/gcov
     - sudo ln -s /usr/bin/gcov-4.9 /usr/bin/gcov
+    # make gcc's memory usage more economical, not to run out of memory on travis VMs
+    - export EXTRA_CXX_FLAGS="-fPIC --param ggc-min-expand=3 --param ggc-min-heapsize=5120"
 
 script:
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then mkdir build && pushd build; fi
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExUSE_SSS=ON -DwxExUSE_OTL=ON -DBUILD_TEST=ON ..; fi
+    - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then make -j 4; fi
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then make lcov-prep; fi
-    - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then make -j 4 && ctest -V ..; fi
+    - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then ctest -V ..; fi
+        
+after_success:
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then make lcov; fi
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then make lcov-coveralls; fi

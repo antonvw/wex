@@ -2,11 +2,12 @@
 // Name:      process.h
 // Purpose:   Declaration of class wxExProcess
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <memory>
 #include <wx/process.h>
 
 class wxTimer;
@@ -21,7 +22,7 @@ public:
   wxExProcess();
   
   /// Destructor.
-  virtual ~wxExProcess();
+  virtual ~wxExProcess() {};
 
   /// Copy constructor.
   wxExProcess(const wxExProcess& process);
@@ -108,5 +109,6 @@ private:
 #if wxUSE_GUI
   static wxExShell* m_Shell;
 #endif  
-  wxTimer* m_Timer;
+
+  std::unique_ptr<wxTimer> m_Timer;
 };

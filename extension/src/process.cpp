@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wxExProcess
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -89,7 +89,7 @@ wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 
 wxExProcess::wxExProcess()
   : wxProcess(wxPROCESS_REDIRECT)
-  , m_Timer(new wxTimer(this))
+  , m_Timer(std::make_unique<wxTimer>(this))
   , m_Error(false)
   , m_HasStdError(false)
   , m_Sync(false)
@@ -99,13 +99,7 @@ wxExProcess::wxExProcess()
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {CheckInput();});
 }
 
-wxExProcess::~wxExProcess()
-{
-  delete m_Timer;
-}
-
 wxExProcess::wxExProcess(const wxExProcess& process)
-  : m_Timer(nullptr)
 {
   *this = process;
 }
@@ -114,10 +108,7 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
 {
   if (this != &p)
   {
-    delete m_Timer;
-    
-    m_Timer = new wxTimer(this);
-    
+    m_Timer = std::make_unique<wxTimer>(this);
     m_Command = p.m_Command;
     m_Error = p.m_Error;
     m_HasStdError = p.m_HasStdError;
@@ -205,7 +196,7 @@ bool wxExProcess::Command(const wxString& command)
 
   if (!IsRunning())
   {
-    ShowProcess(false, m_Timer);
+    ShowProcess(false, m_Timer.get());
   }
 
   return true;
@@ -377,7 +368,7 @@ wxKillError wxExProcess::Kill(wxSignal sig)
   const wxKillError result = wxProcess::Kill(GetPid(), sig);
   
   DeletePendingEvents();
-  ShowProcess(false, m_Timer);
+  ShowProcess(false, m_Timer.get());
   
   switch (result)
   {

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <memory>
 #include <wx/file.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/stat.h>
@@ -39,7 +40,7 @@ public:
   wxExFile& operator=(const wxExFile& f);
 
   /// Destructor, closes file if it was opened.
-  virtual ~wxExFile();
+  virtual ~wxExFile() {};
 
   /// Checks whether this file can be synced, and 
   /// syncs (invokes DoFileLoad) the file if so.
@@ -82,14 +83,14 @@ public:
     {return m_File->Open(filename, mode, access);};
   
   /// Reads this file into a buffer.
-  const wxCharBuffer Read(wxFileOffset seek_position = 0);
+  const wxCharBuffer* Read(wxFileOffset seek_position = 0);
 
   /// Resets contents changed.
   virtual void ResetContentsChanged() {;};
   
   /// Writes file from buffer.
-  size_t Write(const void *buffer, size_t count) {
-    return m_File->Write(buffer, count);};
+  bool Write(const wxCharBuffer& buffer) {
+    return m_File->Write(buffer.data(), buffer.length()) == buffer.length();};
   
   /// Writes file from string.
   bool Write(const wxString &s) {return m_File->Write(s);}; 
@@ -120,11 +121,12 @@ private:
       m_FileName.m_Stat.Sync(m_FileName.GetFullPath()) &&
       m_Stat.Sync(m_FileName.GetFullPath());};
 
-  bool m_HasRead;
   bool m_IsLoaded;
   bool m_OpenFile;
   
-  wxFile* m_File; // do not derive from wxFile, should not be used polymorphically
+  std::unique_ptr<wxCharBuffer> m_Buffer;
+  std::unique_ptr<wxFile> m_File;
+
   wxExFileName m_FileName;
   wxExStat m_Stat; // used for syncing, no public access
 };

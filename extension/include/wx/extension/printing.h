@@ -2,11 +2,12 @@
 // Name:      printing.h
 // Purpose:   Include file for wxExPrinting class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <memory> 
 #include <vector> 
 #include <wx/html/htmprint.h>
 #include <wx/print.h> 
@@ -15,20 +16,17 @@
 class WXDLLIMPEXP_BASE wxExPrinting
 {
 public:
-  // Destructor (not for Doxy).
- ~wxExPrinting();
- 
   /// Returns the printing object.
   static wxExPrinting* Get(bool createOnDemand = true);
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   /// Returns the html printer.
-  auto* GetHtmlPrinter() {return m_HtmlPrinter;};
+  auto* GetHtmlPrinter() {return m_HtmlPrinter.get();};
 #endif
 
 #if wxUSE_PRINTING_ARCHITECTURE
   /// Returns the printer.
-  auto* GetPrinter() {return m_Printer;};
+  auto* GetPrinter() {return m_Printer.get();};
 #endif
 
   /// Sets the object as the current one, returns the pointer 
@@ -37,12 +35,11 @@ public:
 private:
   wxExPrinting();
 
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxHtmlEasyPrinting* m_HtmlPrinter;
-#endif
-
 #if wxUSE_PRINTING_ARCHITECTURE
-  wxPrinter* m_Printer;
+  std::unique_ptr<wxPrinter> m_Printer;
+#if wxUSE_HTML
+  std::unique_ptr<wxHtmlEasyPrinting> m_HtmlPrinter;
+#endif
 #endif
 
   static wxExPrinting* m_Self;
