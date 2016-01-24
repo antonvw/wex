@@ -2,7 +2,7 @@
 // Name:      printing.cpp
 // Purpose:   Implementation of wxExPrinting class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -16,31 +16,20 @@
 wxExPrinting* wxExPrinting::m_Self = nullptr;
 
 wxExPrinting::wxExPrinting()
+#if wxUSE_PRINTING_ARCHITECTURE
+  : m_Printer(std::make_unique<wxPrinter>())
+#if wxUSE_HTML
+  , m_HtmlPrinter(std::make_unique<wxHtmlEasyPrinting>())
+#endif
+#endif
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  m_HtmlPrinter = new wxHtmlEasyPrinting();
-
   m_HtmlPrinter->SetFonts(wxEmptyString, wxEmptyString); // use defaults
   m_HtmlPrinter->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
   m_HtmlPrinter->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
 
   m_HtmlPrinter->SetHeader(wxExPrintHeader(wxFileName()));
   m_HtmlPrinter->SetFooter(wxExPrintFooter());
-#endif
-
-#if wxUSE_PRINTING_ARCHITECTURE
-  m_Printer = new wxPrinter;
-#endif
-}
-
-wxExPrinting::~wxExPrinting()
-{
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  delete m_HtmlPrinter;
-#endif
-
-#if wxUSE_PRINTING_ARCHITECTURE
-  delete m_Printer;
 #endif
 }
 

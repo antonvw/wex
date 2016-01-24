@@ -66,7 +66,7 @@ private:
   bool CommandChar(int c);
   bool CommandChars(std::string& rest);
   void CommandReg(const char reg);
-  bool FindChar(const std::string& text, char c);
+  bool FindChar(const std::string& text);
   void FindWord(bool find_next = true);
   void GotoBrace();
   bool Indent(

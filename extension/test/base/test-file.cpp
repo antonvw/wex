@@ -35,15 +35,15 @@ TEST_CASE( "wxExFile" )
     REQUIRE( file.Open(wxExFileName(GetTestDir() + "test.bin").GetFullPath()));
     REQUIRE( file.IsOpened());
 
-    wxCharBuffer buffer = file.Read();
-    REQUIRE(buffer.length() == 40);
+    const wxCharBuffer* buffer = file.Read();
+    REQUIRE(buffer->length() == 40);
     
     file.Close();
     file.FileNew(wxExFileName("test-xxx"));
     
     REQUIRE(!file.IsOpened());
     REQUIRE( file.Open(wxFile::write));
-    REQUIRE( file.Write(buffer, 10) == 10);
+    REQUIRE( file.Write(*buffer));
     REQUIRE( file.Write(wxString("OK")));
     REQUIRE( file.Close());
   }
@@ -59,7 +59,7 @@ TEST_CASE( "wxExFile" )
 
     for (int i = 0; i < max; i++)
     {
-      REQUIRE(file.Read().length() > 0);
+      REQUIRE(file.Read()->length() > 0);
     }
 
     const long exfile_read = sw.Time();

@@ -399,7 +399,7 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     GetSTC()->SetText(rect);
     // force rectangular selection.
     (void)GetSTC()->GetVi().Command("3 ");
-    (void)GetSTC()->GetVi().Command("F");
+    (void)GetSTC()->GetVi().Command("K");
     (void)GetSTC()->GetVi().Command("4j");
     (void)GetSTC()->GetVi().Command("5l");
     REQUIRE( wxExSortSelection(GetSTC(), STRING_SORT_ASCENDING, 3, 5));

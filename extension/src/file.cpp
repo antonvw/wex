@@ -2,7 +2,7 @@
 // Name:      file.cpp
 // Purpose:   Implementation of class wxExFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,11 +14,10 @@
 
 wxExFile::wxExFile(bool open_file)
   : m_OpenFile(open_file)
-  , m_HasRead(false)
   , m_IsLoaded(false)
-  , m_FileName()
   , m_Stat()
-  , m_File(new wxFile())
+  , m_File(std::make_unique<wxFile>())
+  , m_FileName()
 {
 }
 
@@ -26,24 +25,16 @@ wxExFile::wxExFile(
   const wxFileName& filename,
   wxFile::OpenMode mode,
   bool open_file)
-  : m_File(new wxFile(filename.GetFullPath(), mode))
+  : m_File(std::make_unique<wxFile>(filename.GetFullPath(), mode))
+  , m_FileName(filename)
   , m_OpenFile(open_file)
-  , m_HasRead(false)
   , m_IsLoaded(false)
   , m_Stat(filename.GetFullPath())
-  , m_FileName(filename)
 {
   MakeAbsolute();
 }
 
-wxExFile::~wxExFile()
-{
-  Close();
-  delete m_File;
-}
-  
 wxExFile::wxExFile(const wxExFile& rhs)
-  : m_File(nullptr)
 {
   *this = rhs;
 }
@@ -52,16 +43,11 @@ wxExFile& wxExFile::operator=(const wxExFile& f)
 {
   if (this != &f)
   {
-    delete m_File;
-    
-    m_HasRead = f.m_HasRead;
     m_IsLoaded = f.m_IsLoaded;
     m_OpenFile = f.m_OpenFile;
-    
     m_FileName = f.m_FileName;
     m_Stat = f.m_Stat;
-
-    m_File = new wxFile(m_FileName.GetFullPath());
+    m_File = std::make_unique<wxFile>(m_FileName.GetFullPath());
   }
 
   return *this;
@@ -121,10 +107,9 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
 
 void wxExFile::FileNew(const wxExFileName& filename)
 {
-  // Do not check return value, as file will not (yet) 
-  // exist.
   Assign(filename);
   DoFileNew();
+  m_IsLoaded = true;
 }
 
 bool wxExFile::FileSave(const wxExFileName& filename)
@@ -190,26 +175,22 @@ bool wxExFile::Get(bool synced)
   return true;
 }
 
-const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
+const wxCharBuffer* wxExFile::Read(wxFileOffset seek_position)
 {
   wxASSERT(IsOpened());
   
-  if ((!m_HasRead && seek_position > 0) || 
-      ( m_HasRead && m_File->Tell() != seek_position))
+  if ((m_Buffer.get() != nullptr && seek_position > 0) || 
+      (m_Buffer.get() != nullptr && m_File->Tell() != seek_position))
   {
     m_File->Seek(seek_position);
   }
 
-  const wxFileOffset bytes_to_read = Length() - seek_position;
+  m_Buffer = std::make_unique<wxCharBuffer>(Length() - seek_position);
 
-  wxCharBuffer buffer(bytes_to_read);
-
-  if (m_File->Read(buffer.data(), bytes_to_read) != bytes_to_read)
+  if (m_File->Read(m_Buffer->data(), m_Buffer->length()) != m_Buffer->length())
   {
     wxFAIL;
   }
-  
-  m_HasRead = true;
 
-  return buffer;
+  return m_Buffer.get();
 }

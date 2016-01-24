@@ -277,17 +277,17 @@ bool wxExAddress::Read(const wxString& arg) const
       return false;
     }
     
-    const wxCharBuffer& buffer = file.Read();
+    const auto buffer = file.Read();
     
     if (*this == ".")
     {
-      m_Ex->GetSTC()->AddTextRaw((const char *)buffer.data(), buffer.length());
+      m_Ex->GetSTC()->AddTextRaw((const char *)buffer->data(), buffer->length());
     }
     else
     {
       // README: InsertTextRaw does not have length argument.
       m_Ex->GetSTC()->InsertTextRaw(
-        m_Ex->GetSTC()->PositionFromLine(GetLine()), (const char *)buffer.data());
+        m_Ex->GetSTC()->PositionFromLine(GetLine()), (const char *)buffer->data());
     }
       
     return true;

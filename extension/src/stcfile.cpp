@@ -98,25 +98,13 @@ void wxExSTCFile::DoFileNew()
 
 void wxExSTCFile::DoFileSave(bool save_as)
 {
-  size_t size;
-  size_t count;
-  
   if (m_STC->GetHexMode().Active())
   {
-    count = m_STC->GetHexMode().GetBuffer().size();
-    size = Write(m_STC->GetHexMode().GetBuffer(), count);
+    Write(m_STC->GetHexMode().GetBuffer());
   }
   else
   {
-    const wxCharBuffer& buffer = m_STC->GetTextRaw(); 
-    count = buffer.length();
-    size = Write(buffer.data(), count);
-  }
-  
-  if (size != count)
-  {
-    wxLogStatus("could not save file");
-    return;
+    Write(m_STC->GetTextRaw());
   }
   
   if (save_as)
@@ -162,19 +150,19 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
   m_PreviousLength = Length();
 
-  const wxCharBuffer& buffer = Read(offset);
+  const auto buffer = Read(offset);
 
   if (!m_STC->GetHexMode().Active())
   {
-    m_STC->Allocate(buffer.length());
+    m_STC->Allocate(buffer->length());
     
     get_only_new_data ? 
-      m_STC->AppendTextRaw((const char *)buffer.data(), buffer.length()):
-      m_STC->AddTextRaw((const char *)buffer.data(), buffer.length());
+      m_STC->AppendTextRaw((const char *)buffer->data(), buffer->length()):
+      m_STC->AddTextRaw((const char *)buffer->data(), buffer->length());
   }
   else
   {
-    m_STC->GetHexMode().AppendText(buffer);
+    m_STC->GetHexMode().AppendText(*buffer);
   }
 
   if (get_only_new_data)

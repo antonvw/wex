@@ -294,7 +294,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   {
     if (motion_command.first <= 255)
     {
-      stc->SetText("xxxxxxxxxx\nyyyyyyyyyy\nzzzzzzzzzz\n");
+      stc->SetText("xxxxxxxxxx\nyyyyyyyyyy\nzzzzzzzzzz\n{section}");
 
       // test yank
       std::string mc(
@@ -456,7 +456,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   for (const auto& visual : std::vector<std::pair<std::string, int>> {
     {"v",wxExVi::MODE_VISUAL},
     {"V",wxExVi::MODE_VISUAL_LINE},
-    {"F",wxExVi::MODE_VISUAL_RECT}})
+    {"K",wxExVi::MODE_VISUAL_RECT}})
   {
     ChangeMode( vi, visual.first, visual.second);
     ChangeMode( vi, "jjj", visual.second);
@@ -474,7 +474,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   stc->GotoLine(2);
 
   // Test navigate while in rect mode.
-  ChangeMode( vi, "F", wxExVi::MODE_VISUAL_RECT);
+  ChangeMode( vi, "K", wxExVi::MODE_VISUAL_RECT);
   
   for (const auto& rect : std::vector<std::string> {
     "w", "b", "h", "j", "k", "l"})

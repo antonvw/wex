@@ -63,7 +63,7 @@ bool wxExViFSM::Transition(const std::string& command)
   {
     switch (command[0])
     {
-      case 'F': key = KEY_VISUAL_RECT; break;
+      case 'K': key = KEY_VISUAL_RECT; break;
       case 'v': key = KEY_VISUAL; break;
       case 'V': key = KEY_VISUAL_LINE; break;
       case 27:  key = KEY_ESCAPE; break;
