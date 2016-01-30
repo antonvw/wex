@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wxExtension utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -119,8 +119,9 @@ const wxString wxExClipboardGet();
 template <typename T> 
 const T wxExComboBoxAs(const wxComboBox* cb, size_t max_items = UINT_MAX)
 {
-  T  a;
-
+  T a;
+  
+  // wxArrayString has no emplace_back.
   a.push_back(cb->GetValue());
 
   switch (cb->FindString(cb->GetValue(), true)) // case sensitive

@@ -67,7 +67,7 @@ void wxExPrintout::CountPages()
   wxBusyCursor wait;
 
   m_PageBreaks.clear();
-  m_PageBreaks.push_back(0); // a page break at pos 0
+  m_PageBreaks.emplace_back(0); // a page break at pos 0
   int pos = 0;
 
   while (pos < m_Owner->GetLength())
@@ -83,7 +83,7 @@ void wxExPrintout::CountPages()
       m_PrintRect,
       m_PageRect);
 
-    m_PageBreaks.push_back(pos);
+    m_PageBreaks.emplace_back(pos);
   }
 }
 

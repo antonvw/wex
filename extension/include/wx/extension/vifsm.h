@@ -2,7 +2,7 @@
 // Name:      vifsm.h
 // Purpose:   Declaration of class wxExViFSMEntry and wxExViFSM
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -49,6 +49,9 @@ public:
     std::function<void(const std::string&)> insert,
     std::function<void(const std::string&)> normal);
   
+  /// Returns insert commands.
+  const auto & GetInsertCommands() const {return m_InsertCommands;};
+
   /// Returns current state.  
   int State() const {return m_State;};
   
@@ -62,4 +65,5 @@ private:
   int m_State;
   
   std::vector<wxExViFSMEntry> m_FSM;
+  std::vector<std::pair<int, std::function<void()>>> m_InsertCommands;
 };

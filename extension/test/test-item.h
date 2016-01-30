@@ -2,7 +2,7 @@
 // Name:      test-item.h
 // Purpose:   Declaration and implementation of TestItems
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once

@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wxExShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -430,7 +430,7 @@ void wxExShell::KeepCommand()
     m_Command = wxExSkipWhiteSpace(m_Command);
   }
   
-  m_Commands.push_back(m_Command);
+  m_Commands.emplace_back(m_Command);
 }
 
 void wxExShell::Paste()

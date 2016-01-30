@@ -264,8 +264,8 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   SECTION("wxExListToConfig")
   {
     l.clear();
-    l.push_back("1");
-    l.push_back("2");
+    l.emplace_back("1");
+    l.emplace_back("2");
     wxExListToConfig(l, "list_items");
     REQUIRE( l.size() == 2);
     REQUIRE(wxConfigBase::Get()->Read("list_items", "").Contains("1"));

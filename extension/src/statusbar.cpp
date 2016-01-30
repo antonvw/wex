@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wxExStatusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -261,13 +261,13 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
       {
         if (!it.IsShown())
         {
-          changes.push_back(it.GetHiddenText());
+          changes.emplace_back(it.GetHiddenText());
           
           it.Show(true);
           
           for (int j = panes_shown; j < GetFieldsCount(); j++)
           {
-            changes.push_back(wxStatusBar::GetStatusText(j));
+            changes.emplace_back(wxStatusBar::GetStatusText(j));
           }
         }
         
@@ -285,7 +285,7 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
           
           for (int j = panes_shown + 1; j < GetFieldsCount(); j++)
           {
-            changes.push_back(wxStatusBar::GetStatusText(j));
+            changes.emplace_back(wxStatusBar::GetStatusText(j));
           }
         }
       }

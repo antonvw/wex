@@ -19,7 +19,7 @@ enum
 };
 
 #define MAKE_ENTRY( STATE, ACTION, NEXT, PROCESS )                 \
-  m_FSM.push_back(                                                 \
+  m_FSM.emplace_back(                                              \
     wxExViFSMEntry(wxExVi::STATE, ACTION, wxExVi::NEXT, PROCESS)); \
 
 #define NAVIGATE(SCOPE, DIRECTION)                                 \
@@ -30,6 +30,22 @@ wxExViFSM::wxExViFSM(wxExVi* vi,
   std::function<void(const std::string&)> normal)
   : m_vi(vi)
   , m_State(wxExVi::MODE_NORMAL)
+  , m_InsertCommands {
+    {'a', [&](){NAVIGATE(Char, Right);}},
+    {'i', [&](){;}},
+    {'o', [&](){
+      NAVIGATE(Line, End);
+      m_vi->GetSTC()->NewLine();}},
+    {'A', [&](){NAVIGATE(Line, End);}},
+    {'C', [&](){
+      m_vi->GetSTC()->LineEndExtend();
+      m_vi->Cut();}},
+    {'I', [&](){NAVIGATE(Line, Home);}},
+    {'O', [&](){
+      NAVIGATE(Line, Home); 
+      m_vi->GetSTC()->NewLine(); 
+      NAVIGATE(Line, Up);}},
+    {'R', [&](){m_vi->GetSTC()->SetOvertype(true);}}}
 {
    MAKE_ENTRY ( MODE_NORMAL,      KEY_INSERT,      MODE_INSERT,      insert)
    MAKE_ENTRY ( MODE_NORMAL,      KEY_VISUAL,      MODE_VISUAL,      nullptr)
@@ -61,21 +77,22 @@ bool wxExViFSM::Transition(const std::string& command)
   
   if (command.size() == 1)
   {
-    switch (command[0])
+    if (std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
+      [command](std::pair<int, std::function<void()>> const& elem) {
+      return elem.first == command[0];}) != m_InsertCommands.end())
     {
-      case 'K': key = KEY_VISUAL_RECT; break;
-      case 'v': key = KEY_VISUAL; break;
-      case 'V': key = KEY_VISUAL_LINE; break;
-      case 27:  key = KEY_ESCAPE; break;
-      case 'a': 
-      case 'i': 
-      case 'o': 
-      case 'A': 
-      case 'C': 
-      case 'I': 
-      case 'O': 
-      case 'R': key = KEY_INSERT; break;
-      default: return false;
+      key = KEY_INSERT;
+    }
+    else
+    {
+      switch (command[0])
+      {
+        case 'K': key = KEY_VISUAL_RECT; break;
+        case 'v': key = KEY_VISUAL; break;
+        case 'V': key = KEY_VISUAL_LINE; break;
+        case 27:  key = KEY_ESCAPE; break;
+        default: return false;
+      }
     }
   }
   else
@@ -105,25 +122,12 @@ bool wxExViFSM::Transition(const std::string& command)
       switch (m_State)
       {
         case wxExVi::MODE_INSERT:
-          switch ((int)command[0])
           {
-            case 'a': NAVIGATE(Char, Right); break;
-            case 'A': NAVIGATE(Line, End); break;
-            case 'R': m_vi->GetSTC()->SetOvertype(true); break;
-            case 'I': NAVIGATE(Line, Home); break;
-            case 'o': 
-              NAVIGATE(Line, End);
-              m_vi->GetSTC()->NewLine(); 
-              break;
-            case 'C': 
-              m_vi->GetSTC()->LineEndExtend();
-              m_vi->Cut();
-              break;
-            case 'O': 
-              NAVIGATE(Line, Home); 
-              m_vi->GetSTC()->NewLine(); 
-              NAVIGATE(Line, Up); 
-              break;
+          auto it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
+            [command](std::pair<int, std::function<void()>> const& elem) {
+            return elem.first == command[0];});
+          if (it != m_InsertCommands.end() && it->second != nullptr)
+            it->second();
           }
           break;
           

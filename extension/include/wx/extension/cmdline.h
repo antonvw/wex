@@ -2,7 +2,7 @@
 // Name:      cmdline.h
 // Purpose:   Declaration of wxExCmdLineParser class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -135,7 +135,7 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
             std::vector<wxString> v;
             for (size_t i = 0; i < GetParamCount(); i++)
             {
-              v.push_back(GetParam(i));
+              v.emplace_back(GetParam(i));
             }
             it.second.second(v);
           }

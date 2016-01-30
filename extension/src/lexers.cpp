@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wxExLexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -372,7 +372,7 @@ bool wxExLexers::LoadDocument()
       
       if (lexer.IsOk())
       {
-        m_Lexers.push_back(lexer);
+        m_Lexers.emplace_back(lexer);
       }
     }
 
@@ -436,7 +436,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "hex")
     {
-      m_StylesHex.push_back(wxExStyle(child, "global"));
+      m_StylesHex.emplace_back(wxExStyle(child, "global"));
     }
     else if (child->GetName() == "indicator")
     {
@@ -479,7 +479,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
       }
       else
       {
-        m_Styles.push_back(style);
+        m_Styles.emplace_back(style);
       }
     }
     

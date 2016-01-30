@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wxExtension utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -60,7 +60,7 @@ wxExToVectorString::wxExToVectorString(const wxString& in)
       
   while (tkz.HasMoreTokens())
   {
-    m_VS.push_back(tkz.GetNextToken());
+    m_VS.emplace_back(tkz.GetNextToken());
   }
 }
 
@@ -68,7 +68,7 @@ void wxExToVectorString::FromArrayString(const wxArrayString& in)
 {
   for (const auto& it : in)
   {
-    m_VS.push_back(it);
+    m_VS.emplace_back(it);
   }
 }
 
@@ -178,12 +178,12 @@ bool wxExAutoCompleteFileName(
   }
 
   v.clear();
-  v.push_back(expansion);
-  v.push_back(filename);
+  v.emplace_back(expansion);
+  v.emplace_back(filename);
     
   while (dir.GetNext(&filename))
   {
-    v.push_back(filename);
+    v.emplace_back(filename);
   }
 
   if (v.size() > 2)
@@ -388,7 +388,7 @@ const wxString wxExConfigFirstOfWrite(const wxString& key, const wxString& value
     
     if (val != value)
     {
-      v.push_back(val);
+      v.emplace_back(val);
     }
   }
 
@@ -552,7 +552,7 @@ const std::list < wxString > wxExListFromConfig(
 
   while (tkz.HasMoreTokens())
   {
-    l.push_back(tkz.GetNextToken());
+    l.emplace_back(tkz.GetNextToken());
   }
 
   return l;
@@ -631,7 +631,7 @@ int wxExMatch(
     {
       for (size_t i = 1; i < res.size(); i++)
       {
-        v.push_back(wxString(res[i]));
+        v.emplace_back(wxString(res[i]));
       }
     }
   }
@@ -672,7 +672,7 @@ void wxExNodeProperties(
   {
     if (child->GetName() == "property")
     {
-      properties.push_back(wxExProperty(child));
+      properties.emplace_back(wxExProperty(child));
     }
     
     child = child->GetNext();
@@ -690,7 +690,7 @@ void wxExNodeStyles(
   {
     if (child->GetName() == "style")
     {
-      styles.push_back(wxExStyle(child, lexer));
+      styles.emplace_back(wxExStyle(child, lexer));
     }
     
     child = child->GetNext();
@@ -981,7 +981,7 @@ const wxString wxExSort(
     }
     else
     {
-      lines.push_back(line);
+      lines.emplace_back(line);
       ms.insert(key);
     }
   }

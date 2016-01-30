@@ -38,17 +38,17 @@ public:
     
     std::vector<wxExStatusBarPane> panes;
 
-    panes.push_back(wxExStatusBarPane());
+    panes.emplace_back(wxExStatusBarPane());
     
     for (int i = 0; i < 15; i++)
     {
-      panes.push_back(wxExStatusBarPane(wxString::Format("Pane%d", i)));
+      panes.emplace_back(wxExStatusBarPane(wxString::Format("Pane%d", i)));
     }
     
-    panes.push_back(wxExStatusBarPane("PaneInfo"));
-    panes.push_back(wxExStatusBarPane("PaneLexer"));
-    panes.push_back(wxExStatusBarPane("PaneFileType"));
-    panes.push_back(wxExStatusBarPane("LastPane"));
+    panes.emplace_back(wxExStatusBarPane("PaneInfo"));
+    panes.emplace_back(wxExStatusBarPane("PaneLexer"));
+    panes.emplace_back(wxExStatusBarPane("PaneFileType"));
+    panes.emplace_back(wxExStatusBarPane("LastPane"));
 
     m_StatusBar = m_Frame->SetupStatusBar(panes);
     

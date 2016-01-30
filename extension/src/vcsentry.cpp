@@ -2,7 +2,7 @@
 // Name:      vcsentry.cpp
 // Purpose:   Implementation of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -65,7 +65,7 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
   if (m_Commands.empty())
   {
     wxLogError("No commands found for: " + m_Name);
-    m_Commands.push_back(wxExVCSCommand());
+    m_Commands.emplace_back(wxExVCSCommand());
   }  
 }
 
@@ -88,7 +88,7 @@ void wxExVCSEntry::AddCommands(const wxXmlNode* node)
         const wxString submenu = child->GetAttribute("submenu");
         const wxString subcommand = child->GetAttribute("subcommand");
         
-        m_Commands.push_back(
+        m_Commands.emplace_back(
           wxExVCSCommand(
             content, 
             attrib, 

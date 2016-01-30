@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wxExToolBar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -287,7 +287,7 @@ void wxExOptionsToolBar::AddControls(bool realize)
     }
     
     wxCheckBox* cb = new wxCheckBox(this, std::get<0>(it), std::get<1>(it));
-    m_CheckBoxes.push_back(cb);
+    m_CheckBoxes.emplace_back(cb);
 #if wxUSE_TOOLTIPS
     cb->SetToolTip(std::get<4>(it));
 #endif
