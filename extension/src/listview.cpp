@@ -488,7 +488,7 @@ long wxExListView::AppendColumn(const wxExColumn& col)
   if (index != -1)
   {
     mycol.SetColumn(GetColumnCount() - 1);
-    m_Columns.push_back(mycol);
+    m_Columns.emplace_back(mycol);
     
     Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
       SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);},
@@ -1224,7 +1224,7 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   for (int i = 0; i < GetItemCount(); i++)
   {
     const wxString val = wxListView::GetItemText(i, column_no);
-    items.push_back(val);
+    items.emplace_back(val);
 
     switch (sorted_col.GetType())
     {

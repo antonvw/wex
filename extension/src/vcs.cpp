@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wxExVCS class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <map>
@@ -102,7 +102,7 @@ int wxExVCS::ConfigDialog(
 
   for (const auto& it2 : m_Entries)
   {
-    v.push_back(wxExItem(it2.GetName(), ITEM_FILEPICKERCTRL));
+    v.emplace_back(wxExItem(it2.GetName(), ITEM_FILEPICKERCTRL));
   }
 
   if (modal)
@@ -272,7 +272,7 @@ const wxString wxExVCS::GetRelativeFile(
       return relative_file + fn.GetFullName();
     }
 
-    v.push_back(root.GetDirs().Last());
+    v.emplace_back(root.GetDirs().Last());
     root.RemoveLastDir();
   }
   
@@ -377,7 +377,7 @@ bool wxExVCS::LoadDocument()
   {
     if (child->GetName() == "vcs")
     {
-      m_Entries.push_back(wxExVCSEntry(child));
+      m_Entries.emplace_back(wxExVCSEntry(child));
     }
 
     child = child->GetNext();

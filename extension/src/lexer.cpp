@@ -193,7 +193,7 @@ void wxExLexer::AutoMatch(const wxString& lexer)
       // First try exact match.
       if (macro != wxExLexers::Get()->GetThemeMacros().end())
       {
-        m_Styles.push_back(wxExStyle(it.second, macro->second));
+        m_Styles.emplace_back(wxExStyle(it.second, macro->second));
       }
       else
       {
@@ -202,7 +202,7 @@ void wxExLexer::AutoMatch(const wxString& lexer)
         {
           if (it.first.Contains(style.first))
           {
-            m_Styles.push_back(wxExStyle(it.second, style.second));
+            m_Styles.emplace_back(wxExStyle(it.second, style.second));
             break;
           }
         }
@@ -617,7 +617,7 @@ void wxExLexer::SetProperty(const wxString& name, const wxString& value)
     }
   }
 
-  m_Properties.push_back(wxExProperty(name, value));
+  m_Properties.emplace_back(wxExProperty(name, value));
 }
 
 int wxExLexer::UsableCharactersPerLine() const

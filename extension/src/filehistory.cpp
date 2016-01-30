@@ -2,7 +2,7 @@
 // Name:      filehistory.cpp
 // Purpose:   Implementation of wxExFileHistory class methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -81,7 +81,7 @@ std::vector<wxString> wxExFileHistory::GetVector(size_t count) const
   
   for (size_t i = 0; i < count && i < GetCount(); i++)
   {
-    v.push_back(GetHistoryFile(i));
+    v.emplace_back(GetHistoryFile(i));
   }  
   
   return v;

@@ -37,6 +37,9 @@ public:
   /// Returns true if the command was executed.
   virtual bool Command(const std::string& command) override;
   
+  /// Returns insert commands.
+  const auto & GetInsertCommands() const {return m_FSM.GetInsertCommands();};
+
   /// Returns inserted text.
   const auto & GetInsertedText() const {return m_InsertText;};
   
@@ -63,12 +66,12 @@ private:
   void AddText(const std::string& text);
   bool ChangeNumber(bool inc);
   void CommandCalc(const wxString& reg);
-  bool CommandChar(int c);
-  bool CommandChars(std::string& rest);
+  bool CommandChar(std::string& command);
+  bool CommandChars(std::string& command);
   void CommandReg(const char reg);
+  void FilterCount(std::string& command, const std::string& prefix = "");
   bool FindChar(const std::string& text);
   void FindWord(bool find_next = true);
-  void GotoBrace();
   bool Indent(
     const wxString& begin_address, 
     const wxString& end_address, 
@@ -77,16 +80,15 @@ private:
   void InsertModeNormal(const std::string& text);
   /// Adds recording to current macro.
   virtual void MacroRecord(const std::string& text);
-  bool MotionCommand(int type, const std::string& command);
+  bool MotionCommand(int type, std::string& command);
   bool Put(bool after);
-  bool ReverseCase(); 
 
   static std::string m_LastFindCharCommand;
 
   bool m_Dot;  
   bool m_SearchForward;
   
-  int m_Repeat;
+  int m_Count;
   
   wxExViFSM m_FSM;
   

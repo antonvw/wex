@@ -2,7 +2,7 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -133,21 +133,19 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
   
   // Test MODE_INSERT commands.
-  std::vector<std::string> commands {"a", "i", "o", "A", "C", "I", "O", "R"};
-  
-  for (auto& it1 : commands)
+  std::vector<std::string> commands;
+  for (auto& it1 : vi->GetInsertCommands())
   {
-    ChangeMode( vi, it1, wxExVi::MODE_INSERT);
+    ChangeMode( vi, std::string(1, it1.first), wxExVi::MODE_INSERT);
     ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+    commands.push_back(std::string(1, it1.first));
   }
 
   // Test MODE_INSERT commands and delete command on readonly document.
   commands.insert(commands.end(), {"dd", "d0", "d$", "dw", "de"});
-  
   stc->SetReadOnly(true);
   stc->EmptyUndoBuffer();
   stc->SetSavePoint();
-  
   for (auto& it2 : commands)
   {
     INFO( it2);
@@ -220,18 +218,6 @@ TEST_CASE("wxExVi", "[stc][vi]")
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   REQUIRE( stc->GetText().Contains("b"));
 
-  // Test commands that do not change mode, and all return true.
-  commands.clear();
-  commands.insert(commands.end(), {
-    "b","e","h","j","k","l","p","u","w","x"," ",
-    "B","D","E","G","H","J","L","M","P","W","X","Y",
-    "^","-","+","|","~","$","{","}","(",")","%","&","*","#"});
-
-  for (auto& it4 : commands)
-  {
-    ChangeMode( vi, it4, wxExVi::MODE_NORMAL);
-  }
-
   // Test substitute command.
   stc->SetText("xxxxxxxxxx\nxxxxxxxx\naaaaaaaaaa\n");
   REQUIRE( vi->Command(":.="));
@@ -270,7 +256,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( stc->GetLineText(0) == "zzz third");
 
   // Test special delete commands.
-  for (auto& delete_command : std::vector<std::string> {"dgg","3dw"})
+  for (auto& delete_command : std::vector<std::string> {"dgg","3dw", "d3w"})
   {
     REQUIRE( vi->Command(delete_command));
     REQUIRE( vi->GetLastCommand() == delete_command);
@@ -288,14 +274,27 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( vi->Command("p"));
   REQUIRE( stc->GetText().Contains("second"));
   
-  // Test motion commands: yank, delete, and change.
+  // Test motion commands: navigate, yank, delete, and change.
   wxExFindReplaceData::Get()->SetFindString("xx");
   for (auto& motion_command : vi->GetMotionCommands())
   {
     if (motion_command.first <= 255)
     {
-      stc->SetText("xxxxxxxxxx\nyyyyyyyyyy\nzzzzzzzzzz\n{section}");
+      stc->SetText("xxxxxxxxxx\nyyyyyyyyyy\nzzzzzzzzzz\nftFT\n{section}");
 
+      // test navigate
+      std::string nc(
+        motion_command.first == 'f' || motion_command.first == 't' ||
+        motion_command.first == 'F' || motion_command.first == 'T' ||
+        motion_command.first == '\'' ? 2: 1, motion_command.first);
+      INFO( nc );
+      REQUIRE( vi->Command(nc));
+      
+      // test navigate while in rect mode
+      ChangeMode( vi, "K", wxExVi::MODE_VISUAL_RECT);
+      REQUIRE( vi->Command( nc ));
+      ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  
       // test yank
       std::string mc(
         motion_command.first == 'f' || motion_command.first == 't' ||
@@ -306,6 +305,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
       INFO( mc);
       REQUIRE( vi->Command(mc));
       REQUIRE( vi->GetLastCommand() == mc);
+      REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
 
       // test delete
       mc[0] = 'd';
@@ -324,9 +324,8 @@ TEST_CASE("wxExVi", "[stc][vi]")
 
   // Test other commands.
   stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
-    
   for (auto& other_command : std::vector<std::string> {
-    "fx","Fx",";","gg","zc","zo","zE",">>","<<"})
+    "gg","zc","zo","zE",">>","<<"})
   {
     REQUIRE( vi->Command(other_command));
   }
@@ -473,17 +472,6 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( stc->GetLineCount() == 12);
   stc->GotoLine(2);
 
-  // Test navigate while in rect mode.
-  ChangeMode( vi, "K", wxExVi::MODE_VISUAL_RECT);
-  
-  for (const auto& rect : std::vector<std::string> {
-    "w", "b", "h", "j", "k", "l"})
-  {
-    REQUIRE( vi->Command(rect) );
-  }
-  
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
-  
   for (const auto& go : std::vector<std::pair<std::string, int>> {
     {"gg",0},
     {"G",11},

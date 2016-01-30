@@ -2,7 +2,7 @@
 // Name:      itemtpldlg.h
 // Purpose:   Declaration of wxExItemTemplateDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -62,7 +62,7 @@ public:
     Bind(wxEVT_UPDATE_UI, &wxExItemTemplateDialog::OnUpdateUI, this, wxID_OK);};
   
   /// Adds an item to the temp vector.
-  void Add(const T & item) {m_ItemsTemp.push_back(item);};
+  void Add(const T & item) {m_ItemsTemp.emplace_back(item);};
 
   /// If you specified some checkboxes, calling this method
   /// requires that one of them should be checked for the OK button

@@ -2,7 +2,7 @@
 // Name:      vimacros.cpp
 // Purpose:   Implementation of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -332,13 +332,13 @@ const std::vector< wxString > wxExViMacros::Get() const
   {
     if (it.first.size() > 1)
     {
-      v.push_back(it.first);
+      v.emplace_back(it.first);
     }
   }
    
   for (const auto& it : m_Variables)
   {
-    v.push_back(it.first);
+    v.emplace_back(it.first);
   }
   
   std::sort(v.begin(), v.end());
@@ -361,7 +361,7 @@ const std::vector< std::string > wxExViMacros::Get(const wxString& macro) const
     
     if (it != m_Variables.end())
     {
-      v.push_back(it->second.GetValue().ToStdString());
+      v.emplace_back(it->second.GetValue().ToStdString());
     }
   
     return v;
@@ -423,7 +423,7 @@ const std::vector< std::string > wxExViMacros::GetRegisters() const
         output += it2;
       }
     
-      r.push_back(wxString(wxString(it.first) + ": " + wxExSkipWhiteSpace(output)).ToStdString());
+      r.emplace_back(wxString(wxString(it.first) + ": " + wxExSkipWhiteSpace(output)).ToStdString());
     }
   }
    
@@ -431,7 +431,7 @@ const std::vector< std::string > wxExViMacros::GetRegisters() const
               
   if (!clipboard.empty())
   {
-    r.push_back(wxString("*: " + clipboard).ToStdString());
+    r.emplace_back(wxString("*: " + clipboard).ToStdString());
   }
                 
   return r;
@@ -532,7 +532,7 @@ void wxExViMacros::ParseNodeMacro(wxXmlNode* node)
 
   while (command)
   {
-    v.push_back(Decode(command->GetNodeContent()));
+    v.emplace_back(Decode(command->GetNodeContent()));
     command = command->GetNext();
   }
   
@@ -639,14 +639,14 @@ void wxExViMacros::Record(const std::string& text, bool new_command)
   
   if (new_command) 
   {
-    m_Macros[m_Macro].push_back(text);
+    m_Macros[m_Macro].emplace_back(text);
   }
   else
   {
     if (m_Macros[m_Macro].empty())
     {
       std::string s;
-      m_Macros[m_Macro].push_back(s);
+      m_Macros[m_Macro].emplace_back(s);
     }
     
     m_Macros[m_Macro].back() += text;
@@ -763,11 +763,11 @@ void wxExViMacros::SetRegister(const char name, const std::string& value)
   {
     if (wxIsupper(name))
     {
-      v.push_back(GetRegister(tolower(name)) + value);
+      v.emplace_back(GetRegister(tolower(name)) + value);
     }
     else
     {
-      v.push_back(value);
+      v.emplace_back(value);
     }
   }
   

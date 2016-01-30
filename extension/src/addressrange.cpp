@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wxExAddressRange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -51,7 +51,7 @@ public:
             m_Changes++;
           }
           
-          m_Commands.push_back(cmd);
+          m_Commands.emplace_back(cmd);
         }
       }
     }

@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -556,7 +556,7 @@ void Frame::OnSocket(wxSocketEvent& event)
     sock->SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
     sock->Notify(true);
 
-    m_Clients.push_back(sock);
+    m_Clients.emplace_back(sock);
 
 #if wxUSE_STATUSBAR
     StatusText(

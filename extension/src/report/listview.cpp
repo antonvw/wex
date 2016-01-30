@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of class wxExListViewWithFrame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -151,7 +151,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
     std::vector< wxString > files;
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
-      files.push_back(wxExListItem(this, i).GetFileName().GetFullPath());
+      files.emplace_back(wxExListItem(this, i).GetFileName().GetFullPath());
     }
     wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
     }, ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);

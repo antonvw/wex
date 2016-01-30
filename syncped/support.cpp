@@ -2,7 +2,7 @@
 // Name:      support.cpp
 // Purpose:   Implementation of DecoratedFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -51,16 +51,16 @@ DecoratedFrame::DecoratedFrame()
     const int lexer_size = 75;
 #endif
 
-    panes.push_back(wxExStatusBarPane("PaneLexer", lexer_size, _("Lexer")));
-    panes.push_back(wxExStatusBarPane("PaneTheme", lexer_size, _("Theme")));
+    panes.emplace_back(wxExStatusBarPane("PaneLexer", lexer_size, _("Lexer")));
+    panes.emplace_back(wxExStatusBarPane("PaneTheme", lexer_size, _("Theme")));
   }
 
   if (wxExVCS::GetCount() > 0)
   {
-    panes.push_back(wxExStatusBarPane("PaneVCS", 75, _("VCS")));
+    panes.emplace_back(wxExStatusBarPane("PaneVCS", 75, _("VCS")));
   }
   
-  panes.push_back(wxExStatusBarPane("PaneMacro", 75));
+  panes.emplace_back(wxExStatusBarPane("PaneMacro", 75));
   
   SetupStatusBar(panes);
   
