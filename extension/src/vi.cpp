@@ -363,16 +363,14 @@ bool wxExVi::ChangeNumber(bool inc)
   {
     return false;
   }
-  
-  const int start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
-  const int end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
-  const wxString word = GetSTC()->GetTextRange(start, end);
-  
-  long number;
-  
-  if (word.ToLong(&number))
+
+  try 
   {
-    const long next = (inc ? ++number: --number);
+    const int start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
+    const int end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
+    const std::string word = GetSTC()->GetTextRange(start, end).ToStdString();
+    auto number = std::stoi(word);
+    const auto next = (inc ? ++number: --number);
     
     if (next >= 0)
     {
@@ -390,8 +388,10 @@ bool wxExVi::ChangeNumber(bool inc)
     
     return true;
   }
-  
-  return false;
+  catch (...)
+  {
+    return false;
+  }
 }
 
 bool wxExVi::Command(const std::string& command)
@@ -1224,81 +1224,81 @@ bool wxExVi::MotionCommand(int type, std::string& command)
     [c](std::pair<int, std::function<bool(const std::string& command)>> const& elem) {
     return elem.first == c;});
   
-  if (it != m_MotionCommands.end())
+  if (it == m_MotionCommands.end())
   {
-    const int start = GetSTC()->GetCurrentPos();
-        
-    switch (type)
-    {
-      case MOTION_CHANGE:
-        if (!GetSTC()->GetSelectedText().empty())
-        {
-          GetSTC()->SetCurrentPos(GetSTC()->GetSelectionStart());
-        }
-      
-        if (!ModeVisual())
-        {
-          m_FSM.Transition("v");
-        }
-
-        if (!it->second(command.substr(1))) return false;
-      
-        DeleteRange(this, start, GetSTC()->GetCurrentPos());
-
-        m_FSM.Transition(command);
-        command = command.substr(2);
-        break;
-      
-      case MOTION_DELETE:
-        if (GetSTC()->GetReadOnly() || GetSTC()->HexMode())
-        {
-          return true;
-        }
-      
-        if (!it->second(command.substr(1))) return false;
-        
-        DeleteRange(this, start, GetSTC()->GetCurrentPos());
-        break;
-      
-      case MOTION_NAVIGATE: 
-        if (!it->second(command)) return false; 
-        break;
-      
-      case MOTION_YANK:
-        if (!ModeVisual())
-        {
-          m_FSM.Transition("v");
-        }
-      
-        if (!it->second(command.substr(1))) return false;
-      
-        if (GetSTC()->GetSelectedText().empty())
-        {
-          const int end = GetSTC()->GetCurrentPos();
-          GetSTC()->CopyRange(start, end - start);
-          GetSTC()->SetSelection(start, end);
-        }
-
-        m_FSM.Transition("\x1b");
-        
-        if (!GetRegister())
-        {
-          SetRegisterYank(GetSelectedText());
-        }
-        else
-        {
-          GetMacros().SetRegister(GetRegister(), GetSelectedText());
-          GetSTC()->SelectNone();
-        }
-        break;
-    }
-    
-    m_Count = 1;
-
-    return true;
+    return false;
   }
+  
+  const int start = GetSTC()->GetCurrentPos();
+      
+  switch (type)
+  {
+    case MOTION_CHANGE:
+      if (!GetSTC()->GetSelectedText().empty())
+      {
+        GetSTC()->SetCurrentPos(GetSTC()->GetSelectionStart());
+      }
+    
+      if (!ModeVisual())
+      {
+        m_FSM.Transition("v");
+      }
 
-  return false;
+      if (!it->second(command.substr(1))) return false;
+    
+      DeleteRange(this, start, GetSTC()->GetCurrentPos());
+
+      m_FSM.Transition(command);
+      command = command.substr(2);
+      break;
+    
+    case MOTION_DELETE:
+      if (GetSTC()->GetReadOnly() || GetSTC()->HexMode())
+      {
+        return true;
+      }
+    
+      if (!it->second(command.substr(1))) return false;
+      
+      DeleteRange(this, start, GetSTC()->GetCurrentPos());
+      break;
+    
+    case MOTION_NAVIGATE: 
+      if (!it->second(command)) return false; 
+      break;
+    
+    case MOTION_YANK:
+      if (!ModeVisual())
+      {
+        m_FSM.Transition("v");
+      }
+    
+      if (!it->second(command.substr(1))) return false;
+    
+      if (GetSTC()->GetSelectedText().empty())
+      {
+        const int end = GetSTC()->GetCurrentPos();
+        GetSTC()->CopyRange(start, end - start);
+        GetSTC()->SetSelection(start, end);
+      }
+
+      m_FSM.Transition("\x1b");
+      
+      if (!GetRegister())
+      {
+        SetRegisterYank(GetSelectedText());
+      }
+      else
+      {
+        GetMacros().SetRegister(GetRegister(), GetSelectedText());
+        GetSTC()->SelectNone();
+      }
+      break;
+  }
+  
+  m_Count = 1;
+
+  return true;
 }
 
 bool wxExVi::OnChar(const wxKeyEvent& event)

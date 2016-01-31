@@ -78,8 +78,7 @@ private:
     bool forward);
   bool InsertMode(const std::string& text);
   void InsertModeNormal(const std::string& text);
-  /// Adds recording to current macro.
-  virtual void MacroRecord(const std::string& text);
+  virtual void MacroRecord(const std::string& text) override;
   bool MotionCommand(int type, std::string& command);
   bool Put(bool after);
 
