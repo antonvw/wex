@@ -2,6 +2,8 @@
 #
 # It is used automatically for the repositories on Github if it's found in the
 # root directory of the project.
+sudo: required
+dist: trusty
 language: cpp
 
 compiler: gcc
@@ -29,10 +31,6 @@ branches:
 
 before_install:
     - mysql -e "create database IF NOT EXISTS test;" -uroot
-    - sudo apt-key adv --fetch-keys http://repos.codelite.org/CodeLite.asc
-    - sudo apt-add-repository 'deb http://repos.codelite.org/wx3.0.2/ubuntu/ precise universe'
-    - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
-    - sudo apt-get update
 
 install:
     - sudo apt-get install g++-4.9
@@ -40,9 +38,8 @@ install:
     - sudo apt-get install ruby
     - gem install coveralls-lcov
     # first add dependencies for libwxgtk3
-    - sudo apt-get install -y liblzma5 
-    - sudo apt-get install -y libjbig0
-    - sudo apt-get install -y libwxbase3.0-0-unofficial libwxbase3.0-dev libwxgtk3.0-0-unofficial libwxgtk3.0-dev wx3.0-headers wx-common wx3.0-i18n    
+    - sudo apt-get install -y liblzma5 libjbig0
+    - sudo apt-get install -y libwxbase3.0-0 libwxgtk3.0-0 libwxbase3.0-dev libwxgtk3.0-dev wx3.0-headers wx-common wx3.0-i18n    
     # coreutils needed for uniq and sort used in testing
     - sudo apt-get install -y coreutils
     - sudo apt-get install -y unixodbc unixodbc-dev libmyodbc

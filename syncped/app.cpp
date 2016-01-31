@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of class App
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -86,7 +86,7 @@ bool App::OnInit()
 
 void App::Reset()
 {
+  // do not reset flags
   m_Command.clear();
-  m_Flags = 0;
   m_Split = -1;
 }
