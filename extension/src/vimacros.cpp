@@ -675,49 +675,34 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
     root->RemoveChild(child);
     delete child;
   }
- 
-  for (
-    auto it = 
-      m_Macros.rbegin();
-    it != m_Macros.rend();
-    ++it)
+
+  std::for_each(m_Macros.rbegin(), m_Macros.rend(), [&](const auto& it)
   {
-    if (!it->second.empty())
+    if (!it.second.empty())
     {
       wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "macro");
-      element->AddAttribute("name", it->first);
+      element->AddAttribute("name", it.first);
       
-      for (
-        auto it2 = it->second.rbegin();
-        it2 != it->second.rend();
-        ++it2)
+      std::for_each(it.second.rbegin(), it.second.rend(), [&](const auto& it2)
       { 
         wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
-        new wxXmlNode(cmd, wxXML_TEXT_NODE, "", Encode(*it2));
-      }
+        new wxXmlNode(cmd, wxXML_TEXT_NODE, "", Encode(it2));
+      });
     }
-  }
-  
-  for (
-    auto it2 = 
-      m_Variables.rbegin();
-    it2 != m_Variables.rend();
-    ++it2)
+  });
+
+  std::for_each(m_Variables.rbegin(), m_Variables.rend(), [&](const auto& it)
   {
     wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "variable");
-    it2->second.Save(element);
-  }
+    it.second.Save(element);
+  });
   
-  for (
-    auto it3 = 
-      m_Abbreviations.rbegin();
-    it3 != m_Abbreviations.rend();
-    ++it3)
+  std::for_each(m_Abbreviations.rbegin(), m_Abbreviations.rend(), [&](const auto& it)
   {
     wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "abbreviation");
-    element->AddAttribute("name", it3->first);
-    new wxXmlNode(element, wxXML_TEXT_NODE, "", it3->second);
-  }
+    element->AddAttribute("name", it.first);
+    new wxXmlNode(element, wxXML_TEXT_NODE, "", it.second);
+  });
   
   const bool ok = doc.Save(GetFileName().GetFullPath());
   
