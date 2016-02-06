@@ -6,9 +6,6 @@ sudo: required
 dist: trusty
 language: cpp
 
-services:
-    - mysql
-
 compiler: gcc
 
 env:
@@ -26,6 +23,7 @@ addons:
     build_command_prepend: "sudo rm /usr/bin/g++; sudo ln -s /usr/bin/g++-4.9 /usr/bin/g++; mkdir build; pushd build; cmake .."
     build_command:   "make -j 4"
     branch_pattern: coverity_scan
+  mariadb: '10.0'
   
 branches:
     only:
@@ -33,7 +31,7 @@ branches:
       - coverity_scan
 
 before_install:
-    - mysql -e "create database IF NOT EXISTS test;" -uroot
+    - mysql -u root -e "create database if not exists test;"
 
 install:
     - sudo apt-get install g++-4.9
