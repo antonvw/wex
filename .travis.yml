@@ -23,7 +23,6 @@ addons:
     build_command_prepend: "sudo rm /usr/bin/g++; sudo ln -s /usr/bin/g++-4.9 /usr/bin/g++; mkdir build; pushd build; cmake .."
     build_command:   "make -j 4"
     branch_pattern: coverity_scan
-  mariadb: '10.0'
   
 branches:
     only:
@@ -31,7 +30,6 @@ branches:
       - coverity_scan
 
 before_install:
-    - mysql -u root -e "create database if not exists test;"
 
 install:
     - sudo apt-get install g++-4.9
@@ -43,7 +41,6 @@ install:
     - sudo apt-get install -y libwxbase3.0-0 libwxgtk3.0-0 libwxbase3.0-dev libwxgtk3.0-dev wx3.0-headers wx-common wx3.0-i18n    
     # coreutils needed for uniq and sort used in testing
     - sudo apt-get install -y coreutils
-    - sudo apt-get install -y unixodbc unixodbc-dev libmyodbc
 
 before_script:
     # we need  a display for the gui tests
@@ -58,7 +55,7 @@ before_script:
 
 script:
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then mkdir build && pushd build; fi
-    - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExUSE_SSS=ON -DwxExUSE_OTL=ON -DBUILD_TEST=ON ..; fi
+    - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExUSE_SSS=ON -DBUILD_TEST=ON ..; fi
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then make -j 4; fi
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then make lcov-prep; fi
     - if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then ctest -V ..; fi
