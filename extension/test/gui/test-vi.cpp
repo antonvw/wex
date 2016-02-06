@@ -28,20 +28,18 @@ void ChangeMode(wxExVi* vi, const std::string& command, int mode)
 
 TEST_CASE("wxExVi", "[stc][vi]")
 {
-  // Test for modeline support.
   wxExSTC* stc = new wxExSTC(GetFrame(), 
     "// vi: set ts=120 "
     "// this is a modeline");
   AddPane(GetFrame(), stc);
-    
   wxExVi* vi = &stc->GetVi();
+  wxKeyEvent event(wxEVT_CHAR);
   
+  // Test for modeline support.
   REQUIRE(stc->GetTabWidth() == 120);
   REQUIRE( vi->GetIsActive());
   REQUIRE( vi->ModeNormal());
 
-  wxKeyEvent event(wxEVT_CHAR);
-  
   // Test WXK_NONE.
   event.m_uniChar = WXK_NONE;
   REQUIRE( vi->OnChar(event));
@@ -50,7 +48,6 @@ TEST_CASE("wxExVi", "[stc][vi]")
   event.m_uniChar = 'i';
   REQUIRE(!vi->OnChar(event));
   REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
-  
   // Second i (and more) all handled by vi.
   for (int i = 0; i < 10; i++) REQUIRE(!vi->OnChar(event));
 
@@ -89,10 +86,11 @@ TEST_CASE("wxExVi", "[stc][vi]")
 
   // Test navigate command keys.
   for (const auto& nav_key : std::vector<int> {
-    WXK_BACK,WXK_DELETE,WXK_RETURN,WXK_LEFT,WXK_DOWN,WXK_UP,WXK_RIGHT,
-    WXK_PAGEUP,WXK_PAGEDOWN,WXK_TAB})
+    WXK_BACK, WXK_DELETE, WXK_RETURN, WXK_LEFT, WXK_DOWN, WXK_UP, WXK_RIGHT,
+    WXK_PAGEUP, WXK_PAGEDOWN, WXK_TAB})
   {
     event.m_keyCode = nav_key;
+    INFO( nav_key );
     REQUIRE(!vi->OnKeyDown(event));
     ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   }
@@ -126,7 +124,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
     REQUIRE( vi->Command("."));
   REQUIRE( stc->GetText().Contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
   
-  // Test MODE_INSERT commands.
+  // Test insert commands.
   std::vector<std::string> commands;
   for (auto& it1 : vi->GetInsertCommands())
   {
@@ -135,7 +133,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
     commands.push_back(std::string(1, it1.first));
   }
 
-  // Test MODE_INSERT commands and delete command on readonly document.
+  // Test insert commands and delete commands on readonly document.
   commands.insert(commands.end(), {"dd", "d0", "d$", "dw", "de"});
   stc->SetReadOnly(true);
   stc->EmptyUndoBuffer();
@@ -147,8 +145,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
     REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
     REQUIRE(!stc->GetModify());
   }
-
-  // Test MODE_INSERT commands on hexmode document.
+  // and on hexmode document.
   stc->SetReadOnly(false);
   stc->Reload(wxExSTC::STC_WIN_HEX);
   REQUIRE( stc->HexMode());
@@ -194,6 +191,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
     ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
     REQUIRE( vi->GetInsertedText() == "abbreviation "  + abbrev.first + " ");
     REQUIRE( stc->GetText().Contains("abbreviation " + abbrev.second));
+    INFO( abbrev.first);
     REQUIRE(!stc->GetText().Contains(abbrev.first));
   }
 
@@ -216,12 +214,12 @@ TEST_CASE("wxExVi", "[stc][vi]")
   stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
   REQUIRE( stc->GetLineCount() == 4);
   REQUIRE( vi->Command(":1"));
-  REQUIRE( vi->Command("cc"));
+  REQUIRE( vi->Command("cw"));
   REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
   REQUIRE( vi->Command("zzz"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   REQUIRE( stc->GetLineCount() == 4);
-  REQUIRE( stc->GetLineText(0) == "zzz");
+  REQUIRE( stc->GetLineText(0) == "zzzsecond");
   stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
   REQUIRE( vi->Command(":1"));
   REQUIRE( vi->Command("ce"));
@@ -306,11 +304,23 @@ TEST_CASE("wxExVi", "[stc][vi]")
   }
 
   // Test other commands.
-  stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
-  for (auto& other_command : std::vector<std::string> {
-    "gg","zc","zo","zE",">>","<<"})
+  for (auto& other_command : vi->GetOtherCommands())
   {
-    REQUIRE( vi->Command(other_command));
+    stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
+
+    const std::string oc(
+      other_command.first == "m" || 
+      other_command.first == "q" || 
+      other_command.first == "r" || 
+      other_command.first == "\x12" || 
+      other_command.first == "@" ?
+        other_command.first + "a": other_command.first);
+    
+    INFO( oc);
+    if (oc != "\t")
+      REQUIRE( vi->Command(oc));
+    else
+      REQUIRE(!vi->Command(oc));
   }
 
   // Special put test. 
@@ -334,11 +344,12 @@ TEST_CASE("wxExVi", "[stc][vi]")
   vi->Command("=5+5");
   vi->Command("");
   REQUIRE( stc->GetText().Contains("10"));
-  
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+
   // Test macro.
   // First load macros.
+  vi->GetMacros().StopRecording();
   REQUIRE( wxExViMacros::LoadDocument());
-  stc->SetText("this text contains xx");
   for (const auto& macro : std::vector< std::vector< std::string> > {
     {"10w"},
     {"dw"},
@@ -347,7 +358,10 @@ TEST_CASE("wxExVi", "[stc][vi]")
     {"yk"},
     {"/xx","rz"}})  
   {
+    stc->SetText("this text contains xx");
+    
     REQUIRE( vi->Command("qt"));
+    REQUIRE( vi->GetMacros().IsRecording());
     
     std::string all;
     
@@ -356,7 +370,8 @@ TEST_CASE("wxExVi", "[stc][vi]")
       REQUIRE( vi->Command(command));
       all += command;
     }
-    
+
+    INFO( macro.front() );
     REQUIRE( vi->Command("q"));
     REQUIRE( stc->GetVi().GetMacros().GetRegister('t') == all);
   }

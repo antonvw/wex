@@ -6,6 +6,9 @@ sudo: required
 dist: trusty
 language: cpp
 
+services:
+    - mysql
+
 compiler: gcc
 
 env:

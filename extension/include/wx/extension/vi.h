@@ -46,6 +46,9 @@ public:
   /// Returns motion commands.
   const auto & GetMotionCommands() const {return m_MotionCommands;};
 
+  /// Returns other commands.
+  const auto & GetOtherCommands() const {return m_OtherCommands;};
+
   /// Returns the mode we are in.
   int GetMode() const {return m_FSM.State();};
   bool ModeInsert() const {return GetMode() == MODE_INSERT || GetMode() == MODE_INSERT_RECT;};
@@ -67,7 +70,6 @@ private:
   bool ChangeNumber(bool inc);
   void CommandCalc(const wxString& reg);
   bool CommandChar(std::string& command);
-  bool CommandChars(std::string& command);
   void CommandReg(const char reg);
   void FilterCount(std::string& command, const std::string& prefix = "");
   bool FindChar(const std::string& text);
@@ -80,6 +82,7 @@ private:
   void InsertModeNormal(const std::string& text);
   virtual void MacroRecord(const std::string& text) override;
   bool MotionCommand(int type, std::string& command);
+  bool OtherCommand(std::string& command);
   bool Put(bool after);
 
   static std::string m_LastFindCharCommand;
@@ -93,6 +96,12 @@ private:
   
   std::string m_Command;
   std::string m_InsertText;
-  std::vector<std::pair<int, std::function<bool(const std::string& command)>>> m_MotionCommands;
+
+  std::vector<std::pair<
+    int, 
+    std::function<bool(const std::string& command)>>> m_MotionCommands;
+  std::vector<std::pair<
+    const std::string, 
+    std::function<bool(const std::string& command)>>> m_OtherCommands;
 };
 #endif // wxUSE_GUI
