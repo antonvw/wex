@@ -573,6 +573,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) GetSTC()->DeleteBack();
       return true;}},
     {"\x12", [&](const std::string& command){
+      if (command.size() == 1) return false;
       if (RegAfter(wxUniChar(WXK_CONTROL_R), command))
       {
         CommandReg(command[1]);
