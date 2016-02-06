@@ -476,8 +476,8 @@ wxExVi::wxExVi(wxExSTC* stc)
         GetSTC()->GetCurrentPos(), 
         GetSTC()->GetCurrentPos() + 1, 
         text);
-      GetSTC()->CharRight();
-      return true;)}},
+      GetSTC()->CharRight());
+      return true;}},
     {"&", [&](const std::string& command){(void)Command(":.&");return true;}},
     {"*", [&](const std::string& command){FindWord();return true;}},
     {"#", [&](const std::string& command){FindWord(false);return true;}},
