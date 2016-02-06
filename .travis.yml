@@ -34,9 +34,9 @@ before_install:
 install:
     - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
     - sudo apt-get update
-    - sudo apt-get install g++-4.9
-    - sudo apt-get install lcov
-    - sudo apt-get install ruby
+    - sudo apt-get install -y g++-4.9
+    - sudo apt-get install -y lcov
+    - sudo apt-get install -y ruby
     - gem install coveralls-lcov
     # first add dependencies for libwxgtk3
     - sudo apt-get install -y liblzma5 libjbig0
