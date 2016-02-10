@@ -28,6 +28,7 @@ TEST_CASE("wxExViMacros", "[stc][vi]")
   REQUIRE(!macros.GetFileName().GetFullPath().empty());
   REQUIRE( wxExViMacros::LoadDocument());
   REQUIRE( macros.GetCount() > 0);
+  REQUIRE(!macros.GetAbbreviations().empty());
   
   REQUIRE(!macros.IsModified());
   REQUIRE(!macros.IsRecording());
@@ -138,8 +139,6 @@ TEST_CASE("wxExViMacros", "[stc][vi]")
   REQUIRE( macros.GetRegister('z') == "hello z and more");
   
   // Test abbreviations.
-  REQUIRE( macros.GetAbbreviations().empty());
-  
   for (auto& abbrev : GetAbbreviations())
   {
     macros.SetAbbreviation(abbrev.first, abbrev.second);
@@ -152,7 +151,7 @@ TEST_CASE("wxExViMacros", "[stc][vi]")
     }
   }
   
-  REQUIRE( macros.GetAbbreviations().size() == GetAbbreviations().size());
+  REQUIRE( macros.GetAbbreviations().size() == GetAbbreviations().size() + 1);
   REQUIRE( macros.IsModified());
   REQUIRE( wxExViMacros::SaveDocument());
 }

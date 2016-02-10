@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 Name:      macros.xml
-Purpose:   vi macros and variables for wxExtension.
+Purpose:   vi macros, variables and abbreviations for wxExtension.
 Author:    Anton van Wezenbeek
-Copyright: (c) 2015, Anton van Wezenbeek
+Copyright: (c) 2016, Anton van Wezenbeek
 
 Both variables and macros have a "name" attribute, you call them
 from vi mode using @name@ (if name starts with an
 uppercase letter). If the name is a register c, you can call it
 using @c (lowercase). From vi you can record a register using q 
 followed by a letter, and ending with a q as well.
+  
+An abbreviation is expanded during insertion when you enter
+the text. From vi you can enter an abbreviation using :ab.
 
 Each macro can have several commands.  
 
@@ -139,4 +142,7 @@ Comments you add within xml elements are not saved when you edit macros.
     <command>o</command>
     <command>$!27!</command>
   </macro>
+  
+  <!-- An abbreviation macro -->
+  <abbreviation name="CR">Copyright</abbreviation>
 </macros>

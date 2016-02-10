@@ -303,6 +303,16 @@ TEST_CASE("wxExVi", "[stc][vi]")
     }
   }
 
+  // Test % navigate.
+  stc->SetText("{a brace and a close brace}");
+  REQUIRE( vi->Command("y%"));
+  REQUIRE( stc->GetSelectedText().size() == 27);
+  
+  // Test delete navigate.
+  stc->SetText("xyz");
+  REQUIRE( vi->Command(std::string(1, WXK_DELETE)));
+  REQUIRE( stc->GetText() == "yz");
+
   // Test other commands.
   for (auto& other_command : vi->GetOtherCommands())
   {

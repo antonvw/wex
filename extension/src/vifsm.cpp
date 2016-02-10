@@ -76,8 +76,8 @@ bool wxExViFSM::Transition(const std::string& command)
     case 0: return false;
     case 1:
       if (std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
-        [command](std::pair<int, std::function<void()>> const& elem) {
-        return elem.first == command[0];}) != m_InsertCommands.end())
+        [command](auto const& e) {return e.first == command[0];}) 
+        != m_InsertCommands.end())
       {
         key = KEY_INSERT;
       }
@@ -102,8 +102,7 @@ bool wxExViFSM::Transition(const std::string& command)
   }
   
   const auto it = std::find_if(m_FSM.begin(), m_FSM.end(), 
-    [&](wxExViFSMEntry& fsm) {
-    return fsm.State() == m_State && fsm.Action() == key;});
+    [&](const auto & e) {return e.State() == m_State && e.Action() == key;});
   
   if (it == m_FSM.end())
   {
@@ -123,8 +122,7 @@ bool wxExViFSM::Transition(const std::string& command)
     case wxExVi::MODE_INSERT:
       {
       auto it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
-        [command](std::pair<int, std::function<void()>> const& elem) {
-        return elem.first == command[0];});
+        [command](auto const& e) {return e.first == command[0];});
       if (it != m_InsertCommands.end() && it->second != nullptr)
         it->second();
       }

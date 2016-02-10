@@ -58,7 +58,7 @@ bool wxExFile::CheckSync()
   // Might be used without wxApp.
   wxConfigBase* config = wxConfigBase::Get(false);
 
-  if ( IsOpened() ||
+  if ( m_File->IsOpened() ||
       !m_FileName.m_Stat.IsOk() ||
       (config != nullptr && !config->ReadBool("AllowSync", true)))
   {
@@ -177,7 +177,7 @@ bool wxExFile::Get(bool synced)
 
 const wxCharBuffer* wxExFile::Read(wxFileOffset seek_position)
 {
-  wxASSERT(IsOpened());
+  wxASSERT(m_File->IsOpened());
   
   if ((m_Buffer.get() != nullptr && seek_position > 0) || 
       (m_Buffer.get() != nullptr && m_File->Tell() != seek_position))
@@ -185,7 +185,7 @@ const wxCharBuffer* wxExFile::Read(wxFileOffset seek_position)
     m_File->Seek(seek_position);
   }
 
-  m_Buffer = std::make_unique<wxCharBuffer>(Length() - seek_position);
+  m_Buffer = std::make_unique<wxCharBuffer>(m_File->Length() - seek_position);
 
   if (m_File->Read(m_Buffer->data(), m_Buffer->length()) != m_Buffer->length())
   {

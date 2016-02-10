@@ -205,6 +205,10 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   stc->LineHome();
   stc->LineHomeExtend();
   stc->LineHomeRectExtend();
+  stc->LineScrollDownExtend();
+  stc->LineScrollDownRectExtend();
+  stc->LineScrollUpExtend();
+  stc->LineScrollUpRectExtend();
   stc->ParaUpRectExtend();
   stc->ParaDownRectExtend();
   stc->WordLeftRectExtend();

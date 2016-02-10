@@ -2,7 +2,7 @@
 // Name:      item.h
 // Purpose:   Declaration of wxExItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,48 +26,49 @@ template <class T> class wxExItemTemplateDialog;
 /// The item types supported.
 enum wxExItemType
 {
-  ITEM_BUTTON,               ///< a wxButton item
-  ITEM_CHECKBOX,             ///< a wxCheckBox item
-  ITEM_CHECKLISTBOX_BIT,     ///< a wxCheckListBox item to set individual bits in a long
-  ITEM_CHECKLISTBOX_BOOL,    ///< a wxCheckListBox item using boolean choices
-  ITEM_COLOURPICKERWIDGET,   ///< a wxColourPickerWidget item
-  ITEM_COMBOBOX,             ///< a wxComboBox item
-  ITEM_COMBOBOX_DIR,         ///< a wxComboBox item with a browse button
-  ITEM_COMMANDLINKBUTTON,    ///< a wxCommandLinkButton button
-  ITEM_DIRPICKERCTRL,        ///< a wxDirPickerCtrl item
-  ITEM_EMPTY,                ///< an empty item
-  ITEM_FILEPICKERCTRL,       ///< a wxFilePickerCtrl item
-  ITEM_FONTPICKERCTRL,       ///< a wxFontPickerCtrl item
-  ITEM_HYPERLINKCTRL,        ///< a wxHyperlinkCtrl item
-  ITEM_LISTVIEW,             ///< a wxExListView item
-  ITEM_NOTEBOOK,             ///< a wxNotebook item
-  ITEM_NOTEBOOK_AUI,         ///< a wxAuiNotebook item
-  ITEM_NOTEBOOK_CHOICE,      ///< a wxChoicebook item
-  ITEM_NOTEBOOK_EX,          ///< a wxExNotebook  item
-  ITEM_NOTEBOOK_LIST,        ///< a wxListbook item
-  ITEM_NOTEBOOK_SIMPLE,      ///< a wxSimpleNotebook item
-  ITEM_NOTEBOOK_TOOL,        ///< a wxToolbook item
-  ITEM_NOTEBOOK_TREE,        ///< a wxTreebook item
-  ITEM_RADIOBOX,             ///< a wxRadioBox item
-  ITEM_SLIDER,               ///< a wxSlider item
-  ITEM_SPACER,               ///< a spacer item
-  ITEM_SPINCTRL,             ///< a wxSpinCtrl item
-  ITEM_SPINCTRLDOUBLE,       ///< a wxSpinCtrlDouble item
-  ITEM_STATICLINE,           ///< a wxStaticLine item
-  ITEM_STATICTEXT,           ///< a wxStaticText item
-  ITEM_STC,                  ///< a wxExSTC ctrl item  
-  ITEM_TEXTCTRL,             ///< a wxTextCtrl item
-  ITEM_TEXTCTRL_FLOAT,       ///< a wxTextCtrl item that only accepts a float (double)
-  ITEM_TEXTCTRL_INT,         ///< a wxTextCtrl item that only accepts an integer (long)
-  ITEM_TOGGLEBUTTON,         ///< a wxToggleButton item
-  ITEM_USER,                 ///< provide your own window
+  ITEM_BUTTON,             ///< a wxButton item
+  ITEM_CHECKBOX,           ///< a wxCheckBox item
+  ITEM_CHECKLISTBOX_BIT,   ///< a wxCheckListBox item to set individual bits in a long
+  ITEM_CHECKLISTBOX_BOOL,  ///< a wxCheckListBox item using boolean choices
+  ITEM_COLOURPICKERWIDGET, ///< a wxColourPickerWidget item
+  ITEM_COMBOBOX,           ///< a wxComboBox item
+  ITEM_COMBOBOX_DIR,       ///< a wxComboBox item with a browse button
+  ITEM_COMMANDLINKBUTTON,  ///< a wxCommandLinkButton button
+  ITEM_DIRPICKERCTRL,      ///< a wxDirPickerCtrl item
+  ITEM_EMPTY,              ///< an empty item
+  ITEM_FILEPICKERCTRL,     ///< a wxFilePickerCtrl item
+  ITEM_FONTPICKERCTRL,     ///< a wxFontPickerCtrl item
+  ITEM_HYPERLINKCTRL,      ///< a wxHyperlinkCtrl item
+  ITEM_LISTVIEW,           ///< a wxExListView item
+  ITEM_NOTEBOOK,           ///< a wxNotebook item
+  ITEM_NOTEBOOK_AUI,       ///< a wxAuiNotebook item
+  ITEM_NOTEBOOK_CHOICE,    ///< a wxChoicebook item
+  ITEM_NOTEBOOK_EX,        ///< a wxExNotebook  item
+  ITEM_NOTEBOOK_LIST,      ///< a wxListbook item
+  ITEM_NOTEBOOK_SIMPLE,    ///< a wxSimpleNotebook item
+  ITEM_NOTEBOOK_TOOL,      ///< a wxToolbook item
+  ITEM_NOTEBOOK_TREE,      ///< a wxTreebook item
+  ITEM_RADIOBOX,           ///< a wxRadioBox item
+  ITEM_SLIDER,             ///< a wxSlider item
+  ITEM_SPACER,             ///< a spacer item
+  ITEM_SPINCTRL,           ///< a wxSpinCtrl item
+  ITEM_SPINCTRLDOUBLE,     ///< a wxSpinCtrlDouble item
+  ITEM_STATICLINE,         ///< a wxStaticLine item
+  ITEM_STATICTEXT,         ///< a wxStaticText item
+  ITEM_STC,                ///< a wxExSTC ctrl item  
+  ITEM_TEXTCTRL,           ///< a wxTextCtrl item
+  ITEM_TEXTCTRL_FLOAT,     ///< a wxTextCtrl item that only accepts a float (double)
+  ITEM_TEXTCTRL_INT,       ///< a wxTextCtrl item that only accepts an integer (long)
+  ITEM_TOGGLEBUTTON,       ///< a wxToggleButton item
+  ITEM_USER,               ///< provide your own window
 };
 
+/// Type label type supported.
 enum wxExLabelType
 {
-  LABEL_NONE,                ///< no label
-  LABEL_LEFT,                ///< label left from window
-  LABEL_ABOVE,               ///< label above window
+  LABEL_NONE,              ///< no label
+  LABEL_LEFT,              ///< label left from window
+  LABEL_ABOVE,             ///< label above window
 };
 
 /// Callback for user window creation.
@@ -93,8 +94,7 @@ public:
   /// The orientation is wxHORIZONTAL or wxVERTICAL.
   wxExItem(wxOrientation orientation) : wxExItem(ITEM_STATICLINE, orientation) {;};
     
-  /// Constructor for a ITEM_TEXTCTRL, ITEM_STC, ITEM_STATICTEXT, 
-  /// or a ITEM_HYPERLINKCTRL item.
+  /// Constructor several items.
   wxExItem(
     /// label for the window as on the dialog,
     /// might also contain the note after a tab for a command link button
@@ -104,7 +104,13 @@ public:
     const wxString& value = wxEmptyString,
     /// the style for the control used (e.g. wxTE_MULTILINE or wxTE_PASSWORD)
     long style = 0,
+    /// type of this item:
+    /// - ITEM_HYPERLINKCTRL
+    /// - ITEM_STATICTEXT
+    /// - ITEM_STC
+    /// - ITEM_TEXTCTRL
     wxExItemType type = ITEM_TEXTCTRL,
+    /// is this item required 
     bool is_required = false,
     /// will the label be displayed as a static text
     /// ignored for a static text
@@ -113,11 +119,19 @@ public:
       (type != ITEM_STATICTEXT && 
        type != ITEM_HYPERLINKCTRL ? label_type: LABEL_NONE), wxID_ANY) {;};
 
-  /// Constructor for a ITEM_SPINCTRL or a ITEM_SLIDER item.
-  wxExItem(const wxString& label,
+  /// Constructor for spin items.
+  wxExItem(
+    /// label for this item
+    const wxString& label,
+    /// min value
     int min, 
+    /// max value
     int max,
+    /// default value
     const wxAny& value = wxAny(),
+    /// type of item: 
+    /// - ITEM_SPINCTRL 
+    /// - ITEM_SLIDER
     wxExItemType type = ITEM_SPINCTRL,
     /// style for a ITEM_SLIDER item
     long style = wxSL_HORIZONTAL)
@@ -125,10 +139,16 @@ public:
       false, LABEL_LEFT, wxID_ANY, 1, min, max) {;};
 
   /// Constructor for a ITEM_SPINCTRLDOUBLE item.
-  wxExItem(const wxString& label,
+  wxExItem(
+    /// label for this item
+    const wxString& label,
+    /// min value
     double min, 
+    /// max value
     double max,
+    /// default value
     const wxAny& value = wxAny(),
+    /// inc value
     double inc = 1)
     : wxExItem(ITEM_SPINCTRLDOUBLE, 0, label, value,
       false, LABEL_LEFT, wxID_ANY, 1, min, max, inc) {;};
@@ -138,6 +158,7 @@ public:
   wxExItem(
     /// the set with names of boolean items
     const std::set<wxString> & choices,
+    /// style of this item
     long style = 0)
     : wxExItem(ITEM_CHECKLISTBOX_BOOL, style, "checklistbox_bool", choices,
       false, LABEL_NONE, wxID_ANY, 1, 0, 1, 1) {;};
@@ -145,6 +166,7 @@ public:
   /// Constuctor for a ITEM_NOTEBOOK item, being a vector
   /// of a pair of pages with a vector of items.
   /// e.g.:
+  /// \code
   /// wxExItem("notebook", ItemsNotebook {
   ///   {"page1", 
   ///     {wxExItem("string1"),
@@ -154,13 +176,29 @@ public:
   ///     {wxExItem("spin1", 5, 0, 10),
   ///      wxExItem("spin2", 5, 0, 10),
   ///      wxExItem("spin3", 5, 0, 10)}}}, ITEM_NOTEBOOK)
+  /// \endcode
   wxExItem(
+    /// label for this item
     const wxString& label,
+    /// notebook items
     const ItemsNotebook & v,
+    /// type of this item (kind of notebook):
+    /// - ITEM_NOTEBOOK
+    /// - ITEM_NOTEBOOK_AUI
+    /// - ITEM_NOTEBOOK_CHOICE
+    /// - ITEM_NOTEBOOK_EX
+    /// - ITEM_NOTEBOOK_LIST
+    /// - ITEM_NOTEBOOK_SIMPLE
+    /// - ITEM_NOTEBOOK_TOOL
+    /// - ITEM_NOTEBOOK_TREE
     wxExItemType type,
+    /// style of this item
     long style = 0,
+    /// number of rows
     int rows = 0,
+    /// number of cols
     int cols = 1,
+    /// type of label
     wxExLabelType label_type = LABEL_NONE,
     /// image list to be used (required for a tool book)
     wxImageList* imageList = nullptr)
@@ -173,19 +211,24 @@ public:
   /// A radiobox (mutually exclusive choices)
   /// should be used when a long value can have a short
   /// set of possible individual values.
-  wxExItem(const wxString& label,
+  wxExItem(
+    /// label for this item
+    const wxString& label,
     /// the map with values and text
     const std::map<long, const wxString> & choices,
     /// indicates whether to use a radiobox or a checklistbox.
     bool use_radiobox = true,
     /// major dimension for the radiobox
     int majorDimension = 1,
+    /// style of this item
     long style = wxRA_SPECIFY_COLS)
     : wxExItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX_BIT, style, label, choices,
       false, LABEL_NONE, wxID_ANY, majorDimension, 0, 1, 1) {;};
 
   /// Constructor for a ITEM_USER item.
-  wxExItem(const wxString& label,
+  wxExItem(
+    /// label for this item
+    const wxString& label,
     /// the window (use default constructor for it)
     wxWindow* window,
     /// callback for window creation (required, useless without one)
@@ -193,22 +236,32 @@ public:
     /// callback for load and save to config
     /// default it has no relation to the config
     wxExUserWindowToConfig config = nullptr,
+    /// is this item required
     bool is_required = false,
+    /// type of label
     wxExLabelType label_type = LABEL_LEFT)
     : wxExItem(ITEM_USER, 0, label, wxEmptyString,
       is_required, label_type, wxID_ANY, 1, 0, 1, 1, window, create, config) {;};
 
-  /// Constuctor for the other types (as ITEM_BUTTON, 
-  /// ITEM_COMBOBOX, ITEM_DIRPICKERCTRL,
-  /// ITEM_FILEPICKERCTRL, ITEM_TEXTCTRL_INT, ITEM_LISTVIEW).
+  /// Constuctor several items.
   wxExItem(
+    /// label for this item
     const wxString& label,
+    /// type of item:
+    /// - ITEM_BUTTON
+    /// - ITEM_COMBOBOX
+    /// - ITEM_DIRPICKERCTRL
+    /// - ITEM_FILEPICKERCTRL
+    /// - ITEM_LISTVIEW
+    /// - ITEM_TEXTCTRL_INT
     wxExItemType type,
     /// initial value for the control, if appropriate
     const wxAny& value = wxAny(),
+    /// is this item required
     bool is_required = false,
     /// the id as used by the window, see wxExFrame::OnCommandItemDialog, 
     int id = wxID_ANY,
+    /// type of label
     wxExLabelType label_type = LABEL_LEFT,
     /// the style, this default value is translated to correct default
     /// for corresponding window (such as wxFLP_DEFAULT_STYLE for ITEM_FILEPICKERCTRL).
@@ -324,7 +377,9 @@ protected:
     wxWindow* window = nullptr, 
     /// the process callback for window creation
     wxExUserWindowCreate create = nullptr, 
+    /// the process callback for window config
     wxExUserWindowToConfig config = nullptr,
+    /// the imagelist
     wxImageList* imageList = nullptr);
 private:
   wxFlexGridSizer* Add(wxSizer* sizer, wxFlexGridSizer* current) const;

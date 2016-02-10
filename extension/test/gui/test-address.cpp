@@ -2,7 +2,7 @@
 // Name:      test-address.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -59,6 +59,11 @@ TEST_CASE("wxExAddress", "[stc][vi]")
   
   // Test AdjustWindow.
   REQUIRE( address3.AdjustWindow(""));
+  REQUIRE( address3.AdjustWindow("-"));
+  REQUIRE( address3.AdjustWindow("+"));
+  REQUIRE( address3.AdjustWindow("^"));
+  REQUIRE( address3.AdjustWindow("="));
+  REQUIRE( address3.AdjustWindow("."));
   REQUIRE(!address3.AdjustWindow("xxx"));
   
   // Test Append.
@@ -104,6 +109,7 @@ TEST_CASE("wxExAddress", "[stc][vi]")
   // Test Read.
   REQUIRE(!address3.Read("XXXXX"));
   REQUIRE( address3.Read(GetTestDir() + "test.bin"));
+  REQUIRE( address3.Read("!ls"));
   
   // Test Show.
   REQUIRE( address3.Show());
