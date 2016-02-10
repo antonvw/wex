@@ -17,42 +17,30 @@ TEST_CASE( "wxExFile" )
   SECTION( "basic" ) 
   {
     REQUIRE(!file.CheckSync());
-
     REQUIRE(!file.GetContentsChanged());
     
     file.ResetContentsChanged();
 
     REQUIRE(!file.FileSave());
-
     REQUIRE( file.GetFileName().GetStat().IsOk());
     // The fullpath should be normalized, test it.
     REQUIRE( file.GetFileName().GetFullPath() != GetTestFile().GetFullPath());
     REQUIRE(!file.GetFileName().GetStat().IsReadOnly());
-
     REQUIRE(!file.FileLoad(wxExFileName(GetTestDir() + "test.bin")));
-    REQUIRE(!file.IsOpened());
-    
     REQUIRE( file.Open(wxExFileName(GetTestDir() + "test.bin").GetFullPath()));
-    REQUIRE( file.IsOpened());
 
     const wxCharBuffer* buffer = file.Read();
     REQUIRE(buffer->length() == 40);
     
-    file.Close();
     file.FileNew(wxExFileName("test-xxx"));
     
-    REQUIRE(!file.IsOpened());
     REQUIRE( file.Open(wxFile::write));
     REQUIRE( file.Write(*buffer));
     REQUIRE( file.Write(wxString("OK")));
-    REQUIRE( file.Close());
   }
 
   SECTION( "timing" ) 
   {
-    REQUIRE(file.IsOpened());
-    REQUIRE(file.Length() > 0);
-
     wxStopWatch sw;
 
     const int max = 10000;
@@ -65,9 +53,7 @@ TEST_CASE( "wxExFile" )
     const long exfile_read = sw.Time();
 
     wxFile wxfile(GetTestFile().GetFullPath());
-    REQUIRE(wxfile.IsOpened());
     const size_t l = wxfile.Length();
-    REQUIRE(l > 0);
     
     sw.Start();
 

@@ -1,3 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classwx_ex_printing.html" title="Offers printing support. " alt="" coords="5,5,107,32"/>
+<area shape="rect" id="node1" href="$classwx_ex_file.html" title="Adds several File* methods to wxFile. " alt="" coords="205,56,281,83"/>
+<area shape="rect" id="node2" href="$classwx_ex_list_view_file.html" title="Combines wxExListViewWithFrame and wxExFile, giving you a list control with file synchronization supp..." alt="" coords="376,5,503,32"/>
+<area shape="rect" id="node3" href="$classwx_ex_s_t_c_file.html" title="Adds file read and write to wxExSTC. " alt="" coords="388,56,491,83"/>
+<area shape="rect" id="node4" href="$classwx_ex_list_view.html" title="Adds printing, popup menu, images, columns and items to wxListView. " alt="" coords="5,5,111,32"/>
+<area shape="rect" id="node5" href="$classwx_ex_list_view_with_frame.html" title="Adds a wxExFrameWithHistory to wxExListView. " alt="" coords="159,5,328,32"/>
 </map>

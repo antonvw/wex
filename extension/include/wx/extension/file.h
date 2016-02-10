@@ -47,9 +47,6 @@ public:
   /// Returns true if this file was synced.
   bool CheckSync();
 
-  /// Closes file if it was opened.
-  bool Close() {return IsOpened() && m_File->Close();};
-
   /// Sets the filename member, opens the file if asked for,
   /// invokes DoFileLoad, and closes the file again.
   bool FileLoad(const wxExFileName& filename);
@@ -67,21 +64,15 @@ public:
   /// Returns the file name.
   const auto & GetFileName() const {return m_FileName;}
 
-  /// Returns whether file is opened.
-  bool IsOpened() const {return m_File->IsOpened();};
-
-  /// Returns length.
-  wxFileOffset Length() const {return m_File->Length();};
-  
-  /// Opens current filename.
-  bool Open(wxFile::OpenMode mode = wxFile::read, int access = wxS_DEFAULT)
-    {return m_File->Open(m_FileName.GetFullPath(), mode, access);};
-  
   /// Opens specified file.
   bool Open(const wxString &filename, 
     wxFile::OpenMode mode = wxFile::read, int access = wxS_DEFAULT)
     {return m_File->Open(filename, mode, access);};
-  
+
+  /// Opens current filename.
+  bool Open(wxFile::OpenMode mode = wxFile::read, int access = wxS_DEFAULT)
+    {return m_File->Open(m_FileName.GetFullPath(), mode, access);};
+
   /// Reads this file into a buffer.
   const wxCharBuffer* Read(wxFileOffset seek_position = 0);
 
@@ -90,7 +81,8 @@ public:
   
   /// Writes file from buffer.
   bool Write(const wxCharBuffer& buffer) {
-    return m_File->Write(buffer.data(), buffer.length()) == buffer.length();};
+    return m_File->IsOpened() && 
+      m_File->Write(buffer.data(), buffer.length()) == buffer.length();};
   
   /// Writes file from string.
   bool Write(const wxString &s) {return m_File->Write(s);}; 
@@ -113,14 +105,18 @@ protected:
   /// Invoked by FileSave, allows you to save the file.
   /// The file is already opened.
   virtual void DoFileSave(bool save_as = false) {;};
+
+  /// Returns length.
+  wxFileOffset Length() const {return m_File->Length();};
 private:
+  bool Close() {return m_File->IsOpened() && m_File->Close();};
   bool Get(bool synced);
   bool MakeAbsolute() {
     return 
       m_FileName.MakeAbsolute() &&
       m_FileName.m_Stat.Sync(m_FileName.GetFullPath()) &&
       m_Stat.Sync(m_FileName.GetFullPath());};
-
+  
   bool m_IsLoaded;
   bool m_OpenFile;
   

@@ -44,8 +44,12 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
     wxExCmdLineParser(
       /// the command line to be parsed
       const wxString& cmdline, 
-      /// switches, options and params
-      const CmdSwitches & s, const CmdOptions & o, const CmdParams & p = CmdParams()) 
+      /// switches
+      const CmdSwitches & s, 
+      /// options
+      const CmdOptions & o, 
+      /// params
+      const CmdParams & p = CmdParams()) 
       : wxCmdLineParser(cmdline) 
       , m_Switches(s) 
       , m_Options(o)

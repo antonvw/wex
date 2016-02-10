@@ -157,6 +157,7 @@ int wxExTestApp::OnExit()
 {
   // Remove files.
   (void)remove("test-ex.txt");
+  (void)remove("test-file.txt");
   (void)remove("test.hex");
   (void)remove("test-xxx");
 

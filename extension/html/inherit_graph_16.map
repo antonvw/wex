@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classwx_ex_indicator.html" title="This class defines our scintilla indicators. " alt="" coords="6,5,114,32"/>
+<area shape="rect" id="node1" href="$classwx_ex_grid.html" title="Offers popup menu with copy/paste, printing. " alt="" coords="5,35,84,61"/>
+<area shape="rect" id="node2" href="$classwx_ex_grid_statistics.html" title="Helper class for adding clear menu to the grid, and calling Clear for the statistics. " alt="" coords="132,5,299,32"/>
+<area shape="rect" id="node3" href="$classwx_ex_grid_statistics.html" title="wxExGridStatistics\l\&lt; int \&gt;" alt="" coords="148,57,283,98"/>
 </map>

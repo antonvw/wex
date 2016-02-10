@@ -883,11 +883,7 @@ bool wxExAddressRange::Write(const wxString& text) const
   const wxString filename(wxString(text.Contains(">>") ? text.AfterLast('>'): text).Trim(false));
   const wxFile::OpenMode mode(text.Contains(">>") ? wxFile::write_append: wxFile::write);
 
-  wxFile file(filename, mode);
-
-  return 
-    file.IsOpened() && 
-    file.Write(m_Ex->GetSelectedText());
+  return wxExFile(filename, mode).Write(m_Ex->GetSelectedText());
 }
 
 bool wxExAddressRange::Yank(const char name) const

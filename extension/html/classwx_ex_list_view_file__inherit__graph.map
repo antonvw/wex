@@ -1,6 +1,5 @@
 <map id="wxExListViewFile" name="wxExListViewFile">
-<area shape="rect" id="node2" href="$classwx_ex_list_view_with_frame.html" title="Adds a wxExFrameWithHistory to wxExListViewFileName. " alt="" coords="5,155,176,181"/>
-<area shape="rect" id="node3" href="$classwx_ex_list_view_file_name.html" title="Adds some standard lists, all these lists have items associated with files or folders. " alt="" coords="9,80,172,107"/>
-<area shape="rect" id="node4" href="$classwx_ex_list_view.html" title="Adds printing, popup menu, images, columns and items to wxListView. " alt="" coords="39,5,143,32"/>
-<area shape="rect" id="node5" href="$classwx_ex_file.html" title="Adds several File* methods to wxFile. " alt="" coords="201,155,273,181"/>
+<area shape="rect" id="node2" href="$classwx_ex_list_view_with_frame.html" title="Adds a wxExFrameWithHistory to wxExListView. " alt="" coords="5,80,175,107"/>
+<area shape="rect" id="node3" href="$classwx_ex_list_view.html" title="Adds printing, popup menu, images, columns and items to wxListView. " alt="" coords="37,5,143,32"/>
+<area shape="rect" id="node4" href="$classwx_ex_file.html" title="Adds several File* methods to wxFile. " alt="" coords="199,80,275,107"/>
 </map>

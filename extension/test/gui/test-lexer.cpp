@@ -64,7 +64,9 @@ TEST_CASE("wxExLexer", "[stc][lexer]")
   REQUIRE(!lexer.KeywordStartsWith("xxx"));
 
   REQUIRE(!lexer.MakeComment("test", true).empty());
-  REQUIRE(!lexer.MakeComment("test", "test").empty());
+  REQUIRE(!lexer.MakeComment("prefix", "test").empty());
+  REQUIRE(!lexer.MakeComment("test\ntest2", true).empty());
+  REQUIRE(!lexer.MakeComment("prefix", "test\ntest2").empty());
   REQUIRE(!lexer.MakeSingleLineComment("test").empty());
 
   REQUIRE( lexer.GetKeywordsString(6).empty());

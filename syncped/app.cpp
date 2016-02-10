@@ -37,6 +37,8 @@ bool App::OnInit()
     return false;
   }
   
+  m_Flags = 0; // not in reset
+  
   Reset();
   
   bool exit = false;

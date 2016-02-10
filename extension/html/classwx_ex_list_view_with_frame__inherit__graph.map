@@ -1,5 +1,4 @@
 <map id="wxExListViewWithFrame" name="wxExListViewWithFrame">
-<area shape="rect" id="node4" href="$classwx_ex_list_view_file.html" title="Combines wxExListViewWithFrame and wxExFile, giving you a list control with file synchronization supp..." alt="" coords="29,229,152,256"/>
-<area shape="rect" id="node2" href="$classwx_ex_list_view_file_name.html" title="Adds some standard lists, all these lists have items associated with files or folders. " alt="" coords="9,80,172,107"/>
-<area shape="rect" id="node3" href="$classwx_ex_list_view.html" title="Adds printing, popup menu, images, columns and items to wxListView. " alt="" coords="39,5,143,32"/>
+<area shape="rect" id="node3" href="$classwx_ex_list_view_file.html" title="Combines wxExListViewWithFrame and wxExFile, giving you a list control with file synchronization supp..." alt="" coords="27,155,153,181"/>
+<area shape="rect" id="node2" href="$classwx_ex_list_view.html" title="Adds printing, popup menu, images, columns and items to wxListView. " alt="" coords="37,5,143,32"/>
 </map>

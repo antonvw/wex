@@ -2,7 +2,7 @@
 // Name:      hexmode.h
 // Purpose:   Declaration of class wxExHexMode and wxExHexModeLine
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXHEXMODE_H
@@ -51,8 +51,9 @@ public:
   /// Returns printable char.  
   wxUniChar Printable(unsigned int c) const;
 
-  /// Sets hex mode on or off.  
+  /// Sets hex mode.  
   bool Set(
+    /// sets it on or off
     bool on, 
     /// if on, starts with specified text.
     const wxCharBuffer& text = wxCharBuffer());

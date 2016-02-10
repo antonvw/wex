@@ -1,3 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classwx_ex_status_bar.html" title="Offers a status bar that calls virtual methods from wxExFrame, and allows you to address fields by na..." alt="" coords="5,5,123,32"/>
+<area shape="rect" id="node1" href="$classwx_ex_process.html" title="Offers a wxProcess, capturing execution output depending on sync or async call to Execute..." alt="" coords="5,5,108,32"/>
+<area shape="rect" id="node2" href="$classwx_ex_v_c_s_entry.html" title="This class collects a single vcs. " alt="" coords="156,5,271,32"/>
 </map>

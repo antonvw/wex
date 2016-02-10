@@ -1,4 +1,6 @@
 <map id="wxExDialog" name="wxExDialog">
-<area shape="rect" id="node2" href="$classwx_ex_config_dialog.html" title="Offers a dialog to set several items in the config. " alt="" coords="5,80,139,107"/>
-<area shape="rect" id="node3" href="$classwx_ex_s_t_c_entry_dialog.html" title="Offers an wxExSTC as a dialog (like wxTextEntryDialog). " alt="" coords="163,80,313,107"/>
+<area shape="rect" id="node2" href="$classwx_ex_item_template_dialog.html" title="Offers a dialog template to set several items. " alt="" coords="5,87,209,114"/>
+<area shape="rect" id="node3" href="$classwx_ex_item_template_dialog.html" title="wxExItemTemplateDialog\l\&lt; wxExItem \&gt;" alt="" coords="233,80,405,121"/>
+<area shape="rect" id="node5" href="$classwx_ex_s_t_c_entry_dialog.html" title="Offers an wxExSTC as a dialog (like wxTextEntryDialog). " alt="" coords="429,87,580,114"/>
+<area shape="rect" id="node4" href="$classwx_ex_item_dialog.html" title="Offers an item dialog. " alt="" coords="260,169,379,196"/>
 </map>

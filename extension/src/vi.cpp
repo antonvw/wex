@@ -131,7 +131,7 @@ char ConvertKeyEvent(const wxKeyEvent& event)
   return c;
 }
 
-void DeleteRange(wxExVi* vi, int start, int end)
+bool DeleteRange(wxExVi* vi, int start, int end)
 {
   if (!vi->GetSTC()->GetReadOnly() && !vi->GetSTC()->HexMode())
   {
@@ -145,6 +145,8 @@ void DeleteRange(wxExVi* vi, int start, int end)
     
     vi->GetSTC()->DeleteRange(first, last - first);
   }
+  
+  return true;
 }
 
 bool YankedLines(wxExVi* vi)
@@ -354,14 +356,7 @@ wxExVi::wxExVi(wxExSTC* stc)
     {WXK_CONTROL_F,    [&](const std::string& command){MOTION(Page, Down,       false, false);}},
     {WXK_CONTROL_P,    [&](const std::string& command){MOTION(Line, ScrollUp,   false, false);}},
     {WXK_CONTROL_Q,    [&](const std::string& command){MOTION(Line, ScrollDown, false, false);}},
-    {WXK_LEFT,         [&](const std::string& command){MOTION(Char, Left,       false, false);}},
-    {WXK_RIGHT,        [&](const std::string& command){MOTION(Char, Right,      false, false);}},
-    {WXK_DOWN,         [&](const std::string& command){MOTION(Line, Down,       false, false);}},
-    {WXK_UP,           [&](const std::string& command){MOTION(Line, Up,         false, false);}},
-    {WXK_RETURN,       [&](const std::string& command){MOTION(Line, Down,       false, false);}},
-    {WXK_NUMPAD_ENTER, [&](const std::string& command){MOTION(Line, Down,       true,  true); }},
-    {WXK_PAGEUP,       [&](const std::string& command){MOTION(Page, Up,         false, false);}},
-    {WXK_PAGEDOWN,     [&](const std::string& command){MOTION(Page, Down,       false, false);}}}
+    {WXK_RETURN,       [&](const std::string& command){MOTION(Line, Down,       false, false);}}}
   , m_OtherCommands {
     {"m", [&](const std::string& command){
       if (OneLetterAfter("m", command))
@@ -422,8 +417,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       }
       return true;}},
     {"x", [&](const std::string& command){
-      DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count);
-      return true;}},
+      return DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count);}},
     {"D", [&](const std::string& command){
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode())
       {
@@ -434,14 +428,13 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"J", [&](const std::string& command){wxExAddressRange(this, m_Count).Join(); return true;}},
     {"P", [&](const std::string& command){Put(false); return true;}},
     {"X", [&](const std::string& command){
-      DeleteRange(this, GetSTC()->GetCurrentPos() - m_Count, GetSTC()->GetCurrentPos());
-      return true;}},
+      return DeleteRange(this, GetSTC()->GetCurrentPos() - m_Count, GetSTC()->GetCurrentPos());}},
     {"Y", [&](const std::string& command){wxExAddressRange(this, m_Count).Yank(); return true;}},
     {"dd", [&](const std::string& command){
       (void)wxExAddressRange(this, m_Count).Delete(); return true;}},
     {"dgg", [&](const std::string& command){
-      DeleteRange(this, 0,
-        GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine())); return true;}},
+      return DeleteRange(this, 0,
+        GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));}},
     {"gg", [&](const std::string& command){
       GetSTC()->DocumentStart(); return true;}},
     {"yy", [&](const std::string& command){
@@ -559,7 +552,6 @@ wxExVi::wxExVi(wxExSTC* stc)
       }
       return false;}},
     {"\x05", [&](const std::string& command){REPEAT_WITH_UNDO(ChangeNumber(true));}},
-    {"\x0a", [&](const std::string& command){REPEAT_WITH_UNDO(ChangeNumber(false));}},
     {"\x07", [&](const std::string& command){
       GetFrame()->ShowExMessage(wxString::Format("%s line %d of %d --%d%%-- level %d", 
         GetSTC()->GetFileName().GetFullName().c_str(), 
@@ -572,6 +564,7 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"\x08", [&](const std::string& command){
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) GetSTC()->DeleteBack();
       return true;}},
+    {"\x0a", [&](const std::string& command){REPEAT_WITH_UNDO(ChangeNumber(false));}},
     {"\x12", [&](const std::string& command){
       if (command.size() == 1) return false;
       if (RegAfter(wxUniChar(WXK_CONTROL_R), command))
@@ -579,7 +572,9 @@ wxExVi::wxExVi(wxExSTC* stc)
         CommandReg(command[1]);
         return true;
       }  
-      return false;}}}
+      return false;}},
+    {"\x7F", [&](const std::string& command){
+      return DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count);}}}
 {
 }
 
@@ -729,11 +724,12 @@ bool wxExVi::Command(const std::string& command)
             }
             if (!handled)
             {
-              if (!OtherCommand(rest))
+              handled = OtherCommand(rest);
+
+              if (!handled)
               {
                 handled = CommandChar(rest);
               }
-              else handled = true;
             }
         }
       
@@ -1006,7 +1002,7 @@ bool wxExVi::InsertMode(const std::string& command)
       break;
       
     case WXK_DELETE: 
-      GetSTC()->DeleteRange(GetSTC()->GetCurrentPos(), 1);
+      DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + 1);
       break;
       
     case WXK_CONTROL_R:
@@ -1186,8 +1182,7 @@ bool wxExVi::MotionCommand(int type, std::string& command)
   
   const char c = (type == MOTION_NAVIGATE ? command[0]: command[1]);
   auto it = std::find_if(m_MotionCommands.begin(), m_MotionCommands.end(), 
-    [c](std::pair<int, std::function<bool(const std::string& command)>> const& elem) {
-    return elem.first == c;});
+    [c](auto const& e) {return e.first == c;});
   
   if (it == m_MotionCommands.end())
   {
@@ -1383,8 +1378,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 bool wxExVi::OtherCommand(std::string& command)
 {
   auto it = std::find_if(m_OtherCommands.begin(), m_OtherCommands.end(), 
-    [command](std::pair<const std::string, std::function<bool(const std::string&)>> const& elem) {
-    return elem.first == command.substr(0, elem.first.size());});
+    [command](auto const& e) {return e.first == command.substr(0, e.first.size());});
   
   if (it == m_OtherCommands.end())
   {

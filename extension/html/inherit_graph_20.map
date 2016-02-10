@@ -1,3 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classwx_ex_list_item.html" title="Offers a list item associated with a file on an wxExListView. " alt="" coords="5,5,109,32"/>
+<area shape="rect" id="node1" href="$classwx_ex_interruptable.html" title="Adds FindFiles to a wxDir. " alt="" coords="5,56,132,83"/>
+<area shape="rect" id="node2" href="$classwx_ex_dir.html" title="Adds FindFiles to a wxDir. " alt="" coords="180,56,252,83"/>
+<area shape="rect" id="node3" href="$classwx_ex_dir_open_file.html" title="Allows you to easily open all files on specified path. " alt="" coords="313,5,437,32"/>
+<area shape="rect" id="node4" href="$classwx_ex_dir_tool.html" title="Offers a wxExDir with tool support. " alt="" coords="326,56,423,83"/>
+<area shape="rect" id="node5" href="$classwx_ex_dir_with_list_view.html" title="Offers a wxExDir with reporting to a listview. " alt="" coords="300,107,449,133"/>
 </map>

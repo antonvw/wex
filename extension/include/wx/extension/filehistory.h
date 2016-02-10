@@ -2,7 +2,7 @@
 // Name:      filehistory.h
 // Purpose:   Include file for wxExFileHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -17,9 +17,9 @@ class WXDLLIMPEXP_BASE wxExFileHistory : public wxFileHistory
 public:
   /// Default constructor.
   wxExFileHistory(
-    // number of files to use
+    /// number of files to use
     size_t maxFiles = 9, 
-    // base for menu id
+    /// base for menu id
     wxWindowID idBase = wxID_FILE1, 
     /// if key is empty string, files
     /// are loaded / saved to default keys, otherwise to specified key.

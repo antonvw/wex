@@ -1,6 +1,6 @@
 <map id="wxExInterruptable" name="wxExInterruptable">
-<area shape="rect" id="node2" href="$classwx_ex_dir.html" title="Adds FindFiles to a wxDir. " alt="" coords="161,80,227,107"/>
-<area shape="rect" id="node3" href="$classwx_ex_dir_open_file.html" title="Allows you to easily open all files on specified path. " alt="" coords="5,155,124,181"/>
-<area shape="rect" id="node4" href="$classwx_ex_dir_tool.html" title="Offers a wxExDir with tool support. " alt="" coords="148,155,240,181"/>
-<area shape="rect" id="node5" href="$classwx_ex_dir_with_list_view.html" title="Offers a wxExDir with reporting to a listview. " alt="" coords="264,155,404,181"/>
+<area shape="rect" id="node2" href="$classwx_ex_dir.html" title="Adds FindFiles to a wxDir. " alt="" coords="166,80,238,107"/>
+<area shape="rect" id="node3" href="$classwx_ex_dir_open_file.html" title="Allows you to easily open all files on specified path. " alt="" coords="5,155,129,181"/>
+<area shape="rect" id="node4" href="$classwx_ex_dir_tool.html" title="Offers a wxExDir with tool support. " alt="" coords="153,155,251,181"/>
+<area shape="rect" id="node5" href="$classwx_ex_dir_with_list_view.html" title="Offers a wxExDir with reporting to a listview. " alt="" coords="275,155,425,181"/>
 </map>
