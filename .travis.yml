@@ -4,10 +4,6 @@
 # root directory of the project.
 language: cpp
 
-os:
-  - linux
-  - osx
-
 matrix:
   include:
     - os: linux

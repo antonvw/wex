@@ -5,6 +5,7 @@
 // Copyright: (c) 2016
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <functional>
 #include <wx/config.h>
 #include <wx/log.h>
 #include <wx/stdpaths.h>
