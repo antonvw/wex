@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -88,6 +88,7 @@ TEST_CASE("wxExListView")
   REQUIRE(!listView->SortColumn("Date"));
   
   listView->SetItemImage(0, wxART_WARNING);
+  listView->ItemsUpdate();
   
   wxExListView* listView2 = new wxExListView(GetFrame(), wxExListView::LIST_FILE);
   AddPane(GetFrame(), listView2);
@@ -100,14 +101,14 @@ TEST_CASE("wxExListView")
   REQUIRE(!listView2->ItemToText(0).empty());
   REQUIRE(!listView2->ItemToText(-1).empty());
   
-  listView->ItemsUpdate();
-  
   wxListEvent event(wxEVT_LIST_ITEM_ACTIVATED);
   
   for (auto id : std::vector<int> {0}) 
   {
     event.m_itemIndex = id;
-    wxPostEvent(listView, event);
     wxPostEvent(listView2, event);
   }
+  
+  TestAndContinue(listView, [](wxWindow* window) {
+    wxPostEvent(window, wxMouseEvent(wxEVT_RIGHT_DOWN));});
 }

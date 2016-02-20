@@ -2,7 +2,7 @@
 // Name:      managedframe.cpp
 // Purpose:   Implementation of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -173,7 +173,6 @@ bool wxExManagedFrame::AddToolBarPane(
     pane
       .Top()
       .ToolbarPane()
-      .Resizable()
       .MinSize(-1, 30)
       .Caption(caption);
       

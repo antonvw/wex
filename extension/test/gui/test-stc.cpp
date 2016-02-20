@@ -225,4 +225,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     REQUIRE(!stc.Open(wxExFileName("XXX")));
     stc.PropertiesMessage();
   }
+  
+  TestAndContinue(stc, [](wxWindow* window) {
+    wxPostEvent(window, wxMouseEvent(wxEVT_RIGHT_DOWN));});
 }
