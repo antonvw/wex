@@ -33,7 +33,7 @@ addons:
     notification_email: a.m.vanwezenbeek@gmail.com
     build_command_prepend: "sudo rm /usr/bin/g++; sudo ln -s /usr/bin/g++-4.9 /usr/bin/g++; mkdir build; pushd build; cmake .."
     build_command: "make -j 4"
-    branch_pattern: master
+    branch_pattern: coverity_scan
   
 branches:
     only:
@@ -46,7 +46,7 @@ before_script:
     - ./ci/${TRAVIS_OS_NAME}-before-script.sh
 
 script:
-    - mkdir build && pushd build
+    - mkdir build${TRAVIS_OS_NAME} && pushd build${TRAVIS_OS_NAME}
     - cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExUSE_SSS=ON -DBUILD_TEST=ON ..
     - make -j 4
     - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-prep; fi

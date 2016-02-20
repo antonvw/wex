@@ -25,6 +25,14 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vimacros.h>
 
+// compares two strings in compile time constant fashion
+constexpr int c_strcmp( char const* lhs, char const* rhs )
+{
+    return (('\0' == lhs[0]) && ('\0' == rhs[0])) ? 0
+        :  (lhs[0] != rhs[0]) ? (lhs[0] - rhs[0])
+        : c_strcmp( lhs+1, rhs+1 );
+};
+
 #if wxUSE_GUI
 
 #define FOLD( )                                                         \
@@ -56,9 +64,9 @@
     switch (GetMode())                                                 \
     {                                                                  \
       case MODE_NORMAL:                                                \
-        if (WRAP && strcmp((#SCOPE), "Line") ==0)                      \
+        if (WRAP && c_strcmp((#SCOPE), "Line") ==0)                    \
         {                                                              \
-          if (strcmp((#DIRECTION), "Down") == 0)                       \
+          if (c_strcmp((#DIRECTION), "Down") == 0)                     \
             GetSTC()->LineEnd();                                       \
           else                                                         \
             GetSTC()->Home();                                          \
@@ -68,15 +76,15 @@
       case MODE_VISUAL: GetSTC()->SCOPE##DIRECTION##Extend();          \
         break;                                                         \
       case MODE_VISUAL_LINE:                                           \
-        if (strcmp((#SCOPE), "Char") != 0 &&                           \
-            strcmp((#SCOPE), "Word") != 0)                             \
+        if (c_strcmp((#SCOPE), "Char") != 0 &&                         \
+            c_strcmp((#SCOPE), "Word") != 0)                           \
           GetSTC()->SCOPE##DIRECTION##Extend();                        \
         break;                                                         \
       case MODE_VISUAL_RECT: GetSTC()->SCOPE##DIRECTION##RectExtend(); \
         break;                                                         \
     }                                                                  \
   }                                                                    \
-  if (strcmp((#SCOPE), "Line") == 0)                                   \
+  if (c_strcmp((#SCOPE), "Line") == 0)                                 \
   {                                                                    \
     switch (GetMode())                                                 \
     {                                                                  \
