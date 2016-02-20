@@ -174,7 +174,7 @@ wxThread::ExitCode wxExThread::Entry()
   
   wxYield();
   
-  sleep(1);
+  Sleep(1000);
   
   return (ExitCode)0;
 }
