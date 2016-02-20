@@ -6,8 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/config.h>
-#include <wx/stdpaths.h>
 #include <wx/log.h>
+#include <wx/stdpaths.h>
+#include <wx/thread.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include "test.h"
@@ -48,7 +49,7 @@ const wxString BuildArg(const wxString& file)
     "data" + wxFileName::GetPathSeparator() + 
     file + " ";
 }
-  
+
 void SetEnvironment(const wxString& dir)
 {
   if (!wxDirExists(dir))
@@ -153,6 +154,38 @@ const wxString SetWorkingDirectory()
   return old;
 }
 
+class wxExThread : public wxThread
+{
+public:
+  wxExThread(wxWindow* win, std::function<void(wxWindow* win)> f) 
+    : wxThread(wxTHREAD_JOINABLE)
+    , m_Win(win)
+    , m_F(f) {;};
+protected:
+  virtual ExitCode Entry();
+private:
+  wxWindow* m_Win;  
+  std::function<void(wxWindow* win)> m_F;
+};
+
+wxThread::ExitCode wxExThread::Entry()
+{
+  m_F(m_Win);
+  
+  wxYield();
+  
+  sleep(1);
+  
+  return (ExitCode)0;
+}
+
+bool TestAndContinue(wxWindow* win, std::function<void(wxWindow* win)> f)
+{
+  wxExThread* thread = new wxExThread(win, f);
+  thread->Run();
+  return thread->Wait() != (wxThread::ExitCode)-1;
+}
+  
 int wxExTestApp::OnExit()
 {
   // Remove files.

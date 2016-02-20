@@ -38,6 +38,8 @@ wxExNotebook::wxExNotebook(wxWindow* parent,
   // Here you could use another art provider.
   // SetArtProvider(new wxAuiSimpleTabArt); 
   
+  SetFont(wxConfigBase::Get()->ReadObject(_("Tab font"), wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
+  
   Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, [=](wxAuiNotebookEvent& event) {
     event.Skip(); // call base
     if (m_Frame != nullptr)
