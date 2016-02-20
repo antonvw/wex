@@ -9,11 +9,11 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
+      compiler: gcc
     - os: osx
+      compiler: gcc
   allow_failures:
     - os: osx
-
-compiler: gcc
 
 env:
   global:
