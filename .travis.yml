@@ -21,8 +21,7 @@ matrix:
       sudo: required
       compiler: gcc
     - os: osx
-      env: PATH="/usr/local/bin:$PATH"
-      compiler: gcc
+      compiler: clang
   allow_failures:
     - os: osx
 
