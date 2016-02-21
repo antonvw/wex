@@ -216,14 +216,14 @@ bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
 {
   switch (id)
   {
-  case NOTEBOOK_EDITORS:
+  case ID_NOTEBOOK_EDITORS:
     if (wxExFileDialog(this, 
       &((wxExSTC*)page)->GetFile()).ShowModalIfChanged() == wxID_CANCEL)
     {
       return false;
     }
   break;
-  case NOTEBOOK_PROJECTS:
+  case ID_NOTEBOOK_PROJECTS:
     if (wxExFileDialog(this, 
        (wxExListViewFile*)page).ShowModalIfChanged() == wxID_CANCEL)
     {
@@ -241,12 +241,12 @@ void DecoratedFrame::OnNotebook(wxWindowID id, wxWindow* page)
   
   switch (id)
   {
-    case NOTEBOOK_EDITORS:
+    case ID_NOTEBOOK_EDITORS:
       ((wxExSTC*)page)->PropertiesMessage();
     break;
-    case NOTEBOOK_LISTS:
+    case ID_NOTEBOOK_LISTS:
     break;
-    case NOTEBOOK_PROJECTS:
+    case ID_NOTEBOOK_PROJECTS:
 #if wxUSE_STATUSBAR
       wxExLogStatus(((wxExListViewFile*)page)->GetFileName());
       UpdateStatusBar((wxExListViewFile*)page);

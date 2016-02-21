@@ -594,19 +594,24 @@ int wxExListView::ConfigDialog(
   ListViewDefaults use;
   
   static const std::vector<wxExItem> items {
-    wxExItem(_("List font"), ITEM_FONTPICKERCTRL),
-    wxExItem(_("Background colour"), ITEM_COLOURPICKERWIDGET),
-    wxExItem(_("Foreground colour"), ITEM_COLOURPICKERWIDGET),
-    wxExItem(_("Readonly colour"), ITEM_COLOURPICKERWIDGET),
-    wxExItem(_("Header"), ITEM_CHECKBOX),
-    wxExItem(_("Comparator"), ITEM_FILEPICKERCTRL),
-    wxExItem(_("Sort method"), std::map<long, const wxString> {
-      {SORT_ASCENDING, _("Sort ascending")},
-      {SORT_DESCENDING, _("Sort descending")},
-      {SORT_TOGGLE, _("Sort toggle")}}),
-    wxExItem(_("Rulers"),  std::map<long, const wxString> {
-      {wxLC_HRULES, _("Horizontal rulers")},
-      {wxLC_VRULES, _("Vertical rulers")}}, false)};
+    wxExItem("stc-notebook", wxExItem::ItemsNotebook {
+      {_("General"),
+        {wxExItem(_("Header"), ITEM_CHECKBOX),
+         wxExItem(_("Comparator"), ITEM_FILEPICKERCTRL),
+         wxExItem(_("Sort method"), std::map<long, const wxString> {
+           {SORT_ASCENDING, _("Sort ascending")},
+           {SORT_DESCENDING, _("Sort descending")},
+           {SORT_TOGGLE, _("Sort toggle")}}),
+         wxExItem(_("Rulers"),  std::map<long, const wxString> {
+           {wxLC_HRULES, _("Horizontal rulers")},
+           {wxLC_VRULES, _("Vertical rulers")}}, false)}},
+      {_("Font"),
+        {wxExItem(_("List font"), ITEM_FONTPICKERCTRL),
+         wxExItem(_("List tab font"), ITEM_FONTPICKERCTRL)}},
+      {_("Colour"),
+        {wxExItem(_("Background colour"), ITEM_COLOURPICKERWIDGET),
+         wxExItem(_("Foreground colour"), ITEM_COLOURPICKERWIDGET),
+         wxExItem(_("Readonly colour"), ITEM_COLOURPICKERWIDGET)}}}, ITEM_NOTEBOOK_LIST)};
   
   if (button_flags & wxAPPLY)
   {

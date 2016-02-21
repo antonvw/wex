@@ -4,6 +4,16 @@
 # root directory of the project.
 language: cpp
 
+env:
+  global:
+    # we need  a display for the gui tests
+    - DISPLAY=":99.0"
+    # take care that recently-used.xbel file can be written
+    - XDG_DATA_HOME=$PWD
+    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+    #   via the "travis encrypt" command using the project repo's public key
+    - secure: "eVY65PUeX5LiNzJCAiTVI1+Az4xBIzdTFTg/y9VVsfb2atyZDxejbIKCTMXX1noWiVm0+sUiNkqbYHkxku4Eay7KQ8xZp7F8GN6dQFdRkYPYPaEfLPeMn5C/mM+mqZ3ssSHe9HUQT8i3LcseqcYVDf3IeG1z5Sgh0NgbQLvcJr8="
+
 matrix:
   include:
     - os: linux
@@ -11,15 +21,10 @@ matrix:
       sudo: required
       compiler: gcc
     - os: osx
+      env: PATH="/usr/local/bin:$PATH"
       compiler: gcc
   allow_failures:
     - os: osx
-
-env:
-  global:
-    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-    #   via the "travis encrypt" command using the project repo's public key
-    - secure: "eVY65PUeX5LiNzJCAiTVI1+Az4xBIzdTFTg/y9VVsfb2atyZDxejbIKCTMXX1noWiVm0+sUiNkqbYHkxku4Eay7KQ8xZp7F8GN6dQFdRkYPYPaEfLPeMn5C/mM+mqZ3ssSHe9HUQT8i3LcseqcYVDf3IeG1z5Sgh0NgbQLvcJr8="
 
 addons:
   coverity_scan:

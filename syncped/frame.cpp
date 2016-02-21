@@ -117,14 +117,14 @@ Frame::Frame(App* app)
   , m_Editors(new Notebook(
       this, 
       this, 
-      (wxWindowID)NOTEBOOK_EDITORS, 
+      (wxWindowID)ID_NOTEBOOK_EDITORS, 
       wxDefaultPosition, 
       wxDefaultSize, 
       m_PaneFlag))
   , m_Lists(new wxExNotebook(
       this, 
       this, 
-      (wxWindowID)NOTEBOOK_LISTS, 
+      (wxWindowID)ID_NOTEBOOK_LISTS, 
       wxDefaultPosition, 
       wxDefaultSize, 
       m_PaneFlag))
@@ -305,10 +305,10 @@ Frame::Frame(App* app)
     }});
     
   Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=](wxAuiNotebookEvent& event) {
-    GetFileHistory().PopupMenu(this, ID_CLEAR_FILES);}, NOTEBOOK_EDITORS);
+    GetFileHistory().PopupMenu(this, ID_CLEAR_FILES);}, ID_NOTEBOOK_EDITORS);
     
   Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=] (wxAuiNotebookEvent& event) {
-    GetProjectHistory().PopupMenu(this, ID_CLEAR_PROJECTS);}, NOTEBOOK_PROJECTS);
+    GetProjectHistory().PopupMenu(this, ID_CLEAR_PROJECTS);}, ID_NOTEBOOK_PROJECTS);
     
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(
@@ -432,7 +432,7 @@ void Frame::AddPaneProjects()
     m_Projects = new wxExNotebook(
       this, 
       this, 
-      (wxWindowID)NOTEBOOK_PROJECTS, 
+      (wxWindowID)ID_NOTEBOOK_PROJECTS, 
       wxDefaultPosition, 
       wxDefaultSize, 
       m_PaneFlag);
@@ -1512,7 +1512,7 @@ void Frame::SyncCloseAll(wxWindowID id)
   
   switch (id)
   {
-  case NOTEBOOK_EDITORS:
+  case ID_NOTEBOOK_EDITORS:
     SetTitle(wxTheApp->GetAppDisplayName());
     StatusText(wxEmptyString, wxEmptyString);
     StatusText(wxEmptyString, "PaneFileType");
@@ -1525,10 +1525,10 @@ void Frame::SyncCloseAll(wxWindowID id)
       GetManager().Update();
     }
     break;
-  case NOTEBOOK_LISTS:
+  case ID_NOTEBOOK_LISTS:
     ShowPane("OUTPUT", false);
     break;
-  case NOTEBOOK_PROJECTS:
+  case ID_NOTEBOOK_PROJECTS:
     ShowPane("PROJECTS", false);
     break;
   default: wxFAIL;

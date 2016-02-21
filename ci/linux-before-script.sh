@@ -1,11 +1,5 @@
 #!/usr/bin/env sh
 
-# we need  a display for the gui tests
-export DISPLAY=:99.0
-
-# take care that recently-used.xbel file can be written
-export XDG_DATA_HOME=$PWD
-
 sh -e /etc/init.d/xvfb start
 
 sudo rm /usr/bin/g++

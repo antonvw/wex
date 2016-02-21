@@ -49,9 +49,6 @@ one of these applications, being a full featured source code text editor.
     `export CXX=clang++`    
     see g++   
 
-- under mac os 10.4 use gcc 4.0.1 (use v2.9.3 tag) (part of xcode25_8m2258_developerdvd.dmg):   
-    `../configure --with-mac && make`
-
 ## Building wxExtension        
 
 - under windows:   
