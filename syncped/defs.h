@@ -47,11 +47,3 @@ enum
   ID_VIEW_PANE_LAST,
   ID_APPL_HIGHEST
 };
-
-// wxWidget id's.
-enum
-{
-  NOTEBOOK_EDITORS,
-  NOTEBOOK_LISTS,
-  NOTEBOOK_PROJECTS
-};

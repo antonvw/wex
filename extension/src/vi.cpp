@@ -278,7 +278,6 @@ wxExVi::wxExVi(wxExSTC* stc)
         if (command.size() >= 2) return true;
         else return false;
       }}},
-    {'\n', [&](const std::string& command){MOTION(Line, Down, false, false);}},
     {',', [&](const std::string& command){return FindChar(command);}}, 
     {' ', [&](const std::string& command){MOTION(Char, Right,false, false);}},
     {'0', [&](const std::string& command){MOTION(Line, Home, false, false);}},
