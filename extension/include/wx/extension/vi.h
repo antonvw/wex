@@ -8,6 +8,7 @@
 #pragma once
 
 #include <functional>
+#include <string>
 #include <vector>
 #include <wx/event.h>
 #include <wx/extension/ex.h>
@@ -72,6 +73,7 @@ private:
   bool CommandChar(std::string& command);
   void CommandReg(const char reg);
   void FilterCount(std::string& command, const std::string& prefix = "");
+  bool Find(const std::string& command);
   bool FindChar(const std::string& text);
   void FindWord(bool find_next = true);
   bool Indent(
@@ -91,6 +93,8 @@ private:
   bool m_SearchForward;
   
   int m_Count;
+  int m_Start;
+  int m_Type;
   
   wxExViFSM m_FSM;
   

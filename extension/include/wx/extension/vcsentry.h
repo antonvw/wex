@@ -2,7 +2,7 @@
 // Name:      vcsentry.h
 // Purpose:   Declaration of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -106,7 +106,6 @@ public:
 #endif
 private:
   void AddCommands(const wxXmlNode* node);
-  const wxString GetBin() const;
 
   // no const, as entry is set using operator+ in wxExVCS.
   bool m_AdminDirIsTopLevel;

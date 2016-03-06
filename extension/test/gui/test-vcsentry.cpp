@@ -2,7 +2,7 @@
 // Name:      test-vcsentry.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -53,6 +53,7 @@ TEST_CASE("wxExVCSEntry", "[vcs]")
   
   wxExVCSEntry git("git");
   REQUIRE( git.Execute()); // executes just git, shows help
+  REQUIRE( git.GetOutput().Contains("usage: "));
   git.ShowOutput();
   
   wxExVCSEntry* git_async = new wxExVCSEntry("git", wxEmptyString, {wxExVCSCommand("status")});
