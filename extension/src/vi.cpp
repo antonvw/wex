@@ -138,7 +138,8 @@ char ConvertKeyEvent(const wxKeyEvent& event)
   return c;
 }
 
-bool DeleteRange(wxExVi* vi, auto start, auto end)
+// no auto, does not compile under MSW
+bool DeleteRange(wxExVi* vi, int start, int end)
 {
   if (!vi->GetSTC()->GetReadOnly() && !vi->GetSTC()->HexMode())
   {
