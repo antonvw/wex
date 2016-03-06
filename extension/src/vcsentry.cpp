@@ -164,7 +164,6 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 
   return menu->GetMenuItemCount();
 }
-
 #endif
 
 bool wxExVCSEntry::Execute(
@@ -173,29 +172,6 @@ bool wxExVCSEntry::Execute(
   int exec_flags,
   const wxString& wd)
 {
-  if (GetBin().empty())
-  {
-#if defined(__WXMSW__) || defined(__OS2__)
-    const wxString wc = "*.exe";
-#else // Unix/Mac
-    const wxString wc(wxFileSelectorDefaultWildcardStr);
-#endif
-
-    wxFileDialog dlg(nullptr, 
-      _("Select") + " " + m_Name + " bin", 
-      "", 
-      "", 
-      wc, 
-      wxFD_OPEN|wxFD_FILE_MUST_EXIST);
-
-    if (dlg.ShowModal() == wxID_CANCEL)
-    {
-      return false;
-    }
-        
-    wxConfigBase::Get()->Write(m_Name, dlg.GetPath());
-  }
-  
   m_Lexer = lexer;
   
   wxString prefix;
@@ -254,23 +230,12 @@ bool wxExVCSEntry::Execute(
   }
 
   return wxExProcess::Execute(
-    GetBin() + " " + 
+    wxConfigBase::Get()->Read(m_Name, m_Name) + " " + 
       prefix +
       GetCommand().GetCommand() + " " + 
       subcommand + flags + comment + my_args, 
     exec_flags,
     wd);
-}
-
-const wxString wxExVCSEntry::GetBin() const
-{
-  return wxConfigBase::Get()->Read(m_Name, 
-#ifdef __UNIX__
-    "/usr/bin/"
-#else
-    ""
-#endif
-    + m_Name);
 }
 
 const wxString wxExVCSEntry::GetFlags() const

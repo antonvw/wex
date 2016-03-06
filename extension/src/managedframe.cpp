@@ -456,10 +456,8 @@ wxExTextCtrl::wxExTextCtrl(
     if (m_ex == nullptr || GetValue().empty())
     {
       m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
-      return;
     }
-    
-    if (IsCommand())
+    else if (IsCommand())
     {
       if (m_ex->Command(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString()))
       {
@@ -478,20 +476,10 @@ wxExTextCtrl::wxExTextCtrl(
     {
       event.Skip();    
           
-      if (m_UserInput)
+      if (m_ex->Command(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString()))
       {
-        m_ex->GetMacros().Record(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString());
+        m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
       }
-      else 
-      {
-        if (!m_ex->Command(wxString(
-          m_Prefix->GetLabel() + GetValue()).ToStdString()))
-        {
-          return;
-        }
-      }
-      
-      m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
     }
     else if (IsCalc())
     {

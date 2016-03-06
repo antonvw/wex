@@ -21,7 +21,8 @@ matrix:
       sudo: required
       compiler: gcc
     - os: osx
-      compiler: clang
+      compiler: clang++
+      env: CXX=clang++ V='Apple LLVM 6.0' # Apple LLVM version 6.0 (clang-600.0.54) (based on LLVM 3.5svn)
   allow_failures:
     - os: osx
 

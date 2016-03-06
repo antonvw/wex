@@ -83,7 +83,18 @@ TEST_CASE("wxExVi", "[stc][vi]")
     REQUIRE( vi->OnKeyDown(event));
     REQUIRE(!vi->OnChar(event));
   }
-
+  
+  // Test change number.
+  event.m_uniChar = WXK_CONTROL_E;
+  for (const auto& number: std::vector<wxString> {
+    "101", "0xf7", "077", "-99"})
+  {
+    stc->SetText("number: " + number);
+    vi->Command("2w");
+    REQUIRE(!vi->OnChar(event));
+    REQUIRE(!stc->GetText().Contains(number));
+  }
+  
   // Test navigate command keys.
   for (const auto& nav_key : std::vector<int> {
     WXK_BACK, WXK_DELETE, WXK_RETURN, WXK_LEFT, WXK_DOWN, WXK_UP, WXK_RIGHT,
@@ -385,7 +396,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
     REQUIRE( vi->Command("q"));
     REQUIRE( stc->GetVi().GetMacros().GetRegister('t') == all);
   }
-  
+
   REQUIRE( vi->Command("@t"));
   REQUIRE( vi->Command("@@"));
   REQUIRE( vi->Command("."));
