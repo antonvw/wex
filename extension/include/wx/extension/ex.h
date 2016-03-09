@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wxExEx
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -33,9 +33,13 @@ public:
  
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.
-  /// The command should start with a ':'.
   /// Returns true if the command was executed.
-  virtual bool Command(const std::string& command);
+  virtual bool Command(
+    /// command should start with a ':'.
+    const std::string& command,
+    /// normally this command is not yet handled, but
+    /// if it is, set this to allow postfix operation only
+    bool is_handled = false);
   
   /// Cuts selected text to yank register,
   /// and updates delete registers.

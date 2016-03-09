@@ -630,7 +630,7 @@ bool wxExVi::ChangeNumber(bool inc)
   }
 }
 
-bool wxExVi::Command(const std::string& command)
+bool wxExVi::Command(const std::string& command, bool is_handled)
 {
   if (command.empty())
   {
@@ -683,10 +683,10 @@ bool wxExVi::Command(const std::string& command)
       default: 
         switch (rest[0])
         {
-          case 'c': handled = MotionCommand(MOTION_CHANGE, rest); break;
-          case 'd': handled = MotionCommand(MOTION_DELETE, rest); break;
-          case 'y': handled = MotionCommand(MOTION_YANK, rest); break;
-          default: handled = MotionCommand(MOTION_NAVIGATE, rest); 
+          case 'c': handled = MotionCommand(MOTION_CHANGE, rest, is_handled); break;
+          case 'd': handled = MotionCommand(MOTION_DELETE, rest, is_handled); break;
+          case 'y': handled = MotionCommand(MOTION_YANK, rest, is_handled); break;
+          default: handled = MotionCommand(MOTION_NAVIGATE, rest, is_handled); 
         }
         if (!handled)
         {
@@ -1165,7 +1165,7 @@ void wxExVi::MacroRecord(const std::string& text)
   }
 }
 
-bool wxExVi::MotionCommand(int type, std::string& command)
+bool wxExVi::MotionCommand(int type, std::string& command, bool is_handled)
 {
   FilterCount(command, "([cdy])");
   
@@ -1198,7 +1198,7 @@ bool wxExVi::MotionCommand(int type, std::string& command)
         m_FSM.Transition("v");
       }
 
-      if (!it->second(command.substr(1))) return false;
+      if (!is_handled && !it->second(command.substr(1))) return false;
     
       DeleteRange(this, m_Start, GetSTC()->GetCurrentPos());
 
@@ -1212,13 +1212,13 @@ bool wxExVi::MotionCommand(int type, std::string& command)
         return true;
       }
     
-      if (!it->second(command.substr(1))) return false;
+      if (!is_handled && !it->second(command.substr(1))) return false;
       
       DeleteRange(this, m_Start, GetSTC()->GetCurrentPos());
       break;
     
     case MOTION_NAVIGATE: 
-      if (!it->second(command)) return false; 
+      if (!is_handled && !it->second(command)) return false; 
       break;
     
     case MOTION_YANK:
@@ -1227,7 +1227,7 @@ bool wxExVi::MotionCommand(int type, std::string& command)
         m_FSM.Transition("v");
       }
     
-      if (!it->second(command.substr(1))) return false;
+      if (!is_handled && !it->second(command.substr(1))) return false;
     
       const auto end = GetSTC()->GetCurrentPos();
       GetSTC()->CopyRange(m_Start, end - m_Start);
