@@ -120,13 +120,13 @@ else ()
   endif()
         
   if (CMAKE_BUILD_TYPE MATCHES "Coverage")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Os --coverage")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -Os --coverage -fPIC --param ggc-min-expand=3 --param ggc-min-heapsize=5120")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fPIC --param ggc-min-expand=3 --param ggc-min-heapsize=5120")
   endif ()
   
   if (CMAKE_BUILD_TYPE MATCHES "Profile")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -pg")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -O0 -pg")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
   endif ()
   
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wno-write-strings -Wno-deprecated-declarations -Wno-unused-result")

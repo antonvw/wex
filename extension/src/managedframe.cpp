@@ -476,7 +476,9 @@ wxExTextCtrl::wxExTextCtrl(
     {
       event.Skip();    
           
-      if (m_ex->Command(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString()))
+      if (m_ex->Command(
+        wxString(m_Prefix->GetLabel() + GetValue()).ToStdString(),
+        m_UserInput))
       {
         m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
       }

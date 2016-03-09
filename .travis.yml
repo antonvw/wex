@@ -22,7 +22,8 @@ matrix:
       compiler: gcc
     - os: osx
       compiler: clang++
-      env: CXX=clang++ V='Apple LLVM 6.0' # Apple LLVM version 6.0 (clang-600.0.54) (based on LLVM 3.5svn)
+      env: CXX=clang++
+      osx_image: xcode7.1
   allow_failures:
     - os: osx
 

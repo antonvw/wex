@@ -49,7 +49,7 @@
   This requires `lcov` and `genhtml` tools (part of lcov, v1.9).    
   `mkdir Coverage`   
   `cd Coverage`   
-  `cmake -DCMAKE_BUILD_TYPE=Coverage ..`   
+  `cmake -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TEST=ON ..`   
   `make`  
   `make lcov-prep`  
   `make test`  

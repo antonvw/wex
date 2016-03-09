@@ -86,7 +86,7 @@ void wxExEx::AddText(const std::string& text)
   }
 }
 
-bool wxExEx::Command(const std::string& command)
+bool wxExEx::Command(const std::string& command, bool is_handled)
 {
   if (!m_IsActive || command.empty() || command.front() != ':')
   {

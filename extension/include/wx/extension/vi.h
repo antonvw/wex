@@ -36,7 +36,9 @@ public:
   
   /// Executes vi command.
   /// Returns true if the command was executed.
-  virtual bool Command(const std::string& command) override;
+  virtual bool Command(
+    const std::string& command,
+    bool is_handled = false) override;
   
   /// Returns insert commands.
   const auto & GetInsertCommands() const {return m_FSM.GetInsertCommands();};
@@ -83,7 +85,7 @@ private:
   bool InsertMode(const std::string& text);
   void InsertModeNormal(const std::string& text);
   virtual void MacroRecord(const std::string& text) override;
-  bool MotionCommand(int type, std::string& command);
+  bool MotionCommand(int type, std::string& command, bool is_handled = false);
   bool OtherCommand(std::string& command);
   bool Put(bool after);
 
