@@ -109,7 +109,6 @@ void wxExFile::FileNew(const wxExFileName& filename)
 {
   Assign(filename);
   DoFileNew();
-  m_IsLoaded = true;
 }
 
 bool wxExFile::FileSave(const wxExFileName& filename)

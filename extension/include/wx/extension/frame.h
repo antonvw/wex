@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wxExFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -123,9 +123,7 @@ protected:
 #if wxUSE_STATUSBAR
   // Interface from wxFrame.
   virtual wxStatusBar* OnCreateStatusBar(int number,
-    long style,
-    wxWindowID id,
-    const wxString& name);
+    long style, wxWindowID id, const wxString& name) override;
 #endif
 
   void OnCommand(wxCommandEvent& command);

@@ -241,6 +241,7 @@ private:
         Bind(wxEVT_TOGGLEBUTTON, [=](wxCommandEvent& event) {
           Click(event);}, item.GetWindow()->GetId());
         break;
+      default: ; // do nothing
     }};
 
   void Click(const wxCommandEvent& event) const {

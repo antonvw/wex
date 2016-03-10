@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wxExShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -63,7 +63,7 @@ public:
   /// Appends text, and updates the command start position.
   /// Only if the cursor was at the end, the cursos is 
   /// repositioned at the end after appending the text, 
-  void AppendText(const wxString& text);
+  virtual void AppendText(const wxString& text) override;
  
   /// Enable/disable shell processing.
   /// Default (and after constructed) shell processing is enabled.
@@ -84,7 +84,7 @@ public:
   bool GetShellEnabled() const {return m_Enabled;};
   
   // Paste the contents of the clipboard into the document replacing the selection.
-  void Paste();
+  virtual void Paste() override;
   
   /// Processes specified char.
   /// Returns true if char was processed.
@@ -107,7 +107,7 @@ public:
   bool SetPrompt(const wxString& prompt, bool do_prompt = true);
   
   /// Undo one action in the undo history.  
-  virtual void Undo();
+  virtual void Undo() override;
 private:
   void Expand();
   void KeepCommand();
