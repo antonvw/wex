@@ -128,6 +128,7 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
                 any = val;
               }
               break;
+              default: ; // do nothing
             }
             it.second.second(any);
           }

@@ -88,9 +88,13 @@ public:
   bool Write(const wxString &s) {return m_File->Write(s);}; 
 protected:
   /// Assigns the filename.
-  /// Does not open the file.
+  /// Does not open the file, the filename does not need
+  /// to exist. 
+  /// Sets the is loaded member, so you can save the file
+  /// from e.g. stc document (as with vcs blame).
   void Assign(const wxExFileName& filename) {
     m_FileName = filename;
+    m_IsLoaded = true;
     m_Stat = filename.GetFullPath();};
 
   /// Invoked by FileLoad, allows you to load the file.
