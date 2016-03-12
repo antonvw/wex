@@ -27,8 +27,8 @@ one of these applications, being a full featured source code text editor.
 
 - under windows:   
     -- using Microsoft Visual Studio 2015 in build/msw:    
-    `nmake -f makefile.vc` or   
-    `nmake -f makefile.vc BUILD=release`   
+    `nmake /f makefile.vc` or   
+    `nmake /f makefile.vc BUILD=release`   
     -- using mingw in build/msw:
     `make -f makefile.gcc`    
     -- using cygwin 1.7.9:   
