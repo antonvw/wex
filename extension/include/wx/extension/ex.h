@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <functional>
 #include <map>
 #include <wx/extension/marker.h>
 
