@@ -9,6 +9,9 @@
 
 #include <functional>
 #include <map>
+#include <string>
+#include <utility>
+#include <vector>
 #include <wx/extension/marker.h>
 
 #if wxUSE_GUI
