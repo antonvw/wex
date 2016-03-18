@@ -456,7 +456,7 @@ int wxExSTC::ConfigDialog(
 #if wxCHECK_VERSION(3,1,1)
                ,{wxSTC_WS_VISIBLEONLYININDENT, _("Only indent")}},
 #else
-               }},
+               },
 #endif  
                true, 4),
              wxExItem(_("Wrap line"), std::map<long, const wxString> {

@@ -107,17 +107,17 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
 #endif
   
   // Test Global and Global inverse.
-  for (int i = 0; i < 2; i++)
+  for (bool b : { false, true })
   {
     stc->SetText(contents);
-    REQUIRE( wxExAddressRange(ex, 5).Global(wxEmptyString, i));
-    REQUIRE( wxExAddressRange(ex, 5).Global("XXX", i));
-    REQUIRE( wxExAddressRange(ex, 5).Global("/", i));
-    REQUIRE( wxExAddressRange(ex, 5).Global("/xx/p", i));
-    REQUIRE( wxExAddressRange(ex, 5).Global("/xx/p#", i));
-    REQUIRE( wxExAddressRange(ex, 5).Global("/xx/g", i));
-    REQUIRE( wxExAddressRange(ex, 5).Global("/a/s/a/XX", i));
-    REQUIRE( wxExAddressRange(ex, 5).Global("/b/s/b/XX|s/c/yy", i));
+    REQUIRE( wxExAddressRange(ex, 5).Global(wxEmptyString, b));
+    REQUIRE( wxExAddressRange(ex, 5).Global("XXX", b));
+    REQUIRE( wxExAddressRange(ex, 5).Global("/", b));
+    REQUIRE( wxExAddressRange(ex, 5).Global("/xx/p", b));
+    REQUIRE( wxExAddressRange(ex, 5).Global("/xx/p#", b));
+    REQUIRE( wxExAddressRange(ex, 5).Global("/xx/g", b));
+    REQUIRE( wxExAddressRange(ex, 5).Global("/a/s/a/XX", b));
+    REQUIRE( wxExAddressRange(ex, 5).Global("/b/s/b/XX|s/c/yy", b));
   }
   
   // Test Indent.
