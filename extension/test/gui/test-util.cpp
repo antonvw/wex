@@ -172,6 +172,16 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   {
   }
   
+  SECTION("wxExConfigDir")
+  {
+#ifdef __WXMSW__
+    REQUIRE(wxExConfigDir().Contains(".ini"));
+#else
+    REQUIRE(wxExConfigDir().Contains(".config"));
+    REQUIRE(wxExConfigDir().Contains(".conf"));
+#endif
+  }
+  
   SECTION("wxExConfigFirstOf")
   {
     wxExConfigFirstOf("xxxx");

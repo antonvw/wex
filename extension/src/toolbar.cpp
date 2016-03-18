@@ -96,6 +96,8 @@ void wxExToolBar::AddControls(bool realize)
   AddTool(wxID_OPEN);
   AddTool(wxID_SAVE);
   AddTool(wxID_PRINT);
+  AddTool(wxID_UNDO);
+  AddTool(wxID_REDO);
   AddTool(wxID_FIND);
   
   if (wxExProcess::GetShell() != nullptr)

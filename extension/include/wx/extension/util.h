@@ -183,6 +183,9 @@ const std::list < wxString > wxExComboBoxToList(
 /// Compares the files, using wxExecute on comparator set in the config.
 bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2);
 
+/// Returns the config dir for user data files.
+const wxString wxExConfigDir();
+
 /// Returns first of a list of values from config key.
 const wxString wxExConfigFirstOf(const wxString& key);
 

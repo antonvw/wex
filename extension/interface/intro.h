@@ -2,7 +2,7 @@
 // Name:      intro.h
 // Purpose:   Interface file containing Doxyfile reference for mainpage
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 /*!
@@ -21,5 +21,5 @@ There are also some classes to support database programming using the
 
 <p>
 For build instructions see 
-<a href="https://github.com/antonvw/wxExtension/blob/v3.1.0/README.md">README</a>.
+<a href="https://github.com/antonvw/wxExtension/blob/v3.1.1/README.md">README</a>.
 */

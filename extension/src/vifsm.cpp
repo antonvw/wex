@@ -106,6 +106,7 @@ bool wxExViFSM::Transition(const std::string& command)
   
   if (it == m_FSM.end())
   {
+    wxBell();
     return false;
   }
   

@@ -1,8 +1,10 @@
 :%yz
 :ab
+:chd ./
 :grep test
 :grep test ./ *.cpp
 :help
+:pwd
 :reg
 :sed
 :set

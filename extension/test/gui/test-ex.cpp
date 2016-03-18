@@ -54,8 +54,8 @@ TEST_CASE("wxExEx", "[stc][vi]")
   // GetSearchFlags
   REQUIRE( (ex->GetSearchFlags() & wxSTC_FIND_REGEXP));
   
-  // Test valid Commands and GetLastCommand. 
-  // Most valid commands are tested using the :so command.
+  // Test commands and GetLastCommand. 
+  // Most commands are tested using the :so command.
   for (const auto& command : std::vector<std::pair<std::string, bool>> {
     {":ab",true},
     {":ve",false},

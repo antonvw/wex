@@ -452,7 +452,13 @@ int wxExSTC::ConfigDialog(
              wxExItem(_("Whitespace visible"), std::map<long, const wxString> {
                {wxSTC_WS_INVISIBLE, _("Off")},
                {wxSTC_WS_VISIBLEAFTERINDENT, _("After indent")},
-               {wxSTC_WS_VISIBLEALWAYS, _("Always")}}, true, 3),
+               {wxSTC_WS_VISIBLEALWAYS, _("Always")}
+#if wxCHECK_VERSION(3,1,1)
+               ,{wxSTC_WS_VISIBLEONLYININDENT, _("Only indent")}},
+#else
+               }},
+#endif  
+               true, 4),
              wxExItem(_("Wrap line"), std::map<long, const wxString> {
                {wxSTC_WRAP_NONE, _("None")},
                {wxSTC_WRAP_WORD, _("Word")},

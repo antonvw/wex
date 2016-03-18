@@ -6,14 +6,14 @@ one of these applications, being a full featured source code text editor.
 
 # Dependencies
 
-- [wxWidgets 3.0](http://www.wxwidgets.org/)
+- [wxWidgets 3.x](http://www.wxwidgets.org/)
   
 - [cmake](http://www.cmake.org/) to generate makefiles   
   When using wxWidgets 3.1 you can clone wxWidgets to c:\wxWidgets.
 
-- [catch lib 1.3.0](https://github.com/philsquared/Catch/) (only for testing, header only)   
+- [catch lib 1.4.0](https://github.com/philsquared/Catch/) (only for testing, header only)   
     
-- [OTL database 4.0.214](http://otl.sourceforge.net/) (for syncodbcquery, header only)   
+- [OTL database 4.0.368](http://otl.sourceforge.net/) (for syncodbcquery, header only)   
     `sudo apt-get install unixODBC unixODBC-dev` or   
     `yum install unixODBC unixODBC-devel`  
 

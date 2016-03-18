@@ -20,27 +20,51 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
 {
   public:
     /// Switches: 
-    /// - pair of option name and description
-    /// - pair of flags and process callback if option is found
     typedef std::vector<std::pair<
+      /// pair of option name and description
       std::pair<wxString, wxString>, 
-      std::pair<int, std::function<void(bool)>>>> CmdSwitches;
+      /// pair of flags and process callback if option is found
+      std::pair<
+        /// flags:
+        /// - wxCMD_LINE_OPTION_MANDATORY 	
+        /// - wxCMD_LINE_OPTION_HELP 	
+        /// - wxCMD_LINE_SWITCH_NEGATABLE 
+        int, 
+        std::function<void(bool)>>>> CmdSwitches;
 
     /// Options: 
-    /// - pair of option name and description
-    /// - pair of command line param type and process callback if option is found
     typedef std::vector<std::pair<
+      /// pair of option name and description
       std::pair<wxString, wxString>, 
-      std::pair<wxCmdLineParamType, std::function<void(wxAny)>>>> CmdOptions;
+      /// pair of command line param type and process callback if option is found
+      std::pair<
+        /// type:
+        /// - wxCMD_LINE_VAL_STRING 	
+        /// - wxCMD_LINE_VAL_NUMBER 	
+        /// - wxCMD_LINE_VAL_DATE 	
+        /// - wxCMD_LINE_VAL_DOUBLE 	
+        /// - wxCMD_LINE_VAL_NONE 	
+        wxCmdLineParamType, 
+        std::function<void(wxAny)>>>> CmdOptions;
 
     /// Params (currently only string value supported): 
-    /// - description
-    /// - pair of flags and process callback if param is present
     typedef std::vector<std::pair<
+      /// description
       wxString, 
-      std::pair<int, std::function<void(std::vector<wxString> &)>>>> CmdParams;
+      /// pair of flags and process callback if param is present
+      std::pair<
+        /// flags:
+        /// - wxCMD_LINE_PARAM_OPTIONAL 	
+        /// - wxCMD_LINE_PARAM_MULTIPLE 	
+        /// - wxCMD_LINE_NEEDS_SEPARATOR 	
+        int, 
+        std::function<void(std::vector<wxString> &)>>>> CmdParams;
   
     /// Contructor, 
+    /// Default (i.e. if flags are just 0), options are optional.
+    /// If you specify an option name of max short_option_size, it is considered a
+    /// short option, if you specify more chars, it is considered
+    /// a long option.
     wxExCmdLineParser(
       /// the command line to be parsed
       const wxString& cmdline, 
@@ -49,18 +73,26 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
       /// options
       const CmdOptions & o, 
       /// params
-      const CmdParams & p = CmdParams()) 
+      const CmdParams & p = CmdParams(),
+      /// default size for short options
+      int short_option_size = 2) 
       : wxCmdLineParser(cmdline) 
       , m_Switches(s) 
       , m_Options(o)
       , m_Params(p) {
       for (const auto it : s) 
       {
-        AddSwitch(it.first.first, wxEmptyString, it.first.second, it.second.first);
+        AddSwitch(
+          it.first.first.size() <= short_option_size ? it.first.first: wxString(wxEmptyString), 
+          it.first.first.size() <= short_option_size ? wxString(wxEmptyString): it.first.first, 
+          it.first.second, it.second.first);
       };
       for (const auto it : o) 
       {
-        AddOption(it.first.first, wxEmptyString, it.first.second, it.second.first);
+        AddOption(
+          it.first.first.size() <= short_option_size ? it.first.first: wxString(wxEmptyString), 
+          it.first.first.size() <= short_option_size ? wxString(wxEmptyString): it.first.first, 
+          it.first.second, it.second.first);
       };
       for (const auto it : p) 
       {
