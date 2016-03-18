@@ -270,47 +270,50 @@ TEST_CASE("wxExVi", "[stc][vi]")
   wxExFindReplaceData::Get()->SetFindString("xx");
   for (auto& motion_command : vi->GetMotionCommands())
   {
-    if (motion_command.first <= 255)
+    for (auto c : motion_command.first)
     {
-      stc->SetText("xxxxxxxxxx\nyyyyyyyyyy\nzzzzzzzzzz\nftFT\n{section}");
+      if (c <= 255)
+      {
+        stc->SetText("xxxxxxxxxx\nyyyyyyyyyy\nzzzzzzzzzz\nftFT\n{section}");
 
-      // test navigate
-      std::string nc(
-        motion_command.first == 'f' || motion_command.first == 't' ||
-        motion_command.first == 'F' || motion_command.first == 'T' ||
-        motion_command.first == '\'' ? 2: 1, motion_command.first);
-      INFO( nc );
-      REQUIRE( vi->Command(nc));
-      
-      // test navigate while in rect mode
-      ChangeMode( vi, "K", wxExVi::MODE_VISUAL_RECT);
-      REQUIRE( vi->Command( nc ));
-      ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
-  
-      // test yank
-      std::string mc(
-        motion_command.first == 'f' || motion_command.first == 't' ||
-        motion_command.first == 'F' || motion_command.first == 'T' ||
-        motion_command.first == '\'' ? 3: 2, 'y');
-      mc[0] = 'y';
-      mc[1] = motion_command.first;
-      INFO( mc);
-      REQUIRE( vi->Command(mc));
-      REQUIRE( vi->GetLastCommand() == mc);
-      REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
+        // test navigate
+        std::string nc(
+          c == 'f' || c == 't' ||
+          c == 'F' || c == 'T' ||
+          c == '\'' ? 2: 1, c);
+        INFO( nc );
+        REQUIRE( vi->Command(nc));
+        
+        // test navigate while in rect mode
+        ChangeMode( vi, "K", wxExVi::MODE_VISUAL_RECT);
+        REQUIRE( vi->Command( nc ));
+        ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+    
+        // test yank
+        std::string mc(
+          c == 'f' || c == 't' ||
+          c == 'F' || c == 'T' ||
+          c == '\'' ? 3: 2, 'y');
+        mc[0] = 'y';
+        mc[1] = c;
+        INFO( mc);
+        REQUIRE( vi->Command(mc));
+        REQUIRE( vi->GetLastCommand() == mc);
+        REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
 
-      // test delete
-      mc[0] = 'd';
-      INFO( mc);
-      REQUIRE( vi->Command(mc));
-      REQUIRE( vi->GetLastCommand() == mc);
-      
-      // test change
-      mc[0] = 'c';
-      INFO( mc);
-      REQUIRE( vi->Command(mc));
-      REQUIRE( vi->GetLastCommand() == mc);
-      ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+        // test delete
+        mc[0] = 'd';
+        INFO( mc);
+        REQUIRE( vi->Command(mc));
+        REQUIRE( vi->GetLastCommand() == mc);
+        
+        // test change
+        mc[0] = 'c';
+        INFO( mc);
+        REQUIRE( vi->Command(mc));
+        REQUIRE( vi->GetLastCommand() == mc);
+        ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+      }
     }
   }
 

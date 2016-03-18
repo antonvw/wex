@@ -227,13 +227,7 @@ const wxString wxExVCS::GetFile() const
 
 const wxFileName wxExVCS::GetFileName()
 {
-  return wxFileName(
-#ifdef wxExUSE_PORTABLE
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
-#else
-    wxStandardPaths::Get().GetUserDataDir(),
-#endif
-    "vcs.xml");
+  return wxFileName(wxExConfigDir(), "vcs.xml");
 }
 
 const wxString wxExVCS::GetName() const

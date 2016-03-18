@@ -41,7 +41,7 @@ void About(wxFrame* frame)
     _("This program offers a portable text or binary editor\n"
       "with automatic syncing."));
 
-#ifdef wxExUSE_PORTABLE
+#ifdef __WXMSW__
   description +=
     _(" All its config files are read\n"
       "and saved in the same directory as where the executable is.");
@@ -451,12 +451,7 @@ bool Frame::DialogProjectOpen()
   wxFileDialog dlg(this,
     _("Select Projects"),
      (!GetProjectHistory().GetHistoryFile().empty() ? 
-         wxPathOnly(GetProjectHistory().GetHistoryFile()):
-#ifdef wxExUSE_PORTABLE
-         wxPathOnly(wxStandardPaths::Get().GetExecutablePath())),
-#else
-         wxStandardPaths::Get().GetUserDataDir()),
-#endif
+         wxPathOnly(GetProjectHistory().GetHistoryFile()): wxExConfigDir()),
     wxEmptyString,
     m_ProjectWildcard,
     wxFD_OPEN | wxFD_MULTIPLE);
@@ -562,12 +557,7 @@ void Frame::NewProject()
   const wxString text = wxString::Format("%s%d", _("project"), m_NewProjectNo++);
   const wxFileName fn(
      (!GetProjectHistory().GetHistoryFile().empty() ? 
-         wxPathOnly(GetProjectHistory().GetHistoryFile()):
-#ifdef wxExUSE_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())),
-#else
-      wxStandardPaths::Get().GetUserDataDir()),
-#endif
+         wxPathOnly(GetProjectHistory().GetHistoryFile()): wxExConfigDir()),
     text + ".prj");
 
   wxWindow* page = new wxExListViewFile(m_Projects,

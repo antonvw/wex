@@ -12,6 +12,7 @@
 #include <wx/thread.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/util.h>
 #include "test.h"
 
 void AddPane(wxExManagedFrame* frame, wxWindow* pane)
@@ -201,15 +202,8 @@ int wxExTestApp::OnExit()
 bool wxExTestApp::OnInit()
 {
   SetAppName("wxex-test-gui");
-  
   SetWorkingDirectory();
-  
-  SetEnvironment(
-#ifdef wxExUSE_PORTABLE
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()));
-#else
-    wxStandardPaths::Get().GetUserDataDir());
-#endif
+  SetEnvironment(wxExConfigDir());
   
   if (!wxExApp::OnInit())
   {

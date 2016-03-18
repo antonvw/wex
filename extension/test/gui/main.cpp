@@ -111,11 +111,11 @@ void Process(const std::string& str, wxExShell* shell)
 
 IMPLEMENT_APP_NO_MAIN(wxExTestGuiApp);
 
-int main(int argc, char *argv[])
+int main (int argc, char* argv[])
 {
   Catch::Session session; // There must be exactly once instance
 
-  int returnCode = session.applyCommandLine( argc, argv );
+  int returnCode = session.applyCommandLine( argc, (const char **)argv );
   
   if (returnCode != 0 || session.configData().showHelp)
     return returnCode;

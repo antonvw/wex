@@ -1,6 +1,6 @@
 // =================================================================================
-// ORACLE, ODBC and DB2/CLI Template Library, Version 4.0.364,
-// Copyright (C) 1996-2015, Sergei Kuchin (skuchin@gmail.com)
+// ORACLE, ODBC and DB2/CLI Template Library, Version 4.0.368,
+// Copyright (C) 1996-2016, Sergei Kuchin (skuchin@gmail.com)
 //
 // This library is free software. Permission to use, copy, modify,
 // and/or distribute this software for any purpose with or without fee
@@ -26,7 +26,7 @@
 #include "otl_include_0.h"
 #endif
 
-#define OTL_VERSION_NUMBER (0x04016CL)
+#define OTL_VERSION_NUMBER (0x040170L)
 
 #if defined(OTL_CPP_14_ON)
 #define OTL_CPP_11_ON
@@ -1613,6 +1613,9 @@ const int otl_error_code_43 = 32044;
 #define otl_error_msg_43                                                       \
   "Bind variable declaration is missing a terminator: > or */"
 
+const int otl_error_code_44 = 32045;
+#define otl_error_msg_44 "Empty TNS name in connect string"
+
 const int otl_oracle_date_size = 7;
 
 const int otl_explicit_select = 0;
@@ -2284,6 +2287,8 @@ public:
 #endif
     }
   }
+
+  void set_param_type(const int aparam_type){ this->param_type=aparam_type; }
 };
 
 #if defined(OTL_ANSI_CPP_11_ENUM_IS_SUPPORTED)
@@ -4402,6 +4407,11 @@ OTL_EXCEPTION_IS_DERIVED_FROM_STD_EXCEPTION cannot be used
 
 #if defined(UNICODE) || defined(_UNICODE)
 
+#if !defined(OTL_UNICODE_EXCEPTION_AND_RLOGON)
+#error OTL_UNICODE_EXCEPTION_AND_RLOGON needs to be defined when \
+OTL_EXCEPTION_IS_DERIVED_FROM_STD_EXCEPTION is used with Unicode
+#endif
+
 #if defined(__GNUC__) && (__GNUC__ >= 3)
 #if defined(OTL_ANSI_CPP_11_NOEXCEPT_SUPPORT)
 #define OTL_EXCEPTION_HAS_MEMBERS                                              \
@@ -4879,6 +4889,8 @@ public:
   int get_array_size() const { return array_size; }
   const char *get_name() const { return name; }
 
+  void set_param_type(const int aparam_type){ this->param_type=aparam_type; }
+
   void set_pos(const int apos) { this->pos = apos; }
 
   void set_bound(const int abound) { this->bound = abound; }
@@ -4940,10 +4952,6 @@ public:
     bound = 0;
     var_struct.init(select_stm_flag, aftype, elem_size, aarray_size,
                     connect_struct, pl_tab_flag);
-  }
-
-  void set_param_type(const int aparam_type = otl_input_param) {
-    param_type = aparam_type;
   }
 
   int get_param_type(void) { return param_type; }
@@ -10124,6 +10132,24 @@ private:
 
 #if defined(OTL_ODBC)
 
+// use recommended SQL type codes for temporal ODBC data types when
+// ODBC 3.x is used
+#if (defined(ODBCVER) && (ODBCVER >= 0x0300))
+#define OTL_SQL_C_TIMESTAMP SQL_C_TYPE_TIMESTAMP
+#define OTL_SQL_TIMESTAMP SQL_TYPE_TIMESTAMP
+#define OTL_SQL_C_DATE SQL_C_TYPE_DATE
+#define OTL_SQL_DATE SQL_TYPE_DATE
+#define OTL_SQL_C_TIME SQL_C_TYPE_TIME
+#define OTL_SQL_TIME SQL_TYPE_TIME
+#else
+#define OTL_SQL_C_TIMESTAMP SQL_C_TIMESTAMP
+#define OTL_SQL_TIMESTAMP SQL_TIMESTAMP
+#define OTL_SQL_C_DATE SQL_C_DATE
+#define OTL_SQL_DATE SQL_DATE
+#define OTL_SQL_C_TIME SQL_C_TIME
+#define OTL_SQL_TIME SQL_TIME
+#endif
+
 #if defined(OTL_ODBC_USES_SQL_FETCH_SCROLL_WHEN_SPECIFIED_IN_OTL_CONNECT) &&   \
     !defined(OTL_ODBC_SQL_EXTENDED_FETCH_ON)
 #error OTL_ODBC_USES_SQL_FETCH_SCROLL_WHEN_SPECIFIED_IN_OTL_CONNECT can only be used when \
@@ -10411,7 +10437,6 @@ public:
 #if defined(OTL_EXCEPTION_IS_DERIVED_FROM_STD_EXCEPTION)
 protected:
   mutable unsigned char char_msg[1000];
-
 public:
 #endif
 #else
@@ -11488,6 +11513,20 @@ public:
 
 #if defined(OTL_UNICODE_EXCEPTION_AND_RLOGON)
 
+#if defined(__GNUC__)&&defined(__GNUC_MINOR__)&&(__GNUC__ * 100 + __GNUC_MINOR__ >= 407)
+    void* temp_ptr = &exception_struct.code;
+    rc = SQLGetDiagRec
+#if defined(OTL_ODBC_zOS)
+        (hdbc == nullptr ? SQL_HANDLE_ENV : SQL_HANDLE_DBC,
+         hdbc == nullptr ? henv : hdbc,
+#else
+        (SQL_HANDLE_DBC, hdbc,
+#endif
+         1, &exception_struct.sqlstate[0],
+         OTL_RCAST(OTL_SQLINTEGER_PTR, temp_ptr),
+         &exception_struct.msg[0], SQL_MAX_MESSAGE_LENGTH - 1,
+         OTL_RCAST(OTL_SQLSMALLINT_PTR, &msg_len));
+#else
     rc = SQLGetDiagRec
 #if defined(OTL_ODBC_zOS)
         (hdbc == nullptr ? SQL_HANDLE_ENV : SQL_HANDLE_DBC,
@@ -11499,6 +11538,7 @@ public:
          OTL_RCAST(OTL_SQLINTEGER_PTR, &exception_struct.code),
          &exception_struct.msg[0], SQL_MAX_MESSAGE_LENGTH - 1,
          OTL_RCAST(OTL_SQLSMALLINT_PTR, &msg_len));
+#endif
     exception_struct.msg[msg_len] = 0;
 
 #else
@@ -11544,12 +11584,23 @@ public:
 #endif
 
 #else
-    rc = SQLError(henv, hdbc, 0, // hstmt
-                  OTL_RCAST(OTL_SQLCHAR_PTR, &exception_struct.sqlstate[0]),
-                  OTL_RCAST(OTL_SQLINTEGER_PTR, &exception_struct.code),
-                  OTL_RCAST(OTL_SQLCHAR_PTR, &exception_struct.msg[0]),
-                  SQL_MAX_MESSAGE_LENGTH - 1,
-                  OTL_RCAST(OTL_SQLSMALLINT_PTR, &msg_len));
+
+#if defined(__GNUC__)&&defined(__GNUC_MINOR__)&&(__GNUC__ * 100 + __GNUC_MINOR__ >= 407)
+         void* temp_ptr=&exception_struct.code;
+         rc = SQLError(henv, hdbc, 0, // hstmt
+                       OTL_RCAST(OTL_SQLCHAR_PTR, &exception_struct.sqlstate[0]),
+                       OTL_RCAST(OTL_SQLINTEGER_PTR, temp_ptr),
+                       OTL_RCAST(OTL_SQLCHAR_PTR, &exception_struct.msg[0]),
+                       SQL_MAX_MESSAGE_LENGTH - 1,
+                       OTL_RCAST(OTL_SQLSMALLINT_PTR, &msg_len));
+#else
+         rc = SQLError(henv, hdbc, 0, // hstmt
+                       OTL_RCAST(OTL_SQLCHAR_PTR, &exception_struct.sqlstate[0]),
+                       OTL_RCAST(OTL_SQLINTEGER_PTR, &exception_struct.code),
+                       OTL_RCAST(OTL_SQLCHAR_PTR, &exception_struct.msg[0]),
+                       SQL_MAX_MESSAGE_LENGTH - 1,
+                       OTL_RCAST(OTL_SQLSMALLINT_PTR, &msg_len));
+#endif
 #endif
     exception_struct.msg[msg_len] = 0;
 
@@ -12026,13 +12077,13 @@ public:
 #endif
 #if (ODBCVER >= 0x0300)
     case SQL_TYPE_DATE:
-      return SQL_C_TIMESTAMP;
+      return OTL_SQL_C_TIMESTAMP;
     case SQL_TYPE_TIMESTAMP:
-      return SQL_C_TIMESTAMP;
+      return OTL_SQL_C_TIMESTAMP;
     case SQL_TYPE_TIME:
-      return SQL_C_TIMESTAMP;
+      return OTL_SQL_C_TIMESTAMP;
     case OTL_SQL_SS_TIME2:
-      return SQL_C_TIMESTAMP;
+      return OTL_SQL_C_TIMESTAMP;
 #if defined(OTL_UNICODE)
     case OTL_SQL_SS_TIMESTAMPOFFSET:
       return SQL_C_WCHAR;
@@ -12041,12 +12092,12 @@ public:
       return SQL_C_CHAR;
 #endif
 #else
-    case SQL_DATE:
-      return SQL_C_TIMESTAMP;
-    case SQL_TIMESTAMP:
-      return SQL_C_TIMESTAMP;
-    case SQL_TIME:
-      return SQL_C_TIMESTAMP;
+    case OTL_SQL_DATE:
+      return OTL_SQL_C_TIMESTAMP;
+    case OTL_SQL_TIMESTAMP:
+      return OTL_SQL_C_TIMESTAMP;
+    case OTL_SQL_TIME:
+      return OTL_SQL_C_TIMESTAMP;
 #endif
 #if defined(OTL_BIGINT)
     case SQL_BIGINT:
@@ -12154,18 +12205,18 @@ to function
         return max_long_size * OTL_SCAST(int, sizeof(OTL_CHAR));
       case SQL_LONGVARBINARY:
         return max_long_size;
-      case SQL_DATE:
+      case OTL_SQL_DATE:
         return 40;
 #if (ODBCVER >= 0x0300)
       case SQL_TYPE_TIMESTAMP:
 #else
-      case SQL_TIMESTAMP:
+      case OTL_SQL_TIMESTAMP:
 #endif
         return 40;
 #if (ODBCVER >= 0x0300)
       case SQL_TYPE_TIME:
 #else
-      case SQL_TIME:
+      case OTL_SQL_TIME:
 #endif
         return 40;
 #if (ODBCVER >= 0x0350)
@@ -12194,11 +12245,11 @@ to function
       return sizeof(int);
     case SQL_C_SSHORT:
       return sizeof(short int);
-    case SQL_C_TIMESTAMP:
+    case OTL_SQL_C_TIMESTAMP:
       return sizeof(OTL_SQL_TIMESTAMP_STRUCT);
-    case SQL_C_TIME:
+    case OTL_SQL_C_TIME:
       return sizeof(OTL_SQL_TIME_STRUCT);
-    case SQL_C_DATE:
+    case OTL_SQL_C_DATE:
       return sizeof(OTL_SQL_DATE_STRUCT);
 #if defined(OTL_UNICODE)
     case SQL_WLONGVARCHAR:
@@ -12310,9 +12361,9 @@ to function
       case SQL_LONGVARBINARY:
         ftype = otl_var_raw_long;
         break;
-      case SQL_C_DATE:
-      case SQL_C_TIME:
-      case SQL_C_TIMESTAMP:
+      case OTL_SQL_C_DATE:
+      case OTL_SQL_C_TIME:
+      case OTL_SQL_C_TIMESTAMP:
         if (a_override.get_all_mask() & otl_all_date2str) {
           ftype = otl_var_char;
           elem_size = otl_date_str_size;
@@ -13162,7 +13213,7 @@ public:
     case otl_var_timestamp:
     case otl_var_db2time:
     case otl_var_db2date:
-      return SQL_C_TIMESTAMP;
+      return OTL_SQL_C_TIMESTAMP;
     case otl_var_raw_long:
       return SQL_LONGVARBINARY;
     case otl_var_raw:
@@ -13187,18 +13238,18 @@ public:
 #endif
     case SQL_LONGVARBINARY:
       return SQL_LONGVARBINARY;
-    case SQL_C_DATE:
-      return SQL_DATE;
+    case OTL_SQL_C_DATE:
+      return OTL_SQL_DATE;
 #if (ODBCVER >= 0x0300)
-    case SQL_C_TIME:
+    case OTL_SQL_C_TIME:
       return SQL_TYPE_TIME;
-    case SQL_C_TIMESTAMP:
+    case OTL_SQL_C_TIMESTAMP:
       return SQL_TYPE_TIMESTAMP;
 #else
-    case SQL_C_TIME:
-      return SQL_TIME;
-    case SQL_C_TIMESTAMP:
-      return SQL_TIMESTAMP;
+    case OTL_SQL_C_TIME:
+      return OTL_SQL_TIME;
+    case OTL_SQL_C_TIMESTAMP:
+      return OTL_SQL_TIMESTAMP;
 #endif
     case SQL_C_DOUBLE:
       return SQL_DOUBLE;
@@ -13270,7 +13321,7 @@ public:
 #if (ODBCVER >= 0x0300)
       mapped_sqltype = SQL_TYPE_DATE;
 #else
-      mapped_sqltype = SQL_DATE;
+      mapped_sqltype = OTL_SQL_DATE;
 #endif
     else if (aftype == otl_var_db2time)
 #if (ODBCVER >= 0x0300)
@@ -13335,7 +13386,7 @@ public:
                                         : 0;
 #endif
 #else
-          sqltype == SQL_TIMESTAMP ? otl_odbc_date_scale : 0;
+          sqltype == OTL_SQL_TIMESTAMP ? otl_odbc_date_scale : 0;
 #endif
       short int temp_val = OTL_SCAST(OTL_SQLSMALLINT, temp_int_val);
       status = SQLBindParameter(
@@ -13357,7 +13408,7 @@ public:
                                         : OTL_SCAST(OTL_SQLULEN, aelem_size),
 #endif
 #else
-          sqltype == SQL_TIMESTAMP ? otl_odbc_date_prec : aelem_size,
+          sqltype == OTL_SQL_TIMESTAMP ? otl_odbc_date_prec : aelem_size,
 #endif
           temp_val, OTL_RCAST(OTL_SQLPOINTER, OTL_SCAST(size_t, parm_pos)), 0,
           v.p_len);
@@ -13376,7 +13427,7 @@ public:
       else
         temp_column_size = aelem_size;
 #else
-      if (sqltype == SQL_TIMESTAMP)
+      if (sqltype == OTL_SQL_TIMESTAMP)
         temp_column_size = otl_odbc_date_prec;
       else if (ftype == SQL_C_CHAR)
         temp_column_size = aelem_size - 1;
@@ -13405,7 +13456,7 @@ public:
                                         : 0;
 #endif
 #else
-          sqltype == SQL_TIMESTAMP ? otl_odbc_date_scale : 0;
+          sqltype == OTL_SQL_TIMESTAMP ? otl_odbc_date_scale : 0;
 #endif
       short int temp_val2 = OTL_SCAST(OTL_SQLSMALLINT, temp_int_val2);
       status =
@@ -13528,10 +13579,18 @@ OTL_UNICODE is defined
 #if (defined(UNICODE) || defined(_UNICODE))
     {
 #if defined(OTL_UNICODE_EXCEPTION_AND_RLOGON)
+#if defined(__GNUC__)&&defined(__GNUC_MINOR__)&&(__GNUC__ * 100 + __GNUC_MINOR__ >= 407)
+      void* temp_ptr = &exception_struct.code;
+      rc = SQLGetDiagRec(SQL_HANDLE_STMT, cda, 1, &exception_struct.sqlstate[0],
+                         OTL_RCAST(OTL_SQLINTEGER_PTR, temp_ptr),
+                         &exception_struct.msg[0], SQL_MAX_MESSAGE_LENGTH - 1,
+                         OTL_RCAST(OTL_SQLSMALLINT_PTR, &msg_len));
+#else
       rc = SQLGetDiagRec(SQL_HANDLE_STMT, cda, 1, &exception_struct.sqlstate[0],
                          OTL_RCAST(OTL_SQLINTEGER_PTR, &exception_struct.code),
                          &exception_struct.msg[0], SQL_MAX_MESSAGE_LENGTH - 1,
                          OTL_RCAST(OTL_SQLSMALLINT_PTR, &msg_len));
+#endif
       exception_struct.msg[msg_len] = 0;
 #else
       SQLWCHAR temp_sqlstate[1000];
@@ -13559,12 +13618,22 @@ OTL_UNICODE is defined
 #endif
 
 #else
+#if defined(__GNUC__)&&defined(__GNUC_MINOR__)&&(__GNUC__ * 100 + __GNUC_MINOR__ >= 407)
+    void* temp_ptr = &exception_struct.code;
+    rc = SQLError(adb->henv, adb->hdbc, cda,
+                  OTL_RCAST(OTL_SQLCHAR_PTR, &exception_struct.sqlstate[0]),
+                  OTL_RCAST(OTL_SQLINTEGER_PTR, temp_ptr),
+                  OTL_RCAST(OTL_SQLCHAR_PTR, &exception_struct.msg[0]),
+                  SQL_MAX_MESSAGE_LENGTH - 1,
+                  OTL_RCAST(OTL_SQLSMALLINT_PTR, &msg_len));
+#else
     rc = SQLError(adb->henv, adb->hdbc, cda,
                   OTL_RCAST(OTL_SQLCHAR_PTR, &exception_struct.sqlstate[0]),
                   OTL_RCAST(OTL_SQLINTEGER_PTR, &exception_struct.code),
                   OTL_RCAST(OTL_SQLCHAR_PTR, &exception_struct.msg[0]),
                   SQL_MAX_MESSAGE_LENGTH - 1,
                   OTL_RCAST(OTL_SQLSMALLINT_PTR, &msg_len));
+#endif
 #endif
 
     exception_struct.msg[msg_len] = 0;
@@ -15175,8 +15244,10 @@ public:
         (*ov_len) = (*ss)->get_sl_len();
         for (i = 0; i < (*ss)->get_sl_len(); ++i) {
           (*ss)->get_sl()[i].copy_var_desc((*ov)[i]);
-          if ((*ss)->get_sl_desc() != nullptr)
+          if ((*ss)->get_sl_desc() != nullptr){
             (*ov)[i].copy_name((*ss)->get_sl_desc()[i].name);
+            (*ov)[i].set_param_type(1);
+          }
         }
       }
     } else if ((*io)) {
@@ -21764,6 +21835,16 @@ OTL_THROWS_OTL_EXCEPTION:
               bool threaded_mode = false
 #endif
               ) OTL_THROWS_OTL_EXCEPTION {
+    const char* c=connect_str;
+    while(*c){
+      if(*c=='@')
+        break;
+      ++c;
+    }
+    if(*c=='@' && *(c+1)==0){
+      throw otl_exception(otl_error_msg_44, otl_error_code_44);
+    }
+      
     if (this->connected) {
       throw otl_exception(otl_error_msg_30, otl_error_code_30);
     }
@@ -22419,8 +22500,10 @@ OTL_THROWS_OTL_EXCEPTION:
     ov_len = sl_len;
     for (int i = 0; i < sl_len; ++i) {
       sl[i].copy_var_desc(ov[i]);
-      if (sl_desc != nullptr)
+      if (sl_desc != nullptr){
         ov[i].copy_name(sl_desc[i].name);
+        ov[i].set_param_type(1);
+      }
     }
   }
 
@@ -26537,6 +26620,7 @@ public:
         for (i = 0; i < (*ss)->get_sl_len(); ++i) {
           (*ss)->get_sl()[i].copy_var_desc((*ov)[i]);
           (*ov)[i].copy_name((*ss)->get_sl_desc()[i].name);
+          (*ov)[i].set_param_type(1);
         }
       }
     } else if ((*io)) {

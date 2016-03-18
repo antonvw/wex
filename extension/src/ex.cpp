@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wxExEx
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
@@ -61,6 +61,125 @@ wxExEx::wxExEx(wxExSTC* stc)
   , m_SearchFlags(wxSTC_FIND_REGEXP)
   , m_MarkerSymbol(0, -1)
   , m_Register(0)
+  , m_Commands {
+    {":ab", [&](const std::string& command) {
+      wxStringTokenizer tkz(command, " ");
+      if (tkz.CountTokens() >= 2)
+      {
+        tkz.GetNextToken(); // skip
+        const wxString ab(tkz.GetNextToken());
+        m_Macros.SetAbbreviation(ab, tkz.GetString().ToStdString());
+      }
+      else
+      {
+        wxString output;
+        for (const auto& it : m_Macros.GetAbbreviations())
+        {
+          output += it.first + " " + it.second + "\n";
+        }
+        ShowDialog("Abbreviations", output);
+      } return true;}},
+#if wxCHECK_VERSION(3,1,0)
+    {":ar", [&](const std::string& command) {
+      wxString text;
+      for (size_t i = 1; i < wxTheApp->argv.GetArguments().size(); i++)
+      {
+        text += wxTheApp->argv.GetArguments()[i] + "\n";
+      }
+      if (!text.empty()) ShowDialog("ar", text);
+      return true;}},
+#endif
+    {":chd", [&](const std::string& command) {
+      if (command.find(" ") == std::string::npos) return true;
+      wxSetWorkingDirectory(wxString(command).AfterFirst(' ').Trim(false)); return true;}},
+    {":close", [&](const std::string& command) {POST_COMMAND( wxID_CLOSE ) return true;}},
+    {":e", [&](const std::string& command) {POST_COMMAND( wxID_OPEN ) return true;}},
+    {":grep", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPORT_FIND ) return true;}},
+    {":help", [&](const std::string& command) {POST_COMMAND( wxID_HELP ) return true;}},
+    {":new", [&](const std::string& command) {POST_COMMAND( wxID_NEW ) return true;}},
+    {":print", [&](const std::string& command) {m_STC->Print(command.find(" ") == std::string::npos); return true;}},
+    {":pwd", [&](const std::string& command) {wxLogStatus(wxGetCwd()); return true;}},
+    {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
+    {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
+    {":reg", [&](const std::string& command) {
+      wxString output;
+      for (const auto& it : m_Macros.GetRegisters())
+      {
+        output += it + "\n";
+      }
+      output += "%: " + m_STC->GetFileName().GetFullName() + "\n";
+      ShowDialog("Registers", output);
+      return true;}},
+    {":sed", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPORT_REPLACE ) return true;}},
+    {":set", [&](const std::string& command) {
+      if (command.find(" ") == std::string::npos)
+      {
+        POST_COMMAND( wxID_PREFERENCES )
+        return true;
+      }
+      else
+      {
+        return CommandSet(wxString(command.substr(4)).Trim(false));
+      }}},
+    {":so", [&](const std::string& command) {
+      if (command.find(" ") == std::string::npos) return false;
+      wxFileName filename(wxString(command).AfterFirst(' ').Trim(false));
+      if (filename.IsRelative())
+      {
+        filename.MakeAbsolute();
+      }
+      wxTextFile file(filename.GetFullPath());
+      if (!file.Open()) return false;
+      for (int i = 0; i < (int)file.GetLineCount(); i++)
+      {
+        const std::string line(file.GetLine(i).ToStdString());
+        if (!line.empty())
+        {
+          if (line == command)
+          {
+            wxLogMessage("skip recursive %s on line %d", line.c_str(), i);
+            return false;
+          }
+          else if (!Command(line))
+          {
+            wxLogMessage("%s on line %d failed", line.c_str(), i + 1);
+            return false;
+          }
+        }
+      }
+      return true;}},
+    {":syntax", [&](const std::string& command) {
+      if (wxString(command).EndsWith("on"))
+      {
+        wxExLexers::Get()->RestoreTheme();
+        m_STC->SetLexer(m_STC->GetFileName().GetLexer().GetDisplayLexer(), true); // allow folding
+      }
+      else if (wxString(command).EndsWith("off"))
+      {
+        m_STC->ResetLexer();
+        wxExLexers::Get()->SetThemeNone();
+      }
+      else
+      {
+        return false;
+      }
+      m_Frame->StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
+      return true;}},
+    {":una", [&](const std::string& command) {
+      wxStringTokenizer tkz(command, " ");
+      if (tkz.CountTokens() >= 2)
+      {
+        tkz.GetNextToken(); // skip
+        const wxString ab(tkz.GetNextToken());
+        m_Macros.SetAbbreviation(ab, "");
+      }
+      return true;}},
+    {":ve", [&](const std::string& command) {ShowDialog("Version", wxExGetVersionInfo().GetVersionOnlyString()); return true;}},
+    {":x", [&](const std::string& command) {
+      if (command != ":x") return false;
+      POST_COMMAND( wxID_SAVE )
+      POST_CLOSE( wxEVT_CLOSE_WINDOW, true )
+      return true;}}}
 {
   wxASSERT(m_Frame != nullptr);
   
@@ -68,10 +187,6 @@ wxExEx::wxExEx(wxExSTC* stc)
   {
     m_SearchFlags = m_SearchFlags | wxSTC_FIND_MATCHCASE;
   }
-}
-
-wxExEx::~wxExEx()
-{
 }
 
 void wxExEx::AddText(const std::string& text)
@@ -103,182 +218,13 @@ bool wxExEx::Command(const std::string& command, bool is_handled)
       m_STC = stc;
     }
   }
+  else if (CommandHandle(command))
+  {
+  }
   else if (command == ":" || command == ":'<,'>")
   {
     m_Frame->GetExCommand(this, command);
     return true;
-  }
-  else if (command.compare(0, 3, ":ab") == 0)
-  {
-    wxStringTokenizer tkz(command, " ");
-    
-    if (tkz.CountTokens() >= 2)
-    {
-      tkz.GetNextToken(); // skip
-      const wxString ab(tkz.GetNextToken());
-      m_Macros.SetAbbreviation(ab, tkz.GetString().ToStdString());
-    }
-    else
-    {
-      wxString output;
-      
-      for (const auto& it : m_Macros.GetAbbreviations())
-      {
-        output += it.first + " " + it.second + "\n";
-      }
-      
-      ShowDialog("Abbreviations", output);
-    }
-  }
-  else if (command == ":close")
-  {
-    POST_COMMAND( wxID_CLOSE )
-  }
-  else if (command.compare(0, 2, ":e") == 0)
-  {
-    POST_COMMAND( wxID_OPEN )
-  }
-  else if (command.compare(0, 5, ":grep") == 0) // before :g
-  {
-    POST_COMMAND( ID_TOOL_REPORT_FIND )
-  }
-  else if (command.compare(0, 5, ":help") == 0)
-  {
-    POST_COMMAND( wxID_HELP )
-  }
-  else if (command.compare(0, 4, ":new") == 0)
-  {
-    POST_COMMAND( wxID_NEW )
-  }
-  else if (command == ":print")
-  {
-    if (command.find(" ") == std::string::npos)
-    {
-      m_STC->Print();
-    }
-    else
-    {
-      m_STC->Print(false); // no prompt
-    }
-  }
-  else if (command == ":q")
-  {
-    POST_CLOSE( wxEVT_CLOSE_WINDOW, true )
-  }
-  else if (command == ":q!")
-  {
-    POST_CLOSE( wxEVT_CLOSE_WINDOW, false )
-  }
-  else if (command == ":reg")
-  {
-    wxString output;
-    
-    for (const auto& it : m_Macros.GetRegisters())
-    {
-      output += it + "\n";
-    }
-  
-    output += "%: " + m_STC->GetFileName().GetFullName() + "\n";
-    
-    ShowDialog("Registers", output);
-  }
-  else if (command.compare(0, 4, ":sed") == 0)
-  {
-    POST_COMMAND( ID_TOOL_REPORT_REPLACE )
-  }
-  else if (command.compare(0, 4, ":set") == 0)
-  {
-    if (command.find(" ") == std::string::npos)
-    {
-      POST_COMMAND( wxID_PREFERENCES )
-    }
-    else
-    {
-      result = CommandSet(wxString(command.substr(4)).Trim(false));
-    }
-  }
-  else if (command.compare(0, 3, ":so") == 0)
-  {
-    if (command.find(" ") != std::string::npos)
-    {
-      wxFileName filename(wxString(command).AfterFirst(' ').Trim(false));
-      
-      if (filename.IsRelative())
-      {
-        filename.MakeAbsolute();
-      }
-      
-      wxTextFile file(filename.GetFullPath());
-
-      if (file.Open())
-      {
-        for (int i = 0; i < (int)file.GetLineCount(); i++)
-        {
-          const std::string line(file.GetLine(i).ToStdString());
-
-          if (!line.empty())
-          {
-            if (line == command)
-            {
-              wxLogMessage("skip recursive %s on line %d", line.c_str(), i);
-              result = false;
-            }
-            else if (!Command(line))
-            {
-              wxLogMessage("%s on line %d failed", line.c_str(), i + 1);
-              result = false;
-            }
-          }
-        }
-      }
-      else
-      {
-        result = false;
-      }
-    }
-    else
-    {
-      result = false;
-    }
-  }
-  else if (command.compare(0, 7, ":syntax") == 0)
-  {
-    if (wxString(command).EndsWith("on"))
-    {
-      wxExLexers::Get()->RestoreTheme();
-      m_STC->SetLexer(m_STC->GetFileName().GetLexer().GetDisplayLexer(), true); // allow folding
-    }
-    else if (wxString(command).EndsWith("off"))
-    {
-      m_STC->ResetLexer();
-      wxExLexers::Get()->SetThemeNone();
-    }
-    else
-    {
-      result = false;
-    }
-
-    m_Frame->StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
-  }
-  else if (command.compare(0, 4, ":una") == 0)
-  {
-    wxStringTokenizer tkz(command, " ");
-    
-    if (tkz.CountTokens() >= 2)
-    {
-      tkz.GetNextToken(); // skip
-      const wxString ab(tkz.GetNextToken());
-      m_Macros.SetAbbreviation(ab, "");
-    }
-  }
-  else if (command.compare(0, 3, ":ve") == 0)
-  {
-    ShowDialog("Version", wxExGetVersionInfo().GetVersionOnlyString());
-  }
-  else if (command == ":x")
-  {
-    POST_COMMAND( wxID_SAVE )
-    POST_CLOSE( wxEVT_CLOSE_WINDOW, true )
   }
   else if (!CommandAddress(command.substr(1)))
   {
@@ -463,6 +409,14 @@ bool wxExEx::CommandAddress(const std::string& command)
       return false;
     }
   }
+}
+
+bool wxExEx::CommandHandle(const std::string& command)
+{
+  auto it = std::find_if(m_Commands.begin(), m_Commands.end(), 
+    [command](auto const& e) {return e.first == command.substr(0, e.first.size());});
+  
+  return it != m_Commands.end() && it->second(command);
 }
 
 bool wxExEx::CommandSet(const wxString& arg)

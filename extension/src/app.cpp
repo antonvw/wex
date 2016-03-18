@@ -2,23 +2,21 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wxExApp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/dir.h>
-#include <wx/stdpaths.h>
-#ifdef wxExUSE_PORTABLE
 #include <wx/fileconf.h> 
-#endif
+#include <wx/stdpaths.h>
 #include <wx/extension/app.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
+#include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
 int wxExApp::OnExit()
@@ -32,30 +30,15 @@ int wxExApp::OnExit()
 
 bool wxExApp::OnInit()
 {
-  wxConfigBase* config;
-#ifdef wxExUSE_PORTABLE
-  // Use a portable file config.
   // This should be before first use of wxConfigBase::Get().
-  config = new wxFileConfig(
-    wxEmptyString,
-    wxEmptyString,
-    wxFileName(
-      wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath(),
-      GetAppName().Lower() + wxString(".ini")).GetFullPath(),
-    wxEmptyString,
-    wxCONFIG_USE_LOCAL_FILE);
+  wxConfigBase::Set(new wxFileConfig(wxEmptyString, wxEmptyString,
+    wxFileName(wxExConfigDir(), GetAppName().Lower() + 
+#ifdef __WXMSW__
+    ".ini"
 #else
-  // Remember, this one is used on Linux.
-  // As wxStandardPaths::GetUserDataDir is used, subdir is necessary for config.
-  // (ignored on non-Unix system)
-  config = new wxConfig(
-    wxEmptyString,
-    wxEmptyString,
-    wxEmptyString,
-    wxEmptyString,
-    wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
+    ".conf"
 #endif
-  wxConfigBase::Set(config);
+      ).GetFullPath(), wxEmptyString, wxCONFIG_USE_LOCAL_FILE));
   
   const wxLanguageInfo* info = nullptr;
   

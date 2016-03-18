@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncodbcquery
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
@@ -124,6 +124,7 @@ Frame::Frame()
       Name("RESULTS").
       Caption(_("Results")).
       CloseButton(true).
+      Bottom().
       MaximizeButton(true));
 
   GetManager().AddPane(m_Query,
@@ -135,6 +136,7 @@ Frame::Frame()
 
   GetManager().AddPane(m_Statistics.Show(this),
     wxAuiPaneInfo().Left().
+      Hide().
       MaximizeButton(true).
       Caption(_("Statistics")).
       Name("STATISTICS"));

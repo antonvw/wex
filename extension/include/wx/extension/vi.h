@@ -75,13 +75,7 @@ private:
   bool CommandChar(std::string& command);
   void CommandReg(const char reg);
   void FilterCount(std::string& command, const std::string& prefix = "");
-  bool Find(const std::string& command);
-  bool FindChar(const std::string& text);
   void FindWord(bool find_next = true);
-  bool Indent(
-    const wxString& begin_address, 
-    const wxString& end_address, 
-    bool forward);
   bool InsertMode(const std::string& text);
   void InsertModeNormal(const std::string& text);
   virtual void MacroRecord(const std::string& text) override;
@@ -103,10 +97,10 @@ private:
   std::string m_Command;
   std::string m_InsertText;
 
-  std::vector<std::pair<
-    int, 
+  const std::vector<std::pair<
+    const std::string, 
     std::function<bool(const std::string& command)>>> m_MotionCommands;
-  std::vector<std::pair<
+  const std::vector<std::pair<
     const std::string, 
     std::function<bool(const std::string& command)>>> m_OtherCommands;
 };

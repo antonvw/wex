@@ -257,15 +257,7 @@ wxExLexers* wxExLexers::Get(bool createOnDemand)
 {
   if (m_Self == nullptr && createOnDemand)
   {
-    m_Self = new wxExLexers(wxFileName(
-#ifdef wxExUSE_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
-#else
-      wxStandardPaths::Get().GetUserDataDir()
-#endif
-      + wxFileName::GetPathSeparator() + "lexers.xml")
-    );
-
+    m_Self = new wxExLexers(wxFileName(wxExConfigDir(), "lexers.xml"));
     m_Self->LoadDocument();
   }
 

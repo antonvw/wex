@@ -2,7 +2,7 @@
 // Name:      test-cmdlineparser.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -20,21 +20,20 @@ TEST_CASE("wxExCmdLineParser")
   double b;
   wxString c;
   wxDateTime d;
-  bool s;
-  bool t;
-  bool u;
+  bool s, t, u, v;
   wxString p,q,r;
   const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
   
   const wxString str(ds == '.' ?
-    "-a 10 -b 10.1 -c test -d 01-jan-2000 -s -t- -u one two three":
-    "-a 10 -b 10,1 -c test -d 01-jan-2000 -s -t- -u one two three");
+    "-a 10 -b 10.1 -c test -d 01-jan-2000 -s -t- -u --version one two three":
+    "-a 10 -b 10,1 -c test -d 01-jan-2000 -s -t- -u --version one two three");
   
   wxExCmdLineParser clp(str,
     wxExCmdLineParser::CmdSwitches { 
       {{"s", ""}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){s = on;}}},
       {{"t", ""}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){t = on;}}},
-      {{"u", ""}, {0, [&](bool on){u = true;}}}},
+      {{"u", ""}, {0, [&](bool on){u = true;}}},
+      {{"version", ""}, {0, [&](bool on){v = on;}}}},
     wxExCmdLineParser::CmdOptions {
       {{"a", ""}, {wxCMD_LINE_VAL_NUMBER, [&](wxAny any) {any.GetAs(&a);}}},
       {{"b", ""}, {wxCMD_LINE_VAL_DOUBLE, [&](wxAny any) {any.GetAs(&b);}}},
@@ -54,6 +53,7 @@ TEST_CASE("wxExCmdLineParser")
   REQUIRE( s );
   REQUIRE(!t );
   REQUIRE( u );
+  REQUIRE( v );
   REQUIRE( p == "one" );
   REQUIRE( q == "two" );
   REQUIRE( r == "three" );

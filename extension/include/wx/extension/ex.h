@@ -26,7 +26,7 @@ public:
   wxExEx(wxExSTC* stc);
   
   /// Destructor.
-  virtual ~wxExEx();
+  virtual ~wxExEx() {;};
   
   /// Adds text (to STC or register, if register is active).
   void AddText(const std::string& text);
@@ -142,6 +142,7 @@ protected:
   /// disabling current register.
   void SetRegister(const char name) {m_Register = name;};
 private:
+  bool CommandHandle(const std::string& command);
   bool CommandAddress(const std::string& command);
   bool CommandSet(const wxString& command);
   void ShowDialog(const wxString& title, const wxString& text);
@@ -162,5 +163,9 @@ private:
   
   wxExManagedFrame* m_Frame;  
   wxExSTC* m_STC;
+
+  const std::vector<std::pair<
+    const std::string, 
+    std::function<bool(const std::string& command)>>> m_Commands;
 };
 #endif // wxUSE_GUI

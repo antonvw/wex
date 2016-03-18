@@ -3,7 +3,7 @@
 <!--
 Name:      lexers.xml
 Purpose:   Lexers configuration for wxExtension.
-           See scintilla 3.5.5 (www.scintilla.org).
+           See scintilla 3.6.3 (www.scintilla.org).
 Author:    Anton van Wezenbeek
 Copyright: (c) 2016, Anton van Wezenbeek
 -->
@@ -384,6 +384,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="commentblock"/>
       <def no ="verbose_regex"/>
       <def no ="verbose_regex_comment"/>
+      <def no ="instanceproperty"/>
     </def>
 
     <def name = "conf">
@@ -620,6 +621,24 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="java_stack"/>
       <def no ="value"/>
       <def no ="gcc_included_from"/>
+      <def no ="escseq"/>
+      <def no ="escseq_unknown"/>
+      <def no ="es_black"> 40 </def>
+      <def no ="es_red"/>
+      <def no ="es_green"/>
+      <def no ="es_brown"/>
+      <def no ="es_blue"/>
+      <def no ="es_mage"/>
+      <def no ="es_cyan"/>
+      <def no ="es_gray"/>
+      <def no ="es_dark_gray"/>
+      <def no ="es_bright_red"/>
+      <def no ="es_bright_green"/>
+      <def no ="es_yellow"/>
+      <def no ="es_bright_blue"/>
+      <def no ="es_bright_magenta"/>
+      <def no ="es_bright_cyan"/>
+      <def no ="es_white"/>
     </def>
     
     <def name = "escript">
@@ -2489,7 +2508,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
   </lexer>
   <lexer name="bib" extensions="*.bib"/>
   <lexer name="blitzbasic" macro="vb"/>
-  <lexer name="bullant"/>
+  <lexer name="bullant" macro="cpp"/>
   <lexer name="caml"/>
   <lexer name="clarion"/>
   <lexer name="clarionnocase" macro="clarion"/>
@@ -2729,9 +2748,9 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <style no="ulist_item"> fore:green </style>
       <style no="olist_item"> fore:green </style>
       <style no="link"> fore:green,italic </style>
-      <style no="code"> fore:blue </style>
-      <style no="code2"> fore:blue </style>
-      <style no="codebk"> fore:blue </style>
+      <style no="code"> fore:light blue </style>
+      <style no="code2"> fore:light blue </style>
+      <style no="codebk"> fore:light blue </style>
     </styles>
   </lexer>
   
@@ -2861,7 +2880,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
   <lexer name="r"/>
   <lexer name="rebol"/>
   <lexer name="registry"/>
-  <lexer display="rfw" name="bash" extensions="TCS*.txt"> 
+  <lexer display="rfw" name="bash" extensions="TCS*.txt;*.robot"> 
     <keywords> 
       Library Resource Variables Documentation Metadata Setup Suite Teardown 
       Precondition Postcondition Force Tags
