@@ -70,17 +70,15 @@ public:
   bool OnKeyDown(const wxKeyEvent& event);
 private:
   void AddText(const std::string& text);
-  bool ChangeNumber(bool inc);
   void CommandCalc(const wxString& reg);
   bool CommandChar(std::string& command);
   void CommandReg(const char reg);
   void FilterCount(std::string& command, const std::string& prefix = "");
-  void FindWord(bool find_next = true);
   bool InsertMode(const std::string& text);
   void InsertModeNormal(const std::string& text);
   virtual void MacroRecord(const std::string& text) override;
   bool MotionCommand(int type, std::string& command, bool is_handled = false);
-  bool OtherCommand(std::string& command);
+  bool OtherCommand(std::string& command) const;
   bool Put(bool after);
 
   static std::string m_LastFindCharCommand;

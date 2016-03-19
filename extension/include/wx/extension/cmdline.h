@@ -75,7 +75,7 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
       /// params
       const CmdParams & p = CmdParams(),
       /// default size for short options
-      int short_option_size = 2) 
+      size_t short_option_size = 2) 
       : wxCmdLineParser(cmdline) 
       , m_Switches(s) 
       , m_Options(o)
