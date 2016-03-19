@@ -327,24 +327,47 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( vi->Command(std::string(1, WXK_DELETE)));
   REQUIRE( stc->GetText() == "yz");
 
-  // Test other commands.
+  // Test fold.
+  for (auto& fold: std::vector<std::string> {"zo", "zc", "zE", "zf"})
+  {
+    REQUIRE( vi->Command(fold));
+    REQUIRE( vi->GetLastCommand() == fold);
+  }
+  
+  // Test other commands (ZZ not tested).
   for (auto& other_command : vi->GetOtherCommands())
   {
     stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
 
-    const std::string oc(
-      other_command.first == "m" || 
-      other_command.first == "q" || 
-      other_command.first == "r" || 
-      other_command.first == "\x12" || 
-      other_command.first == "@" ?
-        other_command.first + "a": other_command.first);
-    
-    INFO( oc);
-    if (oc != "\t")
-      REQUIRE( vi->Command(oc));
+    if (!isalpha(other_command.first.front()) && 
+        other_command.first.front() != '\x12' &&
+        other_command.first.front() != '@')
+    {
+      for (auto c : other_command.first)
+      {
+        INFO( c);
+        if (c != '\t')
+          REQUIRE( vi->Command(std::string(1, c)));
+        else
+          REQUIRE(!vi->Command(std::string(1, c)));
+      }
+    }
     else
-      REQUIRE(!vi->Command(oc));
+    {
+      const std::string oc(
+        other_command.first == "m" || 
+        other_command.first == "q" || 
+        other_command.first == "r" || 
+        other_command.first == "\x12" || 
+        other_command.first == "@" ?
+          other_command.first + "a": other_command.first);
+
+      INFO( oc);
+      if (oc != "z")
+        REQUIRE( vi->Command(oc));
+      else
+        REQUIRE(!vi->Command(oc));
+    }
   }
 
   // Special put test. 

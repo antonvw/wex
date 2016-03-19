@@ -56,7 +56,7 @@ void SetEnvironment(const wxString& dir)
 {
   if (!wxDirExists(dir))
   {
-    (void)system("mkdir " + dir);
+    (void)system("mkdir -p " + dir);
   }
 
 #ifdef __UNIX__

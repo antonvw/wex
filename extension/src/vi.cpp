@@ -24,6 +24,8 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vimacros.h>
 
+#if wxUSE_GUI
+
 // compares two strings in compile time constant fashion
 constexpr int c_strcmp( char const* lhs, char const* rhs )
 {
@@ -32,18 +34,6 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
     : c_strcmp( lhs+1, rhs+1 );
 };
 
-#if wxUSE_GUI
-
-#define FOLD( )                                                          \
-  const auto level = GetSTC()->GetFoldLevel(GetSTC()->GetCurrentLine()); \
-  const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?        \
-    GetSTC()->GetCurrentLine(): GetSTC()->GetFoldParent(GetSTC()->GetCurrentLine());\
-  if (GetSTC()->GetFoldExpanded(line_to_fold) && command == "zc")        \
-    GetSTC()->ToggleFold(line_to_fold);                                  \
-  else if (!GetSTC()->GetFoldExpanded(line_to_fold) && command == "zo")  \
-    GetSTC()->ToggleFold(line_to_fold);                                  \
-  return true;
-        
 #define MOTION(SCOPE, DIRECTION, COND, WRAP)                           \
 {                                                                      \
   for (auto i = 0; i < m_Count; i++)                                   \
@@ -297,17 +287,6 @@ wxExVi::wxExVi(wxExSTC* stc)
         return true;
       } 
       return command.size() >= 2;}},
-    {"><", [&](const std::string& command){
-      switch (GetMode())
-      {
-        case MODE_NORMAL:
-          wxExAddressRange(this, m_Count).Indent(command == ">"); break;
-        case MODE_VISUAL:
-        case MODE_VISUAL_LINE:
-        case MODE_VISUAL_RECT:
-          wxExAddressRange(this, "'<,'>").Indent(command == ">"); break;
-      }
-      return true;}},
     {"0^", [&](const std::string& command){MOTION(Line, Home, false, false);}},
     {"[]", [&](const std::string& command){REPEAT(
         if (!GetSTC()->FindNext("{", GetSearchFlags(), false))
@@ -388,7 +367,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         return true;
       }
       return false;}},
-    {"p", [&](const std::string& command){Put(true);return true;}},
+    {"p", [&](const std::string& command){Put(command == "p");return true;}},
     {"q", [&](const std::string& command){
       if (GetMacros().IsRecording())
       {
@@ -430,45 +409,50 @@ wxExVi::wxExVi(wxExSTC* stc)
       }
       return false;}},
     {"u", [&](const std::string& command){
-      if (GetSTC()->CanUndo())
-      {
-        GetSTC()->Undo();
-      }
-      else
-      {
-        wxBell();
-      }
+      if (GetSTC()->CanUndo()) GetSTC()->Undo();
+      else wxBell();
       return true;}},
     {"x", [&](const std::string& command){
       return DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count);}},
     {"D", [&](const std::string& command){return Command("d$");}},
     {"J", [&](const std::string& command){wxExAddressRange(this, m_Count).Join(); return true;}},
-    {"P", [&](const std::string& command){Put(false); return true;}},
     {"X", [&](const std::string& command){
       return DeleteRange(this, GetSTC()->GetCurrentPos() - m_Count, GetSTC()->GetCurrentPos());}},
     {"Y", [&](const std::string& command){return Command("y_");}},
     {"dd", [&](const std::string& command){
       (void)wxExAddressRange(this, m_Count).Delete(); return true;}},
     {"dgg", [&](const std::string& command){
-      return DeleteRange(this, 0,
-        GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));}},
+      return DeleteRange(this, 0, GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));}},
     {"gg", [&](const std::string& command){
       GetSTC()->DocumentStart(); return true;}},
     {"yy", [&](const std::string& command){
       wxExAddressRange(this, m_Count).Yank(); return true;}},
-    {"zc", [&](const std::string& command){FOLD();}},
-    {"zo", [&](const std::string& command){FOLD();}},
-    {"zE", [&](const std::string& command){
-      GetSTC()->SetLexerProperty("fold", "0");
-      GetSTC()->Fold(false); return true;}},
-    {"zf", [&](const std::string& command){
-      GetSTC()->SetLexerProperty("fold", "1");
-      GetSTC()->Fold(true); return true;}},
-    {"ZZ", [&](const std::string& command){
-      wxPostEvent(wxTheApp->GetTopWindow(), 
-        wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
-      wxPostEvent(wxTheApp->GetTopWindow(), 
-        wxCloseEvent(wxEVT_CLOSE_WINDOW)); return true;}},
+    {"z", [&](const std::string& command){
+      if (command.size() <= 1) return false;
+      const auto level = GetSTC()->GetFoldLevel(GetSTC()->GetCurrentLine());
+      const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+        GetSTC()->GetCurrentLine(): GetSTC()->GetFoldParent(GetSTC()->GetCurrentLine());
+      switch (command[1])
+      {
+        case 'c':
+        case 'o':
+          if (GetSTC()->GetFoldExpanded(line_to_fold) && command == "zc")
+            GetSTC()->ToggleFold(line_to_fold);
+          else if (!GetSTC()->GetFoldExpanded(line_to_fold) && command == "zo")
+            GetSTC()->ToggleFold(line_to_fold);
+          break;
+        case 'E':
+          GetSTC()->SetLexerProperty("fold", "0");
+          GetSTC()->Fold(false); break;
+        case 'f':
+          GetSTC()->SetLexerProperty("fold", "1");
+          GetSTC()->Fold(true); break;
+        case 'Z':
+          wxPostEvent(wxTheApp->GetTopWindow(), 
+            wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
+          wxPostEvent(wxTheApp->GetTopWindow(), 
+            wxCloseEvent(wxEVT_CLOSE_WINDOW)); break;
+      }; return true;}},
     {".", [&](const std::string& command){
       m_Dot = true;
       const bool result = Command(GetLastCommand());
@@ -486,9 +470,27 @@ wxExVi::wxExVi(wxExSTC* stc)
         text);
       GetSTC()->CharRight());
       return true;}},
+    {"><", [&](const std::string& command){
+      switch (GetMode())
+      {
+        case MODE_NORMAL:
+          wxExAddressRange(this, m_Count).Indent(command == ">"); break;
+        case MODE_VISUAL:
+        case MODE_VISUAL_LINE:
+        case MODE_VISUAL_RECT:
+          wxExAddressRange(this, "'<,'>").Indent(command == ">"); break;
+      }
+      return true;}},
     {"&", [&](const std::string& command){(void)Command(":.&");return true;}},
-    {"*", [&](const std::string& command){FindWord();return true;}},
-    {"#", [&](const std::string& command){FindWord(false);return true;}},
+    {"*#", [&](const std::string& command){
+      const auto start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
+      const auto end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
+      wxExFindReplaceData::Get()->SetFindString(GetSTC()->GetTextRange(start, end));  
+      GetSTC()->FindNext(
+        "\\<"+ wxExFindReplaceData::Get()->GetFindString() + "\\>", 
+        GetSearchFlags(), 
+        command == "*");
+      return true;}},
     {"\t", [&](const std::string& command){
       // just ignore tab, except on first col, then it indents
       if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) == 0)
@@ -564,7 +566,27 @@ wxExVi::wxExVi(wxExSTC* stc)
         }
       }
       return false;}},
-    {"\x05", [&](const std::string& command){REPEAT_WITH_UNDO(ChangeNumber(true));}},
+    {"\x05\x0a", [&](const std::string& command){REPEAT_WITH_UNDO(
+        if (GetSTC()->HexMode()) return true;
+        try 
+        {
+          const auto start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
+          const auto sign = (GetSTC()->GetCharAt(start) == '-' ? 1: 0);
+          const auto end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos() + sign, true);
+          const std::string word(GetSTC()->GetTextRange(start, end).ToStdString());
+          auto number = std::stoi(word, nullptr, 0);
+          const auto next = (command == "\x05" ? ++number: --number);
+          std::ostringstream format;
+          format.fill(' ');
+          format.width(end - start);
+          if (word.substr(0, 2) == "0x") format << std::hex;
+          else if (word[0] == '0') format << std::oct;
+          format << std::showbase << next;
+          GetSTC()->wxStyledTextCtrl::Replace(start, end, format.str());
+        }
+        catch (...)
+        {
+        } return true;)}},
     {"\x07", [&](const std::string& command){
       GetFrame()->ShowExMessage(wxString::Format("%s line %d of %d --%d%%-- level %d", 
         GetSTC()->GetFileName().GetFullName().c_str(), 
@@ -577,7 +599,6 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"\x08", [&](const std::string& command){
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) GetSTC()->DeleteBack();
       return true;}},
-    {"\x0a", [&](const std::string& command){REPEAT_WITH_UNDO(ChangeNumber(false));}},
     {"\x12", [&](const std::string& command){
       if (command.size() == 1) return false;
       if (RegAfter(wxUniChar(WXK_CONTROL_R), command))
@@ -602,39 +623,6 @@ void wxExVi::AddText(const std::string& text)
     GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
     GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + text.size());
     GetSTC()->ReplaceTarget(text);
-  }
-}
-
-bool wxExVi::ChangeNumber(bool inc)
-{
-  if (GetSTC()->HexMode())
-  {
-    return false;
-  }
-
-  try 
-  {
-    const auto start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
-    const auto sign = (GetSTC()->GetCharAt(start) == '-' ? 1: 0);
-    const auto end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos() + sign, true);
-    const std::string word(GetSTC()->GetTextRange(start, end).ToStdString());
-    auto number = std::stoi(word, nullptr, 0);
-    const auto next = (inc ? ++number: --number);
-    
-    std::ostringstream format;
-    format.fill(' ');
-    format.width(end - start);
-    if (word.substr(0, 2) == "0x") format << std::hex;
-    else if (word[0] == '0') format << std::oct;
-    format << std::showbase << next;
-  
-    GetSTC()->wxStyledTextCtrl::Replace(start, end, format.str());
-    
-    return true;
-  }
-  catch (...)
-  {
-    return false;
   }
 }
 
@@ -826,19 +814,6 @@ void wxExVi::FilterCount(std::string& command, const std::string& prefix)
       command = (matches == 2 ? v[1]: v[0] + v[2]);
     }
   }
-}
-
-void wxExVi::FindWord(bool find_next)
-{
-  const auto start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
-  const auto end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
-  
-  wxExFindReplaceData::Get()->SetFindString(GetSTC()->GetTextRange(start, end));  
-    
-  GetSTC()->FindNext(
-    "\\<"+ wxExFindReplaceData::Get()->GetFindString() + "\\>", 
-    GetSearchFlags(), 
-    find_next);
 }
 
 bool wxExVi::InsertMode(const std::string& command)
@@ -1075,7 +1050,7 @@ bool wxExVi::MotionCommand(int type, std::string& command, bool is_handled)
   FilterCount(command, "([cdy])");
   
   const char c = (type == MOTION_NAVIGATE ? command[0]: command[1]);
-  auto it = std::find_if(m_MotionCommands.begin(), m_MotionCommands.end(), 
+  const auto it = std::find_if(m_MotionCommands.begin(), m_MotionCommands.end(), 
     [c](auto const& e) {for (auto r : e.first) if (r == c) return true; return false;});
   
   if (it == m_MotionCommands.end())
@@ -1283,10 +1258,14 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   }
 }
 
-bool wxExVi::OtherCommand(std::string& command)
+bool wxExVi::OtherCommand(std::string& command) const
 {
-  auto it = std::find_if(m_OtherCommands.begin(), m_OtherCommands.end(), 
-    [command](auto const& e) {return e.first == command.substr(0, e.first.size());});
+  const auto it = std::find_if(m_OtherCommands.begin(), m_OtherCommands.end(), 
+    [command](auto const& e) {
+    if (!isalpha(e.first.front())) {
+      for (auto r : e.first) if (r == command.front()) return true; return false;}
+    else
+      return e.first == command.substr(0, e.first.size());});
   
   if (it != m_OtherCommands.end() && it->second(command))
   {
