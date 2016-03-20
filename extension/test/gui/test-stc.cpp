@@ -40,7 +40,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   
   REQUIRE( stc->FindNext(wxString("hello"), wxSTC_FIND_WHOLEWORD));
   REQUIRE(!stc->FindNext(wxString("HELLO"), wxSTC_FIND_MATCHCASE));
-  REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
+  REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE) > 0);
   
   wxExFindReplaceData::Get()->SetMatchCase(false);
   REQUIRE( stc->FindNext(wxString("HELLO"))); // uses flags from frd

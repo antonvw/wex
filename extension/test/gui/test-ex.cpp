@@ -52,7 +52,7 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE( ex->GetIsActive());
   
   // GetSearchFlags
-  REQUIRE( (ex->GetSearchFlags() & wxSTC_FIND_REGEXP));
+  REQUIRE( (ex->GetSearchFlags() & wxSTC_FIND_REGEXP) > 0);
   
   // Test commands and GetLastCommand. 
   // Most commands are tested using the :so command.

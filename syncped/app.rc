@@ -1,3 +1,2 @@
 app ICON "app.ico"
-app-large ICON "app-large.ico"
 #include "wx/msw/wx.rc"

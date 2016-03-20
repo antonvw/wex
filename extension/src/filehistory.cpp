@@ -35,12 +35,10 @@ wxExFileHistory::wxExFileHistory(size_t maxFiles, wxWindowID idBase, const wxStr
 
 void wxExFileHistory::AddFileToHistory(const wxString& file)
 {
-  if (file.empty() || GetMaxFiles() <= 0 || !wxFileExists(file))
+  if (!file.empty() && GetMaxFiles() > 0 && wxFileExists(file))
   {
-    return;
+    wxFileHistory::AddFileToHistory(file);
   }
-  
-  wxFileHistory::AddFileToHistory(file);
 }
 
 void wxExFileHistory::Clear()
@@ -56,7 +54,7 @@ void wxExFileHistory::Clear()
 
 wxString wxExFileHistory::GetHistoryFile(size_t index) const
 {
-  if (GetCount() > 0 && index < GetMaxFiles())
+  if (GetCount() > 0 && (int)index < GetMaxFiles())
   {
     const wxString file(wxFileHistory::GetHistoryFile(index));
 
