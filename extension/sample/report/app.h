@@ -16,7 +16,6 @@ class wxExRepSampleApp: public wxExApp
 public:
   wxExRepSampleApp() {}
 private:
-  /// Override the OnInit.
   virtual bool OnInit() override;
   DECLARE_NO_COPY_CLASS(wxExRepSampleApp)
 };

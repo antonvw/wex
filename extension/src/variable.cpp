@@ -2,7 +2,7 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wxExVariable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -276,7 +276,7 @@ bool wxExVariable::ExpandInput(wxString& expanded)
       return false;
     }
       
-    const wxString value = m_Dialog->GetText();
+    const wxString value = m_Dialog->GetSTC()->GetText();
     
     if (value.empty())
     {

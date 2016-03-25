@@ -367,7 +367,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         return true;
       }
       return false;}},
-    {"p", [&](const std::string& command){Put(command == "p");return true;}},
+    {"p", [&](const std::string& command){Put(true);return true;}},
     {"q", [&](const std::string& command){
       if (GetMacros().IsRecording())
       {
@@ -418,6 +418,7 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"J", [&](const std::string& command){wxExAddressRange(this, m_Count).Join(); return true;}},
     {"X", [&](const std::string& command){
       return DeleteRange(this, GetSTC()->GetCurrentPos() - m_Count, GetSTC()->GetCurrentPos());}},
+    {"P", [&](const std::string& command){Put(false);return true;}},
     {"Y", [&](const std::string& command){return Command("y_");}},
     {"dd", [&](const std::string& command){
       (void)wxExAddressRange(this, m_Count).Delete(); return true;}},

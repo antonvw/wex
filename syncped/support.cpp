@@ -61,6 +61,7 @@ DecoratedFrame::DecoratedFrame()
   }
   
   panes.emplace_back(wxExStatusBarPane("PaneMacro", 75));
+  panes.emplace_back(wxExStatusBarPane("PaneMode", 100));
   
   SetupStatusBar(panes);
   
@@ -80,8 +81,10 @@ DecoratedFrame::DecoratedFrame()
   }
   
   const bool vi_mode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
+  const bool show_mode = wxConfigBase::Get()->ReadBool(_("Show mode"), false);
   
   m_StatusBar->ShowField("PaneMacro", vi_mode);
+  m_StatusBar->ShowField("PaneMode", vi_mode && show_mode);
 #endif
 
   wxExMenu *menuFile = new wxExMenu();

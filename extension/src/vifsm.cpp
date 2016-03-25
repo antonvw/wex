@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <wx/extension/vifsm.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vi.h>
 
@@ -117,10 +118,12 @@ bool wxExViFSM::Transition(const std::string& command)
   }
 
   m_State = it->Next(command);
+  wxString mode;
   
   switch (m_State)
   {
     case wxExVi::MODE_INSERT:
+      mode = "insert";
       {
       auto it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
         [command](auto const& e) {return e.first == command[0];});
@@ -129,7 +132,12 @@ bool wxExViFSM::Transition(const std::string& command)
       }
       break;
       
+    case wxExVi::MODE_INSERT_RECT:  mode = "insert rect"; break;
+    case wxExVi::MODE_VISUAL:       mode = "visual";      break;
+    case wxExVi::MODE_VISUAL_RECT:  mode = "visual rect"; break;
+    
     case wxExVi::MODE_VISUAL_LINE:
+      mode = "visual line";
       if (m_vi->GetSTC()->SelectionIsRectangle())
       {
         m_vi->GetSTC()->Home();
@@ -150,6 +158,8 @@ bool wxExViFSM::Transition(const std::string& command)
       break;
   }
   
+  m_vi->GetFrame()->StatusText(mode, "PaneMode");
+
   return true;
 }
 

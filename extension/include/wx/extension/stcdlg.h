@@ -2,7 +2,7 @@
 // Name:      stcdlg.h
 // Purpose:   Declaration of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -42,20 +42,8 @@ public:
     /// name
     const wxString& name = "wxExSTCEntryDialog");
     
-  /// Returns the STC lexer.
-  const wxExLexer* GetLexer() const;
-  
   /// Returns the STC.
-  wxExSTC* GetSTC();
-
-  /// Returns the normal STC text value.
-  const wxString GetText() const;
-
-  /// Returns raw STC text value.
-  const wxCharBuffer GetTextRaw() const;
-
-  /// Sets the STC lexer.
-  bool SetLexer(const wxString& lexer);
+  wxExSTC* GetSTC() {return m_STC;};
 private:
   wxExSTC* m_STC;
 };

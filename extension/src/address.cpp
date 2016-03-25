@@ -26,10 +26,6 @@ wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
 {
 }
 
-wxExAddress::~wxExAddress()
-{
-}
-  
 bool wxExAddress::AdjustWindow(const wxString& text) const
 {
   std::vector<wxString> v;

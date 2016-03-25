@@ -13,7 +13,6 @@
 :set ac!
 :set ai
 :set ai!
-:set ec=5
 :set el
 :set el!
 :set ic
@@ -24,14 +23,18 @@
 :set nu!
 :set re
 :set re!
-:set sy=cpp
-:set ts=10
+:set sm
+:set sm!
 :set ut
 :set ut!
 :set wl
 :set wl!
 :set ws
 :set ws!
+:set ec=5
+:set sw=4
+:set sy=cpp
+:set ts=10
 :set ai
 :syntax off
 :syntax on
@@ -44,6 +47,7 @@
 :.=
 :/yy/=
 :/yy/ka
+:'a=
 :/xx/,/yy/y
 :/xx/,/yy/j
 :.kz
@@ -64,6 +68,7 @@
 :ab xx xyz
 :a test
 :.c replaced
+:1
 :.t $
 :.>
 :.<
@@ -85,7 +90,7 @@
 :1,2g/is/p
 :1
 :.m$
-:2
+:1
 :.t$
 :%s/x/y
 :%s/z/z
@@ -121,4 +126,4 @@
 :!pwd
 :!bash
 
-:$puz
+:puz

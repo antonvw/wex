@@ -183,10 +183,6 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
   }
 }
 
-wxExAddressRange::~wxExAddressRange()
-{
-}
-  
 const wxString wxExAddressRange::BuildReplacement(const wxString& text) const
 {
   if (!text.Contains("&") && !text.Contains("\0"))

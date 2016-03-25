@@ -2,7 +2,7 @@
 // Name:      address.h
 // Purpose:   Declaration of class wxExAddress
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -28,9 +28,6 @@ public:
     /// - or a combination of these, using + or -
     /// - or empty, call SetLine afterwards
     const wxString& address = "");
-  
-  /// Destructor.
- ~wxExAddress();
   
   /// Prints this address, with context.
   bool AdjustWindow(const wxString& text) const;

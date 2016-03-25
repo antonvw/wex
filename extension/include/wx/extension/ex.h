@@ -146,9 +146,8 @@ protected:
   /// disabling current register.
   void SetRegister(const char name) {m_Register = name;};
 private:
-  bool CommandHandle(const std::string& command);
+  bool CommandHandle(const std::string& command) const;
   bool CommandAddress(const std::string& command);
-  bool CommandSet(const wxString& command);
   void ShowDialog(const wxString& title, const wxString& text);
     
   const wxExMarker m_MarkerSymbol;

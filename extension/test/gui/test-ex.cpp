@@ -2,7 +2,7 @@
 // Name:      test-ex.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -20,7 +20,7 @@
 TEST_CASE("wxExEx", "[stc][vi]")
 {
   // Test modeline.
-  const wxString modeline("set ts=120 ec=40 sy=sql");
+  const wxString modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
   wxExSTC* stc = new wxExSTC(GetFrame(), "-- vi: " + modeline);
   AddPane(GetFrame(), stc);
   wxExEx* ex = new wxExEx(stc);
@@ -28,6 +28,7 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE(stc->GetVi().GetIsActive());
   REQUIRE(stc->GetTabWidth() == 120);
   REQUIRE(stc->GetEdgeColumn() == 40);
+  REQUIRE(stc->GetIndent() == 4);
   REQUIRE(stc->GetLexer().GetScintillaLexer() == "sql");
   REQUIRE( ex->GetLastCommand() == wxString(":" + modeline));
   wxExSTC* stco = new wxExSTC(GetFrame(), wxExFileName("test-modeline.txt"));
@@ -134,7 +135,7 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE(!ex->Command(":'<,'>x"));
   
   // Test source.
-#ifdef __UNIX
+#ifdef __UNIX__
   stc->SetText("xx\nxx\nyy\nzz\n");
   REQUIRE( ex->Command(":so test-source.txt"));
   stc->SetText("xx\nxx\nyy\nzz\n");
@@ -206,6 +207,8 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE( ex->MarkerAdd('u'));
   REQUIRE( ex->Command(":'t,'us/s/w/"));
   REQUIRE( ex->GetLastCommand() == ":'t,'us/s/w/");
+  REQUIRE( ex->Command(":'t,$s/s/w/"));
+  REQUIRE( ex->Command(":1,'us/s/w/"));
   
   // Test print.
   ex->Print("This is printed");

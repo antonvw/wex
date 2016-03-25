@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wxExItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -368,23 +368,11 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_TEXTCTRL_FLOAT:
-      // See also ITEM_TEXTCTRL_INT, validator cannot be set using ?.
-      if (m_Validator == nullptr)
-      {
-        m_Window = new wxTextCtrl(parent, m_Id, 
-          m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
-          wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
-          m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
-          wxFloatingPointValidator<float>());
-      }
-      else
-      {
-        m_Window = new wxTextCtrl(parent, m_Id, 
-          m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
-          wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
-          m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
-          *m_Validator);
-      }
+      m_Window = new wxTextCtrl(parent, m_Id, 
+        m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
+        wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
+        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+        m_Validator == nullptr ? wxFloatingPointValidator<float>(): *m_Validator);
       break;
       
     case ITEM_FONTPICKERCTRL:
@@ -403,31 +391,18 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_HYPERLINKCTRL:
-      {
 #if wxUSE_HYPERLINKCTRL
       m_Window = new wxHyperlinkCtrl(parent, m_Id, m_Label,
         m_Initial.As<wxString>(), wxDefaultPosition, wxSize(width, wxDefaultCoord), wxHL_DEFAULT_STYLE); // no m_Style
 #endif      
-      }
       break;
 
     case ITEM_TEXTCTRL_INT:
-      if (m_Validator == nullptr)
-      {
-        m_Window = new wxTextCtrl(parent, m_Id, 
-          m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
-          wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
-          m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
-          wxIntegerValidator<int>());
-      }
-      else
-      {
-        m_Window = new wxTextCtrl(parent, m_Id, 
-          m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
-          wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
-          m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
-          *m_Validator);
-      }
+      m_Window = new wxTextCtrl(parent, m_Id, 
+        m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
+        wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
+        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+        m_Validator == nullptr ? wxIntegerValidator<int>(): *m_Validator);
       break;
 
     case ITEM_LISTVIEW:

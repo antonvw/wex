@@ -2,7 +2,7 @@
 // Name:      test-process->cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -30,7 +30,7 @@ TEST_CASE("wxExProcess")
   process->ConfigDialog(GetFrame(), "test process", false);
   
   // Test wxEXEC_SYNC process
-#ifdef __UNIX
+#ifdef __UNIX__
   REQUIRE( process->Execute("ls -l", wxEXEC_SYNC));
   REQUIRE(!process->GetError());
   REQUIRE(!process->GetOutput().empty());

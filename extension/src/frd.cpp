@@ -2,7 +2,7 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -80,11 +80,6 @@ wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
   return m_Self;
 }
 
-bool wxExFindReplaceData::Iterate(wxTextCtrl* ctrl, int key)
-{
-  return wxExSetTextCtrlValue(ctrl, key, m_FindStrings, m_FindsIterator);
-}
-  
 bool wxExFindReplaceData::RegExMatches(const std::string& text) const
 {
   return std::regex_search(text, m_FindRegEx, std::regex_constants::format_default);
@@ -205,7 +200,7 @@ wxExFindTextCtrl::wxExFindTextCtrl(
       pos, size, wxTE_PROCESS_ENTER)
 {
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
-    if (!wxExFindReplaceData::Get()->Iterate(this, event.GetKeyCode()))
+    if (!wxExSetTextCtrlValue(this, event.GetKeyCode(), wxExFindReplaceData::Get()->m_FindStrings, wxExFindReplaceData::Get()->m_FindsIterator))
     {
       event.Skip();
     }});

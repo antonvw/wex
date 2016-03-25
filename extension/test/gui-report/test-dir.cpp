@@ -2,7 +2,7 @@
 // Name:      test-dir.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/report/dir.h>
@@ -40,5 +40,5 @@ TEST_CASE("wxExDirWithListView")
   wxExListViewFile* listView = new wxExListViewFile(GetFrame(), GetFrame(), GetProject());
   AddPane(GetFrame(), listView);
   wxExDirWithListView* dir = new wxExDirWithListView(listView, GetTestDir());
-  REQUIRE(dir->FindFiles());
+  REQUIRE(dir->FindFiles() > 0);
 }

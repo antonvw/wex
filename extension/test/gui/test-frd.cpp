@@ -2,7 +2,7 @@
 // Name:      test-frd.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -22,6 +22,14 @@ TEST_CASE("wxExFrd")
   wxExFindTextCtrl* tc = new wxExFindTextCtrl(GetFrame());
   AddPane(GetFrame(), tc);
   
+  wxKeyEvent event(wxEVT_CHAR);
+  
+  for (auto id : std::vector<int> {WXK_UP, WXK_DOWN, WXK_NONE}) 
+  {
+    event.m_uniChar = id;
+    wxPostEvent(tc, event);
+  }
+  
   frd->SetMatchCase(true);
   REQUIRE( frd->MatchCase());
   frd->SetMatchWord(true);
@@ -39,11 +47,6 @@ TEST_CASE("wxExFrd")
   REQUIRE( frd->RegExMatches("some text find9 other text"));
   REQUIRE(!frd->RegExMatches("some text finda other text"));
   
-  REQUIRE( frd->Iterate(tc, WXK_UP));
-  REQUIRE( frd->Iterate(tc, WXK_UP));
-  REQUIRE( frd->Iterate(tc, WXK_DOWN));
-  REQUIRE(!frd->Iterate(tc, WXK_RIGHT));
-
   const std::list < wxString > l{"find3","find4","find5"};
   frd->SetFindStrings(l);
   REQUIRE( frd->GetFindString() == "find3");

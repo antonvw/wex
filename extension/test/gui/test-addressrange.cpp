@@ -2,7 +2,7 @@
 // Name:      test-address.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -97,7 +97,7 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
   stc->SelectNone();
   
   // Test Escape.
-#ifdef __UNIX
+#ifdef __UNIX__
   stc->SetText(contents);
   REQUIRE( stc->GetLineCount() == 8);
   REQUIRE( wxExAddressRange(ex, "%").Escape("uniq"));
