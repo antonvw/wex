@@ -2,7 +2,7 @@
 // Name:      frd.h
 // Purpose:   Declaration of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,6 +16,7 @@
 /// Adds an existing config to wxFindReplaceData, and some members.
 class WXDLLIMPEXP_BASE wxExFindReplaceData : public wxFindReplaceData
 {
+  friend class wxExFindTextCtrl;
 public:
   // Destructor (not for Doxy).
  ~wxExFindReplaceData();
@@ -47,10 +48,6 @@ public:
   /// Returns text.
   const wxString& GetTextSearchDown() const {return m_TextSearchDown;};
   
-  /// Iterates text ctrl for specified key.
-  /// Returns true if key was handled.
-  bool Iterate(wxTextCtrl* ctrl, int key);
-
   /// Returns true if the flags have match case set.
   bool MatchCase() const {return (GetFlags() & wxFR_MATCHCASE) > 0;};
 

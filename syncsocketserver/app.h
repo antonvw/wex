@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -22,7 +22,7 @@ class TaskBarIcon;
 class App : public wxExApp
 {
 private:
-  virtual bool OnInit();
+  virtual bool OnInit() override;
 };
 
 class Frame : public wxExFrameWithHistory

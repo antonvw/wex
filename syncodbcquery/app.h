@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of classes for syncodbcquery
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #define wxExUSE_OTL 1
@@ -31,7 +31,7 @@ class App: public wxExApp
 {
 public:
   App() {}
-  virtual bool OnInit();
+  virtual bool OnInit() override;
 private:
   DECLARE_NO_COPY_CLASS(App)
 };

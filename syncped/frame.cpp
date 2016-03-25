@@ -1384,8 +1384,8 @@ void Frame::PrintEx(wxExEx* ex, const wxString& text)
 
   if (page == nullptr)
   {
-    wxExSTC* stc = new wxExSTC(m_Editors, text, (long)wxExSTC::STC_WIN_DEFAULT, "Print");
-    m_Editors->AddPage(stc, "Print", "Print", true);
+    page = new wxExSTC(m_Editors, text, (long)wxExSTC::STC_WIN_DEFAULT, "Print");
+    m_Editors->AddPage(page, "Print", "Print", true);
     m_Editors->Split("Print", wxBOTTOM);
   }
   else
@@ -1394,6 +1394,8 @@ void Frame::PrintEx(wxExEx* ex, const wxString& text)
     page->DocumentEnd();
     page->SetSavePoint();
   }
+  
+  page->SetLexer(ex->GetSTC()->GetLexer());
 }
   
 void Frame::StatusBarClicked(const wxString& pane)

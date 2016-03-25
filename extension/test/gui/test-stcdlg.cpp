@@ -2,7 +2,7 @@
 // Name:      test-stcdlg.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -18,10 +18,10 @@ TEST_CASE("wxExSTCEntryDialog", "[stc]")
 {
   wxExSTCEntryDialog* dlg1 = new wxExSTCEntryDialog(GetFrame(), "hello", "testing");
   
-  REQUIRE( dlg1->GetText() == "testing");
+  REQUIRE( dlg1->GetSTC()->GetText() == "testing");
   //REQUIRE( dlg1.GetTextRaw() == "testing");
-  REQUIRE(!dlg1->SetLexer("xxx"));
-  REQUIRE( dlg1->SetLexer("cpp"));
+  REQUIRE(!dlg1->GetSTC()->SetLexer("xxx"));
+  REQUIRE( dlg1->GetSTC()->SetLexer("cpp"));
   
   dlg1->Show();
   
@@ -32,6 +32,6 @@ TEST_CASE("wxExSTCEntryDialog", "[stc]")
       "hello again",
       wxOK);
 
-  REQUIRE(!dlg2.GetText().empty());
-  REQUIRE( dlg2.GetTextRaw().length() > 0);
+  REQUIRE(!dlg2.GetSTC()->GetText().empty());
+  REQUIRE( dlg2.GetSTC()->GetTextRaw().length() > 0);
 }

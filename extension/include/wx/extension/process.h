@@ -81,12 +81,12 @@ public:
   /// Kills the process (sends specified signal if process still running).
   wxKillError Kill(wxSignal sig = wxSIGKILL);
   
-  /// Construct the STC component.
+  /// Construct the shell component.
   static void PrepareOutput(wxWindow* parent);
 
 #if wxUSE_GUI
-  /// Shows output from Execute (wxEXEC_SYNC) on the STC component.
-  /// You can override this method to e.g. prepare a lexer on GetSTC
+  /// Shows output from Execute (wxEXEC_SYNC) on the shell component.
+  /// You can override this method to e.g. prepare a lexer on GetShell
   /// before calling this base method.
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif

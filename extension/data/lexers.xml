@@ -51,7 +51,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="marknum_foldersub"/>
       <def no ="marknum_folder"/>
       <def no ="marknum_folderopen"/>
-      <def no ="style_default"/>
+      <def no ="style_default"> 32 </def>
       <def no ="style_linenumber"/>
       <def no ="style_bracelight"/>
       <def no ="style_bracebad"/>
@@ -66,7 +66,20 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="indic_hidden"/>
       <def no ="indic_box"/>
       <def no ="indic_roundbox"/>
-      <def no ="indic_container"/>
+      <def no ="indic_straightbox"/>
+      <def no ="indic_dash"/>
+      <def no ="indic_dots"/>
+      <def no ="indic_squigglelow"/>
+      <def no ="indic_dotbox"/>
+      <def no ="indic_squigglepixmap"/>
+      <def no ="indic_compositionthick"/>
+      <def no ="indic_compositionthin"/>
+      <def no ="indic_fullbox"/>
+      <def no ="indic_textfore"/>
+      <def no ="indic_ime"> 32 </def>>
+      <def no ="indic_ime_max"> 35 </def>
+      <def no ="indic_container"> 8 </def>
+      
       <def no ="iv_none"> 0 </def>
       <def no ="iv_real"/>
       <def no ="iv_lookforward"/>
@@ -401,6 +414,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
     </def>
     
     <def name = "cpp">
+    <!-- cpp, bullant, cobol, tacl, tal -->
       <def no ="default"/>
       <def no ="comment"/>
       <def no ="commentline"/>
@@ -628,7 +642,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="es_green"/>
       <def no ="es_brown"/>
       <def no ="es_blue"/>
-      <def no ="es_mage"/>
+      <def no ="es_magenta"/>
       <def no ="es_cyan"/>
       <def no ="es_gray"/>
       <def no ="es_dark_gray"/>
@@ -964,6 +978,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="keyword1"/>
       <def no ="functions"/>
       <def no ="operator"/>
+      <def no ="commentstream"/>
       <def no ="identifier"> 31 </def>
     </def>
     
@@ -1891,7 +1906,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
     </def>
 
     <def name = "vb">
-    <!-- , vbscript, powerbasic -->
+    <!-- vb, vbscript, powerbasic, blitzbasic, purebasic, freebasic -->
       <def no ="default"/>
       <def no ="comment"/>
       <def no ="number"/>
@@ -2066,11 +2081,20 @@ Copyright: (c) 2016, Anton van Wezenbeek
   
   <global>
   <!--
-   At this moment <style>, <indicator>, <marker>, <hex> and <properties> 
+   At this moment <hex>, <indicator>, <marker>, <properties> and <style>
    attributes are supported.  
    The marker element has a 'no' attribute and its value contains the next fields:
    <marker symbol number><','><foreground colour><','><background colour>
    -->
+    <hex no="style_bracelight"> back:red </hex>
+
+    <!-- this indicator is used by global vi command, e.g. g/INDIC/ -->
+    <indicator no="0"> indic_box,styleindicatorfind </indicator>
+    <!-- this indicator is used by python lexer to show inconsistent indentation 
+			   (if tab.timmy.whinge.level is set)
+		  -->
+    <indicator no="1"> indic_squiggle,red </indicator>
+
     <marker no="marknum_folderend"> mark_plus,folder </marker>
     <marker no="marknum_folderopenmid"> mark_minus,folder </marker>
     <marker no="marknum_foldermidtail"> mark_tcornercurve,folder,folder</marker>
@@ -2079,20 +2103,17 @@ Copyright: (c) 2016, Anton van Wezenbeek
     <marker no="marknum_folder"> mark_plus,folder </marker>
     <marker no="marknum_folderopen"> mark_minus,folder </marker>
     
+    <!-- ex_marknum_change is used by stc to show changes -->
     <marker no="ex_marknum_change">mark_fullrect,green,light blue</marker>
+    <!-- ex_marknum_vi is used by vi markers -->
     <marker no="ex_marknum_vi"> mark_bookmark,blue,turquoise </marker>
     
-    <indicator no="0"> indic_box,styleindicatorfind </indicator>
-    <indicator no="1"> indic_squiggle,red </indicator>
-    
-    <!-- this style is applied before all other styles -->
-    <style no="style_default"> styledefault </style>
-    
-    <style no="style_bracelight"> bracelight </style>
-    <hex no="style_bracelight"> back:red </hex>
-
     <!-- At this moment we do not have properties -->
     <properties/>
+
+    <!-- this style_default is applied before all other styles -->
+    <style no="style_default"> styledefault </style>
+    <style no="style_bracelight"> bracelight </style>
   </global>
 
   <keyword>
@@ -2691,6 +2712,10 @@ Copyright: (c) 2016, Anton van Wezenbeek
       transient try var void volatile while
     </keywords>
   </lexer>
+  <lexer display="javascript" name="cpp" extensions="*.js">
+    <keywords set="javascript"/>
+  </lexer>
+  <lexer display="json" name="cpp" extensions="*.json"/>
   <lexer name="kix"/>
   <lexer name="kvirc"/>
   <lexer name="latex" extensions="*.tex">
@@ -2887,7 +2912,19 @@ Copyright: (c) 2016, Anton van Wezenbeek
       Default Test Template Timeout
     </keywords>
   </lexer>
-  <lexer name="ruby"/>
+  <lexer name="ruby" extensions="*.rb">
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+    <keywords> 
+			and def end in or self unless __LINE__ begin
+			defined? ensure module redo super until BEGIN break do false next rescue
+			then when END case else for nil retry true while alias class elsif if
+			not return undef yield		
+    </keywords>
+  </lexer>
   <lexer name="rust"/>
   <lexer name="scriptol"/>
   <lexer display="sh" name="bash"> 

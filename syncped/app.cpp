@@ -62,6 +62,11 @@ bool App::OnInit()
         m_Flags = wxExSTC::STC_WIN_READ_ONLY;}}},
       {{"v", _("show version")}, {0, [&](bool on) {
         wxMessageOutput::Get()->Printf("%s", wxExGetVersionInfo().GetVersionOnlyString().c_str());
+        exit = true;}}},
+      {{"version", _("show version")}, {0, [&](bool on) {
+        wxMessageOutput::Get()->Printf("%s\n%s", 
+          wxExGetVersionInfo().GetDescription().c_str(),
+          wxGetLibraryVersionInfo().GetDescription().c_str());
         exit = true;}}}},
     wxExCmdLineParser::CmdOptions {
       {{"c", _("vi command")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {

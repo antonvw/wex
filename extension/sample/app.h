@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of sample classes for wxExtension
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015
+// Copyright: (c) 2016
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/app.h>
@@ -23,7 +23,6 @@ public:
   /// Constructor.
   wxExSampleApp() {}
 private:
-  /// Override the OnInit.
   virtual bool OnInit() override;
   DECLARE_NO_COPY_CLASS(wxExSampleApp)
 };

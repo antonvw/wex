@@ -2,7 +2,7 @@
 // Name:      stcdlg.cpp
 // Purpose:   Implementation of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -48,30 +48,5 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   AddUserSizer(m_STC);
 
   LayoutSizers();
-}
-
-const wxExLexer* wxExSTCEntryDialog::GetLexer() const
-{
-  return &m_STC->GetLexer();
-}
-
-wxExSTC* wxExSTCEntryDialog::GetSTC()
-{
-  return m_STC;
-}
-
-const wxString wxExSTCEntryDialog::GetText() const 
-{
-  return m_STC->GetText();
-}
-
-const wxCharBuffer wxExSTCEntryDialog::GetTextRaw() const 
-{
-  return m_STC->GetTextRaw();
-}
-
-bool wxExSTCEntryDialog::SetLexer(const wxString& lexer) 
-{
-  return m_STC->SetLexer(lexer);
 }
 #endif // wxUSE_GUI

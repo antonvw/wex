@@ -399,7 +399,7 @@ void wxExProcess::PrepareOutput(wxWindow* parent)
 {
   if (m_Shell == nullptr)
   {
-    m_Shell = new wxExShell(parent, wxEmptyString, wxEmptyString, true, 25, wxEmptyString,
+    m_Shell = new wxExShell(parent, wxEmptyString, wxEmptyString, true, 100, wxEmptyString,
       wxExSTC::STC_MENU_DEFAULT | wxExSTC::STC_MENU_OPEN_LINK);
   }
 }
