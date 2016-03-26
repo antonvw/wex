@@ -371,15 +371,12 @@ private:
   void CheckAutoComp(const wxUniChar& c);
   void CheckBrace();
   bool CheckBrace(int pos);
-  void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void FoldAll();
-  void HexDecCalltip(int pos);
   void Initialize(bool file_exists);
   bool LinkOpen(wxString* filename = nullptr); // name of found file
   void MarkModified(const wxStyledTextEvent& event);
   void SetLexerCommon(bool fold);
-  void ShowProperties();
 
   const int m_MarginDividerNumber;
   const int m_MarginFoldingNumber;
@@ -399,19 +396,17 @@ private:
   bool m_AllowChangeIndicator;
   bool m_UseAutoComplete;
 
+  wxExSTCFile m_File;
+  wxExFrame* m_Frame;
   wxExHexMode m_HexMode;
   // We use a separate lexer here as well
   // (though wxExSTCFile offers one), as you can manually override
   // the lexer.
   wxExLexer m_Lexer;
   wxExLink m_Link;
-  wxExSTCFile m_File;
   wxExVi m_vi;
-
-  wxExFrame* m_Frame;
   
   wxFont m_DefaultFont;
-  
   wxString m_AutoComplete;
 
   // All objects share the following:

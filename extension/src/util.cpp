@@ -201,11 +201,6 @@ bool wxExAutoCompleteFileName(const wxString& text, std::vector<wxString> & v)
       }
     }
 
-#ifdef DEBUG  
-    wxLogMessage("rest equal size: %d, word: %s", 
-      rest_equal_size, word.c_str());
-#endif
-  
     v[0] = v[1].Mid(word.length(), rest_equal_size);
   }
 

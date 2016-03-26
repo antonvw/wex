@@ -603,81 +603,6 @@ void wxExSTC::ConfigGet(bool init)
   m_Link.SetFromConfig();
 }
 
-void wxExSTC::ControlCharDialog(const wxString& caption)
-{
-  if (GetSelectedText().length() > 2)
-  {
-    // Do nothing
-    return;
-  }
-  
-  if (HexMode())
-  {
-    return m_HexMode.ControlCharDialog(caption);
-  }
-
-  if (GetReadOnly())
-  {
-    if (GetSelectedText().length() == 1)
-    {
-      const wxUniChar value = GetSelectedText().GetChar(0);
-      wxMessageBox(
-        wxString::Format("hex: %x dec: %d", value, value), 
-        _("Control Character"));
-    }
-
-    return;
-  }
-
-  static int value = ' '; // don't use 0 as default as nullptr is not handled
-
-  if (GetSelectedText().length() == 1)
-  {
-    value = GetSelectedText().GetChar(0);
-  }
-
-  int new_value;
-  
-  if ((new_value = (int)wxGetNumberFromUser(_("Input") + " 0 - 255:",
-    wxEmptyString,
-    caption,
-    value,
-    0,
-    255,
-    this)) < 0)
-  {
-    return;
-  }
-
-  if (GetSelectedText().length() == 1)
-  {
-    if (value != new_value)
-    {
-      ReplaceSelection(wxString::Format("%c", (wxUniChar)new_value));
-    }
-
-    SetSelection(GetCurrentPos(), GetCurrentPos() + 1);
-  }
-  else
-  {
-    char buffer[2];
-    buffer[0] = (char)new_value;
-    buffer[1] = 0;
-
-    if (m_vi.GetIsActive())
-    {
-      m_vi.Command(std::string(buffer, 1));
-    }
-    else
-    {
-      AddTextRaw(buffer, 1);
-    }
-    
-    ProcessChar(new_value);
-  }
-  
-  value = new_value;
-}
 
 void wxExSTC::Copy()
 {
@@ -1105,62 +1030,6 @@ void wxExSTC::GuessType()
 #endif
 }
 
-void wxExSTC::HexDecCalltip(int pos)
-{
-  if (CallTipActive())
-  {
-    CallTipCancel();
-  }
-  
-  if (HexMode())
-  {
-    CallTipShow(pos, wxExHexModeLine(&m_HexMode).GetInfo());
-    return;
-  }
-
-  wxString word;
-
-  if (!GetSelectedText().empty())
-  {
-    word = GetSelectedText();
-  }
-  else
-  {
-    word = GetWordAtPos(pos);
-  }
-
-  if (word.empty()) return;
-
-  const wxUniChar c = word.GetChar(0);
-
-  if (c < 32 || c > 125)
-  {
-    const wxString text(wxString::Format("hex: %x dec: %d", c, c));
-    CallTipShow(pos, text);
-    wxExClipboardAdd(text);
-    return;
-  }
-
-  long base10_val, base16_val;
-  const bool base10_ok = word.ToLong(&base10_val);
-  const bool base16_ok = word.ToLong(&base16_val, 16);
-
-  if (base10_ok || base16_ok)
-  {
-    wxString text;
-
-    if      ( base10_ok && !base16_ok) 
-      text = wxString::Format("hex: %lx", base10_val);
-    else if (!base10_ok &&  base16_ok) 
-      text = wxString::Format("dec: %ld", base16_val);
-    else if ( base10_ok &&  base16_ok) 
-      text = wxString::Format("hex: %lx dec: %ld", base10_val, base16_val);
-
-    CallTipShow(pos, text);
-    wxExClipboardAdd(text);
-  }
-}
-
 void wxExSTC::Initialize(bool file_exists)
 {
   Sync();
@@ -1303,14 +1172,12 @@ void wxExSTC::Initialize(bool file_exists)
   {
     Bind(wxEVT_RIGHT_UP, [=](wxMouseEvent& event) {
       int style = 0; // otherwise CAN_PASTE already on
-      
       if ( GetReadOnly() || HexMode()) style |= wxExMenu::MENU_IS_READ_ONLY;
       if (!GetSelectedText().empty())  style |= wxExMenu::MENU_IS_SELECTED;
       if ( GetTextLength() == 0)       style |= wxExMenu::MENU_IS_EMPTY;
       if ( CanPaste())                 style |= wxExMenu::MENU_CAN_PASTE;
 
       wxExMenu menu(style);
-      
       BuildPopupMenu(menu);
       
       if (menu.GetMenuItemCount() > 0)
@@ -1499,9 +1366,141 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); event.Skip();}, wxID_REPLACE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen();}, ID_EDIT_OPEN_LINK);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {ShowProperties();}, ID_EDIT_SHOW_PROPERTIES);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {ControlCharDialog();}, ID_EDIT_CONTROL_CHAR);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {HexDecCalltip(GetCurrentPos());}, ID_EDIT_HEX_DEC_CALLTIP);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    const wxString propnames(PropertyNames());
+    wxString properties = (!propnames.empty() ? "[Current properties]\n": wxString(wxEmptyString));
+    
+    // Add current (global and lexer) properties.  
+    for (const auto& it1 : wxExLexers::Get()->GetProperties())
+    {
+      properties += it1.GetName() + "=" + GetProperty(it1.GetName()) + "\n";
+    }
+    for (const auto& it2 : m_Lexer.GetProperties())
+    {
+      properties += it2.GetName() + "=" + GetProperty(it2.GetName()) + "\n";
+    }
+    // Add available properties.
+    if (!propnames.empty())
+    {
+      properties += "\n[Available properties]\n";
+      wxStringTokenizer tkz(propnames, "\n");
+    
+      while (tkz.HasMoreTokens())
+      {
+        const wxString prop(tkz.GetNextToken());
+        const wxString description(DescribeProperty(prop));
+        properties += prop + 
+          (!GetProperty(prop).empty() ? "=" + GetProperty(prop): wxString(wxEmptyString)) + 
+          (!description.empty() ? ": " + description: wxString(wxEmptyString)) + "\n";
+      }
+    }
+    if (m_EntryDialog == nullptr)
+    {
+      m_EntryDialog = new wxExSTCEntryDialog(
+        wxTheApp->GetTopWindow(), 
+        _("Properties"), 
+        properties, 
+        wxEmptyString, 
+        wxOK);
+      m_EntryDialog->GetSTC()->SetLexer("props");
+    }
+    else
+    {
+      m_EntryDialog->GetSTC()->SetText(properties);
+    }
+    m_EntryDialog->Show();}, ID_EDIT_SHOW_PROPERTIES);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (GetSelectedText().length() > 2) return;
+    const wxString& caption = _("Enter Control Character");
+    if (HexMode()) return m_HexMode.ControlCharDialog(caption);
+    if (GetReadOnly())
+    {
+      if (GetSelectedText().length() == 1)
+      {
+        const wxUniChar value = GetSelectedText().GetChar(0);
+        wxMessageBox(
+          wxString::Format("hex: %x dec: %d", value, value), 
+          _("Control Character"));
+      }
+      return;
+    }
+
+    static int value = ' '; // don't use 0 as default as nullptr is not handled
+    if (GetSelectedText().length() == 1) value = GetSelectedText().GetChar(0);
+    int new_value;
+    if ((new_value = (int)wxGetNumberFromUser(_("Input") + " 0 - 255:",
+      wxEmptyString, caption, value, 0, 255, this)) < 0) return;
+
+    if (GetSelectedText().length() == 1)
+    {
+      if (value != new_value)
+      {
+        ReplaceSelection(wxString::Format("%c", (wxUniChar)new_value));
+      }
+
+      SetSelection(GetCurrentPos(), GetCurrentPos() + 1);
+    }
+    else
+    {
+      char buffer[2];
+      buffer[0] = (char)new_value;
+      buffer[1] = 0;
+
+      if (m_vi.GetIsActive())
+      {
+        m_vi.Command(std::string(buffer, 1));
+      }
+      else
+      {
+        AddTextRaw(buffer, 1);
+      }
+      
+      ProcessChar(new_value);
+    }
+    
+    value = new_value;
+    }, ID_EDIT_CONTROL_CHAR);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (CallTipActive()) CallTipCancel();
+    
+    const auto pos = GetCurrentPos();
+    if (HexMode())
+    {
+      CallTipShow(pos, wxExHexModeLine(&m_HexMode).GetInfo());
+      return;
+    }
+
+    const wxString word = (!GetSelectedText().empty() ? GetSelectedText() : GetWordAtPos(pos));
+    if (word.empty()) return;
+
+    const wxUniChar c = word.GetChar(0);
+    if (c < 32 || c > 125)
+    {
+      const wxString text(wxString::Format("hex: %x dec: %d", c, c));
+      CallTipShow(pos, text);
+      wxExClipboardAdd(text);
+      return;
+    }
+
+    long base10_val, base16_val;
+    const bool base10_ok = word.ToLong(&base10_val);
+    const bool base16_ok = word.ToLong(&base16_val, 16);
+
+    if (base10_ok || base16_ok)
+    {
+      wxString text;
+      if      ( base10_ok && !base16_ok) 
+        text = wxString::Format("hex: %lx", base10_val);
+      else if (!base10_ok &&  base16_ok) 
+        text = wxString::Format("dec: %ld", base16_val);
+      else if ( base10_ok &&  base16_ok) 
+        text = wxString::Format("hex: %lx dec: %ld", base10_val, base16_val);
+      CallTipShow(pos, text);
+      wxExClipboardAdd(text);
+    }}, ID_EDIT_HEX_DEC_CALLTIP);
+  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LowerCase();}, ID_EDIT_LOWERCASE);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {UpperCase();}, ID_EDIT_UPPERCASE);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FoldAll();}, ID_EDIT_FOLD_ALL);
@@ -2144,60 +2143,6 @@ void wxExSTC::ShowLineNumbers(bool show)
   SetMarginWidth(m_MarginLineNumber, show ? wxConfigBase::Get()->ReadLong(_("Line number"), 0): 0);
 }
 
-void wxExSTC::ShowProperties()
-{
-  // Added check, otherwise scintilla crashes.
-  const wxString propnames = (!m_Lexer.GetScintillaLexer().empty() ?
-    PropertyNames(): wxString(wxEmptyString));
-  
-  wxString text;
-
-  if (!propnames.empty())
-  {
-    text += "Current properties\n";
-  }
-
-  // Add global properties.  
-  for (const auto& it1 : wxExLexers::Get()->GetProperties())
-  {
-    text += it1.GetName() + ": " + GetProperty(it1.GetName()) + "\n";
-  }
-
-  // Add lexer properties.  
-  for (const auto& it2 : m_Lexer.GetProperties())
-  {
-    text += it2.GetName() + ": " + GetProperty(it2.GetName()) + "\n";
-  }
-
-  // Add available properties.
-  if (!propnames.empty())
-  {
-    text += "\nAvailable properties\n";
-    wxStringTokenizer tkz(propnames, "\n");
-  
-    while (tkz.HasMoreTokens())
-    {
-      const wxString prop = tkz.GetNextToken();
-      text += prop + ": " + DescribeProperty(prop) + "\n";
-    }
-  }
-  
-  if (m_EntryDialog == nullptr)
-  {
-    m_EntryDialog = new wxExSTCEntryDialog(
-      wxTheApp->GetTopWindow(), 
-      _("Properties"), 
-      text, 
-      wxEmptyString, 
-      wxOK);
-  }
-  else
-  {
-    m_EntryDialog->GetSTC()->SetText(text);
-  }
-  
-  m_EntryDialog->Show();
-}
 
 void wxExSTC::Sync(bool start)
 {

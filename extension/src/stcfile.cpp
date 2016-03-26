@@ -2,7 +2,7 @@
 // Name:      stcfile.cpp
 // Purpose:   Implementation of class wxExSTCFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -175,10 +175,6 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
   else
   {
     m_STC->GuessType();
-    
-#ifdef DEBUG
-    std::cout << GetFileName().GetFullPath() << "\n";
-#endif
     m_STC->DocumentStart();
   }
 

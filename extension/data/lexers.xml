@@ -2773,9 +2773,9 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <style no="ulist_item"> fore:green </style>
       <style no="olist_item"> fore:green </style>
       <style no="link"> fore:green,italic </style>
-      <style no="code"> fore:light blue </style>
-      <style no="code2"> fore:light blue </style>
-      <style no="codebk"> fore:light blue </style>
+      <style no="code"> fore:sky blue </style>
+      <style no="code2"> fore:sky blue </style>
+      <style no="codebk"> fore:sky blue </style>
     </styles>
   </lexer>
   
@@ -2880,9 +2880,9 @@ Copyright: (c) 2016, Anton van Wezenbeek
   <lexer name="progress"/>
   <lexer name="props" extensions="*.ini;*.conf;*.desktop">
     <styles>
-    <style no="section"> fore:blue </style>
-    <style no="assignment"> fore:brown </style>
-    <style no="defval"> fore:red </style>
+    <style no="section"> fore:sky blue </style>
+    <style no="assignment"> fore:khaki</style>
+    <style no="defval"> fore:red</style>
     <style no="key"> fore:grey </style>
     </styles>
   </lexer>

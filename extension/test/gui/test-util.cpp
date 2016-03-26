@@ -77,13 +77,6 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     std::vector<wxString> v;
     REQUIRE( wxExAutoCompleteFileName("te", v));
     
-#ifdef DEBUG  
-    for (int i = 0; i < v.size(); i++)
-    {
-      wxLogMessage("v[%d]=%s", i, v[i].c_str());
-    }
-#endif
-
     REQUIRE( v[0] == "st");
     REQUIRE(!wxExAutoCompleteFileName("XX", v));
     REQUIRE( v[0] == "st");
@@ -432,7 +425,8 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   SECTION("wxExVCSCommandOnSTC")
   {
     wxExVCSCommand command("status");
-    wxExVCSCommandOnSTC(command, wxExLexer("cpp"), GetSTC());
+    wxExVCSCommandOnSTC(command, wxExLexer("cpp", GetSTC()), GetSTC());
+    wxExVCSCommandOnSTC(command, wxExLexer("cpp", nullptr), GetSTC());
   }
   
   SECTION("wxExVCSExecute")

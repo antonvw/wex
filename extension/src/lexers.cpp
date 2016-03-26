@@ -143,8 +143,7 @@ void wxExLexers::ApplyProperties(wxStyledTextCtrl* stc) const
     std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
 }
 
-const wxString wxExLexers::BuildWildCards(
-  const wxFileName& filename) const
+const wxString wxExLexers::BuildWildCards(const wxFileName& filename) const
 {
   wxString wildcards = 
     _("All Files") + wxString::Format(" (%s)|%s",
@@ -174,8 +173,7 @@ const wxString wxExLexers::BuildWildCards(
   return wildcards;
 }
 
-const wxExLexer wxExLexers::FindByFileName(
-  const wxFileName& filename) const
+const wxExLexer wxExLexers::FindByFileName(const wxFileName& filename) const
 {
   for (const auto& it : m_Lexers)
   {
@@ -267,15 +265,7 @@ wxExLexers* wxExLexers::Get(bool createOnDemand)
 const wxString wxExLexers::GetKeywords(const wxString& set) const
 {
   const auto it = m_Keywords.find(set);
-  
-  if (it != m_Keywords.end())
-  {
-    return it->second;
-  }
-  else
-  {
-    return wxEmptyString;
-  }
+  return (it != m_Keywords.end() ? it->second: wxString(wxEmptyString));
 }
 
 const wxString wxExLexers::GetLexerExtensions() const

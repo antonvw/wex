@@ -114,27 +114,27 @@ wxExColumn::wxExColumn(
 
   switch (m_Type)
   {
-  case wxExColumn::COL_FLOAT: 
-    align = wxLIST_FORMAT_RIGHT; 
-    if (width == 0) width = 80; 
-    break;
-    
-  case wxExColumn::COL_INT: 
-    align = wxLIST_FORMAT_RIGHT; 
-    if (width == 0) width = 60; 
-    break;
-    
-  case wxExColumn::COL_STRING: 
-    align = wxLIST_FORMAT_LEFT;  
-    if (width == 0) width = 100; 
-    break;
-    
-  case wxExColumn::COL_DATE: 
-    align = wxLIST_FORMAT_LEFT;  
-    if (width == 0) width = 150; 
-    break;
-    
-  default: wxFAIL;
+    case wxExColumn::COL_FLOAT: 
+      align = wxLIST_FORMAT_RIGHT; 
+      if (width == 0) width = 80; 
+      break;
+      
+    case wxExColumn::COL_INT: 
+      align = wxLIST_FORMAT_RIGHT; 
+      if (width == 0) width = 60; 
+      break;
+      
+    case wxExColumn::COL_STRING: 
+      align = wxLIST_FORMAT_LEFT;  
+      if (width == 0) width = 100; 
+      break;
+      
+    case wxExColumn::COL_DATE: 
+      align = wxLIST_FORMAT_LEFT;  
+      if (width == 0) width = 150; 
+      break;
+      
+    default: wxFAIL;
   }
 
   SetColumn(-1); // default value, is set when inserting the col
@@ -147,11 +147,11 @@ void wxExColumn::SetIsSortedAscending(wxExSortType type)
 {
   switch (type)
   {
-  case SORT_ASCENDING: m_IsSortedAscending = true; break;
-  case SORT_DESCENDING: m_IsSortedAscending = false; break;
-  case SORT_KEEP: break;
-  case SORT_TOGGLE: m_IsSortedAscending = !m_IsSortedAscending; break;
-  default: wxFAIL; break;
+    case SORT_ASCENDING: m_IsSortedAscending = true; break;
+    case SORT_DESCENDING: m_IsSortedAscending = false; break;
+    case SORT_KEEP: break;
+    case SORT_TOGGLE: m_IsSortedAscending = !m_IsSortedAscending; break;
+    default: wxFAIL; break;
   }
 }
 
@@ -189,26 +189,20 @@ wxExListView::wxExListView(wxWindow* parent,
   SetDropTarget(new DropTarget(this));
 #endif
   
-  if (m_ImageType != IMAGE_NONE)
+  switch (m_ImageType)
   {
-    if (m_ImageType == IMAGE_ART || m_ImageType == IMAGE_OWN)
-    {
+    case IMAGE_NONE: break;
+    case IMAGE_ART:
+    case IMAGE_OWN:
       AssignImageList(
-        new wxImageList(
-          m_ImageWidth, 
-          m_ImageHeight, true, 0), 
+        new wxImageList(m_ImageWidth, m_ImageHeight, true, 0), 
         wxIMAGE_LIST_SMALL);
-    }
-    else if (m_ImageType == IMAGE_FILE_ICON)
-    {
-      SetImageList(
-        wxTheFileIconsTable->GetSmallImageList(), 
-        wxIMAGE_LIST_SMALL);
-    }
-    else
-    {
+      break;
+    case IMAGE_FILE_ICON:
+      SetImageList(wxTheFileIconsTable->GetSmallImageList(), wxIMAGE_LIST_SMALL);
+      break;
+    default:
       wxFAIL;
-    }
   }
 
 #if wxUSE_STATUSBAR
@@ -279,21 +273,13 @@ wxExListView::wxExListView(wxWindow* parent,
   Bind(wxEVT_LIST_BEGIN_DRAG, [=](wxListEvent& event) {
     // Start drag operation.
     wxString text;
-
     for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
       text += ItemToText(i) + wxTextFile::GetEOL();
-      
     if (!text.empty())
     {
       wxTextDataObject textData(text);
       wxDropSource source(textData, this);
-      wxDragResult result = source.DoDragDrop(wxDragCopy);
-
-      if (result != wxDragError &&
-          result != wxDragNone &&
-           result != wxDragCancel)
-      {
-      }
+      source.DoDragDrop(wxDragCopy);
     }});
 #endif
 
@@ -448,26 +434,26 @@ void wxExListView::AddColumns(const wxExLexer* lexer)
 
   switch (m_Type)
   {
-  case LIST_FIND:
-  case LIST_REPLACE:
-    AppendColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
-    AppendColumn(wxExColumn(_("Match"), wxExColumn::COL_STRING));
-    AppendColumn(wxExColumn(_("Line No")));
-    
-    if (m_Type == LIST_REPLACE)
-    {
-      AppendColumn(wxExColumn(_("Replaced")));
-    }
-  break;
-  case LIST_KEYWORD:
-    for (const auto& it : lexer->GetKeywords())
-    {
-      AppendColumn(wxExColumn(it));
-    }
+    case LIST_FIND:
+    case LIST_REPLACE:
+      AppendColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
+      AppendColumn(wxExColumn(_("Match"), wxExColumn::COL_STRING));
+      AppendColumn(wxExColumn(_("Line No")));
+      
+      if (m_Type == LIST_REPLACE)
+      {
+        AppendColumn(wxExColumn(_("Replaced")));
+      }
+    break;
+    case LIST_KEYWORD:
+      for (const auto& it : lexer->GetKeywords())
+      {
+        AppendColumn(wxExColumn(it));
+      }
 
-    AppendColumn(wxExColumn(_("Keywords")));
-  break;
-  default: break; // to prevent warnings
+      AppendColumn(wxExColumn(_("Keywords")));
+    break;
+    default: break; // to prevent warnings
   }
 
   AppendColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
@@ -481,9 +467,7 @@ long wxExListView::AppendColumn(const wxExColumn& col)
   wxExColumn mycol(col);
   
   const long index = wxListView::AppendColumn(
-    mycol.GetText(),
-    mycol.GetAlign(),
-    mycol.GetWidth());
+    mycol.GetText(), mycol.GetAlign(), mycol.GetWidth());
   
   if (index != -1)
   {
@@ -501,18 +485,11 @@ long wxExListView::AppendColumn(const wxExColumn& col)
 const wxString wxExListView::BuildPage()
 {
   wxString text;
-
-  text << "<TABLE ";
-
-  if ((GetWindowStyle() & wxLC_HRULES) ||
-      (GetWindowStyle() & wxLC_VRULES))
-    text << "border=1";
-  else
-    text << "border=0";
-
-  text << " cellpadding=4 cellspacing=0 >" << wxTextFile::GetEOL();
-
-  text << "<tr>" << wxTextFile::GetEOL();
+  text << "<TABLE "
+       << (((GetWindowStyle() & wxLC_HRULES) || (GetWindowStyle() & wxLC_VRULES)) 
+          ? "border=1": "border=0")
+       << " cellpadding=4 cellspacing=0 >" << wxTextFile::GetEOL()
+       << "<tr>" << wxTextFile::GetEOL();
 
   for (int c = 0; c < GetColumnCount(); c++)
   {
@@ -594,7 +571,7 @@ int wxExListView::ConfigDialog(
   ListViewDefaults use;
   
   static const std::vector<wxExItem> items {
-    wxExItem("stc-notebook", wxExItem::ItemsNotebook {
+    wxExItem("notebook", wxExItem::ItemsNotebook {
       {_("General"),
         {wxExItem(_("Header"), ITEM_CHECKBOX),
          wxExItem(_("Comparator"), ITEM_FILEPICKERCTRL),
@@ -824,9 +801,7 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
   }
 }
 
-const wxString wxExListView::GetItemText(
-  long item_number,
-  const wxString& col_name) const 
+const wxString wxExListView::GetItemText(long item_number, const wxString& col_name) const 
 {
   if (col_name.empty())
   {
@@ -834,13 +809,7 @@ const wxString wxExListView::GetItemText(
   }
   
   const int col = FindColumn(col_name);
-  
-  if (col < 0)
-  {
-    return wxEmptyString;
-  }
-  
-  return wxListView::GetItemText(item_number, col);
+  return col < 0 ? wxString(wxEmptyString): wxListView::GetItemText(item_number, col);
 }
 
 const wxString wxExListView::GetTypeDescription(wxExListType type)
@@ -849,14 +818,14 @@ const wxString wxExListView::GetTypeDescription(wxExListType type)
 
   switch (type)
   {
-  case LIST_FOLDER: value = _("Folder"); break;
-  case LIST_FIND: value = _("Find Results"); break;
-  case LIST_HISTORY: value = _("History"); break;
-  case LIST_KEYWORD: value = _("Keywords"); break;
-  case LIST_FILE: value = _("File"); break;
-  case LIST_REPLACE: value = _("Replace Results"); break;
-  case LIST_NONE: value = _("None"); break;
-  default: wxFAIL;
+    case LIST_FOLDER: value = _("Folder"); break;
+    case LIST_FIND: value = _("Find Results"); break;
+    case LIST_HISTORY: value = _("History"); break;
+    case LIST_KEYWORD: value = _("Keywords"); break;
+    case LIST_FILE: value = _("File"); break;
+    case LIST_REPLACE: value = _("Replace Results"); break;
+    case LIST_NONE: value = _("None"); break;
+    default: wxFAIL;
   }
 
   return value;
@@ -869,17 +838,7 @@ bool wxExListView::GotoDialog(const wxString& caption)
     return false;
   }
   
-  int initial_value = GetFirstSelected();
-
-  if (initial_value == -1) // nothing selected
-  {
-    initial_value = 1;
-  }
-  else
-  {
-    initial_value += 1;
-  }
-
+  const int initial_value = (GetFirstSelected() == -1 ? 1: GetFirstSelected() + 1);
   long val;
 
   if ((val = wxGetNumberFromUser(
@@ -1233,40 +1192,30 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 
     switch (sorted_col.GetType())
     {
-    case wxExColumn::COL_DATE:
-      if (!val.empty())
-      {
-        wxDateTime dt;
-
-        if (!dt.ParseISOCombined(val, ' '))
+      case wxExColumn::COL_DATE:
+        if (!val.empty())
         {
-          return false;
+          wxDateTime dt;
+
+          if (!dt.ParseISOCombined(val, ' '))
+          {
+            return false;
+          }
+          else
+          {
+            SetItemData(i, dt.GetTicks());
+          }
         }
         else
         {
-          SetItemData(i, dt.GetTicks());
+          SetItemData(i, 0);
         }
-      }
-      else
-      {
-        SetItemData(i, 0);
-      }
-    break;
+      break;
 
-    case wxExColumn::COL_FLOAT: 
-      SetItemData(i, (long)atof(val.c_str())); 
-    break;
-
-    case wxExColumn::COL_INT: 
-      SetItemData(i, atoi(val.c_str())); 
-    break;
-
-    case wxExColumn::COL_STRING: 
-      SetItemData(i, i); 
-    break;
-    
-    default: 
-      wxFAIL;
+      case wxExColumn::COL_FLOAT: SetItemData(i, (long)atof(val.c_str())); break;
+      case wxExColumn::COL_INT: SetItemData(i, atoi(val.c_str())); break;
+      case wxExColumn::COL_STRING: SetItemData(i, i); break;
+      default: wxFAIL;
     }
   }
 

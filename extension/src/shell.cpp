@@ -399,10 +399,6 @@ void wxExShell::Expand()
     wxExSTC::AppendText(expansion);
     DocumentEnd();
   }
-  
-#ifdef DEBUG
-  wxLogMessage("Expand::" + GetText() + "::");
-#endif
 }
     
 const wxString wxExShell::GetCommand() const
@@ -449,10 +445,6 @@ void wxExShell::Paste()
   wxExSTC::Paste();
   
   m_Command += wxExClipboardGet();  
-  
-#ifdef DEBUG
-  wxLogMessage("Paste::" + GetText() + "::");
-#endif
 }
 
 bool wxExShell::ProcessChar(int key)
@@ -576,10 +568,6 @@ bool wxExShell::ProcessChar(int key)
       ProcessCharDefault(key);
       processed = true;
   }
-  
-#ifdef DEBUG
-  wxLogMessage("ProcessChar::" + GetText() + "(" + m_Command + ")::");
-#endif
 
   return processed;
 }
@@ -637,10 +625,6 @@ bool wxExShell::Prompt(const wxString& text, bool add_eol)
   
   m_CommandStartPosition = GetCurrentPos();
   
-#ifdef DEBUG
-  wxLogMessage("Prompt::" + GetText() + "::");
-#endif
-
   return true;
 }
 
@@ -760,10 +744,6 @@ void wxExShell::ShowHistory()
   {
     AppendText(wxString::Format("\n%d %s", command_no++, it.c_str()));
   }
-  
-#ifdef DEBUG
-  wxLogMessage("ShowHistory::" + GetText() + "::");
-#endif
 }
 
 void wxExShell::Undo()
@@ -774,9 +754,5 @@ void wxExShell::Undo()
   }
   
   m_Command.clear();
-
-#ifdef DEBUG
-  wxLogMessage("Undo::" + GetText() + "::");
-#endif
 }
 #endif // wxUSE_GUI

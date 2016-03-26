@@ -94,8 +94,8 @@ TEST_CASE("wxExSTC", "[stc][vi]")
 
   wxExLexer lexer;
   REQUIRE( lexer.Reset(stc));
-  REQUIRE( lexer.Set("cpp", stc, false));
-  REQUIRE(!lexer.Set("xyz", stc, false));
+  REQUIRE( lexer.Set("cpp", stc));
+  REQUIRE(!lexer.Set("xyz", stc));
   REQUIRE( stc->SetLexer(lexer));
   
   // do the same test as with wxExFile in base for a binary file

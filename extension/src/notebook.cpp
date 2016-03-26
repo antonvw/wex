@@ -13,19 +13,6 @@
 
 #if wxUSE_GUI
 
-#undef LOGGING
-
-#ifdef LOGGING
-void LogKeys(const map < wxString wxWindow* >& keys)
-{
-  int i = 0;
-  for (const auto& it : keys)
-  {
-    wxLogMessage("key[%d]=%s", i++, it->first());
-  }
-}
-#endif
-  
 wxExNotebook::wxExNotebook(wxWindow* parent,
   wxExManagedFrame* frame,
   wxWindowID id,
@@ -98,17 +85,12 @@ wxWindow* wxExNotebook::AddPage(
   m_Keys[key] = page;
   m_Windows[page] = key;
 
-#ifdef LOGGING
-  wxLogMessage("added key: %s", key.c_str());
-  LogKeys(m_Keys);
-#endif
-
   return page;
 }
 
 bool wxExNotebook::DeletePage(const wxString& key)
 {
-  const int index = GetPageIndexByKey(key);
+  const auto index = GetPageIndexByKey(key);
 
   if (index != wxNOT_FOUND && wxAuiNotebook::DeletePage(index))
   {
@@ -120,10 +102,6 @@ bool wxExNotebook::DeletePage(const wxString& key)
     {
       m_Frame->SyncCloseAll(GetId());
     }
-#ifdef LOGGING
-    wxLogMessage("deleted key: %s index: %d", key.c_str(), index);
-    LogKeys(m_Keys);
-#endif
 
     return true;
   }
@@ -149,11 +127,6 @@ wxWindow* wxExNotebook::InsertPage(
   m_Keys[key] = page;
   m_Windows[page] = key;
 
-#ifdef LOGGING
-  wxLogMessage("inserted key: %s index: %d", key.c_str(), page_idx);
-  LogKeys(m_Keys);
-#endif
-
   return page;
 }
 
@@ -171,7 +144,7 @@ bool wxExNotebook::SetPageText(
   const wxString& text,
   const wxBitmap& bitmap)
 {
-  const int index = GetPageIndexByKey(key);
+  const auto index = GetPageIndexByKey(key);
 
   if (index == wxNOT_FOUND || !wxAuiNotebook::SetPageText(index, text))
   {
@@ -193,7 +166,7 @@ bool wxExNotebook::SetPageText(
 
 wxWindow* wxExNotebook::SetSelection(const wxString& key)
 {
-  const int index = GetPageIndexByKey(key);
+  const auto index = GetPageIndexByKey(key);
 
   if (index == wxNOT_FOUND)
   {
@@ -206,7 +179,7 @@ wxWindow* wxExNotebook::SetSelection(const wxString& key)
   
 bool wxExNotebook::Split(const wxString& key, int direction)
 {
-  const int index = GetPageIndexByKey(key);
+  const auto index = GetPageIndexByKey(key);
 
   if (index == wxNOT_FOUND)
   {
@@ -217,5 +190,4 @@ bool wxExNotebook::Split(const wxString& key, int direction)
   
   return true;
 }
-
 #endif // wxUSE_GUI

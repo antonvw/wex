@@ -14,14 +14,12 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-//#define DEBUG ON
-
 void link(
-    const wxExLink& link,
-    const wxString& path, 
-    const wxString& expect = wxEmptyString,
-    int expect_line_no = 0,
-    int expect_col_no = 0);
+  const wxExLink& link,
+  const wxString& path, 
+  const wxString& expect = wxEmptyString,
+  int expect_line_no = 0,
+  int expect_col_no = 0);
 
 void link(
   const wxExLink& link,
@@ -32,12 +30,6 @@ void link(
 {
   int line_no = 0;
   int col_no = 0;
-
-#ifdef DEBUG  
-  wxLogMessage("in: %s out: %s expect: %s %d %d\n", 
-    path.c_str(), link.GetPath(path, line_no, col_no).c_str(), expect.c_str(), 
-    expect_line_no, expect_col_no);
-#endif
 
   if (!expect.empty())
   {
