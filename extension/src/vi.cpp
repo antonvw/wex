@@ -1227,7 +1227,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
       GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
     }
     
-    return false;
+    return true;
   }
   else if (!event.HasAnyModifiers() &&
      (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_ESCAPE ||
@@ -1273,7 +1273,7 @@ bool wxExVi::OtherCommand(std::string& command) const
     command = command.substr(0, it->first.size());
     return true;
   }
-  
+
   return false;
 }
       

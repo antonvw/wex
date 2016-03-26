@@ -18,46 +18,6 @@
 
 const int FIELD_NOT_SHOWN = -1;
 
-// #define DEBUG ON
-
-#ifdef DEBUG
-void DebugPanes(
-  const wxString& field, 
-  bool show,
-  wxStatusBar* sb, 
-  const std::vector<wxExStatusBarPane>& panes,
-  const std::vector<wxString>& v)
-{
-  const int no = sb->GetFieldsCount() - 1 - v.size();
-  
-  wxLogMessage("field: %s show: %d start: %d", 
-    field.c_str(),
-    show,
-    no);
-    
-  for (int l = 0; l < sb->GetFieldsCount(); l++)
-  {
-    wxLogMessage("statusbar[%d]=%s", l, sb->GetStatusText(l).c_str()); 
-  }
-  
-  int i = 0;
-  for (const auto& it : panes)
-  {
-    wxLogMessage("pane[%s](%d)=%s(shown: %d hidden: %s)", 
-      it.GetName().c_str(),
-      i++, 
-      it.GetText().c_str(), 
-      it.IsShown(), 
-      it.GetHiddenText().c_str());
-  }
-
-  for (int k = 0; k < v.size(); k++)
-  {
-    wxLogMessage("changes[%d]=%s", k, v[k].c_str()); 
-  }
-}
-#endif
-  
 void wxExStatusBarPane::Show(bool show)
 {
   m_IsShown = show;
@@ -89,10 +49,7 @@ wxExStatusBar::~wxExStatusBar()
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 }
 
-bool wxExStatusBar::GetFieldNo(
-  const wxString& field,
-  int& shown_pane_no,
-  int& pane_no) const
+bool wxExStatusBar::GetFieldNo(const wxString& field, int& shown_pane_no, int& pane_no) const
 {
   shown_pane_no = 0;
   pane_no = 0;
@@ -126,14 +83,9 @@ bool wxExStatusBar::GetFieldNo(
 const wxString wxExStatusBar::GetStatusText(const wxString& field) const
 {
   int shown_pane_no, dummy;
-  
-  if (!GetFieldNo(field, shown_pane_no, dummy) || shown_pane_no == FIELD_NOT_SHOWN)
-  {
+  return !GetFieldNo(field, shown_pane_no, dummy) || shown_pane_no == FIELD_NOT_SHOWN ?
     // Do not show error, as you might explicitly want to ignore messages.
-    return wxEmptyString;
-  }
-  
-  return wxStatusBar::GetStatusText(shown_pane_no);
+    wxString(wxEmptyString): wxStatusBar::GetStatusText(shown_pane_no);
 }
 
 void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
@@ -317,10 +269,6 @@ bool wxExStatusBar::ShowField(const wxString& field, bool show)
       }
     }
   }
-
-#ifdef DEBUG
-  DebugPanes(field, show, this, m_Panes, changes);
-#endif
 
   delete[] styles;
   delete[] widths;

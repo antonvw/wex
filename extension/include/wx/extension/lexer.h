@@ -24,26 +24,27 @@ class WXDLLIMPEXP_BASE wxExLexer
 {
 public:
   /// Default constructor.
-  wxExLexer();
+  wxExLexer() {Initialize();};
 
   /// Constructor using xml node.
-  wxExLexer(const wxXmlNode* node);
+  wxExLexer(const wxXmlNode* node) {
+    Initialize();
+    Set(node);};
 
   /// Constructor using other lexer.
   wxExLexer(
     /// lexer to use
     const wxString& lexer, 
-    /// stc component on which to apply
-    wxStyledTextCtrl* stc = nullptr,
-    /// if clear is true, old styles are reset (including folding)
-    bool clear = true);
+    /// stc component on which to apply (if not nullptr)
+    wxStyledTextCtrl* stc = nullptr) {
+      Initialize();
+      Set(lexer, stc);};
     
   /// Adds keywords (public for testing only).
   bool AddKeywords(const wxString& text, int setno = 0);
   
-  /// Applies this lexer to stc component
-  /// (and colours the component).
-  void Apply(wxStyledTextCtrl* stc, bool clear = true) const;
+  /// Applies this lexer to stc component (and colours the component).
+  void Apply(wxStyledTextCtrl* stc) const;
 
   /// Returns a string that completes specified comment,
   /// by adding spaces and a comment end at the end.
@@ -135,9 +136,7 @@ public:
     /// lexer to use
     const wxString& lexer, 
     /// stc component on which to apply
-    wxStyledTextCtrl* stc,
-    /// if clear is true, old styles are reset (including folding)
-    bool clear = true);
+    wxStyledTextCtrl* stc);
     
   /// Sets lexer to specified lexer.
   /// Returns true if a scintilla lexer has been set.
@@ -155,7 +154,7 @@ public:
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
-  void ApplyWhenSet(const wxString& lexer, wxStyledTextCtrl* stc, bool clear);
+  void ApplyWhenSet(wxStyledTextCtrl* stc);
   void AutoMatch(const wxString& lexer);
   const wxString GetFormattedText(
     const wxString& lines,

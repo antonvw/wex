@@ -11,7 +11,6 @@
 #endif
 #include <algorithm>
 #include <functional>
-//#include <numeric> // both for accumulate
 #include <wx/stc/stc.h>
 #include <wx/tokenzr.h>
 #include <wx/xml/xml.h>
@@ -21,23 +20,6 @@
 
 // We always use lines with 80 characters. 
 const int line_size = 80;
-
-wxExLexer::wxExLexer()
-{
-  Initialize();
-}
-
-wxExLexer::wxExLexer(const wxXmlNode* node)
-{
-  Initialize();
-  Set(node);
-}
-
-wxExLexer::wxExLexer(const wxString& lexer, wxStyledTextCtrl* stc, bool clear)
-{
-  Initialize();
-  Set(lexer, stc, true);
-}
 
 // Adds the specified keywords to the keywords map and the keywords set.
 // The text might contain the keyword set after a ':'.
@@ -105,12 +87,9 @@ bool wxExLexer::AddKeywords(const wxString& value, int setno)
   return true;
 }
 
-void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
+void wxExLexer::Apply(wxStyledTextCtrl* stc) const
 {
-  if (clear)
-  {
-    stc->ClearDocumentStyle();
-  }
+  stc->ClearDocumentStyle();
   
   for_each (m_Properties.begin(), m_Properties.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
@@ -121,10 +100,7 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
     stc->SetKeyWords(setno, wxEmptyString);
   }
 
-  if (clear)
-  {
-    wxExLexers::Get()->ApplyGlobalStyles(stc);
-  }
+  wxExLexers::Get()->ApplyGlobalStyles(stc);
 
   if (wxExLexers::Get()->GetThemeOk())
   {
@@ -149,29 +125,16 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
   stc->Colourise(0, stc->GetLength() - 1);
 }
 
-void wxExLexer::ApplyWhenSet(
-  const wxString& lexer, wxStyledTextCtrl* stc, bool clear)
+void wxExLexer::ApplyWhenSet(wxStyledTextCtrl* stc)
 {
-  if (stc == nullptr)
-  {
-    return;
-  }
+  if (stc == nullptr) return;
   
   stc->SetLexerLanguage(m_ScintillaLexer);
   
-  if (m_ScintillaLexer.empty() && lexer.empty())
-  {
-    m_IsOk = (stc->GetLexer() == wxSTC_LEX_NULL);
-  }
-  else
-  {
-    m_IsOk = (stc->GetLexer() != wxSTC_LEX_NULL);
-  }
-  
-  if (m_IsOk)
+  if (m_IsOk = (m_ScintillaLexer.empty() ? true: (stc->GetLexer() != wxSTC_LEX_NULL)))
   {
     stc->SetStyleBits(stc->GetStyleBitsNeeded());
-    Apply(stc, clear);
+    Apply(stc);
       
     if (m_ScintillaLexer == "diff")
     {
@@ -213,8 +176,8 @@ void wxExLexer::AutoMatch(const wxString& lexer)
   {
     // Copy styles and properties, and not keywords,
     // so your derived display lexer can have it's own keywords.
-    m_Styles = l.GetStyles();
-    m_Properties = l.GetProperties();
+    m_Styles = l.m_Styles;
+    m_Properties = l.m_Properties;
     
     m_CommentBegin = l.m_CommentBegin;
     m_CommentBegin2 = l.m_CommentBegin2;
@@ -225,18 +188,12 @@ void wxExLexer::AutoMatch(const wxString& lexer)
 
 const wxString wxExLexer::CommentComplete(const wxString& comment) const
 {
-  if (m_CommentEnd.empty())
-  {
-    return wxEmptyString;
-  }
+  if (m_CommentEnd.empty()) return wxEmptyString;
   
   // Fill out rest of comment with spaces, and comment end string.
   const int n = line_size - comment.size() - m_CommentEnd.size();
   
-  if (n <= 0)
-  {
-    return wxEmptyString;
-  }
+  if (n <= 0) return wxEmptyString;
   
   const wxString blanks = wxString(' ', n);
   
@@ -432,60 +389,11 @@ bool wxExLexer::Reset(wxStyledTextCtrl* stc)
   
   stc->SetLexer(wxSTC_LEX_NULL);
   
-  m_IsOk = (stc->GetLexer() == wxSTC_LEX_NULL);
-  
-  if (m_IsOk)
+  if (m_IsOk = (stc->GetLexer() == wxSTC_LEX_NULL))
   {
-    Apply(stc, true);
+    Apply(stc);
   }
 
-  return m_IsOk;
-}
-
-bool wxExLexer::Set(
-  const wxString& lexer, 
-  wxStyledTextCtrl* stc,
-  bool clear)
-{
-  // If there are no lexers, just return, to prevent error message.
-  if (wxExLexers::Get()->GetCount() == 0)
-  {
-    return false;
-  }
-
-  (*this) = wxExLexers::Get()->FindByName(lexer);
-  
-  if (!m_IsOk && stc != nullptr)
-  {
-    (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
-  }
-    
-  ApplyWhenSet(lexer, stc, clear);
-  
-  if (!m_IsOk)
-  {
-    wxLogError("Lexer is not known: " + lexer);
-  }
-  
-  return m_IsOk;
-}
-
-bool wxExLexer::Set(const wxExLexer& lexer, wxStyledTextCtrl* stc)
-{
-  if (lexer.GetScintillaLexer().empty() && stc != nullptr)
-  {
-    (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
-  }
-  else
-  {
-    if (this != &lexer)
-    {
-      (*this) = lexer;
-    }
-  }
-    
-  ApplyWhenSet(lexer.GetScintillaLexer(), stc, true);
-  
   return m_IsOk;
 }
 
@@ -576,34 +484,54 @@ void wxExLexer::Set(const wxXmlNode* node)
       child = child->GetNext();
     }
   }
+}
 
-#ifdef DEBUG
-  wxString text;
+bool wxExLexer::Set(const wxString& lexer, wxStyledTextCtrl* stc)
+{
+  // If there are no lexers, just return, to prevent error message.
+  if (wxExLexers::Get()->GetCount() == 0) return false;
+
+  (*this) = wxExLexers::Get()->FindByName(lexer);
   
-  for (const auto& s : m_Styles)
+  if (!m_IsOk && stc != nullptr)
   {
-    text += wxString::Format("style: no: %s value: %s\n",
-      s.GetNo().c_str(), s.GetValue().c_str());
+    (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
   }
+    
+  if (m_ScintillaLexer.empty() && !lexer.empty())
+  {
+    m_IsOk = false;
+  }
+  else
+  {
+    ApplyWhenSet(stc);
+  }
+  
+  if (!m_IsOk)
+  {
+    wxLogError("Lexer is not known: " + lexer);
+  }
+  
+  return m_IsOk;
+}
 
-  for (const auto& p : m_Properties)
+bool wxExLexer::Set(const wxExLexer& lexer, wxStyledTextCtrl* stc)
+{
+  if (lexer.GetScintillaLexer().empty() && stc != nullptr)
   {
-    text += wxString::Format("prop: name: %s value: %s\n",
-      p.GetName().c_str(), p.GetValue().c_str());
+    (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
   }
-
-  for (const auto& it : m_KeywordsSet)
+  else
   {
-    text += wxString::Format("set: %d %s\n",
-      it.first, GetKeywordsString(it.first).c_str());
+    if (this != &lexer)
+    {
+      (*this) = lexer;
+    }
   }
-
-  if (!text.empty())
-  {
-    wxLogMessage("Lexer: %s Display: %s Data:\n%s",
-     m_ScintillaLexer.c_str(), m_DisplayLexer.c_str(), text.c_str());
-  }
-#endif
+    
+  ApplyWhenSet(stc);
+  
+  return m_IsOk;
 }
 
 void wxExLexer::SetProperty(const wxString& name, const wxString& value)
