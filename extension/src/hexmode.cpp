@@ -2,7 +2,7 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wxExHexMode and wxExHexModeLine
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -76,8 +76,7 @@ void wxExHexMode::Activate(const wxCharBuffer& text)
   
   AppendText(text);
     
-  wxExLexers::Get()->ApplyHexStyles(m_STC);
-  wxExLexers::Get()->ApplyMarkers(m_STC);
+  wxExLexers::Get()->Apply(m_STC);
   
   m_Active = true;
 }

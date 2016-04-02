@@ -2,7 +2,7 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wxExNotebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -88,11 +88,11 @@ public:
       case ID_ALL_STC_SET_LEXER: 
         // At this moment same as themed change,
         // as we want default colour updates as well.
-        ((wxExSTC*)GetPage(page))->SetLexer(((wxExSTC*)GetPage(page))->GetLexer().GetDisplayLexer());
+        ((wxExSTC*)GetPage(page))->GetLexer().Set(((wxExSTC*)GetPage(page))->GetLexer().GetDisplayLexer());
         break;
 
       case ID_ALL_STC_SET_LEXER_THEME: 
-        ((wxExSTC*)GetPage(page))->SetLexer(((wxExSTC*)GetPage(page))->GetLexer().GetDisplayLexer());
+        ((wxExSTC*)GetPage(page))->GetLexer().Set(((wxExSTC*)GetPage(page))->GetLexer().GetDisplayLexer());
         break;
 
       case ID_ALL_STC_SYNC: 
@@ -113,13 +113,13 @@ public:
   /// Returns the key specified by the given page.
   /// If the page does not exist an empty string is returned.
   const wxString GetKeyByPage(wxWindow* page) const {
-    const auto it = m_Windows.find(page);
+    const auto& it = m_Windows.find(page);
     return (it != m_Windows.end() ? it->second: wxString(wxEmptyString));};
   
   /// Returns the page specified by the given key.
   /// If the key does not exist nullptr is returned.
   wxWindow* GetPageByKey(const wxString& key) const {
-    const auto it = m_Keys.find(key);
+    const auto& it = m_Keys.find(key);
     return (it != m_Keys.end() ? it->second: nullptr);};
   
   /// Returns the page index specified by the given key.

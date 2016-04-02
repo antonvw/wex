@@ -13,7 +13,7 @@
 #include <wx/extension/property.h>
 #include <wx/extension/style.h>
 
-class wxStyledTextCtrl;
+class wxExSTC;
 class wxXmlNode;
 
 /// This class defines a lexer using file extensions,
@@ -24,27 +24,34 @@ class WXDLLIMPEXP_BASE wxExLexer
 {
 public:
   /// Default constructor.
-  wxExLexer() {Initialize();};
+  wxExLexer(const wxString& lexer = wxEmptyString) : m_STC(nullptr) {
+    Initialize();
+    if (!lexer.empty())
+    {
+      Set(lexer);
+    }};
+    
+  /// Constructor using stc, and optional lexer.
+  wxExLexer(wxExSTC* stc, const wxString& lexer = wxEmptyString) : m_STC(stc) {
+    Initialize();
+    if (!lexer.empty()) 
+    {
+      Set(lexer);
+    }};
 
   /// Constructor using xml node.
-  wxExLexer(const wxXmlNode* node) {
+  wxExLexer(const wxXmlNode* node) : m_STC(nullptr) {
     Initialize();
     Set(node);};
 
-  /// Constructor using other lexer.
-  wxExLexer(
-    /// lexer to use
-    const wxString& lexer, 
-    /// stc component on which to apply (if not nullptr)
-    wxStyledTextCtrl* stc = nullptr) {
-      Initialize();
-      Set(lexer, stc);};
-    
+  /// Assignment operator.
+  wxExLexer& operator=(const wxExLexer& l);
+
   /// Adds keywords (public for testing only).
   bool AddKeywords(const wxString& text, int setno = 0);
   
   /// Applies this lexer to stc component (and colours the component).
-  void Apply(wxStyledTextCtrl* stc) const;
+  bool Apply() const;
 
   /// Returns a string that completes specified comment,
   /// by adding spaces and a comment end at the end.
@@ -126,27 +133,19 @@ public:
   /// Returns true if the scintilla lexer has been reset.
   /// The is ok member is set according to whether the
   /// lexer could be reset.
-  bool Reset(wxStyledTextCtrl* stc);
+  bool Reset();
 
   /// Sets scintilla lexer for specified lexer and if ok applies it to stc. 
   /// Returns true if a scintilla lexer has been set.
   /// The is ok member is set according to whether the
   /// lexer could be set. Shows error message when lexer could not be set.
-  bool Set(
-    /// lexer to use
-    const wxString& lexer, 
-    /// stc component on which to apply
-    wxStyledTextCtrl* stc);
+  bool Set(const wxString& lexer, bool fold = false);
     
   /// Sets lexer to specified lexer.
   /// Returns true if a scintilla lexer has been set.
   /// The is ok member is set according to whether the
   /// lexer could be set.
-  bool Set(
-    /// lexer to use
-    const wxExLexer& lexer, 
-    /// stc component on which to apply
-    wxStyledTextCtrl* stc);
+  bool Set(const wxExLexer& lexer, bool fold = false);
       
   /// Overrides a local property.
   void SetProperty(const wxString& name, const wxString& value);
@@ -154,7 +153,7 @@ public:
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
-  void ApplyWhenSet(wxStyledTextCtrl* stc);
+  bool ApplyWhenSet();
   void AutoMatch(const wxString& lexer);
   const wxString GetFormattedText(
     const wxString& lines,
@@ -193,4 +192,6 @@ private:
   std::map< int, std::set<wxString> > m_KeywordsSet;
   
   bool m_IsOk;
+  
+  wxExSTC* m_STC;
 };

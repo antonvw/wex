@@ -2,7 +2,7 @@
 // Name:      managedframe.h
 // Purpose:   Declaration of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -114,7 +114,8 @@ public:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     int col_number = 0,
-    long flags = 0) override;
+    long flags = 0,
+    const wxString& command = wxEmptyString) override;
 
   /// Prints text in ex dialog.
   virtual void PrintEx(

@@ -311,9 +311,10 @@ bool wxExManagedFrame::OpenFile(
   int line_number,
   const wxString& match,
   int col_number,
-  long flags)
+  long flags,
+  const wxString& command)
 {
-  if (wxExFrame::OpenFile(filename, line_number, match, col_number, flags))
+  if (wxExFrame::OpenFile(filename, line_number, match, col_number, flags, command))
   {
     SetRecentFile(filename.GetFullPath());
     return true;

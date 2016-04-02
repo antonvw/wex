@@ -48,6 +48,8 @@ TEST_CASE("wxExVi", "[stc][vi]")
   event.m_uniChar = 'i';
   REQUIRE(!vi->OnChar(event));
   REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  REQUIRE( vi->ModeInsert());
+  REQUIRE( vi->GetModeString() == "insert");
   // Second i (and more) all handled by vi.
   for (int i = 0; i < 10; i++) REQUIRE(!vi->OnChar(event));
 
@@ -287,8 +289,10 @@ TEST_CASE("wxExVi", "[stc][vi]")
         // test navigate while in rect mode
         ChangeMode( vi, "K", wxExVi::MODE_VISUAL_RECT);
         REQUIRE( vi->Command( nc ));
+        REQUIRE( vi->ModeVisual());
         ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
-    
+        REQUIRE( vi->ModeNormal());
+        
         // test yank
         std::string mc(
           c == 'f' || c == 't' ||
@@ -439,7 +443,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( vi->Command("@Year@"));
   REQUIRE( stc->GetText().Contains("20"));
 //  REQUIRE(!vi->Command("@xxx@"));
-  REQUIRE( stc->SetLexer("cpp"));
+  REQUIRE( stc->GetLexer().Set("cpp"));
   stc->SetText("");
   REQUIRE( vi->Command("@Cb@"));
   REQUIRE( vi->Command("@Ce@"));

@@ -876,7 +876,10 @@ bool wxExAddressRange::Write(const wxString& text) const
     return false;
   }
   
-  const wxString filename(wxString(text.Contains(">>") ? text.AfterLast('>'): text).Trim(false));
+  wxString filename(wxString(text.Contains(">>") ? text.AfterLast('>'): text).Trim(false));
+#ifdef __UNIX__
+  filename.Replace("~", wxGetHomeDir());
+#endif
   const wxFile::OpenMode mode(text.Contains(">>") ? wxFile::write_append: wxFile::write);
 
   return wxExFile(filename, mode).Write(m_Ex->GetSelectedText());

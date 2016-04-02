@@ -178,8 +178,8 @@ wxExEx::wxExEx(wxExSTC* stc)
             {{"sy", "SYntax (off)"}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
               wxString val;
               any.GetAs(&val);
-              if (val != "off") m_STC->SetLexer(val, true); // allow folding
-              else              m_STC->ResetLexer();}}},
+              if (val != "off") m_STC->GetLexer().Set(val, true); // allow folding
+              else              m_STC->GetLexer().Reset();}}},
             {{"ts", "Tab Stop"}, {wxCMD_LINE_VAL_NUMBER, [&](wxAny any) {
               long val;
               any.GetAs(&val);
@@ -217,11 +217,11 @@ wxExEx::wxExEx(wxExSTC* stc)
       if (wxString(command).EndsWith("on"))
       {
         wxExLexers::Get()->RestoreTheme();
-        m_STC->SetLexer(m_STC->GetFileName().GetLexer().GetDisplayLexer(), true); // allow folding
+        m_STC->GetLexer().Set(m_STC->GetFileName().GetLexer().GetDisplayLexer(), true); // allow folding
       }
       else if (wxString(command).EndsWith("off"))
       {
-        m_STC->ResetLexer();
+        m_STC->GetLexer().Reset();
         wxExLexers::Get()->SetThemeNone();
       }
       else
@@ -823,7 +823,7 @@ void wxExEx::ShowDialog(const wxString& title, const wxString& text)
     m_Dialog->SetTitle(title);
   }
   
-  m_Dialog->GetSTC()->SetLexer(m_STC->GetLexer());
+  m_Dialog->GetSTC()->GetLexer().Set(m_STC->GetLexer());
   m_Dialog->Show();
 }
 

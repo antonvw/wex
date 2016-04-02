@@ -21,34 +21,6 @@ wxExLink::wxExLink(wxExSTC* stc)
 {
 }
 
-bool wxExLink::AddBasePath()
-{
-  if (m_STC == nullptr)
-  {
-    return false;
-  }
-  
-  // Find the base path, if this is not yet on the list, add it.
-  const wxString basepath_text = "Basepath: ";
-  const int find = m_STC->FindText(
-    0,
-    1000, // the max pos to look for, this seems enough
-    basepath_text);
-
-  if (find == -1)
-  {
-    return false;
-  }
-  
-  const int line = m_STC->LineFromPosition(find);
-
-  m_PathList.Add(m_STC->GetTextRange(
-    find + basepath_text.length(),
-    m_STC->GetLineEndPosition(line) - 3));
-    
-  return true;
-}
-
 const wxString wxExLink::FindPath(const wxString& text) const
 {
   if (

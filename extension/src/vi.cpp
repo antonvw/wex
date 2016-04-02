@@ -443,10 +443,12 @@ wxExVi::wxExVi(wxExSTC* stc)
             GetSTC()->ToggleFold(line_to_fold);
           break;
         case 'E':
-          GetSTC()->SetLexerProperty("fold", "0");
+          GetSTC()->GetLexer().SetProperty("fold", "0");
+          GetSTC()->GetLexer().Apply();
           GetSTC()->Fold(false); break;
         case 'f':
-          GetSTC()->SetLexerProperty("fold", "1");
+          GetSTC()->GetLexer().SetProperty("fold", "1");
+          GetSTC()->GetLexer().Apply();
           GetSTC()->Fold(true); break;
         case 'Z':
           wxPostEvent(wxTheApp->GetTopWindow(), 

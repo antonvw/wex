@@ -20,8 +20,8 @@ TEST_CASE("wxExSTCEntryDialog", "[stc]")
   
   REQUIRE( dlg1->GetSTC()->GetText() == "testing");
   //REQUIRE( dlg1.GetTextRaw() == "testing");
-  REQUIRE(!dlg1->GetSTC()->SetLexer("xxx"));
-  REQUIRE( dlg1->GetSTC()->SetLexer("cpp"));
+  REQUIRE(!dlg1->GetSTC()->GetLexer().Set("xxx"));
+  REQUIRE( dlg1->GetSTC()->GetLexer().Set("cpp"));
   
   dlg1->Show();
   

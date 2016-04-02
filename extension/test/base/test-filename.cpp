@@ -15,7 +15,7 @@ TEST_CASE( "wxExFileName" )
   
   SECTION( "basic" ) 
   {
-    REQUIRE(wxExLexers::Get()->GetCount() > 0);
+    REQUIRE(!wxExLexers::Get()->GetLexers().empty());
     INFO(fileName.GetLexer().GetScintillaLexer());
     REQUIRE(fileName.GetLexer().GetScintillaLexer() == "cpp");
     REQUIRE(fileName.GetStat().IsOk());

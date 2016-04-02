@@ -2,7 +2,7 @@
 // Name:      test-vifsm.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -34,9 +34,11 @@ TEST_CASE("wxExViFSM", "[stc][vi]")
   REQUIRE( fsm.State() == wxExVi::MODE_INSERT);
   REQUIRE(!fsm.Transition("i"));
   REQUIRE( fsm.State() == wxExVi::MODE_INSERT);
+  REQUIRE( fsm.StateString() == "insert");
   
   REQUIRE( fsm.Transition(ESC));
   REQUIRE( fsm.State() == wxExVi::MODE_NORMAL);
+  REQUIRE( fsm.StateString().empty());
   
   REQUIRE( fsm.Transition("cc"));
   REQUIRE( fsm.State() == wxExVi::MODE_INSERT);

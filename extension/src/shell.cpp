@@ -82,7 +82,7 @@ wxExShell::wxExShell(
   
   EnableShell(true);
 
-  SetLexer(lexer);
+  GetLexer().Set(lexer);
   
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
     if (m_Enabled)

@@ -62,7 +62,8 @@ public:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     int col_number = 0,
-    long flags = 0);
+    long flags = 0,
+    const wxString& command = wxEmptyString);
 
   /// Allows you to open a filename with info from vcs.
   virtual bool OpenFile(

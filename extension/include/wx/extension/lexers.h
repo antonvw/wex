@@ -2,7 +2,7 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wxExLexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -17,9 +17,9 @@
 #include <wx/extension/property.h>
 #include <wx/extension/style.h>
 
-class wxStyledTextCtrl;
 class wxWindow;
 class wxXmlNode;
+class wxExSTC;
 
 /// Collection of all lexers.
 /// The lexers are loaded from lexers.xml, this is done
@@ -27,15 +27,12 @@ class wxXmlNode;
 class WXDLLIMPEXP_BASE wxExLexers
 {
 public:
+  /// Applies containers (except global styles) to specified component.
+  void Apply(wxExSTC* stc) const;
+
   /// Sets global styles (and colours and indicators) 
   /// for current theme for specified component.
-  void ApplyGlobalStyles(wxStyledTextCtrl* stc);
-
-  /// Sets hex styles for specified component.
-  void ApplyHexStyles(wxStyledTextCtrl* stc) const;
-
-  /// Sets indicators for specified component.
-  void ApplyIndicators(wxStyledTextCtrl* stc) const;
+  void ApplyGlobalStyles(wxExSTC* stc);
 
   /// Applies macro to text:
   /// if text is referring to a macro, text is replaced by the macro value.
@@ -43,15 +40,6 @@ public:
   const wxString ApplyMacro(
     const wxString& text, 
     const wxString& lexer = "global");
-
-  /// Sets markers for specified component.
-  void ApplyMarkers(wxStyledTextCtrl* stc) const;
-
-  /// Sets properties for specified component.
-  void ApplyProperties(wxStyledTextCtrl* stc) const;
-
-  /// Builds a wildcard string from available lexers using specified filename.
-  const wxString BuildWildCards(const wxFileName& filename) const;
 
   /// Finds a lexer specified by a filename.
   const wxExLexer FindByFileName(const wxFileName& filename) const;
@@ -67,18 +55,15 @@ public:
   /// it also invokes LoadDocument.
   static wxExLexers* Get(bool createOnDemand = true);
 
-  /// Returns the number of lexers.
-  size_t GetCount() const {return m_Lexers.size();};
-
-  /// Returns the default style.
-  const auto & GetDefaultStyle() const {return m_DefaultStyle;};
-
   /// Returns the filename.
   const auto & GetFileName() const {return m_FileName;};
   
   /// Returns the keywords for the specified named set of keywords.
   /// Returns empty string if set does not exist.
   const wxString GetKeywords(const wxString& set) const;
+
+  /// Returns the lexers.
+  const auto & GetLexers() const {return m_Lexers;};
 
   /// Returns the macros for specified lexer.
   const auto & GetMacros(const wxString& lexer) {return m_Macros[lexer];};
@@ -99,14 +84,16 @@ public:
   size_t GetThemes() const {return m_ThemeMacros.size();};
   
   /// Returns true if specified indicator is available.
-  bool IndicatorIsLoaded(const wxExIndicator& indic) const;
+  bool IndicatorIsLoaded(const wxExIndicator& indic) const {
+    return m_Indicators.find(indic) != m_Indicators.end();};
 
   /// Loads all lexers (first clears them) from document.
   /// Returns true if the document is loaded.
   bool LoadDocument();
 
   /// Returns true if specified marker is available.
-  bool MarkerIsLoaded(const wxExMarker& marker) const;
+  bool MarkerIsLoaded(const wxExMarker& marker) const {
+    return m_Markers.find(marker) != m_Markers.end();};
 
   /// Restores theme from config (after SetThemeNone).
   void RestoreTheme();
@@ -121,7 +108,7 @@ public:
   bool SetTheme(const wxString& theme);
 
   /// Temporary use the no theme, until you do RestoreTheme.
-  void SetThemeNone();
+  void SetThemeNone() {m_Theme = m_NoTheme;};
   
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true and fills the lexer if you selected one.
@@ -148,7 +135,6 @@ public:
     bool show_modal = true);
 private:
   wxExLexers(const wxFileName& filename);
-  const wxString GetLexerExtensions() const;
   void Initialize();
   void ParseNodeGlobal(const wxXmlNode* node);
   void ParseNodeKeyword(const wxXmlNode* node);

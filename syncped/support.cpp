@@ -43,7 +43,7 @@ DecoratedFrame::DecoratedFrame()
     wxExStatusBarPane("PaneFileType", 50, _("File type")),
     wxExStatusBarPane("PaneInfo", 100, _("Lines or items"))};
 
-  if (wxExLexers::Get()->GetCount() > 0 && wxExLexers::Get()->GetThemes() > 1)
+  if (!wxExLexers::Get()->GetLexers().empty() && wxExLexers::Get()->GetThemes() > 1)
   {
 #ifdef __WXMSW__
     const int lexer_size = 60;

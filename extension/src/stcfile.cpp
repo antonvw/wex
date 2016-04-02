@@ -68,7 +68,7 @@ bool wxExSTCFile::DoFileLoad(bool synced)
     // ReadFromFile might already have set the lexer using a modeline.
     if (m_STC->GetLexer().GetScintillaLexer().empty())
     {
-      m_STC->SetLexer(GetFileName().GetLexer(), true);
+      m_STC->GetLexer().Set(GetFileName().GetLexer(), true);
     }
 
     // No edges for log files.
@@ -93,7 +93,7 @@ void wxExSTCFile::DoFileNew()
   m_STC->SetName(GetFileName().GetFullPath());
   m_STC->PropertiesMessage();
   m_STC->ClearDocument();
-  m_STC->SetLexer(GetFileName().GetLexer(), true); // allow fold
+  m_STC->GetLexer().Set(GetFileName().GetLexer(), true); // allow fold
 }
 
 void wxExSTCFile::DoFileSave(bool save_as)
@@ -110,7 +110,7 @@ void wxExSTCFile::DoFileSave(bool save_as)
   if (save_as)
   {
     m_STC->SetReadOnly(!GetFileName().IsFileWritable());
-    m_STC->SetLexer(GetFileName().GetLexer());
+    m_STC->GetLexer().Set(GetFileName().GetLexer());
     m_STC->SetName(GetFileName().GetFullPath());
   }
   

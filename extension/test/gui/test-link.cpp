@@ -2,13 +2,14 @@
 // Name:      test-link.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/extension/link.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
@@ -30,6 +31,8 @@ void link(
 {
   int line_no = 0;
   int col_no = 0;
+  
+  INFO(path.ToStdString() << "==" << expect.ToStdString());
 
   if (!expect.empty())
   {
@@ -47,15 +50,13 @@ void link(
 #ifdef __UNIX__
 TEST_CASE("wxExLink", "[stc]")
 {
-  wxExSTC* stc = new wxExSTC(
-    GetFrame(), 
-    "hello stc, \"X-Poedit-Basepath: /usr/bin\\n\"");
+  wxExSTC* stc = new wxExSTC(GetFrame());
   AddPane(GetFrame(), stc);
   
   wxExLink lnk(stc);  
   
-  REQUIRE( lnk.AddBasePath());
-  REQUIRE( lnk.AddBasePath());
+  wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");
+  lnk.SetFromConfig();
   
   const wxString test("/extension/test/data/test.h");
   const wxString special("/extension/test/data/test-special.h");
@@ -81,7 +82,7 @@ TEST_CASE("wxExLink", "[stc]")
   // -rw-rw-r-- 1 anton anton  2287 nov 17 10:53 test.h
   link(lnk, "-rw-rw-r-- 1 anton anton 35278 nov 24 16:09 test.h", test);
 
-  // Test existing file in the basepath.
+  // Test existing file in the include path.
   link(lnk, "test", "/usr/bin/test");
   link(lnk, "  test \n", "/usr/bin/test"); // whitespace should be skipped
   link(lnk, "./test", "/usr/bin/./test");
@@ -91,13 +92,13 @@ TEST_CASE("wxExLink", "[stc]")
   link(lnk, "skip \"test\" skip skip", "/usr/bin/test");
   link(lnk, "skip 'test' skip skip", "/usr/bin/test");
   
-  // Test existing file in the basepath, incorrect line and/or col.
+  // Test incorrect line and/or col.
   link(lnk, "test:", "/usr/bin/test");
   link(lnk, "test:xyz", "/usr/bin/test");
   link(lnk, "test:50:xyz", "/usr/bin/test", 50);
   link(lnk, "test:abc:xyz", "/usr/bin/test");
   
-  // Test existing file, line_no and col no.
+  // Test line_no and col no.
   link(lnk, "test:50", "/usr/bin/test", 50);
   link(lnk, "test:50:", "/usr/bin/test", 50);
   link(lnk, "test:50:6", "/usr/bin/test", 50, 6);
@@ -106,20 +107,14 @@ TEST_CASE("wxExLink", "[stc]")
   link(lnk, "skip skip test:50", "/usr/bin/test", 50);
   link(lnk, "test-special.h:10", special, 10);
   link(lnk, "test-special.h:10:2", special, 10, 2);
+  
   // po file format
   link(lnk, "#: test:120", "/usr/bin/test", 120);
-  
-  lnk.SetFromConfig();
-  
-  // Now we have no basepath, so previous test is different.
-  link(lnk, "test");
+  stc->GetLexer().Set("po");
+  link(lnk, "#: test:120", "/usr/bin/test", 120);
   
   // Test link with default contructor.
   wxExLink lnk2;
-  
-  REQUIRE(!lnk2.AddBasePath());
-  REQUIRE(!lnk2.AddBasePath());
-  
   link(lnk2, "test");
 }
 #endif

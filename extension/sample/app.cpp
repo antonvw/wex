@@ -240,19 +240,6 @@ wxExSampleFrame::wxExSampleFrame()
     wxExStatusBarPane("PaneLexer", 60, "Lexer")});
 #endif
 
-  if (wxExLexers::Get()->GetCount() > 0)
-  {
-    if (!wxExLexers::Get()->GetDefaultStyle().IsOk())
-    {
-      wxMessageBox("lexers default style not ok");
-    }
-    
-    if (!wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle())
-    {
-      wxMessageBox("lexers default style does not contain default style");
-    }
-  }
-  
   GetToolBar()->AddControls();
   GetOptionsToolBar()->AddControls();
   
@@ -323,7 +310,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
           wxExLexers::Get()->GetFileName().GetFullPath())
       {
         wxExLexers::Get()->LoadDocument();
-        wxLogMessage("File contains: %d lexers", wxExLexers::Get()->GetCount());
+        wxLogMessage("File contains: %d lexers", wxExLexers::Get()->GetLexers().size());
           // As the lexer might have changed, update status bar field as well.
   #if wxUSE_STATUSBAR
         UpdateStatusBar(m_STC, "PaneLexer");

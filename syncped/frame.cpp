@@ -207,7 +207,7 @@ Frame::Frame(App* app)
     {
       if (count > 0)
       {
-        wxExOpenFiles(this, GetFileHistory().GetVector(count));
+        wxExOpenFiles(this, GetFileHistory().GetVector(count), 0, wxDIR_DEFAULT, m_App->GetCommand());
       }
     }
       
@@ -231,7 +231,7 @@ Frame::Frame(App* app)
   else
   {
     GetManager().GetPane("PROJECTS").Hide();
-    wxExOpenFiles(this, m_App->GetFiles(), 0, wxDIR_FILES); // only files in this dir
+    wxExOpenFiles(this, m_App->GetFiles(), 0, wxDIR_FILES, m_App->GetCommand()); // only files in this dir
   }
   
   StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
@@ -1239,7 +1239,7 @@ bool Frame::OpenFile(
   if (page == nullptr)
   {
     page = new wxExSTC(m_Editors, text, flags, filename.GetFullPath());
-    page->SetLexer(filename.GetLexer());
+    page->GetLexer().Set(filename.GetLexer());
     
     m_Editors->AddPage(
       page, 
@@ -1260,7 +1260,8 @@ bool Frame::OpenFile(
   int line_number,
   const wxString& match,
   int col_number,
-  long flags)
+  long flags,
+  const wxString& command)
 {
   if ((flags & WIN_IS_PROJECT) && m_Projects == nullptr)
   {
@@ -1346,11 +1347,11 @@ bool Frame::OpenFile(
         notebook->Split(key, m_App->GetSplit());
       }
 
-      if (!m_App->GetCommand().empty() && editor->GetVi().GetIsActive())
+      if (!command.empty() && editor->GetVi().GetIsActive())
       {
-        if (!editor->GetVi().Command(m_App->GetCommand().ToStdString()))
+        if (!editor->GetVi().Command(command.ToStdString()))
         {
-          wxLogError("Command error: " + m_App->GetCommand());
+          wxLogError("Command error: " + command);
         }
       }
       
@@ -1395,7 +1396,7 @@ void Frame::PrintEx(wxExEx* ex, const wxString& text)
     page->SetSavePoint();
   }
   
-  page->SetLexer(ex->GetSTC()->GetLexer());
+  page->GetLexer().Set(ex->GetSTC()->GetLexer());
 }
   
 void Frame::StatusBarClicked(const wxString& pane)

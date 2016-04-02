@@ -86,17 +86,16 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   
   stc->SetText("new text");
   REQUIRE(stc->GetText() == "new text");
-  
-  REQUIRE(stc->SetLexer("cpp"));
+  REQUIRE(stc->GetLexer().Set("cpp"));
   REQUIRE(stc->GetLexer().GetScintillaLexer() == "cpp");
-  stc->ResetLexer();
+  stc->GetLexer().Reset();
   REQUIRE(stc->GetLexer().GetScintillaLexer().empty());
 
   wxExLexer lexer;
-  REQUIRE( lexer.Reset(stc));
+  REQUIRE( lexer.Reset());
   REQUIRE( lexer.Set("cpp", stc));
   REQUIRE(!lexer.Set("xyz", stc));
-  REQUIRE( stc->SetLexer(lexer));
+  REQUIRE( stc->GetLexer().Set(lexer));
   
   // do the same test as with wxExFile in base for a binary file
   REQUIRE(stc->Open(wxExFileName(GetTestDir() + "test.bin")));
@@ -145,8 +144,6 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   
   REQUIRE(!stc->SetIndicator(wxExIndicator(4,5), 100, 200));
   
-  stc->SetLexerProperty("xx", "yy");
-  
   REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
   wxExFindReplaceData::Get()->SetMatchCase(false);
   stc->SetSearchFlags(-1);
@@ -166,7 +163,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   REQUIRE( stc->GetText() == "  \n  line with indentation");
   REQUIRE( stc->GetLineCount() == 2);
   // test auto indentation for level change
-  REQUIRE( stc->SetLexer("cpp"));
+  REQUIRE( stc->GetLexer().Set("cpp"));
   stc->SetText("\nif ()\n{\n");
   stc->DocumentEnd();
 #if wxCHECK_VERSION(3,1,0)

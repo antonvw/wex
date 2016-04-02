@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -27,11 +27,11 @@
 #if wxUSE_GUI
 
 #define wxCAST_TO(classname)                                 \
-  if (m_FindFocus != nullptr && m_FindFocus->IsShown())         \
+  if (m_FindFocus != nullptr && m_FindFocus->IsShown())      \
   {                                                          \
     classname* win = dynamic_cast<classname*>(m_FindFocus);  \
                                                              \
-    if (win != nullptr)                                         \
+    if (win != nullptr)                                      \
     {                                                        \
       return win;                                            \
     }                                                        \
@@ -43,7 +43,7 @@
   
 #define FIND_REPLACE( text, dlg)                             \
 {                                                            \
-  if (m_FindReplaceDialog != nullptr)                           \
+  if (m_FindReplaceDialog != nullptr)                        \
   {                                                          \
     m_FindReplaceDialog->Destroy();                          \
   }                                                          \
@@ -52,7 +52,7 @@
                                                              \
   wxExSTC* cl = dynamic_cast<wxExSTC*>(win);                 \
                                                              \
-  if (cl != nullptr)                                            \
+  if (cl != nullptr)                                         \
   {                                                          \
     m_FindFocus = cl;                                        \
   }                                                          \
@@ -60,7 +60,7 @@
   {                                                          \
     wxExListView* cl = dynamic_cast<wxExListView*>(win);     \
                                                              \
-    if (cl != nullptr)                                          \
+    if (cl != nullptr)                                       \
     {                                                        \
       m_FindFocus = cl;                                      \
     }                                                        \
@@ -68,7 +68,7 @@
     {                                                        \
       wxExGrid* grid = dynamic_cast<wxExGrid*>(win);         \
                                                              \
-      if (grid != nullptr)                                      \
+      if (grid != nullptr)                                   \
       {                                                      \
         m_FindFocus = grid;                                  \
       }                                                      \
@@ -77,7 +77,7 @@
                                                              \
   wxExSTC* stc = GetSTC();                                   \
                                                              \
-  if (stc != nullptr)                                           \
+  if (stc != nullptr)                                        \
   {                                                          \
     stc->GetFindString();                                    \
   }                                                          \
@@ -235,7 +235,17 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
         wxSetWorkingDirectory(stc->GetFileName().GetPath());
       }
       
-      wxExOpenFiles(this, wxExToVectorString(command.GetString()).Get());
+      std::vector <wxString> v;
+      wxString cmd;
+      wxString files(command.GetString());
+      
+      if (wxExMatch("\\+([0-9A-Za-z:_/.-]+)* *(.*)", command.GetString().ToStdString(), v) > 1)
+      {
+        cmd = v[0];
+        files = v[1];
+      }
+      
+      wxExOpenFiles(this, wxExToVectorString(files).Get(), 0, wxDIR_DEFAULT, cmd);
     }
     else
     {
@@ -286,7 +296,8 @@ bool wxExFrame::OpenFile(
   int line_number,
   const wxString& match,
   int col_number,
-  long flags)
+  long flags,
+  const wxString& command)
 {
   wxExSTC* stc = GetSTC();
 
@@ -383,14 +394,9 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
 
       if (wxExLexers::Get()->ShowDialog(stc, lexer))
       {
-        if (lexer.empty())
-        {
-          stc->ResetLexer();
-        }
-        else
-        {
-          stc->SetLexer(lexer, true); // allow fold
-        }
+        lexer.empty() ? 
+          stc->GetLexer().Reset():
+          stc->GetLexer().Set(lexer, true); // allow fold
       }
     }
   }
@@ -496,6 +502,10 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
     case wxSTC_EOL_LF: text = "UNIX"; break;
     default: text = "UNKNOWN";
     }
+  }
+  else if (pane == "PaneMode")
+  {
+    text = stc->GetVi().GetModeString();
   }
   else
   {

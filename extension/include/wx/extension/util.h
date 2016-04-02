@@ -302,7 +302,9 @@ int wxExOpenFiles(
   /// flags to be used with OpenFile
   long file_flags = 0,
   /// flags to be used with wxExDirOpenFile
-  int dir_flags = wxDIR_DEFAULT);
+  int dir_flags = wxDIR_DEFAULT,
+  /// initial vi command
+  const wxString& command = wxEmptyString);
 #endif
 
 /// Shows a dialog and opens selected files
