@@ -2,7 +2,7 @@
 // Name:      filedlg.cpp
 // Purpose:   Implementation of wxExtension file dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -12,6 +12,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/file.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/util.h>
 
 wxExFileDialog::wxExFileDialog(
   wxWindow *parent,
@@ -40,7 +41,25 @@ wxExFileDialog::wxExFileDialog(
   if (wildcard == wxFileSelectorDefaultWildcardStr &&
       m_File->GetFileName().IsOk())
   {
-    SetWildcard(wxExLexers::Get()->BuildWildCards(m_File->GetFileName()));
+    wxString wildcards = 
+      _("All Files") + wxString::Format(" (%s)|%s",
+        wxFileSelectorDefaultWildcardStr,
+        wxFileSelectorDefaultWildcardStr);
+
+    for (const auto& it : wxExLexers::Get()->GetLexers())
+    {
+      if (!it.GetExtensions().empty())
+      {
+        const wxString wildcard =
+          it.GetDisplayLexer() +
+          " (" + it.GetExtensions() + ") |" +
+          it.GetExtensions();
+        wildcards = (wxExMatchesOneOf(file->GetFileName(), it.GetExtensions()) ?
+          wildcard + "|" + wildcards: wildcards + "|" + wildcard);
+      }
+    }
+
+    SetWildcard(wildcards);
   }
 }
 

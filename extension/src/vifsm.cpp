@@ -68,6 +68,19 @@ wxExViFSM::wxExViFSM(wxExVi* vi,
 {
 }
 
+const std::string wxExViFSM::StateString() const
+{
+  switch (m_State)
+  {
+    case wxExVi::MODE_INSERT:      return m_vi->GetSTC()->GetOvertype() ? "replace": "insert";
+    case wxExVi::MODE_INSERT_RECT: return m_vi->GetSTC()->GetOvertype() ? "replace rect": "insert rect";
+    case wxExVi::MODE_VISUAL:      return "visual";
+    case wxExVi::MODE_VISUAL_LINE: return "visual line";
+    case wxExVi::MODE_VISUAL_RECT: return "visual rect";
+    default: return "";
+  }
+}
+  
 bool wxExViFSM::Transition(const std::string& command)
 {
   int key = 0;
@@ -102,7 +115,7 @@ bool wxExViFSM::Transition(const std::string& command)
       }
   }
   
-  const auto it = std::find_if(m_FSM.begin(), m_FSM.end(), 
+  const auto & it = std::find_if(m_FSM.begin(), m_FSM.end(), 
     [&](const auto & e) {return e.State() == m_State && e.Action() == key;});
   
   if (it == m_FSM.end())
@@ -118,12 +131,10 @@ bool wxExViFSM::Transition(const std::string& command)
   }
 
   m_State = it->Next(command);
-  wxString mode;
   
   switch (m_State)
   {
     case wxExVi::MODE_INSERT:
-      mode = "insert";
       {
       auto it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
         [command](auto const& e) {return e.first == command[0];});
@@ -132,12 +143,7 @@ bool wxExViFSM::Transition(const std::string& command)
       }
       break;
       
-    case wxExVi::MODE_INSERT_RECT:  mode = "insert rect"; break;
-    case wxExVi::MODE_VISUAL:       mode = "visual";      break;
-    case wxExVi::MODE_VISUAL_RECT:  mode = "visual rect"; break;
-    
     case wxExVi::MODE_VISUAL_LINE:
-      mode = "visual line";
       if (m_vi->GetSTC()->SelectionIsRectangle())
       {
         m_vi->GetSTC()->Home();
@@ -158,7 +164,7 @@ bool wxExViFSM::Transition(const std::string& command)
       break;
   }
   
-  m_vi->GetFrame()->StatusText(mode, "PaneMode");
+  m_vi->GetFrame()->StatusText(StateString(), "PaneMode");
 
   return true;
 }

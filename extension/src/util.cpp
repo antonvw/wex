@@ -680,7 +680,7 @@ void wxExNodeStyles(const wxXmlNode* node, const wxString& lexer,
 
 #if wxUSE_GUI
 int wxExOpenFiles(wxExFrame* frame, const std::vector< wxString > & files,
-  long file_flags, int dir_flags)
+  long file_flags, int dir_flags, const wxString& command)
 {
   wxWindowUpdateLocker locker(frame);
   
@@ -717,7 +717,7 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxString > & files,
       }
       
       fn.FileExists() ?
-        frame->OpenFile(fn, line_no, wxEmptyString, col_no, file_flags):
+        frame->OpenFile(fn, line_no, wxEmptyString, col_no, file_flags, command):
         frame->OpenFile(fn, wxEmptyString, file_flags);
       
       count++;
@@ -1062,19 +1062,19 @@ void wxExVCSCommandOnSTC(const wxExVCSCommand& command,
   
   if (command.IsDiff())
   {
-    stc->SetLexer("diff");
+    stc->GetLexer().Set("diff");
   }
   else if (command.IsHistory())
   {
-    stc->ResetLexer();
+    stc->GetLexer().Reset();
   }
   else if (command.IsOpen())
   {
-    stc->SetLexer(lexer, true); // fold
+    stc->GetLexer().Set(lexer, true); // fold
   }
   else
   {
-    stc->ResetLexer();
+    stc->GetLexer().Reset();
   }
 }
 

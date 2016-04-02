@@ -54,8 +54,17 @@ public:
 
   /// Returns the mode we are in.
   int GetMode() const {return m_FSM.State();};
+  
+  /// Returns the mode we are in as a string.
+  const wxString GetModeString() const {return m_FSM.StateString();};
+  
+  /// Returns true if in insert mode.
   bool ModeInsert() const {return GetMode() == MODE_INSERT || GetMode() == MODE_INSERT_RECT;};
+  
+  /// Returns true if in normal mode.
   bool ModeNormal() const {return GetMode() == MODE_NORMAL;};
+
+  /// Returns true if in visual mode.
   bool ModeVisual() const {return GetMode() >= MODE_INSERT_RECT;};
   
   /// Handles char events.

@@ -34,6 +34,25 @@ class wxExMenu;
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
 public:
+  /// Config dialog flags.
+  enum wxExConfigFlags
+  {
+    STC_CONFIG_DEFAULT    = 0x0000, ///< modal dialog with all options
+    STC_CONFIG_MODELESS   = 0x0001, ///< use as modeless dialog
+    STC_CONFIG_WITH_APPLY = 0x0002, ///< add the apply button
+    STC_CONFIG_SIMPLE     = 0x0004  ///< only 'simple' options on dialog
+  };
+
+  /// Margin flags.
+  enum wxExMarginFlags
+  {
+    STC_MARGIN_NONE       = 0x0000, ///< no margins
+    STC_MARGIN_DIVIDER    = 0x0001, ///< divider margin
+    STC_MARGIN_FOLDING    = 0x0002, ///< folding margin
+    STC_MARGIN_LINENUMBER = 0x0004, ///< line number margin
+    STC_MARGIN_ALL        = 0xFFFF, ///< all margins
+  };
+
   /// Menu and tooltip flags.
   enum wxExMenuFlags
   {
@@ -52,15 +71,6 @@ public:
     STC_WIN_HEX          = 0x0002, ///< window in hex mode
     STC_WIN_NO_INDICATOR = 0x0004, ///< a change indicator is not used
     STC_WIN_FROM_OTHER   = 0x0010  ///< opened from within another file (e.g. a link)
-  };
-
-  /// Config dialog flags.
-  enum wxExConfigFlags
-  {
-    STC_CONFIG_DEFAULT    = 0x0000, ///< modal dialog with all options
-    STC_CONFIG_MODELESS   = 0x0001, ///< use as modeless dialog
-    STC_CONFIG_WITH_APPLY = 0x0002, ///< add the apply button
-    STC_CONFIG_SIMPLE     = 0x0004  ///< only 'simple' options on dialog
   };
 
   /// Constructor. The title is used for name.
@@ -87,7 +97,7 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = 0);
-
+  
   /// Is a change indicator allowed.
   bool AllowChangeIndicator() const {return m_AllowChangeIndicator;};
 
@@ -182,6 +192,9 @@ public:
   
   /// Returns the lexer.
   const wxExLexer& GetLexer() const {return m_Lexer;};
+
+  /// Returns the lexer.
+  wxExLexer& GetLexer() {return m_Lexer;};
 
   /// Returns vi component.
   const wxExVi& GetVi() const {return m_vi;};
@@ -295,12 +308,9 @@ public:
     /// argument passed on to FindNext
     bool find_next = true);
   
-  /// Resets lexer.
-  void ResetLexer();
-  
   /// Reset all margins.
   /// Default also resets the divider margin.
-  void ResetMargins(bool divider_margin = true);
+  void ResetMargins(long flags = STC_MARGIN_ALL);
 
   /// Deselects selected text in the control.
   // Reimplemented, since scintilla version sets empty sel at 0, and sets caret on pos 0.
@@ -308,15 +318,6 @@ public:
   
   /// Sets an indicator at specified start and end pos.
   bool SetIndicator(const wxExIndicator& indicator, int start, int end);
-
-  /// Sets the (scintilla) lexer for this document.
-  bool SetLexer(const wxExLexer& lexer, bool fold = false);
-  
-  /// Sets the (scintilla) lexer for this document.
-  bool SetLexer(const wxString& lexer, bool fold = false);
-  
-  /// Sets lexer prop name and value, and applies it.
-  void SetLexerProperty(const wxString& name, const wxString& value);
 
   /// search flags to be used:
   /// - wxSTC_FIND_WHOLEWORD
@@ -376,7 +377,6 @@ private:
   void Initialize(bool file_exists);
   bool LinkOpen(wxString* filename = nullptr); // name of found file
   void MarkModified(const wxStyledTextEvent& event);
-  void SetLexerCommon(bool fold);
 
   const int m_MarginDividerNumber;
   const int m_MarginFoldingNumber;
@@ -399,10 +399,12 @@ private:
   wxExSTCFile m_File;
   wxExFrame* m_Frame;
   wxExHexMode m_HexMode;
+  
   // We use a separate lexer here as well
   // (though wxExSTCFile offers one), as you can manually override
   // the lexer.
   wxExLexer m_Lexer;
+  
   wxExLink m_Link;
   wxExVi m_vi;
   

@@ -323,7 +323,7 @@ void wxExVCSEntry::ShowOutput(const wxString& caption) const
   {
     if (GetFlags().Contains("xml"))
     {
-      GetShell()->SetLexer("xml");
+      GetShell()->GetLexer().Set("xml");
     }
     else
     {

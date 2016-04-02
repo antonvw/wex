@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wxExMenu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -168,7 +168,7 @@ void wxExMenu::AppendSubMenu(
 
 bool wxExMenu::AppendTools(int itemid)
 {
-  if (wxExLexers::Get()->GetCount() == 0)
+  if (wxExLexers::Get()->GetLexers().empty())
   {
     return false;
   }

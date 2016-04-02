@@ -11,16 +11,44 @@
 #endif
 #include <algorithm>
 #include <functional>
-#include <wx/stc/stc.h>
 #include <wx/tokenzr.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/frame.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/util.h> // for wxExAlignText
 
 // We always use lines with 80 characters. 
 const int line_size = 80;
 
+wxExLexer& wxExLexer::operator=(const wxExLexer& l)
+{
+  if (this != &l)
+  {
+    m_CommentBegin = l.m_CommentBegin;
+    m_CommentBegin2 = l.m_CommentBegin2;
+    m_CommentEnd = l.m_CommentEnd;
+    m_CommentEnd2 = l.m_CommentEnd2;
+    m_DisplayLexer = l.m_DisplayLexer;
+    m_Extensions = l.m_Extensions;
+    m_IsOk = l.m_IsOk;
+    m_Keywords = l.m_Keywords;
+    m_KeywordsSet = l.m_KeywordsSet;
+    m_Language = l.m_Language;
+    m_Properties = l.m_Properties;
+    m_ScintillaLexer = l.m_ScintillaLexer;
+    m_Styles = l.m_Styles;
+    
+    if (m_STC != nullptr && l.m_STC != nullptr)
+    {
+      m_STC = l.m_STC;
+    }
+  }
+
+  return *this;
+}
+  
 // Adds the specified keywords to the keywords map and the keywords set.
 // The text might contain the keyword set after a ':'.
 // Returns false if specified set is illegal or value is empty.
@@ -73,7 +101,7 @@ bool wxExLexer::AddKeywords(const wxString& value, int setno)
     m_Keywords.insert(keyword);
   }
 
-  auto it = m_KeywordsSet.find(setno);
+  const auto& it = m_KeywordsSet.find(setno);
   
   if (it == m_KeywordsSet.end())
   {
@@ -87,60 +115,65 @@ bool wxExLexer::AddKeywords(const wxString& value, int setno)
   return true;
 }
 
-void wxExLexer::Apply(wxStyledTextCtrl* stc) const
+bool wxExLexer::Apply() const
 {
-  stc->ClearDocumentStyle();
+  if (m_STC == nullptr) return false;
   
-  for_each (m_Properties.begin(), m_Properties.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
+  m_STC->ClearDocumentStyle();
+  
+  for_each(m_Properties.begin(), m_Properties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), m_STC));
 
   // Reset keywords, also if no lexer is available.
   for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
   {
-    stc->SetKeyWords(setno, wxEmptyString);
+    m_STC->SetKeyWords(setno, wxEmptyString);
   }
 
-  wxExLexers::Get()->ApplyGlobalStyles(stc);
+  wxExLexers::Get()->ApplyGlobalStyles(m_STC);
 
   if (wxExLexers::Get()->GetThemeOk())
   {
     for (const auto& it : m_KeywordsSet)
     {
-      stc->SetKeyWords(it.first, GetKeywordsStringSet(it.second));
+      m_STC->SetKeyWords(it.first, GetKeywordsStringSet(it.second));
     }
     
-    wxExLexers::Get()->GetDefaultStyle().Apply(stc);
-    wxExLexers::Get()->ApplyIndicators(stc);
-    wxExLexers::Get()->ApplyProperties(stc);
-    wxExLexers::Get()->ApplyMarkers(stc);
+    wxExLexers::Get()->Apply(m_STC);
   
-    for_each (m_Properties.begin(), m_Properties.end(), 
-      std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
+    for_each(m_Properties.begin(), m_Properties.end(), 
+      std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), m_STC));
 
-    for_each (m_Styles.begin(), m_Styles.end(), 
-      std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+    for_each(m_Styles.begin(), m_Styles.end(), 
+      std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), m_STC));
   }
 
   // And finally colour the entire document.
-  stc->Colourise(0, stc->GetLength() - 1);
+  m_STC->Colourise(0, m_STC->GetLength() - 1);
+  
+  return true;
 }
 
-void wxExLexer::ApplyWhenSet(wxStyledTextCtrl* stc)
+bool wxExLexer::ApplyWhenSet()
 {
-  if (stc == nullptr) return;
+  if (m_STC == nullptr) return false;
   
-  stc->SetLexerLanguage(m_ScintillaLexer);
+  m_STC->SetLexerLanguage(m_ScintillaLexer);
   
-  if (m_IsOk = (m_ScintillaLexer.empty() ? true: (stc->GetLexer() != wxSTC_LEX_NULL)))
+  if (m_IsOk = (m_ScintillaLexer.empty() ? true: (((wxStyledTextCtrl *)m_STC)->GetLexer() != wxSTC_LEX_NULL)))
   {
-    stc->SetStyleBits(stc->GetStyleBitsNeeded());
-    Apply(stc);
+    m_STC->SetStyleBits(m_STC->GetStyleBitsNeeded());
+    Apply();
       
     if (m_ScintillaLexer == "diff")
     {
-      stc->SetEdgeMode(wxSTC_EDGE_NONE);
+      m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
     }
+    
+    wxExFrame::StatusText(GetDisplayLexer(), "PaneLexer");
   }
+  
+  return true;
 }
 
 void wxExLexer::AutoMatch(const wxString& lexer)
@@ -161,14 +194,10 @@ void wxExLexer::AutoMatch(const wxString& lexer)
       else
       {
         // Then, a partial using Contains.
-        for (const auto& style : wxExLexers::Get()->GetThemeMacros())
-        {
-          if (it.first.Contains(style.first))
-          {
-            m_Styles.emplace_back(wxExStyle(it.second, style.second));
-            break;
-          }
-        }
+        const auto& style = std::find_if(wxExLexers::Get()->GetThemeMacros().begin(), wxExLexers::Get()->GetThemeMacros().end(), 
+          [&](auto const& e) {return it.first.Contains(e.first);});
+        if (style != wxExLexers::Get()->GetThemeMacros().end())
+          m_Styles.emplace_back(wxExStyle(it.second, style->second));
       }
     }
   }
@@ -246,7 +275,7 @@ const wxString wxExLexer::GetKeywordsString(
   }
   else
   {
-    const auto it = m_KeywordsSet.find(keyword_set);
+    const auto& it = m_KeywordsSet.find(keyword_set);
 
     if (it != m_KeywordsSet.end())
     {
@@ -277,19 +306,18 @@ const wxString wxExLexer::GetKeywordsStringSet(
 
 void wxExLexer::Initialize()
 {
-  m_IsOk = false;
-  
   m_CommentBegin.clear();
   m_CommentBegin2.clear();
   m_CommentEnd.clear();
   m_CommentEnd2.clear();
-  m_Styles.clear();
+  m_DisplayLexer.clear();
   m_Extensions.clear();
-  m_Properties.clear();
+  m_IsOk = true;
   m_Keywords.clear();
   m_KeywordsSet.clear();
+  m_Properties.clear();
   m_ScintillaLexer.clear();
-  m_DisplayLexer.clear();
+  m_Styles.clear();
 }
 
 bool wxExLexer::IsKeyword(const wxString& word) const
@@ -299,7 +327,7 @@ bool wxExLexer::IsKeyword(const wxString& word) const
 
 bool wxExLexer::KeywordStartsWith(const wxString& word) const
 {
-  const auto it = m_Keywords.lower_bound(word);
+  const auto& it = m_Keywords.lower_bound(word);
   return 
     it != m_Keywords.end() &&
     it->StartsWith(word);
@@ -383,15 +411,20 @@ const wxString wxExLexer::MakeSingleLineComment(
   return out;
 }
 
-bool wxExLexer::Reset(wxStyledTextCtrl* stc)
+bool wxExLexer::Reset()
 {
   Initialize();
   
-  stc->SetLexer(wxSTC_LEX_NULL);
-  
-  if (m_IsOk = (stc->GetLexer() == wxSTC_LEX_NULL))
+  if (m_STC != nullptr)
   {
-    Apply(stc);
+    ((wxStyledTextCtrl *)m_STC)->SetLexer(wxSTC_LEX_NULL);
+    
+    if (m_IsOk = (((wxStyledTextCtrl *)m_STC)->GetLexer() == wxSTC_LEX_NULL))
+    {
+      Apply();
+      wxExFrame::StatusText(GetDisplayLexer(), "PaneLexer");
+      m_STC->ResetMargins(wxExSTC::STC_MARGIN_FOLDING);
+    }
   }
 
   return m_IsOk;
@@ -486,16 +519,16 @@ void wxExLexer::Set(const wxXmlNode* node)
   }
 }
 
-bool wxExLexer::Set(const wxString& lexer, wxStyledTextCtrl* stc)
+bool wxExLexer::Set(const wxString& lexer, bool fold)
 {
   // If there are no lexers, just return, to prevent error message.
-  if (wxExLexers::Get()->GetCount() == 0) return false;
+  if (wxExLexers::Get()->GetLexers().empty()) return false;
 
   (*this) = wxExLexers::Get()->FindByName(lexer);
-  
-  if (!m_IsOk && stc != nullptr)
+
+  if (!m_IsOk && m_STC != nullptr)
   {
-    (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
+    (*this) = wxExLexers::Get()->FindByText(m_STC->GetLine(0));
   }
     
   if (m_ScintillaLexer.empty() && !lexer.empty())
@@ -504,7 +537,7 @@ bool wxExLexer::Set(const wxString& lexer, wxStyledTextCtrl* stc)
   }
   else
   {
-    ApplyWhenSet(stc);
+    ApplyWhenSet();
   }
   
   if (!m_IsOk)
@@ -512,14 +545,19 @@ bool wxExLexer::Set(const wxString& lexer, wxStyledTextCtrl* stc)
     wxLogError("Lexer is not known: " + lexer);
   }
   
+  if (fold && m_STC != nullptr)
+  {
+    m_STC->Fold();
+  }
+  
   return m_IsOk;
 }
 
-bool wxExLexer::Set(const wxExLexer& lexer, wxStyledTextCtrl* stc)
+bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
 {
-  if (lexer.GetScintillaLexer().empty() && stc != nullptr)
+  if (lexer.GetScintillaLexer().empty() && m_STC != nullptr)
   {
-    (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
+    (*this) = wxExLexers::Get()->FindByText(m_STC->GetLine(0));
   }
   else
   {
@@ -529,23 +567,22 @@ bool wxExLexer::Set(const wxExLexer& lexer, wxStyledTextCtrl* stc)
     }
   }
     
-  ApplyWhenSet(stc);
+  ApplyWhenSet();
   
+  if (fold && m_STC != nullptr)
+  {
+    m_STC->Fold();
+  }
+
   return m_IsOk;
 }
 
 void wxExLexer::SetProperty(const wxString& name, const wxString& value)
 {
-  for (auto& it : m_Properties)
-  {
-    if (it.GetName() == name)
-    {
-      it.Set(value);
-      return;
-    }
-  }
-
-  m_Properties.emplace_back(wxExProperty(name, value));
+  const auto& it = std::find_if(m_Properties.begin(), m_Properties.end(), 
+    [name](auto const& e) {return e.GetName() == name;});
+  if (it != m_Properties.end()) it->Set(value);
+  else m_Properties.emplace_back(wxExProperty(name, value));
 }
 
 int wxExLexer::UsableCharactersPerLine() const

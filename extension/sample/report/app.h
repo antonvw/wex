@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of sample classes for wxExtension report
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/app.h>
@@ -39,7 +39,8 @@ protected:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     int col_number = 0,
-    long flags = 0) override;
+    long flags = 0,
+    const wxString& command = wxEmptyString) override;
 private:
   wxExNotebook* m_NotebookWithLists; ///< all listviews
   wxExSTC* m_STC;

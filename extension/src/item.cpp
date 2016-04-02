@@ -494,7 +494,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
       if (!m_Initial.IsNull())
       {
-        ((wxExSTC* )m_Window)->SetLexer(m_Initial.As<wxString>());
+        ((wxExSTC* )m_Window)->GetLexer().Set(m_Initial.As<wxString>());
       }
       break;
 

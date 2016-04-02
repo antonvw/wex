@@ -2,7 +2,7 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wxExStyle class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -37,7 +37,7 @@ void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 
 bool wxExStyle::ContainsDefaultStyle() const
 {
-  const auto it = m_No.find(wxSTC_STYLE_DEFAULT);
+  const auto& it = m_No.find(wxSTC_STYLE_DEFAULT);
   return (it != m_No.end());
 }
 
@@ -61,8 +61,7 @@ void wxExStyle::Set(const wxXmlNode* node, const wxString& macro)
 
   m_Value = node->GetNodeContent().Strip(wxString::both);
 
-  const auto it = 
-    wxExLexers::Get()->GetThemeMacros().find(m_Value);
+  const auto& it = wxExLexers::Get()->GetThemeMacros().find(m_Value);
 
   if (it != wxExLexers::Get()->GetThemeMacros().end())
   {
@@ -114,8 +113,7 @@ void wxExStyle::SetNo(const wxString& no, const wxString& macro)
   // Collect each single no in the vector.
   while (no_fields.HasMoreTokens())
   {
-    const wxString single = 
-      wxExLexers::Get()->ApplyMacro(no_fields.GetNextToken(), macro);
+    const auto& single = wxExLexers::Get()->ApplyMacro(no_fields.GetNextToken(), macro);
       
     bool error = true;
 

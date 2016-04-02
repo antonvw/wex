@@ -85,7 +85,8 @@ public:
       m_File->Write(buffer.data(), buffer.length()) == buffer.length();};
   
   /// Writes file from string.
-  bool Write(const wxString &s) {return m_File->Write(s);}; 
+  bool Write(const wxString &s) {
+    return m_File->IsOpened() && m_File->Write(s);}; 
 protected:
   /// Assigns the filename.
   /// Does not open the file, the filename does not need

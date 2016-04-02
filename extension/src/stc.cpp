@@ -93,6 +93,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_Link(wxExLink(this))
   , m_HexMode(wxExHexMode(this))
   , m_Frame(dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow()))
+  , m_Lexer(this)
 {
   Initialize(false);
 
@@ -142,6 +143,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_Link(wxExLink(this))
   , m_HexMode(wxExHexMode(this))
   , m_Frame(dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow()))
+  , m_Lexer(this)
 {
   Initialize(filename.GetStat().IsOk());
   
@@ -219,7 +221,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 {
   const wxString sel = GetSelectedText();
 
-  if (GetCurrentLine() == 0 && wxExLexers::Get()->GetCount() > 0)
+  if (GetCurrentLine() == 0 && !wxExLexers::Get()->GetLexers().empty())
   {
     menu.Append(ID_EDIT_SHOW_PROPERTIES, _("Properties"));
   }
@@ -471,7 +473,7 @@ int wxExSTC::ConfigDialog(
 #endif  
               true, 4)}}}, ITEM_NOTEBOOK_AUI)}},
       {_("Font"), 
-        {wxExLexers::Get()->GetCount() > 0 ?
+        {!wxExLexers::Get()->GetLexers().empty() ?
            wxExItem(_("Default font"), ITEM_FONTPICKERCTRL): wxExItem(),
          wxExItem(_("Tab font"), ITEM_FONTPICKERCTRL)}},
       {_("Edge"),
@@ -484,15 +486,15 @@ int wxExSTC::ConfigDialog(
         {wxExItem(_("Tab width"), 1, (int)cfg->ReadLong(_("Edge column"), 0)),
          wxExItem(_("Indent"), 0, (int)cfg->ReadLong(_("Edge column"), 0)),
          wxExItem(_("Divider"), 0, 40),
-         wxExLexers::Get()->GetCount() > 0 ?
+         !wxExLexers::Get()->GetLexers().empty() ?
            wxExItem(_("Folding"), 0, 40): wxExItem(),
          wxExItem(_("Line number"), 0, 100),
          wxExItem(_("Auto complete maxwidth"), 0, 100)}},
       {_("Folding"),
         {wxExItem(_("Indentation guide"),ITEM_CHECKBOX),
-         wxExLexers::Get()->GetCount() > 0 ?
+         !wxExLexers::Get()->GetLexers().empty() ?
            wxExItem(_("Auto fold"), 0, INT_MAX): wxExItem(),
-         wxExLexers::Get()->GetCount() > 0 ?
+         !wxExLexers::Get()->GetLexers().empty() ?
            wxExItem(_("Fold flags"), std::map<long, const wxString> {
              {wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")},
              {wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")},
@@ -553,7 +555,7 @@ void wxExSTC::ConfigGet(bool init)
     // Doing this once is enough, not yet possible.
     wxExLexers::Get()->LoadDocument();
     
-    SetLexer(m_Lexer);
+    m_Lexer.Apply();
   }
 
   if (GetFileName().GetExt().CmpNoCase("log") == 0)
@@ -602,7 +604,6 @@ void wxExSTC::ConfigGet(bool init)
 
   m_Link.SetFromConfig();
 }
-
 
 void wxExSTC::Copy()
 {
@@ -1047,7 +1048,7 @@ void wxExSTC::Initialize(bool file_exists)
   m_SavedSelectionStart = -1;
   m_SavedSelectionEnd = -1;
   
-  if (wxExLexers::Get()->GetCount() > 0)
+  if (!wxExLexers::Get()->GetLexers().empty())
   {
     m_DefaultFont = wxConfigBase::Get()->ReadObject(
       _("Default font"), wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT));
@@ -1402,7 +1403,7 @@ void wxExSTC::Initialize(bool file_exists)
         properties, 
         wxEmptyString, 
         wxOK);
-      m_EntryDialog->GetSTC()->SetLexer("props");
+      m_EntryDialog->GetSTC()->GetLexer().Set("props");
     }
     else
     {
@@ -1853,6 +1854,7 @@ void wxExSTC::PropertiesMessage(long flags)
   {
     wxExFrame::UpdateStatusBar(this, "PaneFileType");
     wxExFrame::UpdateStatusBar(this, "PaneLexer");
+    wxExFrame::UpdateStatusBar(this, "PaneMode");
   }
   
   wxExFrame::UpdateStatusBar(this, "PaneInfo");
@@ -2013,22 +2015,12 @@ bool wxExSTC::ReplaceNext(
   return true;
 }
 
-void wxExSTC::ResetLexer()
-{
-  m_Lexer.Reset(this);
-  wxExFrame::StatusText(m_Lexer.GetDisplayLexer(), "PaneLexer");
-  SetMarginWidth(m_MarginFoldingNumber, 0);
-}
  
-void wxExSTC::ResetMargins(bool divider_margin)
+void wxExSTC::ResetMargins(long flags)
 {
-  SetMarginWidth(m_MarginFoldingNumber, 0);
-  SetMarginWidth(m_MarginLineNumber, 0);
-
-  if (divider_margin)
-  {
-    SetMarginWidth(m_MarginDividerNumber, 0);
-  }
+  if (flags & STC_MARGIN_FOLDING) SetMarginWidth(m_MarginFoldingNumber, 0);
+  if (flags & STC_MARGIN_DIVIDER) SetMarginWidth(m_MarginLineNumber, 0);
+  if (flags & STC_MARGIN_LINENUMBER) SetMarginWidth(m_MarginDividerNumber, 0);
 }
 
 void wxExSTC::SelectNone()
@@ -2062,55 +2054,6 @@ bool wxExSTC::SetIndicator(
   return true;
 }
 
-bool wxExSTC::SetLexer(const wxExLexer& lexer, bool fold)
-{
-  if (!m_Lexer.Set(lexer, this))
-  {
-    return false;
-  }
-
-  SetLexerCommon(fold);
-  
-  return true;
-}
-
-bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
-{
-  if (!m_Lexer.Set(lexer, this))
-  {
-    return false;
-  }
-  
-  SetLexerCommon(fold);
-  
-  return true;
-}
-
-void wxExSTC::SetLexerCommon(bool fold)
-{
-  if (fold)
-  {
-    Fold();
-  }
-  
-  if (!HexMode() &&
-       m_Lexer.GetScintillaLexer() == "po")
-  {
-    if (!m_Link.AddBasePath())
-    {
-      wxLogStatus("Could not add base path");
-    }
-  }
-    
-  wxExFrame::StatusText(m_Lexer.GetDisplayLexer(), "PaneLexer");
-}
-
-void wxExSTC::SetLexerProperty(const wxString& name, const wxString& value)
-{
-  m_Lexer.SetProperty(name, value);
-  m_Lexer.Apply(this);
-}
-
 void wxExSTC::SetSearchFlags(int flags)
 {
   if (flags == -1)
@@ -2142,7 +2085,6 @@ void wxExSTC::ShowLineNumbers(bool show)
 {
   SetMarginWidth(m_MarginLineNumber, show ? wxConfigBase::Get()->ReadLong(_("Line number"), 0): 0);
 }
-
 
 void wxExSTC::Sync(bool start)
 {

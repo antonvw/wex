@@ -2,7 +2,7 @@
 // Name:      link.h
 // Purpose:   Declaration of class wxExLink
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,10 +19,6 @@ class WXDLLIMPEXP_BASE wxExLink
 public:
   /// Default constructor.
   wxExLink(wxExSTC* stc = nullptr);
-  
-  /// Adds a possible base path to pathlist, present in the stc component.
-  /// Returns false if basepath was not found in stc (or stc is nullptr).
-  bool AddBasePath();
   
   /// Returns a path from text, using pathlist if necessary.
   /// Returns empty string if no path could be found.

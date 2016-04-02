@@ -425,8 +425,9 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   SECTION("wxExVCSCommandOnSTC")
   {
     wxExVCSCommand command("status");
-    wxExVCSCommandOnSTC(command, wxExLexer("cpp", GetSTC()), GetSTC());
-    wxExVCSCommandOnSTC(command, wxExLexer("cpp", nullptr), GetSTC());
+    wxExVCSCommandOnSTC(command, wxExLexer(GetSTC(), "cpp"), GetSTC());
+    wxExVCSCommandOnSTC(command, wxExLexer(nullptr, "cpp"), GetSTC());
+    wxExVCSCommandOnSTC(command, wxExLexer(), GetSTC());
   }
   
   SECTION("wxExVCSExecute")

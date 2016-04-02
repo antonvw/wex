@@ -2,7 +2,7 @@
 // Name:      test-lexer.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -20,22 +20,25 @@ TEST_CASE("wxExLexer", "[stc][lexer]")
   wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
   AddPane(GetFrame(), stc);
   
-  wxExLexer lexer;
-  REQUIRE(!lexer.IsOk());
+  wxExLexer lexer(stc);
+  REQUIRE( lexer.IsOk());
   REQUIRE( lexer.GetStyles().empty());
-  
   REQUIRE( wxExLexer("cpp").IsOk());
   REQUIRE( wxExLexer("pascal").IsOk());
   REQUIRE(!wxExLexer("xxx").IsOk());
+  REQUIRE( lexer.Reset());
   
-  lexer = wxExLexers::Get()->FindByText("XXXX");
-  REQUIRE(!lexer.IsOk());
-  
-  lexer = wxExLexers::Get()->FindByText("<html>");
+  REQUIRE( lexer.Set(wxExLexers::Get()->FindByText("XXXX")));
+  REQUIRE( lexer.GetDisplayLexer().empty());
   REQUIRE( lexer.IsOk());
+  REQUIRE( lexer.Reset());
+  
+  REQUIRE( lexer.Set(wxExLexers::Get()->FindByText("<html>")));
+  REQUIRE( lexer.IsOk());
+  REQUIRE( lexer.GetScintillaLexer() == "hypertext");
   REQUIRE( lexer.GetDisplayLexer() == "hypertext");
   
-  lexer = wxExLexers::Get()->FindByText("// this is a cpp comment text");
+  REQUIRE( lexer.Set(wxExLexers::Get()->FindByText("// this is a cpp comment text")));
   REQUIRE( lexer.IsOk());
   REQUIRE( wxExLexer(lexer).IsOk());
   REQUIRE( lexer.GetDisplayLexer() == "cpp");
@@ -56,30 +59,24 @@ TEST_CASE("wxExLexer", "[stc][lexer]")
   REQUIRE(!lexer.GetKeywordsString(-1, 9).Contains("for_each"));
   REQUIRE( lexer.GetKeywordsString(-1, 50).empty());
   REQUIRE( lexer.CommentComplete("// test").empty());
-
   REQUIRE( lexer.IsKeyword("class"));
   REQUIRE( lexer.IsKeyword("const"));
-
   REQUIRE( lexer.KeywordStartsWith("cla"));
   REQUIRE(!lexer.KeywordStartsWith("xxx"));
-
   REQUIRE(!lexer.MakeComment("test", true).empty());
   REQUIRE(!lexer.MakeComment("prefix", "test").empty());
   REQUIRE(!lexer.MakeComment("test\ntest2", true).empty());
   REQUIRE(!lexer.MakeComment("prefix", "test\ntest2").empty());
   REQUIRE(!lexer.MakeSingleLineComment("test").empty());
-
   REQUIRE( lexer.GetKeywordsString(6).empty());
   REQUIRE( lexer.AddKeywords("hello:1"));
   REQUIRE( lexer.AddKeywords("more:1"));
-  REQUIRE( lexer.AddKeywords(
-    "test11 test21:1 test31:1 test12:2 test22:2"));
+  REQUIRE( lexer.AddKeywords("test11 test21:1 test31:1 test12:2 test22:2"));
   REQUIRE( lexer.AddKeywords("final", 6));
   REQUIRE(!lexer.AddKeywords(""));
   REQUIRE(!lexer.AddKeywords("xxx:1", -1));
   REQUIRE(!lexer.AddKeywords("xxx:1", 100));
   REQUIRE(!lexer.GetKeywordsString(6).empty());
-
   REQUIRE( lexer.IsKeyword("hello")); 
   REQUIRE( lexer.IsKeyword("more")); 
   REQUIRE( lexer.IsKeyword("class")); 
@@ -90,10 +87,8 @@ TEST_CASE("wxExLexer", "[stc][lexer]")
   REQUIRE( lexer.IsKeyword("test31"));
   REQUIRE( lexer.IsKeyword("final"));
   REQUIRE(!lexer.IsKeyword("xxx"));
-
   REQUIRE( lexer.KeywordStartsWith("te"));
   REQUIRE(!lexer.KeywordStartsWith("xx"));
-
   REQUIRE(!lexer.GetKeywords().empty());
   
   lexer.SetProperty("test", "value");
@@ -110,12 +105,12 @@ TEST_CASE("wxExLexer", "[stc][lexer]")
   
   REQUIRE(val == "value");
 
-  REQUIRE( lexer.Set("pascal", stc));
+  REQUIRE( lexer.Set("pascal"));
   REQUIRE( lexer.GetDisplayLexer() == "pascal");
   REQUIRE( lexer.GetScintillaLexer() == "pascal");
   REQUIRE(!lexer.CommentComplete("(*test").empty());
   REQUIRE( lexer.CommentComplete("(*test").EndsWith("     *)"));
-  
+
   wxExLexer lexer2(wxExLexers::Get()->FindByText("// this is a cpp comment text"));
   REQUIRE( lexer2.IsOk());
   REQUIRE( lexer2.GetDisplayLexer() == "cpp");
@@ -125,13 +120,12 @@ TEST_CASE("wxExLexer", "[stc][lexer]")
   REQUIRE( lexer2.GetScintillaLexer() == "pascal");
   REQUIRE(!lexer2.CommentComplete("(*test").empty());
   REQUIRE( lexer2.CommentComplete("(*test").EndsWith("     *)"));
-  
-  lexer.Reset(stc);
+
+  REQUIRE( lexer.Reset());
   REQUIRE( lexer.GetDisplayLexer().empty());
   REQUIRE( lexer.GetScintillaLexer().empty());
-  
-  REQUIRE( lexer.Set("xsl", stc));
+  REQUIRE( lexer.Set("xsl"));
   REQUIRE( lexer.GetLanguage() == "xml");
-  
-  lexer.Apply(stc);
+
+  lexer.Apply();
 }

@@ -113,4 +113,6 @@ TEST_CASE("wxExHexMode", "[stc]")
   REQUIRE( hm->Active());
   REQUIRE(!hm->SetBuffer(0, 30)); // should have no effect
   REQUIRE( hm->GetBuffer().empty());
+  
+  wxExLexers::Get()->Apply(stc);
 }

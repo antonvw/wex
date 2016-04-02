@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of sample classes for wxExRep
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -250,7 +250,8 @@ bool wxExRepSampleFrame::OpenFile(const wxExFileName& file,
   int line_number,
   const wxString& match,
   int col_number,
-  long flags)
+  long flags,
+  const wxString& command)
 {
   // We cannot use the wxExFrameWithHistory::OpenFile, as that uses GetSTC.
   // Prevent recursion.

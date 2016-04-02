@@ -55,6 +55,9 @@ public:
   /// Returns current state.  
   int State() const {return m_State;};
   
+  /// Returns state as a string.
+  const std::string StateString() const;
+  
   /// Transitions to next state depending on command.
   /// Returns true if command represents a state change, otherwise false.
   /// That does not mean that state was changed, in case of readonly doc.

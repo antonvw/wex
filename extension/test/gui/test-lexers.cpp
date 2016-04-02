@@ -2,7 +2,7 @@
 // Name:      test-lexers.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -20,9 +20,7 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
   AddPane(GetFrame(), stc);
   
   REQUIRE( wxExLexers::Get() != nullptr);
-  REQUIRE( wxExLexers::Get()->GetCount() > 0);
-  REQUIRE( wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle());
-  REQUIRE( wxExLexers::Get()->GetDefaultStyle().IsOk());
+  REQUIRE(!wxExLexers::Get()->GetLexers().empty());
   
   // Test lexer and global macros.
   for (const auto& macro : std::vector<
@@ -43,11 +41,9 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
   // At this moment we have no global properties.
   REQUIRE( wxExLexers::Get()->GetProperties().empty());
   
-  wxExLexers::Get()->ApplyMarkers(stc);
-  wxExLexers::Get()->ApplyProperties(stc);
+  wxExLexers::Get()->Apply(stc);
 
-  REQUIRE(!wxExLexers::Get()->BuildWildCards(  GetTestFile()).empty());
-  REQUIRE( wxExLexers::Get()->GetCount() > 0);
+  REQUIRE(!wxExLexers::Get()->GetLexers().empty());
 
   REQUIRE( wxExLexers::Get()->FindByFileName(
     GetTestFile()).GetScintillaLexer() == "cpp");
@@ -118,6 +114,5 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
   REQUIRE( wxExLexers::Get()->LoadDocument());
   
   wxExLexers::Get()->ApplyGlobalStyles(stc);
-  wxExLexers::Get()->ApplyHexStyles(stc);
-  wxExLexers::Get()->ApplyIndicators(stc);
+  wxExLexers::Get()->Apply(stc);
 }

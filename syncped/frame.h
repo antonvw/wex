@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -37,7 +37,8 @@ public:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     int col_number = 0,
-    long flags = 0) override;
+    long flags = 0,
+    const wxString& command = wxEmptyString) override;
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);

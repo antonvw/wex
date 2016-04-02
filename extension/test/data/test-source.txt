@@ -123,6 +123,8 @@
 :1,2w >> test-ex.txt
 :r test-ex.txt
 :$r test-ex.txt
+:e test-ex.txt
+:e +:10 test-ex.txt
 :!pwd
 :!bash
 
