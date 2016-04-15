@@ -1330,7 +1330,8 @@ bool Frame::OpenFile(
         match,
         col_number,
         flags | m_App->GetFlags(),
-        0xFFFF);
+        0xFFFF,
+        command.ToStdString());
         
       const wxString key(filename.GetFullPath());
 
@@ -1345,14 +1346,6 @@ bool Frame::OpenFile(
       if (notebook->GetPageCount() >= 2 && m_App->GetSplit() != -1)
       {
         notebook->Split(key, m_App->GetSplit());
-      }
-
-      if (!command.empty() && editor->GetVi().GetIsActive())
-      {
-        if (!editor->GetVi().Command(command.ToStdString()))
-        {
-          wxLogError("Command error: " + command);
-        }
       }
       
       if (GetManager().GetPane("DIRCTRL").IsShown())

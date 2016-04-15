@@ -11,7 +11,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <shunting-yard/eval.hpp>
 #include <wx/config.h>
+#include <wx/numformatter.h>
 #include <wx/textfile.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/ex.h>
@@ -50,10 +52,81 @@
   wxPostEvent(wxTheApp->GetTopWindow(), event);             \
 };                                                          \
 
+struct ex_evaluator : public evaluator_extra 
+{
+  ex_evaluator() 
+  {
+    opers.insert({">>", oper_t{false, 10, false}});
+    opers.insert({"<<", oper_t{false, 10, false}});
+    opers.insert({"&", oper_t{false, 10, false}});
+    opers.insert({"|", oper_t{false, 10, false}});
+    opers.insert({"xor", oper_t{false, 10, false}});
+    opers.insert({"bitor", oper_t{false, 10, false}});
+    opers.insert({"bitand", oper_t{false, 10, false}});
+
+    funcs.insert({">>", func_args(2, [](args_t v) {
+      return (int)v[0] >> (int)v[1];})});
+    funcs.insert({"<<", func_args(2, [](args_t v) {
+      return (int)v[0] << (int)v[1]; })});
+    funcs.insert({"&", func_args(2, [](args_t v) {
+      return (int)v[0] & (int)v[1]; })});
+    funcs.insert({"|", func_args(2, [](args_t v) {
+      return (int)v[0] | (int)v[1]; })});
+    funcs.insert({"compl", func_args(1, [](args_t v) {
+      return ~(int)v[0];})});
+    funcs.insert({"xor", func_args(2, [](args_t v) {
+      return (int)v[0] xor (int)v[1]; })});
+    funcs.insert({"bitor", func_args(2, [](args_t v) {
+      return (int)v[0] bitor (int)v[1]; })});
+    funcs.insert({"bitand", func_args(2, [](args_t v) {
+      return (int)v[0] bitand (int)v[1]; })});
+  }
+};
+
+ex_evaluator wxExEx::m_Evaluator;
 wxExSTCEntryDialog* wxExEx::m_Dialog = nullptr;
 wxExViMacros wxExEx::m_Macros;
 std::string wxExEx::m_LastCommand;
 
+bool ReplaceMarkers(wxExEx* ex, wxString& text)
+{
+  wxStringTokenizer tkz(text, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
+
+  while (tkz.HasMoreTokens())
+  {
+    tkz.GetNextToken();
+    
+    const wxString rest(tkz.GetString());
+    
+    if (!rest.empty())
+    {
+      // Replace marker.
+      if (tkz.GetLastDelimiter() == '\'')
+      {
+        const int line = ex->MarkerLine(rest.GetChar(0));
+        
+        if (line >= 0)
+        {
+          text.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
+            std::to_string(line + 1));
+        }
+        else
+        {
+          return false;
+        }
+      }
+      // Replace register.
+      else
+      {
+        text.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
+          ex->GetMacros().GetRegister(rest.GetChar(0)));
+      }
+    }
+  }
+  
+  return true;
+}
+  
 wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
@@ -75,16 +148,16 @@ wxExEx::wxExEx(wxExSTC* stc)
         wxString output;
         for (const auto& it : m_Macros.GetAbbreviations())
         {
-          output += it.first + " " + it.second + "\n";
+          output << it.first << "=" << it.second << "\n";
         }
-        ShowDialog("Abbreviations", output);
+        ShowDialog("Abbreviations", output, true);
       } return true;}},
 #if wxCHECK_VERSION(3,1,0)
     {":ar", [&](const std::string& command) {
       wxString text;
       for (size_t i = 1; i < wxTheApp->argv.GetArguments().size(); i++)
       {
-        text += wxTheApp->argv.GetArguments()[i] + "\n";
+        text << wxTheApp->argv.GetArguments()[i] << "\n";
       }
       if (!text.empty()) ShowDialog("ar", text);
       return true;}},
@@ -105,10 +178,15 @@ wxExEx::wxExEx(wxExSTC* stc)
       wxString output;
       for (const auto& it : m_Macros.GetRegisters())
       {
-        output += it + "\n";
+        output << it << "\n";
       }
-      output += "%: " + m_STC->GetFileName().GetFullName() + "\n";
-      ShowDialog("Registers", output);
+      output << "%: " << m_STC->GetFileName().GetFullName() << "\n";
+      std::string err;
+      for (const auto &var : m_Evaluator.variables) 
+      {
+        output << var << "=" << m_Evaluator.eval(var, &err) << "\n";
+      }
+      ShowDialog("Registers", output, true);
       return true;}},
     {":sed", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPORT_REPLACE ) return true;}},
     {":set", [&](const std::string& command) {
@@ -266,6 +344,62 @@ void wxExEx::AddText(const std::string& text)
   }
 }
 
+double wxExEx::Calculator(const std::string& text, int& width)
+{
+  wxString expr(text);
+  expr.Trim();
+
+  if (expr.empty() || expr.Contains("%s"))
+  {
+    return 0;
+  }
+  
+  const char ds(wxNumberFormatter::GetDecimalSeparator());
+  
+  // Determine the width.
+  const std::string rt((ds == '.' ? "\\.": std::string(1, ds)) + std::string("[0-9]+"));
+  std::regex re(rt);
+  auto words_begin = std::sregex_iterator(text.begin(), text.end(), re);
+  auto words_end = std::sregex_iterator();  
+
+  if (words_begin != words_end)
+  {
+    std::smatch match = *words_begin; 
+
+    if (!match.empty())
+    {
+      width = match.length() - 1;
+    }
+  }
+  else
+  {
+    width = 0;
+    
+    // Replace . with current line.
+    expr.Replace(".", std::to_string(m_STC->GetCurrentLine() + 1));
+  }
+  
+  // Replace $ with line count.
+  expr.Replace("$", std::to_string(m_STC->GetLineCount()));
+  
+  // Replace all markers and registers.
+  if (!ReplaceMarkers(this, expr))
+  {
+    return 0;
+  }
+
+  // https://github.com/r-lyeh/eval
+  std::string err;
+  auto val = m_Evaluator.eval(expr.ToStdString(), &err);
+  if (!err.empty())
+  {
+    ShowDialog("Error", expr + "\n" + wxString(err));
+    val = 0;
+  }
+  
+  return val;
+}
+
 bool wxExEx::Command(const std::string& command, bool is_handled)
 {
   if (!m_IsActive || command.empty() || command.front() != ':')
@@ -368,7 +502,7 @@ bool wxExEx::CommandAddress(const std::string& command)
         default: wxFAIL; break;
       }
 
-      if (!wxExReplaceMarkers(range_str, this))
+      if (!ReplaceMarkers(this, range_str))
       {
         return false;
       }
@@ -790,7 +924,7 @@ void wxExEx::SetRegisterYank(const std::string& value) const
   m_Macros.SetRegister('0', value);
 }
 
-void wxExEx::ShowDialog(const wxString& title, const wxString& text)
+void wxExEx::ShowDialog(const wxString& title, const wxString& text, bool prop_lexer)
 {
   if (m_Dialog == nullptr)
   {
@@ -823,7 +957,7 @@ void wxExEx::ShowDialog(const wxString& title, const wxString& text)
     m_Dialog->SetTitle(title);
   }
   
-  m_Dialog->GetSTC()->GetLexer().Set(m_STC->GetLexer());
+  m_Dialog->GetSTC()->GetLexer().Set(prop_lexer ? wxExLexer("props"): m_STC->GetLexer());
   m_Dialog->Show();
 }
 

@@ -196,6 +196,24 @@ TEST_CASE("wxExVi", "[stc][vi]")
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   REQUIRE( stc->GetText().Contains(wxString('z', 200)));
 
+  // Test insert \n.
+  ChangeMode( vi, "i\n\n\n\n", wxExVi::MODE_INSERT);
+  REQUIRE( stc->GetText().Contains("\n"));
+  REQUIRE(!stc->GetText().Contains("i"));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  REQUIRE( vi->GetInsertedText() == "\n\n\n\n");
+  
+  stc->SetText("");
+  event.m_uniChar = 'i';
+  REQUIRE(!vi->OnChar(event));
+  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  REQUIRE( vi->ModeInsert());
+  event.m_uniChar = WXK_RETURN;
+  REQUIRE( vi->OnKeyDown(event));
+  REQUIRE(!vi->OnChar(event));
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  REQUIRE( vi->GetInsertedText() == "\n");
+  
   // Test abbreviate.
   for (auto& abbrev : GetAbbreviations())
   {

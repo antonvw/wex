@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      address.cpp
+// Name:      addressrange.cpp
 // Purpose:   Implementation of class wxExAddressRange
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2016 Anton van Wezenbeek

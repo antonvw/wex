@@ -390,6 +390,30 @@ wxExListView::wxExListView(wxWindow* parent,
       ItemActivated(i);
     }}, ID_EDIT_OPEN);
 
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (!IsShown() || GetItemCount() == 0) return false;
+    
+    const wxString& caption = _("Enter Item Number");
+    const int initial_value = (GetFirstSelected() == -1 ? 1: GetFirstSelected() + 1);
+    long val;
+
+    if ((val = wxGetNumberFromUser(
+      _("Input") + wxString::Format(" (1 - %d):", GetItemCount()),
+      wxEmptyString,
+      caption,
+      initial_value,
+      1,
+      GetItemCount())) > 0)
+    {
+      if (initial_value >= 1)
+      {
+        Select(initial_value - 1, false);
+      }
+      Select(val - 1);
+      EnsureVisible(val - 1);
+    }
+    return true;}, wxID_JUMP_TO);
+
   Bind(wxEVT_RIGHT_DOWN, [=](wxMouseEvent& event) {
     long style = 0; // otherwise CAN_PASTE already on
     
@@ -574,6 +598,7 @@ int wxExListView::ConfigDialog(
     wxExItem("notebook", wxExItem::ItemsNotebook {
       {_("General"),
         {wxExItem(_("Header"), ITEM_CHECKBOX),
+         wxExItem(_("Single selection"), ITEM_CHECKBOX),
          wxExItem(_("Comparator"), ITEM_FILEPICKERCTRL),
          wxExItem(_("Sort method"), std::map<long, const wxString> {
            {SORT_ASCENDING, _("Sort ascending")},
@@ -615,6 +640,7 @@ void wxExListView::ConfigGet(bool init)
   SetSingleStyle(wxLC_HRULES, (cfg->ReadLong(_("Rulers"), 0) & wxLC_HRULES) > 0);
   SetSingleStyle(wxLC_VRULES, (cfg->ReadLong(_("Rulers"), 0) & wxLC_VRULES) > 0);
   SetSingleStyle(wxLC_NO_HEADER, !cfg->ReadBool(_("Header"), false));
+  SetSingleStyle(wxLC_SINGLE_SEL, cfg->ReadBool(_("Single selection"), false));
   
   ItemsUpdate();
 }
@@ -829,38 +855,6 @@ const wxString wxExListView::GetTypeDescription(wxExListType type)
   }
 
   return value;
-}
-
-bool wxExListView::GotoDialog(const wxString& caption)
-{
-  if (!IsShown() || GetItemCount() == 0)
-  {
-    return false;
-  }
-  
-  const int initial_value = (GetFirstSelected() == -1 ? 1: GetFirstSelected() + 1);
-  long val;
-
-  if ((val = wxGetNumberFromUser(
-    _("Input") + wxString::Format(" (1 - %d):", GetItemCount()),
-    wxEmptyString,
-    caption,
-    initial_value,
-    1,
-    GetItemCount())) < 0)
-  {
-    return false;
-  }
-
-  if (initial_value >= 1)
-  {
-    Select(initial_value - 1, false);
-  }
-
-  Select(val - 1);
-  EnsureVisible(val - 1);
-
-  return true;
 }
 
 void wxExListView::Initialize(const wxExLexer* lexer)

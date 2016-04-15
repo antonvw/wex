@@ -259,6 +259,8 @@ bool wxExRepSampleFrame::OpenFile(const wxExFileName& file,
   {
     flags = 0;
   }
+  
+  m_STC->GetLexer().Reset();
 
-  return m_STC->Open(file, line_number, match, col_number, flags);
+  return m_STC->Open(file, line_number, match, col_number, flags, command.ToStdString());
 }

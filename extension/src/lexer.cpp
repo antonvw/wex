@@ -173,7 +173,7 @@ bool wxExLexer::ApplyWhenSet()
     wxExFrame::StatusText(GetDisplayLexer(), "PaneLexer");
   }
   
-  return true;
+  return m_IsOk;
 }
 
 void wxExLexer::AutoMatch(const wxString& lexer)
@@ -537,17 +537,15 @@ bool wxExLexer::Set(const wxString& lexer, bool fold)
   }
   else
   {
-    ApplyWhenSet();
+    if (ApplyWhenSet() && fold && m_STC != nullptr)
+    {
+      m_STC->Fold();
+    }
   }
   
   if (!m_IsOk)
   {
     wxLogError("Lexer is not known: " + lexer);
-  }
-  
-  if (fold && m_STC != nullptr)
-  {
-    m_STC->Fold();
   }
   
   return m_IsOk;
@@ -567,9 +565,7 @@ bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
     }
   }
     
-  ApplyWhenSet();
-  
-  if (fold && m_STC != nullptr)
+  if (ApplyWhenSet() && fold && m_STC != nullptr)
   {
     m_STC->Fold();
   }

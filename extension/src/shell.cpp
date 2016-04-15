@@ -40,6 +40,7 @@ wxExShell::wxExShell(
       STC_WIN_NO_INDICATOR,
       wxEmptyString, // title, used for name
       menu_flags, 
+      std::string(),
       id, 
       pos, 
       size, 

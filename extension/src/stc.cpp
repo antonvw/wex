@@ -76,6 +76,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   long win_flags,
   const wxString& title,
   long menu_flags,
+  const std::string& command,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size, 
@@ -117,6 +118,8 @@ wxExSTC::wxExSTC(wxWindow *parent,
   {
     SetReadOnly(true);
   }
+
+  m_vi.Command(command);
 }
 
 wxExSTC::wxExSTC(wxWindow* parent,
@@ -126,6 +129,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   int col_number,
   long flags,
   long menu_flags,
+  const std::string& command,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
@@ -149,7 +153,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   
   if (filename.GetStat().IsOk())
   {
-    Open(filename, line_number, match, col_number, flags);
+    Open(filename, line_number, match, col_number, flags, command);
   }
 }
 
@@ -902,41 +906,6 @@ const wxString wxExSTC::GetWordAtPos(int pos) const
   }
 }
 
-bool wxExSTC::GotoDialog()
-{
-  if (HexMode())
-  {
-    m_HexMode.GotoDialog();
-  }
-  else
-  {
-    if (m_Goto > GetLineCount())
-    {
-      m_Goto = GetLineCount();
-    }
-    else if (m_Goto < 1)
-    {
-      m_Goto = 1;
-    }
-
-    long val;
-    if ((val = wxGetNumberFromUser(
-      _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
-      wxEmptyString,
-      _("Enter Line Number"),
-      m_Goto, // initial value
-      1,
-      GetLineCount(),
-      this)) < 0)
-    {
-      return false;
-    }
-
-    GotoLineAndSelect(val);
-  }
-
-  return true;
-}
 
 void wxExSTC::GotoLineAndSelect(
   int line_number, 
@@ -1124,22 +1093,20 @@ void wxExSTC::Initialize(bool file_exists)
   ConfigGet(true);
   
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
-    if (event.GetModifiers() != wxMOD_ALT)
-    {
-      if (HexMode())
-      {  
-        if (
-          event.GetKeyCode() == WXK_LEFT ||
-          event.GetKeyCode() == WXK_RIGHT)
-        {
-          wxExHexModeLine(&m_HexMode).SetPos(event);
-        }
-      }
-    
-      if (m_vi.OnKeyDown(event))
+    if (HexMode())
+    {  
+      if (
+        event.GetKeyCode() == WXK_LEFT ||
+        event.GetKeyCode() == WXK_RIGHT)
       {
-        event.Skip();
-      }}});
+        wxExHexModeLine(&m_HexMode).SetPos(event);
+      }
+    }
+  
+    if (m_vi.OnKeyDown(event))
+    {
+      event.Skip();
+    }});
 
   Bind(wxEVT_KEY_UP, [=](wxKeyEvent& event) {
     event.Skip();
@@ -1157,8 +1124,7 @@ void wxExSTC::Initialize(bool file_exists)
     else
     {
       event.Skip();
-    }
-    });
+    }});
   
   Bind(wxEVT_LEFT_UP, [=](wxMouseEvent& event) {
     PropertiesMessage();
@@ -1185,12 +1151,10 @@ void wxExSTC::Initialize(bool file_exists)
       {
         // If last item is a separator, delete it.
         wxMenuItem* item = menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
-      
         if (item->IsSeparator())
         {
           menu.Delete(item->GetId());
         }
-      
         PopupMenu(&menu);
       }});
   }
@@ -1204,7 +1168,6 @@ void wxExSTC::Initialize(bool file_exists)
     {
       const std::string command(wxString(
         event.GetText().Mid(m_AutoComplete.size())).ToStdString());
-        
       if (!command.empty() && !m_vi.Command(command))
       {
         wxLogStatus("Autocomplete failed");
@@ -1362,7 +1325,35 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Redo();}, wxID_REDO);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SelectAll();}, wxID_SELECTALL);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {if (!GetReadOnly() && !HexMode()) Clear();}, wxID_DELETE);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GotoDialog();}, wxID_JUMP_TO);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (HexMode())
+    {
+      m_HexMode.GotoDialog();
+    }
+    else
+    {
+      if (m_Goto > GetLineCount())
+      {
+        m_Goto = GetLineCount();
+      }
+      else if (m_Goto < 1)
+      {
+        m_Goto = 1;
+      }
+      long val;
+      if ((val = wxGetNumberFromUser(
+        _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
+        wxEmptyString,
+        _("Enter Line Number"),
+        m_Goto, // initial value
+        1,
+        GetLineCount(),
+        this)) > 0)
+      {
+        GotoLineAndSelect(val);
+      }
+    }
+    return true;}, wxID_JUMP_TO);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); event.Skip();}, wxID_FIND);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); event.Skip();}, wxID_REPLACE);
     
@@ -1718,7 +1709,8 @@ bool wxExSTC::Open(
   int line_number,
   const wxString& match,
   int col_number,
-  long flags)
+  long flags,
+  const std::string& command)
 {
   if (GetFileName() == filename && line_number > 0)
   {
@@ -1771,6 +1763,8 @@ bool wxExSTC::Open(
   {
     m_Frame->SetRecentFile(filename.GetFullPath());
   }
+  
+  m_vi.Command(command);
   
   return success;
 }

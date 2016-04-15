@@ -115,7 +115,11 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   //  stc->FileTypeMenu();
   
   stc->Fold();
-  stc->Fold(true); // FoldAll
+  
+  // FoldAll
+  REQUIRE( stc->GetLexer().Set("cpp"));
+  wxConfigBase::Get()->Write(_("Auto fold"), 3);
+  stc->Fold(true); 
   
   REQUIRE(!stc->GetEOL().empty());
   
