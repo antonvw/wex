@@ -19,7 +19,6 @@ class wxGenericDirCtrl;
 class wxTextCtrl;
 class wxXmlNode;
 
-class wxExEx;
 class wxExFileName;
 class wxExFrame;
 class wxExLexer;
@@ -99,15 +98,6 @@ bool wxExAutoCompleteFileName(
   /// (and v contains at least 2 elements).
   std::vector<wxString> & v);
   
-/// Returns calculated value of text.
-double wxExCalculator(
-  /// text used for calculation
-  const std::string& text, 
-  /// a marker, or line no referenced in text is solved using this ex
-  wxExEx* ex, 
-  /// width, or precision, for doubles
-  int& width);
-
 /// Adds data to the clipboard.
 bool wxExClipboardAdd(const wxString& text);
 
@@ -338,11 +328,6 @@ const wxString wxExPrintHeader(const wxFileName& filename);
 
 /// Returns quotes around the text.
 const wxString wxExQuoted(const wxString& text);
-
-/// Replace markers and registers present in text by value
-/// according to ex component.
-/// Returns false if invalid marker is present.
-bool wxExReplaceMarkers(wxString& text, wxExEx* ex);
 
 #if wxUSE_GUI
 /// Sets a text ctrl value from a list of values 

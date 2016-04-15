@@ -12,7 +12,6 @@
 #endif
 #include <wx/config.h>
 #include <wx/filehistory.h>
-#include <wx/numformatter.h>
 #include <wx/extension/util.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
@@ -88,52 +87,6 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
 #endif
   }
   
-  SECTION("wxExCalculator")
-  {
-    GetSTC()->SetText("aaaaa\nbbbbb\nccccc\n");
-    const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
-    int width = 0;
-    
-    std::vector<std::pair<std::string, std::pair<double, int>>>calcs{
-      {"",       {0,0}},
-      {"  ",     {0,0}},
-      {"1 + 1",  {2,0}},
-      {"5+5",    {10,0}},
-      {"1 * 1",  {1,0}},
-      {"1 - 1",  {0,0}},
-      {"2 / 1",  {2,0}},
-      {"2 / 0",  {0,0}},
-      {"2 << 2", {8,0}},
-      {"2 >> 1", {1,0}},
-      {"2 | 1",  {3,0}},
-      {"2 & 1",  {0,0}},
-      {"4 % 3",  {1,0}},
-      {".",      {1,0}},
-      {"xxx",    {0,0}},
-      {"%s",     {0,0}},
-      {"%s/xx/", {0,0}},
-      {"$",      {4,0}}};
-      
-    if (ds == '.')
-    {
-      calcs.insert(calcs.end(), {{"1.0 + 1",{2,1}},{"1.1 + 1.1",{2.2,1}}});
-    }
-    else
-    {
-      calcs.insert(calcs.end(), {{"1,0 + 1",{2,1}},{"1,1 + 1,1",{2.2,1}}});
-    }
-      
-    wxExEx* ex = new wxExEx(GetSTC());
-  
-    for (const auto& calc : calcs)
-    {
-      REQUIRE( wxExCalculator(calc.first, ex, width) == calc.second.first);
-      REQUIRE( width == calc.second.second);
-    }
-    
-    delete ex;
-  }
-
   SECTION("wxExClipboardAdd")
   {
     REQUIRE( wxExClipboardAdd("test"));
@@ -353,28 +306,6 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     REQUIRE( wxExQuoted(wxExSkipWhiteSpace(wxString(" %d "))) == "'%d'");
   }
   
-  SECTION("wxExReplaceMarkers.")
-  {
-    wxExEx* ex = new wxExEx(GetSTC());
-  
-    GetSTC()->SetText("aaaaa\nbbbbb\nccccc\n");
-    REQUIRE(ex->MarkerAdd('a', 1));
-    REQUIRE(ex->MarkerAdd('t', 1));
-    REQUIRE(ex->MarkerAdd('u', 2));
-    wxString text;
-    REQUIRE( wxExReplaceMarkers(text, ex));
-    text = "'a";
-    REQUIRE( wxExReplaceMarkers(text, ex));
-    REQUIRE( text == "2");
-    text = "'t,'u,therest";
-    REQUIRE( wxExReplaceMarkers(text, ex));
-    REQUIRE( text == "2,3,therest");
-    text = "'z";
-    REQUIRE(!wxExReplaceMarkers(text, ex));
-    
-    delete ex;
-  }
-
   SECTION("wxExSetTextCtrlValue")
   {
   }

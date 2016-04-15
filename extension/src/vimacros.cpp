@@ -43,7 +43,7 @@ void wxExViMacros::AskForInput()
 const std::string wxExViMacros::Decode(const wxString& text)
 {
   std::string output;
-  
+
   for (size_t i = 0; i < text.length(); i++)
   {
     if (
@@ -411,7 +411,7 @@ const std::vector< std::string > wxExViMacros::GetRegisters() const
         output += it2;
       }
     
-      r.emplace_back(wxString(wxString(it.first) + ": " + wxExSkipWhiteSpace(output)).ToStdString());
+      r.emplace_back(wxString(wxString(it.first) + "=" + wxExSkipWhiteSpace(output)).ToStdString());
     }
   }
    
@@ -419,7 +419,7 @@ const std::vector< std::string > wxExViMacros::GetRegisters() const
               
   if (!clipboard.empty())
   {
-    r.emplace_back(wxString("*: " + clipboard).ToStdString());
+    r.emplace_back(wxString("*=" + clipboard).ToStdString());
   }
                 
   return r;

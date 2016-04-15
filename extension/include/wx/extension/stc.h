@@ -79,6 +79,7 @@ public:
     long win_flags = STC_WIN_DEFAULT,
     const wxString& title = wxEmptyString,
     long menu_flags = STC_MENU_DEFAULT,
+    const std::string& command = std::string(),
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize, 
@@ -93,6 +94,7 @@ public:
     int col_number = 0,
     long win_flags = STC_WIN_DEFAULT,
     long menu_flags = STC_MENU_DEFAULT & STC_MENU_OPEN_LINK,
+    const std::string& command = std::string(),
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
@@ -209,10 +211,6 @@ public:
   /// Returns word at position.
   const wxString GetWordAtPos(int pos) const;
 
-  /// Asks for a line number and goes to the line.
-  /// In hex mode asks for a byte offset, and goes to that byte.
-  bool GotoDialog();
-
   /// Goes to line and selects the line or the specified text in it.
   void GotoLineAndSelect(
     int line_number, 
@@ -233,7 +231,7 @@ public:
   
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
-  virtual bool Open(
+  bool Open(
     /// file to open
     const wxExFileName& filename,
     /// goes to the line if > 0, if -1 goes to end of file
@@ -244,7 +242,9 @@ public:
     /// goes to column if col_number > 0
     int col_number = 0,
     /// flags
-    long flags = 0);
+    long flags = 0,
+    /// vi command to execute
+    const std::string& command = std::string());
 
   /// Paste text from clipboard.
   virtual void Paste() override;

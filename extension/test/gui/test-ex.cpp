@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/numformatter.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/managedframe.h>
@@ -279,4 +280,61 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE( ex->GetRegisterText() == "the chances");
   REQUIRE( ex->GetMacros().GetRegister('1') == "the chances");
   REQUIRE( ex->GetSelectedText().empty());
+  
+  SECTION("Calculator")
+  {
+    stc->SetText("aaaaa\nbbbbb\nccccc\n");
+    const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
+    int width = 0;
+    
+    REQUIRE(ex->MarkerAdd('a', 1));
+    REQUIRE(ex->MarkerAdd('t', 1));
+    REQUIRE(ex->MarkerAdd('u', 2));
+    
+    std::vector<std::pair<std::string, std::pair<double, int>>>calcs{
+      {"",           {0,0}},
+      {"  ",         {0,0}},
+      {"1 + 1",      {2,0}},
+      {"5+5",        {10,0}},
+      {"1 * 1",      {1,0}},
+      {"1 - 1",      {0,0}},
+      {"2 / 1",      {2,0}},
+      {"2 / 0",      {0,0}},
+      {"2 << 2",     {8,0}},
+      {"2 >> 1",     {1,0}},
+      {"2 | 1",      {3,0}},
+      {"2 bitor 1",  {3,0}},
+      {"2 xor 1",    {3,0}},
+      {"2 & 1",      {0,0}},
+      {"2 bitand 1", {0,0}},
+      {"compl(0)",   {-1,0}},
+      {"4 % 3",      {1,0}},
+      {".",          {1,0}},
+      {"xxx",        {0,0}},
+      {"%s",         {0,0}},
+      {"%s/xx/",     {0,0}},
+      {"'a",         {2,0}},
+      {"'t",         {2,0}},
+      {"'u",         {3,0}},
+      {"$",          {4,0}}};
+      
+    if (ds == '.')
+    {
+      calcs.insert(calcs.end(), {{"1.0 + 1",{2,1}},{"1.1 + 1.1",{2.2,1}}});
+    }
+    else
+    {
+      calcs.insert(calcs.end(), {{"1,0 + 1",{2,1}},{"1,1 + 1,1",{2.2,1}}});
+    }
+      
+    for (const auto& calc : calcs)
+    {
+      const auto val = ex->Calculator(calc.first, width);
+      if (!std::isnan(val))
+      {
+        REQUIRE( val == calc.second.first);
+        REQUIRE( width == calc.second.second);
+      }
+    }
+  }
 }

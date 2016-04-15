@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <shunting-yard/shunting-yard.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -17,7 +16,6 @@
 #include <wx/config.h>
 #include <wx/filename.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
-#include <wx/numformatter.h>
 #include <wx/stdpaths.h>
 #include <wx/textctrl.h>
 #include <wx/tokenzr.h>
@@ -25,7 +23,6 @@
 #include <wx/xml/xml.h>
 #include <wx/extension/util.h>
 #include <wx/extension/dir.h>
-#include <wx/extension/ex.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
@@ -205,77 +202,6 @@ bool wxExAutoCompleteFileName(const wxString& text, std::vector<wxString> & v)
   }
 
   return true;
-}
-
-double wxExCalculator(const std::string& text, wxExEx* ex, int& width)
-{
-  wxString expr(text);
-  expr.Trim();
-
-  if (expr.empty() || expr.Contains("%s"))
-  {
-    return 0;
-  }
-  
-  const char ds(wxNumberFormatter::GetDecimalSeparator());
-  
-  // Determine the width.
-  const std::string rt((ds == '.' ? "\\.": std::string(1, ds)) + std::string("[0-9]+"));
-  std::regex re(rt);
-  auto words_begin = std::sregex_iterator(text.begin(), text.end(), re);
-  auto words_end = std::sregex_iterator();  
-
-  if (words_begin != words_end)
-  {
-    std::smatch match = *words_begin; 
-
-    if (!match.empty())
-    {
-      width = match.length() - 1;
-    }
-  }
-  else
-  {
-    width = 0;
-    
-    // Replace . with current line.
-    expr.Replace(".", std::to_string(ex->GetSTC()->GetCurrentLine() + 1));
-  }
-  
-  // Replace $ with line count.
-  expr.Replace("$", std::to_string(ex->GetSTC()->GetLineCount()));
-  
-  // Replace all markers and registers.
-  if (!wxExReplaceMarkers(expr, ex))
-  {
-    return false;
-  }
-
-  // https://github.com/bmars/shunting-yard/
-  // https://github.com/bamos/cpp-expression-parser
-  try
-  {
-    return calculator::calculate(expr);
-  }
-  catch(std::domain_error& e)
-  {
-#ifdef __WXMSW__    
-    // Under MSW wxLogError has problems if % occurs in argument.
-    const wxString error(e.what());
-    
-    if (error.Contains("%"))
-    {
-      wxMessageBox(e.what());
-    }
-    else
-    {
-      wxLogError(e.what());
-    }
-#else
-    wxLogError(e.what());
-#endif
-    return 0;
-  }
 }
 
 bool wxExClipboardAdd(const wxString& text)
@@ -801,45 +727,6 @@ const wxString wxExQuoted(const wxString& text)
   return "'" + text + "'";
 }
 
-bool wxExReplaceMarkers(wxString& text, wxExEx* ex)
-{
-  wxStringTokenizer tkz(text, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
-
-  while (tkz.HasMoreTokens())
-  {
-    tkz.GetNextToken();
-    
-    const wxString rest(tkz.GetString());
-    
-    if (!rest.empty())
-    {
-      // Replace marker.
-      if (tkz.GetLastDelimiter() == '\'')
-      {
-        const int line = ex->MarkerLine(rest.GetChar(0));
-        
-        if (line >= 0)
-        {
-          text.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
-            std::to_string(line + 1));
-        }
-        else
-        {
-          return false;
-        }
-      }
-      // Replace register.
-      else
-      {
-        text.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
-          ex->GetMacros().GetRegister(rest.GetChar(0)));
-      }
-    }
-  }
-  
-  return true;
-}
-  
 const wxString wxExSkipWhiteSpace(const wxString& text, const wxString& replace_with)
 {
   std::regex re("[ \t\n\v\f\r]+");

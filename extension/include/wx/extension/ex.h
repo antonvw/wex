@@ -16,6 +16,7 @@
 
 #if wxUSE_GUI
 
+struct ex_evaluator;
 class wxExManagedFrame;
 class wxExSTC;
 class wxExSTCEntryDialog;
@@ -35,6 +36,13 @@ public:
   /// Adds text (to STC or register, if register is active).
   void AddText(const std::string& text);
  
+  /// Returns calculated value of text.
+  double Calculator(
+    /// text used for calculation
+    const std::string& text, 
+    /// width, or precision, for doubles
+    int& width);
+
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.
   /// Returns true if the command was executed.
@@ -148,7 +156,7 @@ protected:
 private:
   bool CommandHandle(const std::string& command) const;
   bool CommandAddress(const std::string& command);
-  void ShowDialog(const wxString& title, const wxString& text);
+  void ShowDialog(const wxString& title, const wxString& text, bool prop_lexer = false);
     
   const wxExMarker m_MarkerSymbol;
 
@@ -157,6 +165,7 @@ private:
   static std::string m_LastCommand;
   static wxExSTCEntryDialog* m_Dialog;
   static wxExViMacros m_Macros;
+  static ex_evaluator m_Evaluator;
 
   bool m_IsActive; // are we actively using ex mode?
   

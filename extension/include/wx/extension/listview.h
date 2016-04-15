@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of wxExListView and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -155,9 +155,6 @@ public:
 
   /// Returns the list type as a string for specified type.
   static const wxString GetTypeDescription(wxExListType type);
-
-  /// Asks for an item number and goes to the item.
-  bool GotoDialog(const wxString& caption = _("Enter Item Number"));
 
   /// Inserts new item swith column values from text.
   /// Items are separated by newlines, columns by a field separator.

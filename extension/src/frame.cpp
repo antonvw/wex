@@ -375,13 +375,12 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
     
     if (stc != nullptr) 
     {
-      stc->GotoDialog();
+      wxPostEvent(stc, wxCommandEvent(wxEVT_MENU, wxID_JUMP_TO));
     }
     else
     {
       wxExListView* lv = GetListView();
-      
-      if (lv != nullptr) lv->GotoDialog();
+      if (lv != nullptr) wxPostEvent(lv, wxCommandEvent(wxEVT_MENU, wxID_JUMP_TO));
     }
   }
   else if (pane == "PaneLexer")

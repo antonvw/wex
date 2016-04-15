@@ -631,7 +631,7 @@ void wxExVi::AddText(const std::string& text)
 
 bool wxExVi::Command(const std::string& command, bool is_handled)
 {
-  if (command.empty())
+  if (command.empty() || !GetIsActive())
   {
     return false;
   }
@@ -733,7 +733,8 @@ void wxExVi::CommandCalc(const wxString& command)
 {
   const auto index = command.StartsWith("=") ? 1: 2;
   int width = 0;
-  const auto sum = wxExCalculator(command.Mid(index).ToStdString(), this, width);
+  const auto sum = Calculator(command.Mid(index).ToStdString(), width);
+  if (std::isnan(sum)) return;
 
   if (ModeInsert())
   {
@@ -921,16 +922,6 @@ bool wxExVi::InsertMode(const std::string& command)
       }
       break;
 
-    case WXK_RETURN:
-    case WXK_NUMPAD_ENTER:
-      GetSTC()->NewLine();
-        
-      if (!GetSTC()->AutoCompActive())
-      {
-        m_InsertText += GetSTC()->GetEOL().ToStdString();
-      }
-      break;
-      
     default: 
       if (wxString(GetLastCommand()).Matches("*c*") && m_InsertText.empty())
       {
@@ -957,14 +948,28 @@ bool wxExVi::InsertMode(const std::string& command)
       }
       else
       {
-        if (!GetSTC()->GetOvertype())
+        if (command.size() == 1 && 
+          ((int)command.back() == WXK_RETURN || 
+           (int)command.back() == WXK_NUMPAD_ENTER))
         {
-          InsertModeNormal(command);
+          GetSTC()->NewLine();
+            
+          if (!GetSTC()->AutoCompActive())
+          {
+            m_InsertText += GetSTC()->GetEOL().ToStdString();
+          }
         }
-        
-        if (!m_Dot)
+        else
         {
-          m_InsertText += command;
+          if (!GetSTC()->GetOvertype())
+          {
+            InsertModeNormal(command);
+          }
+          
+          if (!m_Dot)
+          {
+            m_InsertText += command;
+          }
         }
       }
   }
@@ -974,7 +979,7 @@ bool wxExVi::InsertMode(const std::string& command)
 
 void wxExVi::InsertModeNormal(const std::string& text)
 {
-  wxStringTokenizer tkz(text, "\r\n", wxTOKEN_RET_EMPTY);
+  wxStringTokenizer tkz(text, "\r\n", wxTOKEN_RET_EMPTY_ALL);
   
   if (text.find('\0') == std::string::npos && tkz.HasMoreTokens())
   {
@@ -1234,8 +1239,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   else if (!event.HasAnyModifiers() &&
      (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_ESCAPE ||
      (!ModeVisual() && event.GetKeyCode() == WXK_TAB) ||
-     (!ModeInsert() &&
-       (event.GetKeyCode() == WXK_LEFT ||
+      ((event.GetKeyCode() == WXK_LEFT ||
         event.GetKeyCode() == WXK_DELETE ||
         event.GetKeyCode() == WXK_DOWN ||
         event.GetKeyCode() == WXK_UP ||
@@ -1247,7 +1251,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   {
     m_Command += ConvertKeyEvent(event);
     const bool result = Command(m_Command);
-    
+
     if (result)
     {
       m_Command.clear();
@@ -1257,6 +1261,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   }
   else
   {
+    if (event.GetModifiers() == wxMOD_ALT && !ModeNormal()) Command("\x1b");
     return true;
   }
 }

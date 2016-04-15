@@ -52,6 +52,7 @@ TEST_CASE("wxExAddress", "[stc][vi]")
     {"'b+'a", 3},
     {"'b-'a", 1}})
   {
+    INFO( it.first );
     REQUIRE( wxExAddress(ex, it.first).GetLine() == it.second);
   }
 
