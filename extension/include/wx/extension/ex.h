@@ -16,7 +16,7 @@
 
 #if wxUSE_GUI
 
-struct ex_evaluator;
+class ex_evaluator;
 class wxExManagedFrame;
 class wxExSTC;
 class wxExSTCEntryDialog;

@@ -115,7 +115,8 @@ TEST_CASE("wxExLexer", "[stc][lexer]")
   REQUIRE( lexer2.IsOk());
   REQUIRE( lexer2.GetDisplayLexer() == "cpp");
   REQUIRE( lexer2.GetScintillaLexer() == "cpp");
-  REQUIRE( lexer2.Set(lexer, stc));
+  REQUIRE( lexer2.Set(lexer));
+  REQUIRE( lexer2.Set(lexer, true));
   REQUIRE( lexer2.GetDisplayLexer() == "pascal");
   REQUIRE( lexer2.GetScintillaLexer() == "pascal");
   REQUIRE(!lexer2.CommentComplete("(*test").empty());

@@ -61,7 +61,7 @@ public:
     std::make_tuple(_("Line number"), ITEM_TEXTCTRL_INT, 60),
     std::make_tuple(_("Print flags"), ITEM_TEXTCTRL_INT, wxSTC_PRINT_BLACKONWHITE),
     std::make_tuple(_("Scroll bars"), ITEM_CHECKBOX, true),
-    std::make_tuple(_("Show mode"), ITEM_CHECKBOX, false),
+    std::make_tuple(_("Show mode"), ITEM_CHECKBOX, true),
     std::make_tuple(_("Tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
     std::make_tuple(_("Tab width"), ITEM_TEXTCTRL_INT, 2),
     std::make_tuple(_("vi mode"), ITEM_CHECKBOX, true)}) {;};
@@ -599,7 +599,7 @@ void wxExSTC::ConfigGet(bool init)
   SetUseTabs(cfg->ReadBool(_("Use tabs"), false));
   SetUseVerticalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
   SetViewEOL(cfg->ReadBool(_("End of line"), false));
-  SetViewWhiteSpace(cfg->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
+  SetViewWhiteSpace(cfg->ReadLong(_("Whitespace visible"), wxSTC_WS_INVISIBLE));
   SetWrapMode(cfg->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
   SetWrapVisualFlags(cfg->ReadLong(_("Wrap visual flags"),  wxSTC_WRAPVISUALFLAG_END));
   m_vi.Use(cfg->ReadBool(_("vi mode"), false));
