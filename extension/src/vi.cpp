@@ -1239,13 +1239,14 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   else if (!event.HasAnyModifiers() &&
      (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_ESCAPE ||
      (!ModeVisual() && event.GetKeyCode() == WXK_TAB) ||
-      ((event.GetKeyCode() == WXK_LEFT ||
+     event.GetKeyCode() == WXK_RETURN ||
+     event.GetKeyCode() == WXK_NUMPAD_ENTER ||
+     (!ModeInsert() && (
+        event.GetKeyCode() == WXK_LEFT ||
         event.GetKeyCode() == WXK_DELETE ||
         event.GetKeyCode() == WXK_DOWN ||
         event.GetKeyCode() == WXK_UP ||
         event.GetKeyCode() == WXK_RIGHT ||
-        event.GetKeyCode() == WXK_RETURN ||
-        event.GetKeyCode() == WXK_NUMPAD_ENTER ||
         event.GetKeyCode() == WXK_PAGEUP ||
         event.GetKeyCode() == WXK_PAGEDOWN))))
   {

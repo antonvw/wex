@@ -246,10 +246,8 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if (GetSelectedItemCount() > 0 && 
-      exists && 
-     (m_MenuFlags & LIST_MENU_TOOL) &&
-      !wxExLexers::Get()->GetLexers().empty() > 0)
+  if (GetSelectedItemCount() > 0 && exists && 
+     (m_MenuFlags & LIST_MENU_TOOL) && !wxExLexers::Get()->GetLexers().empty())
   {
     menu.AppendSeparator();
     menu.AppendTools();

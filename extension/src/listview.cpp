@@ -40,7 +40,8 @@ public:
   : wxExConfigDefaults(std::vector<std::tuple<wxString, wxExItemType, wxAny>> {
     std::make_tuple(_("Background colour"), ITEM_COLOURPICKERWIDGET, *wxWHITE),
     std::make_tuple(_("Foreground colour"), ITEM_COLOURPICKERWIDGET, *wxBLACK),
-    std::make_tuple(_("Readonly colour"), ITEM_COLOURPICKERWIDGET, *wxLIGHT_GREY)}) {;};
+    std::make_tuple(_("Readonly colour"), ITEM_COLOURPICKERWIDGET, *wxLIGHT_GREY),
+    std::make_tuple(_("Header"), ITEM_CHECKBOX, true)}) {;};
 };
   
 #if wxUSE_DRAG_AND_DROP

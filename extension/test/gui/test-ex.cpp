@@ -320,18 +320,23 @@ TEST_CASE("wxExEx", "[stc][vi]")
       
     if (ds == '.')
     {
-      calcs.insert(calcs.end(), {{"1.0 + 1",{2,1}},{"1.1 + 1.1",{2.2,1}}});
+      calcs.insert(calcs.end(), {
+        {"1.0 + 1",{2,1}},
+        {"1.1 + 1.1",{2.2,1}}});
     }
     else
     {
-      calcs.insert(calcs.end(), {{"1,0 + 1",{2,1}},{"1,1 + 1,1",{2.2,1}}});
+      calcs.insert(calcs.end(), {
+        {"1,0 + 1",{2,1}},
+        {"1,1 + 1,1",{2.2,1}}});
     }
-      
+    
     for (const auto& calc : calcs)
     {
       const auto val = ex->Calculator(calc.first, width);
       if (!std::isnan(val))
       {
+        INFO( calc.first);
         REQUIRE( val == calc.second.first);
         REQUIRE( width == calc.second.second);
       }

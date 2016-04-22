@@ -176,7 +176,7 @@ int wxExAddress::GetLine() const
   
   // Try address calculation.
   int width = 0;
-  const int sum = m_Ex->Calculator(ToStdString(), width);
+  const auto sum = m_Ex->Calculator(ToStdString(), width);
   
   if (std::isnan(sum))
   {

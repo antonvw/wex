@@ -52,10 +52,14 @@
   wxPostEvent(wxTheApp->GetTopWindow(), event);             \
 };                                                          \
 
-struct ex_evaluator : public evaluator_extra 
+class ex_evaluator : public evaluator_extra 
 {
+public:
   ex_evaluator() 
   {
+    // prevent a comma to be used as argument separator
+    // for functions
+    opers.insert({",", oper_t{false, 1, false}});
     opers.insert({">>", oper_t{false, 10, false}});
     opers.insert({"<<", oper_t{false, 10, false}});
     opers.insert({"&", oper_t{false, 10, false}});
@@ -63,7 +67,9 @@ struct ex_evaluator : public evaluator_extra
     opers.insert({"xor", oper_t{false, 10, false}});
     opers.insert({"bitor", oper_t{false, 10, false}});
     opers.insert({"bitand", oper_t{false, 10, false}});
-
+    
+    funcs.insert({",", func_args(2, [](args_t v) {
+      return v[0] + v[1] / 10;})});
     funcs.insert({">>", func_args(2, [](args_t v) {
       return (int)v[0] >> (int)v[1];})});
     funcs.insert({"<<", func_args(2, [](args_t v) {
@@ -75,11 +81,11 @@ struct ex_evaluator : public evaluator_extra
     funcs.insert({"compl", func_args(1, [](args_t v) {
       return ~(int)v[0];})});
     funcs.insert({"xor", func_args(2, [](args_t v) {
-      return (int)v[0] xor (int)v[1]; })});
+      return (int)v[0] ^ (int)v[1]; })});
     funcs.insert({"bitor", func_args(2, [](args_t v) {
-      return (int)v[0] bitor (int)v[1]; })});
+      return (int)v[0] | (int)v[1]; })});
     funcs.insert({"bitand", func_args(2, [](args_t v) {
-      return (int)v[0] bitand (int)v[1]; })});
+      return (int)v[0] & (int)v[1]; })});
   }
 };
 
@@ -359,8 +365,8 @@ double wxExEx::Calculator(const std::string& text, int& width)
   // Determine the width.
   const std::string rt((ds == '.' ? "\\.": std::string(1, ds)) + std::string("[0-9]+"));
   std::regex re(rt);
-  auto words_begin = std::sregex_iterator(text.begin(), text.end(), re);
-  auto words_end = std::sregex_iterator();  
+  const auto words_begin = std::sregex_iterator(text.begin(), text.end(), re);
+  const auto words_end = std::sregex_iterator();  
 
   if (words_begin != words_end)
   {
@@ -396,7 +402,7 @@ double wxExEx::Calculator(const std::string& text, int& width)
     ShowDialog("Error", expr + "\n" + wxString(err));
     val = 0;
   }
-  
+
   return val;
 }
 
