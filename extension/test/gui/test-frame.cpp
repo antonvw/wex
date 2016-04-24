@@ -67,9 +67,16 @@ TEST_CASE("wxExFrame")
   REQUIRE( GetFrame()->UpdateStatusBar(stc, "PaneLexer"));
   REQUIRE( GetFrame()->UpdateStatusBar(stc, "PaneFileType"));
   
-  for (auto id : std::vector<int> {
+  wxCommandEvent event(wxEVT_MENU, wxID_OPEN);
+  for (const auto str : std::vector<wxString> {
+    "xxx", "+10 test", "`pwd`"})
+  {
+    event.SetString(str);
+    wxPostEvent(GetFrame(), event);
+  }
+  
+  for (const auto id : std::vector<int> {
     wxID_FIND, wxID_REPLACE, 
-    // wxID_OPEN,shows dialog..
     ID_VIEW_MENUBAR, ID_VIEW_STATUSBAR, ID_VIEW_TITLEBAR}) 
   {
     wxPostEvent(GetFrame(), wxCommandEvent(wxEVT_MENU, id));

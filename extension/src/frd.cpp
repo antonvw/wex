@@ -200,7 +200,10 @@ wxExFindTextCtrl::wxExFindTextCtrl(
       pos, size, wxTE_PROCESS_ENTER)
 {
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
-    if (!wxExSetTextCtrlValue(this, event.GetKeyCode(), wxExFindReplaceData::Get()->m_FindStrings, wxExFindReplaceData::Get()->m_FindsIterator))
+    if (!wxExSetTextCtrlValue(this, 
+      event.GetKeyCode(), 
+      wxExFindReplaceData::Get()->m_FindStrings, 
+      wxExFindReplaceData::Get()->m_FindsIterator))
     {
       event.Skip();
     }});
