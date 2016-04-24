@@ -27,6 +27,8 @@
 
 #if wxUSE_GUI
 
+const int ID_REGISTER = wxNewId();
+
 // Support class.
 // Offers a text ctrl related to a ex object.
 class wxExTextCtrl: public wxExFindTextCtrl
@@ -42,7 +44,7 @@ public:
     const wxSize& size = wxDefaultSize);
     
   /// Destructor.
- ~wxExTextCtrl();
+ ~wxExTextCtrl() {wxExListToConfig(m_Commands, "excommand");};
     
   /// Returns ex component.
   wxExEx* GetEx() {return m_ex;};
@@ -50,8 +52,6 @@ public:
   /// Sets ex component.
   void SetEx(wxExEx* ex, const wxString& range);
 private:  
-  void Expand();
-  void Handle(wxKeyEvent& event);
   bool IsCalc() const {return m_Prefix->GetLabel() == "=";};
   bool IsCommand() const {return m_Prefix->GetLabel() == ":";};
   bool IsFind() const {return m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?";};
@@ -59,7 +59,7 @@ private:
   wxExManagedFrame* m_Frame;
   wxExEx* m_ex;
   wxStaticText* m_Prefix;
-  bool m_Controlr;
+  bool m_ControlR;
   bool m_ModeVisual;
   bool m_UserInput;
   
@@ -381,7 +381,7 @@ wxExTextCtrl::wxExTextCtrl(
   : wxExFindTextCtrl(parent, id, pos, size)
   , m_Frame(frame)
   , m_ex(nullptr)
-  , m_Controlr(false)
+  , m_ControlR(false)
   , m_ModeVisual(false)
   , m_UserInput(false)
   , m_Prefix(prefix)
@@ -423,28 +423,62 @@ wxExTextCtrl::wxExTextCtrl(
       {
         m_ex->GetSTC()->PositionRestore();
       }
-      
       m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
-      
-      m_Controlr = false;
+      m_ControlR = false;
       m_UserInput = false;
     break;
     
-    case WXK_CONTROL_R:
-      m_Controlr = true;
+    case WXK_CONTROL_R: m_ControlR = true; break;
+    case WXK_TAB: {
+      if (m_ex != nullptr && m_ex->GetSTC()->GetFileName().FileExists())
+      {
+        wxSetWorkingDirectory(m_ex->GetSTC()->GetFileName().GetPath());
+      }
+      std::vector<wxString> v;
+      if (wxExAutoCompleteFileName(m_Command, v))
+      {
+        m_Command += v[0];
+        AppendText(v[0]);
+      }}
       break;
-  
-    case WXK_TAB:
-      Expand();
-      break;
-        
-    default: Handle(event);
-    }});
 
+    default: {
+      bool skip = true;
+      if (event.GetKeyCode() != WXK_RETURN)
+      {
+        if (event.GetUnicodeKey() != (wxChar)WXK_NONE && m_ControlR)
+        {
+          skip = false;
+          const wxChar c = event.GetUnicodeKey();
+          wxCommandEvent event(wxEVT_MENU, ID_REGISTER);
+          if (c == '%')
+          {
+            if (m_ex != nullptr) event.SetString(m_ex->GetSTC()->GetFileName().GetFullName());
+          }
+          else 
+          {
+            event.SetString(wxExEx::GetMacros().GetRegister(c));
+          }
+          if (!event.GetString().empty())
+          {
+            wxPostEvent(this, event);
+          }
+        }
+        m_UserInput = true;
+      }
+      m_ControlR = false;
+      if (skip)
+      {
+        event.Skip();
+      }
+    }}});
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    WriteText(event.GetString());}, ID_REGISTER);
+  
   Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
     event.Skip();
-    if (
-       m_UserInput && m_ex != nullptr && IsFind())
+    if (m_UserInput && m_ex != nullptr && IsFind())
     {
       m_ex->GetSTC()->PositionRestore();
       m_ex->GetSTC()->FindNext(
@@ -506,75 +540,13 @@ wxExTextCtrl::wxExTextCtrl(
     }});
 }
 
-wxExTextCtrl::~wxExTextCtrl()
-{
-  wxExListToConfig(m_Commands, "excommand");
-}
-
-void wxExTextCtrl::Expand()
-{
-  if (m_ex != nullptr && m_ex->GetSTC()->GetFileName().FileExists())
-  {
-    wxSetWorkingDirectory(m_ex->GetSTC()->GetFileName().GetPath());
-  }
-  
-  std::vector<wxString> v;
-  
-  if (wxExAutoCompleteFileName(m_Command, v))
-  {
-    m_Command += v[0];
-    AppendText(v[0]);
-  }
-}
-
-void wxExTextCtrl::Handle(wxKeyEvent& event)
-{
-  bool skip = true;
-  
-  if (event.GetKeyCode() != WXK_RETURN)
-  {
-    if (
-      IsCalc() &&
-      event.GetUnicodeKey() != (wxChar)WXK_NONE &&
-      m_Controlr)
-    {
-      skip = false;
-      
-      const wxChar c = event.GetUnicodeKey();
-    
-      switch (c)
-      {
-      case '\"':
-        AppendText(wxExClipboardGet()); break;
-          
-      default:
-        if (
-           m_ex != nullptr &&
-          !m_ex->GetMacros().GetRegister(c).empty())
-        {
-          AppendText(m_ex->GetMacros().GetRegister(c));
-        }
-      }
-    }
-    
-    m_UserInput = true;
-  }
-  
-  if (skip)
-  {
-    event.Skip();
-  }
-  
-  m_Controlr = false;
-}
-    
 void wxExTextCtrl::SetEx(wxExEx* ex, const wxString& command) 
 {
   m_Prefix->SetLabel(command.Left(1));
   const wxString range(command.Mid(1));
   
   m_Command.clear();
-  m_Controlr = false;
+  m_ControlR = false;
   m_ModeVisual = !range.empty();
   m_UserInput = false;
   m_ex = ex;

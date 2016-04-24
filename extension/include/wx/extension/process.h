@@ -97,7 +97,6 @@ private:
 
   bool m_Error;
   bool m_HasStdError;
-  bool m_Sync;
 
   wxCriticalSection m_Critical;
   wxString m_Command;  

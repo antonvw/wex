@@ -374,25 +374,22 @@ const wxFileName wxExViMacros::GetFileName()
 
 const std::string wxExViMacros::GetRegister(const char name) const
 {
-  if (name == '*')
+  switch (name)
   {
-    return wxExClipboardGet().ToStdString();
-  }
-  else
-  {
-    const auto it = m_Macros.find(name);
-    
-    std::string output;
-    
-    if (it != m_Macros.end())
-    {
-      for (const auto& it2 : it->second)
+    case '*':
+    case '\"': return wxExClipboardGet().ToStdString();
+    default: {   
+      const auto it = m_Macros.find(name);
+      std::string output;
+      if (it != m_Macros.end())
       {
-        output += it2;
+        for (const auto& it2 : it->second)
+        {
+          output += it2;
+        }
       }
+      return output;
     }
-
-    return output;
   }
 }
 

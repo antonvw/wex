@@ -239,10 +239,17 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
       wxString cmd;
       wxString files(command.GetString());
       
-      if (wxExMatch("\\+([0-9A-Za-z:_/.-]+)* *(.*)", command.GetString().ToStdString(), v) > 1)
+      if (wxExMatch("\\+([0-9A-Za-z:_/.-]+)* *(.*)", files.ToStdString(), v) > 1)
       {
         cmd = v[0];
         files = v[1];
+      }
+
+      if (wxExMatch("`(.*)`", files.ToStdString(), v) > 0)
+      {
+        wxExProcess process;
+        if (!process.Execute(v[0], wxEXEC_SYNC)) return;
+        files = process.GetOutput();
       }
       
       wxExOpenFiles(this, wxExToVectorString(files).Get(), 0, wxDIR_DEFAULT, cmd);

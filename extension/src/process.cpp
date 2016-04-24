@@ -92,7 +92,6 @@ wxExProcess::wxExProcess()
   , m_Timer(std::make_unique<wxTimer>(this))
   , m_Error(false)
   , m_HasStdError(false)
-  , m_Sync(false)
 {
   m_Command = wxExConfigFirstOf(_("Process"));
   
@@ -114,7 +113,6 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
     m_HasStdError = p.m_HasStdError;
     m_Input = p.m_Input;
     m_Output = p.m_Output;
-    m_Sync = p.m_Sync;
   }
 
   return *this;
@@ -122,12 +120,9 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
 
 void wxExProcess::CheckInput()
 {
-  wxCriticalSectionLocker lock(m_Critical);
+  if (m_Shell == nullptr) return;
   
-  if (m_Shell == nullptr)
-  {
-    return;
-  }
+  wxCriticalSectionLocker lock(m_Critical);
   
   wxString output;
   GET_STREAM(Input);
@@ -239,12 +234,6 @@ bool wxExProcess::Execute(
   int flags,
   const wxString& wd)
 {
-  // We need a shell for output.
-  if (m_Shell == nullptr)
-  {
-    return false;
-  }
-  
   m_Error = false;
     
   struct wxExecuteEnv env;
@@ -273,15 +262,16 @@ bool wxExProcess::Execute(
     env.cwd = wd;
   }
   
-  m_Sync = (flags & wxEXEC_SYNC);
-
-  m_Shell->EnableShell(!m_Sync);
-  m_Shell->SetProcess(this);
-  
+  const bool sync = (flags & wxEXEC_SYNC);
   m_HasStdError = false;
   
-  if (!m_Sync)
+  if (!sync)
   { 
+    // We need a shell for output.
+    if (m_Shell == nullptr) return false;
+  
+    m_Shell->EnableShell(true);
+    m_Shell->SetProcess(this);
     m_Shell->SetName(m_Command);
     m_Shell->SetPrompt(
       // a unix shell itself has no prompt, s put one here
@@ -345,9 +335,6 @@ bool wxExProcess::Execute(
 bool wxExProcess::IsRunning() const
 {
   if (
-    // If we executed a sync process, then it always ended,
-    // so it is not running.
-    m_Sync || 
     // If we have not yet run Execute, process is not running
     m_Shell == nullptr ||
     GetPid() <= 0)
@@ -407,11 +394,7 @@ void wxExProcess::PrepareOutput(wxWindow* parent)
 #if wxUSE_GUI
 void wxExProcess::ShowOutput(const wxString& caption) const
 {
-  if (!m_Sync)
-  {
-    wxLogStatus("Output only available for sync processes");
-  }  
-  else if (!m_Error)
+  if (!m_Error)
   {
     if (m_Shell != nullptr && ShowProcess(true))
     {

@@ -19,6 +19,15 @@ TEST_CASE("wxExProcess")
   // Test commands entered in shell.
   const wxString cwd = wxGetCwd();
   
+#ifdef __UNIX__
+  SECTION("Async")
+  {
+    wxExProcess process;
+    REQUIRE( process.Execute("pwd"));
+    REQUIRE( process.GetOutput().empty());
+  }
+#endif
+  
   wxExProcess* process = new wxExProcess;
   
   REQUIRE(!process->GetError());
@@ -29,8 +38,8 @@ TEST_CASE("wxExProcess")
   
   process->ConfigDialog(GetFrame(), "test process", false);
   
-  // Test wxEXEC_SYNC process
 #ifdef __UNIX__
+  // Test wxEXEC_SYNC process
   REQUIRE( process->Execute("ls -l", wxEXEC_SYNC));
   REQUIRE(!process->GetError());
   REQUIRE(!process->GetOutput().empty());
