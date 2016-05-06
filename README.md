@@ -9,15 +9,19 @@ one of these applications, being a full featured source code text editor.
 - [wxWidgets 3.x](http://www.wxwidgets.org/)
   
 - [cmake](http://www.cmake.org/) to generate makefiles   
-  When using wxWidgets 3.1 you can clone wxWidgets to c:\wxWidgets.
 
-- [catch lib 1.4.0](https://github.com/philsquared/Catch/) (only for testing, header only)   
-    
-- [OTL database 4.0.368](http://otl.sourceforge.net/) (for syncodbcquery, header only)   
+# Uses
+
+- [catch lib](https://github.com/philsquared/Catch/) (only for testing, header only)   
+
+- [eval lib](https://github.com/r-lyeh/eval) (shunting-yard algorithn for calculation, header only)
+
+- [OTL database lib](http://otl.sourceforge.net/) (for syncodbcquery, header only)   
     `sudo apt-get install unixODBC unixODBC-dev` or   
     `yum install unixODBC unixODBC-devel`  
 
 # Build process 
+
   [![Travis](https://travis-ci.org/antonvw/wxExtension.png?branch=master)](https://travis-ci.org/antonvw/wxExtension)
   [![Appveyor](https://ci.appveyor.com/api/projects/status/x3jm519fq1i407a6?svg=true)](https://ci.appveyor.com/project/antonvw/wxextension)
   [![Coverity](https://scan.coverity.com/projects/2868/badge.svg)](https://scan.coverity.com/projects/2868>)
@@ -37,11 +41,11 @@ one of these applications, being a full featured source code text editor.
     
 - under Linux g++ 4.9.2:   
     install gtk:   
-    `sudo apt-get install libgtk2.0-dev`   or   
+    `sudo apt-get install libgtk2.0-dev` or   
     `sudo apt-get install libgtk-3-dev`   
     then in buildgtk (created):   
-    `../configure --with-gtk && make`  or   
-    `../configure --with-gtk=3 && make`   and   
+    `../configure --with-gtk && make` or   
+    `../configure --with-gtk=3 && make` and   
     `make install`    
     
 - under Linux clang 3.5.0:   

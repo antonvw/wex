@@ -23,6 +23,7 @@
 #include <wx/xml/xml.h>
 #include <wx/extension/util.h>
 #include <wx/extension/dir.h>
+#include <wx/extension/ex.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
@@ -527,6 +528,49 @@ long wxExMake(const wxFileName& makefile)
     makefile.GetPath());
 }
 
+bool wxExMarkerAndRegisterExpansion(wxExEx* ex, wxString& text)
+{
+  wxStringTokenizer tkz(text, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
+
+  while (tkz.HasMoreTokens())
+  {
+    tkz.GetNextToken();
+    
+    const wxString rest(tkz.GetString());
+    
+    if (!rest.empty())
+    {
+      const char name(rest.GetChar(0));
+      
+      // Replace marker.
+      if (tkz.GetLastDelimiter() == '\'')
+      {
+        const int line = ex->MarkerLine(name);
+        
+        if (line >= 0)
+        {
+          text.Replace(
+            tkz.GetLastDelimiter() + wxString(name), 
+            std::to_string(line + 1));
+        }
+        else
+        {
+          return false;
+        }
+      }
+      // Replace register.
+      else
+      {
+        text.Replace(
+          tkz.GetLastDelimiter() + wxString(name), 
+          name == '%' ? ex->GetSTC()->GetFileName().GetFullName(): ex->GetMacros().GetRegister(name));
+      }
+    }
+  }
+  
+  return true;
+}
+  
 int wxExMatch(const std::string& reg, const std::string& text, 
   std::vector < wxString > & v)
 {
@@ -802,6 +846,27 @@ const wxString GetLines(std::vector<wxString> & lines,
   return text;
 }
     
+bool wxExShellExpansion(wxString& command)
+{
+  std::vector <wxString> v;
+  const std::string re_str("`(.*?)`"); // non-greedy
+  const std::regex re(re_str);
+  
+  while (wxExMatch(re_str, command.ToStdString(), v) > 0)
+  {
+    wxExProcess process;
+    if (!process.Execute(v[0], wxEXEC_SYNC)) return false;
+    
+    command = std::regex_replace(
+      command.ToStdString(), 
+      re, 
+      process.GetOutput().ToStdString(), 
+      std::regex_constants::format_sed);
+  }
+      
+  return true;
+}
+  
 const wxString wxExSort(const wxString& input, 
   size_t sort_type, size_t pos, const wxString& eol, size_t len)
 {

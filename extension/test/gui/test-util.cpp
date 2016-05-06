@@ -13,6 +13,7 @@
 #include <wx/config.h>
 #include <wx/filehistory.h>
 #include <wx/extension/util.h>
+#include <wx/extension/ex.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
@@ -308,7 +309,42 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   
   SECTION("wxExSetTextCtrlValue")
   {
+    wxTextCtrl* tc = new wxTextCtrl(GetFrame(), wxID_ANY, "this is some text");
+    AddPane(GetFrame(), tc);
+    
+    const std::list < wxString > l {"one", "two", "three"};
+    std::list < wxString >::const_iterator it = l.begin();
+    
+    REQUIRE(!wxExSetTextCtrlValue(tc, 0, l, it));
+    REQUIRE( wxExSetTextCtrlValue(tc, WXK_UP, l, it));
+    REQUIRE( wxExSetTextCtrlValue(tc, WXK_DOWN, l, it));
   }
+  
+  SECTION("wxExMarkerAndRegisterExpansion")
+  {
+    wxExSTC* stc = new wxExSTC(GetFrame(), "this is some text");
+    AddPane(GetFrame(), stc);
+    wxExEx* ex = new wxExEx(stc);
+    wxString command("xxx");
+    REQUIRE( wxExMarkerAndRegisterExpansion(ex, command));
+    command = "'yxxx";
+    REQUIRE(!wxExMarkerAndRegisterExpansion(ex, command));
+  }
+  
+#ifdef __UNIX__
+  SECTION("wxExShellExpansion")
+  {
+    wxString command("xxx `pwd` `pwd`");
+    REQUIRE( wxExShellExpansion(command));
+    REQUIRE(!command.Contains("`"));
+    command = "no quotes";
+    REQUIRE( wxExShellExpansion(command));
+    REQUIRE( command == "no quotes");
+    command = "illegal process `xyz`";
+    REQUIRE(!wxExShellExpansion(command));
+    REQUIRE( command == "illegal process `xyz`");
+  }
+#endif
   
   SECTION("wxExSort")
   {
@@ -316,7 +352,6 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     REQUIRE(wxExSort("z\ny\nx\n", STRING_SORT_DESCENDING, 0, "\n") == "z\ny\nx\n");
     REQUIRE(wxExSort("z\nz\ny\nx\n", STRING_SORT_ASCENDING, 0, "\n") == "x\ny\nz\nz\n");
     REQUIRE(wxExSort("z\nz\ny\nx\n", STRING_SORT_ASCENDING | STRING_SORT_UNIQUE, 0, "\n") == "x\ny\nz\n");
-    
     REQUIRE(wxExSort(rect, STRING_SORT_ASCENDING, 3, "\n", 5) == sorted);
   }
 

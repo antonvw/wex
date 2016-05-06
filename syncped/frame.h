@@ -15,17 +15,6 @@
 
 class App;
 
-class Notebook : public wxExNotebook
-{
-public:
-  Notebook(wxWindow* parent,
-    wxExManagedFrame* frame,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxAUI_NB_DEFAULT_STYLE);
-};
-
 class Frame : public DecoratedFrame
 {
 public:
@@ -80,19 +69,15 @@ private:
   const wxString m_ProjectWildcard;
 
   bool m_IsClosing;
-  int m_NewProjectNo;
-  int m_SplitId;
+  int m_NewProjectNo, m_SplitId;
 
   App* m_App;
-  Notebook* m_Editors;
 
-  wxCheckBox* m_CheckBoxDirCtrl;
-  wxCheckBox* m_CheckBoxHistory;
+  wxCheckBox *m_CheckBoxDirCtrl, *m_CheckBoxHistory;
   wxExGenericDirCtrl* m_DirCtrl;
   wxExListViewWithFrame* m_History;
-  wxExNotebook* m_Lists;
+  wxExNotebook *m_Editors, *m_Lists, *m_Projects;
   wxExProcess* m_Process;
-  wxExNotebook* m_Projects;
   wxExSTC* m_asciiTable;
 
   DECLARE_EVENT_TABLE()

@@ -92,9 +92,8 @@ wxExProcess::wxExProcess()
   , m_Timer(std::make_unique<wxTimer>(this))
   , m_Error(false)
   , m_HasStdError(false)
+  , m_Command(wxExConfigFirstOf(_("Process")))
 {
-  m_Command = wxExConfigFirstOf(_("Process"));
-  
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {CheckInput();});
 }
 
@@ -214,17 +213,11 @@ int wxExProcess::ConfigDialog(
 
   if (modal)
   {
-    return wxExItemDialog(parent,
-      v,
-      title).ShowModal();
+    return wxExItemDialog(parent, v, title).ShowModal();
   }
   else
   {
-    wxExItemDialog* dlg = new wxExItemDialog(
-      parent,
-      v,
-      title);
-      
+    wxExItemDialog* dlg = new wxExItemDialog(parent, v, title);
     return dlg->Show();
   }
 }
@@ -334,15 +327,10 @@ bool wxExProcess::Execute(
 
 bool wxExProcess::IsRunning() const
 {
-  if (
+  return 
     // If we have not yet run Execute, process is not running
-    m_Shell == nullptr ||
-    GetPid() <= 0)
-  {
-    return false;
-  }
-
-  return Exists(GetPid());
+    m_Shell != nullptr &&
+    GetPid() > 0 && Exists(GetPid());
 }
 
 wxKillError wxExProcess::Kill(wxSignal sig)

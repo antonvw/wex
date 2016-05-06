@@ -333,14 +333,17 @@ bool wxExAddressRange::Escape(const wxString& command)
 {
   if (m_Begin.empty() && m_End.empty())
   {
+    wxString expanded(command);
+    if (
+      !wxExShellExpansion(expanded) ||
+      !wxExMarkerAndRegisterExpansion(m_Ex, expanded)) return false;
+
     if (m_Process == nullptr)
     {
       m_Process = new wxExProcess();
     }
-  
-    const bool ok = m_Process->Execute(
-      command,
-      wxEXEC_ASYNC,
+    
+    const bool ok = m_Process->Execute(expanded, wxEXEC_ASYNC,
       m_STC->GetFileName().GetPath());
     
     if (ok)
@@ -880,21 +883,15 @@ bool wxExAddressRange::Write(const wxString& text) const
 #ifdef __UNIX__
   filename.Replace("~", wxGetHomeDir());
 #endif
-  const wxFile::OpenMode mode(text.Contains(">>") ? wxFile::write_append: wxFile::write);
 
-  return wxExFile(filename, mode).Write(m_Ex->GetSelectedText());
+  return wxExFile(filename, 
+    text.Contains(">>") ? wxFile::write_append: wxFile::write).Write(m_Ex->GetSelectedText());
 }
 
 bool wxExAddressRange::Yank(const char name) const
 {
-  if (!SetSelection())
-  {
-    return false;
-  }
-  
-  m_Ex->GetMacros().SetRegister(name, m_Ex->GetSelectedText());
-
-  return true;
+  return 
+    SetSelection() &&
+    m_Ex->GetMacros().SetRegister(name, m_Ex->GetSelectedText());
 }
-
 #endif // wxUSE_GUI

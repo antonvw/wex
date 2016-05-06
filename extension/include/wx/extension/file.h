@@ -63,6 +63,9 @@ public:
 
   /// Returns the file name.
   const auto & GetFileName() const {return m_FileName;}
+  
+  /// Returns true if file is opened.
+  bool IsOpened() const {return m_File->IsOpened();};
 
   /// Opens specified file.
   bool Open(const wxString &filename, 

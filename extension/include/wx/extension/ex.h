@@ -97,9 +97,6 @@ public:
     const wxString& macro = wxEmptyString,
     int repeat = 1);
       
-  /// Adds recording to current macro.
-  virtual void MacroRecord(const std::string& text);
-  
   /// Start recording a macro.  
   /// If specified macro is empty,
   /// it asks for the name of the macro.

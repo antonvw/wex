@@ -713,17 +713,18 @@ void wxExViMacros::SetAbbreviation(const wxString& ab, const std::string& value)
   m_IsModified = true;
 }
 
-void wxExViMacros::SetRegister(const char name, const std::string& value)
+bool wxExViMacros::SetRegister(const char name, const std::string& value)
 {
-  if (!wxIsascii(name))
+  if (!isalnum(name) && !isdigit(name) && 
+       name != '%' && name != '_' && name != '*' && name != '.')
   {
-    return;
+    return false;
   }
   
   if (name == '*')
   {
     wxExClipboardAdd(value);
-    return;
+    return true;
   }
 
   std::vector<std::string> v;
@@ -742,8 +743,9 @@ void wxExViMacros::SetRegister(const char name, const std::string& value)
   }
   
   m_Macros[(char)tolower(name)] = v;
-
   m_IsModified = true;
+  
+  return true;
 }
 
 void wxExViMacros::StartRecording(const wxString& macro)

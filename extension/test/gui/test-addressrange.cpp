@@ -20,6 +20,9 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
   wxExSTC* stc = GetSTC();
   stc->SetText("hello\nhello1\nhello2");
   wxExEx* ex = new wxExEx(stc);
+  ex->MarkerAdd('x', 1);
+  ex->MarkerAdd('y', 2);
+  ex->GetMacros().SetRegister('*', "ls");
   stc->GotoLine(2);
 
   // Test valid ranges when no selection is active.
@@ -103,6 +106,8 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
   REQUIRE( wxExAddressRange(ex, "%").Escape("uniq"));
   REQUIRE( stc->GetLineCount() == 5);
   REQUIRE( wxExAddressRange(ex).Escape("ls -l"));
+  REQUIRE( wxExAddressRange(ex).Escape("ls `pwd`"));
+  REQUIRE( wxExAddressRange(ex).Escape("ls \x12*"));
   REQUIRE( wxExAddressRange::GetProcess() != nullptr);
 #endif
   

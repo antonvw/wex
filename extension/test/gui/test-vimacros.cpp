@@ -130,13 +130,16 @@ TEST_CASE("wxExViMacros", "[stc][vi]")
   REQUIRE( macros.GetRegister('z').empty());
   REQUIRE(!macros.GetRegisters().empty());
   REQUIRE( macros.Get("z").empty());
-  macros.SetRegister('z', "hello z");
-  REQUIRE(!macros.GetRegister('z').empty());
+  REQUIRE( macros.SetRegister('z', "hello z"));
   REQUIRE(!macros.Get("z").empty());
   REQUIRE( macros.GetRegister('z') == "hello z");
-  macros.SetRegister('Z', " and more");
+  REQUIRE( macros.SetRegister('Z', " and more"));
   REQUIRE( macros.GetRegister('Z').empty());
   REQUIRE( macros.GetRegister('z') == "hello z and more");
+  REQUIRE(!macros.SetRegister('\x05', "hello z"));
+  REQUIRE( macros.SetRegister('*', "clipboard"));
+  REQUIRE( macros.SetRegister('_', "blackhole"));
+  REQUIRE( macros.GetRegister('_').empty());
   
   // Test abbreviations.
   for (auto& abbrev : GetAbbreviations())
