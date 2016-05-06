@@ -125,6 +125,10 @@ else ()
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
   endif ()
   
+  if (CMAKE_BUILD_TYPE MATCHES "valgrind")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
+  endif ()
+  
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wno-write-strings -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 

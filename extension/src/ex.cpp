@@ -94,45 +94,6 @@ wxExSTCEntryDialog* wxExEx::m_Dialog = nullptr;
 wxExViMacros wxExEx::m_Macros;
 std::string wxExEx::m_LastCommand;
 
-bool ReplaceMarkers(wxExEx* ex, wxString& text)
-{
-  wxStringTokenizer tkz(text, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
-
-  while (tkz.HasMoreTokens())
-  {
-    tkz.GetNextToken();
-    
-    const wxString rest(tkz.GetString());
-    
-    if (!rest.empty())
-    {
-      // Replace marker.
-      if (tkz.GetLastDelimiter() == '\'')
-      {
-        const int line = ex->MarkerLine(rest.GetChar(0));
-        
-        if (line >= 0)
-        {
-          text.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
-            std::to_string(line + 1));
-        }
-        else
-        {
-          return false;
-        }
-      }
-      // Replace register.
-      else
-      {
-        text.Replace(tkz.GetLastDelimiter() + wxString(rest.GetChar(0)), 
-          ex->GetMacros().GetRegister(rest.GetChar(0)));
-      }
-    }
-  }
-  
-  return true;
-}
-  
 wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
@@ -388,8 +349,8 @@ double wxExEx::Calculator(const std::string& text, int& width)
   // Replace $ with line count.
   expr.Replace("$", std::to_string(m_STC->GetLineCount()));
   
-  // Replace all markers and registers.
-  if (!ReplaceMarkers(this, expr))
+  // Expand all markers and registers.
+  if (!wxExMarkerAndRegisterExpansion(this, expr))
   {
     return 0;
   }
@@ -408,11 +369,11 @@ double wxExEx::Calculator(const std::string& text, int& width)
 
 bool wxExEx::Command(const std::string& command, bool is_handled)
 {
-  if (!m_IsActive || command.empty() || command.front() != ':')
+  if (!m_IsActive || command.empty())
   {
     return false;
   }
-  
+
   wxExSTC* stc = nullptr;
 
   if (m_Frame->ExecExCommand(command, stc))
@@ -422,6 +383,10 @@ bool wxExEx::Command(const std::string& command, bool is_handled)
       m_STC = stc;
     }
     return true;
+  }
+  if (command.front() != ':')
+  {
+    return false;
   }
   else if (command == ":" || command == ":'<,'>")
   {
@@ -437,7 +402,6 @@ bool wxExEx::Command(const std::string& command, bool is_handled)
   }
   else
   {
-    wxBell();
     return false;
   }
 }
@@ -508,22 +472,16 @@ bool wxExEx::CommandAddress(const std::string& command)
         default: wxFAIL; break;
       }
 
-      if (!ReplaceMarkers(this, range_str))
+      if (!wxExMarkerAndRegisterExpansion(this, range_str))
       {
         return false;
       }
     }
     else 
     {
-      if (wxExAddress(this, rest).GetLine() > 0)
-      {
-        m_STC->GotoLineAndSelect(wxExAddress(this, rest).GetLine());
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+      const auto line(wxExAddress(this, rest).GetLine());
+      if (line > 0) m_STC->GotoLineAndSelect(line);
+      return line > 0;
     }
     
     if (range_str.empty() && cmd != '!') 
@@ -733,11 +691,6 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   }
   
   return ok;
-}
-
-void wxExEx::MacroRecord(const std::string& text)
-{
-  m_Macros.Record(text);
 }
 
 void wxExEx::MacroStartRecording(const wxString& macro)

@@ -210,22 +210,12 @@ bool wxExAddress::Insert(const wxString& text) const
   
 bool wxExAddress::MarkerAdd(const wxUniChar& marker) const
 {
-  if (GetLine() <= 0)
-  {
-    return false;
-  }
-  
-  return m_Ex->MarkerAdd(marker, GetLine() - 1);
+  return GetLine() > 0 && m_Ex->MarkerAdd(marker, GetLine() - 1);
 }
   
 bool wxExAddress::MarkerDelete() const
 {
-  if (StartsWith("'") && size() > 1)
-  {
-    return m_Ex->MarkerDelete(GetChar(1));
-  }
-  
-  return false;
+  return StartsWith("'") && size() > 1 && m_Ex->MarkerDelete(GetChar(1));
 }
 
 bool wxExAddress::Put(const char name) const
@@ -277,7 +267,7 @@ bool wxExAddress::Read(const wxString& arg) const
       return false;
     }
     
-    const auto buffer = file.Read();
+    const auto buffer(file.Read());
     
     if (*this == ".")
     {

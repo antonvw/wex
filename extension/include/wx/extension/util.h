@@ -19,6 +19,7 @@ class wxGenericDirCtrl;
 class wxTextCtrl;
 class wxXmlNode;
 
+class wxExEx;
 class wxExFileName;
 class wxExFrame;
 class wxExLexer;
@@ -255,6 +256,10 @@ long wxExMake(
   /// the makefile
   const wxFileName& makefile);
 
+/// Expands all markers and registers in command.
+/// Returns false if a marker could not be found.
+bool wxExMarkerAndRegisterExpansion(wxExEx* ex, wxString& command);
+
 /// Regular expression match.
 /// Returns number of submatches present in vector.
 int wxExMatch(
@@ -342,6 +347,12 @@ bool wxExSetTextCtrlValue(
   const std::list < wxString > & l,
   /// iterator on the list
   std::list < wxString >::const_iterator & it);
+#endif
+  
+/// Executes all process between backquotes in command, 
+/// and changes command with replaced match with output from process.
+/// Returns false if process could not be executed.
+bool wxExShellExpansion(wxString& command);
   
 enum
 {
@@ -349,7 +360,6 @@ enum
   STRING_SORT_DESCENDING = 0x001, ///< sort descending order
   STRING_SORT_UNIQUE     = 0x010, ///< flag to remove doubles
 };
-#endif
 
 /// Sorts specified text, returns string with sorted text.
 const wxString wxExSort(

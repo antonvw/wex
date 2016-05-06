@@ -71,9 +71,21 @@ bool App::OnInit()
     wxExCmdLineParser::CmdOptions {
       {{"c", _("vi command")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
         any.GetAs(&m_Command);}}},
+      {{"s", _("script in")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
+        wxString script;
+        any.GetAs(&script);
+        m_Scriptin.Open(script);}}},
       {{"S", _("source file")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
         any.GetAs(&m_Command);
-        m_Command = ":so " + m_Command;}}}},
+        m_Command = ":so " + m_Command;}}},
+      {{"w", _("script out write")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
+        wxString script;
+        any.GetAs(&script);
+        m_Scriptout.Open(script, wxFile::write);}}},
+      {{"W", _("script out append")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
+        wxString script;
+        any.GetAs(&script);
+        m_Scriptout.Open(script, wxFile::write_append);}}}},
     wxExCmdLineParser::CmdParams {
       {_("input file:line number:column number"), {wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE, [&](std::vector<wxString> & v) {
         m_Files = v;}}}}).Parse() != 0 || exit)

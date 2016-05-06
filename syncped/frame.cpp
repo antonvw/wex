@@ -13,6 +13,7 @@
 #include <wx/config.h>
 #include <wx/imaglist.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
+#include <wx/tokenzr.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/itemdlg.h>
 #include <wx/extension/lexers.h>
@@ -30,6 +31,17 @@
 #include "frame.h"
 #include "app.h"
 #include "defs.h"
+
+class EditorsNotebook : public wxExNotebook
+{
+public:
+  EditorsNotebook(wxWindow* parent,
+    wxExManagedFrame* frame,
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = wxAUI_NB_DEFAULT_STYLE);
+};
 
 void About(wxFrame* frame)
 {
@@ -114,7 +126,7 @@ Frame::Frame(App* app)
       wxAUI_NB_WINDOWLIST_BUTTON |
       wxAUI_NB_SCROLL_BUTTONS)
   , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
-  , m_Editors(new Notebook(
+  , m_Editors(new EditorsNotebook(
       this, 
       this, 
       (wxWindowID)ID_NOTEBOOK_EDITORS, 
@@ -151,7 +163,7 @@ Frame::Frame(App* app)
   {
     AddPaneProjects();
   }
-
+  
   GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo()
     .Left()
     .MaximizeButton(true)
@@ -465,6 +477,13 @@ bool Frame::DialogProjectOpen()
 
 bool Frame::ExecExCommand(const std::string& command, wxExSTC* & stc)
 {
+  if (command == ":") return false;
+
+  if (m_App->GetScriptout().IsOpened())
+  {
+    m_App->GetScriptout().Write(command + "\n");
+  }
+
   if (m_Editors->GetPageCount() > 0)
   {
     if (command == ":n")
@@ -1358,6 +1377,21 @@ bool Frame::OpenFile(
       {
         editor->SetEdgeMode(wxSTC_EDGE_NONE);
       }
+      
+      if (m_App->GetScriptin().IsOpened())
+      {
+        const auto buffer(m_App->GetScriptin().Read());
+        wxStringTokenizer tkz(wxString((const char *)buffer->data(), buffer->length()), "\r\n");
+        while (tkz.HasMoreTokens())
+        {
+          const wxString command = tkz.GetNextToken();
+          if (!editor->GetVi().Command(command.ToStdString()))
+          {
+            wxLogStatus("Aborted at: " + command);
+            return false;
+          }
+        }
+      }
     }
     else if (line_number > 0)
     {
@@ -1521,7 +1555,7 @@ void Frame::SyncCloseAll(wxWindowID id)
   }
 }
 
-Notebook::Notebook(wxWindow* parent,
+EditorsNotebook::EditorsNotebook(wxWindow* parent,
   wxExManagedFrame* frame,
   wxWindowID id,
   const wxPoint& pos,

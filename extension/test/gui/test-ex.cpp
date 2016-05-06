@@ -164,10 +164,6 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE(!ex->GetMacros().IsRecording());
   REQUIRE(!ex->GetMacros().IsRecorded("a")); // still no macro
   
-  ex->MacroRecord("a");
-  REQUIRE(!ex->GetMacros().IsRecording()); // if not recording it does not start it
-  REQUIRE(!ex->GetMacros().IsRecorded("a"));
-  
   ex->MacroStartRecording("a");
   REQUIRE( ex->Command(":10"));
   ex->GetMacros().StopRecording();

@@ -390,27 +390,29 @@ wxExTextCtrl::wxExTextCtrl(
   m_CommandsIterator = m_Commands.begin();
 
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
-    if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
+    if (event.GetUnicodeKey() != WXK_NONE)
     {
       if (event.GetKeyCode() == WXK_BACK)
       {
         m_Command = m_Command.Truncate(m_Command.size() - 1);
       }
-      else if (event.GetKeyCode() != WXK_TAB)
+      else if (event.GetKeyCode() != WXK_TAB && event.GetKeyCode() != WXK_RETURN)
       {
         m_Command += event.GetUnicodeKey();
       }
     }
         
-    const int key = event.GetKeyCode();
-  
-    switch (key)
+    switch (event.GetKeyCode())
     {
-    case WXK_UP: 
+    case WXK_CONTROL_R: 
+      m_ControlR = true; 
+      break;
+
     case WXK_DOWN:
+    case WXK_UP: 
       if (IsCommand())
       {
-        wxExSetTextCtrlValue(this, key, m_Commands, m_CommandsIterator);
+        wxExSetTextCtrlValue(this, event.GetKeyCode(), m_Commands, m_CommandsIterator);
       }
       else if (IsFind())
       {
@@ -428,7 +430,6 @@ wxExTextCtrl::wxExTextCtrl(
       m_UserInput = false;
     break;
     
-    case WXK_CONTROL_R: m_ControlR = true; break;
     case WXK_TAB: {
       if (m_ex != nullptr && m_ex->GetSTC()->GetFileName().FileExists())
       {
@@ -463,6 +464,10 @@ wxExTextCtrl::wxExTextCtrl(
           {
             wxPostEvent(this, event);
           }
+          if (m_ex != nullptr && m_ex->GetMacros().IsRecording())
+          {
+            m_Command += "\x12" + c;
+          }
         }
         m_UserInput = true;
       }
@@ -491,46 +496,27 @@ wxExTextCtrl::wxExTextCtrl(
     if (m_ex == nullptr || GetValue().empty())
     {
       m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
+      return;
     }
-    else if (IsCommand())
+    if (!m_ex->GetMacros().IsRecording())
     {
-      if (m_ex->Command(wxString(m_Prefix->GetLabel() + GetValue()).ToStdString()))
+      m_Command = m_Prefix->GetLabel() + GetValue();
+    }
+    event.Skip();
+    if (m_ex->Command(m_Command.ToStdString(), m_UserInput && IsFind()))
+    {
+      int focus = (IsFind() ? 
+        wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC: 
+        wxExManagedFrame::HIDE_BAR_FOCUS_STC);
+      if (IsCommand())
       {
-        int focus = wxExManagedFrame::HIDE_BAR_FOCUS_STC;
         if (GetValue() == "n" || GetValue() == "prev") focus = wxExManagedFrame::HIDE_BAR_FORCE;
         if (GetValue().StartsWith("!")) focus = wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC;
-            
         m_Commands.remove(GetValue());
         m_Commands.push_front(GetValue());
         m_CommandsIterator = m_Commands.begin();
-  
-        m_Frame->HideExBar(focus);
       }
-    }
-    else if (IsFind())
-    {
-      event.Skip();    
-          
-      if (m_ex->Command(
-        wxString(m_Prefix->GetLabel() + GetValue()).ToStdString(),
-        m_UserInput))
-      {
-        m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
-      }
-    }
-    else if (IsCalc())
-    {
-      if (m_UserInput)
-      {
-        m_ex->MacroRecord(m_Command.ToStdString());
-      }
-        
-      if (m_ex->Command(wxString(
-        m_Prefix->GetLabel() + GetValue()).ToStdString()))
-      {
-        m_Frame->HideExBar();
-      }
-    }});
+      m_Frame->HideExBar(focus);}});
 
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
     event.Skip();
@@ -545,7 +531,7 @@ void wxExTextCtrl::SetEx(wxExEx* ex, const wxString& command)
   m_Prefix->SetLabel(command.Left(1));
   const wxString range(command.Mid(1));
   
-  m_Command.clear();
+  m_Command = m_Prefix->GetLabel();
   m_ControlR = false;
   m_ModeVisual = !range.empty();
   m_UserInput = false;

@@ -18,6 +18,7 @@ TEST_CASE( "wxExFile" )
   {
     REQUIRE(!file.CheckSync());
     REQUIRE(!file.GetContentsChanged());
+    REQUIRE( file.IsOpened());
     
     file.ResetContentsChanged();
 
@@ -28,6 +29,7 @@ TEST_CASE( "wxExFile" )
     REQUIRE(!file.GetFileName().GetStat().IsReadOnly());
     REQUIRE(!file.FileLoad(wxExFileName(GetTestDir() + "test.bin")));
     REQUIRE( file.Open(wxExFileName(GetTestDir() + "test.bin").GetFullPath()));
+    REQUIRE( file.IsOpened());
 
     const wxCharBuffer* buffer = file.Read();
     REQUIRE(buffer->length() == 40);

@@ -244,13 +244,8 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
         cmd = v[0];
         files = v[1];
       }
-
-      if (wxExMatch("`(.*)`", files.ToStdString(), v) > 0)
-      {
-        wxExProcess process;
-        if (!process.Execute(v[0], wxEXEC_SYNC)) return;
-        files = process.GetOutput();
-      }
+      
+      if (!wxExShellExpansion(files)) return;
       
       wxExOpenFiles(this, wxExToVectorString(files).Get(), 0, wxDIR_DEFAULT, cmd);
     }

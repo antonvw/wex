@@ -349,6 +349,24 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( vi->Command(std::string(1, WXK_DELETE)));
   REQUIRE( stc->GetText() == "yz");
 
+  // Test record find.
+  stc->SetText("abc\nuvw\nxyz\n");
+  vi->Command("");
+  REQUIRE( vi->Command("qa"));
+  REQUIRE( vi->GetMacros().IsRecording());
+  REQUIRE( vi->Command("/abc"));
+  REQUIRE( vi->Command("q"));
+  REQUIRE(!vi->GetMacros().IsRecording());
+  REQUIRE( vi->Command("@a"));
+  REQUIRE( vi->Command(" "));
+  REQUIRE( vi->Command("qb"));
+  REQUIRE( vi->GetMacros().IsRecording());
+  REQUIRE( vi->Command("?abc"));
+  REQUIRE( vi->Command("q"));
+  REQUIRE(!vi->GetMacros().IsRecording());
+  REQUIRE( vi->Command("@b"));
+  REQUIRE( vi->Command(" "));
+
   // Test fold.
   for (auto& fold: std::vector<std::string> {"zo", "zc", "zE", "zf"})
   {

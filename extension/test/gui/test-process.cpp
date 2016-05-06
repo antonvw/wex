@@ -20,12 +20,14 @@ TEST_CASE("wxExProcess")
   const wxString cwd = wxGetCwd();
   
 #ifdef __UNIX__
+#if wxCHECK_VERSION(3,1,0)
   SECTION("Async")
   {
     wxExProcess process;
     REQUIRE( process.Execute("pwd"));
     REQUIRE( process.GetOutput().empty());
   }
+#endif
 #endif
   
   wxExProcess* process = new wxExProcess;

@@ -135,18 +135,14 @@ bool DeleteRange(wxExVi* vi, int start, int end)
   return true;
 }
 
-// Returns true if after chr only one letter is followed.
-bool OneLetterAfter(const std::string& chr, const std::string& letter)
+bool OneLetterAfter(const std::string& text, const std::string& letter)
 {
-  if (letter.size() < 1) return false;
-  std::regex re("^" + chr + "[a-zA-Z]$");
-  return std::regex_match(letter, re);
+  return std::regex_match(letter, std::regex("^" + text + "[a-zA-Z]$"));
 }
 
-bool RegAfter(const wxString& text, const wxString& letter)
+bool RegAfter(const std::string& text, const std::string& letter)
 {
-  std::regex re("^" + text.ToStdString() + "[0-9=\"a-z%.]$");
-  return std::regex_match(letter.ToStdString(), re);
+  return std::regex_match(letter, std::regex("^" + text + "[0-9=\"a-z%.]$"));
 }
 
 enum
@@ -604,7 +600,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       return true;}},
     {"\x12", [&](const std::string& command){
       if (command.size() == 1) return false;
-      if (RegAfter(wxUniChar(WXK_CONTROL_R), command))
+      if (RegAfter(std::string(1, WXK_CONTROL_R), command))
       {
         CommandReg(command[1]);
         return true;
@@ -631,7 +627,18 @@ void wxExVi::AddText(const std::string& text)
 
 bool wxExVi::Command(const std::string& command, bool is_handled)
 {
-  if (command.empty() || !GetIsActive())
+  if (ModeVisual() && command.find("'<,'>") == std::string::npos)
+  {
+    if (wxExEx::Command(command + "'<,'>"))
+    {
+      return true;
+    }
+  }
+  else if (wxExEx::Command(command))
+  {
+    return true;
+  }
+  else if (command.empty() || !GetIsActive())
   {
     return false;
   }
@@ -704,12 +711,7 @@ bool wxExVi::Command(const std::string& command, bool is_handled)
 
   if (!handled)
   {  
-    if (ModeVisual() && command.find("'<,'>") == std::string::npos)
-    {
-      return wxExEx::Command(command + "'<,'>");
-    }
-
-    return wxExEx::Command(command);
+    return false;
   }
   
   if (!m_Dot)
@@ -721,7 +723,7 @@ bool wxExVi::Command(const std::string& command, bool is_handled)
       ModeInsert() || size != GetSTC()->GetLength());
   }
     
-  if (GetMacros().IsRecording() && command[0] != 'q' && command != "/")
+  if (GetMacros().IsRecording() && command[0] != 'q' && command != "/" && command != "?")
   {
     GetMacros().Record(command);
   }  
@@ -853,8 +855,8 @@ bool wxExVi::InsertMode(const std::string& command)
     {
       const wxString token = tkz.GetNextToken();
       
-      if (RegAfter(wxUniChar(WXK_CONTROL_R), 
-        wxUniChar(WXK_CONTROL_R) + tkz.GetString().Mid(0, 1)))
+      if (RegAfter(std::string(1, WXK_CONTROL_R), 
+        std::string(1, WXK_CONTROL_R) + tkz.GetString().Mid(0, 1).ToStdString()))
       {
         InsertMode(token.ToStdString());
         CommandReg(tkz.GetString().GetChar(0));
@@ -1031,25 +1033,16 @@ void wxExVi::InsertModeNormal(const std::string& text)
         GetSTC()->AddText(token);
       }
   
-      GetSTC()->AddText(tkz.GetLastDelimiter());
-      GetSTC()->AutoIndentation(tkz.GetLastDelimiter());
+      if (tkz.GetLastDelimiter() != 0)
+      {
+        GetSTC()->AddText(tkz.GetLastDelimiter());
+        GetSTC()->AutoIndentation(tkz.GetLastDelimiter());
+      }
     }
   }
   else
   {
     AddText(text);
-  }
-}
-
-void wxExVi::MacroRecord(const std::string& text)
-{
-  if (ModeInsert())
-  {
-    m_InsertText += text;
-  }
-  else
-  {
-    wxExEx::MacroRecord(text);
   }
 }
 
