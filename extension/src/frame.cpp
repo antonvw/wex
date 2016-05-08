@@ -112,14 +112,8 @@ private:
 #endif
 
 wxExFrame::wxExFrame(wxWindow* parent,
-  wxWindowID id,
-  const wxString& title,
-  long style)
+  wxWindowID id, const wxString& title, long style)
   : wxFrame(parent, id, title, wxDefaultPosition, wxDefaultSize, style, "wxExFrame")
-  , m_FindReplaceDialog(nullptr)
-  , m_MenuBar(nullptr)
-  , m_FindFocus(nullptr)
-  , m_IsCommand(false)
 {
   Initialize();
 
@@ -129,22 +123,16 @@ wxExFrame::wxExFrame(wxWindow* parent,
   wxExPrinting::Get()->GetHtmlPrinter()->SetParentWindow(this);
 #endif
 
-  Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, wxID_FIND);
-  Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, wxID_REPLACE);
-  Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, wxID_OPEN);
-  Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, ID_VIEW_MENUBAR);
-  Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, ID_VIEW_STATUSBAR);
-  Bind(wxEVT_MENU, &wxExFrame::OnCommand, this, ID_VIEW_TITLEBAR);
-
-  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()): event.Check(false));},
-    ID_VIEW_MENUBAR);
-
 #if wxUSE_STATUSBAR
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (GetStatusBar() != nullptr)
+    {
+      GetStatusBar()->Show(!GetStatusBar()->IsShown());
+      SendSizeEvent();
+    }}, ID_VIEW_STATUSBAR);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     (GetStatusBar() != nullptr ? event.Check(GetStatusBar()->IsShown()): event.Check(false));},
     ID_VIEW_STATUSBAR);
-    
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     wxExListView* lv = GetListView();
     if (lv != nullptr && lv->HasFocus())
@@ -152,6 +140,45 @@ wxExFrame::wxExFrame(wxWindow* parent,
       UpdateStatusBar(lv);
     }}, ID_UPDATE_STATUS_BAR);
 #endif
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FIND_REPLACE(_("Find"), 0 );}, wxID_FIND);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FIND_REPLACE( _("Replace") , wxFR_REPLACEDIALOG );}, wxID_REPLACE);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_IsCommand = true;
+    if (!event.GetString().empty())
+    {
+      wxExSTC* stc = GetSTC();
+      if (stc != nullptr)
+      {
+        wxSetWorkingDirectory(stc->GetFileName().GetPath());
+      }
+      std::vector <wxString> v;
+      wxString cmd;
+      wxString files(event.GetString());
+      if (wxExMatch("\\+([0-9A-Za-z:_/.-]+)* *(.*)", files.ToStdString(), v) > 1)
+      {
+        cmd = v[0];
+        files = v[1];
+      }
+      if (!wxExShellExpansion(files)) return;
+      wxExOpenFiles(this, wxExToVectorString(files).Get(), 0, wxDIR_DEFAULT, cmd);
+    }
+    else
+    {
+      wxExOpenFilesDialog(this);
+    }}, wxID_OPEN);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    SetMenuBar(GetMenuBar() != nullptr ? nullptr: m_MenuBar);}, ID_VIEW_MENUBAR);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    SetWindowStyleFlag(!(GetWindowStyleFlag() & wxCAPTION) ? 
+      wxDEFAULT_FRAME_STYLE:
+      GetWindowStyleFlag() & ~wxCAPTION);
+    Refresh();}, ID_VIEW_TITLEBAR);
+
+  Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
+    (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()): event.Check(false));},
+    ID_VIEW_MENUBAR);
 
   Bind(wxEVT_FIND_CLOSE, [=](wxFindDialogEvent& event) {
     wxASSERT(m_FindReplaceDialog != nullptr);
@@ -215,69 +242,6 @@ void wxExFrame::Initialize()
 
   wxAcceleratorTable accel(WXSIZEOF(entries), entries);
   SetAcceleratorTable(accel);
-}
-
-void wxExFrame::OnCommand(wxCommandEvent& command)
-{
-  m_IsCommand = true;
-
-  switch (command.GetId())
-  {
-  case wxID_FIND: FIND_REPLACE(_("Find"), 0 ); break;
-  case wxID_REPLACE: FIND_REPLACE( _("Replace") , wxFR_REPLACEDIALOG ); break;
-  case wxID_OPEN:
-    if (!command.GetString().empty())
-    {
-      wxExSTC* stc = GetSTC();
-
-      if (stc != nullptr)
-      {
-        wxSetWorkingDirectory(stc->GetFileName().GetPath());
-      }
-      
-      std::vector <wxString> v;
-      wxString cmd;
-      wxString files(command.GetString());
-      
-      if (wxExMatch("\\+([0-9A-Za-z:_/.-]+)* *(.*)", files.ToStdString(), v) > 1)
-      {
-        cmd = v[0];
-        files = v[1];
-      }
-      
-      if (!wxExShellExpansion(files)) return;
-      
-      wxExOpenFiles(this, wxExToVectorString(files).Get(), 0, wxDIR_DEFAULT, cmd);
-    }
-    else
-    {
-      wxExOpenFilesDialog(this);
-    }
-    break;
-      
-  case ID_VIEW_MENUBAR:
-    SetMenuBar(GetMenuBar() != nullptr ? nullptr: m_MenuBar);
-    break;
-
-  case ID_VIEW_STATUSBAR:
-#if wxUSE_STATUSBAR
-    if (GetStatusBar() != nullptr)
-    {
-      GetStatusBar()->Show(!GetStatusBar()->IsShown());
-      SendSizeEvent();
-    }
-#endif    
-    break;
-    
-  case ID_VIEW_TITLEBAR:
-    SetWindowStyleFlag(!(GetWindowStyleFlag() & wxCAPTION) ? 
-      wxDEFAULT_FRAME_STYLE:
-      GetWindowStyleFlag() & ~wxCAPTION);
-    Refresh();
-    break;
-
-  default: wxFAIL; break;
-  }
 }
 
 #if wxUSE_STATUSBAR
@@ -516,5 +480,4 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
   return StatusText(text, pane);
 }
 #endif
-
 #endif // wxUSE_GUI

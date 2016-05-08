@@ -65,7 +65,6 @@ wxExItem::wxExItem(wxExItemType type, long style,
   , m_Inc(inc)
   , m_MajorDimension(major_dimension)
   , m_UserWindowCreate(create)
-  , m_Validator(nullptr)
   , m_Window(window)
   , m_IsRowGrowable(false)
   , m_Page()
@@ -73,7 +72,6 @@ wxExItem::wxExItem(wxExItemType type, long style,
   , m_MaxItems(25)
   , m_UserWindowToConfig(config)
   , m_ImageList(imageList)
-  , m_Dialog(nullptr)
 {
   switch (m_Type)
   {

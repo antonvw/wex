@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -29,12 +29,9 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   size_t maxProjects,
   int style)
   : wxExManagedFrame(parent, id, title, maxFiles, style)
-  , m_FiFDialog(nullptr)
-  , m_RiFDialog(nullptr)
   , m_TextInFiles(_("In files"))
   , m_TextInFolder(_("In folder"))
   , m_TextRecursive(_("Recursive"))
-  , m_FileHistoryList(nullptr)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST, "RecentProject")
   , m_Info({
       wxExFindReplaceData::Get()->GetTextMatchWholeWord(),
@@ -47,77 +44,13 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     wxConfigBase::Get()->Write(m_TextRecursive, true); 
   }
 
-  Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
-  
-  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
-    m_ProjectHistory.Save();
-    event.Skip();});
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_ProjectHistory.Clear();}, ID_CLEAR_PROJECTS);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExListViewFile* project = GetProject();
-    if (project != nullptr)
-    {
-      project->FileSave();
-    }}, ID_PROJECT_SAVE);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (!event.GetString().empty())
-    {
-      Grep(event.GetString());
-    }
-    else
-    {
-      if (m_FiFDialog == nullptr)
-      {
-        CreateDialogs();
-      }
-
-      if  (GetSTC() != nullptr && !GetSTC()->GetFindString().empty())
-      {
-        m_FiFDialog->Reload(); 
-      }
-
-      m_FiFDialog->Show(); 
-    }}, ID_TOOL_REPORT_FIND);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (!event.GetString().empty())
-    {
-      Sed(event.GetString());
-    }
-    else
-    {
-      if (m_RiFDialog == nullptr)
-      {
-        CreateDialogs();
-      }
-      if (GetSTC() != nullptr && !GetSTC()->GetFindString().empty())
-      {
-        m_RiFDialog->Reload(); 
-      }
-      m_RiFDialog->Show();
-    }}, ID_TOOL_REPORT_REPLACE);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    DoRecent(m_ProjectHistory, event.GetId() - m_ProjectHistory.GetBaseId(), WIN_IS_PROJECT);},
-    m_ProjectHistory.GetBaseId(), m_ProjectHistory.GetBaseId() + m_ProjectHistory.GetMaxFiles());
-}
-
-void wxExFrameWithHistory::CreateDialogs()
-{
   std::set<wxString> t(m_Info);
   t.insert(m_TextRecursive);
   
   const std::vector<wxExItem> f {
-    wxExItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
-      ITEM_COMBOBOX, wxAny(), true),
-    wxExItem(m_TextInFiles, 
-      ITEM_COMBOBOX, wxAny(), true),
-    wxExItem(m_TextInFolder, 
-      ITEM_COMBOBOX_DIR, wxAny(), true, NewControlId()),
+    wxExItem(wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), true),
+    wxExItem(m_TextInFiles, ITEM_COMBOBOX, wxAny(), true),
+    wxExItem(m_TextInFolder, ITEM_COMBOBOX_DIR, wxAny(), true, NewControlId()),
     wxExItem(t)};
   
   m_FiFDialog = new wxExItemDialog(this,
@@ -145,6 +78,54 @@ void wxExFrameWithHistory::CreateDialogs()
     1,
     wxAPPLY | wxCANCEL,
     ID_REPLACE_IN_FILES);
+
+  Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
+  
+  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
+    m_ProjectHistory.Save();
+    event.Skip();});
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_ProjectHistory.Clear();}, ID_CLEAR_PROJECTS);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExListViewFile* project = GetProject();
+    if (project != nullptr)
+    {
+      project->FileSave();
+    }}, ID_PROJECT_SAVE);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (!event.GetString().empty())
+    {
+      Grep(event.GetString());
+    }
+    else
+    {
+      if  (GetSTC() != nullptr && !GetSTC()->GetFindString().empty())
+      {
+        m_FiFDialog->Reload(); 
+      }
+      m_FiFDialog->Show(); 
+    }}, ID_TOOL_REPORT_FIND);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (!event.GetString().empty())
+    {
+      Sed(event.GetString());
+    }
+    else
+    {
+      if (GetSTC() != nullptr && !GetSTC()->GetFindString().empty())
+      {
+        m_RiFDialog->Reload(); 
+      }
+      m_RiFDialog->Show();
+    }}, ID_TOOL_REPORT_REPLACE);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    DoRecent(m_ProjectHistory, event.GetId() - m_ProjectHistory.GetBaseId(), WIN_IS_PROJECT);},
+    m_ProjectHistory.GetBaseId(), m_ProjectHistory.GetBaseId() + m_ProjectHistory.GetMaxFiles());
 }
 
 void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)

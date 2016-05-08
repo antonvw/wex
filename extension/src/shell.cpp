@@ -53,7 +53,6 @@ wxExShell::wxExShell(
   , m_CommandsInConfigDelimiter(wxUniChar(0x03))
   , m_CommandsSaveInConfig(commands_save_in_config)
   , m_Prompt(prompt)
-  , m_Process(nullptr)
   , m_Enabled(true)
 {
   // Override defaults from config.

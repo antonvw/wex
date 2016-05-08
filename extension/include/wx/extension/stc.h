@@ -378,10 +378,10 @@ private:
   bool LinkOpen(wxString* filename = nullptr); // name of found file
   void MarkModified(const wxStyledTextEvent& event);
 
-  const int m_MarginDividerNumber;
-  const int m_MarginFoldingNumber;
-  const int m_MarginLineNumber;
-  const wxExMarker m_MarkerChange;
+  const int m_MarginDividerNumber = 1;
+  const int m_MarginFoldingNumber = 2;
+  const int m_MarginLineNumber = 0;
+  const wxExMarker m_MarkerChange = wxExMarker(1, -1);
   const long m_MenuFlags;
 
   int m_FoldLevel;

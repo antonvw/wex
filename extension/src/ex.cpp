@@ -945,5 +945,4 @@ void wxExEx::Yank(bool show_message)
     m_Frame->ShowExMessage(wxString::Format(_("%d lines yanked"), lines - 1));
   }
 }
-
 #endif // wxUSE_GUI
