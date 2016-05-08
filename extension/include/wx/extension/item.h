@@ -397,10 +397,10 @@ private:
   wxAny m_Initial, m_Min, m_Max, m_Inc;
   wxString m_Label, m_Page;
   wxSizerFlags m_SizerFlags;
-  wxValidator* m_Validator;
+  wxValidator* m_Validator = nullptr;
   wxWindow* m_Window;
   wxImageList* m_ImageList;
-  wxExItemTemplateDialog<wxExItem>* m_Dialog;
+  wxExItemTemplateDialog<wxExItem>* m_Dialog = nullptr;
   wxExUserWindowCreate m_UserWindowCreate;
   wxExUserWindowToConfig m_UserWindowToConfig;
   

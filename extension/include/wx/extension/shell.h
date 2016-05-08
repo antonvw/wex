@@ -134,6 +134,6 @@ private:
   const int m_CommandsSaveInConfig;
   wxString m_Prompt;
   
-  wxExProcess* m_Process;
+  wxExProcess* m_Process = nullptr;
 };
 #endif // wxUSE_GUI

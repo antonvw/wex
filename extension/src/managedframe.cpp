@@ -57,7 +57,7 @@ private:
   bool IsFind() const {return m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?";};
   
   wxExManagedFrame* m_Frame;
-  wxExEx* m_ex;
+  wxExEx* m_ex = nullptr;
   wxStaticText* m_Prefix;
   bool m_ControlR;
   bool m_ModeVisual;
@@ -274,16 +274,7 @@ void wxExManagedFrame::HideExBar(int hide)
          m_TextCtrl != nullptr && 
          m_TextCtrl->GetEx() != nullptr)
     {
-      if (m_TextCtrl->GetValue().StartsWith("!") && 
-        wxExAddressRange::GetProcess() != nullptr &&
-        wxExAddressRange::GetProcess()->IsRunning())
-      {
-        wxExAddressRange::GetProcess()->GetShell()->SetFocus();
-      }
-      else
-      {
-        m_TextCtrl->GetEx()->GetSTC()->SetFocus();
-      }
+      m_TextCtrl->GetEx()->GetSTC()->SetFocus();
     }
   }
 }
@@ -380,7 +371,6 @@ wxExTextCtrl::wxExTextCtrl(
   const wxSize& size)
   : wxExFindTextCtrl(parent, id, pos, size)
   , m_Frame(frame)
-  , m_ex(nullptr)
   , m_ControlR(false)
   , m_ModeVisual(false)
   , m_UserInput(false)
@@ -502,7 +492,7 @@ wxExTextCtrl::wxExTextCtrl(
     {
       m_Command = m_Prefix->GetLabel() + GetValue();
     }
-    event.Skip();
+    if (IsFind()) event.Skip(); // to update find string
     if (m_ex->Command(m_Command.ToStdString(), m_UserInput && IsFind()))
     {
       int focus = (IsFind() ? 

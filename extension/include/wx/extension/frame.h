@@ -14,7 +14,6 @@
 // Only if we have a gui.
 #if wxUSE_GUI
 
-class wxFindDialogEvent;
 class wxFindReplaceDialog;
 class wxListView;
 
@@ -127,18 +126,16 @@ protected:
     long style, wxWindowID id, const wxString& name) override;
 #endif
 
-  void OnCommand(wxCommandEvent& command);
-  
 #if wxUSE_STATUSBAR
   static wxExStatusBar* m_StatusBar;
 #endif
 private:
   void Initialize();
 
-  wxWindow* m_FindFocus;
-  wxFindReplaceDialog* m_FindReplaceDialog;
-  wxMenuBar* m_MenuBar;
+  wxWindow* m_FindFocus = nullptr;
+  wxFindReplaceDialog* m_FindReplaceDialog = nullptr;
+  wxMenuBar* m_MenuBar = nullptr;
   
-  bool m_IsCommand;
+  bool m_IsCommand = false;
 };
 #endif // wxUSE_GUI

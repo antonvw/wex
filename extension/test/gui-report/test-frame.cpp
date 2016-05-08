@@ -32,9 +32,11 @@ TEST_CASE("wxExFrameWithHistory")
   
   wxExFindReplaceData::Get()->SetFindString("wxExTestApp");
 
+  REQUIRE(!GetFrame()->FindInFiles(
+    std::vector<wxString> {}, ID_TOOL_REPORT_FIND, false));
+
   REQUIRE(GetFrame()->FindInFiles(
-    std::vector<wxString> {GetTestFile().GetFullPath()}, 
-    ID_TOOL_REPORT_FIND, false));
+    std::vector<wxString> {GetTestFile().GetFullPath()}, ID_TOOL_REPORT_FIND, false));
 
   // GetFrame()->FindInFilesDialog(ID_TOOL_REPORT_FIND);
   REQUIRE(!GetFrame()->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());

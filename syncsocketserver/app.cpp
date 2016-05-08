@@ -68,7 +68,6 @@ bool App::OnInit()
 
 Frame::Frame()
   : wxExFrameWithHistory(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
-  , m_SocketServer(nullptr)
   , m_Timer(this)
   , m_Answer(ANSWER_OFF)
   , m_DataWindow(new wxExSTC(this))

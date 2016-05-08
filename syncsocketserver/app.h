@@ -74,7 +74,7 @@ private:
 
   wxExStatistics < int > m_Statistics;
 
-  wxSocketServer* m_SocketServer;
+  wxSocketServer* m_SocketServer = nullptr;
   wxTimer m_Timer;
 
 #if wxUSE_TASKBARICON

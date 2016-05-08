@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Include file for wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -118,13 +118,12 @@ protected:
   
   void OnIdle(wxIdleEvent& event);
 private:
-  void CreateDialogs();
   void FindInFiles(wxWindowID dialogid);
   const wxString GetFindReplaceInfoText(bool replace = false) const;
 
-  wxExItemDialog* m_FiFDialog;
-  wxExItemDialog* m_RiFDialog;
-  wxExListView* m_FileHistoryList;
+  wxExItemDialog* m_FiFDialog = nullptr;
+  wxExItemDialog* m_RiFDialog = nullptr;
+  wxExListView* m_FileHistoryList = nullptr;
   wxExFileHistory m_ProjectHistory;
 
   const wxString m_TextInFiles;

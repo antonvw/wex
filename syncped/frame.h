@@ -75,10 +75,10 @@ private:
 
   wxCheckBox *m_CheckBoxDirCtrl, *m_CheckBoxHistory;
   wxExGenericDirCtrl* m_DirCtrl;
-  wxExListViewWithFrame* m_History;
-  wxExNotebook *m_Editors, *m_Lists, *m_Projects;
+  wxExListViewWithFrame* m_History = nullptr;
+  wxExNotebook *m_Editors, *m_Lists, *m_Projects = nullptr;
   wxExProcess* m_Process;
-  wxExSTC* m_asciiTable;
+  wxExSTC* m_asciiTable = nullptr;
 
   DECLARE_EVENT_TABLE()
 };

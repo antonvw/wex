@@ -2,7 +2,7 @@
 // Name:      statistics.h
 // Purpose:   Include file for statistics classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -50,11 +50,7 @@ template <class T> class WXDLLIMPEXP_BASE wxExStatistics
 {
 public:
   /// Default constructor.
-  wxExStatistics() 
-#if wxUSE_GRID
-    : m_Grid(nullptr)
-#endif
-    {};
+  wxExStatistics() {};
 
   /// Adds other statistics.
   wxExStatistics& operator+=(const wxExStatistics& s) {
@@ -202,6 +198,6 @@ private:
 
 #if wxUSE_GRID
   std::map<wxString, int> m_Rows;
-  wxExGridStatistics<T>* m_Grid;
+  wxExGridStatistics<T>* m_Grid = nullptr;
 #endif
 };

@@ -115,10 +115,7 @@ Frame::Frame(App* app)
   , m_IsClosing(false)
   , m_NewProjectNo(1)
   , m_SplitId(1)
-  , m_History(nullptr)
   , m_Process(new wxExProcess())
-  , m_Projects(nullptr)
-  , m_asciiTable(nullptr)
   , m_PaneFlag(
       wxAUI_NB_DEFAULT_STYLE |
       wxAUI_NB_CLOSE_ON_ALL_TABS |
