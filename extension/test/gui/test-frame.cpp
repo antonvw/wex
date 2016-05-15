@@ -68,8 +68,9 @@ TEST_CASE("wxExFrame")
   REQUIRE( GetFrame()->UpdateStatusBar(stc, "PaneFileType"));
   
   wxCommandEvent event(wxEVT_MENU, wxID_OPEN);
+  stc->GetVi().SetRegisterYank("test.h");
   for (const auto str : std::vector<wxString> {
-    "xxx", "+10 test", "`pwd`"})
+    "xxx", "+10 test", "`pwd`", "0"})
   {
     event.SetString(str);
     wxPostEvent(GetFrame(), event);

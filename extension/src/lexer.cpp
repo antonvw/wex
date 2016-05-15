@@ -289,19 +289,9 @@ const wxString wxExLexer::GetKeywordsString(
 const wxString wxExLexer::GetKeywordsStringSet(
   const std::set<wxString>& kset, size_t min_size, const wxString& prefix) const
 {
-  // accumulate would be nice, but does not add a space, could not do it easily.
-  // return accumulate(kset.begin(), kset.end(), wxEmptyString);
-  wxString keywords;
-
-  for (const auto& it : kset)
-  {
-    if (it.size() >= min_size && it.StartsWith(prefix))
-    {
-      keywords += it + " ";
-    }
-  }
-
-  return keywords.Trim(); // remove the ending space
+  return wxString(accumulate(kset.begin(), kset.end(), wxString{}, 
+    [&](const wxString& a, const wxString& b) {
+      return (b.size() >= min_size && b.StartsWith(prefix)) ? a + b + ' ': a;})).Trim();
 }
 
 void wxExLexer::Initialize()

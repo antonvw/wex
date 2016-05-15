@@ -2,7 +2,7 @@
 // Name:      test-statusbar.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -46,4 +46,22 @@ TEST_CASE("wxExStatusBar")
   REQUIRE(!GetStatusBar()->SetStatusText("BackAgain", "LastPane"));
   REQUIRE( GetStatusBar()->ShowField("LastPane", true));
   REQUIRE( GetStatusBar()->GetStatusText("LastPane") == "BackAgain");
+
+  wxExStatusBarPane pane1("PaneInfo", 15, "hello");
+  REQUIRE( pane1.GetName() == "PaneInfo");
+  REQUIRE( pane1.GetHelpText() == "hello");
+  REQUIRE( pane1.GetHiddenText().empty());
+  REQUIRE( pane1.GetWidth() == 15);
+  REQUIRE( pane1.IsShown() ); // TODO: should not be shown yet
+  pane1.SetHiddenText("hidden");
+  REQUIRE( pane1.GetHiddenText() == "hidden");
+  
+  std::vector<wxExStatusBarPane> panes ({
+    pane1,
+    wxExStatusBarPane("PaneLexer"),
+    wxExStatusBarPane("PaneFileType"),
+    wxExStatusBarPane("Pane1"),
+    wxExStatusBarPane("Pane2")});
+  
+  GetStatusBar()->SetFields(panes);
 }

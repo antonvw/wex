@@ -21,6 +21,8 @@ TEST_CASE( "wxExFileName" )
     REQUIRE(fileName.GetStat().IsOk());
     fileName.Assign("xxx");
     REQUIRE(fileName.GetStat().IsOk());
+    fileName.SetLexer(wxExLexer("ada"));
+    REQUIRE(fileName.GetLexer().GetScintillaLexer() == "ada");
   }
 
   SECTION( "timing" ) 

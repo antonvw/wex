@@ -54,14 +54,16 @@ class WXDLLIMPEXP_BASE wxExPrintout : public wxPrintout
 public:
   /// Constructor.
   wxExPrintout(wxStyledTextCtrl* owner);
+
+  /// Methods overridden from base class.
+  virtual void GetPageInfo(int* minPage, int* maxPage, int* pageFrom, int* pageTo) override;
+  virtual bool HasPage(int pageNum) override {
+    return (pageNum >= 1 && pageNum <= (int)m_PageBreaks.size());};
+  virtual void OnPreparePrinting() override;
+  virtual bool OnPrintPage(int pageNum) override;
 private:
   void CountPages();
-  void GetPageInfo(int* minPage, int* maxPage, int* pageFrom, int* pageTo);
-  bool HasPage(int pageNum) {
-    return (pageNum >= 1 && pageNum <= (int)m_PageBreaks.size());};
-  void OnPreparePrinting();
-  bool OnPrintPage(int pageNum);
-  void SetScale(wxDC *dc);
+  void SetScale();
   wxRect m_PageRect, m_PrintRect;
   std::vector<int> m_PageBreaks;
   wxStyledTextCtrl* m_Owner;

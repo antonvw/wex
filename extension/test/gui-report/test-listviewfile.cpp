@@ -2,7 +2,7 @@
 // Name:      test-listviewfile.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/dir.h>
@@ -14,6 +14,14 @@ TEST_CASE("wxExListViewFile")
   wxExListViewFile* listView = new wxExListViewFile(GetFrame(), GetFrame(), GetProject());
   AddPane(GetFrame(), listView);
 
+  REQUIRE(listView->GetFile().GetFileName().GetFullName() == GetProject());
+  
+  REQUIRE(!listView->GetTextAddFiles().empty());
+  REQUIRE(!listView->GetTextAddFolders().empty());
+  REQUIRE(!listView->GetTextAddRecursive().empty());
+  REQUIRE(!listView->GetTextAddWhat().empty());
+  REQUIRE(!listView->GetTextInFolder().empty());
+  
   listView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->AppendColumn(wxExColumn("Number", wxExColumn::COL_INT));
 

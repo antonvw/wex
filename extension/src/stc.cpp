@@ -467,7 +467,7 @@ int wxExSTC::ConfigDialog(
 #else
                },
 #endif  
-              true, 4)}}}, ITEM_NOTEBOOK_AUI)}},
+              true, 4)}}}, ITEM_NOTEBOOK)}},
       {_("Font"), 
         {!wxExLexers::Get()->GetLexers().empty() ?
            wxExItem(_("Default font"), ITEM_FONTPICKERCTRL): wxExItem(),
@@ -1433,7 +1433,7 @@ void wxExSTC::Initialize(bool file_exists)
 
       if (m_vi.GetIsActive())
       {
-        m_vi.Command(std::string(buffer, 1));
+        m_vi.Command(std::string(buffer, 2));
       }
       else
       {

@@ -62,7 +62,7 @@ wxExPrintout::wxExPrintout(wxStyledTextCtrl* owner)
 
 void wxExPrintout::CountPages()
 {
-  wxASSERT(GetDC() != nullptr);
+  if (GetDC() == nullptr) return;
 
   wxBusyCursor wait;
 
@@ -72,7 +72,7 @@ void wxExPrintout::CountPages()
 
   while (pos < m_Owner->GetLength())
   {
-    SetScale(GetDC());
+    SetScale();
 
     pos = m_Owner->FormatRange(
       false,
@@ -132,7 +132,7 @@ void wxExPrintout::OnPreparePrinting()
 
 bool wxExPrintout::OnPrintPage(int pageNum)
 {
-  wxASSERT(GetDC() != nullptr);
+  if (GetDC() == nullptr) return false;
 
   if (pageNum > (int)m_PageBreaks.size())
   {
@@ -140,7 +140,7 @@ bool wxExPrintout::OnPrintPage(int pageNum)
     return false;
   }
 
-  SetScale(GetDC());
+  SetScale();
 
   m_Owner->FormatRange(
     true,
@@ -196,8 +196,10 @@ bool wxExPrintout::OnPrintPage(int pageNum)
   return true;
 }
 
-void wxExPrintout::SetScale(wxDC *dc)
+void wxExPrintout::SetScale()
 {
+  if (GetDC() == nullptr) return;
+
   wxSize ppiScr, ppiPrt;
   GetPPIScreen(&ppiScr.x, &ppiScr.y);
 
@@ -217,7 +219,7 @@ void wxExPrintout::SetScale(wxDC *dc)
     ppiPrt.y = ppiScr.y;
   }
 
-  const wxSize dcSize = dc->GetSize();
+  const wxSize dcSize = GetDC()->GetSize();
   wxSize pageSize;
   GetPageSizePixels(&pageSize.x, &pageSize.y);
 
@@ -225,6 +227,6 @@ void wxExPrintout::SetScale(wxDC *dc)
   const float scale_x = (float)(factor * ppiPrt.x * dcSize.x) / (float)(ppiScr.x * pageSize.x);
   const float scale_y = (float)(factor * ppiPrt.y * dcSize.y) / (float)(ppiScr.y * pageSize.y);
 
-  dc->SetUserScale(scale_x, scale_y);
+  GetDC()->SetUserScale(scale_x, scale_y);
 }
 #endif // wxUSE_PRINTING_ARCHITECTURE

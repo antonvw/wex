@@ -181,7 +181,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         GetSTC()->EndUndoAction();})
   , m_Count(1)
   , m_Start(0)
-  , m_Type(MOTION_YANK)
+  , m_Type(MOTION_NAVIGATE)
   , m_SearchForward(true)
   , m_MotionCommands {
     {"bB", [&](const std::string& command){MOTION(Word, Left, false, false);}},
@@ -749,7 +749,9 @@ void wxExVi::CommandCalc(const wxString& command)
   }
   else
   {
-    GetFrame()->ShowExMessage(wxString::Format("%.*f", width, sum));
+    const wxString msg(wxString::Format("%.*f", width, sum));
+    SetRegisterYank(msg.ToStdString());
+    GetFrame()->ShowExMessage(msg);
   }
 }
 
@@ -827,6 +829,13 @@ bool wxExVi::InsertMode(const std::string& command)
   if (command.empty())
   {
     return false;
+  }
+  // add control chars
+  else if (command.size() == 2 && command[1] == 0)
+  {
+    m_InsertText += std::string(1, command[0]);
+    AddText(std::string(1, command[0]));
+    return true;
   }
 
   if (command.find(wxString(wxUniChar(WXK_CONTROL_R) + wxString("="))) !=

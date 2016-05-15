@@ -26,8 +26,15 @@ TEST_CASE("wxExPrinting")
   
   wxExSTC* stc = new wxExSTC(GetFrame(), "hello printing");
     
-  new wxExPrintout(stc);
+  wxExPrintout* printout = new wxExPrintout(stc);
   
+  printout->OnPreparePrinting();
+  int min, max, from, to;
+  printout->GetPageInfo(&min, &max, &from, &to);
+  REQUIRE(!printout->HasPage(5));
+  REQUIRE(!printout->OnPrintPage(5));
+
+  // these wait for a click
 //  stc->Print(false);
 //  stc->PrintPreview(wxPreviewFrame_NonModal);
 }

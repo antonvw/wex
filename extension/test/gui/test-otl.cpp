@@ -28,6 +28,7 @@ TEST_CASE("wxExOTL")
   
   wxExOTL otl;
   
+  REQUIRE( otl.VersionInfo().GetMajor() > 0);
   REQUIRE(!otl.Datasource().empty());
   
   otl.Logon();

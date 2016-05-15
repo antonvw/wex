@@ -59,13 +59,13 @@ private:
   wxExManagedFrame* m_Frame;
   wxExEx* m_ex = nullptr;
   wxStaticText* m_Prefix;
-  bool m_ControlR;
-  bool m_ModeVisual;
-  bool m_UserInput;
+  bool m_ControlR = false;
+  bool m_ModeVisual = false;
+  bool m_UserInput = false;
   
   wxString m_Command;
   
-  std::list < wxString > m_Commands;
+  std::list < wxString > m_Commands = wxExListFromConfig("excommand");;
   std::list < wxString >::const_iterator m_CommandsIterator;
 };
 
@@ -371,14 +371,9 @@ wxExTextCtrl::wxExTextCtrl(
   const wxSize& size)
   : wxExFindTextCtrl(parent, id, pos, size)
   , m_Frame(frame)
-  , m_ControlR(false)
-  , m_ModeVisual(false)
-  , m_UserInput(false)
   , m_Prefix(prefix)
-  , m_Commands(wxExListFromConfig("excommand"))
+  , m_CommandsIterator(m_Commands.begin())
 {
-  m_CommandsIterator = m_Commands.begin();
-
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
     if (event.GetUnicodeKey() != WXK_NONE)
     {
