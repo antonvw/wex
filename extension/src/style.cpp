@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <numeric>
 #include <wx/config.h>
 #include <wx/log.h> 
 #include <wx/stc/stc.h>
@@ -43,7 +44,7 @@ bool wxExStyle::ContainsDefaultStyle() const
 
 const wxString wxExStyle::GetNo() const
 {
-  return accumulate(m_No.begin(), m_No.end(), std::string{}, 
+  return std::accumulate(m_No.begin(), m_No.end(), std::string{}, 
     [](const std::string& a, int b) {return a + std::to_string(b) + ' ';});
 }
 
