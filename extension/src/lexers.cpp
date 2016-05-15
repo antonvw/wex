@@ -499,15 +499,14 @@ bool wxExLexers::ShowDialog(wxWindow* parent, wxString& lexer, const wxString& c
 
 bool wxExLexers::ShowThemeDialog(wxWindow* parent, const wxString& caption, bool show_modal)
 { 
-  // NoTheme is always present
-  if (m_ThemeMacros.size() <= 1) return false;
-
+  if (!show_modal) return false;
+  
   wxArrayString s;
   for (const auto& it : m_ThemeMacros) s.Add(it.first);
 
-  wxString theme;
+  wxString theme(m_Theme);
   if (!SingleChoice(parent, caption, show_modal, s, theme)) return false;
-  
   SetTheme(theme);
+  
   return LoadDocument();
 }
