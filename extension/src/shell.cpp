@@ -9,8 +9,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <numeric>
 #include <functional>
+#include <numeric>
 #include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/shell.h>
@@ -415,7 +415,7 @@ const wxString wxExShell::GetCommand() const
 
 const wxString wxExShell::GetHistory() const
 {
-  return accumulate(m_Commands.begin(), m_Commands.end(), wxString());
+  return std::accumulate(m_Commands.begin(), m_Commands.end(), wxString());
 }
 
 void wxExShell::KeepCommand()

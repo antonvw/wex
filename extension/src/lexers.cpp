@@ -11,6 +11,7 @@
 #endif
 #include <algorithm>
 #include <functional>
+#include <numeric>
 #include <regex>
 #include <wx/config.h>
 #include <wx/stdpaths.h>
@@ -209,7 +210,7 @@ bool wxExLexers::LoadDocument()
 
   if (config != nullptr)
   {
-    const wxString extensions(accumulate(m_Lexers.begin(), m_Lexers.end(), wxFileSelectorDefaultWildcardStr, 
+    const wxString extensions(std::accumulate(m_Lexers.begin(), m_Lexers.end(), wxFileSelectorDefaultWildcardStr, 
       [&](const wxString& a, const wxExLexer& b) {
         if (!b.GetExtensions().empty())
           return !a.empty() ? a + wxExGetFieldSeparator() + b.GetExtensions(): b.GetExtensions();

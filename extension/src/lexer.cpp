@@ -11,6 +11,7 @@
 #endif
 #include <algorithm>
 #include <functional>
+#include <numeric>
 #include <wx/tokenzr.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/lexer.h>
@@ -289,7 +290,7 @@ const wxString wxExLexer::GetKeywordsString(
 const wxString wxExLexer::GetKeywordsStringSet(
   const std::set<wxString>& kset, size_t min_size, const wxString& prefix) const
 {
-  return wxString(accumulate(kset.begin(), kset.end(), wxString{}, 
+  return wxString(std::accumulate(kset.begin(), kset.end(), wxString{}, 
     [&](const wxString& a, const wxString& b) {
       return (b.size() >= min_size && b.StartsWith(prefix)) ? a + b + ' ': a;})).Trim();
 }

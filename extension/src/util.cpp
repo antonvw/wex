@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <numeric>
 #include <regex>
 #include <wx/app.h>
 #include <wx/clipbrd.h>
@@ -315,7 +316,7 @@ const wxString wxExConfigFirstOfWrite(const wxString& key, const wxString& value
     }
   }
 
-  wxConfigBase::Get()->Write(key, accumulate(v.begin(), v.end(), wxString{}, 
+  wxConfigBase::Get()->Write(key, std::accumulate(v.begin(), v.end(), wxString{}, 
     [&](const wxString& a, const wxString& b) {
       return a + b + wxExGetFieldSeparator();}));
   
