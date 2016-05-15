@@ -207,6 +207,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   event.m_uniChar = 'i';
   REQUIRE(!vi->OnChar(event));
   REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  REQUIRE( vi->GetInsertedText().empty());
   REQUIRE( vi->ModeInsert());
   event.m_uniChar = WXK_RETURN;
   REQUIRE( vi->OnKeyDown(event));
@@ -432,6 +433,10 @@ TEST_CASE("wxExVi", "[stc][vi]")
   vi->Command("");
   REQUIRE( stc->GetText().Contains("10"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  vi->Command("=5+5");
+  REQUIRE( wxString(stc->GetVi().GetMacros().GetRegister('0')).Contains("10"));
+  vi->Command("=5+5+5");
+  REQUIRE( wxString(stc->GetVi().GetMacros().GetRegister('0')).Contains("15"));
 
   // Test macro.
   // First load macros.
@@ -514,8 +519,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( vi->Command("yy"));
   stc->SetText("");
   REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Command(wxString(wxUniChar(ctrl_r)).ToStdString()));
-  REQUIRE( vi->Command("0"));
+  REQUIRE( vi->Command(std::string("\x12") + std::string("0")));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   REQUIRE( stc->GetText().Contains("test.h"));
   

@@ -98,6 +98,15 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     REQUIRE( wxExClipboardGet() == "test");
   }
   
+  SECTION("wxExComboBoxAs")
+  {
+    wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
+    AddPane(GetFrame(), cb);
+    wxExComboBoxAs<const std::list < wxString >>(cb, l);
+    size_t max = 5;
+    const std::list < wxString > p(wxExComboBoxAs<std::list < wxString >>(cb, max));
+  }
+  
   SECTION("wxExComboBoxFromList")
   {
     wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
@@ -326,9 +335,14 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     AddPane(GetFrame(), stc);
     wxExEx* ex = new wxExEx(stc);
     wxString command("xxx");
+    REQUIRE(!wxExMarkerAndRegisterExpansion(nullptr, command));
     REQUIRE( wxExMarkerAndRegisterExpansion(ex, command));
     command = "'yxxx";
     REQUIRE(!wxExMarkerAndRegisterExpansion(ex, command));
+    wxExClipboardAdd("yanked");
+    command = "*";
+    REQUIRE( wxExMarkerAndRegisterExpansion(ex, command));
+    REQUIRE( command.Contains("yanked"));
   }
   
 #ifdef __UNIX__

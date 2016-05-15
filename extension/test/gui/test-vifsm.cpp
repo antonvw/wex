@@ -26,6 +26,8 @@ TEST_CASE("wxExViFSM", "[stc][vi]")
     [=](const std::string& command){;},
     [=](const std::string& command){;});
   
+  REQUIRE(!fsm.GetInsertCommands().empty());
+  
   REQUIRE( fsm.State() == wxExVi::MODE_NORMAL);
   REQUIRE(!fsm.Transition("x"));
   REQUIRE(!fsm.Transition("y"));

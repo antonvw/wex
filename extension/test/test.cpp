@@ -219,6 +219,7 @@ bool wxExTestApp::OnInit()
   }
   
   wxConfigBase::Get()->Write(_("vi mode"), true);
+  wxConfigBase::Get()->Write(_("locale"), GetLocale().GetName()); // for coverage
   
   return true;
 }

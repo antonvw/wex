@@ -315,14 +315,9 @@ const wxString wxExConfigFirstOfWrite(const wxString& key, const wxString& value
     }
   }
 
-  wxString text;
-  
-  for (auto it: v)
-  {
-    text += it + wxExGetFieldSeparator();
-  }
-
-  wxConfigBase::Get()->Write(key, text);
+  wxConfigBase::Get()->Write(key, accumulate(v.begin(), v.end(), wxString{}, 
+    [&](const wxString& a, const wxString& b) {
+      return a + b + wxExGetFieldSeparator();}));
   
   return value;
 }
@@ -530,6 +525,8 @@ long wxExMake(const wxFileName& makefile)
 
 bool wxExMarkerAndRegisterExpansion(wxExEx* ex, wxString& text)
 {
+  if (ex == nullptr) return false;
+
   wxStringTokenizer tkz(text, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
 
   while (tkz.HasMoreTokens())

@@ -203,4 +203,12 @@ TEST_CASE("wxExItem", "[item]")
     wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
     wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));
   }
+  
+  SECTION("wxExConfigDefaults")
+  {
+    wxExConfigDefaults def ({
+      std::make_tuple("item1", ITEM_TEXTCTRL_INT, 1500),
+      std::make_tuple("item2", ITEM_TEXTCTRL_INT, 1510)});
+    REQUIRE(def.Get() != nullptr);
+  }
 }

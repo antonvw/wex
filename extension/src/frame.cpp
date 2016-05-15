@@ -160,6 +160,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
         cmd = v[0];
         files = v[1];
       }
+      if (stc != nullptr && !wxExMarkerAndRegisterExpansion(&stc->GetVi(), files)) return;
       if (!wxExShellExpansion(files)) return;
       wxExOpenFiles(this, wxExToVectorString(files).Get(), 0, wxDIR_DEFAULT, cmd);
     }

@@ -209,17 +209,11 @@ bool wxExLexers::LoadDocument()
 
   if (config != nullptr)
   {
-    wxString extensions = wxFileSelectorDefaultWildcardStr;
-
-    for (const auto& it : m_Lexers)
-    {
-      if (!it.GetExtensions().empty())
-      {
-        if (!extensions.empty()) extensions += wxExGetFieldSeparator();
-        extensions += it.GetExtensions();
-      }
-    }
-
+    const wxString extensions(accumulate(m_Lexers.begin(), m_Lexers.end(), wxFileSelectorDefaultWildcardStr, 
+      [&](const wxString& a, const wxExLexer& b) {
+        if (!b.GetExtensions().empty())
+          return !a.empty() ? a + wxExGetFieldSeparator() + b.GetExtensions(): b.GetExtensions();
+        else return a;}));
     if (!config->Exists(_("Add what"))) config->Write(_("Add what"), extensions);
     if (!config->Exists(_("In files"))) config->Write(_("In files"), extensions);
     if (!config->Exists(_("In folder"))) config->Write(_("In folder"), wxGetHomeDir());
@@ -479,28 +473,25 @@ bool wxExLexers::SetTheme(const wxString& theme)
   return false;  
 }
 
-bool wxExLexers::ShowDialog(wxWindow* parent, wxString& lexer, const wxString& caption, bool show_modal) const
+bool SingleChoice(wxWindow* parent, const wxString& caption, 
+  bool show_modal, const wxArrayString& s, wxString& selection)
 {
-  wxArrayString s;
+  wxSingleChoiceDialog dlg(parent, _("Input") + ":", caption, s);
 
-  for (const auto& it : m_Lexers) s.Add(it.GetDisplayLexer());
-
-  s.Add(wxEmptyString);
-
-  wxSingleChoiceDialog dlg(
-    parent, 
-    _("Input") + ":", 
-    caption, 
-    s);
-
-  const int index = s.Index(lexer);
-  
+  const int index = s.Index(selection);
   if (index != wxNOT_FOUND) dlg.SetSelection(index);
   if (show_modal && dlg.ShowModal() == wxID_CANCEL) return false;
 
-  lexer = dlg.GetStringSelection();
+  selection = dlg.GetStringSelection();
+}
+  
+bool wxExLexers::ShowDialog(wxWindow* parent, wxString& lexer, const wxString& caption, bool show_modal) const
+{
+  wxArrayString s;
+  for (const auto& it : m_Lexers) s.Add(it.GetDisplayLexer());
+  s.Add(wxEmptyString);
 
-  return true;
+  return SingleChoice(parent, caption, show_modal, s, lexer);
 }
 
 bool wxExLexers::ShowThemeDialog(wxWindow* parent, const wxString& caption, bool show_modal)
@@ -508,20 +499,12 @@ bool wxExLexers::ShowThemeDialog(wxWindow* parent, const wxString& caption, bool
   // NoTheme is always present
   if (m_ThemeMacros.size() <= 1) return false;
 
-  wxArrayString choices;
+  wxArrayString s;
+  for (const auto& it : m_ThemeMacros) s.Add(it.first);
 
-  for (const auto& it : m_ThemeMacros) choices.Add(it.first);
-
-  wxSingleChoiceDialog dlg(parent, _("Input") + ":", caption, choices);
-
-  const int index = choices.Index(m_Theme);
-  if (index != wxNOT_FOUND) dlg.SetSelection(index);
-
-  if (show_modal)
-  {
-    if (dlg.ShowModal() == wxID_CANCEL) return false;
-    SetTheme(dlg.GetStringSelection());
-  }
-
+  wxString theme;
+  if (!SingleChoice(parent, caption, show_modal, s, theme)) return false;
+  
+  SetTheme(theme);
   return LoadDocument();
 }

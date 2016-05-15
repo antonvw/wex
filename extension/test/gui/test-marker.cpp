@@ -2,7 +2,7 @@
 // Name:      test-marker.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,6 +11,7 @@
 #endif
 #include <wx/xml/xml.h>
 #include <wx/extension/marker.h>
+#include <wx/extension/stc.h>
 #include "test.h"
 
 TEST_CASE("wxExMarker","[lexer]")
@@ -32,4 +33,6 @@ TEST_CASE("wxExMarker","[lexer]")
   wxExMarker marker2(&xml);
   REQUIRE( marker2.GetNo() == 5);
   REQUIRE( marker2.IsOk());
+  
+  markerx.Apply(GetSTC());
 }
