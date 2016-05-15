@@ -484,6 +484,8 @@ bool SingleChoice(wxWindow* parent, const wxString& caption,
   if (show_modal && dlg.ShowModal() == wxID_CANCEL) return false;
 
   selection = dlg.GetStringSelection();
+  
+  return true;
 }
   
 bool wxExLexers::ShowDialog(wxWindow* parent, wxString& lexer, const wxString& caption, bool show_modal) const
