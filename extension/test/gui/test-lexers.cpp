@@ -89,7 +89,7 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
   REQUIRE( wxExLexers::Get()->GetTheme().empty());
   REQUIRE(!wxExLexers::Get()->GetThemeOk());
   wxExLexers::Get()->RestoreTheme();
-  REQUIRE( wxExLexers::Get()->GetTheme() == "torte");
+  REQUIRE( wxExLexers::Get()->GetTheme() == "studio");
   REQUIRE( wxExLexers::Get()->GetThemeOk());
   
   REQUIRE(!wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(99, -1)));
