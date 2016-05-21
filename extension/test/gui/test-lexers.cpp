@@ -85,12 +85,6 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
   REQUIRE(!wxExLexers::Get()->GetThemeMacros().empty());
   REQUIRE( wxExLexers::Get()->GetThemes() > 1);
 
-  REQUIRE(!wxExLexers::Get()->SetTheme("xxx"));
-  REQUIRE(!wxExLexers::Get()->GetTheme().empty());
-  REQUIRE( wxExLexers::Get()->GetThemeOk());
-  REQUIRE( wxExLexers::Get()->SetTheme("torte"));
-  REQUIRE( wxExLexers::Get()->GetTheme() == "torte");
-  REQUIRE( wxExLexers::Get()->GetThemeOk());
   wxExLexers::Get()->SetThemeNone();
   REQUIRE( wxExLexers::Get()->GetTheme().empty());
   REQUIRE(!wxExLexers::Get()->GetThemeOk());

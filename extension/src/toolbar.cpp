@@ -46,24 +46,18 @@ private:
   wxExFrame* m_Frame;
 };
 
-void FindPopupMenu(wxWindow* win,
-  const std::list < wxString > & l, int first_id, const wxPoint& pos)
+void FindPopupMenu(wxWindow* win, const std::list < wxString > & l, const wxPoint& pos)
 {
   wxMenu* menu = new wxMenu();
 
-  int i = 0;
   const int max_size = 25;
+  int i = 0;
   
   for (const auto& it : l)
   {
-    const wxString label = 
-      (it.size() >= max_size - 3 ? it.Left(max_size) + "..." : it);
-    wxMenuItem* item = new wxMenuItem(
-      menu, 
-      first_id + i++, 
-      label);
-
-    menu->Append(item);
+    menu->Append(new wxMenuItem(menu, 
+      ID_FIND_FIRST + i++, 
+      (it.size() >= max_size - 3 ? it.Left(max_size) + "..." : it)));
     
     if (i >= FIND_MAX_FINDS) break;
   }
@@ -72,13 +66,30 @@ void FindPopupMenu(wxWindow* win,
   {
     menu->AppendSeparator();
     menu->Append(ID_CLEAR_FINDS, wxGetStockLabel(wxID_CLEAR));
-      
     win->PopupMenu(menu, pos);
   }
     
   delete menu;
 }
+
+wxPoint GetPoint(wxAuiToolBar* tb, wxAuiToolBarEvent& event)
+{
+  const wxRect rect = tb->GetToolRect(event.GetId());
+  const wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
+  return tb->ScreenToClient(pt);  
+}
   
+bool PrepDropDown(wxAuiToolBar* tb, wxAuiToolBarEvent& event)
+{
+  if (!event.IsDropDownClicked())
+  {
+    event.Skip();
+    return false;
+  }
+  tb->SetToolSticky(event.GetId(), true);
+  return true;
+}
+    
 wxExToolBar::wxExToolBar(wxExManagedFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
@@ -107,53 +118,17 @@ void wxExToolBar::AddControls(bool realize)
 
   SetToolDropDown(wxID_FIND, true);
   SetToolDropDown(wxID_OPEN, true);
-  
-  m_Frame->Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
-    if (event.IsDropDownClicked())
-    {
-      wxAuiToolBar* tb = static_cast<wxAuiToolBar*>(event.GetEventObject());
-  
-      tb->SetToolSticky(event.GetId(), true);
-  
-      // create the popup menu
-      // line up our menu with the button
-      wxRect rect = tb->GetToolRect(event.GetId());
-      wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
-      pt = ScreenToClient(pt);
-      
-      FindPopupMenu(this, wxExFindReplaceData::Get()->GetFindStrings(), ID_FIND_FIRST, pt);
-  
-      // make sure the button is "un-stuck"
-      tb->SetToolSticky(event.GetId(), false);
-    }
-    else
-    {
-      event.Skip();
-  }}, wxID_FIND);
+
+  Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
+    if (!PrepDropDown(this, event)) return;
+    FindPopupMenu(this, wxExFindReplaceData::Get()->GetFindStrings(), GetPoint(this, event));
+    SetToolSticky(event.GetId(), false);}, wxID_FIND);
   
   Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, [=](wxAuiToolBarEvent& event) {
-    if (event.IsDropDownClicked())
-    {
-      wxAuiToolBar* tb = static_cast<wxAuiToolBar*>(event.GetEventObject());
-  
-      tb->SetToolSticky(event.GetId(), true);
-  
-      // create the popup menu
-      // line up our menu with the button
-      wxRect rect = tb->GetToolRect(event.GetId());
-      wxPoint pt = tb->ClientToScreen(rect.GetBottomLeft());
-      pt = ScreenToClient(pt);
-
-      m_Frame->GetFileHistory().PopupMenu(this, ID_CLEAR_FILES, pt);
-  
-      // make sure the button is "un-stuck"
-      tb->SetToolSticky(event.GetId(), false);
-    }
-    else
-    {
-      event.Skip();
-    }}, wxID_OPEN);
-    
+    if (!PrepDropDown(this, event)) return;
+    m_Frame->GetFileHistory().PopupMenu(this, ID_CLEAR_FILES, GetPoint(this, event));
+    SetToolSticky(event.GetId(), false);}, wxID_OPEN);
+      
   if (realize) Realize();
 }
 

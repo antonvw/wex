@@ -473,19 +473,18 @@ const std::list < wxString > wxExListFromConfig(const wxString& config)
 /// Saves entries from a list with strings to the config.
 void wxExListToConfig(const std::list < wxString > & l, const wxString& config)
 {
+  if (l.empty()) return;
+
   wxString text;
   const int commandsSaveInConfig = 75;
   int items = 0;
 
-  for (
-    auto it = l.begin();
-    it != l.end() && items < commandsSaveInConfig;
-    ++it)
+  for (const auto& it : l)
   {
-    text += *it + wxExGetFieldSeparator();
-    items++;
+    if (items++ > commandsSaveInConfig) break;
+    text += it + wxString(wxExGetFieldSeparator());
   }
-
+  
   wxConfigBase::Get()->Write(config, text);
 }
 
@@ -861,7 +860,7 @@ bool wxExShellExpansion(wxString& command)
       process.GetOutput().ToStdString(), 
       std::regex_constants::format_sed);
   }
-      
+  
   return true;
 }
   

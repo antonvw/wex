@@ -13,15 +13,14 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
 
-#define SET_STRING( ACTION, STRINGS, VALUE, TEXT)             \
+#define SET_STRING( ACTION, STRINGS, VALUE, CONFIG)           \
   wxFindReplaceData::Set##ACTION##String(VALUE);              \
   STRINGS.remove(VALUE);                                      \
   STRINGS.push_front(VALUE);                                  \
-  wxExListToConfig(STRINGS, TEXT);                            
+  wxExListToConfig(STRINGS, CONFIG);
 
-#define SET_STRINGS( ACTION, STRINGS, VALUE, TEXT)            \
+#define SET_STRINGS( ACTION, STRINGS, VALUE, CONFIG)          \
   STRINGS = VALUE;                                            \
-                                                              \
   if (!STRINGS.empty())                                       \
   {                                                           \
     wxFindReplaceData::Set##ACTION##String(STRINGS.front());  \
@@ -30,9 +29,7 @@
   {                                                           \
     wxFindReplaceData::Set##ACTION##String(wxEmptyString);    \
   }                                                           \
-                                                              \
-  wxExListToConfig(STRINGS, TEXT);                            
-
+  wxExListToConfig(STRINGS, CONFIG);
 
 wxExFindReplaceData* wxExFindReplaceData::m_Self = nullptr;
 
@@ -118,7 +115,7 @@ void wxExFindReplaceData::SetFindString(const wxString& value)
   
   SetUseRegEx(m_UseRegEx);
   
-  m_FindsIterator = GetFindStrings().begin();
+  m_FindsIterator = m_FindStrings.begin();
 }
 
 void wxExFindReplaceData::SetFindStrings(
