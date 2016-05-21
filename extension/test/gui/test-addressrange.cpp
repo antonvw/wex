@@ -108,6 +108,7 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
   REQUIRE( wxExAddressRange(ex).Escape("ls -l"));
   REQUIRE( wxExAddressRange(ex).Escape("ls `pwd`"));
   REQUIRE( wxExAddressRange(ex).Escape("ls \x12*"));
+  REQUIRE( wxExAddressRange(ex).Escape("ls  `echo \x12*`"));
   REQUIRE( wxExAddressRange::GetProcess() != nullptr);
 #endif
   

@@ -2,19 +2,19 @@
  * - rlyeh, mit licensed.
 
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 Simmo Saan
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,7 +26,8 @@
 
 #pragma once
 
-#define EVAL_VERSION "1.0.1" /* (2016/03/26): Add simple support for assignment and variables
+#define EVAL_VERSION "1.0.2" /* (2016/05/19): Fix out-of-range iterator access
+#define EVAL_VERSION "1.0.1" // (2016/03/26): Add simple support for assignment and variables
 #define EVAL_VERSION "1.0.0" // (2016/02/20): Extra math stuff; Header-only now; Initial SemVer adherence */
 
 #include <cmath>
@@ -82,13 +83,28 @@ struct evaluator {
         unsigned int i;
     };
 
+    template< typename Iter1, typename Iter2 >
+    static bool equal_safe(Iter1 begin1, Iter1 end1, Iter2 begin2, Iter2 end2)
+    {
+        while (begin1 != end1 && begin2 != end2)
+        {
+            if (*begin1 != *begin2)
+            {
+                return false;
+            }
+            ++begin1;
+            ++begin2;
+        }
+        return begin1 == end1 && begin2 == end2;
+    }
+
     struct funcname_compare
     {
         bool operator() (const std::string &lhs, const std::string &rhs) const
         {
-            if (equal(lhs.begin(), lhs.end(), rhs.begin())) // lhs is prefix of rhs
+            if (equal_safe(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())) // lhs is prefix of rhs
                 return false;
-            else if (equal(rhs.begin(), rhs.end(), lhs.begin())) // rhs is prefix of lhs
+            else if (equal_safe(rhs.begin(), rhs.end(), lhs.begin(), lhs.end())) // rhs is prefix of lhs
                 return true;
             else
                 return lhs < rhs;

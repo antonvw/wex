@@ -335,8 +335,8 @@ bool wxExAddressRange::Escape(const wxString& command)
   {
     wxString expanded(command);
     if (
-      !wxExShellExpansion(expanded) ||
-      !wxExMarkerAndRegisterExpansion(m_Ex, expanded)) return false;
+      !wxExMarkerAndRegisterExpansion(m_Ex, expanded) ||
+      !wxExShellExpansion(expanded)) return false;
 
     if (m_Process == nullptr)
     {

@@ -103,10 +103,6 @@ public:
   /// (both the parameter and returned value may be nullptr). 
   static wxExLexers* Set(wxExLexers* lexers);
   
-  /// Sets specified theme.
-  /// Returns true if theme is an existing theme.
-  bool SetTheme(const wxString& theme);
-
   /// Temporary use the no theme, until you do RestoreTheme.
   void SetThemeNone() {m_Theme = m_NoTheme;};
   

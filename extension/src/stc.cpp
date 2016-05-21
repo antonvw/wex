@@ -467,7 +467,12 @@ int wxExSTC::ConfigDialog(
 #else
                },
 #endif  
-              true, 4)}}}, ITEM_NOTEBOOK)}},
+              true, 4)}}}, 
+#ifdef __WXMSW__
+            ITEM_NOTEBOOK_AUI)}},
+#else
+            ITEM_NOTEBOOK)}},
+#endif
       {_("Font"), 
         {!wxExLexers::Get()->GetLexers().empty() ?
            wxExItem(_("Default font"), ITEM_FONTPICKERCTRL): wxExItem(),
@@ -527,7 +532,7 @@ int wxExSTC::ConfigDialog(
     {
       m_ConfigDialog = new wxExItemDialog(
         parent, items, title, 0, 1, buttons, id, 
-        wxDefaultPosition, wxSize(500,500));
+        wxDefaultPosition, wxSize(510,425));
     }
 
     return m_ConfigDialog->Show();

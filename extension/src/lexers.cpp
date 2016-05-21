@@ -460,20 +460,6 @@ wxExLexers* wxExLexers::Set(wxExLexers* lexers)
   return old;
 }
 
-bool wxExLexers::SetTheme(const wxString& theme)
-{
-  const auto& it = m_ThemeColours.find(theme);
-  
-  if (it != m_ThemeColours.end())
-  {
-    m_Theme = theme;
-    wxConfigBase::Get()->Write("theme", m_Theme);  
-    return true;
-  }
-
-  return false;  
-}
-
 bool SingleChoice(wxWindow* parent, const wxString& caption, 
   bool show_modal, const wxArrayString& s, wxString& selection)
 {
@@ -504,9 +490,9 @@ bool wxExLexers::ShowThemeDialog(wxWindow* parent, const wxString& caption, bool
   wxArrayString s;
   for (const auto& it : m_ThemeMacros) s.Add(it.first);
 
-  wxString theme(m_Theme);
-  if (!SingleChoice(parent, caption, show_modal, s, theme)) return false;
-  SetTheme(theme);
-  
+  if (!SingleChoice(parent, caption, show_modal, s, m_Theme)) return false;
+
+  wxConfigBase::Get()->Write("theme", m_Theme);  
+
   return LoadDocument();
 }

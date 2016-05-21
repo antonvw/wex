@@ -103,7 +103,6 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     m_Manager.Update();
     info->Resizable();
     m_Manager.Update();
-    
     // If this pane is a toolbar pane, it might have a checkbox,
     // update that as well.
     m_OptionsBar->Update(info->name, false);
@@ -122,8 +121,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   }
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    std::list < wxString > l; 
-    wxExFindReplaceData::Get()->SetFindStrings(l);}, ID_CLEAR_FINDS);
+    wxExFindReplaceData::Get()->SetFindStrings(std::list < wxString > {});}, ID_CLEAR_FINDS);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExSTC::ConfigDialog(this,
@@ -140,10 +138,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     {
       auto it = wxExFindReplaceData::Get()->GetFindStrings().begin();
       std::advance(it, event.GetId() - ID_FIND_FIRST);
-    
-      if (stc->FindNext(
-        *it,
-        stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1))
+      if (stc->FindNext(*it, stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1))
       {
         wxExFindReplaceData::Get()->SetFindString(*it);
       }
