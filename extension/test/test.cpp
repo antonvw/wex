@@ -5,14 +5,22 @@
 // Copyright: (c) 2016
 ////////////////////////////////////////////////////////////////////////////////
 
+#define CATCH_CONFIG_RUNNER
+
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 #include <functional>
 #include <wx/config.h>
 #include <wx/log.h>
 #include <wx/stdpaths.h>
-#include <wx/thread.h>
+#include <wx/timer.h>
+#include "wx/uiaction.h"
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/util.h>
+#include "catch.hpp"
 #include "test.h"
 
 void AddPane(wxExManagedFrame* frame, wxWindow* pane)
@@ -156,36 +164,43 @@ const wxString SetWorkingDirectory()
   return old;
 }
 
-class wxExThread : public wxThread
+bool wxExUIAction(wxWindow* win, const wxString& action, const wxString& par)
 {
-public:
-  wxExThread(wxWindow* win, std::function<void(wxWindow* win)> f) 
-    : wxThread(wxTHREAD_JOINABLE)
-    , m_Win(win)
-    , m_F(f) {;};
-protected:
-  virtual ExitCode Entry();
-private:
-  wxWindow* m_Win;  
-  std::function<void(wxWindow* win)> m_F;
-};
+  wxUIActionSimulator sim;
 
-wxThread::ExitCode wxExThread::Entry()
-{
-  m_F(m_Win);
-  
-  wxYield();
-  
-  Sleep(1000);
-  
-  return (ExitCode)0;
-}
+  if (action.StartsWith("button"))
+  {
+    sim.MouseMove(win->GetScreenPosition() + wxPoint(100, 100));
+    
+    if (par.Contains("left") || par.Contains("right"))
+    {
+      sim.MouseClick(par.Contains("right") ? wxMOUSE_BTN_RIGHT: wxMOUSE_BTN_LEFT);
+    }
 
-bool TestAndContinue(wxWindow* win, std::function<void(wxWindow* win)> f)
-{
-  wxExThread* thread = new wxExThread(win, f);
-  thread->Run();
-  return thread->Wait() != (wxThread::ExitCode)-1;
+    wxTimer* timer = new wxTimer(wxTheApp);
+    timer->StartOnce(1000);
+
+    wxTheApp->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
+      wxUIActionSimulator sim;
+      sim.Char(WXK_RETURN);
+      });
+  }
+  else if (action.StartsWith("key"))
+  {
+    wxTimer* timer = new wxTimer(wxTheApp);
+    timer->StartOnce(1000);
+
+    wxTheApp->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
+      wxUIActionSimulator sim;
+      sim.Char(WXK_RETURN);
+      });
+  }
+  else
+  {
+    return false;
+  }
+  
+  return true;
 }
   
 int wxExTestApp::OnExit()
@@ -222,4 +237,55 @@ bool wxExTestApp::OnInit()
   wxConfigBase::Get()->Write(_("locale"), GetLocale().GetName()); // for coverage
   
   return true;
+}
+
+int wxExTestApp::OnRun()
+{
+  wxTimer* timer = new wxTimer(this);
+  timer->StartOnce(1000);
+  
+  Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
+    const int fails = m_Session->run();
+    const long auto_exit(wxConfigBase::Get()->ReadLong("auto-exit", 1));
+    wxExUIAction(GetTopWindow(), "key", "char");
+    if (auto_exit && (argc < 2 || fails == 0))
+    {
+      OnExit();
+      exit(fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
+    }});
+
+  return wxExApp::OnRun();
+}
+
+void wxExTestApp::SetSession(Catch::Session* session)
+{
+  m_Session = session;
+}
+  
+int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)
+{
+  Catch::Session session; // There must be exactly once instance
+
+  int returnCode = session.applyCommandLine(argc, (const char **)argv);
+  
+  if (returnCode != 0 || session.configData().showHelp)
+    return returnCode;
+
+  wxApp::SetInstance(app);
+  wxEntryStart(argc, argv);
+  app->OnInit();
+  
+  if (!use_eventloop)
+  {
+    const int fails = session.run();
+    app->ProcessPendingEvents();
+    app->OnExit();
+    app->ExitMainLoop();
+    return fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS;
+  }
+  else
+  {
+    app->SetSession(&session);
+    return app->OnRun();
+  }
 }

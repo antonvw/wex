@@ -5,8 +5,6 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#define CATCH_CONFIG_RUNNER
-
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -22,38 +20,23 @@ public:
     const wxString& title,
     size_t maxFiles = 9,
     size_t maxProjects = 0,
-    int style = wxDEFAULT_FRAME_STYLE);
+    int style = wxDEFAULT_FRAME_STYLE) 
+    : wxExFrameWithHistory(parent, id, title, maxFiles, maxProjects, style) {
+      wxExLexer lexer("cpp");
+      m_Report = new wxExListView(
+        this, 
+        wxExListView::LIST_KEYWORD,
+        wxID_ANY,
+        &lexer);
+      AddPane(this, m_Report);};
 
   virtual wxExListView* Activate(
     wxExListView::wxExListType list_type, 
-    const wxExLexer* lexer) override;
+    const wxExLexer* lexer) override {
+    return m_Report;};
 private:
   wxExListView* m_Report;
 };
-
-FrameWithHistory::FrameWithHistory(wxWindow* parent,
-  wxWindowID id,
-  const wxString& title,
-  size_t maxFiles,
-  size_t maxProjects,
-  int style)
-  : wxExFrameWithHistory(parent, id, title, maxFiles, maxProjects, style)
-{
-  wxExLexer lexer("cpp");
-  m_Report = new wxExListView(
-    this, 
-    wxExListView::LIST_KEYWORD,
-    wxID_ANY,
-    &lexer);
-  AddPane(this, m_Report);
-}
-
-wxExListView* FrameWithHistory::Activate(
-  wxExListView::wxExListType list_type, 
-  const wxExLexer* lexer)
-{
-  return m_Report;
-}
 
 class wxExTestGuiApp : public wxExTestApp
 {
@@ -92,28 +75,7 @@ const wxString GetProject()
   
 IMPLEMENT_APP_NO_MAIN(wxExTestGuiApp);
 
-int main (int argc, char* argv[])
+int main(int argc, char* argv[])
 {
-  Catch::Session session; // There must be exactly once instance
-
-  int returnCode = session.applyCommandLine( argc, (const char **)argv );
-  
-  if (returnCode != 0 || session.configData().showHelp)
-    return returnCode;
-
-  wxApp::SetInstance( new wxExTestGuiApp() );
-  wxEntryStart( argc, argv );
-  wxGetApp().OnInit();
-  
-  const int fails = session.run();
-
-  if (argc < 2)
-  {
-    wxGetApp().OnExit();
-    exit(fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
-  }
-  
-  wxGetApp().OnRun();
-  
-  return 1;
+  return wxExTestMain(argc, argv, new wxExTestGuiApp(), true);
 }

@@ -130,8 +130,6 @@ protected:
   static wxExStatusBar* m_StatusBar;
 #endif
 private:
-  void Initialize();
-
   wxWindow* m_FindFocus = nullptr;
   wxFindReplaceDialog* m_FindReplaceDialog = nullptr;
   wxMenuBar* m_MenuBar = nullptr;

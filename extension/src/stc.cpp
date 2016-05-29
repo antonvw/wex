@@ -84,7 +84,6 @@ wxExSTC::wxExSTC(wxWindow *parent,
   : wxStyledTextCtrl(parent, id , pos, size, style, title)
   , m_Flags(win_flags)
   , m_MenuFlags(menu_flags)
-  , m_Goto(1)
   , m_vi(wxExVi(this))
   , m_File(this, title)
   , m_Link(wxExLink(this))
@@ -132,7 +131,6 @@ wxExSTC::wxExSTC(wxWindow* parent,
   long style)
   : wxStyledTextCtrl(parent, id, pos, size, style)
   , m_File(this)
-  , m_Goto(1)
   , m_Flags(flags)
   , m_MenuFlags(menu_flags)
   , m_vi(wxExVi(this))
@@ -1357,7 +1355,7 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen();}, ID_EDIT_OPEN_LINK);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const wxString propnames(PropertyNames());
-    wxString properties = (!propnames.empty() ? "[Current properties]\n": wxString(wxEmptyString));
+    wxString properties = (!propnames.empty() ? "[Current properties]\n": wxString());
     
     // Add current (global and lexer) properties.  
     for (const auto& it1 : wxExLexers::Get()->GetProperties())
@@ -1379,8 +1377,8 @@ void wxExSTC::Initialize(bool file_exists)
         const wxString prop(tkz.GetNextToken());
         const wxString description(DescribeProperty(prop));
         properties += prop + 
-          (!GetProperty(prop).empty() ? "=" + GetProperty(prop): wxString(wxEmptyString)) + 
-          (!description.empty() ? ": " + description: wxString(wxEmptyString)) + "\n";
+          (!GetProperty(prop).empty() ? "=" + GetProperty(prop): wxString()) + 
+          (!description.empty() ? ": " + description: wxString()) + "\n";
       }
     }
     if (m_EntryDialog == nullptr)
@@ -1854,7 +1852,7 @@ void wxExSTC::PropertiesMessage(long flags)
   if (!(flags & STAT_SYNC) && m_Frame != nullptr)
   {
     const wxString file = GetName() + 
-      (GetReadOnly() ? " [" + _("Readonly") + "]": wxString(wxEmptyString));
+      (GetReadOnly() ? " [" + _("Readonly") + "]": wxString());
     
     if (file.empty())
     {

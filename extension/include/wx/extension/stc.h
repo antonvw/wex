@@ -390,7 +390,7 @@ private:
   int m_SavedSelectionEnd;
   
   long m_Flags; // win flags
-  long m_Goto;
+  long m_Goto = 1;
   
   bool m_AddingChars;
   bool m_AllowChangeIndicator;

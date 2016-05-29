@@ -28,8 +28,6 @@ class GlobalEnv
 public:
   GlobalEnv(wxExEx* ex, const wxString& commands)
   : m_Ex(ex)
-  , m_Changes(0)
-  , m_FindIndicator(0, 0)
   {
     m_Ex->GetSTC()->SetIndicatorCurrent(m_FindIndicator.GetNo());
     m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
@@ -131,9 +129,9 @@ public:
     return true;
   }        
 private:
-  const wxExIndicator m_FindIndicator;
+  const wxExIndicator m_FindIndicator = wxExIndicator(0, 0);
   std::vector<std::string> m_Commands;
-  int m_Changes;
+  int m_Changes = 0;
   wxExEx* m_Ex;
 };
 

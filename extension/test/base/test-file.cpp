@@ -5,7 +5,7 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/stopwatch.h>
+#include <chrono>
 #include <wx/extension/file.h>
 #include "../catch.hpp"
 #include "../test.h"
@@ -43,22 +43,20 @@ TEST_CASE( "wxExFile" )
 
   SECTION( "timing" ) 
   {
-    wxStopWatch sw;
-
     const int max = 10000;
-
+    const auto ex_start = std::chrono::system_clock::now();
+    
     for (int i = 0; i < max; i++)
     {
       REQUIRE(file.Read()->length() > 0);
     }
 
-    const long exfile_read = sw.Time();
-
+    const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - ex_start);
+    
     wxFile wxfile(GetTestFile().GetFullPath());
     const size_t l = wxfile.Length();
+    const auto wx_start = std::chrono::system_clock::now();
     
-    sw.Start();
-
     for (int j = 0; j < max; j++)
     {
       char* charbuffer = new char[l];
@@ -67,9 +65,9 @@ TEST_CASE( "wxExFile" )
       delete[] charbuffer;
     }
 
-    const long file_read = sw.Time();
+    const auto wx_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - wx_start);
 
-    CHECK(exfile_read < 2000);
-    CHECK(file_read < 2000);
+    CHECK(ex_milli.count() < 2000);
+    CHECK(wx_milli.count() < 2000);
   }
 }

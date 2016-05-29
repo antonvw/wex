@@ -114,7 +114,7 @@ public:
   /// If the page does not exist an empty string is returned.
   const wxString GetKeyByPage(wxWindow* page) const {
     const auto& it = m_Windows.find(page);
-    return (it != m_Windows.end() ? it->second: wxString(wxEmptyString));};
+    return (it != m_Windows.end() ? it->second: wxString());};
   
   /// Returns the page specified by the given key.
   /// If the key does not exist nullptr is returned.

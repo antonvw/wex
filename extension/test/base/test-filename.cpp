@@ -5,7 +5,7 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/stopwatch.h>
+#include <chrono>
 #include "../catch.hpp"
 #include "../test.h"
 
@@ -28,37 +28,33 @@ TEST_CASE( "wxExFileName" )
   SECTION( "timing" ) 
   {
     const int max = 1000;
-
-    wxStopWatch sw;
-
     const wxExFileName exfile(GetTestFile());
+    const auto ex_start = std::chrono::system_clock::now();
 
     for (int i = 0; i < max; i++)
     {
       REQUIRE(!exfile.GetStat().IsReadOnly());
     }
 
-    const long exfile_time = sw.Time();
-
-    sw.Start();
-
+    const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - ex_start);
     const wxFileName file(GetTestFile());
+    const auto wx_start = std::chrono::system_clock::now();
 
     for (int j = 0; j < max; j++)
     {
       REQUIRE(file.IsFileWritable());
     }
 
-    const long file_time = sw.Time();
+    const auto wx_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - wx_start);
 
-    CHECK(exfile_time < 1000);
-    CHECK(file_time < 1000);
+    CHECK(ex_milli.count() < 1000);
+    CHECK(wx_milli.count() < 1000);
     
     INFO(wxString::Format(
       "wxExFileName::IsReadOnly %d files in %ld ms wxFileName::IsFileWritable %d files in %ld ms",
       max,
-      exfile_time,
+      ex_milli.count(),
       max,
-      file_time).ToStdString());
+      wx_milli.count()).ToStdString());
   }
 }

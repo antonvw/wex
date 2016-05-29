@@ -397,7 +397,7 @@ wxExListViewWithFrame* Frame::AddPage(
   const wxExLexer* lexer)
 {
   const wxString name = wxExListView::GetTypeDescription(type) +
-    (lexer != nullptr ?  " " + lexer->GetDisplayLexer(): wxString(wxEmptyString));
+    (lexer != nullptr ?  " " + lexer->GetDisplayLexer(): wxString());
 
   wxExListViewWithFrame* list = 
     (wxExListViewWithFrame*)m_Lists->GetPageByKey(name);
@@ -1505,7 +1505,7 @@ void Frame::StatusBarClickedRight(const wxString& pane)
   else if (pane == "PaneVCS")
   {
     OpenFile(wxExVCS::GetFileName(), 0, (GetStatusText(pane) != "Auto" ? 
-      GetStatusText(pane): wxString(wxEmptyString)));
+      GetStatusText(pane): wxString()));
   }
   else
   {

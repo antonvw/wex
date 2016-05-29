@@ -19,12 +19,11 @@
 
 #if wxUSE_GUI
 
-wxExAddress::wxExAddress(wxExEx* ex, const wxString& address)
-  : wxString(address)
-  , m_Ex(ex)
-  , m_Line(0)
-{
-}
+#define SEPARATE                                             \
+  if (separator)                                             \
+  {                                                          \
+    output += wxString('-', 40) + m_Ex->GetSTC()->GetEOL();  \
+  }                                                          \
 
 bool wxExAddress::AdjustWindow(const wxString& text) const
 {
@@ -68,22 +67,13 @@ bool wxExAddress::AdjustWindow(const wxString& text) const
   }
   
   wxString output;
-  
-  if (separator)
-  {
-    output += wxString('-', 40) + m_Ex->GetSTC()->GetEOL();
-  }
-  
+  SEPARATE;
   for (int i = begin; i < begin + count; i++)
   {
     output += (flags.Contains("#") ? wxString::Format("%6d ", i): "") + 
       m_Ex->GetSTC()->GetLine(i - 1);
   }
-  
-  if (separator)
-  {
-    output += wxString('-', 40) + m_Ex->GetSTC()->GetEOL();
-  }
+  SEPARATE;
     
   m_Ex->GetFrame()->PrintEx(m_Ex, output);
   

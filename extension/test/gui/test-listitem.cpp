@@ -5,6 +5,7 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <chrono>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -21,8 +22,7 @@ TEST_CASE("wxExListItem")
   wxExListView* listView2 = new wxExListView(GetFrame(), wxExListView::LIST_NONE);
   AddPane(GetFrame(), listView2);
   
-  wxStopWatch sw;
-  sw.Start();
+  const auto start = std::chrono::system_clock::now();
 
   const int max = 250;
   for (int j = 0; j < max; j++)
@@ -37,26 +37,25 @@ TEST_CASE("wxExListItem")
     item4.Insert();
   }
 
-  const long add = sw.Time();
+  const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
 
-  INFO(std::to_string(add));
-  REQUIRE(add < 15000);
+  INFO(std::to_string(milli.count()));
+  REQUIRE(milli.count() < 15000);
   
   INFO(wxString::Format(
-    "wxExListItem::Insert %d items in %ld ms", 3 * max, add).ToStdString());
+    "wxExListItem::Insert %d items in %ld ms", 3 * max, milli.count()).ToStdString());
   
-  sw.Start();
+  const auto sort_start = std::chrono::system_clock::now();
   
-  // The File Name column must be translated, otherwise
-  // test fails.
+  // The File Name column must be translated, otherwise test fails.
   listView->SortColumn(_("File Name"), SORT_ASCENDING);
   
-  const long sort = sw.Time();
+  const auto sort_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - sort_start);
   
-  REQUIRE(sort < 10000);
+  REQUIRE(sort_milli.count() < 10000);
   
   INFO(wxString::Format(
-    "wxExListView::Sort %d items in %ld ms", 3 * max, sort).ToStdString());
+    "wxExListView::Sort %d items in %ld ms", 3 * max, sort_milli.count()).ToStdString());
   REQUIRE(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
   
   wxExListItem item(listView, wxExFileName("./test.h"));

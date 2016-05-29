@@ -5,6 +5,7 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <chrono>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -42,18 +43,17 @@ TEST_CASE("wxExTextFile")
   wxExFindReplaceData::Get()->SetMatchWord(true);
   wxExFindReplaceData::Get()->SetUseRegEx(false);
   
-  wxStopWatch sw;
-  sw.Start();
+  const auto start = std::chrono::system_clock::now();
   
   REQUIRE( textFile.RunTool());
   
-  const long elapsed = sw.Time();
+  const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
   
-  REQUIRE(elapsed < 100);
+  REQUIRE(milli.count() < 100);
   
   INFO(wxString::Format(
     "wxExTextFile::matching %d items in %ld ms", 
-    textFile.GetStatistics().Get(_("Actions Completed")), elapsed).ToStdString());
+    textFile.GetStatistics().Get(_("Actions Completed")), milli.count()).ToStdString());
     
   REQUIRE(!textFile.GetStatistics().GetElements().GetItems().empty());
   REQUIRE( textFile.GetStatistics().Get(_("Actions Completed")) == 193);
@@ -63,16 +63,15 @@ TEST_CASE("wxExTextFile")
   
   wxExFindReplaceData::Get()->SetReplaceString("test");
   
-  wxStopWatch sw2;
-  sw2.Start();
+  const auto start2 = std::chrono::system_clock::now();
   REQUIRE( textFile2.RunTool());
-  const long elapsed2 = sw2.Time();
+  const auto milli2 = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start2);
   
-  REQUIRE(elapsed2 < 100);
+  REQUIRE(milli2.count() < 100);
   
   INFO(wxString::Format(
     "wxExTextFile::replacing %d items in %ld ms", 
-    textFile2.GetStatistics().Get(_("Actions Completed")), elapsed2).ToStdString());
+    textFile2.GetStatistics().Get(_("Actions Completed")), milli2.count()).ToStdString());
     
   REQUIRE(!textFile2.GetStatistics().GetElements().GetItems().empty());
   REQUIRE( textFile2.GetStatistics().Get(_("Actions Completed")) == 194);

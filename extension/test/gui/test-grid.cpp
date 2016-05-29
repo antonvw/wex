@@ -51,6 +51,5 @@ TEST_CASE("wxExGrid")
   grid->UseDragAndDrop(false);
 #endif
   
-  TestAndContinue(grid, [](wxWindow* window) {
-    wxPostEvent(window, wxGridEvent());});
+  REQUIRE(wxExUIAction(grid));
 }

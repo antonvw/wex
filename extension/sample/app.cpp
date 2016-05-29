@@ -5,6 +5,7 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <chrono>
 #include <numeric>
 #include <functional>
 #include <wx/wxprec.h>
@@ -292,14 +293,11 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       {
       wxExFileDialog dlg(this, &m_STC->GetFile());
       if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
-  
-      wxStopWatch sw;
-      
+      const auto start = std::chrono::system_clock::now();
       m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
-  
-      const auto stop = sw.Time();
+      const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
       wxLogStatus(
-        "wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength());
+        "wxExSTC::Open:%ld milliseconds, %d bytes", milli.count(), m_STC->GetTextLength());
       }
       break;
   

@@ -107,14 +107,10 @@ public:
   void SetThemeNone() {m_Theme = m_NoTheme;};
   
   /// Shows a dialog with all lexers, allowing you to choose one.
-  /// Returns true and fills the lexer if you selected one.
+  /// Returns true and sets the lexer on the stc component if you selected one.
   bool ShowDialog(
-    /// parent
-    wxWindow* parent,
-    /// If you specify an existing lexer, it is selected
-    /// in the list. If you press OK, the lexer is 
-    /// set to the selected lexer.
-    wxString& lexer,
+    /// stc component
+    wxExSTC* stc,
     /// caption
     const wxString& caption = _("Enter Lexer"),
     /// shows modal dialog

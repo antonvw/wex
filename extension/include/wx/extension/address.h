@@ -27,7 +27,9 @@ public:
     /// - . : current line 
     /// - or a combination of these, using + or -
     /// - or empty, call SetLine afterwards
-    const wxString& address = "");
+    const wxString& address = "")
+    : wxString(address)
+    , m_Ex(ex) {;};
   
   /// Prints this address, with context.
   bool AdjustWindow(const wxString& text) const;
@@ -69,6 +71,6 @@ public:
   bool Show() const;
 private:
   wxExEx* m_Ex;
-  int m_Line;
+  int m_Line = 0;
 };
 #endif // wxUSE_GUI

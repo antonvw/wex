@@ -83,15 +83,15 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
       for (const auto it : s) 
       {
         AddSwitch(
-          it.first.first.size() <= short_option_size ? it.first.first: wxString(wxEmptyString), 
-          it.first.first.size() <= short_option_size ? wxString(wxEmptyString): it.first.first, 
+          it.first.first.size() <= short_option_size ? it.first.first: wxString(), 
+          it.first.first.size() <= short_option_size ? wxString(): it.first.first, 
           it.first.second, it.second.first);
       };
       for (const auto it : o) 
       {
         AddOption(
-          it.first.first.size() <= short_option_size ? it.first.first: wxString(wxEmptyString), 
-          it.first.first.size() <= short_option_size ? wxString(wxEmptyString): it.first.first, 
+          it.first.first.size() <= short_option_size ? it.first.first: wxString(), 
+          it.first.first.size() <= short_option_size ? wxString(): it.first.first, 
           it.first.second, it.second.first);
       };
       for (const auto it : p) 

@@ -97,7 +97,7 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
   REQUIRE( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0, -1)));
   
   wxString lexer("cpp");
-  wxExLexers::Get()->ShowDialog(GetFrame(), lexer, wxEmptyString, false);
+  wxExLexers::Get()->ShowDialog(stc, wxEmptyString, false);
   wxExLexers::Get()->ShowThemeDialog(GetFrame(), wxEmptyString, false);
   
   REQUIRE(!wxExLexers::Get()->GetKeywords("cpp").empty());

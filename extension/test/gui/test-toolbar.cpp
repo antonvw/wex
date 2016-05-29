@@ -33,6 +33,5 @@ TEST_CASE("wxExToolBar")
   GetFrame()->GetManager().GetPane("OPTIONSBAR").Hide();
   GetFrame()->GetManager().Update();
   
-  TestAndContinue(GetFrame()->GetToolBar(), [](wxWindow* window) {
-    wxPostEvent(window, wxAuiToolBarEvent(wxEVT_AUITOOLBAR_TOOL_DROPDOWN));});
+  REQUIRE(wxExUIAction(GetFrame()->GetToolBar()));
 }

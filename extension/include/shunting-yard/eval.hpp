@@ -26,7 +26,8 @@
 
 #pragma once
 
-#define EVAL_VERSION "1.0.2" /* (2016/05/19): Fix out-of-range iterator access
+#define EVAL_VERSION "1.0.3" /* (2016/05/21): Fix name clash on OSX
+#define EVAL_VERSION "1.0.2" // (2016/05/19): Fix out-of-range iterator access
 #define EVAL_VERSION "1.0.1" // (2016/03/26): Add simple support for assignment and variables
 #define EVAL_VERSION "1.0.0" // (2016/02/20): Extra math stuff; Header-only now; Initial SemVer adherence */
 
@@ -41,7 +42,6 @@
 
 // public api: evaluate string
 double eval( const std::string &expr, std::string *err = 0 );
-void extend( const std::string &expr, std::string *err = 0 );
 
 // private api: (based on calculate.hpp/.cpp)
 #include <string>

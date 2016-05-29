@@ -98,7 +98,8 @@ wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
   , m_IsActive(true)
-  , m_SearchFlags(wxSTC_FIND_REGEXP)
+  , m_SearchFlags(wxExFindReplaceData::Get()->MatchCase() ? 
+      wxSTC_FIND_MATCHCASE | wxSTC_FIND_REGEXP: wxSTC_FIND_REGEXP)
   , m_MarkerSymbol(0, -1)
   , m_Register(0)
   , m_Commands {
@@ -292,11 +293,6 @@ wxExEx::wxExEx(wxExSTC* stc)
       return true;}}}
 {
   wxASSERT(m_Frame != nullptr);
-  
-  if (wxExFindReplaceData::Get()->MatchCase())
-  {
-    m_SearchFlags = m_SearchFlags | wxSTC_FIND_MATCHCASE;
-  }
 }
 
 void wxExEx::AddText(const std::string& text)

@@ -51,7 +51,6 @@ public:
     const wxString& name = "wxExItemTemplateDialog")
   : wxExDialog(parent, title, flags, id, pos, size, style, name)
   , m_ForceCheckBoxChecked(false)
-  , m_Page(wxEmptyString)
   , m_Items(v) {
     Layout(rows, cols);
     Bind(wxEVT_BUTTON, &wxExItemTemplateDialog::OnCommand, this, wxID_APPLY);
