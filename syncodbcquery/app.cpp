@@ -5,6 +5,7 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <chrono>
 #include <regex>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -329,9 +330,8 @@ bool Frame::OpenFile(
 
 void Frame::RunQuery(const wxString& query, bool empty_results)
 {
-  wxStopWatch sw;
-
   const wxString query_lower = query.Lower();
+  const auto start = std::chrono::system_clock::now();
 
   // Query functions supported by ODBC
   // $SQLTables, $SQLColumns, etc.
@@ -354,17 +354,20 @@ void Frame::RunQuery(const wxString& query, bool empty_results)
       rpc = m_otl.Query(query, m_Shell, m_Stopped);
     }
 
-    sw.Pause();
+    const auto end = std::chrono::system_clock::now();
+    const auto elapsed = end - start;
+    const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
 
-    UpdateStatistics(sw.Time(), rpc);
+    UpdateStatistics(milli.count(), rpc);
   }
   else
   {
     const auto rpc = m_otl.Query(query);
+    const auto end = std::chrono::system_clock::now();
+    const auto elapsed = end - start;
+    const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
 
-    sw.Pause();
-
-    UpdateStatistics(sw.Time(), rpc);
+    UpdateStatistics(milli.count(), rpc);
   }
 
   m_Shell->DocumentEnd();
@@ -390,9 +393,10 @@ void Frame::RunQueries(const wxString& text)
   wxStringTokenizer tkz(output, ";");
   int no_queries = 0;
 
-  wxStopWatch sw;
   m_Running = true;
 
+  const auto start = std::chrono::system_clock::now();
+  
   // Run all queries.
   while (tkz.HasMoreTokens() && !m_Stopped)
   {
@@ -417,9 +421,14 @@ void Frame::RunQueries(const wxString& text)
     }
   }
 
+  const auto rpc = m_otl.Query(query);
+  const auto end = std::chrono::system_clock::now();
+  const auto elapsed = end - start;
+  const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+  
   m_Shell->Prompt(wxString::Format(_("\n%d queries (%.3f seconds)"),
     no_queries,
-    (float)sw.Time() / (float)1000));
+    (float)milli.count() / (float)1000));
 
   m_Running = false;
 }

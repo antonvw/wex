@@ -85,7 +85,7 @@ const wxString wxExStatusBar::GetStatusText(const wxString& field) const
   int shown_pane_no, dummy;
   return !GetFieldNo(field, shown_pane_no, dummy) || shown_pane_no == FIELD_NOT_SHOWN ?
     // Do not show error, as you might explicitly want to ignore messages.
-    wxString(wxEmptyString): wxStatusBar::GetStatusText(shown_pane_no);
+    wxString(): wxStatusBar::GetStatusText(shown_pane_no);
 }
 
 void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)

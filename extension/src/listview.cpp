@@ -50,11 +50,8 @@ class DropTarget : public wxFileDropTarget
 {
 public:
   explicit DropTarget(wxExListView* lv) {m_ListView = lv;}
-private:
-  virtual bool OnDropFiles(
-    wxCoord x, 
-    wxCoord y, 
-    const wxArrayString& filenames) 
+  virtual bool OnDropFiles(wxCoord x, wxCoord y, 
+    const wxArrayString& filenames) override
   {
     // Only drop text if nothing is selected,
     // so dropping on your own selection is impossible.
@@ -72,7 +69,7 @@ private:
       return false;
     }
   };
-        
+private:
   wxExListView* m_ListView;
 };
 
@@ -836,7 +833,7 @@ const wxString wxExListView::GetItemText(long item_number, const wxString& col_n
   }
   
   const int col = FindColumn(col_name);
-  return col < 0 ? wxString(wxEmptyString): wxListView::GetItemText(item_number, col);
+  return col < 0 ? wxString(): wxListView::GetItemText(item_number, col);
 }
 
 const wxString wxExListView::GetTypeDescription(wxExListType type)

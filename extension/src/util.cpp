@@ -79,7 +79,7 @@ const wxString wxExAlignText(const wxString& lines, const wxString& header,
 
   // Use the header, with one space extra to separate, or no header at all.
   const wxString header_with_spaces =
-    (header.empty()) ? wxString(wxEmptyString) : wxString(' ', header.size());
+    (header.empty()) ? wxString() : wxString(' ', header.size());
 
   wxString in = lines, line = header;
 
@@ -98,7 +98,7 @@ const wxString wxExAlignText(const wxString& lines, const wxString& header,
     }
     else
     {
-      line += (!line.empty() && !at_begin ? wxString(" "): wxString(wxEmptyString)) + word;
+      line += (!line.empty() && !at_begin ? wxString(" "): wxString()) + word;
       at_begin = false;
     }
   }
@@ -326,7 +326,7 @@ const wxString wxExConfigFirstOfWrite(const wxString& key, const wxString& value
 const wxString wxExEllipsed(const wxString& text, const wxString& control)
 {
   return text + "..." + 
-    (!control.empty() ? "\t" + control: wxString(wxEmptyString));
+    (!control.empty() ? "\t" + control: wxString());
 }
 
 const wxString wxExGetEndOfText(const wxString& text, size_t max_chars)
@@ -809,7 +809,7 @@ bool wxExSetTextCtrlValue(
     return false;
   }
 
-  ctrl->SetValue(it != l.end() ? *it: wxString(wxEmptyString));
+  ctrl->SetValue(it != l.end() ? *it: wxString());
   ctrl->SetInsertionPointEnd();
   
   return true;

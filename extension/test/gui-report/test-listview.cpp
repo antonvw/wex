@@ -34,14 +34,12 @@ TEST_CASE("wxExListViewWithFrame")
   listView->Select(1);
   
   for (auto id : std::vector<int> {
-    ID_EDIT_OPEN, ID_LIST_COMPARE, ID_LIST_RUN_MAKE,
-    ID_EDIT_VCS_LOWEST, ID_TOOL_REPORT_FIND}) 
+    ID_EDIT_OPEN, ID_EDIT_VCS_LOWEST, ID_LIST_COMPARE, ID_LIST_RUN_MAKE}) 
   {
     wxPostEvent(listView, wxCommandEvent(wxEVT_MENU, id));
   }
   
-  TestAndContinue(listView, [](wxWindow* window) {
-    wxPostEvent(window, wxMouseEvent(wxEVT_RIGHT_DOWN));});
+  REQUIRE(wxExUIAction(listView));
 
   wxExListViewWithFrame* listView2 = new wxExListViewWithFrame(GetFrame(), GetFrame(), 
     wxExListView::LIST_FIND);

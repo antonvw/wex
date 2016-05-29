@@ -45,7 +45,6 @@ wxExShell::wxExShell(
       pos, 
       size, 
       style)
-  , m_Command(wxEmptyString)
   , m_CommandEnd((command_end == wxEmptyString ? GetEOL(): command_end))
   , m_CommandStartPosition(0)
   , m_Echo(echo)
@@ -488,7 +487,7 @@ bool wxExShell::ProcessChar(int key)
         
         // History command.
         if (m_Command == wxString("history") +
-           (m_CommandEnd == GetEOL() ? wxString(wxEmptyString): m_CommandEnd))
+           (m_CommandEnd == GetEOL() ? wxString(): m_CommandEnd))
         {
           KeepCommand();
           ShowHistory();

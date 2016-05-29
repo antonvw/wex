@@ -134,7 +134,7 @@ void wxExListItem::Update()
     SetItem(_("Size"),
       (!wxFileName::DirExists(m_FileName.GetFullPath()) ? // IsDir not ok
          (wxString::Format("%lu", size)):
-          wxString(wxEmptyString)));
+          wxString()));
     SetItem(_("Modified"), m_FileName.GetStat().GetModificationTime());
   }
 }

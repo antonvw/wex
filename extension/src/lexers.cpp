@@ -28,12 +28,10 @@ wxExLexers* wxExLexers::m_Self = nullptr;
 // it both constructs and loads the lexers.
 wxExLexers::wxExLexers(const wxFileName& filename)
   : m_FileName(filename)
-  , m_NoTheme(wxEmptyString)
   // Here the default theme is set, and used if the application
   // is run for the first time.
   , m_Theme(wxConfigBase::Get()->Read("theme", "studio"))
 {
-  m_DefaultColours.clear();
 }
 
 void wxExLexers::Apply(wxExSTC* stc) const
@@ -153,7 +151,7 @@ wxExLexers* wxExLexers::Get(bool createOnDemand)
 const wxString wxExLexers::GetKeywords(const wxString& set) const
 {
   const auto& it = m_Keywords.find(set);
-  return (it != m_Keywords.end() ? it->second: wxString(wxEmptyString));
+  return (it != m_Keywords.end() ? it->second: wxString());
 }
 
 void wxExLexers::Initialize()
@@ -474,13 +472,20 @@ bool SingleChoice(wxWindow* parent, const wxString& caption,
   return true;
 }
   
-bool wxExLexers::ShowDialog(wxWindow* parent, wxString& lexer, const wxString& caption, bool show_modal) const
+bool wxExLexers::ShowDialog(wxExSTC* stc, const wxString& caption, bool show_modal) const
 {
   wxArrayString s;
   for (const auto& it : m_Lexers) s.Add(it.GetDisplayLexer());
   s.Add(wxEmptyString);
 
-  return SingleChoice(parent, caption, show_modal, s, lexer);
+  wxString lexer = stc->GetLexer().GetDisplayLexer();
+  if (!SingleChoice(stc, caption, show_modal, s, lexer)) return false;
+
+  lexer.empty() ? 
+    stc->GetLexer().Reset():
+    stc->GetLexer().Set(lexer, true); // allow fold
+  
+  return true;
 }
 
 bool wxExLexers::ShowThemeDialog(wxWindow* parent, const wxString& caption, bool show_modal)

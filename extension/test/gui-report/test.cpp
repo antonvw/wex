@@ -5,6 +5,7 @@
 // Copyright: (c) 2015 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <chrono>
 #include <wx/extension/frd.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/util.h>
@@ -46,8 +47,7 @@ TEST_CASE("wxEx")
   
   frd->SetFindString("Author:");
   
-  wxStopWatch sw;
-  sw.Start();
+  const auto start = std::chrono::system_clock::now();
 
   REQUIRE(GetFrame()->FindInFiles(
     wxExToVectorString(files).Get(), 
@@ -55,13 +55,13 @@ TEST_CASE("wxEx")
     false, 
     report));
     
-  const long find = sw.Time();
+  const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
   
-  REQUIRE(find < 1000);
+  REQUIRE(milli.count() < 1000);
 
   INFO(wxString::Format(
     "%d %lu items in: %ld ms", 
-    report->GetItemCount(), wxExToVectorString(files).Get().size(), find).ToStdString());
+    report->GetItemCount(), wxExToVectorString(files).Get().size(), milli.count()).ToStdString());
 
 #ifdef __UNIX__
   // Each file has one author (files.GetCount()), add the one in SetFindString 

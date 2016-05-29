@@ -109,6 +109,5 @@ TEST_CASE("wxExListView")
     wxPostEvent(listView2, event);
   }
   
-  TestAndContinue(listView, [](wxWindow* window) {
-    wxPostEvent(window, wxMouseEvent(wxEVT_RIGHT_DOWN));});
+  REQUIRE(wxExUIAction(listView));
 }

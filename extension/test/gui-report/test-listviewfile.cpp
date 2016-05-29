@@ -53,7 +53,4 @@ TEST_CASE("wxExListViewFile")
   {
     wxPostEvent(listView, wxCommandEvent(wxEVT_MENU, id));
   }
-  
-  TestAndContinue(listView, [](wxWindow* window) {
-    wxPostEvent(window, wxMouseEvent(wxEVT_RIGHT_DOWN));});
 }

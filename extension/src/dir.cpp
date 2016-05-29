@@ -82,7 +82,7 @@ int wxExDir::FindFiles()
   // contains single spec (*.h), wxDir does not handle multi specs (*.cpp; *.h).
   const size_t retValue = Traverse(
     traverser, 
-    (m_FileSpec.Contains(";") ? wxString(wxEmptyString): m_FileSpec), 
+    (m_FileSpec.Contains(";") ? wxString(): m_FileSpec), 
     m_Flags);
 
   Stop();

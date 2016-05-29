@@ -203,6 +203,10 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     wxPostEvent(stc, wxCommandEvent(wxEVT_MENU, id));
   }
   
+  wxKeyEvent event(wxEVT_KEY_DOWN);
+  event.m_keyCode = WXK_UP;
+  wxPostEvent(stc, event);
+  
   stc->LineHome();
   stc->LineHomeExtend();
   stc->LineHomeRectExtend();
@@ -227,6 +231,5 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     stc.PropertiesMessage();
   }
   
-  TestAndContinue(stc, [](wxWindow* window) {
-    wxPostEvent(window, wxMouseEvent(wxEVT_RIGHT_DOWN));});
+  REQUIRE(wxExUIAction(stc));
 }

@@ -5,8 +5,6 @@
 // Copyright: (c) 2016
 ////////////////////////////////////////////////////////////////////////////////
 
-#define CATCH_CONFIG_RUNNER
-
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -111,28 +109,7 @@ void Process(const std::string& str, wxExShell* shell)
 
 IMPLEMENT_APP_NO_MAIN(wxExTestGuiApp);
 
-int main (int argc, char* argv[])
+int main(int argc, char* argv[])
 {
-  Catch::Session session; // There must be exactly once instance
-
-  int returnCode = session.applyCommandLine( argc, (const char **)argv );
-  
-  if (returnCode != 0 || session.configData().showHelp)
-    return returnCode;
-
-  wxApp::SetInstance( new wxExTestGuiApp() );
-  wxEntryStart( argc, argv );
-  wxGetApp().OnInit();
-  
-  const int fails = session.run();
-
-  if (argc < 2 || fails == 0)
-  {
-    wxGetApp().OnExit();
-    exit(fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
-  }
-  
-  wxGetApp().OnRun();
-  
-  return 1;
+  return wxExTestMain(argc, argv, new wxExTestGuiApp(), true);
 }

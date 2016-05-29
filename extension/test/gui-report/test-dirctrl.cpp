@@ -10,38 +10,36 @@
 #include <wx/extension/report/defs.h>
 #include "test.h"
 
+void Test(wxExGenericDirCtrl* ctrl)
+{
+  for (auto id : std::vector<int> {
+    ID_EDIT_VCS_LOWEST + 2, 
+    ID_TREE_COPY, 
+    ID_EDIT_OPEN, 
+    ID_TREE_RUN_MAKE,
+    ID_TOOL_REPORT_FIND})
+  {
+    wxPostEvent(ctrl, wxCommandEvent(wxEVT_MENU, id));
+    REQUIRE(wxExUIAction(ctrl, "key"));
+  }
+}
+
 TEST_CASE("wxExDirCtrl")
 {
   wxExGenericDirCtrl* ctrl = new wxExGenericDirCtrl(GetFrame(), GetFrame());
   AddPane(GetFrame(), ctrl);
 
-  // Select directory.
-  ctrl->ExpandAndSelectPath("./");
-  
-  for (auto id : std::vector<int> {
-    ID_EDIT_VCS_LOWEST + 2, 
-    ID_TREE_COPY, 
-    ID_EDIT_OPEN, 
-    ID_TREE_RUN_MAKE,
-    ID_TOOL_REPORT_FIND, 
-  })
+  SECTION("Select directory")
   {
-    wxPostEvent(ctrl, wxCommandEvent(wxEVT_MENU, id));
+    ctrl->ExpandAndSelectPath("./");
+    Test(ctrl);
   }
   
 #ifdef __UNIX__
-  // Select file.
-  ctrl->ExpandAndSelectPath("/usr/bin/git");
-#endif
-  
-  for (auto id : std::vector<int> {
-    ID_EDIT_VCS_LOWEST + 2, 
-    ID_TREE_COPY, 
-    ID_EDIT_OPEN, 
-    ID_TREE_RUN_MAKE,
-    ID_TOOL_REPORT_FIND, 
-  })
+  SECTION("Select file")
   {
-    wxPostEvent(ctrl, wxCommandEvent(wxEVT_MENU, id));
+    ctrl->ExpandAndSelectPath("/usr/bin/git");
+    Test(ctrl);
   }
+#endif
 }
