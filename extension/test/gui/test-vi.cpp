@@ -514,6 +514,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( vi->Command(wxString(wxUniChar(ctrl_r)).ToStdString()));
   REQUIRE( vi->Command("%"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  INFO( stc->GetText());
   REQUIRE( stc->GetText().Contains("test.h"));
   
   REQUIRE( vi->Command("yy"));

@@ -93,7 +93,7 @@ public:
     const wxString& match = wxEmptyString,
     int col_number = 0,
     long win_flags = STC_WIN_DEFAULT,
-    long menu_flags = STC_MENU_DEFAULT & STC_MENU_OPEN_LINK,
+    long menu_flags = STC_MENU_DEFAULT | STC_MENU_OPEN_LINK,
     const std::string& command = std::string(),
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,

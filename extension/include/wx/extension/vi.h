@@ -91,11 +91,11 @@ private:
 
   static std::string m_LastFindCharCommand;
 
-  bool m_Dot;  
-  bool m_SearchForward;
+  bool m_Dot = false;
+  bool m_SearchForward = true;
   
-  int m_Count;
-  int m_Start;
+  int m_Count = 1;
+  int m_Start = 0;
   int m_Type;
   
   wxExViFSM m_FSM;

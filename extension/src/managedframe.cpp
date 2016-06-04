@@ -112,7 +112,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     DoRecent(m_FileHistory, event.GetId() - m_FileHistory.GetBaseId());},
     m_FileHistory.GetBaseId(), m_FileHistory.GetBaseId() + m_FileHistory.GetMaxFiles());
 
-  for (auto it : m_ToggledPanes)
+  for (const auto& it : m_ToggledPanes)
   {
     Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
       event.Check(m_Manager.GetPane(it.first.first).IsShown());}, it.second);
@@ -206,7 +206,9 @@ void wxExManagedFrame::AppendPanes(wxMenu* menu) const
   menu->AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar\tCtrl+I"));
 #endif
 
-  for (auto it : m_ToggledPanes)
+  menu->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
+
+  for (const auto& it : m_ToggledPanes)
   {
     if (it.first.first == "PROCESS" && wxExProcess::GetShell() == nullptr)
     {

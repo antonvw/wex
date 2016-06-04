@@ -157,7 +157,6 @@ std::string wxExVi::m_LastFindCharCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
   : wxExEx(stc)
-  , m_Dot(false)
   , m_FSM(this, 
      // insert mode process
      [=](const std::string& command) {
@@ -179,10 +178,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         }
         m_Command.clear();
         GetSTC()->EndUndoAction();})
-  , m_Count(1)
-  , m_Start(0)
   , m_Type(MOTION_NAVIGATE)
-  , m_SearchForward(true)
   , m_MotionCommands {
     {"bB", [&](const std::string& command){MOTION(Word, Left, false, false);}},
     {"eE", [&](const std::string& command){MOTION(Word, RightEnd, false, false);}},
@@ -457,17 +453,20 @@ wxExVi::wxExVi(wxExSTC* stc)
       const bool result = Command(GetLastCommand());
       m_Dot = false;
       return result;}},
-    {"~", [&](const std::string& command){REPEAT_WITH_UNDO(
-      if (GetSTC()->GetReadOnly() || GetSTC()->HexMode()) return false;
-      wxString text(GetSTC()->GetTextRange(
-        GetSTC()->GetCurrentPos(), 
-        GetSTC()->GetCurrentPos() + 1));
-      wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
-      GetSTC()->wxStyledTextCtrl::Replace(
-        GetSTC()->GetCurrentPos(), 
-        GetSTC()->GetCurrentPos() + 1, 
-        text);
-      GetSTC()->CharRight());
+    {"~", [&](const std::string& command){
+      if (GetSTC()->GetLength() == 0 || GetSTC()->GetReadOnly() || GetSTC()->HexMode()) return false;
+      REPEAT_WITH_UNDO(
+        if (GetSTC()->GetCurrentPos() == GetSTC()->GetLength()) return false;
+        wxString text(GetSTC()->GetTextRange(
+            GetSTC()->GetCurrentPos(), 
+            GetSTC()->GetCurrentPos() + 1));
+        if (text.empty()) return false;
+        wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
+        GetSTC()->wxStyledTextCtrl::Replace(
+          GetSTC()->GetCurrentPos(), 
+          GetSTC()->GetCurrentPos() + 1, 
+          text);
+        GetSTC()->CharRight());
       return true;}},
     {"><", [&](const std::string& command){
       switch (GetMode())
@@ -664,7 +663,7 @@ bool wxExVi::Command(const std::string& command, bool is_handled)
   const auto size = GetSTC()->GetLength();
   std::string rest(command);
   
-  if (rest.front() == '"')
+  if (!rest.empty() && rest.front() == '"')
   {
     if (rest.size() < 2) return false;
     SetRegister(rest[1]);

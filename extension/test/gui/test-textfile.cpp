@@ -52,8 +52,8 @@ TEST_CASE("wxExTextFile")
   REQUIRE(milli.count() < 100);
   
   INFO(wxString::Format(
-    "wxExTextFile::matching %d items in %ld ms", 
-    textFile.GetStatistics().Get(_("Actions Completed")), milli.count()).ToStdString());
+    "wxExTextFile::matching %d items in %d ms", 
+    textFile.GetStatistics().Get(_("Actions Completed")), (int)milli.count()).ToStdString());
     
   REQUIRE(!textFile.GetStatistics().GetElements().GetItems().empty());
   REQUIRE( textFile.GetStatistics().Get(_("Actions Completed")) == 193);
@@ -70,8 +70,8 @@ TEST_CASE("wxExTextFile")
   REQUIRE(milli2.count() < 100);
   
   INFO(wxString::Format(
-    "wxExTextFile::replacing %d items in %ld ms", 
-    textFile2.GetStatistics().Get(_("Actions Completed")), milli2.count()).ToStdString());
+    "wxExTextFile::replacing %d items in %d ms", 
+    textFile2.GetStatistics().Get(_("Actions Completed")), (int)milli2.count()).ToStdString());
     
   REQUIRE(!textFile2.GetStatistics().GetElements().GetItems().empty());
   REQUIRE( textFile2.GetStatistics().Get(_("Actions Completed")) == 194);

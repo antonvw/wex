@@ -60,8 +60,8 @@ TEST_CASE("wxEx")
   REQUIRE(milli.count() < 1000);
 
   INFO(wxString::Format(
-    "%d %lu items in: %ld ms", 
-    report->GetItemCount(), wxExToVectorString(files).Get().size(), milli.count()).ToStdString());
+    "%d %lu items in: %d ms", 
+    report->GetItemCount(), wxExToVectorString(files).Get().size(), (int)milli.count()).ToStdString());
 
 #ifdef __UNIX__
   // Each file has one author (files.GetCount()), add the one in SetFindString 

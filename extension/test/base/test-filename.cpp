@@ -49,12 +49,12 @@ TEST_CASE( "wxExFileName" )
 
     CHECK(ex_milli.count() < 1000);
     CHECK(wx_milli.count() < 1000);
-    
+
     INFO(wxString::Format(
-      "wxExFileName::IsReadOnly %d files in %ld ms wxFileName::IsFileWritable %d files in %ld ms",
+      "wxExFileName::IsReadOnly %d files in %d ms wxFileName::IsFileWritable %d files in %d ms",
       max,
-      ex_milli.count(),
+      (int)ex_milli.count(),
       max,
-      wx_milli.count()).ToStdString());
+      (int)wx_milli.count()).ToStdString());
   }
 }
