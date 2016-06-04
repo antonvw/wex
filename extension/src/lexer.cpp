@@ -179,7 +179,7 @@ bool wxExLexer::ApplyWhenSet()
 
 void wxExLexer::AutoMatch(const wxString& lexer)
 {
-  const wxExLexer l(wxExLexers::Get()->FindByName(lexer));
+  const wxExLexer& l(wxExLexers::Get()->FindByName(lexer));
   
   if (l.GetScintillaLexer().empty())
   {

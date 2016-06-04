@@ -81,6 +81,7 @@ public:
     funcs.insert({"compl", func_args(1, [](args_t v) {
       return ~(int)v[0];})});
     funcs.insert({"xor", func_args(2, [](args_t v) {
+      if (v.size() < 2) return 0;
       return (int)v[0] ^ (int)v[1]; })});
     funcs.insert({"bitor", func_args(2, [](args_t v) {
       return (int)v[0] | (int)v[1]; })});
@@ -97,11 +98,8 @@ std::string wxExEx::m_LastCommand;
 wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
-  , m_IsActive(true)
   , m_SearchFlags(wxExFindReplaceData::Get()->MatchCase() ? 
       wxSTC_FIND_MATCHCASE | wxSTC_FIND_REGEXP: wxSTC_FIND_REGEXP)
-  , m_MarkerSymbol(0, -1)
-  , m_Register(0)
   , m_Commands {
     {":ab", [&](const std::string& command) {
       wxStringTokenizer tkz(command, " ");

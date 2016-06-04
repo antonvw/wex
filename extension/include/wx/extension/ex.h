@@ -155,7 +155,7 @@ private:
   bool CommandAddress(const std::string& command);
   void ShowDialog(const wxString& title, const wxString& text, bool prop_lexer = false);
     
-  const wxExMarker m_MarkerSymbol;
+  const wxExMarker m_MarkerSymbol = wxExMarker(0, -1);
 
   std::map<wxUniChar, int> m_Markers;
   
@@ -164,11 +164,11 @@ private:
   static wxExViMacros m_Macros;
   static ex_evaluator m_Evaluator;
 
-  bool m_IsActive; // are we actively using ex mode?
+  bool m_IsActive = true; // are we actively using ex mode?
   
   int m_SearchFlags;
   
-  char m_Register;
+  char m_Register = 0;
   
   wxExManagedFrame* m_Frame;  
   wxExSTC* m_STC;

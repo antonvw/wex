@@ -249,13 +249,14 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE( stc->GetLineCount() == 12);
   stc->GotoLine(2);
 
-  for (auto& go : std::vector<std::pair<std::string, int>> {
+  for (const auto& go : std::vector<std::pair<std::string, int>> {
     {":1",0},
     {":-10",0},
     {":10",9},
     {":/c/",2},
     {":10000",11}})
   {
+    INFO( go.first);
     REQUIRE(  ex->Command(go.first));
     REQUIRE( stc->GetCurrentLine() == go.second);
   }
