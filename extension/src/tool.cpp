@@ -27,7 +27,7 @@ wxExTool::wxExTool(int type)
 
 const wxString wxExTool::Info() const
 {
-  const auto it = m_ToolInfo.find(m_Id);
+  const auto& it = m_ToolInfo.find(m_Id);
 
   if (it != m_ToolInfo.end())
   {

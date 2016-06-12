@@ -388,8 +388,8 @@ private:
   wxFlexGridSizer* AddStaticText(wxSizer* sizer) const;
   bool CreateWindow(wxWindow* parent, bool readonly);
 
-  bool m_IsRequired, m_IsRowGrowable;
-  int m_Id, m_MajorDimension, m_MaxItems;
+  bool m_IsRequired, m_IsRowGrowable = false;
+  int m_Id, m_MajorDimension, m_MaxItems = 25;
   long m_Style;
   
   wxExItemType m_Type;

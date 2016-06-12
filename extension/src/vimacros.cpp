@@ -111,7 +111,7 @@ const wxString wxExViMacros::Encode(const std::string& text)
 
 bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
 {
-  auto it = m_Variables.find(variable);
+  const auto& it = m_Variables.find(variable);
   
   bool ok;
     
@@ -164,7 +164,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
 
 bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
 {
-  auto it = m_Variables.find(variable);
+  const auto& it = m_Variables.find(variable);
     
   bool ok;
     
@@ -342,7 +342,7 @@ const std::vector< wxString > wxExViMacros::Get() const
 
 const std::vector< std::string > wxExViMacros::Get(const wxString& macro) const
 {
-  const auto it = m_Macros.find(macro);
+  const auto& it = m_Macros.find(macro);
     
   if (it != m_Macros.end())
   {
@@ -350,7 +350,7 @@ const std::vector< std::string > wxExViMacros::Get(const wxString& macro) const
   }
   else
   {
-    const auto it = m_Variables.find(macro);
+    const auto& it = m_Variables.find(macro);
     std::vector<std::string> v;
     
     if (it != m_Variables.end())
@@ -379,7 +379,7 @@ const std::string wxExViMacros::GetRegister(const char name) const
     case '*':
     case '\"': return wxExClipboardGet().ToStdString();
     default: {   
-      const auto it = m_Macros.find(name);
+      const auto& it = m_Macros.find(name);
       std::string output;
       if (it != m_Macros.end())
       {
@@ -494,10 +494,8 @@ void wxExViMacros::ParseNodeAbbreviation(wxXmlNode* node)
 {
   const wxString abb(node->GetAttribute("name"));
   const wxString text(node->GetNodeContent().Strip(wxString::both));
-  
-  const auto it = m_Abbreviations.find(abb);
 
-  if (it != m_Abbreviations.end())
+  if (m_Abbreviations.find(abb) != m_Abbreviations.end())
   {
     wxLogError("Duplicate abbreviation: %s on line: %d", 
      abb,
@@ -521,7 +519,7 @@ void wxExViMacros::ParseNodeMacro(wxXmlNode* node)
     command = command->GetNext();
   }
   
-  const auto it = m_Macros.find(node->GetAttribute("name"));
+  const auto& it = m_Macros.find(node->GetAttribute("name"));
 
   if (it != m_Macros.end())
   {
@@ -538,7 +536,7 @@ void wxExViMacros::ParseNodeMacro(wxXmlNode* node)
 void wxExViMacros::ParseNodeVariable(wxXmlNode* node)
 {
   const wxExVariable variable(node);
-  const auto it = m_Variables.find(variable.GetName());
+  const auto& it = m_Variables.find(variable.GetName());
 
   if (it != m_Variables.end())
   {

@@ -219,7 +219,6 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   stc->WordLeftRectExtend();
   stc->WordRightRectExtend();
   stc->WordRightEndRectExtend();
-  
   stc->Clear();
   
   SECTION("load file")

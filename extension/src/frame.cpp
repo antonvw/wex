@@ -22,6 +22,7 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
+#include <wx/extension/tostring.h>
 #include <wx/extension/vcsentry.h>
 
 #if wxUSE_GUI

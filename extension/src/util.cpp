@@ -32,45 +32,9 @@
 #include <wx/extension/lexer.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/tostring.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/vimacros.h>
-
-wxExToVectorString::wxExToVectorString(const wxArrayString& in)
-{
-  FromArrayString(in);
-}
-
-wxExToVectorString::wxExToVectorString(const wxFileDialog& in)
-{
-  wxArrayString paths;
-  in.GetPaths(paths);
-  FromArrayString(paths);
-}
-
-wxExToVectorString::wxExToVectorString(const wxGenericDirCtrl& in)
-{
-  wxArrayString paths;
-  in.GetPaths(paths);
-  FromArrayString(paths);
-}
-
-wxExToVectorString::wxExToVectorString(const wxString& in)
-{
-  wxStringTokenizer tkz(in);
-      
-  while (tkz.HasMoreTokens())
-  {
-    m_VS.emplace_back(tkz.GetNextToken());
-  }
-}
-
-void wxExToVectorString::FromArrayString(const wxArrayString& in)
-{
-  for (const auto& it : in)
-  {
-    m_VS.emplace_back(it);
-  }
-}
 
 const wxString wxExAlignText(const wxString& lines, const wxString& header,
   bool fill_out_with_space, bool fill_out, const wxExLexer& lexer)
@@ -113,7 +77,7 @@ bool wxExAutoComplete(const wxString& text,
 {
   int matches = 0;
   
-  for (auto& it : v)
+  for (const auto& it : v)
   {
     if (it.StartsWith(text))
     {
@@ -252,13 +216,7 @@ void wxExComboBoxFromList(wxComboBox* cb, const std::list < wxString > & text)
 {
   wxExComboBoxAs<const std::list < wxString >>(cb, text);
 }
-
-const std::list < wxString > wxExComboBoxToList(const wxComboBox* cb,
-  size_t max_items)
-{
-  return wxExComboBoxAs<std::list < wxString >>(cb, max_items);
-}
-#endif // wxUSE_GUI
+#endif
 
 bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
 {
@@ -780,39 +738,6 @@ const wxString wxExSkipWhiteSpace(const wxString& text, const wxString& replace_
   output.Trim(true);
   output.Trim(false);
   return output;
-}
-
-bool wxExSetTextCtrlValue(
-  wxTextCtrl* ctrl, int key, const std::list < wxString > & l,
-  std::list < wxString >::const_iterator & it)
-{
-  if (l.empty())
-  {
-    return false;
-  }
-  
-  switch (key)
-  {
-  case WXK_UP:
-    if (it != l.end())
-    {
-      it++;
-    }
-    break;
-  case WXK_DOWN:
-    if (it != l.begin())
-    {
-      it--;
-    }
-    break;
-  default:
-    return false;
-  }
-
-  ctrl->SetValue(it != l.end() ? *it: wxString());
-  ctrl->SetInsertionPointEnd();
-  
-  return true;
 }
 
 template <typename InputIterator>

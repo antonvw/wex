@@ -2,7 +2,7 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wxExGenericDirCtrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stockitem.h> // for wxGetStockLabel
@@ -11,6 +11,7 @@
 #include <wx/extension/menu.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
+#include <wx/extension/tostring.h>
 #include <wx/extension/report/dirctrl.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>

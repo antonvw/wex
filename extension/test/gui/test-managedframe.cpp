@@ -32,7 +32,12 @@ TEST_CASE("wxExManagedFrame", "[stc]")
   REQUIRE(!GetFrame()->ExecExCommand(":n", stco));
   REQUIRE( stco == nullptr);
   
-  GetFrame()->GetExCommand(vi, "/");
+  REQUIRE(!GetFrame()->GetExCommand(vi, ""));
+  REQUIRE(!GetFrame()->GetExCommand(vi, "x"));
+  REQUIRE(!GetFrame()->GetExCommand(vi, "xx"));
+  REQUIRE( GetFrame()->GetExCommand(vi, "/"));
+  REQUIRE( GetFrame()->GetExCommand(vi, "?"));
+  REQUIRE( GetFrame()->GetExCommand(vi, "="));
   
   GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR);
   GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR_FOCUS_STC);
@@ -85,8 +90,10 @@ TEST_CASE("wxExManagedFrame", "[stc]")
   GetFrame()->AppendPanes(menu);
 
   for (auto id : std::vector<int> {
-    wxID_PREFERENCES, ID_FIND_FIRST, 
-    ID_VIEW_LOWEST + 1, ID_VIEW_LOWEST + 2}) 
+    wxID_PREFERENCES, 
+    ID_FIND_FIRST, ID_FIND_LAST,
+    ID_CLEAR_FILES, ID_CLEAR_FINDS,
+    ID_VIEW_LOWEST + 1, ID_VIEW_LOWEST + 2, ID_VIEW_LOWEST + 3, ID_VIEW_LOWEST + 4}) 
   {
     wxPostEvent(GetFrame(), wxCommandEvent(wxEVT_MENU, id));
   }

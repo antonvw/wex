@@ -13,35 +13,18 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
 
-#define SET_STRING( ACTION, STRINGS, VALUE, CONFIG)           \
-  wxFindReplaceData::Set##ACTION##String(VALUE);              \
-  STRINGS.remove(VALUE);                                      \
-  STRINGS.push_front(VALUE);                                  \
-  wxExListToConfig(STRINGS, CONFIG);
-
-#define SET_STRINGS( ACTION, STRINGS, VALUE, CONFIG)          \
-  STRINGS = VALUE;                                            \
-  if (!STRINGS.empty())                                       \
-  {                                                           \
-    wxFindReplaceData::Set##ACTION##String(STRINGS.front());  \
-  }                                                           \
-  else                                                        \
-  {                                                           \
-    wxFindReplaceData::Set##ACTION##String(wxEmptyString);    \
-  }                                                           \
-  wxExListToConfig(STRINGS, CONFIG);
-
 wxExFindReplaceData* wxExFindReplaceData::m_Self = nullptr;
 
 wxExFindReplaceData::wxExFindReplaceData()
   : wxFindReplaceData()
-  , m_UseRegEx(false)
   , m_TextFindWhat(_("Find what"))
   , m_TextMatchCase(_("Match case"))
   , m_TextMatchWholeWord(_("Match whole word"))
   , m_TextRegEx(_("Regular expression"))
   , m_TextReplaceWith(_("Replace with"))
   , m_TextSearchDown(_("Search down"))
+  , m_FindStrings(m_TextFindWhat)
+  , m_ReplaceStrings(m_TextReplaceWith)
 {
   int flags = 0;
   flags |= wxFR_DOWN *      (wxConfigBase::Get()->ReadBool(m_TextSearchDown, true));
@@ -58,9 +41,6 @@ wxExFindReplaceData::wxExFindReplaceData()
 
 wxExFindReplaceData::~wxExFindReplaceData()
 {
-  wxExListToConfig(m_FindStrings, m_TextFindWhat);
-  wxExListToConfig(m_ReplaceStrings, m_TextReplaceWith);
-
   wxConfigBase::Get()->Write(m_TextMatchCase, MatchCase());
   wxConfigBase::Get()->Write(m_TextMatchWholeWord, MatchWord());
   wxConfigBase::Get()->Write(m_TextRegEx, m_UseRegEx);
@@ -106,25 +86,16 @@ wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
 
 void wxExFindReplaceData::SetFindString(const wxString& value)
 {
-  if (value.empty())
-  {
-    return;
-  }
-  
-  SET_STRING( Find, m_FindStrings, value, m_TextFindWhat);
-  
+  if (!m_FindStrings.Set(value)) return;
+  wxFindReplaceData::SetFindString(value);
   SetUseRegEx(m_UseRegEx);
-  
-  m_FindsIterator = m_FindStrings.begin();
 }
 
 void wxExFindReplaceData::SetFindStrings(
-  const std::list < wxString > & value)
+  const std::list < wxString > & values)
 {
-  SET_STRINGS( Find, m_FindStrings, value, m_TextFindWhat);
-  
-  m_FindsIterator = m_FindStrings.begin();
-
+  m_FindStrings.Set(values);
+  wxFindReplaceData::SetFindString(m_FindStrings.Get());
   SetUseRegEx(m_UseRegEx);
 }
 
@@ -154,13 +125,15 @@ void wxExFindReplaceData::SetMatchWord(bool value)
 
 void wxExFindReplaceData::SetReplaceString(const wxString& value)
 {
-  SET_STRING( Replace, m_ReplaceStrings, value, m_TextReplaceWith);
+  m_ReplaceStrings.Set(value);
+  wxFindReplaceData::SetReplaceString(value);
 }
 
 void wxExFindReplaceData::SetReplaceStrings(
   const std::list < wxString > & value)
 {
-  SET_STRINGS( Replace, m_ReplaceStrings, value, m_TextReplaceWith);
+  m_ReplaceStrings.Set(value);
+  wxFindReplaceData::SetReplaceString(m_ReplaceStrings.Get());
 }
 
 void wxExFindReplaceData::SetUseRegEx(bool value) 
@@ -184,27 +157,4 @@ void wxExFindReplaceData::SetUseRegEx(bool value)
     m_UseRegEx = false;
     wxLogStatus("regex error: %s %s", e.what(), GetFindString().ToStdString());
   }
-}
-
-wxExFindTextCtrl::wxExFindTextCtrl(
-  wxWindow* parent,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size)
-  : wxTextCtrl(parent, 
-      id,
-      wxExFindReplaceData::Get()->GetFindString(), 
-      pos, size, wxTE_PROCESS_ENTER)
-{
-  Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
-    if (!wxExSetTextCtrlValue(this, 
-      event.GetKeyCode(), 
-      wxExFindReplaceData::Get()->m_FindStrings, 
-      wxExFindReplaceData::Get()->m_FindsIterator))
-    {
-      event.Skip();
-    }});
-  
-  Bind(wxEVT_TEXT_ENTER, [=](wxCommandEvent& event) {
-    wxExFindReplaceData::Get()->SetFindString(GetValue());});
 }

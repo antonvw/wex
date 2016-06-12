@@ -25,15 +25,18 @@
 
 #if wxUSE_GUI
 
-// Support class.
-// Offers a find text ctrl that allows you to find text
-// on a current Grid, ListView or STC on an wxExFrame.
-class FindTextCtrl : public wxExFindTextCtrl
+/// Support class.
+/// Offers a find text ctrl that allows you to find text
+/// on a current Grid, ListView or STC on an wxExFrame.
+/// Pressing key up and down browses through values from
+/// wxExFindReplaceData, and pressing enter sets value
+/// in wxExFindReplaceData.
+class wxExFindTextCtrl : public wxTextCtrl
 {
 public:
   /// Constructor. Fills the text ctrl with value 
   /// from FindReplace from config.
-  FindTextCtrl(
+  wxExFindTextCtrl(
     wxWindow* parent,
     wxExFrame* frame,
     wxWindowID id = wxID_ANY,
@@ -179,7 +182,7 @@ wxExFindToolBar::wxExFindToolBar(
   const wxWindowID ID_MATCH_CASE = NewControlId();
   const wxWindowID ID_REGULAR_EXPRESSION = NewControlId();
 
-  FindTextCtrl* findCtrl = new FindTextCtrl(this, GetFrame());
+  wxExFindTextCtrl* findCtrl = new wxExFindTextCtrl(this, GetFrame());
   wxCheckBox* matchCase = new wxCheckBox(this, 
     ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
   wxCheckBox* matchWholeWord = new wxCheckBox(this, 
@@ -253,7 +256,7 @@ void wxExOptionsToolBar::AddControls(bool realize)
   
   // 0   1      2     3       4        5
   // id, label, name, config, tooltip, default
-  for (auto it : std::vector<std::tuple<int, wxString, wxString, wxString, wxString, bool>> {
+  for (const auto& it : std::vector<std::tuple<int, wxString, wxString, wxString, wxString, bool>> {
     std::make_tuple(ID_VIEW_PROCESS, _("Process"), "PROCESS", "ViewProcess", _("View process"), false),
     std::make_tuple(NewControlId(), "Hex", "HEX", "HexMode", _("Open in hex mode"), false),
     std::make_tuple(NewControlId(), "Sync", "SYNC", "AllowSync", _("Synchronize modified files"), true)})
@@ -286,7 +289,7 @@ void wxExOptionsToolBar::AddControls(bool realize)
 
 bool wxExOptionsToolBar::Update(const wxString& name, bool show)
 {
-  for (auto it : m_CheckBoxes)
+  for (auto& it : m_CheckBoxes)
   {
     if (it->GetName() == name)
     {
@@ -300,13 +303,16 @@ bool wxExOptionsToolBar::Update(const wxString& name, bool show)
 
 // Implementation of support class.
 
-FindTextCtrl::FindTextCtrl(
+wxExFindTextCtrl::wxExFindTextCtrl(
   wxWindow* parent,
   wxExFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
-  : wxExFindTextCtrl(parent, id, pos, size)
+  : wxTextCtrl(parent, 
+      id,
+      wxExFindReplaceData::Get()->GetFindString(), 
+      pos, size, wxTE_PROCESS_ENTER)
   , m_Frame(frame)
 {
   const int accels = 1;
@@ -314,6 +320,12 @@ FindTextCtrl::FindTextCtrl(
   entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
   wxAcceleratorTable accel(accels, entries);
   SetAcceleratorTable(accel);
+  
+  Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
+    if (!wxExFindReplaceData::Get()->m_FindStrings.Set(event.GetKeyCode(), this))
+    {
+      event.Skip();
+    }});
   
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
     wxExSTC* stc = m_Frame->GetSTC();
@@ -331,11 +343,12 @@ FindTextCtrl::FindTextCtrl(
     event.Skip();
     if (!GetValue().empty())
     {
+      wxExFindReplaceData::Get()->SetFindString(GetValue());
       Find();
     }});
 }
 
-void FindTextCtrl::Find(bool find_next, bool restore_position)
+void wxExFindTextCtrl::Find(bool find_next, bool restore_position)
 {
   // We cannot use events here, as OnFindDialog in stc uses frd data,
   // whereas we need the GetValue here.
