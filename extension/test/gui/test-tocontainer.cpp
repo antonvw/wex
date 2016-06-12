@@ -27,15 +27,19 @@ TEST_CASE("wxExToContainer")
   a.Add("b");
   a.Add("c");
   a.Add("d");
+#ifdef __WXGTK__
   wxFileDialog dlg;
   wxGenericDirCtrl dir;
   REQUIRE( wxExToVectorString(dlg).Get().empty());
   REQUIRE( wxExToVectorString(dir).Get().empty());
+#endif
   REQUIRE( wxExToVectorString(a).Get().size() == 4);
   REQUIRE( wxExToVectorString("test test test").Get().size() == 3);
   
+#ifdef __WXGTK__
   REQUIRE( wxExToListString(dlg).Get().empty());
   REQUIRE( wxExToListString(dir).Get().empty());
+#endif
   REQUIRE( wxExToListString(a).Get().size() == 4);
   REQUIRE( wxExToListString("test test test").Get().size() == 3);
   REQUIRE( wxExToContainer<std::list < wxString >>(cb, 5).Get().size() == 0);
