@@ -29,12 +29,20 @@
 
 const int ID_REGISTER = wxNewId();
 
+enum
+{
+  TYPE_UNKNOWN,
+  TYPE_CALC,
+  TYPE_COMMAND,
+  TYPE_FIND,
+};
+
 // Support class.
 // Offers a text ctrl related to a ex object.
-class wxExTextCtrl: public wxExFindTextCtrl
+class wxExTextCtrl: public wxTextCtrl
 {
 public:
-  /// Constructor. Creates empty control.
+  // Constructor. Creates empty control.
   wxExTextCtrl(
     wxWindow* parent,
     wxExManagedFrame* frame,
@@ -43,19 +51,23 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize);
     
-  /// Destructor.
- ~wxExTextCtrl() {wxExListToConfig(m_Commands, "excommand");};
-    
-  /// Returns ex component.
+  // Returns ex component.
   wxExEx* GetEx() {return m_ex;};
     
-  /// Sets ex component.
-  void SetEx(wxExEx* ex, const wxString& range);
+  // Sets ex component.
+  // Returns false if command not supported.
+  bool SetEx(wxExEx* ex, const std::string& command);
 private:  
-  bool IsCalc() const {return m_Prefix->GetLabel() == "=";};
-  bool IsCommand() const {return m_Prefix->GetLabel() == ":";};
-  bool IsFind() const {return m_Prefix->GetLabel() == "/" || m_Prefix->GetLabel() == "?";};
-  
+  int GetType() const {return GetType(m_Prefix->GetLabel().ToStdString());};
+  int GetType(const std::string& command) const {
+    if (command.empty()) return TYPE_UNKNOWN;
+    switch (command[0])
+    {
+      case ':': return TYPE_COMMAND; break;
+      case '=': return TYPE_CALC; break;
+      case '/':
+      case '?': return TYPE_FIND; break;
+      default: return TYPE_UNKNOWN;};};
   wxExManagedFrame* m_Frame;
   wxExEx* m_ex = nullptr;
   wxStaticText* m_Prefix;
@@ -63,10 +75,9 @@ private:
   bool m_ModeVisual = false;
   bool m_UserInput = false;
   
+  wxExTextCtrlInput m_Calcs;
+  wxExTextCtrlInput m_Commands;
   wxString m_Command;
-  
-  std::list < wxString > m_Commands = wxExListFromConfig("excommand");;
-  std::list < wxString >::const_iterator m_CommandsIterator;
 };
 
 wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
@@ -76,17 +87,18 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   long style)
   : wxExFrame(parent, id, title, style)
   , m_FileHistory(maxFiles, wxID_FILE1)
+  , m_FindBar(new wxExFindToolBar(this))
+  , m_OptionsBar(new wxExOptionsToolBar(this))
   , m_ToolBar(new wxExToolBar(this))
   , m_ToggledPanes({
     {{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
     {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
     {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
     {{"PROCESS", _("&Process")}, ID_VIEW_LOWEST + 4}})
-  , m_OptionsBar(new wxExOptionsToolBar(this))
 {
   m_Manager.SetManagedWindow(this);
   AddToolBarPane(m_ToolBar, "TOOLBAR", _("Toolbar"));
-  AddToolBarPane(new wxExFindToolBar(this), "FINDBAR", _("Findbar"));
+  AddToolBarPane(m_FindBar,  "FINDBAR", _("Findbar"));
   AddToolBarPane(m_OptionsBar, "OPTIONSBAR", _("Optionsbar"));
   AddToolBarPane(CreateExPanel(), "VIBAR");
   m_Manager.Update();
@@ -250,10 +262,9 @@ void wxExManagedFrame::DoRecent(
   }
 }
 
-void wxExManagedFrame::GetExCommand(wxExEx* ex, const wxString& command)
+bool wxExManagedFrame::GetExCommand(wxExEx* ex, const std::string& command)
 {
-  m_TextCtrl->SetEx(ex, command);
-  ShowPane("VIBAR");
+  return m_TextCtrl->SetEx(ex, command) && ShowPane("VIBAR");
 }
 
 void wxExManagedFrame::HideExBar(int hide)
@@ -366,10 +377,11 @@ wxExTextCtrl::wxExTextCtrl(
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
-  : wxExFindTextCtrl(parent, id, pos, size)
+  : wxTextCtrl(parent, id, wxEmptyString, pos, size, wxTE_PROCESS_ENTER)
   , m_Frame(frame)
   , m_Prefix(prefix)
-  , m_CommandsIterator(m_Commands.begin())
+  , m_Calcs("excalc")
+  , m_Commands("excommand")
 {
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
     if (event.GetUnicodeKey() != WXK_NONE)
@@ -391,14 +403,16 @@ wxExTextCtrl::wxExTextCtrl(
       break;
 
     case WXK_DOWN:
-    case WXK_UP: 
-      if (IsCommand())
+    case WXK_END:
+    case WXK_HOME:
+    case WXK_PAGEDOWN:
+    case WXK_PAGEUP:
+    case WXK_UP:
+      switch (GetType())
       {
-        wxExSetTextCtrlValue(this, event.GetKeyCode(), m_Commands, m_CommandsIterator);
-      }
-      else if (IsFind())
-      {
-        event.Skip();
+        case TYPE_CALC: m_Calcs.Set(event.GetKeyCode(), this); break;
+        case TYPE_COMMAND: m_Commands.Set(event.GetKeyCode(), this); break;
+        case TYPE_FIND: wxExFindReplaceData::Get()->m_FindStrings.Set(event.GetKeyCode(), this); break;
       }
       break;
       
@@ -465,7 +479,7 @@ wxExTextCtrl::wxExTextCtrl(
   
   Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
     event.Skip();
-    if (m_UserInput && m_ex != nullptr && IsFind())
+    if (m_UserInput && m_ex != nullptr && GetType() == TYPE_FIND)
     {
       m_ex->GetSTC()->PositionRestore();
       m_ex->GetSTC()->FindNext(
@@ -484,19 +498,22 @@ wxExTextCtrl::wxExTextCtrl(
     {
       m_Command = m_Prefix->GetLabel() + GetValue();
     }
-    if (IsFind()) event.Skip(); // to update find string
-    if (m_ex->Command(m_Command.ToStdString(), m_UserInput && IsFind()))
+    if (m_ex->Command(m_Command.ToStdString(), m_UserInput && GetType() == TYPE_FIND))
     {
-      int focus = (IsFind() ? 
+      int focus = (GetType() == TYPE_FIND ? 
         wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC: 
         wxExManagedFrame::HIDE_BAR_FOCUS_STC);
-      if (IsCommand())
+      switch (GetType())
       {
-        if (GetValue() == "n" || GetValue() == "prev") focus = wxExManagedFrame::HIDE_BAR_FORCE;
-        if (GetValue().StartsWith("!")) focus = wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC;
-        m_Commands.remove(GetValue());
-        m_Commands.push_front(GetValue());
-        m_CommandsIterator = m_Commands.begin();
+        case TYPE_CALC: m_Calcs.Set(this); break;
+        case TYPE_COMMAND:
+          if (GetValue() == "n" || GetValue() == "prev") focus = wxExManagedFrame::HIDE_BAR_FORCE;
+          if (GetValue().StartsWith("!")) focus = wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC;
+          m_Commands.Set(this);
+          break;
+        case TYPE_FIND:
+          wxExFindReplaceData::Get()->SetFindString(GetValue());
+          break;
       }
       m_Frame->HideExBar(focus);}});
 
@@ -508,49 +525,41 @@ wxExTextCtrl::wxExTextCtrl(
     }});
 }
 
-void wxExTextCtrl::SetEx(wxExEx* ex, const wxString& command) 
+bool wxExTextCtrl::SetEx(wxExEx* ex, const std::string& command) 
 {
-  m_Prefix->SetLabel(command.Left(1));
-  const wxString range(command.Mid(1));
-  
-  m_Command = m_Prefix->GetLabel();
-  m_ControlR = false;
-  m_ModeVisual = !range.empty();
+  if (command.empty()) return false;
+
   m_UserInput = false;
-  m_ex = ex;
-  
-  SetValue(wxEmptyString);
-  
-  if (IsFind())
+  const wxString range(command.substr(1));
+  m_ModeVisual = !range.empty();
+
+  switch (GetType(command))
   {
-    if (!m_ModeVisual)
-    {
-      SetValue(m_ex->GetSTC()->GetFindString());
-    }
-  }
-  else if (IsCommand())
-  {
-    if (m_Commands.begin() != m_Commands.end())
-    {
-      const wxString current(*m_Commands.begin());
-      
-      if (m_ModeVisual && !current.StartsWith(range))
+    case TYPE_CALC: SetValue(m_Calcs.Get()); break;
+    case TYPE_COMMAND:
+      if (!m_Commands.Get().empty())
       {
-        SetValue(range + current); 
+        SetValue(m_ModeVisual && !m_Commands.Get().StartsWith(range) ? 
+          range + m_Commands.Get(): m_Commands.Get()); 
       }
       else
       {
-        SetValue(current);
+        SetValue(range); 
       }
-    }
-    else
-    {
-      SetValue(range); 
-    }
+      break;
+    case TYPE_FIND: SetValue(!m_ModeVisual ? ex->GetSTC()->GetFindString(): wxString()); break;
+    case TYPE_UNKNOWN: return false;
   }
     
+  m_Prefix->SetLabel(command.substr(0, 1));
+  m_Command = m_Prefix->GetLabel();
+  m_ControlR = false;
+  m_ex = ex;
+
   Show();
   SelectAll();
   SetFocus();
+  
+  return true;
 }
 #endif // wxUSE_GUI

@@ -15,8 +15,6 @@
 
 class wxArrayString;
 class wxFileName;
-class wxGenericDirCtrl;
-class wxTextCtrl;
 class wxXmlNode;
 
 class wxExEx;
@@ -28,32 +26,6 @@ class wxExSTC;
 class wxExStyle;
 class wxExVCSCommand;
 
-/// Converts several objects to a vector string.
-class WXDLLIMPEXP_BASE wxExToVectorString
-{
-public:  
-  /// Constructor, using aray string.
-  wxExToVectorString(const wxArrayString& in);
-  
-  /// Constructor, using file dialog.
-  /// Fills the vector with the full paths of the files chosen.
-  wxExToVectorString(const wxFileDialog& in);
-
-  /// Constructor, using generic dirctrl.
-  /// Fills the vector with the currently-selected directory or filename. 
-  wxExToVectorString(const wxGenericDirCtrl& in);
-  
-  /// Constructor, using string, each word results in a vector element.
-  wxExToVectorString(const wxString& in);
-  
-  /// Returns the vector string.
-  const auto & Get() const {return m_VS;};
-private:
-  void FromArrayString(const wxArrayString& in);
-  
-  std::vector< wxString > m_VS;
-};
-  
 /*! \file */
 
 /// Aligns text.
@@ -106,43 +78,6 @@ bool wxExClipboardAdd(const wxString& text);
 const wxString wxExClipboardGet();
 
 #if wxUSE_GUI
-/// Adds entries from a combobox to a container.
-template <typename T> 
-const T wxExComboBoxAs(const wxComboBox* cb, size_t max_items = UINT_MAX)
-{
-  T a;
-  
-  // wxArrayString has no emplace_back.
-  a.push_back(cb->GetValue());
-
-  switch (cb->FindString(cb->GetValue(), true)) // case sensitive
-  {
-    case 0: 
-      // No change necessary, the string is already present as the first one.
-      for (size_t i = 1; i < cb->GetCount() && i < max_items; i++)
-        a.push_back(cb->GetString(i));
-      break;
-
-    case wxNOT_FOUND:
-      // Add the string, as it is not in the combobox, to the text,
-      // simply by appending all combobox items.
-      for (size_t i = 0; i < cb->GetCount() && i < max_items; i++)
-        a.push_back(cb->GetString(i));
-    break;
-
-    default:
-      // Reorder. The new first element already present, just add all others.
-      for (size_t i = 0; i < cb->GetCount() && i < max_items; i++)
-      {
-        const wxString cb_element = cb->GetString(i);
-        if (cb_element != cb->GetValue())
-          a.push_back(cb_element);
-      }
-  }
-  
-  return a;
-}
-
 /// Adds entries to a combobox from a container.
 template <typename T> 
 void wxExComboBoxAs(wxComboBox* cb, const T& t)
@@ -164,11 +99,6 @@ void wxExComboBoxAs(wxComboBox* cb, const T& t)
 void wxExComboBoxFromList(
   wxComboBox* cb,
   const std::list < wxString > & text);
-  
-/// Adds entries from a combobox to a list with strings.
-const std::list < wxString > wxExComboBoxToList(
-  const wxComboBox* cb,
-  size_t max_items = 25);
 #endif
   
 /// Compares the files, using wxExecute on comparator set in the config.
@@ -334,21 +264,6 @@ const wxString wxExPrintHeader(const wxFileName& filename);
 /// Returns quotes around the text.
 const wxString wxExQuoted(const wxString& text);
 
-#if wxUSE_GUI
-/// Sets a text ctrl value from a list of values 
-/// according to key movement.
-/// Returns true if key was supported and l not empty.
-bool wxExSetTextCtrlValue(
-  /// text ctrl
-  wxTextCtrl* ctrl,
-  /// UP or DOWN key
-  int key,
-  /// the list
-  const std::list < wxString > & l,
-  /// iterator on the list
-  std::list < wxString >::const_iterator & it);
-#endif
-  
 /// Executes all process between backquotes in command, 
 /// and changes command with replaced match with output from process.
 /// Returns false if process could not be executed.

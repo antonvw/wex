@@ -20,6 +20,7 @@
 
 class wxPanel;
 class wxExEx;
+class wxExFindToolBar;
 class wxExTextCtrl;
 class wxExOptionsToolBar;
 class wxExToolBar;
@@ -78,18 +79,20 @@ public:
     wxExSTC* & stc) {return false;};
 
   /// Returns a command line ex command.
-  /// Default shows the ex bar, sets the label and 
-  /// sets focus to it, allowing
+  /// Shows the ex bar, sets the label and sets focus to it, allowing
   /// you to enter a command.
-  /// You can override it to e.g. hide other panels.
-  virtual void GetExCommand(
+  /// Returns false if label is not supported.
+  bool GetExCommand(
     /// the ex on which command is to be done
     wxExEx* ex, 
-    /// label for the ex bar (like / or ? or :)
-    const wxString& label);
+    /// label for the ex bar (/, ?, :, =)
+    const std::string& label);
   
   /// Returns file history.
   auto & GetFileHistory() {return m_FileHistory;};
+  
+  /// Returns the find toolbar.
+  auto * GetFindToolBar() {return m_FindBar;};
   
   /// Returns the manager.
   auto & GetManager() {return m_Manager;};
@@ -160,6 +163,7 @@ private:
   
   wxAuiManager m_Manager;
   wxExFileHistory m_FileHistory;
+  wxExFindToolBar* m_FindBar;
   wxExOptionsToolBar* m_OptionsBar;
   wxExTextCtrl* m_TextCtrl;
   wxExToolBar* m_ToolBar;

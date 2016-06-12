@@ -19,17 +19,6 @@ TEST_CASE("wxExFrd")
   
   REQUIRE(frd != nullptr);
   
-  wxExFindTextCtrl* tc = new wxExFindTextCtrl(GetFrame());
-  AddPane(GetFrame(), tc);
-  
-  wxKeyEvent event(wxEVT_CHAR);
-  
-  for (auto id : std::vector<int> {WXK_UP, WXK_DOWN, WXK_NONE}) 
-  {
-    event.m_uniChar = id;
-    wxPostEvent(tc, event);
-  }
-  
   frd->SetMatchCase(true);
   REQUIRE( frd->MatchCase());
   frd->SetMatchWord(true);

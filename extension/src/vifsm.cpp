@@ -136,7 +136,7 @@ bool wxExViFSM::Transition(const std::string& command)
   {
     case wxExVi::MODE_INSERT:
       {
-      auto it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
+      const auto& it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
         [command](auto const& e) {return e.first == command[0];});
       if (it != m_InsertCommands.end() && it->second != nullptr)
         it->second();

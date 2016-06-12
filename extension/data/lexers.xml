@@ -3,7 +3,7 @@
 <!--
 Name:      lexers.xml
 Purpose:   Lexers configuration for wxExtension.
-           See scintilla 3.6.3 (www.scintilla.org).
+           See scintilla 3.6.6 (www.scintilla.org).
 Author:    Anton van Wezenbeek
 Copyright: (c) 2016, Anton van Wezenbeek
 -->
@@ -967,6 +967,23 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="identifier"/>
     </def>
     
+    <def name = "JSON">
+      <def no ="default"/>
+      <def no ="number"/>
+      <def no ="string"/>
+      <def no ="stringeol"/>
+      <def no ="propertyname"/>
+      <def no ="escapesequence"/>
+      <def no ="linecomment"/>
+      <def no ="blockcomment"/>
+      <def no ="operator"/>
+      <def no ="uri"/>
+      <def no ="compactiri"/>
+      <def no ="keyword"/>
+      <def no ="ldkeyword"/>
+      <def no ="error"/>
+    </def>
+    
     <def name = "kix">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1613,6 +1630,22 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no = "parameter"/>
       <def no = "operator"/>
     </def>
+
+    <def name = "rfw">
+      <def no ="default"/>
+      <def no ="error"/>
+      <def no ="commentline"/>
+      <def no ="number"/>
+      <def no ="keyword1"/>
+      <def no ="string"/>
+      <def no ="character"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="scalar"/>
+      <def no ="param"/>
+      <def no ="backticks"/>
+      <def no ="testcase"/>
+    </def>
     
     <def name = "ruby">
       <def no ="default"/>
@@ -2242,9 +2275,10 @@ Copyright: (c) 2016, Anton van Wezenbeek
     <set name="cpp-stl">
       adjacent_find array at back back_insert_iterator begin 
       binary_search
-      bind1st bind2nd bitset capacity clear const_iterator copy 
-      copy_backward
-      count count_if deque divides emplace_back empty end equal equal_range 
+      bind1st bind2nd bitset 
+      capacity cbegin cend clear const_iterator copy 
+      copy_backward count count_if crbegin crend
+      deque divides emplace_back empty end equal equal_range 
       equal_to
       erase fill fill_n find find_end find_first_of find_if 
       for_each
@@ -2715,7 +2749,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
   <lexer display="javascript" name="cpp" extensions="*.js">
     <keywords set="javascript"/>
   </lexer>
-  <lexer display="json" name="cpp" extensions="*.json"/>
+  <lexer name="json" extensions="*.json"/>
   <lexer name="kix"/>
   <lexer name="kvirc"/>
   <lexer name="latex" extensions="*.tex">
@@ -2905,11 +2939,23 @@ Copyright: (c) 2016, Anton van Wezenbeek
   <lexer name="r"/>
   <lexer name="rebol"/>
   <lexer name="registry"/>
-  <lexer display="rfw" name="bash" extensions="TCS*.txt;*.robot"> 
+  <lexer name="rfw" extensions="TCS*.txt;*.robot;__init__.*"> 
+    <styles>
+      <style no="testcase"> fore:sky blue </style>
+    </styles>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+      <property name="fold.pipes"> 1 </property>
+    </properties>
     <keywords> 
-      Library Resource Variables Documentation Metadata Setup Suite Teardown 
-      Precondition Postcondition Force Tags
-      Default Test Template Timeout
+      *Keyword *Keywords *Keyword* *Keywords* 
+      *Setting *Settings *Setting* *Settings*
+      *Variable *Variables *Variable* *Variables*
+      [Arguments] [Documentation] [Tags] [Teardown]
+      Default Force Library Metadata Postcondition Precondition Resource 
+      Template Timeout 
     </keywords>
   </lexer>
   <lexer name="ruby" extensions="*.rb">

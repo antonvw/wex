@@ -2,7 +2,7 @@
 // Name:      configitem.cpp
 // Purpose:   Implementation of wxExItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -15,6 +15,7 @@
 #include <wx/window.h>
 #include <wx/extension/item.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/tostring.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -64,20 +65,20 @@ bool wxExItem::ToConfig(bool save) const
   
   switch (GetType())
   {
-    case ITEM_CHECKBOX:         PERSISTENT(ReadBool, bool, false); break;
-    case ITEM_CHECKLISTBOX_BIT: PERSISTENT(ReadLong, long, 0); break;
-    case ITEM_COLOURPICKERWIDGET:           PERSISTENT(ReadObject, wxColour, *wxWHITE); break;
-    case ITEM_DIRPICKERCTRL:    PERSISTENT(Read, wxString, GetLabel()); break;
-    case ITEM_TEXTCTRL_FLOAT:            PERSISTENT(ReadDouble, double, 0); break;
-    case ITEM_FONTPICKERCTRL:   PERSISTENT(ReadObject, wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
-    case ITEM_TEXTCTRL_INT:              PERSISTENT(ReadLong, long, 0); break;
-    case ITEM_LISTVIEW:         PERSISTENT(Read, wxString, ""); break;
-    case ITEM_SLIDER:           PERSISTENT(ReadLong, int, ((wxSlider* )GetWindow())->GetMin()); break;
-    case ITEM_SPINCTRL:         PERSISTENT(ReadLong, int, ((wxSpinCtrl* )GetWindow())->GetMin()); break;
-    case ITEM_SPINCTRLDOUBLE:  PERSISTENT(ReadDouble, double, ((wxSpinCtrlDouble* )GetWindow())->GetMin()); break;
-    case ITEM_STC:              PERSISTENT(Read, wxString, ""); break;
+    case ITEM_CHECKBOX:           PERSISTENT(ReadBool, bool, false); break;
+    case ITEM_CHECKLISTBOX_BIT:   PERSISTENT(ReadLong, long, 0); break;
+    case ITEM_COLOURPICKERWIDGET: PERSISTENT(ReadObject, wxColour, *wxWHITE); break;
+    case ITEM_DIRPICKERCTRL:      PERSISTENT(Read, wxString, GetLabel()); break;
+    case ITEM_TEXTCTRL_FLOAT:     PERSISTENT(ReadDouble, double, 0); break;
+    case ITEM_FONTPICKERCTRL:     PERSISTENT(ReadObject, wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
+    case ITEM_TEXTCTRL_INT:       PERSISTENT(ReadLong, long, 0); break;
+    case ITEM_LISTVIEW:           PERSISTENT(Read, wxString, ""); break;
+    case ITEM_SLIDER:             PERSISTENT(ReadLong, int, ((wxSlider* )GetWindow())->GetMin()); break;
+    case ITEM_SPINCTRL:           PERSISTENT(ReadLong, int, ((wxSpinCtrl* )GetWindow())->GetMin()); break;
+    case ITEM_SPINCTRLDOUBLE:     PERSISTENT(ReadDouble, double, ((wxSpinCtrlDouble* )GetWindow())->GetMin()); break;
+    case ITEM_STC:                PERSISTENT(Read, wxString, ""); break;
     case ITEM_TEXTCTRL:           PERSISTENT(Read, wxString, ""); break;
-    case ITEM_TOGGLEBUTTON:     PERSISTENT(ReadBool, bool, false); break;
+    case ITEM_TOGGLEBUTTON:       PERSISTENT(ReadBool, bool, false); break;
 
     case ITEM_CHECKLISTBOX_BOOL:
       {
@@ -103,7 +104,7 @@ bool wxExItem::ToConfig(bool save) const
 
       if (save)
       {
-        const auto& l = wxExComboBoxToList(cb, m_MaxItems);
+        const auto l = wxExToListString(cb, m_MaxItems).Get();
 
         if (GetLabel() == wxExFindReplaceData::Get()->GetTextFindWhat())
         {
@@ -194,7 +195,7 @@ wxExConfigDefaults::wxExConfigDefaults(
   {
     m_Config->SetRecordDefaults(true);
     
-    for (auto it : items)
+    for (const auto& it : items)
     {
       switch (std::get<1>(it))
       {

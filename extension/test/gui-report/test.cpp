@@ -2,13 +2,14 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
+#include <wx/dir.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/tostring.h>
 #include <wx/extension/tool.h>
-#include <wx/extension/util.h>
 #include "test.h"
 
 TEST_CASE("wxEx")

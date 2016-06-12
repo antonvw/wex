@@ -22,6 +22,7 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/tostring.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>

@@ -2,7 +2,7 @@
 // Name:      test-toolbar.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -29,6 +29,16 @@ TEST_CASE("wxExToolBar")
   GetFrame()->GetManager().GetPane("OPTIONSBAR").Show();
   GetFrame()->GetManager().Update();
   
+  // Send events to the find toolbar.
+  wxKeyEvent event(wxEVT_CHAR);
+  
+  for (auto key : std::vector<int> {WXK_UP, WXK_DOWN, WXK_HOME, WXK_END,
+    WXK_PAGEUP, WXK_PAGEDOWN}) 
+  {
+    event.m_keyCode = key;
+    wxPostEvent(GetFrame()->GetFindToolBar(), event);
+  }
+
   GetFrame()->GetManager().GetPane("FINDBAR").Hide();
   GetFrame()->GetManager().GetPane("OPTIONSBAR").Hide();
   GetFrame()->GetManager().Update();

@@ -21,20 +21,6 @@
 #include <wx/extension/vimacros.h>
 #include "test.h"
 
-TEST_CASE("wxExToVectorString")
-{
-  wxArrayString a;
-  a.Add("x");
-  a.Add("b");
-  a.Add("c");
-  a.Add("d");
-  wxExToVectorString v1(a);
-  REQUIRE( v1.Get().size() == 4);
-  
-  wxExToVectorString v3("test test test");
-  REQUIRE( v3.Get().size() == 3);
-}
-
 TEST_CASE("wxEx", "[stc][vi][!throws]")
 {
   std::list < wxString > l{"x","y","z"};
@@ -103,8 +89,6 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
     AddPane(GetFrame(), cb);
     wxExComboBoxAs<const std::list < wxString >>(cb, l);
-    size_t max = 5;
-    const std::list < wxString > p(wxExComboBoxAs<std::list < wxString >>(cb, max));
   }
   
   SECTION("wxExComboBoxFromList")
@@ -113,15 +97,6 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     AddPane(GetFrame(), cb);
     wxExComboBoxFromList(cb, l);
     REQUIRE( cb->GetCount() == 3);
-  }
-  
-  SECTION("wxExComboBoxToList")
-  {
-    wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
-    AddPane(GetFrame(), cb);
-    wxExComboBoxFromList(cb, l);
-    l = wxExComboBoxToList(cb);
-    REQUIRE( l.size() == 3);
   }
   
   SECTION("wxExCompareFile")
@@ -313,19 +288,6 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     REQUIRE( wxExQuoted("test") == "'test'");
     REQUIRE( wxExQuoted("%d") == "'%d'");
     REQUIRE( wxExQuoted(wxExSkipWhiteSpace(wxString(" %d "))) == "'%d'");
-  }
-  
-  SECTION("wxExSetTextCtrlValue")
-  {
-    wxTextCtrl* tc = new wxTextCtrl(GetFrame(), wxID_ANY, "this is some text");
-    AddPane(GetFrame(), tc);
-    
-    const std::list < wxString > l {"one", "two", "three"};
-    std::list < wxString >::const_iterator it = l.begin();
-    
-    REQUIRE(!wxExSetTextCtrlValue(tc, 0, l, it));
-    REQUIRE( wxExSetTextCtrlValue(tc, WXK_UP, l, it));
-    REQUIRE( wxExSetTextCtrlValue(tc, WXK_DOWN, l, it));
   }
   
   SECTION("wxExMarkerAndRegisterExpansion")

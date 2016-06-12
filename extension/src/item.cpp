@@ -39,6 +39,7 @@
 #include <wx/extension/managedframe.h>
 #include <wx/extension/notebook.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/tocontainer.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -66,10 +67,7 @@ wxExItem::wxExItem(wxExItemType type, long style,
   , m_MajorDimension(major_dimension)
   , m_UserWindowCreate(create)
   , m_Window(window)
-  , m_IsRowGrowable(false)
-  , m_Page()
   , m_SizerFlags(wxSizerFlags().Border().Left())
-  , m_MaxItems(25)
   , m_UserWindowToConfig(config)
   , m_ImageList(imageList)
 {
@@ -205,7 +203,7 @@ void wxExItem::AddItems(
     booksizer->AddGrowableCol(i);
   }
   
-  for (auto & item: page.second)
+  for (auto& item: page.second)
   {
     // If this item has same type as previous type use previous sizer,
     // otherwise use no sizer (Layout will create a new one).
@@ -285,7 +283,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       {
       wxArrayString arraychoices;
 
-      for (const auto & it : m_Initial.As<std::map<long, const wxString>>())
+      for (const auto& it : m_Initial.As<std::map<long, const wxString>>())
       {
         arraychoices.Add(it.second);
       }
@@ -556,18 +554,18 @@ const wxAny wxExItem::GetValue() const
   {
     case ITEM_CHECKBOX: any = ((wxCheckBox* )m_Window)->GetValue(); break;
     case ITEM_COLOURPICKERWIDGET: any = ((wxColourPickerWidget* )m_Window)->GetColour(); break;
-    case ITEM_COMBOBOX: any = wxExComboBoxAs<wxArrayString>((wxComboBox*)m_Window); break;
+    case ITEM_COMBOBOX: any = wxExToContainer<wxArrayString>((wxComboBox*)m_Window).Get(); break;
     case ITEM_DIRPICKERCTRL: any = ((wxDirPickerCtrl* )m_Window)->GetPath(); break;
     case ITEM_FILEPICKERCTRL: any = ((wxFilePickerCtrl* )m_Window)->GetPath(); break;
-    case ITEM_TEXTCTRL_FLOAT: any = atof(((wxTextCtrl* )m_Window)->GetValue()); break;
     case ITEM_FONTPICKERCTRL: any = ((wxFontPickerCtrl* )m_Window)->GetSelectedFont(); break;
-    case ITEM_TEXTCTRL_INT: any = atoi(((wxTextCtrl* )m_Window)->GetValue()); break;
     case ITEM_LISTVIEW: any = ((wxExListView* )m_Window)->ItemToText(-1); break;
     case ITEM_SLIDER: any = ((wxSlider* )m_Window)->GetValue(); break;
     case ITEM_SPINCTRL: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
     case ITEM_SPINCTRLDOUBLE: any = ((wxSpinCtrlDouble* )m_Window)->GetValue(); break;
     case ITEM_STC: any = ((wxStyledTextCtrl* )m_Window)->GetValue(); break;
     case ITEM_TEXTCTRL: any = ((wxTextCtrl* )m_Window)->GetValue(); break;
+    case ITEM_TEXTCTRL_FLOAT: any = atof(((wxTextCtrl* )m_Window)->GetValue()); break;
+    case ITEM_TEXTCTRL_INT: any = atoi(((wxTextCtrl* )m_Window)->GetValue()); break;
     case ITEM_TOGGLEBUTTON: any = ((wxToggleButton* )m_Window)->GetValue(); break;
     
     case ITEM_CHECKLISTBOX_BIT:
@@ -627,7 +625,7 @@ wxFlexGridSizer* wxExItem::Layout(
         return_sizer = Add(sizer, fgz);
         
         // Add all pages and recursive layout the subitems.
-        for (auto & page : m_Initial.As<ItemsNotebook>())
+        for (auto& page : m_Initial.As<ItemsNotebook>())
         {
           AddItems(page, readonly);
         }
@@ -640,12 +638,6 @@ wxFlexGridSizer* wxExItem::Layout(
             bookctrl->SetSelection(0);
           }
         }
-      
-        /* TODO: next causes inifinite recursion, use different sizers for each page.
-        if (bookctrl->GetCurrentPage() != nullptr)
-        {
-          bookctrl->GetCurrentPage()->SetSizer(sizer);
-        } */      
       }
       else 
       {

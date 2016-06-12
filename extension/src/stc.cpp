@@ -2050,7 +2050,13 @@ void wxExSTC::SetSearchFlags(int flags)
     flags = 0;
     
     wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-    if (frd->UseRegEx()) flags |= wxSTC_FIND_REGEXP;
+    if (frd->UseRegEx()) 
+    {
+      flags |= wxSTC_FIND_REGEXP;
+#if wxCHECK_VERSION(3,1,1)
+      flags |= wxSTC_FIND_CXX11REGEX;
+#endif
+    }
     if (frd->MatchWord()) flags |= wxSTC_FIND_WHOLEWORD;
     if (frd->MatchCase()) flags |= wxSTC_FIND_MATCHCASE;
   }

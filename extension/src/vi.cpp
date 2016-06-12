@@ -266,12 +266,12 @@ wxExVi::wxExVi(wxExSTC* stc)
           GetSearchFlags(),
           m_SearchForward)) return false;
         wxExFindReplaceData::Get()->SetFindString(command.substr(1));
+        return true;
       }
       else
       {
-        GetFrame()->GetExCommand(this, command + (ModeVisual() ? "'<,'>": ""));
-      }
-      return true;}},
+        return GetFrame()->GetExCommand(this, command + (ModeVisual() ? "'<,'>": ""));
+      }}},
     {"\'", [&](const std::string& command){
       if (OneLetterAfter("'", command)) 
       {
@@ -774,7 +774,7 @@ void wxExVi::CommandReg(const char reg)
   {
     case 0: break;
     // calc register
-    case '=': GetFrame()->GetExCommand(this, reg); break;
+    case '=': GetFrame()->GetExCommand(this, std::string(1, reg)); break;
     // clipboard register
     case '*': Put(true); break;
     // filename register
@@ -1059,8 +1059,8 @@ bool wxExVi::MotionCommand(int type, std::string& command, bool is_handled)
   FilterCount(command, "([cdy])");
   
   const char c = (type == MOTION_NAVIGATE ? command[0]: command[1]);
-  const auto it = std::find_if(m_MotionCommands.begin(), m_MotionCommands.end(), 
-    [c](auto const& e) {for (auto r : e.first) if (r == c) return true; return false;});
+  const auto& it = std::find_if(m_MotionCommands.begin(), m_MotionCommands.end(), 
+    [c](auto const& e) {for (const auto& r : e.first) if (r == c) return true; return false;});
   
   if (it == m_MotionCommands.end())
   {
@@ -1270,10 +1270,10 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 
 bool wxExVi::OtherCommand(std::string& command) const
 {
-  const auto it = std::find_if(m_OtherCommands.begin(), m_OtherCommands.end(), 
+  const auto& it = std::find_if(m_OtherCommands.begin(), m_OtherCommands.end(), 
     [command](auto const& e) {
     if (!isalpha(e.first.front())) {
-      for (auto r : e.first) if (r == command.front()) return true; return false;}
+      for (const auto& r : e.first) if (r == command.front()) return true; return false;}
     else
       return e.first == command.substr(0, e.first.size());});
   

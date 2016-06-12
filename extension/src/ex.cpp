@@ -99,7 +99,12 @@ wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
   , m_SearchFlags(wxExFindReplaceData::Get()->MatchCase() ? 
-      wxSTC_FIND_MATCHCASE | wxSTC_FIND_REGEXP: wxSTC_FIND_REGEXP)
+      wxSTC_FIND_MATCHCASE | wxSTC_FIND_REGEXP: 
+      wxSTC_FIND_REGEXP
+#if wxCHECK_VERSION(3,1,1)
+      | wxSTC_FIND_CXX11REGEX
+#endif
+      )
   , m_Commands {
     {":ab", [&](const std::string& command) {
       wxStringTokenizer tkz(command, " ");
@@ -192,8 +197,20 @@ wxExEx::wxExEx(wxExSTC* stc)
               m_STC->ShowLineNumbers(on);
               wxConfigBase::Get()->Write(_("Line numbers"), on);}}},
             {{"re", "Regular Expression"}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){
-              if (on) m_SearchFlags |= wxSTC_FIND_REGEXP;
-              else    m_SearchFlags &= ~wxSTC_FIND_REGEXP;
+              if (on) 
+              {
+                m_SearchFlags |= wxSTC_FIND_REGEXP;
+#if wxCHECK_VERSION(3,1,1)
+                m_SearchFlags |= wxSTC_FIND_CXX11REGEX;
+#endif
+              }
+              else    
+              {
+                m_SearchFlags &= ~wxSTC_FIND_REGEXP;
+#if wxCHECK_VERSION(3,1,1)
+                m_SearchFlags &= ~wxSTC_FIND_CXX11REGEX;
+#endif
+              }
               wxExFindReplaceData::Get()->SetUseRegEx(on);}}},
             {{"sm", "Show Mode"}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){
               ((wxExStatusBar *)m_Frame->GetStatusBar())->ShowField("PaneMode", on);
@@ -563,7 +580,7 @@ bool wxExEx::CommandAddress(const std::string& command)
 
 bool wxExEx::CommandHandle(const std::string& command) const
 {
-  const auto it = std::find_if(m_Commands.begin(), m_Commands.end(), 
+  const auto& it = std::find_if(m_Commands.begin(), m_Commands.end(), 
     [command](auto const& e) {return e.first == command.substr(0, e.first.size());});
   
   return it != m_Commands.end() && it->second(command);
@@ -741,7 +758,7 @@ bool wxExEx::MarkerAdd(const wxUniChar& marker, int line)
 
 bool wxExEx::MarkerDelete(const wxUniChar& marker)
 {
-  const auto it = m_Markers.find(marker);
+  const auto& it = m_Markers.find(marker);
 
   if (it != m_Markers.end())
   {
@@ -788,7 +805,7 @@ int wxExEx::MarkerLine(const wxUniChar& marker) const
   }
   else
   {
-    const auto it = m_Markers.find(marker);
+    const auto& it = m_Markers.find(marker);
 
     if (it != m_Markers.end())
     {

@@ -11,11 +11,12 @@
 #include <regex>
 #include <string>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
-#include <wx/textctrl.h>
+#include <wx/extension/textctrl.h>
 
 /// Adds an existing config to wxFindReplaceData, and some members.
 class WXDLLIMPEXP_BASE wxExFindReplaceData : public wxFindReplaceData
 {
+  friend class wxExTextCtrl;
   friend class wxExFindTextCtrl;
 public:
   // Destructor (not for Doxy).
@@ -25,10 +26,10 @@ public:
   static wxExFindReplaceData* Get(bool createOnDemand = true);
 
   /// Returns the find strings.
-  const auto & GetFindStrings() const {return m_FindStrings;};
+  const auto & GetFindStrings() const {return m_FindStrings.GetValues();};
 
   /// Returns the replace strings.
-  const auto & GetReplaceStrings() const {return m_ReplaceStrings;};
+  const auto & GetReplaceStrings() const {return m_ReplaceStrings.GetValues();};
 
   /// Returns text.
   const wxString& GetTextFindWhat() const {return m_TextFindWhat;};
@@ -104,8 +105,6 @@ public:
 private:
   wxExFindReplaceData();
 
-  bool m_UseRegEx;
-
   const wxString m_TextFindWhat;
   const wxString m_TextMatchCase;
   const wxString m_TextMatchWholeWord;
@@ -113,26 +112,12 @@ private:
   const wxString m_TextReplaceWith;
   const wxString m_TextSearchDown;
 
-  std::list < wxString > m_FindStrings;
-  std::list < wxString >::const_iterator m_FindsIterator;
-  std::list < wxString > m_ReplaceStrings;
+  bool m_UseRegEx = false;
+
+  wxExTextCtrlInput m_FindStrings;
+  wxExTextCtrlInput m_ReplaceStrings;
+
   std::regex m_FindRegEx;
 
   static wxExFindReplaceData* m_Self;
-};
-
-/// Offers a find text ctrl.
-/// Pressing key up and down browses through values from
-/// wxExFindReplaceData, and pressing enter sets value
-/// in wxExFindReplaceData.
-class wxExFindTextCtrl : public wxTextCtrl
-{
-public:
-  /// Constructor. 
-  /// Fills the text ctrl with value from wxExFindReplaceData.
-  wxExFindTextCtrl(
-    wxWindow* parent,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize);
 };
