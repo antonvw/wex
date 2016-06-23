@@ -383,6 +383,9 @@ wxExTextCtrl::wxExTextCtrl(
   , m_Calcs("excalc")
   , m_Commands("excommand")
 {
+  SetFont(wxConfigBase::Get()->ReadObject(_("Text font"), 
+    wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
+
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
     if (event.GetUnicodeKey() != WXK_NONE)
     {
@@ -408,7 +411,11 @@ wxExTextCtrl::wxExTextCtrl(
     case WXK_PAGEDOWN:
     case WXK_PAGEUP:
     case WXK_UP:
-      switch (GetType())
+      if ((event.GetKeyCode() == WXK_HOME || event.GetKeyCode() == WXK_END) && !event.ControlDown())
+      {
+        event.Skip();
+      }
+      else switch (GetType())
       {
         case TYPE_CALC: m_Calcs.Set(event.GetKeyCode(), this); break;
         case TYPE_COMMAND: m_Commands.Set(event.GetKeyCode(), this); break;

@@ -16,9 +16,7 @@
 #include <wx/extension/vi.h>
 
 #if wxUSE_GUI
-class wxFindDialogEvent;
 class wxExItemDialog;
-class wxExFile;
 class wxExFileName;
 class wxExFrame;
 class wxExIndicator;
@@ -222,8 +220,8 @@ public:
   /// and sets EOL mode and updates statusbar if it found eols.
   void GuessType();
   
-   /// Returns true if we are in hex mode.
-   bool HexMode() const {return m_HexMode.Active();};
+  /// Returns true if we are in hex mode.
+  bool HexMode() const {return m_HexMode.Active();};
  
   /// Deletes all change markers.
   /// Returns false if marker change is not loaded.
@@ -384,17 +382,17 @@ private:
   const wxExMarker m_MarkerChange = wxExMarker(1, -1);
   const long m_MenuFlags;
 
-  int m_FoldLevel;
-  int m_SavedPos;
-  int m_SavedSelectionStart;
-  int m_SavedSelectionEnd;
+  int m_FoldLevel = 0;
+  int m_SavedPos = -1;
+  int m_SavedSelectionStart = -1;
+  int m_SavedSelectionEnd = -1;
   
   long m_Flags; // win flags
   long m_Goto = 1;
   
-  bool m_AddingChars;
-  bool m_AllowChangeIndicator;
-  bool m_UseAutoComplete;
+  bool m_AddingChars = false;
+  bool m_AllowChangeIndicator = true;
+  bool m_UseAutoComplete = true;
 
   wxExSTCFile m_File;
   wxExFrame* m_Frame;

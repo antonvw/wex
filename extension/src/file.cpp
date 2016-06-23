@@ -12,33 +12,6 @@
 #include <wx/config.h>
 #include <wx/extension/file.h>
 
-wxExFile::wxExFile(bool open_file)
-  : m_OpenFile(open_file)
-  , m_IsLoaded(false)
-  , m_Stat()
-  , m_File(std::make_unique<wxFile>())
-  , m_FileName()
-{
-}
-
-wxExFile::wxExFile(
-  const wxFileName& filename,
-  wxFile::OpenMode mode,
-  bool open_file)
-  : m_File(std::make_unique<wxFile>(filename.GetFullPath(), mode))
-  , m_FileName(filename)
-  , m_OpenFile(open_file)
-  , m_IsLoaded(false)
-  , m_Stat(filename.GetFullPath())
-{
-  MakeAbsolute();
-}
-
-wxExFile::wxExFile(const wxExFile& rhs)
-{
-  *this = rhs;
-}
-  
 wxExFile& wxExFile::operator=(const wxExFile& f)
 {
   if (this != &f)

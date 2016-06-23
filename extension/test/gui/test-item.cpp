@@ -38,6 +38,7 @@ TEST_CASE("wxExItem", "[item]")
   REQUIRE( item.GetValue().IsNull());
   REQUIRE(!item.IsRowGrowable());
   REQUIRE(!item.IsNotebook());
+  REQUIRE(!item.Apply());
   
   REQUIRE(!item.ToConfig(false));
   wxExItem::UseConfig(true);

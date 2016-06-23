@@ -159,6 +159,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     (GetStatusBar() != nullptr ? event.Check(GetStatusBar()->IsShown()): event.Check(false));},
     ID_VIEW_STATUSBAR);
+
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     wxExListView* lv = GetListView();
     if (lv != nullptr && lv->HasFocus())
