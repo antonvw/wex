@@ -385,13 +385,11 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
         text += wxString::Format("Hello from line: %d\n", i);
       }
       
-      wxExSTCEntryDialog dlg(
+      wxExSTCEntryDialog(
         this,
         "Hello world",
         text,      
-        "Greetings from " + wxTheApp->GetAppDisplayName());
-        
-        dlg.ShowModal();
+        "Greetings from " + wxTheApp->GetAppDisplayName()).ShowModal();
       }
       break;
       
@@ -469,9 +467,9 @@ void wxExSampleFrame::OnCommandItemDialog(
       m_STCLexers->ConfigGet();
     }
   }
-  else if (event.GetId() > 1000 && event.GetId() < 1050)
+  else if (event.GetId() >= 1000 && event.GetId() < 1050)
   {
-    wxLogMessage(wxString::Format("hello button: %d checked: %d", event.GetId(), event.IsChecked()));
+    wxLogMessage(wxString::Format("button: %d checked: %d", event.GetId(), event.IsChecked()));
   }
   else
   {
@@ -509,6 +507,6 @@ void wxExSampleFrame::ShowConfigItems()
     wxSize(600, 600));
 #endif    
   
-  dlg->ForceCheckBoxChecked("Group", "Checkboxes");
+//  dlg->ForceCheckBoxChecked("Group", "Checkboxes");
   dlg->Show();
 }

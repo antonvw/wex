@@ -51,8 +51,9 @@ wxExItem::wxExItem(wxExItemType type, long style,
   bool is_required, wxExLabelType label_type,
   int id, int major_dimension,
   const wxAny& min, const wxAny& max, const wxAny& inc,
-  wxWindow* window, wxExUserWindowCreate create,
-  wxExUserWindowToConfig config,
+  wxWindow* window, 
+  std::function<void(wxWindow* user, wxWindow* parent, bool readonly)> create,
+  std::function<bool(wxWindow* user, bool save)> config,
   wxImageList* imageList)
   : m_Type(type)
   , m_Style(style)
@@ -134,7 +135,7 @@ wxFlexGridSizer* wxExItem::Add(wxSizer* sizer, wxFlexGridSizer* current) const
   return current;
 }
       
-wxFlexGridSizer* wxExItem::AddBrowseButton(wxSizer* sizer) const
+wxFlexGridSizer* wxExItem::AddBrowseButton(wxSizer* sizer)
 {
   wxASSERT(m_Window != nullptr);
 
@@ -148,15 +149,15 @@ wxFlexGridSizer* wxExItem::AddBrowseButton(wxSizer* sizer) const
   // Tried to use a wxDirPickerCtrl here, is nice,
   // but does not use a combobox for keeping old values, so this is better.
   // And the text box that is used is not resizable as well.
-  fgz->Add(
-    new wxButton(
-      m_Window->GetParent(),
-      m_Window->GetId(),
-      _(wxDirPickerWidgetLabel)),
-    wxSizerFlags().Center().Border());
+  m_Browse = new wxButton(
+    m_Window->GetParent(),
+    m_Window->GetId(),
+    _(wxDirPickerWidgetLabel));
+
+  fgz->Add(m_Browse, wxSizerFlags().Center().Border());
 
   sizer->Add(fgz, wxSizerFlags().Left().Expand()); // no border
-
+  
   return fgz;
 }
 
@@ -224,6 +225,7 @@ void wxExItem::AddItems(
     if (m_Dialog != nullptr)
     {
       m_Dialog->Add(item);
+      m_Dialog->BindButton(item);
     }
 
     if (booksizer->GetEffectiveRowsCount() >= 1 &&
@@ -251,7 +253,7 @@ wxFlexGridSizer* wxExItem::AddStaticText(wxSizer* sizer) const
 
 bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 {
-  if (m_Window != nullptr)
+  if (m_Type != ITEM_USER && m_Window != nullptr)
   {
     return false;
   }
@@ -512,10 +514,9 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_USER:
-      wxASSERT(m_Window != nullptr);
-    
       if (m_UserWindowCreate != nullptr)
       {
+        wxASSERT(m_Window != nullptr);
         (m_UserWindowCreate)(m_Window, parent, readonly);
       }
       break;
@@ -543,21 +544,20 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
 const wxAny wxExItem::GetValue() const
 {
-  wxAny any;
+  if (m_Window == nullptr) return wxAny();
   
-  if (m_Window == nullptr)
-  {
-    return any;
-  }
+  wxAny any;
   
   switch (m_Type)
   {
     case ITEM_CHECKBOX: any = ((wxCheckBox* )m_Window)->GetValue(); break;
     case ITEM_COLOURPICKERWIDGET: any = ((wxColourPickerWidget* )m_Window)->GetColour(); break;
-    case ITEM_COMBOBOX: any = wxExToContainer<wxArrayString>((wxComboBox*)m_Window).Get(); break;
+    case ITEM_COMBOBOX: 
+    case ITEM_COMBOBOX_DIR: any = wxExToContainer<wxArrayString>((wxComboBox*)m_Window).Get(); break;
     case ITEM_DIRPICKERCTRL: any = ((wxDirPickerCtrl* )m_Window)->GetPath(); break;
     case ITEM_FILEPICKERCTRL: any = ((wxFilePickerCtrl* )m_Window)->GetPath(); break;
     case ITEM_FONTPICKERCTRL: any = ((wxFontPickerCtrl* )m_Window)->GetSelectedFont(); break;
+    case ITEM_HYPERLINKCTRL: any = ((wxHyperlinkCtrl* )m_Window)->GetURL(); break;
     case ITEM_LISTVIEW: any = ((wxExListView* )m_Window)->ItemToText(-1); break;
     case ITEM_SLIDER: any = ((wxSlider* )m_Window)->GetValue(); break;
     case ITEM_SPINCTRL: any = ((wxSpinCtrl* )m_Window)->GetValue(); break;
@@ -568,8 +568,7 @@ const wxAny wxExItem::GetValue() const
     case ITEM_TEXTCTRL_INT: any = atoi(((wxTextCtrl* )m_Window)->GetValue()); break;
     case ITEM_TOGGLEBUTTON: any = ((wxToggleButton* )m_Window)->GetValue(); break;
     
-    case ITEM_CHECKLISTBOX_BIT:
-      {
+    case ITEM_CHECKLISTBOX_BIT: {
       wxCheckListBox* clb = (wxCheckListBox*)GetWindow();
       long value = 0;
       int item = 0;

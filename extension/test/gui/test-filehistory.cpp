@@ -11,6 +11,7 @@
 #endif
 #include <wx/menu.h>
 #include <wx/extension/filehistory.h>
+#include <wx/extension/file.h>
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
@@ -49,4 +50,12 @@ TEST_CASE("wxExFileHistory")
   history2.AddFileToHistory(GetTestFile().GetFullPath());
   REQUIRE( history2.GetCount() == 1);
   history2.Save();
+  
+  history.Clear();
+  wxExFile file(wxFileName("test-history"), wxFile::write);
+  REQUIRE( file.Write(wxString("test")));
+  history.AddFileToHistory("test-history");
+  REQUIRE( history.GetHistoryFile(0) == "test-history");
+  (void)remove("test-history");
+  REQUIRE( history.GetHistoryFile(0).empty());
 }

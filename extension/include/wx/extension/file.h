@@ -25,16 +25,23 @@ public:
   /// That might be useful if you do not use the wxFile for loading
   /// and saving (as with XML documents), but still want to use the
   /// virtual file interface.
-  wxExFile(bool open_file = true);
+  wxExFile(bool open_file = true)
+    : m_OpenFile(open_file)
+    , m_File(std::make_unique<wxFile>()) {;};
 
   /// Opens a file with a filename.
   wxExFile(
     const wxFileName& filename,
     wxFile::OpenMode mode = wxFile::read,
-    bool open_file = true);
+    bool open_file = true)
+    : m_File(std::make_unique<wxFile>(filename.GetFullPath(), mode))
+    , m_FileName(filename)
+    , m_OpenFile(open_file)
+    , m_Stat(filename.GetFullPath()) {
+      MakeAbsolute();};
   
   /// Copy constructor.
-  wxExFile(const wxExFile& rhs);
+  wxExFile(const wxExFile& rhs) {*this = rhs; };
   
   /// Assignment operator.
   wxExFile& operator=(const wxExFile& f);
@@ -125,7 +132,7 @@ private:
       m_FileName.m_Stat.Sync(m_FileName.GetFullPath()) &&
       m_Stat.Sync(m_FileName.GetFullPath());};
   
-  bool m_IsLoaded;
+  bool m_IsLoaded = false;
   bool m_OpenFile;
   
   std::unique_ptr<wxCharBuffer> m_Buffer;

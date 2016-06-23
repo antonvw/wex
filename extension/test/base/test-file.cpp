@@ -39,6 +39,11 @@ TEST_CASE( "wxExFile" )
     REQUIRE( file.Open(wxFile::write));
     REQUIRE( file.Write(*buffer));
     REQUIRE( file.Write(wxString("OK")));
+    
+    wxExFile create(wxExFileName("test-create"), wxFile::write);
+    REQUIRE( create.IsOpened());
+    REQUIRE( create.Write(wxString("OK")));
+    (void)remove("test-create");
   }
 
   SECTION( "timing" ) 

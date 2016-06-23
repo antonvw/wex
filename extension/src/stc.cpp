@@ -474,7 +474,8 @@ int wxExSTC::ConfigDialog(
       {_("Font"), 
         {!wxExLexers::Get()->GetLexers().empty() ?
            wxExItem(_("Default font"), ITEM_FONTPICKERCTRL): wxExItem(),
-         wxExItem(_("Tab font"), ITEM_FONTPICKERCTRL)}},
+         wxExItem(_("Tab font"), ITEM_FONTPICKERCTRL),
+         wxExItem(_("Text font"), ITEM_FONTPICKERCTRL)}},
       {_("Edge"),
         {wxExItem(_("Edge column"), 0, 500),
          wxExItem( _("Edge line"),  std::map<long, const wxString> {
@@ -1004,13 +1005,7 @@ void wxExSTC::Initialize(bool file_exists)
     m_HexMode.Set(true);
   }
 
-  m_AddingChars = false;
   m_AllowChangeIndicator = !(m_Flags & STC_WIN_NO_INDICATOR);
-  m_UseAutoComplete = true;
-  m_FoldLevel = 0;
-  m_SavedPos = -1;
-  m_SavedSelectionStart = -1;
-  m_SavedSelectionEnd = -1;
   
   if (!wxExLexers::Get()->GetLexers().empty())
   {

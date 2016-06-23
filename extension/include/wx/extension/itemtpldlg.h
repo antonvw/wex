@@ -12,6 +12,7 @@
 #include <wx/tglbtn.h> // for wxEVT_TOGGLEBUTTON
 #include <wx/extension/dialog.h>
 #include <wx/extension/frame.h>
+#include <wx/extension/item.h> // for ITEM_BUTTON etc.
 
 #if wxUSE_GUI
 /// Offers a dialog template to set several items.
@@ -62,6 +63,40 @@ public:
   
   /// Adds an item to the temp vector.
   void Add(const T & item) {m_ItemsTemp.emplace_back(item);};
+
+  /// If this item is related to a button, bind to event handler.
+  /// Returns true if bind was done.
+  bool BindButton(const T & item) {
+    if (item.GetWindow() == nullptr) return false;
+    switch (item.GetType())
+    {
+      case ITEM_BUTTON:
+      case ITEM_COMMANDLINKBUTTON:
+        Bind(wxEVT_BUTTON, [=](wxCommandEvent& event) {
+          if (!item.Apply()) Click(event);}, item.GetWindow()->GetId());
+        break;
+      case ITEM_COMBOBOX_DIR:
+        Bind(wxEVT_BUTTON, [=](wxCommandEvent& event) {
+          wxComboBox* browse = (wxComboBox*)item.GetWindow();
+          wxDirDialog dir_dlg(
+            this,
+            _(wxDirSelectorPromptStr),
+            browse->GetValue(),
+            wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+          if (dir_dlg.ShowModal() == wxID_OK)
+          {
+            const wxString value = dir_dlg.GetPath();
+            const int item = browse->FindString(value);
+            browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
+          }}, item.GetWindow()->GetId());
+        break;
+      case ITEM_TOGGLEBUTTON:
+        Bind(wxEVT_TOGGLEBUTTON, [=](wxCommandEvent& event) {
+          if (!item.Apply()) Click(event);}, item.GetWindow()->GetId());
+        break;
+      default: return false;
+    }
+    return true;};
 
   /// If you specified some checkboxes, calling this method
   /// requires that one of them should be checked for the OK button
@@ -213,36 +248,6 @@ protected:
     }
     event.Enable(m_ForceCheckBoxChecked ? one_checkbox_checked: true);};
 private:
-  void BindButton(const T& item) {
-    switch (item.GetType())
-    {
-      case ITEM_BUTTON:
-      case ITEM_COMMANDLINKBUTTON:
-        Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent& event) {
-          Click(event);}, item.GetWindow()->GetId());
-        break;
-      case ITEM_COMBOBOX_DIR:
-        Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent& event) {
-          wxComboBox* browse = (wxComboBox*)item.GetWindow();
-          wxDirDialog dir_dlg(
-            this,
-            _(wxDirSelectorPromptStr),
-            browse->GetValue(),
-            wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-          if (dir_dlg.ShowModal() == wxID_OK)
-          {
-            const wxString value = dir_dlg.GetPath();
-            const int item = browse->FindString(value);
-            browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
-          }}, item.GetWindow()->GetId());
-        break;
-      case ITEM_TOGGLEBUTTON:
-        Bind(wxEVT_TOGGLEBUTTON, [=](wxCommandEvent& event) {
-          Click(event);}, item.GetWindow()->GetId());
-        break;
-      default: ; // do nothing
-    }};
-
   void Click(const wxCommandEvent& event) const {
     wxExFrame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExFrame);
     if (frame != nullptr)

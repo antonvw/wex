@@ -172,9 +172,10 @@ bool wxExItem::ToConfig(bool save) const
       break;
 
     case ITEM_USER:
-      if (m_UserWindowToConfig != nullptr)
-      {
-        return (m_UserWindowToConfig)(GetWindow(), save);
+      if (m_UserWindowToConfig != nullptr &&
+        !(m_UserWindowToConfig)(GetWindow(), save))
+      { 
+        return false;
       }
       break;
       
@@ -182,6 +183,11 @@ bool wxExItem::ToConfig(bool save) const
       // the other types have no persistent info
       return false;
       break;
+  }
+
+  if (m_Apply != nullptr)
+  {
+    (m_Apply)(m_Window, GetValue(), save);
   }
 
   return true;

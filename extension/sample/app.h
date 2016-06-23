@@ -50,6 +50,7 @@ class wxExSampleFrame: public wxExManagedFrame
 public:
   /// Constructor.
   wxExSampleFrame();
+  virtual wxExListView* GetListView() override {return m_ListView;};
   virtual void OnCommandItemDialog(
     wxWindowID id, 
     const wxCommandEvent& event) override;

@@ -45,7 +45,14 @@ TEST_CASE("wxExToContainer")
   REQUIRE( wxExToContainer<std::list < wxString >>(cb, 5).Get().size() == 0);
   
   wxExComboBoxFromList(cb, std::list < wxString > {"x","y","z"});
-  REQUIRE( wxExToListString(cb).Get().size() == 3);
+  REQUIRE( wxExToListString(cb).Get().size() == cb->GetCount());
   REQUIRE( wxExToContainer<std::list < wxString >>(cb, 2).Get().size() == 2);
   REQUIRE( wxExToContainer<std::list < wxString >>(cb, 0).Get().empty());
+  
+  cb->SetValue(wxEmptyString);
+  REQUIRE( wxExToListString(cb).Get().size() == cb->GetCount());
+
+  cb->SetValue("other");
+  REQUIRE( wxExToListString(cb).Get().size() == cb->GetCount() + 1);
+  REQUIRE( wxExToListString(cb).Get().front() == "other");
 }
