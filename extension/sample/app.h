@@ -56,10 +56,7 @@ public:
     const wxCommandEvent& event) override;
 protected:
   void OnCommand(wxCommandEvent& event);
-  void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  void ShowConfigItems();
-  
 #if wxUSE_GRID
   wxExGrid* m_Grid;
 #endif
@@ -70,7 +67,7 @@ private:
   wxExSTC* m_STCLexers;
   wxExShell* m_Shell;
 
-  long m_FlagsSTC;
+  long m_FlagsSTC = 0;
   wxExStatistics <int> m_Statistics;
 
   DECLARE_NO_COPY_CLASS(wxExSampleFrame)

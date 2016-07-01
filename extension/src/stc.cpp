@@ -998,7 +998,7 @@ void wxExSTC::GuessType()
 
 void wxExSTC::Initialize(bool file_exists)
 {
-  Sync();
+  if (wxConfig::Get()->ReadBool("AllowSync", true)) Sync();
   
   if (m_Flags & STC_WIN_HEX)
   {

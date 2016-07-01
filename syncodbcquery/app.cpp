@@ -48,8 +48,6 @@ bool App::OnInit()
 
 Frame::Frame()
   : wxExFrameWithHistory(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
-  , m_Running(false)
-  , m_Stopped(false)
   , m_Results(new wxExGrid(this))
   , m_Query(new wxExSTC(this))
   , m_Shell(new wxExShell(this, "", ";", true, 50))
@@ -167,7 +165,48 @@ Frame::Frame()
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Stopped = false;
-    RunQueries(m_Query->GetText());}, wxID_EXECUTE);
+    if (m_Query->GetText().empty()) return;
+    if (m_Results->IsShown())
+    {
+      m_Results->ClearGrid();
+    }
+    // Skip sql comments.
+    std::regex re("--.*$");
+    wxString output = std::regex_replace(m_Query->GetText().ToStdString(), re, "", std::regex_constants::format_sed);
+    // Queries are seperated by ; character.
+    wxStringTokenizer tkz(output, ";");
+    int no_queries = 0;
+    m_Running = true;
+    const auto start = std::chrono::system_clock::now();
+    // Run all queries.
+    while (tkz.HasMoreTokens() && !m_Stopped)
+    {
+      wxString query = tkz.GetNextToken();
+      query.Trim(true);
+      query.Trim(false);
+      if (!query.empty())
+      {
+        try
+        {
+          RunQuery(query, no_queries == 0);
+          no_queries++;
+        }
+        catch (otl_exception& p)
+        {
+          m_Statistics.Inc(_("Number of query errors"));
+          m_Shell->AppendText(
+            _("\nerror: ") +  wxExQuoted(p.msg) + 
+            _(" in: ") + wxExQuoted(query));
+        }
+      }
+    }
+    const auto end = std::chrono::system_clock::now();
+    const auto elapsed = end - start;
+    const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+    m_Shell->Prompt(wxString::Format(_("\n%d queries (%.3f seconds)"),
+      no_queries,
+      (float)milli.count() / (float)1000));
+    m_Running = false;}, wxID_EXECUTE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     Close(true);}, wxID_EXIT);
@@ -224,7 +263,6 @@ Frame::Frame()
       try
       {
         const wxString input(event.GetString());
-        
         if (!input.empty())
         {
           const wxString query = input.substr(
@@ -241,7 +279,6 @@ Frame::Frame()
         {
           m_Results->EndBatch();
         }
-
         m_Shell->AppendText(_("\nerror: ") + wxExQuoted(p.msg));
       }
     }
@@ -315,7 +352,8 @@ bool Frame::OpenFile(
   int line_number,
   const wxString& match,
   int col_number,
-  long flags)
+  long flags,
+  const wxString& command)
 {
   if (m_Query->Open(filename, line_number, match, col_number, flags))
   {
@@ -333,6 +371,9 @@ void Frame::RunQuery(const wxString& query, bool empty_results)
   const wxString query_lower = query.Lower();
   const auto start = std::chrono::system_clock::now();
 
+  std::chrono::milliseconds milli;
+  long rpc;
+
   // Query functions supported by ODBC
   // $SQLTables, $SQLColumns, etc.
   // $SQLTables $1:'%'
@@ -343,8 +384,6 @@ void Frame::RunQuery(const wxString& query, bool empty_results)
       query_lower.StartsWith("explain") ||
       query_lower.StartsWith("$sql"))
   {
-    long rpc;
-
     if (m_Results->IsShown())
     {
       rpc = m_otl.Query(query, m_Results, m_Stopped, empty_results);
@@ -356,93 +395,26 @@ void Frame::RunQuery(const wxString& query, bool empty_results)
 
     const auto end = std::chrono::system_clock::now();
     const auto elapsed = end - start;
-    const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
-
-    UpdateStatistics(milli.count(), rpc);
+    milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
   }
   else
   {
-    const auto rpc = m_otl.Query(query);
+    rpc = m_otl.Query(query);
     const auto end = std::chrono::system_clock::now();
     const auto elapsed = end - start;
-    const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
-
-    UpdateStatistics(milli.count(), rpc);
+    milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
   }
 
-  m_Shell->DocumentEnd();
-}
-
-void Frame::RunQueries(const wxString& text)
-{
-  if (text.empty())
-  {
-    return;
-  }
-  
-  if (m_Results->IsShown())
-  {
-    m_Results->ClearGrid();
-  }
-
-  // Skip sql comments.
-  std::regex re("--.*$");
-  wxString output = std::regex_replace(text.ToStdString(), re, "", std::regex_constants::format_sed);
-
-  // Queries are seperated by ; character.
-  wxStringTokenizer tkz(output, ";");
-  int no_queries = 0;
-
-  m_Running = true;
-
-  const auto start = std::chrono::system_clock::now();
-  
-  // Run all queries.
-  while (tkz.HasMoreTokens() && !m_Stopped)
-  {
-    wxString query = tkz.GetNextToken();
-    query.Trim(true);
-    query.Trim(false);
-
-    if (!query.empty())
-    {
-      try
-      {
-        RunQuery(query, no_queries == 0);
-        no_queries++;
-      }
-      catch (otl_exception& p)
-      {
-        m_Statistics.Inc(_("Number of query errors"));
-        m_Shell->AppendText(
-          _("\nerror: ") +  wxExQuoted(p.msg) + 
-          _(" in: ") + wxExQuoted(query));
-      }
-    }
-  }
-
-  const auto rpc = m_otl.Query(query);
-  const auto end = std::chrono::system_clock::now();
-  const auto elapsed = end - start;
-  const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
-  
-  m_Shell->Prompt(wxString::Format(_("\n%d queries (%.3f seconds)"),
-    no_queries,
-    (float)milli.count() / (float)1000));
-
-  m_Running = false;
-}
-
-void Frame::UpdateStatistics(long time, long rpc)
-{
   m_Shell->AppendText(wxString::Format(_("\n%ld rows processed (%.3f seconds)"),
     rpc,
-    (float)time / (float)1000));
+    (float)milli.count() / (float)1000));
 
   m_Statistics.Set(_("Rows processed"), rpc);
-  m_Statistics.Set(_("Query runtime"), time);
+  m_Statistics.Set(_("Query runtime"), milli.count());
 
   m_Statistics.Inc(_("Total number of queries run"));
-  m_Statistics.Inc(_("Total query runtime"), time);
+  m_Statistics.Inc(_("Total query runtime"), milli.count());
   m_Statistics.Inc(_("Total rows processed"), rpc);
+
+  m_Shell->DocumentEnd();
 }

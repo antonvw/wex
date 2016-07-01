@@ -32,24 +32,14 @@ public:
  ~Frame();
   bool ServerNotListening() const {
     return m_SocketServer == nullptr;}
-protected:
-  void OnSocket(wxSocketEvent& event);
 private:
   void AppendText(
     wxExSTC* stc, 
     const wxString& text,
     int mode);
-  virtual void OnCommandItemDialog(
-    wxWindowID dialogid,
-    const wxCommandEvent& event) override;
-  virtual bool OpenFile(
-    const wxExFileName& filename,
-    int line_number = 0,
-    const wxString& match = wxEmptyString,
-    int col_number = 0,
-    long flags = 0);
-  virtual void StatusBarClicked(
-    const wxString& pane);
+  virtual void OnCommandItemDialog(wxWindowID dialogid, const wxCommandEvent& event) override;
+  virtual bool OpenFile(const wxExFileName& filename, int line_number = 0, const wxString& match = wxEmptyString, int col_number = 0, long flags = 0, const wxString& command = wxEmptyString) override;
+  virtual void StatusBarClicked(const wxString& pane) override;
 
   void LogConnection(
     wxSocketBase* sock,

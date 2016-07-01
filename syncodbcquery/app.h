@@ -41,18 +41,10 @@ class Frame: public wxExFrameWithHistory
 public:
   Frame();
 private:
-  virtual void OnCommandItemDialog(
-    wxWindowID dialogid,
-    const wxCommandEvent& event) override;
-  virtual bool OpenFile(
-    const wxExFileName& filename,
-    int line_number = 0,
-    const wxString& match = wxEmptyString,
-    int col_number = 0,
-    long flags = 0) override;
+  virtual void OnCommandItemDialog(wxWindowID dialogid, const wxCommandEvent& event) override;
+  virtual bool OpenFile(const wxExFileName& filename, int line_number = 0, const wxString& match = wxEmptyString, int col_number = 0, long flags = 0, const wxString& command = wxEmptyString) override;
+
   void RunQuery(const wxString& query, bool empty_results = false);
-  void RunQueries(const wxString& text);
-  void UpdateStatistics(long time, long rpc);
 
   wxExGrid* m_Results;
   wxExSTC* m_Query;
@@ -61,8 +53,8 @@ private:
   wxExStatistics <int> m_Statistics;
   wxExOTL m_otl;
   
-  bool m_Running;
-  bool m_Stopped;
+  bool m_Running = false;
+  bool m_Stopped = false;
 
   DECLARE_NO_COPY_CLASS(Frame)
 };

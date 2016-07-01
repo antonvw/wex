@@ -30,46 +30,31 @@ public:
     const wxString& command = wxEmptyString) override;
 protected:
   void OnCommand(wxCommandEvent& event);
+  void OnCommandDirCtrl(wxCommandEvent& event);
+  void OnCommandHistory(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  virtual wxExListView* Activate(
-    wxExListView::wxExListType type, 
-    const wxExLexer* lexer = nullptr) override;
+  virtual wxExListView* Activate(wxExListView::wxExListType type, const wxExLexer* lexer = nullptr) override;
   virtual bool ExecExCommand(const std::string& command, wxExSTC* & stc) override;
   virtual wxExListViewFile* GetProject() override;
-  virtual void OnCommandItemDialog(
-    wxWindowID dialogid,
-    const wxCommandEvent& event) override;
-  virtual bool OpenFile(
-    const wxExFileName& filename,
-    const wxExVCSEntry& vcs,
-    long flags = 0) override;
-  virtual bool OpenFile(
-    const wxExFileName& filename,
-    const wxString& text,
-    long flags = 0) override;
+  virtual void OnCommandItemDialog(wxWindowID dialogid, const wxCommandEvent& event) override;
+  virtual bool OpenFile(const wxExFileName& filename, const wxExVCSEntry& vcs, long flags = 0) override;
+  virtual bool OpenFile(const wxExFileName& filename, const wxString& text, long flags = 0) override;
   virtual void PrintEx(wxExEx* ex, const wxString& text) override;
   virtual void StatusBarClicked(const wxString& pane) override;
   virtual void StatusBarClickedRight(const wxString& pane) override;
   virtual void SyncAll() override;
   virtual void SyncCloseAll(wxWindowID id) override;
   
-  void AddAsciiTable();
-  wxExListViewWithFrame* AddPage(
-    wxExListView::wxExListType type, 
-    const wxExLexer* lexer = nullptr);
   void AddPaneHistory();
   void AddPaneProcess();
   void AddPaneProjects();
-  bool DialogProjectOpen();
-  void NewFile(const wxString& name);
-  void NewProject();
 
   const long m_PaneFlag;
   const wxString m_ProjectWildcard;
 
-  bool m_IsClosing;
-  int m_NewProjectNo, m_SplitId;
+  bool m_IsClosing = false;
+  int m_NewProjectNo = 1, m_SplitId = 1;
 
   App* m_App;
 

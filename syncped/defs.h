@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Constant definitions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,8 +13,6 @@
 enum
 {
   ID_APPL_LOWEST = ID_EXTENSION_REPORT_HIGHEST + 1,
-  ID_CHECKBOX_DIRCTRL,
-  ID_CHECKBOX_HISTORY,
   ID_EDIT_MACRO,
   ID_EDIT_MACRO_MENU,
   ID_EDIT_MACRO_PLAYBACK,

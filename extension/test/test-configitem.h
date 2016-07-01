@@ -11,7 +11,12 @@
 #include <wx/extension/item.h>
 
 /// Returns a vector with all config items available.
-const auto TestConfigItems()
+/// The first item is a notebook, containing the other items,
+/// the arguments are arguments for the notebook item.
+const auto TestConfigItems(
+  wxExItemType type = ITEM_NOTEBOOK_LIST, 
+  int rows = 0,
+  int cols = 0)
 {
   wxExItem ci("String Validator");
   
@@ -122,5 +127,5 @@ const auto TestConfigItems()
            [=](wxWindow* user, const wxAny& value, bool save) {
              wxLogStatus(((wxTextCtrl *)user)->GetValue());
              })}}}, 
-    ITEM_NOTEBOOK_LIST, 0, 0, 1)};
+    type, 0, rows, cols)};
 }
