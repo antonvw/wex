@@ -68,7 +68,18 @@ TEST_CASE("wxExItemTemplateDialog", "[item]")
     
     dlg->ForceCheckBoxChecked();
   }
-  
+
+  SECTION("Test dialog with checkbox item")
+  {
+    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
+      std::vector <wxExTestItem> {
+        wxExTestItem("checkbox", ITEM_CHECKBOX)},
+      "checkbox items");
+
+    dlg->ForceCheckBoxChecked();
+    dlg->Show();
+  }
+
   SECTION("Test dialog without buttons")
   {
     wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 

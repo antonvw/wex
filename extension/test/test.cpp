@@ -176,30 +176,26 @@ bool wxExUIAction(wxWindow* win, const wxString& action, const wxString& par)
     {
       sim.MouseClick(par.Contains("right") ? wxMOUSE_BTN_RIGHT: wxMOUSE_BTN_LEFT);
     }
-
-    wxTimer* timer = new wxTimer(wxTheApp);
-    timer->StartOnce(1000);
-
-    wxTheApp->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
-      wxUIActionSimulator sim;
-      sim.Char(WXK_RETURN);
-      });
   }
   else if (action.StartsWith("key"))
   {
-    wxTimer* timer = new wxTimer(wxTheApp);
-    timer->StartOnce(1000);
-
-    wxTheApp->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
-      wxUIActionSimulator sim;
-      sim.Char(WXK_RETURN);
-      });
+  }
+  else if (action.StartsWith("toolbar"))
+  {
+    sim.MouseMove(win->GetScreenPosition() + wxPoint(5, 5));
+    sim.MouseClick(wxMOUSE_BTN_LEFT);
   }
   else
   {
     return false;
   }
   
+  wxTimer* timer = new wxTimer(wxTheApp);
+  timer->StartOnce(1000);
+  wxTheApp->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
+    wxUIActionSimulator sim;
+    sim.Char(WXK_RETURN);});
+
   return true;
 }
   

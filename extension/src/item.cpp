@@ -52,8 +52,8 @@ wxExItem::wxExItem(wxExItemType type, long style,
   int id, int major_dimension,
   const wxAny& min, const wxAny& max, const wxAny& inc,
   wxWindow* window, 
-  std::function<void(wxWindow* user, wxWindow* parent, bool readonly)> create,
-  std::function<bool(wxWindow* user, bool save)> config,
+  UserWindowCreate create,
+  UserWindowToConfig config,
   wxImageList* imageList)
   : m_Type(type)
   , m_Style(style)

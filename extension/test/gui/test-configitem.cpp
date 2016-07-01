@@ -89,7 +89,7 @@ TEST_CASE("wxExConfigItem", "[item]")
     ci_empty, ci_spacer, ci_cb, ci_cb_dir, ci_sl, ci_vl, ci_sp, ci_sp_d,
     ci_str, ci_hl, ci_st, ci_int, ci_rb, ci_bc, ci_cl_n, ci_user};
 
-  const auto more(TestConfigItems());
+  const auto more(TestConfigItems(ITEM_NOTEBOOK_LIST, 0, 1));
   items.insert(items.end(), more.begin(), more.end());
   
   // Check members are initialized.

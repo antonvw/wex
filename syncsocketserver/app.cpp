@@ -384,8 +384,140 @@ Frame::Frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     WriteDataWindowToClients();}, ID_WRITE_DATA);
 
-  Bind(wxEVT_SOCKET, &Frame::OnSocket, this, ID_SERVER);
-  Bind(wxEVT_SOCKET, &Frame::OnSocket, this, ID_CLIENT);
+  Bind(wxEVT_SOCKET, [=](wxSocketEvent& event) {
+    // Accept new connection if there is one in the pending
+    // connections queue, else exit. We use Accept(false) for
+    // non-blocking accept (although if we got here, there
+    // should ALWAYS be a pending connection).
+    wxSocketBase*sock = m_SocketServer->Accept(false);
+    if (sock == nullptr)
+    {
+      AppendText(m_LogWindow,
+        _("error: couldn't accept a new connection"),
+        DATA_MESSAGE);
+    }
+    else
+    {
+      m_Statistics.Inc(_("Connections Accepted"));
+      sock->SetEventHandler(*this, ID_CLIENT);
+      sock->SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
+      sock->Notify(true);
+      m_Clients.emplace_back(sock);
+
+#if wxUSE_STATUSBAR
+      StatusText(
+        wxString::Format(_("%ld clients"), m_Clients.size()),
+        "PaneClients");
+#endif
+      LogConnection(sock, true);
+      const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
+      WriteDataToClient(buffer, sock);
+#if wxUSE_TASKBARICON
+      UpdateTaskBar();
+#endif
+    };}, ID_SERVER);
+
+  Bind(wxEVT_SOCKET, [=](wxSocketEvent& event) {
+    wxSocketBase *sock = event.GetSocket();
+    switch (event.GetSocketEvent())
+    {
+      case wxSOCKET_INPUT:
+      {
+        m_Statistics.Inc(_("Input Events"));
+
+        // We disable input events, so that the test doesn't trigger
+        // wxSocketEvent again.
+        sock->SetNotify(wxSOCKET_LOST_FLAG);
+
+        const long size = wxConfigBase::Get()->ReadLong(_("Buffer Size"), 4096);
+
+        if (size <= 0)
+        {
+          wxLogError("Illegal buffer size, skipping socket input data");
+          return;
+        }
+
+        char* buffer = new char[size];
+        sock->Read(buffer, size);
+
+        m_Statistics.Inc(_("Bytes Received"), sock->LastCount());
+
+        if (sock->LastCount() > 0)
+        {
+          const wxString text(buffer, sock->LastCount());
+
+          if (wxConfigBase::Get()->ReadBool(_("Log Data"), true))
+          {
+            if (wxConfigBase::Get()->ReadBool(_("Count Only"), true))
+            {
+              AppendText(m_LogWindow, 
+                wxString::Format(_("read: %d bytes from: %s"), 
+                  sock->LastCount(), SocketDetails(sock).c_str()),
+                DATA_MESSAGE);
+            }
+            else
+            {
+              AppendText(m_LogWindow, text, DATA_READ);
+            }
+          }
+          
+          switch (m_Answer)
+          {
+            case ANSWER_COMMAND: 
+              {
+              const wxString command(m_Shell->GetCommand());
+              if (command != "history")
+              {
+                WriteDataToClient(command.ToAscii(), sock); 
+              }
+              }
+              break;
+              
+            case ANSWER_ECHO: WriteDataToClient(text.ToAscii(), sock); break;
+            case ANSWER_FILE: WriteDataToClient(m_DataWindow->GetTextRaw(), sock); break;
+          }
+
+          if (GetManager().GetPane("SHELL").IsShown())
+          {
+            AppendText(m_Shell, text, DATA_MESSAGE_RAW);
+            m_Shell->Prompt(wxEmptyString, false); // no eol
+          }
+        }
+
+        delete [] buffer;
+
+#if wxUSE_STATUSBAR
+        StatusText(wxString::Format("%d,%d",
+          m_Statistics.Get(_("Bytes Received")),
+          m_Statistics.Get(_("Bytes Sent"))),
+          "PaneBytes");
+#endif
+
+#if wxUSE_TASKBARICON
+        UpdateTaskBar();
+#endif
+        // Enable input events again.
+        sock->SetNotify(wxSOCKET_LOST_FLAG | wxSOCKET_INPUT_FLAG);
+        break;
+      }
+
+      case wxSOCKET_LOST:
+        m_Statistics.Inc(_("Connections Lost"));
+        SocketLost(sock, true);
+#if wxUSE_STATUSBAR
+        StatusText(
+          wxString::Format(_("%ld clients"), m_Clients.size()),
+          "PaneClients");
+#endif
+
+#if wxUSE_TASKBARICON
+        UpdateTaskBar();
+#endif
+        break;
+
+      default:
+        wxFAIL;
+    };}, ID_CLIENT);
 
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     WriteDataWindowToClients();});
@@ -529,163 +661,13 @@ void Frame::OnCommandItemDialog(
   }
 }
 
-void Frame::OnSocket(wxSocketEvent& event)
-{
-  wxSocketBase *sock = event.GetSocket();
-
-  if (event.GetId() == ID_SERVER)
-  {
-    // Accept new connection if there is one in the pending
-    // connections queue, else exit. We use Accept(false) for
-    // non-blocking accept (although if we got here, there
-    // should ALWAYS be a pending connection).
-    sock = m_SocketServer->Accept(false);
-
-    if (sock == nullptr)
-    {
-      AppendText(m_LogWindow,
-        _("error: couldn't accept a new connection"),
-        DATA_MESSAGE);
-      return;
-    }
-
-    m_Statistics.Inc(_("Connections Accepted"));
-
-    sock->SetEventHandler(*this, ID_CLIENT);
-    sock->SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
-    sock->Notify(true);
-
-    m_Clients.emplace_back(sock);
-
-#if wxUSE_STATUSBAR
-    StatusText(
-      wxString::Format(_("%ld clients"), m_Clients.size()),
-      "PaneClients");
-#endif
-
-    LogConnection(sock, true);
-
-    const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
-    WriteDataToClient(buffer, sock);
-
-#if wxUSE_TASKBARICON
-    UpdateTaskBar();
-#endif
-  }
-  else if (event.GetId() == ID_CLIENT)
-  {
-    switch (event.GetSocketEvent())
-    {
-      case wxSOCKET_INPUT:
-      {
-        m_Statistics.Inc(_("Input Events"));
-
-        // We disable input events, so that the test doesn't trigger
-        // wxSocketEvent again.
-        sock->SetNotify(wxSOCKET_LOST_FLAG);
-
-        const long size = wxConfigBase::Get()->ReadLong(_("Buffer Size"), 4096);
-
-        if (size <= 0)
-        {
-          wxLogError("Illegal buffer size, skipping socket input data");
-          return;
-        }
-
-        char* buffer = new char[size];
-        sock->Read(buffer, size);
-
-        m_Statistics.Inc(_("Bytes Received"), sock->LastCount());
-
-        if (sock->LastCount() > 0)
-        {
-          const wxString text(buffer, sock->LastCount());
-
-          if (wxConfigBase::Get()->ReadBool(_("Log Data"), true))
-          {
-            if (wxConfigBase::Get()->ReadBool(_("Count Only"), true))
-            {
-              AppendText(m_LogWindow, 
-                wxString::Format(_("read: %d bytes from: %s"), 
-                  sock->LastCount(), SocketDetails(sock).c_str()),
-                DATA_MESSAGE);
-            }
-            else
-            {
-              AppendText(m_LogWindow, text, DATA_READ);
-            }
-          }
-          
-          switch (m_Answer)
-          {
-            case ANSWER_COMMAND: 
-              {
-              const wxString command(m_Shell->GetCommand());
-              if (command != "history")
-              {
-                WriteDataToClient(command.ToAscii(), sock); 
-              }
-              }
-              break;
-              
-            case ANSWER_ECHO: WriteDataToClient(text.ToAscii(), sock); break;
-            case ANSWER_FILE: WriteDataToClient(m_DataWindow->GetTextRaw(), sock); break;
-          }
-
-          if (GetManager().GetPane("SHELL").IsShown())
-          {
-            AppendText(m_Shell, text, DATA_MESSAGE_RAW);
-            m_Shell->Prompt(wxEmptyString, false); // no eol
-          }
-        }
-
-        delete [] buffer;
-
-#if wxUSE_STATUSBAR
-        StatusText(wxString::Format("%d,%d",
-          m_Statistics.Get(_("Bytes Received")),
-          m_Statistics.Get(_("Bytes Sent"))),
-          "PaneBytes");
-#endif
-
-#if wxUSE_TASKBARICON
-        UpdateTaskBar();
-#endif
-        // Enable input events again.
-        sock->SetNotify(wxSOCKET_LOST_FLAG | wxSOCKET_INPUT_FLAG);
-        break;
-      }
-
-      case wxSOCKET_LOST:
-        m_Statistics.Inc(_("Connections Lost"));
-        SocketLost(sock, true);
-#if wxUSE_STATUSBAR
-        StatusText(
-          wxString::Format(_("%ld clients"), m_Clients.size()),
-          "PaneClients");
-#endif
-
-#if wxUSE_TASKBARICON
-        UpdateTaskBar();
-#endif
-        break;
-
-      default:
-        wxFAIL;
-    }
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
 bool Frame::OpenFile(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
   int col_number,
-  long flags)
+  long flags,
+  const wxString& command)
 {
   if (m_DataWindow->Open(filename, line_number, match, col_number, flags))
   {

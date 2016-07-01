@@ -170,8 +170,10 @@ function(process_po_files)
           # TODO: this should be part of cmake,
           # however wxWidgets_ROOT_DIR is empty for linux, so set it here,
           # search at several places...
-          set(wxWidgets_ROOT_DIR /home/${user}/wxWidgets)
-        endif()
+          if (EXISTS "/home/${user}/wxWidgets")
+            set(wxWidgets_ROOT_DIR /home/${user}/wxWidgets)
+          endif ()
+        endif ()
         
         gettext_process_po_files(${locale} ALL INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
           PO_FILES ${filename})

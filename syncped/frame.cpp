@@ -44,32 +44,7 @@ public:
     long style = wxAUI_NB_DEFAULT_STYLE);
 };
 
-void About(wxFrame* frame)
-{
-  wxAboutDialogInfo info;
-  info.SetIcon(frame->GetIcon());
-  info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
-
-  wxString description(
-    _("This program offers a portable text or binary editor\n"
-      "with automatic syncing."));
-
-#ifdef __WXMSW__
-  description +=
-    _(" All its config files are read\n"
-      "and saved in the same directory as where the executable is.");
-#endif
-
-  info.SetDescription(description);
-  info.SetCopyright(wxExGetVersionInfo().GetCopyright());
-  info.SetWebSite("http://sourceforge.net/projects/syncped/");
-    
-  wxAboutBox(info);
-}
-    
 BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
-  EVT_CHECKBOX(ID_CHECKBOX_DIRCTRL, Frame::OnCommand)
-  EVT_CHECKBOX(ID_CHECKBOX_HISTORY, Frame::OnCommand)
   EVT_MENU(wxID_DELETE, Frame::OnCommand)
   EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
   EVT_MENU(wxID_JUMP_TO, Frame::OnCommand)
@@ -77,10 +52,8 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_MENU(wxID_STOP, Frame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, Frame::OnCommand)
   EVT_MENU_RANGE(wxID_CLOSE, wxID_CLOSE_ALL, Frame::OnCommand)
-  EVT_MENU_RANGE(ID_APPL_LOWEST, ID_APPL_HIGHEST, Frame::OnCommand)
-  EVT_MENU_RANGE(ID_ALL_LOWEST, ID_ALL_HIGHEST, Frame::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, Frame::OnCommand)
-  EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, Frame::OnCommand)
+  EVT_MENU_RANGE(ID_EDIT_MACRO_PLAYBACK, ID_EDIT_MACRO_STOP_RECORD, Frame::OnCommand)
+  EVT_MENU_RANGE(ID_SPLIT, ID_SPLIT_VERTICALLY, Frame::OnCommand)
   EVT_UPDATE_UI(ID_ALL_CLOSE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_SAVE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_CLOSE, Frame::OnUpdateUI)
@@ -113,9 +86,6 @@ END_EVENT_TABLE()
 
 Frame::Frame(App* app)
   : DecoratedFrame()
-  , m_IsClosing(false)
-  , m_NewProjectNo(1)
-  , m_SplitId(1)
   , m_Process(new wxExProcess())
   , m_PaneFlag(
       wxAUI_NB_DEFAULT_STYLE |
@@ -124,28 +94,22 @@ Frame::Frame(App* app)
       wxAUI_NB_WINDOWLIST_BUTTON |
       wxAUI_NB_SCROLL_BUTTONS)
   , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
-  , m_Editors(new EditorsNotebook(
-      this, 
-      this, 
+  , m_Editors(new EditorsNotebook(this, this, 
       (wxWindowID)ID_NOTEBOOK_EDITORS, 
-      wxDefaultPosition, 
-      wxDefaultSize, 
+      wxDefaultPosition, wxDefaultSize, 
       m_PaneFlag))
-  , m_Lists(new wxExNotebook(
-      this, 
-      this, 
+  , m_Lists(new wxExNotebook(this, this, 
       (wxWindowID)ID_NOTEBOOK_LISTS, 
-      wxDefaultPosition, 
-      wxDefaultSize, 
+      wxDefaultPosition, wxDefaultSize, 
       m_PaneFlag))
   , m_DirCtrl(new wxExGenericDirCtrl(this, this))
   , m_CheckBoxDirCtrl(new wxCheckBox(
       GetToolBar(),
-      ID_CHECKBOX_DIRCTRL,
+      ID_VIEW_DIRCTRL,
       _("Explorer")))
   , m_CheckBoxHistory(new wxCheckBox(
       GetToolBar(),
-      ID_CHECKBOX_HISTORY,
+      ID_VIEW_HISTORY,
       _("History")))
   , m_App(app)
 {
@@ -267,13 +231,21 @@ Frame::Frame(App* app)
   m_CheckBoxHistory->SetValue(
     wxConfigBase::Get()->ReadBool("ShowHistory", false));
     
+  Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=](wxAuiNotebookEvent& event) {
+    GetFileHistory().PopupMenu(this, ID_CLEAR_FILES);}, ID_NOTEBOOK_EDITORS);
+    
+  Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=] (wxAuiNotebookEvent& event) {
+    GetProjectHistory().PopupMenu(this, ID_CLEAR_PROJECTS);}, ID_NOTEBOOK_PROJECTS);
+    
+  Bind(wxEVT_CHECKBOX, &Frame::OnCommandDirCtrl, this, ID_VIEW_DIRCTRL);
+  Bind(wxEVT_CHECKBOX, &Frame::OnCommandHistory, this, ID_VIEW_HISTORY);
+
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     m_IsClosing = true; 
     long count = 0;
     for (size_t i = 0; i < m_Editors->GetPageCount(); i++)
     {
       wxExSTC* stc = wxDynamicCast(m_Editors->GetPage(i), wxExSTC);
-      
       if (stc->GetFileName().FileExists())
       {
         count++;
@@ -287,38 +259,260 @@ Frame::Frame(App* app)
         (m_Projects != nullptr && !m_Projects->ForEach<wxExListViewFile>(ID_ALL_CLOSE)))
       {
         event.Veto();
-        
         if (m_Process != nullptr && m_Process->IsRunning())
         {
           wxLogStatus(_("Process is running"));
         }
-        
         m_IsClosing = false;
-        
         return;
       }
     }
-    
     wxExViMacros::SaveDocument();
-  
     wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
     wxConfigBase::Get()->Write("OpenFiles", count);
-    wxConfigBase::Get()->Write("ShowHistory", 
-      m_History != nullptr && m_History->IsShown());
-    wxConfigBase::Get()->Write("ShowProjects", 
-      m_Projects != nullptr && m_Projects->IsShown());
-  
+    wxConfigBase::Get()->Write("ShowHistory", m_History != nullptr && m_History->IsShown());
+    wxConfigBase::Get()->Write("ShowProjects", m_Projects != nullptr && m_Projects->IsShown());
     if (m_App->GetCommand().empty())
     {
       wxDELETE(m_Process);
       event.Skip();
     }});
     
-  Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=](wxAuiNotebookEvent& event) {
-    GetFileHistory().PopupMenu(this, ID_CLEAR_FILES);}, ID_NOTEBOOK_EDITORS);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxAboutDialogInfo info;
+    info.SetIcon(GetIcon());
+    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
+    wxString description(
+      _("This program offers a portable text or binary editor\n"
+        "with automatic syncing."));
+#ifdef __WXMSW__
+    description +=
+      _(" All its config files are read\n"
+        "and saved in the same directory as where the executable is.");
+#endif
+    info.SetDescription(description);
+    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
+    info.SetWebSite("http://sourceforge.net/projects/syncped/");
+    wxAboutBox(info);}, wxID_ABOUT);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    ShowPane("PROCESS"); 
+    m_Process->Execute();}, wxID_EXECUTE);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    Close(true);}, wxID_EXIT);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxLaunchDefaultBrowser(
+      "http://antonvw.github.io/syncped/v" + 
+      wxExGetVersionInfo().GetVersionOnlyString() + 
+      "/syncped.htm");}, wxID_HELP);
     
-  Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=] (wxAuiNotebookEvent& event) {
-    GetProjectHistory().PopupMenu(this, ID_CLEAR_PROJECTS);}, ID_NOTEBOOK_PROJECTS);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExPrinting::Get()->GetHtmlPrinter()->PageSetup();}, wxID_PRINT_SETUP);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    // In hex mode we cannot edit the file.
+    if (wxConfigBase::Get()->ReadBool("HexMode", false)) return;
+    wxString name = event.GetString();
+    if (name.empty())
+    {
+      static wxString text;
+      wxTextEntryDialog dlg(this, _("Input") + ":", _("File Name"), text);
+      wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
+      validator.SetCharExcludes("/\\?%*:|\"<>");
+      dlg.SetTextValidator(validator);
+      if (dlg.ShowModal() != wxID_CANCEL)
+      {
+        name = dlg.GetValue();
+      }
+    }
+    wxWindow* page = new wxExSTC(
+      m_Editors, 
+      wxEmptyString,
+      wxExSTC::STC_WIN_DEFAULT,
+      wxEmptyString,
+      0xFFFF);
+    ((wxExSTC*)page)->GetFile().FileNew(name);
+    // This file does yet exist, so do not give it a bitmap.
+    m_Editors->AddPage(page, name, name, true);
+    ShowPane("FILES");}, wxID_NEW);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Process->Kill(); 
+    ShowPane("PROCESS", false);}, wxID_STOP);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Editors->ForEach<wxExSTC>(event.GetId());}, 
+    ID_ALL_CLOSE, ID_ALL_SAVE);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    OpenFile(wxExViMacros::GetFileName());}, ID_EDIT_MACRO);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (GetSTC() != nullptr)
+    {
+      wxPostEvent(GetSTC(), event);
+    };}, ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExListView::ConfigDialog(this, 
+      _("List Options"), wxOK | wxCANCEL | wxAPPLY, ID_OPTION_LIST);}, ID_OPTION_LIST);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (wxExVCS().ConfigDialog(this) == wxID_OK)
+    { 
+      wxExVCS vcs;
+      vcs.SetEntryFromBase(this);
+      m_StatusBar->ShowField(
+        "PaneVCS", 
+        vcs.Use());
+      StatusText(vcs.GetName(), "PaneVCS");
+    };}, ID_OPTION_VCS);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (wxExProcess::ConfigDialog(this) == wxID_OK)
+    {
+      ShowPane("PROCESS");
+      m_Process->Execute();
+    };}, ID_PROCESS_SELECT);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExListViewFile* project = GetProject();
+    if (project != nullptr && m_Projects != nullptr)
+    {
+      m_Projects->DeletePage(project->GetFileName().GetFullPath());
+    };}, ID_PROJECT_CLOSE);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (m_Projects == nullptr) AddPaneProjects();
+    const wxString text = wxString::Format("%s%d", _("project"), m_NewProjectNo++);
+    const wxFileName fn(
+       (!GetProjectHistory().GetHistoryFile().empty() ? 
+           wxPathOnly(GetProjectHistory().GetHistoryFile()): wxExConfigDir()),
+      text + ".prj");
+    wxWindow* page = new wxExListViewFile(m_Projects,
+      this,
+      fn.GetFullPath(),
+      wxID_ANY,
+      wxExListViewWithFrame::LIST_MENU_DEFAULT);
+    ((wxExListViewFile*)page)->FileNew(fn.GetFullPath());
+    // This file does yet exist, so do not give it a bitmap.
+    m_Projects->AddPage(page, fn.GetFullPath(), text, true);
+    SetRecentProject(fn.GetFullPath());
+    ShowPane("PROJECTS");}, ID_PROJECT_NEW);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExListViewFile* project = GetProject();
+    if (project != nullptr)
+    {
+      if (wxExFileDialog(
+        this, project).ShowModalIfChanged() != wxID_CANCEL)
+      {
+        OpenFile(project->GetFileName());
+      }
+    };}, ID_PROJECT_OPENTEXT);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExListViewFile* project = GetProject();
+    if (project != nullptr && m_Projects != nullptr)
+    {
+      wxExFileDialog dlg(
+        this, project, 
+        _("Project Save As"), 
+        m_ProjectWildcard, 
+        wxFD_SAVE);
+      if (dlg.ShowModal() == wxID_OK)
+      {
+        project->FileSave(dlg.GetPath());
+        m_Projects->SetPageText(
+          m_Projects->GetKeyByPage(project),
+          project->GetFileName().GetFullPath(),
+          project->GetFileName().GetName());
+      }
+    };}, ID_PROJECT_SAVEAS);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxFileDialog dlg(this,
+      _("Select Projects"),
+       (!GetProjectHistory().GetHistoryFile().empty() ? 
+           wxPathOnly(GetProjectHistory().GetHistoryFile()): wxExConfigDir()),
+      wxEmptyString,
+      m_ProjectWildcard,
+      wxFD_OPEN | wxFD_MULTIPLE);
+    if (dlg.ShowModal() == wxID_CANCEL) return;
+    wxExOpenFiles(this, wxExToVectorString(dlg).Get(), WIN_IS_PROJECT);}, ID_PROJECT_OPEN);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Editors->Rearrange(wxTOP);}, ID_REARRANGE_HORIZONTALLY);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_Editors->Rearrange(wxLEFT);}, ID_REARRANGE_VERTICALLY);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxConfigBase::Get()->Write("List/SortSync", 
+      !wxConfigBase::Get()->ReadBool("List/SortSync", true));}, ID_SORT_SYNC);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxExVCS(std::vector< wxString >(), event.GetId() - ID_VCS_LOWEST - 1).Request(this);},
+    ID_VCS_LOWEST, ID_VCS_HIGHEST);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (m_asciiTable == nullptr)
+    {
+      m_asciiTable = new wxExSTC(this);
+      GetManager().AddPane(m_asciiTable, wxAuiPaneInfo()
+        .Left()
+        .Name("ASCIITABLE")
+        .MinSize(500, 150)
+        .Caption(_("Ascii Table")));
+      GetManager().Update();
+      // Do not show an edge, eol or whitespace for ascii table.
+      m_asciiTable->SetEdgeMode(wxSTC_EDGE_NONE);
+      m_asciiTable->SetViewEOL(false);
+      m_asciiTable->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
+      m_asciiTable->SetTabWidth(5);
+      for (int i = 1; i <= 255; i++)
+      {
+        switch (i)
+        {
+          case  9: m_asciiTable->AddText(wxString::Format("%3d\tTAB", i)); break;
+          case 10: m_asciiTable->AddText(wxString::Format("%3d\tLF", i)); break;
+          case 13: m_asciiTable->AddText(wxString::Format("%3d\tCR", i)); break;
+          default:
+            m_asciiTable->AddText(wxString::Format("%3d\t%c", i, (wxUniChar)i));
+        }
+        m_asciiTable->AddText((i % 5 == 0) ? m_asciiTable->GetEOL(): "\t");
+      }
+      m_asciiTable->EmptyUndoBuffer();
+      m_asciiTable->SetSavePoint();
+      m_asciiTable->SetReadOnly(true);
+    }
+    else
+    {
+      TogglePane("ASCIITABLE"); 
+    };}, ID_VIEW_ASCII_TABLE);
+    
+  Bind(wxEVT_MENU, &Frame::OnCommandDirCtrl, this, ID_VIEW_DIRCTRL);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("FILES"); 
+    if (!GetManager().GetPane("FILES").IsShown())
+    {
+      if (GetManager().GetPane("PROJECTS").IsShown())
+      {
+        GetManager().GetPane("PROJECTS").Maximize();
+        GetManager().Update();
+      }
+    };}, ID_VIEW_FILES);
+    
+  Bind(wxEVT_MENU, &Frame::OnCommandHistory, this, ID_VIEW_HISTORY);
+  
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("OUTPUT");}, ID_VIEW_OUTPUT);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("PROJECTS");}, ID_VIEW_PROJECTS);
     
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Check(
@@ -349,79 +543,31 @@ wxExListView* Frame::Activate(
   else
   {
     ShowPane("OUTPUT");
-    return AddPage(type, lexer);
-  }
-}
 
-void Frame::AddAsciiTable()
-{
-  m_asciiTable = new wxExSTC(this);
+    const wxString name = wxExListView::GetTypeDescription(type) +
+      (lexer != nullptr ?  " " + lexer->GetDisplayLexer(): wxString());
 
-  GetManager().AddPane(m_asciiTable, wxAuiPaneInfo()
-    .Left()
-    .Name("ASCIITABLE")
-    .MinSize(500, 150)
-    .Caption(_("Ascii Table")));
-        
-  GetManager().Update();
+    wxExListViewWithFrame* list = 
+      (wxExListViewWithFrame*)m_Lists->GetPageByKey(name);
 
-  // Do not show an edge, eol or whitespace for ascii table.
-  m_asciiTable->SetEdgeMode(wxSTC_EDGE_NONE);
-  m_asciiTable->SetViewEOL(false);
-  m_asciiTable->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
-
-  // And override tab width.
-  m_asciiTable->SetTabWidth(5);
-
-  for (int i = 1; i <= 255; i++)
-  {
-    switch (i)
+    if (list == nullptr && type != wxExListView::LIST_FILE)
     {
-      case  9: m_asciiTable->AddText(wxString::Format("%3d\tTAB", i)); break;
-      case 10: m_asciiTable->AddText(wxString::Format("%3d\tLF", i)); break;
-      case 13: m_asciiTable->AddText(wxString::Format("%3d\tCR", i)); break;
-        
-      default:
-        m_asciiTable->AddText(wxString::Format("%3d\t%c", i, (wxUniChar)i));
+      list = new wxExListViewWithFrame(
+        m_Lists, this,
+        type,
+        wxID_ANY,
+        wxExListViewWithFrame::LIST_MENU_DEFAULT,
+        lexer);
+
+      m_Lists->AddPage(list, name, name, true);
     }
-    
-    m_asciiTable->AddText((i % 5 == 0) ? m_asciiTable->GetEOL(): "\t");
+
+    return list;
   }
-
-  m_asciiTable->EmptyUndoBuffer();
-  m_asciiTable->SetSavePoint();
-  m_asciiTable->SetReadOnly(true);
-}
-
-wxExListViewWithFrame* Frame::AddPage(
-  wxExListView::wxExListType type, 
-  const wxExLexer* lexer)
-{
-  const wxString name = wxExListView::GetTypeDescription(type) +
-    (lexer != nullptr ?  " " + lexer->GetDisplayLexer(): wxString());
-
-  wxExListViewWithFrame* list = 
-    (wxExListViewWithFrame*)m_Lists->GetPageByKey(name);
-
-  if (list == nullptr && type != wxExListView::LIST_FILE)
-  {
-    list = new wxExListViewWithFrame(
-      m_Lists, this,
-      type,
-      wxID_ANY,
-      wxExListViewWithFrame::LIST_MENU_DEFAULT,
-      lexer);
-
-    m_Lists->AddPage(list, name, name, true);
-  }
-
-  return list;
 }
 
 void Frame::AddPaneHistory()
 {
-  wxASSERT(m_History == nullptr);
-  
   m_History = new wxExListViewWithFrame(this, this,
     wxExListView::LIST_HISTORY,
     wxExListViewWithFrame::LIST_MENU_DEFAULT);
@@ -429,48 +575,26 @@ void Frame::AddPaneHistory()
   GetManager().AddPane(m_History, wxAuiPaneInfo()
     .Left()
     .MaximizeButton(true)
+    .Name("HISTORY")
     .CloseButton(false)
     .MinSize(150, 150)
-    .Name("HISTORY")
     .Caption(_("History")));
 }
 
 void Frame::AddPaneProjects()
 {
-  if (m_Projects == nullptr)
-  {
-    m_Projects = new wxExNotebook(
-      this, 
-      this, 
-      (wxWindowID)ID_NOTEBOOK_PROJECTS, 
-      wxDefaultPosition, 
-      wxDefaultSize, 
-      m_PaneFlag);
-      
-    GetManager().AddPane(m_Projects, wxAuiPaneInfo()
-      .Left()
-      .MaximizeButton(true)
-      .Name("PROJECTS")
-      .MinSize(150, 150)
-      .Caption(_("Projects")));
-  }
-}
-
-bool Frame::DialogProjectOpen()
-{
-  wxFileDialog dlg(this,
-    _("Select Projects"),
-     (!GetProjectHistory().GetHistoryFile().empty() ? 
-         wxPathOnly(GetProjectHistory().GetHistoryFile()): wxExConfigDir()),
-    wxEmptyString,
-    m_ProjectWildcard,
-    wxFD_OPEN | wxFD_MULTIPLE);
-
-  if (dlg.ShowModal() == wxID_CANCEL) return false;
-
-  wxExOpenFiles(this, wxExToVectorString(dlg).Get(), WIN_IS_PROJECT);
-
-  return true;
+  m_Projects = new wxExNotebook(this, this, 
+    (wxWindowID)ID_NOTEBOOK_PROJECTS, 
+    wxDefaultPosition, 
+    wxDefaultSize, 
+    m_PaneFlag);
+    
+  GetManager().AddPane(m_Projects, wxAuiPaneInfo()
+    .Left()
+    .MaximizeButton(true)
+    .Name("PROJECTS")
+    .MinSize(150, 150)
+    .Caption(_("Projects")));
 }
 
 bool Frame::ExecExCommand(const std::string& command, wxExSTC* & stc)
@@ -540,67 +664,10 @@ wxExListViewFile* Frame::GetProject()
   }
 }
 
-void Frame::NewFile(const wxString& name)
-{
-  if (wxConfigBase::Get()->ReadBool("HexMode", false))
-  {
-    // In hex mode we cannot edit the file.
-    return;
-  }
- 
-  wxWindow* page = new wxExSTC(
-    m_Editors, 
-    wxEmptyString,
-    wxExSTC::STC_WIN_DEFAULT,
-    wxEmptyString,
-    0xFFFF);
-
-  ((wxExSTC*)page)->GetFile().FileNew(name);
-
-  // This file does yet exist, so do not give it a bitmap.
-  m_Editors->AddPage(
-    page,
-    name,
-    name,
-    true);
-
-  ShowPane("FILES");
-}
-
-void Frame::NewProject()
-{
-  AddPaneProjects();
-  
-  const wxString text = wxString::Format("%s%d", _("project"), m_NewProjectNo++);
-  const wxFileName fn(
-     (!GetProjectHistory().GetHistoryFile().empty() ? 
-         wxPathOnly(GetProjectHistory().GetHistoryFile()): wxExConfigDir()),
-    text + ".prj");
-
-  wxWindow* page = new wxExListViewFile(m_Projects,
-    this,
-    fn.GetFullPath(),
-    wxID_ANY,
-    wxExListViewWithFrame::LIST_MENU_DEFAULT);
-
-  ((wxExListViewFile*)page)->FileNew(fn.GetFullPath());
-
-  // This file does yet exist, so do not give it a bitmap.
-  m_Projects->AddPage(
-    page,
-    fn.GetFullPath(),
-    text,
-    true);
-    
-  SetRecentProject(fn.GetFullPath());
-
-  ShowPane("PROJECTS");
-}
 
 void Frame::OnCommand(wxCommandEvent& event)
 {
   wxExSTC* editor = GetSTC();
-  wxExListViewFile* project = GetProject();
 
   switch (event.GetId())
   {
@@ -623,56 +690,13 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
   break;
 
-  case wxID_ABOUT: About(this); break;
-  
   case wxID_CLOSE:
     if (editor != nullptr)
     {
-      if (!AllowClose(
-        m_Editors->GetId(),
-        editor))
-      {
-        return;
-      }
-        
+      if (!AllowClose(m_Editors->GetId(), editor)) return;
       m_Editors->DeletePage(m_Editors->GetKeyByPage(editor));
     }
     break;
-    
-  case wxID_EXIT: Close(true); break;
-  
-  case wxID_HELP:
-    wxLaunchDefaultBrowser(
-      "http://antonvw.github.io/syncped/v" + 
-      wxExGetVersionInfo().GetVersionOnlyString() + 
-      "/syncped.htm");
-    break;
-    
-  case wxID_NEW: 
-      if (!event.GetString().empty())
-      {
-        NewFile(event.GetString()); 
-      }
-      else
-      {
-        static wxString text;
-        wxTextEntryDialog dlg(this, _("Input") + ":", _("File Name"), text);
-        
-        wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
-        validator.SetCharExcludes("/\\?%*:|\"<>");
-        dlg.SetTextValidator(validator);
-        
-        if (dlg.ShowModal() == wxID_CANCEL)
-        {
-          return;
-        }
-        
-        text = dlg.GetValue();
-        
-        NewFile(text); 
-      }
-    break;
-  
   case wxID_PREVIEW:
     if (editor != nullptr)
     {
@@ -693,17 +717,10 @@ void Frame::OnCommand(wxCommandEvent& event)
       GetListView()->Print();
     }
     break;
-  case wxID_PRINT_SETUP:
-    wxExPrinting::Get()->GetHtmlPrinter()->PageSetup();
-    break;
-
   case wxID_SAVE:
     if (editor != nullptr)
     {
-      if (!editor->GetFile().FileSave())
-      {
-        return;
-      }
+      if (!editor->GetFile().FileSave()) return;
 
       SetRecentFile(editor->GetFileName().GetFullPath());
       
@@ -773,101 +790,10 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
 
-  case wxID_EXECUTE: 
-    ShowPane("PROCESS"); 
-    m_Process->Execute();
-    break;
-  case wxID_STOP: 
-    m_Process->Kill(); 
-    ShowPane("PROCESS", false);
-    break;
-
-  case ID_ALL_CLOSE:
-  case ID_ALL_CLOSE_OTHERS:
-  case ID_ALL_SAVE:
-    m_Editors->ForEach<wxExSTC>(event.GetId());
-    break;
-
-  case ID_EDIT_MACRO: OpenFile(wxExViMacros::GetFileName()); break;
   case ID_EDIT_MACRO_PLAYBACK: if (editor != nullptr) editor->GetVi().MacroPlayback(); break;
   case ID_EDIT_MACRO_START_RECORD: if (editor != nullptr) editor->GetVi().MacroStartRecording(); break;
   case ID_EDIT_MACRO_STOP_RECORD: if (editor != nullptr) editor->GetVi().GetMacros().StopRecording(); break;
   
-  case ID_OPTION_LIST: wxExListView::ConfigDialog(this, 
-    _("List Options"), wxOK | wxCANCEL | wxAPPLY, ID_OPTION_LIST); 
-    break;
-
-  case ID_OPTION_VCS: 
-    if (wxExVCS().ConfigDialog(this) == wxID_OK)
-    { 
-      wxExVCS vcs;
-      vcs.SetEntryFromBase(this);
-      
-      m_StatusBar->ShowField(
-        "PaneVCS", 
-        vcs.Use());
-        
-      StatusText(vcs.GetName(), "PaneVCS");
-    }
-    break;
-    
-  case ID_PROCESS_SELECT: 
-    if (wxExProcess::ConfigDialog(this) == wxID_OK)
-    {
-      ShowPane("PROCESS");
-      m_Process->Execute();
-    }
-    break;
-
-  case ID_PROJECT_CLOSE:
-    if (project != nullptr && m_Projects != nullptr)
-    {
-      m_Projects->DeletePage(project->GetFileName().GetFullPath());
-    }
-    break;
-  case ID_PROJECT_NEW: NewProject(); break;
-  case ID_PROJECT_OPEN:
-    DialogProjectOpen();
-    break;
-  case ID_PROJECT_OPENTEXT:
-    if (project != nullptr)
-    {
-      if (wxExFileDialog(
-        this, project).ShowModalIfChanged() != wxID_CANCEL)
-      {
-        OpenFile(project->GetFileName());
-      }
-    }
-    break;
-  case ID_PROJECT_SAVEAS:
-    if (project != nullptr && m_Projects != nullptr)
-    {
-      wxExFileDialog dlg(
-        this, project, 
-        _("Project Save As"), 
-        m_ProjectWildcard, 
-        wxFD_SAVE);
-
-      if (dlg.ShowModal() == wxID_OK)
-      {
-        project->FileSave(dlg.GetPath());
-
-        m_Projects->SetPageText(
-          m_Projects->GetKeyByPage(project),
-          project->GetFileName().GetFullPath(),
-          project->GetFileName().GetName());
-      }
-    }
-    break;
-
-  case ID_SORT_SYNC: 
-    wxConfigBase::Get()->Write("List/SortSync", 
-      !wxConfigBase::Get()->ReadBool("List/SortSync", true)); 
-    break;
-
-  case ID_REARRANGE_HORIZONTALLY: m_Editors->Rearrange(wxTOP); break;
-  case ID_REARRANGE_VERTICALLY: m_Editors->Rearrange(wxLEFT); break;
-    
   case ID_SPLIT:
   case ID_SPLIT_HORIZONTALLY:
   case ID_SPLIT_VERTICALLY:
@@ -916,101 +842,48 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
     
-  case ID_VIEW_ASCII_TABLE: 
-    if (m_asciiTable == nullptr)
-    {
-      AddAsciiTable();
-    }
-    else
-    {
-      TogglePane("ASCIITABLE"); 
-    }
-    break;
-    
-  case ID_CHECKBOX_DIRCTRL: 
-  case ID_VIEW_DIRCTRL: 
-    TogglePane("DIRCTRL"); 
-    m_CheckBoxDirCtrl->SetValue(GetManager().GetPane("DIRCTRL").IsShown());
-    GetToolBar()->Realize();
-    
-    if (GetManager().GetPane("DIRCTRL").IsShown() &&
-        GetManager().GetPane("FILES").IsShown())
-    {
-      wxExSTC* editor = GetSTC();
-      
-      if (editor != nullptr)
-      {
-        m_DirCtrl->ExpandAndSelectPath(
-          editor->GetFileName().GetFullPath());
-      }
-    }
-    break;
-  
-  case ID_VIEW_FILES: 
-    TogglePane("FILES"); 
-    
-    if (!GetManager().GetPane("FILES").IsShown())
-    {
-      if (GetManager().GetPane("PROJECTS").IsShown())
-      {
-        GetManager().GetPane("PROJECTS").Maximize();
-        GetManager().Update();
-      }
-    }
-    break;
-    
-  case ID_VIEW_HISTORY: 
-  case ID_CHECKBOX_HISTORY: 
-    if (m_History == nullptr)
-    {
-      AddPaneHistory();
-      GetManager().Update();
-    }
-    else
-    {
-      TogglePane("HISTORY");
-    }
-  
-    m_CheckBoxHistory->SetValue(GetManager().GetPane("HISTORY").IsShown());
-    GetToolBar()->Realize();
-    
-#if wxUSE_STATUSBAR
-    UpdateStatusBar(m_History);
-#endif
-    break;
-  case ID_VIEW_OUTPUT: 
-    TogglePane("OUTPUT");
-    break;
-    
-  case ID_VIEW_PROJECTS: 
-    if (m_Projects == nullptr)
-    {
-      NewProject();
-    }
-    else
-    {
-      TogglePane("PROJECTS");
-    }
-    break;
-    
   default: 
-    if (event.GetId() > ID_VCS_LOWEST && event.GetId() < ID_VCS_HIGHEST)
-    {
-      wxExVCS(std::vector< wxString >(), event.GetId() - ID_VCS_LOWEST - 1).Request(this);
-    }
-    else if (event.GetId() > ID_EDIT_STC_LOWEST && event.GetId() < ID_EDIT_STC_HIGHEST)
-    {
-      if (editor != nullptr)
-      {
-        wxPostEvent(editor, event);
-      }
-    }
-    else
       wxFAIL;
     break;
   }
 }
 
+void Frame::OnCommandDirCtrl(wxCommandEvent& event)
+{
+  TogglePane("DIRCTRL"); 
+  m_CheckBoxDirCtrl->SetValue(GetManager().GetPane("DIRCTRL").IsShown());
+  GetToolBar()->Realize();
+  if (GetManager().GetPane("DIRCTRL").IsShown() &&
+      GetManager().GetPane("FILES").IsShown())
+  {
+    wxExSTC* editor = GetSTC();
+    if (editor != nullptr)
+    {
+      m_DirCtrl->ExpandAndSelectPath(
+        editor->GetFileName().GetFullPath());
+    }
+  }
+}
+
+void Frame::OnCommandHistory(wxCommandEvent& event)
+{
+  if (m_History == nullptr)
+  {
+    AddPaneHistory();
+    GetManager().Update();
+  }
+  else
+  {
+    TogglePane("HISTORY");
+  }
+
+  m_CheckBoxHistory->SetValue(GetManager().GetPane("HISTORY").IsShown());
+  GetToolBar()->Realize();
+#if wxUSE_STATUSBAR
+  UpdateStatusBar(m_History);
+#endif
+}
+  
 void Frame::OnCommandItemDialog(
   wxWindowID dialogid,
   const wxCommandEvent& event)
@@ -1225,21 +1098,12 @@ bool Frame::OpenFile(
     if (index != -1)
     {
       // Place new page before the one used for vcs.
-      m_Editors->InsertPage(
-        index,
-        editor,
-        key,
-        filename.GetFullName() + " " + unique,
-        true);
-      }
+      m_Editors->InsertPage(index, editor, key, filename.GetFullName() + " " + unique, true);
+    }
     else
     {
       // Just add at the end.
-      m_Editors->AddPage(
-        editor,
-        key,
-        filename.GetFullName() + " " + unique,
-        true);
+      m_Editors->AddPage(editor, key, filename.GetFullName() + " " + unique, true);
     }
   }
 
@@ -1257,12 +1121,7 @@ bool Frame::OpenFile(
   {
     page = new wxExSTC(m_Editors, text, flags, filename.GetFullPath());
     page->GetLexer().Set(filename.GetLexer());
-    
-    m_Editors->AddPage(
-      page, 
-      filename.GetFullPath(), 
-      filename.GetFullName(), 
-      true);
+    m_Editors->AddPage(page, filename.GetFullPath(), filename.GetFullName(), true);
   }
   else
   {
@@ -1523,10 +1382,7 @@ void Frame::SyncCloseAll(wxWindowID id)
 {
   DecoratedFrame::SyncCloseAll(id);
   
-  if (m_IsClosing)
-  {
-    return;
-  }
+  if (m_IsClosing) return;
   
   switch (id)
   {
@@ -1543,12 +1399,8 @@ void Frame::SyncCloseAll(wxWindowID id)
       GetManager().Update();
     }
     break;
-  case ID_NOTEBOOK_LISTS:
-    ShowPane("OUTPUT", false);
-    break;
-  case ID_NOTEBOOK_PROJECTS:
-    ShowPane("PROJECTS", false);
-    break;
+  case ID_NOTEBOOK_LISTS: ShowPane("OUTPUT", false); break;
+  case ID_NOTEBOOK_PROJECTS: ShowPane("PROJECTS", false); break;
   default: wxFAIL;
   }
 }
@@ -1562,7 +1414,7 @@ EditorsNotebook::EditorsNotebook(wxWindow* parent,
   : wxExNotebook(parent, frame, id, pos, size, style)
 {
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-      wxPostEvent(GetCurrentPage(), event);
+    wxPostEvent(GetCurrentPage(), event);
     }, ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
   
   Bind(wxEVT_AUINOTEBOOK_TAB_RIGHT_UP, [=](wxAuiNotebookEvent& event) {
