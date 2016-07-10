@@ -829,25 +829,25 @@ void wxExEx::SetLastCommand(
   const std::string& command,
   bool always)
 {
-  // First test on '.' and ';' these should never be the last command,
+  // First on commands that should not be a last command,
   // even if always were true.
-  // Also, undo or placing a marker should not be a last command.
   if (
     command.empty() ||
-    command[0] == '.' || command[0] == ';' || 
-    command[0] == 'u' || wxString(command).Matches("m?"))
+    command[0] == '.' || 
+    command[0] == ';' || 
+    command[0] == '/' || 
+    command[0] == '?' || 
+    command[0] == 'u' || 
+    wxString(command).Matches("m?"))
   {
-    return;
   }
-  
-  if (
-      always || 
-      command == "~" || 
-      ( command.size() > 2 && command.front() == ':' && 
-        !wxString(command).StartsWith(":ve") &&
-        !wxString(command).StartsWith(":help") &&
-        !wxString(command).StartsWith(":new")
-      ) ||
+  else if (
+    always || 
+    command == "~" || 
+    ( command.size() > 2 && command.front() == ':' && 
+      !wxString(command).StartsWith(":ve") &&
+      !wxString(command).StartsWith(":help") &&
+      !wxString(command).StartsWith(":new") ) ||
     ( command.size() > 1 && command.front() != ':' && command.front() != '\t'))
   {
     m_LastCommand = command;

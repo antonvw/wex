@@ -578,12 +578,19 @@ TEST_CASE("wxExVi", "[stc][vi]")
     {"?a",0},
     {"n",0},
     {"N",0}}) {
+    INFO( go.first);
+
     if (go.first.back() != 'd')
       REQUIRE( vi->Command(go.first));
     else
       REQUIRE(!vi->Command(go.first));
+    
+    if (go.first[0] == '/' || go.first[0] == '?')
+    {
+      // A / or ? should not set a last command.
+      REQUIRE( vi->GetLastCommand()[0] != go.first[0]);
+    }
 
-    INFO( go.first);
     REQUIRE( stc->GetCurrentLine() == go.second);
   }
 }
