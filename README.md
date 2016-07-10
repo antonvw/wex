@@ -6,7 +6,7 @@ one of these applications, being a full featured source code text editor.
 
 # Dependencies
 
-- [wxWidgets 3.x](http://www.wxwidgets.org/)
+- [wxWidgets 3.x](http://www.wxwidgets.org/) or this fork
   
 - [cmake](http://www.cmake.org/) to generate makefiles   
 
