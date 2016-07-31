@@ -106,6 +106,8 @@ wxExItem::wxExItem(wxExItemType type, long style,
     case ITEM_USER:
       m_SizerFlags.Expand();
       break;
+    
+    default: ; // prevent warning
   }
 }
 
@@ -583,6 +585,8 @@ const wxAny wxExItem::GetValue() const
       any = value;
       }
       break;
+    
+    default: ; // prevent warning
   }
   
   return any;

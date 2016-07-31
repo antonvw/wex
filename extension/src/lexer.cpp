@@ -161,7 +161,7 @@ bool wxExLexer::ApplyWhenSet()
   
   m_STC->SetLexerLanguage(m_ScintillaLexer);
   
-  if (m_IsOk = (m_ScintillaLexer.empty() ? true: (((wxStyledTextCtrl *)m_STC)->GetLexer() != wxSTC_LEX_NULL)))
+  if ((m_IsOk = (m_ScintillaLexer.empty() ? true: (((wxStyledTextCtrl *)m_STC)->GetLexer()) != wxSTC_LEX_NULL)))
   {
     m_STC->SetStyleBits(m_STC->GetStyleBitsNeeded());
     Apply();
@@ -410,7 +410,7 @@ bool wxExLexer::Reset()
   {
     ((wxStyledTextCtrl *)m_STC)->SetLexer(wxSTC_LEX_NULL);
     
-    if (m_IsOk = (((wxStyledTextCtrl *)m_STC)->GetLexer() == wxSTC_LEX_NULL))
+    if ((m_IsOk = (((wxStyledTextCtrl *)m_STC)->GetLexer()) == wxSTC_LEX_NULL))
     {
       Apply();
       wxExFrame::StatusText(GetDisplayLexer(), "PaneLexer");

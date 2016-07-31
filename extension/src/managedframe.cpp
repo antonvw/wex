@@ -469,7 +469,7 @@ wxExTextCtrl::wxExTextCtrl(
           }
           if (m_ex != nullptr && m_ex->GetMacros().IsRecording())
           {
-            m_Command += "\x12" + c;
+            m_Command << "\x12" << c;
           }
         }
         m_UserInput = true;
