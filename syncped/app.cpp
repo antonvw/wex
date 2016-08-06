@@ -12,6 +12,7 @@
 #include <wx/msgout.h>
 #include <wx/extension/cmdline.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/tostring.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include "app.h"

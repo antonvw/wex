@@ -287,7 +287,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       {
       wxArrayString arraychoices;
 
-      for (const auto& it : m_Initial.As<std::map<long, const wxString>>())
+      for (const auto& it : m_Initial.As<wxExItem::Choices>())
       {
         arraychoices.Add(it.second);
       }
@@ -367,15 +367,10 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       }
       break;
 
-    case ITEM_TEXTCTRL_FLOAT:
-      m_Window = new wxTextCtrl(parent, m_Id, 
-        m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
-        wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
-        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
-        m_Validator == nullptr ? wxFloatingPointValidator<float>(): *m_Validator);
-      break;
-      
     case ITEM_FONTPICKERCTRL:
+#ifdef __WXOSX__
+      return false;
+#endif
       {
       wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent, m_Id, wxNullFont,
         wxDefaultPosition, wxDefaultSize,
@@ -397,14 +392,6 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 #endif      
       break;
 
-    case ITEM_TEXTCTRL_INT:
-      m_Window = new wxTextCtrl(parent, m_Id, 
-        m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
-        wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
-        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
-        m_Validator == nullptr ? wxIntegerValidator<int>(): *m_Validator);
-      break;
-
     case ITEM_LISTVIEW:
       {
       wxExListView* lv = new wxExListView(parent, (wxExListView::wxExListType)m_Style, m_Id, nullptr,
@@ -423,6 +410,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_TOP); break;
     case ITEM_NOTEBOOK_LIST: bookctrl = new wxListbook(parent, wxID_ANY); break;
     case ITEM_NOTEBOOK_SIMPLE: bookctrl = new wxSimplebook(parent, wxID_ANY); break;
+          
     case ITEM_NOTEBOOK_TREE: bookctrl = new wxTreebook(parent, wxID_ANY); break;
     
     case ITEM_NOTEBOOK_TOOL: bookctrl = new wxToolbook(parent, wxID_ANY);
@@ -437,7 +425,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       {
       wxArrayString arraychoices;
 
-      for (const auto& it : m_Initial.As<std::map<long, const wxString>>())
+      for (const auto& it : m_Initial.As<wxExItem::Choices>())
       {
         arraychoices.Add(it.second);
       } 
@@ -510,6 +498,22 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
         (m_Validator != nullptr ? *m_Validator: wxDefaultValidator));
       break;
 
+    case ITEM_TEXTCTRL_FLOAT:
+      m_Window = new wxTextCtrl(parent, m_Id, 
+        m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
+        wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
+        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+        m_Validator == nullptr ? wxFloatingPointValidator<float>(): *m_Validator);
+      break;
+      
+    case ITEM_TEXTCTRL_INT:
+      m_Window = new wxTextCtrl(parent, m_Id, 
+        m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>(),
+        wxDefaultPosition, wxSize(width_numeric, wxDefaultCoord),
+        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+        m_Validator == nullptr ? wxIntegerValidator<int>(): *m_Validator);
+      break;
+
     case ITEM_TOGGLEBUTTON:
       m_Window = new wxToggleButton(parent, m_Id, m_Label,
         wxDefaultPosition, wxDefaultSize, m_Style);
@@ -574,7 +578,8 @@ const wxAny wxExItem::GetValue() const
       wxCheckListBox* clb = (wxCheckListBox*)GetWindow();
       long value = 0;
       int item = 0;
-      for (const auto& b : m_Initial.As<std::map<long, const wxString>>())
+
+      for (const auto& b : m_Initial.As<wxExItem::Choices>())
       {
         if (clb->IsChecked(item))
         {
@@ -582,6 +587,7 @@ const wxAny wxExItem::GetValue() const
         }
         item++;
       }
+
       any = value;
       }
       break;
@@ -672,14 +678,14 @@ bool wxExItem::SetValue(const wxAny& value) const
     case ITEM_COMBOBOX: wxExComboBoxAs((wxComboBox* )m_Window, value.As<wxArrayString>()); break;
     case ITEM_DIRPICKERCTRL: ((wxDirPickerCtrl* )m_Window)->SetPath(value.As<wxString>()); break;
     case ITEM_FILEPICKERCTRL: ((wxFilePickerCtrl* )m_Window)->SetPath(value.As<wxString>()); break;
-    case ITEM_TEXTCTRL_FLOAT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%lf", value.As<float>())); break;
     case ITEM_FONTPICKERCTRL: ((wxFontPickerCtrl* )m_Window)->SetSelectedFont(value.As<wxFont>()); break;
-    case ITEM_TEXTCTRL_INT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%ld", value.As<long>())); break;
     case ITEM_SLIDER: ((wxSlider* )m_Window)->SetValue(value.As<int>()); break;
     case ITEM_SPINCTRL: ((wxSpinCtrl* )m_Window)->SetValue(value.As<int>()); break;
     case ITEM_SPINCTRLDOUBLE: ((wxSpinCtrlDouble* )m_Window)->SetValue(value.As<double>()); break;
     case ITEM_STC: ((wxStyledTextCtrl* )m_Window)->SetValue(value.As<wxString>()); break;
     case ITEM_TEXTCTRL: ((wxTextCtrl* )m_Window)->SetValue(value.As<wxString>()); break;
+    case ITEM_TEXTCTRL_FLOAT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%lf", value.As<float>())); break;
+    case ITEM_TEXTCTRL_INT: ((wxTextCtrl* )m_Window)->SetValue(wxString::Format("%ld", value.As<long>())); break;
     case ITEM_TOGGLEBUTTON: ((wxToggleButton* )m_Window)->SetValue(value.As<bool>()); break;
 
     case ITEM_CHECKLISTBOX_BIT:
@@ -687,7 +693,7 @@ bool wxExItem::SetValue(const wxAny& value) const
       wxCheckListBox* clb = (wxCheckListBox*)m_Window;
       int item = 0;
 
-      for (const auto& b : m_Initial.As<std::map<long, const wxString>>())
+      for (const auto& b : m_Initial.As<wxExItem::Choices>())
       {
         clb->Check(item, (value.As<long>() & b.first) > 0);
         item++;

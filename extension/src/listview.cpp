@@ -40,6 +40,8 @@ public:
   : wxExConfigDefaults(std::vector<std::tuple<wxString, wxExItemType, wxAny>> {
     std::make_tuple(_("Background colour"), ITEM_COLOURPICKERWIDGET, *wxWHITE),
     std::make_tuple(_("Foreground colour"), ITEM_COLOURPICKERWIDGET, *wxBLACK),
+    std::make_tuple(_("List font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
+    std::make_tuple(_("List tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
     std::make_tuple(_("Readonly colour"), ITEM_COLOURPICKERWIDGET, *wxLIGHT_GREY),
     std::make_tuple(_("Header"), ITEM_CHECKBOX, true)}) {;};
 };
@@ -598,16 +600,21 @@ int wxExListView::ConfigDialog(
         {wxExItem(_("Header"), ITEM_CHECKBOX),
          wxExItem(_("Single selection"), ITEM_CHECKBOX),
          wxExItem(_("Comparator"), ITEM_FILEPICKERCTRL),
-         wxExItem(_("Sort method"), std::map<long, const wxString> {
+         wxExItem(_("Sort method"), {
            {SORT_ASCENDING, _("Sort ascending")},
            {SORT_DESCENDING, _("Sort descending")},
            {SORT_TOGGLE, _("Sort toggle")}}),
-         wxExItem(_("Rulers"),  std::map<long, const wxString> {
+         wxExItem(_("Rulers"),  wxExItem::Choices {
            {wxLC_HRULES, _("Horizontal rulers")},
            {wxLC_VRULES, _("Vertical rulers")}}, false)}},
       {_("Font"),
+#ifndef __WXOSX__
         {wxExItem(_("List font"), ITEM_FONTPICKERCTRL),
          wxExItem(_("List tab font"), ITEM_FONTPICKERCTRL)}},
+#else
+        {wxExItem(_("List font")),
+         wxExItem(_("List tab font"))}},
+#endif
       {_("Colour"),
         {wxExItem(_("Background colour"), ITEM_COLOURPICKERWIDGET),
          wxExItem(_("Foreground colour"), ITEM_COLOURPICKERWIDGET),

@@ -103,10 +103,6 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   AddToolBarPane(CreateExPanel(), "VIBAR");
   m_Manager.Update();
   
-  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
-    m_FileHistory.Save();
-    event.Skip();});
-
   Bind(wxEVT_AUI_PANE_CLOSE, [=](wxAuiManagerEvent& event) {
     // TODO: wxAui should take care of this...
     wxAuiPaneInfo* info = event.GetPane();  
@@ -120,6 +116,10 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     m_OptionsBar->Update(info->name, false);
     });
   
+  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
+    m_FileHistory.Save();
+    event.Skip();});
+
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     DoRecent(m_FileHistory, event.GetId() - m_FileHistory.GetBaseId());},
     m_FileHistory.GetBaseId(), m_FileHistory.GetBaseId() + m_FileHistory.GetMaxFiles());
@@ -264,7 +264,7 @@ void wxExManagedFrame::DoRecent(
 
 bool wxExManagedFrame::GetExCommand(wxExEx* ex, const std::string& command)
 {
-  return m_TextCtrl->SetEx(ex, command) && ShowPane("VIBAR");
+  return ShowPane("VIBAR") && m_TextCtrl->SetEx(ex, command);
 }
 
 void wxExManagedFrame::HideExBar(int hide)
@@ -401,86 +401,93 @@ wxExTextCtrl::wxExTextCtrl(
         
     switch (event.GetKeyCode())
     {
-    case WXK_CONTROL_R: 
-      m_ControlR = true; 
-      break;
+      case WXK_CONTROL_R: 
+        m_ControlR = true; 
+        break;
 
-    case WXK_DOWN:
-    case WXK_END:
-    case WXK_HOME:
-    case WXK_PAGEDOWN:
-    case WXK_PAGEUP:
-    case WXK_UP:
-      if ((event.GetKeyCode() == WXK_HOME || event.GetKeyCode() == WXK_END) && !event.ControlDown())
-      {
-        event.Skip();
-      }
-      else switch (GetType())
-      {
-        case TYPE_CALC: m_Calcs.Set(event.GetKeyCode(), this); break;
-        case TYPE_COMMAND: m_Commands.Set(event.GetKeyCode(), this); break;
-        case TYPE_FIND: wxExFindReplaceData::Get()->m_FindStrings.Set(event.GetKeyCode(), this); break;
-      }
-      break;
-      
-    case WXK_ESCAPE:
-      if (m_ex != nullptr)
-      {
-        m_ex->GetSTC()->PositionRestore();
-      }
-      m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
-      m_ControlR = false;
-      m_UserInput = false;
-    break;
-    
-    case WXK_TAB: {
-      if (m_ex != nullptr && m_ex->GetSTC()->GetFileName().FileExists())
-      {
-        wxSetWorkingDirectory(m_ex->GetSTC()->GetFileName().GetPath());
-      }
-      std::vector<wxString> v;
-      if (wxExAutoCompleteFileName(m_Command, v))
-      {
-        m_Command += v[0];
-        AppendText(v[0]);
-      }}
-      break;
-
-    default: {
-      bool skip = true;
-      if (event.GetKeyCode() != WXK_RETURN)
-      {
-        if (event.GetUnicodeKey() != (wxChar)WXK_NONE && m_ControlR)
+      case WXK_TAB: {
+        if (m_ex != nullptr && m_ex->GetSTC()->GetFileName().FileExists())
         {
-          skip = false;
-          const wxChar c = event.GetUnicodeKey();
-          wxCommandEvent event(wxEVT_MENU, ID_REGISTER);
-          if (c == '%')
-          {
-            if (m_ex != nullptr) event.SetString(m_ex->GetSTC()->GetFileName().GetFullName());
-          }
-          else 
-          {
-            event.SetString(wxExEx::GetMacros().GetRegister(c));
-          }
-          if (!event.GetString().empty())
-          {
-            wxPostEvent(this, event);
-          }
-          if (m_ex != nullptr && m_ex->GetMacros().IsRecording())
-          {
-            m_Command << "\x12" << c;
-          }
+          wxSetWorkingDirectory(m_ex->GetSTC()->GetFileName().GetPath());
         }
-        m_UserInput = true;
-      }
-      m_ControlR = false;
-      if (skip)
-      {
-        event.Skip();
-      }
-    }}});
+        std::vector<wxString> v;
+        if (wxExAutoCompleteFileName(m_Command, v))
+        {
+          m_Command += v[0];
+          AppendText(v[0]);
+        }}
+        break;
 
+      default: {
+        bool skip = true;
+        if (event.GetKeyCode() != WXK_RETURN)
+        {
+          if (event.GetUnicodeKey() != (wxChar)WXK_NONE && m_ControlR)
+          {
+            skip = false;
+            const wxChar c = event.GetUnicodeKey();
+            wxCommandEvent event(wxEVT_MENU, ID_REGISTER);
+            if (c == '%')
+            {
+              if (m_ex != nullptr) event.SetString(m_ex->GetSTC()->GetFileName().GetFullName());
+            }
+            else 
+            {
+              event.SetString(wxExEx::GetMacros().GetRegister(c));
+            }
+            if (!event.GetString().empty())
+            {
+              wxPostEvent(this, event);
+            }
+            if (m_ex != nullptr && m_ex->GetMacros().IsRecording())
+            {
+              m_Command << "\x12" << c;
+            }
+          }
+          m_UserInput = true;
+        }
+        m_ControlR = false;
+        if (skip)
+        {
+          event.Skip();
+        }
+      }}});
+
+  Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
+    switch (event.GetKeyCode())
+    {
+      case WXK_DOWN:
+      case WXK_END:
+      case WXK_HOME:
+      case WXK_PAGEDOWN:
+      case WXK_PAGEUP:
+      case WXK_UP:
+        if ((event.GetKeyCode() == WXK_HOME || event.GetKeyCode() == WXK_END) && !event.ControlDown())
+        {
+          event.Skip();
+        }
+        else switch (GetType())
+        {
+          case TYPE_CALC: m_Calcs.Set(event.GetKeyCode(), this); break;
+          case TYPE_COMMAND: m_Commands.Set(event.GetKeyCode(), this); break;
+          case TYPE_FIND: wxExFindReplaceData::Get()->m_FindStrings.Set(event.GetKeyCode(), this); break;
+        }
+        break;
+        
+      case WXK_ESCAPE:
+        if (m_ex != nullptr)
+        {
+          m_ex->GetSTC()->PositionRestore();
+        }
+        m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
+        m_ControlR = false;
+        m_UserInput = false;
+        break;
+      
+      default: event.Skip();
+        break;
+      }});
+  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     WriteText(event.GetString());}, ID_REGISTER);
   
@@ -566,7 +573,7 @@ bool wxExTextCtrl::SetEx(wxExEx* ex, const std::string& command)
   Show();
   SelectAll();
   SetFocus();
-  
+
   return true;
 }
 #endif // wxUSE_GUI

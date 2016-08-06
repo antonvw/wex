@@ -43,7 +43,9 @@ TEST_CASE("wxEx")
     report) == 1);
   
 #ifdef __UNIX__    
+#ifndef __WXOSX__
   REQUIRE(report->GetItemCount() == 1);
+#endif
 #endif
   
   frd->SetFindString("Author:");
@@ -65,10 +67,12 @@ TEST_CASE("wxEx")
     report->GetItemCount(), wxExToVectorString(files).Get().size(), (int)milli.count()).ToStdString());
 
 #ifdef __UNIX__
+#ifndef __WXOSX__
   // Each file has one author (files.GetCount()), add the one in SetFindString 
   // above, and the one that is already present on the 
   // list because of the first FindInFiles.
   REQUIRE(report->GetItemCount() == (
     wxExToVectorString(files).Get().size() + 2));
+#endif
 #endif
 }

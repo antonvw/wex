@@ -70,7 +70,12 @@ bool wxExItem::ToConfig(bool save) const
     case ITEM_COLOURPICKERWIDGET: PERSISTENT(ReadObject, wxColour, *wxWHITE); break;
     case ITEM_DIRPICKERCTRL:      PERSISTENT(Read, wxString, GetLabel()); break;
     case ITEM_TEXTCTRL_FLOAT:     PERSISTENT(ReadDouble, double, 0); break;
-    case ITEM_FONTPICKERCTRL:     PERSISTENT(ReadObject, wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
+    case ITEM_FONTPICKERCTRL:     
+#ifdef __WXOSX__
+                                  return false;
+#else
+                                  PERSISTENT(ReadObject, wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
+#endif
     case ITEM_TEXTCTRL_INT:       PERSISTENT(ReadLong, long, 0); break;
     case ITEM_LISTVIEW:           PERSISTENT(Read, wxString, ""); break;
     case ITEM_SLIDER:             PERSISTENT(ReadLong, int, ((wxSlider* )GetWindow())->GetMin()); break;
@@ -149,9 +154,10 @@ bool wxExItem::ToConfig(bool save) const
     case ITEM_RADIOBOX:
       {
       wxRadioBox* rb = (wxRadioBox*)GetWindow();
+
       if (save)
       {
-        for (const auto& b : GetInitial().As<std::map<long, const wxString>>())
+        for (const auto& b : GetInitial().As<wxExItem::Choices>())
         {
           if (b.second == rb->GetStringSelection())
           {
@@ -161,7 +167,7 @@ bool wxExItem::ToConfig(bool save) const
       }
       else
       {
-        const std::map<long, const wxString> & choices(GetInitial().As<std::map<long, const wxString>>());
+          const wxExItem::Choices & choices(GetInitial().As<wxExItem::Choices>());
         const auto c = choices.find(wxConfigBase::Get()->ReadLong(GetLabel(), 0));
         if (c != choices.end())
         {

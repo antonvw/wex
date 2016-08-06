@@ -664,7 +664,6 @@ wxExListViewFile* Frame::GetProject()
   }
 }
 
-
 void Frame::OnCommand(wxCommandEvent& event)
 {
   wxExSTC* editor = GetSTC();
@@ -720,7 +719,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_SAVE:
     if (editor != nullptr)
     {
-      if (!editor->GetFile().FileSave()) return;
+      if (!editor->IsModified() || !editor->GetFile().FileSave()) return;
 
       SetRecentFile(editor->GetFileName().GetFullPath());
       

@@ -39,14 +39,12 @@ TEST_CASE("wxExConfigItem", "[item]")
   const wxExItem ci_hl("ci-hyper", "www.wxwidgets.org", 0,ITEM_HYPERLINKCTRL);
   wxExItem ci_st("ci-static", "HELLO", 0, ITEM_STATICTEXT);
   const wxExItem ci_int("ci-int",ITEM_TEXTCTRL_INT);
-  const wxExItem ci_rb("ci-rb", 
-    std::map<long, const wxString> {
+  const wxExItem ci_rb("ci-rb", {
       {0, "Zero"},
       {1, "One"},
       {2, "Two"}},
     true);
-  const wxExItem ci_bc("ci-cl", 
-    std::map<long, const wxString> {
+  const wxExItem ci_bc("ci-cl", {
       {0, "Bit One"},
       {1, "Bit Two"},
       {2, "Bit Three"},

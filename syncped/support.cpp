@@ -194,8 +194,12 @@ DecoratedFrame::DecoratedFrame()
     menuOptions->Append(ID_OPTION_VCS, wxExEllipsed(_("Set &VCS")));
     menuOptions->AppendSeparator();
   }
-  
+
+#ifndef __WXOSX__
   menuOptions->Append(wxID_PREFERENCES, wxExEllipsed(_("Set &Editor Options")));
+#else
+  menuOptions->Append(wxID_PREFERENCES);
+#endif  
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_LIST, wxExEllipsed(_("Set &List Options")));
 

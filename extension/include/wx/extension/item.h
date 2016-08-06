@@ -77,6 +77,9 @@ enum wxExLabelType
 class WXDLLIMPEXP_BASE wxExItem
 {
 public:
+  /// Choices for radioboxes.
+  typedef std::map<long, const char*> Choices;
+    
   /// This is vector of a pair of pages with a vector of items.
   typedef std::vector<std::pair<wxString, std::vector<wxExItem>>> 
     ItemsNotebook;
@@ -96,7 +99,7 @@ public:
   /// the config.
   typedef std::function<bool(wxWindow* user, bool save)> 
     UserWindowToConfig;
-  
+
   /// Default constructor for a ITEM_EMPTY item.
   wxExItem() : wxExItem(ITEM_EMPTY, 0, wxEmptyString) {;};
 
@@ -241,7 +244,7 @@ public:
     /// label for this item
     const wxString& label,
     /// the map with values and text
-    const std::map<long, const wxString> & choices,
+    const Choices & choices,
     /// indicates whether to use a radiobox or a checklistbox.
     bool use_radiobox = true,
     /// major dimension for the radiobox
@@ -251,7 +254,7 @@ public:
     /// callback to apply
     UserApply apply = nullptr)
     : wxExItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX_BIT, style, label, choices,
-      false, LABEL_NONE, wxID_ANY, majorDimension, 0, 1, 1) 
+      false, LABEL_NONE, wxID_ANY, majorDimension, 0, 1, 1)
       {m_Apply = apply;};
 
   /// Constructor for a ITEM_USER item.

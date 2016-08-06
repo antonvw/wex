@@ -68,9 +68,11 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     REQUIRE( v[0] == "st");
     
 #ifdef __UNIX__
+#ifndef __WXOSX__    
     REQUIRE( wxExAutoCompleteFileName("/usr/include/s", v));
     REQUIRE( wxExAutoCompleteFileName("../../../extension/src/v", v));
     REQUIRE( wxExAutoCompleteFileName("~/", v));
+#endif    
 #endif
   }
   
