@@ -52,7 +52,7 @@ script:
     - cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExUSE_SSS=ON -DBUILD_TEST=ON ..
     - make -j 4
     - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov-prep; fi
-    - if [ "$TRAVIS_OS_NAME" != "osx" ]; then ctest -V ..; fi
+    - ctest -V ..
         
 after_success:
     - if [ "$TRAVIS_OS_NAME" != "osx" ]; then make lcov; fi

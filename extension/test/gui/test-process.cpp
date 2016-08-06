@@ -72,7 +72,9 @@ TEST_CASE("wxExProcess")
   wxExShell* shell = process->GetShell();  
   REQUIRE( shell != nullptr);
   Process("cd ~\rpwd\r", shell);
+#ifndef __WXOSX__
   REQUIRE( shell->GetText().Contains("home"));
+#endif
   REQUIRE( cwd != wxGetCwd());
   REQUIRE( process->Kill() == wxKILL_OK);
 

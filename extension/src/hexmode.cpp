@@ -83,8 +83,6 @@ void wxExHexMode::Activate(const wxCharBuffer& text)
 
 void wxExHexMode::AppendText(const wxCharBuffer& buffer)
 {
-  wxFileOffset start = m_Buffer.length();
-  
   m_Buffer += buffer;
   m_BufferOriginal = m_Buffer;
   

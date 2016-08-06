@@ -102,6 +102,7 @@ wxExSampleFrame::wxExSampleFrame()
   , m_Shell(new wxExShell(this, ">", wxTextFile::GetEOL(), true, 10))
   , m_STCLexers(new wxExSTC(this, wxExLexers::Get()->GetFileName()))
 {
+wxLogMessage("%d", wxID_SELECTALL);
   wxExProcess::PrepareOutput(this);
   
   SetIcon(wxICON(app));
@@ -238,9 +239,11 @@ wxExSampleFrame::wxExSampleFrame()
   GetOptionsToolBar()->AddControls();
   
   // The OnCommand keeps statistics.
-  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_CUT, wxID_CLEAR);
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_COPY);
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_CUT);
   Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_EXECUTE);
   Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_JUMP_TO);
+  Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_PASTE);
   Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_OPEN, wxID_SAVEAS);
   Bind(wxEVT_MENU, &wxExSampleFrame::OnCommand, this, wxID_UNDO, wxID_REDO);
   
@@ -398,14 +401,11 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       }
       break;
   
-    case wxID_CLEAR:
     case wxID_COPY:
     case wxID_CUT:
-    case wxID_DELETE:
     case wxID_JUMP_TO:
     case wxID_PASTE:
     case wxID_REDO:
-    case wxID_SELECTALL:
     case wxID_UNDO:
       if (editor != nullptr)
       {

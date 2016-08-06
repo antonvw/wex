@@ -18,7 +18,7 @@ function(pack)
   if (WIN32)
     set(CONFIG_INSTALL_DIR bin)
   else ()
-    set(CONFIG_INSTALL_DIR /home/${user}/.config/${PROJECT_NAME})
+    set(CONFIG_INSTALL_DIR $ENV{HOME}/.config/${PROJECT_NAME})
   endif ()
 
   set(CPACK_GENERATOR "ZIP")
@@ -129,7 +129,12 @@ else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
   endif ()
   
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wno-write-strings -Wno-deprecated-declarations -Wno-unused-result")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings -Wno-deprecated-declarations -Wno-unused-result")
+
+  if ( APPLE )
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+#    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -lstdc++")
+  endif ()
 endif ()
 
 if (WIN32)

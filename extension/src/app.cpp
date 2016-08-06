@@ -59,7 +59,9 @@ bool wxExApp::OnInit()
   // and do not want messages about loading non existing wxstd files.
   if (!m_Locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT))
   {
-    wxLogMessage("Could not init locale for: " + GetLocale().GetName());
+#ifndef __WXOSX__
+    wxLogMessage("Could not init locale for: %d", lang);
+#endif
   }
   
   // If there are catalogs in the catalog_dir, then add them to the m_Locale.

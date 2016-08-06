@@ -61,10 +61,10 @@ int wxExVCS::ConfigDialog(
     return wxID_CANCEL;
   }
   
-  std::map<long, const wxString> choices{{(long)VCS_NONE, _("None")}};
+  wxExItem::Choices choices{{(long)VCS_NONE, _("None")}};
   
   // Using auto vcs is not useful if we only have one vcs.
-  if (m_Entries.size() != 1)
+  if (m_Entries.size() > 1)
   {
     choices.insert({(long)VCS_AUTO, "Auto"});
   }

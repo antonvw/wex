@@ -51,7 +51,7 @@ public:
     std::make_tuple(_("Auto fold"), ITEM_TEXTCTRL_INT, 1500),
     std::make_tuple(_("Auto indent"), ITEM_TEXTCTRL_INT, (long)INDENT_ALL),
     std::make_tuple(_("Caret line"), ITEM_CHECKBOX, true),
-    std::make_tuple(_("Default font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)),
+    std::make_tuple(_("Default font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)),
     std::make_tuple(_("Divider"), ITEM_TEXTCTRL_INT, 16),
     std::make_tuple(_("Edge column"), ITEM_TEXTCTRL_INT, 80),
     std::make_tuple(_("Edge line"), ITEM_TEXTCTRL_INT, wxSTC_EDGE_NONE),
@@ -64,6 +64,7 @@ public:
     std::make_tuple(_("Show mode"), ITEM_CHECKBOX, true),
     std::make_tuple(_("Tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
     std::make_tuple(_("Tab width"), ITEM_TEXTCTRL_INT, 2),
+    std::make_tuple(_("Text font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
     std::make_tuple(_("vi mode"), ITEM_CHECKBOX, true)}) {;};
 };
   
@@ -436,17 +437,17 @@ int wxExSTC::ConfigDialog(
                _("Auto complete"),
                _("vi mode")})}},
           {_("Page2"), 
-            {wxExItem(_("Auto indent"), std::map<long, const wxString> {
+            {wxExItem(_("Auto indent"), {
                {INDENT_NONE, _("None")},
                {INDENT_WHITESPACE, _("Whitespace")},
                {INDENT_LEVEL, _("Level")},
                {INDENT_ALL, _("Both")}}, true, 4),
-             wxExItem(_("Wrap visual flags"), std::map<long, const wxString> {
+             wxExItem(_("Wrap visual flags"), {
                {wxSTC_WRAPVISUALFLAG_NONE, _("None")},
                {wxSTC_WRAPVISUALFLAG_END, _("End")},
                {wxSTC_WRAPVISUALFLAG_START, _("Start")},
                {wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")}}, true, 4),
-             wxExItem(_("Whitespace visible"), std::map<long, const wxString> {
+             wxExItem(_("Whitespace visible"), {
                {wxSTC_WS_INVISIBLE, _("Off")},
                {wxSTC_WS_VISIBLEAFTERINDENT, _("After indent")},
                {wxSTC_WS_VISIBLEALWAYS, _("Always")}
@@ -456,7 +457,7 @@ int wxExSTC::ConfigDialog(
                },
 #endif  
                true, 4),
-             wxExItem(_("Wrap line"), std::map<long, const wxString> {
+             wxExItem(_("Wrap line"), {
                {wxSTC_WRAP_NONE, _("None")},
                {wxSTC_WRAP_WORD, _("Word")},
                {wxSTC_WRAP_CHAR, _("Char")}
@@ -472,13 +473,20 @@ int wxExSTC::ConfigDialog(
             ITEM_NOTEBOOK)}},
 #endif
       {_("Font"), 
+#ifndef __WXOSX__
         {!wxExLexers::Get()->GetLexers().empty() ?
            wxExItem(_("Default font"), ITEM_FONTPICKERCTRL): wxExItem(),
          wxExItem(_("Tab font"), ITEM_FONTPICKERCTRL),
          wxExItem(_("Text font"), ITEM_FONTPICKERCTRL)}},
+#else
+        {!wxExLexers::Get()->GetLexers().empty() ?
+           wxExItem(_("Default font")): wxExItem(),
+         wxExItem(_("Tab font")),
+         wxExItem(_("Text font"))}},
+#endif
       {_("Edge"),
         {wxExItem(_("Edge column"), 0, 500),
-         wxExItem( _("Edge line"),  std::map<long, const wxString> {
+         wxExItem( _("Edge line"), {
            {wxSTC_EDGE_NONE, _("None")},
            {wxSTC_EDGE_LINE, _("Line")},
            {wxSTC_EDGE_BACKGROUND, _("Background")}}, true, 1)}},
@@ -495,15 +503,15 @@ int wxExSTC::ConfigDialog(
          !wxExLexers::Get()->GetLexers().empty() ?
            wxExItem(_("Auto fold"), 0, INT_MAX): wxExItem(),
          !wxExLexers::Get()->GetLexers().empty() ?
-           wxExItem(_("Fold flags"), std::map<long, const wxString> {
+           wxExItem(_("Fold flags"), {
              {wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")},
              {wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")},
              {wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")},
-             {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")}}, 
+             {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")}},
              // {wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")}},
              false): wxExItem()}},
       {_("Printer"),
-        {wxExItem(_("Print flags"), std::map<long, const wxString> {
+        {wxExItem(_("Print flags"), {
            {wxSTC_PRINT_NORMAL, _("Normal")},
            {wxSTC_PRINT_INVERTLIGHT, _("Invert on white")},
            {wxSTC_PRINT_BLACKONWHITE, _("Black on white")},
@@ -523,15 +531,15 @@ int wxExSTC::ConfigDialog(
   if (!(flags & STC_CONFIG_MODELESS))
   {
     return wxExItemDialog(
-      parent, items, title, 0, 1, buttons, id).ShowModal();
+      parent, items, id == wxID_PREFERENCES ? wxGetStockLabel(id, 0): title, 0, 1, buttons, id).ShowModal();
   }
   else
   {
     if (m_ConfigDialog == nullptr)
     {
       m_ConfigDialog = new wxExItemDialog(
-        parent, items, title, 0, 1, buttons, id, 
-        wxDefaultPosition, wxSize(510,425));
+        parent, items, id == wxID_PREFERENCES ? wxGetStockLabel(id, 0): title, 0, 1, buttons, id, 
+        wxDefaultPosition, wxSize(510, 440));
     }
 
     return m_ConfigDialog->Show();

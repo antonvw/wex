@@ -95,6 +95,8 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
 
 char ConvertKeyEvent(const wxKeyEvent& event)
 {
+  if (event.GetKeyCode() == WXK_BACK) return WXK_BACK;
+
   char c = event.GetUnicodeKey();
   
   if (c == WXK_NONE)
@@ -420,6 +422,11 @@ wxExVi::wxExVi(wxExSTC* stc)
       GetSTC()->DocumentStart(); return true;}},
     {"yy", [&](const std::string& command){
       wxExAddressRange(this, m_Count).Yank(); return true;}},
+    {"ZZ", [&](const std::string& command){
+      wxPostEvent(wxTheApp->GetTopWindow(), 
+        wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
+      wxPostEvent(wxTheApp->GetTopWindow(), 
+        wxCloseEvent(wxEVT_CLOSE_WINDOW)); return true;}},
     {"z", [&](const std::string& command){
       if (command.size() <= 1) return false;
       const auto level = GetSTC()->GetFoldLevel(GetSTC()->GetCurrentLine());
@@ -442,11 +449,6 @@ wxExVi::wxExVi(wxExSTC* stc)
           GetSTC()->GetLexer().SetProperty("fold", "1");
           GetSTC()->GetLexer().Apply();
           GetSTC()->Fold(true); break;
-        case 'Z':
-          wxPostEvent(wxTheApp->GetTopWindow(), 
-            wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
-          wxPostEvent(wxTheApp->GetTopWindow(), 
-            wxCloseEvent(wxEVT_CLOSE_WINDOW)); break;
       }; return true;}},
     {".", [&](const std::string& command){
       m_Dot = true;

@@ -213,7 +213,9 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( vi->OnKeyDown(event));
   REQUIRE(!vi->OnChar(event));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+#ifndef __WXOSX__  
   REQUIRE( wxString(vi->GetInsertedText()).Contains("\n"));
+#endif
   
   // Test abbreviate.
   for (auto& abbrev : GetAbbreviations())
