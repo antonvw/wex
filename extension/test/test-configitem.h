@@ -14,7 +14,6 @@
 /// The first item is a notebook, containing the other items,
 /// the arguments are arguments for the notebook item.
 const auto TestConfigItems(
-  wxExItemType type = ITEM_NOTEBOOK_LIST, 
   int rows = 0,
   int cols = 0)
 {
@@ -25,7 +24,7 @@ const auto TestConfigItems(
   ci.SetValidator(validator);
   
   return std::vector<wxExItem> {
-    wxExItem("notebook", wxExItem::ItemsNotebook {
+    wxExItem("notebook", {
       {"Buttons",
         {wxExItem("<span size='x-large' color='blue'>Big</span> <b>bold</b> button",
            ITEM_BUTTON, wxAny(), false, 1000),
@@ -41,8 +40,7 @@ const auto TestConfigItems(
         {wxExItem("Bin Choices", {
            {1, "Bit One"}, {2, "Bit Two"}, {4, "Bit Three"}, {8, "Bit Four"}},
            false), 
-         wxExItem(std::set<wxString>{"This", "Or", "Other", "a", "b", "c", "d",
-           "e", "f", "g", "h"})}},
+         wxExItem({"This", "Or", "Other", "a", "b", "c", "d", "e", "f", "g", "h"})}},
       {"Colours",
         {wxExItem("Colour1", ITEM_COLOURPICKERWIDGET)}}, 
       {"Comboboxes",
@@ -109,5 +107,5 @@ const auto TestConfigItems(
            [=](wxWindow* user, const wxAny& value, bool save) {
              wxLogStatus(((wxTextCtrl *)user)->GetValue());
              })}}}, 
-    type, 0, rows, cols)};
+    ITEM_NOTEBOOK_LIST, 0, rows, cols)};
 }

@@ -110,7 +110,7 @@ private:
   // no const, as entry is set using operator+ in wxExVCS.
   bool m_AdminDirIsTopLevel;
   
-  int m_CommandIndex;
+  int m_CommandIndex = 0;
   int m_FlagsLocation;
   
   wxString m_AdminDir;

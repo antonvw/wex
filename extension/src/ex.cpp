@@ -178,9 +178,8 @@ wxExEx::wxExEx(wxExSTC* stc)
           text.Replace("=", " ");
           text.Replace("!", "-"); // change negatable char
         }
-        return wxExCmdLineParser(text, 
-          wxExCmdLineParser::CmdSwitches { 
-            {{"ac", "Auto Complete"}, {wxCMD_LINE_SWITCH_NEGATABLE, [](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);}}},
+        return wxExCmdLineParser(text,
+           {{{"ac", "Auto Complete"}, {wxCMD_LINE_SWITCH_NEGATABLE, [](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);}}},
             {{"ai", "Auto Indent"}, {wxCMD_LINE_SWITCH_NEGATABLE, [](bool on){wxConfigBase::Get()->Write(_("Auto indent"), on ? 2: 0);}}},
             {{"el", "Edge Line"}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){
               m_STC->SetEdgeMode(on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);     
@@ -225,8 +224,7 @@ wxExEx::wxExEx(wxExSTC* stc)
               m_STC->SetViewEOL(on);
               m_STC->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
               wxConfigBase::Get()->Write(_("Whitespace"), on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}}}},
-          wxExCmdLineParser::CmdOptions {
-            {{"ec", "Edge Column"}, {wxCMD_LINE_VAL_NUMBER, [&](wxAny any) {
+           {{{"ec", "Edge Column"}, {wxCMD_LINE_VAL_NUMBER, [&](wxAny any) {
               long val;
               any.GetAs(&val);
               m_STC->SetEdgeColumn(val);

@@ -7,7 +7,7 @@ file(GLOB SRCS "*.cpp")
 if (WIN32)
   set(SRCS ${SRCS} app.rc)
 endif()
-  
+
 if(NOT APPLE )
   add_executable(
     ${PROJECT_NAME}
@@ -18,11 +18,10 @@ else()
   set( MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME} )
   set( MACOSX_BUNDLE_GUI_IDENTIFIER ${PROJECT_NAME} )
   set( MACOSX_BUNDLE_ICON_FILE app-large.icns )
-  set( MACOSX_BUNDLE_INFO_STRING "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}, Copyright 2015  Anton van Wezenbeek" )
-  set( MACOSX_BUNDLE_SHORT_VERSION_STRING "${VERSION_MAJOR}.${VERSION_MINOR}" )
-  set( MACOSX_BUNDLE_LONG_VERSION_STRING "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" )
-  set( MACOSX_BUNDLE_BUNDLE_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" )
-  set( MACOSX_BUNDLE_COPYRIGHT "(C) 2005-2008 Stewart Adam" )
+  set( MACOSX_BUNDLE_INFO_STRING "${PROJECT_NAME}" )
+  set( MACOSX_BUNDLE_SHORT_VERSION_STRING "3.1.0" )
+  set( MACOSX_BUNDLE_BUNDLE_VERSION "3.1.0" )
+  set( MACOSX_BUNDLE_COPYRIGHT "(c) 1998-2016 Anton van Wezenbeek" )
 
   # create a bundle with an icon too!
   add_executable( ${PROJECT_NAME} MACOSX_BUNDLE ${SRCS} )
@@ -49,11 +48,19 @@ target_link_libraries(
 
 add_subdirectory(locale)
 
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+if(NOT APPLE )
+  install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+else()
+  install(TARGETS ${PROJECT_NAME} DESTINATION /Applications)
+endif()
 
 if (NOT WIN32)
-  install(FILES syncped.desktop DESTINATION /usr/share/applications)
-  install(FILES syncped.png DESTINATION /usr/share/icons/hicolor/32x32/)
+  if (EXISTS "/usr/share/applications")
+    install(FILES syncped.desktop DESTINATION /usr/share/applications)
+  endif()
+  if (EXISTS "/usr/share/icons")
+    install(FILES syncped.png DESTINATION /usr/share/icons/hicolor/32x32/)
+  endif()
 endif()
 
 pack()

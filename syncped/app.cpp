@@ -44,8 +44,8 @@ bool App::OnInit()
   
   bool exit = false;
 
-  if (wxExCmdLineParser(wxExCmdLineParser::CmdSwitches {
-      {{"l", _("show locale")}, {0, [&](bool on) {
+  if (wxExCmdLineParser(
+     {{{"l", _("show locale")}, {0, [&](bool on) {
         wxMessageOutput::Get()->Printf("Catalog dir: %s\nName: %s\nCanonical name: %s\nLanguage: %d\nLocale: %s\nIs ok: %d\nIs available: %d",
           GetCatalogDir().c_str(),
           GetLocale().GetName().c_str(),
@@ -69,8 +69,7 @@ bool App::OnInit()
           wxExGetVersionInfo().GetDescription().c_str(),
           wxGetLibraryVersionInfo().GetDescription().c_str());
         exit = true;}}}},
-    wxExCmdLineParser::CmdOptions {
-      {{"c", _("vi command")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
+     {{{"c", _("vi command")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
         any.GetAs(&m_Command);}}},
       {{"s", _("script in")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
         wxString script;
@@ -87,8 +86,7 @@ bool App::OnInit()
         wxString script;
         any.GetAs(&script);
         m_Scriptout.Open(script, wxFile::write_append);}}}},
-    wxExCmdLineParser::CmdParams {
-      {_("input file:line number:column number"), {wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE, [&](std::vector<wxString> & v) {
+     {{_("input file:line number:column number"), {wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE, [&](std::vector<wxString> & v) {
         m_Files = v;}}}}).Parse() != 0 || exit)
   {
     return false;

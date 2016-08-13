@@ -37,7 +37,6 @@ TEST_CASE("wxExItem", "[item]")
   REQUIRE( item.GetWindow() == nullptr);
   REQUIRE( item.GetValue().IsNull());
   REQUIRE(!item.IsRowGrowable());
-  REQUIRE(!item.IsNotebook());
   REQUIRE(!item.Apply());
   
   REQUIRE(!item.ToConfig(false));
@@ -149,9 +148,9 @@ TEST_CASE("wxExItem", "[item]")
       il->Add(wxArtProvider::GetIcon(wxART_ERROR, wxART_OTHER, imageSize));
     }
     
-    const wxExItem notebook("notebook", wxExItem::ItemsNotebook {
+    const wxExItem notebook("notebook", {
       {wxString("page0"), 
-        {wxExItem("subnotebook", wxExItem::ItemsNotebook {
+        {wxExItem("subnotebook", {
           {"strings", 
             {wxExItem("string1", "first"),
              wxExItem("string2"),
@@ -165,7 +164,7 @@ TEST_CASE("wxExItem", "[item]")
             {wxExItem("spin1", 0, 10),
              wxExItem("spin2", 0, 10),
              wxExItem("spin3", 0, 10),
-             wxExItem("spin control double", 10.1, 15.0, 11.0, 0.1)}}}, ITEM_NOTEBOOK),
+             wxExItem("spin control double", 10.1, 15.0, 11.0, 0.1)}}}),
          wxExItem("string1", "nice"),
          wxExItem("string2"),
          wxExItem("string3")}},

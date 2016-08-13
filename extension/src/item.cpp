@@ -620,7 +620,7 @@ wxFlexGridSizer* wxExItem::Layout(
     case ITEM_SPACER: sizer->AddSpacer(m_Style); return fgz;
     
     default: 
-      if (IsNotebook())
+      if (m_Type >= ITEM_NOTEBOOK && m_Type <= ITEM_NOTEBOOK_TREE)
       {
         if (m_Initial.IsNull() || !m_Initial.CheckType<ItemsNotebook>())
         {

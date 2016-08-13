@@ -50,7 +50,7 @@ TEST_CASE("wxExConfigItem", "[item]")
       {2, "Bit Three"},
       {4, "Bit Four"}},
     false);
-  const wxExItem ci_cl_n(std::set<wxString> {"This","Or","Other"});
+  const wxExItem ci_cl_n({"This","Or","Other"});
   const wxExItem ci_user("ci-usr", 
     new wxTextCtrl(), 
     [=](wxWindow* user, wxWindow* parent, bool readonly) {
@@ -87,7 +87,7 @@ TEST_CASE("wxExConfigItem", "[item]")
     ci_empty, ci_spacer, ci_cb, ci_cb_dir, ci_sl, ci_vl, ci_sp, ci_sp_d,
     ci_str, ci_hl, ci_st, ci_int, ci_rb, ci_bc, ci_cl_n, ci_user};
 
-  const auto more(TestConfigItems(ITEM_NOTEBOOK_LIST, 0, 1));
+  const auto more(TestConfigItems(0, 1));
   items.insert(items.end(), more.begin(), more.end());
   
   // Check members are initialized.

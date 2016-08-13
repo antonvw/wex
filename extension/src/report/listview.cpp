@@ -112,7 +112,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
     if (tool.IsFindType() && m_Frame->FindInFilesDialog(tool.GetId()) == wxID_CANCEL) return;
     if (!wxExTextFileWithListView::SetupTool(tool, m_Frame)) return;
 
-#ifndef __WXGTK__    
+#ifdef __WXMSW__    
     std::thread t([=] {
 #endif
 
@@ -141,7 +141,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
 
     wxLogStatus(tool.Info(&stats));
 
-#ifndef __WXGTK__    
+#ifdef __WXMSW__    
     });
     t.detach();
 #endif

@@ -121,7 +121,8 @@ Copyright: (c) 2012, Anton van Wezenbeek
 
   <vcs 
     name="svn"
-    admin-dir=".svn">
+    admin-dir=".svn"
+    toplevel="true">
 
     <commands>
       <command type = "main"> &amp;add </command>

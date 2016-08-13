@@ -23,7 +23,6 @@ wxExVCSEntry::wxExVCSEntry(
   std::vector<wxExVCSCommand> commands,
   int flags_location)
   : wxExProcess()
-  , m_CommandIndex(0)
   , m_AdminDir(admin_dir)
   , m_Name(name)
   , m_FlagsLocation(flags_location)
@@ -34,7 +33,6 @@ wxExVCSEntry::wxExVCSEntry(
 
 wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
   : wxExProcess()
-  , m_CommandIndex(0)
   , m_AdminDir(node->GetAttribute("admin-dir"))
   , m_Name(node->GetAttribute("name"))
   , m_FlagsLocation(
