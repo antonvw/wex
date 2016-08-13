@@ -424,11 +424,11 @@ int wxExSTC::ConfigDialog(
   wxConfigBase* cfg = use.Get();
   
   static const std::vector<wxExItem> items {
-    wxExItem("stc-notebook", wxExItem::ItemsNotebook {
+    wxExItem("stc-notebook", {
       {_("General"),
-        {wxExItem("stc-subnotebook", wxExItem::ItemsNotebook {
+        {wxExItem("stc-subnotebook", {
           {_("Page1"), 
-            {wxExItem(std::set<wxString> {
+            {wxExItem({
                _("End of line"),
                _("Line numbers"),
                _("Use tabs"),
@@ -466,12 +466,11 @@ int wxExSTC::ConfigDialog(
 #else
                },
 #endif  
-              true, 4)}}}, 
+              true, 4)}}} 
 #ifdef __WXMSW__
-            ITEM_NOTEBOOK_AUI)}},
-#else
-            ITEM_NOTEBOOK)}},
+            ,ITEM_NOTEBOOK_AUI
 #endif
+            )}},
       {_("Font"), 
 #ifndef __WXOSX__
         {!wxExLexers::Get()->GetLexers().empty() ?
@@ -519,7 +518,8 @@ int wxExSTC::ConfigDialog(
            {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}}, true, 1)}},
       {_("Directory"),
         {!(flags & STC_CONFIG_SIMPLE) ?
-           wxExItem(_("Include directory"), ITEM_LISTVIEW, wxAny(), false, wxID_ANY, LABEL_NONE): wxExItem()}}}, ITEM_NOTEBOOK_LIST)};
+           wxExItem(_("Include directory"), ITEM_LISTVIEW, wxAny(), false, wxID_ANY, LABEL_NONE):
+           wxExItem()}}})};
 
   int buttons = wxOK | wxCANCEL;
 

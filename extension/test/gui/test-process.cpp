@@ -74,8 +74,8 @@ TEST_CASE("wxExProcess")
   Process("cd ~\rpwd\r", shell);
 #ifndef __WXOSX__
   REQUIRE( shell->GetText().Contains("home"));
-#endif
   REQUIRE( cwd != wxGetCwd());
+#endif
   REQUIRE( process->Kill() == wxKILL_OK);
 
   // Test working directory for wxEXEC_ASYNC process (should change).

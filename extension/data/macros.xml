@@ -115,7 +115,7 @@ Comments you add within xml elements are not saved when you edit macros.
     <command>o</command>
     <command>$!27!</command>
     <command>@Cb@</command>
-    <command>i Name:      </command>
+    <command>i$!32!Name:$!32!$!32!$!32!$!32!$!32!$!32!</command>
     <command>$!27!</command>
     <command>i$!18!%</command>
     <command>$!27!</command>
@@ -129,10 +129,10 @@ Comments you add within xml elements are not saved when you edit macros.
     <command>o</command>
     <command>$!27!</command>
     <command>@Cb@</command>
-    <command>i Copyright: (c) </command>
+    <command>i$!32!Copyright:$!32!(c)$!32!</command>
     <command>$!27!</command>
     <command>@Year@</command>
-    <command>i </command>
+    <command>i$!32!</command>
     <command>$!27!</command>
     <command>@Copyright@</command>
     <command>@Cc@</command>

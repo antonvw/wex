@@ -69,10 +69,9 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
       f.at(2),
       wxExItem(
         // Match whole word does not work with replace.
-        std::set<wxString>{
-        wxExFindReplaceData::Get()->GetTextMatchCase(),
-        wxExFindReplaceData::Get()->GetTextRegEx(),
-        m_TextRecursive})},
+        {wxExFindReplaceData::Get()->GetTextMatchCase(),
+         wxExFindReplaceData::Get()->GetTextRegEx(),
+         m_TextRecursive})},
     _("Replace In Files"),
     0,
     1,
@@ -141,7 +140,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     return;
   }
 
-#ifndef __WXGTK__
+#ifdef __WXMSW__
   std::thread t([=]{
 #endif
     wxLogStatus(GetFindReplaceInfoText(replace));
@@ -167,7 +166,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     
     Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
 
-#ifndef __WXGTK__
+#ifdef __WXMSW__
     });
   t.detach();
 #endif
@@ -199,7 +198,7 @@ bool wxExFrameWithHistory::FindInFiles(
     return false;
   }
   
-#ifndef __WXGTK__
+#ifdef __WXMSW__
   std::thread t([=]{
 #endif
     wxExStatistics<int> stats;
@@ -228,7 +227,7 @@ bool wxExFrameWithHistory::FindInFiles(
     
     wxLogStatus(tool.Info(&stats));
     
-#ifndef __WXGTK__
+#ifdef __WXMS__
     });
   t.detach();
 #endif
@@ -300,11 +299,9 @@ bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
   static int arg3 = wxDIR_FILES;
 
   if (wxExCmdLineParser(arg, 
-    wxExCmdLineParser::CmdSwitches {
-      {{"r", "recursive"}, {0, [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}}},
-    wxExCmdLineParser::CmdOptions(),
-    wxExCmdLineParser::CmdParams {
-      {"match", {0, [&](std::vector<wxString> & v) {wxExFindReplaceData::Get()->SetFindString(v[0]);}}},
+     {{{"r", "recursive"}, {0, [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}}},
+     {},
+     {{"match", {0, [&](std::vector<wxString> & v) {wxExFindReplaceData::Get()->SetFindString(v[0]);}}},
       {sed ? "replace": "", {0, [&](std::vector<wxString> & v) {
         wxExFindReplaceData::Get()->SetReplaceString(v[0]);}}},
       {"extension", {wxCMD_LINE_PARAM_OPTIONAL, [&](std::vector<wxString> & v) {
@@ -329,7 +326,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
     return false;
   }
 
-#ifndef __WXGTK__
+#ifdef __WXMSW__
   std::thread t([=]{
 #endif
     wxExSTC* stc = GetSTC();
@@ -345,7 +342,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
     wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
     Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
   
-#ifndef __WXGTK__
+#ifdef __WXMSW__
     });
   t.detach();
 #endif

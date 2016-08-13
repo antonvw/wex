@@ -196,7 +196,7 @@ public:
   /// of a pair of pages with a vector of items.
   /// e.g.:
   /// \code
-  /// wxExItem("notebook", ItemsNotebook {
+  /// wxExItem("notebook", {
   ///   {"page1", 
   ///     {wxExItem("string1"),
   ///      wxExItem("string2"),
@@ -204,7 +204,7 @@ public:
   ///   {"page2", 
   ///     {wxExItem("spin1", 5, 0, 10),
   ///      wxExItem("spin2", 5, 0, 10),
-  ///      wxExItem("spin3", 5, 0, 10)}}}, ITEM_NOTEBOOK)
+  ///      wxExItem("spin3", 5, 0, 10)}}})
   /// \endcode
   wxExItem(
     /// label for this item
@@ -220,7 +220,11 @@ public:
     /// - ITEM_NOTEBOOK_SIMPLE
     /// - ITEM_NOTEBOOK_TOOL
     /// - ITEM_NOTEBOOK_TREE
-    wxExItemType type,
+#ifdef __WXMSW__
+    wxExItemType type = ITEM_NOTEBOOK_LIST,
+#else
+    wxExItemType type = ITEM_NOTEBOOK,
+#endif
     /// style of this item
     long style = 0,
     /// number of rows
@@ -231,8 +235,8 @@ public:
     wxExLabelType label_type = LABEL_NONE,
     /// image list to be used (required for a tool book)
     wxImageList* imageList = nullptr)
-  : wxExItem(type, style, label, v, false, 
-    label_type, wxID_ANY, cols, 0, 1, 1, nullptr, nullptr, nullptr, imageList) {;};
+    : wxExItem(type, style, label, v, false, 
+      label_type, wxID_ANY, cols, 0, 1, 1, nullptr, nullptr, nullptr, imageList) {;};
   
   /// Constructor for a ITEM_RADIOBOX, or a ITEM_CHECKLISTBOX_BIT item. 
   /// This checklistbox (not mutually exclusive choices)
@@ -348,9 +352,6 @@ public:
   /// Returns the window (first call Layout, to create it, otherwise it is nullptr).
   wxWindow* GetWindow() const {return m_Window;};
 
-  /// Returns true if this item is a notebook.
-  bool IsNotebook() const {return m_Type >= ITEM_NOTEBOOK && m_Type <= ITEM_NOTEBOOK_TREE;};
-  
   /// Is this item allowed to be expanded on a row.
   bool IsRowGrowable() const {return m_IsRowGrowable;};
 
@@ -378,7 +379,7 @@ public:
   
   /// Sets this item to be growable.
   /// Default whether the item row is growable is determined
-  /// by the kind of item. You can ovverride this using SetRowGrowable.
+  /// by the kind of item. You can override this using SetRowGrowable.
   void SetRowGrowable(bool value) {m_IsRowGrowable = value;};
   
   /// Sets the validator to be used by the item, if appropriate.

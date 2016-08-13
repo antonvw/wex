@@ -8,7 +8,6 @@
 #pragma once
 
 #include <wx/extension/item.h>
-#include <wx/extension/listview.h>
 
 /// Returns a vector with all items available.
 const auto TestItems()
@@ -27,7 +26,7 @@ const auto TestItems()
     wxExItem("string3"),
     wxExItem("slider1", 10, 15, 10, ITEM_SLIDER),
     wxExItem("slider2", 10, 15, 10, ITEM_SLIDER),
-    wxExItem("notebook", wxExItem::ItemsNotebook {
+    wxExItem("notebook", {
       {"strings", 
         {wxExItem("string1"),
          wxExItem("string2"),
@@ -41,7 +40,7 @@ const auto TestItems()
         {wxExItem("spin1", 0, 10),
          wxExItem("spin2", 0, 10),
          wxExItem("spin3", 0, 10),
-         wxExItem("spin control double", 10.1, 15.0, 11.0, 0.1)}}}, ITEM_NOTEBOOK_LIST, 0, 0, 1),
+         wxExItem("spin control double", 10.1, 15.0, 11.0, 0.1)}}}),
     wxExItem("button1", ITEM_BUTTON),
     wxExItem("button2", ITEM_BUTTON),
     wxExItem("combobox", ITEM_COMBOBOX, as)};

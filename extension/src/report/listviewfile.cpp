@@ -116,7 +116,7 @@ void wxExListViewFile::AddItems(
 {
   Unbind(wxEVT_IDLE, &wxExListViewFile::OnIdle, this);
   
-#ifndef __WXGTK__ 
+#ifdef __WXMSW__ 
   std::thread t([=] {
 #endif
     const int old_count = GetItemCount();
@@ -142,7 +142,7 @@ void wxExListViewFile::AddItems(
     wxLogStatus(text);
     
     Bind(wxEVT_IDLE, &wxExListViewFile::OnIdle, this);
-#ifndef __WXGTK__ 
+#ifdef __WXMSW__ 
     });
   if (detached)  
     t.detach();

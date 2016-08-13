@@ -208,13 +208,14 @@ bool wxExLexers::LoadDocument()
 
   if (config != nullptr)
   {
-    const wxString extensions(std::accumulate(m_Lexers.begin(), m_Lexers.end(), wxFileSelectorDefaultWildcardStr, 
+    const std::string extensions(std::accumulate(
+      m_Lexers.begin(), m_Lexers.end(), std::string(wxFileSelectorDefaultWildcardStr), 
       [&](const wxString& a, const wxExLexer& b) {
         if (!b.GetExtensions().empty())
-          return !a.empty() ? a + wxExGetFieldSeparator() + b.GetExtensions(): b.GetExtensions();
+          return a.empty() ? b.GetExtensions() : a + wxExGetFieldSeparator() + b.GetExtensions();
         else return a;}));
-    if (!config->Exists(_("Add what"))) config->Write(_("Add what"), extensions);
-    if (!config->Exists(_("In files"))) config->Write(_("In files"), extensions);
+    if (!config->Exists(_("Add what"))) config->Write(_("Add what"), wxString(extensions));
+    if (!config->Exists(_("In files"))) config->Write(_("In files"), wxString(extensions));
     if (!config->Exists(_("In folder"))) config->Write(_("In folder"), wxGetHomeDir());
   }
   

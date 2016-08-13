@@ -28,23 +28,18 @@ TEST_CASE("wxExCmdLineParser")
     "-a 10 -b 10.1 -c test -d 01-jan-2000 -s -t- -u --version one two three":
     "-a 10 -b 10,1 -c test -d 01-jan-2000 -s -t- -u --version one two three");
   
-  wxExCmdLineParser clp(str,
-    wxExCmdLineParser::CmdSwitches { 
-      {{"s", ""}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){s = on;}}},
+  REQUIRE( wxExCmdLineParser(str,
+     {{{"s", ""}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){s = on;}}},
       {{"t", ""}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){t = on;}}},
       {{"u", ""}, {0, [&](bool on){u = true;}}},
       {{"version", ""}, {0, [&](bool on){v = on;}}}},
-    wxExCmdLineParser::CmdOptions {
-      {{"a", ""}, {wxCMD_LINE_VAL_NUMBER, [&](wxAny any) {any.GetAs(&a);}}},
+     {{{"a", ""}, {wxCMD_LINE_VAL_NUMBER, [&](wxAny any) {any.GetAs(&a);}}},
       {{"b", ""}, {wxCMD_LINE_VAL_DOUBLE, [&](wxAny any) {any.GetAs(&b);}}},
       {{"c", ""}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {any.GetAs(&c);}}},
       {{"d", ""}, {wxCMD_LINE_VAL_DATE, [&](wxAny any) {any.GetAs(&d);}}}},
-    wxExCmdLineParser::CmdParams {
-      {"p", {0, [&](std::vector<wxString> & v) {p = v[0];}}},
+     {{"p", {0, [&](std::vector<wxString> & v) {p = v[0];}}},
       {"q", {0, [&](std::vector<wxString> & v) {q = v[1];}}},
-      {"r", {0, [&](std::vector<wxString> & v) {r = v[2];}}}});
-    
-  REQUIRE( clp.Parse() == 0 );
+      {"r", {0, [&](std::vector<wxString> & v) {r = v[2];}}}}).Parse() == 0 );
 
   REQUIRE( a == 10 );
   REQUIRE( b == 10.1 );

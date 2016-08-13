@@ -102,7 +102,6 @@ wxExSampleFrame::wxExSampleFrame()
   , m_Shell(new wxExShell(this, ">", wxTextFile::GetEOL(), true, 10))
   , m_STCLexers(new wxExSTC(this, wxExLexers::Get()->GetFileName()))
 {
-wxLogMessage("%d", wxID_SELECTALL);
   wxExProcess::PrepareOutput(this);
   
   SetIcon(wxICON(app));
@@ -267,12 +266,12 @@ wxLogMessage("%d", wxID_SELECTALL);
       wxEmptyString, _("Columns"), 1, 1, 100);
     if (val >= 0)
     {
-      wxExItemDialog(this, TestConfigItems(ITEM_NOTEBOOK_LIST, 0, val), 
+      wxExItemDialog(this, TestConfigItems(0, val), 
         "Config Dialog Columns", 0, val).ShowModal();
     }}, ID_DLG_CONFIG_ITEM_COL);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExItemDialog* dlg = new wxExItemDialog(this, TestConfigItems(ITEM_NOTEBOOK_LIST, 0, 1), 
+    wxExItemDialog* dlg = new wxExItemDialog(this, TestConfigItems(0, 1), 
       "Config Dialog",
       0, 1,
       wxAPPLY | wxCANCEL,
@@ -287,11 +286,11 @@ wxLogMessage("%d", wxID_SELECTALL);
     dlg->Show();}, ID_DLG_CONFIG_ITEM);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExItemDialog(this, TestConfigItems(ITEM_NOTEBOOK_LIST, 0, 1), "Config Dialog Readonly",
+    wxExItemDialog(this, TestConfigItems(0, 1), "Config Dialog Readonly",
       0, 4, wxCANCEL).ShowModal();}, ID_DLG_CONFIG_ITEM_READONLY);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExItemDialog(this, TestItems(), "Options", 0, 2).ShowModal();}, ID_DLG_ITEM);
+    wxExItemDialog(this, TestItems(), "Options", 0, 1).ShowModal();}, ID_DLG_ITEM);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_ListView->ConfigDialog(this);}, ID_DLG_LISTVIEW);
