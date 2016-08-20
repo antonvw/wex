@@ -2,7 +2,7 @@
 // Name:      test-Item.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -86,8 +86,7 @@ TEST_CASE("wxExItem", "[item]")
 #endif
 #endif
   
-  std::vector <wxExItem> items {
-    item, item_int, item_spin
+  std::vector <wxExItem> items {item, item_int, item_spin
 #ifdef __UNIX__
     , item_picker
 #endif
@@ -148,48 +147,9 @@ TEST_CASE("wxExItem", "[item]")
       il->Add(wxArtProvider::GetIcon(wxART_ERROR, wxART_OTHER, imageSize));
     }
     
-    const wxExItem notebook("notebook", {
-      {wxString("page0"), 
-        {wxExItem("subnotebook", {
-          {"strings", 
-            {wxExItem("string1", "first"),
-             wxExItem("string2"),
-             wxExItem("string3")}},
-          {"checkboxes", 
-           {wxExItem("checkbox1", ITEM_CHECKBOX),
-            wxExItem("checkbox2", ITEM_CHECKBOX),
-            wxExItem("checkbox3", ITEM_CHECKBOX),
-            wxExItem("checkbox4", ITEM_CHECKBOX)}},
-          {"spins", 
-            {wxExItem("spin1", 0, 10),
-             wxExItem("spin2", 0, 10),
-             wxExItem("spin3", 0, 10),
-             wxExItem("spin control double", 10.1, 15.0, 11.0, 0.1)}}}),
-         wxExItem("string1", "nice"),
-         wxExItem("string2"),
-         wxExItem("string3")}},
-      {"page1", 
-        {wxExItem("string1", "nice"),
-         wxExItem("string2"),
-         wxExItem("string3")}},
-      {"checkboxes", 
-       {wxExItem("checkbox1", ITEM_CHECKBOX),
-        wxExItem("checkbox2", ITEM_CHECKBOX),
-        wxExItem("checkbox3", ITEM_CHECKBOX),
-        wxExItem("checkbox4", ITEM_CHECKBOX)}},
-      {"spins", 
-        {wxExItem("spin1", 0, 10),
-         wxExItem("spin2", 0, 10),
-         wxExItem("spin3", 0, 10),
-         wxExItem("spin control double", 10.1, 15.0, 11.0, 0.1)}}}, 
-      (wxExItemType)style, 0, 0, 1, LABEL_NONE, il);
-    
-    wxExItemDialog* dlg = new wxExItemDialog(
-      GetFrame(), 
-      std::vector <wxExItem> {notebook},
-      titles[style - ITEM_NOTEBOOK],
-      0,
-      1,
+    wxExItemDialog* dlg = new wxExItemDialog(GetFrame(), 
+      std::vector <wxExItem> {NotebookItem((wxExItemType)style, LABEL_NONE, il)},
+      titles[style - ITEM_NOTEBOOK], 0, 1,
       wxOK | wxCANCEL | wxAPPLY);
       
     dlg->Show();

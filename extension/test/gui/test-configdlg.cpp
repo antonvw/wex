@@ -20,11 +20,11 @@ TEST_CASE("wxExConfigDialog", "[item]")
   
   wxExItemDialog* dlg = new wxExItemDialog(GetFrame(), 
     std::vector <wxExItem> {
-      wxExItem("string1", "test1"),
-      wxExItem("string2", "test2"),
-      wxExItem("string3", "test3"),
-      wxExItem("string4", "test4"),
-      wxExItem("string5", "test5")},
+      {"string1", "test1"},
+      {"string2", "test2"},
+      {"string3", "test3"},
+      {"string4", "test4"},
+      {"string5", "test5"}},
     "config dialog", 0, 1, wxOK | wxCANCEL | wxAPPLY);
   dlg->Show();
   
@@ -37,8 +37,8 @@ TEST_CASE("wxExConfigDialog", "[item]")
   // Test config dialog without pages.
   wxExItemDialog* dlg1 = new wxExItemDialog(GetFrame(), 
     std::vector <wxExItem> {
-      wxExItem("string1"),
-      wxExItem("string2")},
+      {"string1"},
+      {"string2"}},
     "no pages", 0, 1, wxOK | wxCANCEL | wxAPPLY);
   dlg1->Show();
   
@@ -53,8 +53,7 @@ TEST_CASE("wxExConfigDialog", "[item]")
   
   // Test config dialog with empty items.
   wxExItemDialog* dlg3 = new wxExItemDialog(GetFrame(), 
-    std::vector <wxExItem> {
-      wxExItem(), wxExItem(), wxExItem()},
+    std::vector <wxExItem> {{}, {}, {}},
     "empty items");
   dlg3->Show();
 }

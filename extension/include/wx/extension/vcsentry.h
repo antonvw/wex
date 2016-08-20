@@ -32,7 +32,7 @@ public:
     const wxString& admin_dir = wxEmptyString,
     /// commands for this vcs,
     /// default adds empty vcs command with id 0
-    std::vector<wxExVCSCommand> commands = std::vector<wxExVCSCommand>{wxExVCSCommand()},
+    const std::vector<wxExVCSCommand> & commands = std::vector<wxExVCSCommand>{wxExVCSCommand()},
     /// vcs flags
     int flags_location = VCS_FLAGS_LOCATION_POSTFIX);
   

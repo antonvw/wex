@@ -495,6 +495,13 @@ void wxExLexer::Set(const wxXmlNode* node)
       }
       else if (child->GetName() == "properties")
       {
+        if (!m_Properties.empty())
+        {
+          wxLogError(
+            "Properties already available on line: %d", 
+            child->GetLineNumber());
+        }
+        
         wxExNodeProperties(child, m_Properties);
       }
       else if (child->GetName() == "comments")

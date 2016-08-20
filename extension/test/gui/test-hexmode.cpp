@@ -67,7 +67,8 @@ TEST_CASE("wxExHexMode", "[stc]")
   REQUIRE( hex.Replace('2'));
   REQUIRE( hex.OtherField() != wxSTC_INVALID_POSITION);
   
-  stc->GetFile().FileSave(wxExFileName("test.hex"));
+  INFO(wxExFileName(GetTestDir() + "test.hex").GetFullPath());
+  REQUIRE( stc->GetFile().FileSave(wxExFileName(GetTestDir() + "test.hex")));
   stc->Reload();
   REQUIRE(stc->GetText() == "01232567890123456789");
   
@@ -81,7 +82,7 @@ TEST_CASE("wxExHexMode", "[stc]")
   REQUIRE( hex.Replace('x'));
   REQUIRE( hex.OtherField() != wxSTC_INVALID_POSITION);
   
-  stc->GetFile().FileSave();
+  REQUIRE( stc->GetFile().FileSave());
   stc->Reload();
   REQUIRE(stc->GetText() == "012325x7890123456789");
   
@@ -115,4 +116,6 @@ TEST_CASE("wxExHexMode", "[stc]")
   REQUIRE( hm->GetBuffer().empty());
   
   wxExLexers::Get()->Apply(stc);
+  
+  REQUIRE( remove("test.hex") == 0);
 }

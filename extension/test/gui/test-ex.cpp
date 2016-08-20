@@ -127,10 +127,11 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE( ex->Command(":'<,'>m1"));
   stc->GotoLine(2);
   stc->LineDownExtend();
-  REQUIRE( ex->Command(":'<,'>wtest-ex.txt"));
+  REQUIRE( ex->Command(":'<,'>w test-ex.txt"));
   REQUIRE( ex->Command(":'<,'><"));
   REQUIRE( ex->Command(":'<,'>>"));
   REQUIRE( ex->Command(":'<,'>!sort"));
+
   stc->GotoLine(2);
   stc->LineDownExtend();
   REQUIRE(!ex->Command(":'<,'>x"));
@@ -150,7 +151,7 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE( ex->Command(":r !echo qwerty"));
   REQUIRE( stc->GetText().Contains("qwerty"));
 #endif
-  
+
   // Test macros.
   // Do not load macros yet, to test IsRecorded.
   REQUIRE(!ex->GetMacros().IsRecording());
@@ -339,4 +340,6 @@ TEST_CASE("wxExEx", "[stc][vi]")
       }
     }
   }
+
+  REQUIRE( remove("test-ex.txt") == 0);
 }

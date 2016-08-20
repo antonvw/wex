@@ -2067,6 +2067,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:blue </def>
         <def style ="styledefault"> default-font,back:white,fore:black </def>
+        <def style ="styledefault-back"> default-font,back:#F7F7F7,fore:black </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:dark slate blue </def>
         <def style ="variable"> fore:medium blue </def>
@@ -2099,6 +2100,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:#ffab8f </def>
         <def style ="styledefault"> default-font,back:#202020,fore:#BBBBBB </def>
+        <def style ="styledefault-back"> default-font,back:#232323,fore:#BBBBBB,eolfilled </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:cadet blue </def>
         <def style ="variable"> fore:green </def>
@@ -2422,6 +2424,53 @@ Copyright: (c) 2016, Anton van Wezenbeek
       else except exec finally for from global if import in is lambda None 
       not or pass print raise return try while with yield
     </set>
+    <set name="sql">    
+      <!-- First line added manually -->
+      <!-- Copied from scite, v1.68. -->
+      auto_increment comment index exists
+      absolute action add admin after aggregate
+      alias all allocate alter and any are array as asc
+      assertion at authorization
+      before begin binary bit blob boolean both breadth by
+      call cascade cascaded case cast catalog char character
+      check class clob close collate collation column commit
+      completion connect connection constraint constraints
+      constructor continue corresponding create cross cube current
+      current_date current_path current_role current_time current_timestamp
+      current_user cursor cycle
+      data date day deallocate dec decimal declare default
+      deferrable deferred delete depth deref desc describe descriptor
+      destroy destructor deterministic dictionary diagnostics disconnect
+      distinct domain double drop dynamic
+      each else end end-exec equals escape every except
+      exception exec execute external
+      false fetch first float for foreign found from free full
+      function general get global go goto grant group grouping
+      having host hour identity if ignore immediate in indicator initialize 
+      initially inner inout input insert int integer intersect interval
+      into is isolation iterate
+      join key language large last lateral leading left less level like
+      limit local localtime localtimestamp locator
+      map match minute modifies modify module month
+      names national natural nchar nclob new next no none
+      not null numeric object of off old on only open operation option
+      or order ordinality out outer output
+      pad parameter parameters partial path postfix precision prefix
+      preorder prepare preserve primary
+      prior privileges procedure public
+      read reads real recursive ref references referencing relative
+      restrict result return returns revoke right
+      role rollback rollup routine row rows
+      savepoint schema scroll scope search second section select
+      sequence session session_user set sets size smallint some| space
+      specific specifictype sql sqlexception sqlstate sqlwarning start
+      state statement static structure system_user
+      table temporary terminate than then time timestamp
+      timezone_hour timezone_minute to trailing transaction translation
+      treat trigger true under union unique unknown
+      unnest update usage user using value values varchar variable varying view
+      when whenever where with without work write year zone
+    </set>
   </keyword>
   
   <!--
@@ -2663,7 +2712,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
   <lexer name="gap"/>
   <lexer name="gui4cli"/>
   <lexer name="haskell"/>
-  <lexer name="hypertext" extensions="*.htm;*.html">
+  <lexer name="hypertext" extensions="*.htm;*.html;*.php">
     <styles>
       <style no="tag"> tag </style>
       <style no="tagend"> tag </style>
@@ -2671,7 +2720,16 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <style no="attributeunknown"> error </style>
       <style no="question"> fore:sky blue,bold </style>
       <style no="value"> fore:#ff00ff</style>
-      <style no="hphp_default"> styledefault </style>
+      <style no="hphp_default"> styledefault-back </style>
+      <style no="hphp_hstring"> styledefault-back </style>
+      <style no="hphp_simplestring"> styledefault-back </style>
+      <style no="hphp_keyword2"> styledefault-back </style>
+      <style no="hphp_number"> styledefault-back </style>
+      <style no="hphp_variable"> styledefault-back </style>
+      <style no="hphp_comment"> styledefault-back </style>
+      <style no="hphp_commentline"> styledefault-back </style>
+      <style no="hphp_hstring_variable"> styledefault-back </style>
+      <style no="hphp_operator"> styledefault-back </style>
       <style no="asp"> fore:sky blue,bold </style>
       <style no="hpa_triple"> comment </style>
     </styles>
@@ -2728,11 +2786,6 @@ Copyright: (c) 2016, Anton van Wezenbeek
       list manifest max min novalidate pattern placeholder
       required reversed role sandbox scoped seamless sizes spellcheck srcdoc step
     </keywords>
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-    </properties>
   </lexer>
   <lexer name="ihex"/>
   <lexer name="inno"/>
@@ -2817,8 +2870,30 @@ Copyright: (c) 2016, Anton van Wezenbeek
   <lexer name="metapost"/>
   <lexer name="mmixal"/>
   <lexer name="modula"/>
-  <lexer name="mssql"/>
-  <lexer name="mysql"/>
+  <lexer name="mssql">
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+    <keywords set="sql"/>
+  </lexer>
+  <lexer name="mysql" extensions="*.sql">
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+    <keywords set="sql">
+      ascii:1 bin bit_length char char_length character_length concat concat_ws elt
+      export_set field find_in_set format from_base64 hex insert instr lcase
+      left length like load_file locate lower lpad ltrim make_set
+      match mid not_like not_regexp oct octet_length ord position quote
+      regexp repeat replace reverse right rlike rpad rtrim soundex
+      sounds_like space strcmp substr substring substring_index to_base64 trim ucase
+      unhex upper weight_string 
+    </keywords>
+  </lexer>
   <lexer name="nimrod" macro="python"/>
   <lexer name="nncrontab"/>
   <lexer name="nsis"/>
@@ -2884,7 +2959,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
     </properties>
   </lexer>
   <lexer name="PL/M"/>
-  <lexer display="php" name="phpscript" macro="hypertext" extensions="*.php"/> 
+  <lexer display="php" name="phpscript" macro="hypertext"/> 
   <lexer name="phpscript" macro="hypertext"/> 
   <lexer name="po" extensions="*.po;*.pot">
     <styles>
@@ -2985,59 +3060,13 @@ Copyright: (c) 2016, Anton van Wezenbeek
   <lexer name="sorcins"/>
   <lexer name="specman"/>
   <lexer name="spice"/>
-  <lexer name="sql" extensions="*.sql">
+  <lexer name="sql">
     <properties>
       <property name="fold"> 1 </property>
       <property name="fold.compact"> 1 </property>
       <property name="fold.comment"> 1 </property>
     </properties>
-    <keywords>    
-    <!-- First line added manually -->
-    <!-- Copied from scite, v1.68. -->
-      auto_increment comment index exists
-      absolute action add admin after aggregate
-      alias all allocate alter and any are array as asc
-      assertion at authorization
-      before begin binary bit blob boolean both breadth by
-      call cascade cascaded case cast catalog char character
-      check class clob close collate collation column commit
-      completion connect connection constraint constraints
-      constructor continue corresponding create cross cube current
-      current_date current_path current_role current_time current_timestamp
-      current_user cursor cycle
-      data date day deallocate dec decimal declare default
-      deferrable deferred delete depth deref desc describe descriptor
-      destroy destructor deterministic dictionary diagnostics disconnect
-      distinct domain double drop dynamic
-      each else end end-exec equals escape every except
-      exception exec execute external
-      false fetch first float for foreign found from free full
-      function general get global go goto grant group grouping
-      having host hour identity if ignore immediate in indicator initialize 
-      initially inner inout input insert int integer intersect interval
-      into is isolation iterate
-      join key language large last lateral leading left less level like
-      limit local localtime localtimestamp locator
-      map match minute modifies modify module month
-      names national natural nchar nclob new next no none
-      not null numeric object of off old on only open operation option
-      or order ordinality out outer output
-      pad parameter parameters partial path postfix precision prefix
-      preorder prepare preserve primary
-      prior privileges procedure public
-      read reads real recursive ref references referencing relative
-      restrict result return returns revoke right
-      role rollback rollup routine row rows
-      savepoint schema scroll scope search second section select
-      sequence session session_user set sets size smallint some| space
-      specific specifictype sql sqlexception sqlstate sqlwarning start
-      state statement static structure system_user
-      table temporary terminate than then time timestamp
-      timezone_hour timezone_minute to trailing transaction translation
-      treat trigger true under union unique unknown
-      unnest update usage user using value values varchar variable varying view
-      when whenever where with without work write year zone
-    </keywords>
+    <keywords set="sql"/>
     <comments begin1="--" />
   </lexer>
   <lexer name="srec" macro="ihex"/>

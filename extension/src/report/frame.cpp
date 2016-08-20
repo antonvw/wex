@@ -48,10 +48,10 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   t.insert(m_TextRecursive);
   
   const std::vector<wxExItem> f {
-    wxExItem(wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), true),
-    wxExItem(m_TextInFiles, ITEM_COMBOBOX, wxAny(), true),
-    wxExItem(m_TextInFolder, ITEM_COMBOBOX_DIR, wxAny(), true, NewControlId()),
-    wxExItem(t)};
+    {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), true},
+    {m_TextInFiles, ITEM_COMBOBOX, wxAny(), true},
+    {m_TextInFolder, ITEM_COMBOBOX_DIR, wxAny(), true, NewControlId()},
+    {t}};
   
   m_FiFDialog = new wxExItemDialog(this,
     f,
@@ -63,15 +63,13 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     
   m_RiFDialog = new wxExItemDialog(this,
     std::vector<wxExItem> {f.at(0),
-      wxExItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-      ITEM_COMBOBOX),
+      {wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX},
       f.at(1),
       f.at(2),
-      wxExItem(
-        // Match whole word does not work with replace.
-        {wxExFindReplaceData::Get()->GetTextMatchCase(),
-         wxExFindReplaceData::Get()->GetTextRegEx(),
-         m_TextRecursive})},
+      // Match whole word does not work with replace.
+      {{wxExFindReplaceData::Get()->GetTextMatchCase(),
+        wxExFindReplaceData::Get()->GetTextRegEx(),
+        m_TextRecursive}}},
     _("Replace In Files"),
     0,
     1,
@@ -227,7 +225,7 @@ bool wxExFrameWithHistory::FindInFiles(
     
     wxLogStatus(tool.Info(&stats));
     
-#ifdef __WXMS__
+#ifdef __WXMSW__
     });
   t.detach();
 #endif
@@ -246,9 +244,9 @@ int wxExFrameWithHistory::FindInFilesDialog(
 
   if (wxExItemDialog(this,
     std::vector<wxExItem> {
-      wxExItem(
+      {
         wxExFindReplaceData::Get()->GetTextFindWhat(), 
-        ITEM_COMBOBOX, wxAny(), true),
+        ITEM_COMBOBOX, wxAny(), true},
       (add_in_files ? wxExItem(
         m_TextInFiles, 
         ITEM_COMBOBOX, wxAny(), true) : wxExItem()),

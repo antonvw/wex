@@ -35,19 +35,19 @@ TEST_CASE("wxExItemTemplateDialog", "[item]")
   {
     wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
       std::vector <wxExTestItem> {
-        wxExTestItem("fruit", "apple"),
-        wxExTestItem("button", ITEM_BUTTON),
-        wxExTestItem("string1"),
-        wxExTestItem("string2"),
-        wxExTestItem("more fruit", "citron")},
+        {"fruit", "apple"},
+        {"button", ITEM_BUTTON},
+        {"string1"},
+        {"string2"},
+        {"more fruit", "citron"}},
       "3 columns", 0, 3);
     
     REQUIRE( wxExTestItem("test", ITEM_BUTTON).GetType() == ITEM_BUTTON);
     
-    REQUIRE(!dlg->BindButton(wxExTestItem()));
-    REQUIRE(!dlg->BindButton(wxExTestItem("test", ITEM_COMBOBOX)));
-    REQUIRE(!dlg->BindButton(wxExTestItem("test", ITEM_BUTTON))); // not yet laid out0
-    REQUIRE(!dlg->BindButton(wxExTestItem("test", ITEM_COMBOBOX_DIR))); // same
+    REQUIRE(!dlg->BindButton({}));
+    REQUIRE(!dlg->BindButton({"test", ITEM_COMBOBOX}));
+    REQUIRE(!dlg->BindButton({"test", ITEM_BUTTON})); // not yet laid out0
+    REQUIRE(!dlg->BindButton({"test", ITEM_COMBOBOX_DIR})); // same
 
     REQUIRE( dlg->BindButton(dlg->GetItem("button")));
     
@@ -72,8 +72,7 @@ TEST_CASE("wxExItemTemplateDialog", "[item]")
   SECTION("Test dialog with checkbox item")
   {
     wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
-      std::vector <wxExTestItem> {
-        wxExTestItem("checkbox", ITEM_CHECKBOX)},
+      std::vector <wxExTestItem> {{"checkbox", ITEM_CHECKBOX}},
       "checkbox items");
 
     dlg->ForceCheckBoxChecked();
@@ -84,8 +83,8 @@ TEST_CASE("wxExItemTemplateDialog", "[item]")
   {
     wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
       std::vector <wxExTestItem> {
-        wxExTestItem("string1"),
-        wxExTestItem("string2")},
+        {"string1"},
+        {"string2"}},
       "no buttons", 0, 1, 0);
     dlg->Show();
   }
@@ -101,8 +100,7 @@ TEST_CASE("wxExItemTemplateDialog", "[item]")
   SECTION("Test dialog with empty items")
   {
     wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
-      std::vector <wxExTestItem> {
-        wxExTestItem(), wxExTestItem(), wxExTestItem()},
+      std::vector <wxExTestItem> {{}, {}, {}},
       "empty items");
     dlg->Show();
   }

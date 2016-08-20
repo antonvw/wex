@@ -20,7 +20,10 @@
 TEST_CASE("wxExToContainer")
 {
   wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
+#ifndef __WXOSX__
+  // gives a warning about very large combobox
   AddPane(GetFrame(), cb);
+#endif
 
   wxArrayString a;
   a.Add("x");

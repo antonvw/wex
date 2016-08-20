@@ -31,6 +31,10 @@
 #include "ready.xpm"
 #endif
 
+#ifdef __WXOSX__
+  #undef wxUSE_TASKBARICON
+#endif
+
 #if wxUSE_SOCKETS
 
 enum
@@ -113,8 +117,7 @@ Frame::Frame()
 #endif
 
   wxMenu* menuServer = new wxMenu();
-  menuServer->Append(ID_SERVER_CONFIG,
-    wxExEllipsed(_("Config")), _("Configures the server"));
+  menuServer->Append(wxID_PREFERENCES);
   menuServer->AppendSeparator();
   menuServer->Append(wxID_EXECUTE);
   menuServer->Append(wxID_STOP);
@@ -166,7 +169,9 @@ Frame::Frame()
   menuBar->Append(menuView, _("&View"));
   menuBar->Append(menuServer, _("&Server"));
   menuBar->Append(menuClient, _("&Client"));
+#ifndef __WXOSX__
   menuBar->Append(menuOptions, _("&Options"));
+#endif
   menuBar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   SetMenuBar(menuBar);
 
@@ -224,18 +229,14 @@ Frame::Frame()
     {
       return;
     }
-
     for (auto& it : m_Clients)
     {
       wxSocketBase* sock = it;
       SocketLost(sock, false);
     }
-
     m_Clients.clear();
-
     m_SocketServer->Destroy();
     m_SocketServer = nullptr;
-
     const wxString text = _("server stopped");
 
 #if wxUSE_TASKBARICON
@@ -246,12 +247,9 @@ Frame::Frame()
       wxString::Format(_("%ld clients"), m_Clients.size()),
       "PaneClients");
 #endif
-
     wxLogStatus(text);
     AppendText(m_LogWindow, text, DATA_MESSAGE);
-
     const wxString statistics = m_Statistics.Get();
-
     if (!statistics.empty())
     {
       AppendText(m_LogWindow, statistics, DATA_MESSAGE);
@@ -292,7 +290,6 @@ Frame::Frame()
       wxGetStockLabel(wxID_SAVEAS), 
       wxFileSelectorDefaultWildcardStr, 
       wxFD_SAVE);
-      
     if (dlg.ShowModal())
     {
       m_DataWindow->GetFile().FileSave(dlg.GetPath());
@@ -339,26 +336,24 @@ Frame::Frame()
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
     wxExItemDialog(this, std::vector<wxExItem>{
-        wxExItem(_("Hostname"), wxEmptyString, 0, ITEM_TEXTCTRL, true),
+        {_("Hostname"), wxEmptyString, 0, ITEM_TEXTCTRL, true},
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
-        wxExItem(_("Port"), 1, 65536)},
+        {_("Port"), 1, 65536}},
       _("Server Config"),
       0,
       1,
       m_SocketServer == nullptr ? wxOK|wxCANCEL: wxCANCEL).ShowModal();
-    }, ID_SERVER_CONFIG);
+    }, wxID_PREFERENCES);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const wxString str = event.GetString() + wxTextFile::GetEOL();
     const wxCharBuffer& buffer(str.c_str());
-
     for (auto& it : m_Clients)
     {
       wxSocketBase* sock = it;
       WriteDataToClient(buffer, sock);
     }
-
     m_Shell->Prompt();}, ID_SHELL_COMMAND);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {

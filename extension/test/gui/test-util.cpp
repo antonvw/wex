@@ -89,14 +89,18 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   SECTION("wxExComboBoxAs")
   {
     wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
+#ifndef __WXOSX__
     AddPane(GetFrame(), cb);
+#endif
     wxExComboBoxAs<const std::list < wxString >>(cb, l);
   }
   
   SECTION("wxExComboBoxFromList")
   {
     wxComboBox* cb = new wxComboBox(GetFrame(), wxID_ANY);
+#ifndef __WXOSX__
     AddPane(GetFrame(), cb);
+#endif
     wxExComboBoxFromList(cb, l);
     REQUIRE( cb->GetCount() == 3);
   }

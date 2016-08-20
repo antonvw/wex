@@ -86,12 +86,6 @@ void wxExFile::FileNew(const wxExFileName& filename)
 
 bool wxExFile::FileSave(const wxExFileName& filename)
 {
-  if (!m_IsLoaded)
-  {
-    wxLogStatus("File has not been loaded");
-    return false;
-  }
-
   bool save_as = false;
 
   if (filename.IsOk())
@@ -99,6 +93,12 @@ bool wxExFile::FileSave(const wxExFileName& filename)
     Assign(filename);
     MakeAbsolute();
     save_as = true;
+  }
+
+  if (!save_as && !m_IsLoaded)
+  {
+    wxLogStatus("File has not been loaded");
+    return false;
   }
 
   if (m_OpenFile && !Open(m_FileName.GetFullPath(), wxFile::write))

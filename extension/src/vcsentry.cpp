@@ -20,7 +20,7 @@
 wxExVCSEntry::wxExVCSEntry(
   const wxString& name,
   const wxString& admin_dir,
-  std::vector<wxExVCSCommand> commands,
+  const std::vector<wxExVCSCommand> & commands,
   int flags_location)
   : wxExProcess()
   , m_AdminDir(admin_dir)
@@ -279,21 +279,11 @@ int wxExVCSEntry::ShowDialog(
   const int retValue = wxExItemDialog(parent,
     std::vector<wxExItem> {
       (GetCommand().IsCommit() ? wxExItem(
-        _("Revision comment"), 
-        ITEM_COMBOBOX,
-        wxAny(),
-        true) : wxExItem()),
+        _("Revision comment"), ITEM_COMBOBOX, wxAny(), true) : wxExItem()),
       (add_folder && !GetCommand().IsHelp() ? wxExItem(
-        _("Base folder"), 
-        ITEM_COMBOBOX_DIR, 
-        wxAny(), 
-        true,
-        wxWindow::NewControlId()) : wxExItem()),
+        _("Base folder"), ITEM_COMBOBOX_DIR, wxAny(), true, wxWindow::NewControlId()) : wxExItem()),
       (add_folder && !GetCommand().IsHelp() && GetCommand().IsAdd() ? wxExItem(
-        _("Path"), 
-        ITEM_COMBOBOX,
-        wxAny(), 
-        true) : wxExItem()),
+        _("Path"), ITEM_COMBOBOX, wxAny(), true) : wxExItem()), 
       (GetCommand().UseFlags() ?  wxExItem(
         _("Flags"), wxEmptyString): wxExItem()),
       (m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX ? wxExItem(

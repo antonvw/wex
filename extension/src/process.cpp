@@ -209,7 +209,7 @@ int wxExProcess::ConfigDialog(
   
   const std::vector<wxExItem> v {
     ci,
-    wxExItem(m_WorkingDirKey, ITEM_COMBOBOX_DIR, wxAny(), true, wxWindow::NewControlId())};
+    {m_WorkingDirKey, ITEM_COMBOBOX_DIR, wxAny(), true, wxWindow::NewControlId()}};
 
   if (modal)
   {

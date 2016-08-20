@@ -6,7 +6,7 @@ one of these applications, being a full featured source code text editor.
 
 # Dependencies
 
-- [wxWidgets 3.x](http://www.wxwidgets.org/) or this fork
+- [wxWidgets 3.x](http://www.wxwidgets.org/) or [this fork](https://github.com/antonvw/wxWidgets/)
   
 - [cmake](http://www.cmake.org/) to generate makefiles   
 
@@ -52,12 +52,18 @@ one of these applications, being a full featured source code text editor.
     `export CC=clang`   
     `export CXX=clang++`    
     see g++   
+    
+- under MacOS:    
+    `brew install wxwidgets`   
+    `brew install xcode`   
 
 ## Building wxExtension        
 
-- under windows:   
+- start with:   
     `mkdir build`   
     `cd build`   
+
+- under windows:   
   -- using Visual Studio:   
     `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
     `nmake`   
@@ -67,9 +73,7 @@ one of these applications, being a full featured source code text editor.
   
   (or make a `debug` directory and use `-DCMAKE_BUILD_TYPE=Debug`)   
     
-- under Linux:   
-    `mkdir build`   
-    `cd build`   
+- under Linux or MacOS:   
     `cmake ..`   
     `make`   
 

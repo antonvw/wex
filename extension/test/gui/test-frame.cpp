@@ -56,7 +56,9 @@ TEST_CASE("wxExFrame")
   REQUIRE(!GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "test"));
   REQUIRE(!GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "Pane1"));
   REQUIRE(!GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "Pane2"));
+#ifndef __WXOSX__
   REQUIRE( GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "PaneInfo"));
+#endif
   
   wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
   AddPane(GetFrame(), stc);

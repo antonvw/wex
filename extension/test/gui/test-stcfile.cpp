@@ -36,4 +36,5 @@ TEST_CASE("wxExSTCFile", "[stc]")
   REQUIRE(!file.GetContentsChanged());
   REQUIRE( file.FileSave());
   REQUIRE(!file.GetContentsChanged());
+  REQUIRE( remove("test-file.txt") == 0);
 }

@@ -198,13 +198,13 @@ public:
   /// \code
   /// wxExItem("notebook", {
   ///   {"page1", 
-  ///     {wxExItem("string1"),
-  ///      wxExItem("string2"),
-  ///      wxExItem("string3")}},
+  ///     {{"string1"},
+  ///      {"string2"},
+  ///      {"string3"}}},
   ///   {"page2", 
-  ///     {wxExItem("spin1", 5, 0, 10),
-  ///      wxExItem("spin2", 5, 0, 10),
-  ///      wxExItem("spin3", 5, 0, 10)}}})
+  ///     {{"spin1", 5, 0, 10},
+  ///      {"spin2", 5, 0, 10},
+  ///      {"spin3", 5, 0, 10}}}})
   /// \endcode
   wxExItem(
     /// label for this item

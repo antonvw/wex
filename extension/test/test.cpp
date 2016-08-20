@@ -41,16 +41,6 @@ void AddPane(wxExManagedFrame* frame, wxWindow* pane)
   frame->GetManager().Update();
 }
 
-const wxString GetTestDir()
-{
-  return wxString(".") + wxFileName::GetPathSeparator();
-}
-  
-const wxExFileName GetTestFile()
-{
-  return GetTestDir() + "test.h";
-}
-  
 const wxString BuildArg(const wxString& file)
 {
   return 
@@ -60,6 +50,16 @@ const wxString BuildArg(const wxString& file)
     file + " ";
 }
 
+const wxString GetTestDir()
+{
+  return wxExTestApp::GetTestFileName().GetFullPath() + wxFileName::GetPathSeparator();
+}
+  
+const wxExFileName GetTestFile()
+{
+  return GetTestDir() + "test.h";
+}
+  
 void SetEnvironment(const wxString& dir)
 {
   if (!wxDirExists(dir))
@@ -126,44 +126,6 @@ void SetFindExtension(wxFileName& fn)
   }
 }
     
-const wxString SetWorkingDirectory()
-{
-  const wxString old = wxGetCwd();
-
-  wxFileName fn(old, "");
-  
-  if (fn.GetDirs().Index("wxExtension") == wxNOT_FOUND)
-  {
-    if (fn.GetDirs().Index("extension") == wxNOT_FOUND)
-    {
-      fn.RemoveLastDir();
-      fn.AppendDir("extension");
-    }
-    else
-    {
-      SetFindExtension(fn);
-    }
-  }
-  else
-  {
-    SetFindExtension(fn);
-  }
-  
-  if (fn.GetDirs().Index("test") == wxNOT_FOUND)
-  {
-    fn.AppendDir("test");
-    fn.AppendDir("data");
-  }
-  
-  if (!wxSetWorkingDirectory(fn.GetFullPath()))
-  {
-    fprintf(stderr, "%s\n", (const char *)fn.GetFullPath().c_str());
-    exit(1);
-  }
-  
-  return old;
-}
-
 bool wxExUIAction(wxWindow* win, const wxString& action, const wxString& par)
 {
   wxUIActionSimulator sim;
@@ -199,17 +161,8 @@ bool wxExUIAction(wxWindow* win, const wxString& action, const wxString& par)
   return true;
 }
   
-int wxExTestApp::OnExit()
-{
-  // Remove files.
-  (void)remove("test-ex.txt");
-  (void)remove("test-file.txt");
-  (void)remove("test.hex");
-  (void)remove("test-xxx");
+wxFileName wxExTestApp::m_TestFileName;
 
-  return wxExApp::OnExit();
-}
-  
 bool wxExTestApp::OnInit()
 {
   SetAppName("wxex-test-gui");
@@ -239,14 +192,13 @@ int wxExTestApp::OnRun()
 {
   wxTimer* timer = new wxTimer(this);
   timer->StartOnce(1000);
-  
+
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     const int fails = m_Session->run();
-    const long auto_exit(wxConfigBase::Get()->ReadLong("auto-exit", 1));
     wxExUIAction(GetTopWindow(), "key", "char");
-    if (auto_exit && (argc < 2 || fails == 0))
+    const long auto_exit(wxConfigBase::Get()->ReadLong("auto-exit", 1));
+    if (auto_exit)
     {
-      OnExit();
       exit(fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
     }});
 
@@ -258,9 +210,47 @@ void wxExTestApp::SetSession(Catch::Session* session)
   m_Session = session;
 }
   
+const wxString wxExTestApp::SetWorkingDirectory()
+{
+  const wxString old = wxGetCwd();
+
+  m_TestFileName = wxFileName(old, "");
+  
+  if (m_TestFileName.GetDirs().Index("wxExtension") == wxNOT_FOUND)
+  {
+    if (m_TestFileName.GetDirs().Index("extension") == wxNOT_FOUND)
+    {
+      m_TestFileName.RemoveLastDir();
+      m_TestFileName.AppendDir("extension");
+    }
+    else
+    {
+      SetFindExtension(m_TestFileName);
+    }
+  }
+  else
+  {
+    SetFindExtension(m_TestFileName);
+  }
+  
+  if (m_TestFileName.GetDirs().Index("test") == wxNOT_FOUND)
+  {
+    m_TestFileName.AppendDir("test");
+    m_TestFileName.AppendDir("data");
+  }
+  
+  if (!wxSetWorkingDirectory(m_TestFileName.GetFullPath()))
+  {
+    fprintf(stderr, "%s\n", (const char *)m_TestFileName.GetFullPath().c_str());
+    exit(1);
+  }
+  
+  return old;
+}
+
 int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)
 {
-  Catch::Session session; // There must be exactly once instance
+  Catch::Session session; // There must be exactly one instance
 
   int returnCode = session.applyCommandLine(argc, (const char **)argv);
   
@@ -275,7 +265,6 @@ int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)
   {
     const int fails = session.run();
     app->ProcessPendingEvents();
-    app->OnExit();
     app->ExitMainLoop();
     return fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS;
   }
