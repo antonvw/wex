@@ -38,7 +38,6 @@ public:
     STC_CONFIG_DEFAULT    = 0x0000, ///< modal dialog with all options
     STC_CONFIG_MODELESS   = 0x0001, ///< use as modeless dialog
     STC_CONFIG_WITH_APPLY = 0x0002, ///< add the apply button
-    STC_CONFIG_SIMPLE     = 0x0004  ///< only 'simple' options on dialog
   };
 
   /// Margin flags.

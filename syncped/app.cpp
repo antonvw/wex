@@ -65,7 +65,8 @@ bool App::OnInit()
         wxMessageOutput::Get()->Printf("%s", wxExGetVersionInfo().GetVersionOnlyString().c_str());
         exit = true;}}},
       {{"version", _("show version")}, {0, [&](bool on) {
-        wxMessageOutput::Get()->Printf("%s\n%s", 
+        wxMessageOutput::Get()->Printf("syncped-%s using:\n%s\nand:\n%s", 
+          wxExGetVersionInfo().GetVersionOnlyString().c_str(),
           wxExGetVersionInfo().GetDescription().c_str(),
           wxGetLibraryVersionInfo().GetDescription().c_str());
         exit = true;}}}},

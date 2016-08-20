@@ -2,10 +2,6 @@
 # Copyright (C) 2015 A.M. van Wezenbeek
 # This file is distributed under the same license as the syncped package.
 #
-#, fuzzy
-msgid ""
-msgstr ""
-"Project-Id-Version: syncped 3.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-11-21 19:01+0100\n"
 "PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"

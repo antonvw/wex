@@ -93,16 +93,13 @@ int wxExVCS::ConfigDialog(
       cols = 4;
       break;
   }
-
-  std::vector<wxExItem> v{wxExItem(
-    "VCS",
-    choices,
-    true, // use a radiobox 
-    cols)};
+  
+  // use a radiobox 
+  std::vector<wxExItem> v{{"VCS", choices, true, cols}};
 
   for (const auto& it2 : m_Entries)
   {
-    v.emplace_back(wxExItem(it2.GetName(), ITEM_FILEPICKERCTRL));
+    v.push_back({it2.GetName(), ITEM_FILEPICKERCTRL});
   }
 
   if (modal)
@@ -425,12 +422,8 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   const wxString message = _("Select VCS Folder");
   
   // See also vcsentry, same item is used there.
-  const std::vector<wxExItem> v{wxExItem(
-    _("Base folder"), 
-    ITEM_COMBOBOX_DIR, 
-    wxAny(), 
-    true,
-    wxWindow::NewControlId())};
+  const std::vector<wxExItem> v{{
+    _("Base folder"), ITEM_COMBOBOX_DIR, wxAny(), true, wxWindow::NewControlId()}};
       
   if (wxExConfigFirstOf(_("Base folder")).empty()) 
   {

@@ -25,7 +25,7 @@ TEST_CASE( "wxExFile" )
     REQUIRE(!file.FileSave());
     REQUIRE( file.GetFileName().GetStat().IsOk());
     // The fullpath should be normalized, test it.
-    REQUIRE( file.GetFileName().GetFullPath() != GetTestFile().GetFullPath());
+    REQUIRE( file.GetFileName().GetFullPath() != "./test.h");
     REQUIRE(!file.GetFileName().GetStat().IsReadOnly());
     REQUIRE(!file.FileLoad(wxExFileName(GetTestDir() + "test.bin")));
     REQUIRE( file.Open(wxExFileName(GetTestDir() + "test.bin").GetFullPath()));
@@ -43,7 +43,9 @@ TEST_CASE( "wxExFile" )
     wxExFile create(wxExFileName("test-create"), wxFile::write);
     REQUIRE( create.IsOpened());
     REQUIRE( create.Write(wxString("OK")));
-    (void)remove("test-create");
+    
+    REQUIRE( remove("test-create") == 0);
+    REQUIRE( remove("test-xxx") == 0);
   }
 
   SECTION( "timing" ) 

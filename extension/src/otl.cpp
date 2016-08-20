@@ -57,9 +57,9 @@ bool wxExOTL::Logon(
   if (parent != nullptr)
   {
     if (wxExItemDialog(parent, std::vector<wxExItem> {
-        wxExItem(_("Datasource"), ITEM_COMBOBOX, wxAny(), true),
-        wxExItem(_("User")),
-        wxExItem(_("Password"), wxEmptyString, wxTE_PASSWORD)},
+        {_("Datasource"), ITEM_COMBOBOX, wxAny(), true},
+        {_("User")},
+        {_("Password"), wxEmptyString, wxTE_PASSWORD}},
         title).ShowModal() == wxID_CANCEL)
     {
       return false;

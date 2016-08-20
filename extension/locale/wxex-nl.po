@@ -1,17 +1,7 @@
-msgid "Stopped"
-msgstr "Gestopt"
-
-msgid "&Statusbar"
-msgstr "&Statusbalk"
-
 # wxExtension localization file wxex-nl.po
 # Copyright (C) 2015 A.M. van Wezenbeek
 # This file is distributed under the same license as the wxExtension package.
 #
-#, fuzzy
-msgid ""
-msgstr ""
-"Project-Id-Version: wxExtension 3.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-12-12 12:21+0100\n"
 "PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
@@ -21,6 +11,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "Stopped"
+msgstr "Gestopt"
+
+msgid "&Statusbar"
+msgstr "&Statusbalk"
 
 #: ../include/wx/extension/configdlg.h:25
 #: ../include/wx/extension/configdlg.h:43 ../include/wx/extension/itemdlg.h:22

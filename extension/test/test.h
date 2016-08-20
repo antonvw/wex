@@ -31,9 +31,6 @@ const wxExFileName GetTestFile();
 /// Sets environment. 
 void SetEnvironment(const wxString& dir);
 
-/// Sets working directory to test dir, returns current working directory.
-const wxString SetWorkingDirectory();
-
 /// Invoke UI action on window, 
 /// Returns false if an error occurred.
 bool wxExUIAction(
@@ -51,10 +48,9 @@ class wxExTestApp: public wxExApp
 public:
   /// Constructor.
   wxExTestApp() {}
-
-  /// Cleanup.
-  virtual int OnExit() override;
   
+  static wxFileName GetTestFileName() {return m_TestFileName;};
+
   /// Prepare environment.
   virtual bool OnInit() override;
 
@@ -64,7 +60,12 @@ public:
   /// Sets catch session.
   void SetSession(Catch::Session* session);
 private:
+  /// Sets working directory to test dir, returns current working directory.
+  const wxString SetWorkingDirectory();
+
   Catch::Session* m_Session;
+  
+  static wxFileName m_TestFileName;
 };
 
 int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop);

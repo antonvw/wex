@@ -36,11 +36,7 @@ int GetHexNumberFromUser(
   wxExItem::UseConfig(false);
 
   wxExItemDialog dlg(parent,
-    std::vector<wxExItem>{wxExItem(
-      message, 
-      min,
-      max,
-      value)},
+    std::vector<wxExItem>{{message, min, max, value}},
     caption);
   
   wxExItem::UseConfig(true);

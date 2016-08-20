@@ -13,10 +13,9 @@
 
 const wxExVersionInfo wxExGetVersionInfo() 
 {
-  return wxExVersionInfo(
-    "wxExtension", 
-    wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER, 
-    "wxExtension Library offers a collection of wxWidgets extension classes",
+  return wxExVersionInfo("wxExtension", 
+    16, 10, 0, 
+    "wxExtension Library (a collection of wxWidgets extension classes)",
     "(c) 1998-2016, Anton van Wezenbeek. " + wxString(_("All rights reserved.")));
 }
 

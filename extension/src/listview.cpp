@@ -324,58 +324,42 @@ wxExListView::wxExListView(wxWindow* parent,
 
     PopupMenu(&menu);});
     
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {EditClearAll();}, wxID_CLEAR);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {CopySelectedItemsToClipboard();}, wxID_COPY);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {EditDelete();}, wxID_DELETE);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {ItemFromText(wxExClipboardGet());}, wxID_PASTE);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);}, wxID_SELECTALL);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SortColumn(m_ToBeSortedColumnNo, SORT_ASCENDING);}, wxID_SORT_ASCENDING);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING);}, wxID_SORT_DESCENDING);
+    
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    EditDelete();}, wxID_DELETE);
+    CopySelectedItemsToClipboard();
+    EditDelete();}, wxID_CUT);
     
-  Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
-    SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);}, wxID_SELECTALL);
-    
-  Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
-    SortColumn(m_ToBeSortedColumnNo, SORT_ASCENDING);}, wxID_SORT_ASCENDING);
-    
-  Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
-    SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING);}, wxID_SORT_DESCENDING);
-    
-  Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     for (int i = 0; i < GetItemCount(); i++)
     {
       Select(i, !IsSelected(i));
     }}, ID_EDIT_SELECT_INVERT);
     
-  Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     for (int i = 0; i < GetItemCount(); i++)
     {
       Select(i, false);
     }}, ID_EDIT_SELECT_NONE);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    CopySelectedItemsToClipboard();
-    EditDelete();}, wxID_CUT);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    EditClearAll();}, wxID_CLEAR);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    CopySelectedItemsToClipboard();}, wxID_COPY);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    ItemFromText(wxExClipboardGet());}, wxID_PASTE);
-  
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxString defaultPath;
-    
     if (GetSelectedItemCount() > 0)
     {
       defaultPath = wxExListItem(
         this, GetFirstSelected()).GetFileName().GetFullPath();
     }
-    
     wxDirDialog dir_dlg(
       this,
       _(wxDirSelectorPromptStr),
       defaultPath,
       wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
     if (dir_dlg.ShowModal() == wxID_OK)
     {
       const int no = (GetSelectedItemCount() > 0 ? 
@@ -392,11 +376,9 @@ wxExListView::wxExListView(wxWindow* parent,
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (!IsShown() || GetItemCount() == 0) return false;
-    
     const wxString& caption = _("Enter Item Number");
     const int initial_value = (GetFirstSelected() == -1 ? 1: GetFirstSelected() + 1);
     long val;
-
     if ((val = wxGetNumberFromUser(
       _("Input") + wxString::Format(" (1 - %d):", GetItemCount()),
       wxEmptyString,
@@ -416,20 +398,15 @@ wxExListView::wxExListView(wxWindow* parent,
 
   Bind(wxEVT_RIGHT_DOWN, [=](wxMouseEvent& event) {
     long style = 0; // otherwise CAN_PASTE already on
-    
     if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
     if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
     if (m_Type != LIST_FIND && m_Type != LIST_REPLACE) style |= wxExMenu::MENU_CAN_PASTE;
-    
     if (GetSelectedItemCount() == 0 && GetItemCount() > 0) 
     {
       style |= wxExMenu::MENU_ALLOW_CLEAR;
     }
-
     wxExMenu menu(style);
-
     BuildPopupMenu(menu);
-
     if (menu.GetMenuItemCount() > 0)
     {
       PopupMenu(&menu);
@@ -595,30 +572,30 @@ int wxExListView::ConfigDialog(
   ListViewDefaults use;
   
   static const std::vector<wxExItem> items {
-    wxExItem("notebook", {
+    {"notebook", {
       {_("General"),
-        {wxExItem(_("Header"), ITEM_CHECKBOX),
-         wxExItem(_("Single selection"), ITEM_CHECKBOX),
-         wxExItem(_("Comparator"), ITEM_FILEPICKERCTRL),
-         wxExItem(_("Sort method"), {
+        {{_("Header"), ITEM_CHECKBOX},
+         {_("Single selection"), ITEM_CHECKBOX},
+         {_("Comparator"), ITEM_FILEPICKERCTRL},
+         {_("Sort method"), {
            {SORT_ASCENDING, _("Sort ascending")},
            {SORT_DESCENDING, _("Sort descending")},
-           {SORT_TOGGLE, _("Sort toggle")}}),
-         wxExItem(_("Rulers"),  wxExItem::Choices {
+           {SORT_TOGGLE, _("Sort toggle")}}},
+         {_("Rulers"),  {
            {wxLC_HRULES, _("Horizontal rulers")},
-           {wxLC_VRULES, _("Vertical rulers")}}, false)}},
+           {wxLC_VRULES, _("Vertical rulers")}}, false}}},
       {_("Font"),
 #ifndef __WXOSX__
-        {wxExItem(_("List font"), ITEM_FONTPICKERCTRL),
-         wxExItem(_("List tab font"), ITEM_FONTPICKERCTRL)}},
+        {{_("List font"), ITEM_FONTPICKERCTRL},
+         {_("List tab font"), ITEM_FONTPICKERCTRL}}},
 #else
-        {wxExItem(_("List font")),
-         wxExItem(_("List tab font"))}},
+        {{_("List font")},
+         {_("List tab font")}}},
 #endif
       {_("Colour"),
-        {wxExItem(_("Background colour"), ITEM_COLOURPICKERWIDGET),
-         wxExItem(_("Foreground colour"), ITEM_COLOURPICKERWIDGET),
-         wxExItem(_("Readonly colour"), ITEM_COLOURPICKERWIDGET)}}})};
+        {{_("Background colour"), ITEM_COLOURPICKERWIDGET},
+         {_("Foreground colour"), ITEM_COLOURPICKERWIDGET},
+         {_("Readonly colour"), ITEM_COLOURPICKERWIDGET}}}}}};
   
   if (button_flags & wxAPPLY)
   {
