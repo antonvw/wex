@@ -60,7 +60,7 @@ TEST_CASE("wxEx")
     
   const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
   
-  REQUIRE(milli.count() < 1000);
+  REQUIRE(milli.count() < 1500);
 
   INFO(wxString::Format(
     "%d %lu items in: %d ms", 
