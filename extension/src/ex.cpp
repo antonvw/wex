@@ -143,8 +143,8 @@ wxExEx::wxExEx(wxExSTC* stc)
     {":new", [&](const std::string& command) {POST_COMMAND( wxID_NEW ) return true;}},
     {":print", [&](const std::string& command) {m_STC->Print(command.find(" ") == std::string::npos); return true;}},
     {":pwd", [&](const std::string& command) {wxLogStatus(wxGetCwd()); return true;}},
-    {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
     {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
+    {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
     {":reg", [&](const std::string& command) {
       wxString output;
       for (const auto& it : m_Macros.GetRegisters())
