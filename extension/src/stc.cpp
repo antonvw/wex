@@ -473,7 +473,7 @@ int wxExSTC::ConfigDialog(
       {_("Font"), 
 #ifndef __WXOSX__
         {!wxExLexers::Get()->GetLexers().empty() ?
-           {_("Default font"), ITEM_FONTPICKERCTRL}: {},
+           wxExItem(_("Default font"), ITEM_FONTPICKERCTRL): wxExItem(),
          {_("Tab font"), ITEM_FONTPICKERCTRL},
          {_("Text font"), ITEM_FONTPICKERCTRL}}},
 #else
