@@ -26,6 +26,7 @@ matrix:
       osx_image: xcode8
   allow_failures:
     - os: osx
+    - os: linux
 
 addons:
   coverity_scan:

@@ -12,6 +12,10 @@ platform:
 configuration:
   - Release
 
+matrix:
+  allow_failures:
+    - platform: x86
+
 install:
   - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.0-include.7z'
   - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.0-lib.7z'
