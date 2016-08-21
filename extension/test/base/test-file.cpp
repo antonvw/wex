@@ -12,10 +12,10 @@
 
 TEST_CASE( "wxExFile" ) 
 {
-  wxExFile file(GetTestFile());
-  
   SECTION( "basic" ) 
   {
+    wxExFile file(GetTestFile());
+  
     REQUIRE(!file.CheckSync());
     REQUIRE(!file.GetContentsChanged());
     REQUIRE( file.IsOpened());
@@ -39,17 +39,23 @@ TEST_CASE( "wxExFile" )
     REQUIRE( file.Open(wxFile::write));
     REQUIRE( file.Write(*buffer));
     REQUIRE( file.Write(wxString("OK")));
-    
+
     wxExFile create(wxExFileName("test-create"), wxFile::write);
     REQUIRE( create.IsOpened());
     REQUIRE( create.Write(wxString("OK")));
-    
+  }
+
+  // file should be closed before remove (at least for windows)
+  SECTION( "remove")
+  {
     REQUIRE( remove("test-create") == 0);
     REQUIRE( remove("test-xxx") == 0);
   }
 
   SECTION( "timing" ) 
   {
+    wxExFile file(GetTestFile());
+  
     const int max = 10000;
     const auto ex_start = std::chrono::system_clock::now();
     
