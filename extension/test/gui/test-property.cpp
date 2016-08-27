@@ -37,10 +37,10 @@ TEST_CASE("wxExProperty", "[stc][lexer]")
   
   wxXmlNode xml(wxXML_ELEMENT_NODE, "property");
   xml.AddAttribute("name", "fold.comment");
-//  wxXmlNode child(&xml, wxXML_TEXT_NODE , "","2");
+  new wxXmlNode(&xml, wxXML_TEXT_NODE , "","2");
 
   wxExProperty prop2(&xml);
   REQUIRE( prop2.GetName() == "fold.comment");
-//  REQUIRE( prop2.GetValue() == "2");
-  REQUIRE(!prop2.IsOk());
+  REQUIRE( prop2.GetValue() == "2");
+  REQUIRE( prop2.IsOk());
 }

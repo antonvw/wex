@@ -242,17 +242,10 @@ int wxExFrameWithHistory::FindInFilesDialog(
     GetSTC()->GetFindString();
   }
 
-  if (wxExItemDialog(this,
-    std::vector<wxExItem> {
-      {
-        wxExFindReplaceData::Get()->GetTextFindWhat(), 
-        ITEM_COMBOBOX, wxAny(), true},
-      (add_in_files ? wxExItem(
-        m_TextInFiles, 
-        ITEM_COMBOBOX, wxAny(), true) : wxExItem()),
-      (id == ID_TOOL_REPORT_REPLACE ? wxExItem(
-        wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-        ITEM_COMBOBOX): wxExItem()),
+  if (wxExItemDialog(this, std::vector<wxExItem> {
+      {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), true}, 
+      (add_in_files ? wxExItem(m_TextInFiles, ITEM_COMBOBOX, wxAny(), true) : wxExItem()),
+      (id == ID_TOOL_REPORT_REPLACE ? wxExItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX): wxExItem()),
       wxExItem(m_Info)},
     GetFindInCaption(id)).ShowModal() == wxID_CANCEL)
   {

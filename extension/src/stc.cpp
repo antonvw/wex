@@ -472,13 +472,11 @@ int wxExSTC::ConfigDialog(
             }}},
       {_("Font"), 
 #ifndef __WXOSX__
-        {!wxExLexers::Get()->GetLexers().empty() ?
-           wxExItem(_("Default font"), ITEM_FONTPICKERCTRL): wxExItem(),
+        {{_("Default font"), ITEM_FONTPICKERCTRL},
          {_("Tab font"), ITEM_FONTPICKERCTRL},
          {_("Text font"), ITEM_FONTPICKERCTRL}}},
 #else
-        {!wxExLexers::Get()->GetLexers().empty() ?
-           wxExItem(_("Default font")): wxExItem(),
+         {_("Default font")},
          {_("Tab font")},
          {_("Text font")}}},
 #endif
@@ -492,22 +490,19 @@ int wxExSTC::ConfigDialog(
         {{_("Tab width"), 1, (int)cfg->ReadLong(_("Edge column"), 0)},
          {_("Indent"), 0, (int)cfg->ReadLong(_("Edge column"), 0)},
          {_("Divider"), 0, 40},
-         !wxExLexers::Get()->GetLexers().empty() ?
-           wxExItem(_("Folding"), 0, 40): wxExItem(),
+         {_("Folding"), 0, 40},
          {_("Line number"), 0, 100},
          {_("Auto complete maxwidth"), 0, 100}}},
       {_("Folding"),
         {{_("Indentation guide"), ITEM_CHECKBOX},
-         !wxExLexers::Get()->GetLexers().empty() ?
-           wxExItem(_("Auto fold"), 0, INT_MAX): wxExItem(),
-         !wxExLexers::Get()->GetLexers().empty() ?
-           wxExItem(_("Fold flags"), {
+         {_("Auto fold"), 0, INT_MAX},
+         {_("Fold flags"), {
              {wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")},
              {wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")},
              {wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")},
-             {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")}},
-             // {wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")}},
-             false): wxExItem()}},
+             {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")},
+             {wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")}},
+             false}}},
       {_("Printer"),
         {{_("Print flags"), {
            {wxSTC_PRINT_NORMAL, _("Normal")},
@@ -536,7 +531,7 @@ int wxExSTC::ConfigDialog(
     {
       m_ConfigDialog = new wxExItemDialog(parent, items, 
         id == wxID_PREFERENCES ? wxGetStockLabel(id, 0): title, 0, 1, buttons, id, 
-        wxDefaultPosition, wxSize(510, 440));
+        wxDefaultPosition, wxSize(510, 500));
     }
 
     return m_ConfigDialog->Show();
@@ -1194,7 +1189,10 @@ void wxExSTC::Initialize(bool file_exists)
     {
       CallTipCancel();
     }});
-    
+
+  // if we support automatic fold, this can be removed,
+  // not yet possible for wx3.0. And add wxSTC_AUTOMATICFOLD_CLICK
+  // to configdialog, and SetAutomaticFold.
   Bind(wxEVT_STC_MARGINCLICK, [=](wxStyledTextEvent& event) {
     if (event.GetMargin() == m_MarginFoldingNumber)
     {
@@ -1205,7 +1203,7 @@ void wxExSTC::Initialize(bool file_exists)
         ToggleFold(line);
       }
     }});
-    
+
   Bind(wxEVT_STC_UPDATEUI, [=](wxStyledTextEvent& event) {
     event.Skip();
     wxExFrame::UpdateStatusBar(this, "PaneInfo");});

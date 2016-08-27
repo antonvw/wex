@@ -7,6 +7,7 @@
 
 #include <numeric>
 #include <wx/wxprec.h>
+#include <wx/xml/xml.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
@@ -17,40 +18,70 @@
 
 TEST_CASE("wxExStyle", "[stc][lexer]")
 {
-  REQUIRE(!wxExStyle().IsOk() );
-  
-  for (const auto& style : std::vector<
-    std::pair<
-      std::pair<std::string,std::string>,
-      std::pair<std::string,std::string>>> {
-    {{"MARK_CIRCLE",""}, {"ugly","global"}},
-    {{"mark_circle","0 "}, {"ugly","global"}},
-    {{"512",""}, {"ugly","global"}},
-    {{"number,string,comment","1 4 6 "}, {"fore:blue", "cpp"}},
-    {{"number,string,xxx","4 6 "}, {"fore:black", "cpp"}},
-    {{"xxx",""}, {"fore:black", "cpp"}}})
+  SECTION("Default constructor");
   {
-    const wxExStyle test(
-      style.first.first, style.second.first, style.second.second);
-    
-    if (!style.first.second.empty())
+    REQUIRE(!wxExStyle().IsOk() );
+  }
+  
+  SECTION("Constructor using no and value")
+  {
+    for (const auto& style : std::vector<
+      std::pair<
+        std::pair<std::string,std::string>,
+        std::pair<std::string,std::string>>> {
+      {{"MARK_CIRCLE",""}, {"ugly","global"}},
+      {{"mark_circle","0 "}, {"ugly","global"}},
+      {{"512",""}, {"ugly","global"}},
+      {{"number,string,comment","1 4 6 "}, {"fore:blue", "cpp"}},
+      {{"number,string,xxx","4 6 "}, {"fore:black", "cpp"}},
+      {{"xxx",""}, {"fore:black", "cpp"}}})
     {
-      REQUIRE( test.IsOk());
-      REQUIRE( test.GetNo() == style.first.second);
-      REQUIRE( test.GetValue() == style.second.first);
-    }
-    else
-    {
-      REQUIRE(!test.IsOk());
+      // no, value, macro
+      const wxExStyle test(
+        style.first.first, style.second.first, style.second.second);
+      
+      if (!style.first.second.empty())
+      {
+        REQUIRE( test.IsOk());
+        REQUIRE( test.GetNo() == style.first.second);
+        REQUIRE( test.GetValue() == style.second.first);
+      }
+      else
+      {
+        REQUIRE(!test.IsOk());
+      }
     }
   }
 
-  wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
+  SECTION("Constructor using xml node")
+  {
+    wxXmlNode xml(wxXML_ELEMENT_NODE, "style");
+    xml.AddAttribute("no", "2");
+    new wxXmlNode(&xml, wxXML_TEXT_NODE , "", "string");
+
+    REQUIRE( atoi(wxExStyle(&xml, "").GetNo()) == 2);
+    REQUIRE( wxExStyle(&xml, "").GetValue() == "fore:blue");
+    REQUIRE( atoi(wxExStyle(&xml, "cpp").GetNo()) == 2);
+    REQUIRE( wxExStyle(&xml, "").GetValue() == "fore:blue");
+
+    wxXmlNode xml2(wxXML_ELEMENT_NODE, "style");
+    xml2.AddAttribute("no", "2");
+    new wxXmlNode(&xml2, wxXML_TEXT_NODE , "", "styledefault+comment");
+
+    REQUIRE(!wxExStyle(&xml2, "cpp").GetValue().Contains("default"));
+    REQUIRE(!wxExStyle(&xml2, "cpp").GetValue().Contains("comment"));
+    REQUIRE(!wxExStyle(&xml2, "cpp").GetValue().Contains("+"));
+  }
   
-  AddPane(GetFrame(), stc);
+  SECTION("Apply")
+  {
+    wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
+    AddPane(GetFrame(), stc);
+    wxExStyle style("mark_circle", "0");
+    style.Apply(stc);
+    REQUIRE( style.IsOk());
+    REQUIRE(!style.ContainsDefaultStyle());
   
-  wxExStyle style("mark_circle", "0");
-  style.Apply(stc);
-  REQUIRE( style.IsOk());
-  REQUIRE(!style.ContainsDefaultStyle());
+    wxExStyle().Apply(stc);
+  }
 }
