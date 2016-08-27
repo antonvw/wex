@@ -128,6 +128,7 @@ void SetFindExtension(wxFileName& fn)
     
 bool wxExUIAction(wxWindow* win, const wxString& action, const wxString& par)
 {
+#if wxCHECK_VERSION(3,1,0)
   wxUIActionSimulator sim;
 
   if (action.StartsWith("button"))
@@ -157,6 +158,7 @@ bool wxExUIAction(wxWindow* win, const wxString& action, const wxString& par)
   wxTheApp->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     wxUIActionSimulator sim;
     sim.Char(WXK_RETURN);});
+#endif
 
   return true;
 }

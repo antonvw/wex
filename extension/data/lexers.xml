@@ -848,6 +848,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="sgml_comment"/>
       <def no ="sgml_st_param_comment"/>
       <def no ="sgml_block_default"/>
+      <!-- Embedded Javascript -->
       <def no ="hj_start"> 40 </def>
       <def no ="hj_default"/>
       <def no ="hj_comment"/>
@@ -861,7 +862,8 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="hj_symbols"/>
       <def no ="hj_stringeol"/>
       <def no ="hj_regex"/>
-      <def no ="hja_start"/>
+      <!-- ASP Javascript> -->
+      <def no ="hja_start"> 55 </def>
       <def no ="hja_default"/>
       <def no ="hja_comment"/>
       <def no ="hja_commentline"/>
@@ -874,22 +876,25 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="hja_symbols"/>
       <def no ="hja_stringeol"/>
       <def no ="hja_regex"/>
+      <!-- Embedded VBScript -->
       <def no ="hb_start"> 70 </def>
       <def no ="hb_default"/>
       <def no ="hb_commentline"/>
       <def no ="hb_number"/>
-      <def no ="hb_word"/>
+      <def no ="hb_keyword1"/>
       <def no ="hb_string"/>
       <def no ="hb_identifier"/>
       <def no ="hb_stringeol"/>
+      <!-- ASP VBScript -->
       <def no ="hba_start"> 80 </def>
       <def no ="hba_default"/>
       <def no ="hba_commentline"/>
       <def no ="hba_number"/>
-      <def no ="hba_word"/>
+      <def no ="hba_keyword1"/>
       <def no ="hba_string"/>
       <def no ="hba_identifier"/>
       <def no ="hba_stringeol"/>
+      <!-- Embedded Python -->
       <def no ="hp_start"> 90 </def>
       <def no ="hp_default"/>
       <def no ="hp_commentline"/>
@@ -904,6 +909,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="hp_operator"/>
       <def no ="hp_identifier"/>
       <def no ="hphp_complex_variable"> 104 </def>
+      <!-- ASP Python -->
       <def no ="hpa_start"> 105 </def>
       <def no ="hpa_default"/>
       <def no ="hpa_commentline"/>
@@ -917,10 +923,11 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="hpa_defname"/>
       <def no ="hpa_operator"/>
       <def no ="hpa_identifier"/>
-      <def no ="hphp_default"/>
+      <!-- PHP -->
+      <def no ="hphp_default"> 118 </def>
       <def no ="hphp_hstring"/>
       <def no ="hphp_simplestring"/>
-      <def no ="hphp_keyword2"/>
+      <def no ="hphp_keyword1"/>
       <def no ="hphp_number"/>
       <def no ="hphp_variable"/>
       <def no ="hphp_comment"/>
@@ -2056,7 +2063,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
         <def style ="commentdockeyword"> fore:medium sea green,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> light blue </def>
-        <def style ="identifier"> fore:black,bold</def>
+        <def style ="identifier"> fore:black</def>
         <def style ="keyword1"> fore:dark turquoise </def>
         <def style ="keyword2"> fore:dark green </def>
         <def style ="keyword3"> fore:medium spring green </def>
@@ -2067,7 +2074,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:blue </def>
         <def style ="styledefault"> default-font,back:white,fore:black </def>
-        <def style ="styledefault-back"> default-font,back:#F7F7F7,fore:black </def>
+        <def style ="styledefault-back"> default-font,back:#F1F1F1,fore:green,eol </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:dark slate blue </def>
         <def style ="variable"> fore:medium blue </def>
@@ -2100,7 +2107,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:#ffab8f </def>
         <def style ="styledefault"> default-font,back:#202020,fore:#BBBBBB </def>
-        <def style ="styledefault-back"> default-font,back:#232323,fore:#BBBBBB,eolfilled </def>
+        <def style ="styledefault-back"> default-font,back:#2D2D2D,fore:#BBBBBB,eol </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:cadet blue </def>
         <def style ="variable"> fore:green </def>
@@ -2410,7 +2417,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       _INPUT _OUTPUT _STDIN _STDOUT _STDERR -- file descriptors
     </set>
     <set name="php">
-      and array as bool boolean break case cfunction class const continue declare 
+      abstract and array as bool boolean break case cfunction class const continue declare 
       default die directory do double echo else elseif empty enddeclare endfor 
       endforeach endif endswitch endwhile eval exit extends false float for 
       foreach function global goto if include include_once int integer isset list namespace 
@@ -2471,6 +2478,17 @@ Copyright: (c) 2016, Anton van Wezenbeek
       unnest update usage user using value values varchar variable varying view
       when whenever where with without work write year zone
     </set>
+    <set name="vb">
+      addressof alias and as attribute base begin binary boolean byref byte byval call case cdbl \
+      cint clng compare const csng cstr currency date decimal declare defbool defbyte defcur \
+      defdate defdbl defdec defint deflng defobj defsng defstr defvar dim do double each else \
+      elseif empty end enum eqv erase error event exit explicit false for friend function get \
+      global gosub goto if imp implements in input integer is len let lib like load lock long \
+      loop lset me mid midb mod new next not nothing null object on option optional or paramarray \
+      preserve print private property public raiseevent randomize redim rem resume return rset \
+      seek select set single static step stop string sub text then time to true type typeof \
+      unload until variant wend while with withevents xor
+      </set>
   </keyword>
   
   <!--
@@ -2502,6 +2520,9 @@ Copyright: (c) 2016, Anton van Wezenbeek
       - underline turns on underlining
       It can also have the default-font value which is kept in the config
       and can be set using options edit, and substitutes face and size.
+      Furthermore the value is parsed by the theme macros, so you
+      can make the specifier themeable, and you can specify
+      multiple specifiers separated by a + sign.
    2) <keywords>. Keywords for this lexer. Default they are in set 0, but you can 
       explicitly express the set by adding :<setno> after the keyword.
       You can share keyword sets by adding keyword sets in the keyword section above,
@@ -2720,18 +2741,83 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <style no="attributeunknown"> error </style>
       <style no="question"> fore:sky blue,bold </style>
       <style no="value"> fore:#ff00ff</style>
-      <style no="hphp_default"> styledefault-back </style>
-      <style no="hphp_hstring"> styledefault-back </style>
-      <style no="hphp_simplestring"> styledefault-back </style>
-      <style no="hphp_keyword2"> styledefault-back </style>
-      <style no="hphp_number"> styledefault-back </style>
-      <style no="hphp_variable"> styledefault-back </style>
-      <style no="hphp_comment"> styledefault-back </style>
-      <style no="hphp_commentline"> styledefault-back </style>
-      <style no="hphp_hstring_variable"> styledefault-back </style>
-      <style no="hphp_operator"> styledefault-back </style>
       <style no="asp"> fore:sky blue,bold </style>
-      <style no="hpa_triple"> comment </style>
+      <style no="hb_start">  fore:sky blue,bold </style>
+      <style no="hb_default"> styledefault-back </style>
+      <style no="hb_commentline"> styledefault-back+comment </style>
+      <style no="hb_number"> styledefault-back+number </style>
+      <style no="hb_keyword1"> styledefault-back+keyword1 </style>
+      <style no="hb_string"> styledefault-back+string </style>
+      <style no="hb_identifier"> styledefault-back+identifier </style>
+      <style no="hb_stringeol"> styledefault-back </style>
+      <style no="hba_start">  fore:sky blue,bold </style>
+      <style no="hba_default"> styledefault-back </style>
+      <style no="hba_commentline"> styledefault-back+comment </style>
+      <style no="hba_number"> styledefault-back+number </style>
+      <style no="hba_keyword1"> styledefault-back+keyword1 </style>
+      <style no="hba_string"> styledefault-back+string </style>
+      <style no="hba_identifier"> styledefault-back+identifier </style>
+      <style no="hba_stringeol"> styledefault-back </style>
+      <style no="hj_default"> styledefault-back </style>
+      <style no="hj_comment"> styledefault-back+comment </style>
+      <style no="hj_commentline"> styledefault-back+comment </style>
+      <style no="hj_commentdoc"> styledefault-back+comment </style>
+      <style no="hj_number"> styledefault-back+number </style>
+      <style no="hj_word"> styledefault-back+word </style>
+      <style no="hj_keyword1"> styledefault-back+keyword1 </style>
+      <style no="hj_doublestring"> styledefault-back+string </style>
+      <style no="hj_singlestring"> styledefault-back+string </style>
+      <style no="hj_symbols"> styledefault-back </style>
+      <style no="hj_stringeol"> styledefault-back+string </style>
+      <style no="hj_regex"> styledefault-back </style>
+      <style no="hja_default"> styledefault-back </style>
+      <style no="hja_comment"> styledefault-back+comment </style>
+      <style no="hja_commentline"> styledefault-back+comment </style>
+      <style no="hja_commentdoc"> styledefault-back+comment </style>
+      <style no="hja_number"> styledefault-back+number </style>
+      <style no="hja_word"> styledefault-back+word </style>
+      <style no="hja_keyword1"> styledefault-back+keyword1 </style>
+      <style no="hja_doublestring"> styledefault-back+string </style>
+      <style no="hja_singlestring"> styledefault-back+string </style>
+      <style no="hja_symbols"> styledefault-back </style>
+      <style no="hja_stringeol"> styledefault-back </style>
+      <style no="hja_regex"> styledefault-back </style>
+      <style no="hp_start"> fore:sky blue,bold </style>
+      <style no="hp_default"> styledefault-back </style>
+      <style no="hp_commentline"> styledefault-back+comment </style>
+      <style no="hp_number"> styledefault-back+number </style>
+      <style no="hp_string"> styledefault-back+string </style>
+      <style no="hp_character"> styledefault-back </style>
+      <style no="hp_keyword1"> styledefault-back+keyword </style>
+      <style no="hp_triple"> styledefault-back </style>
+      <style no="hp_tripledouble"> styledefault-back </style>
+      <style no="hp_classname"> styledefault-back </style>
+      <style no="hp_defname"> styledefault-back </style>
+      <style no="hp_operator"> styledefault-back+operator </style>
+      <style no="hp_identifier"> styledefault-back+identifier </style>
+      <style no="hpa_start">  fore:sky blue,bold </style>
+      <style no="hpa_default"> styledefault-back </style>
+      <style no="hpa_commentline"> styledefault-back+comment </style>
+      <style no="hpa_number"> styledefault-back+number </style>
+      <style no="hpa_string"> styledefault-back+string </style>
+      <style no="hpa_character"> styledefault-back </style>
+      <style no="hpa_keyword1"> styledefault-back+keyword1 </style>
+      <style no="hpa_triple"> styledefault-back </style>
+      <style no="hpa_tripledouble"> styledefault-back </style>
+      <style no="hpa_classname"> styledefault-back </style>
+      <style no="hpa_defname"> styledefault-back </style>
+      <style no="hpa_operator"> styledefault-back+operator </style>
+      <style no="hpa_identifier"> styledefault-back+identifier </style>
+      <style no="hphp_default"> styledefault-back </style>
+      <style no="hphp_hstring"> styledefault-back+string </style>
+      <style no="hphp_simplestring"> styledefault-back+string </style>
+      <style no="hphp_keyword1"> styledefault-back+keyword1 </style>
+      <style no="hphp_number"> styledefault-back+number </style>
+      <style no="hphp_variable"> styledefault-back+variable </style>
+      <style no="hphp_comment"> styledefault-back+comment </style>
+      <style no="hphp_commentline"> styledefault-back+comment </style>
+      <style no="hphp_hstring_variable"> styledefault-back </style>
+      <style no="hphp_operator"> styledefault-back+operator </style>
     </styles>
     <properties>
       <property name="fold"> 1 </property>
@@ -2741,7 +2827,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <!-- Default Language 1 for JS, 2 for VBS, 3 for python -->
       <property name="asp.default.language"> 1 </property>
     </properties>
-    <keywords set-1="javascript" set-3="python" set-4="php">
+    <keywords set-1="javascript" set-2="vb" set-3="python" set-4="php">
       <!-- See scintilla html.properies -->      
       a abbr acronym address applet area b base basefont
       bdo big blockquote body br button caption center
@@ -3109,8 +3195,12 @@ Copyright: (c) 2016, Anton van Wezenbeek
   <lexer name="tehex" macro="ihex"/>
   <lexer name="tex"/>
   <lexer name="txt2tags"/>
-  <lexer name="vb"/>
-  <lexer name="vbscript" macro="vb"/>
+  <lexer name="vb">
+    <keywords set ="vb"/>
+  </lexer>
+  <lexer name="vbscript" macro="vb">
+    <keywords set ="vb"/>
+  </lexer>
   <lexer name="verilog"/>
   <lexer name="vhdl"/>
   <lexer name="visualprolog"/>

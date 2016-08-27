@@ -54,42 +54,53 @@ void wxExStyle::Set(const wxXmlNode* node, const wxString& macro)
     wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"), macro),
     macro);
 
-  m_Value = node->GetNodeContent().Strip(wxString::both);
+  // The style is parsed using the themed macros, and
+  // you can specify several styles separated by a + sign.
+  wxStringTokenizer fields(node->GetNodeContent().Strip(wxString::both), "+");
 
-  const auto& it = wxExLexers::Get()->GetThemeMacros().find(m_Value);
-
-  if (it != wxExLexers::Get()->GetThemeMacros().end())
+  // Collect each single field style.
+  while (fields.HasMoreTokens())
   {
-    wxString value = it->second;
-    
-    if (value.Contains("default-font"))
+    const auto& single = fields.GetNextToken();
+    const auto& it = wxExLexers::Get()->GetThemeMacros().find(single);
+
+    if (it != wxExLexers::Get()->GetThemeMacros().end())
     {
-      const wxFont font(wxConfigBase::Get()->ReadObject(_("Default font"), 
-        wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
+      wxString value = it->second;
       
-      value.Replace("default-font", 
-        wxString::Format("face:%s,size:%d",
-          font.GetFaceName().c_str(), font.GetPointSize()));
-          
-      const wxFontStyle style = font.GetStyle();
-          
-      if (style == wxFONTSTYLE_ITALIC || style == wxFONTSTYLE_SLANT)
+      if (value.Contains("default-font"))
       {
-        value += ",italic";
+        const wxFont font(wxConfigBase::Get()->ReadObject(_("Default font"), 
+          wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));
+        
+        value.Replace("default-font", 
+          wxString::Format("face:%s,size:%d",
+            font.GetFaceName().c_str(), font.GetPointSize()));
+            
+        const wxFontStyle style = font.GetStyle();
+            
+        if (style == wxFONTSTYLE_ITALIC || style == wxFONTSTYLE_SLANT)
+        {
+          value += ",italic";
+        }
+        
+        if (font.GetWeight() == wxFONTWEIGHT_BOLD)
+        {
+          value += ",bold";
+        }
+        
+        if (font.GetUnderlined())
+        {
+          value += ",underline";
+        }
       }
-      
-      if (font.GetWeight() == wxFONTWEIGHT_BOLD)
-      {
-        value += ",bold";
-      }
-      
-      if (font.GetUnderlined())
-      {
-        value += ",underline";
-      }
-    }
     
-    m_Value = value;
+      m_Value = (m_Value.empty() ? value: m_Value + "," + value);
+    }
+    else
+    {
+      m_Value = (m_Value.empty() ? single: m_Value + "," + single);
+    }
   }
 
   if (!IsOk())
