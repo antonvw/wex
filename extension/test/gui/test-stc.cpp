@@ -24,6 +24,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
 #endif
   
   wxExSTC* stc = GetSTC();
+  stc->GetVi().Command("\x1b");
   
   SECTION("SetText")
   {
@@ -63,7 +64,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     stc->DocumentStart();
     wxExFindReplaceData::Get()->SetMatchWord(false);
     REQUIRE( stc->FindNext(wxString("more text")));
-    INFO (stc->GetSelectedText() << stc->GetVi().GetMode());
+    INFO (stc->GetSelectedText() << stc->GetVi().GetModeString());
     REQUIRE( stc->GetFindString() == "more text");
     REQUIRE( stc->ReplaceAll("more", "less") == 1);
     REQUIRE( stc->ReplaceAll("more", "less") == 0);
@@ -202,7 +203,11 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     REQUIRE(!stc->AutoIndentation('x'));
     REQUIRE( stc->GetText() == "  \n  line with indentation");
     REQUIRE( stc->GetLineCount() == 2);
+#ifdef __WXOSX__
+    REQUIRE( stc->AutoIndentation('\r'));
+#else
     REQUIRE( stc->AutoIndentation('\n'));
+#endif
     // the \n is not added, but indentation does
     REQUIRE( stc->GetText() == "  \n  line with indentation");
     REQUIRE( stc->GetLineCount() == 2);

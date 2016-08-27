@@ -476,7 +476,7 @@ int wxExSTC::ConfigDialog(
          {_("Tab font"), ITEM_FONTPICKERCTRL},
          {_("Text font"), ITEM_FONTPICKERCTRL}}},
 #else
-         {_("Default font")},
+        {{_("Default font")},
          {_("Tab font")},
          {_("Text font")}}},
 #endif
