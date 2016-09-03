@@ -92,9 +92,11 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
   REQUIRE( wxExLexers::Get()->GetTheme() == "studio");
   REQUIRE( wxExLexers::Get()->GetThemeOk());
   
-  REQUIRE(!wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(99, -1)));
-  REQUIRE( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0, -1)));
-  REQUIRE( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0, -1)));
+  REQUIRE(!wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(99)));
+  REQUIRE( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0)));
+  REQUIRE( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0)));
+  REQUIRE( wxExLexers::Get()->GetIndicator(wxExIndicator(0)).IsOk());
+  REQUIRE( wxExLexers::Get()->GetMarker(wxExMarker(0)).IsOk());
   
   wxString lexer("cpp");
   wxExLexers::Get()->ShowDialog(stc, wxEmptyString, false);

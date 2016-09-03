@@ -6,7 +6,6 @@ me=$(basename $0)
 path=${0%%/$me}        # path from which the script has been launched
 current=$(pwd)
 cd $path
-export RELEASE=`16.10.0`
 export WXWIDGETS=`pwd`
 
 # now run doxygen

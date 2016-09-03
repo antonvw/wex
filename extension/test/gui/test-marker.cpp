@@ -16,23 +16,46 @@
 
 TEST_CASE("wxExMarker","[lexer]")
 {
-  wxExMarker marker;
-  REQUIRE( !marker.IsOk() );
+  SECTION("Default constructor")
+  {
+    REQUIRE( !wxExMarker().IsOk() );
+  }
   
-  wxExMarker markerx(5, 2);
-  wxExMarker markery(7, 5);
-  
-  REQUIRE( markerx.IsOk());
-  REQUIRE( markery.IsOk());
-  REQUIRE( markerx < markery );
-  
-  wxXmlNode xml(wxXML_ELEMENT_NODE, "marker");
-  xml.AddAttribute("no", "5");
-  xml.SetContent("symbol,green,white");
+  SECTION("Constructor using no, symbol")
+  {
+    REQUIRE(!wxExMarker(1, 100).IsOk());
+    REQUIRE( wxExMarker(1, wxSTC_MARK_CHARACTER).IsOk());
+    REQUIRE( wxExMarker(1, wxSTC_MARK_CHARACTER + 100).IsOk());
+    REQUIRE(!wxExMarker(1, wxSTC_MARK_CHARACTER + 300).IsOk());
+    
+    wxExMarker markerx(5, 2);
+    wxExMarker markery(7, 5);
+    
+    REQUIRE(!wxExMarker(0).IsOk());
+    REQUIRE( markerx.IsOk());
+    REQUIRE( markery.IsOk());
+    REQUIRE( markerx < markery );
+    REQUIRE( markerx == markerx );
+    REQUIRE( wxExMarker(5) == wxExMarker(5));
+    REQUIRE( wxExMarker(5) == wxExMarker(5, 2));
+    REQUIRE( wxExMarker(5) != wxExMarker(4));
+    REQUIRE( wxExMarker(5, 2) == wxExMarker(5, 2));
+    REQUIRE( wxExMarker(5, 1) != wxExMarker(5, 2));
+    
+    markerx.Apply(GetSTC());
+  }
 
-  wxExMarker marker2(&xml);
-  REQUIRE( marker2.GetNo() == 5);
-  REQUIRE( marker2.IsOk());
-  
-  markerx.Apply(GetSTC());
+  SECTION("Constructor xml")
+  {
+    wxXmlNode xml(wxXML_ELEMENT_NODE, "marker");
+    xml.AddAttribute("no", "5");
+    new wxXmlNode(&xml, wxXML_TEXT_NODE , "", "mark_character,green,white");
+
+    wxExMarker marker(&xml);
+    REQUIRE( marker.GetNo() == 5);
+    REQUIRE( marker.GetSymbol() == wxSTC_MARK_CHARACTER);
+    REQUIRE( marker.GetForegroundColour() == *wxGREEN);
+    REQUIRE( marker.GetBackgroundColour() == *wxWHITE);
+    REQUIRE( marker.IsOk());
+  }
 }

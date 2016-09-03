@@ -204,6 +204,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     REQUIRE( stc->GetText() == "  \n  line with indentation");
     REQUIRE( stc->GetLineCount() == 2);
 #ifdef __WXOSX__
+    stc->SetEOLMode(wxSTC_EOL_CR);
     REQUIRE( stc->AutoIndentation('\r'));
 #else
     REQUIRE( stc->AutoIndentation('\n'));
@@ -245,6 +246,13 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     REQUIRE( stc.Open(GetTestFile()));
     REQUIRE(!stc.Open(wxExFileName("XXX")));
     stc.PropertiesMessage();
+  }
+
+  SECTION("xml complete")
+  {
+    REQUIRE( stc->GetLexer().Set("xml"));
+    stc->GetVi().Command("i<xxxx>");
+    stc->GetVi().Command("\x1b");
   }
 
   SECTION("popup")

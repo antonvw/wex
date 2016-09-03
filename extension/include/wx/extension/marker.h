@@ -2,11 +2,10 @@
 // Name:      marker.h
 // Purpose:   Declaration of class wxExMarker
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXMARKER_H
-#define _EXMARKER_H
+#pragma once
 
 #include <wx/colour.h> 
 
@@ -21,29 +20,40 @@ public:
   wxExMarker(const wxXmlNode* node = nullptr);
 
   /// Constructor.
-  wxExMarker(int no, int symbol);
+  /// Only sets no and symbol, and not the colours.
+  wxExMarker(int no, int symbol = -1);
 
-  /// < operator
+  /// < Operator.
   bool operator<(const wxExMarker& m) const;
 
-  /// == operator
+  /// == Operator. 
+  /// Returns true if no and symbol are equal
+  /// (if symbol is not -1).
   bool operator==(const wxExMarker& m) const;
+
+  /// != Operator.
+  bool operator!=(const wxExMarker& m) const {return !operator==(m);};
 
   /// Applies this marker to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
 
+  /// Returns background colour.
+  const auto & GetBackgroundColour() const {return m_BackgroundColour;};
+  
+  /// Returns foreground colour.
+  const auto & GetForegroundColour() const {return m_ForegroundColour;};
+  
   /// Returns the no.
   int GetNo() const {return m_No;};
 
+  /// Returns symbol no.
+  int GetSymbol() const {return m_Symbol;};
+  
   /// Returns true if marker is valid.
   bool IsOk() const;
 private:
-  void Set(const wxXmlNode* node);
-
-  int m_No;
-  int m_Symbol;
+  int m_No = -1;
+  int m_Symbol = -1;
   wxColour m_BackgroundColour;
   wxColour m_ForegroundColour;
 };
-
-#endif

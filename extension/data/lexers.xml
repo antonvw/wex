@@ -837,7 +837,8 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="question"/>
       <def no ="value"/>
       <def no ="xccomment"/>
-      <def no ="sgml_default"/>
+      <!-- SGML -->
+      <def no ="sgml_default"> 21 </def>
       <def no ="sgml_command"/>
       <def no ="sgml_param"/>
       <def no ="sgml_doublestring"/>
@@ -1890,7 +1891,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="keyword6"/>
       <def no ="keyword7"/>
       <def no ="keyword8"/>
-      <def no ="box"/>
+      <def no ="box_comment"/>
       <def no ="block_comment"/>
     </def>
     
@@ -2059,7 +2060,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
         <def style ="bracelight"> back:yellow,fore:black</def>
         <def style ="char"> fore:pink </def>
         <def style ="command"> fore:steel blue </def>
-        <def style ="comment"> fore:forest green,italic,eol </def>
+        <def style ="comment"> fore:forest green,italic,back:#F1F1F1,eol </def>
         <def style ="commentdockeyword"> fore:medium sea green,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> light blue </def>
@@ -2092,7 +2093,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
         <def style ="bracelight"> back:blue,fore:white</def>
         <def style ="char"> fore:pink </def>
         <def style ="command"> fore:steel blue </def>
-        <def style ="comment"> fore:#80a0ff,italic,eol </def>
+        <def style ="comment"> fore:#80a0ff,italic,back:#2D2D2D,eol </def>
         <def style ="commentdockeyword"> fore:medium sea green,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> light blue </def>
@@ -2148,7 +2149,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
     <!-- ex_marknum_change is used by stc to show changes -->
     <marker no="ex_marknum_change">mark_fullrect,green,light blue</marker>
     <!-- ex_marknum_vi is used by vi markers -->
-    <marker no="ex_marknum_vi"> mark_bookmark,blue,turquoise </marker>
+    <marker no="ex_marknum_vi"> mark_character,blue,turquoise </marker>
     
     <!-- At this moment we do not have properties -->
     <properties/>
@@ -2430,6 +2431,9 @@ Copyright: (c) 2016, Anton van Wezenbeek
       and as assert break class continue def del elif 
       else except exec finally for from global if import in is lambda None 
       not or pass print raise return try while with yield
+    </set>
+    <set name="sgml">
+      ELEMENT DOCTYPE ATTLIST ENTITY NOTATION
     </set>
     <set name="sql">    
       <!-- First line added manually -->
@@ -2818,6 +2822,17 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <style no="hphp_commentline"> styledefault-back+comment </style>
       <style no="hphp_hstring_variable"> styledefault-back </style>
       <style no="hphp_operator"> styledefault-back+operator </style>
+      <style no="sgml_default"> styledefault-back </style>
+      <style no="sgml_command"> styledefault-back+bold </style>
+      <style no="sgml_param"> styledefault-back </style>
+      <style no="sgml_doublestring"> styledefault-back+string </style>
+      <style no="sgml_simplestring"> styledefault-back+string </style>
+      <style no="sgml_error"> styledefault-back+error </style>
+      <style no="sgml_special"> styledefault-back </style>
+      <style no="sgml_entity"> styledefault-back </style>
+      <style no="sgml_comment"> styledefault-back+comment </style>
+      <style no="sgml_st_param_comment"> styledefault-back </style>
+      <style no="sgml_block_default"> styledefault-back </style>
     </styles>
     <properties>
       <property name="fold"> 1 </property>
@@ -2827,7 +2842,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <!-- Default Language 1 for JS, 2 for VBS, 3 for python -->
       <property name="asp.default.language"> 1 </property>
     </properties>
-    <keywords set-1="javascript" set-2="vb" set-3="python" set-4="php">
+    <keywords set-1="javascript" set-2="vb" set-3="python" set-4="php" set-5="sgml">
       <!-- See scintilla html.properies -->      
       a abbr acronym address applet area b base basefont
       bdo big blockquote body br button caption center
@@ -3208,6 +3223,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
     <styles>
       <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
     </styles>
+    <keywords set-5="sgml"/>
     <!-- xml comments cannot be added, but don't need to, 
          they are added in the source -->
   </lexer>

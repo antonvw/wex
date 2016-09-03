@@ -511,7 +511,11 @@ wxExVi::wxExVi(wxExSTC* stc)
         const wxString macro = command.back();
         if (GetMacros().IsRecorded(macro))
         {
-          MacroPlayback(macro, m_Count);
+          if (!MacroPlayback(macro, m_Count))
+          {
+            m_Command.clear();
+            return false;
+          }
         }
         else
         {
