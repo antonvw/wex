@@ -2,7 +2,7 @@
 // Name:      marker.cpp
 // Purpose:   Implementation of class wxExMarker
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,52 +17,9 @@
 #include <wx/extension/lexers.h>
 
 wxExMarker::wxExMarker(const wxXmlNode* node)
-  : m_No(-1)
-  , m_Symbol(-1)
 {
-  if (node != nullptr)
-  {
-    Set(node);
-  }
-}
+  if (node == nullptr) return;
 
-wxExMarker::wxExMarker(int no, int symbol)
-  : m_No(no)
-  , m_Symbol(symbol)
-{
-}
-
-bool wxExMarker::operator<(const wxExMarker& m) const
-{
-  return m_No < m.m_No;
-}
-
-bool wxExMarker::operator==(const wxExMarker& m) const
-{
-  return m_No == m.m_No;
-}
-
-void wxExMarker::Apply(wxStyledTextCtrl* stc) const
-{
-  if (IsOk())
-  {
-    stc->MarkerDefine(
-      m_No,
-      m_Symbol,
-      m_ForegroundColour,
-      m_BackgroundColour);
-  }
-}
-
-bool wxExMarker::IsOk() const
-{
-  return 
-    m_No >= 0 && m_No <= wxSTC_MARKER_MAX &&
-    m_Symbol >= 0 && m_Symbol <= wxSTC_MARKER_MAX;
-}
-
-void wxExMarker::Set(const wxXmlNode* node)
-{
   const wxString single = 
     wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"));
 
@@ -101,4 +58,38 @@ void wxExMarker::Set(const wxXmlNode* node)
     wxLogError("Illegal marker number: %d on line: %d", 
       m_No, node->GetLineNumber());
   }
+}
+
+wxExMarker::wxExMarker(int no, int symbol)
+  : m_No(no)
+  , m_Symbol(symbol)
+{
+}
+
+bool wxExMarker::operator<(const wxExMarker& m) const
+{
+  return m_No < m.m_No;
+}
+
+bool wxExMarker::operator==(const wxExMarker& m) const
+{
+  return m_Symbol == -1 ? 
+    m_No == m.m_No: 
+    m_No == m.m_No && m_Symbol == m.m_Symbol;
+}
+
+void wxExMarker::Apply(wxStyledTextCtrl* stc) const
+{
+  if (IsOk())
+  {
+    stc->MarkerDefine(m_No, m_Symbol, m_ForegroundColour, m_BackgroundColour);
+  }
+}
+
+bool wxExMarker::IsOk() const
+{
+  return 
+    m_No >= 0 && m_No <= wxSTC_MARKER_MAX &&
+    ((m_Symbol >= 0 && m_Symbol <= wxSTC_MARKER_MAX) || 
+     (m_Symbol >= wxSTC_MARK_CHARACTER && m_Symbol <= wxSTC_MARK_CHARACTER + 255));
 }

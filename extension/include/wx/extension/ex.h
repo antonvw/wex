@@ -155,9 +155,12 @@ private:
   bool CommandAddress(const std::string& command);
   void ShowDialog(const wxString& title, const wxString& text, bool prop_lexer = false);
     
-  const wxExMarker m_MarkerSymbol = wxExMarker(0, -1);
+  const wxExMarker m_MarkerSymbol = wxExMarker(0);
 
-  std::map<wxUniChar, int> m_Markers;
+  // relate a marker to identifier
+  std::map<wxUniChar, int> m_MarkerIdentifiers;
+  // relate a marker to mark number
+  std::map<wxUniChar, int> m_MarkerNumbers;
   
   static std::string m_LastCommand;
   static wxExSTCEntryDialog* m_Dialog;

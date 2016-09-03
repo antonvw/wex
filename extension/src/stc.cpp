@@ -224,11 +224,16 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   if (m_MenuFlags & STC_MENU_OPEN_LINK)
   {
     wxString filename;
-    
-    if (LinkOpen(&filename))
+
+    if (LinkOpen(false, &filename))
     {
       menu.AppendSeparator();
       menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + filename);
+    }
+    else if (LinkOpen(true))
+    {
+      menu.AppendSeparator();
+      menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
     }
   }
 
@@ -242,13 +247,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
         menu.AppendVCS(GetFileName());
       }
     }
-  }
-
-  if (( sel.empty() && m_Lexer.GetScintillaLexer() == "hypertext") ||
-      (!sel.empty() && (sel.StartsWith("http") || sel.StartsWith("www."))))
-  {
-    menu.AppendSeparator();
-    menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
   }
 
   if (!m_vi.GetIsActive() && GetTextLength() > 0)
@@ -956,7 +954,7 @@ void wxExSTC::GotoLineAndSelect(
   if (flags & STC_WIN_FROM_OTHER)
   {
     IndicatorClearRange(0, GetTextLength() - 1);
-    SetIndicator(wxExIndicator(0, 0), 
+    SetIndicator(wxExIndicator(0), 
       PositionFromLine(line_number - 1), 
       col_number > 0 ? 
         PositionFromLine(line_number - 1) + col_number - 1:
@@ -1092,7 +1090,6 @@ void wxExSTC::Initialize(bool file_exists)
         wxExHexModeLine(&m_HexMode).SetPos(event);
       }
     }
-  
     if (m_vi.OnKeyDown(event))
     {
       event.Skip();
@@ -1107,14 +1104,9 @@ void wxExSTC::Initialize(bool file_exists)
       
   Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
     wxString filename;
-    if (LinkOpen(&filename))
-    {
-      LinkOpen();
-    }
-    else
-    {
-      event.Skip();
-    }});
+    if (LinkOpen(false, &filename)) LinkOpen();
+    else if (LinkOpen(true, &filename));
+    else event.Skip();});
   
   Bind(wxEVT_LEFT_UP, [=](wxMouseEvent& event) {
     PropertiesMessage();
@@ -1133,10 +1125,8 @@ void wxExSTC::Initialize(bool file_exists)
       if (!GetSelectedText().empty())  style |= wxExMenu::MENU_IS_SELECTED;
       if ( GetTextLength() == 0)       style |= wxExMenu::MENU_IS_EMPTY;
       if ( CanPaste())                 style |= wxExMenu::MENU_CAN_PASTE;
-
       wxExMenu menu(style);
       BuildPopupMenu(menu);
-      
       if (menu.GetMenuItemCount() > 0)
       {
         // If last item is a separator, delete it.
@@ -1238,14 +1228,12 @@ void wxExSTC::Initialize(bool file_exists)
       {
         m_AddingChars = true;
       }
-    
       CheckAutoComp(event.GetUnicodeKey());
     }
     else
     {
       m_AddingChars = false;
     }
-
     if (m_vi.OnChar(event))
     {
       if (
@@ -1272,7 +1260,6 @@ void wxExSTC::Initialize(bool file_exists)
       }
       event.Skip();
     }
-
     if (
       event.GetUnicodeKey() == '>' && 
       m_Lexer.GetScintillaLexer() == "hypertext")
@@ -1281,7 +1268,7 @@ void wxExSTC::Initialize(bool file_exists)
          GetCurrentPos() - 1,
          PositionFromLine(GetCurrentLine()),
          "<");
-       if (match_pos != wxSTC_INVALID_POSITION)
+       if (match_pos != wxSTC_INVALID_POSITION && GetCharAt(match_pos + 1) != '!')
        {
          const wxString match(GetWordAtPos(match_pos + 1));
          if (
@@ -1495,9 +1482,8 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_Zoom);}, ID_EDIT_ZOOM_OUT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(true);}, ID_EDIT_FIND_NEXT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(false);}, ID_EDIT_FIND_PREVIOUS);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetSelectedText().empty() ?
-      wxLaunchDefaultBrowser(GetFileName().GetFullPath()):
-      wxLaunchDefaultBrowser(GetSelectedText());}, ID_EDIT_OPEN_BROWSER);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxString filename; LinkOpen(true, &filename);}, ID_EDIT_OPEN_BROWSER);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const int level = GetFoldLevel(GetCurrentLine());
@@ -1573,17 +1559,17 @@ void wxExSTC::Initialize(bool file_exists)
     }}, wxID_SORT_ASCENDING, wxID_SORT_DESCENDING);
 }
 
-bool wxExSTC::LinkOpen(wxString* filename)
+bool wxExSTC::LinkOpen(bool browser, wxString* filename)
 {
   const wxString sel = GetSelectedText();
   const wxString text = (!sel.empty() ? sel: GetCurLine());
-  int line_no = 0;
+  int line_no = (browser ? -1 :0);
   int col_no = 0;
   const wxString path = m_Link.GetPath(text, line_no, col_no);
   
   if (!path.empty())
   {
-    if (filename == nullptr)
+    if (filename == nullptr && !browser)
     {
       if (m_Frame != nullptr)
       {
@@ -1606,7 +1592,18 @@ bool wxExSTC::LinkOpen(wxString* filename)
     }
     else
     {
-      *filename = wxFileName(path).GetFullName();
+      if (filename != nullptr)
+      {
+        if (browser)
+        {
+          *filename = path;
+          wxLaunchDefaultBrowser(path);
+        }
+        else
+        {
+          *filename = wxFileName(path).GetFullName();
+        }
+      }
     }
   }
   

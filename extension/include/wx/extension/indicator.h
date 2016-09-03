@@ -2,11 +2,10 @@
 // Name:      indicator.h
 // Purpose:   Declaration of class wxExIndicator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXINDICATOR_H
-#define _EXINDICATOR_H
+#pragma once
 
 #include <wx/colour.h> 
 
@@ -21,29 +20,40 @@ public:
   wxExIndicator(const wxXmlNode* node = nullptr);
 
   /// Constructor.
-  wxExIndicator(int no, int style);
+  /// Only sets no and style, and not the colour and under.
+  wxExIndicator(int no, int style = -1);
 
-  /// < operator
+  /// < Operator.
   bool operator<(const wxExIndicator& i) const;
 
-  /// == operator
+  /// == Operator. 
+  /// Returns true if no and style are equal
+  /// (if style is not -1).
   bool operator==(const wxExIndicator& i) const;
+  
+  /// != Operator.
+  bool operator!=(const wxExIndicator& i) const {return !operator==(i);};
 
   /// Applies this indicator to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
 
+  /// Returns foreground colour.
+  const auto & GetForegroundColour() const {return m_ForegroundColour;};
+  
   /// Returns the no.
   int GetNo() const {return m_No;};
+
+  /// Returns the style.
+  int GetStyle() const {return m_Style;};
+  
+  /// Returns underline.
+  bool GetUnder() const {return m_Under;};
 
   /// Returns true if this indicator is valid.
   bool IsOk() const;
 private:
-  void Set(const wxXmlNode* node);
-
-  int m_No;
-  int m_Style;
+  int m_No = -1;
+  int m_Style = -1;
   wxColour m_ForegroundColour;
-  bool m_Under;
+  bool m_Under = false;
 };
-
-#endif

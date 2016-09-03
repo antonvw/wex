@@ -734,34 +734,68 @@ void wxExEx::MacroStartRecording(const wxString& macro)
 
 bool wxExEx::MarkerAdd(const wxUniChar& marker, int line)
 {
-  MarkerDelete(marker);
+  const wxExMarker lm(wxExLexers::Get()->GetMarker(m_MarkerSymbol));
+
+  if (!lm.IsOk())
+  {
+    wxLogError("Could not find marker symbol: %d in lexers", m_MarkerSymbol.GetNo());
+    return false;
+  }
   
+  MarkerDelete(marker);
+
+  int id;
   const int lin = (line == -1 ? m_STC->GetCurrentLine(): line);
   
-  const int id = m_STC->MarkerAdd(
-    lin, 
-    m_MarkerSymbol.GetNo());
+  if (lm.GetSymbol() == wxSTC_MARK_CHARACTER)
+  {
+    const auto& it = m_MarkerNumbers.find(marker);
+
+    if (it == m_MarkerNumbers.end())
+    {
+      // We have symbol:
+      // 0: non-char ex marker
+      // 1: change marker
+      // 2..: character markers (all markers in m_MarkerIdentifiers)
+      const int marker_offset = 2;
+      const int marker_number = m_MarkerIdentifiers.size() + marker_offset;
+
+      m_STC->MarkerDefine(marker_number, 
+        wxSTC_MARK_CHARACTER + marker.GetValue(), 
+        lm.GetForegroundColour(), lm.GetBackgroundColour());
+
+      id = m_STC->MarkerAdd(lin, marker_number);
+      m_MarkerNumbers[marker] = marker_number;
+    }
+    else
+    {
+      id = m_STC->MarkerAdd(lin, it->second);
+    }
+  }
+  else
+  {
+    id = m_STC->MarkerAdd(lin, m_MarkerSymbol.GetNo());
+  }
     
   if (id == -1)
   {
-    wxLogError("Could not add marker: %c to line: %d",
-      marker, lin);
+    wxLogError("Could not add marker: %c to line: %d", marker, lin);
     return false;  
   }
     
-  m_Markers[marker] = id;
+  m_MarkerIdentifiers[marker] = id;
   
   return true;
 }  
 
 bool wxExEx::MarkerDelete(const wxUniChar& marker)
 {
-  const auto& it = m_Markers.find(marker);
+  const auto& it = m_MarkerIdentifiers.find(marker);
 
-  if (it != m_Markers.end())
+  if (it != m_MarkerIdentifiers.end())
   {
     m_STC->MarkerDeleteHandle(it->second);
-    m_Markers.erase(it);
+    m_MarkerIdentifiers.erase(it);
     return true;
   }
   
@@ -803,9 +837,9 @@ int wxExEx::MarkerLine(const wxUniChar& marker) const
   }
   else
   {
-    const auto& it = m_Markers.find(marker);
+    const auto& it = m_MarkerIdentifiers.find(marker);
 
-    if (it != m_Markers.end())
+    if (it != m_MarkerIdentifiers.end())
     {
       return m_STC->MarkerLineFromHandle(it->second);
     }

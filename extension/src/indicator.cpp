@@ -2,7 +2,7 @@
 // Name:      indicator.cpp
 // Purpose:   Implementation of class wxExIndicator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,57 +17,9 @@
 #include <wx/extension/lexers.h>
 
 wxExIndicator::wxExIndicator(const wxXmlNode* node)
-  : m_No(-1)
-  , m_Style(-1)
-  , m_Under(false)
 {
-  if (node != nullptr)
-  {
-    Set(node);
-  }
-}
+  if (node == nullptr) return;
 
-wxExIndicator::wxExIndicator(int no, int style)
-  : m_No(no)
-  , m_Style(style)
-  , m_Under(false)
-{
-}
-
-bool wxExIndicator::operator<(const wxExIndicator& i) const
-{
-  return m_No < i.m_No;
-}
-
-bool wxExIndicator::operator==(const wxExIndicator& i) const
-{
-  return m_No == i.m_No;
-}
-
-void wxExIndicator::Apply(wxStyledTextCtrl* stc) const
-{
-  if (IsOk())
-  {
-    stc->IndicatorSetStyle(m_No, m_Style);
-
-    if (m_ForegroundColour.IsOk())
-    {
-      stc->IndicatorSetForeground(m_No, m_ForegroundColour);
-    }
-
-    stc->IndicatorSetUnder(m_No, m_Under);
-  }
-}
-
-bool wxExIndicator::IsOk() const
-{
-  return 
-    m_No >= 0 && m_No <= wxSTC_INDIC_MAX &&
-    m_Style >= 0 && m_Style <= wxSTC_INDIC_ROUNDBOX;
-}
-
-void wxExIndicator::Set(const wxXmlNode* node)
-{
   const wxString single = 
     wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"));
 
@@ -112,4 +64,44 @@ void wxExIndicator::Set(const wxXmlNode* node)
     wxLogError("Illegal indicator number: %d on line: %d", 
       m_No, node->GetLineNumber());
   }
+}
+
+wxExIndicator::wxExIndicator(int no, int style)
+  : m_No(no)
+  , m_Style(style)
+{
+}
+
+bool wxExIndicator::operator<(const wxExIndicator& i) const
+{
+  return m_No < i.m_No;
+}
+
+bool wxExIndicator::operator==(const wxExIndicator& i) const
+{
+  return m_Style == -1 ?
+    m_No == i.m_No:
+    m_No == i.m_No && m_Style == i.m_Style;
+}
+
+void wxExIndicator::Apply(wxStyledTextCtrl* stc) const
+{
+  if (IsOk())
+  {
+    stc->IndicatorSetStyle(m_No, m_Style);
+
+    if (m_ForegroundColour.IsOk())
+    {
+      stc->IndicatorSetForeground(m_No, m_ForegroundColour);
+    }
+
+    stc->IndicatorSetUnder(m_No, m_Under);
+  }
+}
+
+bool wxExIndicator::IsOk() const
+{
+  return 
+    m_No >= 0 && m_No <= wxSTC_INDIC_MAX &&
+    m_Style >= 0 && m_Style <= wxSTC_INDIC_ROUNDBOX;
 }

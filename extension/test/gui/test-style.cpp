@@ -18,7 +18,7 @@
 
 TEST_CASE("wxExStyle", "[stc][lexer]")
 {
-  SECTION("Default constructor");
+  SECTION("Default constructor")
   {
     REQUIRE(!wxExStyle().IsOk() );
   }

@@ -17,25 +17,43 @@
 
 TEST_CASE("wxExIndicator")
 {
-  wxExIndicator ind;
-  REQUIRE(!ind.IsOk() );
+  SECTION("Default constructor")
+  {
+    REQUIRE(!wxExIndicator().IsOk() );
+  }
   
-  wxExIndicator indx(5, 2);
-  wxExIndicator indy(7, 5);
-  
-  REQUIRE( indx.IsOk());
-  REQUIRE( indy.IsOk());
-  REQUIRE( indx < indy );
-  
-  wxXmlNode xml(wxXML_ELEMENT_NODE, "indicator");
-  xml.AddAttribute("no", "5");
-  xml.SetContent("symbol,green");
+  SECTION("Constructor using no, symbol")
+  {
+    wxExIndicator indx(5, 2);
+    wxExIndicator indy(7, 5);
 
-  wxExIndicator ind2(&xml);
-  REQUIRE( ind2.GetNo() == 5);
-  REQUIRE( ind2.IsOk());
+    REQUIRE(!wxExIndicator(5).IsOk() );
+    REQUIRE( indx.IsOk());
+    REQUIRE( indy.IsOk());
+    REQUIRE( indx < indy );
+    REQUIRE( indx == indx );
+    REQUIRE( indx != indy );
+    REQUIRE( wxExIndicator(5) == wxExIndicator(5));
+    REQUIRE( wxExIndicator(5) == wxExIndicator(5, 2));
+    REQUIRE( wxExIndicator(5) != wxExIndicator(4));
+    REQUIRE( wxExIndicator(5, 2) == wxExIndicator(5, 2));
+    REQUIRE( wxExIndicator(5, 1) != wxExIndicator(5, 2));
+  }
   
-  wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
-  ind2.Apply(stc);
-  REQUIRE( ind2.IsOk());
+  SECTION("Constructor xml")
+  {
+    wxXmlNode xml(wxXML_ELEMENT_NODE, "indicator");
+    xml.AddAttribute("no", "5");
+    new wxXmlNode(&xml, wxXML_TEXT_NODE , "", "indic_box,green");
+
+    wxExIndicator ind(&xml);
+    REQUIRE( ind.GetForegroundColour() == *wxGREEN);
+    REQUIRE( ind.GetNo() == 5);
+    REQUIRE( ind.GetStyle() == 6);
+    REQUIRE(!ind.GetUnder());
+    REQUIRE( ind.IsOk());
+    
+    ind.Apply(GetSTC());
+    REQUIRE( ind.IsOk());
+  }
 }

@@ -53,71 +53,92 @@ TEST_CASE("wxExLink", "[stc]")
   wxExSTC* stc = new wxExSTC(GetFrame());
   AddPane(GetFrame(), stc);
   
-  wxExLink lnk(stc);  
+  SECTION("Default constructor")
+  {
+    const wxExLink lnk;
+    link(lnk, "test");
+  }
   
-  wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");
-  lnk.SetFromConfig();
-  
-  const wxString test("/extension/test/data/test.h");
-  const wxString special("/extension/test/data/test-special.h");
-  
-  // Test empty, or illegal paths.
-  link(lnk, "");
-  link(lnk, "xxxx");
-  link(lnk, "1 othertest:");
-  link(lnk, ":test");
-  link(lnk, ": xtest");
-  link(lnk, "c:test");
-  link(lnk, "c:\\test");
-  link(lnk, "on xxxx: 1200");
-  link(lnk, "on xxxx: not a number");
-  
-  // Test existing file in test data dir.
-  link(lnk, "test.h", test);
-  link(lnk, "  test.h", test);
-  link(lnk, "test-special.h", special);
-  link(lnk, "  test-special.h", special);
-  
-  // Test output ls -l.
-  // -rw-rw-r-- 1 anton anton  2287 nov 17 10:53 test.h
-  link(lnk, "-rw-rw-r-- 1 anton anton 35278 nov 24 16:09 test.h", test);
+  SECTION("Constructor with STC")
+  {
+    wxExLink lnk(stc);  
+    
+    wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");
+    lnk.SetFromConfig();
+    
+    const wxString test("/extension/test/data/test.h");
+    const wxString special("/extension/test/data/test-special.h");
+    
+    // Test empty, or illegal paths.
+    link(lnk, "");
+    link(lnk, "xxxx");
+    link(lnk, "1 othertest:");
+    link(lnk, ":test");
+    link(lnk, ": xtest");
+    link(lnk, "c:test");
+    link(lnk, "c:\\test");
+    link(lnk, "on xxxx: 1200");
+    link(lnk, "on xxxx: not a number");
+    
+    // Test existing file in test data dir.
+    link(lnk, "test.h", test);
+    link(lnk, "  test.h", test);
+    link(lnk, "test-special.h", special);
+    link(lnk, "  test-special.h", special);
+    
+    // Test output ls -l.
+    // -rw-rw-r-- 1 anton anton  2287 nov 17 10:53 test.h
+    link(lnk, "-rw-rw-r-- 1 anton anton 35278 nov 24 16:09 test.h", test);
 
-  // Test existing file in the include path.
+    // Test existing file in the include path.
 #ifndef __WXOSX__  
-  link(lnk, "test", "/usr/bin/test");
-  link(lnk, "  test \n", "/usr/bin/test"); // whitespace should be skipped
-  link(lnk, "./test", "/usr/bin/./test");
-  link(lnk, "<test>", "/usr/bin/test");
-  link(lnk, "\"test\"", "/usr/bin/test");
-  link(lnk, "skip <test> skip skip", "/usr/bin/test");
-  link(lnk, "skip \"test\" skip skip", "/usr/bin/test");
-  link(lnk, "skip 'test' skip skip", "/usr/bin/test");
-  
-  // Test incorrect line and/or col.
-  link(lnk, "test:", "/usr/bin/test");
-  link(lnk, "test:xyz", "/usr/bin/test");
-  link(lnk, "test:50:xyz", "/usr/bin/test", 50);
-  link(lnk, "test:abc:xyz", "/usr/bin/test");
-  
-  // Test line_no and col no.
-  link(lnk, "test:50", "/usr/bin/test", 50);
-  link(lnk, "test:50:", "/usr/bin/test", 50);
-  link(lnk, "test:50:6", "/usr/bin/test", 50, 6);
-  link(lnk, "test:500000", "/usr/bin/test", 500000);
-  link(lnk, "test:500000:599", "/usr/bin/test", 500000, 599);
-  link(lnk, "skip skip test:50", "/usr/bin/test", 50);
+    link(lnk, "test", "/usr/bin/test");
+    link(lnk, "  test \n", "/usr/bin/test"); // whitespace should be skipped
+    link(lnk, "./test", "/usr/bin/./test");
+    link(lnk, "<test>", "/usr/bin/test");
+    link(lnk, "\"test\"", "/usr/bin/test");
+    link(lnk, "skip <test> skip skip", "/usr/bin/test");
+    link(lnk, "skip \"test\" skip skip", "/usr/bin/test");
+    link(lnk, "skip 'test' skip skip", "/usr/bin/test");
+    
+    // Test incorrect line and/or col.
+    link(lnk, "test:", "/usr/bin/test");
+    link(lnk, "test:xyz", "/usr/bin/test");
+    link(lnk, "test:50:xyz", "/usr/bin/test", 50);
+    link(lnk, "test:abc:xyz", "/usr/bin/test");
+    
+    // Test line_no and col no.
+    link(lnk, "test:50", "/usr/bin/test", 50);
+    link(lnk, "test:50:", "/usr/bin/test", 50);
+    link(lnk, "test:50:6", "/usr/bin/test", 50, 6);
+    link(lnk, "test:500000", "/usr/bin/test", 500000);
+    link(lnk, "test:500000:599", "/usr/bin/test", 500000, 599);
+    link(lnk, "skip skip test:50", "/usr/bin/test", 50);
 
-  // po file format
-  link(lnk, "#: test:120", "/usr/bin/test", 120);
-  stc->GetLexer().Set("po");
-  link(lnk, "#: test:120", "/usr/bin/test", 120);
+    // po file format
+    link(lnk, "#: test:120", "/usr/bin/test", 120);
+    stc->GetLexer().Set("po");
+    link(lnk, "#: test:120", "/usr/bin/test", 120);
 #endif
 
-  link(lnk, "test-special.h:10", special, 10);
-  link(lnk, "test-special.h:10:2", special, 10, 2);
+    link(lnk, "test-special.h:10", special, 10);
+    link(lnk, "test-special.h:10:2", special, 10, 2);
+  }
   
-  // Test link with default contructor.
-  wxExLink lnk2;
-  link(lnk2, "test");
+  SECTION("http link")
+  { 
+    const wxExLink lnk(stc);
+    int line = 0, col = 0;
+    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", line, col).empty());
+    line = -1;
+    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", line, col).empty());
+    REQUIRE( lnk.GetPath("www.wxwidgets.org", line, col) == "www.wxwidgets.org" );
+    REQUIRE( lnk.GetPath("some text www.wxwidgets.org", line, col) == "www.wxwidgets.org" );
+    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", line, col) == "https://github.com/antonvw/wxExtension" );
+    line = 0;
+    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", line, col).empty() );
+    stc->GetLexer().Set("hypertext");
+    REQUIRE( lnk.GetPath("www.wxwidgets.org", line, col) == "" );
+  }
 }
 #endif

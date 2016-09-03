@@ -129,7 +129,7 @@ public:
     return true;
   }        
 private:
-  const wxExIndicator m_FindIndicator = wxExIndicator(0, 0);
+  const wxExIndicator m_FindIndicator = wxExIndicator(0);
   std::vector<std::string> m_Commands;
   int m_Changes = 0;
   wxExEx* m_Ex;
@@ -799,7 +799,7 @@ bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
     return false;
   }
 
-  wxExIndicator indicator(0, 0);
+  wxExIndicator indicator(0);
 
   m_Pattern = pattern;
   m_Replacement = repl; 

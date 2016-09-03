@@ -58,6 +58,10 @@ public:
   /// Returns the filename.
   const auto & GetFileName() const {return m_FileName;};
   
+  /// Returns indicator from loaded indicators,
+  /// based on the no of specified indicator.
+  const wxExIndicator GetIndicator(const wxExIndicator& indicator) const;
+  
   /// Returns the keywords for the specified named set of keywords.
   /// Returns empty string if set does not exist.
   const wxString GetKeywords(const wxString& set) const;
@@ -68,6 +72,10 @@ public:
   /// Returns the macros for specified lexer.
   const auto & GetMacros(const wxString& lexer) {return m_Macros[lexer];};
 
+  /// Returns marker from loaded markers,
+  /// based on the no of specified marker.
+  const wxExMarker GetMarker(const wxExMarker& marker) const;
+  
   /// Returns global properties.
   const auto & GetProperties() const {return m_GlobalProperties;};
 

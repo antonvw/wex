@@ -39,6 +39,22 @@ const wxString wxExLink::FindPath(const wxString& text) const
   {
     return text.Mid(3);
   }
+  
+  // hypertext file
+  if (
+    m_STC != nullptr && 
+    m_STC->GetLexer().GetScintillaLexer() == "hypertext")
+  {
+    return m_STC->GetFileName().GetFullPath();
+  }
+  
+  // hypertext link
+  std::size_t found;
+  if ((found = text.find("http")) != std::string::npos ||
+      (found = text.find("www.")) != std::string::npos)
+  {
+    return text.substr(found).Trim();
+  }
 
   // Better first try to find "...", then <...>, as in next example.
   // <A HREF="http://www.scintilla.org">scintilla</A> component.
@@ -87,12 +103,19 @@ const wxString wxExLink::FindPath(const wxString& text) const
   return out;
 }
 
+// text contains selected text, or current line
 const wxString wxExLink::GetPath(
   const wxString& text,
   int& line_no,
   int& column_no) const
 {
   const wxString path(FindPath(text));
+  
+  if (line_no == -1 && (path.StartsWith("http") || path.StartsWith("www.")))
+  {
+    return path;
+  }
+  
   wxString link(path);
   
   SetLink(link, line_no, column_no);

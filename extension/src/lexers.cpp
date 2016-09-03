@@ -148,12 +148,24 @@ wxExLexers* wxExLexers::Get(bool createOnDemand)
   return m_Self;
 }
 
+const wxExIndicator wxExLexers::GetIndicator(const wxExIndicator& indicator) const
+{
+  const auto it = m_Indicators.find(indicator);
+  return (it != m_Indicators.end() ? *it: wxExIndicator());
+}
+
 const wxString wxExLexers::GetKeywords(const wxString& set) const
 {
   const auto& it = m_Keywords.find(set);
   return (it != m_Keywords.end() ? it->second: wxString());
 }
 
+const wxExMarker wxExLexers::GetMarker(const wxExMarker& marker) const
+{
+  const auto it = m_Markers.find(marker);
+  return (it != m_Markers.end() ? *it: wxExMarker());
+}
+  
 void wxExLexers::Initialize()
 {
   m_DefaultStyle = wxExStyle();

@@ -403,10 +403,12 @@ TEST_CASE("wxExVi", "[stc][vi]")
           other_command.first + "a": other_command.first);
 
       INFO( oc);
-      if (oc != "z")
+      if (oc != "z" && oc != "@a")
         REQUIRE( vi->Command(oc));
       else
         REQUIRE(!vi->Command(oc));
+      
+      vi->GetMacros().StopRecording();
     }
   }
 
