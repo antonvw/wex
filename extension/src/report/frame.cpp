@@ -211,7 +211,7 @@ bool wxExFrameWithHistory::FindInFiles(
         file.RunTool();
         stats += file.GetStatistics().GetElements();
       }
-      else
+      else if (!fn.GetFullPath().empty())
       {
         wxExDirTool dir(
           tool, 
@@ -307,6 +307,12 @@ bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
     return false;
   }
   
+  if (arg1.empty() || arg2.empty())
+  {
+    wxLogStatus("empty arguments");
+    return false;
+  }
+  
   const wxExTool tool = (sed ?
     ID_TOOL_REPORT_REPLACE:
     ID_TOOL_REPORT_FIND);
@@ -326,7 +332,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
     wxExFindReplaceData::Get()->SetUseRegEx(true);
     wxLogStatus(GetFindReplaceInfoText());
     Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
-    
+
     wxExDirTool dir(tool, arg1, arg2, arg3);
     dir.FindFiles();
 

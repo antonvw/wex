@@ -196,12 +196,20 @@ int wxExTestApp::OnRun()
   timer->StartOnce(1000);
 
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
-    const int fails = m_Session->run();
-    wxExUIAction(GetTopWindow(), "key", "char");
-    const long auto_exit(wxConfigBase::Get()->ReadLong("auto-exit", 1));
-    if (auto_exit)
+    try
     {
-      exit(fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
+      const int fails = m_Session->run();
+      wxExUIAction(GetTopWindow(), "key", "char");
+      const long auto_exit(wxConfigBase::Get()->ReadLong("auto-exit", 1));
+      if (auto_exit)
+      {
+        exit(fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
+      }
+    }
+    catch (const std::exception& e)
+    {
+      std::cout << e.what() << "\n";
+      exit(EXIT_FAILURE);
     }});
 
   return wxExApp::OnRun();
@@ -265,10 +273,18 @@ int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)
   
   if (!use_eventloop)
   {
-    const int fails = session.run();
-    app->ProcessPendingEvents();
-    app->ExitMainLoop();
-    return fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS;
+    try
+    {
+      const int fails = session.run();
+      app->ProcessPendingEvents();
+      app->ExitMainLoop();
+      return fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS;
+    }
+    catch (const std::exception& e)
+    {
+      std::cout << e.what() << "\n";
+      exit(EXIT_FAILURE);
+    }
   }
   else
   {

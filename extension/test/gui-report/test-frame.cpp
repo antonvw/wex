@@ -46,9 +46,9 @@ TEST_CASE("wxExFrameWithHistory")
   
   REQUIRE( GetFrame()->GetProject() == nullptr);
 
-  REQUIRE( GetFrame()->Grep("xxxxxxx"));
-  REQUIRE( GetFrame()->Grep("xxxxxxx yyy"));
-  REQUIRE( GetFrame()->Grep("xxxxxxx *.cpp ."));
+  REQUIRE(!GetFrame()->Grep("xxxxxxx"));
+  REQUIRE(!GetFrame()->Grep("xxxxxxx yyy"));
+  REQUIRE( GetFrame()->Grep("xxxxxxx *.cpp ./"));
 
 #ifndef __WXMSW__
   REQUIRE(!GetFrame()->Sed("xxxxxxx"));

@@ -18,47 +18,26 @@
 #include <wx/extension/process.h>
 #include <wx/extension/util.h>
 
-const char autoCompSep = 3;
-
 #if wxUSE_GUI
 
-wxExShell::wxExShell(
-  wxWindow* parent,
-  const wxString& prompt,
-  const wxString& command_end,
-  bool echo,
-  int commands_save_in_config,
-  const wxString& lexer,
-  long menu_flags,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style)
-  : wxExSTC(
-      parent, 
-      wxEmptyString,
+wxExShell::wxExShell(wxWindow* parent,
+  const wxString& prompt, const wxString& command_end,
+  bool echo, int commands_save_in_config, const wxString& lexer,
+  long menu_flags, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
+  : wxExSTC(parent, wxEmptyString,
       STC_WIN_NO_INDICATOR,
       wxEmptyString, // title, used for name
-      menu_flags, 
-      std::string(),
-      id, 
-      pos, 
-      size, 
-      style)
+      menu_flags, std::string(), id, pos, size, style)
   , m_CommandEnd((command_end == wxEmptyString ? GetEOL(): command_end))
-  , m_CommandStartPosition(0)
   , m_Echo(echo)
-  // take a char that is not likely to appear inside commands
-  , m_CommandsInConfigDelimiter(wxUniChar(0x03))
   , m_CommandsSaveInConfig(commands_save_in_config)
   , m_Prompt(prompt)
-  , m_Enabled(true)
 {
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
   ResetMargins(false); // do not reset divider margin
   UseAutoComplete(false); // we have our own autocomplete
-  AutoCompSetSeparator(autoCompSep);
+  AutoCompSetSeparator(3);
 
   // Start with a prompt.
   Prompt();
@@ -67,7 +46,7 @@ wxExShell::wxExShell(
   {
     // Get all previous commands.
     wxStringTokenizer tkz(wxConfigBase::Get()->Read("Shell"),
-      m_CommandsInConfigDelimiter);
+      (char)AutoCompGetSeparator());
 
     while (tkz.HasMoreTokens())
     {
@@ -88,7 +67,6 @@ wxExShell::wxExShell(
     {
       ProcessChar(event.GetKeyCode());
     }
-    
     if (m_Echo)
     {
       event.Skip();
@@ -116,7 +94,8 @@ wxExShell::wxExShell(
         DocumentEnd();
         GetVi().Command("\x1b"); // ESC, normal mode
       }
-      if (GetCurrentPos() >= m_CommandStartPosition)
+      if (GetCurrentPos() >= m_CommandStartPosition && 
+          m_Process != nullptr && m_Process->IsRunning())
       {
         EnableShell(true);
       }
@@ -161,7 +140,6 @@ wxExShell::wxExShell(
         
       case WXK_HOME:
         Home();
-  
         if (GetLine(GetCurrentLine()).StartsWith(m_Prompt))
         {
           GotoPos(GetCurrentPos() + m_Prompt.length());
@@ -221,7 +199,6 @@ wxExShell::wxExShell(
           (key == 'C' && GetSelectedText().empty())))
         {
           skip = false;
-        
           if (m_Process != nullptr)
           {
             m_Process->Kill();
@@ -239,9 +216,7 @@ wxExShell::wxExShell(
         {
           DocumentEnd();
         }
-  
         m_CommandsIterator = m_Commands.end();
-  
         if (m_Echo && skip) event.Skip();
     }});
 
@@ -288,7 +263,7 @@ wxExShell::~wxExShell()
       it != m_Commands.rend() && items < m_CommandsSaveInConfig;
       ++it)
     {
-      values += *it + m_CommandsInConfigDelimiter;
+      values += *it + (char)AutoCompGetSeparator();
       items++;
     }
 
@@ -373,17 +348,11 @@ void wxExShell::Expand()
       }
       else
       {
-        wxString list;
         m_AutoCompleteList.erase(m_AutoCompleteList.begin());
-      
-        for (const auto& it : m_AutoCompleteList)
-        {
-          list += it + autoCompSep;
-        }
-      
-        list.Trim(); // skip last whitespace separator
-      
-        AutoCompShow(word.length(), list);
+        AutoCompShow(word.length(), std::accumulate(
+          m_AutoCompleteList.begin(), m_AutoCompleteList.end(), wxString(), 
+          [&](const wxString& a, const wxString& b) {
+            return a.empty() ? b : a + (char)AutoCompGetSeparator() + b;}));
       }
     }
   }
@@ -402,14 +371,7 @@ void wxExShell::Expand()
     
 const wxString wxExShell::GetCommand() const
 {
-  if (!m_Commands.empty())
-  {
-    return m_Commands.back();
-  }
-  else
-  {
-    return wxEmptyString;
-  }
+  return !m_Commands.empty() ? m_Commands.back(): wxString();
 }
 
 const wxString wxExShell::GetHistory() const
