@@ -100,7 +100,7 @@ bool App::OnInit()
     frame->Show();
   }
   
-  return true;
+  return !frame->IsClosing();
 }
 
 void App::Reset()

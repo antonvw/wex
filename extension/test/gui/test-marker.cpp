@@ -54,8 +54,8 @@ TEST_CASE("wxExMarker","[lexer]")
     wxExMarker marker(&xml);
     REQUIRE( marker.GetNo() == 5);
     REQUIRE( marker.GetSymbol() == wxSTC_MARK_CHARACTER);
-    REQUIRE( marker.GetForegroundColour() == *wxGREEN);
-    REQUIRE( marker.GetBackgroundColour() == *wxWHITE);
+    REQUIRE( marker.GetForegroundColour() == wxColour("GREEN"));
+    REQUIRE( marker.GetBackgroundColour() == wxColour("WHITE"));
     REQUIRE( marker.IsOk());
   }
 }

@@ -47,7 +47,7 @@ TEST_CASE("wxExIndicator")
     new wxXmlNode(&xml, wxXML_TEXT_NODE , "", "indic_box,green");
 
     wxExIndicator ind(&xml);
-    REQUIRE( ind.GetForegroundColour() == *wxGREEN);
+    REQUIRE( ind.GetForegroundColour() == wxColour("GREEN"));
     REQUIRE( ind.GetNo() == 5);
     REQUIRE( ind.GetStyle() == 6);
     REQUIRE(!ind.GetUnder());

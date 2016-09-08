@@ -320,6 +320,11 @@ bool wxExProcess::Execute(
       // Set output by converting array strings into normal strings.
       m_Output = wxJoin(errors, '\n', '\n') + wxJoin(output, '\n', '\n');
     }
+    
+    if (m_Shell != nullptr)
+    {
+      m_Shell->EnableShell(false);
+    }
   }
   
   return !m_Error;

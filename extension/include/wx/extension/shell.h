@@ -127,10 +127,9 @@ private:
 
   wxString m_Command;
   const wxString m_CommandEnd;
-  int m_CommandStartPosition; /// position after the prompt from where commands can be inserted
+  int m_CommandStartPosition = 0; /// position after the prompt from where commands can be inserted
   const bool m_Echo;
-  bool m_Enabled;
-  const wxString m_CommandsInConfigDelimiter;
+  bool m_Enabled = true;
   const int m_CommandsSaveInConfig;
   wxString m_Prompt;
   
