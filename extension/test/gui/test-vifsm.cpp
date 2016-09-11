@@ -41,6 +41,14 @@ TEST_CASE("wxExViFSM", "[stc][vi]")
   REQUIRE( fsm.Transition(ESC));
   REQUIRE( fsm.State() == wxExVi::MODE_NORMAL);
   REQUIRE( fsm.StateString().empty());
+  REQUIRE( fsm.Transition("K"));
+  REQUIRE( fsm.State() == wxExVi::MODE_VISUAL_RECT);
+  REQUIRE( fsm.Transition("K")); // ignore
+  REQUIRE( fsm.State() == wxExVi::MODE_VISUAL_RECT);
+  
+  REQUIRE( fsm.Transition(ESC));
+  REQUIRE( fsm.State() == wxExVi::MODE_NORMAL);
+  REQUIRE( fsm.StateString().empty());
   
   REQUIRE( fsm.Transition("cc"));
   REQUIRE( fsm.State() == wxExVi::MODE_INSERT);

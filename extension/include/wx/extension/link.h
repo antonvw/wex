@@ -34,7 +34,7 @@ public:
   /// If there is no config, pathlist will be empty.
   void SetFromConfig();
 private:
-  const wxString FindPath(const wxString& text) const;
+  const wxString FindPath(const wxString& text, int line_no) const;
   bool SetLink(
     wxString& text,
     int& line_no,

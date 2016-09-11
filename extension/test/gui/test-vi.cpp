@@ -549,6 +549,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   {
     ChangeMode( vi, visual.first, visual.second);
     ChangeMode( vi, "jjj", visual.second);
+    ChangeMode( vi, visual.first, visual.second); // second has no effect
     ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
     
     event.m_uniChar = visual.first[0];

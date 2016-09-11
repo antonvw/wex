@@ -17,6 +17,7 @@ int main (int argc, char* argv[])
 
 TEST_CASE( "wxExTestApp" ) 
 {
+  wxASSERT( 1 == 0 );
   REQUIRE(!wxGetApp().GetCatalogDir().empty());
   REQUIRE( wxGetApp().GetLocale().IsOk());
   INFO( wxGetApp().GetLocale().GetLanguage());
