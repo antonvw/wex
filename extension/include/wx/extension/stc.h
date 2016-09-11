@@ -372,7 +372,7 @@ private:
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void FoldAll();
   void Initialize(bool file_exists);
-  bool LinkOpen(bool browser = false, wxString* filename = nullptr); // name of found file
+  bool LinkOpen(int mode, wxString* filename = nullptr); // name of found file
   void MarkModified(const wxStyledTextEvent& event);
 
   const int m_MarginDividerNumber = 1;

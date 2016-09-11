@@ -19,6 +19,18 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
+void wxExApp::OnAssertFailure(
+  const wxChar *file, int line, const wxChar *func, 
+  const wxChar *cond, const wxChar *msg)
+{
+  std::cout << 
+    "file: " << file << 
+    "line: " << line << 
+    "func: " << func << 
+    "cond: " << cond << 
+    "msg: " << msg << "\n";
+}
+    
 int wxExApp::OnExit()
 {
   delete wxExFindReplaceData::Set(nullptr);

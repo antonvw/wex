@@ -62,7 +62,6 @@ TEST_CASE("wxExLink", "[stc]")
   SECTION("Constructor with STC")
   {
     wxExLink lnk(stc);  
-    
     wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");
     lnk.SetFromConfig();
     
@@ -121,24 +120,41 @@ TEST_CASE("wxExLink", "[stc]")
     link(lnk, "#: test:120", "/usr/bin/test", 120);
 #endif
 
+    link(lnk, "gcc", "/usr/bin/gcc");
+    link(lnk, "<gcc>", "/usr/bin/gcc");
+
     link(lnk, "test-special.h:10", special, 10);
     link(lnk, "test-special.h:10:2", special, 10, 2);
   }
   
   SECTION("http link")
   { 
-    const wxExLink lnk(stc);
+    wxExLink lnk(stc);
+    wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");
+    lnk.SetFromConfig();
+
     int line = 0, col = 0;
     REQUIRE( lnk.GetPath("xxx.wxwidgets.org", line, col).empty());
+    REQUIRE( lnk.GetPath("<test.cpp>", line, col).empty());
     line = -1;
+    REQUIRE( lnk.GetPath("gcc>", line, col).empty());
+    REQUIRE( lnk.GetPath("<gcc>", line, col).empty());
     REQUIRE( lnk.GetPath("xxx.wxwidgets.org", line, col).empty());
+    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", line, col).empty());
+    REQUIRE( lnk.GetPath("<test.cpp>", line, col).empty());
     REQUIRE( lnk.GetPath("www.wxwidgets.org", line, col) == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("some text www.wxwidgets.org", line, col) == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", line, col) == "https://github.com/antonvw/wxExtension" );
     line = 0;
     REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", line, col).empty() );
-    stc->GetLexer().Set("hypertext");
-    REQUIRE( lnk.GetPath("www.wxwidgets.org", line, col) == "" );
+    // hypertext file
+    stc->GetFile().FileNew(wxExFileName("test.html"));
+    REQUIRE( lnk.GetPath("www.wxwidgets.org", line, col).empty() );
+    REQUIRE( lnk.GetPath("xx", line, col).empty());
+    line = -1;
+    REQUIRE( lnk.GetPath("xx", line, col) == "test.html" );
+    line = -2;
+    REQUIRE( lnk.GetPath("xx", line, col).empty());
   }
 }
 #endif

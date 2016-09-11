@@ -43,6 +43,13 @@ enum
   INDENT_ALL,
 };
 
+enum
+{
+  LINK_CHECK         = 0x0001,
+  LINK_OPEN          = 0x0002,
+  LINK_OPEN_BROWSER  = 0x0004,
+};
+
 class STCDefaults : public wxExConfigDefaults
 {
 public:
@@ -225,15 +232,15 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   {
     wxString filename;
 
-    if (LinkOpen(false, &filename))
-    {
-      menu.AppendSeparator();
-      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + filename);
-    }
-    else if (LinkOpen(true))
+    if (LinkOpen(LINK_OPEN_BROWSER | LINK_CHECK))
     {
       menu.AppendSeparator();
       menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
+    }
+    else if (LinkOpen(LINK_OPEN | LINK_CHECK, &filename))
+    {
+      menu.AppendSeparator();
+      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + filename);
     }
   }
 
@@ -1104,8 +1111,15 @@ void wxExSTC::Initialize(bool file_exists)
       
   Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
     wxString filename;
-    if (LinkOpen(false, &filename)) LinkOpen();
-    else if (LinkOpen(true, &filename));
+    if (LinkOpen(LINK_OPEN | LINK_CHECK, &filename)) 
+    {
+      if (!LinkOpen(LINK_OPEN)) event.Skip();
+    }
+    else if (m_Lexer.GetScintillaLexer() != "hypertext" ||
+      GetCurLine().Contains("href")) 
+    {
+      if (!LinkOpen(LINK_OPEN_BROWSER)) event.Skip();
+    }
     else event.Skip();});
   
   Bind(wxEVT_LEFT_UP, [=](wxMouseEvent& event) {
@@ -1337,7 +1351,7 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); event.Skip();}, wxID_FIND);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); event.Skip();}, wxID_REPLACE);
     
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen();}, ID_EDIT_OPEN_LINK);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen(LINK_OPEN);}, ID_EDIT_OPEN_LINK);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const wxString propnames(PropertyNames());
     wxString properties = (!propnames.empty() ? "[Current properties]\n": wxString());
@@ -1482,8 +1496,7 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_Zoom);}, ID_EDIT_ZOOM_OUT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(true);}, ID_EDIT_FIND_NEXT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(false);}, ID_EDIT_FIND_PREVIOUS);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxString filename; LinkOpen(true, &filename);}, ID_EDIT_OPEN_BROWSER);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen(LINK_OPEN_BROWSER);}, ID_EDIT_OPEN_BROWSER);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const int level = GetFoldLevel(GetCurrentLine());
@@ -1559,55 +1572,52 @@ void wxExSTC::Initialize(bool file_exists)
     }}, wxID_SORT_ASCENDING, wxID_SORT_DESCENDING);
 }
 
-bool wxExSTC::LinkOpen(bool browser, wxString* filename)
+bool wxExSTC::LinkOpen(int mode, wxString* filename)
 {
   const wxString sel = GetSelectedText();
   const wxString text = (!sel.empty() ? sel: GetCurLine());
-  int line_no = (browser ? -1 :0);
+  int line_no = 0;
   int col_no = 0;
+  if (mode & LINK_OPEN_BROWSER)
+  {
+    line_no = (sel.empty() ? -1 : -2);
+  }
+
   const wxString path = m_Link.GetPath(text, line_no, col_no);
   
-  if (!path.empty())
+  if (path.empty()) return false;
+
+  if (mode & LINK_OPEN_BROWSER)
   {
-    if (filename == nullptr && !browser)
+    if (!(mode & LINK_CHECK)) wxLaunchDefaultBrowser(path);
+  }
+  else if (mode & LINK_OPEN)
+  {
+    if (filename != nullptr)
     {
-      if (m_Frame != nullptr)
-      {
-        return m_Frame->OpenFile(
-          path,
-          line_no, 
-          wxEmptyString,
-          col_no,
-          GetFlags() | STC_WIN_FROM_OTHER);          
-      }
-      else
-      {
-        return Open(
-          path, 
-          line_no, 
-          wxEmptyString, 
-          col_no,
-          GetFlags() | STC_WIN_FROM_OTHER);
-      }
+      *filename = wxFileName(path).GetFullName();
+    }
+    else if (m_Frame != nullptr)
+    {
+      return m_Frame->OpenFile(
+        path,
+        line_no, 
+        wxEmptyString,
+        col_no,
+        GetFlags() | STC_WIN_FROM_OTHER);          
     }
     else
     {
-      if (filename != nullptr)
-      {
-        if (browser)
-        {
-          *filename = path;
-          wxLaunchDefaultBrowser(path);
-        }
-        else
-        {
-          *filename = wxFileName(path).GetFullName();
-        }
-      }
+      return Open(
+        path, 
+        line_no, 
+        wxEmptyString, 
+        col_no,
+        GetFlags() | STC_WIN_FROM_OTHER);
     }
   }
   
-  return !path.empty();
+  return true;
 }
 
 bool wxExSTC::MarkerDeleteAllChange()
