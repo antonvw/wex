@@ -441,14 +441,20 @@ wxExVi::wxExVi(wxExSTC* stc)
           else if (!GetSTC()->GetFoldExpanded(line_to_fold) && command == "zo")
             GetSTC()->ToggleFold(line_to_fold);
           break;
-        case 'E':
-          GetSTC()->GetLexer().SetProperty("fold", "0");
-          GetSTC()->GetLexer().Apply();
-          GetSTC()->Fold(false); break;
         case 'f':
           GetSTC()->GetLexer().SetProperty("fold", "1");
           GetSTC()->GetLexer().Apply();
           GetSTC()->Fold(true); break;
+        case 'E':
+          GetSTC()->GetLexer().SetProperty("fold", "0");
+          GetSTC()->GetLexer().Apply();
+          GetSTC()->Fold(false); break;
+        case 'M':
+          GetSTC()->Fold(true);
+          break;
+        case 'R':
+          for (int i = 0; i < GetSTC()->GetLineCount(); i++) GetSTC()->EnsureVisible(i);
+          break;
       }; return true;}},
     {".", [&](const std::string& command){
       m_Dot = true;

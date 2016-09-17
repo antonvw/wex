@@ -2310,10 +2310,11 @@ Copyright: (c) 2016, Anton van Wezenbeek
       random_shuffle rbegin remove remove_copy remove_copy_if 
       remove_if
       rend replace replace_copy replace_copy_if replace_if reserve
-      reserve_copy resize reverse reverse_iterator rotate rotate_copy
+      reserve_copy resize reverse reverse_iterator rfind rotate rotate_copy
       search search_n set
       set_difference set_intersection set_symmetric_difference set_union
       shared_ptr size sort sort_heap stable_partition stable_sort stack string
+      substr
       swap swap_ranges transform unique unique_copy unique_ptr upper_bound 
       valarray vector
     </set>

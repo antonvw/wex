@@ -20,15 +20,12 @@
 #include <wx/extension/vcs.h>
 
 void wxExApp::OnAssertFailure(
-  const wxChar *file, int line, const wxChar *func, 
-  const wxChar *cond, const wxChar *msg)
+  const wxChar* file, int line, const wxChar* func, 
+  const wxChar* cond, const wxChar* msg)
 {
-  std::cout << 
-    "file: " << file << 
-    "line: " << line << 
-    "func: " << func << 
-    "cond: " << cond << 
-    "msg: " << msg << "\n";
+  std::wcout << wxNow() << ": OnAssertFailure: " <<
+    " file: " << file << " line: " << line << " func: " << func << 
+    " cond: " << cond << " msg: " << msg << "\n";
 }
     
 int wxExApp::OnExit()
@@ -99,7 +96,7 @@ bool wxExApp::OnInit()
   }
   else if (info != nullptr)
   {
-    wxLogMessage("Missing locale files for: " + GetLocale().GetName());
+   std::cout << "Missing locale files for: " << GetLocale().GetName() << "\n";
   }
 
   wxExVCS::LoadDocument();
