@@ -145,6 +145,7 @@ TEST_CASE("wxExLink", "[stc]")
     REQUIRE( lnk.GetPath("www.wxwidgets.org", line, col) == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("some text www.wxwidgets.org", line, col) == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", line, col) == "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wxExtension)", line, col) == "https://github.com/antonvw/wxExtension" );
     line = 0;
     REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", line, col).empty() );
     // hypertext file

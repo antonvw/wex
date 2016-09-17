@@ -2,12 +2,12 @@
 
 function substitute 
 {
-  sed -i "s/SOME.*/wxExtension localization file $1/" $1
-  sed -i "s/YEAR/2016/" $1
-  sed -i "s/PACKAGE/wxExtension/" $1
-  sed -i "s/VERSION/16.10/" $1
-  sed -i "/FIRST AUTHOR.*/d" $1 
-  sed -i "s/charset=CHARSET/charset=UTF-8/" $1 
+  sed -e "s/SOME.*/wxExtension localization file $1/" -i $1.org $1
+  sed -e "s/YEAR/2016/" -i $1.org $1
+  sed -e "s/PACKAGE/wxExtension/" -i $1.org $1
+  sed -e "s/VERSION/16.10/" -i $1.org $1
+  sed -e "/FIRST AUTHOR.*/d" -i $1.org $1 
+  sed -e "s/charset=CHARSET/charset=UTF-8/" -i $1.org $1 
 }
 
 # file locations

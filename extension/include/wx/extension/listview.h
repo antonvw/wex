@@ -9,10 +9,8 @@
 
 #include <map>
 #include <vector>
+#include <wx/artprov.h> // for wxArtID
 #include <wx/listctrl.h>
-
-class wxFindDialogEvent;
-typedef wxString wxArtID;
 
 class wxExItemDialog;
 class wxExLexer;
@@ -67,8 +65,8 @@ public:
   /// Sets the sort ascending member.
   void SetIsSortedAscending(wxExSortType type);
 private:
-  wxExColumnType m_Type;
-  bool m_IsSortedAscending;
+  wxExColumnType m_Type = COL_INVALID;
+  bool m_IsSortedAscending = false;
 };
 
 /// Adds printing, popup menu, images, columns and items to wxListView.

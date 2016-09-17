@@ -9,7 +9,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/artprov.h>
 #include <wx/config.h>
 #include <wx/dnd.h> 
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
@@ -85,7 +84,7 @@ private:
   virtual bool OnDropText(
     wxCoord x, 
     wxCoord y, 
-    const wxString& text) {
+    const wxString& text) override {
       // Only drop text if nothing is selected,
       // so dropping on your own selection is impossible.
       return (m_ListView->GetSelectedItemCount() == 0 ?
@@ -96,8 +95,6 @@ private:
 #endif
 
 wxExColumn::wxExColumn()
-  : m_Type(COL_INVALID)
-  , m_IsSortedAscending(false)
 {
   SetColumn(-1);
 }
@@ -106,9 +103,7 @@ wxExColumn::wxExColumn(
   const wxString& name,
   wxExColumn::wxExColumnType type,
   int width)
-  : wxListItem()
-  , m_Type(type)
-  , m_IsSortedAscending(false)
+  : m_Type(type)
 {
   wxListColumnFormat align = wxLIST_FORMAT_RIGHT;
 
@@ -188,6 +183,16 @@ wxExListView::wxExListView(wxWindow* parent,
   // as list items can also be copied and pasted.
   SetDropTarget(new DropTarget(this));
 #endif
+
+  wxAcceleratorEntry entries[4];
+
+  entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
+  entries[1].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
+  entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
+  entries[3].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
+
+  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
+  SetAcceleratorTable(accel);
   
   switch (m_ImageType)
   {

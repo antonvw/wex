@@ -46,12 +46,21 @@ const wxString wxExLink::FindPath(const wxString& text, int line_no) const
       ((found = text.find("http")) != std::string::npos ||
        (found = text.find("www.")) != std::string::npos))
   {
+    // with a possible delimiter
     wxString match(text.substr(found));
-    size_t pos_char = match.rfind("\"");
-    if (pos_char != std::string::npos)
+    const std::string delimiters("\")");
+    
+    for (const auto c : delimiters)
     {
-      return match.substr(0, pos_char).Trim();
+      size_t pos = match.find(c);
+      
+      if (pos != std::string::npos)
+      {
+        return match.substr(0, pos).Trim();
+      }
     }
+    
+    // without delimiter
     return match.Trim();
   }
   

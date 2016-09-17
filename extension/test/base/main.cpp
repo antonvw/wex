@@ -5,6 +5,8 @@
 // Copyright: (c) 2016
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <string.h>
+
 #include "../catch.hpp"
 #include "../test.h"
 
@@ -17,7 +19,7 @@ int main (int argc, char* argv[])
 
 TEST_CASE( "wxExTestApp" ) 
 {
-  wxASSERT( 1 == 0 );
+  wxASSERT( 1 == 0 ); // to test OnAssertFailure
   REQUIRE(!wxGetApp().GetCatalogDir().empty());
   REQUIRE( wxGetApp().GetLocale().IsOk());
   INFO( wxGetApp().GetLocale().GetLanguage());
