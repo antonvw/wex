@@ -26,7 +26,7 @@ public:
     /// caption
     const wxString& caption,
     /// initial text
-    const wxString& text,
+    const std::string& text,
     /// prompt (as with wxTextEntryDialog)
     const wxString& prompt = wxEmptyString,
     /// buttons

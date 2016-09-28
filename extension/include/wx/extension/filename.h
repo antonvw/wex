@@ -15,17 +15,21 @@
 class wxExFile;
 
 /// Adds a wxExStat and a wxExLexer member to wxFileName.
-class WXDLLIMPEXP_BASE wxExFileName : public wxFileName
+class wxExFileName : public wxFileName
 {
   friend class wxExFile; // it might update stat
 public:
   /// Default constructor.
   wxExFileName() : wxFileName() {;};
 
-  /// Constructor taking a full filename.
+  /// Constructor taking a string.
   wxExFileName(const wxString& fullpath, wxPathFormat format = wxPATH_NATIVE)
     : wxFileName(fullpath, format)
     , m_Stat(fullpath) {m_Lexer = wxExLexers::Get()->FindByFileName(*this);};
+
+  /// Constructor taking a char array.
+  wxExFileName(const char* fullpath, wxPathFormat format = wxPATH_NATIVE)
+    : wxExFileName(wxString(fullpath), format) {;};
 
   /// Constructor from a wxFileName.
   wxExFileName(const wxFileName& filename)

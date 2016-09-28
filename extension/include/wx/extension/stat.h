@@ -2,7 +2,7 @@
 // Name:      stat.h
 // Purpose:   Declaration of wxExStat class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -15,7 +15,7 @@
 /// Adds IsOk to the stat base class, several methods
 /// to get/update on the stat members, and Sync to sync
 /// the stat from disk.
-class WXDLLIMPEXP_BASE wxExStat : public stat
+class wxExStat : public stat
 {
 public:
   /// Default constructor. Calls sync.

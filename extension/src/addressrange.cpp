@@ -13,7 +13,6 @@
 #include <wx/extension/addressrange.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/indicator.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/shell.h>
@@ -26,8 +25,10 @@
 class GlobalEnv
 {
 public:
-  GlobalEnv(wxExEx* ex, const wxString& commands)
+  GlobalEnv(wxExEx* ex, 
+    const wxExIndicator& indicator, const wxString& commands)
   : m_Ex(ex)
+  , m_FindIndicator(indicator)
   {
     m_Ex->GetSTC()->SetIndicatorCurrent(m_FindIndicator.GetNo());
     m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
@@ -129,7 +130,7 @@ public:
     return true;
   }        
 private:
-  const wxExIndicator m_FindIndicator = wxExIndicator(0);
+  const wxExIndicator m_FindIndicator;
   std::vector<std::string> m_Commands;
   int m_Changes = 0;
   wxExEx* m_Ex;
@@ -258,9 +259,7 @@ bool wxExAddressRange::Change(const wxString& command) const
 }
   
 int wxExAddressRange::Confirm(
-  const wxString& pattern, 
-  const wxString& replacement, 
-  const wxExIndicator& indicator)
+  const wxString& pattern, const wxString& replacement)
 {
   wxMessageDialog msgDialog(m_STC, 
     _("Replace") + " " + pattern + " " + _("with") + " " + replacement, 
@@ -275,7 +274,7 @@ int wxExAddressRange::Confirm(
   m_STC->GotoLine(line);
   m_STC->EnsureVisible(line);
   m_STC->SetIndicator(
-    indicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd());
+    m_FindIndicator, m_STC->GetTargetStart(), m_STC->GetTargetEnd());
   
   return msgDialog.ShowModal();
 }
@@ -447,7 +446,7 @@ bool wxExAddressRange::Global(const wxString& text, bool inverse) const
     return true;  
   }
   
-  const GlobalEnv g(m_Ex, rest);
+  const GlobalEnv g(m_Ex, m_FindIndicator, rest);
   m_Ex->MarkerAdd('%', m_End.GetLine() - 1);
   m_STC->SetTargetStart(m_STC->PositionFromLine(m_Begin.GetLine() - 1));
   m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('%')));
@@ -799,12 +798,10 @@ bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
     return false;
   }
 
-  wxExIndicator indicator(0);
-
   m_Pattern = pattern;
   m_Replacement = repl; 
   
-  m_STC->SetIndicatorCurrent(indicator.GetNo());
+  m_STC->SetIndicatorCurrent(m_FindIndicator.GetNo());
   m_STC->SetSearchFlags(searchFlags);
   m_STC->BeginUndoAction();
   m_STC->SetTargetStart(m_STC->PositionFromLine(m_Ex->MarkerLine('#')));
@@ -819,7 +816,7 @@ bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
     
     if (options.Contains("c"))
     {
-      result = Confirm(pattern, replacement, indicator);
+      result = Confirm(pattern, replacement);
     }
         
     if (result == wxID_YES)

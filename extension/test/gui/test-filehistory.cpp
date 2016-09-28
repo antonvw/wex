@@ -64,7 +64,7 @@ TEST_CASE("wxExFileHistory")
     history.Clear();
     // file should be closed before remove (at least for windows)
     {
-      wxExFile file(wxFileName("test-history.txt"), wxFile::write);
+      wxExFile file("test-history.txt", wxFile::write);
       REQUIRE( file.Write(wxString("test")));
     }
     history.AddFileToHistory("test-history.txt");

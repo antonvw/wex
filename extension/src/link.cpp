@@ -21,7 +21,7 @@ wxExLink::wxExLink(wxExSTC* stc)
 {
 }
 
-const wxString wxExLink::FindPath(const wxString& text, int line_no) const
+const std::string wxExLink::FindPath(const std::string& text, int line_no) const
 {
   if (
     text.empty() ||
@@ -29,25 +29,25 @@ const wxString wxExLink::FindPath(const wxString& text, int line_no) const
     // add trimmed argument, to skip eol
     wxExGetNumberOfLines(text, true) > 1)
   {
-    return wxEmptyString;
+    return std::string();
   }
 
   // Path in .po files.
   if (
     m_STC != nullptr &&
-    m_STC->GetLexer().GetScintillaLexer() == "po" && text.StartsWith("#: "))
+    m_STC->GetLexer().GetScintillaLexer() == "po" && text.substr(0, 3) == "#: ")
   {
-    return text.Mid(3);
+    return text.substr(3);
   }
   
   // hypertext link
-  std::size_t found;
+  std::vector <wxString> v;
   if (line_no < 0 &&
-      ((found = text.find("http")) != std::string::npos ||
-       (found = text.find("www.")) != std::string::npos))
+      (wxExMatch("(https?:.*)", text, v) > 0 || 
+       wxExMatch("(www.*)", text, v) > 0))
   {
     // with a possible delimiter
-    wxString match(text.substr(found));
+    std::string match(v[0]);
     const std::string delimiters("\")");
     
     for (const auto c : delimiters)
@@ -56,12 +56,12 @@ const wxString wxExLink::FindPath(const wxString& text, int line_no) const
       
       if (pos != std::string::npos)
       {
-        return match.substr(0, pos).Trim();
+        return match.substr(0, pos);
       }
     }
     
     // without delimiter
-    return match.Trim();
+    return match;
   }
   
   // hypertext file
@@ -70,10 +70,10 @@ const wxString wxExLink::FindPath(const wxString& text, int line_no) const
     m_STC != nullptr && 
     m_STC->GetLexer().GetScintillaLexer() == "hypertext")
   {
-    return m_STC->GetFileName().GetFullPath();
+    return m_STC->GetFileName().GetFullPath().ToStdString();
   }
   
-  if (line_no < 0) return wxEmptyString;
+  if (line_no < 0) return std::string();
 
   // Better first try to find "...", then <...>, as in next example.
   // <A HREF="http://www.scintilla.org">scintilla</A> component.
@@ -100,11 +100,11 @@ const wxString wxExLink::FindPath(const wxString& text, int line_no) const
     pos_char2 = text.rfind("'");
   }
   
-  wxString out;
+  std::string out;
 
   // If we did not find anything.
-  if (pos_char1 == wxString::npos || 
-      pos_char2 == wxString::npos || 
+  if (pos_char1 == std::string::npos || 
+      pos_char2 == std::string::npos || 
       pos_char2 <= pos_char1)
   {
     out = text;
@@ -116,29 +116,28 @@ const wxString wxExLink::FindPath(const wxString& text, int line_no) const
   }
 
   // And make sure we skip white space.
-  out.Trim(true);
-  out.Trim(false);
+  out = wxExSkipWhiteSpace(out);
   
   return out;
 }
 
 // text contains selected text, or current line
-const wxString wxExLink::GetPath(
-  const wxString& text,
+const std::string wxExLink::GetPath(
+  const std::string& text,
   int& line_no,
   int& column_no) const
 {
   // line_no:
   // - -1: look for browse, and browse file
   // - -2: look for browse
-  const wxString path(FindPath(text, line_no));
+  const std::string path(FindPath(text, line_no));
   
   if (line_no < 0)
   { 
     return path;
   }
   
-  wxString link(path);
+  std::string link(path);
   
   SetLink(link, line_no, column_no);
   
@@ -146,13 +145,13 @@ const wxString wxExLink::GetPath(
     link.empty() || 
     // Otherwise, if you happen to select text that 
     // ends with a separator, wx asserts.
-    wxFileName::IsPathSeparator(link.Last()))
+    wxFileName::IsPathSeparator(link.back()))
   {
-    return wxEmptyString;
+    return std::string();
   }
 
   wxFileName file(link);
-  wxString fullpath;
+  std::string fullpath;
 
   if (file.FileExists())
   {
@@ -177,12 +176,14 @@ const wxString wxExLink::GetPath(
 
     if (fullpath.empty())
     {
+      int pos = path.find_last_of(' ');
+      
       // Check whether last word is a file.
-      wxString word = path.AfterLast(' ').Trim();
+      std::string word = wxExSkipWhiteSpace((pos != std::string::npos ? path.substr(pos): std::string()));
     
       if (
        !word.empty() && 
-       !wxFileName::IsPathSeparator(link.Last()) &&
+       !wxFileName::IsPathSeparator(link.back()) &&
         wxFileExists(word))
       {
         wxFileName file(word);
@@ -214,7 +215,7 @@ const wxString wxExLink::GetPath(
   return fullpath;
 }
 
-bool wxExLink::SetLink(wxString& link, int& line_no, int& column_no) const
+bool wxExLink::SetLink(std::string& link, int& line_no, int& column_no) const
 {
   if (link.size() < 2)
   {
@@ -222,12 +223,11 @@ bool wxExLink::SetLink(wxString& link, int& line_no, int& column_no) const
   }
 
   // Using backslash as separator does not yet work.
-  link.Replace("\\\\", "/");
-  link.Replace("\\", "/");
+  std::replace(link.begin(), link.end(), '\\', '/');
 
   // The harddrive letter is filtererd, it does not work
   // when adding it to wxExMatch.
-  wxString prefix;
+  std::string prefix;
 
 #ifdef __WXMSW__
   if (isalpha(link[0]) && link[1] == ':')
@@ -240,7 +240,7 @@ bool wxExLink::SetLink(wxString& link, int& line_no, int& column_no) const
   // file[:line[:column]]
   std::vector <wxString> v;
   
-  if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link.ToStdString(), v))
+  if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link, v))
   {
     link = v[0];
     line_no = 0;
@@ -256,8 +256,7 @@ bool wxExLink::SetLink(wxString& link, int& line_no, int& column_no) const
       }
     }
       
-    link = prefix + link;
-    link.Trim();
+    link = wxExSkipWhiteSpace(prefix + link);
     
     return true;
   }

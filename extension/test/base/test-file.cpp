@@ -14,6 +14,8 @@ TEST_CASE( "wxExFile" )
 {
   SECTION( "basic" ) 
   {
+    REQUIRE(!wxExFile("XXXXX").IsOpened());
+    
     wxExFile file(GetTestFile());
   
     REQUIRE(!file.CheckSync());
@@ -27,20 +29,20 @@ TEST_CASE( "wxExFile" )
     // The fullpath should be normalized, test it.
     REQUIRE( file.GetFileName().GetFullPath() != "./test.h");
     REQUIRE(!file.GetFileName().GetStat().IsReadOnly());
-    REQUIRE(!file.FileLoad(wxExFileName(GetTestDir() + "test.bin")));
+    REQUIRE(!file.FileLoad(GetTestDir() + "test.bin"));
     REQUIRE( file.Open(wxExFileName(GetTestDir() + "test.bin").GetFullPath()));
     REQUIRE( file.IsOpened());
 
     const wxCharBuffer* buffer = file.Read();
     REQUIRE(buffer->length() == 40);
     
-    file.FileNew(wxExFileName("test-xxx"));
+    file.FileNew(wxString("test-xxx"));
     
     REQUIRE( file.Open(wxFile::write));
     REQUIRE( file.Write(*buffer));
     REQUIRE( file.Write(wxString("OK")));
 
-    wxExFile create(wxExFileName("test-create"), wxFile::write);
+    wxExFile create("test-create", wxFile::write);
     REQUIRE( create.IsOpened());
     REQUIRE( create.Write(wxString("OK")));
   }

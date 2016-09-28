@@ -38,6 +38,7 @@ TEST_CASE("wxExToContainer")
 #endif
   REQUIRE( wxExToVectorString(a).Get().size() == 4);
   REQUIRE( wxExToVectorString("test test test").Get().size() == 3);
+  REQUIRE( wxExToVectorString("test\\ test test").Get().size() == 2);
   
 #ifdef __WXGTK__
   REQUIRE( wxExToListString(dlg).Get().empty());

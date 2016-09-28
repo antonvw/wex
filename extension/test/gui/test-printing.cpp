@@ -24,9 +24,7 @@ TEST_CASE("wxExPrinting")
   REQUIRE(wxExPrinting::Get(false) == nullptr);
   REQUIRE(wxExPrinting::Get(true) != nullptr);
   
-  wxExSTC* stc = new wxExSTC(GetFrame(), "hello printing");
-    
-  wxExPrintout* printout = new wxExPrintout(stc);
+  wxExPrintout* printout = new wxExPrintout(GetSTC());
   
   printout->OnPreparePrinting();
   int min, max, from, to;

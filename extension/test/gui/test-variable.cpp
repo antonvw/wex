@@ -17,9 +17,7 @@
 
 TEST_CASE("wxExVariable", "[stc][vi]")
 {
-  wxExSTC* stc = new wxExSTC(GetFrame(), "hello again");
-  AddPane(GetFrame(), stc);
-  wxExEx* ex = new wxExEx(stc);
+  wxExEx* ex = new wxExEx(GetSTC());
 
   for (auto it : std::vector<std::pair<char*, int>> {
     {"Created", wxExVariable::VARIABLE_BUILTIN},     
@@ -65,12 +63,12 @@ TEST_CASE("wxExVariable", "[stc][vi]")
     REQUIRE( var2.GetName() == it);
     REQUIRE( var2.GetValue().empty());
     REQUIRE( var2.Expand(ex));
-    wxString content;
+    std::string content;
     REQUIRE( var2.Expand(ex, content));
 
     if (it == "Year")
     {
-      REQUIRE( content.StartsWith("20")); // start of year
+      REQUIRE( wxString(content).StartsWith("20")); // start of year
     }
     
     REQUIRE(!var2.IsModified());

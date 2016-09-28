@@ -302,7 +302,7 @@ wxExSampleFrame::wxExSampleFrame()
       wxExSTC::STC_CONFIG_WITH_APPLY);}, ID_DLG_STC_CONFIG);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxString text;
+    std::string text;
     for (auto i = 0; i < 100; i++)
     {
       text += wxString::Format("Hello from line: %d\n", i);

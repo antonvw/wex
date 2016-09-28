@@ -26,13 +26,10 @@ TEST_CASE("wxExProperty", "[stc][lexer]")
   REQUIRE( prop.GetName() == "man");
   REQUIRE( prop.GetValue() == "ugly");
   
-  wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
-  AddPane(GetFrame(), stc);
-  
-  prop.Apply(stc);
+  prop.Apply(GetSTC());
   REQUIRE( prop.IsOk());
   
-  prop.ApplyReset(stc);
+  prop.ApplyReset(GetSTC());
   REQUIRE( prop.IsOk());
   
   wxXmlNode xml(wxXML_ELEMENT_NODE, "property");

@@ -50,7 +50,7 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   SECTION("wxExAutoComplete")
   {
     REQUIRE( wxExViMacros::LoadDocument());
-    wxString s;
+    std::string s;
     REQUIRE(!wxExAutoComplete("xxxx", GetSTC()->GetVi().GetMacros().Get(), s));
     REQUIRE(!wxExAutoComplete("Date", // not unique!
       GetSTC()->GetVi().GetMacros().Get(), s));
@@ -293,14 +293,13 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   {
     REQUIRE( wxExQuoted("test") == "'test'");
     REQUIRE( wxExQuoted("%d") == "'%d'");
-    REQUIRE( wxExQuoted(wxExSkipWhiteSpace(wxString(" %d "))) == "'%d'");
+    REQUIRE( wxExQuoted(wxExSkipWhiteSpace(" %d ")) == "'%d'");
   }
   
   SECTION("wxExMarkerAndRegisterExpansion")
   {
-    wxExSTC* stc = new wxExSTC(GetFrame(), "this is some text");
-    AddPane(GetFrame(), stc);
-    wxExEx* ex = new wxExEx(stc);
+    GetSTC()->SetText("this is some text");
+    wxExEx* ex = new wxExEx(GetSTC());
     wxString command("xxx");
     REQUIRE(!wxExMarkerAndRegisterExpansion(nullptr, command));
     REQUIRE( wxExMarkerAndRegisterExpansion(ex, command));

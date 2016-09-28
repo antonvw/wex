@@ -17,10 +17,7 @@
 
 TEST_CASE("wxExLexer", "[stc][lexer]")
 {
-  wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
-  AddPane(GetFrame(), stc);
-  
-  wxExLexer lexer(stc);
+  wxExLexer lexer(GetSTC());
   REQUIRE( lexer.IsOk());
   REQUIRE( lexer.GetStyles().empty());
   REQUIRE( wxExLexer("cpp").IsOk());

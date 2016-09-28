@@ -2,7 +2,7 @@
 // Name:      variable.h
 // Purpose:   Declaration of class wxExVariable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -34,9 +34,9 @@ public:
 
   /// Default constructor.
   wxExVariable(
-    const wxString& name = wxEmptyString,
-    const wxString& value = wxEmptyString,
-    const wxString& prefix = wxEmptyString,
+    const std::string& name = std::string(),
+    const std::string& value = std::string(),
+    const std::string& prefix = std::string(),
     int type = VARIABLE_INPUT_SAVE,
     bool ask_for_input = true);
   
@@ -55,13 +55,13 @@ public:
   /// Expands variable to value text.
   /// This might update the internal value, and set the modified flag.
   /// Returns true if variable could be expanded.
-  bool Expand(wxExEx* ex, wxString& value);
+  bool Expand(wxExEx* ex, std::string& value);
   
   /// Returns variable name.
-  const wxString& GetName() const {return m_Name;};
+  const auto& GetName() const {return m_Name;};
   
   /// Returns variable value.
-  const wxString& GetValue() const {return m_Value;};
+  const auto& GetValue() const {return m_Value;};
   
   /// Returns true if this variable is of type input.
   bool IsInput() const;
@@ -75,21 +75,21 @@ public:
   /// Resets the ask for input member, if appropriate for type.
   void SkipInput();
 private:  
-  bool ExpandBuiltIn(wxExEx* ex, wxString& expanded) const;
-  bool ExpandInput(wxString& expanded);
+  bool ExpandBuiltIn(wxExEx* ex, std::string& expanded) const;
+  bool ExpandInput(std::string& expanded);
 
-  bool m_AskForInput;
-  bool m_IsModified;
+  bool m_AskForInput = true;
+  bool m_IsModified = false;
     
   int m_Type;
   
-  wxString m_Name;
-  wxString m_Prefix;
+  std::string m_Name;
+  std::string m_Prefix;
   
   /// We keep values of input variables,
   /// so, while playing back, you have to enter them only once.
   /// The m_AskForInput member is set each time you start playback.
-  wxString m_Value;
+  std::string m_Value;
   
   // The dialog used.
   static wxExSTCEntryDialog* m_Dialog;

@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <numeric>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -26,11 +27,11 @@ bool wxExViMacros::m_IsExpand = false;
 bool wxExViMacros::m_IsModified = false;
 bool wxExViMacros::m_IsPlayback = false;
 bool wxExViMacros::m_IsRecording = false;
-wxString wxExViMacros::m_Macro;
+std::string wxExViMacros::m_Macro;
 
-std::map <wxString, std::string> wxExViMacros::m_Abbreviations;
-std::map <wxString, std::vector< std::string > > wxExViMacros::m_Macros;
-std::map <wxString, wxExVariable > wxExViMacros::m_Variables;
+std::map <std::string, std::string> wxExViMacros::m_Abbreviations;
+std::map <std::string, std::vector< std::string > > wxExViMacros::m_Macros;
+std::map <std::string, wxExVariable > wxExViMacros::m_Variables;
 
 void wxExViMacros::AskForInput()
 {
@@ -40,7 +41,7 @@ void wxExViMacros::AskForInput()
   }
 }
 
-const std::string wxExViMacros::Decode(const wxString& text)
+const std::string wxExViMacros::Decode(const std::string& text)
 {
   std::string output;
 
@@ -60,7 +61,7 @@ const std::string wxExViMacros::Decode(const wxString& text)
         text[i + 3] == '!')
       {
         skip  = 3;
-        number = text.Mid(i + 2, 1);
+        number = text.substr(i + 2, 1);
       }
       else if (
         i + 4 < text.length() &&
@@ -69,7 +70,7 @@ const std::string wxExViMacros::Decode(const wxString& text)
         text[i + 4] == '!')
       {
         skip = 4;
-        number = text.Mid(i + 2, 2);
+        number = text.substr(i + 2, 2);
       }
       
       if (!number.empty())
@@ -87,9 +88,9 @@ const std::string wxExViMacros::Decode(const wxString& text)
   return output;
 }
 
-const wxString wxExViMacros::Encode(const std::string& text)
+const std::string wxExViMacros::Encode(const std::string& text)
 {
-  wxString output;
+  std::string output;
   
   for (size_t i = 0; i < text.length(); i++)
   {
@@ -109,7 +110,7 @@ const wxString wxExViMacros::Encode(const std::string& text)
   return output;
 }
 
-bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
+bool wxExViMacros::Expand(wxExEx* ex, const std::string& variable)
 {
   const auto& it = m_Variables.find(variable);
   
@@ -117,8 +118,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
     
   if (it == m_Variables.end())
   {
-    std::pair<std::map<wxString, wxExVariable>::iterator, bool> ret = 
-      m_Variables.insert({variable, wxExVariable(variable)});
+    auto ret = m_Variables.insert({variable, wxExVariable(variable)});
       
     wxLogStatus(_("Added variable") + ": "  +  variable);
     
@@ -162,7 +162,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable)
   return ok;
 }  
 
-bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
+bool wxExViMacros::Expand(wxExEx* ex, const std::string& variable, std::string& value)
 {
   const auto& it = m_Variables.find(variable);
     
@@ -170,8 +170,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
     
   if (it == m_Variables.end())
   {
-    std::pair<std::map<wxString, wxExVariable>::iterator, bool> ret = 
-      m_Variables.insert({variable, wxExVariable(variable)});
+    auto ret = m_Variables.insert({variable, wxExVariable(variable)});
       
     wxLogStatus(_("Added variable") + ": "  +  variable);
     
@@ -222,7 +221,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const wxString& variable, wxString& value)
 }
 
 bool wxExViMacros::ExpandTemplate(
-  wxExEx* ex, const wxExVariable& v, wxString& expanded)
+  wxExEx* ex, const wxExVariable& v, std::string& expanded)
 {
   if (v.GetValue().empty())
   {
@@ -249,7 +248,7 @@ bool wxExViMacros::ExpandTemplate(
 
   // Keep current macro, in case you cancel expanding,
   // this one is restored.
-  wxString macro = m_Macro;
+  std::string macro = m_Macro;
   
   wxTextInputStream text(input);
   
@@ -263,7 +262,7 @@ bool wxExViMacros::ExpandTemplate(
     }
     else
     {
-      wxString variable;
+      std::string variable;
       bool completed = false;
       
       while (input.IsOk() && !input.Eof() && !completed) 
@@ -293,7 +292,7 @@ bool wxExViMacros::ExpandTemplate(
         return false;
       }
       
-      wxString value;
+      std::string value;
       
       if (!Expand(ex, variable, value))
       {
@@ -318,9 +317,9 @@ bool wxExViMacros::ExpandTemplate(
   return true;
 }
 
-const std::vector< wxString > wxExViMacros::Get() const
+const std::vector< std::string > wxExViMacros::Get() const
 {
-  std::vector< wxString > v;
+  std::vector< std::string > v;
     
   for (const auto& it : m_Macros)
   {
@@ -340,7 +339,8 @@ const std::vector< wxString > wxExViMacros::Get() const
   return v;
 }
 
-const std::vector< std::string > wxExViMacros::Get(const wxString& macro) const
+const std::vector< std::string > wxExViMacros::Get(
+  const std::string& macro) const
 {
   const auto& it = m_Macros.find(macro);
     
@@ -355,16 +355,11 @@ const std::vector< std::string > wxExViMacros::Get(const wxString& macro) const
     
     if (it != m_Variables.end())
     {
-      v.emplace_back(it->second.GetValue().ToStdString());
+      v.emplace_back(it->second.GetValue());
     }
   
     return v;
   }
-}
-
-int wxExViMacros::GetCount() const
-{
-  return m_Macros.size() + m_Variables.size();
 }
 
 const wxFileName wxExViMacros::GetFileName()
@@ -377,18 +372,12 @@ const std::string wxExViMacros::GetRegister(const char name) const
   switch (name)
   {
     case '*':
-    case '\"': return wxExClipboardGet().ToStdString();
+    case '\"': return wxExClipboardGet();
     default: {   
-      const auto& it = m_Macros.find(name);
-      std::string output;
-      if (it != m_Macros.end())
-      {
-        for (const auto& it2 : it->second)
-        {
-          output += it2;
-        }
-      }
-      return output;
+      const auto& it = m_Macros.find(std::string(1, name));
+      return it != m_Macros.end() ?
+        std::accumulate(it->second.begin(), it->second.end(), std::string()):
+        std::string();
     }
   }
 }
@@ -401,33 +390,27 @@ const std::vector< std::string > wxExViMacros::GetRegisters() const
   {
     if (it.first.size() == 1)
     {
-      wxString output;
-    
-      for (const auto& it2 : it.second)
-      {
-        output += it2;
-      }
-    
-      r.emplace_back(wxString(wxString(it.first) + "=" + wxExSkipWhiteSpace(output)).ToStdString());
+      r.emplace_back(it.first + "=" + wxExSkipWhiteSpace(
+        std::accumulate(it.second.begin(), it.second.end(), std::string())));
     }
   }
    
-  const wxString clipboard(wxExSkipWhiteSpace(wxExClipboardGet()));
+  const std::string clipboard(wxExSkipWhiteSpace(wxExClipboardGet()));
               
   if (!clipboard.empty())
   {
-    r.emplace_back(wxString("*=" + clipboard).ToStdString());
+    r.emplace_back("*=" + clipboard);
   }
                 
   return r;
 }
 
-bool wxExViMacros::IsRecorded(const wxString& macro) const
+bool wxExViMacros::IsRecorded(const std::string& macro) const
 {
   return !Get(macro).empty();
 }
 
-bool wxExViMacros::IsRecordedMacro(const wxString& macro) const
+bool wxExViMacros::IsRecordedMacro(const std::string& macro) const
 {
   return m_Macros.find(macro) != m_Macros.end();
 }
@@ -492,8 +475,8 @@ bool wxExViMacros::LoadDocument()
 
 void wxExViMacros::ParseNodeAbbreviation(wxXmlNode* node)
 {
-  const wxString abb(node->GetAttribute("name"));
-  const wxString text(node->GetNodeContent().Strip(wxString::both));
+  const std::string abb(node->GetAttribute("name"));
+  const std::string text(node->GetNodeContent().Strip(wxString::both));
 
   if (m_Abbreviations.find(abb) != m_Abbreviations.end())
   {
@@ -503,7 +486,7 @@ void wxExViMacros::ParseNodeAbbreviation(wxXmlNode* node)
   }
   else
   {
-    m_Abbreviations.insert({abb, text.ToStdString()});
+    m_Abbreviations.insert({abb, text});
   }
 }
 
@@ -515,11 +498,11 @@ void wxExViMacros::ParseNodeMacro(wxXmlNode* node)
 
   while (command)
   {
-    v.emplace_back(Decode(command->GetNodeContent()));
+    v.emplace_back(Decode(command->GetNodeContent().ToStdString()));
     command = command->GetNext();
   }
   
-  const auto& it = m_Macros.find(node->GetAttribute("name"));
+  const auto& it = m_Macros.find(node->GetAttribute("name").ToStdString());
 
   if (it != m_Macros.end())
   {
@@ -529,7 +512,7 @@ void wxExViMacros::ParseNodeMacro(wxXmlNode* node)
   }
   else
   {
-    m_Macros.insert({node->GetAttribute("name"), v});
+    m_Macros.insert({node->GetAttribute("name").ToStdString(), v});
   }
 }
 
@@ -550,7 +533,7 @@ void wxExViMacros::ParseNodeVariable(wxXmlNode* node)
   }
 }
 
-bool wxExViMacros::Playback(wxExEx* ex, const wxString& macro, int repeat)
+bool wxExViMacros::Playback(wxExEx* ex, const std::string& macro, int repeat)
 {
   if (!IsRecordedMacro(macro))
   {
@@ -697,7 +680,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
   return ok;
 }
 
-void wxExViMacros::SetAbbreviation(const wxString& ab, const std::string& value)
+void wxExViMacros::SetAbbreviation(const std::string& ab, const std::string& value)
 {
   if (value.empty())
   {
@@ -740,13 +723,13 @@ bool wxExViMacros::SetRegister(const char name, const std::string& value)
     }
   }
   
-  m_Macros[(char)tolower(name)] = v;
+  m_Macros[std::string(1, (char)tolower(name))] = v;
   m_IsModified = true;
   
   return true;
 }
 
-void wxExViMacros::StartRecording(const wxString& macro)
+void wxExViMacros::StartRecording(const std::string& macro)
 {
   if (m_IsRecording || macro.empty())
   {
@@ -759,8 +742,9 @@ void wxExViMacros::StartRecording(const wxString& macro)
   if (macro.size() == 1)
   {
     // We only use lower case macro's, to be able to
-    // append to them using qA.
-    m_Macro = macro.Lower();
+    // append to them using.
+    m_Macro = macro;
+    std::transform(m_Macro.begin(), m_Macro.end(), m_Macro.begin(), ::tolower);
   
     // Clear macro if it is lower case
     // (otherwise append to the macro).
@@ -780,7 +764,7 @@ void wxExViMacros::StartRecording(const wxString& macro)
   wxLogStatus(_("Macro recording"));
 }
 
-bool wxExViMacros::StartsWith(const wxString& text) const
+bool wxExViMacros::StartsWith(const std::string& text) const
 {
   if (text.empty())
   {
@@ -794,7 +778,7 @@ bool wxExViMacros::StartsWith(const wxString& text) const
   
   for (const auto& it : m_Macros)
   {
-    if (it.first.StartsWith(text))
+    if (it.first.substr(0, text.size()) == text)
     {
       return true;
     }
@@ -802,7 +786,7 @@ bool wxExViMacros::StartsWith(const wxString& text) const
    
   for (const auto& it : m_Variables)
   {
-    if (it.first.StartsWith(text))
+    if (it.first.substr(0, text.size()) == text)
     {
       return true;
     }

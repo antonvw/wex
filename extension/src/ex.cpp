@@ -111,7 +111,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       if (tkz.CountTokens() >= 2)
       {
         tkz.GetNextToken(); // skip
-        const wxString ab(tkz.GetNextToken());
+        const std::string ab(tkz.GetNextToken());
         m_Macros.SetAbbreviation(ab, tkz.GetString().ToStdString());
       }
       else
@@ -294,8 +294,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       if (tkz.CountTokens() >= 2)
       {
         tkz.GetNextToken(); // skip
-        const wxString ab(tkz.GetNextToken());
-        m_Macros.SetAbbreviation(ab, "");
+        m_Macros.SetAbbreviation(tkz.GetNextToken().ToStdString(), "");
       }
       return true;}},
     {":ve", [&](const std::string& command) {ShowDialog("Version", wxExGetVersionInfo().GetVersionOnlyString()); return true;}},
@@ -677,15 +676,15 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
 
   bool ok = true;
   
-  if (m_Macros.IsRecordedMacro(choice))
+  if (m_Macros.IsRecordedMacro(choice.ToStdString()))
   {
-    ok = m_Macros.Playback(this, choice, repeat);
+    ok = m_Macros.Playback(this, choice.ToStdString(), repeat);
   }
   else
   {
     for (int i = 0; i < repeat && ok; i++)
     {
-      if (!m_Macros.Expand(this, choice))
+      if (!m_Macros.Expand(this, choice.ToStdString()))
       {
         ok = false;
       }
@@ -729,7 +728,7 @@ void wxExEx::MacroStartRecording(const wxString& macro)
     choice = dlg.GetValue();
   }
   
-  m_Macros.StartRecording(choice);
+  m_Macros.StartRecording(choice.ToStdString());
 }
 
 bool wxExEx::MarkerAdd(const wxUniChar& marker, int line)
@@ -933,7 +932,7 @@ void wxExEx::ShowDialog(const wxString& title, const wxString& text, bool prop_l
     m_Dialog = new wxExSTCEntryDialog(
       wxTheApp->GetTopWindow(),
       title, 
-      text,
+      text.ToStdString(),
       wxEmptyString,
       wxOK);
   }

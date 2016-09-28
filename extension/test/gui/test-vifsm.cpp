@@ -19,10 +19,7 @@
 
 TEST_CASE("wxExViFSM", "[stc][vi]")
 {
-  wxExSTC* stc = new wxExSTC(GetFrame());
-  AddPane(GetFrame(), stc);
-  
-  wxExViFSM fsm(&stc->GetVi(), 
+  wxExViFSM fsm(&GetSTC()->GetVi(), 
     [=](const std::string& command){;},
     [=](const std::string& command){;});
   
@@ -56,7 +53,7 @@ TEST_CASE("wxExViFSM", "[stc][vi]")
   REQUIRE( fsm.Transition(ESC));
   REQUIRE( fsm.State() == wxExVi::MODE_NORMAL);
   
-  stc->SetReadOnly(true);
+  GetSTC()->SetReadOnly(true);
   REQUIRE( fsm.Transition("i"));
   REQUIRE( fsm.State() == wxExVi::MODE_NORMAL);
   
@@ -64,4 +61,5 @@ TEST_CASE("wxExViFSM", "[stc][vi]")
   REQUIRE( entry.State() == 0);
   REQUIRE( entry.Action() == 1);
   REQUIRE( entry.Next("test") == 2);
+  GetSTC()->SetReadOnly(false);
 }

@@ -20,7 +20,7 @@ TEST_CASE("wxExHexMode", "[stc]")
   // 0123456789012345678901234567890123456789012345678901234567890123456789
   // 30 31 32 33 34 35 36 37 38 39                   0123456789
   wxExSTC* stc = new wxExSTC(
-    GetFrame(), "0123456789", wxExSTC::STC_WIN_HEX);
+    GetFrame(), std::string("0123456789"), wxExSTC::STC_WIN_HEX);
   AddPane(GetFrame(), stc);
     
   REQUIRE(stc->GetText() != "0123456789");
@@ -50,7 +50,7 @@ TEST_CASE("wxExHexMode", "[stc]")
   
   stc->DiscardEdits();  
   stc->Reload();
-  REQUIRE(stc->GetText() == "01234567890123456789");
+  REQUIRE( stc->GetText() == "01234567890123456789");
   
   // Test hex field.
   stc->Reload(wxExSTC::STC_WIN_HEX);
@@ -70,7 +70,7 @@ TEST_CASE("wxExHexMode", "[stc]")
   INFO(wxExFileName(GetTestDir() + "test.hex").GetFullPath());
   REQUIRE( stc->GetFile().FileSave(wxExFileName(GetTestDir() + "test.hex")));
   stc->Reload();
-  REQUIRE(stc->GetText() == "01232567890123456789");
+  REQUIRE( stc->GetText() == "01232567890123456789");
   
   // Test ascii field.
   stc->Reload(wxExSTC::STC_WIN_HEX);

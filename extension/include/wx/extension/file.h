@@ -29,7 +29,7 @@ public:
     : m_OpenFile(open_file)
     , m_File(std::make_unique<wxFile>()) {;};
 
-  /// Opens a file with a filename.
+  /// Constructor taking a filename.
   wxExFile(
     const wxFileName& filename,
     wxFile::OpenMode mode = wxFile::read,
@@ -39,6 +39,13 @@ public:
     , m_OpenFile(open_file)
     , m_Stat(filename.GetFullPath()) {
       MakeAbsolute();};
+  
+  /// Constructor taking a string filename.
+  wxExFile(
+    const wxString& filename,
+    wxFile::OpenMode mode = wxFile::read,
+    bool open_file = true)
+    : wxExFile(wxFileName(filename), mode, open_file) {;};
   
   /// Copy constructor.
   wxExFile(const wxExFile& rhs) {*this = rhs; };

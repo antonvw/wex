@@ -29,8 +29,8 @@ void ChangeMode(wxExVi* vi, const std::string& command, int mode)
 TEST_CASE("wxExVi", "[stc][vi]")
 {
   wxExSTC* stc = new wxExSTC(GetFrame(), 
-    "// vi: set ts=120 "
-    "// this is a modeline");
+    std::string("// vi: set ts=120 "
+                "// this is a modeline"));
   AddPane(GetFrame(), stc);
   wxExVi* vi = &stc->GetVi();
   wxKeyEvent event(wxEVT_CHAR);
@@ -502,18 +502,15 @@ TEST_CASE("wxExVi", "[stc][vi]")
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
 
   // Test registers
-  stc = new wxExSTC(GetFrame(), GetTestFile());
-  AddPane(GetFrame(), stc);
-  vi = &stc->GetVi();
-  const int ctrl_r = 18;
+  stc->GetFile().FileNew("test.h");
+  stc->SetText("");
+  const std::string ctrl_r = "\x12";
   REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Command(wxString(wxUniChar(ctrl_r)).ToStdString()));
-  REQUIRE( vi->Command("_"));
+  REQUIRE( vi->Command(ctrl_r + "_"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   
   REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Command(wxString(wxUniChar(ctrl_r)).ToStdString()));
-  REQUIRE( vi->Command("%"));
+  REQUIRE( vi->Command(ctrl_r + "%"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   INFO( stc->GetText());
   REQUIRE( stc->GetText().Contains("test.h"));
@@ -521,22 +518,23 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( vi->Command("yy"));
   stc->SetText("");
   REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Command(std::string("\x12") + std::string("0")));
+  REQUIRE( vi->Command(ctrl_r + "0"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   REQUIRE( stc->GetText().Contains("test.h"));
   
   stc->SetText("XXXXX");
   REQUIRE( vi->Command("dd"));
   REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Command(wxString(wxUniChar(ctrl_r)).ToStdString()));
+  REQUIRE( vi->Command(ctrl_r));
   REQUIRE( vi->Command("1"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  INFO( stc->GetText());
   REQUIRE( stc->GetText().Contains("XXXXX"));
   
   stc->SetText("YYYYY");
   REQUIRE( vi->Command("dd"));
   REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Command(wxString(wxUniChar(ctrl_r)).ToStdString()));
+  REQUIRE( vi->Command(ctrl_r + "2"));
   REQUIRE( vi->Command("2"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   REQUIRE( stc->GetText().Contains("XXXXX"));

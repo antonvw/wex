@@ -17,30 +17,30 @@
 
 void link(
   const wxExLink& link,
-  const wxString& path, 
-  const wxString& expect = wxEmptyString,
+  const std::string& path, 
+  const std::string& expect = std::string(),
   int expect_line_no = 0,
   int expect_col_no = 0);
 
 void link(
   const wxExLink& link,
-  const wxString& path, 
-  const wxString& expect,
+  const std::string& path, 
+  const std::string& expect,
   int expect_line_no,
   int expect_col_no)
 {
   int line_no = 0;
   int col_no = 0;
   
-  INFO(path.ToStdString() << "==" << expect.ToStdString());
+  INFO(path << "==" << expect);
 
   if (!expect.empty())
   {
-    REQUIRE(link.GetPath(path, line_no, col_no).Contains(expect));
+    REQUIRE(link.GetPath(path, line_no, col_no).find(expect) != std::string::npos);
   }
   else
   {
-    REQUIRE(link.GetPath(path, line_no, col_no) == expect);
+    REQUIRE(link.GetPath(path, line_no, col_no).empty());
   }
   
   REQUIRE(line_no == expect_line_no);
@@ -50,8 +50,7 @@ void link(
 #ifdef __UNIX__
 TEST_CASE("wxExLink", "[stc]")
 {
-  wxExSTC* stc = new wxExSTC(GetFrame());
-  AddPane(GetFrame(), stc);
+  wxExSTC* stc = GetSTC();
   
   SECTION("Default constructor")
   {
@@ -65,9 +64,6 @@ TEST_CASE("wxExLink", "[stc]")
     wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");
     lnk.SetFromConfig();
     
-    const wxString test("/extension/test/data/test.h");
-    const wxString special("/extension/test/data/test-special.h");
-    
     // Test empty, or illegal paths.
     link(lnk, "");
     link(lnk, "xxxx");
@@ -80,8 +76,11 @@ TEST_CASE("wxExLink", "[stc]")
     link(lnk, "on xxxx: not a number");
     
     // Test existing file in test data dir.
+    const std::string test("/extension/test/data/test.h");
     link(lnk, "test.h", test);
     link(lnk, "  test.h", test);
+    
+    const std::string special("/extension/test/data/test-special.h");
     link(lnk, "test-special.h", special);
     link(lnk, "  test-special.h", special);
     
@@ -146,10 +145,11 @@ TEST_CASE("wxExLink", "[stc]")
     REQUIRE( lnk.GetPath("some text www.wxwidgets.org", line, col) == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", line, col) == "https://github.com/antonvw/wxExtension" );
     REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wxExtension)", line, col) == "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.GetPath("httpd = new httpd", line, col).empty());
     line = 0;
     REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", line, col).empty() );
     // hypertext file
-    stc->GetFile().FileNew(wxExFileName("test.html"));
+    stc->GetFile().FileNew("test.html");
     REQUIRE( lnk.GetPath("www.wxwidgets.org", line, col).empty() );
     REQUIRE( lnk.GetPath("xx", line, col).empty());
     line = -1;

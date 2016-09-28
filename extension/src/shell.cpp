@@ -24,7 +24,7 @@ wxExShell::wxExShell(wxWindow* parent,
   const wxString& prompt, const wxString& command_end,
   bool echo, int commands_save_in_config, const wxString& lexer,
   long menu_flags, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
-  : wxExSTC(parent, wxEmptyString,
+  : wxExSTC(parent, std::string(),
       STC_WIN_NO_INDICATOR,
       wxEmptyString, // title, used for name
       menu_flags, std::string(), id, pos, size, style)
@@ -384,7 +384,7 @@ void wxExShell::KeepCommand()
   // Prevent large commands, in case command end is not eol.
   if (m_CommandEnd != GetEOL())
   {
-    m_Command = wxExSkipWhiteSpace(m_Command);
+    m_Command = wxExSkipWhiteSpace(m_Command.ToStdString());
   }
   
   m_Commands.emplace_back(m_Command);

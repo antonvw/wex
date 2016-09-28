@@ -2,12 +2,13 @@
 // Name:      vcscommand.h
 // Purpose:   Declaration of wxExVCSCommand class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wx/string.h>
+#include <string>
+#include <wx/dlimpexp.h>
 
 /// This class contains a single vcs command.
 class WXDLLIMPEXP_BASE wxExVCSCommand
@@ -28,22 +29,22 @@ public:
   /// Constructor.
   wxExVCSCommand(
     /// Specify command.
-    const wxString& command,
+    const std::string& command,
     /// The type (main, popup, both).
-    const wxString& type = wxEmptyString,
+    const std::string& type = std::string(),
     /// The submenu member is set to specified submenu if not empty,
     /// otherwise to specified subcommand.
-    const wxString& submenu = wxEmptyString,
+    const std::string& submenu = std::string(),
     /// The subcommand (used as submenu, but also used for executing).
-    const wxString& subcommand = wxEmptyString);
+    const std::string& subcommand = std::string());
 
   /// Returns the command (and subcommand and accelerators if necessary).
-  const wxString GetCommand(
+  const std::string GetCommand(
     bool include_subcommand = true,
     bool include_accelerators = false) const;
   
   /// Returns the submenu.
-  const wxString& GetSubMenu() const {return m_SubMenu;};
+  const auto& GetSubMenu() const {return m_SubMenu;};
 
   /// Returns the type.
   long GetType() const {return m_Type;};
@@ -82,10 +83,10 @@ public:
   /// Returns true if a subcommand can be used for this command.
   bool UseSubcommand() const;
 private:
-  int From(const wxString& type) const;
+  long From(const std::string& type) const;
 
-  wxString m_Command;
-  wxString m_SubMenu;
+  std::string m_Command;
+  std::string m_SubMenu;
 
   bool m_SubMenuIsCommand;
   long m_Type;

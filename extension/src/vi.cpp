@@ -144,7 +144,7 @@ bool OneLetterAfter(const std::string& text, const std::string& letter)
 
 bool RegAfter(const std::string& text, const std::string& letter)
 {
-  return std::regex_match(letter, std::regex("^" + text + "[0-9=\"a-z%.]$"));
+  return std::regex_match(letter, std::regex("^" + text + "[0-9=\"a-z%._]$"));
 }
 
 enum
@@ -514,7 +514,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       }
       else if (RegAfter("@", command))
       {
-        const wxString macro = command.back();
+        const std::string macro = std::string(1, command.back());
         if (GetMacros().IsRecorded(macro))
         {
           if (!MacroPlayback(macro, m_Count))
@@ -548,7 +548,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         }
         else if (GetMacros().StartsWith(command.substr(1)))
         {
-          wxString s;
+          std::string s;
           if (wxExAutoComplete(command.substr(1), GetMacros().Get(), s))
           {
             GetFrame()->StatusText(s, "PaneMacro");
@@ -610,8 +610,8 @@ wxExVi::wxExVi(wxExSTC* stc)
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) GetSTC()->DeleteBack();
       return true;}},
     {"\x12", [&](const std::string& command){
-      if (command.size() == 1) return false;
-      if (RegAfter(std::string(1, WXK_CONTROL_R), command))
+      if (command.size() > 1 &&
+        RegAfter(std::string(1, WXK_CONTROL_R), command))
       {
         CommandReg(command[1]);
         return true;
@@ -638,20 +638,20 @@ void wxExVi::AddText(const std::string& text)
 
 bool wxExVi::Command(const std::string& command, bool is_handled)
 {
-  if (ModeVisual() && command.find("'<,'>") == std::string::npos)
+  if (command.empty() || !GetIsActive())
+  {
+    return false;
+  }
+  else if (command.front() == ':')
+  {
+    return wxExEx::Command(command);
+  }
+  else if (ModeVisual() && command.find("'<,'>") == std::string::npos)
   {
     if (wxExEx::Command(command + "'<,'>"))
     {
       return true;
     }
-  }
-  else if (wxExEx::Command(command))
-  {
-    return true;
-  }
-  else if (command.empty() || !GetIsActive())
-  {
-    return false;
   }
   else if ( command.front() == '=' ||
       (command.size() > 2 && wxString(command).StartsWith(wxUniChar(WXK_CONTROL_R) + wxString("="))))
@@ -788,7 +788,12 @@ void wxExVi::CommandReg(const char reg)
     // calc register
     case '=': GetFrame()->GetExCommand(this, std::string(1, reg)); break;
     // clipboard register
-    case '*': Put(true); break;
+    case '*': 
+      if (ModeInsert())
+      {
+        Put(true); 
+      }
+      break;
     // filename register
     case '%':
       if (ModeInsert())
@@ -797,17 +802,25 @@ void wxExVi::CommandReg(const char reg)
       }
       else
       {
+        GetFrame()->ShowExMessage(GetSTC()->GetFileName().GetFullPath());
         wxExClipboardAdd(GetSTC()->GetFileName().GetFullPath());
       }
       break;
     default:
       if (!GetMacros().GetRegister(reg).empty())
       {
-        AddText(GetMacros().GetRegister(reg));
-        
-        if (reg == '.')
+        if (ModeInsert())
+        {   
+          AddText(GetMacros().GetRegister(reg));
+          
+          if (reg == '.')
+          {
+            m_InsertText += GetRegisterInsert();
+          }
+        }
+        else
         {
-          m_InsertText += GetRegisterInsert();
+          GetFrame()->ShowExMessage(GetMacros().GetRegister(reg));
         }
       }
       else
@@ -873,12 +886,12 @@ bool wxExVi::InsertMode(const std::string& command)
     
     while (tkz.HasMoreTokens())
     {
-      const wxString token = tkz.GetNextToken();
+      const std::string token = tkz.GetNextToken().ToStdString();
       
-      if (RegAfter(std::string(1, WXK_CONTROL_R), 
-        std::string(1, WXK_CONTROL_R) + tkz.GetString().Mid(0, 1).ToStdString()))
+      if (RegAfter("\x12", 
+        "\x12" + tkz.GetString().Mid(0, 1).ToStdString()))
       {
-        InsertMode(token.ToStdString());
+        InsertMode(token);
         CommandReg(tkz.GetString().GetChar(0));
         InsertMode(tkz.GetString().Mid(1).ToStdString());
         return true;

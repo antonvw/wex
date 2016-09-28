@@ -72,14 +72,14 @@ const wxString wxExAlignText(const wxString& lines, const wxString& header,
   return out;
 }
 
-bool wxExAutoComplete(const wxString& text, 
-  const std::vector<wxString> & v, wxString& s)
+bool wxExAutoComplete(const std::string& text, 
+  const std::vector<std::string> & v, std::string& s)
 {
   int matches = 0;
   
   for (const auto& it : v)
   {
-    if (it.StartsWith(text))
+    if (wxString(it).StartsWith(text))
     {
       s = it;
       matches++;
@@ -87,6 +87,18 @@ bool wxExAutoComplete(const wxString& text,
   }
 
   return (matches == 1);
+}
+  
+const wxString Encode(const wxString& text)
+{
+  wxString output(text);
+  
+  if (output.Contains(" "))
+  {
+    output.Replace(" ", "\\ ");
+  }
+  
+  return output;
 }
   
 bool wxExAutoCompleteFileName(const wxString& text, std::vector<wxString> & v)
@@ -134,12 +146,12 @@ bool wxExAutoCompleteFileName(const wxString& text, std::vector<wxString> & v)
   }
 
   v.clear();
-  v.emplace_back(expansion);
+  v.emplace_back(Encode(expansion));
   v.emplace_back(filename);
     
   while (dir.GetNext(&filename))
   {
-    v.emplace_back(filename);
+    v.emplace_back(Encode(filename));
   }
 
   if (v.size() > 2)
@@ -185,19 +197,19 @@ bool wxExClipboardAdd(const wxString& text)
   return true;
 }
 
-const wxString wxExClipboardGet()
+const std::string wxExClipboardGet()
 {
   wxClipboardLocker locker;
 
   if (!locker)
   {
     wxLogStatus("Cannot open clipboard");
-    return wxEmptyString;
+    return std::string();
   }
 
   if (!wxTheClipboard->IsSupported(wxDF_TEXT))
   {
-    return wxEmptyString;
+    return std::string();
   }
 
   wxTextDataObject data;
@@ -205,10 +217,10 @@ const wxString wxExClipboardGet()
   if (!wxTheClipboard->GetData(data))
   {
     wxLogStatus("Cannot get clipboard data");
-    return wxEmptyString;
+    return std::string();
   }
 
-  return data.GetText();
+  return data.GetText().ToStdString();
 }
 
 #if wxUSE_GUI
@@ -316,7 +328,7 @@ const wxString wxExGetFindResult(const wxString& find_text,
     const wxString where = (find_next) ? _("bottom"): _("top");
     text <<
       _("Searching for") << " " << 
-      wxExQuoted(wxExSkipWhiteSpace(find_text)) << " " <<
+      wxExQuoted(wxExSkipWhiteSpace(find_text.ToStdString())) << " " <<
       _("hit") << " " << where;
   }
   else
@@ -324,7 +336,7 @@ const wxString wxExGetFindResult(const wxString& find_text,
     wxBell();
       
     text << 
-      wxExQuoted(wxExSkipWhiteSpace(find_text)) << " " << _("not found");
+      wxExQuoted(wxExSkipWhiteSpace(find_text.ToStdString())) << " " << _("not found");
   }
   
   return text;
@@ -628,7 +640,7 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxString > & files,
 
       if (!fn.FileExists() && file.Contains(":"))
       {
-        const wxString val = wxExLink().GetPath(file, line_no, col_no);
+        const wxString val = wxExLink().GetPath(file.ToStdString(), line_no, col_no);
         
         if (!val.empty())
         {
@@ -726,20 +738,6 @@ const wxString wxExQuoted(const wxString& text)
   return "'" + text + "'";
 }
 
-const wxString wxExSkipWhiteSpace(const wxString& text, const wxString& replace_with)
-{
-  std::regex re("[ \t\n\v\f\r]+");
-  wxString output = std::regex_replace(
-    text.ToStdString(), 
-    re, 
-    replace_with.ToStdString(), 
-    std::regex_constants::format_sed);
-  
-  output.Trim(true);
-  output.Trim(false);
-  return output;
-}
-
 template <typename InputIterator>
 const wxString GetColumn(InputIterator first, InputIterator last)
 {
@@ -788,7 +786,21 @@ bool wxExShellExpansion(wxString& command)
   
   return true;
 }
+
+const std::string wxExSkipWhiteSpace(const std::string& text, const std::string& replace_with)
+{
+  std::string output1 = std::regex_replace(text, 
+    std::regex("[ \t\n\v\f\r]+"), replace_with, std::regex_constants::format_sed);
   
+  std::string output2 = std::regex_replace(output1, 
+    std::regex("^ +"), "", std::regex_constants::format_sed);
+
+  std::string output3 = std::regex_replace(output2, 
+    std::regex(" +$"), "", std::regex_constants::format_sed);
+  
+  return output3;
+}
+
 const wxString wxExSort(const wxString& input, 
   size_t sort_type, size_t pos, const wxString& eol, size_t len)
 {
@@ -954,9 +966,11 @@ void wxExVCSCommandOnSTC(const wxExVCSCommand& command,
 
 void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< wxString > & files)
 {
+  wxASSERT(!files.empty());
+  
   wxExVCS vcs(files, id);
   
-  if (vcs.GetEntry().GetCommand().IsOpen() && !files.empty())
+  if (vcs.GetEntry().GetCommand().IsOpen())
   {
     if (vcs.ShowDialog(frame) == wxID_OK)
     {
@@ -966,7 +980,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< wxString > & fi
         
         if (vcs.Execute())
         {
-          frame->OpenFile(it, vcs.GetEntry(), wxExSTC::STC_WIN_READ_ONLY);
+          frame->OpenFile(it, vcs.GetEntry());
         }
       }
     }

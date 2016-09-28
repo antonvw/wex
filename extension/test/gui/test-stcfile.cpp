@@ -27,7 +27,7 @@ TEST_CASE("wxExSTCFile", "[stc]")
   REQUIRE(!file.GetFileName().GetStat().IsOk());
   REQUIRE(!file.GetContentsChanged());
 
-  file.FileNew(wxExFileName("test-file.txt")); // clears stc document
+  file.FileNew("test-file.txt"); // clears stc document
   
   REQUIRE( stc->GetText().empty());
   stc->SetText("No, the game never ends "

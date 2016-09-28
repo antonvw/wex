@@ -114,7 +114,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   SECTION("Open")
   {
     // do the same test as with wxExFile in base for a binary file
-    REQUIRE(stc->Open(wxExFileName(GetTestDir() + "test.bin")));
+    REQUIRE(stc->Open(GetTestDir() + "test.bin"));
     REQUIRE(stc->GetFlags() == 0);
     const wxCharBuffer& buffer = stc->GetTextRaw();
     REQUIRE(buffer.length() == 40);
@@ -244,7 +244,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     wxExSTC stc(GetFrame(), GetTestFile());
     REQUIRE( stc.GetFileName().GetFullPath().Contains("test.h"));
     REQUIRE( stc.Open(GetTestFile()));
-    REQUIRE(!stc.Open(wxExFileName("XXX")));
+    REQUIRE(!stc.Open("XXX"));
     stc.PropertiesMessage();
   }
 

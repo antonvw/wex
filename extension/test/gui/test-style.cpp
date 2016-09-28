@@ -75,13 +75,11 @@ TEST_CASE("wxExStyle", "[stc][lexer]")
   
   SECTION("Apply")
   {
-    wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
-    AddPane(GetFrame(), stc);
     wxExStyle style("mark_circle", "0");
-    style.Apply(stc);
+    style.Apply(GetSTC());
     REQUIRE( style.IsOk());
     REQUIRE(!style.ContainsDefaultStyle());
   
-    wxExStyle().Apply(stc);
+    wxExStyle().Apply(GetSTC());
   }
 }

@@ -60,7 +60,7 @@ TEST_CASE("wxExFrame")
   REQUIRE( GetFrame()->UpdateStatusBar(GetFrame()->GetSTC(), "PaneInfo"));
 #endif
   
-  wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
+  wxExSTC* stc = new wxExSTC(GetFrame());
   AddPane(GetFrame(), stc);
   stc->SetFocus();
   

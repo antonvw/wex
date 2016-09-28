@@ -16,9 +16,6 @@
 
 TEST_CASE("wxExLexers", "[stc][lexer]")
 {
-  wxExSTC* stc = new wxExSTC(GetFrame(), "hello stc");
-  AddPane(GetFrame(), stc);
-  
   REQUIRE( wxExLexers::Get() != nullptr);
   REQUIRE(!wxExLexers::Get()->GetLexers().empty());
   
@@ -41,7 +38,7 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
   // At this moment we have no global properties.
   REQUIRE( wxExLexers::Get()->GetProperties().empty());
   
-  wxExLexers::Get()->Apply(stc);
+  wxExLexers::Get()->Apply(GetSTC());
 
   REQUIRE(!wxExLexers::Get()->GetLexers().empty());
 
@@ -99,7 +96,7 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
   REQUIRE( wxExLexers::Get()->GetMarker(wxExMarker(0)).IsOk());
   
   wxString lexer("cpp");
-  wxExLexers::Get()->ShowDialog(stc, wxEmptyString, false);
+  wxExLexers::Get()->ShowDialog(GetSTC(), wxEmptyString, false);
   wxExLexers::Get()->ShowThemeDialog(GetFrame(), wxEmptyString, false);
   
   REQUIRE(!wxExLexers::Get()->GetKeywords("cpp").empty());
@@ -109,6 +106,6 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
 
   REQUIRE( wxExLexers::Get()->LoadDocument());
   
-  wxExLexers::Get()->ApplyGlobalStyles(stc);
-  wxExLexers::Get()->Apply(stc);
+  wxExLexers::Get()->ApplyGlobalStyles(GetSTC());
+  wxExLexers::Get()->Apply(GetSTC());
 }

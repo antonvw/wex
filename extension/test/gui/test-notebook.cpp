@@ -70,9 +70,9 @@ TEST_CASE("wxExNotebook", "[stc][!throws]")
   REQUIRE(notebook->GetPageCount() == 0);
   
   // Test ForEach.
-  wxExSTC* stc_x = new wxExSTC(GetFrame(), "hello stc");
-  wxExSTC* stc_y = new wxExSTC(GetFrame(), "hello stc");
-  wxExSTC* stc_z = new wxExSTC(GetFrame(), "hello stc");
+  wxExSTC* stc_x = new wxExSTC(GetFrame(), wxString("hello stc"));
+  wxExSTC* stc_y = new wxExSTC(GetFrame(), wxString("hello stc"));
+  wxExSTC* stc_z = new wxExSTC(GetFrame(), wxString("hello stc"));
   
   REQUIRE(notebook->AddPage(stc_x, "key1") != nullptr);
   REQUIRE(notebook->AddPage(stc_y, "key2") != nullptr);

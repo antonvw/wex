@@ -21,13 +21,12 @@
 wxExSTCEntryDialog* wxExVariable::m_Dialog = nullptr;
 
 wxExVariable::wxExVariable(
-  const wxString& name,
-  const wxString& value,
-  const wxString& prefix,
+  const std::string& name,
+  const std::string& value,
+  const std::string& prefix,
   int type,
   bool ask_for_input)
-  : m_IsModified(false)
-  , m_Type(type)
+  : m_Type(type)
   , m_AskForInput(ask_for_input)
   , m_Name(name)
   , m_Prefix(prefix)
@@ -37,8 +36,6 @@ wxExVariable::wxExVariable(
 
 wxExVariable::wxExVariable(const wxXmlNode* node)
   : m_Type(VARIABLE_READ)
-  , m_AskForInput(true)
-  , m_IsModified(false)
 {
   const wxString type = node->GetAttribute("type");
    
@@ -95,19 +92,19 @@ bool wxExVariable::Expand(wxExEx* ex)
     return false;
   }
   
-  wxString text;
+  std::string text;
   
   if (!Expand(ex, text))
   {
     return false;
   }
   
-  ex->AddText(text.ToStdString());
+  ex->AddText(text);
     
   return true;
 }
 
-bool wxExVariable::Expand(wxExEx* ex, wxString& value)
+bool wxExVariable::Expand(wxExEx* ex, std::string& value)
 {
   switch (m_Type)
   {
@@ -119,9 +116,13 @@ bool wxExVariable::Expand(wxExEx* ex, wxString& value)
       break;
       
     case VARIABLE_ENVIRONMENT:
-      if (!wxGetEnv(m_Name, &value))
+      {
+      wxString val;
+      if (!wxGetEnv(m_Name, &val))
       {
         return false;
+      }
+      value = val;
       }
       break;
       
@@ -157,7 +158,7 @@ bool wxExVariable::Expand(wxExEx* ex, wxString& value)
   return true;
 }
 
-bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
+bool wxExVariable::ExpandBuiltIn(wxExEx* ex, std::string& expanded) const
 {
   if (m_Name == "Cb")
   {
@@ -234,7 +235,7 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, wxString& expanded) const
   return true;
 }
 
-bool wxExVariable::ExpandInput(wxString& expanded)
+bool wxExVariable::ExpandInput(std::string& expanded)
 {
   if (m_AskForInput || m_Value.empty())
   {

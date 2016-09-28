@@ -19,9 +19,9 @@ else()
   set( MACOSX_BUNDLE_GUI_IDENTIFIER ${PROJECT_NAME} )
   set( MACOSX_BUNDLE_ICON_FILE app-large.icns )
   set( MACOSX_BUNDLE_INFO_STRING "${PROJECT_NAME}" )
-  set( MACOSX_BUNDLE_SHORT_VERSION_STRING "16.10.0" )
-  set( MACOSX_BUNDLE_BUNDLE_VERSION "16.10.0" )
-  set( MACOSX_BUNDLE_COPYRIGHT "(c) 1998-2016 Anton van Wezenbeek" )
+  set( MACOSX_BUNDLE_SHORT_VERSION_STRING "17.04.0" )
+  set( MACOSX_BUNDLE_BUNDLE_VERSION "17.04.0" )
+  set( MACOSX_BUNDLE_COPYRIGHT "(c) 1998-2017 Anton van Wezenbeek" )
 
   # create a bundle with an icon too!
   add_executable( ${PROJECT_NAME} MACOSX_BUNDLE ${SRCS} )

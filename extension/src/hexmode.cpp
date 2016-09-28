@@ -53,8 +53,6 @@ int GetHexNumberFromUser(
 
 wxExHexMode::wxExHexMode(wxExSTC* stc)
   : m_STC(stc)
-  , m_Active(false)
-  , m_Goto(0)
 {
 }
   
@@ -284,48 +282,28 @@ wxUniChar wxExHexMode::Printable(unsigned int c) const
   }
 }
   
-bool wxExHexMode::Set(
-  bool on, 
-  const wxCharBuffer& text)
+void wxExHexMode::Set(bool on, const wxCharBuffer& text)
 {
-  if (m_STC->GetVi().GetMode() == wxExVi::MODE_INSERT)
+  if (m_Active != on)
   {
-    return false;
-  }
-  
-  if (
-    ( m_Active && on) ||
-    (!m_Active && !on))
-  {
-    return true;
-  }
+    m_STC->UseModificationMarkers(false);
     
-  m_STC->UseModificationMarkers(false);
-  
-  const bool modified = (m_STC->GetModify());
-  
-  m_STC->BeginUndoAction();
-  
-  if (on) 
-  {
-    Activate(text); 
-  }
-  else
-  {
-    Deactivate();
-  }
-  
-  m_STC->EndUndoAction();
-  
-  if (!modified)
-  {
-    m_STC->EmptyUndoBuffer();
-    m_STC->SetSavePoint();
-  }
+    const bool modified = (m_STC->GetModify());
     
-  m_STC->UseModificationMarkers(true);
-
-  return true;
+    m_STC->BeginUndoAction();
+    
+    on ? Activate(text): Deactivate();
+    
+    m_STC->EndUndoAction();
+    
+    if (!modified)
+    {
+      m_STC->EmptyUndoBuffer();
+      m_STC->SetSavePoint();
+    }
+      
+    m_STC->UseModificationMarkers(true);
+  }
 }
 
 bool wxExHexMode::SetBuffer(size_t index, int value)

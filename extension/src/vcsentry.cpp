@@ -88,10 +88,10 @@ void wxExVCSEntry::AddCommands(const wxXmlNode* node)
         
         m_Commands.emplace_back(
           wxExVCSCommand(
-            content, 
-            attrib, 
-            submenu, 
-            subcommand));
+            content.ToStdString(), 
+            attrib.ToStdString(), 
+            submenu.ToStdString(), 
+            subcommand.ToStdString()));
       }
     }
     

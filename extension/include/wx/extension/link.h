@@ -22,9 +22,9 @@ public:
   
   /// Returns a path from text, using pathlist if necessary.
   /// Returns empty string if no path could be found.
-  const wxString GetPath(
+  const std::string GetPath(
     /// text containing a path somewhere
-    const wxString& text,
+    const std::string& text,
     /// line number to be filled in
     int& line_no,
     /// column to be filled in
@@ -34,9 +34,9 @@ public:
   /// If there is no config, pathlist will be empty.
   void SetFromConfig();
 private:
-  const wxString FindPath(const wxString& text, int line_no) const;
+  const std::string FindPath(const std::string& text, int line_no) const;
   bool SetLink(
-    wxString& text,
+    std::string& text,
     int& line_no,
     int& column_no) const;
   

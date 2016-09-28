@@ -2,13 +2,9 @@
 // Name:      vcscommand.cpp
 // Purpose:   Implementation of wxExVCSCommand class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/extension/vcscommand.h>
 
 wxExVCSCommand::wxExVCSCommand()
@@ -20,10 +16,10 @@ wxExVCSCommand::wxExVCSCommand()
 }
 
 wxExVCSCommand::wxExVCSCommand(
-  const wxString& command,
-  const wxString& type,
-  const wxString& submenu,
-  const wxString& subcommand)
+  const std::string& command,
+  const std::string& type,
+  const std::string& submenu,
+  const std::string& subcommand)
   : m_Command(command)
   , m_SubMenu(!submenu.empty() ? submenu: subcommand)
   , m_SubMenuIsCommand(!subcommand.empty())
@@ -31,38 +27,40 @@ wxExVCSCommand::wxExVCSCommand(
 {
 }
   
-int wxExVCSCommand::From(const wxString& type) const
+long wxExVCSCommand::From(const std::string& type) const
 {
   long command = VCS_COMMAND_IS_BOTH;
   
-  if (type.Contains("popup"))
+  if (type.find("popup") != std::string::npos)
   {
     command = VCS_COMMAND_IS_POPUP;
   }
-  else if (type.Contains("main"))
+  else if (type.find("main") != std::string::npos)
   {
     command = VCS_COMMAND_IS_MAIN;
   }
   
-  long flags = (type.Contains("separator") ? VCS_COMMAND_SEPARATOR: 0);
+  const long flags = (type.find("separator") != std::string::npos ? 
+    VCS_COMMAND_SEPARATOR: 0);
   
   return command | flags;
 }
 
-const wxString wxExVCSCommand::GetCommand(
+const std::string wxExVCSCommand::GetCommand(
   bool include_subcommand,
   bool include_accelerators) const
 {
-  wxString command = m_Command;
+  std::string command = m_Command;
 
   if (m_SubMenuIsCommand && include_subcommand)
   {
     command += " " + m_SubMenu;
   }
 
-  if (command.Contains("&") && !include_accelerators)
+  if (command.find("&") != std::string::npos && !include_accelerators)
   {
-    command.Replace("&", wxEmptyString);
+    command.erase(
+      std::remove(command.begin(), command.end(), '&'), command.end());
   }
 
   return command;
@@ -100,7 +98,7 @@ bool wxExVCSCommand::IsCommit() const
 bool wxExVCSCommand::IsDiff() const
 {
   return 
-    GetCommand(false).Contains("diff");
+    GetCommand(false).find("diff") != std::string::npos;
 }
 
 bool wxExVCSCommand::IsHelp() const

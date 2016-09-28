@@ -18,10 +18,10 @@
 
 TEST_CASE("wxExViMacros", "[stc][vi]")
 {
-  wxExSTC* stc = new wxExSTC(GetFrame(), "hello");
+  wxExSTC* stc = new wxExSTC(GetFrame(), std::string("hello"));
   AddPane(GetFrame(), stc);
   wxExVi* vi = &stc->GetVi();
-  
+
   wxExViMacros macros;
   
   // Load, save document is last test, to be able to check contents.
@@ -57,14 +57,13 @@ TEST_CASE("wxExViMacros", "[stc][vi]")
   REQUIRE(!macros.StartsWith("xx"));
   REQUIRE( macros.IsRecordedMacro("a"));
   REQUIRE( macros.GetMacro() == "a");
-  
+  REQUIRE( macros.Get("a").front() == "a");
   REQUIRE(!macros.IsRecorded("b"));
   
   stc->SetText("");
   REQUIRE(!macros.IsPlayback());
   REQUIRE( macros.Playback(vi, "a"));
   REQUIRE(!macros.IsPlayback());
-  REQUIRE( macros.Get("a").front() == "a");
 
   REQUIRE( stc->GetText() == "test");
   stc->SetText("");
@@ -103,7 +102,7 @@ TEST_CASE("wxExViMacros", "[stc][vi]")
     REQUIRE( macros.Expand(vi, builtin));
   }
 
-  wxString expanded;
+  std::string expanded;
   REQUIRE(!wxExViMacros::ExpandTemplate(vi, wxExVariable(), expanded));
 
 #ifdef __UNIX__

@@ -51,11 +51,11 @@ const wxString wxExAlignText(
 /// Returns true if a unique match was found.
 bool wxExAutoComplete(
   /// text to be completed
-  const wxString& text, 
+  const std::string& text, 
   /// vector with completed text
-  const std::vector<wxString> & v,
+  const std::vector<std::string> & v,
   /// expansion of text to one of the strings from the vector
-  wxString& s);
+  std::string& s);
 
 /// Tries to autocomplete filename,
 /// result stored in the vector.
@@ -75,7 +75,7 @@ bool wxExAutoCompleteFileName(
 bool wxExClipboardAdd(const wxString& text);
 
 /// Returns data from the clipboard.
-const wxString wxExClipboardGet();
+const std::string wxExClipboardGet();
 
 #if wxUSE_GUI
 /// Adds entries to a combobox from a container.
@@ -305,9 +305,9 @@ bool wxExSortSelection(
 #endif
 
 /// Returns a string without all white space in specified input.
-const wxString wxExSkipWhiteSpace(
-  const wxString& text,
-  const wxString& replace_with = " ");
+const std::string wxExSkipWhiteSpace(
+  const std::string& text,
+  const std::string& replace_with = " ");
 
 /// This takes care of the translation.
 const wxString wxExTranslate(const wxString& text, int pageNum, int numPages);

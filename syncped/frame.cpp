@@ -329,7 +329,7 @@ Frame::Frame(App* app)
     }
     wxWindow* page = new wxExSTC(
       m_Editors, 
-      wxEmptyString,
+      std::string(),
       wxExSTC::STC_WIN_DEFAULT,
       wxEmptyString,
       0xFFFF);
@@ -1085,7 +1085,7 @@ bool Frame::OpenFile(
   {
     wxExSTC* editor = new wxExSTC(
       m_Editors, 
-      vcs.GetOutput(),
+      vcs.GetOutput().ToStdString(),
       flags,
       filename.GetFullName() + " " + unique);
 

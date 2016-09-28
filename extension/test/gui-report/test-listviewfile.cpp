@@ -29,8 +29,8 @@ TEST_CASE("wxExListViewFile")
   REQUIRE(listView->FindColumn("String") > 1);
   REQUIRE(listView->FindColumn("Number") > 1);
 
-  REQUIRE(listView->FileLoad(wxExFileName(GetProject())));
-  REQUIRE(listView->FileSave(wxExFileName("test-rep.prj.bck")));
+  REQUIRE(listView->FileLoad(GetProject()));
+  REQUIRE(listView->FileSave("test-rep.prj.bck"));
   REQUIRE(remove("test-rep.prj.bck") == 0);
 
   REQUIRE(listView->ItemFromText("test1\ntest2\n"));

@@ -9,10 +9,10 @@
 
 #include <vector> 
 #include <wx/extension/address.h>
+#include <wx/extension/indicator.h>
 
 #if wxUSE_GUI
 
-class wxExIndicator;
 class wxExProcess;
 class wxExSTC;
 
@@ -129,10 +129,7 @@ public:
   bool Yank(const char name = '0') const;
 private:  
   const wxString BuildReplacement(const wxString& text) const;
-  int Confirm(
-    const wxString& pattern, 
-    const wxString& replacement, 
-    const wxExIndicator& ind);
+  int Confirm(const wxString& pattern, const wxString& replacement);
   bool Parse(const wxString& command, 
     wxString& pattern, wxString& replacement, wxString& options) const;
   void Set(const wxString& begin, const wxString& end) {
@@ -152,6 +149,8 @@ private:
   static wxString m_Replacement;
   static wxExProcess* m_Process;
   
+  const wxExIndicator m_FindIndicator = wxExIndicator(0);
+
   wxExAddress m_Begin;
   wxExAddress m_End;
   wxExEx* m_Ex;

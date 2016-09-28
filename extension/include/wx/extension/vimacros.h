@@ -26,19 +26,19 @@ class WXDLLIMPEXP_BASE wxExViMacros
 public:  
   /// Returns all macro names as a vector of strings.
   /// Does not include registers.
-  const std::vector< wxString > Get() const;
+  const std::vector< std::string > Get() const;
   
   /// Returns contents of macro as a vector of strings.
-  const std::vector< std::string > Get(const wxString& name) const;
+  const std::vector< std::string > Get(const std::string& name) const;
   
   /// Returns abbreviations.
   const auto & GetAbbreviations() const {return m_Abbreviations;};
   
   /// Returns number of macros and variables available.
-  int GetCount() const;
+  int GetCount() const {return m_Macros.size() + m_Variables.size();};
   
   /// Returns current or last macro played back (or variable expanded).
-  const wxString& GetMacro() const {return m_Macro;};
+  const auto& GetMacro() const {return m_Macro;};
   
   /// Returns content of register.
   const std::string GetRegister(const char name) const;
@@ -52,11 +52,11 @@ public:
   bool IsModified() const {return m_IsModified;};
   
   /// Is macro or variable recorded.
-  bool IsRecorded(const wxString& macro) const;
+  bool IsRecorded(const std::string& macro) const;
   
   /// Is macro recorded.
   /// Does not check for variables.
-  bool IsRecordedMacro(const wxString& macro) const;
+  bool IsRecordedMacro(const std::string& macro) const;
   
   /// Are we playing back?
   bool IsPlayback() const {return m_IsPlayback;};
@@ -70,11 +70,11 @@ public:
     /// ex component to use
     wxExEx* ex, 
     /// macro name
-    const wxString& macro, 
+    const std::string& macro, 
     /// number of times this maco is executed
     int repeat = 1);
   
-  /// Records text to current macro (or regiser) as a new command.
+  /// Records text to current macro (or register) as a new command.
   /// The text to be recorded should be valid ex command,
   /// though it is not checked here.
   /// If you playback this macro the text
@@ -88,7 +88,7 @@ public:
     bool new_command = true);
   
   /// Sets abbreviation (overwrites existing abbreviationi).
-  void SetAbbreviation(const wxString& ab, const std::string& value);
+  void SetAbbreviation(const std::string& ab, const std::string& value);
   
   /// Sets register (overwrites existing register).
   /// The name should be a one letter register.
@@ -97,17 +97,17 @@ public:
   
   /// Starts recording a macro (appends to 
   /// existing macro if macro is single upper case character).
-  void StartRecording(const wxString& macro);
+  void StartRecording(const std::string& macro);
   
   /// Does a recorded macro or variable starts with text.
-  bool StartsWith(const wxString& text) const;
+  bool StartsWith(const std::string& text) const;
   
   /// Stops recording.
   void StopRecording();
   
   /// Expands variable to ex component.
   /// Returns true if variable could be expanded.
-  static bool Expand(wxExEx* ex, const wxString& variable);
+  static bool Expand(wxExEx* ex, const std::string& variable);
   
   /// Expands variable to value text.
   /// Returns true if variable could be expanded.
@@ -115,9 +115,9 @@ public:
     /// ex component to use
     wxExEx* ex, 
     /// variable name
-    const wxString& variable, 
+    const std::string& variable, 
     /// value to receive contents
-    wxString& value);
+    std::string& value);
   
   /// Expands template variable.
   /// Returns true if the template file name exists,
@@ -128,7 +128,7 @@ public:
     /// variable (containing template file name)
     const wxExVariable& variable, 
     /// value to receive contents
-    wxString& expanded);
+    std::string& expanded);
   
   /// Returns the filename with xml document.
   static const wxFileName GetFileName();
@@ -148,24 +148,24 @@ private:
   static void ParseNodeAbbreviation(wxXmlNode* node);
   static void ParseNodeMacro(wxXmlNode* node);
   static void ParseNodeVariable(wxXmlNode* node);
-  static const wxString Encode(const std::string& text);
-  static const std::string Decode(const wxString& text);
+  static const std::string Encode(const std::string& text);
+  static const std::string Decode(const std::string& text);
     
   static bool m_IsExpand;
   static bool m_IsModified;
   static bool m_IsPlayback;
   static bool m_IsRecording;
   
-  static wxString m_Macro;
+  static std::string m_Macro;
   
   /// All abbreviations, as a map of abbreviation and full text.
-  static std::map<wxString, std::string> m_Abbreviations;
+  static std::map<std::string, std::string> m_Abbreviations;
   
   /// All macros (and registers), as a map of name and a vector of commands.
   /// Registers are 1 letter macros.
-  static std::map<wxString, std::vector<std::string> > m_Macros;
+  static std::map<std::string, std::vector<std::string> > m_Macros;
   
   /// All variables, as a map of name and variable.
-  static std::map<wxString, wxExVariable> m_Variables;
+  static std::map<std::string, wxExVariable> m_Variables;
 };
 #endif // wxUSE_GUI

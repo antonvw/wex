@@ -17,7 +17,7 @@
 
 wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   const wxString& caption,
-  const wxString& text,
+  const std::string& text,
   const wxString& prompt,
   long button_style,
   wxWindowID id,

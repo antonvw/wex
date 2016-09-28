@@ -80,7 +80,7 @@ wxExSTCEntryDialog* wxExSTC::m_EntryDialog = nullptr;
 int wxExSTC::m_Zoom = -1;
 
 wxExSTC::wxExSTC(wxWindow *parent, 
-  const wxString& value,
+  const std::string& value,
   long win_flags,
   const wxString& title,
   long menu_flags,
@@ -1354,7 +1354,7 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen(LINK_OPEN);}, ID_EDIT_OPEN_LINK);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const wxString propnames(PropertyNames());
-    wxString properties = (!propnames.empty() ? "[Current properties]\n": wxString());
+    std::string properties = (!propnames.empty() ? "[Current properties]\n": std::string());
     
     // Add current (global and lexer) properties.  
     for (const auto& it1 : wxExLexers::Get()->GetProperties())
@@ -1583,7 +1583,7 @@ bool wxExSTC::LinkOpen(int mode, wxString* filename)
     line_no = (sel.empty() ? -1 : -2);
   }
 
-  const wxString path = m_Link.GetPath(text, line_no, col_no);
+  const wxString path = m_Link.GetPath(text.ToStdString(), line_no, col_no);
   
   if (path.empty()) return false;
 
@@ -1872,11 +1872,8 @@ void wxExSTC::PropertiesMessage(long flags)
 
 void wxExSTC::Reload(long flags)
 {
-  if (!m_HexMode.Set((flags & STC_WIN_HEX) > 0, 
-     (flags & STC_WIN_HEX) ? GetTextRaw(): wxCharBuffer()))
-  {
-    return;
-  }
+  m_HexMode.Set((flags & STC_WIN_HEX) > 0, 
+    (flags & STC_WIN_HEX) ? GetTextRaw(): wxCharBuffer());
   
   m_Flags = flags;
     

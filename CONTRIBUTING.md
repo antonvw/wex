@@ -8,8 +8,6 @@
 
 - use STL whenever possible 
 
-- run [cppcheck](http://cppcheck.sourceforge.net/)
-
 - icons and bitmaps
   - menu and toolbar bitmaps are from wxWidgets, using wxArtProvider
 
@@ -26,7 +24,7 @@
  
 - translation is done using xgettext by invoking po-sync.sh   
   - to translate wxExtension copy the wxex.pot file to the correct language po 
-    file, and fill in the translation (e.g. using [poedit](http://www.poedit.net/).    
+    file, and fill in the translation.
 
   - The place where to put your po files can be found by adding -l command line switch.
     You can also test other languages using the special LANG config item,
@@ -41,7 +39,7 @@
 
 - `mkdir build`   
   `cd build`   
-  `cmake ..`   
+  `cmake -DBUILD_TEST=ON ..`   
   `make`   
   `make test`   
 

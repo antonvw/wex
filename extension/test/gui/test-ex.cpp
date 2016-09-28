@@ -22,7 +22,7 @@ TEST_CASE("wxExEx", "[stc][vi]")
 {
   // Test modeline.
   const wxString modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
-  wxExSTC* stc = new wxExSTC(GetFrame(), "-- vi: " + modeline);
+  wxExSTC* stc = new wxExSTC(GetFrame(), std::string("-- vi: " + modeline));
   AddPane(GetFrame(), stc);
   wxExEx* ex = new wxExEx(stc);
 

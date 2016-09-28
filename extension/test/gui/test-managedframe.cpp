@@ -21,12 +21,9 @@ TEST_CASE("wxExManagedFrame", "[stc]")
 {
   REQUIRE(GetFrame()->AllowClose(100, nullptr));
   
-  wxExSTC* stc = new wxExSTC(GetFrame(), "hello world");
-  AddPane(GetFrame(), stc);
-  
-  stc->SetFocus();
-  stc->Show();
-  wxExVi* vi = &stc->GetVi();
+  GetSTC()->SetFocus();
+  GetSTC()->Show();
+  wxExVi* vi = &GetSTC()->GetVi();
   
   wxExSTC* stco = nullptr;  
   REQUIRE(!GetFrame()->ExecExCommand(":n", stco));
@@ -85,7 +82,7 @@ TEST_CASE("wxExManagedFrame", "[stc]")
   REQUIRE(!GetFrame()->TogglePane("XXXXBAR"));
   REQUIRE(!GetFrame()->GetManager().GetPane("XXXXBAR").IsOk());
   
-  GetFrame()->OnNotebook(100, stc);
+  GetFrame()->OnNotebook(100, GetSTC());
   
   GetFrame()->AppendPanes(menu);
 

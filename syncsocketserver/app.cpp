@@ -75,7 +75,7 @@ Frame::Frame()
   , m_Timer(this)
   , m_Answer(ANSWER_OFF)
   , m_DataWindow(new wxExSTC(this))
-  , m_LogWindow(new wxExSTC(this, wxEmptyString, wxExSTC::STC_WIN_NO_INDICATOR))
+  , m_LogWindow(new wxExSTC(this, std::string(), wxExSTC::STC_WIN_NO_INDICATOR))
   , m_Shell(new wxExShell(this))
 {
   SetIcon(wxICON(app));

@@ -5,8 +5,7 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXHEXMODE_H
-#define _EXHEXMODE_H
+#pragma once
 
 #include <wx/string.h>
 
@@ -52,7 +51,7 @@ public:
   wxUniChar Printable(unsigned int c) const;
 
   /// Sets hex mode.  
-  bool Set(
+  void Set(
     /// sets it on or off
     bool on, 
     /// if on, starts with specified text.
@@ -68,8 +67,8 @@ private:
   void Activate(const wxCharBuffer& text = wxCharBuffer());
   void Deactivate();
   
-  bool m_Active;
-  int m_Goto;
+  bool m_Active = false;
+  int m_Goto = 0;
   
   wxString m_Buffer;
   wxString m_BufferOriginal;
@@ -152,4 +151,3 @@ private:
   
   wxExHexMode* m_Hex;
 };
-#endif

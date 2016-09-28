@@ -21,7 +21,7 @@
 
 /// Offers a class to keep several objects into a templatized container.
 template <class T> 
-class WXDLLIMPEXP_BASE wxExToContainer
+class wxExToContainer
 {
 public:  
   /// Constructor, using array string.
@@ -39,11 +39,21 @@ public:
     CONVERT(in);}
   
   /// Constructor, using string, each word results in a container element.
-  wxExToContainer(const wxString& in) {
-    wxStringTokenizer tkz(in);
+  wxExToContainer(
+    /// string containing elements
+    const wxString& in,
+    /// delimiter for elements
+    const wxString& delims = wxDEFAULT_DELIMITERS) {
+    wxStringTokenizer tkz(in, delims);
     while (tkz.HasMoreTokens())
     {
-      m_Container.emplace_back(tkz.GetNextToken());
+      wxString token(tkz.GetNextToken());
+      // if escape space, add next token
+      if (token.Last() == '\\')
+      {
+        token = token.substr(0, token.size() - 1) + " " + tkz.GetNextToken();
+      }
+      m_Container.emplace_back(token);
     }}
 
   /// Constructor, using a combobox.

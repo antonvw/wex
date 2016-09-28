@@ -72,7 +72,7 @@ public:
 
   /// Constructor. The title is used for name.
   wxExSTC(wxWindow* parent, 
-    const wxString& value = wxEmptyString,
+    const std::string& value = std::string(),
     long win_flags = STC_WIN_DEFAULT,
     const wxString& title = wxEmptyString,
     long menu_flags = STC_MENU_DEFAULT,

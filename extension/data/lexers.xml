@@ -2281,6 +2281,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       throw true try typedef typeid typename
       union unsigned using virtual void volatile
       wchar_t while xor xor_eq
+      std
     </set>
     <set name="cpp-stl">
       adjacent_find array at back back_insert_iterator begin 
@@ -2291,6 +2292,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       deque divides emplace_back empty end equal equal_range 
       equal_to
       erase fill fill_n find find_end find_first_of find_if 
+      first 
       for_each
       front front_insert_iterator generate generate_n get_allocator 
       greater
@@ -2311,12 +2313,15 @@ Copyright: (c) 2016, Anton van Wezenbeek
       remove_if
       rend replace replace_copy replace_copy_if replace_if reserve
       reserve_copy resize reverse reverse_iterator rfind rotate rotate_copy
+      second
       search search_n set
       set_difference set_intersection set_symmetric_difference set_union
       shared_ptr size sort sort_heap stable_partition stable_sort stack string
       substr
       swap swap_ranges transform unique unique_copy unique_ptr upper_bound 
       valarray vector
+      basic_regex sub_mtch match_results
+      regex_match regex_search regex_replace
     </set>
     <set name="cpp-doc">
       a addindex addtogroup anchor arg attention
