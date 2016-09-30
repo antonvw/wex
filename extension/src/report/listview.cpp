@@ -53,8 +53,12 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
     m_Frame->UseFileHistoryList(this);
   }
 
-  wxAcceleratorEntry entries[1];
-  entries[0].Set(wxACCEL_CTRL, 'M', ID_LIST_COMPARE);
+  wxAcceleratorEntry entries[5];
+  entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
+  entries[1].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
+  entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
+  entries[3].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
+  entries[4].Set(wxACCEL_CTRL, 'M', ID_LIST_COMPARE);
 
   wxAcceleratorTable accel(WXSIZEOF(entries), entries);
   SetAcceleratorTable(accel);

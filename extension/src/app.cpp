@@ -23,8 +23,8 @@ void wxExApp::OnAssertFailure(
   const wxChar* file, int line, const wxChar* func, 
   const wxChar* cond, const wxChar* msg)
 {
-  std::wcout << wxNow() << ": OnAssertFailure: " <<
-    " file: " << file << " line: " << line << " func: " << func << 
+  std::wcout << wxNow() << ": OnAssertFailure: file: " << file << 
+    " line: " << line << " func: " << func << 
     " cond: " << cond << " msg: " << msg << "\n";
 }
     
