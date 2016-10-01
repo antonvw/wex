@@ -232,8 +232,8 @@ bool wxExLink::SetLink(std::string& link, int& line_no, int& column_no) const
 #ifdef __WXMSW__
   if (isalpha(link[0]) && link[1] == ':')
   {
-    prefix = link.SubString(0,1);
-    link = link.Mid(2);
+    prefix = link.substr(0,1);
+    link = link.substr(2);
   }
 #endif
 
