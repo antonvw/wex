@@ -475,7 +475,7 @@ Frame::Frame()
           if (GetManager().GetPane("SHELL").IsShown())
           {
             AppendText(m_Shell, text, DATA_MESSAGE_RAW);
-            m_Shell->Prompt(wxEmptyString, false); // no eol
+            m_Shell->Prompt(std::string(), false); // no eol
           }
         }
 

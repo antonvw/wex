@@ -10,16 +10,16 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/menucommands.h>
+#include <wx/extension/menucommand.h>
 #include "test.h"
 
 TEST_CASE("wxExMenuCommands", "[menu]")
 {
-  wxExMenuCommands(
-  wxExMenuCommand add("a&dd");
+  wxExMenuCommands<wxExMenuCommand> cmnds("test", {{"test"}});
   
-  REQUIRE( cmnds.GetCommand() > 0));
-  REQUIRE(!cmnds.GetCommands().empty()));
-  REQUIRE(!cmnds.GetFlagsKey().empty()));
-  REQUIRE(!cmnds.GetName().empty()));
-  REQUIRE( cmnds.SetCommand(4));
+  REQUIRE( cmnds.GetCommand().GetCommand().size() > 0);
+  REQUIRE(!cmnds.GetCommands().empty());
+  REQUIRE( cmnds.GetFlagsKey().empty());
+  REQUIRE(!cmnds.GetName().empty());
+  REQUIRE(!cmnds.SetCommand(4));
 }
