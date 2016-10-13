@@ -26,17 +26,7 @@ TEST_CASE("wxExVCSCommand", "[vcs]")
 
   REQUIRE(add.GetCommand() == "add");
   REQUIRE(add.GetCommand(true, true) == "a&dd");
-  REQUIRE(help.GetCommand() == "help me");
-  REQUIRE(help.GetCommand(true, true) == "h&elp m&e");
-  REQUIRE(help.GetCommand(false, true) == "h&elp");
-  REQUIRE(help.GetCommand(false, false) == "help");
   
-  REQUIRE(add.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
-  REQUIRE(blame.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
-  REQUIRE(commit.GetType() == wxExVCSCommand::VCS_COMMAND_IS_MAIN);
-  REQUIRE(diff.GetType() == wxExVCSCommand::VCS_COMMAND_IS_POPUP);
-  REQUIRE(help.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
-
   REQUIRE(add.IsAdd());
   REQUIRE(blame.IsBlame());
   REQUIRE(co.IsCheckout());
@@ -52,6 +42,4 @@ TEST_CASE("wxExVCSCommand", "[vcs]")
   REQUIRE(add.GetSubMenu().empty());
   REQUIRE(diff.GetSubMenu() == "submenu");
   REQUIRE(help.GetSubMenu() == "m&e");
-
-  REQUIRE(none.GetType() == wxExVCSCommand::VCS_COMMAND_IS_NONE);
 }

@@ -101,7 +101,8 @@ const wxString Encode(const wxString& text)
   return output;
 }
   
-bool wxExAutoCompleteFileName(const wxString& text, std::vector<wxString> & v)
+bool wxExAutoCompleteFileName(
+  const std::string& text, std::vector<std::string> & v)
 {
   // E.g.:
   // 1) text: src/vi
@@ -113,7 +114,7 @@ bool wxExAutoCompleteFileName(const wxString& text, std::vector<wxString> & v)
   // path:   /usr/include
   // word:   s
   // And text might be prefixed by a command, e.g.: e src/vi
-  wxFileName path(text.AfterLast(' '));
+  wxFileName path(wxString(text).AfterLast(' '));
   
   if (path.IsRelative())
   {
@@ -129,7 +130,7 @@ bool wxExAutoCompleteFileName(const wxString& text, std::vector<wxString> & v)
   }
   
   const wxString word(
-    text.AfterLast(' ').AfterLast(wxFileName::GetPathSeparator()));
+    wxString(text).AfterLast(' ').AfterLast(wxFileName::GetPathSeparator()));
   wxDir dir(path.GetPath());
   wxString filename;
 
@@ -163,8 +164,7 @@ bool wxExAutoCompleteFileName(const wxString& text, std::vector<wxString> & v)
     {
       for (size_t j = 2; j < v.size() && all_ok; j++)
       {
-        if (i < v[j].size() && 
-            v[1].GetChar(i) != v[j].GetChar(i))
+        if (i < v[j].size() && v[1][i] != v[j][i])
         {
           all_ok = false;
         }
@@ -176,7 +176,7 @@ bool wxExAutoCompleteFileName(const wxString& text, std::vector<wxString> & v)
       }
     }
 
-    v[0] = v[1].Mid(word.length(), rest_equal_size);
+    v[0] = v[1].substr(word.length(), rest_equal_size);
   }
 
   return true;
@@ -293,9 +293,11 @@ const wxString wxExConfigFirstOfWrite(const wxString& key, const wxString& value
   return value;
 }
   
-const wxString wxExEllipsed(const wxString& text, const wxString& control)
+const wxString wxExEllipsed(
+  const wxString& text, const wxString& control, bool ellipse)
 {
-  return text + "..." + 
+  return text + 
+    (ellipse ? "...": wxString()) + 
     (!control.empty() ? "\t" + control: wxString());
 }
 

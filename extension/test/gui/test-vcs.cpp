@@ -11,9 +11,9 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/menu.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/menu.h>
 #include "test.h"
 
 TEST_CASE("wxExVCS", "[vcs]")
@@ -38,12 +38,9 @@ TEST_CASE("wxExVCS", "[vcs]")
   REQUIRE( vcs.Execute());
 
   // GetEntry  
-  REQUIRE( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);
+  REQUIRE( vcs.GetEntry().BuildMenu(100, new wxExMenu("test")) > 0);
   REQUIRE( vcs.GetEntry().GetOutput().empty());
   REQUIRE( vcs.GetEntry().GetCommand().GetCommand() == "add");
-  
-  // GetFileName
-  REQUIRE( vcs.GetFileName().IsOk());
   
   // GetName
   REQUIRE( vcs.GetName() == "Auto");

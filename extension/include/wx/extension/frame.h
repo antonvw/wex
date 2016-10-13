@@ -20,6 +20,7 @@ class wxListView;
 class wxExFileName;
 class wxExGrid;
 class wxExListView;
+class wxExProcess;
 class wxExSTC;
 class wxExVCSEntry;
 
@@ -75,6 +76,10 @@ public:
     const wxExFileName& filename,
     const wxString& text,
     long flags = 0);
+  
+  /// Allows you to e.g. add debugging.
+  /// Default returns nullptr.
+  virtual wxExProcess* Process(const std::string& command) {return nullptr;};
     
   /// Sets the find focus to specified window.
   void SetFindFocus(wxWindow* focus) {m_FindFocus = focus;};

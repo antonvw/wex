@@ -19,6 +19,7 @@
 #if wxUSE_GUI
 
 class wxPanel;
+class wxExDebug;
 class wxExEx;
 class wxExFindToolBar;
 class wxExTextCtrl;
@@ -78,6 +79,9 @@ public:
     /// if the command changes stc, update it, otherwise nullptr
     wxExSTC* & stc) {return false;};
 
+  /// Debugging interface.
+  auto* GetDebug() {return m_Debug;};
+
   /// Returns a command line ex command.
   /// Shows the ex bar, sets the label and sets focus to it, allowing
   /// you to enter a command.
@@ -125,7 +129,7 @@ public:
     /// the ex for the dialog
     wxExEx* ex,
     /// the text to be printed
-    const wxString& text);
+    const std::string& text);
   
   /// Allows derived class to update file history.
   virtual void SetRecentFile(const wxString& file) override {
@@ -162,6 +166,7 @@ private:
   const std::vector<std::pair<std::pair<wxString,wxString>, int>> m_ToggledPanes;
   
   wxAuiManager m_Manager;
+  wxExDebug* m_Debug = nullptr;
   wxExFileHistory m_FileHistory;
   wxExFindToolBar* m_FindBar;
   wxExOptionsToolBar* m_OptionsBar;

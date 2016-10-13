@@ -18,9 +18,9 @@
 #if wxUSE_GUI
 class wxExItemDialog;
 class wxExFileName;
-class wxExFrame;
 class wxExIndicator;
 class wxExLexer;
+class wxExManagedFrame;
 class wxExMenu;
 
 /// Offers a styled text ctrl with:
@@ -54,9 +54,11 @@ public:
   enum wxExMenuFlags
   {
     STC_MENU_NONE      = 0x0000, ///< no context menu
-    STC_MENU_DEFAULT   = 0x0001, ///< default, standard context menu
+    STC_MENU_CONTEXT   = 0x0001, ///< context menu
     STC_MENU_OPEN_LINK = 0x0002, ///< for adding link open menu
     STC_MENU_VCS       = 0x0004, ///< for adding vcs menu
+    STC_MENU_DEFAULT   = 0x000F, ///< default
+    STC_MENU_DEBUG     = 0x0010, ///< for adding debug menu
   };
 
   /// Window flags.
@@ -167,13 +169,13 @@ public:
   /// Returns EOL string.
   /// If you only want to insert a newline, use NewLine()
   /// (from wxStyledTextCtrl).
-  const wxString GetEOL() const;
+  const std::string GetEOL() const;
 
   /// Returns the file.
-  wxExSTCFile& GetFile() {return m_File;};
+  auto & GetFile() {return m_File;};
 
   /// Returns the filename, as used by the file.
-  const wxExFileName& GetFileName() const {return m_File.GetFileName();};
+  const auto & GetFileName() const {return m_File.GetFileName();};
 
   /// Returns find string, from selected text or from config.
   /// The search flags are taken from frd.
@@ -184,26 +186,26 @@ public:
   long GetFlags() const {return m_Flags;};
   
   /// Returns hex mode component.
-  const wxExHexMode& GetHexMode() const {return m_HexMode;};
+  const auto & GetHexMode() const {return m_HexMode;};
   
   /// Returns writable hex mode component.
-  wxExHexMode& GetHexMode() {return m_HexMode;};
+  auto & GetHexMode() {return m_HexMode;};
   
   /// Returns the lexer.
-  const wxExLexer& GetLexer() const {return m_Lexer;};
+  const auto & GetLexer() const {return m_Lexer;};
 
   /// Returns the lexer.
-  wxExLexer& GetLexer() {return m_Lexer;};
+  auto & GetLexer() {return m_Lexer;};
 
   /// Returns vi component.
-  const wxExVi& GetVi() const {return m_vi;};
+  const auto & GetVi() const {return m_vi;};
   
   /// Returns writable vi component.
   /// This allows you to do vi like editing:
   /// - GetVi().Command(":1,$s/xx/yy/g")
   /// - GetVi().Command(":w")
   /// to replace all xx by yy, and save the file.
-  wxExVi& GetVi() {return m_vi;};
+  auto & GetVi() {return m_vi;};
   
   /// Returns word at position.
   const wxString GetWordAtPos(int pos) const;
@@ -394,7 +396,7 @@ private:
   bool m_UseAutoComplete = true;
 
   wxExSTCFile m_File;
-  wxExFrame* m_Frame;
+  wxExManagedFrame* m_Frame;
   wxExHexMode m_HexMode;
   
   // We use a separate lexer here as well

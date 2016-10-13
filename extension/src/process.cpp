@@ -138,12 +138,30 @@ void wxExProcess::CheckInput()
     {
       m_Shell->AppendText(output);
     }
+
+    const int last = m_Shell->GetLength();
+    const wxString text(m_Shell->GetTextRange(last - 100, last));
+    std::vector<wxString> v;
+
+    if (wxExMatch("at (.*):([0-9]+)", text.ToStdString(), v) > 1)
+    {
+      const wxExFileName fn(v[0]);
+
+      if (fn.FileExists())
+      {
+        wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
+        frame->OpenFile(fn, atoi(v[1]));
+      }
+    }
+//      const wxString text(m_Debug->GetShell()->GetLine(m_Debug->GetShell()->GetLineCount() - 1));
+//      const int line(atoi(text));
+//      if (line > 0) stc->GotoLine(line);
   }
     
   if (!m_Input.empty())
   {
     m_Input.clear();
-    m_Shell->Prompt(wxEmptyString, false);
+    m_Shell->Prompt(std::string(), false);
   }
 }
 
@@ -157,20 +175,8 @@ bool wxExProcess::Command(const wxString& command)
   
   m_Timer->Stop();
   
-  if (
-     !m_Command.StartsWith("cmd") && 
-     !m_Command.StartsWith("powershell"))
-  {
-    if (command.empty())
-    {
-      m_Shell->Prompt(wxEmptyString, true);
-    }
-    else
-    {
-      m_Shell->AppendText(m_Shell->GetEOL());
-    }
-  }
-  else
+  if (m_Command.StartsWith("cmd") ||
+      m_Command.StartsWith("powershell"))
   {
     m_Shell->DocumentEnd();
   }
@@ -267,7 +273,7 @@ bool wxExProcess::Execute(
     m_Shell->SetProcess(this);
     m_Shell->SetName(m_Command);
     m_Shell->SetPrompt(
-      // a unix shell itself has no prompt, s put one here
+      // a unix shell itself has no prompt, so put one here
       m_Command.StartsWith("bash") ||
       m_Command.StartsWith("csh") ||
       m_Command.StartsWith("ksh") ||
@@ -379,7 +385,7 @@ void wxExProcess::PrepareOutput(wxWindow* parent)
 {
   if (m_Shell == nullptr)
   {
-    m_Shell = new wxExShell(parent, wxEmptyString, wxEmptyString, true, 100, wxEmptyString,
+    m_Shell = new wxExShell(parent, std::string(), std::string(), true, 100, std::string(),
       wxExSTC::STC_MENU_DEFAULT | wxExSTC::STC_MENU_OPEN_LINK);
   }
 }

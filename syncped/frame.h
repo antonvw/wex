@@ -40,7 +40,8 @@ private:
   virtual void OnCommandItemDialog(wxWindowID dialogid, const wxCommandEvent& event) override;
   virtual bool OpenFile(const wxExFileName& filename, const wxExVCSEntry& vcs, long flags = 0) override;
   virtual bool OpenFile(const wxExFileName& filename, const wxString& text, long flags = 0) override;
-  virtual void PrintEx(wxExEx* ex, const wxString& text) override;
+  virtual void PrintEx(wxExEx* ex, const std::string& text) override;
+  virtual wxExProcess* Process(const std::string& command) override;
   virtual void StatusBarClicked(const wxString& pane) override;
   virtual void StatusBarClickedRight(const wxString& pane) override;
   virtual void SyncAll() override;
@@ -55,8 +56,6 @@ private:
 
   bool m_IsClosing = false;
   int m_NewProjectNo = 1, m_SplitId = 1;
-
-  App* m_App;
 
   wxCheckBox *m_CheckBoxDirCtrl, *m_CheckBoxHistory;
   wxExGenericDirCtrl* m_DirCtrl;

@@ -9,10 +9,14 @@
 
 #include <wx/extension/report/frame.h>
 
+class App;
+
 class DecoratedFrame : public wxExFrameWithHistory
 {
 public:
-  DecoratedFrame();
+  DecoratedFrame(App* app);
   virtual bool AllowClose(wxWindowID id, wxWindow* page) override;
   virtual void OnNotebook(wxWindowID id, wxWindow* page) override;
+protected:
+  App* m_App;
 };

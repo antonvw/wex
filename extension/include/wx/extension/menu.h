@@ -33,6 +33,9 @@ public:
 
   /// Default constructor.
   wxExMenu(long style = MENU_DEFAULT);
+  
+  /// Construct a menu with a title.
+  wxExMenu(const wxString& title, long style = 0);
 
   /// Appends a menu item for stock menu id's
   /// using automatic naming, help text and art id.

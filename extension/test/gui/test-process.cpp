@@ -47,7 +47,7 @@ TEST_CASE("wxExProcess")
   REQUIRE(!process->GetOutput().empty());
   
   REQUIRE(!process->IsRunning());
-  REQUIRE( process->IsSelected());
+  REQUIRE(!process->GetExecuteCommand().empty());
   REQUIRE( process->Kill() == wxKILL_NO_PROCESS);
   
   process->ShowOutput();

@@ -9,9 +9,11 @@
 
 #include <memory>
 #include <wx/process.h>
+#include <wx/extension/marker.h>
 
 class wxTimer;
 class wxExShell;
+class wxExSTC;
 
 /// Offers a wxProcess, capturing execution output depending
 /// on sync or async call to Execute.
@@ -40,6 +42,10 @@ public:
     const wxString& title = _("Select Process"),
     bool modal = true);
   
+  /// Tries to execute debug action menu_id with data from stc.
+  /// Returns false if e.g. debug process is not running.
+  bool Debug(wxExSTC* stc, int menu_id);
+  
   /// Executes the process.
   /// - In case asynchronously (wxEXEC_ASYNC) this call immediately returns.
   ///   The STC component will be filled with output from the process.
@@ -59,11 +65,14 @@ public:
     /// working dir, if empty last working dir is used
     const wxString& wd = wxEmptyString);
   
+  /// Returns command executed.
+  const auto & GetExecuteCommand() const {return m_Command;};
+
   /// Returns true if the command could not be executed.
   bool GetError() const {return m_Error;};
 
   /// Returns the output from Execute (only filled for wxEXEC_SYNC).
-  const wxString& GetOutput() const {return m_Output;};
+  const auto & GetOutput() const {return m_Output;};
   
   /// Returns the shell component 
   /// (might be nullptr if PrepareOutput is not yet invoked).
@@ -74,9 +83,6 @@ public:
   
   /// Returns true if this process is running.
   bool IsRunning() const;
-
-  /// Returns true if a process command is selected.
-  bool IsSelected() const {return !m_Command.empty();};
 
   /// Kills the process (sends specified signal if process still running).
   wxKillError Kill(wxSignal sig = wxSIGKILL);
@@ -95,14 +101,13 @@ protected:
 private:
   void CheckInput();
 
-  bool m_Error;
-  bool m_HasStdError;
+  bool m_Error, m_HasStdError;
 
   wxCriticalSection m_Critical;
-  wxString m_Command;  
-  wxString m_Input;  
-  wxString m_Output;
+  wxString m_Command, m_Input, m_Output;
   
+  const wxExMarker m_MarkerSymbol = wxExMarker(2);
+
   static wxString m_WorkingDirKey;
 
 #if wxUSE_GUI

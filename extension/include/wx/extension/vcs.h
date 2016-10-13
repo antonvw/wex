@@ -2,7 +2,7 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wxExVCS class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,7 +13,7 @@
 class wxFileName;
 
 /// This class collects all vcs handling.
-/// The VCS entries are loaded from vcs.xml, this is done
+/// The VCS entries are loaded from menus.xml, this is done
 /// during wxExApp startup.
 class WXDLLIMPEXP_BASE wxExVCS
 {
@@ -51,9 +51,6 @@ public:
 
   /// Returns the current vcs entry.
   const auto& GetEntry() const {return m_Entry;};
-  
-  /// Returns the xml filename.
-  static const wxFileName GetFileName();
   
   /// Returns name for current vcs entry, or empty string
   /// if vcs is not used.

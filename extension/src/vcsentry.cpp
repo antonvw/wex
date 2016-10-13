@@ -13,154 +13,40 @@
 #include <wx/extension/vcsentry.h>
 #include <wx/extension/defs.h> // for VCS_MAX_COMMANDS
 #include <wx/extension/itemdlg.h>
+#include <wx/extension/menu.h>
+#include <wx/extension/menus.h>
 #include <wx/extension/shell.h>
-#include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
 wxExVCSEntry::wxExVCSEntry(
-  const wxString& name,
+  const std::string& name,
   const wxString& admin_dir,
   const std::vector<wxExVCSCommand> & commands,
   int flags_location)
   : wxExProcess()
+  , wxExMenuCommands(name, commands)
   , m_AdminDir(admin_dir)
-  , m_Name(name)
   , m_FlagsLocation(flags_location)
   , m_AdminDirIsTopLevel(false)
-  , m_Commands(commands)
 {
 }
 
 wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
   : wxExProcess()
+  , wxExMenuCommands(node)
   , m_AdminDir(node->GetAttribute("admin-dir"))
-  , m_Name(node->GetAttribute("name"))
   , m_FlagsLocation(
       (node->GetAttribute("flags-location") == "prefix" ?
          VCS_FLAGS_LOCATION_PREFIX: VCS_FLAGS_LOCATION_POSTFIX))
   , m_AdminDirIsTopLevel(
       node->GetAttribute("toplevel") == "true")
 {
-  if (m_Name.empty())
-  {
-    wxLogError("Missing vcs on line: %d", node->GetLineNumber());
-  }
-  else
-  {
-    wxXmlNode *child = node->GetChildren();
-    
-    while (child)
-    {
-      if (child->GetName() == "commands")
-      {
-        AddCommands(child);
-      }
-      
-      child = child->GetNext();
-    }
-  }
-  
-  if (m_Commands.empty())
-  {
-    wxLogError("No commands found for: " + m_Name);
-    m_Commands.emplace_back(wxExVCSCommand());
-  }  
-}
-
-void wxExVCSEntry::AddCommands(const wxXmlNode* node)
-{
-  wxXmlNode* child = node->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "command")
-    {
-      if (m_Commands.size() == VCS_MAX_COMMANDS)
-      {
-        wxLogError("Reached commands limit: %d", VCS_MAX_COMMANDS);
-      }
-      else
-      {
-        const wxString content = child->GetNodeContent().Strip(wxString::both);
-        const wxString attrib = child->GetAttribute("type");
-        const wxString submenu = child->GetAttribute("submenu");
-        const wxString subcommand = child->GetAttribute("subcommand");
-        
-        m_Commands.emplace_back(
-          wxExVCSCommand(
-            content.ToStdString(), 
-            attrib.ToStdString(), 
-            submenu.ToStdString(), 
-            subcommand.ToStdString()));
-      }
-    }
-    
-    child = child->GetNext();
-  }
 }
 
 #if wxUSE_GUI
-int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
+int wxExVCSEntry::BuildMenu(int base_id, wxExMenu* menu, bool is_popup) const
 {
-  wxMenu* submenu = nullptr;
-
-  const wxString unused = "XXXXX";  
-  wxString prev_menu = unused;
-  
-  int i = 0;
-
-  for (const auto& it : m_Commands)
-  {
-    bool add = false;
-
-    if (!it.GetSubMenu().empty() && prev_menu != it.GetSubMenu())
-    {
-      submenu = new wxMenu();
-      prev_menu = it.GetSubMenu();
-      menu->AppendSeparator();
-      menu->AppendSubMenu(submenu, it.GetSubMenu());
-    }
-    else if (it.GetSubMenu().empty())
-    {
-      if (prev_menu != unused)
-      {
-        prev_menu = unused;
-        menu->AppendSeparator();
-      }
-
-      submenu = nullptr;
-    }
-    
-    const long type = it.GetType() & 0x000F;
-
-    switch (type)
-    {
-      case wxExVCSCommand::VCS_COMMAND_IS_BOTH: add = true; break;
-      case wxExVCSCommand::VCS_COMMAND_IS_POPUP: add = is_popup; break;
-      case wxExVCSCommand::VCS_COMMAND_IS_MAIN: add = !is_popup; break;
-      case wxExVCSCommand::VCS_COMMAND_IS_NONE: add = false; break;
-      default: wxFAIL;
-    }
-
-    if (add)
-    {
-      wxMenu* usemenu = (submenu == nullptr ? menu: submenu);
-      usemenu->Append(
-        base_id + i, 
-        wxExEllipsed(it.GetCommand(false, true))); // use no sub and do accel
-        
-      const long sep = it.GetType() & 0x00F0;
-      
-      if (sep)
-      {
-        usemenu->AppendSeparator();
-      }
-    }
-      
-    i++;
-  }
-
-  return menu->GetMenuItemCount();
+  return wxExMenus::BuildMenu(GetCommands(), base_id, menu, is_popup);
 }
 #endif
 
@@ -228,7 +114,7 @@ bool wxExVCSEntry::Execute(
   }
 
   return wxExProcess::Execute(
-    wxConfigBase::Get()->Read(m_Name, m_Name) + " " + 
+    wxConfigBase::Get()->Read(GetName(), GetName()) + " " + 
       prefix +
       GetCommand().GetCommand() + " " + 
       subcommand + flags + comment + my_args, 
@@ -239,23 +125,6 @@ bool wxExVCSEntry::Execute(
 const wxString wxExVCSEntry::GetFlags() const
 {
   return wxConfigBase::Get()->Read(_("Flags"));
-}
-
-bool wxExVCSEntry::SetCommand(int command_no)
-{
-  if (command_no < 0 || command_no >= (int)m_Commands.size())
-  {
-    return false;
-  }
-  
-  m_CommandIndex = command_no;
-  
-  m_FlagsKey = wxString::Format(
-    "vcsflags/%s%d", 
-    m_Name.c_str(), 
-    m_CommandIndex);
-    
-  return true;
 }
 
 #if wxUSE_GUI
@@ -273,7 +142,7 @@ int wxExVCSEntry::ShowDialog(
   {
     wxConfigBase::Get()->Write(
       _("Flags"), 
-      wxConfigBase::Get()->Read(m_FlagsKey));
+      wxConfigBase::Get()->Read(GetFlagsKey()));
   }
   
   const int retValue = wxExItemDialog(parent,
@@ -296,7 +165,7 @@ int wxExVCSEntry::ShowDialog(
   {
     if (GetCommand().UseFlags())
     {
-      wxConfigBase::Get()->Write(m_FlagsKey, GetFlags());
+      wxConfigBase::Get()->Write(GetFlagsKey(), GetFlags());
     }
   }
   

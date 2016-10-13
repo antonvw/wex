@@ -89,6 +89,8 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="ex_marknum_change"> 1 </def>
       <!-- Macro for wxExtension vi markers -->
       <def no ="ex_marknum_vi"> 0 </def>
+      <!-- Macro for wxExtension breakpoint markers -->
+      <def no ="ex_marknum_break"> 2 </def>
     </def>
 
     <def name = "a68k">
@@ -2150,6 +2152,8 @@ Copyright: (c) 2016, Anton van Wezenbeek
     <marker no="ex_marknum_change">mark_fullrect,green,light blue</marker>
     <!-- ex_marknum_vi is used by vi markers -->
     <marker no="ex_marknum_vi"> mark_character,blue,turquoise </marker>
+    <!-- ex_marknum_break is used by debugging -->
+    <marker no="ex_marknum_break"> mark_arrow,red,turquoise </marker>
     
     <!-- At this moment we do not have properties -->
     <properties/>

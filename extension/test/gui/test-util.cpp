@@ -60,7 +60,7 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   
   SECTION("wxExAutoCompleteFileName")
   {
-    std::vector<wxString> v;
+    std::vector<std::string> v;
     REQUIRE( wxExAutoCompleteFileName("te", v));
     
     REQUIRE( v[0] == "st");
@@ -267,7 +267,7 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     REQUIRE( wxExOpenFiles(GetFrame(), 
         std::vector<wxString> {GetTestFile().GetFullPath()}) == 1);
     REQUIRE( 
-      wxExOpenFiles(GetFrame(), std::vector<wxString> {"../../data/vcs.xml"}) == 1);
+      wxExOpenFiles(GetFrame(), std::vector<wxString> {"../../data/menus.xml"}) == 1);
   }
 
   SECTION("wxExOpenFilesDialog")

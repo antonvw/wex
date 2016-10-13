@@ -14,10 +14,12 @@
 #include <wx/imaglist.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
 #include <wx/tokenzr.h>
+#include <wx/extension/debug.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/itemdlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/menu.h>
+#include <wx/extension/menus.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/shell.h>
@@ -85,7 +87,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
 END_EVENT_TABLE()
 
 Frame::Frame(App* app)
-  : DecoratedFrame()
+  : DecoratedFrame(app)
   , m_Process(new wxExProcess())
   , m_PaneFlag(
       wxAUI_NB_DEFAULT_STYLE |
@@ -111,7 +113,6 @@ Frame::Frame(App* app)
       GetToolBar(),
       ID_VIEW_HISTORY,
       _("History")))
-  , m_App(app)
 {
   wxExViMacros::LoadDocument();
 
@@ -240,6 +241,9 @@ Frame::Frame(App* app)
   Bind(wxEVT_CHECKBOX, &Frame::OnCommandDirCtrl, this, ID_VIEW_DIRCTRL);
   Bind(wxEVT_CHECKBOX, &Frame::OnCommandHistory, this, ID_VIEW_HISTORY);
 
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    GetDebug()->Execute(event.GetId() - ID_EDIT_DEBUG_FIRST);}, ID_EDIT_DEBUG_FIRST, ID_EDIT_DEBUG_LAST);
+  
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     m_IsClosing = true; 
     long count = 0;
@@ -253,13 +257,12 @@ Frame::Frame(App* app)
     }
     if (event.CanVeto())
     {
-      if (
-         (m_Process != nullptr && m_Process->IsRunning()) || 
+      if ((m_Process->IsRunning() && m_Process->GetExecuteCommand() != "gdb") || 
         !m_Editors->ForEach<wxExSTC>(ID_ALL_CLOSE) || 
         (m_Projects != nullptr && !m_Projects->ForEach<wxExListViewFile>(ID_ALL_CLOSE)))
       {
         event.Veto();
-        if (m_Process != nullptr && m_Process->IsRunning())
+        if (m_Process->IsRunning())
         {
           wxLogStatus(_("Process is running"));
         }
@@ -332,7 +335,7 @@ Frame::Frame(App* app)
       std::string(),
       wxExSTC::STC_WIN_DEFAULT,
       wxEmptyString,
-      0xFFFF);
+      wxExSTC::STC_MENU_DEFAULT);
     ((wxExSTC*)page)->GetFile().FileNew(name);
     // This file does yet exist, so do not give it a bitmap.
     m_Editors->AddPage(page, name, name, true);
@@ -733,7 +736,7 @@ void Frame::OnCommand(wxCommandEvent& event)
         UpdateStatusBar(editor, "PaneLexer");
 #endif
       }
-      else if (editor->GetFileName() == wxExVCS::GetFileName())
+      else if (editor->GetFileName() == wxExMenus::GetFileName())
       {
         wxExVCS::LoadDocument();
       }
@@ -924,8 +927,8 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
   switch (event.GetId())
   {
     case wxID_EXECUTE: 
-      event.Enable( m_Process->IsSelected() &&
-                   !m_Process->IsRunning()); 
+      event.Enable( !m_Process->GetExecuteCommand().empty() &&
+                    !m_Process->IsRunning()); 
       break;
     case wxID_STOP: event.Enable(m_Process->IsRunning()); break;
     case wxID_PREVIEW:
@@ -1198,16 +1201,16 @@ bool Frame::OpenFile(
     {
       if (wxConfigBase::Get()->ReadBool("HexMode", false))
         flags |= wxExSTC::STC_WIN_HEX;
-
+      
       editor = new wxExSTC(m_Editors,
         filename,
         line_number,
         match,
         col_number,
         flags | m_App->GetFlags(),
-        0xFFFF,
+        wxExSTC::STC_MENU_DEFAULT | (m_App->GetDebug() ? wxExSTC::STC_MENU_DEBUG: 0),
         command.ToStdString());
-        
+
       const wxString key(filename.GetFullPath());
 
       notebook->AddPage(
@@ -1262,7 +1265,7 @@ bool Frame::OpenFile(
   return true;
 }
 
-void Frame::PrintEx(wxExEx* ex, const wxString& text)
+void Frame::PrintEx(wxExEx* ex, const std::string& text)
 {
   wxExSTC* page = (wxExSTC*)m_Editors->SetSelection("Print");
 
@@ -1282,6 +1285,12 @@ void Frame::PrintEx(wxExEx* ex, const wxString& text)
   page->GetLexer().Set(ex->GetSTC()->GetLexer());
 }
   
+wxExProcess* Frame::Process(const std::string& command)
+{
+  m_Process->Execute(command, wxEXEC_ASYNC);
+  return m_Process;
+}
+
 void Frame::StatusBarClicked(const wxString& pane)
 {
   if (pane == "PaneTheme")
@@ -1363,7 +1372,7 @@ void Frame::StatusBarClickedRight(const wxString& pane)
   }
   else if (pane == "PaneVCS")
   {
-    OpenFile(wxExVCS::GetFileName(), 0, (GetStatusText(pane) != "Auto" ? 
+    OpenFile(wxExMenus::GetFileName(), 0, (GetStatusText(pane) != "Auto" ? 
       GetStatusText(pane): wxString()));
   }
   else

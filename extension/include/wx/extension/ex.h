@@ -94,14 +94,14 @@ public:
   /// Returns true if the macro was played back 
   /// or the variable was expanded succesfully.
   bool MacroPlayback(
-    const wxString& macro = wxEmptyString,
+    const std::string& macro = std::string(),
     int repeat = 1);
       
   /// Start recording a macro.  
   /// If specified macro is empty,
   /// it asks for the name of the macro.
   /// You can stop recording by invoking GetMacros.StopRecording().
-  void MacroStartRecording(const wxString& macro = wxEmptyString);
+  void MacroStartRecording(const std::string& macro = std::string());
   
   /// Adds marker at the specified line.
   /// Returns true if marker could be added.
@@ -124,7 +124,7 @@ public:
   int MarkerLine(const wxUniChar& marker) const;
   
   /// Prints text in the dialog.
-  void Print(const wxString& text);
+  void Print(const std::string& text);
   
   /// Sets delete registers 1 - 9 (if value not empty).
   void SetRegistersDelete(const std::string& value) const;
@@ -153,7 +153,7 @@ protected:
 private:
   bool CommandHandle(const std::string& command) const;
   bool CommandAddress(const std::string& command);
-  void ShowDialog(const wxString& title, const wxString& text, bool prop_lexer = false);
+  void ShowDialog(const std::string& title, const std::string& text, bool prop_lexer = false);
     
   const wxExMarker m_MarkerSymbol = wxExMarker(0);
 

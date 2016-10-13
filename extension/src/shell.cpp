@@ -21,8 +21,8 @@
 #if wxUSE_GUI
 
 wxExShell::wxExShell(wxWindow* parent,
-  const wxString& prompt, const wxString& command_end,
-  bool echo, int commands_save_in_config, const wxString& lexer,
+  const std::string& prompt, const std::string& command_end,
+  bool echo, int commands_save_in_config, const std::string& lexer,
   long menu_flags, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
   : wxExSTC(parent, std::string(),
       STC_WIN_NO_INDICATOR,
@@ -40,7 +40,7 @@ wxExShell::wxExShell(wxWindow* parent,
   AutoCompSetSeparator(3);
 
   // Start with a prompt.
-  Prompt();
+  Prompt(std::string(), false);
 
   if (m_CommandsSaveInConfig > 0)
   {
@@ -50,8 +50,7 @@ wxExShell::wxExShell(wxWindow* parent,
 
     while (tkz.HasMoreTokens())
     {
-      const wxString val = tkz.GetNextToken();
-      m_Commands.push_front(val);
+      m_Commands.push_front(tkz.GetNextToken().ToStdString());
     }
   }
 
@@ -187,16 +186,12 @@ wxExShell::wxExShell(wxWindow* parent,
         
       default:
         // Ctrl-V pressed, used for pasting.
-        if (key == 'V' && event.GetModifiers() == wxMOD_CONTROL)
+        if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')
         {
           Paste();
         }
         // Ctrl-Q pressed, used to stop processing.
-        // Ctrl-C pressed and no text selected (otherwise copy), also used to stop processing.
-        else if (
-          event.GetModifiers() == wxMOD_CONTROL && 
-          (key == 'Q' || 
-          (key == 'C' && GetSelectedText().empty())))
+        else if (event.GetModifiers() == wxMOD_CONTROL && key == 'Q')
         {
           skip = false;
           if (m_Process != nullptr)
@@ -322,7 +317,7 @@ void wxExShell::Expand()
   // path:   src/vi
   // subdir: src
   // word:   vi
-  const wxString path(m_Command.AfterLast(' '));
+  const wxString path(wxString(m_Command).AfterLast(' '));
   const wxString word(path.AfterLast(wxFileName::GetPathSeparator()));
   
   wxString expansion;
@@ -333,7 +328,7 @@ void wxExShell::Expand()
     
     if (index >= 0 && index < (int)m_AutoCompleteList.size())
     {
-      expansion = m_AutoCompleteList[index].Mid(word.length());
+      expansion = m_AutoCompleteList[index].substr(word.length());
     }
     
     AutoCompCancel();
@@ -369,14 +364,14 @@ void wxExShell::Expand()
   }
 }
     
-const wxString wxExShell::GetCommand() const
+const std::string wxExShell::GetCommand() const
 {
-  return !m_Commands.empty() ? m_Commands.back(): wxString();
+  return !m_Commands.empty() ? m_Commands.back(): std::string();
 }
 
-const wxString wxExShell::GetHistory() const
+const std::string wxExShell::GetHistory() const
 {
-  return std::accumulate(m_Commands.begin(), m_Commands.end(), wxString());
+  return std::accumulate(m_Commands.begin(), m_Commands.end(), std::string());
 }
 
 void wxExShell::KeepCommand()
@@ -384,7 +379,7 @@ void wxExShell::KeepCommand()
   // Prevent large commands, in case command end is not eol.
   if (m_CommandEnd != GetEOL())
   {
-    m_Command = wxExSkipWhiteSpace(m_Command.ToStdString());
+    m_Command = wxExSkipWhiteSpace(m_Command);
   }
   
   m_Commands.emplace_back(m_Command);
@@ -431,6 +426,7 @@ bool wxExShell::ProcessChar(int key)
       {
         if (m_Process != nullptr)
         {
+          AppendText(GetEOL());
           m_Process->Command(m_Command);
         }
         else
@@ -442,21 +438,21 @@ bool wxExShell::ProcessChar(int key)
       }
       else if (
         m_CommandEnd == GetEOL() ||
-        m_Command.EndsWith(m_CommandEnd))
+        wxString(m_Command).EndsWith(m_CommandEnd))
       {
         // We have a command.
         EmptyUndoBuffer();
         
         // History command.
-        if (m_Command == wxString("history") +
-           (m_CommandEnd == GetEOL() ? wxString(): m_CommandEnd))
+        if (m_Command == "history" +
+           (m_CommandEnd == GetEOL() ? std::string(): m_CommandEnd))
         {
           KeepCommand();
           ShowHistory();
           Prompt();
         }
         // !.. command, get it from history.
-        else if (m_Command.StartsWith("!"))
+        else if (m_Command.substr(0, 1) == "!")
         {
           if (SetCommandFromHistory(m_Command.substr(1)))
           {
@@ -465,6 +461,7 @@ bool wxExShell::ProcessChar(int key)
           
             if (m_Process != nullptr)
             {
+              AppendText(GetEOL());
               m_Process->Command(m_Command);
             }
             else
@@ -476,7 +473,7 @@ bool wxExShell::ProcessChar(int key)
           }
           else
           {
-            Prompt(GetEOL() + m_Command + ": " + _("event not found"));
+            Prompt(GetEOL() + m_Command + ": event not found");
           }
         }
         // Other command, send to parent or process.
@@ -486,6 +483,7 @@ bool wxExShell::ProcessChar(int key)
           
           if (m_Process != nullptr)
           {
+            AppendText(GetEOL());
             m_Process->Command(m_Command);
           }
           else
@@ -542,7 +540,7 @@ void wxExShell::ProcessCharDefault(int key)
     GetCurrentPos() < GetLength() && 
     index >= 0 && index < (int)m_Command.size())
   {
-    m_Command.insert(index, wxChar(key));
+    m_Command.insert(index, 1, char(key));
   }
   else
   {
@@ -550,7 +548,7 @@ void wxExShell::ProcessCharDefault(int key)
   }
 }
   
-bool wxExShell::Prompt(const wxString& text, bool add_eol)
+bool wxExShell::Prompt(const std::string& text, bool add_eol)
 {
   if (!m_Enabled)
   {
@@ -565,15 +563,15 @@ bool wxExShell::Prompt(const wxString& text, bool add_eol)
     AppendText(text);
   }
 
+  if (add_eol)
+  {
+    appended = true;
+    AppendText(GetEOL());
+  }
+
   if (!m_Prompt.empty())
   {
     appended = true;
-    
-    if (GetTextLength() > 0 && add_eol)
-    {
-      AppendText(GetEOL());
-    }
-    
     AppendText(m_Prompt);
   }
   
@@ -589,7 +587,7 @@ bool wxExShell::Prompt(const wxString& text, bool add_eol)
   return true;
 }
 
-bool wxExShell::SetCommandFromHistory(const wxString& short_command)
+bool wxExShell::SetCommandFromHistory(const std::string& short_command)
 {
   const int no_asked_for = atoi(short_command.c_str());
 
@@ -610,7 +608,7 @@ bool wxExShell::SetCommandFromHistory(const wxString& short_command)
   }
   else
   {
-    wxString short_command_check;
+    std::string short_command_check;
 
     if (m_CommandEnd == GetEOL())
     {
@@ -629,9 +627,9 @@ bool wxExShell::SetCommandFromHistory(const wxString& short_command)
       it != m_Commands.rend();
       ++it)
     {
-      const wxString command = *it;
+      const std::string command = *it;
 
-      if (command.StartsWith(short_command_check))
+      if (command.substr(0, short_command_check.size()) == short_command_check)
       {
         m_Command = command;
         return true;
@@ -647,7 +645,7 @@ void wxExShell::SetProcess(wxExProcess* process)
   m_Process = process;
 }
 
-bool wxExShell::SetPrompt(const wxString& prompt, bool do_prompt) 
+bool wxExShell::SetPrompt(const std::string& prompt, bool do_prompt) 
 {
   if (!m_Enabled)
   {

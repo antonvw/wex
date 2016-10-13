@@ -9,12 +9,13 @@
 
 #include <wx/defs.h>
 
+const int DEBUG_MAX_DEBUGS = 25;
+const int FIND_MAX_FINDS = 25;
 const int TOOL_MAX_REPORTS = 10;
 const int VCS_MAX_COMMANDS = 25;
-const int FIND_MAX_FINDS = 25;
 const int VIEW_MAX_PANES = 10;
 
-// The maximal number of files and projects to be supported.
+/// The maximal number of files and projects to be supported.
 const int NUMBER_RECENT_FILES = 25;
 const int NUMBER_RECENT_PROJECTS = 25;
 const int ID_RECENT_PROJECT_LOWEST =  wxID_FILE1 + NUMBER_RECENT_FILES + 1;
@@ -51,15 +52,14 @@ enum wxExId
   ID_FIND_FIRST,
   ID_FIND_LAST = ID_FIND_FIRST + FIND_MAX_FINDS,
 
-  ID_EDIT_SELECT_NONE,
-  ID_EDIT_SELECT_INVERT,
-  
-  ID_EDIT_OPEN,
+  ID_EDIT_DEBUG_FIRST,
+  ID_EDIT_DEBUG_LAST = ID_EDIT_DEBUG_FIRST + DEBUG_MAX_DEBUGS,
 
-  // Here are the STC file commands,
-  // add them to stc file event macro as well.
+  ID_EDIT_OPEN,
   ID_EDIT_OPEN_LINK,
   ID_EDIT_OPEN_BROWSER,
+  ID_EDIT_SELECT_NONE,
+  ID_EDIT_SELECT_INVERT,
   ID_EDIT_SHOW_PROPERTIES,
 
   ID_VIEW_MENUBAR,

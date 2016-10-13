@@ -536,7 +536,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         std::vector <wxString> v;
         if (wxExMatch("@([a-zA-Z].+)@", command, v) > 0)
         {
-          if (!MacroPlayback(v[0], m_Count))
+          if (!MacroPlayback(v[0].ToStdString(), m_Count))
           {
             m_Command.clear();
             GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
@@ -742,11 +742,11 @@ bool wxExVi::Command(const std::string& command, bool is_handled)
   return true;
 }
 
-void wxExVi::CommandCalc(const wxString& command)
+void wxExVi::CommandCalc(const std::string& command)
 {
-  const auto index = command.StartsWith("=") ? 1: 2;
+  const auto index = command[0] == '=' ? 1: 2;
   int width = 0;
-  const auto sum = Calculator(command.Mid(index).ToStdString(), width);
+  const auto sum = Calculator(command.substr(index), width);
   if (std::isnan(sum)) return;
 
   if (ModeInsert())
@@ -991,7 +991,7 @@ bool wxExVi::InsertMode(const std::string& command)
             
           if (!GetSTC()->AutoCompActive())
           {
-            m_InsertText += GetSTC()->GetEOL().ToStdString();
+            m_InsertText += GetSTC()->GetEOL();
           }
         }
         else

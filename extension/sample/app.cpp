@@ -99,7 +99,7 @@ wxExSampleFrame::wxExSampleFrame()
       wxID_ANY, wxDefaultPosition, wxDefaultSize,
       wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS))
   , m_STC(new wxExSTC(this))
-  , m_Shell(new wxExShell(this, ">", wxTextFile::GetEOL(), true, 10))
+  , m_Shell(new wxExShell(this, ">", "\n", true, 10))
   , m_STCLexers(new wxExSTC(this, wxExLexers::Get()->GetFileName()))
 {
   wxExProcess::PrepareOutput(this);
@@ -319,7 +319,7 @@ wxExSampleFrame::wxExSampleFrame()
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Shell->Prompt(
-      "\nHello '" + event.GetString() + "' from the shell");}, ID_SHELL_COMMAND);
+      "\nHello '" + event.GetString().ToStdString() + "' from the shell");}, ID_SHELL_COMMAND);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxFileDialog dlg(this, _("Open File"), "", "",

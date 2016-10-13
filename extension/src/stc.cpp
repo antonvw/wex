@@ -15,10 +15,10 @@
 #include <wx/numdlg.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/debug.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
-#include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/indicator.h>
@@ -26,6 +26,7 @@
 #include <wx/extension/lexer.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/link.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stcdlg.h>
@@ -96,7 +97,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_File(this, title)
   , m_Link(wxExLink(this))
   , m_HexMode(wxExHexMode(this))
-  , m_Frame(dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow()))
+  , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
   , m_Lexer(this)
 {
   Initialize(false);
@@ -144,7 +145,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_vi(wxExVi(this))
   , m_Link(wxExLink(this))
   , m_HexMode(wxExHexMode(this))
-  , m_Frame(dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow()))
+  , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
   , m_Lexer(this)
 {
   Initialize(filename.GetStat().IsOk());
@@ -244,6 +245,11 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
+  if (m_MenuFlags & STC_MENU_DEBUG)
+  {
+    m_Frame->GetDebug()->AddMenu(&menu, true);
+  }
+  
   if (m_MenuFlags & STC_MENU_VCS)
   {
     if (GetFileName().FileExists() && sel.empty())
@@ -827,7 +833,7 @@ void wxExSTC::FoldAll()
   GotoLine(current_line);
 }
 
-const wxString wxExSTC::GetEOL() const
+const std::string wxExSTC::GetEOL() const
 {
   switch (GetEOLMode())
   {
@@ -930,6 +936,11 @@ void wxExSTC::GotoLineAndSelect(
   GotoLine(line_number - 1);
   EnsureVisible(line_number - 1);
   EnsureCaretVisible();
+  
+  IndicatorClearRange(0, GetTextLength() - 1);
+  SetIndicator(wxExIndicator(0), 
+    PositionFromLine(line_number - 1), 
+    GetLineEndPosition(line_number - 1));
 
   m_Goto = line_number;
 
@@ -1351,6 +1362,8 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); event.Skip();}, wxID_FIND);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); event.Skip();}, wxID_REPLACE);
     
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_Frame->GetDebug()->Execute(event.GetId() - ID_EDIT_DEBUG_FIRST, this);}, ID_EDIT_DEBUG_FIRST, ID_EDIT_DEBUG_LAST);
+
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen(LINK_OPEN);}, ID_EDIT_OPEN_LINK);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const wxString propnames(PropertyNames());

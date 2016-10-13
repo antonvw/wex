@@ -75,7 +75,7 @@ bool wxExAddress::AdjustWindow(const wxString& text) const
   }
   SEPARATE;
     
-  m_Ex->GetFrame()->PrintEx(m_Ex, output);
+  m_Ex->GetFrame()->PrintEx(m_Ex, output.ToStdString());
   
   return true;
 }

@@ -11,6 +11,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
+#include <wx/extension/debug.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/menu.h>
@@ -23,15 +24,17 @@
 #include "app.xpm"
 #endif
 #include "support.h"
+#include "app.h"
 #include "defs.h"
 
-DecoratedFrame::DecoratedFrame()
+DecoratedFrame::DecoratedFrame(App* app)
   : wxExFrameWithHistory(
       nullptr,
       wxID_ANY,
       wxTheApp->GetAppDisplayName(), // title
       25,                            // maxFiles
       4)                             // maxProjects
+  , m_App(app)
 {
   SetIcon(wxICON(app));
   
@@ -186,6 +189,14 @@ DecoratedFrame::DecoratedFrame()
     wxGetStockLabel(wxID_SAVEAS), wxEmptyString, wxART_FILE_SAVE_AS);
   menuProject->AppendSeparator();
   menuProject->AppendCheckItem(ID_SORT_SYNC, _("&Auto Sort"));
+  
+  wxExMenu* menuDebug = nullptr;
+
+  if (m_App->GetDebug())
+  {
+    menuDebug = new wxExMenu();
+    GetDebug()->AddMenu(menuDebug);
+  }
 
   wxMenu* menuOptions = new wxMenu();
   
@@ -213,6 +224,8 @@ DecoratedFrame::DecoratedFrame()
   menubar->Append(menuView, _("&View"));
   menubar->Append(menuProcess, _("&Process"));
   menubar->Append(menuProject, _("&Project"));
+  if (menuDebug != nullptr)
+    menubar->Append(menuDebug, _("&Debug"));
   menubar->Append(menuOptions, _("&Options"));
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   

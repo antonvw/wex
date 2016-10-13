@@ -13,8 +13,8 @@
 #include <wx/config.h>
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
-#include <wx/xml/xml.h>
 #include <wx/extension/vcs.h>
+#include <wx/extension/menus.h>
 #include <wx/extension/itemdlg.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/util.h>
@@ -73,7 +73,7 @@ int wxExVCS::ConfigDialog(
 
   for (const auto& it : m_Entries)
   {
-    choices.insert({i++, it.GetName()});
+    choices.insert({i++, it.GetName().c_str()});
   }
 
   // Estimate number of columns used by the radiobox.
@@ -154,7 +154,7 @@ bool wxExVCS::Execute()
         args += "\"" + it + "\" ";
       }
     }
-    else if (m_Entry.GetName().Lower() == "git")
+    else if (m_Entry.GetName() == "git")
     {
       const wxString admin_dir(FindEntry(filename).GetAdminDir());
       wd = GetTopLevelDir(admin_dir, filename);
@@ -166,7 +166,7 @@ bool wxExVCS::Execute()
           filename);
       }
     }
-    else if (m_Entry.GetName().Lower() == "sccs")
+    else if (m_Entry.GetName() == "sccs")
     {
       args = "\"" + 
       // sccs for windows does not handle windows paths,
@@ -220,11 +220,6 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 const wxString wxExVCS::GetFile() const
 {
   return (m_Files.empty() ? wxExConfigFirstOf(_("Base folder")): m_Files[0]);
-}
-
-const wxFileName wxExVCS::GetFileName()
-{
-  return wxFileName(wxExConfigDir(), "vcs.xml");
 }
 
 const wxString wxExVCS::GetName() const
@@ -343,36 +338,9 @@ bool wxExVCS::IsAdminDirTopLevel(
 
 bool wxExVCS::LoadDocument()
 {
-  // This test is to prevent showing an error if the vcs file does not exist,
-  // as this is not required.
-  if (!GetFileName().FileExists())
-  {
-    return false;
-  }
-  
-  wxXmlDocument doc;
-
-  if (!doc.Load(GetFileName().GetFullPath()))
-  {
-    return false;
-  }
-
-  // Initialize members.
   const int old_entries = m_Entries.size();
   
-  m_Entries.clear();
-
-  wxXmlNode* child = doc.GetRoot()->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "vcs")
-    {
-      m_Entries.emplace_back(wxExVCSEntry(child));
-    }
-
-    child = child->GetNext();
-  }
+  if (!wxExMenus::Load("vcs", m_Entries)) return false;
 
   if (old_entries == 0)
   {

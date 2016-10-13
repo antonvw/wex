@@ -38,14 +38,15 @@ bool App::OnInit()
     return false;
   }
   
-  m_Flags = 0; // not in reset
-  
   Reset();
   
   bool exit = false;
 
   if (wxExCmdLineParser(
-     {{{"l", _("show locale")}, {0, [&](bool on) {
+     {
+      {{"d", _("use debug mode")}, {0, [&](bool on) {
+        m_Debug = true;}}},
+      {{"l", _("show locale")}, {0, [&](bool on) {
         wxMessageOutput::Get()->Printf("Catalog dir: %s\nName: %s\nCanonical name: %s\nLanguage: %d\nLocale: %s\nIs ok: %d\nIs available: %d",
           GetCatalogDir().c_str(),
           GetLocale().GetName().c_str(),

@@ -1,24 +1,14 @@
 <?xml version="1.0" ?>
 <!--
-Name:      vcs.xml
-Purpose:   collection of version control systems supported
+Name:      menus.xml
+Purpose:   setup of dynamic menus, like version control systems 
+           and debuggers
 Author:    Anton van Wezenbeek
-Copyright: (c) 2012, Anton van Wezenbeek
+Copyright: (c) 2016, Anton van Wezenbeek
 -->
 
-<vcss>
+<menus>
   <!--
-   Each <vcs> has a name attribute (name of vcs used),
-   an admin-dir attribute (where admin dir is located),
-   a toplevel attribute (default false, admin dir only in toplevel)
-   and a flags-location attribute (default 'postfix'), 
-   followed by a number of <commands>. 
-   
-   The flags-location
-   configures how this vcs expects the flags argument, if 'postfix'
-   the flags will be put after the command, if 'prefix' the flags
-   will be put before the command. 
-   
    Each <command> will be a menu item, the attribute type indicates
    how this item will be used, if type is 'popup' the item is only
    on the popup menu, if type is 'main', the item is only on the
@@ -30,7 +20,38 @@ Copyright: (c) 2012, Anton van Wezenbeek
    The latter is handled the same, but also used as command to execute.
    You can set an accelerator everywhere using an & char (&amp;).
    -->
-  
+  <gdb name="gdb">
+    <commands>
+      <command type = "main ellipses" > file </command>
+      <command type = "main ellipses" > attach </command>
+      <command type = "main separator" > detach </command>
+      <command type = "main" > run </command>
+      <command type = "main" > interrupt </command>
+      <command type = "main separator" > continue </command>
+      <command type = "main separator" > info sources </command>
+      <command type = "main " > help </command>
+      <command type = "popup" > next </command>
+      <command type = "popup" > step </command>
+      <command type = "popup separator" > until </command>
+      <command type = "popup separator" > print </command>
+      <command type = "popup" submenu = "break"> break </command>
+      <command type = "popup" submenu = "break"> del breakpoints </command>
+      <command type = "popup" submenu = "break"> info breakpoints </command>
+    </commands>
+  </gdb>
+
+  <!--
+   Each <vcs> has a name attribute (name of vcs used),
+   an admin-dir attribute (where admin dir is located),
+   a toplevel attribute (default false, admin dir only in toplevel)
+   and a flags-location attribute (default 'postfix'), 
+   followed by a number of <commands>. 
+   
+   The flags-location
+   configures how this vcs expects the flags argument, if 'postfix'
+   the flags will be put after the command, if 'prefix' the flags
+   will be put before the command. 
+   -->
   <vcs
     name="bazaar" 
     admin-dir=".bzr">
@@ -142,4 +163,4 @@ Copyright: (c) 2012, Anton van Wezenbeek
     </commands>
   </vcs>
 
-</vcss>
+</menus>

@@ -116,10 +116,10 @@ wxExEx::wxExEx(wxExSTC* stc)
       }
       else
       {
-        wxString output;
+        std::string output;
         for (const auto& it : m_Macros.GetAbbreviations())
         {
-          output << it.first << "=" << it.second << "\n";
+          output += it.first + "=" + it.second + "\n";
         }
         ShowDialog("Abbreviations", output, true);
       } return true;}},
@@ -130,7 +130,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       {
         text << wxTheApp->argv.GetArguments()[i] << "\n";
       }
-      if (!text.empty()) ShowDialog("ar", text);
+      if (!text.empty()) ShowDialog("ar", text.ToStdString());
       return true;}},
 #endif
     {":chd", [&](const std::string& command) {
@@ -146,16 +146,16 @@ wxExEx::wxExEx(wxExSTC* stc)
     {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
     {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
     {":reg", [&](const std::string& command) {
-      wxString output;
+      std::string output;
       for (const auto& it : m_Macros.GetRegisters())
       {
-        output << it << "\n";
+        output += it + "\n";
       }
-      output << "%: " << m_STC->GetFileName().GetFullName() << "\n";
+      output += "%: " + m_STC->GetFileName().GetFullName() + "\n";
       std::string err;
       for (const auto &var : m_Evaluator.variables) 
       {
-        output << var << "=" << m_Evaluator.eval(var, &err) << "\n";
+        output += var + "=" + std::to_string(m_Evaluator.eval(var, &err)) + "\n";
       }
       ShowDialog("Registers", output, true);
       return true;}},
@@ -297,7 +297,8 @@ wxExEx::wxExEx(wxExSTC* stc)
         m_Macros.SetAbbreviation(tkz.GetNextToken().ToStdString(), "");
       }
       return true;}},
-    {":ve", [&](const std::string& command) {ShowDialog("Version", wxExGetVersionInfo().GetVersionOnlyString()); return true;}},
+    {":ve", [&](const std::string& command) {ShowDialog("Version", 
+      wxExGetVersionInfo().GetVersionOnlyString().ToStdString()); return true;}},
     {":x", [&](const std::string& command) {
       if (command != ":x") return false;
       POST_COMMAND( wxID_SAVE )
@@ -368,7 +369,7 @@ double wxExEx::Calculator(const std::string& text, int& width)
   auto val = m_Evaluator.eval(expr.ToStdString(), &err);
   if (!err.empty())
   {
-    ShowDialog("Error", expr + "\n" + wxString(err));
+    ShowDialog("Error", expr.ToStdString() + "\n" + err);
     val = 0;
   }
 
@@ -625,7 +626,7 @@ const std::string wxExEx::GetSelectedText() const
   return std::string(b.data(), b.length() - 1);
 }
 
-bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
+bool wxExEx::MacroPlayback(const std::string& macro, int repeat)
 {
   if (!m_IsActive)
   {
@@ -701,7 +702,7 @@ bool wxExEx::MacroPlayback(const wxString& macro, int repeat)
   return ok;
 }
 
-void wxExEx::MacroStartRecording(const wxString& macro)
+void wxExEx::MacroStartRecording(const std::string& macro)
 {
   if (!m_IsActive)
   {
@@ -755,8 +756,9 @@ bool wxExEx::MarkerAdd(const wxUniChar& marker, int line)
       // We have symbol:
       // 0: non-char ex marker
       // 1: change marker
-      // 2..: character markers (all markers in m_MarkerIdentifiers)
-      const int marker_offset = 2;
+      // 2: breakpoint marker
+      // 3..: character markers (all markers in m_MarkerIdentifiers)
+      const int marker_offset = 3;
       const int marker_number = m_MarkerIdentifiers.size() + marker_offset;
 
       m_STC->MarkerDefine(marker_number, 
@@ -851,7 +853,7 @@ int wxExEx::MarkerLine(const wxUniChar& marker) const
   }
 }
 
-void wxExEx::Print(const wxString& text)
+void wxExEx::Print(const std::string& text)
 {
   ShowDialog("Print", text);
 }
@@ -925,14 +927,15 @@ void wxExEx::SetRegisterYank(const std::string& value) const
   m_Macros.SetRegister('0', value);
 }
 
-void wxExEx::ShowDialog(const wxString& title, const wxString& text, bool prop_lexer)
+void wxExEx::ShowDialog(
+  const std::string& title, const std::string& text, bool prop_lexer)
 {
   if (m_Dialog == nullptr)
   {
     m_Dialog = new wxExSTCEntryDialog(
       wxTheApp->GetTopWindow(),
       title, 
-      text.ToStdString(),
+      text,
       wxEmptyString,
       wxOK);
   }

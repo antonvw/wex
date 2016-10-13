@@ -16,13 +16,13 @@
 
 TEST_CASE("wxExVCSEntry", "[vcs]")
 {
-  REQUIRE( wxExVCSEntry().GetCommands() == 1); // the empty command
+  REQUIRE( wxExVCSEntry().GetCommands().size() == 1); // the empty command
   
   wxExVCSEntry test("my-vcs", "./",
     {wxExVCSCommand("one", "main"), wxExVCSCommand("two", "main")},
     wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX);
   
-  REQUIRE( test.GetCommands() == 2);
+  REQUIRE( test.GetCommands().size() == 2);
   REQUIRE(!test.GetCommand().GetCommand().empty());
   REQUIRE(!test.AdminDirIsTopLevel());
   REQUIRE( test.GetAdminDir() == "./");
@@ -37,7 +37,7 @@ TEST_CASE("wxExVCSEntry", "[vcs]")
   
   test.ShowOutput();
   
-  wxMenu menu;
+  wxExMenu menu;
   REQUIRE( test.BuildMenu(0, &menu) == 0);
   
   // This should have no effect.  
@@ -45,7 +45,7 @@ TEST_CASE("wxExVCSEntry", "[vcs]")
   REQUIRE(!test.SetCommand(ID_EDIT_VCS_LOWEST));
   REQUIRE(!test.SetCommand(ID_VCS_LOWEST));
   
-  REQUIRE( test.GetCommands() == 2);
+  REQUIRE( test.GetCommands().size() == 2);
   REQUIRE( test.GetFlags().empty());
   REQUIRE( test.GetName() == "my-vcs");
   REQUIRE( test.GetOutput().empty());

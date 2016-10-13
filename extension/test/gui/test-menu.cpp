@@ -14,7 +14,7 @@
 #include <wx/extension/menu.h>
 #include "test.h"
 
-TEST_CASE("wxExMenu")
+TEST_CASE("wxExMenu", "[menu]")
 {
   wxExMenu* menu = new wxExMenu;
   

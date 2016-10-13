@@ -20,8 +20,7 @@ class wxExProcess;
 /// If a command is entered, an ID_SHELL_COMMAND command event is sent to the
 /// event handler, with the command available as event.GetString().
 /// Or, if you used SetProcess, commands are sent to the process.
-/// - If you press Ctrl-Q or Ctrl-C in the shell, and no text is selected,
-///   a ID_SHELL_COMMAND_STOP is sent to the event handler.
+/// - If you press Ctrl-Q a ID_SHELL_COMMAND_STOP is sent to the event handler.
 /// - If you enter 'history', all previously entered commands are shown.
 /// - If you enter !\<number\> the previous \<number\> command is entered.
 /// - If you enter !\<abbreviation\> the last command starting with 
@@ -36,16 +35,16 @@ public:
     wxWindow* parent,
     /// Give the command used to end a line.
     /// The default uses the GetEOL.
-    const wxString& prompt = ">",
+    const std::string& prompt = ">",
     /// The command used to end a line.
-    const wxString& command_end = wxEmptyString,
+    const std::string& command_end = std::string(),
     /// Will commands be echoed.
     bool echo = true,
     /// Give the number of commands that are kept in the config.
     /// Default -1, no commands are kept.
     int commands_save_in_config = -1,
     /// The lexer used by stc.
-    const wxString& lexer = wxEmptyString,
+    const std::string& lexer = std::string(),
     /// The stc menu flags.
     long menu_flags = STC_MENU_DEFAULT,
     /// The window id.
@@ -71,14 +70,14 @@ public:
   void EnableShell(bool enable = true);
   
   /// Returns last entered command.
-  const wxString GetCommand() const;
+  const std::string GetCommand() const;
   
   /// Returns all history commands as a string, 
   /// separated by a newline (for testing).
-  const wxString GetHistory() const;
+  const std::string GetHistory() const;
 
   /// Returns the prompt.
-  const wxString& GetPrompt() const {return m_Prompt;};
+  const auto& GetPrompt() const {return m_Prompt;};
 
   /// Returns whether shell processing is enabled.
   bool GetShellEnabled() const {return m_Enabled;};
@@ -95,7 +94,7 @@ public:
   /// Default it also adds an eol before the prompt.
   /// Returns false and does not prompt if the shell is not enabled.
   bool Prompt(
-    const wxString& text = wxEmptyString,
+    const std::string& text = std::string(),
     bool add_eol = true);
   
   /// Sets the process to which commands are sent.
@@ -104,7 +103,7 @@ public:
 
   /// Sets the prompt, and prompts if asked for.
   /// Returns false and does not set the prompt if the shell is not enabled.
-  bool SetPrompt(const wxString& prompt, bool do_prompt = true);
+  bool SetPrompt(const std::string& prompt, bool do_prompt = true);
   
   /// Undo one action in the undo history.  
   virtual void Undo() override;
@@ -114,24 +113,25 @@ private:
   void ProcessCharDefault(int key);
   /// Set command for command specified as number or as start of command,
   /// Returns true if found and m_Command was set.
-  bool SetCommandFromHistory(const wxString& short_command);
+  bool SetCommandFromHistory(const std::string& short_command);
   void ShowHistory();
   void ShowCommand(int key);
+
+  const std::string m_CommandEnd;
+  const bool m_Echo;
+  const int m_CommandsSaveInConfig;
 
   // We use a list, as each command appears only once,
   // and when selecting an element already present,
   // it is moved to the end of the list.
-  std::list < wxString > m_Commands;
-  std::list < wxString >::const_iterator m_CommandsIterator;
-  std::vector < wxString > m_AutoCompleteList;
+  std::list < std::string > m_Commands;
+  std::list < std::string >::const_iterator m_CommandsIterator;
+  std::vector < std::string > m_AutoCompleteList;
 
-  wxString m_Command;
-  const wxString m_CommandEnd;
+  std::string m_Command;
+  std::string m_Prompt;
   int m_CommandStartPosition = 0; /// position after the prompt from where commands can be inserted
-  const bool m_Echo;
   bool m_Enabled = true;
-  const int m_CommandsSaveInConfig;
-  wxString m_Prompt;
   
   wxExProcess* m_Process = nullptr;
 };

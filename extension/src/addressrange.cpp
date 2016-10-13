@@ -11,6 +11,7 @@
 #endif
 #include <wx/tokenzr.h>
 #include <wx/extension/addressrange.h>
+#include <wx/extension/debug.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
@@ -338,6 +339,7 @@ bool wxExAddressRange::Escape(const wxString& command)
     if (m_Process == nullptr)
     {
       m_Process = new wxExProcess();
+      m_Ex->GetFrame()->GetDebug()->SetDebugProcess(m_Process);
     }
     
     const bool ok = m_Process->Execute(expanded, wxEXEC_ASYNC,
@@ -640,7 +642,7 @@ bool wxExAddressRange::Print(const wxString& flags) const
       m_STC->GetLine(i);
   }
     
-  m_Ex->GetFrame()->PrintEx(m_Ex, text);
+  m_Ex->GetFrame()->PrintEx(m_Ex, text.ToStdString());
   
   return true;
 }

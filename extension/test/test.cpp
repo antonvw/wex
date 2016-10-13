@@ -76,7 +76,7 @@ void SetEnvironment(const wxString& dir)
   (void)system(cp + BuildArg("cht.txt") + dir);
   (void)system(cp + BuildArg("lexers.xml") + dir);
   (void)system(cp + BuildArg("macros.xml") + dir);
-  (void)system(cp + BuildArg("vcs.xml") + dir);
+  (void)system(cp + BuildArg("menus.xml") + dir);
 
 #if wxExUSE_OTL
   (void)system(cp + " .odbc.ini " + wxGetHomeDir());

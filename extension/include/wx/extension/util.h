@@ -61,7 +61,7 @@ bool wxExAutoComplete(
 /// result stored in the vector.
 bool wxExAutoCompleteFileName(
   /// text containing start of a filename
-  const wxString& text, 
+  const std::string& text, 
   /// vector containing completed file name(s)
   /// v[0] is expansion of text to matching filename
   /// (if only 1 match exists)
@@ -69,7 +69,7 @@ bool wxExAutoCompleteFileName(
   /// other elements are all matching file names
   /// Returns true if a match was found 
   /// (and v contains at least 2 elements).
-  std::vector<wxString> & v);
+  std::vector<std::string> & v);
   
 /// Adds data to the clipboard.
 bool wxExClipboardAdd(const wxString& text);
@@ -118,7 +118,8 @@ const wxString wxExConfigFirstOfWrite(const wxString& key, const wxString& value
 /// The control, if present is postfixed, after a tab character (for accels).
 const wxString wxExEllipsed(
   const wxString& text,
-  const wxString& control = wxEmptyString);
+  const wxString& control = wxEmptyString,
+  bool ellipse = true);
 
 /// If text length exceeds max_chars,
 /// returns an ellipse prefix followed by the last max_chars from the text,

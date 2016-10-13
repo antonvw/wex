@@ -14,9 +14,11 @@ class App : public wxExApp
 public:
   const auto& GetCommand() const {return m_Command;};
   const auto& GetFiles() const {return m_Files;};
-  auto GetFlags() const {return m_Flags;};
   auto& GetScriptin() {return m_Scriptin;};
   auto& GetScriptout() {return m_Scriptout;};
+
+  auto GetDebug() const {return m_Debug;};
+  auto GetFlags() const {return m_Flags;};
   auto GetSplit() const {return m_Split;};
   
   void Reset();
@@ -27,7 +29,8 @@ private:
   virtual bool OnInit() override;
 
   std::vector< wxString > m_Files;
-  int m_Flags;
+  bool m_Debug = false;
+  int m_Flags = 0;
   int m_Split;
   wxString m_Command; 
   wxExFile m_Scriptin, m_Scriptout;

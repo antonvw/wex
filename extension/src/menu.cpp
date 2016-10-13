@@ -24,6 +24,12 @@ wxExMenu::wxExMenu(long style)
 {
 }
 
+wxExMenu::wxExMenu(const wxString& title, long style)
+  : wxMenu(title)
+  , m_Style(style)
+{
+}
+  
 wxMenuItem* wxExMenu::Append(int id)
 {
   // Using wxMenu::Append(id)

@@ -56,7 +56,7 @@ public:
   int GetMode() const {return m_FSM.State();};
   
   /// Returns the mode we are in as a string.
-  const wxString GetModeString() const {return m_FSM.StateString();};
+  const std::string GetModeString() const {return m_FSM.StateString();};
   
   /// Returns true if in insert mode.
   bool ModeInsert() const {return GetMode() == MODE_INSERT || GetMode() == MODE_INSERT_RECT;};
@@ -79,7 +79,7 @@ public:
   bool OnKeyDown(const wxKeyEvent& event);
 private:
   void AddText(const std::string& text);
-  void CommandCalc(const wxString& reg);
+  void CommandCalc(const std::string& reg);
   bool CommandChar(std::string& command);
   void CommandReg(const char reg);
   void FilterCount(std::string& command, const std::string& prefix = "");

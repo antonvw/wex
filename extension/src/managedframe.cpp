@@ -15,6 +15,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/addressrange.h>
+#include <wx/extension/debug.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
@@ -86,6 +87,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   size_t maxFiles,
   long style)
   : wxExFrame(parent, id, title, style)
+  , m_Debug(new wxExDebug(this))
   , m_FileHistory(maxFiles, wxID_FILE1)
   , m_FindBar(new wxExFindToolBar(this))
   , m_OptionsBar(new wxExOptionsToolBar(this))
@@ -159,6 +161,8 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
 
 wxExManagedFrame::~wxExManagedFrame()
 {
+  delete m_Debug;
+  
   m_Manager.UnInit();
 }
 
@@ -300,7 +304,7 @@ void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
   }
 }
 
-void wxExManagedFrame::PrintEx(wxExEx* ex, const wxString& text)
+void wxExManagedFrame::PrintEx(wxExEx* ex, const std::string& text)
 {
   ex->Print(text);
 }
@@ -410,8 +414,8 @@ wxExTextCtrl::wxExTextCtrl(
         {
           wxSetWorkingDirectory(m_ex->GetSTC()->GetFileName().GetPath());
         }
-        std::vector<wxString> v;
-        if (wxExAutoCompleteFileName(m_Command, v))
+        std::vector<std::string> v;
+        if (wxExAutoCompleteFileName(m_Command.ToStdString(), v))
         {
           m_Command += v[0];
           AppendText(v[0]);
