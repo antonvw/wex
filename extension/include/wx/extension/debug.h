@@ -9,6 +9,7 @@
 
 #include <map>
 #include <string>
+#include <tuple>
 #include <wx/extension/filename.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/menucommand.h>

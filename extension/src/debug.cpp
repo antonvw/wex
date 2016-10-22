@@ -159,7 +159,7 @@ void wxExDebug::ProcessOutput(const std::string& text)
     wxExSTC* stc = m_Frame->OpenFile(filename);
     const int id = stc->MarkerAdd(
       std::stoi(v[2]), m_MarkerBreakpoint.GetNo());
-    m_Breakpoints[v[0]] = {filename, id, std::stoi(v[2])};
+    m_Breakpoints[v[0]] = std::make_tuple(filename, id, std::stoi(v[2]));
   }
   else if (wxExMatch("at (.*):([0-9]+)", text, v) > 1)
   {
