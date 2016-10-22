@@ -14,7 +14,7 @@ one of these applications, being a full featured source code text editor.
 
 - [catch lib](https://github.com/philsquared/Catch/) (only for testing, header only)   
 
-- [excuberant ctags](http://ctags.sourceforge.net) (for using ctags)
+- [exuberant ctags](http://ctags.sourceforge.net) (for using ctags)
 
 - [eval lib](https://github.com/r-lyeh/eval) (shunting-yard algorithn for calculation, header only)
 

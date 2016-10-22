@@ -6,6 +6,7 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <map>
 #include <vector>
 #include <wx/choicdlg.h>
