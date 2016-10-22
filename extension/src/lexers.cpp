@@ -15,6 +15,7 @@
 #include <regex>
 #include <wx/config.h>
 #include <wx/stdpaths.h>
+#include <wx/tokenzr.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
@@ -63,6 +64,16 @@ void wxExLexers::ApplyGlobalStyles(wxExSTC* stc)
   stc->StyleClearAll();
 
   for_each(m_Styles.begin(), m_Styles.end(), std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+
+  if (!m_FoldingBackgroundColour.empty())
+  {
+    stc->SetFoldMarginHiColour(true, m_FoldingBackgroundColour);
+  }
+
+  if (!m_FoldingForegroundColour.empty())
+  {
+    stc->SetFoldMarginColour(true, m_FoldingForegroundColour);
+  }
 
   const auto& colour_it = m_ThemeColours.find(m_Theme);
   
@@ -256,6 +267,15 @@ bool wxExLexers::LoadDocument()
   return true;
 }
 
+void wxExLexers::ParseNodeFolding(const wxXmlNode* node)
+{
+  const wxString content = node->GetNodeContent().Strip(wxString::both);
+  wxStringTokenizer fields(content, ",");
+
+  m_FoldingBackgroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+  m_FoldingForegroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+}
+
 void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
 {
   wxXmlNode* child = node->GetChildren();
@@ -265,6 +285,10 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
     if (m_Theme == m_NoTheme)
     {
       // Do nothing.
+    }
+    else if (child->GetName() == "foldmargin")
+    {
+      ParseNodeFolding(child);
     }
     else if (child->GetName() == "hex")
     {

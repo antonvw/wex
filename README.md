@@ -16,7 +16,7 @@ one of these applications, being a full featured source code text editor.
 
 - [exuberant ctags](http://ctags.sourceforge.net) (for using ctags)
 
-- [eval lib](https://github.com/r-lyeh/eval) (shunting-yard algorithn for calculation, header only)
+- [eval lib](https://github.com/r-lyeh/eval) (shunting-yard algorithm for calculation, header only)
 
 - [OTL database lib](http://otl.sourceforge.net/) (for syncodbcquery, header only)   
     `sudo apt-get install unixODBC unixODBC-dev` or   

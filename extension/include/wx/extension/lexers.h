@@ -136,6 +136,7 @@ public:
 private:
   wxExLexers(const wxFileName& filename);
   void Initialize();
+  void ParseNodeFolding(const wxXmlNode* node);
   void ParseNodeGlobal(const wxXmlNode* node);
   void ParseNodeKeyword(const wxXmlNode* node);
   void ParseNodeMacro(const wxXmlNode* node);
@@ -161,6 +162,7 @@ private:
   const wxFileName m_FileName;
   const wxString m_NoTheme;
   wxString m_Theme;
+  wxString m_FoldingBackgroundColour, m_FoldingForegroundColour;
 
   static wxExLexers* m_Self;
 };

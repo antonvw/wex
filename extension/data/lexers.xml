@@ -2126,11 +2126,14 @@ Copyright: (c) 2016, Anton van Wezenbeek
   
   <global>
   <!--
-   At this moment <hex>, <indicator>, <marker>, <properties> and <style>
+   At this moment <foldmargin>, <hex>, <indicator>, <marker>, <properties> and <style>
    attributes are supported.  
    The marker element has a 'no' attribute and its value contains the next fields:
    <marker symbol number><','><foreground colour><','><background colour>
    -->
+    <!-- checker board colours: background colour, foreground colour -->
+    <foldmargin> black, black </foldmargin>
+    
     <hex no="style_bracelight"> back:red </hex>
 
     <!-- this indicator is used by global vi command, e.g. g/INDIC/ -->
