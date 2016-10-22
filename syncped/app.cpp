@@ -61,10 +61,12 @@ bool App::OnInit()
       {{"O", _("split tabs vertically")}, {0, [&](bool on) {
         m_Split = wxRIGHT;}}},
       {{"R", _("readonly mode")}, {0, [&](bool on) {
-        m_Flags = wxExSTC::STC_WIN_READ_ONLY;}}},
+        m_Flags |= wxExSTC::STC_WIN_READ_ONLY;}}},
       {{"v", _("show version")}, {0, [&](bool on) {
         wxMessageOutput::Get()->Printf("%s", wxExGetVersionInfo().GetVersionOnlyString().c_str());
         exit = true;}}},
+      {{"hex", _("hex mode")}, {0, [&](bool on) {
+        m_Flags |= wxExSTC::STC_WIN_HEX;}}},
       {{"version", _("show version")}, {0, [&](bool on) {
         wxMessageOutput::Get()->Printf("syncped-%s using:\n%s\nand:\n%s", 
           wxExGetVersionInfo().GetVersionOnlyString().c_str(),
@@ -72,11 +74,17 @@ bool App::OnInit()
           wxGetLibraryVersionInfo().GetDescription().c_str());
         exit = true;}}}},
      {{{"c", _("vi command")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
-        any.GetAs(&m_Command);}}},
+        wxString command;
+        any.GetAs(&command);
+        m_Command = command;}}},
       {{"s", _("script in")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
         wxString script;
         any.GetAs(&script);
         m_Scriptin.Open(script);}}},
+      {{"t", _("start at tag")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
+        wxString tag;
+        any.GetAs(&tag);
+        m_Tag = tag;}}},
       {{"S", _("source file")}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
         any.GetAs(&m_Command);
         m_Command = ":so " + m_Command;}}},
@@ -108,5 +116,6 @@ void App::Reset()
 {
   // do not reset flags
   m_Command.clear();
+  m_Tag.clear();
   m_Split = -1;
 }

@@ -21,27 +21,28 @@ public:
   explicit Frame(App* app);
   
   bool IsClosing() const {return m_IsClosing;};
-  virtual bool OpenFile(
-    const wxExFileName& filename,
-    int line_number = 0,
-    const wxString& match = wxEmptyString,
-    int col_number = 0,
-    long flags = 0,
-    const wxString& command = wxEmptyString) override;
 protected:
   void OnCommand(wxCommandEvent& event);
-  void OnCommandDirCtrl(wxCommandEvent& event);
-  void OnCommandHistory(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual wxExListView* Activate(wxExListView::wxExListType type, const wxExLexer* lexer = nullptr) override;
   virtual bool ExecExCommand(const std::string& command, wxExSTC* & stc) override;
   virtual wxExListViewFile* GetProject() override;
+  virtual bool IsOpen(const wxExFileName& filename) override;
   virtual void OnCommandItemDialog(wxWindowID dialogid, const wxCommandEvent& event) override;
-  virtual bool OpenFile(const wxExFileName& filename, const wxExVCSEntry& vcs, long flags = 0) override;
-  virtual bool OpenFile(const wxExFileName& filename, const wxString& text, long flags = 0) override;
+  virtual wxExSTC* OpenFile(
+    const wxExFileName& filename,
+    int line_number = 0,
+    const std::string& match = std::string(),
+    int col_number = 0,
+    long flags = 0,
+    const std::string& command = std::string()) override;
+  virtual wxExSTC* OpenFile(const wxExFileName& filename, const wxExVCSEntry& vcs, long flags = 0) override;
+  virtual wxExSTC* OpenFile(const wxExFileName& filename, const std::string& text, long flags = 0) override;
   virtual void PrintEx(wxExEx* ex, const std::string& text) override;
   virtual wxExProcess* Process(const std::string& command) override;
+  virtual wxExSTC* RestorePage(const std::string& key) override;
+  virtual bool SaveCurrentPage(const std::string& key) override;
   virtual void StatusBarClicked(const wxString& pane) override;
   virtual void StatusBarClickedRight(const wxString& pane) override;
   virtual void SyncAll() override;
@@ -63,6 +64,7 @@ private:
   wxExNotebook *m_Editors, *m_Lists, *m_Projects = nullptr;
   wxExProcess* m_Process;
   wxExSTC* m_asciiTable = nullptr;
+  wxString m_SavedPage;
 
   DECLARE_EVENT_TABLE()
 };

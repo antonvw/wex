@@ -42,7 +42,12 @@ public:
   Frame();
 private:
   virtual void OnCommandItemDialog(wxWindowID dialogid, const wxCommandEvent& event) override;
-  virtual bool OpenFile(const wxExFileName& filename, int line_number = 0, const wxString& match = wxEmptyString, int col_number = 0, long flags = 0, const wxString& command = wxEmptyString) override;
+  virtual wxExSTC* OpenFile(
+    const wxExFileName& filename, 
+    int line_number = 0, 
+    const std::sting& match = std::string(), 
+    int col_number = 0, long flags = 0, 
+    const std::sting& command = std::string()) override;
 
   void RunQuery(const wxString& query, bool empty_results = false);
 

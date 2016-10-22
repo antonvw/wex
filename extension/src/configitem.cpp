@@ -230,7 +230,8 @@ wxExConfigDefaults::wxExConfigDefaults(
           m_Config->Read(std::get<0>(it), std::get<2>(it).As<wxString>());
           break;
         default:
-          wxLogMessage("Unsupported default type for: %s", std::get<0>(it).c_str());
+          std::cout << "Unsupported default type for: "  << 
+            std::get<0>(it).c_str() << "\n";;
       }
     }
   }

@@ -56,7 +56,7 @@ public:
   int GetMode() const {return m_FSM.State();};
   
   /// Returns the mode we are in as a string.
-  const std::string GetModeString() const {return m_FSM.StateString();};
+  const auto GetModeString() const {return m_FSM.StateString();};
   
   /// Returns true if in insert mode.
   bool ModeInsert() const {return GetMode() == MODE_INSERT || GetMode() == MODE_INSERT_RECT;};
@@ -97,7 +97,7 @@ private:
   int m_Count = 1;
   int m_Start = 0;
   int m_Type;
-  
+
   wxExViFSM m_FSM;
   
   std::string m_Command;

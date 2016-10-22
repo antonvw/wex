@@ -19,28 +19,42 @@
 
 TEST_CASE("wxExDebug", "[process]")
 {
-  wxExDebug dbg(GetFrame());
-  
+  // obtain a menu item id
   wxExMenu menu;
-  
+
+  // start test
+  wxExDebug dbg(GetFrame());
+
+  REQUIRE( dbg.GetProcess() == nullptr);
+  REQUIRE( dbg.GetBreakpoints().empty());
+  REQUIRE( dbg.GetMarkerBreakpoint().GetNo() > 0);
+
   REQUIRE( dbg.AddMenu(&menu) > 0);
   REQUIRE( dbg.AddMenu(&menu, true) > 0);
-
-  int item = menu.FindItem("break");
+  const int item = menu.FindItem("break");
   REQUIRE( item != wxNOT_FOUND);
   REQUIRE( item > ID_EDIT_DEBUG_FIRST );
   REQUIRE( item < ID_EDIT_DEBUG_LAST);
 
-/*    
-  REQUIRE( !dbg.Execute(item));
+  REQUIRE( dbg.Execute("break"));
+  REQUIRE( dbg.Execute("break", GetSTC()));
+  REQUIRE( dbg.GetBreakpoints().empty()); // no file loaded
+  REQUIRE(!dbg.Execute("xxxx"));
+  REQUIRE( dbg.GetProcess() != nullptr);
 
+  REQUIRE( dbg.Execute(item - ID_EDIT_DEBUG_FIRST));
+  REQUIRE(!dbg.Execute(item));
+  
+  dbg.ProcessInput("test");
+  dbg.ProcessOutput("test");
+
+/*    
   wxExSTC* stc = GetSTC();
   stc->SetText("#include <stdio.h>\n\nmain()\n{printf(\"hello world\");\n}\n");
   stc->GetFile().FileSave("example.cc");
   system("cc -g example.cc");
   
   wxExProcess process;
-  dbg.SetDebugProcess(&process);
   REQUIRE( !dbg.Execute(item));
   
   process.Execute("gdb a.out");

@@ -15,11 +15,14 @@
 
 TEST_CASE("wxExMenuCommands", "[menu]")
 {
-  wxExMenuCommands<wxExMenuCommand> cmnds("test", {{"test"}});
+  wxExMenuCommands<wxExMenuCommand> cmnds("test", {{"x"},{"y"},{"z"}});
   
-  REQUIRE( cmnds.GetCommand().GetCommand().size() > 0);
-  REQUIRE(!cmnds.GetCommands().empty());
+  REQUIRE( cmnds.GetCommand().GetCommand()  == "x");
+  REQUIRE( cmnds.GetCommands().size() == 3);
   REQUIRE( cmnds.GetFlagsKey().empty());
-  REQUIRE(!cmnds.GetName().empty());
+  REQUIRE( cmnds.GetName() == "test");
   REQUIRE(!cmnds.SetCommand(4));
+  REQUIRE( cmnds.GetCommand().GetCommand()  == "x");
+  REQUIRE( cmnds.SetCommand(2));
+  REQUIRE( cmnds.GetCommand().GetCommand()  == "z");
 }

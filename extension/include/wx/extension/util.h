@@ -192,14 +192,16 @@ long wxExMake(
 bool wxExMarkerAndRegisterExpansion(wxExEx* ex, wxString& command);
 
 /// Regular expression match.
-/// Returns number of submatches present in vector.
+/// Returns -1 of text does not match, if
+/// there are submatches present, if fills the vector 
+/// and number of submatches present in the vector.
 int wxExMatch(
   /// regular expression
   const std::string& regex,
   /// text to match
   const std::string& text, 
   /// vector is filled with submatches
-  std::vector<wxString>& v);
+  std::vector<std::string>& v);
 
 /// Returns true if filename (fullname) matches one of the
 /// fields in specified pattern (fields separated by ; sign).
@@ -230,7 +232,7 @@ int wxExOpenFiles(
   /// flags to be used with wxExDirOpenFile
   int dir_flags = wxDIR_DEFAULT,
   /// initial vi command
-  const wxString& command = wxEmptyString);
+  const std::string& command = std::string());
 #endif
 
 /// Shows a dialog and opens selected files

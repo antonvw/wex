@@ -906,7 +906,7 @@ void wxExListView::ItemActivated(long item_number)
         frame->OpenFile(
           item.GetFileName().GetFullPath(),
           line_number, 
-          match);
+          match.ToStdString());
       }
     }
     else if (wxDirExists(item.GetFileName().GetFullPath()))

@@ -541,31 +541,31 @@ bool wxExMarkerAndRegisterExpansion(wxExEx* ex, wxString& text)
 }
   
 int wxExMatch(const std::string& reg, const std::string& text, 
-  std::vector < wxString > & v)
+  std::vector < std::string > & v)
 {
-  v.clear();
-  
   try 
   {
-    std::match_results<std::string::const_iterator> res;
-    std::regex rx(reg);
-    std::regex_search(text, res, rx);
+    std::match_results<std::string::const_iterator> m;
     
-    if (res.size() > 1)
+    if (!std::regex_search(text, m, std::regex(reg))) return -1;
+    
+    if (m.size() > 1)
     {
-      for (size_t i = 1; i < res.size(); i++)
+      v.clear();
+      for (size_t i = 1; i < m.size(); i++)
       {
-        v.emplace_back(wxString(res[i]));
+        v.emplace_back(m[i]);
       }
     }
+
+    return v.size();
   }
   catch (std::regex_error& e) 
   {
     wxLogError(wxString::Format("%s: in: %s code: %d",
       e.what(), reg.c_str(), e.code()));
+    return -1;
   }
-
-  return v.size();
 }
 
 bool wxExMatchesOneOf(const wxFileName& filename, const wxString& pattern)
@@ -619,7 +619,7 @@ void wxExNodeStyles(const wxXmlNode* node, const wxString& lexer,
 
 #if wxUSE_GUI
 int wxExOpenFiles(wxExFrame* frame, const std::vector< wxString > & files,
-  long file_flags, int dir_flags, const wxString& command)
+  long file_flags, int dir_flags, const std::string& command)
 {
   wxWindowUpdateLocker locker(frame);
   
@@ -634,15 +634,13 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxString > & files,
     }
     else
     {
-      wxString file(it);
       int line_no = 0;
       int col_no = 0;
-      
-      wxFileName fn(file);
+      wxFileName fn(it);
 
-      if (!fn.FileExists() && file.Contains(":"))
+      if (!fn.FileExists() && it.Contains(":"))
       {
-        const wxString val = wxExLink().GetPath(file.ToStdString(), line_no, col_no);
+        const wxString val = wxExLink().GetPath(it.ToStdString(), line_no, col_no);
         
         if (!val.empty())
         {
@@ -656,8 +654,8 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxString > & files,
       }
       
       fn.FileExists() ?
-        frame->OpenFile(fn, line_no, wxEmptyString, col_no, file_flags, command):
-        frame->OpenFile(fn, wxEmptyString, file_flags);
+        frame->OpenFile(fn, line_no, std::string(), col_no, file_flags, command):
+        frame->OpenFile(fn, std::string(), file_flags);
       
       count++;
     }
@@ -770,7 +768,7 @@ const wxString GetLines(std::vector<wxString> & lines,
     
 bool wxExShellExpansion(wxString& command)
 {
-  std::vector <wxString> v;
+  std::vector <std::string> v;
   const std::string re_str("`(.*?)`"); // non-greedy
   const std::regex re(re_str);
   

@@ -656,23 +656,21 @@ void Frame::OnCommandItemDialog(
   }
 }
 
-bool Frame::OpenFile(
+wxExSTC* Frame::OpenFile(
   const wxExFileName& filename,
   int line_number,
-  const wxString& match,
+  const std::string& match,
   int col_number,
   long flags,
-  const wxString& command)
+  const std::string& command)
 {
-  if (m_DataWindow->Open(filename, line_number, match, col_number, flags))
+  if (m_DataWindow->Open(
+    filename, line_number, match, col_number, flags, command))
   {
     ShowPane("DATA");
-    return true;
   }
-  else
-  {
-    return false;
-  }
+  
+  return m_DataWindow;
 }
 
 bool Frame::SetupSocketServer()

@@ -16,7 +16,7 @@
 
 TEST_CASE("wxExMenus", "[menu]")
 {
-  wxExMenuCommands <wxExMenuCommand > menucommands;
+  wxExMenuCommands <wxExMenuCommand > menucommands("test");
 
   wxXmlNode xml(wxXML_ELEMENT_NODE, "menus");
   xml.AddAttribute("name", "fold.comment");
@@ -31,6 +31,6 @@ TEST_CASE("wxExMenus", "[menu]")
   REQUIRE( wxExMenus::GetFileName().IsOk());
 
   std::vector < wxExMenuCommands <wxExMenuCommand > > entries;
-  REQUIRE( wxExMenus::Load("gdb", entries));
+  REQUIRE( wxExMenus::Load("debug", entries));
   REQUIRE(!wxExMenus::Load("xxx", entries));
 }

@@ -83,7 +83,7 @@ int wxExSTC::m_Zoom = -1;
 wxExSTC::wxExSTC(wxWindow *parent, 
   const std::string& value,
   long win_flags,
-  const wxString& title,
+  const std::string& title,
   long menu_flags,
   const std::string& command,
   wxWindowID id,
@@ -129,7 +129,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
 wxExSTC::wxExSTC(wxWindow* parent,
   const wxExFileName& filename,
   int line_number,
-  const wxString& match,
+  const std::string& match,
   int col_number,
   long flags,
   long menu_flags,
@@ -231,7 +231,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     
   if (m_MenuFlags & STC_MENU_OPEN_LINK)
   {
-    wxString filename;
+    std::string filename;
 
     if (LinkOpen(LINK_OPEN_BROWSER | LINK_CHECK))
     {
@@ -680,7 +680,7 @@ bool wxExSTC::FindNext(bool find_next)
 }
 
 bool wxExSTC::FindNext(
-  const wxString& text, 
+  const std::string& text, 
   int find_flags,
   bool find_next)
 {
@@ -847,7 +847,7 @@ const std::string wxExSTC::GetEOL() const
 }
 
 // Cannot be const because of GetSelectedText (not const in 2.9.4).
-const wxString wxExSTC::GetFindString()
+const std::string wxExSTC::GetFindString()
 {
   const wxString selection = GetSelectedText();
 
@@ -879,11 +879,11 @@ const wxString wxExSTC::GetFindString()
     }
   }
 
-  return wxExFindReplaceData::Get()->GetFindString();
+  return wxExFindReplaceData::Get()->GetFindString().ToStdString();
 }
 
 
-const wxString wxExSTC::GetWordAtPos(int pos) const
+const std::string wxExSTC::GetWordAtPos(int pos) const
 {
   const int word_start = 
     const_cast< wxExSTC * >( this )->WordStartPosition(pos, true);
@@ -897,11 +897,11 @@ const wxString wxExSTC::GetWordAtPos(int pos) const
 
     if (!isspace(word[0]))
     {
-      return word;
+      return word.ToStdString();
     }
     else
     {
-      return wxEmptyString;
+      return std::string();
     }
   }
   else
@@ -909,14 +909,13 @@ const wxString wxExSTC::GetWordAtPos(int pos) const
     const wxString word = 
       const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_end);
 
-    return word;
+    return word.ToStdString();
   }
 }
 
-
 void wxExSTC::GotoLineAndSelect(
   int line_number, 
-  const wxString& text,
+  const std::string& text,
   int col_number,
   long flags)
 {
@@ -940,7 +939,9 @@ void wxExSTC::GotoLineAndSelect(
   IndicatorClearRange(0, GetTextLength() - 1);
   SetIndicator(wxExIndicator(0), 
     PositionFromLine(line_number - 1), 
-    GetLineEndPosition(line_number - 1));
+    col_number > 0 ? 
+      PositionFromLine(line_number - 1) + col_number - 1:
+      GetLineEndPosition(line_number - 1));
 
   m_Goto = line_number;
 
@@ -968,16 +969,6 @@ void wxExSTC::GotoLineAndSelect(
     // Reset selection, seems necessary.
     SelectNone();
   }
-  
-  if (flags & STC_WIN_FROM_OTHER)
-  {
-    IndicatorClearRange(0, GetTextLength() - 1);
-    SetIndicator(wxExIndicator(0), 
-      PositionFromLine(line_number - 1), 
-      col_number > 0 ? 
-        PositionFromLine(line_number - 1) + col_number - 1:
-        GetLineEndPosition(line_number - 1));
-  }
 }
 
 void wxExSTC::GuessType()
@@ -989,7 +980,7 @@ void wxExSTC::GuessType()
   const wxString text = (!HexMode() ? GetTextRange(0, sample_size): 
     m_HexMode.GetBuffer().Mid(0, sample_size));
 
-  std::vector<wxString> v;  
+  std::vector<std::string> v;  
   
   // If we have a modeline comment.
   if (
@@ -1121,7 +1112,7 @@ void wxExSTC::Initialize(bool file_exists)
       - wxSTC_FOLDLEVELBASE;});
       
   Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
-    wxString filename;
+    std::string filename;
     if (LinkOpen(LINK_OPEN | LINK_CHECK, &filename)) 
     {
       if (!LinkOpen(LINK_OPEN)) event.Skip();
@@ -1237,7 +1228,9 @@ void wxExSTC::Initialize(bool file_exists)
     ReplaceNext(wxExFindReplaceData::Get()->SearchDown());});
     
   Bind(wxEVT_FIND_REPLACE_ALL, [=](wxFindDialogEvent& event) {
-    ReplaceAll(frd->GetFindString(), frd->GetReplaceString());});
+    ReplaceAll(
+      frd->GetFindString().ToStdString(), 
+      frd->GetReplaceString().ToStdString());});
     
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
     if (!m_vi.GetIsActive())
@@ -1585,7 +1578,7 @@ void wxExSTC::Initialize(bool file_exists)
     }}, wxID_SORT_ASCENDING, wxID_SORT_DESCENDING);
 }
 
-bool wxExSTC::LinkOpen(int mode, wxString* filename)
+bool wxExSTC::LinkOpen(int mode, std::string* filename)
 {
   const wxString sel = GetSelectedText();
   const wxString text = (!sel.empty() ? sel: GetCurLine());
@@ -1615,18 +1608,18 @@ bool wxExSTC::LinkOpen(int mode, wxString* filename)
       return m_Frame->OpenFile(
         path,
         line_no, 
-        wxEmptyString,
+        std::string(),
         col_no,
-        GetFlags() | STC_WIN_FROM_OTHER);          
+        GetFlags());
     }
     else
     {
       return Open(
         path, 
         line_no, 
-        wxEmptyString, 
+        std::string(), 
         col_no,
-        GetFlags() | STC_WIN_FROM_OTHER);
+        GetFlags());
     }
   }
   
@@ -1720,7 +1713,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 bool wxExSTC::Open(
   const wxExFileName& filename,
   int line_number,
-  const wxString& match,
+  const std::string& match,
   int col_number,
   long flags,
   const std::string& command)
@@ -1732,54 +1725,45 @@ bool wxExSTC::Open(
     return true;
   }
 
+  if (!m_File.FileLoad(filename)) return false;
+
   m_Flags = flags;
 
-  bool success;
+  SetName(filename.GetFullPath());
 
-  if (m_File.FileLoad(filename))
+  if (line_number > 0)
   {
-    SetName(filename.GetFullPath());
-
-    if (line_number > 0)
-    {
-      GotoLineAndSelect(line_number, match, col_number, flags);
-    }
-    else
-    {
-      if (line_number == -1)
-      {
-        if (!match.empty())
-        {
-           FindNext(match, 0, false);
-        }
-        else
-        {
-          DocumentEnd();
-        }
-      }
-      else if (!match.empty())
-      {
-        FindNext(match, 0);
-      }
-    }
-
-    PropertiesMessage();
-    
-    success = true;
+    GotoLineAndSelect(line_number, match, col_number, flags);
   }
   else
   {
-    success = false;
+    if (line_number == -1)
+    {
+      if (!match.empty())
+      {
+         FindNext(match, 0, false);
+      }
+      else
+      {
+        DocumentEnd();
+      }
+    }
+    else if (!match.empty())
+    {
+      FindNext(match, 0);
+    }
   }
+
+  PropertiesMessage();
   
-  if (success && m_Frame != nullptr)
+  if (m_Frame != nullptr)
   {
     m_Frame->SetRecentFile(filename.GetFullPath());
   }
-  
+
   m_vi.Command(command);
   
-  return success;
+  return true;
 }
 
 void wxExSTC::Paste()
@@ -1899,8 +1883,8 @@ void wxExSTC::Reload(long flags)
 }
 
 int wxExSTC::ReplaceAll(
-  const wxString& find_text,
-  const wxString& replace_text)
+  const std::string& find_text,
+  const std::string& replace_text)
 {
   if (HexMode())
   {
@@ -1976,15 +1960,15 @@ int wxExSTC::ReplaceAll(
 bool wxExSTC::ReplaceNext(bool find_next)
 {
   return ReplaceNext(
-    wxExFindReplaceData::Get()->GetFindString(),
-    wxExFindReplaceData::Get()->GetReplaceString(),
+    wxExFindReplaceData::Get()->GetFindString().ToStdString(),
+    wxExFindReplaceData::Get()->GetReplaceString().ToStdString(),
     -1,
     find_next);
 }
 
 bool wxExSTC::ReplaceNext(
-  const wxString& find_text, 
-  const wxString& replace_text,
+  const std::string& find_text, 
+  const std::string& replace_text,
   int find_flags,
   bool find_next)
 {
@@ -2079,7 +2063,7 @@ void wxExSTC::SetSearchFlags(int flags)
   wxStyledTextCtrl::SetSearchFlags(flags);
 }
 
-void wxExSTC::SetText(const wxString& value)
+void wxExSTC::SetText(const std::string& value)
 {
   ClearDocument();
 

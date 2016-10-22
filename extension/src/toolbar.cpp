@@ -364,7 +364,7 @@ void wxExFindTextCtrl::Find(bool find_next, bool restore_position)
     }
     
     stc->FindNext(
-      GetValue(), 
+      GetValue().ToStdString(), 
       -1,
       find_next);
   }

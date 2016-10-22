@@ -2,7 +2,7 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of class wxExDir and wxExDirOpenFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -104,6 +104,6 @@ wxExDirOpenFile::wxExDirOpenFile(wxExFrame* frame,
 
 void wxExDirOpenFile::OnFile(const wxString& file)
 {
-  m_Frame->OpenFile(file, 0, wxEmptyString, m_Flags);
+  m_Frame->OpenFile(file, 0, std::string(), m_Flags);
 }
 #endif

@@ -34,13 +34,13 @@ protected:
   virtual bool AllowClose(wxWindowID id, wxWindow* page) override;
   virtual wxExListView* GetListView() override;
   virtual wxExSTC* GetSTC() override;
-  virtual bool OpenFile(
+  virtual wxExSTC* OpenFile(
     const wxExFileName& file,
     int line_number = 0,
-    const wxString& match = wxEmptyString,
+    const std::string& match = std::string(),
     int col_number = 0,
     long flags = 0,
-    const wxString& command = wxEmptyString) override;
+    const std::string& command = std::string()) override;
 private:
   wxExNotebook* m_NotebookWithLists; ///< all listviews
   wxExSTC* m_STC;

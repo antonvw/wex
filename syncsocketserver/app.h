@@ -37,8 +37,14 @@ private:
     wxExSTC* stc, 
     const wxString& text,
     int mode);
-  virtual void OnCommandItemDialog(wxWindowID dialogid, const wxCommandEvent& event) override;
-  virtual bool OpenFile(const wxExFileName& filename, int line_number = 0, const wxString& match = wxEmptyString, int col_number = 0, long flags = 0, const wxString& command = wxEmptyString) override;
+  virtual void OnCommandItemDialog(
+    wxWindowID dialogid, const wxCommandEvent& event) override;
+  virtual wxExSTC* OpenFile(
+    const wxExFileName& filename, 
+    int line_number = 0,
+    const std::string& match = std::string(), 
+    int col_number = 0, long flags = 0, 
+    const std::string& command = std::string()) override;
   virtual void StatusBarClicked(const wxString& pane) override;
 
   void LogConnection(

@@ -27,7 +27,7 @@
 
 bool wxExAddress::AdjustWindow(const wxString& text) const
 {
-  std::vector<wxString> v;
+  std::vector<std::string> v;
   
   if (wxExMatch("([-+=.^]*)([0-9]+)?(.*)", text.ToStdString(), v) != 3)
   {
@@ -35,7 +35,7 @@ bool wxExAddress::AdjustWindow(const wxString& text) const
   }
   
   const wxString type(v[0]);
-  const int count = (v[1].empty() ? 2: std::stoi(v[1].ToStdString()));
+  const int count = (v[1].empty() ? 2: std::stoi(v[1]));
   const wxString flags(v[2]);
   
   if (!Flags(flags))
@@ -99,9 +99,9 @@ bool wxExAddress::Flags(const wxString& flags) const
     return true;
   }
   
-  std::vector<wxString> v;
+  std::vector<std::string> v;
   
-  if (!wxExMatch("([-+#pl])", flags.ToStdString(), v))
+  if (wxExMatch("([-+#pl])", flags.ToStdString(), v) < 0)
   {
     wxLogStatus("Unsupported flags: " + flags);
     return false;
@@ -119,9 +119,11 @@ int wxExAddress::GetLine() const
   }
 
   // If this is a // address, return line with first forward match.
-  std::vector <wxString> v;
-  
-  if (wxExMatch("/(.*)/$", ToStdString(), v))
+  std::vector <std::string> v;
+
+  m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
+
+  if (wxExMatch("/(.*)/$", ToStdString(), v) > 0)
   {
     m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
     m_Ex->GetSTC()->SetTargetEnd(m_Ex->GetSTC()->GetTextLength());
@@ -143,7 +145,7 @@ int wxExAddress::GetLine() const
   }
 
   // If this is a ?? address, return line with first backward match.
-  if (wxExMatch("\\?(.*)\\?", ToStdString(), v))
+  if (wxExMatch("\\?(.*)\\?", ToStdString(), v) > 0)
   {
     m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
     m_Ex->GetSTC()->SetTargetEnd(0);

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      MenuCommands.h
+// Name:      menucommands.h
 // Purpose:   Declaration of class wxExMenuCommands
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2016 Anton van Wezenbeek
@@ -48,7 +48,7 @@ public:
   /// Returns the commands.
   const auto & GetCommands() const {return m_Commands;};
 
-  /// Returns the name for this group of commands.
+  /// Returns the flags key.
   const auto & GetFlagsKey() const {return m_FlagsKey;};
 
   /// Returns the name for this group of commands.
@@ -64,7 +64,7 @@ public:
       return false;
     }
     m_CommandIndex = command_no;
-    m_FlagsKey = "vcsflags/" + m_Name + std::to_string(m_CommandIndex);
+    m_FlagsKey = "menuflags/" + m_Name + std::to_string(m_CommandIndex);
     return true;};
 private:
   int m_CommandIndex = 0;

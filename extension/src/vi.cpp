@@ -16,6 +16,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/addressrange.h>
+#include <wx/extension/ctags.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/lexers.h>
@@ -214,7 +215,7 @@ wxExVi::wxExVi(wxExSTC* stc)
           else d = m_LastFindCharCommand.front();
       }
       REPEAT(
-        if (!GetSTC()->FindNext(c, 
+        if (!GetSTC()->FindNext(std::string(1, c), 
           GetSearchFlags() & ~wxSTC_FIND_REGEXP, wxIslower(d)))
         {
           m_Command.clear();
@@ -238,7 +239,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       MOTION(Char, Right, false, false);}},
     {"nN", [&](const std::string& command){REPEAT(
       if (!GetSTC()->FindNext(
-        wxExFindReplaceData::Get()->GetFindString(), GetSearchFlags(), 
+        wxExFindReplaceData::Get()->GetFindString().ToStdString(), GetSearchFlags(), 
         command == "n"? m_SearchForward: !m_SearchForward))
       {
         m_Command.clear();
@@ -410,9 +411,20 @@ wxExVi::wxExVi(wxExSTC* stc)
       return DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count);}},
     {"D", [&](const std::string& command){return Command("d$");}},
     {"J", [&](const std::string& command){wxExAddressRange(this, m_Count).Join(); return true;}},
+    {"P", [&](const std::string& command){Put(false);return true;}},
+    {"Q", [&](const std::string& command){
+      GetFrame()->SaveCurrentPage("ctags");
+      GetCTags()->Find(GetSTC()->GetWordAtPos(GetSTC()->GetCurrentPos()));
+      return true;}},
+    {"S", [&](const std::string& command){
+      wxExSTC* stc = GetFrame()->RestorePage("ctags");
+      if (stc != nullptr)
+      {
+        m_STC = stc;
+      }
+      return true;}},
     {"X", [&](const std::string& command){
       return DeleteRange(this, GetSTC()->GetCurrentPos() - m_Count, GetSTC()->GetCurrentPos());}},
-    {"P", [&](const std::string& command){Put(false);return true;}},
     {"Y", [&](const std::string& command){return Command("y_");}},
     {"dd", [&](const std::string& command){
       (void)wxExAddressRange(this, m_Count).Delete(); return true;}},
@@ -493,7 +505,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       const auto end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
       wxExFindReplaceData::Get()->SetFindString(GetSTC()->GetTextRange(start, end));  
       GetSTC()->FindNext(
-        "\\<"+ wxExFindReplaceData::Get()->GetFindString() + "\\>", 
+        "\\<"+ wxExFindReplaceData::Get()->GetFindString().ToStdString() + "\\>", 
         GetSearchFlags(), 
         command == "*");
       return true;}},
@@ -533,10 +545,10 @@ wxExVi::wxExVi(wxExSTC* stc)
       }
       else
       {
-        std::vector <wxString> v;
+        std::vector <std::string> v;
         if (wxExMatch("@([a-zA-Z].+)@", command, v) > 0)
         {
-          if (!MacroPlayback(v[0].ToStdString(), m_Count))
+          if (!MacroPlayback(v[0], m_Count))
           {
             m_Command.clear();
             GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
@@ -576,6 +588,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         }
       }
       return false;}},
+    // ctrl-e, ctrl-j
     {"\x05\x0a", [&](const std::string& command){REPEAT_WITH_UNDO(
         if (GetSTC()->HexMode()) return true;
         try 
@@ -597,6 +610,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         catch (...)
         {
         } return true;)}},
+    // ctrl-g
     {"\x07", [&](const std::string& command){
       GetFrame()->ShowExMessage(wxString::Format("%s line %d of %d --%d%%-- level %d", 
         GetSTC()->GetFileName().GetFullName().c_str(), 
@@ -606,9 +620,11 @@ wxExVi::wxExVi(wxExSTC* stc)
         (GetSTC()->GetFoldLevel(GetSTC()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
          - wxSTC_FOLDLEVELBASE));
       return true;}},
+    // ctrl-h
     {"\x08", [&](const std::string& command){
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) GetSTC()->DeleteBack();
       return true;}},
+    // ctrl-r
     {"\x12", [&](const std::string& command){
       if (command.size() > 1 &&
         RegAfter(std::string(1, WXK_CONTROL_R), command))
@@ -617,6 +633,18 @@ wxExVi::wxExVi(wxExSTC* stc)
         return true;
       }  
       return false;}},
+    // ctrl-t
+    {"\x14", [&](const std::string& command){
+      wxExSTC* stc = GetFrame()->RestorePage("ctags");
+      if (stc != nullptr)
+      {
+        m_STC = stc;
+      }
+      return true;}},
+    // ctrl-]
+    {"\x5D", [&](const std::string& command){
+      GetCTags()->Find(GetSTC()->GetWordAtPos(GetSTC()->GetCurrentPos()));
+      return true;}},
     {"\x7F", [&](const std::string& command){
       return DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count);}}}
 {
@@ -664,7 +692,8 @@ bool wxExVi::Command(const std::string& command, bool is_handled)
     InsertMode(command);
     return true;
   }
-  else if (!m_Dot && command.back() == WXK_ESCAPE)
+
+  if (!m_Dot && command.back() == WXK_ESCAPE)
   {
     m_FSM.Transition("\x1b");
     return true;
@@ -832,13 +861,13 @@ void wxExVi::CommandReg(const char reg)
 
 void wxExVi::FilterCount(std::string& command, const std::string& prefix)
 {
-  std::vector<wxString> v;
+  std::vector<std::string> v;
         
   const auto matches = wxExMatch("^" + prefix + "([1-9][0-9]*)(.*)", command, v);
   
   if (matches >= 2)
   {
-    const auto count = std::stoi(v[matches - 2].ToStdString());
+    const auto count = std::stoi(v[matches - 2]);
     
     if (count > 0)
     {

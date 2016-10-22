@@ -97,6 +97,7 @@ bool wxExNotebook::DeletePage(const wxString& key)
     wxWindow* page = m_Keys[key];
     m_Keys.erase(key);
     m_Windows.erase(page);
+    page = nullptr;
     
     if (m_Frame != nullptr && m_Keys.empty())
     {
@@ -111,6 +112,12 @@ bool wxExNotebook::DeletePage(const wxString& key)
   }
 }
 
+const wxString wxExNotebook::GetCurrentPage()
+{
+  wxWindow* page = wxAuiNotebook::GetCurrentPage();
+  return GetKeyByPage(page);
+}
+  
 wxWindow* wxExNotebook::InsertPage(
   size_t page_idx,
   wxWindow* page,
@@ -174,7 +181,12 @@ wxWindow* wxExNotebook::SetSelection(const wxString& key)
   }
 
   wxAuiNotebook::SetSelection(index);
-  return GetPage(index);
+  
+  wxWindow* page = GetPage(index);
+  
+  page->SetFocus();
+  
+  return page;
 }
   
 bool wxExNotebook::Split(const wxString& key, int direction)

@@ -42,7 +42,7 @@ const std::string wxExLink::FindPath(const std::string& text, int line_no) const
   }
   
   // hypertext link
-  std::vector <wxString> v;
+  std::vector <std::string> v;
   if (line_no < 0 &&
       (wxExMatch("(https?:.*)", text, v) > 0 || 
        wxExMatch("(www.*)", text, v) > 0))
@@ -239,21 +239,21 @@ bool wxExLink::SetLink(std::string& link, int& line_no, int& column_no) const
 #endif
 
   // file[:line[:column]]
-  std::vector <wxString> v;
+  std::vector <std::string> v;
   
-  if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link, v))
+  if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link, v) > 0)
   {
     link = v[0];
     line_no = 0;
     column_no = 0;
       
-    if (v.size() > 1)
+    if (v.size() > 1 && !v[1].empty())
     {
-      line_no = atoi(v[1]);
+      line_no = std::stoi(v[1]);
         
-      if (v.size() > 2)
+      if (v.size() > 2 && !v[2].empty())
       {
-        column_no = atoi(v[2]);
+        column_no = std::stoi(v[2]);
       }
     }
       

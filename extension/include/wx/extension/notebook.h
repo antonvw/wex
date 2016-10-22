@@ -109,10 +109,14 @@ public:
       m_Frame->SyncCloseAll(GetId());
     }
     return true;};
+  
+  /// Returns key for the current page.
+  const wxString GetCurrentPage();
 
   /// Returns the key specified by the given page.
-  /// If the page does not exist an empty string is returned.
+  /// If the page or i nullptr does not exist an empty string is returned.
   const wxString GetKeyByPage(wxWindow* page) const {
+    if (page == nullptr) return wxString();
     const auto& it = m_Windows.find(page);
     return (it != m_Windows.end() ? it->second: wxString());};
   

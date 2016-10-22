@@ -152,7 +152,8 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     {
       auto it = wxExFindReplaceData::Get()->GetFindStrings().begin();
       std::advance(it, event.GetId() - ID_FIND_FIRST);
-      if (stc->FindNext(*it, stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1))
+      if (stc->FindNext(it->ToStdString(), 
+        stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1))
       {
         wxExFindReplaceData::Get()->SetFindString(*it);
       }
@@ -254,7 +255,7 @@ wxPanel* wxExManagedFrame::CreateExPanel()
 }
 
 void wxExManagedFrame::DoRecent(
-  wxFileHistory& history, 
+  const wxFileHistory& history, 
   size_t index, 
   long flags)
 {
@@ -262,7 +263,7 @@ void wxExManagedFrame::DoRecent(
   
   if (!file.empty())
   {
-    OpenFile(file, 0, wxEmptyString, 0, flags);
+    OpenFile(file, 0, std::string(), 0, flags);
   }
 }
 
@@ -304,26 +305,28 @@ void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
   }
 }
 
+wxExSTC* wxExManagedFrame::OpenFile(
+  const wxExFileName& filename,
+  int line_number,
+  const std::string& match,
+  int col_number,
+  long flags,
+  const std::string& command)
+{
+  wxExSTC* stc;
+  
+  if ((stc = wxExFrame::OpenFile(
+    filename, line_number, match, col_number, flags, command)) != nullptr)
+  {
+    SetRecentFile(filename.GetFullPath());
+  }
+
+  return stc;
+}
+
 void wxExManagedFrame::PrintEx(wxExEx* ex, const std::string& text)
 {
   ex->Print(text);
-}
-
-bool wxExManagedFrame::OpenFile(
-  const wxExFileName& filename,
-  int line_number,
-  const wxString& match,
-  int col_number,
-  long flags,
-  const wxString& command)
-{
-  if (wxExFrame::OpenFile(filename, line_number, match, col_number, flags, command))
-  {
-    SetRecentFile(filename.GetFullPath());
-    return true;
-  }
-
-  return false;
 }
 
 void wxExManagedFrame::ShowExMessage(const wxString& text)
@@ -501,7 +504,7 @@ wxExTextCtrl::wxExTextCtrl(
     {
       m_ex->GetSTC()->PositionRestore();
       m_ex->GetSTC()->FindNext(
-        GetValue(),
+        GetValue().ToStdString(),
         m_ex->GetSearchFlags(),
         m_Prefix->GetLabel() == "/");
     }});

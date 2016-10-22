@@ -183,13 +183,14 @@ wxExFrame::wxExFrame(wxWindow* parent,
       }
       if (!wxExShellExpansion(text)) return;
       wxString cmd;
-      std::vector <wxString> v;
+      std::vector <std::string> v;
       if (wxExMatch("\\+([0-9A-Za-z:_/.-]+)* *(.*)", text.ToStdString(), v) > 1)
       {
         cmd = v[0];
         text = v[1];
       }
-      wxExOpenFiles(this, wxExToVectorString(text).Get(), 0, wxDIR_DEFAULT, cmd);
+      wxExOpenFiles(this, wxExToVectorString(text).Get(), 
+        0, wxDIR_DEFAULT, cmd.ToStdString());
     }
     else
     {
@@ -239,6 +240,18 @@ wxExSTC* wxExFrame::GetSTC()
   wxCAST_TO(wxExSTC);
 }
   
+bool wxExFrame::IsOpen(const wxExFileName& filename)
+{
+  wxExSTC* stc = GetSTC();
+  
+  if (stc != nullptr)
+  {
+    return stc->GetFileName() == filename;
+  }
+  
+  return false;
+}
+  
 #if wxUSE_STATUSBAR
 wxStatusBar* wxExFrame::OnCreateStatusBar(
   int number,
@@ -252,25 +265,25 @@ wxStatusBar* wxExFrame::OnCreateStatusBar(
 }
 #endif
 
-bool wxExFrame::OpenFile(
+wxExSTC* wxExFrame::OpenFile(
   const wxExFileName& filename,
   int line_number,
-  const wxString& match,
+  const std::string& match,
   int col_number,
   long flags,
-  const wxString& command)
+  const std::string& command)
 {
   wxExSTC* stc = GetSTC();
 
   if (stc != nullptr)
   {
-    return stc->Open(filename, line_number, match, col_number, flags);
+    stc->Open(filename, line_number, match, col_number, flags, command);
   }
 
-  return false;
+  return stc;
 }
 
-bool wxExFrame::OpenFile(
+wxExSTC* wxExFrame::OpenFile(
   const wxExFileName& filename,
   const wxExVCSEntry& vcs,
   long flags)
@@ -279,27 +292,26 @@ bool wxExFrame::OpenFile(
 
   if (stc != nullptr)
   {
-    stc->SetText(vcs.GetOutput());
+    stc->SetText(vcs.GetOutput().ToStdString());
     wxExVCSCommandOnSTC(vcs.GetCommand(), filename.GetLexer(), stc);
   }
-  else
-  {
-    wxLogMessage(vcs.GetOutput());
-  }
 
-  return true;
+  return stc;
 }
 
-bool wxExFrame::OpenFile(
+wxExSTC* wxExFrame::OpenFile(
   const wxExFileName& filename,
-  const wxString& text,
+  const std::string& text,
   long flags)
 {
   wxExSTC* stc = GetSTC();
 
-  if (stc != nullptr) stc->SetText(text);
+  if (stc != nullptr)
+  {
+    stc->SetText(text);
+  }
 
-  return stc != nullptr;
+  return stc;
 }
     
 void wxExFrame::SetMenuBar(wxMenuBar* bar)

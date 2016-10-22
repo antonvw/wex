@@ -73,7 +73,7 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
   REQUIRE( wxExAddressRange(ex, "1,3").Delete());
   
   // Test implementation.  
-  const wxString contents("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  const std::string contents("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
   
   // Test Change.
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");

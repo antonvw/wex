@@ -17,6 +17,7 @@
 #if wxUSE_GUI
 
 class ex_evaluator;
+class wxExCTags;
 class wxExManagedFrame;
 class wxExSTC;
 class wxExSTCEntryDialog;
@@ -42,6 +43,9 @@ public:
     const std::string& text, 
     /// width, or precision, for doubles
     int& width);
+  
+  /// Cleans up (ctags).
+  static void Cleanup();
 
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.
@@ -56,12 +60,15 @@ public:
   /// Cuts selected text to yank register,
   /// and updates delete registers.
   void Cut(bool show_message = true);
+
+  /// Returns the ctags.
+  static auto & GetCTags() {return m_CTags;};
   
   /// Returns frame.
   wxExManagedFrame* GetFrame() {return m_Frame;};
   
   /// Returns whether ex is active.
-  bool GetIsActive() const {return m_IsActive;};
+  auto GetIsActive() const {return m_IsActive;};
   
   /// Returns last entered command.
   const auto & GetLastCommand() const {return m_LastCommand;};
@@ -70,7 +77,7 @@ public:
   static auto & GetMacros() {return m_Macros;};
 
   /// Returns register name.
-  const char GetRegister() const {return m_Register;};
+  const auto GetRegister() const {return m_Register;};
   
   /// Returns text to be inserted.
   const std::string GetRegisterInsert() const;
@@ -79,13 +86,13 @@ public:
   const std::string GetRegisterText() const;
   
   /// Returns search flags.
-  int GetSearchFlags() const {return m_SearchFlags;};
+  auto GetSearchFlags() const {return m_SearchFlags;};
   
   /// Returns selected text as a string.
   const std::string GetSelectedText() const;
   
   /// Returns STC component.
-  wxExSTC* GetSTC() {return m_STC;};
+  auto * GetSTC() {return m_STC;};
   
   /// Plays back a recorded macro or expands a variable.
   /// If specified macro is empty,
@@ -150,6 +157,8 @@ protected:
   /// Setting register 0 results in
   /// disabling current register.
   void SetRegister(const char name) {m_Register = name;};
+protected:
+  wxExSTC* m_STC;
 private:
   bool CommandHandle(const std::string& command) const;
   bool CommandAddress(const std::string& command);
@@ -163,6 +172,7 @@ private:
   std::map<wxUniChar, int> m_MarkerNumbers;
   
   static std::string m_LastCommand;
+  static wxExCTags* m_CTags;
   static wxExSTCEntryDialog* m_Dialog;
   static wxExViMacros m_Macros;
   static ex_evaluator m_Evaluator;
@@ -174,7 +184,6 @@ private:
   char m_Register = 0;
   
   wxExManagedFrame* m_Frame;  
-  wxExSTC* m_STC;
 
   const std::vector<std::pair<
     const std::string, 

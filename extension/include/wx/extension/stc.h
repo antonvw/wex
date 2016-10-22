@@ -69,14 +69,13 @@ public:
                                    ///<   overrides real mode from disk
     STC_WIN_HEX          = 0x0002, ///< window in hex mode
     STC_WIN_NO_INDICATOR = 0x0004, ///< a change indicator is not used
-    STC_WIN_FROM_OTHER   = 0x0010  ///< opened from within another file (e.g. a link)
   };
 
   /// Constructor. The title is used for name.
   wxExSTC(wxWindow* parent, 
     const std::string& value = std::string(),
     long win_flags = STC_WIN_DEFAULT,
-    const wxString& title = wxEmptyString,
+    const std::string& title = std::string(),
     long menu_flags = STC_MENU_DEFAULT,
     const std::string& command = std::string(),
     wxWindowID id = wxID_ANY,
@@ -89,7 +88,7 @@ public:
   wxExSTC(wxWindow* parent,
     const wxExFileName& filename,
     int line_number = 0,
-    const wxString& match = wxEmptyString,
+    const std::string& match = std::string(),
     int col_number = 0,
     long win_flags = STC_WIN_DEFAULT,
     long menu_flags = STC_MENU_DEFAULT | STC_MENU_OPEN_LINK,
@@ -147,7 +146,7 @@ public:
   /// Finds next.
   bool FindNext(
     /// text to find
-    const wxString& text, 
+    const std::string& text, 
     /// search flags to be used:
     /// - wxSTC_FIND_WHOLEWORD
     /// - wxSTC_FIND_MATCHCASE
@@ -180,7 +179,7 @@ public:
   /// Returns find string, from selected text or from config.
   /// The search flags are taken from frd.
   /// If text is selected, it also sets the find string.
-  const wxString GetFindString();
+  const std::string GetFindString();
 
   /// Returns current flags.
   long GetFlags() const {return m_Flags;};
@@ -208,12 +207,12 @@ public:
   auto & GetVi() {return m_vi;};
   
   /// Returns word at position.
-  const wxString GetWordAtPos(int pos) const;
+  const std::string GetWordAtPos(int pos) const;
 
   /// Goes to line and selects the line or the specified text in it.
   void GotoLineAndSelect(
     int line_number, 
-    const wxString& text = wxEmptyString,
+    const std::string& text = std::string(),
     int col_number = 0,
     long flags = 0);
 
@@ -237,7 +236,7 @@ public:
     int line_number = 0,
     /// if not empty selects the text on that line (if line was specified)
     /// or finds text from begin (if line was 0) or end (line was -1)
-    const wxString& match = wxEmptyString,
+    const std::string& match = std::string(),
     /// goes to column if col_number > 0
     int col_number = 0,
     /// flags
@@ -281,8 +280,8 @@ public:
   /// in the entire document.
   /// Returns the number of replacements.
   int ReplaceAll(
-    const wxString& find_text, 
-    const wxString& replace_text);
+    const std::string& find_text, 
+    const std::string& replace_text);
   
   /// Replaces text and calls find next.
   /// Uses settings from find replace data.
@@ -293,9 +292,9 @@ public:
   /// it starts at current position.
   bool ReplaceNext(
     /// text to find
-    const wxString& find_text, 
+    const std::string& find_text, 
     /// text to replace with
-    const wxString& replace_text,
+    const std::string& replace_text,
     /// search flags to be used:
     /// - wxSTC_FIND_WHOLEWORD
     /// - wxSTC_FIND_MATCHCASE
@@ -328,7 +327,7 @@ public:
   void SetSearchFlags(int flags);
   
   /// Sets the text.
-  void SetText(const wxString& value);
+  void SetText(const std::string& value);
 
   /// Shows or hides line numbers.
   void ShowLineNumbers(bool show);
@@ -374,7 +373,7 @@ private:
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void FoldAll();
   void Initialize(bool file_exists);
-  bool LinkOpen(int mode, wxString* filename = nullptr); // name of found file
+  bool LinkOpen(int mode, std::string* filename = nullptr); // name of found file
   void MarkModified(const wxStyledTextEvent& event);
 
   const int m_MarginDividerNumber = 1;
@@ -408,7 +407,7 @@ private:
   wxExVi m_vi;
   
   wxFont m_DefaultFont;
-  wxString m_AutoComplete;
+  std::string m_AutoComplete;
 
   // All objects share the following:
   static wxExItemDialog* m_ConfigDialog;

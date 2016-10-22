@@ -116,13 +116,13 @@ public:
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
   /// Interface from wxExFrame.
-  virtual bool OpenFile(
+  wxExSTC* OpenFile(
     const wxExFileName& filename,
     int line_number = 0,
-    const wxString& match = wxEmptyString,
+    const std::string& match = std::string(),
     int col_number = 0,
     long flags = 0,
-    const wxString& command = wxEmptyString) override;
+    const std::string& command = std::string()) override;
 
   /// Prints text in ex dialog.
   virtual void PrintEx(
@@ -130,6 +130,13 @@ public:
     wxExEx* ex,
     /// the text to be printed
     const std::string& text);
+
+  /// Restores a previous saved current page.
+  /// Returns restored page (default returns nullptr).
+  virtual wxExSTC* RestorePage(const std::string& key) {return nullptr;};
+  
+  /// Saves the current page, to restore later on.
+  virtual bool SaveCurrentPage(const std::string& key) {return false;};
   
   /// Allows derived class to update file history.
   virtual void SetRecentFile(const wxString& file) override {
@@ -155,7 +162,7 @@ public:
   bool TogglePane(
     const wxString& pane) {return ShowPane(pane, !m_Manager.GetPane(pane).IsShown());};
 protected:
-  void DoRecent(wxFileHistory& history, size_t index, long flags = 0);
+  void DoRecent(const wxFileHistory& history, size_t index, long flags = 0);
 private:
   bool AddToolBarPane(
     wxWindow* window, 

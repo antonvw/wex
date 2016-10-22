@@ -236,7 +236,9 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   
   SECTION("wxExMatch")
   {
-    std::vector<wxString> v;
+    std::vector<std::string> v;
+    REQUIRE( wxExMatch("hllo", "hello world", v) == -1);
+    REQUIRE( wxExMatch("hello", "hello world", v) == 0);
     REQUIRE( wxExMatch("([0-9]+)ok([0-9]+)nice", "19999ok245nice", v) == 2);
     REQUIRE( wxExMatch("(\\d+)ok(\\d+)nice", "19999ok245nice", v) == 2);
     REQUIRE( wxExMatch(" ([\\d\\w]+)", " 19999ok245nice ", v) == 1);
@@ -345,7 +347,7 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     REQUIRE( wxExSortSelection(GetSTC(), STRING_SORT_ASCENDING, 3, 10));
     REQUIRE(!wxExSortSelection(GetSTC(), STRING_SORT_ASCENDING, 20, 10));
     GetSTC()->SelectNone();
-    GetSTC()->SetText(rect);
+    GetSTC()->SetText(rect.ToStdString());
     // force rectangular selection.
     (void)GetSTC()->GetVi().Command("3 ");
     (void)GetSTC()->GetVi().Command("K");

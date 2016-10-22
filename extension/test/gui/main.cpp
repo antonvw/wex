@@ -16,6 +16,21 @@
 
 #include "test.h"
 
+class wxExTestManagedFrame : public wxExManagedFrame
+{
+public:
+  wxExTestManagedFrame(wxWindow* parent,
+    wxWindowID id,
+    const wxString& title)
+  : wxExManagedFrame(parent, id, title)
+  , m_Process(new wxExProcess()) {;};
+  virtual wxExProcess* Process(const std::string& command) override {
+    m_Process->Execute(command);
+    return m_Process;};
+private:
+  wxExProcess* m_Process;
+};
+
 class wxExTestGuiApp : public wxExTestApp
 {
 public: 
@@ -28,7 +43,8 @@ public:
       return false;
     }
   
-    m_Frame = new wxExManagedFrame(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName());
+    m_Frame = new wxExTestManagedFrame(
+      nullptr, wxID_ANY, wxTheApp->GetAppDisplayName());
     m_Frame->Show();
     
     wxExProcess::PrepareOutput(m_Frame);
@@ -60,12 +76,12 @@ public:
   static wxExStatusBar* GetStatusBar() {return m_StatusBar;};
   static wxExSTC* GetSTC() {return m_STC;};
 private:
-  static wxExManagedFrame* m_Frame;
+  static wxExTestManagedFrame* m_Frame;
   static wxExStatusBar* m_StatusBar;
   static wxExSTC* m_STC;
 }; 
 
-wxExManagedFrame* wxExTestGuiApp::m_Frame = nullptr;
+wxExTestManagedFrame* wxExTestGuiApp::m_Frame = nullptr;
 wxExStatusBar* wxExTestGuiApp::m_StatusBar = nullptr;
 wxExSTC* wxExTestGuiApp::m_STC = nullptr;
   

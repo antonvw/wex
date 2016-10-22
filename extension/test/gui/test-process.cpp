@@ -36,7 +36,7 @@ TEST_CASE("wxExProcess")
   REQUIRE( process->GetOutput().empty());
   REQUIRE(!process->HasStdError());
   REQUIRE(!process->IsRunning());
-  process->GetShell()->SetText(wxEmptyString);
+  process->GetShell()->SetText(std::string());
   
   process->ConfigDialog(GetFrame(), "test process", false);
   

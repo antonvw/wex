@@ -14,6 +14,8 @@ class App : public wxExApp
 public:
   const auto& GetCommand() const {return m_Command;};
   const auto& GetFiles() const {return m_Files;};
+  const auto& GetTag() const {return m_Tag;};
+
   auto& GetScriptin() {return m_Scriptin;};
   auto& GetScriptout() {return m_Scriptout;};
 
@@ -32,6 +34,6 @@ private:
   bool m_Debug = false;
   int m_Flags = 0;
   int m_Split;
-  wxString m_Command; 
+  std::string m_Command, m_Tag; 
   wxExFile m_Scriptin, m_Scriptout;
 };

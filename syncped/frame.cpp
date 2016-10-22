@@ -14,6 +14,7 @@
 #include <wx/imaglist.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
 #include <wx/tokenzr.h>
+#include <wx/extension/ctags.h>
 #include <wx/extension/debug.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/itemdlg.h>
@@ -174,7 +175,11 @@ Frame::Frame(App* app)
   
   HideExBar();
   
-  if (m_App->GetFiles().empty())
+  if (!m_App->GetTag().empty())
+  {
+    wxExEx::GetCTags()->Find(m_App->GetTag());
+  }
+  else if (m_App->GetFiles().empty())
   {
     long count = 0;
       
@@ -182,7 +187,8 @@ Frame::Frame(App* app)
     {
       if (count > 0)
       {
-        wxExOpenFiles(this, GetFileHistory().GetVector(count), 0, wxDIR_DEFAULT, m_App->GetCommand());
+        wxExOpenFiles(this, GetFileHistory().GetVector(count), 0, 
+          wxDIR_DEFAULT, m_App->GetCommand());
       }
     }
       
@@ -193,7 +199,7 @@ Frame::Frame(App* app)
         OpenFile(
           wxExFileName(GetProjectHistory().GetHistoryFile()),
           0,
-          wxEmptyString,
+          std::string(),
           0,
           WIN_IS_PROJECT);
       }
@@ -238,9 +244,38 @@ Frame::Frame(App* app)
   Bind(wxEVT_AUINOTEBOOK_BG_DCLICK, [=] (wxAuiNotebookEvent& event) {
     GetProjectHistory().PopupMenu(this, ID_CLEAR_PROJECTS);}, ID_NOTEBOOK_PROJECTS);
     
-  Bind(wxEVT_CHECKBOX, &Frame::OnCommandDirCtrl, this, ID_VIEW_DIRCTRL);
-  Bind(wxEVT_CHECKBOX, &Frame::OnCommandHistory, this, ID_VIEW_HISTORY);
+  Bind(wxEVT_CHECKBOX, [=] (wxCommandEvent& event) {
+    TogglePane("DIRCTRL"); 
+    m_CheckBoxDirCtrl->SetValue(GetManager().GetPane("DIRCTRL").IsShown());
+    GetToolBar()->Realize();
+    if (GetManager().GetPane("DIRCTRL").IsShown() &&
+        GetManager().GetPane("FILES").IsShown())
+    {
+      wxExSTC* editor = GetSTC();
+      if (editor != nullptr)
+      {
+        m_DirCtrl->ExpandAndSelectPath(
+          editor->GetFileName().GetFullPath());
+      }
+    }}, ID_VIEW_DIRCTRL);
 
+  Bind(wxEVT_CHECKBOX, [=] (wxCommandEvent& event) {
+    if (m_History == nullptr)
+    {
+      AddPaneHistory();
+      GetManager().Update();
+    }
+    else
+    {
+      TogglePane("HISTORY");
+    }
+    m_CheckBoxHistory->SetValue(GetManager().GetPane("HISTORY").IsShown());
+    GetToolBar()->Realize();
+  #if wxUSE_STATUSBAR
+    UpdateStatusBar(m_History);
+  #endif
+    }, ID_VIEW_HISTORY);
+  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     GetDebug()->Execute(event.GetId() - ID_EDIT_DEBUG_FIRST);}, ID_EDIT_DEBUG_FIRST, ID_EDIT_DEBUG_LAST);
   
@@ -334,7 +369,7 @@ Frame::Frame(App* app)
       m_Editors, 
       std::string(),
       wxExSTC::STC_WIN_DEFAULT,
-      wxEmptyString,
+      std::string(),
       wxExSTC::STC_MENU_DEFAULT);
     ((wxExSTC*)page)->GetFile().FileNew(name);
     // This file does yet exist, so do not give it a bitmap.
@@ -496,8 +531,6 @@ Frame::Frame(App* app)
       TogglePane("ASCIITABLE"); 
     };}, ID_VIEW_ASCII_TABLE);
     
-  Bind(wxEVT_MENU, &Frame::OnCommandDirCtrl, this, ID_VIEW_DIRCTRL);
-
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     TogglePane("FILES"); 
     if (!GetManager().GetPane("FILES").IsShown())
@@ -509,8 +542,6 @@ Frame::Frame(App* app)
       }
     };}, ID_VIEW_FILES);
     
-  Bind(wxEVT_MENU, &Frame::OnCommandHistory, this, ID_VIEW_HISTORY);
-  
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     TogglePane("OUTPUT");}, ID_VIEW_OUTPUT);
     
@@ -613,10 +644,7 @@ bool Frame::ExecExCommand(const std::string& command, wxExSTC* & stc)
   {
     if (command == ":n")
     {
-      if (m_Editors->GetSelection() == m_Editors->GetPageCount() - 1)
-      {
-        return false;
-      }
+      if (m_Editors->GetSelection() == m_Editors->GetPageCount() - 1) return false;
       
       m_Editors->AdvanceSelection();
 
@@ -629,10 +657,7 @@ bool Frame::ExecExCommand(const std::string& command, wxExSTC* & stc)
     }
     else if (command == ":prev")
     {
-      if (m_Editors->GetSelection() == 0)
-      {
-        return false;
-      }
+      if (m_Editors->GetSelection() == 0) return false;
       
       m_Editors->AdvanceSelection(false);
 
@@ -667,6 +692,11 @@ wxExListViewFile* Frame::GetProject()
   }
 }
 
+bool Frame::IsOpen(const wxExFileName& filename)
+{
+  return m_Editors->GetPageIndexByKey(filename.GetFullPath()) != wxNOT_FOUND;
+}
+  
 void Frame::OnCommand(wxCommandEvent& event)
 {
   wxExSTC* editor = GetSTC();
@@ -682,8 +712,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_DELETE:
   case wxID_SELECTALL:
   case wxID_JUMP_TO:
-  case wxID_CUT:
-  case wxID_COPY:
+  case wxID_CUT:  case wxID_COPY:
   case wxID_PASTE:
   case wxID_CLEAR:
     if (editor != nullptr)
@@ -850,42 +879,6 @@ void Frame::OnCommand(wxCommandEvent& event)
   }
 }
 
-void Frame::OnCommandDirCtrl(wxCommandEvent& event)
-{
-  TogglePane("DIRCTRL"); 
-  m_CheckBoxDirCtrl->SetValue(GetManager().GetPane("DIRCTRL").IsShown());
-  GetToolBar()->Realize();
-  if (GetManager().GetPane("DIRCTRL").IsShown() &&
-      GetManager().GetPane("FILES").IsShown())
-  {
-    wxExSTC* editor = GetSTC();
-    if (editor != nullptr)
-    {
-      m_DirCtrl->ExpandAndSelectPath(
-        editor->GetFileName().GetFullPath());
-    }
-  }
-}
-
-void Frame::OnCommandHistory(wxCommandEvent& event)
-{
-  if (m_History == nullptr)
-  {
-    AddPaneHistory();
-    GetManager().Update();
-  }
-  else
-  {
-    TogglePane("HISTORY");
-  }
-
-  m_CheckBoxHistory->SetValue(GetManager().GetPane("HISTORY").IsShown());
-  GetToolBar()->Realize();
-#if wxUSE_STATUSBAR
-  UpdateStatusBar(m_History);
-#endif
-}
-  
 void Frame::OnCommandItemDialog(
   wxWindowID dialogid,
   const wxCommandEvent& event)
@@ -1072,7 +1065,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
   }
 }
 
-bool Frame::OpenFile(
+wxExSTC* Frame::OpenFile(
   const wxExFileName& filename,
   const wxExVCSEntry& vcs,
   long flags)
@@ -1090,7 +1083,7 @@ bool Frame::OpenFile(
       m_Editors, 
       vcs.GetOutput().ToStdString(),
       flags,
-      filename.GetFullName() + " " + unique);
+      filename.GetFullName().ToStdString() + " " + unique.ToStdString());
 
     wxExVCSCommandOnSTC(
       vcs.GetCommand(), filename.GetLexer(), editor);
@@ -1109,19 +1102,19 @@ bool Frame::OpenFile(
     }
   }
 
-  return true;
+  return (wxExSTC*)page;
 }
 
-bool Frame::OpenFile(
+wxExSTC* Frame::OpenFile(
   const wxExFileName& filename,
-  const wxString& text,
+  const std::string& text,
   long flags)
 {
   wxExSTC* page = (wxExSTC*)m_Editors->SetSelection(filename.GetFullPath());
 
   if (page == nullptr)
   {
-    page = new wxExSTC(m_Editors, text, flags, filename.GetFullPath());
+    page = new wxExSTC(m_Editors, text, flags, filename.GetFullPath().ToStdString());
     page->GetLexer().Set(filename.GetLexer());
     m_Editors->AddPage(page, filename.GetFullPath(), filename.GetFullName(), true);
   }
@@ -1130,16 +1123,16 @@ bool Frame::OpenFile(
     page->SetText(text);
   }
 
-  return true;
+  return page;
 }
   
-bool Frame::OpenFile(
+wxExSTC* Frame::OpenFile(
   const wxExFileName& filename,
   int line_number,
-  const wxString& match,
+  const std::string& match,
   int col_number,
   long flags,
-  const wxString& command)
+  const std::string& command)
 {
   if ((flags & WIN_IS_PROJECT) && m_Projects == nullptr)
   {
@@ -1208,8 +1201,21 @@ bool Frame::OpenFile(
         match,
         col_number,
         flags | m_App->GetFlags(),
-        wxExSTC::STC_MENU_DEFAULT | (m_App->GetDebug() ? wxExSTC::STC_MENU_DEBUG: 0),
-        command.ToStdString());
+        wxExSTC::STC_MENU_DEFAULT | 
+          (m_App->GetDebug() ? wxExSTC::STC_MENU_DEBUG: 0),
+        command);
+      
+      if (m_App->GetDebug())
+      {
+        for (const auto& it: GetDebug()->GetBreakpoints())
+        {
+          if (std::get<0>(it.second) == filename)
+          {
+            editor->MarkerAdd(std::get<2>(it.second), 
+              GetDebug()->GetMarkerBreakpoint().GetNo());
+          }
+        }
+      }
 
       const wxString key(filename.GetFullPath());
 
@@ -1247,7 +1253,7 @@ bool Frame::OpenFile(
           if (!editor->GetVi().Command(command.ToStdString()))
           {
             wxLogStatus("Aborted at: " + command);
-            return false;
+            return editor;
           }
         }
       }
@@ -1260,9 +1266,15 @@ bool Frame::OpenFile(
     {
       editor->FindNext(match);
     }
+    else if (!command.empty())
+    {
+      editor->GetVi().Command(command);
+    }
+    
+    editor->SetFocus();
   }
   
-  return true;
+  return (wxExSTC*)page;
 }
 
 void Frame::PrintEx(wxExEx* ex, const std::string& text)
@@ -1289,6 +1301,23 @@ wxExProcess* Frame::Process(const std::string& command)
 {
   m_Process->Execute(command, wxEXEC_ASYNC);
   return m_Process;
+}
+
+wxExSTC* Frame::RestorePage(const std::string& key)
+{
+  if (!m_SavedPage.empty())
+  {
+    m_Editors->DeletePage(m_Editors->GetCurrentPage());
+    return (wxExSTC*)m_Editors->SetSelection(m_SavedPage);
+  }
+  
+  return nullptr;
+}
+  
+bool Frame::SaveCurrentPage(const std::string& key)
+{
+  m_SavedPage = m_Editors->GetCurrentPage();
+  return true;
 }
 
 void Frame::StatusBarClicked(const wxString& pane)
@@ -1360,20 +1389,20 @@ void Frame::StatusBarClickedRight(const wxString& pane)
       match = wxExLexers::Get()->GetTheme();
     }
     
-    OpenFile(wxExLexers::Get()->GetFileName(), 0, match);
+    OpenFile(wxExLexers::Get()->GetFileName(), 0, match.ToStdString());
   }
   else if (pane == "PaneMacro")
   {
     if (wxExViMacros::GetFileName().FileExists())
     {
       OpenFile(wxExViMacros::GetFileName(), 0, 
-        " name=\"" + GetStatusText(pane) + "\"");
+        " name=\"" + GetStatusText(pane).ToStdString() + "\"");
     }
   }
   else if (pane == "PaneVCS")
   {
     OpenFile(wxExMenus::GetFileName(), 0, (GetStatusText(pane) != "Auto" ? 
-      GetStatusText(pane): wxString()));
+      GetStatusText(pane).ToStdString(): std::string()));
   }
   else
   {
@@ -1422,7 +1451,7 @@ EditorsNotebook::EditorsNotebook(wxWindow* parent,
   : wxExNotebook(parent, frame, id, pos, size, style)
 {
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxPostEvent(GetCurrentPage(), event);
+    wxPostEvent(wxAuiNotebook::GetCurrentPage(), event);
     }, ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
   
   Bind(wxEVT_AUINOTEBOOK_TAB_RIGHT_UP, [=](wxAuiNotebookEvent& event) {
@@ -1451,7 +1480,7 @@ EditorsNotebook::EditorsNotebook(wxWindow* parent,
       menu.Append(ID_ALL_CLOSE_OTHERS, _("Close Others"));
     }
 
-    wxExSTC* stc = wxDynamicCast(GetCurrentPage(), wxExSTC);
+    wxExSTC* stc = wxDynamicCast(wxAuiNotebook::GetCurrentPage(), wxExSTC);
     
     if (stc->GetFile().GetFileName().FileExists() && 
         wxExVCS::DirExists(stc->GetFile().GetFileName()))

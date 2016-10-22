@@ -36,6 +36,9 @@ TEST_CASE("wxExManagedFrame", "[stc]")
   REQUIRE( GetFrame()->GetExCommand(vi, "?"));
   REQUIRE( GetFrame()->GetExCommand(vi, "="));
   
+  REQUIRE(!GetFrame()->SaveCurrentPage("key"));
+  REQUIRE( GetFrame()->RestorePage("key") == nullptr);
+  
   GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR);
   GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR_FOCUS_STC);
   GetFrame()->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE);

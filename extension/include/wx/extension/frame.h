@@ -51,30 +51,36 @@ public:
   /// Returns an STC.
   virtual wxExSTC* GetSTC();
 
+  /// Returns true if file is opened in a window.
+  virtual bool IsOpen(const wxExFileName& filename);
+
   /// Called when an item dialog command event is triggered.
   virtual void OnCommandItemDialog(
     wxWindowID WXUNUSED(dialogid),
     const wxCommandEvent& WXUNUSED(event)) {};
 
   /// Default opens the file using GetSTC.
-  virtual bool OpenFile(
+  /// Returns stc component opened, or nullptr.
+  virtual wxExSTC* OpenFile(
     const wxExFileName& filename,
     int line_number = 0,
-    const wxString& match = wxEmptyString,
+    const std::string& match = std::string(),
     int col_number = 0,
     long flags = 0,
-    const wxString& command = wxEmptyString);
+    const std::string& command = std::string());
 
   /// Allows you to open a filename with info from vcs.
-  virtual bool OpenFile(
+  /// Returns stc component opened, or nullptr.
+  virtual wxExSTC* OpenFile(
     const wxExFileName& filename,
     const wxExVCSEntry& vcs,
     long flags = 0);
     
   /// Allows you to open a filename with specified contents.
-  virtual bool OpenFile(
+  /// Returns stc component opened, or nullptr.
+  virtual wxExSTC* OpenFile(
     const wxExFileName& filename,
-    const wxString& text,
+    const std::string& text,
     long flags = 0);
   
   /// Allows you to e.g. add debugging.

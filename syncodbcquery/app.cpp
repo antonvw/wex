@@ -205,7 +205,7 @@ Frame::Frame()
     const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
     m_Shell->Prompt(wxString::Format(_("\n%d queries (%.3f seconds)"),
       no_queries,
-      (float)milli.count() / (float)1000));
+      (float)milli.count() / (float)1000).ToStdString());
     m_Running = false;}, wxID_EXECUTE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -254,7 +254,7 @@ Frame::Frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_otl.Logon(this))
     {
-      m_Shell->SetPrompt(m_otl.Datasource() + ">");
+      m_Shell->SetPrompt(m_otl.Datasource().ToStdString() + ">");
     }}, ID_DATABASE_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -290,7 +290,7 @@ Frame::Frame()
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Stopped = true;
-    m_Shell->Prompt(_("cancelled"));}, ID_SHELL_COMMAND_STOP);
+    m_Shell->Prompt("cancelled");}, ID_SHELL_COMMAND_STOP);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     TogglePane("QUERY");}, ID_VIEW_QUERY);
@@ -347,23 +347,21 @@ void Frame::OnCommandItemDialog(
   }
 }
 
-bool Frame::OpenFile(
+wxExSTC* Frame::OpenFile(
   const wxExFileName& filename,
   int line_number,
-  const wxString& match,
+  const std::string& match,
   int col_number,
   long flags,
-  const wxString& command)
+  const std::string& command)
 {
-  if (m_Query->Open(filename, line_number, match, col_number, flags))
+  if (m_Query->Open(
+    filename, line_number, match, col_number, flags, command))
   {
     ShowPane("QUERY");
-    return true;
   }
-  else
-  {
-    return false;
-  }  
+  
+  return m_Query;
 }
 
 void Frame::RunQuery(const wxString& query, bool empty_results)

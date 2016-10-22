@@ -246,21 +246,19 @@ wxExSTC* wxExRepSampleFrame::GetSTC()
   return m_STC;
 }
   
-bool wxExRepSampleFrame::OpenFile(const wxExFileName& file,
+wxExSTC* wxExRepSampleFrame::OpenFile(const wxExFileName& file,
   int line_number,
-  const wxString& match,
+  const std::string& match,
   int col_number,
   long flags,
-  const wxString& command)
+  const std::string& command)
 {
   // We cannot use the wxExFrameWithHistory::OpenFile, as that uses GetSTC.
   // Prevent recursion.
-  if (flags & wxExSTC::STC_WIN_FROM_OTHER)
-  {
-    flags = 0;
-  }
+  flags = 0;
   
   m_STC->GetLexer().Reset();
-
-  return m_STC->Open(file, line_number, match, col_number, flags, command.ToStdString());
+  m_STC->Open(file, line_number, match, col_number, flags, command);
+  
+  return m_STC;
 }

@@ -20,7 +20,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
    The latter is handled the same, but also used as command to execute.
    You can set an accelerator everywhere using an & char (&amp;).
    -->
-  <gdb name="gdb">
+  <debug name="gdb">
     <commands>
       <command type = "main ellipses" > file </command>
       <command type = "main ellipses" > attach </command>
@@ -38,7 +38,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <command type = "popup" submenu = "break"> del breakpoints </command>
       <command type = "popup" submenu = "break"> info breakpoints </command>
     </commands>
-  </gdb>
+  </debug>
 
   <!--
    Each <vcs> has a name attribute (name of vcs used),

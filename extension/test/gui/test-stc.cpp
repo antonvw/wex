@@ -35,19 +35,19 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   SECTION("Find and Replace")
   {
     stc->SetText("hello stc and more text");
-    REQUIRE( stc->FindNext(wxString("hello")));
+    REQUIRE( stc->FindNext(std::string("hello")));
     REQUIRE( stc->GetWordAtPos(0) == "hello");
     
-    REQUIRE(!stc->FindNext(wxString("%d")));
-    REQUIRE(!stc->FindNext(wxString("%ld")));
-    REQUIRE(!stc->FindNext(wxString("%q")));
+    REQUIRE(!stc->FindNext(std::string("%d")));
+    REQUIRE(!stc->FindNext(std::string("%ld")));
+    REQUIRE(!stc->FindNext(std::string("%q")));
     
-    REQUIRE( stc->FindNext(wxString("hello"), wxSTC_FIND_WHOLEWORD));
-    REQUIRE(!stc->FindNext(wxString("HELLO"), wxSTC_FIND_MATCHCASE));
+    REQUIRE( stc->FindNext(std::string("hello"), wxSTC_FIND_WHOLEWORD));
+    REQUIRE(!stc->FindNext(std::string("HELLO"), wxSTC_FIND_MATCHCASE));
     REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE) > 0);
     
     wxExFindReplaceData::Get()->SetMatchCase(false);
-    REQUIRE( stc->FindNext(wxString("HELLO"))); // uses flags from frd
+    REQUIRE( stc->FindNext(std::string("HELLO"))); // uses flags from frd
     
     REQUIRE(!stc->SetIndicator(wxExIndicator(4,5), 100, 200));
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
@@ -63,25 +63,25 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     
     stc->DocumentStart();
     wxExFindReplaceData::Get()->SetMatchWord(false);
-    REQUIRE( stc->FindNext(wxString("more text")));
+    REQUIRE( stc->FindNext(std::string("more text")));
     INFO (stc->GetSelectedText() << stc->GetVi().GetModeString());
     REQUIRE( stc->GetFindString() == "more text");
     REQUIRE( stc->ReplaceAll("more", "less") == 1);
     REQUIRE( stc->ReplaceAll("more", "less") == 0);
-    REQUIRE(!stc->FindNext(wxString("more text")));
+    REQUIRE(!stc->FindNext(std::string("more text")));
     stc->SelectNone();
     REQUIRE(!stc->FindNext());
-    REQUIRE( stc->FindNext(wxString("less text")));
+    REQUIRE( stc->FindNext(std::string("less text")));
     REQUIRE( stc->ReplaceNext("less text", ""));
     REQUIRE(!stc->ReplaceNext());
-    REQUIRE(!stc->FindNext(wxString("less text")));
+    REQUIRE(!stc->FindNext(std::string("less text")));
     REQUIRE( stc->GetFindString() != "less text");
     REQUIRE( stc->ReplaceAll("%", "percent") == 0);
     
     stc->GotoLineAndSelect(1);
     REQUIRE(stc->GetCurrentLine() == 0);
     REQUIRE(stc->GetCurrentPos() == 0);
-    stc->GotoLineAndSelect(1, wxEmptyString, 5);
+    stc->GotoLineAndSelect(1, std::string(), 5);
     REQUIRE(stc->GetCurrentLine() == 0);
     REQUIRE(stc->GetCurrentPos() == 4);
   }
@@ -93,7 +93,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     stc->SetText("more text\notherline");
     stc->GetVi().Command("V");
     REQUIRE( stc->GetVi().GetMode() == wxExVi::MODE_VISUAL_LINE);
-    REQUIRE( stc->FindNext(wxString("more text")));
+    REQUIRE( stc->FindNext(std::string("more text")));
   }
 
   SECTION("Lexer")

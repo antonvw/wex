@@ -13,11 +13,24 @@
 #include <wx/timer.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/process.h>
-#include <wx/extension/itemdlg.h>
+#include <wx/extension/debug.h>
 #include <wx/extension/defs.h>
+#include <wx/extension/itemdlg.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/util.h> // for wxExConfigFirstOf
+
+#define DEBUG(SCOPE)                                       \
+{                                                          \
+  wxExManagedFrame* frame = dynamic_cast<                  \
+    wxExManagedFrame*>(wxTheApp->GetTopWindow());          \
+  if (frame != nullptr &&                                  \
+      frame->GetDebug() != nullptr &&                      \
+      frame->GetDebug()->GetProcess() == this)             \
+  {                                                        \
+    frame->GetDebug()->Process##SCOPE(text.ToStdString()); \
+  }                                                        \
+};
 
 #define GET_STREAM(SCOPE)                          \
 {                                                  \
@@ -31,7 +44,7 @@
                                                    \
       if (c != 0)                                  \
       {                                            \
-        output << c;                               \
+        text << c;                                 \
       }                                            \
     }                                              \
   }                                                \
@@ -123,39 +136,19 @@ void wxExProcess::CheckInput()
   
   wxCriticalSectionLocker lock(m_Critical);
   
-  wxString output;
+  wxString text;
   GET_STREAM(Input);
   GET_STREAM(Error);
   
-  if (!output.empty())
+  if (!text.empty())
   {
-    if (!m_Input.empty() && output.StartsWith(m_Input))
-    {
+    m_Shell->AppendText(
       // prevent echo of last input
-      m_Shell->AppendText(output.substr(m_Input.length()));
-    }
-    else
-    {
-      m_Shell->AppendText(output);
-    }
-
-    const int last = m_Shell->GetLength();
-    const wxString text(m_Shell->GetTextRange(last - 100, last));
-    std::vector<wxString> v;
-
-    if (wxExMatch("at (.*):([0-9]+)", text.ToStdString(), v) > 1)
-    {
-      const wxExFileName fn(v[0]);
-
-      if (fn.FileExists())
-      {
-        wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
-        frame->OpenFile(fn, atoi(v[1]));
-      }
-    }
-//      const wxString text(m_Debug->GetShell()->GetLine(m_Debug->GetShell()->GetLineCount() - 1));
-//      const int line(atoi(text));
-//      if (line > 0) stc->GotoLine(line);
+      !m_Input.empty() && text.StartsWith(m_Input) ?
+        text.substr(m_Input.length()):
+        text);
+    
+    DEBUG(Output);
   }
     
   if (!m_Input.empty())
@@ -165,7 +158,7 @@ void wxExProcess::CheckInput()
   }
 }
 
-bool wxExProcess::Command(const wxString& command)
+bool wxExProcess::Command(const wxString& text)
 {
   if (!IsRunning()) 
   {
@@ -181,14 +174,15 @@ bool wxExProcess::Command(const wxString& command)
     m_Shell->DocumentEnd();
   }
     
-  // Send command to process and restart timer.
+  // Send text to process and restart timer.
   wxOutputStream* os = GetOutputStream();
 
   if (os != nullptr)
   {
-    HandleCommand(command);
-    wxTextOutputStream(*os).WriteString(command + "\n");
-    m_Input = command;
+    HandleCommand(text);
+    DEBUG(Input);
+    wxTextOutputStream(*os).WriteString(text + "\n");
+    m_Input = text;
     wxMilliSleep(10);
     CheckInput();
     m_Timer->Start();
@@ -399,13 +393,9 @@ void wxExProcess::ShowOutput(const wxString& caption) const
     {
       m_Shell->AppendText(m_Output);
     }
-    else if (!m_Output.empty())
-    {
-      wxLogMessage(m_Output);
-    }
     else
     {
-      wxLogStatus("No output available");
+      std::cout << m_Output << "\n";
     }
   }
   else

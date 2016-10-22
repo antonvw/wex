@@ -26,7 +26,7 @@ wxExShell::wxExShell(wxWindow* parent,
   long menu_flags, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
   : wxExSTC(parent, std::string(),
       STC_WIN_NO_INDICATOR,
-      wxEmptyString, // title, used for name
+      std::string(), // title, used for name
       menu_flags, std::string(), id, pos, size, style)
   , m_CommandEnd((command_end == wxEmptyString ? GetEOL(): command_end))
   , m_Echo(echo)

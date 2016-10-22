@@ -11,7 +11,6 @@
 #endif
 #include <wx/tokenzr.h>
 #include <wx/extension/addressrange.h>
-#include <wx/extension/debug.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
@@ -29,9 +28,7 @@ public:
   GlobalEnv(wxExEx* ex, 
     const wxExIndicator& indicator, const wxString& commands)
   : m_Ex(ex)
-  , m_FindIndicator(indicator)
-  {
-    m_Ex->GetSTC()->SetIndicatorCurrent(m_FindIndicator.GetNo());
+  , m_FindIndicator(indicator) {
     m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
     m_Ex->GetSTC()->BeginUndoAction();
     
@@ -54,8 +51,7 @@ public:
           m_Commands.emplace_back(cmd);
         }
       }
-    }
-  }
+    }}
   
  ~GlobalEnv()
   {
@@ -339,7 +335,6 @@ bool wxExAddressRange::Escape(const wxString& command)
     if (m_Process == nullptr)
     {
       m_Process = new wxExProcess();
-      m_Ex->GetFrame()->GetDebug()->SetDebugProcess(m_Process);
     }
     
     const bool ok = m_Process->Execute(expanded, wxEXEC_ASYNC,
@@ -803,7 +798,6 @@ bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
   m_Pattern = pattern;
   m_Replacement = repl; 
   
-  m_STC->SetIndicatorCurrent(m_FindIndicator.GetNo());
   m_STC->SetSearchFlags(searchFlags);
   m_STC->BeginUndoAction();
   m_STC->SetTargetStart(m_STC->PositionFromLine(m_Ex->MarkerLine('#')));

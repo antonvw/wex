@@ -379,7 +379,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       wxExFileDialog dlg(this, &m_STC->GetFile());
       if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
       const auto start = std::chrono::system_clock::now();
-      m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
+      m_STC->Open(dlg.GetPath(), 0, std::string(), m_FlagsSTC);
       const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
       wxLogStatus(
         "wxExSTC::Open:%ld milliseconds, %d bytes", milli.count(), m_STC->GetTextLength());

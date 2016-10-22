@@ -13,6 +13,7 @@
 #include <wx/fileconf.h> 
 #include <wx/stdpaths.h>
 #include <wx/extension/app.h>
+#include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
@@ -33,6 +34,7 @@ int wxExApp::OnExit()
   delete wxExFindReplaceData::Set(nullptr);
   delete wxExLexers::Set(nullptr);
   delete wxExPrinting::Set(nullptr);
+  wxExEx::Cleanup();
 
   return wxApp::OnExit(); // this destroys the config
 }
@@ -57,7 +59,8 @@ bool wxExApp::OnInit()
     
     if (info == nullptr)
     {
-      wxLogMessage("Unknown language: " + wxConfigBase::Get()->Read("LANG"));
+      std::cout << "Unknown language: " << 
+        wxConfigBase::Get()->Read("LANG").ToStdString() << "\n";;
     }
   }
   
@@ -68,9 +71,7 @@ bool wxExApp::OnInit()
   // and do not want messages about loading non existing wxstd files.
   if (!m_Locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT))
   {
-#ifndef __WXOSX__
-    wxLogMessage("Could not init locale for: %d", lang);
-#endif
+    std::cout << "Could not init locale for: " << std::to_string(lang) << "\n";
   }
   
   // If there are catalogs in the catalog_dir, then add them to the m_Locale.
@@ -90,7 +91,8 @@ bool wxExApp::OnInit()
     {
       if (!m_Locale.AddCatalog(wxFileName(it).GetName()))
       {
-        wxLogMessage("Could not add catalog: " + wxFileName(it).GetName());
+        std::cout << "Could not add catalog: " << 
+          wxFileName(it).GetName(). ToStdString() << "\n";;
       }
     }
   }

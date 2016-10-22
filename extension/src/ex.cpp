@@ -20,6 +20,8 @@
 #include <wx/extension/address.h>
 #include <wx/extension/addressrange.h>
 #include <wx/extension/cmdline.h>
+#include <wx/extension/ctags.h>
+#include <wx/extension/debug.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
@@ -91,6 +93,7 @@ public:
 };
 
 ex_evaluator wxExEx::m_Evaluator;
+wxExCTags* wxExEx::m_CTags = nullptr;
 wxExSTCEntryDialog* wxExEx::m_Dialog = nullptr;
 wxExViMacros wxExEx::m_Macros;
 std::string wxExEx::m_LastCommand;
@@ -137,6 +140,9 @@ wxExEx::wxExEx(wxExSTC* stc)
       if (command.find(" ") == std::string::npos) return true;
       wxSetWorkingDirectory(wxString(command).AfterFirst(' ').Trim(false)); return true;}},
     {":close", [&](const std::string& command) {POST_COMMAND( wxID_CLOSE ) return true;}},
+    {":de", [&](const std::string& command) {
+      m_Frame->GetDebug()->Execute(wxString(command).AfterFirst(' ').ToStdString(), m_STC);
+      return true;}},
     {":e", [&](const std::string& command) {POST_COMMAND( wxID_OPEN ) return true;}},
     {":grep", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPORT_FIND ) return true;}},
     {":help", [&](const std::string& command) {POST_COMMAND( wxID_HELP ) return true;}},
@@ -261,12 +267,12 @@ wxExEx::wxExEx(wxExSTC* stc)
         {
           if (line == command)
           {
-            wxLogMessage("skip recursive %s on line %d", line.c_str(), i);
+            std::cout << line << ": recursive (line: " << std::to_string(i + 1) << ")\n";
             return false;
           }
           else if (!Command(line))
           {
-            wxLogMessage("%s on line %d failed", line.c_str(), i + 1);
+            std::cout << line << ": error (line: " << std::to_string(i + 1) << ")\n";
             return false;
           }
         }
@@ -289,6 +295,9 @@ wxExEx::wxExEx(wxExSTC* stc)
       }
       m_Frame->StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
       return true;}},
+    {":ta", [&](const std::string& command) {
+      m_CTags->Find(wxString(command).AfterFirst(' ').ToStdString());
+      return true;}},
     {":una", [&](const std::string& command) {
       wxStringTokenizer tkz(command, " ");
       if (tkz.CountTokens() >= 2)
@@ -306,6 +315,11 @@ wxExEx::wxExEx(wxExSTC* stc)
       return true;}}}
 {
   wxASSERT(m_Frame != nullptr);
+  
+  if (m_CTags == nullptr)
+  {
+    m_CTags = new wxExCTags(m_Frame);
+  }
 }
 
 void wxExEx::AddText(const std::string& text)
@@ -376,13 +390,15 @@ double wxExEx::Calculator(const std::string& text, int& width)
   return val;
 }
 
+void wxExEx::Cleanup()
+{
+  delete m_CTags;
+}
+  
 bool wxExEx::Command(const std::string& command, bool is_handled)
 {
-  if (!m_IsActive || command.empty())
-  {
-    return false;
-  }
-
+  if (!m_IsActive || command.empty() || command.front() != ':') return false;
+    
   wxExSTC* stc = nullptr;
 
   if (m_Frame->ExecExCommand(command, stc))
@@ -391,28 +407,23 @@ bool wxExEx::Command(const std::string& command, bool is_handled)
     {
       m_STC = stc;
     }
-    return true;
-  }
-  if (command.front() != ':')
-  {
-    return false;
   }
   else if (command == ":" || command == ":'<,'>")
   {
     m_Frame->GetExCommand(this, command);
-    return true;
   }
   else if (CommandHandle(command) ||
            CommandAddress(command.substr(1)))
   {
     SetLastCommand(command);
     m_Macros.Record(command);
-    return true;
   }
   else
   {
     return false;
   }
+
+  return true;
 }
 
 bool wxExEx::CommandAddress(const std::string& command)
@@ -440,7 +451,7 @@ bool wxExEx::CommandAddress(const std::string& command)
     const std::string addrm("'[a-z]"); // addr using marker
     const std::string cmd_group1("([aikrz=]|pu)(.*)"); // 1 addr command
     const std::string cmd_group2("([cdgjmpsStvywy<>\\!&~])(.*)"); // 2 addr command
-    std::vector <wxString> v;
+    std::vector <std::string> v;
     
     if (
       // a % address range
@@ -471,7 +482,8 @@ bool wxExEx::CommandAddress(const std::string& command)
           addr1 = true;
           range_str = v[0];
           cmd = v[1];
-          rest = v[2].Trim(false);
+          rest = v[2];
+          rest.Trim(false);
           break;
         case 4:
           range_str = v[0] + v[1];

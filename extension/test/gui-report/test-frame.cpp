@@ -27,7 +27,7 @@ TEST_CASE("wxExFrameWithHistory")
   REQUIRE(!GetFrame()->OpenFile(
     wxExFileName(GetProject()),
     0,
-    wxEmptyString,
+    std::string(),
     wxExFrameWithHistory::WIN_IS_PROJECT));
   
   wxExFindReplaceData::Get()->SetFindString("wxExTestApp");

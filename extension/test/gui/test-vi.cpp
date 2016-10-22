@@ -88,7 +88,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   
   // Test change number.
   event.m_uniChar = WXK_CONTROL_E;
-  for (const auto& number: std::vector<wxString> {
+  for (const auto& number: std::vector<std::string> {
     "101", "0xf7", "077", "-99"})
   {
     stc->SetText("number: " + number);
@@ -548,6 +548,9 @@ TEST_CASE("wxExVi", "[stc][vi]")
     ChangeMode( vi, visual.first, visual.second);
     ChangeMode( vi, "jjj", visual.second);
     ChangeMode( vi, visual.first, visual.second); // second has no effect
+    // enter illegal command
+    vi->Command("g");
+    vi->Command("j");
     ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
     
     event.m_uniChar = visual.first[0];
@@ -593,4 +596,11 @@ TEST_CASE("wxExVi", "[stc][vi]")
 
     REQUIRE( stc->GetCurrentLine() == go.second);
   }
+  
+  // test ctags
+  stc->SetText("no tag");
+  REQUIRE( vi->Command("Q"));
+  stc->SetText("wxExTestApp");
+  REQUIRE( vi->Command("Q"));
+  REQUIRE( vi->Command("S"));
 }
