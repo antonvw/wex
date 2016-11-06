@@ -36,13 +36,18 @@ TEST_CASE("wxExDebug", "[process]")
   REQUIRE( item > ID_EDIT_DEBUG_FIRST );
   REQUIRE( item < ID_EDIT_DEBUG_LAST);
 
+#ifndef __WXMSW__
   REQUIRE( dbg.Execute("break"));
   REQUIRE( dbg.Execute("break", GetSTC()));
+#endif
   REQUIRE( dbg.GetBreakpoints().empty()); // no file loaded
-  REQUIRE(!dbg.Execute("xxxx"));
+#ifndef __WXMSW__
   REQUIRE( dbg.GetProcess() != nullptr);
+#endif
 
+#ifndef __WXMSW__
   REQUIRE( dbg.Execute(item - ID_EDIT_DEBUG_FIRST));
+#endif
   REQUIRE(!dbg.Execute(item));
   
   dbg.ProcessInput("test");

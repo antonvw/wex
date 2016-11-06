@@ -122,17 +122,25 @@ char ConvertKeyEvent(const wxKeyEvent& event)
 // no auto, does not compile under MSW
 bool DeleteRange(wxExVi* vi, int start, int end)
 {
-  if (!vi->GetSTC()->GetReadOnly() && !vi->GetSTC()->HexMode())
+  if (!vi->GetSTC()->GetReadOnly())
   {
     const auto first = (start < end ? start: end);
     const auto last = (start < end ? end: start);
-    const wxCharBuffer b(vi->GetSTC()->GetTextRangeRaw(first, last));
   
-    vi->GetMacros().SetRegister(
-      vi->GetRegister() ? vi->GetRegister(): '0', 
-      std::string(b.data(), b.length()));
+    if (!vi->GetSTC()->HexMode())
+    {
+      const wxCharBuffer b(vi->GetSTC()->GetTextRangeRaw(first, last));
     
-    vi->GetSTC()->DeleteRange(first, last - first);
+      vi->GetMacros().SetRegister(
+        vi->GetRegister() ? vi->GetRegister(): '0', 
+        std::string(b.data(), b.length()));
+      
+      vi->GetSTC()->DeleteRange(first, last - first);
+    }
+    else
+    {
+      vi->GetSTC()->GetHexMode().Delete(last - first, first);
+    }
   }
   
   return true;
@@ -385,9 +393,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         {
           if (GetSTC()->HexMode())
           {
-            wxExHexModeLine ml(&GetSTC()->GetHexMode());
-          
-            if (!ml.Replace(command.back()))
+            if (!GetSTC()->GetHexMode().Replace(command.back()))
             {
               m_Command.clear();
               return false;
@@ -417,11 +423,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       GetCTags()->Find(GetSTC()->GetWordAtPos(GetSTC()->GetCurrentPos()));
       return true;}},
     {"S", [&](const std::string& command){
-      wxExSTC* stc = GetFrame()->RestorePage("ctags");
-      if (stc != nullptr)
-      {
-        m_STC = stc;
-      }
+      GetFrame()->RestorePage("ctags");
       return true;}},
     {"X", [&](const std::string& command){
       return DeleteRange(this, GetSTC()->GetCurrentPos() - m_Count, GetSTC()->GetCurrentPos());}},
@@ -635,11 +637,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       return false;}},
     // ctrl-t
     {"\x14", [&](const std::string& command){
-      wxExSTC* stc = GetFrame()->RestorePage("ctags");
-      if (stc != nullptr)
-      {
-        m_STC = stc;
-      }
+      GetFrame()->RestorePage("ctags");
       return true;}},
     // ctrl-]
     {"\x5D", [&](const std::string& command){
@@ -882,6 +880,22 @@ bool wxExVi::InsertMode(const std::string& command)
   if (command.empty())
   {
     return false;
+  }
+  else if (GetSTC()->HexMode())
+  {
+    if ((int)command.back() == WXK_ESCAPE)
+    {
+      if (m_FSM.Transition("\x1b"))
+      {
+        GetSTC()->SetOvertype(false);
+      }
+    }
+    else
+    {
+      GetSTC()->GetHexMode().Insert(command, GetSTC()->GetCurrentPos());
+    }
+  
+    return true;
   }
   // add control chars
   else if (command.size() == 2 && command[1] == 0)
@@ -1150,7 +1164,7 @@ bool wxExVi::MotionCommand(int type, std::string& command, bool is_handled)
       break;
     
     case MOTION_DELETE:
-      if (GetSTC()->GetReadOnly() || GetSTC()->HexMode())
+      if (GetSTC()->GetReadOnly())
       {
         return true;
       }

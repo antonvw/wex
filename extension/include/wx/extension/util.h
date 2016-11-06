@@ -192,9 +192,10 @@ long wxExMake(
 bool wxExMarkerAndRegisterExpansion(wxExEx* ex, wxString& command);
 
 /// Regular expression match.
-/// Returns -1 of text does not match, if
-/// there are submatches present, if fills the vector 
-/// and number of submatches present in the vector.
+/// Returns:
+/// - -1 if text does not match or there is an error
+/// - 0 if text matches, but no submatches present, v is untouched
+/// - submatches, it fills v with the submatches
 int wxExMatch(
   /// regular expression
   const std::string& regex,

@@ -35,6 +35,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <command type = "popup separator" > until </command>
       <command type = "popup separator" > print </command>
       <command type = "popup" submenu = "break"> break </command>
+      <command type = "popup separator" submenu = "break"> del breakpoint </command>
       <command type = "popup" submenu = "break"> del breakpoints </command>
       <command type = "popup" submenu = "break"> info breakpoints </command>
     </commands>

@@ -48,6 +48,9 @@ public:
   /// Changes range.
   bool Change(const wxString& command) const;
   
+  /// Cleans up (process).
+  static void Cleanup();
+  
   /// Copies range to destination.
   bool Copy(const wxExAddress& destination) const;
   

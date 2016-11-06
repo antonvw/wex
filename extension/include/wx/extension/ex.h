@@ -157,8 +157,6 @@ protected:
   /// Setting register 0 results in
   /// disabling current register.
   void SetRegister(const char name) {m_Register = name;};
-protected:
-  wxExSTC* m_STC;
 private:
   bool CommandHandle(const std::string& command) const;
   bool CommandAddress(const std::string& command);
@@ -184,6 +182,7 @@ private:
   char m_Register = 0;
   
   wxExManagedFrame* m_Frame;  
+  wxExSTC* m_STC;
 
   const std::vector<std::pair<
     const std::string, 

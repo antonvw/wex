@@ -41,6 +41,10 @@ public:
     bool select = false,
     const wxBitmap& bitmap = wxNullBitmap);
 
+  /// Changes the selection for the given page, returning the previous selection.
+  /// If the key does not exist an empty string is returned.
+  const wxString ChangeSelection(const wxString& key);
+
   /// Deletes the page with the given key.
   /// Returns true if page could be deleted.
   bool DeletePage(const wxString& key);
@@ -114,7 +118,7 @@ public:
   const wxString GetCurrentPage();
 
   /// Returns the key specified by the given page.
-  /// If the page or i nullptr does not exist an empty string is returned.
+  /// If the page does not exist or is nullptr an empty string is returned.
   const wxString GetKeyByPage(wxWindow* page) const {
     if (page == nullptr) return wxString();
     const auto& it = m_Windows.find(page);

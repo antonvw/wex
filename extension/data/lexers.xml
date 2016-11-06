@@ -2065,7 +2065,8 @@ Copyright: (c) 2016, Anton van Wezenbeek
         <def style ="comment"> fore:forest green,italic,back:#F1F1F1,eol </def>
         <def style ="commentdockeyword"> fore:medium sea green,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
-        <def style ="folder"> light blue </def>
+        <def style ="folder"> blue </def>
+        <def style ="folder-back"> light blue </def>
         <def style ="identifier"> fore:black</def>
         <def style ="keyword1"> fore:dark turquoise </def>
         <def style ="keyword2"> fore:dark green </def>
@@ -2098,7 +2099,8 @@ Copyright: (c) 2016, Anton van Wezenbeek
         <def style ="comment"> fore:#80a0ff,italic,back:#2D2D2D,eol </def>
         <def style ="commentdockeyword"> fore:medium sea green,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
-        <def style ="folder"> light blue </def>
+        <def style ="folder"> blue </def>
+        <def style ="folder-back"> light blue </def>
         <def style ="identifier"> fore:white</def>
         <def style ="label"> fore:medium slate blue,italic </def>
         <def style ="keyword1"> fore:yellow </def>
@@ -2132,7 +2134,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
    <marker symbol number><','><foreground colour><','><background colour>
    -->
     <!-- checker board colours: background colour, foreground colour -->
-    <foldmargin> black, black </foldmargin>
+    <foldmargin> dim grey, black </foldmargin>
     
     <hex no="style_bracelight"> back:red </hex>
 
@@ -2143,13 +2145,13 @@ Copyright: (c) 2016, Anton van Wezenbeek
 		  -->
     <indicator no="1"> indic_squiggle,red </indicator>
 
-    <marker no="marknum_folderend"> mark_plus,folder </marker>
-    <marker no="marknum_folderopenmid"> mark_minus,folder </marker>
-    <marker no="marknum_foldermidtail"> mark_tcornercurve,folder,folder</marker>
-    <marker no="marknum_foldertail"> mark_lcornercurve,folder,folder </marker>
-    <marker no="marknum_foldersub"> mark_vline,folder,folder</marker>
-    <marker no="marknum_folder"> mark_plus,folder </marker>
-    <marker no="marknum_folderopen"> mark_minus,folder </marker>
+    <marker no="marknum_folderend"> mark_plus,folder,folder-back </marker>
+    <marker no="marknum_folderopenmid"> mark_minus,folder,folder-back </marker>
+    <marker no="marknum_foldermidtail"> mark_tcornercurve,folder,folder-back</marker>
+    <marker no="marknum_foldertail"> mark_lcornercurve,folder,folder-back </marker>
+    <marker no="marknum_foldersub"> mark_vline,folder,folder-back</marker>
+    <marker no="marknum_folder"> mark_plus,folder,folder-back </marker>
+    <marker no="marknum_folderopen"> mark_minus,folder,folder-back </marker>
     
     <!-- ex_marknum_change is used by stc to show changes -->
     <marker no="ex_marknum_change">mark_fullrect,green,light blue</marker>

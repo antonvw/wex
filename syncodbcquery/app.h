@@ -45,9 +45,9 @@ private:
   virtual wxExSTC* OpenFile(
     const wxExFileName& filename, 
     int line_number = 0, 
-    const std::sting& match = std::string(), 
+    const std::string& match = std::string(), 
     int col_number = 0, long flags = 0, 
-    const std::sting& command = std::string()) override;
+    const std::string& command = std::string()) override;
 
   void RunQuery(const wxString& query, bool empty_results = false);
 

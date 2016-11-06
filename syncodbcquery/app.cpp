@@ -324,7 +324,7 @@ Frame::Frame()
   // Do automatic connect.
   if (!m_otl.Datasource().empty() && m_otl.Logon())
   {
-    m_Shell->SetPrompt(m_otl.Datasource() + ">");
+    m_Shell->SetPrompt(m_otl.Datasource().ToStdString() + ">");
   }
   else
   {

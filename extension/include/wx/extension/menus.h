@@ -85,8 +85,8 @@ public:
           wxExEllipsed(
             it.GetCommand(false, true), // use no sub and do accel
             wxEmptyString,
-            it.GetType() & wxExMenuCommand::MENU_COMMAND_ELLIPSES));
-        if (it.GetType() & wxExMenuCommand::MENU_COMMAND_SEPARATOR)
+            (it.GetType() & wxExMenuCommand::MENU_COMMAND_ELLIPSES) > 0));
+        if ((it.GetType() & wxExMenuCommand::MENU_COMMAND_SEPARATOR) > 0)
         {
           usemenu->AppendSeparator();
         }

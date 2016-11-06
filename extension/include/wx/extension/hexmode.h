@@ -1,45 +1,61 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      hexmode.h
-// Purpose:   Declaration of class wxExHexMode and wxExHexModeLine
+// Purpose:   Declaration of class wxExHexMode
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wx/string.h>
+#include <string>
 
+class wxExHexModeLine;
 class wxExSTC;
-  
+
 /// Offers a hex mode.
 class WXDLLIMPEXP_BASE wxExHexMode
 {
+  friend wxExHexModeLine;
 public:
   /// Constructor.
-  wxExHexMode(wxExSTC* stc);
+  wxExHexMode(
+    /// stc to view in hexmode
+    wxExSTC* stc,
+    /// hex field                                       ascii field
+    /// 23 69 6e 63 6c 75 64 65 20 3c 77 78 2f 63 6d 64 #include <wx/cmd
+    /// 6c 69 6e 65 2e 68 3e 20 2f 2f 20 66 6f 72 20 77 line.h> // for w
+    /// 78 43 6d 64 4c 69 6e 65 50 61 72 73 65 72 0a 23 xCmdLineParser #
+    /// <---------------------------------------------> bytesPerLine
+    wxFileOffset bytesPerLine = 16);
   
   /// Returns true if hex mode is on.
   bool Active() const {return m_Active;};
   
-  /// Appends hex mode lines to stc component.  
-  void AppendText(const wxCharBuffer& buffer);
+  /// If hex mode is on, appends hex mode lines to stc component. 
+  /// The text should be normal ascii text, it is encoded while appending.
+  void AppendText(const std::string& text);
   
-  /// Clears the buffer.
-  void Clear();
-
   /// Shows a control char dialog.  
-  void ControlCharDialog(const wxString& caption);
+  void ControlCharDialog(const std::string& caption);
+  
+  /// Deletes chars at current index at current line for
+  /// both ascii and hex field.
+  bool Delete(int count = 1, int pos = -1);
   
   /// Returns the buffer.
   /// The buffer contains the normal text, without hex info.
-  const wxString& GetBuffer() const {return m_Buffer;};
+  const auto & GetBuffer() const {return m_Buffer;};
   
-  /// Returns STC component.
-  wxExSTC* GetSTC() {return m_STC;};
-  
+  /// Returns info about current index,
+  /// depending on which field is current.
+  const std::string GetInfo();
+
   /// Asks for a byte offset goes to that byte.
   bool GotoDialog();
 
+  /// Returns STC component.
+  auto * GetSTC() {return m_STC;};
+  
   /// Highlights the corresponding char for the other field
   /// for the current position.
   bool HighlightOther();
@@ -47,107 +63,48 @@ public:
   /// Highlights the corresponding char for the other field.
   bool HighlightOther(int pos);
 
-  /// Returns printable char.  
-  wxUniChar Printable(unsigned int c) const;
+  /// Inserts ascii text at position.
+  /// Insert is only possible at ascii field.
+  bool Insert(const std::string& text, int pos = -1);
+  
+  /// Replaces current line at current index (if pos -1) with char for
+  /// both ascii and hex field. Otherwise at specified pos.
+  bool Replace(char c, int pos = -1);
+  
+  /// Replaces target with replacement text.
+  /// This is only possible for hex the field, 
+  /// therefore the target start and target end should be within
+  /// the hex field.
+  /// Returns false if target outside area, or replacement
+  /// text has invalid chars, or doc is readonly.
+  bool ReplaceTarget(
+    /// should contain hex codes (uppercase): 303AFF.
+    const std::string& replacement,
+    /// invokes SetText after replacing.
+    bool settext = true);
 
   /// Sets hex mode.  
-  void Set(
-    /// sets it on or off
-    bool on, 
-    /// if on, starts with specified text.
-    const wxCharBuffer& text = wxCharBuffer());
+  void Set(bool on);
 
-  /// Sets a byte in the buffer to a value.  
-  /// The original buffer is not changed so it can be undone.  
-  bool SetBuffer(size_t index, int value);
-  
-  /// Undo change, sets the buffer to the original buffer.
-  void Undo();
-private:
-  void Activate(const wxCharBuffer& text = wxCharBuffer());
-  void Deactivate();
-  
-  bool m_Active = false;
-  int m_Goto = 0;
-  
-  wxString m_Buffer;
-  wxString m_BufferOriginal;
-  wxExSTC* m_STC;
-};
-
-/// Offers a hex mode line.
-/*
-e.g.:
-<- start_hex_field                              <- start_ascii_field
-hex field                                       ascii field
-23 69 6e 63 6c 75 64 65 20 3c 77 78 2f 63 6d 64 #include <wx/cmd
-6c 69 6e 65 2e 68 3e 20 2f 2f 20 66 6f 72 20 77 line.h> // for w
-78 43 6d 64 4c 69 6e 65 50 61 72 73 65 72 0a 23 xCmdLineParser #
-<---------------------------------------------> bytes_per_line
-<-> each_hex_field
-*/
-class WXDLLIMPEXP_BASE wxExHexModeLine
-{
-public:
-  /// Constructor.
-  /// Uses current position and line.
-  wxExHexModeLine(wxExHexMode* hex);
-  
-  /// Constructor.
-  /// Specify position or byte offset.
-  /// Default assumes you specify a position.
-  wxExHexModeLine(wxExHexMode* hex, 
-    int pos_or_offset, 
-    bool is_position = true);
-
-  /// Returns info about current index,
-  /// depending on which field is current.
-  const wxString GetInfo() const;
-  
-  /// Goes to position in stc component as
-  /// implied by current line and index.
-  bool Goto() const;
-  
-  /// Returns true if current index is within ascii field.
-  bool IsAsciiField() const;
-  
-  /// Returns true if current index is within hex field.
-  bool IsHexField() const;
-  
-  /// Returns true if current index refers to a readonly position in current line.
-  /// (as on a space).
-  bool IsReadOnly() const;
-
-  /// If on ascii field, return index for hex field,
-  /// if on hex field, return index for ascii field,
-  /// if invalid field, returns wxSTC_INVALID_POSITION.
-  int OtherField() const;
-  
-  /// Replaces current line at current index with char for
-  /// both ascii and hex field.
-  bool Replace(const wxUniChar& c);
-  
-  /// Replaces current line at current and next index (the hex field) 
-  /// with value for both ascii and hex field. 
-  bool ReplaceHex(int value);
-  
-  /// Sets line and index from specified position on stc component.
-  void Set(int pos);
-  
   /// Sets caret pos on stc, depending on event and 
   /// where we are.
   void SetPos(const wxKeyEvent& event);
+  
+  /// Sets text, if hex mode is on. 
+  /// The text should be normal ascii text, it is encoded while appending.
+  void SetText(const std::string text);
+
+  /// Undo change, sets the buffer to the original buffer.
+  void Undo();
 private:
-  int Convert(int offset) const;
+  void Activate();
+  void Deactivate();
   
-  int GetAsciiField() const;
-  /// Returns the byte no for this position (hex field).
-  int GetByte() const;
-  int GetHexField() const;
+  const wxFileOffset m_BytesPerLine, m_EachHexField;
+
+  bool m_Active = false;
+  int m_Goto = 0;
   
-  wxString m_Line;
-  int m_LineNo;
-  int m_Index;
-  
-  wxExHexMode* m_Hex;
+  std::string m_Buffer, m_BufferOriginal;
+  wxExSTC* m_STC;
 };

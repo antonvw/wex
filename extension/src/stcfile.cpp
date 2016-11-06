@@ -162,7 +162,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
   }
   else
   {
-    m_STC->GetHexMode().AppendText(*buffer);
+    m_STC->GetHexMode().AppendText(std::string(buffer->data(), buffer->length()));
   }
 
   if (get_only_new_data)

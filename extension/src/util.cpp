@@ -552,6 +552,7 @@ int wxExMatch(const std::string& reg, const std::string& text,
     if (m.size() > 1)
     {
       v.clear();
+
       for (size_t i = 1; i < m.size(); i++)
       {
         v.emplace_back(m[i]);

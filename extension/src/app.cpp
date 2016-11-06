@@ -13,6 +13,7 @@
 #include <wx/fileconf.h> 
 #include <wx/stdpaths.h>
 #include <wx/extension/app.h>
+#include <wx/extension/addressrange.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
@@ -34,6 +35,8 @@ int wxExApp::OnExit()
   delete wxExFindReplaceData::Set(nullptr);
   delete wxExLexers::Set(nullptr);
   delete wxExPrinting::Set(nullptr);
+
+  wxExAddressRange::Cleanup();
   wxExEx::Cleanup();
 
   return wxApp::OnExit(); // this destroys the config

@@ -127,8 +127,7 @@ bool wxExViFSM::Transition(const std::string& command)
     return false;
   }
   
-  if (key == KEY_INSERT &&
-    (m_vi->GetSTC()->GetReadOnly() || m_vi->GetSTC()->HexMode()))
+  if (key == KEY_INSERT && m_vi->GetSTC()->GetReadOnly())
   {
     return true;
   }
@@ -138,11 +137,12 @@ bool wxExViFSM::Transition(const std::string& command)
   switch (m_State)
   {
     case wxExVi::MODE_INSERT:
+      if (!m_vi->GetSTC()->HexMode())
       {
-      const auto& it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
-        [command](auto const& e) {return e.first == command[0];});
-      if (it != m_InsertCommands.end() && it->second != nullptr)
-        it->second();
+        const auto& it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
+          [command](auto const& e) {return e.first == command[0];});
+        if (it != m_InsertCommands.end() && it->second != nullptr)
+          it->second();
       }
       break;
       

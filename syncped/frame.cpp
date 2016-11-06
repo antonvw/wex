@@ -1307,8 +1307,7 @@ wxExSTC* Frame::RestorePage(const std::string& key)
 {
   if (!m_SavedPage.empty() && IsOpen(m_SavedPage))
   {
-    m_Editors->DeletePage(m_Editors->GetCurrentPage());
-    return (wxExSTC*)m_Editors->SetSelection(m_SavedPage);
+    m_Editors->ChangeSelection(m_SavedPage);
   }
   
   return nullptr;

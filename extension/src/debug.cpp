@@ -52,32 +52,49 @@ int wxExDebug::AddMenu(wxExMenu* menu, bool popup) const
   return ret;
 }
   
-bool wxExDebug::Execute(const std::string& item, wxExSTC* stc)
+bool wxExDebug::DeleteAllBreakpoints(const std::string& text)
 {
-  for (const auto& it : m_Entry.GetCommands())
+  std::vector<std::string> v;
+
+  if (wxExMatch("(d|del|delete|Delete) (all )?breakpoints", text, v) >= 1)
   {
-    if (it.GetCommand() == item)
+    for (const auto& it: m_Breakpoints)
     {
-      std::string args;
-
-      if (!GetArgs(item, args, stc) ||
-        ( m_Process == nullptr &&
-         (m_Process = m_Frame->Process(m_Entry.GetName())) == nullptr))
-         return false;
-
-      m_Frame->ShowPane("PROCESS"); 
-
-      return m_Process->Command(it.GetCommand() + args);
+      if (m_Frame->IsOpen(std::get<0>(it.second)))
+      {
+        wxExSTC* stc = m_Frame->OpenFile(std::get<0>(it.second));
+        stc->MarkerDeleteAll(m_MarkerBreakpoint.GetNo());
+      }
     }
+
+    m_Breakpoints.clear();
+    
+    return true;
   }
   
   return false;
+}
+  
+bool wxExDebug::Execute(const std::string& action, wxExSTC* stc)
+{
+  std::string args;
+
+  if (!GetArgs(action, args, stc) ||
+     (m_Process == nullptr &&
+     (m_Process = m_Frame->Process(m_Entry.GetName())) == nullptr))
+     return false;
+
+  m_Frame->ShowPane("PROCESS"); 
+
+  return m_Process->Command(action + args);
 }
 
 bool wxExDebug::GetArgs(
   const std::string& command, std::string& args, wxExSTC* stc)
 {
-  if (command == "attach")
+  std::vector<std::string> v;
+
+  if (wxExMatch("^(at|attach)", command, v) == 0)
   {
     const long pid = wxGetNumberFromUser(
       _("Input:"),
@@ -89,12 +106,26 @@ bool wxExDebug::GetArgs(
     
     args += " " + std::to_string(pid);
   }
-  else if (command == "break" && stc != nullptr)
+  else if ((wxExMatch("^(br|break)", command, v) == 1) && stc != nullptr)
   {
     args += " " +
       stc->GetFileName().GetFullPath() + ":" + 
       std::to_string(stc->GetCurrentLine()); 
   }
+  else if ((wxExMatch("^(d|del|delete) (br|breakpoint)", command, v) > 0) && stc != nullptr)
+  {
+    for (const auto& it: m_Breakpoints)
+    {
+      if (
+        stc->GetFileName() == std::get<0>(it.second) &&
+        stc->GetCurrentLine() == std::get<2>(it.second))
+      {
+        args += " " + it.first;
+        break;
+      }
+    }
+  }
+  else if (DeleteAllBreakpoints(command)) {}
   else if (command == "file")
   {
     if (wxExItemDialog(
@@ -105,11 +136,11 @@ bool wxExDebug::GetArgs(
     
     args += " " + wxExConfigFirstOf("File"); 
   }
-  else if (command == "print" && stc != nullptr)
+  else if ((wxExMatch("^(p|print)", command, v) == 1) && stc != nullptr)
   {
     args += " " + stc->GetSelectedText(); 
   }
-  else if (command == "until" && stc != nullptr)
+  else if ((wxExMatch("(u|until)", command, v) == 1) && stc != nullptr)
   {
     args += " " + std::to_string(stc->GetCurrentLine());
   }
@@ -121,9 +152,9 @@ void wxExDebug::ProcessInput(const std::string& text)
 {
   std::vector<std::string> v;
 
-  if (wxExMatch("(?:del|delete) breakpoint ([0-9]+)", text, v) > 0)
+  if (wxExMatch("(d|del|delete) (br|breakpoint) ([0-9]+)", text, v) == 3)
   {
-    const auto& it = m_Breakpoints.find(v[0]);
+    const auto& it = m_Breakpoints.find(v[2]);
 
     if (it != m_Breakpoints.end() && m_Frame->IsOpen(std::get<0>(it->second)))
     {
@@ -131,17 +162,9 @@ void wxExDebug::ProcessInput(const std::string& text)
       stc->MarkerDeleteHandle(std::get<1>(it->second));
     }
   }
-  else if (wxExMatch("(del|delete) breakpoints", text, v) == 1)
+  else 
   {
-    for (const auto& it: m_Breakpoints)
-    {
-      if (m_Frame->IsOpen(std::get<0>(it.second)))
-      {
-        wxExSTC* stc = m_Frame->OpenFile(std::get<0>(it.second));
-        stc->MarkerDeleteAll(m_MarkerBreakpoint.GetNo());
-      }
-    }
-    m_Breakpoints.clear();
+    DeleteAllBreakpoints(text);
   }
 }
 
@@ -156,11 +179,18 @@ void wxExDebug::ProcessOutput(const std::string& text)
   {
     wxExFileName filename(v[1]);
     filename.MakeAbsolute();
-    wxExSTC* stc = m_Frame->OpenFile(filename);
-    const int id = stc->MarkerAdd(
-      std::stoi(v[2]), m_MarkerBreakpoint.GetNo());
-    m_Breakpoints[v[0]] = std::make_tuple(filename, id, std::stoi(v[2]));
+    if (filename.FileExists())
+    {
+      wxExSTC* stc = m_Frame->OpenFile(filename);
+      if (stc != nullptr)
+      {
+        const int id = stc->MarkerAdd(
+          std::stoi(v[2]), m_MarkerBreakpoint.GetNo());
+        m_Breakpoints[v[0]] = std::make_tuple(filename, id, std::stoi(v[2]));
+      }
+    }
   }
+  else if (DeleteAllBreakpoints(text)) {}
   else if (wxExMatch("at (.*):([0-9]+)", text, v) > 1)
   {
     m_FileName = wxExFileName(v[0]);

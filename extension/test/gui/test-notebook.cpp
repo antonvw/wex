@@ -65,7 +65,15 @@ TEST_CASE("wxExNotebook", "[stc][!throws]")
   REQUIRE(notebook->GetCurrentPage() == "key3");
   REQUIRE(notebook->SetSelection("XXX") == nullptr);
   REQUIRE(notebook->GetCurrentPage() == "key3");
-  
+
+  // Test ChangeSelection.
+  REQUIRE(notebook->ChangeSelection("KEY1") == "key3");
+  REQUIRE(notebook->GetCurrentPage() == "KEY1");
+  REQUIRE(notebook->ChangeSelection("key3") == "KEY1");
+  REQUIRE(notebook->GetCurrentPage() == "key3");
+  REQUIRE(notebook->ChangeSelection("XXX") == wxEmptyString);
+  REQUIRE(notebook->GetCurrentPage() == "key3");
+
   // Prepare next test, delete all pages.
   REQUIRE(notebook->DeletePage("KEY0"));
   REQUIRE(notebook->DeletePage("KEY1"));

@@ -108,7 +108,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   {
     if (HexMode())
     {
-      m_HexMode.AppendText(value.c_str());
+      m_HexMode.AppendText(value);
     }
     else
     {
@@ -978,7 +978,7 @@ void wxExSTC::GuessType()
   const int sample_size = (length > 255 ? 255: length);
   
   const wxString text = (!HexMode() ? GetTextRange(0, sample_size): 
-    m_HexMode.GetBuffer().Mid(0, sample_size));
+    m_HexMode.GetBuffer().substr(0, sample_size - 1));
 
   std::vector<std::string> v;  
   
@@ -1096,7 +1096,7 @@ void wxExSTC::Initialize(bool file_exists)
         event.GetKeyCode() == WXK_LEFT ||
         event.GetKeyCode() == WXK_RIGHT)
       {
-        wxExHexModeLine(&m_HexMode).SetPos(event);
+        m_HexMode.SetPos(event);
       }
     }
     if (m_vi.OnKeyDown(event))
@@ -1115,12 +1115,14 @@ void wxExSTC::Initialize(bool file_exists)
     std::string filename;
     if (LinkOpen(LINK_OPEN | LINK_CHECK, &filename)) 
     {
-      if (!LinkOpen(LINK_OPEN)) event.Skip();
+      if (!LinkOpen(LINK_OPEN)) 
+        event.Skip();
     }
     else if (m_Lexer.GetScintillaLexer() != "hypertext" ||
       GetCurLine().Contains("href")) 
     {
-      if (!LinkOpen(LINK_OPEN_BROWSER)) event.Skip();
+      if (!LinkOpen(LINK_OPEN_BROWSER)) 
+        event.Skip();
     }
     else event.Skip();});
   
@@ -1265,7 +1267,7 @@ void wxExSTC::Initialize(bool file_exists)
       {
         if (GetOvertype())
         {
-          if (wxExHexModeLine(&m_HexMode).Replace(event.GetUnicodeKey()))
+          if (m_HexMode.Replace(event.GetUnicodeKey()))
           {
             CharRight();
           }
@@ -1405,7 +1407,7 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (GetSelectedText().length() > 2) return;
     const wxString& caption = _("Enter Control Character");
-    if (HexMode()) return m_HexMode.ControlCharDialog(caption);
+    if (HexMode()) return m_HexMode.ControlCharDialog(caption.ToStdString());
     if (GetReadOnly())
     {
       if (GetSelectedText().length() == 1)
@@ -1460,7 +1462,7 @@ void wxExSTC::Initialize(bool file_exists)
     const auto pos = GetCurrentPos();
     if (HexMode())
     {
-      CallTipShow(pos, wxExHexModeLine(&m_HexMode).GetInfo());
+      CallTipShow(pos, m_HexMode.GetInfo());
       return;
     }
 
@@ -1605,21 +1607,12 @@ bool wxExSTC::LinkOpen(int mode, std::string* filename)
     }
     else if (m_Frame != nullptr)
     {
-      return m_Frame->OpenFile(
-        path,
-        line_no, 
-        std::string(),
-        col_no,
-        GetFlags());
+      m_Frame->OpenFile(
+        path, line_no, std::string(), col_no, GetFlags());
     }
     else
     {
-      return Open(
-        path, 
-        line_no, 
-        std::string(), 
-        col_no,
-        GetFlags());
+      Open(path, line_no, std::string(), col_no, GetFlags());
     }
   }
   
@@ -1869,8 +1862,7 @@ void wxExSTC::PropertiesMessage(long flags)
 
 void wxExSTC::Reload(long flags)
 {
-  m_HexMode.Set((flags & STC_WIN_HEX) > 0, 
-    (flags & STC_WIN_HEX) ? GetTextRaw(): wxCharBuffer());
+  m_HexMode.Set((flags & STC_WIN_HEX) > 0);
   
   m_Flags = flags;
     
@@ -1886,12 +1878,6 @@ int wxExSTC::ReplaceAll(
   const std::string& find_text,
   const std::string& replace_text)
 {
-  if (HexMode())
-  {
-    wxLogStatus(_("Not allowed in hex mode"));
-    return 0;
-  }
-  
   int selection_from_end = 0;
 
   if (SelectionIsRectangle() || wxExGetNumberOfLines(GetSelectedText()) > 1)
@@ -1933,9 +1919,16 @@ int wxExSTC::ReplaceAll(
 
     if (!skip_replace)
     {
-      wxExFindReplaceData::Get()->UseRegEx() ?
-        ReplaceTargetRE(replace_text):
-        ReplaceTarget(replace_text);
+      if (HexMode())
+      {
+        m_HexMode.ReplaceTarget(replace_text);
+      }
+      else
+      {
+        wxExFindReplaceData::Get()->UseRegEx() ?
+          ReplaceTargetRE(replace_text):
+          ReplaceTarget(replace_text);
+      }
 
       nr_replacements++;
     }
@@ -1986,10 +1979,7 @@ bool wxExSTC::ReplaceNext(
 
   if (HexMode())
   {
-    for (const auto& it : replace_text)
-    {
-      wxExHexModeLine(&m_HexMode, GetTargetStart()).Replace(it);
-    }
+    m_HexMode.ReplaceTarget(replace_text);
   }
   else
   {

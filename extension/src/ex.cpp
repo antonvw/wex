@@ -411,17 +411,17 @@ bool wxExEx::Command(const std::string& command, bool is_handled)
   else if (command == ":" || command == ":'<,'>")
   {
     m_Frame->GetExCommand(this, command);
+    return true;
   }
-  else if (CommandHandle(command) ||
-           CommandAddress(command.substr(1)))
-  {
-    SetLastCommand(command);
-    m_Macros.Record(command);
-  }
-  else
+  else if (
+    !CommandHandle(command) &&
+    !CommandAddress(command.substr(1)))
   {
     return false;
   }
+
+  SetLastCommand(command);
+  m_Macros.Record(command);
 
   return true;
 }
@@ -854,7 +854,13 @@ int wxExEx::MarkerLine(const wxUniChar& marker) const
 
     if (it != m_MarkerIdentifiers.end())
     {
-      return m_STC->MarkerLineFromHandle(it->second);
+      const int line = m_STC->MarkerLineFromHandle(it->second);
+    
+      if (line == -1)
+      {
+        wxLogStatus("Handle for marker: %c invalid", marker);
+      }
+      return line;
     }
     else
     {

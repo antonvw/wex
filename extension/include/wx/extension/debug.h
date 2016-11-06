@@ -33,17 +33,17 @@ public:
   /// Returns number of items added to menu.
   int AddMenu(wxExMenu* menu, bool popup = false) const;
   
-  /// Executes the menu item action using the current debug process,
+  /// Executes the item action using the current debug process,
   /// if there is not yet a debug process, invokes wxExFrame::Process
   /// to allow derived classed to provide one,
   /// and optionally use an stc component for extra input / output.
-  /// If the action is not part of menu commands, false is returned.
-  bool Execute(const std::string& item, wxExSTC* stc = nullptr);
+  /// Returns false if cancelled, or no debug process available.
+  bool Execute(const std::string& action, wxExSTC* stc = nullptr);
   
   /// As above, but for a menu action item.
   bool Execute(int item, wxExSTC* stc = nullptr) {
     return 
-      item < m_Entry.GetCommands().size() &&
+      item < (int)m_Entry.GetCommands().size() &&
       Execute(m_Entry.GetCommands().at(item).GetCommand(), stc);};
 
   /// Returns brekpoints.
@@ -61,6 +61,7 @@ public:
   /// Handles output from process.
   void ProcessOutput(const std::string& text);
 private:
+  bool DeleteAllBreakpoints(const std::string& text);
   bool GetArgs(
     const std::string& command, std::string& args, wxExSTC* stc);
 

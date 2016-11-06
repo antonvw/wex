@@ -88,6 +88,23 @@ wxWindow* wxExNotebook::AddPage(
   return page;
 }
 
+const wxString wxExNotebook::ChangeSelection(const wxString& key)
+{
+  const auto index = GetPageIndexByKey(key);
+  int previous;
+  
+  if (index != wxNOT_FOUND && 
+    ((previous = wxAuiNotebook::ChangeSelection(index))) >= 0)
+  {
+    wxWindow* page = m_Keys[key];
+    m_Keys[key] = page;
+    m_Windows[page] = key;
+    return GetKeyByPage(GetPage(previous));
+  }
+  
+  return wxEmptyString;
+}
+  
 bool wxExNotebook::DeletePage(const wxString& key)
 {
   const auto index = GetPageIndexByKey(key);

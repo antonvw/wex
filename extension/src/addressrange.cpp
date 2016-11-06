@@ -255,6 +255,11 @@ bool wxExAddressRange::Change(const wxString& command) const
   return true;
 }
   
+void wxExAddressRange::Cleanup()
+{
+  delete m_Process;
+}
+  
 int wxExAddressRange::Confirm(
   const wxString& pattern, const wxString& replacement)
 {
@@ -712,7 +717,7 @@ bool wxExAddressRange::Sort(const wxString& parameters) const
   
 bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
 {
-  if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk())
+  if (m_STC->GetReadOnly() || !IsOk())
   {
     return false;
   }
@@ -817,9 +822,16 @@ bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
         
     if (result == wxID_YES)
     {
-      (searchFlags & wxSTC_FIND_REGEXP) ?
-        m_STC->ReplaceTargetRE(replacement):
-        m_STC->ReplaceTarget(replacement);
+      if (m_STC->HexMode())
+      {  
+        m_STC->GetHexMode().ReplaceTarget(replacement.ToStdString(), false);
+      }
+      else
+      {
+        (searchFlags & wxSTC_FIND_REGEXP) ?
+          m_STC->ReplaceTargetRE(replacement):
+          m_STC->ReplaceTarget(replacement);
+      }
         
       nr_replacements++;
     }
@@ -841,6 +853,11 @@ bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
     {
       break;
     }
+  }
+  
+  if (m_STC->HexMode())
+  {
+    m_STC->GetHexMode().SetText(m_STC->GetHexMode().GetBuffer());
   }
 
   m_STC->EndUndoAction();
