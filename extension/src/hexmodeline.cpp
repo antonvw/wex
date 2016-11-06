@@ -233,6 +233,8 @@ bool wxExHexModeLine::Replace(char c)
   }
 
   m_Hex->m_Buffer[index] = c;
+  
+  return true;
 }
 
 void wxExHexModeLine::Replace(const std::string& hex, bool settext)
