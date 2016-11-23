@@ -31,7 +31,7 @@ public:
 
   /// Constructor taking a filename.
   wxExFile(
-    const wxFileName& filename,
+    const wxExFileName& filename,
     wxFile::OpenMode mode = wxFile::read,
     bool open_file = true)
     : m_File(std::make_unique<wxFile>(filename.GetFullPath(), mode))
@@ -42,10 +42,10 @@ public:
   
   /// Constructor taking a string filename.
   wxExFile(
-    const wxString& filename,
+    const std::string& filename,
     wxFile::OpenMode mode = wxFile::read,
     bool open_file = true)
-    : wxExFile(wxFileName(filename), mode, open_file) {;};
+    : wxExFile(wxExFileName(filename), mode, open_file) {;};
   
   /// Copy constructor.
   wxExFile(const wxExFile& rhs) {*this = rhs; };
@@ -82,7 +82,7 @@ public:
   bool IsOpened() const {return m_File->IsOpened();};
 
   /// Opens specified file.
-  bool Open(const wxString &filename, 
+  bool Open(const std::string& filename, 
     wxFile::OpenMode mode = wxFile::read, int access = wxS_DEFAULT)
     {return m_File->Open(filename, mode, access);};
 
@@ -102,7 +102,7 @@ public:
       m_File->Write(buffer.data(), buffer.length()) == buffer.length();};
   
   /// Writes file from string.
-  bool Write(const wxString &s) {
+  bool Write(const std::string& s) {
     return m_File->IsOpened() && m_File->Write(s);}; 
 protected:
   /// Assigns the filename.

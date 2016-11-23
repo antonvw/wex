@@ -50,8 +50,8 @@ TEST_CASE("wxExDebug", "[process]")
 #endif
   REQUIRE(!dbg.Execute(item));
   
-  dbg.ProcessInput("test");
-  dbg.ProcessOutput("test");
+  dbg.ProcessStdIn("test");
+  dbg.ProcessStdOut("test");
 
 /*    
   wxExSTC* stc = GetSTC();

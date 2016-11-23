@@ -24,31 +24,34 @@ class WXDLLIMPEXP_BASE wxExLexer
 {
 public:
   /// Default constructor.
-  wxExLexer(const wxString& lexer = wxEmptyString) : m_STC(nullptr) {
-    Initialize();
-    if (!lexer.empty())
-    {
-      Set(lexer);
-    }};
+  wxExLexer(const std::string& lexer = std::string())
+    : m_STC(nullptr) {
+      Initialize();
+      if (!lexer.empty())
+      {
+        Set(lexer);
+      }};
     
   /// Constructor using stc, and optional lexer.
-  wxExLexer(wxExSTC* stc, const wxString& lexer = wxEmptyString) : m_STC(stc) {
-    Initialize();
-    if (!lexer.empty()) 
-    {
-      Set(lexer);
-    }};
+  wxExLexer(wxExSTC* stc, const std::string& lexer = std::string())
+    : m_STC(stc) {
+      Initialize();
+      if (!lexer.empty()) 
+      {
+        Set(lexer);
+      }};
 
   /// Constructor using xml node.
-  wxExLexer(const wxXmlNode* node) : m_STC(nullptr) {
-    Initialize();
-    Set(node);};
+  wxExLexer(const wxXmlNode* node) 
+    : m_STC(nullptr) {
+      Initialize();
+      Set(node);};
 
   /// Assignment operator.
   wxExLexer& operator=(const wxExLexer& l);
 
   /// Adds keywords (public for testing only).
-  bool AddKeywords(const wxString& text, int setno = 0);
+  bool AddKeywords(const std::string& text, int setno = 0);
   
   /// Applies this lexer to stc component (and colours the component).
   bool Apply() const;
@@ -56,31 +59,31 @@ public:
   /// Returns a string that completes specified comment,
   /// by adding spaces and a comment end at the end.
   /// If the comment end string is empty, it returns empty string.
-  const wxString CommentComplete(const wxString& comment) const;
+  const std::string CommentComplete(const std::string& comment) const;
     
   /// Returns the comment begin.
-  const wxString& GetCommentBegin() const {return m_CommentBegin;};
+  const auto & GetCommentBegin() const {return m_CommentBegin;};
 
   /// Returns the comment begin 2.
-  const wxString& GetCommentBegin2() const {return m_CommentBegin2;};
+  const auto & GetCommentBegin2() const {return m_CommentBegin2;};
 
   /// Returns the comment end.
-  const wxString& GetCommentEnd() const {return m_CommentEnd;};
+  const auto & GetCommentEnd() const {return m_CommentEnd;};
 
   /// Returns the comment end 2.
-  const wxString& GetCommentEnd2() const {return m_CommentEnd2;};
+  const auto & GetCommentEnd2() const {return m_CommentEnd2;};
 
   /// Returns the display lexer (as shown in dialog).
-  const wxString& GetDisplayLexer() const {return m_DisplayLexer;};
+  const auto & GetDisplayLexer() const {return m_DisplayLexer;};
 
   /// Returns the extensions.
-  const wxString& GetExtensions() const {return m_Extensions;};
+  const auto & GetExtensions() const {return m_Extensions;};
 
   /// Returns the keywords.
   const auto & GetKeywords() const {return m_Keywords;};
 
   /// Returns the keywords as one large string, 
-  const wxString GetKeywordsString(
+  const std::string GetKeywordsString(
     /// if keyword_set -1 take all the sets,
     /// otherwise take the specified set.
     int keyword_set = -1,
@@ -88,44 +91,44 @@ public:
     /// otherwise use keywords with minimim size
     size_t min_size = 0,
     /// prefix keyword should start with
-    const wxString& prefix = wxEmptyString) const;
+    const std::string& prefix = std::string()) const;
 
   /// Returns the language.
-  const wxString& GetLanguage() const {return m_Language;};
+  const auto & GetLanguage() const {return m_Language;};
   
   /// Returns the properties.
   const auto & GetProperties() const {return m_Properties;};
   
   /// Returns the scintilla lexer.
-  const wxString& GetScintillaLexer() const {return m_ScintillaLexer;};
+  const auto & GetScintillaLexer() const {return m_ScintillaLexer;};
 
   /// Returns the styles.
   const auto & GetStyles() const {return m_Styles;};
   
   /// Is this word a keyword (allways all keywords), case sensitive.
-  bool IsKeyword(const wxString& word) const;
+  bool IsKeyword(const std::string& word) const;
 
   /// Is this lexer valid.
   bool IsOk() const {return m_IsOk;};
 
   /// Does any keyword (allways all keywords) start with this word,
   /// case insensitive.
-  bool KeywordStartsWith(const wxString& word) const;
+  bool KeywordStartsWith(const std::string& word) const;
 
   /// Returns a lexer comment string with text formatted.
-  const wxString MakeComment(
-    const wxString& text,
+  const std::string MakeComment(
+    const std::string& text,
     bool fill_out_with_space = true,
     bool fill_out = true) const;
 
   /// Returns a lexer comment string with prefix.
-  const wxString MakeComment(
-    const wxString& prefix,
-    const wxString& text) const;
+  const std::string MakeComment(
+    const std::string& prefix,
+    const std::string& text) const;
 
   /// Returns a lexer comment string filled out over one line.
-  const wxString MakeSingleLineComment(
-    const wxString& text,
+  const std::string MakeSingleLineComment(
+    const std::string& text,
     bool fill_out_with_space = true,
     bool fill_out = true) const;
     
@@ -139,7 +142,7 @@ public:
   /// Returns true if a scintilla lexer has been set.
   /// The is ok member is set according to whether the
   /// lexer could be set. Shows error message when lexer could not be set.
-  bool Set(const wxString& lexer, bool fold = false);
+  bool Set(const std::string& lexer, bool fold = false);
     
   /// Sets lexer to specified lexer.
   /// Returns true if a scintilla lexer has been set.
@@ -148,48 +151,48 @@ public:
   bool Set(const wxExLexer& lexer, bool fold = false);
       
   /// Overrides a local property.
-  void SetProperty(const wxString& name, const wxString& value);
+  void SetProperty(const std::string& name, const std::string& value);
 
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
   bool ApplyWhenSet();
-  void AutoMatch(const wxString& lexer);
-  const wxString GetFormattedText(
-    const wxString& lines,
-    const wxString& header,
+  void AutoMatch(const std::string& lexer);
+  const std::string GetFormattedText(
+    const std::string& lines,
+    const std::string& header,
     bool fill_out_with_space,
     bool fill_out) const;
-  const wxString GetKeywordsStringSet(
-    const std::set<wxString>& kset, 
+  const std::string GetKeywordsStringSet(
+    const std::set<std::string>& kset, 
     size_t min_size = 0,
-    const wxString& prefix = wxEmptyString) const;
+    const std::string& prefix = std::string()) const;
   void Initialize();
   void Set(const wxXmlNode* node);
 
-  wxString m_CommentBegin;
-  wxString m_CommentBegin2;
-  wxString m_CommentEnd;
-  wxString m_CommentEnd2;
-  wxString m_Extensions;
-  wxString m_Language; // e.g. xml
+  std::string m_CommentBegin;
+  std::string m_CommentBegin2;
+  std::string m_CommentEnd;
+  std::string m_CommentEnd2;
+  std::string m_Extensions;
+  std::string m_Language; // e.g. xml
 
   // The scintilla name for this lexer.
   // Cannot be const, as in wxExFileName the operator= is used on a lexer.
-  wxString m_ScintillaLexer;
+  std::string m_ScintillaLexer;
 
   // Normally the lexer displayed is the scintilla lexer,
   // however this might be different, as with c#.
   // In that case the scintilla lexer is cpp, whereas the
   // display lexer is c#.  
-  wxString m_DisplayLexer;
+  std::string m_DisplayLexer;
 
-  std::set<wxString> m_Keywords;
+  std::set<std::string> m_Keywords;
   std::vector<wxExProperty> m_Properties;
   std::vector<wxExStyle> m_Styles;
 
   // each keyword set in a separate keyword set
-  std::map< int, std::set<wxString> > m_KeywordsSet;
+  std::map< int, std::set<std::string> > m_KeywordsSet;
   
   bool m_IsOk;
   

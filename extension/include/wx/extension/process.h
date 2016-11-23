@@ -8,23 +8,22 @@
 #pragma once
 
 #include <memory>
-#include <wx/process.h>
 #include <wx/extension/marker.h>
 
 class wxTimer;
+class wxExProcessImp;
 class wxExShell;
-class wxExSTC;
 
-/// Offers a wxProcess, capturing execution output depending
+/// Offers a process, capturing execution output depending
 /// on sync or async call to Execute.
-class WXDLLIMPEXP_BASE wxExProcess : public wxProcess
+class WXDLLIMPEXP_BASE wxExProcess
 {
 public:
   /// Default constructor.
   wxExProcess();
   
   /// Destructor.
-  virtual ~wxExProcess() {};
+  virtual ~wxExProcess();
 
   /// Copy constructor.
   wxExProcess(const wxExProcess& process);
@@ -32,9 +31,6 @@ public:
   /// Assignment operator.
   wxExProcess& operator=(const wxExProcess& p);
 
-  /// Handles shell commands.
-  bool Command(const wxString& command);
-  
   /// Shows a config dialog, allowing you to set the command and folder.
   /// Returns dialog return code.
   static int ConfigDialog(
@@ -42,15 +38,11 @@ public:
     const wxString& title = _("Select Process"),
     bool modal = true);
   
-  /// Tries to execute debug action menu_id with data from stc.
-  /// Returns false if e.g. debug process is not running.
-  bool Debug(wxExSTC* stc, int menu_id);
-  
   /// Executes the process.
   /// - In case asynchronously (wxEXEC_ASYNC) this call immediately returns.
   ///   The STC component will be filled with output from the process.
   /// - In case synchronously (wxEXEC_SYNC) this call returns after execute ends, 
-  ///   and the output is available using GetOutput.
+  ///   and the output is available using GetStdOut.
   /// Return value is false if process could not execute (and GetError is true), 
   /// or if config dialog was invoked and cancelled (and GetError is false).
   /// Normally the reason for not being able to run the process is logged
@@ -59,33 +51,33 @@ public:
   bool Execute(
     /// command to be executed, if empty
     /// last given command is used
-    const wxString& command = wxEmptyString,
+    const std::string& command = std::string(),
     /// flags for wxExecute
     int flags = wxEXEC_ASYNC,
     /// working dir, if empty last working dir is used
-    const wxString& wd = wxEmptyString);
+    const std::string& wd = std::string());
   
-  /// Returns command executed.
-  const auto & GetExecuteCommand() const {return m_Command;};
-
   /// Returns true if the command could not be executed.
   bool GetError() const {return m_Error;};
 
-  /// Returns the output from Execute (only filled for wxEXEC_SYNC).
-  const auto & GetOutput() const {return m_Output;};
-  
+  /// Returns command executed.
+  const auto & GetExecuteCommand() const {return m_Command;};
+
   /// Returns the shell component 
   /// (might be nullptr if PrepareOutput is not yet invoked).
   static auto* GetShell() {return m_Shell;};
   
-  /// Returns true when the command executed resulted in stderr errors.
-  bool HasStdError() const {return m_HasStdError;};
+  /// Returns the stderr.
+  const auto & GetStdErr() const {return m_StdErr;};
+  
+  /// Returns the stdout.
+  const auto & GetStdOut() const {return m_StdOut;};
   
   /// Returns true if this process is running.
   bool IsRunning() const;
 
-  /// Kills the process (sends specified signal if process still running).
-  wxKillError Kill(wxSignal sig = wxSIGKILL);
+  /// Kills the process.
+  bool Kill();
   
   /// Construct the shell component.
   static void PrepareOutput(wxWindow* parent);
@@ -96,15 +88,16 @@ public:
   /// before calling this base method.
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
-protected:
-  virtual void OnTerminate(int pid, int status) override;
+
+  /// Writes text to stdin of process.
+  bool Write(const std::string& text);
 private:
   void CheckInput();
 
-  bool m_Error, m_HasStdError;
+  bool m_Error;
 
   wxCriticalSection m_Critical;
-  wxString m_Command, m_Input, m_Output;
+  std::string m_Command, m_StdErr, m_StdIn, m_StdOut;
   
   const wxExMarker m_MarkerSymbol = wxExMarker(2);
 
@@ -114,5 +107,6 @@ private:
   static wxExShell* m_Shell;
 #endif  
 
+  wxExProcessImp* m_Process;
   std::unique_ptr<wxTimer> m_Timer;
 };

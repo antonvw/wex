@@ -2,7 +2,7 @@
 // Name:      dir.h
 // Purpose:   Include file for wxExDirWithListView and wxExDirTool classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,14 +20,14 @@ public:
   /// Constructor, provide your tool and a path.
   /// SetupTool should already be called.
   wxExDirTool(const wxExTool& tool,
-    const wxString& fullpath,
-    const wxString& filespec = wxEmptyString,
+    const std::string& fullpath,
+    const std::string& filespec = std::string(),
     int flags = wxDIR_DEFAULT);
     
   /// Returns the statistics.
   auto & GetStatistics() {return m_Statistics;};
 protected:  
-  void OnFile(const wxString& file);
+  virtual bool OnFile(const std::string& file) override;
 private:    
   wxExFileStatistics m_Statistics;
   const wxExTool m_Tool;
@@ -42,12 +42,12 @@ class wxExDirWithListView : public wxExDir
 public:
   /// Constructor, provide your listview and a path.
   wxExDirWithListView(wxExListView* listview,
-    const wxString& fullpath,
-    const wxString& filespec = wxEmptyString,
+    const std::string& fullpath,
+    const std::string& filespec = std::string(),
     int flags = wxDIR_DEFAULT);
 protected:
-  virtual void OnDir(const wxString& dir);
-  virtual void OnFile(const wxString& file);
+  virtual bool OnDir(const std::string& dir) override;
+  virtual bool OnFile(const std::string& file) override;
 private:
   wxExListView* m_ListView;
 };

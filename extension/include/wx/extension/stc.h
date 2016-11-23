@@ -35,48 +35,47 @@ public:
   /// Config dialog flags.
   enum wxExConfigFlags
   {
-    STC_CONFIG_DEFAULT    = 0x0000, ///< modal dialog with all options
-    STC_CONFIG_MODELESS   = 0x0001, ///< use as modeless dialog
-    STC_CONFIG_WITH_APPLY = 0x0002, ///< add the apply button
+    STC_CONFIG_MODAL      = 0,      ///< modal dialog with all options
+    STC_CONFIG_MODELESS   = 1 << 0, ///< use as modeless dialog
+    STC_CONFIG_WITH_APPLY = 1 << 1, ///< add the apply button
   };
 
   /// Margin flags.
   enum wxExMarginFlags
   {
-    STC_MARGIN_NONE       = 0x0000, ///< no margins
-    STC_MARGIN_DIVIDER    = 0x0001, ///< divider margin
-    STC_MARGIN_FOLDING    = 0x0002, ///< folding margin
-    STC_MARGIN_LINENUMBER = 0x0004, ///< line number margin
+    STC_MARGIN_NONE       = 0,      ///< no margins
+    STC_MARGIN_DIVIDER    = 1 << 1, ///< divider margin
+    STC_MARGIN_FOLDING    = 1 << 2, ///< folding margin
+    STC_MARGIN_LINENUMBER = 1 << 3, ///< line number margin
     STC_MARGIN_ALL        = 0xFFFF, ///< all margins
   };
 
   /// Menu and tooltip flags.
   enum wxExMenuFlags
   {
-    STC_MENU_NONE      = 0x0000, ///< no context menu
-    STC_MENU_CONTEXT   = 0x0001, ///< context menu
-    STC_MENU_OPEN_LINK = 0x0002, ///< for adding link open menu
-    STC_MENU_VCS       = 0x0004, ///< for adding vcs menu
-    STC_MENU_DEFAULT   = 0x000F, ///< default
-    STC_MENU_DEBUG     = 0x0010, ///< for adding debug menu
+    STC_MENU_NONE      = 0,      ///< no context menu
+    STC_MENU_CONTEXT   = 1 << 1, ///< context menu
+    STC_MENU_OPEN_LINK = 1 << 2, ///< for adding link open menu
+    STC_MENU_VCS       = 1 << 3, ///< for adding vcs menu
+    STC_MENU_DEBUG     = 1 << 4, ///< for adding debug menu
   };
 
   /// Window flags.
   enum wxExWindowFlags
   {
-    STC_WIN_DEFAULT      = 0x0000, ///< default, not readonly, not hex mode
-    STC_WIN_READ_ONLY    = 0x0001, ///< window is readonly, 
+    STC_WIN_DEFAULT      = 0,      ///< default, not readonly, not hex mode
+    STC_WIN_READ_ONLY    = 1 << 1, ///< window is readonly, 
                                    ///<   overrides real mode from disk
-    STC_WIN_HEX          = 0x0002, ///< window in hex mode
-    STC_WIN_NO_INDICATOR = 0x0004, ///< a change indicator is not used
+    STC_WIN_HEX          = 1 << 2, ///< window in hex mode
+    STC_WIN_NO_INDICATOR = 1 << 3, ///< a change indicator is not used
   };
 
   /// Constructor. The title is used for name.
   wxExSTC(wxWindow* parent, 
     const std::string& value = std::string(),
-    long win_flags = STC_WIN_DEFAULT,
+    wxExWindowFlags win_flags = STC_WIN_DEFAULT,
     const std::string& title = std::string(),
-    long menu_flags = STC_MENU_DEFAULT,
+    wxExMenuFlags menu_flags = static_cast<wxExMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS),
     const std::string& command = std::string(),
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -90,8 +89,8 @@ public:
     int line_number = 0,
     const std::string& match = std::string(),
     int col_number = 0,
-    long win_flags = STC_WIN_DEFAULT,
-    long menu_flags = STC_MENU_DEFAULT | STC_MENU_OPEN_LINK,
+    wxExWindowFlags win_flags = STC_WIN_DEFAULT,
+    wxExMenuFlags menu_flags = static_cast<wxExMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS),
     const std::string& command = std::string(),
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -308,7 +307,7 @@ public:
   
   /// Reset all margins.
   /// Default also resets the divider margin.
-  void ResetMargins(long flags = STC_MARGIN_ALL);
+  void ResetMargins(wxExMarginFlags flags = STC_MARGIN_ALL);
 
   /// Deselects selected text in the control.
   // Reimplemented, since scintilla version sets empty sel at 0, and sets caret on pos 0.

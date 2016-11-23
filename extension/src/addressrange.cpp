@@ -153,7 +153,7 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
   }
 }
 
-wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
+wxExAddressRange::wxExAddressRange(wxExEx* ex, const std::string& range)
   : m_Begin(ex)
   , m_End(ex)
   , m_Ex(ex)
@@ -169,9 +169,9 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, const wxString& range)
       m_STC->GetFirstVisibleLine() + 1, 
       m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() + 1);
   }
-  else if (range.Contains(","))
+  else if (range.find(",") != std::string::npos)
   {
-    Set(range.BeforeFirst(','), range.AfterFirst(','));
+    Set(range.substr(0, range.find(",")), range.substr(range.find(",") + 1));
   }
   else
   {
@@ -243,7 +243,7 @@ const wxString wxExAddressRange::BuildReplacement(const wxString& text) const
   return replacement;
 }
   
-bool wxExAddressRange::Change(const wxString& command) const
+bool wxExAddressRange::Change(const std::string& command) const
 {
   if (!Delete())
   {
@@ -328,11 +328,12 @@ bool wxExAddressRange::Delete(bool show_message) const
   return true;
 }
 
-bool wxExAddressRange::Escape(const wxString& command)
+bool wxExAddressRange::Escape(const std::string& command)
 {
-  if (m_Begin.empty() && m_End.empty())
+  if (m_Begin.m_Address.empty() && m_End.m_Address.empty())
   {
-    wxString expanded(command);
+    std::string expanded(command);
+
     if (
       !wxExMarkerAndRegisterExpansion(m_Ex, expanded) ||
       !wxExShellExpansion(expanded)) return false;
@@ -359,7 +360,7 @@ bool wxExAddressRange::Escape(const wxString& command)
     return false;
   }
   
-  const wxString filename("__TMPFILE__");
+  const std::string filename("__TMPFILE__");
   
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !Write(filename))
   {
@@ -370,20 +371,20 @@ bool wxExAddressRange::Escape(const wxString& command)
   
   const bool ok = process.Execute(command + " " + filename, wxEXEC_SYNC);
   
-  if (remove(filename) != 0)
+  if (remove(filename.c_str()) != 0)
   {
     wxLogStatus("Could not remove file");
   }
   
   if (ok)
   {
-    if (!process.HasStdError())
+    if (process.GetStdErr().empty())
     {      
       m_STC->BeginUndoAction();
 
       if (Delete(false))
       {
-        m_STC->AddText(process.GetOutput());
+        m_STC->AddText(process.GetStdOut());
         m_STC->AddText(m_STC->GetEOL());
       }
       
@@ -393,14 +394,14 @@ bool wxExAddressRange::Escape(const wxString& command)
     }
     else
     {
-      m_Ex->GetFrame()->ShowExMessage(process.GetOutput());
+      m_Ex->GetFrame()->ShowExMessage(process.GetStdErr());
     }
   }
   
   return false;
 }
 
-bool wxExAddressRange::Global(const wxString& text, bool inverse) const
+bool wxExAddressRange::Global(const std::string& text, bool inverse) const
 {
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
   
@@ -627,22 +628,25 @@ bool wxExAddressRange::Parse(
   return true;
 }
     
-bool wxExAddressRange::Print(const wxString& flags) const
+bool wxExAddressRange::Print(const std::string& flags) const
 {
   if (!IsOk() || !m_Begin.Flags(flags))
   {
     return false;
   }
   
-  wxString text;
+  std::string text;
   
   for (int i = m_Begin.GetLine() - 1; i < m_End.GetLine(); i++)
   {
-    text += (flags.Contains("#") ? wxString::Format("%6d ", i + 1): "") + 
+    char buffer[8];
+    sprintf(buffer, "%6d ", i + 1);
+    
+    text += (flags.find("#") != std::string::npos ? buffer: std::string()) + 
       m_STC->GetLine(i);
   }
     
-  m_Ex->GetFrame()->PrintEx(m_Ex, text.ToStdString());
+  m_Ex->GetFrame()->PrintEx(m_Ex, text);
   
   return true;
 }
@@ -671,7 +675,7 @@ bool wxExAddressRange::SetSelection() const
   return true;
 }
 
-bool wxExAddressRange::Sort(const wxString& parameters) const
+bool wxExAddressRange::Sort(const std::string& parameters) const
 {
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !SetSelection())
   {
@@ -691,23 +695,23 @@ bool wxExAddressRange::Sort(const wxString& parameters) const
   if (!parameters.empty())
   {
     if (  (parameters[0] == '0') ||
-         (!parameters.StartsWith("u") && 
-          !parameters.StartsWith("r") && 
+         ( parameters.find("u") != 0 && 
+           parameters.find("r") != 0 && 
           !isdigit(parameters[0])))
     {
       return false;
     }
     
-    sort_type |= (parameters.Contains("r") ? STRING_SORT_DESCENDING: 0);
-    sort_type |= (parameters.Contains("u") ? STRING_SORT_UNIQUE: 0);
+    sort_type |= (parameters.find("r") != std::string::npos ? STRING_SORT_DESCENDING: 0);
+    sort_type |= (parameters.find("u")!= std::string::npos  ? STRING_SORT_UNIQUE: 0);
     
     if (isdigit(parameters[0]))
     {
-      pos = (atoi(parameters) > 0 ? atoi(parameters) - 1: 0);
+      pos = (std::stoi(parameters) > 0 ? std::stoi(parameters) - 1: 0);
       
-      if (parameters.Contains(","))
+      if (parameters.find(",") != std::string::npos)
       {
-        len = atoi(parameters.AfterFirst(',')) - pos + 1;
+        len = std::stoi(parameters.substr(parameters.find(',') + 1)) - pos + 1;
       }
     }
   }
@@ -715,7 +719,7 @@ bool wxExAddressRange::Sort(const wxString& parameters) const
   return wxExSortSelection(m_STC, sort_type, pos, len);
 }
   
-bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
+bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
 {
   if (m_STC->GetReadOnly() || !IsOk())
   {
@@ -862,7 +866,7 @@ bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
 
   m_STC->EndUndoAction();
   
-  if (m_Begin == "'<" && m_End == "'>")
+  if (m_Begin.m_Address == "'<" && m_End.m_Address == "'>")
   {
     m_STC->SetSelection(
       m_STC->PositionFromLine(m_Ex->MarkerLine('#')),
@@ -880,20 +884,25 @@ bool wxExAddressRange::Substitute(const wxString& text, const char cmd)
   return true;
 }
 
-bool wxExAddressRange::Write(const wxString& text) const
+bool wxExAddressRange::Write(const std::string& txt) const
 {
   if (!SetSelection())
   {
     return false;
   }
   
-  wxString filename(wxString(text.Contains(">>") ? text.AfterLast('>'): text).Trim(false));
+  const wxString text(txt);
+  std::string filename(wxString(text.Contains(">>") ? text.AfterLast('>'): text).Trim(false));
+
 #ifdef __UNIX__
-  filename.Replace("~", wxGetHomeDir());
+  if (filename.find("~") != std::string::npos)
+  {
+    filename.replace(filename.find("~"), 1, wxGetHomeDir().ToStdString());
+  }
 #endif
 
-  return wxExFile(filename, 
-    text.Contains(">>") ? wxFile::write_append: wxFile::write).Write(m_Ex->GetSelectedText());
+  return wxExFile(filename, text.Contains(">>") ? 
+    wxFile::write_append: wxFile::write).Write(m_Ex->GetSelectedText());
 }
 
 bool wxExAddressRange::Yank(const char name) const

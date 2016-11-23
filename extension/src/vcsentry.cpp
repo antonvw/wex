@@ -20,7 +20,7 @@
 
 wxExVCSEntry::wxExVCSEntry(
   const std::string& name,
-  const wxString& admin_dir,
+  const std::string& admin_dir,
   const std::vector<wxExVCSCommand> & commands,
   int flags_location)
   : wxExProcess()
@@ -51,14 +51,14 @@ int wxExVCSEntry::BuildMenu(int base_id, wxExMenu* menu, bool is_popup) const
 #endif
 
 bool wxExVCSEntry::Execute(
-  const wxString& args,
+  const std::string& args,
   const wxExLexer& lexer,
   int exec_flags,
-  const wxString& wd)
+  const std::string& wd)
 {
   m_Lexer = lexer;
   
-  wxString prefix;
+  std::string prefix;
   
   if (m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX)
   {
@@ -70,7 +70,7 @@ bool wxExVCSEntry::Execute(
     }
   }
   
-  wxString subcommand;
+  std::string subcommand;
   
   if (GetCommand().UseSubcommand())
   {
@@ -82,8 +82,8 @@ bool wxExVCSEntry::Execute(
     }
   }
 
-  wxString flags;
-  wxString my_args(args);
+  std::string flags;
+  std::string my_args(args);
 
   if (GetCommand().UseFlags())
   {
@@ -93,13 +93,13 @@ bool wxExVCSEntry::Execute(
     // git show HEAD~15:syncped/frame.cpp
     // where flags is HEAD~15:,
     // so there should be no space after it
-    if (!flags.empty() && !flags.EndsWith(':'))
+    if (!flags.empty() && flags.back() != ':')
     {
       flags += " ";
     }
   }
   
-  wxString comment;
+  std::string comment;
 
   if (GetCommand().IsCommit())
   {
@@ -108,13 +108,13 @@ bool wxExVCSEntry::Execute(
   }
 
   // If we specified help (flags), we do not need a file argument.      
-  if (GetCommand().IsHelp() || flags.Contains("help"))
+  if (GetCommand().IsHelp() || flags.find("help") != std::string::npos)
   {
     my_args.clear();
   }
 
   return wxExProcess::Execute(
-    wxConfigBase::Get()->Read(GetName(), GetName()) + " " + 
+    wxConfigBase::Get()->Read(GetName(), GetName()).ToStdString() + " " + 
       prefix +
       GetCommand().GetCommand() + " " + 
       subcommand + flags + comment + my_args, 
@@ -122,9 +122,9 @@ bool wxExVCSEntry::Execute(
     wd);
 }
 
-const wxString wxExVCSEntry::GetFlags() const
+const std::string wxExVCSEntry::GetFlags() const
 {
-  return wxConfigBase::Get()->Read(_("Flags"));
+  return wxConfigBase::Get()->Read(_("Flags")).ToStdString();
 }
 
 #if wxUSE_GUI
@@ -165,7 +165,7 @@ int wxExVCSEntry::ShowDialog(
   {
     if (GetCommand().UseFlags())
     {
-      wxConfigBase::Get()->Write(GetFlagsKey(), GetFlags());
+      wxConfigBase::Get()->Write(GetFlagsKey(), wxString(GetFlags()));
     }
   }
   
@@ -178,7 +178,7 @@ void wxExVCSEntry::ShowOutput(const wxString& caption) const
 {
   if (!GetError() && GetShell() != nullptr)
   {
-    if (GetFlags().Contains("xml"))
+    if (GetFlags().find("xml") != std::string::npos)
     {
       GetShell()->GetLexer().Set("xml");
     }

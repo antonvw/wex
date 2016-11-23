@@ -12,4 +12,4 @@
 #include <wx/extension/tocontainer.h>
 
 using wxExToListString = wxExToContainer<std::list < wxString > >;
-using wxExToVectorString = wxExToContainer<std::vector < wxString > >;
+using wxExToVectorString = wxExToContainer<std::vector < std::string > >;

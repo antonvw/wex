@@ -174,7 +174,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
     m_IsCommand = true;
     if (!event.GetString().empty())
     {
-      wxString text(event.GetString());
+      std::string text(event.GetString());
       wxExSTC* stc = GetSTC();
       if (stc != nullptr)
       {
@@ -182,15 +182,15 @@ wxExFrame::wxExFrame(wxWindow* parent,
         if (!wxExMarkerAndRegisterExpansion(&stc->GetVi(), text)) return;
       }
       if (!wxExShellExpansion(text)) return;
-      wxString cmd;
+      std::string cmd;
       std::vector <std::string> v;
-      if (wxExMatch("\\+([0-9A-Za-z:_/.-]+)* *(.*)", text.ToStdString(), v) > 1)
+      if (wxExMatch("\\+([0-9A-Za-z:_/.-]+)* *(.*)", text, v) > 1)
       {
         cmd = v[0];
         text = v[1];
       }
       wxExOpenFiles(this, wxExToVectorString(text).Get(), 
-        0, wxDIR_DEFAULT, cmd.ToStdString());
+        0, wxDIR_DEFAULT, cmd);
     }
     else
     {
@@ -292,7 +292,7 @@ wxExSTC* wxExFrame::OpenFile(
 
   if (stc != nullptr)
   {
-    stc->SetText(vcs.GetOutput().ToStdString());
+    stc->SetText(vcs.GetStdOut());
     wxExVCSCommandOnSTC(vcs.GetCommand(), filename.GetLexer(), stc);
   }
 
@@ -425,10 +425,10 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
         }
         else
         {
-          // There might be nullptr's inside selection.
+          // There might be null's inside selection.
           // So use the GetSelectedTextRaw variant.
           const int number_of_lines = 
-            wxExGetNumberOfLines(stc->GetSelectedTextRaw());
+            wxExGetNumberOfLines(wxString(stc->GetSelectedTextRaw()).ToStdString());
             
           if (number_of_lines <= 1) 
             text = wxString::Format("%d,%d,%d", line, pos, len);

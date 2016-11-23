@@ -2,7 +2,7 @@
 // Name:      stcfile.h
 // Purpose:   Declaration of class wxExSTCFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,7 +22,7 @@ public:
     /// the stc component
     wxExSTC* stc,
     /// the filename to be assigned if not empty
-    const wxString& filename = wxEmptyString);
+    const std::string& filename = std::string());
   
   /// Override virtual methods.
   virtual bool GetContentsChanged() const override;

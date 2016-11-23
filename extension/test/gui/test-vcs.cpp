@@ -2,7 +2,7 @@
 // Name:      test-vcs.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -21,13 +21,13 @@ TEST_CASE("wxExVCS", "[vcs]")
   // GetCount
   REQUIRE( wxExVCS::GetCount() > 0);
 
-  wxFileName file(GetTestFile());
-  file.Normalize();
+  wxExFileName file(GetTestFile());
+  file.MakeAbsolute();
   
   // In wxExApp the vcs is Read, so current vcs is known,
   // using this constructor results in command id 0,
   // giving the first command of current vcs, being add.
-  wxExVCS vcs(std::vector< wxString >{file.GetFullPath()});
+  wxExVCS vcs(std::vector< std::string >{file.GetFullPath()});
   
   vcs.ConfigDialog(GetFrame(), "test vcs", false);
   
@@ -39,7 +39,7 @@ TEST_CASE("wxExVCS", "[vcs]")
 
   // GetEntry  
   REQUIRE( vcs.GetEntry().BuildMenu(100, new wxExMenu("test")) > 0);
-  REQUIRE( vcs.GetEntry().GetOutput().empty());
+  REQUIRE( vcs.GetEntry().GetStdOut().empty());
   REQUIRE( vcs.GetEntry().GetCommand().GetCommand() == "add");
   
   // GetName

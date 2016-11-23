@@ -85,8 +85,12 @@ bool wxExDebug::Execute(const std::string& action, wxExSTC* stc)
      return false;
 
   m_Frame->ShowPane("PROCESS"); 
-
-  return m_Process->Command(action + args);
+  
+  if (action == "interrupt")
+  {
+    return m_Process->Write(std::string(1, 3));
+  }
+  else return m_Process->Write(action + args);
 }
 
 bool wxExDebug::GetArgs(
@@ -148,7 +152,7 @@ bool wxExDebug::GetArgs(
   return true;
 }
 
-void wxExDebug::ProcessInput(const std::string& text)
+void wxExDebug::ProcessStdIn(const std::string& text)
 {
   std::vector<std::string> v;
 
@@ -168,7 +172,7 @@ void wxExDebug::ProcessInput(const std::string& text)
   }
 }
 
-void wxExDebug::ProcessOutput(const std::string& text)
+void wxExDebug::ProcessStdOut(const std::string& text)
 {
   std::vector<std::string> v;
   int line = -1;

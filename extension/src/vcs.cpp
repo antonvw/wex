@@ -30,7 +30,7 @@ enum
 
 std::vector<wxExVCSEntry> wxExVCS::m_Entries;
 
-wxExVCS::wxExVCS(const std::vector< wxString > & files, int command_no)
+wxExVCS::wxExVCS(const std::vector< std::string > & files, int command_no)
   : m_Files(files)
   , m_Caption("VCS")
 {
@@ -114,7 +114,7 @@ int wxExVCS::ConfigDialog(
 }
 #endif
 
-bool wxExVCS::DirExists(const wxFileName& filename)
+bool wxExVCS::DirExists(const wxExFileName& filename)
 {
   const wxExVCSEntry entry(FindEntry(filename));
 
@@ -137,15 +137,15 @@ bool wxExVCS::Execute()
   if (!filename.IsOk())
   {
     return m_Entry.Execute(
-      m_Entry.GetCommand().IsAdd() ? wxExConfigFirstOf(_("Path")): wxString(), 
+      m_Entry.GetCommand().IsAdd() ? wxExConfigFirstOf(_("Path")): std::string(), 
       wxExLexer(), 
       wxEXEC_SYNC,
       wxExConfigFirstOf(_("Base folder")));
   }
   else
   {
-    wxString args;
-    wxString wd;
+    std::string args;
+    std::string wd;
     
     if (m_Files.size() > 1)
     {
@@ -156,7 +156,7 @@ bool wxExVCS::Execute()
     }
     else if (m_Entry.GetName() == "git")
     {
-      const wxString admin_dir(FindEntry(filename).GetAdminDir());
+      const std::string admin_dir(FindEntry(filename).GetAdminDir());
       wd = GetTopLevelDir(admin_dir, filename);
       
       if (!filename.GetFullName().empty())
@@ -172,7 +172,7 @@ bool wxExVCS::Execute()
       // sccs for windows does not handle windows paths,
       // so convert them to UNIX, and add volume as well.
 #ifdef __WXMSW__      
-        filename.GetVolume() + filename.GetVolumeSeparator() +
+        filename.GetVolume() + wxFileName::GetVolumeSeparator() +
 #endif        
         filename.GetFullPath(wxPATH_UNIX) + "\"";
     }
@@ -185,7 +185,13 @@ bool wxExVCS::Execute()
   }
 }
 
-const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
+
+const wxExVCSEntry wxExVCS::FindEntry(const std::string& filename) 
+{
+  return FindEntry(wxExFileName(filename));
+}
+
+const wxExVCSEntry wxExVCS::FindEntry(const wxExFileName& filename)
 {
   const int vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO);
 
@@ -196,7 +202,7 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
       for (const auto& it : m_Entries)
       {
         const bool toplevel = it.AdminDirIsTopLevel();
-        const wxString admin_dir = it.GetAdminDir();
+        const std::string admin_dir = it.GetAdminDir();
 
         if (toplevel && IsAdminDirTopLevel(admin_dir, filename))
         {
@@ -217,29 +223,29 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
   return wxExVCSEntry();
 }
 
-const wxString wxExVCS::GetFile() const
+const std::string wxExVCS::GetFile() const
 {
   return (m_Files.empty() ? wxExConfigFirstOf(_("Base folder")): m_Files[0]);
 }
 
-const wxString wxExVCS::GetName() const
+const std::string wxExVCS::GetName() const
 {
   switch (wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO))
   {
-    case VCS_NONE: return wxEmptyString; break;
+    case VCS_NONE: return std::string(); break;
     case VCS_AUTO: return "Auto"; break;
     default: return m_Entry.GetName();
   }
 }
 
 // See IsAdminDirTopLevel
-const wxString wxExVCS::GetRelativeFile(
-  const wxString& admin_dir, 
-  const wxFileName& fn) const
+const std::string wxExVCS::GetRelativeFile(
+  const std::string& admin_dir, 
+  const wxExFileName& fn) const
 {
   // The .git dir only exists in the root, so check all components.
-  wxFileName root(fn);
-  std::vector< wxString > v;
+  wxFileName root(fn.GetFullPath());
+  std::vector< std::string > v;
 
   while (root.DirExists() && root.GetDirCount() > 0)
   {
@@ -248,7 +254,7 @@ const wxString wxExVCS::GetRelativeFile(
 
     if (path.DirExists() && !path.FileExists())
     {
-      wxString relative_file;
+      std::string relative_file;
 
       for (int i = v.size() - 1; i >= 0; i--)
       {
@@ -262,21 +268,21 @@ const wxString wxExVCS::GetRelativeFile(
     root.RemoveLastDir();
   }
   
-  return wxEmptyString;
+  return std::string();
 }
 
 // See IsAdminDirTopLevel
-const wxString wxExVCS::GetTopLevelDir(
-  const wxString& admin_dir, 
-  const wxFileName& fn) const
+const std::string wxExVCS::GetTopLevelDir(
+  const std::string& admin_dir, 
+  const wxExFileName& fn) const
 {
   if (!fn.IsOk() || admin_dir.empty())
   {
-    return wxEmptyString;
+    return std::string();
   }
   
   // The .git dir only exists in the root, so check all components.
-  wxFileName root(fn);
+  wxFileName root(fn.GetFullPath());
 
   while (root.DirExists() && root.GetDirCount() > 0)
   {
@@ -284,18 +290,18 @@ const wxString wxExVCS::GetTopLevelDir(
     path.AppendDir(admin_dir);
     if (path.DirExists() && !path.FileExists())
     {
-      return root.GetPath();
+      return root.GetPath().ToStdString();
     }
 
     root.RemoveLastDir();
   }
 
-  return wxEmptyString;
+  return std::string();
 }
 
 bool wxExVCS::IsAdminDir(
-  const wxString& admin_dir, 
-  const wxFileName& fn)
+  const std::string& admin_dir, 
+  const wxExFileName& fn)
 {
   if (admin_dir.empty() || !fn.IsOk())
   {
@@ -303,14 +309,14 @@ bool wxExVCS::IsAdminDir(
   }
   
   // these cannot be combined, as AppendDir is a void (2.9.1).
-  wxFileName path(fn);
+  wxFileName path(fn.GetFullPath());
   path.AppendDir(admin_dir);
   return path.DirExists() && !path.FileExists();
 }
 
 bool wxExVCS::IsAdminDirTopLevel(
-  const wxString& admin_dir, 
-  const wxFileName& fn)
+  const std::string& admin_dir, 
+  const wxExFileName& fn)
 {
   if (!fn.IsOk() || admin_dir.empty())
   {
@@ -318,7 +324,7 @@ bool wxExVCS::IsAdminDirTopLevel(
   }
   
   // The .git dir only exists in the root, so check all components.
-  wxFileName root(fn);
+  wxFileName root(fn.GetFullPath());
 
   while (root.DirExists() && root.GetDirCount() > 0)
   {

@@ -14,7 +14,6 @@
 #include <wx/filedlg.h> // for wxFD_OPEN etc.
 
 class wxArrayString;
-class wxFileName;
 class wxXmlNode;
 
 class wxExEx;
@@ -29,13 +28,13 @@ class wxExVCSCommand;
 /*! \file */
 
 /// Aligns text.
-const wxString wxExAlignText(
+const std::string wxExAlignText(
   /// lines to align
-  const wxString& lines,
+  const std::string& lines,
   /// The header is used as a prefix for the line, directly 
   /// followed by the lines, and if necessary on the next line
   /// the header is repeated as a string of spaces.
-  const wxString& header,
+  const std::string& header,
   /// if fill out, then use space
   bool fill_out_with_space,
   /// fill out
@@ -72,7 +71,7 @@ bool wxExAutoCompleteFileName(
   std::vector<std::string> & v);
   
 /// Adds data to the clipboard.
-bool wxExClipboardAdd(const wxString& text);
+bool wxExClipboardAdd(const std::string& text);
 
 /// Returns data from the clipboard.
 const std::string wxExClipboardGet();
@@ -102,38 +101,38 @@ void wxExComboBoxFromList(
 #endif
   
 /// Compares the files, using wxExecute on comparator set in the config.
-bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2);
+bool wxExCompareFile(const wxExFileName& file1, const wxExFileName& file2);
 
 /// Returns the config dir for user data files.
-const wxString wxExConfigDir();
+const std::string wxExConfigDir();
 
 /// Returns first of a list of values from config key.
-const wxString wxExConfigFirstOf(const wxString& key);
+const std::string wxExConfigFirstOf(const wxString& key);
 
 /// Sets first of a list of values in config key.
 /// And returns the value.
-const wxString wxExConfigFirstOfWrite(const wxString& key, const wxString& value);
+const std::string wxExConfigFirstOfWrite(const wxString& key, const wxString& value);
 
 /// Adds an ellipses after text.
 /// The control, if present is postfixed, after a tab character (for accels).
-const wxString wxExEllipsed(
+const std::string wxExEllipsed(
   const wxString& text,
-  const wxString& control = wxEmptyString,
+  const std::string& control = std::string(),
   bool ellipse = true);
 
 /// If text length exceeds max_chars,
 /// returns an ellipse prefix followed by the last max_chars from the text,
 /// otherwise just returns the text.
-const wxString wxExGetEndOfText(
-  const wxString& text,
+const std::string wxExGetEndOfText(
+  const std::string& text,
   size_t max_chars = 15);
 
 /// Returns field separator.
-const wxUniChar wxExGetFieldSeparator();
+const char wxExGetFieldSeparator();
 
 /// Returns a search result, that might be shown in the statusbar.
-const wxString wxExGetFindResult(
-  const wxString& find_text, 
+const std::string wxExGetFindResult(
+  const std::string& find_text, 
   bool find_next, 
   bool recursive);
 
@@ -141,15 +140,15 @@ const wxString wxExGetFindResult(
 /// The return value is an index in wxTheFileIconsTable.
 /// You can use this index as a bitmap using:
 /// wxTheFileIconsTable->GetSmallImageList()->GetBitmap(wxExGetIconID(file))
-int wxExGetIconID(const wxFileName& filename);
+int wxExGetIconID(const wxExFileName& filename);
 
 /// Returns the number of lines in a (trimmed) string.
 /// If text is empty, 0 is returned, otherwise at least 1.
-int wxExGetNumberOfLines(const wxString& text, bool trimmed = false);
+int wxExGetNumberOfLines(const std::string& text, bool trimmed = false);
 
 /// Returns a word from a string.
-const wxString wxExGetWord(
-  wxString& text,
+const std::string wxExGetWord(
+  std::string& text,
   bool use_other_field_separators = false,
   bool use_path_separator = false);
 
@@ -185,11 +184,11 @@ void wxExLogStatus(const wxExFileName& filename, long flags = STAT_DEFAULT);
 /// Returns value from executing the make process.
 long wxExMake(
   /// the makefile
-  const wxFileName& makefile);
+  const wxExFileName& makefile);
 
 /// Expands all markers and registers in command.
 /// Returns false if a marker could not be found.
-bool wxExMarkerAndRegisterExpansion(wxExEx* ex, wxString& command);
+bool wxExMarkerAndRegisterExpansion(wxExEx* ex, std::string& command);
 
 /// Regular expression match.
 /// Returns:
@@ -206,7 +205,7 @@ int wxExMatch(
 
 /// Returns true if filename (fullname) matches one of the
 /// fields in specified pattern (fields separated by ; sign).
-bool wxExMatchesOneOf(const wxFileName& filename, const wxString& patterns);
+bool wxExMatchesOneOf(const std::string& fullname, const std::string& patterns);
 
 /// Parses properties node.
 void wxExNodeProperties(
@@ -216,7 +215,7 @@ void wxExNodeProperties(
 /// Parses style node.
 void wxExNodeStyles(
   const wxXmlNode* node,
-  const wxString& lexer,
+  const std::string& lexer,
   std::vector<wxExStyle>& styles);
 
 #if wxUSE_GUI
@@ -227,7 +226,7 @@ int wxExOpenFiles(
   /// and wxExDirOpenFile for each dir
   wxExFrame* frame,
   /// array with files
-  const std::vector< wxString > & files,
+  const std::vector< std::string > & files,
   /// flags to be used with OpenFile
   long file_flags = 0,
   /// flags to be used with wxExDirOpenFile
@@ -255,23 +254,23 @@ void wxExOpenFilesDialog(
 #endif
 
 /// Adds a caption.
-const wxString wxExPrintCaption(const wxFileName& filename);
+const std::string wxExPrintCaption(const wxExFileName& filename);
 
 /// You can use macros in PrintFooter and in PrintHeader:
 ///   \@PAGENUM\@ is replaced by page number
 ///   \@PAGESCNT\@ is replaced by total number of pages
-const wxString wxExPrintFooter();
+const std::string wxExPrintFooter();
 
 /// Adds a header.
-const wxString wxExPrintHeader(const wxFileName& filename);
+const std::string wxExPrintHeader(const wxExFileName& filename);
 
 /// Returns quotes around the text.
-const wxString wxExQuoted(const wxString& text);
+const std::string wxExQuoted(const std::string& text);
 
 /// Executes all process between backquotes in command, 
 /// and changes command with replaced match with output from process.
 /// Returns false if process could not be executed.
-bool wxExShellExpansion(wxString& command);
+bool wxExShellExpansion(std::string& command);
   
 enum
 {
@@ -281,15 +280,15 @@ enum
 };
 
 /// Sorts specified text, returns string with sorted text.
-const wxString wxExSort(
+const std::string wxExSort(
   /// text to sort
-  const wxString& input, 
+  const std::string& input, 
   /// sort type
   size_t sort_type,
   /// position of the first character to be replaced
   size_t pos, 
   /// eol to split lines
-  const wxString& eol,
+  const std::string& eol,
   /// number of characters to replace
   /// string::npos indicates all characters until eol
   size_t len = std::string::npos);
@@ -314,7 +313,7 @@ const std::string wxExSkipWhiteSpace(
   const std::string& replace_with = " ");
 
 /// This takes care of the translation.
-const wxString wxExTranslate(const wxString& text, int pageNum, int numPages);
+const std::string wxExTranslate(const std::string& text, int pageNum, int numPages);
 
 #if wxUSE_GUI
 /// Use specified VCS command to set lexer on STC document.
@@ -336,5 +335,5 @@ void wxExVCSExecute(
   /// VCS menu id to execute
   int id,
   /// files on which to operate
-  const std::vector< wxString > & files);
+  const std::vector< std::string > & files);
 #endif

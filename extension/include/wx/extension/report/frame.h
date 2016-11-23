@@ -50,7 +50,7 @@ public:
   /// Returns true if process started.
   bool FindInFiles(
     /// the files
-    const std::vector< wxString > & files,
+    const std::vector< std::string > & files,
     /// ID_TOOL_REPORT_FIND or ID_TOOL_REPORT_REPLACE
     int id,
     /// Default shows a dialog.
@@ -101,7 +101,7 @@ public:
     const wxString& line) {return Grep(line, true);};
     
   /// Updates file history.
-  virtual void SetRecentFile(const wxString& file) override;
+  virtual void SetRecentFile(const std::string& file) override;
 
   /// Updates project history.
   void SetRecentProject(const wxString& project) {

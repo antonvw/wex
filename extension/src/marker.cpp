@@ -21,7 +21,7 @@ wxExMarker::wxExMarker(const wxXmlNode* node)
   if (node == nullptr) return;
 
   const wxString single = 
-    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"));
+    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0").ToStdString());
 
   if (!single.IsNumber())
   {
@@ -37,19 +37,19 @@ wxExMarker::wxExMarker(const wxXmlNode* node)
   wxStringTokenizer fields(content, ",");
 
   const wxString symbol = 
-    wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+    wxExLexers::Get()->ApplyMacro(fields.GetNextToken().ToStdString());
 
   m_Symbol = atoi(symbol.c_str());
 
   if (fields.HasMoreTokens())
   {
     m_ForegroundColour = wxExLexers::Get()->ApplyMacro(
-      fields.GetNextToken().Strip(wxString::both));
+      fields.GetNextToken().Strip(wxString::both).ToStdString());
 
     if (fields.HasMoreTokens())
     {
       m_BackgroundColour = wxExLexers::Get()->ApplyMacro(
-        fields.GetNextToken().Strip(wxString::both));
+        fields.GetNextToken().Strip(wxString::both).ToStdString());
     }
   }
 
@@ -82,7 +82,10 @@ void wxExMarker::Apply(wxStyledTextCtrl* stc) const
 {
   if (IsOk())
   {
-    stc->MarkerDefine(m_No, m_Symbol, m_ForegroundColour, m_BackgroundColour);
+    stc->MarkerDefine(m_No, 
+      m_Symbol, 
+      wxString(m_ForegroundColour), 
+      wxString(m_BackgroundColour));
   }
 }
 

@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
+#include <wx/extension/filename.h>
 #include "../catch.hpp"
 #include "../test.h"
 
@@ -15,14 +16,21 @@ TEST_CASE( "wxExFileName" )
   
   SECTION( "basic" ) 
   {
+    REQUIRE( fileName.DirExists());
+    REQUIRE( fileName.FileExists());
+    REQUIRE( fileName.GetExtension() == "h");
+    REQUIRE( fileName.GetFullName() == "test.h");
+    REQUIRE(!fileName.GetFullPath().empty());
+    REQUIRE( fileName.GetLexer().GetScintillaLexer() == "cpp");
+    REQUIRE( fileName.GetName() == "test");
+    REQUIRE(!fileName.GetPath().empty());
+    REQUIRE( fileName.GetStat().IsOk());
+    REQUIRE( fileName.IsOk());
+    REQUIRE(!fileName.IsReadOnly());
+
     REQUIRE(!wxExFileName("XXXXX").GetStat().IsOk());
+    REQUIRE( wxExFileName("XXXXX").MakeAbsolute());
     
-    REQUIRE(!wxExLexers::Get()->GetLexers().empty());
-    INFO(fileName.GetLexer().GetScintillaLexer());
-    REQUIRE(fileName.GetLexer().GetScintillaLexer() == "cpp");
-    REQUIRE(fileName.GetStat().IsOk());
-    fileName.Assign("xxx");
-    REQUIRE(fileName.GetStat().IsOk());
     fileName.SetLexer(wxExLexer("ada"));
     REQUIRE(fileName.GetLexer().GetScintillaLexer() == "ada");
   }
@@ -39,12 +47,12 @@ TEST_CASE( "wxExFileName" )
     }
 
     const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - ex_start);
-    const wxFileName file(GetTestFile());
+    const wxExFileName file(GetTestFile());
     const auto wx_start = std::chrono::system_clock::now();
 
     for (int j = 0; j < max; j++)
     {
-      REQUIRE(file.IsFileWritable());
+      REQUIRE(!file.IsReadOnly());
     }
 
     const auto wx_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - wx_start);

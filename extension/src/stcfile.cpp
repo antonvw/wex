@@ -20,9 +20,7 @@
 #if wxUSE_GUI
 void CheckWellFormed(const wxExFileName& fn)
 {
-  if (
-    wxExLexers::Get()->GetFileName() != fn &&
-    fn.GetLexer().GetLanguage() == "xml")
+  if (fn.GetLexer().GetLanguage() == "xml")
   {
     if (!wxXmlDocument(fn.GetFullPath()).IsOk())
     {
@@ -31,7 +29,7 @@ void CheckWellFormed(const wxExFileName& fn)
   }
 }
 
-wxExSTCFile::wxExSTCFile(wxExSTC* stc, const wxString& filename)
+wxExSTCFile::wxExSTCFile(wxExSTC* stc, const std::string& filename)
   : m_STC(stc)
   , m_PreviousLength(0)
 {
@@ -54,7 +52,7 @@ bool wxExSTCFile::DoFileLoad(bool synced)
   // Other kind of files might get new data anywhere inside the file,
   // we cannot sync that by keeping pos. 
   // Also only do it for reasonably large files.
-  const bool isLog = (GetFileName().GetExt().CmpNoCase("log") == 0);
+  const bool isLog = (GetFileName().GetExtension().find("log") == 0);
   
   m_STC->UseModificationMarkers(false);
 
@@ -109,7 +107,7 @@ void wxExSTCFile::DoFileSave(bool save_as)
   
   if (save_as)
   {
-    m_STC->SetReadOnly(!GetFileName().IsFileWritable());
+    m_STC->SetReadOnly(GetFileName().IsReadOnly());
     m_STC->GetLexer().Set(GetFileName().GetLexer());
     m_STC->SetName(GetFileName().GetFullPath());
   }
@@ -183,8 +181,8 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
     m_STC->SetSelection(startPos, endPos);
   }
   
-  if (( m_STC->GetFlags() & m_STC->STC_WIN_READ_ONLY) ||
-       !GetFileName().IsFileWritable())
+  if ((m_STC->GetFlags() & m_STC->STC_WIN_READ_ONLY) ||
+       GetFileName().IsReadOnly())
   {
     m_STC->SetReadOnly(true);
   }

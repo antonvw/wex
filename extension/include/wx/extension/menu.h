@@ -9,7 +9,7 @@
 
 #include <wx/artprov.h> // for wxArtID
 #include <wx/menu.h>
-#include <wx/filename.h>
+#include <wx/extension/filename.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -76,7 +76,7 @@ public:
   bool AppendVCS(
     /// if a filename is specified the menu is built as a submenu,
     /// otherwise as menu items.
-    const wxFileName& filename = wxFileName(),
+    const wxExFileName& filename = wxExFileName(),
     /// shows modal dialog if necessary
     bool show_modal = true);
 

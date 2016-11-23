@@ -158,9 +158,10 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
       wxExConfigFirstOf(m_TextInFiles),
       flags);
 
-    dir.FindFiles();
-
-    wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+    if (dir.FindFiles() >= 0)
+    {
+      wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+    }
     
     Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
 
@@ -171,7 +172,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 }
 
 bool wxExFrameWithHistory::FindInFiles(
-  const std::vector< wxString > & files,
+  const std::vector< std::string > & files,
   int id,
   bool show_dialog,
   wxExListView* report)
@@ -208,7 +209,12 @@ bool wxExFrameWithHistory::FindInFiles(
       if (fn.FileExists())
       {
         wxExTextFileWithListView file(fn, tool);
-        file.RunTool();
+
+        if (!file.RunTool())
+        {
+          break;
+        }
+        
         stats += file.GetStatistics().GetElements();
       }
       else if (!fn.GetFullPath().empty())
@@ -292,14 +298,14 @@ bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
   if (wxExCmdLineParser(arg, 
      {{{"r", "recursive"}, {0, [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}}},
      {},
-     {{"match", {0, [&](std::vector<wxString> & v) {wxExFindReplaceData::Get()->SetFindString(v[0]);}}},
-      {sed ? "replace": "", {0, [&](std::vector<wxString> & v) {
+     {{"match", {0, [&](std::vector<std::string> & v) {wxExFindReplaceData::Get()->SetFindString(v[0]);}}},
+      {sed ? "replace": "", {0, [&](std::vector<std::string> & v) {
         wxExFindReplaceData::Get()->SetReplaceString(v[0]);}}},
-      {"extension", {wxCMD_LINE_PARAM_OPTIONAL, [&](std::vector<wxString> & v) {
+      {"extension", {wxCMD_LINE_PARAM_OPTIONAL, [&](std::vector<std::string> & v) {
         arg2 = (v.size() > 1 ? 
           wxExConfigFirstOfWrite(m_TextInFiles, v[1]): 
           wxExConfigFirstOf(m_TextInFiles));}}},
-      {"folder", {wxCMD_LINE_PARAM_OPTIONAL, [&](std::vector<wxString> & v) {
+      {"folder", {wxCMD_LINE_PARAM_OPTIONAL, [&](std::vector<std::string> & v) {
         arg1 = (v.size() == 3 ? 
           wxExConfigFirstOfWrite(m_TextInFolder, v[2]): 
           wxExConfigFirstOf(m_TextInFolder));}}}}).Parse() != 0)
@@ -333,7 +339,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
     wxLogStatus(GetFindReplaceInfoText());
     Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
 
-    wxExDirTool dir(tool, arg1, arg2, arg3);
+    wxExDirTool dir(tool, arg1.ToStdString(), arg2.ToStdString(), arg3);
     dir.FindFiles();
 
     wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
@@ -435,7 +441,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
   }
 }
 
-void wxExFrameWithHistory::SetRecentFile(const wxString& file)
+void wxExFrameWithHistory::SetRecentFile(const std::string& file)
 {
   wxExManagedFrame::SetRecentFile(file);
   
@@ -471,7 +477,7 @@ void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
   {
     wxExListItem item(
       m_FileHistoryList, 
-      GetFileHistory().GetHistoryFile(i));
+      GetFileHistory().GetHistoryFile(i).ToStdString());
 
     if (item.GetFileName().GetStat().IsOk())
     {

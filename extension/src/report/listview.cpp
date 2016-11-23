@@ -70,8 +70,8 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       wxExListItem li(this, i);
-      const wxFileName* filename = &li.GetFileName();
-      if (wxFileName::DirExists(filename->GetFullPath())) continue; // IsDir no ok
+      const wxExFileName* filename = &li.GetFileName();
+      if (filename->DirExists()) continue;
       switch (event.GetId())
       {
         case ID_LIST_COMPARE:
@@ -120,7 +120,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       const wxExListItem item(this, i);
-      wxLogStatus(item.GetFileName().GetFullPath());
+      wxLogStatus(item.GetFileName().GetFullPath().c_str());
       if (item.GetFileName().FileExists())
       {
         wxExTextFileWithListView file(item.GetFileName(), tool);
@@ -129,7 +129,9 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
       }
       else
       {
-        wxExDirTool dir(tool, item.GetFileName().GetFullPath(), item.GetFileSpec());
+        wxExDirTool dir(tool, 
+          item.GetFileName().GetFullPath(), 
+          item.GetFileSpec().ToStdString());
         dir.FindFiles();
         stats += dir.GetStatistics().GetElements();
       }
@@ -142,7 +144,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
     }, ID_TOOL_LOWEST, ID_TOOL_HIGHEST);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    std::vector< wxString > files;
+    std::vector< std::string > files;
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       files.emplace_back(wxExListItem(this, i).GetFileName().GetFullPath());
@@ -197,14 +199,14 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
         const wxString current_file = thislist.GetFileName().GetFullPath();
 
         wxExListItem otherlist(list, list->GetFirstSelected());
-        const wxString with_file = otherlist.GetFileName().GetFullPath();
+        const std::string with_file = otherlist.GetFileName().GetFullPath();
 
         if (current_file != with_file &&
             !wxConfigBase::Get()->Read(_("Comparator")).empty())
         {
           menu.AppendSeparator();
           menu.Append(ID_LIST_COMPARE,
-            _("&Compare With") + " " + wxExGetEndOfText(with_file));
+            _("&Compare With") + " " + wxString(wxExGetEndOfText(with_file)));
         }
       }
     }

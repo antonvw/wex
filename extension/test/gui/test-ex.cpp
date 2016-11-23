@@ -21,7 +21,7 @@
 TEST_CASE("wxExEx", "[stc][vi]")
 {
   // Test modeline.
-  const wxString modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
+  const std::string modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
   wxExSTC* stc = new wxExSTC(GetFrame(), std::string("-- vi: " + modeline));
   AddPane(GetFrame(), stc);
   wxExEx* ex = new wxExEx(stc);
@@ -31,7 +31,7 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE(stc->GetEdgeColumn() == 40);
   REQUIRE(stc->GetIndent() == 4);
   REQUIRE(stc->GetLexer().GetScintillaLexer() == "sql");
-  REQUIRE( ex->GetLastCommand() == wxString(":" + modeline));
+  REQUIRE( ex->GetLastCommand() == ":" + modeline);
   wxExSTC* stco = new wxExSTC(GetFrame(), wxExFileName("test-modeline.txt"));
   AddPane(GetFrame(), stco);
   REQUIRE(stco->GetLexer().GetScintillaLexer() == "sql");

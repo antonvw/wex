@@ -19,7 +19,7 @@
 #if wxUSE_DIRDLG
 
 #define GET_VECTOR_FILES \
-  const std::vector< wxString > files(wxExToVectorString(*this).Get()); \
+  const std::vector< std::string > files(wxExToVectorString(*this).Get()); \
   if (files.empty()) \
   {                  \
     event.Skip();    \
@@ -55,7 +55,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxBusyCursor wait;
-    wxString clipboard;
+    std::string clipboard;
     for (const auto& it : wxExToVectorString(*this).Get())
     {
       clipboard += it + wxTextFile::GetEOL();

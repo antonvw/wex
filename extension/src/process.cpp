@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/process.h>
 #include <wx/timer.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/process.h>
@@ -28,27 +29,36 @@
       frame->GetDebug() != nullptr &&                      \
       frame->GetDebug()->GetProcess() == this)             \
   {                                                        \
-    frame->GetDebug()->Process##SCOPE(text.ToStdString()); \
+    frame->GetDebug()->Process##SCOPE(text);               \
   }                                                        \
 };
 
-#define GET_STREAM(SCOPE)                          \
-{                                                  \
-  if (Is##SCOPE##Available())                      \
-  {                                                \
-    wxTextInputStream tis(*Get##SCOPE##Stream());  \
-                                                   \
-    while (Is##SCOPE##Available())                 \
-    {                                              \
-      const wxChar c = tis.GetChar();              \
-                                                   \
-      if (c != 0)                                  \
-      {                                            \
-        text << c;                                 \
-      }                                            \
-    }                                              \
-  }                                                \
-};                                                 \
+#define GET_STREAM(SCOPE)                                    \
+{                                                            \
+  if (m_Process->Is##SCOPE##Available())                     \
+  {                                                          \
+    wxTextInputStream tis(*m_Process->Get##SCOPE##Stream()); \
+                                                             \
+    while (m_Process->Is##SCOPE##Available())                \
+    {                                                        \
+      const char c = tis.GetChar();                          \
+                                                             \
+      if (c != 0)                                            \
+      {                                                      \
+        text += c;                                           \
+      }                                                      \
+    }                                                        \
+  }                                                          \
+};                                                           \
+
+class wxExProcessImp : public wxProcess
+{
+public:
+  wxExProcessImp() : 
+    wxProcess(wxPROCESS_REDIRECT) {;};
+protected:
+  virtual void OnTerminate(int pid, int status) override {;};
+};
 
 void HandleCommand(const wxString& command)
 {
@@ -101,15 +111,19 @@ wxExShell* wxExProcess::m_Shell = nullptr;
 wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 
 wxExProcess::wxExProcess()
-  : wxProcess(wxPROCESS_REDIRECT)
-  , m_Timer(std::make_unique<wxTimer>(this))
+  : m_Process(new wxExProcessImp())
+  , m_Timer(std::make_unique<wxTimer>(m_Process))
   , m_Error(false)
-  , m_HasStdError(false)
   , m_Command(wxExConfigFirstOf(_("Process")))
 {
-  Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {CheckInput();});
+  m_Process->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {CheckInput();});
 }
 
+wxExProcess::~wxExProcess()
+{
+  delete m_Process;
+}
+  
 wxExProcess::wxExProcess(const wxExProcess& process)
 {
   *this = process;
@@ -119,12 +133,13 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
 {
   if (this != &p)
   {
-    m_Timer = std::make_unique<wxTimer>(this);
+    m_Process = new wxExProcessImp();
+    m_Timer = std::make_unique<wxTimer>(m_Process);
     m_Command = p.m_Command;
     m_Error = p.m_Error;
-    m_HasStdError = p.m_HasStdError;
-    m_Input = p.m_Input;
-    m_Output = p.m_Output;
+    m_StdIn = p.m_StdIn;
+    m_StdErr = p.m_StdErr;
+    m_StdOut = p.m_StdOut;
   }
 
   return *this;
@@ -136,7 +151,7 @@ void wxExProcess::CheckInput()
   
   wxCriticalSectionLocker lock(m_Critical);
   
-  wxString text;
+  std::string text;
   GET_STREAM(Input);
   GET_STREAM(Error);
   
@@ -144,58 +159,20 @@ void wxExProcess::CheckInput()
   {
     m_Shell->AppendText(
       // prevent echo of last input
-      !m_Input.empty() && text.StartsWith(m_Input) ?
-        text.substr(m_Input.length()):
+      !m_StdIn.empty() && text.find(m_StdIn) == 0 ?
+        text.substr(m_StdIn.length()):
         text);
     
-    DEBUG(Output);
+    DEBUG(StdOut);
   }
     
-  if (!m_Input.empty())
+  if (!m_StdIn.empty())
   {
-    m_Input.clear();
+    m_StdIn.clear();
     m_Shell->Prompt(std::string(), false);
   }
 }
 
-bool wxExProcess::Command(const wxString& text)
-{
-  if (!IsRunning()) 
-  {
-    wxLogStatus("Process is not running");
-    return false;
-  }
-  
-  m_Timer->Stop();
-  
-  if (m_Command.StartsWith("cmd") ||
-      m_Command.StartsWith("powershell"))
-  {
-    m_Shell->DocumentEnd();
-  }
-    
-  // Send text to process and restart timer.
-  wxOutputStream* os = GetOutputStream();
-
-  if (os != nullptr)
-  {
-    HandleCommand(text);
-    DEBUG(Input);
-    wxTextOutputStream(*os).WriteString(text + "\n");
-    m_Input = text;
-    wxMilliSleep(10);
-    CheckInput();
-    m_Timer->Start();
-  }
-
-  if (!IsRunning())
-  {
-    ShowProcess(false, m_Timer.get());
-  }
-
-  return true;
-}
-  
 int wxExProcess::ConfigDialog(
   wxWindow* parent,
   const wxString& title,
@@ -223,9 +200,9 @@ int wxExProcess::ConfigDialog(
 }
 
 bool wxExProcess::Execute(
-  const wxString& command_to_execute,
+  const std::string& command_to_execute,
   int flags,
-  const wxString& wd)
+  const std::string& wd)
 {
   m_Error = false;
     
@@ -256,7 +233,6 @@ bool wxExProcess::Execute(
   }
   
   const bool sync = (flags & wxEXEC_SYNC);
-  m_HasStdError = false;
   
   if (!sync)
   { 
@@ -268,15 +244,15 @@ bool wxExProcess::Execute(
     m_Shell->SetName(m_Command);
     m_Shell->SetPrompt(
       // a unix shell itself has no prompt, so put one here
-      m_Command.StartsWith("bash") ||
-      m_Command.StartsWith("csh") ||
-      m_Command.StartsWith("ksh") ||
-      m_Command.StartsWith("tcsh") ||
-      m_Command.StartsWith("sh") ? ">" : "");
+      m_Command.find("bash") == 0 ||
+      m_Command.find("csh") == 0 ||
+      m_Command.find("ksh") == 0 ||
+      m_Command.find("tcsh") == 0 ||
+      m_Command.find("sh") == 0 ? ">" : "");
     
     // For asynchronous execution the return value is the process id and zero 
     // value indicates that the command could not be executed.
-    if (wxExecute(m_Command, flags, this, &env) > 0)
+    if (wxExecute(m_Command, flags, m_Process, &env) > 0)
     {
       if (!env.cwd.empty())
       {
@@ -285,11 +261,8 @@ bool wxExProcess::Execute(
         wxSetWorkingDirectory(fn.GetFullPath());
       }
       
-      if (IsRunning())
-      {
-        m_Timer->Start(100); // milliseconds
-        m_Shell->SetFocus();
-      }
+      m_Timer->Start(100); // milliseconds
+      m_Shell->SetFocus();
     }
     else
     {
@@ -310,15 +283,15 @@ bool wxExProcess::Execute(
       flags,
       &env) == -1)
     {
-      m_Output.clear();
+      m_StdErr.clear();
+      m_StdOut.clear();
       m_Error = true;
     }
     else
     {
-      m_HasStdError = !errors.empty();
-      
       // Set output by converting array strings into normal strings.
-      m_Output = wxJoin(errors, '\n', '\n') + wxJoin(output, '\n', '\n');
+      m_StdOut = wxJoin(output, '\n', '\n');
+      m_StdErr = wxJoin(errors, '\n', '\n');
     }
     
     if (m_Shell != nullptr)
@@ -335,19 +308,21 @@ bool wxExProcess::IsRunning() const
   return 
     // If we have not yet run Execute, process is not running
     m_Shell != nullptr &&
-    GetPid() > 0 && Exists(GetPid());
+    m_Process->GetPid() > 0 && wxProcess::Exists(m_Process->GetPid());
 }
 
-wxKillError wxExProcess::Kill(wxSignal sig)
+bool wxExProcess::Kill()
 {
   if (!IsRunning())
   {
-    return wxKILL_NO_PROCESS;
+    return false;
   }
+
+  wxSignal sig = wxSIGKILL;
   
-  const wxKillError result = wxProcess::Kill(GetPid(), sig);
+  const wxKillError result = m_Process->Kill(m_Process->GetPid(), sig);
   
-  DeletePendingEvents();
+  m_Process->DeletePendingEvents();
   ShowProcess(false, m_Timer.get());
   
   switch (result)
@@ -360,27 +335,18 @@ wxKillError wxExProcess::Kill(wxSignal sig)
     default: wxFAIL;
   }
   
-  return result;
-}
-
-void wxExProcess::OnTerminate(int pid, int status)
-{
-  m_Timer->Stop();
-  CheckInput();
-  wxLogStatus(_("Ready"));
-
-  if (m_Shell != nullptr)
-  {
-    m_Shell->EnableShell(false);
-  }
+  return result == wxKILL_OK;
 }
 
 void wxExProcess::PrepareOutput(wxWindow* parent)
 {
   if (m_Shell == nullptr)
   {
-    m_Shell = new wxExShell(parent, std::string(), std::string(), true, 100, std::string(),
-      wxExSTC::STC_MENU_DEFAULT | wxExSTC::STC_MENU_OPEN_LINK);
+    m_Shell = new wxExShell(parent, 
+      std::string(), 
+      std::string(), 
+      true, 
+      100);
   }
 }
 
@@ -391,18 +357,57 @@ void wxExProcess::ShowOutput(const wxString& caption) const
   {
     if (m_Shell != nullptr && ShowProcess(true))
     {
-      m_Shell->AppendText(m_Output);
+      m_Shell->AppendText(m_StdOut);
     }
     else
     {
-      std::cout << m_Output << "\n";
+      std::cout << m_StdOut << "\n";
     }
   }
   else
   {
     // Executing command failed, so no output,
     // show failing command.
-    wxLogError("Could not execute: " + m_Command);
+    wxLogError("Could not execute: %s", m_Command.c_str());
   }
 }
 #endif
+
+bool wxExProcess::Write(const std::string& text)
+{
+  if (!IsRunning()) 
+  {
+    wxLogStatus("Process is not running");
+    return false;
+  }
+  
+  m_Timer->Stop();
+  
+  if (m_Command.find("cmd") == 0 ||
+      m_Command.find("powershell") == 0)
+  {
+    m_Shell->DocumentEnd();
+  }
+    
+  // Send text to process and restart timer.
+  wxOutputStream* os = m_Process->GetOutputStream();
+
+  if (os != nullptr)
+  {
+    HandleCommand(text);
+    DEBUG(StdIn);
+    const std::string el = (text.size() == 1 && text[0] == 3 ? std::string(): std::string("\n"));
+    wxTextOutputStream(*os).WriteString(text + el);
+    m_StdIn = text;
+    wxMilliSleep(10);
+    CheckInput();
+    m_Timer->Start();
+  }
+
+  if (!IsRunning())
+  {
+    ShowProcess(false, m_Timer.get());
+  }
+
+  return true;
+}

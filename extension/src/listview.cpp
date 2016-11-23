@@ -370,7 +370,7 @@ wxExListView::wxExListView(wxWindow* parent,
       const int no = (GetSelectedItemCount() > 0 ? 
         GetFirstSelected(): GetItemCount());
        
-      wxExListItem(this, dir_dlg.GetPath()).Insert(no);
+      wxExListItem(this, dir_dlg.GetPath().ToStdString()).Insert(no);
     }}, wxID_ADD);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -642,7 +642,7 @@ void wxExListView::CopySelectedItemsToClipboard()
   for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     clipboard += ItemToText(i) + wxTextFile::GetEOL();
     
-  wxExClipboardAdd(clipboard);
+  wxExClipboardAdd(clipboard.ToStdString());
 }
 
 void wxExListView::EditClearAll()
@@ -776,7 +776,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   }
   else
   {
-    wxExFrame::StatusText(wxExGetFindResult(text, find_next, recursive), wxEmptyString);
+    wxExFrame::StatusText(wxString(wxExGetFindResult(text.ToStdString(), find_next, recursive)), wxEmptyString);
     
     if (!recursive)
     {
@@ -944,7 +944,7 @@ bool wxExListView::ItemFromText(const wxString& text)
     {
       if (!InReportView())
       {
-        wxExListItem(this, tkz.GetNextToken()).Insert();
+        wxExListItem(this, tkz.GetNextToken().ToStdString()).Insert();
       }
       else
       {
@@ -986,12 +986,12 @@ bool wxExListView::ItemFromText(const wxString& text)
             const wxString findfiles =
               (tk.HasMoreTokens() ? tk.GetNextToken(): tk.GetString());
     
-            wxExListItem(this, value, findfiles).Insert();
+            wxExListItem(this, value.ToStdString(), findfiles).Insert();
           }
         }
         else
         {
-          wxExListItem(this, token).Insert();
+          wxExListItem(this, token.ToStdString()).Insert();
         }
       }
     }

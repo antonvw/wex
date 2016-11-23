@@ -62,7 +62,7 @@ bool wxExFile::CheckSync()
       if (!m_Stat.Sync())
       {
         // This might be reported in an OnIdle, so do not use wxLogError.
-        wxLogStatus("Could not sync: " + m_FileName.GetFullPath());
+        wxLogStatus("Could not sync: ", m_FileName.GetFullPath().c_str());
       }
         
       return true;

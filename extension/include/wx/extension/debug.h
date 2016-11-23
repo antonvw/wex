@@ -55,11 +55,11 @@ public:
   /// Returns process.
   auto GetProcess() {return m_Process;};
 
-  /// Handles input from process.
-  void ProcessInput(const std::string& text);
+  /// Handles stdin from process.
+  void ProcessStdIn(const std::string& text);
   
-  /// Handles output from process.
-  void ProcessOutput(const std::string& text);
+  /// Handles stdout from process.
+  void ProcessStdOut(const std::string& text);
 private:
   bool DeleteAllBreakpoints(const std::string& text);
   bool GetArgs(

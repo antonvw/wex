@@ -64,7 +64,7 @@ private:
   wxExNotebook *m_Editors, *m_Lists, *m_Projects = nullptr;
   wxExProcess* m_Process;
   wxExSTC* m_asciiTable = nullptr;
-  wxString m_SavedPage;
+  std::string m_SavedPage;
 
   DECLARE_EVENT_TABLE()
 };

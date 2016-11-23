@@ -36,15 +36,15 @@ TEST_CASE( "wxExFile" )
     const wxCharBuffer* buffer = file.Read();
     REQUIRE(buffer->length() == 40);
     
-    file.FileNew(wxString("test-xxx"));
+    file.FileNew("test-xxx");
     
     REQUIRE( file.Open(wxFile::write));
     REQUIRE( file.Write(*buffer));
-    REQUIRE( file.Write(wxString("OK")));
+    REQUIRE( file.Write(std::string("OK")));
 
-    wxExFile create("test-create", wxFile::write);
+    wxExFile create(std::string("test-create"), wxFile::write);
     REQUIRE( create.IsOpened());
-    REQUIRE( create.Write(wxString("OK")));
+    REQUIRE( create.Write(std::string("OK")));
   }
 
   // file should be closed before remove (at least for windows)

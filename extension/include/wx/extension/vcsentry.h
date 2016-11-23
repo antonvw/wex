@@ -32,7 +32,7 @@ public:
     /// name of the vcs
     const std::string& name = std::string(),
     /// which dir is used for vcs admin (like .svn, .git)
-    const wxString& admin_dir = wxEmptyString,
+    const std::string& admin_dir = std::string(),
     /// commands for this vcs,
     /// default adds empty vcs command with id 0
     const std::vector<wxExVCSCommand> & commands = std::vector<wxExVCSCommand>{wxExVCSCommand()},
@@ -64,19 +64,19 @@ public:
   /// and also can be false if dialog for vcs bin was cancelled.
   bool Execute(
     /// args, like filenames, or vcs flags
-    const wxString& args = wxEmptyString,
+    const std::string& args = std::string(),
     /// lexer that is used for presenting the output
     const wxExLexer& lexer = wxExLexer(),
     /// flags for wxExecute
     int flags = wxEXEC_SYNC,
     /// working directory
-    const wxString& wd = wxEmptyString);
+    const std::string& wd = std::string());
   
   /// Returns the administrative directory.
   const auto& GetAdminDir() const {return m_AdminDir;};
 
   /// Returns the flags used to run the command.
-  const wxString GetFlags() const;
+  const std::string GetFlags() const;
 
 #if wxUSE_GUI
   /// Shows a dialog allowing you to run or cancel the current vcs command.
@@ -95,6 +95,6 @@ private:
   bool m_AdminDirIsTopLevel;
   int m_FlagsLocation;
   
-  wxString m_AdminDir;
+  std::string m_AdminDir;
   wxExLexer m_Lexer;
 };

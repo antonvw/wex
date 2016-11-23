@@ -158,16 +158,16 @@ TEST_CASE("wxExVi", "[stc][vi]")
     REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
     REQUIRE(!stc->GetModify());
   }
-  // and on hexmode document.
+
+  // Test insert on hexmode document.
+  // TODO: add real chars and test.
   stc->SetReadOnly(false);
   stc->Reload(wxExSTC::STC_WIN_HEX);
   REQUIRE( stc->HexMode());
   REQUIRE(!stc->GetModify());
-  for (auto& it3 : commands)
-  {
-    REQUIRE( vi->Command(it3) );
-  }
-  REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
+  REQUIRE( vi->Command("a") );
+  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   REQUIRE(!stc->GetModify());
   stc->Reload();
   REQUIRE(!stc->HexMode());
@@ -509,27 +509,26 @@ TEST_CASE("wxExVi", "[stc][vi]")
   REQUIRE( vi->Command(ctrl_r + "_"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   
+  stc->SetText("");
   REQUIRE( vi->Command("i"));
   REQUIRE( vi->Command(ctrl_r + "%"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
-  INFO( stc->GetText());
-  REQUIRE( stc->GetText().Contains("test.h"));
+  REQUIRE( stc->GetText() == "test.h");
   
   REQUIRE( vi->Command("yy"));
   stc->SetText("");
   REQUIRE( vi->Command("i"));
   REQUIRE( vi->Command(ctrl_r + "0"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
-  REQUIRE( stc->GetText().Contains("test.h"));
+  REQUIRE( stc->GetText() == "test.h");
   
   stc->SetText("XXXXX");
   REQUIRE( vi->Command("dd"));
   REQUIRE( vi->Command("i"));
-  REQUIRE( vi->Command(ctrl_r));
+  REQUIRE(!vi->Command(ctrl_r));
   REQUIRE( vi->Command("1"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
-  INFO( stc->GetText());
-  REQUIRE( stc->GetText().Contains("XXXXX"));
+  REQUIRE( stc->GetText() == "XXXXX");
   
   stc->SetText("YYYYY");
   REQUIRE( vi->Command("dd"));

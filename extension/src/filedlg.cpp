@@ -54,7 +54,7 @@ wxExFileDialog::wxExFileDialog(
           it.GetDisplayLexer() +
           " (" + it.GetExtensions() + ") |" +
           it.GetExtensions();
-        wildcards = (wxExMatchesOneOf(file->GetFileName(), it.GetExtensions()) ?
+        wildcards = (wxExMatchesOneOf(file->GetFileName().GetFullName(), it.GetExtensions()) ?
           wildcard + "|" + wildcards: wildcards + "|" + wildcard);
       }
     }

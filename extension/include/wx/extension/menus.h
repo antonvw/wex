@@ -84,7 +84,7 @@ public:
           base_id + i, 
           wxExEllipsed(
             it.GetCommand(false, true), // use no sub and do accel
-            wxEmptyString,
+            std::string(),
             (it.GetType() & wxExMenuCommand::MENU_COMMAND_ELLIPSES) > 0));
         if ((it.GetType() & wxExMenuCommand::MENU_COMMAND_SEPARATOR) > 0)
         {

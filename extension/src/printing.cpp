@@ -11,6 +11,7 @@
 #endif
 #include <wx/stc/stc.h>
 #include <wx/extension/printing.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/util.h>
 
 wxExPrinting* wxExPrinting::m_Self = nullptr;
@@ -28,7 +29,7 @@ wxExPrinting::wxExPrinting()
   m_HtmlPrinter->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
   m_HtmlPrinter->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
 
-  m_HtmlPrinter->SetHeader(wxExPrintHeader(wxFileName()));
+  m_HtmlPrinter->SetHeader(wxExPrintHeader(wxExFileName()));
   m_HtmlPrinter->SetFooter(wxExPrintFooter());
 #endif
 }
@@ -52,7 +53,7 @@ wxExPrinting* wxExPrinting::Set(wxExPrinting* printing)
 
 #if wxUSE_PRINTING_ARCHITECTURE
 wxExPrintout::wxExPrintout(wxStyledTextCtrl* owner)
-  : wxPrintout(wxExPrintCaption(owner->GetName()))
+  : wxPrintout(wxExPrintCaption(owner->GetName().ToStdString()))
   , m_PageRect()
   , m_PrintRect()
   , m_PageBreaks()
@@ -159,7 +160,7 @@ bool wxExPrintout::OnPrintPage(int pageNum)
   GetDC()->SetPen(*wxBLACK_PEN);
 
   // Print a header.
-  const wxString header = wxExPrintHeader(m_Owner->GetName());
+  const std::string header = wxExPrintHeader(m_Owner->GetName().ToStdString());
   if (!header.empty())
   {
     const int text_from_top = 23;
@@ -178,7 +179,7 @@ bool wxExPrintout::OnPrintPage(int pageNum)
   }
 
   // Print a footer
-  const wxString footer = wxExPrintFooter();
+  const std::string footer = wxExPrintFooter();
   if (!footer.empty())
   {
     GetDC()->DrawText(

@@ -29,7 +29,7 @@ public:
 
     if (m_Dir.GetFlags() & wxDIR_DIRS)
     {
-      m_Dir.OnDir(dirname);
+      if (!m_Dir.OnDir(dirname.ToStdString())) return wxDIR_STOP;
     }
 
     return wxDIR_CONTINUE;
@@ -42,19 +42,18 @@ public:
       return wxDIR_STOP;
     }
 
-    if (wxExMatchesOneOf(filename, m_Dir.GetFileSpec()))
+    if (wxExMatchesOneOf(filename.ToStdString(), m_Dir.GetFileSpec()))
     {
-      m_Dir.OnFile(filename);
+      if (!m_Dir.OnFile(filename.ToStdString())) return wxDIR_STOP;
     }
 
     return wxDIR_CONTINUE;
   }
-
 private:
   wxExDir& m_Dir;
 };
 
-wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec, int flags)
+wxExDir::wxExDir(const std::string& fullpath, const std::string& filespec, int flags)
   : wxDir(fullpath)
   , m_FileSpec(filespec)
   , m_Flags(flags)
@@ -82,7 +81,7 @@ int wxExDir::FindFiles()
   // contains single spec (*.h), wxDir does not handle multi specs (*.cpp; *.h).
   const size_t retValue = Traverse(
     traverser, 
-    (m_FileSpec.Contains(";") ? wxString(): m_FileSpec), 
+    (m_FileSpec.find(";") != std::string::npos ? std::string(): m_FileSpec), 
     m_Flags);
 
   Stop();
@@ -92,8 +91,8 @@ int wxExDir::FindFiles()
 
 #if wxUSE_GUI
 wxExDirOpenFile::wxExDirOpenFile(wxExFrame* frame,
-  const wxString& fullpath, 
-  const wxString& filespec, 
+  const std::string& fullpath, 
+  const std::string& filespec, 
   long file_flags,
   int dir_flags)
   : wxExDir(fullpath, filespec, dir_flags)
@@ -102,8 +101,9 @@ wxExDirOpenFile::wxExDirOpenFile(wxExFrame* frame,
 {
 }
 
-void wxExDirOpenFile::OnFile(const wxString& file)
+bool wxExDirOpenFile::OnFile(const std::string& file)
 {
   m_Frame->OpenFile(file, 0, std::string(), m_Flags);
+  return true;
 }
 #endif

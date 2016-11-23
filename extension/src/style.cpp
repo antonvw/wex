@@ -42,16 +42,16 @@ bool wxExStyle::ContainsDefaultStyle() const
   return (it != m_No.end());
 }
 
-const wxString wxExStyle::GetNo() const
+const std::string wxExStyle::GetNo() const
 {
   return std::accumulate(m_No.begin(), m_No.end(), std::string{}, 
     [](const std::string& a, int b) {return a + std::to_string(b) + ' ';});
 }
 
-void wxExStyle::Set(const wxXmlNode* node, const wxString& macro)
+void wxExStyle::Set(const wxXmlNode* node, const std::string& macro)
 {
   SetNo(
-    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"), macro),
+    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0").ToStdString(), macro),
     macro);
 
   // The style is parsed using the themed macros, and
@@ -61,7 +61,7 @@ void wxExStyle::Set(const wxXmlNode* node, const wxString& macro)
   // Collect each single field style.
   while (fields.HasMoreTokens())
   {
-    const auto& single = fields.GetNextToken();
+    const auto& single = fields.GetNextToken().ToStdString();
     const auto& it = wxExLexers::Get()->GetThemeMacros().find(single);
 
     if (it != wxExLexers::Get()->GetThemeMacros().end())
@@ -110,7 +110,7 @@ void wxExStyle::Set(const wxXmlNode* node, const wxString& macro)
   }
 }
 
-void wxExStyle::SetNo(const wxString& no, const wxString& macro)
+void wxExStyle::SetNo(const std::string& no, const std::string& macro)
 {
   m_No.clear();
   
@@ -119,11 +119,11 @@ void wxExStyle::SetNo(const wxString& no, const wxString& macro)
   // Collect each single no in the vector.
   while (no_fields.HasMoreTokens())
   {
-    const auto& single = wxExLexers::Get()->ApplyMacro(no_fields.GetNextToken(), macro);
+    const auto& single = wxExLexers::Get()->ApplyMacro(no_fields.GetNextToken().ToStdString(), macro);
       
     bool error = true;
 
-    if (single.IsNumber())
+    if (wxString(single).IsNumber())
     {
       const int style_no = atoi(single.c_str());
       

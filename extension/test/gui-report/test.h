@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,4 +16,4 @@
 wxExFrameWithHistory* GetFrame();
 
 /// Returns the project.
-const wxString GetProject();
+const std::string GetProject();

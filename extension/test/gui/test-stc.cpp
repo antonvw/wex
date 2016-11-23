@@ -242,7 +242,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   SECTION("load file")
   {
     wxExSTC stc(GetFrame(), GetTestFile());
-    REQUIRE( stc.GetFileName().GetFullPath().Contains("test.h"));
+    REQUIRE( stc.GetFileName().GetFullPath().find("test.h") != std::string::npos);
     REQUIRE( stc.Open(GetTestFile()));
     REQUIRE(!stc.Open("XXX"));
     stc.PropertiesMessage();

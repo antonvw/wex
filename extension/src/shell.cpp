@@ -23,7 +23,8 @@
 wxExShell::wxExShell(wxWindow* parent,
   const std::string& prompt, const std::string& command_end,
   bool echo, int commands_save_in_config, const std::string& lexer,
-  long menu_flags, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
+  wxExMenuFlags menu_flags, wxWindowID id, 
+  const wxPoint& pos, const wxSize& size, long style)
   : wxExSTC(parent, std::string(),
       STC_WIN_NO_INDICATOR,
       std::string(), // title, used for name
@@ -35,7 +36,7 @@ wxExShell::wxExShell(wxWindow* parent,
 {
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
-  ResetMargins(false); // do not reset divider margin
+  ResetMargins(static_cast<wxExMarginFlags>(wxExSTC::STC_MARGIN_FOLDING | wxExSTC::STC_MARGIN_LINENUMBER));
   UseAutoComplete(false); // we have our own autocomplete
   AutoCompSetSeparator(3);
 
@@ -427,7 +428,7 @@ bool wxExShell::ProcessChar(int key)
         if (m_Process != nullptr)
         {
           AppendText(GetEOL());
-          m_Process->Command(m_Command);
+          m_Process->Write(m_Command);
         }
         else
         {
@@ -462,7 +463,7 @@ bool wxExShell::ProcessChar(int key)
             if (m_Process != nullptr)
             {
               AppendText(GetEOL());
-              m_Process->Command(m_Command);
+              m_Process->Write(m_Command);
             }
             else
             {
@@ -484,7 +485,7 @@ bool wxExShell::ProcessChar(int key)
           if (m_Process != nullptr)
           {
             AppendText(GetEOL());
-            m_Process->Command(m_Command);
+            m_Process->Write(m_Command);
           }
           else
           {

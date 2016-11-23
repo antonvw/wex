@@ -2,11 +2,10 @@
 // Name:      style.h
 // Purpose:   Declaration of wxExStyle class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXSTYLE_H
-#define _EXSTYLE_H
+#pragma once
 
 #include <set>
 
@@ -25,14 +24,14 @@ public:
   wxExStyle() {;};
   
   /// Constructor using xml node (sets no from the no attribute).
-  wxExStyle(const wxXmlNode* node, const wxString& macro) {
+  wxExStyle(const wxXmlNode* node, const std::string& macro) {
     Set(node, macro);};
 
   /// Constructor using no and value.
   wxExStyle(
-    const wxString& no, 
-    const wxString& value,
-    const wxString& macro = "global")
+    const std::string& no, 
+    const std::string& value,
+    const std::string& macro = "global")
     : m_Value(value) {
     SetNo(no, macro);};
 
@@ -44,19 +43,18 @@ public:
   bool ContainsDefaultStyle() const;
   
   /// Returns the no ('s).
-  const wxString GetNo() const;
+  const std::string GetNo() const;
   
   /// Returns the value.
-  const wxString& GetValue() const {return m_Value;};
+  const auto & GetValue() const {return m_Value;};
 
   /// Returns true if this style is valid.
   bool IsOk() const {
     return !m_No.empty() && !m_Value.empty();};
 private:
-  void Set(const wxXmlNode* node, const wxString& macro);
-  void SetNo(const wxString& no, const wxString& macro);
+  void Set(const wxXmlNode* node, const std::string& macro);
+  void SetNo(const std::string& no, const std::string& macro);
 
   std::set <int> m_No;
-  wxString m_Value;
+  std::string m_Value;
 };
-#endif

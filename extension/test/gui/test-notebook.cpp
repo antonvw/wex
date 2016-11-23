@@ -2,7 +2,7 @@
 // Name:      test-notebook.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -81,9 +81,9 @@ TEST_CASE("wxExNotebook", "[stc][!throws]")
   REQUIRE(notebook->GetPageCount() == 0);
   
   // Test ForEach.
-  wxExSTC* stc_x = new wxExSTC(GetFrame(), wxString("hello stc"));
-  wxExSTC* stc_y = new wxExSTC(GetFrame(), wxString("hello stc"));
-  wxExSTC* stc_z = new wxExSTC(GetFrame(), wxString("hello stc"));
+  wxExSTC* stc_x = new wxExSTC(GetFrame(), std::string("hello stc"));
+  wxExSTC* stc_y = new wxExSTC(GetFrame(), std::string("hello stc"));
+  wxExSTC* stc_z = new wxExSTC(GetFrame(), std::string("hello stc"));
   
   REQUIRE(notebook->AddPage(stc_x, "key1") != nullptr);
   REQUIRE(notebook->AddPage(stc_y, "key2") != nullptr);

@@ -687,8 +687,7 @@ bool wxExVi::Command(const std::string& command, bool is_handled)
   }
   else if (ModeInsert())
   {
-    InsertMode(command);
-    return true;
+    return InsertMode(command);
   }
 
   if (!m_Dot && command.back() == WXK_ESCAPE)
@@ -825,7 +824,7 @@ void wxExVi::CommandReg(const char reg)
     case '%':
       if (ModeInsert())
       {
-        AddText(GetSTC()->GetFileName().GetFullName().ToStdString());
+        AddText(GetSTC()->GetFileName().GetFullName());
       }
       else
       {
@@ -889,13 +888,13 @@ bool wxExVi::InsertMode(const std::string& command)
       {
         GetSTC()->SetOvertype(false);
       }
+
+      return true;
     }
     else
     {
-      GetSTC()->GetHexMode().Insert(command, GetSTC()->GetCurrentPos());
+      return GetSTC()->GetHexMode().Insert(command, GetSTC()->GetCurrentPos());
     }
-  
-    return true;
   }
   // add control chars
   else if (command.size() == 2 && command[1] == 0)
@@ -925,6 +924,11 @@ bool wxExVi::InsertMode(const std::string& command)
   else if (command.find(wxString(wxUniChar(WXK_CONTROL_R)).ToStdString()) !=
     std::string::npos)
   {
+    if (command.size() < 2)
+    {
+      return false;
+    }
+
     wxStringTokenizer tkz(command, wxUniChar(WXK_CONTROL_R));
     
     while (tkz.HasMoreTokens())
@@ -1241,8 +1245,16 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     {
       return true;
     }
+
+    m_Command += std::string(1, ConvertKeyEvent(event));
     
-    const bool result = InsertMode(std::string(1, ConvertKeyEvent(event)));
+    const bool result = InsertMode(m_Command);
+
+    if (result || (GetSTC()->HexMode() && m_Command.size() > 2))
+    {
+      m_Command.clear();
+    }
+
     return result && GetSTC()->GetOvertype();
   }
   else

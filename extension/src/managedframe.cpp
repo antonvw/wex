@@ -259,7 +259,7 @@ void wxExManagedFrame::DoRecent(
   size_t index, 
   long flags)
 {
-  const wxString file(history.GetHistoryFile(index));
+  const std::string file(history.GetHistoryFile(index));
   
   if (!file.empty())
   {

@@ -28,7 +28,7 @@ TEST_CASE("wxExVCSEntry", "[vcs]")
   REQUIRE( test.GetAdminDir() == "./");
   REQUIRE( test.GetFlags().empty());
   REQUIRE( test.GetName() == "my-vcs");
-  REQUIRE( test.GetOutput().empty());
+  REQUIRE( test.GetStdOut().empty());
   
   REQUIRE( wxExVCSEntry().ShowDialog(
     GetFrame(),
@@ -48,15 +48,15 @@ TEST_CASE("wxExVCSEntry", "[vcs]")
   REQUIRE( test.GetCommands().size() == 2);
   REQUIRE( test.GetFlags().empty());
   REQUIRE( test.GetName() == "my-vcs");
-  REQUIRE( test.GetOutput().empty());
+  REQUIRE( test.GetStdOut().empty());
   REQUIRE(!test.Execute());
   
   wxExVCSEntry git("git");
   REQUIRE( git.Execute()); // executes just git, shows help
-  REQUIRE( git.GetOutput().Contains("usage: "));
+  REQUIRE( git.GetStdOut().find("usage: ") != std::string::npos);
   git.ShowOutput();
   
-  wxExVCSEntry* git_async = new wxExVCSEntry("git", wxEmptyString, {wxExVCSCommand("status")});
-  REQUIRE( git_async->Execute(wxEmptyString, wxExLexer(), wxEXEC_ASYNC));
+  wxExVCSEntry* git_async = new wxExVCSEntry("git", std::string(), {wxExVCSCommand("status")});
+  REQUIRE( git_async->Execute(std::string(), wxExLexer(), wxEXEC_ASYNC));
   git_async->ShowOutput();
 }

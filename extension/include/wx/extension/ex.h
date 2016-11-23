@@ -114,21 +114,21 @@ public:
   /// Returns true if marker could be added.
   bool MarkerAdd(
     /// marker
-    const wxUniChar& marker,
+    char marker,
     /// line to add marker, default current line
     int line = -1);
   
   /// Deletes specified marker.
   /// Returns true if marker was deleted.
-  bool MarkerDelete(const wxUniChar& marker);
+  bool MarkerDelete(char marker);
   
   /// Goes to specified marker.
   /// Returns true if marker exists.
-  bool MarkerGoto(const wxUniChar& marker);
+  bool MarkerGoto(char marker);
   
   /// Returns line for specified marker.
   /// Returns -1 if marker does not exist.
-  int MarkerLine(const wxUniChar& marker) const;
+  int MarkerLine(char marker) const;
   
   /// Prints text in the dialog.
   void Print(const std::string& text);
@@ -165,9 +165,9 @@ private:
   const wxExMarker m_MarkerSymbol = wxExMarker(0);
 
   // relate a marker to identifier
-  std::map<wxUniChar, int> m_MarkerIdentifiers;
+  std::map<char, int> m_MarkerIdentifiers;
   // relate a marker to mark number
-  std::map<wxUniChar, int> m_MarkerNumbers;
+  std::map<char, int> m_MarkerNumbers;
   
   static std::string m_LastCommand;
   static wxExCTags* m_CTags;

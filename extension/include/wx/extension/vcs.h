@@ -10,7 +10,7 @@
 #include <vector>
 #include <wx/extension/vcsentry.h>
 
-class wxFileName;
+class wxExFileName;
 
 /// This class collects all vcs handling.
 /// The VCS entries are loaded from menus.xml, this is done
@@ -23,7 +23,7 @@ public:
     /// Specify several files for which you want vcs action.
     /// Sets the vcs entry for first of the specified files, or
     /// to the base folder if array is empty.
-    const std::vector< wxString > & files = std::vector< wxString >(),
+    const std::vector< std::string > & files = std::vector< std::string >(),
     /// The command no that is used to set the current vcs command
     /// (index in vcs entry commands).
     int command_no = -1);
@@ -39,7 +39,7 @@ public:
 #endif    
 
   /// Returns true if specified filename (a path) is a vcs directory.
-  static bool DirExists(const wxFileName& filename);
+  static bool DirExists(const wxExFileName& filename);
 
   /// Executes the current vcs command for the current
   /// vcs entry, and collects the output.
@@ -54,7 +54,7 @@ public:
   
   /// Returns name for current vcs entry, or empty string
   /// if vcs is not used.
-  const wxString GetName() const;
+  const std::string GetName() const;
   
   /// Loads all entries (first clears them) from vcs document.
   /// Returns true if document is loaded.
@@ -86,25 +86,26 @@ public:
   /// Returns true if vcs usage is set in the config.
   bool Use() const;
 private:
-  static const wxExVCSEntry FindEntry(const wxFileName& filename);
+  static const wxExVCSEntry FindEntry(const std::string& filename);
+  static const wxExVCSEntry FindEntry(const wxExFileName& filename);
   static bool IsAdminDir(
-    const wxString& admin_dir, 
-    const wxFileName& fn);
+    const std::string& admin_dir, 
+    const wxExFileName& fn);
   static bool IsAdminDirTopLevel(
-    const wxString& admin_dir, 
-    const wxFileName& fn);
+    const std::string& admin_dir, 
+    const wxExFileName& fn);
   
-  const wxString GetFile() const;
-  const wxString GetRelativeFile(
-    const wxString& admin_dir, 
-    const wxFileName& file) const;
-  const wxString GetTopLevelDir(
-    const wxString& admin_dir, 
-    const wxFileName& file) const;
+  const std::string GetFile() const;
+  const std::string GetRelativeFile(
+    const std::string& admin_dir, 
+    const wxExFileName& file) const;
+  const std::string GetTopLevelDir(
+    const std::string& admin_dir, 
+    const wxExFileName& file) const;
   
   wxExVCSEntry m_Entry;
 
-  std::vector< wxString > m_Files;
+  std::vector< std::string > m_Files;
   wxString m_Caption;
 
   static std::vector<wxExVCSEntry> m_Entries;

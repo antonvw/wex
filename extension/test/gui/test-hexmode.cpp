@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/hexmode.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include "test.h"
@@ -88,10 +89,10 @@ TEST_CASE("wxExHexMode", "[stc]")
   REQUIRE( hm->GetBuffer() == "0123456789");
   REQUIRE( hm->Delete(1, 13));
   REQUIRE( hm->GetBuffer() == "012356789");
-  REQUIRE( hm->Insert("abc", 13));
-  REQUIRE( hm->GetBuffer() == "0123abc56789");
+  REQUIRE( hm->Insert("30", 13)); // insert in hex field 
+  REQUIRE( hm->GetBuffer() == "0123056789");
   REQUIRE( hm->Insert("abc", 52)); // insert in ascii field 
-  REQUIRE( hm->GetBuffer() == "0123abcabc56789");
+  REQUIRE( hm->GetBuffer() == "0123abc056789");
   
   // Test replace target (replace in hex field).
   hm->SetText("0123456789");

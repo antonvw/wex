@@ -2,7 +2,7 @@
 // Name:      dir.h
 // Purpose:   Declaration of class wxExDir and wxExDirOpenFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,8 +20,8 @@ public:
   /// Opens the wxDir and sets the filespec.
   /// This filespec specifies what files are found.
   wxExDir(
-    const wxString& fullpath,
-    const wxString& filespec = wxEmptyString, // finds all
+    const std::string& fullpath,
+    const std::string& filespec = std::string(), // finds all
     int flags = wxDIR_DEFAULT);
 
   /// Destructor.
@@ -33,7 +33,7 @@ public:
   int FindFiles();
 
   /// Returns the file spec.
-  const wxString& GetFileSpec() const {return m_FileSpec;};
+  const auto & GetFileSpec() const {return m_FileSpec;};
 
   /// Returns the flags.
   int GetFlags() const {return m_Flags;};
@@ -41,14 +41,14 @@ public:
   /// Do something with the dir.
   /// Not made pure virtual, to allow this 
   /// class to be tested by calling FindFiles.
-  virtual void OnDir(const wxString& ){};
+  virtual bool OnDir(const std::string& ){return true;};
 
   /// Do something with the file.
   /// Not made pure virtual, to allow this 
   /// class to be tested by calling FindFiles.
-  virtual void OnFile(const wxString& ){};
+  virtual bool OnFile(const std::string& ){return true;};
 private:
-  const wxString m_FileSpec;
+  const std::string m_FileSpec;
   const int m_Flags;
 };
 
@@ -64,13 +64,13 @@ public:
   /// Constructor.
   /// Flags are passed on to OpenFile, and dir flags for treating subdirs.
   wxExDirOpenFile(wxExFrame* frame,
-    const wxString& fullpath,
-    const wxString& filespec,
+    const std::string& fullpath,
+    const std::string& filespec,
     long file_flags = 0,
     int dir_flags = wxDIR_DEFAULT);
 
   /// Opens each found file.
-  virtual void OnFile(const wxString& file) override;
+  virtual bool OnFile(const std::string& file) override;
 private:
   wxExFrame* m_Frame;
   const long m_Flags;

@@ -15,7 +15,6 @@
 #include <wx/app.h>
 #include <wx/clipbrd.h>
 #include <wx/config.h>
-#include <wx/filename.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/stdpaths.h>
 #include <wx/textctrl.h>
@@ -36,38 +35,40 @@
 #include <wx/extension/vcs.h>
 #include <wx/extension/vimacros.h>
 
-const wxString wxExAlignText(const wxString& lines, const wxString& header,
+const std::string wxExAlignText(
+  const std::string& lines, const std::string& header,
   bool fill_out_with_space, bool fill_out, const wxExLexer& lexer)
 {
   const size_t line_length = lexer.UsableCharactersPerLine();
 
   // Use the header, with one space extra to separate, or no header at all.
-  const wxString header_with_spaces =
-    (header.empty()) ? wxString() : wxString(' ', header.size());
+  const std::string header_with_spaces =
+    (header.empty()) ? std::string() : std::string(header.size(), ' ');
 
-  wxString in = lines, line = header;
+  std::string in = lines;
+  std::string line = header;
 
   bool at_begin = true;
-  wxString out;
+  std::string out;
 
   while (!in.empty())
   {
-    const wxString word = wxExGetWord(in, false, false);
+    const std::string word = wxExGetWord(in, false, false);
 
     if (line.size() + 1 + word.size() > line_length)
     {
-      out << lexer.MakeSingleLineComment(line, fill_out_with_space, fill_out) << "\n";
+      out += lexer.MakeSingleLineComment(line, fill_out_with_space, fill_out) + "\n";
 
       line = header_with_spaces + word;
     }
     else
     {
-      line += (!line.empty() && !at_begin ? wxString(" "): wxString()) + word;
+      line += (!line.empty() && !at_begin ? std::string(" "): std::string()) + word;
       at_begin = false;
     }
   }
 
-  out << lexer.MakeSingleLineComment(line, fill_out_with_space, fill_out);
+  out += lexer.MakeSingleLineComment(line, fill_out_with_space, fill_out);
 
   return out;
 }
@@ -182,7 +183,7 @@ bool wxExAutoCompleteFileName(
   return true;
 }
 
-bool wxExClipboardAdd(const wxString& text)
+bool wxExClipboardAdd(const std::string& text)
 {
   wxClipboardLocker locker;
   if (!locker) return false;
@@ -230,7 +231,7 @@ void wxExComboBoxFromList(wxComboBox* cb, const std::list < wxString > & text)
 }
 #endif
 
-bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
+bool wxExCompareFile(const wxExFileName& file1, const wxExFileName& file2)
 {
   if (wxConfigBase::Get()->Read(_("Comparator")).empty())
   {
@@ -238,7 +239,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
   }
 
   const wxString arguments =
-     (file1.GetModificationTime() < file2.GetModificationTime()) ?
+     (file1.GetStat().st_mtime < file2.GetStat().st_mtime) ?
        "\"" + file1.GetFullPath() + "\" \"" + file2.GetFullPath() + "\"":
        "\"" + file2.GetFullPath() + "\" \"" + file1.GetFullPath() + "\"";
 
@@ -252,24 +253,24 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
   return true;
 }
 
-const wxString wxExConfigDir()
+const std::string wxExConfigDir()
 {
 #ifdef __WXMSW__
-  return wxPathOnly(wxStandardPaths::Get().GetExecutablePath());
+  return wxPathOnly(wxStandardPaths::Get().GetExecutablePath().ToStdString());
 #else
   return wxFileName(
     wxGetHomeDir() + wxFileName::GetPathSeparator() + ".config",
-    wxTheApp->GetAppName().Lower()).GetFullPath();
+    wxTheApp->GetAppName().Lower()).GetFullPath().ToStdString();
 #endif
 }
   
-const wxString wxExConfigFirstOf(const wxString& key)
+const std::string wxExConfigFirstOf(const wxString& key)
 {
   return 
-    wxConfigBase::Get()->Read(key).BeforeFirst(wxExGetFieldSeparator());
+    wxConfigBase::Get()->Read(key).BeforeFirst(wxExGetFieldSeparator()).ToStdString();
 }
 
-const wxString wxExConfigFirstOfWrite(const wxString& key, const wxString& value)
+const std::string wxExConfigFirstOfWrite(const wxString& key, const wxString& value)
 {
   wxStringTokenizer tkz(wxConfigBase::Get()->Read(key),
     wxExGetFieldSeparator());
@@ -290,20 +291,20 @@ const wxString wxExConfigFirstOfWrite(const wxString& key, const wxString& value
     [&](const wxString& a, const wxString& b) {
       return a + b + wxExGetFieldSeparator();}));
   
-  return value;
+  return value.ToStdString();
 }
   
-const wxString wxExEllipsed(
-  const wxString& text, const wxString& control, bool ellipse)
+const std::string wxExEllipsed(
+  const wxString& text, const std::string& control, bool ellipse)
 {
-  return text + 
-    (ellipse ? "...": wxString()) + 
-    (!control.empty() ? "\t" + control: wxString());
+  return text.ToStdString() + 
+    (ellipse ? "...": std::string()) + 
+    (!control.empty() ? "\t" + control: std::string());
 }
 
-const wxString wxExGetEndOfText(const wxString& text, size_t max_chars)
+const std::string wxExGetEndOfText(const std::string& text, size_t max_chars)
 {
-  wxString text_out(text);
+  std::string text_out(text);
 
   if (text_out.length() > max_chars)
   {
@@ -320,47 +321,41 @@ const wxString wxExGetEndOfText(const wxString& text, size_t max_chars)
   return text_out;
 }
 
-const wxString wxExGetFindResult(const wxString& find_text, 
+const std::string wxExGetFindResult(const std::string& find_text, 
   bool find_next, bool recursive)
 {
-  wxString text;
-  
   if (!recursive)
   {
-    const wxString where = (find_next) ? _("bottom"): _("top");
-    text <<
-      _("Searching for") << " " << 
-      wxExQuoted(wxExSkipWhiteSpace(find_text.ToStdString())) << " " <<
-      _("hit") << " " << where;
+    const std::string where = (find_next) ? _("bottom").ToStdString(): _("top").ToStdString();
+    return
+      _("Searching for").ToStdString() + " " + 
+      wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " +
+      _("hit").ToStdString() + " " + where;
   }
   else
   {
     wxBell();
-      
-    text << 
-      wxExQuoted(wxExSkipWhiteSpace(find_text.ToStdString())) << " " << _("not found");
+    return
+      wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found").ToStdString();
   }
-  
-  return text;
 }
 
-const wxUniChar wxExGetFieldSeparator()
+const char wxExGetFieldSeparator()
 {
   return '\x0B';
 }
 
-int wxExGetIconID(const wxFileName& filename)
+int wxExGetIconID(const wxExFileName& filename)
 {
-  if (filename.FileExists() || 
-      filename.DirExists(filename.GetFullPath()))
+  if (filename.FileExists() || filename.DirExists())
   {
-    if (filename.DirExists(filename.GetFullPath()))
+    if (!filename.GetExtension().empty())
+    {
+      return wxTheFileIconsTable->GetIconID(filename.GetExtension());
+    }
+    else if (filename.FileExists())
     {
       return wxFileIconsTable::folder;
-    }
-    else if (!filename.GetExt().empty())
-    {
-      return wxTheFileIconsTable->GetIconID(filename.GetExt());
     }
     else
     {
@@ -373,7 +368,7 @@ int wxExGetIconID(const wxFileName& filename)
   }
 }
 
-int wxExGetNumberOfLines(const wxString& text, bool trim)
+int wxExGetNumberOfLines(const std::string& text, bool trim)
 {
   if (text.empty())
   {
@@ -397,7 +392,7 @@ int wxExGetNumberOfLines(const wxString& text, bool trim)
   return std::count(trimmed.begin(), trimmed.end(), '\r') + 1;
 }
 
-const wxString wxExGetWord(wxString& text,
+const std::string wxExGetWord(std::string& text,
   bool use_other_field_separators,
   bool use_path_separator)
 {
@@ -408,8 +403,8 @@ const wxString wxExGetWord(wxString& text,
   wxStringTokenizer tkz(text, field_separators);
   if (tkz.HasMoreTokens()) token = tkz.GetNextToken();
   text = tkz.GetString();
-  text.Trim(false);
-  return token;
+  text = wxString(text).Trim(false).ToStdString();
+  return token.ToStdString();
 }
 
 bool wxExIsBrace(int c) 
@@ -483,23 +478,24 @@ void wxExLogStatus(const wxExFileName& fn, long flags)
   wxLogStatus(text);
 }
 
-long wxExMake(const wxFileName& makefile)
+long wxExMake(const wxExFileName& makefile)
 {
   wxExProcess* process = new wxExProcess;
 
   return process->Execute(
-    wxConfigBase::Get()->Read("Make", "make") + " " +
-      wxConfigBase::Get()->Read("MakeSwitch", "-f") + " " +
+    wxConfigBase::Get()->Read("Make", "make").ToStdString() + " " +
+      wxConfigBase::Get()->Read("MakeSwitch", "-f").ToStdString() + " " +
       makefile.GetFullPath(),
     wxEXEC_ASYNC,
     makefile.GetPath());
 }
 
-bool wxExMarkerAndRegisterExpansion(wxExEx* ex, wxString& text)
+bool wxExMarkerAndRegisterExpansion(wxExEx* ex, std::string& text)
 {
   if (ex == nullptr) return false;
 
   wxStringTokenizer tkz(text, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
+  wxString repl(text);
 
   while (tkz.HasMoreTokens())
   {
@@ -518,7 +514,7 @@ bool wxExMarkerAndRegisterExpansion(wxExEx* ex, wxString& text)
         
         if (line >= 0)
         {
-          text.Replace(
+          repl.Replace(
             tkz.GetLastDelimiter() + wxString(name), 
             std::to_string(line + 1));
         }
@@ -530,12 +526,14 @@ bool wxExMarkerAndRegisterExpansion(wxExEx* ex, wxString& text)
       // Replace register.
       else
       {
-        text.Replace(
+        repl.Replace(
           tkz.GetLastDelimiter() + wxString(name), 
           name == '%' ? ex->GetSTC()->GetFileName().GetFullName(): ex->GetMacros().GetRegister(name));
       }
     }
   }
+  
+  text = repl;
   
   return true;
 }
@@ -563,19 +561,18 @@ int wxExMatch(const std::string& reg, const std::string& text,
   }
   catch (std::regex_error& e) 
   {
-    wxLogError(wxString::Format("%s: in: %s code: %d",
-      e.what(), reg.c_str(), e.code()));
+    wxLogError("%s: in: %s code: %d", e.what(), reg.c_str(), e.code());
     return -1;
   }
 }
 
-bool wxExMatchesOneOf(const wxFileName& filename, const wxString& pattern)
+bool wxExMatchesOneOf(const std::string& fullname, const std::string& pattern)
 {
   if (pattern == "*") return true; // asterix matches always.
 
-  const wxString fullname_uppercase = filename.GetFullName().Upper();
+  const wxString fullname_uppercase = wxString(fullname).Upper();
 
-  wxStringTokenizer tkz(pattern.Upper(), ";");
+  wxStringTokenizer tkz(wxString(pattern).Upper(), ";");
   
   while (tkz.HasMoreTokens())
   {
@@ -602,7 +599,7 @@ void wxExNodeProperties(const wxXmlNode* node, std::vector<wxExProperty>& proper
   }
 }
 
-void wxExNodeStyles(const wxXmlNode* node, const wxString& lexer,
+void wxExNodeStyles(const wxXmlNode* node, const std::string& lexer,
   std::vector<wxExStyle>& styles)
 {
   wxXmlNode* child = node->GetChildren();
@@ -619,7 +616,7 @@ void wxExNodeStyles(const wxXmlNode* node, const wxString& lexer,
 }
 
 #if wxUSE_GUI
-int wxExOpenFiles(wxExFrame* frame, const std::vector< wxString > & files,
+int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
   long file_flags, int dir_flags, const std::string& command)
 {
   wxWindowUpdateLocker locker(frame);
@@ -628,10 +625,10 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxString > & files,
   
   for (const auto& it : files)
   {
-    if (it.Contains("*") || it.Contains("?"))
+    if (it.find("*") != std::string::npos || it.find("?") != std::string::npos)
     {
       count += wxExDirOpenFile(frame, 
-        wxGetCwd(), it, file_flags, dir_flags).FindFiles();
+        wxGetCwd().ToStdString(), it, file_flags, dir_flags).FindFiles();
     }
     else
     {
@@ -639,9 +636,9 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxString > & files,
       int col_no = 0;
       wxFileName fn(it);
 
-      if (!fn.FileExists() && it.Contains(":"))
+      if (!fn.FileExists() && it.find(":") != std::string::npos)
       {
-        const wxString val = wxExLink().GetPath(it.ToStdString(), line_no, col_no);
+        const wxString val = wxExLink().GetPath(it, line_no, col_no);
         
         if (!val.empty())
         {
@@ -708,33 +705,33 @@ void wxExOpenFilesDialog(wxExFrame* frame,
 }
 #endif // wxUSE_GUI
 
-const wxString wxExPrintCaption(const wxFileName& filename)
+const std::string wxExPrintCaption(const wxExFileName& filename)
 {
   return filename.GetFullPath();
 }
 
-const wxString wxExPrintFooter()
+const std::string wxExPrintFooter()
 {
-  return _("Page @PAGENUM@ of @PAGESCNT@");
+  return _("Page @PAGENUM@ of @PAGESCNT@").ToStdString();
 }
 
-const wxString wxExPrintHeader(const wxFileName& filename)
+const std::string wxExPrintHeader(const wxExFileName& filename)
 {
   if (filename.FileExists())
   {
     return
       wxExGetEndOfText(
         filename.GetFullPath() + " " +
-        filename.GetModificationTime().Format(), 
+        wxDateTime(filename.GetStat().st_mtime).Format().ToStdString(), 
         80);
   }
   else
   {
-    return _("Printed") + ": " + wxDateTime::Now().Format();
+    return _("Printed").ToStdString() + ": " + wxDateTime::Now().Format().ToStdString();
   }
 }
 
-const wxString wxExQuoted(const wxString& text)
+const std::string wxExQuoted(const std::string& text)
 {
   return "'" + text + "'";
 }
@@ -767,21 +764,21 @@ const wxString GetLines(std::vector<wxString> & lines,
   return text;
 }
     
-bool wxExShellExpansion(wxString& command)
+bool wxExShellExpansion(std::string& command)
 {
   std::vector <std::string> v;
   const std::string re_str("`(.*?)`"); // non-greedy
   const std::regex re(re_str);
   
-  while (wxExMatch(re_str, command.ToStdString(), v) > 0)
+  while (wxExMatch(re_str, command, v) > 0)
   {
     wxExProcess process;
     if (!process.Execute(v[0], wxEXEC_SYNC)) return false;
     
     command = std::regex_replace(
-      command.ToStdString(), 
+      command, 
       re, 
-      process.GetOutput().ToStdString(), 
+      process.GetStdOut(), 
       std::regex_constants::format_sed);
   }
   
@@ -802,8 +799,8 @@ const std::string wxExSkipWhiteSpace(const std::string& text, const std::string&
   return output3;
 }
 
-const wxString wxExSort(const wxString& input, 
-  size_t sort_type, size_t pos, const wxString& eol, size_t len)
+const std::string wxExSort(const std::string& input, 
+  size_t sort_type, size_t pos, const std::string& eol, size_t len)
 {
   wxBusyCursor wait;
 
@@ -840,7 +837,7 @@ const wxString wxExSort(const wxString& input,
     }
   }
 
-  wxString text;
+  std::string text;
 
   if (len == std::string::npos)
   {
@@ -892,7 +889,7 @@ bool wxExSortSelection(wxExSTC* stc,
         
       const wxString sel = stc->GetTextRange(start_pos_line, end_pos_line); 
       stc->DeleteRange(start_pos_line, end_pos_line - start_pos_line);
-      const wxString text(wxExSort(sel, sort_type, pos, stc->GetEOL(), len));
+      const std::string text(wxExSort(sel.ToStdString(), sort_type, pos, stc->GetEOL(), len));
       stc->InsertText(start_pos_line, text);
 
       stc->SetCurrentPos(start_pos);
@@ -908,7 +905,7 @@ bool wxExSortSelection(wxExSTC* stc,
     }
     else
     {
-      const wxString text(wxExSort(stc->GetSelectedText(), sort_type, pos, stc->GetEOL(), len));
+      const std::string text(wxExSort(stc->GetSelectedText().ToStdString(), sort_type, pos, stc->GetEOL(), len));
       stc->ReplaceSelection(text);
       stc->SetSelection(start_pos, start_pos + text.size());
     }
@@ -924,18 +921,18 @@ bool wxExSortSelection(wxExSTC* stc,
   return !error;
 }
   
-const wxString wxExTranslate(const wxString& text, int pageNum, int numPages)
+const std::string wxExTranslate(const std::string& text, 
+  int pageNum, int numPages)
 {
+  const std::string num = std::to_string(pageNum);
+  const std::string cnt = std::to_string(pageNum);
+  
   wxString translation = text;
-  wxString num;
 
-  num.Printf("%i", pageNum);
   translation.Replace("@PAGENUM@", num);
+  translation.Replace("@PAGESCNT@", cnt);
 
-  num.Printf("%i", numPages);
-  translation.Replace("@PAGESCNT@", num);
-
-  return translation;
+  return translation.ToStdString();
 }
 
 void wxExVCSCommandOnSTC(const wxExVCSCommand& command, 
@@ -965,7 +962,7 @@ void wxExVCSCommandOnSTC(const wxExVCSCommand& command,
   }
 }
 
-void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< wxString > & files)
+void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< std::string > & files)
 {
   wxASSERT(!files.empty());
   

@@ -2,7 +2,7 @@
 // Name:      grid.cpp
 // Purpose:   Implementation of wxExGrid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -252,7 +252,7 @@ void wxExGrid::BuildPopupMenu(wxExMenu& menu)
 bool wxExGrid::CopySelectedCellsToClipboard() const
 {
   wxBusyCursor wait;
-  return wxExClipboardAdd(GetSelectedCellsValue());
+  return wxExClipboardAdd(GetSelectedCellsValue().ToStdString());
 }
 
 #if wxUSE_DRAG_AND_DROP
@@ -388,7 +388,8 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
   {
     bool result = false;
     
-    wxExFrame::StatusText(wxExGetFindResult(text, find_next, recursive), wxEmptyString);
+    wxExFrame::StatusText(
+      wxString(wxExGetFindResult(text.ToStdString(), find_next, recursive)), wxEmptyString);
     
     if (!recursive)
     {

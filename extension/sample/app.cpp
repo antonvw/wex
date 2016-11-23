@@ -73,12 +73,12 @@ bool wxExSampleApp::OnInit()
 #if wxUSE_GRID
 wxExSampleDir::wxExSampleDir(
   const wxString& fullpath, const wxString& findfiles, wxExGrid* grid)
-  : wxExDir(fullpath, findfiles)
+  : wxExDir(fullpath.ToStdString(), findfiles.ToStdString())
   , m_Grid(grid)
 {
 }
 
-void wxExSampleDir::OnFile(const wxString& file)
+bool wxExSampleDir::OnFile(const std::string& file)
 {
   m_Grid->AppendRows(1);
   const auto no = m_Grid->GetNumberRows() - 1;
@@ -89,6 +89,7 @@ void wxExSampleDir::OnFile(const wxString& file)
   // things like cutting and dropping is forbidden.
   m_Grid->SetReadOnly(no, 1);
   m_Grid->SetCellBackgroundColour(no, 1, *wxLIGHT_GREY);
+  return true;
 }
 #endif
 
@@ -325,8 +326,8 @@ wxExSampleFrame::wxExSampleFrame()
     wxFileDialog dlg(this, _("Open File"), "", "",
       "All files (*.*)|*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
     if (dlg.ShowModal() == wxID_CANCEL) return;
-    const wxExVCS vcs(std::vector< wxString > {dlg.GetPath()});
-    wxLogMessage(vcs.GetName());}, ID_SHOW_VCS);
+    const wxExVCS vcs(std::vector< std::string > {dlg.GetPath().ToStdString()});
+    wxLogMessage(vcs.GetName().c_str());}, ID_SHOW_VCS);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_Notebook->SetSelection("Statistics") == nullptr)
@@ -379,7 +380,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       wxExFileDialog dlg(this, &m_STC->GetFile());
       if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
       const auto start = std::chrono::system_clock::now();
-      m_STC->Open(dlg.GetPath(), 0, std::string(), m_FlagsSTC);
+      m_STC->Open(dlg.GetPath().ToStdString(), 0, std::string(), m_FlagsSTC);
       const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
       wxLogStatus(
         "wxExSTC::Open:%ld milliseconds, %d bytes", milli.count(), m_STC->GetTextLength());

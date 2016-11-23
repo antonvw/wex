@@ -137,7 +137,7 @@ void wxExMenu::AppendEdit(bool add_invert)
 
 void wxExMenu::AppendPrint()
 {
-  Append(wxID_PRINT_SETUP, wxExEllipsed(_("Page &Setup")));
+  Append(wxID_PRINT_SETUP, wxString(wxExEllipsed(_("Page &Setup"))));
   Append(wxID_PREVIEW);
   Append(wxID_PRINT);
 }
@@ -197,7 +197,7 @@ bool wxExMenu::AppendTools(int itemid)
   return true;
 }
 
-bool wxExMenu::AppendVCS(const wxFileName& filename, bool show_modal)
+bool wxExMenu::AppendVCS(const wxExFileName& filename, bool show_modal)
 {
   if (!filename.IsOk())
   {

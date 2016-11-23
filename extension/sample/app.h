@@ -39,7 +39,7 @@ public:
     wxExGrid* grid);
 private:
   /// Override the OnFile.
-  virtual void OnFile(const wxString& file) override;
+  virtual bool OnFile(const std::string& file) override;
   wxExGrid* m_Grid;
 };
 #endif

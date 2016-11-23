@@ -63,8 +63,10 @@ public:
   /// Highlights the corresponding char for the other field.
   bool HighlightOther(int pos);
 
-  /// Inserts ascii text at position.
-  /// Insert is only possible at ascii field.
+  /// Inserts text at position.
+  /// Insert at ascii field or at hex field, 
+  /// at hex field you should provide the ascii
+  /// hex codes, e.g. "30" inserts one byte space.
   bool Insert(const std::string& text, int pos = -1);
   
   /// Replaces current line at current index (if pos -1) with char for

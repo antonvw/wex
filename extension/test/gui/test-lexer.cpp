@@ -52,8 +52,8 @@ TEST_CASE("wxExLexer", "[stc][lexer]")
   REQUIRE(!lexer.GetKeywordsString().empty());
   REQUIRE(!lexer.GetKeywordsString(-1, 0).empty());
   REQUIRE(!lexer.GetKeywordsString(-1, 6).empty());
-  REQUIRE( lexer.GetKeywordsString(-1, 8).Contains("for_each"));
-  REQUIRE(!lexer.GetKeywordsString(-1, 9).Contains("for_each"));
+  REQUIRE( lexer.GetKeywordsString(-1, 8).find("for_each") != std::string::npos);
+  REQUIRE(!lexer.GetKeywordsString(-1, 9).find("for_each") != std::string::npos);
   REQUIRE( lexer.GetKeywordsString(-1, 50).empty());
   REQUIRE( lexer.CommentComplete("// test").empty());
   REQUIRE( lexer.IsKeyword("class"));
@@ -106,7 +106,7 @@ TEST_CASE("wxExLexer", "[stc][lexer]")
   REQUIRE( lexer.GetDisplayLexer() == "pascal");
   REQUIRE( lexer.GetScintillaLexer() == "pascal");
   REQUIRE(!lexer.CommentComplete("(*test").empty());
-  REQUIRE( lexer.CommentComplete("(*test").EndsWith("     *)"));
+  REQUIRE( wxString(lexer.CommentComplete("(*test")).EndsWith("     *)"));
 
   wxExLexer lexer2(wxExLexers::Get()->FindByText("// this is a cpp comment text"));
   REQUIRE( lexer2.IsOk());
@@ -117,7 +117,7 @@ TEST_CASE("wxExLexer", "[stc][lexer]")
   REQUIRE( lexer2.GetDisplayLexer() == "pascal");
   REQUIRE( lexer2.GetScintillaLexer() == "pascal");
   REQUIRE(!lexer2.CommentComplete("(*test").empty());
-  REQUIRE( lexer2.CommentComplete("(*test").EndsWith("     *)"));
+  REQUIRE( wxString(lexer2.CommentComplete("(*test")).EndsWith("     *)"));
 
   REQUIRE( lexer.Reset());
   REQUIRE( lexer.GetDisplayLexer().empty());

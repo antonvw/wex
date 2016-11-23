@@ -2,7 +2,7 @@
 // Name:      textfile.h
 // Purpose:   Declaration of class 'wxExTextFileWithListView'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -77,8 +77,8 @@ private:
   bool ParseLine(const wxString& line);
   
   // Implement interface from wxExTextFile.
-  virtual bool Parse();
-  virtual void Report(size_t line);
+  virtual bool Parse() override;
+  virtual void Report(size_t line) override;
   
   static wxExListView* m_Report;
   static wxExFrameWithHistory* m_Frame;
@@ -86,8 +86,6 @@ private:
   bool m_IsCommentStatement;
   bool m_IsString;
 
-  wxString m_Comments;
-  
   wxExSyntaxType m_LastSyntaxType;
   wxExSyntaxType m_SyntaxType;
 };

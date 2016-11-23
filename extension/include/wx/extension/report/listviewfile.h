@@ -2,7 +2,7 @@
 // Name:      listviewfile.h
 // Purpose:   Declaration of class wxExListViewFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,7 +21,7 @@ public:
   /// Constructor for a LIST_FILE, opens the file.
   wxExListViewFile(wxWindow* parent,
     wxExFrameWithHistory* frame,
-    const wxString& file,
+    const std::string& file,
     wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,
     const wxPoint& pos = wxDefaultPosition,

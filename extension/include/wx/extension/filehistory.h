@@ -23,7 +23,7 @@ public:
     wxWindowID idBase = wxID_FILE1, 
     /// if key is empty string, files
     /// are loaded / saved to default keys, otherwise to specified key.
-    const wxString& key = wxEmptyString);
+    const std::string& key = std::string());
 
   /// Adds a file to the file history list, if the object has a pointer to 
   /// an appropriate file menu. 
@@ -36,7 +36,7 @@ public:
   virtual wxString GetHistoryFile(size_t index = 0) const override;
 
   /// Returns a vector of max recent opened files.
-  std::vector<wxString> GetVector(size_t max) const;
+  std::vector<std::string> GetVector(size_t max) const;
   
   /// Shows popup menu.
   void PopupMenu(wxWindow* win, 
@@ -49,5 +49,5 @@ public:
   /// and sets the file history to use it.
   void UseMenu(wxWindowID id, wxMenu* menu);
 private:
-  const wxString m_Key;
+  const std::string m_Key;
 };

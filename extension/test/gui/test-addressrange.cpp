@@ -116,7 +116,7 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
   for (bool b : { false, true })
   {
     stc->SetText(contents);
-    REQUIRE( wxExAddressRange(ex, 5).Global(wxEmptyString, b));
+    REQUIRE( wxExAddressRange(ex, 5).Global(std::string(), b));
     REQUIRE( wxExAddressRange(ex, 5).Global("XXX", b));
     REQUIRE( wxExAddressRange(ex, 5).Global("/", b));
     REQUIRE( wxExAddressRange(ex, 5).Global("/xx/p", b));

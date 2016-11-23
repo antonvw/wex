@@ -10,13 +10,14 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/filename.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
 #include <wx/extension/filehistory.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/util.h>
 
-wxExFileHistory::wxExFileHistory(size_t maxFiles, wxWindowID idBase, const wxString& key)
+wxExFileHistory::wxExFileHistory(
+  size_t maxFiles, wxWindowID idBase, const std::string& key)
   : wxFileHistory(maxFiles, idBase)
   , m_Key(key)
 {
@@ -28,7 +29,7 @@ wxExFileHistory::wxExFileHistory(size_t maxFiles, wxWindowID idBase, const wxStr
     for (int i = GetMaxFiles() - 1 ; i >=0 ; i--)
     {
       AddFileToHistory(
-        wxConfigBase::Get()->Read(wxString::Format("%s/%d", key, i)));
+        wxConfigBase::Get()->Read(wxString::Format("%s/%d", key.c_str(), i)));
     }
   }
 }
@@ -73,13 +74,13 @@ wxString wxExFileHistory::GetHistoryFile(size_t index) const
   return wxEmptyString;
 }
     
-std::vector<wxString> wxExFileHistory::GetVector(size_t count) const
+std::vector<std::string> wxExFileHistory::GetVector(size_t count) const
 {
-  std::vector<wxString> v;
+  std::vector<std::string> v;
   
   for (size_t i = 0; i < count && i < GetCount(); i++)
   {
-    v.emplace_back(GetHistoryFile(i));
+    v.emplace_back(GetHistoryFile(i).ToStdString());
   }  
   
   return v;
@@ -92,7 +93,7 @@ void wxExFileHistory::PopupMenu(wxWindow* win,
 
   for (size_t i = 0; i < GetCount(); i++)
   {
-    const wxFileName file(GetHistoryFile(i));
+    const wxExFileName file(GetHistoryFile(i).ToStdString());
     
     if (file.FileExists())
     {

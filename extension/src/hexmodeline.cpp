@@ -146,25 +146,40 @@ bool wxExHexModeLine::Insert(const std::string& text)
   
   if (IsReadOnly() || index == wxSTC_INVALID_POSITION) return false;
   
-  m_Hex->m_Buffer.insert(index, text);
-
   if (m_ColumnNo >= m_StartAsciiField)
   {
-    // at ascii field manual insert
+    m_Hex->m_Buffer.insert(index, text);
     m_Hex->SetText(m_Hex->m_Buffer);
 
     if (m_ColumnNo + text.size() >= m_Hex->m_BytesPerLine + m_StartAsciiField)
     {
-      int line_no = m_Hex->GetSTC()->LineFromPosition(m_Hex->GetSTC()->GetCurrentPos()) + 1;
+      int line_no = m_Hex->GetSTC()->LineFromPosition(
+        m_Hex->GetSTC()->GetCurrentPos()) + 1;
       m_Hex->GetSTC()->SetCurrentPos(
         m_Hex->GetSTC()->PositionFromLine(line_no) + m_StartAsciiField);
     }
     else
     {
-      m_Hex->GetSTC()->SetCurrentPos(m_Hex->GetSTC()->GetCurrentPos() + text.size());
+      m_Hex->GetSTC()->SetCurrentPos(
+        m_Hex->GetSTC()->GetCurrentPos() + text.size());
     }
 
     m_Hex->GetSTC()->SelectNone();
+  }
+  else
+  {
+    if (text.size() != 2 || 
+       (!isxdigit(text[0]) && !isxdigit(text[1]))) return false;
+
+    char hex[3];
+    hex[0] = text[0];
+    hex[1] = text[1];
+    hex[2] = '\0';
+    int no;
+    sscanf(hex, "%x", &no);
+    
+    m_Hex->m_Buffer.insert(index, std::string(1, no));
+    m_Hex->SetText(m_Hex->m_Buffer);
   }
 
   return true;

@@ -47,7 +47,7 @@ TEST_CASE("wxExMenu", "[menu]")
   menu->AppendVCS(wxFileName(), false);
   wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());
   REQUIRE( menu->AppendVCS(wxFileName(), false));
-  REQUIRE( menu->AppendVCS(wxGetCwd(), false));
+  REQUIRE( menu->AppendVCS(wxGetCwd().ToStdString(), false));
 
   // GetStyle
   REQUIRE(menu->GetStyle() == wxExMenu::MENU_DEFAULT);

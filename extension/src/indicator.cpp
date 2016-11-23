@@ -21,7 +21,7 @@ wxExIndicator::wxExIndicator(const wxXmlNode* node)
   if (node == nullptr) return;
 
   const wxString single = 
-    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"));
+    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0").ToStdString());
 
   if (!single.IsNumber())
   {
@@ -37,7 +37,7 @@ wxExIndicator::wxExIndicator(const wxXmlNode* node)
   wxStringTokenizer fields(content, ",");
 
   const wxString style = 
-    wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+    wxExLexers::Get()->ApplyMacro(fields.GetNextToken().ToStdString());
 
   if (!style.IsNumber())
   {
@@ -51,7 +51,7 @@ wxExIndicator::wxExIndicator(const wxXmlNode* node)
   if (fields.HasMoreTokens())
   {
     m_ForegroundColour = wxExLexers::Get()->ApplyMacro(
-      fields.GetNextToken().Strip(wxString::both));
+      fields.GetNextToken().Strip(wxString::both).ToStdString());
 
     if (fields.HasMoreTokens())
     {
@@ -90,9 +90,9 @@ void wxExIndicator::Apply(wxStyledTextCtrl* stc) const
   {
     stc->IndicatorSetStyle(m_No, m_Style);
 
-    if (m_ForegroundColour.IsOk())
+    if (!m_ForegroundColour.empty())
     {
-      stc->IndicatorSetForeground(m_No, m_ForegroundColour);
+      stc->IndicatorSetForeground(m_No, wxString(m_ForegroundColour));
     }
 
     stc->IndicatorSetUnder(m_No, m_Under);

@@ -37,9 +37,9 @@ TEST_CASE("wxExCmdLineParser")
       {{"b", ""}, {wxCMD_LINE_VAL_DOUBLE, [&](wxAny any) {any.GetAs(&b);}}},
       {{"c", ""}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {any.GetAs(&c);}}},
       {{"d", ""}, {wxCMD_LINE_VAL_DATE, [&](wxAny any) {any.GetAs(&d);}}}},
-     {{"p", {0, [&](std::vector<wxString> & v) {p = v[0];}}},
-      {"q", {0, [&](std::vector<wxString> & v) {q = v[1];}}},
-      {"r", {0, [&](std::vector<wxString> & v) {r = v[2];}}}}).Parse() == 0 );
+     {{"p", {0, [&](std::vector<std::string> & v) {p = v[0];}}},
+      {"q", {0, [&](std::vector<std::string> & v) {q = v[1];}}},
+      {"r", {0, [&](std::vector<std::string> & v) {r = v[2];}}}}).Parse() == 0 );
 
   REQUIRE( a == 10 );
   REQUIRE( b == 10.1 );

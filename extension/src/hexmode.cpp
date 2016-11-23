@@ -353,4 +353,14 @@ void wxExHexMode::Undo()
   {
     m_Buffer = m_BufferOriginal;
   }
+  
+  // Check the mode we are in.
+  std::vector<std::string> v;
+
+  const int min_size = m_BytesPerLine * (m_EachHexField + 1);
+
+  m_Active = (
+    m_STC->GetTextLength() > min_size && 
+    wxExMatch("([0-9A-F][0-9A-F] )+", 
+      m_STC->GetTextRange(0, min_size).ToStdString(), v) > 0);
 }

@@ -30,7 +30,7 @@ private:
 #endif
   virtual bool OnInit() override;
 
-  std::vector< wxString > m_Files;
+  std::vector< std::string > m_Files;
   bool m_Debug = false;
   int m_Flags = 0;
   int m_Split;

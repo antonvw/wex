@@ -23,13 +23,13 @@ namespace Catch
 void AddPane(wxExManagedFrame* frame, wxWindow* pane);
 
 /// Returns test dir.
-const wxString GetTestDir();
+const std::string GetTestDir();
 
 /// Returns test file.
 const wxExFileName GetTestFile();
   
 /// Sets environment. 
-void SetEnvironment(const wxString& dir);
+void SetEnvironment(const std::string& dir);
 
 /// Invoke UI action on window, 
 /// Returns false if an error occurred.
@@ -61,7 +61,7 @@ public:
   void SetSession(Catch::Session* session);
 private:
   /// Sets working directory to test dir, returns current working directory.
-  const wxString SetWorkingDirectory();
+  const std::string SetWorkingDirectory();
 
   Catch::Session* m_Session;
   

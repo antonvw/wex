@@ -2,7 +2,7 @@
 // Name:      textfile.cpp
 // Purpose:   Implementation of class wxExTextFileWithListView
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype> // for isspace
@@ -125,10 +125,6 @@ wxExTextFileWithListView::wxExCommentType wxExTextFileWithListView::CheckForComm
 void wxExTextFileWithListView::CommentStatementEnd()
 {
   m_IsCommentStatement = false;
-
-  // Remove the end of comment characters (as last used) from the buffer.
-  m_Comments = m_Comments.Left(
-    m_Comments.length() - CommentEnd().length());
 }
 
 void wxExTextFileWithListView::CommentStatementStart()
@@ -220,7 +216,6 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
   {
     if (m_IsCommentStatement)
     {
-      m_Comments += line[i];
     }
     else if (line[i] == '"')
     {
@@ -243,7 +238,7 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
       }
 
       const size_t max_check_size = 
-        GetFileName().GetLexer().GetCommentBegin().Length();
+        GetFileName().GetLexer().GetCommentBegin().size();
       const size_t check_size = (i > max_check_size ? max_check_size: i + 1);
 
       const wxString text = line.substr(i + 1 - check_size, check_size);
@@ -290,7 +285,7 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
       {
         if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
         {
-          if (GetFileName().GetLexer().IsKeyword(codeword))
+          if (GetFileName().GetLexer().IsKeyword(codeword.ToStdString()))
           {
             IncStatistics(codeword);
           }

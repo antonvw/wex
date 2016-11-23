@@ -71,7 +71,7 @@ const std::string wxExLink::FindPath(const std::string& text, int line_no) const
     m_STC != nullptr && 
     m_STC->GetLexer().GetScintillaLexer() == "hypertext")
   {
-    return m_STC->GetFileName().GetFullPath().ToStdString();
+    return m_STC->GetFileName().GetFullPath();
   }
   
   if (line_no < 0) return std::string();

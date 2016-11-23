@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/lexers.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include "test.h"
@@ -43,7 +44,7 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
   REQUIRE(!wxExLexers::Get()->GetLexers().empty());
 
   REQUIRE( wxExLexers::Get()->FindByFileName(
-    GetTestFile()).GetScintillaLexer() == "cpp");
+    GetTestFile().GetFullName()).GetScintillaLexer() == "cpp");
     
   REQUIRE( wxExLexers::Get()->FindByName(
     "xxx").GetScintillaLexer().empty());
@@ -102,7 +103,7 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
   REQUIRE(!wxExLexers::Get()->GetKeywords("cpp").empty());
   REQUIRE(!wxExLexers::Get()->GetKeywords("csh").empty());
   REQUIRE( wxExLexers::Get()->GetKeywords("xxx").empty());
-  REQUIRE( wxExLexers::Get()->GetKeywords(wxEmptyString).empty());
+  REQUIRE( wxExLexers::Get()->GetKeywords(std::string()).empty());
 
   REQUIRE( wxExLexers::Get()->LoadDocument());
   

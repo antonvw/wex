@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wxExAddress
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -19,24 +19,24 @@
 
 #if wxUSE_GUI
 
-#define SEPARATE                                             \
-  if (separator)                                             \
-  {                                                          \
-    output += wxString('-', 40) + m_Ex->GetSTC()->GetEOL();  \
-  }                                                          \
+#define SEPARATE                                                \
+  if (separator)                                                \
+  {                                                             \
+    output += std::string(40, '-') + m_Ex->GetSTC()->GetEOL();  \
+  }                                                             \
 
-bool wxExAddress::AdjustWindow(const wxString& text) const
+bool wxExAddress::AdjustWindow(const std::string& text) const
 {
   std::vector<std::string> v;
   
-  if (wxExMatch("([-+=.^]*)([0-9]+)?(.*)", text.ToStdString(), v) != 3)
+  if (wxExMatch("([-+=.^]*)([0-9]+)?(.*)", text, v) != 3)
   {
     return false;
   }
   
-  const wxString type(v[0]);
+  const std::string type(v[0]);
   const int count = (v[1].empty() ? 2: std::stoi(v[1]));
-  const wxString flags(v[2]);
+  const std::string flags(v[2]);
   
   if (!Flags(flags))
   {
@@ -48,7 +48,7 @@ bool wxExAddress::AdjustWindow(const wxString& text) const
   
   if (!type.empty())
   {
-    switch ((int)type.GetChar(0))
+    switch ((int)type.at(0))
      {
       case '-': begin -= ((type.length() * count) - 1); break;
       case '+': begin += (((type.length()  - 1) * count) + 1); break;
@@ -59,28 +59,31 @@ bool wxExAddress::AdjustWindow(const wxString& text) const
         {
           return false;
         }
-        separator = (type.GetChar(0) == '=');
+        separator = (type.at(0) == '=');
         begin -= (count - 1) / 2;
         break;
       default: return false;
     }
   }
   
-  wxString output;
+  std::string output;
   SEPARATE;
   for (int i = begin; i < begin + count; i++)
   {
-    output += (flags.Contains("#") ? wxString::Format("%6d ", i): "") + 
+    char buffer[8];
+    sprintf(buffer, "%6d ", i);
+
+    output += (flags.find("#") != std::string::npos ? buffer: "") + 
       m_Ex->GetSTC()->GetLine(i - 1);
   }
   SEPARATE;
     
-  m_Ex->GetFrame()->PrintEx(m_Ex, output.ToStdString());
+  m_Ex->GetFrame()->PrintEx(m_Ex, output);
   
   return true;
 }
   
-bool wxExAddress::Append(const wxString& text) const
+bool wxExAddress::Append(const std::string& text) const
 {
   if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
   {
@@ -92,7 +95,7 @@ bool wxExAddress::Append(const wxString& text) const
   return true;
 }
   
-bool wxExAddress::Flags(const wxString& flags) const
+bool wxExAddress::Flags(const std::string& flags) const
 {
   if (flags.empty())
   {
@@ -101,9 +104,9 @@ bool wxExAddress::Flags(const wxString& flags) const
   
   std::vector<std::string> v;
   
-  if (wxExMatch("([-+#pl])", flags.ToStdString(), v) < 0)
+  if (wxExMatch("([-+#pl])", flags, v) < 0)
   {
-    wxLogStatus("Unsupported flags: " + flags);
+    wxLogStatus("Unsupported flags: %s", flags.c_str());
     return false;
   }
   
@@ -123,7 +126,7 @@ int wxExAddress::GetLine() const
 
   m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
 
-  if (wxExMatch("/(.*)/$", ToStdString(), v) > 0)
+  if (wxExMatch("/(.*)/$", m_Address, v) > 0)
   {
     m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
     m_Ex->GetSTC()->SetTargetEnd(m_Ex->GetSTC()->GetTextLength());
@@ -145,7 +148,7 @@ int wxExAddress::GetLine() const
   }
 
   // If this is a ?? address, return line with first backward match.
-  if (wxExMatch("\\?(.*)\\?", ToStdString(), v) > 0)
+  if (wxExMatch("\\?(.*)\\?", m_Address, v) > 0)
   {
     m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
     m_Ex->GetSTC()->SetTargetEnd(0);
@@ -168,7 +171,7 @@ int wxExAddress::GetLine() const
   
   // Try address calculation.
   int width = 0;
-  const auto sum = m_Ex->Calculator(ToStdString(), width);
+  const auto sum = m_Ex->Calculator(m_Address, width);
   
   if (std::isnan(sum))
   {
@@ -188,7 +191,7 @@ int wxExAddress::GetLine() const
   }
 }
 
-bool wxExAddress::Insert(const wxString& text) const
+bool wxExAddress::Insert(const std::string& text) const
 {
   if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
   {
@@ -200,17 +203,18 @@ bool wxExAddress::Insert(const wxString& text) const
   return true;
 }
   
-bool wxExAddress::MarkerAdd(const wxUniChar& marker) const
+bool wxExAddress::MarkerAdd(char marker) const
 {
   return GetLine() > 0 && m_Ex->MarkerAdd(marker, GetLine() - 1);
 }
   
 bool wxExAddress::MarkerDelete() const
 {
-  return StartsWith("'") && size() > 1 && m_Ex->MarkerDelete(GetChar(1));
+  return m_Address.size() > 1 && m_Address[0] == '\'' &&
+    m_Ex->MarkerDelete(m_Address[1]);
 }
 
-bool wxExAddress::Put(const char name) const
+bool wxExAddress::Put(char name) const
 {
   if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
   {
@@ -224,23 +228,23 @@ bool wxExAddress::Put(const char name) const
   return true;
 }
 
-bool wxExAddress::Read(const wxString& arg) const
+bool wxExAddress::Read(const std::string& arg) const
 {
   if (m_Ex->GetSTC()->GetReadOnly() || m_Ex->GetSTC()->HexMode() || GetLine() <= 0)
   {
     return false;
   }
   
-  if (arg.StartsWith("!"))
+  if (arg.find("!") == 0)
   {
     wxExProcess process;
     
-    if (!process.Execute(arg.AfterFirst('!'), wxEXEC_SYNC))
+    if (!process.Execute(arg.substr(1), wxEXEC_SYNC))
     {
       return false;
     }
     
-    return Append(process.GetOutput());
+    return Append(process.GetStdOut());
   }
   else
   {
@@ -253,7 +257,7 @@ bool wxExAddress::Read(const wxString& arg) const
     
     wxExFile file;
 
-    if (!wxFile::Exists(fn.GetFullPath()) || !file.Open(fn.GetFullPath()))
+    if (!wxFile::Exists(fn.GetFullPath()) || !file.Open(fn.GetFullPath().ToStdString()))
     {
       wxLogStatus(_("file: %s does not exist"), arg);
       return false;
@@ -261,7 +265,7 @@ bool wxExAddress::Read(const wxString& arg) const
     
     const auto buffer(file.Read());
     
-    if (*this == ".")
+    if (m_Address == ".")
     {
       m_Ex->GetSTC()->AddTextRaw((const char *)buffer->data(), buffer->length());
     }

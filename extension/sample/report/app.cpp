@@ -122,7 +122,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   wxExDirWithListView dir(
     (wxExListView*)m_NotebookWithLists->GetPageByKey(
       wxExListView::GetTypeDescription(wxExListView::LIST_FILE)),
-    wxGetCwd(),
+    wxGetCwd().ToStdString(),
     "*.cpp;*.h");
 
   dir.FindFiles();
@@ -205,7 +205,7 @@ wxExListView* wxExRepSampleFrame::Activate(
           {
             if (!lexer->GetDisplayLexer().empty())
             {
-              wxLogMessage(lexer->GetDisplayLexer() + ", only cpp for the sample");
+              wxLogMessage("%s, only cpp for the sample", lexer->GetDisplayLexer().c_str());
             }
               
             return nullptr;

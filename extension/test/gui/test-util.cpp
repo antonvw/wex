@@ -26,14 +26,14 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   std::list < wxString > l{"x","y","z"};
   std::vector<int> cs{'(',')','{','<','>'};
     
-  const wxString rect("\
+  const std::string rect("\
 012z45678901234567890\n\
 123y56789012345678901\n\
 234x67890123456789012\n\
 345a78901234567890123\n\
 456b89012345678901234\n");
 
-  const wxString sorted("\
+  const std::string sorted("\
 012a78908901234567890\n\
 123b89019012345678901\n\
 234x67890123456789012\n\
@@ -114,7 +114,7 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
 #ifdef __WXMSW__
     REQUIRE(!wxExConfigDir().empty());
 #else
-    REQUIRE(wxExConfigDir().Contains(".config"));
+    REQUIRE(wxExConfigDir().find(".config") != std::string::npos);
 #endif
   }
   
@@ -125,12 +125,12 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   
   SECTION("wxExConfigFirstOfWrite")
   {
-    REQUIRE( wxExConfigFirstOfWrite("xxxx","zz") == "zz");
+    REQUIRE( wxExConfigFirstOfWrite("xxxx", "zz") == "zz");
   }
   
   SECTION("wxExEllipsed  ")
   {
-    REQUIRE( wxExEllipsed("xxx").Contains("..."));
+    REQUIRE( wxExEllipsed("xxx").find("...") != std::string::npos);
   }
   
   SECTION("wxExGetEndOfText")
@@ -146,15 +146,15 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
 
   SECTION("wxExGetFindResult")
   {
-    REQUIRE( wxExGetFindResult("test", true, true).Contains("test"));
-    REQUIRE( wxExGetFindResult("test", true, false).Contains("test"));
-    REQUIRE( wxExGetFindResult("test", false, true).Contains("test"));
-    REQUIRE( wxExGetFindResult("test", false, false).Contains("test"));
+    REQUIRE( wxExGetFindResult("test", true, true).find("test") != std::string::npos);
+    REQUIRE( wxExGetFindResult("test", true, false).find("test") != std::string::npos);
+    REQUIRE( wxExGetFindResult("test", false, true).find("test") != std::string::npos);
+    REQUIRE( wxExGetFindResult("test", false, false).find("test") != std::string::npos);
     
-    REQUIRE( wxExGetFindResult("%d", true, true).Contains("%d"));
-    REQUIRE( wxExGetFindResult("%d", true, false).Contains("%d"));
-    REQUIRE( wxExGetFindResult("%d", false, true).Contains("%d"));
-    REQUIRE( wxExGetFindResult("%d", false, false).Contains("%d"));
+    REQUIRE( wxExGetFindResult("%d", true, true).find("%d") != std::string::npos);
+    REQUIRE( wxExGetFindResult("%d", true, false).find("%d") != std::string::npos);
+    REQUIRE( wxExGetFindResult("%d", false, true).find("%d") != std::string::npos);
+    REQUIRE( wxExGetFindResult("%d", false, false).find("%d") != std::string::npos);
   }
   
   SECTION("wxExGetIconID")
@@ -247,9 +247,9 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   
   SECTION("wxExMatchesOneOf")
   {
-    REQUIRE(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
-    REQUIRE( wxExMatchesOneOf(wxFileName("test.txt"), "*.txt"));
-    REQUIRE( wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
+    REQUIRE(!wxExMatchesOneOf("test.txt", "*.cpp"));
+    REQUIRE( wxExMatchesOneOf("test.txt", "*.txt"));
+    REQUIRE( wxExMatchesOneOf("test.txt", "*.cpp;*.txt"));
   }
   
   SECTION("wxExNodeProperties")
@@ -262,14 +262,14 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   
   SECTION("wxExOpenFiles")
   {
-    REQUIRE( wxExOpenFiles(GetFrame(), std::vector<wxString>()) == 0);
-    REQUIRE( wxExOpenFiles(GetFrame(), std::vector<wxString> {
+    REQUIRE( wxExOpenFiles(GetFrame(), std::vector<std::string>()) == 0);
+    REQUIRE( wxExOpenFiles(GetFrame(), std::vector<std::string> {
       GetTestFile().GetFullPath(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
-    INFO( GetTestFile().GetFullPath().ToStdString()); 
+    INFO( GetTestFile().GetFullPath()); 
     REQUIRE( wxExOpenFiles(GetFrame(), 
-        std::vector<wxString> {GetTestFile().GetFullPath()}) == 1);
+        std::vector<std::string> {GetTestFile().GetFullPath()}) == 1);
     REQUIRE( 
-      wxExOpenFiles(GetFrame(), std::vector<wxString> {"../../data/menus.xml"}) == 1);
+      wxExOpenFiles(GetFrame(), std::vector<std::string> {"../../data/menus.xml"}) == 1);
   }
 
   SECTION("wxExOpenFilesDialog")
@@ -278,17 +278,17 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   
   SECTION("wxExPrintCaption")
   {
-    REQUIRE( wxExPrintCaption(wxFileName("test")).Contains("test"));
+    REQUIRE( wxExPrintCaption(wxExFileName("test")).find("test") != std::string::npos);
   }
   
   SECTION("wxExPrintFooter")
   {
-    REQUIRE( wxExPrintFooter().Contains("@"));
+    REQUIRE( wxExPrintFooter().find("@") != std::string::npos);
   }
   
   SECTION("wxExPrintHeader")
   {
-    REQUIRE( wxExPrintHeader(GetTestFile()).Contains("test"));
+    REQUIRE( wxExPrintHeader(GetTestFile()).find("test") != std::string::npos);
   }
   
   SECTION("wxExQuoted")
@@ -302,7 +302,7 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   {
     GetSTC()->SetText("this is some text");
     wxExEx* ex = new wxExEx(GetSTC());
-    wxString command("xxx");
+    std::string command("xxx");
     REQUIRE(!wxExMarkerAndRegisterExpansion(nullptr, command));
     REQUIRE( wxExMarkerAndRegisterExpansion(ex, command));
     command = "'yxxx";
@@ -310,15 +310,15 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     wxExClipboardAdd("yanked");
     command = "*";
     REQUIRE( wxExMarkerAndRegisterExpansion(ex, command));
-    REQUIRE( command.Contains("yanked"));
+    REQUIRE( command.find("yanked") != std::string::npos);
   }
   
 #ifdef __UNIX__
   SECTION("wxExShellExpansion")
   {
-    wxString command("xxx `pwd` `pwd`");
+    std::string command("xxx `pwd` `pwd`");
     REQUIRE( wxExShellExpansion(command));
-    REQUIRE(!command.Contains("`"));
+    REQUIRE( command.find("`") == std::string::npos);
     command = "no quotes";
     REQUIRE( wxExShellExpansion(command));
     REQUIRE( command == "no quotes");
@@ -347,7 +347,7 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
     REQUIRE( wxExSortSelection(GetSTC(), STRING_SORT_ASCENDING, 3, 10));
     REQUIRE(!wxExSortSelection(GetSTC(), STRING_SORT_ASCENDING, 20, 10));
     GetSTC()->SelectNone();
-    GetSTC()->SetText(rect.ToStdString());
+    GetSTC()->SetText(rect);
     // force rectangular selection.
     (void)GetSTC()->GetVi().Command("3 ");
     (void)GetSTC()->GetVi().Command("K");
@@ -369,7 +369,7 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
   SECTION("wxExTranslate")
   {
     REQUIRE(!wxExTranslate(
-      "hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
+      "hello @PAGENUM@ from @PAGESCNT@", 1, 2).find("@") != std::string::npos);
   }
       
   SECTION("wxExVCSCommandOnSTC")

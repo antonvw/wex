@@ -43,10 +43,10 @@ public:
     /// - *   : current screen visible area
     /// - x,y : range from begin x and end y address.
     /// -     : (empty), the range is empty
-    const wxString& range);
+    const std::string& range);
 
   /// Changes range.
-  bool Change(const wxString& command) const;
+  bool Change(const std::string& command) const;
   
   /// Cleans up (process).
   static void Cleanup();
@@ -67,7 +67,7 @@ public:
   /// Of course, you could also do: wxExAddressRange(96,99).Sort().
   /// If you did not specify an address range,
   /// the command is run as an asynchronous process.
-  bool Escape(const wxString& command);
+  bool Escape(const std::string& command);
 
   /// Acccess to the process.
   /// Returns NULLL if escape without range was not yet invoked.
@@ -76,7 +76,7 @@ public:
   /// Performs the global command on this range.
   bool Global(
     /// command
-    const wxString& command, 
+    const std::string& command, 
     /// normally performs command on each match, if inverse 
     /// performs command if line does not match
     bool inverse = false) const;
@@ -94,13 +94,13 @@ public:
   bool Move(const wxExAddress& destination) const;
   
   /// Prints range to print file.
-  bool Print(const wxString& flags = wxEmptyString) const;
+  bool Print(const std::string& flags = std::string()) const;
   
   /// Sorts range, with optional parameters:
   /// -u to sort unique lines
   /// -r to sort reversed (descending)
   ///  - x,y sorts rectangle within range: x start col, y end col (exclusive).
-  bool Sort(const wxString& parameters = wxEmptyString) const;
+  bool Sort(const std::string& parameters = std::string()) const;
   
   /// Substitutes range.
   bool Substitute(
@@ -118,7 +118,7 @@ public:
     /// e.g. /$/EOL appends the string EOL at the end of each line. 
     /// Merging is not yet possible using a \n target,
     /// you can create a macro for that.  
-    const wxString& text,
+    const std::string& text,
     /// cmd is one of s, & or ~
     /// - s : default, normal substitute
     /// - & : repeat last substitute (text contains options)
@@ -126,7 +126,7 @@ public:
     const char cmd = 's');
     
   /// Writes range to filename.
-  bool Write(const wxString& filename) const;
+  bool Write(const std::string& filename) const;
   
   /// Yanks range to register, default to yank register.
   bool Yank(const char name = '0') const;
@@ -136,10 +136,10 @@ private:
   bool Parse(const wxString& command, 
     wxString& pattern, wxString& replacement, wxString& options) const;
   void Set(const wxString& begin, const wxString& end) {
-    m_Begin.assign(begin);
+    m_Begin.m_Address = begin;
     const int begin_line = m_Begin.GetLine();
     if (begin_line > 0) m_Begin.SetLine(begin_line);
-    m_End.assign(end);
+    m_End.m_Address = end;
     const int end_line = m_End.GetLine();
     if (end_line > 0) m_End.SetLine(end_line);};
   void Set(int begin, int end) {

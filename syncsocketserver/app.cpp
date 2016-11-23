@@ -197,7 +197,7 @@ Frame::Frame()
 
   if (!GetFileHistory().GetHistoryFile().empty() && GetManager().GetPane("DATA").IsShown())
   {
-    OpenFile(GetFileHistory().GetHistoryFile());
+    OpenFile(GetFileHistory().GetHistoryFile().ToStdString());
   }
 
   if (GetManager().GetPane("SHELL").IsShown())
@@ -292,7 +292,7 @@ Frame::Frame()
       wxFD_SAVE);
     if (dlg.ShowModal())
     {
-      m_DataWindow->GetFile().FileSave(dlg.GetPath());
+      m_DataWindow->GetFile().FileSave(dlg.GetPath().ToStdString());
     }}, wxID_SAVEAS);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {

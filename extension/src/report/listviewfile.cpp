@@ -2,7 +2,7 @@
 // Name:      listviewfile.cpp
 // Purpose:   Implementation of class wxExListViewFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -24,7 +24,7 @@
 
 wxExListViewFile::wxExListViewFile(wxWindow* parent,
   wxExFrameWithHistory* frame,
-  const wxString& file,
+  const std::string& file,
   wxWindowID id,
   long menu_flags,
   const wxPoint& pos,
@@ -93,7 +93,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
     m_AddItemsDialog->Show();}, wxID_ADD);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (!GetFileName().FileExists() || GetFileName().IsFileWritable())
+    if (!GetFileName().FileExists() || !GetFileName().IsReadOnly())
     {
       event.Skip();
       m_ContentsChanged = true;
@@ -120,7 +120,7 @@ void wxExListViewFile::AddItems(
   std::thread t([=] {
 #endif
     const int old_count = GetItemCount();
-    wxExDirWithListView dir(this, folder, files, flags);
+    wxExDirWithListView dir(this, folder.ToStdString(), files.ToStdString(), flags);
   
     dir.FindFiles();
     
@@ -164,7 +164,7 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 {
   const bool ok =
      !GetFileName().FileExists() || 
-     (GetFileName().FileExists() && GetFileName().IsFileWritable());
+     (GetFileName().FileExists() && !GetFileName().IsReadOnly());
      
   const long style = menu.GetStyle() | (!ok ? wxExMenu::MENU_IS_READ_ONLY: 0);
 
@@ -194,7 +194,7 @@ bool wxExListViewFile::DoFileLoad(bool synced)
 
   while (child)
   {
-    const wxString value = child->GetNodeContent();
+    const std::string value = child->GetNodeContent().ToStdString();
 
     if (child->GetName() == "file")
     {

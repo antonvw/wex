@@ -53,14 +53,14 @@ wxExLexer& wxExLexer::operator=(const wxExLexer& l)
 // Adds the specified keywords to the keywords map and the keywords set.
 // The text might contain the keyword set after a ':'.
 // Returns false if specified set is illegal or value is empty.
-bool wxExLexer::AddKeywords(const wxString& value, int setno)
+bool wxExLexer::AddKeywords(const std::string& value, int setno)
 {
   if (value.empty() || setno < 0 || setno >= wxSTC_KEYWORDSET_MAX)
   {
     return false;
   }
   
-  std::set<wxString> keywords_set;
+  std::set<std::string> keywords_set;
 
   wxStringTokenizer tkz(value, "\r\n ");
 
@@ -68,7 +68,7 @@ bool wxExLexer::AddKeywords(const wxString& value, int setno)
   {
     const wxString line = tkz.GetNextToken();
     wxStringTokenizer fields(line, ":");
-    wxString keyword;
+    std::string keyword;
 
     if (fields.CountTokens() > 1)
     {
@@ -128,7 +128,7 @@ bool wxExLexer::Apply() const
   // Reset keywords, also if no lexer is available.
   for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
   {
-    m_STC->SetKeyWords(setno, wxEmptyString);
+    m_STC->SetKeyWords(setno, std::string());
   }
 
   wxExLexers::Get()->ApplyGlobalStyles(m_STC);
@@ -177,7 +177,7 @@ bool wxExLexer::ApplyWhenSet()
   return m_IsOk;
 }
 
-void wxExLexer::AutoMatch(const wxString& lexer)
+void wxExLexer::AutoMatch(const std::string& lexer)
 {
   const wxExLexer& l(wxExLexers::Get()->FindByName(lexer));
   
@@ -196,7 +196,7 @@ void wxExLexer::AutoMatch(const wxString& lexer)
       {
         // Then, a partial using Contains.
         const auto& style = std::find_if(wxExLexers::Get()->GetThemeMacros().begin(), wxExLexers::Get()->GetThemeMacros().end(), 
-          [&](auto const& e) {return it.first.Contains(e.first);});
+          [&](auto const& e) {return it.first.find(e.first) != std::string::npos;});
         if (style != wxExLexers::Get()->GetThemeMacros().end())
           m_Styles.emplace_back(wxExStyle(it.second, style->second));
       }
@@ -216,34 +216,34 @@ void wxExLexer::AutoMatch(const wxString& lexer)
   }
 }
 
-const wxString wxExLexer::CommentComplete(const wxString& comment) const
+const std::string wxExLexer::CommentComplete(const std::string& comment) const
 {
-  if (m_CommentEnd.empty()) return wxEmptyString;
+  if (m_CommentEnd.empty()) return std::string();
   
   // Fill out rest of comment with spaces, and comment end string.
   const int n = line_size - comment.size() - m_CommentEnd.size();
   
-  if (n <= 0) return wxEmptyString;
+  if (n <= 0) return std::string();
   
-  const wxString blanks = wxString(' ', n);
+  const std::string blanks = std::string(n, ' ');
   
   return blanks + m_CommentEnd;
 }
 
-const wxString wxExLexer::GetFormattedText(
-  const wxString& lines,
-  const wxString& header,
+const std::string wxExLexer::GetFormattedText(
+  const std::string& lines,
+  const std::string& header,
   bool fill_out_with_space,
   bool fill_out) const
 {
-  wxString text = lines, header_to_use = header;
+  std::string text = lines, header_to_use = header;
   size_t nCharIndex;
-  wxString out;
+  std::string out;
 
   // Process text between the carriage return line feeds.
-  while ((nCharIndex = text.find("\n")) != wxString::npos)
+  while ((nCharIndex = text.find("\n")) != std::string::npos)
   {
-    out << wxExAlignText(
+    out += wxExAlignText(
       text.substr(0, nCharIndex),
       header_to_use,
       fill_out_with_space,
@@ -251,12 +251,12 @@ const wxString wxExLexer::GetFormattedText(
       *this);
 
     text = text.substr(nCharIndex + 1);
-    header_to_use = wxString(' ', header.size());
+    header_to_use = std::string(header.size(), ' ');
   }
 
   if (!text.empty())
   {
-    out << wxExAlignText(
+    out += wxExAlignText(
       text,
       header_to_use,
       fill_out_with_space,
@@ -267,8 +267,8 @@ const wxString wxExLexer::GetFormattedText(
   return out;
 }
 
-const wxString wxExLexer::GetKeywordsString(
-  int keyword_set, size_t min_size, const wxString& prefix) const
+const std::string wxExLexer::GetKeywordsString(
+  int keyword_set, size_t min_size, const std::string& prefix) const
 {
   if (keyword_set == -1)
   {
@@ -284,15 +284,15 @@ const wxString wxExLexer::GetKeywordsString(
     }
   }
 
-  return wxEmptyString;
+  return std::string();
 }
 
-const wxString wxExLexer::GetKeywordsStringSet(
-  const std::set<wxString>& kset, size_t min_size, const wxString& prefix) const
+const std::string wxExLexer::GetKeywordsStringSet(
+  const std::set<std::string>& kset, size_t min_size, const std::string& prefix) const
 {
-  return wxString(std::accumulate(kset.begin(), kset.end(), wxString{}, 
-    [&](const wxString& a, const wxString& b) {
-      return (b.size() >= min_size && b.StartsWith(prefix)) ? a + b + ' ': a;})).Trim();
+  return std::accumulate(kset.begin(), kset.end(), std::string{}, 
+    [&](const std::string& a, const std::string& b) {
+      return (b.size() >= min_size && wxString(b).StartsWith(prefix)) ? a + b + ' ': a;});
 }
 
 void wxExLexer::Initialize()
@@ -311,48 +311,48 @@ void wxExLexer::Initialize()
   m_Styles.clear();
 }
 
-bool wxExLexer::IsKeyword(const wxString& word) const
+bool wxExLexer::IsKeyword(const std::string& word) const
 {
   return m_Keywords.find(word) != m_Keywords.end();
 }
 
-bool wxExLexer::KeywordStartsWith(const wxString& word) const
+bool wxExLexer::KeywordStartsWith(const std::string& word) const
 {
   const auto& it = m_Keywords.lower_bound(word);
   return 
     it != m_Keywords.end() &&
-    it->StartsWith(word);
+    it->find(word) == 0;
 }
 
-const wxString wxExLexer::MakeComment(
-  const wxString& text,
+const std::string wxExLexer::MakeComment(
+  const std::string& text,
   bool fill_out_with_space,
   bool fill_out) const
 {
-  wxString out;
+  std::string out;
 
-  text.find("\n") != wxString::npos ?
-    out << GetFormattedText(text, wxEmptyString, fill_out_with_space, fill_out):
-    out << wxExAlignText(text, wxEmptyString, fill_out_with_space, fill_out, *this);
+  text.find("\n") != std::string::npos ?
+    out += GetFormattedText(text, std::string(), fill_out_with_space, fill_out):
+    out += wxExAlignText(text, std::string(), fill_out_with_space, fill_out, *this);
 
   return out;
 }
 
-const wxString wxExLexer::MakeComment(
-  const wxString& prefix,
-  const wxString& text) const
+const std::string wxExLexer::MakeComment(
+  const std::string& prefix,
+  const std::string& text) const
 {
-  wxString out;
+  std::string out;
 
-  text.find("\n") != wxString::npos ?
-    out << GetFormattedText(text, prefix, true, true):
-    out << wxExAlignText(text, prefix, true, true, *this);
+  text.find("\n") != std::string::npos ?
+    out += GetFormattedText(text, prefix, true, true):
+    out += wxExAlignText(text, prefix, true, true, *this);
 
   return out;
 }
 
-const wxString wxExLexer::MakeSingleLineComment(
-  const wxString& text,
+const std::string wxExLexer::MakeSingleLineComment(
+  const std::string& text,
   bool fill_out_with_space,
   bool fill_out) const
 {
@@ -362,7 +362,7 @@ const wxString wxExLexer::MakeSingleLineComment(
   }
 
   // First set the fill_out_character.
-  wxUniChar fill_out_character;
+  char fill_out_character;
 
   if (fill_out_with_space || m_ScintillaLexer == "hypertext")
   {
@@ -379,7 +379,7 @@ const wxString wxExLexer::MakeSingleLineComment(
     else   fill_out_character = ' ';
   }
 
-  wxString out = m_CommentBegin + fill_out_character + text;
+  std::string out = m_CommentBegin + fill_out_character + text;
 
   // Fill out characters.
   if (fill_out)
@@ -391,7 +391,7 @@ const wxString wxExLexer::MakeSingleLineComment(
 
       if (fill_chars > 0)
       {
-        const wxString fill_out(fill_out_character, fill_chars);
+        const std::string fill_out(fill_out_character, fill_chars);
         out += fill_out;
       }
     }
@@ -442,7 +442,7 @@ void wxExLexer::Set(const wxXmlNode* node)
     m_Language = node->GetAttribute("language");
 
     AutoMatch((!node->GetAttribute("macro").empty() ?
-      node->GetAttribute("macro"):
+      node->GetAttribute("macro").ToStdString():
       m_ScintillaLexer));
 
     if (m_ScintillaLexer == "hypertext")
@@ -464,7 +464,7 @@ void wxExLexer::Set(const wxXmlNode* node)
       else if (child->GetName() == "keywords")
       {
         // Add all direct keywords
-        const wxString& direct(child->GetNodeContent().Strip(wxString::both));
+        const std::string& direct(child->GetNodeContent().Strip(wxString::both).ToStdString());
         
         if (!direct.empty() && !AddKeywords(direct))
         {
@@ -479,8 +479,8 @@ void wxExLexer::Set(const wxXmlNode* node)
         while (att != nullptr)
         {
           const int setno = atoi(att->GetName().AfterFirst('-'));
-          const wxString keywords = wxExLexers::Get()->GetKeywords(
-            att->GetValue().Strip(wxString::both));
+          const std::string keywords = wxExLexers::Get()->GetKeywords(
+            att->GetValue().Strip(wxString::both).ToStdString());
           
           if (!AddKeywords(keywords, setno))
           {
@@ -517,7 +517,7 @@ void wxExLexer::Set(const wxXmlNode* node)
   }
 }
 
-bool wxExLexer::Set(const wxString& lexer, bool fold)
+bool wxExLexer::Set(const std::string& lexer, bool fold)
 {
   // If there are no lexers, just return, to prevent error message.
   if (wxExLexers::Get()->GetLexers().empty()) return false;
@@ -526,7 +526,7 @@ bool wxExLexer::Set(const wxString& lexer, bool fold)
 
   if (!m_IsOk && m_STC != nullptr)
   {
-    (*this) = wxExLexers::Get()->FindByText(m_STC->GetLine(0));
+    (*this) = wxExLexers::Get()->FindByText(m_STC->GetLine(0).ToStdString());
   }
     
   if (m_ScintillaLexer.empty() && !lexer.empty())
@@ -543,7 +543,7 @@ bool wxExLexer::Set(const wxString& lexer, bool fold)
   
   if (!m_IsOk)
   {
-    wxLogError("Lexer is not known: " + lexer);
+    wxLogError("Lexer is not known: %s", lexer.c_str());
   }
   
   return m_IsOk;
@@ -553,7 +553,7 @@ bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
 {
   if (lexer.GetScintillaLexer().empty() && m_STC != nullptr)
   {
-    (*this) = wxExLexers::Get()->FindByText(m_STC->GetLine(0));
+    (*this) = wxExLexers::Get()->FindByText(m_STC->GetLine(0).ToStdString());
   }
   else
   {
@@ -571,7 +571,7 @@ bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
   return m_IsOk;
 }
 
-void wxExLexer::SetProperty(const wxString& name, const wxString& value)
+void wxExLexer::SetProperty(const std::string& name, const std::string& value)
 {
   const auto& it = std::find_if(m_Properties.begin(), m_Properties.end(), 
     [name](auto const& e) {return e.GetName() == name;});

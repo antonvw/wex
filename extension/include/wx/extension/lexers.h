@@ -37,18 +37,18 @@ public:
   /// Applies macro to text:
   /// if text is referring to a macro, text is replaced by the macro value.
   /// Otherwise the same text is returned.
-  const wxString ApplyMacro(
-    const wxString& text, 
-    const wxString& lexer = "global");
+  const std::string ApplyMacro(
+    const std::string& text, 
+    const std::string& lexer = "global");
 
-  /// Finds a lexer specified by a filename.
-  const wxExLexer FindByFileName(const wxFileName& filename) const;
+  /// Finds a lexer specified by a filename (fullname).
+  const wxExLexer FindByFileName(const std::string& fullname) const;
 
   /// Finds a lexer specified by the (display scintilla) name.
-  const wxExLexer FindByName(const wxString& name) const;
+  const wxExLexer FindByName(const std::string& name) const;
 
   /// Finds a lexer if text starts with some special tokens.
-  const wxExLexer FindByText(const wxString& text) const;
+  const wxExLexer FindByText(const std::string& text) const;
 
   /// Returns the lexers object.
   /// If this is the first invocation, and createOnDemand is true,
@@ -64,13 +64,13 @@ public:
   
   /// Returns the keywords for the specified named set of keywords.
   /// Returns empty string if set does not exist.
-  const wxString GetKeywords(const wxString& set) const;
+  const std::string GetKeywords(const std::string& set) const;
 
   /// Returns the lexers.
   const auto & GetLexers() const {return m_Lexers;};
 
   /// Returns the macros for specified lexer.
-  const auto & GetMacros(const wxString& lexer) {return m_Macros[lexer];};
+  const auto & GetMacros(const std::string& lexer) {return m_Macros[lexer];};
 
   /// Returns marker from loaded markers,
   /// based on the no of specified marker.
@@ -143,11 +143,11 @@ private:
   void ParseNodeTheme(const wxXmlNode* node);
   void ParseNodeThemes(const wxXmlNode* node);
 
-  std::map<wxString, wxString> m_DefaultColours;
-  std::map<wxString, wxString> m_Keywords;
-  std::map<wxString, std::map<wxString, wxString> > m_Macros;
-  std::map<wxString, std::map<wxString, wxString> > m_ThemeColours;
-  std::map<wxString, std::map<wxString, wxString> > m_ThemeMacros;
+  std::map<std::string, std::string> m_DefaultColours;
+  std::map<std::string, std::string> m_Keywords;
+  std::map<std::string, std::map<std::string, std::string> > m_Macros;
+  std::map<std::string, std::map<std::string, std::string> > m_ThemeColours;
+  std::map<std::string, std::map<std::string, std::string> > m_ThemeMacros;
 
   std::set<wxExIndicator> m_Indicators;
   std::set<wxExMarker> m_Markers;
@@ -160,9 +160,9 @@ private:
   wxExStyle m_DefaultStyle;
 
   const wxFileName m_FileName;
-  const wxString m_NoTheme;
-  wxString m_Theme;
-  wxString m_FoldingBackgroundColour, m_FoldingForegroundColour;
+  const std::string m_NoTheme;
+  std::string m_Theme;
+  std::string m_FoldingBackgroundColour, m_FoldingForegroundColour;
 
   static wxExLexers* m_Self;
 };

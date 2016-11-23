@@ -2,7 +2,7 @@
 // Name:      textfile.cpp
 // Purpose:   Implementation of wxExTextFile class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -122,6 +122,8 @@ bool wxExTextFile::Parse()
       m_FindString.begin(), 
       toupper);
   }
+  
+  const int prev = m_Stats.Get(_("Actions Completed"));
 
   for (size_t i = 0; i < GetLineCount(); i++)
   {
@@ -130,6 +132,12 @@ bool wxExTextFile::Parse()
     if (MatchLine(line))
     {
       Report(i);
+      
+      if (m_Stats.Get(_("Actions Completed")) - prev > 250)
+      {
+        wxLogMessage("too many matches, reconsider your search");
+        return false;
+      }
     }
   }
 
@@ -149,13 +157,12 @@ bool wxExTextFile::RunTool()
   {
     if (!m_FileName.GetLexer().IsOk())
     {
-      m_FileName.SetLexer(wxExLexers::Get()->FindByText(GetLine(0)));
+      m_FileName.SetLexer(wxExLexers::Get()->FindByText(GetLine(0).ToStdString()));
     }
 
     if (!Parse())
     {
       Close();
-
       return false;
     }
   }
@@ -165,7 +172,6 @@ bool wxExTextFile::RunTool()
     if (!Write())
     {
       Close();
-
       return false;
     }
   }

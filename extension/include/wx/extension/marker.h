@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <wx/colour.h> 
-
 class wxXmlNode;
 class wxStyledTextCtrl;
 
@@ -52,8 +50,6 @@ public:
   /// Returns true if marker is valid.
   bool IsOk() const;
 private:
-  int m_No = -1;
-  int m_Symbol = -1;
-  wxColour m_BackgroundColour;
-  wxColour m_ForegroundColour;
+  std::string m_BackgroundColour, m_ForegroundColour;
+  int m_No = -1, m_Symbol = -1;
 };

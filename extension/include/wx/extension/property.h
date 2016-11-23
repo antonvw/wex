@@ -18,8 +18,8 @@ public:
   /// Default constructor.
   wxExProperty(const wxXmlNode* node = nullptr) {
     if (node != nullptr) {
-      m_Name = node->GetAttribute("name", "0");
-      m_Value = node->GetNodeContent().Strip(wxString::both);
+      m_Name = node->GetAttribute("name", "0").ToStdString();
+      m_Value = node->GetNodeContent().Strip(wxString::both).ToStdString();
       if (!IsOk())
       {
         wxLogError("Illegal property name: %s or value: %s on line: %d",
@@ -29,7 +29,7 @@ public:
       }}};
   
   /// Constructor using name, value pair.
-  wxExProperty(const wxString& name, const wxString& value)
+  wxExProperty(const std::string& name, const std::string& value)
     : m_Name(name)
     , m_Value(value){;};
 
@@ -43,18 +43,18 @@ public:
     stc->SetProperty(m_Name, wxEmptyString);};
   
   /// Returns the name of this property.
-  const wxString& GetName() const {return m_Name;};
+  const auto & GetName() const {return m_Name;};
 
   /// Returns the value of this property.
-  const wxString& GetValue() const {return m_Value;};
+  const auto & GetValue() const {return m_Value;};
 
   /// Returns true if property is valid.
   bool IsOk() const {
     return !m_Name.empty() && !m_Value.empty();};
   
   /// Override this property (so does not apply this property).
-  void Set(const wxString& value) {m_Value = value;};
+  void Set(const std::string& value) {m_Value = value;};
 private:
-  wxString m_Name;
-  wxString m_Value;
+  std::string m_Name;
+  std::string m_Value;
 };

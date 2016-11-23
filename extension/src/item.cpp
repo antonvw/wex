@@ -473,8 +473,10 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_STC:
-      m_Window = new wxExSTC(parent, std::string(), 0,
-        std::string(), wxExSTC::STC_MENU_DEFAULT, std::string(), m_Id);
+      m_Window = new wxExSTC(parent, std::string(), wxExSTC::STC_WIN_DEFAULT,
+        std::string(), 
+        static_cast<wxExSTC::wxExMenuFlags>(wxExSTC::STC_MENU_CONTEXT | wxExSTC::STC_MENU_OPEN_LINK | wxExSTC::STC_MENU_VCS), 
+        std::string(), m_Id);
       
       // Do not use vi mode, as ESC should cancel the dialog,
       // and would not be interpreted by vi.
@@ -482,7 +484,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
       if (!m_Initial.IsNull())
       {
-        ((wxExSTC* )m_Window)->GetLexer().Set(m_Initial.As<wxString>());
+        ((wxExSTC* )m_Window)->GetLexer().Set(m_Initial.As<wxString>().ToStdString());
       }
       break;
 

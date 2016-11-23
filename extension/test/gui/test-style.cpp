@@ -59,18 +59,18 @@ TEST_CASE("wxExStyle", "[stc][lexer]")
     xml.AddAttribute("no", "2");
     new wxXmlNode(&xml, wxXML_TEXT_NODE , "", "string");
 
-    REQUIRE( atoi(wxExStyle(&xml, "").GetNo()) == 2);
+    REQUIRE( std::stoi(wxExStyle(&xml, "").GetNo()) == 2);
     REQUIRE( wxExStyle(&xml, "").GetValue() == "fore:blue");
-    REQUIRE( atoi(wxExStyle(&xml, "cpp").GetNo()) == 2);
+    REQUIRE( std::stoi(wxExStyle(&xml, "cpp").GetNo()) == 2);
     REQUIRE( wxExStyle(&xml, "").GetValue() == "fore:blue");
 
     wxXmlNode xml2(wxXML_ELEMENT_NODE, "style");
     xml2.AddAttribute("no", "2");
     new wxXmlNode(&xml2, wxXML_TEXT_NODE , "", "styledefault+comment");
 
-    REQUIRE(!wxExStyle(&xml2, "cpp").GetValue().Contains("default"));
-    REQUIRE(!wxExStyle(&xml2, "cpp").GetValue().Contains("comment"));
-    REQUIRE(!wxExStyle(&xml2, "cpp").GetValue().Contains("+"));
+    REQUIRE( wxExStyle(&xml2, "cpp").GetValue().find("default") == std::string::npos);
+    REQUIRE( wxExStyle(&xml2, "cpp").GetValue().find("comment") == std::string::npos);
+    REQUIRE( wxExStyle(&xml2, "cpp").GetValue().find("+") == std::string::npos);
   }
   
   SECTION("Apply")

@@ -76,15 +76,13 @@ TEST_CASE("wxExAddress", "[stc][vi]")
   REQUIRE( address3.Flags("#"));
   REQUIRE(!address3.Flags("x"));
 
-  // Test GetLine.
-  wxExAddress address(ex);
-  REQUIRE( address.GetLine() == 0);
-  address.SetLine(-1);
-  REQUIRE( address.GetLine() == 1);
-  address.SetLine(1);
-  REQUIRE( address.GetLine() == 1);
-  address.SetLine(100);
-  REQUIRE( address.GetLine() == lines);
+  // Test Get, GetLine.
+  REQUIRE( wxExAddress(ex).GetLine() == 0);
+  REQUIRE( wxExAddress(ex, "-1").GetLine() == 1);
+  REQUIRE( wxExAddress(ex, "-1").Get() == "-1");
+  REQUIRE( wxExAddress(ex, "1").GetLine() == 1);
+  REQUIRE( wxExAddress(ex, "1").Get() == "1");
+  REQUIRE( wxExAddress(ex, "100").GetLine() == lines);
   
   wxExAddress address2(ex, "'a");
   REQUIRE( address2.GetLine() == 1);

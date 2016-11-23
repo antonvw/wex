@@ -29,7 +29,7 @@ public:
     // ctags mixes regex with non regex....
     std::replace(m_Pattern.begin(), m_Pattern.end(), '*', '.');};
   const std::string GetName() const {
-    return wxExFileName(m_File).GetName().ToStdString();};
+    return wxExFileName(m_File).GetName();};
   void OpenFile(wxExFrame* frame) const
   {
     frame->OpenFile(wxExFileName(m_File), 
@@ -47,7 +47,7 @@ wxExCTags::wxExCTags(wxExFrame* frame, const std::string& filename)
   tagFileInfo info;
 
   for (const auto & it : std::vector < std::string > {
-    "./", wxExConfigDir().ToStdString() + "/"})
+    "./", wxExConfigDir() + "/"})
   {
     if ((m_File = tagsOpen(std::string(it + filename).c_str(), &info)) != nullptr)
     {

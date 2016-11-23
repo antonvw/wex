@@ -67,12 +67,14 @@ void wxExLexers::ApplyGlobalStyles(wxExSTC* stc)
 
   if (!m_FoldingBackgroundColour.empty())
   {
-    stc->SetFoldMarginHiColour(true, m_FoldingBackgroundColour);
+    const wxString col(m_FoldingBackgroundColour);
+    stc->SetFoldMarginHiColour(true, col);
   }
 
   if (!m_FoldingForegroundColour.empty())
   {
-    stc->SetFoldMarginColour(true, m_FoldingForegroundColour);
+    const wxString col((m_FoldingForegroundColour));
+    stc->SetFoldMarginColour(true, col);
   }
 
   const auto& colour_it = m_ThemeColours.find(m_Theme);
@@ -81,18 +83,18 @@ void wxExLexers::ApplyGlobalStyles(wxExSTC* stc)
   {
     for (const auto& it : colour_it->second)
     {
-           if (it.first == "caretforeground") stc->SetCaretForeground(it.second);
-      else if (it.first == "caretlinebackground") stc->SetCaretLineBackground(it.second);
-      else if (it.first == "selbackground") stc->SetSelBackground(true, it.second);
-      else if (it.first == "selforeground") stc->SetSelForeground(true, it.second);
-      else if (it.first == "calltipbackground") stc->CallTipSetBackground(wxColour(it.second));
-      else if (it.first == "calltipforeground") stc->CallTipSetForeground(wxColour(it.second));
-      else if (it.first == "edge") stc->SetEdgeColour(wxColour(it.second));
+           if (it.first == "caretforeground") stc->SetCaretForeground(wxString(it.second));
+      else if (it.first == "caretlinebackground") stc->SetCaretLineBackground(wxString(it.second));
+      else if (it.first == "selbackground") stc->SetSelBackground(true, wxString(it.second));
+      else if (it.first == "selforeground") stc->SetSelForeground(true, wxString(it.second));
+      else if (it.first == "calltipbackground") stc->CallTipSetBackground(wxString(it.second));
+      else if (it.first == "calltipforeground") stc->CallTipSetForeground(wxString(it.second));
+      else if (it.first == "edge") stc->SetEdgeColour(wxString(it.second));
     }
   }
 }
 
-const wxString wxExLexers::ApplyMacro(const wxString& text, const wxString& lexer)
+const std::string wxExLexers::ApplyMacro(const std::string& text, const std::string& lexer)
 {
   const auto& it = GetMacros(lexer).find(text);
   
@@ -109,24 +111,25 @@ const wxString wxExLexers::ApplyMacro(const wxString& text, const wxString& lexe
   return text;
 }
 
-const wxExLexer wxExLexers::FindByFileName(const wxFileName& filename) const
+const wxExLexer wxExLexers::FindByFileName(const std::string& fullname) const
 {
   const auto& it = std::find_if(m_Lexers.begin(), m_Lexers.end(), 
-    [filename](auto const& e) {return !e.GetExtensions().empty() && wxExMatchesOneOf(filename, e.GetExtensions());});
+    [fullname](auto const& e) {return !e.GetExtensions().empty() && 
+       wxExMatchesOneOf(fullname, e.GetExtensions());});
   return it != m_Lexers.end() ? *it: wxExLexer();
 }
 
-const wxExLexer wxExLexers::FindByName(const wxString& name) const
+const wxExLexer wxExLexers::FindByName(const std::string& name) const
 {
   const auto& it = std::find_if(m_Lexers.begin(), m_Lexers.end(), 
     [name](auto const& e) {return e.GetDisplayLexer() == name;});
   return it != m_Lexers.end() ? *it: wxExLexer();
 }
 
-const wxExLexer wxExLexers::FindByText(const wxString& text) const
+const wxExLexer wxExLexers::FindByText(const std::string& text) const
 {
   // Add automatic lexers if text starts with some special tokens.
-  const wxString text_lowercase = text.Lower().Trim();
+  const wxString text_lowercase = wxString(text).Lower().Trim();
 
        if (text_lowercase.StartsWith("<html>")) return FindByName("hypertext");
   else if (text_lowercase.StartsWith("<?xml")) return FindByName("xml");
@@ -134,9 +137,9 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
   // (e.g. /usr/include/c++/3.3.5/map) so add here.
   else if (text_lowercase.StartsWith("//")) return FindByName("cpp");
   else if (text_lowercase.StartsWith("<?php")) return FindByName("phpscript");
-  else if (text.StartsWith("#!/bin/csh")) return FindByName("csh");
-  else if (text.StartsWith("#!/bin/tcsh")) return FindByName("tcsh");
-  else if (text.StartsWith("#!/bin/sh")) return FindByName("sh");
+  else if (text_lowercase.StartsWith("#!/bin/csh")) return FindByName("csh");
+  else if (text_lowercase.StartsWith("#!/bin/tcsh")) return FindByName("tcsh");
+  else if (text_lowercase.StartsWith("#!/bin/sh")) return FindByName("sh");
   else
   {
     // If there is another Shell Language Indicator,
@@ -165,10 +168,10 @@ const wxExIndicator wxExLexers::GetIndicator(const wxExIndicator& indicator) con
   return (it != m_Indicators.end() ? *it: wxExIndicator());
 }
 
-const wxString wxExLexers::GetKeywords(const wxString& set) const
+const std::string wxExLexers::GetKeywords(const std::string& set) const
 {
   const auto& it = m_Keywords.find(set);
-  return (it != m_Keywords.end() ? it->second: wxString());
+  return (it != m_Keywords.end() ? it->second: std::string());
 }
 
 const wxExMarker wxExLexers::GetMarker(const wxExMarker& marker) const
@@ -191,7 +194,7 @@ void wxExLexers::Initialize()
   m_Styles.clear();
   m_StylesHex.clear();
   m_ThemeColours[m_NoTheme] = m_DefaultColours;
-  const std::map<wxString, wxString> empty_map;
+  const std::map<std::string, std::string> empty_map;
   m_ThemeMacros[m_NoTheme] = empty_map;  
 }
 
@@ -233,7 +236,7 @@ bool wxExLexers::LoadDocument()
   {
     const std::string extensions(std::accumulate(
       m_Lexers.begin(), m_Lexers.end(), std::string(wxFileSelectorDefaultWildcardStr), 
-      [&](const wxString& a, const wxExLexer& b) {
+      [&](const std::string& a, const wxExLexer& b) {
         if (!b.GetExtensions().empty())
           return a.empty() ? b.GetExtensions() : a + wxExGetFieldSeparator() + b.GetExtensions();
         else return a;}));
@@ -272,8 +275,8 @@ void wxExLexers::ParseNodeFolding(const wxXmlNode* node)
   const wxString content = node->GetNodeContent().Strip(wxString::both);
   wxStringTokenizer fields(content, ",");
 
-  m_FoldingBackgroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
-  m_FoldingForegroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+  m_FoldingBackgroundColour = ApplyMacro(fields.GetNextToken().ToStdString());
+  m_FoldingForegroundColour = ApplyMacro(fields.GetNextToken().ToStdString());
 }
 
 void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
@@ -351,8 +354,8 @@ void wxExLexers::ParseNodeKeyword(const wxXmlNode* node)
   {
     if (child->GetName() == "set")
     {
-      const wxString name(child->GetAttribute("name"));
-      const wxString content(child->GetNodeContent().Strip(wxString::both));
+      const std::string name(child->GetAttribute("name"));
+      const std::string content(child->GetNodeContent().Strip(wxString::both));
       m_Keywords[name] = content;
     }
     
@@ -368,18 +371,18 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
   {
     if (child->GetName() == "def")
     {
-      const wxString name = child->GetAttribute("name");
+      const std::string name = child->GetAttribute("name").ToStdString();
     
       wxXmlNode* macro = child->GetChildren();
       
-      std::map <wxString, wxString> macro_map;
+      std::map <std::string, std::string> macro_map;
 
       long val = 0;
   
       while (macro)
       {
-        const wxString attrib = macro->GetAttribute("no");
-        const wxString content = macro->GetNodeContent().Strip(wxString::both);
+        const std::string attrib = macro->GetAttribute("no").ToStdString();
+        const std::string content = macro->GetNodeContent().Strip(wxString::both).ToStdString();
 
         if (!attrib.empty())
         {
@@ -395,7 +398,7 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
           {
             if (!content.empty())
             {
-              if (!content.ToLong(&val))
+              if (!wxString(content).ToLong(&val))
               {
                 wxLogError("Macro: %s on line: %d is not a number",
                   attrib.c_str(), 
@@ -431,18 +434,18 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
 
 void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
 {
-  std::map<wxString, wxString> tmpColours;
-  std::map<wxString, wxString> tmpMacros;
+  std::map<std::string, std::string> tmpColours;
+  std::map<std::string, std::string> tmpMacros;
   
   wxXmlNode *child = node->GetChildren();
   
   while (child)
   {
-    const wxString content = child->GetNodeContent().Strip(wxString::both);
+    const std::string content = child->GetNodeContent().Strip(wxString::both).ToStdString();
       
     if (child->GetName() == "def")
     {
-      const wxString style = child->GetAttribute("style");
+      const std::string style = child->GetAttribute("style").ToStdString();
       
       if (!style.empty())
       {
@@ -462,14 +465,14 @@ void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
     }
     else if (child->GetName() == "colour")
     {
-      tmpColours[child->GetAttribute("name", "0")] = ApplyMacro(content);
+      tmpColours[child->GetAttribute("name", "0").ToStdString()] = ApplyMacro(content);
     }
     
     child = child->GetNext();
   }
   
-  m_ThemeColours[node->GetAttribute("name")] = tmpColours;
-  m_ThemeMacros[node->GetAttribute("name")] = tmpMacros;
+  m_ThemeColours[node->GetAttribute("name").ToStdString()] = tmpColours;
+  m_ThemeMacros[node->GetAttribute("name").ToStdString()] = tmpMacros;
 }
 
 void wxExLexers::ParseNodeThemes(const wxXmlNode* node)
@@ -496,7 +499,7 @@ wxExLexers* wxExLexers::Set(wxExLexers* lexers)
 }
 
 bool SingleChoice(wxWindow* parent, const wxString& caption, 
-  bool show_modal, const wxArrayString& s, wxString& selection)
+  bool show_modal, const wxArrayString& s, std::string& selection)
 {
   wxSingleChoiceDialog dlg(parent, _("Input") + ":", caption, s);
 
@@ -515,7 +518,7 @@ bool wxExLexers::ShowDialog(wxExSTC* stc, const wxString& caption, bool show_mod
   for (const auto& it : m_Lexers) s.Add(it.GetDisplayLexer());
   s.Add(wxEmptyString);
 
-  wxString lexer = stc->GetLexer().GetDisplayLexer();
+  auto lexer = stc->GetLexer().GetDisplayLexer();
   if (!SingleChoice(stc, caption, show_modal, s, lexer)) return false;
 
   lexer.empty() ? 
@@ -525,7 +528,8 @@ bool wxExLexers::ShowDialog(wxExSTC* stc, const wxString& caption, bool show_mod
   return true;
 }
 
-bool wxExLexers::ShowThemeDialog(wxWindow* parent, const wxString& caption, bool show_modal)
+bool wxExLexers::ShowThemeDialog(
+  wxWindow* parent, const wxString& caption, bool show_modal)
 { 
   if (!show_modal) return false;
   
@@ -534,7 +538,7 @@ bool wxExLexers::ShowThemeDialog(wxWindow* parent, const wxString& caption, bool
 
   if (!SingleChoice(parent, caption, show_modal, s, m_Theme)) return false;
 
-  wxConfigBase::Get()->Write("theme", m_Theme);  
+  wxConfigBase::Get()->Write("theme", wxString(m_Theme));
 
   return LoadDocument();
 }

@@ -68,7 +68,7 @@ wxExFrameWithHistory* GetFrame()
   return wxExTestGuiApp::GetFrame();
 }
   
-const wxString GetProject()
+const std::string GetProject()
 {
   return "test-rep.prj";
 }

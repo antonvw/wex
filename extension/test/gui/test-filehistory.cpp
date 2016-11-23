@@ -64,8 +64,8 @@ TEST_CASE("wxExFileHistory")
     history.Clear();
     // file should be closed before remove (at least for windows)
     {
-      wxExFile file("test-history.txt", wxFile::write);
-      REQUIRE( file.Write(wxString("test")));
+      wxExFile file(std::string("test-history.txt"), wxFile::write);
+      REQUIRE( file.Write(std::string("test")));
     }
     history.AddFileToHistory("test-history.txt");
     REQUIRE( history.GetHistoryFile(0) == "test-history.txt");

@@ -57,7 +57,7 @@ void wxExListItem::Insert(long index)
     col = m_ListView->FindColumn(_("File Name"));
     wxASSERT(col >= 0);
     filename = (
-      m_FileName.Exists() ?
+      m_FileName.FileExists() || m_FileName.DirExists() ?
         m_FileName.GetFullName():
         m_FileName.GetFullPath());
   }
@@ -129,7 +129,7 @@ void wxExListItem::Update()
     SetItem(_("Type"),
       (wxFileName::DirExists(m_FileName.GetFullPath()) ? // IsDir not ok
          m_FileSpec:
-         m_FileName.GetExt()));
+         m_FileName.GetExtension()));
     SetItem(_("In Folder"), m_FileName.GetPath());
     SetItem(_("Size"),
       (!wxFileName::DirExists(m_FileName.GetFullPath()) ? // IsDir not ok

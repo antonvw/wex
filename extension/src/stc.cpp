@@ -82,9 +82,9 @@ int wxExSTC::m_Zoom = -1;
 
 wxExSTC::wxExSTC(wxWindow *parent, 
   const std::string& value,
-  long win_flags,
+  wxExWindowFlags win_flags,
   const std::string& title,
-  long menu_flags,
+  wxExMenuFlags menu_flags,
   const std::string& command,
   wxWindowID id,
   const wxPoint& pos,
@@ -131,8 +131,8 @@ wxExSTC::wxExSTC(wxWindow* parent,
   int line_number,
   const std::string& match,
   int col_number,
-  long flags,
-  long menu_flags,
+  wxExWindowFlags flags,
+  wxExMenuFlags menu_flags,
   const std::string& command,
   wxWindowID id,
   const wxPoint& pos,
@@ -284,7 +284,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
       menuSelection->Append(ID_EDIT_UPPERCASE, _("&Uppercase\tF11"));
       menuSelection->Append(ID_EDIT_LOWERCASE, _("&Lowercase\tF12"));
 
-      if (wxExGetNumberOfLines(sel) > 1)
+      if (wxExGetNumberOfLines(sel.ToStdString()) > 1)
       {
         wxExMenu* menuSort = new wxExMenu(menu.GetStyle());
         menuSort->Append(wxID_SORT_ASCENDING);
@@ -569,7 +569,7 @@ void wxExSTC::ConfigGet(bool init)
     m_Lexer.Apply();
   }
 
-  if (GetFileName().GetExt().CmpNoCase("log") == 0)
+  if (GetFileName().GetExtension().find("log") == 0)
   {
     SetEdgeMode(wxSTC_EDGE_NONE);
   }
@@ -641,7 +641,7 @@ void wxExSTC::Cut()
   
 bool wxExSTC::FileReadOnlyAttributeChanged()
 {
-  SetReadOnly(!GetFileName().IsFileWritable()); // does not return anything
+  SetReadOnly(GetFileName().IsReadOnly()); // does not return anything
   wxLogStatus(_("Readonly attribute changed"));
 
   return true;
@@ -849,7 +849,7 @@ const std::string wxExSTC::GetEOL() const
 // Cannot be const because of GetSelectedText (not const in 2.9.4).
 const std::string wxExSTC::GetFindString()
 {
-  const wxString selection = GetSelectedText();
+  const std::string selection = GetSelectedText().ToStdString();
 
   if (!selection.empty() && wxExGetNumberOfLines(selection) == 1)
   {
@@ -978,16 +978,20 @@ void wxExSTC::GuessType()
   const int sample_size = (length > 255 ? 255: length);
   
   const wxString text = (!HexMode() ? GetTextRange(0, sample_size): 
-    m_HexMode.GetBuffer().substr(0, sample_size - 1));
+    m_HexMode.GetBuffer().substr(0, sample_size));
+
+  const wxString text2 = (!HexMode() ? GetTextRange(length - sample_size, length): 
+    m_HexMode.GetBuffer().substr(length - sample_size, sample_size));
 
   std::vector<std::string> v;  
   
   // If we have a modeline comment.
   if (
     m_vi.GetIsActive() && 
-    wxExMatch("vi: *(set [a-z0-9:=! ]+)", text.ToStdString(), v) > 0)
+     (wxExMatch("vi: *(set [a-z0-9:=! ]+)", text.ToStdString(), v) > 0 ||
+      wxExMatch("vi: *(set [a-z0-9:=! ]+)", text2.ToStdString(), v) > 0))
   {
-    if (!m_vi.Command(wxString(":" + v[0]).ToStdString()))
+    if (!m_vi.Command(":" + v[0]))
     {
       wxLogStatus("Could not apply vi settings");
     }
@@ -1294,7 +1298,7 @@ void wxExSTC::Initialize(bool file_exists)
          if (
            !match.StartsWith("/") &&
             GetCharAt(GetCurrentPos() - 2) != '/' &&
-           (m_Lexer.GetLanguage() == "xml" || m_Lexer.IsKeyword(match)) &&
+           (m_Lexer.GetLanguage() == "xml" || m_Lexer.IsKeyword(match.ToStdString())) &&
            !SelectionIsRectangle())
          {
            const wxString add("</" + match + ">");
@@ -1474,7 +1478,7 @@ void wxExSTC::Initialize(bool file_exists)
     {
       const wxString text(wxString::Format("hex: %x dec: %d", c, c));
       CallTipShow(pos, text);
-      wxExClipboardAdd(text);
+      wxExClipboardAdd(text.ToStdString());
       return;
     }
 
@@ -1492,7 +1496,7 @@ void wxExSTC::Initialize(bool file_exists)
       else if ( base10_ok &&  base16_ok) 
         text = wxString::Format("hex: %lx dec: %ld", base10_val, base16_val);
       CallTipShow(pos, text);
-      wxExClipboardAdd(text);
+      wxExClipboardAdd(text.ToStdString());
     }}, ID_EDIT_HEX_DEC_CALLTIP);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LowerCase();}, ID_EDIT_LOWERCASE);
@@ -1514,7 +1518,7 @@ void wxExSTC::Initialize(bool file_exists)
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, 
-      std::vector< wxString >{GetFileName().GetFullPath()});},
+      std::vector< std::string >{GetFileName().GetFullPath()});},
       ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -1591,7 +1595,7 @@ bool wxExSTC::LinkOpen(int mode, std::string* filename)
     line_no = (sel.empty() ? -1 : -2);
   }
 
-  const wxString path = m_Link.GetPath(text.ToStdString(), line_no, col_no);
+  const std::string path = m_Link.GetPath(text.ToStdString(), line_no, col_no);
   
   if (path.empty()) return false;
 
@@ -1822,7 +1826,7 @@ void wxExSTC::PrintPreview(wxPreviewFrameModalityKind kind)
   wxPreviewFrame* frame = new wxPreviewFrame(
     preview,
     this,
-    wxExPrintCaption(GetName()));
+    wxExPrintCaption(GetName().ToStdString()));
 
   frame->InitializeWithModality(kind);
   frame->Show();
@@ -1868,7 +1872,7 @@ void wxExSTC::Reload(long flags)
     
   if (
     (m_Flags & STC_WIN_READ_ONLY) || 
-    (GetFileName().Exists() && !GetFileName().IsFileWritable()))
+    (GetFileName().FileExists() && GetFileName().IsReadOnly()))
   {
     SetReadOnly(true);
   }
@@ -1880,7 +1884,7 @@ int wxExSTC::ReplaceAll(
 {
   int selection_from_end = 0;
 
-  if (SelectionIsRectangle() || wxExGetNumberOfLines(GetSelectedText()) > 1)
+  if (SelectionIsRectangle() || wxExGetNumberOfLines(GetSelectedText().ToStdString()) > 1)
   {
     TargetFromSelection();
     selection_from_end = GetLength() - GetTargetEnd();
@@ -1994,7 +1998,7 @@ bool wxExSTC::ReplaceNext(
 }
 
  
-void wxExSTC::ResetMargins(long flags)
+void wxExSTC::ResetMargins(wxExMarginFlags flags)
 {
   if (flags & STC_MARGIN_FOLDING) SetMarginWidth(m_MarginFoldingNumber, 0);
   if (flags & STC_MARGIN_DIVIDER) SetMarginWidth(m_MarginLineNumber, 0);

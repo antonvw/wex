@@ -58,7 +58,7 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
         /// - wxCMD_LINE_PARAM_MULTIPLE 	
         /// - wxCMD_LINE_NEEDS_SEPARATOR 	
         int, 
-        std::function<void(std::vector<wxString> &)>>>> CmdParams;
+        std::function<void(std::vector<std::string> &)>>>> CmdParams;
   
     /// Contructor, 
     /// Default (i.e. if flags are just 0), options are optional.
@@ -169,10 +169,10 @@ class WXDLLIMPEXP_BASE wxExCmdLineParser : public wxCmdLineParser
         {
           if (!it.first.empty())
           {
-            std::vector<wxString> v;
+            std::vector<std::string> v;
             for (size_t i = 0; i < GetParamCount(); i++)
             {
-              v.emplace_back(GetParam(i));
+              v.emplace_back(GetParam(i).ToStdString());
             }
             it.second.second(v);
           }

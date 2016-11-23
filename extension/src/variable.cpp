@@ -170,7 +170,7 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, std::string& expanded) const
     const int startPos = ex->GetSTC()->PositionFromLine(line);
     const int endPos = ex->GetSTC()->GetLineEndPosition(line);
     expanded = ex->GetSTC()->GetLexer().CommentComplete(
-      ex->GetSTC()->GetTextRange(startPos, endPos));
+      ex->GetSTC()->GetTextRange(startPos, endPos).ToStdString());
   }
   else if (m_Name == "Ce")
   {
@@ -178,17 +178,15 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, std::string& expanded) const
   }
   else if (m_Name == "Cl")
   {
-    expanded = ex->GetSTC()->GetLexer().MakeComment(wxEmptyString, false);
+    expanded = ex->GetSTC()->GetLexer().MakeComment(std::string(), false);
   }
   else if (m_Name == "Created")
   {
-    wxFileName file(ex->GetSTC()->GetFileName());
-    wxDateTime dtCreate;
+    wxExFileName file(ex->GetSTC()->GetFileName());
     
-    if (ex->GetSTC()->GetFileName().GetStat().IsOk() &&
-        file.GetTimes (nullptr, nullptr, &dtCreate))
+    if (ex->GetSTC()->GetFileName().GetStat().IsOk())
     {
-      expanded = dtCreate.FormatISODate();
+      expanded = wxDateTime(file.GetStat().st_ctime).FormatISODate();
     }
     else
     {

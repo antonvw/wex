@@ -50,9 +50,10 @@ const wxString BuildArg(const wxString& file)
     file + " ";
 }
 
-const wxString GetTestDir()
+const std::string GetTestDir()
 {
-  return wxExTestApp::GetTestFileName().GetFullPath() + wxFileName::GetPathSeparator();
+  return wxExTestApp::GetTestFileName().GetFullPath().ToStdString() + 
+    (char)wxFileName::GetPathSeparator();
 }
   
 const wxExFileName GetTestFile()
@@ -60,11 +61,11 @@ const wxExFileName GetTestFile()
   return GetTestDir() + "test.h";
 }
   
-void SetEnvironment(const wxString& dir)
+void SetEnvironment(const std::string& dir)
 {
   if (!wxDirExists(dir))
   {
-    (void)system("mkdir -p " + dir);
+    (void)system("mkdir -p " + wxString(dir));
   }
 
 #ifdef __UNIX__
@@ -220,7 +221,7 @@ void wxExTestApp::SetSession(Catch::Session* session)
   m_Session = session;
 }
   
-const wxString wxExTestApp::SetWorkingDirectory()
+const std::string wxExTestApp::SetWorkingDirectory()
 {
   const wxString old = wxGetCwd();
 
@@ -255,7 +256,7 @@ const wxString wxExTestApp::SetWorkingDirectory()
     exit(1);
   }
   
-  return old;
+  return old.ToStdString();
 }
 
 int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)

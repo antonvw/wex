@@ -10,10 +10,12 @@
 #if wxUSE_GUI
 
 class wxExEx;
+class wxExAddressRange;
 
 /// Offers an address class to be used by vi address ranges.
-class WXDLLIMPEXP_BASE wxExAddress : public wxString
+class WXDLLIMPEXP_BASE wxExAddress
 {
+  friend wxExAddressRange;
 public:
   /// Constructor for an address.
   wxExAddress(
@@ -27,18 +29,21 @@ public:
     /// - . : current line 
     /// - or a combination of these, using + or -
     /// - or empty, call SetLine afterwards
-    const wxString& address = "")
-    : wxString(address)
+    const std::string& address = std::string())
+    : m_Address(address)
     , m_Ex(ex) {;};
   
   /// Prints this address, with context.
-  bool AdjustWindow(const wxString& text) const;
+  bool AdjustWindow(const std::string& text) const;
   
   /// Appends text to this address.
-  bool Append(const wxString& text) const;
+  bool Append(const std::string& text) const;
   
   /// Returns false if flags are unsupported.
-  bool Flags(const wxString& flags) const;
+  bool Flags(const std::string& flags) const;
+  
+  /// Returns address as specified during construction.
+  const auto & Get() const {return m_Address;};
   
   /// If the line number was set using SetLine, it
   /// returns this line number, otherwise
@@ -49,28 +54,30 @@ public:
   int GetLine() const;
   
   /// Inserts text at this address.
-  bool Insert(const wxString& text) const;
+  bool Insert(const std::string& text) const;
   
   /// Marks this address.
-  bool MarkerAdd(const wxUniChar& marker) const;
+  bool MarkerAdd(char marker) const;
   
   /// Deletes marker (if this address concerns a marker).
   bool MarkerDelete() const;
   
   /// Append text from the specified register at this address, 
   /// default uses yank register.
-  bool Put(const char name = '0') const;
+  bool Put(char name = '0') const;
   
   /// Read file at this address.
-  bool Read(const wxString& arg) const;
-  
-  /// Sets (vi) line number.
-  void SetLine(int line);
+  bool Read(const std::string& arg) const;
   
   /// Shows this address in the ex bar.
   bool Show() const;
 private:
+  /// Sets (vi) line number.
+  void SetLine(int line);
+  
   wxExEx* m_Ex;
   int m_Line = 0;
+  
+  std::string m_Address;
 };
 #endif // wxUSE_GUI

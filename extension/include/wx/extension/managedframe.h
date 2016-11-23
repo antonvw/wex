@@ -139,7 +139,7 @@ public:
   virtual bool SaveCurrentPage(const std::string& key) {return false;};
   
   /// Allows derived class to update file history.
-  virtual void SetRecentFile(const wxString& file) override {
+  virtual void SetRecentFile(const std::string& file) override {
     m_FileHistory.AddFileToHistory(file);};
   
   /// Shows text in ex bar.
