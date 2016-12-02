@@ -97,7 +97,6 @@ wxExProcess::wxExProcess()
   : m_Command(wxExConfigFirstOf(_("Process")))
   , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
 {
-  wxASSERT(m_Frame != nullptr);
 }
 
 wxExProcess::~wxExProcess()
@@ -412,7 +411,7 @@ void wxExProcessImp::Read()
         text.substr(m_StdIn.length()):
         text);
     
-    if (m_Debug)
+    if (m_Debug && m_Frame != nullptr)
     {
       m_Frame->GetDebug()->ProcessStdOut(text);
     }
@@ -442,7 +441,7 @@ bool wxExProcessImp::Write(const std::string& text)
   {
     HandleCommand(text);
 
-    if (m_Debug)
+    if (m_Debug && m_Frame != nullptr)
     {
       m_Frame->GetDebug()->ProcessStdIn(text);
     }

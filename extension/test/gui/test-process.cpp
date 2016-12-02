@@ -19,17 +19,6 @@ TEST_CASE("wxExProcess")
   // Test commands entered in shell.
   const wxString cwd = wxGetCwd();
   
-#ifdef __UNIX__
-#if wxCHECK_VERSION(3,1,0)
-  SECTION("Async")
-  {
-    wxExProcess process;
-    REQUIRE( process.Execute("pwd"));
-    REQUIRE( process.GetStdOut().empty());
-  }
-#endif
-#endif
-  
   wxExProcess* process = new wxExProcess;
   
   REQUIRE(!process->GetError());
@@ -103,5 +92,5 @@ TEST_CASE("wxExProcess")
   
   wxExProcess::KillAll();
   
-  wxSleep(5);
+  wxSleep(10);
 }

@@ -20,7 +20,7 @@
 TEST_CASE("wxExSTC", "[stc][vi]")
 {
 #if wxCHECK_VERSION(3,1,0)
-  wxExSTC::ConfigDialog(GetFrame(), "test stc", wxExSTC::STC_CONFIG_MODELESS);
+  wxExSTC::ConfigDialog(GetFrame(), "test stc", STC_CONFIG_MODELESS);
 #endif
   
   wxExSTC* stc = GetSTC();

@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 class wxExManagedFrame;
 class wxExProcessImp;
 class wxExShell;
