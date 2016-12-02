@@ -33,7 +33,7 @@ public:
   void OpenFile(wxExFrame* frame) const
   {
     frame->OpenFile(wxExFileName(m_File), 
-      m_LineNumber, std::string(), 0, 0, m_Pattern);
+      m_LineNumber, std::string(), 0, STC_WIN_DEFAULT, m_Pattern);
   }
 private:
   const std::string m_File;

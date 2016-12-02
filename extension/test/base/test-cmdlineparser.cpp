@@ -11,7 +11,6 @@
 #endif
 #include <wx/numformatter.h>
 #include <wx/extension/cmdline.h>
-#include "../catch.hpp"
 #include "../test.h"
 
 TEST_CASE("wxExCmdLineParser")
@@ -24,7 +23,7 @@ TEST_CASE("wxExCmdLineParser")
   wxString p,q,r;
   const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
   
-  const wxString str(ds == '.' ?
+  const std::string str(ds == '.' ?
     "-a 10 -b 10.1 -c test -d 01-jan-2000 -s -t- -u --version one two three":
     "-a 10 -b 10,1 -c test -d 01-jan-2000 -s -t- -u --version one two three");
   

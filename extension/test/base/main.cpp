@@ -5,7 +5,6 @@
 // Copyright: (c) 2016
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../catch.hpp"
 #include "../test.h"
 
 IMPLEMENT_APP_NO_MAIN(wxExTestApp);

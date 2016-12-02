@@ -250,12 +250,12 @@ wxExSTC* wxExRepSampleFrame::OpenFile(const wxExFileName& file,
   int line_number,
   const std::string& match,
   int col_number,
-  long flags,
+  wxExSTCWindowFlags flags,
   const std::string& command)
 {
   // We cannot use the wxExFrameWithHistory::OpenFile, as that uses GetSTC.
   // Prevent recursion.
-  flags = 0;
+  flags = STC_WIN_DEFAULT;
   
   m_STC->GetLexer().Reset();
   m_STC->Open(file, line_number, match, col_number, flags, command);

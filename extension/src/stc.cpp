@@ -82,9 +82,9 @@ int wxExSTC::m_Zoom = -1;
 
 wxExSTC::wxExSTC(wxWindow *parent, 
   const std::string& value,
-  wxExWindowFlags win_flags,
+  wxExSTCWindowFlags win_flags,
   const std::string& title,
-  wxExMenuFlags menu_flags,
+  wxExSTCMenuFlags menu_flags,
   const std::string& command,
   wxWindowID id,
   const wxPoint& pos,
@@ -131,8 +131,8 @@ wxExSTC::wxExSTC(wxWindow* parent,
   int line_number,
   const std::string& match,
   int col_number,
-  wxExWindowFlags flags,
-  wxExMenuFlags menu_flags,
+  wxExSTCWindowFlags flags,
+  wxExSTCMenuFlags menu_flags,
   const std::string& command,
   wxWindowID id,
   const wxPoint& pos,
@@ -1503,7 +1503,7 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {UpperCase();}, ID_EDIT_UPPERCASE);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FoldAll();}, ID_EDIT_FOLD_ALL);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);}, ID_EDIT_UNFOLD_ALL);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Reload(m_Flags ^ STC_WIN_HEX);}, ID_EDIT_HEX);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Reload(static_cast<wxExSTCWindowFlags>(m_Flags ^ STC_WIN_HEX));}, ID_EDIT_HEX);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_Zoom);}, ID_EDIT_ZOOM_IN);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_Zoom);}, ID_EDIT_ZOOM_OUT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(true);}, ID_EDIT_FIND_NEXT);
@@ -1712,7 +1712,7 @@ bool wxExSTC::Open(
   int line_number,
   const std::string& match,
   int col_number,
-  long flags,
+  wxExSTCWindowFlags flags,
   const std::string& command)
 {
   if (GetFileName() == filename && line_number > 0)
@@ -1864,7 +1864,7 @@ void wxExSTC::PropertiesMessage(long flags)
   }
 }
 
-void wxExSTC::Reload(long flags)
+void wxExSTC::Reload(wxExSTCWindowFlags flags)
 {
   m_HexMode.Set((flags & STC_WIN_HEX) > 0);
   
@@ -1998,7 +1998,7 @@ bool wxExSTC::ReplaceNext(
 }
 
  
-void wxExSTC::ResetMargins(wxExMarginFlags flags)
+void wxExSTC::ResetMargins(wxExSTCMarginFlags flags)
 {
   if (flags & STC_MARGIN_FOLDING) SetMarginWidth(m_MarginFoldingNumber, 0);
   if (flags & STC_MARGIN_DIVIDER) SetMarginWidth(m_MarginLineNumber, 0);

@@ -5,6 +5,7 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <vector>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -21,83 +22,63 @@
 #include <wx/extension/shell.h>
 #include <wx/extension/util.h> // for wxExConfigFirstOf
 
-#define DEBUG(SCOPE)                                       \
-{                                                          \
-  wxExManagedFrame* frame = dynamic_cast<                  \
-    wxExManagedFrame*>(wxTheApp->GetTopWindow());          \
-  if (frame != nullptr &&                                  \
-      frame->GetDebug() != nullptr &&                      \
-      frame->GetDebug()->GetProcess() == this)             \
-  {                                                        \
-    frame->GetDebug()->Process##SCOPE(text);               \
-  }                                                        \
-};
-
-#define GET_STREAM(SCOPE)                                    \
-{                                                            \
-  if (m_Process->Is##SCOPE##Available())                     \
-  {                                                          \
-    wxTextInputStream tis(*m_Process->Get##SCOPE##Stream()); \
-                                                             \
-    while (m_Process->Is##SCOPE##Available())                \
-    {                                                        \
-      const char c = tis.GetChar();                          \
-                                                             \
-      if (c != 0)                                            \
-      {                                                      \
-        text += c;                                           \
-      }                                                      \
-    }                                                        \
-  }                                                          \
-};                                                           \
+#define GET_STREAM(SCOPE)                         \
+{                                                 \
+  if (Is##SCOPE##Available())                     \
+  {                                               \
+    wxTextInputStream tis(*Get##SCOPE##Stream()); \
+                                                  \
+    while (Is##SCOPE##Available())                \
+    {                                             \
+      const char c = tis.GetChar();               \
+                                                  \
+      if (c != 0)                                 \
+      {                                           \
+        text += c;                                \
+      }                                           \
+    }                                             \
+  }                                               \
+};                                                \
 
 class wxExProcessImp : public wxProcess
 {
 public:
-  wxExProcessImp() : 
-    wxProcess(wxPROCESS_REDIRECT) {;};
-protected:
-  virtual void OnTerminate(int pid, int status) override {;};
+  wxExProcessImp(wxExManagedFrame* frame, wxExShell* shell, bool debug)
+    : wxProcess(wxPROCESS_REDIRECT) 
+    , m_Debug(debug)
+    , m_Frame(frame)
+    , m_Shell(shell)
+    , m_Timer(std::make_unique<wxTimer>(this)) {
+    Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {Read();});};
+  virtual ~wxExProcessImp() {;};
+
+  bool Execute(const std::string& command, const std::string& path);
+  bool Kill();
+  static int KillAll();
+  void Read();
+  bool Write(const std::string& text);
+private:
+  void HandleCommand(const wxString& command);
+  virtual void OnTerminate(int pid, int status) override {
+    const auto it = find (m_pids.begin(), m_pids.end(), pid);
+    if (it != m_pids.end())
+    {
+      m_pids.erase(it);
+    }
+    m_Timer->Stop();
+    Read();};
+  
+  const bool m_Debug;
+  std::string m_Command, m_StdIn;
+  wxExManagedFrame* m_Frame;
+  wxExShell* m_Shell;
+  std::unique_ptr<wxTimer> m_Timer;
+  wxCriticalSection m_Critical;
+  static std::vector<long> m_pids;
 };
 
-void HandleCommand(const wxString& command)
+bool ShowProcess(wxExManagedFrame* frame, bool show)
 {
-  wxString rest;
-  
-  if (
-         command.StartsWith("cd", &rest)
-#ifdef __WXMSW__
-      || command.StartsWith("chdir", &rest)
-#endif        
-     )
-  {
-    wxLogNull logNo;
-    rest.Trim(false);
-    rest.Trim(true);
-    
-    if (rest.empty() || rest == "~")
-    {
-#ifdef __WXMSW__
-#else        
-      wxSetWorkingDirectory(wxGetHomeDir());
-#endif        
-    }
-    else
-    {
-      wxSetWorkingDirectory(rest);
-    }
-  }
-}
-
-bool ShowProcess(bool show, wxTimer* timer = nullptr)
-{
-  if (!show && timer != nullptr)
-  {
-    timer->Stop();
-  }
-
-  wxExManagedFrame* frame = (dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()));
-
   if (frame != nullptr)
   {
     frame->ShowPane("PROCESS", show);
@@ -107,70 +88,38 @@ bool ShowProcess(bool show, wxTimer* timer = nullptr)
   return false;  
 }
       
+std::vector<long> wxExProcessImp::m_pids;
+
 wxExShell* wxExProcess::m_Shell = nullptr;
 wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 
-wxExProcess::wxExProcess()
-  : m_Process(new wxExProcessImp())
-  , m_Timer(std::make_unique<wxTimer>(m_Process))
-  , m_Error(false)
-  , m_Command(wxExConfigFirstOf(_("Process")))
+wxExProcess::wxExProcess() 
+  : m_Command(wxExConfigFirstOf(_("Process")))
+  , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
 {
-  m_Process->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {CheckInput();});
+  wxASSERT(m_Frame != nullptr);
 }
 
 wxExProcess::~wxExProcess()
 {
-  delete m_Process;
 }
   
 wxExProcess::wxExProcess(const wxExProcess& process)
 {
   *this = process;
 }
-
+  
 wxExProcess& wxExProcess::operator=(const wxExProcess& p)
 {
   if (this != &p)
   {
-    m_Process = new wxExProcessImp();
-    m_Timer = std::make_unique<wxTimer>(m_Process);
     m_Command = p.m_Command;
     m_Error = p.m_Error;
-    m_StdIn = p.m_StdIn;
     m_StdErr = p.m_StdErr;
     m_StdOut = p.m_StdOut;
   }
 
   return *this;
-}
-
-void wxExProcess::CheckInput()
-{
-  if (m_Shell == nullptr) return;
-  
-  wxCriticalSectionLocker lock(m_Critical);
-  
-  std::string text;
-  GET_STREAM(Input);
-  GET_STREAM(Error);
-  
-  if (!text.empty())
-  {
-    m_Shell->AppendText(
-      // prevent echo of last input
-      !m_StdIn.empty() && text.find(m_StdIn) == 0 ?
-        text.substr(m_StdIn.length()):
-        text);
-    
-    DEBUG(StdOut);
-  }
-    
-  if (!m_StdIn.empty())
-  {
-    m_StdIn.clear();
-    m_Shell->Prompt(std::string(), false);
-  }
 }
 
 int wxExProcess::ConfigDialog(
@@ -200,23 +149,18 @@ int wxExProcess::ConfigDialog(
 }
 
 bool wxExProcess::Execute(
-  const std::string& command_to_execute,
-  int flags,
+  const std::string& command,
+  bool wait,
   const std::string& wd)
 {
   m_Error = false;
     
-  struct wxExecuteEnv env;
+  std::string cwd(wd);
     
-  if (command_to_execute.empty())
+  if (command.empty())
   {
     if (wxExConfigFirstOf(_("Process")).empty())
     {
-      if (!wd.empty())
-      {
-        wxLogStatus("Ignored specified working directory");
-      }
-      
       if (ConfigDialog(wxTheApp->GetTopWindow()) == wxID_CANCEL)
       {
         return false;
@@ -224,17 +168,14 @@ bool wxExProcess::Execute(
     }
     
     m_Command = wxExConfigFirstOf(_("Process"));
-    env.cwd = wxExConfigFirstOf(m_WorkingDirKey);
+    cwd = wxExConfigFirstOf(m_WorkingDirKey);
   }
   else
   {
-    m_Command = command_to_execute;
-    env.cwd = wd;
+    m_Command = command;
   }
-  
-  const bool sync = (flags & wxEXEC_SYNC);
-  
-  if (!sync)
+
+  if (!wait)
   { 
     // We need a shell for output.
     if (m_Shell == nullptr) return false;
@@ -250,22 +191,11 @@ bool wxExProcess::Execute(
       m_Command.find("tcsh") == 0 ||
       m_Command.find("sh") == 0 ? ">" : "");
     
-    // For asynchronous execution the return value is the process id and zero 
-    // value indicates that the command could not be executed.
-    if (wxExecute(m_Command, flags, m_Process, &env) > 0)
+    m_Process = std::make_unique<wxExProcessImp>(m_Frame, m_Shell, command == "gdb");
+
+    if (!m_Process->Execute(m_Command, wd))
     {
-      if (!env.cwd.empty())
-      {
-        wxFileName fn(env.cwd);
-        fn.Normalize();
-        wxSetWorkingDirectory(fn.GetFullPath());
-      }
-      
-      m_Timer->Start(100); // milliseconds
-      m_Shell->SetFocus();
-    }
-    else
-    {
+      m_Process.release();
       m_Error = true;
     }
   }
@@ -273,15 +203,10 @@ bool wxExProcess::Execute(
   {
     wxArrayString output;
     wxArrayString errors;
+    struct wxExecuteEnv env;
+    env.cwd = wd;
     
-    // Call wxExecute to execute the command and
-    // collect the output and the errors.
-    if (wxExecute(
-      m_Command,
-      output,
-      errors,
-      flags,
-      &env) == -1)
+    if (wxExecute(m_Command, output, errors, wxEXEC_SYNC, &env) == -1)
     {
       m_StdErr.clear();
       m_StdOut.clear();
@@ -293,7 +218,7 @@ bool wxExProcess::Execute(
       m_StdOut = wxJoin(output, '\n', '\n');
       m_StdErr = wxJoin(errors, '\n', '\n');
     }
-    
+
     if (m_Shell != nullptr)
     {
       m_Shell->EnableShell(false);
@@ -305,37 +230,27 @@ bool wxExProcess::Execute(
 
 bool wxExProcess::IsRunning() const
 {
-  return 
-    // If we have not yet run Execute, process is not running
-    m_Shell != nullptr &&
-    m_Process->GetPid() > 0 && wxProcess::Exists(m_Process->GetPid());
+  return m_Process != nullptr && wxProcess::Exists(m_Process->GetPid());
 }
 
 bool wxExProcess::Kill()
 {
-  if (!IsRunning())
-  {
-    return false;
-  }
+  bool killed = false;
 
-  wxSignal sig = wxSIGKILL;
-  
-  const wxKillError result = m_Process->Kill(m_Process->GetPid(), sig);
-  
-  m_Process->DeletePendingEvents();
-  ShowProcess(false, m_Timer.get());
-  
-  switch (result)
+  if (m_Process != nullptr)
   {
-    case wxKILL_OK: break;
-    case wxKILL_BAD_SIGNAL:    wxLogStatus("no such signal"); break;
-    case wxKILL_ACCESS_DENIED: wxLogStatus("permission denied"); break;
-    case wxKILL_NO_PROCESS:    wxLogStatus("no such process"); break;
-    case wxKILL_ERROR:         wxLogStatus("another, unspecified error"); break;
-    default: wxFAIL;
+    killed = m_Process->Kill();
+    m_Process.release();
   }
   
-  return result == wxKILL_OK;
+  ShowProcess(m_Frame, false);
+
+  return killed;
+}
+
+int wxExProcess::KillAll()
+{
+  return wxExProcessImp::KillAll();
 }
 
 void wxExProcess::PrepareOutput(wxWindow* parent)
@@ -355,7 +270,7 @@ void wxExProcess::ShowOutput(const wxString& caption) const
 {
   if (!m_Error)
   {
-    if (m_Shell != nullptr && ShowProcess(true))
+    if (m_Shell != nullptr && ShowProcess(m_Frame, true))
     {
       m_Shell->AppendText(m_StdOut);
     }
@@ -381,6 +296,137 @@ bool wxExProcess::Write(const std::string& text)
     return false;
   }
   
+  m_Process->Write(text);
+  
+  if (!IsRunning())
+  {
+    ShowProcess(m_Frame, false);
+  }
+
+  return true;
+}
+
+// Implementation.
+
+bool wxExProcessImp::Execute(
+  const std::string& command, const std::string& path)
+{
+  struct wxExecuteEnv env;
+  env.cwd = path;
+  m_Command = command;
+  
+  if (wxExecute(command, wxEXEC_ASYNC, this, &env) <= 0) return false;
+  
+  m_pids.push_back(GetPid());
+
+  if (!env.cwd.empty())
+  {
+    wxFileName fn(env.cwd);
+    fn.Normalize();
+    wxSetWorkingDirectory(fn.GetFullPath());
+  }
+  
+  ShowProcess(m_Frame, true);
+  m_Timer->Start(100); // milliseconds
+  m_Shell->SetFocus();
+  
+  return true;
+}
+
+void wxExProcessImp::HandleCommand(const wxString& command)
+{
+  wxString rest;
+  
+  if (
+         command.StartsWith("cd", &rest)
+#ifdef __WXMSW__
+      || command.StartsWith("chdir", &rest)
+#endif        
+     )
+  {
+    wxLogNull logNo;
+    rest.Trim(false);
+    rest.Trim(true);
+    
+    if (rest.empty() || rest == "~")
+    {
+#ifdef __WXMSW__
+#else        
+      wxSetWorkingDirectory(wxGetHomeDir());
+#endif        
+    }
+    else
+    {
+      wxSetWorkingDirectory(rest);
+    }
+  }
+}
+
+bool wxExProcessImp::Kill()
+{
+  long pid = GetPid();
+
+  if (wxProcess::Kill(pid) != wxKILL_OK)
+  {
+    return false;
+  }
+  
+  const auto it = find (m_pids.begin(), m_pids.end(), pid);
+
+  if (it != m_pids.end())
+  {
+    m_pids.erase(it);
+  }
+
+  return true;
+}
+
+int wxExProcessImp::KillAll()
+{
+  int killed = 0;
+  
+  for (auto pid : m_pids)
+  {
+    if (wxProcess::Kill(pid, wxSIGKILL) == wxKILL_OK)
+    {
+      killed++;
+    }
+  }
+  
+  return killed;
+}
+
+void wxExProcessImp::Read()
+{
+  wxCriticalSectionLocker lock(m_Critical);
+  
+  std::string text;
+  GET_STREAM(Input);
+  GET_STREAM(Error);
+  
+  if (!text.empty())
+  {
+    m_Shell->AppendText(
+      // prevent echo of last input
+      !m_StdIn.empty() && text.find(m_StdIn) == 0 ?
+        text.substr(m_StdIn.length()):
+        text);
+    
+    if (m_Debug)
+    {
+      m_Frame->GetDebug()->ProcessStdOut(text);
+    }
+  }
+    
+  if (!m_StdIn.empty())
+  {
+    m_StdIn.clear();
+    m_Shell->Prompt(std::string(), false);
+  }
+}
+
+bool wxExProcessImp::Write(const std::string& text)
+{
   m_Timer->Stop();
   
   if (m_Command.find("cmd") == 0 ||
@@ -389,24 +435,24 @@ bool wxExProcess::Write(const std::string& text)
     m_Shell->DocumentEnd();
   }
     
-  // Send text to process and restart timer.
-  wxOutputStream* os = m_Process->GetOutputStream();
+  // Write text to process and restart timer.
+  wxOutputStream* os = GetOutputStream();
 
   if (os != nullptr)
   {
     HandleCommand(text);
-    DEBUG(StdIn);
+
+    if (m_Debug)
+    {
+      m_Frame->GetDebug()->ProcessStdIn(text);
+    }
+
     const std::string el = (text.size() == 1 && text[0] == 3 ? std::string(): std::string("\n"));
     wxTextOutputStream(*os).WriteString(text + el);
     m_StdIn = text;
     wxMilliSleep(10);
-    CheckInput();
+    Read();
     m_Timer->Start();
-  }
-
-  if (!IsRunning())
-  {
-    ShowProcess(false, m_Timer.get());
   }
 
   return true;

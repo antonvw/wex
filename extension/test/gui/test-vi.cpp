@@ -162,7 +162,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   // Test insert on hexmode document.
   // TODO: add real chars and test.
   stc->SetReadOnly(false);
-  stc->Reload(wxExSTC::STC_WIN_HEX);
+  stc->Reload(STC_WIN_HEX);
   REQUIRE( stc->HexMode());
   REQUIRE(!stc->GetModify());
   REQUIRE( vi->Command("a") );
@@ -525,8 +525,7 @@ TEST_CASE("wxExVi", "[stc][vi]")
   stc->SetText("XXXXX");
   REQUIRE( vi->Command("dd"));
   REQUIRE( vi->Command("i"));
-  REQUIRE(!vi->Command(ctrl_r));
-  REQUIRE( vi->Command("1"));
+  REQUIRE( vi->Command(ctrl_r + "1"));
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   REQUIRE( stc->GetText() == "XXXXX");
   

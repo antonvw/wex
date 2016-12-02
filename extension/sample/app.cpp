@@ -299,8 +299,7 @@ wxExSampleFrame::wxExSampleFrame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExSTC::ConfigDialog(this,
       "Editor Options",
-      wxExSTC::STC_CONFIG_MODELESS | 
-      wxExSTC::STC_CONFIG_WITH_APPLY);}, ID_DLG_STC_CONFIG);
+      STC_CONFIG_MODELESS | STC_CONFIG_WITH_APPLY);}, ID_DLG_STC_CONFIG);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     std::string text;

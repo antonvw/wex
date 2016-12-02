@@ -106,10 +106,10 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
   REQUIRE( wxExAddressRange(ex, "%").Escape("uniq"));
   REQUIRE( stc->GetLineCount() == 5);
   REQUIRE( wxExAddressRange(ex).Escape("ls -l"));
+  REQUIRE( wxExAddressRange::GetProcess() != nullptr);
   REQUIRE( wxExAddressRange(ex).Escape("ls `pwd`"));
   REQUIRE( wxExAddressRange(ex).Escape("ls \x12*"));
   REQUIRE( wxExAddressRange(ex).Escape("ls  `echo \x12*`"));
-  REQUIRE( wxExAddressRange::GetProcess() != nullptr);
 #endif
   
   // Test Global and Global inverse.
@@ -161,8 +161,7 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
   // Test Substitute.
   stc->SetText(contents);
   stc->GotoLine(1);
-  REQUIRE( wxExAddressRange(ex, "%").
-    Substitute("/tiger//"));
+  REQUIRE( wxExAddressRange(ex, "%").Substitute("/tiger//"));
   REQUIRE(!stc->GetText().Contains("tiger"));
   
   stc->SetText(contents);
@@ -203,16 +202,16 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
   REQUIRE( stc->GetText().Contains("char  present"));
   
   stc->SetText("special char ' present");
-  REQUIRE( wxExAddressRange(ex, "%").Substitute("/'///"));
+  REQUIRE( wxExAddressRange(ex, "%").Substitute("/'//"));
   REQUIRE( stc->GetText().Contains("char  present"));
   
   // Test Substitute and flags.
   REQUIRE(!wxExAddressRange(ex, "1").Substitute("//y"));
   REQUIRE(!wxExAddressRange(ex, "0").Substitute("/x/y"));
-  REQUIRE(!wxExAddressRange(ex, "2").Substitute("/x/y/f"));
+  REQUIRE( wxExAddressRange(ex, "2").Substitute("/x/y/f"));
   REQUIRE( wxExAddressRange(ex, "1,2").Substitute("/x/y"));
   REQUIRE( wxExAddressRange(ex, "1,2").Substitute("/x/y/i"));
-  REQUIRE(!wxExAddressRange(ex, "1,2").Substitute("/x/y/f"));
+  REQUIRE( wxExAddressRange(ex, "1,2").Substitute("/x/y/f"));
   REQUIRE( wxExAddressRange(ex, "1,2").Substitute("/x/y/g"));
   REQUIRE( wxExAddressRange(ex, "1,2").Substitute("g", '&'));
   REQUIRE( wxExAddressRange(ex, "1,2").Substitute("g", '~'));

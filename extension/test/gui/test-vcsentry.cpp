@@ -57,6 +57,6 @@ TEST_CASE("wxExVCSEntry", "[vcs]")
   git.ShowOutput();
   
   wxExVCSEntry* git_async = new wxExVCSEntry("git", std::string(), {wxExVCSCommand("status")});
-  REQUIRE( git_async->Execute(std::string(), wxExLexer(), wxEXEC_ASYNC));
+  REQUIRE( git_async->Execute(std::string(), wxExLexer(), false));
   git_async->ShowOutput();
 }

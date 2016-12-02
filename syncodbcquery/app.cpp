@@ -238,7 +238,7 @@ Frame::Frame()
       wxFD_SAVE);
     if (dlg.ShowModal() == wxID_OK)
     {
-       m_Query->GetFile().FileSave(dlg.GetPath());
+       m_Query->GetFile().FileSave(dlg.GetPath().ToStdString());
     }}, wxID_SAVEAS);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -279,7 +279,7 @@ Frame::Frame()
         {
           m_Results->EndBatch();
         }
-        m_Shell->AppendText(_("\nerror: ") + wxExQuoted(p.msg));
+        m_Shell->AppendText(_("\nerror: ") + wxString(wxExQuoted(p.msg)));
       }
     }
     else
@@ -352,7 +352,7 @@ wxExSTC* Frame::OpenFile(
   int line_number,
   const std::string& match,
   int col_number,
-  long flags,
+  wxExSTCWindowFlags flags,
   const std::string& command)
 {
   if (m_Query->Open(

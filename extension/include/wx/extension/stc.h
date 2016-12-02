@@ -13,6 +13,7 @@
 #include <wx/extension/link.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/stcfile.h>
+#include <wx/extension/stc-enums.h>
 #include <wx/extension/vi.h>
 
 #if wxUSE_GUI
@@ -32,50 +33,13 @@ class wxExMenu;
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
 public:
-  /// Config dialog flags.
-  enum wxExConfigFlags
-  {
-    STC_CONFIG_MODAL      = 0,      ///< modal dialog with all options
-    STC_CONFIG_MODELESS   = 1 << 0, ///< use as modeless dialog
-    STC_CONFIG_WITH_APPLY = 1 << 1, ///< add the apply button
-  };
-
-  /// Margin flags.
-  enum wxExMarginFlags
-  {
-    STC_MARGIN_NONE       = 0,      ///< no margins
-    STC_MARGIN_DIVIDER    = 1 << 1, ///< divider margin
-    STC_MARGIN_FOLDING    = 1 << 2, ///< folding margin
-    STC_MARGIN_LINENUMBER = 1 << 3, ///< line number margin
-    STC_MARGIN_ALL        = 0xFFFF, ///< all margins
-  };
-
-  /// Menu and tooltip flags.
-  enum wxExMenuFlags
-  {
-    STC_MENU_NONE      = 0,      ///< no context menu
-    STC_MENU_CONTEXT   = 1 << 1, ///< context menu
-    STC_MENU_OPEN_LINK = 1 << 2, ///< for adding link open menu
-    STC_MENU_VCS       = 1 << 3, ///< for adding vcs menu
-    STC_MENU_DEBUG     = 1 << 4, ///< for adding debug menu
-  };
-
-  /// Window flags.
-  enum wxExWindowFlags
-  {
-    STC_WIN_DEFAULT      = 0,      ///< default, not readonly, not hex mode
-    STC_WIN_READ_ONLY    = 1 << 1, ///< window is readonly, 
-                                   ///<   overrides real mode from disk
-    STC_WIN_HEX          = 1 << 2, ///< window in hex mode
-    STC_WIN_NO_INDICATOR = 1 << 3, ///< a change indicator is not used
-  };
-
   /// Constructor. The title is used for name.
   wxExSTC(wxWindow* parent, 
     const std::string& value = std::string(),
-    wxExWindowFlags win_flags = STC_WIN_DEFAULT,
+    wxExSTCWindowFlags win_flags = STC_WIN_DEFAULT,
     const std::string& title = std::string(),
-    wxExMenuFlags menu_flags = static_cast<wxExMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS),
+    wxExSTCMenuFlags menu_flags = static_cast<wxExSTCMenuFlags>(
+      STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS),
     const std::string& command = std::string(),
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -89,8 +53,9 @@ public:
     int line_number = 0,
     const std::string& match = std::string(),
     int col_number = 0,
-    wxExWindowFlags win_flags = STC_WIN_DEFAULT,
-    wxExMenuFlags menu_flags = static_cast<wxExMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS),
+    wxExSTCWindowFlags win_flags = STC_WIN_DEFAULT,
+    wxExSTCMenuFlags menu_flags = static_cast<wxExSTCMenuFlags>(
+      STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS),
     const std::string& command = std::string(),
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -181,7 +146,7 @@ public:
   const std::string GetFindString();
 
   /// Returns current flags.
-  long GetFlags() const {return m_Flags;};
+  auto GetFlags() const {return m_Flags;};
   
   /// Returns hex mode component.
   const auto & GetHexMode() const {return m_HexMode;};
@@ -239,7 +204,7 @@ public:
     /// goes to column if col_number > 0
     int col_number = 0,
     /// flags
-    long flags = 0,
+    wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
     /// vi command to execute
     const std::string& command = std::string());
 
@@ -269,10 +234,10 @@ public:
   
   /// Shows properties on the statusbar.
   /// Flags used are from wxExStatusFlags.
-  virtual void PropertiesMessage(long flags = 0);
+  void PropertiesMessage(long flags = 0);
   
   /// Reloads current document using specified flags.
-  void Reload(long flags = STC_WIN_DEFAULT);
+  void Reload(wxExSTCWindowFlags flags = STC_WIN_DEFAULT);
 
   /// Replaces all text.
   /// It there is a selection, it replaces in the selection, otherwise
@@ -307,7 +272,7 @@ public:
   
   /// Reset all margins.
   /// Default also resets the divider margin.
-  void ResetMargins(wxExMarginFlags flags = STC_MARGIN_ALL);
+  void ResetMargins(wxExSTCMarginFlags flags = STC_MARGIN_ALL);
 
   /// Deselects selected text in the control.
   // Reimplemented, since scintilla version sets empty sel at 0, and sets caret on pos 0.
@@ -379,14 +344,14 @@ private:
   const int m_MarginFoldingNumber = 2;
   const int m_MarginLineNumber = 0;
   const wxExMarker m_MarkerChange = wxExMarker(1);
-  const long m_MenuFlags;
+  const wxExSTCMenuFlags m_MenuFlags;
 
   int m_FoldLevel = 0;
   int m_SavedPos = -1;
   int m_SavedSelectionStart = -1;
   int m_SavedSelectionEnd = -1;
   
-  long m_Flags; // win flags
+  wxExSTCWindowFlags m_Flags;
   long m_Goto = 1;
   
   bool m_AddingChars = false;

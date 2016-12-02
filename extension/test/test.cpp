@@ -20,7 +20,6 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/util.h>
-#include "catch.hpp"
 #include "test.h"
 
 void AddPane(wxExManagedFrame* frame, wxWindow* pane)

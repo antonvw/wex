@@ -53,7 +53,7 @@ int wxExVCSEntry::BuildMenu(int base_id, wxExMenu* menu, bool is_popup) const
 bool wxExVCSEntry::Execute(
   const std::string& args,
   const wxExLexer& lexer,
-  int exec_flags,
+  bool wait,
   const std::string& wd)
 {
   m_Lexer = lexer;
@@ -118,7 +118,7 @@ bool wxExVCSEntry::Execute(
       prefix +
       GetCommand().GetCommand() + " " + 
       subcommand + flags + comment + my_args, 
-    exec_flags,
+    wait,
     wd);
 }
 

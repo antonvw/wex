@@ -41,8 +41,8 @@ TEST_CASE("wxExProcess")
   process->ConfigDialog(GetFrame(), "test process", false);
   
 #ifdef __UNIX__
-  // Test wxEXEC_SYNC process
-  REQUIRE( process->Execute("ls -l", wxEXEC_SYNC));
+  // Test wait for prcess (sync)
+  REQUIRE( process->Execute("ls -l", true));
   REQUIRE(!process->GetError());
   REQUIRE(!process->Write("hello world"));
   REQUIRE(!process->GetStdOut().empty());
@@ -53,21 +53,25 @@ TEST_CASE("wxExProcess")
   
   process->ShowOutput();
 
-  // Repeat last wxEXEC_SYNC process (using "" only for dialogs).
-  REQUIRE( process->Execute("ls -l", wxEXEC_SYNC));
+  // Repeat last process (using "" only for dialogs).
+  REQUIRE( process->Execute("ls -l", true));
   REQUIRE(!process->GetError());
   REQUIRE(!process->GetStdOut().empty());
 
-  // Test working directory for wxEXEC_SYNC process (should not change).
-  REQUIRE( process->Execute("ls -l", wxEXEC_SYNC, ".."));
+  // Test working directory (should not change).
+  REQUIRE( process->Execute("ls -l", true, ".."));
   REQUIRE(!process->GetError());
   REQUIRE(!process->GetStdOut().empty());
   REQUIRE( wxGetCwd().Contains("data"));
 
-  // Test invalid wxEXEC_SYNC process
-  REQUIRE(!process->Execute("xxxx", wxEXEC_SYNC));
+  // Test invalid process
+  REQUIRE(!process->Execute("xxxx", true));
+  INFO( process->GetStdErr());
+  REQUIRE( process->GetStdErr().empty());
+  REQUIRE( process->GetStdOut().empty());
+  REQUIRE(!process->Kill());
   
-  // Test wxEXEC_ASYNC process
+  // Test not wait for process (async)
   REQUIRE( process->Execute("bash"));
   REQUIRE( process->IsRunning());
   wxExShell* shell = process->GetShell();  
@@ -79,19 +83,16 @@ TEST_CASE("wxExProcess")
 #endif
   REQUIRE( process->Kill());
 
-  // Test working directory for wxEXEC_ASYNC process (should change).
-  REQUIRE( process->Execute("ls -l", wxEXEC_ASYNC, ".."));
+  // Test working directory for process (should change).
+  REQUIRE( process->Execute("ls -l", false, ".."));
   REQUIRE(!process->GetError());
   REQUIRE(!wxGetCwd().Contains("data"));
   wxSetWorkingDirectory(cwd);
   REQUIRE( process->Kill());
   
-  // Test invalid wxEXEC_ASYNC process (the process gets a process id, and exits immediately).
+  // Test invalid process (the process gets a process id, and exits immediately).
   REQUIRE( process->Execute("xxxx"));
   REQUIRE(!process->GetError());
-  // The output is not touched by the async process, so if it was not empty,
-  // it still is not empty.
-  REQUIRE( process->GetStdOut().empty());
   REQUIRE( process->Kill());
 #endif
   
@@ -99,4 +100,8 @@ TEST_CASE("wxExProcess")
 
   // Go back to where we were, necessary for other tests.
   wxSetWorkingDirectory(cwd);
+  
+  wxExProcess::KillAll();
+  
+  wxSleep(5);
 }

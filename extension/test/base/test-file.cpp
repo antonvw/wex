@@ -7,7 +7,6 @@
 
 #include <chrono>
 #include <wx/extension/file.h>
-#include "../catch.hpp"
 #include "../test.h"
 
 TEST_CASE( "wxExFile" ) 

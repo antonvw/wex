@@ -10,6 +10,7 @@
 #include <vector>
 #include <wx/frame.h>
 #include <wx/extension/statusbar.h>
+#include <wx/extension/stc-enums.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -66,7 +67,7 @@ public:
     int line_number = 0,
     const std::string& match = std::string(),
     int col_number = 0,
-    long flags = 0,
+    wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
     const std::string& command = std::string());
 
   /// Allows you to open a filename with info from vcs.
@@ -74,14 +75,14 @@ public:
   virtual wxExSTC* OpenFile(
     const wxExFileName& filename,
     const wxExVCSEntry& vcs,
-    long flags = 0);
+    wxExSTCWindowFlags flags = STC_WIN_DEFAULT);
     
   /// Allows you to open a filename with specified contents.
   /// Returns stc component opened, or nullptr.
   virtual wxExSTC* OpenFile(
     const wxExFileName& filename,
     const std::string& text,
-    long flags = 0);
+    wxExSTCWindowFlags flags = STC_WIN_DEFAULT);
   
   /// Allows you to e.g. add debugging.
   /// Default returns nullptr.

@@ -23,7 +23,7 @@
 wxExShell::wxExShell(wxWindow* parent,
   const std::string& prompt, const std::string& command_end,
   bool echo, int commands_save_in_config, const std::string& lexer,
-  wxExMenuFlags menu_flags, wxWindowID id, 
+  wxExSTCMenuFlags menu_flags, wxWindowID id, 
   const wxPoint& pos, const wxSize& size, long style)
   : wxExSTC(parent, std::string(),
       STC_WIN_NO_INDICATOR,
@@ -36,7 +36,7 @@ wxExShell::wxExShell(wxWindow* parent,
 {
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
-  ResetMargins(static_cast<wxExMarginFlags>(wxExSTC::STC_MARGIN_FOLDING | wxExSTC::STC_MARGIN_LINENUMBER));
+  ResetMargins(static_cast<wxExSTCMarginFlags>(STC_MARGIN_FOLDING | STC_MARGIN_LINENUMBER));
   UseAutoComplete(false); // we have our own autocomplete
   AutoCompSetSeparator(3);
 

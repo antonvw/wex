@@ -131,11 +131,11 @@ public:
   /// Yanks range to register, default to yank register.
   bool Yank(const char name = '0') const;
 private:  
-  const wxString BuildReplacement(const wxString& text) const;
-  int Confirm(const wxString& pattern, const wxString& replacement);
-  bool Parse(const wxString& command, 
-    wxString& pattern, wxString& replacement, wxString& options) const;
-  void Set(const wxString& begin, const wxString& end) {
+  const std::string BuildReplacement(const std::string& text) const;
+  int Confirm(const std::string& pattern, const std::string& replacement);
+  bool Parse(const std::string& command, 
+    std::string& pattern, std::string& replacement, std::string& options) const;
+  void Set(const std::string& begin, const std::string& end) {
     m_Begin.m_Address = begin;
     const int begin_line = m_Begin.GetLine();
     if (begin_line > 0) m_Begin.SetLine(begin_line);
@@ -148,8 +148,8 @@ private:
   void Set(wxExAddress& begin, wxExAddress& end, int lines);
   bool SetSelection() const;
 
-  static wxString m_Pattern;
-  static wxString m_Replacement;
+  static std::string m_Pattern;
+  static std::string m_Replacement;
   static wxExProcess* m_Process;
   
   const wxExIndicator m_FindIndicator = wxExIndicator(0);

@@ -39,12 +39,7 @@ else()
     PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
 endif()
  
-target_link_libraries(
-  ${PROJECT_NAME}
-  wxex-rep
-  wxex
-  ${wxWidgets_LIBRARIES} 
-  )
+target_link_all()
 
 add_subdirectory(locale)
 

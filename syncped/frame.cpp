@@ -188,7 +188,7 @@ Frame::Frame(App* app)
       if (count > 0)
       {
         wxExOpenFiles(this, GetFileHistory().GetVector(count), 
-          wxExSTC::STC_WIN_DEFAULT, wxDIR_DEFAULT, m_App->GetCommand());
+          STC_WIN_DEFAULT, wxDIR_DEFAULT, m_App->GetCommand());
       }
     }
       
@@ -201,7 +201,7 @@ Frame::Frame(App* app)
           0,
           std::string(),
           0,
-          WIN_IS_PROJECT);
+          STC_WIN_IS_PROJECT);
       }
       else
       {
@@ -212,7 +212,7 @@ Frame::Frame(App* app)
   else
   {
     GetManager().GetPane("PROJECTS").Hide();
-    wxExOpenFiles(this, m_App->GetFiles(), 0, wxDIR_FILES, m_App->GetCommand()); // only files in this dir
+    wxExOpenFiles(this, m_App->GetFiles(), STC_WIN_DEFAULT, wxDIR_FILES, m_App->GetCommand()); // only files in this dir
   }
   
   StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
@@ -364,7 +364,7 @@ Frame::Frame(App* app)
       name = dlg.GetValue();
     }
     wxWindow* page = new wxExSTC(m_Editors, 
-      std::string(), wxExSTC::STC_WIN_DEFAULT);
+      std::string(), STC_WIN_DEFAULT);
     ((wxExSTC*)page)->GetFile().FileNew(name);
     // This file does yet exist, so do not give it a bitmap.
     m_Editors->AddPage(page, name, name, true);
@@ -473,7 +473,7 @@ Frame::Frame(App* app)
       m_ProjectWildcard,
       wxFD_OPEN | wxFD_MULTIPLE);
     if (dlg.ShowModal() == wxID_CANCEL) return;
-    wxExOpenFiles(this, wxExToVectorString(dlg).Get(), WIN_IS_PROJECT);}, ID_PROJECT_OPEN);
+    wxExOpenFiles(this, wxExToVectorString(dlg).Get(), STC_WIN_IS_PROJECT);}, ID_PROJECT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Editors->Rearrange(wxTOP);}, ID_REARRANGE_HORIZONTALLY);
@@ -1072,7 +1072,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 wxExSTC* Frame::OpenFile(
   const wxExFileName& filename,
   const wxExVCSEntry& vcs,
-  long flags)
+  wxExSTCWindowFlags flags)
 {
   const wxString unique = 
     vcs.GetCommand().GetCommand() + " " + vcs.GetFlags();
@@ -1112,7 +1112,7 @@ wxExSTC* Frame::OpenFile(
 wxExSTC* Frame::OpenFile(
   const wxExFileName& filename,
   const std::string& text,
-  long flags)
+  wxExSTCWindowFlags flags)
 {
   wxExSTC* page = (wxExSTC*)m_Editors->SetSelection(filename.GetFullPath());
 
@@ -1135,23 +1135,23 @@ wxExSTC* Frame::OpenFile(
   int line_number,
   const std::string& match,
   int col_number,
-  long flags,
+  wxExSTCWindowFlags flags,
   const std::string& command)
 {
-  if ((flags & WIN_IS_PROJECT) && m_Projects == nullptr)
+  if ((flags & STC_WIN_IS_PROJECT) && m_Projects == nullptr)
   {
     AddPaneProjects();
     GetManager().Update();
   }
   
-  wxExNotebook* notebook = ((flags & WIN_IS_PROJECT)
+  wxExNotebook* notebook = ((flags & STC_WIN_IS_PROJECT)
     ? m_Projects : m_Editors);
     
   wxASSERT(notebook != nullptr);
   
   wxWindow* page = notebook->SetSelection(filename.GetFullPath());
 
-  if (flags & WIN_IS_PROJECT)
+  if (flags & STC_WIN_IS_PROJECT)
   {
     if (page == nullptr)
     {
@@ -1197,16 +1197,16 @@ wxExSTC* Frame::OpenFile(
     if (page == nullptr)
     {
       if (wxConfigBase::Get()->ReadBool("HexMode", false))
-        flags |= wxExSTC::STC_WIN_HEX;
+        flags = static_cast<wxExSTCWindowFlags>(flags | STC_WIN_HEX);
       
       editor = new wxExSTC(m_Editors,
         filename,
         line_number,
         match,
         col_number,
-        static_cast<wxExSTC::wxExWindowFlags>(flags | m_App->GetFlags()),
-        static_cast<wxExSTC::wxExMenuFlags>(wxExSTC::STC_MENU_CONTEXT | wxExSTC::STC_MENU_OPEN_LINK | wxExSTC::STC_MENU_VCS | 
-          (m_App->GetDebug() ? wxExSTC::STC_MENU_DEBUG: 0)),
+        static_cast<wxExSTCWindowFlags>(flags | m_App->GetFlags()),
+        static_cast<wxExSTCMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS | 
+          (m_App->GetDebug() ? STC_MENU_DEBUG: 0)),
         command);
       
       if (m_App->GetDebug())
@@ -1287,7 +1287,7 @@ void Frame::PrintEx(wxExEx* ex, const std::string& text)
 
   if (page == nullptr)
   {
-    page = new wxExSTC(m_Editors, text, (long)wxExSTC::STC_WIN_DEFAULT, "Print");
+    page = new wxExSTC(m_Editors, text, STC_WIN_DEFAULT, "Print");
     m_Editors->AddPage(page, "Print", "Print", true);
     m_Editors->Split("Print", wxBOTTOM);
   }
@@ -1303,7 +1303,7 @@ void Frame::PrintEx(wxExEx* ex, const std::string& text)
   
 wxExProcess* Frame::Process(const std::string& command)
 {
-  m_Process->Execute(command, wxEXEC_ASYNC);
+  m_Process->Execute(command, false);
   return m_Process;
 }
 
@@ -1392,7 +1392,7 @@ void Frame::StatusBarClickedRight(const wxString& pane)
       match = wxExLexers::Get()->GetTheme();
     }
     
-    OpenFile(wxExLexers::Get()->GetFileName(), 0, match.ToStdString());
+    OpenFile(wxExLexers::Get()->GetFileName(), STC_WIN_DEFAULT, match.ToStdString());
   }
   else if (pane == "PaneMacro")
   {

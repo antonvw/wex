@@ -35,10 +35,16 @@ private:
     int line_number = 0,
     const std::string& match = std::string(),
     int col_number = 0,
-    long flags = 0,
+    wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
     const std::string& command = std::string()) override;
-  virtual wxExSTC* OpenFile(const wxExFileName& filename, const wxExVCSEntry& vcs, long flags = 0) override;
-  virtual wxExSTC* OpenFile(const wxExFileName& filename, const std::string& text, long flags = 0) override;
+  virtual wxExSTC* OpenFile(
+    const wxExFileName& filename, 
+    const wxExVCSEntry& vcs, 
+    wxExSTCWindowFlags flags = STC_WIN_DEFAULT) override;
+  virtual wxExSTC* OpenFile(
+    const wxExFileName& filename, 
+    const std::string& text, 
+    wxExSTCWindowFlags flags = STC_WIN_DEFAULT) override;
   virtual void PrintEx(wxExEx* ex, const std::string& text) override;
   virtual wxExProcess* Process(const std::string& command) override;
   virtual wxExSTC* RestorePage(const std::string& key) override;

@@ -15,7 +15,6 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
-#include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vimacros.h>
@@ -26,7 +25,7 @@ class GlobalEnv
 {
 public:
   GlobalEnv(wxExEx* ex, 
-    const wxExIndicator& indicator, const wxString& commands)
+    const wxExIndicator& indicator, const std::string& commands)
   : m_Ex(ex)
   , m_FindIndicator(indicator) {
     m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
@@ -78,7 +77,8 @@ public:
 
         if (!m_Ex->Command(cmd))
         {
-          m_Ex->GetFrame()->ShowExMessage(wxString::Format("%s failed", cmd.c_str()));
+          m_Ex->GetFrame()->ShowExMessage(
+            wxString::Format("%s failed", cmd.c_str()));
           return false;
         }
       }
@@ -133,8 +133,8 @@ private:
   wxExEx* m_Ex;
 };
 
-wxString wxExAddressRange::m_Pattern;
-wxString wxExAddressRange::m_Replacement;
+std::string wxExAddressRange::m_Pattern;
+std::string wxExAddressRange::m_Replacement;
 wxExProcess* wxExAddressRange::m_Process = nullptr;
 
 wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
@@ -179,63 +179,64 @@ wxExAddressRange::wxExAddressRange(wxExEx* ex, const std::string& range)
   }
 }
 
-const wxString wxExAddressRange::BuildReplacement(const wxString& text) const
+const std::string wxExAddressRange::BuildReplacement(const std::string& text) const
 {
-  if (!text.Contains("&") && !text.Contains("\0"))
+  if (text.find("&") == std::string::npos && 
+      text.find("\0") == std::string::npos)
   {
     return text;
   }
 
-  wxString target(m_STC->GetTextRange(
+  std::string target(m_STC->GetTextRange(
     m_STC->GetTargetStart(), m_STC->GetTargetEnd()));
     
-  wxString replacement;
+  std::string replacement;
   bool backslash = false;
     
   for (size_t i = 0; i < text.length(); i++)
   {
-    switch ((int)text.GetChar(i))
+    switch ((int)text[i])
     {
       case '&': 
         if (!backslash) 
-          replacement << target; 
+          replacement += target; 
         else
-          replacement << text[i];
+          replacement += text[i];
         backslash = false; 
         break;
         
       case '0': 
         if (backslash) 
-          replacement << target; 
+          replacement += target; 
         else
-          replacement << text[i];
+          replacement += text[i];
         backslash = false; 
         break;
         
       case 'L': 
         if (backslash) 
-          target.MakeLower();
+          std::transform(target.begin(), target.end(), target.begin(), ::tolower);
         else
-          replacement << text[i];
+          replacement += text[i];
         backslash = false; 
         break;
         
       case 'U': 
         if (backslash) 
-          target.MakeUpper();
+          std::transform(target.begin(), target.end(), target.begin(), ::toupper);
         else
-          replacement << text[i];
+          replacement += text[i];
         backslash = false; 
         break;
         
       case '\\': 
         if (backslash) 
-          replacement << text[i];
+          replacement += text[i];
         backslash = !backslash; 
         break;
         
       default:
-        replacement << text[i];
+        replacement += text[i];
         backslash = false; 
     }
   }
@@ -261,7 +262,7 @@ void wxExAddressRange::Cleanup()
 }
   
 int wxExAddressRange::Confirm(
-  const wxString& pattern, const wxString& replacement)
+  const std::string& pattern, const std::string& replacement)
 {
   wxMessageDialog msgDialog(m_STC, 
     _("Replace") + " " + pattern + " " + _("with") + " " + replacement, 
@@ -342,17 +343,12 @@ bool wxExAddressRange::Escape(const std::string& command)
     {
       m_Process = new wxExProcess();
     }
-    
-    const bool ok = m_Process->Execute(expanded, wxEXEC_ASYNC,
-      m_STC->GetFileName().GetPath());
-    
-    if (ok)
+    else
     {
-      m_Ex->GetFrame()->ShowPane("PROCESS");
-      wxExProcess::GetShell()->SetFocus();
+      m_Process->Kill();
     }
     
-    return ok;
+    return m_Process->Execute(expanded, false, m_STC->GetFileName().GetPath());
   }
   
   if (!IsOk())
@@ -369,7 +365,7 @@ bool wxExAddressRange::Escape(const std::string& command)
 
   wxExProcess process;
   
-  const bool ok = process.Execute(command + " " + filename, wxEXEC_SYNC);
+  const bool ok = process.Execute(command + " " + filename, true);
   
   if (remove(filename.c_str()) != 0)
   {
@@ -378,7 +374,7 @@ bool wxExAddressRange::Escape(const std::string& command)
   
   if (ok)
   {
-    if (process.GetStdErr().empty())
+    if (!process.GetStdOut().empty())
     {      
       m_STC->BeginUndoAction();
 
@@ -392,7 +388,7 @@ bool wxExAddressRange::Escape(const std::string& command)
       
       return true;
     }
-    else
+    else if (!process.GetStdErr().empty())
     {
       m_Ex->GetFrame()->ShowExMessage(process.GetStdErr());
     }
@@ -413,19 +409,19 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
   }
 
   next.GetNextToken(); // skip empty token
-  const wxString pattern = next.GetNextToken();
+  const std::string pattern = next.GetNextToken().ToStdString();
   std::string rest;
   
   if (next.HasMoreTokens())
   {
     int command = 0;
-    const wxString token(next.GetNextToken());
-    command = token.GetChar(0);
-    wxString arg(token.Mid(1));
+    const std::string token(next.GetNextToken());
+    command = token[0];
+    std::string arg(token.substr(1));
     
     if (next.HasMoreTokens())
     {
-      wxString subpattern = next.GetNextToken();
+      std::string subpattern = next.GetNextToken().ToStdString();
       
       if (subpattern.empty())
       {
@@ -498,9 +494,11 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
   if (hits > 0)
   {
     if (g.Commands())
-      m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("Executed: %d commands"), hits));
+      m_Ex->GetFrame()->ShowExMessage(
+        wxString::Format(_("Executed: %d commands"), hits));
     else
-      m_Ex->GetFrame()->ShowExMessage(wxString::Format(_("Found: %d matches"), hits));
+      m_Ex->GetFrame()->ShowExMessage(
+        wxString::Format(_("Found: %d matches"), hits));
   }
   
   return true;
@@ -580,22 +578,35 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
   return true;
 }
 
+void ReplaceString(std::string& text, 
+  const std::string& search,
+  const std::string& replace) 
+{
+  size_t pos = 0;
+  while((pos = text.find(search, pos)) != std::string::npos) 
+  {
+    text.replace(pos, search.length(), replace);
+    pos += replace.length();
+  }
+}
+
 bool wxExAddressRange::Parse(
-  const wxString& command_org, 
-  wxString& pattern, wxString& replacement, wxString& options) const
+  const std::string& command_org, 
+  std::string& pattern, std::string& replacement, std::string& options) const
 {
   // If there are escaped / chars in the text,
   // temporarily replace them to an unused char, so
   // we can use string tokenizer with / as separator.
   bool escaped = false;
   
-  wxString command(command_org);
+  std::string command(command_org);
   
-  if (!command.Contains("\\\\/") && command.Contains("\\/"))
+  if (command.find("\\\\/") == std::string::npos && 
+      command.find("\\/") != std::string::npos)
   {
-    if (!command.Contains(wxChar(1)))
+    if (command.find(char(1) == std::string::npos))
     {
-      command.Replace("\\/", wxChar(1));
+      ReplaceString(command, "\\/", "\x01");
       escaped = true;
     }
     else
@@ -604,28 +615,28 @@ bool wxExAddressRange::Parse(
       return false;
     }
   }
-  
-  wxStringTokenizer next(command, "/");
 
-  if (!next.HasMoreTokens())
+  std::vector<std::string> v;
+
+  if (wxExMatch("/(.*)/(.*)/([cgi]*)", command, v) == 3 ||
+      wxExMatch("/(.*)/(.*)", command, v) == 2 ||
+      wxExMatch("/(.*)", command, v) == 1)
   {
-    wxLogStatus("Missing slash");
-    return false;
-  }
+    pattern = v[0];
+    if (v.size() >= 2) replacement = v[1];
+    if (v.size() >= 3) options = v[2];
+    
+    // Restore a / for all occurrences of the special char.
+    if (escaped)
+    {  
+      std::replace(pattern.begin(), pattern.end(), '\x01', '/');
+      std::replace(replacement.begin(), replacement.end(), '\x01', '/');
+    }
 
-  next.GetNextToken(); // skip empty token
-  pattern = next.GetNextToken();
-  replacement = next.GetNextToken();
-  options = next.GetNextToken();
-  
-  // Restore a / for all occurrences of the special char.
-  if (escaped)
-  {  
-    pattern.Replace(wxChar(1), "/");
-    replacement.Replace(wxChar(1), "/");
+    return true;
   }
   
-  return true;
+  return false;
 }
     
 bool wxExAddressRange::Print(const std::string& flags) const
@@ -726,9 +737,9 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
     return false;
   }
   
-  wxString pattern;
-  wxString repl;
-  wxString options;
+  std::string pattern;
+  std::string repl;
+  std::string options;
   
   switch (cmd)
   {
@@ -752,20 +763,6 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
       return false;
   }
     
-  if (!options.empty())
-  {
-    wxString filter(options);
-    filter.Replace("c", "");
-    filter.Replace("g", "");
-    filter.Replace("i", "");
-    
-    if (!filter.empty())
-    {
-      wxLogStatus("Unsupported flags: " + filter);
-      return false;
-    }
-  }
-  
   if (pattern.empty())
   {
     wxLogStatus("Pattern is empty");
@@ -773,10 +770,10 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
   }
 
   int searchFlags = m_Ex->GetSearchFlags();
-  if (options.Contains("i")) searchFlags &= ~wxSTC_FIND_MATCHCASE;
+  if (options.find("i") != std::string::npos) searchFlags &= ~wxSTC_FIND_MATCHCASE;
     
   if ((searchFlags & wxSTC_FIND_REGEXP) && 
-    pattern.size() == 2 && pattern.Last() == '*' && repl.empty())
+    pattern.size() == 2 && pattern.back() == '*' && repl.empty())
   {
     wxLogStatus("Replacement leads to infinite loop");
     return false;
@@ -817,9 +814,9 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
   
   while (m_STC->SearchInTarget(pattern) != -1 && result != wxID_CANCEL)
   {
-    const wxString replacement(BuildReplacement(repl));
+    const std::string replacement(BuildReplacement(repl));
     
-    if (options.Contains("c"))
+    if (options.find("c") != std::string::npos)
     {
       result = Confirm(pattern, replacement);
     }
@@ -828,7 +825,7 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
     {
       if (m_STC->HexMode())
       {  
-        m_STC->GetHexMode().ReplaceTarget(replacement.ToStdString(), false);
+        m_STC->GetHexMode().ReplaceTarget(replacement, false);
       }
       else
       {
@@ -840,7 +837,7 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
       nr_replacements++;
     }
     
-    if (options.Contains("g"))
+    if (options.find("g") != std::string::npos)
     {
       m_STC->SetTargetStart(m_STC->GetTargetEnd());
     }

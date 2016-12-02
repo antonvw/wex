@@ -39,7 +39,7 @@ protected:
     int line_number = 0,
     const std::string& match = std::string(),
     int col_number = 0,
-    long flags = 0,
+    wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
     const std::string& command = std::string()) override;
 private:
   wxExNotebook* m_NotebookWithLists; ///< all listviews

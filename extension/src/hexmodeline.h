@@ -10,7 +10,8 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/hexmode.h>
-#include <wx/extension/stc.h>
+
+class wxExSTC;
 
 char Printable(unsigned int c, wxExSTC* stc);
 

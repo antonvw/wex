@@ -223,7 +223,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   
   SECTION("hex")
   {
-    stc->Reload(wxExSTC::STC_WIN_HEX);
+    stc->Reload(STC_WIN_HEX);
     REQUIRE(stc->HexMode());
     stc->GetHexMode().AppendText("in hex mode");
     stc->Reload();

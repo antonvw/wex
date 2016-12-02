@@ -9,7 +9,6 @@
 
 #include <wx/extension/report/frame.h>
 
-#include "../catch.hpp"
 #include "../test.h"
 
 /// Returns the frame.

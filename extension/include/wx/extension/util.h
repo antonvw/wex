@@ -12,6 +12,7 @@
 #include <wx/combobox.h>
 #include <wx/dir.h> // for wxDIR_DEFAULT
 #include <wx/filedlg.h> // for wxFD_OPEN etc.
+#include <wx/extension/stc-enums.h>
 
 class wxArrayString;
 class wxXmlNode;
@@ -100,7 +101,7 @@ void wxExComboBoxFromList(
   const std::list < wxString > & text);
 #endif
   
-/// Compares the files, using wxExecute on comparator set in the config.
+/// Compares the files, using comparator set in the config.
 bool wxExCompareFile(const wxExFileName& file1, const wxExFileName& file2);
 
 /// Returns the config dir for user data files.
@@ -228,7 +229,7 @@ int wxExOpenFiles(
   /// array with files
   const std::vector< std::string > & files,
   /// flags to be used with OpenFile
-  long file_flags = 0,
+  wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
   /// flags to be used with wxExDirOpenFile
   int dir_flags = wxDIR_DEFAULT,
   /// initial vi command
@@ -248,7 +249,7 @@ void wxExOpenFilesDialog(
   /// flags to be used with wxExFileDialog
   bool ask_for_continue = false,
   /// flags to be used with OpenFile
-  long file_flags = 0,
+  wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
   /// flags to be used with wxExDirOpenFile
   int dir_flags = wxDIR_DEFAULT);
 #endif

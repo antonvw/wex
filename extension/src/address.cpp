@@ -239,7 +239,7 @@ bool wxExAddress::Read(const std::string& arg) const
   {
     wxExProcess process;
     
-    if (!process.Execute(arg.substr(1), wxEXEC_SYNC))
+    if (!process.Execute(arg.substr(1), true))
     {
       return false;
     }

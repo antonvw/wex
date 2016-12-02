@@ -238,12 +238,13 @@ bool wxExCompareFile(const wxExFileName& file1, const wxExFileName& file2)
     return false;
   }
 
-  const wxString arguments =
+  const std::string arguments =
      (file1.GetStat().st_mtime < file2.GetStat().st_mtime) ?
        "\"" + file1.GetFullPath() + "\" \"" + file2.GetFullPath() + "\"":
        "\"" + file2.GetFullPath() + "\" \"" + file1.GetFullPath() + "\"";
 
-  if (wxExecute(wxConfigBase::Get()->Read(_("Comparator")) + " " + arguments) == 0)
+  if (!wxExProcess().Execute(
+    wxConfigBase::Get()->Read(_("Comparator")).ToStdString() + " " + arguments, true))
   {
     return false;
   }
@@ -256,7 +257,7 @@ bool wxExCompareFile(const wxExFileName& file1, const wxExFileName& file2)
 const std::string wxExConfigDir()
 {
 #ifdef __WXMSW__
-  return wxPathOnly(wxStandardPaths::Get().GetExecutablePath().ToStdString());
+  return wxPathOnly(wxStandardPaths::Get().GetExecutablePath()).ToStdString();
 #else
   return wxFileName(
     wxGetHomeDir() + wxFileName::GetPathSeparator() + ".config",
@@ -355,11 +356,11 @@ int wxExGetIconID(const wxExFileName& filename)
     }
     else if (filename.FileExists())
     {
-      return wxFileIconsTable::folder;
+      return wxFileIconsTable::file;
     }
     else
     {
-      return wxFileIconsTable::file;
+      return wxFileIconsTable::folder;
     }
   }
   else
@@ -486,7 +487,7 @@ long wxExMake(const wxExFileName& makefile)
     wxConfigBase::Get()->Read("Make", "make").ToStdString() + " " +
       wxConfigBase::Get()->Read("MakeSwitch", "-f").ToStdString() + " " +
       makefile.GetFullPath(),
-    wxEXEC_ASYNC,
+    false,
     makefile.GetPath());
 }
 
@@ -617,7 +618,7 @@ void wxExNodeStyles(const wxXmlNode* node, const std::string& lexer,
 
 #if wxUSE_GUI
 int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
-  long file_flags, int dir_flags, const std::string& command)
+  wxExSTCWindowFlags file_flags, int dir_flags, const std::string& command)
 {
   wxWindowUpdateLocker locker(frame);
   
@@ -664,7 +665,7 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
 
 void wxExOpenFilesDialog(wxExFrame* frame,
   long style, const wxString& wildcards, bool ask_for_continue,
-  long file_flags, int dir_flags)
+  wxExSTCWindowFlags file_flags, int dir_flags)
 {
   wxExSTC* stc = frame->GetSTC();
   wxArrayString paths;
@@ -773,7 +774,7 @@ bool wxExShellExpansion(std::string& command)
   while (wxExMatch(re_str, command, v) > 0)
   {
     wxExProcess process;
-    if (!process.Execute(v[0], wxEXEC_SYNC)) return false;
+    if (!process.Execute(v[0], true)) return false;
     
     command = std::regex_replace(
       command, 

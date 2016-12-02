@@ -7,15 +7,11 @@
 
 #pragma once
 
-#include <memory>
-#include <wx/extension/marker.h>
-
-class wxTimer;
+class wxExManagedFrame;
 class wxExProcessImp;
 class wxExShell;
 
-/// Offers a process, capturing execution output depending
-/// on sync or async call to Execute.
+/// Offers a process, capturing execution output.
 class WXDLLIMPEXP_BASE wxExProcess
 {
 public:
@@ -39,21 +35,18 @@ public:
     bool modal = true);
   
   /// Executes the process.
-  /// - In case asynchronously (wxEXEC_ASYNC) this call immediately returns.
-  ///   The STC component will be filled with output from the process.
-  /// - In case synchronously (wxEXEC_SYNC) this call returns after execute ends, 
-  ///   and the output is available using GetStdOut.
   /// Return value is false if process could not execute (and GetError is true), 
   /// or if config dialog was invoked and cancelled (and GetError is false).
-  /// Normally the reason for not being able to run the process is logged
-  /// by the wxWidgets library using a wxLogError. You can prevent that
-  /// using a wxLogNull before calling Execute.
   bool Execute(
     /// command to be executed, if empty
     /// last given command is used
     const std::string& command = std::string(),
-    /// flags for wxExecute
-    int flags = wxEXEC_ASYNC,
+    /// wait for process finished
+    /// - if false this call immediately returns.
+    ///   The STC component will be filled with output from the process.
+    /// - if true this call returns after execute ends, 
+    ///   and the output is available using GetStdOut.
+    bool wait = false,
     /// working dir, if empty last working dir is used
     const std::string& wd = std::string());
   
@@ -76,14 +69,19 @@ public:
   /// Returns true if this process is running.
   bool IsRunning() const;
 
-  /// Kills the process.
+  /// Kills this process.
+  /// Returns true if process is killed.
   bool Kill();
+  
+  /// Kills all processes that are still running.
+  /// Returns the number of processes killed.
+  static int KillAll();
   
   /// Construct the shell component.
   static void PrepareOutput(wxWindow* parent);
 
 #if wxUSE_GUI
-  /// Shows output from Execute (wxEXEC_SYNC) on the shell component.
+  /// Shows std output from Execute on the shell component.
   /// You can override this method to e.g. prepare a lexer on GetShell
   /// before calling this base method.
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
@@ -92,21 +90,17 @@ public:
   /// Writes text to stdin of process.
   bool Write(const std::string& text);
 private:
-  void CheckInput();
+  bool m_Error = false;
 
-  bool m_Error;
-
-  wxCriticalSection m_Critical;
-  std::string m_Command, m_StdErr, m_StdIn, m_StdOut;
+  std::string m_Command, m_StdErr, m_StdOut;
   
-  const wxExMarker m_MarkerSymbol = wxExMarker(2);
-
   static wxString m_WorkingDirKey;
 
 #if wxUSE_GUI
   static wxExShell* m_Shell;
 #endif  
 
-  wxExProcessImp* m_Process;
-  std::unique_ptr<wxTimer> m_Timer;
+  std::unique_ptr<wxExProcessImp> m_Process;
+  
+  wxExManagedFrame* m_Frame;
 };

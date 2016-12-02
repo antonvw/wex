@@ -17,13 +17,7 @@ add_executable(
   WIN32 
   ${SRCS})
   
-target_link_libraries(
-  ${PROJECT_NAME}
-  wxex-rep
-  wxex
-  ${wxWidgets_LIBRARIES} 
-  ${ODBC_LIBRARIES}
-  )
+target_link_all(${ODBC_LIBRARIES})
   
 add_subdirectory(locale)
 

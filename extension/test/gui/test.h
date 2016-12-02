@@ -11,7 +11,6 @@
 #include <utility>
 #include <vector>
 
-#include "../catch.hpp"
 #include "../test.h"
 
 class wxExManagedFrame;

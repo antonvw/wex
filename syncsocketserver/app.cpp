@@ -75,7 +75,7 @@ Frame::Frame()
   , m_Timer(this)
   , m_Answer(ANSWER_OFF)
   , m_DataWindow(new wxExSTC(this))
-  , m_LogWindow(new wxExSTC(this, std::string(), wxExSTC::STC_WIN_NO_INDICATOR))
+  , m_LogWindow(new wxExSTC(this, std::string(), STC_WIN_NO_INDICATOR))
   , m_Shell(new wxExShell(this))
 {
   SetIcon(wxICON(app));
@@ -661,7 +661,7 @@ wxExSTC* Frame::OpenFile(
   int line_number,
   const std::string& match,
   int col_number,
-  long flags,
+  wxExSTCWindowFlags flags,
   const std::string& command)
 {
   if (m_DataWindow->Open(

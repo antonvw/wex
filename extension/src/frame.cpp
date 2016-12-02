@@ -190,7 +190,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
         text = v[1];
       }
       wxExOpenFiles(this, wxExToVectorString(text).Get(), 
-        0, wxDIR_DEFAULT, cmd);
+        STC_WIN_DEFAULT, wxDIR_DEFAULT, cmd);
     }
     else
     {
@@ -270,7 +270,7 @@ wxExSTC* wxExFrame::OpenFile(
   int line_number,
   const std::string& match,
   int col_number,
-  long flags,
+  wxExSTCWindowFlags flags,
   const std::string& command)
 {
   wxExSTC* stc = GetSTC();
@@ -286,7 +286,7 @@ wxExSTC* wxExFrame::OpenFile(
 wxExSTC* wxExFrame::OpenFile(
   const wxExFileName& filename,
   const wxExVCSEntry& vcs,
-  long flags)
+  wxExSTCWindowFlags flags)
 {
   wxExSTC* stc = GetSTC();
 
@@ -302,7 +302,7 @@ wxExSTC* wxExFrame::OpenFile(
 wxExSTC* wxExFrame::OpenFile(
   const wxExFileName& filename,
   const std::string& text,
-  long flags)
+  wxExSTCWindowFlags flags)
 {
   wxExSTC* stc = GetSTC();
 

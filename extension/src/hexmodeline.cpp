@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/extension/stc.h>
 #include "hexmodeline.h"
 
 char Printable(unsigned int c, wxExSTC* stc) 

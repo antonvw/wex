@@ -46,7 +46,7 @@ public:
     /// The lexer used by stc.
     const std::string& lexer = std::string(),
     /// The stc menu flags.
-    wxExMenuFlags menu_flags = static_cast<wxExMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS),
+    wxExSTCMenuFlags menu_flags = static_cast<wxExSTCMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS),
     /// The window id.
     wxWindowID id = wxID_ANY,
     /// Position.

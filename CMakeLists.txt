@@ -145,6 +145,17 @@ if (WIN32)
 else ()
   find_package(wxWidgets COMPONENTS aui stc html adv xml core base net REQUIRED)
 endif ()
+      
+macro(target_link_all)
+  set (extra_macro_args ${ARGN})
+  target_link_libraries(
+    ${PROJECT_NAME}
+    wxex-rep
+    wxex
+    ${wxWidgets_LIBRARIES} 
+    ${extra_macro_args}
+    )
+endmacro()  
 
 function(process_po_files)
   # travis has problem with gettext

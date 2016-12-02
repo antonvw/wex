@@ -121,7 +121,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     }}, ID_TOOL_REPORT_REPLACE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    DoRecent(m_ProjectHistory, event.GetId() - m_ProjectHistory.GetBaseId(), WIN_IS_PROJECT);},
+    DoRecent(m_ProjectHistory, event.GetId() - m_ProjectHistory.GetBaseId(), STC_WIN_IS_PROJECT);},
     m_ProjectHistory.GetBaseId(), m_ProjectHistory.GetBaseId() + m_ProjectHistory.GetMaxFiles());
 }
 
@@ -295,7 +295,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
   static wxString arg1, arg2;
   static int arg3 = wxDIR_FILES;
 
-  if (wxExCmdLineParser(arg, 
+  if (wxExCmdLineParser(arg.ToStdString(), 
      {{{"r", "recursive"}, {0, [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}}},
      {},
      {{"match", {0, [&](std::vector<std::string> & v) {wxExFindReplaceData::Get()->SetFindString(v[0]);}}},

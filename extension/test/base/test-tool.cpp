@@ -7,7 +7,6 @@
 
 #include <wx/extension/tool.h>
 #include <wx/extension/statistics.h>
-#include "../catch.hpp"
 #include "../test.h"
 
 TEST_CASE( "wxExTool" ) 

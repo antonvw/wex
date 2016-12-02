@@ -174,15 +174,17 @@ wxExEx::wxExEx(wxExSTC* stc)
       }
       else
       {
-        wxString text(wxString(command.substr(4)).Trim(false));
-        if (!text.Contains("/") && (text.Contains("=") || !text.Contains("-")))
+        std::string text(command.substr(4));
+        if ( text.find("/") == std::string::npos && 
+            (text.find("=") != std::string::npos || 
+             text.find("-") == std::string::npos))
         {
           // Convert modeline to commandline arg (add - to each group, remove all =).
           // ts=120 ac ic sy=cpp -> -ts 120 -ac -ic -sy cpp
           std::regex re("[0-9a-z=]+");
-          text = std::regex_replace(text.ToStdString(), re, "-&", std::regex_constants::format_sed);
-          text.Replace("=", " ");
-          text.Replace("!", "-"); // change negatable char
+          text = std::regex_replace(text, re, "-&", std::regex_constants::format_sed);
+          std::replace(text.begin(), text.end(), '=', ' ');
+          std::replace(text.begin(), text.end(), '!', '-'); // change negatable char
         }
         return wxExCmdLineParser(text,
            {{{"ac", "Auto Complete"}, {wxCMD_LINE_SWITCH_NEGATABLE, [](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);}}},
@@ -240,7 +242,7 @@ wxExEx::wxExEx(wxExSTC* stc)
               any.GetAs(&val);
               m_STC->SetIndent(val);
               wxConfigBase::Get()->Write(_("Indent"), val);}}},
-            {{"sy", "SYntax (off)"}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
+            {{"sy", "SYntax (lexer or 'off')"}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
               wxString val;
               any.GetAs(&val);
               if (val != "off") m_STC->GetLexer().Set(val.ToStdString(), true); // allow folding

@@ -67,8 +67,8 @@ public:
     const std::string& args = std::string(),
     /// lexer that is used for presenting the output
     const wxExLexer& lexer = wxExLexer(),
-    /// flags for wxExecute
-    int flags = wxEXEC_SYNC,
+    /// wait to finish
+    bool wait = true,    
     /// working directory
     const std::string& wd = std::string());
   

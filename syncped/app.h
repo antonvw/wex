@@ -32,7 +32,7 @@ private:
 
   std::vector< std::string > m_Files;
   bool m_Debug = false;
-  int m_Flags = 0;
+  wxExSTCWindowFlags m_Flags = STC_WIN_DEFAULT;
   int m_Split;
   std::string m_Command, m_Tag; 
   wxExFile m_Scriptin, m_Scriptout;

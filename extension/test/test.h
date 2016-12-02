@@ -11,6 +11,7 @@
 #include <string>
 #include <wx/extension/app.h>
 #include <wx/extension/filename.h>
+#include "catch.hpp"
 
 class wxExManagedFrame;
 

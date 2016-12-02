@@ -7,18 +7,9 @@ add_executable(
   ${SRCS})
 
 if (ODBC_FOUND)
-  target_link_libraries(
-    ${PROJECT_NAME} 
-    wxex
-    ${wxWidgets_LIBRARIES} 
-    ${ODBC_LIBRARY}
-    )
+  target_link_all(${ODBC_LIBRARIES})
 else ()
-  target_link_libraries(
-    ${PROJECT_NAME} 
-    wxex
-    ${wxWidgets_LIBRARIES} 
-    )
+  target_link_all()
 endif()
 
 if (WIN32)

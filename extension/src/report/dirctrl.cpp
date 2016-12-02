@@ -64,7 +64,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExOpenFiles(frame, 
-      wxExToVectorString(*this).Get(), 0, wxDIR_FILES); // only files in this dir
+      wxExToVectorString(*this).Get(), STC_WIN_DEFAULT, wxDIR_FILES); // only files in this dir
     }, ID_EDIT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -92,7 +92,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
     }
     else
     {
-      wxExOpenFiles(frame, files, 0, wxDIR_FILES); // only files in this dir
+      wxExOpenFiles(frame, files, STC_WIN_DEFAULT, wxDIR_FILES); // only files in this dir
     }});
   
   Bind(wxEVT_TREE_ITEM_MENU, [=](wxTreeEvent& event) {

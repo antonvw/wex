@@ -2,11 +2,10 @@
 // Name:      test-dir.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/dir.h>
-#include "../catch.hpp"
 #include "../test.h"
 
 TEST_CASE( "wxExDir" ) 

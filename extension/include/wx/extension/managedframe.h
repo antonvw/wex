@@ -121,7 +121,7 @@ public:
     int line_number = 0,
     const std::string& match = std::string(),
     int col_number = 0,
-    long flags = 0,
+    wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
     const std::string& command = std::string()) override;
 
   /// Prints text in ex dialog.
@@ -162,7 +162,10 @@ public:
   bool TogglePane(
     const wxString& pane) {return ShowPane(pane, !m_Manager.GetPane(pane).IsShown());};
 protected:
-  void DoRecent(const wxFileHistory& history, size_t index, long flags = 0);
+  void DoRecent(
+    const wxFileHistory& history, 
+    size_t index, 
+    wxExSTCWindowFlags flags = STC_WIN_DEFAULT);
 private:
   bool AddToolBarPane(
     wxWindow* window, 

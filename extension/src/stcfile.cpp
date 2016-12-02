@@ -181,7 +181,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
     m_STC->SetSelection(startPos, endPos);
   }
   
-  if ((m_STC->GetFlags() & m_STC->STC_WIN_READ_ONLY) ||
+  if ((static_cast<long>(m_STC->GetFlags()) & STC_WIN_READ_ONLY) ||
        GetFileName().IsReadOnly())
   {
     m_STC->SetReadOnly(true);

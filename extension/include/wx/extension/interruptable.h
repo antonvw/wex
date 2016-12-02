@@ -1,15 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      interruptabl.h
-// Purpose:   Declaration of class wxExDir and wxExDirOpenFile
+// Name:      interruptable.h
+// Purpose:   Declaration of class wxExInterruptable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-/// Adds FindFiles to a wxDir.
-/// By overriding OnDir and OnFile you can take care
-/// of what to do with the result.
+/// Offers methods to start, stop things.
 class WXDLLIMPEXP_BASE wxExInterruptable
 {
 public:

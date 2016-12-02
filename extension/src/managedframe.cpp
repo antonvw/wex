@@ -140,7 +140,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExSTC::ConfigDialog(this,
       _("Editor Options"),
-      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY,
+      STC_CONFIG_MODELESS | STC_CONFIG_WITH_APPLY,
       event.GetId());}, wxID_PREFERENCES);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -257,7 +257,7 @@ wxPanel* wxExManagedFrame::CreateExPanel()
 void wxExManagedFrame::DoRecent(
   const wxFileHistory& history, 
   size_t index, 
-  long flags)
+  wxExSTCWindowFlags flags)
 {
   const std::string file(history.GetHistoryFile(index));
   
@@ -310,7 +310,7 @@ wxExSTC* wxExManagedFrame::OpenFile(
   int line_number,
   const std::string& match,
   int col_number,
-  long flags,
+  wxExSTCWindowFlags flags,
   const std::string& command)
 {
   wxExSTC* stc;

@@ -414,7 +414,7 @@ bool wxExLexer::Reset()
     {
       Apply();
       wxExFrame::StatusText(GetDisplayLexer(), "PaneLexer");
-      m_STC->ResetMargins(wxExSTC::STC_MARGIN_FOLDING);
+      m_STC->ResetMargins(STC_MARGIN_FOLDING);
     }
   }
 
