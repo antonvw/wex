@@ -36,7 +36,7 @@ class wxExTestGuiApp : public wxExTestApp
 public: 
   wxExTestGuiApp() : wxExTestApp() {;};
   
-  bool OnInit() 
+  virtual bool OnInit() override
   {
     if (!wxExTestApp::OnInit())
     {

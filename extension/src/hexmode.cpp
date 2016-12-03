@@ -273,7 +273,7 @@ bool wxExHexMode::ReplaceTarget(const std::string& replacement, bool settext)
 
   for (
     int i = 0;
-    i < replacement.size(); 
+    i < (int)replacement.size(); 
     i = i + 2, start = start + m_EachHexField)
   {
     // replace

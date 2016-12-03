@@ -19,6 +19,7 @@
 #include "wx/uiaction.h"
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/process.h>
 #include <wx/extension/util.h>
 #include "test.h"
 
@@ -201,6 +202,7 @@ int wxExTestApp::OnRun()
       const int fails = m_Session->run();
       wxExUIAction(GetTopWindow(), "key", "char");
       const long auto_exit(wxConfigBase::Get()->ReadLong("auto-exit", 1));
+      wxExProcess::KillAll();
       if (auto_exit)
       {
         exit(fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
@@ -278,6 +280,7 @@ int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)
       const int fails = session.run();
       app->ProcessPendingEvents();
       app->ExitMainLoop();
+      wxExProcess::KillAll();
       return fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS;
     }
     catch (const std::exception& e)

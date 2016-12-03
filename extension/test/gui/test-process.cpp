@@ -90,7 +90,5 @@ TEST_CASE("wxExProcess")
   // Go back to where we were, necessary for other tests.
   wxSetWorkingDirectory(cwd);
   
-  wxExProcess::KillAll();
-  
-  wxSleep(10);
+  // KillAll is done in main.
 }

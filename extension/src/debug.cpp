@@ -30,7 +30,7 @@ wxExDebug::wxExDebug(wxExManagedFrame* frame, wxExProcess* debug)
   
   if (wxExMenus::Load("debug", entries))
   {
-    const int use = wxConfigBase::Get()->ReadLong("DEBUG", 0);
+    const size_t use = wxConfigBase::Get()->ReadLong("DEBUG", 0);
     m_Entry = entries[use < entries.size() ? use: 0];
   }
 }

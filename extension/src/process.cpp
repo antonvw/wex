@@ -74,7 +74,7 @@ private:
   wxExShell* m_Shell;
   std::unique_ptr<wxTimer> m_Timer;
   wxCriticalSection m_Critical;
-  static std::vector<long> m_pids;
+  static std::vector<int> m_pids;
 };
 
 bool ShowProcess(wxExManagedFrame* frame, bool show)
@@ -88,7 +88,7 @@ bool ShowProcess(wxExManagedFrame* frame, bool show)
   return false;  
 }
       
-std::vector<long> wxExProcessImp::m_pids;
+std::vector<int> wxExProcessImp::m_pids;
 
 wxExShell* wxExProcess::m_Shell = nullptr;
 wxString wxExProcess::m_WorkingDirKey = _("Process folder");
@@ -314,16 +314,12 @@ bool wxExProcessImp::Execute(
   env.cwd = path;
   m_Command = command;
   
-  if (wxExecute(command, wxEXEC_ASYNC, this, &env) <= 0) return false;
+  if (wxExecute(command, wxEXEC_ASYNC, this, &env) <= 0) 
+  {
+    return false;
+  }
   
   m_pids.push_back(GetPid());
-
-  if (!env.cwd.empty())
-  {
-    wxFileName fn(env.cwd);
-    fn.Normalize();
-    wxSetWorkingDirectory(fn.GetFullPath());
-  }
   
   ShowProcess(m_Frame, true);
   m_Timer->Start(100); // milliseconds
@@ -363,9 +359,9 @@ void wxExProcessImp::HandleCommand(const wxString& command)
 
 bool wxExProcessImp::Kill()
 {
-  long pid = GetPid();
+  int pid = GetPid();
 
-  if (wxProcess::Kill(pid) != wxKILL_OK)
+  if (wxProcess::Kill(pid, wxSIGKILL) != wxKILL_OK)
   {
     return false;
   }
@@ -392,6 +388,11 @@ int wxExProcessImp::KillAll()
     }
   }
   
+  if (killed != m_pids.size())
+  {
+    std::cout << "could not kill all processes\n";
+  }
+ 
   return killed;
 }
 
