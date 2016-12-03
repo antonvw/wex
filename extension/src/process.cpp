@@ -60,7 +60,7 @@ public:
 private:
   void HandleCommand(const wxString& command);
   virtual void OnTerminate(int pid, int status) override {
-    const auto it = find (m_pids.begin(), m_pids.end(), pid);
+    const auto it = std::find(m_pids.begin(), m_pids.end(), pid);
     if (it != m_pids.end())
     {
       m_pids.erase(it);
@@ -366,7 +366,7 @@ bool wxExProcessImp::Kill()
     return false;
   }
   
-  const auto it = find (m_pids.begin(), m_pids.end(), pid);
+  const auto it = std::find(m_pids.begin(), m_pids.end(), pid);
 
   if (it != m_pids.end())
   {
