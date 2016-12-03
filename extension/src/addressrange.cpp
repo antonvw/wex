@@ -604,7 +604,7 @@ bool wxExAddressRange::Parse(
   if (command.find("\\\\/") == std::string::npos && 
       command.find("\\/") != std::string::npos)
   {
-    if (command.find(char(1) == std::string::npos))
+    if (command.find(char(1)) == std::string::npos)
     {
       ReplaceString(command, "\\/", "\x01");
       escaped = true;
