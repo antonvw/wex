@@ -5,6 +5,7 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <vector>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
