@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
+#include <iostream>
 #include <regex>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -260,7 +261,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       {
         filename.MakeAbsolute();
       }
-      std::ifstream ifs(filename.GetFullPath());
+      std::ifstream ifs(filename.GetFullPath().c_str());
       if (!ifs.is_open()) return false;
       std::string line;
       int i = 0;

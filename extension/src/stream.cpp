@@ -116,7 +116,7 @@ bool wxExStream::ProcessBegin()
   
 bool wxExStream::RunTool()
 {
-  std::ifstream ifs(m_FileName.GetFullPath());
+  std::ifstream ifs(m_FileName.GetFullPath().c_str());
 
   if (!ifs.is_open() || !ProcessBegin())
   {
@@ -141,7 +141,7 @@ bool wxExStream::RunTool()
 
   if (m_Write)
   {
-    std::ofstream ofs(m_FileName.GetFullPath());
+    std::ofstream ofs(m_FileName.GetFullPath().c_str());
   
     for (const auto & it : v)
     {
