@@ -34,8 +34,8 @@ class wxExSampleDir: public wxExDir
 public:
   /// Constructor.
   wxExSampleDir(
-    const wxString& fullpath, 
-    const wxString& findfiles, 
+    const std::string& fullpath, 
+    const std::string& findfiles, 
     wxExGrid* grid);
 private:
   /// Override the OnFile.

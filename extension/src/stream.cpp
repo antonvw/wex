@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      textfile.cpp
-// Purpose:   Implementation of wxExTextFile class
+// Name:      stream.cpp
+// Purpose:   Implementation of wxExStream class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,173 +10,146 @@
 #include <wx/wx.h>
 #endif
 #include <algorithm>
-#include <wx/extension/lexers.h>
-#include <wx/extension/textfile.h>
+#include <fstream>
+#include <iostream>
+#include <wx/extension/stream.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/util.h>
 
-wxExTextFile::wxExTextFile(
-  const wxExFileName& filename,
-  const wxExTool& tool)
+wxExStream::wxExStream(const wxExFileName& filename, const wxExTool& tool)
   : m_FileName(filename)
   , m_Tool(tool)
-  , m_Modified(false)
+  , m_FRD(wxExFindReplaceData::Get())
 {
 }
 
-bool wxExTextFile::MatchLine(wxString& line)
+bool wxExStream::Process(std::string& line, size_t line_no)
 {
+  bool modified = false;
   bool match = false;
   int count = 1;
 
-  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-
-  if (!frd->UseRegEx())
+  if (!m_FRD->UseRegEx())
   {
     if (m_Tool.GetId() == ID_TOOL_REPORT_FIND)
     {
-      std::string search_line(line);
-
-      if (!frd->MatchCase())
+      if (!m_FRD->MatchCase())
       {
-        std::transform(
-          search_line.begin(), 
-          search_line.end(), 
-          search_line.begin(), 
-          toupper);
+        std::transform(line.begin(), line.end(), line.begin(), toupper);
       }
 
-      const size_t start = search_line.find(m_FindString);
+      const size_t start = line.find(m_FindString);
 
-      if (start != wxString::npos)
+      if (start != std::string::npos)
       {
-        if (frd->MatchWord())
+        match = true;
+
+        if (m_FRD->MatchWord())
         {
-          if (( start == 0 ||
-               (start > 0 && !IsWordCharacter(search_line[start - 1]))) &&
-              !IsWordCharacter(search_line[start + m_FindString.length()]))
+          if ((start > 0 && IsWordCharacter(line[start - 1])) ||
+               IsWordCharacter(line[start + m_FindString.length()]))
           {
-            match = true;
+            match = false;
           }
-        }
-        else
-        {
-          match = true;
         }
       }
     }
     else
     {
-      count = line.Replace(
-        frd->GetFindString(), 
-        frd->GetReplaceString());
+      count = wxExReplaceAll(line, m_FRD->GetFindString(), m_FRD->GetReplaceString());
 
       if (count > 0)
       {
-        m_Modified = true;
         match = true;
+        modified = true;
       }
     }
   }
   else
   {
-    match = frd->RegExMatches(line.ToStdString());
+    match = m_FRD->RegExMatches(line);
 
     if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
     {
-      std::string s(line);
-      count = frd->RegExReplaceAll(s);
-      line = s;
-      m_Modified = true;
+      count = m_FRD->RegExReplaceAll(line);
+      if (count > 0) modified = true;
     }
   }
 
   if (match)
   {
     IncActionsCompleted(count);
-  }
-
-  return match;
-}
-
-bool wxExTextFile::Parse()
-{
-  if (
-    !m_Tool.IsFindType() || 
-    (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE && m_FileName.GetStat().IsReadOnly()))
-  {
-    return false;
-  }
-
-  if (wxExFindReplaceData::Get()->GetFindString().empty())
-  {
-    return false;
-  }
-
-  m_FindString = wxExFindReplaceData::Get()->GetFindString();
-
-  if (!wxExFindReplaceData::Get()->MatchCase())
-  {
-    std::transform(
-      m_FindString.begin(), 
-      m_FindString.end(), 
-      m_FindString.begin(), 
-      toupper);
-  }
-  
-  const int prev = m_Stats.Get(_("Actions Completed"));
-
-  for (size_t i = 0; i < GetLineCount(); i++)
-  {
-    wxString& line = GetLine(i);
-
-    if (MatchLine(line))
+    ProcessMatch(line, line_no);
+    
+    if (m_Stats.Get(_("Actions Completed").ToStdString()) - m_Prev > 250)
     {
-      Report(i);
-      
-      if (m_Stats.Get(_("Actions Completed")) - prev > 250)
-      {
-        wxLogMessage("too many matches, reconsider your search");
-        return false;
-      }
+      wxLogMessage("too many matches, reconsider your search");
+      return false;
     }
   }
 
   return true;
 }
 
-bool wxExTextFile::RunTool()
+bool wxExStream::ProcessBegin()
 {
-  if (!wxTextFile::Open(m_FileName.GetFullPath()))
+  if (
+    !m_Tool.IsFindType() || 
+    (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE && m_FileName.GetStat().IsReadOnly()) ||
+     wxExFindReplaceData::Get()->GetFindString().empty())
   {
     return false;
   }
 
-  m_Stats.m_Elements.Set(_("Files"), 1);
+  m_Write = (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE);
+  m_FindString = wxExFindReplaceData::Get()->GetFindString();
+  m_Prev = m_Stats.Get(_("Actions Completed").ToStdString());
 
-  if (GetLineCount() > 0)
+  if (!wxExFindReplaceData::Get()->MatchCase())
   {
-    if (!m_FileName.GetLexer().IsOk())
-    {
-      m_FileName.SetLexer(wxExLexers::Get()->FindByText(GetLine(0).ToStdString()));
-    }
+    std::transform(
+      m_FindString.begin(), m_FindString.end(), m_FindString.begin(), toupper);
+  }
+  
+  return true;
+}
+  
+bool wxExStream::RunTool()
+{
+  std::ifstream ifs(m_FileName.GetFullPath());
 
-    if (!Parse())
+  if (!ifs.is_open() || !ProcessBegin())
+  {
+    return false;
+  }
+
+  m_Stats.m_Elements.Set(_("Files").ToStdString(), 1);
+  
+  std::string line;
+  int line_no = 0;
+  std::vector<std::string> v;
+
+  while (std::getline(ifs, line))
+  {
+    if (!Process(line, line_no++)) return false;
+
+    if (m_Write)
     {
-      Close();
-      return false;
+      v.emplace_back(line);
     }
   }
 
-  if (m_Modified && !m_FileName.GetStat().IsReadOnly())
+  if (m_Write)
   {
-    if (!Write())
+    std::ofstream ofs(m_FileName.GetFullPath());
+  
+    for (const auto & it : v)
     {
-      Close();
-      return false;
+      ofs << it << std::endl;
     }
   }
-
-  Close();
+  
+  ProcessEnd();
 
   return true;
 }

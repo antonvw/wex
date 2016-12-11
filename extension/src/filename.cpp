@@ -11,7 +11,9 @@
 wxExFileName::wxExFileName(const std::string& fullpath)
   : m_FileName(fullpath)
   , m_Stat(fullpath) 
-  , m_Lexer(wxExLexers::Get()->FindByFileName(wxFileName(fullpath).GetFullName().ToStdString()))
+  , m_Lexer(wxExLexers::Get(false) != nullptr ? 
+      wxExLexers::Get(false)->FindByFileName(wxFileName(fullpath).GetFullName().ToStdString()):
+      std::string())
 {
 }
 

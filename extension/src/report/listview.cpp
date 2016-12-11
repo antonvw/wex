@@ -21,7 +21,7 @@
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/frame.h>
-#include <wx/extension/report/textfile.h>
+#include <wx/extension/report/stream.h>
 
 wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   wxExFrameWithHistory* frame,
@@ -109,7 +109,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
     const wxExTool& tool(event.GetId());
     if (tool.GetId() == ID_TOOL_REPORT_KEYWORD && GetType() == LIST_KEYWORD) return;
     if (tool.IsFindType() && m_Frame->FindInFilesDialog(tool.GetId()) == wxID_CANCEL) return;
-    if (!wxExTextFileWithListView::SetupTool(tool, m_Frame)) return;
+    if (!wxExStreamToListView::SetupTool(tool, m_Frame)) return;
 
 #ifdef __WXMSW__    
     std::thread t([=] {
@@ -123,7 +123,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
       wxLogStatus(item.GetFileName().GetFullPath().c_str());
       if (item.GetFileName().FileExists())
       {
-        wxExTextFileWithListView file(item.GetFileName(), tool);
+        wxExStreamToListView file(item.GetFileName(), tool);
         file.RunTool();
         stats += file.GetStatistics().GetElements();
       }

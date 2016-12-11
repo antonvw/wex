@@ -16,8 +16,7 @@
 wxExFindReplaceData* wxExFindReplaceData::m_Self = nullptr;
 
 wxExFindReplaceData::wxExFindReplaceData()
-  : wxFindReplaceData()
-  , m_TextFindWhat(_("Find what"))
+  : m_TextFindWhat(_("Find what"))
   , m_TextMatchCase(_("Match case"))
   , m_TextMatchWholeWord(_("Match whole word"))
   , m_TextRegEx(_("Regular expression"))
@@ -71,7 +70,7 @@ int wxExFindReplaceData::RegExReplaceAll(std::string& text) const
   
   text = std::regex_replace(text, 
     m_FindRegEx, 
-    GetReplaceString().ToStdString(),
+    GetReplaceString(),
     std::regex_constants::format_default);
 
   return result;
@@ -84,18 +83,18 @@ wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
   return old;
 }
 
-void wxExFindReplaceData::SetFindString(const wxString& value)
+void wxExFindReplaceData::SetFindString(const std::string& value)
 {
   if (!m_FindStrings.Set(value)) return;
-  wxFindReplaceData::SetFindString(value);
+  m_FRD.SetFindString(value);
   SetUseRegEx(m_UseRegEx);
 }
 
 void wxExFindReplaceData::SetFindStrings(
-  const std::list < wxString > & values)
+  const std::list < std::string > & values)
 {
   m_FindStrings.Set(values);
-  wxFindReplaceData::SetFindString(m_FindStrings.Get());
+  m_FRD.SetFindString(m_FindStrings.Get());
   SetUseRegEx(m_UseRegEx);
 }
 
@@ -123,17 +122,17 @@ void wxExFindReplaceData::SetMatchWord(bool value)
   }
 }
 
-void wxExFindReplaceData::SetReplaceString(const wxString& value)
+void wxExFindReplaceData::SetReplaceString(const std::string& value)
 {
   m_ReplaceStrings.Set(value);
-  wxFindReplaceData::SetReplaceString(value);
+  m_FRD.SetReplaceString(value);
 }
 
 void wxExFindReplaceData::SetReplaceStrings(
-  const std::list < wxString > & value)
+  const std::list < std::string > & value)
 {
   m_ReplaceStrings.Set(value);
-  wxFindReplaceData::SetReplaceString(m_ReplaceStrings.Get());
+  m_FRD.SetReplaceString(m_ReplaceStrings.Get());
 }
 
 void wxExFindReplaceData::SetUseRegEx(bool value) 
@@ -149,12 +148,12 @@ void wxExFindReplaceData::SetUseRegEx(bool value)
     std::regex::flag_type flags = std::regex::ECMAScript;
     if (!MatchCase()) flags |= std::regex::icase;
   
-    m_FindRegEx = std::regex(GetFindString().ToStdString(), flags);
+    m_FindRegEx = std::regex(GetFindString(), flags);
     m_UseRegEx = true;
   }
   catch (std::regex_error& e) 
   {
     m_UseRegEx = false;
-    wxLogStatus("regex error: %s %s", e.what(), GetFindString().ToStdString());
+    wxLogStatus("regex error: %s %s", e.what(), GetFindString());
   }
 }

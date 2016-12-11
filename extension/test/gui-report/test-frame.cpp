@@ -22,7 +22,7 @@ TEST_CASE("wxExFrameWithHistory")
   list->Show();
   
   REQUIRE(!GetFrame()->OpenFile(GetTestFile())); // as we have no focused stc
-  REQUIRE(!GetFrame()->GetFileHistory().GetHistoryFile().Contains("../test.h"));
+  REQUIRE(!GetFrame()->GetFileHistory().GetHistoryFile().find("../test.h") != std::string::npos);
 
   REQUIRE(!GetFrame()->OpenFile(
     wxExFileName(GetProject()),
@@ -42,7 +42,7 @@ TEST_CASE("wxExFrameWithHistory")
   REQUIRE(!GetFrame()->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
   
   // It does not open, next should fail.
-  REQUIRE(!GetFrame()->GetProjectHistory().GetHistoryFile().Contains(GetProject()));
+  REQUIRE(!GetFrame()->GetProjectHistory().GetHistoryFile().find(GetProject()) != std::string::npos);
   
   REQUIRE( GetFrame()->GetProject() == nullptr);
 

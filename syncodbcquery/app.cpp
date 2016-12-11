@@ -195,8 +195,8 @@ Frame::Frame()
         {
           m_Statistics.Inc(_("Number of query errors"));
           m_Shell->AppendText(
-            _("\nerror: ") +  wxExQuoted(p.msg) + 
-            _(" in: ") + wxExQuoted(query));
+            _("\nerror: ") +  wxString(wxExQuoted(p.msg)) + 
+            _(" in: ") + wxString(wxExQuoted(query)));
         }
       }
     }

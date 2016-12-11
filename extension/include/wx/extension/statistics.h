@@ -43,7 +43,7 @@ private:
 #endif
 
 /// Offers base statistics. All statistics involve a key value pair,
-/// where the key is a wxString, and the value a template.
+/// where the key is a string, and the value a template.
 /// The statistics can be shown on a grid, that is automatically
 /// updated whenever statistics change.
 template <class T> class WXDLLIMPEXP_BASE wxExStatistics
@@ -80,16 +80,16 @@ public:
 
   /// Returns all items as a string. All items are returned as a string,
   /// with comma's separating items, and a : separating key and value.
-  const wxString Get() const {
-    wxString text;
+  const std::string Get() const {
+    std::string text;
     for (const auto& it : m_Items)
     {
       if (!text.empty())
       {
-        text << ", ";
+        text += ", ";
       }
       
-      text << it.first << ":" << it.second;
+      text += it.first + ":" + std::to_string(it.second);
     }
     return text;};
 
@@ -97,21 +97,21 @@ public:
   const auto & GetItems() const {return m_Items;};
 
   /// Returns value for specified key.
-  const T Get(const wxString& key) const {
+  const T Get(const std::string& key) const {
     const auto it = m_Items.find(key);
     return it != m_Items.end() ? it->second: T();};
 
   /// Decrements key with value.
-  const T Dec(const wxString& key, T dec_value = 1) {
+  const T Dec(const std::string& key, T dec_value = 1) {
     return Set(key, Get(key) - dec_value);};
 
   /// Increments key with value.
-  const T Inc(const wxString& key, T inc_value = 1) {
+  const T Inc(const std::string& key, T inc_value = 1) {
     return Set(key, Get(key) + inc_value);};
 
   /// Sets key to value. If you have Shown the statistics
   /// the window is updated as well.
-  const T Set(const wxString& key, T value) {
+  const T Set(const std::string& key, T value) {
     m_Items[key] = value;
 #if wxUSE_GRID
     if (m_Grid != nullptr)
@@ -194,10 +194,10 @@ public:
   const wxExGrid* GetGrid() const {return m_Grid;}
 #endif
 private:
-  std::map<wxString, T> m_Items;
+  std::map<std::string, T> m_Items;
 
 #if wxUSE_GRID
-  std::map<wxString, int> m_Rows;
+  std::map<std::string, int> m_Rows;
   wxExGridStatistics<T>* m_Grid = nullptr;
 #endif
 };

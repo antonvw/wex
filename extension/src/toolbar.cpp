@@ -49,7 +49,7 @@ private:
   wxExFrame* m_Frame;
 };
 
-void FindPopupMenu(wxWindow* win, const std::list < wxString > & l, const wxPoint& pos)
+void FindPopupMenu(wxWindow* win, const std::list < std::string > & l, const wxPoint& pos)
 {
   wxMenu* menu = new wxMenu();
 
@@ -60,7 +60,7 @@ void FindPopupMenu(wxWindow* win, const std::list < wxString > & l, const wxPoin
   {
     menu->Append(new wxMenuItem(menu, 
       ID_FIND_FIRST + i++, 
-      (it.size() >= max_size - 3 ? it.Left(max_size) + "..." : it)));
+      (it.size() >= max_size - 3 ? it.substr(0, max_size) + "..." : it)));
     
     if (i >= FIND_MAX_FINDS) break;
   }
@@ -343,7 +343,7 @@ wxExFindTextCtrl::wxExFindTextCtrl(
     event.Skip();
     if (!GetValue().empty())
     {
-      wxExFindReplaceData::Get()->SetFindString(GetValue());
+      wxExFindReplaceData::Get()->SetFindString(GetValue().ToStdString());
       Find();
     }});
 }

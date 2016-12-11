@@ -14,7 +14,6 @@
 #endif
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
-#include <wx/textfile.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/itemdlg.h>
@@ -72,8 +71,8 @@ bool wxExSampleApp::OnInit()
 
 #if wxUSE_GRID
 wxExSampleDir::wxExSampleDir(
-  const wxString& fullpath, const wxString& findfiles, wxExGrid* grid)
-  : wxExDir(fullpath.ToStdString(), findfiles.ToStdString())
+  const std::string& fullpath, const std::string& findfiles, wxExGrid* grid)
+  : wxExDir(fullpath, findfiles)
   , m_Grid(grid)
 {
 }
@@ -196,7 +195,7 @@ wxExSampleFrame::wxExSampleFrame()
   m_Notebook->AddPage(m_Grid, "wxExGrid");
   m_Grid->CreateGrid(0, 0);
   m_Grid->AppendCols(2);
-  wxExSampleDir dir(wxGetCwd(), "*.*", m_Grid);
+  wxExSampleDir dir(wxGetCwd().ToStdString(), "*.*", m_Grid);
   dir.FindFiles();
   m_Grid->AutoSizeColumns();
 #endif
@@ -426,7 +425,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
         wxExSTC* stc = new wxExSTC(m_Notebook, editor->GetFileName());
         m_Notebook->AddPage(
           stc,
-          wxString::Format("stc%d", stc->GetId()),
+          "stc" + std::to_string(stc->GetId()),
           m_STC->GetFileName().GetFullName());
         stc->SetDocPointer(m_STC->GetDocPointer());
       }

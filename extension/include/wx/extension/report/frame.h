@@ -77,7 +77,7 @@ public:
   /// Returns true if process started.
   bool Grep(
     /// text [extension] [folder]
-    const wxString& line,
+    const std::string& line,
     /// normally grep does not replace, by setting sed, it can
     bool sed = false);
   
@@ -92,13 +92,13 @@ public:
   /// Returns true if process started.
   bool Sed(
     /// text replacement [extension] [folder]
-    const wxString& line) {return Grep(line, true);};
+    const std::string& line) {return Grep(line, true);};
     
   /// Updates file history.
   virtual void SetRecentFile(const std::string& file) override;
 
   /// Updates project history.
-  void SetRecentProject(const wxString& project) {
+  void SetRecentProject(const std::string& project) {
     m_ProjectHistory.AddFileToHistory(project);};
 
   /// Uses specified history list, and adds all elements from file history

@@ -879,7 +879,7 @@ const std::string wxExSTC::GetFindString()
     }
   }
 
-  return wxExFindReplaceData::Get()->GetFindString().ToStdString();
+  return wxExFindReplaceData::Get()->GetFindString();
 }
 
 
@@ -1235,8 +1235,8 @@ void wxExSTC::Initialize(bool file_exists)
     
   Bind(wxEVT_FIND_REPLACE_ALL, [=](wxFindDialogEvent& event) {
     ReplaceAll(
-      frd->GetFindString().ToStdString(), 
-      frd->GetReplaceString().ToStdString());});
+      frd->GetFindString(), 
+      frd->GetReplaceString());});
     
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
     if (!m_vi.GetIsActive())
@@ -1957,8 +1957,8 @@ int wxExSTC::ReplaceAll(
 bool wxExSTC::ReplaceNext(bool find_next)
 {
   return ReplaceNext(
-    wxExFindReplaceData::Get()->GetFindString().ToStdString(),
-    wxExFindReplaceData::Get()->GetReplaceString().ToStdString(),
+    wxExFindReplaceData::Get()->GetFindString(),
+    wxExFindReplaceData::Get()->GetReplaceString(),
     -1,
     find_next);
 }

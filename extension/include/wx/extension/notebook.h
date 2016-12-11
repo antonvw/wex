@@ -36,18 +36,18 @@ public:
   /// Adds the page with given key and fills the keys.
   wxWindow* AddPage(
     wxWindow* page,
-    const wxString& key,
-    const wxString& text = wxEmptyString, // in that case uses key as text
+    const std::string& key,
+    const std::string& text = std::string(), // in that case uses key as text
     bool select = false,
     const wxBitmap& bitmap = wxNullBitmap);
 
   /// Changes the selection for the given page, returning the previous selection.
   /// If the key does not exist an empty string is returned.
-  const wxString ChangeSelection(const wxString& key);
+  const std::string ChangeSelection(const std::string& key);
 
   /// Deletes the page with the given key.
   /// Returns true if page could be deleted.
-  bool DeletePage(const wxString& key);
+  bool DeletePage(const std::string& key);
 
   /// Do something for each page in the notebook.
   /// The id should be inbetween ID_ALL_LOWEST and ID_ALL_HIGHEST.
@@ -72,7 +72,7 @@ public:
           {
             return false;
           }
-          const wxString key = m_Windows[GetPage(page)];
+          const std::string key = m_Windows[GetPage(page)];
           m_Windows.erase(GetPage(page));
           m_Keys.erase(key);
           wxAuiNotebook::DeletePage(page);
@@ -115,24 +115,24 @@ public:
     return true;};
   
   /// Returns key for the current page.
-  const wxString GetCurrentPage();
+  const std::string GetCurrentPage();
 
   /// Returns the key specified by the given page.
   /// If the page does not exist or is nullptr an empty string is returned.
-  const wxString GetKeyByPage(wxWindow* page) const {
-    if (page == nullptr) return wxString();
+  const std::string GetKeyByPage(wxWindow* page) const {
+    if (page == nullptr) return std::string();
     const auto& it = m_Windows.find(page);
-    return (it != m_Windows.end() ? it->second: wxString());};
+    return (it != m_Windows.end() ? it->second: std::string());};
   
   /// Returns the page specified by the given key.
   /// If the key does not exist nullptr is returned.
-  wxWindow* GetPageByKey(const wxString& key) const {
+  wxWindow* GetPageByKey(const std::string& key) const {
     const auto& it = m_Keys.find(key);
     return (it != m_Keys.end() ? it->second: nullptr);};
   
   /// Returns the page index specified by the given key.
   /// If the key does not exist wxNOT_FOUND is returned.
-  int GetPageIndexByKey(const wxString& key) const {
+  int GetPageIndexByKey(const std::string& key) const {
     wxWindow* page = GetPageByKey(key);
     return (page != nullptr ? GetPageIndex(page): wxNOT_FOUND);};
   
@@ -140,8 +140,8 @@ public:
   wxWindow* InsertPage(
     size_t page_idx,
     wxWindow* page,
-    const wxString& key,
-    const wxString& text = wxEmptyString, // in that case uses key as text
+    const std::string& key,
+    const std::string& text = std::string(), // in that case uses key as text
     bool select = false,
     const wxBitmap& bitmap = wxNullBitmap);
 
@@ -159,21 +159,21 @@ public:
   /// on the page for the given key.
   /// If the key does not exist false is returned.
   bool SetPageText(
-    const wxString& key,
-    const wxString& new_key,
-    const wxString& text,
+    const std::string& key,
+    const std::string& new_key,
+    const std::string& text,
     const wxBitmap& bitmap = wxNullBitmap);
       
   /// Selects (and returns) the page specified by the given key.
   /// If the key does not exist nullptr is returned.
-  wxWindow* SetSelection(const wxString& key);
+  wxWindow* SetSelection(const std::string& key);
   
   /// Split performs a split operation programmatically. 
   /// If the key does not exist false is returned.
   bool Split(
     /// The page that will be split off. 
     /// This page will also become the active page after the split.
-    const wxString& key, 
+    const std::string& key, 
     /// Specify where the pane should go.
     /// It should be one of the following: 
     /// - wxTOP
@@ -184,7 +184,7 @@ public:
 private:
   wxExManagedFrame* m_Frame;
   // In bookctrl.h: m_pages
-  std::map<wxString, wxWindow*> m_Keys;
-  std::map<wxWindow*, wxString> m_Windows;
+  std::map<std::string, wxWindow*> m_Keys;
+  std::map<wxWindow*, std::string> m_Windows;
 };
 #endif // wxUSE_GUI

@@ -225,9 +225,9 @@ const std::string wxExClipboardGet()
 }
 
 #if wxUSE_GUI
-void wxExComboBoxFromList(wxComboBox* cb, const std::list < wxString > & text)
+void wxExComboBoxFromList(wxComboBox* cb, const std::list < std::string > & text)
 {
-  wxExComboBoxAs<const std::list < wxString >>(cb, text);
+  wxExComboBoxAs<const std::list < std::string >>(cb, text);
 }
 #endif
 
@@ -422,13 +422,13 @@ bool wxExIsCodewordSeparator(int c)
          c == ',' || c == ';' || c == ':' || c == '@';
 }
 
-const std::list < wxString > wxExListFromConfig(const wxString& config)
+const std::list < std::string > wxExListFromConfig(const std::string& config)
 {
   wxStringTokenizer tkz(
     wxConfigBase::Get()->Read(config), 
     wxExGetFieldSeparator());
 
-  std::list < wxString > l;
+  std::list < std::string > l;
 
   while (tkz.HasMoreTokens())
   {
@@ -439,21 +439,21 @@ const std::list < wxString > wxExListFromConfig(const wxString& config)
 }
 
 /// Saves entries from a list with strings to the config.
-void wxExListToConfig(const std::list < wxString > & l, const wxString& config)
+void wxExListToConfig(const std::list < std::string > & l, const std::string& config)
 {
   if (l.empty()) return;
 
-  wxString text;
+  std::string text;
   const int commandsSaveInConfig = 75;
   int items = 0;
 
   for (const auto& it : l)
   {
     if (items++ > commandsSaveInConfig) break;
-    text += it + wxString(wxExGetFieldSeparator());
+    text += it + wxExGetFieldSeparator();
   }
   
-  wxConfigBase::Get()->Write(config, text);
+  wxConfigBase::Get()->Write(config, text.c_str());
 }
 
 void wxExLogStatus(const wxExFileName& fn, long flags)
@@ -735,6 +735,23 @@ const std::string wxExPrintHeader(const wxExFileName& filename)
 const std::string wxExQuoted(const std::string& text)
 {
   return "'" + text + "'";
+}
+
+int wxExReplaceAll(std::string& text, 
+  const std::string& search,
+  const std::string& replace) 
+{
+  int count = 0;
+  size_t pos = 0;
+
+  while ((pos = text.find(search, pos)) != std::string::npos) 
+  {
+    text.replace(pos, search.length(), replace);
+    pos += replace.length();
+    count++;
+  }
+  
+  return count;
 }
 
 template <typename InputIterator>

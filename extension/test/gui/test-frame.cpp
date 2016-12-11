@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test.cpp
+// Name:      test-frame.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2016 Anton van Wezenbeek

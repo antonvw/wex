@@ -187,7 +187,7 @@ Frame::Frame(App* app)
     {
       if (count > 0)
       {
-        wxExOpenFiles(this, GetFileHistory().GetVector(count), 
+        wxExOpenFiles(this, GetFileHistory().GetHistoryFiles(count), 
           STC_WIN_DEFAULT, wxDIR_DEFAULT, m_App->GetCommand());
       }
     }
@@ -197,7 +197,7 @@ Frame::Frame(App* app)
       if (!GetProjectHistory().GetHistoryFile().empty())
       {
         OpenFile(
-          wxExFileName(GetProjectHistory().GetHistoryFile().ToStdString()),
+          wxExFileName(GetProjectHistory().GetHistoryFile()),
           0,
           std::string(),
           0,
@@ -418,17 +418,17 @@ Frame::Frame(App* app)
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_Projects == nullptr) AddPaneProjects();
-    const wxString text = wxString::Format("%s%d", _("project"), m_NewProjectNo++);
-    const wxFileName fn(
+    const std::string text = wxString::Format("%s%d", _("project"), m_NewProjectNo++).ToStdString();
+    const wxExFileName fn(
        (!GetProjectHistory().GetHistoryFile().empty() ? 
-           wxPathOnly(GetProjectHistory().GetHistoryFile()): wxExConfigDir()),
+           wxPathOnly(GetProjectHistory().GetHistoryFile()).ToStdString(): wxExConfigDir()),
       text + ".prj");
     wxWindow* page = new wxExListViewFile(m_Projects,
       this,
-      fn.GetFullPath().ToStdString(),
+      fn.GetFullPath(),
       wxID_ANY,
       wxExListViewWithFrame::LIST_MENU_DEFAULT);
-    ((wxExListViewFile*)page)->FileNew(fn.GetFullPath().ToStdString());
+    ((wxExListViewFile*)page)->FileNew(fn.GetFullPath());
     // This file does yet exist, so do not give it a bitmap.
     m_Projects->AddPage(page, fn.GetFullPath(), text, true);
     SetRecentProject(fn.GetFullPath());
@@ -582,8 +582,8 @@ wxExListView* Frame::Activate(
   {
     ShowPane("OUTPUT");
 
-    const wxString name = wxExListView::GetTypeDescription(type) +
-      (lexer != nullptr ?  " " + lexer->GetDisplayLexer(): wxString());
+    const std::string name = wxExListView::GetTypeDescription(type).ToStdString() +
+      (lexer != nullptr ?  " " + lexer->GetDisplayLexer(): std::string());
 
     wxExListViewWithFrame* list = 
       (wxExListViewWithFrame*)m_Lists->GetPageByKey(name);
@@ -851,7 +851,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       }
       
       // key should be unique
-      const wxString key(wxString::Format("split%06d", m_SplitId++));
+      const std::string key("split" + std::to_string(m_SplitId++));
       
       // Place new page before page for editor.
       m_Editors->InsertPage(
@@ -1074,10 +1074,9 @@ wxExSTC* Frame::OpenFile(
   const wxExVCSEntry& vcs,
   wxExSTCWindowFlags flags)
 {
-  const wxString unique = 
+  const std::string unique = 
     vcs.GetCommand().GetCommand() + " " + vcs.GetFlags();
-    
-  const wxString key = filename.GetFullPath() + " " + unique;
+  const std::string key = filename.GetFullPath() + " " + unique;
 
   wxWindow* page = m_Editors->SetSelection(key);
   
@@ -1087,7 +1086,7 @@ wxExSTC* Frame::OpenFile(
       m_Editors, 
       vcs.GetStdOut(),
       flags,
-      filename.GetFullName() + " " + unique.ToStdString());
+      filename.GetFullName() + " " + unique);
 
     wxExVCSCommandOnSTC(
       vcs.GetCommand(), filename.GetLexer(), editor);
@@ -1221,7 +1220,7 @@ wxExSTC* Frame::OpenFile(
         }
       }
 
-      const wxString key(filename.GetFullPath());
+      const std::string key(filename.GetFullPath());
 
       notebook->AddPage(
         editor,

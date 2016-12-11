@@ -8,8 +8,7 @@
 #pragma once
 
 #include <wx/extension/dir.h>
-#include <wx/extension/statistics.h>
-#include <wx/extension/report/textfile.h> // for wxExFileStatistics
+#include <wx/extension/stream-statistics.h>
 #include <wx/extension/tool.h>
 
 /// Offers a wxExDir with tool support.
@@ -29,7 +28,7 @@ public:
 protected:  
   virtual bool OnFile(const std::string& file) override;
 private:    
-  wxExFileStatistics m_Statistics;
+  wxExStreamStatistics m_Statistics;
   const wxExTool m_Tool;
 };
 

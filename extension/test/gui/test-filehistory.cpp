@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-frame.cpp
+// Name:      test-filehistory.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -34,8 +34,8 @@ TEST_CASE("wxExFileHistory")
     
     history.AddFileToHistory(GetTestFile().GetFullPath());
     REQUIRE( history.GetCount() == 1);
-    REQUIRE( history.GetVector(0).size() == 0);
-    REQUIRE( history.GetVector(5).size() == 1);
+    REQUIRE( history.GetHistoryFiles(0).size() == 0);
+    REQUIRE( history.GetHistoryFiles(5).size() == 1);
 
     // next shows a popupmenu, but remains active
     // history.PopupMenu(GetFrame(), 5);
@@ -55,6 +55,8 @@ TEST_CASE("wxExFileHistory")
     wxExFileHistory history(4, 1000, "MY-KEY");
     history.AddFileToHistory(GetTestFile().GetFullPath());
     REQUIRE( history.GetCount() == 1);
+    REQUIRE( history.GetBaseId() == 1000);
+    REQUIRE( history.GetMaxFiles() == 4);
     history.Save();
   }
   

@@ -7,6 +7,7 @@
 
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listviewfile.h>
+#include <wx/extension/report/stream.h>
 #include "test.h"
 
 TEST_CASE("wxExDirTool")
@@ -17,7 +18,7 @@ TEST_CASE("wxExDirTool")
     GetFrame(), 
     wxExListView::LIST_FIND);
     
-  if (!wxExTextFileWithListView::SetupTool(tool, GetFrame(), report))
+  if (!wxExStreamToListView::SetupTool(tool, GetFrame(), report))
   {
     return;
   }

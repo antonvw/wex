@@ -84,7 +84,7 @@
   }                                                          \
                                                              \
   m_FindReplaceDialog = new wxFindReplaceDialog(             \
-    this, wxExFindReplaceData::Get(), text, dlg);            \
+    this, &wxExFindReplaceData::Get()->GetFRD(), text, dlg);  \
   m_FindReplaceDialog->Show();                               \
 };                                                           \
   

@@ -14,15 +14,15 @@
 class WXDLLIMPEXP_BASE wxExTextCtrlInput
 {
 public:
-  /// Constructor.
-  wxExTextCtrlInput(const wxString& name);
+  /// Constructor, fills values from config.
+  wxExTextCtrlInput(const std::string& name);
   
-  /// Destructor.
+  /// Destructor, writes values to config.
  ~wxExTextCtrlInput();
 
   /// Returns value on the list pointed to by iterator, 
   /// or empty string, if iterator is at end.
-  const wxString Get() const;
+  const std::string Get() const;
   
   /// Gets all values.
   const auto& GetValues() const {return m_Values;};
@@ -30,10 +30,10 @@ public:
   /// Sets first value on the list.
   /// Sets iterator to begin of list.
   /// Returns false if value is empty.
-  bool Set(const wxString& value);
+  bool Set(const std::string& value);
   
   /// Sets first value on the list from specified text control.
-  bool Set(const wxTextCtrl* tc) {return Set(tc->GetValue());};
+  bool Set(const wxTextCtrl* tc) {return Set(tc->GetValue().ToStdString());};
 
   /// Sets iterator according to specified key, and then
   /// sets value of text control (if not nullptr) to the list value 
@@ -53,9 +53,9 @@ public:
   
   /// Sets all values (values might be empty).
   /// Sets iterator to begin of list.
-  void Set(const std::list < wxString > & values);
+  void Set(const std::list < std::string > & values);
 private:
-  std::list < wxString > m_Values;
-  std::list < wxString >::const_iterator m_Iterator;
-  const wxString m_Name;
+  std::list < std::string > m_Values;
+  std::list < std::string >::const_iterator m_Iterator;
+  const std::string m_Name;
 };

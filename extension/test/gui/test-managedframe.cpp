@@ -56,9 +56,9 @@ TEST_CASE("wxExManagedFrame", "[stc]")
   GetFrame()->SetRecentFile(GetTestFile().GetFullPath());
   GetFrame()->SetRecentFile("testing");
   
-  REQUIRE( GetFrame()->GetFileHistory().GetHistoryFile().Contains("test.h"));
+  REQUIRE( GetFrame()->GetFileHistory().GetHistoryFile().find("test.h") != std::string::npos);
   REQUIRE( GetFrame()->GetFileHistory().GetCount() > 0);
-  REQUIRE(!GetFrame()->GetFileHistory().GetVector(5).empty());
+  REQUIRE(!GetFrame()->GetFileHistory().GetHistoryFiles(5).empty());
   
   GetFrame()->ShowExMessage("hello from GetFrame()");
   REQUIRE(!GetFrame()->ShowPane("xxxx"));

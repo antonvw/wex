@@ -247,7 +247,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       MOTION(Char, Right, false, false);}},
     {"nN", [&](const std::string& command){REPEAT(
       if (!GetSTC()->FindNext(
-        wxExFindReplaceData::Get()->GetFindString().ToStdString(), GetSearchFlags(), 
+        wxExFindReplaceData::Get()->GetFindString(), GetSearchFlags(), 
         command == "n"? m_SearchForward: !m_SearchForward))
       {
         m_Command.clear();
@@ -505,9 +505,9 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"*#", [&](const std::string& command){
       const auto start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
       const auto end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
-      wxExFindReplaceData::Get()->SetFindString(GetSTC()->GetTextRange(start, end));  
+      wxExFindReplaceData::Get()->SetFindString(GetSTC()->GetTextRange(start, end).ToStdString());  
       GetSTC()->FindNext(
-        "\\<"+ wxExFindReplaceData::Get()->GetFindString().ToStdString() + "\\>", 
+        "\\<"+ wxExFindReplaceData::Get()->GetFindString() + "\\>", 
         GetSearchFlags(), 
         command == "*");
       return true;}},

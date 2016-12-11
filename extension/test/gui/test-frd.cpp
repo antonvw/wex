@@ -36,7 +36,7 @@ TEST_CASE("wxExFrd")
   REQUIRE( frd->RegExMatches("some text find9 other text"));
   REQUIRE(!frd->RegExMatches("some text finda other text"));
   
-  const std::list < wxString > l{"find3","find4","find5"};
+  const std::list < std::string > l{"find3","find4","find5"};
   frd->SetFindStrings(l);
   REQUIRE( frd->GetFindString() == "find3");
   
@@ -58,7 +58,7 @@ TEST_CASE("wxExFrd")
   REQUIRE( frd->GetReplaceString() == "find3");
   REQUIRE( frd->SearchDown());
   
-  const std::list< wxString > e;
+  const std::list< std::string > e;
   frd->SetFindStrings(e);
   frd->SetReplaceStrings(e);
   REQUIRE( frd->GetFindStrings().empty());

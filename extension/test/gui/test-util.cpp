@@ -23,7 +23,7 @@
 
 TEST_CASE("wxEx", "[stc][vi][!throws]")
 {
-  std::list < wxString > l{"x","y","z"};
+  std::list < std::string > l{"x","y","z"};
   std::vector<int> cs{'(',')','{','<','>'};
     
   const std::string rect("\
@@ -92,7 +92,7 @@ TEST_CASE("wxEx", "[stc][vi][!throws]")
 #ifndef __WXOSX__
     AddPane(GetFrame(), cb);
 #endif
-    wxExComboBoxAs<const std::list < wxString >>(cb, l);
+    wxExComboBoxAs<const std::list < std::string >>(cb, l);
   }
   
   SECTION("wxExComboBoxFromList")

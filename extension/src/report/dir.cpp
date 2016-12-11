@@ -12,6 +12,7 @@
 #include <wx/config.h>
 #include <wx/extension/listitem.h>
 #include <wx/extension/report/dir.h>
+#include <wx/extension/report/stream.h>
 
 wxExDirTool::wxExDirTool(const wxExTool& tool,
   const std::string& fullpath, const std::string& filespec, int flags)
@@ -23,7 +24,7 @@ wxExDirTool::wxExDirTool(const wxExTool& tool,
 
 bool wxExDirTool::OnFile(const std::string& file)
 {
-  wxExTextFileWithListView report(file, m_Tool);
+  wxExStreamToListView report(file, m_Tool);
 
   bool ret = report.RunTool();
   m_Statistics += report.GetStatistics();

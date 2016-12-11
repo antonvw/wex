@@ -1,23 +1,23 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      textfile.h
-// Purpose:   Declaration of class 'wxExTextFileWithListView'
+// Name:      stream.h
+// Purpose:   Declaration of class 'wxExStreamToListView'
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wx/extension/textfile.h>
+#include <wx/extension/stream.h>
 
 class wxExFrameWithHistory;
 class wxExListView;
 
-/// Offers a wxExTextFile with reporting to a listview.
-class WXDLLIMPEXP_BASE wxExTextFileWithListView : public wxExTextFile
+/// Offers a wxExStream with reporting to a listview.
+class WXDLLIMPEXP_BASE wxExStreamToListView : public wxExStream
 {
 public:
   /// Constructor.
-  wxExTextFileWithListView(
+  wxExStreamToListView(
     const wxExFileName& filename,
     const wxExTool& tool);
 
@@ -71,21 +71,18 @@ private:
   void CommentStatementEnd();
   void CommentStatementStart();
   
-  /// Parses the specified line, and invokes actions depending on the tool,
-  /// and fills the comments if any on the line.
-  /// At the end it calls ParseComments.
-  bool ParseLine(const wxString& line);
-  
-  // Implement interface from wxExTextFile.
-  virtual bool Parse() override;
-  virtual void Report(size_t line) override;
+  // Implement interface from wxExStream.
+  virtual bool Process(std::string& line, size_t line_no) override;
+  virtual bool ProcessBegin() override;
+  virtual void ProcessEnd() override;
+  virtual void ProcessMatch(const std::string& line, size_t line_no) override;
   
   static wxExListView* m_Report;
   static wxExFrameWithHistory* m_Frame;
 
   bool m_IsCommentStatement;
   bool m_IsString;
-
+  
   wxExSyntaxType m_LastSyntaxType;
   wxExSyntaxType m_SyntaxType;
 };

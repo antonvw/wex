@@ -135,7 +135,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   }
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExFindReplaceData::Get()->SetFindStrings(std::list < wxString > {});}, ID_CLEAR_FINDS);
+    wxExFindReplaceData::Get()->SetFindStrings(std::list < std::string > {});}, ID_CLEAR_FINDS);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExSTC::ConfigDialog(this,
@@ -152,8 +152,8 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     {
       auto it = wxExFindReplaceData::Get()->GetFindStrings().begin();
       std::advance(it, event.GetId() - ID_FIND_FIRST);
-      if (stc->FindNext(it->ToStdString(), 
-        stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1))
+      if (stc->FindNext(*it), 
+        stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1)
       {
         wxExFindReplaceData::Get()->SetFindString(*it);
       }
@@ -255,7 +255,7 @@ wxPanel* wxExManagedFrame::CreateExPanel()
 }
 
 void wxExManagedFrame::DoRecent(
-  const wxFileHistory& history, 
+  const wxExFileHistory& history, 
   size_t index, 
   wxExSTCWindowFlags flags)
 {
@@ -533,7 +533,7 @@ wxExTextCtrl::wxExTextCtrl(
           m_Commands.Set(this);
           break;
         case TYPE_FIND:
-          wxExFindReplaceData::Get()->SetFindString(GetValue());
+          wxExFindReplaceData::Get()->SetFindString(GetValue().ToStdString());
           break;
       }
       m_Frame->HideExBar(focus);}});
@@ -560,7 +560,7 @@ bool wxExTextCtrl::SetEx(wxExEx* ex, const std::string& command)
     case TYPE_COMMAND:
       if (!m_Commands.Get().empty())
       {
-        SetValue(m_ModeVisual && !m_Commands.Get().StartsWith(range) ? 
+        SetValue(m_ModeVisual && !m_Commands.Get().find(range) == 0 ? 
           range + m_Commands.Get(): m_Commands.Get()); 
       }
       else

@@ -21,6 +21,7 @@
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listviewfile.h>
+#include <wx/extension/report/stream.h>
 
 wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   wxWindowID id,
@@ -95,7 +96,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (!event.GetString().empty())
     {
-      Grep(event.GetString());
+      Grep(event.GetString().ToStdString());
     }
     else
     {
@@ -109,7 +110,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (!event.GetString().empty())
     {
-      Sed(event.GetString());
+      Sed(event.GetString().ToStdString());
     }
     else
     {
@@ -133,7 +134,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
        ID_TOOL_REPORT_REPLACE:
        ID_TOOL_REPORT_FIND);
 
-  if (!wxExTextFileWithListView::SetupTool(tool, this))
+  if (!wxExStreamToListView::SetupTool(tool, this))
   {
     return;
   }
@@ -192,7 +193,7 @@ bool wxExFrameWithHistory::FindInFiles(
     return false;
   }
   
-  if (!wxExTextFileWithListView::SetupTool(tool, this, report))
+  if (!wxExStreamToListView::SetupTool(tool, this, report))
   {
     return false;
   }
@@ -208,7 +209,7 @@ bool wxExFrameWithHistory::FindInFiles(
       
       if (fn.FileExists())
       {
-        wxExTextFileWithListView file(fn, tool);
+        wxExStreamToListView file(fn, tool);
 
         if (!file.RunTool())
         {
@@ -276,8 +277,8 @@ const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
   
   // Printing a % in wxLogStatus gives assert
   if (
-    !wxExFindReplaceData::Get()->GetFindString().Contains("%") &&
-    !wxExFindReplaceData::Get()->GetReplaceString().Contains("%"))
+    wxExFindReplaceData::Get()->GetFindString().find("%") == std::string::npos &&
+    wxExFindReplaceData::Get()->GetReplaceString().find("%") == std::string::npos )
   {
     log = _("Searching for") + ": " + wxExFindReplaceData::Get()->GetFindString();
 
@@ -290,12 +291,12 @@ const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
   return log;
 }
 
-bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
+bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
 {
   static wxString arg1, arg2;
   static int arg3 = wxDIR_FILES;
 
-  if (wxExCmdLineParser(arg.ToStdString(), 
+  if (wxExCmdLineParser(arg, 
      {{{"r", "recursive"}, {0, [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}}},
      {},
      {{"match", {0, [&](std::vector<std::string> & v) {wxExFindReplaceData::Get()->SetFindString(v[0]);}}},
@@ -323,7 +324,7 @@ bool wxExFrameWithHistory::Grep(const wxString& arg, bool sed)
     ID_TOOL_REPORT_REPLACE:
     ID_TOOL_REPORT_FIND);
 
-  if (!wxExTextFileWithListView::SetupTool(tool, this))
+  if (!wxExStreamToListView::SetupTool(tool, this))
   {
     wxLogStatus("setup failed");
     return false;
@@ -477,7 +478,7 @@ void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
   {
     wxExListItem item(
       m_FileHistoryList, 
-      GetFileHistory().GetHistoryFile(i).ToStdString());
+      GetFileHistory().GetHistoryFile(i));
 
     if (item.GetFileName().GetStat().IsOk())
     {

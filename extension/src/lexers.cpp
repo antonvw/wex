@@ -27,7 +27,7 @@ wxExLexers* wxExLexers::m_Self = nullptr;
 // This must be an existing xml file containing all lexers.
 // It does not do LoadDocument, however if you use the global Get,
 // it both constructs and loads the lexers.
-wxExLexers::wxExLexers(const wxFileName& filename)
+wxExLexers::wxExLexers(const wxExFileName& filename)
   : m_FileName(filename)
   // Here the default theme is set, and used if the application
   // is run for the first time.
@@ -138,6 +138,7 @@ const wxExLexer wxExLexers::FindByText(const std::string& text) const
   else if (text_lowercase.StartsWith("//")) return FindByName("cpp");
   else if (text_lowercase.StartsWith("<?php")) return FindByName("phpscript");
   else if (text_lowercase.StartsWith("#!/bin/csh")) return FindByName("csh");
+  else if (text_lowercase.StartsWith("#!/bin/env python")) return FindByName("python");
   else if (text_lowercase.StartsWith("#!/bin/tcsh")) return FindByName("tcsh");
   else if (text_lowercase.StartsWith("#!/bin/sh")) return FindByName("sh");
   else

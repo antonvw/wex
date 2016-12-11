@@ -98,7 +98,7 @@ void wxExComboBoxAs(wxComboBox* cb, const T& t)
 /// Adds entries to a combobox from a list with strings.
 void wxExComboBoxFromList(
   wxComboBox* cb,
-  const std::list < wxString > & text);
+  const std::list < std::string > & text);
 #endif
   
 /// Compares the files, using comparator set in the config.
@@ -160,13 +160,13 @@ bool wxExIsBrace(int c);
 bool wxExIsCodewordSeparator(int c);
 
 /// Loads entries from the config into a list with strings.
-const std::list < wxString > wxExListFromConfig(
-  const wxString& config);
+const std::list < std::string > wxExListFromConfig(
+  const std::string& config);
 
 /// Saves entries from a list with strings to the config.
 void wxExListToConfig(
-  const std::list < wxString > & l, 
-  const wxString& config);
+  const std::list < std::string > & l, 
+  const std::string& config);
 
 /// Flags for wxExLogStatus.
 enum wxExStatusFlags
@@ -267,6 +267,12 @@ const std::string wxExPrintHeader(const wxExFileName& filename);
 
 /// Returns quotes around the text.
 const std::string wxExQuoted(const std::string& text);
+
+/// Replaces all substrings in text with replace.
+/// Returns number of replacements.
+int wxExReplaceAll(std::string& text, 
+  const std::string& search,
+  const std::string& replace);
 
 /// Executes all process between backquotes in command, 
 /// and changes command with replaced match with output from process.

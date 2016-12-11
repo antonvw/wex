@@ -5,7 +5,7 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/textfile.h>
+#include <wx/extension/stream.h>
 #include "../test.h"
 
 TEST_CASE( "wxExStatistics" ) 
@@ -21,8 +21,8 @@ TEST_CASE( "wxExStatistics" )
   REQUIRE(statistics.Get("test") == 12);
   statistics.Inc("test2");
   REQUIRE(statistics.Get("test2") == 1);
-  REQUIRE(statistics.Get().Contains("test"));
-  REQUIRE(statistics.Get().Contains("test2"));
+  REQUIRE(statistics.Get().find("test") != std::string::npos);
+  REQUIRE(statistics.Get().find("test2") != std::string::npos);
 
   wxExStatistics<long> copy(statistics);
   REQUIRE(copy.Get("test") == 12);

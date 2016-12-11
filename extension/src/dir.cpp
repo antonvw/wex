@@ -53,8 +53,8 @@ private:
   wxExDir& m_Dir;
 };
 
-wxExDir::wxExDir(const std::string& fullpath, const std::string& filespec, int flags)
-  : wxDir(fullpath)
+wxExDir::wxExDir(const std::string& dir, const std::string& filespec, int flags)
+  : m_Dir(dir)
   , m_FileSpec(filespec)
   , m_Flags(flags)
 {
@@ -64,7 +64,7 @@ int wxExDir::FindFiles()
 {
   if (!IsOpened())
   {
-    wxLogError("Could not open: " + GetName());
+    wxLogError("Could not open: " + m_Dir.GetName());
     return -1;
   }
   else if (Running())
@@ -79,7 +79,7 @@ int wxExDir::FindFiles()
   
   // Using m_FileSpec only works if it 
   // contains single spec (*.h), wxDir does not handle multi specs (*.cpp; *.h).
-  const size_t retValue = Traverse(
+  const size_t retValue = m_Dir.Traverse(
     traverser, 
     (m_FileSpec.find(";") != std::string::npos ? std::string(): m_FileSpec), 
     m_Flags);

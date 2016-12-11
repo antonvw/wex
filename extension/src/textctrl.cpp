@@ -12,7 +12,7 @@
 #include <wx/extension/textctrl.h>
 #include <wx/extension/util.h>
 
-wxExTextCtrlInput::wxExTextCtrlInput(const wxString& name) 
+wxExTextCtrlInput::wxExTextCtrlInput(const std::string& name) 
   : m_Name(name)
   , m_Values(wxExListFromConfig(name))
   , m_Iterator(m_Values.cbegin()) 
@@ -24,12 +24,12 @@ wxExTextCtrlInput::~wxExTextCtrlInput()
   wxExListToConfig(m_Values, m_Name);
 }
 
-const wxString wxExTextCtrlInput::Get() const 
+const std::string wxExTextCtrlInput::Get() const 
 {
-  return m_Iterator != m_Values.end() ? *m_Iterator: wxString();
+  return m_Iterator != m_Values.end() ? *m_Iterator: std::string();
 }
   
-bool wxExTextCtrlInput::Set(const wxString& value)
+bool wxExTextCtrlInput::Set(const std::string& value)
 {
   if (value.empty()) return false;
 
@@ -82,7 +82,7 @@ bool wxExTextCtrlInput::Set(int key, wxTextCtrl* tc)
   return true;
 }
 
-void wxExTextCtrlInput::Set(const std::list < wxString > & values)
+void wxExTextCtrlInput::Set(const std::list < std::string > & values)
 {
   m_Values.assign(values.cbegin(), values.cend());
   m_Iterator = m_Values.cbegin();

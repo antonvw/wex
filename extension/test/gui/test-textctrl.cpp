@@ -24,11 +24,11 @@ TEST_CASE("wxExTextCtrl")
   
   wxExTextCtrlInput tip("tip");
   REQUIRE( tip.Set("one"));
-  REQUIRE(!tip.Set(wxString()));
+  REQUIRE(!tip.Set(std::string()));
   REQUIRE( tip.Get() == "one");
   REQUIRE( tip.GetValues().front() == "one");
   
-  tip.Set(std::list < wxString > {"find3","find4","find5"});
+  tip.Set(std::list < std::string > {"find3","find4","find5"});
   REQUIRE( tip.Get() == "find3");
   REQUIRE( tip.GetValues().size() == 3);
   
@@ -51,7 +51,7 @@ TEST_CASE("wxExTextCtrl")
 
   REQUIRE(!tip.Set(WXK_NONE, tc));
 
-  tip.Set(std::list < wxString > {"1","2", "3", "4", "5", "6", "7", "8",
+  tip.Set(std::list < std::string > {"1","2", "3", "4", "5", "6", "7", "8",
     "9", "10", "11", "12"});
   for (auto key : std::vector<int> {WXK_UP, WXK_DOWN, WXK_HOME, WXK_END,
     WXK_PAGEUP, WXK_PAGEDOWN}) 
@@ -59,8 +59,8 @@ TEST_CASE("wxExTextCtrl")
     INFO( key);
     REQUIRE( tip.Set(key, tc));
   }
-  
-  const std::list < wxString > e{};
+
+  const std::list < std::string > e{};
   tip.Set(e);
   REQUIRE( tip.GetValues().empty());
 }

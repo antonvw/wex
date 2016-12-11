@@ -422,7 +422,7 @@ const wxString wxExGrid::GetFindString() const
     // Only if we have one cell, so one EOL.
     if (tkz.CountTokens() == 1)
     {
-      wxExFindReplaceData::Get()->SetFindString(tkz.GetNextToken());
+      wxExFindReplaceData::Get()->SetFindString(tkz.GetNextToken().ToStdString());
     }
   }
   else
@@ -434,7 +434,7 @@ const wxString wxExGrid::GetFindString() const
 
     if (!val.empty())
     {
-      wxExFindReplaceData::Get()->SetFindString(val);
+      wxExFindReplaceData::Get()->SetFindString(val.ToStdString());
     }
   }
     

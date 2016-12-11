@@ -11,5 +11,5 @@
 #include <vector>
 #include <wx/extension/tocontainer.h>
 
-using wxExToListString = wxExToContainer<std::list < wxString > >;
+using wxExToListString = wxExToContainer<std::list < std::string > >;
 using wxExToVectorString = wxExToContainer<std::vector < std::string > >;

@@ -14,7 +14,6 @@
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/numdlg.h>
-#include <wx/textfile.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/itemdlg.h>
@@ -197,7 +196,7 @@ Frame::Frame()
 
   if (!GetFileHistory().GetHistoryFile().empty() && GetManager().GetPane("DATA").IsShown())
   {
-    OpenFile(GetFileHistory().GetHistoryFile().ToStdString());
+    OpenFile(GetFileHistory().GetHistoryFile());
   }
 
   if (GetManager().GetPane("SHELL").IsShown())
@@ -393,7 +392,7 @@ Frame::Frame()
     }
     else
     {
-      m_Statistics.Inc(_("Connections Accepted"));
+      m_Statistics.Inc("Connections Accepted");
       sock->SetEventHandler(*this, ID_CLIENT);
       sock->SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
       sock->Notify(true);
@@ -418,7 +417,7 @@ Frame::Frame()
     {
       case wxSOCKET_INPUT:
       {
-        m_Statistics.Inc(_("Input Events"));
+        m_Statistics.Inc("Input Events");
 
         // We disable input events, so that the test doesn't trigger
         // wxSocketEvent again.
@@ -435,7 +434,7 @@ Frame::Frame()
         char* buffer = new char[size];
         sock->Read(buffer, size);
 
-        m_Statistics.Inc(_("Bytes Received"), sock->LastCount());
+        m_Statistics.Inc("Bytes Received", sock->LastCount());
 
         if (sock->LastCount() > 0)
         {
@@ -483,8 +482,8 @@ Frame::Frame()
 
 #if wxUSE_STATUSBAR
         StatusText(wxString::Format("%d,%d",
-          m_Statistics.Get(_("Bytes Received")),
-          m_Statistics.Get(_("Bytes Sent"))),
+          m_Statistics.Get("Bytes Received"),
+          m_Statistics.Get("Bytes Sent")),
           "PaneBytes");
 #endif
 
@@ -497,7 +496,7 @@ Frame::Frame()
       }
 
       case wxSOCKET_LOST:
-        m_Statistics.Inc(_("Connections Lost"));
+        m_Statistics.Inc("Connections Lost");
         SocketLost(sock, true);
 #if wxUSE_STATUSBAR
         StatusText(
@@ -746,10 +745,10 @@ bool Frame::SocketCheckError(const wxSocketBase* sock)
 {
   if (sock->Error())
   {
-    const wxString error = 
-      wxString::Format(_("Socket Error: %d"), sock->LastError());
+    const std::string error = 
+      "Socket Error: " + std::to_string(sock->LastError());
       
-    wxLogStatus(error);
+    wxLogStatus(error.c_str());
 
     m_Statistics.Inc(error);
     
@@ -883,8 +882,8 @@ void Frame::UpdateTaskBar()
         wxTheApp->GetAppName().c_str(),
         m_Clients.size(),
         wxConfigBase::Get()->ReadLong(_("Port"), 3000),
-        m_Statistics.Get(_("Bytes Received")),
-        m_Statistics.Get(_("Bytes Sent")));
+        m_Statistics.Get("Bytes Received"),
+        m_Statistics.Get("Bytes Sent"));
 
     m_TaskBarIcon->SetIcon(wxICON(connect), text);
   }
@@ -907,12 +906,12 @@ void Frame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client)
     AppendText(m_LogWindow, _("not all bytes sent to socket"), DATA_MESSAGE);
   }
 
-  m_Statistics.Inc(_("Bytes Sent"), client->LastCount());
-  m_Statistics.Inc(_("Messages Sent"));
+  m_Statistics.Inc("Bytes Sent", client->LastCount());
+  m_Statistics.Inc("Messages Sent");
 
 #if wxUSE_STATUSBAR
   StatusText(wxString::Format("%d,%d",
-    m_Statistics.Get(_("Bytes Received")), m_Statistics.Get(_("Bytes Sent"))),
+    m_Statistics.Get("Bytes Received"), m_Statistics.Get("Bytes Sent")),
     "PaneBytes");
 #endif
 

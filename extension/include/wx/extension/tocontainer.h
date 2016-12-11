@@ -62,26 +62,26 @@ public:
     // wxArrayString has no emplace_back.
     if (!cb->GetValue().empty())
     {
-      m_Container.push_back(cb->GetValue());
+      m_Container.push_back(cb->GetValue().ToStdString());
       switch (cb->FindString(cb->GetValue(), true)) // case sensitive
       {
         case 0: 
           // The string is already present as the first one, add
           // all other items.
           for (size_t i = 1; i < cb->GetCount() && i < max_items; i++)
-            m_Container.push_back(cb->GetString(i));
+            m_Container.push_back(cb->GetString(i).ToStdString());
           break;
         case wxNOT_FOUND:
           // Add the string, as it is not in the combobox, to the text,
           // simply by appending all combobox items.
           for (size_t i = 0; i < cb->GetCount() && i < max_items; i++)
-            m_Container.push_back(cb->GetString(i));
+            m_Container.push_back(cb->GetString(i).ToStdString());
         break;
         default:
           // Reorder. The new first element already present, just add all others.
           for (size_t i = 0; i < cb->GetCount() && i < max_items; i++)
           {
-            const wxString cb_element = cb->GetString(i);
+            const std::string cb_element(cb->GetString(i));
             if (cb_element != cb->GetValue())
               m_Container.push_back(cb_element);
           }
@@ -90,7 +90,7 @@ public:
     else
     {
       for (size_t i = 0; i < cb->GetCount() && i < max_items; i++)
-        m_Container.push_back(cb->GetString(i));
+        m_Container.push_back(cb->GetString(i).ToStdString());
     }};
   
   /// Returns the container.

@@ -163,7 +163,7 @@ public:
     const wxString& pane) {return ShowPane(pane, !m_Manager.GetPane(pane).IsShown());};
 protected:
   void DoRecent(
-    const wxFileHistory& history, 
+    const wxExFileHistory& history, 
     size_t index, 
     wxExSTCWindowFlags flags = STC_WIN_DEFAULT);
 private:

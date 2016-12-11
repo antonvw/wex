@@ -121,12 +121,12 @@ bool wxExItem::ToConfig(bool save) const
         }
         else
         {
-          wxExListToConfig(l, GetLabel());
+          wxExListToConfig(l, GetLabel().ToStdString());
         }
       }
       else
       {
-        wxExComboBoxFromList(cb, wxExListFromConfig(GetLabel()));
+        wxExComboBoxFromList(cb, wxExListFromConfig(GetLabel().ToStdString()));
       }
       }
       break;

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      textfile.cpp
-// Purpose:   Implementation of class wxExTextFileWithListView
+// Name:      stream.cpp
+// Purpose:   Implementation of class wxExStreamToListView
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/extension/report/textfile.h>
+#include <wx/extension/report/stream.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/listitem.h>
 #include <wx/extension/util.h>
@@ -19,13 +19,13 @@
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listview.h>
 
-wxExListView* wxExTextFileWithListView::m_Report = nullptr;
-wxExFrameWithHistory* wxExTextFileWithListView::m_Frame = nullptr;
+wxExListView* wxExStreamToListView::m_Report = nullptr;
+wxExFrameWithHistory* wxExStreamToListView::m_Frame = nullptr;
 
-wxExTextFileWithListView::wxExTextFileWithListView(
+wxExStreamToListView::wxExStreamToListView(
   const wxExFileName& filename,
   const wxExTool& tool)
-  : wxExTextFile(filename, tool)
+  : wxExStream(filename, tool)
   , m_LastSyntaxType(SYNTAX_NONE)
   , m_SyntaxType(SYNTAX_NONE)
   , m_IsCommentStatement(false)
@@ -33,7 +33,7 @@ wxExTextFileWithListView::wxExTextFileWithListView(
 {
 }
 
-wxExTextFileWithListView::wxExCommentType wxExTextFileWithListView::CheckCommentSyntax(
+wxExStreamToListView::wxExCommentType wxExStreamToListView::CheckCommentSyntax(
   const wxString& syntax_begin,
   const wxString& syntax_end,
   const wxString& text) const
@@ -65,7 +65,7 @@ wxExTextFileWithListView::wxExCommentType wxExTextFileWithListView::CheckComment
   return COMMENT_NONE;
 }
 
-wxExTextFileWithListView::wxExCommentType wxExTextFileWithListView::CheckForComment(
+wxExStreamToListView::wxExCommentType wxExStreamToListView::CheckForComment(
   const wxString& text)
 {
   if (GetFileName().GetLexer().GetCommentBegin2().empty())
@@ -122,95 +122,25 @@ wxExTextFileWithListView::wxExCommentType wxExTextFileWithListView::CheckForComm
   return comment_type;
 }
 
-void wxExTextFileWithListView::CommentStatementEnd()
+void wxExStreamToListView::CommentStatementEnd()
 {
   m_IsCommentStatement = false;
 }
 
-void wxExTextFileWithListView::CommentStatementStart()
+void wxExStreamToListView::CommentStatementStart()
 {
   m_IsCommentStatement = true;
 }
 
-bool wxExTextFileWithListView::Parse()
+bool wxExStreamToListView::Process(std::string& line, size_t line_no)
 {
-  if (GetTool().IsFindType())
+  if (GetTool().GetId() != ID_TOOL_REPORT_KEYWORD)
   {
-    return wxExTextFile::Parse();
-  }
-  else if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
-  {
-    if (m_Frame == nullptr)
-    {
-      return false;
-    }
-    
-    m_Report = m_Frame->Activate(
-      wxExListViewWithFrame::GetTypeTool(GetTool()),
-      &GetFileName().GetLexer());
-
-    if (m_Report == nullptr)
-    {
-      return false;
-    }
+    return wxExStream::Process(line, line_no);
   }
   
-  for (size_t i = 0; i < GetLineCount(); i++)
-  {
-    wxString& line = GetLine(i);
-
-    GoToLine(i);
-      
-    if (!ParseLine(line))
-    {
-      return false;
-    }
-  }
-
-  if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
-  {
-    if (!GetFileName().GetLexer().GetKeywordsString().empty())
-    {
-      IncActionsCompleted();
-    }
-
-    wxExListItem item(m_Report, GetFileName());
-    item.Insert();
-
-    int total = 0;
-    int col = 1;
-    
-    for (const auto& setit : GetFileName().GetLexer().GetKeywords())
-    {
-      const wxExStatistics<int>& stat = GetStatistics().GetElements();
-      const auto& it = stat.GetItems().find(setit);
-      
-      if (it != stat.GetItems().end())
-      {
-        m_Report->SetItem(
-          item.GetId(), 
-          col, 
-          std::to_string(it->second));
-          
-        total += it->second;
-      }
-      
-      col++;
-    }
-    
-    m_Report->SetItem(
-      item.GetId(),
-      col,
-      std::to_string(total));
-  }
-
-  return true;
-}
-
-bool wxExTextFileWithListView::ParseLine(const wxString& line)
-{
   bool sequence = false;
-  wxString codeword;
+  std::string codeword;
 
   for (size_t i = 0; i < line.length(); i++) // no auto
   {
@@ -285,7 +215,7 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
       {
         if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
         {
-          if (GetFileName().GetLexer().IsKeyword(codeword.ToStdString()))
+          if (GetFileName().GetLexer().IsKeyword(codeword))
           {
             IncStatistics(codeword);
           }
@@ -305,14 +235,80 @@ bool wxExTextFileWithListView::ParseLine(const wxString& line)
   return true;
 }
 
-void wxExTextFileWithListView::Report(size_t line)
+bool wxExStreamToListView::ProcessBegin()
+{
+  if (GetTool().GetId() != ID_TOOL_REPORT_KEYWORD)
+  {
+    return wxExStream::ProcessBegin();
+  }
+  else
+  {
+    if (m_Frame == nullptr)
+    {
+      return false;
+    }
+    
+    m_Report = m_Frame->Activate(
+      wxExListViewWithFrame::GetTypeTool(GetTool()),
+      &GetFileName().GetLexer());
+
+    if (m_Report == nullptr)
+    {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+void wxExStreamToListView::ProcessEnd()
+{
+  if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
+  {
+    if (!GetFileName().GetLexer().GetKeywordsString().empty())
+    {
+      IncActionsCompleted();
+    }
+
+    wxExListItem item(m_Report, GetFileName());
+    item.Insert();
+
+    int total = 0;
+    int col = 1;
+    
+    for (const auto& setit : GetFileName().GetLexer().GetKeywords())
+    {
+      const wxExStatistics<int>& stat = GetStatistics().GetElements();
+      const auto& it = stat.GetItems().find(setit);
+      
+      if (it != stat.GetItems().end())
+      {
+        m_Report->SetItem(
+          item.GetId(), 
+          col, 
+          std::to_string(it->second));
+          
+        total += it->second;
+      }
+      
+      col++;
+    }
+    
+    m_Report->SetItem(
+      item.GetId(),
+      col,
+      std::to_string(total));
+  }
+}
+
+void wxExStreamToListView::ProcessMatch(const std::string& line, size_t line_no)
 {
   wxASSERT(m_Report != nullptr);
 
   wxExListItem item(m_Report, GetFileName());
   item.Insert();
 
-  item.SetItem(_("Line No"), std::to_string((int)line + 1));
+  item.SetItem(_("Line No"), std::to_string((int)line_no + 1));
 
   switch (GetTool().GetId())
   {
@@ -320,7 +316,7 @@ void wxExTextFileWithListView::Report(size_t line)
     item.SetItem(_("Replaced"), wxExFindReplaceData::Get()->GetReplaceString());
     // fall through
   case ID_TOOL_REPORT_FIND:
-    item.SetItem(_("Line"), GetLine(line).Strip(wxString::both));
+    item.SetItem(_("Line"), wxString(line).Strip(wxString::both));
     item.SetItem(_("Match"), wxExFindReplaceData::Get()->GetFindString());
   break;
 
@@ -328,7 +324,7 @@ void wxExTextFileWithListView::Report(size_t line)
   }
 }
 
-bool wxExTextFileWithListView::SetupTool(
+bool wxExStreamToListView::SetupTool(
   const wxExTool& tool, 
   wxExFrameWithHistory* frame,
   wxExListView* report)

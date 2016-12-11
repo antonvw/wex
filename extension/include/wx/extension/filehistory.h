@@ -8,11 +8,12 @@
 #pragma once
 
 #include <vector>
-#include <wx/filehistory.h>
 #include <wx/window.h>
 
+class wxExFileHistoryImp;
+
 /// Offers some extra methods to wxFileHistory.
-class WXDLLIMPEXP_BASE wxExFileHistory : public wxFileHistory
+class WXDLLIMPEXP_BASE wxExFileHistory
 {
 public:
   /// Default constructor.
@@ -24,23 +25,40 @@ public:
     /// if key is empty string, files
     /// are loaded / saved to default keys, otherwise to specified key.
     const std::string& key = std::string());
+  
+  /// Destructor.
+ ~wxExFileHistory();
 
   /// Adds a file to the file history list, if the object has a pointer to 
   /// an appropriate file menu. 
-  virtual void AddFileToHistory(const wxString& file) override;
+  void AddFileToHistory(const std::string& file);
   
   /// Clears history.
   void Clear();
-
+  
+  /// Returns baseid.
+  wxWindowID GetBaseId() const;
+  
+  /// Returns number of items.
+  size_t GetCount() const;
+  
   /// Returns the file at this index (zero-based).
-  virtual wxString GetHistoryFile(size_t index = 0) const override;
+  std::string GetHistoryFile(size_t index = 0) const;
 
   /// Returns a vector of max recent opened files.
-  std::vector<std::string> GetVector(size_t max) const;
+  std::vector<std::string> GetHistoryFiles(size_t max) const;
   
-  /// Shows popup menu.
-  void PopupMenu(wxWindow* win, 
-    int clear_id, const wxPoint& pos = wxDefaultPosition) const;
+  /// Returns max files.
+  int GetMaxFiles() const;
+
+  /// Shows popup menu containing all recent opened files.
+  void PopupMenu(
+    /// window which will get the popup menu
+    wxWindow* win, 
+    /// adds a clear menu items as well (if not -1)
+    int clear_id = -1, 
+    /// position for popup menu
+    const wxPoint& pos = wxDefaultPosition) const;
   
   /// Saves the file history into the config. 
   void Save();
@@ -49,5 +67,6 @@ public:
   /// and sets the file history to use it.
   void UseMenu(wxWindowID id, wxMenu* menu);
 private:
+  wxExFileHistoryImp* m_History;
   const std::string m_Key;
 };

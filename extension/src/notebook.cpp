@@ -56,7 +56,7 @@ wxExNotebook::wxExNotebook(wxWindow* parent,
       else
       {
         wxWindow* page = GetPage(sel);
-        const wxString key = m_Windows[page];
+        const std::string key = m_Windows[page];
         m_Windows.erase(page);
         m_Keys.erase(key);
         event.Skip(); // call base
@@ -72,8 +72,8 @@ wxExNotebook::wxExNotebook(wxWindow* parent,
 
 wxWindow* wxExNotebook::AddPage(
   wxWindow* page,
-  const wxString& key,
-  const wxString& text,
+  const std::string& key,
+  const std::string& text,
   bool select,
   const wxBitmap& bitmap)
 {
@@ -88,7 +88,7 @@ wxWindow* wxExNotebook::AddPage(
   return page;
 }
 
-const wxString wxExNotebook::ChangeSelection(const wxString& key)
+const std::string wxExNotebook::ChangeSelection(const std::string& key)
 {
   const auto index = GetPageIndexByKey(key);
   int previous;
@@ -102,10 +102,10 @@ const wxString wxExNotebook::ChangeSelection(const wxString& key)
     return GetKeyByPage(GetPage(previous));
   }
   
-  return wxEmptyString;
+  return std::string();
 }
   
-bool wxExNotebook::DeletePage(const wxString& key)
+bool wxExNotebook::DeletePage(const std::string& key)
 {
   const auto index = GetPageIndexByKey(key);
 
@@ -129,7 +129,7 @@ bool wxExNotebook::DeletePage(const wxString& key)
   }
 }
 
-const wxString wxExNotebook::GetCurrentPage()
+const std::string wxExNotebook::GetCurrentPage()
 {
   wxWindow* page = wxAuiNotebook::GetCurrentPage();
   return GetKeyByPage(page);
@@ -138,8 +138,8 @@ const wxString wxExNotebook::GetCurrentPage()
 wxWindow* wxExNotebook::InsertPage(
   size_t page_idx,
   wxWindow* page,
-  const wxString& key,
-  const wxString& text,
+  const std::string& key,
+  const std::string& text,
   bool select,
   const wxBitmap& bitmap)
 {
@@ -163,9 +163,9 @@ void wxExNotebook::Rearrange(int direction)
 }
 
 bool wxExNotebook::SetPageText(
-  const wxString& key,
-  const wxString& new_key,
-  const wxString& text,
+  const std::string& key,
+  const std::string& new_key,
+  const std::string& text,
   const wxBitmap& bitmap)
 {
   const auto index = GetPageIndexByKey(key);
@@ -188,7 +188,7 @@ bool wxExNotebook::SetPageText(
   return true;
 }
 
-wxWindow* wxExNotebook::SetSelection(const wxString& key)
+wxWindow* wxExNotebook::SetSelection(const std::string& key)
 {
   const auto index = GetPageIndexByKey(key);
 
@@ -206,7 +206,7 @@ wxWindow* wxExNotebook::SetSelection(const wxString& key)
   return page;
 }
   
-bool wxExNotebook::Split(const wxString& key, int direction)
+bool wxExNotebook::Split(const std::string& key, int direction)
 {
   const auto index = GetPageIndexByKey(key);
 

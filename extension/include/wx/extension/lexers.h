@@ -10,7 +10,7 @@
 #include <map>
 #include <set>
 #include <vector>
-#include <wx/filename.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/marker.h>
@@ -134,7 +134,7 @@ public:
     /// shows modal dialog
     bool show_modal = true);
 private:
-  wxExLexers(const wxFileName& filename);
+  wxExLexers(const wxExFileName& filename);
   void Initialize();
   void ParseNodeFolding(const wxXmlNode* node);
   void ParseNodeGlobal(const wxXmlNode* node);
@@ -159,7 +159,7 @@ private:
 
   wxExStyle m_DefaultStyle;
 
-  const wxFileName m_FileName;
+  const wxExFileName m_FileName;
   const std::string m_NoTheme;
   std::string m_Theme;
   std::string m_FoldingBackgroundColour, m_FoldingForegroundColour;

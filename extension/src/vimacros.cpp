@@ -6,15 +6,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <fstream>
 #include <numeric>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/stdpaths.h>
-#include <wx/txtstrm.h>
-#include <wx/wfstream.h>
-#include <wx/utils.h>
 #include <wx/extension/vimacros.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/frame.h>
@@ -236,13 +233,13 @@ bool wxExViMacros::ExpandTemplate(
 
   // Read the file (file name is in v.GetValue()), expand
   // all macro variables in it, and set expanded.
-  const wxFileName filename(wxExConfigDir(), v.GetValue());
+  const wxExFileName filename(wxExConfigDir(), v.GetValue());
 
-  wxFileInputStream input(filename.GetFullPath());
+  std::ifstream ifs(filename.GetFullPath());
   
-  if (!input.IsOk())
+  if (!ifs.is_open())
   {
-    wxLogError("Could not open template file: " + filename.GetFullPath());
+    wxLogError("Could not open template file: %s", filename.GetFullPath().c_str());
     return false;
   }
 
@@ -250,11 +247,9 @@ bool wxExViMacros::ExpandTemplate(
   // this one is restored.
   std::string macro = m_Macro;
   
-  wxTextInputStream text(input);
-  
-  while (input.IsOk() && !input.Eof()) 
+  while (ifs.good() && !ifs.eof()) 
   {
-    const wxChar c = text.GetChar();
+    const char c = ifs.get();
     
     if (c != '@')
     {
@@ -265,9 +260,9 @@ bool wxExViMacros::ExpandTemplate(
       std::string variable;
       bool completed = false;
       
-      while (input.IsOk() && !input.Eof() && !completed) 
+      while (ifs.good() && !ifs.eof() && !completed) 
       {
-        const wxChar c = text.GetChar();
+        const char c = ifs.get();
     
         if (c != '@')
         {
@@ -568,9 +563,11 @@ bool wxExViMacros::Playback(wxExEx* ex, const std::string& macro, int repeat)
     
   AskForInput();
   
+  const auto& macro_commands(m_Macros[macro]);
+  
   for (int i = 0; i < repeat && !stop; i++)
   {
-    for (auto& it : m_Macros[macro])
+    for (auto& it : macro_commands)
     { 
       stop = !ex->Command(it);
       

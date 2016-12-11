@@ -56,12 +56,13 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
     std::string, 
     std::pair<std::string, std::string>>> {
     {"// this is a cpp comment text",{"cpp","cpp"}},
-    {"#!/bin/sh",{"bash","sh"}},
-    {"#!/bin/csh",{"bash","csh"}},
-    {"#!/bin/tcsh",{"bash","tcsh"}},
     {"#!/bin/bash",{"bash","bash"}},
     {"#!/bin/bash\n",{"bash","bash"}},
     {"#!/usr/bin/csh",{"bash","bash"}},
+    {"#!/bin/csh",{"bash","csh"}},
+    {"#!/bin/env python",{"python","python"}},
+    {"#!/bin/sh",{"bash","sh"}},
+    {"#!/bin/tcsh",{"bash","tcsh"}},
     {"<html>",{"hypertext","hypertext"}},
     {"<?xml",{"hypertext","xml"}}})
   {

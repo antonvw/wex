@@ -578,18 +578,6 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
   return true;
 }
 
-void ReplaceString(std::string& text, 
-  const std::string& search,
-  const std::string& replace) 
-{
-  size_t pos = 0;
-  while((pos = text.find(search, pos)) != std::string::npos) 
-  {
-    text.replace(pos, search.length(), replace);
-    pos += replace.length();
-  }
-}
-
 bool wxExAddressRange::Parse(
   const std::string& command_org, 
   std::string& pattern, std::string& replacement, std::string& options) const
@@ -606,7 +594,7 @@ bool wxExAddressRange::Parse(
   {
     if (command.find(char(1)) == std::string::npos)
     {
-      ReplaceString(command, "\\/", "\x01");
+      wxExReplaceAll(command, "\\/", "\x01");
       escaped = true;
     }
     else

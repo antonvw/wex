@@ -43,10 +43,10 @@ const wxString wxExTool::Info(const wxExStatistics<int>* stat) const
 
   if (logtext.Contains("%d"))
   {
-    logtext = logtext.Format(logtext, stat->Get(_("Actions Completed")));
+    logtext = logtext.Format(logtext, stat->Get(_("Actions Completed").ToStdString()));
   }
 
-  logtext << " " << stat->Get(_("Files")) << " " << _("file(s)");
+  logtext << " " << stat->Get(_("Files").ToStdString()) << " " << _("file(s)");
 
   return logtext;
 }

@@ -6,6 +6,7 @@
 // Copyright: (c) 2016 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <fstream>
 #include <regex>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -14,7 +15,6 @@
 #include <shunting-yard/eval.hpp>
 #include <wx/config.h>
 #include <wx/numformatter.h>
-#include <wx/textfile.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/address.h>
@@ -260,11 +260,12 @@ wxExEx::wxExEx(wxExSTC* stc)
       {
         filename.MakeAbsolute();
       }
-      wxTextFile file(filename.GetFullPath());
-      if (!file.Open()) return false;
-      for (int i = 0; i < (int)file.GetLineCount(); i++)
+      std::ifstream ifs(filename.GetFullPath());
+      if (!ifs.is_open()) return false;
+      std::string line;
+      int i = 0;
+      while (std::getline(ifs, line))
       {
-        const std::string line(file.GetLine(i).ToStdString());
         if (!line.empty())
         {
           if (line == command)
@@ -278,6 +279,7 @@ wxExEx::wxExEx(wxExSTC* stc)
             return false;
           }
         }
+        i++;
       }
       return true;}},
     {":syntax", [&](const std::string& command) {

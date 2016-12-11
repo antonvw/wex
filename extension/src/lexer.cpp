@@ -391,8 +391,7 @@ const std::string wxExLexer::MakeSingleLineComment(
 
       if (fill_chars > 0)
       {
-        const std::string fill_out(fill_out_character, fill_chars);
-        out += fill_out;
+        out += std::string(fill_chars, fill_out_character);
       }
     }
   }

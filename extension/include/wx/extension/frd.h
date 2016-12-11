@@ -14,46 +14,58 @@
 #include <wx/extension/textctrl.h>
 
 /// Adds an existing config to wxFindReplaceData, and some members.
-class WXDLLIMPEXP_BASE wxExFindReplaceData : public wxFindReplaceData
+class WXDLLIMPEXP_BASE wxExFindReplaceData
 {
   friend class wxExTextCtrl;
   friend class wxExFindTextCtrl;
 public:
-  // Destructor (not for Doxy).
+  /// Destructor, writes data to config.
  ~wxExFindReplaceData();
  
   /// Returns the find replace data.
   static wxExFindReplaceData* Get(bool createOnDemand = true);
 
+  /// Returns the find string.
+  const auto GetFindString() const {return m_FRD.GetFindString().ToStdString();};
+
   /// Returns the find strings.
   const auto & GetFindStrings() const {return m_FindStrings.GetValues();};
+  
+  /// Returns flags.
+  int GetFlags() const {return m_FRD.GetFlags();};
+  
+  /// Access to data.
+  auto & GetFRD() {return m_FRD;};
+
+  /// Returns the replace string.
+  const auto GetReplaceString() const {return m_FRD.GetReplaceString().ToStdString();};
 
   /// Returns the replace strings.
   const auto & GetReplaceStrings() const {return m_ReplaceStrings.GetValues();};
 
   /// Returns text.
-  const wxString& GetTextFindWhat() const {return m_TextFindWhat;};
+  const auto & GetTextFindWhat() const {return m_TextFindWhat;};
 
   /// Returns text.
-  const wxString& GetTextMatchCase() const {return m_TextMatchCase;};
+  const auto & GetTextMatchCase() const {return m_TextMatchCase;};
 
   /// Returns text.
-  const wxString& GetTextMatchWholeWord() const {return m_TextMatchWholeWord;};
+  const auto & GetTextMatchWholeWord() const {return m_TextMatchWholeWord;};
 
   /// Returns text.
-  const wxString& GetTextRegEx() const {return m_TextRegEx;};
+  const auto & GetTextRegEx() const {return m_TextRegEx;};
 
   /// Returns text.
-  const wxString& GetTextReplaceWith() const {return m_TextReplaceWith;};
+  const auto & GetTextReplaceWith() const {return m_TextReplaceWith;};
 
   /// Returns text.
-  const wxString& GetTextSearchDown() const {return m_TextSearchDown;};
+  const auto & GetTextSearchDown() const {return m_TextSearchDown;};
   
   /// Returns true if the flags have match case set.
-  bool MatchCase() const {return (GetFlags() & wxFR_MATCHCASE) > 0;};
+  bool MatchCase() const {return (m_FRD.GetFlags() & wxFR_MATCHCASE) > 0;};
 
   /// Returns true if the flags have whole word set.
-  bool MatchWord() const {return (GetFlags() & wxFR_WHOLEWORD) > 0;};
+  bool MatchWord() const {return (m_FRD.GetFlags() & wxFR_WHOLEWORD) > 0;};
   
   /// Returns true if GetFindString as regular expression matches text.
   bool RegExMatches(const std::string& text) const;
@@ -64,7 +76,7 @@ public:
   int RegExReplaceAll(std::string& text) const;
 
   /// Returns true if the flags have search down set.
-  bool SearchDown() const {return (GetFlags() & wxFR_DOWN) > 0;};
+  bool SearchDown() const {return (m_FRD.GetFlags() & wxFR_DOWN) > 0;};
 
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object 
@@ -76,11 +88,14 @@ public:
   /// This string is used for tool find in files and replace in files.
   /// Als moves the find string to the beginning of the find
   /// strings list.
-  void SetFindString(const wxString& value);
+  void SetFindString(const std::string& value);
 
   /// Sets the find strings.
-  void SetFindStrings(const std::list < wxString > & value);
-
+  void SetFindStrings(const std::list < std::string > & value);
+  
+  /// Sets flags.
+  void SetFlags(wxUint32 flags) {m_FRD.SetFlags(flags);};
+  
   /// Sets flags for match case.
   void SetMatchCase(bool value);
 
@@ -88,12 +103,12 @@ public:
   void SetMatchWord(bool value);
 
   /// Sets the replace string.
-  void SetReplaceString(const wxString& value);
+  void SetReplaceString(const std::string& value);
 
   /// Sets the replace strings.
   /// Als moves the replace string to the beginning of the replace
   /// strings list.
-  void SetReplaceStrings(const std::list < wxString > & value);
+  void SetReplaceStrings(const std::list < std::string > & value);
 
   /// Sets using regular expression for find text.
   /// If GetFindString does not contain a valid regular expression
@@ -105,12 +120,14 @@ public:
 private:
   wxExFindReplaceData();
 
-  const wxString m_TextFindWhat;
-  const wxString m_TextMatchCase;
-  const wxString m_TextMatchWholeWord;
-  const wxString m_TextRegEx;
-  const wxString m_TextReplaceWith;
-  const wxString m_TextSearchDown;
+  const std::string m_TextFindWhat;
+  const std::string m_TextMatchCase;
+  const std::string m_TextMatchWholeWord;
+  const std::string m_TextRegEx;
+  const std::string m_TextReplaceWith;
+  const std::string m_TextSearchDown;
+  
+  wxFindReplaceData m_FRD;
 
   bool m_UseRegEx = false;
 
