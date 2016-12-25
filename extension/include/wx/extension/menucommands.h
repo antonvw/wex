@@ -9,7 +9,7 @@
 
 #include <string>
 #include <vector>
-#include <wx/xml/xml.h>
+#include <pugixml.hpp>
 #include <wx/extension/menus.h>
 
 /// This class offers a collection (vector) of menu commands,
@@ -26,17 +26,17 @@ public:
     , m_Commands(commands) {;};
   
   /// Constructor using xml node.
-  wxExMenuCommands(const wxXmlNode* node) 
-    : m_Name(node->GetAttribute("name")) {
+  wxExMenuCommands(const pugi::xml_node& node) 
+    : m_Name(node.attribute("name").value()) {
     if (m_Name.empty())
     {
-      std::cout << "No name on line: " << node->GetLineNumber() << "\n";
+      std::cerr << "No name with offset: " << node.offset_debug() << "\n";
     }
     else
     {
       if (wxExMenus::AddCommands(node, m_Commands) == 0)
       {
-        std::cout << "No commands found for: " << m_Name << "\n";
+        std::cerr << "No commands found for: " << m_Name << "\n";
         m_Commands.push_back({});
       }  
     }};

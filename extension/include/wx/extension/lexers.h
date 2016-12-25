@@ -10,6 +10,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <pugixml.hpp>
 #include <wx/extension/filename.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexer.h>
@@ -18,7 +19,6 @@
 #include <wx/extension/style.h>
 
 class wxWindow;
-class wxXmlNode;
 class wxExSTC;
 
 /// Collection of all lexers.
@@ -136,12 +136,12 @@ public:
 private:
   wxExLexers(const wxExFileName& filename);
   void Initialize();
-  void ParseNodeFolding(const wxXmlNode* node);
-  void ParseNodeGlobal(const wxXmlNode* node);
-  void ParseNodeKeyword(const wxXmlNode* node);
-  void ParseNodeMacro(const wxXmlNode* node);
-  void ParseNodeTheme(const wxXmlNode* node);
-  void ParseNodeThemes(const wxXmlNode* node);
+  void ParseNodeFolding(const pugi::xml_node& node);
+  void ParseNodeGlobal(const pugi::xml_node& node);
+  void ParseNodeKeyword(const pugi::xml_node& node);
+  void ParseNodeMacro(const pugi::xml_node& node);
+  void ParseNodeTheme(const pugi::xml_node& node);
+  void ParseNodeThemes(const pugi::xml_node& node);
 
   std::map<std::string, std::string> m_DefaultColours;
   std::map<std::string, std::string> m_Keywords;

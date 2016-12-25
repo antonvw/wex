@@ -13,7 +13,6 @@
 #include <wx/config.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/numdlg.h>
-#include <wx/tokenzr.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/debug.h>
 #include <wx/extension/defs.h>
@@ -30,6 +29,7 @@
 #include <wx/extension/menu.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stcdlg.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/vi.h>
@@ -1365,7 +1365,7 @@ void wxExSTC::Initialize(bool file_exists)
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen(LINK_OPEN);}, ID_EDIT_OPEN_LINK);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    const wxString propnames(PropertyNames());
+    const std::string propnames(PropertyNames());
     std::string properties = (!propnames.empty() ? "[Current properties]\n": std::string());
     
     // Add current (global and lexer) properties.  
@@ -1381,15 +1381,15 @@ void wxExSTC::Initialize(bool file_exists)
     if (!propnames.empty())
     {
       properties += "\n[Available properties]\n";
-      wxStringTokenizer tkz(propnames, "\n");
+      wxExTokenizer tkz(propnames, "\n");
     
       while (tkz.HasMoreTokens())
       {
-        const wxString prop(tkz.GetNextToken());
-        const wxString description(DescribeProperty(prop));
+        const std::string prop(tkz.GetNextToken());
+        const std::string description(DescribeProperty(prop));
         properties += prop + 
-          (!GetProperty(prop).empty() ? "=" + GetProperty(prop): wxString()) + 
-          (!description.empty() ? ": " + description: wxString()) + "\n";
+          (!GetProperty(prop).empty() ? "=" + GetProperty(prop): std::string()) + 
+          (!description.empty() ? ": " + description: std::string()) + "\n";
       }
     }
     if (m_EntryDialog == nullptr)

@@ -85,12 +85,9 @@ bool wxExDebug::Execute(const std::string& action, wxExSTC* stc)
      return false;
 
   m_Frame->ShowPane("PROCESS"); 
-  
-  if (action == "interrupt")
-  {
-    return m_Process->Write(std::string(1, 3));
-  }
-  else return m_Process->Write(action + args);
+
+  return m_Process->Write(action == "interrupt" ?
+    std::string(1, 3) : action + args);
 }
 
 bool wxExDebug::GetArgs(

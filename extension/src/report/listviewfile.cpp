@@ -10,9 +10,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <pugixml.hpp>
 #include <wx/config.h>
-#include <wx/tokenzr.h>
-#include <wx/xml/xml.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/itemdlg.h>
 #include <wx/extension/listitem.h>
@@ -181,31 +180,31 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 
 bool wxExListViewFile::DoFileLoad(bool synced)
 {
-  EditClearAll();
+  pugi::xml_document doc;
+  const pugi::xml_parse_result result = doc.load_file(
+    GetFileName().GetFullPath().c_str(),
+    pugi::parse_default | pugi::parse_comments);
 
-  wxXmlDocument doc;
-
-  if (!doc.Load(GetFileName().GetFullPath()))
+  if (!result)
   {
+    wxExXmlError(GetFileName().GetFullPath().c_str(), &result);
     return false;
   }
 
-  wxXmlNode* child = doc.GetRoot()->GetChildren();
+  EditClearAll();
 
-  while (child)
+  for (const auto& child: doc.document_element().children())
   {
-    const std::string value = child->GetNodeContent().ToStdString();
+    const std::string value = child.text().get();
 
-    if (child->GetName() == "file")
+    if (strcmp(child.name(), "file") == 0)
     {
       wxExListItem(this, value).Insert();
     }
-    else if (child->GetName() == "folder")
+    else if (strcmp(child.name(), "folder") == 0)
     {
-      wxExListItem(this, value, child->GetAttribute("extensions")).Insert();
+      wxExListItem(this, value, child.attribute("extensions").value()).Insert();
     }
-    
-    child = child->GetNext();
   }
 
   if (synced)
@@ -225,40 +224,32 @@ void wxExListViewFile::DoFileNew()
 
 void wxExListViewFile::DoFileSave(bool save_as)
 {
-  wxXmlNode* root = new wxXmlNode(wxXML_ELEMENT_NODE, "files");
-  wxXmlNode* comment = new wxXmlNode(
-    wxXML_COMMENT_NODE,
-    wxEmptyString,
-    wxTheApp->GetAppDisplayName() + " project " + GetFileName().GetFullName() + 
-      " "  + wxDateTime::Now().Format());
+  pugi::xml_document doc;
 
-  root->AddChild(comment);
+  doc.load_string(std::string("\
+    <files>\n\
+    <!-- " + wxTheApp->GetAppDisplayName().ToStdString() + " project " + 
+      GetFileName().GetFullName() + 
+      " "  + wxDateTime::Now().Format().ToStdString().c_str() + "-->\n\
+    </files>\n").c_str(),
+       pugi::parse_default | pugi::parse_comments);
+  
+  pugi::xml_node root = doc.document_element();
 
   for (int i = 0; i < GetItemCount(); i++)
   {
     const wxExFileName fn = wxExListItem(this, i).GetFileName();
-
-    wxXmlNode* element = new wxXmlNode(
-      wxXML_ELEMENT_NODE,
-      (fn.FileExists() ? "file": "folder"));
+    
+    pugi::xml_node node = root.append_child(fn.FileExists() ? "file": "folder");
+    node.text().set(fn.GetFullPath().c_str());
 
     if (!fn.FileExists() && fn.DirExists())
     {
-      element->AddAttribute("extensions", GetItemText(i, _("Type")));
+      node.append_attribute("extensions") = GetItemText(i, _("Type")).ToStdString().c_str();
     }
-    
-    wxXmlNode* text = new wxXmlNode(
-      wxXML_TEXT_NODE, 
-      wxEmptyString, 
-      fn.GetFullPath());
-      
-    element->AddChild(text);
-    root->AddChild(element);
   }
   
-  wxXmlDocument doc;
-  doc.SetRoot(root);
-  doc.Save(GetFileName().GetFullPath());
+  doc.save_file(GetFileName().GetFullPath().c_str());
 }
 
 bool wxExListViewFile::ItemFromText(const wxString& text)

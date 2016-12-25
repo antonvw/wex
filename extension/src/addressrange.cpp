@@ -9,13 +9,13 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/tokenzr.h>
 #include <wx/extension/addressrange.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vimacros.h>
 
@@ -31,24 +31,21 @@ public:
     m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
     m_Ex->GetSTC()->BeginUndoAction();
     
-    wxStringTokenizer tkz(commands, "|");
+    wxExTokenizer tkz(commands, "|");
     
     while (tkz.HasMoreTokens())
     {
-      const std::string cmd(tkz.GetNextToken().ToStdString());
+      const std::string cmd(tkz.GetNextToken());
       
-      if (!cmd.empty())
+      // Prevent recursive global.
+      if (cmd[0] != 'g' && cmd[0] != 'v')
       {
-        // Prevent recursive global.
-        if (cmd[0] != 'g' && cmd[0] != 'v')
+        if (cmd[0] == 'd' || cmd[0] == 'm')
         {
-          if (cmd[0] == 'd' || cmd[0] == 'm')
-          {
-            m_Changes++;
-          }
-          
-          m_Commands.emplace_back(cmd);
+          m_Changes++;
         }
+        
+        m_Commands.emplace_back(cmd);
       }
     }}
   
@@ -401,7 +398,7 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
 {
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
   
-  wxStringTokenizer next(text, "/");
+  wxExTokenizer next(text, "/", false);
 
   if (next.CountTokens() <= 1)
   {
@@ -409,29 +406,33 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
   }
 
   next.GetNextToken(); // skip empty token
-  const std::string pattern = next.GetNextToken().ToStdString();
+
+  const std::string pattern = next.GetNextToken();
   std::string rest;
   
   if (next.HasMoreTokens())
   {
-    int command = 0;
     const std::string token(next.GetNextToken());
-    command = token[0];
-    std::string arg(token.substr(1));
     
-    if (next.HasMoreTokens())
+    if (!token.empty())
     {
-      std::string subpattern = next.GetNextToken().ToStdString();
+      const char command = token[0];
+      std::string arg(token.size() > 1 ? token.substr(1): std::string());
       
-      if (subpattern.empty())
+      if (next.HasMoreTokens())
       {
-        subpattern = pattern;
+        std::string subpattern = next.GetNextToken();
+        
+        if (subpattern.empty())
+        {
+          subpattern = pattern;
+        }
+
+        arg += "/" + subpattern + "/" + next.GetString();
       }
       
-      arg += "/" + subpattern + "/" + next.GetString();
+      rest = std::string(1, command) + arg;
     }
-    
-    rest = std::string(1, command) + arg;
   }
 
   if (pattern.empty())

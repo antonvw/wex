@@ -7,25 +7,21 @@
 
 #pragma once
 
-#include <wx/log.h> 
+#include <pugixml.hpp> 
 #include <wx/stc/stc.h>
-#include <wx/xml/xml.h>
 
 /// This class defines our scintilla properties.
 class WXDLLIMPEXP_BASE wxExProperty
 {
 public:
   /// Default constructor.
-  wxExProperty(const wxXmlNode* node = nullptr) {
-    if (node != nullptr) {
-      m_Name = node->GetAttribute("name", "0").ToStdString();
-      m_Value = node->GetNodeContent().Strip(wxString::both).ToStdString();
-      if (!IsOk())
+  wxExProperty(const pugi::xml_node& node = pugi::xml_node()) {
+    if (!node.empty()) {
+      m_Name = node.attribute("name").value();
+      m_Value = node.text().get();
+      if (m_Value.empty())
       {
-        wxLogError("Illegal property name: %s or value: %s on line: %d",
-          m_Name.c_str(),
-          m_Value.c_str(),
-          node->GetLineNumber());
+        std::cerr << "Empty property " << m_Name << " with offset: " << node.offset_debug() << "\n";
       }}};
   
   /// Constructor using name, value pair.

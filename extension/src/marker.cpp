@@ -9,54 +9,47 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/log.h> 
 #include <wx/stc/stc.h>
-#include <wx/xml/xml.h>
-#include <wx/tokenzr.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/tokenizer.h>
 
-wxExMarker::wxExMarker(const wxXmlNode* node)
+wxExMarker::wxExMarker(const pugi::xml_node& node)
 {
-  if (node == nullptr) return;
+  if (node.empty()) return;
 
-  const wxString single = 
-    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0").ToStdString());
+  const std::string single = 
+    wxExLexers::Get()->ApplyMacro(node.attribute("no").value());
 
-  if (!single.IsNumber())
+  try
   {
-    wxLogError("Illegal marker: %s on line: %d", 
-      single.c_str(), node->GetLineNumber());
+    m_No = atoi(single.c_str());
+  }
+  catch (std::exception& e)
+  {
+    std::cerr << "Marker exception: " << single << " with offset: " << node.offset_debug() << "\n";
     return;
   }
 
-  m_No = atoi(single.c_str());
+  wxExTokenizer fields(node.text().get(), ",");
 
-  const wxString content = node->GetNodeContent().Strip(wxString::both);
-
-  wxStringTokenizer fields(content, ",");
-
-  const wxString symbol = 
-    wxExLexers::Get()->ApplyMacro(fields.GetNextToken().ToStdString());
+  const wxString symbol = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
 
   m_Symbol = atoi(symbol.c_str());
 
   if (fields.HasMoreTokens())
   {
-    m_ForegroundColour = wxExLexers::Get()->ApplyMacro(
-      fields.GetNextToken().Strip(wxString::both).ToStdString());
+    m_ForegroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
 
     if (fields.HasMoreTokens())
     {
-      m_BackgroundColour = wxExLexers::Get()->ApplyMacro(
-        fields.GetNextToken().Strip(wxString::both).ToStdString());
+      m_BackgroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
     }
   }
 
   if (!IsOk())
   {
-    wxLogError("Illegal marker number: %d on line: %d", 
-      m_No, node->GetLineNumber());
+    std::cerr << "Illegal marker: " << m_No << " with offset: " << node.offset_debug() << "\n";
   }
 }
 

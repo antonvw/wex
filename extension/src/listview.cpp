@@ -15,8 +15,6 @@
 #include <wx/numdlg.h> // for wxGetNumberFromUser
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
-#include <wx/textfile.h> // for wxTextFile::GetEOL()
-#include <wx/tokenzr.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
@@ -28,6 +26,7 @@
 #include <wx/extension/listitem.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/printing.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -279,7 +278,7 @@ wxExListView::wxExListView(wxWindow* parent,
     // Start drag operation.
     wxString text;
     for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-      text += ItemToText(i) + wxTextFile::GetEOL();
+      text += ItemToText(i) + "\n";
     if (!text.empty())
     {
       wxTextDataObject textData(text);
@@ -494,27 +493,27 @@ const wxString wxExListView::BuildPage()
   text << "<TABLE "
        << (((GetWindowStyle() & wxLC_HRULES) || (GetWindowStyle() & wxLC_VRULES)) 
           ? "border=1": "border=0")
-       << " cellpadding=4 cellspacing=0 >" << wxTextFile::GetEOL()
-       << "<tr>" << wxTextFile::GetEOL();
+       << " cellpadding=4 cellspacing=0 >\n"
+       << "<tr>\n";
 
   for (int c = 0; c < GetColumnCount(); c++)
   {
     wxListItem col;
     GetColumn(c, col);
-    text << "<td><i>" << col.GetText() << "</i>" << wxTextFile::GetEOL();
+    text << "<td><i>" << col.GetText() << "</i>\n";
   }
 
   for (int i = 0; i < GetItemCount(); i++)
   {
-    text << "<tr>" << wxTextFile::GetEOL();
+    text << "<tr>\n";
 
     for (int col = 0; col < GetColumnCount(); col++)
     {
-      text << "<td>" << wxListView::GetItemText(i, col) << wxTextFile::GetEOL();
+      text << "<td>" << wxListView::GetItemText(i, col) << "\n";
     }
   }
 
-  text << "</TABLE>" << wxTextFile::GetEOL();
+  text << "</TABLE>\n";
 
   return text;
 }
@@ -640,7 +639,7 @@ void wxExListView::CopySelectedItemsToClipboard()
   wxString clipboard;
 
   for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-    clipboard += ItemToText(i) + wxTextFile::GetEOL();
+    clipboard += ItemToText(i) + "\n";
     
   wxExClipboardAdd(clipboard.ToStdString());
 }
@@ -934,7 +933,7 @@ bool wxExListView::ItemFromText(const wxString& text)
 
   bool modified = false;
   
-  wxStringTokenizer tkz(text, wxTextFile::GetEOL());
+  wxExTokenizer tkz(text.ToStdString(), "\n");
 
   while (tkz.HasMoreTokens())
   {
@@ -944,16 +943,16 @@ bool wxExListView::ItemFromText(const wxString& text)
     {
       if (!InReportView())
       {
-        wxExListItem(this, tkz.GetNextToken().ToStdString()).Insert();
+        wxExListItem(this, tkz.GetNextToken()).Insert();
       }
       else
       {
-        const wxString token(tkz.GetNextToken());
-        wxStringTokenizer tk(token, GetFieldSeparator());
+        const std::string token(tkz.GetNextToken());
+        wxExTokenizer tk(token, std::string(1, GetFieldSeparator()));
         
         if (tk.HasMoreTokens())
         {
-          const wxString value = tk.GetNextToken();
+          const std::string value = tk.GetNextToken();
           wxFileName fn(value);
     
           if (fn.FileExists())
@@ -983,23 +982,23 @@ bool wxExListView::ItemFromText(const wxString& text)
           {
             // Now we need only the first column (containing findfiles). If more
             // columns are present, these are ignored.
-            const wxString findfiles =
+            const std::string findfiles =
               (tk.HasMoreTokens() ? tk.GetNextToken(): tk.GetString());
     
-            wxExListItem(this, value.ToStdString(), findfiles).Insert();
+            wxExListItem(this, value, findfiles).Insert();
           }
         }
         else
         {
-          wxExListItem(this, token.ToStdString()).Insert();
+          wxExListItem(this, token).Insert();
         }
       }
     }
     else
     {
-      const wxString line = tkz.GetNextToken();
+      const std::string line = tkz.GetNextToken();
       
-      wxStringTokenizer tkz(line, m_FieldSeparator);
+      wxExTokenizer tkz(line, std::string(1, m_FieldSeparator));
       
       if (tkz.HasMoreTokens())
       {
@@ -1033,7 +1032,7 @@ const wxString wxExListView::ItemToText(long item_number) const
   {
     for (long i = 0; i < GetItemCount(); i++)
     {
-      text += wxListView::GetItemText(i) + wxTextFile::GetEOL();
+      text += wxListView::GetItemText(i) + "\n";
     }
     
     return text;

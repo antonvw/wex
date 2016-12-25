@@ -14,13 +14,13 @@
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/stockitem.h>
-#include <wx/tokenzr.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/version.h>
 #include <wx/extension/report/defs.h>
 #include "app.h"
@@ -172,18 +172,16 @@ Frame::Frame()
     }
     // Skip sql comments.
     std::regex re("--.*$");
-    wxString output = std::regex_replace(m_Query->GetText().ToStdString(), re, "", std::regex_constants::format_sed);
+    std::string output = std::regex_replace(m_Query->GetText().ToStdString(), re, "", std::regex_constants::format_sed);
     // Queries are seperated by ; character.
-    wxStringTokenizer tkz(output, ";");
+    wxExTokenizer tkz(output, ";");
     int no_queries = 0;
     m_Running = true;
     const auto start = std::chrono::system_clock::now();
     // Run all queries.
     while (tkz.HasMoreTokens() && !m_Stopped)
     {
-      wxString query = tkz.GetNextToken();
-      query.Trim(true);
-      query.Trim(false);
+      std::string query = tkz.GetNextToken();
       if (!query.empty())
       {
         try
@@ -265,7 +263,7 @@ Frame::Frame()
         const wxString input(event.GetString());
         if (!input.empty())
         {
-          const wxString query = input.substr(
+          const std::string query = input.substr(
             0,
             input.length() - 1);
 
@@ -364,9 +362,9 @@ wxExSTC* Frame::OpenFile(
   return m_Query;
 }
 
-void Frame::RunQuery(const wxString& query, bool empty_results)
+void Frame::RunQuery(const std::string& query, bool empty_results)
 {
-  const wxString query_lower = query.Lower();
+  const wxString query_lower = wxString(query).Lower();
   const auto start = std::chrono::system_clock::now();
 
   std::chrono::milliseconds milli;

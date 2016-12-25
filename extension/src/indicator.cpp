@@ -11,58 +11,56 @@
 #endif
 #include <wx/log.h> 
 #include <wx/stc/stc.h>
-#include <wx/tokenzr.h>
-#include <wx/xml/xml.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/tokenizer.h>
 
-wxExIndicator::wxExIndicator(const wxXmlNode* node)
+wxExIndicator::wxExIndicator(const pugi::xml_node& node)
 {
-  if (node == nullptr) return;
+  if (node.empty()) return;
 
-  const wxString single = 
-    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0").ToStdString());
+  const std::string single = 
+    wxExLexers::Get()->ApplyMacro(node.attribute("no").value());
 
-  if (!single.IsNumber())
+  try
   {
-    wxLogError("Illegal indicator: %s on line: %d", 
-      single.c_str(), node->GetLineNumber());
+    m_No = std::stoi(single);
+  }
+  catch (std::exception& e)
+  {
+    std::cerr << "Illegal indicator: " << single << " with offset: " << 
+      node.offset_debug() << "\n";
     return;
   }
 
-  m_No = atoi(single.c_str());
+  wxExTokenizer fields(node.text().get(), ",");
 
-  const wxString content = node->GetNodeContent().Strip(wxString::both);
+  const std::string style = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
 
-  wxStringTokenizer fields(content, ",");
-
-  const wxString style = 
-    wxExLexers::Get()->ApplyMacro(fields.GetNextToken().ToStdString());
-
-  if (!style.IsNumber())
+  try
   {
-    wxLogError("Illegal indicator style: %s on line: %d", 
-      style.c_str(), node->GetLineNumber());
-    return;
-  }
-
-  m_Style = atoi(style.c_str());
-
-  if (fields.HasMoreTokens())
-  {
-    m_ForegroundColour = wxExLexers::Get()->ApplyMacro(
-      fields.GetNextToken().Strip(wxString::both).ToStdString());
+    m_Style = std::stoi(style);
 
     if (fields.HasMoreTokens())
     {
-      m_Under = (fields.GetNextToken().Strip(wxString::both) == "true");
+      m_ForegroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+
+      if (fields.HasMoreTokens())
+      {
+        m_Under = (fields.GetNextToken() == "true");
+      }
     }
+  }
+  catch (std::exception& e)
+  {
+    std::cerr << "Illegal indicator style: " << style << " with offset: " << 
+      node.offset_debug() << "\n";
   }
 
   if (!IsOk())
   {
-    wxLogError("Illegal indicator number: %d on line: %d", 
-      m_No, node->GetLineNumber());
+    std::cerr << "Illegal indicator number: " << m_No << " with offset: " << 
+      node.offset_debug() << "\n";
   }
 }
 

@@ -10,6 +10,7 @@
 #include <map>
 #include <vector>
 #include <wx/choicdlg.h>
+#include <wx/log.h>
 #include <wx/extension/ctags.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/frame.h>

@@ -68,11 +68,10 @@ TEST_CASE("wxEx")
 
 #ifdef __UNIX__
 #ifndef __WXOSX__
-  // Each file has one author (files.GetCount()), add the one in SetFindString 
-  // above, and the one that is already present on the 
-  // list because of the first FindInFiles.
+  // Each file has one author (files.GetCount()), and the one that is already 
+  // present on the list because of the first FindInFiles.
   REQUIRE(report->GetItemCount() == (
-    wxExToVectorString(files).Get().size() + 2));
+    wxExToVectorString(files).Get().size() + 1));
 #endif
 #endif
 }

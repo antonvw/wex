@@ -31,15 +31,15 @@ wxExVCSEntry::wxExVCSEntry(
 {
 }
 
-wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
+wxExVCSEntry::wxExVCSEntry(const pugi::xml_node& node)
   : wxExProcess()
   , wxExMenuCommands(node)
-  , m_AdminDir(node->GetAttribute("admin-dir"))
+  , m_AdminDir(node.attribute("admin-dir").value())
   , m_FlagsLocation(
-      (node->GetAttribute("flags-location") == "prefix" ?
+      (strcmp(node.attribute("flags-location").value(), "prefix") == 0 ?
          VCS_FLAGS_LOCATION_PREFIX: VCS_FLAGS_LOCATION_POSTFIX))
   , m_AdminDirIsTopLevel(
-      node->GetAttribute("toplevel") == "true")
+      strcmp(node.attribute("toplevel").value(), "true") == 0)
 {
 }
 

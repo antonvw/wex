@@ -15,7 +15,11 @@
 #include <wx/extension/stc-enums.h>
 
 class wxArrayString;
-class wxXmlNode;
+namespace pugi
+{
+  class xml_node;
+  class xml_parse_result;
+};
 
 class wxExEx;
 class wxExFileName;
@@ -210,12 +214,12 @@ bool wxExMatchesOneOf(const std::string& fullname, const std::string& patterns);
 
 /// Parses properties node.
 void wxExNodeProperties(
-  const wxXmlNode* node,
+  const pugi::xml_node* node,
   std::vector<wxExProperty>& properties);
   
 /// Parses style node.
 void wxExNodeStyles(
-  const wxXmlNode* node,
+  const pugi::xml_node* node,
   const std::string& lexer,
   std::vector<wxExStyle>& styles);
 
@@ -344,3 +348,8 @@ void wxExVCSExecute(
   /// files on which to operate
   const std::vector< std::string > & files);
 #endif
+
+/// Shows xml error.
+void wxExXmlError(
+  const char* filename, 
+  const pugi::xml_parse_result* result);

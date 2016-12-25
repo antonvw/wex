@@ -11,12 +11,10 @@
 #endif
 #include <numeric>
 #include <wx/config.h>
-#include <wx/log.h> 
 #include <wx/stc/stc.h>
-#include <wx/tokenzr.h>
-#include <wx/xml/xml.h>
 #include <wx/extension/style.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/tokenizer.h>
 
 void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 {
@@ -38,8 +36,7 @@ void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 
 bool wxExStyle::ContainsDefaultStyle() const
 {
-  const auto& it = m_No.find(wxSTC_STYLE_DEFAULT);
-  return (it != m_No.end());
+  return (m_No.find(wxSTC_STYLE_DEFAULT) != m_No.end());
 }
 
 const std::string wxExStyle::GetNo() const
@@ -48,20 +45,21 @@ const std::string wxExStyle::GetNo() const
     [](const std::string& a, int b) {return a + std::to_string(b) + ' ';});
 }
 
-void wxExStyle::Set(const wxXmlNode* node, const std::string& macro)
+void wxExStyle::Set(const pugi::xml_node& node, const std::string& macro)
 {
+  // TODO: default 0
   SetNo(
-    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0").ToStdString(), macro),
-    macro);
+    wxExLexers::Get()->ApplyMacro(node.attribute("no").value(), macro),
+    macro, node);
 
   // The style is parsed using the themed macros, and
   // you can specify several styles separated by a + sign.
-  wxStringTokenizer fields(node->GetNodeContent().Strip(wxString::both), "+");
+  wxExTokenizer fields(node.text().get(), "+");
 
   // Collect each single field style.
   while (fields.HasMoreTokens())
   {
-    const auto& single = fields.GetNextToken().ToStdString();
+    const auto& single = fields.GetNextToken();
     const auto& it = wxExLexers::Get()->GetThemeMacros().find(single);
 
     if (it != wxExLexers::Get()->GetThemeMacros().end())
@@ -94,7 +92,7 @@ void wxExStyle::Set(const wxXmlNode* node, const std::string& macro)
           value += ",underline";
         }
       }
-    
+
       m_Value = (m_Value.empty() ? value: m_Value + "," + value);
     }
     else
@@ -103,40 +101,41 @@ void wxExStyle::Set(const wxXmlNode* node, const std::string& macro)
     }
   }
 
-  if (!IsOk())
+  if (m_Value.empty())
   {
-    wxLogError("Illegal style: %s on line: %d", 
-      m_Value.c_str(), node->GetLineNumber());
+    std::cerr << "Empty style: " << GetNo() << " with offset: " 
+      << node.offset_debug() << "\n";
   }
 }
 
-void wxExStyle::SetNo(const std::string& no, const std::string& macro)
+void wxExStyle::SetNo(const std::string& no, const std::string& macro, 
+  const pugi::xml_node& node)
 {
   m_No.clear();
   
-  wxStringTokenizer no_fields(no, ",");
+  wxExTokenizer no_fields(no, ",");
 
   // Collect each single no in the vector.
   while (no_fields.HasMoreTokens())
   {
-    const auto& single = wxExLexers::Get()->ApplyMacro(no_fields.GetNextToken().ToStdString(), macro);
-      
-    bool error = true;
-
-    if (wxString(single).IsNumber())
+    const auto& single = wxExLexers::Get()->ApplyMacro(no_fields.GetNextToken(), macro);
+ 
+    try
     {
-      const int style_no = atoi(single.c_str());
+      const int style_no = std::stoi(single);
       
       if (style_no >= 0 && style_no <= wxSTC_STYLE_MAX)
       {
         m_No.insert(style_no);
-        error = false;
+      }
+      else
+      {
+        std::cerr << "Illegal style: " << no << " with offset: " << node.offset_debug() << "\n";
       }
     }
-    
-    if (error)
+    catch (std::exception& e)
     {
-      wxLogError("Illegal style: %s", no.c_str());
+      std::cerr << "Style exception: " << single << " with offset: " << node.offset_debug() << "\n";
     }
   }
 }

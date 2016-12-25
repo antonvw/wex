@@ -18,15 +18,14 @@ TEST_CASE("wxExMenus", "[menu]")
 {
   wxExMenuCommands <wxExMenuCommand > menucommands("test");
 
-  wxXmlNode xml(wxXML_ELEMENT_NODE, "menus");
-  xml.AddAttribute("name", "fold.comment");
-  new wxXmlNode(&xml, wxXML_TEXT_NODE , "","2");
-  
+  pugi::xml_document doc;
+  REQUIRE( doc.load_string("<menus name = \"fold.comment\">2</menus>"));
+
   wxExMenu* menu = new wxExMenu;
   REQUIRE(!wxExMenus::BuildMenu(menucommands.GetCommands(), 500, menu, false));
 
   std::vector < wxExMenuCommand > commands;
-  REQUIRE(!wxExMenus::AddCommands(&xml, commands));
+  REQUIRE(!wxExMenus::AddCommands(doc, commands));
   
   REQUIRE( wxExMenus::GetFileName().IsOk());
 

@@ -25,32 +25,36 @@ wxExStream::wxExStream(const wxExFileName& filename, const wxExTool& tool)
 
 bool wxExStream::Process(std::string& line, size_t line_no)
 {
-  bool modified = false;
   bool match = false;
   int count = 1;
 
-  if (!m_FRD->UseRegEx())
+  if (m_FRD->UseRegEx())
+  {
+    match = m_FRD->RegExMatches(line);
+
+    if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
+    {
+      count = m_FRD->RegExReplaceAll(line);
+    }
+  }
+  else
   {
     if (m_Tool.GetId() == ID_TOOL_REPORT_FIND)
     {
-      if (!m_FRD->MatchCase())
-      {
-        std::transform(line.begin(), line.end(), line.begin(), toupper);
-      }
+      const std::string::iterator it = (!m_FRD->MatchCase() ?
+        std::search(line.begin(), line.end(), m_FindString.begin(), m_FindString.end(),
+          [](char ch1, char ch2) {return std::toupper(ch1) == ch2;}):
+        std::search(line.begin(), line.end(), m_FindString.begin(), m_FindString.end()));
 
-      const size_t start = line.find(m_FindString);
-
-      if (start != std::string::npos)
+      if (it != line.end())
       {
         match = true;
 
-        if (m_FRD->MatchWord())
+        if (m_FRD->MatchWord() && 
+            ((it != line.begin() && IsWordCharacter(*std::prev(it))) ||
+              IsWordCharacter(*std::next(it, m_FindString.length()))))
         {
-          if ((start > 0 && IsWordCharacter(line[start - 1])) ||
-               IsWordCharacter(line[start + m_FindString.length()]))
-          {
-            match = false;
-          }
+          match = false;
         }
       }
     }
@@ -61,18 +65,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
       if (count > 0)
       {
         match = true;
-        modified = true;
       }
-    }
-  }
-  else
-  {
-    match = m_FRD->RegExMatches(line);
-
-    if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
-    {
-      count = m_FRD->RegExReplaceAll(line);
-      if (count > 0) modified = true;
     }
   }
 
@@ -101,9 +94,9 @@ bool wxExStream::ProcessBegin()
     return false;
   }
 
-  m_Write = (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE);
   m_FindString = wxExFindReplaceData::Get()->GetFindString();
   m_Prev = m_Stats.Get(_("Actions Completed").ToStdString());
+  m_Write = (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE);
 
   if (!wxExFindReplaceData::Get()->MatchCase())
   {

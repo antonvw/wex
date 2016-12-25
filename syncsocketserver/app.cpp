@@ -346,7 +346,7 @@ Frame::Frame()
     }, wxID_PREFERENCES);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    const wxString str = event.GetString() + wxTextFile::GetEOL();
+    const wxString str = event.GetString() + "\n";
     const wxCharBuffer& buffer(str.c_str());
     for (auto& it : m_Clients)
     {

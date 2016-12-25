@@ -9,7 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/xml/xml.h>
+#include <pugixml.hpp>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
@@ -18,13 +18,21 @@
 #include <wx/extension/util.h> // for STAT_ etc.
 
 #if wxUSE_GUI
-void CheckWellFormed(const wxExFileName& fn)
+void CheckWellFormed(wxExSTC* stc, const wxExFileName& fn)
 {
   if (fn.GetLexer().GetLanguage() == "xml")
   {
-    if (!wxXmlDocument(fn.GetFullPath()).IsOk())
+    const pugi::xml_parse_result result = 
+      pugi::xml_document().load_file(fn.GetFullPath().c_str());
+    
+    if (!result)
     {
-      wxLogStatus("not a valid XML document");
+      wxLogError("Error: %s at offset: %d", result.description(), (int)result.offset);
+
+      if (result.offset != 0)
+      {
+        stc->GetVi().Command(std::to_string(result.offset) + "|");
+      }
     }
   }
 }
@@ -78,10 +86,10 @@ bool wxExSTCFile::DoFileLoad(bool synced)
     wxLogStatus(_("Opened") + ": " + GetFileName().GetFullPath());
   }
   
-  CheckWellFormed(GetFileName());
-  
   m_STC->PropertiesMessage(synced ? STAT_SYNC: STAT_DEFAULT);
   m_STC->UseModificationMarkers(true);
+  
+  CheckWellFormed(m_STC, GetFileName());
   
   return true;
 }
@@ -116,7 +124,7 @@ void wxExSTCFile::DoFileSave(bool save_as)
   
   wxLogStatus(_("Saved") + ": " + GetFileName().GetFullPath());
   
-  CheckWellFormed(GetFileName());
+  CheckWellFormed(m_STC, GetFileName());
 }
 
 bool wxExSTCFile::GetContentsChanged() const 

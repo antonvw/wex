@@ -12,12 +12,12 @@
 #include <algorithm>
 #include <functional>
 #include <numeric>
-#include <wx/tokenzr.h>
-#include <wx/xml/xml.h>
+#include <pugixml.hpp>
 #include <wx/extension/lexer.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h> // for wxExAlignText
 
 // We always use lines with 80 characters. 
@@ -62,12 +62,12 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
   
   std::set<std::string> keywords_set;
 
-  wxStringTokenizer tkz(value, "\r\n ");
+  wxExTokenizer tkz(value, "\r\n ");
 
   while (tkz.HasMoreTokens())
   {
-    const wxString line = tkz.GetNextToken();
-    wxStringTokenizer fields(line, ":");
+    const std::string line = tkz.GetNextToken();
+    wxExTokenizer fields(line, ":");
     std::string keyword;
 
     if (fields.CountTokens() > 1)
@@ -78,7 +78,7 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
 
       if (new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
       {
-        wxLogError("Invalid keyword set: %d", new_setno);
+        std::cerr << "Invalid keyword set: " << new_setno << "\n";
         return false;
       }
 
@@ -420,9 +420,9 @@ bool wxExLexer::Reset()
   return m_IsOk;
 }
 
-void wxExLexer::Set(const wxXmlNode* node)
+void wxExLexer::Set(const pugi::xml_node* node)
 {
-  m_ScintillaLexer = node->GetAttribute("name");
+  m_ScintillaLexer = node->attribute("name").value();
 
   // Just set ok if there is a lexer,
   // when we Apply to a stc component we really can set it.  
@@ -430,18 +430,18 @@ void wxExLexer::Set(const wxXmlNode* node)
 
   if (!m_IsOk)
   {
-    wxLogError("Missing lexer on line: %d", node->GetLineNumber());
+    std::cerr << "Missing lexer with offset: " << node->offset_debug() << "\n";
   }
   else
   {
-    m_DisplayLexer = (!node->GetAttribute("display").empty() ?
-      node->GetAttribute("display"):
+    m_DisplayLexer = (!node->attribute("display").empty() ?
+      node->attribute("display").value():
       m_ScintillaLexer);
-    m_Extensions = node->GetAttribute("extensions");
-    m_Language = node->GetAttribute("language");
+    m_Extensions = node->attribute("extensions").value();
+    m_Language = node->attribute("language").value();
 
-    AutoMatch((!node->GetAttribute("macro").empty() ?
-      node->GetAttribute("macro").ToStdString():
+    AutoMatch((!node->attribute("macro").empty() ?
+      node->attribute("macro").value():
       m_ScintillaLexer));
 
     if (m_ScintillaLexer == "hypertext")
@@ -452,66 +452,65 @@ void wxExLexer::Set(const wxXmlNode* node)
       m_CommentEnd = "-->";
     }
 
-    wxXmlNode *child = node->GetChildren();
-
-    while (child)
+    for (const auto& child: node->children())
     {
-      if (child->GetName() == "styles")
+      if (strcmp(child.name(), "styles") == 0)
       {
-        wxExNodeStyles(child, m_ScintillaLexer, m_Styles);
+        wxExNodeStyles(&child, m_ScintillaLexer, m_Styles);
       }
-      else if (child->GetName() == "keywords")
+      else if (strcmp(child.name(), "keywords") == 0)
       {
         // Add all direct keywords
-        const std::string& direct(child->GetNodeContent().Strip(wxString::both).ToStdString());
+        const std::string& direct(child.text().get());
         
         if (!direct.empty() && !AddKeywords(direct))
         {
-          wxLogError(
-            "Keywords could not be set on line: %d", 
-            child->GetLineNumber());
+          std::cerr << "Keywords could not be set with offset: " << child.offset_debug() << "\n";
         }
-      
+
         // Add all keywords that point to a keyword set.
-        wxXmlAttribute* att = child->GetAttributes();
-        
-        while (att != nullptr)
+        for (const auto& att: child.attributes())
         {
-          const int setno = atoi(att->GetName().AfterFirst('-'));
-          const std::string keywords = wxExLexers::Get()->GetKeywords(
-            att->GetValue().Strip(wxString::both).ToStdString());
-          
-          if (!AddKeywords(keywords, setno))
+          std::string nm(att.name());
+          const int pos = nm.find("-");
+          try
           {
-            wxLogError(
-              "Keywords for %s could not be set on line: %d", 
-              att->GetValue().c_str(),
-              child->GetLineNumber());
+            const int setno = (pos == std::string::npos ? 0: std::stoi(nm.substr(pos + 1)));
+            const std::string keywords = wxExLexers::Get()->GetKeywords(att.value());
+
+            if (keywords.empty())
+            {
+              std::cerr << "Empty keywords for " << att.value() << " with offset: " << child.offset_debug() << "\n";
+            }
+
+            if (!AddKeywords(keywords, setno))
+            {
+              std::cerr << "Keywords for " << att.value() << " could not be set with offset: " 
+                << child.offset_debug() << "\n";
+            }
           }
-        
-          att = att->GetNext();
+          catch (std::exception& e)
+          {
+            std::cerr << "Keyword exception: " << nm << " with offset: " << node->offset_debug() << "\n";
+          }
         }
       }
-      else if (child->GetName() == "properties")
+      else if (strcmp(child.name(), "properties") == 0)
       {
         if (!m_Properties.empty())
         {
-          wxLogError(
-            "Properties already available on line: %d", 
-            child->GetLineNumber());
+          std::cerr << "Properties already available with offset: " << child.offset_debug() << "\n";
         }
-        
-        wxExNodeProperties(child, m_Properties);
+
+        wxExNodeProperties(&child, m_Properties);
       }
-      else if (child->GetName() == "comments")
+      else if (strcmp(child.name(), "comments") == 0)
       {
-        m_CommentBegin = child->GetAttribute("begin1");
-        m_CommentEnd = child->GetAttribute("end1");
-        m_CommentBegin2 = child->GetAttribute("begin2");
-        m_CommentEnd2 = child->GetAttribute("end2");
+        m_CommentBegin = child.attribute("begin1").value();
+        m_CommentEnd = child.attribute("end1").value();
+        m_CommentBegin2 = child.attribute("begin2").value();
+        m_CommentEnd2 = child.attribute("end2").value();
       }
-      
-      child = child->GetNext();
     }
   }
 }
@@ -542,7 +541,7 @@ bool wxExLexer::Set(const std::string& lexer, bool fold)
   
   if (!m_IsOk)
   {
-    wxLogError("Lexer is not known: %s", lexer.c_str());
+    std::cerr << "Lexer is not known: " << lexer << "\n";
   }
   
   return m_IsOk;

@@ -58,7 +58,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
     std::string clipboard;
     for (const auto& it : wxExToVectorString(*this).Get())
     {
-      clipboard += it + wxTextFile::GetEOL();
+      clipboard += it + "\n";
     }
     wxExClipboardAdd(clipboard);}, ID_TREE_COPY);
 

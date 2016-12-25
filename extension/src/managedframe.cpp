@@ -12,7 +12,6 @@
 #endif
 #include <wx/config.h>
 #include <wx/panel.h>
-#include <wx/tokenzr.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/addressrange.h>
 #include <wx/extension/debug.h>

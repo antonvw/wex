@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <numeric>
+#include <pugixml.hpp>
 #include <regex>
 #include <wx/app.h>
 #include <wx/clipbrd.h>
@@ -18,9 +19,7 @@
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/stdpaths.h>
 #include <wx/textctrl.h>
-#include <wx/tokenzr.h>
 #include <wx/wupdlock.h>
-#include <wx/xml/xml.h>
 #include <wx/extension/util.h>
 #include <wx/extension/dir.h>
 #include <wx/extension/ex.h>
@@ -29,8 +28,10 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/tostring.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/vimacros.h>
@@ -273,8 +274,8 @@ const std::string wxExConfigFirstOf(const wxString& key)
 
 const std::string wxExConfigFirstOfWrite(const wxString& key, const wxString& value)
 {
-  wxStringTokenizer tkz(wxConfigBase::Get()->Read(key),
-    wxExGetFieldSeparator());
+  wxExTokenizer tkz(wxConfigBase::Get()->Read(key).ToStdString(), 
+    std::string(1, wxExGetFieldSeparator()));
   
   std::vector<wxString> v{value};
 
@@ -397,15 +398,15 @@ const std::string wxExGetWord(std::string& text,
   bool use_other_field_separators,
   bool use_path_separator)
 {
-  wxString field_separators = " \t";
+  std::string field_separators = " \t";
   if (use_other_field_separators) field_separators += ":";
   if (use_path_separator) field_separators = wxFILE_SEP_PATH;
-  wxString token;
-  wxStringTokenizer tkz(text, field_separators);
+  std::string token;
+  wxExTokenizer tkz(text, field_separators);
   if (tkz.HasMoreTokens()) token = tkz.GetNextToken();
   text = tkz.GetString();
   text = wxString(text).Trim(false).ToStdString();
-  return token.ToStdString();
+  return token;
 }
 
 bool wxExIsBrace(int c) 
@@ -424,18 +425,9 @@ bool wxExIsCodewordSeparator(int c)
 
 const std::list < std::string > wxExListFromConfig(const std::string& config)
 {
-  wxStringTokenizer tkz(
-    wxConfigBase::Get()->Read(config), 
-    wxExGetFieldSeparator());
-
-  std::list < std::string > l;
-
-  while (tkz.HasMoreTokens())
-  {
-    l.emplace_back(tkz.GetNextToken());
-  }
-
-  return l;
+  return wxExTokenizer(
+    wxConfigBase::Get()->Read(config).ToStdString(), 
+    std::string(1, wxExGetFieldSeparator())).Tokenize<std::list < std::string >>();
 }
 
 /// Saves entries from a list with strings to the config.
@@ -495,18 +487,18 @@ bool wxExMarkerAndRegisterExpansion(wxExEx* ex, std::string& text)
 {
   if (ex == nullptr) return false;
 
-  wxStringTokenizer tkz(text, "'" + wxString(wxUniChar(WXK_CONTROL_R)));
+  wxExTokenizer tkz(text, "'" + std::string(1, wxUniChar(WXK_CONTROL_R)), false);
   wxString repl(text);
 
   while (tkz.HasMoreTokens())
   {
     tkz.GetNextToken();
     
-    const wxString rest(tkz.GetString());
+    const std::string rest(tkz.GetString());
     
     if (!rest.empty())
     {
-      const char name(rest.GetChar(0));
+      const char name(rest[0]);
       
       // Replace marker.
       if (tkz.GetLastDelimiter() == '\'')
@@ -573,46 +565,37 @@ bool wxExMatchesOneOf(const std::string& fullname, const std::string& pattern)
 
   const wxString fullname_uppercase = wxString(fullname).Upper();
 
-  wxStringTokenizer tkz(wxString(pattern).Upper(), ";");
+  wxExTokenizer tkz(wxString(pattern).Upper().ToStdString(), ";");
   
   while (tkz.HasMoreTokens())
   {
     const wxString token = tkz.GetNextToken();
-    
     if (fullname_uppercase.Matches(token)) return true;
   }
   
   return false;
 }
 
-void wxExNodeProperties(const wxXmlNode* node, std::vector<wxExProperty>& properties)
+void wxExNodeProperties(const pugi::xml_node* node, std::vector<wxExProperty>& properties)
 {
-  wxXmlNode *child = node->GetChildren();
-
-  while (child)
+  for (const auto& child: node->children())
   {
-    if (child->GetName() == "property")
+    if (strcmp(child.name(), "property") == 0)
     {
       properties.emplace_back(wxExProperty(child));
     }
-    
-    child = child->GetNext();
   }
 }
 
-void wxExNodeStyles(const wxXmlNode* node, const std::string& lexer,
+void wxExNodeStyles(const pugi::xml_node* node, const std::string& lexer,
   std::vector<wxExStyle>& styles)
 {
-  wxXmlNode* child = node->GetChildren();
-
-  while (child)
+  for (const auto& child: node->children())
   {
-    if (child->GetName() == "style")
+    if (strcmp(child.name(), "style") == 0)
     {
       styles.emplace_back(wxExStyle(child, lexer));
     }
-    
-    child = child->GetNext();
   }
 }
 
@@ -823,7 +806,7 @@ const std::string wxExSort(const std::string& input,
   wxBusyCursor wait;
 
   // Empty lines are not kept after sorting, as they are used as separator.
-  wxStringTokenizer tkz(input, eol);
+  wxExTokenizer tkz(input, eol);
   std::map<wxString, wxString> m;
   std::multimap<wxString, wxString> mm;
   std::multiset<wxString> ms;
@@ -1004,5 +987,24 @@ void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< std::string > &
   else
   {
     vcs.Request(frame);
+  }
+}
+
+void wxExXmlError(
+  const char* filename, 
+  const pugi::xml_parse_result* result)
+{
+  wxLogError("Error: %s at offset: %d", result->description(), (int)result->offset);
+
+  wxExManagedFrame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame);
+  
+  if (frame != nullptr && filename != nullptr)
+  {
+    wxExSTC* stc = frame->OpenFile(wxExFileName(filename));
+
+    if (stc != nullptr && result->offset != 0)
+    {
+      stc->GetVi().Command(std::to_string(result->offset) + "|");
+    }
   }
 }

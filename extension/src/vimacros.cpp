@@ -20,6 +20,7 @@
 
 #if wxUSE_GUI
 
+pugi::xml_document wxExViMacros::m_doc;
 bool wxExViMacros::m_IsExpand = false;
 bool wxExViMacros::m_IsModified = false;
 bool wxExViMacros::m_IsPlayback = false;
@@ -109,43 +110,45 @@ const std::string wxExViMacros::Encode(const std::string& text)
 
 bool wxExViMacros::Expand(wxExEx* ex, const std::string& variable)
 {
+  pugi::xml_node node;
+  wxExVariable var;
   const auto& it = m_Variables.find(variable);
-  
-  bool ok;
     
   if (it == m_Variables.end())
   {
-    auto ret = m_Variables.insert({variable, wxExVariable(variable)});
-      
+    var = wxExVariable(var);
+    m_Variables.insert({variable, var});
     wxLogStatus(_("Added variable") + ": "  +  variable);
-    
-    ok = ret.first->second.Expand(ex);
-  
-    if (ret.first->second.IsModified())
-    {
-      m_IsModified = true;
-    }
-    
-    // If ok is false, this is because expansion dialog was cancelled,
-    // no need to show log status message.
+    node = m_doc.document_element().append_child("variable");
   }
   else
   {
-    ok = it->second.Expand(ex);
-  
-    if (it->second.IsModified())
+    try
     {
-      m_IsModified = true;
+      const std::string query("//variable[@name='" + variable + "']");
+      pugi::xpath_node xp = m_doc.document_element().select_node(query.c_str());
+
+      if (xp && xp.node())
+      {
+        node = xp.node();
+      }
+    }
+    catch (pugi::xpath_exception& e)
+    {
+      std::cerr << e.what() << "\n";
     }
 
-    // Now only show log status if this is no input variable,
-    // as it was cancelled in that case.    
-    if (!ok && !it->second.IsInput())
-    {
-      wxLogStatus(_("Could not expand variable") + ": "  +  variable);
-    }
+    var = it->second;
   }
 
+  const bool ok = var.Expand(ex);
+
+  if (var.IsModified())
+  {
+    var.Save(node);
+    m_IsModified = true;
+  }
+    
   if (ok)
   {
     wxLogStatus(_("Variable expanded"));
@@ -153,6 +156,15 @@ bool wxExViMacros::Expand(wxExEx* ex, const std::string& variable)
     if (!m_IsRecording)
     {
       m_Macro = variable;
+    }
+  }
+  else
+  {
+    // Now only show log status if this is no input variable,
+    // as it was cancelled in that case.    
+    if (!it->second.IsInput())
+    {
+      wxLogStatus(_("Could not expand variable") + ": "  +  variable);
     }
   }
   
@@ -181,6 +193,9 @@ bool wxExViMacros::Expand(wxExEx* ex, const std::string& variable, std::string& 
     
     if (ret.first->second.IsModified())
     {
+      pugi::xml_node node = m_doc.document_element().child("variable");
+      pugi::xml_node app = node.append_child(variable.c_str());
+      ret.first->second.Save(app);
       m_IsModified = true;
     }
   }
@@ -196,6 +211,8 @@ bool wxExViMacros::Expand(wxExEx* ex, const std::string& variable, std::string& 
   
     if (it->second.IsModified())
     {
+      pugi::xml_node node = m_doc.document_element().child(variable.c_str());
+      it->second.Save(node);
       m_IsModified = true;
     }
   }
@@ -207,7 +224,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const std::string& variable, std::string& 
   else 
   {
     wxLogStatus(_("Variable expanded"));
-  
+
     if (!m_IsRecording)
     {
       m_Macro = variable;
@@ -410,117 +427,88 @@ bool wxExViMacros::IsRecordedMacro(const std::string& macro) const
   return m_Macros.find(macro) != m_Macros.end();
 }
 
-bool wxExViMacros::Load(wxXmlDocument& doc)
-{
-  // This test is to prevent showing an error if the macro file does not exist,
-  // as this is not required.
-  if (!GetFileName().FileExists())
-  {
-    return false;
-  } 
-  
-  if (!doc.Load(GetFileName().GetFullPath()))
-  {
-    return false;
-  }
-  
-  return true;
-}
-
 bool wxExViMacros::LoadDocument()
 {
-  wxXmlDocument doc;
-  
-  if (!Load(doc))
+  const pugi::xml_parse_result result = m_doc.load_file(
+    GetFileName().GetFullPath().ToStdString().c_str(),
+     pugi::parse_default | pugi::parse_comments);
+
+  if (!result)
   {
+    wxExXmlError(GetFileName().GetFullPath().ToStdString().c_str(), &result);
     return false;
   }
-  
-  // If modified is true, then you did not save previous
-  // recordings.
-  // We assume that this is your choice, so we reset the member.
+
   m_IsModified = false;
-  
   m_Abbreviations.clear();
   m_Macros.clear();
   m_Variables.clear();
   
-  wxXmlNode* child = doc.GetRoot()->GetChildren();
-  
-  while (child)
+  for (const auto& child: m_doc.document_element().children())
   {
-    if (child->GetName() == "abbreviation")
+    if (strcmp(child.name(), "abbreviation") == 0)
     {
       ParseNodeAbbreviation(child);
     }
-    else if (child->GetName() == "macro")
+    else if (strcmp(child.name(), "macro") == 0)
     {
       ParseNodeMacro(child);
     }
-    else if (child->GetName() == "variable")
+    else if (strcmp(child.name(), "variable") == 0)
     {
       ParseNodeVariable(child);
     }
-      
-    child = child->GetNext();
   }
   
   return true;
 }
 
-void wxExViMacros::ParseNodeAbbreviation(wxXmlNode* node)
+void wxExViMacros::ParseNodeAbbreviation(const pugi::xml_node& node)
 {
-  const std::string abb(node->GetAttribute("name"));
-  const std::string text(node->GetNodeContent().Strip(wxString::both));
+  const std::string abb(node.attribute("name").value());
 
   if (m_Abbreviations.find(abb) != m_Abbreviations.end())
   {
-    wxLogError("Duplicate abbreviation: %s on line: %d", 
-     abb,
-     node->GetLineNumber());
+    std::cerr<< "Duplicate abbreviation: " << abb << " with offset: " <<
+      node.offset_debug() << "\n";
   }
   else
   {
-    m_Abbreviations.insert({abb, text});
+    m_Abbreviations.insert({abb, std::string(node.text().get())});
   }
 }
 
-void wxExViMacros::ParseNodeMacro(wxXmlNode* node)
+void wxExViMacros::ParseNodeMacro(const pugi::xml_node& node)
 {
   std::vector<std::string> v;
   
-  wxXmlNode* command = node->GetChildren();
-
-  while (command)
+  for (const auto& command: node.children())
   {
-    v.emplace_back(Decode(command->GetNodeContent().ToStdString()));
-    command = command->GetNext();
+    v.emplace_back(Decode(command.text().get()));
   }
   
-  const auto& it = m_Macros.find(node->GetAttribute("name").ToStdString());
+  const auto& it = m_Macros.find(node.attribute("name").value());
 
   if (it != m_Macros.end())
   {
-    wxLogError("Duplicate macro: %s on line: %d", 
-      node->GetAttribute("name"),
-      node->GetLineNumber());
+    std::cerr << "Duplicate macro: " << node.attribute("name").value() << " with offset: " <<
+      node.offset_debug() << "\n";
   }
   else
   {
-    m_Macros.insert({node->GetAttribute("name").ToStdString(), v});
+    m_Macros.insert({node.attribute("name").value(), v});
   }
 }
 
-void wxExViMacros::ParseNodeVariable(wxXmlNode* node)
+void wxExViMacros::ParseNodeVariable(const pugi::xml_node& node)
 {
   const wxExVariable variable(node);
   const auto& it = m_Variables.find(variable.GetName());
 
   if (it != m_Variables.end())
   {
-    wxLogError("Duplicate variable: %s on line: %d", 
-     variable.GetName(),
-     node->GetLineNumber());
+    std::cerr << "Duplicate variable: " << variable.GetName() << " with offset: " <<
+      node.offset_debug() << "\n";
   }
   else
   {
@@ -623,51 +611,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
     return false;
   }
   
-  wxXmlDocument doc;
-  
-  if (!Load(doc))
-  {
-    return false;
-  }
-  
-  wxXmlNode* root = doc.GetRoot();
-  wxXmlNode* child;
-  
-  while ((child = root->GetChildren()))
-  {
-    root->RemoveChild(child);
-    delete child;
-  }
-
-  std::for_each(m_Macros.rbegin(), m_Macros.rend(), [&](const auto& it)
-  {
-    if (!it.second.empty())
-    {
-      wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "macro");
-      element->AddAttribute("name", it.first);
-      
-      std::for_each(it.second.rbegin(), it.second.rend(), [&](const auto& it2)
-      { 
-        wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
-        new wxXmlNode(cmd, wxXML_TEXT_NODE, "", Encode(it2));
-      });
-    }
-  });
-
-  std::for_each(m_Variables.rbegin(), m_Variables.rend(), [&](const auto& it)
-  {
-    wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "variable");
-    it.second.Save(element);
-  });
-  
-  std::for_each(m_Abbreviations.rbegin(), m_Abbreviations.rend(), [&](const auto& it)
-  {
-    wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, "abbreviation");
-    element->AddAttribute("name", it.first);
-    new wxXmlNode(element, wxXML_TEXT_NODE, "", it.second);
-  });
-  
-  const bool ok = doc.Save(GetFileName().GetFullPath());
+  const bool ok = m_doc.save_file(GetFileName().GetFullPath().ToStdString().c_str());
   
   if (ok)
   {
@@ -677,17 +621,63 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
   return ok;
 }
 
+void wxExViMacros::SaveMacro(const std::string& macro)
+{
+  try
+  {
+    const std::string query("//macro[@name='" + macro + "']");
+
+    pugi::xpath_node node = m_doc.document_element().select_node(query.c_str());
+
+    if (node && node.node())
+    {
+      m_doc.document_element().remove_child(node.node());
+    }
+
+    pugi::xml_node node_macro = m_doc.document_element().append_child("macro");
+    node_macro.append_attribute("name") = macro.c_str();
+
+    for (const auto& it: m_Macros[macro])
+    {
+      node_macro.append_child("command").text().set(Encode(it).c_str());
+    }
+  }
+  catch (pugi::xpath_exception& e)
+  {
+    std::cerr << e.what() << "\n";
+  }
+}
+
 void wxExViMacros::SetAbbreviation(const std::string& ab, const std::string& value)
 {
-  if (value.empty())
+  try
   {
-    m_Abbreviations.erase(ab);
+    const std::string query("//abbreviation[@name='" + ab + "']");
+    pugi::xpath_node node = m_doc.document_element().select_node(query.c_str());
+
+    if (node && node.node())
+    {
+      m_doc.document_element().remove_child(node.node());
+    }
+
+    if (value.empty())
+    {
+      m_Abbreviations.erase(ab);
+    }
+    else
+    {
+      pugi::xml_node node_ab = m_doc.document_element().append_child("abbreviation");
+      node_ab.append_attribute("name") = ab.c_str();
+      node_ab.text().set(value.c_str());
+
+      m_Abbreviations[ab] = value;
+    }
   }
-  else
+  catch (pugi::xpath_exception& e)
   {
-    m_Abbreviations[ab] = value;
+    std::cerr << e.what() << "\n";
   }
-  
+
   m_IsModified = true;
 }
 
@@ -721,6 +711,8 @@ bool wxExViMacros::SetRegister(const char name, const std::string& value)
   }
   
   m_Macros[std::string(1, (char)tolower(name))] = v;
+  SaveMacro(std::string(1, (char)tolower(name)));
+
   m_IsModified = true;
   
   return true;
@@ -763,16 +755,11 @@ void wxExViMacros::StartRecording(const std::string& macro)
 
 bool wxExViMacros::StartsWith(const std::string& text) const
 {
-  if (text.empty())
+  if (text.empty() || wxIsdigit(text[0]))
   {
     return false;
   }
 
-  if (wxIsdigit(text[0]))
-  {
-    return false;
-  }
-  
   for (const auto& it : m_Macros)
   {
     if (it.first.substr(0, text.size()) == text)
@@ -803,6 +790,7 @@ void wxExViMacros::StopRecording()
   
   if (!Get(m_Macro).empty())
   {
+    SaveMacro(m_Macro);
     wxLogStatus(wxString::Format(_("Macro '%s' is recorded"), m_Macro.c_str()));
   }
   else
@@ -813,5 +801,4 @@ void wxExViMacros::StopRecording()
     wxExFrame::StatusText(wxEmptyString, "PaneMacro");
   }
 }
-
 #endif // wxUSE_GUI

@@ -9,7 +9,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/xml/xml.h>
 #include <wx/extension/property.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
@@ -32,11 +31,10 @@ TEST_CASE("wxExProperty", "[stc][lexer]")
   prop.ApplyReset(GetSTC());
   REQUIRE( prop.IsOk());
   
-  wxXmlNode xml(wxXML_ELEMENT_NODE, "property");
-  xml.AddAttribute("name", "fold.comment");
-  new wxXmlNode(&xml, wxXML_TEXT_NODE , "","2");
+  pugi::xml_document doc;
+  REQUIRE( doc.load_string("<property name = \"fold.comment\">2</property>"));
 
-  wxExProperty prop2(&xml);
+  wxExProperty prop2(doc.document_element());
   REQUIRE( prop2.GetName() == "fold.comment");
   REQUIRE( prop2.GetValue() == "2");
   REQUIRE( prop2.IsOk());

@@ -7,9 +7,9 @@
 
 #pragma once
 
+#include <pugixml.hpp>
 #include <set>
 
-class wxXmlNode;
 class wxStyledTextCtrl;
 
 /// This class defines our scintilla styles. The no as in xml or in the string
@@ -24,7 +24,7 @@ public:
   wxExStyle() {;};
   
   /// Constructor using xml node (sets no from the no attribute).
-  wxExStyle(const wxXmlNode* node, const std::string& macro) {
+  wxExStyle(const pugi::xml_node& node, const std::string& macro) {
     Set(node, macro);};
 
   /// Constructor using no and value.
@@ -52,8 +52,9 @@ public:
   bool IsOk() const {
     return !m_No.empty() && !m_Value.empty();};
 private:
-  void Set(const wxXmlNode* node, const std::string& macro);
-  void SetNo(const std::string& no, const std::string& macro);
+  void Set(const pugi::xml_node& node, const std::string& macro);
+  void SetNo(const std::string& no, const std::string& macro, 
+    const pugi::xml_node& node = pugi::xml_node());
 
   std::set <int> m_No;
   std::string m_Value;

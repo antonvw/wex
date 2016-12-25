@@ -11,10 +11,10 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/tokenzr.h>
 #include <wx/extension/link.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 
 wxExLink::wxExLink(wxExSTC* stc)
@@ -267,8 +267,8 @@ bool wxExLink::SetLink(std::string& link, int& line_no, int& column_no) const
   
 void wxExLink::SetFromConfig()
 {
-  wxStringTokenizer tkz(
-    wxConfigBase::Get()->Read(_("Include directory")),
+  wxExTokenizer tkz(
+    wxConfigBase::Get()->Read(_("Include directory")).ToStdString(),
     "\r\n");
     
   m_PathList.Empty();

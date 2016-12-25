@@ -9,8 +9,8 @@
 
 #include <map>
 #include <vector>
+#include <pugixml.hpp>
 #include <wx/filename.h>
-#include <wx/xml/xml.h>
 #include <wx/extension/variable.h>
 
 #if wxUSE_GUI
@@ -144,17 +144,19 @@ public:
   static bool SaveDocument(bool only_if_modified = true);
 private:  
   static void AskForInput();
-  static bool Load(wxXmlDocument& doc);
-  static void ParseNodeAbbreviation(wxXmlNode* node);
-  static void ParseNodeMacro(wxXmlNode* node);
-  static void ParseNodeVariable(wxXmlNode* node);
-  static const std::string Encode(const std::string& text);
   static const std::string Decode(const std::string& text);
+  static const std::string Encode(const std::string& text);
+  static void ParseNodeAbbreviation(const pugi::xml_node& node);
+  static void ParseNodeMacro(const pugi::xml_node& node);
+  static void ParseNodeVariable(const pugi::xml_node& node);
+  static void SaveMacro(const std::string& macro);
     
   static bool m_IsExpand;
   static bool m_IsModified;
   static bool m_IsPlayback;
   static bool m_IsRecording;
+  
+  static pugi::xml_document m_doc;
   
   static std::string m_Macro;
   

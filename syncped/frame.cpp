@@ -13,7 +13,6 @@
 #include <wx/config.h>
 #include <wx/imaglist.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
-#include <wx/tokenzr.h>
 #include <wx/extension/ctags.h>
 #include <wx/extension/debug.h>
 #include <wx/extension/filedlg.h>
@@ -25,6 +24,7 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/tostring.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
@@ -1249,13 +1249,12 @@ wxExSTC* Frame::OpenFile(
       if (m_App->GetScriptin().IsOpened())
       {
         const auto buffer(m_App->GetScriptin().Read());
-        wxStringTokenizer tkz(wxString((const char *)buffer->data(), buffer->length()), "\r\n");
+        wxExTokenizer tkz(std::string((const char *)buffer->data(), buffer->length()), "\r\n");
         while (tkz.HasMoreTokens())
         {
-          const wxString command = tkz.GetNextToken();
-          if (!editor->GetVi().Command(command.ToStdString()))
+          if (!editor->GetVi().Command( tkz.GetNextToken()))
           {
-            wxLogStatus("Aborted at: " + command);
+            wxLogStatus("Aborted at: %s", tkz.GetToken().c_str());
             return editor;
           }
         }
@@ -1275,6 +1274,8 @@ wxExSTC* Frame::OpenFile(
     }
     
     editor->SetFocus();
+    
+    return editor;
   }
   
   return (wxExSTC*)page;

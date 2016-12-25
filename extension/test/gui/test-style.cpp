@@ -7,7 +7,6 @@
 
 #include <numeric>
 #include <wx/wxprec.h>
-#include <wx/xml/xml.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
@@ -55,22 +54,19 @@ TEST_CASE("wxExStyle", "[stc][lexer]")
 
   SECTION("Constructor using xml node")
   {
-    wxXmlNode xml(wxXML_ELEMENT_NODE, "style");
-    xml.AddAttribute("no", "2");
-    new wxXmlNode(&xml, wxXML_TEXT_NODE , "", "string");
+    pugi::xml_document doc;
+    REQUIRE( doc.load_string("<style no = \"2\">string</style>"));
 
-    REQUIRE( std::stoi(wxExStyle(&xml, "").GetNo()) == 2);
-    REQUIRE( wxExStyle(&xml, "").GetValue() == "fore:blue");
-    REQUIRE( std::stoi(wxExStyle(&xml, "cpp").GetNo()) == 2);
-    REQUIRE( wxExStyle(&xml, "").GetValue() == "fore:blue");
+    REQUIRE( std::stoi(wxExStyle(doc.document_element(), "").GetNo()) == 2);
+    REQUIRE( wxExStyle(doc.document_element(), "").GetValue() == "fore:blue");
+    REQUIRE( std::stoi(wxExStyle(doc.document_element(), "cpp").GetNo()) == 2);
+    REQUIRE( wxExStyle(doc.document_element(), "").GetValue() == "fore:blue");
 
-    wxXmlNode xml2(wxXML_ELEMENT_NODE, "style");
-    xml2.AddAttribute("no", "2");
-    new wxXmlNode(&xml2, wxXML_TEXT_NODE , "", "styledefault+comment");
-
-    REQUIRE( wxExStyle(&xml2, "cpp").GetValue().find("default") == std::string::npos);
-    REQUIRE( wxExStyle(&xml2, "cpp").GetValue().find("comment") == std::string::npos);
-    REQUIRE( wxExStyle(&xml2, "cpp").GetValue().find("+") == std::string::npos);
+    REQUIRE( doc.load_string("<style no = \"2\">styledefault+comment</style>"));
+    
+    REQUIRE( wxExStyle(doc.document_element(), "cpp").GetValue().find("default") == std::string::npos);
+    REQUIRE( wxExStyle(doc.document_element(), "cpp").GetValue().find("comment") == std::string::npos);
+    REQUIRE( wxExStyle(doc.document_element(), "cpp").GetValue().find("+") == std::string::npos);
   }
   
   SECTION("Apply")

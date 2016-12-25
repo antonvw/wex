@@ -11,7 +11,6 @@
 #endif
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/persist/toplevel.h>
-#include <wx/tokenzr.h> 
 #include <wx/extension/frame.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/filename.h>

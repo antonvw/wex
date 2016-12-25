@@ -7,7 +7,8 @@
 
 #pragma once
 
-class wxXmlNode;
+#include <pugixml.hpp>
+
 class wxStyledTextCtrl;
 
 /// This class defines our scintilla markers.
@@ -15,7 +16,7 @@ class WXDLLIMPEXP_BASE wxExMarker
 {
 public:
   /// Default constructor.
-  wxExMarker(const wxXmlNode* node = nullptr);
+  wxExMarker(const pugi::xml_node& node = pugi::xml_node());
 
   /// Constructor.
   /// Only sets no and symbol, and not the colours.

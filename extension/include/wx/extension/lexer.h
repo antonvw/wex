@@ -14,7 +14,11 @@
 #include <wx/extension/style.h>
 
 class wxExSTC;
-class wxXmlNode;
+
+namespace pugi
+{
+  class xml_node;
+};
 
 /// This class defines a lexer using file extensions,
 /// syntax colouring and comment definitions.
@@ -42,7 +46,7 @@ public:
       }};
 
   /// Constructor using xml node.
-  wxExLexer(const wxXmlNode* node) 
+  wxExLexer(const pugi::xml_node* node) 
     : m_STC(nullptr) {
       Initialize();
       Set(node);};
@@ -168,7 +172,7 @@ private:
     size_t min_size = 0,
     const std::string& prefix = std::string()) const;
   void Initialize();
-  void Set(const wxXmlNode* node);
+  void Set(const pugi::xml_node* node);
 
   std::string m_CommentBegin;
   std::string m_CommentBegin2;

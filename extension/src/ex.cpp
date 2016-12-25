@@ -16,7 +16,6 @@
 #include <shunting-yard/eval.hpp>
 #include <wx/config.h>
 #include <wx/numformatter.h>
-#include <wx/tokenzr.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/address.h>
 #include <wx/extension/addressrange.h>
@@ -29,6 +28,7 @@
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/stcdlg.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include <wx/extension/vimacros.h>
@@ -111,12 +111,12 @@ wxExEx::wxExEx(wxExSTC* stc)
       )
   , m_Commands {
     {":ab", [&](const std::string& command) {
-      wxStringTokenizer tkz(command, " ");
+      wxExTokenizer tkz(command);
       if (tkz.CountTokens() >= 2)
       {
         tkz.GetNextToken(); // skip
         const std::string ab(tkz.GetNextToken());
-        m_Macros.SetAbbreviation(ab, tkz.GetString().ToStdString());
+        m_Macros.SetAbbreviation(ab, tkz.GetString());
       }
       else
       {
@@ -304,11 +304,11 @@ wxExEx::wxExEx(wxExSTC* stc)
       m_CTags->Find(wxString(command).AfterFirst(' ').ToStdString());
       return true;}},
     {":una", [&](const std::string& command) {
-      wxStringTokenizer tkz(command, " ");
-      if (tkz.CountTokens() >= 2)
+      wxExTokenizer tkz(command);
+      if (tkz.CountTokens() >= 1)
       {
-        tkz.GetNextToken(); // skip
-        m_Macros.SetAbbreviation(tkz.GetNextToken().ToStdString(), "");
+        tkz.GetNextToken(); // skip :una
+        m_Macros.SetAbbreviation(tkz.GetNextToken(), "");
       }
       return true;}},
     {":ve", [&](const std::string& command) {ShowDialog("Version", 
@@ -405,7 +405,7 @@ void wxExEx::Cleanup()
 bool wxExEx::Command(const std::string& command, bool is_handled)
 {
   if (!m_IsActive || command.empty() || command.front() != ':') return false;
-    
+
   wxExSTC* stc = nullptr;
 
   if (m_Frame->ExecExCommand(command, stc))

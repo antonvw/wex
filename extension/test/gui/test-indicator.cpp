@@ -9,7 +9,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/xml/xml.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
@@ -42,11 +41,12 @@ TEST_CASE("wxExIndicator")
   
   SECTION("Constructor xml")
   {
-    wxXmlNode xml(wxXML_ELEMENT_NODE, "indicator");
-    xml.AddAttribute("no", "5");
-    new wxXmlNode(&xml, wxXML_TEXT_NODE , "", "indic_box,green");
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_string("<indicator no = \"5\">indic_box,green</indicator>");
+    INFO( result.description());
+    REQUIRE( result );
 
-    wxExIndicator ind(&xml);
+    wxExIndicator ind(doc.document_element());
     REQUIRE( ind.GetForegroundColour() == "green");
     REQUIRE( ind.GetNo() == 5);
     REQUIRE( ind.GetStyle() == 6);

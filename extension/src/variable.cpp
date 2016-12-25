@@ -9,7 +9,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/xml/xml.h>
 #include <wx/extension/variable.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/stc.h>
@@ -34,11 +33,15 @@ wxExVariable::wxExVariable(
 {
 }
 
-wxExVariable::wxExVariable(const wxXmlNode* node)
-  : m_Type(VARIABLE_READ)
+wxExVariable::wxExVariable(const pugi::xml_node& node)
+  : wxExVariable(
+      node.attribute("name").value(),
+      node.text().get(),
+      node.attribute("prefix").value(),
+      VARIABLE_READ, true)
 {
-  const wxString type = node->GetAttribute("type");
-   
+  const std::string type = node.attribute("type").value();
+
   if (!type.empty())
   {
     if (type == "BUILTIN")
@@ -68,13 +71,9 @@ wxExVariable::wxExVariable(const wxXmlNode* node)
     }
     else
     {
-      wxLogError("Variable type is not supported: " + type);
+      std::cerr << "Variable type is not supported: " << type << "\n";
     }
   }
-
-  m_Name = node->GetAttribute("name");
-  m_Prefix = node->GetAttribute("prefix");
-  m_Value = node->GetNodeContent().Strip(wxString::both);
 }
 
 void wxExVariable::AskForInput() 
@@ -311,50 +310,39 @@ bool wxExVariable::IsInput() const
      m_Type == VARIABLE_INPUT_SAVE;
 }
 
-void wxExVariable::Save(wxXmlNode* node) const
+void wxExVariable::Save(pugi::xml_node& node) const
 {
-  node->AddAttribute("name", m_Name);
-  
-  switch (m_Type)
+  if (!node.attribute("name"))
   {
-    case VARIABLE_BUILTIN:
-      node->AddAttribute("type", "BUILTIN");
-      break;
-      
-    case VARIABLE_ENVIRONMENT:
-      node->AddAttribute("type", "ENVIRONMENT");
-      break;
-      
-    case VARIABLE_INPUT:
-      node->AddAttribute("type", "INPUT");
-      break;
-      
-    case VARIABLE_INPUT_ONCE:
-      node->AddAttribute("type", "INPUT-ONCE");
-      break;
+    node.append_attribute("name") = m_Name.c_str();
+  }
+
+  if (!node.attribute("type"))
+  {
+    pugi::xml_attribute type = node.append_attribute("type");
     
-    case VARIABLE_INPUT_SAVE:
-      node->AddAttribute("type", "INPUT-SAVE");
-      break;
-    
-    case VARIABLE_READ:
-      break;
-      
-    case VARIABLE_TEMPLATE:
-      node->AddAttribute("type", "TEMPLATE");
-      break;
-      
-    default: wxFAIL; break;
+    switch (m_Type)
+    {
+      case VARIABLE_BUILTIN: type.set_value("BUILTIN"); break;
+      case VARIABLE_ENVIRONMENT: type.set_value("ENVIRONMENT"); break;
+      case VARIABLE_INPUT: type.set_value("INPUT"); break;
+      case VARIABLE_INPUT_ONCE: type.set_value("INPUT-ONCE"); break;
+      case VARIABLE_INPUT_SAVE: type.set_value("INPUT-SAVE"); break;
+      case VARIABLE_READ: break;
+      case VARIABLE_TEMPLATE: type.set_value("TEMPLATE"); break;
+
+      default: wxFAIL; break;
+    }
   }
   
-  if (!m_Prefix.empty())
+  if (!m_Prefix.empty() && !node.attribute("prefix"))
   {
-    node->AddAttribute("prefix", m_Prefix);
+    node.append_attribute("prefix") = m_Prefix.c_str();
   }
     
   if (!m_Value.empty() && m_Type != VARIABLE_INPUT)
   {
-    new wxXmlNode(node, wxXML_TEXT_NODE, "", m_Value);
+    node.text().set(m_Value.c_str());
   }
 } 
 
@@ -365,5 +353,4 @@ void wxExVariable::SkipInput()
     m_AskForInput = false;
   }
 }
-
 #endif // wxUSE_GUI

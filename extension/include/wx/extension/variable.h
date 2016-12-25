@@ -9,9 +9,10 @@
 
 #if wxUSE_GUI
 
+#include <pugixml.hpp>
+
 class wxExEx;
 class wxExSTCEntryDialog;
-class wxXmlNode;
 
 /// Offers variable support to be used in macros.
 /// Variables are assigned from an xml node, and
@@ -42,7 +43,7 @@ public:
   
   /// Constructor using xml node, setting name, type, value,
   /// prefix using node attributes.
-  wxExVariable(const wxXmlNode* node);
+  wxExVariable(const pugi::xml_node& node);
   
   /// Sets the ask for input member, if appropriate for type.
   void AskForInput();
@@ -70,7 +71,7 @@ public:
   bool IsModified() const {return m_IsModified;};
   
   /// Save in xml node.
-  void Save(wxXmlNode* node) const;
+  void Save(pugi::xml_node& node) const;
   
   /// Resets the ask for input member, if appropriate for type.
   void SkipInput();

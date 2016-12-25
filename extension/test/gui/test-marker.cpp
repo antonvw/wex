@@ -9,7 +9,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/xml/xml.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/stc.h>
 #include "test.h"
@@ -47,11 +46,10 @@ TEST_CASE("wxExMarker","[lexer]")
 
   SECTION("Constructor xml")
   {
-    wxXmlNode xml(wxXML_ELEMENT_NODE, "marker");
-    xml.AddAttribute("no", "5");
-    new wxXmlNode(&xml, wxXML_TEXT_NODE , "", "mark_character,green,white");
+    pugi::xml_document doc;
+    REQUIRE( doc.load_string("<marker no = \"5\">mark_character,green,white</marker>"));
 
-    wxExMarker marker(&xml);
+    wxExMarker marker(doc.document_element());
     REQUIRE( marker.GetNo() == 5);
     REQUIRE( marker.GetSymbol() == wxSTC_MARK_CHARACTER);
     REQUIRE( marker.GetForegroundColour() == "green");

@@ -13,7 +13,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/addressrange.h>
 #include <wx/extension/ctags.h>
@@ -22,6 +21,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vimacros.h>
 
@@ -929,18 +929,18 @@ bool wxExVi::InsertMode(const std::string& command)
       return false;
     }
 
-    wxStringTokenizer tkz(command, wxUniChar(WXK_CONTROL_R));
+    wxExTokenizer tkz(command, std::string(1, WXK_CONTROL_R), false);
     
     while (tkz.HasMoreTokens())
     {
-      const std::string token = tkz.GetNextToken().ToStdString();
+      const std::string token = tkz.GetNextToken();
+      const std::string rest(tkz.GetString());
       
-      if (RegAfter("\x12", 
-        "\x12" + tkz.GetString().Mid(0, 1).ToStdString()))
+      if (RegAfter("\x12", "\x12" + rest.substr(0, 1)))
       {
         InsertMode(token);
-        CommandReg(tkz.GetString().GetChar(0));
-        InsertMode(tkz.GetString().Mid(1).ToStdString());
+        CommandReg(rest[0]);
+        InsertMode(rest.substr(1));
         return true;
       }  
     }
@@ -1061,7 +1061,7 @@ bool wxExVi::InsertMode(const std::string& command)
 
 void wxExVi::InsertModeNormal(const std::string& text)
 {
-  wxStringTokenizer tkz(text, "\r\n", wxTOKEN_RET_EMPTY_ALL);
+  wxExTokenizer tkz(text, "\r\n", false);
   
   if (text.find('\0') == std::string::npos && tkz.HasMoreTokens())
   {

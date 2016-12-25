@@ -8,6 +8,7 @@
 #pragma once
 
 #include <vector>
+#include <pugixml.hpp>
 #include <wx/extension/lexer.h>
 #include <wx/extension/menucommands.h>
 #include <wx/extension/process.h>
@@ -40,7 +41,7 @@ public:
     int flags_location = VCS_FLAGS_LOCATION_POSTFIX);
   
   /// Constructor using xml node.
-  wxExVCSEntry(const wxXmlNode* node);
+  wxExVCSEntry(const pugi::xml_node& node);
 
   /// Returns true if admin dir is only at top level.
   bool AdminDirIsTopLevel() const {return m_AdminDirIsTopLevel;};

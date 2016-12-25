@@ -10,13 +10,12 @@
 #include <wx/wx.h>
 #endif
 #include <wx/dnd.h>
-#include <wx/textfile.h> // for wxTextFile::GetEOL()
-#include <wx/tokenzr.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/printing.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GRID
@@ -210,32 +209,30 @@ const wxString wxExGrid::BuildPage()
   else
     text << "border=0";
 
-  text << " cellpadding=4 cellspacing=0 >" << wxTextFile::GetEOL();
-
-  text << "<tr>" << wxTextFile::GetEOL();
+  text << " cellpadding=4 cellspacing=0 >\n";
+  text << "<tr>\n";
 
   // Add the col labels only if they are shown.
   if (GetColLabelSize() > 0)
   {
     for (int c = 0 ; c < GetNumberCols(); c++)
     {
-      text << "<td><i>" << GetColLabelValue(c) << "</i>" << wxTextFile::GetEOL();
+      text << "<td><i>" << GetColLabelValue(c) << "</i>\n";
     }
   }
 
   for (int i = 0 ; i < GetNumberRows(); i++)
   {
-    text << "<tr>" << wxTextFile::GetEOL();
+    text << "<tr>\n";
 
     for (int j = 0 ; j < GetNumberCols(); j++)
     {
       text << "<td>" <<
-        (GetCellValue(i, j).empty() ? "&nbsp": GetCellValue(i, j)) <<
-        wxTextFile::GetEOL();
+        (GetCellValue(i, j).empty() ? "&nbsp": GetCellValue(i, j)) << "\n";
     }
   }
 
-  text << "</TABLE>" << wxTextFile::GetEOL();
+  text << "</TABLE>\n";
 
   // This can be useful for testing, paste in a file and
   // check in your browser (there indeed rules are okay).
@@ -415,14 +412,12 @@ const wxString wxExGrid::GetFindString() const
   {
     // This does not work (if single cell selected, array count is 0!
     // const wxGridCellCoordsArray cells(GetSelectedCells());
-    const wxString data = GetSelectedCellsValue();
-
-    wxStringTokenizer tkz(data, wxTextFile::GetEOL());
+    wxExTokenizer tkz(GetSelectedCellsValue().ToStdString(), "\n");
 
     // Only if we have one cell, so one EOL.
     if (tkz.CountTokens() == 1)
     {
-      wxExFindReplaceData::Get()->SetFindString(tkz.GetNextToken().ToStdString());
+      wxExFindReplaceData::Get()->SetFindString(tkz.GetNextToken());
     }
   }
   else
@@ -468,7 +463,7 @@ const wxString wxExGrid::GetSelectedCellsValue() const
 
     if (value_added)
     {
-      text << wxTextFile::GetEOL();
+      text << "\n";
     }
   }
 
@@ -485,15 +480,15 @@ bool wxExGrid::IsAllowedDragSelection()
 #if wxUSE_DRAG_AND_DROP
 bool wxExGrid::IsAllowedDropSelection(const wxGridCellCoords& drop_coords, const wxString& data)
 {
-  wxStringTokenizer tkz(data, wxTextFile::GetEOL());
+  wxExTokenizer tkz(data.ToStdString(), "\n");
 
   int start_at_row = drop_coords.GetRow();
 
   while (tkz.HasMoreTokens())
   {
-    const wxString line = (tkz.GetNextToken());
+    const std::string line = (tkz.GetNextToken());
 
-    wxStringTokenizer tkz(line, "\t");
+    wxExTokenizer tkz(line, "\t");
 
     int next_col = drop_coords.GetCol();
     while (tkz.HasMoreTokens() && next_col < GetNumberCols())
@@ -558,15 +553,15 @@ void wxExGrid::SetCellsValue(
   const wxGridCellCoords& start_coords, 
   const wxString& data)
 {
-  wxStringTokenizer tkz(data, wxTextFile::GetEOL());
+  wxExTokenizer tkz(data.ToStdString(), "\n");
 
   int start_at_row = start_coords.GetRow();
 
   while (tkz.HasMoreTokens())
   {
-    const wxString line = (tkz.GetNextToken());
+    const std::string line = (tkz.GetNextToken());
 
-    wxStringTokenizer tkz(line, "\t");
+    wxExTokenizer tkz(line, "\t");
 
     int next_col = start_coords.GetCol();
 

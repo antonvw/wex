@@ -52,7 +52,7 @@ private:
     wxExSTCWindowFlags flags = STC_WIN_DEFAULT, 
     const std::string& command = std::string()) override;
 
-  void RunQuery(const wxString& query, bool empty_results = false);
+  void RunQuery(const std::string& query, bool empty_results = false);
 
   wxExGrid* m_Results;
   wxExSTC* m_Query;

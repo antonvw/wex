@@ -11,7 +11,7 @@
 #include <wx/combobox.h>
 #include <wx/filedlg.h>
 #include <wx/generic/dirctrlg.h>
-#include <wx/tokenzr.h>
+#include <wx/extension/tokenizer.h>
 
 #define CONVERT( IN )                     \
   if (IN.GetParent() == nullptr) return;  \
@@ -41,15 +41,15 @@ public:
   /// Constructor, using string, each word results in a container element.
   wxExToContainer(
     /// string containing elements
-    const wxString& in,
+    const std::string& in,
     /// delimiter for elements
-    const wxString& delims = wxDEFAULT_DELIMITERS) {
-    wxStringTokenizer tkz(in, delims);
+    const std::string& delims = " \t\r\n") {
+    wxExTokenizer tkz(in, delims);
     while (tkz.HasMoreTokens())
     {
-      wxString token(tkz.GetNextToken());
+      std::string token(tkz.GetNextToken());
       // if escape space, add next token
-      if (token.Last() == '\\')
+      if (token.back() == '\\')
       {
         token = token.substr(0, token.size() - 1) + " " + tkz.GetNextToken();
       }

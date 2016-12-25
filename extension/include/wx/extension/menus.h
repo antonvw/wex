@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wx/xml/xml.h>
+#include <pugixml.hpp>
 #include <wx/extension/menu.h>
 #include <wx/extension/menucommand.h>
 #include <wx/extension/util.h>
@@ -21,17 +21,15 @@ public:
   template <typename T>
   static int AddCommands(
     /// node with data
-    const wxXmlNode* node,
+    const pugi::xml_node& node,
     /// the commands to be filled
     T& commands) {
-    wxXmlNode *child = node->GetChildren();
-    while (child)
+    for (const auto& child: node.children())
     {
-      if (child->GetName() == "commands")
+      if (strcmp(child.name(), "commands") == 0)
       {
         AddCommand(child, commands);
       }
-      child = child->GetNext();
     }
     return commands.size();};
 
@@ -104,42 +102,36 @@ public:
   /// no entries were added.
   template <typename T>
   static bool Load(const std::string& name, T& entries) {
-    wxXmlDocument doc;
+    pugi::xml_document doc;
     if (!GetFileName().FileExists() ||
-        !doc.Load(GetFileName().GetFullPath()))
+        !doc.load_file(
+           GetFileName().GetFullPath().ToStdString().c_str(),
+           pugi::parse_default | pugi::parse_trim_pcdata))
     {
       return false;
     }
     entries.clear();
-    wxXmlNode* child = doc.GetRoot()->GetChildren();
-    while (child)
+    for (const auto& child: doc.document_element().children())
     {
-      if (child->GetName() == name)
+      if (strcmp(child.name(), name.c_str()) == 0)
       {
         entries.push_back({child});
       }
-      child = child->GetNext();
     }
     return !entries.empty();};
 private:
   template <typename T>
-  static void AddCommand(const wxXmlNode* node, T& commands)
+  static void AddCommand(const pugi::xml_node& node, T& commands)
   {
-    wxXmlNode* child = node->GetChildren();
-    while (child)
+    for (const auto& child: node.children())
     {
-      if (child->GetName() == "command")
+      if (strcmp(child.name(), "command") == 0)
       {
-        const wxString content = child->GetNodeContent().Strip(wxString::both);
-        const wxString attrib = child->GetAttribute("type");
-        const wxString submenu = child->GetAttribute("submenu");
-        const wxString subcommand = child->GetAttribute("subcommand");
         commands.push_back(
-          {content.ToStdString(), 
-           attrib.ToStdString(), 
-           submenu.ToStdString(), 
-           subcommand.ToStdString()});
+          {child.text().get(),
+           child.attribute("type").value(), 
+           child.attribute("submenu").value(), 
+           child.attribute("subcommand").value()});
       }
-      child = child->GetNext();
     }};
 };

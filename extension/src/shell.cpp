@@ -12,10 +12,10 @@
 #include <functional>
 #include <numeric>
 #include <wx/config.h>
-#include <wx/tokenzr.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/defs.h> // for ID_SHELL_COMMAND
 #include <wx/extension/process.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -46,12 +46,12 @@ wxExShell::wxExShell(wxWindow* parent,
   if (m_CommandsSaveInConfig > 0)
   {
     // Get all previous commands.
-    wxStringTokenizer tkz(wxConfigBase::Get()->Read("Shell"),
-      (char)AutoCompGetSeparator());
+    wxExTokenizer tkz(wxConfigBase::Get()->Read("Shell").ToStdString(),
+      std::string(1, AutoCompGetSeparator()));
 
     while (tkz.HasMoreTokens())
     {
-      m_Commands.push_front(tkz.GetNextToken().ToStdString());
+      m_Commands.push_front(tkz.GetNextToken());
     }
   }
 

@@ -9,7 +9,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/xml/xml.h>
 #include <wx/extension/variable.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
@@ -41,25 +40,26 @@ TEST_CASE("wxExVariable", "[stc][vi]")
       REQUIRE(!v.IsInput());
   }
 
-  wxXmlNode xml(wxXML_ELEMENT_NODE, "variable");
-  xml.AddAttribute("name", "test");
-  xml.AddAttribute("type", "BUILTIN");
-    
-  wxExVariable var(&xml);
+  pugi::xml_document doc;
+  REQUIRE( doc.load_string("<variable name = \"test\" type = \"BUILTIN\"></variable>"));
+
+  pugi::xml_node node = doc.document_element();
+  wxExVariable var(node);
+
   REQUIRE( var.GetName() == "test");
   REQUIRE( var.GetValue().empty());
   REQUIRE(!var.Expand(ex));
   REQUIRE(!var.IsModified());
   REQUIRE(!var.IsInput());
   
-  xml.DeleteAttribute("name");
+  node.remove_attribute("name");
   
   // Test all builtin macro variables.
   for (const auto& it : GetBuiltinVariables())
   {
-    xml.AddAttribute("name", it);
+    node.append_attribute("name") = it.c_str();
 
-    wxExVariable var2(&xml);
+    wxExVariable var2(node);
     REQUIRE( var2.GetName() == it);
     REQUIRE( var2.GetValue().empty());
     REQUIRE( var2.Expand(ex));
@@ -68,13 +68,13 @@ TEST_CASE("wxExVariable", "[stc][vi]")
 
     if (it == "Year")
     {
-      REQUIRE( wxString(content).StartsWith("20")); // start of year
+      REQUIRE( content.find("20") == 0); // start of year
     }
     
     REQUIRE(!var2.IsModified());
     REQUIRE(!var2.IsInput());
     
-    xml.DeleteAttribute("name");
+    node.remove_attribute("name");
   }
     
   wxExVariable var3("added");
@@ -84,5 +84,5 @@ TEST_CASE("wxExVariable", "[stc][vi]")
   // This is input, we cannot test it at this moment.
   var.AskForInput();
   
-  var3.Save(&xml);
+  var3.Save(doc);
 }
