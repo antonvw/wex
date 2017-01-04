@@ -528,7 +528,7 @@ wxExTextCtrl::wxExTextCtrl(
         case TYPE_CALC: m_Calcs.Set(this); break;
         case TYPE_COMMAND:
           if (GetValue() == "n" || GetValue() == "prev") focus = wxExManagedFrame::HIDE_BAR_FORCE;
-          if (GetValue().StartsWith("!")) focus = wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC;
+          if (GetValue().find("!") == 0) focus = wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC;
           m_Commands.Set(this);
           break;
         case TYPE_FIND:

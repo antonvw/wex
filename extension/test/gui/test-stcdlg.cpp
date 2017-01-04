@@ -14,7 +14,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExSTCEntryDialog", "[stc]")
+TEST_CASE("wxExSTCEntryDialog")
 {
   wxExSTCEntryDialog* dlg1 = new wxExSTCEntryDialog(GetFrame(), "hello", "testing");
   

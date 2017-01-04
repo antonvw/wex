@@ -13,7 +13,7 @@
 #include <wx/extension/menucommand.h>
 #include "test.h"
 
-TEST_CASE("wxExMenuCommands", "[menu]")
+TEST_CASE("wxExMenuCommands")
 {
   wxExMenuCommands<wxExMenuCommand> cmnds("test", {{"x"},{"y"},{"z"}});
   

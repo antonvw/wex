@@ -16,7 +16,7 @@
 #include <wx/extension/menu.h>
 #include "test.h"
 
-TEST_CASE("wxExVCS", "[vcs]")
+TEST_CASE("wxExVCS")
 {
   // GetCount
   REQUIRE( wxExVCS::GetCount() > 0);

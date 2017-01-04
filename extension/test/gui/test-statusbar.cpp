@@ -14,8 +14,6 @@
 
 TEST_CASE("wxExStatusBar")
 {
-  INFO( GetStatusBar()->GetFieldsCount());
-  
   REQUIRE( GetStatusBar()->SetStatusText("hello", ""));
   REQUIRE( GetStatusBar()->SetStatusText("hello0", "Pane0"));
   REQUIRE( GetStatusBar()->SetStatusText("hello1", "Pane1"));

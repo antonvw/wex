@@ -21,12 +21,11 @@
 
 void ChangeMode(wxExVi* vi, const std::string& command, int mode)
 {
-  INFO( command);
   REQUIRE( vi->Command(command));
   REQUIRE( vi->GetMode() == mode);
 }
 
-TEST_CASE("wxExVi", "[stc][vi]")
+TEST_CASE("wxExVi")
 {
   wxExSTC* stc = new wxExSTC(GetFrame(), 
     std::string("// vi: set ts=120 "
@@ -103,7 +102,6 @@ TEST_CASE("wxExVi", "[stc][vi]")
     WXK_PAGEUP, WXK_PAGEDOWN, WXK_TAB})
   {
     event.m_keyCode = nav_key;
-    INFO( nav_key );
     REQUIRE(!vi->OnKeyDown(event));
     ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   }
@@ -153,7 +151,6 @@ TEST_CASE("wxExVi", "[stc][vi]")
   stc->SetSavePoint();
   for (auto& it2 : commands)
   {
-    INFO( it2);
     REQUIRE( vi->Command(it2));
     REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
     REQUIRE(!stc->GetModify());
@@ -225,7 +222,6 @@ TEST_CASE("wxExVi", "[stc][vi]")
     ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
     REQUIRE( vi->GetInsertedText() == "abbreviation "  + abbrev.first + " ");
     REQUIRE( stc->GetText().Contains("abbreviation " + abbrev.second));
-    INFO( abbrev.first);
     REQUIRE(!stc->GetText().Contains(abbrev.first));
   }
 
@@ -302,7 +298,6 @@ TEST_CASE("wxExVi", "[stc][vi]")
         c == 'f' || c == 't' ||
         c == 'F' || c == 'T' ||
         c == '\'' ? 2: 1, c);
-      INFO( nc );
       REQUIRE( vi->Command(nc));
       
       // test navigate while in rect mode
@@ -319,20 +314,17 @@ TEST_CASE("wxExVi", "[stc][vi]")
         c == '\'' ? 3: 2, 'y');
       mc[0] = 'y';
       mc[1] = c;
-      INFO( mc);
       REQUIRE( vi->Command(mc));
       REQUIRE( vi->GetLastCommand() == mc);
       REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
 
       // test delete
       mc[0] = 'd';
-      INFO( mc);
       REQUIRE( vi->Command(mc));
       REQUIRE( vi->GetLastCommand() == mc);
       
       // test change
       mc[0] = 'c';
-      INFO( mc);
       REQUIRE( vi->Command(mc));
       REQUIRE( vi->GetLastCommand() == mc);
       ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
@@ -385,7 +377,6 @@ TEST_CASE("wxExVi", "[stc][vi]")
     {
       for (auto c : other_command.first)
       {
-        INFO( c);
         if (c != '\t')
           REQUIRE( vi->Command(std::string(1, c)));
         else
@@ -402,7 +393,6 @@ TEST_CASE("wxExVi", "[stc][vi]")
         other_command.first == "@" ?
           other_command.first + "a": other_command.first);
 
-      INFO( oc);
       if (oc != "z" && oc != "@a")
         REQUIRE( vi->Command(oc));
       else
@@ -464,7 +454,6 @@ TEST_CASE("wxExVi", "[stc][vi]")
       all += command;
     }
 
-    INFO( macro.front() );
     REQUIRE( vi->Command("q"));
     REQUIRE( stc->GetVi().GetMacros().GetRegister('t') == all);
   }
@@ -579,7 +568,6 @@ TEST_CASE("wxExVi", "[stc][vi]")
     {"?a",0},
     {"n",0},
     {"N",0}}) {
-    INFO( go.first);
 
     if (go.first.back() != 'd')
       REQUIRE( vi->Command(go.first));

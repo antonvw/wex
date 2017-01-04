@@ -14,7 +14,7 @@
 #include <wx/extension/defs.h>
 #include "test.h"
 
-TEST_CASE("wxExVCSEntry", "[vcs]")
+TEST_CASE("wxExVCSEntry")
 {
   REQUIRE( wxExVCSEntry().GetCommands().size() == 1); // the empty command
   

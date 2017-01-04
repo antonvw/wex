@@ -191,10 +191,11 @@ Frame::Frame()
         }
         catch (otl_exception& p)
         {
-          m_Statistics.Inc(_("Number of query errors"));
+          const std::string text((const char*)p.msg, 1000);
+          m_Statistics.Inc("Number of query errors");
           m_Shell->AppendText(
-            _("\nerror: ") +  wxString(wxExQuoted(p.msg)) + 
-            _(" in: ") + wxString(wxExQuoted(query)));
+            "\nerror: " +  wxExQuoted(text) + 
+            " in: " + wxExQuoted(query));
         }
       }
     }
@@ -260,7 +261,7 @@ Frame::Frame()
     {
       try
       {
-        const wxString input(event.GetString());
+        const std::string input(event.GetString().ToStdString());
         if (!input.empty())
         {
           const std::string query = input.substr(
@@ -273,16 +274,17 @@ Frame::Frame()
       }
       catch (otl_exception& p)
       {
+        const std::string text((const char*)p.msg, 1000);
         if (m_Results->IsShown())
         {
           m_Results->EndBatch();
         }
-        m_Shell->AppendText(_("\nerror: ") + wxString(wxExQuoted(p.msg)));
+        m_Shell->AppendText("\nerror: " + wxExQuoted(text));
       }
     }
     else
     {
-      m_Shell->AppendText(_("\nnot connected"));
+      m_Shell->AppendText("\nnot connected");
     }
     m_Shell->Prompt();}, ID_SHELL_COMMAND);
 
@@ -405,12 +407,12 @@ void Frame::RunQuery(const std::string& query, bool empty_results)
     rpc,
     (float)milli.count() / (float)1000));
 
-  m_Statistics.Set(_("Rows processed"), rpc);
-  m_Statistics.Set(_("Query runtime"), milli.count());
+  m_Statistics.Set("Rows processed", rpc);
+  m_Statistics.Set("Query runtime", milli.count());
 
-  m_Statistics.Inc(_("Total number of queries run"));
-  m_Statistics.Inc(_("Total query runtime"), milli.count());
-  m_Statistics.Inc(_("Total rows processed"), rpc);
+  m_Statistics.Inc("Total number of queries run");
+  m_Statistics.Inc("Total query runtime", milli.count());
+  m_Statistics.Inc("Total rows processed", rpc);
 
   m_Shell->DocumentEnd();
 }

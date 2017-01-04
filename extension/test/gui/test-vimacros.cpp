@@ -16,7 +16,7 @@
 
 #define ESC "\x1b"
 
-TEST_CASE("wxExViMacros", "[stc][vi]")
+TEST_CASE("wxExViMacros")
 {
   wxExSTC* stc = new wxExSTC(GetFrame(), std::string("hello"));
   AddPane(GetFrame(), stc);
@@ -126,9 +126,7 @@ TEST_CASE("wxExViMacros", "[stc][vi]")
   
   // Test registers.
   REQUIRE(!macros.GetRegister('a').empty());
-  REQUIRE( macros.GetRegister('z').empty());
   REQUIRE(!macros.GetRegisters().empty());
-  REQUIRE( macros.Get("z").empty());
   REQUIRE( macros.SetRegister('z', "hello z"));
   REQUIRE(!macros.Get("z").empty());
   REQUIRE( macros.GetRegister('z') == "hello z");

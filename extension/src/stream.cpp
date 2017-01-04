@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <iostream>
 #include <wx/extension/stream.h>
@@ -100,8 +101,7 @@ bool wxExStream::ProcessBegin()
 
   if (!wxExFindReplaceData::Get()->MatchCase())
   {
-    std::transform(
-      m_FindString.begin(), m_FindString.end(), m_FindString.begin(), toupper);
+    for (auto & c : m_FindString) c = std::toupper(c);
   }
   
   return true;

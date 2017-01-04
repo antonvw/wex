@@ -32,8 +32,6 @@ void link(
   int line_no = 0;
   int col_no = 0;
   
-  INFO(path << "==" << expect);
-
   if (!expect.empty())
   {
     REQUIRE(link.GetPath(path, line_no, col_no).find(expect) != std::string::npos);
@@ -48,17 +46,17 @@ void link(
 }
 
 #ifdef __UNIX__
-TEST_CASE("wxExLink", "[stc]")
+TEST_CASE("wxExLink")
 {
   wxExSTC* stc = GetSTC();
   
-  SECTION("Default constructor")
+  SUBCASE("Default constructor")
   {
     const wxExLink lnk;
     link(lnk, "test");
   }
   
-  SECTION("Constructor with STC")
+  SUBCASE("Constructor with STC")
   {
     wxExLink lnk(stc);  
     wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");
@@ -126,7 +124,7 @@ TEST_CASE("wxExLink", "[stc]")
     link(lnk, "test-special.h:10:2", special, 10, 2);
   }
   
-  SECTION("http link")
+  SUBCASE("http link")
   { 
     wxExLink lnk(stc);
     wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");

@@ -27,11 +27,11 @@ public:
   void SetDialog(wxExItemTemplateDialog<wxExTestItem>* dlg) {;};
 };
 
-TEST_CASE("wxExItemTemplateDialog", "[item]")
+TEST_CASE("wxExItemTemplateDialog")
 {
   wxExItem::UseConfig(false);
 
-  SECTION("Basic")
+  SUBCASE("Basic")
   {
     wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
       std::vector <wxExTestItem> {
@@ -69,7 +69,7 @@ TEST_CASE("wxExItemTemplateDialog", "[item]")
     dlg->ForceCheckBoxChecked();
   }
 
-  SECTION("Test dialog with checkbox item")
+  SUBCASE("Test dialog with checkbox item")
   {
     wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
       std::vector <wxExTestItem> {{"checkbox", ITEM_CHECKBOX}},
@@ -79,7 +79,7 @@ TEST_CASE("wxExItemTemplateDialog", "[item]")
     dlg->Show();
   }
 
-  SECTION("Test dialog without buttons")
+  SUBCASE("Test dialog without buttons")
   {
     wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
       std::vector <wxExTestItem> {
@@ -89,7 +89,7 @@ TEST_CASE("wxExItemTemplateDialog", "[item]")
     dlg->Show();
   }
 
-  SECTION("Test dialog without items")
+  SUBCASE("Test dialog without items")
   {
     wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
       std::vector <wxExTestItem>(),
@@ -97,7 +97,7 @@ TEST_CASE("wxExItemTemplateDialog", "[item]")
     dlg->Show();
   }
   
-  SECTION("Test dialog with empty items")
+  SUBCASE("Test dialog with empty items")
   {
     wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
       std::vector <wxExTestItem> {{}, {}, {}},

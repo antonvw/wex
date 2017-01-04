@@ -1294,20 +1294,21 @@ void wxExSTC::Initialize(bool file_exists)
          "<");
        if (match_pos != wxSTC_INVALID_POSITION && GetCharAt(match_pos + 1) != '!')
        {
-         const wxString match(GetWordAtPos(match_pos + 1));
+         const std::string match(GetWordAtPos(match_pos + 1));
+
          if (
-           !match.StartsWith("/") &&
+            match.find("/") != 0 &&
             GetCharAt(GetCurrentPos() - 2) != '/' &&
-           (m_Lexer.GetLanguage() == "xml" || m_Lexer.IsKeyword(match.ToStdString())) &&
+           (m_Lexer.GetLanguage() == "xml" || m_Lexer.IsKeyword(match)) &&
            !SelectionIsRectangle())
          {
-           const wxString add("</" + match + ">");
+           const std::string add("</" + match + ">");
            if (m_vi.GetIsActive())
            {
              const int esc = 27;
              if (
-               !m_vi.Command(add.ToStdString()) ||
-               !m_vi.Command(wxString(wxUniChar(esc)).ToStdString()) ||
+               !m_vi.Command(add) ||
+               !m_vi.Command(std::string(1, esc)) ||
                !m_vi.Command("%") ||
                !m_vi.Command("i"))
              {

@@ -19,5 +19,4 @@ TEST_CASE( "wxExTestApp" )
   wxASSERT( 1 == 0 ); // to test OnAssertFailure
   REQUIRE(!wxGetApp().GetCatalogDir().empty());
   REQUIRE( wxGetApp().GetLocale().IsOk());
-  INFO( wxGetApp().GetLocale().GetLanguage());
 }

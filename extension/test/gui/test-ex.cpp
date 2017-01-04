@@ -18,7 +18,7 @@
 #include <wx/extension/vimacros.h>
 #include "test.h"
 
-TEST_CASE("wxExEx", "[stc][vi]")
+TEST_CASE("wxExEx")
 {
   // Test modeline.
   const std::string modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
@@ -63,14 +63,12 @@ TEST_CASE("wxExEx", "[stc][vi]")
     {":ve",false},
     {":1,$s/s/w/",true}})
   {
-    INFO( command.first);
     REQUIRE( ex->Command(command.first));
       
     if (command.second)
     {
       if (command.first != ":.=")
       {
-        INFO( command.first);
         REQUIRE( ex->GetLastCommand() == command.first);
       }
     }
@@ -102,7 +100,6 @@ TEST_CASE("wxExEx", "[stc][vi]")
     ":/XXX/x",
     ":r test-xx.txt"})
   {
-    INFO(command);
     REQUIRE(!ex->Command(command));
     REQUIRE( ex->GetLastCommand() != command);
   }
@@ -216,8 +213,6 @@ TEST_CASE("wxExEx", "[stc][vi]")
   for (int i = 0; i < max; i++) stc->AppendText("line xxxx added\n");
   const int lines = stc->GetLineCount();
   REQUIRE( ex->Command(":g/xxxx/d"));
-  INFO(std::to_string(stc->GetLineCount()) + "!=" + 
-    std::to_string(lines - max));
   REQUIRE(stc->GetLineCount() == lines - max);
   
   // Test global substitute.
@@ -240,7 +235,6 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE( stc->GetText() == "we have yyyy xxxx zzzz");
   stc->SetText("we have xxxx 'zzzz'");
   REQUIRE( ex->Command(":%s/'//g"));
-  INFO(stc->GetText().ToStdString() );
   REQUIRE(stc->GetText() == "we have xxxx zzzz" );
   REQUIRE(!ex->Command(":.s/x*//g"));
   REQUIRE(!ex->Command(":.s/ *//g"));
@@ -257,7 +251,6 @@ TEST_CASE("wxExEx", "[stc][vi]")
     {":/c/",2},
     {":10000",11}})
   {
-    INFO( go.first);
     REQUIRE(  ex->Command(go.first));
     REQUIRE( stc->GetCurrentLine() == go.second);
   }
@@ -279,7 +272,7 @@ TEST_CASE("wxExEx", "[stc][vi]")
   REQUIRE( ex->GetMacros().GetRegister('1') == "the chances");
   REQUIRE( ex->GetSelectedText().empty());
   
-  SECTION("Calculator")
+  SUBCASE("Calculator")
   {
     stc->SetText("aaaaa\nbbbbb\nccccc\n");
     const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
@@ -334,7 +327,6 @@ TEST_CASE("wxExEx", "[stc][vi]")
       const auto val = ex->Calculator(calc.first, width);
       if (!std::isnan(val))
       {
-        INFO( calc.first);
         REQUIRE( val == calc.second.first);
         REQUIRE( width == calc.second.second);
       }

@@ -55,7 +55,6 @@ TEST_CASE("wxExProcess")
 
   // Test invalid process
   REQUIRE(!process->Execute("xxxx", true));
-  INFO( process->GetStdErr());
   REQUIRE( process->GetStdErr().empty());
   REQUIRE( process->GetStdOut().empty());
   REQUIRE(!process->Kill());

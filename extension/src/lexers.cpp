@@ -128,24 +128,26 @@ const wxExLexer wxExLexers::FindByName(const std::string& name) const
 const wxExLexer wxExLexers::FindByText(const std::string& text) const
 {
   // Add automatic lexers if text starts with some special tokens.
-  const wxString text_lowercase = wxString(text).Lower().Trim();
+  std::string text_lowercase = std::regex_replace(text, 
+    std::regex("[ \t\n\v\f\r]+$"), "", std::regex_constants::format_sed);
+  for (auto & c : text_lowercase) c = std::tolower(c);
 
-       if (text_lowercase.StartsWith("<html>")) return FindByName("hypertext");
-  else if (text_lowercase.StartsWith("<?xml")) return FindByName("xml");
+       if (text_lowercase.find("<html>") == 0) return FindByName("hypertext");
+  else if (text_lowercase.find("<?xml") == 0) return FindByName("xml");
   // cpp files like #include <map> really do not have a .h extension 
   // (e.g. /usr/include/c++/3.3.5/map) so add here.
-  else if (text_lowercase.StartsWith("//")) return FindByName("cpp");
-  else if (text_lowercase.StartsWith("<?php")) return FindByName("phpscript");
-  else if (text_lowercase.StartsWith("#!/bin/csh")) return FindByName("csh");
-  else if (text_lowercase.StartsWith("#!/bin/env python")) return FindByName("python");
-  else if (text_lowercase.StartsWith("#!/bin/tcsh")) return FindByName("tcsh");
-  else if (text_lowercase.StartsWith("#!/bin/sh")) return FindByName("sh");
+  else if (text_lowercase.find("//") == 0) return FindByName("cpp");
+  else if (text_lowercase.find("<?php") == 0) return FindByName("phpscript");
+  else if (text_lowercase.find("#!/bin/csh") == 0) return FindByName("csh");
+  else if (text_lowercase.find("#!/bin/env python") == 0) return FindByName("python");
+  else if (text_lowercase.find("#!/bin/tcsh") == 0) return FindByName("tcsh");
+  else if (text_lowercase.find("#!/bin/sh") == 0) return FindByName("sh");
   else
   {
     // If there is another Shell Language Indicator,
     // match with bash.
     std::regex re("#!.*/bin/.*");
-    if (std::regex_match(text_lowercase.ToStdString(), re)) return FindByName("bash");
+    if (std::regex_match(text_lowercase, re)) return FindByName("bash");
   }
 
   return wxExLexer();
@@ -454,27 +456,27 @@ wxExLexers* wxExLexers::Set(wxExLexers* lexers)
 }
 
 bool SingleChoice(wxWindow* parent, const wxString& caption, 
-  bool show_modal, const wxArrayString& s, std::string& selection)
+  const wxArrayString& s, std::string& selection)
 {
   wxSingleChoiceDialog dlg(parent, _("Input") + ":", caption, s);
 
   const int index = s.Index(selection);
   if (index != wxNOT_FOUND) dlg.SetSelection(index);
-  if (show_modal && dlg.ShowModal() == wxID_CANCEL) return false;
+  if (dlg.ShowModal() == wxID_CANCEL) return false;
 
   selection = dlg.GetStringSelection();
   
   return true;
 }
   
-bool wxExLexers::ShowDialog(wxExSTC* stc, const wxString& caption, bool show_modal) const
+bool wxExLexers::ShowDialog(wxExSTC* stc, const wxString& caption) const
 {
   wxArrayString s;
   for (const auto& it : m_Lexers) s.Add(it.GetDisplayLexer());
   s.Add(wxEmptyString);
 
   auto lexer = stc->GetLexer().GetDisplayLexer();
-  if (!SingleChoice(stc, caption, show_modal, s, lexer)) return false;
+  if (!SingleChoice(stc, caption, s, lexer)) return false;
 
   lexer.empty() ? 
     stc->GetLexer().Reset():
@@ -483,15 +485,12 @@ bool wxExLexers::ShowDialog(wxExSTC* stc, const wxString& caption, bool show_mod
   return true;
 }
 
-bool wxExLexers::ShowThemeDialog(
-  wxWindow* parent, const wxString& caption, bool show_modal)
+bool wxExLexers::ShowThemeDialog(wxWindow* parent, const wxString& caption)
 { 
-  if (!show_modal) return false;
-  
   wxArrayString s;
   for (const auto& it : m_ThemeMacros) s.Add(it.first);
 
-  if (!SingleChoice(parent, caption, show_modal, s, m_Theme)) return false;
+  if (!SingleChoice(parent, caption, s, m_Theme)) return false;
 
   wxConfigBase::Get()->Write("theme", wxString(m_Theme));
 

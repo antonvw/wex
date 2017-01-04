@@ -120,9 +120,7 @@ public:
     /// stc component
     wxExSTC* stc,
     /// caption
-    const wxString& caption = _("Enter Lexer"),
-    /// shows modal dialog
-    bool show_modal = true) const;
+    const wxString& caption = _("Enter Lexer")) const;
     
   /// Shows a dialog with all themes, allowing you to choose one.
   /// Returns true and sets current theme if you select one.
@@ -130,9 +128,7 @@ public:
     /// parent
     wxWindow* parent,
     /// caption
-    const wxString& caption = _("Enter Theme"),
-    /// shows modal dialog
-    bool show_modal = true);
+    const wxString& caption = _("Enter Theme"));
 private:
   wxExLexers(const wxExFileName& filename);
   void Initialize();

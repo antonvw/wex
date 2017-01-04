@@ -14,7 +14,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExSTCFile", "[stc]")
+TEST_CASE("wxExSTCFile")
 {
   wxExSTC* stc = new wxExSTC(GetFrame(), GetTestFile());
   stc->SetText("and still they came");

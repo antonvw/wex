@@ -15,7 +15,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExHexMode", "[stc]")
+TEST_CASE("wxExHexMode")
 {
   // 0000000000111111111122222222223333333333444444444455555555555666666666
   // 0123456789012345678901234567890123456789012345678901234567890123456789
@@ -57,7 +57,6 @@ TEST_CASE("wxExHexMode", "[stc]")
   REQUIRE( hm->Replace('9', 13));
   REQUIRE( hm->Replace('2', 13));
   
-  INFO(wxExFileName(GetTestDir() + "test.hex").GetFullPath());
   REQUIRE( stc->GetFile().FileSave(wxExFileName(GetTestDir() + "test.hex")));
   stc->Reload();
   REQUIRE( stc->GetText() == "01232567890123456789");

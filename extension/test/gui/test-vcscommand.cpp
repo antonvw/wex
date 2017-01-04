@@ -12,7 +12,7 @@
 #include <wx/extension/vcscommand.h>
 #include "test.h"
 
-TEST_CASE("wxExVCSCommand", "[vcs]")
+TEST_CASE("wxExVCSCommand")
 {
   const wxExVCSCommand add("a&dd");
   const wxExVCSCommand blame("blame");

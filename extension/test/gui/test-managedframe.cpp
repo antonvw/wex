@@ -17,7 +17,7 @@
 #include "test.h"
 
 // Also test the toolbar (wxExToolBar).
-TEST_CASE("wxExManagedFrame", "[stc]")
+TEST_CASE("wxExManagedFrame")
 {
   REQUIRE(GetFrame()->AllowClose(100, nullptr));
   

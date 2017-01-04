@@ -2,7 +2,7 @@
 // Name:      vifsm.cpp
 // Purpose:   Implementation of class wxExViFSM
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -48,23 +48,29 @@ wxExViFSM::wxExViFSM(wxExVi* vi,
       NAVIGATE(Line, Up);}},
     {'R', [&](){m_vi->GetSTC()->SetOvertype(true);}}}
   , m_FSM {
+      MAKE_ENTRY(MODE_INSERT,      KEY_ESCAPE,      MODE_NORMAL,      normal),
+      MAKE_ENTRY(MODE_INSERT_RECT, KEY_ESCAPE,      MODE_VISUAL_RECT, nullptr),
+      // normal
+      MAKE_ENTRY(MODE_NORMAL,      KEY_ESCAPE,      MODE_NORMAL,      nullptr),
       MAKE_ENTRY(MODE_NORMAL,      KEY_INSERT,      MODE_INSERT,      insert),
       MAKE_ENTRY(MODE_NORMAL,      KEY_VISUAL,      MODE_VISUAL,      nullptr),
       MAKE_ENTRY(MODE_NORMAL,      KEY_VISUAL_LINE, MODE_VISUAL_LINE, nullptr),
       MAKE_ENTRY(MODE_NORMAL,      KEY_VISUAL_RECT, MODE_VISUAL_RECT, nullptr),
-      MAKE_ENTRY(MODE_INSERT,      KEY_ESCAPE,      MODE_NORMAL,      normal),
-      MAKE_ENTRY(MODE_INSERT_RECT, KEY_ESCAPE,      MODE_VISUAL_RECT, nullptr),
-      MAKE_ENTRY(MODE_VISUAL,      KEY_INSERT,      MODE_INSERT,      insert),
+      // visual
       MAKE_ENTRY(MODE_VISUAL,      KEY_ESCAPE,      MODE_NORMAL,      nullptr),
+      MAKE_ENTRY(MODE_VISUAL,      KEY_INSERT,      MODE_INSERT,      insert), // e.g. cw
       MAKE_ENTRY(MODE_VISUAL,      KEY_VISUAL,      MODE_VISUAL,      nullptr),
       MAKE_ENTRY(MODE_VISUAL,      KEY_VISUAL_LINE, MODE_VISUAL_LINE, nullptr),
       MAKE_ENTRY(MODE_VISUAL,      KEY_VISUAL_RECT, MODE_VISUAL_RECT, nullptr),
+      // visual line
       MAKE_ENTRY(MODE_VISUAL_LINE, KEY_ESCAPE,      MODE_NORMAL,      nullptr),
+      MAKE_ENTRY(MODE_VISUAL_LINE, KEY_INSERT,      MODE_VISUAL_LINE, nullptr),
       MAKE_ENTRY(MODE_VISUAL_LINE, KEY_VISUAL,      MODE_VISUAL,      nullptr),
       MAKE_ENTRY(MODE_VISUAL_LINE, KEY_VISUAL_LINE, MODE_VISUAL_LINE, nullptr),
       MAKE_ENTRY(MODE_VISUAL_LINE, KEY_VISUAL_RECT, MODE_VISUAL_RECT, nullptr),
-      MAKE_ENTRY(MODE_VISUAL_RECT, KEY_INSERT,      MODE_INSERT_RECT, insert),
+      // visual rect
       MAKE_ENTRY(MODE_VISUAL_RECT, KEY_ESCAPE,      MODE_NORMAL,      nullptr),
+      MAKE_ENTRY(MODE_VISUAL_RECT, KEY_INSERT,      MODE_INSERT_RECT, insert),
       MAKE_ENTRY(MODE_VISUAL_RECT, KEY_VISUAL,      MODE_VISUAL,      nullptr),
       MAKE_ENTRY(MODE_VISUAL_RECT, KEY_VISUAL_LINE, MODE_VISUAL_LINE, nullptr),
       MAKE_ENTRY(MODE_VISUAL_RECT, KEY_VISUAL_RECT, MODE_VISUAL_RECT, nullptr)}

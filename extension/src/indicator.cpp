@@ -19,26 +19,17 @@ wxExIndicator::wxExIndicator(const pugi::xml_node& node)
 {
   if (node.empty()) return;
 
-  const std::string single = 
-    wxExLexers::Get()->ApplyMacro(node.attribute("no").value());
-
   try
   {
+    const std::string single = 
+      wxExLexers::Get()->ApplyMacro(node.attribute("no").value());
+
     m_No = std::stoi(single);
-  }
-  catch (std::exception& e)
-  {
-    std::cerr << "Illegal indicator: " << single << " with offset: " << 
-      node.offset_debug() << "\n";
-    return;
-  }
 
-  wxExTokenizer fields(node.text().get(), ",");
+    wxExTokenizer fields(node.text().get(), ",");
 
-  const std::string style = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+    const std::string style = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
 
-  try
-  {
     m_Style = std::stoi(style);
 
     if (fields.HasMoreTokens())
@@ -50,17 +41,15 @@ wxExIndicator::wxExIndicator(const pugi::xml_node& node)
         m_Under = (fields.GetNextToken() == "true");
       }
     }
+
+    if (!IsOk())
+    {
+      std::cerr << "Illegal indicator number: " << m_No << " with offset: " << node.offset_debug() << "\n";
+    }
   }
   catch (std::exception& e)
   {
-    std::cerr << "Illegal indicator style: " << style << " with offset: " << 
-      node.offset_debug() << "\n";
-  }
-
-  if (!IsOk())
-  {
-    std::cerr << "Illegal indicator number: " << m_No << " with offset: " << 
-      node.offset_debug() << "\n";
+    std::cerr << "Indicator exception with offset: " << node.offset_debug() << "\n";
   }
 }
 

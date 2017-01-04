@@ -12,17 +12,17 @@ one of these applications, being a full featured source code text editor.
 
 # Uses
 
-- [catch lib](https://github.com/philsquared/Catch/) (only for testing)   
+- [doctest lib](https://github.com/onqtam/doctest)    
 
-- [exuberant ctags lib](https://github.com/rtyler/ctags) (for using ctags)   
+- [eval lib](https://github.com/r-lyeh/eval)    
 
-- [pugixml lib](https://github.com/zeux/pugixml) (for xml parsing)   
+- [exuberant ctags lib](https://github.com/rtyler/ctags)    
 
-- [eval lib](https://github.com/r-lyeh/eval) (shunting-yard algorithm for calculation)   
-
-- [OTL database lib](http://otl.sourceforge.net/) (for syncodbcquery)   
+- [OTL database lib](http://otl.sourceforge.net/)    
     `sudo apt-get install unixODBC unixODBC-dev` or   
     `yum install unixODBC unixODBC-devel`  
+
+- [pugixml lib](https://github.com/zeux/pugixml)    
 
 # Build process 
 

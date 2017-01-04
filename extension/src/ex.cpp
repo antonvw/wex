@@ -903,9 +903,9 @@ void wxExEx::SetLastCommand(
     always || 
     command == "~" || 
     ( command.size() > 2 && command.front() == ':' && 
-      !wxString(command).StartsWith(":ve") &&
-      !wxString(command).StartsWith(":help") &&
-      !wxString(command).StartsWith(":new") ) ||
+      command.find(":ve") != 0 &&
+      command.find(":help") != 0 &&
+      command.find(":new") != 0) ||
     ( command.size() > 1 && command.front() != ':' && command.front() != '\t'))
   {
     m_LastCommand = command;

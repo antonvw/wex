@@ -17,7 +17,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExDebug", "[process]")
+TEST_CASE("wxExDebug")
 {
   // obtain a menu item id
   wxExMenu menu;

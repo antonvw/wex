@@ -11,7 +11,7 @@
 
 TEST_CASE( "wxExFile" ) 
 {
-  SECTION( "basic" ) 
+  SUBCASE( "basic" ) 
   {
     REQUIRE(!wxExFile("XXXXX").IsOpened());
     
@@ -47,13 +47,13 @@ TEST_CASE( "wxExFile" )
   }
 
   // file should be closed before remove (at least for windows)
-  SECTION( "remove")
+  SUBCASE( "remove")
   {
     REQUIRE( remove("test-create") == 0);
     REQUIRE( remove("test-xxx") == 0);
   }
 
-  SECTION( "timing" ) 
+  SUBCASE( "timing" ) 
   {
     wxExFile file(GetTestFile());
   

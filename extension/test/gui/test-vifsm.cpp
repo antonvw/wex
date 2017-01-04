@@ -2,7 +2,7 @@
 // Name:      test-vifsm.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,7 +17,7 @@
 
 #define ESC "\x1b"
 
-TEST_CASE("wxExViFSM", "[stc][vi]")
+TEST_CASE("wxExViFSM")
 {
   wxExViFSM fsm(&GetSTC()->GetVi(), 
     [=](const std::string& command){;},

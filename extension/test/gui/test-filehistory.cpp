@@ -17,7 +17,7 @@
 
 TEST_CASE("wxExFileHistory")
 {
-  SECTION("Default constructor")
+  SUBCASE("Default constructor")
   {
     wxExFileHistory history;
     REQUIRE( history.GetCount() == 0);
@@ -50,7 +50,7 @@ TEST_CASE("wxExFileHistory")
     history.Save();
   }
 
-  SECTION("Other constructor")
+  SUBCASE("Other constructor")
   {
     wxExFileHistory history(4, 1000, "MY-KEY");
     history.AddFileToHistory(GetTestFile().GetFullPath());
@@ -60,7 +60,7 @@ TEST_CASE("wxExFileHistory")
     history.Save();
   }
   
-  SECTION("Delete file")
+  SUBCASE("Delete file")
   {
     wxExFileHistory history;
     history.Clear();

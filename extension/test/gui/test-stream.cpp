@@ -50,11 +50,6 @@ TEST_CASE("wxExStream")
   const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
   
   REQUIRE(milli.count() < 100);
-  
-  INFO(wxString::Format(
-    "wxExStream::matching %d items in %d ms", 
-    s.GetStatistics().Get("Actions Completed"), (int)milli.count()).ToStdString());
-    
   REQUIRE(!s.GetStatistics().GetElements().GetItems().empty());
   REQUIRE( s.GetStatistics().Get("Actions Completed") == 193);
   
@@ -68,11 +63,6 @@ TEST_CASE("wxExStream")
   const auto milli2 = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start2);
   
   REQUIRE(milli2.count() < 100);
-  
-  INFO(wxString::Format(
-    "wxExStream::replacing %d items in %d ms", 
-    s2.GetStatistics().Get("Actions Completed"), (int)milli2.count()).ToStdString());
-    
   REQUIRE(!s2.GetStatistics().GetElements().GetItems().empty());
   REQUIRE( s2.GetStatistics().Get("Actions Completed") == 194);
 }

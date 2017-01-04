@@ -29,14 +29,14 @@ TEST_CASE("wxExDirCtrl")
   wxExGenericDirCtrl* ctrl = new wxExGenericDirCtrl(GetFrame(), GetFrame());
   AddPane(GetFrame(), ctrl);
 
-  SECTION("Select directory")
+  SUBCASE("Select directory")
   {
     ctrl->ExpandAndSelectPath("./");
     Test(ctrl);
   }
   
 #ifdef __UNIX__
-  SECTION("Select file")
+  SUBCASE("Select file")
   {
     ctrl->ExpandAndSelectPath("/usr/bin/git");
     Test(ctrl);

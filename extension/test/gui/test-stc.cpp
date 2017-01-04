@@ -17,7 +17,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExSTC", "[stc][vi]")
+TEST_CASE("wxExSTC")
 {
 #if wxCHECK_VERSION(3,1,0)
   wxExSTC::ConfigDialog(GetFrame(), "test stc", STC_CONFIG_MODELESS);
@@ -26,13 +26,13 @@ TEST_CASE("wxExSTC", "[stc][vi]")
   wxExSTC* stc = GetSTC();
   stc->GetVi().Command("\x1b");
   
-  SECTION("SetText")
+  SUBCASE("SetText")
   {
     stc->SetText("hello stc");
     REQUIRE( stc->GetText() == "hello stc");
   }
   
-  SECTION("Find and Replace")
+  SUBCASE("Find and Replace")
   {
     stc->SetText("hello stc and more text");
     REQUIRE( stc->FindNext(std::string("hello")));
@@ -64,7 +64,6 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     stc->DocumentStart();
     wxExFindReplaceData::Get()->SetMatchWord(false);
     REQUIRE( stc->FindNext(std::string("more text")));
-    INFO (stc->GetSelectedText() << stc->GetVi().GetModeString());
     REQUIRE( stc->GetFindString() == "more text");
     REQUIRE( stc->ReplaceAll("more", "less") == 1);
     REQUIRE( stc->ReplaceAll("more", "less") == 0);
@@ -86,7 +85,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     REQUIRE(stc->GetCurrentPos() == 4);
   }
 
-  SECTION("vi")
+  SUBCASE("vi")
   {
     stc->GetVi().Command("\x1b");
     REQUIRE(stc->GetVi().GetMode() == wxExVi::MODE_NORMAL);
@@ -96,7 +95,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     REQUIRE( stc->FindNext(std::string("more text")));
   }
 
-  SECTION("Lexer")
+  SUBCASE("Lexer")
   {
     stc->SetText("new text");
     REQUIRE(stc->GetLexer().Set("cpp"));
@@ -111,7 +110,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     REQUIRE( stc->GetLexer().Set(lexer));
   }
 
-  SECTION("Open")
+  SUBCASE("Open")
   {
     // do the same test as with wxExFile in base for a binary file
     REQUIRE(stc->Open(GetTestDir() + "test.bin"));
@@ -120,7 +119,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     REQUIRE(buffer.length() == 40);
   }
   
-  SECTION("AddText and AppendText and ContentsChanged")
+  SUBCASE("AddText and AppendText and ContentsChanged")
   {
     stc->AddText("added text");
     REQUIRE( stc->GetText().Contains("added text"));
@@ -132,12 +131,12 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     REQUIRE( stc->GetText() != "hello stc");
   }
   
-  SECTION("Marker")
+  SUBCASE("Marker")
   {
     REQUIRE(stc->MarkerDeleteAllChange());
   }
 
-  SECTION("Coverage")
+  SUBCASE("Coverage")
   {
     stc->GetLexer().Set("cpp");
     stc->Clear();
@@ -181,19 +180,19 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     stc->WordRightEndRectExtend();
   }
 
-  SECTION("EOL")
+  SUBCASE("EOL")
   {
     REQUIRE(!stc->GetEOL().empty());
   }
     
-  SECTION("PositionRestore and Save")
+  SUBCASE("PositionRestore and Save")
   {
     REQUIRE(!stc->PositionRestore());
     stc->PositionSave();
     REQUIRE( stc->PositionRestore());
   }
     
-  SECTION("AutoIndentation")
+  SUBCASE("AutoIndentation")
   {
     // first test auto indentation on next line
     wxConfigBase::Get()->Write(_("Auto indent"), 3);
@@ -221,7 +220,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
 #endif
   }
   
-  SECTION("hex")
+  SUBCASE("hex")
   {
     stc->Reload(STC_WIN_HEX);
     REQUIRE(stc->HexMode());
@@ -229,7 +228,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     stc->Reload();
   }
 
-  SECTION("events")
+  SUBCASE("events")
   {
     for (auto id : std::vector<int> {
       ID_EDIT_HEX_DEC_CALLTIP, ID_EDIT_MARKER_NEXT, ID_EDIT_MARKER_PREVIOUS,
@@ -239,7 +238,7 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     }
   }
 
-  SECTION("load file")
+  SUBCASE("load file")
   {
     wxExSTC stc(GetFrame(), GetTestFile());
     REQUIRE( stc.GetFileName().GetFullPath().find("test.h") != std::string::npos);
@@ -248,14 +247,14 @@ TEST_CASE("wxExSTC", "[stc][vi]")
     stc.PropertiesMessage();
   }
 
-  SECTION("xml complete")
+  SUBCASE("xml complete")
   {
     REQUIRE( stc->GetLexer().Set("xml"));
     stc->GetVi().Command("i<xxxx>");
     stc->GetVi().Command("\x1b");
   }
 
-  SECTION("popup")
+  SUBCASE("popup")
   {
     REQUIRE( stc->GetLexer().Set("cpp"));
     REQUIRE(wxExUIAction(stc));

@@ -56,7 +56,6 @@ TEST_CASE("wxExTextCtrl")
   for (auto key : std::vector<int> {WXK_UP, WXK_DOWN, WXK_HOME, WXK_END,
     WXK_PAGEUP, WXK_PAGEDOWN}) 
   {
-    INFO( key);
     REQUIRE( tip.Set(key, tc));
   }
 

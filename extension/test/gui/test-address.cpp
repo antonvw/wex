@@ -15,7 +15,7 @@
 #include <wx/extension/vimacros.h>
 #include "test.h"
 
-TEST_CASE("wxExAddress", "[stc][vi]")
+TEST_CASE("wxExAddress")
 {
   wxExSTC* stc = GetSTC();
   stc->SetText("hello0\nhello1\nhello2\nhello3\nhello4\nhello5");
@@ -52,7 +52,6 @@ TEST_CASE("wxExAddress", "[stc][vi]")
     {"'b+'a", 3},
     {"'b-'a", 1}})
   {
-    INFO( it.first );
     REQUIRE( wxExAddress(ex, it.first).GetLine() == it.second);
   }
 

@@ -16,7 +16,7 @@
 #include "../test-configitem.h"
 #include "test.h"
 
-TEST_CASE("wxExConfigItem", "[item]")
+TEST_CASE("wxExConfigItem")
 {
   wxScrolledWindow* panel = new wxScrolledWindow(GetFrame());
   AddPane(GetFrame(), panel);
@@ -121,7 +121,6 @@ TEST_CASE("wxExConfigItem", "[item]")
  
     if (it.GetType() != ITEM_EMPTY && it.GetType() != ITEM_SPACER)
     {
-      INFO( it.GetLabel());
       REQUIRE( it.GetWindow() != nullptr);
       
       if (

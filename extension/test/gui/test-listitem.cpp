@@ -39,11 +39,7 @@ TEST_CASE("wxExListItem")
 
   const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
 
-  INFO(std::to_string(milli.count()));
   REQUIRE(milli.count() < 15000);
-  
-  INFO(wxString::Format(
-    "wxExListItem::Insert %d items in %d ms", 3 * max, (int)milli.count()).ToStdString());
   
   const auto sort_start = std::chrono::system_clock::now();
   
@@ -54,8 +50,6 @@ TEST_CASE("wxExListItem")
   
   REQUIRE(sort_milli.count() < 10000);
   
-  INFO(wxString::Format(
-    "wxExListView::Sort %d items in %d ms", 3 * max, (int)sort_milli.count()).ToStdString());
   REQUIRE(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
   
   wxExListItem item(listView, wxExFileName("./test.h"));

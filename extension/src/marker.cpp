@@ -18,38 +18,37 @@ wxExMarker::wxExMarker(const pugi::xml_node& node)
 {
   if (node.empty()) return;
 
-  const std::string single = 
-    wxExLexers::Get()->ApplyMacro(node.attribute("no").value());
-
   try
   {
-    m_No = atoi(single.c_str());
-  }
-  catch (std::exception& e)
-  {
-    std::cerr << "Marker exception: " << single << " with offset: " << node.offset_debug() << "\n";
-    return;
-  }
+    const std::string single = 
+      wxExLexers::Get()->ApplyMacro(node.attribute("no").value());
 
-  wxExTokenizer fields(node.text().get(), ",");
+    m_No = std::stoi(single);
 
-  const wxString symbol = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+    wxExTokenizer fields(node.text().get(), ",");
 
-  m_Symbol = atoi(symbol.c_str());
+    const std::string symbol = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
 
-  if (fields.HasMoreTokens())
-  {
-    m_ForegroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+    m_Symbol = std::stoi(symbol);
 
     if (fields.HasMoreTokens())
     {
-      m_BackgroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+      m_ForegroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+
+      if (fields.HasMoreTokens())
+      {
+        m_BackgroundColour = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+      }
+    }
+
+    if (!IsOk())
+    {
+      std::cerr << "Illegal marker: " << m_No << " with offset: " << node.offset_debug() << "\n";
     }
   }
-
-  if (!IsOk())
+  catch (std::exception& e)
   {
-    std::cerr << "Illegal marker: " << m_No << " with offset: " << node.offset_debug() << "\n";
+    std::cerr << "Marker exception with offset: " << node.offset_debug() << "\n";
   }
 }
 

@@ -14,7 +14,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExVariable", "[stc][vi]")
+TEST_CASE("wxExVariable")
 {
   wxExEx* ex = new wxExEx(GetSTC());
 
@@ -30,7 +30,6 @@ TEST_CASE("wxExVariable", "[stc][vi]")
     {"ee", wxExVariable::VARIABLE_INPUT_SAVE}})
   {
     wxExVariable v(it.first, "cht.txt", "zzz", it.second, false);
-    INFO( it.first);
     REQUIRE( v.Expand(ex));
     REQUIRE( v.GetName() == it.first);
     REQUIRE(!v.IsModified());

@@ -12,7 +12,7 @@
 #include <wx/extension/menucommand.h>
 #include "test.h"
 
-TEST_CASE("wxExMenuCommand", "[menu]")
+TEST_CASE("wxExMenuCommand")
 {
   const wxExMenuCommand add("a&dd");
   const wxExMenuCommand blame("blame");

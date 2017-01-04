@@ -13,7 +13,7 @@ TEST_CASE( "wxExFileName" )
 {
   wxExFileName fileName(GetTestFile());
   
-  SECTION( "basic" ) 
+  SUBCASE( "basic" ) 
   {
     REQUIRE( fileName.DirExists());
     REQUIRE( fileName.FileExists());
@@ -34,7 +34,7 @@ TEST_CASE( "wxExFileName" )
     REQUIRE(fileName.GetLexer().GetScintillaLexer() == "ada");
   }
 
-  SECTION( "timing" ) 
+  SUBCASE( "timing" ) 
   {
     const int max = 1000;
     const wxExFileName exfile(GetTestFile());
@@ -58,12 +58,5 @@ TEST_CASE( "wxExFileName" )
 
     CHECK(ex_milli.count() < 1000);
     CHECK(wx_milli.count() < 1000);
-
-    INFO(wxString::Format(
-      "wxExFileName::IsReadOnly %d files in %d ms wxFileName::IsFileWritable %d files in %d ms",
-      max,
-      (int)ex_milli.count(),
-      max,
-      (int)wx_milli.count()).ToStdString());
   }
 }

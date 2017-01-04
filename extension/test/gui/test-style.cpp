@@ -15,14 +15,14 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExStyle", "[stc][lexer]")
+TEST_CASE("wxExStyle")
 {
-  SECTION("Default constructor")
+  SUBCASE("Default constructor")
   {
     REQUIRE(!wxExStyle().IsOk() );
   }
   
-  SECTION("Constructor using no and value")
+  SUBCASE("Constructor using no and value")
   {
     for (const auto& style : std::vector<
       std::pair<
@@ -52,7 +52,7 @@ TEST_CASE("wxExStyle", "[stc][lexer]")
     }
   }
 
-  SECTION("Constructor using xml node")
+  SUBCASE("Constructor using xml node")
   {
     pugi::xml_document doc;
     REQUIRE( doc.load_string("<style no = \"2\">string</style>"));
@@ -69,7 +69,7 @@ TEST_CASE("wxExStyle", "[stc][lexer]")
     REQUIRE( wxExStyle(doc.document_element(), "cpp").GetValue().find("+") == std::string::npos);
   }
   
-  SECTION("Apply")
+  SUBCASE("Apply")
   {
     wxExStyle style("mark_circle", "0");
     style.Apply(GetSTC());

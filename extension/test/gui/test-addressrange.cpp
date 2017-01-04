@@ -15,7 +15,7 @@
 #include <wx/extension/vimacros.h>
 #include "test.h"
 
-TEST_CASE("wxExAddressRange", "[stc][vi]")
+TEST_CASE("wxExAddressRange")
 {
   wxExSTC* stc = GetSTC();
   stc->SetText("hello\nhello1\nhello2");
@@ -138,7 +138,6 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
   stc->SetText("a\nb\nc\nd\ne\nf\ng\n");
   REQUIRE( wxExAddressRange(ex, "%").Join());
   REQUIRE( stc->GetText().Contains("a"));
-  INFO( std::to_string(stc->GetLineCount()));
   REQUIRE( stc->GetLineCount() == 1);
   
   // Test Move.
@@ -194,7 +193,6 @@ TEST_CASE("wxExAddressRange", "[stc][vi]")
   
   stc->SetText("special char \\ present");
   REQUIRE( wxExAddressRange(ex, "%").Substitute("/\\\\//"));
-  INFO( stc->GetText().ToStdString() );
   REQUIRE( stc->GetText().Contains("char  present"));
   
   stc->SetText("special char / present");

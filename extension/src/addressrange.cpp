@@ -707,11 +707,17 @@ bool wxExAddressRange::Sort(const std::string& parameters) const
     
     if (isdigit(parameters[0]))
     {
-      pos = (std::stoi(parameters) > 0 ? std::stoi(parameters) - 1: 0);
-      
-      if (parameters.find(",") != std::string::npos)
+      try
       {
-        len = std::stoi(parameters.substr(parameters.find(',') + 1)) - pos + 1;
+        pos = (std::stoi(parameters) > 0 ? std::stoi(parameters) - 1: 0);
+        
+        if (parameters.find(",") != std::string::npos)
+        {
+          len = std::stoi(parameters.substr(parameters.find(',') + 1)) - pos + 1;
+        }
+      }
+      catch (...)
+      {
       }
     }
   }

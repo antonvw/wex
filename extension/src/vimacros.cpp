@@ -51,7 +51,7 @@ const std::string wxExViMacros::Decode(const std::string& text)
       text[i + 1] == '!')
     {
       int skip = 0;
-      wxString number;
+      std::string number;
     
       if (
         i + 3 < text.length() &&
@@ -73,7 +73,7 @@ const std::string wxExViMacros::Decode(const std::string& text)
       
       if (!number.empty())
       {
-        output += wxChar(atoi(number));
+        output += char(atoi(number.c_str()));
         i += skip;
       }
     }

@@ -15,7 +15,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExLexer", "[stc][lexer]")
+TEST_CASE("wxExLexer")
 {
   wxExLexer lexer(GetSTC());
   REQUIRE( lexer.IsOk());

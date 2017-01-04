@@ -70,7 +70,6 @@ TEST_CASE("wxExFrd")
   frd->SetReplaceString("xxx");
   std::string text("find1 find2 find3 find4");
   const int res = frd->RegExReplaceAll(text);
-  INFO( std::to_string(res));
   REQUIRE( res == 4);
   
   frd->SetFindString("find[0-9");

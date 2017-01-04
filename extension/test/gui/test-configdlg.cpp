@@ -14,7 +14,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExConfigDialog", "[item]")
+TEST_CASE("wxExConfigDialog")
 {
   wxExItem::UseConfig(true);
   

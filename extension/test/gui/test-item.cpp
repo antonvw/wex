@@ -17,7 +17,7 @@
 #include "../test-item.h"
 #include "test.h"
 
-TEST_CASE("wxExItem", "[item]")
+TEST_CASE("wxExItem")
 {
   wxPanel* panel = new wxPanel(GetFrame());
   AddPane(GetFrame(), panel);
@@ -164,7 +164,7 @@ TEST_CASE("wxExItem", "[item]")
     wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));
   }
   
-  SECTION("wxExConfigDefaults")
+  SUBCASE("wxExConfigDefaults")
   {
     wxExConfigDefaults def ({
       std::make_tuple("item1", ITEM_TEXTCTRL_INT, 1500),

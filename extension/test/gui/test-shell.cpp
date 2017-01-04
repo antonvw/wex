@@ -13,7 +13,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExShell", "[stc]")
+TEST_CASE("wxExShell")
 {
   wxExShell* shell = new wxExShell(GetFrame());
   AddPane(GetFrame(), shell);

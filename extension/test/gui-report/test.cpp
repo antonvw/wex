@@ -62,10 +62,6 @@ TEST_CASE("wxEx")
   
   REQUIRE(milli.count() < 1500);
 
-  INFO(wxString::Format(
-    "%d %lu items in: %d ms", 
-    report->GetItemCount(), wxExToVectorString(files).Get().size(), (int)milli.count()).ToStdString());
-
 #ifdef __UNIX__
 #ifndef __WXOSX__
   // Each file has one author (files.GetCount()), and the one that is already 

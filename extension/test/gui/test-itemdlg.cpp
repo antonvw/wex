@@ -14,7 +14,7 @@
 #include <wx/extension/managedframe.h>
 #include "test.h"
 
-TEST_CASE("wxExItemDialog", "[item]")
+TEST_CASE("wxExItemDialog")
 {
 #if wxCHECK_VERSION(3,1,0)
   wxExItem::UseConfig(false);

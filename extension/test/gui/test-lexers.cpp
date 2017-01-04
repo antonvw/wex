@@ -15,7 +15,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExLexers", "[stc][lexer]")
+TEST_CASE("wxExLexers")
 {
   REQUIRE( wxExLexers::Get() != nullptr);
   REQUIRE(!wxExLexers::Get()->GetLexers().empty());
@@ -98,9 +98,6 @@ TEST_CASE("wxExLexers", "[stc][lexer]")
   REQUIRE( wxExLexers::Get()->GetMarker(wxExMarker(0)).IsOk());
   
   wxString lexer("cpp");
-  wxExLexers::Get()->ShowDialog(GetSTC(), wxEmptyString, false);
-  wxExLexers::Get()->ShowThemeDialog(GetFrame(), wxEmptyString, false);
-  
   REQUIRE(!wxExLexers::Get()->GetKeywords("cpp").empty());
   REQUIRE(!wxExLexers::Get()->GetKeywords("csh").empty());
   REQUIRE( wxExLexers::Get()->GetKeywords("xxx").empty());

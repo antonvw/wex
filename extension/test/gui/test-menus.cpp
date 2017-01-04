@@ -14,7 +14,7 @@
 #include <wx/extension/menucommands.h>
 #include "test.h"
 
-TEST_CASE("wxExMenus", "[menu]")
+TEST_CASE("wxExMenus")
 {
   wxExMenuCommands <wxExMenuCommand > menucommands("test");
 

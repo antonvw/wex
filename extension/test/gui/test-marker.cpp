@@ -13,14 +13,14 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExMarker","[lexer]")
+TEST_CASE("wxExMarker")
 {
-  SECTION("Default constructor")
+  SUBCASE("Default constructor")
   {
     REQUIRE( !wxExMarker().IsOk() );
   }
   
-  SECTION("Constructor using no, symbol")
+  SUBCASE("Constructor using no, symbol")
   {
     REQUIRE(!wxExMarker(1, 100).IsOk());
     REQUIRE( wxExMarker(1, wxSTC_MARK_CHARACTER).IsOk());
@@ -44,7 +44,7 @@ TEST_CASE("wxExMarker","[lexer]")
     markerx.Apply(GetSTC());
   }
 
-  SECTION("Constructor xml")
+  SUBCASE("Constructor xml")
   {
     pugi::xml_document doc;
     REQUIRE( doc.load_string("<marker no = \"5\">mark_character,green,white</marker>"));
@@ -55,5 +55,13 @@ TEST_CASE("wxExMarker","[lexer]")
     REQUIRE( marker.GetForegroundColour() == "green");
     REQUIRE( marker.GetBackgroundColour() == "white");
     REQUIRE( marker.IsOk());
+  }
+    
+  SUBCASE("Constructor xml invalid no")
+  {
+    pugi::xml_document doc;
+    REQUIRE( doc.load_string("<marker no = \"x\"></marker>"));
+    wxExMarker marker(doc.document_element());
+    REQUIRE(!marker.IsOk());
   }
 }

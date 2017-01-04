@@ -15,7 +15,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExNotebook", "[stc][!throws]")
+TEST_CASE("wxExNotebook")
 {
   wxExNotebook* notebook = new wxExNotebook(GetFrame(), nullptr);
   AddPane(GetFrame(), notebook);
@@ -71,7 +71,7 @@ TEST_CASE("wxExNotebook", "[stc][!throws]")
   REQUIRE(notebook->GetCurrentPage() == "KEY1");
   REQUIRE(notebook->ChangeSelection("key3") == "KEY1");
   REQUIRE(notebook->GetCurrentPage() == "key3");
-  REQUIRE(notebook->ChangeSelection("XXX") == wxEmptyString);
+  REQUIRE(notebook->ChangeSelection("XXX") == std::string());
   REQUIRE(notebook->GetCurrentPage() == "key3");
 
   // Prepare next test, delete all pages.

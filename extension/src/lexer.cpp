@@ -74,23 +74,31 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
     {
       keyword = fields.GetNextToken();
 
-      const int new_setno = atoi(fields.GetNextToken().c_str());
-
-      if (new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
+      try
       {
-        std::cerr << "Invalid keyword set: " << new_setno << "\n";
-        return false;
-      }
+        const int new_setno = std::stoi(fields.GetNextToken());
 
-      if (new_setno != setno)
-      {
-        if (!keywords_set.empty())
+        if (new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
         {
-          m_KeywordsSet.insert({setno, keywords_set});
-          keywords_set.clear();
+          std::cerr << "Invalid keyword set: " << new_setno << "\n";
+          return false;
         }
 
-        setno = new_setno;
+        if (new_setno != setno)
+        {
+          if (!keywords_set.empty())
+          {
+            m_KeywordsSet.insert({setno, keywords_set});
+            keywords_set.clear();
+          }
+
+          setno = new_setno;
+        }
+      }
+      catch (std::exception& e)
+      {
+        std::cerr << "Keyword exceptiont: " << value << "\n";
+        return false;
       }
     }
     else
@@ -292,7 +300,7 @@ const std::string wxExLexer::GetKeywordsStringSet(
 {
   return std::accumulate(kset.begin(), kset.end(), std::string{}, 
     [&](const std::string& a, const std::string& b) {
-      return (b.size() >= min_size && wxString(b).StartsWith(prefix)) ? a + b + ' ': a;});
+      return (b.size() >= min_size && b.find(prefix) == 0) ? a + b + ' ': a;});
 }
 
 void wxExLexer::Initialize()

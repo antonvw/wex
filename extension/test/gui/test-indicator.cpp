@@ -16,12 +16,12 @@
 
 TEST_CASE("wxExIndicator")
 {
-  SECTION("Default constructor")
+  SUBCASE("Default constructor")
   {
     REQUIRE(!wxExIndicator().IsOk() );
   }
   
-  SECTION("Constructor using no, symbol")
+  SUBCASE("Constructor using no, symbol")
   {
     wxExIndicator indx(5, 2);
     wxExIndicator indy(7, 5);
@@ -39,11 +39,10 @@ TEST_CASE("wxExIndicator")
     REQUIRE( wxExIndicator(5, 1) != wxExIndicator(5, 2));
   }
   
-  SECTION("Constructor xml")
+  SUBCASE("Constructor xml")
   {
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_string("<indicator no = \"5\">indic_box,green</indicator>");
-    INFO( result.description());
     REQUIRE( result );
 
     wxExIndicator ind(doc.document_element());
@@ -55,5 +54,13 @@ TEST_CASE("wxExIndicator")
     
     ind.Apply(GetSTC());
     REQUIRE( ind.IsOk());
+  }
+
+  SUBCASE("Constructor xml invalid no")
+  {
+    pugi::xml_document doc;
+    REQUIRE( doc.load_string("<indicator no = \"x\"></indicator>"));
+    wxExIndicator ind(doc.document_element());
+    REQUIRE(!ind.IsOk());
   }
 }

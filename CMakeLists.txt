@@ -141,9 +141,9 @@ if (WIN32)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/FindwxWidgets.cmake
     "${CMAKE_ROOT}/Modules/FindwxWidgets.cmake" COPYONLY)
 
-  find_package(wxWidgets COMPONENTS stc scintilla aui html adv xml core base net REQUIRED)
+  find_package(wxWidgets COMPONENTS stc scintilla aui html adv core base net REQUIRED)
 else ()
-  find_package(wxWidgets COMPONENTS aui stc html adv xml core base net REQUIRED)
+  find_package(wxWidgets COMPONENTS aui stc html adv core base net REQUIRED)
 endif ()
       
 macro(target_link_all)

@@ -81,7 +81,7 @@ bool wxExAutoComplete(const std::string& text,
   
   for (const auto& it : v)
   {
-    if (wxString(it).StartsWith(text))
+    if (it.find(text) == 0)
     {
       s = it;
       matches++;
@@ -928,12 +928,12 @@ const std::string wxExTranslate(const std::string& text,
   const std::string num = std::to_string(pageNum);
   const std::string cnt = std::to_string(pageNum);
   
-  wxString translation = text;
+  std::string translation = text;
 
-  translation.Replace("@PAGENUM@", num);
-  translation.Replace("@PAGESCNT@", cnt);
+  wxExReplaceAll(translation, "@PAGENUM@", num);
+  wxExReplaceAll(translation, "@PAGESCNT@", cnt);
 
-  return translation.ToStdString();
+  return translation;
 }
 
 void wxExVCSCommandOnSTC(const wxExVCSCommand& command, 

@@ -14,7 +14,7 @@
 #include <wx/extension/stc.h>
 #include "test.h"
 
-TEST_CASE("wxExProperty", "[stc][lexer]")
+TEST_CASE("wxExProperty")
 {
   wxExProperty inv;
   REQUIRE( !inv.IsOk() );

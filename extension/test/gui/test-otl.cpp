@@ -10,16 +10,15 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/extension/otl.h>
 #include <wx/extension/managedframe.h>
 #include "test.h"
+#include <wx/extension/otl.h>
 
 TEST_CASE("wxExOTL")
 {
 #if wxExUSE_OTL
   // Ensure we have a database and a table.
   system("mysql test < otl-create.sql");
-  
 
   wxConfigBase* config = wxConfigBase::Get(false);
   config->Write(_("Datasource"), "Test");

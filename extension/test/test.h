@@ -11,13 +11,13 @@
 #include <string>
 #include <wx/extension/app.h>
 #include <wx/extension/filename.h>
-#include "catch.hpp"
+#include "doctest.h"
 
 class wxExManagedFrame;
 
-namespace Catch
+namespace doctest
 {
-  class Session;
+  class Context;
 }
 
 /// Adds managed pane.
@@ -39,9 +39,9 @@ bool wxExUIAction(
   wxWindow* win, 
   /// action, if starts with button is a button action,
   /// if starts with dialog is a dialog action
-  const wxString& action = "button",
+  const std::string& action = "button",
   /// e.g. the dialog to operate on
-  const wxString& par = "right");
+  const std::string& par = "right");
   
 /// Derive your application from wxExApp.
 class wxExTestApp: public wxExApp
@@ -50,7 +50,7 @@ public:
   /// Constructor.
   wxExTestApp() {}
   
-  static wxFileName GetTestFileName() {return m_TestFileName;};
+  static auto GetTestFileName() {return m_TestFileName;};
 
   /// Prepare environment.
   virtual bool OnInit() override;
@@ -58,13 +58,13 @@ public:
   /// Start event loop and start testing.
   virtual int OnRun() override;
 
-  /// Sets catch session.
-  void SetSession(Catch::Session* session);
+  /// Sets context.
+  void SetContext(doctest::Context* context);
 private:
   /// Sets working directory to test dir, returns current working directory.
   const std::string SetWorkingDirectory();
 
-  Catch::Session* m_Session;
+  doctest::Context* m_Context;
   
   static wxFileName m_TestFileName;
 };

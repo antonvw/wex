@@ -2,10 +2,10 @@
 // Name:      test.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016
+// Copyright: (c) 2017
 ////////////////////////////////////////////////////////////////////////////////
 
-#define CATCH_CONFIG_RUNNER
+#define DOCTEST_CONFIG_IMPLEMENT
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -16,7 +16,7 @@
 #include <wx/log.h>
 #include <wx/stdpaths.h>
 #include <wx/timer.h>
-#include "wx/uiaction.h"
+#include <wx/uiaction.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
@@ -41,13 +41,17 @@ void AddPane(wxExManagedFrame* frame, wxWindow* pane)
   frame->GetManager().Update();
 }
 
-const wxString BuildArg(const wxString& file)
+void SystemArg(
+  const std::string cmd, const std::string& file, const std::string& dir)
 {
-  return 
-    wxString(" ..") + wxFileName::GetPathSeparator() + 
-    ".." + wxFileName::GetPathSeparator() + 
-    "data" + wxFileName::GetPathSeparator() + 
-    file + " ";
+  const std::string line(
+    cmd +
+    std::string(" ..") + std::string(1, wxFileName::GetPathSeparator()) + 
+    ".." + std::string(1, wxFileName::GetPathSeparator()) + 
+    "data" + std::string(1, wxFileName::GetPathSeparator()) + 
+    file + " " + dir);
+
+  (void)system(line.c_str());
 }
 
 const std::string GetTestDir()
@@ -69,15 +73,15 @@ void SetEnvironment(const std::string& dir)
   }
 
 #ifdef __UNIX__
-  const wxString cp("cp");
+  const std::string cp("cp");
 #else
-  const wxString cp("COPY");
+  const std::string cp("COPY");
 #endif
   
-  (void)system(cp + BuildArg("cht.txt") + dir);
-  (void)system(cp + BuildArg("lexers.xml") + dir);
-  (void)system(cp + BuildArg("macros.xml") + dir);
-  (void)system(cp + BuildArg("menus.xml") + dir);
+  SystemArg(cp, "cht.txt", dir);
+  SystemArg(cp, "lexers.xml", dir);
+  SystemArg(cp, "macros.xml", dir);
+  SystemArg(cp, "menus.xml", dir);
 
 #if wxExUSE_OTL
   (void)system(cp + " .odbc.ini " + wxGetHomeDir());
@@ -127,24 +131,24 @@ void SetFindExtension(wxFileName& fn)
   }
 }
     
-bool wxExUIAction(wxWindow* win, const wxString& action, const wxString& par)
+bool wxExUIAction(wxWindow* win, const std::string& action, const std::string& par)
 {
 #if wxCHECK_VERSION(3,1,0)
   wxUIActionSimulator sim;
 
-  if (action.StartsWith("button"))
+  if (action.find("button") == 0)
   {
     sim.MouseMove(win->GetScreenPosition() + wxPoint(100, 100));
     
-    if (par.Contains("left") || par.Contains("right"))
+    if (par.find("left") != std::string::npos || par.find("right") != std::string::npos)
     {
-      sim.MouseClick(par.Contains("right") ? wxMOUSE_BTN_RIGHT: wxMOUSE_BTN_LEFT);
+      sim.MouseClick(par.find("right") != std::string::npos ? wxMOUSE_BTN_RIGHT: wxMOUSE_BTN_LEFT);
     }
   }
-  else if (action.StartsWith("key"))
+  else if (action.find("key") == 0)
   {
   }
-  else if (action.StartsWith("toolbar"))
+  else if (action.find("toolbar") == 0)
   {
     sim.MouseMove(win->GetScreenPosition() + wxPoint(5, 5));
     sim.MouseClick(wxMOUSE_BTN_LEFT);
@@ -199,13 +203,13 @@ int wxExTestApp::OnRun()
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     try
     {
-      const int fails = m_Session->run();
+      const int res = m_Context->run();
       wxExUIAction(GetTopWindow(), "key", "char");
       const long auto_exit(wxConfigBase::Get()->ReadLong("auto-exit", 1));
       wxExProcess::KillAll();
       if (auto_exit)
       {
-        exit(fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS);
+        exit(res);
       }
     }
     catch (const std::exception& e)
@@ -217,9 +221,9 @@ int wxExTestApp::OnRun()
   return wxExApp::OnRun();
 }
 
-void wxExTestApp::SetSession(Catch::Session* session)
+void wxExTestApp::SetContext(doctest::Context* context)
 {
-  m_Session = session;
+  m_Context = context;
 }
   
 const std::string wxExTestApp::SetWorkingDirectory()
@@ -262,13 +266,9 @@ const std::string wxExTestApp::SetWorkingDirectory()
 
 int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)
 {
-  Catch::Session session; // There must be exactly one instance
-
-  int returnCode = session.applyCommandLine(argc, (const char **)argv);
+  doctest::Context context;
+  context.applyCommandLine(argc, argv);
   
-  if (returnCode != 0 || session.configData().showHelp)
-    return returnCode;
-
   wxApp::SetInstance(app);
   wxEntryStart(argc, argv);
   app->OnInit();
@@ -277,11 +277,12 @@ int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)
   {
     try
     {
-      const int fails = session.run();
+      const int res = context.run();
+      if (context.shouldExit()) return res;
       app->ProcessPendingEvents();
       app->ExitMainLoop();
       wxExProcess::KillAll();
-      return fails > 0 ? EXIT_FAILURE: EXIT_SUCCESS;
+      return res;
     }
     catch (const std::exception& e)
     {
@@ -291,7 +292,7 @@ int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)
   }
   else
   {
-    app->SetSession(&session);
+    app->SetContext(&context);
     return app->OnRun();
   }
 }
