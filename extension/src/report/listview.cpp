@@ -71,7 +71,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
     {
       wxExListItem li(this, i);
       const wxExFileName* filename = &li.GetFileName();
-      if (filename->DirExists()) continue;
+      if (!filename->FileExists()) continue;
       switch (event.GetId())
       {
         case ID_LIST_COMPARE:

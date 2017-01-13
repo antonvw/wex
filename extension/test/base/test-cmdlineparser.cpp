@@ -2,7 +2,7 @@
 // Name:      test-cmdlineparser.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -13,39 +13,37 @@
 #include <wx/extension/cmdline.h>
 #include "../test.h"
 
-TEST_CASE("wxExCmdLineParser")
+TEST_CASE("wxExCmdLine")
 {
-  long a;
-  double b;
-  wxString c;
-  wxDateTime d;
+  int a;
+  float b;
   bool s, t, u, v;
-  wxString p,q,r;
+  std::string c,p,q,r;
   const wxChar ds(wxNumberFormatter::GetDecimalSeparator());
   
   const std::string str(ds == '.' ?
-    "-a 10 -b 10.1 -c test -d 01-jan-2000 -s -t- -u --version one two three":
-    "-a 10 -b 10,1 -c test -d 01-jan-2000 -s -t- -u --version one two three");
+    "wxExCmdLine -a 10 -b 5.1 -c test -s -t -u -v one two three":
+    "wxExCmdLine -a 10 -b 5.1 -c test -s -t -u -v one two three");
   
-  REQUIRE( wxExCmdLineParser(str,
-     {{{"s", ""}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){s = on;}}},
-      {{"t", ""}, {wxCMD_LINE_SWITCH_NEGATABLE, [&](bool on){t = on;}}},
-      {{"u", ""}, {0, [&](bool on){u = true;}}},
-      {{"version", ""}, {0, [&](bool on){v = on;}}}},
-     {{{"a", ""}, {wxCMD_LINE_VAL_NUMBER, [&](wxAny any) {any.GetAs(&a);}}},
-      {{"b", ""}, {wxCMD_LINE_VAL_DOUBLE, [&](wxAny any) {any.GetAs(&b);}}},
-      {{"c", ""}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {any.GetAs(&c);}}},
-      {{"d", ""}, {wxCMD_LINE_VAL_DATE, [&](wxAny any) {any.GetAs(&d);}}}},
-     {{"p", {0, [&](std::vector<std::string> & v) {p = v[0];}}},
-      {"q", {0, [&](std::vector<std::string> & v) {q = v[1];}}},
-      {"r", {0, [&](std::vector<std::string> & v) {r = v[2];}}}}).Parse() == 0 );
+  REQUIRE( wxExCmdLine(
+     {{{"s", "1", "bool"}, [&](bool on){s = on;}},
+      {{"t", "2", "bool"}, [&](bool on){t = on;}},
+      {{"u", "3", "bool"}, [&](bool on){u = true;}},
+      {{"v", "4", "bool"}, [&](bool on){v = on;}}},
+     {{{"a", "5", "int"}, {CMD_LINE_INT, [&](const wxAny& i) {a = i.As<int>();}}},
+      {{"b", "6", "float"}, {CMD_LINE_FLOAT, [&](const wxAny& i) {b = i.As<float>();}}},
+      {{"c", "7", "string"}, {CMD_LINE_STRING, [&](const wxAny& s) {c = s.As<std::string>();}}}},
+     {{"rest", "rest"}, [&](const std::vector<std::string> & v) {
+        p = v[0];
+        q = v[1];
+        r = v[2];
+        return true;}}).Parse(str));
 
   REQUIRE( a == 10 );
-  REQUIRE( b == 10.1 );
+  REQUIRE( b == 5.1f );
   REQUIRE( c == "test" );
-  REQUIRE( d.IsValid() );
   REQUIRE( s );
-  REQUIRE(!t );
+  REQUIRE( t );
   REQUIRE( u );
   REQUIRE( v );
   REQUIRE( p == "one" );

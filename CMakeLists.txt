@@ -216,10 +216,10 @@ include(FindGettext)
 
 enable_testing()
 
-add_subdirectory(extension)
-
 include_directories(../extension/include)
-
+include_directories(../extension/tclap/include)
+      
+add_subdirectory(extension)
 add_subdirectory(syncped)
 
 if (wxExUSE_OTL)

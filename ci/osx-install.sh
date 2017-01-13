@@ -3,4 +3,4 @@
 brew update || brew update
 brew install wxwidgets
 brew unlink cmake
-brew install cmake30
+brew install cmake

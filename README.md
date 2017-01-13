@@ -19,10 +19,10 @@ one of these applications, being a full featured source code text editor.
 - [exuberant ctags lib](https://github.com/rtyler/ctags)    
 
 - [OTL database lib](http://otl.sourceforge.net/)    
-    `sudo apt-get install unixODBC unixODBC-dev` or   
-    `yum install unixODBC unixODBC-devel`  
 
 - [pugixml lib](https://github.com/zeux/pugixml)    
+
+- [tclap lib](https://github.com/TCLAP/tclap)    
 
 # Build process 
 

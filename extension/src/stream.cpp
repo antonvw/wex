@@ -2,7 +2,7 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of wxExStream class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -109,7 +109,7 @@ bool wxExStream::ProcessBegin()
   
 bool wxExStream::RunTool()
 {
-  std::ifstream ifs(m_FileName.GetFullPath().c_str());
+  std::ifstream ifs(m_FileName.GetFullPath());
 
   if (!ifs.is_open() || !ProcessBegin())
   {

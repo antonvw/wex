@@ -1,0 +1,6 @@
+[submodule "extension/tclap"]
+	path = extension/tclap
+	url = https://github.com/TCLAP/tclap.git
+[submodule "extension/test/doctest"]
+	path = extension/test/doctest
+	url = https://github.com/onqtam/doctest.git

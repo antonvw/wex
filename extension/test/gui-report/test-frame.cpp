@@ -51,7 +51,7 @@ TEST_CASE("wxExFrameWithHistory")
   REQUIRE( GetFrame()->Grep("xxxxxxx *.cpp ./"));
 
 #ifndef __WXMSW__
-  REQUIRE(!GetFrame()->Sed("xxxxxxx"));
+  REQUIRE( GetFrame()->Sed("xxxxxxx") == false);
 #endif
   
   GetFrame()->SetRecentProject("xxx.prj");

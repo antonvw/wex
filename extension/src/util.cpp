@@ -91,13 +91,13 @@ bool wxExAutoComplete(const std::string& text,
   return (matches == 1);
 }
   
-const wxString Encode(const wxString& text)
+const std::string Encode(const std::string& text)
 {
-  wxString output(text);
+  std::string output(text);
   
-  if (output.Contains(" "))
+  if (output.find(" ") != std::string::npos)
   {
-    output.Replace(" ", "\\ ");
+    wxExReplaceAll(output, " ", "\\ ");
   }
   
   return output;
@@ -141,7 +141,7 @@ bool wxExAutoCompleteFileName(
     return false;
   }
   
-  wxString expansion = filename.Mid(word.length());
+  std::string expansion = filename.ToStdString().substr(word.length());
   
   if (wxDirExists(dir.GetNameWithSep() + filename))
   {
@@ -150,11 +150,11 @@ bool wxExAutoCompleteFileName(
 
   v.clear();
   v.emplace_back(Encode(expansion));
-  v.emplace_back(filename);
+  v.emplace_back(filename.ToStdString());
     
   while (dir.GetNext(&filename))
   {
-    v.emplace_back(Encode(filename));
+    v.emplace_back(Encode(filename.ToStdString()));
   }
 
   if (v.size() > 2)

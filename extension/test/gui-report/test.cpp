@@ -25,10 +25,10 @@ TEST_CASE("wxEx")
   wxArrayString files;
   
   REQUIRE(wxDir::GetAllFiles(
-    "../../../extension", 
+    "../../../extension/test/gui-report", 
     &files,
     "*.cpp", 
-    wxDIR_FILES | wxDIR_DIRS) > 10);
+    wxDIR_FILES | wxDIR_DIRS) > 5);
     
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
   
@@ -64,10 +64,10 @@ TEST_CASE("wxEx")
 
 #ifdef __UNIX__
 #ifndef __WXOSX__
-  // Each file has one author (files.GetCount()), and the one that is already 
+  // Each other file has one author (files.GetCount()), and the one that is already 
   // present on the list because of the first FindInFiles.
   REQUIRE(report->GetItemCount() == (
-    wxExToVectorString(files).Get().size() + 1));
+    wxExToVectorString(files).Get().size() + 2));
 #endif
 #endif
 }

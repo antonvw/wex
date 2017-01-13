@@ -26,7 +26,6 @@ matrix:
       osx_image: xcode8
   allow_failures:
     - os: osx
-    - os: linux
 
 addons:
   coverity_scan:
@@ -41,6 +40,9 @@ addons:
 branches:
     only:
       - master
+
+git:
+    submodules: true
 
 install:
     - ./ci/${TRAVIS_OS_NAME}-install.sh

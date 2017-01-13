@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wxExLink
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -84,8 +84,8 @@ const std::string wxExLink::FindPath(const std::string& text, int line_no) const
   size_t pos_char2 = text.rfind("\"");
 
   // If that did not succeed, then get text between < and >.
-  if (pos_char1 == wxString::npos || 
-      pos_char2 == wxString::npos || 
+  if (pos_char1 == std::string::npos || 
+      pos_char2 == std::string::npos || 
       pos_char2 <= pos_char1)
   {
     pos_char1 = text.find("<");
@@ -93,8 +93,8 @@ const std::string wxExLink::FindPath(const std::string& text, int line_no) const
   }
 
   // If that did not succeed, then get text between ' and '.
-  if (pos_char1 == wxString::npos ||
-      pos_char2 == wxString::npos || 
+  if (pos_char1 == std::string::npos ||
+      pos_char2 == std::string::npos || 
       pos_char2 <= pos_char1)
   {
     pos_char1 = text.find("'");

@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wxExtension utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -18,7 +18,7 @@ class wxArrayString;
 namespace pugi
 {
   class xml_node;
-  class xml_parse_result;
+  struct xml_parse_result;
 };
 
 class wxExEx;

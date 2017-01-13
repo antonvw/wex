@@ -8,29 +8,17 @@
 :reg
 :sed
 :set
-:set h
 :set ac
-:set ac!
 :set ai
-:set ai!
 :set el
-:set el!
 :set ic
-:set ic!
 :set mw
-:set mw!
 :set nu
-:set nu!
 :set re
-:set re!
 :set sm
-:set sm!
 :set ut
-:set ut!
 :set wl
-:set wl!
 :set ws
-:set ws!
 :set ec=5
 :set sw=4
 :set sy=cpp

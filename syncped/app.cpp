@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of class App
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -30,23 +30,27 @@ void App::MacOpenFiles(const wxArrayString& fileNames)
 
 bool App::OnInit()
 {
-  // This must be the first statement, other methods might use the name.
   SetAppName("syncped");
-  
-  if (!wxExApp::OnInit())
-  {
-    return false;
-  }
-  
   Reset();
   
   bool exit = false;
 
-  if (wxExCmdLineParser(
-     {
-      {{"d", "use debug mode"}, {0, [&](bool on) {
-        m_Debug = true;}}},
-      {{"l", "show locale"}, {0, [&](bool on) {
+  if (
+    !wxExApp::OnInit() ||
+    !wxExCmdLine(
+     {{{"d", "debug", "use debug mode"}, [&](bool on) {m_Debug = on && true;}},
+      {{"H", "hex", "hex mode"}, [&](bool on) {
+        if (!on) return;
+        m_Flags = static_cast<wxExSTCWindowFlags>(m_Flags | STC_WIN_HEX);}},
+      {{"i", "info", "show version"}, [&](bool on) {
+        if (!on) return;
+        wxMessageOutput::Get()->Printf("syncped-%s using:\n%s\nand:\n%s", 
+          wxExGetVersionInfo().GetVersionOnlyString().c_str(),
+          wxExGetVersionInfo().GetDescription().c_str(),
+          wxGetLibraryVersionInfo().GetDescription().c_str());
+        exit = true;}},
+      {{"l", "locale", "show locale"}, [&](bool on) {
+        if (!on) return;
         wxMessageOutput::Get()->Printf("Catalog dir: %s\nName: %s\nCanonical name: %s\nLanguage: %d\nLocale: %s\nIs ok: %d\nIs available: %d",
           GetCatalogDir().c_str(),
           GetLocale().GetName().c_str(),
@@ -55,49 +59,28 @@ bool App::OnInit()
           GetLocale().GetLocale().c_str(),
           GetLocale().IsOk(),
           GetLocale().IsAvailable(GetLocale().GetLanguage()));
-          exit = true;}}},
-      {{"o", "split tabs horizontally"}, {0, [&](bool on) {
-        m_Split = wxBOTTOM;}}},
-      {{"O", "split tabs vertically"}, {0, [&](bool on) {
-        m_Split = wxRIGHT;}}},
-      {{"R", "readonly mode"}, {0, [&](bool on) {
-        m_Flags = static_cast<wxExSTCWindowFlags>(m_Flags | STC_WIN_READ_ONLY);}}},
-      {{"v", "show version"}, {0, [&](bool on) {
-        wxMessageOutput::Get()->Printf("%s", wxExGetVersionInfo().GetVersionOnlyString().c_str());
-        exit = true;}}},
-      {{"hex", "hex mode"}, {0, [&](bool on) {
-        m_Flags = static_cast<wxExSTCWindowFlags>(m_Flags | STC_WIN_HEX);}}},
-      {{"version", "show version"}, {0, [&](bool on) {
-        wxMessageOutput::Get()->Printf("syncped-%s using:\n%s\nand:\n%s", 
-          wxExGetVersionInfo().GetVersionOnlyString().c_str(),
-          wxExGetVersionInfo().GetDescription().c_str(),
-          wxGetLibraryVersionInfo().GetDescription().c_str());
-        exit = true;}}}},
-     {{{"c", "vi command"}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
-        wxString command;
-        any.GetAs(&command);
-        m_Command = command;}}},
-      {{"s", "script in"}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
-        wxString script;
-        any.GetAs(&script);
-        m_Scriptin.Open(script.ToStdString());}}},
-      {{"t", "start at tag"}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
-        wxString tag;
-        any.GetAs(&tag);
-        m_Tag = tag;}}},
-      {{"S", "source file"}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
-        any.GetAs(&m_Command);
-        m_Command = ":so " + m_Command;}}},
-      {{"w", "script out write"}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
-        wxString script;
-        any.GetAs(&script);
-        m_Scriptout.Open(script.ToStdString(), wxFile::write);}}},
-      {{"W", "script out append"}, {wxCMD_LINE_VAL_STRING, [&](wxAny any) {
-        wxString script;
-        any.GetAs(&script);
-        m_Scriptout.Open(script.ToStdString(), wxFile::write_append);}}}},
-     {{"input file:line number:column number", {wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE, [&](std::vector<std::string> & v) {
-        m_Files = v;}}}}).Parse() != 0 || exit)
+          exit = true;}},
+      {{"o", "splithor", "split tabs horizontally"}, [&](bool on) {
+        if (on) m_Split = wxBOTTOM;}},
+      {{"O", "splitver", "split tabs vertically"}, [&](bool on) {
+        if (on) m_Split = wxRIGHT;}},
+      {{"R", "readonly", "readonly mode"}, [&](bool on) {
+        if (on) m_Flags = static_cast<wxExSTCWindowFlags>(m_Flags | STC_WIN_READ_ONLY);}}},
+     {{{"c", "command", "vi command"}, {CMD_LINE_STRING, [&](const wxAny& s) {
+        m_Command = s.As<std::string>();}}},
+      {{"s", "scriptin", "script in"}, {CMD_LINE_STRING, [&](const wxAny& s) {
+        m_Scriptin.Open(s.As<std::string>());}}},
+      {{"S", "source", "source file"}, {CMD_LINE_STRING, [&](const wxAny& s) {
+        m_Command = ":so " + s.As<std::string>();}}},
+      {{"t", "tag", "start at tag"}, {CMD_LINE_STRING, [&](const wxAny& s) {
+        m_Tag = s.As<std::string>();}}},
+      {{"w", "scriptout", "script out write"}, {CMD_LINE_STRING, [&](const wxAny& s) {
+        m_Scriptout.Open(s.As<std::string>(), wxFile::write);}}},
+      {{"W", "append", "script out append"}, {CMD_LINE_STRING, [&](const wxAny& s) {
+        m_Scriptout.Open(s.As<std::string>(), wxFile::write_append);}}}},
+     {{"files", "input file[:line number][:column number]"}, [&](const std::vector<std::string> & v) {
+        m_Files = v;
+        return true;}}).Parse() || exit)
   {
     return false;
   }

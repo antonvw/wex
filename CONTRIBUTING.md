@@ -4,6 +4,10 @@
 
 - Create a topic branch from where you want to base your work
 
+- When using otl   
+    `sudo apt-get install unixODBC unixODBC-dev` or   
+    `yum install unixODBC unixODBC-devel`  
+
 ## Adding functionality
 
 - use STL whenever possible 

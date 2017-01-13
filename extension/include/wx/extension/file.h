@@ -2,7 +2,7 @@
 // Name:      file.h
 // Purpose:   Declaration of class wxExFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -83,12 +83,11 @@ public:
 
   /// Opens specified file.
   bool Open(const std::string& filename, 
-    wxFile::OpenMode mode = wxFile::read, int access = wxS_DEFAULT)
-    {return m_File->Open(filename, mode, access);};
+    wxFile::OpenMode mode = wxFile::read, int access = wxS_DEFAULT);
 
   /// Opens current filename.
   bool Open(wxFile::OpenMode mode = wxFile::read, int access = wxS_DEFAULT)
-    {return m_File->Open(m_FileName.GetFullPath(), mode, access);};
+    {return Open(m_FileName.GetFullPath(), mode, access);};
 
   /// Reads this file into a buffer.
   const wxCharBuffer* Read(wxFileOffset seek_position = 0);

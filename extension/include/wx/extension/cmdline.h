@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      cmdline.h
-// Purpose:   Declaration of wxExCmdLineParser class
+// Purpose:   Declaration of wxExCmdLine class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,84 +10,87 @@
 #include <functional>
 #include <utility>
 #include <vector>
+#include <tclap/CmdLine.h>
 #include <wx/any.h>
-#include <wx/cmdline.h>
+
+/// Types for commandline.
+enum wxExCmdLineTypes
+{
+  CMD_LINE_FLOAT,
+  CMD_LINE_INT,
+  CMD_LINE_STRING,
+};
 
 /// This class offers a command line parser.
-class WXDLLIMPEXP_BASE wxExCmdLineParser
+class WXDLLIMPEXP_BASE wxExCmdLine
 {
-  public:
-    /// Switches: 
-    typedef std::vector<std::pair<
-      /// pair of option name and description
-      std::pair<std::string, std::string>, 
-      /// pair of flags and process callback if option is found
-      std::pair<
-        /// flags:
-        /// - wxCMD_LINE_OPTION_MANDATORY 	
-        /// - wxCMD_LINE_OPTION_HELP 	
-        /// - wxCMD_LINE_SWITCH_NEGATABLE 
-        int, 
-        std::function<void(bool)>>>> CmdSwitches;
+public:
+  /// Switches: 
+  typedef std::vector<std::pair<
+    /// tuple of option flag, name, description
+    std::tuple<std::string, std::string, std::string>, 
+    /// process callback if option is found
+    std::function<void(bool)>>> CmdSwitches;
 
-    /// Options: 
-    typedef std::vector<std::pair<
-      /// pair of option name and description
-      std::pair<std::string, std::string>, 
-      /// pair of command line param type and process callback if option is found
-      std::pair<
-        /// type:
-        /// - wxCMD_LINE_VAL_STRING 	
-        /// - wxCMD_LINE_VAL_NUMBER 	
-        /// - wxCMD_LINE_VAL_DATE 	
-        /// - wxCMD_LINE_VAL_DOUBLE 	
-        /// - wxCMD_LINE_VAL_NONE 	
-        wxCmdLineParamType, 
-        std::function<void(wxAny)>>>> CmdOptions;
+  /// Options:
+  typedef std::vector<std::pair<
+    /// tuple of option flag, name and description
+    std::tuple<std::string, std::string, std::string>, 
+    /// pair of command line param type and process callback if option is found
+    std::pair<wxExCmdLineTypes, std::function<void(const wxAny& any)>>>> CmdOptions;
 
-    /// Params (currently only string value supported): 
-    typedef std::vector<std::pair<
-      /// description
-      std::string, 
-      /// pair of flags and process callback if param is present
-      std::pair<
-        /// flags:
-        /// - wxCMD_LINE_PARAM_OPTIONAL 	
-        /// - wxCMD_LINE_PARAM_MULTIPLE 	
-        /// - wxCMD_LINE_NEEDS_SEPARATOR 	
-        int, 
-        std::function<void(std::vector<std::string> &)>>>> CmdParams;
+  /// Params (currently only string value supported): 
+  typedef std::pair<
+    /// pair of name and description
+    std::pair<std::string, std::string>, 
+    /// process callback if param is present
+    std::function<bool(const std::vector<std::string> &)>> CmdParams;
+
+  /// Constructor, 
+  wxExCmdLine(
+    /// switches
+    const CmdSwitches & s, 
+    /// options
+    const CmdOptions & o, 
+    /// params
+    const CmdParams & p = CmdParams(),
+    /// message
+    const std::string& message = std::string(),
+    /// delimiter
+    const char delimiter = ' ', 
+    /// version, if empty use wxExtension version
+    const std::string& version = std::string(), 
+    /// help
+    bool helpAndVersion = true);
+
+  /// Destructor.
+ ~wxExCmdLine();
   
-    /// Contructor, 
-    /// Default (i.e. if flags are just 0), options are optional.
-    /// If you specify an option name of max short_option_size, it is considered a
-    /// short option, if you specify more chars, it is considered
-    /// a long option.
-    wxExCmdLineParser(
-      /// the command line to be parsed
-      const std::string& cmdline, 
-      /// switches
-      const CmdSwitches & s, 
-      /// options
-      const CmdOptions & o, 
-      /// params
-      const CmdParams & p = CmdParams(),
-      /// default size for short options
-      size_t short_option_size = 2);
-
-    /// Constructor using command line from wxTheApp.
-    wxExCmdLineParser(
-      const CmdSwitches & s, const CmdOptions & o, const CmdParams & p = CmdParams());
-    
-    /// Parses the command line and invokes callbacks, returns:
-    /// - -1 for help, 
-    /// - 0 if ok, 
-    /// - a positive value if an error occurred. 
-    int Parse(bool giveUsage = true);
+  /// Parses the specified command line 
+  /// (should start with app name, and if empty
+  /// the command line from wxTheApp is used).
+  bool Parse(const std::string& cmdline = std::string());
 private:
-  const CmdOptions m_Options; 
-  const CmdParams m_Params; 
-  const CmdSwitches m_Switches; 
+  struct wxExCmdLineContent
+  {
+    wxExCmdLineTypes m_Type;
+    std::function<void(const wxAny& any)> m_f; 
+
+    union
+    {
+      TCLAP::ValueArg<float>* m_val_f; 
+      TCLAP::ValueArg<int>* m_val_i; 
+      TCLAP::ValueArg<std::string>* m_val_s; 
+    };
+  };
+
+  std::vector<wxExCmdLineContent*> m_Options; 
+  std::vector<std::pair<
+    TCLAP::UnlabeledMultiArg<std::string>*, 
+    std::function<bool(std::vector<std::string>)>>> m_Params; 
+  std::vector<std::pair<
+    TCLAP::SwitchArg*, 
+    std::function<void(bool)>>> m_Switches; 
   
-  wxCmdLineParser m_Parser;
+  TCLAP::CmdLine m_CmdLine;
 };

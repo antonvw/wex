@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wxExLexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -130,7 +130,7 @@ const wxExLexer wxExLexers::FindByText(const std::string& text) const
   // Add automatic lexers if text starts with some special tokens.
   std::string text_lowercase = std::regex_replace(text, 
     std::regex("[ \t\n\v\f\r]+$"), "", std::regex_constants::format_sed);
-  for (auto & c : text_lowercase) c = std::tolower(c);
+  for (auto & c : text_lowercase) c = ::tolower(c);
 
        if (text_lowercase.find("<html>") == 0) return FindByName("hypertext");
   else if (text_lowercase.find("<?xml") == 0) return FindByName("xml");

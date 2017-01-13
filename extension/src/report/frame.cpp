@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -296,20 +296,25 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
   static wxString arg1, arg2;
   static int arg3 = wxDIR_FILES;
 
-  if (wxExCmdLineParser(arg, 
-     {{{"r", "recursive"}, {0, [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}}},
-     {},
-     {{"match", {0, [&](std::vector<std::string> & v) {wxExFindReplaceData::Get()->SetFindString(v[0]);}}},
-      {sed ? "replace": "", {0, [&](std::vector<std::string> & v) {
-        wxExFindReplaceData::Get()->SetReplaceString(v[0]);}}},
-      {"extension", {wxCMD_LINE_PARAM_OPTIONAL, [&](std::vector<std::string> & v) {
-        arg2 = (v.size() > 1 ? 
-          wxExConfigFirstOfWrite(m_TextInFiles, v[1]): 
-          wxExConfigFirstOf(m_TextInFiles));}}},
-      {"folder", {wxCMD_LINE_PARAM_OPTIONAL, [&](std::vector<std::string> & v) {
-        arg1 = (v.size() == 3 ? 
-          wxExConfigFirstOfWrite(m_TextInFolder, v[2]): 
-          wxExConfigFirstOf(m_TextInFolder));}}}}).Parse() != 0)
+  if (!wxExCmdLine(
+    {{{"r", "recursive", "recursive"}, [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}},
+    {},
+    {{"rest", "match " + std::string(sed ? "replace": "") + " [extension] [folder]"}, 
+       [&](const std::vector<std::string> & v) {
+       int i = 0;
+       wxExFindReplaceData::Get()->SetFindString(v[i++]);
+       if (sed) 
+       {
+         if (v.size() <= i) return false;
+         wxExFindReplaceData::Get()->SetReplaceString(v[i++]);
+       }
+       arg2 = (v.size() > i ? 
+         wxExConfigFirstOfWrite(m_TextInFiles, v[i++]): 
+         wxExConfigFirstOf(m_TextInFiles));
+       arg1 = (v.size() > i ? 
+         wxExConfigFirstOfWrite(m_TextInFolder, v[i++]): 
+         wxExConfigFirstOf(m_TextInFolder));
+       return true;}}).Parse(std::string(sed ? ":sed": ":grep") + " " + arg))
   {
     return false;
   }

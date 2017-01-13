@@ -2,7 +2,7 @@
 // Name:      file.cpp
 // Purpose:   Implementation of class wxExFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -145,6 +145,11 @@ bool wxExFile::Get(bool synced)
   ResetContentsChanged();
 
   return true;
+}
+
+bool wxExFile::Open(const std::string& filename, wxFile::OpenMode mode, int access)
+{
+  return m_File->Open(filename, mode, access);
 }
 
 const wxCharBuffer* wxExFile::Read(wxFileOffset seek_position)
