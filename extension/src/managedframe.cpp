@@ -2,7 +2,7 @@
 // Name:      managedframe.cpp
 // Purpose:   Implementation of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -559,7 +559,7 @@ bool wxExTextCtrl::SetEx(wxExEx* ex, const std::string& command)
     case TYPE_COMMAND:
       if (!m_Commands.Get().empty())
       {
-        SetValue(m_ModeVisual && !m_Commands.Get().find(range) == 0 ? 
+        SetValue(m_ModeVisual && m_Commands.Get().find(range) != 0 ? 
           range + m_Commands.Get(): m_Commands.Get()); 
       }
       else
