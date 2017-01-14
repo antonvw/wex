@@ -2,7 +2,7 @@
 // Name:      test-process->cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -74,7 +74,9 @@ TEST_CASE("wxExProcess")
   // Test working directory for process (should change).
   REQUIRE( process->Execute("ls -l", false, ".."));
   REQUIRE(!process->GetError());
+#ifndef __WXOSX__
   REQUIRE(!wxGetCwd().Contains("data"));
+#endif
   wxSetWorkingDirectory(cwd);
   REQUIRE( process->Kill());
   

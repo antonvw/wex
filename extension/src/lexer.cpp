@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -97,7 +97,7 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
       }
       catch (std::exception& e)
       {
-        std::cerr << "Keyword exceptiont: " << value << "\n";
+        std::cerr << "Keyword exceptiont: " << e.what() << "\n";
         return false;
       }
     }
@@ -499,7 +499,7 @@ void wxExLexer::Set(const pugi::xml_node* node)
           }
           catch (std::exception& e)
           {
-            std::cerr << "Keyword exception: " << nm << " with offset: " << node->offset_debug() << "\n";
+            std::cerr << "Keyword exception: " << e.what() << "\n";
           }
         }
       }

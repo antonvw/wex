@@ -2,7 +2,7 @@
 // Name:      marker.cpp
 // Purpose:   Implementation of class wxExMarker
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -48,7 +48,7 @@ wxExMarker::wxExMarker(const pugi::xml_node& node)
   }
   catch (std::exception& e)
   {
-    std::cerr << "Marker exception with offset: " << node.offset_debug() << "\n";
+    std::cerr << "Marker exception: " << e.what() << "\n";
   }
 }
 

@@ -2,7 +2,7 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wxExStyle class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -135,7 +135,7 @@ void wxExStyle::SetNo(const std::string& no, const std::string& macro,
     }
     catch (std::exception& e)
     {
-      std::cerr << "Style exception: " << single << " with offset: " << node.offset_debug() << "\n";
+      std::cerr << "Style exception: " << e.what() << "\n";
     }
   }
 }

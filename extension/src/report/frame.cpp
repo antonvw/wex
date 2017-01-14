@@ -301,7 +301,7 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
     {},
     {{"rest", "match " + std::string(sed ? "replace": "") + " [extension] [folder]"}, 
        [&](const std::vector<std::string> & v) {
-       int i = 0;
+       size_t i = 0;
        wxExFindReplaceData::Get()->SetFindString(v[i++]);
        if (sed) 
        {

@@ -39,8 +39,10 @@ wxExCmdLine::wxExCmdLine(
             -1,
             "float");
           m_CmdLine.add(arg);
-          m_Options.push_back(new wxExCmdLineContent{CMD_LINE_FLOAT, it->second.second,
-            {.m_val_f = arg}});
+          m_Options.push_back(new wxExCmdLineContent{
+            CMD_LINE_FLOAT, 
+            it->second.second,
+            .m_tclap_u = {.m_val_f = arg}});
           }
           break;
 
@@ -51,8 +53,10 @@ wxExCmdLine::wxExCmdLine(
             -1,
             "int");
           m_CmdLine.add(arg);
-          m_Options.push_back(new wxExCmdLineContent{CMD_LINE_INT, it->second.second,
-            {.m_val_i = arg}});
+          m_Options.push_back(new wxExCmdLineContent{
+            CMD_LINE_INT, 
+            it->second.second,
+            .m_tclap_u = {.m_val_i = arg}});
           }
           break;
         
@@ -63,8 +67,10 @@ wxExCmdLine::wxExCmdLine(
             std::string(),
             "string");
           m_CmdLine.add(arg);
-          m_Options.push_back(new wxExCmdLineContent{CMD_LINE_STRING, it->second.second,
-            {.m_val_s = arg}});
+          m_Options.push_back(new wxExCmdLineContent{
+            CMD_LINE_STRING, 
+            it->second.second,
+            .m_tclap_u = {.m_val_s = arg}});
           }
           break;
         
@@ -104,9 +110,9 @@ wxExCmdLine::~wxExCmdLine()
   {
     switch (it->m_Type)
     {
-      case CMD_LINE_FLOAT: delete it->m_val_f; break;
-      case CMD_LINE_INT: delete it->m_val_i; break;
-      case CMD_LINE_STRING: delete it->m_val_s; break;
+      case CMD_LINE_FLOAT: delete it->m_tclap_u.m_val_f; break;
+      case CMD_LINE_INT: delete it->m_tclap_u.m_val_i; break;
+      case CMD_LINE_STRING: delete it->m_tclap_u.m_val_s; break;
     }
     delete it;
   }
@@ -141,23 +147,23 @@ bool wxExCmdLine::Parse(const std::string& cmdline)
       switch (it->m_Type)
       {
         case CMD_LINE_FLOAT:
-          if (it->m_val_f->getValue() != -1) 
+          if (it->m_tclap_u.m_val_f->getValue() != -1) 
           {
-            it->m_f(it->m_val_f->getValue());
+            it->m_f(it->m_tclap_u.m_val_f->getValue());
           }
           break;
 
         case CMD_LINE_INT:
-          if (it->m_val_i->getValue() != -1) 
+          if (it->m_tclap_u.m_val_i->getValue() != -1) 
           {
-            it->m_f(it->m_val_i->getValue());
+            it->m_f(it->m_tclap_u.m_val_i->getValue());
           }
           break;
 
         case CMD_LINE_STRING:
-          if (!it->m_val_s->getValue().empty()) 
+          if (!it->m_tclap_u.m_val_s->getValue().empty()) 
           {
-            it->m_f(it->m_val_s->getValue());
+            it->m_f(it->m_tclap_u.m_val_s->getValue());
           }
           break;
       }

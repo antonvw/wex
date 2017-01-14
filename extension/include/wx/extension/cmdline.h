@@ -10,6 +10,7 @@
 #include <functional>
 #include <utility>
 #include <vector>
+#include <sstream> // for tclap!
 #include <tclap/CmdLine.h>
 #include <wx/any.h>
 
@@ -28,21 +29,21 @@ public:
   /// Switches: 
   typedef std::vector<std::pair<
     /// tuple of option flag, name, description
-    std::tuple<std::string, std::string, std::string>, 
+    const std::tuple<const std::string, const std::string, const std::string>, 
     /// process callback if option is found
     std::function<void(bool)>>> CmdSwitches;
 
   /// Options:
   typedef std::vector<std::pair<
     /// tuple of option flag, name and description
-    std::tuple<std::string, std::string, std::string>, 
+    const std::tuple<const std::string, const std::string, const std::string>, 
     /// pair of command line param type and process callback if option is found
     std::pair<wxExCmdLineTypes, std::function<void(const wxAny& any)>>>> CmdOptions;
 
   /// Params (currently only string value supported): 
   typedef std::pair<
     /// pair of name and description
-    std::pair<std::string, std::string>, 
+    const std::pair<const std::string, const std::string>, 
     /// process callback if param is present
     std::function<bool(const std::vector<std::string> &)>> CmdParams;
 
@@ -81,7 +82,7 @@ private:
       TCLAP::ValueArg<float>* m_val_f; 
       TCLAP::ValueArg<int>* m_val_i; 
       TCLAP::ValueArg<std::string>* m_val_s; 
-    };
+    } m_tclap_u;
   };
 
   std::vector<wxExCmdLineContent*> m_Options; 
