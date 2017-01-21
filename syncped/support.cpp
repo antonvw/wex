@@ -2,7 +2,7 @@
 // Name:      support.cpp
 // Purpose:   Implementation of DecoratedFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -40,33 +40,23 @@ DecoratedFrame::DecoratedFrame(App* app)
   
   wxExProcess::PrepareOutput(this);
 
+  const bool vi_mode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
+  
 #if wxUSE_STATUSBAR
-  std::vector<wxExStatusBarPane> panes{
-    wxExStatusBarPane(),
-    wxExStatusBarPane("PaneFileType", 50, _("File type")),
-    wxExStatusBarPane("PaneInfo", 100, _("Lines or items"))};
-
-  if (!wxExLexers::Get()->GetLexers().empty() && wxExLexers::Get()->GetThemes() > 1)
-  {
 #ifdef __WXMSW__
-    const int lexer_size = 60;
+  const int lexer_size = 60;
 #else
-    const int lexer_size = 75;
+  const int lexer_size = 75;
 #endif
-
-    panes.emplace_back(wxExStatusBarPane("PaneLexer", lexer_size, _("Lexer")));
-    panes.emplace_back(wxExStatusBarPane("PaneTheme", lexer_size, _("Theme")));
-  }
-
-  if (wxExVCS::GetCount() > 0)
-  {
-    panes.emplace_back(wxExStatusBarPane("PaneVCS", 75, _("VCS")));
-  }
-  
-  panes.emplace_back(wxExStatusBarPane("PaneMacro", 75));
-  panes.emplace_back(wxExStatusBarPane("PaneMode", 100));
-  
-  SetupStatusBar(panes);
+  SetupStatusBar({
+    {},
+    {"PaneFileType", 50, _("File type").ToStdString()},
+    {"PaneInfo", 100, _("Lines or items").ToStdString()},
+    {"PaneLexer", lexer_size, _("Lexer").ToStdString()},
+    {"PaneTheme", lexer_size, _("Theme").ToStdString()},
+    {"PaneVCS", 75},
+    {"PaneMacro", 75},
+    {"PaneMode", 100}});
   
   wxExVCS vcs;
   
@@ -83,11 +73,8 @@ DecoratedFrame::DecoratedFrame(App* app)
     m_StatusBar->ShowField("PaneVCS", false);
   }
   
-  const bool vi_mode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
-  const bool show_mode = wxConfigBase::Get()->ReadBool(_("Show mode"), false);
-  
   m_StatusBar->ShowField("PaneMacro", vi_mode);
-  m_StatusBar->ShowField("PaneMode", vi_mode && show_mode);
+  m_StatusBar->ShowField("PaneMode", false);
 #endif
 
   wxExMenu *menuFile = new wxExMenu();

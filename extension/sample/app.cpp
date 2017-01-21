@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of sample classes for wxExtension
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -227,11 +227,11 @@ wxExSampleFrame::wxExSampleFrame()
   }
 
 #if wxUSE_STATUSBAR
-  SetupStatusBar(std::vector<wxExStatusBarPane>{
-    wxExStatusBarPane(),
-    wxExStatusBarPane("PaneFileType", 50, "File type"),
-    wxExStatusBarPane("PaneInfo", 100, "Lines or items"),
-    wxExStatusBarPane("PaneLexer", 60, "Lexer")});
+  SetupStatusBar({
+    {},
+    {"PaneFileType", 50, "File type"},
+    {"PaneInfo", 100, "Lines or items"},
+    {"PaneLexer", 60}});
 #endif
 
   GetToolBar()->AddControls();

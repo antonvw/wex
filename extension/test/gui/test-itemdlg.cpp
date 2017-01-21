@@ -2,7 +2,7 @@
 // Name:      test-itemdlg.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -20,8 +20,7 @@ TEST_CASE("wxExItemDialog")
   wxExItem::UseConfig(false);
   
   // Test dialog without pages.
-  wxExItemDialog* dlg1 = new wxExItemDialog(GetFrame(), 
-    std::vector <wxExItem> {
+  wxExItemDialog* dlg1 = new wxExItemDialog(GetFrame(), {
       {"string1", "hello1"},
       {"string2", "hello2"},
       {"int1", ITEM_TEXTCTRL_INT, "10"},
@@ -47,8 +46,7 @@ TEST_CASE("wxExItemDialog")
   
   // Test dialog with empty items.
   wxExItemDialog* dlg3 = new wxExItemDialog(GetFrame(), 
-    std::vector <wxExItem> {{}, {}, {}},
-    "empty items");
+    {{}, {}, {}}, "empty items");
   dlg3->Show();
 #endif
 }

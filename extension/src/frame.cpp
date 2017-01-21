@@ -229,9 +229,9 @@ wxExListView* wxExFrame::GetListView()
   wxCAST_TO(wxExListView);
 }
 
-wxString wxExFrame::GetStatusText(const wxString& pane)
+std::string wxExFrame::GetStatusText(const std::string& pane)
 {
-  return (m_StatusBar == nullptr ? wxString(): m_StatusBar->GetStatusText(pane));
+  return (m_StatusBar == nullptr ? std::string(): m_StatusBar->GetStatusText(pane));
 }
 
 wxExSTC* wxExFrame::GetSTC()
@@ -337,7 +337,7 @@ wxExStatusBar* wxExFrame::SetupStatusBar(
   return m_StatusBar;
 }
 
-void wxExFrame::StatusBarClicked(const wxString& pane)
+void wxExFrame::StatusBarClicked(const std::string& pane)
 {
   wxExSTC* stc = GetSTC();
     
@@ -367,7 +367,7 @@ void wxExFrame::StatusBarClicked(const wxString& pane)
   }
 }
 
-bool wxExFrame::StatusText(const wxString& text, const wxString& pane)
+bool wxExFrame::StatusText(const std::string& text, const std::string& pane)
 {
   return (m_StatusBar == nullptr ? false: m_StatusBar->SetStatusText(text, pane));
 }
@@ -376,9 +376,9 @@ bool wxExFrame::UpdateStatusBar(const wxListView* lv)
 {
   if (lv->IsShown())
   {
-    const wxString text = (lv->GetSelectedItemCount() == 0 ?
-      std::to_string(lv->GetItemCount()):
-      wxString::Format("%d,%d", lv->GetItemCount(), lv->GetSelectedItemCount()));
+    const std::string text = std::to_string(lv->GetItemCount()) + 
+      (lv->GetSelectedItemCount() > 0 ? "," + std::to_string(lv->GetSelectedItemCount()):
+       std::string());
       
     return StatusText(text, "PaneInfo");
   }
@@ -387,14 +387,14 @@ bool wxExFrame::UpdateStatusBar(const wxListView* lv)
 }
 
 // Do not make it const, too many const_casts needed,
-bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
+bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const std::string& pane)
 {
   if (stc == nullptr)
   {
     return false;
   }
   
-  wxString text;
+  std::string text;
 
   if (pane == "PaneInfo")
   {

@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncodbcquery
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -100,9 +100,9 @@ Frame::Frame()
   m_Shell->SetFocus();
 
 #if wxUSE_STATUSBAR
-  SetupStatusBar(std::vector<wxExStatusBarPane>{
-    wxExStatusBarPane(),
-    wxExStatusBarPane("PaneInfo", 100, _("Lines"))});
+  SetupStatusBar({
+    {},
+    {"PaneInfo", 100, _("Lines").ToStdString()}});
 #endif
 
   GetToolBar()->AddControls(false); // no realize yet

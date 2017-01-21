@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -721,7 +721,7 @@ bool wxExSTC::FindNext(
   if (SearchInTarget(text) == -1)
   {
     wxExFrame::StatusText(
-      wxExGetFindResult(text, find_next, recursive), wxEmptyString);
+      wxExGetFindResult(text, find_next, recursive), std::string());
     
     bool found = false;
     

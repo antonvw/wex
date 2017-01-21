@@ -2,7 +2,7 @@
 // Name:      vcsentry.cpp
 // Purpose:   Implementation of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -145,8 +145,7 @@ int wxExVCSEntry::ShowDialog(
       wxConfigBase::Get()->Read(GetFlagsKey()));
   }
   
-  const int retValue = wxExItemDialog(parent,
-    std::vector<wxExItem> {
+  const int retValue = wxExItemDialog(parent, {
       (GetCommand().IsCommit() ? wxExItem(
         _("Revision comment"), ITEM_COMBOBOX, wxAny(), true) : wxExItem()),
       (add_folder && !GetCommand().IsHelp() ? wxExItem(

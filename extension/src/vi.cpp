@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wxExVi
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -164,6 +164,8 @@ enum
   MOTION_YANK,
 };
 
+#define ESC "\x1b"
+
 std::string wxExVi::m_LastFindCharCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
@@ -182,10 +184,10 @@ wxExVi::wxExVi(wxExSTC* stc)
         if (!m_Dot)
         {
           const std::string lc(GetLastCommand() + GetRegisterInsert());
-          SetLastCommand(lc + wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
+          SetLastCommand(lc + ESC);
           // Record it (if recording is on).
           GetMacros().Record(lc);
-          GetMacros().Record(wxString(wxUniChar(WXK_ESCAPE)).ToStdString());
+          GetMacros().Record(ESC);
         }
         m_Command.clear();
         GetSTC()->EndUndoAction();})
@@ -387,7 +389,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       } 
       return false;}},
     {"r", [&](const std::string& command){
-      if (wxString(command).Matches("r?"))
+      if (command.size() > 1)
       {
         if (!GetSTC()->GetReadOnly())
         {
@@ -620,7 +622,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         GetSTC()->GetLineCount(),
         100 * (GetSTC()->GetCurrentLine() + 1)/ GetSTC()->GetLineCount(),
         (GetSTC()->GetFoldLevel(GetSTC()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
-         - wxSTC_FOLDLEVELBASE));
+         - wxSTC_FOLDLEVELBASE).ToStdString());
       return true;}},
     // ctrl-h
     {"\x08", [&](const std::string& command){
@@ -788,7 +790,7 @@ void wxExVi::CommandCalc(const std::string& command)
   {
     const wxString msg(wxString::Format("%.*f", width, sum));
     SetRegisterYank(msg.ToStdString());
-    GetFrame()->ShowExMessage(msg);
+    GetFrame()->ShowExMessage(msg.ToStdString());
   }
 }
 
@@ -851,7 +853,7 @@ void wxExVi::CommandReg(const char reg)
       }
       else
       {
-        GetFrame()->ShowExMessage("?" + wxString(reg));
+        GetFrame()->ShowExMessage("?" + reg);
       }
   }
 }
@@ -904,12 +906,11 @@ bool wxExVi::InsertMode(const std::string& command)
     return true;
   }
 
-  if (command.find(wxString(wxUniChar(WXK_CONTROL_R) + wxString("="))) !=
+  if (command.find(std::string(1, WXK_CONTROL_R) + "=") !=
     std::string::npos)
   {
     if (
-      command.compare(0, 2, 
-        wxString(wxUniChar(WXK_CONTROL_R) + wxString("="))) == 0)
+      command.compare(0, 2, std::string(1, WXK_CONTROL_R) + "=") == 0)
     {
       CommandCalc(command);
       return true;
@@ -921,8 +922,7 @@ bool wxExVi::InsertMode(const std::string& command)
       return true;
     }
   }
-  else if (command.find(wxString(wxUniChar(WXK_CONTROL_R)).ToStdString()) !=
-    std::string::npos)
+  else if (command.find(std::string(1, WXK_CONTROL_R)) != std::string::npos)
   {
     if (command.size() < 2)
     {

@@ -74,10 +74,23 @@ public:
 private:
   struct wxExCmdLineContent
   {
-    wxExCmdLineTypes m_Type;
+    wxExCmdLineContent(std::function<void(const wxAny& any)> fu,
+      TCLAP::ValueArg<float>* f)
+      : m_Type(CMD_LINE_FLOAT) 
+      , m_f(fu) {m_tclap_u.m_val_f = f;};
+    wxExCmdLineContent(std::function<void(const wxAny& any)> fu,
+      TCLAP::ValueArg<int>* i)
+      : m_Type(CMD_LINE_INT) 
+      , m_f(fu) {m_tclap_u.m_val_i = i;};
+    wxExCmdLineContent(std::function<void(const wxAny& any)> fu,
+      TCLAP::ValueArg<std::string>* s)
+      : m_Type(CMD_LINE_STRING) 
+      , m_f(fu) {m_tclap_u.m_val_s = s;};
+      
+    const wxExCmdLineTypes m_Type;
     std::function<void(const wxAny& any)> m_f; 
 
-    union
+    union wxExInternal
     {
       TCLAP::ValueArg<float>* m_val_f; 
       TCLAP::ValueArg<int>* m_val_i; 

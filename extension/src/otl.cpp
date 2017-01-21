@@ -2,7 +2,7 @@
 // Name:      otl.cpp
 // Purpose:   Implementation of wxExOTL class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -56,7 +56,7 @@ bool wxExOTL::Logon(
 {
   if (parent != nullptr)
   {
-    if (wxExItemDialog(parent, std::vector<wxExItem> {
+    if (wxExItemDialog(parent, {
         {_("Datasource"), ITEM_COMBOBOX, wxAny(), true},
         {_("User")},
         {_("Password"), wxEmptyString, wxTE_PASSWORD}},

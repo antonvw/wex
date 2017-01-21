@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of sample classes for wxExRep
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -68,11 +68,11 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   GetToolBar()->AddControls();
   
 #if wxUSE_STATUSBAR
-  SetupStatusBar(std::vector<wxExStatusBarPane>{
-    wxExStatusBarPane(),
-    wxExStatusBarPane("PaneFileType", 50),
-    wxExStatusBarPane("PaneInfo", 100),
-    wxExStatusBarPane("PaneLexer", 60)});
+  SetupStatusBar({
+    {},
+    {"PaneFileType", 50},
+    {"PaneInfo", 100},
+    {"PaneLexer", 60}});
 #endif
 
   m_NotebookWithLists = new wxExNotebook(

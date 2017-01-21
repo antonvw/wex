@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
@@ -87,13 +87,13 @@ Frame::Frame()
 
 #if wxUSE_STATUSBAR
   // Statusbar setup before STC construction.
-  SetupStatusBar(std::vector<wxExStatusBarPane>{
-    wxExStatusBarPane(),
-    wxExStatusBarPane("PaneClients", 75, _("Number of clients connected")),
-    wxExStatusBarPane("PaneTimer", 75, _("Repeat timer")),
-    wxExStatusBarPane("PaneBytes", 150, _("Number of bytes received and sent")),
-    wxExStatusBarPane("PaneFileType", 50, _("File type")),
-    wxExStatusBarPane("PaneInfo", 100, _("Lines"))});
+  SetupStatusBar({
+    {},
+    {"PaneClients", 75, _("Number of clients connected").ToStdString()},
+    {"PaneTimer", 75, _("Repeat timer").ToStdString()},
+    {"PaneBytes", 150, _("Number of bytes received and sent").ToStdString()},
+    {"PaneFileType", 50, _("File type").ToStdString()},
+    {"PaneInfo", 100, _("Lines").ToStdString()}});
 #endif
 
   m_LogWindow->ResetMargins();
@@ -243,7 +243,7 @@ Frame::Frame()
 #endif
 #if wxUSE_STATUSBAR
     StatusText(
-      wxString::Format(_("%ld clients"), m_Clients.size()),
+      std::to_string(m_Clients.size()) + " clients",
       "PaneClients");
 #endif
     wxLogStatus(text);
@@ -334,7 +334,7 @@ Frame::Frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
-    wxExItemDialog(this, std::vector<wxExItem>{
+    wxExItemDialog(this, {
         {_("Hostname"), wxEmptyString, 0, ITEM_TEXTCTRL, true},
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
@@ -362,7 +362,7 @@ Frame::Frame()
     m_Timer.Stop();
     AppendText(m_LogWindow, _("timer stopped"), DATA_MESSAGE);
 #if wxUSE_STATUSBAR
-    StatusText(wxEmptyString, "PaneTimer");
+    StatusText(std::string(), "PaneTimer");
 #endif
    }, ID_TIMER_STOP);
 
@@ -400,7 +400,7 @@ Frame::Frame()
 
 #if wxUSE_STATUSBAR
       StatusText(
-        wxString::Format(_("%ld clients"), m_Clients.size()),
+        std::to_string(m_Clients.size()) + " clients",
         "PaneClients");
 #endif
       LogConnection(sock, true);
@@ -481,9 +481,9 @@ Frame::Frame()
         delete [] buffer;
 
 #if wxUSE_STATUSBAR
-        StatusText(wxString::Format("%d,%d",
-          m_Statistics.Get("Bytes Received"),
-          m_Statistics.Get("Bytes Sent")),
+        StatusText(
+          std::to_string(m_Statistics.Get("Bytes Received")) + "," +
+          std::to_string(m_Statistics.Get("Bytes Sent")),
           "PaneBytes");
 #endif
 
@@ -500,7 +500,7 @@ Frame::Frame()
         SocketLost(sock, true);
 #if wxUSE_STATUSBAR
         StatusText(
-          wxString::Format(_("%ld clients"), m_Clients.size()),
+          std::to_string(m_Clients.size()) + " clients",
           "PaneClients");
 #endif
 
@@ -811,7 +811,7 @@ void Frame::SocketLost(wxSocketBase* sock, bool remove_from_clients)
   sock->Destroy();
 }
 
-void Frame::StatusBarClicked(const wxString& pane)
+void Frame::StatusBarClicked(const std::string& pane)
 {
   if (pane == "PaneTimer")
   {
@@ -849,7 +849,7 @@ void Frame::TimerDialog()
       DATA_MESSAGE);
       
 #if wxUSE_STATUSBAR
-    StatusText(wxString::Format("%ld", val), "PaneTimer");
+    StatusText(std::to_string(val), "PaneTimer");
 #endif
   }
   else if (val == 0)
@@ -859,7 +859,7 @@ void Frame::TimerDialog()
     AppendText(m_LogWindow, _("timer stopped"), DATA_MESSAGE);
     
 #if wxUSE_STATUSBAR
-    StatusText(wxEmptyString, "PaneTimer");
+    StatusText(std::string(), "PaneTimer");
 #endif
   }
 }
@@ -910,8 +910,9 @@ void Frame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client)
   m_Statistics.Inc("Messages Sent");
 
 #if wxUSE_STATUSBAR
-  StatusText(wxString::Format("%d,%d",
-    m_Statistics.Get("Bytes Received"), m_Statistics.Get("Bytes Sent")),
+  StatusText(
+    std::to_string(m_Statistics.Get("Bytes Received")) + "," + 
+    std::to_string(m_Statistics.Get("Bytes Sent")),
     "PaneBytes");
 #endif
 

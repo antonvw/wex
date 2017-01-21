@@ -111,25 +111,24 @@ public:
     const wxString& name = "statusBar");
 
   /// When (left) clicked, uses the GetSTC() for some dialogs.
-  virtual void StatusBarClicked(
-    const wxString& pane);
+  virtual void StatusBarClicked(const std::string& pane);
 
   /// Do something when statusbar is (right) clicked.
-  virtual void StatusBarClickedRight(const wxString& ) {};
+  virtual void StatusBarClickedRight(const std::string& ) {};
 
   /// Returns text on specified pane.
   /// Don't forget to call SetupStatusBar first.
-  static wxString GetStatusText(const wxString& pane);
+  static std::string GetStatusText(const std::string& pane);
   
   /// Sets text on specified pane.
   /// Don't forget to call SetupStatusBar first.
-  static bool StatusText(const wxString& text, const wxString& pane);
+  static bool StatusText(const std::string& text, const std::string& pane);
   
   /// Updates statusbar pane items pane with values from specified listview.
   static bool UpdateStatusBar(const wxListView* lv);
   
   /// Updates the specified statusbar pane with values from specified stc.
-  static bool UpdateStatusBar(wxExSTC* stc, const wxString& pane);
+  static bool UpdateStatusBar(wxExSTC* stc, const std::string& pane);
 #endif // wxUSE_STATUSBAR
 protected:
 #if wxUSE_STATUSBAR

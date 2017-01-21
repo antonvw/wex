@@ -14,6 +14,8 @@
 
 TEST_CASE("wxExStatusBar")
 {
+  REQUIRE( GetStatusBar()->GetFieldsCount() == 10);
+
   REQUIRE( GetStatusBar()->SetStatusText("hello", ""));
   REQUIRE( GetStatusBar()->SetStatusText("hello0", "Pane0"));
   REQUIRE( GetStatusBar()->SetStatusText("hello1", "Pane1"));
@@ -31,9 +33,11 @@ TEST_CASE("wxExStatusBar")
   REQUIRE( GetStatusBar()->GetStatusText("Panexxx").empty());
   
   REQUIRE( GetStatusBar()->ShowField("Pane0", false));
+  REQUIRE( GetStatusBar()->GetField(0).GetName() == "PaneText");
   REQUIRE( ((wxStatusBar*) GetStatusBar())->GetStatusText(1) == "hello1");
   REQUIRE(!GetStatusBar()->ShowField("Pane0", false));
   REQUIRE( GetStatusBar()->ShowField("Pane3", false));
+  REQUIRE( GetStatusBar()->GetField(1).GetName() == "Pane0");
   REQUIRE( ((wxStatusBar*) GetStatusBar())->GetStatusText(1) == "hello1");
   REQUIRE( GetStatusBar()->GetStatusText("Pane0").empty());
   REQUIRE( GetStatusBar()->ShowField("Pane0", true));
@@ -54,12 +58,13 @@ TEST_CASE("wxExStatusBar")
   pane1.SetHiddenText("hidden");
   REQUIRE( pane1.GetHiddenText() == "hidden");
   
-  std::vector<wxExStatusBarPane> panes ({
+  GetStatusBar()->SetFields({
     pane1,
-    wxExStatusBarPane("PaneLexer"),
-    wxExStatusBarPane("PaneFileType"),
-    wxExStatusBarPane("Pane1"),
-    wxExStatusBarPane("Pane2")});
-  
-  GetStatusBar()->SetFields(panes);
+    {"PaneLexer"},
+    {"PaneFileType"},
+    {"Pane1"},
+    {"Pane2"}});
+
+  REQUIRE( GetStatusBar()->GetField(0).GetName() == "PaneInfo");
+  REQUIRE( GetStatusBar()->GetFieldsCount() == 5);
 }

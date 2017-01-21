@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -1323,7 +1323,7 @@ bool Frame::SaveCurrentPage(const std::string& key)
   return true;
 }
 
-void Frame::StatusBarClicked(const wxString& pane)
+void Frame::StatusBarClicked(const std::string& pane)
 {
   if (pane == "PaneTheme")
   {
@@ -1363,7 +1363,7 @@ void Frame::StatusBarClicked(const wxString& pane)
   }
 }
 
-void Frame::StatusBarClickedRight(const wxString& pane)
+void Frame::StatusBarClickedRight(const std::string& pane)
 {
   if (pane == "PaneLexer" || pane == "PaneTheme")
   {
@@ -1399,13 +1399,13 @@ void Frame::StatusBarClickedRight(const wxString& pane)
     if (wxExViMacros::GetFileName().FileExists())
     {
       OpenFile(wxExViMacros::GetFileName(), 0, 
-        " name=\"" + GetStatusText(pane).ToStdString() + "\"");
+        " name=\"" + GetStatusText(pane) + "\"");
     }
   }
   else if (pane == "PaneVCS")
   {
     OpenFile(wxExMenus::GetFileName(), 0, (GetStatusText(pane) != "Auto" ? 
-      GetStatusText(pane).ToStdString(): std::string()));
+      GetStatusText(pane): std::string()));
   }
   else
   {
@@ -1428,10 +1428,10 @@ void Frame::SyncCloseAll(wxWindowID id)
   {
   case ID_NOTEBOOK_EDITORS:
     SetTitle(wxTheApp->GetAppDisplayName());
-    StatusText(wxEmptyString, wxEmptyString);
-    StatusText(wxEmptyString, "PaneFileType");
-    StatusText(wxEmptyString, "PaneInfo");
-    StatusText(wxEmptyString, "PaneLexer");
+    StatusText(std::string(), std::string());
+    StatusText(std::string(), "PaneFileType");
+    StatusText(std::string(), "PaneInfo");
+    StatusText(std::string(), "PaneLexer");
     
     if (GetManager().GetPane("PROJECTS").IsShown() && m_Projects != nullptr)
     {

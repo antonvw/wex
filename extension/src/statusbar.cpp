@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wxExStatusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,6 +17,11 @@
 #if wxUSE_STATUSBAR
 
 const int FIELD_NOT_SHOWN = -1;
+
+std::string ConfigName(wxExStatusBar* sb, const std::string item, int f)
+{
+  return "SB" + sb->GetField(f).GetName() + item;
+}
 
 void wxExStatusBarPane::Show(bool show)
 {
@@ -47,10 +52,23 @@ wxExStatusBar::wxExStatusBar(
 wxExStatusBar::~wxExStatusBar()
 { 
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
+
+  for (size_t i = 0; i < GetFieldsCount(); i++)
+  {
+    wxConfigBase::Get()->Write(ConfigName(this, "Style", i), GetField(i).GetStyle());
+    wxConfigBase::Get()->Write(ConfigName(this, "Width", i), GetField(i).GetWidth());
+  }
 }
 
-bool wxExStatusBar::GetFieldNo(const wxString& field, int& shown_pane_no, int& pane_no) const
+const wxExStatusBarPane& wxExStatusBar::GetField(int n) const
 {
+  return m_Panes[n];
+}
+
+bool wxExStatusBar::GetFieldNo(
+  const std::string& field, int& shown_pane_no, int& pane_no) const
+{
+  const std::string use_field = field.empty() ? "PaneText": field;
   shown_pane_no = 0;
   pane_no = 0;
   
@@ -58,7 +76,7 @@ bool wxExStatusBar::GetFieldNo(const wxString& field, int& shown_pane_no, int& p
   {
     if (it.IsShown())
     {
-      if (it.GetName() == field)
+      if (it.GetName() == use_field)
       {
         return true;
       }
@@ -67,7 +85,7 @@ bool wxExStatusBar::GetFieldNo(const wxString& field, int& shown_pane_no, int& p
     }
     else
     {
-      if (it.GetName() == field)
+      if (it.GetName() == use_field)
       {
         shown_pane_no = FIELD_NOT_SHOWN;
         return true;
@@ -80,12 +98,12 @@ bool wxExStatusBar::GetFieldNo(const wxString& field, int& shown_pane_no, int& p
   return false;
 }
   
-const wxString wxExStatusBar::GetStatusText(const wxString& field) const
+const std::string wxExStatusBar::GetStatusText(const std::string& field) const
 {
   int shown_pane_no, dummy;
   return !GetFieldNo(field, shown_pane_no, dummy) || shown_pane_no == FIELD_NOT_SHOWN ?
     // Do not show error, as you might explicitly want to ignore messages.
-    wxString(): wxStatusBar::GetStatusText(shown_pane_no);
+    std::string(): wxStatusBar::GetStatusText(shown_pane_no).ToStdString();
 }
 
 void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
@@ -154,8 +172,12 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
 
   for (size_t i = 0; i < fields.size(); i++)
   {
-    styles[i] = fields[i].GetStyle();
-    widths[i] = fields[i].GetWidth();
+    styles[i] = wxConfigBase::Get()->ReadLong(ConfigName(this, "Style", i),
+      fields[i].GetStyle());
+    m_Panes[i].SetStyle(styles[i]);
+    widths[i] = wxConfigBase::Get()->ReadLong(ConfigName(this, "Width", i),
+      fields[i].GetWidth());
+    m_Panes[i].SetWidth(widths[i]);
   }
   
   SetFieldsCount(fields.size(), widths);
@@ -169,7 +191,8 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
   Bind(wxEVT_MOTION, &wxExStatusBar::OnMouse, this);
 }
 
-bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
+bool wxExStatusBar::SetStatusText(
+  const std::string& text, const std::string& field)
 {
   int shown_pane_no, pane_no;
 
@@ -195,14 +218,14 @@ bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
   }
 }
 
-bool wxExStatusBar::ShowField(const wxString& field, bool show)
+bool wxExStatusBar::ShowField(const std::string& field, bool show)
 {
   wxASSERT(!m_Panes.empty());
   
   int* widths = new int[m_Panes.size()];
   int* styles = new int[m_Panes.size()];
   int panes_shown = 0;
-  std::vector <wxString> changes;
+  std::vector<std::string> changes;
   bool changed = false;
 
   for (auto& it : m_Panes)

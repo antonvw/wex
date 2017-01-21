@@ -62,8 +62,8 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     wxAPPLY | wxCANCEL,
     ID_FIND_IN_FILES);
     
-  m_RiFDialog = new wxExItemDialog(this,
-    std::vector<wxExItem> {f.at(0),
+  m_RiFDialog = new wxExItemDialog(this, {
+      f.at(0),
       {wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX},
       f.at(1),
       f.at(2),
@@ -249,7 +249,7 @@ int wxExFrameWithHistory::FindInFilesDialog(
     GetSTC()->GetFindString();
   }
 
-  if (wxExItemDialog(this, std::vector<wxExItem> {
+  if (wxExItemDialog(this, {
       {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), true}, 
       (add_in_files ? wxExItem(m_TextInFiles, ITEM_COMBOBOX, wxAny(), true) : wxExItem()),
       (id == ID_TOOL_REPORT_REPLACE ? wxExItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX): wxExItem()),
@@ -297,9 +297,9 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
   static int arg3 = wxDIR_FILES;
 
   if (!wxExCmdLine(
-    {{{"r", "recursive", "recursive"}, [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}},
+    {{std::make_tuple("r", "recursive", "recursive"), [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}},
     {},
-    {{"rest", "match " + std::string(sed ? "replace": "") + " [extension] [folder]"}, 
+    {std::make_pair("rest", "match " + std::string(sed ? "replace": "") + " [extension] [folder]"), 
        [&](const std::vector<std::string> & v) {
        size_t i = 0;
        wxExFindReplaceData::Get()->SetFindString(v[i++]);

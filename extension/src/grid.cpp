@@ -2,7 +2,7 @@
 // Name:      grid.cpp
 // Purpose:   Implementation of wxExGrid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -175,7 +175,7 @@ wxExGrid::wxExGrid(wxWindow* parent,
   Bind(wxEVT_GRID_SELECT_CELL, [=](wxGridEvent& event) {
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(
-      wxString::Format("%d,%d", 1 + event.GetCol(), 1 + event.GetRow()),
+      std::to_string(1 + event.GetCol()) + "," + std::to_string(1 + event.GetRow()),
       "PaneInfo");
 #endif
     event.Skip();});
@@ -183,8 +183,7 @@ wxExGrid::wxExGrid(wxWindow* parent,
   Bind(wxEVT_GRID_RANGE_SELECT, [=](wxGridRangeSelectEvent& event) {
     event.Skip();
   #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(
-      wxString::Format("%ld", GetSelectedCells().GetCount()),
+    wxExFrame::StatusText(std::to_string(GetSelectedCells().GetCount()),
       "PaneInfo");
   #endif
     });
@@ -386,7 +385,7 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
     bool result = false;
     
     wxExFrame::StatusText(
-      wxString(wxExGetFindResult(text.ToStdString(), find_next, recursive)), wxEmptyString);
+      wxExGetFindResult(text.ToStdString(), find_next, recursive), std::string());
     
     if (!recursive)
     {

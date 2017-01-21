@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wxExListView and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -775,7 +775,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   }
   else
   {
-    wxExFrame::StatusText(wxString(wxExGetFindResult(text.ToStdString(), find_next, recursive)), wxEmptyString);
+    wxExFrame::StatusText(wxExGetFindResult(text.ToStdString(), find_next, recursive), std::string());
     
     if (!recursive)
     {

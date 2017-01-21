@@ -380,7 +380,7 @@ void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
               }
               catch (std::exception& e)
               {
-                std::cerr << "Macro: " << attrib << " with offset: " << macro.offset_debug() << " is not a number\n";
+                std::cerr << "Macro excption: " << e.what() << "\n";
               }
             }
             else

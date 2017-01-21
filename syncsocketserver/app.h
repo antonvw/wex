@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of classes for syncsocketserver
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -46,7 +46,7 @@ private:
     int col_number = 0,
     wxExSTCWindowFlags flags = STC_WIN_DEFAULT, 
     const std::string& command = std::string()) override;
-  virtual void StatusBarClicked(const wxString& pane) override;
+  virtual void StatusBarClicked(const std::string& pane) override;
 
   void LogConnection(
     wxSocketBase* sock,

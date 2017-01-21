@@ -185,13 +185,13 @@ wxExEx::wxExEx(wxExSTC* stc)
           std::replace(text.begin(), text.end(), '=', ' ');
         }
         wxExCmdLine(
-          {{{"a", "ac", "Auto Complete"}, [](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);}},
-           {{"C", "ic", "Ignore Case"}, [&](bool on){
+          {{std::make_tuple("a", "ac", "Auto Complete"), [](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);}},
+           {std::make_tuple("C", "ic", "Ignore Case"), [&](bool on){
              if (!on) m_SearchFlags |= wxSTC_FIND_MATCHCASE;
              else     m_SearchFlags &= ~wxSTC_FIND_MATCHCASE;
              wxExFindReplaceData::Get()->SetMatchCase(!on);}},
-           {{"i", "ai", "Auto Indent"}, [](bool on){wxConfigBase::Get()->Write(_("Auto indent"), on ? 2: 0);}},
-           {{"e", "re", "Regular Expression"}, [&](bool on){
+           {std::make_tuple("i", "ai", "Auto Indent"), [](bool on){wxConfigBase::Get()->Write(_("Auto indent"), on ? 2: 0);}},
+           {std::make_tuple("e", "re", "Regular Expression"), [&](bool on){
              if (on) 
              {
                m_SearchFlags |= wxSTC_FIND_REGEXP;
@@ -207,39 +207,39 @@ wxExEx::wxExEx(wxExSTC* stc)
 #endif
              }
              wxExFindReplaceData::Get()->SetUseRegEx(on);}},
-           {{"l", "el", "Edge Line"}, [&](bool on){
+           {std::make_tuple("l", "el", "Edge Line"), [&](bool on){
              m_STC->SetEdgeMode(on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);     
              wxConfigBase::Get()->Write(_("Edge line"), on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);}},
-           {{"m", "sm", "Show Mode"}, [&](bool on){
+           {std::make_tuple("m", "sm", "Show Mode"), [&](bool on){
              ((wxExStatusBar *)m_Frame->GetStatusBar())->ShowField("PaneMode", on);
              wxConfigBase::Get()->Write(_("Show mode"), on);}},
-           {{"n", "nu", "show lineNUmbers"}, [&](bool on){
+           {std::make_tuple("n", "nu", "show lineNUmbers"), [&](bool on){
              m_STC->ShowLineNumbers(on);
              wxConfigBase::Get()->Write(_("Line numbers"), on);}},
-           {{"s", "ws", "show WhiteSpace"}, [&](bool on){
+           {std::make_tuple("s", "ws", "show WhiteSpace"), [&](bool on){
              m_STC->SetViewEOL(on);
              m_STC->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
              wxConfigBase::Get()->Write(_("Whitespace"), on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}},
-           {{"u", "ut", "Use Tabs"}, [&](bool on){
+           {std::make_tuple("u", "ut", "Use Tabs"), [&](bool on){
              m_STC->SetUseTabs(on);
              wxConfigBase::Get()->Write(_("Use tabs"), on);}},
-           {{"w", "mw", "Match Words"}, [&](bool on){
+           {std::make_tuple("w", "mw", "Match Words"), [&](bool on){
              if (on) m_SearchFlags |= wxSTC_FIND_WHOLEWORD;
              else    m_SearchFlags &= ~wxSTC_FIND_WHOLEWORD;
              wxExFindReplaceData::Get()->SetMatchWord(on);}},
-           {{"W", "wl", "Wrap Line"}, [&](bool on){
+           {std::make_tuple("W", "wl", "Wrap Line"), [&](bool on){
              m_STC->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
              wxConfigBase::Get()->Write(_("Wrap line"), on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}}},
-          {{{"c", "ec", "Edge Column"}, {CMD_LINE_INT, [&](const wxAny& val) {
+          {{std::make_tuple("c", "ec", "Edge Column"), {CMD_LINE_INT, [&](const wxAny& val) {
              m_STC->SetEdgeColumn(val.As<int>());
              wxConfigBase::Get()->Write(_("Edge column"), val.As<int>());}}},
-           {{"S", "sw", "Shift Width"}, {CMD_LINE_INT, [&](const wxAny& val) {
+           {std::make_tuple("S", "sw", "Shift Width"), {CMD_LINE_INT, [&](const wxAny& val) {
              m_STC->SetIndent(val.As<int>());
              wxConfigBase::Get()->Write(_("Indent"), val.As<int>());}}},
-           {{"t", "ts", "Tab Stop"}, {CMD_LINE_INT, [&](const wxAny& val) {
+           {std::make_tuple("t", "ts", "Tab Stop"), {CMD_LINE_INT, [&](const wxAny& val) {
              m_STC->SetTabWidth(val.As<int>());
              wxConfigBase::Get()->Write(_("Tab width"), val.As<int>());}}},
-           {{"y", "sy", "SYntax (lexer or 'off')"}, {CMD_LINE_STRING, [&](const wxAny& val) {
+           {std::make_tuple("y", "sy", "SYntax (lexer or 'off')"), {CMD_LINE_STRING, [&](const wxAny& val) {
              if (val.As<std::string>() != "off") 
                m_STC->GetLexer().Set(val.As<std::string>(), true); // allow folding
              else              
@@ -607,7 +607,7 @@ void wxExEx::Cut(bool show_message)
   
   if (lines >= 3 && show_message)
   {
-    m_Frame->ShowExMessage(wxString::Format(_("%d fewer lines"), lines - 1));
+    m_Frame->ShowExMessage(wxString::Format(_("%d fewer lines"), lines - 1).ToStdString());
   }
 }
 
@@ -1004,7 +1004,7 @@ void wxExEx::Yank(bool show_message)
   
   if (lines >= 3 && show_message)
   {
-    m_Frame->ShowExMessage(wxString::Format(_("%d lines yanked"), lines - 1));
+    m_Frame->ShowExMessage(wxString::Format(_("%d lines yanked"), lines - 1).ToStdString());
   }
 }
 #endif // wxUSE_GUI

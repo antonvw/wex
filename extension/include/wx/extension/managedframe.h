@@ -2,7 +2,7 @@
 // Name:      managedframe.h
 // Purpose:   Declaration of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -143,11 +143,11 @@ public:
     m_FileHistory.AddFileToHistory(file);};
   
   /// Shows text in ex bar.
-  void ShowExMessage(const wxString& text);
+  void ShowExMessage(const std::string& text);
   
   /// Shows or hides the managed pane.
   /// Returns false if pane is not managed.
-  bool ShowPane(const wxString& pane, bool show = true);
+  bool ShowPane(const std::string& pane, bool show = true);
   
   /// Called after you checked the Sync checkbox on the options toolbar.
   /// Default syncs current stc.
@@ -160,7 +160,8 @@ public:
   /// Toggles the managed pane: if shown hides it, otherwise shows it.
   /// Returns false if pane is not managed.
   bool TogglePane(
-    const wxString& pane) {return ShowPane(pane, !m_Manager.GetPane(pane).IsShown());};
+    const std::string& pane) {
+      return ShowPane(pane, !m_Manager.GetPane(pane).IsShown());};
 protected:
   void DoRecent(
     const wxExFileHistory& history, 
@@ -169,11 +170,12 @@ protected:
 private:
   bool AddToolBarPane(
     wxWindow* window, 
-    const wxString& name, 
+    const std::string& name, 
     const wxString& caption = wxEmptyString);
   wxPanel* CreateExPanel();
   
-  const std::vector<std::pair<std::pair<wxString,wxString>, int>> m_ToggledPanes;
+  const std::vector<std::pair<std::pair<std::string, std::string>, int>> 
+    m_ToggledPanes;
   
   wxAuiManager m_Manager;
   wxExDebug* m_Debug = nullptr;

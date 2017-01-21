@@ -2,7 +2,7 @@
 // Name:      vimacros.cpp
 // Purpose:   Implementation of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -798,7 +798,7 @@ void wxExViMacros::StopRecording()
     m_Macros.erase(m_Macro);
     m_Macro.clear();
     wxLogStatus(wxEmptyString);
-    wxExFrame::StatusText(wxEmptyString, "PaneMacro");
+    wxExFrame::StatusText(std::string(), "PaneMacro");
   }
 }
 #endif // wxUSE_GUI

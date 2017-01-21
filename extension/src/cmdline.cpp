@@ -35,42 +35,27 @@ wxExCmdLine::wxExCmdLine(
         case CMD_LINE_FLOAT: {
           auto* arg = new TCLAP::ValueArg<float>(
             std::get<0>(it->first), std::get<1>(it->first), std::get<2>(it->first),
-            false,
-            -1,
-            "float");
+            false, -1, "float");
           m_CmdLine.add(arg);
-          m_Options.push_back(new wxExCmdLineContent{
-            CMD_LINE_FLOAT, 
-            it->second.second,
-            .m_tclap_u = {.m_val_f = arg}});
+          m_Options.push_back(new wxExCmdLineContent(it->second.second, arg));
           }
           break;
 
         case CMD_LINE_INT: {
           auto* arg = new TCLAP::ValueArg<int>(
             std::get<0>(it->first), std::get<1>(it->first), std::get<2>(it->first),
-            false,
-            -1,
-            "int");
+            false, -1, "int");
           m_CmdLine.add(arg);
-          m_Options.push_back(new wxExCmdLineContent{
-            CMD_LINE_INT, 
-            it->second.second,
-            .m_tclap_u = {.m_val_i = arg}});
+          m_Options.push_back(new wxExCmdLineContent(it->second.second, arg));
           }
           break;
         
         case CMD_LINE_STRING: {
           auto* arg = new TCLAP::ValueArg<std::string>(
             std::get<0>(it->first), std::get<1>(it->first), std::get<2>(it->first),
-            false,
-            std::string(),
-            "string");
+            false, std::string(), "string");
           m_CmdLine.add(arg);
-          m_Options.push_back(new wxExCmdLineContent{
-            CMD_LINE_STRING, 
-            it->second.second,
-            .m_tclap_u = {.m_val_s = arg}});
+          m_Options.push_back(new wxExCmdLineContent(it->second.second, arg));
           }
           break;
         

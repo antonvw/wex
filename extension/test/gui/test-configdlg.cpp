@@ -18,8 +18,7 @@ TEST_CASE("wxExConfigDialog")
 {
   wxExItem::UseConfig(true);
   
-  wxExItemDialog* dlg = new wxExItemDialog(GetFrame(), 
-    std::vector <wxExItem> {
+  wxExItemDialog* dlg = new wxExItemDialog(GetFrame(), {
       {"string1", "test1"},
       {"string2", "test2"},
       {"string3", "test3"},
@@ -35,8 +34,7 @@ TEST_CASE("wxExConfigDialog")
   wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxCANCEL));
   
   // Test config dialog without pages.
-  wxExItemDialog* dlg1 = new wxExItemDialog(GetFrame(), 
-    std::vector <wxExItem> {
+  wxExItemDialog* dlg1 = new wxExItemDialog(GetFrame(), {
       {"string1"},
       {"string2"}},
     "no pages", 0, 1, wxOK | wxCANCEL | wxAPPLY);

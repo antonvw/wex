@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -49,8 +49,8 @@ private:
   virtual wxExProcess* Process(const std::string& command) override;
   virtual wxExSTC* RestorePage(const std::string& key) override;
   virtual bool SaveCurrentPage(const std::string& key) override;
-  virtual void StatusBarClicked(const wxString& pane) override;
-  virtual void StatusBarClickedRight(const wxString& pane) override;
+  virtual void StatusBarClicked(const std::string& pane) override;
+  virtual void StatusBarClickedRight(const std::string& pane) override;
   virtual void SyncAll() override;
   virtual void SyncCloseAll(wxWindowID id) override;
   

@@ -2,7 +2,7 @@
 // Name:      addressrange.cpp
 // Purpose:   Implementation of class wxExAddressRange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -74,8 +74,7 @@ public:
 
         if (!m_Ex->Command(cmd))
         {
-          m_Ex->GetFrame()->ShowExMessage(
-            wxString::Format("%s failed", cmd.c_str()));
+          m_Ex->GetFrame()->ShowExMessage(cmd + " failed");
           return false;
         }
       }
@@ -305,7 +304,7 @@ bool wxExAddressRange::Copy(const wxExAddress& destination) const
   if (lines >= 2)
   {
     m_Ex->GetFrame()->ShowExMessage(
-      wxString::Format(_("%d lines copied"), lines - 1));
+      wxString::Format(_("%d lines copied"), lines - 1).ToStdString());
   }
 
   return true;
@@ -472,8 +471,8 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
         
     if (hits > 50 && infinite)
     {
-      m_Ex->GetFrame()->ShowExMessage(wxString::Format(
-        "possible infinite loop at %d", match));
+      m_Ex->GetFrame()->ShowExMessage(
+        "possible infinite loop at " + std::to_string(match));
       return false;
     }
     
@@ -496,10 +495,10 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
   {
     if (g.Commands())
       m_Ex->GetFrame()->ShowExMessage(
-        wxString::Format(_("Executed: %d commands"), hits));
+        wxString::Format(_("Executed: %d commands"), hits).ToStdString());
     else
       m_Ex->GetFrame()->ShowExMessage(
-        wxString::Format(_("Found: %d matches"), hits));
+        wxString::Format(_("Found: %d matches"), hits).ToStdString());
   }
   
   return true;
@@ -573,7 +572,7 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
   if (lines >= 2)
   {
     m_Ex->GetFrame()->ShowExMessage(
-      wxString::Format(_("%d lines moved"), lines - 1));
+      wxString::Format(_("%d lines moved"), lines - 1).ToStdString());
   }
 
   return true;
@@ -869,7 +868,7 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
   m_Ex->MarkerDelete('$');
   
   m_Ex->GetFrame()->ShowExMessage(wxString::Format(
-    _("Replaced: %d occurrences of: %s"), nr_replacements, pattern.c_str()));
+    _("Replaced: %d occurrences of: %s"), nr_replacements, pattern.c_str()).ToStdString());
 
   m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
   

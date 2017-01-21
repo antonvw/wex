@@ -2,7 +2,7 @@
 // Name:      listviewfile.cpp
 // Purpose:   Implementation of class wxExListViewFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -50,8 +50,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   , m_TextAddRecursive(_("Recursive"))
   , m_TextAddWhat(_("Add what"))
   , m_TextInFolder(_("In folder"))
-  , m_AddItemsDialog(new wxExItemDialog(this,
-      std::vector<wxExItem> {
+  , m_AddItemsDialog(new wxExItemDialog(this, {
         {m_TextAddWhat,ITEM_COMBOBOX, wxAny(), true},
         {m_TextInFolder,ITEM_COMBOBOX_DIR, wxAny(), true, NewControlId()},
         {std::set<wxString> {

@@ -92,10 +92,10 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   , m_OptionsBar(new wxExOptionsToolBar(this))
   , m_ToolBar(new wxExToolBar(this))
   , m_ToggledPanes({
-    {{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
-    {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
-    {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
-    {{"PROCESS", _("&Process")}, ID_VIEW_LOWEST + 4}})
+    {{"FINDBAR", _("&Findbar").ToStdString()}, ID_VIEW_LOWEST + 1},
+    {{"OPTIONSBAR", _("&Optionsbar").ToStdString()}, ID_VIEW_LOWEST + 2},
+    {{"TOOLBAR", _("&Toolbar").ToStdString()}, ID_VIEW_LOWEST + 3},
+    {{"PROCESS", _("&Process").ToStdString()}, ID_VIEW_LOWEST + 4}})
 {
   m_Manager.SetManagedWindow(this);
   AddToolBarPane(m_ToolBar, "TOOLBAR", _("Toolbar"));
@@ -168,7 +168,7 @@ wxExManagedFrame::~wxExManagedFrame()
 
 bool wxExManagedFrame::AddToolBarPane(
   wxWindow* window, 
-  const wxString& name,
+  const std::string& name,
   const wxString& caption)
 {
   wxAuiPaneInfo pane;
@@ -328,7 +328,7 @@ void wxExManagedFrame::PrintEx(wxExEx* ex, const std::string& text)
   ex->Print(text);
 }
 
-void wxExManagedFrame::ShowExMessage(const wxString& text)
+void wxExManagedFrame::ShowExMessage(const std::string& text)
 {
   if (GetStatusBar() != nullptr && GetStatusBar()->IsShown())
   {
@@ -341,7 +341,7 @@ void wxExManagedFrame::ShowExMessage(const wxString& text)
   }
 }
 
-bool wxExManagedFrame::ShowPane(const wxString& pane, bool show)
+bool wxExManagedFrame::ShowPane(const std::string& pane, bool show)
 {
   wxAuiPaneInfo& info = m_Manager.GetPane(pane);
 

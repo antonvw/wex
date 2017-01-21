@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016
+// Copyright: (c) 2017
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -45,28 +45,24 @@ public:
   
     m_Frame = new wxExTestManagedFrame(
       nullptr, wxID_ANY, wxTheApp->GetAppDisplayName());
-    m_Frame->Show();
-    
-    wxExProcess::PrepareOutput(m_Frame);
-    AddPane(m_Frame, wxExProcess::GetShell());
-    
-    std::vector<wxExStatusBarPane> panes;
-
-    panes.emplace_back(wxExStatusBarPane());
-    
-    for (int i = 0; i < 15; i++)
-    {
-      panes.emplace_back(wxExStatusBarPane(wxString::Format("Pane%d", i)));
-    }
-    
-    panes.emplace_back(wxExStatusBarPane("PaneInfo"));
-    panes.emplace_back(wxExStatusBarPane("PaneLexer"));
-    panes.emplace_back(wxExStatusBarPane("PaneFileType"));
-    panes.emplace_back(wxExStatusBarPane("LastPane"));
-
-    m_StatusBar = m_Frame->SetupStatusBar(panes);
-    
+    m_StatusBar = m_Frame->SetupStatusBar({
+      {},
+      {"Pane0"}, // the order of panes is tested
+      {"Pane1"},
+      {"Pane2"},
+      {"Pane3"},
+      {"Pane4"},
+      {"PaneInfo"},
+      {"PaneLexer"},
+      {"PaneFileType"},
+      {"LastPane"}});
     m_STC = new wxExSTC(m_Frame);
+
+    m_Frame->Show();
+
+    wxExProcess::PrepareOutput(m_Frame); // before adding pane
+    
+    AddPane(m_Frame, wxExProcess::GetShell());
     AddPane(m_Frame, m_STC);
     
     return true;

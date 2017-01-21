@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <wx/config.h>
 #include <wx/extension/vifsm.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
@@ -172,7 +173,9 @@ bool wxExViFSM::Transition(const std::string& command)
       }
       break;
   }
-  
+
+  ((wxExStatusBar *)m_vi->GetFrame()->GetStatusBar())->ShowField("PaneMode", 
+    !m_vi->ModeNormal() && wxConfigBase::Get()->ReadBool(_("Show mode"), false));
   m_vi->GetFrame()->StatusText(StateString(), "PaneMode");
 
   return true;

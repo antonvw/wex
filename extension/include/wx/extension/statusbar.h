@@ -2,11 +2,10 @@
 // Name:      statusbar.h
 // Purpose:   Declaration of wxExStatusBar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2014 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXSTATUSBAR_H
-#define _EXSTATUSBAR_H
+#pragma once
 
 #include <vector>
 #include <wx/statusbr.h> 
@@ -22,60 +21,68 @@ class WXDLLIMPEXP_BASE wxExStatusBarPane : public wxStatusBarPane
 {
 public:
   /// Default constructor.
-  /// This constructs the pane text field.
+  /// This constructs the PaneText field.
   wxExStatusBarPane(
+    /// width of the field (default, might be overridden in the config)
     int width = -3,
+    /// style (default, might be overridden in the config)
     int style = wxSB_NORMAL)
-    : wxStatusBarPane(style, width)
-    , m_HelpText()
-    , m_IsShown(true)
-    , m_Name()
-    {};
+    : wxStatusBarPane(style, width) 
+    , m_Name("PaneText") {};
   
   /// Constructor.
   wxExStatusBarPane(
-    /// The name of the pane.
-    /// The wxExtension lib uses PaneFileType, PaneInfo, PaneLexer, PaneMacro
+    /// name of the pane
+    /// wxExtension lib uses:
+    /// - PaneFileType
+    /// - PaneInfo
+    /// - PaneLexer
+    /// - PaneTheme
+    /// - PaneVCS
+    /// - PaneMacro
+    /// - PaneMode
     /// by setting up one of these panes,
     /// your panes will get controlled by the lib.
-    const wxString& name,
-    /// Width of the field
+    const std::string& name,
+    /// width of the field (default, might be overridden in the config)
     int width = 50,
-    /// The helptext shown as a tooltip.
+    /// helptext shown as a tooltip
     /// If you do no provide helptext, it is derived from the name, by using
     /// text after the first 'e' character (so after 'Pane').
-    const wxString& helptext = wxEmptyString,
-    /// The style.
+    const std::string& helptext = std::string(),
+    /// style (default, might be overridden in the config)
+    /// - wxSB_NORMAL (0)
+    /// - wxSB_FLAT (1)
+    /// - wxSB_RAISED (2)
+    /// - wxSB_SUNKEN (3)
     int style = wxSB_NORMAL)
     : wxStatusBarPane(style, width)
-    , m_HelpText(helptext.empty() ? name.AfterFirst('e'): helptext)
-    , m_IsShown(true)
-    , m_Name(name)
-    {};
+    , m_HelpText(helptext.empty() ? name.substr(name.find('e') + 1): helptext)
+    , m_Name(name) {};
     
   /// Returns statusbar pane help text.
-  const wxString& GetHelpText() const {return m_HelpText;};
+  const auto& GetHelpText() const {return m_HelpText;};
   
   /// Returns hidden text.
-  const wxString& GetHiddenText() const {return m_HiddenText;};
+  const auto& GetHiddenText() const {return m_HiddenText;};
   
   /// Returns statusbar pane name.
-  const wxString& GetName() const {return m_Name;};
+  const auto& GetName() const {return m_Name;};
   
   /// Returns whether this pane is shown.
   bool IsShown() const {return m_IsShown;};
   
   /// Sets hidden text.
-  void SetHiddenText(const wxString& text) {m_HiddenText = text;};
+  void SetHiddenText(const std::string& text) {m_HiddenText = text;};
   
   /// Sets whether this pane is shown.
   /// Resets the hidden text if show is true.
   void Show(bool show);
 private:
-  wxString m_HelpText;
-  wxString m_HiddenText;
-  wxString m_Name;
-  bool m_IsShown;
+  std::string m_HelpText;
+  std::string m_HiddenText;
+  std::string m_Name;
+  bool m_IsShown = true;
 };
 
 class wxExFrame;
@@ -86,18 +93,31 @@ class WXDLLIMPEXP_BASE wxExStatusBar : public wxStatusBar
 {
 public:
   /// Constructor.
-  wxExStatusBar(wxExFrame* parent,
+  wxExStatusBar(
+    /// parent
+    wxExFrame* parent,
+    /// id of window
     wxWindowID id = wxID_ANY,
+    /// style
+    /// - wxSTB_DEFAULT_STYLE (wxSTB_SIZEGRIP|wxSTB_ELLIPSIZE_END|wxSTB_SHOW_TIPS|wxFULL_REPAINT_ON_RESIZE)
+    /// - wxSTB_ELLIPSIZE_END
+    /// - wxSTB_ELLIPSIZE_MIDDLE
+    /// - wxSTB_ELLIPSIZE_START
+    /// - wxSTB_SHOW_TIPS
+    /// - wxSTB_SIZEGRIP
     long style = wxST_SIZEGRIP,
     const wxString& name = wxStatusBarNameStr);
     
   /// Destructor.
  ~wxExStatusBar();  
+
+  /// Returns the wxExStatusBarPane representing the n-th field. 
+  const wxExStatusBarPane& GetField(int n) const;
  
   /// Returns the status text on specified field.
   /// Returns empty string if field does not exist
   /// or is not shown.
-  const wxString GetStatusText(const wxString& field) const;
+  const std::string GetStatusText(const std::string& field) const;
 
   /// Sets the fields.
   void SetFields(const std::vector<wxExStatusBarPane>& fields);
@@ -106,13 +126,13 @@ public:
   /// Returns false if field does not exist or is not shown.
   bool SetStatusText(
     /// text
-    const wxString& text, 
-    /// field, default field pane 0,
-    const wxString& field = wxEmptyString);
+    const std::string& text, 
+    /// field, default field text pane,
+    const std::string& field = std::string());
   
   /// Shows or hides the field.
   /// Returns true if field visibility actually changed.
-  bool ShowField(const wxString& field, bool show);
+  bool ShowField(const std::string& field, bool show);
 protected:
   /// React on some mouse events line button down, double click and
   /// moving over.
@@ -121,7 +141,7 @@ private:
   /// Returns true if the field exists.
   /// The visible_pane_no is FIELD_NOT_SHOWN if the field is not shown.
   bool GetFieldNo(
-    const wxString& field, 
+    const std::string& field, 
     int& shown_pane_no,
     int& pane_no) const;
   void Handle(wxMouseEvent& event, const wxExStatusBarPane& wxExStatusBarPane);
@@ -131,4 +151,3 @@ private:
 };
 #endif // wxUSE_STATUSBAR
 #endif // wxUSE_GUI
-#endif
