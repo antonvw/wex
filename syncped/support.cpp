@@ -36,7 +36,7 @@ DecoratedFrame::DecoratedFrame(App* app)
       4)                             // maxProjects
   , m_App(app)
 {
-  SetIcon(wxICON(app));
+  SetIcons(wxICON(app));
   
   wxExProcess::PrepareOutput(this);
 

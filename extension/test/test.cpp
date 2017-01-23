@@ -159,7 +159,7 @@ bool wxExUIAction(wxWindow* win, const std::string& action, const std::string& p
   }
   
   wxTimer* timer = new wxTimer(wxTheApp);
-  timer->StartOnce(1000);
+  timer->StartOnce(100);
   wxTheApp->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     wxUIActionSimulator sim;
     sim.Char(WXK_RETURN);});
@@ -204,7 +204,6 @@ int wxExTestApp::OnRun()
     try
     {
       const int res = m_Context->run();
-      wxExUIAction(GetTopWindow(), "key", "char");
       const long auto_exit(wxConfigBase::Get()->ReadLong("auto-exit", 1));
       wxExProcess::KillAll();
       if (auto_exit)
