@@ -131,12 +131,12 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
       {
         wxExDirTool dir(tool, 
           item.GetFileName().GetFullPath(), 
-          item.GetFileSpec().ToStdString());
+          item.GetFileSpec());
         dir.FindFiles();
         stats += dir.GetStatistics().GetElements();
       }
     }
-    wxLogStatus(tool.Info(&stats));
+    wxExLogStatus(tool.Info(&stats));
 #ifdef __WXMSW__    
     });
     t.detach();

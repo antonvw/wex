@@ -2,7 +2,7 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of class wxExStreamToListView
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype> // for isspace
@@ -26,17 +26,13 @@ wxExStreamToListView::wxExStreamToListView(
   const wxExFileName& filename,
   const wxExTool& tool)
   : wxExStream(filename, tool)
-  , m_LastSyntaxType(SYNTAX_NONE)
-  , m_SyntaxType(SYNTAX_NONE)
-  , m_IsCommentStatement(false)
-  , m_IsString(false)
 {
 }
 
 wxExStreamToListView::wxExCommentType wxExStreamToListView::CheckCommentSyntax(
-  const wxString& syntax_begin,
-  const wxString& syntax_end,
-  const wxString& text) const
+  const std::string& syntax_begin,
+  const std::string& syntax_end,
+  const std::string& text) const
 {
   if (syntax_begin.empty() && syntax_end.empty())
   {
@@ -56,8 +52,8 @@ wxExStreamToListView::wxExCommentType wxExStreamToListView::CheckCommentSyntax(
     }
   }
 
-  if ( syntax_begin.StartsWith(text) || 
-      (!syntax_end.empty() && syntax_end.StartsWith(text)))
+  if (  syntax_begin.find(text) == 0 || 
+      (!syntax_end.empty() && syntax_end.find(text) == 0))
   {
     return COMMENT_INCOMPLETE;
   }
@@ -66,7 +62,7 @@ wxExStreamToListView::wxExCommentType wxExStreamToListView::CheckCommentSyntax(
 }
 
 wxExStreamToListView::wxExCommentType wxExStreamToListView::CheckForComment(
-  const wxString& text)
+  const std::string& text)
 {
   if (GetFileName().GetLexer().GetCommentBegin2().empty())
   {
@@ -132,6 +128,18 @@ void wxExStreamToListView::CommentStatementStart()
   m_IsCommentStatement = true;
 }
 
+std::string wxExStreamToListView::Context(
+  const std::string& line, int pos) const
+{
+  if (pos == -1 || m_ContextSize <= 0) return line;
+
+  return 
+    (m_ContextSize > pos ? std::string(m_ContextSize - pos, ' '): std::string()) +
+    line.substr(
+      m_ContextSize < pos ? pos - m_ContextSize: 0, 
+      wxExFindReplaceData::Get()->GetFindString().size() + 2 * m_ContextSize);
+}
+
 bool wxExStreamToListView::Process(std::string& line, size_t line_no)
 {
   if (GetTool().GetId() != ID_TOOL_REPORT_KEYWORD)
@@ -171,7 +179,7 @@ bool wxExStreamToListView::Process(std::string& line, size_t line_no)
         GetFileName().GetLexer().GetCommentBegin().size();
       const size_t check_size = (i > max_check_size ? max_check_size: i + 1);
 
-      const wxString text = line.substr(i + 1 - check_size, check_size);
+      const std::string text = line.substr(i + 1 - check_size, check_size);
 
       switch (CheckForComment(text))
       {
@@ -227,7 +235,7 @@ bool wxExStreamToListView::Process(std::string& line, size_t line_no)
     }
   }
 
-  if (CheckForComment(wxEmptyString) == COMMENT_END)
+  if (CheckForComment(std::string()) == COMMENT_END)
   {
     CommentStatementEnd();
   }
@@ -237,6 +245,8 @@ bool wxExStreamToListView::Process(std::string& line, size_t line_no)
 
 bool wxExStreamToListView::ProcessBegin()
 {
+  m_ContextSize = wxConfigBase::Get()->ReadLong(_("Context size"), 10);
+
   if (GetTool().GetId() != ID_TOOL_REPORT_KEYWORD)
   {
     return wxExStream::ProcessBegin();
@@ -301,26 +311,36 @@ void wxExStreamToListView::ProcessEnd()
   }
 }
 
-void wxExStreamToListView::ProcessMatch(const std::string& line, size_t line_no)
+void wxExStreamToListView::ProcessMatch(
+  const std::string& line, size_t line_no, int pos)
 {
   wxASSERT(m_Report != nullptr);
 
   wxExListItem item(m_Report, GetFileName());
   item.Insert();
 
-  item.SetItem(_("Line No"), std::to_string((int)line_no + 1));
+  item.SetItem(_("Line No").ToStdString(), std::to_string((int)line_no + 1));
 
   switch (GetTool().GetId())
   {
-  case ID_TOOL_REPORT_REPLACE:
-    item.SetItem(_("Replaced"), wxExFindReplaceData::Get()->GetReplaceString());
+    case ID_TOOL_REPORT_REPLACE:
+      item.SetItem(
+        _("Replaced").ToStdString(), 
+        wxExFindReplaceData::Get()->GetReplaceString());
     // fall through
-  case ID_TOOL_REPORT_FIND:
-    item.SetItem(_("Line"), wxString(line).Strip(wxString::both));
-    item.SetItem(_("Match"), wxExFindReplaceData::Get()->GetFindString());
-  break;
+    case ID_TOOL_REPORT_FIND:
+      item.SetItem(
+        _("Line").ToStdString(), 
+        Context(line, pos));
+      item.SetItem(
+        _("Before").ToStdString(), 
+        line.substr(0, pos));
+      item.SetItem(
+        _("Match").ToStdString(), 
+        wxExFindReplaceData::Get()->GetFindString());
+    break;
 
-  default: wxFAIL;
+    default: wxFAIL;
   }
 }
 
@@ -333,16 +353,13 @@ bool wxExStreamToListView::SetupTool(
 
   if (report == nullptr)
   {
-    if (tool.IsReportType())
+    if (tool.IsReportType() && tool.GetId() != ID_TOOL_REPORT_KEYWORD)
     {
-      if (tool.GetId() != ID_TOOL_REPORT_KEYWORD)
+      m_Report = m_Frame->Activate(wxExListViewWithFrame::GetTypeTool(tool));
+
+      if (m_Report == nullptr)
       {
-        m_Report = m_Frame->Activate(wxExListViewWithFrame::GetTypeTool(tool));
-  
-        if (m_Report == nullptr)
-        {
-          return false;
-        }
+        return false;
       }
     }
   }

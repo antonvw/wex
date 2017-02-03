@@ -53,9 +53,14 @@ protected:
   virtual void ProcessEnd() {;};
   
   /// Override to do action for a match.
-  /// The line contains matching line, data is 
-  /// available in find replace data.
-  virtual void ProcessMatch(const std::string& line, size_t line_no) {;};
+  /// Data is available in find replace data.
+  virtual void ProcessMatch(
+    /// matching line
+    const std::string& line, 
+    /// line number containing match
+    size_t line_no,
+    /// pos on line where match starts, -1 not known
+    int pos) {;};
 protected:
   /// Increments the actions completed.
   void IncActionsCompleted(int inc_value = 1) {

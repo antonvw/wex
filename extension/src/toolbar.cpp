@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wxExToolBar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -374,7 +374,7 @@ void wxExFindTextCtrl::Find(bool find_next, bool restore_position)
   }
   else if (lv != nullptr)
   {
-    lv->FindNext(GetValue(), find_next);
+    lv->FindNext(GetValue().ToStdString(), find_next);
   }
 }
 #endif // wxUSE_GUI

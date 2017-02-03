@@ -2,7 +2,7 @@
 // Name:      tool.cpp
 // Purpose:   Implementation of wxExTool class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -19,13 +19,14 @@ wxExTool::wxExTool(int type)
 {
   if (m_ToolInfo.empty())
   {
-    AddInfo(ID_TOOL_REPORT_FIND, _("Found %d matches in"));
-    AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %d matches in"));
-    AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %d keywords in"), _("Report &Keyword"));
+    AddInfo(ID_TOOL_REPORT_FIND, _("Found %d matches in").ToStdString());
+    AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %d matches in").ToStdString());
+    AddInfo(ID_TOOL_REPORT_KEYWORD, 
+      _("Reported %d keywords in").ToStdString(), _("Report &Keyword").ToStdString());
   }
 }
 
-const wxString wxExTool::Info() const
+const std::string wxExTool::Info() const
 {
   const auto& it = m_ToolInfo.find(m_Id);
 
@@ -34,10 +35,10 @@ const wxString wxExTool::Info() const
     return it->second.GetInfo();
   }
 
-  return wxEmptyString;
+  return std::string();
 }
 
-const wxString wxExTool::Info(const wxExStatistics<int>* stat) const
+const std::string wxExTool::Info(const wxExStatistics<int>* stat) const
 {
   wxString logtext(Info());
 
@@ -48,5 +49,5 @@ const wxString wxExTool::Info(const wxExStatistics<int>* stat) const
 
   logtext << " " << stat->Get(_("Files").ToStdString()) << " " << _("file(s)");
 
-  return logtext;
+  return logtext.ToStdString();
 }

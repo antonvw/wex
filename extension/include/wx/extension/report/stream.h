@@ -2,7 +2,7 @@
 // Name:      stream.h
 // Purpose:   Declaration of class 'wxExStreamToListView'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -50,39 +50,42 @@ private:
   };
 
   wxExCommentType CheckCommentSyntax(
-    const wxString& syntax_begin,
-    const wxString& syntax_end,
-    const wxString& text) const;
+    const std::string& syntax_begin,
+    const std::string& syntax_end,
+    const std::string& text) const;
 
   /// Returns the actual begin of comment, depending on the syntax type.
-  const wxString CommentBegin() const {
+  const std::string CommentBegin() const {
     return (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE) ?
       GetFileName().GetLexer().GetCommentBegin() :
       GetFileName().GetLexer().GetCommentBegin2();};
 
   /// Returns the last end of comment detected, depending on the last syntax type.
-  const wxString CommentEnd() const {
+  const std::string CommentEnd() const {
     return (m_LastSyntaxType == SYNTAX_NONE || m_LastSyntaxType == SYNTAX_ONE) ?
       GetFileName().GetLexer().GetCommentEnd() :
       GetFileName().GetLexer().GetCommentEnd2();};
 
   /// Check whether specified text result in a comment.
-  wxExCommentType CheckForComment(const wxString& text);
+  wxExCommentType CheckForComment(const std::string& text);
   void CommentStatementEnd();
   void CommentStatementStart();
+  std::string Context(const std::string& line, int pos) const;
   
   // Implement interface from wxExStream.
   virtual bool Process(std::string& line, size_t line_no) override;
   virtual bool ProcessBegin() override;
   virtual void ProcessEnd() override;
-  virtual void ProcessMatch(const std::string& line, size_t line_no) override;
+  virtual void ProcessMatch(const std::string& line, size_t line_no, int pos) override;
   
   static wxExListView* m_Report;
   static wxExFrameWithHistory* m_Frame;
 
-  bool m_IsCommentStatement;
-  bool m_IsString;
+  bool m_IsCommentStatement = false;
+  bool m_IsString = false;
+
+  int m_ContextSize;
   
-  wxExSyntaxType m_LastSyntaxType;
-  wxExSyntaxType m_SyntaxType;
+  wxExSyntaxType m_LastSyntaxType = SYNTAX_NONE;
+  wxExSyntaxType m_SyntaxType = SYNTAX_NONE;
 };

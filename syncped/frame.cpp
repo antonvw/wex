@@ -582,7 +582,7 @@ wxExListView* Frame::Activate(
   {
     ShowPane("OUTPUT");
 
-    const std::string name = wxExListView::GetTypeDescription(type).ToStdString() +
+    const std::string name = wxExListView::GetTypeDescription(type) +
       (lexer != nullptr ?  " " + lexer->GetDisplayLexer(): std::string());
 
     wxExListViewWithFrame* list = 
@@ -634,6 +634,7 @@ void Frame::AddPaneProjects()
     .MinSize(150, 150)
     .Caption(_("Projects")));
 }
+
 
 bool Frame::ExecExCommand(const std::string& command, wxExSTC* & stc)
 {
@@ -841,6 +842,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxExSTC* stc = new wxExSTC(m_Editors, editor->GetFileName());
       editor->Sync(false);
       stc->Sync(false);
+      stc->GetVi().Copy(&editor->GetVi());
 
       wxBitmap bitmap(wxNullBitmap);
       
@@ -1312,6 +1314,7 @@ wxExSTC* Frame::RestorePage(const std::string& key)
   if (!m_SavedPage.empty() && IsOpen(m_SavedPage))
   {
     m_Editors->ChangeSelection(m_SavedPage);
+    return (wxExSTC *)m_Editors->GetPageByKey(m_SavedPage);
   }
   
   return nullptr;

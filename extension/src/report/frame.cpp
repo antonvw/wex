@@ -30,9 +30,6 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   size_t maxProjects,
   int style)
   : wxExManagedFrame(parent, id, title, maxFiles, style)
-  , m_TextInFiles(_("In files"))
-  , m_TextInFolder(_("In folder"))
-  , m_TextRecursive(_("Recursive"))
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST, "RecentProject")
   , m_Info({
       wxExFindReplaceData::Get()->GetTextMatchWholeWord(),
@@ -161,7 +158,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 
     if (dir.FindFiles() >= 0)
     {
-      wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+      wxExLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
     }
     
     Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
@@ -230,7 +227,7 @@ bool wxExFrameWithHistory::FindInFiles(
       }
     }
     
-    wxLogStatus(tool.Info(&stats));
+    wxExLogStatus(tool.Info(&stats));
     
 #ifdef __WXMSW__
     });
@@ -348,7 +345,7 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
     wxExDirTool dir(tool, arg1.ToStdString(), arg2.ToStdString(), arg3);
     dir.FindFiles();
 
-    wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+    wxExLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
     Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
   
 #ifdef __WXMSW__

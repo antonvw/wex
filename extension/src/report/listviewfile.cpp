@@ -44,12 +44,6 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
       validator, 
       name)
   , wxExFile(false) // do not open files in FileLoad and Save
-  , m_ContentsChanged(false)
-  , m_TextAddFiles(_("Add files"))
-  , m_TextAddFolders(_("Add folders"))
-  , m_TextAddRecursive(_("Recursive"))
-  , m_TextAddWhat(_("Add what"))
-  , m_TextInFolder(_("In folder"))
   , m_AddItemsDialog(new wxExItemDialog(this, {
         {m_TextAddWhat,ITEM_COMBOBOX, wxAny(), true},
         {m_TextInFolder,ITEM_COMBOBOX_DIR, wxAny(), true, NewControlId()},
@@ -244,7 +238,8 @@ void wxExListViewFile::DoFileSave(bool save_as)
 
     if (!fn.FileExists() && fn.DirExists())
     {
-      node.append_attribute("extensions") = GetItemText(i, _("Type")).ToStdString().c_str();
+      node.append_attribute("extensions") = 
+        GetItemText(i, _("Type").ToStdString()).c_str();
     }
   }
   

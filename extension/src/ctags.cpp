@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wxExCTags
 //            http://ctags.sourceforge.net/ctags.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -30,7 +30,7 @@ public:
     // ctags mixes regex with non regex....
     std::replace(m_Pattern.begin(), m_Pattern.end(), '*', '.');};
   const std::string GetName() const {
-    return wxExFileName(m_File).GetName();};
+    return wxExFileName(m_File).GetFullName();};
   void OpenFile(wxExFrame* frame) const
   {
     frame->OpenFile(wxExFileName(m_File), 
@@ -64,14 +64,13 @@ wxExCTags::~wxExCTags()
 
 bool wxExCTags::Find(const std::string& name) const
 {
+  if (m_File == nullptr) return false;
+
   tagEntry entry;
   
   if (tagsFind(m_File, &entry, name.c_str(), TAG_FULLMATCH) == TagFailure)
   {
-    if (m_File != nullptr)
-    {
-      wxLogStatus("tag not found: " + wxString(name));
-    }
+    wxLogStatus("tag not found: " + wxString(name));
     return false;
   }
   

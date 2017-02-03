@@ -2,7 +2,7 @@
 // Name:      listitem.cpp
 // Purpose:   Implementation of class 'wxExListItem'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -21,13 +21,13 @@ wxExListItem::wxExListItem(
   long itemnumber)
   : m_ListView(lv)
   , m_FileName(
-    (!lv->GetItemText(itemnumber, _("File Name")).empty() &&
-     !lv->GetItemText(itemnumber, _("In Folder")).empty() ?
-        wxFileName(
-          lv->GetItemText(itemnumber, _("In Folder")),
-          lv->GetItemText(itemnumber, _("File Name"))) : 
-        lv->GetItemText(itemnumber)))
-  , m_FileSpec(lv->GetItemText(itemnumber, _("Type")))
+    (!lv->GetItemText(itemnumber, _("File Name").ToStdString()).empty() &&
+     !lv->GetItemText(itemnumber, _("In Folder").ToStdString()).empty() ?
+        wxExFileName(
+          lv->GetItemText(itemnumber, _("In Folder").ToStdString()),
+          lv->GetItemText(itemnumber, _("File Name").ToStdString())) : 
+        wxExFileName(lv->GetItemText(itemnumber))))
+  , m_FileSpec(lv->GetItemText(itemnumber, _("Type").ToStdString()))
 {
   SetId(itemnumber);
   m_IsReadOnly = (m_ListView->GetItemData(GetId()) > 0);
@@ -36,7 +36,7 @@ wxExListItem::wxExListItem(
 wxExListItem::wxExListItem(
   wxExListView* listview,
   const wxExFileName& filename,
-  const wxString& filespec)
+  const std::string& filespec)
   : m_ListView(listview)
   , m_FileName(filename)
   , m_FileSpec(filespec)
@@ -50,11 +50,11 @@ void wxExListItem::Insert(long index)
   SetId(index == -1 ? m_ListView->GetItemCount(): index);
   
   int col = 0;
-  wxString filename;
+  std::string filename;
   
   if (m_ListView->InReportView())
   {
-    col = m_ListView->FindColumn(_("File Name"));
+    col = m_ListView->FindColumn(_("File Name").ToStdString());
     wxASSERT(col >= 0);
     filename = (
       m_FileName.FileExists() || m_FileName.DirExists() ?
@@ -63,7 +63,6 @@ void wxExListItem::Insert(long index)
   }
   else
   {
-    col = 0;
     filename = m_FileName.GetFullPath();
   }
 
@@ -87,7 +86,7 @@ void wxExListItem::Insert(long index)
   }
 }
 
-void wxExListItem::SetItem(const wxString& col_name, const wxString& text) 
+void wxExListItem::SetItem(const std::string& col_name, const std::string& text) 
 {
   const int col = m_ListView->FindColumn(col_name);
   
@@ -124,17 +123,15 @@ void wxExListItem::Update()
      m_ListView->InReportView() &&
      m_FileName.GetStat().IsOk())
   {
-    const unsigned long size = m_FileName.GetStat().st_size; // to prevent warning
-    
-    SetItem(_("Type"),
+    SetItem(_("Type").ToStdString(),
       (wxFileName::DirExists(m_FileName.GetFullPath()) ? // IsDir not ok
          m_FileSpec:
          m_FileName.GetExtension()));
-    SetItem(_("In Folder"), m_FileName.GetPath());
-    SetItem(_("Size"),
+    SetItem(_("In Folder").ToStdString(), m_FileName.GetPath());
+    SetItem(_("Size").ToStdString(),
       (!wxFileName::DirExists(m_FileName.GetFullPath()) ? // IsDir not ok
-         (wxString::Format("%lu", size)):
-          wxString()));
-    SetItem(_("Modified"), m_FileName.GetStat().GetModificationTime());
+         (std::to_string(m_FileName.GetStat().st_size)):
+          std::string()));
+    SetItem(_("Modified").ToStdString(), m_FileName.GetStat().GetModificationTime());
   }
 }

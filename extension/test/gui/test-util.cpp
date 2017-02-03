@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -221,6 +221,7 @@ TEST_CASE("wxEx")
   SUBCASE("wxExLogStatus")
   {
     wxExLogStatus( GetTestFile());
+    wxExLogStatus( std::string("hello world") );
   }
 
 #ifdef __UNIX__

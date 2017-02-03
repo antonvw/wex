@@ -28,6 +28,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
 {
   bool match = false;
   int count = 1;
+  int pos = -1;
 
   if (m_FRD->UseRegEx())
   {
@@ -42,7 +43,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
   {
     if (m_Tool.GetId() == ID_TOOL_REPORT_FIND)
     {
-      const std::string::iterator it = (!m_FRD->MatchCase() ?
+      const auto it = (!m_FRD->MatchCase() ?
         std::search(line.begin(), line.end(), m_FindString.begin(), m_FindString.end(),
           [](char ch1, char ch2) {return std::toupper(ch1) == ch2;}):
         std::search(line.begin(), line.end(), m_FindString.begin(), m_FindString.end()));
@@ -50,6 +51,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
       if (it != line.end())
       {
         match = true;
+        pos = it - line.begin();
 
         if (m_FRD->MatchWord() && 
             ((it != line.begin() && IsWordCharacter(*std::prev(it))) ||
@@ -73,7 +75,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
   if (match)
   {
     IncActionsCompleted(count);
-    ProcessMatch(line, line_no);
+    ProcessMatch(line, line_no, pos);
     
     if (m_Stats.Get(_("Actions Completed").ToStdString()) - m_Prev > 250)
     {

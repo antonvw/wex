@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of wxExListView and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -48,7 +48,7 @@ public:
   /// Constructor.
   wxExColumn(
     /// name of the column
-    const wxString& name,
+    const std::string& name,
     /// type of the column
     wxExColumnType type = COL_INT,
     /// width of the column, default width (0) uses a width 
@@ -126,10 +126,11 @@ public:
   void ConfigGet(bool init = false);
 
   /// If column is not found, -1 is returned,
-  int FindColumn(const wxString& name) const;
+  int FindColumn(const std::string& name) const {return Column(name).GetColumn();};
+
 
   /// Finds next.
-  bool FindNext(const wxString& text, bool find_next = true);
+  bool FindNext(const std::string& text, bool find_next = true);
 
   /// Returns image type.
   auto GetImageType() const {return m_ImageType;};
@@ -137,9 +138,9 @@ public:
   /// Returns the item text using item number and column name.
   /// If you do not specify a column, the item label is returned
   /// (this is also valid in non report mode).
-  const wxString GetItemText(
+  const std::string GetItemText(
     long item_number,
-    const wxString& col_name = wxEmptyString) const;
+    const std::string& col_name = std::string()) const;
     
   /// Returns current sorted column no.
   int GetSortedColumnNo() const {return m_SortedColumnNo;};
@@ -148,11 +149,11 @@ public:
   auto GetType() const {return m_Type;};
 
   /// Returns the list type as a string.
-  const wxString GetTypeDescription() const {
+  const std::string GetTypeDescription() const {
     return GetTypeDescription(m_Type);};
 
   /// Returns the list type as a string for specified type.
-  static const wxString GetTypeDescription(wxExListType type);
+  static const std::string GetTypeDescription(wxExListType type);
 
   /// Inserts new item swith column values from text.
   /// Items are separated by newlines, columns by a field separator.
@@ -181,7 +182,7 @@ public:
   /// Sorts on a column specified by column name.
   /// Returns true if column was sorted.
   bool SortColumn(
-    const wxString& column_name, 
+    const std::string& column_name, 
     wxExSortType sort_method = SORT_TOGGLE) {  
       return SortColumn(FindColumn(column_name), sort_method);};
       
@@ -213,8 +214,8 @@ protected:
   const auto& GetFieldSeparator() const {return m_FieldSeparator;};
 private:
   void AddColumns(const wxExLexer* lexer);
-  const wxString BuildPage();
-  const wxExColumn Column(const wxString& name) const;
+  const std::string BuildPage();
+  wxExColumn Column(const std::string& name) const;
   void CopySelectedItemsToClipboard();
   void EditDelete();
     

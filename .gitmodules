@@ -4,3 +4,6 @@
 [submodule "extension/test/doctest"]
 	path = extension/test/doctest
 	url = https://github.com/onqtam/doctest.git
+[submodule "extension/pugixml"]
+	path = extension/pugixml
+	url = https://github.com/zeux/pugixml.git

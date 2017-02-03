@@ -1,7 +1,9 @@
 project(wxExtensionLibrary)
 
 include_directories(include)
+include_directories(pugixml/src)
 include_directories(tclap/include)
+
 add_subdirectory(src)
 add_subdirectory(src/report)
 add_subdirectory(sample)

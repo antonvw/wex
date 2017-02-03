@@ -37,6 +37,7 @@ public:
   ListViewDefaults() 
   : wxExConfigDefaults(std::vector<std::tuple<wxString, wxExItemType, wxAny>> {
     std::make_tuple(_("Background colour"), ITEM_COLOURPICKERWIDGET, *wxWHITE),
+    std::make_tuple(_("Context size"), ITEM_SPINCTRL, 10),
     std::make_tuple(_("Foreground colour"), ITEM_COLOURPICKERWIDGET, *wxBLACK),
     std::make_tuple(_("List font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
     std::make_tuple(_("List tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
@@ -99,7 +100,7 @@ wxExColumn::wxExColumn()
 }
 
 wxExColumn::wxExColumn(
-  const wxString& name,
+  const std::string& name,
   wxExColumn::wxExColumnType type,
   int width)
   : m_Type(type)
@@ -114,7 +115,7 @@ wxExColumn::wxExColumn(
       break;
       
     case wxExColumn::COL_INT: 
-      align = wxLIST_FORMAT_RIGHT; 
+      align = wxLIST_FORMAT_RIGHT;
       if (width == 0) width = 60; 
       break;
       
@@ -203,7 +204,8 @@ wxExListView::wxExListView(wxWindow* parent,
         wxIMAGE_LIST_SMALL);
       break;
     case IMAGE_FILE_ICON:
-      SetImageList(wxTheFileIconsTable->GetSmallImageList(), wxIMAGE_LIST_SMALL);
+      SetImageList(
+        wxTheFileIconsTable->GetSmallImageList(), wxIMAGE_LIST_SMALL);
       break;
     default:
       wxFAIL;
@@ -241,7 +243,7 @@ wxExListView::wxExListView(wxWindow* parent,
     
         if ( item.GetFileName().FileExists() &&
             (item.GetFileName().GetStat().GetModificationTime() != 
-             GetItemText(m_ItemNumber, _("Modified")) ||
+             GetItemText(m_ItemNumber, _("Modified").ToStdString()) ||
              item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
             )
         {
@@ -262,9 +264,9 @@ wxExListView::wxExListView(wxWindow* parent,
           {
             if (
               wxConfigBase::Get()->ReadBool("List/SortSync", true) &&
-              GetSortedColumnNo() == FindColumn(_("Modified")))
+              GetSortedColumnNo() == FindColumn(_("Modified").ToStdString()))
             {
-              SortColumn(_("Modified"), SORT_KEEP);
+              SortColumn(_("Modified").ToStdString(), SORT_KEEP);
             }
           }
     
@@ -305,7 +307,7 @@ wxExListView::wxExListView(wxWindow* parent,
       }
       else
       {
-        wxLogStatus(GetItemText(GetFirstSelected()));
+        wxExLogStatus(GetItemText(GetFirstSelected()));
       }
     }
     wxExFrame::UpdateStatusBar(this);});
@@ -435,19 +437,19 @@ void wxExListView::AddColumns(const wxExLexer* lexer)
 {
   const int col_line_width = 250;
 
-  AppendColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
+  AppendColumn(wxExColumn(_("File Name").ToStdString(), wxExColumn::COL_STRING));
 
   switch (m_Type)
   {
     case LIST_FIND:
     case LIST_REPLACE:
-      AppendColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
-      AppendColumn(wxExColumn(_("Match"), wxExColumn::COL_STRING));
-      AppendColumn(wxExColumn(_("Line No")));
+      AppendColumn(wxExColumn(_("Line").ToStdString(), wxExColumn::COL_STRING, col_line_width));
+      AppendColumn(wxExColumn(_("Match").ToStdString(), wxExColumn::COL_STRING));
+      AppendColumn(wxExColumn(_("Line No").ToStdString()));
       
       if (m_Type == LIST_REPLACE)
       {
-        AppendColumn(wxExColumn(_("Replaced")));
+        AppendColumn(wxExColumn(_("Replaced").ToStdString()));
       }
     break;
     case LIST_KEYWORD:
@@ -456,15 +458,15 @@ void wxExListView::AddColumns(const wxExLexer* lexer)
         AppendColumn(wxExColumn(it));
       }
 
-      AppendColumn(wxExColumn(_("Keywords")));
+      AppendColumn(wxExColumn(_("Keywords").ToStdString()));
     break;
     default: break; // to prevent warnings
   }
 
-  AppendColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
-  AppendColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
-  AppendColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
-  AppendColumn(wxExColumn(_("Size")));
+  AppendColumn(wxExColumn(_("Modified").ToStdString(), wxExColumn::COL_DATE));
+  AppendColumn(wxExColumn(_("In Folder").ToStdString(), wxExColumn::COL_STRING, 175));
+  AppendColumn(wxExColumn(_("Type").ToStdString(), wxExColumn::COL_STRING));
+  AppendColumn(wxExColumn(_("Size").ToStdString()));
 }
 
 long wxExListView::AppendColumn(const wxExColumn& col)
@@ -487,7 +489,7 @@ long wxExListView::AppendColumn(const wxExColumn& col)
   return index;
 }
 
-const wxString wxExListView::BuildPage()
+const std::string wxExListView::BuildPage()
 {
   wxString text;
   text << "<TABLE "
@@ -515,7 +517,7 @@ const wxString wxExListView::BuildPage()
 
   text << "</TABLE>\n";
 
-  return text;
+  return text.ToStdString();
 }
 
 void wxExListView::BuildPopupMenu(wxExMenu& menu)
@@ -554,9 +556,9 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-const wxExColumn wxExListView::Column(const wxString& name) const
+wxExColumn wxExListView::Column(const std::string& name) const
 {
-  for (const auto& it : m_Columns)
+  for (auto& it : m_Columns)
   {
     if (it.GetText() == name)
     {
@@ -585,6 +587,7 @@ int wxExListView::ConfigDialog(
            {SORT_ASCENDING, _("Sort ascending")},
            {SORT_DESCENDING, _("Sort descending")},
            {SORT_TOGGLE, _("Sort toggle")}}},
+         {_("Context size"), 0, 80},
          {_("Rulers"),  {
            {wxLC_HRULES, _("Horizontal rulers")},
            {wxLC_VRULES, _("Vertical rulers")}}, false}}},
@@ -674,12 +677,7 @@ void wxExListView::EditDelete()
   ItemsUpdate();
 }
   
-int wxExListView::FindColumn(const wxString& name) const
-{
-  return Column(name).GetColumn();
-}
-
-bool wxExListView::FindNext(const wxString& text, bool find_next)
+bool wxExListView::FindNext(const std::string& text, bool find_next)
 {
   if (text.empty())
   {
@@ -775,7 +773,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   }
   else
   {
-    wxExFrame::StatusText(wxExGetFindResult(text.ToStdString(), find_next, recursive), std::string());
+    wxExFrame::StatusText(wxExGetFindResult(text, find_next, recursive), std::string());
     
     if (!recursive)
     {
@@ -813,18 +811,19 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
   }
 }
 
-const wxString wxExListView::GetItemText(long item_number, const wxString& col_name) const 
+const std::string wxExListView::GetItemText(
+  long item_number, const std::string& col_name) const 
 {
   if (col_name.empty())
   {
-    return wxListView::GetItemText(item_number);
+    return wxListView::GetItemText(item_number).ToStdString();
   }
   
   const int col = FindColumn(col_name);
-  return col < 0 ? wxString(): wxListView::GetItemText(item_number, col);
+  return col < 0 ? std::string(): wxListView::GetItemText(item_number, col).ToStdString();
 }
 
-const wxString wxExListView::GetTypeDescription(wxExListType type)
+const std::string wxExListView::GetTypeDescription(wxExListType type)
 {
   wxString value;
 
@@ -840,7 +839,7 @@ const wxString wxExListView::GetTypeDescription(wxExListType type)
     default: wxFAIL;
   }
 
-  return value;
+  return value.ToStdString();
 }
 
 void wxExListView::Initialize(const wxExLexer* lexer)
@@ -895,17 +894,17 @@ void wxExListView::ItemActivated(long item_number)
       wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
       if (frame != nullptr)
       {
-        const wxString line_number_str = GetItemText(item_number, _("Line No"));
+        const std::string line_number_str = GetItemText(item_number, _("Line No").ToStdString());
         const int line_number = atoi(line_number_str.c_str());
-        const wxString match =
+        const std::string match =
           (m_Type == LIST_REPLACE ?
-             GetItemText(item_number, _("Replaced")):
-             GetItemText(item_number, _("Match")));
+             GetItemText(item_number, _("Replaced").ToStdString()):
+             GetItemText(item_number, _("Match").ToStdString()));
 
         frame->OpenFile(
           item.GetFileName().GetFullPath(),
           line_number, 
-          match.ToStdString());
+          match);
       }
     }
     else if (wxDirExists(item.GetFileName().GetFullPath()))
@@ -913,11 +912,11 @@ void wxExListView::ItemActivated(long item_number)
       wxTextEntryDialog dlg(this,
         _("Input") + ":",
         _("Folder Type"),
-        GetItemText(item_number, _("Type")));
+        GetItemText(item_number, _("Type").ToStdString()));
   
       if (dlg.ShowModal() == wxID_OK)
       {
-        item.SetItem(_("Type"), dlg.GetValue());
+        item.SetItem(_("Type").ToStdString(), dlg.GetValue().ToStdString());
       }
     }
     
@@ -967,10 +966,10 @@ bool wxExListView::ItemFromText(const wxString& text)
             {
               const wxString value = tk.GetNextToken();
     
-              if (col != FindColumn(_("Type")) &&
-                  col != FindColumn(_("In Folder")) &&
-                  col != FindColumn(_("Size")) &&
-                  col != FindColumn(_("Modified")))
+              if (col != FindColumn(_("Type").ToStdString()) &&
+                  col != FindColumn(_("In Folder").ToStdString()) &&
+                  col != FindColumn(_("Size").ToStdString()) &&
+                  col != FindColumn(_("Modified").ToStdString()))
               {
                 SetItem(item.GetId(), col, value);
               }
@@ -1026,7 +1025,7 @@ bool wxExListView::ItemFromText(const wxString& text)
 
 const wxString wxExListView::ItemToText(long item_number) const
 {
-  wxString text;
+  std::string text;
     
   if (item_number == -1)
   {
@@ -1050,12 +1049,12 @@ const wxString wxExListView::ItemToText(long item_number) const
 
       if (item.GetFileName().DirExists() && !item.GetFileName().FileExists())
       {
-        text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
+        text += GetFieldSeparator() + GetItemText(item_number, _("Type").ToStdString());
       }
       }
 
     case LIST_FOLDER:
-      return wxListView::GetItemText(item_number);
+      return wxListView::GetItemText(item_number).ToStdString();
       break;
     
     default:
@@ -1070,7 +1069,7 @@ const wxString wxExListView::ItemToText(long item_number) const
       }
     }
 
-  return text.Trim();
+  return text;
 }
 
 void wxExListView::ItemsUpdate()

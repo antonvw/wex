@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wxExtension utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -462,13 +462,18 @@ void wxExLogStatus(const wxExFileName& fn, long flags)
   if (fn.GetStat().IsOk())
   {
     const wxString what = ((flags & STAT_SYNC) ? 
-      _("Synchronized"): 
+      _("Synchronized"):
       _("Modified"));
         
     text += " " + what + " " + fn.GetStat().GetModificationTime();
   }
 
   wxLogStatus(text);
+}
+
+void wxExLogStatus(const std::string& text)
+{
+  wxLogStatus(wxString(text));
 }
 
 long wxExMake(const wxExFileName& makefile)

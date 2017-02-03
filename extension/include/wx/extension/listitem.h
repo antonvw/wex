@@ -2,7 +2,7 @@
 // Name:      listitem.h
 // Purpose:   Declaration of class 'wxExListItem'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,7 +20,7 @@ public:
   /// Constructor.
   wxExListItem(wxExListView* listview,
     const wxExFileName& filename,
-    const wxString& filespec = wxEmptyString);
+    const std::string& filespec = std::string());
     
   // Deletes this item from the listview.
   void Delete() {m_ListView->DeleteItem(GetId());};
@@ -42,7 +42,7 @@ public:
   bool IsReadOnly() const {return m_IsReadOnly;};
 
   /// Sets the item text using column name.
-  void SetItem(const wxString& col_name, const wxString& text);
+  void SetItem(const std::string& col_name, const std::string& text);
 
   /// Updates all attributes.
   void Update();
@@ -54,6 +54,6 @@ private:
   wxExListView* m_ListView;
 
   const wxExFileName m_FileName;
-  const wxString m_FileSpec;
+  const std::string m_FileSpec;
   bool m_IsReadOnly;
 };

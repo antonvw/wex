@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -48,7 +48,7 @@ TEST_CASE("wxExListView")
   REQUIRE(listView->ItemFromText("a new item"));
   REQUIRE(listView->FindNext("a new item"));
   
-  REQUIRE( listView->ItemToText(0) == "test");
+  REQUIRE( listView->ItemToText(0).find("test") != std::string::npos);
   REQUIRE(!listView->ItemToText(-1).empty());
   
   //listView->Print(); // waits for input

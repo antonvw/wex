@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wxExEx
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -56,6 +56,9 @@ public:
     /// normally this command is not yet handled, but
     /// if it is, set this to allow postfix operation only
     bool is_handled = false);
+
+  /// Copies data from other component.
+  void Copy(const wxExEx* ex);
   
   /// Cuts selected text to yank register,
   /// and updates delete registers.
@@ -176,6 +179,7 @@ private:
   static ex_evaluator m_Evaluator;
 
   bool m_IsActive = true; // are we actively using ex mode?
+  bool m_Copy = false; // this is a copy, result of split
   
   int m_SearchFlags;
   

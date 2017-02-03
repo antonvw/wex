@@ -53,7 +53,7 @@ wxExStatusBar::~wxExStatusBar()
 { 
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 
-  for (size_t i = 0; i < GetFieldsCount(); i++)
+  for (int i = 0; i < GetFieldsCount(); i++)
   {
     wxConfigBase::Get()->Write(ConfigName(this, "Style", i), GetField(i).GetStyle());
     wxConfigBase::Get()->Write(ConfigName(this, "Width", i), GetField(i).GetWidth());

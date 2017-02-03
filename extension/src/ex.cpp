@@ -594,6 +594,12 @@ bool wxExEx::CommandHandle(const std::string& command) const
   return it != m_Commands.end() && it->second(command);
 }
 
+void wxExEx::Copy(const wxExEx* ex)
+{
+  m_MarkerIdentifiers = ex->m_MarkerIdentifiers;
+  m_Copy = true; // no char numbers for a copy
+}
+
 void wxExEx::Cut(bool show_message)
 {
   const std::string sel(GetSelectedText());
@@ -744,6 +750,8 @@ void wxExEx::MacroStartRecording(const std::string& macro)
 
 bool wxExEx::MarkerAdd(char marker, int line)
 {
+  if (m_Copy) return false;
+
   const wxExMarker lm(wxExLexers::Get()->GetMarker(m_MarkerSymbol));
 
   if (!lm.IsOk())
@@ -756,7 +764,7 @@ bool wxExEx::MarkerAdd(char marker, int line)
 
   int id;
   const int lin = (line == -1 ? m_STC->GetCurrentLine(): line);
-  
+
   if (lm.GetSymbol() == wxSTC_MARK_CHARACTER)
   {
     const auto& it = m_MarkerNumbers.find(marker);

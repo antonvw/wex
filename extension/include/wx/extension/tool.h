@@ -2,13 +2,12 @@
 // Name:      tool.h
 // Purpose:   Declaration of wxExTool classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <map>
-#include <wx/string.h>
 #include <wx/extension/defs.h>
 
 /// This class defines our tool info.
@@ -18,25 +17,25 @@ class WXDLLIMPEXP_BASE wxExToolInfo
 public:
   /// Default constructor.
   wxExToolInfo(
-    const wxString& info = wxEmptyString,
-    const wxString& text = wxEmptyString,
-    const wxString& helptext = wxEmptyString)
+    const std::string& info = std::string(),
+    const std::string& text = std::string(),
+    const std::string& helptext = std::string())
     : m_Info(info)
     , m_HelpText(helptext)
     , m_Text(text){};
 
   /// Returns the info.
-  const wxString& GetInfo() const {return m_Info;};
+  const auto & GetInfo() const {return m_Info;};
 
   /// Returns the helptext.
-  const wxString& GetHelpText() const {return m_HelpText;};
+  const auto & GetHelpText() const {return m_HelpText;};
 
   /// Returns the text.
-  const wxString& GetText() const {return m_Text;};
+  const auto & GetText() const {return m_Text;};
 private:
-  wxString m_Info;
-  wxString m_HelpText;
-  wxString m_Text;
+  std::string m_Info;
+  std::string m_HelpText;
+  std::string m_Text;
 };
 
 template <class T> class wxExStatistics;
@@ -54,9 +53,9 @@ public:
   /// with the Actions Completed element.
   void AddInfo(
     int tool_id,
-    const wxString& info,
-    const wxString& text = wxEmptyString,
-    const wxString& helptext = wxEmptyString) {
+    const std::string& info,
+    const std::string& text = std::string(),
+    const std::string& helptext = std::string()) {
     m_ToolInfo[tool_id] = wxExToolInfo(info, text, helptext);};
 
   /// Returns the tool id.
@@ -66,10 +65,10 @@ public:
   const auto & GetToolInfo() const {return m_ToolInfo;};
 
   /// Returns info about current tool.
-  const wxString Info() const;
+  const std::string Info() const;
 
   /// Returns info about current tool using specified statistics.
-  const wxString Info(const wxExStatistics<int>* stat) const;
+  const std::string Info(const wxExStatistics<int>* stat) const;
   
   /// Is this tool a find type.
   bool IsFindType() const {

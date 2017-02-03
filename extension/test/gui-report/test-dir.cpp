@@ -2,9 +2,10 @@
 // Name:      test-dir.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/extension/util.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/stream.h>
@@ -33,7 +34,7 @@ TEST_CASE("wxExDirTool")
 
   dir.FindFiles();
 
-  wxLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
+  wxExLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
 }
 
 TEST_CASE("wxExDirWithListView")

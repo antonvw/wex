@@ -2,7 +2,7 @@
 // Name:      listviewfile.h
 // Purpose:   Declaration of class wxExListViewFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -71,12 +71,12 @@ protected:
   virtual void DoFileSave(bool save_as = false) override;
   void OnIdle(wxIdleEvent& event);
 private:
-  bool m_ContentsChanged;
-  const wxString m_TextAddFiles;
-  const wxString m_TextAddFolders;
-  const wxString m_TextAddRecursive;
-  const wxString m_TextAddWhat;
-  const wxString m_TextInFolder;
+  bool m_ContentsChanged = false;
+  const wxString m_TextAddFiles = _("Add files");
+  const wxString m_TextAddFolders = _("Add folders");
+  const wxString m_TextAddRecursive = _("Recursive");
+  const wxString m_TextAddWhat = _("Add what");
+  const wxString m_TextInFolder = _("In folder");
   
   wxExItemDialog* m_AddItemsDialog;
 };

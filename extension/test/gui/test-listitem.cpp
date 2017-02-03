@@ -44,13 +44,13 @@ TEST_CASE("wxExListItem")
   const auto sort_start = std::chrono::system_clock::now();
   
   // The File Name column must be translated, otherwise test fails.
-  listView->SortColumn(_("File Name"), SORT_ASCENDING);
+  listView->SortColumn(_("File Name").ToStdString(), SORT_ASCENDING);
   
   const auto sort_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - sort_start);
   
   REQUIRE(sort_milli.count() < 10000);
   
-  REQUIRE(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
+  REQUIRE(listView->GetItemText(0, _("File Name").ToStdString()).find("main.cpp") != std::string::npos);
   
   wxExListItem item(listView, wxExFileName("./test.h"));
   item.Insert();

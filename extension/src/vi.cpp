@@ -422,7 +422,12 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"P", [&](const std::string& command){Put(false);return true;}},
     {"Q", [&](const std::string& command){
       GetFrame()->SaveCurrentPage("ctags");
-      GetCTags()->Find(GetSTC()->GetWordAtPos(GetSTC()->GetCurrentPos()));
+      const std::string word(
+        GetSTC()->GetWordAtPos(GetSTC()->GetCurrentPos()));
+      if (GetCTags()->Find(word))
+      {
+        wxExFindReplaceData::Get()->SetFindString(word);
+      }
       return true;}},
     {"S", [&](const std::string& command){
       GetFrame()->RestorePage("ctags");
@@ -638,13 +643,10 @@ wxExVi::wxExVi(wxExSTC* stc)
       }  
       return false;}},
     // ctrl-t
-    {"\x14", [&](const std::string& command){
-      GetFrame()->RestorePage("ctags");
-      return true;}},
+    {"\x14", [&](const std::string& command){return Command("S");}},
     // ctrl-]
-    {"\x5D", [&](const std::string& command){
-      GetCTags()->Find(GetSTC()->GetWordAtPos(GetSTC()->GetCurrentPos()));
-      return true;}},
+    {"\x5D", [&](const std::string& command){return Command("Q");}},
+    // delete char
     {"\x7F", [&](const std::string& command){
       return DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count);}}}
 {
@@ -853,7 +855,7 @@ void wxExVi::CommandReg(const char reg)
       }
       else
       {
-        GetFrame()->ShowExMessage("?" + reg);
+        GetFrame()->ShowExMessage("?" + std::string(1, reg));
       }
   }
 }
@@ -956,14 +958,14 @@ bool wxExVi::InsertMode(const std::string& command)
       GetSTC()->DeleteBack();
       break;
       
-    case WXK_DELETE: 
-      DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + 1);
-      break;
-      
     case WXK_CONTROL_R:
       m_InsertText += command;
       break;
         
+    case WXK_DELETE: 
+      DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + 1);
+      break;
+      
     case WXK_ESCAPE:
       // Add extra inserts if necessary.        
       if (!m_InsertText.empty())

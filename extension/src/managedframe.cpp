@@ -240,12 +240,12 @@ wxPanel* wxExManagedFrame::CreateExPanel()
   // An ex panel starts with small static text for : or /, then
   // comes the ex ctrl for getting user input.
   wxPanel* panel = new wxPanel(this);
-  wxStaticText* text = new wxStaticText(panel, wxID_ANY, wxEmptyString);
+  wxStaticText* text = new wxStaticText(panel, wxID_ANY, " ");
   m_TextCtrl = new wxExTextCtrl(panel, this, text, wxID_ANY);
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
   sizer->AddGrowableCol(1);
-  sizer->Add(text, wxSizerFlags().Expand());
+  sizer->Add(text, wxSizerFlags().Center());
   sizer->Add(m_TextCtrl, wxSizerFlags().Expand());
   
   panel->SetSizerAndFit(sizer);
@@ -550,7 +550,7 @@ bool wxExTextCtrl::SetEx(wxExEx* ex, const std::string& command)
   if (command.empty()) return false;
 
   m_UserInput = false;
-  const wxString range(command.substr(1));
+  const std::string range(command.substr(1));
   m_ModeVisual = !range.empty();
 
   switch (GetType(command))
@@ -567,7 +567,7 @@ bool wxExTextCtrl::SetEx(wxExEx* ex, const std::string& command)
         SetValue(range); 
       }
       break;
-    case TYPE_FIND: SetValue(!m_ModeVisual ? ex->GetSTC()->GetFindString(): wxString()); break;
+    case TYPE_FIND: SetValue(!m_ModeVisual ? ex->GetSTC()->GetFindString(): std::string()); break;
     case TYPE_UNKNOWN: return false;
   }
     

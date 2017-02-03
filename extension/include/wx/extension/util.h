@@ -185,6 +185,9 @@ enum wxExStatusFlags
 // invoking.
 void wxExLogStatus(const wxExFileName& filename, long flags = STAT_DEFAULT);
 
+/// Logs text.
+void wxExLogStatus(const std::string& text);
+
 /// Runs make on specified makefile.
 /// Returns value from executing the make process.
 long wxExMake(
