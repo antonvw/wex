@@ -84,7 +84,7 @@ wxExCmdLine::wxExCmdLine(
   {
     std::cerr << e.what() << "\n";
   }
-  catch (TCLAP::ExitException& e)
+  catch (TCLAP::ExitException& )
   {
   }
 }
@@ -169,7 +169,7 @@ bool wxExCmdLine::Parse(const std::string& cmdline)
     std::cerr << e.what() << "\n";
     return false;
   }
-  catch (TCLAP::ExitException& e)
+  catch (TCLAP::ExitException& )
   {
     return false;
   }

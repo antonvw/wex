@@ -2,7 +2,7 @@
 // Name:      frd.h
 // Purpose:   Declaration of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -67,8 +67,9 @@ public:
   /// Returns true if the flags have whole word set.
   bool MatchWord() const {return (m_FRD.GetFlags() & wxFR_WHOLEWORD) > 0;};
   
-  /// Returns true if GetFindString as regular expression matches text.
-  bool RegExMatches(const std::string& text) const;
+  /// Returns -1 if GetFindString as regular expression does not match text,
+  /// otherwise start pos of match.
+  int RegExMatches(const std::string& text) const;
   
   /// Replaces all occurrences of GetFindString as regular expression
   /// in text by GetReplaceString.

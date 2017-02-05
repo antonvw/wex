@@ -2,7 +2,7 @@
 // Name:      configitem.cpp
 // Purpose:   Implementation of wxExItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -217,21 +217,24 @@ wxExConfigDefaults::wxExConfigDefaults(
         case ITEM_COLOURPICKERWIDGET:
           m_Config->ReadObject(std::get<0>(it), std::get<2>(it).As<wxColour>());
           break;
-        case ITEM_TEXTCTRL_FLOAT:
-          m_Config->ReadDouble(std::get<0>(it), std::get<2>(it).As<double>());
-          break;
         case ITEM_FONTPICKERCTRL:
           m_Config->ReadObject(std::get<0>(it), std::get<2>(it).As<wxFont>());
           break;
-        case ITEM_TEXTCTRL_INT:
+        case ITEM_SPINCTRL:
           m_Config->ReadLong(std::get<0>(it), std::get<2>(it).As<long>());
           break;
         case ITEM_TEXTCTRL:
           m_Config->Read(std::get<0>(it), std::get<2>(it).As<wxString>());
           break;
+        case ITEM_TEXTCTRL_FLOAT:
+          m_Config->ReadDouble(std::get<0>(it), std::get<2>(it).As<double>());
+          break;
+        case ITEM_TEXTCTRL_INT:
+          m_Config->ReadLong(std::get<0>(it), std::get<2>(it).As<long>());
+          break;
         default:
           std::cout << "Unsupported default type for: "  << 
-            std::get<0>(it).c_str() << "\n";;
+            std::get<0>(it).c_str() << "\n";
       }
     }
   }

@@ -2,7 +2,7 @@
 // Name:      test-lexer.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -53,7 +53,7 @@ TEST_CASE("wxExLexer")
   REQUIRE(!lexer.GetKeywordsString(-1, 0).empty());
   REQUIRE(!lexer.GetKeywordsString(-1, 6).empty());
   REQUIRE( lexer.GetKeywordsString(-1, 8).find("for_each") != std::string::npos);
-  REQUIRE(!lexer.GetKeywordsString(-1, 9).find("for_each") != std::string::npos);
+  REQUIRE( lexer.GetKeywordsString(-1, 9).find("for_each") == std::string::npos);
   REQUIRE( lexer.GetKeywordsString(-1, 50).empty());
   REQUIRE( lexer.CommentComplete("// test").empty());
   REQUIRE( lexer.IsKeyword("class"));

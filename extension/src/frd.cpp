@@ -2,7 +2,7 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -56,16 +56,22 @@ wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
   return m_Self;
 }
 
-bool wxExFindReplaceData::RegExMatches(const std::string& text) const
+int wxExFindReplaceData::RegExMatches(const std::string& text) const
 {
-  return std::regex_search(text, m_FindRegEx, std::regex_constants::format_default);
+  std::smatch m;
+
+  if (!std::regex_search(
+    text, 
+    m,
+    m_FindRegEx, std::regex_constants::format_default)) return -1;
+
+  return m.position();
 }
   
 int wxExFindReplaceData::RegExReplaceAll(std::string& text) const
 {
-  auto words_begin = std::sregex_iterator(text.begin(), text.end(), m_FindRegEx);
-  auto words_end = std::sregex_iterator();  
-
+  const auto words_begin = std::sregex_iterator(text.begin(), text.end(), m_FindRegEx);
+  const auto words_end = std::sregex_iterator();  
   const int result = std::distance(words_begin, words_end);
   
   text = std::regex_replace(text, 

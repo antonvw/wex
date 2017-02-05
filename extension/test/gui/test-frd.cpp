@@ -2,7 +2,7 @@
 // Name:      test-frd.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -33,8 +33,8 @@ TEST_CASE("wxExFrd")
   REQUIRE(!frd->GetFindStrings().empty());
   REQUIRE( frd->GetFindString() == "find[0-9]");
   
-  REQUIRE( frd->RegExMatches("some text find9 other text"));
-  REQUIRE(!frd->RegExMatches("some text finda other text"));
+  REQUIRE( frd->RegExMatches("some text find9 other text") == 10);
+  REQUIRE( frd->RegExMatches("some text finda other text") < 0);
   
   const std::list < std::string > l{"find3","find4","find5"};
   frd->SetFindStrings(l);

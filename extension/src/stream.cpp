@@ -32,7 +32,8 @@ bool wxExStream::Process(std::string& line, size_t line_no)
 
   if (m_FRD->UseRegEx())
   {
-    match = m_FRD->RegExMatches(line);
+    pos = m_FRD->RegExMatches(line);
+    match = (pos >= 0);
 
     if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
     {
@@ -64,11 +65,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
     else
     {
       count = wxExReplaceAll(line, m_FRD->GetFindString(), m_FRD->GetReplaceString());
-
-      if (count > 0)
-      {
-        match = true;
-      }
+      match = (count > 0);
     }
   }
 

@@ -5,6 +5,7 @@ if (NOT ${ODBC_FOUND})
 endif()
 
 include_directories(../extension/include)
+include_directories(../extension/pugixml/src)
 
 FILE(GLOB SRCS "*.cpp")
   

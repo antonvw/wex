@@ -8,6 +8,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 #include <wx/extension/defs.h>
 
 /// This class defines our tool info.
@@ -24,17 +25,17 @@ public:
     , m_HelpText(helptext)
     , m_Text(text){};
 
-  /// Returns the info.
-  const auto & GetInfo() const {return m_Info;};
-
   /// Returns the helptext.
   const auto & GetHelpText() const {return m_HelpText;};
+
+  /// Returns the info.
+  const auto & GetInfo() const {return m_Info;};
 
   /// Returns the text.
   const auto & GetText() const {return m_Text;};
 private:
-  std::string m_Info;
   std::string m_HelpText;
+  std::string m_Info;
   std::string m_Text;
 };
 
