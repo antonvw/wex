@@ -70,7 +70,11 @@ public:
   /// Parses the specified command line 
   /// (should start with app name, and if empty
   /// the command line from wxTheApp is used).
-  bool Parse(const std::string& cmdline = std::string());
+  bool Parse(
+    /// commnd line
+    const std::string& cmdline = std::string(),
+    /// allow to toggle between switches
+    bool toggle = false);
 private:
   struct wxExCmdLineContent
   {

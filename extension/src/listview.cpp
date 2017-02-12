@@ -444,13 +444,14 @@ void wxExListView::AddColumns(const wxExLexer* lexer)
     case LIST_FIND:
     case LIST_REPLACE:
       AppendColumn(wxExColumn(_("Line").ToStdString(), wxExColumn::COL_STRING, col_line_width));
-      AppendColumn(wxExColumn(_("Match").ToStdString(), wxExColumn::COL_STRING));
-      AppendColumn(wxExColumn(_("Line No").ToStdString()));
-      
+
       if (m_Type == LIST_REPLACE)
       {
-        AppendColumn(wxExColumn(_("Replaced").ToStdString()));
+        AppendColumn(wxExColumn(_("Replaced").ToStdString(), wxExColumn::COL_STRING));
       }
+
+      AppendColumn(wxExColumn(_("Match").ToStdString(), wxExColumn::COL_STRING));
+      AppendColumn(wxExColumn(_("Line No").ToStdString()));
     break;
     case LIST_KEYWORD:
       for (const auto& it : lexer->GetKeywords())

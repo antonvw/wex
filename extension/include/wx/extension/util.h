@@ -277,9 +277,15 @@ const std::string wxExQuoted(const std::string& text);
 
 /// Replaces all substrings in text with replace.
 /// Returns number of replacements.
-int wxExReplaceAll(std::string& text, 
+int wxExReplaceAll(
+  /// text to be replaced
+  std::string& text, 
+  /// text to replace
   const std::string& search,
-  const std::string& replace);
+  /// replacement
+  const std::string& replace,
+  /// if not nullptr, position of first match in text
+  int* match_pos = nullptr);
 
 /// Executes all process between backquotes in command, 
 /// and changes command with replaced match with output from process.
@@ -292,6 +298,11 @@ enum
   STRING_SORT_DESCENDING = 0x001, ///< sort descending order
   STRING_SORT_UNIQUE     = 0x010, ///< flag to remove doubles
 };
+
+/// Returns a string without all white space in specified input.
+const std::string wxExSkipWhiteSpace(
+  const std::string& text,
+  const std::string& replace_with = " ");
 
 /// Sorts specified text, returns string with sorted text.
 const std::string wxExSort(
@@ -320,11 +331,6 @@ bool wxExSortSelection(
   /// string::npos indicates all characters until eol
   size_t len = std::string::npos);
 #endif
-
-/// Returns a string without all white space in specified input.
-const std::string wxExSkipWhiteSpace(
-  const std::string& text,
-  const std::string& replace_with = " ");
 
 /// This takes care of the translation.
 const std::string wxExTranslate(const std::string& text, int pageNum, int numPages);

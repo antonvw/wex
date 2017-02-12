@@ -135,9 +135,7 @@ std::string wxExStreamToListView::Context(
 
   return 
     (m_ContextSize > pos ? std::string(m_ContextSize - pos, ' '): std::string()) +
-    line.substr(
-      m_ContextSize < pos ? pos - m_ContextSize: 0, 
-      wxExFindReplaceData::Get()->GetFindString().size() + 2 * m_ContextSize);
+    line.substr(m_ContextSize < pos ? pos - m_ContextSize: 0); 
 }
 
 bool wxExStreamToListView::Process(std::string& line, size_t line_no)
@@ -332,9 +330,6 @@ void wxExStreamToListView::ProcessMatch(
       item.SetItem(
         _("Line").ToStdString(), 
         Context(line, pos));
-      item.SetItem(
-        _("Before").ToStdString(), 
-        line.substr(0, pos));
       item.SetItem(
         _("Match").ToStdString(), 
         wxExFindReplaceData::Get()->GetFindString());

@@ -291,13 +291,6 @@ TEST_CASE("wxEx")
     REQUIRE( wxExPrintHeader(GetTestFile()).find("test") != std::string::npos);
   }
   
-  SUBCASE("wxExQuoted")
-  {
-    REQUIRE( wxExQuoted("test") == "'test'");
-    REQUIRE( wxExQuoted("%d") == "'%d'");
-    REQUIRE( wxExQuoted(wxExSkipWhiteSpace(" %d ")) == "'%d'");
-  }
-  
   SUBCASE("wxExMarkerAndRegisterExpansion")
   {
     GetSTC()->SetText("this is some text");
@@ -313,6 +306,27 @@ TEST_CASE("wxEx")
     REQUIRE( command.find("yanked") != std::string::npos);
   }
   
+  SUBCASE("wxExQuoted")
+  {
+    REQUIRE( wxExQuoted("test") == "'test'");
+    REQUIRE( wxExQuoted("%d") == "'%d'");
+    REQUIRE( wxExQuoted(wxExSkipWhiteSpace(" %d ")) == "'%d'");
+  }
+  
+  SUBCASE("wxExReplaceAll")
+  {
+    int match_pos;
+    const std::string org("test x y z x y z");
+    std::string text(org);
+
+    REQUIRE( wxExReplaceAll(text, "x", "aha", &match_pos) == 2);
+    REQUIRE( match_pos == 5);
+
+    text = org;
+    REQUIRE( wxExReplaceAll(text, "xy", "aha", &match_pos) == 0);
+    REQUIRE( match_pos == 5);
+  }
+
 #ifdef __UNIX__
   SUBCASE("wxExShellExpansion")
   {

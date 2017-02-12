@@ -1,0 +1,14 @@
+select * from universe;
+
+insert into test values(1, 2);
+insert into test values(1, 2);
+insert into test values(1, 2);
+insert into test values(1, 2);
+insert into test values(1, 2);
+insert into test values(1, 2);
+insert into test values(1, 2);
+insert into test values(1, 2);
+insert into test values(1, 2);
+
+-- vi: set sy=sql
+-- test modeline inside a file

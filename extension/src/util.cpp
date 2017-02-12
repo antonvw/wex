@@ -727,15 +727,24 @@ const std::string wxExQuoted(const std::string& text)
 
 int wxExReplaceAll(std::string& text, 
   const std::string& search,
-  const std::string& replace) 
+  const std::string& replace,
+  int* match_pos) 
 {
   int count = 0;
   size_t pos = 0;
+  bool update = false;
 
   while ((pos = text.find(search, pos)) != std::string::npos) 
   {
+    if (match_pos != nullptr && !update)
+    {
+      *match_pos = (int)pos;
+      update = true;
+    }
+
     text.replace(pos, search.length(), replace);
     pos += replace.length();
+
     count++;
   }
   
@@ -743,9 +752,9 @@ int wxExReplaceAll(std::string& text,
 }
 
 template <typename InputIterator>
-const wxString GetColumn(InputIterator first, InputIterator last)
+const std::string GetColumn(InputIterator first, InputIterator last)
 {
-  wxString text;
+  std::string text;
   
   for (InputIterator it = first; it != last; ++it) 
   {
@@ -756,10 +765,10 @@ const wxString GetColumn(InputIterator first, InputIterator last)
 }
     
 template <typename InputIterator>
-const wxString GetLines(std::vector<wxString> & lines,
+const std::string GetLines(std::vector<wxString> & lines,
   size_t pos, size_t len, InputIterator ii)
 {
-  wxString text;
+  std::string text;
   
   for (auto it : lines)
   {

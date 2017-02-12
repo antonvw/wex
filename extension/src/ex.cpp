@@ -243,7 +243,7 @@ wxExEx::wxExEx(wxExSTC* stc)
              if (val.As<std::string>() != "off") 
                m_STC->GetLexer().Set(val.As<std::string>(), true); // allow folding
              else              
-               m_STC->GetLexer().Reset();}}}}).Parse(command.substr(0, 4) + text);
+               m_STC->GetLexer().Reset();}}}}).Parse(command.substr(0, 4) + text, true);
       }
       return true;}},
     {":so", [&](const std::string& command) {

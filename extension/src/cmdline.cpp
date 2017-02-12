@@ -106,7 +106,7 @@ wxExCmdLine::~wxExCmdLine()
   for (auto& it : m_Switches) delete it.first;
 }
   
-bool wxExCmdLine::Parse(const std::string& cmdline)
+bool wxExCmdLine::Parse(const std::string& cmdline, bool toggle)
 {
   try
   {
@@ -124,7 +124,11 @@ bool wxExCmdLine::Parse(const std::string& cmdline)
     for (const auto& it : m_Switches) 
     {
       it.second(it.first->getValue());
-      wxConfigBase::Get()->Write(it.first->getName(), !it.first->getValue());
+
+      if (toggle)
+      {
+        wxConfigBase::Get()->Write(it.first->getName(), !it.first->getValue());
+      }
     }
 
     for (const auto& it : m_Options)

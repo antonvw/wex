@@ -64,7 +64,12 @@ bool wxExStream::Process(std::string& line, size_t line_no)
     }
     else
     {
-      count = wxExReplaceAll(line, m_FRD->GetFindString(), m_FRD->GetReplaceString());
+      count = wxExReplaceAll(
+        line, 
+        m_FRD->GetFindString(), 
+        m_FRD->GetReplaceString(),
+        &pos);
+
       match = (count > 0);
     }
   }

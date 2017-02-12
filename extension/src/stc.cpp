@@ -976,20 +976,18 @@ void wxExSTC::GuessType()
   // Get a small sample from this document to detect the file mode.
   const int length = (!HexMode() ? GetTextLength(): m_HexMode.GetBuffer().size());
   const int sample_size = (length > 255 ? 255: length);
-  
-  const wxString text = (!HexMode() ? GetTextRange(0, sample_size): 
-    m_HexMode.GetBuffer().substr(0, sample_size));
-
-  const wxString text2 = (!HexMode() ? GetTextRange(length - sample_size, length): 
-    m_HexMode.GetBuffer().substr(length - sample_size, sample_size));
+  const std::string text((!HexMode() ? GetTextRange(0, sample_size): 
+    m_HexMode.GetBuffer().substr(0, sample_size)));
+  const std::string text2((!HexMode() ? GetTextRange(length - sample_size, length): 
+    m_HexMode.GetBuffer().substr(length - sample_size, sample_size)));
 
   std::vector<std::string> v;  
   
   // If we have a modeline comment.
   if (
     m_vi.GetIsActive() && 
-     (wxExMatch("vi: *(set [a-z0-9:=! ]+)", text.ToStdString(), v) > 0 ||
-      wxExMatch("vi: *(set [a-z0-9:=! ]+)", text2.ToStdString(), v) > 0))
+     (wxExMatch("vi: *(set [a-z0-9:=! ]+)", text, v) > 0 ||
+      wxExMatch("vi: *(set [a-z0-9:=! ]+)", text2, v) > 0))
   {
     if (!m_vi.Command(":" + v[0]))
     {
@@ -997,9 +995,9 @@ void wxExSTC::GuessType()
     }
   }
 
-  if      (text.Contains("\r\n")) SetEOLMode(wxSTC_EOL_CRLF);
-  else if (text.Contains("\n"))   SetEOLMode(wxSTC_EOL_LF);
-  else if (text.Contains("\r"))   SetEOLMode(wxSTC_EOL_CR);
+  if      (text.find("\r\n") != std::string::npos) SetEOLMode(wxSTC_EOL_CRLF);
+  else if (text.find("\n") != std::string::npos)   SetEOLMode(wxSTC_EOL_LF);
+  else if (text.find("\r") != std::string::npos)   SetEOLMode(wxSTC_EOL_CR);
   else return; // do nothing
 
 #if wxUSE_STATUSBAR

@@ -2,7 +2,7 @@
 // Name:      test-ex.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -32,10 +32,15 @@ TEST_CASE("wxExEx")
   REQUIRE(stc->GetIndent() == 4);
   REQUIRE(stc->GetLexer().GetScintillaLexer() == "sql");
   REQUIRE( ex->GetLastCommand() == ":" + modeline);
+
   wxExSTC* stco = new wxExSTC(GetFrame(), wxExFileName("test-modeline.txt"));
   AddPane(GetFrame(), stco);
   REQUIRE(stco->GetLexer().GetScintillaLexer() == "sql");
-  
+
+  wxExSTC* stcp = new wxExSTC(GetFrame(), wxExFileName("test-modeline2.txt"));
+  AddPane(GetFrame(), stcp);
+  REQUIRE(stcp->GetLexer().GetScintillaLexer() == "sql");
+
   stc->SetText("xx\nxx\nyy\nzz\n");
   stc->DocumentStart();
   
