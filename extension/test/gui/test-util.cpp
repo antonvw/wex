@@ -128,11 +128,21 @@ TEST_CASE("wxEx")
     REQUIRE( wxExConfigFirstOfWrite("xxxx", "zz") == "zz");
   }
   
-  SUBCASE("wxExEllipsed  ")
+  SUBCASE("wxExEllipsed")
   {
     REQUIRE( wxExEllipsed("xxx").find("...") != std::string::npos);
   }
   
+  SUBCASE("wxExFirstOf")
+  {
+    REQUIRE( wxExFirstOf("this is ok", "x") == std::string());
+    REQUIRE( wxExFirstOf("this is ok", " ;,") == "is ok");
+    REQUIRE( wxExFirstOf("this is ok", " ;,i") == "s is ok");
+    REQUIRE( wxExFirstOf("this is ok", " ;,i", std::string::npos, FIRST_OF_FROM_END) == "ok");
+    REQUIRE( wxExFirstOf("this is ok", " ", 0, FIRST_OF_BEFORE) == "this");
+    REQUIRE( wxExFirstOf("this is ok", "x", 0, FIRST_OF_BEFORE) == "this is ok");
+  }
+
   SUBCASE("wxExGetEndOfText")
   {
     REQUIRE( wxExGetEndOfText("test", 3).size() == 3);

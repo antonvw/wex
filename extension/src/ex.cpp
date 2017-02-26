@@ -139,10 +139,10 @@ wxExEx::wxExEx(wxExSTC* stc)
 #endif
     {":chd", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos) return true;
-      wxSetWorkingDirectory(wxString(command).AfterFirst(' ').Trim(false)); return true;}},
+      wxSetWorkingDirectory(wxExFirstOf(command, " ")); return true;}},
     {":close", [&](const std::string& command) {POST_COMMAND( wxID_CLOSE ) return true;}},
     {":de", [&](const std::string& command) {
-      m_Frame->GetDebug()->Execute(wxString(command).AfterFirst(' ').ToStdString(), m_STC);
+      m_Frame->GetDebug()->Execute(wxExFirstOf(command, " "), m_STC);
       return true;}},
     {":e", [&](const std::string& command) {POST_COMMAND( wxID_OPEN ) return true;}},
     {":grep", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPORT_FIND ) return true;}},
@@ -248,7 +248,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       return true;}},
     {":so", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos) return false;
-      wxFileName filename(wxString(command).AfterFirst(' ').Trim(false));
+      wxFileName filename(wxExFirstOf(command, " "));
       if (filename.IsRelative())
       {
         filename.MakeAbsolute();
@@ -293,7 +293,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       m_Frame->StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
       return true;}},
     {":ta", [&](const std::string& command) {
-      m_CTags->Find(wxString(command).AfterFirst(' ').ToStdString());
+      m_CTags->Find(wxExFirstOf(command, " "));
       return true;}},
     {":una", [&](const std::string& command) {
       wxExTokenizer tkz(command);

@@ -39,75 +39,6 @@ void wxExViMacros::AskForInput()
   }
 }
 
-const std::string wxExViMacros::Decode(const std::string& text)
-{
-  std::string output;
-
-  for (size_t i = 0; i < text.length(); i++)
-  {
-    if (
-      i + 1 < text.length() &&
-      text[i]     == '$' &&
-      text[i + 1] == '!')
-    {
-      int skip = 0;
-      std::string number;
-    
-      if (
-        i + 3 < text.length() &&
-        isdigit(text[i + 2]) && 
-        text[i + 3] == '!')
-      {
-        skip  = 3;
-        number = text.substr(i + 2, 1);
-      }
-      else if (
-        i + 4 < text.length() &&
-        isdigit(text[i + 2]) &&
-        isdigit(text[i + 3]) &&
-        text[i + 4] == '!')
-      {
-        skip = 4;
-        number = text.substr(i + 2, 2);
-      }
-      
-      if (!number.empty())
-      {
-        output += char(atoi(number.c_str()));
-        i += skip;
-      }
-    }
-    else
-    {
-      output += text[i];
-    }
-  }
-  
-  return output;
-}
-
-const std::string wxExViMacros::Encode(const std::string& text)
-{
-  std::string output;
-  
-  for (size_t i = 0; i < text.length(); i++)
-  {
-    const int c = text[i];
-  
-    // Encode control and whitespace characters.
-    if (iscntrl(c) || isspace(c))
-    {
-      output += wxString::Format("$!%d!", c);
-    }
-    else
-    {
-      output += text[i];
-    }
-  }
-
-  return output;
-}
-
 bool wxExViMacros::Expand(wxExEx* ex, const std::string& variable)
 {
   pugi::xml_node node;
@@ -374,9 +305,9 @@ const std::vector< std::string > wxExViMacros::Get(
   }
 }
 
-const wxFileName wxExViMacros::GetFileName()
+const wxExFileName wxExViMacros::GetFileName()
 {
-  return wxFileName(wxExConfigDir(), "macros.xml");
+  return wxExFileName(wxExConfigDir(), "macros.xml");
 }
 
 const std::string wxExViMacros::GetRegister(const char name) const
@@ -430,12 +361,12 @@ bool wxExViMacros::IsRecordedMacro(const std::string& macro) const
 bool wxExViMacros::LoadDocument()
 {
   const pugi::xml_parse_result result = m_doc.load_file(
-    GetFileName().GetFullPath().ToStdString().c_str(),
-     pugi::parse_default | pugi::parse_comments);
+    GetFileName().GetFullPath().c_str(),
+    pugi::parse_default | pugi::parse_comments);
 
   if (!result)
   {
-    wxExXmlError(GetFileName().GetFullPath().ToStdString().c_str(), &result);
+    wxExXmlError(GetFileName().GetFullPath().c_str(), &result);
     return false;
   }
 
@@ -484,7 +415,7 @@ void wxExViMacros::ParseNodeMacro(const pugi::xml_node& node)
   
   for (const auto& command: node.children())
   {
-    v.emplace_back(Decode(command.text().get()));
+    v.emplace_back(command.text().get());
   }
   
   const auto& it = m_Macros.find(node.attribute("name").value());
@@ -611,7 +542,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
     return false;
   }
   
-  const bool ok = m_doc.save_file(GetFileName().GetFullPath().ToStdString().c_str());
+  const bool ok = m_doc.save_file(GetFileName().GetFullPath().c_str());
   
   if (ok)
   {
@@ -639,13 +570,15 @@ void wxExViMacros::SaveMacro(const std::string& macro)
 
     for (const auto& it: m_Macros[macro])
     {
-      node_macro.append_child("command").text().set(Encode(it).c_str());
+      node_macro.append_child("command").text().set(it.c_str());
     }
   }
   catch (pugi::xpath_exception& e)
   {
     std::cerr << e.what() << "\n";
   }
+
+  m_IsModified = true;
 }
 
 void wxExViMacros::SetAbbreviation(const std::string& ab, const std::string& value)
@@ -700,7 +633,7 @@ bool wxExViMacros::SetRegister(const char name, const std::string& value)
   // The black hole register, everything written to it is discarded.
   if (name != '_')
   {
-    if (wxIsupper(name))
+    if (isupper(name))
     {
       v.emplace_back(GetRegister(tolower(name)) + value);
     }
@@ -713,8 +646,6 @@ bool wxExViMacros::SetRegister(const char name, const std::string& value)
   m_Macros[std::string(1, (char)tolower(name))] = v;
   SaveMacro(std::string(1, (char)tolower(name)));
 
-  m_IsModified = true;
-  
   return true;
 }
 
@@ -737,7 +668,7 @@ void wxExViMacros::StartRecording(const std::string& macro)
   
     // Clear macro if it is lower case
     // (otherwise append to the macro).
-    if (wxIslower(macro[0]))
+    if (islower(macro[0]))
     {
       m_Macros[m_Macro].clear();
     }
@@ -755,7 +686,7 @@ void wxExViMacros::StartRecording(const std::string& macro)
 
 bool wxExViMacros::StartsWith(const std::string& text) const
 {
-  if (text.empty() || wxIsdigit(text[0]))
+  if (text.empty() || isdigit(text[0]))
   {
     return false;
   }

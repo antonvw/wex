@@ -125,6 +125,24 @@ const std::string wxExEllipsed(
   const std::string& control = std::string(),
   bool ellipse = true);
 
+enum
+{
+  FIRST_OF_AFTER_FROM_BEGIN = 0x000, ///< substring after match, from begin
+  FIRST_OF_BEFORE           = 0x001, ///< substring before match
+  FIRST_OF_FROM_END         = 0x002, ///< substring from end
+};
+
+/// Returns substring after (or before) first occurrence of one of specified chars.
+const std::string wxExFirstOf(
+  /// text to be searched
+  const std::string& text, 
+  /// chars to be found
+  const std::string& chars,
+  /// start pos (from start or end of text, depending on flags)
+  const size_t start_pos = 0,
+  /// start searching at begin, or at end
+  long flags = FIRST_OF_AFTER_FROM_BEGIN);
+
 /// If text length exceeds max_chars,
 /// returns an ellipse prefix followed by the last max_chars from the text,
 /// otherwise just returns the text.

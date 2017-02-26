@@ -1239,14 +1239,14 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_CHAR, [=](wxKeyEvent& event) {
     if (!m_vi.GetIsActive())
     {
-      if (wxIsalnum(event.GetUnicodeKey()))
+      if (isalnum(event.GetUnicodeKey()))
       {
         m_AddingChars = true;
       }
     }
     else if (m_vi.GetMode() == wxExVi::MODE_INSERT)
     {
-      if (wxIsalnum(event.GetUnicodeKey()))
+      if (isalnum(event.GetUnicodeKey()))
       {
         m_AddingChars = true;
       }
@@ -1260,7 +1260,7 @@ void wxExSTC::Initialize(bool file_exists)
     {
       if (
         GetReadOnly() && 
-        wxIsalnum(event.GetUnicodeKey()))
+        isalnum(event.GetUnicodeKey()))
       {
         wxLogStatus(_("Document is readonly"));
         return;

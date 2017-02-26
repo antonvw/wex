@@ -304,6 +304,30 @@ const std::string wxExEllipsed(
     (!control.empty() ? "\t" + control: std::string());
 }
 
+const std::string wxExFirstOf(
+  const std::string& text, 
+  const std::string& chars, 
+  size_t start_pos,
+  long flags)
+{
+  const auto pos = !(flags & FIRST_OF_FROM_END) ? 
+    text.find_first_of(chars, start_pos):
+    text.find_last_of(chars, start_pos);
+
+  if (!(flags & FIRST_OF_BEFORE))
+  {
+    return pos == std::string::npos ?
+      std::string():
+      text.substr(pos + 1);
+  }
+  else
+  {
+    return pos == std::string::npos ?
+      text:
+      text.substr(0, pos);
+  }
+}
+
 const std::string wxExGetEndOfText(const std::string& text, size_t max_chars)
 {
   std::string text_out(text);

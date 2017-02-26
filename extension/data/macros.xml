@@ -3,7 +3,7 @@
 Name:      macros.xml
 Purpose:   vi macros, variables and abbreviations for wxExtension.
 Author:    Anton van Wezenbeek
-Copyright: (c) 2016, Anton van Wezenbeek
+Copyright: (c) 2017, Anton van Wezenbeek
 
 Both variables and macros have a "name" attribute, you call them
 from vi mode using @name@ (if name starts with an
@@ -94,51 +94,51 @@ Variables are expanded when playing back the macro.
   <!-- A macro to test coverage: run in a .h file,
        it finds corresponding method in a test.cpp file -->
   <macro name="Coverage">
-    <command>/$!32!+[a-z]+(</command>
+    <command>/ +[a-z]+(</command>
     <command>b</command>
     <command>b</command>
     <command>*</command>
     <command>:prev</command>
     <command>n</command>
     <command>:n</command>
-    <command>$!13!</command>
+    <command>&#13;</command>
   </macro>
   
   <!-- A header macro -->
   <macro name="Hdr">
     <command>gg</command>
     <command>O</command>
-    <command>$!27!</command>
+    <command>&#27;</command>
     <command>@Cl@</command>
     <command>o</command>
-    <command>$!27!</command>
+    <command>&#27;</command>
     <command>@Cb@</command>
-    <command>i$!32!Name:$!32!$!32!$!32!$!32!$!32!$!32!</command>
-    <command>$!27!</command>
-    <command>i$!18!%</command>
-    <command>$!27!</command>
+    <command>i Name:      </command>
+    <command>&#27;</command>
+    <command>i&#18;</command>
+    <command>&#27;</command>
     <command>@Cc@</command>
     <command>o</command>
-    <command>$!27!</command>
+    <command>&#27;</command>
     <command>@Purpose:@</command>
     <command>o</command>
-    <command>$!27!</command>
+    <command>&#27;</command>
     <command>@Author:@</command>
     <command>o</command>
-    <command>$!27!</command>
+    <command>&#27;</command>
     <command>@Cb@</command>
-    <command>i$!32!Copyright:$!32!(c)$!32!</command>
-    <command>$!27!</command>
+    <command>i Copyright: (c) </command>
+    <command>&#27;</command>
     <command>@Year@</command>
-    <command>i$!32!</command>
-    <command>$!27!</command>
+    <command>i </command>
+    <command>&#27;</command>
     <command>@Copyright@</command>
     <command>@Cc@</command>
     <command>o</command>
-    <command>$!27!</command>
+    <command>&#27;</command>
     <command>@Cl@</command>
     <command>o</command>
-    <command>$!27!</command>
+    <command>&#27;</command>
   </macro>
   
   <!-- An abbreviation macro -->

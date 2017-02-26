@@ -2,7 +2,7 @@
 // Name:      vimacros.h
 // Purpose:   Declaration of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,7 +10,7 @@
 #include <map>
 #include <vector>
 #include <pugixml.hpp>
-#include <wx/filename.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/variable.h>
 
 #if wxUSE_GUI
@@ -131,7 +131,7 @@ public:
     std::string& expanded);
   
   /// Returns the filename with xml document.
-  static const wxFileName GetFileName();
+  static const wxExFileName GetFileName();
   
   /// Loads all macros (and variables) from xml document.
   /// Returns true if document is loaded (macros still can be empty).
@@ -144,8 +144,6 @@ public:
   static bool SaveDocument(bool only_if_modified = true);
 private:  
   static void AskForInput();
-  static const std::string Decode(const std::string& text);
-  static const std::string Encode(const std::string& text);
   static void ParseNodeAbbreviation(const pugi::xml_node& node);
   static void ParseNodeMacro(const pugi::xml_node& node);
   static void ParseNodeVariable(const pugi::xml_node& node);

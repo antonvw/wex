@@ -226,7 +226,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       }
       REPEAT(
         if (!GetSTC()->FindNext(std::string(1, c), 
-          GetSearchFlags() & ~wxSTC_FIND_REGEXP, wxIslower(d)))
+          GetSearchFlags() & ~wxSTC_FIND_REGEXP, islower(d)))
         {
           m_Command.clear();
           return false;
@@ -490,7 +490,7 @@ wxExVi::wxExVi(wxExSTC* stc)
             GetSTC()->GetCurrentPos(), 
             GetSTC()->GetCurrentPos() + 1));
         if (text.empty()) return false;
-        wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
+        islower(text[0]) ? text.UpperCase(): text.LowerCase();
         GetSTC()->wxStyledTextCtrl::Replace(
           GetSTC()->GetCurrentPos(), 
           GetSTC()->GetCurrentPos() + 1, 
@@ -919,8 +919,8 @@ bool wxExVi::InsertMode(const std::string& command)
     }
     else
     {
-      InsertMode(wxString(command).BeforeFirst(wxUniChar(WXK_CONTROL_R)).ToStdString());
-      CommandCalc(wxString(command).AfterFirst(wxUniChar(WXK_CONTROL_R)).ToStdString());
+      InsertMode(wxExFirstOf(command, std::string(1, WXK_CONTROL_R), 0, FIRST_OF_BEFORE));
+      CommandCalc(wxExFirstOf(command, std::string(1, WXK_CONTROL_R)));
       return true;
     }
   }
