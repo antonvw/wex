@@ -683,8 +683,9 @@ bool wxExVi::Command(const std::string& command, bool is_handled)
       return true;
     }
   }
-  else if ( command.front() == '=' ||
-      (command.size() > 2 && command.find(std::string(1, WXK_CONTROL_R) + "=") == 0))
+  else if (
+    command.front() == '=' ||
+   (command.size() > 2 && command.find(std::string(1, WXK_CONTROL_R) + "=") == 0))
   {
     CommandCalc(command);
     return true;
@@ -908,13 +909,12 @@ bool wxExVi::InsertMode(const std::string& command)
     return true;
   }
 
-  if (command.find(std::string(1, WXK_CONTROL_R) + "=") !=
-    std::string::npos)
+  if (command.find(std::string(1, WXK_CONTROL_R) + "=") != std::string::npos)
   {
     if (
       command.compare(0, 2, std::string(1, WXK_CONTROL_R) + "=") == 0)
     {
-      CommandCalc(command);
+      CommandReg(command[1]);
       return true;
     }
     else

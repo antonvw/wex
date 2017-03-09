@@ -3,9 +3,9 @@
 <!--
 Name:      lexers.xml
 Purpose:   Lexers configuration for wxExtension.
-           See scintilla 3.6.6 (www.scintilla.org).
+           See scintilla 3.7.2 (www.scintilla.org).
 Author:    Anton van Wezenbeek
-Copyright: (c) 2016, Anton van Wezenbeek
+Copyright: (c) 2017, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -76,6 +76,8 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="indic_compositionthin"/>
       <def no ="indic_fullbox"/>
       <def no ="indic_textfore"/>
+      <def no ="indic_point"/>
+      <def no ="indic_pointcharacter"/>
       <def no ="indic_ime"> 32 </def>>
       <def no ="indic_ime_max"> 35 </def>
       <def no ="indic_container"> 8 </def>
@@ -277,6 +279,20 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="identifier"/>
       <def no ="stringeol"/>
       <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
+      <def no ="keyword5"/>
+      <def no ="keyword6"/>
+      <def no ="keyword7"/>
+      <def no ="keyword8"/>
+      <def no ="keyword9"/>
+      <def no ="tabledef"/>
+      <def no ="tablesql"/>
+      <def no ="function"/>
+      <def no ="domdef"/>
+      <def no ="funcdef"/>
+      <def no ="objectdef"/>
+      <def no ="definedef"/>
     </def>
     
     <def name = "bash">
@@ -581,6 +597,18 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="deleted"/>
       <def no ="changed"/>
       <def no ="moved"/>
+    </def>
+
+    <def name = "edifact">
+      <def no ="default"/>
+      <def no ="segmentstart"/>
+      <def no ="segmentend"/>
+      <def no ="sep_element"/>
+      <def no ="sep_composite"/>
+      <def no ="sep_release"/>
+      <def no ="una"/>
+      <def no ="unh"/>
+      <def no ="badsegment"/>
     </def>
 
     <def name = "eiffel">
@@ -1396,12 +1424,12 @@ Copyright: (c) 2016, Anton van Wezenbeek
       <def no ="format"/>
       <def no ="string_var"/>
       <def no ="xlat"/>
-      <def no ="regex_var"/>
+      <def no ="regex_var"> 54 </def>
       <def no ="regsubst_var"/>
-      <def no ="backticks_var"/>
-      <def no ="here_qq_var"/>
+      <def no ="backticks_var"> 57 </def>
+      <def no ="here_qq_var"> 61 </def>
       <def no ="here_qx_var"/>
-      <def no ="string_qq_var"/>
+      <def no ="string_qq_var"> 64 </def>
       <def no ="string_qx_var"/>
       <def no ="string_qr_var"/>
     </def>
@@ -1497,38 +1525,19 @@ Copyright: (c) 2016, Anton van Wezenbeek
     </def>
     
     <def name = "progress">
-      <def no ="default"/>
-      <def no ="number"/>
-      <def no ="keyword1"/>
-      <def no ="string"/>
-      <def no ="character"/>
-      <def no ="preprocessor"/>
-      <def no ="operator"/>
-      <def no ="identifier"/>
-      <def no ="block"/>
-      <def no ="end"/>
-      <def no ="comment1"/>
-      <def no ="comment2"/>
-      <def no ="comment3"/>
-      <def no ="comment4"/>
-      <def no ="comment5"/>
-      <def no ="comment6"/>
-      <def no ="default_"/>
-      <def no ="number_"/>
-      <def no ="keyword2"/>
-      <def no ="string_"/>
-      <def no ="character_"/>
-      <def no ="preprocessor_"/>
-      <def no ="operator_"/>
-      <def no ="identifier_"/>
-      <def no ="block_"/>
-      <def no ="end_"/>
-      <def no ="comment1_"/>
-      <def no ="comment2_"/>
-      <def no ="comment3_"/>
-      <def no ="comment4_"/>
-      <def no ="comment5_"/>
-      <def no ="comment6_"/>
+      <def no ="DEFAULT"/>
+      <def no ="NUMBER"/>
+      <def no ="WORD"/>
+      <def no ="STRING"/>
+      <def no ="CHARACTER"/>
+      <def no ="PREPROCESSOR"/>
+      <def no ="OPERATOR"/>
+      <def no ="IDENTIFIER"/>
+      <def no ="BLOCK"/>
+      <def no ="END"/>
+      <def no ="COMMENT"/>
+      <def no ="TASKMARKER"/>
+      <def no ="LINECOMMENT"/>
     </def>
     
     <def name = "props">
@@ -2102,10 +2111,10 @@ Copyright: (c) 2016, Anton van Wezenbeek
         <def style ="folder"> blue </def>
         <def style ="folder-back"> light blue </def>
         <def style ="identifier"> fore:white</def>
-        <def style ="label"> fore:medium slate blue,italic </def>
         <def style ="keyword1"> fore:yellow </def>
         <def style ="keyword2"> fore:yellow green </def>
         <def style ="keyword3"> fore:medium spring green </def>
+        <def style ="label"> fore:medium slate blue,italic </def>
         <def style ="number"> fore:red </def>
         <def style ="operator"> fore:white </def>
         <def style ="preprocessor"> fore:grey </def>
@@ -2653,6 +2662,26 @@ Copyright: (c) 2016, Anton van Wezenbeek
   <lexer name="bib" extensions="*.bib"/>
   <lexer name="blitzbasic" macro="vb"/>
   <lexer name="bullant" macro="cpp"/>
+  <lexer display="c#" name="cpp" extensions="*.cs">
+    <keywords>
+      abstract  as        base       bool      break
+      byte      case      catch      char      checked
+      class     const     continue   decimal   default
+      delegate  do        double     else      enum
+      event     explicit  extern     false     finally
+      fixed     float     for        foreach   goto
+      if        implicit  in         int       interface
+      internal  is        lock       long      namespace
+      new       null      object     operator  out
+      override  params    private    protected public
+      readonly  ref       return     sbyte     sealed
+      short     sizeof    stackalloc static    string
+      struct    switch    this       throw     true
+      try       typeof    uint       ulong     unchecked
+      unsafe    ushort    using      virtual   void
+      volatile  while    
+    </keywords>
+  </lexer>
   <lexer name="caml"/>
   <lexer name="clarion"/>
   <lexer name="clarionnocase" macro="clarion"/>
@@ -2691,26 +2720,6 @@ Copyright: (c) 2016, Anton van Wezenbeek
     <keywords set-0="cpp" set-1="cpp-stl" set-2="cpp-doc"/>
     <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
-  <lexer display="c#" name="cpp" extensions="*.cs">
-    <keywords>
-      abstract  as        base       bool      break
-      byte      case      catch      char      checked
-      class     const     continue   decimal   default
-      delegate  do        double     else      enum
-      event     explicit  extern     false     finally
-      fixed     float     for        foreach   goto
-      if        implicit  in         int       interface
-      internal  is        lock       long      namespace
-      new       null      object     operator  out
-      override  params    private    protected public
-      readonly  ref       return     sbyte     sealed
-      short     sizeof    stackalloc static    string
-      struct    switch    this       throw     true
-      try       typeof    uint       ulong     unchecked
-      unsafe    ushort    using      virtual   void
-      volatile  while    
-    </keywords>
-  </lexer>
   <lexer name="cppnocase" macro="cpp">
     <keywords set-0="cpp" set-1="cpp-stl" set-2="cpp-doc"/>
   </lexer>
@@ -2739,6 +2748,7 @@ Copyright: (c) 2016, Anton van Wezenbeek
   <lexer name="DMAP"/>
   <lexer name="DMIS"/>
   <lexer name="ecl"/>
+  <lexer name="edifact"/>
   <lexer name="eiffel"/>
   <lexer name="eiffelkw" macro="eiffel"/>
   <lexer name="erlang"/>

@@ -2,7 +2,7 @@
 // Name:      menus.h
 // Purpose:   Declaration of wxExMenus class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -46,8 +46,8 @@ public:
     /// is menu used as popup or main menu
     bool is_popup) {
     wxExMenu* submenu = nullptr;
-    const wxString unused = "XXXXX";  
-    wxString prev_menu = unused;
+    const std::string unused = "XXXXX";  
+    std::string prev_menu = unused;
     int i = 0;
     for (const auto& it : commands)
     {
@@ -94,8 +94,8 @@ public:
     return menu->GetMenuItemCount();};
   
   /// Returns the xml filename.
-  static const wxFileName GetFileName() {
-    return wxFileName(wxExConfigDir(), "menus.xml");};
+  static const wxExFileName GetFileName() {
+    return wxExFileName(wxExConfigDir(), "menus.xml");};
   
   /// Loads entries from xml document.
   /// Returns false if document could not be loaded, or
@@ -105,7 +105,7 @@ public:
     pugi::xml_document doc;
     if (!GetFileName().FileExists() ||
         !doc.load_file(
-           GetFileName().GetFullPath().ToStdString().c_str(),
+           GetFileName().GetFullPath().c_str(),
            pugi::parse_default | pugi::parse_trim_pcdata))
     {
       return false;

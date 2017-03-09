@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wxExApp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -72,9 +72,10 @@ bool wxExApp::OnInit()
   // Init the localization, from now on things will be translated.
   // Do not load wxstd, we load all files ourselved,
   // and do not want messages about loading non existing wxstd files.
-  if (!m_Locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT))
+  if (!m_Locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT) &&
+    !wxLocale::GetLanguageName(lang).empty())
   {
-    std::cout << "Could not init locale for: " << std::to_string(lang) << "\n";
+    std::cout << "Could not init locale for: " << wxLocale::GetLanguageName(lang) << "\n";
   }
   
   // If there are catalogs in the catalog_dir, then add them to the m_Locale.
@@ -101,7 +102,7 @@ bool wxExApp::OnInit()
   }
   else if (info != nullptr)
   {
-   std::cout << "Missing locale files for: " << GetLocale().GetName() << "\n";
+    std::cout << "Missing locale files for: " << GetLocale().GetName() << "\n";
   }
 
   wxExVCS::LoadDocument();

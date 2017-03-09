@@ -102,8 +102,7 @@ std::string wxExEx::m_LastCommand;
 wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
-  , m_SearchFlags(wxExFindReplaceData::Get()->MatchCase() ? 
-      wxSTC_FIND_MATCHCASE | wxSTC_FIND_REGEXP: 
+  , m_SearchFlags((wxExFindReplaceData::Get()->MatchCase() ? wxSTC_FIND_MATCHCASE: 0) | 
       wxSTC_FIND_REGEXP
 #if wxCHECK_VERSION(3,1,1)
       | wxSTC_FIND_CXX11REGEX
@@ -174,16 +173,14 @@ wxExEx::wxExEx(wxExSTC* stc)
       }
       else
       {
-        std::string text(command.substr(4));
-        if ( text.find("/") == std::string::npos && 
-            (text.find("=") != std::string::npos || text.find("-") == std::string::npos))
-        {
-          // Convert modeline to commandline arg (add -- to each group, remove all =).
-          // ts=120 ac ic sy=cpp -> --ts 120 --ac --ic --sy cpp
-          std::regex re("[0-9a-z=]+");
-          text = std::regex_replace(text, re, "--&", std::regex_constants::format_sed);
-          std::replace(text.begin(), text.end(), '=', ' ');
-        }
+        const bool toggle = command.back() != '*'; // modeline does not toggle
+        std::string text(command.substr(4, 
+          command.back() == '*' ? command.size() - 5: std::string::npos));
+        // Convert arguments (add -- to each group, remove all =).
+        // ts=120 ac ic sy=cpp -> --ts 120 --ac --ic --sy cpp
+        std::regex re("[0-9a-z=]+");
+        text = std::regex_replace(text, re, "--&", std::regex_constants::format_sed);
+        std::replace(text.begin(), text.end(), '=', ' ');
         wxExCmdLine(
           {{std::make_tuple("a", "ac", "Auto Complete"), [](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);}},
            {std::make_tuple("C", "ic", "Ignore Case"), [&](bool on){
@@ -243,7 +240,7 @@ wxExEx::wxExEx(wxExSTC* stc)
              if (val.As<std::string>() != "off") 
                m_STC->GetLexer().Set(val.As<std::string>(), true); // allow folding
              else              
-               m_STC->GetLexer().Reset();}}}}).Parse(command.substr(0, 4) + text, true);
+               m_STC->GetLexer().Reset();}}}}).Parse(command.substr(0, 4) + text, toggle);
       }
       return true;}},
     {":so", [&](const std::string& command) {

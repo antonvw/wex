@@ -212,7 +212,7 @@ bool wxExLexers::LoadDocument()
 
   if (!result)
   {
-    wxLogError("Error: %s at offset: %d", result.description(), (int)result.offset);
+    wxExXmlError(m_FileName, &result);
     return false;
   }
   

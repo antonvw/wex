@@ -3,9 +3,9 @@
 function substitute 
 {
   sed -i "s/SOME.*/syncped localization file $1/" $1
-  sed -i "s/YEAR/2016/" $1
+  sed -i "s/YEAR/2017/" $1
   sed -i "s/PACKAGE/syncped/" $1
-  sed -i "s/VERSION/3.1/" $1
+  sed -i "s/VERSION/17.04/" $1
   sed -i "/FIRST AUTHOR.*/d" $1 
   sed -i "s/charset=CHARSET/charset=UTF-8/" $1 
 }
@@ -15,7 +15,6 @@ locs="../*.cpp ../*.h"
 
 # create pot file
 xgettext -F -k_ -o syncped.pot --copyright-holder="A.M. van Wezenbeek" $locs
-substitute syncped.pot
 
 # merge (join) all po files
 for f in *.po; do

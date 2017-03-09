@@ -150,7 +150,7 @@ Frame::Frame(App* app)
     .MinSize(250, 100)
     .Caption(_("Process")));
         
-  const wxString perspective = wxConfigBase::Get()->Read("Perspective");
+  wxString perspective = wxConfigBase::Get()->Read("Perspective");
 
   if (perspective.empty())
   {
@@ -762,13 +762,15 @@ void Frame::OnCommand(wxCommandEvent& event)
       
       if (editor->GetFileName() == wxExLexers::Get()->GetFileName())
       {
-        wxExLexers::Get()->LoadDocument();
-        m_Editors->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER);
+        if (wxExLexers::Get()->LoadDocument())
+        {
+          m_Editors->ForEach<wxExSTC>(ID_ALL_STC_SET_LEXER);
 
-        // As the lexer might have changed, update status bar field as well.
 #if wxUSE_STATUSBAR
-        UpdateStatusBar(editor, "PaneLexer");
+          // As the lexer might have changed, update status bar field as well.
+          UpdateStatusBar(editor, "PaneLexer");
 #endif
+        }
       }
       else if (editor->GetFileName() == wxExMenus::GetFileName())
       {
@@ -1370,7 +1372,7 @@ void Frame::StatusBarClickedRight(const std::string& pane)
 {
   if (pane == "PaneLexer" || pane == "PaneTheme")
   {
-    wxString match;
+    std::string match;
     
     if (pane == "PaneLexer")
     {
@@ -1395,20 +1397,22 @@ void Frame::StatusBarClickedRight(const std::string& pane)
       match = wxExLexers::Get()->GetTheme();
     }
     
-    OpenFile(wxExLexers::Get()->GetFileName(), STC_WIN_DEFAULT, match.ToStdString());
+    OpenFile(wxExLexers::Get()->GetFileName(), STC_WIN_DEFAULT, match);
   }
   else if (pane == "PaneMacro")
   {
     if (wxExViMacros::GetFileName().FileExists())
     {
       OpenFile(wxExViMacros::GetFileName(), 0, 
-        " name=\"" + GetStatusText(pane) + "\"");
+        !GetStatusText(pane).empty() ? " name=\"" + GetStatusText(pane) + "\"":
+        std::string());
     }
   }
   else if (pane == "PaneVCS")
   {
-    OpenFile(wxExMenus::GetFileName(), 0, (GetStatusText(pane) != "Auto" ? 
-      GetStatusText(pane): std::string()));
+    OpenFile(wxExMenus::GetFileName(), 0, 
+      GetStatusText(pane) != "Auto" ? GetStatusText(pane): 
+      std::string());
   }
   else
   {

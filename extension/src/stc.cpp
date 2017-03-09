@@ -70,6 +70,9 @@ public:
     std::make_tuple(_("Print flags"), ITEM_TEXTCTRL_INT, wxSTC_PRINT_BLACKONWHITE),
     std::make_tuple(_("Scroll bars"), ITEM_CHECKBOX, true),
     std::make_tuple(_("Show mode"), ITEM_CHECKBOX, true),
+#if wxCHECK_VERSION(3,1,1)
+    std::make_tuple(_("Tab draw mode"), ITEM_TEXTCTRL_INT, wxSTC_TD_LONGARROW),
+#endif
     std::make_tuple(_("Tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
     std::make_tuple(_("Tab width"), ITEM_TEXTCTRL_INT, 2),
     std::make_tuple(_("Text font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
@@ -457,6 +460,11 @@ int wxExSTC::ConfigDialog(
                {wxSTC_WRAPVISUALFLAG_END, _("End")},
                {wxSTC_WRAPVISUALFLAG_START, _("Start")},
                {wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")}}, true, 4},
+#if wxCHECK_VERSION(3,1,1)
+             {_("Tab draw mode"), {
+               {wxSTC_TD_LONGARROW, _("Longarrow")},
+               {wxSTC_TD_STRIKEOUT, _("Strikeout")}}, true, 2},
+#endif
              {_("Whitespace visible"), {
                {wxSTC_WS_INVISIBLE, _("Off")},
                {wxSTC_WS_VISIBLEAFTERINDENT, _("After indent")},
@@ -466,7 +474,7 @@ int wxExSTC::ConfigDialog(
 #else
                },
 #endif  
-               true, 4},
+               true, 2},
              {_("Wrap line"), {
                {wxSTC_WRAP_NONE, _("None")},
                {wxSTC_WRAP_WORD, _("Word")},
@@ -601,6 +609,9 @@ void wxExSTC::ConfigGet(bool init)
   SetIndentationGuides( cfg->ReadBool(_("Indentation guide"), false));
   SetMarginWidth(m_MarginDividerNumber,  cfg->ReadLong(_("Divider"), 0));
   SetPrintColourMode(cfg->ReadLong(_("Print flags"), 0));
+#if wxCHECK_VERSION(3,1,1)
+  SetTabDrawMode(cfg->ReadLong(_("Tab draw mode"), wxSTC_TD_LONGARROW));
+#endif
   SetTabWidth(cfg->ReadLong(_("Tab width"), 0));
   SetUseHorizontalScrollBar(cfg->ReadBool(_("Scroll bars"), true));
   SetUseTabs(cfg->ReadBool(_("Use tabs"), false));
@@ -610,7 +621,7 @@ void wxExSTC::ConfigGet(bool init)
   SetWrapMode(cfg->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
   SetWrapVisualFlags(cfg->ReadLong(_("Wrap visual flags"),  wxSTC_WRAPVISUALFLAG_END));
   m_vi.Use(cfg->ReadBool(_("vi mode"), false));
-  
+
   ShowLineNumbers(cfg->ReadBool(_("Line numbers"), false));
 
   m_Link.SetFromConfig();
@@ -986,12 +997,13 @@ void wxExSTC::GuessType()
   // If we have a modeline comment.
   if (
     m_vi.GetIsActive() && 
-     (wxExMatch("vi: *(set [a-z0-9:=! ]+)", text, v) > 0 ||
-      wxExMatch("vi: *(set [a-z0-9:=! ]+)", text2, v) > 0))
+     (wxExMatch("vi: *(set [a-z0-9:= ]+)", text, v) > 0 ||
+      wxExMatch("vi: *(set [a-z0-9:= ]+)", text2, v) > 0))
   {
-    if (!m_vi.Command(":" + v[0]))
+    if (!m_vi.Command(":" + v[0] + "*")) // add * to indicate modelin
     {
       wxLogStatus("Could not apply vi settings");
+      return;
     }
   }
 
@@ -1052,7 +1064,12 @@ void wxExSTC::Initialize(bool file_exists)
     SetZoom(m_Zoom);
   }
 
-  UsePopUp(false); // we have our own
+  // we have our own popup
+#if wxCHECK_VERSION(3,1,1)
+  UsePopUp(wxSTC_POPUP_NEVER);
+#else
+  UsePopUp(false);
+#endif
 
   const int accels = 20; // take max number of entries
   wxAcceleratorEntry entries[accels];
@@ -1166,8 +1183,7 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_STC_AUTOCOMP_SELECTION, [=](wxStyledTextEvent& event) {
     if (m_vi.GetIsActive())
     {
-      const std::string command(wxString(
-        event.GetText().Mid(m_AutoComplete.size())).ToStdString());
+      const std::string command(event.GetText().substr(m_AutoComplete.size()));
       if (!command.empty() && !m_vi.Command(command))
       {
         wxLogStatus("Autocomplete failed");

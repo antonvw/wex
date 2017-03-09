@@ -2,7 +2,7 @@
 // Name:      stcfile.cpp
 // Purpose:   Implementation of class wxExSTCFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -27,12 +27,7 @@ void CheckWellFormed(wxExSTC* stc, const wxExFileName& fn)
     
     if (!result)
     {
-      wxLogError("Error: %s at offset: %d", result.description(), (int)result.offset);
-
-      if (result.offset != 0)
-      {
-        stc->GetVi().Command(std::to_string(result.offset) + "|");
-      }
+      wxExXmlError(fn, &result, stc);
     }
   }
 }

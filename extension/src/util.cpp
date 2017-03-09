@@ -1029,20 +1029,25 @@ void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< std::string > &
 }
 
 void wxExXmlError(
-  const char* filename, 
-  const pugi::xml_parse_result* result)
+  const wxExFileName& filename, 
+  const pugi::xml_parse_result* result,
+  wxExSTC* stc)
 {
   wxLogError("Error: %s at offset: %d", result->description(), (int)result->offset);
 
-  wxExManagedFrame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame);
-  
-  if (frame != nullptr && filename != nullptr)
+  if (stc == nullptr)
   {
-    wxExSTC* stc = frame->OpenFile(wxExFileName(filename));
+    wxExManagedFrame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame);
 
-    if (stc != nullptr && result->offset != 0)
+    if (frame != nullptr)
     {
-      stc->GetVi().Command(std::to_string(result->offset) + "|");
+      stc = frame->OpenFile(filename);
     }
+  }
+
+  if (stc != nullptr && result->offset != 0)
+  {
+    stc->GetVi().Command("gg");
+    stc->GetVi().Command(std::to_string(result->offset) + "|");
   }
 }

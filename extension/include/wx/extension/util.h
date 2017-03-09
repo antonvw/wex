@@ -378,5 +378,9 @@ void wxExVCSExecute(
 
 /// Shows xml error.
 void wxExXmlError(
-  const char* filename, 
-  const pugi::xml_parse_result* result);
+  /// xml filename that has error
+  const wxExFileName& filename, 
+  /// result of parsing
+  const pugi::xml_parse_result* result,
+  /// stc component contaning the filename
+  wxExSTC* stc = nullptr);

@@ -180,7 +180,7 @@ bool wxExListViewFile::DoFileLoad(bool synced)
 
   if (!result)
   {
-    wxExXmlError(GetFileName().GetFullPath().c_str(), &result);
+    wxExXmlError(GetFileName(), &result);
     return false;
   }
 

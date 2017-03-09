@@ -3,7 +3,7 @@
 Name:      lexers.xsl
 Purpose:   Stylesheet for lexers.xml
 Author:    Anton van Wezenbeek
-Copyright: (c) 2014 Anton van Wezenbeek
+Copyright: (c) 2017 Anton van Wezenbeek
 -->
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -73,9 +73,6 @@ Copyright: (c) 2014 Anton van Wezenbeek
                 <th>value</th>
               </tr>
 
-              <xsl:variable name="offset">-1
-              </xsl:variable>
-          
               <xsl:for-each select="def">
                 <tr>
                   <td><xsl:value-of select="@style"/></td>

@@ -8,7 +8,7 @@ one of these applications, being a full featured source code text editor.
 
 - [wxWidgets 3.x](http://www.wxwidgets.org/) or [this fork](https://github.com/antonvw/wxWidgets/)
   
-- [cmake](http://www.cmake.org/) to generate makefiles   
+- [cmake](http://www.cmake.org/)    
 
 # Uses
 
@@ -22,7 +22,7 @@ one of these applications, being a full featured source code text editor.
 
 - [pugixml lib](https://github.com/zeux/pugixml)    
 
-- [tclap lib](https://github.com/TCLAP/tclap)    
+- [tclap lib](http://tclap.sourceforge.net/)    
 
 # Build process 
 

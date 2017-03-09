@@ -392,8 +392,8 @@ TEST_CASE("wxEx")
   
   SUBCASE("wxExTranslate")
   {
-    REQUIRE(!wxExTranslate(
-      "hello @PAGENUM@ from @PAGESCNT@", 1, 2).find("@") != std::string::npos);
+    REQUIRE(wxExTranslate(
+      "hello @PAGENUM@ from @PAGESCNT@", 1, 2).find("@") == std::string::npos);
   }
       
   SUBCASE("wxExVCSCommandOnSTC")
@@ -407,5 +407,12 @@ TEST_CASE("wxEx")
   SUBCASE("wxExVCSExecute")
   {
     // wxExVCSExecute(GetFrame(), 0, std::vector< wxString > {}); // calls dialog
+  }
+
+  SUBCASE("wxExXmlError")
+  {
+    wxExFileName fn("xml-err.xml");
+    pugi::xml_parse_result pr;
+    wxExXmlError(fn, &pr);
   }
 }

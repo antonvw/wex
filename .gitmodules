@@ -1,9 +1,9 @@
-[submodule "extension/tclap"]
-	path = extension/tclap
-	url = https://github.com/TCLAP/tclap.git
 [submodule "extension/test/doctest"]
 	path = extension/test/doctest
 	url = https://github.com/onqtam/doctest.git
 [submodule "extension/pugixml"]
 	path = extension/pugixml
 	url = https://github.com/zeux/pugixml.git
+[submodule "extension/tclap"]
+	path = extension/tclap
+	url = git://git.code.sf.net/p/tclap/code
