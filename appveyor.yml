@@ -22,7 +22,7 @@ install:
   - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.1-lib.7z'
   - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.1-locale.7z'
   - cmd: 7z x wxWidgets-3.1.1-include.7z -oC:\wxWidgets
-  - cmd: 7z x wxWidgets-3.1.1-lib.7z -oC:\wxWidgets
+  - cmd: 7z x wxWidgets-3.1.1-lib.7z -oC:\wxWidgets\lib
   - cmd: 7z x wxWidgets-3.1.1-locale.7z -oC:\wxWidgets
 
 before_build:
