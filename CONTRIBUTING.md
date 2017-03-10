@@ -15,7 +15,7 @@
 - icons and bitmaps
   - menu and toolbar bitmaps are from wxWidgets, using wxArtProvider
 
-  - application icons from [Tango](http://tango.freedesktop.org/Tango_Desktop_Project),   
+  - application icons from [IconFinder](https://www.iconfinder.com/icons/1495216/article_circle_edit_paper_pencil_icon#size=128),   
   [converted to ico](http://www.convertico.com/),   
   [converted to xpm using GIMP](http://www.gimp.org/),   
   [convert to mac icns (first make 128 by 128 icon)](http://iconverticons.com/)

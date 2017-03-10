@@ -7,14 +7,14 @@ branches:
 clone_folder: c:\projects\wxex
 
 platform:
-  - x86
+  - x64
 
 configuration:
   - Release
 
 matrix:
   allow_failures:
-    - platform: x86
+    - platform: x64
 
 install:
   - git submodule init && git submodule update --init --recursive
