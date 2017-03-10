@@ -578,9 +578,9 @@ int wxExListView::ConfigDialog(
 {
   ListViewDefaults use;
   
-  static const std::vector<wxExItem> items {
+  const std::vector<wxExItem> items {
     {wxString("notebook"), {
-      {_("General").c_str(),
+      {_("General"),
         {{_("Header"), ITEM_CHECKBOX},
          {_("Single selection"), ITEM_CHECKBOX},
          {_("Comparator"), ITEM_FILEPICKERCTRL},
@@ -592,7 +592,7 @@ int wxExListView::ConfigDialog(
          {_("Rulers"),  {
            {wxLC_HRULES, _("Horizontal rulers")},
            {wxLC_VRULES, _("Vertical rulers")}}, false}}},
-      {_("Font").c_str(),
+      {_("Font"),
 #ifndef __WXOSX__
         {{_("List font"), ITEM_FONTPICKERCTRL},
          {_("List tab font"), ITEM_FONTPICKERCTRL}}},
@@ -600,7 +600,7 @@ int wxExListView::ConfigDialog(
         {{_("List font")},
          {_("List tab font")}}},
 #endif
-      {_("Colour").c_str(),
+      {_("Colour"),
         {{_("Background colour"), ITEM_COLOURPICKERWIDGET},
          {_("Foreground colour"), ITEM_COLOURPICKERWIDGET},
          {_("Readonly colour"), ITEM_COLOURPICKERWIDGET}}}}}};

@@ -15,6 +15,7 @@
 #include <wx/any.h>
 #include <wx/imaglist.h>
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
+#include <wx/slider.h>
 #include <wx/string.h>
 #include <wx/validate.h>
 

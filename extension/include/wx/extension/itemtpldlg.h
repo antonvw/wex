@@ -2,12 +2,15 @@
 // Name:      itemtpldlg.h
 // Purpose:   Declaration of wxExItemTemplateDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <vector>
+#include <wx/app.h>
+#include <wx/checkbox.h>
+#include <wx/checklst.h>
 #include <wx/filepicker.h>
 #include <wx/tglbtn.h> // for wxEVT_TOGGLEBUTTON
 #include <wx/extension/dialog.h>
