@@ -524,7 +524,8 @@ if(wxWidgets_FIND_STYLE STREQUAL "win32")
     elseif(CMAKE_CL_64)
       set(WX_LIB_DIR_PREFIX vc_x64)
     else()
-      set(WX_LIB_DIR_PREFIX vc)
+      # TODO: FIXME
+      set(WX_LIB_DIR_PREFIX vc_x64)
     endif()
     if(BUILD_SHARED_LIBS)
       find_path(wxWidgets_LIB_DIR
