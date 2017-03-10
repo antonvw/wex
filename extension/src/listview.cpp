@@ -579,8 +579,8 @@ int wxExListView::ConfigDialog(
   ListViewDefaults use;
   
   static const std::vector<wxExItem> items {
-    {"notebook", {
-      {_("General"),
+    {wxString("notebook"), {
+      {_("General").c_str(),
         {{_("Header"), ITEM_CHECKBOX},
          {_("Single selection"), ITEM_CHECKBOX},
          {_("Comparator"), ITEM_FILEPICKERCTRL},
@@ -592,7 +592,7 @@ int wxExListView::ConfigDialog(
          {_("Rulers"),  {
            {wxLC_HRULES, _("Horizontal rulers")},
            {wxLC_VRULES, _("Vertical rulers")}}, false}}},
-      {_("Font"),
+      {_("Font").c_str(),
 #ifndef __WXOSX__
         {{_("List font"), ITEM_FONTPICKERCTRL},
          {_("List tab font"), ITEM_FONTPICKERCTRL}}},
@@ -600,7 +600,7 @@ int wxExListView::ConfigDialog(
         {{_("List font")},
          {_("List tab font")}}},
 #endif
-      {_("Colour"),
+      {_("Colour").c_str(),
         {{_("Background colour"), ITEM_COLOURPICKERWIDGET},
          {_("Foreground colour"), ITEM_COLOURPICKERWIDGET},
          {_("Readonly colour"), ITEM_COLOURPICKERWIDGET}}}}}};
@@ -1128,8 +1128,8 @@ int wxCALLBACK CompareFunctionCB(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortDa
 
     if (!wxExFindReplaceData::Get()->MatchCase())
     {
-      if (ascending) return strcmp(str1.Upper(), str2.Upper());
-      else           return strcmp(str2.Upper(), str1.Upper());
+      if (ascending) return strcmp(str1.Upper().c_str(), str2.Upper().c_str());
+      else           return strcmp(str2.Upper().c_str(), str1.Upper().c_str());
     }
     else
     {

@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wxExVCS class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <map>
@@ -61,7 +61,7 @@ int wxExVCS::ConfigDialog(
     return wxID_CANCEL;
   }
   
-  wxExItem::Choices choices{{(long)VCS_NONE, _("None")}};
+  wxExItem::Choices choices{{(long)VCS_NONE, _("None").c_str()}};
   
   // Using auto vcs is not useful if we only have one vcs.
   if (m_Entries.size() > 1)

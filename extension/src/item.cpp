@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wxExItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -171,10 +171,11 @@ void wxExItem::AddItems(
   m_Page = page.first;
   int use_cols = 1;
   if (m_MajorDimension != -1) use_cols = m_MajorDimension;
-  if (m_Page.Contains(":"))
+  const size_t col = m_Page.find(":");
+  if (col != std::string::npos)
   {
-    use_cols = atoi(page.first.AfterFirst(':'));
-    m_Page = page.first.BeforeFirst(':');
+    use_cols = std::stoi(m_Page.substr(col + 1).ToStdString());
+    m_Page = m_Page.substr(0, col);
   }
 
   wxBookCtrlBase* bookctrl = (wxBookCtrlBase*)m_Window;
@@ -572,8 +573,8 @@ const wxAny wxExItem::GetValue() const
     case ITEM_SPINCTRLDOUBLE: any = ((wxSpinCtrlDouble* )m_Window)->GetValue(); break;
     case ITEM_STC: any = ((wxStyledTextCtrl* )m_Window)->GetValue(); break;
     case ITEM_TEXTCTRL: any = ((wxTextCtrl* )m_Window)->GetValue(); break;
-    case ITEM_TEXTCTRL_FLOAT: any = atof(((wxTextCtrl* )m_Window)->GetValue()); break;
-    case ITEM_TEXTCTRL_INT: any = atoi(((wxTextCtrl* )m_Window)->GetValue()); break;
+    case ITEM_TEXTCTRL_FLOAT: any = atof(((wxTextCtrl* )m_Window)->GetValue().c_str()); break;
+    case ITEM_TEXTCTRL_INT: any = atoi(((wxTextCtrl* )m_Window)->GetValue().c_str()); break;
     case ITEM_TOGGLEBUTTON: any = ((wxToggleButton* )m_Window)->GetValue(); break;
     
     case ITEM_CHECKLISTBOX_BIT: {

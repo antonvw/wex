@@ -225,8 +225,10 @@ wxExVi::wxExVi(wxExSTC* stc)
           else d = m_LastFindCharCommand.front();
       }
       REPEAT(
-        if (!GetSTC()->FindNext(std::string(1, c), 
-          GetSearchFlags() & ~wxSTC_FIND_REGEXP, islower(d)))
+        if (!GetSTC()->FindNext(
+          std::string(1, c), 
+          GetSearchFlags() & ~wxSTC_FIND_REGEXP, 
+          islower(d) > 0))
         {
           m_Command.clear();
           return false;
