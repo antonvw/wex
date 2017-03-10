@@ -23,7 +23,7 @@ matrix:
     - os: osx
       compiler: clang++
       env: CXX=clang++
-      osx_image: xcode8
+      osx_image: xcode8.2
   allow_failures:
     - os: osx
 
