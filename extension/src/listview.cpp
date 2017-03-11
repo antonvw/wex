@@ -580,7 +580,7 @@ int wxExListView::ConfigDialog(
   
   std::vector<wxExItem> items;
 
-  items.push_back(wxExItem{wxString("notebook"), {
+  items.push_back(wxExItem{wxString("notebook"), wxExItem::ItemsNotebook {
       {_("General"),
         {{_("Header"), ITEM_CHECKBOX},
          {_("Single selection"), ITEM_CHECKBOX},

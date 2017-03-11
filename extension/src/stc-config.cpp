@@ -128,7 +128,7 @@ int wxExSTC::ConfigDialog(
   
   std::vector<wxExItem> items;
 
-  items.push_back(wxExItem{wxString("stc-notebook"), {
+  items.push_back(wxExItem{wxString("stc-notebook"), wxExItem::ItemsNotebook {
       {_("General"),
         {{wxString("stc-subnotebook"), {
           {_("Page1"), 
