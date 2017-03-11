@@ -126,7 +126,9 @@ int wxExSTC::ConfigDialog(
   STCDefaults use;
   wxConfigBase* cfg = use.Get();
   
-  const std::vector<wxExItem> items {wxExItem{wxString("stc-notebook"), {
+  std::vector<wxExItem> items;
+
+  items.push_back(wxExItem{wxString("stc-notebook"), {
       {_("General"),
         {{wxString("stc-subnotebook"), {
           {_("Page1"), 
@@ -218,7 +220,7 @@ int wxExSTC::ConfigDialog(
            {wxSTC_PRINT_COLOURONWHITE, _("Colour on white")},
            {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}}, true, 1}}},
       {_("Directory"),
-        {{_("Include directory"), ITEM_LISTVIEW, wxAny(), false, wxID_ANY, LABEL_NONE}}}}}};
+        {{_("Include directory"), ITEM_LISTVIEW, wxAny(), false, wxID_ANY, LABEL_NONE}}}}});
 
   int buttons = wxOK | wxCANCEL;
 
