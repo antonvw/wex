@@ -12,6 +12,8 @@ platform:
 configuration:
   - Release
 
+image: Visual Studio 2017
+
 matrix:
   allow_failures:
     - platform: x64
