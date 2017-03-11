@@ -126,8 +126,7 @@ int wxExSTC::ConfigDialog(
   STCDefaults use;
   wxConfigBase* cfg = use.Get();
   
-  const std::vector<wxExItem> items {
-    {wxString("stc-notebook"), {
+  const std::vector<wxExItem> items {wxExItem{wxString("stc-notebook"), {
       {_("General"),
         {{wxString("stc-subnotebook"), {
           {_("Page1"), 
