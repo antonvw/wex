@@ -468,7 +468,7 @@ Frame::Frame(App* app)
     wxFileDialog dlg(this,
       _("Select Projects"),
        (!GetProjectHistory().GetHistoryFile().empty() ? 
-           wxPathOnly(GetProjectHistory().GetHistoryFile()): wxExConfigDir()),
+           wxPathOnly(GetProjectHistory().GetHistoryFile()).ToStdString(): wxExConfigDir()),
       wxEmptyString,
       m_ProjectWildcard,
       wxFD_OPEN | wxFD_MULTIPLE);

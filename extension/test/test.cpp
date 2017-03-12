@@ -69,7 +69,7 @@ void SetEnvironment(const std::string& dir)
 {
   if (!wxDirExists(dir))
   {
-    (void)system("mkdir -p " + wxString(dir));
+    (void)system(std::string("mkdir -p " + dir).c_str());
   }
 
 #ifdef __UNIX__

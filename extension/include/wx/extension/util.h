@@ -32,6 +32,9 @@ class wxExVCSCommand;
 
 /*! \file */
 
+// This one is necessary for translation macro if STL is enabled.
+const char* _X(const char* text);
+
 /// Aligns text.
 const std::string wxExAlignText(
   /// lines to align

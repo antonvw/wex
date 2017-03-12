@@ -580,31 +580,31 @@ int wxExListView::ConfigDialog(
   
   std::vector<wxExItem> items;
 
-  items.push_back(wxExItem{wxString("notebook"), wxExItem::ItemsNotebook {
-      {_("General"),
-        {{_("Header"), ITEM_CHECKBOX},
-         {_("Single selection"), ITEM_CHECKBOX},
-         {_("Comparator"), ITEM_FILEPICKERCTRL},
-         {_("Sort method"), {
-           {SORT_ASCENDING, _("Sort ascending")},
-           {SORT_DESCENDING, _("Sort descending")},
-           {SORT_TOGGLE, _("Sort toggle")}}},
-         {_("Context size"), 0, 80},
-         {_("Rulers"),  {
-           {wxLC_HRULES, _("Horizontal rulers")},
-           {wxLC_VRULES, _("Vertical rulers")}}, false}}},
-      {_("Font"),
+  items.push_back(wxExItem{"notebook", wxExItem::ItemsNotebook {
+      {_X("General"),
+        {{_X("Header"), ITEM_CHECKBOX},
+         {_X("Single selection"), ITEM_CHECKBOX},
+         {_X("Comparator"), ITEM_FILEPICKERCTRL},
+         {_X("Sort method"), {
+           {SORT_ASCENDING, _X("Sort ascending")},
+           {SORT_DESCENDING, _X("Sort descending")},
+           {SORT_TOGGLE, _X("Sort toggle")}}},
+         {_X("Context size"), 0, 80},
+         {_X("Rulers"),  {
+           {wxLC_HRULES, _X("Horizontal rulers")},
+           {wxLC_VRULES, _X("Vertical rulers")}}, false}}},
+      {_X("Font"),
 #ifndef __WXOSX__
-        {{_("List font"), ITEM_FONTPICKERCTRL},
-         {_("List tab font"), ITEM_FONTPICKERCTRL}}},
+        {{_X("List font"), ITEM_FONTPICKERCTRL},
+         {_X("List tab font"), ITEM_FONTPICKERCTRL}}},
 #else
-        {{_("List font")},
-         {_("List tab font")}}},
+        {{_X("List font")},
+         {_X("List tab font")}}},
 #endif
-      {_("Colour"),
-        {{_("Background colour"), ITEM_COLOURPICKERWIDGET},
-         {_("Foreground colour"), ITEM_COLOURPICKERWIDGET},
-         {_("Readonly colour"), ITEM_COLOURPICKERWIDGET}}}}});
+      {_X("Colour"),
+        {{_X("Background colour"), ITEM_COLOURPICKERWIDGET},
+         {_X("Foreground colour"), ITEM_COLOURPICKERWIDGET},
+         {_X("Readonly colour"), ITEM_COLOURPICKERWIDGET}}}}});
 
   if (button_flags & wxAPPLY)
   {

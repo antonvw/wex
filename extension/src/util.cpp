@@ -36,6 +36,15 @@
 #include <wx/extension/vcs.h>
 #include <wx/extension/vimacros.h>
 
+const char* _X(const char* text)
+{
+#if wxUSE_STL
+  return text;
+#else
+  return _(text);
+#endif
+}
+
 const std::string wxExAlignText(
   const std::string& lines, const std::string& header,
   bool fill_out_with_space, bool fill_out, const wxExLexer& lexer)

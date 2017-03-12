@@ -679,9 +679,9 @@ void wxExSTC::GuessType()
   // Get a small sample from this document to detect the file mode.
   const int length = (!HexMode() ? GetTextLength(): m_HexMode.GetBuffer().size());
   const int sample_size = (length > 255 ? 255: length);
-  const std::string text((!HexMode() ? GetTextRange(0, sample_size): 
+  const std::string text((!HexMode() ? GetTextRange(0, sample_size).ToStdString(): 
     m_HexMode.GetBuffer().substr(0, sample_size)));
-  const std::string text2((!HexMode() ? GetTextRange(length - sample_size, length): 
+  const std::string text2((!HexMode() ? GetTextRange(length - sample_size, length).ToStdString(): 
     m_HexMode.GetBuffer().substr(length - sample_size, sample_size)));
 
   std::vector<std::string> v;  
@@ -1095,7 +1095,7 @@ void wxExSTC::Initialize(bool file_exists)
         const std::string prop(tkz.GetNextToken());
         const std::string description(DescribeProperty(prop));
         properties += prop + 
-          (!GetProperty(prop).empty() ? "=" + GetProperty(prop): std::string()) + 
+          (!GetProperty(prop).empty() ? "=" + GetProperty(prop).ToStdString(): std::string()) + 
           (!description.empty() ? ": " + description: std::string()) + "\n";
       }
     }
@@ -1177,7 +1177,7 @@ void wxExSTC::Initialize(bool file_exists)
       return;
     }
 
-    const wxString word = (!GetSelectedText().empty() ? GetSelectedText() : GetWordAtPos(pos));
+    const wxString word = (!GetSelectedText().empty() ? GetSelectedText() : wxString(GetWordAtPos(pos)));
     if (word.empty()) return;
 
     const wxUniChar c = word.GetChar(0);
