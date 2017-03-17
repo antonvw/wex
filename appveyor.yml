@@ -7,14 +7,14 @@ branches:
 clone_folder: c:\projects\wxex
 
 platform:
-  - x64
+  - x86
 
 configuration:
   - Release
 
 matrix:
   allow_failures:
-    - platform: x64
+    - platform: x86
 
 install:
   - git submodule init && git submodule update --init --recursive
@@ -31,7 +31,7 @@ before_build:
   - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PROGRAM_PATH=C:\cygwin\bin -DBUILD_TEST=ON ..
 
 build_script:
-  - msbuild ALL_BUILD.vcxproj /p:Configuration=Release /p:Platform=x64
+  - msbuild ALL_BUILD.vcxproj /p:Configuration=Release
   - ..\ci\pack.bat
 
 test: OFF
