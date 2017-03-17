@@ -127,9 +127,7 @@ int wxExSTC::ConfigDialog(
   STCDefaults use;
   wxConfigBase* cfg = use.Get();
   
-  std::vector<wxExItem> items;
-
-  items.push_back(wxExItem{"stc-notebook", wxExItem::ItemsNotebook {
+  static const std::vector<wxExItem> items{{"stc-notebook", {
       {_X("General"),
         {{"stc-subnotebook", {
           {_X("Page1"), 
@@ -195,10 +193,16 @@ int wxExSTC::ConfigDialog(
          { _X("Edge line"), {
            {wxSTC_EDGE_NONE, _X("None")},
            {wxSTC_EDGE_LINE, _X("Line")},
-           {wxSTC_EDGE_BACKGROUND, _X("Background")}}, true, 1}}},
+           {wxSTC_EDGE_BACKGROUND, _X("Background")}
+#if wxCHECK_VERSION(3,1,0)
+           ,{wxSTC_EDGE_MULTILINE, _X("Multiline")}},
+#else
+           },
+#endif
+           true, 1}}},
       {_X("Margin"),
-        {{_X("Tab width"), 1, (int)cfg->ReadLong(_("Edge column"), 0)},
-         {_X("Indent"), 0, (int)cfg->ReadLong(_("Edge column"), 0)},
+        {{_X("Tab width"), 1, 500},
+         {_X("Indent"), 0, 500},
          {_X("Divider"), 0, 40},
          {_X("Folding"), 0, 40},
          {_X("Line number"), 0, 100},
@@ -221,7 +225,7 @@ int wxExSTC::ConfigDialog(
            {wxSTC_PRINT_COLOURONWHITE, _X("Colour on white")},
            {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _X("Colour on white normal")}}, true, 1}}},
       {_X("Directory"),
-        {{_X("Include directory"), ITEM_LISTVIEW, wxAny(), false, wxID_ANY, LABEL_NONE}}}}});
+        {{_X("Include directory"), ITEM_LISTVIEW, wxAny(), false, wxID_ANY, LABEL_NONE}}}}}};
 
   int buttons = wxOK | wxCANCEL;
 

@@ -29,7 +29,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
   
   add_custom_target(lcov-coveralls
     # update coveralls
-    COMMAND coveralls-lcov --repo-token sOcBNDSlOjLSH3vs636zytnjuQtRWKLGP app.run
+    COMMAND coveralls-lcov --repo-token ${COVERALLS_TOKEN} app.run
     # cleanup
     COMMAND rm -f app.base app.run)
 endif ()

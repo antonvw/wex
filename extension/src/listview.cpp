@@ -578,9 +578,7 @@ int wxExListView::ConfigDialog(
 {
   ListViewDefaults use;
   
-  std::vector<wxExItem> items;
-
-  items.push_back(wxExItem{"notebook", wxExItem::ItemsNotebook {
+  static const std::vector<wxExItem> items{{"notebook", {
       {_X("General"),
         {{_X("Header"), ITEM_CHECKBOX},
          {_X("Single selection"), ITEM_CHECKBOX},
@@ -604,7 +602,7 @@ int wxExListView::ConfigDialog(
       {_X("Colour"),
         {{_X("Background colour"), ITEM_COLOURPICKERWIDGET},
          {_X("Foreground colour"), ITEM_COLOURPICKERWIDGET},
-         {_X("Readonly colour"), ITEM_COLOURPICKERWIDGET}}}}});
+         {_X("Readonly colour"), ITEM_COLOURPICKERWIDGET}}}}}};
 
   if (button_flags & wxAPPLY)
   {

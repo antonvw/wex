@@ -140,6 +140,15 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
+#if wxCHECK_VERSION(3,1,0)
+  if (GetEdgeMode() == wxSTC_EDGE_MULTILINE)
+  {
+    menu.AppendSeparator();
+    menu.Append(ID_EDIT_EDGE_SET, _("Edge column"));
+    menu.Append(ID_EDIT_EDGE_CLEAR, _("Edge column reset"));
+  }
+#endif
+
   if (m_MenuFlags & STC_MENU_DEBUG)
   {
     m_Frame->GetDebug()->AddMenu(&menu, true);
@@ -1206,6 +1215,12 @@ void wxExSTC::Initialize(bool file_exists)
       wxExClipboardAdd(text.ToStdString());
     }}, ID_EDIT_HEX_DEC_CALLTIP);
   
+#if wxCHECK_VERSION(3,1,0)
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {MultiEdgeClearAll();}, ID_EDIT_EDGE_CLEAR);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    MultiEdgeAddLine(GetColumn(GetCurrentPos()), GetEdgeColour());}, ID_EDIT_EDGE_SET);
+#endif
+
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LowerCase();}, ID_EDIT_LOWERCASE);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {UpperCase();}, ID_EDIT_UPPERCASE);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FoldAll();}, ID_EDIT_FOLD_ALL);

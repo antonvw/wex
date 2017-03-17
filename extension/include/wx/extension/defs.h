@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Common defs for all wxExtension classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -48,6 +48,9 @@ enum wxExId
 
   ID_EDIT_FIND_NEXT,
   ID_EDIT_FIND_PREVIOUS,
+
+  ID_EDIT_EDGE_CLEAR,
+  ID_EDIT_EDGE_SET,
   
   ID_FIND_FIRST,
   ID_FIND_LAST = ID_FIND_FIRST + FIND_MAX_FINDS,

@@ -63,7 +63,7 @@ wxExCTags::~wxExCTags()
 
 bool wxExCTags::Find(const std::string& name) const
 {
-  if (m_File == nullptr) return false;
+  if (m_File == nullptr || name.empty()) return false;
 
   tagEntry entry;
   
@@ -90,7 +90,7 @@ bool wxExCTags::Find(const std::string& name) const
   else
   {
     wxArrayString as;
-    for (const auto it : v) as.Add(it.second.GetName());
+    for (const auto& it : v) as.Add(it.second.GetName());
     wxSingleChoiceDialog dialog(m_Frame,
       _("Input") + ":", 
       _("Select File"),

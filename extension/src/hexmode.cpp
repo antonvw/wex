@@ -162,7 +162,7 @@ void wxExHexMode::Deactivate()
   m_STC->SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
   m_STC->SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
   m_STC->ClearDocument(false);
-  m_STC->AppendText(m_Buffer);
+  m_STC->AppendTextRaw(m_Buffer.data(), m_Buffer.size());
   m_STC->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
 }
 

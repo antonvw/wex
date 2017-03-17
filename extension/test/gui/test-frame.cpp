@@ -2,7 +2,7 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -73,14 +73,14 @@ TEST_CASE("wxExFrame")
   
   wxCommandEvent event(wxEVT_MENU, wxID_OPEN);
   stc->GetVi().SetRegisterYank("test.h");
-  for (const auto str : std::vector<wxString> {
+  for (const auto& str : std::vector<wxString> {
     "xxx", "+10 test", "`pwd`", "0"})
   {
     event.SetString(str);
     wxPostEvent(GetFrame(), event);
   }
   
-  for (const auto id : std::vector<int> {
+  for (const auto& id : std::vector<int> {
     wxID_FIND, wxID_REPLACE, 
     ID_VIEW_MENUBAR, ID_VIEW_STATUSBAR, ID_VIEW_TITLEBAR}) 
   {

@@ -31,7 +31,7 @@ before_build:
   - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PROGRAM_PATH=C:\cygwin\bin -DBUILD_TEST=ON ..
 
 build_script:
-  - msbuild ALL_BUILD.vcxproj /p:Configuration=Release
+  - msbuild ALL_BUILD.vcxproj /p:Configuration=Release /p:Platform=x64
   - ..\ci\pack.bat
 
 test: OFF
