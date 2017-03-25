@@ -19,6 +19,8 @@ class wxExDirTraverser: public wxDirTraverser
 public:
   explicit wxExDirTraverser(wxExDir& dir)
     : m_Dir(dir){;}
+
+  auto GetMatches() const {return m_Matches;};
   
   virtual wxDirTraverseResult OnDir(const wxString& dirname) override
   {
@@ -46,12 +48,14 @@ public:
       m_Dir.GetFileSpec()))
     {
       if (!m_Dir.OnFile(filename.ToStdString())) return wxDIR_STOP;
+      m_Matches++;
     }
 
     return wxDIR_CONTINUE;
   }
 private:
   wxExDir& m_Dir;
+  int m_Matches = 0;
 };
 
 wxExDir::wxExDir(const std::string& dir, const std::string& filespec, int flags)
@@ -78,11 +82,11 @@ int wxExDir::FindFiles()
 
   wxExDirTraverser traverser(*this);
   
-  const size_t retValue = m_Dir.Traverse(traverser, std::string(), m_Flags);
+  m_Dir.Traverse(traverser, std::string(), m_Flags);
 
   Stop();
 
-  return retValue;
+  return traverser.GetMatches();
 }
 
 #if wxUSE_GUI

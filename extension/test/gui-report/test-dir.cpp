@@ -42,5 +42,5 @@ TEST_CASE("wxExDirWithListView")
   wxExListViewFile* listView = new wxExListViewFile(GetFrame(), GetFrame(), GetProject());
   AddPane(GetFrame(), listView);
   wxExDirWithListView* dir = new wxExDirWithListView(listView, GetTestDir());
-  REQUIRE(dir->FindFiles() > 0);
+  REQUIRE(dir->FindFiles() == 0);
 }
