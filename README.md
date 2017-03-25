@@ -63,6 +63,9 @@ one of these applications, being a full featured source code text editor.
 
 ## Building wxExtension        
 
+- clone with submodules:   
+    `git clone --recursive`   
+
 - start with:   
     `mkdir build`   
     `cd build`   

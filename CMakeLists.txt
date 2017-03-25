@@ -29,7 +29,7 @@ function(pack)
 
   if (MSVC)
     if (MSVC15)
-      set(msvc "17")
+      set(msvc "14") # use v141 MSVC toolset
     elseif (MSVC14)
       set(msvc "14")
     elseif (MSVC12)
@@ -206,6 +206,7 @@ function(process_po_files)
 endfunction()  
 
 option(BUILD_TEST "Build tests")
+option(ENABLE_GETTEXT "Use gettext for i18n")
 option(wxExUSE_OTL "Oracle Template Library")
 option(wxExUSE_SSS "Sync Socket Server")
 
@@ -214,7 +215,10 @@ if (${wxExUSE_OTL} MATCHES ON)
 endif ()
 
 include(${wxWidgets_USE_FILE})
-include(FindGettext)
+        
+if (ENABLE_GETTEXT)
+  include(FindGettext)
+endif ()
 
 enable_testing()
 

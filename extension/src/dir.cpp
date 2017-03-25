@@ -2,7 +2,7 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of class wxExDir and wxExDirOpenFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -42,7 +42,8 @@ public:
       return wxDIR_STOP;
     }
 
-    if (wxExMatchesOneOf(filename.ToStdString(), m_Dir.GetFileSpec()))
+    if (wxExMatchesOneOf(wxExFileName(filename.ToStdString()).GetFullName(), 
+      m_Dir.GetFileSpec()))
     {
       if (!m_Dir.OnFile(filename.ToStdString())) return wxDIR_STOP;
     }
@@ -77,12 +78,7 @@ int wxExDir::FindFiles()
 
   wxExDirTraverser traverser(*this);
   
-  // Using m_FileSpec only works if it 
-  // contains single spec (*.h), wxDir does not handle multi specs (*.cpp; *.h).
-  const size_t retValue = m_Dir.Traverse(
-    traverser, 
-    (m_FileSpec.find(";") != std::string::npos ? std::string(): m_FileSpec), 
-    m_Flags);
+  const size_t retValue = m_Dir.Traverse(traverser, std::string(), m_Flags);
 
   Stop();
 

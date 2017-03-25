@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -40,7 +40,7 @@ TEST_CASE("wxEx")
     wxExToVectorString(files).Get(), 
     ID_TOOL_REPORT_FIND, 
     false, 
-    report) == 1);
+    report));
   
 #ifdef __UNIX__    
 #ifndef __WXOSX__

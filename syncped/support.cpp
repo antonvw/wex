@@ -60,17 +60,20 @@ DecoratedFrame::DecoratedFrame(App* app)
   
   wxExVCS vcs;
   
-  if (vcs.Use())
+  if (vcs.Use() && wxExVCS::GetCount() > 0)
   {
-    if (wxExVCS::GetCount() > 0)
-    {
-      vcs.SetEntryFromBase();
-      StatusText(vcs.GetName(), "PaneVCS");
-    }
+    vcs.SetEntryFromBase();
+    StatusText(vcs.GetName(), "PaneVCS");
   }
   else
   {
     m_StatusBar->ShowField("PaneVCS", false);
+  }
+  
+  if (wxExLexers::Get()->GetLexers().empty())
+  {
+    m_StatusBar->ShowField("PaneLexer", false);
+    m_StatusBar->ShowField("PaneTheme", false);
   }
   
   m_StatusBar->ShowField("PaneMacro", vi_mode);

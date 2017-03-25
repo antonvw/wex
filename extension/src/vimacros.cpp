@@ -360,6 +360,11 @@ bool wxExViMacros::IsRecordedMacro(const std::string& macro) const
 
 bool wxExViMacros::LoadDocument()
 {
+  if (!GetFileName().FileExists())
+  {
+    return false;
+  }
+
   const pugi::xml_parse_result result = m_doc.load_file(
     GetFileName().GetFullPath().c_str(),
     pugi::parse_default | pugi::parse_comments);

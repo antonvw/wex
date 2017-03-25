@@ -10,11 +10,13 @@ Copyright: (c) 2016, Anton van Wezenbeek
 <menus>
   <!--
    Each <command> will be a menu item, the attribute type indicates
-   how this item will be used, if type is 'popup' the item is only
-   on the popup menu, if type is 'main', the item is only on the
-   main menu, if not given, both on popup and main menu. If the
-   type attribute contains an extra 'separator' text, then the command
-   will be followed by a separator on the menu.
+   how this item will be used:
+     if type is 'popup' the item is only on the popup menu, 
+     if type is 'main', the item is only on the main menu, 
+     if not given, both on popup and main menu. 
+     if type contains an extra 'separator' text, then the command
+     will be followed by a separator on the menu.
+     if type contains 'ellipses' then '...' is appended after the item.
    Each <command> can also have a submenu or subcommand attribute, 
    the former is shown as a submenu using the name as specified.
    The latter is handled the same, but also used as command to execute.

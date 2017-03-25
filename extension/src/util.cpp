@@ -601,14 +601,16 @@ bool wxExMatchesOneOf(const std::string& fullname, const std::string& pattern)
 {
   if (pattern == "*") return true; // asterix matches always.
 
-  const wxString fullname_uppercase = wxString(fullname).Upper();
-
-  wxExTokenizer tkz(wxString(pattern).Upper().ToStdString(), ";");
+  // Make a regex of pattern matching chars.
+  std::string re(pattern); 
+  wxExReplaceAll(re, ".", "\\.");
+  wxExReplaceAll(re, "*", ".*");
+  wxExReplaceAll(re, "?", ".?");
+  wxExTokenizer tkz(re, ";");
   
   while (tkz.HasMoreTokens())
   {
-    const wxString token = tkz.GetNextToken();
-    if (fullname_uppercase.Matches(token)) return true;
+    if (std::regex_match(fullname, std::regex(tkz.GetNextToken()))) return true;
   }
   
   return false;

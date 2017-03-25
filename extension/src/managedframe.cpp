@@ -151,10 +151,11 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     {
       auto it = wxExFindReplaceData::Get()->GetFindStrings().begin();
       std::advance(it, event.GetId() - ID_FIND_FIRST);
-      if (stc->FindNext(*it), 
-        stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1)
+      const std::string text(*it);
+      if (stc->FindNext(text, 
+        stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1))
       {
-        wxExFindReplaceData::Get()->SetFindString(*it);
+        wxExFindReplaceData::Get()->SetFindString(text);
       }
     }}, ID_FIND_FIRST, ID_FIND_LAST);
 }

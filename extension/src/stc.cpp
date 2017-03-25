@@ -144,8 +144,8 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   if (GetEdgeMode() == wxSTC_EDGE_MULTILINE)
   {
     menu.AppendSeparator();
-    menu.Append(ID_EDIT_EDGE_SET, _("Edge column"));
-    menu.Append(ID_EDIT_EDGE_CLEAR, _("Edge column reset"));
+    menu.Append(ID_EDIT_EDGE_SET, _("Edge Column"));
+    menu.Append(ID_EDIT_EDGE_CLEAR, _("Edge Column Reset"));
   }
 #endif
 
@@ -440,7 +440,7 @@ bool wxExSTC::FindNext(
     if (!recursive)
     {
       recursive = true;
-      found = FindNext(text, GetSearchFlags(), find_next);
+      found = FindNext(text, find_flags, find_next);
       recursive = false;
     }
     

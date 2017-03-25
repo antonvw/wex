@@ -57,7 +57,10 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     0,
     1,
     wxAPPLY | wxCANCEL,
-    ID_FIND_IN_FILES);
+    ID_FIND_IN_FILES,
+    wxDefaultPosition, 
+    wxDefaultSize, 
+    wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP);
     
   m_RiFDialog = new wxExItemDialog(this, {
       f.at(0),
@@ -72,7 +75,10 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     0,
     1,
     wxAPPLY | wxCANCEL,
-    ID_REPLACE_IN_FILES);
+    ID_REPLACE_IN_FILES,
+    wxDefaultPosition, 
+    wxDefaultSize, 
+    wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP);
 
   Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
   
