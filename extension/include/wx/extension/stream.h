@@ -78,7 +78,7 @@ private:
   wxExStreamStatistics m_Stats;
 
   int m_Prev;
-  bool m_Write = false;
+  bool m_Modified = false, m_Write = false;
   
   wxExFindReplaceData* m_FRD;
 

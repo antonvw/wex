@@ -38,6 +38,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
     if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
     {
       count = m_FRD->RegExReplaceAll(line);
+      m_Modified = (count > 0);
     }
   }
   else
@@ -71,6 +72,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
         &pos);
 
       match = (count > 0);
+      m_Modified = match;
     }
   }
 
@@ -136,7 +138,7 @@ bool wxExStream::RunTool()
     }
   }
 
-  if (m_Write)
+  if (m_Modified && m_Write)
   {
     std::ofstream ofs(m_FileName.GetFullPath().c_str());
   
