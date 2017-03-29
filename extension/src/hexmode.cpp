@@ -18,7 +18,6 @@
 #include <wx/extension/itemdlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/util.h>
 #include "hexmodeline.h"
 
 int GetHexNumberFromUser(
@@ -249,13 +248,11 @@ bool wxExHexMode::Replace(char c, int pos)
   
 bool wxExHexMode::ReplaceTarget(const std::string& replacement, bool settext)
 {
-  std::vector < std::string > v;
-  
   if (m_STC->GetTargetStart() == wxSTC_INVALID_POSITION || 
       m_STC->GetTargetEnd() == wxSTC_INVALID_POSITION || 
       m_STC->GetTargetEnd() <= m_STC->GetTargetStart() ||
-    (replacement.size() % 2) > 0 ||
-    wxExMatch("^[0-9A-F]*$", replacement, v) < 0)
+      (replacement.size() % 2) > 0 ||
+       !std::regex_match(replacement, std::regex("[0-9A-F]*")))
   {
     return false;
   }
@@ -354,9 +351,11 @@ void wxExHexMode::Undo()
   }
   
   // For hex mode the first min_size bytes should be hex fields (or space).
-  const int min_size = m_BytesPerLine * (m_EachHexField + 1);
+  const int min_size = m_BytesPerLine * m_EachHexField;
 
   m_Active = (
     m_STC->GetTextLength() > min_size && 
-    std::regex_match(m_STC->GetTextRange(0, min_size).ToStdString(), std::regex("([0-9A-F][0-9A-F] )+ *")));
+    std::regex_match(
+      m_STC->GetTextRange(0, min_size).ToStdString(), 
+      std::regex("([0-9A-F][0-9A-F] )+ *")));
 }

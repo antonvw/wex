@@ -2,7 +2,7 @@
 // Name:      hexmodeline.cpp
 // Purpose:   Implementation of class wxExHexModeLine
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -76,8 +76,10 @@ bool wxExHexModeLine::Delete(int count, bool settext)
 {
   const int index = GetBufferIndex();
   
-  if (IsReadOnly() || index == wxSTC_INVALID_POSITION) return false;
-  
+  if (IsReadOnly() || 
+    index == wxSTC_INVALID_POSITION || 
+    index >= m_Hex->m_Buffer.length()) return false;
+
   m_Hex->m_Buffer.erase(index, count);
   
   if (settext)
