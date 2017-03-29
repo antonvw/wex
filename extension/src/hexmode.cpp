@@ -2,9 +2,10 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wxExHexMode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <regex>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -352,13 +353,10 @@ void wxExHexMode::Undo()
     m_Buffer = m_BufferOriginal;
   }
   
-  // Check the mode we are in.
-  std::vector<std::string> v;
-
+  // For hex mode the first min_size bytes should be hex fields (or space).
   const int min_size = m_BytesPerLine * (m_EachHexField + 1);
 
   m_Active = (
     m_STC->GetTextLength() > min_size && 
-    wxExMatch("([0-9A-F][0-9A-F] )+", 
-      m_STC->GetTextRange(0, min_size).ToStdString(), v) > 0);
+    std::regex_match(m_STC->GetTextRange(0, min_size).ToStdString(), std::regex("([0-9A-F][0-9A-F] )+ *")));
 }
