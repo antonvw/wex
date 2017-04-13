@@ -32,7 +32,7 @@ wxExOTL::~wxExOTL()
   Logoff();
 }
 
-const wxString wxExOTL::Datasource() const
+const std::string wxExOTL::Datasource() const
 {
   return wxExConfigFirstOf(_("Datasource"));
 }
@@ -87,7 +87,7 @@ bool wxExOTL::Logon(
   return IsConnected();
 }
 
-long wxExOTL::Query(const wxString& query)
+long wxExOTL::Query(const std::string& query)
 {
   if (!IsConnected())
   {
@@ -100,7 +100,7 @@ long wxExOTL::Query(const wxString& query)
 #if wxUSE_GRID
 // Cannot be const because of open call.
 long wxExOTL::Query(
-  const wxString& query,
+  const std::string& query,
   wxGrid* grid,
   bool& stopped,
   bool empty_results,
@@ -198,7 +198,7 @@ long wxExOTL::Query(
 
 // Cannot be const because of open call.
 long wxExOTL::Query(
-  const wxString& query,
+  const std::string& query,
   wxStyledTextCtrl* stc,
   bool& stopped,
   int buffer_size)

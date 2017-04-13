@@ -106,9 +106,9 @@ enum wxExId
 enum wxExToolId
 {
   ID_TOOL_LOWEST = ID_EDIT_HIGHEST + 1,
+  ID_TOOL_REPLACE,
   ID_TOOL_REPORT_FIRST,      // after this the first report
   ID_TOOL_REPORT_FIND,
-  ID_TOOL_REPORT_REPLACE,
   ID_TOOL_REPORT_KEYWORD,
   ID_TOOL_REPORT_FIRST_USER, // after this your own report
   ID_TOOL_REPORT_LAST = ID_TOOL_REPORT_FIRST_USER + TOOL_MAX_REPORTS,  // before this is the last report

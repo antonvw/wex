@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/report/listview.h>
@@ -13,8 +13,6 @@ TEST_CASE("wxExListViewWithFrame")
 {
   REQUIRE(wxExListViewWithFrame::GetTypeTool(wxExTool(ID_TOOL_REPORT_FIND)) == 
     wxExListViewWithFrame::LIST_FIND);
-  REQUIRE(wxExListViewWithFrame::GetTypeTool(wxExTool(ID_TOOL_REPORT_REPLACE)) == 
-    wxExListViewWithFrame::LIST_REPLACE);
   REQUIRE(wxExListViewWithFrame::GetTypeTool(wxExTool(ID_TOOL_REPORT_KEYWORD)) == 
     wxExListViewWithFrame::LIST_KEYWORD);
     

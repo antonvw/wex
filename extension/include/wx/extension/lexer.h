@@ -2,7 +2,7 @@
 // Name:      lexer.h
 // Purpose:   Declaration of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -28,13 +28,12 @@ class WXDLLIMPEXP_BASE wxExLexer
 {
 public:
   /// Default constructor.
-  wxExLexer(const std::string& lexer = std::string())
-    : m_STC(nullptr) {
-      Initialize();
-      if (!lexer.empty())
-      {
-        Set(lexer);
-      }};
+  wxExLexer(const std::string& lexer = std::string()) {
+    Initialize();
+    if (!lexer.empty())
+    {
+      Set(lexer);
+    }};
     
   /// Constructor using stc, and optional lexer.
   wxExLexer(wxExSTC* stc, const std::string& lexer = std::string())
@@ -46,10 +45,7 @@ public:
       }};
 
   /// Constructor using xml node.
-  wxExLexer(const pugi::xml_node* node) 
-    : m_STC(nullptr) {
-      Initialize();
-      Set(node);};
+  wxExLexer(const pugi::xml_node* node) {Initialize(); Set(node);};
 
   /// Assignment operator.
   wxExLexer& operator=(const wxExLexer& l);
@@ -136,22 +132,17 @@ public:
     bool fill_out_with_space = true,
     bool fill_out = true) const;
     
-  /// Resets lexer and if ok applies it to stc.
-  /// Returns true if the scintilla lexer has been reset.
-  /// The is ok member is set according to whether the
-  /// lexer could be reset.
-  bool Reset();
+  /// Resets lexer and applies it to stc.
+  /// The is ok member is set to false.
+  void Reset();
 
-  /// Sets scintilla lexer for specified lexer and if ok applies it to stc. 
-  /// Returns true if a scintilla lexer has been set.
-  /// The is ok member is set according to whether the
-  /// lexer could be set. Shows error message when lexer could not be set.
+  /// Sets lexer to specified lexer (finds by name from lexers),
+  /// invokes the other Set.
+  /// Shows error message when lexer could not be set.
   bool Set(const std::string& lexer, bool fold = false);
     
-  /// Sets lexer to specified lexer.
+  /// Sets lexer to specified lexer, and applies it to stc if present. 
   /// Returns true if a scintilla lexer has been set.
-  /// The is ok member is set according to whether the
-  /// lexer could be set.
   bool Set(const wxExLexer& lexer, bool fold = false);
       
   /// Overrides a local property.
@@ -160,7 +151,6 @@ public:
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
-  bool ApplyWhenSet();
   void AutoMatch(const std::string& lexer);
   const std::string GetFormattedText(
     const std::string& lines,
@@ -198,7 +188,7 @@ private:
   // each keyword set in a separate keyword set
   std::map< int, std::set<std::string> > m_KeywordsSet;
   
-  bool m_IsOk;
+  bool m_IsOk = false;
   
-  wxExSTC* m_STC;
+  wxExSTC* m_STC = nullptr;
 };

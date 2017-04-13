@@ -253,7 +253,7 @@ Frame::Frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_otl.Logon(this))
     {
-      m_Shell->SetPrompt(m_otl.Datasource().ToStdString() + ">");
+      m_Shell->SetPrompt(m_otl.Datasource() + ">");
     }}, ID_DATABASE_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -324,7 +324,7 @@ Frame::Frame()
   // Do automatic connect.
   if (!m_otl.Datasource().empty() && m_otl.Logon())
   {
-    m_Shell->SetPrompt(m_otl.Datasource().ToStdString() + ">");
+    m_Shell->SetPrompt(m_otl.Datasource() + ">");
   }
   else
   {

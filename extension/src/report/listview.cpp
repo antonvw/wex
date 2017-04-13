@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of class wxExListViewWithFrame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -224,11 +224,9 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
       }
     }
 
-    // Finding in the LIST_FIND and REPLACE would 
-    /// result in recursive calls, do not add them.
+    // Finding in the LIST_FIND would result in recursive calls, do not add it.
     if ( exists &&
-         GetType() != LIST_FIND && GetType() != LIST_REPLACE &&
-        (m_MenuFlags & LIST_MENU_REPORT_FIND))
+         GetType() != LIST_FIND && (m_MenuFlags & LIST_MENU_REPORT_FIND))
     {
       menu.AppendSeparator();
       menu.Append(ID_TOOL_REPORT_FIND, 
@@ -236,8 +234,8 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 
       if (!read_only)
       {
-        menu.Append(ID_TOOL_REPORT_REPLACE, 
-          wxExEllipsed(m_Frame->GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
+        menu.Append(ID_TOOL_REPLACE, 
+          wxExEllipsed(m_Frame->GetFindInCaption(ID_TOOL_REPLACE)));
       }
     }
   }
@@ -263,7 +261,5 @@ wxExListViewWithFrame::wxExListType wxExListViewWithFrame::GetTypeTool(
   {
     case ID_TOOL_REPORT_FIND: return LIST_FIND; break;
     case ID_TOOL_REPORT_KEYWORD: return LIST_KEYWORD; break;
-    case ID_TOOL_REPORT_REPLACE: return LIST_REPLACE; break;
-    default: wxFAIL; return LIST_FILE;
   }
 }

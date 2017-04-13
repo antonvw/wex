@@ -101,25 +101,17 @@ const std::string wxExLink::FindPath(const std::string& text, int line_no) const
     pos_char2 = text.rfind("'");
   }
   
-  std::string out;
-
-  // If we did not find anything.
-  if (pos_char1 == std::string::npos || 
+  const std::string out =
+    // If we did not find anything.
+     (pos_char1 == std::string::npos || 
       pos_char2 == std::string::npos || 
-      pos_char2 <= pos_char1)
-  {
-    out = text;
-  }
-  else
-  {
+      pos_char2 <= pos_char1) ?
+    text:
     // Okay, get everything inbetween.
-    out = text.substr(pos_char1 + 1, pos_char2 - pos_char1 - 1);
-  }
+    text.substr(pos_char1 + 1, pos_char2 - pos_char1 - 1);
 
   // And make sure we skip white space.
-  out = wxExSkipWhiteSpace(out);
-  
-  return out;
+  return wxExSkipWhiteSpace(out);
 }
 
 // text contains selected text, or current line

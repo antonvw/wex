@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <regex>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -17,113 +18,138 @@
 
 TEST_CASE("wxExLexer")
 {
-  wxExLexer lexer(GetSTC());
-  REQUIRE( lexer.IsOk());
-  REQUIRE( lexer.GetStyles().empty());
-  REQUIRE( wxExLexer("cpp").IsOk());
-  REQUIRE( wxExLexer("pascal").IsOk());
-  REQUIRE(!wxExLexer("xxx").IsOk());
-  REQUIRE( lexer.Reset());
-  
-  REQUIRE( lexer.Set(wxExLexers::Get()->FindByText("XXXX")));
-  REQUIRE( lexer.GetDisplayLexer().empty());
-  REQUIRE( lexer.IsOk());
-  REQUIRE( lexer.Reset());
-  
-  REQUIRE( lexer.Set(wxExLexers::Get()->FindByText("<html>")));
-  REQUIRE( lexer.IsOk());
-  REQUIRE( lexer.GetScintillaLexer() == "hypertext");
-  REQUIRE( lexer.GetDisplayLexer() == "hypertext");
-  
-  REQUIRE( lexer.Set(wxExLexers::Get()->FindByText("// this is a cpp comment text")));
-  REQUIRE( lexer.IsOk());
-  REQUIRE( wxExLexer(lexer).IsOk());
-  REQUIRE( lexer.GetDisplayLexer() == "cpp");
-  REQUIRE( lexer.GetScintillaLexer() == "cpp");
-  REQUIRE( lexer.UsableCharactersPerLine() > 0);
-  REQUIRE(!lexer.GetExtensions().empty());
-  REQUIRE(!lexer.GetCommentBegin().empty());
-  REQUIRE(!lexer.GetCommentBegin2().empty());
-  REQUIRE( lexer.GetCommentEnd().empty());
-  REQUIRE(!lexer.GetCommentEnd2().empty());
-  REQUIRE( lexer.GetLanguage().empty());
-  REQUIRE(!lexer.GetKeywords().empty());
-  REQUIRE(!lexer.GetStyles().empty());
-  REQUIRE(!lexer.GetKeywordsString().empty());
-  REQUIRE(!lexer.GetKeywordsString(-1, 0).empty());
-  REQUIRE(!lexer.GetKeywordsString(-1, 6).empty());
-  REQUIRE( lexer.GetKeywordsString(-1, 8).find("for_each") != std::string::npos);
-  REQUIRE( lexer.GetKeywordsString(-1, 9).find("for_each") == std::string::npos);
-  REQUIRE( lexer.GetKeywordsString(-1, 50).empty());
-  REQUIRE( lexer.CommentComplete("// test").empty());
-  REQUIRE( lexer.IsKeyword("class"));
-  REQUIRE( lexer.IsKeyword("const"));
-  REQUIRE( lexer.KeywordStartsWith("cla"));
-  REQUIRE(!lexer.KeywordStartsWith("xxx"));
-  REQUIRE(!lexer.MakeComment("test", true).empty());
-  REQUIRE(!lexer.MakeComment("prefix", "test").empty());
-  REQUIRE(!lexer.MakeComment("test\ntest2", true).empty());
-  REQUIRE(!lexer.MakeComment("prefix", "test\ntest2").empty());
-  REQUIRE(!lexer.MakeSingleLineComment("test").empty());
-  REQUIRE( lexer.GetKeywordsString(6).empty());
-  REQUIRE( lexer.AddKeywords("hello:1"));
-  REQUIRE( lexer.AddKeywords("more:1"));
-  REQUIRE( lexer.AddKeywords("test11 test21:1 test31:1 test12:2 test22:2"));
-  REQUIRE( lexer.AddKeywords("final", 6));
-  REQUIRE(!lexer.AddKeywords(""));
-  REQUIRE(!lexer.AddKeywords("xxx:1", -1));
-  REQUIRE(!lexer.AddKeywords("xxx:1", 100));
-  REQUIRE(!lexer.GetKeywordsString(6).empty());
-  REQUIRE( lexer.IsKeyword("hello")); 
-  REQUIRE( lexer.IsKeyword("more")); 
-  REQUIRE( lexer.IsKeyword("class")); 
-  REQUIRE( lexer.IsKeyword("test11"));
-  REQUIRE( lexer.IsKeyword("test21"));
-  REQUIRE( lexer.IsKeyword("test12"));
-  REQUIRE( lexer.IsKeyword("test22"));
-  REQUIRE( lexer.IsKeyword("test31"));
-  REQUIRE( lexer.IsKeyword("final"));
-  REQUIRE(!lexer.IsKeyword("xxx"));
-  REQUIRE( lexer.KeywordStartsWith("te"));
-  REQUIRE(!lexer.KeywordStartsWith("xx"));
-  REQUIRE(!lexer.GetKeywords().empty());
-  
-  lexer.SetProperty("test", "value");
-  wxString val;
+  wxExLexer lexer;
 
-  for (auto p : lexer.GetProperties())
+  SUBCASE("Default constructor")
   {
-    if (p.GetName() == "test")
-    {
-      val = p.GetValue();
-      break;
-    }
+    REQUIRE(!lexer.IsOk());
+    REQUIRE( lexer.GetStyles().empty());
+    REQUIRE( lexer.GetDisplayLexer().empty());
+    REQUIRE( lexer.GetScintillaLexer().empty());
+    lexer.Reset();
+    REQUIRE( lexer.GetDisplayLexer().empty());
+    REQUIRE( lexer.GetScintillaLexer().empty());
+  }
+
+  SUBCASE("Default constructor with lexer")
+  {
+    REQUIRE( wxExLexer("cpp").IsOk());
+    REQUIRE( wxExLexer("pascal").IsOk());
+    REQUIRE(!wxExLexer("xxx").IsOk());
+    REQUIRE(!wxExLexer().Set("xxx"));
   }
   
-  REQUIRE(val == "value");
+  SUBCASE("Constructor using STC")
+  {
+    wxExLexer lexer(GetSTC());
+    REQUIRE(!lexer.IsOk());
+    lexer.Apply();
+  }
 
-  REQUIRE( lexer.Set("pascal"));
-  REQUIRE( lexer.GetDisplayLexer() == "pascal");
-  REQUIRE( lexer.GetScintillaLexer() == "pascal");
-  REQUIRE(!lexer.CommentComplete("(*test").empty());
-  REQUIRE( wxString(lexer.CommentComplete("(*test")).EndsWith("     *)"));
+  SUBCASE("Set")
+  {
+    REQUIRE( lexer.Set("xsl"));
+    REQUIRE( lexer.GetLanguage() == "xml");
 
-  wxExLexer lexer2(wxExLexers::Get()->FindByText("// this is a cpp comment text"));
-  REQUIRE( lexer2.IsOk());
-  REQUIRE( lexer2.GetDisplayLexer() == "cpp");
-  REQUIRE( lexer2.GetScintillaLexer() == "cpp");
-  REQUIRE( lexer2.Set(lexer));
-  REQUIRE( lexer2.Set(lexer, true));
-  REQUIRE( lexer2.GetDisplayLexer() == "pascal");
-  REQUIRE( lexer2.GetScintillaLexer() == "pascal");
-  REQUIRE(!lexer2.CommentComplete("(*test").empty());
-  REQUIRE( wxString(lexer2.CommentComplete("(*test")).EndsWith("     *)"));
+    REQUIRE( lexer.Set("pascal"));
+    wxExLexer lexer2;
+    REQUIRE( lexer2.Set(lexer));
+    REQUIRE( lexer2.Set(lexer, true));
+    REQUIRE( lexer2.GetDisplayLexer() == "pascal");
+    REQUIRE( lexer2.GetScintillaLexer() == "pascal");
 
-  REQUIRE( lexer.Reset());
-  REQUIRE( lexer.GetDisplayLexer().empty());
-  REQUIRE( lexer.GetScintillaLexer().empty());
-  REQUIRE( lexer.Set("xsl"));
-  REQUIRE( lexer.GetLanguage() == "xml");
+    REQUIRE(!lexer.Set(wxExLexers::Get()->FindByText("XXXX")));
+    REQUIRE( lexer.GetDisplayLexer().empty());
+    REQUIRE(!lexer.IsOk());
+    REQUIRE( lexer.Set(wxExLexers::Get()->FindByText("<html>")));
+    REQUIRE( lexer.IsOk());
+    REQUIRE( lexer.GetScintillaLexer() == "hypertext");
+    REQUIRE( lexer.GetDisplayLexer() == "hypertext");
+    REQUIRE( lexer.Set(wxExLexers::Get()->FindByText("// this is a cpp comment text")));
+    REQUIRE( lexer.IsOk());
+    REQUIRE( wxExLexer(lexer).IsOk());
+    REQUIRE( lexer.GetDisplayLexer() == "cpp");
+    REQUIRE( lexer.GetScintillaLexer() == "cpp");
+  }
 
-  lexer.Apply();
+  SUBCASE("Testing several methods")
+  {
+    REQUIRE( lexer.Set("cpp"));
+    REQUIRE( lexer.GetDisplayLexer() == "cpp");
+    REQUIRE( lexer.GetScintillaLexer() == "cpp");
+    REQUIRE( lexer.UsableCharactersPerLine() > 0);
+    REQUIRE(!lexer.GetExtensions().empty());
+    REQUIRE(!lexer.GetCommentBegin().empty());
+    REQUIRE(!lexer.GetCommentBegin2().empty());
+    REQUIRE( lexer.GetCommentEnd().empty());
+    REQUIRE(!lexer.GetCommentEnd2().empty());
+    REQUIRE( lexer.GetLanguage().empty());
+    REQUIRE(!lexer.GetKeywords().empty());
+    REQUIRE(!lexer.GetStyles().empty());
+    REQUIRE(!lexer.GetKeywordsString().empty());
+    REQUIRE(!lexer.GetKeywordsString(-1, 0).empty());
+    REQUIRE(!lexer.GetKeywordsString(-1, 6).empty());
+    REQUIRE( lexer.GetKeywordsString(-1, 8).find("for_each") != std::string::npos);
+    REQUIRE( lexer.GetKeywordsString(-1, 9).find("for_each") == std::string::npos);
+    REQUIRE( lexer.GetKeywordsString(-1, 50).empty());
+    REQUIRE( lexer.CommentComplete("// test").empty());
+    REQUIRE( lexer.IsKeyword("class"));
+    REQUIRE( lexer.IsKeyword("const"));
+    REQUIRE( lexer.KeywordStartsWith("cla"));
+    REQUIRE(!lexer.KeywordStartsWith("xxx"));
+    REQUIRE(!lexer.MakeComment("test", true).empty());
+    REQUIRE(!lexer.MakeComment("prefix", "test").empty());
+    REQUIRE(!lexer.MakeComment("test\ntest2", true).empty());
+    REQUIRE(!lexer.MakeComment("prefix", "test\ntest2").empty());
+    REQUIRE(!lexer.MakeSingleLineComment("test").empty());
+    REQUIRE( lexer.GetKeywordsString(6).empty());
+    REQUIRE( lexer.AddKeywords("hello:1"));
+    REQUIRE( lexer.AddKeywords("more:1"));
+    REQUIRE( lexer.AddKeywords("test11 test21:1 test31:1 test12:2 test22:2"));
+    REQUIRE( lexer.AddKeywords("final", 6));
+    REQUIRE(!lexer.AddKeywords(""));
+    REQUIRE(!lexer.AddKeywords("xxx:1", -1));
+    REQUIRE(!lexer.AddKeywords("xxx:1", 100));
+    REQUIRE(!lexer.GetKeywordsString(6).empty());
+    REQUIRE( lexer.IsKeyword("hello")); 
+    REQUIRE( lexer.IsKeyword("more")); 
+    REQUIRE( lexer.IsKeyword("class")); 
+    REQUIRE( lexer.IsKeyword("test11"));
+    REQUIRE( lexer.IsKeyword("test21"));
+    REQUIRE( lexer.IsKeyword("test12"));
+    REQUIRE( lexer.IsKeyword("test22"));
+    REQUIRE( lexer.IsKeyword("test31"));
+    REQUIRE( lexer.IsKeyword("final"));
+    REQUIRE(!lexer.IsKeyword("xxx"));
+    REQUIRE( lexer.KeywordStartsWith("te"));
+    REQUIRE(!lexer.KeywordStartsWith("xx"));
+    REQUIRE(!lexer.GetKeywords().empty());
+
+    lexer.Apply();
+  }
+  
+  SUBCASE("Property")
+  {
+    lexer.SetProperty("test", "value");
+    std::string val;
+
+    for (const auto& p : lexer.GetProperties())
+    {
+      if (p.GetName() == "test")
+      {
+        val = p.GetValue();
+        break;
+      }
+    }
+    
+    REQUIRE(val == "value");
+  }
+
+  SUBCASE("Comment complete")
+  {
+    REQUIRE( lexer.Set("pascal"));
+    REQUIRE( lexer.GetDisplayLexer() == "pascal");
+    REQUIRE( lexer.GetScintillaLexer() == "pascal");
+    REQUIRE( std::regex_match(lexer.CommentComplete("(*test"), std::regex(" +\\*\\)")));
+  }
 }

@@ -165,7 +165,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       }
       ShowDialog("Registers", output, true);
       return true;}},
-    {":sed", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPORT_REPLACE ) return true;}},
+    {":sed", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPLACE ) return true;}},
     {":set", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos)
       {
@@ -892,8 +892,8 @@ void wxExEx::SetLastCommand(
     command[0] == ';' || 
     command[0] == '/' || 
     command[0] == '?' || 
-    command[0] == 'u' || 
-    wxString(command).Matches("m?"))
+    command[0] == 'm' ||
+    command[0] == 'u')
   {
   }
   else if (

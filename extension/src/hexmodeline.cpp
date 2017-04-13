@@ -78,7 +78,7 @@ bool wxExHexModeLine::Delete(int count, bool settext)
   
   if (IsReadOnly() || 
     index == wxSTC_INVALID_POSITION || 
-    index >= m_Hex->m_Buffer.length()) return false;
+    (size_t)index >= m_Hex->m_Buffer.length()) return false;
 
   m_Hex->m_Buffer.erase(index, count);
   
@@ -174,14 +174,7 @@ bool wxExHexModeLine::Insert(const std::string& text)
     if (text.size() != 2 || 
        (!isxdigit(text[0]) && !isxdigit(text[1]))) return false;
 
-    char hex[3];
-    hex[0] = text[0];
-    hex[1] = text[1];
-    hex[2] = '\0';
-    int no;
-    sscanf(hex, "%x", &no);
-    
-    m_Hex->m_Buffer.insert(index, std::string(1, no));
+    m_Hex->m_Buffer.insert(index, 1, std::stoi(text.substr(0, 2), nullptr, 16));
     m_Hex->SetText(m_Hex->m_Buffer);
   }
 
@@ -222,23 +215,20 @@ bool wxExHexModeLine::Replace(char c)
       pos + m_ColumnNo, pos + m_ColumnNo + 1, c);
         
     // replace ascii field with code
-    char str[3];
+    std::string hex;
     
     if (m_Line[m_ColumnNo + 1] == ' ')
     {
-      str[0] = m_Line[m_ColumnNo - 1];
-      str[1] = c;
+      hex += m_Line[m_ColumnNo - 1];
+      hex += c;
     }
     else
     {
-      str[0] = c;
-      str[1] = m_Line[m_ColumnNo];
+      hex += c;
+      hex += m_Line[m_ColumnNo];
     }
     
-    str[2] = '\0';
-    
-    unsigned int code;
-    sscanf(str, "%3X", &code);
+    const int code = std::stoi(hex, nullptr, 16);
     
     m_Hex->GetSTC()->wxStyledTextCtrl::Replace(
       pos + OtherField(), pos + OtherField() + 1, Printable(code, m_Hex->GetSTC()));
@@ -261,10 +251,7 @@ void wxExHexModeLine::Replace(const std::string& hex, bool settext)
   
   if (IsReadOnly() || index == wxSTC_INVALID_POSITION) return;
   
-  int no;
-  sscanf(hex.c_str(), "%x", &no);
-  
-  m_Hex->m_Buffer[index] = no;
+  m_Hex->m_Buffer[index] = std::stoi(hex, nullptr, 16);
 
   if (settext)
   {

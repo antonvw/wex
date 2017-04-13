@@ -48,7 +48,8 @@ public:
     std::make_tuple(_("Tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
     std::make_tuple(_("Tab width"), ITEM_TEXTCTRL_INT, 2),
     std::make_tuple(_("Text font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
-    std::make_tuple(_("vi mode"), ITEM_CHECKBOX, true)}) {;};
+    std::make_tuple(_("vi mode"), ITEM_CHECKBOX, true),
+    std::make_tuple(_("vi tag fullpath"), ITEM_CHECKBOX, true)}) {;};
 };
   
 wxExItemDialog* wxExSTC::m_ConfigDialog = nullptr;
@@ -137,7 +138,8 @@ int wxExSTC::ConfigDialog(
                _X("Caret line"),
                _X("Scroll bars"),
                _X("Auto complete"),
-               _X("vi mode")}}}},
+               _X("vi mode"),
+               _X("vi tag fullpath")}}}},
           {_X("Page2"), 
             {{_X("Auto indent"), {
                {INDENT_NONE, _X("None")},

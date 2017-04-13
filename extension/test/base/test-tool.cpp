@@ -27,5 +27,5 @@ TEST_CASE( "wxExTool" )
   REQUIRE(!wxExTool(ID_TOOL_REPORT_FIND).Info().empty());
   
   REQUIRE( wxExTool(ID_TOOL_REPORT_FIND).IsFindType());
-  REQUIRE( wxExTool(ID_TOOL_REPORT_REPLACE).IsFindType());
+  REQUIRE( wxExTool(ID_TOOL_REPLACE).IsFindType());
 }

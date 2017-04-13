@@ -188,16 +188,16 @@ const std::string wxExAddressRange::BuildReplacement(const std::string& text) co
     
   std::string replacement;
   bool backslash = false;
-    
-  for (size_t i = 0; i < text.length(); i++)
+
+  for (const auto c : text)
   {
-    switch ((int)text[i])
+    switch (c)
     {
       case '&': 
         if (!backslash) 
           replacement += target; 
         else
-          replacement += text[i];
+          replacement += c;
         backslash = false; 
         break;
         
@@ -205,7 +205,7 @@ const std::string wxExAddressRange::BuildReplacement(const std::string& text) co
         if (backslash) 
           replacement += target; 
         else
-          replacement += text[i];
+          replacement += c;
         backslash = false; 
         break;
         
@@ -213,7 +213,7 @@ const std::string wxExAddressRange::BuildReplacement(const std::string& text) co
         if (backslash) 
           std::transform(target.begin(), target.end(), target.begin(), ::tolower);
         else
-          replacement += text[i];
+          replacement += c;
         backslash = false; 
         break;
         
@@ -221,18 +221,18 @@ const std::string wxExAddressRange::BuildReplacement(const std::string& text) co
         if (backslash) 
           std::transform(target.begin(), target.end(), target.begin(), ::toupper);
         else
-          replacement += text[i];
+          replacement += c;
         backslash = false; 
         break;
         
       case '\\': 
         if (backslash) 
-          replacement += text[i];
+          replacement += c;
         backslash = !backslash; 
         break;
         
       default:
-        replacement += text[i];
+        replacement += c;
         backslash = false; 
     }
   }
@@ -805,12 +805,19 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
 
   int nr_replacements = 0;
   int result = wxID_YES;
-  
+  const bool build = (repl.find_first_of("&0LU\\") != std::string::npos);
+  const bool confirm = (options.find("c") != std::string::npos);
+  const bool global = (options.find("g") != std::string::npos);
+  std::string replacement(repl);
+
   while (m_STC->SearchInTarget(pattern) != -1 && result != wxID_CANCEL)
   {
-    const std::string replacement(BuildReplacement(repl));
+    if (build)
+    {
+      replacement = BuildReplacement(repl);
+    }
     
-    if (options.find("c") != std::string::npos)
+    if (confirm)
     {
       result = Confirm(pattern, replacement);
     }
@@ -824,24 +831,16 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
       else
       {
         (searchFlags & wxSTC_FIND_REGEXP) ?
-          m_STC->ReplaceTargetRE(replacement):
-          m_STC->ReplaceTarget(replacement);
+           m_STC->ReplaceTargetRE(replacement):
+           m_STC->ReplaceTarget(replacement);
       }
         
       nr_replacements++;
     }
     
-    if (options.find("g") != std::string::npos)
-    {
-      m_STC->SetTargetStart(m_STC->GetTargetEnd());
-    }
-    else
-    {
-      m_STC->SetTargetStart(
-        m_STC->GetLineEndPosition(m_STC->LineFromPosition(
-          m_STC->GetTargetEnd())));
-    }
-
+    m_STC->SetTargetStart(global ? 
+      m_STC->GetTargetEnd():
+      m_STC->GetLineEndPosition(m_STC->LineFromPosition(m_STC->GetTargetEnd())));
     m_STC->SetTargetEnd(m_STC->GetLineEndPosition(m_Ex->MarkerLine('$')));
   
     if (m_STC->GetTargetStart() >= m_STC->GetTargetEnd())

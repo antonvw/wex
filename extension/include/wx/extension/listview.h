@@ -92,7 +92,6 @@ public:
     LIST_FIND,       ///< a list to show find results
     LIST_HISTORY,    ///< a list to show history items
     LIST_KEYWORD,    ///< a list to show keywords
-    LIST_REPLACE,    ///< a list to show replace results
     LIST_FILE,       ///< a list associated with a file
     LIST_NONE,       ///< a list without predefined columns
   };

@@ -20,7 +20,7 @@ wxExTool::wxExTool(int type)
   if (m_ToolInfo.empty())
   {
     AddInfo(ID_TOOL_REPORT_FIND, _("Found %d matches in").ToStdString());
-    AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %d matches in").ToStdString());
+    AddInfo(ID_TOOL_REPLACE, _("Replaced %d matches in").ToStdString());
     AddInfo(ID_TOOL_REPORT_KEYWORD, 
       _("Reported %d keywords in").ToStdString(), _("Report &Keyword").ToStdString());
   }

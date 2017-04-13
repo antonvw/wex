@@ -2,7 +2,7 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wxExGenericDirCtrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stockitem.h> // for wxGetStockLabel
@@ -73,7 +73,11 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     frame->FindInFiles(wxExToVectorString(*this).Get(), event.GetId());}, 
-    ID_TOOL_REPORT_FIND, ID_TOOL_REPORT_REPLACE);
+    ID_TOOL_REPORT_FIND);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    frame->FindInFiles(wxExToVectorString(*this).Get(), event.GetId());}, 
+    ID_TOOL_REPLACE);
     
   Bind(wxEVT_TREE_ITEM_ACTIVATED, [=](wxTreeEvent& event) {
     GET_VECTOR_FILES
@@ -126,8 +130,8 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
     menu.Append(ID_TOOL_REPORT_FIND, 
       wxExEllipsed(frame->GetFindInCaption(ID_TOOL_REPORT_FIND)));
 
-    menu.Append(ID_TOOL_REPORT_REPLACE, 
-      wxExEllipsed(frame->GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
+    menu.Append(ID_TOOL_REPLACE, 
+      wxExEllipsed(frame->GetFindInCaption(ID_TOOL_REPLACE)));
       
     PopupMenu(&menu);});
   

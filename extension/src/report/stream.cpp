@@ -251,16 +251,11 @@ bool wxExStreamToListView::ProcessBegin()
   }
   else
   {
-    if (m_Frame == nullptr)
-    {
-      return false;
-    }
-    
-    m_Report = m_Frame->Activate(
+    if (
+      m_Frame == nullptr ||
+     (m_Report = m_Frame->Activate(
       wxExListViewWithFrame::GetTypeTool(GetTool()),
-      &GetFileName().GetLexer());
-
-    if (m_Report == nullptr)
+      &GetFileName().GetLexer())) == nullptr)
     {
       return false;
     }
@@ -317,26 +312,9 @@ void wxExStreamToListView::ProcessMatch(
   wxExListItem item(m_Report, GetFileName());
   item.Insert();
 
-  item.SetItem(_("Line No").ToStdString(), std::to_string((int)line_no + 1));
-
-  switch (GetTool().GetId())
-  {
-    case ID_TOOL_REPORT_REPLACE:
-      item.SetItem(
-        _("Replaced").ToStdString(), 
-        wxExFindReplaceData::Get()->GetReplaceString());
-    // fall through
-    case ID_TOOL_REPORT_FIND:
-      item.SetItem(
-        _("Line").ToStdString(), 
-        Context(line, pos));
-      item.SetItem(
-        _("Match").ToStdString(), 
-        wxExFindReplaceData::Get()->GetFindString());
-    break;
-
-    default: wxFAIL;
-  }
+  item.SetItem(_("Line No").ToStdString(), std::to_string(line_no + 1));
+  item.SetItem(_("Line").ToStdString(), Context(line, pos));
+  item.SetItem(_("Match").ToStdString(), wxExFindReplaceData::Get()->GetFindString());
 }
 
 bool wxExStreamToListView::SetupTool(
@@ -346,13 +324,14 @@ bool wxExStreamToListView::SetupTool(
 {
   m_Frame = frame;
 
+  Reset();
+
   if (report == nullptr)
   {
     if (tool.IsReportType() && tool.GetId() != ID_TOOL_REPORT_KEYWORD)
     {
-      m_Report = m_Frame->Activate(wxExListViewWithFrame::GetTypeTool(tool));
-
-      if (m_Report == nullptr)
+      if ((m_Report = 
+        m_Frame->Activate(wxExListViewWithFrame::GetTypeTool(tool))) == nullptr)
       {
         return false;
       }

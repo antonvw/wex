@@ -67,6 +67,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
       {wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX},
       f.at(1),
       f.at(2),
+      {_X("Replacements"), -1, INT_MAX},
       // Match whole word does not work with replace.
       {{wxExFindReplaceData::Get()->GetTextMatchCase(),
         wxExFindReplaceData::Get()->GetTextRegEx(),
@@ -122,7 +123,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
         m_RiFDialog->Reload(); 
       }
       m_RiFDialog->Show();
-    }}, ID_TOOL_REPORT_REPLACE);
+    }}, ID_TOOL_REPLACE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     DoRecent(m_ProjectHistory, event.GetId() - m_ProjectHistory.GetBaseId(), STC_WIN_IS_PROJECT);},
@@ -134,7 +135,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
   const bool replace = (dialogid == ID_REPLACE_IN_FILES);
   const wxExTool tool =
     (replace ?
-       ID_TOOL_REPORT_REPLACE:
+       ID_TOOL_REPLACE:
        ID_TOOL_REPORT_FIND);
 
   if (!wxExStreamToListView::SetupTool(tool, this))
@@ -255,21 +256,21 @@ int wxExFrameWithHistory::FindInFilesDialog(
   if (wxExItemDialog(this, {
       {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), true}, 
       (add_in_files ? wxExItem(m_TextInFiles, ITEM_COMBOBOX, wxAny(), true) : wxExItem()),
-      (id == ID_TOOL_REPORT_REPLACE ? wxExItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX): wxExItem()),
+      (id == ID_TOOL_REPLACE ? wxExItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX): wxExItem()),
       wxExItem(m_Info)},
     GetFindInCaption(id)).ShowModal() == wxID_CANCEL)
   {
     return wxID_CANCEL;
   }
 
-  wxLogStatus(GetFindReplaceInfoText(id == ID_TOOL_REPORT_REPLACE));
+  wxLogStatus(GetFindReplaceInfoText(id == ID_TOOL_REPLACE));
         
   return wxID_OK;
 }
 
 const wxString wxExFrameWithHistory::GetFindInCaption(int id) const
 {
-  return (id == ID_TOOL_REPORT_REPLACE ?
+  return (id == ID_TOOL_REPLACE ?
     _("Replace In Selection"):
     _("Find In Selection"));
 }
@@ -329,7 +330,7 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
   }
   
   const wxExTool tool = (sed ?
-    ID_TOOL_REPORT_REPLACE:
+    ID_TOOL_REPLACE:
     ID_TOOL_REPORT_FIND);
 
   if (!wxExStreamToListView::SetupTool(tool, this))

@@ -32,37 +32,39 @@ TEST_CASE("wxExStreamStatistics")
 
 TEST_CASE("wxExStream")
 {
-  // Test find.
-  wxExStream s(GetTestFile(), ID_TOOL_REPORT_FIND);
+  SUBCASE("Test find")
+  {
+    wxExStream s(GetTestFile(), ID_TOOL_REPORT_FIND);
+    
+    REQUIRE( s.GetFileName() == GetTestFile());
+    REQUIRE( s.GetTool().GetId() == ID_TOOL_REPORT_FIND);
+    
+    wxExFindReplaceData::Get()->SetFindString("test");
+    wxExFindReplaceData::Get()->SetMatchCase(true);
+    wxExFindReplaceData::Get()->SetMatchWord(true);
+    wxExFindReplaceData::Get()->SetUseRegEx(false);
+    
+    const auto start = std::chrono::system_clock::now();
+    REQUIRE( s.RunTool());
+    const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
+    
+    REQUIRE(milli.count() < 100);
+    REQUIRE(!s.GetStatistics().GetElements().GetItems().empty());
+    REQUIRE( s.GetStatistics().Get("Actions Completed") == 193);
+  }
   
-  REQUIRE( s.GetFileName() == GetTestFile());
-  REQUIRE( s.GetTool().GetId() == ID_TOOL_REPORT_FIND);
-  
-  wxExFindReplaceData::Get()->SetFindString("test");
-  wxExFindReplaceData::Get()->SetMatchCase(true);
-  wxExFindReplaceData::Get()->SetMatchWord(true);
-  wxExFindReplaceData::Get()->SetUseRegEx(false);
-  
-  const auto start = std::chrono::system_clock::now();
-  
-  REQUIRE( s.RunTool());
-  
-  const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
-  
-  REQUIRE(milli.count() < 100);
-  REQUIRE(!s.GetStatistics().GetElements().GetItems().empty());
-  REQUIRE( s.GetStatistics().Get("Actions Completed") == 193);
-  
-  // Test replace.
-  wxExStream s2(GetTestFile(), ID_TOOL_REPORT_REPLACE);
-  
-  wxExFindReplaceData::Get()->SetReplaceString("test");
-  
-  const auto start2 = std::chrono::system_clock::now();
-  REQUIRE( s2.RunTool());
-  const auto milli2 = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start2);
-  
-  REQUIRE(milli2.count() < 100);
-  REQUIRE(!s2.GetStatistics().GetElements().GetItems().empty());
-  REQUIRE( s2.GetStatistics().Get("Actions Completed") == 194);
+  SUBCASE("Test replace")
+  {
+    wxExStream s(GetTestFile(), ID_TOOL_REPLACE);
+    
+    wxExFindReplaceData::Get()->SetReplaceString("test");
+    
+    const auto start = std::chrono::system_clock::now();
+    REQUIRE( s.RunTool());
+    const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
+    
+    REQUIRE(milli.count() < 100);
+    REQUIRE(!s.GetStatistics().GetElements().GetItems().empty());
+    REQUIRE( s.GetStatistics().Get("Actions Completed") == 194);
+  }
 }

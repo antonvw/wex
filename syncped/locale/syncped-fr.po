@@ -5,7 +5,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: syncped 17.04\n"
+"Project-Id-Version: syncped 17.10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-03-04 19:27+0100\n"
 "PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"

@@ -13,14 +13,18 @@
 #include <cctype>
 #include <fstream>
 #include <iostream>
+#include <wx/config.h>
 #include <wx/extension/stream.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
+
+bool wxExStream::m_Asked = false;
 
 wxExStream::wxExStream(const wxExFileName& filename, const wxExTool& tool)
   : m_FileName(filename)
   , m_Tool(tool)
   , m_FRD(wxExFindReplaceData::Get())
+  , m_Threshold(wxConfigBase::Get()->ReadLong(_("Replacements"), -1))
 {
 }
 
@@ -35,7 +39,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
     pos = m_FRD->RegExMatches(line);
     match = (pos >= 0);
 
-    if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
+    if (match && m_Tool.GetId() == ID_TOOL_REPLACE)
     {
       count = m_FRD->RegExReplaceAll(line);
       if (!m_Modified) m_Modified = (count > 0);
@@ -78,13 +82,27 @@ bool wxExStream::Process(std::string& line, size_t line_no)
 
   if (match)
   {
-    IncActionsCompleted(count);
-    ProcessMatch(line, line_no, pos);
-    
-    if (m_Stats.Get(_("Actions Completed").ToStdString()) - m_Prev > 250)
+    if (m_Tool.GetId() == ID_TOOL_REPORT_FIND)
     {
-      wxLogMessage("too many matches, reconsider your search");
-      return false;
+      ProcessMatch(line, line_no, pos);
+    }
+    
+    const auto ac = IncActionsCompleted(count);
+
+    if (!m_Asked && m_Threshold != -1 && (ac - m_Prev > m_Threshold))
+    {
+      if (wxMessageBox(
+        "More than " + std::to_string(m_Threshold) + " matches in: " + 
+          m_FileName.GetFullPath() + "?",
+        _("Continue"),
+        wxYES_NO | wxICON_QUESTION) == wxNO)
+      {
+        return false;
+      }
+      else
+      {
+        m_Asked = true;
+      }
     }
   }
 
@@ -95,7 +113,7 @@ bool wxExStream::ProcessBegin()
 {
   if (
     !m_Tool.IsFindType() || 
-    (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE && m_FileName.GetStat().IsReadOnly()) ||
+    (m_Tool.GetId() == ID_TOOL_REPLACE && m_FileName.GetStat().IsReadOnly()) ||
      wxExFindReplaceData::Get()->GetFindString().empty())
   {
     return false;
@@ -103,7 +121,7 @@ bool wxExStream::ProcessBegin()
 
   m_FindString = wxExFindReplaceData::Get()->GetFindString();
   m_Prev = m_Stats.Get(_("Actions Completed").ToStdString());
-  m_Write = (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE);
+  m_Write = (m_Tool.GetId() == ID_TOOL_REPLACE);
 
   if (!wxExFindReplaceData::Get()->MatchCase())
   {
@@ -151,4 +169,9 @@ bool wxExStream::RunTool()
   ProcessEnd();
 
   return true;
+}
+
+void wxExStream::Reset()
+{
+  m_Asked = false;
 }

@@ -45,7 +45,7 @@ public:
   bool FindInFiles(
     /// the files
     const std::vector< std::string > & files,
-    /// ID_TOOL_REPORT_FIND or ID_TOOL_REPORT_REPLACE
+    /// ID_TOOL_REPORT_FIND or ID_TOOL_REPLACE
     int id,
     /// Default shows a dialog.
     bool show_dialog = true,
@@ -55,7 +55,7 @@ public:
   /// Shows a modal find (or replace) in files dialog.
   /// Returns result from ShowModal.
   int FindInFilesDialog(
-    /// ID_TOOL_REPORT_FIND or ID_TOOL_REPORT_REPLACE
+    /// ID_TOOL_REPORT_FIND or ID_TOOL_REPLACE
     int id,
     /// add file types selection as well
     bool add_in_files = false);

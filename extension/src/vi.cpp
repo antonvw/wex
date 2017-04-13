@@ -424,12 +424,10 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"P", [&](const std::string& command){Put(false);return true;}},
     {"Q", [&](const std::string& command){
       GetFrame()->SaveCurrentPage("ctags");
-      const std::string word(
-        GetSTC()->GetWordAtPos(GetSTC()->GetCurrentPos()));
-      if (GetCTags()->Find(word))
-      {
-        wxExFindReplaceData::Get()->SetFindString(word);
-      }
+      GetCTags()->Find(
+          GetSTC()->GetSelectedText().empty() ? 
+            GetSTC()->GetWordAtPos(GetSTC()->GetCurrentPos()):
+            GetSTC()->GetSelectedText().ToStdString());
       return true;}},
     {"S", [&](const std::string& command){
       GetFrame()->RestorePage("ctags");
@@ -784,7 +782,7 @@ void wxExVi::CommandCalc(const std::string& command)
 
   if (ModeInsert())
   {
-    if (wxString(GetLastCommand()).Matches("*c*"))
+    if (GetLastCommand().find('c') != std::string::npos)
     {
       GetSTC()->ReplaceSelection(wxEmptyString);
     }
@@ -1009,7 +1007,7 @@ bool wxExVi::InsertMode(const std::string& command)
       break;
 
     default: 
-      if (wxString(GetLastCommand()).Matches("*c*") && m_InsertText.empty())
+      if (GetLastCommand().find('c') != std::string::npos && m_InsertText.empty())
       {
         GetSTC()->ReplaceSelection(wxEmptyString);
       }

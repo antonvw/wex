@@ -2,7 +2,7 @@
 // Name:      stream.h
 // Purpose:   Declaration of wxExStream class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -36,6 +36,9 @@ public:
   
   /// Runs the tool.
   bool RunTool();
+
+  /// Resets static members.
+  static void Reset();
 protected:
   /// Processes line.
   /// The default performs a ID_TOOL_REPORT_FIND or REPLACE.
@@ -63,11 +66,11 @@ protected:
     int pos) {;};
 protected:
   /// Increments the actions completed.
-  void IncActionsCompleted(int inc_value = 1) {
+  auto IncActionsCompleted(int inc_value = 1) {return
     m_Stats.m_Elements.Inc(_("Actions Completed").ToStdString(), inc_value);};
     
   /// Increments statistics keyword.
-  void IncStatistics(const std::string& keyword) {
+  auto IncStatistics(const std::string& keyword) {return
     m_Stats.m_Elements.Inc(keyword);};
 private:
   bool IsWordCharacter(int c) const {return isalnum(c) || c == '_';};
@@ -79,8 +82,12 @@ private:
 
   int m_Prev;
   bool m_Modified = false, m_Write = false;
+
+  const int m_Threshold;
   
   wxExFindReplaceData* m_FRD;
 
   std::string m_FindString;
+
+  static bool m_Asked;
 };

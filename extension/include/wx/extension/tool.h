@@ -73,7 +73,7 @@ public:
   
   /// Is this tool a find type.
   bool IsFindType() const {
-    return m_Id == ID_TOOL_REPORT_FIND || m_Id == ID_TOOL_REPORT_REPLACE;}
+    return m_Id == ID_TOOL_REPORT_FIND || m_Id == ID_TOOL_REPLACE;}
 
   /// Is this tool a report type.
   bool IsReportType() const {

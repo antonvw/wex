@@ -406,7 +406,7 @@ wxExListView::wxExListView(wxWindow* parent,
     long style = 0; // otherwise CAN_PASTE already on
     if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
     if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
-    if (m_Type != LIST_FIND && m_Type != LIST_REPLACE) style |= wxExMenu::MENU_CAN_PASTE;
+    if (m_Type != LIST_FIND) style |= wxExMenu::MENU_CAN_PASTE;
     if (GetSelectedItemCount() == 0 && GetItemCount() > 0) 
     {
       style |= wxExMenu::MENU_ALLOW_CLEAR;
@@ -442,14 +442,7 @@ void wxExListView::AddColumns(const wxExLexer* lexer)
   switch (m_Type)
   {
     case LIST_FIND:
-    case LIST_REPLACE:
       AppendColumn(wxExColumn(_("Line").ToStdString(), wxExColumn::COL_STRING, col_line_width));
-
-      if (m_Type == LIST_REPLACE)
-      {
-        AppendColumn(wxExColumn(_("Replaced").ToStdString(), wxExColumn::COL_STRING));
-      }
-
       AppendColumn(wxExColumn(_("Match").ToStdString(), wxExColumn::COL_STRING));
       AppendColumn(wxExColumn(_("Line No").ToStdString()));
     break;
@@ -688,11 +681,11 @@ bool wxExListView::FindNext(const std::string& text, bool find_next)
   static long start_item;
   static long end_item;
 
-  wxString text_use = text;
+  std::string text_use = text;
 
   if (!wxExFindReplaceData::Get()->MatchCase())
   {
-    text_use.MakeUpper();
+    for (auto & c : text_use) c = std::toupper(c);
   }
 
   const int firstselected = GetFirstSelected();
@@ -731,13 +724,15 @@ bool wxExListView::FindNext(const std::string& text, bool find_next)
     index != end_item && match == -1;
     (find_next ? index++: index--))
   {
+    std::string text;
+
     for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
-      wxString text = wxListView::GetItemText(index, col);
+      text = std::string(wxListView::GetItemText(index, col));
 
       if (!wxExFindReplaceData::Get()->MatchCase())
       {
-        text.MakeUpper();
+        for (auto & c : text) c = std::toupper(c);
       }
 
       if (wxExFindReplaceData::Get()->MatchWord())
@@ -749,7 +744,7 @@ bool wxExListView::FindNext(const std::string& text, bool find_next)
       }
       else
       {
-        if (text.Contains(text_use))
+        if (text.find(text_use) != std::string::npos)
         {
           match = index;
         }
@@ -834,7 +829,6 @@ const std::string wxExListView::GetTypeDescription(wxExListType type)
     case LIST_HISTORY: value = _("History"); break;
     case LIST_KEYWORD: value = _("Keywords"); break;
     case LIST_FILE: value = _("File"); break;
-    case LIST_REPLACE: value = _("Replace Results"); break;
     case LIST_NONE: value = _("None"); break;
     default: wxFAIL;
   }
@@ -894,17 +888,10 @@ void wxExListView::ItemActivated(long item_number)
       wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
       if (frame != nullptr)
       {
-        const std::string line_number_str = GetItemText(item_number, _("Line No").ToStdString());
-        const int line_number = atoi(line_number_str.c_str());
-        const std::string match =
-          (m_Type == LIST_REPLACE ?
-             GetItemText(item_number, _("Replaced").ToStdString()):
-             GetItemText(item_number, _("Match").ToStdString()));
-
         frame->OpenFile(
           item.GetFileName().GetFullPath(),
-          line_number, 
-          match);
+          std::stoi(GetItemText(item_number, _("Line No").ToStdString())), 
+          GetItemText(item_number, _("Match").ToStdString()));
       }
     }
     else if (wxDirExists(item.GetFileName().GetFullPath()))

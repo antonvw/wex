@@ -848,10 +848,14 @@ void Frame::OnCommand(wxCommandEvent& event)
 
       wxBitmap bitmap(wxNullBitmap);
       
-      if (stc->GetFileName().FileExists())
+      if (editor->GetFileName().FileExists())
       {
         bitmap = wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-          wxExGetIconID(stc->GetFileName()));
+          wxExGetIconID(editor->GetFileName()));
+      }
+      else if (!editor->GetLexer().GetScintillaLexer().empty())
+      {
+        stc->GetLexer().Set(editor->GetLexer().GetScintillaLexer());
       }
       
       // key should be unique
@@ -862,7 +866,7 @@ void Frame::OnCommand(wxCommandEvent& event)
         m_Editors->GetPageIndex(editor),
         stc,
         key,
-        stc->GetFileName().GetFullName(),
+        editor->GetFileName().GetFullName(),
         true,
         bitmap);
 

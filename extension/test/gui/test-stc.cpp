@@ -2,7 +2,7 @@
 // Name:      test-stc->cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -104,7 +104,7 @@ TEST_CASE("wxExSTC")
     REQUIRE(stc->GetLexer().GetScintillaLexer().empty());
 
     wxExLexer lexer;
-    REQUIRE( lexer.Reset());
+    lexer.Reset();
     REQUIRE( lexer.Set("cpp", true));
     REQUIRE(!lexer.Set("xyz"));
     REQUIRE( stc->GetLexer().Set(lexer));

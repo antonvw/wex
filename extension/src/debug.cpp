@@ -132,7 +132,9 @@ bool wxExDebug::GetArgs(
     if (wxExItemDialog(m_Frame,  {
         {"File", ITEM_COMBOBOX, wxAny(), true},
         {m_Entry.GetName(), ITEM_FILEPICKERCTRL}},
-      "Debug").ShowModal() == wxID_CANCEL) return false;
+      "Debug",
+      0, 1, wxOK | wxCANCEL, wxID_ANY,
+      wxDefaultPosition, wxSize(500, 180)).ShowModal() == wxID_CANCEL) return false;
     
     args += " " + wxExConfigFirstOf("File"); 
   }

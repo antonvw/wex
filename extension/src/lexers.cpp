@@ -125,11 +125,12 @@ const wxExLexer wxExLexers::FindByName(const std::string& name) const
   return it != m_Lexers.end() ? *it: wxExLexer();
 }
 
+// Add automatic lexers if text starts with some special tokens.
 const wxExLexer wxExLexers::FindByText(const std::string& text) const
 {
-  // Add automatic lexers if text starts with some special tokens.
   std::string text_lowercase = std::regex_replace(text, 
     std::regex("[ \t\n\v\f\r]+$"), "", std::regex_constants::format_sed);
+
   for (auto & c : text_lowercase) c = ::tolower(c);
 
        if (text_lowercase.find("<html>") == 0) return FindByName("hypertext");
@@ -142,15 +143,9 @@ const wxExLexer wxExLexers::FindByText(const std::string& text) const
   else if (text_lowercase.find("#!/bin/env python") == 0) return FindByName("python");
   else if (text_lowercase.find("#!/bin/tcsh") == 0) return FindByName("tcsh");
   else if (text_lowercase.find("#!/bin/sh") == 0) return FindByName("sh");
-  else
-  {
-    // If there is another Shell Language Indicator,
-    // match with bash.
-    std::regex re("#!.*/bin/.*");
-    if (std::regex_match(text_lowercase, re)) return FindByName("bash");
-  }
-
-  return wxExLexer();
+  // If there is another Shell Language Indicator match with bash.
+  else if (std::regex_match(text_lowercase, std::regex("#!.*/bin/.*"))) return FindByName("bash");
+  else return wxExLexer();
 }
 
 wxExLexers* wxExLexers::Get(bool createOnDemand)
@@ -478,8 +473,9 @@ bool wxExLexers::ShowDialog(wxExSTC* stc, const wxString& caption) const
   auto lexer = stc->GetLexer().GetDisplayLexer();
   if (!SingleChoice(stc, caption, s, lexer)) return false;
 
-  lexer.empty() ? 
-    stc->GetLexer().Reset():
+  if (lexer.empty())
+    stc->GetLexer().Reset();
+  else  
     stc->GetLexer().Set(lexer, true); // allow fold
   
   return true;

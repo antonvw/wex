@@ -2,7 +2,7 @@
 // Name:      otl.h
 // Purpose:   Declaration of wxExOTL class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -33,7 +33,7 @@ public:
  ~wxExOTL();
 
   /// Returns the datasource connected to or to connect to.
-  const wxString Datasource() const;
+  const std::string Datasource() const;
 
   /// Returns true if we are connected.
   bool IsConnected() const {return m_Connect.connected > 0;};
@@ -52,13 +52,13 @@ public:
     const wxString& title = _("Open ODBC Connection"));
 
   /// Runs the query using direct_exec and returns result.
-  long Query(const wxString& query);
+  long Query(const std::string& query);
 
 #if wxUSE_GRID
   /// Runs the query and puts results on the grid.
   /// If empty_results then the grid is cleared first.
   /// Returns number of rows appended.
-  long Query(const wxString& query,
+  long Query(const std::string& query,
     wxGrid* grid,
     bool& stopped,
     bool empty_results = true,
@@ -67,7 +67,7 @@ public:
 
   /// Runs the query and appends results to the stc.
   /// Returns number of lines added.
-  long Query(const wxString& query,
+  long Query(const std::string& query,
     wxStyledTextCtrl* stc,
     bool& stopped,
     int buffer_size = 1024);

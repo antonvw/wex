@@ -513,7 +513,7 @@ bool wxExShell::ProcessChar(int key)
         const int offset = (key == WXK_BACK ? 1: 0);
         const int index = GetCurrentPos() - m_CommandStartPosition - offset;
         
-        if (index >= 0 && index < (int)m_Command.length() && m_Command.length() > 0)
+        if (!m_Command.empty() && index >= 0 && index < (int)m_Command.length())
         {
           m_Command.erase(index, 1);
         }

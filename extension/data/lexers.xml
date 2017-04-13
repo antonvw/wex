@@ -3154,7 +3154,7 @@ Copyright: (c) 2017, Anton van Wezenbeek
       *Keyword *Keywords *Keyword* *Keywords* 
       *Setting *Settings *Setting* *Settings*
       *Variable *Variables *Variable* *Variables*
-      [Arguments] [Documentation] [Tags] [Teardown]
+      [Arguments] [Documentation] [Return] [Tags] [Teardown]
       Default Force Library Metadata Postcondition Precondition Resource 
       Template Timeout 
     </keywords>

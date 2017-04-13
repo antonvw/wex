@@ -163,28 +163,6 @@ bool wxExLexer::Apply() const
   return true;
 }
 
-bool wxExLexer::ApplyWhenSet()
-{
-  if (m_STC == nullptr) return false;
-  
-  m_STC->SetLexerLanguage(m_ScintillaLexer);
-  
-  if ((m_IsOk = (m_ScintillaLexer.empty() ? true: (((wxStyledTextCtrl *)m_STC)->GetLexer()) != wxSTC_LEX_NULL)))
-  {
-    m_STC->SetStyleBits(m_STC->GetStyleBitsNeeded());
-    Apply();
-      
-    if (m_ScintillaLexer == "diff")
-    {
-      m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
-    }
-    
-    wxExFrame::StatusText(GetDisplayLexer(), "PaneLexer");
-  }
-  
-  return m_IsOk;
-}
-
 void wxExLexer::AutoMatch(const std::string& lexer)
 {
   const wxExLexer& l(wxExLexers::Get()->FindByName(lexer));
@@ -311,7 +289,6 @@ void wxExLexer::Initialize()
   m_CommentEnd2.clear();
   m_DisplayLexer.clear();
   m_Extensions.clear();
-  m_IsOk = true;
   m_Keywords.clear();
   m_KeywordsSet.clear();
   m_Properties.clear();
@@ -409,31 +386,24 @@ const std::string wxExLexer::MakeSingleLineComment(
   return out;
 }
 
-bool wxExLexer::Reset()
+void wxExLexer::Reset()
 {
   Initialize();
+
+  m_IsOk = false;
   
   if (m_STC != nullptr)
   {
     ((wxStyledTextCtrl *)m_STC)->SetLexer(wxSTC_LEX_NULL);
-    
-    if ((m_IsOk = (((wxStyledTextCtrl *)m_STC)->GetLexer()) == wxSTC_LEX_NULL))
-    {
-      Apply();
-      wxExFrame::StatusText(GetDisplayLexer(), "PaneLexer");
-      m_STC->ResetMargins(STC_MARGIN_FOLDING);
-    }
+    Apply();
+    wxExFrame::StatusText(GetDisplayLexer(), "PaneLexer");
+    m_STC->ResetMargins(STC_MARGIN_FOLDING);
   }
-
-  return m_IsOk;
 }
 
 void wxExLexer::Set(const pugi::xml_node* node)
 {
   m_ScintillaLexer = node->attribute("name").value();
-
-  // Just set ok if there is a lexer,
-  // when we Apply to a stc component we really can set it.  
   m_IsOk = !m_ScintillaLexer.empty();
 
   if (!m_IsOk)
@@ -525,29 +495,10 @@ void wxExLexer::Set(const pugi::xml_node* node)
 
 bool wxExLexer::Set(const std::string& lexer, bool fold)
 {
-  // If there are no lexers, just return, to prevent error message.
-  if (wxExLexers::Get()->GetLexers().empty()) return false;
-
-  (*this) = wxExLexers::Get()->FindByName(lexer);
-
-  if (!m_IsOk && m_STC != nullptr)
-  {
-    (*this) = wxExLexers::Get()->FindByText(m_STC->GetLine(0).ToStdString());
-  }
-    
-  if (m_ScintillaLexer.empty() && !lexer.empty())
-  {
-    m_IsOk = false;
-  }
-  else
-  {
-    if (ApplyWhenSet() && fold && m_STC != nullptr)
-    {
-      m_STC->Fold();
-    }
-  }
-  
-  if (!m_IsOk)
+  if (
+    !Set(wxExLexers::Get()->FindByName(lexer), fold) &&
+    !wxExLexers::Get()->GetLexers().empty() &&
+    !lexer.empty())
   {
     std::cerr << "Lexer is not known: " << lexer << "\n";
   }
@@ -557,24 +508,29 @@ bool wxExLexer::Set(const std::string& lexer, bool fold)
 
 bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
 {
-  if (lexer.GetScintillaLexer().empty() && m_STC != nullptr)
+  (*this) = (lexer.GetScintillaLexer().empty() && m_STC != nullptr ?
+     wxExLexers::Get()->FindByText(m_STC->GetLine(0).ToStdString()): lexer);
+
+  if (m_STC == nullptr) return m_IsOk;
+
+  m_STC->SetLexerLanguage(m_ScintillaLexer);
+  m_STC->SetStyleBits(m_STC->GetStyleBitsNeeded());
+
+  Apply();
+      
+  if (m_ScintillaLexer == "diff")
   {
-    (*this) = wxExLexers::Get()->FindByText(m_STC->GetLine(0).ToStdString());
-  }
-  else
-  {
-    if (this != &lexer)
-    {
-      (*this) = lexer;
-    }
+    m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
   }
     
-  if (ApplyWhenSet() && fold && m_STC != nullptr)
+  wxExFrame::StatusText(GetDisplayLexer(), "PaneLexer");
+
+  if (fold)
   {
     m_STC->Fold();
   }
 
-  return m_IsOk;
+  return m_ScintillaLexer.empty() || (((wxStyledTextCtrl *)m_STC)->GetLexer()) != wxSTC_LEX_NULL;
 }
 
 void wxExLexer::SetProperty(const std::string& name, const std::string& value)

@@ -8,7 +8,7 @@ msgstr "Arrêter l'enregistrement"
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: wxExtension 17.04\n"
+"Project-Id-Version: wxExtension 17.10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-03-04 19:22+0100\n"
 "PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
