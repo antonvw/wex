@@ -2,7 +2,7 @@
 // Name:      debug.h
 // Purpose:   Declaration of class wxExDebug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,10 +10,10 @@
 #include <map>
 #include <string>
 #include <tuple>
-#include <wx/extension/filename.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/menucommand.h>
 #include <wx/extension/menucommands.h>
+#include <wx/extension/path.h>
 
 class wxExManagedFrame;
 class wxExMenu;
@@ -71,9 +71,9 @@ private:
   /// The breakpoints, relating debugging breakpoint no to
   /// tuple of filename, marker identifier, and line no.
   std::map<
-    std::string, std::tuple<wxExFileName, int, int>> m_Breakpoints;
+    std::string, std::tuple<wxExPath, int, int>> m_Breakpoints;
   
-  wxExFileName m_FileName;
+  wxExPath m_Path;
   wxExManagedFrame* m_Frame;
   wxExMenuCommands< wxExMenuCommand> m_Entry;
   wxExProcess* m_Process = nullptr;

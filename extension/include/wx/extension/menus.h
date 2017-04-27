@@ -94,8 +94,8 @@ public:
     return menu->GetMenuItemCount();};
   
   /// Returns the xml filename.
-  static const wxExFileName GetFileName() {
-    return wxExFileName(wxExConfigDir(), "menus.xml");};
+  static const wxExPath GetFileName() {
+    return wxExPath(wxExConfigDir(), "menus.xml");};
   
   /// Loads entries from xml document.
   /// Returns false if document could not be loaded, or

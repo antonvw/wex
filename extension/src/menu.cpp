@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wxExMenu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -197,9 +197,9 @@ bool wxExMenu::AppendTools(int itemid)
   return true;
 }
 
-bool wxExMenu::AppendVCS(const wxExFileName& filename, bool show_modal)
+bool wxExMenu::AppendVCS(const wxExPath& filename, bool show_modal)
 {
-  if (!filename.IsOk())
+  if (!filename.GetStat().IsOk())
   {
     wxExVCS vcs;
        

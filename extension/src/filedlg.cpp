@@ -39,7 +39,7 @@ wxExFileDialog::wxExFileDialog(
 {
   // Override wildcard if it is default and file is initialized.
   if (wildcard == wxFileSelectorDefaultWildcardStr &&
-      m_File->GetFileName().IsOk())
+      m_File->GetFileName().GetStat().IsOk())
   {
     wxString wildcards = 
       _("All Files") + wxString::Format(" (%s)|%s",
@@ -69,7 +69,7 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
   
   if (m_File->GetContentsChanged())
   {
-    if (!m_File->GetFileName().IsOk())
+    if (!m_File->GetFileName().GetStat().IsOk())
     {
       switch (wxMessageBox(
         _("Save changes") + "?",

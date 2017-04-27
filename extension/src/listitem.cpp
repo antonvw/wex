@@ -20,13 +20,13 @@ wxExListItem::wxExListItem(
   wxExListView* lv, 
   long itemnumber)
   : m_ListView(lv)
-  , m_FileName(
+  , m_Path(
     (!lv->GetItemText(itemnumber, _("File Name").ToStdString()).empty() &&
      !lv->GetItemText(itemnumber, _("In Folder").ToStdString()).empty() ?
-        wxExFileName(
+        wxExPath(
           lv->GetItemText(itemnumber, _("In Folder").ToStdString()),
           lv->GetItemText(itemnumber, _("File Name").ToStdString())) : 
-        wxExFileName(lv->GetItemText(itemnumber))))
+        wxExPath(lv->GetItemText(itemnumber))))
   , m_FileSpec(lv->GetItemText(itemnumber, _("Type").ToStdString()))
 {
   SetId(itemnumber);
@@ -35,10 +35,10 @@ wxExListItem::wxExListItem(
 
 wxExListItem::wxExListItem(
   wxExListView* listview,
-  const wxExFileName& filename,
+  const wxExPath& filename,
   const std::string& filespec)
   : m_ListView(listview)
-  , m_FileName(filename)
+  , m_Path(filename)
   , m_FileSpec(filespec)
   , m_IsReadOnly(false)
 {
@@ -57,13 +57,13 @@ void wxExListItem::Insert(long index)
     col = m_ListView->FindColumn(_("File Name").ToStdString());
     wxASSERT(col >= 0);
     filename = (
-      m_FileName.FileExists() || m_FileName.DirExists() ?
-        m_FileName.GetFullName():
-        m_FileName.GetFullPath());
+      m_Path.FileExists() || m_Path.DirExists() ?
+        m_Path.GetFullName():
+        m_Path.GetFullPath());
   }
   else
   {
-    filename = m_FileName.GetFullPath();
+    filename = m_Path.GetFullPath();
   }
 
   if (col == 0)
@@ -113,25 +113,25 @@ void wxExListItem::Update()
 {
   SetImage(
     m_ListView->GetImageType() == wxExListView::IMAGE_FILE_ICON && 
-    m_FileName.GetStat().IsOk() ? wxExGetIconID(m_FileName): -1);
+    m_Path.GetStat().IsOk() ? wxExGetIconID(m_Path): -1);
 
   m_ListView->SetItem(*this);
 
-  SetReadOnly(m_FileName.GetStat().IsReadOnly());
+  SetReadOnly(m_Path.GetStat().IsReadOnly());
 
   if (
      m_ListView->InReportView() &&
-     m_FileName.GetStat().IsOk())
+     m_Path.GetStat().IsOk())
   {
     SetItem(_("Type").ToStdString(),
-      (wxFileName::DirExists(m_FileName.GetFullPath()) ? // IsDir not ok
+      (wxFileName::DirExists(m_Path.GetFullPath()) ? // IsDir not ok
          m_FileSpec:
-         m_FileName.GetExtension()));
-    SetItem(_("In Folder").ToStdString(), m_FileName.GetPath());
+         m_Path.GetExtension()));
+    SetItem(_("In Folder").ToStdString(), m_Path.GetPath());
     SetItem(_("Size").ToStdString(),
-      (!wxFileName::DirExists(m_FileName.GetFullPath()) ? // IsDir not ok
-         (std::to_string(m_FileName.GetStat().st_size)):
+      (!wxFileName::DirExists(m_Path.GetFullPath()) ? // IsDir not ok
+         (std::to_string(m_Path.GetStat().st_size)):
           std::string()));
-    SetItem(_("Modified").ToStdString(), m_FileName.GetStat().GetModificationTime());
+    SetItem(_("Modified").ToStdString(), m_Path.GetStat().GetModificationTime());
   }
 }

@@ -2,14 +2,14 @@
 // Name:      menu.h
 // Purpose:   Declaration of wxExMenu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wx/artprov.h> // for wxArtID
 #include <wx/menu.h>
-#include <wx/extension/filename.h>
+#include <wx/extension/path.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -76,7 +76,7 @@ public:
   bool AppendVCS(
     /// if a filename is specified the menu is built as a submenu,
     /// otherwise as menu items.
-    const wxExFileName& filename = wxExFileName(),
+    const wxExPath& filename = wxExPath(),
     /// shows modal dialog if necessary
     bool show_modal = true);
 

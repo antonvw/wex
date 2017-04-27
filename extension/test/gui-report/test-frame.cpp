@@ -2,7 +2,7 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/menu.h>
@@ -25,10 +25,8 @@ TEST_CASE("wxExFrameWithHistory")
   REQUIRE(!GetFrame()->GetFileHistory().GetHistoryFile().find("../test.h") != std::string::npos);
 
   REQUIRE(!GetFrame()->OpenFile(
-    wxExFileName(GetProject()),
-    0,
-    std::string(),
-    STC_WIN_IS_PROJECT));
+    wxExPath(GetProject()),
+    wxExSTCData().Flags(STC_WIN_IS_PROJECT)));
   
   wxExFindReplaceData::Get()->SetFindString("wxExTestApp");
 

@@ -2,7 +2,7 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wxExVCS class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,7 +10,7 @@
 #include <vector>
 #include <wx/extension/vcsentry.h>
 
-class wxExFileName;
+class wxExPath;
 
 /// This class collects all vcs handling.
 /// The VCS entries are loaded from menus.xml, this is done
@@ -39,7 +39,7 @@ public:
 #endif    
 
   /// Returns true if specified filename (a path) is a vcs directory.
-  static bool DirExists(const wxExFileName& filename);
+  static bool DirExists(const wxExPath& filename);
 
   /// Executes the current vcs command for the current
   /// vcs entry, and collects the output.
@@ -87,26 +87,26 @@ public:
   bool Use() const;
 private:
   static const wxExVCSEntry FindEntry(const std::string& filename);
-  static const wxExVCSEntry FindEntry(const wxExFileName& filename);
+  static const wxExVCSEntry FindEntry(const wxExPath& filename);
   static bool IsAdminDir(
     const std::string& admin_dir, 
-    const wxExFileName& fn);
+    const wxExPath& fn);
   static bool IsAdminDirTopLevel(
     const std::string& admin_dir, 
-    const wxExFileName& fn);
+    const wxExPath& fn);
   
   const std::string GetFile() const;
   const std::string GetRelativeFile(
     const std::string& admin_dir, 
-    const wxExFileName& file) const;
+    const wxExPath& file) const;
   const std::string GetTopLevelDir(
     const std::string& admin_dir, 
-    const wxExFileName& file) const;
+    const wxExPath& file) const;
   
   wxExVCSEntry m_Entry;
 
   std::vector< std::string > m_Files;
-  wxString m_Caption;
+  std::string m_Caption;
 
   static std::vector<wxExVCSEntry> m_Entries;
 };

@@ -31,6 +31,7 @@ TEST_CASE("wxExProcess")
   
 #ifdef __UNIX__
   // Test wait for prcess (sync)
+#ifndef __WXOSX__
   REQUIRE( process->Execute("ls -l", true));
   REQUIRE(!process->GetError());
   REQUIRE(!process->Write("hello world"));
@@ -65,18 +66,14 @@ TEST_CASE("wxExProcess")
   wxExShell* shell = process->GetShell();  
   REQUIRE( shell != nullptr);
   Process("cd ~\rpwd\r", shell);
-#ifndef __WXOSX__
   REQUIRE( shell->GetText().Contains("home"));
   REQUIRE( cwd != wxGetCwd());
-#endif
   REQUIRE( process->Kill());
 
   // Test working directory for process (should change).
   REQUIRE( process->Execute("ls -l", false, ".."));
   REQUIRE(!process->GetError());
-#ifndef __WXOSX__
   REQUIRE(!wxGetCwd().Contains("data"));
-#endif
   wxSetWorkingDirectory(cwd);
   REQUIRE( process->Kill());
   
@@ -84,6 +81,7 @@ TEST_CASE("wxExProcess")
   REQUIRE( process->Execute("xxxx"));
   REQUIRE(!process->GetError());
   REQUIRE( process->Kill());
+#endif
 #endif
   
   wxExProcess::PrepareOutput(GetFrame()); // in fact already done

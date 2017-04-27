@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wxExShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -45,16 +45,8 @@ public:
     int commands_save_in_config = -1,
     /// The lexer used by stc.
     const std::string& lexer = std::string(),
-    /// The stc menu flags.
-    wxExSTCMenuFlags menu_flags = static_cast<wxExSTCMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS),
-    /// The window id.
-    wxWindowID id = wxID_ANY,
-    /// Position.
-    const wxPoint& pos = wxDefaultPosition,
-    /// Size.
-    const wxSize& size = wxDefaultSize,
-    /// Window style.
-    long style = 0);
+    const wxExSTCData& stc_data = wxExSTCData(),
+    const wxExWindowData& win_data = wxExWindowData());
 
   /// Destructor, keeps the commands in the config, if required.
   virtual ~wxExShell();

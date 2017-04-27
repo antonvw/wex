@@ -13,9 +13,9 @@
 #include <wx/config.h>
 #include <wx/log.h>
 #include <wx/extension/ctags.h>
-#include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/path.h>
 #include <wx/extension/util.h>
 #include "readtags.h"
 
@@ -24,7 +24,7 @@ class wxExCTagsEntry
 public:
   wxExCTagsEntry(const tagEntry& entry)
     : m_LineNumber(entry.address.lineNumber)
-    , m_FileName(entry.file)
+    , m_Path(entry.file)
     , m_Pattern(entry.address.pattern != nullptr ? 
       // prepend colon to force ex command
       ":" + std::string(entry.address.pattern): std::string()) {
@@ -33,14 +33,14 @@ public:
     std::replace(m_Pattern.begin(), m_Pattern.end(), '*', '.');};
   const std::string GetName() const {return 
     wxConfigBase::Get()->ReadBool(_("vi tag fullpath"), false) ?
-      m_FileName.GetFullPath(): m_FileName.GetFullName();};
+      m_Path.GetFullPath(): m_Path.GetFullName();};
   void OpenFile(wxExFrame* frame) const
   {
-    frame->OpenFile(m_FileName, 
-      m_LineNumber, std::string(), 0, STC_WIN_DEFAULT, m_Pattern);
+    frame->OpenFile(m_Path, 
+      wxExSTCData().Line(m_LineNumber).Command(m_Pattern));
   }
 private:
-  const wxExFileName m_FileName;
+  const wxExPath m_Path;
   const int m_LineNumber;
   std::string m_Pattern;
 };

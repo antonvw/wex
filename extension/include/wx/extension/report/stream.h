@@ -18,7 +18,7 @@ class WXDLLIMPEXP_BASE wxExStreamToListView : public wxExStream
 public:
   /// Constructor.
   wxExStreamToListView(
-    const wxExFileName& filename,
+    const wxExPath& filename,
     const wxExTool& tool);
 
   /// Sets up the tool.

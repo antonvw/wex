@@ -130,7 +130,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   wxExListItem item(
     (wxExListView*)m_NotebookWithLists->GetPageByKey(
       wxExListView::GetTypeDescription(wxExListView::LIST_FILE)),
-    wxFileName("NOT EXISTING ITEM"));
+    wxExPath("NOT EXISTING ITEM"));
 
   item.Insert();
   
@@ -147,7 +147,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {;}, wxID_HELP);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_STC->GetFile().FileNew(wxExFileName());}, wxID_NEW);
+    m_STC->GetFile().FileNew(wxExPath());}, wxID_NEW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_STC->HasCapture())
@@ -246,19 +246,13 @@ wxExSTC* wxExRepSampleFrame::GetSTC()
   return m_STC;
 }
   
-wxExSTC* wxExRepSampleFrame::OpenFile(const wxExFileName& file,
-  int line_number,
-  const std::string& match,
-  int col_number,
-  wxExSTCWindowFlags flags,
-  const std::string& command)
+wxExSTC* wxExRepSampleFrame::OpenFile(const wxExPath& file, const wxExSTCData& data)
 {
+  m_STC->GetLexer().Reset();
+
   // We cannot use the wxExFrameWithHistory::OpenFile, as that uses GetSTC.
   // Prevent recursion.
-  flags = STC_WIN_DEFAULT;
-  
-  m_STC->GetLexer().Reset();
-  m_STC->Open(file, line_number, match, col_number, flags, command);
+  m_STC->Open(file, wxExSTCData(data).Flags(STC_WIN_DEFAULT));
   
   return m_STC;
 }

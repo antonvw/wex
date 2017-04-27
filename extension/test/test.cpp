@@ -60,7 +60,7 @@ const std::string GetTestDir()
     (char)wxFileName::GetPathSeparator();
 }
   
-const wxExFileName GetTestFile()
+const wxExPath GetTestFile()
 {
   return GetTestDir() + "test.h";
 }

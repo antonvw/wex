@@ -172,7 +172,7 @@ private:
   std::string m_Language; // e.g. xml
 
   // The scintilla name for this lexer.
-  // Cannot be const, as in wxExFileName the operator= is used on a lexer.
+  // Cannot be const, as in wxExPath the operator= is used on a lexer.
   std::string m_ScintillaLexer;
 
   // Normally the lexer displayed is the scintilla lexer,

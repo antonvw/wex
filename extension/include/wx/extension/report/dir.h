@@ -2,7 +2,7 @@
 // Name:      dir.h
 // Purpose:   Include file for wxExDirWithListView and wxExDirTool classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,7 +21,7 @@ public:
   wxExDirTool(const wxExTool& tool,
     const std::string& fullpath,
     const std::string& filespec = std::string(),
-    int flags = wxDIR_DEFAULT);
+    int flags = DIR_DEFAULT);
     
   /// Returns the statistics.
   auto & GetStatistics() {return m_Statistics;};
@@ -43,7 +43,7 @@ public:
   wxExDirWithListView(wxExListView* listview,
     const std::string& fullpath,
     const std::string& filespec = std::string(),
-    int flags = wxDIR_DEFAULT);
+    int flags = DIR_DEFAULT);
 protected:
   virtual bool OnDir(const std::string& dir) override;
   virtual bool OnFile(const std::string& file) override;

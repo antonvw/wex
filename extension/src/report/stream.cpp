@@ -23,7 +23,7 @@ wxExListView* wxExStreamToListView::m_Report = nullptr;
 wxExFrameWithHistory* wxExStreamToListView::m_Frame = nullptr;
 
 wxExStreamToListView::wxExStreamToListView(
-  const wxExFileName& filename,
+  const wxExPath& filename,
   const wxExTool& tool)
   : wxExStream(filename, tool)
 {

@@ -10,7 +10,7 @@
 #include <map>
 #include <vector>
 #include <pugixml.hpp>
-#include <wx/extension/filename.h>
+#include <wx/extension/path.h>
 #include <wx/extension/variable.h>
 
 #if wxUSE_GUI
@@ -131,7 +131,7 @@ public:
     std::string& expanded);
   
   /// Returns the filename with xml document.
-  static const wxExFileName GetFileName();
+  static const wxExPath GetFileName();
   
   /// Loads all macros (and variables) from xml document.
   /// Returns true if document is loaded (macros still can be empty).

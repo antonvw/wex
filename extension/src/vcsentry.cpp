@@ -130,7 +130,7 @@ const std::string wxExVCSEntry::GetFlags() const
 #if wxUSE_GUI
 int wxExVCSEntry::ShowDialog(
   wxWindow* parent, 
-  const wxString& caption,
+  const std::string& caption,
   bool add_folder) const
 {
   if (GetCommand().GetCommand().empty())
@@ -173,7 +173,7 @@ int wxExVCSEntry::ShowDialog(
 #endif
   
 #if wxUSE_GUI
-void wxExVCSEntry::ShowOutput(const wxString& caption) const
+void wxExVCSEntry::ShowOutput(const std::string& caption) const
 {
   if (!GetError() && GetShell() != nullptr)
   {

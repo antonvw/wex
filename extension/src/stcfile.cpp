@@ -12,13 +12,13 @@
 #include <pugixml.hpp>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/filedlg.h>
-#include <wx/extension/filename.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/path.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h> // for STAT_ etc.
 
 #if wxUSE_GUI
-void CheckWellFormed(wxExSTC* stc, const wxExFileName& fn)
+void CheckWellFormed(wxExSTC* stc, const wxExPath& fn)
 {
   if (fn.GetLexer().GetLanguage() == "xml")
   {
@@ -38,7 +38,7 @@ wxExSTCFile::wxExSTCFile(wxExSTC* stc, const std::string& filename)
 {
   if (!filename.empty())
   {
-    Assign(wxExFileName(filename));
+    Assign(wxExPath(filename));
   }
 }
 
@@ -129,9 +129,6 @@ bool wxExSTCFile::GetContentsChanged() const
 
 void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 {
-  // Be sure we can add text.
-  m_STC->SetReadOnly(false);
-
   const bool pos_at_end = (m_STC->GetCurrentPos() >= m_STC->GetTextLength() - 1);
 
   int startPos, endPos;
@@ -184,12 +181,6 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
     m_STC->SetSelection(startPos, endPos);
   }
   
-  if ((static_cast<long>(m_STC->GetFlags()) & STC_WIN_READ_ONLY) ||
-       GetFileName().IsReadOnly())
-  {
-    m_STC->SetReadOnly(true);
-  }
-
   m_STC->EmptyUndoBuffer();
 }
 

@@ -2,7 +2,7 @@
 // Name:      test-file.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -29,7 +29,7 @@ TEST_CASE( "wxExFile" )
     REQUIRE( file.GetFileName().GetFullPath() != "./test.h");
     REQUIRE(!file.GetFileName().GetStat().IsReadOnly());
     REQUIRE(!file.FileLoad(GetTestDir() + "test.bin"));
-    REQUIRE( file.Open(wxExFileName(GetTestDir() + "test.bin").GetFullPath()));
+    REQUIRE( file.Open(wxExPath(GetTestDir() + "test.bin").GetFullPath()));
     REQUIRE( file.IsOpened());
 
     const wxCharBuffer* buffer = file.Read();

@@ -188,7 +188,7 @@ Frame::Frame(App* app)
       if (count > 0)
       {
         wxExOpenFiles(this, GetFileHistory().GetHistoryFiles(count), 
-          STC_WIN_DEFAULT, wxDIR_DEFAULT, m_App->GetCommand());
+          m_App->GetData());
       }
     }
       
@@ -197,11 +197,8 @@ Frame::Frame(App* app)
       if (!GetProjectHistory().GetHistoryFile().empty())
       {
         OpenFile(
-          wxExFileName(GetProjectHistory().GetHistoryFile()),
-          0,
-          std::string(),
-          0,
-          STC_WIN_IS_PROJECT);
+          wxExPath(GetProjectHistory().GetHistoryFile()),
+          wxExSTCData().Flags(STC_WIN_IS_PROJECT));
       }
       else
       {
@@ -212,7 +209,7 @@ Frame::Frame(App* app)
   else
   {
     GetManager().GetPane("PROJECTS").Hide();
-    wxExOpenFiles(this, m_App->GetFiles(), STC_WIN_DEFAULT, wxDIR_FILES, m_App->GetCommand()); // only files in this dir
+    wxExOpenFiles(this, m_App->GetFiles(), m_App->GetData(), wxDIR_FILES); // only files in this dir
   }
   
   StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
@@ -310,7 +307,7 @@ Frame::Frame(App* app)
     wxConfigBase::Get()->Write("OpenFiles", count);
     wxConfigBase::Get()->Write("ShowHistory", m_History != nullptr && m_History->IsShown());
     wxConfigBase::Get()->Write("ShowProjects", m_Projects != nullptr && m_Projects->IsShown());
-    if (m_App->GetCommand().empty())
+    if (m_App->GetData().Command().empty())
     {
       wxDELETE(m_Process);
       event.Skip();
@@ -363,8 +360,7 @@ Frame::Frame(App* app)
       if (dlg.ShowModal() == wxID_CANCEL) return;
       name = dlg.GetValue();
     }
-    wxWindow* page = new wxExSTC(m_Editors, 
-      std::string(), STC_WIN_DEFAULT);
+    wxWindow* page = new wxExSTC(m_Editors, std::string(), m_App->GetData());
     ((wxExSTC*)page)->GetFile().FileNew(name);
     // This file does yet exist, so do not give it a bitmap.
     m_Editors->AddPage(page, name, name, true);
@@ -419,7 +415,7 @@ Frame::Frame(App* app)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_Projects == nullptr) AddPaneProjects();
     const std::string text = wxString::Format("%s%d", _("project"), m_NewProjectNo++).ToStdString();
-    const wxExFileName fn(
+    const wxExPath fn(
        (!GetProjectHistory().GetHistoryFile().empty() ? 
            wxPathOnly(GetProjectHistory().GetHistoryFile()).ToStdString(): wxExConfigDir()),
       text + ".prj");
@@ -473,7 +469,7 @@ Frame::Frame(App* app)
       m_ProjectWildcard,
       wxFD_OPEN | wxFD_MULTIPLE);
     if (dlg.ShowModal() == wxID_CANCEL) return;
-    wxExOpenFiles(this, wxExToVectorString(dlg).Get(), STC_WIN_IS_PROJECT);}, ID_PROJECT_OPEN);
+    wxExOpenFiles(this, wxExToVectorString(dlg).Get(), wxExSTCData().Flags(STC_WIN_IS_PROJECT));}, ID_PROJECT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Editors->Rearrange(wxTOP);}, ID_REARRANGE_HORIZONTALLY);
@@ -697,7 +693,7 @@ wxExListViewFile* Frame::GetProject()
   }
 }
 
-bool Frame::IsOpen(const wxExFileName& filename)
+bool Frame::IsOpen(const wxExPath& filename)
 {
   return m_Editors->GetPageIndexByKey(filename.GetFullPath()) != wxNOT_FOUND;
 }
@@ -1078,9 +1074,9 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 }
 
 wxExSTC* Frame::OpenFile(
-  const wxExFileName& filename,
+  const wxExPath& filename,
   const wxExVCSEntry& vcs,
-  wxExSTCWindowFlags flags)
+  const wxExSTCData& data)
 {
   const std::string unique = 
     vcs.GetCommand().GetCommand() + " " + vcs.GetFlags();
@@ -1090,11 +1086,10 @@ wxExSTC* Frame::OpenFile(
   
   if (page == nullptr)
   {
-    wxExSTC* editor = new wxExSTC(
-      m_Editors, 
+    wxExSTC* editor = new wxExSTC(m_Editors, 
       vcs.GetStdOut(),
-      flags,
-      filename.GetFullName() + " " + unique);
+      filename.GetFullName() + " " + unique,
+      data);
 
     wxExVCSCommandOnSTC(
       vcs.GetCommand(), filename.GetLexer(), editor);
@@ -1117,15 +1112,15 @@ wxExSTC* Frame::OpenFile(
 }
 
 wxExSTC* Frame::OpenFile(
-  const wxExFileName& filename,
+  const wxExPath& filename,
   const std::string& text,
-  wxExSTCWindowFlags flags)
+  const wxExSTCData& data)
 {
   wxExSTC* page = (wxExSTC*)m_Editors->SetSelection(filename.GetFullPath());
 
   if (page == nullptr)
   {
-    page = new wxExSTC(m_Editors, text, flags, filename.GetFullPath());
+    page = new wxExSTC(m_Editors, text, filename.GetFullPath(), data);
     page->GetLexer().Set(filename.GetLexer());
     m_Editors->AddPage(page, filename.GetFullPath(), filename.GetFullName(), true);
   }
@@ -1137,28 +1132,22 @@ wxExSTC* Frame::OpenFile(
   return page;
 }
   
-wxExSTC* Frame::OpenFile(
-  const wxExFileName& filename,
-  int line_number,
-  const std::string& match,
-  int col_number,
-  wxExSTCWindowFlags flags,
-  const std::string& command)
+wxExSTC* Frame::OpenFile(const wxExPath& filename, const wxExSTCData& data)
 {
-  if ((flags & STC_WIN_IS_PROJECT) && m_Projects == nullptr)
+  if ((data.Flags() & STC_WIN_IS_PROJECT) && m_Projects == nullptr)
   {
     AddPaneProjects();
     GetManager().Update();
   }
   
-  wxExNotebook* notebook = ((flags & STC_WIN_IS_PROJECT)
+  wxExNotebook* notebook = ((data.Flags() & STC_WIN_IS_PROJECT)
     ? m_Projects : m_Editors);
     
   wxASSERT(notebook != nullptr);
   
   wxWindow* page = notebook->SetSelection(filename.GetFullPath());
 
-  if (flags & STC_WIN_IS_PROJECT)
+  if (data.Flags() & STC_WIN_IS_PROJECT)
   {
     if (page == nullptr)
     {
@@ -1203,18 +1192,12 @@ wxExSTC* Frame::OpenFile(
 
     if (page == nullptr)
     {
-      if (wxConfigBase::Get()->ReadBool("HexMode", false))
-        flags = static_cast<wxExSTCWindowFlags>(flags | STC_WIN_HEX);
-      
       editor = new wxExSTC(m_Editors,
-        filename,
-        line_number,
-        match,
-        col_number,
-        static_cast<wxExSTCWindowFlags>(flags | m_App->GetFlags()),
-        static_cast<wxExSTCMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS | 
-          (m_App->GetDebug() ? STC_MENU_DEBUG: 0)),
-        command);
+        filename, 
+        wxExSTCData(data).
+          Flags(m_App->GetData().Flags(), DATA_OR).
+          Flags(wxConfigBase::Get()->ReadBool("HexMode", false) ? STC_WIN_HEX: STC_WIN_DEFAULT, DATA_OR).
+          Menu(m_App->GetDebug() ? STC_MENU_DEBUG: STC_MENU_NONE, DATA_OR));
       
       if (m_App->GetDebug())
       {
@@ -1268,17 +1251,9 @@ wxExSTC* Frame::OpenFile(
         }
       }
     }
-    else if (line_number > 0)
+    else
     {
-      editor->GotoLineAndSelect(line_number, match, col_number, flags);
-    }
-    else if (!match.empty())
-    {
-      editor->FindNext(match);
-    }
-    else if (!command.empty())
-    {
-      editor->GetVi().Command(command);
+      wxExSTCData(editor, data).Inject();
     }
     
     editor->SetFocus();
@@ -1295,7 +1270,7 @@ void Frame::PrintEx(wxExEx* ex, const std::string& text)
 
   if (page == nullptr)
   {
-    page = new wxExSTC(m_Editors, text, STC_WIN_DEFAULT, "Print");
+    page = new wxExSTC(m_Editors, text, "Print");
     m_Editors->AddPage(page, "Print", "Print", true);
     m_Editors->Split("Print", wxBOTTOM);
   }
@@ -1401,22 +1376,22 @@ void Frame::StatusBarClickedRight(const std::string& pane)
       match = wxExLexers::Get()->GetTheme();
     }
     
-    OpenFile(wxExLexers::Get()->GetFileName(), STC_WIN_DEFAULT, match);
+    OpenFile(wxExLexers::Get()->GetFileName(), wxExSTCData().Find(match));
   }
   else if (pane == "PaneMacro")
   {
     if (wxExViMacros::GetFileName().FileExists())
     {
-      OpenFile(wxExViMacros::GetFileName(), 0, 
-        !GetStatusText(pane).empty() ? " name=\"" + GetStatusText(pane) + "\"":
-        std::string());
+      OpenFile(wxExViMacros::GetFileName(),
+        wxExSTCData().Find(!GetStatusText(pane).empty() ? " name=\"" + GetStatusText(pane) + "\"":
+          std::string()));
     }
   }
   else if (pane == "PaneVCS")
   {
-    OpenFile(wxExMenus::GetFileName(), 0, 
-      GetStatusText(pane) != "Auto" ? GetStatusText(pane): 
-      std::string());
+    OpenFile(wxExMenus::GetFileName(),
+      wxExSTCData().Find(GetStatusText(pane) != "Auto" ? GetStatusText(pane): 
+        std::string()));
   }
   else
   {

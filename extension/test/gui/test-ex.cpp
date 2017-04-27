@@ -12,8 +12,8 @@
 #endif
 #include <wx/numformatter.h>
 #include <wx/extension/ex.h>
-#include <wx/extension/filename.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/path.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vimacros.h>
 #include "test.h"
@@ -33,11 +33,11 @@ TEST_CASE("wxExEx")
   REQUIRE(stc->GetLexer().GetScintillaLexer() == "sql");
   REQUIRE( ex->GetLastCommand() == ":" + modeline + "*");
 
-  wxExSTC* stco = new wxExSTC(GetFrame(), wxExFileName("test-modeline.txt"));
+  wxExSTC* stco = new wxExSTC(GetFrame(), wxExPath("test-modeline.txt"));
   AddPane(GetFrame(), stco);
   REQUIRE(stco->GetLexer().GetScintillaLexer() == "sql");
 
-  wxExSTC* stcp = new wxExSTC(GetFrame(), wxExFileName("test-modeline2.txt"));
+  wxExSTC* stcp = new wxExSTC(GetFrame(), wxExPath("test-modeline2.txt"));
   AddPane(GetFrame(), stcp);
   REQUIRE(stcp->GetLexer().GetScintillaLexer() == "sql");
 

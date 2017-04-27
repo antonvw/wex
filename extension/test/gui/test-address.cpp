@@ -2,7 +2,7 @@
 // Name:      test-address.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -22,9 +22,9 @@ TEST_CASE("wxExAddress")
   
   const int lines = stc->GetLineCount();
   wxExEx* ex = new wxExEx(stc);
-  stc->GotoLineAndSelect(1);
+  wxExSTCData(stc).Line(1).Inject();
   ex->MarkerAdd('a'); // put marker a on line
-  stc->GotoLineAndSelect(2);
+  wxExSTCData(stc).Line(2).Inject();
   ex->MarkerAdd('b'); // put marker b on line
   
   REQUIRE( wxExAddress(ex).GetLine() == 0);

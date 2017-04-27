@@ -24,11 +24,11 @@
 #include <wx/extension/dir.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/filedlg.h>
-#include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/path.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tokenizer.h>
@@ -241,7 +241,7 @@ void wxExComboBoxFromList(wxComboBox* cb, const std::list < std::string > & text
 }
 #endif
 
-bool wxExCompareFile(const wxExFileName& file1, const wxExFileName& file2)
+bool wxExCompareFile(const wxExPath& file1, const wxExPath& file2)
 {
   if (wxConfigBase::Get()->Read(_("Comparator")).empty())
   {
@@ -380,7 +380,7 @@ const char wxExGetFieldSeparator()
   return '\x0B';
 }
 
-int wxExGetIconID(const wxExFileName& filename)
+int wxExGetIconID(const wxExPath& filename)
 {
   if (filename.FileExists() || filename.DirExists())
   {
@@ -481,13 +481,8 @@ void wxExListToConfig(const std::list < std::string > & l, const std::string& co
   wxConfigBase::Get()->Write(config, text.c_str());
 }
 
-void wxExLogStatus(const wxExFileName& fn, long flags)
+void wxExLogStatus(const wxExPath& fn, long flags)
 {
-  if (!fn.IsOk())
-  {
-    return;
-  }
-  
   wxString text = ((flags & STAT_FULLPATH) ? 
     fn.GetFullPath(): 
     fn.GetFullName());
@@ -509,7 +504,7 @@ void wxExLogStatus(const std::string& text)
   wxLogStatus(wxString(text));
 }
 
-long wxExMake(const wxExFileName& makefile)
+long wxExMake(const wxExPath& makefile)
 {
   wxExProcess* process = new wxExProcess;
 
@@ -641,7 +636,7 @@ void wxExNodeStyles(const pugi::xml_node* node, const std::string& lexer,
 
 #if wxUSE_GUI
 int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
-  wxExSTCWindowFlags file_flags, int dir_flags, const std::string& command)
+  const wxExSTCData& data, int dir_flags)
 {
   wxWindowUpdateLocker locker(frame);
   
@@ -652,21 +647,21 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
     if (it.find("*") != std::string::npos || it.find("?") != std::string::npos)
     {
       count += wxExDirOpenFile(frame, 
-        wxGetCwd().ToStdString(), it, file_flags, dir_flags).FindFiles();
+        wxGetCwd().ToStdString(), it, data.Flags(), dir_flags).FindFiles();
     }
     else
     {
-      int line_no = 0;
-      int col_no = 0;
-      wxFileName fn(it);
+      int line_no = DATA_INT_NOT_SET;
+      int col_no = DATA_INT_NOT_SET;
+      wxExPath fn(it);
 
       if (!fn.FileExists() && it.find(":") != std::string::npos)
       {
-        const wxString val = wxExLink().GetPath(it, line_no, col_no);
+        const std::string val = wxExLink().GetPath(it, line_no, col_no);
         
         if (!val.empty())
         {
-          fn.Assign(val);
+          fn = val;
         }
       }
 
@@ -674,10 +669,8 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
       {
         fn.MakeAbsolute();
       }
-      
-      fn.FileExists() ?
-        frame->OpenFile(fn, line_no, std::string(), col_no, file_flags, command):
-        frame->OpenFile(fn, std::string(), file_flags);
+       
+      frame->OpenFile(fn, wxExSTCData(data).Line(line_no).Col(col_no));
       
       count++;
     }
@@ -688,7 +681,7 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
 
 void wxExOpenFilesDialog(wxExFrame* frame,
   long style, const wxString& wildcards, bool ask_for_continue,
-  wxExSTCWindowFlags file_flags, int dir_flags)
+  const wxExSTCData& data, int dir_flags)
 {
   wxExSTC* stc = frame->GetSTC();
   wxArrayString paths;
@@ -725,11 +718,11 @@ void wxExOpenFilesDialog(wxExFrame* frame,
     dlg.GetPaths(paths);
   }
 
-  wxExOpenFiles(frame, wxExToVectorString(paths).Get(), file_flags, dir_flags);
+  wxExOpenFiles(frame, wxExToVectorString(paths).Get(), data, dir_flags);
 }
 #endif // wxUSE_GUI
 
-const std::string wxExPrintCaption(const wxExFileName& filename)
+const std::string wxExPrintCaption(const wxExPath& filename)
 {
   return filename.GetFullPath();
 }
@@ -739,7 +732,7 @@ const std::string wxExPrintFooter()
   return _("Page @PAGENUM@ of @PAGESCNT@").ToStdString();
 }
 
-const std::string wxExPrintHeader(const wxExFileName& filename)
+const std::string wxExPrintHeader(const wxExPath& filename)
 {
   if (filename.FileExists())
   {
@@ -1040,7 +1033,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< std::string > &
 }
 
 void wxExXmlError(
-  const wxExFileName& filename, 
+  const wxExPath& filename, 
   const pugi::xml_parse_result* result,
   wxExSTC* stc)
 {

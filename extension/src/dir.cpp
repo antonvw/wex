@@ -9,10 +9,18 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/dir.h>
 #include <wx/extension/dir.h>
-#include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
+#include <wx/extension/path.h>
 #include <wx/extension/util.h>
+
+class wxExDirImp : public wxDir
+{
+public:
+  wxExDirImp(const std::string& dir) 
+    : wxDir(dir) {;};
+};
 
 class wxExDirTraverser: public wxDirTraverser
 {
@@ -44,7 +52,7 @@ public:
       return wxDIR_STOP;
     }
 
-    if (wxExMatchesOneOf(wxExFileName(filename.ToStdString()).GetFullName(), 
+    if (wxExMatchesOneOf(wxExPath(filename.ToStdString()).GetFullName(), 
       m_Dir.GetFileSpec()))
     {
       if (!m_Dir.OnFile(filename.ToStdString())) return wxDIR_STOP;
@@ -59,17 +67,21 @@ private:
 };
 
 wxExDir::wxExDir(const std::string& dir, const std::string& filespec, int flags)
-  : m_Dir(dir)
+  : m_Dir(std::make_unique<wxExDirImp>(dir))
   , m_FileSpec(filespec)
   , m_Flags(flags)
 {
 }
 
+wxExDir::~wxExDir()
+{
+}
+  
 int wxExDir::FindFiles()
 {
   if (!IsOpened())
   {
-    wxLogError("Could not open: " + m_Dir.GetName());
+    wxLogError("Could not open: " + m_Dir->GetName());
     return -1;
   }
   else if (Running())
@@ -82,18 +94,23 @@ int wxExDir::FindFiles()
 
   wxExDirTraverser traverser(*this);
   
-  m_Dir.Traverse(traverser, std::string(), m_Flags);
+  m_Dir->Traverse(traverser, std::string(), m_Flags);
 
   Stop();
 
   return traverser.GetMatches();
 }
 
+bool wxExDir::IsOpened() const 
+{
+  return m_Dir->IsOpened();
+}
+
 #if wxUSE_GUI
 wxExDirOpenFile::wxExDirOpenFile(wxExFrame* frame,
   const std::string& fullpath, 
   const std::string& filespec, 
-  long file_flags,
+  wxExSTCWindowFlags file_flags,
   int dir_flags)
   : wxExDir(fullpath, filespec, dir_flags)
   , m_Frame(frame)
@@ -103,7 +120,7 @@ wxExDirOpenFile::wxExDirOpenFile(wxExFrame* frame,
 
 bool wxExDirOpenFile::OnFile(const std::string& file)
 {
-  m_Frame->OpenFile(file, 0, std::string(), m_Flags);
+  m_Frame->OpenFile(file, wxExSTCData().Flags(m_Flags));
   return true;
 }
 #endif

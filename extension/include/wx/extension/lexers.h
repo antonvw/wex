@@ -2,7 +2,7 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wxExLexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,10 +11,10 @@
 #include <set>
 #include <vector>
 #include <pugixml.hpp>
-#include <wx/extension/filename.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/marker.h>
+#include <wx/extension/path.h>
 #include <wx/extension/property.h>
 #include <wx/extension/style.h>
 
@@ -56,7 +56,7 @@ public:
   static wxExLexers* Get(bool createOnDemand = true);
 
   /// Returns the filename.
-  const auto & GetFileName() const {return m_FileName;};
+  const auto & GetFileName() const {return m_Path;};
   
   /// Returns indicator from loaded indicators,
   /// based on the no of specified indicator.
@@ -130,7 +130,7 @@ public:
     /// caption
     const wxString& caption = _("Enter Theme"));
 private:
-  wxExLexers(const wxExFileName& filename);
+  wxExLexers(const wxExPath& filename);
   void Initialize();
   void ParseNodeFolding(const pugi::xml_node& node);
   void ParseNodeGlobal(const pugi::xml_node& node);
@@ -155,7 +155,7 @@ private:
 
   wxExStyle m_DefaultStyle;
 
-  const wxExFileName m_FileName;
+  const wxExPath m_Path;
   const std::string m_NoTheme;
   std::string m_Theme;
   std::string m_FoldingBackgroundColour, m_FoldingForegroundColour;

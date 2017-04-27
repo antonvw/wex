@@ -70,7 +70,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       wxExListItem li(this, i);
-      const wxExFileName* filename = &li.GetFileName();
+      const wxExPath* filename = &li.GetFileName();
       if (!filename->FileExists()) continue;
       switch (event.GetId())
       {
@@ -95,7 +95,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
               first = true;
               file2 = filename->GetFullPath();
             }
-            if (first) wxExCompareFile(wxFileName(file1), wxFileName(file2));
+            if (first) wxExCompareFile(wxExPath(file1), wxExPath(file2));
           }
         }
         break;
@@ -261,5 +261,6 @@ wxExListViewWithFrame::wxExListType wxExListViewWithFrame::GetTypeTool(
   {
     case ID_TOOL_REPORT_FIND: return LIST_FIND; break;
     case ID_TOOL_REPORT_KEYWORD: return LIST_KEYWORD; break;
+    default: break;
   }
 }

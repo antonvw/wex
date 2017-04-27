@@ -260,7 +260,9 @@ wxExVi::wxExVi(wxExSTC* stc)
       return true;}},
     {"wW", [&](const std::string& command){MOTION(Word, Right, false, false);}},
     {"G", [&](const std::string& command){
-      (m_Count == 1 ? GetSTC()->DocumentEnd(): GetSTC()->GotoLineAndSelect(m_Count));
+       (m_Count == 1 ? 
+         GetSTC()->DocumentEnd(): 
+         (void)wxExSTCData(GetSTC()).Line(m_Count).Inject());
        return true;}},
     {"H", [&](const std::string& command){
        GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine());

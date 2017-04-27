@@ -2,7 +2,7 @@
 // Name:      test-vcs.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -21,7 +21,7 @@ TEST_CASE("wxExVCS")
   // GetCount
   REQUIRE( wxExVCS::GetCount() > 0);
 
-  wxExFileName file(GetTestFile());
+  wxExPath file(GetTestFile());
   file.MakeAbsolute();
   
   // In wxExApp the vcs is Read, so current vcs is known,

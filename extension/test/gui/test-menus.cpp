@@ -2,7 +2,7 @@
 // Name:      test-menus.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -27,7 +27,7 @@ TEST_CASE("wxExMenus")
   std::vector < wxExMenuCommand > commands;
   REQUIRE(!wxExMenus::AddCommands(doc, commands));
   
-  REQUIRE( wxExMenus::GetFileName().IsOk());
+  REQUIRE(!wxExMenus::GetFileName().GetFullPath().empty());
 
   std::vector < wxExMenuCommands <wxExMenuCommand > > entries;
   REQUIRE( wxExMenus::Load("debug", entries));

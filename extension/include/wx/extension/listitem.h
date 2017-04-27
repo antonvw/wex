@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <wx/extension/filename.h>
 #include <wx/extension/listview.h>
+#include <wx/extension/path.h>
 
 /// Offers a list item associated with a file on an wxExListView.
 class WXDLLIMPEXP_BASE wxExListItem : public wxListItem
@@ -19,14 +19,14 @@ public:
 
   /// Constructor.
   wxExListItem(wxExListView* listview,
-    const wxExFileName& filename,
+    const wxExPath& filename,
     const std::string& filespec = std::string());
     
   // Deletes this item from the listview.
   void Delete() {m_ListView->DeleteItem(GetId());};
 
   /// Returns the filename.
-  const auto & GetFileName() const {return m_FileName;};
+  const auto & GetFileName() const {return m_Path;};
 
   /// Returns the file spec.
   const auto GetFileSpec() const {return m_FileSpec;};
@@ -53,7 +53,7 @@ private:
   // and cannot be const, as it calls InsertItem on the list.
   wxExListView* m_ListView;
 
-  const wxExFileName m_FileName;
+  const wxExPath m_Path;
   const std::string m_FileSpec;
   bool m_IsReadOnly;
 };

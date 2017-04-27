@@ -2,7 +2,7 @@
 // Name:      test-menu.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -44,9 +44,9 @@ TEST_CASE("wxExMenu")
   REQUIRE( menu->AppendTools());
 
   // AppendVCS  
-  menu->AppendVCS(wxFileName(), false);
+  menu->AppendVCS(wxExPath(), false);
   wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());
-  REQUIRE( menu->AppendVCS(wxFileName(), false));
+  REQUIRE( menu->AppendVCS(wxExPath(), false));
   REQUIRE( menu->AppendVCS(wxGetCwd().ToStdString(), false));
 
   // GetStyle

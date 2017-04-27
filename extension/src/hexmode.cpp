@@ -297,9 +297,9 @@ bool wxExHexMode::ReplaceTarget(const std::string& replacement, bool settext)
   return true;
 }
   
-void wxExHexMode::Set(bool on)
+bool wxExHexMode::Set(bool on)
 {
-  if (m_Active == on) return;
+  if (m_Active == on) return false;
 
   m_STC->UseModificationMarkers(false);
   
@@ -318,6 +318,8 @@ void wxExHexMode::Set(bool on)
   }
     
   m_STC->UseModificationMarkers(true);
+  
+  return true;
 }
 
 void wxExHexMode::SetPos(const wxKeyEvent& event)

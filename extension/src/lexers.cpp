@@ -26,8 +26,8 @@ wxExLexers* wxExLexers::m_Self = nullptr;
 // This must be an existing xml file containing all lexers.
 // It does not do LoadDocument, however if you use the global Get,
 // it both constructs and loads the lexers.
-wxExLexers::wxExLexers(const wxExFileName& filename)
-  : m_FileName(filename)
+wxExLexers::wxExLexers(const wxExPath& filename)
+  : m_Path(filename)
   // Here the default theme is set, and used if the application
   // is run for the first time.
   , m_Theme(wxConfigBase::Get()->Read("theme", "studio"))
@@ -152,7 +152,7 @@ wxExLexers* wxExLexers::Get(bool createOnDemand)
 {
   if (m_Self == nullptr && createOnDemand)
   {
-    m_Self = new wxExLexers(wxFileName(wxExConfigDir(), "lexers.xml"));
+    m_Self = new wxExLexers(wxExPath(wxExConfigDir(), "lexers.xml"));
     m_Self->LoadDocument();
   }
 
@@ -198,16 +198,16 @@ bool wxExLexers::LoadDocument()
 {
   // This test is to prevent showing an error if the lexers file does not exist,
   // as this is not required.
-  if (!m_FileName.FileExists()) return false;
+  if (!m_Path.FileExists()) return false;
   
   pugi::xml_document doc;
   const pugi::xml_parse_result result = doc.load_file(
-    m_FileName.GetFullPath().c_str(),
+    m_Path.GetFullPath().c_str(),
     pugi::parse_default | pugi::parse_trim_pcdata);
 
   if (!result)
   {
-    wxExXmlError(m_FileName, &result);
+    wxExXmlError(m_Path, &result);
     return false;
   }
   

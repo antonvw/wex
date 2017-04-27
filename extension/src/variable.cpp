@@ -2,7 +2,7 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wxExVariable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -181,7 +181,7 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, std::string& expanded) const
   }
   else if (m_Name == "Created")
   {
-    wxExFileName file(ex->GetSTC()->GetFileName());
+    wxExPath file(ex->GetSTC()->GetFileName());
     
     if (ex->GetSTC()->GetFileName().GetStat().IsOk())
     {

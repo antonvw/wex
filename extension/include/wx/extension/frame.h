@@ -10,6 +10,7 @@
 #include <vector>
 #include <wx/frame.h>
 #include <wx/extension/statusbar.h>
+#include <wx/extension/stc-data.h>
 #include <wx/extension/stc-enums.h>
 
 // Only if we have a gui.
@@ -18,7 +19,7 @@
 class wxFindReplaceDialog;
 class wxListView;
 
-class wxExFileName;
+class wxExPath;
 class wxExGrid;
 class wxExListView;
 class wxExProcess;
@@ -53,7 +54,7 @@ public:
   virtual wxExSTC* GetSTC();
 
   /// Returns true if file is opened in a window.
-  virtual bool IsOpen(const wxExFileName& filename);
+  virtual bool IsOpen(const wxExPath& filename);
 
   /// Called when an item dialog command event is triggered.
   virtual void OnCommandItemDialog(
@@ -63,26 +64,22 @@ public:
   /// Default opens the file using GetSTC.
   /// Returns stc component opened, or nullptr.
   virtual wxExSTC* OpenFile(
-    const wxExFileName& filename,
-    int line_number = 0,
-    const std::string& match = std::string(),
-    int col_number = 0,
-    wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
-    const std::string& command = std::string());
+    const wxExPath& filename,
+    const wxExSTCData& stc_data = wxExSTCData());
 
   /// Allows you to open a filename with info from vcs.
   /// Returns stc component opened, or nullptr.
   virtual wxExSTC* OpenFile(
-    const wxExFileName& filename,
+    const wxExPath& filename,
     const wxExVCSEntry& vcs,
-    wxExSTCWindowFlags flags = STC_WIN_DEFAULT);
+    const wxExSTCData& stc_data = wxExSTCData());
     
   /// Allows you to open a filename with specified contents.
   /// Returns stc component opened, or nullptr.
   virtual wxExSTC* OpenFile(
-    const wxExFileName& filename,
+    const wxExPath& filename,
     const std::string& text,
-    wxExSTCWindowFlags flags = STC_WIN_DEFAULT);
+    const wxExSTCData& stc_data = wxExSTCData());
   
   /// Allows you to e.g. add debugging.
   /// Default returns nullptr.

@@ -2,7 +2,7 @@
 // Name:      vcsentry.h
 // Purpose:   Declaration of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -84,12 +84,12 @@ public:
   /// Returns result from calling ShowModal.
   int ShowDialog(
     wxWindow* parent, 
-    const wxString& caption,
+    const std::string& caption,
     bool add_folder) const;
 #endif
 
 #if wxUSE_GUI
-  virtual void ShowOutput(const wxString& caption = wxEmptyString) const override;
+  virtual void ShowOutput(const std::string& caption = std::string()) const override;
 #endif
 private:
   // no const, as entry is set using operator+ in wxExVCS.

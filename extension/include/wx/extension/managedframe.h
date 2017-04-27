@@ -116,13 +116,9 @@ public:
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
   /// Interface from wxExFrame.
-  wxExSTC* OpenFile(
-    const wxExFileName& filename,
-    int line_number = 0,
-    const std::string& match = std::string(),
-    int col_number = 0,
-    wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
-    const std::string& command = std::string()) override;
+  virtual wxExSTC* OpenFile(
+    const wxExPath& filename,
+    const wxExSTCData& stc_data = wxExSTCData()) override;
 
   /// Prints text in ex dialog.
   virtual void PrintEx(

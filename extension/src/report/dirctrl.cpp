@@ -7,13 +7,13 @@
 
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/textfile.h>
-#include <wx/extension/filename.h>
 #include <wx/extension/menu.h>
+#include <wx/extension/path.h>
+#include <wx/extension/tostring.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
-#include <wx/extension/tostring.h>
-#include <wx/extension/report/dirctrl.h>
 #include <wx/extension/report/defs.h>
+#include <wx/extension/report/dirctrl.h>
 #include <wx/extension/report/frame.h>
 
 #if wxUSE_DIRDLG
@@ -64,7 +64,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExOpenFiles(frame, 
-      wxExToVectorString(*this).Get(), STC_WIN_DEFAULT, wxDIR_FILES); // only files in this dir
+      wxExToVectorString(*this).Get(), wxExSTCData(), wxDIR_FILES); // only files in this dir
     }, ID_EDIT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -81,7 +81,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
     
   Bind(wxEVT_TREE_ITEM_ACTIVATED, [=](wxTreeEvent& event) {
     GET_VECTOR_FILES
-    const wxFileName fn(files[0]);
+    const wxExPath fn(files[0]);
     
     if (!fn.FileExists() && fn.DirExists())
     {
@@ -96,12 +96,12 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
     }
     else
     {
-      wxExOpenFiles(frame, files, STC_WIN_DEFAULT, wxDIR_FILES); // only files in this dir
+      wxExOpenFiles(frame, files, wxExSTCData(), wxDIR_FILES); // only files in this dir
     }});
   
   Bind(wxEVT_TREE_ITEM_MENU, [=](wxTreeEvent& event) {
     GET_VECTOR_FILES
-    const wxExFileName filename(files[0]);
+    const wxExPath filename(files[0]);
   
     wxExMenu menu; // uses AppendVCS
     
@@ -137,7 +137,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
   
   Bind(wxEVT_TREE_SEL_CHANGED, [=](wxTreeEvent& event) {
     GET_VECTOR_FILES
-    wxExLogStatus(wxFileName(files[0]), STAT_FULLPATH);});
+    wxExLogStatus(files[0], STAT_FULLPATH);});
 }
 
 void wxExGenericDirCtrl::ExpandAndSelectPath(const wxString& path)

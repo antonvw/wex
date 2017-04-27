@@ -35,12 +35,8 @@ protected:
   virtual wxExListView* GetListView() override;
   virtual wxExSTC* GetSTC() override;
   virtual wxExSTC* OpenFile(
-    const wxExFileName& file,
-    int line_number = 0,
-    const std::string& match = std::string(),
-    int col_number = 0,
-    wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
-    const std::string& command = std::string()) override;
+    const wxExPath& file,
+    const wxExSTCData& stc_data = wxExSTCData()) override;
 private:
   wxExNotebook* m_NotebookWithLists; ///< all listviews
   wxExSTC* m_STC;

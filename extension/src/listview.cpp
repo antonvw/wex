@@ -300,7 +300,7 @@ wxExListView::wxExListView(wxWindow* parent,
   Bind(wxEVT_LIST_ITEM_SELECTED, [=](wxListEvent& event) {
     if (m_Type != LIST_NONE && GetSelectedItemCount() == 1)
     {
-      const wxExFileName fn(wxExListItem(this, event.GetIndex()).GetFileName());
+      const wxExPath fn(wxExListItem(this, event.GetIndex()).GetFileName());
       if (fn.GetStat().IsOk())
       {
         wxExLogStatus(fn, STAT_FULLPATH);
@@ -889,9 +889,10 @@ void wxExListView::ItemActivated(long item_number)
       if (frame != nullptr)
       {
         frame->OpenFile(
-          item.GetFileName().GetFullPath(),
-          std::stoi(GetItemText(item_number, _("Line No").ToStdString())), 
-          GetItemText(item_number, _("Match").ToStdString()));
+          item.GetFileName(),
+          wxExSTCData().
+            Line(std::stoi(GetItemText(item_number, _("Line No").ToStdString()))). 
+            Find(GetItemText(item_number, _("Match").ToStdString())));
       }
     }
     else if (wxDirExists(item.GetFileName().GetFullPath()))
@@ -939,7 +940,7 @@ bool wxExListView::ItemFromText(const wxString& text)
         if (tk.HasMoreTokens())
         {
           const std::string value = tk.GetNextToken();
-          wxFileName fn(value);
+          wxExPath fn(value);
     
           if (fn.FileExists())
           {

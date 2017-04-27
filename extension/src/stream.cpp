@@ -20,8 +20,8 @@
 
 bool wxExStream::m_Asked = false;
 
-wxExStream::wxExStream(const wxExFileName& filename, const wxExTool& tool)
-  : m_FileName(filename)
+wxExStream::wxExStream(const wxExPath& filename, const wxExTool& tool)
+  : m_Path(filename)
   , m_Tool(tool)
   , m_FRD(wxExFindReplaceData::Get())
   , m_Threshold(wxConfigBase::Get()->ReadLong(_("Replacements"), -1))
@@ -93,7 +93,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
     {
       if (wxMessageBox(
         "More than " + std::to_string(m_Threshold) + " matches in: " + 
-          m_FileName.GetFullPath() + "?",
+          m_Path.GetFullPath() + "?",
         _("Continue"),
         wxYES_NO | wxICON_QUESTION) == wxNO)
       {
@@ -113,7 +113,7 @@ bool wxExStream::ProcessBegin()
 {
   if (
     !m_Tool.IsFindType() || 
-    (m_Tool.GetId() == ID_TOOL_REPLACE && m_FileName.GetStat().IsReadOnly()) ||
+    (m_Tool.GetId() == ID_TOOL_REPLACE && m_Path.GetStat().IsReadOnly()) ||
      wxExFindReplaceData::Get()->GetFindString().empty())
   {
     return false;
@@ -133,7 +133,7 @@ bool wxExStream::ProcessBegin()
   
 bool wxExStream::RunTool()
 {
-  std::ifstream ifs(m_FileName.GetFullPath());
+  std::ifstream ifs(m_Path.GetFullPath());
 
   if (!ifs.is_open() || !ProcessBegin())
   {
@@ -158,7 +158,7 @@ bool wxExStream::RunTool()
 
   if (m_Modified && m_Write)
   {
-    std::ofstream ofs(m_FileName.GetFullPath().c_str());
+    std::ofstream ofs(m_Path.GetFullPath().c_str());
   
     for (const auto & it : v)
     {

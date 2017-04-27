@@ -16,12 +16,12 @@
 #include <wx/extension/debug.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
-#include <wx/extension/filename.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/menu.h>
+#include <wx/extension/path.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/tokenizer.h>
@@ -40,70 +40,42 @@ enum
 int wxExSTC::m_Zoom = -1;
 
 wxExSTC::wxExSTC(wxWindow *parent, 
-  const std::string& value,
-  wxExSTCWindowFlags win_flags,
-  const std::string& title,
-  wxExSTCMenuFlags menu_flags,
-  const std::string& command,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size, 
-  long style)
-  : wxStyledTextCtrl(parent, id , pos, size, style, title)
-  , m_Flags(win_flags)
-  , m_MenuFlags(menu_flags)
-  , m_vi(wxExVi(this))
-  , m_File(this, title)
-  , m_Link(wxExLink(this))
+  const std::string& text,
+  const std::string& name,
+  const wxExSTCData& stc_data,
+  const wxExWindowData& win_data)
+  : wxStyledTextCtrl(parent,
+      win_data.Id(), win_data.Pos(), win_data.Size(), win_data.Style(), name)
+  , m_Data(this, stc_data)
+  , m_vi(this)
+  , m_File(this, name)
+  , m_Link(this)
   , m_HexMode(wxExHexMode(this))
   , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
   , m_Lexer(this)
 {
   Initialize(false);
 
-  PropertiesMessage();
-
-  if (!value.empty())
+  if (!text.empty())
   {
-    if (HexMode())
-    {
-      m_HexMode.AppendText(value);
-    }
-    else
-    {
-      SetText(value);
-    }
-
+    HexMode() ? m_HexMode.AppendText(text): SetText(text);
     GuessType();
   }
   
-  if (m_Flags & STC_WIN_READ_ONLY)
-  {
-    SetReadOnly(true);
-  }
-
-  m_vi.Command(command);
+  m_Data.Inject();
 }
 
 wxExSTC::wxExSTC(wxWindow* parent,
-  const wxExFileName& filename,
-  int line_number,
-  const std::string& match,
-  int col_number,
-  wxExSTCWindowFlags flags,
-  wxExSTCMenuFlags menu_flags,
-  const std::string& command,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style)
-  : wxStyledTextCtrl(parent, id, pos, size, style)
+  const wxExPath& filename,
+  const wxExSTCData& stc_data,
+  const wxExWindowData& win_data)
+  : wxStyledTextCtrl(parent,
+      win_data.Id(), win_data.Pos(), win_data.Size(), win_data.Style())
   , m_File(this)
-  , m_Flags(flags)
-  , m_MenuFlags(menu_flags)
-  , m_vi(wxExVi(this))
-  , m_Link(wxExLink(this))
-  , m_HexMode(wxExHexMode(this))
+  , m_Data(this, stc_data)
+  , m_vi(this)
+  , m_Link(this)
+  , m_HexMode(this)
   , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
   , m_Lexer(this)
 {
@@ -111,7 +83,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   
   if (filename.GetStat().IsOk())
   {
-    Open(filename, line_number, match, col_number, flags, command);
+    Open(filename, stc_data);
   }
 }
 
@@ -124,7 +96,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     menu.Append(ID_EDIT_SHOW_PROPERTIES, _("Properties"));
   }
     
-  if (m_MenuFlags & STC_MENU_OPEN_LINK)
+  if (m_Data.Menu() & STC_MENU_OPEN_LINK)
   {
     std::string filename;
 
@@ -149,12 +121,12 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 #endif
 
-  if (m_MenuFlags & STC_MENU_DEBUG)
+  if (m_Data.Menu() & STC_MENU_DEBUG)
   {
     m_Frame->GetDebug()->AddMenu(&menu, true);
   }
   
-  if (m_MenuFlags & STC_MENU_VCS)
+  if (m_Data.Menu() & STC_MENU_VCS)
   {
     if (GetFileName().FileExists() && sel.empty())
     {
@@ -261,7 +233,7 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
 
       if (m_Lexer.KeywordStartsWith(m_AutoComplete))
       {
-        const wxString comp(
+        const std::string comp(
           m_Lexer.GetKeywordsString(-1, 5, m_AutoComplete));
           
         if (!comp.empty())
@@ -604,82 +576,14 @@ const std::string wxExSTC::GetWordAtPos(int pos) const
 
   if (word_start == word_end && word_start < GetTextLength())
   {
-    const wxString word = 
-      const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_start + 1);
+    const std::string word = 
+      const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_start + 1).ToStdString();
 
-    if (!isspace(word[0]))
-    {
-      return word.ToStdString();
-    }
-    else
-    {
-      return std::string();
-    }
+    return !isspace(word[0]) ? word: std::string();
   }
   else
   {
-    const wxString word = 
-      const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_end);
-
-    return word.ToStdString();
-  }
-}
-
-void wxExSTC::GotoLineAndSelect(
-  int line_number, 
-  const std::string& text,
-  int col_number,
-  long flags)
-{
-  // line_number and m_Goto start with 1 and is allowed to be 
-  // equal to number of lines.
-  // Internally GotoLine starts with 0, therefore 
-  // line_number - 1 is used afterwards.
-  if (line_number > GetLineCount())
-  {
-    line_number = GetLineCount();
-  }
-  else if (line_number <= 0) 
-  {
-    line_number = 1;
-  }
-
-  GotoLine(line_number - 1);
-  EnsureVisible(line_number - 1);
-  EnsureCaretVisible();
-  
-  IndicatorClearRange(0, GetTextLength() - 1);
-  SetIndicator(wxExIndicator(0), 
-    PositionFromLine(line_number - 1), 
-    col_number > 0 ? 
-      PositionFromLine(line_number - 1) + col_number - 1:
-      GetLineEndPosition(line_number - 1));
-
-  m_Goto = line_number;
-
-  if (!text.empty())
-  {
-    const int start_pos = PositionFromLine(line_number - 1);
-    const int end_pos = GetLineEndPosition(line_number - 1);
-
-    SetSearchFlags(-1);
-    SetTargetStart(start_pos);
-    SetTargetEnd(end_pos);
-
-    if (SearchInTarget(text) != -1)
-    {
-      SetSelection(GetTargetStart(), GetTargetEnd());
-    }
-  }
-  else if (col_number > 0)
-  {
-    const int max = GetLineEndPosition(line_number - 1);
-    const int asked = GetCurrentPos() + col_number - 1;
-    
-    SetCurrentPos(asked < max ? asked: max);
-    
-    // Reset selection, seems necessary.
-    SelectNone();
+    return const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_end).ToStdString();
   }
 }
 
@@ -721,13 +625,6 @@ void wxExSTC::GuessType()
 void wxExSTC::Initialize(bool file_exists)
 {
   if (wxConfig::Get()->ReadBool("AllowSync", true)) Sync();
-  
-  if (m_Flags & STC_WIN_HEX)
-  {
-    m_HexMode.Set(true);
-  }
-
-  m_AllowChangeIndicator = !(m_Flags & STC_WIN_NO_INDICATOR);
   
   if (!wxExLexers::Get()->GetLexers().empty())
   {
@@ -855,7 +752,7 @@ void wxExSTC::Initialize(bool file_exists)
       (GetFoldLevel(GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK) 
       - wxSTC_FOLDLEVELBASE;});
   
-  if (m_MenuFlags != STC_MENU_NONE)
+  if (m_Data.Menu() != STC_MENU_NONE)
   {
     Bind(wxEVT_RIGHT_UP, [=](wxMouseEvent& event) {
       int style = 0; // otherwise CAN_PASTE already on
@@ -1052,25 +949,17 @@ void wxExSTC::Initialize(bool file_exists)
     }
     else
     {
-      if (m_Goto > GetLineCount())
-      {
-        m_Goto = GetLineCount();
-      }
-      else if (m_Goto < 1)
-      {
-        m_Goto = 1;
-      }
       long val;
       if ((val = wxGetNumberFromUser(
         _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
         wxEmptyString,
         _("Enter Line Number"),
-        m_Goto, // initial value
+        m_Data.Line(), // initial value
         1,
         GetLineCount(),
         this)) > 0)
       {
-        GotoLineAndSelect(val);
+        wxExSTCData(this).Line(val).Inject();
       }
     }
     return true;}, wxID_JUMP_TO);
@@ -1225,7 +1114,7 @@ void wxExSTC::Initialize(bool file_exists)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {UpperCase();}, ID_EDIT_UPPERCASE);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FoldAll();}, ID_EDIT_FOLD_ALL);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);}, ID_EDIT_UNFOLD_ALL);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Reload(static_cast<wxExSTCWindowFlags>(m_Flags ^ STC_WIN_HEX));}, ID_EDIT_HEX);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {Reload(static_cast<wxExSTCWindowFlags>(m_Data.Flags() ^ STC_WIN_HEX));}, ID_EDIT_HEX);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_Zoom);}, ID_EDIT_ZOOM_IN);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_Zoom);}, ID_EDIT_ZOOM_OUT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(true);}, ID_EDIT_FIND_NEXT);
@@ -1308,18 +1197,21 @@ void wxExSTC::Initialize(bool file_exists)
 
 bool wxExSTC::LinkOpen(int mode, std::string* filename)
 {
-  const wxString sel = GetSelectedText();
-  const wxString text = (!sel.empty() ? sel: GetCurLine());
-  int line_no = 0;
-  int col_no = 0;
+  const std::string sel = GetSelectedText().ToStdString();
+  const std::string text = (!sel.empty() ? sel: GetCurLine().ToStdString());
+  int line_no = DATA_INT_NOT_SET;
+  int col_no = DATA_INT_NOT_SET;
+
   if (mode & LINK_OPEN_BROWSER)
   {
     line_no = (sel.empty() ? -1 : -2);
   }
 
-  const std::string path = m_Link.GetPath(text.ToStdString(), line_no, col_no);
+  const std::string path = m_Link.GetPath(text, line_no, col_no);
   
   if (path.empty()) return false;
+
+  const wxExSTCData data(m_Data.Line(line_no).Col(col_no));
 
   if (mode & LINK_OPEN_BROWSER)
   {
@@ -1329,16 +1221,15 @@ bool wxExSTC::LinkOpen(int mode, std::string* filename)
   {
     if (filename != nullptr)
     {
-      *filename = wxFileName(path).GetFullName();
+      *filename = wxExPath(path).GetFullName();
     }
     else if (m_Frame != nullptr)
     {
-      m_Frame->OpenFile(
-        path, line_no, std::string(), col_no, GetFlags());
+      m_Frame->OpenFile(path, data);
     }
     else
     {
-      Open(path, line_no, std::string(), col_no, GetFlags());
+      Open(path, data);
     }
   }
   
@@ -1416,7 +1307,7 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
     m_File.CheckSync() &&
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
-    !(m_Flags & STC_WIN_READ_ONLY) &&
+    !(m_Data.Flags() & STC_WIN_READ_ONLY) &&
       GetFileName().GetStat().IsReadOnly() != GetReadOnly())
   {
     FileReadOnlyAttributeChanged();
@@ -1429,59 +1320,26 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   event.Skip();
 }
 
-bool wxExSTC::Open(
-  const wxExFileName& filename,
-  int line_number,
-  const std::string& match,
-  int col_number,
-  wxExSTCWindowFlags flags,
-  const std::string& command)
+bool wxExSTC::Open(const wxExPath& filename, const wxExSTCData& data)
 {
-  if (GetFileName() == filename && line_number > 0)
+  m_Data = data;
+  
+  if (GetFileName() == filename && data.Line() > 0)
   {
-    GotoLineAndSelect(line_number, match, col_number, flags);
-    PropertiesMessage();
-    return true;
+    return m_Data.Inject();
   }
 
   if (!m_File.FileLoad(filename)) return false;
 
-  m_Flags = flags;
-
   SetName(filename.GetFullPath());
-
-  if (line_number > 0)
-  {
-    GotoLineAndSelect(line_number, match, col_number, flags);
-  }
-  else
-  {
-    if (line_number == -1)
-    {
-      if (!match.empty())
-      {
-         FindNext(match, 0, false);
-      }
-      else
-      {
-        DocumentEnd();
-      }
-    }
-    else if (!match.empty())
-    {
-      FindNext(match, 0);
-    }
-  }
-
-  PropertiesMessage();
   
+  m_Data.Inject();
+
   if (m_Frame != nullptr)
   {
     m_Frame->SetRecentFile(filename.GetFullPath());
   }
 
-  m_vi.Command(command);
-  
   return true;
 }
 
@@ -1583,20 +1441,6 @@ void wxExSTC::PropertiesMessage(long flags)
     {
       m_Frame->SetTitle(file);
     }
-  }
-}
-
-void wxExSTC::Reload(wxExSTCWindowFlags flags)
-{
-  m_HexMode.Set((flags & STC_WIN_HEX) > 0);
-  
-  m_Flags = flags;
-    
-  if (
-    (m_Flags & STC_WIN_READ_ONLY) || 
-    (GetFileName().FileExists() && GetFileName().IsReadOnly()))
-  {
-    SetReadOnly(true);
   }
 }
 

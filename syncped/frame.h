@@ -28,23 +28,19 @@ private:
   virtual wxExListView* Activate(wxExListView::wxExListType type, const wxExLexer* lexer = nullptr) override;
   virtual bool ExecExCommand(const std::string& command, wxExSTC* & stc) override;
   virtual wxExListViewFile* GetProject() override;
-  virtual bool IsOpen(const wxExFileName& filename) override;
+  virtual bool IsOpen(const wxExPath& filename) override;
   virtual void OnCommandItemDialog(wxWindowID dialogid, const wxCommandEvent& event) override;
   virtual wxExSTC* OpenFile(
-    const wxExFileName& filename,
-    int line_number = 0,
-    const std::string& match = std::string(),
-    int col_number = 0,
-    wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
-    const std::string& command = std::string()) override;
+    const wxExPath& filename,
+    const wxExSTCData& stc_data = wxExSTCData()) override;
   virtual wxExSTC* OpenFile(
-    const wxExFileName& filename, 
+    const wxExPath& filename, 
     const wxExVCSEntry& vcs, 
-    wxExSTCWindowFlags flags = STC_WIN_DEFAULT) override;
+    const wxExSTCData& stc_data = wxExSTCData()) override;
   virtual wxExSTC* OpenFile(
-    const wxExFileName& filename, 
+    const wxExPath& filename, 
     const std::string& text, 
-    wxExSTCWindowFlags flags = STC_WIN_DEFAULT) override;
+    const wxExSTCData& stc_data = wxExSTCData()) override;
   virtual void PrintEx(wxExEx* ex, const std::string& text) override;
   virtual wxExProcess* Process(const std::string& command) override;
   virtual wxExSTC* RestorePage(const std::string& key) override;

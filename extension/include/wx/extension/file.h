@@ -9,7 +9,7 @@
 
 #include <memory>
 #include <wx/file.h>
-#include <wx/extension/filename.h>
+#include <wx/extension/path.h>
 #include <wx/extension/stat.h>
 
 /// Adds several File* methods to wxFile. All the File* methods update
@@ -31,11 +31,11 @@ public:
 
   /// Constructor taking a filename.
   wxExFile(
-    const wxExFileName& filename,
+    const wxExPath& filename,
     wxFile::OpenMode mode = wxFile::read,
     bool open_file = true)
     : m_File(std::make_unique<wxFile>(filename.GetFullPath(), mode))
-    , m_FileName(filename)
+    , m_Path(filename)
     , m_OpenFile(open_file)
     , m_Stat(filename.GetFullPath()) {
       MakeAbsolute();};
@@ -45,7 +45,7 @@ public:
     const std::string& filename,
     wxFile::OpenMode mode = wxFile::read,
     bool open_file = true)
-    : wxExFile(wxExFileName(filename), mode, open_file) {;};
+    : wxExFile(wxExPath(filename), mode, open_file) {;};
   
   /// Copy constructor.
   wxExFile(const wxExFile& rhs) {*this = rhs; };
@@ -63,20 +63,20 @@ public:
 
   /// Sets the filename member, opens the file if asked for,
   /// invokes DoFileLoad, and closes the file again.
-  bool FileLoad(const wxExFileName& filename);
+  bool FileLoad(const wxExPath& filename);
 
   /// Sets the filename member and invokes DoFileNew.
-  void FileNew(const wxExFileName& filename);
+  void FileNew(const wxExPath& filename);
 
   /// Sets the filename member if filename is ok, opens the file if asked for,
   /// invokes DoFileSave, and closes the file again.
-  bool FileSave(const wxExFileName& filename = wxExFileName());
+  bool FileSave(const wxExPath& filename = wxExPath());
 
   /// Returns whether contents have been changed.
   virtual bool GetContentsChanged() const {return false;};
 
   /// Returns the file name.
-  const auto & GetFileName() const {return m_FileName;}
+  const auto & GetFileName() const {return m_Path;}
   
   /// Returns true if file is opened.
   bool IsOpened() const {return m_File->IsOpened();};
@@ -87,7 +87,7 @@ public:
 
   /// Opens current filename.
   bool Open(wxFile::OpenMode mode = wxFile::read, int access = wxS_DEFAULT)
-    {return Open(m_FileName.GetFullPath(), mode, access);};
+    {return Open(m_Path.GetFullPath(), mode, access);};
 
   /// Reads this file into a buffer.
   const wxCharBuffer* Read(wxFileOffset seek_position = 0);
@@ -109,8 +109,8 @@ protected:
   /// to exist. 
   /// Sets the is loaded member, so you can save the file
   /// from e.g. stc document (as with vcs blame).
-  void Assign(const wxExFileName& filename) {
-    m_FileName = filename;
+  void Assign(const wxExPath& filename) {
+    m_Path = filename;
     m_IsLoaded = true;
     m_Stat = filename.GetFullPath();};
 
@@ -134,9 +134,9 @@ private:
   bool Get(bool synced);
   bool MakeAbsolute() {
     return 
-      m_FileName.MakeAbsolute() &&
-      m_FileName.m_Stat.Sync(m_FileName.GetFullPath()) &&
-      m_Stat.Sync(m_FileName.GetFullPath());};
+      m_Path.MakeAbsolute() &&
+      m_Path.m_Stat.Sync(m_Path.GetFullPath()) &&
+      m_Stat.Sync(m_Path.GetFullPath());};
   
   bool m_IsLoaded = false;
   bool m_OpenFile;
@@ -144,6 +144,6 @@ private:
   std::unique_ptr<wxCharBuffer> m_Buffer;
   std::unique_ptr<wxFile> m_File;
 
-  wxExFileName m_FileName;
+  wxExPath m_Path;
   wxExStat m_Stat; // used for syncing, no public access
 };

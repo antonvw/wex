@@ -238,9 +238,9 @@ TEST_CASE("wxEx")
   SUBCASE("wxExMake")
   {
     const wxString wd = wxGetCwd(); // as /usr/bin/git changes wd
-    REQUIRE( wxExMake(wxFileName("xxx")) != -1);
-    REQUIRE( wxExMake(wxFileName("make.tst")) != -1);
-    REQUIRE( wxExMake(wxFileName("/usr/bin/git")) != -1);
+    REQUIRE( wxExMake(wxExPath("xxx")) != -1);
+    REQUIRE( wxExMake(wxExPath("make.tst")) != -1);
+    REQUIRE( wxExMake(wxExPath("/usr/bin/git")) != -1);
     wxSetWorkingDirectory(wd);
   }
 #endif
@@ -288,7 +288,7 @@ TEST_CASE("wxEx")
   
   SUBCASE("wxExPrintCaption")
   {
-    REQUIRE( wxExPrintCaption(wxExFileName("test")).find("test") != std::string::npos);
+    REQUIRE( wxExPrintCaption(wxExPath("test")).find("test") != std::string::npos);
   }
   
   SUBCASE("wxExPrintFooter")
@@ -411,7 +411,7 @@ TEST_CASE("wxEx")
 
   SUBCASE("wxExXmlError")
   {
-    wxExFileName fn("xml-err.xml");
+    wxExPath fn("xml-err.xml");
     pugi::xml_parse_result pr;
     wxExXmlError(fn, &pr);
   }

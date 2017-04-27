@@ -2,7 +2,7 @@
 // Name:      test-hexmode.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -20,8 +20,8 @@ TEST_CASE("wxExHexMode")
   // 0000000000111111111122222222223333333333444444444455555555555666666666
   // 0123456789012345678901234567890123456789012345678901234567890123456789
   // 30 31 32 33 34 35 36 37 38 39                   0123456789
-  wxExSTC* stc = new wxExSTC(
-    GetFrame(), std::string("0123456789"), STC_WIN_HEX);
+  wxExSTC* stc = new wxExSTC(GetFrame(), 
+    std::string("0123456789"), std::string(), wxExSTCData().Flags(STC_WIN_HEX));
 
   AddPane(GetFrame(), stc);
   REQUIRE(stc->GetText() != "0123456789");
@@ -57,7 +57,7 @@ TEST_CASE("wxExHexMode")
   REQUIRE( hm->Replace('9', 13));
   REQUIRE( hm->Replace('2', 13));
   
-  REQUIRE( stc->GetFile().FileSave(wxExFileName(GetTestDir() + "test.hex")));
+  REQUIRE( stc->GetFile().FileSave(wxExPath(GetTestDir() + "test.hex")));
   stc->Reload();
   REQUIRE( stc->GetText() == "01232567890123456789");
   

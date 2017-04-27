@@ -2,10 +2,12 @@
 // Name:      interruptable.h
 // Purpose:   Declaration of class wxExInterruptable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
+
+#include <wx/dlimpexp.h>
 
 /// Offers methods to start, stop things.
 class WXDLLIMPEXP_BASE wxExInterruptable

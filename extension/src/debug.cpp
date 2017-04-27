@@ -179,7 +179,7 @@ void wxExDebug::ProcessStdOut(const std::string& text)
     wxExMatch("Breakpoint ([0-9]+) at 0x[0-9a-f]+: file (.*), line ([0-9]+)", text, v) == 3 || 
     wxExMatch("Breakpoint ([0-9]+) at 0x[0-9a-f]+: (.*):([0-9]+)", text, v) == 3)
   {
-    wxExFileName filename(v[1]);
+    wxExPath filename(v[1]);
     filename.MakeAbsolute();
     if (filename.FileExists())
     {
@@ -195,8 +195,8 @@ void wxExDebug::ProcessStdOut(const std::string& text)
   else if (DeleteAllBreakpoints(text)) {}
   else if (wxExMatch("at (.*):([0-9]+)", text, v) > 1)
   {
-    m_FileName = wxExFileName(v[0]);
-    m_FileName.MakeAbsolute();
+    m_Path = wxExPath(v[0]);
+    m_Path.MakeAbsolute();
     line = std::stoi(v[1]);
   }
   else if (wxExMatch("^([0-9]+)", text, v) > 0)
@@ -204,9 +204,9 @@ void wxExDebug::ProcessStdOut(const std::string& text)
     line = std::stoi(v[0]);
   }
 
-  if (line > 0 && m_FileName.FileExists())
+  if (line > 0 && m_Path.FileExists())
   {
-    m_Frame->OpenFile(m_FileName, line);
+    m_Frame->OpenFile(m_Path, wxExSTCData().Line(line));
     m_Process->GetShell()->SetFocus();
   }
 }

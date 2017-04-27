@@ -231,7 +231,7 @@ void wxExListViewFile::DoFileSave(bool save_as)
 
   for (int i = 0; i < GetItemCount(); i++)
   {
-    const wxExFileName fn = wxExListItem(this, i).GetFileName();
+    const wxExPath fn = wxExListItem(this, i).GetFileName();
     
     pugi::xml_node node = root.append_child(fn.FileExists() ? "file": "folder");
     node.text().set(fn.GetFullPath().c_str());

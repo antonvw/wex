@@ -2,15 +2,16 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <memory>
 #include <string>
+#include <wx/filename.h>
 #include <wx/extension/app.h>
-#include <wx/extension/filename.h>
+#include <wx/extension/path.h>
 #include "doctest.h"
 
 class wxExManagedFrame;
@@ -27,7 +28,7 @@ void AddPane(wxExManagedFrame* frame, wxWindow* pane);
 const std::string GetTestDir();
 
 /// Returns test file.
-const wxExFileName GetTestFile();
+const wxExPath GetTestFile();
   
 /// Sets environment. 
 void SetEnvironment(const std::string& dir);

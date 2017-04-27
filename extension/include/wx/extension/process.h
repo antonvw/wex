@@ -2,7 +2,7 @@
 // Name:      process.h
 // Purpose:   Declaration of class wxExProcess
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -86,7 +86,7 @@ public:
   /// Shows std output from Execute on the shell component.
   /// You can override this method to e.g. prepare a lexer on GetShell
   /// before calling this base method.
-  virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
+  virtual void ShowOutput(const std::string& caption = std::string()) const;
 #endif
 
   /// Writes text to stdin of process.

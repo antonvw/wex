@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wxExShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -23,13 +23,11 @@
 wxExShell::wxExShell(wxWindow* parent,
   const std::string& prompt, const std::string& command_end,
   bool echo, int commands_save_in_config, const std::string& lexer,
-  wxExSTCMenuFlags menu_flags, wxWindowID id, 
-  const wxPoint& pos, const wxSize& size, long style)
-  : wxExSTC(parent, std::string(),
-      STC_WIN_NO_INDICATOR,
-      std::string(), // title, used for name
-      menu_flags, std::string(), id, pos, size, style)
-  , m_CommandEnd((command_end == wxEmptyString ? GetEOL(): command_end))
+  const wxExSTCData& stc_data,
+  const wxExWindowData& win_data)
+  : wxExSTC(parent, std::string(), 
+      wxExSTCData(stc_data).Flags(STC_WIN_NO_INDICATOR, DATA_OR), win_data)
+  , m_CommandEnd(command_end == std::string() ? GetEOL(): command_end)
   , m_Echo(echo)
   , m_CommandsSaveInConfig(commands_save_in_config)
   , m_Prompt(prompt)
@@ -251,7 +249,7 @@ wxExShell::~wxExShell()
 {
   if (m_CommandsSaveInConfig > 0)
   {
-    wxString values;
+    std::string values;
     int items = 0;
 
     for (
@@ -263,7 +261,7 @@ wxExShell::~wxExShell()
       items++;
     }
 
-    wxConfigBase::Get()->Write("Shell", values);
+    wxConfigBase::Get()->Write("Shell", values.c_str());
   }
 }
 
@@ -321,7 +319,7 @@ void wxExShell::Expand()
   const wxString path(wxString(m_Command).AfterLast(' '));
   const wxString word(path.AfterLast(wxFileName::GetPathSeparator()));
   
-  wxString expansion;
+  std::string expansion;
   
   if (AutoCompActive())
   {
@@ -346,8 +344,8 @@ void wxExShell::Expand()
       {
         m_AutoCompleteList.erase(m_AutoCompleteList.begin());
         AutoCompShow(word.length(), std::accumulate(
-          m_AutoCompleteList.begin(), m_AutoCompleteList.end(), wxString(), 
-          [&](const wxString& a, const wxString& b) {
+          m_AutoCompleteList.begin(), m_AutoCompleteList.end(), std::string(), 
+          [&](const std::string& a, const std::string& b) {
             return a.empty() ? b : a + (char)AutoCompGetSeparator() + b;}));
       }
     }

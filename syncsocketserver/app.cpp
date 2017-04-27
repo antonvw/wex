@@ -74,7 +74,7 @@ Frame::Frame()
   , m_Timer(this)
   , m_Answer(ANSWER_OFF)
   , m_DataWindow(new wxExSTC(this))
-  , m_LogWindow(new wxExSTC(this, std::string(), STC_WIN_NO_INDICATOR))
+  , m_LogWindow(new wxExSTC(this, std::string(), wxExSTCData().Flags(STC_WIN_NO_INDICATOR)))
   , m_Shell(new wxExShell(this))
 {
   SetIcon(wxICON(app));
@@ -269,7 +269,7 @@ Frame::Frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {;}, wxID_HELP);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_DataWindow->GetFile().FileNew(wxExFileName());
+    m_DataWindow->GetFile().FileNew(wxExPath());
     ShowPane("DATA");}, wxID_NEW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -655,16 +655,9 @@ void Frame::OnCommandItemDialog(
   }
 }
 
-wxExSTC* Frame::OpenFile(
-  const wxExFileName& filename,
-  int line_number,
-  const std::string& match,
-  int col_number,
-  wxExSTCWindowFlags flags,
-  const std::string& command)
+wxExSTC* Frame::OpenFile(const wxExPath& filename, const wxExSTCData& data)
 {
-  if (m_DataWindow->Open(
-    filename, line_number, match, col_number, flags, command))
+  if (m_DataWindow->Open(filename, data))
   {
     ShowPane("DATA");
   }

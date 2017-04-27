@@ -263,7 +263,7 @@ void wxExManagedFrame::DoRecent(
   
   if (!file.empty())
   {
-    OpenFile(file, 0, std::string(), 0, flags);
+    OpenFile(file, wxExSTCData().Flags(flags));
   }
 }
 
@@ -306,19 +306,14 @@ void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 }
 
 wxExSTC* wxExManagedFrame::OpenFile(
-  const wxExFileName& filename,
-  int line_number,
-  const std::string& match,
-  int col_number,
-  wxExSTCWindowFlags flags,
-  const std::string& command)
+  const wxExPath& file,
+  const wxExSTCData& stc_data)
 {
   wxExSTC* stc;
   
-  if ((stc = wxExFrame::OpenFile(
-    filename, line_number, match, col_number, flags, command)) != nullptr)
+  if ((stc = wxExFrame::OpenFile(file, stc_data)) != nullptr)
   {
-    SetRecentFile(filename.GetFullPath());
+    SetRecentFile(file.GetFullPath());
   }
 
   return stc;

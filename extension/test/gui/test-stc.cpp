@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-stc->cpp
+// Name:      test-stc.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2017 Anton van Wezenbeek
@@ -55,8 +55,6 @@ TEST_CASE("wxExSTC")
     stc->SetSearchFlags(-1);
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
     
-    REQUIRE( stc->AllowChangeIndicator());
-    
     REQUIRE( stc->CanCut());
     stc->Copy();
     REQUIRE( stc->CanPaste());
@@ -76,13 +74,6 @@ TEST_CASE("wxExSTC")
     REQUIRE(!stc->FindNext(std::string("less text")));
     REQUIRE( stc->GetFindString() != "less text");
     REQUIRE( stc->ReplaceAll("%", "percent") == 0);
-    
-    stc->GotoLineAndSelect(1);
-    REQUIRE(stc->GetCurrentLine() == 0);
-    REQUIRE(stc->GetCurrentPos() == 0);
-    stc->GotoLineAndSelect(1, std::string(), 5);
-    REQUIRE(stc->GetCurrentLine() == 0);
-    REQUIRE(stc->GetCurrentPos() == 4);
   }
 
   SUBCASE("vi")
@@ -114,7 +105,7 @@ TEST_CASE("wxExSTC")
   {
     // do the same test as with wxExFile in base for a binary file
     REQUIRE(stc->Open(GetTestDir() + "test.bin"));
-    REQUIRE(stc->GetFlags() == 0);
+    REQUIRE(stc->GetData().Flags() == 0);
     const wxCharBuffer& buffer = stc->GetTextRaw();
     REQUIRE(buffer.length() == 40);
   }

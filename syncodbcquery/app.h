@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of classes for syncodbcquery
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #define wxExUSE_OTL 1
@@ -45,12 +45,8 @@ private:
     wxWindowID dialogid, 
     const wxCommandEvent& event) override;
   virtual wxExSTC* OpenFile(
-    const wxExFileName& filename, 
-    int line_number = 0, 
-    const std::string& match = std::string(), 
-    int col_number = 0, 
-    wxExSTCWindowFlags flags = STC_WIN_DEFAULT, 
-    const std::string& command = std::string()) override;
+    const wxExPath& filename, 
+    const wxExSTCData& data = wxExSTCData()) override;
 
   void RunQuery(const std::string& query, bool empty_results = false);
 

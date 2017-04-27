@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,16 +13,17 @@
 #include <wx/extension/link.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/stcfile.h>
+#include <wx/extension/stc-data.h>
 #include <wx/extension/stc-enums.h>
 #include <wx/extension/vi.h>
 
 #if wxUSE_GUI
-class wxExItemDialog;
-class wxExFileName;
 class wxExIndicator;
+class wxExItemDialog;
 class wxExLexer;
 class wxExManagedFrame;
 class wxExMenu;
+class wxExPath;
 
 /// Offers a styled text ctrl with:
 /// - lexer support (syntax colouring, folding)
@@ -33,38 +34,19 @@ class wxExMenu;
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
 public:
-  /// Constructor. The title is used for name.
-  wxExSTC(wxWindow* parent, 
-    const std::string& value = std::string(),
-    wxExSTCWindowFlags win_flags = STC_WIN_DEFAULT,
-    const std::string& title = std::string(),
-    wxExSTCMenuFlags menu_flags = static_cast<wxExSTCMenuFlags>(
-      STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS),
-    const std::string& command = std::string(),
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize, 
-    long style = 0);
+  /// Constructor, sets text if not empty.
+  wxExSTC(wxWindow* parent,
+    const std::string& text = std::string(),
+    const std::string& name = std::string(),
+    const wxExSTCData& stc_data = wxExSTCData(),
+    const wxExWindowData& win_data = wxExWindowData());
 
   /// Constructor, opens the file if it exists.
-  /// The filename is used for name. See also Open.
   wxExSTC(wxWindow* parent,
-    const wxExFileName& filename,
-    int line_number = 0,
-    const std::string& match = std::string(),
-    int col_number = 0,
-    wxExSTCWindowFlags win_flags = STC_WIN_DEFAULT,
-    wxExSTCMenuFlags menu_flags = static_cast<wxExSTCMenuFlags>(
-      STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS),
-    const std::string& command = std::string(),
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = 0);
+    const wxExPath& file,
+    const wxExSTCData& stc_data = wxExSTCData(),
+    const wxExWindowData& win_data = wxExWindowData());
   
-  /// Is a change indicator allowed.
-  bool AllowChangeIndicator() const {return m_AllowChangeIndicator;};
-
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool AutoIndentation(int c);
@@ -129,6 +111,9 @@ public:
     /// always all lines are folded.
     bool foldall = false);
 
+  /// Returns associated data.
+  const wxExSTCData& GetData() const {return m_Data;};
+
   /// Returns EOL string.
   /// If you only want to insert a newline, use NewLine()
   /// (from wxStyledTextCtrl).
@@ -145,9 +130,6 @@ public:
   /// If text is selected, it also sets the find string.
   const std::string GetFindString();
 
-  /// Returns current flags.
-  auto GetFlags() const {return m_Flags;};
-  
   /// Returns hex mode component.
   const auto & GetHexMode() const {return m_HexMode;};
   
@@ -173,13 +155,6 @@ public:
   /// Returns word at position.
   const std::string GetWordAtPos(int pos) const;
 
-  /// Goes to line and selects the line or the specified text in it.
-  void GotoLineAndSelect(
-    int line_number, 
-    const std::string& text = std::string(),
-    int col_number = 0,
-    long flags = 0);
-
   /// Guesses the file type using a small sample size from this document, 
   /// and sets EOL mode and updates statusbar if it found eols.
   void GuessType();
@@ -193,20 +168,7 @@ public:
   
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
-  bool Open(
-    /// file to open
-    const wxExFileName& filename,
-    /// goes to the line if > 0, if -1 goes to end of file
-    int line_number = 0,
-    /// if not empty selects the text on that line (if line was specified)
-    /// or finds text from begin (if line was 0) or end (line was -1)
-    const std::string& match = std::string(),
-    /// goes to column if col_number > 0
-    int col_number = 0,
-    /// flags
-    wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
-    /// vi command to execute
-    const std::string& command = std::string());
+  bool Open(const wxExPath& filename, const wxExSTCData& data = wxExSTCData());
 
   /// Paste text from clipboard.
   virtual void Paste() override;
@@ -237,7 +199,8 @@ public:
   void PropertiesMessage(long flags = 0);
   
   /// Reloads current document using specified flags.
-  void Reload(wxExSTCWindowFlags flags = STC_WIN_DEFAULT);
+  void Reload(wxExSTCWindowFlags flags = STC_WIN_DEFAULT) {
+    m_Data.Flags(flags).Inject();};
 
   /// Replaces all text.
   /// It there is a selection, it replaces in the selection, otherwise
@@ -344,18 +307,13 @@ private:
   const int m_MarginFoldingNumber = 2;
   const int m_MarginLineNumber = 0;
   const wxExMarker m_MarkerChange = wxExMarker(1);
-  const wxExSTCMenuFlags m_MenuFlags;
 
   int m_FoldLevel = 0;
   int m_SavedPos = -1;
   int m_SavedSelectionStart = -1;
   int m_SavedSelectionEnd = -1;
   
-  wxExSTCWindowFlags m_Flags;
-  long m_Goto = 1;
-  
   bool m_AddingChars = false;
-  bool m_AllowChangeIndicator = true;
   bool m_UseAutoComplete = true;
 
   wxExSTCFile m_File;
@@ -366,7 +324,7 @@ private:
   // (though wxExSTCFile offers one), as you can manually override
   // the lexer.
   wxExLexer m_Lexer;
-  
+  wxExSTCData m_Data;
   wxExLink m_Link;
   wxExVi m_vi;
   

@@ -181,7 +181,7 @@ bool wxExViMacros::ExpandTemplate(
 
   // Read the file (file name is in v.GetValue()), expand
   // all macro variables in it, and set expanded.
-  const wxExFileName filename(wxExConfigDir(), v.GetValue());
+  const wxExPath filename(wxExConfigDir(), v.GetValue());
 
   std::ifstream ifs(filename.GetFullPath());
   
@@ -305,9 +305,9 @@ const std::vector< std::string > wxExViMacros::Get(
   }
 }
 
-const wxExFileName wxExViMacros::GetFileName()
+const wxExPath wxExViMacros::GetFileName()
 {
-  return wxExFileName(wxExConfigDir(), "macros.xml");
+  return wxExPath(wxExConfigDir(), "macros.xml");
 }
 
 const std::string wxExViMacros::GetRegister(const char name) const

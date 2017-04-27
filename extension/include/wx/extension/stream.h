@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wx/extension/filename.h>
+#include <wx/extension/path.h>
 #include <wx/extension/stream-statistics.h>
 #include <wx/extension/tool.h>
 
@@ -19,14 +19,14 @@ class WXDLLIMPEXP_BASE wxExStream
 public:
   /// Constructor.
   wxExStream(
-    const wxExFileName& filename,
+    const wxExPath& filename,
     const wxExTool& tool);
   
   /// Destructor.
  ~wxExStream() {;};
 
   /// Returns the filename.
-  const auto & GetFileName() const {return m_FileName;};
+  const auto & GetFileName() const {return m_Path;};
 
   /// Returns the statistics.
   const auto & GetStatistics() const {return m_Stats;}
@@ -75,7 +75,7 @@ protected:
 private:
   bool IsWordCharacter(int c) const {return isalnum(c) || c == '_';};
 
-  const wxExFileName m_FileName;
+  const wxExPath m_Path;
   const wxExTool m_Tool;
 
   wxExStreamStatistics m_Stats;

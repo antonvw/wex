@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of class 'App'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,7 +12,7 @@
 class App : public wxExApp
 {
 public:
-  const auto& GetCommand() const {return m_Command;};
+  const auto& GetData() const {return m_Data;};
   const auto& GetFiles() const {return m_Files;};
   const auto& GetTag() const {return m_Tag;};
 
@@ -20,7 +20,6 @@ public:
   auto& GetScriptout() {return m_Scriptout;};
 
   auto GetDebug() const {return m_Debug;};
-  auto GetFlags() const {return m_Flags;};
   auto GetSplit() const {return m_Split;};
   
   void Reset();
@@ -30,10 +29,11 @@ private:
 #endif
   virtual bool OnInit() override;
 
+  std::string m_Tag; 
   std::vector< std::string > m_Files;
+  
   bool m_Debug = false;
-  wxExSTCWindowFlags m_Flags = STC_WIN_DEFAULT;
   int m_Split;
-  std::string m_Command, m_Tag; 
+  wxExSTCData m_Data;
   wxExFile m_Scriptin, m_Scriptout;
 };

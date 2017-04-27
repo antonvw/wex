@@ -2,7 +2,7 @@
 // Name:      filehistory.cpp
 // Purpose:   Implementation of wxExFileHistory class methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -14,7 +14,7 @@
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
 #include <wx/extension/filehistory.h>
-#include <wx/extension/filename.h>
+#include <wx/extension/path.h>
 #include <wx/extension/util.h>
 
 class wxExFileHistoryImp : public wxFileHistory
@@ -107,7 +107,7 @@ void wxExFileHistory::PopupMenu(wxWindow* win,
 
   for (size_t i = 0; i < GetCount(); i++)
   {
-    const wxExFileName file(GetHistoryFile(i));
+    const wxExPath file(GetHistoryFile(i));
     
     if (file.FileExists())
     {

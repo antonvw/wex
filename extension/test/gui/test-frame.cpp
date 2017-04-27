@@ -23,7 +23,7 @@ TEST_CASE("wxExFrame")
   REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestFile()));
   REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestFile().GetFullPath(), "contents"));
   REQUIRE( ((wxExFrame *)GetFrame())->IsOpen(GetTestFile()));
-  REQUIRE(!((wxExFrame *)GetFrame())->IsOpen(wxExFileName("xxx")));
+  REQUIRE(!((wxExFrame *)GetFrame())->IsOpen(wxExPath("xxx")));
   
   REQUIRE( GetFrame()->GetGrid() == nullptr);
   REQUIRE( GetFrame()->GetListView() == nullptr);

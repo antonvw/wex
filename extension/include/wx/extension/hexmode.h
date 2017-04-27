@@ -2,7 +2,7 @@
 // Name:      hexmode.h
 // Purpose:   Declaration of class wxExHexMode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -86,7 +86,8 @@ public:
     bool settext = true);
 
   /// Sets hex mode.  
-  void Set(bool on);
+  /// Returns true if mode is changed.
+  bool Set(bool on);
 
   /// Sets caret pos on stc, depending on event and 
   /// where we are.

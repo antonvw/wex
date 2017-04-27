@@ -2,7 +2,7 @@
 // Name:      test-lexers.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,8 +10,8 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/lexers.h>
-#include <wx/extension/filename.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/path.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
@@ -72,7 +72,7 @@ TEST_CASE("wxExLexers")
       findby.first).GetDisplayLexer() == findby.second.second);
   }
     
-  REQUIRE( wxExLexers::Get()->GetFileName().IsOk());
+  REQUIRE(!wxExLexers::Get()->GetFileName().GetFullPath().empty());
 
   REQUIRE(!wxExLexers::Get()->GetMacros("global").empty());
   REQUIRE(!wxExLexers::Get()->GetMacros("cpp").empty());

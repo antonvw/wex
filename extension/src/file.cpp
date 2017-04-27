@@ -18,9 +18,9 @@ wxExFile& wxExFile::operator=(const wxExFile& f)
   {
     m_IsLoaded = f.m_IsLoaded;
     m_OpenFile = f.m_OpenFile;
-    m_FileName = f.m_FileName;
+    m_Path = f.m_Path;
     m_Stat = f.m_Stat;
-    m_File = std::make_unique<wxFile>(m_FileName.GetFullPath());
+    m_File = std::make_unique<wxFile>(m_Path.GetFullPath());
   }
 
   return *this;
@@ -32,17 +32,17 @@ bool wxExFile::CheckSync()
   wxConfigBase* config = wxConfigBase::Get(false);
 
   if ( m_File->IsOpened() ||
-      !m_FileName.m_Stat.IsOk() ||
+      !m_Path.m_Stat.IsOk() ||
       (config != nullptr && !config->ReadBool("AllowSync", true)))
   {
     return false;
   }
 
-  if (m_FileName.m_Stat.Sync())
+  if (m_Path.m_Stat.Sync())
   {
     bool sync_needed = false;
     
-    if (m_FileName.m_Stat.st_mtime != m_Stat.st_mtime)
+    if (m_Path.m_Stat.st_mtime != m_Stat.st_mtime)
     {
       // Do not check return value,
       // we sync anyhow, to force nex time no sync.
@@ -51,7 +51,7 @@ bool wxExFile::CheckSync()
       sync_needed = true;
     }
     
-    if (m_FileName.m_Stat.IsReadOnly() != m_Stat.IsReadOnly())
+    if (m_Path.m_Stat.IsReadOnly() != m_Stat.IsReadOnly())
     {
       sync_needed = true;
     }
@@ -62,7 +62,7 @@ bool wxExFile::CheckSync()
       if (!m_Stat.Sync())
       {
         // This might be reported in an OnIdle, so do not use wxLogError.
-        wxLogStatus("Could not sync: ", m_FileName.GetFullPath().c_str());
+        wxLogStatus("Could not sync: ", m_Path.GetFullPath().c_str());
       }
         
       return true;
@@ -72,25 +72,25 @@ bool wxExFile::CheckSync()
   return false;
 }
 
-bool wxExFile::FileLoad(const wxExFileName& filename)
+bool wxExFile::FileLoad(const wxExPath& file)
 {
-  Assign(filename);
-  return m_FileName.FileExists() && MakeAbsolute() && Get(false);
+  Assign(file);
+  return m_Path.FileExists() && MakeAbsolute() && Get(false);
 }
 
-void wxExFile::FileNew(const wxExFileName& filename)
+void wxExFile::FileNew(const wxExPath& file)
 {
-  Assign(filename);
+  Assign(file);
   DoFileNew();
 }
 
-bool wxExFile::FileSave(const wxExFileName& filename)
+bool wxExFile::FileSave(const wxExPath& file)
 {
   bool save_as = false;
 
-  if (filename.IsOk())
+  if (!file.GetFullPath().empty())
   {
-    Assign(filename);
+    Assign(file);
     MakeAbsolute();
     save_as = true;
   }
@@ -101,7 +101,7 @@ bool wxExFile::FileSave(const wxExFileName& filename)
     return false;
   }
 
-  if (m_OpenFile && !Open(m_FileName.GetFullPath(), wxFile::write))
+  if (m_OpenFile && !Open(m_Path.GetFullPath(), wxFile::write))
   {
     return false;
   }
@@ -112,7 +112,7 @@ bool wxExFile::FileSave(const wxExFileName& filename)
 
   ResetContentsChanged();
   
-  m_FileName.m_Stat.Sync();
+  m_Path.m_Stat.Sync();
   m_Stat.Sync();
 
   return true;
@@ -125,8 +125,8 @@ bool wxExFile::Get(bool synced)
     wxLogNull logNo;
   
     if ( 
-       (synced && !Open(m_FileName.GetFullPath())) ||
-      (!synced && m_OpenFile && !Open(m_FileName.GetFullPath())))
+       (synced && !Open(m_Path.GetFullPath())) ||
+      (!synced && m_OpenFile && !Open(m_Path.GetFullPath())))
     {
       return false;
     }
@@ -147,9 +147,9 @@ bool wxExFile::Get(bool synced)
   return true;
 }
 
-bool wxExFile::Open(const std::string& filename, wxFile::OpenMode mode, int access)
+bool wxExFile::Open(const std::string& file, wxFile::OpenMode mode, int access)
 {
-  return m_File->Open(filename, mode, access);
+  return m_File->Open(file, mode, access);
 }
 
 const wxCharBuffer* wxExFile::Read(wxFileOffset seek_position)

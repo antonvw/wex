@@ -474,10 +474,9 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_STC:
-      m_Window = new wxExSTC(parent, std::string(), STC_WIN_DEFAULT,
-        std::string(), 
-        static_cast<wxExSTCMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS), 
-        std::string(), m_Id);
+      m_Window = new wxExSTC(parent, std::string(),
+        wxExSTCData().Menu(static_cast<wxExSTCMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS)), 
+        wxExWindowData().Id(m_Id));
       
       // Do not use vi mode, as ESC should cancel the dialog,
       // and would not be interpreted by vi.

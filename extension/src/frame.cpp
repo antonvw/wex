@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -13,11 +13,11 @@
 #include <wx/persist/toplevel.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/defs.h>
-#include <wx/extension/filename.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listview.h>
+#include <wx/extension/path.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
@@ -188,8 +188,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
         cmd = v[0];
         text = v[1];
       }
-      wxExOpenFiles(this, wxExToVectorString(text).Get(), 
-        STC_WIN_DEFAULT, wxDIR_DEFAULT, cmd);
+      wxExOpenFiles(this, wxExToVectorString(text).Get(), wxExSTCData().Command(cmd));
     }
     else
     {
@@ -239,7 +238,7 @@ wxExSTC* wxExFrame::GetSTC()
   wxCAST_TO(wxExSTC);
 }
   
-bool wxExFrame::IsOpen(const wxExFileName& filename)
+bool wxExFrame::IsOpen(const wxExPath& filename)
 {
   wxExSTC* stc = GetSTC();
   
@@ -265,27 +264,23 @@ wxStatusBar* wxExFrame::OnCreateStatusBar(
 #endif
 
 wxExSTC* wxExFrame::OpenFile(
-  const wxExFileName& filename,
-  int line_number,
-  const std::string& match,
-  int col_number,
-  wxExSTCWindowFlags flags,
-  const std::string& command)
+  const wxExPath& filename,
+  const wxExSTCData& stc_data)
 {
   wxExSTC* stc = GetSTC();
 
   if (stc != nullptr)
   {
-    stc->Open(filename, line_number, match, col_number, flags, command);
+    stc->Open(filename, stc_data);
   }
 
   return stc;
 }
 
 wxExSTC* wxExFrame::OpenFile(
-  const wxExFileName& filename,
+  const wxExPath& filename,
   const wxExVCSEntry& vcs,
-  wxExSTCWindowFlags flags)
+  const wxExSTCData& stc_data)
 {
   wxExSTC* stc = GetSTC();
 
@@ -299,9 +294,9 @@ wxExSTC* wxExFrame::OpenFile(
 }
 
 wxExSTC* wxExFrame::OpenFile(
-  const wxExFileName& filename,
+  const wxExPath& filename,
   const std::string& text,
-  wxExSTCWindowFlags flags)
+  const wxExSTCData& stc_data)
 {
   wxExSTC* stc = GetSTC();
 

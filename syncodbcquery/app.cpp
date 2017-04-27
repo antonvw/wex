@@ -73,7 +73,11 @@ Frame::Frame()
   menuQuery->Append(wxID_STOP);
 
   wxMenu* menuOptions = new wxMenu();
+#ifndef __WXOSX__
   menuOptions->Append(wxID_PREFERENCES);
+#else
+  menuQuery->Append(wxID_PREFERENCES); // is moved!
+#endif
 
   wxExMenu* menuView = new wxExMenu();
   AppendPanes(menuView);
@@ -90,7 +94,9 @@ Frame::Frame()
   menubar->Append(menuView, _("&View"));
   menubar->Append(menuDatabase, _("&Connection"));
   menubar->Append(menuQuery, _("&Query"));
+#ifndef __WXOSX__
   menubar->Append(menuOptions, _("&Options"));
+#endif
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   SetMenuBar(menubar);
 
@@ -211,7 +217,7 @@ Frame::Frame()
     Close(true);}, wxID_EXIT);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_Query->GetFile().FileNew(wxExFileName());
+    m_Query->GetFile().FileNew(wxExPath());
     m_Query->SetFocus();
     ShowPane("QUERY");}, wxID_NEW);
 
@@ -347,16 +353,9 @@ void Frame::OnCommandItemDialog(
   }
 }
 
-wxExSTC* Frame::OpenFile(
-  const wxExFileName& filename,
-  int line_number,
-  const std::string& match,
-  int col_number,
-  wxExSTCWindowFlags flags,
-  const std::string& command)
+wxExSTC* Frame::OpenFile(const wxExPath& filename, const wxExSTCData& data)
 {
-  if (m_Query->Open(
-    filename, line_number, match, col_number, flags, command))
+  if (m_Query->Open(filename, data))
   {
     ShowPane("QUERY");
   }
@@ -366,7 +365,8 @@ wxExSTC* Frame::OpenFile(
 
 void Frame::RunQuery(const std::string& query, bool empty_results)
 {
-  const wxString query_lower = wxString(query).Lower();
+  std::string query_lower = query;
+  for (auto & c : query_lower) c = ::tolower(c);
   const auto start = std::chrono::system_clock::now();
 
   std::chrono::milliseconds milli;
@@ -376,21 +376,15 @@ void Frame::RunQuery(const std::string& query, bool empty_results)
   // $SQLTables, $SQLColumns, etc.
   // $SQLTables $1:'%'
   // allow you to get database schema.
-  if (query_lower.StartsWith("select") ||
-      query_lower.StartsWith("describe") ||
-      query_lower.StartsWith("show") ||
-      query_lower.StartsWith("explain") ||
-      query_lower.StartsWith("$sql"))
+  if (query_lower.find("select") == 0 ||
+      query_lower.find("describe") == 0||
+      query_lower.find("show") == 0 ||
+      query_lower.find("explain") == 0 ||
+      query_lower.find("$sql" == 0))
   {
-    if (m_Results->IsShown())
-    {
-      rpc = m_otl.Query(query, m_Results, m_Stopped, empty_results);
-    }
-    else
-    {
-      rpc = m_otl.Query(query, m_Shell, m_Stopped);
-    }
-
+    rpc = m_Results->IsShown() ? 
+      m_otl.Query(query, m_Results, m_Stopped, empty_results):
+      m_otl.Query(query, m_Shell, m_Stopped);
     const auto end = std::chrono::system_clock::now();
     const auto elapsed = end - start;
     milli = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);

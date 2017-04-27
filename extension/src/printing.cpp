@@ -2,7 +2,7 @@
 // Name:      printing.cpp
 // Purpose:   Implementation of wxExPrinting class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,7 +11,7 @@
 #endif
 #include <wx/stc/stc.h>
 #include <wx/extension/printing.h>
-#include <wx/extension/filename.h>
+#include <wx/extension/path.h>
 #include <wx/extension/util.h>
 
 wxExPrinting* wxExPrinting::m_Self = nullptr;
@@ -29,7 +29,7 @@ wxExPrinting::wxExPrinting()
   m_HtmlPrinter->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
   m_HtmlPrinter->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
 
-  m_HtmlPrinter->SetHeader(wxExPrintHeader(wxExFileName()));
+  m_HtmlPrinter->SetHeader(wxExPrintHeader(wxExPath()));
   m_HtmlPrinter->SetFooter(wxExPrintFooter());
 #endif
 }

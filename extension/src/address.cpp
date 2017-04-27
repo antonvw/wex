@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wxExAddress
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <memory>
@@ -249,16 +249,16 @@ bool wxExAddress::Read(const std::string& arg) const
   }
   else
   {
-    wxFileName fn(arg);
+    wxExPath fn(arg);
 
     if (fn.IsRelative())
     {
-      fn.Normalize(wxPATH_NORM_ALL, m_Ex->GetSTC()->GetFileName().GetPath());
+      fn.Normalize(m_Ex->GetSTC()->GetFileName().GetPath());
     }
     
     wxExFile file;
 
-    if (!wxFile::Exists(fn.GetFullPath()) || !file.Open(fn.GetFullPath().ToStdString()))
+    if (!wxFile::Exists(fn.GetFullPath()) || !file.Open(fn.GetFullPath()))
     {
       wxLogStatus(_("file: %s does not exist"), arg);
       return false;

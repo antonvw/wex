@@ -12,7 +12,7 @@
 #include <wx/combobox.h>
 #include <wx/dir.h> // for wxDIR_DEFAULT
 #include <wx/filedlg.h> // for wxFD_OPEN etc.
-#include <wx/extension/stc-enums.h>
+#include <wx/extension/stc-data.h>
 
 class wxArrayString;
 namespace pugi
@@ -22,7 +22,7 @@ namespace pugi
 };
 
 class wxExEx;
-class wxExFileName;
+class wxExPath;
 class wxExFrame;
 class wxExLexer;
 class wxExProperty;
@@ -109,7 +109,7 @@ void wxExComboBoxFromList(
 #endif
   
 /// Compares the files, using comparator set in the config.
-bool wxExCompareFile(const wxExFileName& file1, const wxExFileName& file2);
+bool wxExCompareFile(const wxExPath& file1, const wxExPath& file2);
 
 /// Returns the config dir for user data files.
 const std::string wxExConfigDir();
@@ -166,7 +166,7 @@ const std::string wxExGetFindResult(
 /// The return value is an index in wxTheFileIconsTable.
 /// You can use this index as a bitmap using:
 /// wxTheFileIconsTable->GetSmallImageList()->GetBitmap(wxExGetIconID(file))
-int wxExGetIconID(const wxExFileName& filename);
+int wxExGetIconID(const wxExPath& filename);
 
 /// Returns the number of lines in a (trimmed) string.
 /// If text is empty, 0 is returned, otherwise at least 1.
@@ -204,7 +204,7 @@ enum wxExStatusFlags
 /// Logs filename info on the statusbar.
 // Using type wxExStatusFlags instead of long gives compiler errors at
 // invoking.
-void wxExLogStatus(const wxExFileName& filename, long flags = STAT_DEFAULT);
+void wxExLogStatus(const wxExPath& filename, long flags = STAT_DEFAULT);
 
 /// Logs text.
 void wxExLogStatus(const std::string& text);
@@ -213,7 +213,7 @@ void wxExLogStatus(const std::string& text);
 /// Returns value from executing the make process.
 long wxExMake(
   /// the makefile
-  const wxExFileName& makefile);
+  const wxExPath& makefile);
 
 /// Expands all markers and registers in command.
 /// Returns false if a marker could not be found.
@@ -256,12 +256,10 @@ int wxExOpenFiles(
   wxExFrame* frame,
   /// array with files
   const std::vector< std::string > & files,
-  /// flags to be used with OpenFile
-  wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
+  /// data to be used with OpenFile
+  const wxExSTCData& data = wxExSTCData(),
   /// flags to be used with wxExDirOpenFile
-  int dir_flags = wxDIR_DEFAULT,
-  /// initial vi command
-  const std::string& command = std::string());
+  int dir_flags = wxDIR_DEFAULT);
 #endif
 
 /// Shows a dialog and opens selected files
@@ -276,14 +274,14 @@ void wxExOpenFilesDialog(
   const wxString& wildcards = wxFileSelectorDefaultWildcardStr,
   /// flags to be used with wxExFileDialog
   bool ask_for_continue = false,
-  /// flags to be used with OpenFile
-  wxExSTCWindowFlags flags = STC_WIN_DEFAULT,
+  /// data to be used with OpenFile
+  const wxExSTCData& data = wxExSTCData(),
   /// flags to be used with wxExDirOpenFile
   int dir_flags = wxDIR_DEFAULT);
 #endif
 
 /// Adds a caption.
-const std::string wxExPrintCaption(const wxExFileName& filename);
+const std::string wxExPrintCaption(const wxExPath& filename);
 
 /// You can use macros in PrintFooter and in PrintHeader:
 ///   \@PAGENUM\@ is replaced by page number
@@ -291,7 +289,7 @@ const std::string wxExPrintCaption(const wxExFileName& filename);
 const std::string wxExPrintFooter();
 
 /// Adds a header.
-const std::string wxExPrintHeader(const wxExFileName& filename);
+const std::string wxExPrintHeader(const wxExPath& filename);
 
 /// Returns quotes around the text.
 const std::string wxExQuoted(const std::string& text);
@@ -382,7 +380,7 @@ void wxExVCSExecute(
 /// Shows xml error.
 void wxExXmlError(
   /// xml filename that has error
-  const wxExFileName& filename, 
+  const wxExPath& filename, 
   /// result of parsing describing the error
   const pugi::xml_parse_result* result,
   /// stc component containing the filename

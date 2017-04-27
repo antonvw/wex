@@ -27,13 +27,13 @@ TEST_CASE("wxExListItem")
   const int max = 250;
   for (int j = 0; j < max; j++)
   {
-    wxExListItem item1(listView, wxExFileName("./test.h"));
+    wxExListItem item1(listView, wxExPath("./test.h"));
     item1.Insert();
-    wxExListItem item2(listView, wxExFileName("./test.cpp"));
+    wxExListItem item2(listView, wxExPath("./test.cpp"));
     item2.Insert();
-    wxExListItem item3(listView, wxExFileName("./main.cpp"));
+    wxExListItem item3(listView, wxExPath("./main.cpp"));
     item3.Insert();
-    wxExListItem item4(listView2, wxExFileName("./test.h"));
+    wxExListItem item4(listView2, wxExPath("./test.h"));
     item4.Insert();
   }
 
@@ -52,12 +52,12 @@ TEST_CASE("wxExListItem")
   
   REQUIRE(listView->GetItemText(0, _("File Name").ToStdString()).find("main.cpp") != std::string::npos);
   
-  wxExListItem item(listView, wxExFileName("./test.h"));
+  wxExListItem item(listView, wxExPath("./test.h"));
   item.Insert();
   REQUIRE( item.GetFileName().GetFullName() == "test.h");
   REQUIRE( item.GetFileSpec().empty());
   REQUIRE( wxExListItem(listView, 
-    wxExFileName("./test.h"), "*.txt").GetFileSpec() == "*.txt");
+    wxExPath("./test.h"), "*.txt").GetFileSpec() == "*.txt");
   REQUIRE( item.GetListView() == listView);
   REQUIRE(!item.IsReadOnly());
   

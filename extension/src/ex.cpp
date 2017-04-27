@@ -496,7 +496,7 @@ bool wxExEx::CommandAddress(const std::string& command)
     else 
     {
       const auto line(wxExAddress(this, rest).GetLine());
-      if (line > 0) m_STC->GotoLineAndSelect(line);
+      if (line > 0) wxExSTCData(m_STC).Line(line).Inject();
       return line > 0;
     }
     
@@ -825,7 +825,7 @@ bool wxExEx::MarkerGoto(char marker)
   
   if (line != -1)
   {
-    m_STC->GotoLineAndSelect(line + 1);
+    wxExSTCData(m_STC).Line(line + 1).Inject();
     return true;
   }
   

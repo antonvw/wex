@@ -225,6 +225,10 @@ enable_testing()
 include_directories(../extension/include)
 include_directories(../extension/tclap/include)
       
+if (${wxExUSE_OTL} MATCHES ON)
+  include_directories(${ODBC_INCLUDE_DIR})
+endif ()
+
 add_subdirectory(extension)
 add_subdirectory(syncped)
 

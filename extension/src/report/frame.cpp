@@ -187,7 +187,7 @@ bool wxExFrameWithHistory::FindInFiles(
     return false;
   }
   
-  const wxExFileName filename(files[0]);
+  const wxExPath filename(files[0]);
   const wxExTool tool(id);
   
   if (show_dialog && FindInFilesDialog(
@@ -209,7 +209,7 @@ bool wxExFrameWithHistory::FindInFiles(
     
     for (const auto& it : files)
     {
-      const wxExFileName fn(it);
+      const wxExPath fn(it);
       
       if (fn.FileExists())
       {
@@ -419,9 +419,10 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
-  const wxString title(GetTitle());
+  std::string title(GetTitle());
+  const std::string indicator(" *");
   
-  if (title.empty())
+  if (title.size() < indicator.size())
   {
     return;
   }
@@ -429,24 +430,25 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
   auto* stc = GetSTC();
   auto* project = GetProject();
 
-  const wxUniChar indicator('*');
+  const size_t pos = title.size() - indicator.size();
 
   if ((project != nullptr && project->GetContentsChanged()) ||
        // using GetContentsChanged gives assert in vcs dialog
-      (stc != nullptr && stc->GetModify() && stc->AllowChangeIndicator()))
+      (stc != nullptr && stc->GetModify() && 
+      (!(stc->GetData().Flags() & STC_WIN_NO_INDICATOR))))
   {
     // Project or editor changed, add indicator if not yet done.
-    if (title.Last() != indicator)
+    if (title.substr(pos) != indicator)
     {
-      SetTitle(title + " " + indicator);
+      SetTitle(title + indicator);
     }
   }
   else
   {
     // Project or editor not changed, remove indicator if not yet done.
-    if (title.Last() == indicator && title.size() > 2)
+    if (title.substr(pos) == indicator)
     {
-      SetTitle(title.substr(0, title.length() - 2));
+      SetTitle(title.erase(pos));
     }
   }
 }

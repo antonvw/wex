@@ -2,30 +2,44 @@
 // Name:      dir.h
 // Purpose:   Declaration of class wxExDir and wxExDirOpenFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wx/dir.h>
+#include <string>
 #include <wx/extension/interruptable.h>
+#include <wx/extension/stc-enums.h>
 
-/// Adds FindFiles to a wxDir.
+/// wxExDir flags, at this moment equal to wxDir flags,
+/// will change after c++17.
+enum wxExDirFlags
+{
+  DIR_FILES     = 0x0001, // include files
+  DIR_DIRS      = 0x0002, // include directories
+  DIR_HIDDEN    = 0x0004, // include hidden files
+
+  DIR_DEFAULT   = DIR_FILES | DIR_DIRS | DIR_HIDDEN
+};
+
+class wxExDirImp;
+
+/// Offers FindFiles method.
 /// By overriding OnDir and OnFile you can take care
 /// of what to do with the result.
 class WXDLLIMPEXP_BASE wxExDir : public wxExInterruptable
 {
 public:
   /// Constructor.
-  /// Opens the wxDir and sets the filespec.
+  /// Opens the dir and sets the filespec.
   /// This filespec specifies what files are found.
   wxExDir(
     const std::string& dir,
-    const std::string& filespec = std::string(), // finds all
-    int flags = wxDIR_DEFAULT);
+    const std::string& filespec = std::string(),
+    int flags = DIR_DEFAULT); // finds all
 
   /// Destructor.
-  virtual ~wxExDir() {;};
+  virtual ~wxExDir();
 
   /// Finds matching files.
   /// This results in recursive calls for OnDir and OnFile.
@@ -39,7 +53,7 @@ public:
   int GetFlags() const {return m_Flags;};
  
   /// Returns true if the directory was successfully opened.
-  bool IsOpened() const {return m_Dir.IsOpened();};
+  bool IsOpened() const;
 
   /// Do something with the dir.
   /// Not made pure virtual, to allow this 
@@ -51,7 +65,7 @@ public:
   /// class to be tested by calling FindFiles.
   virtual bool OnFile(const std::string& ) {return true;};
 private:
-  wxDir m_Dir;
+  std::unique_ptr<wxExDirImp> m_Dir;
   const std::string m_FileSpec;
   const int m_Flags;
 };
@@ -70,13 +84,13 @@ public:
   wxExDirOpenFile(wxExFrame* frame,
     const std::string& fullpath,
     const std::string& filespec,
-    long file_flags = 0,
-    int dir_flags = wxDIR_DEFAULT);
+    wxExSTCWindowFlags file_flags = STC_WIN_DEFAULT,
+    int dir_flags = DIR_DEFAULT);
 
   /// Opens each found file.
   virtual bool OnFile(const std::string& file) override;
 private:
   wxExFrame* m_Frame;
-  const long m_Flags;
+  wxExSTCWindowFlags m_Flags;
 };
 #endif

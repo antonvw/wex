@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wxExProcess
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -266,7 +266,7 @@ void wxExProcess::PrepareOutput(wxWindow* parent)
 }
 
 #if wxUSE_GUI
-void wxExProcess::ShowOutput(const wxString& caption) const
+void wxExProcess::ShowOutput(const std::string& caption) const
 {
   if (!m_Error)
   {
@@ -448,7 +448,8 @@ bool wxExProcessImp::Write(const std::string& text)
       m_Frame->GetDebug()->ProcessStdIn(text);
     }
 
-    const std::string el = (text.size() == 1 && text[0] == 3 ? std::string(): std::string("\n"));
+    const std::string el = (text.size() == 1 && text[0] == 3 ? 
+      std::string(): std::string("\n"));
     wxTextOutputStream(*os).WriteString(text + el);
     m_StdIn = text;
     wxMilliSleep(10);
