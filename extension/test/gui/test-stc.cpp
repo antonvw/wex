@@ -145,7 +145,6 @@ TEST_CASE("wxExSTC")
     stc->PrintPreview();
     stc->ProcessChar(5);
     stc->PropertiesMessage();
-    stc->Reload();
     stc->ResetMargins();
     stc->SelectNone();
     stc->Sync(false);
@@ -213,10 +212,10 @@ TEST_CASE("wxExSTC")
   
   SUBCASE("hex")
   {
-    stc->Reload(STC_WIN_HEX);
+    stc->GetHexMode().Set(true);
     REQUIRE(stc->HexMode());
     stc->GetHexMode().AppendText("in hex mode");
-    stc->Reload();
+    stc->GetHexMode().Set(false);
   }
 
   SUBCASE("events")

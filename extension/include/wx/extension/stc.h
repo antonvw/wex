@@ -198,10 +198,6 @@ public:
   /// Flags used are from wxExStatusFlags.
   void PropertiesMessage(long flags = 0);
   
-  /// Reloads current document using specified flags.
-  void Reload(wxExSTCWindowFlags flags = STC_WIN_DEFAULT) {
-    m_Data.Flags(flags).Inject();};
-
   /// Replaces all text.
   /// It there is a selection, it replaces in the selection, otherwise
   /// in the entire document.

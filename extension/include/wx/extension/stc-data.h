@@ -20,6 +20,7 @@ enum wxExDataAction
   DATA_SET, /// set value
   DATA_OR,  /// add this flag
   DATA_INV, /// remove this flag
+  DATA_XOR, /// xor this flag
 };
 
 class wxExSTC;
@@ -69,8 +70,12 @@ public:
   /// Set window flags.
   wxExSTCData& Flags(wxExSTCWindowFlags flags, wxExDataAction action = DATA_SET);
   
-  /// If there is a stc component, uses
-  /// current data to goto the requested position.
+  /// If there is a stc component, injects current data in it:
+  /// - if line available: goto line
+  /// - if col available: goto col
+  /// - if text not empty: finds text
+  /// - if vi command not empty: executes vi command
+  /// - if flags are set: sets flag on stc
   /// Returns false if no suitable data was present or stc is nullpr.
   bool Inject() const;
 
@@ -91,14 +96,10 @@ private:
   wxExSTCData& Flags(T flags, T& result, wxExDataAction action = DATA_SET) {
     switch (action)
     {
-      case DATA_INV: result = 
-        static_cast<T>(result & ~flags); 
-        break;
-      case DATA_OR: result = 
-        static_cast<T>(result | flags); 
-        break;
-      case DATA_SET: result = flags;
-        break;
+      case DATA_INV: result = static_cast<T>(result & ~flags); break;
+      case DATA_OR:  result = static_cast<T>(result | flags); break;
+      case DATA_SET: result = flags; break;
+      case DATA_XOR: result = static_cast<T>(result ^ flags); break;
     }
     return *this;};
   

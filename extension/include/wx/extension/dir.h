@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <wx/extension/interruptable.h>
 #include <wx/extension/stc-enums.h>

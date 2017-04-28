@@ -44,11 +44,11 @@ TEST_CASE("wxExHexMode")
   REQUIRE( hm->GetBuffer() == "01234567890123456789");
   
   stc->DiscardEdits();  
-  stc->Reload();
+  hm->Set(false);
   REQUIRE( stc->GetText() == "01234567890123456789");
   
   // Test hex field.
-  stc->Reload(STC_WIN_HEX);
+  hm->Set(true);
   REQUIRE(!hm->GetInfo().empty()); // 34 <- (ascii 4)
   REQUIRE(!hm->Replace('x', 13));
   REQUIRE(!hm->Replace('y', 13));
@@ -58,21 +58,18 @@ TEST_CASE("wxExHexMode")
   REQUIRE( hm->Replace('2', 13));
   
   REQUIRE( stc->GetFile().FileSave(wxExPath(GetTestDir() + "test.hex")));
-  stc->Reload();
+  hm->Set(false);
   REQUIRE( stc->GetText() == "01232567890123456789");
   
   // Test ascii field.
-  stc->Reload(STC_WIN_HEX);
+  hm->Set(true);
   REQUIRE(!hm->GetInfo().empty());
   REQUIRE( hm->Replace('x', 54)); // 6 <-
   
   REQUIRE( stc->GetFile().FileSave());
-  stc->Reload();
+  hm->Set(false);
   REQUIRE(stc->GetText() == "012325x7890123456789");
   
-  stc->Reload(STC_WIN_HEX);
-  
-  hm->Set(false);
   REQUIRE(!hm->Active());
   
   hm->AppendText("0123456789");

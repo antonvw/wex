@@ -2,7 +2,7 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -159,14 +159,14 @@ TEST_CASE("wxExVi")
   // Test insert on hexmode document.
   // TODO: add real chars and test.
   stc->SetReadOnly(false);
-  stc->Reload(STC_WIN_HEX);
+  stc->GetHexMode().Set(true);
   REQUIRE( stc->HexMode());
   REQUIRE(!stc->GetModify());
   REQUIRE( vi->Command("a") );
   REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
   ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   REQUIRE(!stc->GetModify());
-  stc->Reload();
+  stc->GetHexMode().Set(false);
   REQUIRE(!stc->HexMode());
   REQUIRE(!stc->GetModify());
   stc->SetReadOnly(false);
