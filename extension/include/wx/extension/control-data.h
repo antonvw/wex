@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <functional>
 #include <string>
 #include <wx/dlimpexp.h>
 #include <wx/validate.h>
