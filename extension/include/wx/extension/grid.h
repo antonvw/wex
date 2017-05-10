@@ -2,7 +2,7 @@
 // Name:      grid.h
 // Purpose:   Declaration of wxExGrid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,6 +10,7 @@
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/grid.h>
 #include <wx/extension/menu.h> // for wxExMenu
+#include <wx/extension/window-data.h>
 
 #if wxUSE_GRID
 
@@ -18,13 +19,8 @@
 class WXDLLIMPEXP_BASE wxExGrid : public wxGrid
 {
 public:
-  /// Constructor.
-  wxExGrid(wxWindow* parent,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxWANTS_CHARS,
-    const wxString& name = wxGridNameStr);
+  /// Default constructor.
+  wxExGrid(const wxExWindowData& data = wxExWindowData().Style(wxWANTS_CHARS));
 
   // Interface.
 #if wxUSE_DRAG_AND_DROP

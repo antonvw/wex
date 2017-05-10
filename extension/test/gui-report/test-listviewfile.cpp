@@ -2,7 +2,7 @@
 // Name:      test-listviewfile.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/dir.h>
@@ -11,7 +11,7 @@
 
 TEST_CASE("wxExListViewFile")
 {
-  wxExListViewFile* listView = new wxExListViewFile(GetFrame(), GetFrame(), GetProject());
+  wxExListViewFile* listView = new wxExListViewFile(GetProject());
   AddPane(GetFrame(), listView);
 
   REQUIRE(listView->GetFile().GetFileName().GetFullName() == GetProject());

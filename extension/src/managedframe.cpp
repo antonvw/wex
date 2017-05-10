@@ -47,9 +47,7 @@ public:
     wxWindow* parent,
     wxExManagedFrame* frame,
     wxStaticText* prefix,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize);
+    const wxExWindowData& data = wxExWindowData().Style(wxTE_PROCESS_ENTER));
     
   // Returns ex component.
   wxExEx* GetEx() {return m_ex;};
@@ -77,15 +75,11 @@ private:
   
   wxExTextCtrlInput m_Calcs;
   wxExTextCtrlInput m_Commands;
-  wxString m_Command;
+  std::string m_Command;
 };
 
-wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
-  wxWindowID id,
-  const wxString& title,
-  size_t maxFiles,
-  long style)
-  : wxExFrame(parent, id, title, style)
+wxExManagedFrame::wxExManagedFrame(size_t maxFiles, const wxExWindowData& data)
+  : wxExFrame(data)
   , m_Debug(new wxExDebug(this))
   , m_FileHistory(maxFiles, wxID_FILE1)
   , m_FindBar(new wxExFindToolBar(this))
@@ -137,10 +131,10 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     wxExFindReplaceData::Get()->SetFindStrings(std::list < std::string > {});}, ID_CLEAR_FINDS);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExSTC::ConfigDialog(this,
-      _("Editor Options"),
-      STC_CONFIG_MODELESS | STC_CONFIG_WITH_APPLY,
-      event.GetId());}, wxID_PREFERENCES);
+    wxExSTC::ConfigDialog(
+      wxExWindowData().Parent(this).
+        Title(_("Editor Options").ToStdString()).
+        Button(wxAPPLY | wxOK | wxCANCEL));}, wxID_PREFERENCES);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_FileHistory.Clear();}, ID_CLEAR_FILES);
@@ -242,7 +236,7 @@ wxPanel* wxExManagedFrame::CreateExPanel()
   // comes the ex ctrl for getting user input.
   wxPanel* panel = new wxPanel(this);
   wxStaticText* text = new wxStaticText(panel, wxID_ANY, " ");
-  m_TextCtrl = new wxExTextCtrl(panel, this, text, wxID_ANY);
+  m_TextCtrl = new wxExTextCtrl(panel, this, text);
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
   sizer->AddGrowableCol(1);
@@ -376,10 +370,8 @@ wxExTextCtrl::wxExTextCtrl(
   wxWindow* parent,
   wxExManagedFrame* frame,
   wxStaticText* prefix,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size)
-  : wxTextCtrl(parent, id, wxEmptyString, pos, size, wxTE_PROCESS_ENTER)
+  const wxExWindowData& data)
+  : wxTextCtrl(parent, data.Id(), wxEmptyString, data.Pos(), data.Size(), data.Style())
   , m_Frame(frame)
   , m_Prefix(prefix)
   , m_Calcs("excalc")
@@ -393,7 +385,7 @@ wxExTextCtrl::wxExTextCtrl(
     {
       if (event.GetKeyCode() == WXK_BACK)
       {
-        m_Command = m_Command.Truncate(m_Command.size() - 1);
+        if (m_Command.empty()) m_Command.pop_back();
       }
       else if (event.GetKeyCode() != WXK_TAB && event.GetKeyCode() != WXK_RETURN)
       {
@@ -413,7 +405,7 @@ wxExTextCtrl::wxExTextCtrl(
           wxSetWorkingDirectory(m_ex->GetSTC()->GetFileName().GetPath());
         }
         std::vector<std::string> v;
-        if (wxExAutoCompleteFileName(m_Command.ToStdString(), v))
+        if (wxExAutoCompleteFileName(m_Command, v))
         {
           m_Command += v[0];
           AppendText(v[0]);
@@ -443,7 +435,7 @@ wxExTextCtrl::wxExTextCtrl(
             }
             if (m_ex != nullptr && m_ex->GetMacros().IsRecording())
             {
-              m_Command << "\x12" << c;
+              m_Command += WXK_CONTROL_R + c;
             }
           }
           m_UserInput = true;
@@ -514,7 +506,7 @@ wxExTextCtrl::wxExTextCtrl(
     {
       m_Command = m_Prefix->GetLabel() + GetValue();
     }
-    if (m_ex->Command(m_Command.ToStdString(), m_UserInput && GetType() == TYPE_FIND))
+    if (m_ex->Command(m_Command, m_UserInput && GetType() == TYPE_FIND))
     {
       int focus = (GetType() == TYPE_FIND ? 
         wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC: 

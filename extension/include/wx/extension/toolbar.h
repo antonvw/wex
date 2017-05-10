@@ -2,13 +2,14 @@
 // Name:      toolbar.h
 // Purpose:   Declaration of wxExToolBar classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015
+// Copyright: (c) 2017
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <vector>
 #include <wx/aui/auibar.h> 
+#include <wx/extension/window-data.h> 
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -22,10 +23,7 @@ class WXDLLIMPEXP_BASE wxExToolBar : public wxAuiToolBar
 public:
   /// Constructor.
   wxExToolBar(wxExManagedFrame* frame, 
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxAUI_TB_DEFAULT_STYLE);
+    const wxExWindowData& data = wxExWindowData().Style(wxAUI_TB_DEFAULT_STYLE));
 
   /// Adds automatic naming (for stock menu id's) and 
   /// art id for toolbar normal items.
@@ -54,10 +52,7 @@ class WXDLLIMPEXP_BASE wxExFindToolBar : public wxExToolBar
 public:
   /// Constructor.
   wxExFindToolBar(wxExManagedFrame* frame, 
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxAUI_TB_DEFAULT_STYLE);
+    const wxExWindowData& data = wxExWindowData().Style(wxAUI_TB_DEFAULT_STYLE));
 };
 
 /// Offers a options toolbar, containing checkboxes.
@@ -66,10 +61,7 @@ class WXDLLIMPEXP_BASE wxExOptionsToolBar : public wxExToolBar
 public:
   /// Constructor.
   wxExOptionsToolBar(wxExManagedFrame* frame, 
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxAUI_TB_DEFAULT_STYLE);
+    const wxExWindowData& data = wxExWindowData().Style(wxAUI_TB_DEFAULT_STYLE));
   
   /// Adds the standard checkboxes.
   /// This is a hex and a sync checkbox, and a process check box

@@ -496,7 +496,7 @@ bool wxExEx::CommandAddress(const std::string& command)
     else 
     {
       const auto line(wxExAddress(this, rest).GetLine());
-      if (line > 0) wxExSTCData(m_STC).Line(line).Inject();
+      if (line > 0) wxExSTCData(m_STC).Control(wxExControlData().Line(line)).Inject();
       return line > 0;
     }
     
@@ -825,7 +825,7 @@ bool wxExEx::MarkerGoto(char marker)
   
   if (line != -1)
   {
-    wxExSTCData(m_STC).Line(line + 1).Inject();
+    wxExSTCData(m_STC).Control(wxExControlData().Line(line + 1)).Inject();
     return true;
   }
   
@@ -955,11 +955,9 @@ void wxExEx::ShowDialog(
   if (m_Dialog == nullptr)
   {
     m_Dialog = new wxExSTCEntryDialog(
-      wxTheApp->GetTopWindow(),
-      title, 
       text,
-      wxEmptyString,
-      wxOK);
+      std::string(),
+      wxExWindowData().Button(wxOK).Title(title));
   }
   else
   {

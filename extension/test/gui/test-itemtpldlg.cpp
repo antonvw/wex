@@ -2,7 +2,7 @@
 // Name:      test-itemtpldlg.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -33,14 +33,14 @@ TEST_CASE("wxExItemTemplateDialog")
 
   SUBCASE("Basic")
   {
-    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
+    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(
       std::vector <wxExTestItem> {
         {"fruit", "apple"},
         {"button", ITEM_BUTTON},
         {"string1"},
         {"string2"},
         {"more fruit", "citron"}},
-      "3 columns", 0, 3);
+      wxExWindowData().Title("3 columns"), 0, 3);
     
     REQUIRE( wxExTestItem("test", ITEM_BUTTON).GetType() == ITEM_BUTTON);
     
@@ -71,9 +71,9 @@ TEST_CASE("wxExItemTemplateDialog")
 
   SUBCASE("Test dialog with checkbox item")
   {
-    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
+    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(
       std::vector <wxExTestItem> {{"checkbox", ITEM_CHECKBOX}},
-      "checkbox items");
+      wxExWindowData().Title("checkbox items"));
 
     dlg->ForceCheckBoxChecked();
     dlg->Show();
@@ -81,27 +81,27 @@ TEST_CASE("wxExItemTemplateDialog")
 
   SUBCASE("Test dialog without buttons")
   {
-    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
+    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(
       std::vector <wxExTestItem> {
         {"string1"},
         {"string2"}},
-      "no buttons", 0, 1, 0);
+      wxExWindowData().Button(0).Title("no buttons"));
     dlg->Show();
   }
 
   SUBCASE("Test dialog without items")
   {
-    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
+    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(
       std::vector <wxExTestItem>(),
-      "no items");
+      wxExWindowData().Title("no items"));
     dlg->Show();
   }
   
   SUBCASE("Test dialog with empty items")
   {
-    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(GetFrame(), 
+    wxExItemTemplateDialog<wxExTestItem>* dlg = new wxExItemTemplateDialog<wxExTestItem>(
       std::vector <wxExTestItem> {{}, {}, {}},
-      "empty items");
+      wxExWindowData().Title("empty items"));
     dlg->Show();
   }
 }

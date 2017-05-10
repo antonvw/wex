@@ -25,7 +25,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  virtual wxExListView* Activate(wxExListView::wxExListType type, const wxExLexer* lexer = nullptr) override;
+  virtual wxExListView* Activate(wxExListType type, const wxExLexer* lexer = nullptr) override;
   virtual bool ExecExCommand(const std::string& command, wxExSTC* & stc) override;
   virtual wxExListViewFile* GetProject() override;
   virtual bool IsOpen(const wxExPath& filename) override;
@@ -54,8 +54,14 @@ private:
   void AddPaneProcess();
   void AddPaneProjects();
 
-  const long m_PaneFlag;
-  const wxString m_ProjectWildcard;
+  const long m_PaneFlag = 
+    wxAUI_NB_DEFAULT_STYLE |
+    wxAUI_NB_CLOSE_ON_ALL_TABS |
+    wxAUI_NB_CLOSE_BUTTON |
+    wxAUI_NB_WINDOWLIST_BUTTON |
+    wxAUI_NB_SCROLL_BUTTONS;
+  const wxString m_ProjectWildcard = 
+    _("Project Files") + " (*.prj)|*.prj";
 
   bool m_IsClosing = false;
   int m_NewProjectNo = 1, m_SplitId = 1;

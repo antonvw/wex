@@ -239,10 +239,9 @@ bool wxExVariable::ExpandInput(std::string& expanded)
     if (m_Dialog == nullptr)
     {
       m_Dialog = new wxExSTCEntryDialog(
-        wxTheApp->GetTopWindow(),
         m_Name, 
         m_Value,
-        _("Input") + ":");
+        wxExWindowData().Title(_("Input").ToStdString() + ":"));
         
       m_Dialog->GetSTC()->GetVi().Use(false);
     }

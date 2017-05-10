@@ -39,16 +39,17 @@ enum
 
 int wxExSTC::m_Zoom = -1;
 
-wxExSTC::wxExSTC(wxWindow *parent, 
-  const std::string& text,
-  const std::string& name,
-  const wxExSTCData& stc_data,
-  const wxExWindowData& win_data)
-  : wxStyledTextCtrl(parent,
-      win_data.Id(), win_data.Pos(), win_data.Size(), win_data.Style(), name)
-  , m_Data(this, stc_data)
+wxExSTC::wxExSTC(const std::string& text, const wxExSTCData& data)
+  : wxStyledTextCtrl(
+      data.Window().Parent(),
+      data.Window().Id(), 
+      data.Window().Pos(), 
+      data.Window().Size(), 
+      data.Window().Style(), 
+      data.Window().Name())
+  , m_Data(this, data)
   , m_vi(this)
-  , m_File(this, name)
+  , m_File(this, data.Window().Name())
   , m_Link(this)
   , m_HexMode(wxExHexMode(this))
   , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
@@ -65,14 +66,15 @@ wxExSTC::wxExSTC(wxWindow *parent,
   m_Data.Inject();
 }
 
-wxExSTC::wxExSTC(wxWindow* parent,
-  const wxExPath& filename,
-  const wxExSTCData& stc_data,
-  const wxExWindowData& win_data)
-  : wxStyledTextCtrl(parent,
-      win_data.Id(), win_data.Pos(), win_data.Size(), win_data.Style())
+wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
+  : wxStyledTextCtrl(
+      data.Window().Parent(),
+      data.Window().Id(), 
+      data.Window().Pos(), 
+      data.Window().Size(), 
+      data.Window().Style())
   , m_File(this)
-  , m_Data(this, stc_data)
+  , m_Data(this, data)
   , m_vi(this)
   , m_Link(this)
   , m_HexMode(this)
@@ -83,7 +85,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   
   if (filename.GetStat().IsOk())
   {
-    Open(filename, stc_data);
+    Open(filename, data);
   }
 }
 
@@ -954,12 +956,12 @@ void wxExSTC::Initialize(bool file_exists)
         _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
         wxEmptyString,
         _("Enter Line Number"),
-        m_Data.Line(), // initial value
+        m_Data.Control().Line(), // initial value
         1,
         GetLineCount(),
         this)) > 0)
       {
-        wxExSTCData(this).Line(val).Inject();
+        wxExSTCData(wxExControlData().Line(val), this).Inject();
       }
     }
     return true;}, wxID_JUMP_TO);
@@ -1000,11 +1002,9 @@ void wxExSTC::Initialize(bool file_exists)
     if (m_EntryDialog == nullptr)
     {
       m_EntryDialog = new wxExSTCEntryDialog(
-        wxTheApp->GetTopWindow(), 
-        _("Properties"), 
         properties, 
-        wxEmptyString, 
-        wxOK);
+        std::string(), 
+        wxExWindowData().Button(wxOK).Title(_("Properties").ToStdString()));
       m_EntryDialog->GetSTC()->GetLexer().Set("props");
     }
     else
@@ -1199,8 +1199,8 @@ bool wxExSTC::LinkOpen(int mode, std::string* filename)
 {
   const std::string sel = GetSelectedText().ToStdString();
   const std::string text = (!sel.empty() ? sel: GetCurLine().ToStdString());
-  int line_no = DATA_INT_NOT_SET;
-  int col_no = DATA_INT_NOT_SET;
+  int line_no = DATA_NUMBER_NOT_SET;
+  int col_no = DATA_NUMBER_NOT_SET;
 
   if (mode & LINK_OPEN_BROWSER)
   {
@@ -1211,7 +1211,7 @@ bool wxExSTC::LinkOpen(int mode, std::string* filename)
   
   if (path.empty()) return false;
 
-  const wxExSTCData data(m_Data.Line(line_no).Col(col_no));
+  const wxExSTCData data(wxExControlData().Line(line_no).Col(col_no));
 
   if (mode & LINK_OPEN_BROWSER)
   {
@@ -1324,7 +1324,7 @@ bool wxExSTC::Open(const wxExPath& filename, const wxExSTCData& data)
 {
   m_Data = data;
   
-  if (GetFileName() == filename && data.Line() > 0)
+  if (GetFileName() == filename && data.Control().Line() > 0)
   {
     return m_Data.Inject();
   }

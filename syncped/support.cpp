@@ -29,11 +29,9 @@
 
 DecoratedFrame::DecoratedFrame(App* app)
   : wxExFrameWithHistory(
-      nullptr,
-      wxID_ANY,
-      wxTheApp->GetAppDisplayName(), // title
-      25,                            // maxFiles
-      4)                             // maxProjects
+      25,  // maxFiles
+      4,   // maxProjects
+      wxExWindowData().Name("mainFrame").Style(wxDEFAULT_FRAME_STYLE))
   , m_App(app)
 {
   SetIcon(wxICON(app));

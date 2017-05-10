@@ -2,7 +2,7 @@
 // Name:      test-grid.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -15,7 +15,7 @@
 
 TEST_CASE("wxExGrid")
 {
-  wxExGrid* grid = new wxExGrid(GetFrame());
+  wxExGrid* grid = new wxExGrid();
   AddPane(GetFrame(), grid);
   
   REQUIRE(grid->CreateGrid(5, 5));

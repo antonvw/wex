@@ -83,9 +83,8 @@ public:
   /// Shows a dialog allowing you to run or cancel the current vcs command.
   /// Returns result from calling ShowModal.
   int ShowDialog(
-    wxWindow* parent, 
-    const std::string& caption,
-    bool add_folder) const;
+    const wxExWindowData& data = wxExWindowData(),
+    bool add_folder = false) const;
 #endif
 
 #if wxUSE_GUI

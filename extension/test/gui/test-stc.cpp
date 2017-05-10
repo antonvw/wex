@@ -20,7 +20,7 @@
 TEST_CASE("wxExSTC")
 {
 #if wxCHECK_VERSION(3,1,0)
-  wxExSTC::ConfigDialog(GetFrame(), "test stc", STC_CONFIG_MODELESS);
+  wxExSTC::ConfigDialog();
 #endif
   
   wxExSTC* stc = GetSTC();
@@ -230,7 +230,7 @@ TEST_CASE("wxExSTC")
 
   SUBCASE("load file")
   {
-    wxExSTC stc(GetFrame(), GetTestFile());
+    wxExSTC stc(GetTestFile());
     REQUIRE( stc.GetFileName().GetFullPath().find("test.h") != std::string::npos);
     REQUIRE( stc.Open(GetTestFile()));
     REQUIRE(!stc.Open("XXX"));

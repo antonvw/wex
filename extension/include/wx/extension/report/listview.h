@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of class wxExListViewWithFrame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -17,29 +17,8 @@ class wxExFrameWithHistory;
 class WXDLLIMPEXP_BASE wxExListViewWithFrame : public wxExListView
 {
 public:
-  /// Menu flags, they determine how the context menu will appear.
-  enum
-  {
-    LIST_MENU_REPORT_FIND = 0x0001, ///< for adding find and replace in files
-    LIST_MENU_TOOL        = 0x0002, ///< for adding tool menu
-
-    LIST_MENU_DEFAULT = 
-      LIST_MENU_REPORT_FIND | 
-      LIST_MENU_TOOL
-  };
-
-  /// Constructor.
-  wxExListViewWithFrame(wxWindow* parent,
-    wxExFrameWithHistory* frame,
-    wxExListType type,
-    wxWindowID id = wxID_ANY,
-    long menu_flags = LIST_MENU_DEFAULT,
-    const wxExLexer* lexer = nullptr,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxLC_REPORT,
-    const wxValidator& validator = wxDefaultValidator,
-    const wxString &name = wxListCtrlNameStr);    
+  /// Default constructor.
+  wxExListViewWithFrame(const wxExListViewData& data = wxExListViewData());
     
   /// Destroys the window safely.
   virtual bool Destroy() override;

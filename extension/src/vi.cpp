@@ -262,7 +262,7 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"G", [&](const std::string& command){
        (m_Count == 1 ? 
          GetSTC()->DocumentEnd(): 
-         (void)wxExSTCData(GetSTC()).Line(m_Count).Inject());
+         (void)wxExSTCData(GetSTC()).Control(wxExControlData().Line(m_Count)).Inject());
        return true;}},
     {"H", [&](const std::string& command){
        GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine());

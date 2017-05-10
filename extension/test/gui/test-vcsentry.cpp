@@ -2,7 +2,7 @@
 // Name:      test-vcsentry.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -30,10 +30,7 @@ TEST_CASE("wxExVCSEntry")
   REQUIRE( test.GetName() == "my-vcs");
   REQUIRE( test.GetStdOut().empty());
   
-  REQUIRE( wxExVCSEntry().ShowDialog(
-    GetFrame(),
-    "vcs",
-    false) == wxID_CANCEL);
+  REQUIRE( wxExVCSEntry().ShowDialog() == wxID_CANCEL);
   
   test.ShowOutput();
   

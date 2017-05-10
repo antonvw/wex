@@ -20,13 +20,14 @@
 
 #if wxUSE_GUI
 
-wxExShell::wxExShell(wxWindow* parent,
-  const std::string& prompt, const std::string& command_end,
-  bool echo, int commands_save_in_config, const std::string& lexer,
-  const wxExSTCData& stc_data,
-  const wxExWindowData& win_data)
-  : wxExSTC(parent, std::string(), 
-      wxExSTCData(stc_data).Flags(STC_WIN_NO_INDICATOR, DATA_OR), win_data)
+wxExShell::wxExShell(
+  const wxExSTCData& data,
+  const std::string& prompt, 
+  const std::string& command_end,
+  bool echo, 
+  const std::string& lexer,
+  int commands_save_in_config)
+  : wxExSTC(std::string(), wxExSTCData(data).Flags(STC_WIN_NO_INDICATOR, DATA_OR))
   , m_CommandEnd(command_end == std::string() ? GetEOL(): command_end)
   , m_Echo(echo)
   , m_CommandsSaveInConfig(commands_save_in_config)

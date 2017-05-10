@@ -11,8 +11,7 @@
 
 TEST_CASE("wxExFrameWithHistory")
 {
-  wxExListView* list = new wxExListView(
-    GetFrame(), wxExListView::LIST_HISTORY);
+  wxExListView* list = new wxExListView(wxExListViewData().Type(LIST_HISTORY));
 
   AddPane(GetFrame(), list);
 

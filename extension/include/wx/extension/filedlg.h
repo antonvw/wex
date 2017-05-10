@@ -2,13 +2,13 @@
 // Name:      filedlg.h
 // Purpose:   Declaration of wxExtension file dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXFILEDLG_H
-#define _EXFILEDLG_H
+#pragma once
 
 #include <wx/filedlg.h>
+#include <wx/extension/window-data.h>
 
 class wxExFile;
 
@@ -22,10 +22,7 @@ public:
     wxExFile* file,
     const wxString &message=wxFileSelectorPromptStr, 
     const wxString &wildcard=wxFileSelectorDefaultWildcardStr,
-    long style=wxFD_DEFAULT_STYLE, 
-    const wxPoint &pos=wxDefaultPosition, 
-    const wxSize &size=wxDefaultSize, 
-    const wxString &name=wxFileDialogNameStr);
+    const wxExWindowData& data = wxExWindowData().Style(wxFD_DEFAULT_STYLE));
 
   /// Shows the dialog depending on the changes on the file.
   /// If you specify show_modal then dialog is always shown.
@@ -33,4 +30,3 @@ public:
 private:
   wxExFile* m_File;
 };
-#endif

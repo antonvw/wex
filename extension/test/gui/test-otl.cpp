@@ -30,7 +30,7 @@ TEST_CASE("wxExOTL")
   REQUIRE( otl.VersionInfo().GetMajor() > 0);
   REQUIRE(!otl.Datasource().empty());
   
-  otl.Logon();
+  otl.Logon(wxExWindowData().Button(0));
   
   if (!otl.IsConnected())
   {

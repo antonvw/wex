@@ -27,7 +27,7 @@ TEST_CASE("wxExProcess")
   REQUIRE(!process->IsRunning());
   process->GetShell()->SetText(std::string());
   
-  process->ConfigDialog(GetFrame(), "test process", false);
+  process->ConfigDialog();
   
 #ifdef __UNIX__
   // Test wait for prcess (sync)

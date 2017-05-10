@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wxExFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,6 +12,7 @@
 #include <wx/extension/statusbar.h>
 #include <wx/extension/stc-data.h>
 #include <wx/extension/stc-enums.h>
+#include <wx/extension/window-data.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -33,13 +34,8 @@ class wxExVCSEntry;
 class WXDLLIMPEXP_BASE wxExFrame : public wxFrame
 {
 public:
-  /// Constructor,
-  /// the name is used internally for persistent registration,
-  /// setting the frame position and size. 
-  wxExFrame(wxWindow* parent,
-    wxWindowID id,
-    const wxString& title,
-    long style = wxDEFAULT_FRAME_STYLE);
+  /// Default constructor,
+  wxExFrame(const wxExWindowData& data = wxExWindowData());
 
   /// Destructor.
   virtual ~wxExFrame();
@@ -65,21 +61,21 @@ public:
   /// Returns stc component opened, or nullptr.
   virtual wxExSTC* OpenFile(
     const wxExPath& filename,
-    const wxExSTCData& stc_data = wxExSTCData());
+    const wxExSTCData& data = wxExSTCData());
 
   /// Allows you to open a filename with info from vcs.
   /// Returns stc component opened, or nullptr.
   virtual wxExSTC* OpenFile(
     const wxExPath& filename,
     const wxExVCSEntry& vcs,
-    const wxExSTCData& stc_data = wxExSTCData());
+    const wxExSTCData& data = wxExSTCData());
     
   /// Allows you to open a filename with specified contents.
   /// Returns stc component opened, or nullptr.
   virtual wxExSTC* OpenFile(
     const wxExPath& filename,
     const std::string& text,
-    const wxExSTCData& stc_data = wxExSTCData());
+    const wxExSTCData& data = wxExSTCData());
   
   /// Allows you to e.g. add debugging.
   /// Default returns nullptr.

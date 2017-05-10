@@ -2,7 +2,7 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wxExNotebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -13,19 +13,20 @@
 
 #if wxUSE_GUI
 
-wxExNotebook::wxExNotebook(wxWindow* parent,
-  wxExManagedFrame* frame,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style)
-  : wxAuiNotebook(parent, id, pos, size, style)
-  , m_Frame(frame)
+wxExNotebook::wxExNotebook(const wxExWindowData& data)
+  : wxAuiNotebook(
+      data.Parent(), 
+      data.Id(), 
+      data.Pos(), 
+      data.Size(), 
+      data.Style() == DATA_NUMBER_NOT_SET?
+        wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS: data.Style())
+  , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
 {
   // Here you could use another art provider.
   // SetArtProvider(new wxAuiSimpleTabArt); 
 
-  switch (id)
+  switch (data.Id())
   {
     case ID_NOTEBOOK_EDITORS:
       SetFont(wxConfigBase::Get()->ReadObject(_("Tab font"), 

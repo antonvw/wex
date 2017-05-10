@@ -27,7 +27,7 @@ void ChangeMode(wxExVi* vi, const std::string& command, int mode)
 
 TEST_CASE("wxExVi")
 {
-  wxExSTC* stc = new wxExSTC(GetFrame(), 
+  wxExSTC* stc = new wxExSTC(
     std::string("// vi: set ts=120 "
                 "// this is a modeline"));
   AddPane(GetFrame(), stc);

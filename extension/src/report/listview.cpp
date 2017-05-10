@@ -23,32 +23,12 @@
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/stream.h>
 
-wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
-  wxExFrameWithHistory* frame,
-  wxExListType type,
-  wxWindowID id,
-  long menu_flags,
-  const wxExLexer* lexer,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style,
-  const wxValidator& validator,
-  const wxString &name)
-  : wxExListView(
-      parent, 
-      type, 
-      id, 
-      lexer, 
-      pos, 
-      size, 
-      style, 
-      IMAGE_ART,
-      validator, 
-      name)
-  , m_Frame(frame)
-  , m_MenuFlags(menu_flags)
+wxExListViewWithFrame::wxExListViewWithFrame(const wxExListViewData& data)
+  : wxExListView(data)
+  , m_Frame(dynamic_cast<wxExFrameWithHistory*>(wxTheApp->GetTopWindow()))
+  , m_MenuFlags(data.Menu())
 {
-  if (GetType() == LIST_HISTORY)
+  if (GetData().Type() == LIST_HISTORY)
   {
     m_Frame->UseFileHistoryList(this);
   }
@@ -107,7 +87,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const wxExTool& tool(event.GetId());
-    if (tool.GetId() == ID_TOOL_REPORT_KEYWORD && GetType() == LIST_KEYWORD) return;
+    if (tool.GetId() == ID_TOOL_REPORT_KEYWORD && GetData().Type() == LIST_KEYWORD) return;
     if (tool.IsFindType() && m_Frame->FindInFilesDialog(tool.GetId()) == wxID_CANCEL) return;
     if (!wxExStreamToListView::SetupTool(tool, m_Frame)) return;
 
@@ -187,11 +167,11 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
       menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
     }
 
-    if ( GetType() != LIST_FILE &&
+    if ( GetData().Type() != LIST_FILE &&
         !wxExVCS().Use() &&
          exists && !is_folder)
     {
-      wxExListView* list = m_Frame->Activate(LIST_FILE);
+      auto* list = m_Frame->Activate(LIST_FILE);
 
       if (list != nullptr && list->GetSelectedItemCount() == 1)
       {
@@ -226,7 +206,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 
     // Finding in the LIST_FIND would result in recursive calls, do not add it.
     if ( exists &&
-         GetType() != LIST_FIND && (m_MenuFlags & LIST_MENU_REPORT_FIND))
+         GetData().Type() != LIST_FIND && (m_MenuFlags & LIST_MENU_REPORT_FIND))
     {
       menu.AppendSeparator();
       menu.Append(ID_TOOL_REPORT_FIND, 
@@ -254,13 +234,13 @@ bool wxExListViewWithFrame::Destroy()
   return wxExListView::Destroy();
 }
 
-wxExListViewWithFrame::wxExListType wxExListViewWithFrame::GetTypeTool(
+wxExListType wxExListViewWithFrame::GetTypeTool(
   const wxExTool& tool)
 {
   switch (tool.GetId())
   {
     case ID_TOOL_REPORT_FIND: return LIST_FIND; break;
     case ID_TOOL_REPORT_KEYWORD: return LIST_KEYWORD; break;
-    default: break;
+    default: return LIST_NONE; break;
   }
 }

@@ -15,7 +15,9 @@
 #define OTL_ODBC_UNIX
 #endif
 #include <otlv4.h>
-#include "wx/versioninfo.h"
+
+#include <wx/versioninfo.h>
+#include <wx/extension/window-data.h>
 
 class wxGrid;
 class wxStyledTextCtrl;
@@ -46,10 +48,8 @@ public:
   /// is not nullptr).
   /// max_items specifies max number of datasources in the combobox and config.
   /// Returns false if dialog cancelled or logon fails.
-  bool Logon(
-    wxWindow* parent = nullptr,
-    int max_items = 4,
-    const wxString& title = _("Open ODBC Connection"));
+  bool Logon(const wxExWindowData& data = 
+    wxExWindowData().Title(_("Open ODBC Connection").ToStdString()));
 
   /// Runs the query using direct_exec and returns result.
   long Query(const std::string& query);

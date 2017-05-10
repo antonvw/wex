@@ -16,12 +16,12 @@
 
 TEST_CASE("wxExListView")
 {
-  wxExListView* listView = new wxExListView(GetFrame(), wxExListView::LIST_NONE);
+  wxExListView* listView = new wxExListView();
   AddPane(GetFrame(), listView);
   
-  wxExListView::ConfigDialog(GetFrame(), "test listview", wxAPPLY | wxCANCEL);
+  wxExListView::ConfigDialog(wxExWindowData().Button(wxAPPLY | wxCANCEL));
   
-  REQUIRE(listView->GetImageType() == wxExListView::IMAGE_ART);
+  REQUIRE(listView->GetData().Image() == IMAGE_ART);
   
   listView->ConfigGet();
   listView->SetSingleStyle(wxLC_REPORT);
@@ -93,12 +93,12 @@ TEST_CASE("wxExListView")
   listView->SetItemImage(0, wxART_WARNING);
   listView->ItemsUpdate();
   
-  wxExListView* listView2 = new wxExListView(GetFrame(), wxExListView::LIST_FILE);
+  wxExListView* listView2 = new wxExListView(wxExListViewData().Type(LIST_FILE));
   AddPane(GetFrame(), listView2);
   
-  REQUIRE( listView2->GetImageType() == wxExListView::IMAGE_FILE_ICON);
+  REQUIRE( listView2->GetData().Image() == IMAGE_FILE_ICON);
   REQUIRE(!listView2->GetTypeDescription().empty());
-  REQUIRE(!listView2->wxExListView::GetTypeDescription(wxExListView::LIST_FILE).empty());
+  REQUIRE(!listView2->wxExListView::GetTypeDescription(LIST_FILE).empty());
   
   REQUIRE( listView2->ItemFromText("test.h\ntest.h"));
   REQUIRE(!listView2->ItemToText(0).empty());

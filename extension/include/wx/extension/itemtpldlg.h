@@ -31,29 +31,15 @@ template <class T> class WXDLLIMPEXP_BASE wxExItemTemplateDialog: public wxExDia
 public:
   /// Constructor.
   wxExItemTemplateDialog(
-    /// parent
-    wxWindow* parent,
     /// vector with items 
     const std::vector< T >& v,
-    /// title
-    const wxString& title = _("Options"),
+    /// data
+    const wxExWindowData& data = wxExWindowData(),
     /// number of rows (if 0 add similar items on next row)
     int rows = 0,
     /// number of columns
-    int cols = 1,
-    /// dialog flags for buttons
-    long flags = wxOK | wxCANCEL,
-    /// the window id
-    wxWindowID id = wxID_ANY,
-    /// position
-    const wxPoint& pos = wxDefaultPosition,
-    /// size
-    const wxSize& size = wxDefaultSize, 
-    /// dialog style
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
-    /// name
-    const wxString& name = "wxExItemTemplateDialog")
-  : wxExDialog(parent, title, flags, id, pos, size, style, name)
+    int cols = 1)
+  : wxExDialog(data)
   , m_ForceCheckBoxChecked(false)
   , m_Items(v) {
     Layout(rows, cols);

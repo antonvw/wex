@@ -115,7 +115,7 @@ TEST_CASE("wxExItem")
 #endif
 
   // Test notebooks.
-  const std::vector<wxString> titles {
+  const std::vector<std::string> titles {
     "ITEM_NOTEBOOK",
     "ITEM_NOTEBOOK_AUI",
     "ITEM_NOTEBOOK_CHOICE",
@@ -147,10 +147,11 @@ TEST_CASE("wxExItem")
       il->Add(wxArtProvider::GetIcon(wxART_ERROR, wxART_OTHER, imageSize));
     }
     
-    wxExItemDialog* dlg = new wxExItemDialog(GetFrame(), 
+    wxExItemDialog* dlg = new wxExItemDialog(
       {NotebookItem((wxExItemType)style, LABEL_NONE, il)},
-      titles[style - ITEM_NOTEBOOK], 0, 1,
-      wxOK | wxCANCEL | wxAPPLY);
+      wxExWindowData().
+        Button(wxOK | wxCANCEL | wxAPPLY).
+        Title(titles[style - ITEM_NOTEBOOK]));
       
     dlg->Show();
     

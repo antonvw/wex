@@ -19,15 +19,24 @@ wxExSTCData::wxExSTCData(wxExSTC* stc, const wxExSTCData& r)
 {
   *this = r;
 }
-  
+
+wxExSTCData::wxExSTCData(wxExControlData& data, wxExSTC* stc)
+  : m_Data(data)
+  , m_STC(stc)
+{
+}
+
+wxExSTCData::wxExSTCData(wxExWindowData& data, wxExSTC* stc)
+  : m_Data(wxExControlData().Window(data))
+  , m_STC(stc)
+{
+}
+
 wxExSTCData& wxExSTCData::operator=(const wxExSTCData& r)
 {
   if (this != &r)
   {
-    m_Col = r.m_Col;
-    m_Command = r.m_Command;
-    m_Find = r.m_Find;
-    m_Line = r.m_Line;
+    m_Data = r.m_Data;
     m_MenuFlags = r.m_MenuFlags;
     m_WinFlags = r.m_WinFlags;
 
@@ -40,59 +49,77 @@ wxExSTCData& wxExSTCData::operator=(const wxExSTCData& r)
   return *this;
 }
   
-wxExSTCData& wxExSTCData::Col(int col)
-{
-  m_Col = col;
-  return *this;
-}
-  
-wxExSTCData& wxExSTCData::Command(const std::string& command)
-{
-  m_Command = command;
-  return *this;
-}
-  
-wxExSTCData& wxExSTCData::Find(const std::string& text) 
-{
-  m_Find = text;
-  return *this;
-}
-
 wxExSTCData& wxExSTCData::Flags(
   wxExSTCWindowFlags flags, wxExDataAction action)
 {
-  return Flags<wxExSTCWindowFlags>(flags, m_WinFlags, action);
+  m_Data.Flags<wxExSTCWindowFlags>(flags, m_WinFlags, action);
+
+  return *this;
 }
   
 bool wxExSTCData::Inject() const
 {
   if (m_STC == nullptr) return false;
   
-  bool injected = false;
-  
-  if (m_Line != DATA_INT_NOT_SET)
-  {
-    InjectLine();
-    injected = true;
-  }
-  
-  if (m_Col != DATA_INT_NOT_SET)
-  {
-    InjectCol();
-    injected = true;
-  }
-  
-  if (!m_Find.empty())
-  {
-    InjectFind();
-    injected = true;
-  }
+  bool injected = m_Data.Inject(
+    [&]() {
+      if (m_Data.Line() > 0)
+      {
+        m_STC->GotoLine(m_Data.Line() -1);
+        m_STC->EnsureVisible(m_Data.Line() -1);
+        m_STC->EnsureCaretVisible();
+        
+        m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
+        m_STC->SetIndicator(wxExIndicator(0), 
+          m_STC->PositionFromLine(m_Data.Line() -1), 
+          m_Data.Col() > 0 ? 
+            m_STC->PositionFromLine(m_Data.Line() -1) + m_Data.Col() - 1:
+            m_STC->GetLineEndPosition(m_Data.Line() -1));
+      }
+      else if (m_Data.Line() == DATA_NUMBER_NOT_SET)
+      {
+        return false;
+      }
+      else
+      {
+        m_STC->DocumentEnd();
+      }
+      return true;},
+    [&]() {
+      const int max = (m_Data.Line() > 0) ? m_STC->GetLineEndPosition(m_Data.Line() - 1): 0;
+      const int asked = m_STC->GetCurrentPos() + m_Data.Col() - 1;
+          
+      m_STC->SetCurrentPos(asked < max ? asked: max);
+          
+      // Reset selection, seems necessary.
+      m_STC->SelectNone();
+      return true;},
+    [&]() {
+      if (m_Data.Line() > 0)
+      {
+        const int start_pos = m_STC->PositionFromLine(m_Data.Line() -1);
+        const int end_pos = m_STC->GetLineEndPosition(m_Data.Line() -1);
 
-  if (!m_Command.empty())
-  {
-    m_STC->GetVi().Command(m_Command);
-    injected = true;
-  }
+        m_STC->SetSearchFlags(-1);
+        m_STC->SetTargetStart(start_pos);
+        m_STC->SetTargetEnd(end_pos);
+
+        if (m_STC->SearchInTarget(m_Data.Find()) != -1)
+        {
+          m_STC->SetSelection(m_STC->GetTargetStart(), m_STC->GetTargetEnd());
+        }
+      }
+      else if (m_Data.Line() == 0)
+      {
+        m_STC->FindNext(m_Data.Find(), 0);
+      }
+      else
+      {
+        m_STC->FindNext(m_Data.Find(), 0, false);
+      }
+      return true;},
+    [&]() {
+      return m_STC->GetVi().Command(m_Data.Command());});
   
   if ((m_WinFlags & STC_WIN_READ_ONLY) ||
       (m_STC->GetFileName().FileExists() && m_STC->GetFileName().IsReadOnly()))
@@ -114,101 +141,10 @@ bool wxExSTCData::Inject() const
   return injected;
 }
   
-void wxExSTCData::InjectCol() const
-{
-  const int max = (m_Line > 0) ? m_STC->GetLineEndPosition(m_Line - 1): 0;
-  const int asked = m_STC->GetCurrentPos() + m_Col - 1;
-      
-  m_STC->SetCurrentPos(asked < max ? asked: max);
-      
-  // Reset selection, seems necessary.
-  m_STC->SelectNone();
-}
-
-void wxExSTCData::InjectFind() const
-{
-  if (m_Line > 0)
-  {
-    const int start_pos = m_STC->PositionFromLine(m_Line -1);
-    const int end_pos = m_STC->GetLineEndPosition(m_Line -1);
-
-    m_STC->SetSearchFlags(-1);
-    m_STC->SetTargetStart(start_pos);
-    m_STC->SetTargetEnd(end_pos);
-
-    if (m_STC->SearchInTarget(m_Find) != -1)
-    {
-      m_STC->SetSelection(m_STC->GetTargetStart(), m_STC->GetTargetEnd());
-    }
-  }
-  else if (m_Line == 0)
-  {
-    m_STC->FindNext(m_Find, 0);
-  }
-  else
-  {
-    m_STC->FindNext(m_Find, 0, false);
-  }
-}
-  
-void wxExSTCData::InjectLine() const
-{
-  if (m_Line > 0)
-  {
-    m_STC->GotoLine(m_Line -1);
-    m_STC->EnsureVisible(m_Line -1);
-    m_STC->EnsureCaretVisible();
-    
-    m_STC->IndicatorClearRange(0, m_STC->GetTextLength() - 1);
-    m_STC->SetIndicator(wxExIndicator(0), 
-      m_STC->PositionFromLine(m_Line -1), 
-      m_Col > 0 ? 
-        m_STC->PositionFromLine(m_Line -1) + m_Col - 1:
-        m_STC->GetLineEndPosition(m_Line -1));
-  }
-  else
-  {
-    m_STC->DocumentEnd();
-  }
-}
-
-wxExSTCData& wxExSTCData::Line(int line)
-{
-  m_Line = ValidLine(line);
-  return *this;
-}
-  
 wxExSTCData& wxExSTCData::Menu(
   wxExSTCMenuFlags flags, wxExDataAction action)
 {
-  return Flags<wxExSTCMenuFlags>(flags, m_MenuFlags, action);
-}
+  m_Data.Flags<wxExSTCMenuFlags>(flags, m_MenuFlags, action);
 
-int wxExSTCData::ValidLine(int line) const
-{
-  if (m_STC != nullptr)
-  {
-    if (line > m_STC->GetLineCount())
-    {
-      return m_STC->GetLineCount();
-    }
-    else if (line < 0)
-    {
-      return 1;
-    }
-  }
-  
-  return line;
-}
-  
-wxExWindowData& wxExWindowData::Id(wxWindowID id) 
-{
-  m_Id = id;
-  return *this;
-}
-  
-wxExWindowData& wxExWindowData::Style(long style) 
-{
-  m_Style = style;
   return *this;
 }

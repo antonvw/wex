@@ -9,7 +9,7 @@
 
 #include <set>
 #include <wx/extension/filehistory.h>
-#include <wx/extension/listview.h> // for wxExListView::wxExListType 
+#include <wx/extension/listview.h>
 #include <wx/extension/managedframe.h>
 
 class wxExItemDialog;
@@ -22,21 +22,19 @@ class wxExListViewFile;
 class WXDLLIMPEXP_BASE wxExFrameWithHistory : public wxExManagedFrame
 {
 public:
-  /// Constructor.
+  /// Default constructor.
   /// Default it gives file history support to be used from the file menu.
   /// So you should call UseFileHistory somewhere to set it up.
   /// Default it does not use a recent project file.
-  wxExFrameWithHistory(wxWindow* parent,
-    wxWindowID id,
-    const wxString& title,
+  wxExFrameWithHistory(
     size_t maxFiles = 9,
     size_t maxProjects = 0,
-    int style = wxDEFAULT_FRAME_STYLE);
+    const wxExWindowData& data = wxExWindowData().Style(wxDEFAULT_FRAME_STYLE));
 
   /// This method is called to activate a certain listview.
   /// Default it returns nullptr.
   virtual wxExListView* Activate(
-    wxExListView::wxExListType WXUNUSED(list_type), 
+    wxExListType WXUNUSED(list_type), 
     const wxExLexer* WXUNUSED(lexer) = nullptr) {
     return nullptr;};
     
@@ -61,7 +59,7 @@ public:
     bool add_in_files = false);
   
   /// Returns caption for FindInFilesDialog.
-  const wxString GetFindInCaption(int id) const;
+  const std::string GetFindInCaption(int id) const;
   
   /// If there is a project somewhere, 
   /// your implementation should return that one.

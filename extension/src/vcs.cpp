@@ -50,10 +50,7 @@ wxExVCS::wxExVCS(const std::vector< std::string > & files, int command_no)
 }
 
 #if wxUSE_GUI
-int wxExVCS::ConfigDialog(
-  wxWindow* parent,
-  const wxString& title,
-  bool modal) const
+int wxExVCS::ConfigDialog(const wxExWindowData& data) const
 {
   if (m_Entries.empty())
   {
@@ -101,13 +98,13 @@ int wxExVCS::ConfigDialog(
     v.push_back({it2.GetName(), ITEM_FILEPICKERCTRL});
   }
 
-  if (modal)
+  if (!data.Button() & wxAPPLY)
   {
-    return wxExItemDialog(parent, v, title).ShowModal();
+    return wxExItemDialog(v, data).ShowModal();
   }
   else
   {
-    wxExItemDialog* dlg = new wxExItemDialog(parent, v, title);
+    wxExItemDialog* dlg = new wxExItemDialog(v, data);
     return dlg->Show();
   }
 }
@@ -382,7 +379,7 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
     return false;
   }
   
-  const wxString message = _("Select VCS Folder");
+  const std::string message = _("Select VCS Folder").ToStdString();
   
   // See also vcsentry, same item is used there.
   const std::vector<wxExItem> v{{
@@ -392,7 +389,9 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   {
     if (
       parent != nullptr && 
-      wxExItemDialog(parent, v, message).ShowModal() == wxID_CANCEL)
+      wxExItemDialog(v, wxExWindowData().
+        Parent(parent).
+        Title(message)).ShowModal() == wxID_CANCEL)
     {
       return false;
     }
@@ -407,7 +406,9 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
     {
       if (
         parent != nullptr &&
-        wxExItemDialog(parent, v, message).ShowModal() == wxID_CANCEL)
+        wxExItemDialog(v, wxExWindowData().
+          Parent(parent).
+          Title(message)).ShowModal() == wxID_CANCEL)
       {
         return false;
       }

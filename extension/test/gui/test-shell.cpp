@@ -2,7 +2,7 @@
 // Name:      test-shell.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -15,7 +15,7 @@
 
 TEST_CASE("wxExShell")
 {
-  wxExShell* shell = new wxExShell(GetFrame());
+  wxExShell* shell = new wxExShell();
   AddPane(GetFrame(), shell);
   
   REQUIRE(shell->GetShellEnabled());

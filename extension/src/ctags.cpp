@@ -37,7 +37,7 @@ public:
   void OpenFile(wxExFrame* frame) const
   {
     frame->OpenFile(m_Path, 
-      wxExSTCData().Line(m_LineNumber).Command(m_Pattern));
+      wxExControlData().Line(m_LineNumber).Command(m_Pattern));
   }
 private:
   const wxExPath m_Path;

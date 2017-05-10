@@ -2,12 +2,13 @@
 // Name:      dirctrl.h
 // Purpose:   Declaration of class wxExGenericDirCtrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wx/generic/dirctrlg.h>
+#include <wx/extension/window-data.h>
 
 #if wxUSE_DIRDLG
 
@@ -18,17 +19,14 @@ class wxExFrameWithHistory;
 class WXDLLIMPEXP_BASE wxExGenericDirCtrl : public wxGenericDirCtrl
 {
 public:
-  /// Constructor.
+  /// Default constructor.
   wxExGenericDirCtrl(
-    wxWindow* parent, 
     wxExFrameWithHistory* frame,
-    const wxWindowID id = wxID_ANY, 
-    const wxPoint& pos = wxDefaultPosition, 
-    const wxSize& size = wxDefaultSize, 
-    long style = wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE,
     const wxString& filter = wxEmptyString, 
-    int defaultFilter = 0, 
-    const wxString& name = wxTreeCtrlNameStr);
+    int defaultFilter = 0,
+    const wxExWindowData& data = wxExWindowData().
+      Style(wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE));
+
   /// Expands path and selects it.
   void ExpandAndSelectPath(const wxString& path);
 };

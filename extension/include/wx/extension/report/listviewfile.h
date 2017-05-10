@@ -19,16 +19,9 @@ class WXDLLIMPEXP_BASE wxExListViewFile :
 {
 public:
   /// Constructor for a LIST_FILE, opens the file.
-  wxExListViewFile(wxWindow* parent,
-    wxExFrameWithHistory* frame,
+  wxExListViewFile(
     const std::string& file,
-    wxWindowID id = wxID_ANY,
-    long menu_flags = LIST_MENU_DEFAULT,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxLC_REPORT,
-    const wxValidator& validator = wxDefaultValidator,
-    const wxString &name = wxListCtrlNameStr);
+    const wxExListViewData& data = wxExListViewData());
 
   /// Destructor.
   virtual ~wxExListViewFile();

@@ -21,13 +21,19 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
+#define NO_ASSERT 1
+
 void wxExApp::OnAssertFailure(
   const wxChar* file, int line, const wxChar* func, 
   const wxChar* cond, const wxChar* msg)
 {
+#ifdef NO_ASSERT
   std::wcout << wxNow() << ": OnAssertFailure: file: " << file << 
     " line: " << line << " func: " << func << 
     " cond: " << cond << " msg: " << msg << "\n";
+#else
+  wxApp::OnAssertFailure(file, line, func, cond, msg);
+#endif
 }
     
 int wxExApp::OnExit()

@@ -60,13 +60,8 @@ bool wxExTextDropTarget::OnDropText(
 }
 #endif // wxUSE_DRAG_AND_DROP
 
-wxExGrid::wxExGrid(wxWindow* parent,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style,
-  const wxString& name)
-  : wxGrid(parent, id, pos, size, style, name)
+wxExGrid::wxExGrid(const wxExWindowData& data)
+  : wxGrid(data.Parent(), data.Id(), data.Pos(), data.Size(), data.Style(), data.Name())
 {
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new wxExTextDropTarget(this));

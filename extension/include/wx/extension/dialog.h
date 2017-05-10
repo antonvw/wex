@@ -2,13 +2,14 @@
 // Name:      dialog.h
 // Purpose:   Declaration of wxExDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wx/dialog.h>
 #include <wx/sizer.h>
+#include <wx/extension/window-data.h>
 
 #if wxUSE_GUI
 
@@ -17,33 +18,8 @@
 class WXDLLIMPEXP_BASE wxExDialog : public wxDialog
 {
 public:
-  /// Constructor.
-  wxExDialog(
-    /// parent
-    wxWindow* parent,
-    /// title
-    const wxString& title,
-    /// this is a bit list of the following flags:
-    /// - wxOK 
-    /// - wxYES 
-    /// - wxAPPLY
-    /// - wxSAVE 
-    /// - wxCLOSE
-    /// - wxNO
-    /// - wxCANCEL
-    /// - wxHELP
-    /// - wxNO_DEFAULT
-    long button_flags = wxOK | wxCANCEL,
-    /// windod id
-    wxWindowID id = wxID_ANY,
-    /// position
-    const wxPoint& pos = wxDefaultPosition,
-    /// size
-    const wxSize& size = wxDefaultSize, 
-    /// style
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
-    /// name
-    const wxString& name = "wxExDialog");
+  /// Default constructor.
+  wxExDialog(const wxExWindowData& data = wxExWindowData());
 protected:
   /// Adds to the user sizer using the sizer flags.
   wxSizerItem* AddUserSizer(

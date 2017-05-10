@@ -19,10 +19,8 @@
 class wxExTestManagedFrame : public wxExManagedFrame
 {
 public:
-  wxExTestManagedFrame(wxWindow* parent,
-    wxWindowID id,
-    const wxString& title)
-  : wxExManagedFrame(parent, id, title)
+  wxExTestManagedFrame()
+  : wxExManagedFrame()
   , m_Process(new wxExProcess()) {;};
   virtual wxExProcess* Process(const std::string& command) override {
     m_Process->Execute(command);
@@ -43,8 +41,7 @@ public:
       return false;
     }
   
-    m_Frame = new wxExTestManagedFrame(
-      nullptr, wxID_ANY, wxTheApp->GetAppDisplayName());
+    m_Frame = new wxExTestManagedFrame();
     m_StatusBar = m_Frame->SetupStatusBar({
       {},
       {"Pane0"}, // the order of panes is tested
@@ -56,7 +53,7 @@ public:
       {"PaneLexer"},
       {"PaneFileType"},
       {"LastPane"}});
-    m_STC = new wxExSTC(m_Frame);
+    m_STC = new wxExSTC();
 
     m_Frame->Show();
 

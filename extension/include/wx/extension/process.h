@@ -8,6 +8,7 @@
 #pragma once
 
 #include <memory>
+#include <wx/extension/window-data.h>
 
 class wxExManagedFrame;
 class wxExProcessImp;
@@ -31,10 +32,8 @@ public:
 
   /// Shows a config dialog, allowing you to set the command and folder.
   /// Returns dialog return code.
-  static int ConfigDialog(
-    wxWindow* parent,
-    const wxString& title = _("Select Process"),
-    bool modal = true);
+  static int ConfigDialog(const wxExWindowData& data =
+    wxExWindowData().Title(_("Select Process").ToStdString()));
   
   /// Executes the process.
   /// Return value is false if process could not execute (and GetError is true), 

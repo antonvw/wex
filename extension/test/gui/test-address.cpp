@@ -22,9 +22,9 @@ TEST_CASE("wxExAddress")
   
   const int lines = stc->GetLineCount();
   wxExEx* ex = new wxExEx(stc);
-  wxExSTCData(stc).Line(1).Inject();
+  wxExSTCData(stc).Control(wxExControlData().Line(1)).Inject();
   ex->MarkerAdd('a'); // put marker a on line
-  wxExSTCData(stc).Line(2).Inject();
+  wxExSTCData(stc).Control(wxExControlData().Line(2)).Inject();
   ex->MarkerAdd('b'); // put marker b on line
   
   REQUIRE( wxExAddress(ex).GetLine() == 0);

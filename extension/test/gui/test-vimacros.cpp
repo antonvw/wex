@@ -2,7 +2,7 @@
 // Name:      test-vimacros.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -18,7 +18,7 @@
 
 TEST_CASE("wxExViMacros")
 {
-  wxExSTC* stc = new wxExSTC(GetFrame(), std::string("hello"));
+  wxExSTC* stc = new wxExSTC(std::string("hello"));
   AddPane(GetFrame(), stc);
   wxExVi* vi = &stc->GetVi();
 

@@ -21,39 +21,17 @@
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/frame.h>
 
-wxExListViewFile::wxExListViewFile(wxWindow* parent,
-  wxExFrameWithHistory* frame,
-  const std::string& file,
-  wxWindowID id,
-  long menu_flags,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style,
-  const wxValidator& validator,
-  const wxString& name)
-  : wxExListViewWithFrame(
-      parent, 
-      frame, 
-      LIST_FILE, 
-      id, 
-      menu_flags, 
-      nullptr, 
-      pos, 
-      size, 
-      style, 
-      validator, 
-      name)
+wxExListViewFile::wxExListViewFile(const std::string& file, const wxExListViewData& data)
+  : wxExListViewWithFrame(wxExListViewData(data).Type(LIST_FILE))
   , wxExFile(false) // do not open files in FileLoad and Save
-  , m_AddItemsDialog(new wxExItemDialog(this, {
+  , m_AddItemsDialog(new wxExItemDialog({
         {m_TextAddWhat,ITEM_COMBOBOX, wxAny(), true},
         {m_TextInFolder,ITEM_COMBOBOX_DIR, wxAny(), true, NewControlId()},
         {std::set<wxString> {
           m_TextAddFiles, m_TextAddFolders, m_TextAddRecursive}}},
-      _("Add Items"),
-      0,
-      1,
-      wxAPPLY | wxCANCEL,
-      wxID_ADD))
+      wxExWindowData().
+        Title(_("Add Items").ToStdString()).
+        Button(wxAPPLY | wxCANCEL).Id(wxID_ADD)))
 {
   FileLoad(file);
   

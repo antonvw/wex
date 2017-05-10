@@ -651,8 +651,8 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
     }
     else
     {
-      int line_no = DATA_INT_NOT_SET;
-      int col_no = DATA_INT_NOT_SET;
+      int line_no = DATA_NUMBER_NOT_SET;
+      int col_no = DATA_NUMBER_NOT_SET;
       wxExPath fn(it);
 
       if (!fn.FileExists() && it.find(":") != std::string::npos)
@@ -670,7 +670,7 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
         fn.MakeAbsolute();
       }
        
-      frame->OpenFile(fn, wxExSTCData(data).Line(line_no).Col(col_no));
+      frame->OpenFile(fn, wxExSTCData(data).Control(wxExControlData().Line(line_no).Col(col_no)));
       
       count++;
     }
@@ -693,7 +693,7 @@ void wxExOpenFilesDialog(wxExFrame* frame,
       &stc->GetFile(),
       caption,
       wildcards,
-      style);
+      wxExWindowData().Style(style));
 
     if (ask_for_continue)
     {
@@ -714,7 +714,9 @@ void wxExOpenFilesDialog(wxExFrame* frame,
       wxEmptyString,
       wildcards,
       style);
+
     if (dlg.ShowModal() == wxID_CANCEL) return;
+
     dlg.GetPaths(paths);
   }
 

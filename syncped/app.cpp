@@ -67,11 +67,11 @@ bool App::OnInit()
       {std::make_tuple("R", "readonly", "readonly mode"), [&](bool on) {
         if (on) m_Data.Flags(STC_WIN_READ_ONLY, DATA_OR);}}},
      {{std::make_tuple("c", "command", "vi command"), {CMD_LINE_STRING, [&](const wxAny& s) {
-        m_Data.Command(s.As<std::string>());}}},
+        m_Data.Control(wxExControlData().Command(s.As<std::string>()));}}},
       {std::make_tuple("s", "scriptin", "script in"), {CMD_LINE_STRING, [&](const wxAny& s) {
         m_Scriptin.Open(s.As<std::string>());}}},
       {std::make_tuple("S", "source", "source file"), {CMD_LINE_STRING, [&](const wxAny& s) {
-        m_Data.Command(":so " + s.As<std::string>());}}},
+        m_Data.Control(wxExControlData().Command(":so " + s.As<std::string>()));}}},
       {std::make_tuple("t", "tag", "start at tag"), {CMD_LINE_STRING, [&](const wxAny& s) {
         m_Tag = s.As<std::string>();}}},
       {std::make_tuple("w", "scriptout", "script out write"), {CMD_LINE_STRING, [&](const wxAny& s) {
@@ -98,7 +98,7 @@ bool App::OnInit()
 void App::Reset()
 {
   // do not reset flags
-  m_Data.Command("");
+  m_Data.Control(wxExControlData().Command(""));
   m_Tag.clear();
   m_Split = -1;
 }

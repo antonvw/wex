@@ -15,9 +15,7 @@ TEST_CASE("wxExDirTool")
 {
   const wxExTool tool = ID_TOOL_REPORT_FIND;
 
-  wxExListView* report = new wxExListView(
-    GetFrame(), 
-    wxExListView::LIST_FIND);
+  wxExListView* report = new wxExListView(wxExListViewData().Type(LIST_FIND));
     
   if (!wxExStreamToListView::SetupTool(tool, GetFrame(), report))
   {
@@ -39,7 +37,7 @@ TEST_CASE("wxExDirTool")
 
 TEST_CASE("wxExDirWithListView")
 {
-  wxExListViewFile* listView = new wxExListViewFile(GetFrame(), GetFrame(), GetProject());
+  wxExListViewFile* listView = new wxExListViewFile(GetProject());
   AddPane(GetFrame(), listView);
   wxExDirWithListView* dir = new wxExDirWithListView(listView, GetTestDir());
   REQUIRE(dir->FindFiles() == 0);

@@ -129,8 +129,7 @@ const std::string wxExVCSEntry::GetFlags() const
 
 #if wxUSE_GUI
 int wxExVCSEntry::ShowDialog(
-  wxWindow* parent, 
-  const std::string& caption,
+  const wxExWindowData& data,
   bool add_folder) const
 {
   if (GetCommand().GetCommand().empty())
@@ -145,7 +144,7 @@ int wxExVCSEntry::ShowDialog(
       wxConfigBase::Get()->Read(GetFlagsKey()));
   }
   
-  const int retValue = wxExItemDialog(parent, {
+  const int retValue = wxExItemDialog({
       (GetCommand().IsCommit() ? wxExItem(
         _("Revision comment"), ITEM_COMBOBOX, wxAny(), true) : wxExItem()),
       (add_folder && !GetCommand().IsHelp() ? wxExItem(
@@ -158,7 +157,7 @@ int wxExVCSEntry::ShowDialog(
         _("Prefix flags"), wxEmptyString): wxExItem()),
       (GetCommand().UseSubcommand() ? wxExItem(
         _("Subcommand"), wxEmptyString): wxExItem())},
-    caption).ShowModal();
+    data).ShowModal();
     
   if (retValue == wxID_OK)
   {

@@ -41,8 +41,7 @@ bool wxExRepSampleApp::OnInit()
   return true;
 }
 
-wxExRepSampleFrame::wxExRepSampleFrame()
-  : wxExFrameWithHistory(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
+wxExRepSampleFrame::wxExRepSampleFrame() : wxExFrameWithHistory()
 {
   SetIcon(wxICON(app));
 
@@ -76,27 +75,16 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 #endif
 
   m_NotebookWithLists = new wxExNotebook(
-    this, this,
-    wxID_ANY, wxDefaultPosition, wxDefaultSize,
-    wxAUI_NB_DEFAULT_STYLE |
-    wxAUI_NB_WINDOWLIST_BUTTON);
+    wxExWindowData().Style(wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON));
 
-  m_STC = new wxExSTC(this); // use all flags (default)
+  m_STC = new wxExSTC();
 
   const wxExLexer lexer = wxExLexers::Get()->FindByName("cpp");
 
-  for (
-    int i = wxExListView::LIST_FOLDER;
-    i <= wxExListView::LIST_FILE;
-    i++)
+  for (int i = LIST_FOLDER; i <= LIST_FILE; i++)
   {
-    wxExListViewWithFrame* vw = new wxExListViewWithFrame(
-      this,
-      this, 
-      (wxExListView::wxExListType)i, 
-      wxID_ANY,
-      0xFF, 
-      &lexer); // set all flags
+    auto* vw = new wxExListViewWithFrame(
+      wxExListViewData().Type((wxExListType)i).Lexer(&lexer));
 
     m_NotebookWithLists->AddPage(
       vw, 
@@ -114,14 +102,14 @@ wxExRepSampleFrame::wxExRepSampleFrame()
     wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250)));
 
   GetManager().AddPane(
-    new wxExGenericDirCtrl(this, this),
+    new wxExGenericDirCtrl(this),
     wxAuiPaneInfo().Caption("DirCtrl").Left().MinSize(wxSize(250, 250)));
 
   GetManager().Update();
 
   wxExDirWithListView dir(
     (wxExListView*)m_NotebookWithLists->GetPageByKey(
-      wxExListView::GetTypeDescription(wxExListView::LIST_FILE)),
+      wxExListView::GetTypeDescription(LIST_FILE)),
     wxGetCwd().ToStdString(),
     "*.cpp;*.h");
 
@@ -129,7 +117,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   wxExListItem item(
     (wxExListView*)m_NotebookWithLists->GetPageByKey(
-      wxExListView::GetTypeDescription(wxExListView::LIST_FILE)),
+      wxExListView::GetTypeDescription(LIST_FILE)),
     wxExPath("NOT EXISTING ITEM"));
 
   item.Insert();
@@ -185,7 +173,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 }
 
 wxExListView* wxExRepSampleFrame::Activate(
-  wxExListView::wxExListType type, 
+  wxExListType type, 
   const wxExLexer* lexer)
 {
   for (
@@ -195,9 +183,9 @@ wxExListView* wxExRepSampleFrame::Activate(
   {
     wxExListView* vw = (wxExListView*)m_NotebookWithLists->GetPage(i);
 
-    if (vw->GetType() == type)
+    if (vw->GetData().Type() == type)
     {
-      if (type == wxExListView::LIST_KEYWORD)
+      if (type == LIST_KEYWORD)
       {
         if (lexer != nullptr)
         {

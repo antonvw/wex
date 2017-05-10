@@ -2,7 +2,7 @@
 // Name:      test-stream.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/frd.h>
@@ -13,9 +13,7 @@ TEST_CASE("wxExStreamToListView")
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
 
-  wxExListView* report = new wxExListView(
-    GetFrame(), 
-    wxExListView::LIST_FIND);
+  wxExListView* report = new wxExListView(wxExListViewData().Type(LIST_FIND));
     
   AddPane(GetFrame(), report);
 

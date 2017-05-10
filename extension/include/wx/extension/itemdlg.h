@@ -2,7 +2,7 @@
 // Name:      itemdlg.h
 // Purpose:   Declaration of wxExItemDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -18,19 +18,11 @@ class WXDLLIMPEXP_BASE wxExItemDialog: public wxExItemTemplateDialog <wxExItem>
 public:
   /// Constructor.
   wxExItemDialog(
-    wxWindow* parent,
     const std::vector< wxExItem >& v,
-    const wxString& title = _("Options"),
+    const wxExWindowData& data = wxExWindowData().Title(_("Options").ToStdString()),
     int rows = 0,
-    int cols = 1,
-    long flags = wxOK | wxCANCEL,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize, 
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
-    const wxString& name = "wxExItemDialog")
-  : wxExItemTemplateDialog(parent, v, title, rows, cols, flags, id,
-      pos, size, style, name) {
+    int cols = 1)
+  : wxExItemTemplateDialog(v, data, rows, cols) {
     Bind(wxEVT_BUTTON, &wxExItemDialog::OnCommand, this, wxID_APPLY);
     Bind(wxEVT_BUTTON, &wxExItemDialog::OnCommand, this, wxID_CANCEL);
     Bind(wxEVT_BUTTON, &wxExItemDialog::OnCommand, this, wxID_CLOSE);

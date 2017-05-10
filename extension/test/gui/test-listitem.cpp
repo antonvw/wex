@@ -16,10 +16,10 @@
 
 TEST_CASE("wxExListItem")
 {
-  wxExListView* listView = new wxExListView(GetFrame(), wxExListView::LIST_FILE);
+  wxExListView* listView = new wxExListView(wxExListViewData().Type(LIST_FILE));
   AddPane(GetFrame(), listView);
   
-  wxExListView* listView2 = new wxExListView(GetFrame(), wxExListView::LIST_NONE);
+  wxExListView* listView2 = new wxExListView();
   AddPane(GetFrame(), listView2);
   
   const auto start = std::chrono::system_clock::now();

@@ -109,9 +109,15 @@ private:
 };
 #endif
 
-wxExFrame::wxExFrame(wxWindow* parent,
-  wxWindowID id, const wxString& title, long style)
-  : wxFrame(parent, id, title, wxDefaultPosition, wxDefaultSize, style, "wxExFrame")
+wxExFrame::wxExFrame(const wxExWindowData& data)
+  : wxFrame(
+      data.Parent(), 
+      data.Id(), 
+      data.Title().empty() ? wxTheApp->GetAppDisplayName(): data.Title(), 
+      data.Pos(), data.Size(), 
+      data.Style() == DATA_NUMBER_NOT_SET ? 
+        wxDEFAULT_FRAME_STYLE: data.Style(), 
+      data.Name().empty() ? "wxExFrame": data.Name())
 {
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new FileDropTarget(this));
@@ -188,7 +194,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
         cmd = v[0];
         text = v[1];
       }
-      wxExOpenFiles(this, wxExToVectorString(text).Get(), wxExSTCData().Command(cmd));
+      wxExOpenFiles(this, wxExToVectorString(text).Get(), wxExControlData().Command(cmd));
     }
     else
     {
@@ -257,7 +263,7 @@ wxStatusBar* wxExFrame::OnCreateStatusBar(
   wxWindowID id,
   const wxString& name)
 {
-  m_StatusBar = new wxExStatusBar(this, id, style, name);
+  m_StatusBar = new wxExStatusBar(this, wxExWindowData().Id(id).Style(style).Name(name.ToStdString()));
   m_StatusBar->SetFieldsCount(number);
   return m_StatusBar;
 }
@@ -265,13 +271,13 @@ wxStatusBar* wxExFrame::OnCreateStatusBar(
 
 wxExSTC* wxExFrame::OpenFile(
   const wxExPath& filename,
-  const wxExSTCData& stc_data)
+  const wxExSTCData& data)
 {
   wxExSTC* stc = GetSTC();
 
   if (stc != nullptr)
   {
-    stc->Open(filename, stc_data);
+    stc->Open(filename, data);
   }
 
   return stc;
@@ -280,7 +286,7 @@ wxExSTC* wxExFrame::OpenFile(
 wxExSTC* wxExFrame::OpenFile(
   const wxExPath& filename,
   const wxExVCSEntry& vcs,
-  const wxExSTCData& stc_data)
+  const wxExSTCData& data)
 {
   wxExSTC* stc = GetSTC();
 
@@ -296,7 +302,7 @@ wxExSTC* wxExFrame::OpenFile(
 wxExSTC* wxExFrame::OpenFile(
   const wxExPath& filename,
   const std::string& text,
-  const wxExSTCData& stc_data)
+  const wxExSTCData& data)
 {
   wxExSTC* stc = GetSTC();
 

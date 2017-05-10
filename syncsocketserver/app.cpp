@@ -63,19 +63,18 @@ bool App::OnInit()
     return false;
   }
 
-  // Show (and possibly Hide) is in the constuctor.
-  new Frame();
+  new Frame;
 
   return true;
 }
 
 Frame::Frame()
-  : wxExFrameWithHistory(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
+  : wxExFrameWithHistory()
   , m_Timer(this)
   , m_Answer(ANSWER_OFF)
-  , m_DataWindow(new wxExSTC(this))
-  , m_LogWindow(new wxExSTC(this, std::string(), wxExSTCData().Flags(STC_WIN_NO_INDICATOR)))
-  , m_Shell(new wxExShell(this))
+  , m_DataWindow(new wxExSTC)
+  , m_LogWindow(new wxExSTC(std::string(), wxExSTCData().Flags(STC_WIN_NO_INDICATOR)))
+  , m_Shell(new wxExShell)
 {
   SetIcon(wxICON(app));
 
@@ -288,7 +287,7 @@ Frame::Frame()
       &m_DataWindow->GetFile(), 
       wxGetStockLabel(wxID_SAVEAS), 
       wxFileSelectorDefaultWildcardStr, 
-      wxFD_SAVE);
+      wxExWindowData().Style(wxFD_SAVE));
     if (dlg.ShowModal())
     {
       m_DataWindow->GetFile().FileSave(dlg.GetPath().ToStdString());
@@ -334,15 +333,14 @@ Frame::Frame()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
-    wxExItemDialog(this, {
+    wxExItemDialog({
         {_("Hostname"), wxEmptyString, 0, ITEM_TEXTCTRL, true},
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
         {_("Port"), 1, 65536}},
-      _("Server Config"),
-      0,
-      1,
-      m_SocketServer == nullptr ? wxOK|wxCANCEL: wxCANCEL).ShowModal();
+      wxExWindowData().
+        Title(_("Server Config").ToStdString()).
+        Button(m_SocketServer == nullptr ? wxOK | wxCANCEL: wxCANCEL)).ShowModal();
     }, wxID_PREFERENCES);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {

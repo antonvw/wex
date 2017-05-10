@@ -2,7 +2,7 @@
 // Name:      stcdlg.cpp
 // Purpose:   Implementation of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -15,18 +15,12 @@
 
 #if wxUSE_GUI
 
-wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
-  const wxString& caption,
+wxExSTCEntryDialog::wxExSTCEntryDialog(
   const std::string& text,
-  const wxString& prompt,
-  long button_style,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size, 
-  long style,
-  const wxString& name)
-  : wxExDialog(parent, caption, button_style, id, pos, size, style, name)
-  , m_STC(new wxExSTC(this, text))
+  const std::string& prompt,
+  const wxExWindowData& data)
+  : wxExDialog(data)
+  , m_STC(new wxExSTC(text, wxExSTCData().Window(wxExWindowData().Parent(this))))
 {
 #if wxUSE_STATTEXT
   if (!prompt.empty())
@@ -40,7 +34,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   wxPersistentRegisterAndRestore(this);
   
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
-  m_STC->SetName(caption);
+  m_STC->SetName(data.Title());
   m_STC->ResetMargins();
   m_STC->SetViewEOL(false);
   m_STC->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);

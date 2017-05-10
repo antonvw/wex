@@ -2,7 +2,7 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wxExNotebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -15,6 +15,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/window-data.h>
 
 #if wxUSE_GUI
 
@@ -25,13 +26,8 @@ class wxExManagedFrame;
 class WXDLLIMPEXP_BASE wxExNotebook : public wxAuiNotebook
 {
 public:
-  /// Constructor.
-  wxExNotebook(wxWindow* parent,
-    wxExManagedFrame* frame, // nullptr is allowed
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxAUI_NB_DEFAULT_STYLE);
+  /// Default constructor.
+  wxExNotebook(const wxExWindowData& data = wxExWindowData().Style(wxAUI_NB_DEFAULT_STYLE));
 
   /// Adds the page with given key and fills the keys.
   wxWindow* AddPage(

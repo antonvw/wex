@@ -93,14 +93,12 @@ bool wxExSampleDir::OnFile(const std::string& file)
 #endif
 
 wxExSampleFrame::wxExSampleFrame()
-  : wxExManagedFrame(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName(), 4)
+  : wxExManagedFrame(4)
   , m_Process(new wxExProcess())
-  , m_Notebook(new wxExNotebook(this, this,
-      wxID_ANY, wxDefaultPosition, wxDefaultSize,
-      wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS))
-  , m_STC(new wxExSTC(this))
-  , m_Shell(new wxExShell(this, ">", "\n", true, 10))
-  , m_STCLexers(new wxExSTC(this, wxExLexers::Get()->GetFileName()))
+  , m_Notebook(new wxExNotebook())
+  , m_STC(new wxExSTC())
+  , m_Shell(new wxExShell(wxExSTCData(), ">", "\n"))
+  , m_STCLexers(new wxExSTC(wxExLexers::Get()->GetFileName()))
 {
   wxExProcess::PrepareOutput(this);
   
@@ -170,9 +168,9 @@ wxExSampleFrame::wxExSampleFrame()
   SetMenuBar(menubar);
 
 #if wxUSE_GRID
-  m_Grid = new wxExGrid(m_Notebook);
+  m_Grid = new wxExGrid(wxExWindowData().Parent(m_Notebook));
 #endif
-  m_ListView = new wxExListView(m_Notebook, wxExListView::LIST_NONE);
+  m_ListView = new wxExListView(wxExWindowData().Parent(m_Notebook));
 
   GetManager().AddPane(m_Notebook, 
     wxAuiPaneInfo().CenterPane().MinSize(wxSize(250, 250)));
@@ -266,39 +264,38 @@ wxExSampleFrame::wxExSampleFrame()
       wxEmptyString, _("Columns"), 1, 1, 100);
     if (val >= 0)
     {
-      wxExItemDialog(this, TestConfigItems(0, val), 
-        "Config Dialog Columns", 0, val).ShowModal();
+      wxExItemDialog(TestConfigItems(0, val), 
+        wxExWindowData().Title("Config Dialog Columns"), 0, val).ShowModal();
     }}, ID_DLG_CONFIG_ITEM_COL);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExItemDialog* dlg = new wxExItemDialog(this, TestConfigItems(0, 1), 
-      "Config Dialog",
-      0, 1,
-      wxAPPLY | wxCANCEL,
-      wxID_ANY,
-      wxDefaultPosition,
+    wxExItemDialog* dlg = new wxExItemDialog(TestConfigItems(0, 1), 
+      wxExWindowData().
+        Title("Config Dialog").
+        Button(wxAPPLY | wxCANCEL).
 #ifdef __WXMSW__    
-      wxSize(500, 500));
+        Size(wxSize(500, 500)));
 #else
-      wxSize(600, 600));
+        Size(wxSize(600, 600)));
 #endif    
     //  dlg->ForceCheckBoxChecked("Group", "Checkboxes");
     dlg->Show();}, ID_DLG_CONFIG_ITEM);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExItemDialog(this, TestConfigItems(0, 1), "Config Dialog Readonly",
-      0, 4, wxCANCEL).ShowModal();}, ID_DLG_CONFIG_ITEM_READONLY);
+    wxExItemDialog(TestConfigItems(0, 1), 
+      wxExWindowData().
+        Button(wxCANCEL).
+        Title("Config Dialog Readonly"), 0, 4 ).ShowModal();}, ID_DLG_CONFIG_ITEM_READONLY);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExItemDialog(this, TestItems(), "Options", 0, 1).ShowModal();}, ID_DLG_ITEM);
+    wxExItemDialog(TestItems()).ShowModal();}, ID_DLG_ITEM);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    m_ListView->ConfigDialog(this);}, ID_DLG_LISTVIEW);
+    m_ListView->ConfigDialog();}, ID_DLG_LISTVIEW);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExSTC::ConfigDialog(this,
-      "Editor Options",
-      STC_CONFIG_MODELESS | STC_CONFIG_WITH_APPLY);}, ID_DLG_STC_CONFIG);
+    wxExSTC::ConfigDialog(
+      wxExWindowData().Button(wxAPPLY | wxCANCEL));}, ID_DLG_STC_CONFIG);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     std::string text;
@@ -307,14 +304,13 @@ wxExSampleFrame::wxExSampleFrame()
       text += wxString::Format("Hello from line: %d\n", i);
     }
     wxExSTCEntryDialog(
-      this,
-      "Hello world",
       text,      
-      "Greetings from " + wxTheApp->GetAppDisplayName()).ShowModal();
+      "Greetings from " + std::string(wxTheApp->GetAppDisplayName()),
+      wxExWindowData().Title("Hello world")).ShowModal();
     }, ID_DLG_STC_ENTRY);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExVCS().ConfigDialog(this);}, ID_DLG_VCS);
+    wxExVCS().ConfigDialog();}, ID_DLG_VCS);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Shell->Prompt(
@@ -422,7 +418,8 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     case ID_STC_SPLIT:
       if (editor != nullptr)
       {
-        wxExSTC* stc = new wxExSTC(m_Notebook, editor->GetFileName());
+        wxExSTC* stc = new wxExSTC(editor->GetFileName(), 
+          wxExSTCData().Window(wxExWindowData().Parent(m_Notebook)));
         m_Notebook->AddPage(
           stc,
           "stc" + std::to_string(stc->GetId()),

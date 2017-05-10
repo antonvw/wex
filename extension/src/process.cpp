@@ -122,10 +122,7 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
   return *this;
 }
 
-int wxExProcess::ConfigDialog(
-  wxWindow* parent,
-  const wxString& title,
-  bool modal)
+int wxExProcess::ConfigDialog(const wxExWindowData& data)
 {
   wxExItem ci(_("Process"), ITEM_COMBOBOX, wxAny(), true);
     
@@ -137,13 +134,13 @@ int wxExProcess::ConfigDialog(
     ci,
     {m_WorkingDirKey, ITEM_COMBOBOX_DIR, wxAny(), true, wxWindow::NewControlId()}};
 
-  if (modal)
+  if (!data.Button() & wxAPPLY)
   {
-    return wxExItemDialog(parent, v, title).ShowModal();
+    return wxExItemDialog(v, data).ShowModal();
   }
   else
   {
-    wxExItemDialog* dlg = new wxExItemDialog(parent, v, title);
+    wxExItemDialog* dlg = new wxExItemDialog(v, data);
     return dlg->Show();
   }
 }
@@ -161,7 +158,7 @@ bool wxExProcess::Execute(
   {
     if (wxExConfigFirstOf(_("Process")).empty())
     {
-      if (ConfigDialog(wxTheApp->GetTopWindow()) == wxID_CANCEL)
+      if (ConfigDialog() == wxID_CANCEL)
       {
         return false;
       }
@@ -257,11 +254,9 @@ void wxExProcess::PrepareOutput(wxWindow* parent)
 {
   if (m_Shell == nullptr)
   {
-    m_Shell = new wxExShell(parent, 
-      std::string(), 
-      std::string(), 
-      true, 
-      100);
+    m_Shell = new wxExShell(
+      wxExSTCData().Window(wxExWindowData().Parent(parent)),
+      std::string()); // empty prompt
   }
 }
 

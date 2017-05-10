@@ -129,12 +129,13 @@ bool wxExDebug::GetArgs(
   else if (DeleteAllBreakpoints(command)) {}
   else if (command == "file")
   {
-    if (wxExItemDialog(m_Frame,  {
+    if (wxExItemDialog({
         {"File", ITEM_COMBOBOX, wxAny(), true},
         {m_Entry.GetName(), ITEM_FILEPICKERCTRL}},
-      "Debug",
-      0, 1, wxOK | wxCANCEL, wxID_ANY,
-      wxDefaultPosition, wxSize(500, 180)).ShowModal() == wxID_CANCEL) return false;
+      wxExWindowData().
+        Title("Debug").
+        Parent(m_Frame).
+        Size(wxSize(500, 180))).ShowModal() == wxID_CANCEL) return false;
     
     args += " " + wxExConfigFirstOf("File"); 
   }
@@ -206,7 +207,7 @@ void wxExDebug::ProcessStdOut(const std::string& text)
 
   if (line > 0 && m_Path.FileExists())
   {
-    m_Frame->OpenFile(m_Path, wxExSTCData().Line(line));
+    m_Frame->OpenFile(m_Path, wxExControlData().Line(line));
     m_Process->GetShell()->SetFocus();
   }
 }

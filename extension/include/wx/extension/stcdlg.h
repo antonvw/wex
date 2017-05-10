@@ -2,12 +2,13 @@
 // Name:      stcdlg.h
 // Purpose:   Declaration of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wx/extension/dialog.h>
+#include <wx/extension/window-data.h>
 
 #if wxUSE_GUI
 class wxExLexer;
@@ -19,28 +20,14 @@ class wxExSTC;
 class WXDLLIMPEXP_BASE wxExSTCEntryDialog : public wxExDialog
 {
 public:
-  /// Constructor.
+  /// Default constructor.
   wxExSTCEntryDialog(
-    /// parent
-    wxWindow* parent,
-    /// caption
-    const wxString& caption,
     /// initial text
-    const std::string& text,
+    const std::string& text = std::string(),
     /// prompt (as with wxTextEntryDialog)
-    const wxString& prompt = wxEmptyString,
-    /// buttons
-    long button_style = wxOK | wxCANCEL,
-    /// window id
-    wxWindowID id = wxID_ANY,
-    /// pos
-    const wxPoint& pos = wxDefaultPosition,
-    /// size
-    const wxSize& size = wxDefaultSize, 
-    /// dialog style
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
-    /// name
-    const wxString& name = "wxExSTCEntryDialog");
+    const std::string& prompt = std::string(),
+    /// data
+    const wxExWindowData& data = wxExWindowData());
     
   /// Returns the STC.
   wxExSTC* GetSTC() {return m_STC;};

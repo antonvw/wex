@@ -27,25 +27,20 @@
   }
 
 wxExGenericDirCtrl::wxExGenericDirCtrl(
-  wxWindow *parent, 
   wxExFrameWithHistory* frame,
-  const wxWindowID id, 
-  const wxPoint &pos, 
-  const wxSize &size, 
-  long style, 
   const wxString &filter, 
   int defaultFilter, 
-  const wxString &name)
+  const wxExWindowData& data)
   : wxGenericDirCtrl(
-      parent,
-      id,
+      data.Parent(),
+      data.Id(),
       wxDirDialogDefaultFolderStr,
-      pos,
-      size,
-      style,
+      data.Pos(),
+      data.Size(),
+      data.Style(),
       (filter.empty() ? "*": filter),
       defaultFilter,
-      name)
+      data.Name())
 {
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
       wxExVCSExecute(frame, 

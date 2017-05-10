@@ -2,7 +2,7 @@
 // Name:      dialog.cpp
 // Purpose:   Implementation of wxExDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -12,17 +12,17 @@
 #include <wx/extension/dialog.h>
 
 #if wxUSE_GUI
-wxExDialog::wxExDialog(wxWindow* parent,
-  const wxString& title,
-  long button_flags,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size, 
-  long style,
-  const wxString& name)
-  : wxDialog(parent, id, title, pos, size, style, name)
-  , m_ButtonFlags(button_flags)
-  , m_HasDefaultSize(size == wxDefaultSize)
+wxExDialog::wxExDialog(const wxExWindowData& data)
+  : wxDialog(
+      data.Parent(),
+      data.Id(), 
+      data.Title().empty() ? "Dialog": data.Title(), 
+      data.Pos(), data.Size(), 
+      data.Style() == DATA_NUMBER_NOT_SET ? 
+        wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER: data.Style(), 
+      data.Name().empty() ? "wxExDialog": data.Name())
+  , m_ButtonFlags(data.Button())
+  , m_HasDefaultSize(data.Size() == wxDefaultSize)
   , m_TopSizer(new wxFlexGridSizer(1, 0, 0))
   , m_UserSizer(new wxFlexGridSizer(1, 0, 0))
 {

@@ -31,8 +31,8 @@ class WXDLLIMPEXP_BASE wxExShell: public wxExSTC
 public:
   /// Constructor.
   wxExShell(
-    /// Parent.
-    wxWindow* parent,
+    /// data
+    const wxExSTCData& data = wxExSTCData(),
     /// Give the command used to end a line.
     /// The default uses the GetEOL.
     const std::string& prompt = ">",
@@ -40,13 +40,11 @@ public:
     const std::string& command_end = std::string(),
     /// Will commands be echoed.
     bool echo = true,
-    /// Give the number of commands that are kept in the config.
-    /// Default -1, no commands are kept.
-    int commands_save_in_config = -1,
     /// The lexer used by stc.
     const std::string& lexer = std::string(),
-    const wxExSTCData& stc_data = wxExSTCData(),
-    const wxExWindowData& win_data = wxExWindowData());
+    /// Give the number of commands that are kept in the config.
+    /// If -1, no commands are kept.
+    int commands_save_in_config = 100);
 
   /// Destructor, keeps the commands in the config, if required.
   virtual ~wxExShell();

@@ -2,7 +2,7 @@
 // Name:      test-dirctrl.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/report/dir.h> // necessary?
@@ -26,7 +26,7 @@ void Test(wxExGenericDirCtrl* ctrl)
 
 TEST_CASE("wxExDirCtrl")
 {
-  wxExGenericDirCtrl* ctrl = new wxExGenericDirCtrl(GetFrame(), GetFrame());
+  wxExGenericDirCtrl* ctrl = new wxExGenericDirCtrl(GetFrame());
   AddPane(GetFrame(), ctrl);
 
   SUBCASE("Select directory")

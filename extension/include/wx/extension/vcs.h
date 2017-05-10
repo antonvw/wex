@@ -32,10 +32,8 @@ public:
   /// Shows a dialog allowing you to choose which vcs to use
   /// and to set the path for each vcs entry.
   /// Returns dialog return code.
-  int ConfigDialog(
-    wxWindow* parent,
-    const wxString& title = _("Set VCS"),
-    bool modal = true) const;
+  int ConfigDialog(const wxExWindowData& data =
+    wxExWindowData().Title(_("Set VCS").ToStdString())) const;
 #endif    
 
   /// Returns true if specified filename (a path) is a vcs directory.
@@ -80,7 +78,9 @@ public:
 #if wxUSE_GUI
   /// Calls show dialog for the current vcs entry.
   int ShowDialog(wxWindow* parent) const {
-    return m_Entry.ShowDialog(parent, m_Caption, m_Files.empty());};
+    return m_Entry.ShowDialog(wxExWindowData().
+      Parent(parent).
+      Title(m_Caption), m_Files.empty());};
 #endif
 
   /// Returns true if vcs usage is set in the config.

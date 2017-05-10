@@ -20,13 +20,13 @@ TEST_CASE("wxExItemDialog")
   wxExItem::UseConfig(false);
   
   // Test dialog without pages.
-  wxExItemDialog* dlg1 = new wxExItemDialog(GetFrame(), {
+  wxExItemDialog* dlg1 = new wxExItemDialog({
       {"string1", "hello1"},
       {"string2", "hello2"},
       {"int1", ITEM_TEXTCTRL_INT, "10"},
       {"int2", ITEM_TEXTCTRL_INT, "20"},
       {"float1", ITEM_TEXTCTRL_FLOAT, "20.0"}},
-    "no pages", 0, 1, wxOK | wxCANCEL | wxAPPLY);
+    wxExWindowData().Button(wxOK | wxCANCEL | wxAPPLY));
   dlg1->Show();
   dlg1->ForceCheckBoxChecked();
   
@@ -39,14 +39,11 @@ TEST_CASE("wxExItemDialog")
   REQUIRE(dlg1->GetItemValue("float1") == 20.0);
   
   // Test dialog without items.
-  wxExItemDialog* dlg2 = new wxExItemDialog(GetFrame(), 
-    std::vector <wxExItem>(),
-    "no items");
+  wxExItemDialog* dlg2 = new wxExItemDialog(std::vector <wxExItem>());
   dlg2->Show();
   
   // Test dialog with empty items.
-  wxExItemDialog* dlg3 = new wxExItemDialog(GetFrame(), 
-    {{}, {}, {}}, "empty items");
+  wxExItemDialog* dlg3 = new wxExItemDialog({{}, {}, {}}, wxExWindowData());
   dlg3->Show();
 #endif
 }

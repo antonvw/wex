@@ -2,7 +2,7 @@
 // Name:      filedlg.cpp
 // Purpose:   Implementation of wxExtension file dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -19,19 +19,16 @@ wxExFileDialog::wxExFileDialog(
   wxExFile* file,
   const wxString &message, 
   const wxString &wildcard,
-  long style, 
-  const wxPoint &pos, 
-  const wxSize &size, 
-  const wxString &name)
+  const wxExWindowData& data)
   : wxFileDialog(
       parent, 
       message, 
       file->GetFileName().GetPath(), 
       file->GetFileName().GetFullName(), 
       wildcard, 
-      style, 
-      pos, 
-      size) 
+      data.Style(), 
+      data.Pos(), 
+      data.Size()) 
 // TODO: when compiling under x11 the name is not used as argument,
 // so outcommented it here.      
 //      name)

@@ -36,12 +36,8 @@ class wxExFindTextCtrl : public wxTextCtrl
 public:
   /// Constructor. Fills the text ctrl with value 
   /// from FindReplace from config.
-  wxExFindTextCtrl(
-    wxWindow* parent,
-    wxExFrame* frame,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize);
+  wxExFindTextCtrl(wxWindow* parent, wxExFrame* frame, 
+    const wxExWindowData& data = wxExWindowData());
     
   /// Finds current value in control.
   void Find(bool find_next = true, bool restore_position = false);
@@ -93,13 +89,9 @@ bool PrepDropDown(wxAuiToolBar* tb, wxAuiToolBarEvent& event)
   return true;
 }
     
-wxExToolBar::wxExToolBar(wxExManagedFrame* frame,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style)
-  : wxAuiToolBar(frame, id, pos, size, 
-    style | wxAUI_TB_HORZ_TEXT | wxAUI_TB_PLAIN_BACKGROUND)
+wxExToolBar::wxExToolBar(wxExManagedFrame* frame, const wxExWindowData& data)
+  : wxAuiToolBar(frame, data.Id(), data.Pos(), data.Size(), 
+      data.Style() | wxAUI_TB_HORZ_TEXT | wxAUI_TB_PLAIN_BACKGROUND)
   , m_Frame(frame)
 {
 }
@@ -171,12 +163,8 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
 }
 
 wxExFindToolBar::wxExFindToolBar(
-  wxExManagedFrame* frame,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style)
-  : wxExToolBar(frame, id, pos, size, style)
+  wxExManagedFrame* frame, const wxExWindowData& data)
+  : wxExToolBar(frame, data)
 {
   const wxWindowID ID_MATCH_WHOLE_WORD = NewControlId();
   const wxWindowID ID_MATCH_CASE = NewControlId();
@@ -241,12 +229,9 @@ wxExFindToolBar::wxExFindToolBar(
     event.Enable(!findCtrl->GetValue().empty());}, wxID_UP);
 }
 
-wxExOptionsToolBar::wxExOptionsToolBar(wxExManagedFrame* frame,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style)
-  : wxExToolBar(frame, id, pos, size, style)
+wxExOptionsToolBar::wxExOptionsToolBar(
+  wxExManagedFrame* frame, const wxExWindowData& data)
+  : wxExToolBar(frame, data)
 {
 }
 
@@ -303,16 +288,12 @@ bool wxExOptionsToolBar::Update(const wxString& name, bool show)
 
 // Implementation of support class.
 
-wxExFindTextCtrl::wxExFindTextCtrl(
-  wxWindow* parent,
-  wxExFrame* frame,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size)
+wxExFindTextCtrl::wxExFindTextCtrl(wxWindow* parent, wxExFrame* frame,
+  const wxExWindowData& data)
   : wxTextCtrl(parent, 
-      id,
+      data.Id(),
       wxExFindReplaceData::Get()->GetFindString(), 
-      pos, size, wxTE_PROCESS_ENTER)
+      data.Pos(), data.Size(), wxTE_PROCESS_ENTER)
   , m_Frame(frame)
 {
   const int accels = 1;

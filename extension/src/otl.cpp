@@ -49,18 +49,15 @@ bool wxExOTL::Logoff()
   return true;
 }
 
-bool wxExOTL::Logon(
-  wxWindow* parent,
-  int max_items,
-  const wxString& title)
+bool wxExOTL::Logon(const wxExWindowData& data)
 {
-  if (parent != nullptr)
+  if (data.Button() != 0)
   {
-    if (wxExItemDialog(parent, {
+    if (wxExItemDialog({
         {_("Datasource"), ITEM_COMBOBOX, wxAny(), true},
         {_("User")},
-        {_("Password"), wxEmptyString, wxTE_PASSWORD}},
-        title).ShowModal() == wxID_CANCEL)
+        {_("Password"), wxEmptyString, wxTE_PASSWORD}}, 
+        data).ShowModal() == wxID_CANCEL)
     {
       return false;
     }

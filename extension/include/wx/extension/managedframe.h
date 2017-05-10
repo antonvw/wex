@@ -48,12 +48,10 @@ public:
     HIDE_BAR_FORCE_FOCUS_STC, ///< as previous, and focus to stc
   };
   
-  /// Constructor, registers the aui manager, and creates the bars.
-  wxExManagedFrame(wxWindow* parent,
-    wxWindowID id,
-    const wxString& title,
+  /// Default constructor, registers the aui manager, and creates the bars.
+  wxExManagedFrame(
     size_t maxFiles = 9,
-    long style = wxDEFAULT_FRAME_STYLE);
+    const wxExWindowData& data = wxExWindowData().Style(wxDEFAULT_FRAME_STYLE));
 
   /// Destructor, uninits the aui manager.
   virtual ~wxExManagedFrame();

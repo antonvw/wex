@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <wx/statusbr.h> 
+#include <wx/extension/window-data.h> 
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -96,8 +97,6 @@ public:
   wxExStatusBar(
     /// parent
     wxExFrame* parent,
-    /// id of window
-    wxWindowID id = wxID_ANY,
     /// style
     /// - wxSTB_DEFAULT_STYLE (wxSTB_SIZEGRIP|wxSTB_ELLIPSIZE_END|wxSTB_SHOW_TIPS|wxFULL_REPAINT_ON_RESIZE)
     /// - wxSTB_ELLIPSIZE_END
@@ -105,8 +104,7 @@ public:
     /// - wxSTB_ELLIPSIZE_START
     /// - wxSTB_SHOW_TIPS
     /// - wxSTB_SIZEGRIP
-    long style = wxST_SIZEGRIP,
-    const wxString& name = wxStatusBarNameStr);
+    const wxExWindowData& data = wxExWindowData().Style(wxSTB_DEFAULT_STYLE));
     
   /// Destructor.
  ~wxExStatusBar();  

@@ -12,7 +12,6 @@
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/imaglist.h>
-#include <wx/stdpaths.h> // for wxStandardPaths
 #include <wx/extension/ctags.h>
 #include <wx/extension/debug.h>
 #include <wx/extension/filedlg.h>
@@ -39,12 +38,7 @@
 class EditorsNotebook : public wxExNotebook
 {
 public:
-  EditorsNotebook(wxWindow* parent,
-    wxExManagedFrame* frame,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxAUI_NB_DEFAULT_STYLE);
+  EditorsNotebook(const wxExWindowData& data); 
 };
 
 BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
@@ -90,22 +84,10 @@ END_EVENT_TABLE()
 Frame::Frame(App* app)
   : DecoratedFrame(app)
   , m_Process(new wxExProcess())
-  , m_PaneFlag(
-      wxAUI_NB_DEFAULT_STYLE |
-      wxAUI_NB_CLOSE_ON_ALL_TABS |
-      wxAUI_NB_CLOSE_BUTTON |
-      wxAUI_NB_WINDOWLIST_BUTTON |
-      wxAUI_NB_SCROLL_BUTTONS)
-  , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
-  , m_Editors(new EditorsNotebook(this, this, 
-      (wxWindowID)ID_NOTEBOOK_EDITORS, 
-      wxDefaultPosition, wxDefaultSize, 
-      m_PaneFlag))
-  , m_Lists(new wxExNotebook(this, this, 
-      (wxWindowID)ID_NOTEBOOK_LISTS, 
-      wxDefaultPosition, wxDefaultSize, 
-      m_PaneFlag))
-  , m_DirCtrl(new wxExGenericDirCtrl(this, this))
+  , m_Editors(new EditorsNotebook(wxExWindowData().Id(ID_NOTEBOOK_EDITORS).Style(m_PaneFlag)))
+  , m_Lists(new wxExNotebook(
+      wxExWindowData().Id(ID_NOTEBOOK_LISTS).Style(m_PaneFlag)))
+  , m_DirCtrl(new wxExGenericDirCtrl(this))
   , m_CheckBoxDirCtrl(new wxCheckBox(
       GetToolBar(),
       ID_VIEW_DIRCTRL,
@@ -307,7 +289,7 @@ Frame::Frame(App* app)
     wxConfigBase::Get()->Write("OpenFiles", count);
     wxConfigBase::Get()->Write("ShowHistory", m_History != nullptr && m_History->IsShown());
     wxConfigBase::Get()->Write("ShowProjects", m_Projects != nullptr && m_Projects->IsShown());
-    if (m_App->GetData().Command().empty())
+    if (m_App->GetData().Control().Command().empty())
     {
       wxDELETE(m_Process);
       event.Skip();
@@ -360,7 +342,9 @@ Frame::Frame(App* app)
       if (dlg.ShowModal() == wxID_CANCEL) return;
       name = dlg.GetValue();
     }
-    wxWindow* page = new wxExSTC(m_Editors, std::string(), m_App->GetData());
+    wxWindow* page = new wxExSTC(std::string(),
+      wxExSTCData(m_App->GetData()).Window(wxExWindowData().
+        Parent(m_Editors)));
     ((wxExSTC*)page)->GetFile().FileNew(name);
     // This file does yet exist, so do not give it a bitmap.
     m_Editors->AddPage(page, name, name, true);
@@ -384,11 +368,13 @@ Frame::Frame(App* app)
     };}, ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExListView::ConfigDialog(this, 
-      _("List Options"), wxOK | wxCANCEL | wxAPPLY, ID_OPTION_LIST);}, ID_OPTION_LIST);
+    wxExListView::ConfigDialog(wxExWindowData().
+      Title(_("List Options").ToStdString()).
+      Button(wxOK | wxCANCEL | wxAPPLY).
+      Id(ID_OPTION_LIST));}, ID_OPTION_LIST);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (wxExVCS().ConfigDialog(this) == wxID_OK)
+    if (wxExVCS().ConfigDialog() == wxID_OK)
     { 
       wxExVCS vcs;
       vcs.SetEntryFromBase(this);
@@ -399,7 +385,7 @@ Frame::Frame(App* app)
     };}, ID_OPTION_VCS);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (wxExProcess::ConfigDialog(this) == wxID_OK)
+    if (wxExProcess::ConfigDialog() == wxID_OK)
     {
       ShowPane("PROCESS");
       m_Process->Execute();
@@ -419,11 +405,7 @@ Frame::Frame(App* app)
        (!GetProjectHistory().GetHistoryFile().empty() ? 
            wxPathOnly(GetProjectHistory().GetHistoryFile()).ToStdString(): wxExConfigDir()),
       text + ".prj");
-    wxWindow* page = new wxExListViewFile(m_Projects,
-      this,
-      fn.GetFullPath(),
-      wxID_ANY,
-      wxExListViewWithFrame::LIST_MENU_DEFAULT);
+    wxWindow* page = new wxExListViewFile(fn.GetFullPath(), wxExWindowData().Parent(m_Projects));
     ((wxExListViewFile*)page)->FileNew(fn.GetFullPath());
     // This file does yet exist, so do not give it a bitmap.
     m_Projects->AddPage(page, fn.GetFullPath(), text, true);
@@ -449,7 +431,7 @@ Frame::Frame(App* app)
         this, project, 
         _("Project Save As"), 
         m_ProjectWildcard, 
-        wxFD_SAVE);
+        wxExWindowData().Style(wxFD_SAVE));
       if (dlg.ShowModal() == wxID_OK)
       {
         project->FileSave(dlg.GetPath().ToStdString());
@@ -488,7 +470,7 @@ Frame::Frame(App* app)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_asciiTable == nullptr)
     {
-      m_asciiTable = new wxExSTC(this);
+      m_asciiTable = new wxExSTC();
       GetManager().AddPane(m_asciiTable, wxAuiPaneInfo()
         .Left()
         .Name("ASCIITABLE")
@@ -566,11 +548,9 @@ Frame::Frame(App* app)
   m_App->Reset();
 }    
 
-wxExListView* Frame::Activate(
-  wxExListView::wxExListType type, 
-  const wxExLexer* lexer)
+wxExListView* Frame::Activate(wxExListType type, const wxExLexer* lexer)
 {
-  if (type == wxExListView::LIST_FILE)
+  if (type == LIST_FILE)
   {
     return GetProject();
   }
@@ -584,14 +564,11 @@ wxExListView* Frame::Activate(
     wxExListViewWithFrame* list = 
       (wxExListViewWithFrame*)m_Lists->GetPageByKey(name);
 
-    if (list == nullptr && type != wxExListView::LIST_FILE)
+    if (list == nullptr && type != LIST_FILE)
     {
-      list = new wxExListViewWithFrame(
-        m_Lists, this,
-        type,
-        wxID_ANY,
-        wxExListViewWithFrame::LIST_MENU_DEFAULT,
-        lexer);
+      list = new wxExListViewWithFrame(wxExListViewData(wxExWindowData().Parent(m_Lists)).
+        Type(type).
+        Lexer(lexer));
 
       m_Lists->AddPage(list, name, name, true);
     }
@@ -602,9 +579,7 @@ wxExListView* Frame::Activate(
 
 void Frame::AddPaneHistory()
 {
-  m_History = new wxExListViewWithFrame(this, this,
-    wxExListView::LIST_HISTORY,
-    wxExListViewWithFrame::LIST_MENU_DEFAULT);
+  m_History = new wxExListViewWithFrame(wxExListViewData().Type(LIST_HISTORY));
         
   GetManager().AddPane(m_History, wxAuiPaneInfo()
     .Left()
@@ -617,11 +592,7 @@ void Frame::AddPaneHistory()
 
 void Frame::AddPaneProjects()
 {
-  m_Projects = new wxExNotebook(this, this, 
-    (wxWindowID)ID_NOTEBOOK_PROJECTS, 
-    wxDefaultPosition, 
-    wxDefaultSize, 
-    m_PaneFlag);
+  m_Projects = new wxExNotebook(wxExWindowData().Id(ID_NOTEBOOK_PROJECTS).Style(m_PaneFlag));
     
   GetManager().AddPane(m_Projects, wxAuiPaneInfo()
     .Left()
@@ -795,7 +766,7 @@ void Frame::OnCommand(wxCommandEvent& event)
           &editor->GetFile(), 
           wxGetStockLabel(wxID_SAVEAS, wxSTOCK_NOFLAGS), 
           wxFileSelectorDefaultWildcardStr, 
-          wxFD_SAVE);
+          wxExWindowData().Style(wxFD_SAVE));
 
         if (dlg.ShowModal() != wxID_OK)
         {
@@ -837,7 +808,8 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     else
     {
-      wxExSTC* stc = new wxExSTC(m_Editors, editor->GetFileName());
+      auto* stc = new wxExSTC(editor->GetFileName(), 
+        wxExSTCData().Window(wxExWindowData().Parent(m_Editors)));
       editor->Sync(false);
       stc->Sync(false);
       stc->GetVi().Copy(&editor->GetVi());
@@ -1086,10 +1058,11 @@ wxExSTC* Frame::OpenFile(
   
   if (page == nullptr)
   {
-    wxExSTC* editor = new wxExSTC(m_Editors, 
+    auto* editor = new wxExSTC(
       vcs.GetStdOut(),
-      filename.GetFullName() + " " + unique,
-      data);
+      wxExSTCData(data).Window(wxExWindowData().
+        Parent(m_Editors).
+        Name(filename.GetFullName() + " " + unique)));
 
     wxExVCSCommandOnSTC(
       vcs.GetCommand(), filename.GetLexer(), editor);
@@ -1120,7 +1093,10 @@ wxExSTC* Frame::OpenFile(
 
   if (page == nullptr)
   {
-    page = new wxExSTC(m_Editors, text, filename.GetFullPath(), data);
+    page = new wxExSTC(text, 
+      wxExSTCData(data).Window(wxExWindowData().
+        Parent(m_Editors).
+        Name(filename.GetFullPath())));
     page->GetLexer().Set(filename.GetLexer());
     m_Editors->AddPage(page, filename.GetFullPath(), filename.GetFullName(), true);
   }
@@ -1151,11 +1127,7 @@ wxExSTC* Frame::OpenFile(const wxExPath& filename, const wxExSTCData& data)
   {
     if (page == nullptr)
     {
-      wxExListViewFile* project = new wxExListViewFile(m_Projects,
-        this,
-        filename.GetFullPath(),
-        wxID_ANY,
-        wxExListViewWithFrame::LIST_MENU_DEFAULT);
+      auto* project = new wxExListViewFile(filename.GetFullPath(), wxExWindowData().Parent(m_Projects));
 
       notebook->AddPage(
         project,
@@ -1192,9 +1164,9 @@ wxExSTC* Frame::OpenFile(const wxExPath& filename, const wxExSTCData& data)
 
     if (page == nullptr)
     {
-      editor = new wxExSTC(m_Editors,
-        filename, 
+      editor = new wxExSTC(filename, 
         wxExSTCData(data).
+          Window(wxExWindowData().Parent(m_Editors)).
           Flags(m_App->GetData().Flags(), DATA_OR).
           Flags(wxConfigBase::Get()->ReadBool("HexMode", false) ? STC_WIN_HEX: STC_WIN_DEFAULT, DATA_OR).
           Menu(m_App->GetDebug() ? STC_MENU_DEBUG: STC_MENU_NONE, DATA_OR));
@@ -1270,7 +1242,8 @@ void Frame::PrintEx(wxExEx* ex, const std::string& text)
 
   if (page == nullptr)
   {
-    page = new wxExSTC(m_Editors, text, "Print");
+    page = new wxExSTC(text, wxExSTCData().
+      Window(wxExWindowData().Name("Print").Parent(m_Editors)));
     m_Editors->AddPage(page, "Print", "Print", true);
     m_Editors->Split("Print", wxBOTTOM);
   }
@@ -1331,7 +1304,7 @@ void Frame::StatusBarClicked(const std::string& pane)
   {
     if (wxExVCS::GetCount() > 0)
     {
-      wxExMenu* menu = new wxExMenu;
+      auto* menu = new wxExMenu;
       
       if (menu->AppendVCS())
       {
@@ -1376,21 +1349,21 @@ void Frame::StatusBarClickedRight(const std::string& pane)
       match = wxExLexers::Get()->GetTheme();
     }
     
-    OpenFile(wxExLexers::Get()->GetFileName(), wxExSTCData().Find(match));
+    OpenFile(wxExLexers::Get()->GetFileName(), wxExControlData().Find(match));
   }
   else if (pane == "PaneMacro")
   {
     if (wxExViMacros::GetFileName().FileExists())
     {
       OpenFile(wxExViMacros::GetFileName(),
-        wxExSTCData().Find(!GetStatusText(pane).empty() ? " name=\"" + GetStatusText(pane) + "\"":
+        wxExControlData().Find(!GetStatusText(pane).empty() ? " name=\"" + GetStatusText(pane) + "\"":
           std::string()));
     }
   }
   else if (pane == "PaneVCS")
   {
     OpenFile(wxExMenus::GetFileName(),
-      wxExSTCData().Find(GetStatusText(pane) != "Auto" ? GetStatusText(pane): 
+      wxExControlData().Find(GetStatusText(pane) != "Auto" ? GetStatusText(pane): 
         std::string()));
   }
   else
@@ -1431,13 +1404,8 @@ void Frame::SyncCloseAll(wxWindowID id)
   }
 }
 
-EditorsNotebook::EditorsNotebook(wxWindow* parent,
-  wxExManagedFrame* frame,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style)
-  : wxExNotebook(parent, frame, id, pos, size, style)
+EditorsNotebook::EditorsNotebook(const wxExWindowData& data)
+  : wxExNotebook(data)
 {
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxPostEvent(wxAuiNotebook::GetCurrentPage(), event);
@@ -1446,7 +1414,7 @@ EditorsNotebook::EditorsNotebook(wxWindow* parent,
   Bind(wxEVT_AUINOTEBOOK_TAB_RIGHT_UP, [=](wxAuiNotebookEvent& event) {
     wxExMenu menu;
     
-    wxExMenu* split = new wxExMenu;
+    auto* split = new wxExMenu;
     split->Append(ID_SPLIT_VERTICALLY, _("Split Vertically"));
     split->Append(ID_SPLIT_HORIZONTALLY, _("Split Horizontally"));
     split->AppendSeparator();

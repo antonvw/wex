@@ -119,11 +119,7 @@ bool wxExSTC::AutoIndentation(int c)
   return true;
 }
 
-int wxExSTC::ConfigDialog(
-  wxWindow* parent,
-  const wxString& title,
-  long flags,
-  wxWindowID id)
+int wxExSTC::ConfigDialog(const wxExWindowData& data)
 {
   STCDefaults use;
   wxConfigBase* cfg = use.Get();
@@ -229,25 +225,20 @@ int wxExSTC::ConfigDialog(
       {_X("Directory"),
         {{_X("Include directory"), ITEM_LISTVIEW, wxAny(), false, wxID_ANY, LABEL_NONE}}}}}};
 
-  int buttons = wxOK | wxCANCEL;
-
-  if (flags & STC_CONFIG_WITH_APPLY)
+  if (!data.Button() & wxAPPLY)
   {
-    buttons |= wxAPPLY;
-  }
-  
-  if (!(flags & STC_CONFIG_MODELESS))
-  {
-    return wxExItemDialog(parent, items, 
-      id == wxID_PREFERENCES ? wxGetStockLabel(id, 0): title, 0, 1, buttons, id).ShowModal();
+    return wxExItemDialog(items,
+      wxExWindowData(data).
+        Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title())).ShowModal();
   }
   else
   {
     if (m_ConfigDialog == nullptr)
     {
-      m_ConfigDialog = new wxExItemDialog(parent, items, 
-        id == wxID_PREFERENCES ? wxGetStockLabel(id, 0): title, 0, 1, buttons, id, 
-        wxDefaultPosition, wxSize(510, 500));
+      m_ConfigDialog = new wxExItemDialog(items,
+        wxExWindowData(data).
+          Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title()).
+          Size(wxSize(510, 500)));
     }
 
     return m_ConfigDialog->Show();

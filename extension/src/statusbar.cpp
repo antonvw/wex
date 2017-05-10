@@ -37,12 +37,8 @@ void wxExStatusBarPane::Show(bool show)
   }
 }
 
-wxExStatusBar::wxExStatusBar(
-  wxExFrame* parent,
-  wxWindowID id,
-  long style,
-  const wxString& name)
-  : wxStatusBar(parent, id, style, name)
+wxExStatusBar::wxExStatusBar(wxExFrame* parent, const wxExWindowData& data)
+  : wxStatusBar(parent, data.Id(), data.Style(), data.Name())
   , m_Frame(parent)
 {
   // The statusbar is not managed by Aui, so show/hide it explicitly.    

@@ -2,7 +2,7 @@
 // Name:      test-stcfile.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -16,7 +16,7 @@
 
 TEST_CASE("wxExSTCFile")
 {
-  wxExSTC* stc = new wxExSTC(GetFrame(), GetTestFile());
+  wxExSTC* stc = new wxExSTC(GetTestFile());
   stc->SetText("and still they came");
   
   AddPane(GetFrame(), stc);

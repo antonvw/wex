@@ -16,9 +16,7 @@ TEST_CASE("wxEx")
 {
   wxExTool tool(ID_TOOL_REPORT_FIND);
 
-  wxExListView* report = new wxExListView(
-    GetFrame(), 
-    wxExListView::LIST_FILE);
+  wxExListView* report = new wxExListView(wxExListViewData().Type(LIST_FILE));
   
   AddPane(GetFrame(), report);
     

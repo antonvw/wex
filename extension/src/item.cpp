@@ -395,8 +395,13 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
     case ITEM_LISTVIEW:
       {
-      wxExListView* lv = new wxExListView(parent, (wxExListView::wxExListType)m_Style, m_Id, nullptr,
-        wxDefaultPosition, wxSize(width, 200));
+      wxExListView* lv = new wxExListView(
+        wxExListViewData().
+          Type((wxExListType)m_Style).
+          Window(wxExWindowData().
+            Parent(parent).
+            Id(m_Id).
+            Size({width, 200})));
       lv->ItemFromText(m_Initial.IsNull() ? wxString(): m_Initial.As<wxString>());
       m_Window = lv;
       }
@@ -406,9 +411,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
     case ITEM_NOTEBOOK_AUI: bookctrl = new wxAuiNotebook(parent,
       wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_TOP); break;
     case ITEM_NOTEBOOK_CHOICE: bookctrl = new wxChoicebook(parent, wxID_ANY); break;
-    case ITEM_NOTEBOOK_EX: bookctrl = new wxExNotebook(parent, 
-      dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()),
-      wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_TOP); break;
+    case ITEM_NOTEBOOK_EX: bookctrl = new wxExNotebook(wxExWindowData().Style(wxAUI_NB_TOP).Parent(parent)); break;
     case ITEM_NOTEBOOK_LIST: bookctrl = new wxListbook(parent, wxID_ANY); break;
     case ITEM_NOTEBOOK_SIMPLE: bookctrl = new wxSimplebook(parent, wxID_ANY); break;
           
@@ -474,9 +477,10 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_STC:
-      m_Window = new wxExSTC(parent, std::string(),
-        wxExSTCData().Menu(static_cast<wxExSTCMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS)), 
-        wxExWindowData().Id(m_Id));
+      m_Window = new wxExSTC(std::string(),
+        wxExSTCData().
+          Menu(static_cast<wxExSTCMenuFlags>(STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS)).
+          Window(wxExWindowData().Id(m_Id)));
       
       // Do not use vi mode, as ESC should cancel the dialog,
       // and would not be interpreted by vi.

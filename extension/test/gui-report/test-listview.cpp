@@ -12,12 +12,11 @@
 TEST_CASE("wxExListViewWithFrame")
 {
   REQUIRE(wxExListViewWithFrame::GetTypeTool(wxExTool(ID_TOOL_REPORT_FIND)) == 
-    wxExListViewWithFrame::LIST_FIND);
+    LIST_FIND);
   REQUIRE(wxExListViewWithFrame::GetTypeTool(wxExTool(ID_TOOL_REPORT_KEYWORD)) == 
-    wxExListViewWithFrame::LIST_KEYWORD);
+    LIST_KEYWORD);
     
-  wxExListViewWithFrame* listView = new wxExListViewWithFrame(GetFrame(), GetFrame(), 
-    wxExListView::LIST_FIND);
+  wxExListViewWithFrame* listView = new wxExListViewWithFrame(wxExListViewData().Type(LIST_FIND));
   
   AddPane(GetFrame(), listView);
 
@@ -39,7 +38,6 @@ TEST_CASE("wxExListViewWithFrame")
   
   REQUIRE(wxExUIAction(listView));
 
-  wxExListViewWithFrame* listView2 = new wxExListViewWithFrame(GetFrame(), GetFrame(), 
-    wxExListView::LIST_FIND);
+  wxExListViewWithFrame* listView2 = new wxExListViewWithFrame(wxExListViewData().Type(LIST_FIND));
   listView2->Destroy();
 }

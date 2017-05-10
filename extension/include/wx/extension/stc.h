@@ -14,7 +14,6 @@
 #include <wx/extension/marker.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/stc-data.h>
-#include <wx/extension/stc-enums.h>
 #include <wx/extension/vi.h>
 
 #if wxUSE_GUI
@@ -34,18 +33,11 @@ class wxExPath;
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
 public:
-  /// Constructor, sets text if not empty.
-  wxExSTC(wxWindow* parent,
-    const std::string& text = std::string(),
-    const std::string& name = std::string(),
-    const wxExSTCData& stc_data = wxExSTCData(),
-    const wxExWindowData& win_data = wxExWindowData());
+  /// Default constructor, sets text if not empty.
+  wxExSTC(const std::string& text = std::string(), const wxExSTCData& data = wxExSTCData());
 
   /// Constructor, opens the file if it exists.
-  wxExSTC(wxWindow* parent,
-    const wxExPath& file,
-    const wxExSTCData& stc_data = wxExSTCData(),
-    const wxExWindowData& win_data = wxExWindowData());
+  wxExSTC(const wxExPath& file, const wxExSTCData& data = wxExSTCData());
   
   /// After pressing enter, starts new line at same place
   /// as previous line.
@@ -68,11 +60,8 @@ public:
   /// Shows a dialog with options, returns dialog return code.
   /// If used modeless, it uses the dialog id as specified,
   /// so you can use that id in wxExFrame::OnCommandItemDialog.
-  static int ConfigDialog(
-    wxWindow* parent,
-    const wxString& title = _("Editor Options"),
-    long flags = 0,
-    wxWindowID id = wxID_ANY);
+  static int ConfigDialog(const wxExWindowData& data = 
+    wxExWindowData().Title(_("Editor Options").ToStdString()));
 
   /// Sets the configurable parameters to values currently in config.
   void ConfigGet(bool init = false);
@@ -112,7 +101,7 @@ public:
     bool foldall = false);
 
   /// Returns associated data.
-  const wxExSTCData& GetData() const {return m_Data;};
+  const auto& GetData() const {return m_Data;};
 
   /// Returns EOL string.
   /// If you only want to insert a newline, use NewLine()

@@ -2,7 +2,7 @@
 // Name:      statistics.h
 // Purpose:   Include file for statistics classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,14 +19,10 @@ template <class T> class WXDLLIMPEXP_BASE wxExGridStatistics: public wxExGrid
 {
 public:
   /// Constructor.
-  wxExGridStatistics(wxWindow* parent,
+  wxExGridStatistics(
     wxExStatistics <T> * statistics,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxWANTS_CHARS,
-    const wxString& name = wxGridNameStr)
-    : wxExGrid(parent, id, pos, size, style, name)
+    const wxExWindowData& data = wxExWindowData().Style(wxWANTS_CHARS))
+    : wxExGrid(data)
     , m_Statistics(statistics)
   {
     Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_Statistics->Clear();}, wxID_CLEAR);
@@ -156,7 +152,8 @@ public:
     {
     if (m_Grid == nullptr)
     {
-      m_Grid = new wxExGridStatistics<T>(parent, this, id);
+      m_Grid = new wxExGridStatistics<T>(this,
+        wxExWindowData().Style(wxWANTS_CHARS).Id(id));
       m_Grid->CreateGrid(0, 0);
       m_Grid->AppendCols(2);
       m_Grid->EnableEditing(false);

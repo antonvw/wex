@@ -2,18 +2,10 @@
 // Name:      stc-enums.h
 // Purpose:   Declaration of enums for wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
-
-/// Config dialog flags.
-enum wxExSTCConfigFlags
-{
-  STC_CONFIG_MODAL      = 0,      ///< modal dialog with all options
-  STC_CONFIG_MODELESS   = 1 << 0, ///< use as modeless dialog
-  STC_CONFIG_WITH_APPLY = 1 << 1, ///< add the apply button
-};
 
 /// Margin flags.
 enum wxExSTCMarginFlags

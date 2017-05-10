@@ -23,13 +23,11 @@
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/stream.h>
 
-wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
-  wxWindowID id,
-  const wxString& title,
+wxExFrameWithHistory::wxExFrameWithHistory(
   size_t maxFiles,
   size_t maxProjects,
-  int style)
-  : wxExManagedFrame(parent, id, title, maxFiles, style)
+  const wxExWindowData& data)
+  : wxExManagedFrame(maxFiles, data)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST, "RecentProject")
   , m_Info({
       wxExFindReplaceData::Get()->GetTextMatchWholeWord(),
@@ -51,18 +49,15 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     {m_TextInFolder, ITEM_COMBOBOX_DIR, wxAny(), true, NewControlId()},
     {t}};
   
-  m_FiFDialog = new wxExItemDialog(this,
+  m_FiFDialog = new wxExItemDialog(
     f,
-    _("Find In Files"),
-    0,
-    1,
-    wxAPPLY | wxCANCEL,
-    ID_FIND_IN_FILES,
-    wxDefaultPosition, 
-    wxDefaultSize, 
-    wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP);
+    wxExWindowData().
+      Button(wxAPPLY | wxCANCEL).
+      Id(ID_FIND_IN_FILES).
+      Title(_("Find In Files").ToStdString()).
+      Style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
     
-  m_RiFDialog = new wxExItemDialog(this, {
+  m_RiFDialog = new wxExItemDialog({
       f.at(0),
       {wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX},
       f.at(1),
@@ -72,14 +67,11 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
       {{wxExFindReplaceData::Get()->GetTextMatchCase(),
         wxExFindReplaceData::Get()->GetTextRegEx(),
         m_TextRecursive}}},
-    _("Replace In Files"),
-    0,
-    1,
-    wxAPPLY | wxCANCEL,
-    ID_REPLACE_IN_FILES,
-    wxDefaultPosition, 
-    wxDefaultSize, 
-    wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP);
+    wxExWindowData().
+      Button(wxAPPLY | wxCANCEL).
+      Id(ID_REPLACE_IN_FILES).
+      Title(_("Replace In Files").ToStdString()).
+      Style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
 
   Bind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
   
@@ -253,12 +245,12 @@ int wxExFrameWithHistory::FindInFilesDialog(
     GetSTC()->GetFindString();
   }
 
-  if (wxExItemDialog(this, {
+  if (wxExItemDialog({
       {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), true}, 
       (add_in_files ? wxExItem(m_TextInFiles, ITEM_COMBOBOX, wxAny(), true) : wxExItem()),
       (id == ID_TOOL_REPLACE ? wxExItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX): wxExItem()),
       wxExItem(m_Info)},
-    GetFindInCaption(id)).ShowModal() == wxID_CANCEL)
+    wxExWindowData().Title(GetFindInCaption(id))).ShowModal() == wxID_CANCEL)
   {
     return wxID_CANCEL;
   }
@@ -268,11 +260,11 @@ int wxExFrameWithHistory::FindInFilesDialog(
   return wxID_OK;
 }
 
-const wxString wxExFrameWithHistory::GetFindInCaption(int id) const
+const std::string wxExFrameWithHistory::GetFindInCaption(int id) const
 {
   return (id == ID_TOOL_REPLACE ?
-    _("Replace In Selection"):
-    _("Find In Selection"));
+    _("Replace In Selection").ToStdString():
+    _("Find In Selection").ToStdString());
 }
 
 const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
@@ -479,7 +471,7 @@ void wxExFrameWithHistory::SetRecentFile(const std::string& file)
 
 void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
 {
-  wxASSERT(list->GetType() == wxExListView::LIST_HISTORY);
+  wxASSERT(list->GetData().Type() == LIST_HISTORY);
   
   m_FileHistoryList = list;
   m_FileHistoryList->Hide();

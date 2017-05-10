@@ -27,7 +27,7 @@ int GetHexNumberFromUser(
 {
   wxExItem::UseConfig(false);
 
-  wxExItemDialog dlg(parent, {{message, min, max, value}}, caption);
+  wxExItemDialog dlg({{message, min, max, value}}, wxExWindowData().Title(caption).Parent(parent));
   
   wxExItem::UseConfig(true);
   

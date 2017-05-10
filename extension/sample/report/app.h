@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of sample classes for wxExtension report
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/app.h>
@@ -29,8 +29,7 @@ public:
 protected:
   // Interface from wxExFrameWithHistory.
   virtual wxExListView* Activate(
-    wxExListView::wxExListType type, 
-    const wxExLexer* lexer = nullptr) override;
+    wxExListType type, const wxExLexer* lexer = nullptr) override;
   virtual bool AllowClose(wxWindowID id, wxWindow* page) override;
   virtual wxExListView* GetListView() override;
   virtual wxExSTC* GetSTC() override;

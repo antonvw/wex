@@ -47,10 +47,10 @@ bool App::OnInit()
 }
 
 Frame::Frame()
-  : wxExFrameWithHistory(nullptr, wxID_ANY, wxTheApp->GetAppDisplayName())
-  , m_Results(new wxExGrid(this))
-  , m_Query(new wxExSTC(this))
-  , m_Shell(new wxExShell(this, "", ";", true, 50))
+  : wxExFrameWithHistory()
+  , m_Results(new wxExGrid())
+  , m_Query(new wxExSTC())
+  , m_Shell(new wxExShell(wxExSTCData(), "", ";"))
 {
   SetIcon(wxICON(app));
 
@@ -240,7 +240,7 @@ Frame::Frame()
       &m_Query->GetFile(), 
       wxGetStockLabel(wxID_SAVEAS), 
       wxFileSelectorDefaultWildcardStr, 
-      wxFD_SAVE);
+      wxExWindowData().Style(wxFD_SAVE));
     if (dlg.ShowModal() == wxID_OK)
     {
        m_Query->GetFile().FileSave(dlg.GetPath().ToStdString());
@@ -257,7 +257,7 @@ Frame::Frame()
     }}, ID_DATABASE_CLOSE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (m_otl.Logon(this))
+    if (m_otl.Logon())
     {
       m_Shell->SetPrompt(m_otl.Datasource() + ">");
     }}, ID_DATABASE_OPEN);
