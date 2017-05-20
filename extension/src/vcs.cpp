@@ -98,14 +98,14 @@ int wxExVCS::ConfigDialog(const wxExWindowData& data) const
     v.push_back({it2.GetName(), ITEM_FILEPICKERCTRL});
   }
 
-  if (!data.Button() & wxAPPLY)
-  {
-    return wxExItemDialog(v, data).ShowModal();
-  }
-  else
+  if (data.Button() & wxAPPLY)
   {
     wxExItemDialog* dlg = new wxExItemDialog(v, data);
     return dlg->Show();
+  }
+  else
+  {
+    return wxExItemDialog(v, data).ShowModal();
   }
 }
 #endif
@@ -383,7 +383,7 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   
   // See also vcsentry, same item is used there.
   const std::vector<wxExItem> v{{
-    _("Base folder"), ITEM_COMBOBOX_DIR, wxAny(), true, wxWindow::NewControlId()}};
+    _("Base folder"), ITEM_COMBOBOX_DIR, wxAny(), true}};
       
   if (wxExConfigFirstOf(_("Base folder")).empty()) 
   {

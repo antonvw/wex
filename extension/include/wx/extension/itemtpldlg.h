@@ -11,6 +11,7 @@
 #include <wx/app.h>
 #include <wx/checkbox.h>
 #include <wx/checklst.h>
+#include <wx/combobox.h>
 #include <wx/filepicker.h>
 #include <wx/tglbtn.h> // for wxEVT_TOGGLEBUTTON
 #include <wx/extension/dialog.h>
@@ -271,7 +272,7 @@ private:
       previous_item_sizer = item.Layout(
         this, 
         sizer, 
-        GetButtonFlags() == wxCANCEL,
+        GetData().Button() == wxCANCEL,
         current_item_sizer);
       previous_type = item.GetType();
       

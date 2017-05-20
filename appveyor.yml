@@ -21,9 +21,15 @@ install:
 before_build:
   - mkdir build
   - ps: cd build
-  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PROGRAM_PATH=C:\cygwin\bin -DBUILD_TEST=ON -DENABLE_GETTEXT=ON ..
 
 build_script:
+  - echo "PLATFORM = %PLATFORM%"
+  - echo "WXLIBFOLDER = %WXLIBFOLDER%"
+  - if /I "%PLATFORM%" == "Win32" call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
+  - if /I "%PLATFORM%" == "x64" call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
+  - if /I "%PLATFORM%" == "Win32" SET WXLIBFOLDER=vc_lib
+  - if /I "%PLATFORM%" == "x64" SET WXLIBFOLDER=vc_x64_lib
+  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PROGRAM_PATH=C:\cygwin\bin DBUILD_TEST=ON -DENABLE_GETTEXT=ON ..
   - nmake
   - ..\ci\pack.bat
 

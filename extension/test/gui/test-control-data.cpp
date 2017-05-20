@@ -22,6 +22,7 @@ TEST_CASE("wxExControlData")
     REQUIRE( wxExControlData().Line() == 0);
     REQUIRE( wxExControlData().Line(-1).Line() == -1);
     REQUIRE( wxExControlData().Line(3).Line() == 3);
+    REQUIRE( wxExControlData().Validator() == nullptr);
   }
   
   SUBCASE("Inject")

@@ -416,8 +416,7 @@ Frame::Frame(App* app)
     wxExListViewFile* project = GetProject();
     if (project != nullptr)
     {
-      if (wxExFileDialog(
-        this, project).ShowModalIfChanged() != wxID_CANCEL)
+      if (wxExFileDialog(project).ShowModalIfChanged() != wxID_CANCEL)
       {
         OpenFile(project->GetFileName());
       }
@@ -428,10 +427,12 @@ Frame::Frame(App* app)
     if (project != nullptr && m_Projects != nullptr)
     {
       wxExFileDialog dlg(
-        this, project, 
-        _("Project Save As"), 
-        m_ProjectWildcard, 
-        wxExWindowData().Style(wxFD_SAVE));
+        project, 
+        wxExWindowData().
+          Style(wxFD_SAVE).
+          Parent(this).
+          Title(_("Project Save As").ToStdString()),
+        m_ProjectWildcard);
       if (dlg.ShowModal() == wxID_OK)
       {
         project->FileSave(dlg.GetPath().ToStdString());
@@ -558,7 +559,7 @@ wxExListView* Frame::Activate(wxExListType type, const wxExLexer* lexer)
   {
     ShowPane("OUTPUT");
 
-    const std::string name = wxExListView::GetTypeDescription(type) +
+    const std::string name = wxExListViewData().Type(type).TypeDescription() +
       (lexer != nullptr ?  " " + lexer->GetDisplayLexer(): std::string());
 
     wxExListViewWithFrame* list = 
@@ -762,11 +763,11 @@ void Frame::OnCommand(wxCommandEvent& event)
       else
       {
         wxExFileDialog dlg(
-          this, 
           &editor->GetFile(), 
-          wxGetStockLabel(wxID_SAVEAS, wxSTOCK_NOFLAGS), 
-          wxFileSelectorDefaultWildcardStr, 
-          wxExWindowData().Style(wxFD_SAVE));
+          wxExWindowData().
+            Style(wxFD_SAVE). 
+            Parent(this).
+            Title(wxGetStockLabel(wxID_SAVEAS, wxSTOCK_NOFLAGS).ToStdString()));
 
         if (dlg.ShowModal() != wxID_OK)
         {

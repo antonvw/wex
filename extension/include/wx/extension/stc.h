@@ -284,7 +284,7 @@ private:
   bool CheckBrace(int pos);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void FoldAll();
-  void Initialize(bool file_exists);
+  void Initialize();
   bool LinkOpen(int mode, std::string* filename = nullptr); // name of found file
   void MarkModified(const wxStyledTextEvent& event);
 

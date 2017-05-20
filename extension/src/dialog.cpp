@@ -21,8 +21,7 @@ wxExDialog::wxExDialog(const wxExWindowData& data)
       data.Style() == DATA_NUMBER_NOT_SET ? 
         wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER: data.Style(), 
       data.Name().empty() ? "wxExDialog": data.Name())
-  , m_ButtonFlags(data.Button())
-  , m_HasDefaultSize(data.Size() == wxDefaultSize)
+  , m_Data(data)
   , m_TopSizer(new wxFlexGridSizer(1, 0, 0))
   , m_UserSizer(new wxFlexGridSizer(1, 0, 0))
 {
@@ -72,11 +71,11 @@ void wxExDialog::LayoutSizers(bool add_separator_line)
   m_TopSizer->AddGrowableRow(m_TopSizer->GetChildren().GetCount() - 1);
 
   // Then, if buttons were specified, the button sizer.
-  if (m_ButtonFlags != 0)
+  if (m_Data.Button() != 0)
   {
     wxSizer* sizer = (add_separator_line ?
-      CreateSeparatedButtonSizer(m_ButtonFlags):
-      CreateButtonSizer(m_ButtonFlags));
+      CreateSeparatedButtonSizer(m_Data.Button()):
+      CreateButtonSizer(m_Data.Button()));
 
     if (sizer != nullptr)
     {
@@ -87,7 +86,7 @@ void wxExDialog::LayoutSizers(bool add_separator_line)
   // The top sizer ends with a spacer as well.
   m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
 
-  if (m_HasDefaultSize)
+  if (m_Data.Size() == wxDefaultSize)
   {
     SetSizerAndFit(m_TopSizer);
   }

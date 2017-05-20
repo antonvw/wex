@@ -18,11 +18,14 @@ class WXDLLIMPEXP_BASE wxExFileDialog : public wxFileDialog
 public:
   /// Constructor.
   wxExFileDialog(
-    wxWindow *parent,
+    /// specify file
     wxExFile* file,
-    const wxString &message=wxFileSelectorPromptStr, 
-    const wxString &wildcard=wxFileSelectorDefaultWildcardStr,
-    const wxExWindowData& data = wxExWindowData().Style(wxFD_DEFAULT_STYLE));
+    /// window data
+    const wxExWindowData& data = wxExWindowData().Style(wxFD_DEFAULT_STYLE),
+    /// wildcard
+    /// if wildcard is default and file is initialized, 
+    /// the wildcard is taken from the file
+    const wxString& wildcard = wxFileSelectorDefaultWildcardStr);
 
   /// Shows the dialog depending on the changes on the file.
   /// If you specify show_modal then dialog is always shown.

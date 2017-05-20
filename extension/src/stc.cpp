@@ -40,23 +40,8 @@ enum
 int wxExSTC::m_Zoom = -1;
 
 wxExSTC::wxExSTC(const std::string& text, const wxExSTCData& data)
-  : wxStyledTextCtrl(
-      data.Window().Parent(),
-      data.Window().Id(), 
-      data.Window().Pos(), 
-      data.Window().Size(), 
-      data.Window().Style(), 
-      data.Window().Name())
-  , m_Data(this, data)
-  , m_vi(this)
-  , m_File(this, data.Window().Name())
-  , m_Link(this)
-  , m_HexMode(wxExHexMode(this))
-  , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
-  , m_Lexer(this)
+  : wxExSTC(wxExPath(), data)
 {
-  Initialize(false);
-
   if (!text.empty())
   {
     HexMode() ? m_HexMode.AppendText(text): SetText(text);
@@ -72,20 +57,25 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
       data.Window().Id(), 
       data.Window().Pos(), 
       data.Window().Size(), 
-      data.Window().Style())
-  , m_File(this)
+      data.Window().Style(), 
+      data.Window().Name())
   , m_Data(this, data)
   , m_vi(this)
+  , m_File(this, data.Window().Name())
   , m_Link(this)
-  , m_HexMode(this)
+  , m_HexMode(wxExHexMode(this))
   , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
   , m_Lexer(this)
 {
-  Initialize(filename.GetStat().IsOk());
-  
+  Initialize();
+
   if (filename.GetStat().IsOk())
   {
     Open(filename, data);
+  }
+  else
+  {
+    wxExLexers::Get()->ApplyGlobalStyles(this);
   }
 }
 
@@ -624,7 +614,7 @@ void wxExSTC::GuessType()
 #endif
 }
 
-void wxExSTC::Initialize(bool file_exists)
+void wxExSTC::Initialize()
 {
   if (wxConfig::Get()->ReadBool("AllowSync", true)) Sync();
   
@@ -700,12 +690,6 @@ void wxExSTC::Initialize(bool file_exists)
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
 
-  // Prevent doing this double, see wxExLexer::Apply.
-  if (!file_exists)
-  {
-    wxExLexers::Get()->ApplyGlobalStyles(this);
-  }
-  
   ConfigGet(true);
   
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
@@ -1322,7 +1306,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 
 bool wxExSTC::Open(const wxExPath& filename, const wxExSTCData& data)
 {
-  m_Data = data;
+  m_Data = wxExSTCData(data).Window(wxExWindowData().Name(filename.GetFullPath()));
   
   if (GetFileName() == filename && data.Control().Line() > 0)
   {
@@ -1331,8 +1315,6 @@ bool wxExSTC::Open(const wxExPath& filename, const wxExSTCData& data)
 
   if (!m_File.FileLoad(filename)) return false;
 
-  SetName(filename.GetFullPath());
-  
   m_Data.Inject();
 
   if (m_Frame != nullptr)

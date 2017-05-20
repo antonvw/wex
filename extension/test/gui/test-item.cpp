@@ -26,7 +26,7 @@ TEST_CASE("wxExItem")
   
   wxExItem::UseConfig(false);
   
-  wxExItem item("item", "hello string", 1, ITEM_TEXTCTRL, true);
+  wxExItem item("item", "hello string", ITEM_TEXTCTRL, wxExControlData(), true);
   
   REQUIRE( item.GetColumns() == 1);
   REQUIRE( item.GetInitial().As<wxString>() == "hello string");
@@ -46,7 +46,6 @@ TEST_CASE("wxExItem")
   
   item.SetDialog(nullptr);
   item.SetImageList(nullptr);
-  item.SetValidator(nullptr);
   
   // setting value if window is nullptr should have no effect.
   REQUIRE(!item.SetValue(wxString("test")));
@@ -72,7 +71,8 @@ TEST_CASE("wxExItem")
   REQUIRE( item.SetValue(wxString("value changed")));
   REQUIRE( item.GetValue() == "value changed");
   REQUIRE( item.GetInitial().As<wxString>() == "hello string");
-  REQUIRE( item.GetWindow()->GetWindowStyleFlag() == 1);
+  // TODO: Add Flags to window data.
+  // REQUIRE( item.GetWindow()->GetWindowStyleFlag() == 1);
   
   item_int.Layout(panel, sizer);
   REQUIRE( item_int.GetWindow() != nullptr);

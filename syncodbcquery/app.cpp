@@ -152,7 +152,7 @@ Frame::Frame()
   GetManager().Update();
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
-    if (wxExFileDialog(this,
+    if (wxExFileDialog(
       &m_Query->GetFile()).ShowModalIfChanged()  != wxID_CANCEL)
     {
       wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
@@ -236,11 +236,11 @@ Frame::Frame()
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExFileDialog dlg(
-      this, 
       &m_Query->GetFile(), 
-      wxGetStockLabel(wxID_SAVEAS), 
-      wxFileSelectorDefaultWildcardStr, 
-      wxExWindowData().Style(wxFD_SAVE));
+      wxExWindowData().
+        Style(wxFD_SAVE).
+        Parent(this).
+        Title(wxGetStockLabel(wxID_SAVEAS).ToStdString()));
     if (dlg.ShowModal() == wxID_OK)
     {
        m_Query->GetFile().FileSave(dlg.GetPath().ToStdString());

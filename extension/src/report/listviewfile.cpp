@@ -26,7 +26,7 @@ wxExListViewFile::wxExListViewFile(const std::string& file, const wxExListViewDa
   , wxExFile(false) // do not open files in FileLoad and Save
   , m_AddItemsDialog(new wxExItemDialog({
         {m_TextAddWhat,ITEM_COMBOBOX, wxAny(), true},
-        {m_TextInFolder,ITEM_COMBOBOX_DIR, wxAny(), true, NewControlId()},
+        {m_TextInFolder,ITEM_COMBOBOX_DIR, wxAny(), true},
         {std::set<wxString> {
           m_TextAddFiles, m_TextAddFolders, m_TextAddRecursive}}},
       wxExWindowData().

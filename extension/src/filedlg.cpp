@@ -15,14 +15,12 @@
 #include <wx/extension/util.h>
 
 wxExFileDialog::wxExFileDialog(
-  wxWindow *parent,
   wxExFile* file,
-  const wxString &message, 
-  const wxString &wildcard,
-  const wxExWindowData& data)
+  const wxExWindowData& data,
+  const wxString &wildcard)
   : wxFileDialog(
-      parent, 
-      message, 
+      data.Parent(), 
+      data.Title(), 
       file->GetFileName().GetPath(), 
       file->GetFileName().GetFullName(), 
       wildcard, 
@@ -34,7 +32,6 @@ wxExFileDialog::wxExFileDialog(
 //      name)
   , m_File(file)
 {
-  // Override wildcard if it is default and file is initialized.
   if (wildcard == wxFileSelectorDefaultWildcardStr &&
       m_File->GetFileName().GetStat().IsOk())
   {

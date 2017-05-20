@@ -44,10 +44,9 @@ class wxExTextCtrl: public wxTextCtrl
 public:
   // Constructor. Creates empty control.
   wxExTextCtrl(
-    wxWindow* parent,
     wxExManagedFrame* frame,
     wxStaticText* prefix,
-    const wxExWindowData& data = wxExWindowData().Style(wxTE_PROCESS_ENTER));
+    const wxExWindowData& data);
     
   // Returns ex component.
   wxExEx* GetEx() {return m_ex;};
@@ -236,7 +235,7 @@ wxPanel* wxExManagedFrame::CreateExPanel()
   // comes the ex ctrl for getting user input.
   wxPanel* panel = new wxPanel(this);
   wxStaticText* text = new wxStaticText(panel, wxID_ANY, " ");
-  m_TextCtrl = new wxExTextCtrl(panel, this, text);
+  m_TextCtrl = new wxExTextCtrl(this, text, wxExWindowData().Style(wxTE_PROCESS_ENTER).Parent(panel));
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
   sizer->AddGrowableCol(1);
@@ -367,11 +366,11 @@ void wxExManagedFrame::SyncCloseAll(wxWindowID id)
 // Implementation of support class.
 
 wxExTextCtrl::wxExTextCtrl(
-  wxWindow* parent,
   wxExManagedFrame* frame,
   wxStaticText* prefix,
   const wxExWindowData& data)
-  : wxTextCtrl(parent, data.Id(), wxEmptyString, data.Pos(), data.Size(), data.Style())
+  : wxTextCtrl(
+    data.Parent(), data.Id(), wxEmptyString, data.Pos(), data.Size(), data.Style())
   , m_Frame(frame)
   , m_Prefix(prefix)
   , m_Calcs("excalc")

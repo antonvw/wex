@@ -64,7 +64,7 @@ public:
              id == ID_ALL_CLOSE)
         {
           if (wxExFileDialog(
-            this, &win->GetFile()).ShowModalIfChanged() == wxID_CANCEL) 
+            &win->GetFile()).ShowModalIfChanged() == wxID_CANCEL) 
           {
             return false;
           }

@@ -120,6 +120,11 @@ bool wxExSTCData::Inject() const
       return true;},
     [&]() {
       return m_STC->GetVi().Command(m_Data.Command());});
+
+  if (!m_Data.Window().Name().empty())
+  {
+    m_STC->SetName(m_Data.Window().Name());
+  }
   
   if ((m_WinFlags & STC_WIN_READ_ONLY) ||
       (m_STC->GetFileName().FileExists() && m_STC->GetFileName().IsReadOnly()))

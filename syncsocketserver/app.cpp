@@ -283,11 +283,11 @@ Frame::Frame()
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExFileDialog dlg(
-      this, 
       &m_DataWindow->GetFile(), 
-      wxGetStockLabel(wxID_SAVEAS), 
-      wxFileSelectorDefaultWildcardStr, 
-      wxExWindowData().Style(wxFD_SAVE));
+      wxExWindowData().
+        Style(wxFD_SAVE).
+        Parent(this).
+        Title(wxGetStockLabel(wxID_SAVEAS).ToStdString()));
     if (dlg.ShowModal())
     {
       m_DataWindow->GetFile().FileSave(dlg.GetPath().ToStdString());
@@ -334,7 +334,7 @@ Frame::Frame()
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
     wxExItemDialog({
-        {_("Hostname"), wxEmptyString, 0, ITEM_TEXTCTRL, true},
+        {_("Hostname"), wxEmptyString, ITEM_TEXTCTRL, wxExControlData(), true},
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
         {_("Port"), 1, 65536}},
@@ -520,7 +520,7 @@ Frame::Frame()
       Hide();
       return;
     }
-    if (wxExFileDialog(this, 
+    if (wxExFileDialog(
       &m_DataWindow->GetFile()).ShowModalIfChanged() == wxID_CANCEL)
     {
       return;

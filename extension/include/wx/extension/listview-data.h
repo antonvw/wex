@@ -46,7 +46,7 @@ public:
   wxExListViewData& Image(wxExImageType type);
 
   /// Injects data.  
-  bool Inject() const;
+  bool Inject();
 
   /// Returns lexer.
   const auto& Lexer() const {return m_Lexer;};
@@ -63,8 +63,11 @@ public:
   /// Returns type.
   const auto& Type() const {return m_Type;};
   
-  /// Set type.
+  /// Sets listtype.
   wxExListViewData& Type(wxExListType type);
+
+  /// Returns the list type as a string.
+  const std::string TypeDescription() const;
 
   /// Returns window data.
   const auto& Window() const {return m_Data.Window();};
@@ -72,6 +75,8 @@ public:
   /// Sets window data.
   wxExListViewData& Window(wxExWindowData& data) {m_Data.Window(data); return *this;};
 private:  
+  void AddColumns();
+
   wxExControlData m_Data;
 
   long m_MenuFlags = LIST_MENU_DEFAULT;
@@ -81,4 +86,6 @@ private:
 
   wxExImageType m_ImageType = IMAGE_ART;
   wxExListType m_Type = LIST_NONE;
+
+  bool m_Initialized = false;
 };

@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
-#include <wx/combobox.h>
 #include <wx/config.h>
 #include <wx/settings.h>
 #include <wx/stockitem.h>
@@ -223,15 +222,10 @@ int wxExSTC::ConfigDialog(const wxExWindowData& data)
            {wxSTC_PRINT_COLOURONWHITE, _X("Colour on white")},
            {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _X("Colour on white normal")}}, true, 1}}},
       {_X("Directory"),
-        {{_X("Include directory"), ITEM_LISTVIEW, wxAny(), false, wxID_ANY, LABEL_NONE}}}}}};
+        {{_X("Include directory"), ITEM_LISTVIEW, wxAny(), false, wxExControlData().
+          Window(wxExWindowData().Size({200, 200}))}}}}}};
 
-  if (!data.Button() & wxAPPLY)
-  {
-    return wxExItemDialog(items,
-      wxExWindowData(data).
-        Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title())).ShowModal();
-  }
-  else
+  if (data.Button() & wxAPPLY)
   {
     if (m_ConfigDialog == nullptr)
     {
@@ -242,6 +236,12 @@ int wxExSTC::ConfigDialog(const wxExWindowData& data)
     }
 
     return m_ConfigDialog->Show();
+  }
+  else
+  {
+    return wxExItemDialog(items,
+      wxExWindowData(data).
+        Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title())).ShowModal();
   }
 }
 

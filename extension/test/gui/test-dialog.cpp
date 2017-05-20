@@ -19,4 +19,7 @@ TEST_CASE("wxExDialog")
   
   wxExDialog* dlg = new wxExDialog(wxExWindowData().Button(0).Title("no buttons"));
   dlg->Show();
+
+  REQUIRE(dlg->GetData().Button() == 0);
+  REQUIRE(dlg->GetData().Title() == "no buttons");
 }

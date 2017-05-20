@@ -166,10 +166,13 @@ wxExListView::wxExListView(const wxExListViewData& data)
       data.Window().Name())
   , m_ImageHeight(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
   , m_ImageWidth(16)
-  , m_Data(wxExListViewData(data).Image(data.Type() == LIST_NONE ? data.Image(): IMAGE_FILE_ICON))
+  , m_Data(this, wxExListViewData(data).Image(data.Type() == LIST_NONE ? 
+      data.Image(): IMAGE_FILE_ICON))
 {
-  Initialize();
-  
+  ConfigGet(true);
+
+  m_Data.Inject();
+
 #if wxUSE_DRAG_AND_DROP
   // We can only have one drop target, we use file drop target,
   // as list items can also be copied and pasted.
@@ -417,36 +420,6 @@ wxExListView::wxExListView(const wxExListViewData& data)
     wxExFrame::UpdateStatusBar(this);});
 #endif  
 }    
-
-void wxExListView::AddColumns()
-{
-  const int col_line_width = 250;
-
-  AppendColumn(wxExColumn(_("File Name").ToStdString(), wxExColumn::COL_STRING));
-
-  switch (m_Data.Type())
-  {
-    case LIST_FIND:
-      AppendColumn(wxExColumn(_("Line").ToStdString(), wxExColumn::COL_STRING, col_line_width));
-      AppendColumn(wxExColumn(_("Match").ToStdString(), wxExColumn::COL_STRING));
-      AppendColumn(wxExColumn(_("Line No").ToStdString()));
-    break;
-    case LIST_KEYWORD:
-      for (const auto& it : m_Data.Lexer()->GetKeywords())
-      {
-        AppendColumn(wxExColumn(it));
-      }
-
-      AppendColumn(wxExColumn(_("Keywords").ToStdString()));
-    break;
-    default: break; // to prevent warnings
-  }
-
-  AppendColumn(wxExColumn(_("Modified").ToStdString(), wxExColumn::COL_DATE));
-  AppendColumn(wxExColumn(_("In Folder").ToStdString(), wxExColumn::COL_STRING, 175));
-  AppendColumn(wxExColumn(_("Type").ToStdString(), wxExColumn::COL_STRING));
-  AppendColumn(wxExColumn(_("Size").ToStdString()));
-}
 
 long wxExListView::AppendColumn(const wxExColumn& col)
 {
@@ -797,48 +770,6 @@ const std::string wxExListView::GetItemText(
   
   const int col = FindColumn(col_name);
   return col < 0 ? std::string(): wxListView::GetItemText(item_number, col).ToStdString();
-}
-
-const std::string wxExListView::GetTypeDescription(wxExListType type)
-{
-  wxString value;
-
-  switch (type)
-  {
-    case LIST_FOLDER: value = _("Folder"); break;
-    case LIST_FIND: value = _("Find Results"); break;
-    case LIST_HISTORY: value = _("History"); break;
-    case LIST_KEYWORD: value = _("Keywords"); break;
-    case LIST_FILE: value = _("File"); break;
-    case LIST_NONE: value = _("None"); break;
-    default: wxFAIL;
-  }
-
-  return value.ToStdString();
-}
-
-void wxExListView::Initialize()
-{
-  ConfigGet(true);
-  
-  SetName(GetTypeDescription());
-  
-  switch (m_Data.Type())
-  {
-    case LIST_FOLDER:
-    case LIST_NONE:
-      SetSingleStyle(wxLC_LIST);
-      break;
-    
-    case LIST_KEYWORD:
-      wxASSERT(m_Data.Lexer() != nullptr);
-      SetName(GetName() + " " + m_Data.Lexer()->GetDisplayLexer());
-      // fall through
-    default:
-      SetSingleStyle(wxLC_REPORT);
-      AddColumns();
-      break;
-  }
 }
 
 void wxExListView::ItemActivated(long item_number)

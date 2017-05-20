@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/extension/lexer.h>
 #include <wx/extension/listview-data.h>
 #include <wx/extension/listview.h>
 
@@ -37,6 +38,7 @@ wxExListViewData& wxExListViewData::operator=(const wxExListViewData& r)
   {
     m_Data = r.m_Data;
     m_ImageType = r.m_ImageType;
+    m_Initialized = r.m_Initialized;
     m_Lexer = r.m_Lexer;
     m_MenuFlags = r.m_MenuFlags;
     m_Type = r.m_Type;
@@ -50,15 +52,48 @@ wxExListViewData& wxExListViewData::operator=(const wxExListViewData& r)
   return *this;
 }
   
+void wxExListViewData::AddColumns()
+{
+  const int col_line_width = 250;
+
+  m_ListView->AppendColumn(wxExColumn(_("File Name").ToStdString(), wxExColumn::COL_STRING));
+
+  switch (m_Type)
+  {
+    case LIST_FIND:
+      m_ListView->AppendColumn(wxExColumn(_("Line").ToStdString(), wxExColumn::COL_STRING, col_line_width));
+      m_ListView->AppendColumn(wxExColumn(_("Match").ToStdString(), wxExColumn::COL_STRING));
+      m_ListView->AppendColumn(wxExColumn(_("Line No").ToStdString()));
+    break;
+    case LIST_KEYWORD:
+      for (const auto& it : m_Lexer->GetKeywords())
+      {
+        m_ListView->AppendColumn(wxExColumn(it));
+      }
+
+      m_ListView->AppendColumn(wxExColumn(_("Keywords").ToStdString()));
+    break;
+    default: break; // to prevent warnings
+  }
+
+  m_ListView->AppendColumn(wxExColumn(_("Modified").ToStdString(), wxExColumn::COL_DATE));
+  m_ListView->AppendColumn(wxExColumn(_("In Folder").ToStdString(), wxExColumn::COL_STRING, 175));
+  m_ListView->AppendColumn(wxExColumn(_("Type").ToStdString(), wxExColumn::COL_STRING));
+  m_ListView->AppendColumn(wxExColumn(_("Size").ToStdString()));
+}
+
 wxExListViewData& wxExListViewData::Image(wxExImageType type)
 {
   m_ImageType = type;
   return *this;
 }
 
-bool wxExListViewData::Inject() const
+bool wxExListViewData::Inject()
 {
-  return m_ListView != nullptr && m_Data.Inject(
+   bool injected = 
+     m_ListView != nullptr && 
+     m_ListView->GetItemCount() > 0 && 
+     m_Data.Inject(
     [&]() {
       const int initial_value = (
         m_ListView->GetFirstSelected() == -1 ? 1: m_ListView->GetFirstSelected() + 1);
@@ -74,6 +109,37 @@ bool wxExListViewData::Inject() const
     [&]() {
       return m_ListView->FindNext(m_Data.Find());},
     [&]() {return false;});
+
+  if (!m_Initialized)
+  {
+    injected = true;
+    m_Initialized = true;
+    std::string name = TypeDescription();
+
+    switch (m_Type)
+    {
+      case LIST_FOLDER:
+      case LIST_NONE:
+        m_ListView->SetSingleStyle(wxLC_LIST);
+        break;
+      
+      case LIST_KEYWORD:
+        if (m_Lexer != nullptr)
+        {
+          name += " " + m_Lexer->GetDisplayLexer();
+        }
+        // fall through
+      default:
+        m_ListView->SetSingleStyle(wxLC_REPORT);
+        AddColumns();
+        break;
+    }
+
+    m_ListView->SetName(name);
+    m_Data.Window(wxExWindowData().Name(name));
+  }
+
+  return injected;
 }
   
 wxExListViewData& wxExListViewData::Lexer(const wxExLexer* lexer)
@@ -92,4 +158,22 @@ wxExListViewData& wxExListViewData::Type(wxExListType type)
 {
   m_Type = type;
   return *this;
+}
+
+const std::string wxExListViewData::TypeDescription() const
+{
+  wxString value;
+
+  switch (m_Type)
+  {
+    case LIST_FOLDER: value = _("Folder"); break;
+    case LIST_FIND: value = _("Find Results"); break;
+    case LIST_HISTORY: value = _("History"); break;
+    case LIST_KEYWORD: value = _("Keywords"); break;
+    case LIST_FILE: value = _("File"); break;
+    case LIST_NONE: value = _("None"); break;
+    default: wxFAIL;
+  }
+
+  return value.ToStdString();
 }

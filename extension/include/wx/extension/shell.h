@@ -29,7 +29,7 @@ class wxExProcess;
 class WXDLLIMPEXP_BASE wxExShell: public wxExSTC
 {
 public:
-  /// Constructor.
+  /// Default constructor.
   wxExShell(
     /// data
     const wxExSTCData& data = wxExSTCData(),

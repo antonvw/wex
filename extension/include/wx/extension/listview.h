@@ -111,13 +111,6 @@ public:
   /// Returns current sorted column no.
   int GetSortedColumnNo() const {return m_SortedColumnNo;};
 
-  /// Returns the list type as a string.
-  const std::string GetTypeDescription() const {
-    return GetTypeDescription(m_Data.Type());};
-
-  /// Returns the list type as a string for specified type.
-  static const std::string GetTypeDescription(wxExListType type);
-
   /// Inserts new item swith column values from text.
   /// Items are separated by newlines, columns by a field separator.
   /// Returns true if successfull.
@@ -176,7 +169,6 @@ protected:
   /// Returns the field separator.
   const auto& GetFieldSeparator() const {return m_FieldSeparator;};
 private:
-  void AddColumns();
   const std::string BuildPage();
   wxExColumn Column(const std::string& name) const;
   void CopySelectedItemsToClipboard();
@@ -187,7 +179,6 @@ private:
   /// Use only if you setup for IMAGE_ART.
   unsigned int GetArtID(const wxArtID& artid);
 
-  void Initialize();
   void ItemActivated(long item_number);
   
   /// Sets the item file icon image.

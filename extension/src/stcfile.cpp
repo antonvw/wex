@@ -46,7 +46,7 @@ bool wxExSTCFile::DoFileLoad(bool synced)
 {
   if (
    GetContentsChanged() &&
-   wxExFileDialog(m_STC, this).ShowModalIfChanged() == wxID_CANCEL)
+   wxExFileDialog(this).ShowModalIfChanged() == wxID_CANCEL)
   {
     return false;
   }

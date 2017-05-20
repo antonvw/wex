@@ -97,8 +97,7 @@ TEST_CASE("wxExListView")
   AddPane(GetFrame(), listView2);
   
   REQUIRE( listView2->GetData().Image() == IMAGE_FILE_ICON);
-  REQUIRE(!listView2->GetTypeDescription().empty());
-  REQUIRE(!listView2->wxExListView::GetTypeDescription(LIST_FILE).empty());
+  REQUIRE(!listView2->GetData().TypeDescription().empty());
   
   REQUIRE( listView2->ItemFromText("test.h\ntest.h"));
   REQUIRE(!listView2->ItemToText(0).empty());

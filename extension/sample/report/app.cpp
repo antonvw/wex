@@ -88,8 +88,8 @@ wxExRepSampleFrame::wxExRepSampleFrame() : wxExFrameWithHistory()
 
     m_NotebookWithLists->AddPage(
       vw, 
-      vw->GetTypeDescription(), 
-      vw->GetTypeDescription(), 
+      vw->GetData().TypeDescription(), 
+      vw->GetData().TypeDescription(), 
       true);
   }
 
@@ -109,7 +109,7 @@ wxExRepSampleFrame::wxExRepSampleFrame() : wxExFrameWithHistory()
 
   wxExDirWithListView dir(
     (wxExListView*)m_NotebookWithLists->GetPageByKey(
-      wxExListView::GetTypeDescription(LIST_FILE)),
+      wxExListViewData().Type(LIST_FILE).TypeDescription()),
     wxGetCwd().ToStdString(),
     "*.cpp;*.h");
 
@@ -117,7 +117,7 @@ wxExRepSampleFrame::wxExRepSampleFrame() : wxExFrameWithHistory()
 
   wxExListItem item(
     (wxExListView*)m_NotebookWithLists->GetPageByKey(
-      wxExListView::GetTypeDescription(LIST_FILE)),
+      wxExListViewData().Type(LIST_FILE).TypeDescription()),
     wxExPath("NOT EXISTING ITEM"));
 
   item.Insert();

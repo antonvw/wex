@@ -124,24 +124,21 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
 
 int wxExProcess::ConfigDialog(const wxExWindowData& data)
 {
-  wxExItem ci(_("Process"), ITEM_COMBOBOX, wxAny(), true);
-    
   wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
   validator.SetCharExcludes("?%*\"");
-  ci.SetValidator(&validator);
   
   const std::vector<wxExItem> v {
-    ci,
-    {m_WorkingDirKey, ITEM_COMBOBOX_DIR, wxAny(), true, wxWindow::NewControlId()}};
+    {_("Process"), ITEM_COMBOBOX, wxAny(), true, wxExControlData().Validator(&validator)},
+    {m_WorkingDirKey, ITEM_COMBOBOX_DIR, wxAny(), true}};
 
-  if (!data.Button() & wxAPPLY)
-  {
-    return wxExItemDialog(v, data).ShowModal();
-  }
-  else
+  if (data.Button() & wxAPPLY)
   {
     wxExItemDialog* dlg = new wxExItemDialog(v, data);
     return dlg->Show();
+  }
+  else
+  {
+    return wxExItemDialog(v, data).ShowModal();
   }
 }
 

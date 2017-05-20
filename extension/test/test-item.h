@@ -2,7 +2,7 @@
 // Name:      test-item.h
 // Purpose:   Declaration and implementation of TestItems
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -34,7 +34,7 @@ const auto NotebookItem(
        {"spin2", 0, 10},
        {"spin3", 0, 10},
        {"spin control double", 10.1, 15.0, 11.0, 0.1}}}},
-    style, 0, 0, 1, label, il);
+    style, 0, 1, wxExControlData(), label, il);
 };
 
 /// Returns a vector with some items.

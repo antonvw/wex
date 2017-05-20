@@ -18,6 +18,8 @@ TEST_CASE("wxExListViewData")
   SUBCASE("Constructor")
   {
     REQUIRE( wxExListViewData().Image() == IMAGE_ART);
+    REQUIRE( wxExListViewData().Type() == LIST_NONE);
+    REQUIRE(!wxExListViewData().TypeDescription().empty());
     REQUIRE( wxExListViewData().Image(IMAGE_NONE).Image() == IMAGE_NONE);
     REQUIRE( wxExListViewData(wxExControlData().Col(3)).Control().Col() == 3);
     REQUIRE( wxExListViewData(wxExWindowData().Name("XX")).Window().Name() == "XX");
@@ -26,7 +28,7 @@ TEST_CASE("wxExListViewData")
   SUBCASE("Inject")
   {
     wxExListView* lv = new wxExListView();
-    REQUIRE(!wxExListViewData(lv).Inject());
+    REQUIRE( wxExListViewData(lv).Inject());
     REQUIRE( wxExListViewData(lv, wxExControlData().Line(2)).Inject());
   }
 }

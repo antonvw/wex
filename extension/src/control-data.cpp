@@ -74,3 +74,10 @@ wxExControlData& wxExControlData::Line(int line, std::function<int(int)> valid)
 
   return *this;
 }
+
+wxExControlData& wxExControlData::Validator(wxValidator* validator)
+{
+  m_Validator = validator;
+
+  return *this;
+}

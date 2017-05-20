@@ -689,11 +689,10 @@ void wxExOpenFilesDialog(wxExFrame* frame,
       
   if (stc != nullptr)
   {
-    wxExFileDialog dlg(frame,
+    wxExFileDialog dlg(
       &stc->GetFile(),
-      caption,
-      wildcards,
-      wxExWindowData().Style(style));
+      wxExWindowData().Style(style).Title(caption.ToStdString()),
+      wildcards);
 
     if (ask_for_continue)
     {

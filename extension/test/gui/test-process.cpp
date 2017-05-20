@@ -27,7 +27,7 @@ TEST_CASE("wxExProcess")
   REQUIRE(!process->IsRunning());
   process->GetShell()->SetText(std::string());
   
-  process->ConfigDialog();
+  process->ConfigDialog(wxExWindowData().Button(wxAPPLY | wxCANCEL));
   
 #ifdef __UNIX__
   // Test wait for prcess (sync)

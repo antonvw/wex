@@ -225,14 +225,14 @@ bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
   switch (id)
   {
   case ID_NOTEBOOK_EDITORS:
-    if (wxExFileDialog(this, 
+    if (wxExFileDialog(
       &((wxExSTC*)page)->GetFile()).ShowModalIfChanged() == wxID_CANCEL)
     {
       return false;
     }
   break;
   case ID_NOTEBOOK_PROJECTS:
-    if (wxExFileDialog(this, 
+    if (wxExFileDialog(
        (wxExListViewFile*)page).ShowModalIfChanged() == wxID_CANCEL)
     {
       return false;

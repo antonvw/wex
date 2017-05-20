@@ -46,7 +46,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(
   const std::vector<wxExItem> f {
     {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), true},
     {m_TextInFiles, ITEM_COMBOBOX, wxAny(), true},
-    {m_TextInFolder, ITEM_COMBOBOX_DIR, wxAny(), true, NewControlId()},
+    {m_TextInFolder, ITEM_COMBOBOX_DIR, wxAny(), true},
     {t}};
   
   m_FiFDialog = new wxExItemDialog(

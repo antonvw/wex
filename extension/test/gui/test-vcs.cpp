@@ -29,7 +29,7 @@ TEST_CASE("wxExVCS")
   // giving the first command of current vcs, being add.
   wxExVCS vcs(std::vector< std::string >{file.GetFullPath()});
   
-  vcs.ConfigDialog();
+  vcs.ConfigDialog(wxExWindowData().Button(wxAPPLY | wxCANCEL));
   
   // DirExists
   REQUIRE( vcs.DirExists(file));

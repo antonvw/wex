@@ -2,7 +2,7 @@
 // Name:      test-configitem.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -36,8 +36,8 @@ TEST_CASE("wxExConfigItem")
   const wxExItem ci_sl("ci-sl", 1, 5, 2, ITEM_SLIDER);
   const wxExItem ci_vl(wxLI_HORIZONTAL);
   wxExItem ci_str("ci-string", wxEmptyString);
-  const wxExItem ci_hl("ci-hyper", "www.wxwidgets.org", 0,ITEM_HYPERLINKCTRL);
-  wxExItem ci_st("ci-static", "HELLO", 0, ITEM_STATICTEXT);
+  const wxExItem ci_hl("ci-hyper", "www.wxwidgets.org", ITEM_HYPERLINKCTRL);
+  wxExItem ci_st("ci-static", "HELLO", ITEM_STATICTEXT);
   const wxExItem ci_int("ci-int",ITEM_TEXTCTRL_INT);
   const wxExItem ci_rb("ci-rb", {
       {0, "Zero"},
@@ -109,7 +109,6 @@ TEST_CASE("wxExConfigItem")
     }
     
     it.SetRowGrowable(true);
-    it.SetValidator(nullptr);
   }
 
   // Layout the items and check control is created.

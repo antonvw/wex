@@ -2,7 +2,7 @@
 // Name:      test-configitem.h
 // Purpose:   Declaration and implementation of TestConfigItems
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -17,19 +17,14 @@ const auto TestConfigItems(
   int rows = 0,
   int cols = 0)
 {
-  wxExItem ci("String Validator");
-  
   wxTextValidator* validator = new wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST);
   validator->SetCharIncludes("0123");
-  ci.SetValidator(validator);
   
   return std::vector<wxExItem> {
     {"notebook", {
       {"Buttons",
-        {{"<span size='x-large' color='blue'>Big</span> <b>bold</b> button",
-           ITEM_BUTTON, wxAny(), false, 1000},
-         {"lambda",
-           ITEM_BUTTON, wxAny(), false, 1003, LABEL_LEFT, 0,
+        {{"<span size='x-large' color='blue'>Big</span> <b>bold</b> button", ITEM_BUTTON},
+         {"lambda", ITEM_BUTTON, wxAny(), false, wxExControlData(), LABEL_LEFT,
            [=](wxWindow* user, const wxAny& value, bool save) {
              wxLogStatus("click on lambda");}}}},
       {"Checkboxes",
@@ -38,19 +33,21 @@ const auto TestConfigItems(
          {"Group Checkbox2", ITEM_CHECKBOX}}}, 
       {"Checkbox lists",
         {{"Bin Choices", {
-           {1, "Bit One"}, {2, "Bit Two"}, {4, "Bit Three"}, {8, "Bit Four"}},
+           {1, "Bit One"}, 
+           {2, "Bit Two"}, 
+           {4, "Bit Three"}, 
+           {8, "Bit Four"}},
            false}, 
          {{"This", "Or", "Other", "a", "b", "c", "d", "e", "f", "g", "h"}}}},
       {"Colours",
         {{"Colour1", ITEM_COLOURPICKERWIDGET}}}, 
       {"Comboboxes",
         {{"Combobox", ITEM_COMBOBOX}, 
-         {"Combobox No Label", ITEM_COMBOBOX, wxAny(), false, wxWindow::NewControlId(), LABEL_NONE},
-         {"Combobox Dir Required", ITEM_COMBOBOX_DIR, wxAny(), true, 1011},
-         {"Combobox Dir", ITEM_COMBOBOX_DIR, wxAny(), false, 1012}}},
+         {"Combobox No Label", ITEM_COMBOBOX},
+         {"Combobox Dir Required", ITEM_COMBOBOX_DIR, wxAny(), true},
+         {"Combobox Dir", ITEM_COMBOBOX_DIR}}},
       {"Command Link Buttons",
-        {{"Command Link Button\tThis text describes what the button does",
-           ITEM_COMMANDLINKBUTTON, wxAny(), false, 1010}}},
+        {{"Command Link Button\tThis text describes what the button does", ITEM_COMMANDLINKBUTTON}}},
       {"Pickers",
         {{10},
          {"Dir Picker", ITEM_DIRPICKERCTRL}, 
@@ -59,8 +56,8 @@ const auto TestConfigItems(
       {"Floats", 
         {{"Float", ITEM_TEXTCTRL_FLOAT}}},
       {"Hyperlinks", 
-        {{"Hyper Link 1", "www.wxwidgets.org", 0, ITEM_HYPERLINKCTRL},
-         {"Hyper Link 2", "www.scintilla.org", 0, ITEM_HYPERLINKCTRL}}},
+        {{"Hyper Link 1", "www.wxwidgets.org", ITEM_HYPERLINKCTRL},
+         {"Hyper Link 2", "www.scintilla.org", ITEM_HYPERLINKCTRL}}},
       {"Integers", 
         {{"Integer", ITEM_TEXTCTRL_INT}}},
       {"ListView",
@@ -74,30 +71,29 @@ const auto TestConfigItems(
          {"Spin Control", 1, 2}, 
          {"Spin Control Double", 1.0, 3.0, 1.0, 0.01}}},
       {"Static Text",
-        {{"Static Text", "this is my static text",
-           0,
-           ITEM_STATICTEXT}}},
-      {"Static Line",
+        {{"Static Text", "this is my static text", ITEM_STATICTEXT}}},
+      {"Static Line", 
         {{wxHORIZONTAL},
          {wxVERTICAL}}},
       {"STC",
-        {{"STC", "cpp", 0, ITEM_STC}}},
+        {{"STC", "cpp", ITEM_STC}}},
       {"Strings",
         {{"String"},
-         ci,
-         {"String Multiline", wxEmptyString, wxTE_MULTILINE}}},
+         {"String Validator", wxEmptyString, ITEM_TEXTCTRL, wxExControlData().Validator(validator)},
+         {"String Multiline", wxEmptyString, ITEM_TEXTCTRL, wxExControlData().Window(wxExWindowData().Style(wxTE_MULTILINE))}}},
       {"Toggle buttons",
-        {{"Toggle Button", ITEM_TOGGLEBUTTON, wxAny(), false, 1020}}},
+        {{"Toggle Button", ITEM_TOGGLEBUTTON, wxAny(), false}}},
       {"User Controls",
         {{"HTML Control", 
            new wxHtmlWindow(),
            [=](wxWindow* user, wxWindow* parent, bool readonly) {
-             ((wxHtmlWindow *)user)->Create(parent, 100);},
+             ((wxHtmlWindow *)user)->Create(parent, 100, wxDefaultPosition, wxSize(200, 200));
+             ((wxHtmlWindow *)user)->SetPage("<html><body><b>Hello</b>, <i>world!</i></body></html>");},
            nullptr},
          {"Text Control", 
            new wxTextCtrl(),
            [=](wxWindow* user, wxWindow* parent, bool readonly) {
-             ((wxTextCtrl *)user)->Create(parent, 100, "hello world");},
+             ((wxTextCtrl *)user)->Create(parent, 100, "Hello world");},
            [=](wxWindow* user, bool save) {
              if (save) wxConfigBase::Get()->Write("mytext", ((wxTextCtrl *)user)->GetValue());
              return true;},
@@ -106,5 +102,5 @@ const auto TestConfigItems(
            [=](wxWindow* user, const wxAny& value, bool save) {
              wxLogStatus(((wxTextCtrl *)user)->GetValue());
              }}}}}, 
-    ITEM_NOTEBOOK_LIST, 0, rows, cols}};
+    ITEM_NOTEBOOK_LIST, rows, cols}};
 }

@@ -19,12 +19,15 @@
 
 TEST_CASE("wxExSTC")
 {
-#if wxCHECK_VERSION(3,1,0)
-  wxExSTC::ConfigDialog();
-#endif
-  
   wxExSTC* stc = GetSTC();
   stc->GetVi().Command("\x1b");
+  
+  SUBCASE("ConfigDialog")
+  {
+#if wxCHECK_VERSION(3,1,0)
+    wxExSTC::ConfigDialog(wxExWindowData().Button(wxCANCEL | wxAPPLY));
+#endif
+  }
   
   SUBCASE("SetText")
   {

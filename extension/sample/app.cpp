@@ -285,7 +285,7 @@ wxExSampleFrame::wxExSampleFrame()
     wxExItemDialog(TestConfigItems(0, 1), 
       wxExWindowData().
         Button(wxCANCEL).
-        Title("Config Dialog Readonly"), 0, 4 ).ShowModal();}, ID_DLG_CONFIG_ITEM_READONLY);
+        Title("Config Dialog Readonly"), 0, 4).ShowModal();}, ID_DLG_CONFIG_ITEM_READONLY);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExItemDialog(TestItems()).ShowModal();}, ID_DLG_ITEM);
@@ -371,7 +371,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       break;
     case wxID_OPEN:
       {
-      wxExFileDialog dlg(this, &m_STC->GetFile());
+      wxExFileDialog dlg(&m_STC->GetFile());
       if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
       const auto start = std::chrono::system_clock::now();
       m_STC->Open(dlg.GetPath().ToStdString(), wxExSTCData().Flags((wxExSTCWindowFlags)m_FlagsSTC));

@@ -20,6 +20,9 @@ class WXDLLIMPEXP_BASE wxExDialog : public wxDialog
 public:
   /// Default constructor.
   wxExDialog(const wxExWindowData& data = wxExWindowData());
+
+  /// Returns the window data.
+  const auto& GetData() const {return m_Data;};
 protected:
   /// Adds to the user sizer using the sizer flags.
   wxSizerItem* AddUserSizer(
@@ -31,17 +34,13 @@ protected:
     wxSizer* sizer,
     const wxSizerFlags& flags = wxSizerFlags().Expand());
 
-  /// Returns the button flags (as specified in the constructor).
-  auto GetButtonFlags() const {return m_ButtonFlags;};
-
   /// Layouts the sizers. Should be invoked after adding to sizers.
   /// If you specified button flags,
   /// they will be put at the bottom of the top sizer,
   /// and a sepator line will be added as specified.
   void LayoutSizers(bool add_separator_line = true);
 private:
-  const long m_ButtonFlags;
-  const bool m_HasDefaultSize;
+  const wxExWindowData m_Data;
   
   wxFlexGridSizer* m_TopSizer;
   wxFlexGridSizer* m_UserSizer;
