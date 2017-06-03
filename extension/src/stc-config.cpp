@@ -120,10 +120,11 @@ bool wxExSTC::AutoIndentation(int c)
 
 int wxExSTC::ConfigDialog(const wxExWindowData& data)
 {
-  STCDefaults use;
-  wxConfigBase* cfg = use.Get();
+  if (m_ConfigDialog == nullptr)
+  {
+    STCDefaults use;
   
-  static const std::vector<wxExItem> items{{"stc-notebook", {
+    m_ConfigDialog = new wxExItemDialog({{"stc-notebook", {
       {_X("General"),
         {{"stc-subnotebook", {
           {_X("Page1"), 
@@ -222,30 +223,18 @@ int wxExSTC::ConfigDialog(const wxExWindowData& data)
            {wxSTC_PRINT_COLOURONWHITE, _X("Colour on white")},
            {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _X("Colour on white normal")}}, true, 1}}},
       {_X("Directory"),
-        {{_X("Include directory"), ITEM_LISTVIEW, wxAny(), false, wxExControlData().
-          Window(wxExWindowData().Size({200, 200}))}}}}}};
-
-  if (data.Button() & wxAPPLY)
-  {
-    if (m_ConfigDialog == nullptr)
-    {
-      m_ConfigDialog = new wxExItemDialog(items,
-        wxExWindowData(data).
-          Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title()).
-          Size(wxSize(510, 500)));
-    }
-
-    return m_ConfigDialog->Show();
-  }
-  else
-  {
-    return wxExItemDialog(items,
+        {{_X("Include directory"), ITEM_LISTVIEW, wxAny(), wxExControlData().
+          Window(wxExWindowData().Size({200, 200}))}}}}}},
       wxExWindowData(data).
-        Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title())).ShowModal();
+        Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title()).
+        Size(wxSize(510, 500)));
   }
+
+  return (data.Button() & wxAPPLY) ? 
+    m_ConfigDialog->Show(): m_ConfigDialog->ShowModal();
 }
 
-void wxExSTC::ConfigGet(bool init)
+void wxExSTC::ConfigGet()
 {
   STCDefaults use;
   wxConfigBase* cfg = use.Get();
@@ -285,11 +274,6 @@ void wxExSTC::ConfigGet(bool init)
     }
   }
   
-  if (init)
-  {
-    Fold();
-  }
-
   AutoCompSetMaxWidth(cfg->ReadLong(_("Auto complete maxwidth"), 0));
   SetCaretLineVisible(cfg->ReadBool(_("Caret line"), true));
   SetFoldFlags(cfg->ReadLong( _("Fold flags"), 0));

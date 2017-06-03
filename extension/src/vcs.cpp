@@ -354,9 +354,9 @@ bool wxExVCS::LoadDocument()
 }
 
 #if wxUSE_GUI
-wxStandardID wxExVCS::Request(wxWindow* parent)
+wxStandardID wxExVCS::Request(const wxExWindowData& data)
 {
-  if (ShowDialog(parent) == wxID_CANCEL)
+  if (ShowDialog(data) == wxID_CANCEL)
   {
     return wxID_CANCEL;
   }  
@@ -383,7 +383,7 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   
   // See also vcsentry, same item is used there.
   const std::vector<wxExItem> v{{
-    _("Base folder"), ITEM_COMBOBOX_DIR, wxAny(), true}};
+    _("Base folder"), ITEM_COMBOBOX_DIR, wxAny(), wxExControlData().Required(true)}};
       
   if (wxExConfigFirstOf(_("Base folder")).empty()) 
   {

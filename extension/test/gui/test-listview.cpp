@@ -103,13 +103,19 @@ TEST_CASE("wxExListView")
   REQUIRE(!listView2->ItemToText(0).empty());
   REQUIRE(!listView2->ItemToText(-1).empty());
   
-  wxListEvent event(wxEVT_LIST_ITEM_ACTIVATED);
-  
   for (auto id : std::vector<int> {0}) 
   {
-    event.m_itemIndex = id;
-    wxPostEvent(listView2, event);
+    wxListEvent* event = new wxListEvent(wxEVT_LIST_ITEM_ACTIVATED);
+    event->SetIndex(id);
+    wxQueueEvent(listView2, event);
   }
   
+  for (auto id : std::vector<int> {
+    ID_EDIT_SELECT_INVERT, ID_EDIT_SELECT_NONE}) 
+  {
+    wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+    wxQueueEvent(listView2, event);
+  }
+
   REQUIRE(wxExUIAction(listView));
 }

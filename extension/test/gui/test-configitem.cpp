@@ -58,7 +58,6 @@ TEST_CASE("wxExConfigItem")
     [=](wxWindow* user, bool save) {
       if (save) wxConfigBase::Get()->Write("mytext", ((wxTextCtrl *)user)->GetValue());
       return true;},
-    false,
     LABEL_LEFT,
     [=](wxWindow* user, const wxAny& value, bool save) {
       wxLogStatus(((wxTextCtrl *)user)->GetValue());});

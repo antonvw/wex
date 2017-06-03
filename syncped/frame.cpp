@@ -465,7 +465,7 @@ Frame::Frame(App* app)
       !wxConfigBase::Get()->ReadBool("List/SortSync", true));}, ID_SORT_SYNC);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExVCS(std::vector< std::string >(), event.GetId() - ID_VCS_LOWEST - 1).Request(this);},
+    wxExVCS(std::vector< std::string >(), event.GetId() - ID_VCS_LOWEST - 1).Request();},
     ID_VCS_LOWEST, ID_VCS_HIGHEST);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {

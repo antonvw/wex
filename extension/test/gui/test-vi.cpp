@@ -331,6 +331,14 @@ TEST_CASE("wxExVi")
     }
   }
 
+  // Test find.
+  stc->SetText("some text to find");
+  REQUIRE( vi->Command("/find"));
+  REQUIRE( vi->Command("yb"));
+  REQUIRE(!vi->Command("/xfind"));
+  // TODO: fix
+  // REQUIRE( vi->Command("/"  + std::string(1, WXK_CONTROL_R) + "0"));
+
   // Test % navigate.
   stc->SetText("{a brace and a close brace}");
   REQUIRE( vi->Command("y%"));

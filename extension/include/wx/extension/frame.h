@@ -23,6 +23,7 @@ class wxListView;
 class wxExPath;
 class wxExGrid;
 class wxExListView;
+class wxExPath;
 class wxExProcess;
 class wxExSTC;
 class wxExVCSEntry;
@@ -88,7 +89,7 @@ public:
   virtual void SetMenuBar(wxMenuBar* bar) override;
   
   /// Allows derived class to update file history.
-  virtual void SetRecentFile(const std::string& file) {;};
+  virtual void SetRecentFile(const wxExPath& path) {;};
 
 #if wxUSE_STATUSBAR
   /// Sets up the status bar if you want to use StatusText.

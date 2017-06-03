@@ -26,11 +26,11 @@ TEST_CASE("wxExItem")
   
   wxExItem::UseConfig(false);
   
-  wxExItem item("item", "hello string", ITEM_TEXTCTRL, wxExControlData(), true);
+  wxExItem item("item", "hello string", ITEM_TEXTCTRL, wxExControlData().Required(true));
   
   REQUIRE( item.GetColumns() == 1);
   REQUIRE( item.GetInitial().As<wxString>() == "hello string");
-  REQUIRE( item.GetIsRequired());
+  REQUIRE( item.GetData().Required());
   REQUIRE( item.GetLabel() == "item");
   REQUIRE( item.GetPage().empty());
   REQUIRE( item.GetType() == ITEM_TEXTCTRL);

@@ -131,7 +131,9 @@ wxExManagedFrame::wxExManagedFrame(size_t maxFiles, const wxExWindowData& data)
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExSTC::ConfigDialog(
-      wxExWindowData().Parent(this).
+      wxExWindowData().
+        Id(wxID_PREFERENCES).
+        Parent(this).
         Title(_("Editor Options").ToStdString()).
         Button(wxAPPLY | wxOK | wxCANCEL));}, wxID_PREFERENCES);
       
@@ -291,10 +293,7 @@ void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 
   if (stc != nullptr)
   {
-    if (stc->GetFileName().FileExists())
-    {
-      SetRecentFile(stc->GetFileName().GetFullPath());
-    }
+     SetRecentFile(stc->GetFileName());
   }
 }
 
@@ -306,7 +305,7 @@ wxExSTC* wxExManagedFrame::OpenFile(
   
   if ((stc = wxExFrame::OpenFile(file, stc_data)) != nullptr)
   {
-    SetRecentFile(file.GetFullPath());
+    SetRecentFile(file);
   }
 
   return stc;
@@ -315,6 +314,14 @@ wxExSTC* wxExManagedFrame::OpenFile(
 void wxExManagedFrame::PrintEx(wxExEx* ex, const std::string& text)
 {
   ex->Print(text);
+}
+
+void wxExManagedFrame::SetRecentFile(const wxExPath& path) 
+{
+  if (path.FileExists())
+  {
+    m_FileHistory.AddFileToHistory(path.GetFullPath());
+  }
 }
 
 void wxExManagedFrame::ShowExMessage(const std::string& text)

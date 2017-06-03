@@ -38,10 +38,8 @@ public:
 
   /// Constructor, opens the file if it exists.
   wxExSTC(const wxExPath& file, const wxExSTCData& data = wxExSTCData());
-  
-  /// After pressing enter, starts new line at same place
-  /// as previous line.
-  bool AutoIndentation(int c);
+
+  /// Virtual override methods.
   
   /// Will a cut succeed? 
   virtual bool CanCut() const override;
@@ -52,6 +50,29 @@ public:
   /// Clear the selection.
   virtual void Clear() override;
 
+  /// Copies text to clipboard.
+  virtual void Copy() override;
+
+  /// Cuts text to clipboard.
+  virtual void Cut() override;
+
+  /// Paste text from clipboard.
+  virtual void Paste() override;
+
+  /// Deselects selected text in the control.
+  // Reimplemented, since scintilla version sets empty sel at 0, and sets caret on pos 0.
+  virtual void SelectNone() override;
+  
+  /// If there is an undo facility and the last operation can be undone, 
+  /// undoes the last operation. 
+  virtual void Undo() override;
+
+  /// Other methods.
+
+  /// After pressing enter, starts new line at same place
+  /// as previous line.
+  bool AutoIndentation(int c);
+  
   // Clears the component: all text is cleared and all styles are reset.
   // Invoked by Open and DoFileNew.
   // (Clear is used by scintilla to clear the selection).
@@ -64,13 +85,7 @@ public:
     wxExWindowData().Title(_("Editor Options").ToStdString()));
 
   /// Sets the configurable parameters to values currently in config.
-  void ConfigGet(bool init = false);
-
-  /// Copies text to clipboard.
-  virtual void Copy() override;
-
-  /// Cuts text to clipboard.
-  virtual void Cut() override;
+  void ConfigGet();
 
   /// Shows a menu with current line type checked, and allows you to change it.
   void FileTypeMenu();
@@ -159,9 +174,6 @@ public:
   /// and sets the lexer.
   bool Open(const wxExPath& filename, const wxExSTCData& data = wxExSTCData());
 
-  /// Paste text from clipboard.
-  virtual void Paste() override;
-
   /// Restores saved position.
   /// Returns true if position was saved before.
   bool PositionRestore();
@@ -222,10 +234,6 @@ public:
   /// Default also resets the divider margin.
   void ResetMargins(wxExSTCMarginFlags flags = STC_MARGIN_ALL);
 
-  /// Deselects selected text in the control.
-  // Reimplemented, since scintilla version sets empty sel at 0, and sets caret on pos 0.
-  virtual void SelectNone() override;
-  
   /// Sets an indicator at specified start and end pos.
   bool SetIndicator(const wxExIndicator& indicator, int start, int end);
 
@@ -248,10 +256,6 @@ public:
   /// Default syncing is started during construction.
   void Sync(bool start = true);
   
-  /// If there is an undo facility and the last operation can be undone, 
-  /// undoes the last operation. 
-  virtual void Undo() override;
-
   /// Use autocomplete lists.
   /// Default on.
   void UseAutoComplete(bool use);
@@ -284,7 +288,6 @@ private:
   bool CheckBrace(int pos);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void FoldAll();
-  void Initialize();
   bool LinkOpen(int mode, std::string* filename = nullptr); // name of found file
   void MarkModified(const wxStyledTextEvent& event);
 

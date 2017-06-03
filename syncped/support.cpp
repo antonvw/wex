@@ -112,17 +112,31 @@ DecoratedFrame::DecoratedFrame(App* app)
   {
     // No accelerators for vi mode, Ctrl F is page down.
     menuFind->Append(wxID_FIND, wxGetStockLabel(wxID_FIND, wxSTOCK_NOFLAGS));
-    menuFind->Append(wxID_REPLACE, wxGetStockLabel(wxID_REPLACE, wxSTOCK_NOFLAGS));
+
+    if (!(m_App->GetData().Flags() & STC_WIN_READ_ONLY))
+    {
+      menuFind->Append(wxID_REPLACE, wxGetStockLabel(wxID_REPLACE, wxSTOCK_NOFLAGS));
+    }
   }
   else
   {
     menuFind->Append(wxID_FIND);
-    menuFind->Append(wxID_REPLACE);
+
+    if (!(m_App->GetData().Flags() & STC_WIN_READ_ONLY))
+    {
+      menuFind->Append(wxID_REPLACE);
+    }
   }
   
   menuFind->Append(ID_TOOL_REPORT_FIND, wxExEllipsed(_("Find &in Files")));
-  menuFind->Append(ID_TOOL_REPLACE, wxExEllipsed(_("Replace in File&s")));
-  menuEdit->AppendSubMenu(menuFind, _("&Find and Replace"));
+
+  if (!(m_App->GetData().Flags() & STC_WIN_READ_ONLY))
+  {
+    menuFind->Append(ID_TOOL_REPLACE, wxExEllipsed(_("Replace in File&s")));
+  }
+
+  menuEdit->AppendSubMenu(menuFind, !(m_App->GetData().Flags() & STC_WIN_READ_ONLY) ?
+    _("&Find and Replace"): _("&Find"));
   menuEdit->AppendSeparator();
   menuEdit->Append(
     ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+K"));

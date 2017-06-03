@@ -169,7 +169,7 @@ wxExListView::wxExListView(const wxExListViewData& data)
   , m_Data(this, wxExListViewData(data).Image(data.Type() == LIST_NONE ? 
       data.Image(): IMAGE_FILE_ICON))
 {
-  ConfigGet(true);
+  ConfigGet();
 
   m_Data.Inject();
 
@@ -523,9 +523,12 @@ wxExColumn wxExListView::Column(const std::string& name) const
 
 int wxExListView::ConfigDialog(const wxExWindowData& data)
 {
-  ListViewDefaults use;
   
-  static const std::vector<wxExItem> items{{"notebook", {
+  if (m_ConfigDialog == nullptr)
+  {
+    ListViewDefaults use;
+
+    m_ConfigDialog = new wxExItemDialog({{"notebook", {
       {_X("General"),
         {{_X("Header"), ITEM_CHECKBOX},
          {_X("Single selection"), ITEM_CHECKBOX},
@@ -549,24 +552,14 @@ int wxExListView::ConfigDialog(const wxExWindowData& data)
       {_X("Colour"),
         {{_X("Background colour"), ITEM_COLOURPICKERWIDGET},
          {_X("Foreground colour"), ITEM_COLOURPICKERWIDGET},
-         {_X("Readonly colour"), ITEM_COLOURPICKERWIDGET}}}}}};
+         {_X("Readonly colour"), ITEM_COLOURPICKERWIDGET}}}}}}, data);
+  }
 
-  if (data.Button() & wxAPPLY)
-  {
-    if (m_ConfigDialog == nullptr)
-    {
-      m_ConfigDialog = new wxExItemDialog(items, data);
-    }
-    
-    return m_ConfigDialog->Show();
-  }
-  else
-  {
-    return wxExItemDialog(items, data).ShowModal();
-  }
+  return (data.Button() & wxAPPLY) ?
+    m_ConfigDialog->Show(): m_ConfigDialog->ShowModal();
 }
           
-void wxExListView::ConfigGet(bool init)
+void wxExListView::ConfigGet()
 {
   ListViewDefaults use;
   wxConfigBase* cfg = use.Get();
@@ -801,10 +794,12 @@ void wxExListView::ItemActivated(long item_number)
 
       if (frame != nullptr)
       {
+        const std::string no(GetItemText(item_number, _("Line No").ToStdString()));
+
         wxExControlData data = 
-          (m_Data.Type() == LIST_FIND ?
+          (m_Data.Type() == LIST_FIND && !no.empty() ?
              wxExControlData().
-               Line(std::stoi(GetItemText(item_number, _("Line No").ToStdString()))). 
+               Line(std::stoi(no)). 
                Find(GetItemText(item_number, _("Match").ToStdString())): 
              wxExControlData());
 

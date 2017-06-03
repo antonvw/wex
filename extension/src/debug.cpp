@@ -130,7 +130,7 @@ bool wxExDebug::GetArgs(
   else if (command == "file")
   {
     if (wxExItemDialog({
-        {"File", ITEM_COMBOBOX, wxAny(), true},
+        {"File", ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)},
         {m_Entry.GetName(), ITEM_FILEPICKERCTRL}},
       wxExWindowData().
         Title("Debug").

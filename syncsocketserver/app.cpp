@@ -334,7 +334,7 @@ Frame::Frame()
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
     wxExItemDialog({
-        {_("Hostname"), wxEmptyString, ITEM_TEXTCTRL, wxExControlData(), true},
+        {_("Hostname"), wxEmptyString, ITEM_TEXTCTRL, wxExControlData().Required(true)},
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
         {_("Port"), 1, 65536}},

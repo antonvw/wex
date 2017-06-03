@@ -24,7 +24,7 @@ const auto TestConfigItems(
     {"notebook", {
       {"Buttons",
         {{"<span size='x-large' color='blue'>Big</span> <b>bold</b> button", ITEM_BUTTON},
-         {"lambda", ITEM_BUTTON, wxAny(), false, wxExControlData(), LABEL_LEFT,
+         {"lambda", ITEM_BUTTON, wxAny(), wxExControlData(), LABEL_LEFT,
            [=](wxWindow* user, const wxAny& value, bool save) {
              wxLogStatus("click on lambda");}}}},
       {"Checkboxes",
@@ -44,7 +44,7 @@ const auto TestConfigItems(
       {"Comboboxes",
         {{"Combobox", ITEM_COMBOBOX}, 
          {"Combobox No Label", ITEM_COMBOBOX},
-         {"Combobox Dir Required", ITEM_COMBOBOX_DIR, wxAny(), true},
+         {"Combobox Dir Required", ITEM_COMBOBOX_DIR, wxAny(), wxExControlData().Required(true)},
          {"Combobox Dir", ITEM_COMBOBOX_DIR}}},
       {"Command Link Buttons",
         {{"Command Link Button\tThis text describes what the button does", ITEM_COMMANDLINKBUTTON}}},
@@ -82,7 +82,7 @@ const auto TestConfigItems(
          {"String Validator", wxEmptyString, ITEM_TEXTCTRL, wxExControlData().Validator(validator)},
          {"String Multiline", wxEmptyString, ITEM_TEXTCTRL, wxExControlData().Window(wxExWindowData().Style(wxTE_MULTILINE))}}},
       {"Toggle buttons",
-        {{"Toggle Button", ITEM_TOGGLEBUTTON, wxAny(), false}}},
+        {{"Toggle Button", ITEM_TOGGLEBUTTON}}},
       {"User Controls",
         {{"HTML Control", 
            new wxHtmlWindow(),
@@ -97,7 +97,6 @@ const auto TestConfigItems(
            [=](wxWindow* user, bool save) {
              if (save) wxConfigBase::Get()->Write("mytext", ((wxTextCtrl *)user)->GetValue());
              return true;},
-           false,
            LABEL_LEFT,
            [=](wxWindow* user, const wxAny& value, bool save) {
              wxLogStatus(((wxTextCtrl *)user)->GetValue());

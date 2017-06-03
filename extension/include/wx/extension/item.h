@@ -74,11 +74,13 @@ enum wxExLabelType
 };
 
 /// Container class for using with wxExItemDialog.
-/// The next items can be set using specified window data:
-/// - Id as used by the window, see wxExFrame::OnCommandItemDialog, 
-/// - Style, the default value is translated to correct default
-///   for corresponding window (such as wxFLP_DEFAULT_STYLE for ITEM_FILEPICKERCTRL).
-///   the style for the control used (e.g. wxTE_MULTILINE or wxTE_PASSWORD)
+/// The next items can be set using specified control data:
+/// - Id: as used by the window, see wxExFrame::OnCommandItemDialog, 
+/// - Required: ensures that the control must have a value otherwise OK, APPLY is not enabled,
+/// - Style: the default value is translated to correct default
+/// 
+/// For corresponding window (such as wxFLP_DEFAULT_STYLE for ITEM_FILEPICKERCTRL)
+/// the style for the control used (e.g. wxTE_MULTILINE or wxTE_PASSWORD).
 class WXDLLIMPEXP_BASE wxExItem
 {
 public:
@@ -132,16 +134,14 @@ public:
     /// - ITEM_STC
     /// - ITEM_TEXTCTRL
     wxExItemType type = ITEM_TEXTCTRL,
-    /// window data
+    /// control data
     const wxExControlData& data = wxExControlData(),
-    /// is this item required 
-    bool is_required = false,
     /// will the label be displayed as a static text
     /// ignored for a static text
     wxExLabelType label_type = LABEL_LEFT,
     /// callback to apply
     UserApply apply = nullptr)
-    : wxExItem(type, label, value, is_required, 
+    : wxExItem(type, label, value, 
       (type != ITEM_STATICTEXT && 
        type != ITEM_HYPERLINKCTRL ? label_type: LABEL_NONE))
       {m_Apply = apply;
@@ -161,11 +161,11 @@ public:
     /// - ITEM_SPINCTRL 
     /// - ITEM_SLIDER
     wxExItemType type = ITEM_SPINCTRL,
-    /// window data
+    /// control data
     const wxExControlData& data = wxExControlData().Window(wxExWindowData().Style(wxSL_HORIZONTAL)),
     /// callback to apply
     UserApply apply = nullptr)
-    : wxExItem(type, label, value, false, LABEL_LEFT, 1, min, max)
+    : wxExItem(type, label, value, LABEL_LEFT, 1, min, max)
       {m_Apply = apply;
        m_Data = data;};
 
@@ -181,11 +181,11 @@ public:
     const wxAny& value = wxAny(),
     /// inc value
     double inc = 1,
-    /// window data
+    /// control data
     const wxExControlData& data = wxExControlData().Window(wxExWindowData().Style(wxSL_HORIZONTAL)),
     /// callback to apply
     UserApply apply = nullptr)
-    : wxExItem(ITEM_SPINCTRLDOUBLE, label, value, false, LABEL_LEFT, 1, min, max, inc)
+    : wxExItem(ITEM_SPINCTRLDOUBLE, label, value, LABEL_LEFT, 1, min, max, inc)
       {m_Apply = apply;
        m_Data = data;};
 
@@ -194,12 +194,11 @@ public:
   wxExItem(
     /// the set with names of boolean items
     const std::set<wxString> & choices,
-    /// window data
+    /// control data
     const wxExControlData& data = wxExControlData(),
     /// callback to apply
     UserApply apply = nullptr)
-    : wxExItem(ITEM_CHECKLISTBOX_BOOL, "checklistbox_bool", choices,
-      false, LABEL_NONE, 1, 0, 1, 1) 
+    : wxExItem(ITEM_CHECKLISTBOX_BOOL, "checklistbox_bool", choices, LABEL_NONE, 1, 0, 1, 1) 
       {m_Apply = apply;
        m_Data = data;};
 
@@ -240,14 +239,13 @@ public:
     int rows = 0,
     /// number of cols
     int cols = 1,
-    /// window data
+    /// control data
     const wxExControlData& data = wxExControlData(),
     /// type of label
     wxExLabelType label_type = LABEL_NONE,
     /// image list to be used (required for a tool book)
     wxImageList* imageList = nullptr)
-    : wxExItem(type, label, v, false, 
-      label_type, cols, 0, 1, 1, nullptr, nullptr, nullptr, imageList) {
+    : wxExItem(type, label, v, label_type, cols, 0, 1, 1, nullptr, nullptr, nullptr, imageList) {
         m_Data= data;};
   
   /// Constructor for a ITEM_RADIOBOX, or a ITEM_CHECKLISTBOX_BIT item. 
@@ -265,12 +263,12 @@ public:
     bool use_radiobox = true,
     /// major dimension for the radiobox
     int majorDimension = 1,
-    /// window data
+    /// control data
     const wxExControlData& data = wxExControlData().Window(wxExWindowData().Style(wxRA_SPECIFY_COLS)),
     /// callback to apply
     UserApply apply = nullptr)
     : wxExItem(use_radiobox ? ITEM_RADIOBOX: ITEM_CHECKLISTBOX_BIT, label, choices,
-      false, LABEL_NONE, majorDimension, 0, 1, 1) {
+      LABEL_NONE, majorDimension, 0, 1, 1) {
         m_Apply = apply;
         m_Data = data;};
 
@@ -285,13 +283,11 @@ public:
     /// callback for load and save to config
     /// if nullptr it has no relation to the config
     UserWindowToConfig config = nullptr,
-    /// is this item required
-    bool is_required = false,
     /// type of label
     wxExLabelType label_type = LABEL_LEFT,
     /// callback to apply
     UserApply apply = nullptr)
-    : wxExItem(ITEM_USER, label, wxEmptyString, is_required, label_type, 1, 0, 1, 1, window, create, config) {
+    : wxExItem(ITEM_USER, label, wxEmptyString, label_type, 1, 0, 1, 1, window, create, config) {
         m_Apply = apply;};
 
   /// Constuctor several items.
@@ -313,15 +309,13 @@ public:
     wxExItemType type,
     /// initial value for the control, if appropriate
     const wxAny& value = wxAny(),
-    /// is this item required
-    bool is_required = false,
-    /// window data
+    /// control data
     const wxExControlData& data = wxExControlData(),
     /// type of label
     wxExLabelType label_type = LABEL_LEFT,
     /// callback to apply
     UserApply apply = nullptr)
-    : wxExItem(type, label, value, is_required, 
+    : wxExItem(type, label, value, 
         type == ITEM_BUTTON ||
         type == ITEM_CHECKBOX ||
         type == ITEM_COMMANDLINKBUTTON ||
@@ -330,7 +324,7 @@ public:
         m_Apply = apply;
         m_Data = data;};
   
-  /// If apply callback has been provide calls apply.
+  /// If apply callback has been provided calls apply.
   /// Otherwise return false.
   bool Apply() const {
     if (m_Apply != nullptr) 
@@ -343,12 +337,12 @@ public:
   /// Returns the number of columns for the current page.
   auto GetColumns() const {return m_MajorDimension;};
 
-  /// Returns the initial value.
-  const auto & GetInitial() const {return m_Initial;};
-  
-  /// Returns is required.
-  auto GetIsRequired() const {return m_IsRequired;};
+  /// Returns control data.
+  const auto& GetData() const {return m_Data;};
 
+  /// Returns the initial value.
+  const auto& GetInitial() const {return m_Initial;};
+  
   /// Returns the label.
   const auto& GetLabel() const {return m_Label;};
 
@@ -416,8 +410,6 @@ protected:
     const wxString& label = wxEmptyString, 
     /// intitial value if appropriate
     const wxAny& value = wxString(),
-    /// support for the underlying control
-    bool is_required = false, 
     /// If you specify add label, then the label is added as a label in front of
     /// the item, otherwise the label is not added
     wxExLabelType label_type = LABEL_NONE,
@@ -444,7 +436,7 @@ private:
   wxFlexGridSizer* AddStaticText(wxSizer* sizer) const;
   bool CreateWindow(wxWindow* parent, bool readonly);
 
-  bool m_IsRequired, m_IsRowGrowable = false;
+  bool m_IsRowGrowable = false;
   int m_MajorDimension, m_MaxItems = 25;
   
   wxExItemType m_Type;

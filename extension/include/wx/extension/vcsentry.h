@@ -14,6 +14,7 @@
 #include <wx/extension/process.h>
 #include <wx/extension/vcscommand.h>
 
+class wxExItemDialog;
 class wxExMenu;
 
 /// This class collects a single vcs.
@@ -92,9 +93,11 @@ public:
 #endif
 private:
   // no const, as entry is set using operator+ in wxExVCS.
-  bool m_AdminDirIsTopLevel;
+  bool m_AdminDirIsTopLevel = false;
   int m_FlagsLocation;
   
   std::string m_AdminDir;
   wxExLexer m_Lexer;
+
+  static wxExItemDialog* m_ItemDialog;
 };

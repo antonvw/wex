@@ -84,7 +84,8 @@ TEST_CASE("wxExFrame")
     wxID_FIND, wxID_REPLACE, 
     ID_VIEW_MENUBAR, ID_VIEW_STATUSBAR, ID_VIEW_TITLEBAR}) 
   {
-    wxPostEvent(GetFrame(), wxCommandEvent(wxEVT_MENU, id));
-    wxPostEvent(GetFrame(), wxCommandEvent(wxEVT_MENU, id));
+    wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+    wxQueueEvent(GetFrame(), event);
+    wxQueueEvent(GetFrame(), event);
   }
 }

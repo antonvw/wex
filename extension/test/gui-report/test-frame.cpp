@@ -7,6 +7,7 @@
 
 #include <wx/menu.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/report/defs.h>
 #include "test.h"
 
 TEST_CASE("wxExFrameWithHistory")
@@ -55,4 +56,13 @@ TEST_CASE("wxExFrameWithHistory")
   REQUIRE( GetFrame()->GetProjectHistory().GetHistoryFile().empty());
 
   GetFrame()->SetRecentFile(GetTestFile().GetFullPath());
+
+  for (auto id : std::vector<int> {
+    ID_CLEAR_PROJECTS, ID_PROJECT_SAVE, ID_TOOL_REPORT_FIND, ID_TOOL_REPLACE}) 
+  {
+    wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+    wxQueueEvent(GetFrame(), event);
+  }
+  
+  REQUIRE(wxExUIAction(GetFrame()));
 }

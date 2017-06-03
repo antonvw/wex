@@ -24,7 +24,7 @@ wxExStream::wxExStream(const wxExPath& filename, const wxExTool& tool)
   : m_Path(filename)
   , m_Tool(tool)
   , m_FRD(wxExFindReplaceData::Get())
-  , m_Threshold(wxConfigBase::Get()->ReadLong(_("Replacements"), -1))
+  , m_Threshold(wxConfigBase::Get()->ReadLong(_("Max replacements"), -1))
 {
 }
 

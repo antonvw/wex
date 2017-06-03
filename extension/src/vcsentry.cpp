@@ -18,6 +18,8 @@
 #include <wx/extension/shell.h>
 #include <wx/extension/vcs.h>
 
+wxExItemDialog* wxExVCSEntry::m_ItemDialog = nullptr;
+
 wxExVCSEntry::wxExVCSEntry(
   const std::string& name,
   const std::string& admin_dir,
@@ -27,7 +29,6 @@ wxExVCSEntry::wxExVCSEntry(
   , wxExMenuCommands(name, commands)
   , m_AdminDir(admin_dir)
   , m_FlagsLocation(flags_location)
-  , m_AdminDirIsTopLevel(false)
 {
 }
 
@@ -144,30 +145,31 @@ int wxExVCSEntry::ShowDialog(
       wxConfigBase::Get()->Read(GetFlagsKey()));
   }
   
-  const int retValue = wxExItemDialog({
-      (GetCommand().IsCommit() ? wxExItem(
-        _("Revision comment"), ITEM_COMBOBOX, wxAny(), true) : wxExItem()),
-      (add_folder && !GetCommand().IsHelp() ? wxExItem(
-        _("Base folder"), ITEM_COMBOBOX_DIR, wxAny(), true) : wxExItem()),
-      (add_folder && !GetCommand().IsHelp() && GetCommand().IsAdd() ? wxExItem(
-        _("Path"), ITEM_COMBOBOX, wxAny(), true) : wxExItem()), 
-      (GetCommand().UseFlags() ?  wxExItem(
-        _("Flags"), wxEmptyString): wxExItem()),
-      (m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX ? wxExItem(
-        _("Prefix flags"), wxEmptyString): wxExItem()),
-      (GetCommand().UseSubcommand() ? wxExItem(
-        _("Subcommand"), wxEmptyString): wxExItem())},
-    data).ShowModal();
-    
-  if (retValue == wxID_OK)
+  if (m_ItemDialog == nullptr)
   {
-    if (GetCommand().UseFlags())
-    {
-      wxConfigBase::Get()->Write(GetFlagsKey(), wxString(GetFlags()));
-    }
+    m_ItemDialog = new wxExItemDialog({
+      GetCommand().IsCommit() ? 
+        wxExItem(_("Revision comment"), ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)) : wxExItem(),
+      add_folder && !GetCommand().IsHelp() ? 
+        wxExItem(_("Base folder"), ITEM_COMBOBOX_DIR, wxAny(), wxExControlData().Required(true)) : wxExItem(),
+      add_folder && !GetCommand().IsHelp() && GetCommand().IsAdd() ? wxExItem(
+        _("Path"), ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)) : wxExItem(), 
+      GetCommand().UseFlags() ?  
+        wxExItem(_("Flags"), wxEmptyString, ITEM_TEXTCTRL, wxExControlData(), LABEL_LEFT, 
+          [=](wxWindow* user, const wxAny& value, bool save) {
+            wxConfigBase::Get()->Write(GetFlagsKey(), wxString(GetFlags()));}): wxExItem(),
+      m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX ? 
+        wxExItem(_("Prefix flags"), wxEmptyString): wxExItem(),
+      GetCommand().UseSubcommand() ? 
+        wxExItem(_("Subcommand"), wxEmptyString): wxExItem()}, data);
   }
-  
-  return retValue;
+  else
+  {
+    m_ItemDialog->SetTitle(data.Title());
+  }
+
+  return (data.Button() & wxAPPLY) ? 
+    m_ItemDialog->Show(): m_ItemDialog->ShowModal();
 }
 #endif
   

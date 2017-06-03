@@ -63,7 +63,7 @@ public:
   /// - Returns wxID_CANCEL if dialog was cancelled, or an execute error occurred.
   /// - Returns wxID_OK if okay (use vcs entry GetError
   ///   to check whether the output contains errors or normal info).
-  wxStandardID Request(wxWindow* parent);
+  wxStandardID Request(const wxExWindowData& data = wxExWindowData());
 #endif  
 
   /// Sets the vcs entry using base folder.
@@ -77,9 +77,8 @@ public:
 
 #if wxUSE_GUI
   /// Calls show dialog for the current vcs entry.
-  int ShowDialog(wxWindow* parent) const {
-    return m_Entry.ShowDialog(wxExWindowData().
-      Parent(parent).
+  int ShowDialog(const wxExWindowData& data = wxExWindowData()) const {
+    return m_Entry.ShowDialog(wxExWindowData(data).
       Title(m_Caption), m_Files.empty());};
 #endif
 

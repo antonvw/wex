@@ -75,6 +75,16 @@ wxExControlData& wxExControlData::Line(int line, std::function<int(int)> valid)
   return *this;
 }
 
+void wxExControlData::Reset()
+{
+  m_Col = DATA_NUMBER_NOT_SET;
+  m_Command.clear();
+  m_Find.clear();
+  m_Line = DATA_NUMBER_NOT_SET;
+  m_Required = false;
+  m_Validator = nullptr;
+}
+
 wxExControlData& wxExControlData::Validator(wxValidator* validator)
 {
   m_Validator = validator;

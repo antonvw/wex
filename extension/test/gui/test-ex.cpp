@@ -68,6 +68,7 @@ TEST_CASE("wxExEx")
     {":ve",false},
     {":1,$s/s/w/",true}})
   {
+    CAPTURE( command );
     REQUIRE( ex->Command(command.first));
       
     if (command.second)
@@ -105,6 +106,7 @@ TEST_CASE("wxExEx")
     ":/XXX/x",
     ":r test-xx.txt"})
   {
+    CAPTURE( command );
     REQUIRE(!ex->Command(command));
     REQUIRE( ex->GetLastCommand() != command);
   }

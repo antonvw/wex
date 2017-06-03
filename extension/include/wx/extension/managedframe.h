@@ -14,6 +14,7 @@
 #include <wx/extension/filehistory.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
+#include <wx/extension/path.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -133,8 +134,7 @@ public:
   virtual bool SaveCurrentPage(const std::string& key) {return false;};
   
   /// Allows derived class to update file history.
-  virtual void SetRecentFile(const std::string& file) override {
-    m_FileHistory.AddFileToHistory(file);};
+  virtual void SetRecentFile(const wxExPath& path) override;
   
   /// Shows text in ex bar.
   void ShowExMessage(const std::string& text);

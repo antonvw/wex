@@ -179,7 +179,7 @@ protected:
       case ITEM_COMBOBOX_DIR:
         {
         wxComboBox* cb = (wxComboBox*)item.GetWindow();
-        if (item.GetIsRequired())
+        if (item.GetData().Required())
         {
           if (cb->GetValue().empty())
           {
@@ -194,7 +194,7 @@ protected:
       case ITEM_TEXTCTRL:
         {
         wxTextCtrl* tc = (wxTextCtrl*)item.GetWindow();
-        if (item.GetIsRequired())
+        if (item.GetData().Required())
         {
           if (tc->GetValue().empty())
           {
@@ -208,7 +208,7 @@ protected:
       case ITEM_DIRPICKERCTRL:
         {
         wxDirPickerCtrl* pc = (wxDirPickerCtrl*)item.GetWindow();
-        if (item.GetIsRequired())
+        if (item.GetData().Required())
         {
           if (pc->GetPath().empty())
           {
@@ -222,7 +222,7 @@ protected:
       case ITEM_FILEPICKERCTRL:
         {
         wxFilePickerCtrl* pc = (wxFilePickerCtrl*)item.GetWindow();
-        if (item.GetIsRequired())
+        if (item.GetData().Required())
         {
           if (pc->GetPath().empty())
           {

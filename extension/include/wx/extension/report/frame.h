@@ -93,7 +93,7 @@ public:
     const std::string& line) {return Grep(line, true);};
     
   /// Updates file history.
-  virtual void SetRecentFile(const std::string& file) override;
+  virtual void SetRecentFile(const wxExPath& path) override;
 
   /// Updates project history.
   void SetRecentProject(const std::string& project) {

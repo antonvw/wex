@@ -2,7 +2,7 @@
 // Name:      addressrange.h
 // Purpose:   Declaration of class wxExAddressRange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -45,8 +45,8 @@ public:
     /// -     : (empty), the range is empty
     const std::string& range);
 
-  /// Changes range.
-  bool Change(const std::string& command) const;
+  /// Changes range into text.
+  bool Change(const std::string& text) const;
   
   /// Cleans up (process).
   static void Cleanup();

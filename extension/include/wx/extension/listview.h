@@ -90,7 +90,7 @@ public:
     wxExWindowData().Title(_("List Options").ToStdString()));
 
   /// Sets the configurable parameters to values currently in config.
-  void ConfigGet(bool init = false);
+  void ConfigGet();
 
   /// If column is not found, -1 is returned,
   int FindColumn(const std::string& name) const {return Column(name).GetColumn();};

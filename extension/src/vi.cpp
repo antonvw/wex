@@ -275,8 +275,24 @@ wxExVi::wxExVi(wxExSTC* stc)
        return true;}},
     {"/?", [&](const std::string& command){
       m_SearchForward = command.front() == '/';
+
       if (command.length() > 1)
       {
+        if (command[1] == WXK_CONTROL_R)
+        {
+          if (command.length() < 3)
+          {
+            return false;
+          }
+
+          if (!GetSTC()->FindNext(
+            GetMacros().GetRegister(command[2]),
+            GetSearchFlags(),
+            m_SearchForward)) return false;
+          wxExFindReplaceData::Get()->SetFindString(GetMacros().GetRegister(command[2]));
+          return true;
+        }
+        
         // This is a previous entered command.
         if (!GetSTC()->FindNext(
           command.substr(1),

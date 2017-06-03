@@ -651,13 +651,12 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
     }
     else
     {
-      int line_no = DATA_NUMBER_NOT_SET;
-      int col_no = DATA_NUMBER_NOT_SET;
+      wxExControlData control;
       wxExPath fn(it);
 
       if (!fn.FileExists() && it.find(":") != std::string::npos)
       {
-        const std::string val = wxExLink().GetPath(it, line_no, col_no);
+        const std::string val = wxExLink().GetPath(it, control);
         
         if (!val.empty())
         {
@@ -670,7 +669,7 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
         fn.MakeAbsolute();
       }
        
-      frame->OpenFile(fn, wxExSTCData(data).Control(wxExControlData().Line(line_no).Col(col_no)));
+      frame->OpenFile(fn, wxExSTCData(control));
       
       count++;
     }
@@ -1014,7 +1013,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< std::string > &
   
   if (vcs.GetEntry().GetCommand().IsOpen())
   {
-    if (vcs.ShowDialog(frame) == wxID_OK)
+    if (vcs.ShowDialog() == wxID_OK)
     {
       for (const auto& it : files)
       {
@@ -1029,7 +1028,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< std::string > &
   }
   else
   {
-    vcs.Request(frame);
+    vcs.Request();
   }
 }
 

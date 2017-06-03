@@ -11,18 +11,42 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/filefn.h> // for wxPathList
 #include <wx/extension/link.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 
+class wxExPaths
+{
+public:
+  wxExPaths() {
+    wxExTokenizer tkz(
+      wxConfigBase::Get()->Read(_("Include directory")).ToStdString(),
+      "\r\n");
+    while (tkz.HasMoreTokens())
+    {
+      m_pl.Add(tkz.GetNextToken());
+    }};
+
+  std::string FindPath(const std::string& path) const {return 
+    m_pl.FindAbsoluteValidPath(wxString(path)).ToStdString();};
+private:
+  wxPathList m_pl;
+};
+
 wxExLink::wxExLink(wxExSTC* stc)
   : m_STC(stc)
+  , m_Paths(std::make_unique<wxExPaths>())
 {
 }
 
-const std::string wxExLink::FindPath(const std::string& text, int line_no) const
+wxExLink::~wxExLink()
+{
+}
+
+const std::string wxExLink::FindPath(const std::string& text, const wxExControlData& data) const
 {
   if (
     text.empty() ||
@@ -43,7 +67,7 @@ const std::string wxExLink::FindPath(const std::string& text, int line_no) const
   
   // hypertext link
   std::vector <std::string> v;
-  if (line_no < 0 &&
+  if (data.Line() < 0 &&
       (wxExMatch("(https?:.*)", text, v) > 0 || 
        wxExMatch("(www.*)", text, v) > 0))
   {
@@ -67,14 +91,14 @@ const std::string wxExLink::FindPath(const std::string& text, int line_no) const
   
   // hypertext file
   if (
-    line_no == -1 &&
+    data.Line() == -1 &&
     m_STC != nullptr && 
     m_STC->GetLexer().GetScintillaLexer() == "hypertext")
   {
     return m_STC->GetFileName().GetFullPath();
   }
   
-  if (line_no < 0) return std::string();
+  if (data.Line() < 0) return std::string();
 
   // Better first try to find "...", then <...>, as in next example.
   // <A HREF="http://www.scintilla.org">scintilla</A> component.
@@ -115,24 +139,18 @@ const std::string wxExLink::FindPath(const std::string& text, int line_no) const
 }
 
 // text contains selected text, or current line
-const std::string wxExLink::GetPath(
-  const std::string& text,
-  int& line_no,
-  int& column_no) const
+const std::string wxExLink::GetPath(const std::string& text, wxExControlData& data) const
 {
-  // line_no:
-  // - -1: look for browse, and browse file
-  // - -2: look for browse
-  const std::string path(FindPath(text, line_no));
+  const std::string path(FindPath(text, data));
   
-  if (line_no < 0)
+  if (data.Line() < 0)
   { 
     return path;
   }
   
   std::string link(path);
   
-  SetLink(link, line_no, column_no);
+  SetLink(link, data);
   
   if (
     link.empty() || 
@@ -182,21 +200,19 @@ const std::string wxExLink::GetPath(
         wxFileName file(word);
         file.MakeAbsolute();
         fullpath = file.GetFullPath();
-        // And reset line or column.
-        line_no = 0;
-        column_no = 0;
+        data.Reset();
       }
     
-      if (fullpath.empty() && !m_PathList.empty())
+      if (fullpath.empty() && m_Paths != nullptr)
       {
-        fullpath = m_PathList.FindAbsoluteValidPath(link);
+        fullpath = m_Paths->FindPath(link);
       
         if (
           fullpath.empty() && 
          !word.empty() &&
-          SetLink(word, line_no, column_no))
+          SetLink(word, data))
         {
-          fullpath = m_PathList.FindAbsoluteValidPath(word);
+          fullpath = m_Paths->FindPath(word);
         }
       }
       
@@ -208,9 +224,9 @@ const std::string wxExLink::GetPath(
   return fullpath;
 }
 
-bool wxExLink::SetLink(std::string& link, int& line_no, int& column_no) const
+bool wxExLink::SetLink(std::string& link, wxExControlData& data) const
 {
-  if (link.size() < 2)
+  if (link.empty())
   {
     return false;
   }
@@ -236,16 +252,15 @@ bool wxExLink::SetLink(std::string& link, int& line_no, int& column_no) const
   if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link, v) > 0)
   {
     link = v[0];
-    line_no = 0;
-    column_no = 0;
+    data.Reset();
       
     if (v.size() > 1 && !v[1].empty())
     {
-      line_no = std::stoi(v[1]);
+      data.Line(std::stoi(v[1]));
         
       if (v.size() > 2 && !v[2].empty())
       {
-        column_no = std::stoi(v[2]);
+        data.Col(std::stoi(v[2]));
       }
     }
       
@@ -259,14 +274,10 @@ bool wxExLink::SetLink(std::string& link, int& line_no, int& column_no) const
   
 void wxExLink::SetFromConfig()
 {
-  wxExTokenizer tkz(
-    wxConfigBase::Get()->Read(_("Include directory")).ToStdString(),
-    "\r\n");
-    
-  m_PathList.Empty();
-  
-  while (tkz.HasMoreTokens())
+  if (m_Paths != nullptr)
   {
-    m_PathList.Add(tkz.GetNextToken());
+    m_Paths.release();
   }
+
+  m_Paths = std::make_unique<wxExPaths>();
 }

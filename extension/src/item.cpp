@@ -47,19 +47,15 @@
 bool wxExItem::m_UseConfig = true;
 
 wxExItem::wxExItem(wxExItemType type, 
-  const wxString& label, const wxAny& value,
-  bool is_required, wxExLabelType label_type,
-  int major_dimension,
-  const wxAny& min, const wxAny& max, const wxAny& inc,
+  const wxString& label, const wxAny& value, wxExLabelType label_type,
+  int major_dimension, const wxAny& min, const wxAny& max, const wxAny& inc,
   wxWindow* window, 
-  UserWindowCreate create,
-  UserWindowToConfig config,
+  UserWindowCreate create, UserWindowToConfig config,
   wxImageList* imageList)
   : m_Type(type)
   , m_LabelType(label_type)
   , m_Label(label)
   , m_Initial(value)
-  , m_IsRequired(is_required)
   , m_Min(min)
   , m_Max(max)
   , m_Inc(inc)

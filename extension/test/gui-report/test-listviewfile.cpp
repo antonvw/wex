@@ -51,6 +51,7 @@ TEST_CASE("wxExListViewFile")
   for (auto id : std::vector<int> {
     wxID_ADD, wxID_EDIT, wxID_REPLACE_ALL}) 
   {
-    wxPostEvent(listView, wxCommandEvent(wxEVT_MENU, id));
+    wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+    wxQueueEvent(listView, event);
   }
 }

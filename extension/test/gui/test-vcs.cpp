@@ -45,6 +45,12 @@ TEST_CASE("wxExVCS")
   // GetName
   REQUIRE( vcs.GetName() == "Auto");
   REQUIRE(!vcs.GetEntry().GetCommand().IsOpen());
+
+  /// ShowDialog.  
+  REQUIRE( vcs.ShowDialog(wxExWindowData().Button(wxAPPLY | wxCANCEL)));
+  
+  /// Request.  
+  REQUIRE( vcs.Request(wxExWindowData().Button(wxAPPLY | wxCANCEL)));
   
   // LoadDocument
   REQUIRE( wxExVCS::LoadDocument());

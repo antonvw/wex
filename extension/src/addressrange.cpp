@@ -240,14 +240,14 @@ const std::string wxExAddressRange::BuildReplacement(const std::string& text) co
   return replacement;
 }
   
-bool wxExAddressRange::Change(const std::string& command) const
+bool wxExAddressRange::Change(const std::string& text) const
 {
   if (!Delete())
   {
     return false;
   }
   
-  m_Ex->GetSTC()->AddText(command);
+  m_Ex->GetSTC()->AddText(text);
   
   return true;
 }

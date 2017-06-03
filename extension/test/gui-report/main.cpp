@@ -23,7 +23,11 @@ public:
       AddPane(this, m_Report);};
 
   virtual wxExListView* Activate(wxExListType list_type, const wxExLexer* lexer) override {
+    // only for coverage
+    wxExFrameWithHistory::Activate(list_type, lexer);
     return m_Report;};
+  void MoreCoverage() {
+    GetFileHistoryList();};
 private:
   wxExListView* m_Report;
 };
@@ -41,17 +45,18 @@ public:
     }
   
     m_Frame = new FrameWithHistory();
+    m_Frame->MoreCoverage();
     m_Frame->Show();
     
     return true;
   }
   
-  static wxExFrameWithHistory* GetFrame() {return m_Frame;};
+  static auto* GetFrame() {return m_Frame;};
 private:
-  static wxExFrameWithHistory* m_Frame;
+  static FrameWithHistory* m_Frame;
 }; 
 
-wxExFrameWithHistory* wxExTestGuiApp::m_Frame = nullptr;
+FrameWithHistory* wxExTestGuiApp::m_Frame = nullptr;
 
 wxExFrameWithHistory* GetFrame()
 {

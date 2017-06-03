@@ -95,6 +95,7 @@ TEST_CASE("wxExManagedFrame")
     ID_CLEAR_FILES, ID_CLEAR_FINDS,
     ID_VIEW_LOWEST + 1, ID_VIEW_LOWEST + 2, ID_VIEW_LOWEST + 3, ID_VIEW_LOWEST + 4}) 
   {
-    wxPostEvent(GetFrame(), wxCommandEvent(wxEVT_MENU, id));
+    wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+    wxQueueEvent(GetFrame(), event);
   }
 }

@@ -44,9 +44,9 @@ wxExFrameWithHistory::wxExFrameWithHistory(
   t.insert(m_TextRecursive);
   
   const std::vector<wxExItem> f {
-    {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), true},
-    {m_TextInFiles, ITEM_COMBOBOX, wxAny(), true},
-    {m_TextInFolder, ITEM_COMBOBOX_DIR, wxAny(), true},
+    {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)},
+    {m_TextInFiles, ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)},
+    {m_TextInFolder, ITEM_COMBOBOX_DIR, wxAny(), wxExControlData().Required(true)},
     {t}};
   
   m_FiFDialog = new wxExItemDialog(
@@ -62,7 +62,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(
       {wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX},
       f.at(1),
       f.at(2),
-      {_X("Replacements"), -1, INT_MAX},
+      {_X("Max replacements"), -1, INT_MAX},
       // Match whole word does not work with replace.
       {{wxExFindReplaceData::Get()->GetTextMatchCase(),
         wxExFindReplaceData::Get()->GetTextRegEx(),
@@ -246,8 +246,8 @@ int wxExFrameWithHistory::FindInFilesDialog(
   }
 
   if (wxExItemDialog({
-      {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), true}, 
-      (add_in_files ? wxExItem(m_TextInFiles, ITEM_COMBOBOX, wxAny(), true) : wxExItem()),
+      {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)}, 
+      (add_in_files ? wxExItem(m_TextInFiles, ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)) : wxExItem()),
       (id == ID_TOOL_REPLACE ? wxExItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX): wxExItem()),
       wxExItem(m_Info)},
     wxExWindowData().Title(GetFindInCaption(id))).ShowModal() == wxID_CANCEL)
@@ -445,13 +445,13 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
   }
 }
 
-void wxExFrameWithHistory::SetRecentFile(const std::string& file)
+void wxExFrameWithHistory::SetRecentFile(const wxExPath& path)
 {
-  wxExManagedFrame::SetRecentFile(file);
+  wxExManagedFrame::SetRecentFile(path);
   
   if (m_FileHistoryList != nullptr)
   {
-    wxExListItem item(m_FileHistoryList, file);
+    wxExListItem item(m_FileHistoryList, path);
     item.Insert((long)0);
 
     if (m_FileHistoryList->GetItemCount() > 1)
@@ -460,7 +460,7 @@ void wxExFrameWithHistory::SetRecentFile(const std::string& file)
       {
         wxExListItem item(m_FileHistoryList, i);
 
-        if (item.GetFileName().GetFullPath() == file)
+        if (item.GetFileName() == path)
         {
           item.Delete();
         }

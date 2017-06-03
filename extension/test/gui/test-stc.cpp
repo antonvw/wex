@@ -227,7 +227,8 @@ TEST_CASE("wxExSTC")
       ID_EDIT_HEX_DEC_CALLTIP, ID_EDIT_MARKER_NEXT, ID_EDIT_MARKER_PREVIOUS,
       ID_EDIT_OPEN_LINK, ID_EDIT_SHOW_PROPERTIES, ID_EDIT_ZOOM_IN, ID_EDIT_ZOOM_OUT}) 
     {
-      wxPostEvent(stc, wxCommandEvent(wxEVT_MENU, id));
+      wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+      wxQueueEvent(stc, event);
     }
   }
 

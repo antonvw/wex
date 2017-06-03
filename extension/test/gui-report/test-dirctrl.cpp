@@ -19,7 +19,8 @@ void Test(wxExGenericDirCtrl* ctrl)
     ID_TREE_RUN_MAKE,
     ID_TOOL_REPORT_FIND})
   {
-    wxPostEvent(ctrl, wxCommandEvent(wxEVT_MENU, id));
+    wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
+    wxQueueEvent(ctrl, event);
     REQUIRE(wxExUIAction(ctrl, "key"));
   }
 }

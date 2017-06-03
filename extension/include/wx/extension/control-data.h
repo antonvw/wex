@@ -64,7 +64,7 @@ public:
     return *this;};
 
   /// Injects data.
-  /// If there is a Control component, injects current data in it:
+  /// If there is a callback specified, injects current data in it:
   /// - if line available: goto line
   /// - if col available: goto col
   /// - if text not empty: finds text
@@ -87,7 +87,16 @@ public:
   /// Sets line number.
   /// Goes to the line if > 0, if -1 goes to end of file
   wxExControlData& Line(int line, std::function<int(int)> valid = nullptr);
+
+  /// Resets members to default state.
+  void Reset();
   
+  /// Returns required.
+  const auto Required() const {return m_Required;};
+  
+  /// Sets required.
+  wxExControlData& Required(bool required) {m_Required = required; return *this;};
+
   /// Returns validator.
   const auto Validator() const {return m_Validator;};
 
@@ -101,6 +110,8 @@ public:
   wxExControlData& Window(wxExWindowData& data) {m_Data = data; return *this;};
 private:  
   wxExWindowData m_Data;
+
+  bool m_Required = false;
   
   int m_Col = DATA_NUMBER_NOT_SET;
   int m_Line = DATA_NUMBER_NOT_SET;

@@ -2,7 +2,7 @@
 // Name:      test-link.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -29,20 +29,19 @@ void link(
   int expect_line_no,
   int expect_col_no)
 {
-  int line_no = 0;
-  int col_no = 0;
+  wxExControlData data;
   
   if (!expect.empty())
   {
-    REQUIRE(link.GetPath(path, line_no, col_no).find(expect) != std::string::npos);
+    REQUIRE(link.GetPath(path, data).find(expect) != std::string::npos);
   }
   else
   {
-    REQUIRE(link.GetPath(path, line_no, col_no).empty());
+    REQUIRE(link.GetPath(path, data).empty());
   }
   
-  REQUIRE(line_no == expect_line_no);
-  REQUIRE(col_no == expect_col_no);
+  REQUIRE(data.Line() == expect_line_no);
+  REQUIRE(data.Col() == expect_col_no);
 }
 
 #ifdef __UNIX__
@@ -130,30 +129,30 @@ TEST_CASE("wxExLink")
     wxConfigBase::Get()->Write(_("Include directory"), "/usr/bin");
     lnk.SetFromConfig();
 
-    int line = 0, col = 0;
-    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", line, col).empty());
-    REQUIRE( lnk.GetPath("<test.cpp>", line, col).empty());
-    line = -1;
-    REQUIRE( lnk.GetPath("gcc>", line, col).empty());
-    REQUIRE( lnk.GetPath("<gcc>", line, col).empty());
-    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", line, col).empty());
-    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", line, col).empty());
-    REQUIRE( lnk.GetPath("<test.cpp>", line, col).empty());
-    REQUIRE( lnk.GetPath("www.wxwidgets.org", line, col) == "www.wxwidgets.org" );
-    REQUIRE( lnk.GetPath("some text www.wxwidgets.org", line, col) == "www.wxwidgets.org" );
-    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", line, col) == "https://github.com/antonvw/wxExtension" );
-    REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wxExtension)", line, col) == "https://github.com/antonvw/wxExtension" );
-    REQUIRE( lnk.GetPath("httpd = new httpd", line, col).empty());
-    line = 0;
-    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", line, col).empty() );
+    wxExControlData data;
+    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).empty());
+    REQUIRE( lnk.GetPath("<test.cpp>", data).empty());
+    data.Line(-1);
+    REQUIRE( lnk.GetPath("gcc>", data).empty());
+    REQUIRE( lnk.GetPath("<gcc>", data).empty());
+    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).empty());
+    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).empty());
+    REQUIRE( lnk.GetPath("<test.cpp>", data).empty());
+    REQUIRE( lnk.GetPath("www.wxwidgets.org", data) == "www.wxwidgets.org" );
+    REQUIRE( lnk.GetPath("some text www.wxwidgets.org", data) == "www.wxwidgets.org" );
+    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data) == "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wxExtension)", data) == "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.GetPath("httpd = new httpd", data).empty());
+    data.Line(0);
+    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data).empty() );
     // hypertext file
     stc->GetFile().FileNew("test.html");
-    REQUIRE( lnk.GetPath("www.wxwidgets.org", line, col).empty() );
-    REQUIRE( lnk.GetPath("xx", line, col).empty());
-    line = -1;
-    REQUIRE( lnk.GetPath("xx", line, col) == "test.html" );
-    line = -2;
-    REQUIRE( lnk.GetPath("xx", line, col).empty());
+    REQUIRE( lnk.GetPath("www.wxwidgets.org", data).empty() );
+    REQUIRE( lnk.GetPath("xx", data).empty());
+    data.Line(-1);
+    REQUIRE( lnk.GetPath("xx", data) == "test.html" );
+    data.Line(-2);
+    REQUIRE( lnk.GetPath("xx", data).empty());
   }
 }
 #endif
