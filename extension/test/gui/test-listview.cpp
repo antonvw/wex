@@ -106,7 +106,7 @@ TEST_CASE("wxExListView")
   for (auto id : std::vector<int> {0}) 
   {
     wxListEvent* event = new wxListEvent(wxEVT_LIST_ITEM_ACTIVATED);
-    event->SetIndex(id);
+    event->m_itemIndex = id; // for wxWidgets 3.0 compatibility
     wxQueueEvent(listView2, event);
   }
   
