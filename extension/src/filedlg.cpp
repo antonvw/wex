@@ -27,7 +27,7 @@ wxExFileDialog::wxExFileDialog(
       data.Style(), 
       data.Pos(), 
       data.Size()) 
-// TODO: when compiling under x11 the name is not used as argument,
+// when compiling under x11 the name is not used as argument,
 // so outcommented it here.      
 //      name)
   , m_File(file)

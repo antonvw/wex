@@ -54,7 +54,7 @@ TEST_CASE("wxExStatusBar")
   REQUIRE( pane1.GetHelpText() == "hello");
   REQUIRE( pane1.GetHiddenText().empty());
   REQUIRE( pane1.GetWidth() == 15);
-  REQUIRE( pane1.IsShown() ); // TODO: should not be shown yet
+  REQUIRE( pane1.IsShown() );
   pane1.SetHiddenText("hidden");
   REQUIRE( pane1.GetHiddenText() == "hidden");
   

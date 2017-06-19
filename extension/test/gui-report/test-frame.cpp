@@ -55,7 +55,7 @@ TEST_CASE("wxExFrameWithHistory")
   GetFrame()->SetRecentProject("xxx.prj");
   REQUIRE( GetFrame()->GetProjectHistory().GetHistoryFile().empty());
 
-  GetFrame()->SetRecentFile(GetTestFile().GetFullPath());
+  GetFrame()->SetRecentFile(GetTestFile());
 
   for (auto id : std::vector<int> {
     ID_CLEAR_PROJECTS, ID_PROJECT_SAVE, ID_TOOL_REPORT_FIND, ID_TOOL_REPLACE}) 

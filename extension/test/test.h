@@ -9,7 +9,6 @@
 
 #include <memory>
 #include <string>
-#include <wx/filename.h>
 #include <wx/extension/app.h>
 #include <wx/extension/path.h>
 #include "doctest.h"
@@ -51,7 +50,7 @@ public:
   /// Constructor.
   wxExTestApp() {}
   
-  static auto GetTestFileName() {return m_TestFileName;};
+  static auto GetTestPath() {return m_TestPath;};
 
   /// Prepare environment.
   virtual bool OnInit() override;
@@ -62,12 +61,11 @@ public:
   /// Sets context.
   void SetContext(doctest::Context* context);
 private:
-  /// Sets working directory to test dir, returns current working directory.
-  const std::string SetWorkingDirectory();
+  void SetTestPath();
 
   doctest::Context* m_Context;
   
-  static wxFileName m_TestFileName;
+  static wxExPath m_TestPath;
 };
 
 int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop);

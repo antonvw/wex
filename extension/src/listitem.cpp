@@ -57,9 +57,7 @@ void wxExListItem::Insert(long index)
     col = m_ListView->FindColumn(_("File Name").ToStdString());
     wxASSERT(col >= 0);
     filename = (
-      m_Path.FileExists() || m_Path.DirExists() ?
-        m_Path.GetFullName():
-        m_Path.GetFullPath());
+      m_Path.FileExists() || m_Path.DirExists() ? m_Path.GetFullName(): m_Path.GetFullPath());
   }
   else
   {
@@ -124,14 +122,10 @@ void wxExListItem::Update()
      m_Path.GetStat().IsOk())
   {
     SetItem(_("Type").ToStdString(),
-      (wxFileName::DirExists(m_Path.GetFullPath()) ? // IsDir not ok
-         m_FileSpec:
-         m_Path.GetExtension()));
+      m_Path.DirExists() ? m_FileSpec: m_Path.GetExtension().substr(1));
     SetItem(_("In Folder").ToStdString(), m_Path.GetPath());
     SetItem(_("Size").ToStdString(),
-      (!wxFileName::DirExists(m_Path.GetFullPath()) ? // IsDir not ok
-         (std::to_string(m_Path.GetStat().st_size)):
-          std::string()));
+      m_Path.DirExists() ? (std::to_string(m_Path.GetStat().st_size)): std::string());
     SetItem(_("Modified").ToStdString(), m_Path.GetStat().GetModificationTime());
   }
 }

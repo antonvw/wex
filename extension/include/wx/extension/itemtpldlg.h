@@ -111,12 +111,14 @@ public:
       }
     };
     return T();};
+
   /// Returns the item actual value for specified label, or 
-  /// IsNull value if item does not exist.
-  const wxAny GetItemValue(const wxString& label) const {
+  /// empty object if item does not exist.
+  const auto GetItemValue(const wxString& label) const {
     return GetItem(label).GetValue();};
+ 
   /// Sets the item actual value for specified label.
-  bool SetItemValue(const wxString& label, const wxAny& value) const {
+  bool SetItemValue(const wxString& label, const std::any& value) const {
     for (auto& item : m_Items)
     {
       if (item.GetLabel() == label)
@@ -125,9 +127,16 @@ public:
       }
     };
     return false;};
+
+  /// Write on all items.
+  void WriteAllItems(std::ostream&  o) const {
+    for (const auto& item : m_Items)
+    { 
+       item.Write(o);
+    }};
 protected:
   const auto & GetItems() const {return m_Items;};
-  
+
   void OnCommand(wxCommandEvent& event) {
     if (  event.GetId() == wxID_APPLY ||
         ((event.GetId() == wxID_OK ||

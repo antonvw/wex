@@ -5,15 +5,45 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/filename.h>
+#include <experimental/filesystem>
 #include <wx/extension/path.h>
 #include <wx/extension/lexers.h>
 
-class wxExPathImp : public wxFileName
+class wxExPathImp
 {
 public:
-  wxExPathImp(const std::string& fullpath) 
-    : wxFileName(fullpath) {;};
+  wxExPathImp(const std::string& fullpath = std::string()) 
+    : m_path(fullpath) {;};
+
+  void Absolute(const wxExPath& base) { 
+    m_path = std::experimental::filesystem::absolute(m_path,
+      base.GetFullPath().empty() ? 
+        std::experimental::filesystem::current_path(): 
+        std::experimental::filesystem::path(base.GetPath()));
+
+    if (!std::experimental::filesystem::is_directory(m_path.parent_path())) 
+    {
+      m_path.clear();
+    }};
+
+  void Append(const std::string& path) {
+    m_path /= std::experimental::filesystem::path(path);};
+
+  bool Canonical(const std::string& wd) { 
+    if (!std::experimental::filesystem::is_directory(wd) || 
+        !std::experimental::filesystem::is_directory(wd))
+    {
+      return false;
+    }
+    m_path = std::experimental::filesystem::canonical(m_path, wd);
+    return true;};
+
+  const auto& Path() {return m_path;};
+
+  void ReplaceFileName(const std::string& filename) {
+    m_path.replace_filename(filename);}
+private:
+  std::experimental::filesystem::path m_path;
 };
   
 wxExPath::wxExPath(const std::string& fullpath)
@@ -21,13 +51,13 @@ wxExPath::wxExPath(const std::string& fullpath)
   , m_Stat(fullpath) 
   , m_Lexer(wxExLexers::Get(false) != nullptr ? 
       wxExLexers::Get(false)->FindByFileName(
-        wxFileName(fullpath).GetFullName().ToStdString()):
+        std::experimental::filesystem::path(fullpath).filename()):
       std::string())
 {
 }
 
 wxExPath::wxExPath(const std::string& path, const std::string& name)
-  : wxExPath(std::string(path + wxFileName::GetPathSeparator() + name))
+  : wxExPath(std::experimental::filesystem::path(path) /= name)
 {
 }
 
@@ -39,6 +69,15 @@ wxExPath::wxExPath(const char* fullpath)
 wxExPath::wxExPath(const wxExPath& r)
   : wxExPath(r.GetFullPath()) 
 {
+}
+
+wxExPath::wxExPath(const std::vector<std::string> v)
+  : wxExPath() 
+{
+  for (const auto& it : v)
+  {
+    m_Path->Append(it);
+  }
 }
 
 wxExPath::~wxExPath()
@@ -57,49 +96,73 @@ wxExPath& wxExPath::operator=(const wxExPath& r)
   return *this;
 }
 
+wxExPath& wxExPath::Append(const wxExPath& path)
+{
+  m_Path->Append(path.GetFullPath());
+
+  return *this;
+}
+
+bool wxExPath::Canonical(const std::string& cwd)
+{
+  return m_Path->Canonical(cwd);
+}
+
 bool wxExPath::DirExists() const 
 {
-  return m_Path->DirExists();
+  return std::experimental::filesystem::is_directory(m_Path->Path());
 }
 
 bool wxExPath::FileExists() const
 {
-  return m_Path->FileExists();
+  return std::experimental::filesystem::is_regular_file(m_Path->Path());
 }
 
 const std::string wxExPath::GetExtension() const 
 {
-  return m_Path->GetExt().ToStdString();
+  return m_Path->Path().extension().string();
 }
 
 const std::string wxExPath::GetFullName() const 
 {
-  return m_Path->GetFullName().ToStdString();
+  return m_Path->Path().filename().string();
 }
 
 const std::string wxExPath::GetFullPath() const 
 {
-  return m_Path->GetFullPath().ToStdString();
+  return m_Path->Path().string();
 }
 
 const std::string wxExPath::GetName() const 
 {
-  return m_Path->GetName().ToStdString();
+  return m_Path->Path().stem().string();
 }
 
 const std::string wxExPath::GetPath() const 
 {
-  return m_Path->GetPath().ToStdString();
+  return m_Path->Path().parent_path().string();
+}
+
+const std::vector<wxExPath> wxExPath::GetPaths() const
+{
+  std::vector<wxExPath> v;
+
+  for (const auto& e : m_Path->Path())
+  {
+    v.emplace_back(e);
+  }
+
+  return v;
 }
 
 const std::string wxExPath::GetVolume() const 
 {
-  return m_Path->GetVolume().ToStdString();
+  return m_Path->Path().root_name().string();
 }
 
 bool wxExPath::IsAbsolute() const
 {
-  return m_Path->IsAbsolute();
+  return m_Path->Path().is_absolute();
 }
   
 bool wxExPath::IsReadOnly() const 
@@ -109,15 +172,19 @@ bool wxExPath::IsReadOnly() const
     
 bool wxExPath::IsRelative() const
 {
-  return m_Path->IsRelative();
+  return m_Path->Path().is_relative();
 }
   
-bool wxExPath::MakeAbsolute() 
+wxExPath& wxExPath::MakeAbsolute(const wxExPath& base) 
 {
-  return m_Path->MakeAbsolute();
+  m_Path->Absolute(base);
+
+  return *this;
 }
 
-bool wxExPath::Normalize(const std::string& cwd)
+wxExPath& wxExPath::ReplaceFileName(const std::string& filename)
 {
-  return m_Path->Normalize(wxPATH_NORM_ALL, cwd);
+  m_Path->ReplaceFileName(filename);
+
+  return *this;
 }

@@ -47,7 +47,6 @@ const std::string wxExStyle::GetNo() const
 
 void wxExStyle::Set(const pugi::xml_node& node, const std::string& macro)
 {
-  // TODO: default 0
   SetNo(
     wxExLexers::Get()->ApplyMacro(node.attribute("no").value(), macro),
     macro, node);

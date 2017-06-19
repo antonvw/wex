@@ -253,7 +253,7 @@ bool wxExAddress::Read(const std::string& arg) const
 
     if (fn.IsRelative())
     {
-      fn.Normalize(m_Ex->GetSTC()->GetFileName().GetPath());
+      fn.Canonical(m_Ex->GetSTC()->GetFileName().GetPath());
     }
     
     wxExFile file;

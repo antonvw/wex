@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 #include <wx/extension/lexer.h>
 #include <wx/extension/stat.h>
 
@@ -29,6 +30,9 @@ public:
   /// Constructor taking a char array.
   wxExPath(const char* fullpath);
 
+  /// Constructor from a vector of paths.
+  wxExPath(const std::vector<std::string> v);
+
   /// Copy constructor.
   wxExPath(const wxExPath& r);
   
@@ -45,13 +49,20 @@ public:
   /// != Operator.
   bool operator!=(const wxExPath& r) const {return !operator==(r);};
 
+  /// Appends path.
+  wxExPath& Append(const wxExPath& path);
+
+  /// Normalizes the path.
+  /// Returns false if the path does not exist.
+  bool Canonical(const std::string& path);
+
   /// Returns true if the directory with this name exists.
   bool DirExists() const;
 
   /// Returns true if the file with this name exists.
   bool FileExists() const;
 
-  /// Returns path extension component.
+  /// Returns path extension component (including the .).
   const std::string GetExtension() const;
 
   /// Returns path fullname (including extension) component.
@@ -69,6 +80,9 @@ public:
   /// Returns path path component (without fullname).
   const std::string GetPath() const;
 
+  /// Returns path components.
+  const std::vector<wxExPath> GetPaths() const;
+
   /// Returns the stat.
   const auto & GetStat() const {return m_Stat;};
 
@@ -84,11 +98,11 @@ public:
   /// Returns true if this path is relative.
   bool IsRelative() const;
     
-  /// Make path absolute.
-  bool MakeAbsolute();
+  /// Make this path absolute.
+  wxExPath& MakeAbsolute(const wxExPath& base = wxExPath());
   
-  /// Normalizes the path.
-  bool Normalize(const std::string& cwd);
+  /// Replaces filename.
+  wxExPath& ReplaceFileName(const std::string& filename);
 private:
   std::unique_ptr<wxExPathImp> m_Path;
   wxExLexer m_Lexer;

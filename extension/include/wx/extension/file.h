@@ -132,11 +132,10 @@ protected:
 private:
   bool Close() {return m_File->IsOpened() && m_File->Close();};
   bool Get(bool synced);
-  bool MakeAbsolute() {
-    return 
-      m_Path.MakeAbsolute() &&
-      m_Path.m_Stat.Sync(m_Path.GetFullPath()) &&
-      m_Stat.Sync(m_Path.GetFullPath());};
+  void MakeAbsolute() {
+    m_Path.MakeAbsolute();
+    if (m_Path.m_Stat.Sync(m_Path.GetFullPath())) {
+      m_Stat.Sync(m_Path.GetFullPath());};};
   
   bool m_IsLoaded = false;
   bool m_OpenFile;

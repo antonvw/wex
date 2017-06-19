@@ -57,7 +57,7 @@ TEST_CASE("wxExHexMode")
   REQUIRE( hm->Replace('9', 13));
   REQUIRE( hm->Replace('2', 13));
   
-  REQUIRE( stc->GetFile().FileSave(wxExPath(GetTestDir() + "test.hex")));
+  REQUIRE( stc->GetFile().FileSave(wxExPath(GetTestDir(), "test.hex")));
   hm->Set(false);
   REQUIRE( stc->GetText() == "01232567890123456789");
   

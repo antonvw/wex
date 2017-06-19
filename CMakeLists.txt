@@ -131,7 +131,7 @@ else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
   endif ()
   
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings -Wno-deprecated-declarations -Wno-unused-result")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings -Wno-deprecated-declarations -Wno-unused-result")
 
   if ( APPLE )
 #    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
@@ -156,6 +156,7 @@ macro(target_link_all)
     wxex
     ${wxWidgets_LIBRARIES} 
     ${extra_macro_args}
+    stdc++fs
     )
 endmacro()  
 

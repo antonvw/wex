@@ -23,20 +23,21 @@ TEST_CASE("wxExItemDialog")
   wxExItemDialog* dlg1 = new wxExItemDialog({
       {"string1", "hello1"},
       {"string2", "hello2"},
-      {"int1", ITEM_TEXTCTRL_INT, "10"},
-      {"int2", ITEM_TEXTCTRL_INT, "20"},
-      {"float1", ITEM_TEXTCTRL_FLOAT, "20.0"}},
+      {"int1", ITEM_TEXTCTRL_INT, wxString("10")},
+      {"int2", ITEM_TEXTCTRL_INT, wxString("20")},
+      {"float1", ITEM_TEXTCTRL_FLOAT, wxString("20.0")}},
     wxExWindowData().Button(wxOK | wxCANCEL | wxAPPLY));
   dlg1->Show();
   dlg1->ForceCheckBoxChecked();
   
   dlg1->Reload();
+  dlg1->WriteAllItems(std::cout);
   
   wxPostEvent(dlg1, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
   
-  REQUIRE(dlg1->GetItemValue("int1") == 10);
-  REQUIRE(dlg1->GetItemValue("int2") == 20);
-  REQUIRE(dlg1->GetItemValue("float1") == 20.0);
+  REQUIRE(std::any_cast<long>(dlg1->GetItemValue("int1")) == 10l);
+  REQUIRE(std::any_cast<long>(dlg1->GetItemValue("int2")) == 20l);
+  REQUIRE(std::any_cast<double>(dlg1->GetItemValue("float1")) == 20.0);
   
   // Test dialog without items.
   wxExItemDialog* dlg2 = new wxExItemDialog(std::vector <wxExItem>());

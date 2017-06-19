@@ -5,11 +5,12 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <experimental/filesystem>
+
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/dir.h>
 #include <wx/fileconf.h> 
 #include <wx/stdpaths.h>
 #include <wx/extension/app.h>
@@ -22,6 +23,8 @@
 #include <wx/extension/vcs.h>
 
 #define NO_ASSERT 1
+
+namespace fs = std::experimental::filesystem;
 
 void wxExApp::OnAssertFailure(
   const wxChar* file, int line, const wxChar* func, 
@@ -90,19 +93,18 @@ bool wxExApp::OnInit()
   m_CatalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
     m_Locale.GetCanonicalName(),
     // This seems to be necessary for wxGTK. For wxMSW it isn't used.
-    wxStandardPaths::ResourceCat_Messages);
+    wxStandardPaths::ResourceCat_Messages).ToStdString();
 
-  if (wxFileName::DirExists(m_CatalogDir))
+  if (fs::is_directory(m_CatalogDir))
   {
-    wxArrayString files;
-    wxDir::GetAllFiles(m_CatalogDir, &files, "*.mo");
-
-    for (const auto& it : files)
+    for (auto& p: fs::directory_iterator(m_CatalogDir))
     {
-      if (!m_Locale.AddCatalog(wxFileName(it).GetName()))
+      if (fs::is_regular_file(p.path()) && wxExMatchesOneOf(p.path().filename(), "*.mo"))
       {
-        std::cout << "Could not add catalog: " << 
-          wxFileName(it).GetName(). ToStdString() << "\n";;
+        if (!m_Locale.AddCatalog(p.path().stem().string()))
+        {
+          std::cout << "Could not add catalog: " << p.path().stem() << "\n";
+        }
       }
     }
   }

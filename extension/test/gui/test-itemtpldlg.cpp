@@ -53,17 +53,17 @@ TEST_CASE("wxExItemTemplateDialog")
     
     dlg->Show();
     
-    REQUIRE( dlg->GetItem("fruit").GetLabel() == "fruit");
-    REQUIRE( dlg->GetItemValue("fruit") == "apple");
-    REQUIRE( dlg->GetItemValue("xxx").IsNull());
-    REQUIRE( dlg->GetItem("xxx").GetLabel().empty());
-    REQUIRE( dlg->GetItemValue("yyy").IsNull());
+    REQUIRE( std::any_cast<wxString>(dlg->GetItem("fruit").GetLabel()) == "fruit");
+    REQUIRE( std::any_cast<wxString>(dlg->GetItemValue("fruit")) == "apple");
+    REQUIRE(!dlg->GetItemValue("xxx").has_value());
+    REQUIRE( std::any_cast<wxString>(dlg->GetItem("xxx").GetLabel()).empty());
+    REQUIRE(!dlg->GetItemValue("yyy").has_value());
     
     // asserts in 3.0
 #if wxCHECK_VERSION(3,1,0)
-    REQUIRE( dlg->SetItemValue("fruit", "strawberry"));
+    REQUIRE( dlg->SetItemValue("fruit", wxString("strawberry")));
     REQUIRE(!dlg->SetItemValue("xxx", "blueberry"));
-    REQUIRE( dlg->GetItemValue("fruit") == "strawberry");
+    REQUIRE( std::any_cast<wxString>(dlg->GetItemValue("fruit")) == "strawberry");
 #endif
     
     dlg->ForceCheckBoxChecked();

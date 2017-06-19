@@ -128,8 +128,8 @@ int wxExProcess::ConfigDialog(const wxExWindowData& data)
   validator.SetCharExcludes("?%*\"");
   
   const std::vector<wxExItem> v {
-    {_("Process"), ITEM_COMBOBOX, wxAny(), wxExControlData().Validator(&validator).Required(true)},
-    {m_WorkingDirKey, ITEM_COMBOBOX_DIR, wxAny(), wxExControlData().Required(true)}};
+    {_("Process"), ITEM_COMBOBOX, std::any(), wxExControlData().Validator(&validator).Required(true)},
+    {m_WorkingDirKey, ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)}};
 
   if (data.Button() & wxAPPLY)
   {

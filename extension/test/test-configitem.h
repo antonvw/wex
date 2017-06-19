@@ -24,8 +24,8 @@ const auto TestConfigItems(
     {"notebook", {
       {"Buttons",
         {{"<span size='x-large' color='blue'>Big</span> <b>bold</b> button", ITEM_BUTTON},
-         {"lambda", ITEM_BUTTON, wxAny(), wxExControlData(), LABEL_LEFT,
-           [=](wxWindow* user, const wxAny& value, bool save) {
+         {"lambda", ITEM_BUTTON, std::any(), wxExControlData(), LABEL_LEFT,
+           [=](wxWindow* user, const std::any& value, bool save) {
              wxLogStatus("click on lambda");}}}},
       {"Checkboxes",
         {{"Checkbox", ITEM_CHECKBOX}, 
@@ -44,7 +44,7 @@ const auto TestConfigItems(
       {"Comboboxes",
         {{"Combobox", ITEM_COMBOBOX}, 
          {"Combobox No Label", ITEM_COMBOBOX},
-         {"Combobox Dir Required", ITEM_COMBOBOX_DIR, wxAny(), wxExControlData().Required(true)},
+         {"Combobox Dir Required", ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)},
          {"Combobox Dir", ITEM_COMBOBOX_DIR}}},
       {"Command Link Buttons",
         {{"Command Link Button\tThis text describes what the button does", ITEM_COMMANDLINKBUTTON}}},
@@ -98,7 +98,7 @@ const auto TestConfigItems(
              if (save) wxConfigBase::Get()->Write("mytext", ((wxTextCtrl *)user)->GetValue());
              return true;},
            LABEL_LEFT,
-           [=](wxWindow* user, const wxAny& value, bool save) {
+           [=](wxWindow* user, const std::any& value, bool save) {
              wxLogStatus(((wxTextCtrl *)user)->GetValue());
              }}}}}, 
     ITEM_NOTEBOOK_LIST, rows, cols}};

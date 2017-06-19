@@ -726,7 +726,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
       if (!editor->IsModified() || !editor->GetFile().FileSave()) return;
 
-      SetRecentFile(editor->GetFileName().GetFullPath());
+      SetRecentFile(editor->GetFileName());
       
       if (editor->GetFileName() == wxExLexers::Get()->GetFileName())
       {
@@ -792,7 +792,7 @@ void Frame::OnCommand(wxCommandEvent& event)
           
       editor->PropertiesMessage();
       
-      SetRecentFile(editor->GetFileName().GetFullPath());
+      SetRecentFile(editor->GetFileName());
     }
     break;
 
@@ -1205,7 +1205,7 @@ wxExSTC* Frame::OpenFile(const wxExPath& filename, const wxExSTCData& data)
       }
       
       // Do not show an edge for project files opened as text.
-      if (filename.GetExtension() == "prj")
+      if (filename.GetExtension() == ".prj")
       {
         editor->SetEdgeMode(wxSTC_EDGE_NONE);
       }

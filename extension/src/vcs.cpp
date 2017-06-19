@@ -383,7 +383,7 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   
   // See also vcsentry, same item is used there.
   const std::vector<wxExItem> v{{
-    _("Base folder"), ITEM_COMBOBOX_DIR, wxAny(), wxExControlData().Required(true)}};
+    _("Base folder"), ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)}};
       
   if (wxExConfigFirstOf(_("Base folder")).empty()) 
   {

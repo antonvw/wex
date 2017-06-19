@@ -27,21 +27,31 @@ TEST_CASE( "wxExPath" )
   
   SUBCASE( "Basic" ) 
   {
-    wxExPath fileName(GetTestFile());
+    wxExPath path(GetTestFile());
   
-    REQUIRE( fileName.DirExists());
-    REQUIRE( fileName.FileExists());
-    REQUIRE( fileName.GetExtension() == "h");
-    REQUIRE( fileName.GetFullName() == "test.h");
-    REQUIRE(!fileName.GetFullPath().empty());
-    REQUIRE( fileName.GetLexer().GetScintillaLexer() == "cpp");
-    REQUIRE( fileName.GetName() == "test");
-    REQUIRE(!fileName.GetPath().empty());
-    REQUIRE( fileName.GetStat().IsOk());
-    REQUIRE(!fileName.IsReadOnly());
+    REQUIRE(!path.DirExists());
+    REQUIRE( path.FileExists());
+    REQUIRE( path.GetExtension() == ".h");
+    REQUIRE( path.GetFullName() == "test.h");
+    REQUIRE(!path.GetFullPath().empty());
+    REQUIRE( path.GetLexer().GetScintillaLexer() == "cpp");
+    REQUIRE( path.GetName() == "test");
+    REQUIRE(!path.GetPath().empty());
+    REQUIRE(!path.GetPaths().empty());
+    REQUIRE( path.GetStat().IsOk());
+    REQUIRE(!path.IsReadOnly());
+    path.GetVolume();
+
+    REQUIRE( path.Append("error").GetFullPath().find("error") != std::string::npos);
+    REQUIRE(!path.Canonical("xxx"));
+
+    path.ReplaceFileName("xxx");
 
     REQUIRE(!wxExPath("XXXXX").GetStat().IsOk());
-    REQUIRE( wxExPath("XXXXX").MakeAbsolute());
+
+    REQUIRE( wxExPath("XXXXX").MakeAbsolute().GetFullName() == "XXXXX");
+    REQUIRE( wxExPath("XXXXX").MakeAbsolute().GetFullPath() != "XXXXX");
+    REQUIRE( wxExPath("XXXXX").MakeAbsolute("yyy").GetFullName() == "XXXXX");
   }
 
   SUBCASE( "Timing" ) 

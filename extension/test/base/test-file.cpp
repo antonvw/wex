@@ -28,7 +28,7 @@ TEST_CASE( "wxExFile" )
     // The fullpath should be normalized, test it.
     REQUIRE( file.GetFileName().GetFullPath() != "./test.h");
     REQUIRE(!file.GetFileName().GetStat().IsReadOnly());
-    REQUIRE(!file.FileLoad(GetTestDir() + "test.bin"));
+    REQUIRE( file.FileLoad(GetTestDir() + "test.bin"));
     REQUIRE( file.Open(wxExPath(GetTestDir() + "test.bin").GetFullPath()));
     REQUIRE( file.IsOpened());
 

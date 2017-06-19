@@ -149,14 +149,14 @@ int wxExVCSEntry::ShowDialog(
   {
     m_ItemDialog = new wxExItemDialog({
       GetCommand().IsCommit() ? 
-        wxExItem(_("Revision comment"), ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)) : wxExItem(),
+        wxExItem(_("Revision comment"), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)) : wxExItem(),
       add_folder && !GetCommand().IsHelp() ? 
-        wxExItem(_("Base folder"), ITEM_COMBOBOX_DIR, wxAny(), wxExControlData().Required(true)) : wxExItem(),
+        wxExItem(_("Base folder"), ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)) : wxExItem(),
       add_folder && !GetCommand().IsHelp() && GetCommand().IsAdd() ? wxExItem(
-        _("Path"), ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)) : wxExItem(), 
+        _("Path"), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)) : wxExItem(), 
       GetCommand().UseFlags() ?  
         wxExItem(_("Flags"), wxEmptyString, ITEM_TEXTCTRL, wxExControlData(), LABEL_LEFT, 
-          [=](wxWindow* user, const wxAny& value, bool save) {
+          [=](wxWindow* user, const std::any& value, bool save) {
             wxConfigBase::Get()->Write(GetFlagsKey(), wxString(GetFlags()));}): wxExItem(),
       m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX ? 
         wxExItem(_("Prefix flags"), wxEmptyString): wxExItem(),

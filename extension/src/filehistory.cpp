@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <experimental/filesystem>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -181,7 +182,8 @@ void wxExFileHistory::UseMenu(wxWindowID id, wxMenu* menu)
 
 void wxExFileHistoryImp::AddFileToHistory(const wxString& file)
 {
-  if (!file.empty() && GetMaxFiles() > 0 && wxFileExists(file))
+  if (!file.empty() && GetMaxFiles() > 0 && 
+    std::experimental::filesystem::is_regular_file(file.ToStdString()))
   {
     wxFileHistory::AddFileToHistory(file);
   }
@@ -193,7 +195,7 @@ wxString wxExFileHistoryImp::GetHistoryFile(size_t index) const
   {
     const wxString file(wxFileHistory::GetHistoryFile(index));
 
-    if (!wxFileExists(file))
+    if (!std::experimental::filesystem::is_regular_file(file.ToStdString()))
     {
       const_cast< wxExFileHistoryImp * >( this )->RemoveFileFromHistory(index);
       wxLogStatus(_("Removed not existing file: %s from history"), 

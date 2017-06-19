@@ -68,7 +68,7 @@ public:
   static auto & GetCTags() {return m_CTags;};
   
   /// Returns frame.
-  wxExManagedFrame* GetFrame() {return m_Frame;};
+  auto* GetFrame() {return m_Frame;};
   
   /// Returns whether ex is active.
   auto GetIsActive() const {return m_IsActive;};

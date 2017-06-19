@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <experimental/filesystem>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -20,13 +21,13 @@
 
 #if wxUSE_GUI
 
-#define PERSISTENT(READ, TYPE, DEFAULT)                            \
-{                                                                  \
-  if (save)                                                        \
-    wxConfigBase::Get()->Write(GetLabel(), GetValue().As<TYPE>()); \
-  else                                                             \
-    SetValue(wxConfigBase::Get()->READ(GetLabel(), DEFAULT));      \
-}                                                                  \
+#define PERSISTENT(READ, TYPE, DEFAULT)                                      \
+{                                                                            \
+  if (save)                                                                  \
+    wxConfigBase::Get()->Write(GetLabel(), std::any_cast<TYPE>(GetValue())); \
+  else                                                                       \
+    SetValue((TYPE)wxConfigBase::Get()->READ(GetLabel(), DEFAULT));                \
+}                                                                            \
 
 bool Update(wxExFindReplaceData* frd, wxCheckListBox* clb, int item, bool save, bool value)
 {
@@ -134,7 +135,7 @@ bool wxExItem::ToConfig(bool save) const
     case ITEM_FILEPICKERCTRL:
       if (save)
       {
-        wxConfigBase::Get()->Write(GetLabel(), GetValue().As<wxString>());
+        wxConfigBase::Get()->Write(GetLabel(), std::any_cast<wxString>(GetValue()));
       }
       else
       {
@@ -142,7 +143,8 @@ bool wxExItem::ToConfig(bool save) const
 
 #ifdef __WXGTK__
         initial = "/usr/bin/" + GetLabel();
-        if (!wxFileExists(initial))
+
+        if (!std::experimental::filesystem::is_regular_file(initial.ToStdString()))
         {
           initial.clear();
         }
@@ -157,7 +159,7 @@ bool wxExItem::ToConfig(bool save) const
 
       if (save)
       {
-        for (const auto& b : GetInitial().As<wxExItem::Choices>())
+        for (const auto& b : std::any_cast<wxExItem::Choices>(GetInitial()))
         {
           if (b.second == rb->GetStringSelection())
           {
@@ -167,7 +169,7 @@ bool wxExItem::ToConfig(bool save) const
       }
       else
       {
-          const wxExItem::Choices & choices(GetInitial().As<wxExItem::Choices>());
+        const wxExItem::Choices & choices(std::any_cast<wxExItem::Choices>(GetInitial()));
         const auto c = choices.find(wxConfigBase::Get()->ReadLong(GetLabel(), 0));
         if (c != choices.end())
         {
@@ -200,7 +202,7 @@ bool wxExItem::ToConfig(bool save) const
 }
 
 wxExConfigDefaults::wxExConfigDefaults(
-  const std::vector<std::tuple<wxString, wxExItemType, wxAny>> & items)
+  const std::vector<std::tuple<wxString, wxExItemType, std::any>> & items)
   : m_Config(wxConfigBase::Get())
 {
   if (!m_Config->Exists(std::get<0>(items.front())))
@@ -209,32 +211,39 @@ wxExConfigDefaults::wxExConfigDefaults(
     
     for (const auto& it : items)
     {
-      switch (std::get<1>(it))
+      try
       {
-        case ITEM_CHECKBOX:
-          m_Config->ReadBool(std::get<0>(it), std::get<2>(it).As<bool>());
-          break;
-        case ITEM_COLOURPICKERWIDGET:
-          m_Config->ReadObject(std::get<0>(it), std::get<2>(it).As<wxColour>());
-          break;
-        case ITEM_FONTPICKERCTRL:
-          m_Config->ReadObject(std::get<0>(it), std::get<2>(it).As<wxFont>());
-          break;
-        case ITEM_SPINCTRL:
-          m_Config->ReadLong(std::get<0>(it), std::get<2>(it).As<long>());
-          break;
-        case ITEM_TEXTCTRL:
-          m_Config->Read(std::get<0>(it), std::get<2>(it).As<wxString>());
-          break;
-        case ITEM_TEXTCTRL_FLOAT:
-          m_Config->ReadDouble(std::get<0>(it), std::get<2>(it).As<double>());
-          break;
-        case ITEM_TEXTCTRL_INT:
-          m_Config->ReadLong(std::get<0>(it), std::get<2>(it).As<long>());
-          break;
-        default:
-          std::cout << "Unsupported default type for: "  << 
-            std::get<0>(it).c_str() << "\n";
+        switch (std::get<1>(it))
+        {
+          case ITEM_CHECKBOX:
+            m_Config->ReadBool(std::get<0>(it), std::any_cast<bool>(std::get<2>(it)));
+            break;
+          case ITEM_COLOURPICKERWIDGET:
+            m_Config->ReadObject(std::get<0>(it), std::any_cast<wxColour>(std::get<2>(it)));
+            break;
+          case ITEM_FONTPICKERCTRL:
+            m_Config->ReadObject(std::get<0>(it), std::any_cast<wxFont>(std::get<2>(it)));
+            break;
+          case ITEM_SPINCTRL:
+            m_Config->ReadLong(std::get<0>(it), std::any_cast<long>(std::get<2>(it)));
+            break;
+          case ITEM_TEXTCTRL:
+            m_Config->Read(std::get<0>(it), std::any_cast<wxString>(std::get<2>(it)));
+            break;
+          case ITEM_TEXTCTRL_FLOAT:
+            m_Config->ReadDouble(std::get<0>(it), std::any_cast<double>(std::get<2>(it)));
+            break;
+          case ITEM_TEXTCTRL_INT:
+            m_Config->ReadLong(std::get<0>(it), std::any_cast<long>(std::get<2>(it)));
+            break;
+          default:
+            std::cout << "Unsupported default type for: "  << 
+              std::get<0>(it).c_str() << "\n";
+        }
+      }
+      catch (std::bad_cast& e)
+      {
+        std::cout << "defaults: " << e.what() << " for: " << std::get<0>(it).ToStdString() << "\n";
       }
     }
   }

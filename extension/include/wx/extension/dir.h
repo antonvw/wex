@@ -23,8 +23,6 @@ enum wxExDirFlags
   DIR_DEFAULT   = DIR_FILES | DIR_DIRS | DIR_HIDDEN
 };
 
-class wxExDirImp;
-
 /// Offers FindFiles method.
 /// By overriding OnDir and OnFile you can take care
 /// of what to do with the result.
@@ -32,15 +30,15 @@ class WXDLLIMPEXP_BASE wxExDir : public wxExInterruptable
 {
 public:
   /// Constructor.
-  /// Opens the dir and sets the filespec.
+  /// Sets the dir and sets the filespec.
   /// This filespec specifies what files are found.
   wxExDir(
     const std::string& dir,
     const std::string& filespec = std::string(),
     int flags = DIR_DEFAULT); // finds all
 
-  /// Destructor.
-  virtual ~wxExDir();
+  /// Returns true if the directory exists.
+  bool DirExists() const;
 
   /// Finds matching files.
   /// This results in recursive calls for OnDir and OnFile.
@@ -53,9 +51,6 @@ public:
   /// Returns the flags.
   int GetFlags() const {return m_Flags;};
  
-  /// Returns true if the directory was successfully opened.
-  bool IsOpened() const;
-
   /// Do something with the dir.
   /// Not made pure virtual, to allow this 
   /// class to be tested by calling FindFiles.
@@ -66,7 +61,7 @@ public:
   /// class to be tested by calling FindFiles.
   virtual bool OnFile(const std::string& ) {return true;};
 private:
-  std::unique_ptr<wxExDirImp> m_Dir;
+  const std::string m_Dir;
   const std::string m_FileSpec;
   const int m_Flags;
 };

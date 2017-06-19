@@ -7,12 +7,12 @@
 
 #pragma once
 
+#include <any>
 #include <functional>
 #include <map>
 #include <set>
 #include <utility>
 #include <vector>
-#include <wx/any.h>
 #include <wx/imaglist.h>
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 #include <wx/slider.h>
@@ -93,7 +93,7 @@ public:
   
   /// A function that you can provide to e.g. specify what 
   /// to do when clicking on a button item.
-  typedef std::function<void(wxWindow* user, const wxAny& value, bool save)> 
+  typedef std::function<void(wxWindow* user, const std::any& value, bool save)> 
     UserApply;
   
   /// A function that you can provide to specify what needs to
@@ -156,7 +156,7 @@ public:
     /// max value
     int max,
     /// default value
-    const wxAny& value = wxAny(),
+    const std::any& value = std::any(),
     /// type of item: 
     /// - ITEM_SPINCTRL 
     /// - ITEM_SLIDER
@@ -178,7 +178,7 @@ public:
     /// max value
     double max,
     /// default value
-    const wxAny& value = wxAny(),
+    const std::any& value = std::any(),
     /// inc value
     double inc = 1,
     /// control data
@@ -296,6 +296,7 @@ public:
     const wxString& label,
     /// type of item:
     /// - ITEM_BUTTON
+    /// - ITEM_CHECKBOX
     /// - ITEM_COLOURPICKERWIDGET
     /// - ITEM_COMBOBOX
     /// - ITEM_COMBOBOX_DIR
@@ -304,11 +305,12 @@ public:
     /// - ITEM_FILEPICKERCTRL
     /// - ITEM_FONTPICKERCTRL
     /// - ITEM_LISTVIEW
+    /// - ITEM_TEXTCTRL_FLOAT
     /// - ITEM_TEXTCTRL_INT
     /// - ITEM_TOGGLEBUTTON
     wxExItemType type,
     /// initial value for the control, if appropriate
-    const wxAny& value = wxAny(),
+    const std::any& value = std::any(),
     /// control data
     const wxExControlData& data = wxExControlData(),
     /// type of label
@@ -352,9 +354,9 @@ public:
   /// Returns the type.
   auto GetType() const {return m_Type;};
   
-  /// Returns actual value, or IsNull if type
+  /// Returns actual value, or empty object if this item
   /// has no (or not yet) associated window, or conversion is not implemented.
-  const wxAny GetValue() const;
+  const std::any GetValue() const;
 
   /// Returns the window (first call Layout, to create it, otherwise it is nullptr).
   auto* GetWindow() const {return m_Window;};
@@ -391,7 +393,7 @@ public:
   
   /// Sets actual value for the associated window.
   /// Returns false if window is nullptr, or value was not set.
-  bool SetValue(const wxAny& value) const;
+  bool SetValue(const std::any& value) const;
   
   /// Loads or saves this item to the config.
   /// Returns true if the config was accessed, as not all
@@ -401,6 +403,9 @@ public:
   /// Use config for getting and retrieving values.
   /// Default the config is used.
   static void UseConfig(bool use) {m_UseConfig = use;};
+
+  /// Writes info about this item to ostream.
+  void Write(std::ostream& s) const;
 protected:
   /// Delegate constructor.
   wxExItem(
@@ -409,18 +414,18 @@ protected:
     /// the label to appear in front of the item
     const wxString& label = wxEmptyString, 
     /// intitial value if appropriate
-    const wxAny& value = wxString(),
+    const std::any& value = wxString(),
     /// If you specify add label, then the label is added as a label in front of
     /// the item, otherwise the label is not added
     wxExLabelType label_type = LABEL_NONE,
     /// major dimention for radio boxes
     int major_dimension = 1,
     /// min value if appropriate
-    const wxAny& min = 0, 
+    const std::any& min = 0, 
     /// max value if appropriate
-    const wxAny& max = 1, 
+    const std::any& max = 1, 
     /// increment value if appropriate
-    const wxAny& inc = 1,
+    const std::any& inc = 1,
     /// window, normally created by Layout, but may be supplied here
     wxWindow* window = nullptr, 
     /// the process callback for window creation
@@ -435,13 +440,14 @@ private:
   void AddItems(std::pair<wxString, std::vector<wxExItem>> & items, bool readonly);
   wxFlexGridSizer* AddStaticText(wxSizer* sizer) const;
   bool CreateWindow(wxWindow* parent, bool readonly);
+  std::ostream& Write(const std::string& name, const std::any& any, std::ostream& s) const;
 
   bool m_IsRowGrowable = false;
   int m_MajorDimension, m_MaxItems = 25;
   
   wxExItemType m_Type;
   wxExLabelType m_LabelType;
-  wxAny m_Initial, m_Min, m_Max, m_Inc;
+  std::any m_Initial, m_Min, m_Max, m_Inc;
   wxString m_Label, m_Page;
   wxSizerFlags m_SizerFlags;
   wxWindow* m_Browse = nullptr, *m_Window;
@@ -466,13 +472,13 @@ public:
   /// if not yet in the config.
   wxExConfigDefaults(
     /// supply name, item type, and default value
-    const std::vector<std::tuple<wxString, wxExItemType, wxAny>> & items);
+    const std::vector<std::tuple<wxString, wxExItemType, std::any>> & items);
   
   /// Destructor, stops recording.
  ~wxExConfigDefaults();
   
   /// Access to config.
-  wxConfigBase* Get() {return m_Config;};
+  auto* Get() {return m_Config;};
 private:
   wxConfigBase* m_Config;
 };

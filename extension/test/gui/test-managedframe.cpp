@@ -53,7 +53,7 @@ TEST_CASE("wxExManagedFrame")
   GetFrame()->SetFindFocus(GetFrame()->GetSTC());
   GetFrame()->OpenFile(GetTestFile());
   
-  GetFrame()->SetRecentFile(GetTestFile().GetFullPath());
+  GetFrame()->SetRecentFile(GetTestFile());
   GetFrame()->SetRecentFile("testing");
   
   REQUIRE( GetFrame()->GetFileHistory().GetHistoryFile().find("test.h") != std::string::npos);

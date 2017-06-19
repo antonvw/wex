@@ -269,9 +269,10 @@ const std::string wxExConfigDir()
 #ifdef __WXMSW__
   return wxPathOnly(wxStandardPaths::Get().GetExecutablePath()).ToStdString();
 #else
-  return wxFileName(
-    wxGetHomeDir() + wxFileName::GetPathSeparator() + ".config",
-    wxTheApp->GetAppName().Lower()).GetFullPath().ToStdString();
+  return wxExPath({
+    wxGetHomeDir().ToStdString(), 
+    ".config", 
+    wxTheApp->GetAppName().Lower().ToStdString()}).GetFullPath();
 #endif
 }
   

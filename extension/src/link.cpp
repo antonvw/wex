@@ -11,9 +11,9 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/filefn.h> // for wxPathList
 #include <wx/extension/link.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/path.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
@@ -21,19 +21,23 @@
 class wxExPaths
 {
 public:
-  wxExPaths() {
-    wxExTokenizer tkz(
-      wxConfigBase::Get()->Read(_("Include directory")).ToStdString(),
-      "\r\n");
-    while (tkz.HasMoreTokens())
-    {
-      m_pl.Add(tkz.GetNextToken());
-    }};
+  wxExPaths() : m_pl(wxExTokenizer(
+    wxConfigBase::Get()->Read(_("Include directory")).ToStdString(),
+    "\r\n").Tokenize<std::vector<std::string>>()) {;};
 
-  std::string FindPath(const std::string& path) const {return 
-    m_pl.FindAbsoluteValidPath(wxString(path)).ToStdString();};
+  std::string FindPath(const std::string& path) const {
+    for (const auto& it : m_pl)
+    {
+      const wxExPath valid(it, path);
+
+      if (valid.FileExists())
+      {
+        return valid.GetFullPath();
+      }
+    }
+    return std::string();};
 private:
-  wxPathList m_pl;
+  const std::vector<std::string> m_pl;
 };
 
 wxExLink::wxExLink(wxExSTC* stc)
@@ -48,11 +52,7 @@ wxExLink::~wxExLink()
 
 const std::string wxExLink::FindPath(const std::string& text, const wxExControlData& data) const
 {
-  if (
-    text.empty() ||
-    // wxPathList cannot handle links over several lines.
-    // add trimmed argument, to skip eol
-    wxExGetNumberOfLines(text, true) > 1)
+  if (text.empty())
   {
     return std::string();
   }
@@ -142,7 +142,8 @@ const std::string wxExLink::FindPath(const std::string& text, const wxExControlD
 const std::string wxExLink::GetPath(const std::string& text, wxExControlData& data) const
 {
   const std::string path(FindPath(text, data));
-  
+
+  // if http link requested  
   if (data.Line() < 0)
   { 
     return path;
@@ -152,73 +153,54 @@ const std::string wxExLink::GetPath(const std::string& text, wxExControlData& da
   
   SetLink(link, data);
   
-  if (
-    link.empty() || 
-    // Otherwise, if you happen to select text that 
-    // ends with a separator, wx asserts.
-    wxFileName::IsPathSeparator(link.back()))
+  if (link.empty())
   {
     return std::string();
   }
 
-  wxFileName file(link);
-  std::string fullpath;
+  wxExPath file(link);
 
   if (file.FileExists())
   {
-    file.MakeAbsolute();
-    fullpath = file.GetFullPath();
+    return file.MakeAbsolute().GetFullPath();
   }
-  else
-  {
-    if (
-      file.IsRelative() && 
-      m_STC != nullptr && 
-      m_STC->GetFileName().FileExists())
-    {
-      if (file.MakeAbsolute(m_STC->GetFileName().GetPath()))
-      {
-        if (file.FileExists())
-        {
-          fullpath = file.GetFullPath();
-        }
-      }
-    }
 
-    if (fullpath.empty())
+  if (file.IsRelative() && 
+      m_STC != nullptr && m_STC->GetFileName().FileExists())
+  {
+    wxExPath path(file.MakeAbsolute(m_STC->GetFileName().GetPath()));
+
+    if (path.FileExists())
     {
-      int pos = path.find_last_of(' ');
-      
-      // Check whether last word is a file.
-      std::string word = wxExSkipWhiteSpace((pos != std::string::npos ? path.substr(pos): std::string()));
-    
-      if (
-       !word.empty() && 
-       !wxFileName::IsPathSeparator(link.back()) &&
-        wxFileExists(word))
-      {
-        wxFileName file(word);
-        file.MakeAbsolute();
-        fullpath = file.GetFullPath();
-        data.Reset();
-      }
-    
-      if (fullpath.empty() && m_Paths != nullptr)
-      {
-        fullpath = m_Paths->FindPath(link);
-      
-        if (
-          fullpath.empty() && 
-         !word.empty() &&
-          SetLink(word, data))
-        {
-          fullpath = m_Paths->FindPath(word);
-        }
-      }
-      
-      // Do nothing if fullpath.empty(),
-      // as we return empty string if no path could be found.
+      return path.GetFullPath();
     }
+  }
+
+  // Check whether last word is a file.
+  int pos = path.find_last_of(' ');
+  std::string word = wxExSkipWhiteSpace((pos != std::string::npos ? path.substr(pos): std::string()));
+
+  if (!word.empty())
+  {
+    wxExPath path(word);
+
+    if (path.FileExists())
+    {
+      data.Reset();
+      return path.MakeAbsolute().GetFullPath();
+    }
+  }
+
+  std::string fullpath = m_Paths->FindPath(link);
+
+  if (!fullpath.empty())
+  {
+    return fullpath;
+  }
+
+  if (!word.empty() && SetLink(word, data))
+  {
+    fullpath = m_Paths->FindPath(word);
   }
   
   return fullpath;
@@ -274,10 +256,6 @@ bool wxExLink::SetLink(std::string& link, wxExControlData& data) const
   
 void wxExLink::SetFromConfig()
 {
-  if (m_Paths != nullptr)
-  {
-    m_Paths.release();
-  }
-
+  m_Paths.release();
   m_Paths = std::make_unique<wxExPaths>();
 }

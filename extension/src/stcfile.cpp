@@ -55,7 +55,7 @@ bool wxExSTCFile::DoFileLoad(bool synced)
   // Other kind of files might get new data anywhere inside the file,
   // we cannot sync that by keeping pos. 
   // Also only do it for reasonably large files.
-  const bool isLog = (GetFileName().GetExtension().find("log") == 0);
+  const bool isLog = (GetFileName().GetExtension().find(".log") == 0);
   
   m_STC->UseModificationMarkers(false);
 

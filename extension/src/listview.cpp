@@ -35,14 +35,14 @@ class ListViewDefaults : public wxExConfigDefaults
 {
 public:
   ListViewDefaults() 
-  : wxExConfigDefaults(std::vector<std::tuple<wxString, wxExItemType, wxAny>> {
-    std::make_tuple(_("Background colour"), ITEM_COLOURPICKERWIDGET, *wxWHITE),
-    std::make_tuple(_("Context size"), ITEM_SPINCTRL, 10),
-    std::make_tuple(_("Foreground colour"), ITEM_COLOURPICKERWIDGET, *wxBLACK),
-    std::make_tuple(_("List font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
-    std::make_tuple(_("List tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
-    std::make_tuple(_("Readonly colour"), ITEM_COLOURPICKERWIDGET, *wxLIGHT_GREY),
-    std::make_tuple(_("Header"), ITEM_CHECKBOX, true)}) {;};
+  : wxExConfigDefaults({
+    {_("Background colour"), ITEM_COLOURPICKERWIDGET, *wxWHITE},
+    {_("Context size"), ITEM_SPINCTRL, 10l},
+    {_("Foreground colour"), ITEM_COLOURPICKERWIDGET, *wxBLACK},
+    {_("List font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+    {_("List tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+    {_("Readonly colour"), ITEM_COLOURPICKERWIDGET, *wxLIGHT_GREY},
+    {_("Header"), ITEM_CHECKBOX, true}}) {;};
 };
   
 #if wxUSE_DRAG_AND_DROP
@@ -806,7 +806,7 @@ void wxExListView::ItemActivated(long item_number)
         frame->OpenFile(item.GetFileName(), data);
       }
     }
-    else if (wxDirExists(item.GetFileName().GetFullPath()))
+    else if (item.GetFileName().DirExists())
     {
       wxTextEntryDialog dlg(this,
         _("Input") + ":",

@@ -14,7 +14,6 @@
 #include <functional>
 #include <wx/config.h>
 #include <wx/log.h>
-#include <wx/stdpaths.h>
 #include <wx/timer.h>
 #include <wx/uiaction.h>
 #include <wx/extension/lexers.h>
@@ -23,6 +22,44 @@
 #include <wx/extension/util.h>
 #include "test.h"
 
+void AddExtension(wxExPath& fn)
+{
+  const auto v(fn.GetPaths());
+  const auto it = std::find(v.begin(), v.end(), "wxExtension");
+  
+  fn = wxExPath();
+  
+  // If wxExtension is present, copy all subdirectories.
+  if (it != v.end())
+  {
+    for (auto i = v.begin(); i != it; i++)
+    {
+      fn.Append(*i);
+    }
+
+    fn.Append("wxExtension").Append("extension");
+  }
+  else
+  {
+    for (const auto& it : v)
+    {
+      if (it == "build" || it == "Release" || 
+          it == "Debug" || it == "Coverage")
+      {
+        fn.Append("extension");
+        break;      
+      }
+    
+      fn.Append(it);
+    
+      if (it == "extension")
+      {
+        break;
+      }
+    }
+  }
+}
+    
 void AddPane(wxExManagedFrame* frame, wxWindow* pane)
 {
   static int no = 0;
@@ -30,8 +67,8 @@ void AddPane(wxExManagedFrame* frame, wxWindow* pane)
   wxAuiPaneInfo info(frame->GetManager().GetAllPanes().GetCount() == 5 ?
     wxAuiPaneInfo().Center():
     wxAuiPaneInfo().Bottom());
-  
-  const wxString name(wxString::Format("PANE %d", no++));
+
+  const std::string name("PANE " + std::to_string(no++));
   
   frame->GetManager().AddPane(pane, wxAuiPaneInfo(info)
     .Name(name)
@@ -41,33 +78,28 @@ void AddPane(wxExManagedFrame* frame, wxWindow* pane)
   frame->GetManager().Update();
 }
 
-void SystemArg(
-  const std::string cmd, const std::string& file, const std::string& dir)
-{
-  const std::string line(
-    cmd +
-    std::string(" ..") + std::string(1, wxFileName::GetPathSeparator()) + 
-    ".." + std::string(1, wxFileName::GetPathSeparator()) + 
-    "data" + std::string(1, wxFileName::GetPathSeparator()) + 
-    file + " " + dir);
-
-  (void)system(line.c_str());
-}
-
 const std::string GetTestDir()
 {
-  return wxExTestApp::GetTestFileName().GetFullPath().ToStdString() + 
-    (char)wxFileName::GetPathSeparator();
+  return wxExTestApp::GetTestPath().GetFullPath() + "/";
 }
   
 const wxExPath GetTestFile()
 {
-  return GetTestDir() + "test.h";
+  return wxExPath({GetTestDir(), "test.h"});
 }
   
+void SystemArg(
+  const std::string cmd, const std::string& file, const std::string& dir)
+{
+  const wxExPath path({"..", "..", "data", file});
+  const std::string line(cmd + " " + path.GetFullPath() + " " + dir);
+
+  (void)system(line.c_str());
+}
+
 void SetEnvironment(const std::string& dir)
 {
-  if (!wxDirExists(dir))
+  if (!wxExPath(dir).DirExists())
   {
     (void)system(std::string("mkdir -p " + dir).c_str());
   }
@@ -91,44 +123,6 @@ void SetEnvironment(const std::string& dir)
   // it should be present in ~/.wxex-test-gui
   // (depending on platform, configuration).
   wxExLexers::Get();
-}
-    
-void SetFindExtension(wxFileName& fn)
-{
-  const wxArrayString ar(fn.GetDirs());
-  const int index = ar.Index("wxExtension");
-  
-  fn.Assign(wxFileName::GetPathSeparator(), "");
-  
-  // If wxExtension is present, copy all subdirectories.
-  if (index != wxNOT_FOUND)
-  {
-    for (int i = 0; i <= index; i++)
-    {
-      fn.AppendDir(ar[i]);
-    }
-
-    fn.AppendDir("extension");
-  }
-  else
-  {
-    for (const auto& it : ar)
-    {
-      if (it == "build" || it == "Release" || 
-          it == "Debug" || it == "Coverage")
-      {
-        fn.AppendDir("extension");
-        break;      
-      }
-    
-      fn.AppendDir(it);
-    
-      if (it == "extension")
-      {
-        break;
-      }
-    }
-  }
 }
     
 bool wxExUIAction(wxWindow* win, const std::string& action, const std::string& par)
@@ -168,12 +162,12 @@ bool wxExUIAction(wxWindow* win, const std::string& action, const std::string& p
   return true;
 }
   
-wxFileName wxExTestApp::m_TestFileName;
+wxExPath wxExTestApp::m_TestPath;
 
 bool wxExTestApp::OnInit()
 {
   SetAppName("wxex-test-gui");
-  SetWorkingDirectory();
+  SetTestPath();
   SetEnvironment(wxExConfigDir());
   
   if (!wxExApp::OnInit())
@@ -225,42 +219,39 @@ void wxExTestApp::SetContext(doctest::Context* context)
   m_Context = context;
 }
   
-const std::string wxExTestApp::SetWorkingDirectory()
+void wxExTestApp::SetTestPath()
 {
-  const wxString old = wxGetCwd();
-
-  m_TestFileName = wxFileName(old, "");
+  m_TestPath = wxExPath(wxGetCwd().ToStdString(), "");
+  auto v(m_TestPath.GetPaths());
   
-  if (m_TestFileName.GetDirs().Index("wxExtension") == wxNOT_FOUND)
+  if (std::find(v.begin(), v.end(), "wxExtension") == v.end())
   {
-    if (m_TestFileName.GetDirs().Index("extension") == wxNOT_FOUND)
+    if (std::find(v.begin(), v.end(), "extension") == v.end())
     {
-      m_TestFileName.RemoveLastDir();
-      m_TestFileName.AppendDir("extension");
+      m_TestPath.ReplaceFileName("extension");
     }
     else
     {
-      SetFindExtension(m_TestFileName);
+      AddExtension(m_TestPath);
     }
   }
   else
   {
-    SetFindExtension(m_TestFileName);
+    AddExtension(m_TestPath);
   }
-  
-  if (m_TestFileName.GetDirs().Index("test") == wxNOT_FOUND)
+
+  v = m_TestPath.GetPaths();
+
+  if (std::find(v.begin(), v.end(), "test") == v.end())
   {
-    m_TestFileName.AppendDir("test");
-    m_TestFileName.AppendDir("data");
+    m_TestPath.Append("test").Append("data");
   }
-  
-  if (!wxSetWorkingDirectory(m_TestFileName.GetFullPath()))
+
+  if (!wxSetWorkingDirectory(m_TestPath.GetFullPath()))
   {
-    fprintf(stderr, "%s\n", (const char *)m_TestFileName.GetFullPath().c_str());
+    std::cout << "cannot set working dir: " << m_TestPath.GetFullPath() << "\n";
     exit(1);
   }
-  
-  return old.ToStdString();
 }
 
 int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)

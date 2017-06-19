@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Include file for wxExApp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -38,6 +38,6 @@ public:
   /// You should normally don't need to override it.
   virtual int OnExit() override;
 private:
-  wxString m_CatalogDir;
+  std::string m_CatalogDir;
   wxLocale m_Locale;
 };

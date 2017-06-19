@@ -27,7 +27,7 @@ TEST_CASE("wxExConfigDialog")
     wxExWindowData().Button(wxOK | wxCANCEL | wxAPPLY));
   dlg->Show();
   
-  REQUIRE(dlg->GetItemValue("string1").As<wxString>().empty());
+  REQUIRE( std::any_cast<wxString>(dlg->GetItemValue("string1")).empty());
   
   dlg->Reload();
   

@@ -7,12 +7,12 @@
 
 #pragma once
 
+#include <any>
 #include <functional>
 #include <utility>
 #include <vector>
 #include <sstream> // for tclap!
 #include <tclap/CmdLine.h>
-#include <wx/any.h>
 
 /// Types for commandline.
 enum wxExCmdLineTypes
@@ -38,7 +38,7 @@ public:
     /// tuple of option flag, name and description
     const std::tuple<const std::string, const std::string, const std::string>, 
     /// pair of command line param type and process callback if option is found
-    std::pair<wxExCmdLineTypes, std::function<void(const wxAny& any)>>>> CmdOptions;
+    std::pair<wxExCmdLineTypes, std::function<void(const std::any& any)>>>> CmdOptions;
 
   /// Params (currently only string value supported): 
   typedef std::pair<
@@ -78,21 +78,21 @@ public:
 private:
   struct wxExCmdLineContent
   {
-    wxExCmdLineContent(std::function<void(const wxAny& any)> fu,
+    wxExCmdLineContent(std::function<void(const std::any& any)> fu,
       TCLAP::ValueArg<float>* f)
       : m_Type(CMD_LINE_FLOAT) 
       , m_f(fu) {m_tclap_u.m_val_f = f;};
-    wxExCmdLineContent(std::function<void(const wxAny& any)> fu,
+    wxExCmdLineContent(std::function<void(const std::any& any)> fu,
       TCLAP::ValueArg<int>* i)
       : m_Type(CMD_LINE_INT) 
       , m_f(fu) {m_tclap_u.m_val_i = i;};
-    wxExCmdLineContent(std::function<void(const wxAny& any)> fu,
+    wxExCmdLineContent(std::function<void(const std::any& any)> fu,
       TCLAP::ValueArg<std::string>* s)
       : m_Type(CMD_LINE_STRING) 
       , m_f(fu) {m_tclap_u.m_val_s = s;};
       
     const wxExCmdLineTypes m_Type;
-    std::function<void(const wxAny& any)> m_f; 
+    std::function<void(const std::any& any)> m_f; 
 
     union wxExInternal
     {

@@ -59,7 +59,7 @@ TEST_CASE("wxExConfigItem")
       if (save) wxConfigBase::Get()->Write("mytext", ((wxTextCtrl *)user)->GetValue());
       return true;},
     LABEL_LEFT,
-    [=](wxWindow* user, const wxAny& value, bool save) {
+    [=](wxWindow* user, const std::any& value, bool save) {
       wxLogStatus(((wxTextCtrl *)user)->GetValue());});
   
   REQUIRE(ci_empty.GetType() == ITEM_EMPTY);
@@ -129,11 +129,11 @@ TEST_CASE("wxExConfigItem")
           it.GetType() == ITEM_USER ||
           it.GetType() == ITEM_STATICTEXT)
       {
-        REQUIRE( it.GetValue().IsNull());
+        REQUIRE(!it.GetValue().has_value());
       }
       else
       {
-        REQUIRE(!it.GetValue().IsNull());
+        REQUIRE( it.GetValue().has_value());
       }
     }
   }
@@ -154,12 +154,12 @@ TEST_CASE("wxExConfigItem")
 #if wxCHECK_VERSION(3,1,0)
 TEST_CASE("wxExConfigDefaults")
 {
-  wxExConfigDefaults def(std::vector<std::tuple<wxString, wxExItemType, wxAny>> {
-    std::make_tuple("def-colour", ITEM_COLOURPICKERWIDGET, *wxWHITE),
-    std::make_tuple("def-font", ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)),
-    std::make_tuple("def-double", ITEM_TEXTCTRL_FLOAT, 8.8),
-    std::make_tuple("def-string", ITEM_TEXTCTRL, "a string"),
-    std::make_tuple("def-int", ITEM_TEXTCTRL_INT, 10)});
+  wxExConfigDefaults def(std::vector<std::tuple<wxString, wxExItemType, std::any>> {
+    {"def-colour", ITEM_COLOURPICKERWIDGET, *wxWHITE},
+    {"def-font", ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)},
+    {"def-double", ITEM_TEXTCTRL_FLOAT, 8.8},
+    {"def-string", ITEM_TEXTCTRL, wxString("a string")},
+    {"def-int", ITEM_TEXTCTRL_INT, 10l}});
   
   REQUIRE( def.Get() != nullptr);
   REQUIRE( def.Get()->Exists("def-colour"));

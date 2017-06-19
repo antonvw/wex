@@ -2,7 +2,7 @@
 // Name:      stat.h
 // Purpose:   Declaration of wxExStat class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -23,8 +23,6 @@ public:
     Sync(fullpath);};
 
   /// Returns the modification time.
-  /// From wxFileName class GetModificationTime is available as well,
-  /// this one returns string and only uses the stat member, and is fast.
   const std::string GetModificationTime() const {
     return wxDateTime(st_mtime).FormatISOCombined(' ').ToStdString();};
 

@@ -44,9 +44,9 @@ wxExFrameWithHistory::wxExFrameWithHistory(
   t.insert(m_TextRecursive);
   
   const std::vector<wxExItem> f {
-    {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)},
-    {m_TextInFiles, ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)},
-    {m_TextInFolder, ITEM_COMBOBOX_DIR, wxAny(), wxExControlData().Required(true)},
+    {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
+    {m_TextInFiles, ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
+    {m_TextInFolder, ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)},
     {t}};
   
   m_FiFDialog = new wxExItemDialog(
@@ -246,8 +246,8 @@ int wxExFrameWithHistory::FindInFilesDialog(
   }
 
   if (wxExItemDialog({
-      {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)}, 
-      (add_in_files ? wxExItem(m_TextInFiles, ITEM_COMBOBOX, wxAny(), wxExControlData().Required(true)) : wxExItem()),
+      {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)}, 
+      (add_in_files ? wxExItem(m_TextInFiles, ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)) : wxExItem()),
       (id == ID_TOOL_REPLACE ? wxExItem(wxExFindReplaceData::Get()->GetTextReplaceWith(), ITEM_COMBOBOX): wxExItem()),
       wxExItem(m_Info)},
     wxExWindowData().Title(GetFindInCaption(id))).ShowModal() == wxID_CANCEL)
@@ -293,9 +293,9 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
   static int arg3 = wxDIR_FILES;
 
   if (!wxExCmdLine(
-    {{std::make_tuple("r", "recursive", "recursive"), [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}},
+    {{{"r", "recursive", "recursive"}, [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}},
     {},
-    {std::make_pair("rest", "match " + std::string(sed ? "replace": "") + " [extension] [folder]"), 
+    {{"rest", "match " + std::string(sed ? "replace": "") + " [extension] [folder]"}, 
        [&](const std::vector<std::string> & v) {
        size_t i = 0;
        wxExFindReplaceData::Get()->SetFindString(v[i++]);

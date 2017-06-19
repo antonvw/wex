@@ -26,29 +26,29 @@ class STCDefaults : public wxExConfigDefaults
 {
 public:
   STCDefaults() 
-  : wxExConfigDefaults(std::vector<std::tuple<wxString, wxExItemType, wxAny>> {
-    std::make_tuple(_("Auto fold"), ITEM_TEXTCTRL_INT, 1500),
-    std::make_tuple(_("Auto indent"), ITEM_TEXTCTRL_INT, (long)INDENT_ALL),
-    std::make_tuple(_("Caret line"), ITEM_CHECKBOX, true),
-    std::make_tuple(_("Default font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)),
-    std::make_tuple(_("Divider"), ITEM_TEXTCTRL_INT, 16),
-    std::make_tuple(_("Edge column"), ITEM_TEXTCTRL_INT, 80),
-    std::make_tuple(_("Edge line"), ITEM_TEXTCTRL_INT, wxSTC_EDGE_NONE),
-    std::make_tuple(_("Fold flags"), ITEM_TEXTCTRL_INT, wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED),
-    std::make_tuple(_("Folding"), ITEM_TEXTCTRL_INT, 16),
-    std::make_tuple(_("Indent"), ITEM_TEXTCTRL_INT, 2),
-    std::make_tuple(_("Line number"), ITEM_TEXTCTRL_INT, 60),
-    std::make_tuple(_("Print flags"), ITEM_TEXTCTRL_INT, wxSTC_PRINT_BLACKONWHITE),
-    std::make_tuple(_("Scroll bars"), ITEM_CHECKBOX, true),
-    std::make_tuple(_("Show mode"), ITEM_CHECKBOX, true),
+  : wxExConfigDefaults({
+    {_("Auto fold"), ITEM_TEXTCTRL_INT, 1500l},
+    {_("Auto indent"), ITEM_TEXTCTRL_INT, (long)INDENT_ALL},
+    {_("Caret line"), ITEM_CHECKBOX, true},
+    {_("Default font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)},
+    {_("Divider"), ITEM_TEXTCTRL_INT, 16l},
+    {_("Edge column"), ITEM_TEXTCTRL_INT, 80l},
+    {_("Edge line"), ITEM_TEXTCTRL_INT, (long)wxSTC_EDGE_NONE},
+    {_("Fold flags"), ITEM_TEXTCTRL_INT, (long)wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED},
+    {_("Folding"), ITEM_TEXTCTRL_INT, 16l},
+    {_("Indent"), ITEM_TEXTCTRL_INT, 2l},
+    {_("Line number"), ITEM_TEXTCTRL_INT, 60l},
+    {_("Print flags"), ITEM_TEXTCTRL_INT, (long)wxSTC_PRINT_BLACKONWHITE},
+    {_("Scroll bars"), ITEM_CHECKBOX, true},
+    {_("Show mode"), ITEM_CHECKBOX, true},
 #if wxCHECK_VERSION(3,1,1)
-    std::make_tuple(_("Tab draw mode"), ITEM_TEXTCTRL_INT, wxSTC_TD_LONGARROW),
+    {_("Tab draw mode"), ITEM_TEXTCTRL_INT, (long)wxSTC_TD_LONGARROW},
 #endif
-    std::make_tuple(_("Tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
-    std::make_tuple(_("Tab width"), ITEM_TEXTCTRL_INT, 2),
-    std::make_tuple(_("Text font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
-    std::make_tuple(_("vi mode"), ITEM_CHECKBOX, true),
-    std::make_tuple(_("vi tag fullpath"), ITEM_CHECKBOX, true)}) {;};
+    {_("Tab font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+    {_("Tab width"), ITEM_TEXTCTRL_INT, 2l},
+    {_("Text font"), ITEM_FONTPICKERCTRL, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+    {_("vi mode"), ITEM_CHECKBOX, true},
+    {_("vi tag fullpath"), ITEM_CHECKBOX, true}}) {;};
 };
   
 wxExItemDialog* wxExSTC::m_ConfigDialog = nullptr;
@@ -207,7 +207,7 @@ int wxExSTC::ConfigDialog(const wxExWindowData& data)
          {_X("Auto complete maxwidth"), 0, 100}}},
       {_X("Folding"),
         {{_X("Indentation guide"), ITEM_CHECKBOX},
-         {_X("Auto fold"), 0, INT_MAX},
+         {_X("Auto fold"), 0l, INT_MAX},
          {_X("Fold flags"), {
              {wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _X("Line before expanded")},
              {wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _X("Line before contracted")},
@@ -223,7 +223,7 @@ int wxExSTC::ConfigDialog(const wxExWindowData& data)
            {wxSTC_PRINT_COLOURONWHITE, _X("Colour on white")},
            {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _X("Colour on white normal")}}, true, 1}}},
       {_X("Directory"),
-        {{_X("Include directory"), ITEM_LISTVIEW, wxAny(), wxExControlData().
+        {{_X("Include directory"), ITEM_LISTVIEW, std::any(), wxExControlData().
           Window(wxExWindowData().Size({200, 200}))}}}}}},
       wxExWindowData(data).
         Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title()).
@@ -254,7 +254,7 @@ void wxExSTC::ConfigGet()
     m_Lexer.Apply();
   }
 
-  if (GetFileName().GetExtension().find("log") == 0)
+  if (GetFileName().GetExtension().find(".log") == 0)
   {
     SetEdgeMode(wxSTC_EDGE_NONE);
   }

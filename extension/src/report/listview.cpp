@@ -145,7 +145,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     const wxExListItem item(this, GetFirstSelected());
 
     exists = item.GetFileName().GetStat().IsOk();
-    is_folder = wxFileName::DirExists(item.GetFileName().GetFullPath());
+    is_folder = item.GetFileName().DirExists();
     read_only = item.GetFileName().GetStat().IsReadOnly();
     is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
   }

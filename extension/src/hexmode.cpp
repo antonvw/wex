@@ -38,7 +38,7 @@ int GetHexNumberFromUser(
     return -1;
   }
   
-  return dlg.GetItemValue(message).As<int>();
+  return std::any_cast<int>(dlg.GetItemValue(message));
 }
 
 const std::string MakeLine(wxExSTC* stc, const std::string& buffer, 

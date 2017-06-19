@@ -75,7 +75,15 @@ bool wxExFile::CheckSync()
 bool wxExFile::FileLoad(const wxExPath& file)
 {
   Assign(file);
-  return m_Path.FileExists() && MakeAbsolute() && Get(false);
+
+  if (m_Path.FileExists())
+  {
+    MakeAbsolute();
+    Get(false);
+    return true;
+  }
+
+  return false;
 }
 
 void wxExFile::FileNew(const wxExPath& file)

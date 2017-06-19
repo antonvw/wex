@@ -11,6 +11,8 @@
 #endif
 #include <algorithm>
 #include <cctype>
+#include <experimental/algorithm>
+#include <experimental/functional>
 #include <fstream>
 #include <iostream>
 #include <wx/config.h>
@@ -52,7 +54,8 @@ bool wxExStream::Process(std::string& line, size_t line_no)
       const auto it = (!m_FRD->MatchCase() ?
         std::search(line.begin(), line.end(), m_FindString.begin(), m_FindString.end(),
           [](char ch1, char ch2) {return std::toupper(ch1) == ch2;}):
-        std::search(line.begin(), line.end(), m_FindString.begin(), m_FindString.end()));
+        std::experimental::search(line.begin(), line.end(), 
+          std::experimental::make_boyer_moore_searcher(m_FindString.begin(), m_FindString.end())));
 
       if (it != line.end())
       {

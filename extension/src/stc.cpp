@@ -1310,7 +1310,7 @@ bool wxExSTC::Open(const wxExPath& filename, const wxExSTCData& data)
 
   if (m_Frame != nullptr)
   {
-    m_Frame->SetRecentFile(filename.GetFullPath());
+    m_Frame->SetRecentFile(filename);
   }
 
   return true;

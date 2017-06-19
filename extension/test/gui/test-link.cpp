@@ -33,10 +33,13 @@ void link(
   
   if (!expect.empty())
   {
+    CAPTURE(path);
     REQUIRE(link.GetPath(path, data).find(expect) != std::string::npos);
   }
   else
   {
+    CAPTURE(path);
+    CAPTURE(expect);
     REQUIRE(link.GetPath(path, data).empty());
   }
   
@@ -130,14 +133,13 @@ TEST_CASE("wxExLink")
     lnk.SetFromConfig();
 
     wxExControlData data;
-    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).empty());
-    REQUIRE( lnk.GetPath("<test.cpp>", data).empty());
     data.Line(-1);
+    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).empty());
+    REQUIRE( lnk.GetPath("test.cpp", data).empty());
+    REQUIRE( lnk.GetPath("<test.cpp>", data).empty());
     REQUIRE( lnk.GetPath("gcc>", data).empty());
     REQUIRE( lnk.GetPath("<gcc>", data).empty());
     REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).empty());
-    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).empty());
-    REQUIRE( lnk.GetPath("<test.cpp>", data).empty());
     REQUIRE( lnk.GetPath("www.wxwidgets.org", data) == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("some text www.wxwidgets.org", data) == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data) == "https://github.com/antonvw/wxExtension" );
