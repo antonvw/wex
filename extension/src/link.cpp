@@ -12,6 +12,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/filefn.h> // for wxPathList
+#include <wx/filename.h>
 #include <wx/extension/link.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/stc.h>
