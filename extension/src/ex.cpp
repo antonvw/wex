@@ -15,6 +15,7 @@
 #endif
 #include <shunting-yard/eval.hpp>
 #include <wx/config.h>
+#include <wx/filename.h>
 #include <wx/numformatter.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/address.h>

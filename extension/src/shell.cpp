@@ -12,6 +12,7 @@
 #include <functional>
 #include <numeric>
 #include <wx/config.h>
+#include <wx/filename.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/defs.h> // for ID_SHELL_COMMAND
 #include <wx/extension/process.h>
