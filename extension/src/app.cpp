@@ -99,7 +99,7 @@ bool wxExApp::OnInit()
   {
     for (auto& p: fs::directory_iterator(m_CatalogDir))
     {
-      if (fs::is_regular_file(p.path()) && wxExMatchesOneOf(p.path().filename(), "*.mo"))
+      if (fs::is_regular_file(p.path()) && wxExMatchesOneOf(p.path().filename().string(), "*.mo"))
       {
         if (!m_Locale.AddCatalog(p.path().stem().string()))
         {

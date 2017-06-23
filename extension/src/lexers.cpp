@@ -38,13 +38,13 @@ void wxExLexers::Apply(wxExSTC* stc) const
 {
   m_DefaultStyle.Apply(stc);
 
-  for_each(m_Indicators.begin(), m_Indicators.end(), std::bind2nd(std::mem_fun_ref(&wxExIndicator::Apply), stc));
-  for_each(m_GlobalProperties.begin(), m_GlobalProperties.end(), std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
-  for_each(m_Markers.begin(), m_Markers.end(), std::bind2nd(std::mem_fun_ref(&wxExMarker::Apply), stc));
+  for (auto& i : m_Indicators) i.Apply(stc);
+  for (auto& p : m_GlobalProperties) p.Apply(stc);
+  for (auto& m : m_Markers) m.Apply(stc);
   
   if (stc->GetHexMode().Active())
   {
-    for_each(m_StylesHex.begin(), m_StylesHex.end(), std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+    for (auto& s : m_StylesHex) s.Apply(stc);
   }
 }
   
@@ -62,7 +62,7 @@ void wxExLexers::ApplyGlobalStyles(wxExSTC* stc)
 
   stc->StyleClearAll();
 
-  for_each(m_Styles.begin(), m_Styles.end(), std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+  for (auto& s : m_Styles) s.Apply(stc);
 
   if (!m_FoldingBackgroundColour.empty())
   {

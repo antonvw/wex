@@ -108,7 +108,7 @@ set(ODBC_LIBRARIES ${ODBC_LIBRARY})
 mark_as_advanced( ODBC_FOUND ODBC_LIBRARY ODBC_EXTRA_LIBRARIES ODBC_INCLUDE_DIR )
 
 if (MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_CRT_SECURE_NO_WARNINGS /DCRT_SECURE_NO_DEPRECATE")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_CRT_SECURE_NO_WARNINGS /DCRT_SECURE_NO_DEPRECATE /std:c++latest")
 
   if (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(wxWidgets_CONFIGURATION mswud)
@@ -150,6 +150,16 @@ endif ()
       
 macro(target_link_all)
   set (extra_macro_args ${ARGN})
+          
+if (WIN32)
+  target_link_libraries(
+    ${PROJECT_NAME}
+    wxex-rep
+    wxex
+    ${wxWidgets_LIBRARIES} 
+    ${extra_macro_args}
+    )
+else ()
   target_link_libraries(
     ${PROJECT_NAME}
     wxex-rep
@@ -158,6 +168,7 @@ macro(target_link_all)
     ${extra_macro_args}
     stdc++fs
     )
+endif ()
 endmacro()  
 
 function(process_po_files)

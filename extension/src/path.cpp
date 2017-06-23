@@ -45,19 +45,19 @@ public:
 private:
   std::experimental::filesystem::path m_path;
 };
-  
+
 wxExPath::wxExPath(const std::string& fullpath)
   : m_Path(std::make_unique<wxExPathImp>(fullpath))
   , m_Stat(fullpath) 
   , m_Lexer(wxExLexers::Get(false) != nullptr ? 
       wxExLexers::Get(false)->FindByFileName(
-        std::experimental::filesystem::path(fullpath).filename()):
+        std::experimental::filesystem::path(fullpath).filename().string()):
       std::string())
 {
 }
 
 wxExPath::wxExPath(const std::string& path, const std::string& name)
-  : wxExPath(std::experimental::filesystem::path(path) /= name)
+  : wxExPath(std::experimental::filesystem::path(path).append(name).string())
 {
 }
 
@@ -149,7 +149,7 @@ const std::vector<wxExPath> wxExPath::GetPaths() const
 
   for (const auto& e : m_Path->Path())
   {
-    v.emplace_back(e);
+    v.emplace_back(e.string());
   }
 
   return v;

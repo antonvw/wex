@@ -33,15 +33,15 @@ bool Handle(const fs::directory_entry& e, wxExDir* dir, int& matches)
 {
   if (fs::is_regular_file(e.path()))
   {
-    if (wxExMatchesOneOf(e.path().filename(), dir->GetFileSpec()))
+    if (wxExMatchesOneOf(e.path().filename().string(), dir->GetFileSpec()))
     {
-      dir->OnFile(e.path());
+      dir->OnFile(e.path().string());
       matches++;
     }
   }
   else if (fs::is_directory(e.path()))
   {
-    dir->OnDir(e.path());
+    dir->OnDir(e.path().string());
   }
 
   return !wxExInterruptable::Cancelled();

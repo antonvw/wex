@@ -130,8 +130,10 @@ bool wxExLexer::Apply() const
   
   m_STC->ClearDocumentStyle();
   
-  for_each(m_Properties.begin(), m_Properties.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), m_STC));
+  for (auto& it : m_Properties)
+  {
+    it.ApplyReset(m_STC);
+  }
 
   // Reset keywords, also if no lexer is available.
   for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
@@ -143,18 +145,15 @@ bool wxExLexer::Apply() const
 
   if (wxExLexers::Get()->GetThemeOk())
   {
-    for (const auto& it : m_KeywordsSet)
+    for (const auto& k : m_KeywordsSet)
     {
-      m_STC->SetKeyWords(it.first, GetKeywordsStringSet(it.second));
+      m_STC->SetKeyWords(k.first, GetKeywordsStringSet(k.second));
     }
     
     wxExLexers::Get()->Apply(m_STC);
   
-    for_each(m_Properties.begin(), m_Properties.end(), 
-      std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), m_STC));
-
-    for_each(m_Styles.begin(), m_Styles.end(), 
-      std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), m_STC));
+    for (auto& p : m_Properties) p.Apply(m_STC);
+    for (auto& s : m_Styles) s.Apply(m_STC);
   }
 
   // And finally colour the entire document.
