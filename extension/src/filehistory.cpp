@@ -53,9 +53,12 @@ wxExFileHistory::~wxExFileHistory()
   delete m_History;
 }
   
-void wxExFileHistory::AddFileToHistory(const std::string& file)
+void wxExFileHistory::AddFileToHistory(const wxExPath& file)
 {
-  m_History->AddFileToHistory(file);
+  if (file.FileExists())
+  {
+    m_History->AddFileToHistory(file.Path().string());
+  }
 }
 
 void wxExFileHistory::Clear()
@@ -84,14 +87,14 @@ int wxExFileHistory::GetMaxFiles() const
   return m_History->GetMaxFiles();
 }
 
-std::string wxExFileHistory::GetHistoryFile(size_t index) const
+wxExPath wxExFileHistory::GetHistoryFile(size_t index) const
 {
-  return m_History->GetHistoryFile(index).ToStdString();
+  return wxExPath(m_History->GetHistoryFile(index).ToStdString());
 }
     
-std::vector<std::string> wxExFileHistory::GetHistoryFiles(size_t count) const
+std::vector<wxExPath> wxExFileHistory::GetHistoryFiles(size_t count) const
 {
-  std::vector<std::string> v;
+  std::vector<wxExPath> v;
   
   for (size_t i = 0; i < count && i < GetCount(); i++)
   {
@@ -182,8 +185,7 @@ void wxExFileHistory::UseMenu(wxWindowID id, wxMenu* menu)
 
 void wxExFileHistoryImp::AddFileToHistory(const wxString& file)
 {
-  if (!file.empty() && GetMaxFiles() > 0 && 
-    std::experimental::filesystem::is_regular_file(file.ToStdString()))
+  if (!file.empty() && GetMaxFiles() > 0)
   {
     wxFileHistory::AddFileToHistory(file);
   }

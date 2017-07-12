@@ -53,7 +53,7 @@ public:
   const wxString GetTextInFolder() const {return m_TextInFolder;};
 
   /// Adds item from text.
-  virtual bool ItemFromText(const wxString& text) override;
+  virtual bool ItemFromText(const std::string& text) override;
 
   /// Resets the member.
   virtual void ResetContentsChanged() override {m_ContentsChanged = false;};

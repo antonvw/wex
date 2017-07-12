@@ -103,7 +103,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
     {
       if (wxMessageBox(
         "More than " + std::to_string(m_Threshold) + " matches in: " + 
-          m_Path.GetFullPath() + "?",
+          m_Path.Path().string() + "?",
         _("Continue"),
         wxYES_NO | wxICON_QUESTION) == wxNO)
       {
@@ -143,7 +143,7 @@ bool wxExStream::ProcessBegin()
   
 bool wxExStream::RunTool()
 {
-  std::ifstream ifs(m_Path.GetFullPath());
+  std::ifstream ifs(m_Path.Path());
 
   if (!ifs.is_open() || !ProcessBegin())
   {
@@ -168,7 +168,7 @@ bool wxExStream::RunTool()
 
   if (m_Modified && m_Write)
   {
-    std::ofstream ofs(m_Path.GetFullPath().c_str());
+    std::ofstream ofs(m_Path.Path());
   
     for (const auto & it : v)
     {

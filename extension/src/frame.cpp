@@ -102,7 +102,7 @@ public:
 
   virtual bool OnDropFiles(wxCoord x, wxCoord y, 
     const wxArrayString& filenames) override {
-      wxExOpenFiles(m_Frame, wxExToVectorString(filenames).Get());
+      wxExOpenFiles(m_Frame, wxExToVectorPath(filenames).Get());
       return true;}
 private:
   wxExFrame* m_Frame;
@@ -194,7 +194,7 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
         cmd = v[0];
         text = v[1];
       }
-      wxExOpenFiles(this, wxExToVectorString(text).Get(), wxExControlData().Command(cmd));
+      wxExOpenFiles(this, wxExToVectorPath(text).Get(), wxExControlData().Command(cmd));
     }
     else
     {

@@ -179,7 +179,7 @@ void wxExLexer::AutoMatch(const std::string& lexer)
       }
       else
       {
-        // Then, a partial using Contains.
+        // Then, a partial using find_if.
         const auto& style = std::find_if(wxExLexers::Get()->GetThemeMacros().begin(), wxExLexers::Get()->GetThemeMacros().end(), 
           [&](auto const& e) {return it.first.find(e.first) != std::string::npos;});
         if (style != wxExLexers::Get()->GetThemeMacros().end())

@@ -34,10 +34,10 @@ public:
     const wxExPath& filename,
     wxFile::OpenMode mode = wxFile::read,
     bool open_file = true)
-    : m_File(std::make_unique<wxFile>(filename.GetFullPath(), mode))
+    : m_File(std::make_unique<wxFile>(filename.Path().string(), mode))
     , m_Path(filename)
     , m_OpenFile(open_file)
-    , m_Stat(filename.GetFullPath()) {
+    , m_Stat(filename.Path().string()) {
       MakeAbsolute();};
   
   /// Constructor taking a string filename.
@@ -82,12 +82,12 @@ public:
   bool IsOpened() const {return m_File->IsOpened();};
 
   /// Opens specified file.
-  bool Open(const std::string& filename, 
+  bool Open(const wxExPath& filename, 
     wxFile::OpenMode mode = wxFile::read, int access = wxS_DEFAULT);
 
   /// Opens current filename.
   bool Open(wxFile::OpenMode mode = wxFile::read, int access = wxS_DEFAULT)
-    {return Open(m_Path.GetFullPath(), mode, access);};
+    {return Open(m_Path, mode, access);};
 
   /// Reads this file into a buffer.
   const wxCharBuffer* Read(wxFileOffset seek_position = 0);
@@ -112,7 +112,7 @@ protected:
   void Assign(const wxExPath& filename) {
     m_Path = filename;
     m_IsLoaded = true;
-    m_Stat = filename.GetFullPath();};
+    m_Stat = filename.Path().string();};
 
   /// Invoked by FileLoad, allows you to load the file.
   /// The file is already opened, so you can call Read.
@@ -134,8 +134,8 @@ private:
   bool Get(bool synced);
   void MakeAbsolute() {
     m_Path.MakeAbsolute();
-    if (m_Path.m_Stat.Sync(m_Path.GetFullPath())) {
-      m_Stat.Sync(m_Path.GetFullPath());};};
+    if (m_Path.m_Stat.Sync(m_Path.Path().string())) {
+      m_Stat.Sync(m_Path.Path().string());};};
   
   bool m_IsLoaded = false;
   bool m_OpenFile;

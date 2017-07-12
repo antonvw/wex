@@ -12,36 +12,61 @@
 #endif
 #include <wx/extension/dir.h>
 #include <wx/extension/frame.h>
-#include <wx/extension/path.h>
 #include <wx/extension/util.h>
+
+/// Collects files into container.
+class wxExDirToContainer : public wxExDir
+{
+public:
+  wxExDirToContainer(
+    const wxExPath& path,
+    const std::string& filespec = std::string(),
+    int flags = DIR_DEFAULT) 
+  : wxExDir(path, filespec, flags) {;};
+
+  const auto & Get() const {return m_Container;};
+private:
+  virtual bool OnDir(const wxExPath& p) override {
+    m_Container.emplace_back(p);
+    return true;};
+  virtual bool OnFile(const wxExPath& p) override {
+    m_Container.emplace_back(p);
+    return true;};
+
+  std::vector <wxExPath> m_Container;
+};
+
+std::vector <wxExPath> wxExGetAllFiles(
+  const wxExPath& path, const std::string& filespec, int flags) 
+{
+  wxExDirToContainer dir(path, filespec, flags);
+  dir.FindFiles();
+  return dir.Get();
+}
 
 namespace fs = std::experimental::filesystem;
 
-wxExDir::wxExDir(const std::string& dir, const std::string& filespec, int flags)
+wxExDir::wxExDir(const wxExPath& dir, const std::string& filespec, int flags)
   : m_Dir(dir)
   , m_FileSpec(filespec)
   , m_Flags(flags)
 {
 }
 
-bool wxExDir::DirExists() const 
-{
-  return fs::is_directory(m_Dir);
-}
-
 bool Handle(const fs::directory_entry& e, wxExDir* dir, int& matches)
 {
   if (fs::is_regular_file(e.path()))
   {
-    if (wxExMatchesOneOf(e.path().filename().string(), dir->GetFileSpec()))
+    if ((dir->GetFlags() & DIR_FILES) && 
+      wxExMatchesOneOf(e.path().filename().string(), dir->GetFileSpec()))
     {
-      dir->OnFile(e.path().string());
+      dir->OnFile(e.path());
       matches++;
     }
   }
-  else if (fs::is_directory(e.path()))
+  else if ((dir->GetFlags() & DIR_DIRS) && fs::is_directory(e.path()))
   {
-    dir->OnDir(e.path().string());
+    dir->OnDir(e.path());
   }
 
   return !wxExInterruptable::Cancelled();
@@ -49,12 +74,13 @@ bool Handle(const fs::directory_entry& e, wxExDir* dir, int& matches)
 
 int wxExDir::FindFiles()
 {
-  if (!DirExists())
+  if (!m_Dir.DirExists())
   {
-    std::cout << "Could not open: " << m_Dir << "\n";
+    std::cout << "Invalid path: " << m_Dir.Path() << "\n";
     return -1;
   }
-  else if (Running())
+
+  if (!Start())
   {
     wxLogStatus(_("Busy"));
     return -1;
@@ -62,21 +88,28 @@ int wxExDir::FindFiles()
 
   int matches = 0;
 
-  Start();
-
-  if (m_Flags & DIR_DIRS)
+  try
   {
-    for (auto& p: fs::recursive_directory_iterator(m_Dir))
+    if (m_Flags & DIR_RECURSIVE)
     {
-      if (!Handle(p, this, matches)) break;
+      for (auto& p: fs::recursive_directory_iterator(
+        m_Dir.Path(), fs::directory_options::skip_permission_denied))
+      {
+        if (!Handle(p, this, matches)) break;
+      }
+    }
+    else
+    {
+      for (auto& p: fs::directory_iterator(
+        m_Dir.Path(), fs::directory_options::skip_permission_denied))
+      {
+        if (!Handle(p, this, matches)) break;
+      }
     }
   }
-  else
+  catch (fs::filesystem_error e)
   {
-    for (auto& p: fs::directory_iterator(m_Dir))
-    {
-      if (!Handle(p, this, matches)) break;
-    }
+    std::cout << e.what() << "\n";
   }
 
   Stop();
@@ -86,17 +119,17 @@ int wxExDir::FindFiles()
 
 #if wxUSE_GUI
 wxExDirOpenFile::wxExDirOpenFile(wxExFrame* frame,
-  const std::string& fullpath, 
+  const wxExPath& path, 
   const std::string& filespec, 
   wxExSTCWindowFlags file_flags,
   int dir_flags)
-  : wxExDir(fullpath, filespec, dir_flags)
+  : wxExDir(path, filespec, dir_flags)
   , m_Frame(frame)
   , m_Flags(file_flags)
 {
 }
 
-bool wxExDirOpenFile::OnFile(const std::string& file)
+bool wxExDirOpenFile::OnFile(const wxExPath& file)
 {
   m_Frame->OpenFile(file, wxExSTCData().Flags(m_Flags));
   return true;

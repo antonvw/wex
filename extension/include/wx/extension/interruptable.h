@@ -24,7 +24,8 @@ public:
   static bool Running() {return m_Running;};
   
   /// Starts interruptable process.
-  static void Start();
+  /// Returns false if process is already running.
+  static bool Start();
   
   /// Stops interruptable process.
   static void Stop();

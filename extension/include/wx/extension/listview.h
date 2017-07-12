@@ -79,15 +79,14 @@ public:
   /// Default constructor.
   wxExListView(const wxExListViewData& data = wxExListViewData());
 
-  /// Adds a new column.
-  /// Returns the index of the inserted column or -1 if adding it failed.
-  long AppendColumn(const wxExColumn& col);
+  /// Appends new columns.
+  /// Returns false if appending a column failed.
+  bool AppendColumns(const std::vector < wxExColumn >& cols);
 
   /// Shows a dialog with options, returns dialog return code.
   /// If used modeless, it uses the dialog id as specified,
   /// so you can use that id in wxExFrame::OnCommandItemDialog.
-  static int ConfigDialog(const wxExWindowData& data = 
-    wxExWindowData().Title(_("List Options").ToStdString()));
+  static int ConfigDialog(const wxExWindowData& data = wxExWindowData());
 
   /// Sets the configurable parameters to values currently in config.
   void ConfigGet();
@@ -111,14 +110,18 @@ public:
   /// Returns current sorted column no.
   int GetSortedColumnNo() const {return m_SortedColumnNo;};
 
+  /// Inserts item with provided columns.
+  /// Returns false if insertings fails, or item is empty.
+  bool InsertItem(const std::vector < std::string > & item);
+
   /// Inserts new item swith column values from text.
   /// Items are separated by newlines, columns by a field separator.
   /// Returns true if successfull.
-  virtual bool ItemFromText(const wxString& text);
+  virtual bool ItemFromText(const std::string& text);
 
   /// Copies the specified item (all columns) to text.
   /// If item_number = -1, copies all items.
-  virtual const wxString ItemToText(long item_number) const;
+  virtual const std::string ItemToText(long item_number) const;
 
   /// Implement this one if you have images that might be changed after sorting etc.
   virtual void ItemsUpdate();
@@ -128,6 +131,10 @@ public:
 
   /// Previews the list.
   void PrintPreview();
+
+  /// Sets an item string field at a particular column.
+  /// Returns false if an error occurred.
+  bool SetItem(long index, int column, const std::string &label, int imageId = -1);
 
   /// Sets the item image, using the image list.
   /// If the listview does not already contain the image, it is added.
@@ -180,7 +187,7 @@ private:
   unsigned int GetArtID(const wxArtID& artid);
 
   void ItemActivated(long item_number);
-  
+
   /// Sets the item file icon image.
   bool SetItemImage(long item_number, int iconid) {
     return (m_Data.Image() == IMAGE_FILE_ICON ?

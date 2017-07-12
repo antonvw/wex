@@ -21,7 +21,7 @@ TEST_CASE("wxExFrame")
   GetSTC()->GetFile().ResetContentsChanged();
 
   REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestFile()));
-  REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestFile().GetFullPath(), "contents"));
+  REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestFile().Path().string(), "contents"));
   REQUIRE( ((wxExFrame *)GetFrame())->IsOpen(GetTestFile()));
   REQUIRE(!((wxExFrame *)GetFrame())->IsOpen(wxExPath("xxx")));
   

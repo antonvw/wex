@@ -49,8 +49,11 @@ bool wxExOTL::Logoff()
   return true;
 }
 
-bool wxExOTL::Logon(const wxExWindowData& data)
+bool wxExOTL::Logon(const wxExWindowData& par)
 {
+  const wxExWindowData data(wxExWindowData(par).
+    Title(_("Open ODBC Connection").ToStdString()));
+
   if (data.Button() != 0)
   {
     if (wxExItemDialog({

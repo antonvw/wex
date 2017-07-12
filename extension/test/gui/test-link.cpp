@@ -34,13 +34,13 @@ void link(
   if (!expect.empty())
   {
     CAPTURE(path);
-    REQUIRE(link.GetPath(path, data).find(expect) != std::string::npos);
+    REQUIRE(link.GetPath(path, data).Path().string().find(expect) != std::string::npos);
   }
   else
   {
     CAPTURE(path);
     CAPTURE(expect);
-    REQUIRE(link.GetPath(path, data).empty());
+    REQUIRE(link.GetPath(path, data).Path().empty());
   }
   
   REQUIRE(data.Line() == expect_line_no);
@@ -134,27 +134,27 @@ TEST_CASE("wxExLink")
 
     wxExControlData data;
     data.Line(-1);
-    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).empty());
-    REQUIRE( lnk.GetPath("test.cpp", data).empty());
-    REQUIRE( lnk.GetPath("<test.cpp>", data).empty());
-    REQUIRE( lnk.GetPath("gcc>", data).empty());
-    REQUIRE( lnk.GetPath("<gcc>", data).empty());
-    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).empty());
-    REQUIRE( lnk.GetPath("www.wxwidgets.org", data) == "www.wxwidgets.org" );
-    REQUIRE( lnk.GetPath("some text www.wxwidgets.org", data) == "www.wxwidgets.org" );
-    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data) == "https://github.com/antonvw/wxExtension" );
-    REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wxExtension)", data) == "https://github.com/antonvw/wxExtension" );
-    REQUIRE( lnk.GetPath("httpd = new httpd", data).empty());
+    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).Path().empty());
+    REQUIRE( lnk.GetPath("test.cpp", data).Path().empty());
+    REQUIRE( lnk.GetPath("<test.cpp>", data).Path().empty());
+    REQUIRE( lnk.GetPath("gcc>", data).Path().empty());
+    REQUIRE( lnk.GetPath("<gcc>", data).Path().empty());
+    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).Path().empty());
+    REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
+    REQUIRE( lnk.GetPath("some text www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
+    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data).Path() == "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wxExtension)", data).Path() == "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.GetPath("httpd = new httpd", data).Path().empty());
     data.Line(0);
-    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data).empty() );
+    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data).Path().empty() );
     // hypertext file
     stc->GetFile().FileNew("test.html");
-    REQUIRE( lnk.GetPath("www.wxwidgets.org", data).empty() );
-    REQUIRE( lnk.GetPath("xx", data).empty());
+    REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path().empty() );
+    REQUIRE( lnk.GetPath("xx", data).Path().empty());
     data.Line(-1);
-    REQUIRE( lnk.GetPath("xx", data) == "test.html" );
+    REQUIRE( lnk.GetPath("xx", data).Path() == "test.html" );
     data.Line(-2);
-    REQUIRE( lnk.GetPath("xx", data).empty());
+    REQUIRE( lnk.GetPath("xx", data).Path().empty());
   }
 }
 #endif

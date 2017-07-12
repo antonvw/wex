@@ -54,32 +54,32 @@ wxExListViewData& wxExListViewData::operator=(const wxExListViewData& r)
   
 void wxExListViewData::AddColumns()
 {
-  const int col_line_width = 250;
-
-  m_ListView->AppendColumn(wxExColumn(_("File Name").ToStdString(), wxExColumn::COL_STRING));
+  m_ListView->AppendColumns({{_("File Name").ToStdString(), wxExColumn::COL_STRING}});
 
   switch (m_Type)
   {
     case LIST_FIND:
-      m_ListView->AppendColumn(wxExColumn(_("Line").ToStdString(), wxExColumn::COL_STRING, col_line_width));
-      m_ListView->AppendColumn(wxExColumn(_("Match").ToStdString(), wxExColumn::COL_STRING));
-      m_ListView->AppendColumn(wxExColumn(_("Line No").ToStdString()));
+      m_ListView->AppendColumns({
+        {_("Line").ToStdString(), wxExColumn::COL_STRING, 250},
+        {_("Match").ToStdString(), wxExColumn::COL_STRING},
+        {_("Line No").ToStdString()}});
     break;
     case LIST_KEYWORD:
       for (const auto& it : m_Lexer->GetKeywords())
       {
-        m_ListView->AppendColumn(wxExColumn(it));
+        m_ListView->AppendColumns({{wxExColumn(it)}});
       }
 
-      m_ListView->AppendColumn(wxExColumn(_("Keywords").ToStdString()));
+      m_ListView->AppendColumns({{_("Keywords").ToStdString()}});
     break;
     default: break; // to prevent warnings
   }
 
-  m_ListView->AppendColumn(wxExColumn(_("Modified").ToStdString(), wxExColumn::COL_DATE));
-  m_ListView->AppendColumn(wxExColumn(_("In Folder").ToStdString(), wxExColumn::COL_STRING, 175));
-  m_ListView->AppendColumn(wxExColumn(_("Type").ToStdString(), wxExColumn::COL_STRING));
-  m_ListView->AppendColumn(wxExColumn(_("Size").ToStdString()));
+  m_ListView->AppendColumns({
+    {_("Modified").ToStdString(), wxExColumn::COL_DATE},
+    {_("In Folder").ToStdString(), wxExColumn::COL_STRING, 175},
+    {_("Type").ToStdString(), wxExColumn::COL_STRING},
+    {_("Size").ToStdString()}});
 }
 
 wxExListViewData& wxExListViewData::Image(wxExImageType type)

@@ -24,7 +24,7 @@ wxIMPLEMENT_APP(App);
 void App::MacOpenFiles(const wxArrayString& fileNames)
 {
   Frame* frame = wxDynamicCast(GetTopWindow(), Frame);
-  wxExOpenFiles(frame, wxExToVectorString(fileNames).Get(), m_Data);
+  wxExOpenFiles(frame, wxExToVectorPath(fileNames).Get(), m_Data);
 }
 #endif
 
@@ -79,7 +79,7 @@ bool App::OnInit()
       {{"W", "append", "script out append"}, {CMD_LINE_STRING, [&](const std::any& s) {
         m_Scriptout.Open(std::any_cast<std::string>(s), wxFile::write_append);}}}},
      {{"files", "input file[:line number][:column number]"}, [&](const std::vector<std::string> & v) {
-        m_Files = v;
+        for (const auto & f : v) m_Files.emplace_back(f);
         return true;}}).Parse() || exit)
   {
     return false;

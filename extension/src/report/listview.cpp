@@ -68,12 +68,12 @@ wxExListViewWithFrame::wxExListViewWithFrame(const wxExListViewData& data)
             if (first)
             {
               first = false;
-              file1 = filename->GetFullPath();
+              file1 = filename->Path().string();
             }
             else
             {
               first = true;
-              file2 = filename->GetFullPath();
+              file2 = filename->Path().string();
             }
             if (first) wxExCompareFile(wxExPath(file1), wxExPath(file2));
           }
@@ -100,7 +100,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(const wxExListViewData& data)
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       const wxExListItem item(this, i);
-      wxLogStatus(item.GetFileName().GetFullPath().c_str());
+      wxLogStatus(item.GetFileName().Path().string().c_str());
       if (item.GetFileName().FileExists())
       {
         wxExStreamToListView file(item.GetFileName(), tool);
@@ -110,7 +110,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(const wxExListViewData& data)
       else
       {
         wxExDirTool dir(tool, 
-          item.GetFileName().GetFullPath(), 
+          item.GetFileName().Path().string(), 
           item.GetFileSpec());
         dir.FindFiles();
         stats += dir.GetStatistics().GetElements();
@@ -124,10 +124,10 @@ wxExListViewWithFrame::wxExListViewWithFrame(const wxExListViewData& data)
     }, ID_TOOL_LOWEST, ID_TOOL_HIGHEST);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    std::vector< std::string > files;
+    std::vector< wxExPath > files;
     for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
-      files.emplace_back(wxExListItem(this, i).GetFileName().GetFullPath());
+      files.emplace_back(wxExListItem(this, i).GetFileName().Path());
     }
     wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, files);
     }, ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
@@ -176,10 +176,10 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
       if (list != nullptr && list->GetSelectedItemCount() == 1)
       {
         wxExListItem thislist(this, GetFirstSelected());
-        const wxString current_file = thislist.GetFileName().GetFullPath();
+        const wxString current_file = thislist.GetFileName().Path().string();
 
         wxExListItem otherlist(list, list->GetFirstSelected());
-        const std::string with_file = otherlist.GetFileName().GetFullPath();
+        const std::string with_file = otherlist.GetFileName().Path().string();
 
         if (current_file != with_file &&
             !wxConfigBase::Get()->Read(_("Comparator")).empty())

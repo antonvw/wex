@@ -273,13 +273,13 @@ TEST_CASE("wxEx")
   
   SUBCASE("wxExOpenFiles")
   {
-    REQUIRE( wxExOpenFiles(GetFrame(), std::vector<std::string>()) == 0);
-    REQUIRE( wxExOpenFiles(GetFrame(), std::vector<std::string> {
-      GetTestFile().GetFullPath(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
+    REQUIRE( wxExOpenFiles(GetFrame(), std::vector<wxExPath>()) == 0);
+    REQUIRE( wxExOpenFiles(GetFrame(), std::vector<wxExPath> {
+      GetTestFile().Path(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
     REQUIRE( wxExOpenFiles(GetFrame(), 
-        std::vector<std::string> {GetTestFile().GetFullPath()}) == 1);
+      std::vector<wxExPath> {GetTestFile().Path()}) == 1);
     REQUIRE( 
-      wxExOpenFiles(GetFrame(), std::vector<std::string> {"../../data/menus.xml"}) == 1);
+      wxExOpenFiles(GetFrame(), std::vector<wxExPath> {"../../data/menus.xml"}) == 1);
   }
 
   SUBCASE("wxExOpenFilesDialog")

@@ -86,6 +86,8 @@ wxExItem::wxExItem(wxExItemType type,
 
     case ITEM_STATICTEXT:
     case ITEM_TEXTCTRL:
+    case ITEM_TEXTCTRL_FLOAT:
+    case ITEM_TEXTCTRL_INT:
       m_IsRowGrowable = (m_Data.Window().Style() & wxTE_MULTILINE) > 0;
       m_SizerFlags.Expand();
       break;
@@ -93,6 +95,7 @@ wxExItem::wxExItem(wxExItemType type,
     case ITEM_CHECKBOX:
     case ITEM_COMBOBOX:
     case ITEM_COMBOBOX_DIR:
+    case ITEM_COMBOBOX_FILE:
     case ITEM_DIRPICKERCTRL:
     case ITEM_FILEPICKERCTRL:
     case ITEM_SPACER:
@@ -145,12 +148,13 @@ wxFlexGridSizer* wxExItem::AddBrowseButton(wxSizer* sizer)
   // Tried to use a wxDirPickerCtrl here, is nice,
   // but does not use a combobox for keeping old values, so this is better.
   // And the text box that is used is not resizable as well.
-  m_Browse = new wxButton(
+  // In wxExItemTemplateDialog the button click is bound to browse dialog.
+  wxButton* browse = new wxButton(
     m_Window->GetParent(),
     m_Window->GetId(),
     _(wxDirPickerWidgetLabel));
 
-  fgz->Add(m_Browse, wxSizerFlags().Center().Border());
+  fgz->Add(browse, wxSizerFlags().Center().Border());
 
   sizer->Add(fgz, wxSizerFlags().Left().Expand()); // no border
   
@@ -327,6 +331,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
     case ITEM_COMBOBOX:
     case ITEM_COMBOBOX_DIR:
+    case ITEM_COMBOBOX_FILE:
       m_Window = new wxComboBox(parent, 
         m_Data.Window().Id(), 
         wxEmptyString,
@@ -428,9 +433,8 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       {
       wxExListView* lv = new wxExListView(
         wxExListViewData().
-          Type((wxExListType)m_Data.Window().Style()).
           Window(wxExWindowData(m_Data.Window()).Parent(parent)));
-      lv->ItemFromText(!m_Initial.has_value() ? wxString(): std::any_cast<wxString>(m_Initial));
+      lv->ItemFromText(!m_Initial.has_value() ? std::string(): std::any_cast<std::string>(m_Initial));
       m_Window = lv;
       }
       break;
@@ -673,7 +677,8 @@ const std::any wxExItem::GetValue() const
     case ITEM_CHECKBOX: any = ((wxCheckBox* )m_Window)->GetValue(); break;
     case ITEM_COLOURPICKERWIDGET: any = ((wxColourPickerWidget* )m_Window)->GetColour(); break;
     case ITEM_COMBOBOX: 
-    case ITEM_COMBOBOX_DIR: any = wxExToContainer<wxArrayString>((wxComboBox*)m_Window).Get(); break;
+    case ITEM_COMBOBOX_DIR: 
+    case ITEM_COMBOBOX_FILE: any = wxExToContainer<wxArrayString>((wxComboBox*)m_Window).Get(); break;
     case ITEM_DIRPICKERCTRL: any = ((wxDirPickerCtrl* )m_Window)->GetPath(); break;
     case ITEM_FILEPICKERCTRL: any = ((wxFilePickerCtrl* )m_Window)->GetPath(); break;
     case ITEM_FONTPICKERCTRL: any = ((wxFontPickerCtrl* )m_Window)->GetSelectedFont(); break;
@@ -731,7 +736,9 @@ wxFlexGridSizer* wxExItem::Layout(
     
     switch (m_Type)
     {
-      case ITEM_COMBOBOX_DIR: return_sizer = AddBrowseButton(sizer); break;
+      case ITEM_COMBOBOX_DIR: 
+      case ITEM_COMBOBOX_FILE: 
+        return_sizer = AddBrowseButton(sizer); break;
       case ITEM_EMPTY: return fgz;
       case ITEM_SPACER: sizer->AddSpacer(m_Data.Window().Style()); return fgz;
       
@@ -829,7 +836,7 @@ bool wxExItem::SetValue(const std::any& value) const
       {
       wxExListView* win = (wxExListView*)GetWindow();
       win->DeleteAllItems();
-      win->ItemFromText(std::any_cast<wxString>(value));
+      win->ItemFromText(std::any_cast<std::string>(value));
       }
       break;
 

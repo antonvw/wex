@@ -22,7 +22,7 @@ TEST_CASE("wxExFrameWithHistory")
   list->Show();
   
   REQUIRE(!GetFrame()->OpenFile(GetTestFile())); // as we have no focused stc
-  REQUIRE(!GetFrame()->GetFileHistory().GetHistoryFile().find("../test.h") != std::string::npos);
+  REQUIRE( GetFrame()->GetFileHistory().GetHistoryFile().Path().string().find("../test.h") == std::string::npos);
 
   REQUIRE(!GetFrame()->OpenFile(
     wxExPath(GetProject()),
@@ -30,17 +30,16 @@ TEST_CASE("wxExFrameWithHistory")
   
   wxExFindReplaceData::Get()->SetFindString("wxExTestApp");
 
-  REQUIRE(!GetFrame()->FindInFiles(
-    std::vector<std::string> {}, ID_TOOL_REPORT_FIND, false));
+  REQUIRE(!GetFrame()->FindInFiles({}, ID_TOOL_REPORT_FIND, false));
 
-  REQUIRE(GetFrame()->FindInFiles(
-    std::vector<std::string> {GetTestFile().GetFullPath()}, ID_TOOL_REPORT_FIND, false));
+  REQUIRE( GetFrame()->FindInFiles(
+    {GetTestFile().Path().string()}, ID_TOOL_REPORT_FIND, false));
 
   // GetFrame()->FindInFilesDialog(ID_TOOL_REPORT_FIND);
   REQUIRE(!GetFrame()->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
   
   // It does not open, next should fail.
-  REQUIRE(!GetFrame()->GetProjectHistory().GetHistoryFile().find(GetProject()) != std::string::npos);
+  REQUIRE( GetFrame()->GetProjectHistory().GetHistoryFile().Path().string().find(GetProject()) == std::string::npos);
   
   REQUIRE( GetFrame()->GetProject() == nullptr);
 
@@ -53,7 +52,7 @@ TEST_CASE("wxExFrameWithHistory")
 #endif
   
   GetFrame()->SetRecentProject("xxx.prj");
-  REQUIRE( GetFrame()->GetProjectHistory().GetHistoryFile().empty());
+  REQUIRE( GetFrame()->GetProjectHistory().GetHistoryFile().Path().empty());
 
   GetFrame()->SetRecentFile(GetTestFile());
 

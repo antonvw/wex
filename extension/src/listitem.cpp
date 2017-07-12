@@ -58,11 +58,11 @@ void wxExListItem::Insert(long index)
     col = m_ListView->FindColumn(_("File Name").ToStdString());
     wxASSERT(col >= 0);
     filename = (
-      m_Path.FileExists() || m_Path.DirExists() ? m_Path.GetFullName(): m_Path.GetFullPath());
+      m_Path.FileExists() || m_Path.DirExists() ? m_Path.GetFullName(): m_Path.Path().string());
   }
   else
   {
-    filename = m_Path.GetFullPath();
+    filename = m_Path.Path().string();
   }
 
   if (col == 0)
@@ -71,7 +71,7 @@ void wxExListItem::Insert(long index)
     SetText(filename);
   }
 
-  m_ListView->InsertItem(*this);
+  ((wxListView* )m_ListView)->InsertItem(*this);
   
 #if wxUSE_STATUSBAR
   wxExFrame::UpdateStatusBar(m_ListView);
@@ -87,7 +87,7 @@ void wxExListItem::Insert(long index)
 
 void wxExListItem::SetItem(const std::string& col_name, const std::string& text) 
 {
-  const int col = m_ListView->FindColumn(col_name);
+  const auto col = m_ListView->FindColumn(col_name);
   
   if (col != -1)
   {
@@ -101,7 +101,7 @@ void wxExListItem::SetReadOnly(bool readonly)
     wxConfigBase::Get()->ReadObject(_("Readonly colour"), *wxRED):
     wxConfigBase::Get()->ReadObject(_("Foreground colour"), *wxBLACK));
 
-  m_ListView->SetItem(*this);
+  ((wxListView* )m_ListView)->SetItem(*this);
 
   // Using GetTextColour did not work, so keep state in boolean.
   m_IsReadOnly = readonly;
@@ -114,7 +114,7 @@ void wxExListItem::Update()
     m_ListView->GetData().Image() == IMAGE_FILE_ICON && 
     m_Path.GetStat().IsOk() ? wxExGetIconID(m_Path): -1);
 
-  m_ListView->SetItem(*this);
+  ((wxListView *)m_ListView)->SetItem(*this);
 
   SetReadOnly(m_Path.GetStat().IsReadOnly());
 

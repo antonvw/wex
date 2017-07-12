@@ -105,6 +105,7 @@ bool wxExItem::ToConfig(bool save) const
 
     case ITEM_COMBOBOX:
     case ITEM_COMBOBOX_DIR:
+    case ITEM_COMBOBOX_FILE:
       {
       wxComboBox* cb = (wxComboBox*)GetWindow();
 

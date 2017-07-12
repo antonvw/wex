@@ -2,7 +2,7 @@
 // Name:      test-filehistory.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -30,9 +30,9 @@ TEST_CASE("wxExFileHistory")
     history.AddFileToHistory("xxx.cpp");
     history.AddFileToHistory("");
     REQUIRE( history.GetCount() == 0);
-    REQUIRE( history.GetHistoryFile().empty());
+    REQUIRE( history.GetHistoryFile().Path().empty());
     
-    history.AddFileToHistory(GetTestFile().GetFullPath());
+    history.AddFileToHistory(GetTestFile());
     REQUIRE( history.GetCount() == 1);
     REQUIRE( history.GetHistoryFiles(0).size() == 0);
     REQUIRE( history.GetHistoryFiles(5).size() == 1);
@@ -43,8 +43,8 @@ TEST_CASE("wxExFileHistory")
 
     history.Clear();
     REQUIRE( history.GetCount() == 0);
-    REQUIRE( history.GetHistoryFile().empty());
-    REQUIRE( history.GetHistoryFile(100).empty());
+    REQUIRE( history.GetHistoryFile().Path().empty());
+    REQUIRE( history.GetHistoryFile(100).Path().empty());
     
     history.PopupMenu(GetFrame(), 5);
     history.Save();
@@ -53,7 +53,7 @@ TEST_CASE("wxExFileHistory")
   SUBCASE("Other constructor")
   {
     wxExFileHistory history(4, 1000, "MY-KEY");
-    history.AddFileToHistory(GetTestFile().GetFullPath());
+    history.AddFileToHistory(GetTestFile());
     REQUIRE( history.GetCount() == 1);
     REQUIRE( history.GetBaseId() == 1000);
     REQUIRE( history.GetMaxFiles() == 4);
@@ -72,6 +72,6 @@ TEST_CASE("wxExFileHistory")
     history.AddFileToHistory("test-history.txt");
     REQUIRE( history.GetHistoryFile(0) == "test-history.txt");
     REQUIRE( remove("test-history.txt") == 0);
-    REQUIRE( history.GetHistoryFile(0).empty());
+    REQUIRE( history.GetHistoryFile(0).Path().empty());
   }
 }

@@ -34,7 +34,7 @@ one of these applications, being a full featured source code text editor.
 ## Building wxWidgets
 
 - under windows:   
-    -- using Microsoft Visual Studio 2015 in build/msw:    
+    -- using Microsoft Visual Studio 2017 in build/msw:    
     `nmake /f makefile.vc` or   
     `nmake /f makefile.vc BUILD=release`   
     -- using mingw in build/msw:
@@ -43,7 +43,7 @@ one of these applications, being a full featured source code text editor.
     in buildmsw (created):
     `../configure --with-msw --disable-shared && make`  
     
-- under Linux g++ 4.9.2:   
+- under Linux g++ 7.1.1:   
     install gtk:   
     `sudo apt-get install libgtk2.0-dev` or   
     `sudo apt-get install libgtk-3-dev`   

@@ -16,6 +16,7 @@
 #include <wx/app.h>
 #include <wx/clipbrd.h>
 #include <wx/config.h>
+#include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/stdpaths.h>
@@ -251,8 +252,8 @@ bool wxExCompareFile(const wxExPath& file1, const wxExPath& file2)
 
   const std::string arguments =
      (file1.GetStat().st_mtime < file2.GetStat().st_mtime) ?
-       "\"" + file1.GetFullPath() + "\" \"" + file2.GetFullPath() + "\"":
-       "\"" + file2.GetFullPath() + "\" \"" + file1.GetFullPath() + "\"";
+       "\"" + file1.Path().string() + "\" \"" + file2.Path().string() + "\"":
+       "\"" + file2.Path().string() + "\" \"" + file1.Path().string() + "\"";
 
   if (!wxExProcess().Execute(
     wxConfigBase::Get()->Read(_("Comparator")).ToStdString() + " " + arguments, true))
@@ -273,7 +274,7 @@ const std::string wxExConfigDir()
   return wxExPath({
     wxGetHomeDir().ToStdString(), 
     ".config", 
-    wxTheApp->GetAppName().Lower().ToStdString()}).GetFullPath();
+    wxTheApp->GetAppName().Lower().ToStdString()}).Path().string();
 #endif
 }
   
@@ -486,8 +487,7 @@ void wxExListToConfig(const std::list < std::string > & l, const std::string& co
 void wxExLogStatus(const wxExPath& fn, long flags)
 {
   wxString text = ((flags & STAT_FULLPATH) ? 
-    fn.GetFullPath(): 
-    fn.GetFullName());
+    fn.Path().string(): fn.GetFullName());
 
   if (fn.GetStat().IsOk())
   {
@@ -513,7 +513,7 @@ long wxExMake(const wxExPath& makefile)
   return process->Execute(
     wxConfigBase::Get()->Read("Make", "make").ToStdString() + " " +
       wxConfigBase::Get()->Read("MakeSwitch", "-f").ToStdString() + " " +
-      makefile.GetFullPath(),
+      makefile.Path().string(),
     false,
     makefile.GetPath());
 }
@@ -637,7 +637,7 @@ void wxExNodeStyles(const pugi::xml_node* node, const std::string& lexer,
 }
 
 #if wxUSE_GUI
-int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
+int wxExOpenFiles(wxExFrame* frame, const std::vector< wxExPath > & files,
   const wxExSTCData& data, int dir_flags)
 {
   wxWindowUpdateLocker locker(frame);
@@ -646,21 +646,21 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< std::string > & files,
   
   for (const auto& it : files)
   {
-    if (it.find("*") != std::string::npos || it.find("?") != std::string::npos)
+    if (it.Path().string().find("*") != std::string::npos || it.Path().string().find("?") != std::string::npos)
     {
       count += wxExDirOpenFile(frame, 
-        wxGetCwd().ToStdString(), it, data.Flags(), dir_flags).FindFiles();
+        wxGetCwd().ToStdString(), it.Path().string(), data.Flags(), dir_flags).FindFiles();
     }
     else
     {
       wxExControlData control;
       wxExPath fn(it);
 
-      if (!fn.FileExists() && it.find(":") != std::string::npos)
+      if (!it.FileExists() && it.Path().string().find(":") != std::string::npos)
       {
-        const std::string val = wxExLink().GetPath(it, control);
+        const wxExPath val = wxExLink().GetPath(it.Path().string(), control);
         
-        if (!val.empty())
+        if (!val.Path().empty())
         {
           fn = val;
         }
@@ -684,7 +684,7 @@ void wxExOpenFilesDialog(wxExFrame* frame,
   long style, const wxString& wildcards, bool ask_for_continue,
   const wxExSTCData& data, int dir_flags)
 {
-  wxExSTC* stc = frame->GetSTC();
+  auto* stc = frame->GetSTC();
   wxArrayString paths;
   const wxString caption(_("Select Files"));
       
@@ -720,13 +720,13 @@ void wxExOpenFilesDialog(wxExFrame* frame,
     dlg.GetPaths(paths);
   }
 
-  wxExOpenFiles(frame, wxExToVectorString(paths).Get(), data, dir_flags);
+  wxExOpenFiles(frame, wxExToVectorPath(paths).Get(), data, dir_flags);
 }
 #endif // wxUSE_GUI
 
 const std::string wxExPrintCaption(const wxExPath& filename)
 {
-  return filename.GetFullPath();
+  return filename.Path().string();
 }
 
 const std::string wxExPrintFooter()
@@ -740,7 +740,7 @@ const std::string wxExPrintHeader(const wxExPath& filename)
   {
     return
       wxExGetEndOfText(
-        filename.GetFullPath() + " " +
+        filename.Path().string() + " " +
         wxDateTime(filename.GetStat().st_mtime).Format().ToStdString(), 
         80);
   }
@@ -1007,7 +1007,7 @@ void wxExVCSCommandOnSTC(const wxExVCSCommand& command,
   }
 }
 
-void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< std::string > & files)
+void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< wxExPath > & files)
 {
   wxASSERT(!files.empty());
   

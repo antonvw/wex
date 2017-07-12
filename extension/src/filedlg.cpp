@@ -78,7 +78,7 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
     else
     {
       switch (wxMessageBox(
-        _("Save changes to") + ": " + m_File->GetFileName().GetFullPath() + "?",
+        _("Save changes to") + ": " + m_File->GetFileName().Path().string() + "?",
         _("Confirm"),
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {

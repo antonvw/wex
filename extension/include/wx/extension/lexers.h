@@ -116,19 +116,11 @@ public:
   
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true and sets the lexer on the stc component if you selected one.
-  bool ShowDialog(
-    /// stc component
-    wxExSTC* stc,
-    /// caption
-    const wxString& caption = _("Enter Lexer")) const;
+  bool ShowDialog(wxExSTC* stc) const;
     
   /// Shows a dialog with all themes, allowing you to choose one.
   /// Returns true and sets current theme if you select one.
-  bool ShowThemeDialog(
-    /// parent
-    wxWindow* parent,
-    /// caption
-    const wxString& caption = _("Enter Theme"));
+  bool ShowThemeDialog(wxWindow* parent);
 private:
   wxExLexers(const wxExPath& filename);
   void Initialize();

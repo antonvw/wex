@@ -27,7 +27,7 @@ TEST_CASE("wxExMenus")
   std::vector < wxExMenuCommand > commands;
   REQUIRE(!wxExMenus::AddCommands(doc, commands));
   
-  REQUIRE(!wxExMenus::GetFileName().GetFullPath().empty());
+  REQUIRE(!wxExMenus::GetFileName().Path().empty());
 
   std::vector < wxExMenuCommands <wxExMenuCommand > > entries;
   REQUIRE( wxExMenus::Load("debug", entries));

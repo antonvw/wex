@@ -33,7 +33,7 @@ public:
     std::replace(m_Pattern.begin(), m_Pattern.end(), '*', '.');};
   const std::string GetName() const {return 
     wxConfigBase::Get()->ReadBool(_("vi tag fullpath"), false) ?
-      m_Path.GetFullPath(): m_Path.GetFullName();};
+      m_Path.Path().string(): m_Path.GetFullName();};
   void OpenFile(wxExFrame* frame) const
   {
     frame->OpenFile(m_Path, 

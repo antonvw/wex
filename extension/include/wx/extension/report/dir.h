@@ -19,14 +19,14 @@ public:
   /// Constructor, provide your tool and a path.
   /// SetupTool should already be called.
   wxExDirTool(const wxExTool& tool,
-    const std::string& fullpath,
+    const wxExPath& fullpath,
     const std::string& filespec = std::string(),
     int flags = DIR_DEFAULT);
     
   /// Returns the statistics.
   auto & GetStatistics() {return m_Statistics;};
 protected:  
-  virtual bool OnFile(const std::string& file) override;
+  virtual bool OnFile(const wxExPath& file) override;
 private:    
   wxExStreamStatistics m_Statistics;
   const wxExTool m_Tool;
@@ -41,12 +41,12 @@ class wxExDirWithListView : public wxExDir
 public:
   /// Constructor, provide your listview and a path.
   wxExDirWithListView(wxExListView* listview,
-    const std::string& fullpath,
+    const wxExPath& fullpath,
     const std::string& filespec = std::string(),
     int flags = DIR_DEFAULT);
 protected:
-  virtual bool OnDir(const std::string& dir) override;
-  virtual bool OnFile(const std::string& file) override;
+  virtual bool OnDir(const wxExPath& dir) override;
+  virtual bool OnFile(const wxExPath& file) override;
 private:
   wxExListView* m_ListView;
 };

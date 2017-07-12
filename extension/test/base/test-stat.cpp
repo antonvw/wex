@@ -10,7 +10,7 @@
 
 TEST_CASE( "wxExStat" ) 
 {
-  wxExStat stat(GetTestFile().GetFullPath());
+  wxExStat stat(GetTestFile().Path().string());
 
   REQUIRE( stat.IsOk());
   REQUIRE(!stat.IsReadOnly());

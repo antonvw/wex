@@ -28,7 +28,7 @@ TEST_CASE("wxExDirTool")
     tool,
     "./",
     "*.cpp;*.h",
-    wxDIR_FILES | wxDIR_HIDDEN | wxDIR_DIRS);
+    DIR_FILES | DIR_HIDDEN | DIR_DIRS);
 
   dir.FindFiles();
 

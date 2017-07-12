@@ -153,7 +153,7 @@ bool wxExListViewFile::DoFileLoad(bool synced)
 {
   pugi::xml_document doc;
   const pugi::xml_parse_result result = doc.load_file(
-    GetFileName().GetFullPath().c_str(),
+    GetFileName().Path().string().c_str(),
     pugi::parse_default | pugi::parse_comments);
 
   if (!result)
@@ -183,7 +183,7 @@ bool wxExListViewFile::DoFileLoad(bool synced)
     wxExLogStatus(GetFileName(), STAT_SYNC | STAT_FULLPATH);
   }
 
-  GetFrame()->SetRecentProject(GetFileName().GetFullPath());
+  GetFrame()->SetRecentProject(GetFileName().Path().string());
   
   return true;
 }
@@ -212,7 +212,7 @@ void wxExListViewFile::DoFileSave(bool save_as)
     const wxExPath fn = wxExListItem(this, i).GetFileName();
     
     pugi::xml_node node = root.append_child(fn.FileExists() ? "file": "folder");
-    node.text().set(fn.GetFullPath().c_str());
+    node.text().set(fn.Path().string().c_str());
 
     if (!fn.FileExists() && fn.DirExists())
     {
@@ -221,10 +221,10 @@ void wxExListViewFile::DoFileSave(bool save_as)
     }
   }
   
-  doc.save_file(GetFileName().GetFullPath().c_str());
+  doc.save_file(GetFileName().Path().string().c_str());
 }
 
-bool wxExListViewFile::ItemFromText(const wxString& text)
+bool wxExListViewFile::ItemFromText(const std::string& text)
 {
   bool result = false;
   

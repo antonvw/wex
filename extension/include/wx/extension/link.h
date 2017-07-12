@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <string>
+#include <wx/extension/path.h>
 
 #if wxUSE_GUI
 
@@ -26,9 +27,9 @@ public:
   /// Destructor.
  ~wxExLink();
   
-  /// Returns a path from text, using paths if necessary.
-  /// Returns empty string if no path could be found.
-  const std::string GetPath(
+  /// Returns a path from text, using paths if necessary,
+  /// returns empty path if no path could be found.
+  const wxExPath GetPath(
     /// text containing a path somewhere
     const std::string& text,
     /// control data to be filled in
@@ -42,9 +43,8 @@ public:
   /// If there is no config, paths will be empty.
   void SetFromConfig();
 private:
-  const std::string FindPath(const std::string& text, const wxExControlData& data) const;
-  bool SetLink(
-    std::string& text, wxExControlData& data) const;
+  const wxExPath FindPath(const std::string& text, const wxExControlData& data) const;
+  bool SetLink(wxExPath& text, wxExControlData& data) const;
   
   std::unique_ptr<wxExPaths> m_Paths;
   wxExSTC* m_STC;

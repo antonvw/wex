@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
-#include <wx/dir.h>
+#include <wx/extension/dir.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/tostring.h>
 #include <wx/extension/tool.h>
@@ -20,13 +20,12 @@ TEST_CASE("wxEx")
   
   AddPane(GetFrame(), report);
     
-  wxArrayString files;
-  
-  REQUIRE(wxDir::GetAllFiles(
+  const auto files = wxExGetAllFiles(
     "../../../extension/test/gui-report", 
-    &files,
     "*.cpp", 
-    wxDIR_FILES | wxDIR_DIRS) > 5);
+    DIR_FILES | DIR_DIRS);
+  
+  REQUIRE(files.size() > 5);
     
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
   
@@ -35,7 +34,7 @@ TEST_CASE("wxEx")
   frd->SetFindString("@@@@@@@@@@@@@@@@@@@");
   
   REQUIRE(GetFrame()->FindInFiles(
-    wxExToVectorString(files).Get(), 
+    files, 
     ID_TOOL_REPORT_FIND, 
     false, 
     report));
@@ -51,7 +50,7 @@ TEST_CASE("wxEx")
   const auto start = std::chrono::system_clock::now();
 
   REQUIRE(GetFrame()->FindInFiles(
-    wxExToVectorString(files).Get(), 
+    files, 
     ID_TOOL_REPORT_FIND, 
     false, 
     report));
@@ -64,8 +63,7 @@ TEST_CASE("wxEx")
 #ifndef __WXOSX__
   // Each other file has one author (files.GetCount()), and the one that is already 
   // present on the list because of the first FindInFiles.
-  REQUIRE(report->GetItemCount() == (
-    wxExToVectorString(files).Get().size() + 2));
+  REQUIRE(report->GetItemCount() == files.size() + 2);
 #endif
 #endif
 }

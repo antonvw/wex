@@ -23,7 +23,7 @@ void CheckWellFormed(wxExSTC* stc, const wxExPath& fn)
   if (fn.GetLexer().GetLanguage() == "xml")
   {
     const pugi::xml_parse_result result = 
-      pugi::xml_document().load_file(fn.GetFullPath().c_str());
+      pugi::xml_document().load_file(fn.Path().string().c_str());
     
     if (!result)
     {
@@ -78,7 +78,7 @@ bool wxExSTCFile::DoFileLoad(bool synced)
       m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
     }
     
-    wxLogStatus(_("Opened") + ": " + GetFileName().GetFullPath());
+    wxLogStatus(_("Opened") + ": " + GetFileName().Path().string());
   }
   
   m_STC->PropertiesMessage(synced ? STAT_SYNC: STAT_DEFAULT);
@@ -91,7 +91,7 @@ bool wxExSTCFile::DoFileLoad(bool synced)
 
 void wxExSTCFile::DoFileNew()
 {
-  m_STC->SetName(GetFileName().GetFullPath());
+  m_STC->SetName(GetFileName().Path().string());
   m_STC->PropertiesMessage();
   m_STC->ClearDocument();
   m_STC->GetLexer().Set(GetFileName().GetLexer(), true); // allow fold
@@ -112,12 +112,12 @@ void wxExSTCFile::DoFileSave(bool save_as)
   {
     m_STC->SetReadOnly(GetFileName().IsReadOnly());
     m_STC->GetLexer().Set(GetFileName().GetLexer());
-    m_STC->SetName(GetFileName().GetFullPath());
+    m_STC->SetName(GetFileName().Path().string());
   }
   
   m_STC->MarkerDeleteAllChange();
   
-  wxLogStatus(_("Saved") + ": " + GetFileName().GetFullPath());
+  wxLogStatus(_("Saved") + ": " + GetFileName().Path().string());
   
   CheckWellFormed(m_STC, GetFileName());
 }

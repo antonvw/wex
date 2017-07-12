@@ -2,7 +2,7 @@
 // Name:      filehistory.h
 // Purpose:   Include file for wxExFileHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,6 +11,7 @@
 #include <wx/window.h>
 
 class wxExFileHistoryImp;
+class wxExPath;
 
 /// Offers some extra methods to wxFileHistory.
 class WXDLLIMPEXP_BASE wxExFileHistory
@@ -31,7 +32,7 @@ public:
 
   /// Adds a file to the file history list, if the object has a pointer to 
   /// an appropriate file menu. 
-  void AddFileToHistory(const std::string& file);
+  void AddFileToHistory(const wxExPath& file);
   
   /// Clears history.
   void Clear();
@@ -43,10 +44,10 @@ public:
   size_t GetCount() const;
   
   /// Returns the file at this index (zero-based).
-  std::string GetHistoryFile(size_t index = 0) const;
+  wxExPath GetHistoryFile(size_t index = 0) const;
 
   /// Returns a vector of max recent opened files.
-  std::vector<std::string> GetHistoryFiles(size_t max) const;
+  std::vector<wxExPath> GetHistoryFiles(size_t max) const;
   
   /// Returns max files.
   int GetMaxFiles() const;

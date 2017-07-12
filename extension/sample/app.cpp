@@ -77,12 +77,12 @@ wxExSampleDir::wxExSampleDir(
 {
 }
 
-bool wxExSampleDir::OnFile(const std::string& file)
+bool wxExSampleDir::OnFile(const wxExPath& file)
 {
   m_Grid->AppendRows(1);
   const auto no = m_Grid->GetNumberRows() - 1;
   m_Grid->SetCellValue(no, 0, wxString::Format("cell%d", no));
-  m_Grid->SetCellValue(no, 1, file);
+  m_Grid->SetCellValue(no, 1, file.Path().string());
 
   // Let's make these cells readonly and colour them, so we can test
   // things like cutting and dropping is forbidden.
@@ -199,19 +199,21 @@ wxExSampleFrame::wxExSampleFrame()
 #endif
 
   m_ListView->SetSingleStyle(wxLC_REPORT);
-  m_ListView->AppendColumn(wxExColumn("String", wxExColumn::COL_STRING));
-  m_ListView->AppendColumn(wxExColumn("Number", wxExColumn::COL_INT));
-  m_ListView->AppendColumn(wxExColumn("Float", wxExColumn::COL_FLOAT));
-  m_ListView->AppendColumn(wxExColumn("Date", wxExColumn::COL_DATE));
+  m_ListView->AppendColumns({
+    {"String", wxExColumn::COL_STRING},
+    {"Number", wxExColumn::COL_INT},
+    {"Float", wxExColumn::COL_FLOAT},
+    {"Date", wxExColumn::COL_DATE}});
 
   const int items = 50;
 
   for (auto i = 0; i < items; i++)
   {
-    m_ListView->InsertItem(i, wxString::Format("item%d", i));
-    m_ListView->SetItem(i, 1, std::to_string(i));
-    m_ListView->SetItem(i, 2, wxString::Format("%f", (float)i / 2.0));
-    m_ListView->SetItem(i, 3, wxDateTime::Now().FormatISOCombined(' '));
+    m_ListView->InsertItem({
+      "item%d" + std::to_string(i),
+      std::to_string(i),
+      std::to_string((float)i / 2.0),
+      wxDateTime::Now().FormatISOCombined(' ').ToStdString()});
 
     // Set some images.
     if      (i == 0) m_ListView->SetItemImage(i, wxART_CDROM);
@@ -320,7 +322,7 @@ wxExSampleFrame::wxExSampleFrame()
     wxFileDialog dlg(this, _("Open File"), "", "",
       "All files (*.*)|*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
     if (dlg.ShowModal() == wxID_CANCEL) return;
-    const wxExVCS vcs(std::vector< std::string > {dlg.GetPath().ToStdString()});
+    const wxExVCS vcs(std::vector< wxExPath > {dlg.GetPath().ToStdString()});
     wxLogMessage(vcs.GetName().c_str());}, ID_SHOW_VCS);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -330,7 +332,7 @@ wxExSampleFrame::wxExSampleFrame()
     }}, ID_STATISTICS_SHOW);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    long value = wxGetNumberFromUser("Input:",
+    const long value = wxGetNumberFromUser("Input:",
       wxEmptyString, "STC Open Flag",
       m_FlagsSTC,
       0,
@@ -383,8 +385,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     case wxID_SAVE:
       m_STC->GetFile().FileSave();
   
-      if (m_STC->GetFileName().GetFullPath() == 
-          wxExLexers::Get()->GetFileName().GetFullPath())
+      if (m_STC->GetFileName().Path() == wxExLexers::Get()->GetFileName().Path())
       {
         wxExLexers::Get()->LoadDocument();
         wxLogMessage("File contains: %d lexers", wxExLexers::Get()->GetLexers().size());

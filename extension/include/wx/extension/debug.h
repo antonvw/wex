@@ -15,6 +15,7 @@
 #include <wx/extension/menucommands.h>
 #include <wx/extension/path.h>
 
+class wxExItemDialog;
 class wxExManagedFrame;
 class wxExMenu;
 class wxExProcess;
@@ -72,7 +73,8 @@ private:
   /// tuple of filename, marker identifier, and line no.
   std::map<
     std::string, std::tuple<wxExPath, int, int>> m_Breakpoints;
-  
+
+  static wxExItemDialog* m_Dialog;  
   wxExPath m_Path;
   wxExManagedFrame* m_Frame;
   wxExMenuCommands< wxExMenuCommand> m_Entry;

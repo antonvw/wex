@@ -202,7 +202,7 @@ bool wxExLexers::LoadDocument()
   
   pugi::xml_document doc;
   const pugi::xml_parse_result result = doc.load_file(
-    m_Path.GetFullPath().c_str(),
+    m_Path.Path().string().c_str(),
     pugi::parse_default | pugi::parse_trim_pcdata);
 
   if (!result)
@@ -450,10 +450,10 @@ wxExLexers* wxExLexers::Set(wxExLexers* lexers)
   return old;
 }
 
-bool SingleChoice(wxWindow* parent, const wxString& caption, 
+bool SingleChoice(wxWindow* parent, const wxString& title, 
   const wxArrayString& s, std::string& selection)
 {
-  wxSingleChoiceDialog dlg(parent, _("Input") + ":", caption, s);
+  wxSingleChoiceDialog dlg(parent, _("Input") + ":", title, s);
 
   const int index = s.Index(selection);
   if (index != wxNOT_FOUND) dlg.SetSelection(index);
@@ -464,14 +464,14 @@ bool SingleChoice(wxWindow* parent, const wxString& caption,
   return true;
 }
   
-bool wxExLexers::ShowDialog(wxExSTC* stc, const wxString& caption) const
+bool wxExLexers::ShowDialog(wxExSTC* stc) const
 {
   wxArrayString s;
   for (const auto& it : m_Lexers) s.Add(it.GetDisplayLexer());
   s.Add(wxEmptyString);
 
   auto lexer = stc->GetLexer().GetDisplayLexer();
-  if (!SingleChoice(stc, caption, s, lexer)) return false;
+  if (!SingleChoice(stc, _("Enter Lexer"), s, lexer)) return false;
 
   if (lexer.empty())
     stc->GetLexer().Reset();
@@ -481,12 +481,12 @@ bool wxExLexers::ShowDialog(wxExSTC* stc, const wxString& caption) const
   return true;
 }
 
-bool wxExLexers::ShowThemeDialog(wxWindow* parent, const wxString& caption)
+bool wxExLexers::ShowThemeDialog(wxWindow* parent)
 { 
   wxArrayString s;
   for (const auto& it : m_ThemeMacros) s.Add(it.first);
 
-  if (!SingleChoice(parent, caption, s, m_Theme)) return false;
+  if (!SingleChoice(parent, _("Enter Theme"), s, m_Theme)) return false;
 
   wxConfigBase::Get()->Write("theme", wxString(m_Theme));
 

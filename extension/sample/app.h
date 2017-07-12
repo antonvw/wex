@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of sample classes for wxExtension
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016
+// Copyright: (c) 2017
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/app.h>
@@ -38,8 +38,7 @@ public:
     const std::string& findfiles, 
     wxExGrid* grid);
 private:
-  /// Override the OnFile.
-  virtual bool OnFile(const std::string& file) override;
+  virtual bool OnFile(const wxExPath& file) override;
   wxExGrid* m_Grid;
 };
 #endif

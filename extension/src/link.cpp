@@ -23,19 +23,19 @@ class wxExPaths
 public:
   wxExPaths() : m_pl(wxExTokenizer(
     wxConfigBase::Get()->Read(_("Include directory")).ToStdString(),
-    "\r\n").Tokenize<std::vector<std::string>>()) {;};
+      "\r\n").Tokenize<std::vector<std::string>>()) {;};
 
-  std::string FindPath(const std::string& path) const {
+  wxExPath FindPath(const std::string& path) const {
     for (const auto& it : m_pl)
     {
       const wxExPath valid(it, path);
 
       if (valid.FileExists())
       {
-        return valid.GetFullPath();
+        return valid;
       }
     }
-    return std::string();};
+    return wxExPath();};
 private:
   const std::vector<std::string> m_pl;
 };
@@ -50,11 +50,12 @@ wxExLink::~wxExLink()
 {
 }
 
-const std::string wxExLink::FindPath(const std::string& text, const wxExControlData& data) const
+const wxExPath wxExLink::FindPath(
+  const std::string& text, const wxExControlData& data) const
 {
   if (text.empty())
   {
-    return std::string();
+    return wxExPath();
   }
 
   // Path in .po files.
@@ -95,10 +96,10 @@ const std::string wxExLink::FindPath(const std::string& text, const wxExControlD
     m_STC != nullptr && 
     m_STC->GetLexer().GetScintillaLexer() == "hypertext")
   {
-    return m_STC->GetFileName().GetFullPath();
+    return m_STC->GetFileName();
   }
   
-  if (data.Line() < 0) return std::string();
+  if (data.Line() < 0) return wxExPath();
 
   // Better first try to find "...", then <...>, as in next example.
   // <A HREF="http://www.scintilla.org">scintilla</A> component.
@@ -139,9 +140,9 @@ const std::string wxExLink::FindPath(const std::string& text, const wxExControlD
 }
 
 // text contains selected text, or current line
-const std::string wxExLink::GetPath(const std::string& text, wxExControlData& data) const
+const wxExPath wxExLink::GetPath(const std::string& text, wxExControlData& data) const
 {
-  const std::string path(FindPath(text, data));
+  const wxExPath path(FindPath(text, data));
 
   // if http link requested  
   if (data.Line() < 0)
@@ -149,74 +150,69 @@ const std::string wxExLink::GetPath(const std::string& text, wxExControlData& da
     return path;
   }
   
-  std::string link(path);
+  wxExPath link(path);
   
   SetLink(link, data);
   
-  if (link.empty())
+  if (link.Path().empty())
   {
-    return std::string();
+    return link;
   }
 
   wxExPath file(link);
 
   if (file.FileExists())
   {
-    return file.MakeAbsolute().GetFullPath();
+    return file.MakeAbsolute();
   }
 
   if (file.IsRelative() && 
       m_STC != nullptr && m_STC->GetFileName().FileExists())
   {
-    wxExPath path(file.MakeAbsolute(m_STC->GetFileName().GetPath()));
+    wxExPath path(file.MakeAbsolute(m_STC->GetFileName()));
 
     if (path.FileExists())
     {
-      return path.GetFullPath();
+      return path;
     }
   }
 
   // Check whether last word is a file.
-  int pos = path.find_last_of(' ');
-  std::string word = wxExSkipWhiteSpace((pos != std::string::npos ? path.substr(pos): std::string()));
+  int pos = path.Path().string().find_last_of(' ');
+  wxExPath word = wxExSkipWhiteSpace((pos != std::string::npos ? path.Path().string().substr(pos): std::string()));
 
-  if (!word.empty())
+  if (!word.Path().empty())
   {
-    wxExPath path(word);
-
-    if (path.FileExists())
+    if (word.FileExists())
     {
       data.Reset();
-      return path.MakeAbsolute().GetFullPath();
+      return word.MakeAbsolute();
     }
   }
 
-  std::string fullpath = m_Paths->FindPath(link);
+  wxExPath fullpath = m_Paths->FindPath(link.Path());
 
-  if (!fullpath.empty())
+  if (!fullpath.Path().empty())
   {
     return fullpath;
   }
 
-  if (!word.empty() && SetLink(word, data))
+  if (!word.Path().empty() && SetLink(word, data))
   {
-    fullpath = m_Paths->FindPath(word);
+    fullpath = m_Paths->FindPath(word.Path().string());
   }
   
   return fullpath;
 }
 
-bool wxExLink::SetLink(std::string& link, wxExControlData& data) const
+bool wxExLink::SetLink(wxExPath& link, wxExControlData& data) const
 {
-  if (link.empty())
+  if (link.Path().empty())
   {
     return false;
   }
 
-  // Using backslash as separator does not yet work.
-  std::replace(link.begin(), link.end(), '\\', '/');
-
-  // The harddrive letter is filtererd, it does not work
+  // The harddrive letter is filtered, it does not work
   // when adding it to wxExMatch.
   std::string prefix;
 
@@ -231,7 +227,7 @@ bool wxExLink::SetLink(std::string& link, wxExControlData& data) const
   // file[:line[:column]]
   std::vector <std::string> v;
   
-  if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link, v) > 0)
+  if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link.Path().string(), v) > 0)
   {
     link = v[0];
     data.Reset();
@@ -246,7 +242,7 @@ bool wxExLink::SetLink(std::string& link, wxExControlData& data) const
       }
     }
       
-    link = wxExSkipWhiteSpace(prefix + link);
+    link = wxExPath(wxExSkipWhiteSpace(prefix + link.Path().string()));
     
     return true;
   }

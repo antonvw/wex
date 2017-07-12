@@ -80,7 +80,7 @@ void AddPane(wxExManagedFrame* frame, wxWindow* pane)
 
 const std::string GetTestDir()
 {
-  return wxExTestApp::GetTestPath().GetFullPath() + "/";
+  return wxExTestApp::GetTestPath().Path().string() + "/";
 }
   
 const wxExPath GetTestFile()
@@ -92,7 +92,7 @@ void SystemArg(
   const std::string cmd, const std::string& file, const std::string& dir)
 {
   const wxExPath path({"..", "..", "data", file});
-  const std::string line(cmd + " " + path.GetFullPath() + " " + dir);
+  const std::string line(cmd + " " + path.Path().string() + " " + dir);
 
   (void)system(line.c_str());
 }
@@ -247,9 +247,9 @@ void wxExTestApp::SetTestPath()
     m_TestPath.Append("test").Append("data");
   }
 
-  if (!wxSetWorkingDirectory(m_TestPath.GetFullPath()))
+  if (!wxSetWorkingDirectory(m_TestPath.Path().string()))
   {
-    std::cout << "cannot set working dir: " << m_TestPath.GetFullPath() << "\n";
+    std::cout << "cannot set working dir: " << m_TestPath.Path().string() << "\n";
     exit(1);
   }
 }

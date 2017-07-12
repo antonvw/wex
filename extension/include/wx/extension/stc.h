@@ -81,8 +81,7 @@ public:
   /// Shows a dialog with options, returns dialog return code.
   /// If used modeless, it uses the dialog id as specified,
   /// so you can use that id in wxExFrame::OnCommandItemDialog.
-  static int ConfigDialog(const wxExWindowData& data = 
-    wxExWindowData().Title(_("Editor Options").ToStdString()));
+  static int ConfigDialog(const wxExWindowData& data = wxExWindowData());
 
   /// Sets the configurable parameters to values currently in config.
   void ConfigGet();

@@ -2,7 +2,7 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of wxExDirWithListView and wxExDirTool classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -15,14 +15,14 @@
 #include <wx/extension/report/stream.h>
 
 wxExDirTool::wxExDirTool(const wxExTool& tool,
-  const std::string& fullpath, const std::string& filespec, int flags)
+  const wxExPath& fullpath, const std::string& filespec, int flags)
   : wxExDir(fullpath, filespec, flags)
   , m_Statistics()
   , m_Tool(tool)
 {
 }
 
-bool wxExDirTool::OnFile(const std::string& file)
+bool wxExDirTool::OnFile(const wxExPath& file)
 {
   wxExStreamToListView report(file, m_Tool);
 
@@ -39,13 +39,13 @@ bool wxExDirTool::OnFile(const std::string& file)
 }
 
 wxExDirWithListView::wxExDirWithListView(wxExListView* listview,
-  const std::string& fullpath, const std::string& filespec, int flags)
+  const wxExPath& fullpath, const std::string& filespec, int flags)
   : wxExDir(fullpath, filespec, flags)
   , m_ListView(listview)
 {
 }
 
-bool wxExDirWithListView::OnDir(const std::string& dir)
+bool wxExDirWithListView::OnDir(const wxExPath& dir)
 {
   if (wxConfigBase::Get()->ReadBool(_("Add folders"), true))
   {
@@ -54,7 +54,7 @@ bool wxExDirWithListView::OnDir(const std::string& dir)
   return true;
 }
 
-bool wxExDirWithListView::OnFile(const std::string& file)
+bool wxExDirWithListView::OnFile(const wxExPath& file)
 {
   wxExListItem(m_ListView, file, GetFileSpec()).Insert();
   return true;

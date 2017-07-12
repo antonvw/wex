@@ -2,7 +2,7 @@
 // Name:      interruptable.cpp
 // Purpose:   Implementation of class wxExInterruptable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -27,10 +27,17 @@ bool wxExInterruptable::Cancel()
   return true;
 }
 
-void wxExInterruptable::Start()
+bool wxExInterruptable::Start()
 {
+  if (m_Running)
+  {
+    return false;
+  }
+
   m_Cancelled = false;
   m_Running = true;
+
+  return true;
 }
 
 void wxExInterruptable::Stop()

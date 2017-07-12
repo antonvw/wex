@@ -14,7 +14,6 @@
 #include <wx/extension/process.h>
 #include <wx/extension/vcscommand.h>
 
-class wxExItemDialog;
 class wxExMenu;
 
 /// This class collects a single vcs.
@@ -80,13 +79,8 @@ public:
   /// Returns the flags used to run the command.
   const std::string GetFlags() const;
 
-#if wxUSE_GUI
-  /// Shows a dialog allowing you to run or cancel the current vcs command.
-  /// Returns result from calling ShowModal.
-  int ShowDialog(
-    const wxExWindowData& data = wxExWindowData(),
-    bool add_folder = false) const;
-#endif
+  /// Returns flags location.
+  auto GetFlagsLocation() const {return m_FlagsLocation;};
 
 #if wxUSE_GUI
   virtual void ShowOutput(const std::string& caption = std::string()) const override;
@@ -98,6 +92,4 @@ private:
   
   std::string m_AdminDir;
   wxExLexer m_Lexer;
-
-  static wxExItemDialog* m_ItemDialog;
 };

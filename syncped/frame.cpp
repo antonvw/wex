@@ -176,7 +176,7 @@ Frame::Frame(App* app)
       
     if (GetManager().GetPane("PROJECTS").IsShown() && m_Projects != nullptr)
     {
-      if (!GetProjectHistory().GetHistoryFile().empty())
+      if (!GetProjectHistory().GetHistoryFile().Path().empty())
       {
         OpenFile(
           wxExPath(GetProjectHistory().GetHistoryFile()),
@@ -191,7 +191,7 @@ Frame::Frame(App* app)
   else
   {
     GetManager().GetPane("PROJECTS").Hide();
-    wxExOpenFiles(this, m_App->GetFiles(), m_App->GetData(), wxDIR_FILES); // only files in this dir
+    wxExOpenFiles(this, m_App->GetFiles(), m_App->GetData(), DIR_FILES);
   }
   
   StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
@@ -233,8 +233,7 @@ Frame::Frame(App* app)
       wxExSTC* editor = GetSTC();
       if (editor != nullptr)
       {
-        m_DirCtrl->ExpandAndSelectPath(
-          editor->GetFileName().GetFullPath());
+        m_DirCtrl->ExpandAndSelectPath(editor->GetFileName());
       }
     }}, ID_VIEW_DIRCTRL);
 
@@ -395,21 +394,21 @@ Frame::Frame(App* app)
     wxExListViewFile* project = GetProject();
     if (project != nullptr && m_Projects != nullptr)
     {
-      m_Projects->DeletePage(project->GetFileName().GetFullPath());
+      m_Projects->DeletePage(project->GetFileName().Path().string());
     };}, ID_PROJECT_CLOSE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_Projects == nullptr) AddPaneProjects();
     const std::string text = wxString::Format("%s%d", _("project"), m_NewProjectNo++).ToStdString();
     const wxExPath fn(
-       (!GetProjectHistory().GetHistoryFile().empty() ? 
-           wxPathOnly(GetProjectHistory().GetHistoryFile()).ToStdString(): wxExConfigDir()),
+       (!GetProjectHistory().GetHistoryFile().Path().empty() ? 
+           GetProjectHistory().GetHistoryFile().GetPath(): wxExConfigDir()),
       text + ".prj");
-    wxWindow* page = new wxExListViewFile(fn.GetFullPath(), wxExWindowData().Parent(m_Projects));
-    ((wxExListViewFile*)page)->FileNew(fn.GetFullPath());
+    wxWindow* page = new wxExListViewFile(fn.Path().string(), wxExWindowData().Parent(m_Projects));
+    ((wxExListViewFile*)page)->FileNew(fn.Path().string());
     // This file does yet exist, so do not give it a bitmap.
-    m_Projects->AddPage(page, fn.GetFullPath(), text, true);
-    SetRecentProject(fn.GetFullPath());
+    m_Projects->AddPage(page, fn.Path().string(), text, true);
+    SetRecentProject(fn.Path().string());
     ShowPane("PROJECTS");}, ID_PROJECT_NEW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -438,7 +437,7 @@ Frame::Frame(App* app)
         project->FileSave(dlg.GetPath().ToStdString());
         m_Projects->SetPageText(
           m_Projects->GetKeyByPage(project),
-          project->GetFileName().GetFullPath(),
+          project->GetFileName().Path().string(),
           project->GetFileName().GetName());
       }
     };}, ID_PROJECT_SAVEAS);
@@ -446,13 +445,13 @@ Frame::Frame(App* app)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxFileDialog dlg(this,
       _("Select Projects"),
-       (!GetProjectHistory().GetHistoryFile().empty() ? 
-           wxPathOnly(GetProjectHistory().GetHistoryFile()).ToStdString(): wxExConfigDir()),
+       (!GetProjectHistory().GetHistoryFile().Path().empty() ? 
+           GetProjectHistory().GetHistoryFile().GetPath(): wxExConfigDir()),
       wxEmptyString,
       m_ProjectWildcard,
       wxFD_OPEN | wxFD_MULTIPLE);
     if (dlg.ShowModal() == wxID_CANCEL) return;
-    wxExOpenFiles(this, wxExToVectorString(dlg).Get(), wxExSTCData().Flags(STC_WIN_IS_PROJECT));}, ID_PROJECT_OPEN);
+    wxExOpenFiles(this, wxExToVectorPath(dlg).Get(), wxExSTCData().Flags(STC_WIN_IS_PROJECT));}, ID_PROJECT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Editors->Rearrange(wxTOP);}, ID_REARRANGE_HORIZONTALLY);
@@ -465,7 +464,7 @@ Frame::Frame(App* app)
       !wxConfigBase::Get()->ReadBool("List/SortSync", true));}, ID_SORT_SYNC);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExVCS(std::vector< std::string >(), event.GetId() - ID_VCS_LOWEST - 1).Request();},
+    wxExVCS(std::vector< wxExPath >(), event.GetId() - ID_VCS_LOWEST - 1).Request();},
     ID_VCS_LOWEST, ID_VCS_HIGHEST);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -667,7 +666,7 @@ wxExListViewFile* Frame::GetProject()
 
 bool Frame::IsOpen(const wxExPath& filename)
 {
-  return m_Editors->GetPageIndexByKey(filename.GetFullPath()) != wxNOT_FOUND;
+  return m_Editors->GetPageIndexByKey(filename.Path().string()) != wxNOT_FOUND;
 }
   
 void Frame::OnCommand(wxCommandEvent& event)
@@ -786,7 +785,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
       m_Editors->SetPageText(
         m_Editors->GetKeyByPage(editor),
-        editor->GetFileName().GetFullPath(),
+        editor->GetFileName().Path().string(),
         editor->GetFileName().GetFullName(),
         bitmap);
           
@@ -844,12 +843,12 @@ void Frame::OnCommand(wxCommandEvent& event)
       if (event.GetId() == ID_SPLIT_HORIZONTALLY)
       {
         m_Editors->Split(key, wxBOTTOM);
-        m_Editors->SetSelection(editor->GetFileName().GetFullPath());
+        m_Editors->SetSelection(editor->GetFileName().Path().string());
       }
       else if (event.GetId() == ID_SPLIT_VERTICALLY)
       {
         m_Editors->Split(key, wxRIGHT);
-        m_Editors->SetSelection(editor->GetFileName().GetFullPath());
+        m_Editors->SetSelection(editor->GetFileName().Path().string());
       }
     }
     break;
@@ -932,17 +931,17 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       break;
     case ID_PROJECT_OPENTEXT:
       event.Enable(
-        GetProject() != nullptr && !GetProject()->GetFileName().GetFullPath().empty());
+        GetProject() != nullptr && !GetProject()->GetFileName().Path().empty());
       break;
     case ID_PROJECT_SAVE:
       event.Enable(GetProject() != nullptr && GetProject()->GetContentsChanged());
       break;
 
     case ID_RECENT_FILE_MENU:
-      event.Enable(!GetFileHistory().GetHistoryFile().empty());
+      event.Enable(!GetFileHistory().GetHistoryFile().Path().empty());
       break;
     case ID_RECENT_PROJECT_MENU:
-      event.Enable(!GetProjectHistory().GetHistoryFile().empty());
+      event.Enable(!GetProjectHistory().GetHistoryFile().Path().empty());
       break;
 
     case ID_SORT_SYNC:
@@ -1002,7 +1001,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
         case wxID_SAVE:
           event.Enable(
-            !editor->GetFileName().GetFullPath().empty() &&
+            !editor->GetFileName().Path().empty() &&
              editor->GetModify());
           break;
         case wxID_REDO:
@@ -1053,7 +1052,7 @@ wxExSTC* Frame::OpenFile(
 {
   const std::string unique = 
     vcs.GetCommand().GetCommand() + " " + vcs.GetFlags();
-  const std::string key = filename.GetFullPath() + " " + unique;
+  const std::string key = filename.Path().string() + " " + unique;
 
   wxWindow* page = m_Editors->SetSelection(key);
   
@@ -1068,7 +1067,7 @@ wxExSTC* Frame::OpenFile(
     wxExVCSCommandOnSTC(
       vcs.GetCommand(), filename.GetLexer(), editor);
       
-    const int index = m_Editors->GetPageIndexByKey(filename.GetFullPath());
+    const int index = m_Editors->GetPageIndexByKey(filename.Path().string());
     
     if (index != -1)
     {
@@ -1090,16 +1089,16 @@ wxExSTC* Frame::OpenFile(
   const std::string& text,
   const wxExSTCData& data)
 {
-  wxExSTC* page = (wxExSTC*)m_Editors->SetSelection(filename.GetFullPath());
+  wxExSTC* page = (wxExSTC*)m_Editors->SetSelection(filename.Path().string());
 
   if (page == nullptr)
   {
     page = new wxExSTC(text, 
       wxExSTCData(data).Window(wxExWindowData().
         Parent(m_Editors).
-        Name(filename.GetFullPath())));
+        Name(filename.Path().string())));
     page->GetLexer().Set(filename.GetLexer());
-    m_Editors->AddPage(page, filename.GetFullPath(), filename.GetFullName(), true);
+    m_Editors->AddPage(page, filename.Path().string(), filename.GetFullName(), true);
   }
   else
   {
@@ -1122,17 +1121,17 @@ wxExSTC* Frame::OpenFile(const wxExPath& filename, const wxExSTCData& data)
     
   wxASSERT(notebook != nullptr);
   
-  wxWindow* page = notebook->SetSelection(filename.GetFullPath());
+  wxWindow* page = notebook->SetSelection(filename.Path().string());
 
   if (data.Flags() & STC_WIN_IS_PROJECT)
   {
     if (page == nullptr)
     {
-      auto* project = new wxExListViewFile(filename.GetFullPath(), wxExWindowData().Parent(m_Projects));
+      auto* project = new wxExListViewFile(filename.Path().string(), wxExWindowData().Parent(m_Projects));
 
       notebook->AddPage(
         project,
-        filename.GetFullPath(),
+        filename.Path().string(),
         filename.GetName(),
         true,
         wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
@@ -1184,7 +1183,7 @@ wxExSTC* Frame::OpenFile(const wxExPath& filename, const wxExSTCData& data)
         }
       }
 
-      const std::string key(filename.GetFullPath());
+      const std::string key(filename.Path().string());
 
       notebook->AddPage(
         editor,

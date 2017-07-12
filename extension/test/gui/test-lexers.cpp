@@ -72,7 +72,7 @@ TEST_CASE("wxExLexers")
       findby.first).GetDisplayLexer() == findby.second.second);
   }
     
-  REQUIRE(!wxExLexers::Get()->GetFileName().GetFullPath().empty());
+  REQUIRE(!wxExLexers::Get()->GetFileName().Path().empty());
 
   REQUIRE(!wxExLexers::Get()->GetMacros("global").empty());
   REQUIRE(!wxExLexers::Get()->GetMacros("cpp").empty());

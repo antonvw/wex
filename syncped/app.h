@@ -30,7 +30,7 @@ private:
   virtual bool OnInit() override;
 
   std::string m_Tag; 
-  std::vector< std::string > m_Files;
+  std::vector< wxExPath > m_Files;
   
   bool m_Debug = false;
   int m_Split;

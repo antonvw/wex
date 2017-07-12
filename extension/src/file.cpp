@@ -20,7 +20,7 @@ wxExFile& wxExFile::operator=(const wxExFile& f)
     m_OpenFile = f.m_OpenFile;
     m_Path = f.m_Path;
     m_Stat = f.m_Stat;
-    m_File = std::make_unique<wxFile>(m_Path.GetFullPath());
+    m_File = std::make_unique<wxFile>(m_Path.Path().string());
   }
 
   return *this;
@@ -62,7 +62,7 @@ bool wxExFile::CheckSync()
       if (!m_Stat.Sync())
       {
         // This might be reported in an OnIdle, so do not use wxLogError.
-        wxLogStatus("Could not sync: ", m_Path.GetFullPath().c_str());
+        wxLogStatus("Could not sync: ", m_Path.Path().string().c_str());
       }
         
       return true;
@@ -96,7 +96,7 @@ bool wxExFile::FileSave(const wxExPath& file)
 {
   bool save_as = false;
 
-  if (!file.GetFullPath().empty())
+  if (!file.Path().empty())
   {
     Assign(file);
     MakeAbsolute();
@@ -109,7 +109,7 @@ bool wxExFile::FileSave(const wxExPath& file)
     return false;
   }
 
-  if (m_OpenFile && !Open(m_Path.GetFullPath(), wxFile::write))
+  if (m_OpenFile && !Open(m_Path.Path().string(), wxFile::write))
   {
     return false;
   }
@@ -133,8 +133,8 @@ bool wxExFile::Get(bool synced)
     wxLogNull logNo;
   
     if ( 
-       (synced && !Open(m_Path.GetFullPath())) ||
-      (!synced && m_OpenFile && !Open(m_Path.GetFullPath())))
+       (synced && !Open(m_Path.Path().string())) ||
+      (!synced && m_OpenFile && !Open(m_Path.Path().string())))
     {
       return false;
     }
@@ -155,9 +155,9 @@ bool wxExFile::Get(bool synced)
   return true;
 }
 
-bool wxExFile::Open(const std::string& file, wxFile::OpenMode mode, int access)
+bool wxExFile::Open(const wxExPath& file, wxFile::OpenMode mode, int access)
 {
-  return m_File->Open(file, mode, access);
+  return m_File->Open(file.Path().string(), mode, access);
 }
 
 const wxCharBuffer* wxExFile::Read(wxFileOffset seek_position)

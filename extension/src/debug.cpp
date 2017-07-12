@@ -5,6 +5,8 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <fstream>
+#include <iostream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -14,6 +16,7 @@
 #include <wx/extension/debug.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/itemdlg.h>
+#include <wx/extension/listview.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/menus.h>
@@ -21,6 +24,42 @@
 #include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
+
+class wxExDirProcesses : public wxExDir
+{
+public:
+  wxExDirProcesses(wxExListView* lv, bool init)
+    : wxExDir("/proc", "", DIR_DIRS)
+    , m_ListView(lv) {
+    if (init)
+    {
+      m_ListView->SetSingleStyle(wxLC_REPORT);
+      m_ListView->AppendColumns({{"Name", wxExColumn::COL_STRING, 200}, {"Pid"}});
+    }
+    else
+    {
+      lv->DeleteAllItems();
+    }};
+ ~wxExDirProcesses() {
+    m_ListView->SortColumn("Name", SORT_ASCENDING);};
+private:
+  virtual bool OnDir(const wxExPath& p) override {
+    if (atoi(p.GetName().c_str()) > 0)
+    {
+      std::ifstream ifs(wxExPath(p.Path(), "comm").Path());
+      if (ifs.is_open()) 
+      {
+        std::string line;
+        std::getline(ifs, line);
+        m_ListView->InsertItem({line, p.GetName()});
+      }
+    }
+    return true;};
+
+  wxExListView* m_ListView;
+};
+
+wxExItemDialog* wxExDebug::m_Dialog = nullptr;
 
 wxExDebug::wxExDebug(wxExManagedFrame* frame, wxExProcess* debug)
   : m_Frame(frame)
@@ -40,7 +79,7 @@ int wxExDebug::AddMenu(wxExMenu* menu, bool popup) const
   wxExMenu* sub = (popup ? new wxExMenu: nullptr);
   wxExMenu* use = (popup ? sub: menu);
   
-  const int ret = wxExMenus::BuildMenu(
+  const auto ret = wxExMenus::BuildMenu(
     m_Entry.GetCommands(), ID_EDIT_DEBUG_FIRST, use, popup);
   
   if (ret > 0 && popup)
@@ -62,7 +101,7 @@ bool wxExDebug::DeleteAllBreakpoints(const std::string& text)
     {
       if (m_Frame->IsOpen(std::get<0>(it.second)))
       {
-        wxExSTC* stc = m_Frame->OpenFile(std::get<0>(it.second));
+        auto* stc = m_Frame->OpenFile(std::get<0>(it.second));
         stc->MarkerDeleteAll(m_MarkerBreakpoint.GetNo());
       }
     }
@@ -95,22 +134,44 @@ bool wxExDebug::GetArgs(
 {
   std::vector<std::string> v;
 
-  if (wxExMatch("^(at|attach)", command, v) == 0)
+  if (wxExMatch("^(at|attach)", command, v) == 1)
   {
-    const long pid = wxGetNumberFromUser(
-      _("Input:"),
-      wxEmptyString,
-      "pid",
-      1, 1, 4194303);
+    static wxExListView* lv = nullptr;
+    bool init = false;
 
-    if (pid < 0) return false;
-    
-    args += " " + std::to_string(pid);
+    if (m_Dialog == nullptr)
+    {
+      init = true;
+      m_Dialog = new wxExItemDialog({
+#ifdef __WXGTK__
+      {"processes", ITEM_LISTVIEW, std::any(), wxExControlData(), LABEL_LEFT,
+        [&](wxWindow* user, const std::any& value, bool save) {
+        lv = ((wxExListView *)user);
+        if (save && lv->GetFirstSelected() != -1)
+        {
+          args = " " + lv->GetItemText(lv->GetFirstSelected(), "Pid");
+        }
+        }}},
+#else
+      {"pid", ITEM_TEXTCTRL_INT, std::any(), wxExControlData().Required(true),
+        LABEL_LEFT,
+        [&](wxWindow* user, const std::any& value, bool save) {
+           if (save) args += " " + std::to_string(std::any_cast<long>(value));}}},
+#endif
+      wxExWindowData().Title("Attach").Parent(m_Frame));
+    }
+
+    if (lv != nullptr)
+    {
+      wxExDirProcesses(lv, init).FindFiles();
+    }
+
+    return m_Dialog->ShowModal() != wxID_CANCEL;
   }
   else if ((wxExMatch("^(br|break)", command, v) == 1) && stc != nullptr)
   {
     args += " " +
-      stc->GetFileName().GetFullPath() + ":" + 
+      stc->GetFileName().Path().string() + ":" + 
       std::to_string(stc->GetCurrentLine()); 
   }
   else if ((wxExMatch("^(d|del|delete) (br|breakpoint)", command, v) > 0) && stc != nullptr)
@@ -129,15 +190,13 @@ bool wxExDebug::GetArgs(
   else if (DeleteAllBreakpoints(command)) {}
   else if (command == "file")
   {
-    if (wxExItemDialog({
-        {"File", ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
+    return wxExItemDialog({
+      {"File", ITEM_COMBOBOX_FILE, std::any(), wxExControlData().Required(true),
+          LABEL_LEFT,
+          [&](wxWindow* user, const std::any& value, bool save) {
+             if (save) args += " " + std::any_cast<wxArrayString>(value)[0];}},
         {m_Entry.GetName(), ITEM_FILEPICKERCTRL}},
-      wxExWindowData().
-        Title("Debug").
-        Parent(m_Frame).
-        Size(wxSize(500, 180))).ShowModal() == wxID_CANCEL) return false;
-    
-    args += " " + wxExConfigFirstOf("File"); 
+      wxExWindowData().Title("Debug").Parent(m_Frame)).ShowModal() != wxID_CANCEL;
   }
   else if ((wxExMatch("^(p|print)", command, v) == 1) && stc != nullptr)
   {
@@ -174,7 +233,7 @@ void wxExDebug::ProcessStdIn(const std::string& text)
 void wxExDebug::ProcessStdOut(const std::string& text)
 {
   std::vector<std::string> v;
-  int line = -1;
+  wxExControlData data;
 
   if (
     wxExMatch("Breakpoint ([0-9]+) at 0x[0-9a-f]+: file (.*), line ([0-9]+)", text, v) == 3 || 
@@ -184,10 +243,10 @@ void wxExDebug::ProcessStdOut(const std::string& text)
     filename.MakeAbsolute();
     if (filename.FileExists())
     {
-      wxExSTC* stc = m_Frame->OpenFile(filename);
+      auto* stc = m_Frame->OpenFile(filename);
       if (stc != nullptr)
       {
-        const int id = stc->MarkerAdd(
+        const auto id = stc->MarkerAdd(
           std::stoi(v[2]), m_MarkerBreakpoint.GetNo());
         m_Breakpoints[v[0]] = std::make_tuple(filename, id, std::stoi(v[2]));
       }
@@ -196,18 +255,17 @@ void wxExDebug::ProcessStdOut(const std::string& text)
   else if (DeleteAllBreakpoints(text)) {}
   else if (wxExMatch("at (.*):([0-9]+)", text, v) > 1)
   {
-    m_Path = wxExPath(v[0]);
-    m_Path.MakeAbsolute();
-    line = std::stoi(v[1]);
+    m_Path = wxExPath(v[0]).MakeAbsolute();
+    data.Line(std::stoi(v[1]));
   }
   else if (wxExMatch("^([0-9]+)", text, v) > 0)
   {
-    line = std::stoi(v[0]);
+    data.Line(std::stoi(v[0]));
   }
 
-  if (line > 0 && m_Path.FileExists())
+  if (data.Line() > 0 && m_Path.FileExists())
   {
-    m_Frame->OpenFile(m_Path, wxExControlData().Line(line));
+    m_Frame->OpenFile(m_Path, data);
     m_Process->GetShell()->SetFocus();
   }
 }

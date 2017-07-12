@@ -254,9 +254,9 @@ void wxExManagedFrame::DoRecent(
   size_t index, 
   wxExSTCWindowFlags flags)
 {
-  const std::string file(history.GetHistoryFile(index));
+  const wxExPath file(history.GetHistoryFile(index));
   
-  if (!file.empty())
+  if (!file.Path().empty())
   {
     OpenFile(file, wxExSTCData().Flags(flags));
   }
@@ -318,10 +318,7 @@ void wxExManagedFrame::PrintEx(wxExEx* ex, const std::string& text)
 
 void wxExManagedFrame::SetRecentFile(const wxExPath& path) 
 {
-  if (path.FileExists())
-  {
-    m_FileHistory.AddFileToHistory(path.GetFullPath());
-  }
+  m_FileHistory.AddFileToHistory(path);
 }
 
 void wxExManagedFrame::ShowExMessage(const std::string& text)

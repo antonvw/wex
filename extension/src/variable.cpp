@@ -206,7 +206,7 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, std::string& expanded) const
   }
   else if (m_Name == "Fullpath")
   {
-    expanded = ex->GetSTC()->GetFileName().GetFullPath();
+    expanded = ex->GetSTC()->GetFileName().Path().string();
   }
   else if (m_Name == "Nl")
   {

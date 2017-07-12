@@ -48,8 +48,7 @@ public:
   /// is not nullptr).
   /// max_items specifies max number of datasources in the combobox and config.
   /// Returns false if dialog cancelled or logon fails.
-  bool Logon(const wxExWindowData& data = 
-    wxExWindowData().Title(_("Open ODBC Connection").ToStdString()));
+  bool Logon(const wxExWindowData& data = wxExWindowData());
 
   /// Runs the query using direct_exec and returns result.
   long Query(const std::string& query);

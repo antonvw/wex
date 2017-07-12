@@ -42,7 +42,7 @@ public:
   /// Returns true if process started.
   bool FindInFiles(
     /// the files
-    const std::vector< std::string > & files,
+    const std::vector< wxExPath > & files,
     /// ID_TOOL_REPORT_FIND or ID_TOOL_REPLACE
     int id,
     /// Default shows a dialog.

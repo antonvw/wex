@@ -216,7 +216,7 @@ bool wxExMenu::AppendVCS(const wxExPath& filename, bool show_modal)
   {
     wxExMenu* vcsmenu = new wxExMenu;
   
-    const wxExVCS vcs({filename.GetFullPath()});
+    const wxExVCS vcs({filename.Path().string()});
 
     if (vcs.GetEntry().BuildMenu(ID_EDIT_VCS_LOWEST + 1, vcsmenu))
     { 

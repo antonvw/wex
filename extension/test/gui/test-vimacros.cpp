@@ -25,7 +25,7 @@ TEST_CASE("wxExViMacros")
   wxExViMacros macros;
   
   // Load, save document is last test, to be able to check contents.
-  REQUIRE(!macros.GetFileName().GetFullPath().empty());
+  REQUIRE(!macros.GetFileName().Path().empty());
   REQUIRE( wxExViMacros::LoadDocument());
   REQUIRE( macros.GetCount() > 0);
   REQUIRE(!macros.GetAbbreviations().empty());

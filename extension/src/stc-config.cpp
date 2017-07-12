@@ -118,8 +118,11 @@ bool wxExSTC::AutoIndentation(int c)
   return true;
 }
 
-int wxExSTC::ConfigDialog(const wxExWindowData& data)
+int wxExSTC::ConfigDialog(const wxExWindowData& par)
 {
+  const wxExWindowData data(wxExWindowData(par).
+    Title(_("Editor Options").ToStdString()));
+
   if (m_ConfigDialog == nullptr)
   {
     STCDefaults use;

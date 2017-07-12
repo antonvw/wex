@@ -851,8 +851,8 @@ void wxExVi::CommandReg(const char reg)
       }
       else
       {
-        GetFrame()->ShowExMessage(GetSTC()->GetFileName().GetFullPath());
-        wxExClipboardAdd(GetSTC()->GetFileName().GetFullPath());
+        GetFrame()->ShowExMessage(GetSTC()->GetFileName().Path().string());
+        wxExClipboardAdd(GetSTC()->GetFileName().Path().string());
       }
       break;
     default:

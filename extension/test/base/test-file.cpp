@@ -26,10 +26,10 @@ TEST_CASE( "wxExFile" )
     REQUIRE(!file.FileSave());
     REQUIRE( file.GetFileName().GetStat().IsOk());
     // The fullpath should be normalized, test it.
-    REQUIRE( file.GetFileName().GetFullPath() != "./test.h");
+    REQUIRE( file.GetFileName().Path().string() != "./test.h");
     REQUIRE(!file.GetFileName().GetStat().IsReadOnly());
     REQUIRE( file.FileLoad(GetTestDir() + "test.bin"));
-    REQUIRE( file.Open(wxExPath(GetTestDir() + "test.bin").GetFullPath()));
+    REQUIRE( file.Open(wxExPath(GetTestDir() + "test.bin").Path().string()));
     REQUIRE( file.IsOpened());
 
     const wxCharBuffer* buffer = file.Read();
@@ -67,7 +67,7 @@ TEST_CASE( "wxExFile" )
 
     const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - ex_start);
     
-    wxFile wxfile(GetTestFile().GetFullPath());
+    wxFile wxfile(GetTestFile().Path().string());
     const size_t l = wxfile.Length();
     const auto wx_start = std::chrono::system_clock::now();
     

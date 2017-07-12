@@ -32,8 +32,7 @@ public:
 
   /// Shows a config dialog, allowing you to set the command and folder.
   /// Returns dialog return code.
-  static int ConfigDialog(const wxExWindowData& data =
-    wxExWindowData().Title(_("Select Process").ToStdString()));
+  static int ConfigDialog(const wxExWindowData& data = wxExWindowData());
   
   /// Executes the process.
   /// Return value is false if process could not execute (and GetError is true), 

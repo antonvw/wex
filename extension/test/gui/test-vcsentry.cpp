@@ -30,7 +30,7 @@ TEST_CASE("wxExVCSEntry")
   REQUIRE( test.GetName() == "my-vcs");
   REQUIRE( test.GetStdOut().empty());
   
-  REQUIRE( wxExVCSEntry().ShowDialog() == wxID_CANCEL);
+  REQUIRE( wxExVCSEntry().GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX);
   
   test.ShowOutput();
   

@@ -566,7 +566,7 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, 
-      std::vector< std::string >{GetFileName().GetFullPath()});},
+      std::vector< wxExPath >{GetFileName().Path()});},
       ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST);
       
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -1187,19 +1187,19 @@ bool wxExSTC::LinkOpen(int mode, std::string* filename)
     data.Line(sel.empty() ? -1 : -2);
   }
 
-  const std::string path = m_Link.GetPath(text, data);
+  const wxExPath path(m_Link.GetPath(text, data));
   
-  if (path.empty()) return false;
+  if (path.Path().string().empty()) return false;
 
   if (mode & LINK_OPEN_BROWSER)
   {
-    if (!(mode & LINK_CHECK)) wxLaunchDefaultBrowser(path);
+    if (!(mode & LINK_CHECK)) wxLaunchDefaultBrowser(path.Path().string());
   }
   else if (mode & LINK_OPEN)
   {
     if (filename != nullptr)
     {
-      *filename = wxExPath(path).GetFullName();
+      *filename = path.GetFullName();
     }
     else if (m_Frame != nullptr)
     {
@@ -1305,7 +1305,7 @@ bool wxExSTC::Open(const wxExPath& filename, const wxExSTCData& data)
     return false;
   }
 
-  m_Data = wxExSTCData(data).Window(wxExWindowData().Name(filename.GetFullPath()));
+  m_Data = wxExSTCData(data).Window(wxExWindowData().Name(filename.Path().string()));
   m_Data.Inject();
 
   if (m_Frame != nullptr)
@@ -1552,10 +1552,7 @@ void wxExSTC::SelectNone()
   }
 }
 
-bool wxExSTC::SetIndicator(
-  const wxExIndicator& indicator, 
-  int start, 
-  int end)
+bool wxExSTC::SetIndicator(const wxExIndicator& indicator, int start, int end)
 {
   if (!wxExLexers::Get()->IndicatorIsLoaded(indicator))
   {
@@ -1608,11 +1605,9 @@ void wxExSTC::ShowLineNumbers(bool show)
 
 void wxExSTC::Sync(bool start)
 {
-  // do not use ?, compile error for gcc, as Bind is void, Unbind is bool
-  if (start)
-    Bind(wxEVT_IDLE, &wxExSTC::OnIdle, this);
-  else
-    Unbind(wxEVT_IDLE, &wxExSTC::OnIdle, this);
+  start ?
+    Bind(wxEVT_IDLE, &wxExSTC::OnIdle, this):
+    (void)Unbind(wxEVT_IDLE, &wxExSTC::OnIdle, this);
 }
 
 void wxExSTC::Undo()

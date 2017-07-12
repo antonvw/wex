@@ -235,7 +235,7 @@ TEST_CASE("wxExSTC")
   SUBCASE("load file")
   {
     wxExSTC stc(GetTestFile());
-    REQUIRE( stc.GetFileName().GetFullPath().find("test.h") != std::string::npos);
+    REQUIRE( stc.GetFileName().Path().string().find("test.h") != std::string::npos);
     REQUIRE( stc.Open(GetTestFile()));
     REQUIRE(!stc.Open("XXX"));
     stc.PropertiesMessage();

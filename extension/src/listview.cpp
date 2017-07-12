@@ -61,7 +61,7 @@ public:
     {
       for (size_t i = 0; i < filenames.GetCount(); i++)
       {
-        m_ListView->ItemFromText(filenames[i]);
+        m_ListView->ItemFromText(filenames[i].ToStdString());
       }
     
       return true;
@@ -89,7 +89,7 @@ private:
       // Only drop text if nothing is selected,
       // so dropping on your own selection is impossible.
       return (m_ListView->GetSelectedItemCount() == 0 ?
-        m_ListView->ItemFromText(text): false);};
+        m_ListView->ItemFromText(text.ToStdString()): false);};
         
   wxExListView* m_ListView;
 };
@@ -339,13 +339,13 @@ wxExListView::wxExListView(const wxExListViewData& data)
     EditDelete();}, wxID_CUT);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    for (int i = 0; i < GetItemCount(); i++)
+    for (auto i = 0; i < GetItemCount(); i++)
     {
       Select(i, !IsSelected(i));
     }}, ID_EDIT_SELECT_INVERT);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    for (int i = 0; i < GetItemCount(); i++)
+    for (auto i = 0; i < GetItemCount(); i++)
     {
       Select(i, false);
     }}, ID_EDIT_SELECT_NONE);
@@ -355,7 +355,7 @@ wxExListView::wxExListView(const wxExListViewData& data)
     if (GetSelectedItemCount() > 0)
     {
       defaultPath = wxExListItem(
-        this, GetFirstSelected()).GetFileName().GetFullPath();
+        this, GetFirstSelected()).GetFileName().Path().string();
     }
     wxDirDialog dir_dlg(
       this,
@@ -364,7 +364,7 @@ wxExListView::wxExListView(const wxExListViewData& data)
       wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
     if (dir_dlg.ShowModal() == wxID_OK)
     {
-      const int no = (GetSelectedItemCount() > 0 ? 
+      const auto no = (GetSelectedItemCount() > 0 ? 
         GetFirstSelected(): GetItemCount());
        
       wxExListItem(this, dir_dlg.GetPath().ToStdString()).Insert(no);
@@ -422,24 +422,26 @@ wxExListView::wxExListView(const wxExListViewData& data)
 #endif  
 }    
 
-long wxExListView::AppendColumn(const wxExColumn& col)
+bool wxExListView::AppendColumns(const std::vector <wxExColumn>& cols)
 {
-  wxExColumn mycol(col);
-  
-  const long index = wxListView::AppendColumn(
-    mycol.GetText(), mycol.GetAlign(), mycol.GetWidth());
-  
-  if (index != -1)
+  for (const auto col : cols)
   {
+    wxExColumn mycol(col);
+    
+    const long index = wxListView::AppendColumn(
+      mycol.GetText(), mycol.GetAlign(), mycol.GetWidth());
+    
+    if (index == -1) return false;
+
     mycol.SetColumn(GetColumnCount() - 1);
     m_Columns.emplace_back(mycol);
-    
+      
     Bind(wxEVT_MENU,  [=](wxCommandEvent& event) {
       SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);},
       ID_COL_FIRST + GetColumnCount() - 1);
   }
   
-  return index;
+  return true;
 }
 
 const std::string wxExListView::BuildPage()
@@ -451,18 +453,18 @@ const std::string wxExListView::BuildPage()
        << " cellpadding=4 cellspacing=0 >\n"
        << "<tr>\n";
 
-  for (int c = 0; c < GetColumnCount(); c++)
+  for (auto c = 0; c < GetColumnCount(); c++)
   {
     wxListItem col;
     GetColumn(c, col);
     text << "<td><i>" << col.GetText() << "</i>\n";
   }
 
-  for (int i = 0; i < GetItemCount(); i++)
+  for (auto i = 0; i < GetItemCount(); i++)
   {
     text << "<tr>\n";
 
-    for (int col = 0; col < GetColumnCount(); col++)
+    for (auto col = 0; col < GetColumnCount(); col++)
     {
       text << "<td>" << wxListView::GetItemText(i, col) << "\n";
     }
@@ -522,9 +524,11 @@ wxExColumn wxExListView::Column(const std::string& name) const
   return wxExColumn();
 }
 
-int wxExListView::ConfigDialog(const wxExWindowData& data)
+int wxExListView::ConfigDialog(const wxExWindowData& par)
 {
-  
+  const wxExWindowData data(wxExWindowData(par).
+    Title(_("List Options").ToStdString()));
+
   if (m_ConfigDialog == nullptr)
   {
     ListViewDefaults use;
@@ -625,10 +629,6 @@ bool wxExListView::FindNext(const std::string& text, bool find_next)
     return false;
   }
 
-  static bool recursive = false;
-  static long start_item;
-  static long end_item;
-
   std::string text_use = text;
 
   if (!wxExFindReplaceData::Get()->MatchCase())
@@ -637,31 +637,18 @@ bool wxExListView::FindNext(const std::string& text, bool find_next)
   }
 
   const int firstselected = GetFirstSelected();
+  static bool recursive = false;
+  static long start_item;
+  static long end_item;
 
   if (find_next)
   {
-    if (recursive)
-    {
-      start_item = 0;
-    }
-    else
-    {
-      start_item = (firstselected != -1 ? firstselected + 1: 0);
-    }
-
+    start_item = recursive ? 0: (firstselected != -1 ? firstselected + 1: 0);
     end_item = GetItemCount();
   }
   else
   {
-    if (recursive)
-    {
-      start_item = GetItemCount() - 1;
-    }
-    else
-    {
-      start_item = (firstselected != -1 ? firstselected - 1: 0);
-    }
-
+    start_item = recursive ? GetItemCount() - 1: (firstselected != -1 ? firstselected - 1: 0);
     end_item = -1;
   }
 
@@ -766,6 +753,54 @@ const std::string wxExListView::GetItemText(
   return col < 0 ? std::string(): wxListView::GetItemText(item_number, col).ToStdString();
 }
 
+bool wxExListView::InsertItem(const std::vector < std::string > & item)
+{
+  if (item.empty() || item.front().empty() || item.size() > m_Columns.size()) 
+  {
+    return false;
+  }
+
+  long no = 0;
+  int index = 0;
+
+  for (const auto& col : item)
+  {
+    try
+    {
+      switch (m_Columns[no].GetType())
+      {
+        case wxExColumn::COL_DATE:
+          {
+            wxDateTime dt;
+            if (!dt.ParseISOCombined(col, ' ')) return false;
+          }
+          break;
+        case wxExColumn::COL_FLOAT: std::stof(col); break;
+        case wxExColumn::COL_INT: std::stoi(col); break;
+        case wxExColumn::COL_STRING: break;
+      }
+
+      if (no == 0)
+      {
+        index = wxListView::InsertItem(GetItemCount(), col);
+        if (index == -1) return false;
+      }
+      else
+      {
+        if (!SetItem(index, no, col)) return false;
+      }
+      no++;
+    }
+    catch (std::exception& e)
+    {
+      std::cout << item.front() << ": " << col << ": " << e.what() << "\n";
+      return false;
+    }
+  }
+
+  return true;
+}
+
 void wxExListView::ItemActivated(long item_number)
 {
   wxASSERT(item_number >= 0);
@@ -823,7 +858,7 @@ void wxExListView::ItemActivated(long item_number)
   }
 }
 
-bool wxExListView::ItemFromText(const wxString& text)
+bool wxExListView::ItemFromText(const std::string& text)
 {
   if (text.empty())
   {
@@ -832,14 +867,14 @@ bool wxExListView::ItemFromText(const wxString& text)
 
   bool modified = false;
   
-  wxExTokenizer tkz(text.ToStdString(), "\n");
+  wxExTokenizer tkz(text, "\n");
 
   while (tkz.HasMoreTokens())
   {
-    modified = true;
-    
     if (m_Data.Type() != LIST_NONE)
     {
+      modified = true;
+    
       if (!InReportView())
       {
         wxExListItem(this, tkz.GetNextToken()).Insert();
@@ -864,14 +899,14 @@ bool wxExListView::ItemFromText(const wxString& text)
             int col = 1;
             while (tk.HasMoreTokens() && col < GetColumnCount() - 1)
             {
-              const wxString value = tk.GetNextToken();
+              const std::string value = tk.GetNextToken();
     
               if (col != FindColumn(_("Type").ToStdString()) &&
                   col != FindColumn(_("In Folder").ToStdString()) &&
                   col != FindColumn(_("Size").ToStdString()) &&
                   col != FindColumn(_("Modified").ToStdString()))
               {
-                SetItem(item.GetId(), col, value);
+                if (!SetItem(item.GetId(), col, value)) return false;
               }
     
               col++;
@@ -896,26 +931,10 @@ bool wxExListView::ItemFromText(const wxString& text)
     else
     {
       const std::string line = tkz.GetNextToken();
-      
-      wxExTokenizer tkz(line, std::string(1, m_FieldSeparator));
-      
-      if (tkz.HasMoreTokens())
+      if (InsertItem(wxExTokenizer(line, std::string(1, m_FieldSeparator)).
+        Tokenize<std::vector < std::string >>()))
       {
-        const wxString value = tkz.GetNextToken();
-
-        InsertItem(GetItemCount(), value);
-
-        // And set the rest of the columns.
-        int col = 1;
-        while (tkz.HasMoreTokens() && col < GetColumnCount())
-        {
-          SetItem(GetItemCount(), col, tkz.GetNextToken());
-          col++;
-        }
-      }
-      else
-      {
-        InsertItem(GetItemCount(), line);
+        modified = true;
       }
     }
   }
@@ -923,13 +942,13 @@ bool wxExListView::ItemFromText(const wxString& text)
   return modified;
 }
 
-const wxString wxExListView::ItemToText(long item_number) const
+const std::string wxExListView::ItemToText(long item_number) const
 {
   std::string text;
     
   if (item_number == -1)
   {
-    for (long i = 0; i < GetItemCount(); i++)
+    for (auto i = 0; i < GetItemCount(); i++)
     {
       text += wxListView::GetItemText(i) + "\n";
     }
@@ -944,7 +963,7 @@ const wxString wxExListView::ItemToText(long item_number) const
       {
       const wxExListItem item(const_cast< wxExListView * >(this), item_number);
       wxString text = (item.GetFileName().GetStat().IsOk() ? 
-        item.GetFileName().GetFullPath(): 
+        item.GetFileName().Path().string(): 
         item.GetFileName().GetFullName());
 
       if (item.GetFileName().DirExists() && !item.GetFileName().FileExists())
@@ -976,7 +995,7 @@ void wxExListView::ItemsUpdate()
 {
   if (m_Data.Type() != LIST_NONE)
   {
-    for (long i = 0; i < GetItemCount(); i++)
+    for (auto i = 0; i < GetItemCount(); i++)
     {
       wxExListItem(this, i).Update();
     }
@@ -1045,6 +1064,37 @@ int wxCALLBACK CompareFunctionCB(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortDa
   return 0;
 }
 
+bool wxExListView::SetItem(
+  long index, int column, const std::string &label, int imageId)
+{
+  if (label.empty()) return true;
+
+  try
+  {
+    switch (m_Columns[column].GetType())
+    {
+      case wxExColumn::COL_DATE:
+        {
+          wxDateTime dt;
+          if (!dt.ParseISOCombined(label, ' ')) return false;
+        }
+        break;
+      case wxExColumn::COL_FLOAT: std::stof(label); break;
+      case wxExColumn::COL_INT: std::stoi(label); break;
+      case wxExColumn::COL_STRING: break;
+    }
+
+    wxListView::SetItem(index, column, label, imageId);
+    return true;
+  }
+  catch (std::exception& e)
+  {
+    std::cout << "index: " << index << " col: " << column << ": " <<
+      label << e.what() << "\n";
+    return false;
+  }
+}
+
 bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 {
   if (column_no == -1 || column_no >= (int)m_Columns.size())
@@ -1064,7 +1114,7 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   std::vector<wxString> items;
   pitems = &items;
 
-  for (int i = 0; i < GetItemCount(); i++)
+  for (auto i = 0; i < GetItemCount(); i++)
   {
     const wxString val = wxListView::GetItemText(i, column_no);
     items.emplace_back(val);

@@ -140,11 +140,11 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 #endif
     wxLogStatus(GetFindReplaceInfoText(replace));
       
-    int flags = wxDIR_FILES | wxDIR_HIDDEN;
+    int flags = DIR_FILES;
     
     if (wxConfigBase::Get()->ReadBool(m_TextRecursive, true)) 
     {
-      flags |= wxDIR_DIRS;
+      flags |= DIR_RECURSIVE;
     }
 
     Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
@@ -169,7 +169,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 }
 
 bool wxExFrameWithHistory::FindInFiles(
-  const std::vector< std::string > & files,
+  const std::vector< wxExPath > & files,
   int id,
   bool show_dialog,
   wxExListView* report)
@@ -201,11 +201,9 @@ bool wxExFrameWithHistory::FindInFiles(
     
     for (const auto& it : files)
     {
-      const wxExPath fn(it);
-      
-      if (fn.FileExists())
+      if (it.FileExists())
       {
-        wxExStreamToListView file(fn, tool);
+        wxExStreamToListView file(it, tool);
 
         if (!file.RunTool())
         {
@@ -214,11 +212,11 @@ bool wxExFrameWithHistory::FindInFiles(
         
         stats += file.GetStatistics().GetElements();
       }
-      else if (!fn.GetFullPath().empty())
+      else if (it.DirExists())
       {
         wxExDirTool dir(
           tool, 
-          fn.GetFullPath(), 
+          it, 
           wxExConfigFirstOf(m_TextInFiles));
           
         dir.FindFiles();
@@ -290,10 +288,10 @@ const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
 bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
 {
   static wxString arg1, arg2;
-  static int arg3 = wxDIR_FILES;
+  static int arg3 = DIR_FILES;
 
   if (!wxExCmdLine(
-    {{{"r", "recursive", "recursive"}, [&](bool on) {arg3 |= (on ? wxDIR_DIRS: 0);}}},
+    {{{"r", "recursive", "recursive"}, [&](bool on) {arg3 |= (on ? DIR_DIRS: 0);}}},
     {},
     {{"rest", "match " + std::string(sed ? "replace": "") + " [extension] [folder]"}, 
        [&](const std::vector<std::string> & v) {
@@ -379,12 +377,12 @@ void wxExFrameWithHistory::OnCommandItemDialog(
           
             if (wxConfigBase::Get()->ReadBool(GetProject()->GetTextAddFiles(), true)) 
             {
-              flags |= wxDIR_FILES;
+              flags |= DIR_FILES;
             }
           
             if (wxConfigBase::Get()->ReadBool(GetProject()->GetTextAddRecursive(), true)) 
             {
-              flags |= wxDIR_DIRS;
+              flags |= DIR_DIRS;
             }
 
             GetProject()->AddItems(

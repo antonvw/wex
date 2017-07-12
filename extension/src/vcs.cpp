@@ -28,10 +28,11 @@ enum
 };
 
 std::vector<wxExVCSEntry> wxExVCS::m_Entries;
+wxExItemDialog* wxExVCS::m_ItemDialog = nullptr;
 
-wxExVCS::wxExVCS(const std::vector< std::string > & files, int command_no)
+wxExVCS::wxExVCS(const std::vector< wxExPath > & files, int command_no)
   : m_Files(files)
-  , m_Caption("VCS")
+  , m_Title("VCS")
 {
   m_Entry = FindEntry(GetFile());
   
@@ -39,18 +40,18 @@ wxExVCS::wxExVCS(const std::vector< std::string > & files, int command_no)
   {
     if (m_Entry.SetCommand(command_no))
     {
-      m_Caption = m_Entry.GetName() + " " + m_Entry.GetCommand().GetCommand();
+      m_Title = m_Entry.GetName() + " " + m_Entry.GetCommand().GetCommand();
   
       if (!m_Entry.GetCommand().IsHelp() && m_Files.size() == 1)
       {
-        m_Caption += " " + wxExPath(m_Files[0]).GetFullName();
+        m_Title += " " + wxExPath(m_Files[0]).GetFullName();
       }
     }
   }
 }
 
 #if wxUSE_GUI
-int wxExVCS::ConfigDialog(const wxExWindowData& data) const
+int wxExVCS::ConfigDialog(const wxExWindowData& par) const
 {
   if (m_Entries.empty())
   {
@@ -90,6 +91,9 @@ int wxExVCS::ConfigDialog(const wxExWindowData& data) const
       break;
   }
   
+  const wxExWindowData data(wxExWindowData(par).
+    Title(_("Set VCS").ToStdString()));
+
   // use a radiobox 
   std::vector<wxExItem> v{{"VCS", choices, true, cols}};
 
@@ -128,7 +132,7 @@ bool wxExVCS::DirExists(const wxExPath& filename)
 
 bool wxExVCS::Execute()
 {
-  if (GetFile().empty())
+  if (GetFile().Path().empty())
   {
     return m_Entry.Execute(
       m_Entry.GetCommand().IsAdd() ? wxExConfigFirstOf(_("Path")): std::string(), 
@@ -147,7 +151,7 @@ bool wxExVCS::Execute()
     {
       for (const auto& it : m_Files)
       {
-        args += "\"" + it + "\" ";
+        args += "\"" + it.Path().string() + "\" ";
       }
     }
     else if (m_Entry.GetName() == "git")
@@ -164,13 +168,12 @@ bool wxExVCS::Execute()
     }
     else
     {
-      args = "\"" + filename.GetFullPath() + "\"";
+      args = "\"" + filename.Path().string() + "\"";
     }
     
     return m_Entry.Execute(args, filename.GetLexer(), true, wd);
   }
 }
-
 
 const wxExVCSEntry wxExVCS::FindEntry(const std::string& filename) 
 {
@@ -183,7 +186,7 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxExPath& filename)
 
   if (vcs == VCS_AUTO)
   {
-    if (!filename.GetFullPath().empty())
+    if (!filename.Path().empty())
     {
       for (const auto& it : m_Entries)
       {
@@ -209,7 +212,7 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxExPath& filename)
   return wxExVCSEntry();
 }
 
-const std::string wxExVCS::GetFile() const
+const wxExPath wxExVCS::GetFile() const
 {
   return (m_Files.empty() ? wxExConfigFirstOf(_("Base folder")): m_Files[0]);
 }
@@ -230,7 +233,7 @@ const std::string wxExVCS::GetRelativeFile(
   const wxExPath& fn) const
 {
   // The .git dir only exists in the root, so check all components.
-  wxFileName root(fn.GetFullPath());
+  wxFileName root(fn.Path().string());
   std::vector< std::string > v;
 
   while (root.DirExists() && root.GetDirCount() > 0)
@@ -262,13 +265,13 @@ const std::string wxExVCS::GetTopLevelDir(
   const std::string& admin_dir, 
   const wxExPath& fn) const
 {
-  if (fn.GetFullPath().empty() || admin_dir.empty())
+  if (fn.Path().empty() || admin_dir.empty())
   {
     return std::string();
   }
   
   // The .git dir only exists in the root, so check all components.
-  wxFileName root(fn.GetFullPath());
+  wxFileName root(fn.Path().string());
 
   while (root.DirExists() && root.GetDirCount() > 0)
   {
@@ -289,13 +292,13 @@ bool wxExVCS::IsAdminDir(
   const std::string& admin_dir, 
   const wxExPath& fn)
 {
-  if (admin_dir.empty() || fn.GetFullPath().empty())
+  if (admin_dir.empty() || fn.Path().empty())
   {
     return false;
   }
   
   // these cannot be combined, as AppendDir is a void (2.9.1).
-  wxFileName path(fn.GetFullPath());
+  wxFileName path(fn.Path().string());
   path.AppendDir(admin_dir);
   return path.DirExists() && !path.FileExists();
 }
@@ -304,13 +307,13 @@ bool wxExVCS::IsAdminDirTopLevel(
   const std::string& admin_dir, 
   const wxExPath& fn)
 {
-  if (fn.GetFullPath().empty() || admin_dir.empty())
+  if (fn.Path().empty() || admin_dir.empty())
   {
     return false;
   }
   
   // The .git dir only exists in the root, so check all components.
-  wxFileName root(fn.GetFullPath());
+  wxFileName root(fn.Path().string());
 
   while (root.DirExists() && root.GetDirCount() > 0)
   {
@@ -366,7 +369,7 @@ wxStandardID wxExVCS::Request(const wxExWindowData& data)
     return wxID_CANCEL;
   }
     
-  m_Entry.ShowOutput(m_Caption);
+  m_Entry.ShowOutput(m_Title);
 
   return wxID_OK;
 }
@@ -420,6 +423,51 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   return !m_Entry.GetName().empty();
 }
 
+#if wxUSE_GUI
+int wxExVCS::ShowDialog(const wxExWindowData& arg)
+{
+  if (m_Entry.GetCommand().GetCommand().empty())
+  {
+    return wxID_CANCEL;
+  }
+  
+  wxExWindowData data(wxExWindowData(arg).Title(m_Title));
+  const bool add_folder(m_Files.empty());
+
+  if (m_Entry.GetCommand().UseFlags())
+  {
+    wxConfigBase::Get()->Write(
+      _("Flags"), 
+      wxConfigBase::Get()->Read(m_Entry.GetFlagsKey()));
+  }
+
+  if (m_ItemDialog != nullptr)
+  {
+    data.Pos(m_ItemDialog->GetPosition());
+    data.Size(m_ItemDialog->GetSize());
+    delete m_ItemDialog;
+  }
+
+  m_ItemDialog = new wxExItemDialog({
+    m_Entry.GetCommand().IsCommit() ? 
+      wxExItem(_("Revision comment"), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)) : wxExItem(),
+    add_folder && !m_Entry.GetCommand().IsHelp() ? 
+      wxExItem(_("Base folder"), ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)) : wxExItem(),
+    add_folder && !m_Entry.GetCommand().IsHelp() && m_Entry.GetCommand().IsAdd() ? wxExItem(
+      _("Path"), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)) : wxExItem(), 
+    m_Entry.GetCommand().UseFlags() ?  
+      wxExItem(_("Flags"), wxEmptyString, ITEM_TEXTCTRL, wxExControlData(), LABEL_LEFT, 
+        [=](wxWindow* user, const std::any& value, bool save) {
+          wxConfigBase::Get()->Write(m_Entry.GetFlagsKey(), wxString(m_Entry.GetFlags()));}): wxExItem(),
+    m_Entry.GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_PREFIX ? 
+      wxExItem(_("Prefix flags"), wxEmptyString): wxExItem(),
+    m_Entry.GetCommand().UseSubcommand() ? 
+      wxExItem(_("Subcommand"), wxEmptyString): wxExItem()}, data);
+
+  return (data.Button() & wxAPPLY) ? m_ItemDialog->Show(): m_ItemDialog->ShowModal();
+}
+#endif
+  
 bool wxExVCS::Use() const
 {
   return wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO) != VCS_NONE;

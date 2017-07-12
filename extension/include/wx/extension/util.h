@@ -10,8 +10,8 @@
 #include <list>
 #include <vector>
 #include <wx/combobox.h>
-#include <wx/dir.h> // for wxDIR_DEFAULT
 #include <wx/filedlg.h> // for wxFD_OPEN etc.
+#include <wx/extension/dir.h>
 #include <wx/extension/stc-data.h>
 
 class wxArrayString;
@@ -255,11 +255,11 @@ int wxExOpenFiles(
   /// and wxExDirOpenFile for each dir
   wxExFrame* frame,
   /// array with files
-  const std::vector< std::string > & files,
+  const std::vector< wxExPath > & files,
   /// data to be used with OpenFile
   const wxExSTCData& data = wxExSTCData(),
   /// flags to be used with wxExDirOpenFile
-  int dir_flags = wxDIR_DEFAULT);
+  int dir_flags = DIR_DEFAULT);
 #endif
 
 /// Shows a dialog and opens selected files
@@ -277,7 +277,7 @@ void wxExOpenFilesDialog(
   /// data to be used with OpenFile
   const wxExSTCData& data = wxExSTCData(),
   /// flags to be used with wxExDirOpenFile
-  int dir_flags = wxDIR_DEFAULT);
+  int dir_flags = DIR_DEFAULT);
 #endif
 
 /// Adds a caption.
@@ -374,7 +374,7 @@ void wxExVCSExecute(
   /// VCS menu id to execute
   int id,
   /// files on which to operate
-  const std::vector< std::string > & files);
+  const std::vector< wxExPath > & files);
 #endif
 
 /// Shows xml error.

@@ -10,18 +10,21 @@
 #include <memory>
 #include <string>
 #include <wx/extension/interruptable.h>
+#include <wx/extension/path.h>
 #include <wx/extension/stc-enums.h>
 
-/// wxExDir flags, at this moment equal to wxDir flags,
-/// will change after c++17.
+/// wxExDir flags.
 enum wxExDirFlags
 {
   DIR_FILES     = 0x0001, // include files
   DIR_DIRS      = 0x0002, // include directories
-  DIR_HIDDEN    = 0x0004, // include hidden files
+  DIR_RECURSIVE = 0x0004, // recursive
+  DIR_HIDDEN    = 0x0008, // include hidden files
 
-  DIR_DEFAULT   = DIR_FILES | DIR_DIRS | DIR_HIDDEN
+  DIR_DEFAULT  = DIR_FILES | DIR_DIRS | DIR_RECURSIVE | DIR_HIDDEN
 };
+
+class wxExPath;
 
 /// Offers FindFiles method.
 /// By overriding OnDir and OnFile you can take care
@@ -30,20 +33,21 @@ class WXDLLIMPEXP_BASE wxExDir : public wxExInterruptable
 {
 public:
   /// Constructor.
-  /// Sets the dir and sets the filespec.
-  /// This filespec specifies what files are found.
   wxExDir(
-    const std::string& dir,
+    /// the dir to start finding
+    const wxExPath& path,
+    /// the files to be found
     const std::string& filespec = std::string(),
-    int flags = DIR_DEFAULT); // finds all
-
-  /// Returns true if the directory exists.
-  bool DirExists() const;
+    /// finds all
+    int flags = DIR_DEFAULT); 
 
   /// Finds matching files.
   /// This results in recursive calls for OnDir and OnFile.
   /// Returns number of files matching, or -1 if error.
   int FindFiles();
+
+  /// Returns the dir.
+  const auto & GetDir() const {return m_Dir;};
 
   /// Returns the file spec.
   const auto & GetFileSpec() const {return m_FileSpec;};
@@ -54,17 +58,26 @@ public:
   /// Do something with the dir.
   /// Not made pure virtual, to allow this 
   /// class to be tested by calling FindFiles.
-  virtual bool OnDir(const std::string& ) {return true;};
+  virtual bool OnDir(const wxExPath& ) {return true;};
 
   /// Do something with the file.
   /// Not made pure virtual, to allow this 
   /// class to be tested by calling FindFiles.
-  virtual bool OnFile(const std::string& ) {return true;};
+  virtual bool OnFile(const wxExPath& ) {return true;};
 private:
-  const std::string m_Dir;
+  const wxExPath m_Dir;
   const std::string m_FileSpec;
   const int m_Flags;
 };
+
+/// Returns all matching files into a vector.
+std::vector <wxExPath> wxExGetAllFiles(
+  /// the dir to start finding
+  const wxExPath& path,
+  /// the files to be found
+  const std::string& filespec = std::string(),
+  /// finds all
+  int flags = DIR_DEFAULT); 
 
 #if wxUSE_GUI
 class wxExFrame;
@@ -78,13 +91,13 @@ public:
   /// Constructor.
   /// Flags are passed on to OpenFile, and dir flags for treating subdirs.
   wxExDirOpenFile(wxExFrame* frame,
-    const std::string& fullpath,
+    const wxExPath& path,
     const std::string& filespec,
     wxExSTCWindowFlags file_flags = STC_WIN_DEFAULT,
     int dir_flags = DIR_DEFAULT);
 
   /// Opens each found file.
-  virtual bool OnFile(const std::string& file) override;
+  virtual bool OnFile(const wxExPath& file) override;
 private:
   wxExFrame* m_Frame;
   wxExSTCWindowFlags m_Flags;

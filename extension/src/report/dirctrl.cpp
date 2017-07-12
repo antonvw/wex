@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/stockitem.h> // for wxGetStockLabel
-#include <wx/textfile.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/path.h>
 #include <wx/extension/tostring.h>
@@ -19,7 +18,7 @@
 #if wxUSE_DIRDLG
 
 #define GET_VECTOR_FILES \
-  const std::vector< std::string > files(wxExToVectorString(*this).Get()); \
+  const auto files(wxExToVectorPath(*this).Get()); \
   if (files.empty()) \
   {                  \
     event.Skip();    \
@@ -44,7 +43,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
 {
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
       wxExVCSExecute(frame, 
-        event.GetId() - ID_EDIT_VCS_LOWEST - 1, wxExToVectorString(*this).Get());},
+        event.GetId() - ID_EDIT_VCS_LOWEST - 1, wxExToVectorPath(*this).Get());},
     ID_EDIT_VCS_LOWEST + 1, 
     ID_EDIT_VCS_HIGHEST - 1);
     
@@ -59,7 +58,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExOpenFiles(frame, 
-      wxExToVectorString(*this).Get(), wxExSTCData(), wxDIR_FILES); // only files in this dir
+      wxExToVectorPath(*this).Get(), wxExSTCData(), DIR_FILES);
     }, ID_EDIT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -67,11 +66,11 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
     wxExMake(files[0]);}, ID_TREE_RUN_MAKE);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    frame->FindInFiles(wxExToVectorString(*this).Get(), event.GetId());}, 
+    frame->FindInFiles(wxExToVectorPath(*this).Get(), event.GetId());}, 
     ID_TOOL_REPORT_FIND);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    frame->FindInFiles(wxExToVectorString(*this).Get(), event.GetId());}, 
+    frame->FindInFiles(wxExToVectorPath(*this).Get(), event.GetId());}, 
     ID_TOOL_REPLACE);
     
   Bind(wxEVT_TREE_ITEM_ACTIVATED, [=](wxTreeEvent& event) {
@@ -86,12 +85,12 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
       }
       else
       {
-        CollapsePath(files[0]);
+        CollapsePath(files[0].Path().string());
       }
     }
     else
     {
-      wxExOpenFiles(frame, files, wxExSTCData(), wxDIR_FILES); // only files in this dir
+      wxExOpenFiles(frame, files, wxExSTCData(), DIR_FILES);
     }});
   
   Bind(wxEVT_TREE_ITEM_MENU, [=](wxTreeEvent& event) {
@@ -135,9 +134,9 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
     wxExLogStatus(files[0], STAT_FULLPATH);});
 }
 
-void wxExGenericDirCtrl::ExpandAndSelectPath(const wxString& path)
+void wxExGenericDirCtrl::ExpandAndSelectPath(const wxExPath& path)
 {
-  ExpandPath(path);
-  SelectPath(path);
+  ExpandPath(path.Path().string());
+  SelectPath(path.Path().string());
 }
 #endif

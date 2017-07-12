@@ -10,6 +10,7 @@
 #include <vector>
 #include <wx/extension/vcsentry.h>
 
+class wxExItemDialog;
 class wxExPath;
 
 /// This class collects all vcs handling.
@@ -23,7 +24,7 @@ public:
     /// Specify several files for which you want vcs action.
     /// Sets the vcs entry for first of the specified files, or
     /// to the base folder if array is empty.
-    const std::vector< std::string > & files = std::vector< std::string >(),
+    const std::vector< wxExPath > & files = std::vector< wxExPath >(),
     /// The command no that is used to set the current vcs command
     /// (index in vcs entry commands).
     int command_no = -1);
@@ -32,8 +33,7 @@ public:
   /// Shows a dialog allowing you to choose which vcs to use
   /// and to set the path for each vcs entry.
   /// Returns dialog return code.
-  int ConfigDialog(const wxExWindowData& data =
-    wxExWindowData().Title(_("Set VCS").ToStdString())) const;
+  int ConfigDialog(const wxExWindowData& data = wxExWindowData()) const;
 #endif    
 
   /// Returns true if specified filename (a path) is a vcs directory.
@@ -76,10 +76,8 @@ public:
     wxWindow* parent = nullptr);
 
 #if wxUSE_GUI
-  /// Calls show dialog for the current vcs entry.
-  int ShowDialog(const wxExWindowData& data = wxExWindowData()) const {
-    return m_Entry.ShowDialog(wxExWindowData(data).
-      Title(m_Caption), m_Files.empty());};
+  /// Shows dialog for the current vcs entry.
+  int ShowDialog(const wxExWindowData& data = wxExWindowData());
 #endif
 
   /// Returns true if vcs usage is set in the config.
@@ -93,8 +91,8 @@ private:
   static bool IsAdminDirTopLevel(
     const std::string& admin_dir, 
     const wxExPath& fn);
-  
-  const std::string GetFile() const;
+
+  const wxExPath GetFile() const;
   const std::string GetRelativeFile(
     const std::string& admin_dir, 
     const wxExPath& file) const;
@@ -104,8 +102,9 @@ private:
   
   wxExVCSEntry m_Entry;
 
-  std::vector< std::string > m_Files;
-  std::string m_Caption;
+  std::vector< wxExPath > m_Files;
+  std::string m_Title;
 
   static std::vector<wxExVCSEntry> m_Entries;
+  static wxExItemDialog* m_ItemDialog;
 };

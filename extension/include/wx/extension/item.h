@@ -34,7 +34,8 @@ enum wxExItemType
   ITEM_CHECKLISTBOX_BOOL,  ///< a wxCheckListBox item using boolean choices
   ITEM_COLOURPICKERWIDGET, ///< a wxColourPickerWidget item
   ITEM_COMBOBOX,           ///< a wxComboBox item
-  ITEM_COMBOBOX_DIR,       ///< a wxComboBox item with a browse button
+  ITEM_COMBOBOX_DIR,       ///< a wxComboBox item with a browse button for a directory
+  ITEM_COMBOBOX_FILE,      ///< a wxComboBox item with a browse button for a file
   ITEM_COMMANDLINKBUTTON,  ///< a wxCommandLinkButton button
   ITEM_DIRPICKERCTRL,      ///< a wxDirPickerCtrl item
   ITEM_EMPTY,              ///< an empty item
@@ -300,6 +301,7 @@ public:
     /// - ITEM_COLOURPICKERWIDGET
     /// - ITEM_COMBOBOX
     /// - ITEM_COMBOBOX_DIR
+    /// - ITEM_COMBOBOX_FILE
     /// - ITEM_COMMANDLINKBUTTON
     /// - ITEM_DIRPICKERCTRL
     /// - ITEM_FILEPICKERCTRL
@@ -328,10 +330,10 @@ public:
   
   /// If apply callback has been provided calls apply.
   /// Otherwise return false.
-  bool Apply() const {
+  bool Apply(bool save = true) const {
     if (m_Apply != nullptr) 
     {
-      (m_Apply)(m_Window, GetValue(), true);
+      (m_Apply)(m_Window, GetValue(), save);
       return true;
     }
     return false;};
@@ -450,7 +452,7 @@ private:
   std::any m_Initial, m_Min, m_Max, m_Inc;
   wxString m_Label, m_Page;
   wxSizerFlags m_SizerFlags;
-  wxWindow* m_Browse = nullptr, *m_Window;
+  wxWindow* m_Window;
   wxImageList* m_ImageList;
   wxExItemTemplateDialog<wxExItem>* m_Dialog = nullptr;
   wxExControlData m_Data;

@@ -183,11 +183,11 @@ bool wxExViMacros::ExpandTemplate(
   // all macro variables in it, and set expanded.
   const wxExPath filename(wxExConfigDir(), v.GetValue());
 
-  std::ifstream ifs(filename.GetFullPath());
+  std::ifstream ifs(filename.Path());
   
   if (!ifs.is_open())
   {
-    wxLogError("Could not open template file: %s", filename.GetFullPath().c_str());
+    wxLogError("Could not open template file: %s", filename.Path().string().c_str());
     return false;
   }
 
@@ -366,7 +366,7 @@ bool wxExViMacros::LoadDocument()
   }
 
   const pugi::xml_parse_result result = m_doc.load_file(
-    GetFileName().GetFullPath().c_str(),
+    GetFileName().Path().string().c_str(),
     pugi::parse_default | pugi::parse_comments);
 
   if (!result)
@@ -526,7 +526,8 @@ void wxExViMacros::Record(const std::string& text, bool new_command)
   
   if (new_command) 
   {
-    m_Macros[m_Macro].emplace_back(text);
+    // TODO: Improve.
+    m_Macros[m_Macro].emplace_back(text == " " ? "l": text);
   }
   else
   {
@@ -547,7 +548,7 @@ bool wxExViMacros::SaveDocument(bool only_if_modified)
     return false;
   }
   
-  const bool ok = m_doc.save_file(GetFileName().GetFullPath().c_str());
+  const bool ok = m_doc.save_file(GetFileName().Path().string().c_str());
   
   if (ok)
   {

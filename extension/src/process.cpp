@@ -122,11 +122,11 @@ wxExProcess& wxExProcess::operator=(const wxExProcess& p)
   return *this;
 }
 
-int wxExProcess::ConfigDialog(const wxExWindowData& data)
+int wxExProcess::ConfigDialog(const wxExWindowData& par)
 {
   wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
   validator.SetCharExcludes("?%*\"");
-  
+  const wxExWindowData data(wxExWindowData(par).Title(_("Select Process").ToStdString()));
   const std::vector<wxExItem> v {
     {_("Process"), ITEM_COMBOBOX, std::any(), wxExControlData().Validator(&validator).Required(true)},
     {m_WorkingDirKey, ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)}};

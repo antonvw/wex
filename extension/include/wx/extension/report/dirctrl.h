@@ -28,6 +28,6 @@ public:
       Style(wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE));
 
   /// Expands path and selects it.
-  void ExpandAndSelectPath(const wxString& path);
+  void ExpandAndSelectPath(const wxExPath& path);
 };
 #endif // wxUSE_DIRDLG

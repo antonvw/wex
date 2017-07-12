@@ -16,7 +16,8 @@
 #include <wx/tglbtn.h> // for wxEVT_TOGGLEBUTTON
 #include <wx/extension/dialog.h>
 #include <wx/extension/frame.h>
-#include <wx/extension/item.h> // for ITEM_BUTTON etc.
+#include <wx/extension/item.h> 
+#include <wx/extension/path.h>
 
 #if wxUSE_GUI
 /// Offers a dialog template to set several items.
@@ -25,7 +26,8 @@
 /// - wxAPPLY button
 /// - wxOK, wxCANCEL button for a modeless dialog
 /// - a ITEM_BUTTON
-/// - a ITEM_COMBOBOX_DIR
+/// - a ITEM_COMMANDLINKBUTTON
+/// - a ITEM_TOGGLEBUTTON
 /// the method wxExFrame::OnCommandItemDialog is invoked.
 template <class T> class WXDLLIMPEXP_BASE wxExItemTemplateDialog: public wxExDialog
 {
@@ -68,14 +70,32 @@ public:
       case ITEM_COMBOBOX_DIR:
         Bind(wxEVT_BUTTON, [=](wxCommandEvent& event) {
           wxComboBox* browse = (wxComboBox*)item.GetWindow();
-          wxDirDialog dir_dlg(
+          wxDirDialog dlg(
             this,
             _(wxDirSelectorPromptStr),
             browse->GetValue(),
             wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-          if (dir_dlg.ShowModal() == wxID_OK)
+          if (dlg.ShowModal() == wxID_OK)
           {
-            const wxString value = dir_dlg.GetPath();
+            const wxString value = dlg.GetPath();
+            const int item = browse->FindString(value);
+            browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
+          }}, item.GetWindow()->GetId());
+        break;
+      case ITEM_COMBOBOX_FILE:
+        Bind(wxEVT_BUTTON, [=](wxCommandEvent& event) {
+          wxComboBox* browse = (wxComboBox*)item.GetWindow();
+          const wxExPath path(browse->GetValue());
+          wxFileDialog dlg(
+            this,
+            _(wxFileSelectorPromptStr),
+            path.GetPath(),
+            path.GetFullName(),
+            wxFileSelectorDefaultWildcardStr,
+            wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
+          if (dlg.ShowModal() == wxID_OK)
+          {
+            const wxString value = dlg.GetPath();
             const int item = browse->FindString(value);
             browse->SetSelection(item == wxNOT_FOUND ? browse->Append(value): item);
           }}, item.GetWindow()->GetId());
@@ -186,6 +206,7 @@ protected:
 
       case ITEM_COMBOBOX:
       case ITEM_COMBOBOX_DIR:
+      case ITEM_COMBOBOX_FILE:
         {
         wxComboBox* cb = (wxComboBox*)item.GetWindow();
         if (item.GetData().Required())

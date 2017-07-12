@@ -27,7 +27,7 @@ TEST_CASE("wxExVCS")
   // In wxExApp the vcs is Read, so current vcs is known,
   // using this constructor results in command id 0,
   // giving the first command of current vcs, being add.
-  wxExVCS vcs(std::vector< std::string >{file.GetFullPath()});
+  wxExVCS vcs(std::vector< wxExPath >{file.Path().string()});
   
   vcs.ConfigDialog(wxExWindowData().Button(wxAPPLY | wxCANCEL));
   

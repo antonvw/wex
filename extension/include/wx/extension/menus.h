@@ -105,7 +105,7 @@ public:
     pugi::xml_document doc;
     if (!GetFileName().FileExists() ||
         !doc.load_file(
-           GetFileName().GetFullPath().c_str(),
+           GetFileName().Path().string().c_str(),
            pugi::parse_default | pugi::parse_trim_pcdata))
     {
       return false;

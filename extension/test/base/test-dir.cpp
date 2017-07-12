@@ -13,7 +13,7 @@ TEST_CASE( "wxExDir" )
   SUBCASE( "Not recursive" ) 
   {
     wxExDir dir(GetTestDir(), "*.h", DIR_FILES);
-    REQUIRE(dir.DirExists());
+    REQUIRE(dir.GetDir().DirExists());
     REQUIRE(dir.GetFlags() == DIR_FILES);
     REQUIRE(dir.GetFileSpec() == "*.h");
     REQUIRE(dir.FindFiles() == 2);
@@ -24,8 +24,8 @@ TEST_CASE( "wxExDir" )
     // we could use *.h;*.cpp, however wxDir handles only
     // one type, so all files would be found (wxExDir uses empty spec,
     // and checks each file on a match)
-    wxExDir dir("../../", "*.h", DIR_FILES | DIR_DIRS);
-    REQUIRE(dir.DirExists());
+    wxExDir dir("../../", "*.h");
+    REQUIRE(dir.GetDir().DirExists());
     REQUIRE(dir.GetFileSpec() == "*.h");
     REQUIRE(dir.FindFiles() > 50);
   }
@@ -33,6 +33,12 @@ TEST_CASE( "wxExDir" )
   SUBCASE( "Invalid" ) 
   {
     wxExDir dir("xxxx", "*.h", DIR_FILES);
-    REQUIRE(!dir.DirExists());
+    REQUIRE(!dir.GetDir().DirExists());
+  }
+
+  SUBCASE( "GetAllFiles" ) 
+  {
+    REQUIRE(wxExGetAllFiles("./", "*.txt", DIR_FILES).size() == 4);
+    REQUIRE(wxExGetAllFiles("./", "*.txt", DIR_DIRS).empty());
   }
 }

@@ -193,7 +193,7 @@ Frame::Frame()
 #endif
   }
 
-  if (!GetFileHistory().GetHistoryFile().empty() && GetManager().GetPane("DATA").IsShown())
+  if (!GetFileHistory().GetHistoryFile().Path().empty() && GetManager().GetPane("DATA").IsShown())
   {
     OpenFile(GetFileHistory().GetHistoryFile());
   }
@@ -545,7 +545,7 @@ Frame::Frame()
     event.Enable(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
     event.Check(wxConfigBase::Get()->ReadBool(_("Count Only"), true));}, ID_CLIENT_LOG_DATA_COUNT_ONLY);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(!GetFileHistory().GetHistoryFile().empty());}, ID_RECENT_FILE_MENU);
+    event.Enable(!GetFileHistory().GetHistoryFile().Path().empty());}, ID_RECENT_FILE_MENU);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(m_Timer.IsRunning());}, ID_TIMER_STOP);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
