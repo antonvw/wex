@@ -25,7 +25,6 @@ TEST_CASE("wxExListView")
   REQUIRE(listView->GetData().Image() == IMAGE_ART);
   
   listView->ConfigGet();
-  listView->SetSingleStyle(wxLC_REPORT);
   
   wxExColumn intcol(wxExColumn("Int", wxExColumn::COL_INT));
   REQUIRE(!intcol.GetIsSortedAscending());
@@ -69,7 +68,7 @@ TEST_CASE("wxExListView")
   {
     REQUIRE( listView->InsertItem({
       std::to_string(i),
-      wxDateTime::Now().FormatISOCombined(' ').ToStdString(),
+      wxDateTime::Now().Format("%c").ToStdString(),
       std::to_string((float)i / 2.0),
       "hello " + std::to_string(i)}));
   }

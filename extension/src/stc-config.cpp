@@ -226,7 +226,7 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
            {wxSTC_PRINT_COLOURONWHITE, _X("Colour on white")},
            {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _X("Colour on white normal")}}, true, 1}}},
       {_X("Directory"),
-        {{_X("Include directory"), ITEM_LISTVIEW, std::any(), wxExControlData().
+        {{_X("Include directory"), wxExListViewData().Type(LIST_FOLDER).
           Window(wxExWindowData().Size({200, 200}))}}}}}},
       wxExWindowData(data).
         Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title()).

@@ -18,6 +18,7 @@
 #include <wx/slider.h>
 #include <wx/string.h>
 #include <wx/extension/control-data.h>
+#include <wx/extension/listview-data.h>
 
 class wxFlexGridSizer;
 class wxWindow;
@@ -291,6 +292,22 @@ public:
     : wxExItem(ITEM_USER, label, wxEmptyString, label_type, 1, 0, 1, 1, window, create, config) {
         m_Apply = apply;};
 
+  /// Constuctor a ITEM_LISTVIEW item.
+  wxExItem(
+    /// label for this item
+    const wxString& label,
+    /// listview data
+    const wxExListViewData& data,
+    /// initial value
+    const std::any& value = std::any(),
+    /// type of label
+    wxExLabelType label_type = LABEL_NONE,
+    /// callback to apply
+    UserApply apply = nullptr)
+    : wxExItem(ITEM_LISTVIEW, label, value, label_type) {
+        m_Apply = apply;
+        m_ListViewData = data;};
+
   /// Constuctor several items.
   wxExItem(
     /// label for this item
@@ -306,7 +323,6 @@ public:
     /// - ITEM_DIRPICKERCTRL
     /// - ITEM_FILEPICKERCTRL
     /// - ITEM_FONTPICKERCTRL
-    /// - ITEM_LISTVIEW
     /// - ITEM_TEXTCTRL_FLOAT
     /// - ITEM_TEXTCTRL_INT
     /// - ITEM_TOGGLEBUTTON
@@ -323,7 +339,6 @@ public:
         type == ITEM_BUTTON ||
         type == ITEM_CHECKBOX ||
         type == ITEM_COMMANDLINKBUTTON ||
-        type == ITEM_LISTVIEW ||
         type == ITEM_TOGGLEBUTTON ? LABEL_NONE: label_type) {
         m_Apply = apply;
         m_Data = data;};
@@ -456,6 +471,7 @@ private:
   wxImageList* m_ImageList;
   wxExItemTemplateDialog<wxExItem>* m_Dialog = nullptr;
   wxExControlData m_Data;
+  wxExListViewData m_ListViewData;
 
   UserApply m_Apply;
   UserWindowCreate m_UserWindowCreate;

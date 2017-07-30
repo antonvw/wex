@@ -431,9 +431,8 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
     case ITEM_LISTVIEW:
       {
-      wxExListView* lv = new wxExListView(
-        wxExListViewData().
-          Window(wxExWindowData(m_Data.Window()).Parent(parent)));
+      wxExListView* lv = new wxExListView(m_ListViewData.
+        Window(wxExWindowData(m_Data.Window()).Parent(parent)));
       lv->ItemFromText(!m_Initial.has_value() ? std::string(): std::any_cast<std::string>(m_Initial));
       m_Window = lv;
       }

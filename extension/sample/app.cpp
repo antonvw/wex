@@ -198,7 +198,6 @@ wxExSampleFrame::wxExSampleFrame()
   m_Grid->AutoSizeColumns();
 #endif
 
-  m_ListView->SetSingleStyle(wxLC_REPORT);
   m_ListView->AppendColumns({
     {"String", wxExColumn::COL_STRING},
     {"Number", wxExColumn::COL_INT},
@@ -210,10 +209,10 @@ wxExSampleFrame::wxExSampleFrame()
   for (auto i = 0; i < items; i++)
   {
     m_ListView->InsertItem({
-      "item%d" + std::to_string(i),
+      "item " + std::to_string(i),
       std::to_string(i),
       std::to_string((float)i / 2.0),
-      wxDateTime::Now().FormatISOCombined(' ').ToStdString()});
+      wxDateTime::Now().Format("%c").ToStdString()});
 
     // Set some images.
     if      (i == 0) m_ListView->SetItemImage(i, wxART_CDROM);

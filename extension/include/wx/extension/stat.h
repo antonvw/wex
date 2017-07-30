@@ -9,8 +9,6 @@
 
 #include <string>
 #include <sys/stat.h> // for stat
-#include <wx/datetime.h>
-#include <wx/filefn.h>
 
 /// Adds IsOk to the stat base class, several methods
 /// to get/update on the stat members, and Sync to sync
@@ -19,39 +17,20 @@ class wxExStat : public stat
 {
 public:
   /// Default constructor. Calls sync.
-  wxExStat(const std::string& fullpath = std::string()){
+  wxExStat(const std::string& fullpath = std::string()) {
     Sync(fullpath);};
 
   /// Returns the modification time.
-  const std::string GetModificationTime() const {
-    return wxDateTime(st_mtime).FormatISOCombined(' ').ToStdString();};
+  const std::string GetModificationTime() const;
 
   /// Returns true if the stat is okay (last sync was okay).
   bool IsOk() const {return m_IsOk;};
 
   /// Returns true if this stat is readonly.
-  bool IsReadOnly() const {
-#ifdef _MSC_VER
-    return (m_IsOk && ((st_mode & wxS_IWUSR) == 0));};
-#else
-    return (m_IsOk && access(m_FullPath.c_str(), W_OK) == -1);};
-#endif
+  bool IsReadOnly() const;
 
   /// Sets (syncs) this stat, returns result and keeps it in IsOk.
-  bool Sync() {
-    if (m_FullPath.empty())
-    {
-      m_IsOk = false;
-    }
-    else
-    {
-#ifdef _MSC_VER
-      m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
-#else
-      m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
-#endif
-    }
-    return m_IsOk;};
+  bool Sync();
 
   /// Sets the fullpath member, then syncs.
   bool Sync(const std::string& fullpath) {

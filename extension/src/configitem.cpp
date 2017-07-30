@@ -78,7 +78,6 @@ bool wxExItem::ToConfig(bool save) const
                                   PERSISTENT(ReadObject, wxFont, wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)); break;
 #endif
     case ITEM_TEXTCTRL_INT:       PERSISTENT(ReadLong, long, 0); break;
-    case ITEM_LISTVIEW:           PERSISTENT(Read, wxString, ""); break;
     case ITEM_SLIDER:             PERSISTENT(ReadLong, int, ((wxSlider* )GetWindow())->GetMin()); break;
     case ITEM_SPINCTRL:           PERSISTENT(ReadLong, int, ((wxSpinCtrl* )GetWindow())->GetMin()); break;
     case ITEM_SPINCTRLDOUBLE:     PERSISTENT(ReadDouble, double, ((wxSpinCtrlDouble* )GetWindow())->GetMin()); break;
@@ -152,6 +151,13 @@ bool wxExItem::ToConfig(bool save) const
 #endif
         SetValue(wxConfigBase::Get()->Read(GetLabel(), initial));
       }
+      break;
+
+    case ITEM_LISTVIEW:
+      if (save)
+        wxConfigBase::Get()->Write(GetLabel(), wxString(std::any_cast<std::string>(GetValue())));
+      else
+        SetValue(wxConfigBase::Get()->Read(GetLabel(), "").ToStdString());
       break;
 
     case ITEM_RADIOBOX:

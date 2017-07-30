@@ -33,7 +33,6 @@ public:
     , m_ListView(lv) {
     if (init)
     {
-      m_ListView->SetSingleStyle(wxLC_REPORT);
       m_ListView->AppendColumns({{"Name", wxExColumn::COL_STRING, 200}, {"Pid"}});
     }
     else

@@ -424,6 +424,8 @@ wxExListView::wxExListView(const wxExListViewData& data)
 
 bool wxExListView::AppendColumns(const std::vector <wxExColumn>& cols)
 {
+  SetSingleStyle(wxLC_REPORT);
+
   for (const auto col : cols)
   {
     wxExColumn mycol(col);
@@ -584,12 +586,12 @@ void wxExListView::CopySelectedItemsToClipboard()
   if (GetSelectedItemCount() == 0) return;
 
   wxBusyCursor wait;
-  wxString clipboard;
+  std::string clipboard;
 
   for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     clipboard += ItemToText(i) + "\n";
     
-  wxExClipboardAdd(clipboard.ToStdString());
+  wxExClipboardAdd(clipboard);
 }
 
 void wxExListView::EditClearAll()
@@ -771,8 +773,8 @@ bool wxExListView::InsertItem(const std::vector < std::string > & item)
       {
         case wxExColumn::COL_DATE:
           {
-            wxDateTime dt;
-            if (!dt.ParseISOCombined(col, ' ')) return false;
+            struct tm tm;
+            if (strptime(col.c_str(), "%c", &tm) == nullptr) return false;
           }
           break;
         case wxExColumn::COL_FLOAT: std::stof(col); break;
@@ -1075,8 +1077,8 @@ bool wxExListView::SetItem(
     {
       case wxExColumn::COL_DATE:
         {
-          wxDateTime dt;
-          if (!dt.ParseISOCombined(label, ' ')) return false;
+          struct tm tm;
+          if (strptime(label.c_str(), "%c", &tm) == nullptr) return false;
         }
         break;
       case wxExColumn::COL_FLOAT: std::stof(label); break;
@@ -1124,16 +1126,11 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
       case wxExColumn::COL_DATE:
         if (!val.empty())
         {
-          wxDateTime dt;
+          struct tm tm;
+          if (strptime(val.c_str(), "%c", &tm) == nullptr) return false;
 
-          if (!dt.ParseISOCombined(val, ' '))
-          {
-            return false;
-          }
-          else
-          {
-            SetItemData(i, dt.GetTicks());
-          }
+          time_t t = mktime(&tm);
+          SetItemData(i, t);
         }
         else
         {
