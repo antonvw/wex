@@ -21,11 +21,13 @@ public:
   wxExHexMode(
     /// stc to view in hexmode
     wxExSTC* stc,
+    /// @code
     /// hex field                                       ascii field
     /// 23 69 6e 63 6c 75 64 65 20 3c 77 78 2f 63 6d 64 #include <wx/cmd
     /// 6c 69 6e 65 2e 68 3e 20 2f 2f 20 66 6f 72 20 77 line.h> // for w
     /// 78 43 6d 64 4c 69 6e 65 50 61 72 73 65 72 0a 23 xCmdLineParser #
     /// <---------------------------------------------> bytesPerLine
+    /// @endcode
     wxFileOffset bytesPerLine = 16);
   
   /// Returns true if hex mode is on.

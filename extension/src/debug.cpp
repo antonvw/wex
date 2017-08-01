@@ -143,7 +143,7 @@ bool wxExDebug::GetArgs(
       init = true;
       m_Dialog = new wxExItemDialog({
 #ifdef __WXGTK__
-      {"processes", ITEM_LISTVIEW, std::any(), wxExControlData(), LABEL_LEFT,
+      {"processes", wxExListViewData(), std::any(), LABEL_NONE,
         [&](wxWindow* user, const std::any& value, bool save) {
         lv = ((wxExListView *)user);
         if (save && lv->GetFirstSelected() != -1)

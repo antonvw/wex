@@ -522,8 +522,7 @@ bool wxExMarkerAndRegisterExpansion(wxExEx* ex, std::string& text)
 {
   if (ex == nullptr) return false;
 
-  wxExTokenizer tkz(text, "'" + std::string(1, wxUniChar(WXK_CONTROL_R)), false);
-  wxString repl(text);
+  wxExTokenizer tkz(text, "'" + std::string(1, WXK_CONTROL_R), false);
 
   while (tkz.HasMoreTokens())
   {
@@ -538,12 +537,12 @@ bool wxExMarkerAndRegisterExpansion(wxExEx* ex, std::string& text)
       // Replace marker.
       if (tkz.GetLastDelimiter() == '\'')
       {
-        const int line = ex->MarkerLine(name);
+        const auto line = ex->MarkerLine(name);
         
         if (line >= 0)
         {
-          repl.Replace(
-            tkz.GetLastDelimiter() + wxString(name), 
+          wxExReplaceAll(text, 
+            tkz.GetLastDelimiter() + std::string(1, name), 
             std::to_string(line + 1));
         }
         else
@@ -554,14 +553,12 @@ bool wxExMarkerAndRegisterExpansion(wxExEx* ex, std::string& text)
       // Replace register.
       else
       {
-        repl.Replace(
-          tkz.GetLastDelimiter() + wxString(name), 
+        wxExReplaceAll(text,
+          tkz.GetLastDelimiter() + std::string(1, name), 
           name == '%' ? ex->GetSTC()->GetFileName().GetFullName(): ex->GetMacros().GetRegister(name));
       }
     }
   }
-  
-  text = repl;
   
   return true;
 }

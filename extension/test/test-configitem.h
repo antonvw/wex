@@ -62,7 +62,7 @@ const auto TestConfigItems(
       {"Integers", 
         {{"Integer", ITEM_TEXTCTRL_INT}}},
       {"ListView",
-        {{"ListView", ITEM_LISTVIEW}}},
+        {{"ListView", wxExListViewData()}}},
       {"Radioboxes",
         {{"Radio Box", {
            {0, "Zero"}, {1, "One"}, {2, "Two"}, {3, "Three"}, {4, "Four"}, {5, "Five"}},

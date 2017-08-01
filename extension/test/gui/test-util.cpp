@@ -311,9 +311,9 @@ TEST_CASE("wxEx")
     command = "'yxxx";
     REQUIRE(!wxExMarkerAndRegisterExpansion(ex, command));
     wxExClipboardAdd("yanked");
-    command = "*";
+    command = "this is * end";
     REQUIRE( wxExMarkerAndRegisterExpansion(ex, command));
-    REQUIRE( command.find("yanked") != std::string::npos);
+    REQUIRE( command == "this is yanked end");
   }
   
   SUBCASE("wxExQuoted")

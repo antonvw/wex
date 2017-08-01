@@ -706,6 +706,7 @@ bool wxExVi::Command(const std::string& command, bool is_handled)
    (command.size() > 2 && command.find(std::string(1, WXK_CONTROL_R) + "=") == 0))
   {
     CommandCalc(command);
+    GetMacros().Record(command);
     return true;
   }
   else if (ModeInsert())

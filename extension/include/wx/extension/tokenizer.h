@@ -2,13 +2,14 @@
 // Name:      tokenizer.h
 // Purpose:   Declaration of wxExTokenizer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wx/dlimpexp.h>
 #include <string>
+#define WHITESPACE_DELIMITERS " \t\r\n"
 
 /// Offers a class that allows you to tokenize a string into
 /// substrings or into some container.
@@ -18,10 +19,10 @@ public:
   /// Constructor.
   wxExTokenizer(
     /// string to tokenize
-    const std::string& text, 
-    /// delimiters, if no delimiter is given whitespace is used
-    const std::string& delimiters = " \t\r\n",
-    /// skip empty tokens
+    const std::string& text,
+    /// delimiter characters, if no delimiter is given whitespace is used
+    const std::string& delimiters = WHITESPACE_DELIMITERS,
+    /// specify whether to skip empty tokens
     bool skip_empty_tokens = true);
 
   /// Returns total number of tokens in the string.

@@ -390,7 +390,7 @@ wxExTextCtrl::wxExTextCtrl(
       {
         if (m_Command.empty()) m_Command.pop_back();
       }
-      else if (event.GetKeyCode() != WXK_TAB && event.GetKeyCode() != WXK_RETURN)
+      else if (event.GetKeyCode() != WXK_TAB)
       {
         m_Command += event.GetUnicodeKey();
       }
@@ -422,7 +422,7 @@ wxExTextCtrl::wxExTextCtrl(
           if (event.GetUnicodeKey() != (wxChar)WXK_NONE && m_ControlR)
           {
             skip = false;
-            const wxChar c = event.GetUnicodeKey();
+            const char c = event.GetUnicodeKey();
             wxCommandEvent event(wxEVT_MENU, ID_REGISTER);
             if (c == '%')
             {
@@ -435,10 +435,6 @@ wxExTextCtrl::wxExTextCtrl(
             if (!event.GetString().empty())
             {
               wxPostEvent(this, event);
-            }
-            if (m_ex != nullptr && m_ex->GetMacros().IsRecording())
-            {
-              m_Command += WXK_CONTROL_R + c;
             }
           }
           m_UserInput = true;

@@ -108,9 +108,9 @@ public:
     /// Pattern might contain:
     /// - $ to match a line end
     /// Replacement might contain:
-    /// - & or \0 to represent the target in the replacement
-    /// - \U to convert target to uppercase 
-    /// - \L to convert target to lowercase
+    /// - & or \\0 to represent the target in the replacement
+    /// - \\U to convert target to uppercase 
+    /// - \\L to convert target to lowercase
     /// Options can be:
     /// - c : Ask for confirm
     /// - i : Case insensitive
