@@ -21,7 +21,8 @@ namespace doctest
 }
 
 /// Adds managed pane.
-void AddPane(wxExManagedFrame* frame, wxWindow* pane);
+/// Returns name of pane.
+const std::string AddPane(wxExManagedFrame* frame, wxWindow* pane);
 
 /// Returns test dir.
 const std::string GetTestDir();

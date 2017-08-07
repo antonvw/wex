@@ -18,7 +18,6 @@ TEST_CASE("wxExListViewWithFrame")
     LIST_KEYWORD);
     
   wxExListViewWithFrame* listView = new wxExListViewWithFrame(wxExListViewData().Type(LIST_FIND));
-  
   AddPane(GetFrame(), listView);
 
   wxExListItem item(listView, GetTestFile());
@@ -29,14 +28,16 @@ TEST_CASE("wxExListViewWithFrame")
   listView->Select(0);
   listView->Select(1);
 
+#ifndef __WXMSW__
   for (auto id : std::vector<int> {
     ID_EDIT_OPEN, ID_EDIT_VCS_LOWEST, ID_LIST_COMPARE, ID_LIST_RUN_MAKE}) 
   {
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(listView, event);
   }
+#endif
   
-//  REQUIRE(wxExUIAction(listView));
+  REQUIRE(wxExUIAction(listView));
 
   wxExListViewWithFrame* listView2 = new wxExListViewWithFrame(wxExListViewData().Type(LIST_FIND));
   listView2->Destroy();

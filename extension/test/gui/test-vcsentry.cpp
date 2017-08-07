@@ -36,7 +36,8 @@ TEST_CASE("wxExVCSEntry")
   
   wxExMenu menu;
   REQUIRE( test.BuildMenu(0, &menu) == 0);
-  
+
+#ifndef __WXMSW__
   // This should have no effect.  
   REQUIRE(!test.SetCommand(5));
   REQUIRE(!test.SetCommand(ID_EDIT_VCS_LOWEST));
@@ -52,8 +53,9 @@ TEST_CASE("wxExVCSEntry")
   REQUIRE( git.Execute()); // executes just git, shows help
   REQUIRE( git.GetStdOut().find("usage: ") != std::string::npos);
   git.ShowOutput();
-  
+
   wxExVCSEntry* git_async = new wxExVCSEntry("git", std::string(), {wxExVCSCommand("status")});
   REQUIRE( git_async->Execute(std::string(), wxExLexer(), false));
   git_async->ShowOutput();
+#endif
 }

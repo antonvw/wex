@@ -29,6 +29,15 @@ TEST_CASE("wxExDebug")
   REQUIRE( dbg.GetBreakpoints().empty());
   REQUIRE( dbg.GetMarkerBreakpoint().GetNo() > 0);
 
+  
+  wxExSTC* stc = GetSTC();
+  
+  if (stc != nullptr)
+  {
+    stc->EmptyUndoBuffer();
+    stc->SetSavePoint();
+  }
+  
   REQUIRE( dbg.AddMenu(&menu) > 0);
   REQUIRE( dbg.AddMenu(&menu, true) > 0);
   const int item = menu.FindItem("break");

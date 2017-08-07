@@ -126,7 +126,7 @@ void wxExListItem::Update()
       m_Path.DirExists() ? m_FileSpec: m_Path.GetExtension().substr(1));
     SetItem(_("In Folder").ToStdString(), m_Path.GetPath());
     SetItem(_("Size").ToStdString(),
-      m_Path.DirExists() ? (std::to_string(m_Path.GetStat().st_size)): std::string());
+      m_Path.FileExists() ? std::to_string(m_Path.GetStat().st_size): std::string());
     SetItem(_("Modified").ToStdString(), m_Path.GetStat().GetModificationTime());
   }
 }

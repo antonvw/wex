@@ -60,7 +60,7 @@ void AddExtension(wxExPath& fn)
   }
 }
     
-void AddPane(wxExManagedFrame* frame, wxWindow* pane)
+const std::string AddPane(wxExManagedFrame* frame, wxWindow* pane)
 {
   static int no = 0;
   
@@ -76,6 +76,8 @@ void AddPane(wxExManagedFrame* frame, wxWindow* pane)
     .Caption(name));
   
   frame->GetManager().Update();
+  
+  return name;
 }
 
 const std::string GetTestDir()
@@ -199,10 +201,12 @@ int wxExTestApp::OnRun()
     {
       const int res = m_Context->run();
       const long auto_exit(wxConfigBase::Get()->ReadLong("auto-exit", 1));
+      wxConfigBase::Get()->Write("AllowSync", 0);
       wxExProcess::KillAll();
+
       if (auto_exit)
       {
-        exit(res);
+        ExitMainLoop();
       }
     }
     catch (const std::exception& e)
@@ -263,9 +267,9 @@ int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)
   wxEntryStart(argc, argv);
   app->OnInit();
   
-  if (!use_eventloop)
+  try
   {
-    try
+    if (!use_eventloop)
     {
       const int res = context.run();
       if (context.shouldExit()) return res;
@@ -274,15 +278,15 @@ int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)
       wxExProcess::KillAll();
       return res;
     }
-    catch (const std::exception& e)
+    else
     {
-      std::cout << e.what() << "\n";
-      exit(EXIT_FAILURE);
+      app->SetContext(&context);
+      return app->OnRun();
     }
   }
-  else
+  catch (const std::exception& e)
   {
-    app->SetContext(&context);
-    return app->OnRun();
+    std::cout << e.what() << "\n";
+    exit(EXIT_FAILURE);
   }
 }

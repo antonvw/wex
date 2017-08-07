@@ -11,6 +11,7 @@
 #endif
 #include <wx/artprov.h>
 #include <wx/imaglist.h>
+#include <wx/numformatter.h>
 #include <wx/extension/item.h>
 #include <wx/extension/itemdlg.h>
 #include <wx/extension/managedframe.h>
@@ -57,7 +58,8 @@ TEST_CASE("wxExItem")
   wxExItem item_int("int", ITEM_TEXTCTRL_INT, wxString("100"));
   REQUIRE( item_int.GetType() == ITEM_TEXTCTRL_INT);
   
-  wxExItem item_float("float", ITEM_TEXTCTRL_FLOAT, wxString("100.001"));
+  const char ds(wxNumberFormatter::GetDecimalSeparator());
+  wxExItem item_float("float", ITEM_TEXTCTRL_FLOAT, wxString("100") + wxString(ds) + wxString("001"));
   REQUIRE( item_float.GetType() == ITEM_TEXTCTRL_FLOAT);
   
   wxExItem item_spin("spindouble", 20.0, 30.0, 25.0, 0.1);

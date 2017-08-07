@@ -49,10 +49,14 @@ TEST_CASE("wxExListViewFile")
     false); // join the thread
 #endif
 
+#ifndef __WXMSW__
   for (auto id : std::vector<int> {
     wxID_ADD, wxID_EDIT, wxID_REPLACE_ALL}) 
   {
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(listView, event);
   }
+#endif
+  
+  REQUIRE(wxExUIAction(listView));
 }

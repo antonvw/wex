@@ -89,6 +89,7 @@ TEST_CASE("wxExManagedFrame")
   
   GetFrame()->AppendPanes(menu);
 
+#ifndef __WXMSW__
   for (auto id : std::vector<int> {
     wxID_PREFERENCES, 
     ID_FIND_FIRST, ID_FIND_LAST,
@@ -98,4 +99,5 @@ TEST_CASE("wxExManagedFrame")
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(GetFrame(), event);
   }
+#endif
 }

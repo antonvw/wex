@@ -25,6 +25,7 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
+#ifdef __WXGTK__
 class wxExDirProcesses : public wxExDir
 {
 public:
@@ -57,6 +58,7 @@ private:
 
   wxExListView* m_ListView;
 };
+#endif
 
 wxExItemDialog* wxExDebug::m_Dialog = nullptr;
 
@@ -162,7 +164,9 @@ bool wxExDebug::GetArgs(
 
     if (lv != nullptr)
     {
+#ifdef __WXGTK__
       wxExDirProcesses(lv, init).FindFiles();
+#endif
     }
 
     return m_Dialog->ShowModal() != wxID_CANCEL;

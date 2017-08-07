@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-address.cpp
+// Name:      test-addressrange.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -17,7 +17,9 @@
 
 TEST_CASE("wxExAddressRange")
 {
-  wxExSTC* stc = GetSTC();
+  wxExSTC* stc = new wxExSTC();
+  AddPane(GetFrame(), stc);
+
   stc->SetText("hello\nhello1\nhello2");
   wxExEx* ex = new wxExEx(stc);
   ex->MarkerAdd('x', 1);
@@ -112,6 +114,7 @@ TEST_CASE("wxExAddressRange")
   REQUIRE( wxExAddressRange(ex).Escape("ls  `echo \x12*`"));
 #endif
   
+#ifdef __UNIX__
   // Test Global and Global inverse.
   for (bool b : { false, true })
   {
@@ -125,6 +128,7 @@ TEST_CASE("wxExAddressRange")
     REQUIRE( wxExAddressRange(ex, 5).Global("/a/s/a/XX", b));
     REQUIRE( wxExAddressRange(ex, 5).Global("/b/s/b/XX|s/c/yy", b));
   }
+#endif
   
   // Test Indent.
   stc->SetText(contents);

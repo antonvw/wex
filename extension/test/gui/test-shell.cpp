@@ -26,7 +26,7 @@ TEST_CASE("wxExShell")
   shell->Prompt("test4");
 
   // Prompting does not add a command to history.
-  REQUIRE(!shell->GetHistory().find("test4") != std::string::npos);
+  REQUIRE( shell->GetHistory().find("test4") == std::string::npos);
 
   // Post 3 'a' chars to the shell, and check whether it comes in the history.
   Process("aaa\r", shell);

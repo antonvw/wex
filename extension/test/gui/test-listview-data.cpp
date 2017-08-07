@@ -28,6 +28,7 @@ TEST_CASE("wxExListViewData")
   SUBCASE("Inject")
   {
     wxExListView* lv = new wxExListView();
+    AddPane(GetFrame(), lv);
     REQUIRE( wxExListViewData(lv).Inject());
     REQUIRE( wxExListViewData(lv, wxExControlData().Line(2)).Inject());
   }

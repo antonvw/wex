@@ -19,22 +19,15 @@ TEST_CASE("wxExListItem")
   wxExListView* listView = new wxExListView(wxExListViewData().Type(LIST_FILE));
   AddPane(GetFrame(), listView);
   
-  wxExListView* listView2 = new wxExListView();
-  AddPane(GetFrame(), listView2);
-  
   const auto start = std::chrono::system_clock::now();
 
-  const int max = 250;
+  const int max = 1; // 250;
   for (int j = 0; j < max; j++)
   {
     wxExListItem item1(listView, wxExPath("./test.h"));
     item1.Insert();
-    wxExListItem item2(listView, wxExPath("./test.cpp"));
+    wxExListItem item2(listView, wxExPath("./test-special.h"));
     item2.Insert();
-    wxExListItem item3(listView, wxExPath("./main.cpp"));
-    item3.Insert();
-    wxExListItem item4(listView2, wxExPath("./test.h"));
-    item4.Insert();
   }
 
   const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
@@ -50,7 +43,7 @@ TEST_CASE("wxExListItem")
   
   REQUIRE(sort_milli.count() < 10000);
   
-  REQUIRE(listView->GetItemText(0, _("File Name").ToStdString()).find("main.cpp") != std::string::npos);
+  REQUIRE(listView->GetItemText(0, _("File Name").ToStdString()).find("test-special.h") != std::string::npos);
   
   wxExListItem item(listView, wxExPath("./test.h"));
   item.Insert();

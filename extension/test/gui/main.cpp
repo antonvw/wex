@@ -34,6 +34,11 @@ class wxExTestGuiApp : public wxExTestApp
 public: 
   wxExTestGuiApp() : wxExTestApp() {;};
   
+  virtual void ExitMainLoop() override 
+  {
+    wxExTestApp::ExitMainLoop();
+  }
+  
   virtual bool OnInit() override
   {
     if (!wxExTestApp::OnInit())
@@ -59,8 +64,8 @@ public:
 
     wxExProcess::PrepareOutput(m_Frame); // before adding pane
     
-    AddPane(m_Frame, wxExProcess::GetShell());
     AddPane(m_Frame, m_STC);
+    AddPane(m_Frame, wxExProcess::GetShell());
     
     return true;
   }

@@ -190,7 +190,7 @@ const wxExPath wxExLink::GetPath(const std::string& text, wxExControlData& data)
     }
   }
 
-  wxExPath fullpath = m_Paths->FindPath(link.Path());
+  wxExPath fullpath = m_Paths->FindPath(link.Path().string());
 
   if (!fullpath.Path().empty())
   {
@@ -217,10 +217,12 @@ bool wxExLink::SetLink(wxExPath& link, wxExControlData& data) const
   std::string prefix;
 
 #ifdef __WXMSW__
-  if (isalpha(link[0]) && link[1] == ':')
+  if (link.Path().string().size() > 1 && 
+    isalpha(link.Path().string()[0]) && 
+    link.Path().string()[1] == ':')
   {
-    prefix = link.substr(0,1);
-    link = link.substr(2);
+    prefix = link.Path().string().substr(0, 1);
+    link = link.Path().string().substr(2);
   }
 #endif
 

@@ -1006,7 +1006,7 @@ void wxExVCSCommandOnSTC(const wxExVCSCommand& command,
 
 void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< wxExPath > & files)
 {
-  wxASSERT(!files.empty());
+  if (files.empty()) return;
   
   wxExVCS vcs(files, id);
   

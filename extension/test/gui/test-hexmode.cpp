@@ -146,4 +146,7 @@ TEST_CASE("wxExHexMode")
   wxExLexers::Get()->Apply(stc);
   
   REQUIRE( remove("test.hex") == 0);
+  
+  stc->EmptyUndoBuffer();
+  stc->SetSavePoint();
 }

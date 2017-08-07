@@ -180,15 +180,9 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
 #endif
             }}},
       {_X("Font"), 
-#ifndef __WXOSX__
         {{_X("Default font"), ITEM_FONTPICKERCTRL},
          {_X("Tab font"), ITEM_FONTPICKERCTRL},
          {_X("Text font"), ITEM_FONTPICKERCTRL}}},
-#else
-        {{_X("Default font")},
-         {_X("Tab font")},
-         {_X("Text font")}}},
-#endif
       {_X("Edge"),
         {{_X("Edge column"), 0, 500},
          { _X("Edge line"), {

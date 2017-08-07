@@ -45,7 +45,23 @@ public:
     {_("Readonly colour"), ITEM_COLOURPICKERWIDGET, *wxLIGHT_GREY},
     {_("Header"), ITEM_CHECKBOX, true}}) {;};
 };
-  
+
+// See also GetModificationTime in stat.cpp
+bool GetTime(const std::string& text, time_t& t)
+{
+#ifdef __WXMSW__
+  wxDateTime dt; 
+  if (!dt.ParseFormat(text, "%c")) return false; 
+  t = dt.GetTicks();
+#else
+  struct tm tm;
+  if (strptime(text.c_str(), "%c", &tm) == nullptr) return false;
+  t = mktime(&tm);
+#endif
+
+  return true;
+}
+
 #if wxUSE_DRAG_AND_DROP
 // FileDropTarget is already used by wxExFrame.
 class DropTarget : public wxFileDropTarget
@@ -773,8 +789,8 @@ bool wxExListView::InsertItem(const std::vector < std::string > & item)
       {
         case wxExColumn::COL_DATE:
           {
-            struct tm tm;
-            if (strptime(col.c_str(), "%c", &tm) == nullptr) return false;
+            time_t tm;
+            if (!GetTime(col, tm)) return false;
           }
           break;
         case wxExColumn::COL_FLOAT: std::stof(col); break;
@@ -1067,9 +1083,9 @@ int wxCALLBACK CompareFunctionCB(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortDa
 }
 
 bool wxExListView::SetItem(
-  long index, int column, const std::string &label, int imageId)
+  long index, int column, const std::string& text, int imageId)
 {
-  if (label.empty()) return true;
+  if (text.empty()) return true;
 
   try
   {
@@ -1077,22 +1093,22 @@ bool wxExListView::SetItem(
     {
       case wxExColumn::COL_DATE:
         {
-          struct tm tm;
-          if (strptime(label.c_str(), "%c", &tm) == nullptr) return false;
+          time_t tm;
+          if (!GetTime(text, tm)) return false;
         }
         break;
-      case wxExColumn::COL_FLOAT: std::stof(label); break;
-      case wxExColumn::COL_INT: std::stoi(label); break;
+      case wxExColumn::COL_FLOAT: std::stof(text); break;
+      case wxExColumn::COL_INT: std::stoi(text); break;
       case wxExColumn::COL_STRING: break;
     }
 
-    wxListView::SetItem(index, column, label, imageId);
+    wxListView::SetItem(index, column, text, imageId);
     return true;
   }
   catch (std::exception& e)
   {
     std::cout << "index: " << index << " col: " << column << ": " <<
-      label << e.what() << "\n";
+      text << e.what() << "\n";
     return false;
   }
 }
@@ -1126,11 +1142,9 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
       case wxExColumn::COL_DATE:
         if (!val.empty())
         {
-          struct tm tm;
-          if (strptime(val.c_str(), "%c", &tm) == nullptr) return false;
-
-          time_t t = mktime(&tm);
-          SetItemData(i, t);
+          time_t tm;
+          if (!GetTime(val.ToStdString(), tm)) return false;
+          SetItemData(i, tm);
         }
         else
         {

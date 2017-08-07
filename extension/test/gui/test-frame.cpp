@@ -28,6 +28,7 @@ TEST_CASE("wxExFrame")
   REQUIRE( GetFrame()->GetGrid() == nullptr);
   REQUIRE( GetFrame()->GetListView() == nullptr);
   REQUIRE( GetFrame()->GetSTC() != nullptr);
+  GetSTC()->GetFile().ResetContentsChanged();
   
   GetFrame()->SetFindFocus(GetFrame()->GetSTC());
   GetFrame()->SetFindFocus(nullptr);
@@ -80,6 +81,7 @@ TEST_CASE("wxExFrame")
     wxPostEvent(GetFrame(), event);
   }
   
+#ifndef __WXMSW__
   for (const auto& id : std::vector<int> {
     wxID_FIND, wxID_REPLACE, 
     ID_VIEW_MENUBAR, ID_VIEW_STATUSBAR, ID_VIEW_TITLEBAR}) 
@@ -88,4 +90,5 @@ TEST_CASE("wxExFrame")
     wxQueueEvent(GetFrame(), event);
     wxQueueEvent(GetFrame(), event);
   }
+#endif
 }

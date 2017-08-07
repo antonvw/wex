@@ -10,26 +10,24 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/stcdlg.h>
-#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
 TEST_CASE("wxExSTCEntryDialog")
 {
-  wxExSTCEntryDialog* dlg1 = new wxExSTCEntryDialog("hello", "testing");
+  wxExSTCEntryDialog* dlg1 = new wxExSTCEntryDialog("hello1", "testing1");
   
-  REQUIRE( dlg1->GetSTC()->GetText() == "hello");
-  //REQUIRE( dlg1.GetTextRaw() == "testing");
+  REQUIRE( dlg1->GetSTC()->GetText() == "hello1");
   REQUIRE(!dlg1->GetSTC()->GetLexer().Set("xxx"));
   REQUIRE( dlg1->GetSTC()->GetLexer().Set("cpp"));
   
   dlg1->Show();
   
-  wxExSTCEntryDialog dlg2(
-    "hello", 
-    "testing",
+  wxExSTCEntryDialog* dlg2 = new wxExSTCEntryDialog("hello2", "testing2",
     wxExWindowData().Button(wxOK));
-
-  REQUIRE(!dlg2.GetSTC()->GetText().empty());
-  REQUIRE( dlg2.GetSTC()->GetTextRaw().length() > 0);
+  
+  REQUIRE(!dlg2->GetSTC()->GetText().empty());
+  REQUIRE( dlg2->GetSTC()->GetTextRaw().length() > 0);
+  
+  dlg2->Show();
 }

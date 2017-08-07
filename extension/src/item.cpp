@@ -397,9 +397,6 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case ITEM_FONTPICKERCTRL:
-#ifdef __WXOSX__
-      return false;
-#endif
       {
       wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent, 
         m_Data.Window().Id(), 

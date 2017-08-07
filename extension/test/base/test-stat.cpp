@@ -2,7 +2,7 @@
 // Name:      test-stat.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/stat.h>
@@ -13,6 +13,7 @@ TEST_CASE( "wxExStat" )
   wxExStat stat(GetTestFile().Path().string());
 
   REQUIRE( stat.IsOk());
+  REQUIRE(!stat.GetModificationTime().empty());
   REQUIRE(!stat.IsReadOnly());
   REQUIRE( stat.Sync(GetTestDir() + "test-base.link"));
   REQUIRE( stat.Sync());

@@ -9,15 +9,24 @@
 #include <io.h>
 #endif
 #include <iomanip>
+#ifdef __UNIX__
 #include <unistd.h>
+#endif
+#include <sstream>
+#include <wx/datetime.h>
 #include <wx/extension/stat.h>
 
+// See also GetTime in listview.cpp
 const std::string wxExStat::GetModificationTime() const 
 {
+#ifdef _MSC_VER
+  return wxDateTime(st_mtime).Format("%c").ToStdString();
+#else
   std::tm* tm = std::localtime(&st_mtime);
   std::stringstream ss;
   ss << std::put_time(tm, "%c");
   return ss.str();
+#endif
 }
 
 bool wxExStat::IsReadOnly() const 

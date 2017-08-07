@@ -34,8 +34,15 @@ TEST_CASE("wxExVCS")
   // DirExists
   REQUIRE( vcs.DirExists(file));
   
+#ifndef __WXMSW__
   // Execute
   REQUIRE( vcs.Execute());
+  
+  /// ShowDialog.  
+  REQUIRE( vcs.ShowDialog(wxExWindowData().Button(wxAPPLY | wxCANCEL)));
+  
+  /// Request.  
+  REQUIRE( vcs.Request(wxExWindowData().Button(wxAPPLY | wxCANCEL)));
 
   // GetEntry  
   REQUIRE( vcs.GetEntry().BuildMenu(100, new wxExMenu("test")) > 0);
@@ -46,12 +53,6 @@ TEST_CASE("wxExVCS")
   REQUIRE( vcs.GetName() == "Auto");
   REQUIRE(!vcs.GetEntry().GetCommand().IsOpen());
 
-  /// ShowDialog.  
-  REQUIRE( vcs.ShowDialog(wxExWindowData().Button(wxAPPLY | wxCANCEL)));
-  
-  /// Request.  
-  REQUIRE( vcs.Request(wxExWindowData().Button(wxAPPLY | wxCANCEL)));
-  
   // LoadDocument
   REQUIRE( wxExVCS::LoadDocument());
   
@@ -61,4 +62,5 @@ TEST_CASE("wxExVCS")
   
   // Use
   REQUIRE( vcs.Use());
+#endif
 }
