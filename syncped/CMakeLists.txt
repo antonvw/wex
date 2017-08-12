@@ -57,6 +57,7 @@ if (NOT WIN32)
   endif()
   if (EXISTS "/usr/share/icons")
     install(FILES syncped.png DESTINATION /usr/share/icons/hicolor/scalable/apps/)
+    install(FILES syncped.svg DESTINATION /usr/share/icons/hicolor/scalable)
   endif()
 endif()
 

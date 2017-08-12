@@ -661,9 +661,8 @@ wxExVi::wxExVi(wxExSTC* stc)
       }  
       return false;}},
     // ctrl-t
-    {"\x14", [&](const std::string& command){return Command("S");}},
-    // ctrl-]
-    {"\x5D", [&](const std::string& command){return Command("Q");}},
+    {"\x14", [&](const std::string& command){
+      return Command("S");}},
     // delete char
     {"\x7F", [&](const std::string& command){
       return DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count);}}}
@@ -1362,9 +1361,18 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     
     return !result;
   }
+  else if ((event.GetModifiers() & wxMOD_CONTROL) && event.GetKeyCode() == ']')
+  {
+    Command("Q");
+    return true;
+  }
   else
   {
-    if (event.GetModifiers() == wxMOD_ALT && !ModeNormal()) Command("\x1b");
+    if (event.GetModifiers() == wxMOD_ALT && !ModeNormal()) 
+    {
+      Command("\x1b");
+    }
+
     return true;
   }
 }

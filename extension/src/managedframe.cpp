@@ -277,8 +277,7 @@ void wxExManagedFrame::HideExBar(int hide)
       ShowPane("VIBAR", false);
     }
     
-    if ((hide == HIDE_BAR_FOCUS_STC || 
-         hide == HIDE_BAR_FORCE_FOCUS_STC) && 
+    if ((hide == HIDE_BAR_FOCUS_STC || hide == HIDE_BAR_FORCE_FOCUS_STC) && 
          m_TextCtrl != nullptr && 
          m_TextCtrl->GetEx() != nullptr)
     {
@@ -514,8 +513,14 @@ wxExTextCtrl::wxExTextCtrl(
       {
         case TYPE_CALC: m_Calcs.Set(this); break;
         case TYPE_COMMAND:
-          if (GetValue() == "n" || GetValue() == "prev") focus = wxExManagedFrame::HIDE_BAR_FORCE;
-          if (GetValue().find("!") == 0) focus = wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC;
+          if (GetValue() == "n" || GetValue() == "prev" || GetValue().StartsWith("ta")) 
+          {
+            focus = wxExManagedFrame::HIDE_BAR_FORCE;
+          }
+          if (GetValue().find("!") == 0) 
+          {
+            focus = wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC;
+          }
           m_Commands.Set(this);
           break;
         case TYPE_FIND:

@@ -9,12 +9,13 @@
 #include <io.h>
 #endif
 #include <iomanip>
+#include <sstream>
+#include <wx/datetime.h>
+#include <wx/filefn.h>
+#include <wx/extension/stat.h>
 #ifdef __UNIX__
 #include <unistd.h>
 #endif
-#include <sstream>
-#include <wx/datetime.h>
-#include <wx/extension/stat.h>
 
 // See also GetTime in listview.cpp
 const std::string wxExStat::GetModificationTime() const 
@@ -32,7 +33,8 @@ const std::string wxExStat::GetModificationTime() const
 bool wxExStat::IsReadOnly() const 
 {
 #ifdef _MSC_VER
-  return (m_IsOk && _access(m_FullPath.c_str(), 4) == -1);
+  return (m_IsOk && ((st_mode & wxS_IWUSR) == 0));
+//  return (m_IsOk && _access(m_FullPath.c_str(), 4) == -1);
 #else
   return (m_IsOk && access(m_FullPath.c_str(), W_OK) == -1);
 #endif
