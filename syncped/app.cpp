@@ -9,7 +9,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/msgout.h>
 #include <wx/extension/cmdline.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tostring.h>
@@ -27,7 +26,6 @@ void App::MacOpenFiles(const wxArrayString& fileNames)
   wxExOpenFiles(frame, wxExToVectorPath(fileNames).Get(), m_Data);
 }
 #endif
-
 bool App::OnInit()
 {
   SetAppName("syncped");
@@ -44,22 +42,30 @@ bool App::OnInit()
         m_Data.Flags(STC_WIN_HEX, DATA_OR);}},
       {{"i", "info", "show version"}, [&](bool on) {
         if (!on) return;
-        wxMessageOutput::Get()->Printf("syncped-%s using:\n%s\nand:\n%s", 
-          wxExGetVersionInfo().GetVersionOnlyString().c_str(),
-          wxExGetVersionInfo().GetDescription().c_str(),
-          wxGetLibraryVersionInfo().GetDescription().c_str());
+        std::cout << 
+          "syncped-" << wxExGetVersionInfo().GetVersionOnlyString().c_str() << " using\n" << 
+            wxExGetVersionInfo().GetDescription().c_str() << " and:\n" << 
+            wxGetLibraryVersionInfo().GetDescription().c_str();
         exit = true;}},
       {{"l", "locale", "show locale"}, [&](bool on) {
         if (!on) return;
-        wxMessageOutput::Get()->Printf("Catalog dir: %s\nName: %s\nCanonical name: %s\nLanguage: %d\nLocale: %s\nIs ok: %d\nIs available: %d",
-          GetCatalogDir().c_str(),
-          GetLocale().GetName().c_str(),
-          GetLocale().GetCanonicalName().c_str(),
-          GetLocale().GetLanguage(), 
-          GetLocale().GetLocale().c_str(),
-          GetLocale().IsOk(),
-          GetLocale().IsAvailable(GetLocale().GetLanguage()));
-          exit = true;}},
+        std::cout << 
+          "Catalog dir: " << GetCatalogDir() <<
+          "\nName: " << GetLocale().GetName().c_str() <<
+          "\nCanonical name: " << GetLocale().GetCanonicalName().c_str() <<
+          "\nLanguage: " << GetLocale().GetLanguage() <<
+          "\nLocale: " << GetLocale().GetLocale().c_str() <<
+          "\nIs ok: " << GetLocale().IsOk();
+          const wxLanguageInfo *info = wxLocale::GetLanguageInfo(GetLocale().GetLanguage());
+          if (info == nullptr)
+          {
+            std::cout << "\nNo info\n";
+          }
+          else
+          {
+            std::cout << "\nIs available: " << GetLocale().IsAvailable(GetLocale().GetLanguage()) << "\n";
+          }
+        exit = true;}},
       {{"o", "splithor", "split tabs horizontally"}, [&](bool on) {
         if (on) m_Split = wxBOTTOM;}},
       {{"O", "splitver", "split tabs vertically"}, [&](bool on) {

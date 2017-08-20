@@ -385,25 +385,10 @@ const char wxExGetFieldSeparator()
 
 int wxExGetIconID(const wxExPath& filename)
 {
-  if (filename.FileExists() || filename.DirExists())
-  {
-    if (!filename.GetExtension().empty())
-    {
-      return wxTheFileIconsTable->GetIconID(filename.GetExtension());
-    }
-    else if (filename.FileExists())
-    {
-      return wxFileIconsTable::file;
-    }
-    else
-    {
-      return wxFileIconsTable::folder;
-    }
-  }
-  else
-  {
-    return wxFileIconsTable::computer;
-  }
+  return filename.FileExists() ? 
+    wxFileIconsTable::file: (filename.DirExists() ? 
+    wxFileIconsTable::folder: 
+    wxFileIconsTable::computer);
 }
 
 int wxExGetNumberOfLines(const std::string& text, bool trim)

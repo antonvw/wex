@@ -26,19 +26,13 @@ int GetHexNumberFromUser(
   wxWindow *parent)
 {
   wxExItem::UseConfig(false);
-
   wxExItemDialog dlg({{message, min, max, value}}, wxExWindowData().Title(caption).Parent(parent));
-  
   wxExItem::UseConfig(true);
   
   ((wxSpinCtrl* )dlg.GetItem(message).GetWindow())->SetBase(16);
   
-  if (dlg.ShowModal() == wxID_CANCEL)
-  {
-    return -1;
-  }
-  
-  return std::any_cast<int>(dlg.GetItemValue(message));
+  return dlg.ShowModal() == wxID_CANCEL ? 
+    -1: std::any_cast<int>(dlg.GetItemValue(message));
 }
 
 const std::string MakeLine(wxExSTC* stc, const std::string& buffer, 
@@ -84,6 +78,7 @@ void wxExHexMode::Activate()
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
   m_STC->SetViewEOL(false);
   m_STC->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
+  m_STC->BeginUndoAction();
   
   wxCharBuffer buffer(m_STC->GetTextRaw());
   SetText(std::string(buffer.data(), buffer.length()));
@@ -157,10 +152,11 @@ void wxExHexMode::Deactivate()
 {
   m_Active = false;
 
+  m_STC->EndUndoAction();
   m_STC->SetControlCharSymbol(0);
   m_STC->SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
   m_STC->SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
-  m_STC->SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
+  m_STC->SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("Whitespace visible"), wxSTC_WS_INVISIBLE));
   m_STC->ClearDocument(false);
   m_STC->AppendTextRaw(m_Buffer.data(), m_Buffer.size());
   m_STC->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
@@ -305,11 +301,7 @@ bool wxExHexMode::Set(bool on)
   
   const bool modified = (m_STC->GetModify());
   
-  m_STC->BeginUndoAction();
-  
   on ? Activate(): Deactivate();
-  
-  m_STC->EndUndoAction();
   
   if (!modified)
   {
@@ -334,7 +326,6 @@ void wxExHexMode::SetText(const std::string text)
   m_Buffer.clear();
   m_BufferOriginal.clear();
 
-  m_STC->BeginUndoAction();
   m_STC->SelectNone();
   m_STC->PositionSave();
   m_STC->ClearDocument(false);
@@ -342,7 +333,6 @@ void wxExHexMode::SetText(const std::string text)
   AppendText(text);
 
   m_STC->PositionRestore();
-  m_STC->EndUndoAction();
 }
   
 void wxExHexMode::Undo()

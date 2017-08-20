@@ -125,35 +125,24 @@ wxExFrameWithHistory::wxExFrameWithHistory(
 void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 {
   const bool replace = (dialogid == ID_REPLACE_IN_FILES);
-  const wxExTool tool =
-    (replace ?
-       ID_TOOL_REPLACE:
-       ID_TOOL_REPORT_FIND);
+  const wxExTool tool = (replace ?
+    ID_TOOL_REPLACE: ID_TOOL_REPORT_FIND);
 
-  if (!wxExStreamToListView::SetupTool(tool, this))
-  {
-    return;
-  }
+  if (!wxExStreamToListView::SetupTool(tool, this)) return;
 
 #ifdef __WXMSW__
   std::thread t([=]{
 #endif
     wxLogStatus(GetFindReplaceInfoText(replace));
       
-    int flags = DIR_FILES;
-    
-    if (wxConfigBase::Get()->ReadBool(m_TextRecursive, true)) 
-    {
-      flags |= DIR_RECURSIVE;
-    }
-
     Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
 
     wxExDirTool dir(
       tool,
       wxExConfigFirstOf(m_TextInFolder),
       wxExConfigFirstOf(m_TextInFiles),
-      flags);
+      DIR_FILES | (wxConfigBase::Get()->ReadBool(m_TextRecursive, true) ? 
+        DIR_RECURSIVE : 0));
 
     if (dir.FindFiles() >= 0)
     {
@@ -373,17 +362,12 @@ void wxExFrameWithHistory::OnCommandItemDialog(
         case wxID_ADD:
           if (GetProject() != nullptr)
           {
-            int flags = 0;
+            long flags = 0;
+            wxConfigBase* cfg = wxConfigBase::Get();
           
-            if (wxConfigBase::Get()->ReadBool(GetProject()->GetTextAddFiles(), true)) 
-            {
-              flags |= DIR_FILES;
-            }
-          
-            if (wxConfigBase::Get()->ReadBool(GetProject()->GetTextAddRecursive(), true)) 
-            {
-              flags |= DIR_DIRS;
-            }
+            if (cfg->ReadBool(GetProject()->GetTextAddFiles(), true)) flags |= DIR_FILES;
+            if (cfg->ReadBool(GetProject()->GetTextAddRecursive(), true)) flags |= DIR_RECURSIVE;
+            if (cfg->ReadBool(GetProject()->GetTextAddFolders(), true)) flags |= DIR_DIRS;
 
             GetProject()->AddItems(
               wxExConfigFirstOf(GetProject()->GetTextInFolder()),

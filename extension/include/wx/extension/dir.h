@@ -53,7 +53,7 @@ public:
   const auto & GetFileSpec() const {return m_FileSpec;};
 
   /// Returns the flags.
-  int GetFlags() const {return m_Flags;};
+  auto GetFlags() const {return m_Flags;};
  
   /// Do something with the dir.
   /// Not made pure virtual, to allow this 

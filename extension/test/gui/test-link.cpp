@@ -142,8 +142,12 @@ TEST_CASE("wxExLink")
     REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).Path().empty());
     REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("some text www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
-    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data).Path() == "https://github.com/antonvw/wxExtension" );
-    REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wxExtension)", data).Path() == "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data).Path() == 
+      "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.GetPath("some text (https://github.com/antonvw/wxExtension)", data).Path() == 
+      "https://github.com/antonvw/wxExtension" );
+    REQUIRE( lnk.GetPath("some text [https://github.com/antonvw/wxExtension]", data).Path() == 
+      "https://github.com/antonvw/wxExtension" );
     REQUIRE( lnk.GetPath("httpd = new httpd", data).Path().empty());
     data.Line(0);
     REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data).Path().empty() );

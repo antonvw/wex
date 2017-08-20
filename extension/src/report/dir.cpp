@@ -47,10 +47,7 @@ wxExDirWithListView::wxExDirWithListView(wxExListView* listview,
 
 bool wxExDirWithListView::OnDir(const wxExPath& dir)
 {
-  if (wxConfigBase::Get()->ReadBool(_("Add folders"), true))
-  {
-    wxExListItem(m_ListView, dir, GetFileSpec()).Insert();
-  }
+  wxExListItem(m_ListView, dir, GetFileSpec()).Insert();
   return true;
 }
 

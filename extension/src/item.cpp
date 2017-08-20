@@ -338,8 +338,9 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Pos(), 
         m_Data.Window().Size(),
         !m_Initial.has_value() ? wxArrayString(): std::any_cast<wxArrayString>(m_Initial),
-        m_Data.Window().Style(),
-        m_Data.Validator() != nullptr ? *m_Data.Validator(): wxDefaultValidator);
+        m_Data.Window().Style());
+      if (m_Data.Validator() != nullptr)
+        m_Window->SetValidator(*m_Data.Validator());
       break;
 
     case ITEM_COMMANDLINKBUTTON:
@@ -600,8 +601,9 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
         !m_Initial.has_value() ? wxString(): std::any_cast<wxString>(m_Initial),
         m_Data.Window().Pos(),
         m_Data.Window().Size(),
-        m_Data.Window().Style() | (readonly ? wxTE_READONLY: 0),
-        m_Data.Validator() != nullptr ? *m_Data.Validator(): wxDefaultValidator);
+        m_Data.Window().Style() | (readonly ? wxTE_READONLY: 0));
+      if (m_Data.Validator() != nullptr)
+        m_Window->SetValidator(*m_Data.Validator());
       break;
 
     case ITEM_TEXTCTRL_FLOAT:
@@ -610,8 +612,11 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
         !m_Initial.has_value() ? wxString(): std::any_cast<wxString>(m_Initial),
         m_Data.Window().Pos(), 
         m_Data.Window().Size(), 
-        m_Data.Window().Style() | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
-        m_Data.Validator() == nullptr ? wxFloatingPointValidator<double>(): *m_Data.Validator());
+        m_Data.Window().Style() | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT);
+      if (m_Data.Validator() == nullptr)
+        m_Window->SetValidator(wxFloatingPointValidator<double>());
+      else 
+        m_Window->SetValidator(*m_Data.Validator());
       break;
       
     case ITEM_TEXTCTRL_INT:
@@ -620,8 +625,11 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
         !m_Initial.has_value() ? wxString(): std::any_cast<wxString>(m_Initial),
         m_Data.Window().Pos(), 
         m_Data.Window().Size(), 
-        m_Data.Window().Style() | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
-        m_Data.Validator() == nullptr ? wxIntegerValidator<int>(): *m_Data.Validator());
+        m_Data.Window().Style() | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT);
+      if (m_Data.Validator() == nullptr)
+        m_Window->SetValidator(wxIntegerValidator<int>());
+      else 
+        m_Window->SetValidator(*m_Data.Validator());
       break;
 
     case ITEM_TOGGLEBUTTON:

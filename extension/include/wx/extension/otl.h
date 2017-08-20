@@ -10,6 +10,7 @@
 #if wxExUSE_OTL
 #define OTL_ODBC
 #define OTL_STL
+#define OTL_DESTRUCTORS_DO_NOT_THROW
 //#define OTL_UNICODE
 #if __UNIX__
 #define OTL_ODBC_UNIX

@@ -197,7 +197,13 @@ DecoratedFrame::DecoratedFrame(App* app)
   if (m_App->GetDebug())
   {
     menuDebug = new wxExMenu();
-    GetDebug()->AddMenu(menuDebug);
+
+    if (GetDebug()->AddMenu(menuDebug) == 0)
+    {
+      delete menuDebug;
+      menuDebug = nullptr;
+      std::cout << "No debug menu present\n";
+    }
   }
 
   wxMenu* menuOptions = new wxMenu();

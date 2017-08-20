@@ -49,7 +49,7 @@ public:
     const wxExWindowData& data);
     
   // Returns ex component.
-  wxExEx* GetEx() {return m_ex;};
+  auto* GetEx() {return m_ex;};
     
   // Sets ex component.
   // Returns false if command not supported.

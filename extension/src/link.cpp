@@ -21,12 +21,12 @@
 class wxExPaths
 {
 public:
-  wxExPaths() : m_pl(wxExTokenizer(
+  wxExPaths() : m_Paths(wxExTokenizer(
     wxConfigBase::Get()->Read(_("Include directory")).ToStdString(),
       "\r\n").Tokenize<std::vector<std::string>>()) {;};
 
   wxExPath FindPath(const std::string& path) const {
-    for (const auto& it : m_pl)
+    for (const auto& it : m_Paths)
     {
       const wxExPath valid(it, path);
 
@@ -37,7 +37,7 @@ public:
     }
     return wxExPath();};
 private:
-  const std::vector<std::string> m_pl;
+  const std::vector<std::string> m_Paths;
 };
 
 wxExLink::wxExLink(wxExSTC* stc)
@@ -74,7 +74,7 @@ const wxExPath wxExLink::FindPath(
   {
     // with a possible delimiter
     std::string match(v[0]);
-    const std::string delimiters("\")");
+    const std::string delimiters("\")]");
     
     for (const auto c : delimiters)
     {
@@ -140,7 +140,8 @@ const wxExPath wxExLink::FindPath(
 }
 
 // text contains selected text, or current line
-const wxExPath wxExLink::GetPath(const std::string& text, wxExControlData& data) const
+const wxExPath wxExLink::GetPath(
+  const std::string& text, wxExControlData& data) const
 {
   const wxExPath path(FindPath(text, data));
 
@@ -179,7 +180,8 @@ const wxExPath wxExLink::GetPath(const std::string& text, wxExControlData& data)
 
   // Check whether last word is a file.
   int pos = path.Path().string().find_last_of(' ');
-  wxExPath word = wxExSkipWhiteSpace((pos != std::string::npos ? path.Path().string().substr(pos): std::string()));
+  wxExPath word = wxExSkipWhiteSpace((
+    pos != std::string::npos ? path.Path().string().substr(pos): std::string()));
 
   if (!word.Path().empty())
   {
