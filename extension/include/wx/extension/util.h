@@ -35,6 +35,10 @@ class wxExVCSCommand;
 // This one is necessary for translation macro if STL is enabled.
 const char* _X(const char* text);
 
+/// Returns string after last occurrence of c
+/// Returns the whole string if c is not found.
+const std::string AfterLast(const std::string& text, char c);
+
 /// Aligns text.
 const std::string wxExAlignText(
   /// lines to align
@@ -78,6 +82,9 @@ bool wxExAutoCompleteFileName(
   /// (and v contains at least 2 elements).
   std::vector<std::string> & v);
   
+/// Launch default browser and search for text.
+void wxExBrowserSearch(const std::string& text);
+
 /// Adds data to the clipboard.
 bool wxExClipboardAdd(const std::string& text);
 

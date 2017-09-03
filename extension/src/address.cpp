@@ -281,18 +281,6 @@ bool wxExAddress::Read(const std::string& arg) const
   }
 }
   
-bool wxExAddress::Show() const
-{
-  if (GetLine() <= 0)
-  {
-    return false;
-  }
-  
-  m_Ex->GetFrame()->ShowExMessage(std::to_string(GetLine()));
-  
-  return true;
-}
-
 void wxExAddress::SetLine(int line)
 {
   if (line > m_Ex->GetSTC()->GetLineCount())
@@ -307,5 +295,17 @@ void wxExAddress::SetLine(int line)
   {
     m_Line = line;
   }
+}
+
+bool wxExAddress::WriteLineNumber() const
+{
+  if (GetLine() <= 0)
+  {
+    return false;
+  }
+  
+  m_Ex->GetFrame()->ShowExMessage(std::to_string(GetLine()));
+  
+  return true;
 }
 #endif // wxUSE_GUI

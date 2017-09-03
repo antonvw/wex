@@ -38,13 +38,13 @@ void wxExLexers::Apply(wxExSTC* stc) const
 {
   m_DefaultStyle.Apply(stc);
 
-  for (auto& i : m_Indicators) i.Apply(stc);
-  for (auto& p : m_GlobalProperties) p.Apply(stc);
-  for (auto& m : m_Markers) m.Apply(stc);
+  for (const auto& i : m_Indicators) i.Apply(stc);
+  for (const auto& p : m_GlobalProperties) p.Apply(stc);
+  for (const auto& m : m_Markers) m.Apply(stc);
   
   if (stc->GetHexMode().Active())
   {
-    for (auto& s : m_StylesHex) s.Apply(stc);
+    for (const auto& s : m_StylesHex) s.Apply(stc);
   }
 }
   
@@ -62,7 +62,7 @@ void wxExLexers::ApplyGlobalStyles(wxExSTC* stc)
 
   stc->StyleClearAll();
 
-  for (auto& s : m_Styles) s.Apply(stc);
+  for (const auto& s : m_Styles) s.Apply(stc);
 
   if (!m_FoldingBackgroundColour.empty())
   {
@@ -473,10 +473,7 @@ bool wxExLexers::ShowDialog(wxExSTC* stc) const
   auto lexer = stc->GetLexer().GetDisplayLexer();
   if (!SingleChoice(stc, _("Enter Lexer"), s, lexer)) return false;
 
-  if (lexer.empty())
-    stc->GetLexer().Reset();
-  else  
-    stc->GetLexer().Set(lexer, true); // allow fold
+  lexer.empty() ? stc->GetLexer().Reset(): (void)stc->GetLexer().Set(lexer, true);
   
   return true;
 }

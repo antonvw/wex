@@ -23,8 +23,9 @@ enum wxExSTCMenuFlags
   STC_MENU_NONE      = 0,      ///< no context menu
   STC_MENU_CONTEXT   = 1 << 1, ///< context menu
   STC_MENU_OPEN_LINK = 1 << 2, ///< for adding link open menu
-  STC_MENU_VCS       = 1 << 3, ///< for adding vcs menu
-  STC_MENU_DEBUG     = 1 << 4, ///< for adding debug menu
+  STC_MENU_OPEN_WWW  = 1 << 3, ///< for adding search on www open menu
+  STC_MENU_VCS       = 1 << 4, ///< for adding vcs menu
+  STC_MENU_DEBUG     = 1 << 5, ///< for adding debug menu
 };
 
 /// Window flags.

@@ -377,7 +377,7 @@ TEST_CASE("wxExVi")
   // Test other commands (ZZ not tested).
   for (auto& other_command : vi->GetOtherCommands())
   {
-    stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
+    stc->SetText("first second\nthird\nfourth\n");
 
     if (!isalpha(other_command.first.front()) && 
         other_command.first.front() != '\x12' &&

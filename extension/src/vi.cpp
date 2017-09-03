@@ -527,14 +527,24 @@ wxExVi::wxExVi(wxExSTC* stc)
       }
       return true;}},
     {"&", [&](const std::string& command){(void)Command(":.&");return true;}},
-    {"*#", [&](const std::string& command){
+    {"*#!", [&](const std::string& command){
       const auto start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
       const auto end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
-      wxExFindReplaceData::Get()->SetFindString(GetSTC()->GetTextRange(start, end).ToStdString());  
-      GetSTC()->FindNext(
-        "\\<"+ wxExFindReplaceData::Get()->GetFindString() + "\\>", 
-        GetSearchFlags(), 
-        command == "*");
+      const std::string word(GetSTC()->GetSelectedText().empty() ?
+        GetSTC()->GetTextRange(start, end).ToStdString():
+        GetSTC()->GetSelectedText());
+      if (command == "!")
+      {
+        wxExBrowserSearch(word);
+      }
+      else
+      {
+        wxExFindReplaceData::Get()->SetFindString(word);
+        GetSTC()->FindNext(
+          "\\<"+ wxExFindReplaceData::Get()->GetFindString() + "\\>", 
+          GetSearchFlags(), 
+          command == "*");
+      }
       return true;}},
     {"\t", [&](const std::string& command){
       // just ignore tab, except on first col, then it indents
@@ -638,15 +648,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         {
         } return true;)}},
     // ctrl-g
-    {"\x07", [&](const std::string& command){
-      GetFrame()->ShowExMessage(wxString::Format("%s line %d of %d --%d%%-- level %d", 
-        GetSTC()->GetFileName().GetFullName().c_str(), 
-        GetSTC()->GetCurrentLine() + 1,
-        GetSTC()->GetLineCount(),
-        100 * (GetSTC()->GetCurrentLine() + 1)/ GetSTC()->GetLineCount(),
-        (GetSTC()->GetFoldLevel(GetSTC()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
-         - wxSTC_FOLDLEVELBASE).ToStdString());
-      return true;}},
+    {"\x07", [&](const std::string& command){InfoMessage(); return true;}},
     // ctrl-h
     {"\x08", [&](const std::string& command){
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) GetSTC()->DeleteBack();
@@ -719,10 +721,13 @@ bool wxExVi::Command(const std::string& command, bool is_handled)
     return true;
   }
 
+  const auto& it = GetMacros().GetMaps().find(command);
+  const auto& use_command(it != GetMacros().GetMaps().end() ? it->second: command);
+
   m_Count = 1;
   bool handled = true;
   const auto size = GetSTC()->GetLength();
-  std::string rest(command);
+  std::string rest(use_command);
   
   if (!rest.empty() && rest.front() == '"')
   {
@@ -777,15 +782,15 @@ bool wxExVi::Command(const std::string& command, bool is_handled)
   if (!m_Dot)
   {
     // Set last command.
-    SetLastCommand(command, 
+    SetLastCommand(use_command, 
       // Always when in insert mode,
       // or this was a file change command (so size different from before).
       ModeInsert() || size != GetSTC()->GetLength());
   }
     
-  if (GetMacros().IsRecording() && command[0] != 'q' && command != "/" && command != "?")
+  if (GetMacros().IsRecording() && use_command[0] != 'q' && use_command != "/" && use_command != "?")
   {
-    GetMacros().Record(command);
+    GetMacros().Record(use_command);
   }  
   
   return true;

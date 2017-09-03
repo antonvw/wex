@@ -72,7 +72,7 @@ TEST_CASE("wxExItem")
       // therefore, we should not come here
       REQUIRE( 1 == 0);
     }
-    catch (std::exception& e)
+    catch (std::exception&)
     {
     }
     

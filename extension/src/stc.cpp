@@ -407,19 +407,21 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_Frame->GetDebug()->Execute(event.GetId() - ID_EDIT_DEBUG_FIRST, this);}, ID_EDIT_DEBUG_FIRST, ID_EDIT_DEBUG_LAST);
 
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {wxExBrowserSearch(GetSelectedText().ToStdString());}, ID_EDIT_OPEN_WWW);
+
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen(LINK_OPEN);}, ID_EDIT_OPEN_LINK);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const std::string propnames(PropertyNames());
     std::string properties = (!propnames.empty() ? "[Current properties]\n": std::string());
     
     // Add current (global and lexer) properties.  
-    for (const auto& it1 : wxExLexers::Get()->GetProperties())
+    for (const auto& it : wxExLexers::Get()->GetProperties())
     {
-      properties += it1.GetName() + "=" + GetProperty(it1.GetName()) + "\n";
+      properties += it.GetName() + "=" + GetProperty(it.GetName()) + "\n";
     }
-    for (const auto& it2 : m_Lexer.GetProperties())
+    for (const auto& it : m_Lexer.GetProperties())
     {
-      properties += it2.GetName() + "=" + GetProperty(it2.GetName()) + "\n";
+      properties += it.GetName() + "=" + GetProperty(it.GetName()) + "\n";
     }
     // Add available properties.
     if (!propnames.empty())
@@ -643,7 +645,7 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
 
 void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 {
-  const wxString sel = GetSelectedText();
+  const std::string sel = GetSelectedText().ToStdString();
 
   if (GetCurrentLine() == 0 && !wxExLexers::Get()->GetLexers().empty())
   {
@@ -675,21 +677,23 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 #endif
 
+  if (m_Data.Menu() & STC_MENU_OPEN_WWW && !sel.empty())
+  {
+    menu.AppendSeparator();
+    menu.Append(ID_EDIT_OPEN_WWW, _("&Search"));
+  }
+  
   if (m_Data.Menu() & STC_MENU_DEBUG)
   {
     m_Frame->GetDebug()->AddMenu(&menu, true);
   }
   
-  if (m_Data.Menu() & STC_MENU_VCS)
+  if ((m_Data.Menu() & STC_MENU_VCS) &&
+       GetFileName().FileExists() && sel.empty() &&
+       wxExVCS::DirExists(GetFileName()))
   {
-    if (GetFileName().FileExists() && sel.empty())
-    {
-      if (wxExVCS::DirExists(GetFileName()))
-      {
-        menu.AppendSeparator();
-        menu.AppendVCS(GetFileName());
-      }
-    }
+    menu.AppendSeparator();
+    menu.AppendVCS(GetFileName());
   }
 
   if (!m_vi.GetIsActive() && GetTextLength() > 0)
@@ -714,7 +718,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
       menuSelection->Append(ID_EDIT_UPPERCASE, _("&Uppercase\tF11"));
       menuSelection->Append(ID_EDIT_LOWERCASE, _("&Lowercase\tF12"));
 
-      if (wxExGetNumberOfLines(sel.ToStdString()) > 1)
+      if (wxExGetNumberOfLines(sel) > 1)
       {
         wxExMenu* menuSort = new wxExMenu(menu.GetStyle());
         menuSort->Append(wxID_SORT_ASCENDING);

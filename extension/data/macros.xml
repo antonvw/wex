@@ -143,4 +143,7 @@ Variables are expanded when playing back the macro.
   
   <!-- An abbreviation macro -->
   <abbreviation name="CR">Copyright</abbreviation>
+
+  <!-- A map macro -->
+  <map name=":p">:pwd</map>
 </macros>

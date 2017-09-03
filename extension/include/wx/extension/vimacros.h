@@ -40,6 +40,9 @@ public:
   /// Returns current or last macro played back (or variable expanded).
   const auto& GetMacro() const {return m_Macro;};
   
+  /// Returns maps.
+  const auto & GetMaps() const {return m_Maps;};
+  
   /// Returns content of register.
   const std::string GetRegister(const char name) const;
 
@@ -87,8 +90,11 @@ public:
     /// the text is appended after the last command
     bool new_command = true);
   
-  /// Sets abbreviation (overwrites existing abbreviationi).
-  void SetAbbreviation(const std::string& ab, const std::string& value);
+  /// Sets abbreviation (overwrites existing abbreviation).
+  void SetAbbreviation(const std::string& name, const std::string& value);
+  
+  /// Sets map (overwrites existing map).
+  void SetMap(const std::string& name, const std::string& value);
   
   /// Sets register (overwrites existing register).
   /// The name should be a one letter register.
@@ -100,7 +106,7 @@ public:
   void StartRecording(const std::string& macro);
   
   /// Does a recorded macro or variable starts with text.
-  bool StartsWith(const std::string& text) const;
+  bool StartsWith(const std::string_view& text) const;
   
   /// Stops recording.
   void StopRecording();
@@ -143,8 +149,17 @@ public:
   /// Returns true if document is saved.
   static bool SaveDocument(bool only_if_modified = true);
 private:  
+  void Set(
+    std::map<std::string, std::string> & container,
+    const std::string& xpath,
+    const std::string& name,
+    const std::string& value);
+
   static void AskForInput();
-  static void ParseNodeAbbreviation(const pugi::xml_node& node);
+  static void ParseNode(
+    const pugi::xml_node& node,
+    const std::string& name,
+    std::map<std::string, std::string> & container);
   static void ParseNodeMacro(const pugi::xml_node& node);
   static void ParseNodeVariable(const pugi::xml_node& node);
   static void SaveMacro(const std::string& macro);
@@ -164,7 +179,10 @@ private:
   /// All macros (and registers), as a map of name and a vector of commands.
   /// Registers are 1 letter macros.
   static std::map<std::string, std::vector<std::string> > m_Macros;
-  
+
+  /// All maps, as a map of name and command.  
+  static std::map<std::string, std::string> m_Maps;
+
   /// All variables, as a map of name and variable.
   static std::map<std::string, wxExVariable> m_Variables;
 };

@@ -897,7 +897,7 @@ std::ostream& wxExItem::Write(
     }
     catch (std::bad_cast& e)
     {
-      s << "<bad cast>";
+      s << "<bad cast: " << e.what() << ">";
     }
   }
   else

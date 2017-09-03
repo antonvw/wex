@@ -531,7 +531,7 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
 
 wxExColumn wxExListView::Column(const std::string& name) const
 {
-  for (auto& it : m_Columns)
+  for (const auto& it : m_Columns)
   {
     if (it.GetText() == name)
     {
@@ -736,7 +736,7 @@ bool wxExListView::FindNext(const std::string& text, bool find_next)
 
 unsigned int wxExListView::GetArtID(const wxArtID& artid)
 {
-  const auto it = m_ArtIDs.find(artid);
+  const auto& it = m_ArtIDs.find(artid);
 
   if (it != m_ArtIDs.end())
   {

@@ -17,7 +17,6 @@ public:
   wxExRepSampleApp() {}
 private:
   virtual bool OnInit() override;
-  DECLARE_NO_COPY_CLASS(wxExRepSampleApp)
 };
 
 /// Use wxExFrameWithHistory.

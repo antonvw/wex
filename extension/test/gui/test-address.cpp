@@ -111,6 +111,6 @@ TEST_CASE("wxExAddress")
   REQUIRE( address3.Read("!ls"));
 #endif
   
-  // Test Show.
-  REQUIRE( address3.Show());
+  // Test WriteLineNumber.
+  REQUIRE( address3.WriteLineNumber());
 }

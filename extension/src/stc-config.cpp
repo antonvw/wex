@@ -40,6 +40,7 @@ public:
     {_("Line number"), ITEM_TEXTCTRL_INT, 60l},
     {_("Print flags"), ITEM_TEXTCTRL_INT, (long)wxSTC_PRINT_BLACKONWHITE},
     {_("Scroll bars"), ITEM_CHECKBOX, true},
+    {_("Search engine"), ITEM_COMBOBOX, wxString("https://duckduckgo.com")},
     {_("Show mode"), ITEM_CHECKBOX, true},
 #if wxCHECK_VERSION(3,1,1)
     {_("Tab draw mode"), ITEM_TEXTCTRL_INT, (long)wxSTC_TD_LONGARROW},
@@ -138,7 +139,8 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
                _X("Scroll bars"),
                _X("Auto complete"),
                _X("vi mode"),
-               _X("vi tag fullpath")}}}},
+               _X("vi tag fullpath")}},
+            {_X("Search engine"), ITEM_COMBOBOX}}},
           {_X("Page2"), 
             {{_X("Auto indent"), {
                {INDENT_NONE, _X("None")},

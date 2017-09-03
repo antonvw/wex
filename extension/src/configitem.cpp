@@ -228,6 +228,9 @@ wxExConfigDefaults::wxExConfigDefaults(
           case ITEM_COLOURPICKERWIDGET:
             m_Config->ReadObject(std::get<0>(it), std::any_cast<wxColour>(std::get<2>(it)));
             break;
+          case ITEM_COMBOBOX:
+            m_Config->Read(std::get<0>(it), std::any_cast<wxString>(std::get<2>(it)));
+            break;
           case ITEM_FONTPICKERCTRL:
             m_Config->ReadObject(std::get<0>(it), std::any_cast<wxFont>(std::get<2>(it)));
             break;

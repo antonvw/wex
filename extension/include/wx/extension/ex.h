@@ -96,6 +96,9 @@ public:
   
   /// Returns STC component.
   auto * GetSTC() {return m_STC;};
+
+  /// Writes info message.
+  void InfoMessage() const;
   
   /// Plays back a recorded macro or expands a variable.
   /// If specified macro is empty,
@@ -163,6 +166,11 @@ protected:
 private:
   bool CommandHandle(const std::string& command) const;
   bool CommandAddress(const std::string& command);
+  bool Handle(
+    const std::string& kind,
+    const std::string& command,
+    const std::map<std::string, std::string> & container,
+    std::function<bool(const std::string&, const std::string&)> cb);
   void ShowDialog(const std::string& title, const std::string& text, bool prop_lexer = false);
     
   const wxExMarker m_MarkerSymbol = wxExMarker(0);

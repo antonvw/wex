@@ -70,7 +70,7 @@ public:
   bool Read(const std::string& arg) const;
   
   /// Shows this address in the ex bar.
-  bool Show() const;
+  bool WriteLineNumber() const;
 private:
   /// Sets (vi) line number.
   void SetLine(int line);
@@ -78,6 +78,6 @@ private:
   wxExEx* m_Ex;
   int m_Line = 0;
   
-  std::string m_Address;
+  std::string m_Address; // set by address range
 };
 #endif // wxUSE_GUI
