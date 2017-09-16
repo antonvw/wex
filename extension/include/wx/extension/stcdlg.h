@@ -11,7 +11,6 @@
 #include <wx/extension/window-data.h>
 
 #if wxUSE_GUI
-class wxExLexer;
 class wxExSTC;
 
 /// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
@@ -30,7 +29,7 @@ public:
     const wxExWindowData& data = wxExWindowData());
     
   /// Returns the STC.
-  wxExSTC* GetSTC() {return m_STC;};
+  auto* GetSTC() {return m_STC;};
 private:
   wxExSTC* m_STC;
 };

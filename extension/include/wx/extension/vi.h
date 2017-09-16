@@ -87,6 +87,7 @@ private:
   void InsertModeNormal(const std::string& text);
   bool MotionCommand(int type, std::string& command, bool is_handled = false);
   bool OtherCommand(std::string& command) const;
+  bool ParseCommand(std::string& command, bool is_handled);
   bool Put(bool after);
 
   static std::string m_LastFindCharCommand;

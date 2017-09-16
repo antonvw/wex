@@ -13,6 +13,7 @@
 #include <utility>
 #include <vector>
 #include <wx/extension/marker.h>
+#include <wx/extension/vimacros.h> //for types
 
 #if wxUSE_GUI
 
@@ -166,11 +167,17 @@ protected:
 private:
   bool CommandHandle(const std::string& command) const;
   bool CommandAddress(const std::string& command);
-  bool Handle(
-    const std::string& kind,
-    const std::string& command,
-    const std::map<std::string, std::string> & container,
-    std::function<bool(const std::string&, const std::string&)> cb);
+
+  template <typename S, typename T> 
+    bool HandleContainer(
+      const std::string& kind,
+      const std::string& command,
+      const T * container,
+      std::function<bool(const std::string&, const std::string&)> cb);
+
+  template <typename S, typename T>
+  std::string ReportContainer(const T & container) const;
+
   void ShowDialog(const std::string& title, const std::string& text, bool prop_lexer = false);
     
   const wxExMarker m_MarkerSymbol = wxExMarker(0);

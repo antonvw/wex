@@ -46,9 +46,9 @@ const char* _X(const char* text)
 #endif
 }
 
-const std::string wxExAfterLast(const std::string& text, char c)
+const std::string wxExAfter(const std::string& text, char c, bool first)
 {
-  const size_t pos = text.rfind(c);
+  const size_t pos = (first ? text.find(c): text.rfind(c));
 
   return
     (pos == std::string::npos ? text: text.substr(pos + 1));

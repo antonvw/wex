@@ -110,6 +110,15 @@ TEST_CASE("wxExEx")
     REQUIRE(!ex->Command(command));
     REQUIRE( ex->GetLastCommand() != command);
   }
+
+  // Test map.
+  stc->SetText("123456789");
+  REQUIRE( ex->Command(":map :xx :%d"));
+  REQUIRE( ex->Command(":xx"));
+  REQUIRE( ex->GetLastCommand() == ":%d");
+  REQUIRE( ex->Command(":xx"));
+  REQUIRE( stc->GetText().empty());
+  REQUIRE( ex->Command(":unm xx"));
   
   // Test abbreviations.
   stc->SetText("xx\n");

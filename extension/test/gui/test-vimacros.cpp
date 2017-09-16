@@ -59,6 +59,9 @@ TEST_CASE("wxExViMacros")
   REQUIRE( macros.GetMacro() == "a");
   REQUIRE( macros.Get("a").front() == "a");
   REQUIRE(!macros.IsRecorded("b"));
+
+  REQUIRE(!macros.GetKeysMap().empty());
+  macros.SetKeyMap("4", "www");
   
   stc->SetText("");
   REQUIRE(!macros.IsPlayback());

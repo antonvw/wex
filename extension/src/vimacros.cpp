@@ -29,7 +29,10 @@ std::string wxExViMacros::m_Macro;
 
 std::map <std::string, std::string> wxExViMacros::m_Abbreviations;
 std::map <std::string, std::vector< std::string > > wxExViMacros::m_Macros;
-std::map <std::string, std::string> wxExViMacros::m_Maps;
+std::map<std::string, std::string> wxExViMacros::m_Map;
+wxExViMacrosMapType wxExViMacros::m_MapAltKeys;
+wxExViMacrosMapType wxExViMacros::m_MapControlKeys;
+wxExViMacrosMapType wxExViMacros::m_MapKeys;
 std::map <std::string, wxExVariable > wxExViMacros::m_Variables;
 
 void wxExViMacros::AskForInput()
@@ -379,14 +382,18 @@ bool wxExViMacros::LoadDocument()
   m_IsModified = false;
   m_Abbreviations.clear();
   m_Macros.clear();
-  m_Maps.clear();
+  m_Map.clear();
+  m_MapAltKeys.clear();
+  m_MapControlKeys.clear();
+  m_MapKeys.clear();
   m_Variables.clear();
   
   for (const auto& child: m_doc.document_element().children())
   {
     if (strcmp(child.name(), "abbreviation") == 0)
     {
-      ParseNode(child, "abbreviation", m_Abbreviations);
+      ParseNode<std::string, std::map <std::string, std::string>> (
+        child, "abbreviation", m_Abbreviations);
     }
     else if (strcmp(child.name(), "macro") == 0)
     {
@@ -394,7 +401,19 @@ bool wxExViMacros::LoadDocument()
     }
     else if (strcmp(child.name(), "map") == 0)
     {
-      ParseNode(child, "map", m_Maps);
+      ParseNode<std::string, std::map<std::string, std::string>>(child, "map", m_Map);
+    }
+    else if (strcmp(child.name(), "map-alt") == 0)
+    {
+      ParseNode<int, wxExViMacrosMapType>(child, "map-alt", m_MapAltKeys);
+    }
+    else if (strcmp(child.name(), "map-control") == 0)
+    {
+      ParseNode<int, wxExViMacrosMapType>(child, "map-control", m_MapControlKeys);
+    }
+    else if (strcmp(child.name(), "map-key") == 0)
+    {
+      ParseNode<int, wxExViMacrosMapType>(child, "map-key", m_MapKeys);
     }
     else if (strcmp(child.name(), "variable") == 0)
     {
@@ -405,16 +424,19 @@ bool wxExViMacros::LoadDocument()
   return true;
 }
 
+template <typename S, typename T> 
 void wxExViMacros::ParseNode(
   const pugi::xml_node& node,
   const std::string& name,
-  std::map<std::string, std::string> & container)
+  T & container)
 {
-  const std::string value(node.attribute("name").value());
+  const S value = wxExTypeToValue<S>(node.attribute("name").value()).get();
 
   if (container.find(value) != container.end())
   {
-    std::cerr<< "Duplicate " << name << ": " << value << " with offset: " <<
+    std::cerr<< "Duplicate " << 
+      name << ": " << value << " from: " << 
+      node.attribute("name").value() << " with offset: " <<
       node.offset_debug() << "\n";
   }
   else
@@ -596,8 +618,9 @@ void wxExViMacros::SaveMacro(const std::string& macro)
   }
 }
 
+template <typename S, typename T> 
 void wxExViMacros::Set(
-  std::map<std::string, std::string> & container,
+  T  & container,
   const std::string& xpath,
   const std::string& name,
   const std::string& value)
@@ -614,15 +637,15 @@ void wxExViMacros::Set(
 
     if (value.empty())
     {
-      container.erase(name);
+      container.erase(wxExTypeToValue<S>(name).get());
     }
     else
     {
-      pugi::xml_node node_ab = m_doc.document_element().append_child(xpath.c_str());
-      node_ab.append_attribute("name") = name.c_str();
-      node_ab.text().set(value.c_str());
+      pugi::xml_node child = m_doc.document_element().append_child(xpath.c_str());
+      child.append_attribute("name") = name.c_str();
+      child.text().set(value.c_str());
 
-      container[name] = value;
+      container[wxExTypeToValue<S>(name).get()] = value;
     }
 
     m_IsModified = true;
@@ -635,12 +658,27 @@ void wxExViMacros::Set(
 
 void wxExViMacros::SetAbbreviation(const std::string& name, const std::string& value)
 {
-  Set(m_Abbreviations, "abbreviation", name, value);
+  Set<std::string, std::map<std::string, std::string>>(m_Abbreviations, "abbreviation", name, value);
 }
 
-void wxExViMacros::SetMap(const std::string& name, const std::string& value)
+void wxExViMacros::SetKeyMap(
+  const std::string& name, 
+  const std::string& value,
+  wxExViMacrosKeyType type)
 {
-  Set(m_Maps, "map", name, value);
+  switch (type)
+  {
+    case KEY_ALT: Set<int, wxExViMacrosMapType>(m_MapAltKeys, "map-alt", name, value); break;
+    case KEY_CONTROL: Set<int, wxExViMacrosMapType>(m_MapControlKeys, "map-control", name, value); break;
+    case KEY_NORMAL: Set<int, wxExViMacrosMapType>(m_MapKeys, "map-key", name, value); break;
+  }
+}
+
+void wxExViMacros::SetMap(
+  const std::string& name, 
+  const std::string& value)
+{
+  Set<std::string, std::map<std::string, std::string>>(m_Map, "map", name, value);
 }
 
 bool wxExViMacros::SetRegister(const char name, const std::string& value)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 Name:      macros.xml
-Purpose:   vi macros, variables and abbreviations for wxExtension.
+Purpose:   vi macros, variables, abbreviations and key maps for wxExtension.
 Author:    Anton van Wezenbeek
 Copyright: (c) 2017, Anton van Wezenbeek
 
@@ -13,6 +13,9 @@ followed by a letter, and ending with a q as well.
   
 An abbreviation is expanded during insertion when you enter
 the text. From vi you can enter an abbreviation using :ab.
+
+A key map allows you to use your owh shortcuts for vi or ex
+commands. From vi you can enter a map using :map.
 
 Each macro can have several commands.  
 
@@ -95,8 +98,7 @@ Variables are expanded when playing back the macro.
        it finds corresponding method in a test.cpp file -->
   <macro name="Coverage">
     <command>/ +[a-z]+(</command>
-    <command>b</command>
-    <command>b</command>
+    <command>bb</command>
     <command>*</command>
     <command>:prev</command>
     <command>n</command>
@@ -144,6 +146,22 @@ Variables are expanded when playing back the macro.
   <!-- An abbreviation macro -->
   <abbreviation name="CR">Copyright</abbreviation>
 
-  <!-- A map macro -->
-  <map name=":p">:pwd</map>
+  <!-- A alt key macro for alt key chars -->
+  <map-alt name="49">$</map-alt>
+
+  <!-- A map macro (for ex macro's) -->
+  <map name=":A">:abb</map>
+  <map name=":M">:map</map>
+
+  <!-- A control key macro for control chars outside normal range -->
+  <map-control name="]">Q</map-control>
+  <map-control name="[">S</map-control>
+
+  <!-- A key macro for ascii characters, including ctrl-a etc. -->
+  <!-- control g -->
+  <map-key name="7">:f</map-key>
+  <!-- ampersand -->
+  <map-key name="38">:.&amp;</map-key>
+  <map-key name="D">d$</map-key>
+  <map-key name="Y">y_</map-key>
 </macros>
