@@ -91,15 +91,16 @@ bool wxExApp::OnInit()
   // README: We use the canonical name, also for windows, not sure whether that is
   // the best.
   m_CatalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
-    m_Locale.GetCanonicalName(),
+    m_Locale.GetCanonicalName());
     // This seems to be necessary for wxGTK. For wxMSW it isn't used.
-    wxStandardPaths::ResourceCat_Messages).ToStdString();
+    //wxStandardPaths::ResourceCat_Messages).ToStdString();
 
   if (fs::is_directory(m_CatalogDir))
   {
-    for (auto& p: fs::directory_iterator(m_CatalogDir))
+    for (const auto& p: fs::recursive_directory_iterator(m_CatalogDir))
     {
-      if (fs::is_regular_file(p.path()) && wxExMatchesOneOf(p.path().filename().string(), "*.mo"))
+      if (fs::is_regular_file(p.path()) && 
+        wxExMatchesOneOf(p.path().filename().string(), "*.mo"))
       {
         if (!m_Locale.AddCatalog(p.path().stem().string()))
         {
