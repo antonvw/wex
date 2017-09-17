@@ -40,6 +40,15 @@ TEST_CASE("wxEx")
 345y56781234567890123\n\
 456z45672345678901234\n");
 
+  SUBCASE("wxExAfter")
+  {
+    REQUIRE( wxExAfter("nospace", ' ', false) == "nospace");
+    REQUIRE( wxExAfter("nospace", ' ', true) == "nospace");
+    REQUIRE( wxExAfter("some space and more", ' ', false) == "more");
+    REQUIRE( wxExAfter("some space and more", ' ', true) == "space and more");
+    REQUIRE( wxExAfter("some space and more", 'm', false) == "ore");
+  }
+
   SUBCASE("wxExAlignText")
   {
     REQUIRE( wxExAlignText("test", "header", true, true,
@@ -397,7 +406,19 @@ TEST_CASE("wxEx")
     REQUIRE(wxExTranslate(
       "hello @PAGENUM@ from @PAGESCNT@", 1, 2).find("@") == std::string::npos);
   }
-      
+
+  SUBCASE("wxExTypeToValue")
+  {
+    REQUIRE( wxExTypeToValue<int>("100").get() == 100);
+    REQUIRE( wxExTypeToValue<int>("A").get() == 65);
+    REQUIRE( wxExTypeToValue<int>(100).get() == 100);
+    REQUIRE( wxExTypeToValue<int>(1).getString() == "ctrl-A");
+    REQUIRE( wxExTypeToValue<int>("100").getString() == "100");
+    REQUIRE( wxExTypeToValue<int>("xxx").getString() == "xxx");
+    REQUIRE( wxExTypeToValue<std::string>("100").get() == "100");
+    REQUIRE( wxExTypeToValue<std::string>("100").getString() == "100");
+  }
+
   SUBCASE("wxExVCSCommandOnSTC")
   {
     wxExVCSCommand command("status");

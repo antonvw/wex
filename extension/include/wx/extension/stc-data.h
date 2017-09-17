@@ -64,6 +64,6 @@ private:
   wxExControlData m_Data;
 
   wxExSTCMenuFlags m_MenuFlags = static_cast<wxExSTCMenuFlags>(
-    STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_VCS);
+    STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_OPEN_WWW | STC_MENU_VCS);
   wxExSTCWindowFlags m_WinFlags = STC_WIN_DEFAULT;
 };

@@ -130,7 +130,7 @@ bool wxExLexer::Apply() const
   
   m_STC->ClearDocumentStyle();
   
-  for (auto& it : m_Properties)
+  for (const auto& it : m_Properties)
   {
     it.ApplyReset(m_STC);
   }
@@ -152,8 +152,8 @@ bool wxExLexer::Apply() const
     
     wxExLexers::Get()->Apply(m_STC);
   
-    for (auto& p : m_Properties) p.Apply(m_STC);
-    for (auto& s : m_Styles) s.Apply(m_STC);
+    for (const auto& p : m_Properties) p.Apply(m_STC);
+    for (const auto& s : m_Styles) s.Apply(m_STC);
   }
 
   // And finally colour the entire document.
@@ -513,7 +513,6 @@ bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
   if (m_STC == nullptr) return m_IsOk;
 
   m_STC->SetLexerLanguage(m_ScintillaLexer);
-  m_STC->SetStyleBits(m_STC->GetStyleBitsNeeded());
 
   Apply();
       

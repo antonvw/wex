@@ -13,6 +13,7 @@
 #include <utility>
 #include <vector>
 #include <wx/extension/marker.h>
+#include <wx/extension/vimacros.h> //for types
 
 #if wxUSE_GUI
 
@@ -96,6 +97,9 @@ public:
   
   /// Returns STC component.
   auto * GetSTC() {return m_STC;};
+
+  /// Writes info message.
+  void InfoMessage() const;
   
   /// Plays back a recorded macro or expands a variable.
   /// If specified macro is empty,
@@ -163,6 +167,17 @@ protected:
 private:
   bool CommandHandle(const std::string& command) const;
   bool CommandAddress(const std::string& command);
+
+  template <typename S, typename T> 
+    bool HandleContainer(
+      const std::string& kind,
+      const std::string& command,
+      const T * container,
+      std::function<bool(const std::string&, const std::string&)> cb);
+
+  template <typename S, typename T>
+  std::string ReportContainer(const T & container) const;
+
   void ShowDialog(const std::string& title, const std::string& text, bool prop_lexer = false);
     
   const wxExMarker m_MarkerSymbol = wxExMarker(0);

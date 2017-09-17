@@ -17,7 +17,6 @@
 #include <wx/clipbrd.h>
 #include <wx/config.h>
 #include <wx/dir.h>
-#include <wx/filename.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/stdpaths.h>
 #include <wx/textctrl.h>
@@ -45,6 +44,14 @@ const char* _X(const char* text)
 #else
   return _(text);
 #endif
+}
+
+const std::string wxExAfter(const std::string& text, char c, bool first)
+{
+  const size_t pos = (first ? text.find(c): text.rfind(c));
+
+  return
+    (pos == std::string::npos ? text: text.substr(pos + 1));
 }
 
 const std::string wxExAlignText(
@@ -119,11 +126,11 @@ bool wxExAutoCompleteFileName(
 {
   // E.g.:
   // 1) text: src/vi
-  // -> should build list with files in ./src starting with vi
+  // -> should build vector with files in ./src starting with vi
   // path:   src
   // word:   vi
   // 2) text: /usr/include/s
-  // ->should build list with files in /usr/include starting with s
+  // ->should build vector with files in /usr/include starting with s
   // path:   /usr/include
   // word:   s
   // And text might be prefixed by a command, e.g.: e src/vi
@@ -159,6 +166,37 @@ bool wxExAutoCompleteFileName(
     expansion += wxFileName::GetPathSeparator();
   }
 
+/*
+  wxExPath path(wxExAfterLast(text, ' '));
+  
+  if (path.IsRelative())
+  {
+    path.MakeAbsolute();
+  }
+  
+  if (!path.DirExists())
+  {
+    return false;
+  }
+  
+  const wxString word(wxExAfterLast(wxExAfterLast(text, ' '), '/'));
+
+  wxDir dir(path.GetPath());
+  wxString filename;
+
+  if (!dir.IsOpened() || !dir.GetFirst(&filename, word + "*"))
+  {
+    return false;
+  }
+  
+  std::string expansion = filename.ToStdString().substr(word.length());
+  
+  if (wxDirExists(dir.GetNameWithSep() + filename))
+  {
+    expansion += '/';
+  }
+*/
+
   v.clear();
   v.emplace_back(Encode(expansion));
   v.emplace_back(filename.ToStdString());
@@ -193,6 +231,11 @@ bool wxExAutoCompleteFileName(
   }
 
   return true;
+}
+
+void wxExBrowserSearch(const std::string& text)
+{
+  wxLaunchDefaultBrowser(wxExConfigFirstOf(_("Search engine")) + "?q=" + text);
 }
 
 bool wxExClipboardAdd(const std::string& text)
@@ -628,14 +671,17 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxExPath > & files,
   
   for (const auto& it : files)
   {
-    if (it.Path().string().find("*") != std::string::npos || it.Path().string().find("?") != std::string::npos)
+    if (
+      it.Path().string().find("*") != std::string::npos || 
+      it.Path().string().find("?") != std::string::npos)
     {
       count += wxExDirOpenFile(frame, 
-        wxGetCwd().ToStdString(), it.Path().string(), data.Flags(), dir_flags).FindFiles();
+        wxGetCwd().ToStdString(), 
+        it.Path().string(), data.Flags(), dir_flags).FindFiles();
     }
     else
     {
-      wxExControlData control;
+      wxExControlData control(data.Control());
       wxExPath fn(it);
 
       if (!it.FileExists() && it.Path().string().find(":") != std::string::npos)
@@ -653,9 +699,10 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxExPath > & files,
         fn.MakeAbsolute();
       }
        
-      frame->OpenFile(fn, wxExSTCData(control));
-      
-      count++;
+      if (frame->OpenFile(fn, wxExSTCData(control)) != nullptr)
+      {
+        count++;
+      }
     }
   }
   

@@ -149,8 +149,7 @@ private:
 
   const wxExPath m_Path;
   const std::string m_NoTheme;
-  std::string m_Theme;
-  std::string m_FoldingBackgroundColour, m_FoldingForegroundColour;
+  std::string m_FoldingBackgroundColour, m_FoldingForegroundColour, m_Theme;
 
   static wxExLexers* m_Self;
 };

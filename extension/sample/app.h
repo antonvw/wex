@@ -24,7 +24,6 @@ public:
   wxExSampleApp() {}
 private:
   virtual bool OnInit() override;
-  DECLARE_NO_COPY_CLASS(wxExSampleApp)
 };
 
 #if wxUSE_GRID
@@ -68,6 +67,4 @@ private:
 
   long m_FlagsSTC = 0;
   wxExStatistics <int> m_Statistics;
-
-  DECLARE_NO_COPY_CLASS(wxExSampleFrame)
 };

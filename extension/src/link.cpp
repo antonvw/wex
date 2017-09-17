@@ -73,12 +73,12 @@ const wxExPath wxExLink::FindPath(
        wxExMatch("(www.*)", text, v) > 0))
   {
     // with a possible delimiter
-    std::string match(v[0]);
+    const std::string match(v[0]);
     const std::string delimiters("\")]");
     
     for (const auto c : delimiters)
     {
-      size_t pos = match.find(c);
+      const size_t pos = match.find(c);
       
       if (pos != std::string::npos)
       {
@@ -179,7 +179,7 @@ const wxExPath wxExLink::GetPath(
   }
 
   // Check whether last word is a file.
-  int pos = path.Path().string().find_last_of(' ');
+  const int pos = path.Path().string().find_last_of(' ');
   wxExPath word = wxExSkipWhiteSpace((
     pos != std::string::npos ? path.Path().string().substr(pos): std::string()));
 

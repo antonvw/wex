@@ -15,7 +15,6 @@
 #endif
 #include <shunting-yard/eval.hpp>
 #include <wx/config.h>
-#include <wx/filename.h>
 #include <wx/numformatter.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/address.h>
@@ -100,6 +99,31 @@ wxExSTCEntryDialog* wxExEx::m_Dialog = nullptr;
 wxExViMacros wxExEx::m_Macros;
 std::string wxExEx::m_LastCommand;
 
+enum wxExCommandArgType
+{
+  ARG_INT,
+  ARG_NONE,
+  ARG_OTHER,
+};
+
+int ParseCommandWithArg(const std::string command)
+{
+  const std::string post(wxExAfter(command, ' '));
+
+  if (post == command)
+  {
+    return ARG_NONE;
+  }
+  else if (atoi(post.c_str()) > 0)
+  {
+    return ARG_INT;
+  }
+  else
+  {
+    return ARG_OTHER;
+  }
+}
+
 wxExEx::wxExEx(wxExSTC* stc)
   : m_STC(stc)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
@@ -111,22 +135,10 @@ wxExEx::wxExEx(wxExSTC* stc)
       )
   , m_Commands {
     {":ab", [&](const std::string& command) {
-      wxExTokenizer tkz(command);
-      if (tkz.CountTokens() >= 2)
-      {
-        tkz.GetNextToken(); // skip
-        const std::string ab(tkz.GetNextToken());
-        m_Macros.SetAbbreviation(ab, tkz.GetString());
-      }
-      else
-      {
-        std::string output;
-        for (const auto& it : m_Macros.GetAbbreviations())
-        {
-          output += it.first + "=" + it.second + "\n";
-        }
-        ShowDialog("Abbreviations", output, true);
-      } return true;}},
+      return HandleContainer<std::string, std::map<std::string, std::string>>(
+        "Abbreviations", command, &m_Macros.GetAbbreviations(),
+        [=](const std::string& name, const std::string& value) {
+          m_Macros.SetAbbreviation(name, value);return true;});}},
 #if wxCHECK_VERSION(3,1,0)
     {":ar", [&](const std::string& command) {
       wxString text;
@@ -145,8 +157,37 @@ wxExEx::wxExEx(wxExSTC* stc)
       m_Frame->GetDebug()->Execute(wxExFirstOf(command, " "), m_STC);
       return true;}},
     {":e", [&](const std::string& command) {POST_COMMAND( wxID_OPEN ) return true;}},
+    {":f", [&](const std::string& command) {InfoMessage(); return true;}},
     {":grep", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPORT_FIND ) return true;}},
     {":help", [&](const std::string& command) {POST_COMMAND( wxID_HELP ) return true;}},
+    {":map", [&](const std::string& command) {
+      switch (ParseCommandWithArg(command))
+      {
+        case ARG_INT:
+          // TODO: at this moment you cannot set KEY_CONTROL
+          return HandleContainer<int, wxExViMacrosMapType>(
+            "Map", command, nullptr,
+            [=](const std::string& name, const std::string& value) {
+              m_Macros.SetKeyMap(name, value);return true;}); 
+        break;
+        case ARG_NONE: ShowDialog("Map", 
+            "String map:\n" +
+            ReportContainer<std::string, std::map<std::string, std::string>>(m_Macros.GetMap()) +
+            "Key map:\n" +
+            ReportContainer<int, wxExViMacrosMapType>(m_Macros.GetKeysMap()) +
+            "Alt key map:\n" +
+            ReportContainer<int, wxExViMacrosMapType>(m_Macros.GetKeysMap(KEY_ALT)) +
+            "Control key map:\n" +
+            ReportContainer<int, wxExViMacrosMapType>(m_Macros.GetKeysMap(KEY_CONTROL)), 
+            true);
+          return true;
+        break;
+        case ARG_OTHER:
+          return HandleContainer<std::string, std::map<std::string, std::string>>(
+            "Map", command, nullptr,
+            [=](const std::string& name, const std::string& value) {
+              m_Macros.SetMap(name, value);return true;});
+      }}},
     {":new", [&](const std::string& command) {POST_COMMAND( wxID_NEW ) return true;}},
     {":print", [&](const std::string& command) {m_STC->Print(command.find(" ") == std::string::npos); return true;}},
     {":pwd", [&](const std::string& command) {wxLogStatus(wxGetCwd()); return true;}},
@@ -246,12 +287,12 @@ wxExEx::wxExEx(wxExSTC* stc)
       return true;}},
     {":so", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos) return false;
-      wxFileName filename(wxExFirstOf(command, " "));
-      if (filename.IsRelative())
+      wxExPath path(wxExFirstOf(command, " "));
+      if (path.IsRelative())
       {
-        filename.MakeAbsolute();
+        path.MakeAbsolute();
       }
-      std::ifstream ifs(filename.GetFullPath().ToStdString());
+      std::ifstream ifs(path.Path());
       if (!ifs.is_open()) return false;
       std::string line;
       int i = 0;
@@ -299,6 +340,19 @@ wxExEx::wxExEx(wxExSTC* stc)
       {
         tkz.GetNextToken(); // skip :una
         m_Macros.SetAbbreviation(tkz.GetNextToken(), "");
+      }
+      return true;}},
+    {":unm", [&](const std::string& command) {
+      wxExTokenizer tkz(command);
+      if (tkz.CountTokens() >= 1)
+      {
+        tkz.GetNextToken(); // skip :unm
+        switch (ParseCommandWithArg(command))
+        {
+          case ARG_INT: m_Macros.SetKeyMap(tkz.GetNextToken(), ""); break; 
+          case ARG_NONE: break;
+          case ARG_OTHER: m_Macros.SetMap(tkz.GetNextToken(), ""); break;
+        }
       }
       return true;}},
     {":ve", [&](const std::string& command) {ShowDialog("Version", 
@@ -392,11 +446,16 @@ void wxExEx::Cleanup()
   delete m_CTags;
 }
   
-bool wxExEx::Command(const std::string& command, bool is_handled)
+bool wxExEx::Command(const std::string& command_org, bool is_handled)
 {
+  std::string command(command_org);
+
   if (!m_IsActive || command.empty() || command.front() != ':') return false;
 
   wxExSTC* stc = nullptr;
+
+  const auto& it = m_Macros.GetMap().find(command);
+  command = (it != m_Macros.GetMap().end() ? it->second: command);
 
   if (m_Frame->ExecExCommand(command, stc))
   {
@@ -529,7 +588,7 @@ bool wxExEx::CommandAddress(const std::string& command)
       break;
     case 'r': return addr.Read(rest); break;
     case 'z': return addr.AdjustWindow(rest); break;
-    case '=': return addr.Show(); break;
+    case '=': return addr.WriteLineNumber(); break;
     default:
       wxLogStatus("Unknown address command: %s", cmd);
       return false;
@@ -638,6 +697,40 @@ const std::string wxExEx::GetSelectedText() const
 
   const wxCharBuffer b(m_STC->GetSelectedTextRaw());
   return std::string(b.data(), b.length() - 1);
+}
+
+template <typename S, typename T> 
+bool wxExEx::HandleContainer(
+  const std::string& kind,
+  const std::string& command,
+  const T * container,
+  std::function<bool(const std::string&, const std::string&)> cb)
+{
+  wxExTokenizer tkz(command);
+
+  if (tkz.CountTokens() >= 2)
+  {
+    tkz.GetNextToken(); // skip
+    const std::string name(tkz.GetNextToken());
+    cb(name, tkz.GetString());
+  }
+  else if (container != nullptr)
+  {
+    ShowDialog(kind, ReportContainer<S, T>(*container), true);
+  }
+
+  return true;
+}
+
+void wxExEx::InfoMessage() const
+{
+  m_Frame->ShowExMessage(wxString::Format("%s line %d of %d --%d%%-- level %d", 
+    m_STC->GetFileName().GetFullName().c_str(), 
+    m_STC->GetCurrentLine() + 1,
+    m_STC->GetLineCount(),
+    100 * (m_STC->GetCurrentLine() + 1)/ m_STC->GetLineCount(),
+    (m_STC->GetFoldLevel(m_STC->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
+     - wxSTC_FOLDLEVELBASE).ToStdString());
 }
 
 bool wxExEx::MacroPlayback(const std::string& macro, int repeat)
@@ -881,6 +974,19 @@ void wxExEx::Print(const std::string& text)
   ShowDialog("Print", text);
 }
   
+template <typename S, typename T>
+std::string wxExEx::ReportContainer(const T & container) const
+{
+  std::string output;
+
+  for (const auto& it : container)
+  {
+    output += wxExTypeToValue<S>(it.first).getString() + "=" + it.second + "\n";
+  }
+
+  return output;
+}
+
 void wxExEx::SetLastCommand(
   const std::string& command,
   bool always)

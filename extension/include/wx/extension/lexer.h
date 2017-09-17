@@ -164,22 +164,14 @@ private:
   void Initialize();
   void Set(const pugi::xml_node* node);
 
-  std::string m_CommentBegin;
-  std::string m_CommentBegin2;
-  std::string m_CommentEnd;
-  std::string m_CommentEnd2;
-  std::string m_Extensions;
-  std::string m_Language; // e.g. xml
-
-  // The scintilla name for this lexer.
-  // Cannot be const, as in wxExPath the operator= is used on a lexer.
-  std::string m_ScintillaLexer;
-
+  // The scintilla name for this lexer cannot be const, 
+  // as in wxExPath the operator= is used on a lexer.
   // Normally the lexer displayed is the scintilla lexer,
   // however this might be different, as with c#.
-  // In that case the scintilla lexer is cpp, whereas the
-  // display lexer is c#.  
-  std::string m_DisplayLexer;
+  // In that case the scintilla lexer is cpp, whereas the display lexer is c#.  
+  std::string 
+    m_CommentBegin, m_CommentBegin2, m_CommentEnd, m_CommentEnd2, 
+    m_DisplayLexer, m_Extensions, m_Language, m_ScintillaLexer;
 
   std::set<std::string> m_Keywords;
   std::vector<wxExProperty> m_Properties;

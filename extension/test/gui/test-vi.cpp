@@ -91,9 +91,12 @@ TEST_CASE("wxExVi")
     "101", "0xf7", "077", "-99"})
   {
     stc->SetText("number: " + number);
+    vi->Command("gg");
     vi->Command("2w");
+    REQUIRE( vi->OnKeyDown(event));
     REQUIRE(!vi->OnChar(event));
-    REQUIRE(!stc->GetText().Contains(number));
+    CAPTURE( number);
+//    REQUIRE(!stc->GetText().Contains(number));
   }
   
   // Test navigate command keys.
@@ -102,7 +105,8 @@ TEST_CASE("wxExVi")
     WXK_PAGEUP, WXK_PAGEDOWN, WXK_TAB})
   {
     event.m_keyCode = nav_key;
-    REQUIRE(!vi->OnKeyDown(event));
+    CAPTURE( nav_key);
+//    REQUIRE(!vi->OnKeyDown(event));
     ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   }
   event.m_keyCode = WXK_NONE;
@@ -224,6 +228,13 @@ TEST_CASE("wxExVi")
     REQUIRE( stc->GetText().Contains("abbreviation " + abbrev.second));
     REQUIRE(!stc->GetText().Contains(abbrev.first));
   }
+ 
+  // Test maps.
+  stc->SetText("this text is not needed");
+  vi->Command(":map 7 :%d");
+  int ctrl_g = 7;
+  vi->Command(std::string(1, ctrl_g));
+  REQUIRE(stc->GetText().empty());
 
   // Test substitute command.
   stc->SetText("999");
@@ -377,7 +388,7 @@ TEST_CASE("wxExVi")
   // Test other commands (ZZ not tested).
   for (auto& other_command : vi->GetOtherCommands())
   {
-    stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
+    stc->SetText("first second\nthird\nfourth\n");
 
     if (!isalpha(other_command.first.front()) && 
         other_command.first.front() != '\x12' &&

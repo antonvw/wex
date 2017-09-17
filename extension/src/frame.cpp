@@ -189,7 +189,7 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
       if (!wxExShellExpansion(text)) return;
       std::string cmd;
       std::vector <std::string> v;
-      if (wxExMatch("\\+([0-9A-Za-z:_/.-]+)* *(.*)", text, v) > 1)
+      if (wxExMatch("\\+([^ \t]+)* *(.*)", text, v) > 1)
       {
         cmd = v[0];
         text = v[1];

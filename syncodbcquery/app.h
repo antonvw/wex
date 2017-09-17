@@ -32,8 +32,6 @@ class App: public wxExApp
 public:
   App() {}
   virtual bool OnInit() override;
-private:
-  DECLARE_NO_COPY_CLASS(App)
 };
 
 class Frame: public wxExFrameWithHistory
@@ -59,6 +57,4 @@ private:
   
   bool m_Running = false;
   bool m_Stopped = false;
-
-  DECLARE_NO_COPY_CLASS(Frame)
 };

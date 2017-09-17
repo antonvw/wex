@@ -17,6 +17,16 @@
 
 class wxExEx;
 
+enum wxExViMacrosKeyType
+{
+  KEY_ALT,       ///< alt key
+  KEY_CONTROL,   ///< control key
+  KEY_NORMAL,    ///< normal key (default)
+};
+
+/// Maps key to command.  
+typedef std::map<int, std::string> wxExViMacrosMapType;
+
 /// Offers the macro collection, and allows
 /// recording and playback to vi (ex) component.
 /// You can also use variables inside a macro (or in vi),
@@ -37,8 +47,20 @@ public:
   /// Returns number of macros and variables available.
   int GetCount() const {return m_Macros.size() + m_Variables.size();};
   
+  /// Returns keys map.
+  const auto & GetKeysMap(wxExViMacrosKeyType type = KEY_NORMAL) const {
+    switch (type)
+    {
+      case KEY_ALT: return m_MapAltKeys;
+      case KEY_CONTROL: return m_MapControlKeys;
+      case KEY_NORMAL: return m_MapKeys;
+    }};
+  
   /// Returns current or last macro played back (or variable expanded).
   const auto& GetMacro() const {return m_Macro;};
+  
+  /// Returns (string) map.
+  const auto & GetMap() const {return m_Map;};
   
   /// Returns content of register.
   const std::string GetRegister(const char name) const;
@@ -87,9 +109,20 @@ public:
     /// the text is appended after the last command
     bool new_command = true);
   
-  /// Sets abbreviation (overwrites existing abbreviationi).
-  void SetAbbreviation(const std::string& ab, const std::string& value);
+  /// Sets abbreviation (overwrites existing abbreviation).
+  void SetAbbreviation(const std::string& name, const std::string& value);
   
+  /// Sets key map (overwrites existing map).
+  void SetKeyMap(
+    const std::string& name, 
+    const std::string& value,
+    wxExViMacrosKeyType type = KEY_NORMAL);
+  
+  /// Sets map (overwrites existing map).
+  void SetMap(
+    const std::string& name, 
+    const std::string& value);
+
   /// Sets register (overwrites existing register).
   /// The name should be a one letter register.
   /// Returns false if name is not appropriate.
@@ -100,7 +133,7 @@ public:
   void StartRecording(const std::string& macro);
   
   /// Does a recorded macro or variable starts with text.
-  bool StartsWith(const std::string& text) const;
+  bool StartsWith(const std::string_view& text) const;
   
   /// Stops recording.
   void StopRecording();
@@ -143,8 +176,21 @@ public:
   /// Returns true if document is saved.
   static bool SaveDocument(bool only_if_modified = true);
 private:  
+  template <typename S, typename T> 
+  void Set(
+    T & container,
+    const std::string& xpath,
+    const std::string& name,
+    const std::string& value);
+
   static void AskForInput();
-  static void ParseNodeAbbreviation(const pugi::xml_node& node);
+  
+  template <typename S, typename T> 
+  static void ParseNode(
+    const pugi::xml_node& node,
+    const std::string& name,
+    T & container);
+
   static void ParseNodeMacro(const pugi::xml_node& node);
   static void ParseNodeVariable(const pugi::xml_node& node);
   static void SaveMacro(const std::string& macro);
@@ -164,7 +210,19 @@ private:
   /// All macros (and registers), as a map of name and a vector of commands.
   /// Registers are 1 letter macros.
   static std::map<std::string, std::vector<std::string> > m_Macros;
-  
+
+  /// String maps.
+  static std::map<std::string, std::string> m_Map;
+
+  /// Alt key maps.
+  static wxExViMacrosMapType m_MapAltKeys;
+
+  /// Control key maps.
+  static wxExViMacrosMapType m_MapControlKeys;
+
+  /// All normal key maps.
+  static wxExViMacrosMapType m_MapKeys;
+
   /// All variables, as a map of name and variable.
   static std::map<std::string, wxExVariable> m_Variables;
 };

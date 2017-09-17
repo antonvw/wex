@@ -99,14 +99,14 @@ int wxExDir::FindFiles()
         fs::directory_options::skip_permission_denied;
 #endif
       
-      for (auto& p: fs::recursive_directory_iterator(m_Dir.Path(), options))
+      for (const auto& p: fs::recursive_directory_iterator(m_Dir.Path(), options))
       {
         if (!Handle(p, this, matches)) break;
       }
     }
     else
     {
-      for (auto& p: fs::directory_iterator(m_Dir.Path()))
+      for (const auto& p: fs::directory_iterator(m_Dir.Path()))
       {
         if (!Handle(p, this, matches)) break;
       }
