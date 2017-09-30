@@ -110,7 +110,7 @@ wxExRepSampleFrame::wxExRepSampleFrame() : wxExFrameWithHistory()
   wxExDirWithListView dir(
     (wxExListView*)m_NotebookWithLists->GetPageByKey(
       wxExListViewData().Type(LIST_FILE).TypeDescription()),
-    wxGetCwd().ToStdString(),
+    wxExPath::Current(),
     "*.cpp;*.h");
 
   dir.FindFiles();

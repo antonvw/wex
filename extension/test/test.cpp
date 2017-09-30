@@ -225,7 +225,7 @@ void wxExTestApp::SetContext(doctest::Context* context)
   
 void wxExTestApp::SetTestPath()
 {
-  m_TestPath = wxExPath(wxGetCwd().ToStdString(), "");
+  m_TestPath = wxExPath(wxExPath::Current(), "");
   auto v(m_TestPath.GetPaths());
   
   if (std::find(v.begin(), v.end(), "wxExtension") == v.end())
@@ -251,9 +251,13 @@ void wxExTestApp::SetTestPath()
     m_TestPath.Append("test").Append("data");
   }
 
-  if (!wxSetWorkingDirectory(m_TestPath.Path().string()))
+  try
   {
-    std::cout << "cannot set working dir: " << m_TestPath.Path().string() << "\n";
+    wxExPath::Current(m_TestPath.Path().string());
+  }
+  catch (std::exception& e)
+  {
+    std::cout << e.what() << "\n";
     exit(1);
   }
 }

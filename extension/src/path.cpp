@@ -15,6 +15,10 @@ wxExPath::wxExPath(const std::experimental::filesystem::path& p)
       wxExLexers::Get(false)->FindByFileName(p.filename().string()):
       std::string())
 {
+  if (p.empty())
+  {
+    m_path_original = Current();
+  }
 }
 
 wxExPath::wxExPath(const std::string& path, const std::string& name)
@@ -43,6 +47,14 @@ wxExPath::wxExPath(const std::vector<std::string> v)
   for (const auto& it : v)
   {
     Append(it);
+  }
+}
+
+wxExPath::~wxExPath()
+{
+  if (!m_path_original.empty())
+  {
+    Current(m_path_original);
   }
 }
 

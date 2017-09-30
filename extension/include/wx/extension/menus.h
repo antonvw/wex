@@ -19,7 +19,7 @@ public:
   /// Adds commands from xml to vector of menu commands.
   /// Returns number of commands added.
   template <typename T>
-  static int AddCommands(
+  static auto AddCommands(
     /// node with data
     const pugi::xml_node& node,
     /// the commands to be filled

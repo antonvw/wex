@@ -96,7 +96,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(
     }
     else
     {
-      if  (GetSTC() != nullptr && !GetSTC()->GetFindString().empty())
+      if (GetSTC() != nullptr && !GetSTC()->GetFindString().empty())
       {
         m_FiFDialog->Reload(); 
       }
@@ -276,11 +276,17 @@ const wxString wxExFrameWithHistory::GetFindReplaceInfoText(bool replace) const
 
 bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
 {
-  static wxString arg1, arg2;
+  static wxString arg1 = wxExConfigFirstOf(m_TextInFolder);
+  static wxString arg2 = wxExConfigFirstOf(m_TextInFiles);
   static int arg3 = DIR_FILES;
 
+  if (GetSTC() != nullptr)
+  {
+    GetSTC()->GetFindString();
+  }
+
   if (!wxExCmdLine(
-    {{{"r", "recursive", "recursive"}, [&](bool on) {arg3 |= (on ? DIR_DIRS: 0);}}},
+    {{{"r", "recursive", "recursive"}, [&](bool on) {arg3 |= (on ? DIR_RECURSIVE: 0);}}},
     {},
     {{"rest", "match " + std::string(sed ? "replace": "") + " [extension] [folder]"}, 
        [&](const std::vector<std::string> & v) {
@@ -323,7 +329,7 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
 #endif
     wxExSTC* stc = GetSTC();
     if (stc != nullptr)
-      wxSetWorkingDirectory(stc->GetFileName().GetPath());
+      wxExPath::Current(stc->GetFileName().GetPath());
     wxExFindReplaceData::Get()->SetUseRegEx(true);
     wxLogStatus(GetFindReplaceInfoText());
     Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);

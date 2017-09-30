@@ -70,20 +70,20 @@ bool wxExAutoComplete(
 
 /// Tries to autocomplete filename,
 /// result stored in the vector.
+/// Returns true if a match was found 
 bool wxExAutoCompleteFileName(
   /// text containing start of a filename
   const std::string& text, 
-  /// vector containing completed file name(s)
-  /// v[0] is expansion of text to matching filename
+  /// expansion of text to matching filename
   /// (if only 1 match exists)
   /// or common part of matching filenames
-  /// other elements are all matching file names
-  /// Returns true if a match was found 
-  /// (and v contains at least 2 elements).
+  std::string& expansion,
+  /// vector containing completed file name(s)
   std::vector<std::string> & v);
   
 /// Launch default browser and search for text.
-void wxExBrowserSearch(const std::string& text);
+/// Returns false if search engine is empty.
+bool wxExBrowserSearch(const std::string& text);
 
 /// Adds data to the clipboard.
 bool wxExClipboardAdd(const std::string& text);
@@ -317,18 +317,30 @@ int wxExReplaceAll(
 /// and changes command with replaced match with output from process.
 /// Returns false if process could not be executed.
 bool wxExShellExpansion(std::string& command);
+
+enum
+{
+  SKIP_LEFT    = 0x00001,  ///< skip space at left
+  SKIP_RIGHT   = 0x00010,  ///< skip space at right
+  SKIP_BOTH    = 0x00011,  ///< skip space at left and right
+  SKIP_ALL     = 0x11111,  ///< skip all space (also in the middle)
+};
   
+/// Returns a string without all white space in specified input.
+const std::string wxExSkipWhiteSpace(
+  /// text with white space to be skipped
+  const std::string& text,
+  /// kind of skip
+  int skip_type = SKIP_BOTH,
+  /// replace with (only for skip all)
+  const std::string& replace_with = " ");
+
 enum
 {
   STRING_SORT_ASCENDING  = 0x000, ///< default, keep doubles
   STRING_SORT_DESCENDING = 0x001, ///< sort descending order
   STRING_SORT_UNIQUE     = 0x010, ///< flag to remove doubles
 };
-
-/// Returns a string without all white space in specified input.
-const std::string wxExSkipWhiteSpace(
-  const std::string& text,
-  const std::string& replace_with = " ");
 
 /// Sorts specified text, returns string with sorted text.
 const std::string wxExSort(

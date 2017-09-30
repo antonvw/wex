@@ -59,7 +59,7 @@ public:
   void Read();
   bool Write(const std::string& text);
 private:
-  void HandleCommand(const wxString& command);
+  void HandleCommand(const std::string& command);
   virtual void OnTerminate(int pid, int status) override {
     const auto it = std::find(m_pids.begin(), m_pids.end(), pid);
     if (it != m_pids.end())
@@ -321,21 +321,20 @@ bool wxExProcessImp::Execute(
   return true;
 }
 
-void wxExProcessImp::HandleCommand(const wxString& command)
+void wxExProcessImp::HandleCommand(const std::string& command)
 {
-  wxString rest;
-  
-  if (
-         command.StartsWith("cd", &rest)
+  const std::string cd = 
 #ifdef __WXMSW__
-      || command.StartsWith("chdir", &rest)
+      "chdir";
+#else
+      "cd";
 #endif        
-     )
+
+  if (command.find(cd) == 0)
   {
-    wxLogNull logNo;
-    rest.Trim(false);
-    rest.Trim(true);
+    const std::string rest = wxExSkipWhiteSpace(wxExAfter(command, cd.back()));
     
+    wxLogNull logNo;
     if (rest.empty() || rest == "~")
     {
 #ifdef __WXMSW__

@@ -45,7 +45,7 @@ public:
   const auto & GetAbbreviations() const {return m_Abbreviations;};
   
   /// Returns number of macros and variables available.
-  int GetCount() const {return m_Macros.size() + m_Variables.size();};
+  auto GetCount() const {return m_Macros.size() + m_Variables.size();};
   
   /// Returns keys map.
   const auto & GetKeysMap(wxExViMacrosKeyType type = KEY_NORMAL) const {

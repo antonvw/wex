@@ -17,7 +17,7 @@
 TEST_CASE("wxExProcess")
 {
   // Test commands entered in shell.
-  const wxString cwd = wxGetCwd();
+  wxExPath cwd;
   
   wxExProcess* process = new wxExProcess;
   
@@ -67,14 +67,14 @@ TEST_CASE("wxExProcess")
   REQUIRE( shell != nullptr);
   Process("cd ~\rpwd\r", shell);
   REQUIRE( shell->GetText().Contains("home"));
-  REQUIRE( cwd != wxGetCwd());
+  REQUIRE( cwd.GetOriginal() != wxExPath::Current());
   REQUIRE( process->Kill());
 
   // Test working directory for process (should change).
   REQUIRE( process->Execute("ls -l", false, ".."));
   REQUIRE(!process->GetError());
   REQUIRE(!wxGetCwd().Contains("data"));
-  wxSetWorkingDirectory(cwd);
+  wxExPath::Current(cwd.GetOriginal());
   REQUIRE( process->Kill());
   
   // Test invalid process (the process gets a process id, and exits immediately).
@@ -86,8 +86,5 @@ TEST_CASE("wxExProcess")
   
   wxExProcess::PrepareOutput(GetFrame()); // in fact already done
 
-  // Go back to where we were, necessary for other tests.
-  wxSetWorkingDirectory(cwd);
-  
   // KillAll is done in main.
 }

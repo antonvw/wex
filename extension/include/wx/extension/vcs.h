@@ -45,7 +45,7 @@ public:
   bool Execute();
   
   /// Returns the number of vcs entries.
-  static int GetCount() {return m_Entries.size();};
+  static auto GetCount() {return m_Entries.size();};
 
   /// Returns the current vcs entry.
   const auto& GetEntry() const {return m_Entry;};

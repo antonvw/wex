@@ -69,22 +69,27 @@ TEST_CASE("wxEx")
   
   SUBCASE("wxExAutoCompleteFileName")
   {
+    std::string expansion;
     std::vector<std::string> v;
-    REQUIRE( wxExAutoCompleteFileName("te", v));
-    
-    REQUIRE( v[0] == "st");
-    REQUIRE(!wxExAutoCompleteFileName("XX", v));
-    REQUIRE( v[0] == "st");
+    REQUIRE( wxExAutoCompleteFileName("te", expansion, v));
+    REQUIRE( expansion == "st");
+    REQUIRE(!wxExAutoCompleteFileName("XX", expansion, v));
+    REQUIRE( expansion == "st");
     
 #ifdef __UNIX__
 #ifndef __WXOSX__    
-    REQUIRE( wxExAutoCompleteFileName("/usr/include/s", v));
-    REQUIRE( wxExAutoCompleteFileName("../../../extension/src/v", v));
-    REQUIRE( wxExAutoCompleteFileName("~/", v));
+    REQUIRE( wxExAutoCompleteFileName("/usr/include/s", expansion, v));
+    REQUIRE( wxExAutoCompleteFileName("../../../extension/src/v", expansion, v));
+    REQUIRE( wxExAutoCompleteFileName("~/", expansion, v));
 #endif    
 #endif
   }
   
+  SUBCASE("wxExBrowserSearch")
+  {
+    REQUIRE( wxExBrowserSearch("test"));
+  }
+
   SUBCASE("wxExClipboardAdd")
   {
     REQUIRE( wxExClipboardAdd("test"));
@@ -246,11 +251,10 @@ TEST_CASE("wxEx")
 #ifdef __UNIX__
   SUBCASE("wxExMake")
   {
-    const wxString wd = wxGetCwd(); // as /usr/bin/git changes wd
+    wxExPath cwd; // as /usr/bin/git changes wd
     REQUIRE( wxExMake(wxExPath("xxx")) != -1);
     REQUIRE( wxExMake(wxExPath("make.tst")) != -1);
     REQUIRE( wxExMake(wxExPath("/usr/bin/git")) != -1);
-    wxSetWorkingDirectory(wd);
   }
 #endif
   
@@ -390,7 +394,7 @@ TEST_CASE("wxEx")
     (void)GetSTC()->GetVi().Command("5l");
     REQUIRE( wxExSortSelection(GetSTC(), STRING_SORT_ASCENDING, 3, 5));
 #ifdef __WXGTK__
-    REQUIRE( wxString(GetSTC()->GetText()).Trim() == wxString(sorted).Trim());
+    REQUIRE( wxExSkipWhiteSpace(GetSTC()->GetText().ToStdString()) == wxExSkipWhiteSpace(sorted));
 #endif
     REQUIRE( wxExSortSelection(GetSTC(), STRING_SORT_DESCENDING, 3, 5));
     REQUIRE( GetSTC()->GetText() != sorted);
@@ -398,7 +402,10 @@ TEST_CASE("wxEx")
   
   SUBCASE("wxExSkipWhiteSpace")
   {
-    REQUIRE( wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
+    REQUIRE( wxExSkipWhiteSpace("\n\tt \n    es   t\n", SKIP_ALL) == "t es t");
+    REQUIRE( wxExSkipWhiteSpace("\n\tt \n    es   t\n", SKIP_LEFT) == "t \n    es   t\n");
+    REQUIRE( wxExSkipWhiteSpace("\n\tt \n    es   t\n", SKIP_RIGHT) == "\n\tt \n    es   t");
+    REQUIRE( wxExSkipWhiteSpace("\n\tt \n    es   t\n", SKIP_BOTH) == "t \n    es   t");
   }
   
   SUBCASE("wxExTranslate")

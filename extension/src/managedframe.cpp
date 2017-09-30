@@ -404,13 +404,16 @@ wxExTextCtrl::wxExTextCtrl(
       case WXK_TAB: {
         if (m_ex != nullptr && m_ex->GetSTC()->GetFileName().FileExists())
         {
-          wxSetWorkingDirectory(m_ex->GetSTC()->GetFileName().GetPath());
+          wxExPath::Current(m_ex->GetSTC()->GetFileName().GetPath());
         }
+
         std::vector<std::string> v;
-        if (wxExAutoCompleteFileName(m_Command, v))
+        std::string expansion;
+
+        if (wxExAutoCompleteFileName(m_Command, expansion, v))
         {
-          m_Command += v[0];
-          AppendText(v[0]);
+          m_Command += expansion;
+          AppendText(expansion);
         }}
         break;
 
@@ -500,15 +503,18 @@ wxExTextCtrl::wxExTextCtrl(
       m_Frame->HideExBar(wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC);
       return;
     }
+
     if (!m_ex->GetMacros().IsRecording())
     {
       m_Command = m_Prefix->GetLabel() + GetValue();
     }
+
     if (m_ex->Command(m_Command, m_UserInput && GetType() == TYPE_FIND))
     {
       int focus = (GetType() == TYPE_FIND ? 
         wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC: 
         wxExManagedFrame::HIDE_BAR_FOCUS_STC);
+
       switch (GetType())
       {
         case TYPE_CALC: m_Calcs.Set(this); break;
@@ -517,9 +523,9 @@ wxExTextCtrl::wxExTextCtrl(
           {
             focus = wxExManagedFrame::HIDE_BAR_FORCE;
           }
-          if (GetValue().find("!") == 0) 
+          else if (GetValue().find("!") == 0) 
           {
-            focus = wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC;
+            focus = wxExManagedFrame::HIDE_BAR;
           }
           m_Commands.Set(this);
           break;
@@ -527,7 +533,9 @@ wxExTextCtrl::wxExTextCtrl(
           wxExFindReplaceData::Get()->SetFindString(GetValue().ToStdString());
           break;
       }
-      m_Frame->HideExBar(focus);}});
+
+      m_Frame->HideExBar(focus);
+    }});
 
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
     event.Skip();

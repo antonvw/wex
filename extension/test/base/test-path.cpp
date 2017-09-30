@@ -23,6 +23,8 @@ TEST_CASE( "wxExPath" )
     REQUIRE(!wxExPath("..").IsAbsolute());
     REQUIRE( wxExPath("xx") == wxExPath("xx"));
     REQUIRE( wxExPath("xx") != wxExPath("xy"));
+    REQUIRE(!wxExPath().GetOriginal().empty());
+    REQUIRE(!wxExPath().Current().empty());
   }
   
   SUBCASE( "Basic" ) 

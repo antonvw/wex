@@ -109,113 +109,47 @@ bool wxExAutoComplete(const std::string& text,
   return (matches == 1);
 }
   
-const std::string Encode(const std::string& text)
-{
-  std::string output(text);
-  
-  if (output.find(" ") != std::string::npos)
-  {
-    wxExReplaceAll(output, " ", "\\ ");
-  }
-  
-  return output;
-}
-  
 bool wxExAutoCompleteFileName(
-  const std::string& text, std::vector<std::string> & v)
+  const std::string& text, std::string& expansion, std::vector<std::string> & v)
 {
   // E.g.:
   // 1) text: src/vi
   // -> should build vector with files in ./src starting with vi
   // path:   src
-  // word:   vi
+  // prefix: vi
   // 2) text: /usr/include/s
   // ->should build vector with files in /usr/include starting with s
   // path:   /usr/include
-  // word:   s
+  // prefix: s
   // And text might be prefixed by a command, e.g.: e src/vi
-  wxFileName path(wxString(text).AfterLast(' '));
-  
-  if (path.IsRelative())
-  {
-    if (!path.MakeAbsolute())
-    {
-      return false;
-    }
-  }
-  
-  if (!path.DirExists())
-  {
-    return false;
-  }
-  
-  const wxString word(
-    wxString(text).AfterLast(' ').AfterLast(wxFileName::GetPathSeparator()));
-  wxDir dir(path.GetPath());
-  wxString filename;
-
-  if (!dir.IsOpened() || !dir.GetFirst(&filename, word + "*"))
-  {
-    return false;
-  }
-  
-  std::string expansion = filename.ToStdString().substr(word.length());
-  
-  if (wxDirExists(dir.GetNameWithSep() + filename))
-  {
-    expansion += wxFileName::GetPathSeparator();
-  }
-
-/*
-  wxExPath path(wxExAfterLast(text, ' '));
+  wxExPath path(wxExAfter(text, ' ', false));
   
   if (path.IsRelative())
   {
     path.MakeAbsolute();
   }
-  
-  if (!path.DirExists())
+
+  const std::string prefix(path.GetFullName());
+
+  v = wxExGetAllFiles(path.GetPath(), prefix + "*");
+
+  if (v.empty())
   {
     return false;
   }
-  
-  const wxString word(wxExAfterLast(wxExAfterLast(text, ' '), '/'));
 
-  wxDir dir(path.GetPath());
-  wxString filename;
+  size_t rest_equal_size = std::string::npos;
 
-  if (!dir.IsOpened() || !dir.GetFirst(&filename, word + "*"))
+  if (v.size() > 1)
   {
-    return false;
-  }
-  
-  std::string expansion = filename.ToStdString().substr(word.length());
-  
-  if (wxDirExists(dir.GetNameWithSep() + filename))
-  {
-    expansion += '/';
-  }
-*/
-
-  v.clear();
-  v.emplace_back(Encode(expansion));
-  v.emplace_back(filename.ToStdString());
-    
-  while (dir.GetNext(&filename))
-  {
-    v.emplace_back(Encode(filename.ToStdString()));
-  }
-
-  if (v.size() > 2)
-  {
-    int rest_equal_size = 0;
     bool all_ok = true;
+    rest_equal_size = 0;
       
-    for (size_t i = word.length(); i < v[1].size() && all_ok; i++)
+    for (size_t i = prefix.length(); i < v[0].size() && all_ok; i++)
     {
-      for (size_t j = 2; j < v.size() && all_ok; j++)
+      for (size_t j = 1; j < v.size() && all_ok; j++)
       {
-        if (i < v[j].size() && v[1][i] != v[j][i])
+        if (i < v[j].size() && v[0][i] != v[j][i])
         {
           all_ok = false;
         }
@@ -226,16 +160,25 @@ bool wxExAutoCompleteFileName(
         rest_equal_size++;
       }
     }
-
-    v[0] = v[1].substr(word.length(), rest_equal_size);
   }
+
+  expansion = v[0].substr(prefix.length(), rest_equal_size);
 
   return true;
 }
 
-void wxExBrowserSearch(const std::string& text)
+bool wxExBrowserSearch(const std::string& text)
 {
-  wxLaunchDefaultBrowser(wxExConfigFirstOf(_("Search engine")) + "?q=" + text);
+  const std::string search_engine(wxExConfigFirstOf(_("Search engine")));
+
+  if (search_engine.empty())
+  {
+    return false;
+  }
+ 
+  wxLaunchDefaultBrowser(search_engine + "?q=" + text);
+
+  return true;
 }
 
 bool wxExClipboardAdd(const std::string& text)
@@ -441,13 +384,7 @@ int wxExGetNumberOfLines(const std::string& text, bool trim)
     return 0;
   }
   
-  wxString trimmed(text);
-  
-  if (trim)
-  {
-    trimmed.Trim();
-  }
-  
+  const std::string trimmed = (trim ? wxExSkipWhiteSpace(text): text);
   const int c = std::count(trimmed.begin(), trimmed.end(), '\n') + 1;
   
   if (c != 1)
@@ -469,7 +406,7 @@ const std::string wxExGetWord(std::string& text,
   wxExTokenizer tkz(text, field_separators);
   if (tkz.HasMoreTokens()) token = tkz.GetNextToken();
   text = tkz.GetString();
-  text = wxString(text).Trim(false).ToStdString();
+  text = wxExSkipWhiteSpace(text, SKIP_LEFT);
   return token;
 }
 
@@ -676,7 +613,7 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxExPath > & files,
       it.Path().string().find("?") != std::string::npos)
     {
       count += wxExDirOpenFile(frame, 
-        wxGetCwd().ToStdString(), 
+        wxExPath::Current(),
         it.Path().string(), data.Flags(), dir_flags).FindFiles();
     }
     else
@@ -859,18 +796,32 @@ bool wxExShellExpansion(std::string& command)
   return true;
 }
 
-const std::string wxExSkipWhiteSpace(const std::string& text, const std::string& replace_with)
+const std::string wxExSkipWhiteSpace(
+  const std::string& text, 
+  int skip_type,
+  const std::string& replace_with)
 {
-  std::string output1 = std::regex_replace(text, 
-    std::regex("[ \t\n\v\f\r]+"), replace_with, std::regex_constants::format_sed);
-  
-  std::string output2 = std::regex_replace(output1, 
-    std::regex("^ +"), "", std::regex_constants::format_sed);
+  std::string output(text); 
 
-  std::string output3 = std::regex_replace(output2, 
-    std::regex(" +$"), "", std::regex_constants::format_sed);
+  if (skip_type == SKIP_ALL)
+  {
+    output = std::regex_replace(output, 
+      std::regex("[ \t\n\v\f\r]+"), replace_with, std::regex_constants::format_sed);
+  }
   
-  return output3;
+  if (skip_type & SKIP_LEFT)
+  {
+    output = std::regex_replace(output, 
+      std::regex("^[ \t\n\v\f\r]+"), "", std::regex_constants::format_sed);
+  }
+
+  if (skip_type & SKIP_RIGHT)
+  {
+    output = std::regex_replace(output, 
+      std::regex("[ \t\n\v\f\r]+$"), "", std::regex_constants::format_sed);
+  }
+  
+  return output;
 }
 
 const std::string wxExSort(const std::string& input, 

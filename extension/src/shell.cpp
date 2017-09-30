@@ -306,20 +306,20 @@ void wxExShell::Expand()
   // 1) ls -l s
   // -> should build list with e.g. sample and src.
   // path:   s
-  // word:   s
+  // prefix: s
   // subdir: empty
   // 2) ls -l src/
   // path:   src/
   // subdir: src
-  // word:   empty
+  // prefix: empty
   // -> should build list with all files in src
   // 3) ls -l src/vi
   // -> should build list with files in src starting with vi
   // path:   src/vi
   // subdir: src
-  // word:   vi
-  const wxString path(wxString(m_Command).AfterLast(' '));
-  const wxString word(path.AfterLast(wxFileName::GetPathSeparator()));
+  // prefix: vi
+  wxExPath path(wxExAfter(m_Command, ' ', false));
+  const std::string prefix(path.GetFullName());
   
   std::string expansion;
   
@@ -329,23 +329,19 @@ void wxExShell::Expand()
     
     if (index >= 0 && index < (int)m_AutoCompleteList.size())
     {
-      expansion = m_AutoCompleteList[index].substr(word.length());
+      expansion = m_AutoCompleteList[index].substr(prefix.length());
     }
     
     AutoCompCancel();
   }
   else
   {
-    if (wxExAutoCompleteFileName(m_Command, m_AutoCompleteList))
+    if (wxExAutoCompleteFileName(m_Command, expansion, m_AutoCompleteList))
     {
-      if (m_AutoCompleteList.size() == 2)
-      {
-        expansion = m_AutoCompleteList[0];
-      }
-      else
+      if (m_AutoCompleteList.size() > 1)
       {
         m_AutoCompleteList.erase(m_AutoCompleteList.begin());
-        AutoCompShow(word.length(), std::accumulate(
+        AutoCompShow(prefix.length(), std::accumulate(
           m_AutoCompleteList.begin(), m_AutoCompleteList.end(), std::string(), 
           [&](const std::string& a, const std::string& b) {
             return a.empty() ? b : a + (char)AutoCompGetSeparator() + b;}));

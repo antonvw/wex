@@ -13,7 +13,6 @@
 #include <utility>
 #include <vector>
 #include <wx/extension/marker.h>
-#include <wx/extension/vimacros.h> //for types
 
 #if wxUSE_GUI
 

@@ -21,6 +21,7 @@ class wxExPath
   friend class wxExFile; // it might update stat
 public:
   /// Default constructor taking a path.
+  /// If path is empty, it saves the current path, and when destructed restores it to current.
   wxExPath(const std::experimental::filesystem::path& p = std::experimental::filesystem::path());
 
   /// Constructor using string path.
@@ -41,6 +42,9 @@ public:
   /// Assignment operator.
   wxExPath& operator=(const wxExPath& r);
 
+  /// Destructor.
+ ~wxExPath();
+
   /// == Operator. 
   bool operator==(const wxExPath& r) const {return Path() == r.Path();};
 
@@ -53,6 +57,14 @@ public:
   /// Normalizes the path.
   /// Returns false if the path does not exist.
   bool Canonical(const std::string& path);
+
+  /// Returns current path.
+  static std::string Current() {
+    return std::experimental::filesystem::current_path();};
+
+  /// Sets current path.
+  static void Current(const std::string& path) {
+    std::experimental::filesystem::current_path(path);};
 
   /// Returns true if the directory with this name exists.
   bool DirExists() const {
@@ -76,6 +88,9 @@ public:
   /// Returns path name component.
   const std::string GetName() const {
     return m_path.stem().string();};
+
+  /// Returns original path.
+  const auto & GetOriginal() {return m_path_original;};
 
   /// Returns path path component (without fullname).
   const std::string GetPath() const {
@@ -101,12 +116,14 @@ public:
   
   /// Returns path.
   /// E.g. Path().string() returns fullpath.
+  // (cannot be auto)
   const std::experimental::filesystem::path& Path() const {return m_path;};
     
   /// Replaces filename.
   wxExPath& ReplaceFileName(const std::string& filename);
 private:
   std::experimental::filesystem::path m_path;
+  std::string m_path_original;
   wxExLexer m_Lexer;
   wxExStat m_Stat;
 };

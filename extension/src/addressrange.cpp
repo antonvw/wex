@@ -874,15 +874,15 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
   return true;
 }
 
-bool wxExAddressRange::Write(const std::string& txt) const
+bool wxExAddressRange::Write(const std::string& text) const
 {
   if (!SetSelection())
   {
     return false;
   }
   
-  const wxString text(txt);
-  std::string filename(wxString(text.Contains(">>") ? text.AfterLast('>'): text).Trim(false));
+  std::string filename(wxExSkipWhiteSpace(text.find(">>") != std::string::npos ? 
+    wxExAfter(text, '>', false): text, SKIP_LEFT));
 
 #ifdef __UNIX__
   if (filename.find("~") != std::string::npos)
@@ -891,7 +891,7 @@ bool wxExAddressRange::Write(const std::string& txt) const
   }
 #endif
 
-  return wxExFile(filename, text.Contains(">>") ? 
+  return wxExFile(filename, text.find(">>") != std::string::npos ? 
     wxFile::write_append: wxFile::write).Write(m_Ex->GetSelectedText());
 }
 

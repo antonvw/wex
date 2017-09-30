@@ -15,13 +15,11 @@
 #include <wx/extension/util.h>
 
 /// Collects files into container.
+template <class T>
 class wxExDirToContainer : public wxExDir
 {
 public:
-  wxExDirToContainer(
-    const wxExPath& path,
-    const std::string& filespec = std::string(),
-    int flags = DIR_DEFAULT) 
+  wxExDirToContainer(const T & path, const std::string& filespec, int flags) 
   : wxExDir(path, filespec, flags) {;};
 
   const auto & Get() const {return m_Container;};
@@ -33,13 +31,39 @@ private:
     m_Container.emplace_back(p);
     return true;};
 
-  std::vector <wxExPath> m_Container;
+  std::vector <T> m_Container;
+};
+
+class wxExDirToString : public wxExDir
+{
+public:
+  wxExDirToString(const std::string & path, const std::string& filespec, int flags) 
+  : wxExDir(path, filespec, flags) {;};
+
+  const auto & Get() const {return m_Container;};
+private:
+  virtual bool OnDir(const wxExPath& p) override {
+    m_Container.emplace_back(p.GetFullName());
+    return true;};
+  virtual bool OnFile(const wxExPath& p) override {
+    m_Container.emplace_back(p.GetFullName());
+    return true;};
+
+  std::vector <std::string> m_Container;
 };
 
 std::vector <wxExPath> wxExGetAllFiles(
   const wxExPath& path, const std::string& filespec, int flags) 
 {
-  wxExDirToContainer dir(path, filespec, flags);
+  wxExDirToContainer<wxExPath> dir(path, filespec, flags);
+  dir.FindFiles();
+  return dir.Get();
+}
+
+std::vector <std::string> wxExGetAllFiles(
+  const std::string& path, const std::string& filespec, int flags) 
+{
+  wxExDirToString dir(path, filespec, flags);
   dir.FindFiles();
   return dir.Get();
 }
@@ -64,7 +88,8 @@ bool Handle(const fs::directory_entry& e, wxExDir* dir, int& matches)
       matches++;
     }
   }
-  else if ((dir->GetFlags() & DIR_DIRS) && fs::is_directory(e.path()))
+  else if ((dir->GetFlags() & DIR_DIRS) && fs::is_directory(e.path()) &&
+    wxExMatchesOneOf(e.path().filename().string(), dir->GetFileSpec()))
   {
     dir->OnDir(e.path());
   }

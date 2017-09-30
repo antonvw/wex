@@ -38,7 +38,7 @@ TEST_CASE( "wxExDir" )
 
   SUBCASE( "GetAllFiles" ) 
   {
-    REQUIRE(wxExGetAllFiles("./", "*.txt", DIR_FILES).size() == 4);
-    REQUIRE(wxExGetAllFiles("./", "*.txt", DIR_DIRS).empty());
+    REQUIRE(wxExGetAllFiles(std::string("./"), "*.txt", DIR_FILES).size() == 4);
+    REQUIRE(wxExGetAllFiles(wxExPath("./"), "*.txt", DIR_DIRS).empty());
   }
 }

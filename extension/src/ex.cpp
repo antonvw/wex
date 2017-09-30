@@ -151,7 +151,7 @@ wxExEx::wxExEx(wxExSTC* stc)
 #endif
     {":chd", [&](const std::string& command) {
       if (command.find(" ") == std::string::npos) return true;
-      wxSetWorkingDirectory(wxExFirstOf(command, " ")); return true;}},
+      wxExPath::Current(wxExFirstOf(command, " ")); return true;}},
     {":close", [&](const std::string& command) {POST_COMMAND( wxID_CLOSE ) return true;}},
     {":de", [&](const std::string& command) {
       m_Frame->GetDebug()->Execute(wxExFirstOf(command, " "), m_STC);
@@ -187,10 +187,11 @@ wxExEx::wxExEx(wxExSTC* stc)
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
               m_Macros.SetMap(name, value);return true;});
-      }}},
+      }
+      return false;}},
     {":new", [&](const std::string& command) {POST_COMMAND( wxID_NEW ) return true;}},
     {":print", [&](const std::string& command) {m_STC->Print(command.find(" ") == std::string::npos); return true;}},
-    {":pwd", [&](const std::string& command) {wxLogStatus(wxGetCwd()); return true;}},
+    {":pwd", [&](const std::string& command) {wxExLogStatus(wxExPath::Current()); return true;}},
     {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
     {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
     {":reg", [&](const std::string& command) {
@@ -385,10 +386,9 @@ void wxExEx::AddText(const std::string& text)
 
 double wxExEx::Calculator(const std::string& text, int& width)
 {
-  wxString expr(text);
-  expr.Trim();
+  std::string expr(wxExSkipWhiteSpace(text));
 
-  if (expr.empty() || expr.Contains("%s"))
+  if (expr.empty() || expr.find("%s") != std::string::npos)
   {
     return 0;
   }
@@ -415,11 +415,11 @@ double wxExEx::Calculator(const std::string& text, int& width)
     width = 0;
     
     // Replace . with current line.
-    expr.Replace(".", std::to_string(m_STC->GetCurrentLine() + 1));
+    wxExReplaceAll(expr, ".", std::to_string(m_STC->GetCurrentLine() + 1));
   }
   
   // Replace $ with line count.
-  expr.Replace("$", std::to_string(m_STC->GetLineCount()));
+  wxExReplaceAll(expr, "$", std::to_string(m_STC->GetLineCount()));
   
   std::string exp(expr);
   
@@ -538,7 +538,7 @@ bool wxExEx::CommandAddress(const std::string& command)
           addr1 = true;
           range_str = v[0];
           cmd = v[1];
-          rest = wxString(v[2]).Trim(false);
+          rest = wxExSkipWhiteSpace(v[2], SKIP_LEFT);
           break;
         case 4:
           range_str = v[0] + v[1];
@@ -660,7 +660,7 @@ void wxExEx::Copy(const wxExEx* ex)
 void wxExEx::Cut(bool show_message)
 {
   const std::string sel(GetSelectedText());
-  const int lines = wxExGetNumberOfLines(sel);
+  const auto lines = wxExGetNumberOfLines(sel);
   
   Yank(false);
 
@@ -1110,7 +1110,7 @@ void wxExEx::Yank(bool show_message)
     SetRegisterYank(range);
   }
   
-  const int lines = wxExGetNumberOfLines(range);
+  const auto lines = wxExGetNumberOfLines(range);
   
   if (lines >= 3 && show_message)
   {

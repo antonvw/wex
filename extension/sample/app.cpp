@@ -193,7 +193,7 @@ wxExSampleFrame::wxExSampleFrame()
   m_Notebook->AddPage(m_Grid, "wxExGrid");
   m_Grid->CreateGrid(0, 0);
   m_Grid->AppendCols(2);
-  wxExSampleDir dir(wxGetCwd().ToStdString(), "*.*", m_Grid);
+  wxExSampleDir dir(wxExPath::Current(), "*.*", m_Grid);
   dir.FindFiles();
   m_Grid->AutoSizeColumns();
 #endif

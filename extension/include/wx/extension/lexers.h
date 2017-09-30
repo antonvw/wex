@@ -89,7 +89,7 @@ public:
   bool GetThemeOk() const {return GetTheme() != m_NoTheme;};
   
   /// Returns number of themes (should at least contain empty theme).
-  size_t GetThemes() const {return m_ThemeMacros.size();};
+  auto GetThemes() const {return m_ThemeMacros.size();};
   
   /// Returns true if specified indicator is available.
   bool IndicatorIsLoaded(const wxExIndicator& indic) const {

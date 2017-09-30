@@ -183,7 +183,7 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
       wxExSTC* stc = GetSTC();
       if (stc != nullptr)
       {
-        wxSetWorkingDirectory(stc->GetFileName().GetPath());
+        wxExPath::Current(stc->GetFileName().GetPath());
         if (!wxExMarkerAndRegisterExpansion(&stc->GetVi(), text)) return;
       }
       if (!wxExShellExpansion(text)) return;

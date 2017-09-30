@@ -21,7 +21,7 @@ TEST_CASE("wxEx")
   AddPane(GetFrame(), report);
     
   const auto files = wxExGetAllFiles(
-    "../../../extension/test/gui-report", 
+    wxExPath("../../../extension/test/gui-report"), 
     "*.cpp", 
     DIR_FILES | DIR_DIRS);
   

@@ -146,8 +146,9 @@ Variables are expanded when playing back the macro.
   <!-- An abbreviation macro -->
   <abbreviation name="CR">Copyright</abbreviation>
 
-  <!-- A alt key macro for alt key chars -->
-  <map-alt name="49">$</map-alt>
+  <!-- An alt key macro for alt key chars -->
+  <map-alt name="B">:!bash</map-alt>
+  <map-alt name="G">:grep -r</map-alt>
 
   <!-- A map macro (for ex macro's) -->
   <map name=":A">:abb</map>

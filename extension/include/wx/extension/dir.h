@@ -70,7 +70,7 @@ private:
   const int m_Flags;
 };
 
-/// Returns all matching files into a vector.
+/// Returns all matching files into a vector of paths.
 std::vector <wxExPath> wxExGetAllFiles(
   /// the dir to start finding
   const wxExPath& path,
@@ -78,6 +78,15 @@ std::vector <wxExPath> wxExGetAllFiles(
   const std::string& filespec = std::string(),
   /// finds all
   int flags = DIR_DEFAULT); 
+
+/// Returns all matching files into a vector of strings (without paths).
+std::vector <std::string> wxExGetAllFiles(
+  /// the dir to start finding
+  const std::string& path,
+  /// the files to be found
+  const std::string& filespec = std::string(),
+  /// finds all
+  int flags = DIR_FILES | DIR_DIRS); 
 
 #if wxUSE_GUI
 class wxExFrame;
