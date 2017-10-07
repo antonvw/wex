@@ -21,9 +21,6 @@ TEST_CASE( "wxExDir" )
   
   SUBCASE( "Recursive" ) 
   {
-    // we could use *.h;*.cpp, however wxDir handles only
-    // one type, so all files would be found (wxExDir uses empty spec,
-    // and checks each file on a match)
     wxExDir dir("../../", "*.h");
     REQUIRE(dir.GetDir().DirExists());
     REQUIRE(dir.GetFileSpec() == "*.h");

@@ -96,7 +96,7 @@ const std::vector<wxExPath> wxExPath::GetPaths() const
 
   for (const auto& e : m_path)
   {
-    v.emplace_back(e.string());
+    v.emplace_back(e);
   }
 
   return v;

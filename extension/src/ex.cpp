@@ -171,13 +171,13 @@ wxExEx::wxExEx(wxExSTC* stc)
               m_Macros.SetKeyMap(name, value);return true;}); 
         break;
         case ARG_NONE: ShowDialog("Map", 
-            "String map:\n" +
+            "[String map]\n" +
             ReportContainer<std::string, std::map<std::string, std::string>>(m_Macros.GetMap()) +
-            "Key map:\n" +
+            "[Key map]\n" +
             ReportContainer<int, wxExViMacrosMapType>(m_Macros.GetKeysMap()) +
-            "Alt key map:\n" +
+            "[Alt key map]\n" +
             ReportContainer<int, wxExViMacrosMapType>(m_Macros.GetKeysMap(KEY_ALT)) +
-            "Control key map:\n" +
+            "[Control key map]\n" +
             ReportContainer<int, wxExViMacrosMapType>(m_Macros.GetKeysMap(KEY_CONTROL)), 
             true);
           return true;

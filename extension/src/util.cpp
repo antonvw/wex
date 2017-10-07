@@ -16,7 +16,6 @@
 #include <wx/app.h>
 #include <wx/clipbrd.h>
 #include <wx/config.h>
-#include <wx/dir.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/stdpaths.h>
 #include <wx/textctrl.h>

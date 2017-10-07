@@ -56,8 +56,9 @@ private:
 #if wxUSE_TASKBARICON
   void UpdateTaskBar();
 #endif
-  void WriteDataToClient(const wxCharBuffer& data, wxSocketBase* client);
-  void WriteDataWindowToClients();
+  void UpdateConnectionsPane() const;
+  void WriteDataToSocket(const wxCharBuffer& data, wxSocketBase* client);
+  void WriteDataWindowToConnections();
 
   std::list<wxSocketBase*> m_Clients;
 
@@ -67,6 +68,7 @@ private:
 
   wxExStatistics < int > m_Statistics;
 
+  wxSocketClient* m_SocketRemoteServer = nullptr;
   wxSocketServer* m_SocketServer = nullptr;
   wxTimer m_Timer;
 
@@ -82,39 +84,10 @@ class TaskBarIcon: public wxTaskBarIcon
 {
 public:
   explicit TaskBarIcon(Frame* frame);
-protected:
-  virtual wxMenu* CreatePopupMenu();
 private:
+  virtual wxMenu* CreatePopupMenu() override;
   Frame* m_Frame;
 };
 #endif
-
-enum
-{
-  ID_MENU_FIRST,
-
-  ID_CLEAR_STATISTICS,
-  ID_CLIENT_BUFFER_SIZE,
-  ID_CLIENT_ANSWER_COMMAND,
-  ID_CLIENT_ANSWER_ECHO,
-  ID_CLIENT_ANSWER_FILE,
-  ID_CLIENT_ANSWER_OFF,
-  ID_CLIENT_LOG_DATA,
-  ID_CLIENT_LOG_DATA_COUNT_ONLY,
-  ID_HIDE,
-  ID_RECENT_FILE_MENU,
-  ID_TIMER_STOP,
-  ID_TIMER_START,
-  ID_VIEW_DATA,
-  ID_VIEW_LOG,
-  ID_VIEW_SHELL,
-  ID_VIEW_STATISTICS,
-  ID_WRITE_DATA,
-
-  ID_MENU_LAST,
-
-  ID_SERVER,
-  ID_CLIENT
-};
 
 #endif // wxUSE_SOCKETS

@@ -1,4 +1,4 @@
-version: 17.10.0.{build}
+version: 18.04.0.{build}
 
 branches:
   only:
@@ -39,4 +39,4 @@ build_script:
 test: OFF
 
 artifacts:
-  - path: 'build\syncped-v17.10.0.zip'
+  - path: 'build\syncped-v18.04.0.zip'

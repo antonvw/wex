@@ -85,6 +85,9 @@ public:
 private:
   static const wxExVCSEntry FindEntry(const std::string& filename);
   static const wxExVCSEntry FindEntry(const wxExPath& filename);
+  static const wxExPath GetTopLevelDir(
+    const std::string& admin_dir, 
+    const wxExPath& file);
   static bool IsAdminDir(
     const std::string& admin_dir, 
     const wxExPath& fn);
@@ -96,10 +99,7 @@ private:
   const std::string GetRelativeFile(
     const std::string& admin_dir, 
     const wxExPath& file) const;
-  const std::string GetTopLevelDir(
-    const std::string& admin_dir, 
-    const wxExPath& file) const;
-  
+
   wxExVCSEntry m_Entry;
 
   std::vector< wxExPath > m_Files;

@@ -5,7 +5,7 @@ function substitute
   sed -e "s/SOME.*/wxExtension localization file $1/" -i $1 
   sed -e "s/YEAR/2017/" -i $1 
   sed -e "s/PACKAGE/wxExtension/" -i $1 
-  sed -e "s/VERSION/17.10/" -i $1 
+  sed -e "s/VERSION/18.04/" -i $1 
   sed -e "/FIRST AUTHOR.*/d" -i $1 
   sed -e "s/charset=CHARSET/charset=UTF-8/" -i $1 
 }

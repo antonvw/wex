@@ -60,7 +60,7 @@ public:
 
   /// Returns current path.
   static std::string Current() {
-    return std::experimental::filesystem::current_path();};
+    return std::experimental::filesystem::current_path().string();};
 
   /// Sets current path.
   static void Current(const std::string& path) {
