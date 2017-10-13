@@ -599,7 +599,7 @@ void wxExNodeStyles(const pugi::xml_node* node, const std::string& lexer,
 
 #if wxUSE_GUI
 int wxExOpenFiles(wxExFrame* frame, const std::vector< wxExPath > & files,
-  const wxExSTCData& data, int dir_flags)
+  const wxExSTCData& stc_data, int dir_flags)
 {
   wxWindowUpdateLocker locker(frame);
   
@@ -613,16 +613,16 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxExPath > & files,
     {
       count += wxExDirOpenFile(frame, 
         wxExPath::Current(),
-        it.Path().string(), data.Flags(), dir_flags).FindFiles();
+        it.Path().string(), stc_data.Flags(), dir_flags).FindFiles();
     }
     else
     {
-      wxExControlData control(data.Control());
       wxExPath fn(it);
+      wxExSTCData data(stc_data);
 
       if (!it.FileExists() && it.Path().string().find(":") != std::string::npos)
       {
-        const wxExPath val = wxExLink().GetPath(it.Path().string(), control);
+        const wxExPath val = wxExLink().GetPath(it.Path().string(), data.Control());
         
         if (!val.Path().empty())
         {
@@ -635,7 +635,7 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxExPath > & files,
         fn.MakeAbsolute();
       }
        
-      if (frame->OpenFile(fn, wxExSTCData(control)) != nullptr)
+      if (frame->OpenFile(fn, data) != nullptr)
       {
         count++;
       }

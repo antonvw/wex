@@ -20,29 +20,27 @@ matrix:
       dist: trusty
       sudo: required
       compiler: gcc
+      addons:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
     - os: osx
-      compiler: clang++
-      env: CXX=clang++
-      osx_image: xcode8.3
+      osx_image: xcode9.1
+      env:
+        - MATRIX_EVAL="brew install gcc && CC=gcc-7 && CXX=g++-7"
+
   allow_failures:
     - os: osx
 
-addons:
-  coverity_scan:
-    project:
-      name: "antonvw/wxExtension"
-      description: "Build submitted via Travis CI"
-    notification_email: a.m.vanwezenbeek@gmail.com
-    build_command_prepend: "sudo rm /usr/bin/g++; sudo ln -s /usr/bin/g++-4.9 /usr/bin/g++; mkdir build; pushd build; cmake .."
-    build_command: "make -j 4"
-    branch_pattern: coverity_scan
-  
-branches:
-    only:
-      - master
-
 git:
     submodules: true
+
+before_install:
+    - eval "${MATRIX_EVAL}"
 
 install:
     - ./ci/${TRAVIS_OS_NAME}-install.sh

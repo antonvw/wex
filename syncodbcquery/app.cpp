@@ -16,6 +16,7 @@
 #include <wx/stockitem.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/grid.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
@@ -48,8 +49,8 @@ bool App::OnInit()
 
 Frame::Frame()
   : wxExFrameWithHistory()
-  , m_Results(new wxExGrid())
   , m_Query(new wxExSTC())
+  , m_Results(new wxExGrid())
   , m_Shell(new wxExShell(wxExSTCData(), "", ";"))
 {
   SetIcon(wxICON(app));
@@ -108,8 +109,14 @@ Frame::Frame()
 #if wxUSE_STATUSBAR
   SetupStatusBar({
     {},
-    {"PaneInfo", 100, _("Lines").ToStdString()}});
+    {"PaneInfo", 100, _("Lines").ToStdString()},
+    {"PaneTheme", 50, _("Theme").ToStdString()}});
 #endif
+
+  if (wxExLexers::Get()->GetThemes() <= 1)
+  {
+    m_StatusBar->ShowField("PaneTheme", false);
+  }
 
   GetToolBar()->AddControls(false); // no realize yet
   GetToolBar()->AddTool(wxID_EXECUTE, 
@@ -197,10 +204,9 @@ Frame::Frame()
         }
         catch (otl_exception& p)
         {
-          const std::string text((const char*)p.msg, 1000);
           m_Statistics.Inc("Number of query errors");
           m_Shell->AppendText(
-            "\nerror: " +  wxExQuoted(text) + 
+            "\nerror: " +  wxExQuoted(std::string((const char*)p.msg)) + 
             " in: " + wxExQuoted(query));
         }
       }
@@ -280,12 +286,12 @@ Frame::Frame()
       }
       catch (otl_exception& p)
       {
-        const std::string text((const char*)p.msg, 1000);
         if (m_Results->IsShown())
         {
           m_Results->EndBatch();
         }
-        m_Shell->AppendText("\nerror: " + wxExQuoted(text));
+
+        m_Shell->AppendText("\nerror: " + wxExQuoted(std::string((const char*)p.msg)));
       }
     }
     else
@@ -328,7 +334,7 @@ Frame::Frame()
     event.Check(GetManager().GetPane("STATISTICS").IsShown());}, ID_VIEW_STATISTICS);
   
   // Do automatic connect.
-  if (!m_otl.Datasource().empty() && m_otl.Logon())
+  if (!m_otl.Datasource().empty() && m_otl.Logon(wxExWindowData().Button(0)))
   {
     m_Shell->SetPrompt(m_otl.Datasource() + ">");
   }
@@ -409,4 +415,26 @@ void Frame::RunQuery(const std::string& query, bool empty_results)
   m_Statistics.Inc("Total rows processed", rpc);
 
   m_Shell->DocumentEnd();
+}
+
+void Frame::StatusBarClicked(const std::string& pane)
+{
+  if (pane == "PaneTheme")
+  {
+    if (wxExLexers::Get()->ShowThemeDialog(this))
+    {
+      m_Query->GetLexer().Set(m_Query->GetLexer().GetDisplayLexer());
+      m_Shell->GetLexer().Set(m_Shell->GetLexer().GetDisplayLexer());
+
+      m_StatusBar->ShowField(
+        "PaneLexer", 
+        wxExLexers::Get()->GetThemeOk());
+        
+      StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
+    }
+  }
+  else
+  {
+    wxExFrameWithHistory::StatusBarClicked(pane);
+  }
 }

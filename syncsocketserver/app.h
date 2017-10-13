@@ -49,7 +49,6 @@ private:
     bool accepted = true,
     bool show_clients = true);
   bool SetupSocketServer();
-  bool SocketCheckError(const wxSocketBase* sock);
   const wxString SocketDetails(const wxSocketBase* sock) const;
   void SocketLost(wxSocketBase* sock, bool remove_from_clients);
   void TimerDialog();

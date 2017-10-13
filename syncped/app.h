@@ -12,7 +12,7 @@
 class App : public wxExApp
 {
 public:
-  const auto& GetData() const {return m_Data;};
+  auto& GetData() {return m_Data;};
   const auto& GetFiles() const {return m_Files;};
   const auto& GetTag() const {return m_Tag;};
 

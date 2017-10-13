@@ -33,7 +33,7 @@ public:
   wxExSTCData& operator=(const wxExSTCData& r);
   
   /// Returns control data.
-  const auto& Control() const {return m_Data;};
+  auto& Control() {return m_Data;};
 
   /// Sets control data.
   wxExSTCData& Control(wxExControlData& data) {m_Data = data; return *this;};

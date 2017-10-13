@@ -268,7 +268,7 @@ bool wxExVCS::IsAdminDir(const std::string& admin_dir, const wxExPath& fn)
 {
   return 
     !admin_dir.empty() && !fn.Path().empty() &&
-    wxExPath(fn).Append(admin_dir).DirExists();
+    wxExPath(fn.GetPath()).Append(admin_dir).DirExists();
 }
 
 bool wxExVCS::IsAdminDirTopLevel(

@@ -1,8 +1,5 @@
 #!/usr/bin/env sh
 
-sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-sudo apt-get update
-sudo apt-get install -y g++-4.9
 sudo apt-get install -y lcov ruby
 gem install coveralls-lcov
 

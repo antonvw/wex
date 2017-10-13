@@ -412,6 +412,19 @@ Frame::Frame(App* app)
     ShowPane("PROJECTS");}, ID_PROJECT_NEW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    wxFileDialog dlg(this,
+      _("Select Projects"),
+       (!GetProjectHistory().GetHistoryFile().Path().empty() ? 
+           GetProjectHistory().GetHistoryFile().GetPath(): wxExConfigDir()),
+      wxEmptyString,
+      m_ProjectWildcard,
+      wxFD_OPEN | wxFD_MULTIPLE);
+    if (dlg.ShowModal() == wxID_CANCEL) return;
+    wxExOpenFiles(this, 
+      wxExToVectorPath(dlg).Get(), wxExSTCData().Flags(STC_WIN_IS_PROJECT));}, 
+    ID_PROJECT_OPEN);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExListViewFile* project = GetProject();
     if (project != nullptr)
     {
@@ -419,7 +432,8 @@ Frame::Frame(App* app)
       {
         OpenFile(project->GetFileName());
       }
-    };}, ID_PROJECT_OPENTEXT);
+    };}, 
+    ID_PROJECT_OPENTEXT);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExListViewFile* project = GetProject();
@@ -441,17 +455,6 @@ Frame::Frame(App* app)
           project->GetFileName().GetName());
       }
     };}, ID_PROJECT_SAVEAS);
-
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxFileDialog dlg(this,
-      _("Select Projects"),
-       (!GetProjectHistory().GetHistoryFile().Path().empty() ? 
-           GetProjectHistory().GetHistoryFile().GetPath(): wxExConfigDir()),
-      wxEmptyString,
-      m_ProjectWildcard,
-      wxFD_OPEN | wxFD_MULTIPLE);
-    if (dlg.ShowModal() == wxID_CANCEL) return;
-    wxExOpenFiles(this, wxExToVectorPath(dlg).Get(), wxExSTCData().Flags(STC_WIN_IS_PROJECT));}, ID_PROJECT_OPEN);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Editors->Rearrange(wxTOP);}, ID_REARRANGE_HORIZONTALLY);

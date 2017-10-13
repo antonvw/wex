@@ -70,7 +70,7 @@ enum
   ID_HIDE,
   ID_RECENT_FILE_MENU,
   ID_SERVER_CONFIG,
-  ID_SETUP_REMOTE_SERVER,
+  ID_REMOTE_SERVER_CONNECT,
   ID_REMOTE_SERVER_DISCONNECT,
   ID_REMOTE_SERVER_CONFIG,
   ID_TIMER_STOP,
@@ -122,13 +122,18 @@ Frame::Frame()
   // Statusbar setup before STC construction.
   SetupStatusBar({
     {},
-    {"PaneConnections", 75, _("Number of connections").ToStdString()},
+    {"PaneConnections", 75, _("Number of local, remote connections").ToStdString()},
     {"PaneTimer", 75, _("Repeat timer").ToStdString()},
     {"PaneBytes", 150, _("Number of bytes received and sent").ToStdString()},
     {"PaneFileType", 50, _("File type").ToStdString()},
     {"PaneTheme", 50, _("Theme").ToStdString()},
     {"PaneInfo", 100, _("Lines").ToStdString()}});
 #endif
+
+  if (wxExLexers::Get()->GetThemes() <= 1)
+  {
+    m_StatusBar->ShowField("PaneTheme", false);
+  }
 
   m_LogWindow->ResetMargins();
 
@@ -149,23 +154,23 @@ Frame::Frame()
   menuFile->Append(wxID_EXIT);
 #endif
 
-  wxMenu* menuOther = new wxMenu();
-  menuOther->Append(ID_REMOTE_SERVER_CONFIG, _("Configuration"), 
+  wxMenu* menuRemote = new wxMenu();
+  menuRemote->Append(ID_REMOTE_SERVER_CONFIG, _("Configuration"), 
     _("Configures the remote server"));
-  menuOther->AppendSeparator();
-  menuOther->Append(ID_SETUP_REMOTE_SERVER, _("Connect"), 
-    _("Tries to connect to remote server"));
-  menuOther->Append(ID_REMOTE_SERVER_DISCONNECT, _("Disconnect"), 
-    _("Disconnects from remote server"));
+  menuRemote->AppendSeparator();
+  menuRemote->Append(ID_REMOTE_SERVER_CONNECT, 
+    _("Connect"), _("Tries to connect to server"));
+  menuRemote->Append(ID_REMOTE_SERVER_DISCONNECT, 
+    _("Disconnect"), _("Disconnects from remote server"));
 
   wxMenu* menuServer = new wxMenu();
   menuServer->Append(ID_SERVER_CONFIG, _("Configuration"), 
     _("Configures the server"));
   menuServer->AppendSeparator();
-  menuServer->AppendSubMenu(menuOther, _("&Remote"));
-  menuServer->AppendSeparator();
   menuServer->Append(wxID_EXECUTE);
   menuServer->Append(wxID_STOP);
+  menuServer->AppendSeparator();
+  menuServer->AppendSubMenu(menuRemote, _("&Remote"));
 
   wxMenu* menuAnswer = new wxMenu();
   menuAnswer->AppendRadioItem(ID_CLIENT_ANSWER_OFF, _("Off"),
@@ -270,75 +275,6 @@ Frame::Frame()
   GetManager().Update();
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    SetupSocketServer();}, wxID_EXECUTE);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (m_SocketRemoteServer != nullptr)
-    {
-      // In fact, this should not happen, 
-      // but using Ubuntu the OnUpdateUI does not prevent this...
-      wxLogStatus(_("First stop remote server"));
-      return false;
-    }
-    
-    // Create the address - defaults to localhost and port as specified
-    if (!wxConfigBase::Get()->Exists(_("Hostname")))
-    {
-      wxConfigBase::Get()->SetRecordDefaults(true);
-    }
-
-    wxIPV4address addr;
-    addr.Hostname(wxConfigBase::Get()->Read(_("Hostname"), "localhost"));
-    addr.Service(wxConfigBase::Get()->ReadLong(_("Port"), 3000));
-
-    if (wxConfigBase::Get()->IsRecordingDefaults())
-    {
-      wxConfigBase::Get()->SetRecordDefaults(false);
-    }
-
-    m_SocketRemoteServer = new wxSocketClient();
-
-    m_SocketRemoteServer->SetEventHandler(*this, ID_SERVER_CLIENT);
-    m_SocketRemoteServer->SetNotify(wxSOCKET_CONNECTION_FLAG);
-    m_SocketRemoteServer->Notify(true);
-    m_SocketRemoteServer->Connect(addr, false);
-    }, ID_SETUP_REMOTE_SERVER);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (m_SocketRemoteServer == nullptr) return;
-    SocketLost(m_SocketRemoteServer, false);
-    m_SocketRemoteServer = nullptr;
-    }, ID_REMOTE_SERVER_DISCONNECT);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    if (wxMessageBox(_("Stop server?"),
-      _("Confirm"),
-      wxOK | wxCANCEL | wxICON_QUESTION) == wxCANCEL)
-    {
-      return;
-    }
-    for (auto& it : m_Clients)
-    {
-      SocketLost(it, false);
-    }
-    m_Clients.clear();
-    m_SocketServer->Destroy();
-    m_SocketServer = nullptr;
-    const wxString text = _("server stopped");
-
-#if wxUSE_TASKBARICON
-    m_TaskBarIcon->SetIcon(wxICON(notready), text);
-#endif
-    UpdateConnectionsPane();
-    wxLogStatus(text);
-    AppendText(m_LogWindow, text, DATA_MESSAGE);
-    const wxString statistics = m_Statistics.Get();
-    if (!statistics.empty())
-    {
-      AppendText(m_LogWindow, statistics, DATA_MESSAGE);
-    }}, wxID_STOP);
-    
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general socket server."));
@@ -347,6 +283,9 @@ Frame::Frame()
     wxAboutBox(info);
     }, wxID_ABOUT);
 
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    SetupSocketServer();}, wxID_EXECUTE);
+    
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     Close(true);}, wxID_EXIT);
 
@@ -378,6 +317,33 @@ Frame::Frame()
       m_DataWindow->GetFile().FileSave(dlg.GetPath().ToStdString());
     }}, wxID_SAVEAS);
 
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (wxMessageBox(_("Stop server?"),
+      _("Confirm"),
+      wxOK | wxCANCEL | wxICON_QUESTION) == wxCANCEL)
+    {
+      return;
+    }
+
+    const wxString text = _("server stopped");
+    wxLogStatus(text);
+    AppendText(m_LogWindow, text, DATA_MESSAGE);
+
+    for (auto& it : m_Clients)
+    {
+      SocketLost(it, false);
+    }
+
+    m_Clients.clear();
+    m_SocketServer->Destroy();
+    m_SocketServer = nullptr;
+
+#if wxUSE_TASKBARICON
+    m_TaskBarIcon->SetIcon(wxICON(notready), text);
+#endif
+    UpdateConnectionsPane();
+    }, wxID_STOP);
+    
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     m_Statistics.Clear();}, ID_CLEAR_STATISTICS);
 
@@ -428,6 +394,51 @@ Frame::Frame()
         Button(m_SocketRemoteServer == nullptr ? wxOK | wxCANCEL: wxCANCEL)).ShowModal();
     }, ID_REMOTE_SERVER_CONFIG);
 
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (m_SocketRemoteServer == nullptr) return;
+
+    if (m_SocketRemoteServer->IsConnected())
+    {
+      SocketLost(m_SocketRemoteServer, false);
+    }
+
+    UpdateConnectionsPane();
+
+    m_SocketRemoteServer = nullptr;
+    }, ID_REMOTE_SERVER_DISCONNECT);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (m_SocketRemoteServer != nullptr)
+    {
+      // In fact, this should not happen, 
+      // but using Ubuntu the OnUpdateUI does not prevent this...
+      wxLogStatus(_("First stop remote server"));
+      return false;
+    }
+    
+    // Create the address - defaults to localhost and port as specified
+    if (!wxConfigBase::Get()->Exists(_("Remote Hostname")))
+    {
+      wxConfigBase::Get()->SetRecordDefaults(true);
+    }
+
+    wxIPV4address addr;
+    addr.Hostname(wxConfigBase::Get()->Read(_("Remote Hostname"), "localhost"));
+    addr.Service(wxConfigBase::Get()->ReadLong(_("Remote Port"), 3000));
+
+    if (wxConfigBase::Get()->IsRecordingDefaults())
+    {
+      wxConfigBase::Get()->SetRecordDefaults(false);
+    }
+
+    m_SocketRemoteServer = new wxSocketClient();
+
+    m_SocketRemoteServer->SetEventHandler(*this, ID_SERVER_CLIENT);
+    m_SocketRemoteServer->SetNotify(wxSOCKET_CONNECTION_FLAG);
+    m_SocketRemoteServer->Notify(true);
+    m_SocketRemoteServer->Connect(addr, false);
+    }, ID_REMOTE_SERVER_CONNECT);
+    
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
@@ -498,7 +509,6 @@ Frame::Frame()
       sock->SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
       sock->Notify(true);
       m_Clients.emplace_back(sock);
-      UpdateConnectionsPane();
       LogConnection(sock, true);
       const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
       WriteDataToSocket(buffer, sock);
@@ -519,15 +529,12 @@ Frame::Frame()
         sock->SetNotify(wxSOCKET_LOST_FLAG | wxSOCKET_INPUT_FLAG | wxSOCKET_OUTPUT_FLAG);
         const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
         WriteDataToSocket(buffer, sock);
-        UpdateConnectionsPane();
         }
         break;
 
       case wxSOCKET_INPUT:
       case wxSOCKET_OUTPUT:
         {
-        m_Statistics.Inc("Events");
-
         // We disable input events, so that the test doesn't trigger
         // wxSocketEvent again.
         sock->SetNotify(wxSOCKET_LOST_FLAG);
@@ -543,11 +550,12 @@ Frame::Frame()
         char* buffer = new char[size];
         sock->Read(buffer, size);
 
-        m_Statistics.Inc("Bytes Received", sock->LastCount());
-
-        if (sock->LastCount() > 0)
+        if (sock->LastReadCount() > 0)
         {
-          const wxString text(buffer, sock->LastCount());
+          m_Statistics.Inc("Messages Received");
+          m_Statistics.Inc("Bytes Received", sock->LastReadCount());
+
+          const wxString text(buffer, sock->LastReadCount());
 
           if (wxConfigBase::Get()->ReadBool(_("Log Data"), true))
           {
@@ -555,7 +563,7 @@ Frame::Frame()
             {
               AppendText(m_LogWindow, 
                 wxString::Format(_("read: %d bytes from: %s"), 
-                  sock->LastCount(), SocketDetails(sock).c_str()),
+                  sock->LastReadCount(), SocketDetails(sock).c_str()),
                 DATA_MESSAGE);
             }
             else
@@ -666,7 +674,7 @@ Frame::Frame()
     event.Enable(m_SocketServer != nullptr);}, wxID_STOP);
 
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    event.Enable(m_SocketRemoteServer == nullptr);}, ID_SETUP_REMOTE_SERVER);
+    event.Enable(m_SocketRemoteServer == nullptr);}, ID_REMOTE_SERVER_CONNECT);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
    event.Enable(m_SocketRemoteServer != nullptr);}, ID_REMOTE_SERVER_DISCONNECT);
 
@@ -691,8 +699,9 @@ Frame::Frame()
     event.Check(GetManager().GetPane("STATISTICS").IsShown());}, ID_VIEW_STATISTICS);
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     event.Enable(
-      (!m_Clients.empty() || (m_SocketRemoteServer != nullptr && m_SocketRemoteServer->IsConnected())) && 
-      m_DataWindow->GetLength() > 0);}, ID_WRITE_DATA);
+      (!m_Clients.empty() || 
+        (m_SocketRemoteServer != nullptr && m_SocketRemoteServer->IsConnected())) && 
+       m_DataWindow->GetLength() > 0);}, ID_WRITE_DATA);
 
   StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
 }
@@ -754,22 +763,19 @@ void Frame::LogConnection(
   bool show_connections)
 {
   wxString text;
+  text << (accepted ? _("accepted"): _("lost")) << " " << SocketDetails(sock);
 
-  if (sock != nullptr)
-  {
-    text << (accepted ? _("accepted"): _("lost")) << " " << SocketDetails(sock);
-  }
-  else
-  {
-    text << (accepted ? _("accepted"): _("lost")) << " " << _("connection");
-  }
+  const int connections = m_Clients.size() + 
+    (m_SocketRemoteServer != nullptr && m_SocketRemoteServer->IsConnected() ? 1: 0);
 
-  if (show_connections)
+  if (show_connections && connections > 0)
   {
-    text << " " << _("connections: ") << m_Clients.size();
+    text << " " << _("connections: ") << connections;
   }
 
   AppendText(m_LogWindow, text, DATA_MESSAGE);
+
+  UpdateConnectionsPane();
 }
 
 void Frame::OnCommandItemDialog(
@@ -869,23 +875,6 @@ bool Frame::SetupSocketServer()
   return true;
 }
 
-bool Frame::SocketCheckError(const wxSocketBase* sock)
-{
-  if (sock->Error())
-  {
-    const std::string error = 
-      "Socket Error: " + std::to_string(sock->LastError());
-      
-    wxLogStatus(error.c_str());
-
-    m_Statistics.Inc(error);
-    
-    return true;
-  }
-
-  return false;
-}
-
 const wxString Frame::SocketDetails(const wxSocketBase* sock) const
 {
   // See invocation at SocketLost.
@@ -930,11 +919,7 @@ void Frame::SocketLost(wxSocketBase* sock, bool remove_from_connections)
     m_Clients.remove(sock);
   }
 
-#ifdef __WXMSW__
   LogConnection(sock, false, remove_from_connections);
-#else
-  LogConnection(nullptr, false, remove_from_connections); // otherwise a crash!
-#endif
 
   sock->Destroy();
 }
@@ -1010,10 +995,10 @@ void Frame::TimerDialog()
 void Frame::UpdateConnectionsPane() const
 {
 #if wxUSE_STATUSBAR
-    const int connections = m_Clients.size() + 
-      (m_SocketRemoteServer != nullptr && m_SocketRemoteServer->IsConnected() ? 1: 0);
-    StatusText(
-      std::to_string(connections), "PaneConnections");
+  StatusText(
+    std::to_string(m_Clients.size()) + "," + 
+    std::to_string(m_SocketRemoteServer != nullptr && m_SocketRemoteServer->IsConnected() ? 1: 0), 
+    "PaneConnections");
 #endif
 }
 
@@ -1048,19 +1033,23 @@ void Frame::WriteDataToSocket(const wxCharBuffer& buffer, wxSocketBase* sock)
 {
   if (buffer.length() == 0) return;
 
-  sock->Write(buffer, buffer.length());
+  int written = 0;
 
-  if (SocketCheckError(sock))
+  while (written < buffer.length())
   {
-    return;
+    if (sock->Write(buffer.data() + written, buffer.length() - written).Error())
+    {
+      const std::string error = "Socket Error: " + std::to_string(sock->LastError());
+        
+      wxLogStatus(error.c_str());
+
+      m_Statistics.Inc(error);
+    }
+
+    written += sock->LastWriteCount();
   }
 
-  if (sock->LastCount() != buffer.length())
-  {
-    AppendText(m_LogWindow, _("not all bytes sent to socket"), DATA_MESSAGE);
-  }
-
-  m_Statistics.Inc("Bytes Sent", sock->LastCount());
+  m_Statistics.Inc("Bytes Sent", written);
   m_Statistics.Inc("Messages Sent");
 
 #if wxUSE_STATUSBAR
@@ -1080,7 +1069,7 @@ void Frame::WriteDataToSocket(const wxCharBuffer& buffer, wxSocketBase* sock)
     {
       AppendText(m_LogWindow,
         wxString::Format(_("write: %d bytes to: %s"),
-          sock->LastCount(), SocketDetails(sock).c_str()),
+          written, SocketDetails(sock).c_str()),
         DATA_MESSAGE);
     }
     else

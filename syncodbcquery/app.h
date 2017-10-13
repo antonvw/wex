@@ -45,6 +45,7 @@ private:
   virtual wxExSTC* OpenFile(
     const wxExPath& filename, 
     const wxExSTCData& data = wxExSTCData()) override;
+  virtual void StatusBarClicked(const std::string& pane) override;
 
   void RunQuery(const std::string& query, bool empty_results = false);
 

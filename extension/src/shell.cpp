@@ -94,7 +94,7 @@ wxExShell::wxExShell(
         GetVi().Command("\x1b"); // ESC, normal mode
       }
       if (GetCurrentPos() >= m_CommandStartPosition && 
-          m_Process != nullptr && m_Process->IsRunning())
+          (m_Process == nullptr || (m_Process != nullptr && m_Process->IsRunning())))
       {
         EnableShell(true);
       }
