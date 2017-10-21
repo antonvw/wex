@@ -23,14 +23,19 @@
 #include <wx/extension/process.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 
 #ifdef __WXGTK__
+// This class adds name and pid of running processes to
+// a listview. Each process has an entry in /proc,
+// with a subdir of the pid as name. In this dir there is 
+// a file comm that contains the name of that process.
 class wxExDirProcesses : public wxExDir
 {
 public:
   wxExDirProcesses(wxExListView* lv, bool init)
-    : wxExDir("/proc", "", DIR_DIRS)
+    : wxExDir("/proc", "[0-9]+", DIR_DIRS)
     , m_ListView(lv) {
     if (init)
     {
@@ -44,15 +49,11 @@ public:
     m_ListView->SortColumn("Name", SORT_ASCENDING);};
 private:
   virtual bool OnDir(const wxExPath& p) override {
-    if (atoi(p.GetName().c_str()) > 0)
+    std::ifstream ifs(wxExPath(p.Path(), "comm").Path());
+    std::string line;
+    if (ifs.is_open() && std::getline(ifs, line))
     {
-      std::ifstream ifs(wxExPath(p.Path(), "comm").Path());
-      if (ifs.is_open()) 
-      {
-        std::string line;
-        std::getline(ifs, line);
-        m_ListView->InsertItem({line, p.GetName()});
-      }
+      m_ListView->InsertItem({line, p.GetName()});
     }
     return true;};
 
@@ -159,7 +160,7 @@ bool wxExDebug::GetArgs(
         [&](wxWindow* user, const std::any& value, bool save) {
            if (save) args += " " + std::to_string(std::any_cast<long>(value));}}},
 #endif
-      wxExWindowData().Title("Attach").Parent(m_Frame));
+      wxExWindowData().Title("Attach").Size({400, 400}).Parent(m_Frame));
     }
 
     if (lv != nullptr)
@@ -217,19 +218,31 @@ void wxExDebug::ProcessStdIn(const std::string& text)
 {
   std::vector<std::string> v;
 
-  if (wxExMatch("(d|del|delete) (br|breakpoint) ([0-9]+)", text, v) == 3)
+  if (wxExMatch("(d|del|delete) +([0-9 ]*)", text, v) > 0)
   {
-    const auto& it = m_Breakpoints.find(v[2]);
-
-    if (it != m_Breakpoints.end() && m_Frame->IsOpen(std::get<0>(it->second)))
+    switch (v.size())
     {
-      wxExSTC* stc = m_Frame->OpenFile(std::get<0>(it->second));
-      stc->MarkerDeleteHandle(std::get<1>(it->second));
+      case 1:
+        DeleteAllBreakpoints(text);
+      break;
+
+      case 2:
+      {
+        wxExTokenizer tkz(v[1], " ");
+
+        while (tkz.HasMoreTokens())
+        {
+          const auto& it = m_Breakpoints.find(tkz.GetNextToken());
+
+          if (it != m_Breakpoints.end() && m_Frame->IsOpen(std::get<0>(it->second)))
+          {
+            wxExSTC* stc = m_Frame->OpenFile(std::get<0>(it->second));
+            stc->MarkerDeleteHandle(std::get<1>(it->second));
+          }
+        }
+      }
+      break;
     }
-  }
-  else 
-  {
-    DeleteAllBreakpoints(text);
   }
 }
 

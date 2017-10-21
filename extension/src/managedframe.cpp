@@ -387,7 +387,7 @@ wxExTextCtrl::wxExTextCtrl(
     {
       if (event.GetKeyCode() == WXK_BACK)
       {
-        if (m_Command.empty()) m_Command.pop_back();
+        if (!m_Command.empty()) m_Command.pop_back();
       }
       else if (event.GetKeyCode() != WXK_TAB)
       {

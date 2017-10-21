@@ -295,9 +295,8 @@ wxExEx::wxExEx(wxExSTC* stc)
       }
       std::ifstream ifs(path.Path());
       if (!ifs.is_open()) return false;
-      std::string line;
       int i = 0;
-      while (std::getline(ifs, line))
+      for (std::string line; std::getline(ifs, line); )
       {
         if (!line.empty())
         {

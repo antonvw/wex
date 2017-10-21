@@ -50,7 +50,7 @@ private:
     bool show_clients = true);
   bool SetupSocketServer();
   const wxString SocketDetails(const wxSocketBase* sock) const;
-  void SocketLost(wxSocketBase* sock, bool remove_from_clients);
+  void SocketClosed(wxSocketBase* sock, bool remove_from_clients);
   void TimerDialog();
 #if wxUSE_TASKBARICON
   void UpdateTaskBar();
@@ -67,7 +67,7 @@ private:
 
   wxExStatistics < int > m_Statistics;
 
-  wxSocketClient* m_SocketRemoteServer = nullptr;
+  wxSocketClient* m_SocketRemoteClient = nullptr;
   wxSocketServer* m_SocketServer = nullptr;
   wxTimer m_Timer;
 

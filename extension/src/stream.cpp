@@ -152,11 +152,10 @@ bool wxExStream::RunTool()
 
   m_Stats.m_Elements.Set(_("Files").ToStdString(), 1);
   
-  std::string line;
   int line_no = 0;
   std::vector<std::string> v;
 
-  while (std::getline(ifs, line))
+  for (std::string line; std::getline(ifs, line); )
   {
     if (!Process(line, line_no++)) return false;
 

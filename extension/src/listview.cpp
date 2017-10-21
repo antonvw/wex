@@ -442,7 +442,7 @@ bool wxExListView::AppendColumns(const std::vector <wxExColumn>& cols)
 {
   SetSingleStyle(wxLC_REPORT);
 
-  for (const auto col : cols)
+  for (const auto& col : cols)
   {
     wxExColumn mycol(col);
     

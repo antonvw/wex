@@ -102,6 +102,7 @@ private:
   wxExViFSM m_FSM;
   
   std::string m_Command;
+  std::string m_CommandKeep;
   std::string m_InsertText;
 
   const std::vector<std::pair<

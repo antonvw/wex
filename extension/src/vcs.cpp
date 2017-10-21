@@ -155,11 +155,13 @@ bool wxExVCS::Execute()
     else if (m_Entry.GetName() == "git")
     {
       const std::string admin_dir(FindEntry(filename).GetAdminDir());
+
       wd = GetTopLevelDir(admin_dir, filename);
       
       if (!filename.GetFullName().empty())
       {
-        args = GetRelativeFile(admin_dir, filename);
+        args = (m_Entry.GetCommand().GetCommand(false) == "show" ? 
+          GetRelativeFile(admin_dir, filename): filename.Path().string());
       }
     }
     else
@@ -228,7 +230,11 @@ const std::string wxExVCS::GetName() const
 const std::string wxExVCS::GetRelativeFile(
   const std::string& admin_dir, const wxExPath& fn) const
 {
-  // Ignore all common parts in fn, so parts that are in tld.
+  // .git
+  // /home/user/wxExtension/extension/src/vi.cpp
+  // should return -> extension/src/vi.cpp
+
+  // Ignore all common parts in fn, so parts that are in top level dir.
   auto it = std::find(fn.Path().begin(), fn.Path().end(), 
     GetTopLevelDir(admin_dir, fn).GetFullName());
 
@@ -240,9 +246,9 @@ const std::string wxExVCS::GetRelativeFile(
   // The rest from fn is used for relative file.
   wxExPath relative_file;
 
-  while (++it != fn.Path().end())
+  while (it != fn.Path().end())
   {
-     relative_file.Append(*it);
+     relative_file.Append(*it++);
   }
 
   return relative_file.Path().string();
@@ -251,6 +257,9 @@ const std::string wxExVCS::GetRelativeFile(
 const wxExPath wxExVCS::GetTopLevelDir(
   const std::string& admin_dir, const wxExPath& fn)
 {
+  // .git
+  // /home/user/wxExtension/extension/src/vi.cpp
+  // should return -> /home/user/wxExtension
   wxExPath root;
 
   for (const auto & p : fn.Path())
@@ -268,7 +277,7 @@ bool wxExVCS::IsAdminDir(const std::string& admin_dir, const wxExPath& fn)
 {
   return 
     !admin_dir.empty() && !fn.Path().empty() &&
-    wxExPath(fn.GetPath()).Append(admin_dir).DirExists();
+     wxExPath(fn.GetPath()).Append(admin_dir).DirExists();
 }
 
 bool wxExVCS::IsAdminDirTopLevel(

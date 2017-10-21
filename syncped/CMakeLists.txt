@@ -17,12 +17,13 @@ if(NOT APPLE )
     ${SRCS})
 else()
   # Define some settings for the Bundle
+  # add to mac osx Info.plist: <key>NSPrincipleClass</key> (new cmake version)
   set( MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME} )
   set( MACOSX_BUNDLE_GUI_IDENTIFIER ${PROJECT_NAME} )
   set( MACOSX_BUNDLE_ICON_FILE app-large.icns )
   set( MACOSX_BUNDLE_INFO_STRING "${PROJECT_NAME}" )
-  set( MACOSX_BUNDLE_SHORT_VERSION_STRING "17.10.0" )
-  set( MACOSX_BUNDLE_BUNDLE_VERSION "17.10.0" )
+  set( MACOSX_BUNDLE_SHORT_VERSION_STRING "18.04.0" )
+  set( MACOSX_BUNDLE_BUNDLE_VERSION "18.04.0" )
   set( MACOSX_BUNDLE_COPYRIGHT "(c) 1998-2017 Anton van Wezenbeek" )
 
   # create a bundle with an icon too!

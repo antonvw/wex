@@ -1,5 +1,5 @@
 // =================================================================================
-// ORACLE, ODBC and DB2/CLI Template Library, Version 4.0.406,
+// ORACLE, ODBC and DB2/CLI Template Library, Version 4.0.412,
 // Copyright (C) 1996-2017, Sergei Kuchin (skuchin@gmail.com)
 //
 // This library is free software. Permission to use, copy, modify,
@@ -26,7 +26,7 @@
 #include "otl_include_0.h"
 #endif
 
-#define OTL_VERSION_NUMBER (0x040196L)
+#define OTL_VERSION_NUMBER (0x04019CL)
 
 #if defined(OTL_THIRD_PARTY_STRING_VIEW_CLASS)
 #define OTL_STD_STRING_VIEW_CLASS OTL_THIRD_PARTY_STRING_VIEW_CLASS
@@ -193,9 +193,6 @@
 
 #endif
 
-#if defined(OTL_CPP_17_ON)
-#endif
-
 #define OTL_ANSI_CPP_11_NOEXCEPT
 
 #if !defined(OTL_ANSI_CPP_11_NULLPTR_SUPPORT) && !defined(__cplusplus_cli)
@@ -215,6 +212,40 @@
 #define OTL_ANSI_CPP_11_NOEXCEPT noexcept(true)
 #define OTL_ANSI_CPP_11_NOEXCEPT_FALSE noexcept(false)
 #endif
+#endif
+
+#if defined(OTL_STREAM_WITH_STD_TUPLE_ON) && defined(OTL_CPP_14_ON)
+#include <tuple>
+#include <utility>
+
+  template<typename streamType, typename Tuple, const size_t N>
+  struct otl_tuple_helper{
+    
+    static void write(streamType& s, const Tuple& t){
+      otl_tuple_helper<streamType,Tuple,N-1>::write(s,t);
+      s<<std::get<N-1>(t);
+    }
+
+    static void read(streamType& s, Tuple& t){
+      otl_tuple_helper<streamType,Tuple,N-1>::read(s,t);
+      s>>std::get<N-1>(t);
+    }
+    
+  };
+ 
+  template<typename streamType, typename Tuple>
+  struct otl_tuple_helper<streamType,Tuple,1>{
+
+    static void write(streamType& s, const Tuple& t) {
+      s<<std::get<0>(t);
+    }
+
+    static void read(streamType& s, Tuple& t) {
+      s>>std::get<0>(t);
+    }
+
+  };
+
 #endif
 
 // C++11/14/17 attributes
@@ -4180,7 +4211,7 @@ OTL_THROWS_OTL_EXCEPTION:
 
   void open(otl_stream_buffer_size_type arr_size, const char *sqlstm,
             OTLConnect &db,
-            const char *ref_cur_placeholder = 0) OTL_THROWS_OTL_EXCEPTION {
+            const char *ref_cur_placeholder = nullptr) OTL_THROWS_OTL_EXCEPTION {
     OTLStream::open(arr_size, sqlstm, db, ref_cur_placeholder);
     OTLStream::set_commit(0);
   }
@@ -5270,7 +5301,7 @@ public:
 
   void init(const bool select_stm_flag, const int aftype, const int aelem_size,
             const otl_stream_buffer_size_type aarray_size,
-            const void *connect_struct = 0, const int apl_tab_flag = 0
+            const void *connect_struct = nullptr, const int apl_tab_flag = 0
 #if defined(OTL_ORA_SDO_GEOMETRY)
             ,OCIType* colOCIType = nullptr
 #endif
@@ -8688,7 +8719,7 @@ public:
   otl_tmpl_out_stream(otl_stream_buffer_size_type arr_size, const char *sqlstm,
                       OTL_TMPL_CONNECT &db, void *master_stream_ptr,
                       const bool alob_stream_mode = false,
-                      const char *sqlstm_label = 0)
+                      const char *sqlstm_label = nullptr)
       : OTL_TMPL_CURSOR(db), auto_commit_flag(0), dirty(0), cur_x(0), cur_y(0),
         array_size(0), in_exception_flag(0), in_destruct_flag(0),
         should_delete_flag(0), var_info(), flush_flag(0), flush_flag2(0),
@@ -11121,7 +11152,7 @@ OTL_ODBC_SQL_EXTENDED_FETCH_ON is defined
 
 #if !defined(OTL_DB2_CLI) && !defined(OTL_ODBC_zOS)
 
-// in case if it's ODBC for Windows (!OTL_ODBC_UNIX), and windows.h is
+// in case it's ODBC for Windows (!OTL_ODBC_UNIX), and windows.h is
 // not included yet (_WINDOWS_ not defined yet), then include the file
 // explicitly
 #if !defined(OTL_ODBC_UNIX) && !defined(_WINDOWS_)
@@ -11813,6 +11844,12 @@ class otl_cur;
 class otl_connect;
 class otl_sel;
 
+#if defined(OTL_ENABLE_MSSQL_MARS)
+#define OTL_SQL_COPT_SS_BASE 1200
+#define OTL_SQL_COPT_SS_MARS_ENABLED (OTL_SQL_COPT_SS_BASE + 24)
+#define OTL_SQL_MARS_ENABLED_YES 1L
+#endif
+
 class otl_conn {
 protected:
   friend class otl_connect;
@@ -11916,6 +11953,104 @@ public:
       if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
         return 0;
     } else {
+#if defined(__clang__) && (__clang_major__*100+__clang_minor__ >= 500)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
+      SQLPOINTER temp = SQL_AUTOCOMMIT_OFF;
+#if defined(__clang__) && (__clang_major__*100+__clang_minor__ >= 500)
+#pragma clang diagnostic pop
+#endif
+
+      status = SQLSetConnectAttr(hdbc, SQL_ATTR_AUTOCOMMIT,
+                                 OTL_RCAST(SQLPOINTER, temp), SQL_IS_POINTER);
+      if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
+        return 0;
+    }
+    if (timeout > 0) {
+      status =
+          SQLSetConnectAttr(hdbc, SQL_ATTR_LOGIN_TIMEOUT,
+                            OTL_RCAST(void *, OTL_SCAST(size_t, timeout)), 0);
+      if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
+        return 0;
+    }
+
+#if defined(OTL_DB2_CLI)
+    status = SQLSetConnectAttr(hdbc, SQL_ATTR_LONGDATA_COMPAT,
+                               OTL_RCAST(SQLPOINTER, SQL_LD_COMPAT_YES),
+                               SQL_IS_INTEGER);
+    if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
+      return 0;
+#endif
+#if defined(OTL_ENABLE_MSSQL_MARS)
+#if !defined(OTL_DB2_CLI) && (ODBCVER >= 0x0300)
+    status = SQLSetConnectAttr(hdbc, OTL_SQL_COPT_SS_MARS_ENABLED,
+                               OTL_RCAST(SQLPOINTER, OTL_SQL_MARS_ENABLED_YES),
+                               SQL_IS_UINTEGER);
+    if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
+      return 0;
+#endif
+#endif
+    status = SQLConnect(hdbc, OTL_CCAST(SQLWCHAR *, tnsname), SQL_NTS,
+                        OTL_CCAST(SQLWCHAR *, username), SQL_NTS,
+                        OTL_CCAST(SQLWCHAR *, passwd), SQL_NTS);
+    if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
+      return 0;
+    else
+      return 1;
+  }
+#endif
+
+#if !defined(OTL_UNICODE_EXCEPTION_AND_RLOGON) && \
+    ((defined(ODBCVER) && ODBCVER >= 0x0300) || defined(OTL_DB2_CLI))
+#if defined(OTL_DB2_CLI)
+#define OTL_RLOGON_SQLHANDLE_NULLPTR OTL_SCAST(SQLHANDLE,0)
+#else
+#define OTL_RLOGON_SQLHANDLE_NULLPTR nullptr
+#endif
+
+inline void otl_special_convert_char_to_SQLWCHAR
+(SQLWCHAR *dst, const char *src){
+  while (*src)
+    *dst++ = OTL_SCAST(SQLWCHAR, *src++);
+  *dst = 0;
+}
+
+#if defined(__clang__) && (__clang_major__*100+__clang_minor__ >= 500)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
+#if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__*100+__GNUC_MINOR__>=407)
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
+  OTL_NODISCARD int rlogon(const char*username, const char *passwd,
+                           const char *dnsname, const int auto_commit){
+    if(extern_lda){
+      extern_lda=false;
+      henv=OTL_RLOGON_SQLHANDLE_NULLPTR;
+      hdbc=OTL_RLOGON_SQLHANDLE_NULLPTR;
+    }
+    OTL_TRACE_RLOGON_ODBC(0x1, "otl_connect", "rlogon", dnsname, username,
+                          passwd, auto_commit)
+    if (henv == OTL_RLOGON_SQLHANDLE_NULLPTR || hdbc == OTL_RLOGON_SQLHANDLE_NULLPTR) {
+      status = SQLAllocHandle(SQL_HANDLE_ENV, OTL_SQL_NULL_HANDLE_VAL, &henv);
+      if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
+        return 0;
+      status = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION,
+                             OTL_RCAST(void *, SQL_OV_ODBC3), SQL_NTS);
+      if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
+        return 0;
+      status = SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc);
+      if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
+        return 0;
+    }
+    if (auto_commit) {
+      status = SQLSetConnectAttr(hdbc, SQL_ATTR_AUTOCOMMIT,
+                                 OTL_RCAST(SQLPOINTER, SQL_AUTOCOMMIT_ON),
+                                 SQL_IS_POINTER);
+      if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
+        return 0;
+    } else {
       SQLPOINTER temp = SQL_AUTOCOMMIT_OFF;
       status = SQLSetConnectAttr(hdbc, SQL_ATTR_AUTOCOMMIT,
                                  OTL_RCAST(SQLPOINTER, temp), SQL_IS_POINTER);
@@ -11938,9 +12073,6 @@ public:
       return 0;
 #endif
 #if defined(OTL_ENABLE_MSSQL_MARS)
-#define OTL_SQL_COPT_SS_BASE 1200
-#define OTL_SQL_COPT_SS_MARS_ENABLED (OTL_SQL_COPT_SS_BASE + 24)
-#define OTL_SQL_MARS_ENABLED_YES 1L
 #if !defined(OTL_DB2_CLI) && (ODBCVER >= 0x0300)
     status = SQLSetConnectAttr(hdbc, OTL_SQL_COPT_SS_MARS_ENABLED,
                                OTL_RCAST(SQLPOINTER, OTL_SQL_MARS_ENABLED_YES),
@@ -11949,13 +12081,41 @@ public:
       return 0;
 #endif
 #endif
-    status = SQLConnect(hdbc, OTL_CCAST(SQLWCHAR *, tnsname), SQL_NTS,
-                        OTL_CCAST(SQLWCHAR *, username), SQL_NTS,
-                        OTL_CCAST(SQLWCHAR *, passwd), SQL_NTS);
+#if defined(_UNICODE) || defined(UNICODE)
+    {
+      SQLWCHAR *temp_dnsname = new SQLWCHAR[strlen(dnsname) + 1];
+      SQLWCHAR *temp_username = new SQLWCHAR[strlen(username) + 1];
+      SQLWCHAR *temp_passwd = new SQLWCHAR[strlen(passwd) + 1];
+      otl_special_convert_char_to_SQLWCHAR(temp_dnsname,dnsname);
+      otl_special_convert_char_to_SQLWCHAR(temp_username,username);
+      otl_special_convert_char_to_SQLWCHAR(temp_passwd,passwd);
+      status = SQLConnect(hdbc, temp_dnsname, SQL_NTS, temp_username, SQL_NTS,
+                          temp_passwd, SQL_NTS);
+      delete[] temp_dnsname;
+      delete[] temp_username;
+      delete[] temp_passwd;
+    }
+#else
+    status = SQLConnect(hdbc, OTL_RCAST(unsigned char*, OTL_CCAST(char*, dnsname)), SQL_NTS,
+                        OTL_RCAST(unsigned char*, OTL_CCAST(char*, username)), SQL_NTS,
+                        OTL_RCAST(unsigned char*, OTL_CCAST(char*, passwd)), SQL_NTS);
+#endif
     if (status != SQL_SUCCESS && status != SQL_SUCCESS_WITH_INFO)
       return 0;
     else
       return 1;
+  }
+#if defined(__clang__) && (__clang_major__*100+__clang_minor__ >= 500)
+#pragma clang diagnostic pop
+#endif
+#if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__*100+__GNUC_MINOR__>=407)
+#pragma GCC diagnostic pop
+#endif
+
+#else
+  OTL_NODISCARD int rlogon(const char* /*username*/, const char* /*passwd*/,
+                           const char* /*dnsname*/, const int /*auto_commit*/){
+    return 0;
   }
 #endif
 
@@ -12286,9 +12446,6 @@ public:
 #endif
 
 #if defined(OTL_ENABLE_MSSQL_MARS)
-#define OTL_SQL_COPT_SS_BASE 1200
-#define OTL_SQL_COPT_SS_MARS_ENABLED (OTL_SQL_COPT_SS_BASE + 24)
-#define OTL_SQL_MARS_ENABLED_YES 1L
 #if !defined(OTL_DB2_CLI) && (ODBCVER >= 0x0300)
     status = SQLSetConnectAttr(hdbc, OTL_SQL_COPT_SS_MARS_ENABLED,
                                OTL_RCAST(SQLPOINTER, OTL_SQL_MARS_ENABLED_YES),
@@ -15302,6 +15459,38 @@ OTL_THROWS_OTL_EXCEPTION:
   }
 #endif
 
+  void rlogon(const char *username,
+              const char *passwd,
+              const char *dns,
+              const int auto_commit = 0) OTL_THROWS_OTL_EXCEPTION {
+    if (this->connected) {
+      throw otl_exception(otl_error_msg_30, otl_error_code_30);
+    }
+#if defined(OTL_FREETDS_ODBC_WORKAROUNDS)
+    if (auto_commit)
+      auto_commit_ = true;
+    else
+      auto_commit_ = false;
+#endif
+    retcode = connect_struct.rlogon(username, passwd, dns, auto_commit);
+    if (retcode)
+      connected = 1;
+    else {
+      connected = 0;
+      increment_throw_count();
+      if (get_throw_count() > 1)
+        return;
+      if (otl_uncaught_exception())
+        return;
+      throw otl_exception(connect_struct);
+    }
+#if defined(OTL_FREETDS_ODBC_WORKAROUNDS)
+    if (!auto_commit_) {
+      (*this) << "begin tran";
+    }
+#endif
+  }
+
   virtual ~otl_connect()
 #if !defined(OTL_DESTRUCTORS_DO_NOT_THROW)
       OTL_THROWS_OTL_EXCEPTION
@@ -15944,11 +16133,6 @@ public:
 };
 #endif
 
-#if defined(OTL_STREAM_WITH_STD_TUPLE_ON) && defined(OTL_CPP_14_ON)
-#include <tuple>
-#include <utility>
-#endif
-
 #if defined(OTL_STREAM_WITH_STD_CHAR_ARRAY_ON) && defined(OTL_CPP_14_ON)
 #include <array>
 #endif
@@ -15988,41 +16172,18 @@ private:
   bool last_oper_was_read_op;
 
 #if defined(OTL_STREAM_WITH_STD_TUPLE_ON) && defined(OTL_CPP_14_ON)
-  template<const size_t I=0, OTL_TYPE_NAME ...T>
-  OTL_TYPE_NAME std::enable_if<I==sizeof...(T), void>::type
-  __otl_write_tuple_value(const std::tuple<T...>&){
-  }
-
-  template<const size_t I=0, OTL_TYPE_NAME ...T>
-  OTL_TYPE_NAME std::enable_if<I<sizeof...(T),void>::type
-  __otl_write_tuple_value(const std::tuple<T...>& tup){
-    (*this)<<std::get<I>(tup);
-    __otl_write_tuple_value<I+1,T...>(tup);
-  }
-
-  template<const size_t I=0, OTL_TYPE_NAME ...T>
-  OTL_TYPE_NAME std::enable_if<I==sizeof...(T), void>::type
-  __otl_read_tuple_value(std::tuple<T...>&){
-  }
-
-  template<const size_t I=0, OTL_TYPE_NAME ...T>
-  OTL_TYPE_NAME std::enable_if<I<sizeof...(T),void>::type
-  __otl_read_tuple_value(std::tuple<T...>& tup){
-    (*this)>>std::get<I>(tup);
-    __otl_read_tuple_value<I+1,T...>(tup);
-  }
 
 public:
-
-  template<OTL_TYPE_NAME ...T>
-  otl_stream& operator<<(const std::tuple<T...>& tup){
-    __otl_write_tuple_value<0,T...>(tup);
+ 
+  template<typename...T>
+  otl_stream& operator<<(const std::tuple<T...>& t){
+    otl_tuple_helper<otl_stream,decltype(t),sizeof...(T)>::write(*this,t);
     return (*this);
   }
   
-  template<OTL_TYPE_NAME ...T>
-  otl_stream& operator>>(std::tuple<T...>& tup){
-    __otl_read_tuple_value<0,T...>(tup);
+  template<typename...T>
+  otl_stream& operator>>(std::tuple<T...>& t){
+    otl_tuple_helper<otl_stream,decltype(t),sizeof...(T)>::read(*this,t);
     return (*this);
   }
 
@@ -23552,10 +23713,13 @@ public:
       return *this;
     if (otl_uncaught_exception())
       return *this;
-    throw otl_tmpl_exception<TExceptionStruct, TConnectStruct, TCursorStruct>(
-        connect->get_connect_struct(), cursor->get_stm_label()
-                                           ? cursor->get_stm_label()
-                                           : cursor->get_stm_text());
+    if(connect)
+      throw otl_tmpl_exception<TExceptionStruct, TConnectStruct, TCursorStruct>
+        (connect->get_connect_struct(), cursor->get_stm_label()
+         ? cursor->get_stm_label()
+         : cursor->get_stm_text());
+    else
+      return *this;
   }
 
   otl_lob_stream_generic &
@@ -23620,10 +23784,13 @@ public:
       return *this;
     if (otl_uncaught_exception())
       return *this;
-    throw otl_tmpl_exception<TExceptionStruct, TConnectStruct, TCursorStruct>(
-        connect->get_connect_struct(), cursor->get_stm_label()
-                                           ? cursor->get_stm_label()
-                                           : cursor->get_stm_text());
+    if(connect)
+      throw otl_tmpl_exception<TExceptionStruct, TConnectStruct, TCursorStruct>
+        (connect->get_connect_struct(), cursor->get_stm_label()
+          ? cursor->get_stm_label()
+          : cursor->get_stm_text());
+    else
+      return *this;
   }
 
   OTL_NODISCARD int eof(void) OTL_NO_THROW {
@@ -23675,20 +23842,24 @@ public:
                  false) OTL_THROWS_OTL_EXCEPTION {
     if (in_destructor) {
       if (mode == OTL_SCAST(int,OTL_LOB_STREAM_MODE_ENUM otl_lob_stream_read_mode)) {
-        bind_var->get_var_struct().set_lob_stream_flag(0);
-        bind_var->set_not_null(0);
+        if(bind_var){
+          bind_var->get_var_struct().set_lob_stream_flag(0);
+          bind_var->set_not_null(0);
+        }
       }
       return;
     }
     if (mode == OTL_SCAST(int,OTL_LOB_STREAM_MODE_ENUM otl_lob_stream_zero_mode))
       return;
     if (mode == OTL_SCAST(int,OTL_LOB_STREAM_MODE_ENUM otl_lob_stream_read_mode)) {
-      if (offset < lob_len - 1)
-        (void)bind_var->get_var_struct().close_lob();
-      bind_var->get_var_struct().close_temporary_lob();
-      bind_var->get_var_struct().set_lob_stream_flag(0);
-      bind_var->set_not_null(0);
-      init(nullptr, nullptr, nullptr, 0, OTL_SCAST(int,OTL_LOB_STREAM_MODE_ENUM otl_lob_stream_zero_mode));
+      if(bind_var){
+        if (offset < lob_len - 1)
+          (void)bind_var->get_var_struct().close_lob();
+        bind_var->get_var_struct().close_temporary_lob();
+        bind_var->get_var_struct().set_lob_stream_flag(0);
+        bind_var->set_not_null(0);
+        init(nullptr, nullptr, nullptr, 0, OTL_SCAST(int,OTL_LOB_STREAM_MODE_ENUM otl_lob_stream_zero_mode));
+      }
     } else {
       // write mode
       if (!(offset == 0 && lob_len == 0) && (offset - 1) != lob_len &&
@@ -27953,11 +28124,6 @@ public:
 };
 #endif
 
-#if defined(OTL_STREAM_WITH_STD_TUPLE_ON) && defined(OTL_CPP_14_ON)
-#include <tuple>
-#include <utility>
-#endif
-
 #if defined(OTL_STREAM_WITH_STD_CHAR_ARRAY_ON) && defined(OTL_CPP_14_ON)
 #include <array>
 #endif
@@ -29786,44 +29952,21 @@ OTL_THROWS_OTL_EXCEPTION:
   }
 
 #if defined(OTL_STREAM_WITH_STD_TUPLE_ON) && defined(OTL_CPP_14_ON)
-  template<const size_t I=0, OTL_TYPE_NAME ...T>
-  OTL_TYPE_NAME std::enable_if<I==sizeof...(T), void>::type
-  __otl_write_tuple_value(const std::tuple<T...>&){
-  }
-
-  template<const size_t I=0, OTL_TYPE_NAME ...T>
-  OTL_TYPE_NAME std::enable_if<I<sizeof...(T),void>::type
-  __otl_write_tuple_value(const std::tuple<T...>& tup){
-    (*this)<<std::get<I>(tup);
-    __otl_write_tuple_value<I+1,T...>(tup);
-  }
-
-  template<const size_t I=0, OTL_TYPE_NAME ...T>
-  OTL_TYPE_NAME std::enable_if<I==sizeof...(T), void>::type
-  __otl_read_tuple_value(std::tuple<T...>&){
-  }
-
-  template<const size_t I=0, OTL_TYPE_NAME ...T>
-  OTL_TYPE_NAME std::enable_if<I<sizeof...(T),void>::type
-  __otl_read_tuple_value(std::tuple<T...>& tup){
-    (*this)>>std::get<I>(tup);
-    __otl_read_tuple_value<I+1,T...>(tup);
-  }
 
 public:
-
-  template<OTL_TYPE_NAME ...T>
-  otl_stream& operator<<(const std::tuple<T...>& tup){
-    __otl_write_tuple_value<0,T...>(tup);
+ 
+  template<typename...T>
+  otl_stream& operator<<(const std::tuple<T...>& t){
+    otl_tuple_helper<otl_stream,decltype(t),sizeof...(T)>::write(*this,t);
     return (*this);
   }
   
-  template<OTL_TYPE_NAME ...T>
-  otl_stream& operator>>(std::tuple<T...>& tup){
-    __otl_read_tuple_value<0,T...>(tup);
+  template<typename...T>
+  otl_stream& operator>>(std::tuple<T...>& t){
+    otl_tuple_helper<otl_stream,decltype(t),sizeof...(T)>::read(*this,t);
     return (*this);
   }
- 
+
 #endif
 
 #if defined(OTL_STREAM_WITH_STD_OPTIONAL_ON) && defined(OTL_CPP_14_ON)
@@ -32465,7 +32608,12 @@ OTL_ORA8_NAMESPACE_END
     public _STD OTL_VC_TR1_NAMESPACE true_type {};                             \
   _STD_END
 
-#define STL_OUTPUT_ITERATOR_TO_DERIVE_FROM : public _STD _Outit
+#if defined(_MSC_VER) && (_MSC_VER >= 1911)
+// Visual Studio 2017 Update 3 or higher
+#define STL_OUTPUT_ITERATOR_TO_DERIVE_FROM
+#else
+#define STL_OUTPUT_ITERATOR_TO_DERIVE_FROM : public _STD  _Outit
+#endif
 
 #else
 #define STL_OUTPUT_ITERATOR_TO_DERIVE_FROM

@@ -199,7 +199,7 @@ bool wxExProcess::Execute(
     wxArrayString errors;
     struct wxExecuteEnv env;
     env.cwd = wd;
-    
+
     if (wxExecute(m_Command, output, errors, wxEXEC_SYNC, &env) == -1)
     {
       m_StdErr.clear();
