@@ -2,7 +2,7 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wxExVi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,7 +21,7 @@ class WXDLLIMPEXP_BASE wxExVi : public wxExEx
 {
 public:
   /// The possible vi modes.
-  enum wxExViMode
+  enum Mode
   {
     MODE_NORMAL,      ///< normal (command or navigation) mode
     MODE_INSERT,      ///< pressing key inserts key
@@ -77,10 +77,20 @@ public:
   /// Handles keydown events.
   /// See OnChar.
   bool OnKeyDown(const wxKeyEvent& event);
+
+  /// Extend visual selection.
+  void VisualExtend(int start_pos, int end_pos);
 private:
+  /// commands to be used in lambda
+  typedef std::vector<std::pair<
+    /// the command
+    const std::string, 
+    /// command callback, returns number of chars processed
+    /// by this command
+    std::function<size_t(const std::string& command)>>> Commands;
+
   void AddText(const std::string& text);
   void CommandCalc(const std::string& reg);
-  bool CommandChar(std::string& command);
   void CommandReg(const char reg);
   void FilterCount(std::string& command, const std::string& prefix = "");
   bool InsertMode(const std::string& text);
@@ -89,27 +99,13 @@ private:
   bool OtherCommand(std::string& command) const;
   bool ParseCommand(std::string& command, bool is_handled);
   bool Put(bool after);
+  bool TransitionCommand(std::string& command);
 
   static std::string m_LastFindCharCommand;
-
-  bool m_Dot = false;
-  bool m_SearchForward = true;
-  
-  int m_Count = 1;
-  int m_Start = 0;
-  int m_Type;
-
+  bool m_Dot{false}, m_SearchForward{true};
+  int m_Count{1};
   wxExViFSM m_FSM;
-  
-  std::string m_Command;
-  std::string m_CommandKeep;
-  std::string m_InsertText;
-
-  const std::vector<std::pair<
-    const std::string, 
-    std::function<bool(const std::string& command)>>> m_MotionCommands;
-  const std::vector<std::pair<
-    const std::string, 
-    std::function<bool(const std::string& command)>>> m_OtherCommands;
+  std::string m_Command, m_CommandKeep, m_InsertText;
+  const Commands m_MotionCommands, m_OtherCommands;
 };
 #endif // wxUSE_GUI

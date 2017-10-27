@@ -54,8 +54,8 @@ public:
   virtual ~wxExProcessImp() {;};
 
   bool Execute(const std::string& command, const std::string& path);
-  bool Kill();
-  static int KillAll();
+  bool Kill(int sig);
+  static int KillAll(int sig);
   void Read();
   bool Write(const std::string& text);
 private:
@@ -227,24 +227,28 @@ bool wxExProcess::IsRunning() const
   return m_Process != nullptr && wxProcess::Exists(m_Process->GetPid());
 }
 
-bool wxExProcess::Kill()
+bool wxExProcess::Kill(int sig)
 {
   bool killed = false;
 
   if (m_Process != nullptr)
   {
-    killed = m_Process->Kill();
-    m_Process.release();
+    killed = m_Process->Kill(sig);
+
+    if (sig == SIGKILL)
+    {
+      m_Process.release();
+
+      ShowProcess(m_Frame, false);
+    }
   }
-  
-  ShowProcess(m_Frame, false);
 
   return killed;
 }
 
-int wxExProcess::KillAll()
+int wxExProcess::KillAll(int sig)
 {
-  return wxExProcessImp::KillAll();
+  return wxExProcessImp::KillAll(sig);
 }
 
 void wxExProcess::PrepareOutput(wxWindow* parent)
@@ -349,32 +353,35 @@ void wxExProcessImp::HandleCommand(const std::string& command)
   }
 }
 
-bool wxExProcessImp::Kill()
+bool wxExProcessImp::Kill(int sig)
 {
   int pid = GetPid();
 
-  if (wxProcess::Kill(pid, wxSIGKILL) != wxKILL_OK)
+  if (wxProcess::Kill(pid, (wxSignal)sig) != wxKILL_OK)
   {
     return false;
   }
-  
-  const auto it = std::find(m_pids.begin(), m_pids.end(), pid);
 
-  if (it != m_pids.end())
+  if (sig == SIGKILL)
   {
-    m_pids.erase(it);
+    const auto it = std::find(m_pids.begin(), m_pids.end(), pid);
+
+    if (it != m_pids.end())
+    {
+      m_pids.erase(it);
+    }
   }
 
   return true;
 }
 
-int wxExProcessImp::KillAll()
+int wxExProcessImp::KillAll(int sig)
 {
   int killed = 0;
   
   for (auto pid : m_pids)
   {
-    if (wxProcess::Kill(pid, wxSIGKILL) == wxKILL_OK)
+    if (wxProcess::Kill(pid, (wxSignal)sig) == wxKILL_OK)
     {
       killed++;
     }

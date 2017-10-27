@@ -992,20 +992,12 @@ bool wxExSTC::FindNext(
       break;
       
       case wxExVi::MODE_VISUAL:
-        SetSelection(GetSelectionStart(), GetTargetEnd());
-      break;
-      
       case wxExVi::MODE_VISUAL_LINE:
-        SetSelection(
-          PositionFromLine(LineFromPosition(GetSelectionStart())), 
-          PositionFromLine(LineFromPosition(GetTargetEnd()) + 1));
-      break;
-      
       case wxExVi::MODE_VISUAL_RECT:
-        while (GetCurrentPos() < GetTargetEnd())
-        {
-          CharRightRectExtend();
-        }
+        if (find_next)
+          m_vi.VisualExtend(GetSelectionStart(), GetTargetEnd());
+        else
+          m_vi.VisualExtend(GetTargetStart(), GetSelectionEnd());
       break;
     }
       
@@ -1330,7 +1322,11 @@ void wxExSTC::Paste()
 
 bool wxExSTC::PositionRestore()
 {
-  if (m_SavedSelectionStart != -1 && m_SavedSelectionEnd != -1)
+  if (m_vi.ModeVisual())
+  {
+    SetCurrentPos(m_SavedPos);
+  }
+  else if (m_SavedSelectionStart != -1 && m_SavedSelectionEnd != -1)
   {
     SetSelection(m_SavedSelectionStart, m_SavedSelectionEnd);
     SetCurrentPos(m_SavedSelectionStart);
@@ -1353,8 +1349,12 @@ bool wxExSTC::PositionRestore()
 void wxExSTC::PositionSave()
 {
   m_SavedPos = GetCurrentPos();
-  m_SavedSelectionStart = GetSelectionStart();  
-  m_SavedSelectionEnd = GetSelectionEnd();
+
+  if (!m_vi.ModeVisual())
+  {
+    m_SavedSelectionStart = GetSelectionStart();  
+    m_SavedSelectionEnd = GetSelectionEnd();
+  }
 }
 
 #if wxUSE_PRINTING_ARCHITECTURE

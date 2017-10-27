@@ -8,6 +8,7 @@
 #pragma once
 
 #include <memory>
+#include <signal.h>  
 #include <wx/extension/window-data.h>
 
 class wxExManagedFrame;
@@ -69,13 +70,13 @@ public:
   /// Returns true if this process is running.
   bool IsRunning() const;
 
-  /// Kills this process.
-  /// Returns true if process is killed.
-  bool Kill();
+  /// Sends specified signal to this process.
+  /// Returns true if signalling is ok.
+  bool Kill(int sig = SIGKILL);
   
-  /// Kills all processes that are still running.
-  /// Returns the number of processes killed.
-  static int KillAll();
+  /// Sends specified signal to all processes that are still running.
+  /// Returns the number of processes signalled.
+  static int KillAll(int sig = SIGKILL);
   
   /// Construct the shell component.
   static void PrepareOutput(wxWindow* parent);
@@ -90,7 +91,7 @@ public:
   /// Writes text to stdin of process.
   bool Write(const std::string& text);
 private:
-  bool m_Error = false;
+  bool m_Error{false};
 
   std::string m_Command, m_StdErr, m_StdOut;
   

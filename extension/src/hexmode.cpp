@@ -47,7 +47,7 @@ const std::string MakeLine(wxExSTC* stc, const std::string& buffer,
   {
     const unsigned char c = buffer[offset + byte];
 
-    char buff[3];
+    char buff[4];
     sprintf(buff, "%02X ", c);
     field_hex += buff;
     field_ascii += Printable(c, stc);

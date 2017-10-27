@@ -185,10 +185,14 @@ wxExShell::wxExShell(
         break;
         
       default:
-        // Ctrl-V pressed, used for pasting.
-        if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')
+        // Ctrl-C pressed.
+        if (event.GetModifiers() == wxMOD_CONTROL && key == 'C')
         {
-          Paste();
+          skip = false;
+          if (m_Process != nullptr)
+          {
+            m_Process->Kill(SIGINT);
+          }
         }
         // Ctrl-Q pressed, used to stop processing.
         else if (event.GetModifiers() == wxMOD_CONTROL && key == 'Q')
@@ -203,6 +207,11 @@ wxExShell::wxExShell(
             wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
             wxPostEvent(GetParent(), event);
           }
+        }
+        // Ctrl-V pressed, used for pasting.
+        else if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')
+        {
+          Paste();
         }
         // If we enter regular text and not already building a command, first goto end.
         else if (event.GetModifiers() == wxMOD_NONE &&

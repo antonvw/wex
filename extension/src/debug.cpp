@@ -127,6 +127,11 @@ bool wxExDebug::Execute(const std::string& action, wxExSTC* stc)
 
   m_Frame->ShowPane("PROCESS"); 
 
+  if (!m_Process->IsRunning())
+  {
+    m_Process->Execute(m_Entry.GetName(), false);
+  }
+
   return m_Process->Write(action == "interrupt" ?
     std::string(1, 3) : action + args);
 }
@@ -176,7 +181,7 @@ bool wxExDebug::GetArgs(
   {
     args += " " +
       stc->GetFileName().Path().string() + ":" + 
-      std::to_string(stc->GetCurrentLine()); 
+      std::to_string(stc->GetCurrentLine() + 1); 
   }
   else if ((wxExMatch("^(d|del|delete) (br|breakpoint)", command, v) > 0) && stc != nullptr)
   {
@@ -262,9 +267,9 @@ void wxExDebug::ProcessStdOut(const std::string& text)
       auto* stc = m_Frame->OpenFile(filename);
       if (stc != nullptr)
       {
-        const auto id = stc->MarkerAdd(
-          std::stoi(v[2]), m_MarkerBreakpoint.GetNo());
-        m_Breakpoints[v[0]] = std::make_tuple(filename, id, std::stoi(v[2]));
+        const int line = std::stoi(v[2]) - 1;
+        const auto id = stc->MarkerAdd(line, m_MarkerBreakpoint.GetNo());
+        m_Breakpoints[v[0]] = std::make_tuple(filename, id, line);
       }
     }
   }

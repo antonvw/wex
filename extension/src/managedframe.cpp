@@ -65,12 +65,11 @@ private:
       case '/':
       case '?': return TYPE_FIND; break;
       default: return TYPE_UNKNOWN;};};
+
   wxExManagedFrame* m_Frame;
-  wxExEx* m_ex = nullptr;
+  wxExEx* m_ex{nullptr};
   wxStaticText* m_Prefix;
-  bool m_ControlR = false;
-  bool m_ModeVisual = false;
-  bool m_UserInput = false;
+  bool m_ControlR{false}, m_ModeVisual{false}, m_UserInput{false};
   
   wxExTextCtrlInput m_Calcs;
   wxExTextCtrlInput m_Commands;
@@ -486,6 +485,13 @@ wxExTextCtrl::wxExTextCtrl(
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     WriteText(event.GetString());}, ID_REGISTER);
   
+  Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
+    event.Skip();
+    if (m_ex != nullptr)
+    {
+      m_ex->GetSTC()->PositionSave();
+    }});
+
   Bind(wxEVT_TEXT, [=](wxCommandEvent& event) {
     event.Skip();
     if (m_UserInput && m_ex != nullptr && GetType() == TYPE_FIND)
@@ -535,13 +541,6 @@ wxExTextCtrl::wxExTextCtrl(
       }
 
       m_Frame->HideExBar(focus);
-    }});
-
-  Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
-    event.Skip();
-    if (m_ex != nullptr)
-    {
-      m_ex->GetSTC()->PositionSave();
     }});
 }
 

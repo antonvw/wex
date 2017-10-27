@@ -305,10 +305,15 @@ TEST_CASE("wxExVi")
       stc->SetText("xxxxxxxxxx\nyyyyyyyyyy\nzzzzzzzzzz\nftFT\n{section}");
 
       // test navigate
-      std::string nc(
-        c == 'f' || c == 't' ||
-        c == 'F' || c == 'T' ||
-        c == '\'' ? 2: 1, c);
+      std::string nc(1, c);
+
+      if (c == 'f' || c == 't' || c == 'F' || c == 'T' || c == '\'')
+      {
+        nc += "f";
+      }
+
+      CAPTURE( motion_command.first);
+      CAPTURE( nc);
       REQUIRE( vi->Command(nc));
       
       // test navigate while in rect mode
@@ -323,8 +328,10 @@ TEST_CASE("wxExVi")
         c == 'f' || c == 't' ||
         c == 'F' || c == 'T' ||
         c == '\'' ? 3: 2, 'y');
+
       mc[0] = 'y';
       mc[1] = c;
+
       REQUIRE( vi->Command(mc));
       REQUIRE( vi->GetLastCommand() == mc);
       REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
@@ -339,13 +346,17 @@ TEST_CASE("wxExVi")
       REQUIRE( vi->Command(mc));
       REQUIRE( vi->GetLastCommand() == mc);
       ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+      REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
     }
   }
 
   // Test find.
   stc->SetText("some text to find");
+  REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
   REQUIRE( vi->Command("/find"));
+  REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
   REQUIRE( vi->Command("yb"));
+  REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
   REQUIRE(!vi->Command("/xfind"));
   // TODO: fix
   // REQUIRE( vi->Command("/"  + std::string(1, WXK_CONTROL_R) + "0"));
@@ -396,6 +407,12 @@ TEST_CASE("wxExVi")
     {
       for (auto c : other_command.first)
       {
+        // prevent wxExBrowserSearch (for travis)
+        if (c == '!')
+        {
+          continue;
+        }
+
         if (c != '\t')
           REQUIRE( vi->Command(std::string(1, c)));
         else
@@ -565,6 +582,13 @@ TEST_CASE("wxExVi")
     ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
   }
   
+  stc->SetText("123456789");
+  vi->Command("v");
+  REQUIRE( vi->ModeVisual());
+  vi->VisualExtend(0, 10);
+  REQUIRE( vi->GetSelectedText() == "123456789");
+  vi->Command(ESC);
+
   // Test goto, /, ?, n and N.
   stc->SetText("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
   REQUIRE( stc->GetLineCount() == 12);

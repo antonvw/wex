@@ -59,6 +59,7 @@ enum
 
 enum
 {
+  ID_CLEAR_LOG,
   ID_CLEAR_STATISTICS,
   ID_CLIENT_BUFFER_SIZE,
   ID_CLIENT_ANSWER_COMMAND,
@@ -270,6 +271,13 @@ Frame::Frame()
     wxArtProvider::GetBitmap(
       wxART_GO_FORWARD, wxART_TOOLBAR, GetToolBar()->GetToolBitmapSize()),
     _("Write data"));
+  GetToolBar()->AddTool(
+    ID_CLEAR_LOG,
+    wxEmptyString,
+    wxArtProvider::GetBitmap(
+      wxART_NEW, wxART_TOOLBAR, GetToolBar()->GetToolBitmapSize()),
+    _("Clear log"));
+
   GetToolBar()->Realize();
     
   GetOptionsToolBar()->AddControls();
@@ -490,6 +498,9 @@ Frame::Frame()
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     WriteDataWindowToConnections();}, ID_WRITE_DATA);
+
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    m_LogWindow->ClearDocument();}, ID_CLEAR_LOG);
 
   Bind(wxEVT_SOCKET, [=](wxSocketEvent& event) {
     // Accept new connection if there is one in the pending

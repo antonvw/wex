@@ -35,56 +35,6 @@ constexpr int c_strcmp( char const* lhs, char const* rhs )
     : c_strcmp( lhs+1, rhs+1 );
 };
 
-void SelExtend(wxExVi* vi, int old_pos, int new_pos)
-{
-  if (old_pos == wxSTC_INVALID_POSITION || new_pos == wxSTC_INVALID_POSITION)
-  {
-    return;
-  }
-
-  switch (vi->GetMode())
-  {
-    case wxExVi::MODE_VISUAL:
-      if (new_pos < old_pos)
-        vi->GetSTC()->SetSelection(new_pos, old_pos + 1);
-      else
-        vi->GetSTC()->SetSelection(old_pos, new_pos + 1);
-    break;
-
-    case wxExVi::MODE_VISUAL_LINE:
-      if (new_pos < old_pos)
-      {
-        vi->GetSTC()->SetSelection(
-          vi->GetSTC()->PositionFromLine(vi->GetSTC()->LineFromPosition(new_pos)), 
-          vi->GetSTC()->PositionFromLine(vi->GetSTC()->LineFromPosition(old_pos) + 1));
-      }
-      else
-      {
-        vi->GetSTC()->SetSelection(
-          vi->GetSTC()->PositionFromLine(vi->GetSTC()->LineFromPosition(old_pos)), 
-          vi->GetSTC()->PositionFromLine(vi->GetSTC()->LineFromPosition(new_pos) + 1));
-      } 
-    break;
-
-    case wxExVi::MODE_VISUAL_RECT:
-      if (new_pos < old_pos)
-      {
-        while (vi->GetSTC()->GetCurrentPos() < old_pos)
-        {
-          vi->GetSTC()->CharRightRectExtend();
-        }
-      }
-      else
-      {
-        while (vi->GetSTC()->GetCurrentPos() > new_pos)
-        {
-          vi->GetSTC()->CharLeftRectExtend();
-        }
-      }
-    break;
-  }
-}
-
 #define MOTION(SCOPE, DIRECTION, COND, WRAP)                           \
 {                                                                      \
   for (auto i = 0; i < m_Count; i++)                                   \
@@ -125,7 +75,7 @@ void SelExtend(wxExVi* vi, int old_pos, int new_pos)
         if (COND) GetSTC()->VCHomeExtend(); break;                     \
     }                                                                  \
   }                                                                    \
-  return true;                                                         \
+  return 1;                                                            \
 }                                                                      \
 
 #define REPEAT(TEXT)                 \
@@ -141,7 +91,7 @@ void SelExtend(wxExVi* vi, int old_pos, int new_pos)
   GetSTC()->BeginUndoAction();       \
   REPEAT(TEXT);                      \
   GetSTC()->EndUndoAction();         \
-  return true;                       \
+  return 1;                          \
 }
 
 char ConvertKeyEvent(const wxKeyEvent& event)
@@ -241,21 +191,31 @@ wxExVi::wxExVi(wxExSTC* stc)
         }
         m_Command.clear();
         GetSTC()->EndUndoAction();})
-  , m_Type(MOTION_NAVIGATE)
   , m_MotionCommands {
+    {"h", [&](const std::string& command){
+      if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0) 
+        MOTION(Char, Left, false, false); 
+      return 1;}},
+    {"j", [&](const std::string& command){MOTION(Line, Down, false, false);}},
+    {"k", [&](const std::string& command){MOTION(Line, Up, false, false);}},
+    {"l ", [&](const std::string& command){
+      if (command == "l" && GetSTC()->GetCurrentPos() >= 
+          GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine())) return 1; 
+      MOTION(Char, Right, false, false);}},
     {"bB", [&](const std::string& command){MOTION(Word, Left, false, false);}},
     {"eE", [&](const std::string& command){MOTION(Word, RightEnd, false, false);}},
+    {"wW", [&](const std::string& command){MOTION(Word, Right, false, false);}},
     {"fFtT,;", [&](const std::string& command){
-      if (command.empty()) return false;
+      if (command.empty()) return 0;
       char c; // char to find
       if ((command[0] == ';' || command[0] == ',') && command.size() == 1)
       {
-        if (m_LastFindCharCommand.empty()) return false;
+        if (m_LastFindCharCommand.empty()) return 0;
         c = m_LastFindCharCommand.back();
       }
       else if (command.size() == 1)
       {
-        return false;
+        return 0;
       }
       else
       {
@@ -281,103 +241,92 @@ wxExVi::wxExVi(wxExSTC* stc)
           islower(d) > 0))
         {
           m_Command.clear();
-          return false;
+          return 0;
         });
       if (command[0] != ',' && command[0] != ';')
       {
         m_LastFindCharCommand = command;
       }
       if (tolower(d) == 't') GetSTC()->SelectNone();
-      return true;}},
-    {"h", [&](const std::string& command){
-      if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) > 0) 
-        MOTION(Char, Left, false, false); 
-      return true;}},
-    {"j", [&](const std::string& command){MOTION(Line, Down, false, false);}},
-    {"k", [&](const std::string& command){MOTION(Line, Up, false, false);}},
-    {"l ", [&](const std::string& command){
-      if (command == "l" && GetSTC()->GetCurrentPos() >= 
-          GetSTC()->GetLineEndPosition(GetSTC()->GetCurrentLine())) return true; 
-      MOTION(Char, Right, false, false);}},
+      return 1;}},
     {"nN", [&](const std::string& command){REPEAT(
       if (!GetSTC()->FindNext(
         wxExFindReplaceData::Get()->GetFindString(), GetSearchFlags(), 
         command == "n"? m_SearchForward: !m_SearchForward))
       {
         m_Command.clear();
-        return false;
+        return 0;
       });
-      return true;}},
-    {"wW", [&](const std::string& command){MOTION(Word, Right, false, false);}},
+      return 1;}},
     {"G", [&](const std::string& command){
-       (m_Count == 1 ? 
-         GetSTC()->DocumentEnd(): 
-         (void)wxExSTCData(GetSTC()).Control(wxExControlData().Line(m_Count)).Inject());
-       return true;}},
+      (m_Count == 1 ? 
+        GetSTC()->DocumentEnd(): 
+        (void)wxExSTCData(GetSTC()).Control(wxExControlData().Line(m_Count)).Inject());
+      return 1;}},
     {"H", [&](const std::string& command){
-       GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine());
-       return true;}},
+      GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine());
+      return 1;}},
     {"L", [&](const std::string& command){
-       GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() - 1);
-       return true;}},
+      GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() - 1);
+      return 1;}},
     {"M", [&](const std::string& command){
-       GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() / 2);
-       return true;}},
+      GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine() + GetSTC()->LinesOnScreen() / 2);
+      return 1;}},
     {"/?", [&](const std::string& command){
       m_SearchForward = command.front() == '/';
 
-      if (command.length() > 1)
+      if (command.size() > 1)
       {
         if (command[1] == WXK_CONTROL_R)
         {
           if (command.length() < 3)
           {
-            return false;
+            return (size_t)0;
           }
 
           if (!GetSTC()->FindNext(
             GetMacros().GetRegister(command[2]),
             GetSearchFlags(),
-            m_SearchForward)) return false;
+            m_SearchForward)) return (size_t)0;
           wxExFindReplaceData::Get()->SetFindString(GetMacros().GetRegister(command[2]));
-          return true;
+          return command.size();
         }
         
         // This is a previous entered command.
         if (!GetSTC()->FindNext(
           command.substr(1),
           GetSearchFlags(),
-          m_SearchForward)) return false;
+          m_SearchForward)) return (size_t)0;
         wxExFindReplaceData::Get()->SetFindString(command.substr(1));
-        return true;
+        return command.size();
       }
       else
       {
-        return GetFrame()->GetExCommand(this, command + (ModeVisual() ? "'<,'>": ""));
+        return GetFrame()->GetExCommand(this, command + (ModeVisual() ? "'<,'>": "")) ? command.size(): (size_t)0;
       }}},
     {"\'", [&](const std::string& command){
       if (OneLetterAfter("'", command)) 
       {
         const auto pos = GetSTC()->GetCurrentPos();
         MarkerGoto(command.back()); 
-        SelExtend(this, pos, GetSTC()->GetCurrentPos());
-        return true;
+        VisualExtend(pos, GetSTC()->GetCurrentPos());
+        return 2;
       } 
-      return command.size() >= 2;}},
+      return 0;}},
     {"0^", [&](const std::string& command){MOTION(Line, Home, false, false);}},
     {"[]", [&](const std::string& command){REPEAT(
-        if (!GetSTC()->FindNext("{", GetSearchFlags(), false))
-        {
-          m_Command.clear();
-          return false;
-        })
-        return true;}},
+      if (!GetSTC()->FindNext("{", GetSearchFlags(), false))
+      {
+        m_Command.clear();
+        return 0;
+      })
+      return 1;}},
     {"({", [&](const std::string& command){MOTION(Para, Up,   false, false);}},
     {")}", [&](const std::string& command){MOTION(Para, Down, false, false);}},
     {"+", [&](const std::string& command){MOTION(Line, Down, true,  true); }},
     {"|", [&](const std::string& command){
       GetSTC()->GotoPos(GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()) + m_Count - 1);
-      return true;}},
+      return 1;}},
     {"-", [&](const std::string& command){MOTION(Line, Up,  true, true);}},
     {"$", [&](const std::string& command){MOTION(Line, End, false, false);}},
     {"%", [&](const std::string& command){
@@ -390,9 +339,9 @@ wxExVi::wxExVi(wxExSTC* stc)
       if (brace_match != wxSTC_INVALID_POSITION)
       {
         GetSTC()->GotoPos(brace_match);
-        SelExtend(this, pos, brace_match);
+        VisualExtend(pos, brace_match + 1);
       }
-      return true;}},
+      return 1;}},
     {"\r_", [&](const std::string& command){MOTION(Line, Down, false, false);}},
     {"\x02", [&](const std::string& command){MOTION(Page, Up,         false, false);}},
     {"\x06", [&](const std::string& command){MOTION(Page, Down,       false, false);}},
@@ -403,15 +352,16 @@ wxExVi::wxExVi(wxExSTC* stc)
       if (OneLetterAfter("m", command))
       {
         MarkerAdd(command.back());
-        return true;
+        return 2;
       }
-      return false;}},
-    {"p", [&](const std::string& command){Put(true);return true;}},
+      return 0;}},
+    {"p", [&](const std::string& command){Put(true);
+      return 1;}},
     {"q", [&](const std::string& command){
       if (GetMacros().IsRecording())
       {
         GetMacros().StopRecording();
-        return true;
+        return 1;
       }
       else if (OneLetterAfter("q", command))
       {
@@ -419,9 +369,9 @@ wxExVi::wxExVi(wxExSTC* stc)
         {
           MacroStartRecording(command.substr(1));
         }
-        return true;
+        return 2;
       } 
-      return false;}},
+      return 0;}},
     {"r", [&](const std::string& command){
       if (command.size() > 1)
       {
@@ -432,7 +382,7 @@ wxExVi::wxExVi(wxExSTC* stc)
             if (!GetSTC()->GetHexMode().Replace(command.back()))
             {
               m_Command.clear();
-              return false;
+              return 0;
             }
           }
           else
@@ -442,52 +392,54 @@ wxExVi::wxExVi(wxExSTC* stc)
             GetSTC()->ReplaceTarget(wxString(command.back(), m_Count));
           }
         }
-        return true;
+        return 2;
       }
-      return false;}},
+      return 0;}},
     {"u", [&](const std::string& command){
       if (GetSTC()->CanUndo()) GetSTC()->Undo();
       else wxBell();
-      return true;}},
+      return 1;}},
     {"x", [&](const std::string& command){
-      return DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count);}},
-    {"J", [&](const std::string& command){wxExAddressRange(this, m_Count).Join(); return true;}},
-    {"P", [&](const std::string& command){Put(false);return true;}},
+      return DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count) ? 1: 0;}},
+    {"J", [&](const std::string& command){wxExAddressRange(this, m_Count).Join(); return 1;}},
+    {"P", [&](const std::string& command){Put(false);return 1;}},
     {"Q", [&](const std::string& command){
       GetFrame()->SaveCurrentPage("ctags");
       GetCTags()->Find(
           GetSTC()->GetSelectedText().empty() ? 
             GetSTC()->GetWordAtPos(GetSTC()->GetCurrentPos()):
             GetSTC()->GetSelectedText().ToStdString());
-      return true;}},
+      return 1;}},
     {"S", [&](const std::string& command){
       GetFrame()->RestorePage("ctags");
-      return true;}},
+      return 1;}},
     {"X", [&](const std::string& command){
-      return DeleteRange(this, GetSTC()->GetCurrentPos() - m_Count, GetSTC()->GetCurrentPos());}},
+      return DeleteRange(this, GetSTC()->GetCurrentPos() - m_Count, GetSTC()->GetCurrentPos()) ? 1: 0;}},
     {"dd", [&](const std::string& command){
       if (wxExAddressRange(this, m_Count).Delete())
       {
         m_FSM.Transition("\x1b");
       }
-      return true;}},
+      return command.size();}},
     {"dgg", [&](const std::string& command){
-      return DeleteRange(this, 0, GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine()));}},
+      return DeleteRange(this, 0, GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine())) ? 3: 0;}},
     {"gg", [&](const std::string& command){
-      GetSTC()->DocumentStart(); return true;}},
+      GetSTC()->DocumentStart(); 
+      return 2;}},
     {"yy", [&](const std::string& command){
       if (wxExAddressRange(this, m_Count).Yank())
       {
         m_FSM.Transition("\x1b");
       }
-      return true;}},
+      return command.size();}},
     {"ZZ", [&](const std::string& command){
       wxPostEvent(wxTheApp->GetTopWindow(), 
         wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
       wxPostEvent(wxTheApp->GetTopWindow(), 
-        wxCloseEvent(wxEVT_CLOSE_WINDOW)); return true;}},
+        wxCloseEvent(wxEVT_CLOSE_WINDOW)); 
+      return 2;}},
     {"z", [&](const std::string& command){
-      if (command.size() <= 1) return false;
+      if (command.size() <= 1) return (size_t)0;
       const auto level = GetSTC()->GetFoldLevel(GetSTC()->GetCurrentLine());
       const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
         GetSTC()->GetCurrentLine(): GetSTC()->GetFoldParent(GetSTC()->GetCurrentLine());
@@ -514,27 +466,28 @@ wxExVi::wxExVi(wxExSTC* stc)
         case 'R':
           for (int i = 0; i < GetSTC()->GetLineCount(); i++) GetSTC()->EnsureVisible(i);
           break;
-      }; return true;}},
+      }; 
+      return command.size();}},
     {".", [&](const std::string& command){
       m_Dot = true;
       const bool result = Command(GetLastCommand());
       m_Dot = false;
-      return result;}},
+      return result ? 1: 0;}},
     {"~", [&](const std::string& command){
-      if (GetSTC()->GetLength() == 0 || GetSTC()->GetReadOnly() || GetSTC()->HexMode()) return false;
+      if (GetSTC()->GetLength() == 0 || GetSTC()->GetReadOnly() || GetSTC()->HexMode()) return 0;
       REPEAT_WITH_UNDO(
-        if (GetSTC()->GetCurrentPos() == GetSTC()->GetLength()) return false;
+        if (GetSTC()->GetCurrentPos() == GetSTC()->GetLength()) return 0;
         wxString text(GetSTC()->GetTextRange(
             GetSTC()->GetCurrentPos(), 
             GetSTC()->GetCurrentPos() + 1));
-        if (text.empty()) return false;
+        if (text.empty()) return 0;
         islower(text[0]) ? text.UpperCase(): text.LowerCase();
         GetSTC()->wxStyledTextCtrl::Replace(
           GetSTC()->GetCurrentPos(), 
           GetSTC()->GetCurrentPos() + 1, 
           text);
         GetSTC()->CharRight());
-      return true;}},
+      return 1;}},
     {"><", [&](const std::string& command){
       switch (GetMode())
       {
@@ -545,7 +498,7 @@ wxExVi::wxExVi(wxExSTC* stc)
         case MODE_VISUAL_RECT:
           wxExAddressRange(this, "'<,'>").Indent(command == ">"); break;
       }
-      return true;}},
+      return 1;}},
     {"*#!", [&](const std::string& command){
       const auto start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
       const auto end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
@@ -564,21 +517,21 @@ wxExVi::wxExVi(wxExSTC* stc)
           GetSearchFlags(), 
           command == "*");
       }
-      return true;}},
+      return 1;}},
     {"\t", [&](const std::string& command){
       // just ignore tab, except on first col, then it indents
       if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) == 0)
       {
         m_Command.clear();
-        return false;
+        return 0;
       }
-      return true;}},
+      return 1;}},
     {"@", [&](const std::string& command){
-      if (command.size() == 1) return false;
+      if (command.size() == 1) return (size_t)0;
       if (command == "@@") 
       {
         MacroPlayback(GetMacros().GetMacro(), m_Count);
-        return true;
+        return command.size();
       }
       else if (RegAfter("@", command))
       {
@@ -588,16 +541,16 @@ wxExVi::wxExVi(wxExSTC* stc)
           if (!MacroPlayback(macro, m_Count))
           {
             m_Command.clear();
-            return false;
+            return (size_t)0;
           }
         }
         else
         {
           m_Command.clear();
           GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
-          return false;
+          return (size_t)0;
         }
-        return true;
+        return command.size();
       }
       else
       {
@@ -611,7 +564,7 @@ wxExVi::wxExVi(wxExSTC* stc)
           }
           else
           {
-            return true;
+            return command.size();
           }
         }
         else if (GetMacros().StartsWith(command.substr(1)))
@@ -628,7 +581,7 @@ wxExVi::wxExVi(wxExSTC* stc)
             }
             else
             {
-              return true;
+              return command.size();
             }
           }
           else
@@ -640,48 +593,49 @@ wxExVi::wxExVi(wxExSTC* stc)
         {
           m_Command.clear();
           GetFrame()->StatusText(GetMacros().GetMacro(), "PaneMacro");
-          return true;
+          return command.size();
         }
       }
-      return false;}},
+      return (size_t)0;}},
     // ctrl-e, ctrl-j
     {"\x05\x0a", [&](const std::string& command){REPEAT_WITH_UNDO(
-        if (GetSTC()->HexMode()) return true;
-        try 
-        {
-          const auto start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
-          const auto sign = (GetSTC()->GetCharAt(start) == '-' ? 1: 0);
-          const auto end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos() + sign, true);
-          const std::string word(GetSTC()->GetTextRange(start, end).ToStdString());
-          auto number = std::stoi(word, nullptr, 0);
-          const auto next = (command == "\x05" ? ++number: --number);
-          std::ostringstream format;
-          format.fill(' ');
-          format.width(end - start);
-          if (word.substr(0, 2) == "0x") format << std::hex;
-          else if (word[0] == '0') format << std::oct;
-          format << std::showbase << next;
-          GetSTC()->wxStyledTextCtrl::Replace(start, end, format.str());
-        }
-        catch (...)
-        {
-        } return true;)}},
+      if (GetSTC()->HexMode()) return 1;
+      try 
+      {
+        const auto start = GetSTC()->WordStartPosition(GetSTC()->GetCurrentPos(), true);
+        const auto sign = (GetSTC()->GetCharAt(start) == '-' ? 1: 0);
+        const auto end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos() + sign, true);
+        const std::string word(GetSTC()->GetTextRange(start, end).ToStdString());
+        auto number = std::stoi(word, nullptr, 0);
+        const auto next = (command == "\x05" ? ++number: --number);
+        std::ostringstream format;
+        format.fill(' ');
+        format.width(end - start);
+        if (word.substr(0, 2) == "0x") format << std::hex;
+        else if (word[0] == '0') format << std::oct;
+        format << std::showbase << next;
+        GetSTC()->wxStyledTextCtrl::Replace(start, end, format.str());
+      }
+      catch (...)
+      {
+      } 
+      return 1;)}},
     // ctrl-h
     {"\x08", [&](const std::string& command){
       if (!GetSTC()->GetReadOnly() && !GetSTC()->HexMode()) GetSTC()->DeleteBack();
-      return true;}},
+      return command.size();}},
     // ctrl-r
     {"\x12", [&](const std::string& command){
       if (command.size() > 1 &&
         RegAfter(std::string(1, WXK_CONTROL_R), command))
       {
         CommandReg(command[1]);
-        return true;
+        return command.size();
       }  
-      return false;}},
+      return (size_t)0;}},
     // delete char
     {"\x7F", [&](const std::string& command){
-      return DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count);}}}
+      return DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count) ? 1: 0;}}}
 {
 }
 
@@ -776,20 +730,6 @@ void wxExVi::CommandCalc(const std::string& command)
     SetRegisterYank(msg.ToStdString());
     GetFrame()->ShowExMessage(msg.ToStdString());
   }
-}
-
-bool wxExVi::CommandChar(std::string& command)
-{
-  if (
-    m_FSM.Transition(command.substr(0, 1)) ||
-    MotionCommand(MOTION_NAVIGATE, command) ||
-    OtherCommand(command))
-  {
-    command = command.substr(1);
-    return true;
-  }
-  
-  return false;
 }
 
 void wxExVi::CommandReg(const char reg)
@@ -1115,21 +1055,22 @@ bool wxExVi::MotionCommand(int type, std::string& command, bool is_handled)
   
   const char c = (type == MOTION_NAVIGATE ? command[0]: command[1]);
   const auto& it = std::find_if(m_MotionCommands.begin(), m_MotionCommands.end(), 
-    [c](auto const& e) {for (const auto& r : e.first) if (r == c) return true; return false;});
+    [c](auto const& e) {
+      for (const auto& r : e.first) 
+      {
+        if (r == c) return true;
+      }
+      return false;});
   
   if (it == m_MotionCommands.end())
   {
     return false;
   }
 
-  if ((command == "/" || command == "?") || 
-      (command[0] != '/' && command[0] != '?'))
-  {
-    m_Start = GetSTC()->GetCurrentPos();
-    m_Type = type;
-  }
+  int parsed = 0;
+  int start = GetSTC()->GetCurrentPos();
   
-  switch (m_Type)
+  switch (type)
   {
     case MOTION_CHANGE:
       if (!GetSTC()->GetSelectedText().empty())
@@ -1142,28 +1083,28 @@ bool wxExVi::MotionCommand(int type, std::string& command, bool is_handled)
         m_FSM.Transition("v");
       }
 
-      if (!is_handled && !it->second(command.substr(1))) return false;
+      if (!is_handled && (parsed = it->second(command.substr(1))) == 0) return false;
     
-      DeleteRange(this, m_Start, GetSTC()->GetCurrentPos());
-
+      DeleteRange(this, start, GetSTC()->GetCurrentPos());
       m_FSM.Transition(command);
-      command = command.substr(2);
+      parsed++;
       break;
     
     case MOTION_DELETE:
       if (GetSTC()->GetReadOnly())
       {
+        command.clear();
         return true;
       }
     
-      if (!is_handled && !it->second(command.substr(1))) return false;
+      if (!is_handled && (parsed = it->second(command.substr(1))) == 0) return false;
       
-      DeleteRange(this, m_Start, GetSTC()->GetCurrentPos());
-      command = command.substr(2);
+      DeleteRange(this, start, GetSTC()->GetCurrentPos());
+      parsed++;
       break;
     
     case MOTION_NAVIGATE: 
-      if (!is_handled && !it->second(command)) return false; 
+      if (!is_handled && (parsed = it->second(command)) == 0) return false; 
       break;
     
     case MOTION_YANK:
@@ -1172,14 +1113,14 @@ bool wxExVi::MotionCommand(int type, std::string& command, bool is_handled)
         m_FSM.Transition("v");
       }
     
-      if (!is_handled && !it->second(command.substr(1))) return false;
+      if (!is_handled && (parsed = it->second(command.substr(1))) == 0) return false;
     
       auto end = GetSTC()->GetCurrentPos();
     
-      if (end - m_Start > 0)
+      if (end - start > 0)
       {
-        GetSTC()->CopyRange(m_Start, end - m_Start);
-        GetSTC()->SetSelection(m_Start, end);
+        GetSTC()->CopyRange(start, end - start);
+        GetSTC()->SetSelection(start, end);
       }
       else
       {
@@ -1193,8 +1134,8 @@ bool wxExVi::MotionCommand(int type, std::string& command, bool is_handled)
           end--;
         }
       
-        GetSTC()->CopyRange(end, m_Start - end);
-        GetSTC()->SetSelection(end, m_Start);
+        GetSTC()->CopyRange(end, start - end);
+        GetSTC()->SetSelection(end, start);
       }
 
       m_FSM.Transition("\x1b");
@@ -1208,10 +1149,13 @@ bool wxExVi::MotionCommand(int type, std::string& command, bool is_handled)
         GetMacros().SetRegister(GetRegister(), GetSelectedText());
         GetSTC()->SelectNone();
       }
+      parsed++;
       break;
   }
   
   m_Count = 1;
+
+  command = (is_handled ? std::string(): command.substr(parsed));
 
   return true;
 }
@@ -1363,19 +1307,39 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 bool wxExVi::OtherCommand(std::string& command) const
 {
   const auto& it = std::find_if(m_OtherCommands.begin(), m_OtherCommands.end(), 
-    [command](auto const& e) {
-    if (!isalpha(e.first.front())) {
-      for (const auto& r : e.first) if (r == command.front()) return true; return false;}
-    else
-      return e.first == command.substr(0, e.first.size());});
+    [command](auto const& e) 
+    {
+      if (!isalpha(e.first.front())) 
+      {
+        for (const auto& r : e.first) 
+        {
+          if (r == command.front()) 
+          {
+            return true; 
+          }
+        }
+
+        return false;
+      }
+      else
+      {
+        return e.first == command.substr(0, e.first.size());
+      }
+    });
   
-  if (it != m_OtherCommands.end() && it->second(command))
-  {
-    command = command.substr(0, it->first.size());
-    return true;
+  if (it == m_OtherCommands.end())
+  { 
+    return false;
   }
 
-  return false;
+  const auto parsed = it->second(command);
+
+  if (parsed > 0)
+  {
+    command = command.substr(parsed);
+  }
+
+  return parsed > 0;
 }
 
 bool wxExVi::ParseCommand(std::string& command, bool is_handled)
@@ -1405,66 +1369,31 @@ bool wxExVi::ParseCommand(std::string& command, bool is_handled)
     FilterCount(command);
   }
 
-  int parsed_chars = 0;
-
-  bool handled = true;
+  int motion = MOTION_NAVIGATE;
 
   switch (command.size())
   {
     case 0: return false;
-    case 1: handled = CommandChar(command); break;
+    case 1: break;
     default: 
       switch (command[0])
       {
-        case 'c': handled = MotionCommand(MOTION_CHANGE, command, is_handled); 
-          break;
-
-        case 'd': handled = MotionCommand(MOTION_DELETE, command, is_handled); 
-          break;
-
-        case 'y': handled = MotionCommand(MOTION_YANK, command, is_handled); 
-          parsed_chars = 2;
-          break;
-
-        default: handled = MotionCommand(MOTION_NAVIGATE, command, is_handled); 
-          parsed_chars = (command[0] == '/' || command[0] == '?' ? 0: 1);
-          if (command.front() == '\'')
-          {
-            parsed_chars = 2;
-          }
-          break;
-      }
-
-      if (!handled)
-      {
-        handled = OtherCommand(command);
-
-        if (!handled)
-        {
-          handled = CommandChar(command);
-        }
+        case 'c': motion = MOTION_CHANGE; break;
+        case 'd': motion = MOTION_DELETE; break;
+        case 'y': motion = MOTION_YANK; break;
       }
   }
 
-  if (handled && ModeInsert())
+  if (!TransitionCommand(command) && 
+      !MotionCommand(motion, command, is_handled) &&
+      !OtherCommand(command))
   {
-    if (!command.empty())
-    {
-      InsertMode(command);
-    }
-    
-    return true;
-  }
-
-  if (!handled)
-  {  
     return false;
   }
 
-  if (!command.empty() && parsed_chars > 0)
+  if (!command.empty())
   {
-    command = command.substr(parsed_chars);
-    ParseCommand(command, is_handled);
+    ModeInsert() ? InsertMode(command): ParseCommand(command, is_handled);
   }
   
   return true;
@@ -1503,4 +1432,63 @@ bool wxExVi::Put(bool after)
 
   return true;
 }        
+
+bool wxExVi::TransitionCommand(std::string& command)
+{
+  if (!m_FSM.Transition(command.substr(0, 1)))
+  {
+    return false;
+  }
+
+  command = command.substr(1);
+
+  return true;
+}
+
+void wxExVi::VisualExtend(int begin_pos, int end_pos)
+{
+  if (begin_pos == wxSTC_INVALID_POSITION || end_pos == wxSTC_INVALID_POSITION)
+  {
+    return;
+  }
+
+  switch (GetMode())
+  {
+    case MODE_VISUAL:
+      GetSTC()->SetSelection(begin_pos, end_pos);
+    break;
+
+    case MODE_VISUAL_LINE:
+      if (begin_pos < end_pos)
+      {
+        GetSTC()->SetSelection(
+          GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(begin_pos)), 
+          GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(end_pos) + 1));
+      }
+      else
+      {
+        GetSTC()->SetSelection(
+          GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(end_pos)), 
+          GetSTC()->PositionFromLine(GetSTC()->LineFromPosition(begin_pos) + 1));
+      } 
+    break;
+
+    case MODE_VISUAL_RECT:
+      if (begin_pos < end_pos)
+      {
+        while (GetSTC()->GetCurrentPos() < end_pos)
+        {
+          GetSTC()->CharRightRectExtend();
+        }
+      }
+      else
+      {
+        while (GetSTC()->GetCurrentPos() > begin_pos)
+        {
+          GetSTC()->CharLeftRectExtend();
+        }
+      }
+    break;
+  }
+}
 #endif // wxUSE_GUI
