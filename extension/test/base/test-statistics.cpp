@@ -2,10 +2,10 @@
 // Name:      test-statistics.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/extension/stream.h>
+#include <wx/extension/statistics.h>
 #include "../test.h"
 
 TEST_CASE( "wxExStatistics" ) 

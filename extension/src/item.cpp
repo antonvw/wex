@@ -5,6 +5,9 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
+#include <easylogging++.h>
+
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -187,7 +190,7 @@ void wxExItem::AddItems(
     }
     else
     {
-      wxLogError("more pages than images");
+      LOG(ERROR) << "more pages than images";
     }
   }
   
@@ -491,7 +494,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
       if (m_ImageList == nullptr)
       {
-        wxLogError("toolbook requires image list");
+        LOG(ERROR) << "toolbook requires image list";
         return false;
       }
       break;
@@ -751,7 +754,7 @@ wxFlexGridSizer* wxExItem::Layout(
         {
           if (!m_Initial.has_value())
           {
-            wxLogError("Illegal notebook");
+            LOG(ERROR) << "illegal notebook";
             return nullptr;
           }
           
@@ -787,11 +790,74 @@ wxFlexGridSizer* wxExItem::Layout(
   }
   catch (std::bad_cast& e)
   {
-    std::cout << "item: " << e.what();
-    Write(std::cout << "\nITEM INFO\n");
+    LOG(ERROR) << "item: " << e.what() << Log().str();
   }
   
   return nullptr;
+}
+
+std::stringstream wxExItem::Log() const
+{
+  std::stringstream ss;
+
+  ss << "LABEL: " << m_Label << " " << "TYPE: " << m_Type << " "
+     << Log("VALUE: ", GetValue()).str()
+     << Log("INITIAL: ", m_Initial).str()
+     << Log("MIN: ", m_Min).str()
+     << Log("MAX: ", m_Max).str()
+     << Log("INC: ", m_Inc).str();
+
+  return ss;
+}
+
+std::stringstream wxExItem::Log(const std::string& name, const std::any& any) const
+{
+  std::stringstream s;
+
+  s << name << "{internal type: " << any.type().name() << ", value: ";
+
+  if (any.has_value())
+  {
+    try
+    {
+      if (any.type() == typeid(int)) 
+      {
+        s << std::any_cast<int>(any);
+      }
+      else if (any.type() == typeid(long)) 
+      {
+        s << std::any_cast<long>(any);
+      }
+      else if (any.type() == typeid(double)) 
+      {
+        s << std::any_cast<double>(any);
+      }
+      else if (any.type() == typeid(wxString)) 
+      {
+        s << std::any_cast<wxString>(any);
+      }
+      else if (any.type() == typeid(std::string)) 
+      {
+        s << std::any_cast<std::string>(any);
+      }
+      else
+      {
+        s << "<no cast available>";
+      }
+    }
+    catch (std::bad_cast& e)
+    {
+      s << "<bad cast: " << e.what() << ">";
+    }
+  }
+  else
+  {
+    s << "<no value>";
+  }
+
+  s << "} ";
+
+  return s;
 }
 
 void wxExItem::SetDialog(wxExItemTemplateDialog<wxExItem>* dlg)
@@ -850,63 +916,4 @@ bool wxExItem::SetValue(const std::any& value) const
   return true;
 }
 
-void wxExItem::Write(std::ostream& s) const
-{
-  s << "LABEL: " << m_Label << " " << "TYPE: " << m_Type << " ";
-  Write("VALUE: ", GetValue(), s);
-  Write("INITIAL: ", m_Initial, s);
-  Write("MIN: ", m_Min, s);
-  Write("MAX: ", m_Max, s);
-  Write("INC: ", m_Inc, s);
-  s << "\n";
-}
-
-std::ostream& wxExItem::Write(
-  const std::string& name, const std::any& any, std::ostream& s) const
-{
-  s << name << "{internal type: " << any.type().name() << ", value: ";
-
-  if (any.has_value())
-  {
-    try
-    {
-      if (any.type() == typeid(int)) 
-      {
-        s << std::any_cast<int>(any);
-      }
-      else if (any.type() == typeid(long)) 
-      {
-        s << std::any_cast<long>(any);
-      }
-      else if (any.type() == typeid(double)) 
-      {
-        s << std::any_cast<double>(any);
-      }
-      else if (any.type() == typeid(wxString)) 
-      {
-        s << std::any_cast<wxString>(any);
-      }
-      else if (any.type() == typeid(std::string)) 
-      {
-        s << std::any_cast<std::string>(any);
-      }
-      else
-      {
-        s << "<no cast available>";
-      }
-    }
-    catch (std::bad_cast& e)
-    {
-      s << "<bad cast: " << e.what() << ">";
-    }
-  }
-  else
-  {
-    s << "<no value>";
-  }
-
-  s << "} ";
-
-  return s;
-}
 #endif // wxUSE_GUI

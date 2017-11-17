@@ -61,7 +61,6 @@ bool wxExFile::CheckSync()
       // Update the stat member, so next time no sync.
       if (!m_Stat.Sync())
       {
-        // This might be reported in an OnIdle, so do not use wxLogError.
         wxLogStatus("Could not sync: ", m_Path.Path().string().c_str());
       }
         

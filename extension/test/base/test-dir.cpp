@@ -12,7 +12,7 @@ TEST_CASE( "wxExDir" )
 {
   SUBCASE( "Not recursive" ) 
   {
-    wxExDir dir(GetTestDir(), "*.h", DIR_FILES);
+    wxExDir dir(GetTestPath(), "*.h", DIR_FILES);
     REQUIRE(dir.GetDir().DirExists());
     REQUIRE(dir.GetFlags() == DIR_FILES);
     REQUIRE(dir.GetFileSpec() == "*.h");

@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -68,18 +69,24 @@ bool App::OnInit()
         exit = true;}},
       {{"o", "splithor", "split tabs horizontally"}, [&](bool on) {
         if (on) m_Split = wxBOTTOM;}},
+      {{"v", "verbose", "activates maximum verbosity"}, [&](bool on) {}},
       {{"O", "splitver", "split tabs vertically"}, [&](bool on) {
         if (on) m_Split = wxRIGHT;}},
       {{"R", "readonly", "readonly mode"}, [&](bool on) {
         if (on) m_Data.Flags(STC_WIN_READ_ONLY, DATA_OR);}}},
      {{{"c", "command", "vi command"}, {CMD_LINE_STRING, [&](const std::any& s) {
         m_Data.Control(wxExControlData().Command(std::any_cast<std::string>(s)));}}},
+      {{"D", "defaultlogfile", "sets default log file"}, {CMD_LINE_STRING, [&](const std::any& s) {}}},
+      {{"L", "loggingflags", "sets logging flags"}, {CMD_LINE_INT, [&](const std::any& s) {
+        el::Loggers::addFlag((el::LoggingFlag)std::any_cast<int>(s));}}},
+      {{"m", "vmodule", "activates verbosity for files starting with main to level"}, {CMD_LINE_STRING, [&](const std::any& s) {}}},
       {{"s", "scriptin", "script in"}, {CMD_LINE_STRING, [&](const std::any& s) {
         m_Scriptin.Open(std::any_cast<std::string>(s));}}},
       {{"S", "source", "source file"}, {CMD_LINE_STRING, [&](const std::any& s) {
         m_Data.Control(wxExControlData().Command(":so " + std::any_cast<std::string>(s)));}}},
       {{"t", "tag", "start at tag"}, {CMD_LINE_STRING, [&](const std::any& s) {
         m_Tag = std::any_cast<std::string>(s);}}},
+      {{"V", "v", "activates verbosity upto verbose level (valid range: 0-9)"}, {CMD_LINE_INT, [&](const std::any& s) {}}},
       {{"w", "scriptout", "script out write"}, {CMD_LINE_STRING, [&](const std::any& s) {
         m_Scriptout.Open(std::any_cast<std::string>(s), wxFile::write);}}},
       {{"W", "append", "script out append"}, {CMD_LINE_STRING, [&](const std::any& s) {

@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -80,7 +81,7 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
 
         if (new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
         {
-          std::cerr << "Invalid keyword set: " << new_setno << "\n";
+          LOG(ERROR) << "invalid keyword set: " << new_setno;
           return false;
         }
 
@@ -97,7 +98,7 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
       }
       catch (std::exception& e)
       {
-        std::cerr << "Keyword exceptiont: " << e.what() << "\n";
+        LOG(ERROR) << "keyword exceptiont: " << e.what();
         return false;
       }
     }
@@ -407,7 +408,7 @@ void wxExLexer::Set(const pugi::xml_node* node)
 
   if (!m_IsOk)
   {
-    std::cerr << "Missing lexer with offset: " << node->offset_debug() << "\n";
+    LOG(ERROR) << "missing lexer with offset: " << node->offset_debug();
   }
   else
   {
@@ -442,7 +443,7 @@ void wxExLexer::Set(const pugi::xml_node* node)
         
         if (!direct.empty() && !AddKeywords(direct))
         {
-          std::cerr << "Keywords could not be set with offset: " << child.offset_debug() << "\n";
+          LOG(ERROR) << "keywords could not be set with offset: " << child.offset_debug();
         }
 
         // Add all keywords that point to a keyword set.
@@ -457,18 +458,18 @@ void wxExLexer::Set(const pugi::xml_node* node)
 
             if (keywords.empty())
             {
-              std::cerr << "Empty keywords for " << att.value() << " with offset: " << child.offset_debug() << "\n";
+              LOG(ERROR) << "empty keywords for " << att.value() << " with offset: " << child.offset_debug();
             }
 
             if (!AddKeywords(keywords, setno))
             {
-              std::cerr << "Keywords for " << att.value() << " could not be set with offset: " 
-                << child.offset_debug() << "\n";
+              LOG(ERROR) << "keywords for " << att.value() << " could not be set with offset: " 
+                << child.offset_debug();
             }
           }
           catch (std::exception& e)
           {
-            std::cerr << "Keyword exception: " << e.what() << "\n";
+            LOG(ERROR) << "keyword exception: " << e.what();
           }
         }
       }
@@ -476,7 +477,7 @@ void wxExLexer::Set(const pugi::xml_node* node)
       {
         if (!m_Properties.empty())
         {
-          std::cerr << "Properties already available with offset: " << child.offset_debug() << "\n";
+          LOG(ERROR) << "properties already available with offset: " << child.offset_debug();
         }
 
         wxExNodeProperties(&child, m_Properties);
@@ -499,7 +500,7 @@ bool wxExLexer::Set(const std::string& lexer, bool fold)
     !wxExLexers::Get()->GetLexers().empty() &&
     !lexer.empty())
   {
-    std::cerr << "Lexer is not known: " << lexer << "\n";
+    LOG(ERROR) << "lexer is not known: " << lexer;
   }
   
   return m_IsOk;

@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <experimental/filesystem>
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -247,13 +248,13 @@ wxExConfigDefaults::wxExConfigDefaults(
             m_Config->ReadLong(std::get<0>(it), std::any_cast<long>(std::get<2>(it)));
             break;
           default:
-            std::cout << "Unsupported default type for: "  << 
-              std::get<0>(it).c_str() << "\n";
+            LOG(ERROR) << "unsupported default type for: "  << 
+              std::get<0>(it).c_str();
         }
       }
       catch (std::bad_cast& e)
       {
-        std::cout << "defaults: " << e.what() << " for: " << std::get<0>(it).ToStdString() << "\n";
+        LOG(ERROR) << "defaults: " << e.what() << " for: " << std::get<0>(it).ToStdString();
       }
     }
   }

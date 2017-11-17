@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <experimental/filesystem>
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -101,7 +102,7 @@ int wxExDir::FindFiles()
 {
   if (!m_Dir.DirExists())
   {
-    std::cout << "Invalid path: " << m_Dir.Path() << "\n";
+    LOG(ERROR) << "Invalid path: " << m_Dir.Path();
     return -1;
   }
 
@@ -139,7 +140,7 @@ int wxExDir::FindFiles()
   }
   catch (fs::filesystem_error e)
   {
-    std::cout << e.what() << "\n";
+    LOG(ERROR) << e.what();
   }
 
   Stop();

@@ -72,11 +72,23 @@ public:
 
   /// Sends specified signal to this process.
   /// Returns true if signalling is ok.
-  bool Kill(int sig = SIGKILL);
+  /// (SIGKILL is not ISO C99 and not known by windows).
+  bool Kill(
+#ifdef __UNIX__
+    int sig = SIGKILL);
+#else
+    int sig = SIGTERM);
+#endif
   
   /// Sends specified signal to all processes that are still running.
   /// Returns the number of processes signalled.
-  static int KillAll(int sig = SIGKILL);
+  /// (SIGKILL is not ISO C99 and not known by windows).
+  static int KillAll(
+#ifdef __UNIX__
+    int sig = SIGKILL);
+#else
+    int sig = SIGTERM);
+#endif
   
   /// Construct the shell component.
   static void PrepareOutput(wxWindow* parent);

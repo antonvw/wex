@@ -16,7 +16,7 @@
 
 TEST_CASE("wxExSTCFile")
 {
-  wxExSTC* stc = new wxExSTC(GetTestFile());
+  wxExSTC* stc = new wxExSTC(GetTestPath("test.h"));
   stc->SetText("and still they came");
   
   AddPane(GetFrame(), stc);

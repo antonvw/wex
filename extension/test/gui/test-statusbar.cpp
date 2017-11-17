@@ -2,7 +2,7 @@
 // Name:      test-statusbar.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/statusbar.h>
+#include <wx/extension/managedframe.h>
 #include "test.h"
 
 TEST_CASE("wxExStatusBar")
@@ -58,7 +59,7 @@ TEST_CASE("wxExStatusBar")
   pane1.SetHiddenText("hidden");
   REQUIRE( pane1.GetHiddenText() == "hidden");
   
-  GetStatusBar()->SetFields({
+  GetStatusBar()->Setup(GetFrame(), {
     pane1,
     {"PaneLexer"},
     {"PaneFileType"},

@@ -41,9 +41,6 @@ public:
   /// Returns contents of macro as a vector of strings.
   const std::vector< std::string > Get(const std::string& name) const;
   
-  /// Returns abbreviations.
-  const auto & GetAbbreviations() const {return m_Abbreviations;};
-  
   /// Returns number of macros and variables available.
   auto GetCount() const {return m_Macros.size() + m_Variables.size();};
   
@@ -165,6 +162,12 @@ public:
   
   /// Returns the filename with xml document.
   static const wxExPath GetFileName();
+  
+  /// Returns abbreviations.
+  static const auto & GetAbbreviations() {return m_Abbreviations;};
+  
+  /// Returns variables.
+  static const auto& GetVariables() {return m_Variables;};
   
   /// Loads all macros (and variables) from xml document.
   /// Returns true if document is loaded (macros still can be empty).

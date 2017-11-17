@@ -11,6 +11,7 @@
 #include <vector>
 #include <pugixml.hpp>
 #include <wx/extension/menus.h>
+#include <wx/extension/log.h>
 
 /// This class offers a collection (vector) of menu commands,
 /// where the exact type of each command is templatized.
@@ -30,13 +31,17 @@ public:
     : m_Name(node.attribute("name").value()) {
     if (m_Name.empty())
     {
-      std::cerr << "No name with offset: " << node.offset_debug() << "\n";
+      std::stringstream ss;
+      ss << "no name with offset: " << node.offset_debug();
+      wxExLog().Log(ss);
     }
     else
     {
       if (wxExMenus::AddCommands(node, m_Commands) == 0)
       {
-        std::cerr << "No commands found for: " << m_Name << "\n";
+        std::stringstream ss;
+        ss << "no commands found for: " << m_Name;
+        wxExLog().Log(ss);
         m_Commands.push_back({});
       }  
     }};

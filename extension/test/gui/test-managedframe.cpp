@@ -51,9 +51,9 @@ TEST_CASE("wxExManagedFrame")
   wxMenu* menu = new wxMenu();
   GetFrame()->GetFileHistory().UseMenu(1000, menu);
   GetFrame()->SetFindFocus(GetFrame()->GetSTC());
-  GetFrame()->OpenFile(GetTestFile());
+  GetFrame()->OpenFile(GetTestPath("test.h"));
   
-  GetFrame()->SetRecentFile(GetTestFile());
+  GetFrame()->SetRecentFile(GetTestPath("test.h"));
   GetFrame()->SetRecentFile("testing");
   
   REQUIRE( GetFrame()->GetFileHistory().GetHistoryFile().Path().string().find("test.h") != std::string::npos);

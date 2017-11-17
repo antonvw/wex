@@ -18,6 +18,7 @@
 #include <wx/stc/stc.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/itemdlg.h>
+#include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
 #if wxExUSE_OTL
@@ -80,8 +81,9 @@ bool wxExOTL::Logon(const wxExWindowData& par)
   }
   catch (otl_exception& p)
   {
-    wxLogError("Cannot logon to %s because of: %s",
-      Datasource().c_str(), wxString(p.msg).c_str());
+    wxExSTCEntryDialog(
+      "Cannot logon to " + Datasource() + 
+      " because of: " + std::string((const char *)p.msg)).ShowModal();
   }
 
   return IsConnected();

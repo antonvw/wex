@@ -27,11 +27,17 @@ TEST_CASE("wxExItemDialog")
       {"int2", ITEM_TEXTCTRL_INT, wxString("20")},
       {"float1", ITEM_TEXTCTRL_FLOAT, wxString("20.0")}},
     wxExWindowData().Button(wxOK | wxCANCEL | wxAPPLY));
+
   dlg1->Show();
   dlg1->ForceCheckBoxChecked();
-  
   dlg1->Reload();
-  dlg1->WriteAllItems(std::cout);
+
+#ifdef DEBUG
+  for (const auto& i : dlg1->GetItems())
+  { 
+    std::cout << i.Log().str();
+  };
+#endif
   
   wxPostEvent(dlg1, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
   

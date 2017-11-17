@@ -437,7 +437,7 @@ void wxExFrameWithHistory::SetRecentFile(const wxExPath& path)
 {
   wxExManagedFrame::SetRecentFile(path);
   
-  if (m_FileHistoryList != nullptr)
+  if (m_FileHistoryList != nullptr && path.FileExists())
   {
     wxExListItem item(m_FileHistoryList, path);
     item.Insert((long)0);
@@ -465,7 +465,7 @@ void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
   m_FileHistoryList->Hide();
 
   // Add all (existing) items from FileHistory.
-  for (size_t i = 0; i < GetFileHistory().GetCount(); i++)
+  for (auto i = 0; i < GetFileHistory().GetCount(); i++)
   {
     wxExListItem item(
       m_FileHistoryList, 

@@ -21,7 +21,7 @@ TEST_CASE("wxExVCS")
   // GetCount
   REQUIRE( wxExVCS::GetCount() > 0);
 
-  wxExPath file(GetTestFile());
+  wxExPath file(GetTestPath("test.h"));
   file.MakeAbsolute();
   
   // In wxExApp the vcs is Read, so current vcs is known,

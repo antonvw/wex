@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -68,7 +69,6 @@ wxExRepSampleFrame::wxExRepSampleFrame() : wxExFrameWithHistory()
   
 #if wxUSE_STATUSBAR
   SetupStatusBar({
-    {},
     {"PaneFileType", 50},
     {"PaneInfo", 100},
     {"PaneLexer", 60}});
@@ -193,7 +193,7 @@ wxExListView* wxExRepSampleFrame::Activate(
           {
             if (!lexer->GetDisplayLexer().empty())
             {
-              wxLogMessage("%s, only cpp for the sample", lexer->GetDisplayLexer().c_str());
+              LOG(INFO) << lexer->GetDisplayLexer() << ", only cpp for the sample";
             }
               
             return nullptr;

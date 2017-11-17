@@ -288,7 +288,7 @@ bool wxExVCS::IsAdminDirTopLevel(
 
 bool wxExVCS::LoadDocument()
 {
-  const int old_entries = m_Entries.size();
+  const auto old_entries = m_Entries.size();
   
   if (!wxExMenus::Load("vcs", m_Entries)) return false;
 

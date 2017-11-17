@@ -8,6 +8,8 @@
 #pragma once
 
 #include <map>
+#include <utility>
+#include <vector>
 #include <wx/extension/grid.h>
 
 #if wxUSE_GRID
@@ -28,7 +30,7 @@ public:
     Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_Statistics->Clear();}, wxID_CLEAR);
   }
 protected:
-  void BuildPopupMenu(wxExMenu& menu) {
+  void BuildPopupMenu(wxExMenu& menu) override {
     int style = wxExMenu::MENU_ALLOW_CLEAR;
     if (IsSelection()) style |= wxExMenu::MENU_IS_SELECTED;
     menu.SetStyle(style);
@@ -46,7 +48,12 @@ template <class T> class WXDLLIMPEXP_BASE wxExStatistics
 {
 public:
   /// Default constructor.
-  wxExStatistics() {};
+  /// You can specify a vector of values to initialize the statistics.
+  wxExStatistics(const std::vector<std::pair<const std::string, T>> v = {}) {
+    for (const auto& it : v)
+    {
+      Set(it.first, it.second);
+    }};
 
   /// Adds other statistics.
   wxExStatistics& operator+=(const wxExStatistics& s) {
@@ -112,7 +119,8 @@ public:
 #if wxUSE_GRID
     if (m_Grid != nullptr)
     {
-      const auto it = m_Rows.find(key);
+      const auto& it = m_Rows.find(key);
+
       if (it != m_Rows.end())
       {
         m_Grid->SetCellValue(it->second, 1, std::to_string(value));
@@ -121,7 +129,7 @@ public:
       {
         m_Grid->AppendRows(1);
 
-        const int row = m_Grid->GetNumberRows() - 1;
+        const auto row = m_Grid->GetNumberRows() - 1;
         m_Rows.insert({key, row});
 
         m_Grid->SetCellValue(row, 0, key);
@@ -168,6 +176,7 @@ public:
       }
       m_Grid->SetColLabelValue(0, _("Item"));
       m_Grid->SetColLabelValue(1, _("Value"));
+
       // Values are numbers.
       m_Grid->SetColFormatNumber(1);
 
@@ -175,14 +184,17 @@ public:
       {
         m_Grid->HideColLabels();
       }
+
       for (const auto& it : m_Items)
       {
         m_Grid->AppendRows(1);
-        const int row = m_Grid->GetNumberRows() - 1;
+        const auto row = m_Grid->GetNumberRows() - 1;
         m_Grid->SetCellValue(row, 0, it.first);
         m_Grid->SetCellValue(row, 1, std::to_string(it.second));
         m_Rows[it.first] = row;
       }
+
+      m_Grid->AutoSizeColumn(0);
     }
     m_Grid->Show();
     return m_Grid;}
@@ -195,6 +207,6 @@ private:
 
 #if wxUSE_GRID
   std::map<std::string, int> m_Rows;
-  wxExGridStatistics<T>* m_Grid = nullptr;
+  wxExGridStatistics<T>* m_Grid {nullptr};
 #endif
 };

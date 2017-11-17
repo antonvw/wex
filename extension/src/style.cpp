@@ -5,6 +5,8 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -102,8 +104,8 @@ void wxExStyle::Set(const pugi::xml_node& node, const std::string& macro)
 
   if (m_Value.empty())
   {
-    std::cerr << "Empty style: " << GetNo() << " with offset: " 
-      << node.offset_debug() << "\n";
+    LOG(ERROR) << "empty style: " << GetNo() << " with offset: " 
+      << node.offset_debug();
   }
 }
 
@@ -129,12 +131,12 @@ void wxExStyle::SetNo(const std::string& no, const std::string& macro,
       }
       else
       {
-        std::cerr << "Illegal style: " << no << " with offset: " << node.offset_debug() << "\n";
+        LOG(ERROR) << "illegal style: " << no << " with offset: " << node.offset_debug();
       }
     }
     catch (std::exception& e)
     {
-      std::cerr << "Style exception: " << e.what() << "\n";
+      LOG(ERROR) << "style exception: " << e.what();
     }
   }
 }

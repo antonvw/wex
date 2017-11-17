@@ -6,14 +6,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #define DOCTEST_CONFIG_IMPLEMENT
+#define ELPP_NO_CHECK_MACROS
 
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <functional>
 #include <wx/config.h>
-#include <wx/log.h>
 #include <wx/timer.h>
 #include <wx/uiaction.h>
 #include <wx/extension/lexers.h>
@@ -80,16 +81,11 @@ const std::string AddPane(wxExManagedFrame* frame, wxWindow* pane)
   return name;
 }
 
-const std::string GetTestDir()
+const wxExPath GetTestPath(const std::string& file) 
 {
-  return wxExTestApp::GetTestPath().Path().string() + "/";
+  return wxExTestApp::GetTestPath(file);
 }
-  
-const wxExPath GetTestFile()
-{
-  return wxExPath({GetTestDir(), "test.h"});
-}
-  
+
 void SystemArg(
   const std::string cmd, const std::string& file, const std::string& dir)
 {
@@ -112,18 +108,16 @@ void SetEnvironment(const std::string& dir)
   const std::string cp("COPY");
 #endif
   
-  SystemArg(cp, "cht.txt", dir);
-  SystemArg(cp, "lexers.xml", dir);
-  SystemArg(cp, "macros.xml", dir);
-  SystemArg(cp, "menus.xml", dir);
+  for (const auto& it : {"cht.txt", "lexers.xml", "macros.xml", "menus.xml"})
+  {
+    SystemArg(cp, it, dir);
+  }
 
 #if wxExUSE_OTL
   (void)system(cp + " .odbc.ini " + wxGetHomeDir());
 #endif
 
   // Create the global lexers object (after copying lexers.xml), 
-  // it should be present in ~/.wxex-test-gui
-  // (depending on platform, configuration).
   wxExLexers::Get();
 }
     
@@ -156,6 +150,7 @@ bool wxExUIAction(wxWindow* win, const std::string& action, const std::string& p
   
   wxTimer* timer = new wxTimer(wxTheApp);
   timer->StartOnce(100);
+
   wxTheApp->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     wxUIActionSimulator sim;
     sim.Char(WXK_RETURN);});
@@ -166,6 +161,13 @@ bool wxExUIAction(wxWindow* win, const std::string& action, const std::string& p
   
 wxExPath wxExTestApp::m_TestPath;
 
+wxExPath wxExTestApp::GetTestPath(const std::string& file)
+{
+  return file.empty() ?
+    m_TestPath:
+    wxExPath({m_TestPath.Path().string(), file});
+}
+
 bool wxExTestApp::OnInit()
 {
   SetAppName("wxex-test-gui");
@@ -175,14 +177,6 @@ bool wxExTestApp::OnInit()
   if (!wxExApp::OnInit())
   {
     return false;
-  }
-  
-  const long verbose(wxConfigBase::Get()->ReadLong("verbose", 2));
-  
-  switch (verbose)
-  {
-    case 1: wxLog::SetActiveTarget(new wxLogStderr()); break;
-    case 2: new wxLogNull(); break;
   }
   
   wxConfigBase::Get()->Write(_("vi mode"), true);
@@ -197,22 +191,13 @@ int wxExTestApp::OnRun()
   timer->StartOnce(1000);
 
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
-    try
-    {
-      const int res = m_Context->run();
-      const long auto_exit(wxConfigBase::Get()->ReadLong("auto-exit", 1));
-      wxConfigBase::Get()->Write("AllowSync", 0);
-      wxExProcess::KillAll();
+    m_Context->run();
+    wxConfigBase::Get()->Write("AllowSync", 0);
+    wxExProcess::KillAll();
 
-      if (auto_exit)
-      {
-        ExitMainLoop();
-      }
-    }
-    catch (const std::exception& e)
+    if (m_Context->shouldExit())
     {
-      std::cout << e.what() << "\n";
-      exit(EXIT_FAILURE);
+      ExitMainLoop();
     }});
 
   return wxExApp::OnRun();
@@ -257,40 +242,28 @@ void wxExTestApp::SetTestPath()
   }
   catch (std::exception& e)
   {
-    std::cout << e.what() << "\n";
+    LOG(ERROR) << e.what();
     exit(1);
   }
 }
 
-int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop)
+int wxExTestMain(int argc, char* argv[], wxExTestApp* app)
 {
-  doctest::Context context;
-  context.applyCommandLine(argc, argv);
-  
-  wxApp::SetInstance(app);
-  wxEntryStart(argc, argv);
-  app->OnInit();
-  
   try
   {
-    if (!use_eventloop)
-    {
-      const int res = context.run();
-      if (context.shouldExit()) return res;
-      app->ProcessPendingEvents();
-      app->ExitMainLoop();
-      wxExProcess::KillAll();
-      return res;
-    }
-    else
-    {
-      app->SetContext(&context);
-      return app->OnRun();
-    }
+    wxApp::SetInstance(app);
+    wxEntryStart(argc, argv);
+
+    doctest::Context context;
+    context.setOption("exit", true);
+    context.applyCommandLine(argc, argv);
+    app->SetContext(&context);
+
+    return app->OnInit() && app->OnRun();
   }
   catch (const std::exception& e)
   {
-    std::cout << e.what() << "\n";
+    LOG(ERROR) << "exception: " << e.what();
     exit(EXIT_FAILURE);
   }
 }

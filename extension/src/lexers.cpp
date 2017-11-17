@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -244,20 +245,20 @@ bool wxExLexers::LoadDocument()
   // Do some checking.
   if (!m_Lexers.empty())
   {
-    if (!m_DefaultStyle.IsOk()) std::cerr << "Default style not ok" << "\n";
-    if (!m_DefaultStyle.ContainsDefaultStyle()) std::cerr << "Default style does not contain default style" << "\n";
+    if (!m_DefaultStyle.IsOk()) LOG(ERROR) << "default style not ok";
+    if (!m_DefaultStyle.ContainsDefaultStyle()) LOG(ERROR) << "default style does not contain default style";
   }
   
   if (m_ThemeMacros.size() <= 1) // NoTheme is always present
   {
-    std::cerr << "Themes are missing\n";
+    LOG(ERROR) << "themes are missing";
   }
 
   for (const auto& it : m_ThemeMacros)
   {
     if (!it.first.empty() && it.second.empty())
     {
-      std::cerr << "Theme " << it.first << " is unknown\n";
+      LOG(ERROR) << "theme " << it.first << " is unknown";
     }
   } 
 
@@ -314,8 +315,8 @@ void wxExLexers::ParseNodeGlobal(const pugi::xml_node& node)
       {
         if (m_DefaultStyle.IsOk())
         {
-          std::cerr << "Duplicate default style: " << child.name() << " with offset: "
-            << child.offset_debug() << "\n";
+          LOG(ERROR) << "duplicate default style: " << child.name() << " with offset: "
+            << child.offset_debug();
         }
         else
         {
@@ -361,8 +362,8 @@ void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
 
           if (it != macro_map.end())
           {
-            std::cerr << "Macro: " << attrib << " with offset: " << 
-              macro.offset_debug() << " already exists\n";
+            LOG(ERROR) << "macro: " << attrib << " with offset: " << 
+              macro.offset_debug() << " already exists";
           }
           else
           {
@@ -375,7 +376,7 @@ void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
               }
               catch (std::exception& e)
               {
-                std::cerr << "Macro excption: " << e.what() << "\n";
+                LOG(ERROR) << "macro excption: " << e.what();
               }
             }
             else
@@ -415,7 +416,7 @@ void wxExLexers::ParseNodeTheme(const pugi::xml_node& node)
 
         if (it != tmpMacros.end())
         {
-          std::cerr << "Macro style: " <<  style << " with offset: " << child.offset_debug() << " already exists";
+          LOG(ERROR) << "macro style: " <<  style << " with offset: " << child.offset_debug() << " already exists";
         }
         else
         {

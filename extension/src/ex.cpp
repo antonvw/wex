@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <regex>
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -302,12 +303,12 @@ wxExEx::wxExEx(wxExSTC* stc)
         {
           if (line == command)
           {
-            std::cout << line << ": recursive (line: " << std::to_string(i + 1) << ")\n";
+            LOG(ERROR) << line << ": recursive (line: " << std::to_string(i + 1) << ")";
             return false;
           }
           else if (!Command(line))
           {
-            std::cout << line << ": error (line: " << std::to_string(i + 1) << ")\n";
+            LOG(ERROR) << line << ": error (line: " << std::to_string(i + 1) << ")";
             return false;
           }
         }
@@ -379,7 +380,7 @@ void wxExEx::AddText(const std::string& text)
   }
   else
   {
-    m_STC->AddText(text);
+    m_STC->AddTextRaw((const char *)text.c_str(), text.length());
   }
 }
 
@@ -846,7 +847,7 @@ bool wxExEx::MarkerAdd(char marker, int line)
 
   if (!lm.IsOk())
   {
-    wxLogError("Could not find marker symbol: %d in lexers", m_MarkerSymbol.GetNo());
+    LOG(ERROR) << "could not find marker symbol: " << m_MarkerSymbol.GetNo() << " in lexers";
     return false;
   }
   
@@ -866,8 +867,8 @@ bool wxExEx::MarkerAdd(char marker, int line)
       // 1: change marker
       // 2: breakpoint marker
       // 3..: character markers (all markers in m_MarkerIdentifiers)
-      const int marker_offset = 3;
-      const int marker_number = m_MarkerIdentifiers.size() + marker_offset;
+      const auto marker_offset = 3;
+      const auto marker_number = m_MarkerIdentifiers.size() + marker_offset;
 
       m_STC->MarkerDefine(marker_number, 
         wxSTC_MARK_CHARACTER + marker, 
@@ -889,7 +890,7 @@ bool wxExEx::MarkerAdd(char marker, int line)
     
   if (id == -1)
   {
-    wxLogError("Could not add marker: %c to line: %d", marker, lin);
+    LOG(ERROR) << "could not add marker: " << marker  << " to line: " << lin;
     return false;  
   }
     

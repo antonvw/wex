@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -43,12 +44,12 @@ wxExMarker::wxExMarker(const pugi::xml_node& node)
 
     if (!IsOk())
     {
-      std::cerr << "Illegal marker: " << m_No << " with offset: " << node.offset_debug() << "\n";
+      LOG(ERROR) << "illegal marker: " << m_No << " with offset: " << node.offset_debug();
     }
   }
   catch (std::exception& e)
   {
-    std::cerr << "Marker exception: " << e.what() << "\n";
+    LOG(ERROR) << "marker exception: " << e.what();
   }
 }
 

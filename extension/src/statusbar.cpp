@@ -11,6 +11,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/extension/statusbar.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 
 #if wxUSE_GUI
@@ -36,6 +37,8 @@ void wxExStatusBarPane::Show(bool show)
     m_HiddenText = GetText();
   }
 }
+
+std::vector<wxExStatusBarPane> wxExStatusBar::m_Panes = {{}};
 
 wxExStatusBar::wxExStatusBar(wxExFrame* parent, const wxExWindowData& data)
   : wxStatusBar(parent, data.Id(), data.Style(), data.Name())
@@ -159,32 +162,49 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
   }
 }
 
-void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
+wxExStatusBar* wxExStatusBar::Setup(
+  wxExFrame* frame,
+  const std::vector<wxExStatusBarPane> panes,
+  long style,
+  const wxString& name)
 {
-  m_Panes = fields;
-    
-  int* styles = new int[fields.size()];
-  int* widths = new int[fields.size()];
-
-  for (size_t i = 0; i < fields.size(); i++)
+  if (m_Panes.size() > 1)
   {
-    styles[i] = wxConfigBase::Get()->ReadLong(ConfigName(this, "Style", i),
-      fields[i].GetStyle());
+    m_Panes.clear();
+  }
+
+  m_Panes.insert(std::end(m_Panes), std::begin(panes), std::end(panes));
+
+  wxExStatusBar* sb = (frame->GetStatusBar() == nullptr ?
+    (wxExStatusBar *)frame->CreateStatusBar(
+        m_Panes.size(), style, ID_UPDATE_STATUS_BAR, name):
+    (wxExStatusBar *)frame->GetStatusBar());
+
+  int* styles = new int[m_Panes.size()];
+  int* widths = new int[m_Panes.size()];
+
+  for (auto i = 0; i < m_Panes.size(); i++)
+  {
+    styles[i] = wxConfigBase::Get()->ReadLong(ConfigName(sb, "Style", i),
+      m_Panes[i].GetStyle());
+    widths[i] = wxConfigBase::Get()->ReadLong(ConfigName(sb, "Width", i),
+      m_Panes[i].GetWidth());
+
     m_Panes[i].SetStyle(styles[i]);
-    widths[i] = wxConfigBase::Get()->ReadLong(ConfigName(this, "Width", i),
-      fields[i].GetWidth());
     m_Panes[i].SetWidth(widths[i]);
   }
   
-  SetFieldsCount(fields.size(), widths);
-  SetStatusStyles(fields.size(), styles);
+  sb->SetFieldsCount(m_Panes.size(), widths);
+  sb->SetStatusStyles(m_Panes.size(), styles);
 
   delete[] styles;
   delete[] widths;
 
-  Bind(wxEVT_LEFT_UP, &wxExStatusBar::OnMouse, this);
-  Bind(wxEVT_RIGHT_UP, &wxExStatusBar::OnMouse, this);
-  Bind(wxEVT_MOTION, &wxExStatusBar::OnMouse, this);
+  sb->Bind(wxEVT_LEFT_UP, &wxExStatusBar::OnMouse, sb);
+  sb->Bind(wxEVT_RIGHT_UP, &wxExStatusBar::OnMouse, sb);
+  sb->Bind(wxEVT_MOTION, &wxExStatusBar::OnMouse, sb);
+
+  return sb;
 }
 
 bool wxExStatusBar::SetStatusText(

@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -200,6 +201,8 @@ bool wxExProcess::Execute(
     struct wxExecuteEnv env;
     env.cwd = wd;
 
+    VLOG(1) << "exec:" << m_Command;
+
     if (wxExecute(m_Command, output, errors, wxEXEC_SYNC, &env) == -1)
     {
       m_StdErr.clear();
@@ -235,7 +238,7 @@ bool wxExProcess::Kill(int sig)
   {
     killed = m_Process->Kill(sig);
 
-    if (sig == SIGKILL)
+    if ((sig == wxSIGKILL || sig == wxSIGTERM) && killed)
     {
       m_Process.release();
 
@@ -277,9 +280,7 @@ void wxExProcess::ShowOutput(const std::string& caption) const
   }
   else
   {
-    // Executing command failed, so no output,
-    // show failing command.
-    wxLogError("Could not execute: %s", m_Command.c_str());
+    LOG(ERROR) << "could not execute: " <<  m_Command;
   }
 }
 #endif
@@ -311,6 +312,8 @@ bool wxExProcessImp::Execute(
   env.cwd = path;
   m_Command = command;
   
+  VLOG(1) << "exec:" << command;
+
   if (wxExecute(command, wxEXEC_ASYNC, this, &env) <= 0) 
   {
     return false;
@@ -355,14 +358,14 @@ void wxExProcessImp::HandleCommand(const std::string& command)
 
 bool wxExProcessImp::Kill(int sig)
 {
-  int pid = GetPid();
+  const auto pid = GetPid();
 
   if (wxProcess::Kill(pid, (wxSignal)sig) != wxKILL_OK)
   {
     return false;
   }
 
-  if (sig == SIGKILL)
+  if (sig == wxSIGKILL || sig == wxSIGTERM)
   {
     const auto it = std::find(m_pids.begin(), m_pids.end(), pid);
 
@@ -389,7 +392,7 @@ int wxExProcessImp::KillAll(int sig)
   
   if (killed != m_pids.size())
   {
-    std::cout << "could not kill all processes\n";
+    LOG(ERROR) << "could not kill all processes";
   }
  
   return killed;

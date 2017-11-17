@@ -20,9 +20,9 @@ TEST_CASE("wxExFrame")
   GetSTC()->SetFocus();
   GetSTC()->GetFile().ResetContentsChanged();
 
-  REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestFile()));
-  REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestFile().Path().string(), "contents"));
-  REQUIRE( ((wxExFrame *)GetFrame())->IsOpen(GetTestFile()));
+  REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestPath("test.h")));
+  REQUIRE( ((wxExFrame *)GetFrame())->OpenFile(GetTestPath("test.h"), "contents"));
+  REQUIRE( ((wxExFrame *)GetFrame())->IsOpen(GetTestPath("test.h")));
   REQUIRE(!((wxExFrame *)GetFrame())->IsOpen(wxExPath("xxx")));
   
   REQUIRE( GetFrame()->GetGrid() == nullptr);

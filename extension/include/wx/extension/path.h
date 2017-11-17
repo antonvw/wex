@@ -63,8 +63,7 @@ public:
     return std::experimental::filesystem::current_path().string();};
 
   /// Sets current path.
-  static void Current(const std::string& path) {
-    std::experimental::filesystem::current_path(path);};
+  static void Current(const std::string& path);
 
   /// Returns true if the directory with this name exists.
   bool DirExists() const {

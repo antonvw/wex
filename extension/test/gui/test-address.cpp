@@ -106,7 +106,7 @@ TEST_CASE("wxExAddress")
   
   // Test Read.
   REQUIRE(!address3.Read("XXXXX"));
-  REQUIRE( address3.Read(GetTestDir() + "test.bin"));
+  REQUIRE( address3.Read(GetTestPath("test.bin").Path().string()));
 #ifdef __UNIX__
   REQUIRE( address3.Read("!ls"));
 #endif

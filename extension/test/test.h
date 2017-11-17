@@ -20,38 +20,15 @@ namespace doctest
   class Context;
 }
 
-/// Adds managed pane.
-/// Returns name of pane.
-const std::string AddPane(wxExManagedFrame* frame, wxWindow* pane);
-
-/// Returns test dir.
-const std::string GetTestDir();
-
-/// Returns test file.
-const wxExPath GetTestFile();
-  
-/// Sets environment. 
-void SetEnvironment(const std::string& dir);
-
-/// Invoke UI action on window, 
-/// Returns false if an error occurred.
-bool wxExUIAction(
-  /// window to operate on
-  wxWindow* win, 
-  /// action, if starts with button is a button action,
-  /// if starts with dialog is a dialog action
-  const std::string& action = "button",
-  /// e.g. the dialog to operate on
-  const std::string& par = "right");
-  
 /// Derive your application from wxExApp.
 class wxExTestApp: public wxExApp
 {
 public:
   /// Constructor.
-  wxExTestApp() {}
-  
-  static auto GetTestPath() {return m_TestPath;};
+  wxExTestApp() {};
+
+  /// Returns test path.  
+  static wxExPath GetTestPath(const std::string& file = std::string());
 
   /// Prepare environment.
   virtual bool OnInit() override;
@@ -69,4 +46,22 @@ private:
   static wxExPath m_TestPath;
 };
 
-int wxExTestMain(int argc, char* argv[], wxExTestApp* app, bool use_eventloop);
+/// Adds managed pane.
+/// Returns name of pane.
+const std::string AddPane(wxExManagedFrame* frame, wxWindow* pane);
+
+/// Returns test path or file in dir if specified.
+const wxExPath GetTestPath(const std::string& file = std::string());
+  
+/// Invoke UI action on window, 
+int wxExTestMain(int argc, char* argv[], wxExTestApp* app);
+
+/// Returns false if an error occurred.
+bool wxExUIAction(
+  /// window to operate on
+  wxWindow* win, 
+  /// action, if starts with button is a button action,
+  /// if starts with dialog is a dialog action
+  const std::string& action = "button",
+  /// e.g. the dialog to operate on
+  const std::string& par = "right");

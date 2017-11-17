@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -79,6 +80,7 @@ bool wxExSTCFile::DoFileLoad(bool synced)
     }
     
     wxLogStatus(_("Opened") + ": " + GetFileName().Path().string());
+    VLOG(1) << "opened: " << GetFileName().Path().string();
   }
   
   m_STC->PropertiesMessage(synced ? STAT_SYNC: STAT_DEFAULT);
@@ -118,6 +120,7 @@ void wxExSTCFile::DoFileSave(bool save_as)
   m_STC->MarkerDeleteAllChange();
   
   wxLogStatus(_("Saved") + ": " + GetFileName().Path().string());
+  VLOG(1) << "saved: " << GetFileName().Path().string();
   
   CheckWellFormed(m_STC, GetFileName());
 }

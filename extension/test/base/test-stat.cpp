@@ -10,12 +10,12 @@
 
 TEST_CASE( "wxExStat" ) 
 {
-  wxExStat stat(GetTestFile().Path().string());
+  wxExStat stat(GetTestPath("test.h").Path().string());
 
   REQUIRE( stat.IsOk());
   REQUIRE(!stat.GetModificationTime().empty());
   REQUIRE(!stat.IsReadOnly());
-  REQUIRE( stat.Sync(GetTestDir() + "test-base.link"));
+  REQUIRE( stat.Sync(GetTestPath("test-base.link").Path().string()));
   REQUIRE( stat.Sync());
   REQUIRE(!stat.GetModificationTime().empty());
 

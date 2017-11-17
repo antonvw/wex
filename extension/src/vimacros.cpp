@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <algorithm>
 #include <fstream>
 #include <numeric>
@@ -70,7 +71,7 @@ bool wxExViMacros::Expand(wxExEx* ex, const std::string& variable)
     }
     catch (pugi::xpath_exception& e)
     {
-      std::cerr << e.what() << "\n";
+      LOG(ERROR) << e.what();
     }
 
     var = it->second;
@@ -191,18 +192,17 @@ bool wxExViMacros::ExpandTemplate(
   
   if (!ifs.is_open())
   {
-    wxLogError("Could not open template file: %s", filename.Path().string().c_str());
+    LOG(ERROR) << "could not open template file: " << filename.Path().string();
     return false;
   }
 
   // Keep current macro, in case you cancel expanding,
   // this one is restored.
   std::string macro = m_Macro;
-  
-  while (ifs.good() && !ifs.eof()) 
+  char c;
+
+  while (ifs.get(c))
   {
-    const char c = ifs.get();
-    
     if (c != '@')
     {
       expanded += c;
@@ -434,10 +434,10 @@ void wxExViMacros::ParseNode(
 
   if (container.find(value) != container.end())
   {
-    std::cerr<< "Duplicate " << 
+    LOG(ERROR)<< "duplicate " << 
       name << ": " << value << " from: " << 
       node.attribute("name").value() << " with offset: " <<
-      node.offset_debug() << "\n";
+      node.offset_debug();
   }
   else
   {
@@ -458,8 +458,8 @@ void wxExViMacros::ParseNodeMacro(const pugi::xml_node& node)
 
   if (it != m_Macros.end())
   {
-    std::cerr << "Duplicate macro: " << node.attribute("name").value() << " with offset: " <<
-      node.offset_debug() << "\n";
+    LOG(ERROR) << "duplicate macro: " << node.attribute("name").value() << " with offset: " <<
+      node.offset_debug();
   }
   else
   {
@@ -474,8 +474,8 @@ void wxExViMacros::ParseNodeVariable(const pugi::xml_node& node)
 
   if (it != m_Variables.end())
   {
-    std::cerr << "Duplicate variable: " << variable.GetName() << " with offset: " <<
-      node.offset_debug() << "\n";
+    LOG(ERROR) << "duplicate variable: " << variable.GetName() << " with offset: " <<
+      node.offset_debug();
   }
   else
   {
@@ -614,7 +614,7 @@ void wxExViMacros::SaveMacro(const std::string& macro)
   }
   catch (pugi::xpath_exception& e)
   {
-    std::cerr << e.what() << "\n";
+    LOG(ERROR) << e.what();
   }
 }
 
@@ -652,7 +652,7 @@ void wxExViMacros::Set(
   }
   catch (pugi::xpath_exception& e)
   {
-    std::cerr << e.what() << "\n";
+    LOG(ERROR) << e.what();
   }
 }
 

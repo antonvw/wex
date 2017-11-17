@@ -2,7 +2,7 @@
 // Name:      variable.h
 // Purpose:   Declaration of class wxExVariable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -60,6 +60,9 @@ public:
   
   /// Returns variable name.
   const auto& GetName() const {return m_Name;};
+  
+  /// Returns variable type.
+  const auto GetType() const {return m_Type;};
   
   /// Returns variable value.
   const auto& GetValue() const {return m_Value;};

@@ -185,7 +185,7 @@ TEST_CASE("wxEx")
   
   SUBCASE("wxExGetIconID")
   {
-    REQUIRE( wxExGetIconID( GetTestFile()) != -1);
+    REQUIRE( wxExGetIconID( GetTestPath("test.h")) != -1);
   }
 
   SUBCASE("wxExGetNumberOfLines  ")
@@ -246,7 +246,7 @@ TEST_CASE("wxEx")
   
   SUBCASE("wxExLogStatus")
   {
-    wxExLogStatus( GetTestFile());
+    wxExLogStatus( GetTestPath("test.h"));
     wxExLogStatus( std::string("hello world") );
   }
 
@@ -290,9 +290,9 @@ TEST_CASE("wxEx")
   {
     REQUIRE( wxExOpenFiles(GetFrame(), std::vector<wxExPath>()) == 0);
     REQUIRE( wxExOpenFiles(GetFrame(), std::vector<wxExPath> {
-      GetTestFile().Path(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
+      GetTestPath("test.h").Path(), "test.cpp", "*xxxxxx*.cpp"}) == 2);
     REQUIRE( wxExOpenFiles(GetFrame(), 
-      std::vector<wxExPath> {GetTestFile().Path()}) == 1);
+      std::vector<wxExPath> {GetTestPath("test.h").Path()}) == 1);
     REQUIRE( 
       wxExOpenFiles(GetFrame(), std::vector<wxExPath> {"../../data/menus.xml"}) == 1);
   }
@@ -313,7 +313,7 @@ TEST_CASE("wxEx")
   
   SUBCASE("wxExPrintHeader")
   {
-    REQUIRE( wxExPrintHeader(GetTestFile()).find("test") != std::string::npos);
+    REQUIRE( wxExPrintHeader(GetTestPath("test.h")).find("test") != std::string::npos);
   }
   
   SUBCASE("wxExMarkerAndRegisterExpansion")

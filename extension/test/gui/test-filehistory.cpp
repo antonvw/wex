@@ -32,7 +32,7 @@ TEST_CASE("wxExFileHistory")
     REQUIRE( history.GetCount() == 0);
     REQUIRE( history.GetHistoryFile().Path().empty());
     
-    history.AddFileToHistory(GetTestFile());
+    history.AddFileToHistory(GetTestPath("test.h"));
     REQUIRE( history.GetCount() == 1);
     REQUIRE( history.GetHistoryFiles(0).size() == 0);
     REQUIRE( history.GetHistoryFiles(5).size() == 1);
@@ -53,7 +53,7 @@ TEST_CASE("wxExFileHistory")
   SUBCASE("Other constructor")
   {
     wxExFileHistory history(4, 1000, "MY-KEY");
-    history.AddFileToHistory(GetTestFile());
+    history.AddFileToHistory(GetTestPath("test.h"));
     REQUIRE( history.GetCount() == 1);
     REQUIRE( history.GetBaseId() == 1000);
     REQUIRE( history.GetMaxFiles() == 4);

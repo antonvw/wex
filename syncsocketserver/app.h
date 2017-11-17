@@ -65,10 +65,17 @@ private:
   wxExSTC* m_LogWindow;
   wxExShell* m_Shell;
 
-  wxExStatistics < int > m_Statistics;
+  wxExStatistics < int > m_Statistics {{
+    {"Messages Received", 0},
+    {"Messages Sent", 0},
+    {"Bytes Received", 0},
+    {"Bytes Sent", 0},
+    {"Connections Server", 0},
+    {"Connections Remote", 0},
+    {"Connections Closed", 0}}};
 
-  wxSocketClient* m_SocketRemoteClient = nullptr;
-  wxSocketServer* m_SocketServer = nullptr;
+  wxSocketClient* m_SocketRemoteClient {nullptr};
+  wxSocketServer* m_SocketServer {nullptr};
   wxTimer m_Timer;
 
 #if wxUSE_TASKBARICON

@@ -67,6 +67,8 @@ Variables are expanded when playing back the macro.
   <variable name="Datetime"         type="BUILTIN"/>
   <!-- Expands to current filename without extension-->
   <variable name="Filename"         type="BUILTIN"/>
+  <!-- Expands to current filename -->
+  <variable name="Fullname"         type="BUILTIN" />
   <!-- Expands to current filename fullpath -->
   <variable name="Fullpath"         type="BUILTIN"/>
   <!-- Expands to new line according to current document type -->
@@ -84,10 +86,11 @@ Variables are expanded when playing back the macro.
   
   <!-- INPUT-ONCE type -->
   <variable name="Author"           type="INPUT-ONCE"/>
-  <variable name="Copyright"        type="INPUT-ONCE"/>
   <variable name="Author:"          type="INPUT-ONCE" prefix="Author:    "/>
+  <variable name="Copyright"        type="INPUT-ONCE"/>
 
   <!-- INPUT-SAVE type -->
+  <variable name="Purpose"          type="INPUT-SAVE" prefix="WRAP"/>
   <variable name="Purpose:"         type="INPUT-SAVE" prefix="Purpose:   "/>
   
   <!-- TEMPLATE type -->
@@ -116,6 +119,8 @@ Variables are expanded when playing back the macro.
     <command>&#27;</command>
     <command>@Cb@</command>
     <command>i Name:      </command>
+    <command>&#27;</command>
+    <command>@Fullname@</command>
     <command>&#27;</command>
     <command>i&#18;</command>
     <command>&#27;</command>

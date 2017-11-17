@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -164,6 +165,10 @@ bool wxExListViewFile::DoFileLoad(bool synced)
 
   EditClearAll();
 
+#ifdef __WXMSW__ 
+  std::thread t([=] {
+#endif
+
   for (const auto& child: doc.document_element().children())
   {
     const std::string value = child.text().get();
@@ -176,6 +181,8 @@ bool wxExListViewFile::DoFileLoad(bool synced)
     {
       wxExListItem(this, value, child.attribute("extensions").value()).Insert();
     }
+
+    if (wxExInterruptable::Cancelled()) break;
   }
 
   if (synced)
@@ -183,8 +190,18 @@ bool wxExListViewFile::DoFileLoad(bool synced)
     wxExLogStatus(GetFileName(), STAT_SYNC | STAT_FULLPATH);
   }
 
-  GetFrame()->SetRecentProject(GetFileName().Path().string());
+  GetFrame()->SetRecentProject(GetFileName());
   
+#ifdef __WXMSW__ 
+    });
+  if (detached)  
+    t.detach();
+  else
+    t.join();
+#endif
+
+  VLOG(1) << "opened: " << GetFileName().Path().string();
+
   return true;
 }
 
@@ -214,7 +231,7 @@ void wxExListViewFile::DoFileSave(bool save_as)
     pugi::xml_node node = root.append_child(fn.FileExists() ? "file": "folder");
     node.text().set(fn.Path().string().c_str());
 
-    if (!fn.FileExists() && fn.DirExists())
+    if (fn.DirExists())
     {
       node.append_attribute("extensions") = 
         GetItemText(i, _("Type").ToStdString()).c_str();
@@ -222,6 +239,8 @@ void wxExListViewFile::DoFileSave(bool save_as)
   }
   
   doc.save_file(GetFileName().Path().string().c_str());
+
+  VLOG(1) << "saved: " << GetFileName().Path().string();
 }
 
 bool wxExListViewFile::ItemFromText(const std::string& text)

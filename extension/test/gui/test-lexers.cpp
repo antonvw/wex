@@ -44,7 +44,7 @@ TEST_CASE("wxExLexers")
   REQUIRE(!wxExLexers::Get()->GetLexers().empty());
 
   REQUIRE( wxExLexers::Get()->FindByFileName(
-    GetTestFile().GetFullName()).GetScintillaLexer() == "cpp");
+    GetTestPath("test.h").GetFullName()).GetScintillaLexer() == "cpp");
     
   REQUIRE( wxExLexers::Get()->FindByName(
     "xxx").GetScintillaLexer().empty());

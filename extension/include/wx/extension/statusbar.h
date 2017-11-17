@@ -22,9 +22,9 @@ class WXDLLIMPEXP_BASE wxExStatusBarPane : public wxStatusBarPane
 {
 public:
   /// Default constructor.
-  /// This constructs the PaneText field.
+  /// This constructs the PaneText pane.
   wxExStatusBarPane(
-    /// width of the field (default, might be overridden in the config)
+    /// width of the pane (default, might be overridden in the config)
     int width = -3,
     /// style (default, might be overridden in the config)
     int style = wxSB_NORMAL)
@@ -45,7 +45,7 @@ public:
     /// by setting up one of these panes,
     /// your panes will get controlled by the lib.
     const std::string& name,
-    /// width of the field (default, might be overridden in the config)
+    /// width of the pane (default, might be overridden in the config)
     int width = 50,
     /// helptext shown as a tooltip
     /// If you do no provide helptext, it is derived from the name, by using
@@ -89,7 +89,7 @@ private:
 class wxExFrame;
 
 /// Offers a status bar that calls virtual methods from wxExFrame,
-/// and allows you to address fields by name instead of number.
+/// and allows you to address panes by name instead of number.
 class WXDLLIMPEXP_BASE wxExStatusBar : public wxStatusBar
 {
 public:
@@ -109,16 +109,13 @@ public:
   /// Destructor.
  ~wxExStatusBar();  
 
-  /// Returns the wxExStatusBarPane representing the n-th field. 
+  /// Returns the wxExStatusBarPane representing the n-th pane. 
   const wxExStatusBarPane& GetField(int n) const;
  
   /// Returns the status text on specified field.
   /// Returns empty string if field does not exist
   /// or is not shown.
   const std::string GetStatusText(const std::string& field) const;
-
-  /// Sets the fields.
-  void SetFields(const std::vector<wxExStatusBarPane>& fields);
 
   /// Sets text on specified field.
   /// Returns false if field does not exist or is not shown.
@@ -128,6 +125,20 @@ public:
     /// field, default field text pane,
     const std::string& field = std::string());
   
+  /// Sets up the statusbar.
+  /// The status pane reserved for display status text messages is
+  /// automatically added by the framework as the first pane.
+  /// The next panes are used by the framework:
+  /// - PaneFileType, shows file types
+  /// - PaneInfo, shows info for control, e.g. lines
+  /// - PaneLexer, shows lexer
+  /// Returns created statusbar.
+  static wxExStatusBar* Setup(
+    wxExFrame* frame,
+    const std::vector<wxExStatusBarPane> panes,
+    long style = wxST_SIZEGRIP,
+    const wxString& name = "statusBar");
+
   /// Shows or hides the field.
   /// Returns true if field visibility actually changed.
   bool ShowField(const std::string& field, bool show);
@@ -145,7 +156,7 @@ private:
   void Handle(wxMouseEvent& event, const wxExStatusBarPane& wxExStatusBarPane);
   
   wxExFrame* m_Frame;
-  std::vector<wxExStatusBarPane> m_Panes;
+  static std::vector<wxExStatusBarPane> m_Panes;
 };
 #endif // wxUSE_STATUSBAR
 #endif // wxUSE_GUI

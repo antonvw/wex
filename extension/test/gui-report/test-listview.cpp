@@ -20,7 +20,7 @@ TEST_CASE("wxExListViewWithFrame")
   wxExListViewWithFrame* listView = new wxExListViewWithFrame(wxExListViewData().Type(LIST_FIND));
   AddPane(GetFrame(), listView);
 
-  wxExListItem item(listView, GetTestFile());
+  wxExListItem item(listView, GetTestPath("test.h"));
   item.Insert();
   item.Insert();
   item.Insert();

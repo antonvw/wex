@@ -34,9 +34,9 @@ TEST_CASE("wxExStream")
 {
   SUBCASE("Test find")
   {
-    wxExStream s(GetTestFile(), ID_TOOL_REPORT_FIND);
+    wxExStream s(GetTestPath("test.h"), ID_TOOL_REPORT_FIND);
     
-    REQUIRE( s.GetFileName() == GetTestFile());
+    REQUIRE( s.GetFileName() == GetTestPath("test.h"));
     REQUIRE( s.GetTool().GetId() == ID_TOOL_REPORT_FIND);
     
     wxExFindReplaceData::Get()->SetFindString("test");
@@ -55,7 +55,7 @@ TEST_CASE("wxExStream")
   
   SUBCASE("Test replace")
   {
-    wxExStream s(GetTestFile(), ID_TOOL_REPLACE);
+    wxExStream s(GetTestPath("test.h"), ID_TOOL_REPLACE);
     
     wxExFindReplaceData::Get()->SetReplaceString("test");
     

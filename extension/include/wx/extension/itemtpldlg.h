@@ -132,6 +132,9 @@ public:
     };
     return T();};
 
+  /// Returns all items.
+  const auto & GetItems() const {return m_Items;};
+
   /// Returns the item actual value for specified label, or 
   /// empty object if item does not exist.
   const auto GetItemValue(const wxString& label) const {
@@ -147,16 +150,7 @@ public:
       }
     };
     return false;};
-
-  /// Write on all items.
-  void WriteAllItems(std::ostream&  o) const {
-    for (const auto& item : m_Items)
-    { 
-       item.Write(o);
-    }};
 protected:
-  const auto & GetItems() const {return m_Items;};
-
   void OnCommand(wxCommandEvent& event) {
     if (  event.GetId() == wxID_APPLY ||
         ((event.GetId() == wxID_OK ||

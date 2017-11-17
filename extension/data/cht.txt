@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      @Filename@
+// Name:      @Fullname@
 // Purpose:   Declaration of class @Myclass@
 // Author:    @Author@
 // Copyright: (c) @Year@ @Copyright@
@@ -7,7 +7,7 @@
 
 #pragma once
 
-/// @Purpose@
+@Purpose@
 class @Myclass@
 {
 public:

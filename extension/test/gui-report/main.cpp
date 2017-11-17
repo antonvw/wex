@@ -72,5 +72,5 @@ IMPLEMENT_APP_NO_MAIN(wxExTestGuiApp);
 
 int main(int argc, char* argv[])
 {
-  return wxExTestMain(argc, argv, new wxExTestGuiApp(), true);
+  return wxExTestMain(argc, argv, new wxExTestGuiApp());
 }

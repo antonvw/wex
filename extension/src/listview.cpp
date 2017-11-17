@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype>
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -811,7 +812,7 @@ bool wxExListView::InsertItem(const std::vector < std::string > & item)
     }
     catch (std::exception& e)
     {
-      std::cout << item.front() << ": " << col << ": " << e.what() << "\n";
+      LOG(ERROR) << item.front() << ": " << col << ": " << e.what();
       return false;
     }
   }
@@ -1107,8 +1108,8 @@ bool wxExListView::SetItem(
   }
   catch (std::exception& e)
   {
-    std::cout << "index: " << index << " col: " << column << ": " <<
-      text << e.what() << "\n";
+    LOG(ERROR) << "index: " << index << " col: " << column << ": " <<
+      text << e.what();
     return false;
   }
 }

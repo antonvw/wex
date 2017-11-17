@@ -1,6 +1,7 @@
 project(syncped)
 
 include_directories(../extension/include)
+include_directories(../extension/easyloggingpp/src)
 include_directories(../extension/pugixml/src)
 include_directories(../extension/tclap/include)
 

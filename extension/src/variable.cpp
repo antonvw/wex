@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -71,7 +72,7 @@ wxExVariable::wxExVariable(const pugi::xml_node& node)
     }
     else
     {
-      std::cerr << "Variable type is not supported: " << type << "\n";
+      LOG(ERROR) << "variable type is not supported: " << type;
     }
   }
 }
@@ -151,7 +152,8 @@ bool wxExVariable::Expand(wxExEx* ex, std::string& value)
   // If there is a prefix, make a comment out of it.
   if (!m_Prefix.empty())
   {
-    value = ex->GetSTC()->GetLexer().MakeComment(m_Prefix, value);
+    value = ex->GetSTC()->GetLexer().MakeComment(
+      m_Prefix == "WRAP" ? std::string(): m_Prefix, value);
   }
   
   return true;
@@ -204,6 +206,10 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, std::string& expanded) const
   {
     expanded = ex->GetSTC()->GetFileName().GetName();
   }
+  else if (m_Name == "Fullname")
+  {
+    expanded = ex->GetSTC()->GetFileName().GetFullName();
+  }
   else if (m_Name == "Fullpath")
   {
     expanded = ex->GetSTC()->GetFileName().Path().string();
@@ -239,11 +245,12 @@ bool wxExVariable::ExpandInput(std::string& expanded)
     if (m_Dialog == nullptr)
     {
       m_Dialog = new wxExSTCEntryDialog(
-        m_Name, 
         m_Value,
-        wxExWindowData().Title(_("Input").ToStdString() + ":"));
+        std::string(),
+        wxExWindowData().Title(m_Name + ":"));
         
       m_Dialog->GetSTC()->GetVi().Use(false);
+      m_Dialog->GetSTC()->SetWrapMode(wxSTC_WRAP_WORD);
     }
     else
     {

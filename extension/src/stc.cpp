@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
+#include <easylogging++.h>
 #include <wx/app.h>
 #include <wx/config.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
@@ -194,22 +195,29 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
   if (m_Data.Menu() != STC_MENU_NONE)
   {
     Bind(wxEVT_RIGHT_UP, [=](wxMouseEvent& event) {
-      int style = 0; // otherwise CAN_PASTE already on
-      if ( GetReadOnly() || HexMode()) style |= wxExMenu::MENU_IS_READ_ONLY;
-      if (!GetSelectedText().empty())  style |= wxExMenu::MENU_IS_SELECTED;
-      if ( GetTextLength() == 0)       style |= wxExMenu::MENU_IS_EMPTY;
-      if ( CanPaste())                 style |= wxExMenu::MENU_CAN_PASTE;
-      wxExMenu menu(style);
-      BuildPopupMenu(menu);
-      if (menu.GetMenuItemCount() > 0)
+      try
       {
-        // If last item is a separator, delete it.
-        wxMenuItem* item = menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
-        if (item->IsSeparator())
+        int style = 0; // otherwise CAN_PASTE already on
+        if ( GetReadOnly() || HexMode()) style |= wxExMenu::MENU_IS_READ_ONLY;
+        if (!GetSelectedText().empty())  style |= wxExMenu::MENU_IS_SELECTED;
+        if ( GetTextLength() == 0)       style |= wxExMenu::MENU_IS_EMPTY;
+        if ( CanPaste())                 style |= wxExMenu::MENU_CAN_PASTE;
+        wxExMenu menu(style);
+        BuildPopupMenu(menu);
+        if (menu.GetMenuItemCount() > 0)
         {
-          menu.Delete(item->GetId());
+          // If last item is a separator, delete it.
+          wxMenuItem* item = menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
+          if (item->IsSeparator())
+          {
+            menu.Delete(item->GetId());
+          }
+          PopupMenu(&menu);
         }
-        PopupMenu(&menu);
+      }
+      catch (std::exception& e)
+      {
+        LOG(ERROR) << e.what();
       }});
   }
   
@@ -1140,8 +1148,8 @@ const std::string wxExSTC::GetWordAtPos(int pos) const
 void wxExSTC::GuessType()
 {
   // Get a small sample from this document to detect the file mode.
-  const int length = (!HexMode() ? GetTextLength(): m_HexMode.GetBuffer().size());
-  const int sample_size = (length > 255 ? 255: length);
+  const auto length = (!HexMode() ? GetTextLength(): m_HexMode.GetBuffer().size());
+  const auto sample_size = (length > 255 ? 255: length);
   const std::string text((!HexMode() ? GetTextRange(0, sample_size).ToStdString(): 
     m_HexMode.GetBuffer().substr(0, sample_size)));
   const std::string text2((!HexMode() ? GetTextRange(length - sample_size, length).ToStdString(): 
@@ -1376,7 +1384,8 @@ void wxExSTC::PrintPreview(wxPreviewFrameModalityKind kind)
   if (!preview->Ok())
   {
     delete preview;
-    wxLogError("There was a problem previewing.\nPerhaps your current printer is not set correctly?");
+    wxExSTCEntryDialog("There was a problem previewing.\n"
+      "Perhaps your current printer is not set correctly?").ShowModal();
     return;
   }
 

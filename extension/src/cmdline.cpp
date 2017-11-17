@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <wx/app.h>
 #include <wx/config.h>
 #include <wx/extension/cmdline.h>
@@ -59,7 +60,7 @@ wxExCmdLine::wxExCmdLine(
           }
           break;
         
-        default: std::cerr << "unknown type\n";
+        default: LOG(ERROR) << "unknown type";
       }
     }
 
@@ -82,7 +83,7 @@ wxExCmdLine::wxExCmdLine(
   }
   catch (TCLAP::ArgException& e)
   {
-    std::cerr << e.what() << "\n";
+    LOG(ERROR) << e.what();
   }
   catch (TCLAP::ExitException& )
   {
@@ -170,7 +171,7 @@ bool wxExCmdLine::Parse(const std::string& cmdline, bool toggle)
   }
   catch (TCLAP::ArgException& e)
   {
-    std::cerr << e.what() << "\n";
+    LOG(ERROR) << e.what();
     return false;
   }
   catch (TCLAP::ExitException& )

@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <experimental/filesystem>
+#include <easylogging++.h>
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -24,6 +25,8 @@
 
 #define NO_ASSERT 1
 
+INITIALIZE_EASYLOGGINGPP
+
 namespace fs = std::experimental::filesystem;
 
 void wxExApp::OnAssertFailure(
@@ -31,9 +34,9 @@ void wxExApp::OnAssertFailure(
   const wxChar* cond, const wxChar* msg)
 {
 #ifdef NO_ASSERT
-  std::wcout << wxNow() << ": OnAssertFailure: file: " << file << 
+  LOG(ERROR) << "OnAssertFailure: file: " << file << 
     " line: " << line << " func: " << func << 
-    " cond: " << cond << " msg: " << msg << "\n";
+    " cond: " << cond << " msg: " << msg;
 #else
   wxApp::OnAssertFailure(file, line, func, cond, msg);
 #endif
@@ -62,29 +65,80 @@ bool wxExApp::OnInit()
     ".conf"
 #endif
       ).GetFullPath(), wxEmptyString, wxCONFIG_USE_LOCAL_FILE));
-  
+
+  // Load elp configuration from file.
+  const wxExPath elp(wxExConfigDir(), GetAppName().Lower().ToStdString() + ".elp");
+
+  if (elp.FileExists())
+  {
+    el::Loggers::reconfigureAllLoggers(el::Configurations(elp.Path().string()));
+  }
+
+  // We need to convert argc and argv, as elp expects = sign between values.
+  // The logging-flags are handled by syncped.
+  int argc_elp = 0;
+  char *argv_elp[argc];
+  const std::vector <std::pair<
+    std::string, std::string>> supported {
+      {"-m", "-vmodule"},
+      {"--defaultlogfile", "--default-log-file"},
+      {"--x", "--v"}, // for testing with verbosity
+      {"--v", "--v"}};
+
+  for (int i = 0; i < argc; i++)
+  {
+    bool found = false;
+
+    for (const auto& s : supported)
+    {
+      if (strcmp(argv[i], s.first.c_str()) == 0)
+      {
+        found = true;
+        char* buffer = (char *)malloc(strlen(argv[i + 1]));
+        strcpy(buffer, argv[i + 1]);
+
+        argv_elp[argc_elp] = (char *)malloc(s.second.size() + 1 + strlen(argv[i + 1]));
+        sprintf(argv_elp[argc_elp], "%s=%s", s.second.c_str(), buffer);
+        argc_elp++;
+        i++;
+        free(buffer);
+      }
+    }
+
+    if (!found)
+    {
+      argv_elp[argc_elp] = (char *)malloc(strlen(argv[i]));
+      strcpy(argv_elp[argc_elp], argv[i]);
+      argc_elp++;
+    }
+  }
+
+  START_EASYLOGGINGPP(argc_elp, argv_elp);
+
+  for (int i = 0; i < argc_elp; i++)
+  {
+    free(argv_elp[i]);
+  }
+
   const wxLanguageInfo* info = nullptr;
   
   if (wxConfigBase::Get()->Exists("LANG"))
   {
-    info = wxLocale::FindLanguageInfo(wxConfigBase::Get()->Read("LANG"));
-    
-    if (info == nullptr)
+    if ((info = wxLocale::FindLanguageInfo(wxConfigBase::Get()->Read("LANG"))) == nullptr)
     {
-      std::cout << "Unknown language: " << 
-        wxConfigBase::Get()->Read("LANG").ToStdString() << "\n";;
+      LOG(ERROR) << "unknown language: " << wxConfigBase::Get()->Read("LANG");
     }
   }
   
   const int lang = (info != nullptr ? info->Language: wxLANGUAGE_DEFAULT); 
     
   // Init the localization, from now on things will be translated.
-  // Do not load wxstd, we load all files ourselved,
+  // Do not load wxstd, we load all files ourselves,
   // and do not want messages about loading non existing wxstd files.
   if (!m_Locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT) &&
     !wxLocale::GetLanguageName(lang).empty())
   {
-    std::cout << "Could not init locale for: " << wxLocale::GetLanguageName(lang) << "\n";
+    LOG(ERROR) << "could not init locale for: " << wxLocale::GetLanguageName(lang);
   }
   
   // If there are catalogs in the catalog_dir, then add them to the m_Locale.
@@ -106,14 +160,14 @@ bool wxExApp::OnInit()
       {
         if (!m_Locale.AddCatalog(p.path().stem().string()))
         {
-          std::cout << "Could not add catalog: " << p.path().stem() << "\n";
+          LOG(ERROR) << "could not add catalog: " << p.path().stem();
         }
       }
     }
   }
   else if (info != nullptr)
   {
-    std::cout << "Missing locale files for: " << GetLocale().GetName() << "\n";
+    LOG(ERROR) << "missing locale files for: " << GetLocale().GetName();
   }
 
   wxExVCS::LoadDocument();

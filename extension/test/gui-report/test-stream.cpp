@@ -21,7 +21,7 @@ TEST_CASE("wxExStreamToListView")
   
   REQUIRE(wxExStreamToListView::SetupTool(tool, GetFrame(), report));
   
-  wxExStreamToListView textFile(GetTestFile(), tool);
+  wxExStreamToListView textFile(GetTestPath("test.h"), tool);
   
   REQUIRE( textFile.RunTool());
   REQUIRE(!textFile.GetStatistics().GetElements().GetItems().empty());
@@ -29,13 +29,13 @@ TEST_CASE("wxExStreamToListView")
   REQUIRE( textFile.RunTool()); // do the same test
   REQUIRE(!textFile.GetStatistics().GetElements().GetItems().empty());
 
-  wxExStreamToListView textFile2(GetTestFile(), tool);
+  wxExStreamToListView textFile2(GetTestPath("test.h"), tool);
   REQUIRE( textFile2.RunTool());
   REQUIRE(!textFile2.GetStatistics().GetElements().GetItems().empty());
   
   wxExTool tool3(ID_TOOL_REPORT_KEYWORD);
   REQUIRE(wxExStreamToListView::SetupTool(tool3, GetFrame()));
-  wxExStreamToListView textFile3(GetTestFile(), tool3);
+  wxExStreamToListView textFile3(GetTestPath("test.h"), tool3);
   REQUIRE( textFile3.RunTool());
   REQUIRE(!textFile3.GetStatistics().GetElements().GetItems().empty());
 }

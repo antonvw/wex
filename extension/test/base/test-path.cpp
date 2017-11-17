@@ -16,7 +16,7 @@ TEST_CASE( "wxExPath" )
     REQUIRE( wxExPath().Path().empty());
     REQUIRE( wxExPath("xxx").Path().string() == "xxx");
     REQUIRE( wxExPath(wxExPath("yyy")).Path().string() == "yyy");
-    wxExPath fn = wxExPath(GetTestFile());
+    wxExPath fn = GetTestPath("test.h");
     REQUIRE( fn.GetLexer().GetScintillaLexer() == "cpp");
     REQUIRE( wxExPath(fn).GetFullName() == "test.h");
     REQUIRE( wxExPath("..").IsRelative());
@@ -29,7 +29,7 @@ TEST_CASE( "wxExPath" )
   
   SUBCASE( "Basic" ) 
   {
-    wxExPath path(GetTestFile());
+    wxExPath path(GetTestPath("test.h"));
   
     REQUIRE(!path.DirExists());
     REQUIRE( path.FileExists());
@@ -58,7 +58,7 @@ TEST_CASE( "wxExPath" )
   SUBCASE( "Timing" ) 
   {
     const int max = 1000;
-    const wxExPath exfile(GetTestFile());
+    const wxExPath exfile(GetTestPath("test.h"));
     const auto ex_start = std::chrono::system_clock::now();
 
     for (int i = 0; i < max; i++)
@@ -67,7 +67,7 @@ TEST_CASE( "wxExPath" )
     }
 
     const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - ex_start);
-    const wxExPath file(GetTestFile());
+    const wxExPath file(GetTestPath("test.h"));
     const auto wx_start = std::chrono::system_clock::now();
 
     for (int j = 0; j < max; j++)

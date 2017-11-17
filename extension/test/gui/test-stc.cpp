@@ -107,7 +107,7 @@ TEST_CASE("wxExSTC")
   SUBCASE("Open")
   {
     // do the same test as with wxExFile in base for a binary file
-    REQUIRE(stc->Open(GetTestDir() + "test.bin"));
+    REQUIRE(stc->Open(GetTestPath("test.bin")));
     REQUIRE(stc->GetData().Flags() == 0);
     const wxCharBuffer& buffer = stc->GetTextRaw();
     REQUIRE(buffer.length() == 40);
@@ -234,9 +234,9 @@ TEST_CASE("wxExSTC")
 
   SUBCASE("load file")
   {
-    wxExSTC stc(GetTestFile());
+    wxExSTC stc(GetTestPath("test.h"));
     REQUIRE( stc.GetFileName().Path().string().find("test.h") != std::string::npos);
-    REQUIRE( stc.Open(GetTestFile()));
+    REQUIRE( stc.Open(GetTestPath("test.h")));
     REQUIRE(!stc.Open("XXX"));
     stc.PropertiesMessage();
   }

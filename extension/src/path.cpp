@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <wx/extension/path.h>
 #include <wx/extension/lexers.h>
 
@@ -88,6 +89,23 @@ bool wxExPath::Canonical(const std::string& wd)
   m_path = std::experimental::filesystem::canonical(m_path, wd);
 
   return true;
+}
+
+void wxExPath::Current(const std::string& path) 
+{
+  if (path.empty())
+  {
+    return;
+  }
+
+  try
+  {
+    std::experimental::filesystem::current_path(path);
+  }
+  catch (const std::exception& e)
+  {
+    LOG(ERROR) << "exception: " << e.what();
+  }
 }
 
 const std::vector<wxExPath> wxExPath::GetPaths() const

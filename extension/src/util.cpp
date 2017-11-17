@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -31,6 +32,7 @@
 #include <wx/extension/path.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/stcdlg.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/tostring.h>
 #include <wx/extension/vcs.h>
@@ -550,7 +552,7 @@ int wxExMatch(const std::string& reg, const std::string& text,
   }
   catch (std::regex_error& e) 
   {
-    wxLogError("%s: in: %s code: %d", e.what(), reg.c_str(), e.code());
+    LOG(ERROR) << e.what() << ": in: " << " req " << " code: " << e.code();
     return -1;
   }
 }
@@ -936,7 +938,7 @@ bool wxExSortSelection(wxExSTC* stc,
   }
   catch (std::exception& e)
   {
-    wxLogError(e.what());
+    LOG(ERROR) << e.what();
     error = true;
   }
   
@@ -1018,7 +1020,9 @@ void wxExXmlError(
   const pugi::xml_parse_result* result,
   wxExSTC* stc)
 {
-  wxLogError("Error: %s at offset: %d", result->description(), (int)result->offset);
+  wxExSTCEntryDialog(
+    "Error: " + std::string(result->description()) + 
+    " at offset: " + std::to_string(result->offset)).Show();
 
   if (stc == nullptr)
   {

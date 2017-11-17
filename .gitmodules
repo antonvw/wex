@@ -7,3 +7,6 @@
 [submodule "extension/tclap"]
 	path = extension/tclap
 	url = https://git.code.sf.net/p/tclap/code
+[submodule "extension/easyloggingpp"]
+	path = extension/easyloggingpp
+	url = https://github.com/muflihun/easyloggingpp.git

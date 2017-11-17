@@ -12,6 +12,7 @@
 #include <wx/combobox.h>
 #include <wx/filedlg.h> // for wxFD_OPEN etc.
 #include <wx/extension/dir.h>
+#include <wx/extension/log.h>
 #include <wx/extension/stc-data.h>
 
 class wxArrayString;
@@ -432,7 +433,9 @@ public:
     }
     catch (std::exception& e)
     {
-      std::cerr << "value: " << m_s << " exception: " << e.what() << "\n";
+      std::stringstream ss;
+      ss << "value: " << m_s;
+      wxExLog().Log(e, ss);
       return m_i;
     }
   };
@@ -459,7 +462,9 @@ public:
     }
     catch (std::exception& e)
     {
-      std::cerr << "value: " << m_i << " exception: " << e.what() << "\n";
+      std::stringstream ss;
+      ss << "value: " << m_i;
+      wxExLog().Log(e, ss);
       return m_s;
     }
   };

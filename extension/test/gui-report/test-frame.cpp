@@ -21,7 +21,7 @@ TEST_CASE("wxExFrameWithHistory")
   GetFrame()->GetProjectHistory().UseMenu(1000, menu);
   list->Show();
   
-  REQUIRE(!GetFrame()->OpenFile(GetTestFile())); // as we have no focused stc
+  REQUIRE(!GetFrame()->OpenFile(GetTestPath("test.h"))); // as we have no focused stc
   REQUIRE( GetFrame()->GetFileHistory().GetHistoryFile().Path().string().find("../test.h") == std::string::npos);
 
   REQUIRE(!GetFrame()->OpenFile(
@@ -33,7 +33,7 @@ TEST_CASE("wxExFrameWithHistory")
   REQUIRE(!GetFrame()->FindInFiles({}, ID_TOOL_REPORT_FIND, false));
 
   REQUIRE( GetFrame()->FindInFiles(
-    {GetTestFile().Path().string()}, ID_TOOL_REPORT_FIND, false));
+    {GetTestPath("test.h").Path().string()}, ID_TOOL_REPORT_FIND, false));
 
   // GetFrame()->FindInFilesDialog(ID_TOOL_REPORT_FIND);
   REQUIRE(!GetFrame()->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
@@ -54,7 +54,7 @@ TEST_CASE("wxExFrameWithHistory")
   GetFrame()->SetRecentProject("xxx.prj");
   REQUIRE( GetFrame()->GetProjectHistory().GetHistoryFile().Path().empty());
 
-  GetFrame()->SetRecentFile(GetTestFile());
+  GetFrame()->SetRecentFile(GetTestPath("test.h"));
 
   for (auto id : std::vector<int> {
     ID_CLEAR_PROJECTS, ID_PROJECT_SAVE, ID_TOOL_REPORT_FIND, ID_TOOL_REPLACE}) 

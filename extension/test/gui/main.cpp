@@ -13,6 +13,7 @@
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/shell.h>
+#include <wx/extension/vimacros.h>
 
 #include "test.h"
 
@@ -34,11 +35,6 @@ class wxExTestGuiApp : public wxExTestApp
 public: 
   wxExTestGuiApp() : wxExTestApp() {;};
   
-  virtual void ExitMainLoop() override 
-  {
-    wxExTestApp::ExitMainLoop();
-  }
-  
   virtual bool OnInit() override
   {
     if (!wxExTestApp::OnInit())
@@ -48,7 +44,6 @@ public:
   
     m_Frame = new wxExTestManagedFrame();
     m_StatusBar = m_Frame->SetupStatusBar({
-      {},
       {"Pane0"}, // the order of panes is tested
       {"Pane1"},
       {"Pane2"},
@@ -70,9 +65,9 @@ public:
     return true;
   }
   
-  static wxExManagedFrame* GetFrame() {return m_Frame;};
-  static wxExStatusBar* GetStatusBar() {return m_StatusBar;};
-  static wxExSTC* GetSTC() {return m_STC;};
+  static auto* GetFrame() {return m_Frame;};
+  static auto* GetStatusBar() {return m_StatusBar;};
+  static auto* GetSTC() {return m_STC;};
 private:
   static wxExTestManagedFrame* m_Frame;
   static wxExStatusBar* m_StatusBar;
@@ -93,9 +88,17 @@ std::vector<std::pair<std::string, std::string>> GetAbbreviations()
       
 std::vector<std::string> GetBuiltinVariables() 
 {
-  return std::vector<std::string> {
-    "Cb", "Cc", "Ce", "Cl", "Created", "Date", "Datetime",
-    "Filename", "Fullpath", "Nl", "Path", "Time", "Year"};
+  std::vector<std::string> v;
+
+  for (const auto i : wxExViMacros::GetVariables())
+  {
+    if (i.second.GetType() == wxExVariable::VARIABLE_BUILTIN)
+    {
+       v.push_back(i.first);
+    }
+  }
+
+  return v;
 }
 
 wxExManagedFrame* GetFrame()
@@ -125,5 +128,5 @@ IMPLEMENT_APP_NO_MAIN(wxExTestGuiApp);
 
 int main(int argc, char* argv[])
 {
-  return wxExTestMain(argc, argv, new wxExTestGuiApp(), true);
+  return wxExTestMain(argc, argv, new wxExTestGuiApp());
 }

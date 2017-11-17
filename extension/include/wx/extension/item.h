@@ -395,7 +395,10 @@ public:
     /// specify the sizer for creating the item, or nullptr,
     /// than a new one is created
     wxFlexGridSizer* fgz = nullptr);
-  
+
+  /// Logs info about this item.
+  std::stringstream Log() const;
+
   /// Sets dialog to parent, to allow subitems to be added
   /// to the template dialog.
   void SetDialog(wxExItemTemplateDialog<wxExItem>* dlg);
@@ -420,9 +423,6 @@ public:
   /// Use config for getting and retrieving values.
   /// Default the config is used.
   static void UseConfig(bool use) {m_UseConfig = use;};
-
-  /// Writes info about this item to ostream.
-  void Write(std::ostream& s) const;
 protected:
   /// Delegate constructor.
   wxExItem(
@@ -457,7 +457,7 @@ private:
   void AddItems(std::pair<wxString, std::vector<wxExItem>> & items, bool readonly);
   wxFlexGridSizer* AddStaticText(wxSizer* sizer) const;
   bool CreateWindow(wxWindow* parent, bool readonly);
-  std::ostream& Write(const std::string& name, const std::any& any, std::ostream& s) const;
+  std::stringstream Log(const std::string& name, const std::any& any) const;
 
   bool m_IsRowGrowable = false;
   int m_MajorDimension, m_MaxItems = 25;

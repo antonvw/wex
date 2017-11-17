@@ -87,8 +87,6 @@
   m_FindReplaceDialog->Show();                               \
 };                                                           \
   
-const int ID_UPDATE_STATUS_BAR = 900;
-
 #if wxUSE_STATUSBAR
 wxExStatusBar* wxExFrame::m_StatusBar = nullptr;
 #endif
@@ -263,7 +261,8 @@ wxStatusBar* wxExFrame::OnCreateStatusBar(
   wxWindowID id,
   const wxString& name)
 {
-  m_StatusBar = new wxExStatusBar(this, wxExWindowData().Id(id).Style(style).Name(name.ToStdString()));
+  m_StatusBar = new wxExStatusBar(this, 
+    wxExWindowData().Id(id).Style(style).Name(name.ToStdString()));
   m_StatusBar->SetFieldsCount(number);
   return m_StatusBar;
 }
@@ -328,16 +327,6 @@ void wxExFrame::SetMenuBar(wxMenuBar* bar)
 }
 
 #if wxUSE_STATUSBAR
-wxExStatusBar* wxExFrame::SetupStatusBar(
-  const std::vector<wxExStatusBarPane>& panes,
-  long style,
-  const wxString& name)
-{
-  wxFrame::CreateStatusBar(panes.size(), style, ID_UPDATE_STATUS_BAR, name);
-  m_StatusBar->SetFields(panes);
-  return m_StatusBar;
-}
-
 void wxExFrame::StatusBarClicked(const std::string& pane)
 {
   wxExSTC* stc = GetSTC();

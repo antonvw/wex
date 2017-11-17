@@ -123,13 +123,13 @@ Frame::Frame()
 #if wxUSE_STATUSBAR
   // Statusbar setup before STC construction.
   SetupStatusBar({
-    {},
     {"PaneConnections", 75, _("Number of local, remote connections").ToStdString()},
     {"PaneTimer", 75, _("Repeat timer").ToStdString()},
     {"PaneBytes", 150, _("Number of bytes received and sent").ToStdString()},
     {"PaneFileType", 50, _("File type").ToStdString()},
     {"PaneTheme", 50, _("Theme").ToStdString()},
-    {"PaneInfo", 100, _("Lines").ToStdString()}});
+    {"PaneInfo", 100, _("Lines").ToStdString()},
+    {"PaneMode", 100}});
 #endif
 
   if (wxExLexers::Get()->GetThemes() <= 1)
@@ -275,7 +275,7 @@ Frame::Frame()
     ID_CLEAR_LOG,
     wxEmptyString,
     wxArtProvider::GetBitmap(
-      wxART_NEW, wxART_TOOLBAR, GetToolBar()->GetToolBitmapSize()),
+      wxART_CROSS_MARK, wxART_TOOLBAR, GetToolBar()->GetToolBitmapSize()),
     _("Clear log"));
 
   GetToolBar()->Realize();
@@ -395,7 +395,7 @@ Frame::Frame()
     // Configuring only possible if no client is active,
     // otherwise just show settings readonly mode.
     wxExItemDialog({
-        {_("Remote Hostname"), wxEmptyString, ITEM_TEXTCTRL, wxExControlData().Required(true)},
+        {_("Remote Hostname"), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
         // Well known ports are in the range from 0 to 1023.
         // Just allow here for most flexibility.
         {_("Remote Port"), 1, 65536}},
@@ -423,7 +423,7 @@ Frame::Frame()
       // In fact, this should not happen, 
       // but using Ubuntu the OnUpdateUI does not prevent this...
       wxLogStatus(_("First stop remote server"));
-      return false;
+      return;
     }
     
     // Create the address - defaults to localhost and port as specified
@@ -517,7 +517,7 @@ Frame::Frame()
     }
     else
     {
-      m_Statistics.Inc("Server Connections");
+      m_Statistics.Inc("Connections Server");
       sock->SetEventHandler(*this, ID_SOCKET_CLIENT);
       sock->SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
       sock->Notify(true);
@@ -537,7 +537,7 @@ Frame::Frame()
     {
       case wxSOCKET_CONNECTION:
         {
-        m_Statistics.Inc("Remote Connections");
+        m_Statistics.Inc("Connections Remote");
         LogConnection(sock, true);
         sock->SetNotify(wxSOCKET_LOST_FLAG | wxSOCKET_INPUT_FLAG | wxSOCKET_OUTPUT_FLAG);
         const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
@@ -556,7 +556,7 @@ Frame::Frame()
 
         if (size <= 0)
         {
-          wxLogError("Illegal buffer size, skipping socket input data");
+          std::cerr << "illegal buffer size, skipping socket input data";
           return;
         }
 
@@ -778,7 +778,7 @@ void Frame::LogConnection(
   wxString text;
   text << (opend ? _("opened"): _("closed")) << " " << SocketDetails(sock);
 
-  const int connections = m_Clients.size() + 
+  const auto connections = m_Clients.size() + 
     (m_SocketRemoteClient != nullptr && m_SocketRemoteClient->IsConnected() ? 1: 0);
 
   if (show_connections && connections > 0)
@@ -910,7 +910,7 @@ const wxString Frame::SocketDetails(const wxSocketBase* sock) const
 
   if (!sock->GetPeer(peer_addr))
   {
-    wxLogError("Could not get peer address");
+    std::cerr << "could not get peer address";
     return wxEmptyString;
   }
 
@@ -918,7 +918,7 @@ const wxString Frame::SocketDetails(const wxSocketBase* sock) const
 
   if (!sock->GetLocal(local_addr))
   {
-    wxLogError("Could not get local address");
+    std::cerr << "could not get local address";
     return wxEmptyString;
   }
 
@@ -1041,7 +1041,7 @@ void Frame::WriteDataToSocket(const wxCharBuffer& buffer, wxSocketBase* sock)
 {
   if (buffer.length() == 0) return;
 
-  int written = 0;
+  auto written = 0;
 
   while (written < buffer.length())
   {

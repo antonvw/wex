@@ -1,6 +1,7 @@
 project(wxExtensionLibrary)
 
 include_directories(include)
+include_directories(easyloggingpp/src)
 include_directories(pugixml/src)
 include_directories(tclap/include)
 

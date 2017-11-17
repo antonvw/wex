@@ -108,7 +108,6 @@ Frame::Frame()
 
 #if wxUSE_STATUSBAR
   SetupStatusBar({
-    {},
     {"PaneInfo", 100, _("Lines").ToStdString()},
     {"PaneTheme", 50, _("Theme").ToStdString()}});
 #endif

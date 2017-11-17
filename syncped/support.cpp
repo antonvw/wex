@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -47,7 +48,6 @@ DecoratedFrame::DecoratedFrame(App* app)
   const int lexer_size = 75;
 #endif
   SetupStatusBar({
-    {},
     {"PaneFileType", 50, _("File type").ToStdString()},
     {"PaneInfo", 100, _("Lines or items").ToStdString()},
     {"PaneLexer", lexer_size, _("Lexer").ToStdString()},
@@ -202,7 +202,7 @@ DecoratedFrame::DecoratedFrame(App* app)
     {
       delete menuDebug;
       menuDebug = nullptr;
-      std::cout << "No debug menu present\n";
+      LOG(ERROR) << "no debug menu present";
     }
   }
 

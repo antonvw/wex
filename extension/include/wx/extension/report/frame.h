@@ -96,8 +96,8 @@ public:
   virtual void SetRecentFile(const wxExPath& path) override;
 
   /// Updates project history.
-  void SetRecentProject(const std::string& project) {
-    m_ProjectHistory.AddFileToHistory(project);};
+  void SetRecentProject(const wxExPath& path) {
+    m_ProjectHistory.AddFileToHistory(path);};
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
@@ -113,14 +113,14 @@ private:
   void FindInFiles(wxWindowID dialogid);
   const wxString GetFindReplaceInfoText(bool replace = false) const;
 
-  wxExItemDialog* m_FiFDialog = nullptr;
-  wxExItemDialog* m_RiFDialog = nullptr;
-  wxExListView* m_FileHistoryList = nullptr;
+  wxExItemDialog* m_FiFDialog {nullptr};
+  wxExItemDialog* m_RiFDialog {nullptr};
+  wxExListView* m_FileHistoryList {nullptr};
   wxExFileHistory m_ProjectHistory;
 
-  const wxString m_TextInFiles = _("In files");
-  const wxString m_TextInFolder = _("In folder");
-  const wxString m_TextRecursive = _("Recursive");
+  const wxString m_TextInFiles {_("In files")};
+  const wxString m_TextInFolder  {_("In folder")};
+  const wxString m_TextRecursive {_("Recursive")};
 
   // This set determines what fields are placed on the Find Files dialogs
   // as a list of checkboxes.

@@ -2,13 +2,14 @@
 // Name:      property.h
 // Purpose:   Declaration of wxExProperty class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <pugixml.hpp> 
 #include <wx/stc/stc.h>
+#include <wx/extension/log.h>
 
 /// This class defines our scintilla properties.
 class WXDLLIMPEXP_BASE wxExProperty
@@ -21,7 +22,9 @@ public:
       m_Value = node.text().get();
       if (m_Value.empty())
       {
-        std::cerr << "Empty property " << m_Name << " with offset: " << node.offset_debug() << "\n";
+        std::stringstream ss;
+        ss << "Empty property " << m_Name << " with offset: " << node.offset_debug();
+        wxExLog().Log(ss);
       }}};
   
   /// Constructor using name, value pair.

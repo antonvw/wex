@@ -93,16 +93,11 @@ public:
 
 #if wxUSE_STATUSBAR
   /// Sets up the status bar if you want to use StatusText.
-  /// The first pane should be reserved for display status text messages.
-  /// The next panes are used by the framework:
-  /// - PaneFileType, shows file types
-  /// - PaneInfo, shows info for control, e.g. lines
-  /// - PaneLexer, shows lexer
-  /// Returns created statusbar.
   wxExStatusBar* SetupStatusBar(
     const std::vector<wxExStatusBarPane>& panes,
     long style = wxST_SIZEGRIP,
-    const wxString& name = "statusBar");
+    const wxString& name = "statusBar") {
+    return wxExStatusBar::Setup(this, panes, style, name);};
 
   /// When (left) clicked, uses the GetSTC() for some dialogs.
   virtual void StatusBarClicked(const std::string& pane);

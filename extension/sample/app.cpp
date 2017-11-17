@@ -8,6 +8,7 @@
 #include <chrono>
 #include <numeric>
 #include <functional>
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -227,7 +228,6 @@ wxExSampleFrame::wxExSampleFrame()
 
 #if wxUSE_STATUSBAR
   SetupStatusBar({
-    {},
     {"PaneFileType", 50, "File type"},
     {"PaneInfo", 100, "Lines or items"},
     {"PaneLexer", 60}});
@@ -322,7 +322,7 @@ wxExSampleFrame::wxExSampleFrame()
       "All files (*.*)|*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
     if (dlg.ShowModal() == wxID_CANCEL) return;
     const wxExVCS vcs(std::vector< wxExPath > {dlg.GetPath().ToStdString()});
-    wxLogMessage(vcs.GetName().c_str());}, ID_SHOW_VCS);
+    wxExSTCEntryDialog(vcs.GetName()).ShowModal();}, ID_SHOW_VCS);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (m_Notebook->SetSelection("Statistics") == nullptr)
@@ -387,7 +387,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       if (m_STC->GetFileName().Path() == wxExLexers::Get()->GetFileName().Path())
       {
         wxExLexers::Get()->LoadDocument();
-        wxLogMessage("File contains: %d lexers", wxExLexers::Get()->GetLexers().size());
+        LOG(INFO) << "File contains: " << wxExLexers::Get()->GetLexers().size() << " lexers";
           // As the lexer might have changed, update status bar field as well.
   #if wxUSE_STATUSBAR
         UpdateStatusBar(m_STC, "PaneLexer");
@@ -448,7 +448,7 @@ void wxExSampleFrame::OnCommandItemDialog(
   }
   else if (event.GetId() >= 1000 && event.GetId() < 1050)
   {
-    wxLogMessage(wxString::Format("button: %d checked: %d", event.GetId(), event.IsChecked()));
+    LOG(INFO) << "button: " << event.GetId() << " checked: " << event.IsChecked();
   }
   else
   {

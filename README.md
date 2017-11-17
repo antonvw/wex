@@ -14,6 +14,8 @@ one of these applications, being a full featured source code text editor.
 
 - [doctest lib](https://github.com/onqtam/doctest)    
 
+- [easylogging++ lib](https://github.com/muflihun/easyloggingpp)
+
 - [eval lib](https://github.com/r-lyeh/eval)    
 
 - [exuberant ctags lib](https://github.com/rtyler/ctags)    
