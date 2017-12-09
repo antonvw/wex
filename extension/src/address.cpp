@@ -16,7 +16,7 @@
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
-#include <wx/extension/vimacros.h>
+#include <wx/extension/vi-macros.h>
 
 #if wxUSE_GUI
 

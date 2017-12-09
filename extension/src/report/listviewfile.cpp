@@ -165,7 +165,8 @@ bool wxExListViewFile::DoFileLoad(bool synced)
 
   EditClearAll();
 
-#ifdef __WXMSW__ 
+// TODO: threading this on MSW does not work.
+#ifdef FIX__WXMSW__ 
   std::thread t([=] {
 #endif
 
@@ -192,7 +193,7 @@ bool wxExListViewFile::DoFileLoad(bool synced)
 
   GetFrame()->SetRecentProject(GetFileName());
   
-#ifdef __WXMSW__ 
+#ifdef FIX__WXMSW__ 
     });
   if (detached)  
     t.detach();

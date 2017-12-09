@@ -446,7 +446,7 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const std::string& pane)
   }
   else if (pane == "PaneMode")
   {
-    text = stc->GetVi().GetModeString();
+    text = stc->GetVi().Mode().String();
   }
   else
   {

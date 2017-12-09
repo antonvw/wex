@@ -32,7 +32,7 @@
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
-#include <wx/extension/vimacros.h>
+#include <wx/extension/vi-macros.h>
 
 #if wxUSE_GUI
 
@@ -731,112 +731,6 @@ void wxExEx::InfoMessage() const
     100 * (m_STC->GetCurrentLine() + 1)/ m_STC->GetLineCount(),
     (m_STC->GetFoldLevel(m_STC->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
      - wxSTC_FOLDLEVELBASE).ToStdString());
-}
-
-bool wxExEx::MacroPlayback(const std::string& macro, int repeat)
-{
-  if (!m_IsActive)
-  {
-    return false;
-  }
-  
-  wxString choice(macro);
-  
-  if (choice.empty())
-  {
-    const auto& v(m_Macros.Get());
-    
-    if (v.empty())
-    {
-      return false;
-    }
-  
-    wxArrayString macros;
-    macros.resize(v.size());
-    copy(v.begin(), v.end(), macros.begin());
-    
-    wxSingleChoiceDialog dialog(m_STC,
-      _("Input") + ":", 
-      _("Select Macro"),
-      macros);
-      
-    const int index = macros.Index(m_Macros.GetMacro());
-  
-    if (index != wxNOT_FOUND)
-    {
-      dialog.SetSelection(index);
-    }
-
-    if (dialog.ShowModal() != wxID_OK)
-    {
-      return false;
-    }
-    
-    choice = dialog.GetStringSelection();
-  }
-  
-  // The STC pointer might change because of playback.
-  // Normally that is ok, but if playback fails, and
-  // the m_STC was changed (because of e.g. :n), 
-  // you would end up with an incorrect pointer.
-  // Therefore set it back after the playback.
-  wxExSTC* stc = m_STC;
-
-  bool ok = true;
-  
-  if (m_Macros.IsRecordedMacro(choice.ToStdString()))
-  {
-    ok = m_Macros.Playback(this, choice.ToStdString(), repeat);
-  }
-  else
-  {
-    for (int i = 0; i < repeat && ok; i++)
-    {
-      if (!m_Macros.Expand(this, choice.ToStdString()))
-      {
-        ok = false;
-      }
-    }
-  }
-    
-  m_STC = stc;
-
-  if (ok)
-  {
-    m_Frame->StatusText(m_Macros.GetMacro(), "PaneMacro");
-  }
-  
-  return ok;
-}
-
-void wxExEx::MacroStartRecording(const std::string& macro)
-{
-  if (!m_IsActive)
-  {
-    return;
-  }
-  
-  wxString choice(macro);
-  
-  if (choice.empty())
-  {
-    wxTextEntryDialog dlg(m_STC,
-      _("Input") + ":",
-      _("Enter Macro"),
-      m_Macros.GetMacro());
-  
-    wxTextValidator validator(wxFILTER_ALPHANUMERIC);
-    dlg.SetTextValidator(validator);
-  
-    if (dlg.ShowModal() != wxID_OK)
-    {
-      return;
-    }
-    
-    choice = dlg.GetValue();
-  }
-  
-  m_Macros.StartRecording(choice.ToStdString());
 }
 
 bool wxExEx::MarkerAdd(char marker, int line)

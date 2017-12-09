@@ -1,31 +1,24 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vimacros.cpp
+// Name:      vi-macros.cpp
 // Purpose:   Implementation of class wxExViMacros
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <easylogging++.h>
-#include <algorithm>
-#include <fstream>
 #include <numeric>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/vimacros.h>
-#include <wx/extension/ex.h>
-#include <wx/extension/frame.h>
-#include <wx/extension/stc.h>
+#include <wx/extension/vi-macros.h>
+#include <wx/extension/path.h>
 #include <wx/extension/util.h>
-
-#if wxUSE_GUI
+#include <wx/extension/vi-macros-mode.h>
 
 pugi::xml_document wxExViMacros::m_doc;
-bool wxExViMacros::m_IsExpand = false;
+wxExViMacrosMode* wxExViMacros::m_Mode = nullptr;
 bool wxExViMacros::m_IsModified = false;
-bool wxExViMacros::m_IsPlayback = false;
-bool wxExViMacros::m_IsRecording = false;
 std::string wxExViMacros::m_Macro;
 
 std::map <std::string, std::string> wxExViMacros::m_Abbreviations;
@@ -36,235 +29,15 @@ wxExViMacrosMapType wxExViMacros::m_MapControlKeys;
 wxExViMacrosMapType wxExViMacros::m_MapKeys;
 std::map <std::string, wxExVariable > wxExViMacros::m_Variables;
 
-void wxExViMacros::AskForInput()
-{
-  for (auto& it : m_Variables)
+wxExViMacros::wxExViMacros()
+{ 
+  if (m_Mode == nullptr)
   {
-    it.second.AskForInput();
+    m_Mode = new wxExViMacrosMode();
   }
 }
 
-bool wxExViMacros::Expand(wxExEx* ex, const std::string& variable)
-{
-  pugi::xml_node node;
-  wxExVariable var;
-  const auto& it = m_Variables.find(variable);
-    
-  if (it == m_Variables.end())
-  {
-    var = wxExVariable(var);
-    m_Variables.insert({variable, var});
-    wxLogStatus(_("Added variable") + ": "  +  variable);
-    node = m_doc.document_element().append_child("variable");
-  }
-  else
-  {
-    try
-    {
-      const std::string query("//variable[@name='" + variable + "']");
-      pugi::xpath_node xp = m_doc.document_element().select_node(query.c_str());
-
-      if (xp && xp.node())
-      {
-        node = xp.node();
-      }
-    }
-    catch (pugi::xpath_exception& e)
-    {
-      LOG(ERROR) << e.what();
-    }
-
-    var = it->second;
-  }
-
-  const bool ok = var.Expand(ex);
-
-  if (var.IsModified())
-  {
-    var.Save(node);
-    m_IsModified = true;
-  }
-    
-  if (ok)
-  {
-    wxLogStatus(_("Variable expanded"));
-  
-    if (!m_IsRecording)
-    {
-      m_Macro = variable;
-    }
-  }
-  else
-  {
-    // Now only show log status if this is no input variable,
-    // as it was cancelled in that case.    
-    if (!it->second.IsInput())
-    {
-      wxLogStatus(_("Could not expand variable") + ": "  +  variable);
-    }
-  }
-  
-  return ok;
-}  
-
-bool wxExViMacros::Expand(wxExEx* ex, const std::string& variable, std::string& value)
-{
-  const auto& it = m_Variables.find(variable);
-    
-  bool ok;
-    
-  if (it == m_Variables.end())
-  {
-    auto ret = m_Variables.insert({variable, wxExVariable(variable)});
-      
-    wxLogStatus(_("Added variable") + ": "  +  variable);
-    
-    ok = ret.first->second.Expand(ex, value);
-  
-    // If we are expanding, one input is enough.    
-    if (m_IsExpand)
-    {
-      ret.first->second.SkipInput();
-    }
-    
-    if (ret.first->second.IsModified())
-    {
-      pugi::xml_node node = m_doc.document_element().child("variable");
-      pugi::xml_node app = node.append_child(variable.c_str());
-      ret.first->second.Save(app);
-      m_IsModified = true;
-    }
-  }
-  else
-  {
-    ok = it->second.Expand(ex, value);
-
-    // If we are expanding, one input is enough.    
-    if (m_IsExpand)
-    {
-      it->second.SkipInput();
-    }
-  
-    if (it->second.IsModified())
-    {
-      pugi::xml_node node = m_doc.document_element().child(variable.c_str());
-      it->second.Save(node);
-      m_IsModified = true;
-    }
-  }
-  
-  if (!ok)
-  {
-    wxLogStatus(_("Could not expand variable") + ": "  +  variable);
-  }
-  else 
-  {
-    wxLogStatus(_("Variable expanded"));
-
-    if (!m_IsRecording)
-    {
-      m_Macro = variable;
-    }
-  }
-  
-  return ok;
-}
-
-bool wxExViMacros::ExpandTemplate(
-  wxExEx* ex, const wxExVariable& v, std::string& expanded)
-{
-  if (v.GetValue().empty())
-  {
-    return false;
-  }
-  
-  if (!m_IsExpand)
-  {
-    m_IsExpand = true;
-    AskForInput();
-  }
-
-  // Read the file (file name is in v.GetValue()), expand
-  // all macro variables in it, and set expanded.
-  const wxExPath filename(wxExConfigDir(), v.GetValue());
-
-  std::ifstream ifs(filename.Path());
-  
-  if (!ifs.is_open())
-  {
-    LOG(ERROR) << "could not open template file: " << filename.Path().string();
-    return false;
-  }
-
-  // Keep current macro, in case you cancel expanding,
-  // this one is restored.
-  std::string macro = m_Macro;
-  char c;
-
-  while (ifs.get(c))
-  {
-    if (c != '@')
-    {
-      expanded += c;
-    }
-    else
-    {
-      std::string variable;
-      bool completed = false;
-      
-      while (ifs.good() && !ifs.eof() && !completed) 
-      {
-        const char c = ifs.get();
-    
-        if (c != '@')
-        {
-          variable += c;
-        }
-        else
-        {
-          completed = true;
-        }
-      }
-      
-      if (!completed)
-      {
-        m_Macro = macro;
-        return false;
-      }
-      
-      // Prevent recursion.
-      if (variable == v.GetName())
-      {
-        m_Macro = macro;
-        return false;
-      }
-      
-      std::string value;
-      
-      if (!Expand(ex, variable, value))
-      {
-        m_Macro = macro;
-        return false;
-      }
-      
-      expanded += value;
-    }
-  }
-  
-  m_IsExpand = false;
-
-  // Set back to normal value.  
-  AskForInput();
-    
-  if (!m_IsRecording)
-  {
-    m_Macro = v.GetName();
-  }
-    
-  return true;
-}
-
-const std::vector< std::string > wxExViMacros::Get() const
+const std::vector< std::string > wxExViMacros::Get()
 {
   std::vector< std::string > v;
     
@@ -286,8 +59,7 @@ const std::vector< std::string > wxExViMacros::Get() const
   return v;
 }
 
-const std::vector< std::string > wxExViMacros::Get(
-  const std::string& macro) const
+const std::vector< std::string > wxExViMacros::Get(const std::string& macro)
 {
   const auto& it = m_Macros.find(macro);
     
@@ -352,12 +124,12 @@ const std::vector< std::string > wxExViMacros::GetRegisters() const
   return r;
 }
 
-bool wxExViMacros::IsRecorded(const std::string& macro) const
+bool wxExViMacros::IsRecorded(const std::string& macro)
 {
   return !Get(macro).empty();
 }
 
-bool wxExViMacros::IsRecordedMacro(const std::string& macro) const
+bool wxExViMacros::IsRecordedMacro(const std::string& macro)
 {
   return m_Macros.find(macro) != m_Macros.end();
 }
@@ -377,6 +149,11 @@ bool wxExViMacros::LoadDocument()
   {
     wxExXmlError(GetFileName(), &result);
     return false;
+  }
+
+  if (m_Mode == nullptr)
+  {
+    m_Mode = new wxExViMacrosMode();
   }
 
   m_IsModified = false;
@@ -434,7 +211,7 @@ void wxExViMacros::ParseNode(
 
   if (container.find(value) != container.end())
   {
-    LOG(ERROR)<< "duplicate " << 
+    LOG(ERROR) << "duplicate " << 
       name << ": " << value << " from: " << 
       node.attribute("name").value() << " with offset: " <<
       node.offset_debug();
@@ -483,74 +260,9 @@ void wxExViMacros::ParseNodeVariable(const pugi::xml_node& node)
   }
 }
 
-bool wxExViMacros::Playback(wxExEx* ex, const std::string& macro, int repeat)
-{
-  if (!IsRecordedMacro(macro))
-  {
-    wxLogStatus(_("Unknown macro") + ": "  +  macro);
-    return false;
-  }
-  
-  if (m_IsPlayback && macro == m_Macro)
-  {
-    wxLogStatus(_("Already playing back"));
-    return false;
-  }
-
-  if (repeat <= 0)
-  {
-    return false;
-  }
-  
-  ex->GetSTC()->BeginUndoAction();
-  
-  bool stop = false;
-  
-  if (!m_IsPlayback && !m_IsRecording)
-  {
-    m_Macro = macro;
-    wxExFrame::StatusText(m_Macro, "PaneMacro");
-  }
-  
-  m_IsPlayback = true;
-  
-  wxBusyCursor wait;
-    
-  AskForInput();
-  
-  const auto& macro_commands(m_Macros[macro]);
-  
-  for (int i = 0; i < repeat && !stop; i++)
-  {
-    for (const auto& it : macro_commands)
-    { 
-      stop = !ex->Command(it);
-      
-      if (stop)
-      {
-        wxLogStatus(_("Macro aborted at '") + it + "'");
-        break;
-      }
-    }
-  }
-
-  ex->GetSTC()->EndUndoAction();
-
-  if (!stop)
-  {
-    wxLogStatus(_("Macro played back"));
-    m_Macro = macro; // might be overridden by expanded variable
-    wxExFrame::StatusText(m_Macro, "PaneMacro");
-  }
-  
-  m_IsPlayback = false;
-  
-  return !stop;
-}
-
 void wxExViMacros::Record(const std::string& text, bool new_command)
 {
-  if (!m_IsRecording || m_IsPlayback || text.empty())
+  if (!m_Mode->IsRecording() || text.empty())
   {
     return;
   }
@@ -716,42 +428,7 @@ bool wxExViMacros::SetRegister(const char name, const std::string& value)
   return true;
 }
 
-void wxExViMacros::StartRecording(const std::string& macro)
-{
-  if (m_IsRecording || macro.empty())
-  {
-    return;
-  }
-  
-  m_IsRecording = true;
-  m_IsModified = true;
-  
-  if (macro.size() == 1)
-  {
-    // We only use lower case macro's, to be able to
-    // append to them using.
-    m_Macro = macro;
-    std::transform(m_Macro.begin(), m_Macro.end(), m_Macro.begin(), ::tolower);
-  
-    // Clear macro if it is lower case
-    // (otherwise append to the macro).
-    if (islower(macro[0]))
-    {
-      m_Macros[m_Macro].clear();
-    }
-  }
-  else
-  {
-    m_Macro = macro;
-    m_Macros[m_Macro].clear();
-  }
-  
-  wxExFrame::StatusText(m_Macro, "PaneMacro");
-  
-  wxLogStatus(_("Macro recording"));
-}
-
-bool wxExViMacros::StartsWith(const std::string_view& text) const
+bool wxExViMacros::StartsWith(const std::string_view& text)
 {
   if (text.empty() || isdigit(text[0]))
   {
@@ -776,27 +453,3 @@ bool wxExViMacros::StartsWith(const std::string_view& text) const
   
   return false;
 }
-  
-void wxExViMacros::StopRecording()
-{
-  if (!m_IsRecording)
-  {
-    return;
-  }
-  
-  m_IsRecording = false;
-  
-  if (!Get(m_Macro).empty())
-  {
-    SaveMacro(m_Macro);
-    wxLogStatus(wxString::Format(_("Macro '%s' is recorded"), m_Macro.c_str()));
-  }
-  else
-  {
-    m_Macros.erase(m_Macro);
-    m_Macro.clear();
-    wxLogStatus(wxEmptyString);
-    wxExFrame::StatusText(std::string(), "PaneMacro");
-  }
-}
-#endif // wxUSE_GUI

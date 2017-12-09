@@ -13,16 +13,17 @@
 #include <wx/extension/vi.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/managedframe.h>
-#include <wx/extension/vimacros.h>
+#include <wx/extension/vi-macros.h>
+#include <wx/extension/vi-macros-mode.h>
 #include <wx/extension/stc.h>
 #include "test.h"
 
 #define ESC "\x1b"
 
-void ChangeMode(wxExVi* vi, const std::string& command, int mode)
+void ChangeMode(wxExVi* vi, const std::string& command, wxExViModes mode)
 {
   REQUIRE( vi->Command(command));
-  REQUIRE( vi->GetMode() == mode);
+  REQUIRE( vi->Mode().Get() == mode);
 }
 
 TEST_CASE("wxExVi")
@@ -37,7 +38,7 @@ TEST_CASE("wxExVi")
   // Test for modeline support.
   REQUIRE(stc->GetTabWidth() == 120);
   REQUIRE( vi->GetIsActive());
-  REQUIRE( vi->ModeNormal());
+  REQUIRE( vi->Mode().Normal());
 
   // Test WXK_NONE.
   event.m_uniChar = WXK_NONE;
@@ -46,34 +47,10 @@ TEST_CASE("wxExVi")
   // First i enters insert mode, so is handled by vi, not to be skipped.
   event.m_uniChar = 'i';
   REQUIRE(!vi->OnChar(event));
-  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
-  REQUIRE( vi->ModeInsert());
-  REQUIRE( vi->GetModeString() == "insert");
+  REQUIRE( vi->Mode().Insert());
+  REQUIRE( vi->Mode().String() == "insert");
   // Second i (and more) all handled by vi.
   for (int i = 0; i < 10; i++) REQUIRE(!vi->OnChar(event));
-
-  // Repeat some macro tests.
-  REQUIRE(!vi->GetMacros().IsRecording());
-  vi->MacroStartRecording("a");
-  REQUIRE( vi->GetMacros().IsRecording());
-  REQUIRE(!vi->GetMacros().IsRecorded("a"));
-  vi->GetMacros().StopRecording();
-  REQUIRE(!vi->GetMacros().IsRecording());
-  REQUIRE(!vi->GetMacros().IsRecorded("a")); // still no macro
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
-  vi->MacroStartRecording("a");
-  REQUIRE( vi->GetMacros().IsRecording());
-  REQUIRE(!vi->OnChar(event));
-  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
-  REQUIRE(!vi->OnChar(event));
-  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
-  vi->GetMacros().StopRecording();
-  REQUIRE(!vi->GetMacros().IsRecording());
-  REQUIRE( vi->GetMacros().IsRecorded("a"));
-  REQUIRE(!vi->GetMacros().IsRecorded("b"));
-  REQUIRE( vi->MacroPlayback("a"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
 
   // Test control keys.
   for (const auto& control_key : std::vector<int> {
@@ -107,7 +84,7 @@ TEST_CASE("wxExVi")
     event.m_keyCode = nav_key;
     CAPTURE( nav_key);
 //    REQUIRE(!vi->OnKeyDown(event));
-    ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+    ChangeMode( vi, ESC, wxExViModes::NORMAL);
   }
   event.m_keyCode = WXK_NONE;
   REQUIRE( vi->OnKeyDown(event));
@@ -125,14 +102,14 @@ TEST_CASE("wxExVi")
   
   // Test insert command.
   stc->SetText("aaaaa");
-  REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
+  REQUIRE( vi->Mode().Normal());
   REQUIRE( vi->Command("i"));
-  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  REQUIRE( vi->Mode().Insert());
   REQUIRE( vi->GetLastCommand() == "i");
   REQUIRE( vi->Command("xxxxxxxx"));
   REQUIRE( stc->GetText().Contains("xxxxxxxx"));
   REQUIRE( vi->GetLastCommand() == "i");
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE( vi->GetRegisterInsert() == "xxxxxxxx");
   REQUIRE( vi->GetLastCommand() == wxString("ixxxxxxxx") + ESC);
   for (int i = 0; i < 10; i++)
@@ -141,10 +118,10 @@ TEST_CASE("wxExVi")
   
   // Test insert commands.
   std::vector<std::string> commands;
-  for (auto& it1 : vi->GetInsertCommands())
+  for (auto& it1 : vi->Mode().GetInsertCommands())
   {
-    ChangeMode( vi, std::string(1, it1.first), wxExVi::MODE_INSERT);
-    ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+    ChangeMode( vi, std::string(1, it1.first), wxExViModes::INSERT);
+    ChangeMode( vi, ESC, wxExViModes::NORMAL);
     commands.push_back(std::string(1, it1.first));
   }
 
@@ -156,7 +133,7 @@ TEST_CASE("wxExVi")
   for (auto& it2 : commands)
   {
     REQUIRE( vi->Command(it2));
-    REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
+    REQUIRE( vi->Mode().Normal());
     REQUIRE(!stc->GetModify());
   }
 
@@ -167,8 +144,8 @@ TEST_CASE("wxExVi")
   REQUIRE( stc->HexMode());
   REQUIRE(!stc->GetModify());
   REQUIRE( vi->Command("a") );
-  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  REQUIRE( vi->Mode().Insert());
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE(!stc->GetModify());
   stc->GetHexMode().Set(false);
   REQUIRE(!stc->HexMode());
@@ -176,12 +153,12 @@ TEST_CASE("wxExVi")
   stc->SetReadOnly(false);
 
   // Test insert command.  
-  ChangeMode( vi, "i", wxExVi::MODE_INSERT);
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
-  ChangeMode( vi, "iyyyyy", wxExVi::MODE_INSERT);
+  ChangeMode( vi, "i", wxExViModes::INSERT);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
+  ChangeMode( vi, "iyyyyy", wxExViModes::INSERT);
   REQUIRE( stc->GetText().Contains("yyyyy"));
   REQUIRE(!stc->GetText().Contains("iyyyyy"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   const wxString lastcmd = wxString("iyyyyy") + ESC;
   REQUIRE( vi->GetLastCommand() == lastcmd);
   REQUIRE( vi->GetInsertedText() == "yyyyy");
@@ -192,28 +169,28 @@ TEST_CASE("wxExVi")
   REQUIRE( vi->Command("ma"));
   REQUIRE( vi->GetLastCommand() == lastcmd);
   REQUIRE( vi->Command("100izz"));
-  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  REQUIRE( vi->Mode().Insert());
   REQUIRE(!stc->GetText().Contains("izz"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE( stc->GetText().Contains(wxString('z', 200)));
 
   // Test insert \n.
-  ChangeMode( vi, "i\n\n\n\n", wxExVi::MODE_INSERT);
+  ChangeMode( vi, "i\n\n\n\n", wxExViModes::INSERT);
   REQUIRE( stc->GetText().Contains("\n"));
   REQUIRE(!stc->GetText().Contains("i"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE( vi->GetInsertedText() == "\n\n\n\n");
   
   stc->SetText("");
   event.m_uniChar = 'i';
   REQUIRE(!vi->OnChar(event));
-  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  REQUIRE( vi->Mode().Insert());
   REQUIRE( vi->GetInsertedText().empty());
-  REQUIRE( vi->ModeInsert());
+  REQUIRE( vi->Mode().Insert());
   event.m_uniChar = WXK_RETURN;
   REQUIRE( vi->OnKeyDown(event));
   REQUIRE(!vi->OnChar(event));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
 #ifndef __WXOSX__  
   REQUIRE( wxString(vi->GetInsertedText()).Contains("\n"));
 #endif
@@ -223,7 +200,7 @@ TEST_CASE("wxExVi")
   {
     REQUIRE( vi->Command(":ab " + abbrev.first + " " + abbrev.second));
     REQUIRE( vi->Command("iabbreviation " + abbrev.first + " "));
-    ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+    ChangeMode( vi, ESC, wxExViModes::NORMAL);
     REQUIRE( vi->GetInsertedText() == "abbreviation "  + abbrev.first + " ");
     REQUIRE( stc->GetText().Contains("abbreviation " + abbrev.second));
     REQUIRE(!stc->GetText().Contains(abbrev.first));
@@ -240,9 +217,9 @@ TEST_CASE("wxExVi")
   stc->SetText("999");
   REQUIRE( vi->Command(":1,$s/xx/yy/g")); // so &, ~ are ok
   REQUIRE( vi->Command("i"));
-  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  REQUIRE( vi->Mode().Insert());
   REQUIRE( vi->Command("b"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE( stc->GetText().Contains("b"));
   stc->SetText("xxxxxxxxxx\nxxxxxxxx\naaaaaaaaaa\n");
   REQUIRE( vi->Command(":.="));
@@ -256,25 +233,25 @@ TEST_CASE("wxExVi")
   REQUIRE( stc->GetLineCount() == 4);
   REQUIRE( vi->Command(":1"));
   REQUIRE( vi->Command("cw"));
-  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  REQUIRE( vi->Mode().Insert());
   REQUIRE( vi->Command("zzz"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE( stc->GetLineCount() == 4);
   REQUIRE( stc->GetLineText(0) == "zzzsecond");
   stc->SetText("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
   REQUIRE( vi->Command(":1"));
   REQUIRE( vi->Command("ce"));
-  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  REQUIRE( vi->Mode().Insert());
   REQUIRE( vi->Command("zzz"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE( stc->GetLineCount() == 4);
   REQUIRE( stc->GetLineText(0) == "zzz second");
   stc->SetText("xxxxxxxxxx second third\nxxxxxxxx\naaaaaaaaaa\n");
   REQUIRE( vi->Command(":1"));
   REQUIRE( vi->Command("2ce"));
-  REQUIRE( vi->GetMode() == wxExVi::MODE_INSERT);
+  REQUIRE( vi->Mode().Insert());
   REQUIRE( vi->Command("zzz"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE( stc->GetLineCount() == 4);
   REQUIRE( stc->GetLineText(0) == "zzz third");
 
@@ -317,11 +294,11 @@ TEST_CASE("wxExVi")
       REQUIRE( vi->Command(nc));
       
       // test navigate while in rect mode
-      ChangeMode( vi, "K", wxExVi::MODE_VISUAL_RECT);
+      ChangeMode( vi, "K", wxExViModes::VISUAL_RECT);
       REQUIRE( vi->Command( nc ));
-      REQUIRE( vi->ModeVisual());
-      ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
-      REQUIRE( vi->ModeNormal());
+      REQUIRE( vi->Mode().Visual());
+      ChangeMode( vi, ESC, wxExViModes::NORMAL);
+      REQUIRE( vi->Mode().Normal());
       
       // test yank
       std::string mc(
@@ -334,7 +311,7 @@ TEST_CASE("wxExVi")
 
       REQUIRE( vi->Command(mc));
       REQUIRE( vi->GetLastCommand() == mc);
-      REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
+      REQUIRE( vi->Mode().Normal());
 
       // test delete
       mc[0] = 'd';
@@ -345,18 +322,18 @@ TEST_CASE("wxExVi")
       mc[0] = 'c';
       REQUIRE( vi->Command(mc));
       REQUIRE( vi->GetLastCommand() == mc);
-      ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
-      REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
+      ChangeMode( vi, ESC, wxExViModes::NORMAL);
+      REQUIRE( vi->Mode().Normal());
     }
   }
 
   // Test find.
   stc->SetText("some text to find");
-  REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
+  REQUIRE( vi->Mode().Normal());
   REQUIRE( vi->Command("/find"));
-  REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
+  REQUIRE( vi->Mode().Normal());
   REQUIRE( vi->Command("yb"));
-  REQUIRE( vi->GetMode() == wxExVi::MODE_NORMAL);
+  REQUIRE( vi->Mode().Normal());
   REQUIRE(!vi->Command("/xfind"));
   // TODO: fix
   // REQUIRE( vi->Command("/"  + std::string(1, WXK_CONTROL_R) + "0"));
@@ -373,19 +350,22 @@ TEST_CASE("wxExVi")
 
   // Test record find.
   stc->SetText("abc\nuvw\nxyz\n");
+
+  // Test recording.
+  REQUIRE(!vi->GetMacros().Mode()->IsRecording());
   vi->Command("");
   REQUIRE( vi->Command("qa"));
-  REQUIRE( vi->GetMacros().IsRecording());
+  REQUIRE( vi->GetMacros().Mode()->IsRecording());
   REQUIRE( vi->Command("/abc"));
   REQUIRE( vi->Command("q"));
-  REQUIRE(!vi->GetMacros().IsRecording());
+  REQUIRE(!vi->GetMacros().Mode()->IsRecording());
   REQUIRE( vi->Command("@a"));
   REQUIRE( vi->Command(" "));
   REQUIRE( vi->Command("qb"));
-  REQUIRE( vi->GetMacros().IsRecording());
+  REQUIRE( vi->GetMacros().Mode()->IsRecording());
   REQUIRE( vi->Command("?abc"));
   REQUIRE( vi->Command("q"));
-  REQUIRE(!vi->GetMacros().IsRecording());
+  REQUIRE(!vi->GetMacros().Mode()->IsRecording());
   REQUIRE( vi->Command("@b"));
   REQUIRE( vi->Command(" "));
 
@@ -428,14 +408,18 @@ TEST_CASE("wxExVi")
         other_command.first == "\x12" || 
         other_command.first == "@" ?
           other_command.first + "a": other_command.first);
+      CAPTURE( oc );
 
-      if (oc != "z" && oc != "@a")
+      if (oc != "z")
         REQUIRE( vi->Command(oc));
-      else
+      else if (oc != "qa")
         REQUIRE(!vi->Command(oc));
-      
-      vi->GetMacros().StopRecording();
     }
+  }
+
+  if (vi->GetMacros().Mode()->IsRecording())
+  {
+    vi->Command("q");
   }
 
   // Special put test. 
@@ -459,7 +443,7 @@ TEST_CASE("wxExVi")
   vi->Command("=5+5");
   vi->Command("");
   REQUIRE( stc->GetText().Contains("10"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   vi->Command("=5+5");
   REQUIRE( wxString(stc->GetVi().GetMacros().GetRegister('0')).Contains("10"));
   vi->Command("=5+5+5");
@@ -467,7 +451,6 @@ TEST_CASE("wxExVi")
 
   // Test macro.
   // First load macros.
-  vi->GetMacros().StopRecording();
   REQUIRE( wxExViMacros::LoadDocument());
   for (const auto& macro : std::vector< std::vector< std::string> > {
     {"10w"},
@@ -480,7 +463,7 @@ TEST_CASE("wxExVi")
     stc->SetText("this text contains xx");
     
     REQUIRE( vi->Command("qt"));
-    REQUIRE( vi->GetMacros().IsRecording());
+    REQUIRE( vi->GetMacros().Mode()->IsRecording());
     
     std::string all;
     
@@ -524,7 +507,7 @@ TEST_CASE("wxExVi")
   REQUIRE(!vi->Command("dx"));
   REQUIRE( vi->GetLastCommand() != "dx");
   REQUIRE(!vi->Command(":xxx"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
 
   // Test registers
   stc->GetFile().FileNew("test.h");
@@ -532,26 +515,26 @@ TEST_CASE("wxExVi")
   const std::string ctrl_r = "\x12";
   REQUIRE( vi->Command("i"));
   REQUIRE( vi->Command(ctrl_r + "_"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   
   stc->SetText("");
   REQUIRE( vi->Command("i"));
   REQUIRE( vi->Command(ctrl_r + "%"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE( stc->GetText() == "test.h");
   
   REQUIRE( vi->Command("yy"));
   stc->SetText("");
   REQUIRE( vi->Command("i"));
   REQUIRE( vi->Command(ctrl_r + "0"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE( stc->GetText() == "test.h");
   
   stc->SetText("XXXXX");
   REQUIRE( vi->Command("dd"));
   REQUIRE( vi->Command("i"));
   REQUIRE( vi->Command(ctrl_r + "1"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE( stc->GetText() == "XXXXX");
   
   stc->SetText("YYYYY");
@@ -559,14 +542,14 @@ TEST_CASE("wxExVi")
   REQUIRE( vi->Command("i"));
   REQUIRE( vi->Command(ctrl_r + "2"));
   REQUIRE( vi->Command("2"));
-  ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+  ChangeMode( vi, ESC, wxExViModes::NORMAL);
   REQUIRE( stc->GetText().Contains("XXXXX"));
   
   // Test visual modes.
-  for (const auto& visual : std::vector<std::pair<std::string, int>> {
-    {"v",wxExVi::MODE_VISUAL},
-    {"V",wxExVi::MODE_VISUAL_LINE},
-    {"K",wxExVi::MODE_VISUAL_RECT}})
+  for (const auto& visual : std::vector<std::pair<std::string, wxExViModes>> {
+    {"v",wxExViModes::VISUAL},
+    {"V",wxExViModes::VISUAL_LINE},
+    {"K",wxExViModes::VISUAL_RECT}})
   {
     ChangeMode( vi, visual.first, visual.second);
     ChangeMode( vi, "jjj", visual.second);
@@ -574,20 +557,20 @@ TEST_CASE("wxExVi")
     // enter illegal command
     vi->Command("g");
     vi->Command("j");
-    ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+    ChangeMode( vi, ESC, wxExViModes::NORMAL);
     
     event.m_uniChar = visual.first[0];
     REQUIRE(!vi->OnChar(event));
-    REQUIRE( vi->GetMode() == visual.second);
-    ChangeMode( vi, ESC, wxExVi::MODE_NORMAL);
+    REQUIRE( vi->Mode().Get() == visual.second);
+    ChangeMode( vi, ESC, wxExViModes::NORMAL);
   }
   
   stc->SetText("123456789");
   vi->Command("v");
-  REQUIRE( vi->ModeVisual());
+  REQUIRE( vi->Mode().Visual());
   vi->VisualExtend(0, 10);
   REQUIRE( vi->GetSelectedText() == "123456789");
-  vi->Command(ESC);
+  vi->Mode().Escape();
 
   // Test goto, /, ?, n and N.
   stc->SetText("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-vimacros.cpp
+// Name:      test-vi-macros.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2017 Anton van Wezenbeek
@@ -9,9 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/vimacros.h>
+#include <wx/extension/vi-macros.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/vi-macros-mode.h>
 #include "test.h"
 
 #define ESC "\x1b"
@@ -24,34 +25,33 @@ TEST_CASE("wxExViMacros")
 
   wxExViMacros macros;
   
-  // Load, save document is last test, to be able to check contents.
   REQUIRE(!macros.GetFileName().Path().empty());
   REQUIRE( wxExViMacros::LoadDocument());
   REQUIRE( macros.GetCount() > 0);
   REQUIRE(!macros.GetAbbreviations().empty());
   
   REQUIRE(!macros.IsModified());
-  REQUIRE(!macros.IsRecording());
+  REQUIRE(!macros.Mode()->IsRecording());
   
-  macros.StartRecording("a");
+  macros.Mode()->Transition("qa");
   REQUIRE( macros.IsModified());
-  REQUIRE( macros.IsRecording());
+  REQUIRE( macros.Mode()->IsRecording());
   
-  macros.StopRecording();
-  REQUIRE(!macros.IsRecording());
+  macros.Mode()->Transition("q");
+  REQUIRE(!macros.Mode()->IsRecording());
   REQUIRE( macros.IsModified());
   REQUIRE(!macros.IsRecorded("a")); // still no macro
   REQUIRE(!macros.IsRecordedMacro("a"));
   REQUIRE( macros.GetMacro().empty());
   
-  macros.StartRecording("a");
+  macros.Mode()->Transition("qa");
   macros.Record("a");
   macros.Record("test");
   macros.Record(ESC);
-  macros.StopRecording();
+  macros.Mode()->Transition("q");
 
   REQUIRE( macros.IsModified());
-  REQUIRE(!macros.IsRecording());
+  REQUIRE(!macros.Mode()->IsRecording());
   REQUIRE( macros.IsRecorded("a"));
   REQUIRE( macros.StartsWith("a"));
   REQUIRE(!macros.StartsWith("xx"));
@@ -64,55 +64,57 @@ TEST_CASE("wxExViMacros")
   macros.SetKeyMap("4", "www");
   
   stc->SetText("");
-  REQUIRE(!macros.IsPlayback());
-  REQUIRE( macros.Playback(vi, "a"));
-  REQUIRE(!macros.IsPlayback());
+  REQUIRE(!macros.Mode()->IsPlayback());
+  REQUIRE( macros.Mode()->Transition("@a", vi));
+  REQUIRE(!macros.Mode()->IsPlayback());
 
   REQUIRE( stc->GetText() == "test");
   stc->SetText("");
-  REQUIRE(!macros.Playback(vi, "a", 0));
-  REQUIRE(!macros.Playback(vi, "a", -8));
+  REQUIRE(!macros.Mode()->Transition("@a", vi, true, 0));
+  REQUIRE(!macros.Mode()->Transition("@a", vi, true, -8));
   REQUIRE(!stc->GetText().Contains("test"));
-  REQUIRE( macros.Playback(vi, "a", 10));
+  REQUIRE( macros.Mode()->Transition("@a", vi, true, 10));
   REQUIRE( stc->GetText().Contains("testtesttesttest"));
   
-  REQUIRE(!macros.Playback(vi, "b"));
+  REQUIRE( macros.Mode()->Transition("@b", vi) == 2);
   
   REQUIRE(!macros.Get().empty());
 
   // Test append to macro.
-  REQUIRE( vi->Command(ESC));
-  macros.StartRecording("A");
+  REQUIRE( vi->Mode().Escape());
+  macros.Mode()->Transition("qA", vi);
   macros.Record("w");
   macros.Record("/test");
-  macros.StopRecording();
+  macros.Mode()->Transition("q", vi);
   
   REQUIRE(!macros.IsRecorded("A"));
   REQUIRE( macros.Get("a").front() == "a");
   
   // Test recursive macro.
-  REQUIRE( vi->Command(ESC));
-  macros.StartRecording("A");
+  REQUIRE( vi->Mode().Escape());
+  macros.Mode()->Transition("qA", vi);
   macros.Record("@");
   macros.Record("a");
-  macros.StopRecording();
+  macros.Mode()->Transition("q", vi);
   
-  REQUIRE(!macros.Playback(vi, "a"));
+  REQUIRE(!macros.Mode()->Transition("@a", vi) );
   
   // Test all builtin macro variables.
   for (auto& builtin : GetBuiltinVariables())
   {
-    REQUIRE( macros.Expand(vi, builtin));
+    CAPTURE( builtin );
+    REQUIRE( macros.Mode()->Transition("@" + builtin + "@", vi));
   }
 
   std::string expanded;
-  REQUIRE(!wxExViMacros::ExpandTemplate(vi, wxExVariable(), expanded));
+
+  REQUIRE(!wxExViMacros::Mode()->Expand(vi, wxExVariable(), expanded));
 
 #ifdef __UNIX__
   // Test all environment macro variables.
   for (auto& env : std::vector<std::string> {"HOME","PWD"})
   {
-    REQUIRE( macros.Expand(vi, env));
+    REQUIRE( wxExViMacros::Mode()->Transition("@" + env, vi));
   }
 #endif
   

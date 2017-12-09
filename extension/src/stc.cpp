@@ -305,7 +305,7 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
         m_AddingChars = true;
       }
     }
-    else if (m_vi.GetMode() == wxExVi::MODE_INSERT)
+    else if (m_vi.Mode().Insert())
     {
       if (isalnum(event.GetUnicodeKey()))
       {
@@ -647,7 +647,7 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
   }
   else
   {
-    wxExLexers::Get()->ApplyGlobalStyles(this);
+    m_Lexer.Set(filename.GetLexer(), true); // allow fold
   }
 }
 
@@ -993,20 +993,16 @@ bool wxExSTC::FindNext(
     
     recursive = false;
 
-    switch (m_vi.GetMode())
+    if (m_vi.Mode().Normal())
     {
-      case wxExVi::MODE_NORMAL:
         SetSelection(GetTargetStart(), GetTargetEnd());
-      break;
-      
-      case wxExVi::MODE_VISUAL:
-      case wxExVi::MODE_VISUAL_LINE:
-      case wxExVi::MODE_VISUAL_RECT:
-        if (find_next)
-          m_vi.VisualExtend(GetSelectionStart(), GetTargetEnd());
-        else
-          m_vi.VisualExtend(GetTargetStart(), GetSelectionEnd());
-      break;
+    }
+    else if (m_vi.Mode().Visual())
+    {
+      if (find_next)
+        m_vi.VisualExtend(GetSelectionStart(), GetTargetEnd());
+      else
+        m_vi.VisualExtend(GetTargetStart(), GetSelectionEnd());
     }
       
     EnsureVisible(LineFromPosition(GetTargetStart()));
@@ -1330,7 +1326,7 @@ void wxExSTC::Paste()
 
 bool wxExSTC::PositionRestore()
 {
-  if (m_vi.ModeVisual())
+  if (m_vi.Mode().Visual())
   {
     SetCurrentPos(m_SavedPos);
   }
@@ -1358,7 +1354,7 @@ void wxExSTC::PositionSave()
 {
   m_SavedPos = GetCurrentPos();
 
-  if (!m_vi.ModeVisual())
+  if (!m_vi.Mode().Visual())
   {
     m_SavedSelectionStart = GetSelectionStart();  
     m_SavedSelectionEnd = GetSelectionEnd();

@@ -12,7 +12,7 @@
 #include <vector>
 #include <wx/event.h>
 #include <wx/extension/ex.h>
-#include <wx/extension/vifsm.h>
+#include <wx/extension/vi-mode.h>
 
 #if wxUSE_GUI
 
@@ -20,17 +20,6 @@
 class WXDLLIMPEXP_BASE wxExVi : public wxExEx
 {
 public:
-  /// The possible vi modes.
-  enum Mode
-  {
-    MODE_NORMAL,      ///< normal (command or navigation) mode
-    MODE_INSERT,      ///< pressing key inserts key
-    MODE_INSERT_RECT, ///< as insert, while in visual rect mode
-    MODE_VISUAL,      ///< navigation keys extend selection
-    MODE_VISUAL_LINE, ///< complete lines are selected
-    MODE_VISUAL_RECT, ///< navigation keys extend rectangular selection
-  };
-
   /// Constructor.
   wxExVi(wxExSTC* stc);
   
@@ -40,9 +29,6 @@ public:
     const std::string& command,
     bool is_handled = false) override;
   
-  /// Returns insert commands.
-  const auto & GetInsertCommands() const {return m_FSM.GetInsertCommands();};
-
   /// Returns inserted text.
   const auto & GetInsertedText() const {return m_InsertText;};
   
@@ -52,21 +38,12 @@ public:
   /// Returns other commands.
   const auto & GetOtherCommands() const {return m_OtherCommands;};
 
-  /// Returns the mode we are in.
-  int GetMode() const {return m_FSM.State();};
-  
-  /// Returns the mode we are in as a string.
-  const auto GetModeString() const {return m_FSM.StateString();};
-  
-  /// Returns true if in insert mode.
-  bool ModeInsert() const {return GetMode() == MODE_INSERT || GetMode() == MODE_INSERT_RECT;};
-  
-  /// Returns true if in normal mode.
-  bool ModeNormal() const {return GetMode() == MODE_NORMAL;};
+  /// Returns the mode we are in.  
+  const auto & Mode() const {return m_Mode;};
 
-  /// Returns true if in visual mode.
-  bool ModeVisual() const {return GetMode() >= MODE_INSERT_RECT;};
-  
+  /// Returns writeable mode.  
+  auto & Mode() {return m_Mode;};
+
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
   /// This means that the char is not handled by vi,
@@ -104,8 +81,8 @@ private:
   static std::string m_LastFindCharCommand;
   bool m_Dot{false}, m_SearchForward{true};
   int m_Count{1};
-  wxExViFSM m_FSM;
   std::string m_Command, m_CommandKeep, m_InsertText;
+  wxExViMode m_Mode;
   const Commands m_MotionCommands, m_OtherCommands;
 };
 #endif // wxUSE_GUI

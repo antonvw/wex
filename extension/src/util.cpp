@@ -36,7 +36,7 @@
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/tostring.h>
 #include <wx/extension/vcs.h>
-#include <wx/extension/vimacros.h>
+#include <wx/extension/vi-macros.h>
 
 const char* _X(const char* text)
 {
@@ -552,7 +552,7 @@ int wxExMatch(const std::string& reg, const std::string& text,
   }
   catch (std::regex_error& e) 
   {
-    LOG(ERROR) << e.what() << ": in: " << " req " << " code: " << e.code();
+    LOG(ERROR) << e.what() << ": in: " << reg << " code: " << e.code();
     return -1;
   }
 }
@@ -597,6 +597,11 @@ void wxExNodeStyles(const pugi::xml_node* node, const std::string& lexer,
       styles.emplace_back(wxExStyle(child, lexer));
     }
   }
+}
+
+bool wxExOneLetterAfter(const std::string& text, const std::string& letter)
+{
+  return std::regex_match(letter, std::regex("^" + text + "[a-zA-Z]$"));
 }
 
 #if wxUSE_GUI
@@ -720,6 +725,11 @@ const std::string wxExPrintHeader(const wxExPath& filename)
 const std::string wxExQuoted(const std::string& text)
 {
   return "'" + text + "'";
+}
+
+bool wxExRegAfter(const std::string& text, const std::string& letter)
+{
+  return std::regex_match(letter, std::regex("^" + text + "[0-9=\"a-z%._]$"));
 }
 
 int wxExReplaceAll(std::string& text, 

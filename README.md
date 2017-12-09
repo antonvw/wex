@@ -24,6 +24,8 @@ one of these applications, being a full featured source code text editor.
 
 - [pugixml lib](https://github.com/zeux/pugixml)    
 
+- [fsm lib] [https://github.com/eglimi/cppfsm]
+
 - [tclap lib](http://tclap.sourceforge.net/)    
 
 # Build process 

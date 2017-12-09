@@ -14,7 +14,8 @@
 #include <wx/extension/ex.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/stcdlg.h>
-#include <wx/extension/vimacros.h>
+#include <wx/extension/vi-macros.h>
+#include <wx/extension/vi-macros-mode.h>
 
 #if wxUSE_GUI
 
@@ -140,7 +141,7 @@ bool wxExVariable::Expand(wxExEx* ex, std::string& value)
       break;
       
     case VARIABLE_TEMPLATE:
-      if (!wxExViMacros::ExpandTemplate(ex, *this, value))
+      if (!wxExViMacros::Mode()->Expand(ex, *this, value))
       {
         return false;
       }

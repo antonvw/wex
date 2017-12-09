@@ -255,6 +255,9 @@ void wxExNodeStyles(
   const std::string& lexer,
   std::vector<wxExStyle>& styles);
 
+/// Returns whether there is one letter after.
+bool wxExOneLetterAfter(const std::string& text, const std::string& letter);
+
 #if wxUSE_GUI
 /// Opens all files specified by files.
 /// Returns number of files opened.
@@ -301,6 +304,9 @@ const std::string wxExPrintHeader(const wxExPath& filename);
 
 /// Returns quotes around the text.
 const std::string wxExQuoted(const std::string& text);
+
+/// Returns true if a register is specified after letter in text.
+bool wxExRegAfter(const std::string& text, const std::string& letter);
 
 /// Replaces all substrings in text with replace.
 /// Returns number of replacements.

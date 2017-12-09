@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vimacros.h
+// Name:      vi-macros.h
 // Purpose:   Declaration of class wxExViMacros
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2017 Anton van Wezenbeek
@@ -10,18 +10,18 @@
 #include <map>
 #include <vector>
 #include <pugixml.hpp>
-#include <wx/extension/path.h>
 #include <wx/extension/variable.h>
 
-#if wxUSE_GUI
-
 class wxExEx;
+class wxExPath;
+class wxExViMacrosFSM;
+class wxExViMacrosMode;
 
 enum wxExViMacrosKeyType
 {
-  KEY_ALT,       ///< alt key
-  KEY_CONTROL,   ///< control key
-  KEY_NORMAL,    ///< normal key (default)
+  KEY_ALT,     ///< alt key
+  KEY_CONTROL, ///< control key
+  KEY_NORMAL,  ///< normal key (default)
 };
 
 /// Maps key to command.  
@@ -33,13 +33,10 @@ typedef std::map<int, std::string> wxExViMacrosMapType;
 /// these are expanded while playing back.
 class WXDLLIMPEXP_BASE wxExViMacros
 {
+  friend class wxExViMacrosFSM;
 public:  
-  /// Returns all macro names as a vector of strings.
-  /// Does not include registers.
-  const std::vector< std::string > Get() const;
-  
-  /// Returns contents of macro as a vector of strings.
-  const std::vector< std::string > Get(const std::string& name) const;
+  /// Default constructor.
+  wxExViMacros();
   
   /// Returns number of macros and variables available.
   auto GetCount() const {return m_Macros.size() + m_Variables.size();};
@@ -52,9 +49,6 @@ public:
       case KEY_CONTROL: return m_MapControlKeys;
       case KEY_NORMAL: return m_MapKeys;
     }};
-  
-  /// Returns current or last macro played back (or variable expanded).
-  const auto& GetMacro() const {return m_Macro;};
   
   /// Returns (string) map.
   const auto & GetMap() const {return m_Map;};
@@ -69,29 +63,6 @@ public:
   /// Have macros been recorded (or variables 
   /// expanded) without calling SaveDocument.
   bool IsModified() const {return m_IsModified;};
-  
-  /// Is macro or variable recorded.
-  bool IsRecorded(const std::string& macro) const;
-  
-  /// Is macro recorded.
-  /// Does not check for variables.
-  bool IsRecordedMacro(const std::string& macro) const;
-  
-  /// Are we playing back?
-  bool IsPlayback() const {return m_IsPlayback;};
-  
-  /// Are we recording?
-  bool IsRecording() const {return m_IsRecording;};
-  
-  /// Plays back macro a number of repeat times on the ex component.
-  /// Returns true if all records could be executed.
-  bool Playback(
-    /// ex component to use
-    wxExEx* ex, 
-    /// macro name
-    const std::string& macro, 
-    /// number of times this maco is executed
-    int repeat = 1);
   
   /// Records text to current macro (or register) as a new command.
   /// The text to be recorded should be valid ex command,
@@ -125,40 +96,12 @@ public:
   /// Returns false if name is not appropriate.
   bool SetRegister(const char name, const std::string& value);
   
-  /// Starts recording a macro (appends to 
-  /// existing macro if macro is single upper case character).
-  void StartRecording(const std::string& macro);
+  /// Returns all macro names as a vector of strings.
+  /// Does not include registers.
+  static const std::vector< std::string > Get();
   
-  /// Does a recorded macro or variable starts with text.
-  bool StartsWith(const std::string_view& text) const;
-  
-  /// Stops recording.
-  void StopRecording();
-  
-  /// Expands variable to ex component.
-  /// Returns true if variable could be expanded.
-  static bool Expand(wxExEx* ex, const std::string& variable);
-  
-  /// Expands variable to value text.
-  /// Returns true if variable could be expanded.
-  static bool Expand(
-    /// ex component to use
-    wxExEx* ex, 
-    /// variable name
-    const std::string& variable, 
-    /// value to receive contents
-    std::string& value);
-  
-  /// Expands template variable.
-  /// Returns true if the template file name exists,
-  /// and all variables in it could be expanded.
-  static bool ExpandTemplate(
-    /// ex component to use
-    wxExEx* ex, 
-    /// variable (containing template file name)
-    const wxExVariable& variable, 
-    /// value to receive contents
-    std::string& expanded);
+  /// Returns contents of macro as a vector of strings.
+  static const std::vector< std::string > Get(const std::string& name);
   
   /// Returns the filename with xml document.
   static const wxExPath GetFileName();
@@ -166,18 +109,34 @@ public:
   /// Returns abbreviations.
   static const auto & GetAbbreviations() {return m_Abbreviations;};
   
+  /// Returns current or last macro played back (or variable expanded).
+  static const auto& GetMacro() {return m_Macro;};
+  
   /// Returns variables.
   static const auto& GetVariables() {return m_Variables;};
+  
+  /// Is macro or variable recorded.
+  static bool IsRecorded(const std::string& macro);
+  
+  /// Is macro recorded.
+  /// Does not check for variables.
+  static bool IsRecordedMacro(const std::string& macro);
   
   /// Loads all macros (and variables) from xml document.
   /// Returns true if document is loaded (macros still can be empty).
   static bool LoadDocument();
   
+  /// Returns the mode we are in.  
+  static auto Mode() {return m_Mode;};
+
   /// Saves all macros (and variables) to xml document.
   /// If you specify only_if_modified, then document is only saved
   /// if it was modified (if macros have been recorded since last save).
   /// Returns true if document is saved.
   static bool SaveDocument(bool only_if_modified = true);
+
+  /// Does a recorded macro or variable starts with text.
+  static bool StartsWith(const std::string_view& text);
 private:  
   template <typename S, typename T> 
   void Set(
@@ -185,8 +144,6 @@ private:
     const std::string& xpath,
     const std::string& name,
     const std::string& value);
-
-  static void AskForInput();
   
   template <typename S, typename T> 
   static void ParseNode(
@@ -197,36 +154,23 @@ private:
   static void ParseNodeMacro(const pugi::xml_node& node);
   static void ParseNodeVariable(const pugi::xml_node& node);
   static void SaveMacro(const std::string& macro);
-    
-  static bool m_IsExpand;
+
+  static wxExViMacrosMode* m_Mode;
   static bool m_IsModified;
-  static bool m_IsPlayback;
-  static bool m_IsRecording;
-  
   static pugi::xml_document m_doc;
-  
   static std::string m_Macro;
   
   /// All abbreviations, as a map of abbreviation and full text.
   static std::map<std::string, std::string> m_Abbreviations;
-  
+  /// String maps.
+  static std::map<std::string, std::string> m_Map;
   /// All macros (and registers), as a map of name and a vector of commands.
   /// Registers are 1 letter macros.
   static std::map<std::string, std::vector<std::string> > m_Macros;
-
-  /// String maps.
-  static std::map<std::string, std::string> m_Map;
-
-  /// Alt key maps.
-  static wxExViMacrosMapType m_MapAltKeys;
-
-  /// Control key maps.
-  static wxExViMacrosMapType m_MapControlKeys;
-
-  /// All normal key maps.
-  static wxExViMacrosMapType m_MapKeys;
-
   /// All variables, as a map of name and variable.
   static std::map<std::string, wxExVariable> m_Variables;
+
+  static wxExViMacrosMapType m_MapAltKeys;
+  static wxExViMacrosMapType m_MapControlKeys;
+  static wxExViMacrosMapType m_MapKeys; /// All normal key maps.
 };
-#endif // wxUSE_GUI

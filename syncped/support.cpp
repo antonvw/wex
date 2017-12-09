@@ -19,7 +19,7 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
-#include <wx/extension/vimacros.h>
+#include <wx/extension/vi-macros.h>
 #include <wx/extension/report/listviewfile.h>
 #ifndef __WXMSW__
 #include "app.xpm"

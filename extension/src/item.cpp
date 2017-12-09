@@ -22,7 +22,9 @@
 #include <wx/spinctrl.h>
 #include <wx/statline.h>
 #include <wx/tglbtn.h>
+#ifndef __WXMSW__
 #include <wx/valnum.h>
+#endif
 #include <wx/valtext.h>
 #include <wx/window.h>
 
@@ -617,7 +619,13 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Size(), 
         m_Data.Window().Style() | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT);
       if (m_Data.Validator() == nullptr)
+#ifdef __WXMSW__
+        // TODO: using wxFloatingPointValidator and wxIntegerValidator
+        // gives compile error in MSW.
+        ;
+#else
         m_Window->SetValidator(wxFloatingPointValidator<double>());
+#endif
       else 
         m_Window->SetValidator(*m_Data.Validator());
       break;
@@ -630,7 +638,11 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Data.Window().Size(), 
         m_Data.Window().Style() | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT);
       if (m_Data.Validator() == nullptr)
+#ifdef __WXMSW__
+        ;
+#else
         m_Window->SetValidator(wxIntegerValidator<int>());
+#endif
       else 
         m_Window->SetValidator(*m_Data.Validator());
       break;

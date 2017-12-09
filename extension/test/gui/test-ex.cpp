@@ -15,7 +15,8 @@
 #include <wx/extension/managedframe.h>
 #include <wx/extension/path.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/vimacros.h>
+#include <wx/extension/vi-macros.h>
+#include <wx/extension/vi-macros-mode.h>
 #include "test.h"
 
 TEST_CASE("wxExEx")
@@ -166,42 +167,7 @@ TEST_CASE("wxExEx")
 #endif
 
   // Test macros.
-  // Do not load macros yet, to test IsRecorded.
-  REQUIRE(!ex->GetMacros().IsRecording());
-  REQUIRE(!ex->GetMacros().IsRecorded("a"));
-  
-  ex->MacroStartRecording("a");
-  REQUIRE( ex->GetMacros().IsRecording());
-  REQUIRE(!ex->GetMacros().IsRecorded("a"));
-  
-  ex->GetMacros().StopRecording();
-  REQUIRE(!ex->GetMacros().IsRecording());
-  REQUIRE(!ex->GetMacros().IsRecorded("a")); // still no macro
-  
-  ex->MacroStartRecording("a");
-  REQUIRE( ex->Command(":10"));
-  ex->GetMacros().StopRecording();
-  
-  REQUIRE(!ex->GetMacros().IsRecording());
-  REQUIRE( ex->GetMacros().IsRecorded("a"));
-  REQUIRE( ex->GetMacros().StartsWith("a"));
-  REQUIRE(!ex->GetMacros().StartsWith("b"));
-  
-  REQUIRE(!ex->GetMacros().IsRecorded("b"));
-  
-  REQUIRE( ex->MacroPlayback("a"));
-//  REQUIRE(!ex->MacroPlayback("b"));
-  REQUIRE( ex->GetMacros().GetMacro() == "a");
-  REQUIRE( ex->GetSTC() == stc);
-
-  REQUIRE( wxExViMacros::LoadDocument());
-  REQUIRE(!ex->GetMacros().IsRecorded("xxx"));
-  REQUIRE( ex->GetMacros().GetCount() > 0);
-  
-  REQUIRE( ex->GetMacros().StartsWith("Da"));
-  
-  REQUIRE( ex->GetMacros().Expand(ex, "Date"));
-//  REQUIRE(!ex->GetMacros().Expand(ex, "xxx"));
+  REQUIRE(!ex->GetMacros().Mode()->IsRecording());
   
   // Test markers.
   REQUIRE( ex->MarkerAdd('a'));

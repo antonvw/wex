@@ -22,6 +22,7 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
+#include <wx/extension/vi-macros.h>
 
 #define NO_ASSERT 1
 
@@ -77,7 +78,7 @@ bool wxExApp::OnInit()
   // We need to convert argc and argv, as elp expects = sign between values.
   // The logging-flags are handled by syncped.
   int argc_elp = 0;
-  char *argv_elp[argc];
+  char *argv_elp[20]; // argc does not compile under MSW
   const std::vector <std::pair<
     std::string, std::string>> supported {
       {"-m", "-vmodule"},
@@ -171,6 +172,7 @@ bool wxExApp::OnInit()
   }
 
   wxExVCS::LoadDocument();
+  wxExViMacros::LoadDocument();
 
   return true; // wxApp::OnInit(); // we have our own cmd line processing
 }

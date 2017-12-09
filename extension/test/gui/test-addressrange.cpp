@@ -12,7 +12,7 @@
 #include <wx/extension/addressrange.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/vimacros.h>
+#include <wx/extension/vi-macros.h>
 #include "test.h"
 
 TEST_CASE("wxExAddressRange")

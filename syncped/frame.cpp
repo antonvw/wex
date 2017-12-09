@@ -5,6 +5,7 @@
 // Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -29,7 +30,8 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/version.h>
-#include <wx/extension/vimacros.h>
+#include <wx/extension/vi-macros.h>
+#include <wx/extension/vi-macros-mode.h>
 #include <wx/extension/report/listviewfile.h>
 #include "frame.h"
 #include "app.h"
@@ -97,7 +99,7 @@ Frame::Frame(App* app)
       ID_VIEW_HISTORY,
       _("History")))
 {
-  wxExViMacros::LoadDocument();
+  VLOG(1) << "started: " << "syncped-" << wxExGetVersionInfo().GetVersionOnlyString().c_str();
 
   GetManager().AddPane(m_Editors, wxAuiPaneInfo()
     .CenterPane()
@@ -292,7 +294,9 @@ Frame::Frame(App* app)
     {
       wxDELETE(m_Process);
       event.Skip();
-    }});
+    }
+    VLOG(1) << "closed";
+    });
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxAboutDialogInfo info;
@@ -330,17 +334,14 @@ Frame::Frame(App* app)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     // In hex mode we cannot edit the file.
     if (wxConfigBase::Get()->ReadBool("HexMode", false)) return;
-    std::string name = event.GetString().ToStdString();
-    if (name.empty())
-    {
-      static wxString text;
-      wxTextEntryDialog dlg(this, _("Input") + ":", _("File Name"), text);
-      wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
-      validator.SetCharExcludes("/\\?%*:|\"<>");
-      dlg.SetTextValidator(validator);
-      if (dlg.ShowModal() == wxID_CANCEL) return;
-      name = dlg.GetValue();
-    }
+    static std::string name = event.GetString().ToStdString();
+    wxTextEntryDialog dlg(this, _("Input") + ":", _("File Name"), name);
+    wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
+    validator.SetCharExcludes("/\\?%*:|\"<>");
+    dlg.SetTextValidator(validator);
+    if (dlg.ShowModal() == wxID_CANCEL) return;
+    name = dlg.GetValue();
+    if (name.empty()) return;
     wxWindow* page = new wxExSTC(std::string(),
       wxExSTCData(m_App->GetData()).Window(wxExWindowData().
         Parent(m_Editors)));
@@ -623,7 +624,7 @@ bool Frame::ExecExCommand(const std::string& command, wxExSTC* & stc)
       
       m_Editors->AdvanceSelection();
 
-      if (wxExEx::GetMacros().IsPlayback())
+      if (wxExEx::GetMacros().Mode()->IsPlayback())
       {
         stc = (wxExSTC *)m_Editors->GetPage(m_Editors->GetSelection());
       }
@@ -636,7 +637,7 @@ bool Frame::ExecExCommand(const std::string& command, wxExSTC* & stc)
       
       m_Editors->AdvanceSelection(false);
 
-      if (wxExEx::GetMacros().IsPlayback())
+      if (wxExEx::GetMacros().Mode()->IsPlayback())
       {
         stc = (wxExSTC *)m_Editors->GetPage(m_Editors->GetSelection());
       }
@@ -798,9 +799,13 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
 
-  case ID_EDIT_MACRO_PLAYBACK: if (editor != nullptr) editor->GetVi().MacroPlayback(); break;
-  case ID_EDIT_MACRO_START_RECORD: if (editor != nullptr) editor->GetVi().MacroStartRecording(); break;
-  case ID_EDIT_MACRO_STOP_RECORD: if (editor != nullptr) editor->GetVi().GetMacros().StopRecording(); break;
+  case ID_EDIT_MACRO_PLAYBACK: 
+    if (editor != nullptr) 
+      editor->GetVi().GetMacros().Mode()->Transition("@", &editor->GetVi(), true); break;
+  case ID_EDIT_MACRO_START_RECORD: 
+  case ID_EDIT_MACRO_STOP_RECORD: 
+    if (editor != nullptr) 
+      editor->GetVi().GetMacros().Mode()->Transition("q", &editor->GetVi(), true); break;
   
   case ID_SPLIT:
   case ID_SPLIT_HORIZONTALLY:
@@ -974,7 +979,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         case ID_EDIT_MACRO:
           event.Enable(
              editor->GetVi().GetIsActive() &&
-            !editor->GetVi().GetMacros().IsRecording() &&
+            !editor->GetVi().GetMacros().Mode()->IsRecording() &&
              wxExViMacros::GetFileName().FileExists());
           break;
         case ID_EDIT_MACRO_MENU:
@@ -985,15 +990,15 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           event.Enable(
              editor->GetVi().GetIsActive() &&
              editor->GetVi().GetMacros().GetCount() > 0 &&
-            !editor->GetVi().GetMacros().IsRecording());
+            !editor->GetVi().GetMacros().Mode()->IsRecording());
           break;
         case ID_EDIT_MACRO_START_RECORD:
           event.Enable(
              editor->GetVi().GetIsActive() && 
-            !editor->GetVi().GetMacros().IsRecording());
+            !editor->GetVi().GetMacros().Mode()->IsRecording());
           break;
         case ID_EDIT_MACRO_STOP_RECORD:
-          event.Enable(editor->GetVi().GetMacros().IsRecording());
+          event.Enable(editor->GetVi().GetMacros().Mode()->IsRecording());
           break;
 
         case ID_EDIT_TOGGLE_FOLD:
@@ -1301,7 +1306,8 @@ void Frame::StatusBarClicked(const std::string& pane)
   else if (pane == "PaneMacro")
   {
     wxExSTC* editor = GetSTC();
-    if (editor != nullptr) editor->GetVi().MacroPlayback();
+    if (editor != nullptr) 
+      editor->GetVi().GetMacros().Mode()->Transition("@", &editor->GetVi(), true);
   }
   else if (pane == "PaneVCS")
   {

@@ -82,10 +82,10 @@ TEST_CASE("wxExSTC")
   SUBCASE("vi")
   {
     stc->GetVi().Command("\x1b");
-    REQUIRE(stc->GetVi().GetMode() == wxExVi::MODE_NORMAL);
+    REQUIRE(stc->GetVi().Mode().Normal());
     stc->SetText("more text\notherline");
     stc->GetVi().Command("V");
-    REQUIRE( stc->GetVi().GetMode() == wxExVi::MODE_VISUAL_LINE);
+    REQUIRE( stc->GetVi().Mode().Get() == wxExViModes::VISUAL_LINE);
     REQUIRE( stc->FindNext(std::string("more text")));
   }
 

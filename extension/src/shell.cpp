@@ -88,10 +88,10 @@ wxExShell::wxExShell(
   Bind(wxEVT_KEY_DOWN, [=](wxKeyEvent& event) {
     if (!m_Enabled)
     {
-      if (GetVi().ModeInsert())
+      if (GetVi().Mode().Insert())
       {
         DocumentEnd();
-        GetVi().Command("\x1b"); // ESC, normal mode
+        GetVi().Mode().Escape();
       }
       if (GetCurrentPos() >= m_CommandStartPosition && 
           (m_Process == nullptr || (m_Process != nullptr && m_Process->IsRunning())))

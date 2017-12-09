@@ -23,7 +23,8 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
-#include <wx/extension/vimacros.h>
+#include <wx/extension/vi-macros.h>
+#include <wx/extension/vi-macros-mode.h>
 
 #if wxUSE_GUI
 
@@ -510,7 +511,7 @@ wxExTextCtrl::wxExTextCtrl(
       return;
     }
 
-    if (!m_ex->GetMacros().IsRecording())
+    if (!m_ex->GetMacros().Mode()->IsRecording())
     {
       m_Command = m_Prefix->GetLabel() + GetValue();
     }

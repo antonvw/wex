@@ -201,7 +201,7 @@ bool wxExProcess::Execute(
     struct wxExecuteEnv env;
     env.cwd = wd;
 
-    VLOG(1) << "exec:" << m_Command;
+    VLOG(1) << "exec: " << m_Command;
 
     if (wxExecute(m_Command, output, errors, wxEXEC_SYNC, &env) == -1)
     {
@@ -312,7 +312,7 @@ bool wxExProcessImp::Execute(
   env.cwd = path;
   m_Command = command;
   
-  VLOG(1) << "exec:" << command;
+  VLOG(1) << "exec: " << command;
 
   if (wxExecute(command, wxEXEC_ASYNC, this, &env) <= 0) 
   {

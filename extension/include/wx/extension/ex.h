@@ -22,10 +22,12 @@ class wxExManagedFrame;
 class wxExSTC;
 class wxExSTCEntryDialog;
 class wxExViMacros;
+class wxExViMacrosMode;
 
 /// Offers a class that adds ex editor to wxExSTC.
 class WXDLLIMPEXP_BASE wxExEx
 {
+  friend class wxExViMacrosMode;
 public:
   /// Constructor. 
   /// Sets ex mode.
@@ -99,22 +101,6 @@ public:
 
   /// Writes info message.
   void InfoMessage() const;
-  
-  /// Plays back a recorded macro or expands a variable.
-  /// If specified macro is empty,
-  /// it shows a list with all macros and variables,
-  /// allowing you to choose one.
-  /// Returns true if the macro was played back 
-  /// or the variable was expanded succesfully.
-  bool MacroPlayback(
-    const std::string& macro = std::string(),
-    int repeat = 1);
-      
-  /// Start recording a macro.  
-  /// If specified macro is empty,
-  /// it asks for the name of the macro.
-  /// You can stop recording by invoking GetMacros.StopRecording().
-  void MacroStartRecording(const std::string& macro = std::string());
   
   /// Adds marker at the specified line.
   /// Returns true if marker could be added.
