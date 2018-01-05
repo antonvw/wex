@@ -64,9 +64,7 @@ TEST_CASE("wxExViMacros")
   macros.SetKeyMap("4", "www");
   
   stc->SetText("");
-  REQUIRE(!macros.Mode()->IsPlayback());
   REQUIRE( macros.Mode()->Transition("@a", vi));
-  REQUIRE(!macros.Mode()->IsPlayback());
 
   REQUIRE( stc->GetText() == "test");
   stc->SetText("");
@@ -81,7 +79,6 @@ TEST_CASE("wxExViMacros")
   REQUIRE(!macros.Get().empty());
 
   // Test append to macro.
-  REQUIRE( vi->Mode().Escape());
   macros.Mode()->Transition("qA", vi);
   macros.Record("w");
   macros.Record("/test");
@@ -91,7 +88,6 @@ TEST_CASE("wxExViMacros")
   REQUIRE( macros.Get("a").front() == "a");
   
   // Test recursive macro.
-  REQUIRE( vi->Mode().Escape());
   macros.Mode()->Transition("qA", vi);
   macros.Record("@");
   macros.Record("a");

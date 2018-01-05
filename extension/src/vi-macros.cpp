@@ -17,9 +17,9 @@
 #include <wx/extension/vi-macros-mode.h>
 
 pugi::xml_document wxExViMacros::m_doc;
-wxExViMacrosMode* wxExViMacros::m_Mode = nullptr;
 bool wxExViMacros::m_IsModified = false;
 std::string wxExViMacros::m_Macro;
+wxExViMacrosMode* wxExViMacros::m_Mode = nullptr;
 
 std::map <std::string, std::string> wxExViMacros::m_Abbreviations;
 std::map <std::string, std::vector< std::string > > wxExViMacros::m_Macros;
@@ -286,7 +286,7 @@ void wxExViMacros::Record(const std::string& text, bool new_command)
 
 bool wxExViMacros::SaveDocument(bool only_if_modified)
 {
-  if (!m_IsModified && only_if_modified)
+  if (!GetFileName().FileExists() || (!m_IsModified && only_if_modified))
   {
     return false;
   }

@@ -199,7 +199,7 @@ bool wxExHexModeLine::Replace(char c)
       pos + m_ColumnNo, pos + m_ColumnNo + 1, c);       
 
     // replace hex field with code
-    char buffer[2];
+    char buffer[3];
     sprintf(buffer, "%02X", c);
     
     m_Hex->GetSTC()->wxStyledTextCtrl::Replace(

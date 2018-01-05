@@ -2,14 +2,16 @@
 // Name:      ctags.h
 // Purpose:   Declaration of class wxExCTags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <map>
 #include <string>
 #include <wx/dlimpexp.h>
 
+class wxExCTagsEntry;
 class wxExFrame;
 typedef struct sTagFile tagFile;
 
@@ -30,14 +32,23 @@ public:
   /// Destructor, closes ctags file.
  ~wxExCTags();
   
-  /// Find the tags matching `name'.
+  /// Find the tags matching `name', and fills matches.
   /// Returns true if a matching tag is found,
   /// and calls frame OpenFile if name matches and
   /// there is no next match in another file.
+  /// If the name is empty, Next is invoked.
   /// Otherwise shows a dialog to select a file from the matches.
   /// Returns false if dialog was cancelled.
-  bool Find(const std::string& name) const;
+  bool Find(const std::string& name);
+
+  /// Jumps to next match from a previous Find.
+  bool Next();
+
+  /// Jumps to previous match from a previous Find.
+  bool Previous();
 private:
   wxExFrame* m_Frame;
-  tagFile* m_File = nullptr;
+  tagFile* m_File{nullptr};
+  std::map< std::string, wxExCTagsEntry > m_Matches;
+  std::map< std::string, wxExCTagsEntry >::iterator m_Iterator;
 };

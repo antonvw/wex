@@ -197,6 +197,7 @@ int wxExTestApp::OnRun()
 
     if (m_Context->shouldExit())
     {
+      OnExit();
       ExitMainLoop();
     }});
 

@@ -20,6 +20,7 @@
 #if wxUSE_GUI
 
 class wxPanel;
+class wxExExCommand;
 class wxExDebug;
 class wxExEx;
 class wxExFindToolBar;
@@ -72,11 +73,7 @@ public:
   /// this command is handled. This method is invoked
   /// at the beginning of the wxExEx command handling,
   /// allowing you to override any command.
-  virtual bool ExecExCommand(
-    /// the command to execute
-    const std::string& command, 
-    /// if the command changes stc, update it, otherwise nullptr
-    wxExSTC* & stc) {return false;};
+  virtual bool ExecExCommand(wxExExCommand& command) {return false;};
 
   /// Debugging interface.
   auto* GetDebug() {return m_Debug;};

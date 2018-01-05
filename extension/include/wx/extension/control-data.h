@@ -2,7 +2,7 @@
 // Name:      control-data.h
 // Purpose:   Declaration of wxExControlData
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,6 +11,7 @@
 #include <string>
 #include <wx/dlimpexp.h>
 #include <wx/validate.h>
+#include <wx/extension/ex-command.h>
 #include <wx/extension/window-data.h>
 
 /// Determine how flags value are set.
@@ -111,13 +112,10 @@ public:
 private:  
   wxExWindowData m_Data;
 
-  bool m_Required = false;
+  bool m_Required {false};
+  int m_Col {DATA_NUMBER_NOT_SET}, m_Line {DATA_NUMBER_NOT_SET};
+  std::string m_Find {std::string()};
   
-  int m_Col = DATA_NUMBER_NOT_SET;
-  int m_Line = DATA_NUMBER_NOT_SET;
-  
-  std::string m_Command = std::string();
-  std::string m_Find = std::string();
-
-  wxValidator* m_Validator = nullptr;
+  wxExExCommand m_Command {std::string()};
+  wxValidator* m_Validator {nullptr};
 };

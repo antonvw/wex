@@ -2,7 +2,7 @@
 // Name:      stc-data.cpp
 // Purpose:   Implementation of wxExSTCData
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/stc-data.h>
@@ -119,7 +119,7 @@ bool wxExSTCData::Inject() const
       }
       return true;},
     [&]() {
-      return m_STC->GetVi().Command(m_Data.Command());});
+      return m_STC->GetVi().Command(m_Data.Command().Command());});
 
   if (!m_Data.Window().Name().empty())
   {

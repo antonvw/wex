@@ -388,7 +388,7 @@ TEST_CASE("wxExVi")
       for (auto c : other_command.first)
       {
         // prevent wxExBrowserSearch (for travis)
-        if (c == '!')
+        if (c == 'T')
         {
           continue;
         }

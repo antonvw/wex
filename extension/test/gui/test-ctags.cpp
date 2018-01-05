@@ -19,6 +19,9 @@ TEST_CASE("wxExCTags")
   REQUIRE(!wxExCTags(GetFrame(), "xxx").Find("wxExTestApp") );
   
   REQUIRE(!wxExCTags(GetFrame(), "test-ctags").Find("") );
+  REQUIRE(!wxExCTags(GetFrame(), "test-ctags").Next() );
+  REQUIRE(!wxExCTags(GetFrame(), "test-ctags").Previous() );
   REQUIRE(!wxExCTags(GetFrame(), "test-ctags").Find("xxxx") );
   REQUIRE( wxExCTags(GetFrame(), "test-ctags").Find("wxExTestApp") );
+  REQUIRE(!wxExCTags(GetFrame(), "test-ctags").Next() );
 }

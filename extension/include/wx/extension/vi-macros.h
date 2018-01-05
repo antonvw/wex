@@ -47,7 +47,7 @@ public:
     {
       case KEY_ALT: return m_MapAltKeys;
       case KEY_CONTROL: return m_MapControlKeys;
-      case KEY_NORMAL: return m_MapKeys;
+      default: return m_MapKeys;
     }};
   
   /// Returns (string) map.

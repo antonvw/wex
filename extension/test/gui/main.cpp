@@ -51,6 +51,7 @@ public:
       {"Pane4"},
       {"PaneInfo"},
       {"PaneLexer"},
+      {"PaneMode"},
       {"PaneFileType"},
       {"LastPane"}});
     m_STC = new wxExSTC();
@@ -92,7 +93,7 @@ std::vector<std::string> GetBuiltinVariables()
 
   for (const auto i : wxExViMacros::GetVariables())
   {
-    if (i.second.GetType() == wxExVariable::VARIABLE_BUILTIN)
+    if (i.second.IsBuiltIn())
     {
        v.push_back(i.first);
     }

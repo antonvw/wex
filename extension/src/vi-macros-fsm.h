@@ -60,6 +60,9 @@ public:
   /// Returns internal state.
   auto Get() const {return m_fsm.state();};
 
+  /// Returns true if busy playing back.
+  bool IsPlayback() const;
+
   /// Returns internal state as a string.
   const std::string State() const {
     return Get() == States::IDLE ? std::string(): State(Get());};
@@ -89,22 +92,22 @@ public:
     }
     return std::string();};
 private:
-  void AskForInput();
   void ExpandingTemplate();
   void ExpandingVariable();
-  bool ExpandTo(const std::string& variable, std::string& value);
+  bool ExpandingVariable(const std::string& name, std::string* value) const;
   void Playback();
+  void SetAskForInput() const;
   void StartRecording();
   void StopRecording();
 
   static void Verbose(States, States, Triggers);
 
   int m_count{1};
-  bool m_error{false};
-  wxExEx* m_ex{nullptr};
+  bool m_error {false}, m_playback {false};
+  wxExEx* m_ex {nullptr};
   static std::string m_macro;
   wxExVariable m_variable;
-  std::string* m_expanded{nullptr};
+  std::string* m_expanded {nullptr};
 
   FSM::Fsm<States, States::IDLE, Triggers> m_fsm;
 };

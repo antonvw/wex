@@ -41,7 +41,6 @@ public:
       {wxExViModes::INSERT,      wxExViModes::NORMAL,      Triggers::ESCAPE,      nullptr, normal},
       {wxExViModes::INSERT_RECT, wxExViModes::VISUAL_RECT, Triggers::ESCAPE,      nullptr, nullptr},
       // normal
-      {wxExViModes::NORMAL,      wxExViModes::NORMAL,      Triggers::ESCAPE,      nullptr, nullptr},
       {wxExViModes::NORMAL,      wxExViModes::INSERT,      Triggers::INSERT,      
          [&]{return m_writeable;}, [&]{InsertMode();}},
       {wxExViModes::NORMAL,      wxExViModes::VISUAL,      Triggers::VISUAL,      nullptr, nullptr},
@@ -108,6 +107,7 @@ public:
       case Triggers::VISUAL_LINE: return "visual line";
       case Triggers::VISUAL_RECT: return "visual rect";
       case Triggers::ESCAPE: return "escape";
+      default: return "unhandled";
     }};
   
   static void Verbose(wxExViModes from, wxExViModes to, Triggers trigger)

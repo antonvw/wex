@@ -28,11 +28,11 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/path.h>
 #include <wx/extension/process.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/stcdlg.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/tostring.h>
 #include <wx/extension/vcs.h>
@@ -1030,11 +1030,12 @@ void wxExXmlError(
   const pugi::xml_parse_result* result,
   wxExSTC* stc)
 {
-  wxExSTCEntryDialog(
-    "Error: " + std::string(result->description()) + 
-    " at offset: " + std::to_string(result->offset)).Show();
+  LOG(ERROR) << 
+    "xml error: " << std::string(result->description()) << 
+    " at offset: " << std::to_string(result->offset);
 
-  if (stc == nullptr)
+  // prevent recursion
+  if (stc == nullptr && filename != wxExLexers::Get()->GetFileName())
   {
     wxExManagedFrame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame);
 

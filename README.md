@@ -18,15 +18,15 @@ one of these applications, being a full featured source code text editor.
 
 - [eval lib](https://github.com/r-lyeh/eval)    
 
-- [exuberant ctags lib](https://github.com/rtyler/ctags)    
+- [fsm lib](https://github.com/eglimi/cppfsm)
 
 - [OTL database lib](http://otl.sourceforge.net/)    
 
 - [pugixml lib](https://github.com/zeux/pugixml)    
 
-- [fsm lib] [https://github.com/eglimi/cppfsm]
-
 - [tclap lib](http://tclap.sourceforge.net/)    
+
+- [universal-ctags lib](https://github.com/universal-ctags/ctags)    
 
 # Build process 
 

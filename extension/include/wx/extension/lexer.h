@@ -28,21 +28,17 @@ class WXDLLIMPEXP_BASE wxExLexer
 {
 public:
   /// Default constructor.
-  wxExLexer(const std::string& lexer = std::string()) {
+  wxExLexer(const std::string& lexer = std::string())
+    : wxExLexer(nullptr, lexer) {;};
+    
+  /// Constructor using stc, and optional lexer.
+  wxExLexer(wxExSTC* stc, const std::string& lexer = std::string())
+    : m_STC(stc) {
     Initialize();
     if (!lexer.empty())
     {
       Set(lexer);
     }};
-    
-  /// Constructor using stc, and optional lexer.
-  wxExLexer(wxExSTC* stc, const std::string& lexer = std::string())
-    : m_STC(stc) {
-      Initialize();
-      if (!lexer.empty()) 
-      {
-        Set(lexer);
-      }};
 
   /// Constructor using xml node.
   wxExLexer(const pugi::xml_node* node) {Initialize(); Set(node);};
@@ -173,14 +169,12 @@ private:
     m_CommentBegin, m_CommentBegin2, m_CommentEnd, m_CommentEnd2, 
     m_DisplayLexer, m_Extensions, m_Language, m_ScintillaLexer;
 
+  // each keyword set in a separate keyword set
+  std::map< int, std::set<std::string> > m_KeywordsSet;
   std::set<std::string> m_Keywords;
   std::vector<wxExProperty> m_Properties;
   std::vector<wxExStyle> m_Styles;
-
-  // each keyword set in a separate keyword set
-  std::map< int, std::set<std::string> > m_KeywordsSet;
   
-  bool m_IsOk = false;
-  
-  wxExSTC* m_STC = nullptr;
+  bool m_IsOk {false};
+  wxExSTC* m_STC {nullptr};
 };

@@ -2,9 +2,10 @@
 // Name:      test-variable.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <tuple>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -18,70 +19,91 @@ TEST_CASE("wxExVariable")
 {
   wxExEx* ex = new wxExEx(GetSTC());
 
-  for (auto it : std::vector<std::pair<char*, int>> {
-    {"Created", wxExVariable::VARIABLE_BUILTIN},     
-#ifdef __UNIX__
-    {"HOME", wxExVariable::VARIABLE_ENVIRONMENT}, 
-#endif
-    {"aa", wxExVariable::VARIABLE_READ},
-//    {"template", wxExVariable::VARIABLE_TEMPLATE},
-    {"cc", wxExVariable::VARIABLE_INPUT},       
-    {"dd", wxExVariable::VARIABLE_INPUT_ONCE},
-    {"ee", wxExVariable::VARIABLE_INPUT_SAVE}})
+  SUBCASE("Default constructor")
   {
-    wxExVariable v(it.first, "cht.txt", "zzz", it.second, false);
-    REQUIRE( v.Expand(ex));
-    REQUIRE( v.GetName() == it.first);
-    REQUIRE(!v.IsModified());
-    if (it.second >= wxExVariable::VARIABLE_INPUT && it.second <= wxExVariable::VARIABLE_INPUT_SAVE)
-      REQUIRE( v.IsInput());
-    else
-      REQUIRE(!v.IsInput());
+    std::string value;
+    REQUIRE( wxExVariable("test").GetName() == "test");
+    REQUIRE( wxExVariable("test").GetValue().empty());
+    REQUIRE(!wxExVariable("test").IsBuiltIn());
+    REQUIRE(!wxExVariable("test").IsTemplate());
+
+    wxExVariable var("test");
+    var.SetAskForInput(false);
+
+    REQUIRE( var.Expand(nullptr));
+    REQUIRE( var.Expand(ex));
+    REQUIRE( var.Expand(value));
   }
 
   pugi::xml_document doc;
-  REQUIRE( doc.load_string("<variable name = \"test\" type = \"BUILTIN\"></variable>"));
 
-  pugi::xml_node node = doc.document_element();
-  wxExVariable var(node);
-
-  REQUIRE( var.GetName() == "test");
-  REQUIRE( var.GetValue().empty());
-  REQUIRE(!var.Expand(ex));
-  REQUIRE(!var.IsModified());
-  REQUIRE(!var.IsInput());
-  
-  node.remove_attribute("name");
-  
-  // Test all builtin macro variables.
-  for (const auto& it : GetBuiltinVariables())
+  SUBCASE("XML")
   {
-    node.append_attribute("name") = it.c_str();
-
-    wxExVariable var2(node);
-    REQUIRE( var2.GetName() == it);
-    REQUIRE( var2.GetValue().empty());
-    REQUIRE( var2.Expand(ex));
-    std::string content;
-    REQUIRE( var2.Expand(ex, content));
-
-    if (it == "Year")
+    for (const auto& it : std::vector<std::tuple<
+      std::string, std::string, std::string, std::string>> {
+      {"Created", "BUILTIN", "", ""},     
+#ifdef __UNIX__
+      {"HOME", "ENVIRONMENT", "", ""}, 
+#endif
+      {"aa", "OTHER", "", ""},
+      {"template", "TEMPLATE", "xxx.txt", "xxx.txt"},
+      {"cc", "INPUT", "one", "one"},       
+      {"dd", "INPUT-ONCE", "@Year@", "2018"},
+      {"ee", "INPUT-SAVE", "three", "three"}})
     {
-      REQUIRE( content.find("20") == 0); // start of year
+      const std::string text(
+        "<variable name=\"" + std::get<0>(it) +
+        "\" type=\"" + std::get<1>(it) +
+        "\">" + std::get<2>(it) +
+        "</variable>");
+      CAPTURE( text );
+      REQUIRE( doc.load_string(text.c_str()));
+      pugi::xml_node node = doc.document_element();
+
+      wxExVariable var(node);
+      var.SetAskForInput(false);
+
+      REQUIRE( var.GetName() == std::get<0>(it));
+      REQUIRE( var.GetValue() == std::get<2>(it));
+      if (var.GetName() == "template")
+        REQUIRE(!var.Expand(ex));
+      else
+        REQUIRE( var.Expand(ex));
+      REQUIRE( var.GetValue() == std::get<3>(it));
+
+      var.Save(doc);
+
+      node.remove_attribute("name");
     }
-    
-    REQUIRE(!var2.IsModified());
-    REQUIRE(!var2.IsInput());
-    
-    node.remove_attribute("name");
   }
-    
-  wxExVariable var3("added");
-  REQUIRE( var3.GetName() == "added");
-  REQUIRE( var3.IsInput());
-  var.SkipInput();
-  // This is input, we cannot test it at this moment.
-  var.AskForInput();
   
-  var3.Save(doc);
+  SUBCASE("builtin")
+  {
+    for (const auto& it : GetBuiltinVariables())
+    {
+      const std::string text(
+        "<variable name =\"" + it + 
+        "\" type=\"BUILTIN\"></variable>");
+      CAPTURE( text );
+      REQUIRE( doc.load_string(text.c_str()));
+      pugi::xml_node node = doc.document_element();
+
+      wxExVariable var(node);
+
+      REQUIRE( var.GetName() == it);
+      REQUIRE( var.GetValue().empty());
+      REQUIRE( var.IsBuiltIn());
+      REQUIRE( var.Expand(ex));
+
+      std::string content;
+      REQUIRE( var.Expand(content, ex));
+
+      if (it == "Year")
+      {
+        REQUIRE( content.find("20") == 0); // start of year
+      }
+      
+      node.remove_attribute("name");
+    }
+  }
 }

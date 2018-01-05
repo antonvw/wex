@@ -2,12 +2,13 @@
 // Name:      marker.h
 // Purpose:   Declaration of class wxExMarker
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2017 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <pugixml.hpp>
+#include <wx/dlimpexp.h>
 
 class wxStyledTextCtrl;
 

@@ -14,6 +14,7 @@
 #include <wx/extension/ex.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/stcdlg.h>
+#include <wx/extension/util.h>
 #include <wx/extension/vi-macros.h>
 #include <wx/extension/vi-macros-mode.h>
 
@@ -21,26 +22,10 @@
 
 wxExSTCEntryDialog* wxExVariable::m_Dialog = nullptr;
 
-wxExVariable::wxExVariable(
-  const std::string& name,
-  const std::string& value,
-  const std::string& prefix,
-  int type,
-  bool ask_for_input)
-  : m_Type(type)
-  , m_AskForInput(ask_for_input)
-  , m_Name(name)
-  , m_Prefix(prefix)
-  , m_Value(value)
-{
-}
-
 wxExVariable::wxExVariable(const pugi::xml_node& node)
-  : wxExVariable(
-      node.attribute("name").value(),
-      node.text().get(),
-      node.attribute("prefix").value(),
-      VARIABLE_READ, true)
+  : m_Name(node.attribute("name").value())
+  , m_Value(node.text().get())
+  , m_Prefix(node.attribute("prefix").value())
 {
   const std::string type = node.attribute("type").value();
 
@@ -65,7 +50,6 @@ wxExVariable::wxExVariable(const pugi::xml_node& node)
     else if (type == "INPUT-ONCE")
     {
       m_Type = VARIABLE_INPUT_ONCE;
-      m_AskForInput = false;
     }
     else if (type == "TEMPLATE")
     {
@@ -78,35 +62,105 @@ wxExVariable::wxExVariable(const pugi::xml_node& node)
   }
 }
 
-void wxExVariable::AskForInput() 
+bool wxExVariable::CheckLink(std::string& value) const
 {
-  if (m_Type == VARIABLE_INPUT || m_Type == VARIABLE_INPUT_SAVE)
+  std::vector <std::string> v;
+
+  if (wxExMatch("@([a-zA-Z].+)@", m_Value, v) > 0)
   {
-    m_AskForInput = true;
+    const auto& it = wxExViMacros::GetVariables().find(v[0]);
+
+    if (it != wxExViMacros::GetVariables().end())
+    {
+      if (!it->second.Expand(value))
+      {
+        if (!IsInput())
+        {
+          LOG(ERROR) << "variable: " << m_Name << " (" << v[0] << ") could not be expanded";
+        }
+      }
+      else
+      {
+        if (!value.empty())
+        {
+          VLOG(9) << "variable: " << m_Name << " (" << v[0] << ") expanded: " << value;
+          return true;
+        }
+      }
+    }
+    else
+    {
+      LOG(ERROR) << "variable: " << m_Name << " (" << v[0] << ") is not found";
+    }
   }
+  
+  return false;
 }
 
 bool wxExVariable::Expand(wxExEx* ex)
 {
-  if (ex->GetSTC()->GetReadOnly() || ex->GetSTC()->HexMode())
+  std::string value;
+
+  if (CheckLink(value))
   {
+    m_Value = value;
+    value.clear();
+  }
+
+  if (!Expand(value, ex))
+  {
+    if (!IsInput())
+    // Now only show log status if this is no input variable,
+    // as it was cancelled in that case.    
+    {
+      wxLogStatus(_("Could not expand variable") + ": "  +  m_Name);
+    }
+
     return false;
   }
   
-  std::string text;
-  
-  if (!Expand(ex, text))
-  {
-    return false;
+  // If there is a prefix, make a comment out of it.
+  std::string commented(value);
+
+  if (ex != nullptr)
+  { 
+    if (ex->GetSTC()->GetReadOnly() || ex->GetSTC()->HexMode())
+    {
+      return false;
+    }
+
+    if (!m_Prefix.empty())
+    {
+      commented = ex->GetSTC()->GetLexer().MakeComment(
+        m_Prefix == "WRAP" ? std::string(): m_Prefix, value);
+    }
+
+    ex->AddText(commented);
   }
   
-  ex->AddText(text);
-    
+  if (m_Type == VARIABLE_INPUT_SAVE || m_Type == VARIABLE_INPUT_ONCE)
+  {
+    m_Value = value;
+
+    VLOG(9) << "variable: " << m_Name << " expanded and saved: " << m_Value;
+  }
+  else 
+  {
+    VLOG(9) << "variable: " << m_Name << " expanded to: " << value;
+  }
+
+  if (m_Type == VARIABLE_INPUT_ONCE && !m_Value.empty())
+  {
+    m_AskForInput = false;
+  }
+
   return true;
 }
 
-bool wxExVariable::Expand(wxExEx* ex, std::string& value)
+bool wxExVariable::Expand(std::string& value, wxExEx* ex) const
 {
+  CheckLink(value);
+
   switch (m_Type)
   {
     case VARIABLE_BUILTIN:
@@ -137,6 +191,10 @@ bool wxExVariable::Expand(wxExEx* ex, std::string& value)
       break;
       
     case VARIABLE_READ:
+      if (m_Value.empty())
+      {
+        return false;
+      }
       value = m_Value;
       break;
       
@@ -150,78 +208,18 @@ bool wxExVariable::Expand(wxExEx* ex, std::string& value)
     default: wxFAIL; break;
   }
   
-  // If there is a prefix, make a comment out of it.
-  if (!m_Prefix.empty())
-  {
-    value = ex->GetSTC()->GetLexer().MakeComment(
-      m_Prefix == "WRAP" ? std::string(): m_Prefix, value);
-  }
-  
   return true;
 }
 
 bool wxExVariable::ExpandBuiltIn(wxExEx* ex, std::string& expanded) const
 {
-  if (m_Name == "Cb")
-  {
-    expanded = ex->GetSTC()->GetLexer().GetCommentBegin();
-  }
-  else if (m_Name == "Cc")
-  {
-    const int line = ex->GetSTC()->GetCurrentLine();
-    const int startPos = ex->GetSTC()->PositionFromLine(line);
-    const int endPos = ex->GetSTC()->GetLineEndPosition(line);
-    expanded = ex->GetSTC()->GetLexer().CommentComplete(
-      ex->GetSTC()->GetTextRange(startPos, endPos).ToStdString());
-  }
-  else if (m_Name == "Ce")
-  {
-    expanded = ex->GetSTC()->GetLexer().GetCommentEnd();
-  }
-  else if (m_Name == "Cl")
-  {
-    expanded = ex->GetSTC()->GetLexer().MakeComment(std::string(), false);
-  }
-  else if (m_Name == "Created")
-  {
-    wxExPath file(ex->GetSTC()->GetFileName());
-    
-    if (ex->GetSTC()->GetFileName().GetStat().IsOk())
-    {
-      expanded = wxDateTime(file.GetStat().st_ctime).FormatISODate();
-    }
-    else
-    {
-      expanded = wxDateTime::Now().FormatISODate();
-    }
-  }
-  else if (m_Name == "Date")
+  if (m_Name == "Date")
   {
     expanded = wxDateTime::Now().FormatISODate();
   }
   else if (m_Name == "Datetime")
   {
     expanded = wxDateTime::Now().FormatISOCombined(' ');
-  }
-  else if (m_Name == "Filename")
-  {
-    expanded = ex->GetSTC()->GetFileName().GetName();
-  }
-  else if (m_Name == "Fullname")
-  {
-    expanded = ex->GetSTC()->GetFileName().GetFullName();
-  }
-  else if (m_Name == "Fullpath")
-  {
-    expanded = ex->GetSTC()->GetFileName().Path().string();
-  }
-  else if (m_Name == "Nl")
-  {
-    expanded = ex->GetSTC()->GetEOL();
-  }
-  else if (m_Name == "Path")
-  {
-    expanded = ex->GetSTC()->GetFileName().GetPath();
   }
   else if (m_Name == "Time")
   {
@@ -231,34 +229,89 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, std::string& expanded) const
   {
     expanded = wxDateTime::Now().Format("%Y");
   }
-  else
+  else if (ex != nullptr)
   {
-    return false;
+    if (m_Name == "Cb")
+    {
+      expanded = ex->GetSTC()->GetLexer().GetCommentBegin();
+    }
+    else if (m_Name == "Cc")
+    {
+      const int line = ex->GetSTC()->GetCurrentLine();
+      const int startPos = ex->GetSTC()->PositionFromLine(line);
+      const int endPos = ex->GetSTC()->GetLineEndPosition(line);
+      expanded = ex->GetSTC()->GetLexer().CommentComplete(
+        ex->GetSTC()->GetTextRange(startPos, endPos).ToStdString());
+    }
+    else if (m_Name == "Ce")
+    {
+      expanded = ex->GetSTC()->GetLexer().GetCommentEnd();
+    }
+    else if (m_Name == "Cl")
+    {
+      expanded = ex->GetSTC()->GetLexer().MakeComment(std::string(), false);
+    }
+    else if (m_Name == "Created")
+    {
+      wxExPath file(ex->GetSTC()->GetFileName());
+      
+      if (ex->GetSTC()->GetFileName().GetStat().IsOk())
+      {
+        expanded = wxDateTime(file.GetStat().st_ctime).FormatISODate();
+      }
+      else
+      {
+        expanded = wxDateTime::Now().FormatISODate();
+      }
+    }
+    else if (m_Name == "Filename")
+    {
+      expanded = ex->GetSTC()->GetFileName().GetName();
+    }
+    else if (m_Name == "Fullname")
+    {
+      expanded = ex->GetSTC()->GetFileName().GetFullName();
+    }
+    else if (m_Name == "Fullpath")
+    {
+      expanded = ex->GetSTC()->GetFileName().Path().string();
+    }
+    else if (m_Name == "Nl")
+    {
+      expanded = ex->GetSTC()->GetEOL();
+    }
+    else if (m_Name == "Path")
+    {
+      expanded = ex->GetSTC()->GetFileName().GetPath();
+    }
+    else
+    {
+      return false;
+    }
   }
   
   return true;
 }
 
-bool wxExVariable::ExpandInput(std::string& expanded)
+bool wxExVariable::ExpandInput(std::string& expanded)  const
 {
-  if (m_AskForInput || m_Value.empty())
+  if (m_AskForInput)
   {
+    const std::string use(!expanded.empty() ? expanded: m_Value);
+
     if (m_Dialog == nullptr)
     {
       m_Dialog = new wxExSTCEntryDialog(
-        m_Value,
+        use,
         std::string(),
         wxExWindowData().Title(m_Name + ":"));
         
       m_Dialog->GetSTC()->GetVi().Use(false);
       m_Dialog->GetSTC()->SetWrapMode(wxSTC_WRAP_WORD);
     }
-    else
-    {
-      m_Dialog->SetTitle(m_Name);
-      m_Dialog->GetSTC()->SetText(m_Value);
-    }
-        
+
+    m_Dialog->SetTitle(m_Name);
+    m_Dialog->GetSTC()->SetText(use);
     m_Dialog->GetSTC()->SetFocus();
     
     bool ended = false;
@@ -289,17 +342,6 @@ bool wxExVariable::ExpandInput(std::string& expanded)
     }
     
     expanded = value;
-    
-    if (m_Value != value)
-    {
-      m_Value = value;
-      m_IsModified = true;
-    }
-
-    if (m_Type == VARIABLE_INPUT_ONCE)
-    {
-      m_AskForInput = false;
-    }
   }
   else
   {
@@ -309,16 +351,10 @@ bool wxExVariable::ExpandInput(std::string& expanded)
   return true;
 }
 
-bool wxExVariable::IsInput() const
+void wxExVariable::Save(pugi::xml_node& node, const std::string* value)
 {
-  return 
-     m_Type == VARIABLE_INPUT || 
-     m_Type == VARIABLE_INPUT_ONCE ||
-     m_Type == VARIABLE_INPUT_SAVE;
-}
+  wxASSERT(!m_Name.empty());
 
-void wxExVariable::Save(pugi::xml_node& node) const
-{
   if (!node.attribute("name"))
   {
     node.append_attribute("name") = m_Name.c_str();
@@ -346,6 +382,11 @@ void wxExVariable::Save(pugi::xml_node& node) const
   {
     node.append_attribute("prefix") = m_Prefix.c_str();
   }
+
+  if (value != nullptr)
+  {
+    m_Value = *value;
+  }
     
   if (!m_Value.empty() && m_Type != VARIABLE_INPUT)
   {
@@ -353,11 +394,15 @@ void wxExVariable::Save(pugi::xml_node& node) const
   }
 } 
 
-void wxExVariable::SkipInput()
+void wxExVariable::SetAskForInput(bool value) 
 {
-  if (m_Type == VARIABLE_INPUT || m_Type == VARIABLE_INPUT_SAVE)
+  if (!value)
   {
-    m_AskForInput = false;
+    m_AskForInput = value;
+  }
+  else if (IsInput() && m_Type != VARIABLE_INPUT_ONCE)
+  {
+    m_AskForInput = value;
   }
 }
 #endif // wxUSE_GUI

@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wxExEx
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
@@ -126,7 +126,7 @@ int ParseCommandWithArg(const std::string command)
 }
 
 wxExEx::wxExEx(wxExSTC* stc)
-  : m_STC(stc)
+  : m_Command(wxExExCommand(stc))
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
   , m_SearchFlags((wxExFindReplaceData::Get()->MatchCase() ? wxSTC_FIND_MATCHCASE: 0) | 
       wxSTC_FIND_REGEXP
@@ -155,7 +155,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       wxExPath::Current(wxExFirstOf(command, " ")); return true;}},
     {":close", [&](const std::string& command) {POST_COMMAND( wxID_CLOSE ) return true;}},
     {":de", [&](const std::string& command) {
-      m_Frame->GetDebug()->Execute(wxExFirstOf(command, " "), m_STC);
+      m_Frame->GetDebug()->Execute(wxExFirstOf(command, " "), m_Command.STC());
       return true;}},
     {":e", [&](const std::string& command) {POST_COMMAND( wxID_OPEN ) return true;}},
     {":f", [&](const std::string& command) {InfoMessage(); return true;}},
@@ -191,7 +191,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       }
       return false;}},
     {":new", [&](const std::string& command) {POST_COMMAND( wxID_NEW ) return true;}},
-    {":print", [&](const std::string& command) {m_STC->Print(command.find(" ") == std::string::npos); return true;}},
+    {":print", [&](const std::string& command) {m_Command.STC()->Print(command.find(" ") == std::string::npos); return true;}},
     {":pwd", [&](const std::string& command) {wxExLogStatus(wxExPath::Current()); return true;}},
     {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
     {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
@@ -201,7 +201,7 @@ wxExEx::wxExEx(wxExSTC* stc)
       {
         output += it + "\n";
       }
-      output += "%: " + m_STC->GetFileName().GetFullName() + "\n";
+      output += "%: " + m_Command.STC()->GetFileName().GetFullName() + "\n";
       std::string err;
       for (const auto &var : m_Evaluator.variables) 
       {
@@ -249,42 +249,42 @@ wxExEx::wxExEx(wxExSTC* stc)
              }
              wxExFindReplaceData::Get()->SetUseRegEx(on);}},
            {{"l", "el", "Edge Line"}, [&](bool on){
-             m_STC->SetEdgeMode(on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);     
+             m_Command.STC()->SetEdgeMode(on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);     
              wxConfigBase::Get()->Write(_("Edge line"), on ? wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);}},
            {{"m", "sm", "Show Mode"}, [&](bool on){
              ((wxExStatusBar *)m_Frame->GetStatusBar())->ShowField("PaneMode", on);
              wxConfigBase::Get()->Write(_("Show mode"), on);}},
            {{"n", "nu", "show lineNUmbers"}, [&](bool on){
-             m_STC->ShowLineNumbers(on);
+             m_Command.STC()->ShowLineNumbers(on);
              wxConfigBase::Get()->Write(_("Line numbers"), on);}},
            {{"s", "ws", "show WhiteSpace"}, [&](bool on){
-             m_STC->SetViewEOL(on);
-             m_STC->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
+             m_Command.STC()->SetViewEOL(on);
+             m_Command.STC()->SetViewWhiteSpace(on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);
              wxConfigBase::Get()->Write(_("Whitespace"), on ? wxSTC_WS_VISIBLEALWAYS: wxSTC_WS_INVISIBLE);}},
            {{"u", "ut", "Use Tabs"}, [&](bool on){
-             m_STC->SetUseTabs(on);
+             m_Command.STC()->SetUseTabs(on);
              wxConfigBase::Get()->Write(_("Use tabs"), on);}},
            {{"w", "mw", "Match Words"}, [&](bool on){
              if (on) m_SearchFlags |= wxSTC_FIND_WHOLEWORD;
              else    m_SearchFlags &= ~wxSTC_FIND_WHOLEWORD;
              wxExFindReplaceData::Get()->SetMatchWord(on);}},
            {{"W", "wl", "Wrap Line"}, [&](bool on){
-             m_STC->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
+             m_Command.STC()->SetWrapMode(on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);
              wxConfigBase::Get()->Write(_("Wrap line"), on ? wxSTC_WRAP_CHAR: wxSTC_WRAP_NONE);}}},
           {{{"c", "ec", "Edge Column"}, {CMD_LINE_INT, [&](const std::any& val) {
-             m_STC->SetEdgeColumn(std::any_cast<int>(val));
+             m_Command.STC()->SetEdgeColumn(std::any_cast<int>(val));
              wxConfigBase::Get()->Write(_("Edge column"), std::any_cast<int>(val));}}},
            {{"S", "sw", "Shift Width"}, {CMD_LINE_INT, [&](const std::any& val) {
-             m_STC->SetIndent(std::any_cast<int>(val));
+             m_Command.STC()->SetIndent(std::any_cast<int>(val));
              wxConfigBase::Get()->Write(_("Indent"), std::any_cast<int>(val));}}},
            {{"t", "ts", "Tab Stop"}, {CMD_LINE_INT, [&](const std::any& val) {
-             m_STC->SetTabWidth(std::any_cast<int>(val));
+             m_Command.STC()->SetTabWidth(std::any_cast<int>(val));
              wxConfigBase::Get()->Write(_("Tab width"), std::any_cast<int>(val));}}},
            {{"y", "sy", "SYntax (lexer or 'off')"}, {CMD_LINE_STRING, [&](const std::any& val) {
              if (std::any_cast<std::string>(val) != "off") 
-               m_STC->GetLexer().Set(std::any_cast<std::string>(val), true); // allow folding
+               m_Command.STC()->GetLexer().Set(std::any_cast<std::string>(val), true); // allow folding
              else              
-               m_STC->GetLexer().Reset();}}}}).Parse(command.substr(0, 4) + text, toggle);
+               m_Command.STC()->GetLexer().Reset();}}}}).Parse(command.substr(0, 4) + text, toggle);
       }
       return true;}},
     {":so", [&](const std::string& command) {
@@ -319,11 +319,11 @@ wxExEx::wxExEx(wxExSTC* stc)
       if (wxString(command).EndsWith("on"))
       {
         wxExLexers::Get()->RestoreTheme();
-        m_STC->GetLexer().Set(m_STC->GetFileName().GetLexer().GetDisplayLexer(), true); // allow folding
+        m_Command.STC()->GetLexer().Set(m_Command.STC()->GetFileName().GetLexer().GetDisplayLexer(), true); // allow folding
       }
       else if (wxString(command).EndsWith("off"))
       {
-        m_STC->GetLexer().Reset();
+        m_Command.STC()->GetLexer().Reset();
         wxExLexers::Get()->SetThemeNone();
       }
       else
@@ -380,7 +380,7 @@ void wxExEx::AddText(const std::string& text)
   }
   else
   {
-    m_STC->AddTextRaw((const char *)text.c_str(), text.length());
+    m_Command.STC()->AddTextRaw((const char *)text.c_str(), text.length());
   }
 }
 
@@ -415,11 +415,11 @@ double wxExEx::Calculator(const std::string& text, int& width)
     width = 0;
     
     // Replace . with current line.
-    wxExReplaceAll(expr, ".", std::to_string(m_STC->GetCurrentLine() + 1));
+    wxExReplaceAll(expr, ".", std::to_string(m_Command.STC()->GetCurrentLine() + 1));
   }
   
   // Replace $ with line count.
-  wxExReplaceAll(expr, "$", std::to_string(m_STC->GetLineCount()));
+  wxExReplaceAll(expr, "$", std::to_string(m_Command.STC()->GetLineCount()));
   
   std::string exp(expr);
   
@@ -446,25 +446,21 @@ void wxExEx::Cleanup()
   delete m_CTags;
 }
   
-bool wxExEx::Command(const std::string& command_org, bool is_handled)
+bool wxExEx::Command(const std::string& cmd)
 {
-  std::string command(command_org);
+  std::string command(cmd);
 
   if (!m_IsActive || command.empty() || command.front() != ':') return false;
-
-  wxExSTC* stc = nullptr;
 
   const auto& it = m_Macros.GetMap().find(command);
   command = (it != m_Macros.GetMap().end() ? it->second: command);
 
-  if (m_Frame->ExecExCommand(command, stc))
+  if (m_Frame->ExecExCommand(m_Command.Command(cmd)))
   {
-    if (stc != nullptr)
-    {
-      m_STC = stc;
-    }
+    m_Command.clear();
+    return true;
   }
-  else if (command == ":" || command == ":'<,'>")
+  else if (command == ":" || command == ":'<,'>" || command == ":!")
   {
     m_Frame->GetExCommand(this, command);
     return true;
@@ -478,6 +474,7 @@ bool wxExEx::Command(const std::string& command_org, bool is_handled)
 
   SetLastCommand(command);
   m_Macros.Record(command);
+  m_Command.clear();
 
   return true;
 }
@@ -556,7 +553,7 @@ bool wxExEx::CommandAddress(const std::string& command)
     else 
     {
       const auto line(wxExAddress(this, rest).GetLine());
-      if (line > 0) wxExSTCData(m_STC).Control(wxExControlData().Line(line)).Inject();
+      if (line > 0) wxExSTCData(m_Command.STC()).Control(wxExControlData().Line(line)).Inject();
       return line > 0;
     }
     
@@ -608,7 +605,7 @@ bool wxExEx::CommandAddress(const std::string& command)
     case 'j': return range.Join(); break;
     case 'm': return range.Move(wxExAddress(this, rest)); break;
     case 'p': 
-      if (m_STC->GetName() != "Print")
+      if (m_Command.STC()->GetName() != "Print")
       {
         return range.Print(rest);
       }
@@ -664,7 +661,7 @@ void wxExEx::Cut(bool show_message)
   
   Yank(false);
 
-  m_STC->ReplaceSelection(wxEmptyString);
+  m_Command.STC()->ReplaceSelection(wxEmptyString);
   
   SetRegistersDelete(sel);
   
@@ -689,13 +686,13 @@ const std::string wxExEx::GetRegisterText() const
 const std::string wxExEx::GetSelectedText() const
 {
   // This also supports rectangular text.
-  if (m_STC->GetSelectedText().empty())
+  if (m_Command.STC()->GetSelectedText().empty())
   {
     std::string none;
     return none;
   }
 
-  const wxCharBuffer b(m_STC->GetSelectedTextRaw());
+  const wxCharBuffer b(m_Command.STC()->GetSelectedTextRaw());
   return std::string(b.data(), b.length() - 1);
 }
 
@@ -725,11 +722,11 @@ bool wxExEx::HandleContainer(
 void wxExEx::InfoMessage() const
 {
   m_Frame->ShowExMessage(wxString::Format("%s line %d of %d --%d%%-- level %d", 
-    m_STC->GetFileName().GetFullName().c_str(), 
-    m_STC->GetCurrentLine() + 1,
-    m_STC->GetLineCount(),
-    100 * (m_STC->GetCurrentLine() + 1)/ m_STC->GetLineCount(),
-    (m_STC->GetFoldLevel(m_STC->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
+    m_Command.STC()->GetFileName().GetFullName().c_str(), 
+    m_Command.STC()->GetCurrentLine() + 1,
+    m_Command.STC()->GetLineCount(),
+    100 * (m_Command.STC()->GetCurrentLine() + 1)/ m_Command.STC()->GetLineCount(),
+    (m_Command.STC()->GetFoldLevel(m_Command.STC()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
      - wxSTC_FOLDLEVELBASE).ToStdString());
 }
 
@@ -748,7 +745,7 @@ bool wxExEx::MarkerAdd(char marker, int line)
   MarkerDelete(marker);
 
   int id;
-  const int lin = (line == -1 ? m_STC->GetCurrentLine(): line);
+  const int lin = (line == -1 ? m_Command.STC()->GetCurrentLine(): line);
 
   if (lm.GetSymbol() == wxSTC_MARK_CHARACTER)
   {
@@ -764,22 +761,22 @@ bool wxExEx::MarkerAdd(char marker, int line)
       const auto marker_offset = 3;
       const auto marker_number = m_MarkerIdentifiers.size() + marker_offset;
 
-      m_STC->MarkerDefine(marker_number, 
+      m_Command.STC()->MarkerDefine(marker_number, 
         wxSTC_MARK_CHARACTER + marker, 
         wxString(lm.GetForegroundColour()), 
         wxString(lm.GetBackgroundColour()));
 
-      id = m_STC->MarkerAdd(lin, marker_number);
+      id = m_Command.STC()->MarkerAdd(lin, marker_number);
       m_MarkerNumbers[marker] = marker_number;
     }
     else
     {
-      id = m_STC->MarkerAdd(lin, it->second);
+      id = m_Command.STC()->MarkerAdd(lin, it->second);
     }
   }
   else
   {
-    id = m_STC->MarkerAdd(lin, m_MarkerSymbol.GetNo());
+    id = m_Command.STC()->MarkerAdd(lin, m_MarkerSymbol.GetNo());
   }
     
   if (id == -1)
@@ -799,7 +796,7 @@ bool wxExEx::MarkerDelete(char marker)
 
   if (it != m_MarkerIdentifiers.end())
   {
-    m_STC->MarkerDeleteHandle(it->second);
+    m_Command.STC()->MarkerDeleteHandle(it->second);
     m_MarkerIdentifiers.erase(it);
     return true;
   }
@@ -813,7 +810,7 @@ bool wxExEx::MarkerGoto(char marker)
   
   if (line != -1)
   {
-    wxExSTCData(m_STC).Control(wxExControlData().Line(line + 1)).Inject();
+    wxExSTCData(m_Command.STC()).Control(wxExControlData().Line(line + 1)).Inject();
     return true;
   }
   
@@ -824,21 +821,21 @@ int wxExEx::MarkerLine(char marker) const
 {
   if (marker == '<')
   {
-    if (m_STC->GetSelectedText().empty())
+    if (m_Command.STC()->GetSelectedText().empty())
     {
       return -1;
     }
     
-    return m_STC->LineFromPosition(m_STC->GetSelectionStart());
+    return m_Command.STC()->LineFromPosition(m_Command.STC()->GetSelectionStart());
   }
   else if (marker == '>')
   {
-    if (m_STC->GetSelectedText().empty())
+    if (m_Command.STC()->GetSelectedText().empty())
     {
       return -1;
     }
   
-    return m_STC->LineFromPosition(m_STC->GetSelectionEnd());
+    return m_Command.STC()->LineFromPosition(m_Command.STC()->GetSelectionEnd());
   }
   else
   {
@@ -846,7 +843,7 @@ int wxExEx::MarkerLine(char marker) const
 
     if (it != m_MarkerIdentifiers.end())
     {
-      const int line = m_STC->MarkerLineFromHandle(it->second);
+      const int line = m_Command.STC()->MarkerLineFromHandle(it->second);
     
       if (line == -1)
       {
@@ -982,7 +979,7 @@ void wxExEx::ShowDialog(
     m_Dialog->SetTitle(title);
   }
   
-  m_Dialog->GetSTC()->GetLexer().Set(prop_lexer ? wxExLexer("props"): m_STC->GetLexer());
+  m_Dialog->GetSTC()->GetLexer().Set(prop_lexer ? wxExLexer("props"): m_Command.STC()->GetLexer());
   m_Dialog->Show();
 }
 

@@ -44,6 +44,9 @@ Variables are expanded when playing back the macro.
   
   If you do not specify this attribute, then the variable is expanded
   to the xml contents as specified here.
+  Finally a variable can be intialized using another variable 
+  using the @OTHER@ as contents for that variable referring
+  to the OTHER variable to for intialization. E.g. see the Copyright variable.
   
 - A variable can have a "prefix" attribute. 
   This attribute causes a comment line to be generated that is prefixed with
@@ -87,7 +90,7 @@ Variables are expanded when playing back the macro.
   <!-- INPUT-ONCE type -->
   <variable name="Author"           type="INPUT-ONCE"/>
   <variable name="Author:"          type="INPUT-ONCE" prefix="Author:    "/>
-  <variable name="Copyright"        type="INPUT-ONCE"/>
+  <variable name="Copyright"        type="INPUT-ONCE">@Author:@</variable>
 
   <!-- INPUT-SAVE type -->
   <variable name="Purpose"          type="INPUT-SAVE" prefix="WRAP"/>
@@ -161,7 +164,7 @@ Variables are expanded when playing back the macro.
 
   <!-- A control key macro for control chars outside normal range -->
   <map-control name="]">Q</map-control>
-  <map-control name="[">S</map-control>
+  <map-control name="[">B</map-control>
 
   <!-- A key macro for ascii characters, including ctrl-a etc. -->
   <!-- control g -->

@@ -74,7 +74,7 @@ private:
   
   wxExTextCtrlInput m_Calcs;
   wxExTextCtrlInput m_Commands;
-  std::string m_Command;
+  wxExExCommand m_Command;
 };
 
 wxExManagedFrame::wxExManagedFrame(size_t maxFiles, const wxExWindowData& data)
@@ -391,7 +391,7 @@ wxExTextCtrl::wxExTextCtrl(
       }
       else if (event.GetKeyCode() != WXK_TAB)
       {
-        m_Command += event.GetUnicodeKey();
+        m_Command.Append(event.GetUnicodeKey());
       }
     }
         
@@ -410,9 +410,9 @@ wxExTextCtrl::wxExTextCtrl(
         std::vector<std::string> v;
         std::string expansion;
 
-        if (wxExAutoCompleteFileName(m_Command, expansion, v))
+        if (wxExAutoCompleteFileName(m_Command.Command(), expansion, v))
         {
-          m_Command += expansion;
+          m_Command.Append(expansion);
           AppendText(expansion);
         }}
         break;
@@ -513,10 +513,12 @@ wxExTextCtrl::wxExTextCtrl(
 
     if (!m_ex->GetMacros().Mode()->IsRecording())
     {
-      m_Command = m_Prefix->GetLabel() + GetValue();
+      m_Command.Command(m_Prefix->GetLabel().ToStdString() + GetValue().ToStdString());
     }
 
-    if (m_ex->Command(m_Command, m_UserInput && GetType() == TYPE_FIND))
+    m_Command.IsHandled(m_UserInput && GetType() == TYPE_FIND);
+
+    if (m_Command.Exec())
     {
       int focus = (GetType() == TYPE_FIND ? 
         wxExManagedFrame::HIDE_BAR_FORCE_FOCUS_STC: 
@@ -549,35 +551,50 @@ bool wxExTextCtrl::SetEx(wxExEx* ex, const std::string& command)
 {
   if (command.empty()) return false;
 
+  m_ex = ex;
   m_UserInput = false;
   const std::string range(command.substr(1));
   m_ModeVisual = !range.empty();
+  m_Prefix->SetLabel(command.substr(0, 1));
+  m_Command = wxExExCommand(ex->GetCommand()).Command(m_Prefix->GetLabel().ToStdString());
+  m_ControlR = false;
 
   switch (GetType(command))
   {
-    case TYPE_CALC: SetValue(m_Calcs.Get()); break;
+    case TYPE_CALC: 
+      SetValue(m_Calcs.Get()); 
+      SelectAll();
+      break;
+
     case TYPE_COMMAND:
-      if (!m_Commands.Get().empty())
+      if (command == ":!")
+      {
+        SetValue("!");
+        SetInsertionPointEnd();
+      }
+      else if (!m_Commands.Get().empty())
       {
         SetValue(m_ModeVisual && m_Commands.Get().find(range) != 0 ? 
           range + m_Commands.Get(): m_Commands.Get()); 
+        SelectAll();
       }
       else
       {
         SetValue(range); 
+        SelectAll();
       }
       break;
-    case TYPE_FIND: SetValue(!m_ModeVisual ? ex->GetSTC()->GetFindString(): std::string()); break;
-    case TYPE_UNKNOWN: return false;
+
+    case TYPE_FIND: 
+      SetValue(!m_ModeVisual ? ex->GetSTC()->GetFindString(): std::string()); 
+      SelectAll();
+      break;
+
+    case TYPE_UNKNOWN: 
+      return false;
   }
     
-  m_Prefix->SetLabel(command.substr(0, 1));
-  m_Command = m_Prefix->GetLabel();
-  m_ControlR = false;
-  m_ex = ex;
-
   Show();
-  SelectAll();
   SetFocus();
 
   return true;

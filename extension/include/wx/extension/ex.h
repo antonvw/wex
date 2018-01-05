@@ -12,6 +12,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <wx/extension/ex-command.h>
 #include <wx/extension/marker.h>
 
 #if wxUSE_GUI
@@ -52,12 +53,7 @@ public:
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.
   /// Returns true if the command was executed.
-  virtual bool Command(
-    /// command should start with a ':'.
-    const std::string& command,
-    /// normally this command is not yet handled, but
-    /// if it is, set this to allow postfix operation only
-    bool is_handled = false);
+  virtual bool Command(const std::string& command);
 
   /// Copies data from other component.
   void Copy(const wxExEx* ex);
@@ -65,6 +61,9 @@ public:
   /// Cuts selected text to yank register,
   /// and updates delete registers.
   void Cut(bool show_message = true);
+
+  /// Returns command.
+  const auto & GetCommand() const {return m_Command;};
 
   /// Returns the ctags.
   static auto & GetCTags() {return m_CTags;};
@@ -97,7 +96,7 @@ public:
   const std::string GetSelectedText() const;
   
   /// Returns STC component.
-  auto * GetSTC() {return m_STC;};
+  auto * GetSTC() {return m_Command.STC();};
 
   /// Writes info message.
   void InfoMessage() const;
@@ -149,6 +148,8 @@ protected:
   /// Setting register 0 results in
   /// disabling current register.
   void SetRegister(const char name) {m_Register = name;};
+
+  wxExExCommand m_Command;
 private:
   bool CommandHandle(const std::string& command) const;
   bool CommandAddress(const std::string& command);
@@ -178,15 +179,14 @@ private:
   static wxExViMacros m_Macros;
   static ex_evaluator m_Evaluator;
 
-  bool m_IsActive = true; // are we actively using ex mode?
-  bool m_Copy = false; // this is a copy, result of split
+  bool m_IsActive{true}; // are we actively using ex mode?
+  bool m_Copy{false}; // this is a copy, result of split
   
   int m_SearchFlags;
   
-  char m_Register = 0;
+  char m_Register{0};
   
   wxExManagedFrame* m_Frame;  
-  wxExSTC* m_STC;
 
   const std::vector<std::pair<
     const std::string, 

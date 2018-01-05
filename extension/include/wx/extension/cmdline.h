@@ -11,8 +11,6 @@
 #include <functional>
 #include <utility>
 #include <vector>
-#include <sstream> // for tclap!
-#include <tclap/CmdLine.h>
 
 /// Types for commandline.
 enum wxExCmdLineTypes
@@ -21,6 +19,11 @@ enum wxExCmdLineTypes
   CMD_LINE_INT,
   CMD_LINE_STRING,
 };
+
+class wxExCmdLineOption;
+class wxExCmdLineParam;
+class wxExCmdLineParser;
+class wxExCmdLineSwitch;
 
 /// This class offers a command line parser.
 class WXDLLIMPEXP_BASE wxExCmdLine
@@ -61,7 +64,7 @@ public:
     const char delimiter = ' ', 
     /// version, if empty use wxExtension version
     const std::string& version = std::string(), 
-    /// help
+    /// show help
     bool helpAndVersion = true);
 
   /// Destructor.
@@ -71,44 +74,14 @@ public:
   /// (should start with app name, and if empty
   /// the command line from wxTheApp is used).
   bool Parse(
-    /// commnd line
+    /// command line
     const std::string& cmdline = std::string(),
     /// allow to toggle between switches
     bool toggle = false);
 private:
-  struct wxExCmdLineContent
-  {
-    wxExCmdLineContent(std::function<void(const std::any& any)> fu,
-      TCLAP::ValueArg<float>* f)
-      : m_Type(CMD_LINE_FLOAT) 
-      , m_f(fu) {m_tclap_u.m_val_f = f;};
-    wxExCmdLineContent(std::function<void(const std::any& any)> fu,
-      TCLAP::ValueArg<int>* i)
-      : m_Type(CMD_LINE_INT) 
-      , m_f(fu) {m_tclap_u.m_val_i = i;};
-    wxExCmdLineContent(std::function<void(const std::any& any)> fu,
-      TCLAP::ValueArg<std::string>* s)
-      : m_Type(CMD_LINE_STRING) 
-      , m_f(fu) {m_tclap_u.m_val_s = s;};
-      
-    const wxExCmdLineTypes m_Type;
-    std::function<void(const std::any& any)> m_f; 
-
-    union wxExInternal
-    {
-      TCLAP::ValueArg<float>* m_val_f; 
-      TCLAP::ValueArg<int>* m_val_i; 
-      TCLAP::ValueArg<std::string>* m_val_s; 
-    } m_tclap_u;
-  };
-
-  std::vector<wxExCmdLineContent*> m_Options; 
-  std::vector<std::pair<
-    TCLAP::UnlabeledMultiArg<std::string>*, 
-    std::function<bool(std::vector<std::string>)>>> m_Params; 
-  std::vector<std::pair<
-    TCLAP::SwitchArg*, 
-    std::function<void(bool)>>> m_Switches; 
+  std::vector<wxExCmdLineOption*> m_Options; 
+  std::vector<wxExCmdLineParam*> m_Params; 
+  std::vector<wxExCmdLineSwitch*> m_Switches; 
   
-  TCLAP::CmdLine m_CmdLine;
+  wxExCmdLineParser* m_Parser;
 };

@@ -22,6 +22,7 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
+#include <wx/extension/version.h>
 #include <wx/extension/vi-macros.h>
 
 #define NO_ASSERT 1
@@ -51,6 +52,8 @@ int wxExApp::OnExit()
 
   wxExAddressRange::Cleanup();
   wxExEx::Cleanup();
+
+  VLOG(1) << "closed";
 
   return wxApp::OnExit(); // this destroys the config
 }
@@ -121,6 +124,12 @@ bool wxExApp::OnInit()
     free(argv_elp[i]);
   }
 
+  VLOG(1) 
+    << "started: " 
+    << GetAppName() << "-" << wxExGetVersionInfo().GetVersionOnlyString().c_str()
+    << " verbosity: " 
+    << el::Loggers::verboseLevel();
+
   const wxLanguageInfo* info = nullptr;
   
   if (wxConfigBase::Get()->Exists("LANG"))
@@ -172,7 +181,7 @@ bool wxExApp::OnInit()
   }
 
   wxExVCS::LoadDocument();
-  wxExViMacros::LoadDocument();
+  wxExViMacros().LoadDocument();
 
   return true; // wxApp::OnInit(); // we have our own cmd line processing
 }

@@ -36,7 +36,7 @@ public:
 
   /// Are we playing back?
   bool IsPlayback() const;
-  
+
   /// Are we recording?
   bool IsRecording() const;
 

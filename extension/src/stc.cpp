@@ -647,6 +647,7 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
   }
   else
   {
+    m_File.FileLoad(filename);
     m_Lexer.Set(filename.GetLexer(), true); // allow fold
   }
 }
@@ -980,6 +981,11 @@ bool wxExSTC::FindNext(
       recursive = true;
       found = FindNext(text, find_flags, find_next);
       recursive = false;
+
+      if (!found)
+      {
+        VLOG(9) << GetFileName().GetFullName() << " text: " << text << " not found";
+      }
     }
     
     return found;
@@ -1007,6 +1013,8 @@ bool wxExSTC::FindNext(
       
     EnsureVisible(LineFromPosition(GetTargetStart()));
     EnsureCaretVisible();
+
+    VLOG(9) << GetFileName().GetFullName() << " found text: " << text;
 
     return true;
   }

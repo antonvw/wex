@@ -7,8 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <map>
 #include <vector>
+#include <easylogging++.h>
 #include <wx/choicdlg.h>
 #include <wx/config.h>
 #include <wx/log.h>
@@ -47,6 +47,7 @@ private:
 
 wxExCTags::wxExCTags(wxExFrame* frame, const std::string& filename)
   : m_Frame(frame)
+  , m_Iterator(m_Matches.begin())
 {
   tagFileInfo info;
 
@@ -65,9 +66,14 @@ wxExCTags::~wxExCTags()
   tagsClose(m_File);
 }
 
-bool wxExCTags::Find(const std::string& name) const
+bool wxExCTags::Find(const std::string& name)
 {
-  if (m_File == nullptr || name.empty()) return false;
+  if (m_File == nullptr) return false;
+
+  if (name.empty())
+  {
+    return Next();
+  }
 
   tagEntry entry;
   
@@ -78,23 +84,27 @@ bool wxExCTags::Find(const std::string& name) const
   }
   
   const wxExCTagsEntry ct(entry);
-  
-  std::map< std::string, wxExCTagsEntry > v{{ct.GetName(), ct}};
+
+  m_Matches.clear();
+  m_Matches.insert({ct.GetName(), ct});
+  m_Iterator = m_Matches.begin();
   
   while (tagsFindNext(m_File, &entry) == TagSuccess)
   {
     const wxExCTagsEntry ct(entry);
-    v.insert({ct.GetName(), ct});
+    m_Matches.insert({ct.GetName(), ct});
   }
 
-  if (v.size() == 1)
+  VLOG(9) << "ctags matches: " << m_Matches.size();
+
+  if (m_Matches.size() == 1)
   {
-    v.begin()->second.OpenFile(m_Frame);
+    m_Matches.begin()->second.OpenFile(m_Frame);
   }
   else
   {
     wxArrayString as;
-    for (const auto& it : v) as.Add(it.second.GetName());
+    for (const auto& it : m_Matches) as.Add(it.second.GetName());
     wxMultiChoiceDialog dialog(m_Frame,
       _("Input") + ":", 
       _("Select File"),
@@ -103,8 +113,8 @@ bool wxExCTags::Find(const std::string& name) const
     
     for (const auto& sel : dialog.GetSelections())
     {
-      const auto & it = v.find(as[sel].ToStdString());
-      it->second.OpenFile(m_Frame);
+      m_Iterator = m_Matches.find(as[sel].ToStdString());
+      m_Iterator->second.OpenFile(m_Frame);
     }
   }
 
@@ -112,3 +122,38 @@ bool wxExCTags::Find(const std::string& name) const
 
   return true;
 }  
+
+bool wxExCTags::Next()
+{
+  if (m_Matches.size() <= 1)
+  {
+    return false;
+  }
+
+  if (++m_Iterator == m_Matches.end())
+  {
+    m_Iterator = m_Matches.begin();
+  }
+
+  m_Iterator->second.OpenFile(m_Frame);
+
+  return true;
+}
+
+bool wxExCTags::Previous()
+{
+  if (m_Matches.size() <= 1)
+  {
+    return false;
+  }
+
+  if (m_Iterator == m_Matches.begin())
+  {
+    m_Iterator = m_Matches.end();
+  }
+
+  m_Iterator--;
+  m_Iterator->second.OpenFile(m_Frame);
+
+  return true;
+}

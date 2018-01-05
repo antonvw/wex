@@ -26,7 +26,7 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual wxExListView* Activate(wxExListType type, const wxExLexer* lexer = nullptr) override;
-  virtual bool ExecExCommand(const std::string& command, wxExSTC* & stc) override;
+  virtual bool ExecExCommand(wxExExCommand& ciommand) override;
   virtual wxExListViewFile* GetProject() override;
   virtual bool IsOpen(const wxExPath& filename) override;
   virtual void OnCommandItemDialog(wxWindowID dialogid, const wxCommandEvent& event) override;

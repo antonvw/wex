@@ -2,10 +2,9 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -99,8 +98,6 @@ Frame::Frame(App* app)
       ID_VIEW_HISTORY,
       _("History")))
 {
-  VLOG(1) << "started: " << "syncped-" << wxExGetVersionInfo().GetVersionOnlyString().c_str();
-
   GetManager().AddPane(m_Editors, wxAuiPaneInfo()
     .CenterPane()
     .MaximizeButton(true)
@@ -295,7 +292,6 @@ Frame::Frame(App* app)
       wxDELETE(m_Process);
       event.Skip();
     }
-    VLOG(1) << "closed";
     });
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -334,18 +330,23 @@ Frame::Frame(App* app)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     // In hex mode we cannot edit the file.
     if (wxConfigBase::Get()->ReadBool("HexMode", false)) return;
+
     static std::string name = event.GetString().ToStdString();
     wxTextEntryDialog dlg(this, _("Input") + ":", _("File Name"), name);
     wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
     validator.SetCharExcludes("/\\?%*:|\"<>");
     dlg.SetTextValidator(validator);
     if (dlg.ShowModal() == wxID_CANCEL) return;
+
     name = dlg.GetValue();
     if (name.empty()) return;
+
     wxWindow* page = new wxExSTC(std::string(),
       wxExSTCData(m_App->GetData()).Window(wxExWindowData().
         Parent(m_Editors)));
+
     ((wxExSTC*)page)->GetFile().FileNew(name);
+
     // This file does yet exist, so do not give it a bitmap.
     m_Editors->AddPage(page, name, name, true);
     ShowPane("FILES");}, wxID_NEW);
@@ -508,6 +509,9 @@ Frame::Frame(App* app)
     };}, ID_VIEW_ASCII_TABLE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    TogglePane("DIRCTRL");}, ID_VIEW_DIRCTRL);
+    
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     TogglePane("FILES"); 
     if (!GetManager().GetPane("FILES").IsShown())
     {
@@ -607,46 +611,42 @@ void Frame::AddPaneProjects()
 }
 
 
-bool Frame::ExecExCommand(const std::string& command, wxExSTC* & stc)
+bool Frame::ExecExCommand(wxExExCommand& command)
 {
-  if (command == ":") return false;
+  if (command.Command() == ":") return false;
 
   if (m_App->GetScriptout().IsOpened())
   {
-    m_App->GetScriptout().Write(command + "\n");
+    m_App->GetScriptout().Write(command.Command() + "\n");
   }
+
+  bool handled = false;
 
   if (m_Editors->GetPageCount() > 0)
   {
-    if (command == ":n")
+    if (command.Command() == ":n")
     {
       if (m_Editors->GetSelection() == m_Editors->GetPageCount() - 1) return false;
       
       m_Editors->AdvanceSelection();
-
-      if (wxExEx::GetMacros().Mode()->IsPlayback())
-      {
-        stc = (wxExSTC *)m_Editors->GetPage(m_Editors->GetSelection());
-      }
-      
-      return true;
+      handled = true;
     }
-    else if (command == ":prev")
+    else if (command.Command() == ":prev")
     {
       if (m_Editors->GetSelection() == 0) return false;
       
       m_Editors->AdvanceSelection(false);
+      handled = true;
+    }
 
-      if (wxExEx::GetMacros().Mode()->IsPlayback())
-      {
-        stc = (wxExSTC *)m_Editors->GetPage(m_Editors->GetSelection());
-      }
-
-      return true;
+    if (handled && wxExEx::GetMacros().Mode()->IsPlayback())
+    {
+      command.Set(((wxExSTC *)m_Editors->GetPage(
+        m_Editors->GetSelection()))->GetVi().GetCommand());
     }
   }
-  
-  return false;
+
+  return handled;
 }
 
 wxExListViewFile* Frame::GetProject()

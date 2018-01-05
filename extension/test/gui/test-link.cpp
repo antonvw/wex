@@ -54,8 +54,7 @@ TEST_CASE("wxExLink")
   
   SUBCASE("Default constructor")
   {
-    const wxExLink lnk;
-    link(lnk, "test");
+    link(wxExLink(), "xxxxx");
   }
   
   SUBCASE("Constructor with STC")

@@ -7,7 +7,7 @@
 
 #pragma once
 
-@Purpose@
+// @Purpose@
 class @Myclass@
 {
 public:

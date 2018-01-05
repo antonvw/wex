@@ -2,7 +2,7 @@
 // Name:      version.cpp
 // Purpose:   Implementation of version info
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -16,7 +16,7 @@ const wxExVersionInfo wxExGetVersionInfo()
   return wxExVersionInfo("wxExtension", 
     18, 4, 0, 
     "wxExtension Library (a collection of wxWidgets extension classes)",
-    "(c) 1998-2017, Anton van Wezenbeek." + wxString(_("All rights reserved.")));
+    "(c) 1998-2018, Anton van Wezenbeek." + wxString(_("All rights reserved.")));
 }
 
 wxExVersionInfo::wxExVersionInfo(const wxString& name,

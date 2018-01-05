@@ -2,7 +2,7 @@
 // Name:      vi-macros-mode.cpp
 // Purpose:   Implementation of class wxExViMacrosMode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -68,13 +68,11 @@ bool wxExViMacrosMode::Expand(
   return m_FSM->Expand(ex, v, expanded);
 }
 
-bool wxExViMacrosMode::IsPlayback() const 
+bool wxExViMacrosMode::IsPlayback() const
 {
-  return 
-    m_FSM->Get() == States::PLAYINGBACK ||
-    m_FSM->Get() == States::PLAYINGBACK_WHILE_RECORDING;
+  return m_FSM->IsPlayback();
 }
-  
+
 bool wxExViMacrosMode::IsRecording() const 
 {
   return m_FSM->Get() == States::RECORDING;
@@ -192,26 +190,16 @@ int wxExViMacrosMode::Transition(
         }
       }
 
-      trigger = !wxExViMacros::IsRecordedMacro(macro) ? 
-        Triggers::EXPAND_VARIABLE: Triggers::PLAYBACK; 
+      trigger = wxExViMacros::IsRecordedMacro(macro) ? 
+        Triggers::PLAYBACK: Triggers::EXPAND_VARIABLE; 
     break;
 
     default: return 0;
   }
 
-  // The STC pointer might change because of playback.
-  // Normally that is ok, but if playback fails, and
-  // the m_STC was changed (because of e.g. :n), 
-  // you would end up with an incorrect pointer.
-  // Therefore set it back after the playback.
-  wxExSTC* stc = (ex != nullptr ? ex->m_STC: nullptr);
+  const wxExExCommand cmd(ex != nullptr ? ex->GetCommand(): wxExExCommand());
+  const bool result = m_FSM->Execute(trigger, macro, ex, repeat);
+  if (ex != nullptr) ex->m_Command.Restore(cmd);
 
-  if (!m_FSM->Execute(trigger, macro, ex, repeat))
-  {
-    return 0;
-  }
-
-  if (stc != nullptr) ex->m_STC = stc;
-
-  return command.size();
+  return result ? command.size(): 0;
 }

@@ -70,11 +70,9 @@ public:
     {
       for (const auto& it : m_Commands)
       {
-        const std::string cmd(":" + std::to_string(line + 1) + it);
-
-        if (!m_Ex->Command(cmd))
+        if (!m_Ex->Command(":" + std::to_string(line + 1) + it))
         {
-          m_Ex->GetFrame()->ShowExMessage(cmd + " failed");
+          m_Ex->GetFrame()->ShowExMessage(m_Ex->GetCommand().Command() + " failed");
           return false;
         }
       }

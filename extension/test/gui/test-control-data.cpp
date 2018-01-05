@@ -2,7 +2,7 @@
 // Name:      test-control-data.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -18,7 +18,7 @@ TEST_CASE("wxExControlData")
   {
     REQUIRE( wxExControlData().Col() == DATA_NUMBER_NOT_SET);
     REQUIRE( wxExControlData().Col(3).Col() == 3);
-    REQUIRE( wxExControlData().Command("xx").Command() == "xx");
+    REQUIRE( wxExControlData().Command("xx").Command().Command() == "xx");
     REQUIRE( wxExControlData().Find("xx").Find() == "xx");
     REQUIRE( wxExControlData().Line() == DATA_NUMBER_NOT_SET);
     REQUIRE( wxExControlData().Line(-1).Line() == -1);

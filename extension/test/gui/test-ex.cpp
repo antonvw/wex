@@ -61,7 +61,7 @@ TEST_CASE("wxExEx")
   
   // GetSearchFlags
   REQUIRE( (ex->GetSearchFlags() & wxSTC_FIND_REGEXP) > 0);
-  
+
   // Test commands and GetLastCommand. 
   // Most commands are tested using the :so command.
   for (const auto& command : std::vector<std::pair<std::string, bool>> {
@@ -210,9 +210,11 @@ TEST_CASE("wxExEx")
   REQUIRE( stc->GetText().Contains("d"));
   
   // Test substitute.
+  stc->SetText("we have ccccc yyyy zzzz");
+  REQUIRE( ex->Command(":%s/ccccc/ddd"));
+  REQUIRE( stc->GetText() == "we have ddd yyyy zzzz");
   stc->SetText("we have xxxx yyyy zzzz");
   REQUIRE( ex->Command(":set re"));
-  REQUIRE( ex->Command(":%s/ccccc/ddd"));
   REQUIRE( ex->Command(":%s/\\(x+\\) *\\(y+\\)/\\\\2 \\\\1"));
   REQUIRE( stc->GetText() == "we have yyyy xxxx zzzz");
   stc->SetText("we have xxxx 'zzzz'");

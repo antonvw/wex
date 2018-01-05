@@ -20,6 +20,46 @@ class wxExSTCEntryDialog;
 class WXDLLIMPEXP_BASE wxExVariable
 {
 public:
+  /// Default constructor.
+  wxExVariable(const std::string& name = std::string())
+    : m_Name(name) {;};
+  
+  /// Constructor that sets members using speecified xml node.
+  wxExVariable(const pugi::xml_node& node);
+  
+  /// Expands variable to ex component.
+  /// This might update the internal value.
+  /// Returns true if variable could be expanded.
+  bool Expand(wxExEx* ex);
+  
+  /// Expands variable to value text.
+  /// Returns true if variable could be expanded.
+  bool Expand(std::string& value, wxExEx* ex = nullptr) const;
+  
+  /// Returns variable name.
+  const auto& GetName() const {return m_Name;};
+  
+  /// Returns variable value.
+  const auto& GetValue() const {return m_Value;};
+  
+  /// Returns true if this variable is a built in.
+  bool IsBuiltIn() const {return m_Type == VARIABLE_BUILTIN;};
+
+  /// Returns true if this is an input template.  
+  bool IsInput() const {return 
+    m_Type == VARIABLE_INPUT || 
+    m_Type == VARIABLE_INPUT_ONCE ||
+    m_Type == VARIABLE_INPUT_SAVE;};
+
+  /// Returns true if this variable is a template.
+  bool IsTemplate() const {return m_Type == VARIABLE_TEMPLATE;};
+  
+  /// Save in xml node.
+  void Save(pugi::xml_node& node, const std::string* value = nullptr);
+  
+  /// Sets the ask for input member, if appropriate for type.
+  void SetAskForInput(bool value = true);
+private:  
   // Several types of variables are supported.
   // See xml file.
   enum
@@ -33,66 +73,16 @@ public:
     VARIABLE_TEMPLATE     // read value from a template file
   };
 
-  /// Default constructor.
-  wxExVariable(
-    const std::string& name = std::string(),
-    const std::string& value = std::string(),
-    const std::string& prefix = std::string(),
-    int type = VARIABLE_INPUT_SAVE,
-    bool ask_for_input = true);
-  
-  /// Constructor using xml node, setting name, type, value,
-  /// prefix using node attributes.
-  wxExVariable(const pugi::xml_node& node);
-  
-  /// Sets the ask for input member, if appropriate for type.
-  void AskForInput();
-  
-  /// Expands variable to ex component.
-  /// This might update the internal value, and set the modified flag.
-  /// Returns true if variable could be expanded.
-  bool Expand(wxExEx* ex);
-  
-  /// Expands variable to value text.
-  /// This might update the internal value, and set the modified flag.
-  /// Returns true if variable could be expanded.
-  bool Expand(wxExEx* ex, std::string& value);
-  
-  /// Returns variable name.
-  const auto& GetName() const {return m_Name;};
-  
-  /// Returns variable type.
-  const auto GetType() const {return m_Type;};
-  
-  /// Returns variable value.
-  const auto& GetValue() const {return m_Value;};
-  
-  /// Returns true if this variable is of type input.
-  bool IsInput() const;
-  
-  /// Returns true if expanding has modified the value.
-  bool IsModified() const {return m_IsModified;};
-  
-  /// Save in xml node.
-  void Save(pugi::xml_node& node) const;
-  
-  /// Resets the ask for input member, if appropriate for type.
-  void SkipInput();
-private:  
+  bool CheckLink(std::string& value) const;
   bool ExpandBuiltIn(wxExEx* ex, std::string& expanded) const;
-  bool ExpandInput(std::string& expanded);
-
-  bool m_AskForInput = true;
-  bool m_IsModified = false;
-    
-  int m_Type;
+  bool ExpandInput(std::string& expanded) const;
   
+  bool m_AskForInput{true};
+    
+  // no const members because of assignment in wxExViMacrosFSM
+  int m_Type{VARIABLE_INPUT_SAVE};
   std::string m_Name;
   std::string m_Prefix;
-  
-  /// We keep values of input variables,
-  /// so, while playing back, you have to enter them only once.
-  /// The m_AskForInput member is set each time you start playback.
   std::string m_Value;
   
   // The dialog used.

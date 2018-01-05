@@ -37,7 +37,7 @@ wxExViMacrosFSM::wxExViMacrosFSM()
     // idle
     {States::IDLE, States::EXPANDING_TEMPLATE, Triggers::EXPAND_TEMPLATE, 
       [&]{
-        if (m_variable.GetType() != wxExVariable::VARIABLE_TEMPLATE)
+        if (!m_variable.IsTemplate())
         {
           LOG(ERROR) << "variable: " << m_variable.GetName() << " is no template";
           return false;
@@ -77,14 +77,6 @@ wxExViMacrosFSM::wxExViMacrosFSM()
       [&]{Playback();}}});
 
   m_fsm.add_debug_fn(Verbose);
-}
-
-void wxExViMacrosFSM::AskForInput() 
-{
-  for (auto& it : wxExViMacros::m_Variables)
-  {
-    it.second.AskForInput();
-  }
 }
 
 bool wxExViMacrosFSM::Execute(
@@ -149,7 +141,7 @@ void wxExViMacrosFSM::ExpandingTemplate()
     return;
   }
 
-  AskForInput();
+  SetAskForInput();
 
   // Keep current macro, in case you cancel expanding,
   // this one is restored.
@@ -181,29 +173,33 @@ void wxExViMacrosFSM::ExpandingTemplate()
       
       if (!completed)
       {
+        LOG(ERROR) << "variable syntax error: " << variable;
         m_error = true;
       }
       // Prevent recursion.
       else if (variable == m_variable.GetName())
       {
+        LOG(ERROR) << "recursive variable: " << variable;
         m_error = true;
       }
       else
       {
         std::string value;
         
-        if (!ExpandTo(variable, value))
+        if (!ExpandingVariable(variable, &value))
         {
           m_error = true;
         }
-        
-        *m_expanded += value;
+        else
+        {
+          *m_expanded += value;
+        }
       }
     }
   }
   
   // Set back to normal value.  
-  AskForInput();
+  SetAskForInput();
     
   wxExViMacros::m_Macro = m_variable.GetName();
   wxExFrame::StatusText(wxExViMacros::m_Macro, "PaneMacro");
@@ -213,104 +209,80 @@ void wxExViMacrosFSM::ExpandingTemplate()
 
 void wxExViMacrosFSM::ExpandingVariable()
 {
+  if (!ExpandingVariable(m_macro, nullptr))
+  {
+    m_error = true;
+  }
+  else
+  {
+    wxExViMacros::m_Macro = m_macro;
+  }
+}
+
+bool wxExViMacrosFSM::ExpandingVariable(
+  const std::string& name, std::string* value) const
+{
   pugi::xml_node node;
-  wxExVariable var;
-  const auto& it = wxExViMacros::m_Variables.find(m_macro);
+  const auto& it = wxExViMacros::m_Variables.find(name);
+  wxExVariable* var;
     
   if (it == wxExViMacros::m_Variables.end())
   {
-    var = wxExVariable(var);
-    wxExViMacros::m_Variables.insert({m_macro, var});
-    wxLogStatus(_("Added variable") + ": "  +  m_macro);
+    wxExVariable varnew(name);
+    const auto& it = wxExViMacros::m_Variables.insert({name, varnew});
+    var = &it.first->second;
     node = wxExViMacros::m_doc.document_element().append_child("variable");
   }
   else
   {
+    var = &it->second;
+
     try
     {
-      const std::string query("//variable[@name='" + m_macro + "']");
+      // node = wxExViMacros::m_doc.document_element().child(name.c_str());
+      const std::string query("//variable[@name='" + name + "']");
       pugi::xpath_node xp = wxExViMacros::m_doc.document_element().select_node(query.c_str());
 
       if (xp && xp.node())
       {
         node = xp.node();
       }
+      else
+      {
+        LOG(ERROR) << "xml query failed: " << query;
+        return false;
+      }
     }
     catch (pugi::xpath_exception& e)
     {
       LOG(ERROR) << e.what();
+      return false;
     }
-
-    var = it->second;
   }
 
-  if (var.Expand(m_ex))
+  if (value == nullptr)
   {
-    if (var.IsModified())
+    if (!var->Expand(m_ex))
     {
-      var.Save(node);
-      wxExViMacros::m_IsModified = true;
-    }
-    
-    wxLogStatus(_("Variable expanded"));
-  
-    if (Get() == States::PLAYINGBACK)
-    {
-      wxExViMacros::m_Macro = m_macro;
+      return false;
     }
   }
-  else
+  else if (!var->Expand(*value, m_ex))     
   {
-    // Now only show log status if this is no input variable,
-    // as it was cancelled in that case.    
-    if (!it->second.IsInput())
-    {
-      wxLogStatus(_("Could not expand variable") + ": "  +  m_macro);
-      m_error = true;
-    }
+    return false;
   }
-}  
 
-bool wxExViMacrosFSM::ExpandTo(const std::string& variable, std::string& value)
+  var->SetAskForInput(false);
+  wxExViMacros::m_IsModified = true;
+  var->Save(node, value);
+  wxLogStatus(_("Variable expanded"));
+
+  return true;
+}
+
+bool wxExViMacrosFSM::IsPlayback() const
 {
-  const auto& it = wxExViMacros::m_Variables.find(variable);
-    
-  bool ok;
-    
-  if (it == wxExViMacros::m_Variables.end())
-  {
-    auto ret = wxExViMacros::m_Variables.insert({variable, wxExVariable(variable)});
-      
-    wxLogStatus(_("Added variable") + ": "  +  variable);
-    
-    ok = ret.first->second.Expand(m_ex, value);
-    ret.first->second.SkipInput();
-    
-    if (ret.first->second.IsModified())
-    {
-      pugi::xml_node node = wxExViMacros::m_doc.document_element().child("variable");
-      pugi::xml_node app = node.append_child(variable.c_str());
-      ret.first->second.Save(app);
-      wxExViMacros::m_IsModified = true;
-    }
-  }
-  else
-  {
-    ok = it->second.Expand(m_ex, value);
-    it->second.SkipInput();
-
-    if (it->second.IsModified())
-    {
-      pugi::xml_node node = wxExViMacros::m_doc.document_element().child(variable.c_str());
-      it->second.Save(node);
-      wxExViMacros::m_IsModified = true;
-    }
-  }
-  
-  wxLogStatus(!ok ?
-    _("Could not expand variable") + ": "  +  variable: _("Variable expanded"));
-  
-  return ok;
+  return m_playback;
 }
 
 void wxExViMacrosFSM::Playback()
@@ -318,11 +290,12 @@ void wxExViMacrosFSM::Playback()
   m_ex->GetSTC()->BeginUndoAction();
   
   wxBusyCursor wait;
+  m_playback = true;
     
-  AskForInput();
+  SetAskForInput();
   
   const auto& macro_commands(wxExViMacros::m_Macros[m_macro]);
-  
+
   for (int i = 0; i < m_count && !m_error; i++)
   {
     for (const auto& it : macro_commands)
@@ -337,15 +310,20 @@ void wxExViMacrosFSM::Playback()
   }
 
   m_ex->GetSTC()->EndUndoAction();
+  m_playback = false;
 
   if (!m_error)
   {
-    if (Get() == States::PLAYINGBACK)
-    {
-      wxExViMacros::m_Macro = m_macro;
-    }
-
+    wxExViMacros::m_Macro = m_macro;
     wxLogStatus(_("Macro played back"));
+  }
+}
+
+void wxExViMacrosFSM::SetAskForInput() const
+{
+  for (auto& it : wxExViMacros::m_Variables)
+  {
+    it.second.SetAskForInput();
   }
 }
 

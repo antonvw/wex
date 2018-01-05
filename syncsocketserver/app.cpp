@@ -1041,7 +1041,7 @@ void Frame::WriteDataToSocket(const wxCharBuffer& buffer, wxSocketBase* sock)
 {
   if (buffer.length() == 0) return;
 
-  auto written = 0;
+  size_t written = 0;
 
   while (written < buffer.length())
   {

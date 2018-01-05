@@ -25,9 +25,7 @@ public:
   
   /// Executes vi command.
   /// Returns true if the command was executed.
-  virtual bool Command(
-    const std::string& command,
-    bool is_handled = false) override;
+  virtual bool Command(const std::string& command) override;
   
   /// Returns inserted text.
   const auto & GetInsertedText() const {return m_InsertText;};
@@ -72,16 +70,16 @@ private:
   void FilterCount(std::string& command, const std::string& prefix = "");
   bool InsertMode(const std::string& text);
   void InsertModeNormal(const std::string& text);
-  bool MotionCommand(int type, std::string& command, bool is_handled = false);
+  bool MotionCommand(int type, std::string& command);
   bool OtherCommand(std::string& command) const;
-  bool ParseCommand(std::string& command, bool is_handled);
+  bool ParseCommand(std::string& command);
   bool Put(bool after);
   bool TransitionCommand(std::string& command);
 
   static std::string m_LastFindCharCommand;
   bool m_Dot{false}, m_SearchForward{true};
   int m_Count{1};
-  std::string m_Command, m_CommandKeep, m_InsertText;
+  std::string m_CommandKeep, m_InsertText;
   wxExViMode m_Mode;
   const Commands m_MotionCommands, m_OtherCommands;
 };
