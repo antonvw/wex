@@ -137,7 +137,7 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
                _X("Use tabs"),
                _X("Caret line"),
                _X("Scroll bars"),
-               _X("Auto complete"),
+               _X("Autocomplete"),
                _X("vi mode"),
                _X("vi tag fullpath")}},
             {_X("Search engine"), ITEM_COMBOBOX}}},
@@ -203,7 +203,7 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
          {_X("Divider"), 0, 40},
          {_X("Folding"), 0, 40},
          {_X("Line number"), 0, 100},
-         {_X("Auto complete maxwidth"), 0, 100}}},
+         {_X("Autocomplete maxwidth"), 0, 100}}},
       {_X("Folding"),
         {{_X("Indentation guide"), ITEM_CHECKBOX},
          {_X("Auto fold"), 0l, INT_MAX},
@@ -273,7 +273,7 @@ void wxExSTC::ConfigGet()
     }
   }
   
-  AutoCompSetMaxWidth(cfg->ReadLong(_("Auto complete maxwidth"), 0));
+  AutoCompSetMaxWidth(cfg->ReadLong(_("Autocomplete maxwidth"), 0));
   SetCaretLineVisible(cfg->ReadBool(_("Caret line"), true));
   SetFoldFlags(cfg->ReadLong( _("Fold flags"), 0));
   SetIndent(cfg->ReadLong(_("Indent"), 0));

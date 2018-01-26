@@ -2,7 +2,7 @@
 // Name:      managedframe.cpp
 // Purpose:   Implementation of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -13,7 +13,6 @@
 #include <wx/config.h>
 #include <wx/panel.h>
 #include <wx/extension/managedframe.h>
-#include <wx/extension/addressrange.h>
 #include <wx/extension/debug.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/ex.h>
@@ -35,6 +34,7 @@ enum
   TYPE_UNKNOWN,
   TYPE_CALC,
   TYPE_COMMAND,
+  TYPE_EXEC,
   TYPE_FIND,
 };
 
@@ -57,6 +57,7 @@ public:
   bool SetEx(wxExEx* ex, const std::string& command);
 private:  
   int GetType() const {return GetType(m_Prefix->GetLabel().ToStdString());};
+
   int GetType(const std::string& command) const {
     if (command.empty()) return TYPE_UNKNOWN;
     switch (command[0])
@@ -65,15 +66,16 @@ private:
       case '=': return TYPE_CALC; break;
       case '/':
       case '?': return TYPE_FIND; break;
-      default: return TYPE_UNKNOWN;};};
+      case '!': return TYPE_EXEC; break;
+      default: return TYPE_UNKNOWN;};
+    };
 
   wxExManagedFrame* m_Frame;
-  wxExEx* m_ex{nullptr};
+  wxExEx* m_ex {nullptr};
   wxStaticText* m_Prefix;
-  bool m_ControlR{false}, m_ModeVisual{false}, m_UserInput{false};
+  bool m_ControlR {false}, m_ModeVisual {false}, m_UserInput {false};
   
-  wxExTextCtrlInput m_Calcs;
-  wxExTextCtrlInput m_Commands;
+  wxExTextCtrlInput m_Calcs, m_Commands, m_Execs;
   wxExExCommand m_Command;
 };
 
@@ -116,7 +118,8 @@ wxExManagedFrame::wxExManagedFrame(size_t maxFiles, const wxExWindowData& data)
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     DoRecent(m_FileHistory, event.GetId() - m_FileHistory.GetBaseId());},
-    m_FileHistory.GetBaseId(), m_FileHistory.GetBaseId() + m_FileHistory.GetMaxFiles());
+    m_FileHistory.GetBaseId(), 
+    m_FileHistory.GetBaseId() + m_FileHistory.GetMaxFiles());
 
   for (const auto& it : m_ToggledPanes)
   {
@@ -237,7 +240,8 @@ wxPanel* wxExManagedFrame::CreateExPanel()
   // comes the ex ctrl for getting user input.
   wxPanel* panel = new wxPanel(this);
   wxStaticText* text = new wxStaticText(panel, wxID_ANY, " ");
-  m_TextCtrl = new wxExTextCtrl(this, text, wxExWindowData().Style(wxTE_PROCESS_ENTER).Parent(panel));
+  m_TextCtrl = new wxExTextCtrl(this, text, 
+    wxExWindowData().Style(wxTE_PROCESS_ENTER).Parent(panel));
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
   sizer->AddGrowableCol(1);
@@ -377,6 +381,7 @@ wxExTextCtrl::wxExTextCtrl(
   , m_Frame(frame)
   , m_Prefix(prefix)
   , m_Calcs("excalc")
+  , m_Execs("exexec")
   , m_Commands("excommand")
 {
   SetFont(wxConfigBase::Get()->ReadObject(_("Text font"), 
@@ -457,15 +462,28 @@ wxExTextCtrl::wxExTextCtrl(
       case WXK_PAGEDOWN:
       case WXK_PAGEUP:
       case WXK_UP:
-        if ((event.GetKeyCode() == WXK_HOME || event.GetKeyCode() == WXK_END) && !event.ControlDown())
+        if ((event.GetKeyCode() == WXK_HOME || event.GetKeyCode() == WXK_END) && 
+            !event.ControlDown())
         {
           event.Skip();
         }
         else switch (GetType())
         {
-          case TYPE_CALC: m_Calcs.Set(event.GetKeyCode(), this); break;
-          case TYPE_COMMAND: m_Commands.Set(event.GetKeyCode(), this); break;
-          case TYPE_FIND: wxExFindReplaceData::Get()->m_FindStrings.Set(event.GetKeyCode(), this); break;
+          case TYPE_CALC: 
+            m_Calcs.Set(event.GetKeyCode(), this); 
+            break;
+
+          case TYPE_COMMAND: 
+            m_Commands.Set(event.GetKeyCode(), this); 
+            break;
+
+          case TYPE_EXEC: 
+            m_Execs.Set(event.GetKeyCode(), this); 
+            break;
+
+          case TYPE_FIND: 
+            wxExFindReplaceData::Get()->m_FindStrings.Set(event.GetKeyCode(), this); 
+            break;
         }
         break;
         
@@ -526,7 +544,14 @@ wxExTextCtrl::wxExTextCtrl(
 
       switch (GetType())
       {
-        case TYPE_CALC: m_Calcs.Set(this); break;
+        case TYPE_CALC: 
+          m_Calcs.Set(this); 
+          break;
+
+        case TYPE_EXEC: 
+          m_Execs.Set(this); 
+          break;
+
         case TYPE_COMMAND:
           if (GetValue() == "n" || GetValue() == "prev" || GetValue().StartsWith("ta")) 
           {
@@ -538,6 +563,7 @@ wxExTextCtrl::wxExTextCtrl(
           }
           m_Commands.Set(this);
           break;
+
         case TYPE_FIND:
           wxExFindReplaceData::Get()->SetFindString(GetValue().ToStdString());
           break;
@@ -556,7 +582,8 @@ bool wxExTextCtrl::SetEx(wxExEx* ex, const std::string& command)
   const std::string range(command.substr(1));
   m_ModeVisual = !range.empty();
   m_Prefix->SetLabel(command.substr(0, 1));
-  m_Command = wxExExCommand(ex->GetCommand()).Command(m_Prefix->GetLabel().ToStdString());
+  m_Command = wxExExCommand(ex->GetCommand()).Command(
+    m_Prefix->GetLabel().ToStdString());
   m_ControlR = false;
 
   switch (GetType(command))
@@ -583,6 +610,11 @@ bool wxExTextCtrl::SetEx(wxExEx* ex, const std::string& command)
         SetValue(range); 
         SelectAll();
       }
+      break;
+
+    case TYPE_EXEC: 
+      SetValue(m_Execs.Get()); 
+      SelectAll();
       break;
 
     case TYPE_FIND: 

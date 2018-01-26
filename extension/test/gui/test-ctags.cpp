@@ -24,4 +24,11 @@ TEST_CASE("wxExCTags")
   REQUIRE(!wxExCTags(GetFrame(), "test-ctags").Find("xxxx") );
   REQUIRE( wxExCTags(GetFrame(), "test-ctags").Find("wxExTestApp") );
   REQUIRE(!wxExCTags(GetFrame(), "test-ctags").Next() );
+
+  REQUIRE( wxExCTags(GetFrame()).AutoComplete("wxExTest") == "wxExTestApp");
+  
+  wxExCTagsFilter filter;
+  REQUIRE( wxExCTags(GetFrame()).Filter("wxExTestApp", filter));
+
+  wxExCTags(GetFrame()).AutoCompletePrepare(GetFrame()->GetSTC());
 }

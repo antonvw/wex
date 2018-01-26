@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wxExApp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <experimental/filesystem>
@@ -71,7 +71,7 @@ bool wxExApp::OnInit()
       ).GetFullPath(), wxEmptyString, wxCONFIG_USE_LOCAL_FILE));
 
   // Load elp configuration from file.
-  const wxExPath elp(wxExConfigDir(), GetAppName().Lower().ToStdString() + ".elp");
+  const wxExPath elp(wxExConfigDir(), "conf.elp");
 
   if (elp.FileExists())
   {
@@ -179,6 +179,9 @@ bool wxExApp::OnInit()
   {
     LOG(ERROR) << "missing locale files for: " << GetLocale().GetName();
   }
+
+  // Necessary for autocomplete images.
+  wxInitAllImageHandlers();
 
   wxExVCS::LoadDocument();
   wxExViMacros().LoadDocument();

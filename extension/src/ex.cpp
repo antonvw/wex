@@ -94,6 +94,13 @@ public:
   }
 };
 
+enum
+{
+  INFO_ADD,
+  INFO_COPY,
+  INFO_DEL,
+};
+
 ex_evaluator wxExEx::m_Evaluator;
 wxExCTags* wxExEx::m_CTags = nullptr;
 wxExSTCEntryDialog* wxExEx::m_Dialog = nullptr;
@@ -160,6 +167,7 @@ wxExEx::wxExEx(wxExSTC* stc)
     {":e", [&](const std::string& command) {POST_COMMAND( wxID_OPEN ) return true;}},
     {":f", [&](const std::string& command) {InfoMessage(); return true;}},
     {":grep", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPORT_FIND ) return true;}},
+    {":gt", [&](const std::string& command) {return m_Command.STC()->LinkOpen();}},
     {":help", [&](const std::string& command) {POST_COMMAND( wxID_HELP ) return true;}},
     {":map", [&](const std::string& command) {
       switch (ParseCommandWithArg(command))
@@ -171,7 +179,7 @@ wxExEx::wxExEx(wxExSTC* stc)
             [=](const std::string& name, const std::string& value) {
               m_Macros.SetKeyMap(name, value);return true;}); 
         break;
-        case ARG_NONE: ShowDialog("Map", 
+        case ARG_NONE: ShowDialog("Maps", 
             "[String map]\n" +
             ReportContainer<std::string, std::map<std::string, std::string>>(m_Macros.GetMap()) +
             "[Key map]\n" +
@@ -196,13 +204,18 @@ wxExEx::wxExEx(wxExSTC* stc)
     {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
     {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
     {":reg", [&](const std::string& command) {
-      std::string output;
+      std::string output("[Named buffers]\n");
       for (const auto& it : m_Macros.GetRegisters())
       {
         output += it + "\n";
       }
+      output += "[Filename buffer]\n";
       output += "%: " + m_Command.STC()->GetFileName().GetFullName() + "\n";
       std::string err;
+      if (!m_Evaluator.variables.empty()) 
+      {
+        output += "[Variables]\n";
+      }
       for (const auto &var : m_Evaluator.variables) 
       {
         output += var + "=" + std::to_string(m_Evaluator.eval(var, &err)) + "\n";
@@ -274,6 +287,8 @@ wxExEx::wxExEx(wxExSTC* stc)
           {{{"c", "ec", "Edge Column"}, {CMD_LINE_INT, [&](const std::any& val) {
              m_Command.STC()->SetEdgeColumn(std::any_cast<int>(val));
              wxConfigBase::Get()->Write(_("Edge column"), std::any_cast<int>(val));}}},
+           {{"r", "rp", "reported lines"}, {CMD_LINE_INT, [&](const std::any& val) {
+             wxConfigBase::Get()->Write("Reported lines",  std::any_cast<int>(val));}}},
            {{"S", "sw", "Shift Width"}, {CMD_LINE_INT, [&](const std::any& val) {
              m_Command.STC()->SetIndent(std::any_cast<int>(val));
              wxConfigBase::Get()->Write(_("Indent"), std::any_cast<int>(val));}}},
@@ -382,6 +397,8 @@ void wxExEx::AddText(const std::string& text)
   {
     m_Command.STC()->AddTextRaw((const char *)text.c_str(), text.length());
   }
+
+  InfoMessage(text, INFO_ADD);
 }
 
 double wxExEx::Calculator(const std::string& text, int& width)
@@ -469,6 +486,7 @@ bool wxExEx::Command(const std::string& cmd)
     !CommandHandle(command) &&
     !CommandAddress(command.substr(1)))
   {
+    m_Command.clear();
     return false;
   }
 
@@ -657,18 +675,14 @@ void wxExEx::Copy(const wxExEx* ex)
 void wxExEx::Cut(bool show_message)
 {
   const std::string sel(GetSelectedText());
-  const auto lines = wxExGetNumberOfLines(sel);
   
-  Yank(false);
+  Yank('0', false);
 
   m_Command.STC()->ReplaceSelection(wxEmptyString);
   
   SetRegistersDelete(sel);
   
-  if (lines >= 3 && show_message)
-  {
-    m_Frame->ShowExMessage(wxString::Format(_("%d fewer lines"), lines - 1).ToStdString());
-  }
+  InfoMessage(sel, INFO_DEL);
 }
 
 const std::string wxExEx::GetRegisterInsert() const
@@ -688,8 +702,7 @@ const std::string wxExEx::GetSelectedText() const
   // This also supports rectangular text.
   if (m_Command.STC()->GetSelectedText().empty())
   {
-    std::string none;
-    return none;
+    return std::string();
   }
 
   const wxCharBuffer b(m_Command.STC()->GetSelectedTextRaw());
@@ -728,6 +741,25 @@ void wxExEx::InfoMessage() const
     100 * (m_Command.STC()->GetCurrentLine() + 1)/ m_Command.STC()->GetLineCount(),
     (m_Command.STC()->GetFoldLevel(m_Command.STC()->GetCurrentLine()) & wxSTC_FOLDLEVELNUMBERMASK)
      - wxSTC_FOLDLEVELBASE).ToStdString());
+}
+
+void wxExEx::InfoMessage(const std::string& text, int type) const
+{
+  const auto lines = wxExGetNumberOfLines(text);
+  
+  if (lines >= wxConfig::Get()->Read("Reported lines", 5))
+  {
+    wxString msg;
+
+    switch (type)
+    {
+      case INFO_ADD: msg = _("%d lines added"); break;
+      case INFO_COPY: msg = _("%d lines yanked"); break;
+      case INFO_DEL: msg = _("%d fewer lines"); break;
+    }
+
+    m_Frame->ShowExMessage(wxString::Format(msg, lines - 1).ToStdString());
+  }
 }
 
 bool wxExEx::MarkerAdd(char marker, int line)
@@ -821,7 +853,7 @@ int wxExEx::MarkerLine(char marker) const
 {
   if (marker == '<')
   {
-    if (m_Command.STC()->GetSelectedText().empty())
+    if (GetSelectedText().empty())
     {
       return -1;
     }
@@ -830,7 +862,7 @@ int wxExEx::MarkerLine(char marker) const
   }
   else if (marker == '>')
   {
-    if (m_Command.STC()->GetSelectedText().empty())
+    if (GetSelectedText().empty())
     {
       return -1;
     }
@@ -876,6 +908,16 @@ std::string wxExEx::ReportContainer(const T & container) const
   }
 
   return output;
+}
+
+void wxExEx::ResetSearchFlags()
+{
+  m_SearchFlags = ((wxExFindReplaceData::Get()->MatchCase() ? wxSTC_FIND_MATCHCASE: 0) | 
+    wxSTC_FIND_REGEXP
+#if wxCHECK_VERSION(3,1,1)
+    | wxSTC_FIND_CXX11REGEX
+#endif
+    );
 }
 
 void wxExEx::SetLastCommand(
@@ -979,33 +1021,35 @@ void wxExEx::ShowDialog(
     m_Dialog->SetTitle(title);
   }
   
-  m_Dialog->GetSTC()->GetLexer().Set(prop_lexer ? wxExLexer("props"): m_Command.STC()->GetLexer());
+  m_Dialog->GetSTC()->GetLexer().Set(
+    prop_lexer ? wxExLexer("props"): m_Command.STC()->GetLexer());
   m_Dialog->Show();
 }
 
-void wxExEx::Yank(bool show_message)
+bool wxExEx::Yank(const char name, bool show_message) const
 {
   const std::string range(GetSelectedText());
   
   if (range.empty())
   {
-    return;
+    return false;
   }
   
   if (GetRegister())
   {
     m_Macros.SetRegister(GetRegister(), range);
   }
+  else if (name != '0')
+  {
+    m_Macros.SetRegister(name, range);
+  }
   else
   {
     SetRegisterYank(range);
   }
+
+  InfoMessage(range, INFO_COPY);
   
-  const auto lines = wxExGetNumberOfLines(range);
-  
-  if (lines >= 3 && show_message)
-  {
-    m_Frame->ShowExMessage(wxString::Format(_("%d lines yanked"), lines - 1).ToStdString());
-  }
+  return true;
 }
 #endif // wxUSE_GUI

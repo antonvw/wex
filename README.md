@@ -32,7 +32,6 @@ one of these applications, being a full featured source code text editor.
 
   [![Travis](https://travis-ci.org/antonvw/wxExtension.png?branch=master)](https://travis-ci.org/antonvw/wxExtension)
   [![Appveyor](https://ci.appveyor.com/api/projects/status/x3jm519fq1i407a6?svg=true)](https://ci.appveyor.com/project/antonvw/wxextension)
-  [![Coverity](https://scan.coverity.com/projects/2868/badge.svg)](https://scan.coverity.com/projects/2868>)
   [![Coveralls](https://coveralls.io/repos/antonvw/wxExtension/badge.svg?branch=master&service=github)](https://coveralls.io/github/antonvw/wxExtension?branch=master)   
 
 ## Building wxWidgets

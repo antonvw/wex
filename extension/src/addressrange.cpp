@@ -2,7 +2,7 @@
 // Name:      addressrange.cpp
 // Purpose:   Implementation of class wxExAddressRange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -245,7 +245,7 @@ bool wxExAddressRange::Change(const std::string& text) const
     return false;
   }
   
-  m_Ex->GetSTC()->AddText(text);
+  m_Ex->AddText(text);
   
   return true;
 }
@@ -895,8 +895,6 @@ bool wxExAddressRange::Write(const std::string& text) const
 
 bool wxExAddressRange::Yank(const char name) const
 {
-  return 
-    SetSelection() &&
-    m_Ex->GetMacros().SetRegister(name, m_Ex->GetSelectedText());
+  return SetSelection() && m_Ex->Yank(name);
 }
 #endif // wxUSE_GUI

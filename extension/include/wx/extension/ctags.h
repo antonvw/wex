@@ -2,17 +2,19 @@
 // Name:      ctags.h
 // Purpose:   Declaration of class wxExCTags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <map>
 #include <string>
+#include <wx/extension/ctags-filter.h>
 #include <wx/dlimpexp.h>
 
 class wxExCTagsEntry;
 class wxExFrame;
+class wxExSTC;
 typedef struct sTagFile tagFile;
 
 /// Offers ctags handling.
@@ -32,6 +34,26 @@ public:
   /// Destructor, closes ctags file.
  ~wxExCTags();
   
+  /// Tries to autocomplete text using the tags file.
+  /// Returns a string with matches, or empty string if no match is found.
+  std::string AutoComplete(
+    /// text to be completed
+    const std::string& text,
+    /// filter on ctags extension field(s), default no filter
+    const wxExCTagsFilter& filter = wxExCTagsFilter()) const;
+
+  /// Prepares stc component for autocomplete.
+  void AutoCompletePrepare(wxExSTC* stc);
+
+  /// Finds the tag and uses it to fill the supplied filter.
+  /// Returns true if a matching tag is found, 
+  /// and can be used as a master.
+  bool Filter(
+    /// tag
+    const std::string& name,
+    /// filter to be filled
+    wxExCTagsFilter& filter) const;
+
   /// Find the tags matching `name', and fills matches.
   /// Returns true if a matching tag is found,
   /// and calls frame OpenFile if name matches and
@@ -48,7 +70,7 @@ public:
   bool Previous();
 private:
   wxExFrame* m_Frame;
-  tagFile* m_File{nullptr};
+  tagFile* m_File {nullptr};
   std::map< std::string, wxExCTagsEntry > m_Matches;
   std::map< std::string, wxExCTagsEntry >::iterator m_Iterator;
 };

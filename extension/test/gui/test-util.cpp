@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -202,6 +202,12 @@ TEST_CASE("wxEx")
     REQUIRE( wxExGetNumberOfLines("test\r\ntest\n\n", true) == 2);
   }
   
+  SUBCASE("wxExGetStringSet")
+  {
+    REQUIRE( wxExGetStringSet({"one", "two", "three"}) == "one three two ");
+    REQUIRE( wxExGetStringSet({"one", "two", "three"}, 4) == "three ");
+  }
+
   SUBCASE("wxExGetWord")
   {
   }

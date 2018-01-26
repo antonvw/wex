@@ -61,11 +61,9 @@ bool wxExExCommand::AppendExec(char c)
 
 bool wxExExCommand::Exec(const std::string& command)
 {
-  if (m_STC == nullptr) return false;
-
-  return command.empty() ? 
+  return m_IsHandled || ((m_STC != nullptr) && (command.empty() ? 
     m_STC->GetVi().Command(Command()):
-    m_STC->GetVi().Command(command);
+    m_STC->GetVi().Command(command)));
 }
 
 void wxExExCommand::Restore(const wxExExCommand& c)

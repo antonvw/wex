@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wxExEx
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -123,6 +123,9 @@ public:
   
   /// Prints text in the dialog.
   void Print(const std::string& text);
+
+  /// Resets search flags.
+  void ResetSearchFlags();
   
   /// Sets delete registers 1 - 9 (if value not empty).
   void SetRegistersDelete(const std::string& value) const;
@@ -136,8 +139,9 @@ public:
   /// Set using ex mode.
   void Use(bool mode) {m_IsActive = mode;};
   
-  /// Yanks selected text to yank register.
-  void Yank(bool show_message = true);
+  /// Yanks selected text to yank register, default to yank register.
+  /// Returns false if no text was selected.
+  bool Yank(const char name = '0', bool show_message = true) const;
 protected:
   /// Sets last command.
   void SetLastCommand(
@@ -153,18 +157,17 @@ protected:
 private:
   bool CommandHandle(const std::string& command) const;
   bool CommandAddress(const std::string& command);
-
   template <typename S, typename T> 
     bool HandleContainer(
       const std::string& kind,
       const std::string& command,
       const T * container,
       std::function<bool(const std::string&, const std::string&)> cb);
-
+  void InfoMessage(const std::string& text, int type) const;
   template <typename S, typename T>
   std::string ReportContainer(const T & container) const;
-
-  void ShowDialog(const std::string& title, const std::string& text, bool prop_lexer = false);
+  void ShowDialog(
+    const std::string& title, const std::string& text, bool prop_lexer = false);
     
   const wxExMarker m_MarkerSymbol = wxExMarker(0);
 

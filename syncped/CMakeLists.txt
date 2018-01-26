@@ -25,7 +25,7 @@ else()
   set( MACOSX_BUNDLE_INFO_STRING "${PROJECT_NAME}" )
   set( MACOSX_BUNDLE_SHORT_VERSION_STRING "18.04.0" )
   set( MACOSX_BUNDLE_BUNDLE_VERSION "18.04.0" )
-  set( MACOSX_BUNDLE_COPYRIGHT "(c) 1998-2017 Anton van Wezenbeek" )
+  set( MACOSX_BUNDLE_COPYRIGHT "(c) 1998-2018 Anton van Wezenbeek" )
 
   # create a bundle with an icon too!
   add_executable( ${PROJECT_NAME} MACOSX_BUNDLE ${SRCS} )
@@ -47,7 +47,7 @@ target_link_all()
 
 add_subdirectory(locale)
 
-if(NOT APPLE )
+if (NOT APPLE)
   install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 else()
   install(TARGETS ${PROJECT_NAME} DESTINATION /Applications)

@@ -2,7 +2,7 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -120,9 +120,13 @@ TEST_CASE("wxExVi")
   std::vector<std::string> commands;
   for (auto& it1 : vi->Mode().GetInsertCommands())
   {
-    ChangeMode( vi, std::string(1, it1.first), wxExViModes::INSERT);
-    ChangeMode( vi, ESC, wxExViModes::NORMAL);
-    commands.push_back(std::string(1, it1.first));
+    if (it1.first != 'c')
+    {
+      CAPTURE( it1.first);
+      ChangeMode( vi, std::string(1, it1.first), wxExViModes::INSERT);
+      ChangeMode( vi, ESC, wxExViModes::NORMAL);
+      commands.push_back(std::string(1, it1.first));
+    }
   }
 
   // Test insert commands and delete commands on readonly document.
@@ -273,13 +277,18 @@ TEST_CASE("wxExVi")
   REQUIRE( vi->Command("p"));
   REQUIRE( stc->GetText().Contains("second"));
   
+  vi->ResetSearchFlags();
+
   // Test motion commands: navigate, yank, delete, and change.
   wxExFindReplaceData::Get()->SetFindString("xx");
   for (auto& motion_command : vi->GetMotionCommands())
   {
     for (auto c : motion_command.first)
     {
-      stc->SetText("xxxxxxxxxx\nyyyyyyyyyy\nzzzzzzzzzz\nftFT\n{section}");
+      stc->SetText("xxxxxxxxxx\nyyyyyyyyyy\n"
+                   "zzzzzzzzzz\nftFT\n"
+                   "{section}yyyy\n"
+                   "{anothersection}{finalsection}");
 
       // test navigate
       std::string nc(1, c);
@@ -309,17 +318,21 @@ TEST_CASE("wxExVi")
       mc[0] = 'y';
       mc[1] = c;
 
+      CAPTURE( mc);
       REQUIRE( vi->Command(mc));
       REQUIRE( vi->GetLastCommand() == mc);
       REQUIRE( vi->Mode().Normal());
 
       // test delete
       mc[0] = 'd';
+      CAPTURE( mc);
       REQUIRE( vi->Command(mc));
       REQUIRE( vi->GetLastCommand() == mc);
+      REQUIRE( vi->Mode().Normal());
       
       // test change
       mc[0] = 'c';
+      CAPTURE( mc);
       REQUIRE( vi->Command(mc));
       REQUIRE( vi->GetLastCommand() == mc);
       ChangeMode( vi, ESC, wxExViModes::NORMAL);

@@ -2,7 +2,7 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wxExLexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -133,17 +133,16 @@ private:
 
   std::map<std::string, std::string> m_DefaultColours;
   std::map<std::string, std::string> m_Keywords;
-  std::map<std::string, std::map<std::string, std::string> > m_Macros;
-  std::map<std::string, std::map<std::string, std::string> > m_ThemeColours;
-  std::map<std::string, std::map<std::string, std::string> > m_ThemeMacros;
+  std::map<std::string, std::map<std::string, std::string> > 
+    m_Macros, m_ThemeColours, m_ThemeMacros;
 
   std::set<wxExIndicator> m_Indicators;
   std::set<wxExMarker> m_Markers;
 
   std::vector<wxExProperty> m_GlobalProperties;
   std::vector<wxExLexer> m_Lexers;
-  std::vector<wxExStyle> m_Styles;
-  std::vector<wxExStyle> m_StylesHex;
+  std::vector<wxExStyle> m_Styles, m_StylesHex;
+  std::vector<std::pair<std::string, std::string>> m_Texts;
 
   wxExStyle m_DefaultStyle;
 

@@ -2,13 +2,15 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <set>
 #include <wx/prntbase.h>
 #include <wx/stc/stc.h>
+#include <wx/extension/ctags-filter.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/link.h>
 #include <wx/extension/marker.h>
@@ -169,6 +171,9 @@ public:
   /// Returns false if marker change is not loaded.
   bool MarkerDeleteAllChange();
   
+  /// If selected text is a link, opens the link.
+  bool LinkOpen();
+
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
   bool Open(const wxExPath& filename, const wxExSTCData& data = wxExSTCData());
@@ -290,18 +295,17 @@ private:
   bool LinkOpen(int mode, std::string* filename = nullptr); // name of found file
   void MarkModified(const wxStyledTextEvent& event);
 
-  const int m_MarginDividerNumber = 1;
-  const int m_MarginFoldingNumber = 2;
-  const int m_MarginLineNumber = 0;
+  const int 
+    m_MarginDividerNumber {1}, m_MarginFoldingNumber {2},
+    m_MarginLineNumber {0};
+
   const wxExMarker m_MarkerChange = wxExMarker(1);
 
-  int m_FoldLevel = 0;
-  int m_SavedPos = -1;
-  int m_SavedSelectionStart = -1;
-  int m_SavedSelectionEnd = -1;
+  int 
+    m_FoldLevel {0}, 
+    m_SavedPos {-1}, m_SavedSelectionStart {-1}, m_SavedSelectionEnd {-1};
   
-  bool m_AddingChars = false;
-  bool m_UseAutoComplete = true;
+  bool m_AddingChars {false}, m_UseAutoComplete {true};
 
   wxExSTCFile m_File;
   wxExManagedFrame* m_Frame;
@@ -317,6 +321,8 @@ private:
   
   wxFont m_DefaultFont;
   std::string m_AutoComplete;
+  wxExCTagsFilter m_AutoCompleteFilter;
+  std::set< std:: string > m_AutoCompleteInserts;
 
   // All objects share the following:
   static wxExItemDialog* m_ConfigDialog;

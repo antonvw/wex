@@ -2,7 +2,7 @@
 // Name:      vi-mode.cpp
 // Purpose:   Implementation of class wxExViMode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -55,8 +55,7 @@ public:
       {wxExViModes::VISUAL,      wxExViModes::VISUAL_RECT, Triggers::VISUAL_RECT, nullptr, nullptr},
       // visual line
       {wxExViModes::VISUAL_LINE, wxExViModes::NORMAL,      Triggers::ESCAPE,      nullptr, nullptr},
-      {wxExViModes::VISUAL_LINE, wxExViModes::VISUAL_LINE, Triggers::INSERT,      
-         [&]{return m_writeable;}, [&]{InsertMode();}},
+      {wxExViModes::VISUAL_LINE, wxExViModes::VISUAL_LINE, Triggers::INSERT,      nullptr, nullptr},
       {wxExViModes::VISUAL_LINE, wxExViModes::VISUAL,      Triggers::VISUAL,      nullptr, nullptr},
       {wxExViModes::VISUAL_LINE, wxExViModes::VISUAL_LINE, Triggers::VISUAL_LINE, nullptr, nullptr},
       {wxExViModes::VISUAL_LINE, wxExViModes::VISUAL_RECT, Triggers::VISUAL_RECT, nullptr, nullptr},
@@ -135,6 +134,7 @@ wxExViMode::wxExViMode(wxExVi* vi,
   , m_FSM(std::make_unique<wxExViFSM>(vi->GetSTC(), insert, normal))
   , m_InsertCommands {
     {'a', [&](){NAVIGATE(Char, Right);}},
+    {'c', [&](){;}},
     {'i', [&](){;}},
     {'o', [&](){
       NAVIGATE(Line, End);
@@ -174,7 +174,11 @@ bool wxExViMode::Transition(const std::string& command)
   {
     case 0: return false;
     case 1:
-      if (std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
+      if (command[0] == 'c' && m_vi->GetSTC()->GetSelectedText().empty())
+      {
+        return false;
+      }
+      else if (std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
         [command](auto const& e) {return e.first == command[0];}) 
         != m_InsertCommands.end())
       {

@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wxExtension utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -394,6 +394,14 @@ int wxExGetNumberOfLines(const std::string& text, bool trim)
   }
   
   return std::count(trimmed.begin(), trimmed.end(), '\r') + 1;
+}
+
+const std::string wxExGetStringSet(
+  const std::set<std::string>& kset, size_t min_size, const std::string& prefix)
+{
+  return std::accumulate(kset.begin(), kset.end(), std::string{}, 
+    [&](const std::string& a, const std::string& b) {
+      return (b.size() >= min_size && b.find(prefix) == 0) ? a + b + ' ': a;});
 }
 
 const std::string wxExGetWord(std::string& text,

@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017
+// Copyright: (c) 2018
 ////////////////////////////////////////////////////////////////////////////////
 
 #define DOCTEST_CONFIG_IMPLEMENT
@@ -108,7 +108,7 @@ void SetEnvironment(const std::string& dir)
   const std::string cp("COPY");
 #endif
   
-  for (const auto& it : {"cht.txt", "lexers.xml", "macros.xml", "menus.xml"})
+  for (const auto& it : {"cht.txt", "conf.elp", "lexers.xml", "macros.xml", "menus.xml"})
   {
     SystemArg(cp, it, dir);
   }

@@ -2,7 +2,7 @@
 // Name:      test-cmdlineparser.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -24,8 +24,8 @@ TEST_CASE("wxExCmdLine")
   const std::string str(ds == '.' ?
     "wxExCmdLine -a 10 -b 5.1 -c test -s -t -u -v one two three":
     "wxExCmdLine -a 10 -b 5.1 -c test -s -t -u -v one two three");
-  
-  REQUIRE( wxExCmdLine(
+
+  wxExCmdLine cmdl(
      {{{"s", "1", "bool"}, [&](bool on){s = on;}},
       {{"t", "2", "bool"}, [&](bool on){t = on;}},
       {{"u", "3", "bool"}, [&](bool on){u = true;}},
@@ -37,7 +37,13 @@ TEST_CASE("wxExCmdLine")
         p = v[0];
         q = v[1];
         r = v[2];
-        return true;}}).Parse(str));
+        return true;}});
+  
+  REQUIRE( cmdl.Parse(str));
+  REQUIRE( cmdl.Delimiter() == ' ');
+
+  cmdl.Delimiter('x');
+  REQUIRE( cmdl.Delimiter() == 'x');
 
   REQUIRE( a == 10 );
   REQUIRE( b == 5.1f );

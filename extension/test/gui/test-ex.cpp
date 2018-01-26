@@ -2,7 +2,7 @@
 // Name:      test-ex.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -141,6 +141,8 @@ TEST_CASE("wxExEx")
   REQUIRE( ex->Command(":'<,'>m1"));
   stc->GotoLine(2);
   stc->LineDownExtend();
+  stc->LineDownExtend();
+  stc->LineDownExtend();
   REQUIRE( ex->Command(":'<,'>w test-ex.txt"));
   REQUIRE( ex->Command(":'<,'><"));
   REQUIRE( ex->Command(":'<,'>>"));
@@ -249,8 +251,12 @@ TEST_CASE("wxExEx")
   
   stc->SetText("the chances");
   stc->SelectAll();
-  ex->Yank();
+  REQUIRE( ex->Yank());
+  stc->SelectNone();
+  REQUIRE(!ex->Yank());
+
   REQUIRE( ex->GetRegisterText() == "the chances");
+  stc->SelectAll();
   ex->Cut();
   REQUIRE( ex->GetRegisterText() == "the chances");
   REQUIRE( ex->GetMacros().GetRegister('1') == "the chances");

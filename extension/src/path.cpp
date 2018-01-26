@@ -2,7 +2,7 @@
 // Name:      path.cpp
 // Purpose:   Implementation of class wxExPath
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <easylogging++.h>
@@ -104,7 +104,7 @@ void wxExPath::Current(const std::string& path)
   }
   catch (const std::exception& e)
   {
-    LOG(ERROR) << "exception: " << e.what();
+    LOG(ERROR) << "exception: " << e.what() << " path: " << path;
   }
 }
 

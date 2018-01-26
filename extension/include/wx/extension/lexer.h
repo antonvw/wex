@@ -2,7 +2,7 @@
 // Name:      lexer.h
 // Purpose:   Declaration of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -153,10 +153,6 @@ private:
     const std::string& header,
     bool fill_out_with_space,
     bool fill_out) const;
-  const std::string GetKeywordsStringSet(
-    const std::set<std::string>& kset, 
-    size_t min_size = 0,
-    const std::string& prefix = std::string()) const;
   void Initialize();
   void Set(const pugi::xml_node* node);
 

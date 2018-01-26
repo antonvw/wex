@@ -2,7 +2,7 @@
 // Name:      cmdline.h
 // Purpose:   Declaration of wxExCmdLine class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -60,8 +60,6 @@ public:
     const CmdParams & p = CmdParams(),
     /// message
     const std::string& message = std::string(),
-    /// delimiter
-    const char delimiter = ' ', 
     /// version, if empty use wxExtension version
     const std::string& version = std::string(), 
     /// show help
@@ -69,7 +67,13 @@ public:
 
   /// Destructor.
  ~wxExCmdLine();
+
+  /// Returns current delimiter.
+  char Delimiter() const;
   
+  /// Sets delimiter.
+  void Delimiter(char c);
+
   /// Parses the specified command line 
   /// (should start with app name, and if empty
   /// the command line from wxTheApp is used).
@@ -77,7 +81,9 @@ public:
     /// command line
     const std::string& cmdline = std::string(),
     /// allow to toggle between switches
-    bool toggle = false);
+    bool toggle = false,
+    /// delimiter
+    const char delimiter = ' ');
 private:
   std::vector<wxExCmdLineOption*> m_Options; 
   std::vector<wxExCmdLineParam*> m_Params; 

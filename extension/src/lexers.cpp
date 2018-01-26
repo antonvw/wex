@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wxExLexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <easylogging++.h>
@@ -15,7 +15,6 @@
 #include <numeric>
 #include <regex>
 #include <wx/config.h>
-#include <wx/stdpaths.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tokenizer.h>
@@ -126,27 +125,25 @@ const wxExLexer wxExLexers::FindByName(const std::string& name) const
   return it != m_Lexers.end() ? *it: wxExLexer();
 }
 
-// Add automatic lexers if text starts with some special tokens.
 const wxExLexer wxExLexers::FindByText(const std::string& text) const
 {
-  std::string text_lowercase = std::regex_replace(text, 
-    std::regex("[ \t\n\v\f\r]+$"), "", std::regex_constants::format_sed);
+  try
+  {
+    const std::string filtered(std::regex_replace(text, 
+      std::regex("[ \t\n\v\f\r]+$"), "", std::regex_constants::format_sed));
 
-  for (auto & c : text_lowercase) c = ::tolower(c);
+    for (const auto& t : m_Texts) 
+    {
+      if (std::regex_search(filtered, std::regex(t.second)))
+        return FindByName(t.first);
+    }
+  }
+  catch (std::exception& e)
+  {
+    LOG(ERROR) << "findbytext exception: " << e.what();
+  }
 
-       if (text_lowercase.find("<html>") == 0) return FindByName("hypertext");
-  else if (text_lowercase.find("<?xml") == 0) return FindByName("xml");
-  // cpp files like #include <map> really do not have a .h extension 
-  // (e.g. /usr/include/c++/3.3.5/map) so add here.
-  else if (text_lowercase.find("//") == 0) return FindByName("cpp");
-  else if (text_lowercase.find("<?php") == 0) return FindByName("phpscript");
-  else if (text_lowercase.find("#!/bin/csh") == 0) return FindByName("csh");
-  else if (text_lowercase.find("#!/bin/env python") == 0) return FindByName("python");
-  else if (text_lowercase.find("#!/bin/tcsh") == 0) return FindByName("tcsh");
-  else if (text_lowercase.find("#!/bin/sh") == 0) return FindByName("sh");
-  // If there is another Shell Language Indicator match with bash.
-  else if (std::regex_match(text_lowercase, std::regex("#!.*/bin/.*"))) return FindByName("bash");
-  else return wxExLexer();
+  return wxExLexer();
 }
 
 wxExLexers* wxExLexers::Get(bool createOnDemand)
@@ -162,7 +159,7 @@ wxExLexers* wxExLexers::Get(bool createOnDemand)
 
 const wxExIndicator wxExLexers::GetIndicator(const wxExIndicator& indicator) const
 {
-  const auto it = m_Indicators.find(indicator);
+  const auto& it = m_Indicators.find(indicator);
   return (it != m_Indicators.end() ? *it: wxExIndicator());
 }
 
@@ -174,7 +171,7 @@ const std::string wxExLexers::GetKeywords(const std::string& set) const
 
 const wxExMarker wxExLexers::GetMarker(const wxExMarker& marker) const
 {
-  const auto it = m_Markers.find(marker);
+  const auto& it = m_Markers.find(marker);
   return (it != m_Markers.end() ? *it: wxExMarker());
 }
   
@@ -190,7 +187,7 @@ void wxExLexers::Initialize()
   m_ThemeMacros.clear();
   m_Markers.clear();
   m_Styles.clear();
-  m_StylesHex.clear();
+  m_Texts.clear();
   m_ThemeColours[m_NoTheme] = m_DefaultColours;
   m_ThemeMacros[m_NoTheme] = std::map<std::string, std::string>{};  
 }
@@ -328,6 +325,10 @@ void wxExLexers::ParseNodeGlobal(const pugi::xml_node& node)
         m_Styles.emplace_back(style);
       }
     }
+    else if (strcmp(child.name(), "text") == 0)
+    {
+      m_Texts.push_back({child.attribute("no").value(), child.text().get()});
+    }
   }
 }
 
@@ -346,23 +347,21 @@ void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
     if (strcmp(child.name(), "def") == 0)
     {
       const std::string name = child.attribute("name").value();
-    
       std::map <std::string, std::string> macro_map;
-
       int val = 0;
 
       for (const auto& macro: child.children())
       {
-        const std::string attrib = macro.attribute("no").value();
+        const std::string no = macro.attribute("no").value();
         const std::string content = macro.text().get();
 
-        if (!attrib.empty())
+        if (!no.empty())
         {
-          const auto& it = macro_map.find(attrib);
+          const auto& it = macro_map.find(no);
 
           if (it != macro_map.end())
           {
-            LOG(ERROR) << "macro: " << attrib << " with offset: " << 
+            LOG(ERROR) << "macro: " << no << " with offset: " << 
               macro.offset_debug() << " already exists";
           }
           else
@@ -372,16 +371,16 @@ void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
               try
               {
                 val = std::stoi(content) + 1;
-                macro_map[attrib] = content;
+                macro_map[no] = content;
               }
               catch (std::exception& e)
               {
-                LOG(ERROR) << "macro excption: " << e.what();
+                LOG(ERROR) << "macro exception: " << e.what();
               }
             }
             else
             {
-              macro_map[attrib] = std::to_string(val);
+              macro_map[no] = std::to_string(val);
               val++;
             }
           }

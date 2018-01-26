@@ -5,7 +5,7 @@ Name:      lexers.xml
 Purpose:   Lexers configuration for wxExtension v18.04.
            See scintilla 3.7.2 (www.scintilla.org).
 Author:    Anton van Wezenbeek
-Copyright: (c) 2017, Anton van Wezenbeek
+Copyright: (c) 2018, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -2135,13 +2135,10 @@ Copyright: (c) 2017, Anton van Wezenbeek
     </themes>
   </macro>
   
-  <global>
   <!--
-   At this moment <foldmargin>, <hex>, <indicator>, <marker>, <properties> and <style>
-   attributes are supported.  
-   The marker element has a 'no' attribute and its value contains the next fields:
-   <marker symbol number><','><foreground colour><','><background colour>
-   -->
+   At this moment <foldmargin>, <hex>, <indicator>, <marker>, <properties>, <style>
+   and <text> children are supported. -->
+  <global>
     <!-- checker board colours: background colour, foreground colour -->
     <foldmargin> dim grey, black </foldmargin>
     
@@ -2154,6 +2151,8 @@ Copyright: (c) 2017, Anton van Wezenbeek
 		  -->
     <indicator no="1"> indic_squiggle,red </indicator>
 
+    <!-- The marker element has a 'no' attribute and its value contains the next fields:
+         <marker symbol number><','><foreground colour><','><background colour> -->
     <marker no="marknum_folderend"> mark_plus,folder,folder-back </marker>
     <marker no="marknum_folderopenmid"> mark_minus,folder,folder-back </marker>
     <marker no="marknum_foldermidtail"> mark_tcornercurve,folder,folder-back</marker>
@@ -2175,6 +2174,21 @@ Copyright: (c) 2017, Anton van Wezenbeek
     <!-- this style_default is applied before all other styles -->
     <style no="style_default"> styledefault </style>
     <style no="style_bracelight"> bracelight </style>
+
+    <!-- add automatic lexers if text starts with some special tokens, only first match is valid -->
+    <text no="hypertext"> html </text>
+    <text no="xml"> &lt;?xml </text>
+    <!--  cpp files like #include <map> really do not have a .h extension 
+         (e.g. /usr/include/c++/3.3.5/map) so add here. -->
+    <text no="cpp"> // </text>
+    <text no="phpscript"> &lt;?php </text>
+    <text no="csh"> #!/bin/csh </text>
+    <text no="python"> #!/bin/env python </text>
+    <text no="tcsh"> #!/bin/tcsh </text>
+    <text no="sh"> #!/bin/sh </text>
+    <text no="errorlist"> !_TAG_FILE_ </text>
+    <text no="bash"> #!.*/bin/.* </text>
+    <text no="rfw"> \&#42;Settings </text>
   </global>
 
   <keyword>
@@ -2299,47 +2313,216 @@ Copyright: (c) 2017, Anton van Wezenbeek
       throw true try typedef typeid typename
       union unsigned using virtual void volatile
       wchar_t while xor xor_eq
-      std
     </set>
     <set name="cpp-stl">
-      adjacent_find array at back back_insert_iterator begin 
-      binary_search
-      bind1st bind2nd bitset 
-      capacity cbegin cend clear const_iterator copy 
-      copy_backward count count_if crbegin crend
-      deque divides emplace_back empty end equal equal_range 
-      equal_to
-      erase fill fill_n find find_end find_first_of find_if 
-      first 
-      for_each
-      front front_insert_iterator generate generate_n get_allocator 
-      greater
-      greater_equal includes inplace_merge insert istream_iterator 
-      istreambuf_iterator iter_swap iterator less less_equal 
-      lexicographical_compare
-      list logical_and logical_not logical_or lower_bound make_heap 
-      make_pair make_unique make_shared
-      map max max_element max_size  mem_fun mem_fun_ref merge
-      min min_element minus mismatch modulus multimap multiplies 
-      multiset
-      negate next_permutation not1 not2 not_equal_to nth_element
-      ostream_iterator ostreambuf_iterator
-      partial_sort partial_sort_copy partition
-      plus pop_back pop_front pop_heap prev_permutation priority_queue
-      ptr_fun push_back push_front push_heap queue
-      random_shuffle rbegin remove remove_copy remove_copy_if 
-      remove_if
-      rend replace replace_copy replace_copy_if replace_if reserve
-      reserve_copy resize reverse reverse_iterator rfind rotate rotate_copy
-      second
-      search search_n set
-      set_difference set_intersection set_symmetric_difference set_union
-      shared_ptr size sort sort_heap stable_partition stable_sort stack string string_view
-      substr
-      swap swap_ranges transform unique unique_copy unique_ptr upper_bound 
-      valarray vector
-      basic_regex sub_mtch match_results
-      regex_match regex_search regex_replace
+      <!-- see https://github.com/Mizuchi/STL-Syntax -->
+      ATOMIC_FLAG_INIT ATOMIC_VAR_INIT ECMAScript FLT_EVAL_METHOD FP_INFINITY FP_NAN
+      FP_NORMAL FP_SUBNORMAL FP_ZERO HUGE_VALF HUGE_VALL INFINITY
+      MATH_ERREXCEPT MATH_ERRNO NAN abort abs accumulate
+      acos acosh add_const add_const_t add_cv add_cv_t
+      add_lvalue_reference add_lvalue_reference_t add_pointer add_pointer_t add_rvalue_reference add_rvalue_reference_t
+      add_volatile add_volatile_t addressof adjacent_difference adjacent_find adjacent_find_if
+      adopt_lock_t advance align aligned_storage aligned_storage_t aligned_union
+      aligned_union_t alignment_of all all_of any_of none_of allocate_shared allocator
+      allocator_arg allocator_arg_t allocator_traits allocator_type any append
+      arg array asctime asin asinh assert
+      assign async at at_quick_exit atan atan2
+      atanh atexit atof atoi atol atoll
+      atomic atomic_bool atomic_char atomic_char16_t atomic_char32_t atomic_compare_exchange_strong
+      atomic_compare_exchange_strong_explicit atomic_compare_exchange_weak atomic_compare_exchange_weak_explicit atomic_exchange atomic_exchange_explicit atomic_fetch_add
+      atomic_fetch_add_explicit atomic_fetch_and atomic_fetch_and_explicit atomic_fetch_or atomic_fetch_or_explicit atomic_fetch_sub
+      atomic_fetch_sub_explicit atomic_fetch_xor atomic_fetch_xor_explicit atomic_flag atomic_flag_clear atomic_flag_clear_explicit
+      atomic_flag_test_and_set atomic_flag_test_and_set_explicit atomic_init atomic_int atomic_int_fast16_t atomic_int_fast32_t
+      atomic_int_fast64_t atomic_int_fast8_t atomic_int_least16_t atomic_int_least32_t atomic_int_least64_t atomic_int_least8_t
+      atomic_intmax_t atomic_intptr_t atomic_is_lock_free atomic_llong atomic_load atomic_load_explicit
+      atomic_long atomic_ptrdiff_t atomic_schar atomic_short atomic_signal_fence atomic_size_t
+      atomic_store atomic_store_explicit atomic_thread_fence atomic_uchar atomic_uint atomic_uint_fast16_t
+      atomic_uint_fast32_t atomic_uint_fast64_t atomic_uint_fast8_t atomic_uint_least16_t atomic_uint_least32_t atomic_uint_least64_t
+      atomic_uint_least8_t atomic_uintmax_t atomic_uintptr_t atomic_ullong atomic_ulong atomic_ushort
+      atomic_wchar_t atto auto_ptr awk back back_insert_iterator
+      back_inserter bad bad_alloc bad_array_new_length bad_exception bad_function_call
+      bad_typeid bad_cast bad_weak_ptr badbit basic basic_filebuf basic_fstream
+      basic_ifstream basic_iostream basic_istream basic_istringstream basic_ofstream basic_ostream
+      basic_ostringstream basic_regex basic_streambuf basic_string basic_stringbuf basic_stringstream
+      before_begin beg begin bernoulli_distribution bidirectional_iterator bidirectional_iterator_tag
+      binary_compose binary_compose binary_function binary_negate binary_negate binary_search
+      bind bind1st bind2nd binder1st binder1st binder2nd
+      binder2nd binomial_distribution bit_and bit_not bit_or bitset
+      boolalpha boost bsearch bucket bucket_count bucket_size
+      c16rtomb c32rtomb c_str call_once calloc capacity
+      cauchy_distribution cbefore_begin cbegin cbrt ceil cend
+      centi cerr char_traits char_type chi_squared_distribution chrono
+      cin clear clearerr clock clog close
+      codecvt_mode codecvt_utf16 codecvt_utf8 codecvt_utf8_utf16 collate common_type
+      common_type_t compare condition_variable condition_variable_any conditional conditional_t
+      conj const_iterator const_local_iterator const_mem_fun1_t const_mem_fun_ref1_t const_mem_fun_ref_t
+      const_mem_fun_t const_pointer const_pointer_cast const_reference const_reverse_iterator construct
+      copy copy_backward copy_if copy_n copysign cos
+      cosh count count_if cout crbegin crend
+      ctime cv_status data dec deca decay
+      decay_t deci declare_no_pointers declare_reachable declval default_delete
+      default_random_engine defaultfloat defer_lock try_to_lock adopt_lock defer_lock_t denorm_min deque
+      destroy detach difference_type difftime digits digits10
+      discard_block_engine discrete_distribution distance div div_t divides
+      domain_error double_t duration duration_cast dynamic_pointer_cast dynarray
+      egrep emplace emplace_after emplace_back emplace_front emplace_hint
+      empty enable_if enable_if_t enable_shared_from_this end endl
+      ends eof eofbit epsilon equal equal_range
+      equal_to erase erase_after erf erfc error_backref
+      error_badbrace error_badrepeat error_brace error_brack error_collate error_complexity
+      error_ctype error_escape error_paren error_range error_space error_stack
+      error_type exa exception exit exp exp2
+      expm1 exponential_distribution extended extent extreme_value_distribution fabs
+      fail failbit failure false_type fclose fdim
+      femto feof ferror fflush fgetc fgetpos
+      fgets filebuf fill fill_n find find_end
+      find_first_not_of find_first_of find_if find_if_not find_last_not_of find_last_of
+      first first_type fisher_f_distribution fixed flags flip
+      float_denorm_style float_round_style float_t floor flush flush
+      fma fmax fmin fmod fopen for_each
+      format_default format_first_only format_no_copy format_sed forward forward_as_tuple
+      forward_iterator forward_iterator_tag forward_list fpclassify fprintf fputc
+      fputs fread free freopen frexp front
+      front_insert_iterator fscanf fseek fsetpos fstream ftell
+      function future future_category future_errc future_error future_status
+      fwide fwprintf fwrite fwscanf gamma_distribution gcount
+      generate generate_canonical generate_n geometric_distribution get get_allocator
+      get_deleter get_id get_id get_money get_pointer_safety get_temporary_buffer
+      get_time getc getchar getenv getline getloc
+      gets giga gmtime good goodbit greater
+      greater_equal grep gslice_array hardware_concurrency has_denorm has_denorm_loss
+      has_infinity has_quiet_NaN has_signaling_NaN hash hash_function hasher
+      hecto hex hexfloat high_resolution_clock hours hypot
+      icase ifstream ignore ilogb imag imaxabs
+      imaxdiv imaxdiv_t imbue in includes independent_bits_engine
+      index_sequence_for indirect_array infinity initializer_list inner_product inplace_merge
+      input_iterator input_iterator_tag insert insert_after insert_iterator inserter
+      int_type integer_sequence integral_constant internal invalid_argument io_errc
+      ion btowc ion mblen ion mbrlen ion mbrtowc ion mbsinit ion mbsrtowcs
+      ion mbstowcs ion mbtowc ion wcrtomb ion wcsrtombs ion wcstombs ion wctob
+      ion wctomb ios ios_base ios_base iostate iostream
+      iostream_category iota is_abstract is_arithmetic is_array is_assignable
+      is_base_of is_bind_expression is_bounded is_class is_compound is_const
+      is_constructible is_convertible is_copy_assignable is_copy_constructible is_default_constructible is_destructible
+      is_empty is_enum is_exact is_floating_point is_function is_fundamental
+      is_heap is_heap_until is_iec559 is_integer is_integral is_literal_type
+      is_lvalue_reference is_member_function_pointer is_member_object_pointer is_member_pointer is_modulo is_move_assignable
+      is_move_constructible is_nothrow_assignable is_nothrow_constructible is_nothrow_copy_assignable is_nothrow_copy_constructible is_nothrow_default_constructible
+      is_nothrow_move_assignable is_nothrow_move_constructible is_object is_open is_partitioned is_permutation
+      is_placeholder is_pod is_pointer is_polymorphic is_reference is_rvalue_reference
+      is_same is_scalar is_signed is_signed is_sorted is_sorted_until
+      is_specialized is_standard_layout is_trivial is_trivially_assignable is_trivially_constructible is_trivially_copy_assignable
+      is_trivially_copy_constructible is_trivially_copyable is_trivially_default_constructible is_trivially_destructible is_trivially_move_assignable is_trivially_move_constructible
+      is_union is_unsigned is_void is_volatile isalnum isalpha
+      isblank iscntrl isdigit isfinite isgraph isinf
+      islower isnan isnormal isprint ispunct isspace
+      istream istream_iterator istreambuf_iterator istringstream istrstream isupper
+      iswalnum iswalpha iswblank iswcntrl iswctype iswdigit
+      iswgraph iswlower iswprint iswpunct iswspace iswupper
+      iswxdigit isxdigit iter_swap iterator iterator_category iterator_traits
+      itoa jmp_buf join joinable key_comp key_compare
+      key_eq key_equal key_type kill_dependency kilo knuth_b
+      labs launch ldexp ldiv ldiv_t length
+      length_error less less_equal lexical_cast lexicographical_compare lexicographical_compare_3way
+      lgamma linear_congruential_engine list llabs lldiv lldiv_t
+      llrint llround load_factor local_iterator localtime lock_guard
+      log log10 log1p log2 logb logic_error
+      logical_and logical_not logical_or lognormal_distribution longjmp lower_bound
+      lowest lrint lround make_heap make_index_sequence make_integer_sequence
+      make_move_iterator make_optional make_pair make_shared make_signed make_signed_t
+      make_tuple make_unique make_unsigned make_unsigned_t malloc map
+      mapped_type mark_count mask_array match_any match_continuous match_default
+      match_flag_type match_not_bol match_not_bow match_not_eol match_not_eow match_not_null
+      match_prev_avail match_results math_errhandling max max_bucket_count max_digits10
+      max_element max_exponent max_exponent10 max_load_factor max_size mbrtoc16
+      mbrtoc32 mbstate_t mega mem_fn mem_fun mem_fun1_t
+      mem_fun_ref mem_fun_ref1_t mem_fun_ref_t mem_fun_t memchr memcpy
+      memmove memory_order memset merge mersenne_twister_engine micro
+      microseconds milli milliseconds min min_element min_exponent
+      min_exponent10 minmax minmax_element minstd_rand minstd_rand0 minus
+      minutes mismatch mktime modf modulus move
+      move_backward move_if_noexcept move_iterator mt19937 mt19937_64 multimap
+      multiplies multiset mutex nan nanf nanl
+      nano nanoseconds native_handle nearbyint negate negative_binomial_distribution
+      next prev next_permutation nextafter nexttoward noboolalpha none
+      norm normal_distribution noshowbase noshowpoint noshowpos noskipws
+      nosubs not1 not2 not_equal_to nothrow nothrow_t
+      notify_all_at_thread_exit nounitbuf nouppercase npos nth_element nullptr_t max_align_t
+      numeric_limits oct off_type ofstream once_flag open
+      optimize optional ostream ostream_iterator ostreambuf_iterator ostringstream
+      ostrstream out_of_range output_iterator output_iterator_tag overflow_error owner_less
+      packaged_task pair partial_sort partial_sort_copy partial_sum partition
+      partition_copy partition_point peek perror peta pico
+      piecewise_constant_distribution piecewise_construct piecewise_construct_t piecewise_linear_distribution plus pointer
+      pointer_safety pointer_to_binary_function pointer_to_unary_function pointer_traits poisson_distribution polar
+      pop pop_back pop_front pop_heap pos_type pow
+      power precision prev_permutation printf priority_queue proj
+      promise ptr_fun push push_back push_front push_heap
+      put put_money put_time putback putc putchar
+      puts qsort queue quick_exit quiet_NaN radix
+      raise rand random_access_iterator random_access_iterator_tag random_device random_sample
+      random_sample_n random_shuffle range_error rank ranlux24 ranlux24_base
+      ranlux48 ranlux48_base ratio ratio_add ratio_divide ratio_equal
+      ratio_greater ratio_greater_equal ratio_less ratio_less_equal ratio_multiply ratio_not_equal
+      ratio_subtract raw_storage_iterator rbegin rdbuf rdstate read
+      real realloc recursive_mutex recursive_timed_mutex ref cref reference
+      reference_wrapper regex regex_constants regex_error regex_iterator regex_match
+      regex_replace regex_search regex_token_iterator regex_traits rehash rel_ops
+      remainder remove remove_all_extents remove_all_extents_t remove_const remove_const_t
+      remove_copy remove_copy_if remove_cv remove_cv_t remove_extent remove_extent_t
+      remove_if remove_pointer remove_pointer_t remove_reference remove_reference_t remove_volatile
+      remove_volatile_t remquo rename rend replace replace_copy
+      replace_copy_if replace_if reserve reserve reset resetiosflags
+      resize result_of result_of_t return_temporary_buffer reverse reverse_bidirectional_iterator
+      reverse_copy reverse_iterator rewind rfind rint rotate
+      rotate_copy round round_error round_style runtime_error scalbln
+      scalbn scanf scientific scoped_allocator_adaptor search search_n
+      second second_type seconds seed_seq seekg seekp
+      sequence_buffer set set_difference set_intersection set_new_handler set_symmetric_difference
+      set_union setbase setbuf setf setfill setiosflags
+      setjmp setlocale setprecision setvbuf setw shared_future
+      shared_lock shared_mutex shared_ptr showbase showpoint showpos
+      shrink_to_fit shuffle shuffle_order_engine sig_atomic_t signal signaling_NaN
+      signbit sin sinh size size_type skipws
+      sleep_for sleep_until slice_array snprintf vsnprintf sort sort_heap
+      splice splice_after sprintf sqrt srand sscanf
+      stable_partition stable_sort stack static_pointer_cast std steady_clock
+      stod stof stoi stol stold stoll
+      stoul stoull str strcat strchr strcmp
+      strcoll strcpy strcspn stream streambuf strerror
+      strftime string string stringbuf stringstream strlen
+      strncat strncmp strncpy strpbrk strrchr strspn
+      strstr strstream strstreambuf strtod strtof strtoimax
+      strtok strtol strtold strtoll strtoul strtoumax
+      strxfrm student_t_distribution sub_match substr subtract_with_carry_engine swap
+      swap_ranges swprintf swscanf sync_with_stdio syntax_option_type system
+      system_clock tan tanh tellg tellp temporary_buffer
+      tera test test_type tgamma thread tie
+      time time_point time_point_cast time_t timed_mutex tinyness_before
+      tm tmpfile tmpnam to_string to_ullong to_ulong
+      to_wstring tolower top toupper towctrans towlower
+      towupper traits_type transform traps true_type trunc
+      try_lock lock try_to_lock_t tuple tuple tuple_cat tuple_size tuple_element
+      type_index type_info u16string u32string unary_compose unary_compose
+      unary_function unary_negate unary_negate undeclare_no_pointers undeclare_reachable underflow_error
+      underlying_type underlying_type_t unget ungetc uniform_int_distribution uniform_real_distribution
+      uninitialized_copy uninitialized_copy_n uninitialized_fill uninitialized_fill_n unique unique_copy
+      unique_lock unique_ptr unitbuf unordered_map unordered_multimap unordered_multiset
+      unordered_set unsetf upper_bound uppercase uses_allocator va_arg
+      va_copy va_end va_start valarray value value_comp
+      value_compare value_or value_type vector vfprintf vfwprintf
+      vprintf vscanf vfscanf vsscanf vsprintf vswprintf vwprintf vwscanf vfwscanf vswscanf
+      wbuffer_convert wcerr wcin wclog wcout wcscat
+      wcschr wcscmp wcscoll wcscpy wcscspn wcslen
+      wcsncat wcsncmp wcsncpy wcspbrk wcsrchr wcsspn
+      wcsstr wcstod wcstof wcstoimax wcstok wcstol
+      wcstold wcstoll wcstoul wcstoull wcstoumax wcsxfrm
+      wctrans wctrans_t wctype wctype_t weak_ptr weibull_distribution
+      wfilebuf wfstream width wifstream wint_t wiostream
+      wistream wistringstream wmemchr wmemcmp wmemcpy wmemmove
+      wmemset wofstream wostream wostringstream wprintf wregex
+      write ws wscanf wstreambuf wstring wstring_convert
+      wstringbuf wstringstream yield yocto yotta zepto zetta 
     </set>
     <set name="cpp-doc">
     <!-- see: https://www.stack.nl/~dimitri/doxygen/manual/commands.html 
@@ -2711,7 +2894,7 @@ Copyright: (c) 2017, Anton van Wezenbeek
     </keywords>
   </lexer>
   <lexer name="coffeescript"/>
-  <lexer name="conf"/>
+  <lexer name="conf" extensions="*.elp"/>
   <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
     <properties>
       <property name="lexer.cpp.track.preprocessor"> 0 </property>

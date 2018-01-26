@@ -2,18 +2,18 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wxExLexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
+#include <functional>
+#include <numeric>
 #include <easylogging++.h>
+#include <pugixml.hpp>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <algorithm>
-#include <functional>
-#include <numeric>
-#include <pugixml.hpp>
 #include <wx/extension/lexer.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/lexers.h>
@@ -148,7 +148,7 @@ bool wxExLexer::Apply() const
   {
     for (const auto& k : m_KeywordsSet)
     {
-      m_STC->SetKeyWords(k.first, GetKeywordsStringSet(k.second));
+      m_STC->SetKeyWords(k.first, wxExGetStringSet(k.second));
     }
     
     wxExLexers::Get()->Apply(m_STC);
@@ -258,7 +258,7 @@ const std::string wxExLexer::GetKeywordsString(
 {
   if (keyword_set == -1)
   {
-    return GetKeywordsStringSet(m_Keywords, min_size, prefix);
+    return wxExGetStringSet(m_Keywords, min_size, prefix);
   }
   else
   {
@@ -266,19 +266,11 @@ const std::string wxExLexer::GetKeywordsString(
 
     if (it != m_KeywordsSet.end())
     {
-      return GetKeywordsStringSet(it->second, min_size, prefix);
+      return wxExGetStringSet(it->second, min_size, prefix);
     }
   }
 
   return std::string();
-}
-
-const std::string wxExLexer::GetKeywordsStringSet(
-  const std::set<std::string>& kset, size_t min_size, const std::string& prefix) const
-{
-  return std::accumulate(kset.begin(), kset.end(), std::string{}, 
-    [&](const std::string& a, const std::string& b) {
-      return (b.size() >= min_size && b.find(prefix) == 0) ? a + b + ' ': a;});
 }
 
 void wxExLexer::Initialize()

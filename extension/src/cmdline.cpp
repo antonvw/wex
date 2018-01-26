@@ -2,7 +2,7 @@
 // Name:      cmdline.cpp
 // Purpose:   Implementation of wxExCmdLine class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream> // for tclap!
@@ -149,11 +149,10 @@ wxExCmdLine::wxExCmdLine(
   const CmdOptions & o, 
   const CmdParams & p,
   const std::string& message,
-  const char delimiter,
   const std::string &version,
   bool helpAndVersion)
   : m_Parser(new wxExCmdLineParser(
-      message, delimiter, 
+      message, ' ', 
       version.empty() ? wxExGetVersionInfo().GetVersionOnlyString().ToStdString(): version, 
       helpAndVersion))
 {
@@ -231,8 +230,21 @@ wxExCmdLine::~wxExCmdLine()
   delete m_Parser;
 }
   
-bool wxExCmdLine::Parse(const std::string& cmdline, bool toggle)
+char wxExCmdLine::Delimiter() const
 {
+  return TCLAP::Arg::delimiter();
+}
+  
+void wxExCmdLine::Delimiter(char c)
+{
+  TCLAP::Arg::setDelimiter(c);
+}
+
+bool wxExCmdLine::Parse(
+  const std::string& cmdline, bool toggle, const char delimiter)
+{
+  Delimiter(delimiter);
+  
   try
   {
     if (cmdline.empty())

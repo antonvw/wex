@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -14,6 +14,7 @@
 #include <wx/numdlg.h>
 #include <wx/settings.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/ctags.h>
 #include <wx/extension/debug.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
@@ -97,6 +98,8 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
   SetMultiPaste(wxSTC_MULTIPASTE_EACH);
   SetMultipleSelection(true);
   
+  m_vi.GetCTags()->AutoCompletePrepare(this);
+
   if (m_Zoom == -1)
   {
     m_Zoom = GetZoom();
@@ -226,14 +229,24 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
     event.Skip();});
 
   Bind(wxEVT_STC_AUTOCOMP_SELECTION, [=](wxStyledTextEvent& event) {
+    m_AutoComplete.clear();
+
+    if (m_vi.GetCTags()->Filter(
+      event.GetText().ToStdString(), 
+      m_AutoCompleteFilter))
+    {
+      VLOG(9) << "filter: " << m_AutoCompleteFilter.Get();
+    }
+
     if (m_vi.GetIsActive())
     {
-      const std::string command(event.GetText().substr(m_AutoComplete.size()));
+      const std::string command(event.GetText().substr(
+        m_AutoComplete.size()));
+
       if (!command.empty() && !m_vi.Command(command))
       {
         wxLogStatus("Autocomplete failed");
-      }
-    }});
+      }}});
     
   Bind(wxEVT_STC_CHARADDED, [=](wxStyledTextEvent& event) {
     event.Skip();
@@ -311,6 +324,7 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
       {
         m_AddingChars = true;
       }
+
       CheckAutoComp(event.GetUnicodeKey());
     }
     else
@@ -776,7 +790,7 @@ bool wxExSTC::CanPaste() const
 void wxExSTC::CheckAutoComp(const wxUniChar& c)
 {
   if (!m_UseAutoComplete || 
-      !wxConfigBase::Get()->ReadBool(_("Auto complete"), true) ||
+      !wxConfigBase::Get()->ReadBool(_("Autocomplete"), true) ||
       SelectionIsRectangle())
   {
     return;
@@ -788,28 +802,80 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
   }
   else
   {
-    m_AutoComplete += c;
-
-    if (m_AutoComplete.length() > 3) // Only autocompletion for large words
+    if (c == '.')
     {
-      if (!AutoCompActive())
+      m_AutoComplete.clear();
+    }
+    else if (isspace(c))
+    {
+      if (m_AutoComplete.size() > 2)
       {
-        AutoCompSetIgnoreCase(true);
-        AutoCompSetAutoHide(false);
+        m_AutoCompleteInserts.emplace(m_AutoComplete);
       }
+
+      m_AutoComplete.clear();
+      return;
+    }
+    else
+    {
+      m_AutoComplete += c;
+    }
+
+    if (m_AutoCompleteFilter.Active())
+    {
+      const std::string comp(m_vi.GetCTags()->AutoComplete(
+        m_AutoComplete, m_AutoCompleteFilter));
+
+      if (!comp.empty())
+      {
+        AutoCompShow(m_AutoComplete.length() - 1, comp);
+      }
+      else
+      {
+        AutoCompCancel();
+      }
+    }
+    else if (m_AutoComplete.length() > 2) // Only autocompletion for large words
+    {
+      const std::string comp(m_vi.GetCTags()->AutoComplete(m_AutoComplete));
+      bool show = false;
+
+      if (!comp.empty())
+      {
+        AutoCompShow(m_AutoComplete.length() - 1, comp);
+        show = true;
+      }
+
+      const int min_size = 3;
 
       if (m_Lexer.KeywordStartsWith(m_AutoComplete))
       {
         const std::string comp(
-          m_Lexer.GetKeywordsString(-1, 5, m_AutoComplete));
+          m_Lexer.GetKeywordsString(-1, min_size, m_AutoComplete));
           
         if (!comp.empty())
         {
           AutoCompShow(m_AutoComplete.length() - 1, comp);
+          show = true;
         }
       }
-      else
+
+      if (!m_AutoCompleteInserts.empty())
+      {
+        const std::string comp(wxExGetStringSet(
+          m_AutoCompleteInserts, min_size, m_AutoComplete));
+          
+        if (!comp.empty())
+        {
+          AutoCompShow(m_AutoComplete.length() - 1, comp);
+          show = true;
+        }
+      }
+
+      if (!show)
+      {
         AutoCompCancel();
+      }
     }
   }
 }
@@ -1182,6 +1248,11 @@ void wxExSTC::GuessType()
 #if wxUSE_STATUSBAR
   wxExFrame::UpdateStatusBar(this, "PaneFileType");
 #endif
+}
+
+bool wxExSTC::LinkOpen()
+{
+  return LinkOpen(LINK_OPEN_BROWSER);
 }
 
 bool wxExSTC::LinkOpen(int mode, std::string* filename)

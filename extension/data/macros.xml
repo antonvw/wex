@@ -3,7 +3,7 @@
 Name:      macros.xml
 Purpose:   vi macros, variables, abbreviations and key maps for wxExtension.
 Author:    Anton van Wezenbeek
-Copyright: (c) 2017, Anton van Wezenbeek
+Copyright: (c) 2018, Anton van Wezenbeek
 
 Both variables and macros have a "name" attribute, you call them
 from vi mode using @name@ (if name starts with an
@@ -172,5 +172,5 @@ Variables are expanded when playing back the macro.
   <!-- ampersand -->
   <map-key name="38">:.&amp;</map-key>
   <map-key name="D">d$</map-key>
-  <map-key name="Y">y_</map-key>
+  <map-key name="Y">yy</map-key>
 </macros>

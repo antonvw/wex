@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wxExtension utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -179,6 +179,12 @@ int wxExGetIconID(const wxExPath& filename);
 /// Returns the number of lines in a (trimmed) string.
 /// If text is empty, 0 is returned, otherwise at least 1.
 int wxExGetNumberOfLines(const std::string& text, bool trimmed = false);
+
+/// Returns string from set.
+const std::string wxExGetStringSet(
+  const std::set<std::string>& kset, 
+  size_t min_size = 0,
+  const std::string& prefix = std::string());
 
 /// Returns a word from a string.
 const std::string wxExGetWord(
