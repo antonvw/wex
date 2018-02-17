@@ -8,6 +8,14 @@
 #include <easylogging++.h>
 #include <wx/extension/path.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/util.h>
+
+const std::string SubstituteTilde(const std::string& text)
+{
+  std::string out(text);
+  wxExReplaceAll(out, "~", wxGetHomeDir().ToStdString());
+  return out;
+}
 
 wxExPath::wxExPath(const std::experimental::filesystem::path& p)
   : m_path(p)
@@ -23,12 +31,12 @@ wxExPath::wxExPath(const std::experimental::filesystem::path& p)
 }
 
 wxExPath::wxExPath(const std::string& path, const std::string& name)
-  : wxExPath(std::experimental::filesystem::path(path).append(name).string())
+  : wxExPath(std::experimental::filesystem::path(SubstituteTilde(path)).append(name).string())
 {
 }
 
 wxExPath::wxExPath(const std::string& path)
-  : wxExPath(std::experimental::filesystem::path(path))
+  : wxExPath(std::experimental::filesystem::path(SubstituteTilde(path)))
 {
 }
 

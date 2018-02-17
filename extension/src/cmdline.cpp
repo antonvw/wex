@@ -270,6 +270,7 @@ bool wxExCmdLine::Parse(
 
     if (!m_Params.empty() && !m_Params[0]->Run())
     {
+      LOG(ERROR) << "could not run params";
       return false;
     }
     

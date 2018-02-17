@@ -94,43 +94,43 @@ public:
   }
 };
 
-enum
+enum class wxExCommandArg
 {
-  INFO_ADD,
-  INFO_COPY,
-  INFO_DEL,
+  INT,
+  NONE,
+  OTHER,
 };
+
+enum class wxExInfoMessage
+{
+  ADD,
+  COPY,
+  DEL,
+};
+
+wxExCommandArg ParseCommandWithArg(const std::string& command)
+{
+  const std::string post(wxExAfter(command, ' '));
+
+  if (post == command)
+  {
+    return wxExCommandArg::NONE;
+  }
+  else if (atoi(post.c_str()) > 0)
+  {
+    return wxExCommandArg::INT;
+  }
+  else
+  {
+    return wxExCommandArg::OTHER;
+  }
+}
 
 ex_evaluator wxExEx::m_Evaluator;
 wxExCTags* wxExEx::m_CTags = nullptr;
 wxExSTCEntryDialog* wxExEx::m_Dialog = nullptr;
 wxExViMacros wxExEx::m_Macros;
 std::string wxExEx::m_LastCommand;
-
-enum wxExCommandArgType
-{
-  ARG_INT,
-  ARG_NONE,
-  ARG_OTHER,
-};
-
-int ParseCommandWithArg(const std::string command)
-{
-  const std::string post(wxExAfter(command, ' '));
-
-  if (post == command)
-  {
-    return ARG_NONE;
-  }
-  else if (atoi(post.c_str()) > 0)
-  {
-    return ARG_INT;
-  }
-  else
-  {
-    return ARG_OTHER;
-  }
-}
 
 wxExEx::wxExEx(wxExSTC* stc)
   : m_Command(wxExExCommand(stc))
@@ -172,14 +172,14 @@ wxExEx::wxExEx(wxExSTC* stc)
     {":map", [&](const std::string& command) {
       switch (ParseCommandWithArg(command))
       {
-        case ARG_INT:
+        case wxExCommandArg::INT:
           // TODO: at this moment you cannot set KEY_CONTROL
           return HandleContainer<int, wxExViMacrosMapType>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
               m_Macros.SetKeyMap(name, value);return true;}); 
         break;
-        case ARG_NONE: ShowDialog("Maps", 
+        case wxExCommandArg::NONE: ShowDialog("Maps", 
             "[String map]\n" +
             ReportContainer<std::string, std::map<std::string, std::string>>(m_Macros.GetMap()) +
             "[Key map]\n" +
@@ -191,7 +191,7 @@ wxExEx::wxExEx(wxExSTC* stc)
             true);
           return true;
         break;
-        case ARG_OTHER:
+        case wxExCommandArg::OTHER:
           return HandleContainer<std::string, std::map<std::string, std::string>>(
             "Map", command, nullptr,
             [=](const std::string& name, const std::string& value) {
@@ -365,9 +365,9 @@ wxExEx::wxExEx(wxExSTC* stc)
         tkz.GetNextToken(); // skip :unm
         switch (ParseCommandWithArg(command))
         {
-          case ARG_INT: m_Macros.SetKeyMap(tkz.GetNextToken(), ""); break; 
-          case ARG_NONE: break;
-          case ARG_OTHER: m_Macros.SetMap(tkz.GetNextToken(), ""); break;
+          case wxExCommandArg::INT: m_Macros.SetKeyMap(tkz.GetNextToken(), ""); break; 
+          case wxExCommandArg::NONE: break;
+          case wxExCommandArg::OTHER: m_Macros.SetMap(tkz.GetNextToken(), ""); break;
         }
       }
       return true;}},
@@ -398,7 +398,7 @@ void wxExEx::AddText(const std::string& text)
     m_Command.STC()->AddTextRaw((const char *)text.c_str(), text.length());
   }
 
-  InfoMessage(text, INFO_ADD);
+  InfoMessage(text, wxExInfoMessage::ADD);
 }
 
 double wxExEx::Calculator(const std::string& text, int& width)
@@ -438,20 +438,18 @@ double wxExEx::Calculator(const std::string& text, int& width)
   // Replace $ with line count.
   wxExReplaceAll(expr, "$", std::to_string(m_Command.STC()->GetLineCount()));
   
-  std::string exp(expr);
-  
   // Expand all markers and registers.
-  if (!wxExMarkerAndRegisterExpansion(this, exp))
+  if (!wxExMarkerAndRegisterExpansion(this, expr))
   {
     return 0;
   }
 
   // https://github.com/r-lyeh/eval
   std::string err;
-  auto val = m_Evaluator.eval(exp, &err);
+  auto val = m_Evaluator.eval(expr, &err);
   if (!err.empty())
   {
-    ShowDialog("Error", exp + "\n" + err);
+    ShowDialog("Error", expr + "\n" + err);
     val = 0;
   }
 
@@ -587,10 +585,10 @@ bool wxExEx::CommandAddress(const std::string& command)
     
     switch ((int)cmd[0])
     {
-    case 0: return false; break;
-    case 'a': return addr.Append(rest); break;
-    case 'i': return addr.Insert(rest); break;
-    case 'k': return !rest.empty() ? addr.MarkerAdd(rest[0]): false; break;
+    case 0: return false;
+    case 'a': return addr.Append(rest);
+    case 'i': return addr.Insert(rest);
+    case 'k': return !rest.empty() ? addr.MarkerAdd(rest[0]): false;
     case 'p': 
       if (cmd == "pu")
       { 
@@ -601,9 +599,9 @@ bool wxExEx::CommandAddress(const std::string& command)
         return false;
       }
       break;
-    case 'r': return addr.Read(rest); break;
-    case 'z': return addr.AdjustWindow(rest); break;
-    case '=': return addr.WriteLineNumber(); break;
+    case 'r': return addr.Read(rest);
+    case 'z': return addr.AdjustWindow(rest);
+    case '=': return addr.WriteLineNumber();
     default:
       wxLogStatus("Unknown address command: %s", cmd);
       return false;
@@ -615,13 +613,13 @@ bool wxExEx::CommandAddress(const std::string& command)
     
     switch ((int)cmd[0])
     {
-    case 0: return false; break;
-    case 'c': return range.Change(rest); break;
-    case 'd': return range.Delete(); break;
+    case 0: return false;
+    case 'c': return range.Change(rest);
+    case 'd': return range.Delete();
     case 'v':
-    case 'g': return range.Global(rest, cmd[0] == 'v'); break;
-    case 'j': return range.Join(); break;
-    case 'm': return range.Move(wxExAddress(this, rest)); break;
+    case 'g': return range.Global(rest, cmd[0] == 'v');
+    case 'j': return range.Join();
+    case 'm': return range.Move(wxExAddress(this, rest));
     case 'p': 
       if (m_Command.STC()->GetName() != "Print")
       {
@@ -633,9 +631,9 @@ bool wxExEx::CommandAddress(const std::string& command)
       }
     case 's':
     case '&':
-    case '~': return range.Substitute(rest, cmd[0]); break;
-    case 'S': return range.Sort(rest); break;
-    case 't': return range.Copy(wxExAddress(this, rest)); break;
+    case '~': return range.Substitute(rest, cmd[0]);
+    case 'S': return range.Sort(rest);
+    case 't': return range.Copy(wxExAddress(this, rest));
     case 'w': 
       if (!rest.empty())
       {
@@ -647,10 +645,10 @@ bool wxExEx::CommandAddress(const std::string& command)
         return true;
       }
       break;
-    case 'y': return range.Yank(rest.empty() ? '0': (char)rest[0]); break;
-    case '>': return range.Indent(true); break;
-    case '<': return range.Indent(false); break;
-    case '!': return range.Escape(rest); break;
+    case 'y': return range.Yank(rest.empty() ? '0': (char)rest[0]);
+    case '>': return range.Indent(true);
+    case '<': return range.Indent(false);
+    case '!': return range.Escape(rest);
     default:
       wxLogStatus("Unknown range command: %s", cmd);
       return false;
@@ -682,7 +680,7 @@ void wxExEx::Cut(bool show_message)
   
   SetRegistersDelete(sel);
   
-  InfoMessage(sel, INFO_DEL);
+  InfoMessage(sel, wxExInfoMessage::DEL);
 }
 
 const std::string wxExEx::GetRegisterInsert() const
@@ -743,7 +741,7 @@ void wxExEx::InfoMessage() const
      - wxSTC_FOLDLEVELBASE).ToStdString());
 }
 
-void wxExEx::InfoMessage(const std::string& text, int type) const
+void wxExEx::InfoMessage(const std::string& text, wxExInfoMessage type) const
 {
   const auto lines = wxExGetNumberOfLines(text);
   
@@ -753,9 +751,9 @@ void wxExEx::InfoMessage(const std::string& text, int type) const
 
     switch (type)
     {
-      case INFO_ADD: msg = _("%d lines added"); break;
-      case INFO_COPY: msg = _("%d lines yanked"); break;
-      case INFO_DEL: msg = _("%d fewer lines"); break;
+      case wxExInfoMessage::ADD: msg = _("%d lines added"); break;
+      case wxExInfoMessage::COPY: msg = _("%d lines yanked"); break;
+      case wxExInfoMessage::DEL: msg = _("%d fewer lines"); break;
     }
 
     m_Frame->ShowExMessage(wxString::Format(msg, lines - 1).ToStdString());
@@ -1048,7 +1046,7 @@ bool wxExEx::Yank(const char name, bool show_message) const
     SetRegisterYank(range);
   }
 
-  InfoMessage(range, INFO_COPY);
+  InfoMessage(range, wxExInfoMessage::COPY);
   
   return true;
 }

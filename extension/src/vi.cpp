@@ -243,16 +243,29 @@ wxExVi::wxExVi(wxExSTC* stc)
       return command.size();}},
     {"nN", [&](const std::string& command){REPEAT(
       if (!GetSTC()->FindNext(
-        wxExFindReplaceData::Get()->GetFindString(), GetSearchFlags(), 
+        wxExFindReplaceData::Get()->GetFindString(), 
+        GetSearchFlags(), 
         command == "n"? m_SearchForward: !m_SearchForward))
       {
         return m_Command.clear();
       });
       return (size_t)1;}},
     {"G", [&](const std::string& command){
-      (m_Count == 1 ? 
-        GetSTC()->DocumentEnd(): 
-        (void)wxExSTCData(GetSTC()).Control(wxExControlData().Line(m_Count)).Inject());
+      if (m_Count == 1)
+      {
+        if (m_Mode.Visual())
+        {
+          GetSTC()->DocumentEndExtend();
+        }
+        else
+        {
+          GetSTC()->DocumentEnd();
+        }
+      }
+      else
+      {
+        (void)wxExSTCData(GetSTC()).Control(wxExControlData().Line(m_Count)).Inject();
+      }
       return 1;}},
     {"H", [&](const std::string& command){
       GetSTC()->GotoLine(GetSTC()->GetFirstVisibleLine());
@@ -435,7 +448,14 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"dgg", [&](const std::string& command){
       return DeleteRange(this, 0, GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine())) ? 3: 0;}},
     {"gg", [&](const std::string& command){
-      GetSTC()->DocumentStart(); 
+      if (m_Mode.Visual())
+      {
+        GetSTC()->DocumentStartExtend(); 
+      }
+      else
+      {
+        GetSTC()->DocumentStart(); 
+      }
       return 2;}},
     {"yy", [&](const std::string& command){
       if (wxExAddressRange(this, m_Count).Yank())
@@ -522,9 +542,9 @@ wxExVi::wxExVi(wxExSTC* stc)
       }
       else
       {
-        wxExFindReplaceData::Get()->SetFindString(word);
+        wxExFindReplaceData::Get()->SetFindString("\\<"+ word + "\\>");
         GetSTC()->FindNext(
-          "\\<"+ wxExFindReplaceData::Get()->GetFindString() + "\\>", 
+          wxExFindReplaceData::Get()->GetFindString(), 
           GetSearchFlags(), 
           command == "*");
       }

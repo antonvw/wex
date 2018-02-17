@@ -2,7 +2,7 @@
 // Name:      vi-macros-fsm.cpp
 // Purpose:   Implementation of class wxExViMacrosFSM
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
@@ -143,9 +143,6 @@ void wxExViMacrosFSM::ExpandingTemplate()
 
   SetAskForInput();
 
-  // Keep current macro, in case you cancel expanding,
-  // this one is restored.
-  std::string macro = wxExViMacros::m_Macro;
   char c;
 
   while (ifs.get(c) && !m_error)

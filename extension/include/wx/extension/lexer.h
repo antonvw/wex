@@ -147,6 +147,14 @@ public:
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
+  enum class wxExEdgeMode
+  {
+    ABSENT,
+    NONE,
+    LINE,
+    BACKGROUND,
+  };
+
   void AutoMatch(const std::string& lexer);
   const std::string GetFormattedText(
     const std::string& lines,
@@ -168,9 +176,11 @@ private:
   // each keyword set in a separate keyword set
   std::map< int, std::set<std::string> > m_KeywordsSet;
   std::set<std::string> m_Keywords;
+  std::vector<int> m_EdgeColumns;
   std::vector<wxExProperty> m_Properties;
   std::vector<wxExStyle> m_Styles;
   
   bool m_IsOk {false};
+  wxExEdgeMode m_EdgeMode {wxExEdgeMode::ABSENT};
   wxExSTC* m_STC {nullptr};
 };

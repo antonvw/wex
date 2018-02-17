@@ -530,39 +530,68 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
     if (CallTipActive()) CallTipCancel();
     
     const auto pos = GetCurrentPos();
+
     if (HexMode())
     {
       CallTipShow(pos, m_HexMode.GetInfo());
       return;
     }
 
-    const wxString word = (!GetSelectedText().empty() ? GetSelectedText() : wxString(GetWordAtPos(pos)));
-    if (word.empty()) return;
+    const std::string word = (!GetSelectedText().empty() ? 
+      GetSelectedText().ToStdString() : GetWordAtPos(pos));
 
-    const wxUniChar c = word.GetChar(0);
-    if (c < 32 || c > 125)
+    if (word.empty()) 
     {
-      const wxString text(wxString::Format("hex: %x dec: %d", c, c));
-      CallTipShow(pos, text);
-      wxExClipboardAdd(text.ToStdString());
       return;
     }
 
-    long base10_val, base16_val;
-    const bool base10_ok = word.ToLong(&base10_val);
-    const bool base16_ok = word.ToLong(&base16_val, 16);
+    const int c = word[0];
+    std::stringstream stream;
 
-    if (base10_ok || base16_ok)
+    if (c < 32 || c > 125)
     {
-      wxString text;
-      if      ( base10_ok && !base16_ok) 
-        text = wxString::Format("hex: %lx", base10_val);
-      else if (!base10_ok &&  base16_ok) 
-        text = wxString::Format("dec: %ld", base16_val);
-      else if ( base10_ok &&  base16_ok) 
-        text = wxString::Format("hex: %lx dec: %ld", base10_val, base16_val);
-      CallTipShow(pos, text);
-      wxExClipboardAdd(text.ToStdString());
+      stream << "bin: " << c;
+    }
+    else
+    {
+      long base10_val, base16_val;
+      bool base10_ok = true;
+      bool base16_ok = true;
+
+      try
+      {
+        base10_val = std::stol(word);
+        base10_ok = (base10_val != 0);
+      }
+      catch (std::exception& e)
+      {
+        base10_ok = false;
+      }
+
+      try
+      {
+        base16_val = std::stol(word, nullptr, 16);
+      }
+      catch (std::exception& e)
+      {
+        base16_ok = false;
+      }
+
+      if (base10_ok || base16_ok)
+      {
+        if      ( base10_ok && !base16_ok) 
+          stream << "hex: " << std::hex << base10_val;
+        else if (!base10_ok &&  base16_ok) 
+          stream << "dec: " << base16_val;
+        else if ( base10_ok &&  base16_ok) 
+          stream << "dec: " << base16_val << " hex: " << std::hex << base10_val;
+      }
+    }
+
+    if (!stream.str().empty())
+    {
+      CallTipShow(pos, stream.str());
+      wxExClipboardAdd(stream.str());
     }}, ID_EDIT_HEX_DEC_CALLTIP);
   
 #if wxCHECK_VERSION(3,1,0)
@@ -828,7 +857,9 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
 
       if (!comp.empty())
       {
+        AutoCompSetSeparator(m_vi.GetCTags()->Separator());
         AutoCompShow(m_AutoComplete.length() - 1, comp);
+        AutoCompSetSeparator(' ');
       }
       else
       {
@@ -842,7 +873,9 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
 
       if (!comp.empty())
       {
+        AutoCompSetSeparator(m_vi.GetCTags()->Separator());
         AutoCompShow(m_AutoComplete.length() - 1, comp);
+        AutoCompSetSeparator(' ');
         show = true;
       }
 
@@ -1149,9 +1182,9 @@ const std::string wxExSTC::GetEOL() const
 {
   switch (GetEOLMode())
   {
-    case wxSTC_EOL_CR: return "\r"; break;
-    case wxSTC_EOL_CRLF: return "\r\n"; break;
-    case wxSTC_EOL_LF: return "\n"; break;
+    case wxSTC_EOL_CR: return "\r";
+    case wxSTC_EOL_CRLF: return "\r\n";
+    case wxSTC_EOL_LF: return "\n";
     default: wxFAIL; break;
   }
 
@@ -1236,7 +1269,6 @@ void wxExSTC::GuessType()
     if (!m_vi.Command(":" + v[0] + "*")) // add * to indicate modelin
     {
       wxLogStatus("Could not apply vi settings");
-      return;
     }
   }
 
@@ -1252,45 +1284,62 @@ void wxExSTC::GuessType()
 
 bool wxExSTC::LinkOpen()
 {
-  return LinkOpen(LINK_OPEN_BROWSER);
+  return LinkOpen(LINK_OPEN | LINK_OPEN_BROWSER);
 }
 
 bool wxExSTC::LinkOpen(int mode, std::string* filename)
 {
   const std::string sel = GetSelectedText().ToStdString();
+
+  if (sel.size() > 200 || sel.find('\n') != std::string::npos)
+  {
+    return false;
+  }
+
   const std::string text = (!sel.empty() ? sel: GetCurLine().ToStdString());
-  wxExControlData data;
 
   if (mode & LINK_OPEN_BROWSER)
   {
-    data.Line(sel.empty() ? -1 : -2);
+    const wxExPath path(m_Link.GetPath(text, 
+      wxExControlData().Line(sel.empty() ? -1 : -2)));
+    
+    if (!path.Path().string().empty()) 
+    {
+      if (!(mode & LINK_CHECK)) 
+      {
+        wxLaunchDefaultBrowser(path.Path().string());
+      }
+
+      return true;
+    }
   }
 
-  const wxExPath path(m_Link.GetPath(text, data));
-  
-  if (path.Path().string().empty()) return false;
+  if (mode & LINK_OPEN)
+  {
+    wxExControlData data;
 
-  if (mode & LINK_OPEN_BROWSER)
-  {
-    if (!(mode & LINK_CHECK)) wxLaunchDefaultBrowser(path.Path().string());
-  }
-  else if (mode & LINK_OPEN)
-  {
-    if (filename != nullptr)
+    const wxExPath path(m_Link.GetPath(text, data));
+    
+    if (!path.Path().string().empty()) 
     {
-      *filename = path.GetFullName();
-    }
-    else if (m_Frame != nullptr)
-    {
-      m_Frame->OpenFile(path, data);
-    }
-    else
-    {
-      Open(path, data);
+      if (filename != nullptr)
+      {
+        *filename = path.GetFullName();
+      }
+      else if (m_Frame != nullptr)
+      {
+        m_Frame->OpenFile(path, data);
+      }
+      else
+      {
+        Open(path, data);
+      }
+
+      return true;
     }
   }
   
-  return true;
+  return false;
 }
 
 bool wxExSTC::MarkerDeleteAllChange()

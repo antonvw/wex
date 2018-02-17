@@ -2,7 +2,7 @@
 // Name:      test-tokenizer.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -49,4 +49,6 @@ TEST_CASE( "wxExTokenizer" )
 
   REQUIRE( wxExTokenizer(";one;two;three;four", "; ").CountTokens() == 4);
   REQUIRE( wxExTokenizer(";;;one;two;three;four", "; ", false).CountTokens() == 7);
+
+  REQUIRE( wxExTokenizer(" 1 2 3 4 5").Tokenize().size() == 5);
 }

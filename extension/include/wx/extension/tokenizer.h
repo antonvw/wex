@@ -2,12 +2,13 @@
 // Name:      tokenizer.h
 // Purpose:   Declaration of wxExTokenizer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wx/dlimpexp.h>
+#include <functional>
 #include <string>
 #define WHITESPACE_DELIMITERS " \t\r\n"
 
@@ -44,21 +45,35 @@ public:
   /// A sequence of delimiters is skipped: an empty token is not returned.
   bool HasMoreTokens() const;
 
-  /// Tokenizes the complete string into a templatized class.
+  /// Tokenizes the complete string into a templatized class 
+  /// (e.g. vector<std::string>).
   /// Always restarts, so you can use HasMoreTokens before.
+  /// Returns the filled in container.
   template <typename T> T Tokenize() {
     T tokens;
     m_TokenEndPos = 0;
-    while (HasMoreTokens()) tokens.emplace_back(GetNextToken());
+    while (HasMoreTokens()) 
+    {
+      tokens.emplace_back(GetNextToken());
+    }
+    return tokens;};
+
+  /// Tokenizes the complete string into a vector of integers.
+  /// Always restarts, so you can use HasMoreTokens before.
+  /// Returns the filled in vector.
+  auto Tokenize() {
+    std::vector <int> tokens;
+    m_TokenEndPos = 0;
+    while (HasMoreTokens()) 
+    {
+      tokens.emplace_back(std::stoi(GetNextToken()));
+    }
     return tokens;};
 private:
   const std::string m_Delimiters;
   const std::string m_Text;
   const bool m_SkipEmptyTokens;
 
-  char m_LastDelimiter = 0;
-
-  size_t m_StartPos = 0;
-  size_t m_TokenEndPos = 0;
-  size_t m_TokenStartPos = 0;
+  char m_LastDelimiter {0};
+  size_t m_StartPos {0}, m_TokenEndPos {0}, m_TokenStartPos {0};
 };

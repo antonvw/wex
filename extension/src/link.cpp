@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wxExLink
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -103,40 +103,20 @@ const wxExPath wxExLink::FindPath(
 
   // Better first try to find "...", then <...>, as in next example.
   // <A HREF="http://www.scintilla.org">scintilla</A> component.
-
-  // So, first get text between " signs.
-  size_t pos_char1 = text.find("\"");
-  size_t pos_char2 = text.rfind("\"");
-
-  // If that did not succeed, then get text between < and >.
-  if (pos_char1 == std::string::npos || 
-      pos_char2 == std::string::npos || 
-      pos_char2 <= pos_char1)
+  for (const auto& p: std::vector < std::pair < std::string, std::string> >
+    {{"\"", "\""}, {"<", ">"}, {"[", "]"}, {"'", "'"}, {"{", "}"}})
   {
-    pos_char1 = text.find("<");
-    pos_char2 = text.rfind(">");
+    const auto pos1 = text.find(p.first);
+    const auto pos2 = text.rfind(p.second);
+
+    if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1)
+    {
+      // Okay, get everything inbetween, and make sure we skip white space.
+      return wxExSkipWhiteSpace(text.substr(pos1 + 1, pos2 - pos1 - 1));
+    }
   }
 
-  // If that did not succeed, then get text between ' and '.
-  if (pos_char1 == std::string::npos ||
-      pos_char2 == std::string::npos || 
-      pos_char2 <= pos_char1)
-  {
-    pos_char1 = text.find("'");
-    pos_char2 = text.rfind("'");
-  }
-  
-  const std::string out =
-    // If we did not find anything.
-     (pos_char1 == std::string::npos || 
-      pos_char2 == std::string::npos || 
-      pos_char2 <= pos_char1) ?
-    text:
-    // Okay, get everything inbetween.
-    text.substr(pos_char1 + 1, pos_char2 - pos_char1 - 1);
-
-  // And make sure we skip white space.
-  return wxExSkipWhiteSpace(out);
+  return wxExSkipWhiteSpace(text);
 }
 
 // text contains selected text, or current line

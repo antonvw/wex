@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wxExProcess
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -188,7 +188,7 @@ bool wxExProcess::Execute(
     
     m_Process = std::make_unique<wxExProcessImp>(m_Frame, m_Shell, command == "gdb");
 
-    if (!m_Process->Execute(m_Command, wd))
+    if (!m_Process->Execute(m_Command, cwd))
     {
       m_Process.release();
       m_Error = true;
@@ -199,7 +199,7 @@ bool wxExProcess::Execute(
     wxArrayString output;
     wxArrayString errors;
     struct wxExecuteEnv env;
-    env.cwd = wd;
+    env.cwd = cwd;
 
     VLOG(1) << "exec: " << m_Command;
 
@@ -273,10 +273,8 @@ void wxExProcess::ShowOutput(const std::string& caption) const
     {
       m_Shell->AppendText(m_StdOut);
     }
-    else
-    {
-      std::cout << m_StdOut << "\n";
-    }
+
+    VLOG(1) << m_StdOut;
   }
   else
   {

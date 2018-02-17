@@ -33,6 +33,8 @@ wxExLexer& wxExLexer::operator=(const wxExLexer& l)
     m_CommentEnd = l.m_CommentEnd;
     m_CommentEnd2 = l.m_CommentEnd2;
     m_DisplayLexer = l.m_DisplayLexer;
+    m_EdgeColumns = l.m_EdgeColumns;
+    m_EdgeMode = l.m_EdgeMode;
     m_Extensions = l.m_Extensions;
     m_IsOk = l.m_IsOk;
     m_Keywords = l.m_Keywords;
@@ -98,7 +100,7 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
       }
       catch (std::exception& e)
       {
-        LOG(ERROR) << "keyword exceptiont: " << e.what();
+        LOG(ERROR) << "keyword exception: " << e.what();
         return false;
       }
     }
@@ -280,6 +282,7 @@ void wxExLexer::Initialize()
   m_CommentEnd.clear();
   m_CommentEnd2.clear();
   m_DisplayLexer.clear();
+  m_EdgeColumns.clear();
   m_Extensions.clear();
   m_Keywords.clear();
   m_KeywordsSet.clear();
@@ -378,6 +381,8 @@ const std::string wxExLexer::MakeSingleLineComment(
   return out;
 }
 
+
+
 void wxExLexer::Reset()
 {
   Initialize();
@@ -410,6 +415,34 @@ void wxExLexer::Set(const pugi::xml_node* node)
     m_Extensions = node->attribute("extensions").value();
     m_Language = node->attribute("language").value();
 
+    const std::string em(node->attribute("edgemode").value());
+
+    if (!em.empty())
+    {
+      if (em == "none")
+        m_EdgeMode = wxExEdgeMode::NONE;
+      else if (em == "line")
+        m_EdgeMode = wxExEdgeMode::LINE;
+      else if (em == "background")
+        m_EdgeMode = wxExEdgeMode::BACKGROUND;
+      else
+        LOG(ERROR) << "unsupported edge mode: " << em << " with offset: " << node->offset_debug();
+    }
+
+    const std::string ec(node->attribute("edgecolumns").value());
+
+    if (!ec.empty())
+    {
+      try
+      {
+        m_EdgeColumns = wxExTokenizer(ec).Tokenize();
+      }
+      catch (std::exception& e)
+      {
+        LOG(ERROR) << "edgecolumns exception: " << e.what();
+      }
+    }
+ 
     AutoMatch((!node->attribute("macro").empty() ?
       node->attribute("macro").value():
       m_ScintillaLexer));
@@ -508,12 +541,40 @@ bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
   m_STC->SetLexerLanguage(m_ScintillaLexer);
 
   Apply();
-      
-  if (m_ScintillaLexer == "diff")
+
+  switch (m_EdgeMode)
   {
-    m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
+    case wxExEdgeMode::ABSENT: break;
+      
+    case wxExEdgeMode::BACKGROUND:
+      m_STC->SetEdgeMode(wxSTC_EDGE_BACKGROUND); 
+      break;
+      
+    case wxExEdgeMode::LINE:
+      m_STC->SetEdgeMode(m_EdgeColumns.size() <= 1 ? 
+        wxSTC_EDGE_LINE: wxSTC_EDGE_MULTILINE); 
+      break;
+      
+    case wxExEdgeMode::NONE:
+      m_STC->SetEdgeMode(wxSTC_EDGE_NONE); 
+      break;
   }
-    
+      
+  switch (m_EdgeColumns.size())
+  {
+    case 0: break;
+
+    case 1:
+      m_STC->SetEdgeColumn(m_EdgeColumns.front());
+      break;
+
+    default:
+      for (const auto& c : m_EdgeColumns)
+      {
+        m_STC->MultiEdgeAddLine(c, m_STC->GetEdgeColour());
+      }
+  }
+
   wxExFrame::StatusText(GetDisplayLexer(), "PaneLexer");
 
   if (fold)

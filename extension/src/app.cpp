@@ -25,7 +25,7 @@
 #include <wx/extension/version.h>
 #include <wx/extension/vi-macros.h>
 
-#define NO_ASSERT 1
+//#define NO_ASSERT 1
 
 INITIALIZE_EASYLOGGINGPP
 
@@ -156,7 +156,7 @@ bool wxExApp::OnInit()
   // the best.
   m_CatalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
     m_Locale.GetCanonicalName()
-#ifdef __WXGTK__
+#ifndef __WXMSW__
     , wxStandardPaths::ResourceCat_Messages
 #endif
     ).ToStdString();

@@ -29,12 +29,12 @@ wxExCTagsFilter& wxExCTagsFilter::Class(const std::string& v)
 
 void wxExCTagsFilter::Clear()
 {
+  VLOG(9) << "filter: " << Get() << " cleared";
+
   m_access.clear();
   m_class.clear();
   m_kind.clear();
   m_signature.clear();
-
-  VLOG(9) << "filter cleared";
 }
 
 const std::string wxExCTagsFilter::Get() const

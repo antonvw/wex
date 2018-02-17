@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wxExStatusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -19,7 +19,7 @@
 
 const int FIELD_NOT_SHOWN = -1;
 
-std::string ConfigName(wxExStatusBar* sb, const std::string item, int f)
+std::string ConfigName(wxExStatusBar* sb, const std::string& item, int f)
 {
   return "SB" + sb->GetField(f).GetName() + item;
 }

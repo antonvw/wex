@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of class wxExListViewWithFrame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -239,8 +239,8 @@ wxExListType wxExListViewWithFrame::GetTypeTool(
 {
   switch (tool.GetId())
   {
-    case ID_TOOL_REPORT_FIND: return LIST_FIND; break;
-    case ID_TOOL_REPORT_KEYWORD: return LIST_KEYWORD; break;
-    default: return LIST_NONE; break;
+    case ID_TOOL_REPORT_FIND: return LIST_FIND;
+    case ID_TOOL_REPORT_KEYWORD: return LIST_KEYWORD;
+    default: return LIST_NONE;
   }
 }

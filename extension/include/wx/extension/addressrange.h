@@ -2,7 +2,7 @@
 // Name:      addressrange.h
 // Purpose:   Declaration of class wxExAddressRange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -33,7 +33,7 @@ public:
     /// lines 0 is illegal
     int lines = 1);
   
-  /// Contructor for a range (including visual range).
+  /// Constructor for a range (including visual range).
   wxExAddressRange(
     /// the ex (or vi) component
     wxExEx* ex, 
@@ -152,10 +152,9 @@ private:
   static std::string m_Replacement;
   static wxExProcess* m_Process;
   
-  const wxExIndicator m_FindIndicator = wxExIndicator(0);
+  const wxExIndicator m_FindIndicator {wxExIndicator(0)};
 
-  wxExAddress m_Begin;
-  wxExAddress m_End;
+  wxExAddress m_Begin, m_End;
   wxExEx* m_Ex;
   wxExSTC* m_STC;
 };

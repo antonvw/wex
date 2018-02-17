@@ -2,7 +2,7 @@
 // Name:      tokenizer.cpp
 // Purpose:   Implementation of class wxExTokenizer
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/tokenizer.h>
@@ -89,6 +89,6 @@ bool wxExTokenizer::HasMoreTokens() const
   return 
     !m_Delimiters.empty() && 
      m_TokenEndPos != std::string::npos &&
-     (!m_SkipEmptyTokens  || 
-       (m_SkipEmptyTokens && m_Text.find_first_not_of(m_Delimiters, m_TokenEndPos) != std::string::npos));
+     (!m_SkipEmptyTokens || 
+       m_Text.find_first_not_of(m_Delimiters, m_TokenEndPos) != std::string::npos);
 }

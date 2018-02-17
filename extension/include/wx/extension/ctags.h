@@ -68,9 +68,13 @@ public:
 
   /// Jumps to previous match from a previous Find.
   bool Previous();
+
+  /// Autocomplete separator.
+  auto Separator() const {return m_Separator;};
 private:
   wxExFrame* m_Frame;
   tagFile* m_File {nullptr};
+  const int m_Separator;
   std::map< std::string, wxExCTagsEntry > m_Matches;
   std::map< std::string, wxExCTagsEntry >::iterator m_Iterator;
 };

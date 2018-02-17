@@ -62,11 +62,11 @@ private:
     if (command.empty()) return TYPE_UNKNOWN;
     switch (command[0])
     {
-      case ':': return TYPE_COMMAND; break;
-      case '=': return TYPE_CALC; break;
+      case ':': return TYPE_COMMAND;
+      case '=': return TYPE_CALC;
       case '/':
-      case '?': return TYPE_FIND; break;
-      case '!': return TYPE_EXEC; break;
+      case '?': return TYPE_FIND;
+      case '!': return TYPE_EXEC;
       default: return TYPE_UNKNOWN;};
     };
 

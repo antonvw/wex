@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wxExShell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -94,7 +94,7 @@ wxExShell::wxExShell(
         GetVi().Mode().Escape();
       }
       if (GetCurrentPos() >= m_CommandStartPosition && 
-          (m_Process == nullptr || (m_Process != nullptr && m_Process->IsRunning())))
+          (m_Process == nullptr || m_Process->IsRunning()))
       {
         EnableShell(true);
       }

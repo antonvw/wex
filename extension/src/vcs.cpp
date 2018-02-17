@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wxExVCS class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <map>
@@ -219,8 +219,8 @@ const std::string wxExVCS::GetName() const
 {
   switch (wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO))
   {
-    case VCS_NONE: return std::string(); break;
-    case VCS_AUTO: return "Auto"; break;
+    case VCS_NONE: return std::string();
+    case VCS_AUTO: return "Auto";
     default: return m_Entry.GetName();
   }
 }

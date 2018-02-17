@@ -2722,6 +2722,8 @@ Copyright: (c) 2018, Anton van Wezenbeek
       but show it under a different name (see c sharp).
    4) language. This is currently used to support the xml language,
       including check on well formed doc, and autocomplete.
+   5) edgemode. Can be none, line or background.
+   6) edgecolumns. Sets the location of the edge columns.
    Furthermore it might contain the next tags:
    1) <styles>. Colouring styles for this lexer. 
       The attribute 'no' contains the scintilla styles.
@@ -2917,7 +2919,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
     <keywords set-0="css1" set-2="css2" set-3="css3"/>
   </lexer>
   <lexer name="d"/> 
-  <lexer name="diff" extensions="*.diff">
+  <lexer name="diff" extensions="*.diff" edgemode="none">
     <styles>
     <style no="header"> fore:grey </style> 
     <style no="position"> fore:steel blue </style> 
@@ -2938,7 +2940,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
   <lexer name="eiffel"/>
   <lexer name="eiffelkw" macro="eiffel"/>
   <lexer name="erlang"/>
-  <lexer name="errorlist"/>
+  <lexer name="errorlist" edgemode="none"/>
   <lexer name="escript"/>
   <lexer name="flagship"/>
   <lexer name="forth"/>
@@ -3431,7 +3433,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
   <lexer name="verilog"/>
   <lexer name="vhdl"/>
   <lexer name="visualprolog"/>
-  <lexer display="xml" name="hypertext" extensions="*.xml" language = "xml">
+  <lexer display="xml" name="hypertext" extensions="*.xml" language = "xml" edgemode="none">
     <styles>
       <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
     </styles>

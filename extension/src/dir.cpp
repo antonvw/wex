@@ -2,7 +2,7 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of class wxExDir and wxExDirOpenFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <experimental/filesystem>
@@ -112,6 +112,8 @@ int wxExDir::FindFiles()
     return -1;
   }
 
+  VLOG(9) << "iterating: " << m_Dir.Path() << " on: " << m_FileSpec << " flags: " << m_Flags;
+
   int matches = 0;
 
   try
@@ -138,7 +140,7 @@ int wxExDir::FindFiles()
       }
     }
   }
-  catch (fs::filesystem_error e)
+  catch (fs::filesystem_error& e)
   {
     LOG(ERROR) << e.what();
   }

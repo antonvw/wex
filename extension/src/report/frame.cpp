@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrameWithHistory class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <easylogging++.h>
 #include <wx/config.h>
 #include <wx/extension/cmdline.h>
 #include <wx/extension/frd.h>
@@ -310,7 +311,7 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
   
   if (arg1.empty() || arg2.empty())
   {
-    wxLogStatus("empty arguments");
+    LOG(ERROR) << "empty arguments";
     return false;
   }
   
@@ -320,7 +321,7 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
 
   if (!wxExStreamToListView::SetupTool(tool, this))
   {
-    wxLogStatus("setup failed");
+    LOG(ERROR) << "setup failed";
     return false;
   }
 
@@ -465,7 +466,7 @@ void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
   m_FileHistoryList->Hide();
 
   // Add all (existing) items from FileHistory.
-  for (auto i = 0; i < GetFileHistory().GetCount(); i++)
+  for (size_t i = 0; i < GetFileHistory().GetCount(); i++)
   {
     wxExListItem item(
       m_FileHistoryList, 

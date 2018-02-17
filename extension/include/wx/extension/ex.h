@@ -25,6 +25,8 @@ class wxExSTCEntryDialog;
 class wxExViMacros;
 class wxExViMacrosMode;
 
+enum class wxExInfoMessage;
+
 /// Offers a class that adds ex editor to wxExSTC.
 class WXDLLIMPEXP_BASE wxExEx
 {
@@ -163,7 +165,7 @@ private:
       const std::string& command,
       const T * container,
       std::function<bool(const std::string&, const std::string&)> cb);
-  void InfoMessage(const std::string& text, int type) const;
+  void InfoMessage(const std::string& text, wxExInfoMessage type) const;
   template <typename S, typename T>
   std::string ReportContainer(const T & container) const;
   void ShowDialog(

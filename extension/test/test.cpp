@@ -87,7 +87,7 @@ const wxExPath GetTestPath(const std::string& file)
 }
 
 void SystemArg(
-  const std::string cmd, const std::string& file, const std::string& dir)
+  const std::string& cmd, const std::string& file, const std::string& dir)
 {
   const wxExPath path({"..", "..", "data", file});
   const std::string line(cmd + " " + path.Path().string() + " " + dir);

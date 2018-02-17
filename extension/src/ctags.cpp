@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      ctags.cpp
 // Purpose:   Implementation of class wxExCTags
-//            http://ctags.sourceforge.net/ctags.html
+//            https://github.com/universal-ctags/ctags
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -21,8 +21,9 @@
 #include <wx/extension/util.h>
 #include "readtags.h"
 
-enum
+enum wxExImageAccessType
 {
+  IMAGE_NONE,
   IMAGE_PUBLIC,
   IMAGE_PROTECTED,
   IMAGE_PRIVATE
@@ -32,7 +33,7 @@ enum
 class wxExCTagsEntry
 {
 public:
-  // Contructor.
+  // Constructor.
   wxExCTagsEntry(const tagEntry& entry)
     : m_LineNumber(entry.address.lineNumber)
     , m_Path(entry.file)
@@ -61,7 +62,7 @@ private:
   std::string m_Pattern;
 };
 
-void SetImage(int& image, const char* value)
+void SetImage(wxExImageAccessType& image, const char* value)
 {
   if (strcmp(value, "public") == 0)
   {
@@ -78,7 +79,9 @@ void SetImage(int& image, const char* value)
 }
 
 const std::string Filtered(
-  const tagEntry& entry, const wxExCTagsFilter& filter, int& image)
+  const tagEntry& entry, 
+  const wxExCTagsFilter& filter, 
+  wxExImageAccessType& image)
 {
   if (!filter.Active()) return entry.name;
 
@@ -164,6 +167,7 @@ const std::string Filtered(
 wxExCTags::wxExCTags(wxExFrame* frame, const std::string& filename)
   : m_Frame(frame)
   , m_Iterator(m_Matches.begin())
+  , m_Separator(3)
 {
   tagFileInfo info;
 
@@ -198,13 +202,28 @@ std::string wxExCTags::AutoComplete(
 
   do
   {
-    int image = -1;
+    wxExImageAccessType image = IMAGE_NONE;
     const std::string tag(Filtered(entry, filter, image));
 
     if (!tag.empty() && tag != prev_tag)
     {
-      if (!s.empty()) s.append(" ");
-      s.append(tag + (image != -1 ? "?" + std::to_string(image): std::string()));
+      if (!s.empty()) s.append(std::string(1, m_Separator));
+
+      s.append(tag);
+
+      if (filter.Kind() == "f")
+      {
+        for (int i = 0; i < entry.fields.count; ++i)
+        {
+          if (strcmp(entry.fields.list[i].key, "signature") == 0)
+          {
+            s.append(entry.fields.list[i].value);
+          }
+        }
+      }
+
+      s.append(image != IMAGE_NONE ? "?" + std::to_string(image): std::string());
+
       prev_tag = tag;
     } 
   } while (tagsFindNext(m_File, &entry) == TagSuccess);
@@ -223,6 +242,7 @@ void wxExCTags::AutoCompletePrepare(wxExSTC* stc)
   stc->AutoCompSetIgnoreCase(true);
   stc->AutoCompSetAutoHide(false);
 
+  wxLogNull logNo;
   stc->RegisterImage(IMAGE_PUBLIC, wxArtProvider::GetBitmap(wxART_PLUS));
   stc->RegisterImage(IMAGE_PROTECTED, wxArtProvider::GetBitmap(wxART_MINUS));
   stc->RegisterImage(IMAGE_PRIVATE, wxArtProvider::GetBitmap(wxART_TICK_MARK));

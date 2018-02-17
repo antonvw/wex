@@ -968,13 +968,10 @@ bool wxExSortSelection(wxExSTC* stc,
 const std::string wxExTranslate(const std::string& text, 
   int pageNum, int numPages)
 {
-  const std::string num = std::to_string(pageNum);
-  const std::string cnt = std::to_string(pageNum);
-  
-  std::string translation = text;
+  std::string translation(text);
 
-  wxExReplaceAll(translation, "@PAGENUM@", num);
-  wxExReplaceAll(translation, "@PAGESCNT@", cnt);
+  wxExReplaceAll(translation, "@PAGENUM@", std::to_string(pageNum));
+  wxExReplaceAll(translation, "@PAGESCNT@", std::to_string(numPages));
 
   return translation;
 }

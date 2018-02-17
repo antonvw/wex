@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wxExItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -757,7 +757,7 @@ wxFlexGridSizer* wxExItem::Layout(
     {
       case ITEM_COMBOBOX_DIR: 
       case ITEM_COMBOBOX_FILE: 
-        return_sizer = AddBrowseButton(sizer); break;
+        return_sizer = AddBrowseButton(sizer);
       case ITEM_EMPTY: return fgz;
       case ITEM_SPACER: sizer->AddSpacer(m_Data.Window().Style()); return fgz;
       
