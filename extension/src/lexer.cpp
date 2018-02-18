@@ -551,8 +551,12 @@ bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
       break;
       
     case wxExEdgeMode::LINE:
+#if wxCHECK_VERSION(3,1,1)
       m_STC->SetEdgeMode(m_EdgeColumns.size() <= 1 ? 
         wxSTC_EDGE_LINE: wxSTC_EDGE_MULTILINE); 
+#else
+      m_STC->SetEdgeMode(wxSTC_EDGE_LINE);
+#endif
       break;
       
     case wxExEdgeMode::NONE:
@@ -569,10 +573,12 @@ bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
       break;
 
     default:
+#if wxCHECK_VERSION(3,1,1)
       for (const auto& c : m_EdgeColumns)
       {
         m_STC->MultiEdgeAddLine(c, m_STC->GetEdgeColour());
       }
+#endif
   }
 
   wxExFrame::StatusText(GetDisplayLexer(), "PaneLexer");

@@ -25,7 +25,7 @@
 #include <wx/extension/version.h>
 #include <wx/extension/vi-macros.h>
 
-//#define NO_ASSERT 1
+#define NO_ASSERT 1
 
 INITIALIZE_EASYLOGGINGPP
 

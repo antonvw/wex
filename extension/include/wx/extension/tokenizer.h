@@ -10,6 +10,7 @@
 #include <wx/dlimpexp.h>
 #include <functional>
 #include <string>
+#include <vector>
 #define WHITESPACE_DELIMITERS " \t\r\n"
 
 /// Offers a class that allows you to tokenize a string into

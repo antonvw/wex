@@ -183,7 +183,7 @@ wxExStatusBar* wxExStatusBar::Setup(
   int* styles = new int[m_Panes.size()];
   int* widths = new int[m_Panes.size()];
 
-  for (auto i = 0; i < m_Panes.size(); i++)
+  for (int i = 0; i < (int)m_Panes.size(); i++)
   {
     styles[i] = wxConfigBase::Get()->ReadLong(ConfigName(sb, "Style", i),
       m_Panes[i].GetStyle());
