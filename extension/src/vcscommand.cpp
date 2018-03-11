@@ -2,7 +2,7 @@
 // Name:      vcscommand.cpp
 // Purpose:   Implementation of wxExVCSCommand class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/vcscommand.h>
@@ -59,11 +59,4 @@ bool wxExVCSCommand::IsOpen() const
     IsBlame() ||
     IsDiff() ||
     IsHistory();
-}
-
-bool wxExVCSCommand::IsUpdate() const
-{
-  return 
-    GetCommand(false) == "update" ||
-    GetCommand(false) == "up";
 }

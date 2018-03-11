@@ -172,7 +172,7 @@ int wxExViMacrosMode::Transition(
         else if (wxExViMacros::StartsWith(macro.substr(1)))
         {
           std::string s;
-          if (wxExAutoComplete(macro.substr(1), wxExViMacros::Get(), s))
+          if (wxExAutoCompleteText(macro.substr(1), wxExViMacros::Get(), s))
           {
             wxExFrame::StatusText(s, "PaneMacro");
             macro = s;

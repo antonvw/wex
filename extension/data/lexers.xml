@@ -2120,8 +2120,8 @@ Copyright: (c) 2018, Anton van Wezenbeek
         <def style ="preprocessor"> fore:grey </def>
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:#ffab8f </def>
-        <def style ="styledefault"> default-font,back:#202020,fore:#BBBBBB </def>
-        <def style ="styledefault-back"> default-font,back:#2D2D2D,fore:#BBBBBB,eol </def>
+        <def style ="styledefault"> default-font,back:#2B2B2B,fore:#BBBBBB </def>
+        <def style ="styledefault-back"> default-font,back:#2E2E2E,fore:#BBBBBB,eol </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:cadet blue </def>
         <def style ="variable"> fore:green </def>
@@ -2814,7 +2814,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
   <lexer name="ave"/>
   <lexer name="avs"/>
   <lexer name="baan"/>
-  <lexer name="bash" extensions="*.bash;Doxyfile"> 
+  <lexer name="bash" extensions="*.bash;*.sh;Doxyfile"> 
     <keywords>    
       alias bg bind break builtin caller case cd command compgen complete
       cp diff do done echo elif else esac exit fg fi find 

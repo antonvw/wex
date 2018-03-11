@@ -25,6 +25,7 @@ TEST_CASE("wxExExCommand")
     REQUIRE( command.Command().empty());
     REQUIRE(!command.IsHandled());
     REQUIRE( command.STC() == stc);
+    REQUIRE( command.Type() == wxExExCommandType::NONE);
 
     command.Command("G");
     REQUIRE( command.Command() == "G");
@@ -60,6 +61,7 @@ TEST_CASE("wxExExCommand")
     REQUIRE( command.Command() == "G");
     REQUIRE(!command.IsHandled());
     REQUIRE( command.STC() == nullptr);
+    REQUIRE( command.Type() == wxExExCommandType::VI);
 
     REQUIRE(!command.Exec() );
     REQUIRE( stc->GetCurrentLine() == 0);

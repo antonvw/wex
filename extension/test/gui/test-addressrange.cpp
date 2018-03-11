@@ -2,7 +2,7 @@
 // Name:      test-addressrange.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -119,8 +119,8 @@ TEST_CASE("wxExAddressRange")
   for (bool b : { false, true })
   {
     stc->SetText(contents);
-    REQUIRE( wxExAddressRange(ex, 5).Global(std::string(), b));
-    REQUIRE( wxExAddressRange(ex, 5).Global("XXX", b));
+    REQUIRE(!wxExAddressRange(ex, 5).Global(std::string(), b));
+    REQUIRE(!wxExAddressRange(ex, 5).Global("XXX", b));
     REQUIRE( wxExAddressRange(ex, 5).Global("/", b));
     REQUIRE( wxExAddressRange(ex, 5).Global("/xx/p", b));
     REQUIRE( wxExAddressRange(ex, 5).Global("/xx/p#", b));

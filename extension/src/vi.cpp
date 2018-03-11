@@ -180,6 +180,7 @@ wxExVi::wxExVi(wxExSTC* stc)
           GetMacros().Record(ESC);
         }
         m_Command.clear();
+        GetSTC()->AutoComplete().Reset();
         GetSTC()->EndUndoAction();})
   , m_MotionCommands {
     {"h", [&](const std::string& command){
@@ -833,7 +834,7 @@ bool wxExVi::InsertMode(const std::string& command)
     case WXK_BACK: 
       if (!m_InsertText.empty())
       {
-        m_InsertText.erase(m_InsertText.size() - 1);
+        m_InsertText.pop_back();
       }
       GetSTC()->DeleteBack();
       break;
@@ -904,7 +905,7 @@ bool wxExVi::InsertMode(const std::string& command)
         }
         else
         {
-          m_InsertText.erase(m_InsertText.size() - 1);
+          m_InsertText.pop_back();
         }
       
         CommandReg(command.back());

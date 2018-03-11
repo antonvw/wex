@@ -127,13 +127,13 @@ wxExCommandArg ParseCommandWithArg(const std::string& command)
 }
 
 ex_evaluator wxExEx::m_Evaluator;
-wxExCTags* wxExEx::m_CTags = nullptr;
 wxExSTCEntryDialog* wxExEx::m_Dialog = nullptr;
 wxExViMacros wxExEx::m_Macros;
 std::string wxExEx::m_LastCommand;
 
 wxExEx::wxExEx(wxExSTC* stc)
   : m_Command(wxExExCommand(stc))
+  , m_CTags(new wxExCTags(this))
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
   , m_SearchFlags((wxExFindReplaceData::Get()->MatchCase() ? wxSTC_FIND_MATCHCASE: 0) | 
       wxSTC_FIND_REGEXP
@@ -380,13 +380,13 @@ wxExEx::wxExEx(wxExSTC* stc)
       return true;}}}
 {
   wxASSERT(m_Frame != nullptr);
-  
-  if (m_CTags == nullptr)
-  {
-    m_CTags = new wxExCTags(m_Frame);
-  }
 }
 
+wxExEx::~wxExEx()
+{
+  delete m_CTags;
+}
+  
 void wxExEx::AddText(const std::string& text)
 {
   if (m_Register)
@@ -456,11 +456,6 @@ double wxExEx::Calculator(const std::string& text, int& width)
   return val;
 }
 
-void wxExEx::Cleanup()
-{
-  delete m_CTags;
-}
-  
 bool wxExEx::Command(const std::string& cmd)
 {
   std::string command(cmd);

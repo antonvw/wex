@@ -2,7 +2,7 @@
 // Name:      vi-macros-fsm.h
 // Purpose:   Declaration of class wxExViMacrosFSM
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <string>
@@ -77,8 +77,7 @@ public:
       case States::PLAYINGBACK: return "playback";
       case States::PLAYINGBACK_WHILE_RECORDING: return "recording playback";
       case States::RECORDING: return "recording";
-    }  
-    return std::string();};
+    };};
 
   /// Returns any trigger as a string.
   static const std::string Trigger(Triggers trigger) {
@@ -89,8 +88,7 @@ public:
       case Triggers::EXPAND_VARIABLE: return "expand_variable";
       case Triggers::PLAYBACK: return "playback";
       case Triggers::RECORD: return "record";
-    }
-    return std::string();};
+    };};
 private:
   void ExpandingTemplate();
   void ExpandingVariable();

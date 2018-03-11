@@ -34,14 +34,13 @@ public:
   /// Constructor using stc, and optional lexer.
   wxExLexer(wxExSTC* stc, const std::string& lexer = std::string())
     : m_STC(stc) {
-    Initialize();
     if (!lexer.empty())
     {
       Set(lexer);
     }};
 
   /// Constructor using xml node.
-  wxExLexer(const pugi::xml_node* node) {Initialize(); Set(node);};
+  wxExLexer(const pugi::xml_node* node) {Set(node);};
 
   /// Assignment operator.
   wxExLexer& operator=(const wxExLexer& l);
@@ -161,7 +160,6 @@ private:
     const std::string& header,
     bool fill_out_with_space,
     bool fill_out) const;
-  void Initialize();
   void Set(const pugi::xml_node* node);
 
   // The scintilla name for this lexer cannot be const, 

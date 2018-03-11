@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      configitem.cpp
-// Purpose:   Implementation of wxExItem class
+// Purpose:   Implementation of wxExItem class config methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <experimental/filesystem>
@@ -25,9 +25,9 @@
 #define PERSISTENT(READ, TYPE, DEFAULT)                                      \
 {                                                                            \
   if (save)                                                                  \
-    wxConfigBase::Get()->Write(GetLabel(), std::any_cast<TYPE>(GetValue())); \
+    wxConfigBase::Get()->Write(m_Label, std::any_cast<TYPE>(GetValue()));    \
   else                                                                       \
-    SetValue((TYPE)wxConfigBase::Get()->READ(GetLabel(), DEFAULT));                \
+    SetValue((TYPE)wxConfigBase::Get()->READ(m_Label, DEFAULT));             \
 }                                                                            \
 
 bool Update(wxExFindReplaceData* frd, wxCheckListBox* clb, int item, bool save, bool value)
@@ -70,7 +70,7 @@ bool wxExItem::ToConfig(bool save) const
     case ITEM_CHECKBOX:           PERSISTENT(ReadBool, bool, false); break;
     case ITEM_CHECKLISTBOX_BIT:   PERSISTENT(ReadLong, long, 0); break;
     case ITEM_COLOURPICKERWIDGET: PERSISTENT(ReadObject, wxColour, *wxWHITE); break;
-    case ITEM_DIRPICKERCTRL:      PERSISTENT(Read, wxString, GetLabel()); break;
+    case ITEM_DIRPICKERCTRL:      PERSISTENT(Read, wxString, m_Label); break;
     case ITEM_TEXTCTRL_FLOAT:     PERSISTENT(ReadDouble, double, 0); break;
     case ITEM_FONTPICKERCTRL:     
 #ifdef __WXOSX__
@@ -113,22 +113,22 @@ bool wxExItem::ToConfig(bool save) const
       {
         const auto l = wxExToListString(cb, m_MaxItems).Get();
 
-        if (GetLabel() == wxExFindReplaceData::Get()->GetTextFindWhat())
+        if (m_Label == wxExFindReplaceData::Get()->GetTextFindWhat())
         {
           wxExFindReplaceData::Get()->SetFindStrings(l);
         }
-        else if (GetLabel() == wxExFindReplaceData::Get()->GetTextReplaceWith())
+        else if (m_Label == wxExFindReplaceData::Get()->GetTextReplaceWith())
         {
           wxExFindReplaceData::Get()->SetReplaceStrings(l);
         }
         else
         {
-          wxExListToConfig(l, GetLabel().ToStdString());
+          wxExListToConfig(l, m_Label.ToStdString());
         }
       }
       else
       {
-        wxExComboBoxFromList(cb, wxExListFromConfig(GetLabel().ToStdString()));
+        wxExComboBoxFromList(cb, wxExListFromConfig(m_Label.ToStdString()));
       }
       }
       break;
@@ -136,29 +136,29 @@ bool wxExItem::ToConfig(bool save) const
     case ITEM_FILEPICKERCTRL:
       if (save)
       {
-        wxConfigBase::Get()->Write(GetLabel(), std::any_cast<wxString>(GetValue()));
+        wxConfigBase::Get()->Write(m_Label, std::any_cast<wxString>(GetValue()));
       }
       else
       {
         wxString initial;
 
 #ifdef __WXGTK__
-        initial = "/usr/bin/" + GetLabel();
+        initial = "/usr/bin/" + m_Label;
 
         if (!std::experimental::filesystem::is_regular_file(initial.ToStdString()))
         {
           initial.clear();
         }
 #endif
-        SetValue(wxConfigBase::Get()->Read(GetLabel(), initial));
+        SetValue(wxConfigBase::Get()->Read(m_Label, initial));
       }
       break;
 
     case ITEM_LISTVIEW:
       if (save)
-        wxConfigBase::Get()->Write(GetLabel(), wxString(std::any_cast<std::string>(GetValue())));
+        wxConfigBase::Get()->Write(m_Label, wxString(std::any_cast<std::string>(GetValue())));
       else
-        SetValue(wxConfigBase::Get()->Read(GetLabel(), "").ToStdString());
+        SetValue(wxConfigBase::Get()->Read(m_Label, "").ToStdString());
       break;
 
     case ITEM_RADIOBOX:
@@ -171,14 +171,14 @@ bool wxExItem::ToConfig(bool save) const
         {
           if (b.second == rb->GetStringSelection())
           {
-            wxConfigBase::Get()->Write(GetLabel(), b.first);
+            wxConfigBase::Get()->Write(m_Label, b.first);
           }
         }
       }
       else
       {
         const wxExItem::Choices & choices(std::any_cast<wxExItem::Choices>(GetInitial()));
-        const auto c = choices.find(wxConfigBase::Get()->ReadLong(GetLabel(), 0));
+        const auto c = choices.find(wxConfigBase::Get()->ReadLong(m_Label, 0));
         if (c != choices.end())
         {
           rb->SetStringSelection(c->second);

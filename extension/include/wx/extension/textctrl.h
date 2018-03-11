@@ -2,7 +2,7 @@
 // Name:      textctrl.h
 // Purpose:   Declaration of wxExTextCtrlInput class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,12 +10,14 @@
 #include <list>
 #include <wx/textctrl.h>
 
+enum class wxExExCommandType;
+
 /// Offers a class to relate text control to values with iterators.
 class WXDLLIMPEXP_BASE wxExTextCtrlInput
 {
 public:
   /// Constructor, fills values from config.
-  wxExTextCtrlInput(const std::string& name);
+  wxExTextCtrlInput(wxExExCommandType type);
   
   /// Destructor, writes values to config.
  ~wxExTextCtrlInput();
@@ -54,8 +56,12 @@ public:
   /// Sets all values (values might be empty).
   /// Sets iterator to begin of list.
   void Set(const std::list < std::string > & values);
+
+  /// Returns type.
+  auto Type() const {return m_Type;};
 private:
+  const wxExExCommandType m_Type;
+  const std::string m_Name;
   std::list < std::string > m_Values;
   std::list < std::string >::const_iterator m_Iterator;
-  const std::string m_Name;
 };

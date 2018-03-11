@@ -2,7 +2,7 @@
 // Name:      debug.cpp
 // Purpose:   Implementation of class wxExDebug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
@@ -199,12 +199,12 @@ bool wxExDebug::GetArgs(
   else if (DeleteAllBreakpoints(command)) {}
   else if (command == "file")
   {
-    return wxExItemDialog({
-      {"File", ITEM_COMBOBOX_FILE, std::any(), wxExControlData().Required(true),
+    return wxExItemDialog(
+      {{"File", ITEM_COMBOBOX_FILE, std::any(), wxExControlData().Required(true),
           LABEL_LEFT,
           [&](wxWindow* user, const std::any& value, bool save) {
              if (save) args += " " + std::any_cast<wxArrayString>(value)[0];}},
-        {m_Entry.GetName(), ITEM_FILEPICKERCTRL}},
+       {m_Entry.GetName(), ITEM_FILEPICKERCTRL}},
       wxExWindowData().Title("Debug").Parent(m_Frame)).ShowModal() != wxID_CANCEL;
   }
   else if ((wxExMatch("^(p|print)", command, v) == 1) && stc != nullptr)

@@ -36,6 +36,7 @@ wxExSTCData& wxExSTCData::operator=(const wxExSTCData& r)
 {
   if (this != &r)
   {
+    m_CTagsFileName = r.m_CTagsFileName;
     m_Data = r.m_Data;
     m_MenuFlags = r.m_MenuFlags;
     m_WinFlags = r.m_WinFlags;
@@ -49,6 +50,12 @@ wxExSTCData& wxExSTCData::operator=(const wxExSTCData& r)
   return *this;
 }
   
+wxExSTCData& wxExSTCData::CTagsFileName(const std::string& text)
+{
+  m_CTagsFileName = text;
+  return *this;
+}
+
 wxExSTCData& wxExSTCData::Flags(
   wxExSTCWindowFlags flags, wxExDataAction action)
 {

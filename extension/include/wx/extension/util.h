@@ -58,17 +58,6 @@ const std::string wxExAlignText(
   /// with spaces is not done.
   const wxExLexer& lexer);
 
-/// Tries to autocomplete text from a vector of strings,
-/// result stored in the string.
-/// Returns true if a unique match was found.
-bool wxExAutoComplete(
-  /// text to be completed
-  const std::string& text, 
-  /// vector with completed text
-  const std::vector<std::string> & v,
-  /// expansion of text to one of the strings from the vector
-  std::string& s);
-
 /// Tries to autocomplete filename,
 /// result stored in the vector.
 /// Returns true if a match was found 
@@ -82,6 +71,21 @@ bool wxExAutoCompleteFileName(
   /// vector containing completed file name(s)
   std::vector<std::string> & v);
   
+/// Tries to autocomplete text from a vector of strings,
+/// result stored in the string.
+/// Returns true if a unique match was found.
+bool wxExAutoCompleteText(
+  /// text to be completed
+  const std::string& text, 
+  /// vector with completed text
+  const std::vector<std::string> & v,
+  /// expansion of text to one of the strings from the vector
+  std::string& s);
+
+/// Returns string before first or last occurrence of c
+/// Returns the whole string if c is not found.
+const std::string wxExBefore(const std::string& text, char c, bool first = true);
+
 /// Launch default browser and search for text.
 /// Returns false if search engine is empty.
 bool wxExBrowserSearch(const std::string& text);

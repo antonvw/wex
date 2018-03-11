@@ -175,23 +175,6 @@ const wxExMarker wxExLexers::GetMarker(const wxExMarker& marker) const
   return (it != m_Markers.end() ? *it: wxExMarker());
 }
   
-void wxExLexers::Initialize()
-{
-  m_DefaultStyle = wxExStyle();
-  m_ThemeColours.clear();
-  m_GlobalProperties.clear();
-  m_Indicators.clear();
-  m_Keywords.clear();
-  m_Lexers.clear();
-  m_Macros.clear();
-  m_ThemeMacros.clear();
-  m_Markers.clear();
-  m_Styles.clear();
-  m_Texts.clear();
-  m_ThemeColours[m_NoTheme] = m_DefaultColours;
-  m_ThemeMacros[m_NoTheme] = std::map<std::string, std::string>{};  
-}
-
 bool wxExLexers::LoadDocument()
 {
   // This test is to prevent showing an error if the lexers file does not exist,
@@ -209,8 +192,20 @@ bool wxExLexers::LoadDocument()
     return false;
   }
   
-  Initialize();
-  
+  m_DefaultStyle = wxExStyle();
+  m_ThemeColours.clear();
+  m_GlobalProperties.clear();
+  m_Indicators.clear();
+  m_Keywords.clear();
+  m_Lexers.clear();
+  m_Macros.clear();
+  m_ThemeMacros.clear();
+  m_Markers.clear();
+  m_Styles.clear();
+  m_Texts.clear();
+  m_ThemeColours[m_NoTheme] = m_DefaultColours;
+  m_ThemeMacros[m_NoTheme] = std::map<std::string, std::string>{};  
+
   for (const auto& node: doc.document_element().children())
   {
          if (strcmp(node.name(), "macro") == 0) ParseNodeMacro(node);

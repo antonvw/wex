@@ -7,10 +7,9 @@
 
 #pragma once
 
-#include <set>
 #include <wx/prntbase.h>
 #include <wx/stc/stc.h>
-#include <wx/extension/ctags-filter.h>
+#include <wx/extension/autocomplete.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/link.h>
 #include <wx/extension/marker.h>
@@ -70,6 +69,9 @@ public:
   virtual void Undo() override;
 
   /// Other methods.
+
+  /// Returns autocomplete.
+  auto & AutoComplete() {return m_AutoComplete;};
 
   /// After pressing enter, starts new line at same place
   /// as previous line.
@@ -260,10 +262,6 @@ public:
   /// Default syncing is started during construction.
   void Sync(bool start = true);
   
-  /// Use autocomplete lists.
-  /// Default on.
-  void UseAutoComplete(bool use);
-
   /// Use and show modification markers in the margin.
   /// If you open a file, the modification markers are used.
   void UseModificationMarkers(bool use);
@@ -287,7 +285,6 @@ protected:
   void OnStyledText(wxStyledTextEvent& event);
 private:
   void BuildPopupMenu(wxExMenu& menu);
-  void CheckAutoComp(const wxUniChar& c);
   void CheckBrace();
   bool CheckBrace(int pos);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
@@ -305,12 +302,12 @@ private:
     m_FoldLevel {0}, 
     m_SavedPos {-1}, m_SavedSelectionStart {-1}, m_SavedSelectionEnd {-1};
   
-  bool m_AddingChars {false}, m_UseAutoComplete {true};
+  bool m_AddingChars {false};
 
-  wxExSTCFile m_File;
   wxExManagedFrame* m_Frame;
+  wxExAutoComplete m_AutoComplete;
   wxExHexMode m_HexMode;
-  
+  wxExSTCFile m_File;
   // We use a separate lexer here as well
   // (though wxExSTCFile offers one), as you can manually override
   // the lexer.
@@ -320,9 +317,6 @@ private:
   wxExVi m_vi;
   
   wxFont m_DefaultFont;
-  std::string m_AutoComplete;
-  wxExCTagsFilter m_AutoCompleteFilter;
-  std::set< std:: string > m_AutoCompleteInserts;
 
   // All objects share the following:
   static wxExItemDialog* m_ConfigDialog;

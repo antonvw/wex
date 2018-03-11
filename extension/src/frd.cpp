@@ -2,7 +2,7 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,19 +11,20 @@
 #endif
 #include <wx/config.h> 
 #include <wx/extension/frd.h>
+#include <wx/extension/ex-command.h>
 #include <wx/extension/util.h>
 
 wxExFindReplaceData* wxExFindReplaceData::m_Self = nullptr;
+std::string wxExFindReplaceData::m_TextFindWhat = _("Find what").ToStdString();
+std::string wxExFindReplaceData::m_TextMatchCase = _("Match case").ToStdString();
+std::string wxExFindReplaceData::m_TextMatchWholeWord = _("Match whole word").ToStdString();
+std::string wxExFindReplaceData::m_TextRegEx = _("Regular expression").ToStdString();
+std::string wxExFindReplaceData::m_TextReplaceWith = _("Replace with").ToStdString();
+std::string wxExFindReplaceData::m_TextSearchDown = _("Search down").ToStdString();
 
 wxExFindReplaceData::wxExFindReplaceData()
-  : m_TextFindWhat(_("Find what"))
-  , m_TextMatchCase(_("Match case"))
-  , m_TextMatchWholeWord(_("Match whole word"))
-  , m_TextRegEx(_("Regular expression"))
-  , m_TextReplaceWith(_("Replace with"))
-  , m_TextSearchDown(_("Search down"))
-  , m_FindStrings(m_TextFindWhat)
-  , m_ReplaceStrings(m_TextReplaceWith)
+  : m_FindStrings(wxExExCommandType::FIND)
+  , m_ReplaceStrings(wxExExCommandType::REPLACE)
 {
   int flags = 0;
   flags |= wxFR_DOWN *      (wxConfigBase::Get()->ReadBool(m_TextSearchDown, true));

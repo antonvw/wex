@@ -36,7 +36,8 @@ wxExShell::wxExShell(
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
   ResetMargins(static_cast<wxExSTCMarginFlags>(STC_MARGIN_FOLDING | STC_MARGIN_LINENUMBER));
-  UseAutoComplete(false); // we have our own autocomplete
+
+  AutoComplete().Use(false); // we have our own autocomplete
   AutoCompSetSeparator(3);
 
   // Start with a prompt.

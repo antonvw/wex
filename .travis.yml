@@ -10,9 +10,6 @@ env:
     - DISPLAY=":99.0"
     # take care that recently-used.xbel file can be written
     - XDG_DATA_HOME=$PWD
-    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-    #   via the "travis encrypt" command using the project repo's public key
-    - secure: "eVY65PUeX5LiNzJCAiTVI1+Az4xBIzdTFTg/y9VVsfb2atyZDxejbIKCTMXX1noWiVm0+sUiNkqbYHkxku4Eay7KQ8xZp7F8GN6dQFdRkYPYPaEfLPeMn5C/mM+mqZ3ssSHe9HUQT8i3LcseqcYVDf3IeG1z5Sgh0NgbQLvcJr8="
 
 matrix:
   include:
@@ -32,7 +29,7 @@ matrix:
     - os: osx
       osx_image: xcode9.2
       env:
-        - MATRIX_EVAL="brew update && brew install gcc && CC=gcc-7 && CXX=g++-7 && brew link --overwrite gcc"
+        - MATRIX_EVAL="brew update && brew install --force gcc && CC=gcc-7 && CXX=g++-7 && brew link --overwrite gcc"
 
   allow_failures:
     - os: osx

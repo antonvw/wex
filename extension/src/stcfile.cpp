@@ -2,7 +2,7 @@
 // Name:      stcfile.cpp
 // Purpose:   Implementation of class wxExSTCFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <easylogging++.h>
@@ -73,12 +73,6 @@ bool wxExSTCFile::DoFileLoad(bool synced)
       m_STC->GetLexer().Set(GetFileName().GetLexer(), true);
     }
 
-    // No edges for log files.
-    if (isLog)
-    {
-      m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
-    }
-    
     wxLogStatus(_("Opened") + ": " + GetFileName().Path().string());
     VLOG(1) << "opened: " << GetFileName().Path().string();
   }
@@ -191,5 +185,4 @@ void wxExSTCFile::ResetContentsChanged()
 {
   m_STC->SetSavePoint();
 }
-
 #endif // wxUSE_GUI

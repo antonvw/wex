@@ -37,7 +37,7 @@ public:
   wxExEx(wxExSTC* stc);
   
   /// Destructor.
-  virtual ~wxExEx() {;};
+  virtual ~wxExEx();
   
   /// Adds text (to STC or register, if register is active).
   void AddText(const std::string& text);
@@ -49,8 +49,8 @@ public:
     /// width, or precision, for doubles
     int& width);
   
-  /// Cleans up (ctags).
-  static void Cleanup();
+  /// Cleans up.
+  void Cleanup();
 
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.
@@ -68,7 +68,7 @@ public:
   const auto & GetCommand() const {return m_Command;};
 
   /// Returns the ctags.
-  static auto & GetCTags() {return m_CTags;};
+  auto & GetCTags() {return m_CTags;};
   
   /// Returns frame.
   auto* GetFrame() {return m_Frame;};
@@ -179,19 +179,19 @@ private:
   std::map<char, int> m_MarkerNumbers;
   
   static std::string m_LastCommand;
-  static wxExCTags* m_CTags;
   static wxExSTCEntryDialog* m_Dialog;
   static wxExViMacros m_Macros;
   static ex_evaluator m_Evaluator;
 
-  bool m_IsActive{true}; // are we actively using ex mode?
-  bool m_Copy{false}; // this is a copy, result of split
+  bool m_IsActive {true}; // are we actively using ex mode?
+  bool m_Copy {false}; // this is a copy, result of split
   
   int m_SearchFlags;
   
-  char m_Register{0};
+  char m_Register {0};
   
   wxExManagedFrame* m_Frame;  
+  wxExCTags* m_CTags {nullptr};
 
   const std::vector<std::pair<
     const std::string, 

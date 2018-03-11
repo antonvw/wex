@@ -9,6 +9,18 @@
 
 #include <string>
 
+/// The type of ex command.
+enum class wxExExCommandType
+{
+  CALC,    ///< a calculation command (control R=)
+  COMMAND, ///< a normal command (:)
+  EXEC,    ///< an exec command (:)
+  FIND,    ///< a find command (/ or ?)
+  NONE,    ///< an empty command 
+  REPLACE, ///< a replace command
+  VI,      ///< a vi command (no ex command)
+};
+
 class wxExSTC;
 
 /// Offers a command to be used by ex Command.
@@ -85,6 +97,9 @@ public:
 
   /// Returns STC component.
   auto * STC() const {return m_STC;};
+
+  /// Returns type of command.
+  wxExExCommandType Type() const;
 private:
   std::string m_Command;
   bool m_IsHandled {false};

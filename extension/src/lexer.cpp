@@ -275,22 +275,6 @@ const std::string wxExLexer::GetKeywordsString(
   return std::string();
 }
 
-void wxExLexer::Initialize()
-{
-  m_CommentBegin.clear();
-  m_CommentBegin2.clear();
-  m_CommentEnd.clear();
-  m_CommentEnd2.clear();
-  m_DisplayLexer.clear();
-  m_EdgeColumns.clear();
-  m_Extensions.clear();
-  m_Keywords.clear();
-  m_KeywordsSet.clear();
-  m_Properties.clear();
-  m_ScintillaLexer.clear();
-  m_Styles.clear();
-}
-
 bool wxExLexer::IsKeyword(const std::string& word) const
 {
   return m_Keywords.find(word) != m_Keywords.end();
@@ -385,7 +369,19 @@ const std::string wxExLexer::MakeSingleLineComment(
 
 void wxExLexer::Reset()
 {
-  Initialize();
+  m_CommentBegin.clear();
+  m_CommentBegin2.clear();
+  m_CommentEnd.clear();
+  m_CommentEnd2.clear();
+  m_DisplayLexer.clear();
+  m_EdgeColumns.clear();
+  m_Extensions.clear();
+  m_Keywords.clear();
+  m_KeywordsSet.clear();
+  m_Language.clear();
+  m_Properties.clear();
+  m_ScintillaLexer.clear();
+  m_Styles.clear();
 
   m_IsOk = false;
   
@@ -540,45 +536,51 @@ bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
 
   m_STC->SetLexerLanguage(m_ScintillaLexer);
 
+  const bool ok = (((wxStyledTextCtrl *)m_STC)->GetLexer()) != wxSTC_LEX_NULL;
+
   Apply();
 
-  switch (m_EdgeMode)
+  // Set edges only if lexer is set.
+  if (ok)
   {
-    case wxExEdgeMode::ABSENT: break;
-      
-    case wxExEdgeMode::BACKGROUND:
-      m_STC->SetEdgeMode(wxSTC_EDGE_BACKGROUND); 
-      break;
-      
-    case wxExEdgeMode::LINE:
+    switch (m_EdgeMode)
+    {
+      case wxExEdgeMode::ABSENT: break;
+        
+      case wxExEdgeMode::BACKGROUND:
+        m_STC->SetEdgeMode(wxSTC_EDGE_BACKGROUND); 
+        break;
+        
+      case wxExEdgeMode::LINE:
 #if wxCHECK_VERSION(3,1,1)
-      m_STC->SetEdgeMode(m_EdgeColumns.size() <= 1 ? 
-        wxSTC_EDGE_LINE: wxSTC_EDGE_MULTILINE); 
+        m_STC->SetEdgeMode(m_EdgeColumns.size() <= 1 ? 
+          wxSTC_EDGE_LINE: wxSTC_EDGE_MULTILINE); 
 #else
-      m_STC->SetEdgeMode(wxSTC_EDGE_LINE);
+        m_STC->SetEdgeMode(wxSTC_EDGE_LINE);
 #endif
-      break;
-      
-    case wxExEdgeMode::NONE:
-      m_STC->SetEdgeMode(wxSTC_EDGE_NONE); 
-      break;
-  }
-      
-  switch (m_EdgeColumns.size())
-  {
-    case 0: break;
+        break;
+        
+      case wxExEdgeMode::NONE:
+        m_STC->SetEdgeMode(wxSTC_EDGE_NONE); 
+        break;
+    }
+        
+    switch (m_EdgeColumns.size())
+    {
+      case 0: break;
 
-    case 1:
-      m_STC->SetEdgeColumn(m_EdgeColumns.front());
-      break;
+      case 1:
+        m_STC->SetEdgeColumn(m_EdgeColumns.front());
+        break;
 
-    default:
 #if wxCHECK_VERSION(3,1,1)
-      for (const auto& c : m_EdgeColumns)
-      {
-        m_STC->MultiEdgeAddLine(c, m_STC->GetEdgeColour());
-      }
+      default:
+        for (const auto& c : m_EdgeColumns)
+        {
+          m_STC->MultiEdgeAddLine(c, m_STC->GetEdgeColour());
+        }
 #endif
+    }
   }
 
   wxExFrame::StatusText(GetDisplayLexer(), "PaneLexer");
@@ -588,7 +590,7 @@ bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
     m_STC->Fold();
   }
 
-  return m_ScintillaLexer.empty() || (((wxStyledTextCtrl *)m_STC)->GetLexer()) != wxSTC_LEX_NULL;
+  return m_ScintillaLexer.empty() || ok;
 }
 
 void wxExLexer::SetProperty(const std::string& name, const std::string& value)

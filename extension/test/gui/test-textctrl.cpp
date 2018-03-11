@@ -2,7 +2,7 @@
 // Name:      test-textctrl.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -18,11 +18,11 @@ TEST_CASE("wxExTextCtrl")
   wxTextCtrl* tc = new wxTextCtrl(GetFrame(), wxID_ANY);
   AddPane(GetFrame(), tc);
   
-  REQUIRE( wxExTextCtrlInput("xxx").Get().empty());
-  REQUIRE( wxExTextCtrlInput("xxx").GetValues().empty());
-  REQUIRE(!wxExTextCtrlInput("xxx").Set(WXK_UP, tc));
+  REQUIRE( wxExTextCtrlInput(wxExExCommandType::NONE).Get().empty());
+  REQUIRE( wxExTextCtrlInput(wxExExCommandType::NONE).GetValues().empty());
+  REQUIRE(!wxExTextCtrlInput(wxExExCommandType::NONE).Set(WXK_UP, tc));
   
-  wxExTextCtrlInput tip("tip");
+  wxExTextCtrlInput tip(wxExExCommandType::FIND);
   REQUIRE( tip.Set("one"));
   REQUIRE(!tip.Set(std::string()));
   REQUIRE( tip.Get() == "one");

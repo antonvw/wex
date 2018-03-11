@@ -2,21 +2,35 @@
 // Name:      textctrl.cpp
 // Purpose:   Implementation of wxExTextCtrlInput class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <wx/extension/textctrl.h>
+#include <wx/extension/ex-command.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/util.h>
 
-wxExTextCtrlInput::wxExTextCtrlInput(const std::string& name) 
-  : m_Name(name)
-  , m_Values(wxExListFromConfig(name))
-  , m_Iterator(m_Values.cbegin()) 
+wxExTextCtrlInput::wxExTextCtrlInput(wxExExCommandType type) 
+  : m_Type(type)
+  , m_Name([](wxExExCommandType type) {
+      switch (type)
+      {
+        case wxExExCommandType::CALC: return std::string("excalc");
+        case wxExExCommandType::EXEC: return std::string("exexec");
+        case wxExExCommandType::FIND: return wxExFindReplaceData::GetTextFindWhat();
+        case wxExExCommandType::REPLACE: return wxExFindReplaceData::GetTextReplaceWith();
+        case wxExExCommandType::COMMAND: return std::string("excommand");
+        default: return std::string("exother");
+      }}(type))
+  , m_Values(wxExListFromConfig(m_Name))
+  , m_Iterator(m_Values.cbegin())
 {
+  VLOG(9) << "TCI " << m_Name << " size: " << m_Values.size();
 }
 
 wxExTextCtrlInput::~wxExTextCtrlInput() 
@@ -26,7 +40,15 @@ wxExTextCtrlInput::~wxExTextCtrlInput()
 
 const std::string wxExTextCtrlInput::Get() const 
 {
-  return m_Iterator != m_Values.end() ? *m_Iterator: std::string();
+  try
+  {
+    return m_Iterator != m_Values.end() ? *m_Iterator: std::string();
+  }
+  catch (std::exception& e)
+  {
+    LOG(ERROR) << "TCI: " << m_Name << " exception: " << e.what();
+    return std::string();
+  }
 }
   
 bool wxExTextCtrlInput::Set(const std::string& value)

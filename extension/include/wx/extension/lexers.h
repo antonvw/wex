@@ -123,7 +123,6 @@ public:
   bool ShowThemeDialog(wxWindow* parent);
 private:
   wxExLexers(const wxExPath& filename);
-  void Initialize();
   void ParseNodeFolding(const pugi::xml_node& node);
   void ParseNodeGlobal(const pugi::xml_node& node);
   void ParseNodeKeyword(const pugi::xml_node& node);

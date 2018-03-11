@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of class App
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <easylogging++.h>
@@ -37,7 +37,7 @@ bool App::OnInit()
   if (
     !wxExApp::OnInit() ||
     !wxExCmdLine(
-     {{{"d", "debug", "use debug mode"}, [&](bool on) {m_Debug = on && true;}},
+     {{{"d", "debug", "use debug mode"}, [&](bool on) {m_Debug = on;}},
       {{"H", "hex", "hex mode"}, [&](bool on) {
         if (!on) return;
         m_Data.Flags(STC_WIN_HEX, DATA_OR);}},
@@ -76,8 +76,8 @@ bool App::OnInit()
         if (on) m_Data.Flags(STC_WIN_READ_ONLY, DATA_OR);}}},
      {{{"c", "command", "vi command"}, {CMD_LINE_STRING, [&](const std::any& s) {
         m_Data.Control(wxExControlData().Command(std::any_cast<std::string>(s)));}}},
-      {{"D", "defaultlogfile", "sets default log file"}, {CMD_LINE_STRING, [&](const std::any& s) {}}},
-      {{"L", "loggingflags", "sets logging flags"}, {CMD_LINE_INT, [&](const std::any& s) {
+      {{"D", "logfile", "sets log file"}, {CMD_LINE_STRING, [&](const std::any& s) {}}},
+      {{"L", "logflags", "sets log flags"}, {CMD_LINE_INT, [&](const std::any& s) {
         el::Loggers::addFlag((el::LoggingFlag)std::any_cast<int>(s));}}},
       {{"m", "vmodule", "activates verbosity for files starting with main to level"}, {CMD_LINE_STRING, [&](const std::any& s) {}}},
       {{"s", "scriptin", "script in"}, {CMD_LINE_STRING, [&](const std::any& s) {
@@ -86,6 +86,8 @@ bool App::OnInit()
         m_Data.Control(wxExControlData().Command(":so " + std::any_cast<std::string>(s)));}}},
       {{"t", "tag", "start at tag"}, {CMD_LINE_STRING, [&](const std::any& s) {
         m_Tag = std::any_cast<std::string>(s);}}},
+      {{"u", "tagfile", "use tagfile"}, {CMD_LINE_STRING, [&](const std::any& s) {
+        m_Data.CTagsFileName(std::any_cast<std::string>(s));}}},
       {{"V", "v", "activates verbosity upto verbose level (valid range: 0-9)"}, {CMD_LINE_INT, [&](const std::any& s) {}}},
       {{"w", "scriptout", "script out write"}, {CMD_LINE_STRING, [&](const std::any& s) {
         m_Scriptout.Open(std::any_cast<std::string>(s), wxFile::write);}}},

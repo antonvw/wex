@@ -158,7 +158,7 @@ Frame::Frame(App* app)
   
   if (!m_App->GetTag().empty())
   {
-    wxExEx::GetCTags()->Find(m_App->GetTag());
+    wxExCTags(this).Find(m_App->GetTag());
   }
   else if (m_App->GetFiles().empty())
   {

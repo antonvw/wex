@@ -14,7 +14,6 @@
 #include <wx/numdlg.h>
 #include <wx/settings.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/ctags.h>
 #include <wx/extension/debug.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
@@ -62,6 +61,7 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
       data.Window().Style(), 
       data.Window().Name())
   , m_Data(this, data)
+  , m_AutoComplete(this)
   , m_vi(this)
   , m_File(this, data.Window().Name())
   , m_Link(this)
@@ -98,8 +98,6 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
   SetMultiPaste(wxSTC_MULTIPASTE_EACH);
   SetMultipleSelection(true);
   
-  m_vi.GetCTags()->AutoCompletePrepare(this);
-
   if (m_Zoom == -1)
   {
     m_Zoom = GetZoom();
@@ -158,6 +156,10 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
       {
         m_HexMode.SetPos(event);
       }
+    }
+    if (event.GetKeyCode() == WXK_BACK)
+    {
+      m_AutoComplete.Apply(event.GetKeyCode());
     }
     if (m_vi.OnKeyDown(event))
     {
@@ -229,24 +231,7 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
     event.Skip();});
 
   Bind(wxEVT_STC_AUTOCOMP_SELECTION, [=](wxStyledTextEvent& event) {
-    m_AutoComplete.clear();
-
-    if (m_vi.GetCTags()->Filter(
-      event.GetText().ToStdString(), 
-      m_AutoCompleteFilter))
-    {
-      VLOG(9) << "filter: " << m_AutoCompleteFilter.Get();
-    }
-
-    if (m_vi.GetIsActive())
-    {
-      const std::string command(event.GetText().substr(
-        m_AutoComplete.size()));
-
-      if (!command.empty() && !m_vi.Command(command))
-      {
-        wxLogStatus("Autocomplete failed");
-      }}});
+    m_AutoComplete.Activate(event.GetText().ToStdString());});
     
   Bind(wxEVT_STC_CHARADDED, [=](wxStyledTextEvent& event) {
     event.Skip();
@@ -325,12 +310,13 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
         m_AddingChars = true;
       }
 
-      CheckAutoComp(event.GetUnicodeKey());
+      m_AutoComplete.Apply(event.GetUnicodeKey());
     }
     else
     {
       m_AddingChars = false;
     }
+
     if (m_vi.OnChar(event))
     {
       if (
@@ -353,7 +339,7 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
       }
       if (!m_vi.GetIsActive())
       {
-        CheckAutoComp(event.GetUnicodeKey());
+        m_AutoComplete.Apply(event.GetUnicodeKey());
       }
       event.Skip();
     }
@@ -816,102 +802,6 @@ bool wxExSTC::CanPaste() const
   return wxStyledTextCtrl::CanPaste() && !GetReadOnly() && !HexMode();
 }
 
-void wxExSTC::CheckAutoComp(const wxUniChar& c)
-{
-  if (!m_UseAutoComplete || 
-      !wxConfigBase::Get()->ReadBool(_("Autocomplete"), true) ||
-      SelectionIsRectangle())
-  {
-    return;
-  }
-  
-  if (wxExIsCodewordSeparator(GetCharAt(GetCurrentPos() - 1)))
-  {
-    m_AutoComplete = c;
-  }
-  else
-  {
-    if (c == '.')
-    {
-      m_AutoComplete.clear();
-    }
-    else if (isspace(c))
-    {
-      if (m_AutoComplete.size() > 2)
-      {
-        m_AutoCompleteInserts.emplace(m_AutoComplete);
-      }
-
-      m_AutoComplete.clear();
-      return;
-    }
-    else
-    {
-      m_AutoComplete += c;
-    }
-
-    if (m_AutoCompleteFilter.Active())
-    {
-      const std::string comp(m_vi.GetCTags()->AutoComplete(
-        m_AutoComplete, m_AutoCompleteFilter));
-
-      if (!comp.empty())
-      {
-        AutoCompSetSeparator(m_vi.GetCTags()->Separator());
-        AutoCompShow(m_AutoComplete.length() - 1, comp);
-        AutoCompSetSeparator(' ');
-      }
-      else
-      {
-        AutoCompCancel();
-      }
-    }
-    else if (m_AutoComplete.length() > 2) // Only autocompletion for large words
-    {
-      const std::string comp(m_vi.GetCTags()->AutoComplete(m_AutoComplete));
-      bool show = false;
-
-      if (!comp.empty())
-      {
-        AutoCompSetSeparator(m_vi.GetCTags()->Separator());
-        AutoCompShow(m_AutoComplete.length() - 1, comp);
-        AutoCompSetSeparator(' ');
-        show = true;
-      }
-
-      const int min_size = 3;
-
-      if (m_Lexer.KeywordStartsWith(m_AutoComplete))
-      {
-        const std::string comp(
-          m_Lexer.GetKeywordsString(-1, min_size, m_AutoComplete));
-          
-        if (!comp.empty())
-        {
-          AutoCompShow(m_AutoComplete.length() - 1, comp);
-          show = true;
-        }
-      }
-
-      if (!m_AutoCompleteInserts.empty())
-      {
-        const std::string comp(wxExGetStringSet(
-          m_AutoCompleteInserts, min_size, m_AutoComplete));
-          
-        if (!comp.empty())
-        {
-          AutoCompShow(m_AutoComplete.length() - 1, comp);
-          show = true;
-        }
-      }
-
-      if (!show)
-      {
-        AutoCompCancel();
-      }
-    }
-  }
-}
 
 void wxExSTC::CheckBrace()
 {
@@ -1751,11 +1641,6 @@ void wxExSTC::Undo()
 {
   wxStyledTextCtrl::Undo();
   m_HexMode.Undo();
-}
-
-void wxExSTC::UseAutoComplete(bool use)
-{
-  m_UseAutoComplete = use;
 }
 
 void wxExSTC::UseModificationMarkers(bool use)

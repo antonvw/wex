@@ -758,6 +758,8 @@ wxFlexGridSizer* wxExItem::Layout(
       case ITEM_COMBOBOX_DIR: 
       case ITEM_COMBOBOX_FILE: 
         return_sizer = AddBrowseButton(sizer);
+        break;
+
       case ITEM_EMPTY: return fgz;
       case ITEM_SPACER: sizer->AddSpacer(m_Data.Window().Style()); return fgz;
       

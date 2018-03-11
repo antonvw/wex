@@ -10,9 +10,11 @@
 #include <map>
 #include <string>
 #include <wx/extension/ctags-filter.h>
+#include <wx/extension/stc-enums.h>
 #include <wx/dlimpexp.h>
 
 class wxExCTagsEntry;
+class wxExEx;
 class wxExFrame;
 class wxExSTC;
 typedef struct sTagFile tagFile;
@@ -22,14 +24,16 @@ class WXDLLIMPEXP_BASE wxExCTags
 {
 public:  
   /// Constructor, opens ctags file.
-  wxExCTags(
-    /// frame to use for opening source files
-    wxExFrame* frame, 
-    /// Opens the ctags file on a path.
-    /// Default uses standard ctags file, but you can choose your own name.
-    /// This file is searched for in the current dir, and if not found in the 
-    /// config dir.
-    const std::string& filename = "tags");
+  /// Uses ex component for presenting ctags results.
+  /// The ctags file is obtained from the STCData associated with ex STC.
+  /// Default uses standard ctags file, but you can choose your own name.
+  /// This file is searched for in the current dir, and if not found in the 
+  /// config dir.
+  /// You can also specify an absolute filename.
+  wxExCTags(wxExEx* ex);
+
+  /// Constructor, opens default ctags file.
+  wxExCTags(wxExFrame* frame);
   
   /// Destructor, closes ctags file.
  ~wxExCTags();
@@ -40,10 +44,7 @@ public:
     /// text to be completed
     const std::string& text,
     /// filter on ctags extension field(s), default no filter
-    const wxExCTagsFilter& filter = wxExCTagsFilter()) const;
-
-  /// Prepares stc component for autocomplete.
-  void AutoCompletePrepare(wxExSTC* stc);
+    const wxExCTagsFilter& filter = wxExCTagsFilter());
 
   /// Finds the tag and uses it to fill the supplied filter.
   /// Returns true if a matching tag is found, 
@@ -72,9 +73,15 @@ public:
   /// Autocomplete separator.
   auto Separator() const {return m_Separator;};
 private:
+  void AutoCompletePrepare();
+  void Init(const std::string& filename);
+  bool Open(const std::string& path, bool show_error = false);
+
+  wxExEx* m_Ex {nullptr};
   wxExFrame* m_Frame;
   tagFile* m_File {nullptr};
   const int m_Separator;
+  bool m_Prepare {false};
   std::map< std::string, wxExCTagsEntry > m_Matches;
   std::map< std::string, wxExCTagsEntry >::iterator m_Iterator;
 };

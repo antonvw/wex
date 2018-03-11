@@ -2,7 +2,7 @@
 // Name:      frd.h
 // Purpose:   Declaration of wxExFindReplaceData class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -44,22 +44,22 @@ public:
   const auto & GetReplaceStrings() const {return m_ReplaceStrings.GetValues();};
 
   /// Returns text.
-  const auto & GetTextFindWhat() const {return m_TextFindWhat;};
+  static const auto & GetTextFindWhat() {return m_TextFindWhat;};
 
   /// Returns text.
-  const auto & GetTextMatchCase() const {return m_TextMatchCase;};
+  static const auto & GetTextMatchCase() {return m_TextMatchCase;};
 
   /// Returns text.
-  const auto & GetTextMatchWholeWord() const {return m_TextMatchWholeWord;};
+  static const auto & GetTextMatchWholeWord() {return m_TextMatchWholeWord;};
 
   /// Returns text.
-  const auto & GetTextRegEx() const {return m_TextRegEx;};
+  static const auto & GetTextRegEx() {return m_TextRegEx;};
 
   /// Returns text.
-  const auto & GetTextReplaceWith() const {return m_TextReplaceWith;};
+  static const auto & GetTextReplaceWith() {return m_TextReplaceWith;};
 
   /// Returns text.
-  const auto & GetTextSearchDown() const {return m_TextSearchDown;};
+  static const auto & GetTextSearchDown() {return m_TextSearchDown;};
   
   /// Returns true if the flags have match case set.
   bool MatchCase() const {return (m_FRD.GetFlags() & wxFR_MATCHCASE) > 0;};
@@ -121,16 +121,16 @@ public:
 private:
   wxExFindReplaceData();
 
-  const std::string m_TextFindWhat;
-  const std::string m_TextMatchCase;
-  const std::string m_TextMatchWholeWord;
-  const std::string m_TextRegEx;
-  const std::string m_TextReplaceWith;
-  const std::string m_TextSearchDown;
+  static std::string m_TextFindWhat;
+  static std::string m_TextMatchCase;
+  static std::string m_TextMatchWholeWord;
+  static std::string m_TextRegEx;
+  static std::string m_TextReplaceWith;
+  static std::string m_TextSearchDown;
   
   wxFindReplaceData m_FRD;
 
-  bool m_UseRegEx = false;
+  bool m_UseRegEx {false};
 
   wxExTextCtrlInput m_FindStrings;
   wxExTextCtrlInput m_ReplaceStrings;

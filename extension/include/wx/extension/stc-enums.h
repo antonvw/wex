@@ -2,10 +2,12 @@
 // Name:      stc-enums.h
 // Purpose:   Declaration of enums for wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
+
+#define DEFAULT_TAGFILE "tags"
 
 /// Margin flags.
 enum wxExSTCMarginFlags

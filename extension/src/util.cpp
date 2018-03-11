@@ -93,23 +93,6 @@ const std::string wxExAlignText(
   return out;
 }
 
-bool wxExAutoComplete(const std::string& text, 
-  const std::vector<std::string> & v, std::string& s)
-{
-  int matches = 0;
-  
-  for (const auto& it : v)
-  {
-    if (it.find(text) == 0)
-    {
-      s = it;
-      matches++;
-    }
-  }
-
-  return (matches == 1);
-}
-  
 bool wxExAutoCompleteFileName(
   const std::string& text, std::string& expansion, std::vector<std::string> & v)
 {
@@ -167,6 +150,37 @@ bool wxExAutoCompleteFileName(
 
   return true;
 }
+
+bool wxExAutoCompleteText(const std::string& text, 
+  const std::vector<std::string> & v, std::string& s)
+{
+  int matches = 0;
+  
+  for (const auto& it : v)
+  {
+    if (it.find(text) == 0)
+    {
+      s = it;
+      matches++;
+    }
+  }
+
+  return (matches == 1);
+}
+
+const std::string wxExBefore(const std::string& text, char c, bool first)
+{
+  std::string::size_type pos = (first ? text.find(c): text.rfind(c));
+
+  if (pos != std::string::npos)
+  {
+    return text.substr(0, pos);
+  }
+  else
+  {
+    return text;
+  }
+}  
 
 bool wxExBrowserSearch(const std::string& text)
 {

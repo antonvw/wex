@@ -14,8 +14,9 @@
 #include <wx/config.h>
 #include <wx/log.h>
 #include <wx/extension/ctags.h>
-#include <wx/extension/frame.h>
+#include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/path.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
@@ -62,8 +63,11 @@ private:
   std::string m_Pattern;
 };
 
-void SetImage(wxExImageAccessType& image, const char* value)
+void SetImage(const tagEntry& entry, wxExImageAccessType& image)
 {
+  const char* value = tagsField(&entry, "access");
+  if (value == nullptr) return;
+
   if (strcmp(value, "public") == 0)
   {
     image = IMAGE_PUBLIC;
@@ -78,17 +82,20 @@ void SetImage(wxExImageAccessType& image, const char* value)
   }
 }
 
+bool Compare(const tagEntry& entry, 
+  const std::string& text, const std::string& field)
+{
+  const char* value = tagsField(&entry, field.c_str());
+  return 
+    value != nullptr && strcmp(text.c_str(), value) == 0;
+}
+
 const std::string Filtered(
   const tagEntry& entry, 
   const wxExCTagsFilter& filter, 
   wxExImageAccessType& image)
 {
   if (!filter.Active()) return entry.name;
-
-  if (filter.Kind().empty() && entry.fields.count == 0)
-  {
-    LOG(ERROR) << "filter active, but no fields present";
-  }
 
   if (!filter.Kind().empty())
   { 
@@ -98,65 +105,17 @@ const std::string Filtered(
     }
   }
 
-  bool found = true;
-
-  if (!filter.Access().empty() || !filter.Class().empty() || !filter.Signature().empty())
+  if (!filter.Access().empty() && !Compare(entry, filter.Access(), "access"))
   {
-    found = false;
-
-    for (int i = 0; i < entry.fields.count; ++i)
-    {
-      const char* key = entry.fields.list[i].key;
-      const char* value = entry.fields.list[i].value;
-
-      if (strcmp(key, "access") == 0)
-      {
-        SetImage(image, value);
-
-        if (!filter.Access().empty())
-        {
-          if (filter.Access() != value)
-          {
-            return std::string();
-          }
-          else
-          {
-            found = true;
-          }
-        }
-      }
-      else if (strcmp(key, "class") == 0)
-      {
-        if (!filter.Class().empty())
-        {
-          if (filter.Class() != value)
-          {
-            return std::string();
-          }
-          else
-          {
-            found = true;
-          }
-        }
-      }
-      else if (strcmp(key, "signature") == 0)
-      {
-        if (!filter.Signature().empty())
-        {
-          if (filter.Signature() != value)
-          {
-            return std::string();
-          }
-          else
-          {
-            found = true;
-          }
-        }
-      }
-    }
+    return std::string();
   }
 
-  if (!found)
+  if (!filter.Class().empty() && !Compare(entry, filter.Class(), "class"))
+  {
+    return std::string();
+  }
+
+  if (!filter.Signature().empty() && !Compare(entry, filter.Signature(), "signature"))
   {
     return std::string();
   }
@@ -164,21 +123,21 @@ const std::string Filtered(
   return entry.name;
 }
 
-wxExCTags::wxExCTags(wxExFrame* frame, const std::string& filename)
+wxExCTags::wxExCTags(wxExEx* ex)
+  : m_Ex(ex)
+  , m_Frame(ex->GetFrame())
+  , m_Iterator(m_Matches.begin())
+  , m_Separator(3)
+{
+  Init(m_Ex->GetCommand().STC()->GetData().CTagsFileName());
+}
+
+wxExCTags::wxExCTags(wxExFrame* frame)
   : m_Frame(frame)
   , m_Iterator(m_Matches.begin())
   , m_Separator(3)
 {
-  tagFileInfo info;
-
-  for (const auto & it : std::vector < std::string > {
-    "./", wxExConfigDir() + "/"})
-  {
-    if ((m_File = tagsOpen(std::string(it + filename).c_str(), &info)) != nullptr)
-    {
-      return; // finish, we found a file
-    }
-  }
+  Init(DEFAULT_TAGFILE);
 }
 
 wxExCTags::~wxExCTags()
@@ -187,18 +146,37 @@ wxExCTags::~wxExCTags()
 }
 
 std::string wxExCTags::AutoComplete(
-  const std::string& text, const wxExCTagsFilter& filter) const
+  const std::string& text, const wxExCTagsFilter& filter)
 {
   if (m_File == nullptr) return std::string();
 
   tagEntry entry;
   
-  if (tagsFind(m_File, &entry, text.c_str(), TAG_PARTIALMATCH) == TagFailure)
+  if (text.empty())
+  { 
+    if (tagsFirst(m_File, &entry) == TagFailure)
+    {
+      return std::string();
+    }
+  }
+  else if (tagsFind(
+    m_File, 
+    &entry, 
+    text.c_str(), TAG_PARTIALMATCH | TAG_IGNORECASE) == TagFailure)
   {
     return std::string();
   }
 
   std::string s, prev_tag;
+
+  const int max{100};
+  int count {0};
+  tagResult result = TagSuccess;
+
+  if (!m_Prepare)
+  {
+    AutoCompletePrepare();
+  }
 
   do
   {
@@ -210,56 +188,58 @@ std::string wxExCTags::AutoComplete(
       if (!s.empty()) s.append(std::string(1, m_Separator));
 
       s.append(tag);
+      count++;
+
+      SetImage(entry, image);
 
       if (filter.Kind() == "f")
       {
-        for (int i = 0; i < entry.fields.count; ++i)
-        {
-          if (strcmp(entry.fields.list[i].key, "signature") == 0)
-          {
-            s.append(entry.fields.list[i].value);
-          }
-        }
+        s.append(tagsField(&entry, "signature"));
       }
 
       s.append(image != IMAGE_NONE ? "?" + std::to_string(image): std::string());
 
       prev_tag = tag;
     } 
-  } while (tagsFindNext(m_File, &entry) == TagSuccess);
+
+    result = (text.empty() ?
+      tagsNext(m_File, &entry): tagsFindNext(m_File, &entry));
+  } while (result == TagSuccess && count < max);
+
+  VLOG(9) << "ctags AutoComplete: " << count;
 
   return s;
 }
 
-void wxExCTags::AutoCompletePrepare(wxExSTC* stc)
+void wxExCTags::AutoCompletePrepare()
 {
-  if (stc == nullptr)
-  {
-    LOG(ERROR) << "missing STC";
-    return;
-  }
-
-  stc->AutoCompSetIgnoreCase(true);
-  stc->AutoCompSetAutoHide(false);
+  m_Ex->GetSTC()->AutoCompSetIgnoreCase(true);
+  m_Ex->GetSTC()->AutoCompSetAutoHide(false);
 
   wxLogNull logNo;
-  stc->RegisterImage(IMAGE_PUBLIC, wxArtProvider::GetBitmap(wxART_PLUS));
-  stc->RegisterImage(IMAGE_PROTECTED, wxArtProvider::GetBitmap(wxART_MINUS));
-  stc->RegisterImage(IMAGE_PRIVATE, wxArtProvider::GetBitmap(wxART_TICK_MARK));
+  m_Ex->GetSTC()->RegisterImage(IMAGE_PUBLIC, wxArtProvider::GetBitmap(wxART_PLUS));
+  m_Ex->GetSTC()->RegisterImage(IMAGE_PROTECTED, wxArtProvider::GetBitmap(wxART_MINUS));
+  m_Ex->GetSTC()->RegisterImage(IMAGE_PRIVATE, wxArtProvider::GetBitmap(wxART_TICK_MARK));
+
+  m_Prepare = true;
 }
 
 bool Master(const tagEntry& entry)
 {
   return entry.kind != nullptr && 
      ((strcmp(entry.kind, "c") == 0) ||
-      (strcmp(entry.kind, "e") == 0));
+      (strcmp(entry.kind, "e") == 0) ||
+      (strcmp(entry.kind, "m") == 0));
 }
 
 bool wxExCTags::Filter(const std::string& name, wxExCTagsFilter& filter) const
 {
+  if (m_File == nullptr) return false;
+
   tagEntry entry;
 
-  // Find first entry.  
+  // Find first entry. This entry determines which kind of
+  // filter will be set.
   if (tagsFind(m_File, &entry, name.c_str(), TAG_FULLMATCH) == TagFailure)
   {
     return false;
@@ -276,8 +256,20 @@ bool wxExCTags::Filter(const std::string& name, wxExCTagsFilter& filter) const
     return false;
   }
 
-  // Set filter for member functions for this class.
-  filter.Kind("f").Class(entry.name);
+  // Set filter for member functions for this member or class.
+  if (strcmp(entry.kind, "m") == 0)
+  {
+    const char* value = tagsField(&entry, "typeref");
+
+    if (value != nullptr)
+    {
+      filter.Kind("f").Class(wxExBefore(wxExAfter(value, ':'), ' '));
+    }
+  }
+  else 
+  {
+    filter.Kind("f").Class(entry.name);
+  }
 
   return true;
 }
@@ -337,6 +329,38 @@ bool wxExCTags::Find(const std::string& name)
   return true;
 }  
 
+void wxExCTags::Init(const std::string& filename)
+{
+  wxExPath path(filename);
+
+  if (path.IsAbsolute())
+  {
+    // an absolute file should exist
+    Open(path.Path().string(), true);
+  }
+  else
+  {
+    // First check whether default tagfile with extension 
+    // exists, then without extension.
+    for (const auto & it : std::vector < std::string > {
+      "./", wxExConfigDir() + "/"})
+    {
+      if (
+        (m_Ex != nullptr && (
+           Open(it + filename + m_Ex->GetSTC()->GetFileName().GetExtension()))) ||
+        Open(it + filename))
+      {
+        return; // finish, we found a file
+      }
+    }
+
+    if (filename != DEFAULT_TAGFILE && m_File == nullptr)
+    {
+      LOG(ERROR) << "coult not open ctags file: " << filename;
+    }
+  }
+}
+
 bool wxExCTags::Next()
 {
   if (m_Matches.size() <= 1)
@@ -352,6 +376,23 @@ bool wxExCTags::Next()
   m_Iterator->second.OpenFile(m_Frame);
 
   return true;
+}
+
+bool wxExCTags::Open(const std::string& path, bool show_error)
+{
+  tagFileInfo info;
+
+  if ((m_File = tagsOpen(path.c_str(), &info)) != nullptr)
+  {
+    VLOG(9) << "ctags file: " << path;
+    return true;
+  }
+  else if (show_error)
+  {
+    LOG(ERROR) << "coult not open ctags file: " << path;
+  }
+
+  return false;
 }
 
 bool wxExCTags::Previous()

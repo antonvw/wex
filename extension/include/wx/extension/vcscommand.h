@@ -2,7 +2,7 @@
 // Name:      vcscommand.h
 // Purpose:   Declaration of wxExVCSCommand class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -52,7 +52,4 @@ public:
   /// Returns true if this command can behave like
   /// opening a file.
   bool IsOpen() const;
-
-  /// Returns true if this is a update like command.
-  bool IsUpdate() const;
 };

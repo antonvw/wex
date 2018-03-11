@@ -399,7 +399,7 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
 
   if (next.CountTokens() <= 1)
   {
-    return true;
+    return false;
   }
 
   next.GetNextToken(); // skip empty token

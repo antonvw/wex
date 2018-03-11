@@ -56,14 +56,14 @@ TEST_CASE("wxEx")
         == wxString("// headertest").size());
   }
       
-  SUBCASE("wxExAutoComplete")
+  SUBCASE("wxExAutoCompleteText")
   {
     REQUIRE( wxExViMacros::LoadDocument());
     std::string s;
-    REQUIRE(!wxExAutoComplete("xxxx", GetSTC()->GetVi().GetMacros().Get(), s));
-    REQUIRE(!wxExAutoComplete("Date", // not unique!
+    REQUIRE(!wxExAutoCompleteText("xxxx", GetSTC()->GetVi().GetMacros().Get(), s));
+    REQUIRE(!wxExAutoCompleteText("Date", // not unique!
       GetSTC()->GetVi().GetMacros().Get(), s));
-    REQUIRE( wxExAutoComplete("Datet", GetSTC()->GetVi().GetMacros().Get(), s));
+    REQUIRE( wxExAutoCompleteText("Datet", GetSTC()->GetVi().GetMacros().Get(), s));
     REQUIRE( s == "Datetime");
   }
   
@@ -86,6 +86,15 @@ TEST_CASE("wxEx")
 #endif
   }
   
+  SUBCASE("wxExBefore")
+  {
+    REQUIRE( wxExBefore("nospace", ' ', false) == "nospace");
+    REQUIRE( wxExBefore("nospace", ' ', true) == "nospace");
+    REQUIRE( wxExBefore("some space and more", ' ', false) == "some space and");
+    REQUIRE( wxExBefore("some space and more", ' ', true) == "some");
+    REQUIRE( wxExBefore("some space and more", 'm', false) == "some space and ");
+  }
+
   SUBCASE("wxExBrowserSearch")
   {
     // Causes travis to hang.

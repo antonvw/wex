@@ -11,6 +11,7 @@ configuration:
   - Release
 
 install:
+  - git config http.postBuffer 524288000
   - git submodule init && git submodule update --init --recursive
   - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.1-include.7z'
   - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.1-lib.7z'

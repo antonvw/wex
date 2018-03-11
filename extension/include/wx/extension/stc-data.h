@@ -2,7 +2,7 @@
 // Name:      stc-data.h
 // Purpose:   Declaration of wxExSTCData
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -38,6 +38,12 @@ public:
   /// Sets control data.
   wxExSTCData& Control(wxExControlData& data) {m_Data = data; return *this;};
 
+  /// Returns ctags filename.
+  const auto& CTagsFileName() const {return m_CTagsFileName;};
+
+  /// Sets ctags filename.
+  wxExSTCData& CTagsFileName(const std::string& text);
+
   /// Returns window flags.
   const auto& Flags() const {return m_WinFlags;};
   
@@ -59,11 +65,13 @@ public:
   /// Sets window data.
   wxExSTCData& Window(wxExWindowData& data) {m_Data.Window(data); return *this;};
 private:  
-  wxExSTC* m_STC = nullptr;
+  wxExSTC* m_STC {nullptr};
 
   wxExControlData m_Data;
 
-  wxExSTCMenuFlags m_MenuFlags = static_cast<wxExSTCMenuFlags>(
-    STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_OPEN_WWW | STC_MENU_VCS);
-  wxExSTCWindowFlags m_WinFlags = STC_WIN_DEFAULT;
+  std::string m_CTagsFileName {DEFAULT_TAGFILE};
+
+  wxExSTCMenuFlags m_MenuFlags {static_cast<wxExSTCMenuFlags>(
+    STC_MENU_CONTEXT | STC_MENU_OPEN_LINK | STC_MENU_OPEN_WWW | STC_MENU_VCS)};
+  wxExSTCWindowFlags m_WinFlags {STC_WIN_DEFAULT};
 };

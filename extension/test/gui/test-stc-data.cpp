@@ -2,7 +2,7 @@
 // Name:      test-stc-data.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -27,6 +27,7 @@ TEST_CASE("wxExSTCData")
     REQUIRE( wxExSTCData().Flags(STC_WIN_READ_ONLY).Flags(STC_WIN_HEX, DATA_OR).
       Flags() != STC_WIN_READ_ONLY);
     REQUIRE((wxExSTCData().Menu() & STC_MENU_VCS));
+    REQUIRE((wxExSTCData().CTagsFileName() == "tags"));
   }
   
   SUBCASE("Inject")

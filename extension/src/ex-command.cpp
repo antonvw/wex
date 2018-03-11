@@ -87,3 +87,20 @@ void wxExExCommand::Set(const wxExExCommand& c)
     m_STC = (c.m_STC == c.m_STC_original ? c.m_STC: c.m_STC_original);
   }
 }
+
+wxExExCommandType wxExExCommand::Type() const
+{
+  if (m_Command.empty()) 
+  {
+    return wxExExCommandType::NONE;
+  }
+  else switch (m_Command[0])
+  {
+    case ':': return wxExExCommandType::COMMAND;
+    case '=': return wxExExCommandType::CALC;
+    case '/':
+    case '?': return wxExExCommandType::FIND;
+    case '!': return wxExExCommandType::EXEC;
+    default: return wxExExCommandType::VI;
+  }
+}

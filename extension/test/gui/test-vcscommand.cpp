@@ -2,7 +2,7 @@
 // Name:      test-vcscommand.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -21,7 +21,6 @@ TEST_CASE("wxExVCSCommand")
   const wxExVCSCommand diff("diff", "popup", "submenu");
   const wxExVCSCommand log("log", "main");
   const wxExVCSCommand help("h&elp", "error", "", "m&e");
-  const wxExVCSCommand update("update");
   const wxExVCSCommand none;
 
   REQUIRE(add.GetCommand() == "add");
@@ -35,7 +34,6 @@ TEST_CASE("wxExVCSCommand")
   REQUIRE(help.IsHelp());
   REQUIRE(log.IsHistory());
   REQUIRE(blame.IsOpen());
-  REQUIRE(update.IsUpdate());
   REQUIRE(!help.UseFlags());
   REQUIRE(help.UseSubcommand());
 

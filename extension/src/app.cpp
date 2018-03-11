@@ -51,9 +51,8 @@ int wxExApp::OnExit()
   delete wxExPrinting::Set(nullptr);
 
   wxExAddressRange::Cleanup();
-  wxExEx::Cleanup();
 
-  VLOG(1) << "closed";
+  VLOG(1) << "exit";
 
   return wxApp::OnExit(); // this destroys the config
 }
@@ -85,7 +84,10 @@ bool wxExApp::OnInit()
   const std::vector <std::pair<
     std::string, std::string>> supported {
       {"-m", "-vmodule"},
-      {"--defaultlogfile", "--default-log-file"},
+      {"-D", "--default-log-file"},
+      {"-L", "--loggingflags"},
+      {"--logfile", "--default-log-file"},
+      {"--logflags", "--loggingflags"},
       {"--x", "--v"}, // for testing with verbosity
       {"--v", "--v"}};
 

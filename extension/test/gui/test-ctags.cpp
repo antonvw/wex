@@ -2,7 +2,7 @@
 // Name:      test-ctags.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -11,25 +11,47 @@
 #endif
 #include <wx/extension/ctags.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/stc.h>
 #include "test.h"
 
 TEST_CASE("wxExCTags")
 {
-  REQUIRE( wxExCTags(GetFrame()).Find("wxExTestApp") ); // tags default
-  REQUIRE(!wxExCTags(GetFrame(), "xxx").Find("wxExTestApp") );
-  
-  REQUIRE(!wxExCTags(GetFrame(), "test-ctags").Find("") );
-  REQUIRE(!wxExCTags(GetFrame(), "test-ctags").Next() );
-  REQUIRE(!wxExCTags(GetFrame(), "test-ctags").Previous() );
-  REQUIRE(!wxExCTags(GetFrame(), "test-ctags").Find("xxxx") );
-  REQUIRE( wxExCTags(GetFrame(), "test-ctags").Find("wxExTestApp") );
-  REQUIRE(!wxExCTags(GetFrame(), "test-ctags").Next() );
-  REQUIRE( wxExCTags(GetFrame(), "test-ctags").Separator() != ' ');
+  wxExSTCData data;
 
-  REQUIRE( wxExCTags(GetFrame()).AutoComplete("wxExTest") == "wxExTestApp");
-  
-  wxExCTagsFilter filter;
-  REQUIRE( wxExCTags(GetFrame()).Filter("wxExTestApp", filter));
+  SUBCASE("tags default")
+  {
+    wxExEx* ex = &GetSTC()->GetVi();
 
-  wxExCTags(GetFrame()).AutoCompletePrepare(GetFrame()->GetSTC());
+    REQUIRE( wxExCTags(ex).Find("wxExTestApp") );
+    REQUIRE( wxExCTags(ex).AutoComplete("wxExTest") == "wxExTestApp");
+
+    wxExCTagsFilter filter;
+    REQUIRE( wxExCTags(ex).Filter("wxExTestApp", filter));
+  }
+
+  SUBCASE("tags non-existing file")
+  {
+    data.CTagsFileName("xxx");
+    wxExSTC* stc = new wxExSTC(std::string("test"), data);
+    AddPane(GetFrame(), stc);
+    wxExEx* ex = &stc->GetVi();
+
+    REQUIRE(!wxExCTags(ex).Find("wxExTestApp") );
+  }
+  
+  SUBCASE("tags own file")
+  {
+    data.CTagsFileName("test-ctags");
+    wxExSTC* stc = new wxExSTC(std::string("test"), data);
+    AddPane(GetFrame(), stc);
+    wxExEx* ex = &stc->GetVi();
+
+    REQUIRE(!wxExCTags(ex).Find("") );
+    REQUIRE(!wxExCTags(ex).Next() );
+    REQUIRE(!wxExCTags(ex).Previous() );
+    REQUIRE(!wxExCTags(ex).Find("xxxx") );
+    REQUIRE( wxExCTags(ex).Find("wxExTestApp") );
+    REQUIRE(!wxExCTags(ex).Next() );
+    REQUIRE( wxExCTags(ex).Separator() != ' ');
+  }
 }
