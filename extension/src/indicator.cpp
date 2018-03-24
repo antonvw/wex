@@ -2,10 +2,9 @@
 // Name:      indicator.cpp
 // Purpose:   Implementation of class wxExIndicator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -14,6 +13,7 @@
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/tokenizer.h>
+#include <easylogging++.h>
 
 wxExIndicator::wxExIndicator(const pugi::xml_node& node)
 {

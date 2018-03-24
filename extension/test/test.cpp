@@ -8,7 +8,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 #define ELPP_NO_CHECK_MACROS
 
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -21,6 +20,7 @@
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/util.h>
+#include <easylogging++.h>
 #include "test.h"
 
 void AddExtension(wxExPath& fn)

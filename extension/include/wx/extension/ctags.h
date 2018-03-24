@@ -10,13 +10,11 @@
 #include <map>
 #include <string>
 #include <wx/extension/ctags-filter.h>
-#include <wx/extension/stc-enums.h>
 #include <wx/dlimpexp.h>
 
 class wxExCTagsEntry;
 class wxExEx;
 class wxExFrame;
-class wxExSTC;
 typedef struct sTagFile tagFile;
 
 /// Offers ctags handling.

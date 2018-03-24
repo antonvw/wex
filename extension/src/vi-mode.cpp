@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <easylogging++.h>
 #include <wx/config.h>
 #include <wx/extension/vi-mode.h>
 #include <wx/extension/managedframe.h>
@@ -14,6 +13,7 @@
 #include <wx/extension/vi.h>
 #include <wx/extension/vi-macros.h>
 #include <wx/extension/vi-macros-mode.h>
+#include <easylogging++.h>
 #include "fsm.h"
 
 enum class Triggers

@@ -2,10 +2,9 @@
 // Name:      marker.cpp
 // Purpose:   Implementation of class wxExMarker
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -14,6 +13,7 @@
 #include <wx/extension/marker.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/tokenizer.h>
+#include <easylogging++.h>
 
 wxExMarker::wxExMarker(const pugi::xml_node& node)
 {

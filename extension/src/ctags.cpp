@@ -8,7 +8,6 @@
 
 #include <algorithm>
 #include <vector>
-#include <easylogging++.h>
 #include <wx/artprov.h>
 #include <wx/choicdlg.h>
 #include <wx/config.h>
@@ -20,6 +19,7 @@
 #include <wx/extension/path.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
+#include <easylogging++.h>
 #include "readtags.h"
 
 enum wxExImageAccessType

@@ -2,7 +2,7 @@
 // Name:      menucommand.cpp
 // Purpose:   Implementation of wxExMenuCommand class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -14,8 +14,10 @@ wxExMenuCommand::wxExMenuCommand(
   const std::string& command,
   const std::string& type,
   const std::string& submenu,
-  const std::string& subcommand)
+  const std::string& subcommand,
+  const std::string& flags)
   : m_Command(command)
+  , m_Flags(flags)
   , m_SubMenu(!submenu.empty() ? submenu: subcommand)
   , m_SubMenuIsCommand(!subcommand.empty())
   , m_Type(From(type))
@@ -24,7 +26,10 @@ wxExMenuCommand::wxExMenuCommand(
   
 long wxExMenuCommand::From(const std::string& type) const
 {
-  long command = (type.empty() || type == "separator") ? 
+  long command = (
+    type.empty() || 
+   (type.find("popup") == std::string::npos && 
+    type.find("main") == std::string::npos)) ? 
     MENU_COMMAND_IS_POPUP | MENU_COMMAND_IS_MAIN: MENU_COMMAND_IS_NONE;
 
   command |= (type.find("popup") != std::string::npos ? MENU_COMMAND_IS_POPUP: 0);

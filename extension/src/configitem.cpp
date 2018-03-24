@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <experimental/filesystem>
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -19,6 +18,7 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/tostring.h>
 #include <wx/extension/util.h>
+#include <easylogging++.h>
 
 #if wxUSE_GUI
 

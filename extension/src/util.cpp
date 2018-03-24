@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -37,6 +36,7 @@
 #include <wx/extension/tostring.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/vi-macros.h>
+#include <easylogging++.h>
 
 const char* _X(const char* text)
 {
@@ -1033,7 +1033,18 @@ void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< wxExPath > & fi
         
         if (vcs.Execute())
         {
-          frame->OpenFile(it, vcs.GetEntry());
+          if (!vcs.GetEntry().GetStdOut().empty())
+          {
+            frame->OpenFile(it, vcs.GetEntry());
+          }
+          else if (!vcs.GetEntry().GetStdErr().empty())
+          {
+            LOG(ERROR) << vcs.GetEntry().GetStdErr();
+          }
+          else
+          {
+            LOG(ERROR) << "no output from: " << vcs.GetEntry().GetExecuteCommand();
+          }
         }
       }
     }

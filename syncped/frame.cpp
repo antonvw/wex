@@ -36,6 +36,8 @@
 #include "app.h"
 #include "defs.h"
 
+const int ID_EDIT_PANE_INFO_TOGGLE = wxWindow::NewControlId();
+
 class EditorsNotebook : public wxExNotebook
 {
 public:
@@ -362,6 +364,12 @@ Frame::Frame(App* app)
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     OpenFile(wxExViMacros::GetFileName());}, ID_EDIT_MACRO);
   
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
+    if (GetSTC() != nullptr)
+    {
+      GetSTC()->ShowLineNumbers(!GetSTC()->ShownLineNumbers());
+    };}, ID_EDIT_PANE_INFO_TOGGLE);
+
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (GetSTC() != nullptr)
     {
@@ -1058,6 +1066,16 @@ wxExSTC* Frame::OpenFile(
   const wxExVCSEntry& vcs,
   const wxExSTCData& data)
 {
+  if (vcs.GetCommand().IsBlame())
+  {
+    wxExSTC* page = (wxExSTC*)m_Editors->SetSelection(filename.Path().string());
+
+    if (page != nullptr)
+    {
+      if (page->ShowVCS(&vcs)) return page;
+    }
+  }
+
   const std::string unique = 
     vcs.GetCommand().GetCommand() + " " + vcs.GetFlags();
   const std::string key = filename.Path().string() + " " + unique;
@@ -1331,7 +1349,19 @@ void Frame::StatusBarClicked(const std::string& pane)
 
 void Frame::StatusBarClickedRight(const std::string& pane)
 {
-  if (pane == "PaneLexer" || pane == "PaneTheme")
+  if (pane == "PaneInfo")
+  {
+    wxExSTC* stc = GetSTC();
+    
+    if (stc != nullptr)
+    {
+      wxMenu* menu = new wxMenu();
+      menu->Append(ID_EDIT_PANE_INFO_TOGGLE, 
+        stc->ShownLineNumbers() ? "&Hide": "&Show");
+      PopupMenu(menu);
+    }
+  }
+  else if (pane == "PaneLexer" || pane == "PaneTheme")
   {
     std::string match;
     

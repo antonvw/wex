@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <experimental/filesystem>
-#include <easylogging++.h>
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -24,6 +23,7 @@
 #include <wx/extension/vcs.h>
 #include <wx/extension/version.h>
 #include <wx/extension/vi-macros.h>
+#include <easylogging++.h>
 
 #define NO_ASSERT 1
 

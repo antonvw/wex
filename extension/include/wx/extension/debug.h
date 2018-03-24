@@ -2,7 +2,7 @@
 // Name:      debug.h
 // Purpose:   Declaration of class wxExDebug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -48,7 +48,7 @@ public:
       Execute(m_Entry.GetCommands().at(item).GetCommand(), stc);};
 
   /// Returns brekpoints.
-  const auto & GetBreakpoints() const {return m_Breakpoints;};
+  auto & GetBreakpoints() {return m_Breakpoints;};
   
   /// Returns marker for brekpoint.
   const auto & GetMarkerBreakpoint() const {return m_MarkerBreakpoint;};
@@ -78,5 +78,5 @@ private:
   wxExPath m_Path;
   wxExManagedFrame* m_Frame;
   wxExMenuCommands< wxExMenuCommand> m_Entry;
-  wxExProcess* m_Process = nullptr;
+  wxExProcess* m_Process {nullptr};
 };

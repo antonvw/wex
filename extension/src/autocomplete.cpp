@@ -5,12 +5,12 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/config.h>
 #include <wx/extension/autocomplete.h>
 #include <wx/extension/ctags.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
+#include <easylogging++.h>
 
 wxExAutoComplete::wxExAutoComplete(wxExSTC* stc)
   : m_STC(stc)
@@ -20,14 +20,12 @@ wxExAutoComplete::wxExAutoComplete(wxExSTC* stc)
 
 bool wxExAutoComplete::Activate(const std::string& text)
 {
-  if (!Use() || !m_STC->GetVi().GetCTags()->Filter(
-    text, 
-    m_Filter))
+  if (!Use())
   {
     return false;
   }
 
-  m_Text.clear();
+  bool ret = m_STC->GetVi().GetCTags()->Filter(text, m_Filter);
 
   if (m_Filter.Active())
   {
@@ -45,7 +43,9 @@ bool wxExAutoComplete::Activate(const std::string& text)
     }
   }
 
-  return true;
+  m_Text.clear();
+
+  return ret;
 }
 
 bool wxExAutoComplete::Apply(char c)

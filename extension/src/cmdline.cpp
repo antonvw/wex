@@ -7,12 +7,12 @@
 
 #include <sstream> // for tclap!
 #include <tclap/CmdLine.h>
-#include <easylogging++.h>
 #include <wx/app.h>
 #include <wx/config.h>
 #include <wx/extension/cmdline.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/version.h>
+#include <easylogging++.h>
 
 class wxExCmdLineOption
 {

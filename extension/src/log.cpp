@@ -2,11 +2,11 @@
 // Name:      log.cpp
 // Purpose:   Implementation of class wxExLog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/extension/log.h>
+#include <easylogging++.h>
 
 wxExLog::wxExLog(int level)
   : m_Level(level)

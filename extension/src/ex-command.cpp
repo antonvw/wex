@@ -99,7 +99,10 @@ wxExExCommandType wxExExCommand::Type() const
     case ':': return wxExExCommandType::COMMAND;
     case '=': return wxExExCommandType::CALC;
     case '/':
-    case '?': return wxExExCommandType::FIND;
+    case '?': 
+      return m_STC != nullptr && m_STC->GetMarginTextClick() > 0 ?
+        wxExExCommandType::FIND_MARGIN:
+        wxExExCommandType::FIND;
     case '!': return wxExExCommandType::EXEC;
     default: return wxExExCommandType::VI;
   }

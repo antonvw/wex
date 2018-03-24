@@ -5,7 +5,6 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -19,6 +18,7 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h> // for wxExMatchesOneOf
+#include <easylogging++.h>
 
 wxExLexers* wxExLexers::m_Self = nullptr;
 

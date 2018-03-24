@@ -34,7 +34,7 @@ TEST_CASE("wxExVCSCommand")
   REQUIRE(help.IsHelp());
   REQUIRE(log.IsHistory());
   REQUIRE(blame.IsOpen());
-  REQUIRE(!help.UseFlags());
+  REQUIRE(!help.AskFlags());
   REQUIRE(help.UseSubcommand());
 
   REQUIRE(add.GetSubMenu().empty());

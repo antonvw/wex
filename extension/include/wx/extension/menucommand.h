@@ -2,7 +2,7 @@
 // Name:      menucommand.h
 // Purpose:   Declaration of wxExMenuCommand class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
  
 #pragma once
@@ -44,34 +44,40 @@ public:
     /// otherwise to specified subcommand.
     const std::string& submenu = std::string(),
     /// The subcommand (used as submenu, but also used for executing).
-    const std::string& subcommand = std::string());
+    const std::string& subcommand = std::string(),
+    /// The flags.
+    const std::string& flags = std::string());
   
+  /// Returns true if flags are requested for this command.
+  /// All commands, except help, and if the flags are present
+  /// in menus.xml, support flags.
+  bool AskFlags() const {return 
+    !IsHelp() && m_Flags.empty() && m_Flags != "none";};
+    
   /// Returns the command (and subcommand and accelerators if necessary).
   const std::string GetCommand(
     bool include_subcommand = true,
     bool include_accelerators = false) const;
   
+  /// Returns the flags.
+  const auto& GetFlags() const {return m_Flags;};
+
   /// Returns the submenu.
   const auto& GetSubMenu() const {return m_SubMenu;};
 
   /// Returns the type.
-  long GetType() const {return m_Type;};
+  auto GetType() const {return m_Type;};
   
   /// Returns true if this is a help like command.
   bool IsHelp() const {return GetCommand(false) == "help";};
 
-  /// Returns true if flags can be used for this command.
-  // All commands, except help support flags.
-  bool UseFlags() const {return !IsHelp();};
-    
   /// Returns true if a subcommand can be used for this command.
   bool UseSubcommand() const;
 private:
   long From(const std::string& type) const;
 
-  std::string m_Command;
-  std::string m_SubMenu;
+  std::string m_Command, m_Flags, m_SubMenu;
 
-  bool m_SubMenuIsCommand = false;
-  long m_Type = MENU_COMMAND_IS_NONE;
+  bool m_SubMenuIsCommand {false};
+  long m_Type {MENU_COMMAND_IS_NONE};
 };

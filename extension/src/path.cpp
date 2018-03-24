@@ -5,10 +5,10 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/extension/path.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h>
+#include <easylogging++.h>
 
 const std::string SubstituteTilde(const std::string& text)
 {

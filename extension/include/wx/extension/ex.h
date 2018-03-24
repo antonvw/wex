@@ -17,8 +17,8 @@
 
 #if wxUSE_GUI
 
-class ex_evaluator;
 class wxExCTags;
+class wxExEvaluator;
 class wxExManagedFrame;
 class wxExSTC;
 class wxExSTCEntryDialog;
@@ -49,9 +49,6 @@ public:
     /// width, or precision, for doubles
     int& width);
   
-  /// Cleans up.
-  void Cleanup();
-
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.
   /// Returns true if the command was executed.
@@ -181,7 +178,7 @@ private:
   static std::string m_LastCommand;
   static wxExSTCEntryDialog* m_Dialog;
   static wxExViMacros m_Macros;
-  static ex_evaluator m_Evaluator;
+  static wxExEvaluator m_Evaluator;
 
   bool m_IsActive {true}; // are we actively using ex mode?
   bool m_Copy {false}; // this is a copy, result of split

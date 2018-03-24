@@ -2,11 +2,10 @@
 // Name:      listviewfile.cpp
 // Purpose:   Implementation of class wxExListViewFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -21,6 +20,7 @@
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/frame.h>
+#include <easylogging++.h>
 
 wxExListViewFile::wxExListViewFile(const std::string& file, const wxExListViewData& data)
   : wxExListViewWithFrame(wxExListViewData(data).Type(LIST_FILE))

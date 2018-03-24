@@ -10,7 +10,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <easylogging++.h>
 #include <wx/config.h>
 #include <wx/extension/cmdline.h>
 #include <wx/extension/frd.h>
@@ -23,6 +22,7 @@
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/stream.h>
+#include <easylogging++.h>
 
 wxExFrameWithHistory::wxExFrameWithHistory(
   size_t maxFiles,

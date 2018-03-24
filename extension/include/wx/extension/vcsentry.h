@@ -2,7 +2,7 @@
 // Name:      vcsentry.h
 // Purpose:   Declaration of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -82,14 +82,22 @@ public:
   /// Returns flags location.
   auto GetFlagsLocation() const {return m_FlagsLocation;};
 
+  /// Returns margin size.
+  auto GetMarginWidth() const {return m_MarginWidth;};
+
+  /// Returns pos begin.
+  const auto & GetPosBegin() const {return m_PosBegin;};
+
+  /// Returns pos end.
+  const auto & GetPosEnd() const {return m_PosEnd;};
+
 #if wxUSE_GUI
   virtual void ShowOutput(const std::string& caption = std::string()) const override;
 #endif
 private:
   // no const, as entry is set using operator+ in wxExVCS.
-  bool m_AdminDirIsTopLevel = false;
-  int m_FlagsLocation;
-  
-  std::string m_AdminDir;
+  bool m_AdminDirIsTopLevel {false};
+  int m_FlagsLocation, m_MarginWidth;
+  std::string m_AdminDir, m_PosBegin, m_PosEnd;
   wxExLexer m_Lexer;
 };

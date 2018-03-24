@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <functional>
 #include <numeric>
-#include <easylogging++.h>
 #include <pugixml.hpp>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -20,6 +19,7 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h> // for wxExAlignText
+#include <easylogging++.h>
 
 // We always use lines with 80 characters. 
 const int line_size = 80;

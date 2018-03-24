@@ -2,7 +2,7 @@
 // Name:      menus.h
 // Purpose:   Declaration of wxExMenus class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -49,6 +49,7 @@ public:
     const std::string unused = "XXXXX";  
     std::string prev_menu = unused;
     int i = 0;
+
     for (const auto& it : commands)
     {
       bool add = false;
@@ -59,6 +60,7 @@ public:
         add = is_popup;
       else if (it.GetType() & wxExMenuCommand::MENU_COMMAND_IS_MAIN)
         add = !is_popup;
+
       if (add)
       {
         if (!it.GetSubMenu().empty() && prev_menu != it.GetSubMenu())
@@ -77,6 +79,7 @@ public:
           }
           submenu = nullptr;
         }
+
         wxExMenu* usemenu = (submenu == nullptr ? menu: submenu);
         usemenu->Append(
           base_id + i, 
@@ -84,6 +87,7 @@ public:
             it.GetCommand(false, true), // use no sub and do accel
             std::string(),
             (it.GetType() & wxExMenuCommand::MENU_COMMAND_ELLIPSES) > 0));
+
         if ((it.GetType() & wxExMenuCommand::MENU_COMMAND_SEPARATOR) > 0)
         {
           usemenu->AppendSeparator();
@@ -91,6 +95,7 @@ public:
       }
       i++;
     }
+
     return menu->GetMenuItemCount();};
   
   /// Returns the xml filename.
@@ -131,7 +136,8 @@ private:
           {child.text().get(),
            child.attribute("type").value(), 
            child.attribute("submenu").value(), 
-           child.attribute("subcommand").value()});
+           child.attribute("subcommand").value(),
+           child.attribute("flags").value()});
       }
     }};
 };

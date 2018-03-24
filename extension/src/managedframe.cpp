@@ -27,7 +27,7 @@
 
 #if wxUSE_GUI
 
-const int ID_REGISTER = wxNewId();
+const int ID_REGISTER = wxWindow::NewControlId();
 
 // Support class.
 // Offers a text ctrl related to a ex object.
@@ -52,6 +52,7 @@ private:
     {
       case wxExExCommandType::CALC: return m_Calcs;
       case wxExExCommandType::EXEC: return m_Execs;
+      case wxExExCommandType::FIND_MARGIN: return m_FindMargins;
       default: return m_Commands;
     }};
   wxExExCommand m_Command;
@@ -62,7 +63,8 @@ private:
   wxExTextCtrlInput 
     m_Calcs {wxExExCommandType::CALC},
     m_Commands {wxExExCommandType::COMMAND},
-    m_Execs {wxExExCommandType::EXEC};
+    m_Execs {wxExExCommandType::EXEC},
+    m_FindMargins {wxExExCommandType::FIND_MARGIN};
 };
 
 wxExManagedFrame::wxExManagedFrame(size_t maxFiles, const wxExWindowData& data)
@@ -556,6 +558,7 @@ bool wxExTextCtrl::SetEx(wxExEx* ex, const std::string& command)
   {
     case wxExExCommandType::CALC: 
     case wxExExCommandType::EXEC: 
+    case wxExExCommandType::FIND_MARGIN: 
       SetValue(TCI().Get()); 
       SelectAll();
       break;

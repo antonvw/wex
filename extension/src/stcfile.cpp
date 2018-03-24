@@ -5,7 +5,6 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -17,6 +16,7 @@
 #include <wx/extension/path.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h> // for STAT_ etc.
+#include <easylogging++.h>
 
 #if wxUSE_GUI
 void CheckWellFormed(wxExSTC* stc, const wxExPath& fn)

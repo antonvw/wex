@@ -4,7 +4,7 @@ Name:      menus.xml
 Purpose:   setup of dynamic menus, like version control systems 
            and debuggers
 Author:    Anton van Wezenbeek
-Copyright: (c) 2016, Anton van Wezenbeek
+Copyright: (c) 2018, Anton van Wezenbeek
 -->
 
 <menus>
@@ -24,22 +24,22 @@ Copyright: (c) 2016, Anton van Wezenbeek
    -->
   <debug name="gdb">
     <commands>
-      <command type = "main ellipses" > file </command>
-      <command type = "main ellipses" > attach </command>
-      <command type = "main separator" > detach </command>
-      <command type = "main" > run </command>
-      <command type = "main" > interrupt </command>
-      <command type = "main separator" > continue </command>
-      <command type = "main separator" > info sources </command>
-      <command type = "main " > help </command>
-      <command type = "popup" > next </command>
-      <command type = "popup" > step </command>
-      <command type = "popup separator" > until </command>
-      <command type = "popup separator" > print </command>
-      <command type = "popup" submenu = "break"> break </command>
-      <command type = "popup separator" submenu = "break"> del breakpoint </command>
-      <command type = "popup" submenu = "break"> del breakpoints </command>
-      <command type = "popup" submenu = "break"> info breakpoints </command>
+      <command type="main ellipses" > file </command>
+      <command type="main ellipses" > attach </command>
+      <command type="main separator" > detach </command>
+      <command type="main" > run </command>
+      <command type="main" > interrupt </command>
+      <command type="main separator" > continue </command>
+      <command type="main separator" > info sources </command>
+      <command type="main " > help </command>
+      <command type="popup" > next </command>
+      <command type="popup" > step </command>
+      <command type="popup separator" > until </command>
+      <command type="popup separator" > print </command>
+      <command type="popup" submenu = "break"> break </command>
+      <command type="popup separator" submenu = "break"> del breakpoint </command>
+      <command type="popup" submenu = "break"> del breakpoints </command>
+      <command type="popup" submenu = "break"> info breakpoints </command>
     </commands>
   </debug>
 
@@ -54,17 +54,24 @@ Copyright: (c) 2016, Anton van Wezenbeek
    configures how this vcs expects the flags argument, if 'postfix'
    the flags will be put after the command, if 'prefix' the flags
    will be put before the command. 
+
+   You can also configure the text margin for blame info. 
+   Default blame is shown in a separate window, but when 
+   supplying a margin-width it is shown on the text margin.
+   By supplying a pos-begin and pos-end you can configure
+   which positions to use to for the blame info in 
+   the text margin.
    -->
   <vcs
     name="bazaar" 
     admin-dir=".bzr">
     
     <commands>
-      <command type = "main"> &amp;add </command>
+      <command type="main"> &amp;add </command>
       <command> &amp;cat </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
-      <command type = "main"> &amp;help </command>
+      <command type="main"> &amp;help </command>
       <command> &amp;info </command>
       <command> &amp;log </command>
       <command> &amp;status </command>
@@ -76,11 +83,11 @@ Copyright: (c) 2016, Anton van Wezenbeek
     admin-dir=".cvs">
 
     <commands>
-      <command type = "main"> &amp;add </command>
+      <command type="main"> &amp;add </command>
       <command> &amp;co </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
-      <command type = "main"> &amp;help </command>
+      <command type="main"> &amp;help </command>
       <command> &amp;log </command>
       <command> &amp;status </command>
       <command> &amp;update </command>
@@ -90,21 +97,24 @@ Copyright: (c) 2016, Anton van Wezenbeek
   <vcs 
     name="git"
     admin-dir=".git"
-    toplevel="true">
+    toplevel="true"
+    margin-width="280" 
+    pos-begin="(" 
+    pos-end="+">
 
     <commands>
-      <command type = "main"> &amp;add </command>
-      <command> &amp;blame </command>
-      <command> &amp;commit </command>
-      <command> &amp;diff </command>
-      <command type = "main"> &amp;help </command>
-      <command> &amp;log </command>
+      <command type="main ellipses"> &amp;add </command>
+      <command flags="none"> &amp;blame </command>
+      <command type="ellipses"> &amp;commit </command>
+      <command type="ellipses"> &amp;diff </command>
+      <command type="ellipses main"> &amp;help </command>
+      <command type="ellipses"> &amp;log </command>
       <!-- pull and push ask for password (should be asyc, not yet)
-      <command type = "main"> &amp;pull </command>
-      <command type = "main"> &amp;push </command>
+      <command type="main"> &amp;pull </command>
+      <command type="main"> &amp;push </command>
       -->
-      <command> &amp;show </command>
-      <command> &amp;status </command>
+      <command type="ellipses"> &amp;show </command>
+      <command type="ellipses"> &amp;status </command>
     </commands>
   </vcs>
 
@@ -114,11 +124,11 @@ Copyright: (c) 2016, Anton van Wezenbeek
     toplevel="true">
     
     <commands>
-      <command type = "main"> &amp;add </command>
+      <command type="main"> &amp;add </command>
       <command> &amp;annotate </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
-      <command type = "main"> &amp;help </command>
+      <command type="main"> &amp;help </command>
       <command> &amp;log </command>
       <command> &amp;parents </command>
       <command> &amp;push </command>
@@ -149,18 +159,18 @@ Copyright: (c) 2016, Anton van Wezenbeek
     toplevel="true">
 
     <commands>
-      <command type = "main"> &amp;add </command>
+      <command type="main"> &amp;add </command>
       <command type="popup"> &amp;blame </command>
       <command type="popup"> &amp;cat </command>
-      <command type = "main"> &amp;cleanup </command>
+      <command type="main"> &amp;cleanup </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
-      <command type = "main"> &amp;help </command>
+      <command type="main"> &amp;help </command>
       <command> &amp;info </command>
       <command> &amp;log </command>
-      <command type = "main"> &amp;ls </command>
-      <command type = "popup"> &amp;proplist </command>
-      <command type = "popup"> prop&amp;set </command>
+      <command type="main"> &amp;ls </command>
+      <command type="popup"> &amp;proplist </command>
+      <command type="popup"> prop&amp;set </command>
       <command> &amp;stat </command>
       <command> &amp;update </command>
     </commands>

@@ -2,7 +2,7 @@
 // Name:      vcsentry.cpp
 // Purpose:   Implementation of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -33,11 +33,14 @@ wxExVCSEntry::wxExVCSEntry(const pugi::xml_node& node)
   : wxExProcess()
   , wxExMenuCommands(node)
   , m_AdminDir(node.attribute("admin-dir").value())
+  , m_AdminDirIsTopLevel(
+      strcmp(node.attribute("toplevel").value(), "true") == 0)
   , m_FlagsLocation(
       (strcmp(node.attribute("flags-location").value(), "prefix") == 0 ?
          VCS_FLAGS_LOCATION_PREFIX: VCS_FLAGS_LOCATION_POSTFIX))
-  , m_AdminDirIsTopLevel(
-      strcmp(node.attribute("toplevel").value(), "true") == 0)
+  , m_MarginWidth(atoi(node.attribute("margin-width").value()))
+  , m_PosBegin(node.attribute("pos-begin").value())
+  , m_PosEnd(node.attribute("pos-end").value())
 {
 }
 
@@ -81,22 +84,25 @@ bool wxExVCSEntry::Execute(
   }
 
   std::string flags;
-  std::string my_args(args);
 
-  if (GetCommand().UseFlags())
+  if (GetCommand().AskFlags())
   {
     flags = GetFlags();
-
-    // E.g. in git you can do
-    // git show HEAD~15:syncped/frame.cpp
-    // where flags is HEAD~15:,
-    // so there should be no space after it
-    if (!flags.empty() && flags.back() != ':')
-    {
-      flags += " ";
-    }
+  }
+  else if (GetCommand().GetFlags() != "none")
+  {
+    flags = GetCommand().GetFlags();
   }
   
+  // E.g. in git you can do
+  // git show HEAD~15:syncped/frame.cpp
+  // where flags is HEAD~15:,
+  // so there should be no space after it
+  if (!flags.empty() && flags.back() != ':')
+  {
+    flags += " ";
+  }
+
   std::string comment;
 
   if (GetCommand().IsCommit())
@@ -104,6 +110,8 @@ bool wxExVCSEntry::Execute(
     comment = 
       "-m \"" + wxExConfigFirstOf(_("Revision comment")) + "\" ";
   }
+
+  std::string my_args(args);
 
   // If we specified help (flags), we do not need a file argument.      
   if (GetCommand().IsHelp() || flags.find("help") != std::string::npos)

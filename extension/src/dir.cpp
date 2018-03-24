@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <experimental/filesystem>
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -14,6 +13,7 @@
 #include <wx/extension/dir.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/util.h>
+#include <easylogging++.h>
 
 /// Collects files into container.
 template <class T>

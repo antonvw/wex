@@ -39,7 +39,8 @@ wxExVCS::wxExVCS(const std::vector< wxExPath > & files, int command_no)
   {
     if (m_Entry.SetCommand(command_no))
     {
-      m_Title = m_Entry.GetName() + " " + m_Entry.GetCommand().GetCommand();
+      m_Title = m_Entry.GetName() + " " + 
+        m_Entry.GetCommand().GetCommand(true, false);
   
       if (!m_Entry.GetCommand().IsHelp() && m_Files.size() == 1)
       {
@@ -389,7 +390,7 @@ int wxExVCS::ShowDialog(const wxExWindowData& arg)
   wxExWindowData data(wxExWindowData(arg).Title(m_Title));
   const bool add_folder(m_Files.empty());
 
-  if (m_Entry.GetCommand().UseFlags())
+  if (m_Entry.GetCommand().AskFlags())
   {
     wxConfigBase::Get()->Write(
       _("Flags"), 
@@ -403,21 +404,44 @@ int wxExVCS::ShowDialog(const wxExWindowData& arg)
     delete m_ItemDialog;
   }
 
-  m_ItemDialog = new wxExItemDialog({
+  const std::vector <wxExItem> v({
     m_Entry.GetCommand().IsCommit() ? 
-      wxExItem(_("Revision comment"), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)) : wxExItem(),
+      wxExItem(_("Revision comment"), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)): 
+      wxExItem(),
     add_folder && !m_Entry.GetCommand().IsHelp() ? 
-      wxExItem(_("Base folder"), ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)) : wxExItem(),
+      wxExItem(_("Base folder"), ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)): 
+      wxExItem(),
     add_folder && !m_Entry.GetCommand().IsHelp() && m_Entry.GetCommand().IsAdd() ? wxExItem(
-      _("Path"), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)) : wxExItem(), 
-    m_Entry.GetCommand().UseFlags() ?  
+      _("Path"), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)): 
+      wxExItem(), 
+    m_Entry.GetCommand().AskFlags() ?  
       wxExItem(_("Flags"), wxEmptyString, ITEM_TEXTCTRL, wxExControlData(), LABEL_LEFT, 
         [=](wxWindow* user, const std::any& value, bool save) {
-          wxConfigBase::Get()->Write(m_Entry.GetFlagsKey(), wxString(m_Entry.GetFlags()));}): wxExItem(),
+          wxConfigBase::Get()->Write(m_Entry.GetFlagsKey(), wxString(m_Entry.GetFlags()));}): 
+      wxExItem(),
     m_Entry.GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_PREFIX ? 
-      wxExItem(_("Prefix flags"), wxEmptyString): wxExItem(),
+      wxExItem(_("Prefix flags"), wxEmptyString): 
+      wxExItem(),
     m_Entry.GetCommand().UseSubcommand() ? 
-      wxExItem(_("Subcommand"), wxEmptyString): wxExItem()}, data);
+      wxExItem(_("Subcommand"), wxEmptyString): 
+      wxExItem()});
+
+  bool all_empty = true;
+
+  for (const auto& i : v)
+  {
+    if (i.GetType() != ITEM_EMPTY)
+    {
+      all_empty = false;
+    }
+  }
+
+  if (all_empty)
+  {
+    return wxID_OK;
+  }
+
+  m_ItemDialog = new wxExItemDialog(v, data);
 
   return (data.Button() & wxAPPLY) ? m_ItemDialog->Show(): m_ItemDialog->ShowModal();
 }

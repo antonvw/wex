@@ -243,8 +243,12 @@ wxExVi::wxExVi(wxExSTC* stc)
       }
       return command.size();}},
     {"nN", [&](const std::string& command){REPEAT(
+      const std::string find(GetSTC()->GetMarginTextClick() > 0 ?
+        wxExListFromConfig("exmargin").front():
+        wxExFindReplaceData::Get()->GetFindString());
+
       if (!GetSTC()->FindNext(
-        wxExFindReplaceData::Get()->GetFindString(), 
+        find,
         GetSearchFlags(), 
         command == "n"? m_SearchForward: !m_SearchForward))
       {
@@ -302,7 +306,8 @@ wxExVi::wxExVi(wxExSTC* stc)
           command.substr(1),
           GetSearchFlags(),
           m_SearchForward)) return (size_t)0;
-        wxExFindReplaceData::Get()->SetFindString(command.substr(1));
+        if (GetSTC()->GetMarginTextClick() == -1)
+          wxExFindReplaceData::Get()->SetFindString(command.substr(1));
         return command.size();
       }
       else
@@ -441,10 +446,7 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"X", [&](const std::string& command){
       return DeleteRange(this, GetSTC()->GetCurrentPos() - m_Count, GetSTC()->GetCurrentPos()) ? 1: 0;}},
     {"dd", [&](const std::string& command){
-      if (wxExAddressRange(this, m_Count).Delete())
-      {
-        m_Mode.Escape();
-      }
+      wxExAddressRange(this, m_Count).Delete();
       return command.size();}},
     {"dgg", [&](const std::string& command){
       return DeleteRange(this, 0, GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine())) ? 3: 0;}},
@@ -459,10 +461,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       }
       return 2;}},
     {"yy", [&](const std::string& command){
-      if (wxExAddressRange(this, m_Count).Yank())
-      {
-        m_Mode.Escape();
-      }
+      wxExAddressRange(this, m_Count).Yank();
       return command.size();}},
     {"ZZ", [&](const std::string& command){
       wxPostEvent(wxTheApp->GetTopWindow(), 
@@ -1068,11 +1067,6 @@ bool wxExVi::MotionCommand(int type, std::string& command)
         start = GetSTC()->GetCurrentPos();
       }
     
-      if (!Mode().Visual())
-      {
-        m_Mode.Escape();
-      }
-
       if ((c == 'c') && !GetSelectedText().empty())
       {
       }

@@ -28,8 +28,10 @@ public:
     /// otherwise to specified subcommand.
     const std::string& submenu = std::string(),
     /// The subcommand (used as submenu, but also used for executing).
-    const std::string& subcommand = std::string())
-    : wxExMenuCommand(command, type, submenu, subcommand) {;};
+    const std::string& subcommand = std::string(),
+    /// The flags.
+    const std::string& flags = std::string())
+    : wxExMenuCommand(command, type, submenu, subcommand, flags) {;};
 
   /// Returns true if this is a add like command.
   bool IsAdd() const;

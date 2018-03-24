@@ -9,14 +9,11 @@
 #include <fstream>
 #include <iostream>
 #include <regex>
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <shunting-yard/eval.hpp>
 #include <wx/config.h>
-#include <wx/numformatter.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/address.h>
 #include <wx/extension/addressrange.h>
@@ -33,6 +30,8 @@
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include <wx/extension/vi-macros.h>
+#include <easylogging++.h>
+#include "eval.h"
 
 #if wxUSE_GUI
 
@@ -55,44 +54,6 @@
                                                             \
   wxPostEvent(wxTheApp->GetTopWindow(), event);             \
 };                                                          \
-
-class ex_evaluator : public evaluator_extra 
-{
-public:
-  ex_evaluator() 
-  {
-    // prevent a comma to be used as argument separator
-    // for functions
-    opers.insert({",", oper_t{false, 1, false}});
-    opers.insert({">>", oper_t{false, 10, false}});
-    opers.insert({"<<", oper_t{false, 10, false}});
-    opers.insert({"&", oper_t{false, 10, false}});
-    opers.insert({"|", oper_t{false, 10, false}});
-    opers.insert({"xor", oper_t{false, 10, false}});
-    opers.insert({"bitor", oper_t{false, 10, false}});
-    opers.insert({"bitand", oper_t{false, 10, false}});
-    
-    funcs.insert({",", func_args(2, [](args_t v) {
-      return v[0] + v[1] / 10;})});
-    funcs.insert({">>", func_args(2, [](args_t v) {
-      return (int)v[0] >> (int)v[1];})});
-    funcs.insert({"<<", func_args(2, [](args_t v) {
-      return (int)v[0] << (int)v[1]; })});
-    funcs.insert({"&", func_args(2, [](args_t v) {
-      return (int)v[0] & (int)v[1]; })});
-    funcs.insert({"|", func_args(2, [](args_t v) {
-      return (int)v[0] | (int)v[1]; })});
-    funcs.insert({"compl", func_args(1, [](args_t v) {
-      return ~(int)v[0];})});
-    funcs.insert({"xor", func_args(2, [](args_t v) {
-      if (v.size() < 2) return 0;
-      return (int)v[0] ^ (int)v[1]; })});
-    funcs.insert({"bitor", func_args(2, [](args_t v) {
-      return (int)v[0] | (int)v[1]; })});
-    funcs.insert({"bitand", func_args(2, [](args_t v) {
-      return (int)v[0] & (int)v[1]; })});
-  }
-};
 
 enum class wxExCommandArg
 {
@@ -126,7 +87,7 @@ wxExCommandArg ParseCommandWithArg(const std::string& command)
   }
 }
 
-ex_evaluator wxExEx::m_Evaluator;
+wxExEvaluator wxExEx::m_Evaluator;
 wxExSTCEntryDialog* wxExEx::m_Dialog = nullptr;
 wxExViMacros wxExEx::m_Macros;
 std::string wxExEx::m_LastCommand;
@@ -204,23 +165,7 @@ wxExEx::wxExEx(wxExSTC* stc)
     {":q!", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, false ) return true;}},
     {":q", [&](const std::string& command) {POST_CLOSE( wxEVT_CLOSE_WINDOW, true ) return true;}},
     {":reg", [&](const std::string& command) {
-      std::string output("[Named buffers]\n");
-      for (const auto& it : m_Macros.GetRegisters())
-      {
-        output += it + "\n";
-      }
-      output += "[Filename buffer]\n";
-      output += "%: " + m_Command.STC()->GetFileName().GetFullName() + "\n";
-      std::string err;
-      if (!m_Evaluator.variables.empty()) 
-      {
-        output += "[Variables]\n";
-      }
-      for (const auto &var : m_Evaluator.variables) 
-      {
-        output += var + "=" + std::to_string(m_Evaluator.eval(var, &err)) + "\n";
-      }
-      ShowDialog("Registers", output, true);
+      ShowDialog("Registers", m_Evaluator.GetInfo(this), true);
       return true;}},
     {":sed", [&](const std::string& command) {POST_COMMAND( ID_TOOL_REPLACE ) return true;}},
     {":set", [&](const std::string& command) {
@@ -403,54 +348,12 @@ void wxExEx::AddText(const std::string& text)
 
 double wxExEx::Calculator(const std::string& text, int& width)
 {
-  std::string expr(wxExSkipWhiteSpace(text));
-
-  if (expr.empty() || expr.find("%s") != std::string::npos)
-  {
-    return 0;
-  }
-  
-  const char ds(wxNumberFormatter::GetDecimalSeparator());
-  
-  // Determine the width.
-  const std::string rt((ds == '.' ? "\\.": std::string(1, ds)) + std::string("[0-9]+"));
-  std::regex re(rt);
-  const auto words_begin = std::sregex_iterator(text.begin(), text.end(), re);
-  const auto words_end = std::sregex_iterator();  
-
-  if (words_begin != words_end)
-  {
-    std::smatch match = *words_begin; 
-
-    if (!match.empty())
-    {
-      width = match.length() - 1;
-    }
-  }
-  else
-  {
-    width = 0;
-    
-    // Replace . with current line.
-    wxExReplaceAll(expr, ".", std::to_string(m_Command.STC()->GetCurrentLine() + 1));
-  }
-  
-  // Replace $ with line count.
-  wxExReplaceAll(expr, "$", std::to_string(m_Command.STC()->GetLineCount()));
-  
-  // Expand all markers and registers.
-  if (!wxExMarkerAndRegisterExpansion(this, expr))
-  {
-    return 0;
-  }
-
-  // https://github.com/r-lyeh/eval
   std::string err;
-  auto val = m_Evaluator.eval(expr, &err);
+  const auto val = m_Evaluator.Eval(this, text, width, err);
+
   if (!err.empty())
   {
-    ShowDialog("Error", expr + "\n" + err);
-    val = 0;
+    ShowDialog("Error", text + "\n" + err);
   }
 
   return val;

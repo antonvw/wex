@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
-#include <easylogging++.h>
 #include <pugixml.hpp>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -19,6 +18,7 @@
 #include <wx/extension/util.h>
 #include <wx/extension/variable.h>
 #include <wx/extension/vi-macros.h>
+#include <easylogging++.h>
 #include "vi-macros-fsm.h"
 
 std::string wxExViMacrosFSM::m_macro;

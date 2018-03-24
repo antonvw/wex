@@ -2,7 +2,7 @@
 // Name:      test-menucommand.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -40,7 +40,7 @@ TEST_CASE("wxExMenuCommand")
   REQUIRE((help.GetType() & wxExMenuCommand::MENU_COMMAND_IS_MAIN) > 0);
   REQUIRE((help.GetType() & wxExMenuCommand::MENU_COMMAND_IS_POPUP) > 0);
 
-  REQUIRE(!help.UseFlags());
+  REQUIRE(!help.AskFlags());
   REQUIRE( help.IsHelp());
   REQUIRE( help.UseSubcommand());
 

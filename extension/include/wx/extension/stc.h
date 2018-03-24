@@ -24,6 +24,7 @@ class wxExLexer;
 class wxExManagedFrame;
 class wxExMenu;
 class wxExPath;
+class wxExVCSEntry;
 
 /// Offers a styled text ctrl with:
 /// - lexer support (syntax colouring, folding)
@@ -149,6 +150,10 @@ public:
   /// Returns the lexer.
   auto & GetLexer() {return m_Lexer;};
 
+  /// Returns line on which text margin was clicked,
+  /// or -1 if not.
+  auto GetMarginTextClick() const {return m_MarginTextClick;};
+
   /// Returns vi component.
   const auto & GetVi() const {return m_vi;};
   
@@ -168,14 +173,14 @@ public:
   
   /// Returns true if we are in hex mode.
   bool HexMode() const {return m_HexMode.Active();};
- 
+
+  /// If selected text is a link, opens the link.
+  bool LinkOpen();
+
   /// Deletes all change markers.
   /// Returns false if marker change is not loaded.
   bool MarkerDeleteAllChange();
   
-  /// If selected text is a link, opens the link.
-  bool LinkOpen();
-
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
   bool Open(const wxExPath& filename, const wxExSTCData& data = wxExSTCData());
@@ -255,8 +260,16 @@ public:
   /// Sets the text.
   void SetText(const std::string& value);
 
+  /// Returns true if line numbers are shown. 
+  bool ShownLineNumbers() const {return
+    GetMarginWidth(m_MarginLineNumber) > 0;};
+
   /// Shows or hides line numbers.
   void ShowLineNumbers(bool show);
+
+  /// Shows vcs info in text margin.
+  /// Returns true if info was added.
+  bool ShowVCS(const wxExVCSEntry* vcs);
   
   /// Starts or stops syncing.
   /// Default syncing is started during construction.
@@ -284,6 +297,14 @@ protected:
   void OnIdle(wxIdleEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:
+  enum
+  {
+    LINK_CHECK         = 0x0001,
+    LINK_OPEN          = 0x0002,
+    LINK_OPEN_BROWSER  = 0x0004,
+  };
+
+  void BindAll();
   void BuildPopupMenu(wxExMenu& menu);
   void CheckBrace();
   bool CheckBrace(int pos);
@@ -294,12 +315,12 @@ private:
 
   const int 
     m_MarginDividerNumber {1}, m_MarginFoldingNumber {2},
-    m_MarginLineNumber {0};
+    m_MarginLineNumber {0}, m_MarginTextNumber {3};
 
   const wxExMarker m_MarkerChange = wxExMarker(1);
 
   int 
-    m_FoldLevel {0}, 
+    m_FoldLevel {0}, m_MarginTextClick {-1},
     m_SavedPos {-1}, m_SavedSelectionStart {-1}, m_SavedSelectionEnd {-1};
   
   bool m_AddingChars {false};

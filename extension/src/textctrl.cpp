@@ -5,7 +5,6 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -14,6 +13,7 @@
 #include <wx/extension/ex-command.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
+#include <easylogging++.h>
 
 wxExTextCtrlInput::wxExTextCtrlInput(wxExExCommandType type) 
   : m_Type(type)
@@ -21,10 +21,11 @@ wxExTextCtrlInput::wxExTextCtrlInput(wxExExCommandType type)
       switch (type)
       {
         case wxExExCommandType::CALC: return std::string("excalc");
+        case wxExExCommandType::COMMAND: return std::string("excommand");
         case wxExExCommandType::EXEC: return std::string("exexec");
         case wxExExCommandType::FIND: return wxExFindReplaceData::GetTextFindWhat();
+        case wxExExCommandType::FIND_MARGIN: return std::string("exmargin");
         case wxExExCommandType::REPLACE: return wxExFindReplaceData::GetTextReplaceWith();
-        case wxExExCommandType::COMMAND: return std::string("excommand");
         default: return std::string("exother");
       }}(type))
   , m_Values(wxExListFromConfig(m_Name))

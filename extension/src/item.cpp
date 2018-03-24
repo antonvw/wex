@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
-#include <easylogging++.h>
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -46,6 +45,7 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/tocontainer.h>
 #include <wx/extension/util.h>
+#include <easylogging++.h>
 
 #if wxUSE_GUI
 

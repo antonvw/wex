@@ -130,6 +130,17 @@ TEST_CASE("wxExSTC")
     REQUIRE(stc->MarkerDeleteAllChange());
   }
 
+  SUBCASE("Margin")
+  {
+    REQUIRE(stc->GetMarginTextClick() == -1);
+
+    REQUIRE(!stc->ShownLineNumbers());
+    stc->ShowLineNumbers(true);
+    REQUIRE( stc->ShownLineNumbers());
+    stc->ShowLineNumbers(false);
+    REQUIRE(!stc->ShownLineNumbers());
+  }
+
   SUBCASE("Coverage")
   {
     stc->GetLexer().Set("cpp");
@@ -152,8 +163,6 @@ TEST_CASE("wxExSTC")
     stc->SelectNone();
     stc->Sync(false);
     stc->Sync(true);
-    stc->ShowLineNumbers(false);
-    stc->ShowLineNumbers(true);
     stc->Undo();
     stc->AutoComplete().Use(true);
     stc->AutoComplete().Use(false);
@@ -213,7 +222,12 @@ TEST_CASE("wxExSTC")
 #endif
   }
   
-  SUBCASE("hex")
+  SUBCASE("Link")
+  {
+    REQUIRE(!stc->LinkOpen());
+  }
+
+  SUBCASE("Hex")
   {
     stc->GetHexMode().Set(true);
     REQUIRE(stc->HexMode());
@@ -221,7 +235,7 @@ TEST_CASE("wxExSTC")
     stc->GetHexMode().Set(false);
   }
 
-  SUBCASE("events")
+  SUBCASE("Events")
   {
     for (auto id : std::vector<int> {
       ID_EDIT_HEX_DEC_CALLTIP, ID_EDIT_MARKER_NEXT, ID_EDIT_MARKER_PREVIOUS,
@@ -232,7 +246,7 @@ TEST_CASE("wxExSTC")
     }
   }
 
-  SUBCASE("load file")
+  SUBCASE("Load file")
   {
     wxExSTC stc(GetTestPath("test.h"));
     REQUIRE( stc.GetFileName().Path().string().find("test.h") != std::string::npos);
@@ -248,7 +262,7 @@ TEST_CASE("wxExSTC")
     stc->GetVi().Command("\x1b");
   }
 
-  SUBCASE("popup")
+  SUBCASE("Popup")
   {
     REQUIRE( stc->GetLexer().Set("cpp"));
     REQUIRE(wxExUIAction(stc));

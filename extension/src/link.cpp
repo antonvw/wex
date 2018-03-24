@@ -236,6 +236,6 @@ bool wxExLink::SetLink(wxExPath& link, wxExControlData& data) const
   
 void wxExLink::SetFromConfig()
 {
-  m_Paths.release();
+  delete m_Paths.release();
   m_Paths = std::make_unique<wxExPaths>();
 }

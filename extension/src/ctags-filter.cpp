@@ -5,8 +5,8 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/extension/ctags-filter.h>
+#include <easylogging++.h>
 
 wxExCTagsFilter& wxExCTagsFilter::Access(const std::string& v) 
 {

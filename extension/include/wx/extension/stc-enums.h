@@ -16,6 +16,7 @@ enum wxExSTCMarginFlags
   STC_MARGIN_DIVIDER    = 1 << 1, ///< divider margin
   STC_MARGIN_FOLDING    = 1 << 2, ///< folding margin
   STC_MARGIN_LINENUMBER = 1 << 3, ///< line number margin
+  STC_MARGIN_TEXT       = 1 << 4, ///< text margin
   STC_MARGIN_ALL        = 0xFFFF, ///< all margins
 };
 

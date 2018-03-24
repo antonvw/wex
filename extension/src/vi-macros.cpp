@@ -2,10 +2,9 @@
 // Name:      vi-macros.cpp
 // Purpose:   Implementation of class wxExViMacros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <numeric>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -15,6 +14,7 @@
 #include <wx/extension/path.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vi-macros-mode.h>
+#include <easylogging++.h>
 
 pugi::xml_document wxExViMacros::m_doc;
 bool wxExViMacros::m_IsModified = false;

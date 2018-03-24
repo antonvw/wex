@@ -2,11 +2,9 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wxExStyle class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -17,6 +15,7 @@
 #include <wx/extension/style.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/tokenizer.h>
+#include <easylogging++.h>
 
 void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 {

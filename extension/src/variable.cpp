@@ -2,10 +2,9 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wxExVariable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -17,6 +16,7 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vi-macros.h>
 #include <wx/extension/vi-macros-mode.h>
+#include <easylogging++.h>
 
 #if wxUSE_GUI
 

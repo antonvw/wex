@@ -20,6 +20,17 @@ namespace pugi
   class xml_node;
 };
 
+/// The edge mode as is specified in the lexers file.
+/// When ABSENT the edge mode is shown as specified
+/// by the editor option settings.
+enum class wxExEdgeMode
+{
+  ABSENT,     ///< no edge mode present
+  NONE,       ///< no edge is shown
+  LINE,       ///< edge shown as line
+  BACKGROUND, ///< adge shown as background colour
+};
+
 /// This class defines a lexer using file extensions,
 /// syntax colouring and comment definitions.
 /// This lexer is one of the Scintilla lexers.
@@ -70,6 +81,9 @@ public:
 
   /// Returns the display lexer (as shown in dialog).
   const auto & GetDisplayLexer() const {return m_DisplayLexer;};
+
+  /// Returns the edge mode.
+  const auto GetEdgeMode() const {return m_EdgeMode;};
 
   /// Returns the extensions.
   const auto & GetExtensions() const {return m_Extensions;};
@@ -146,14 +160,6 @@ public:
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
-  enum class wxExEdgeMode
-  {
-    ABSENT,
-    NONE,
-    LINE,
-    BACKGROUND,
-  };
-
   void AutoMatch(const std::string& lexer);
   const std::string GetFormattedText(
     const std::string& lines,

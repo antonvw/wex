@@ -2,7 +2,7 @@
 // Name:      stc-config.cpp
 // Purpose:   Implementation of config related methods of class wxExSTC
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -253,23 +253,26 @@ void wxExSTC::ConfigGet()
     m_Lexer.Apply();
   }
 
-  if (GetFileName().GetExtension().find(".log") == 0)
+  if (m_Lexer.GetEdgeMode() == wxExEdgeMode::ABSENT)
   {
-    SetEdgeMode(wxSTC_EDGE_NONE);
-  }
-  else
-  {
-    SetEdgeColumn(cfg->ReadLong(_("Edge column"), 0));
-  
-    const int el = cfg->ReadLong(_("Edge line"), wxSTC_EDGE_NONE);
-  
-    if (el != wxSTC_EDGE_NONE)
+    if (!m_Lexer.IsOk())
     {
-      SetEdgeMode(font.IsFixedWidth() ? el: wxSTC_EDGE_BACKGROUND);
+      SetEdgeMode(wxSTC_EDGE_NONE);
     }
     else
     {
-      SetEdgeMode(el);
+      SetEdgeColumn(cfg->ReadLong(_("Edge column"), 0));
+    
+      const int el = cfg->ReadLong(_("Edge line"), wxSTC_EDGE_NONE);
+    
+      if (el != wxSTC_EDGE_NONE)
+      {
+        SetEdgeMode(font.IsFixedWidth() ? el: wxSTC_EDGE_BACKGROUND);
+      }
+      else
+      {
+        SetEdgeMode(el);
+      }
     }
   }
   
