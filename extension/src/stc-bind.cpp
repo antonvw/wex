@@ -294,7 +294,11 @@ void wxExSTC::BindAll()
       m_MarginTextClick = line;
     }});
 
+#if wxCHECK_VERSION(3,1,0)
   Bind(wxEVT_STC_MARGIN_RIGHT_CLICK, [=](wxStyledTextEvent& event) {
+#else
+  Bind(wxEVT_STC_MARGINCLICK, [=](wxStyledTextEvent& event) {
+#endif
     if (event.GetMargin() == m_MarginTextNumber)
     {
       wxMenu* menu = new wxMenu();
