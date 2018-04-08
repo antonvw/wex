@@ -14,11 +14,11 @@ one of these applications, being a full featured source code text editor.
 
 - [doctest lib](https://github.com/onqtam/doctest)    
 
-- [easylogging++ lib](https://github.com/muflihun/easyloggingpp)
+- [easylogging++ lib](https://github.com/muflihun/easyloggingpp)    
 
 - [eval lib](https://github.com/r-lyeh/eval)    
 
-- [fsm lib](https://github.com/eglimi/cppfsm)
+- [fsm lib](https://github.com/eglimi/cppfsm)    
 
 - [OTL database lib](http://otl.sourceforge.net/)    
 
@@ -37,14 +37,16 @@ one of these applications, being a full featured source code text editor.
 ## Building wxWidgets
 
 - under windows:   
-    -- using Microsoft Visual Studio 2017 in build/msw:    
-    `nmake /f makefile.vc` or   
-    `nmake /f makefile.vc BUILD=release`   
-    -- using mingw in build/msw:
-    `make -f makefile.gcc`    
-    -- using cygwin 1.7.9:   
-    in buildmsw (created):
-    `../configure --with-msw --disable-shared && make`  
+    -- using Microsoft Visual Studio 2017:    
+    `git clone --recursive`   
+    `mkdir build`   
+    `cd build`   
+    
+    (or make a `debug` directory and use `-DCMAKE_BUILD_TYPE=Debug`)   
+    
+    `cmake.exe -DwxBUILD_SHARED=OFF -DCMAKE_BUILD_TYPE=Release ..`    
+    `nmake`    
+    copy generated lib\vc_lib to wxWidgets\lib
     
 - under Linux g++ 7.1.1:   
     install gtk:   
@@ -61,17 +63,14 @@ one of these applications, being a full featured source code text editor.
     see g++   
     
 - under MacOS:    
-    `brew install wxwidgets`   
-    `brew install xcode`   
+    `brew install wxwidgets`    
+    `brew install xcode`    
 
 ## Building wxExtension        
 
-- clone with submodules:   
-    `git clone --recursive`   
-
-- start with:   
-    `mkdir build`   
-    `cd build`   
+- `git clone --recursive`   
+  `mkdir build`   
+  `cd build`   
 
 - under windows:   
   -- using Visual Studio:   
@@ -81,8 +80,6 @@ one of these applications, being a full featured source code text editor.
     `cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
     `mingw32-make`   
   
-  (or make a `debug` directory and use `-DCMAKE_BUILD_TYPE=Debug`)   
-    
 - under Linux or MacOS:   
     `cmake ..`   
     `make`   

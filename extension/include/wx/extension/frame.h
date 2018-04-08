@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wxExFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -118,6 +118,9 @@ public:
   
   /// Updates the specified statusbar pane with values from specified stc.
   static bool UpdateStatusBar(wxExSTC* stc, const std::string& pane);
+
+  /// Are we closing?
+  static bool IsClosing() {return m_IsClosing;};
 #endif // wxUSE_STATUSBAR
 protected:
 #if wxUSE_STATUSBAR
@@ -130,10 +133,11 @@ protected:
   static wxExStatusBar* m_StatusBar;
 #endif
 private:
-  wxWindow* m_FindFocus = nullptr;
-  wxFindReplaceDialog* m_FindReplaceDialog = nullptr;
-  wxMenuBar* m_MenuBar = nullptr;
+  static bool m_IsClosing;
   
-  bool m_IsCommand = false;
+  bool m_IsCommand {false};
+  wxWindow* m_FindFocus {nullptr};
+  wxFindReplaceDialog* m_FindReplaceDialog {nullptr};
+  wxMenuBar* m_MenuBar {nullptr};
 };
 #endif // wxUSE_GUI

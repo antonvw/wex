@@ -2,10 +2,9 @@
 // Name:      support.cpp
 // Purpose:   Implementation of DecoratedFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -21,6 +20,7 @@
 #include <wx/extension/vcs.h>
 #include <wx/extension/vi-macros.h>
 #include <wx/extension/report/listviewfile.h>
+#include <easylogging++.h>
 #ifndef __WXMSW__
 #include "app.xpm"
 #endif

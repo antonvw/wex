@@ -2,10 +2,9 @@
 // Name:      app.cpp
 // Purpose:   Implementation of sample classes for wxExRep
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -20,6 +19,7 @@
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/dirctrl.h>
 #include <wx/extension/report/listview.h>
+#include <easylogging++.h>
 #include "app.h"
 #ifndef __WXMSW__
 #include "app.xpm"

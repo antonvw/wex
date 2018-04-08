@@ -5,7 +5,6 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <easylogging++.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -15,6 +14,7 @@
 #include <wx/extension/tostring.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
+#include <easylogging++.h>
 #include "app.h"
 #include "frame.h"
 

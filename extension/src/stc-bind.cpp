@@ -500,7 +500,7 @@ void wxExSTC::BindAll()
         base10_val = std::stol(word);
         base10_ok = (base10_val != 0);
       }
-      catch (std::exception& e)
+      catch (std::exception&)
       {
         base10_ok = false;
       }
@@ -509,7 +509,7 @@ void wxExSTC::BindAll()
       {
         base16_val = std::stol(word, nullptr, 16);
       }
-      catch (std::exception& e)
+      catch (std::exception&)
       {
         base16_ok = false;
       }

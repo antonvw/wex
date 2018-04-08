@@ -91,6 +91,8 @@
 wxExStatusBar* wxExFrame::m_StatusBar = nullptr;
 #endif
 
+bool wxExFrame::m_IsClosing = false;
+
 #if wxUSE_DRAG_AND_DROP
 class FileDropTarget : public wxFileDropTarget
 {
@@ -209,6 +211,10 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
     (GetMenuBar() != nullptr ? event.Check(GetMenuBar()->IsShown()): event.Check(false));},
     ID_VIEW_MENUBAR);
+  
+  Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
+    m_IsClosing = true;
+	event.Skip(); });
 }
 
 wxExFrame::~wxExFrame()
@@ -359,12 +365,14 @@ void wxExFrame::StatusBarClicked(const std::string& pane)
 
 bool wxExFrame::StatusText(const std::string& text, const std::string& pane)
 {
-  return (m_StatusBar == nullptr ? false: m_StatusBar->SetStatusText(text, pane));
+  return (m_IsClosing || m_StatusBar == nullptr ? 
+    false: 
+    m_StatusBar->SetStatusText(text, pane));
 }
 
 bool wxExFrame::UpdateStatusBar(const wxListView* lv)
 {
-  if (lv->IsShown())
+  if (!m_IsClosing && lv->IsShown())
   {
     const std::string text = std::to_string(lv->GetItemCount()) + 
       (lv->GetSelectedItemCount() > 0 ? "," + std::to_string(lv->GetSelectedItemCount()):
@@ -379,7 +387,7 @@ bool wxExFrame::UpdateStatusBar(const wxListView* lv)
 // Do not make it const, too many const_casts needed,
 bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const std::string& pane)
 {
-  if (stc == nullptr)
+  if (stc == nullptr || m_IsClosing)
   {
     return false;
   }

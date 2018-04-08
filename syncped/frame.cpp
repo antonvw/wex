@@ -259,7 +259,6 @@ Frame::Frame(App* app)
     GetDebug()->Execute(event.GetId() - ID_EDIT_DEBUG_FIRST);}, ID_EDIT_DEBUG_FIRST, ID_EDIT_DEBUG_LAST);
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
-    m_IsClosing = true; 
     long count = 0;
     for (size_t i = 0; i < m_Editors->GetPageCount(); i++)
     {
@@ -280,7 +279,6 @@ Frame::Frame(App* app)
         {
           wxLogStatus(_("Process is running"));
         }
-        m_IsClosing = false;
         return;
       }
     }
@@ -292,8 +290,8 @@ Frame::Frame(App* app)
     if (m_App->GetData().Control().Command().empty())
     {
       wxDELETE(m_Process);
-      event.Skip();
     }
+    event.Skip();
     });
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
@@ -916,7 +914,8 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
   switch (event.GetId())
   {
     case wxID_EXECUTE: 
-      event.Enable( !m_Process->GetExecuteCommand().empty() &&
+      event.Enable( !IsClosing() && m_Process != nullptr &&
+		            !m_Process->GetExecuteCommand().empty() &&
                     !m_Process->IsRunning()); 
       break;
     case wxID_STOP: event.Enable(m_Process->IsRunning()); break;
@@ -1420,7 +1419,7 @@ void Frame::SyncCloseAll(wxWindowID id)
 {
   DecoratedFrame::SyncCloseAll(id);
   
-  if (m_IsClosing) return;
+  if (IsClosing()) return;
   
   switch (id)
   {

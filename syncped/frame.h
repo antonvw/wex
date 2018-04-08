@@ -19,8 +19,6 @@ class Frame : public DecoratedFrame
 {
 public:
   explicit Frame(App* app);
-  
-  bool IsClosing() const {return m_IsClosing;};
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
@@ -63,7 +61,6 @@ private:
   const wxString m_ProjectWildcard = 
     _("Project Files") + " (*.prj)|*.prj";
 
-  bool m_IsClosing = false;
   int m_NewProjectNo = 1, m_SplitId = 1;
 
   wxCheckBox *m_CheckBoxDirCtrl, *m_CheckBoxHistory;

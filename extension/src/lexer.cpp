@@ -130,9 +130,9 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
 bool wxExLexer::Apply() const
 {
   if (m_STC == nullptr) return false;
-  
+
   m_STC->ClearDocumentStyle();
-  
+
   for (const auto& it : m_Properties)
   {
     it.ApplyReset(m_STC);
@@ -152,15 +152,20 @@ bool wxExLexer::Apply() const
     {
       m_STC->SetKeyWords(k.first, wxExGetStringSet(k.second));
     }
-    
+
     wxExLexers::Get()->Apply(m_STC);
-  
+
     for (const auto& p : m_Properties) p.Apply(m_STC);
     for (const auto& s : m_Styles) s.Apply(m_STC);
   }
 
   // And finally colour the entire document.
-  m_STC->Colourise(0, m_STC->GetLength() - 1);
+  const auto length = m_STC->GetLength();
+
+  if (length > 0)
+  {
+    m_STC->Colourise(0, length - 1);
+  }
   
   return true;
 }
@@ -364,8 +369,6 @@ const std::string wxExLexer::MakeSingleLineComment(
 
   return out;
 }
-
-
 
 void wxExLexer::Reset()
 {

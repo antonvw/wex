@@ -86,9 +86,9 @@ struct evaluator {
     {
         bool operator() (const std::string &lhs, const std::string &rhs) const
         {
-            if (equal(lhs.begin(), lhs.end(), rhs.begin())) // lhs is prefix of rhs
+            if (equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())) // lhs is prefix of rhs
                 return false;
-            else if (equal(rhs.begin(), rhs.end(), lhs.begin())) // rhs is prefix of lhs
+            else if (equal(rhs.begin(), rhs.end(), lhs.begin(), lhs.begin())) // rhs is prefix of lhs
                 return true;
             else
                 return lhs < rhs;
@@ -205,8 +205,11 @@ struct evaluator {
             for (; it2 != in.cend() && numbers.find(*it2) != std::string::npos; ++it2); // TODO: find_first_not_of
             if (it2 != it)
             {
-                if (lasttok.first == ")" || (opers.find(lasttok.first) == opers.end() && funcs.find(lasttok.first) != funcs.end()) || lasttok.second == -1)
-                    throw parse_error("Missing operator", i);
+                if (!lasttok.first.empty())
+                {
+                  if (lasttok.first == ")" || (opers.find(lasttok.first) == opers.end() && funcs.find(lasttok.first) != funcs.end()) || lasttok.second == -1)
+                      throw parse_error("Missing operator", i);
+                }
 
                 out.push_back(lasttok = token_t(std::string(it, it2), -1));
                 it = it2;

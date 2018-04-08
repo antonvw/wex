@@ -121,10 +121,12 @@ bool wxExApp::OnInit()
 
   START_EASYLOGGINGPP(argc_elp, argv_elp);
 
+#ifndef __WXMSW__
   for (int i = 0; i < argc_elp; i++)
   {
     free(argv_elp[i]);
   }
+#endif
 
   VLOG(1) 
     << "started: " 
