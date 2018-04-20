@@ -8,6 +8,7 @@
 #include <wx/config.h>
 #include <wx/extension/autocomplete.h>
 #include <wx/extension/ctags.h>
+#include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <easylogging++.h>
@@ -38,7 +39,7 @@ bool wxExAutoComplete::Activate(const std::string& text)
 
     if (!command.empty() && !m_STC->GetVi().Command(command))
     {
-      LOG(ERROR) << "AutoComplete command failed";
+      wxExLog() << "AutoComplete command failed";
       return false;
     }
   }

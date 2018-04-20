@@ -41,6 +41,9 @@ public:
     const std::string& text, 
     const std::string& lexer = "global");
 
+  /// Applies margin text style to stc line.
+  void ApplyMarginTextStyle(wxExSTC* stc, int line) const;
+
   /// Finds a lexer specified by a filename (fullname).
   const wxExLexer FindByFileName(const std::string& fullname) const;
 
@@ -148,6 +151,7 @@ private:
   const wxExPath m_Path;
   const std::string m_NoTheme;
   std::string m_FoldingBackgroundColour, m_FoldingForegroundColour, m_Theme;
+  int m_StyleNoTextMargin {-1};
 
   static wxExLexers* m_Self;
 };

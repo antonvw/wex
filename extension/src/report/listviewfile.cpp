@@ -15,6 +15,7 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/itemdlg.h>
 #include <wx/extension/listitem.h>
+#include <wx/extension/log.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/defs.h>

@@ -14,8 +14,8 @@
 #include <wx/stc/stc.h>
 #include <wx/extension/style.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/tokenizer.h>
-#include <easylogging++.h>
 
 void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 {
@@ -48,9 +48,10 @@ const std::string wxExStyle::GetNo() const
 
 void wxExStyle::Set(const pugi::xml_node& node, const std::string& macro)
 {
+  m_Define = node.attribute("no").value();
+
   SetNo(
-    wxExLexers::Get()->ApplyMacro(node.attribute("no").value(), macro),
-    macro, node);
+    wxExLexers::Get()->ApplyMacro(m_Define, macro), macro, node);
 
   // The style is parsed using the themed macros, and
   // you can specify several styles separated by a + sign.
@@ -103,12 +104,13 @@ void wxExStyle::Set(const pugi::xml_node& node, const std::string& macro)
 
   if (m_Value.empty())
   {
-    LOG(ERROR) << "empty style: " << GetNo() << " with offset: " 
-      << node.offset_debug();
+    wxExLog("empty style") << GetNo() << node;
   }
 }
 
-void wxExStyle::SetNo(const std::string& no, const std::string& macro, 
+void wxExStyle::SetNo(
+  const std::string& no, 
+  const std::string& macro, 
   const pugi::xml_node& node)
 {
   m_No.clear();
@@ -130,12 +132,12 @@ void wxExStyle::SetNo(const std::string& no, const std::string& macro,
       }
       else
       {
-        LOG(ERROR) << "illegal style: " << no << " with offset: " << node.offset_debug();
+        wxExLog("illegal style") << no << node;
       }
     }
     catch (std::exception& e)
     {
-      LOG(ERROR) << "style exception: " << e.what();
+      wxExLog(e) << "style:" << single;
     }
   }
 }

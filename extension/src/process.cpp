@@ -17,8 +17,8 @@
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/process.h>
 #include <wx/extension/debug.h>
-#include <wx/extension/defs.h>
 #include <wx/extension/itemdlg.h>
+#include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/util.h> // for wxExConfigFirstOf
@@ -80,7 +80,7 @@ private:
   static std::vector<int> m_pids;
 };
 
-bool ShowProcess(wxExManagedFrame* frame, bool show)
+auto ShowProcess(wxExManagedFrame* frame, bool show)
 {
   if (frame != nullptr)
   {
@@ -146,7 +146,7 @@ int wxExProcess::ConfigDialog(const wxExWindowData& par)
 
 bool wxExProcess::Execute(
   const std::string& command,
-  bool wait,
+  long flags,
   const std::string& wd)
 {
   m_Error = false;
@@ -171,7 +171,7 @@ bool wxExProcess::Execute(
     m_Command = command;
   }
 
-  if (!wait)
+  if (!(flags & PROCESS_EXEC_WAIT))
   { 
     // We need a shell for output.
     if (m_Shell == nullptr) return false;
@@ -272,14 +272,14 @@ void wxExProcess::ShowOutput(const std::string& caption) const
   {
     if (m_Shell != nullptr && ShowProcess(m_Frame, true))
     {
-      m_Shell->AppendText(m_StdOut);
+      m_Shell->AppendText(!m_StdOut.empty() ? m_StdOut: m_StdErr);
     }
 
-    VLOG(1) << m_StdOut;
+    VLOG(2) << m_StdOut;
   }
   else
   {
-    LOG(ERROR) << "could not execute: " <<  m_Command;
+    wxExLog() << "could not execute:" <<  m_Command;
   }
 }
 #endif
@@ -391,7 +391,7 @@ int wxExProcessImp::KillAll(int sig)
   
   if (killed != m_pids.size())
   {
-    LOG(ERROR) << "could not kill all processes";
+    wxExLog() << "could not kill all processes";
   }
  
   return killed;

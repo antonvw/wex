@@ -13,10 +13,10 @@
 #include <shunting-yard/eval.hpp>
 #include <wx/numformatter.h>
 #include <wx/extension/ex.h>
+#include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vi-macros.h>
-#include <easylogging++.h>
 #include "eval.h"
 
 wxExEvaluator::~wxExEvaluator()
@@ -91,16 +91,14 @@ std::string wxExEvaluator::GetInfo(const wxExEx* ex)
   output += "[Filename buffer]\n";
   output += "%: " + ex->GetCommand().STC()->GetFileName().GetFullName() + "\n";
 
-  std::string err;
-
   if (!m_eval->variables.empty()) 
   {
     output += "[Variables]\n";
-  }
 
-  for (const auto &var : m_eval->variables) 
-  {
-    output += var + "=" + std::to_string(m_eval->eval(var, &err)) + "\n";
+    for (const auto &var : m_eval->variables) 
+    {
+      output += var + "=" + std::to_string(m_eval->eval(var, nullptr)) + "\n";
+    }
   }
 
   return output;
@@ -149,7 +147,7 @@ void wxExEvaluator::Init()
   }
   catch (std::exception& e)
   {
-    LOG(ERROR) << "evaluator exception: " << e.what();
+    wxExLog(e) << "evaluator";
     return;
   }
 }

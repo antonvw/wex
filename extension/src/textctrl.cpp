@@ -12,6 +12,7 @@
 #include <wx/extension/textctrl.h>
 #include <wx/extension/ex-command.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/log.h>
 #include <wx/extension/util.h>
 #include <easylogging++.h>
 
@@ -47,7 +48,7 @@ const std::string wxExTextCtrlInput::Get() const
   }
   catch (std::exception& e)
   {
-    LOG(ERROR) << "TCI: " << m_Name << " exception: " << e.what();
+    wxExLog(e) << "TCI: " << m_Name;
     return std::string();
   }
 }

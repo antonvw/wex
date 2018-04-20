@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <wx/config.h>
 #include <wx/extension/vi-mode.h>
+#include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vi.h>
@@ -202,7 +203,10 @@ bool wxExViMode::Transition(const std::string& command)
   
   if (m_FSM->Execute(command, trigger) != FSM::Fsm_Success)
   {
-    wxBell();
+    if (wxConfigBase::Get()->ReadLong(_("Error bells"), 1))
+    {
+      wxBell();
+    }
     return false;
   }
   

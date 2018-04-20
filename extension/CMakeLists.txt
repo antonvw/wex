@@ -22,15 +22,15 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     # combine tracefiles
     COMMAND lcov --add-tracefile app.base --add-tracefile app.run --output-file app.run
     # remove output that we are not interested in
-    COMMAND lcov --remove app.run "/usr/*" "*sample*" "*eval.hpp" "*otlv4.h*" "*tclap*"
-      "*doctest*" "readtags.*" "*pugi*" --output-file app.run
+    COMMAND lcov --remove app.run "/usr/*" "*sample*" "*otlv4.h*" 
+      "*eval.hpp" "*doctest*" "easyloggingpp*" "fsm.h" "*pugi*" "readtags.*" "*tclap*" --output-file app.run
     # generate local files
     COMMAND genhtml --no-branch-coverage --title "${PROJECT_NAME}" app.run
     COMMENT "Running lcov" VERBATIM)    
   
   add_custom_target(lcov-coveralls
     # update coveralls
-    COMMAND coveralls-lcov --repo-token ${COVERALLS_TOKEN} app.run
+    COMMAND coveralls-lcov app.run
     # cleanup
     COMMAND rm -f app.base app.run)
 endif ()

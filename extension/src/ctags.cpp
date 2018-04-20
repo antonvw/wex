@@ -15,6 +15,7 @@
 #include <wx/extension/ctags.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/path.h>
 #include <wx/extension/stc.h>
@@ -356,7 +357,7 @@ void wxExCTags::Init(const std::string& filename)
 
     if (filename != DEFAULT_TAGFILE && m_File == nullptr)
     {
-      LOG(ERROR) << "coult not open ctags file: " << filename;
+      wxExLog() << "could not open ctags file:" << filename;
     }
   }
 }
@@ -389,7 +390,7 @@ bool wxExCTags::Open(const std::string& path, bool show_error)
   }
   else if (show_error)
   {
-    LOG(ERROR) << "coult not open ctags file: " << path;
+    wxExLog() << "could not open ctags file:" << path;
   }
 
   return false;

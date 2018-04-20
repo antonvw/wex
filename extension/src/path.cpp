@@ -7,8 +7,8 @@
 
 #include <wx/extension/path.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/util.h>
-#include <easylogging++.h>
 
 const std::string SubstituteTilde(const std::string& text)
 {
@@ -112,7 +112,7 @@ void wxExPath::Current(const std::string& path)
   }
   catch (const std::exception& e)
   {
-    LOG(ERROR) << "exception: " << e.what() << " path: " << path;
+    wxExLog(e) << "path:" << path;
   }
 }
 

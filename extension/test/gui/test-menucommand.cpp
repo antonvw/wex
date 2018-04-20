@@ -25,20 +25,20 @@ TEST_CASE("wxExMenuCommand")
   const wxExMenuCommand none;
 
   REQUIRE(add.GetCommand() == "add");
-  REQUIRE(add.GetCommand(true, true) == "a&dd");
+  REQUIRE(add.GetCommand(COMMAND_INCLUDE_SUBCOMMAND | COMMAND_INCLUDE_ACCELL) == "a&dd");
   REQUIRE(help.GetCommand() == "help me");
-  REQUIRE(help.GetCommand(true, true) == "h&elp m&e");
-  REQUIRE(help.GetCommand(false, true) == "h&elp");
-  REQUIRE(help.GetCommand(false, false) == "help");
+  REQUIRE(help.GetCommand(COMMAND_INCLUDE_SUBCOMMAND | COMMAND_INCLUDE_ACCELL) == "h&elp m&e");
+  REQUIRE(help.GetCommand(COMMAND_INCLUDE_ACCELL) == "h&elp");
+  REQUIRE(help.GetCommand(COMMAND_INCLUDE_NONE) == "help");
   
-  REQUIRE((add.GetType() & wxExMenuCommand::MENU_COMMAND_IS_MAIN) > 0);
-  REQUIRE((add.GetType() & wxExMenuCommand::MENU_COMMAND_IS_POPUP) > 0);
-  REQUIRE((blame.GetType() & wxExMenuCommand::MENU_COMMAND_IS_MAIN) > 0);
-  REQUIRE((blame.GetType() & wxExMenuCommand::MENU_COMMAND_IS_POPUP) > 0);
-  REQUIRE((commit.GetType() & wxExMenuCommand::MENU_COMMAND_IS_MAIN) > 0);
-  REQUIRE((diff.GetType() & wxExMenuCommand::MENU_COMMAND_IS_POPUP) > 0);
-  REQUIRE((help.GetType() & wxExMenuCommand::MENU_COMMAND_IS_MAIN) > 0);
-  REQUIRE((help.GetType() & wxExMenuCommand::MENU_COMMAND_IS_POPUP) > 0);
+  REQUIRE((add.GetType() & MENU_COMMAND_IS_MAIN) > 0);
+  REQUIRE((add.GetType() & MENU_COMMAND_IS_POPUP) > 0);
+  REQUIRE((blame.GetType() & MENU_COMMAND_IS_MAIN) > 0);
+  REQUIRE((blame.GetType() & MENU_COMMAND_IS_POPUP) > 0);
+  REQUIRE((commit.GetType() & MENU_COMMAND_IS_MAIN) > 0);
+  REQUIRE((diff.GetType() & MENU_COMMAND_IS_POPUP) > 0);
+  REQUIRE((help.GetType() & MENU_COMMAND_IS_MAIN) > 0);
+  REQUIRE((help.GetType() & MENU_COMMAND_IS_POPUP) > 0);
 
   REQUIRE(!help.AskFlags());
   REQUIRE( help.IsHelp());
@@ -48,5 +48,5 @@ TEST_CASE("wxExMenuCommand")
   REQUIRE(diff.GetSubMenu() == "submenu");
   REQUIRE(help.GetSubMenu() == "m&e");
 
-  REQUIRE(none.GetType() == wxExMenuCommand::MENU_COMMAND_IS_NONE);
+  REQUIRE(none.GetType() == MENU_COMMAND_IS_NONE);
 }

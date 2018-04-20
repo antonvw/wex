@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/ctags-filter.h>
+#include <wx/extension/log.h>
 #include <easylogging++.h>
 
 wxExCTagsFilter& wxExCTagsFilter::Access(const std::string& v) 

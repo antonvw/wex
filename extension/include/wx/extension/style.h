@@ -2,7 +2,7 @@
 // Name:      style.h
 // Purpose:   Declaration of wxExStyle class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -42,6 +42,9 @@ public:
   /// Is the default style part of these styles.
   bool ContainsDefaultStyle() const;
   
+  /// Returns the original define.
+  const auto & GetDefine() const {return m_Define;};
+
   /// Returns the no ('s).
   const std::string GetNo() const;
   
@@ -57,5 +60,5 @@ private:
     const pugi::xml_node& node = pugi::xml_node());
 
   std::set <int> m_No;
-  std::string m_Value;
+  std::string m_Define, m_Value; 
 };

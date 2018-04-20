@@ -1,4 +1,4 @@
-version: 18.04.0.{build}
+version: 18.10.0.{build}
 
 platform: 
   - x86 
@@ -34,4 +34,4 @@ build_script:
 test: OFF
 
 artifacts:
-  - path: 'build\syncped-v18.04.0.zip'
+  - path: 'build\syncped-v18.10.0.zip'

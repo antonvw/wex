@@ -24,7 +24,7 @@ TEST_CASE("wxExVCSCommand")
   const wxExVCSCommand none;
 
   REQUIRE(add.GetCommand() == "add");
-  REQUIRE(add.GetCommand(true, true) == "a&dd");
+  REQUIRE(add.GetCommand(COMMAND_INCLUDE_SUBCOMMAND | COMMAND_INCLUDE_ACCELL) == "a&dd");
   
   REQUIRE(add.IsAdd());
   REQUIRE(blame.IsBlame());

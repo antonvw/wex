@@ -24,12 +24,12 @@
 #include <wx/extension/item.h>
 #include <wx/extension/itemdlg.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/log.h>
 #include <wx/extension/listitem.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
-#include <easylogging++.h>
 
 #if wxUSE_GUI
 
@@ -812,7 +812,7 @@ bool wxExListView::InsertItem(const std::vector < std::string > & item)
     }
     catch (std::exception& e)
     {
-      LOG(ERROR) << item.front() << ": " << col << ": " << e.what();
+      wxExLog(e) << col;
       return false;
     }
   }
@@ -1108,8 +1108,7 @@ bool wxExListView::SetItem(
   }
   catch (std::exception& e)
   {
-    LOG(ERROR) << "index: " << index << " col: " << column << ": " <<
-      text << e.what();
+    wxExLog(e) << "index:" << index << "col:" << column << ":" << text;
     return false;
   }
 }

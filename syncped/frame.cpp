@@ -80,7 +80,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(ID_RECENT_PROJECT_MENU, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_SORT_SYNC, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_FIND_NEXT, ID_EDIT_FIND_PREVIOUS, Frame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(ID_EDIT_TOGGLE_FOLD, ID_EDIT_UNFOLD_ALL, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_PROJECT_OPENTEXT, ID_PROJECT_SAVEAS, Frame::OnUpdateUI)
 END_EVENT_TABLE()
 
@@ -256,7 +255,8 @@ Frame::Frame(App* app)
     }, ID_VIEW_HISTORY);
   
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    GetDebug()->Execute(event.GetId() - ID_EDIT_DEBUG_FIRST);}, ID_EDIT_DEBUG_FIRST, ID_EDIT_DEBUG_LAST);
+    GetDebug()->Execute(event.GetId() - ID_EDIT_DEBUG_FIRST);}, 
+    ID_EDIT_DEBUG_FIRST, ID_EDIT_DEBUG_LAST);
   
   Bind(wxEVT_CLOSE_WINDOW, [=](wxCloseEvent& event) {
     long count = 0;
@@ -372,7 +372,7 @@ Frame::Frame(App* app)
     if (GetSTC() != nullptr)
     {
       wxPostEvent(GetSTC(), event);
-    };}, ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST);
+    };}, ID_EDIT_CONTROL_CHAR);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExListView::ConfigDialog(wxExWindowData().
@@ -979,8 +979,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         case wxID_REPLACE:
         case ID_EDIT_FIND_NEXT:
         case ID_EDIT_FIND_PREVIOUS:
-        case ID_EDIT_FOLD_ALL:
-        case ID_EDIT_UNFOLD_ALL:
           event.Enable(editor->GetLength() > 0);
           break;
         case ID_EDIT_MACRO:
@@ -1006,12 +1004,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           break;
         case ID_EDIT_MACRO_STOP_RECORD:
           event.Enable(editor->GetVi().GetMacros().Mode()->IsRecording());
-          break;
-
-        case ID_EDIT_TOGGLE_FOLD:
-          event.Enable(
-            editor->GetTextLength() > 0 &&
-            editor->GetFoldLevel(editor->GetCurrentLine()) > wxSTC_FOLDLEVELBASE);
           break;
 
         case wxID_SAVE:
@@ -1284,7 +1276,7 @@ void Frame::PrintEx(wxExEx* ex, const std::string& text)
   
 wxExProcess* Frame::Process(const std::string& command)
 {
-  m_Process->Execute(command, false);
+  m_Process->Execute(command, PROCESS_EXEC_DEFAULT);
   return m_Process;
 }
 
@@ -1400,9 +1392,16 @@ void Frame::StatusBarClickedRight(const std::string& pane)
   }
   else if (pane == "PaneVCS")
   {
-    OpenFile(wxExMenus::GetFileName(),
-      wxExControlData().Find(GetStatusText(pane) != "Auto" ? GetStatusText(pane): 
-        std::string()));
+    std::string match(GetStatusText(pane));
+    wxExSTC* stc = GetSTC();
+
+    if (stc != nullptr)
+    {
+      const wxExVCS vcs({stc->GetFileName().Path().string()});
+      match = vcs.GetEntry().GetName();
+    }
+
+    OpenFile(wxExMenus::GetFileName(), wxExControlData().Find(match));
   }
   else
   {

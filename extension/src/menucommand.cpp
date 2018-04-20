@@ -20,38 +20,37 @@ wxExMenuCommand::wxExMenuCommand(
   , m_Flags(flags)
   , m_SubMenu(!submenu.empty() ? submenu: subcommand)
   , m_SubMenuIsCommand(!subcommand.empty())
-  , m_Type(From(type))
+  , m_Type([](const std::string& type) {
+      long command = (
+        type.empty() || 
+       (type.find("popup") == std::string::npos && 
+        type.find("main") == std::string::npos)) ? 
+        MENU_COMMAND_IS_POPUP | MENU_COMMAND_IS_MAIN: MENU_COMMAND_IS_NONE;
+
+      command |= (type.find("popup") != std::string::npos ? 
+        MENU_COMMAND_IS_POPUP: MENU_COMMAND_IS_NONE);
+      command |= (type.find("main") != std::string::npos ? 
+        MENU_COMMAND_IS_MAIN: MENU_COMMAND_IS_NONE);
+      command |= (type.find("separator") != std::string::npos ? 
+        MENU_COMMAND_SEPARATOR: MENU_COMMAND_IS_NONE);
+      command |= (type.find("ellipses") != std::string::npos ? 
+        MENU_COMMAND_ELLIPSES: MENU_COMMAND_IS_NONE);
+      return command;} (type))
 {
 }
   
-long wxExMenuCommand::From(const std::string& type) const
-{
-  long command = (
-    type.empty() || 
-   (type.find("popup") == std::string::npos && 
-    type.find("main") == std::string::npos)) ? 
-    MENU_COMMAND_IS_POPUP | MENU_COMMAND_IS_MAIN: MENU_COMMAND_IS_NONE;
-
-  command |= (type.find("popup") != std::string::npos ? MENU_COMMAND_IS_POPUP: 0);
-  command |= (type.find("main") != std::string::npos ? MENU_COMMAND_IS_MAIN: 0);
-  command |= (type.find("separator") != std::string::npos ? MENU_COMMAND_SEPARATOR: 0);
-  command |= (type.find("ellipses") != std::string::npos ? MENU_COMMAND_ELLIPSES: 0);
-
-  return command;
-}
-
-const std::string wxExMenuCommand::GetCommand(
-  bool include_subcommand,
-  bool include_accelerators) const
+const std::string wxExMenuCommand::GetCommand(long type) const
 {
   std::string command = m_Command;
 
-  if (m_SubMenuIsCommand && include_subcommand)
+  if (m_SubMenuIsCommand && 
+     (type & COMMAND_INCLUDE_SUBCOMMAND))
   {
     command += " " + m_SubMenu;
   }
 
-  if (command.find("&") != std::string::npos && !include_accelerators)
+  if (command.find("&") != std::string::npos && 
+    !(type & COMMAND_INCLUDE_ACCELL))
   {
     command.erase(
       std::remove(command.begin(), command.end(), '&'), command.end());

@@ -14,13 +14,13 @@
 #include <wx/extension/debug.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/vi-macros.h>
 #include <wx/extension/report/listviewfile.h>
-#include <easylogging++.h>
 #ifndef __WXMSW__
 #include "app.xpm"
 #endif
@@ -52,7 +52,7 @@ DecoratedFrame::DecoratedFrame(App* app)
     {"PaneInfo", 100, _("Lines or items").ToStdString()},
     {"PaneLexer", lexer_size, _("Lexer").ToStdString()},
     {"PaneTheme", lexer_size, _("Theme").ToStdString()},
-    {"PaneVCS", 75},
+    {"PaneVCS", 150},
     {"PaneMacro", 75},
     {"PaneMode", 100}});
   
@@ -61,7 +61,7 @@ DecoratedFrame::DecoratedFrame(App* app)
   if (vcs.Use() && wxExVCS::GetCount() > 0)
   {
     vcs.SetEntryFromBase();
-    StatusText(vcs.GetName(), "PaneVCS");
+    StatusText(!vcs.GetBranch().empty() ? vcs.GetBranch(): vcs.GetName(), "PaneVCS");
   }
   else
   {
@@ -202,7 +202,7 @@ DecoratedFrame::DecoratedFrame(App* app)
     {
       delete menuDebug;
       menuDebug = nullptr;
-      LOG(ERROR) << "no debug menu present";
+      wxExLog() << "no debug menu present";
     }
   }
 

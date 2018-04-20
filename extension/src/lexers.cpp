@@ -15,10 +15,10 @@
 #include <regex>
 #include <wx/config.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h> // for wxExMatchesOneOf
-#include <easylogging++.h>
 
 wxExLexers* wxExLexers::m_Self = nullptr;
 
@@ -110,6 +110,14 @@ const std::string wxExLexers::ApplyMacro(const std::string& text, const std::str
   return text;
 }
 
+void wxExLexers::ApplyMarginTextStyle(wxExSTC* stc, int line) const
+{
+  if (m_StyleNoTextMargin != -1)
+  {
+    stc->MarginSetStyle(line, m_StyleNoTextMargin);
+  }
+}
+
 const wxExLexer wxExLexers::FindByFileName(const std::string& fullname) const
 {
   const auto& it = std::find_if(m_Lexers.begin(), m_Lexers.end(), 
@@ -140,7 +148,7 @@ const wxExLexer wxExLexers::FindByText(const std::string& text) const
   }
   catch (std::exception& e)
   {
-    LOG(ERROR) << "findbytext exception: " << e.what();
+    wxExLog(e) << "findbytext";
   }
 
   return wxExLexer();
@@ -237,20 +245,19 @@ bool wxExLexers::LoadDocument()
   // Do some checking.
   if (!m_Lexers.empty())
   {
-    if (!m_DefaultStyle.IsOk()) LOG(ERROR) << "default style not ok";
-    if (!m_DefaultStyle.ContainsDefaultStyle()) LOG(ERROR) << "default style does not contain default style";
-  }
-  
+    if (!m_DefaultStyle.IsOk()) wxExLog() << "default style not ok";
+    if (!m_DefaultStyle.ContainsDefaultStyle()) wxExLog() << "default style does not contain default style";
+  }  
   if (m_ThemeMacros.size() <= 1) // NoTheme is always present
   {
-    LOG(ERROR) << "themes are missing";
+    wxExLog() << "themes are missing";
   }
 
   for (const auto& it : m_ThemeMacros)
   {
     if (!it.first.empty() && it.second.empty())
     {
-      LOG(ERROR) << "theme " << it.first << " is unknown";
+      wxExLog("theme") << it.first << " is unknown";
     }
   } 
 
@@ -307,8 +314,7 @@ void wxExLexers::ParseNodeGlobal(const pugi::xml_node& node)
       {
         if (m_DefaultStyle.IsOk())
         {
-          LOG(ERROR) << "duplicate default style: " << child.name() << " with offset: "
-            << child.offset_debug();
+          wxExLog("duplicate default style") << child.name() << child;
         }
         else
         {
@@ -317,6 +323,11 @@ void wxExLexers::ParseNodeGlobal(const pugi::xml_node& node)
       }
       else
       {
+        if (style.GetDefine() == "style_textmargin")
+        {
+          m_StyleNoTextMargin = std::stoi(style.GetNo());
+        }
+
         m_Styles.emplace_back(style);
       }
     }
@@ -356,8 +367,7 @@ void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
 
           if (it != macro_map.end())
           {
-            LOG(ERROR) << "macro: " << no << " with offset: " << 
-              macro.offset_debug() << " already exists";
+            wxExLog("macro") << no << macro << " already exists";
           }
           else
           {
@@ -370,7 +380,7 @@ void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
               }
               catch (std::exception& e)
               {
-                LOG(ERROR) << "macro exception: " << e.what();
+                wxExLog(e) << "macro";
               }
             }
             else
@@ -410,7 +420,7 @@ void wxExLexers::ParseNodeTheme(const pugi::xml_node& node)
 
         if (it != tmpMacros.end())
         {
-          LOG(ERROR) << "macro style: " <<  style << " with offset: " << child.offset_debug() << " already exists";
+          wxExLog("macro style") <<  style << child << " already exists";
         }
         else
         {

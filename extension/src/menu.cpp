@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wxExMenu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -30,58 +30,30 @@ wxExMenu::wxExMenu(const wxString& title, long style)
 {
 }
   
-wxMenuItem* wxExMenu::Append(int id)
-{
-  // Using wxMenu::Append(id)
-  // also appends the stock item,
-  // but does not add the bitmap.
-  wxMenuItem* item = new wxMenuItem(this, id);
-
-  const wxExStockArt art(id);
-
-  if (art.GetBitmap().IsOk())
-  {
-    item->SetBitmap(art.GetBitmap(
-      wxART_MENU, 
-      wxArtProvider::GetSizeHint(wxART_MENU, true)));
-  }
-
-  return wxMenu::Append(item);
-}
-
 wxMenuItem* wxExMenu::Append(
   int id,
   const wxString& name,
   const wxString& helptext,
   const wxArtID& artid)
 {
+  if (artid.empty())
+  {
+    return wxMenu::Append(id, name, helptext);
+  }
+
+  const wxBitmap bitmap(
+    wxArtProvider::GetBitmap(
+      artid, 
+      wxART_MENU, 
+      wxArtProvider::GetSizeHint(wxART_MENU, true)));
+
+  if (!bitmap.IsOk())
+  {
+    return wxMenu::Append(id, name, helptext);
+  }
+
   wxMenuItem* item = new wxMenuItem(this, id, name, helptext);
-
-  if (!artid.empty())
-  {
-    const wxBitmap bitmap = 
-      wxArtProvider::GetBitmap(
-        artid, 
-        wxART_MENU, 
-        wxArtProvider::GetSizeHint(wxART_MENU, true));
-
-    if (bitmap.IsOk())
-    {
-      item->SetBitmap(bitmap);
-    }
-  }
-  else
-  {
-    const wxExStockArt art(id);
-
-    if (art.GetBitmap().IsOk())
-    {
-      item->SetBitmap(art.GetBitmap(
-        wxART_MENU, 
-        wxArtProvider::GetSizeHint(wxART_MENU, true)));
-    }
-  }
-
+  item->SetBitmap(bitmap);
   return wxMenu::Append(item);
 }
 

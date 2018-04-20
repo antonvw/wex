@@ -11,10 +11,11 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/vi-macros.h>
+#include <wx/extension/log.h>
 #include <wx/extension/path.h>
+#include <wx/extension/type-to-value.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vi-macros-mode.h>
-#include <easylogging++.h>
 
 pugi::xml_document wxExViMacros::m_doc;
 bool wxExViMacros::m_IsModified = false;
@@ -211,10 +212,9 @@ void wxExViMacros::ParseNode(
 
   if (container.find(value) != container.end())
   {
-    LOG(ERROR) << "duplicate " << 
+    wxExLog() << "duplicate " << 
       name << ": " << value << " from: " << 
-      node.attribute("name").value() << " with offset: " <<
-      node.offset_debug();
+      node.attribute("name").value() << node;
   }
   else
   {
@@ -235,8 +235,7 @@ void wxExViMacros::ParseNodeMacro(const pugi::xml_node& node)
 
   if (it != m_Macros.end())
   {
-    LOG(ERROR) << "duplicate macro: " << node.attribute("name").value() << " with offset: " <<
-      node.offset_debug();
+    wxExLog() << "duplicate macro: " << node.attribute("name").value() << node;
   }
   else
   {
@@ -251,8 +250,7 @@ void wxExViMacros::ParseNodeVariable(const pugi::xml_node& node)
 
   if (it != m_Variables.end())
   {
-    LOG(ERROR) << "duplicate variable: " << variable.GetName() << " with offset: " <<
-      node.offset_debug();
+    wxExLog() << "duplicate variable: " << variable.GetName() << node;
   }
   else
   {
@@ -326,7 +324,7 @@ void wxExViMacros::SaveMacro(const std::string& macro)
   }
   catch (pugi::xpath_exception& e)
   {
-    LOG(ERROR) << e.what();
+    wxExLog(e) << macro;
   }
 }
 
@@ -364,7 +362,7 @@ void wxExViMacros::Set(
   }
   catch (pugi::xpath_exception& e)
   {
-    LOG(ERROR) << e.what();
+    wxExLog(e) << name;
   }
 }
 

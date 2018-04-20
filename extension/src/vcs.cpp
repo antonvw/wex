@@ -40,7 +40,7 @@ wxExVCS::wxExVCS(const std::vector< wxExPath > & files, int command_no)
     if (m_Entry.SetCommand(command_no))
     {
       m_Title = m_Entry.GetName() + " " + 
-        m_Entry.GetCommand().GetCommand(true, false);
+        m_Entry.GetCommand().GetCommand();
   
       if (!m_Entry.GetCommand().IsHelp() && m_Files.size() == 1)
       {
@@ -137,7 +137,7 @@ bool wxExVCS::Execute()
     return m_Entry.Execute(
       m_Entry.GetCommand().IsAdd() ? wxExConfigFirstOf(_("Path")): std::string(), 
       wxExLexer(), 
-      true,
+      PROCESS_EXEC_WAIT,
       wxExConfigFirstOf(_("Base folder")));
   }
   else
@@ -170,7 +170,8 @@ bool wxExVCS::Execute()
       args = "\"" + filename.Path().string() + "\"";
     }
     
-    return m_Entry.Execute(args, filename.GetLexer(), true, wd.Path().string());
+    return m_Entry.Execute(args, 
+      filename.GetLexer(), PROCESS_EXEC_WAIT, wd.Path().string());
   }
 }
 
@@ -209,6 +210,15 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxExPath& filename)
   }
   
   return wxExVCSEntry();
+}
+
+const std::string wxExVCS::GetBranch() const
+{
+  switch (wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO))
+  {
+    case VCS_NONE: return std::string();
+    default: return m_Entry.GetBranch();
+  }
 }
 
 const wxExPath wxExVCS::GetFile() const

@@ -2,7 +2,7 @@
 // Name:      test-vcsentry.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -26,6 +26,7 @@ TEST_CASE("wxExVCSEntry")
   REQUIRE(!test.GetCommand().GetCommand().empty());
   REQUIRE(!test.AdminDirIsTopLevel());
   REQUIRE( test.GetAdminDir() == "./");
+  REQUIRE( test.GetBranch().empty());
   REQUIRE( test.GetFlags().empty());
   REQUIRE( test.GetName() == "my-vcs");
   REQUIRE( test.GetStdOut().empty());
@@ -55,7 +56,7 @@ TEST_CASE("wxExVCSEntry")
   git.ShowOutput();
 
   wxExVCSEntry* git_async = new wxExVCSEntry("git", std::string(), {wxExVCSCommand("status")});
-  REQUIRE( git_async->Execute(std::string(), wxExLexer(), false));
+  REQUIRE( git_async->Execute(std::string(), wxExLexer(), PROCESS_EXEC_WAIT));
   git_async->ShowOutput();
 #endif
 }

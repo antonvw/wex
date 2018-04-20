@@ -15,6 +15,7 @@
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/path.h>
@@ -22,9 +23,28 @@
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
-#include <easylogging++.h>
 
-const int ID_EDIT_MARGIN_TEXT_HIDE = wxWindow::NewControlId();
+const int idEdgeClear = wxWindow::NewControlId(); 
+const int idEdgeSet = wxWindow::NewControlId();
+const int idEolDos = wxWindow::NewControlId(3);
+const int idEolUnix = idEolDos + 1;
+const int idEolMac = idEolDos + 2;
+const int idFoldAll = wxWindow::NewControlId();
+const int idHex = wxWindow::NewControlId();
+const int idHexDecCalltip = wxWindow::NewControlId();
+const int idLowercase = wxWindow::NewControlId();
+const int idMarginTextHide = wxWindow::NewControlId();
+const int idMarkerNext = wxWindow::NewControlId(2);
+const int idMarkerPrevious = idMarkerNext + 1;
+const int idOpenBrowser = wxWindow::NewControlId();
+const int idOpenLink = wxWindow::NewControlId();
+const int idOpenWWW = wxWindow::NewControlId();
+const int idShowProperties = wxWindow::NewControlId();
+const int idToggleFold = wxWindow::NewControlId();
+const int idUnfoldAll = wxWindow::NewControlId();
+const int idUppercase = wxWindow::NewControlId();
+const int idZoomIn = wxWindow::NewControlId();
+const int idZoomOut = wxWindow::NewControlId();
 
 void wxExSTC::BindAll()
 {
@@ -35,21 +55,21 @@ void wxExSTC::BindAll()
 
   entries[i++].Set(wxACCEL_CTRL, (int)'Z', wxID_UNDO);
   entries[i++].Set(wxACCEL_CTRL, (int)'Y', wxID_REDO);
-  entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
+  entries[i++].Set(wxACCEL_CTRL, (int)'D', idHexDecCalltip);
   entries[i++].Set(wxACCEL_CTRL, (int)'K', ID_EDIT_CONTROL_CHAR);
-  entries[i++].Set(wxACCEL_CTRL, '=', ID_EDIT_ZOOM_IN);
-  entries[i++].Set(wxACCEL_CTRL, '-', ID_EDIT_ZOOM_OUT);
-  entries[i++].Set(wxACCEL_CTRL, '9', ID_EDIT_MARKER_NEXT);
-  entries[i++].Set(wxACCEL_CTRL, '0', ID_EDIT_MARKER_PREVIOUS);
+  entries[i++].Set(wxACCEL_CTRL, '=', idZoomIn);
+  entries[i++].Set(wxACCEL_CTRL, '-', idZoomOut);
+  entries[i++].Set(wxACCEL_CTRL, '9', idMarkerNext);
+  entries[i++].Set(wxACCEL_CTRL, '0', idMarkerPrevious);
   entries[i++].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F9, ID_EDIT_FOLD_ALL);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F10, ID_EDIT_UNFOLD_ALL);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F11, ID_EDIT_UPPERCASE);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F12, ID_EDIT_LOWERCASE);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F9, idFoldAll);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F10, idUnfoldAll);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F11, idUppercase);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F12, idLowercase);
   entries[i++].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
   entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
   entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
@@ -238,7 +258,7 @@ void wxExSTC::BindAll()
       }
       catch (std::exception& e)
       {
-        LOG(ERROR) << e.what();
+        wxExLog(e) << "menu";
       }});
   }
   
@@ -302,7 +322,7 @@ void wxExSTC::BindAll()
     if (event.GetMargin() == m_MarginTextNumber)
     {
       wxMenu* menu = new wxMenu();
-      menu->Append(ID_EDIT_MARGIN_TEXT_HIDE, "&Hide");
+      menu->Append(idMarginTextHide, "&Hide");
       PopupMenu(menu);
       delete menu;
     }});
@@ -364,10 +384,10 @@ void wxExSTC::BindAll()
     m_Frame->GetDebug()->Execute(event.GetId() - ID_EDIT_DEBUG_FIRST, this);}, ID_EDIT_DEBUG_FIRST, ID_EDIT_DEBUG_LAST);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExBrowserSearch(GetSelectedText().ToStdString());}, ID_EDIT_OPEN_WWW);
+    wxExBrowserSearch(GetSelectedText().ToStdString());}, idOpenWWW);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    LinkOpen(LINK_OPEN);}, ID_EDIT_OPEN_LINK);
+    LinkOpen(LINK_OPEN);}, idOpenLink);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const std::string propnames(PropertyNames());
@@ -409,7 +429,7 @@ void wxExSTC::BindAll()
     {
       m_EntryDialog->GetSTC()->SetText(properties);
     }
-    m_EntryDialog->Show();}, ID_EDIT_SHOW_PROPERTIES);
+    m_EntryDialog->Show();}, idShowProperties);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     if (GetSelectedText().length() > 2) return;
@@ -529,30 +549,30 @@ void wxExSTC::BindAll()
     {
       CallTipShow(pos, stream.str());
       wxExClipboardAdd(stream.str());
-    }}, ID_EDIT_HEX_DEC_CALLTIP);
+    }}, idHexDecCalltip);
   
 #if wxCHECK_VERSION(3,1,0)
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {MultiEdgeClearAll();}, ID_EDIT_EDGE_CLEAR);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {MultiEdgeClearAll();}, idEdgeClear);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    MultiEdgeAddLine(GetColumn(GetCurrentPos()), GetEdgeColour());}, ID_EDIT_EDGE_SET);
+    MultiEdgeAddLine(GetColumn(GetCurrentPos()), GetEdgeColour());}, idEdgeSet);
 #endif
 
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LowerCase();}, ID_EDIT_LOWERCASE);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {UpperCase();}, ID_EDIT_UPPERCASE);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FoldAll();}, ID_EDIT_FOLD_ALL);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);}, ID_EDIT_UNFOLD_ALL);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_Data.Flags(STC_WIN_HEX, DATA_XOR).Inject();}, ID_EDIT_HEX);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_Zoom);}, ID_EDIT_ZOOM_IN);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_Zoom);}, ID_EDIT_ZOOM_OUT);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LowerCase();}, idLowercase);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {UpperCase();}, idUppercase);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {FoldAll();}, idFoldAll);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);}, idUnfoldAll);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {m_Data.Flags(STC_WIN_HEX, DATA_XOR).Inject();}, idHex);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(++m_Zoom);}, idZoomIn);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_Zoom);}, idZoomOut);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(true);}, ID_EDIT_FIND_NEXT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(false);}, ID_EDIT_FIND_PREVIOUS);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen(LINK_OPEN_BROWSER);}, ID_EDIT_OPEN_BROWSER);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen(LINK_OPEN_BROWSER);}, idOpenBrowser);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     const int level = GetFoldLevel(GetCurrentLine());
     const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
       GetCurrentLine(): GetFoldParent(GetCurrentLine());
-    ToggleFold(line_to_fold);}, ID_EDIT_TOGGLE_FOLD);
+    ToggleFold(line_to_fold);}, idToggleFold);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
     wxExVCSExecute(m_Frame, event.GetId() - ID_EDIT_VCS_LOWEST - 1, 
@@ -573,13 +593,9 @@ void wxExSTC::BindAll()
       }
       else
       {
-        int eol_mode = wxSTC_EOL_LF; // default ID_EDIT_EOL_UNIX
-        
-        switch (event.GetId())
-        {
-          case ID_EDIT_EOL_DOS: eol_mode = wxSTC_EOL_CRLF; break;
-          case ID_EDIT_EOL_MAC: eol_mode = wxSTC_EOL_CR; break;
-        }
+        int eol_mode = wxSTC_EOL_LF; // default IDEOL_UNIX
+        if (event.GetId() == idEolDos) eol_mode = wxSTC_EOL_CRLF;
+        else if (event.GetId() == idEolMac) eol_mode = wxSTC_EOL_CR;
     
         ConvertEOLs(eol_mode);
         SetEOLMode(eol_mode);
@@ -587,18 +603,18 @@ void wxExSTC::BindAll()
         wxExFrame::UpdateStatusBar(this, "PaneFileType");
 #endif
       }
-    }}, ID_EDIT_EOL_DOS, ID_EDIT_EOL_MAC);
+    }}, idEolDos, idEolMac);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {ResetMargins(STC_MARGIN_TEXT);}, 
-    ID_EDIT_MARGIN_TEXT_HIDE);
+    idMarginTextHide);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    int line = (event.GetId() == ID_EDIT_MARKER_NEXT ? 
+    int line = (event.GetId() == idMarkerNext ? 
       wxStyledTextCtrl::MarkerNext(GetCurrentLine() + 1, 0xFFFF):
       wxStyledTextCtrl::MarkerPrevious(GetCurrentLine() - 1, 0xFFFF));
     if (line == -1)
     {
-      line = (event.GetId() == ID_EDIT_MARKER_NEXT ?
+      line = (event.GetId() == idMarkerNext ?
         wxStyledTextCtrl::MarkerNext(0, 0xFFFF):
         wxStyledTextCtrl::MarkerPrevious(GetLineCount() - 1, 0xFFFF));
     }
@@ -609,5 +625,168 @@ void wxExSTC::BindAll()
     else
     {
       wxLogStatus(_("No markers present"));
-    }}, ID_EDIT_MARKER_NEXT, ID_EDIT_MARKER_PREVIOUS);
+    }}, idMarkerNext, idMarkerPrevious);
+}
+
+void wxExSTC::BuildPopupMenu(wxExMenu& menu)
+{
+  const std::string sel = GetSelectedText().ToStdString();
+
+  if (GetCurrentLine() == 0 && !wxExLexers::Get()->GetLexers().empty())
+  {
+    menu.Append(idShowProperties, _("Properties"));
+  }
+    
+  if (m_Data.Menu() & STC_MENU_OPEN_LINK)
+  {
+    std::string filename;
+
+    if (LinkOpen(LINK_OPEN_BROWSER | LINK_CHECK))
+    {
+      menu.AppendSeparator();
+      menu.Append(idOpenBrowser, _("&Open In Browser"));
+    }
+    else if (LinkOpen(LINK_OPEN | LINK_CHECK, &filename))
+    {
+      menu.AppendSeparator();
+      menu.Append(idOpenLink, _("Open") + " " + filename);
+    }
+  }
+
+#if wxCHECK_VERSION(3,1,0)
+  if (GetEdgeMode() == wxSTC_EDGE_MULTILINE)
+  {
+    menu.AppendSeparator();
+    menu.Append(idEdgeSet, _("Edge Column"));
+    menu.Append(idEdgeClear, _("Edge Column Reset"));
+  }
+#endif
+
+  if (m_Data.Menu() & STC_MENU_OPEN_WWW && !sel.empty())
+  {
+    menu.AppendSeparator();
+    menu.Append(idOpenWWW, _("&Search"));
+  }
+  
+  if (m_Data.Menu() & STC_MENU_DEBUG)
+  {
+    m_Frame->GetDebug()->AddMenu(&menu, true);
+  }
+  
+  if ((m_Data.Menu() & STC_MENU_VCS) &&
+       GetFileName().FileExists() && sel.empty() &&
+       wxExVCS::DirExists(GetFileName()))
+  {
+    menu.AppendSeparator();
+    menu.AppendVCS(GetFileName());
+  }
+
+  if (!m_vi.GetIsActive() && GetTextLength() > 0)
+  {
+    menu.AppendSeparator();
+    menu.Append(wxID_FIND);
+
+    if (!GetReadOnly())
+    {
+      menu.Append(wxID_REPLACE);
+    }
+  }
+
+  menu.AppendSeparator();
+  menu.AppendEdit();
+
+  if (!GetReadOnly())
+  {
+    if (!sel.empty())
+    {
+      wxExMenu* menuSelection = new wxExMenu(menu.GetStyle());
+      menuSelection->Append(idUppercase, _("&Uppercase\tF11"));
+      menuSelection->Append(idLowercase, _("&Lowercase\tF12"));
+
+      if (wxExGetNumberOfLines(sel) > 1)
+      {
+        wxExMenu* menuSort = new wxExMenu(menu.GetStyle());
+        menuSort->Append(wxID_SORT_ASCENDING);
+        menuSort->Append(wxID_SORT_DESCENDING);
+        menuSelection->AppendSeparator();
+        menuSelection->AppendSubMenu(menuSort, _("&Sort"));
+      }
+
+      menu.AppendSeparator();
+      menu.AppendSubMenu(menuSelection, _("&Selection"));
+    }
+  }
+
+  if (!GetReadOnly() && (CanUndo() || CanRedo()))
+  {
+    menu.AppendSeparator();
+    if (CanUndo()) menu.Append(wxID_UNDO);
+    if (CanRedo()) menu.Append(wxID_REDO);
+  }
+
+  // Folding if nothing selected, property is set,
+  // and we have a lexer.
+  if (
+     sel.empty() && 
+     GetProperty("fold") == "1" &&
+     m_Lexer.IsOk() &&
+    !m_Lexer.GetScintillaLexer().empty())
+  {
+    menu.AppendSeparator();
+    menu.Append(idToggleFold, _("&Toggle Fold\tCtrl+T"));
+    menu.Append(idFoldAll, _("&Fold All Lines\tF9"));
+    menu.Append(idUnfoldAll, _("&Unfold All Lines\tF10"));
+  }
+}
+
+void wxExSTC::CheckBrace()
+{
+  if (HexMode())
+  {
+    m_HexMode.HighlightOther();
+  }
+  else if (!CheckBrace(GetCurrentPos()))
+  {
+    CheckBrace(GetCurrentPos() - 1);
+  }
+}
+
+bool wxExSTC::CheckBrace(int pos)
+{
+  const int brace_match = BraceMatch(pos);
+
+  if (brace_match != wxSTC_INVALID_POSITION)
+  {
+    BraceHighlight(pos, brace_match);
+    return true;
+  }
+  else
+  {
+    BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
+    return false;
+  }
+}
+
+void wxExSTC::FileTypeMenu()
+{
+  wxMenu* menu = new wxMenu();
+
+  // The order here should be the same as the defines for wxSTC_EOL_CRLF.
+  // So the FindItemByPosition can work
+  menu->AppendRadioItem(idEolDos, "&DOS");
+  menu->AppendRadioItem(idEolMac, "&MAC");
+  menu->AppendRadioItem(idEolUnix, "&UNIX");
+  menu->AppendSeparator();
+  wxMenuItem* hex = menu->AppendCheckItem(idHex, "&HEX");
+  
+  menu->FindItemByPosition(GetEOLMode())->Check();
+  
+  if (HexMode())
+  {
+    hex->Check();
+  }
+
+  PopupMenu(menu);
+  
+  delete menu;
 }

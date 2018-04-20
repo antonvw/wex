@@ -2,7 +2,7 @@
 // Name:      statistics.h
 // Purpose:   Include file for statistics classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -31,7 +31,7 @@ public:
   }
 protected:
   void BuildPopupMenu(wxExMenu& menu) override {
-    int style = wxExMenu::MENU_ALLOW_CLEAR;
+    long style = wxExMenu::MENU_ALLOW_CLEAR;
     if (IsSelection()) style |= wxExMenu::MENU_IS_SELECTED;
     menu.SetStyle(style);
     wxExGrid::BuildPopupMenu(menu);};

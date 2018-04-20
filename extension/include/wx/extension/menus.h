@@ -53,12 +53,12 @@ public:
     for (const auto& it : commands)
     {
       bool add = false;
-      if (it.GetType() & wxExMenuCommand::MENU_COMMAND_IS_POPUP &&
-          it.GetType() & wxExMenuCommand::MENU_COMMAND_IS_MAIN)
+      if (it.GetType() & MENU_COMMAND_IS_POPUP &&
+          it.GetType() & MENU_COMMAND_IS_MAIN)
         add = true;
-      else if (it.GetType() & wxExMenuCommand::MENU_COMMAND_IS_POPUP)
+      else if (it.GetType() & MENU_COMMAND_IS_POPUP)
         add = is_popup;
-      else if (it.GetType() & wxExMenuCommand::MENU_COMMAND_IS_MAIN)
+      else if (it.GetType() & MENU_COMMAND_IS_MAIN)
         add = !is_popup;
 
       if (add)
@@ -84,11 +84,11 @@ public:
         usemenu->Append(
           base_id + i, 
           wxExEllipsed(
-            it.GetCommand(false, true), // use no sub and do accel
+            it.GetCommand(COMMAND_INCLUDE_ACCELL),
             std::string(),
-            (it.GetType() & wxExMenuCommand::MENU_COMMAND_ELLIPSES) > 0));
+            (it.GetType() & MENU_COMMAND_ELLIPSES) > 0));
 
-        if ((it.GetType() & wxExMenuCommand::MENU_COMMAND_SEPARATOR) > 0)
+        if ((it.GetType() & MENU_COMMAND_SEPARATOR) > 0)
         {
           usemenu->AppendSeparator();
         }

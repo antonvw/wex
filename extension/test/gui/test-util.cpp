@@ -431,18 +431,6 @@ TEST_CASE("wxEx")
       "hello @PAGENUM@ from @PAGESCNT@", 1, 2).find("@") == std::string::npos);
   }
 
-  SUBCASE("wxExTypeToValue")
-  {
-    REQUIRE( wxExTypeToValue<int>("100").get() == 100);
-    REQUIRE( wxExTypeToValue<int>("A").get() == 65);
-    REQUIRE( wxExTypeToValue<int>(100).get() == 100);
-    REQUIRE( wxExTypeToValue<int>(1).getString() == "ctrl-A");
-    REQUIRE( wxExTypeToValue<int>("100").getString() == "100");
-    REQUIRE( wxExTypeToValue<int>("xxx").getString() == "xxx");
-    REQUIRE( wxExTypeToValue<std::string>("100").get() == "100");
-    REQUIRE( wxExTypeToValue<std::string>("100").getString() == "100");
-  }
-
   SUBCASE("wxExVCSCommandOnSTC")
   {
     wxExVCSCommand command("status");

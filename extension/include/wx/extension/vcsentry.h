@@ -69,12 +69,15 @@ public:
     /// lexer that is used for presenting the output
     const wxExLexer& lexer = wxExLexer(),
     /// wait to finish
-    bool wait = true,    
+    long flags = PROCESS_EXEC_WAIT,
     /// working directory
     const std::string& wd = std::string());
   
   /// Returns the administrative directory.
   const auto& GetAdminDir() const {return m_AdminDir;};
+
+  /// Returns the name of current branch.
+  const std::string GetBranch() const;
 
   /// Returns the flags used to run the command.
   const std::string GetFlags() const;

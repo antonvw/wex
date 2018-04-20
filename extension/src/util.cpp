@@ -18,7 +18,6 @@
 #include <wx/config.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/stdpaths.h>
-#include <wx/textctrl.h>
 #include <wx/wupdlock.h>
 #include <wx/extension/util.h>
 #include <wx/extension/dir.h>
@@ -28,6 +27,7 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/path.h>
 #include <wx/extension/process.h>
@@ -257,7 +257,8 @@ bool wxExCompareFile(const wxExPath& file1, const wxExPath& file2)
        "\"" + file2.Path().string() + "\" \"" + file1.Path().string() + "\"";
 
   if (!wxExProcess().Execute(
-    wxConfigBase::Get()->Read(_("Comparator")).ToStdString() + " " + arguments, true))
+    wxConfigBase::Get()->Read(_("Comparator")).ToStdString() + " " + arguments, 
+    PROCESS_EXEC_WAIT))
   {
     return false;
   }
@@ -373,7 +374,10 @@ const std::string wxExGetFindResult(const std::string& find_text,
   }
   else
   {
-    wxBell();
+    if (wxConfigBase::Get()->ReadLong(_("Error bells"), 1))
+    {
+      wxBell();
+    }
     return
       wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found").ToStdString();
   }
@@ -502,7 +506,7 @@ long wxExMake(const wxExPath& makefile)
     wxConfigBase::Get()->Read("Make", "make").ToStdString() + " " +
       wxConfigBase::Get()->Read("MakeSwitch", "-f").ToStdString() + " " +
       makefile.Path().string(),
-    false,
+    PROCESS_EXEC_DEFAULT,
     makefile.GetPath());
 }
 
@@ -574,7 +578,7 @@ int wxExMatch(const std::string& reg, const std::string& text,
   }
   catch (std::regex_error& e) 
   {
-    LOG(ERROR) << e.what() << ": in: " << reg << " code: " << e.code();
+    wxExLog(e) << reg << "code:" << e.code();
     return -1;
   }
 }
@@ -817,7 +821,7 @@ bool wxExShellExpansion(std::string& command)
   while (wxExMatch(re_str, command, v) > 0)
   {
     wxExProcess process;
-    if (!process.Execute(v[0], true)) return false;
+    if (!process.Execute(v[0], PROCESS_EXEC_WAIT)) return false;
     
     command = std::regex_replace(
       command, 
@@ -831,7 +835,7 @@ bool wxExShellExpansion(std::string& command)
 
 const std::string wxExSkipWhiteSpace(
   const std::string& text, 
-  int skip_type,
+  size_t skip_type,
   const std::string& replace_with)
 {
   std::string output(text); 
@@ -970,7 +974,7 @@ bool wxExSortSelection(wxExSTC* stc,
   }
   catch (std::exception& e)
   {
-    LOG(ERROR) << e.what();
+    wxExLog(e) << "during sort";
     error = true;
   }
   
@@ -1039,11 +1043,12 @@ void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< wxExPath > & fi
           }
           else if (!vcs.GetEntry().GetStdErr().empty())
           {
-            LOG(ERROR) << vcs.GetEntry().GetStdErr();
+            wxExLog() << vcs.GetEntry().GetStdErr();
           }
           else
           {
-            LOG(ERROR) << "no output from: " << vcs.GetEntry().GetExecuteCommand();
+            wxLogStatus("No difference");
+            VLOG(9) << "no output from: " << vcs.GetEntry().GetExecuteCommand();
           }
         }
       }
@@ -1060,9 +1065,8 @@ void wxExXmlError(
   const pugi::xml_parse_result* result,
   wxExSTC* stc)
 {
-  LOG(ERROR) << 
-    "xml error: " << std::string(result->description()) << 
-    " at offset: " << std::to_string(result->offset);
+  wxExLogStatus("xml error: " + std::string(result->description()));
+  wxExLog(*result) << filename.GetName();
 
   // prevent recursion
   if (stc == nullptr && filename != wxExLexers::Get()->GetFileName())

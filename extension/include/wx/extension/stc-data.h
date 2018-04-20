@@ -11,6 +11,8 @@
 #include <wx/extension/control-data.h>
 #include <wx/extension/stc-enums.h>
 
+#define DEFAULT_TAGFILE "tags"
+
 class wxExSTC;
 
 /// Offers user data to be used by wxExSTC. 

@@ -12,18 +12,18 @@
 #include <wx/stc/stc.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/tokenizer.h>
-#include <easylogging++.h>
 
 wxExMarker::wxExMarker(const pugi::xml_node& node)
 {
   if (node.empty()) return;
 
+  const std::string single = 
+    wxExLexers::Get()->ApplyMacro(node.attribute("no").value());
+
   try
   {
-    const std::string single = 
-      wxExLexers::Get()->ApplyMacro(node.attribute("no").value());
-
     m_No = std::stoi(single);
 
     wxExTokenizer fields(node.text().get(), ",");
@@ -44,12 +44,12 @@ wxExMarker::wxExMarker(const pugi::xml_node& node)
 
     if (!IsOk())
     {
-      LOG(ERROR) << "illegal marker: " << m_No << " with offset: " << node.offset_debug();
+      wxExLog() << "illegal marker: " << m_No << node;
     }
   }
   catch (std::exception& e)
   {
-    LOG(ERROR) << "marker exception: " << e.what();
+    wxExLog(e) << "marker:" << single;
   }
 }
 

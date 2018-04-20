@@ -12,8 +12,8 @@
 #include <wx/stc/stc.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/tokenizer.h>
-#include <easylogging++.h>
 
 wxExIndicator::wxExIndicator(const pugi::xml_node& node)
 {
@@ -44,12 +44,12 @@ wxExIndicator::wxExIndicator(const pugi::xml_node& node)
 
     if (!IsOk())
     {
-      LOG(ERROR) << "illegal indicator number: " << m_No << " with offset: " << node.offset_debug();
+      wxExLog("illegal indicator number: ") << m_No << node;
     }
   }
   catch (std::exception& e)
   {
-    LOG(ERROR) << "indicator exception: " << e.what();
+    wxExLog(e) << "indicator";
   }
 }
 

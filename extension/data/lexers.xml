@@ -2,7 +2,7 @@
 <?xml-stylesheet href="lexers.xsl" type="text/xsl" ?>
 <!--
 Name:      lexers.xml
-Purpose:   Lexers configuration for wxExtension v18.04.
+Purpose:   Lexers configuration for wxExtension v18.10.
            See scintilla 3.7.2 (www.scintilla.org).
 Author:    Anton van Wezenbeek
 Copyright: (c) 2018, Anton van Wezenbeek
@@ -58,6 +58,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
       <def no ="style_controlchar"/>
       <def no ="style_indentguide"/>
       <def no ="style_calltip"/>
+      <def no ="style_textmargin"> 55 </def>
       <def no ="indic_plain"> 0 </def>
       <def no ="indic_squiggle"/>
       <def no ="indic_tt"/>
@@ -2088,6 +2089,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
         <def style ="string"> fore:blue </def>
         <def style ="styledefault"> default-font,back:white,fore:black </def>
         <def style ="styledefault-back"> default-font,back:#F1F1F1,fore:green,eol </def>
+        <def style ="styletextmargin"> size:8 </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:dark slate blue </def>
         <def style ="variable"> fore:medium blue </def>
@@ -2123,6 +2125,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
         <def style ="styledefault"> default-font,back:#2B2B2B,fore:#BBBBBB </def>
         <def style ="styledefault-back"> default-font,back:#2E2E2E,fore:#BBBBBB,eol </def>
         <def style ="styleindicatorfind"> red </def>
+        <def style ="styletextmargin"> back:#3B3B3B,face:ABeeZee,size:8 </def>
         <def style ="tag"> fore:cadet blue </def>
         <def style ="variable"> fore:green </def>
         
@@ -2174,6 +2177,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
     <!-- this style_default is applied before all other styles -->
     <style no="style_default"> styledefault </style>
     <style no="style_bracelight"> bracelight </style>
+    <style no="style_textmargin"> styletextmargin </style>
 
     <!-- add automatic lexers if text starts with some special tokens, only first match is valid -->
     <text no="hypertext"> html </text>
@@ -3159,7 +3163,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
   <lexer name="makefile" extensions="Makefile;*makefile;makefile*.*;*.pro">
     <comments begin1="#"/>
   </lexer>
-  <lexer name="markdown" extensions="*.md">
+  <lexer name="markdown" extensions="*.md" edgemode="none">
     <styles>
       <style no="strong1"> fore:yellow,bold </style>
       <style no="strong2"> fore:green,bold </style>
@@ -3301,7 +3305,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
     </properties>
   </lexer>
   <lexer name="progress"/>
-  <lexer name="props" extensions="*.ini;*.conf;*.desktop">
+  <lexer name="props" extensions="*.ini;*.conf;*.desktop" edgemode="none">
     <styles>
     <style no="section"> fore:sky blue </style>
     <style no="assignment"> fore:khaki</style>
@@ -3328,7 +3332,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
   <lexer name="r"/>
   <lexer name="rebol"/>
   <lexer name="registry"/>
-  <lexer name="rfw" extensions="TCS*.txt;*.robot;__init__.*"> 
+  <lexer name="rfw" extensions="TCS*.txt;*.robot;__init__.*" edgemode="none"> 
     <styles>
       <style no="testcase"> fore:sky blue </style>
     </styles>

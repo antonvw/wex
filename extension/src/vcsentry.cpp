@@ -15,6 +15,7 @@
 #include <wx/extension/menu.h>
 #include <wx/extension/menus.h>
 #include <wx/extension/shell.h>
+#include <wx/extension/tokenizer.h>
 #include <wx/extension/vcs.h>
 
 wxExVCSEntry::wxExVCSEntry(
@@ -54,7 +55,7 @@ int wxExVCSEntry::BuildMenu(int base_id, wxExMenu* menu, bool is_popup) const
 bool wxExVCSEntry::Execute(
   const std::string& args,
   const wxExLexer& lexer,
-  bool wait,
+  long pflags,
   const std::string& wd)
 {
   m_Lexer = lexer;
@@ -124,8 +125,33 @@ bool wxExVCSEntry::Execute(
       prefix +
       GetCommand().GetCommand() + " " + 
       subcommand + flags + comment + my_args, 
-    wait,
+    pflags,
     wd);
+}
+
+const std::string wxExVCSEntry::GetBranch() const
+{
+  if (GetName() == "git")
+  { 
+    wxExProcess p;
+
+    if (p.Execute("git branch", PROCESS_EXEC_WAIT))
+    {
+      wxExTokenizer tkz(p.GetStdOut(), "\r\n");
+
+      while (tkz.HasMoreTokens())
+      {
+        const std::string token(tkz.GetNextToken());
+
+        if (token.find('*') == 0)
+        {
+          return wxExSkipWhiteSpace(token.substr(1));
+        }
+      }
+    }
+  }
+
+  return std::string();
 }
 
 const std::string wxExVCSEntry::GetFlags() const

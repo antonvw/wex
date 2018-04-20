@@ -2,7 +2,7 @@
 // Name:      test-vcs.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
@@ -25,9 +25,8 @@ TEST_CASE("wxExVCS")
   file.MakeAbsolute();
   
   // In wxExApp the vcs is Read, so current vcs is known,
-  // using this constructor results in command id 0,
-  // giving the first command of current vcs, being add.
-  wxExVCS vcs(std::vector< wxExPath >{file.Path().string()});
+  // using this constructor results in command id 1, being add.
+  wxExVCS vcs(std::vector< wxExPath >{file.Path().string()}, 1);
   
   vcs.ConfigDialog(wxExWindowData().Button(wxAPPLY | wxCANCEL));
   
@@ -49,6 +48,9 @@ TEST_CASE("wxExVCS")
   REQUIRE( vcs.GetEntry().GetStdOut().empty());
   REQUIRE( vcs.GetEntry().GetCommand().GetCommand() == "add");
   
+  // GetBranch
+  REQUIRE( vcs.GetBranch() == "master");
+
   // GetName
   REQUIRE( vcs.GetName() == "Auto");
   REQUIRE(!vcs.GetEntry().GetCommand().IsOpen());

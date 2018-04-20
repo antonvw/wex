@@ -11,6 +11,7 @@
 #endif
 #include <wx/extension/variable.h>
 #include <wx/extension/ex.h>
+#include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
@@ -57,7 +58,7 @@ wxExVariable::wxExVariable(const pugi::xml_node& node)
     }
     else
     {
-      LOG(ERROR) << "variable type is not supported: " << type;
+      wxExLog() << "variable type is not supported:" << type;
     }
   }
 }
@@ -76,7 +77,7 @@ bool wxExVariable::CheckLink(std::string& value) const
       {
         if (!IsInput())
         {
-          LOG(ERROR) << "variable: " << m_Name << " (" << v[0] << ") could not be expanded";
+          wxExLog() << "variable:" << m_Name << "(" << v[0] << ") could not be expanded";
         }
       }
       else
@@ -90,7 +91,7 @@ bool wxExVariable::CheckLink(std::string& value) const
     }
     else
     {
-      LOG(ERROR) << "variable: " << m_Name << " (" << v[0] << ") is not found";
+      wxExLog() << "variable: " << m_Name << "(" << v[0] << ") is not found";
     }
   }
   

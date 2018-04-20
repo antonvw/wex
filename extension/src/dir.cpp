@@ -12,6 +12,7 @@
 #endif
 #include <wx/extension/dir.h>
 #include <wx/extension/frame.h>
+#include <wx/extension/log.h>
 #include <wx/extension/util.h>
 #include <easylogging++.h>
 
@@ -102,7 +103,7 @@ int wxExDir::FindFiles()
 {
   if (!m_Dir.DirExists())
   {
-    LOG(ERROR) << "invalid path: " << m_Dir.Path();
+    wxExLog("invalid path") << m_Dir.Path();
     return -1;
   }
 
@@ -142,7 +143,7 @@ int wxExDir::FindFiles()
   }
   catch (fs::filesystem_error& e)
   {
-    LOG(ERROR) << e.what();
+    wxExLog(e) << "filesystem";
   }
 
   Stop();

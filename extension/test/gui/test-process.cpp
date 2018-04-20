@@ -2,7 +2,7 @@
 // Name:      test-process->cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -32,7 +32,7 @@ TEST_CASE("wxExProcess")
 #ifdef __UNIX__
   // Test wait for prcess (sync)
 #ifndef __WXOSX__
-  REQUIRE( process->Execute("ls -l", true));
+  REQUIRE( process->Execute("ls -l", PROCESS_EXEC_WAIT));
   REQUIRE(!process->GetError());
   REQUIRE(!process->Write("hello world"));
   REQUIRE(!process->GetStdOut().empty());
@@ -44,18 +44,18 @@ TEST_CASE("wxExProcess")
   process->ShowOutput();
 
   // Repeat last process (using "" only for dialogs).
-  REQUIRE( process->Execute("ls -l", true));
+  REQUIRE( process->Execute("ls -l", PROCESS_EXEC_WAIT));
   REQUIRE(!process->GetError());
   REQUIRE(!process->GetStdOut().empty());
 
   // Test working directory (should not change).
-  REQUIRE( process->Execute("ls -l", true, ".."));
+  REQUIRE( process->Execute("ls -l", PROCESS_EXEC_WAIT, ".."));
   REQUIRE(!process->GetError());
   REQUIRE(!process->GetStdOut().empty());
   REQUIRE( wxGetCwd().Contains("data"));
 
   // Test invalid process
-  REQUIRE(!process->Execute("xxxx", true));
+  REQUIRE(!process->Execute("xxxx", PROCESS_EXEC_WAIT));
   REQUIRE( process->GetStdErr().empty());
   REQUIRE( process->GetStdOut().empty());
   REQUIRE(!process->Kill());
@@ -71,7 +71,7 @@ TEST_CASE("wxExProcess")
   REQUIRE( process->Kill());
 
   // Test working directory for process (should change).
-  REQUIRE( process->Execute("ls -l", false, ".."));
+  REQUIRE( process->Execute("ls -l", PROCESS_EXEC_DEFAULT, ".."));
   REQUIRE(!process->GetError());
   REQUIRE(!wxGetCwd().Contains("data"));
   wxExPath::Current(cwd.GetOriginal());

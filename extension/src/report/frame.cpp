@@ -15,6 +15,7 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/itemdlg.h>
 #include <wx/extension/listitem.h>
+#include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/frame.h>
@@ -22,7 +23,6 @@
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/stream.h>
-#include <easylogging++.h>
 
 wxExFrameWithHistory::wxExFrameWithHistory(
   size_t maxFiles,
@@ -311,7 +311,7 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
   
   if (arg1.empty() || arg2.empty())
   {
-    LOG(ERROR) << "empty arguments";
+    wxExLog("empty arguments") << arg1.ToStdString() << arg2.ToStdString();
     return false;
   }
   
@@ -321,7 +321,7 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
 
   if (!wxExStreamToListView::SetupTool(tool, this))
   {
-    LOG(ERROR) << "setup failed";
+    wxExLog() << "setup failed";
     return false;
   }
 

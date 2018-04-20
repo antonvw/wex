@@ -22,9 +22,7 @@ public:
       m_Value = node.text().get();
       if (m_Value.empty())
       {
-        std::stringstream ss;
-        ss << "Empty property " << m_Name << " with offset: " << node.offset_debug();
-        wxExLog().Log(ss);
+        wxExLog("empty property") << m_Name << node;
       }}};
   
   /// Constructor using name, value pair.

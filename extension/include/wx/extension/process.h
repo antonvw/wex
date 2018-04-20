@@ -2,7 +2,7 @@
 // Name:      process.h
 // Purpose:   Declaration of class wxExProcess
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,6 +14,17 @@
 class wxExManagedFrame;
 class wxExProcessImp;
 class wxExShell;
+
+/// process excute flags
+/// - default this call immediately returns.
+///   The STC component will be filled with output from the process.
+/// - if PROCESS_EXEC_WAIT this call returns after execute ends, 
+///   and the output is available using GetStdOut.
+enum 
+{
+  PROCESS_EXEC_DEFAULT = 0x0000, ///< default flags
+  PROCESS_EXEC_WAIT    = 0x0001, ///< wait for process finish
+};
 
 /// Offers a process, capturing execution output.
 class WXDLLIMPEXP_BASE wxExProcess
@@ -42,12 +53,8 @@ public:
     /// command to be executed, if empty
     /// last given command is used
     const std::string& command = std::string(),
-    /// wait for process finished
-    /// - if false this call immediately returns.
-    ///   The STC component will be filled with output from the process.
-    /// - if true this call returns after execute ends, 
-    ///   and the output is available using GetStdOut.
-    bool wait = false,
+    /// process excute flags
+    long flags = PROCESS_EXEC_DEFAULT,
     /// working dir, if empty last working dir is used
     const std::string& wd = std::string());
   
@@ -103,7 +110,7 @@ public:
   /// Writes text to stdin of process.
   bool Write(const std::string& text);
 private:
-  bool m_Error{false};
+  bool m_Error {false};
 
   std::string m_Command, m_StdErr, m_StdOut;
   

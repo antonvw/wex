@@ -18,6 +18,7 @@
 #include <wx/extension/ex.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
@@ -140,7 +141,7 @@ bool wxExApp::OnInit()
   {
     if ((info = wxLocale::FindLanguageInfo(wxConfigBase::Get()->Read("LANG"))) == nullptr)
     {
-      LOG(ERROR) << "unknown language: " << wxConfigBase::Get()->Read("LANG");
+      wxExLog() << "unknown language:" << wxConfigBase::Get()->Read("LANG");
     }
   }
   
@@ -152,7 +153,7 @@ bool wxExApp::OnInit()
   if (!m_Locale.Init(lang, wxLOCALE_DONT_LOAD_DEFAULT) &&
     !wxLocale::GetLanguageName(lang).empty())
   {
-    LOG(ERROR) << "could not init locale for: " << wxLocale::GetLanguageName(lang);
+    wxExLog() << "could not init locale for:" << wxLocale::GetLanguageName(lang);
   }
   
   // If there are catalogs in the catalog_dir, then add them to the m_Locale.
@@ -174,14 +175,14 @@ bool wxExApp::OnInit()
       {
         if (!m_Locale.AddCatalog(p.path().stem().string()))
         {
-          LOG(ERROR) << "could not add catalog: " << p.path().stem();
+          wxExLog() << "could not add catalog:" << p.path().stem();
         }
       }
     }
   }
   else if (info != nullptr)
   {
-    LOG(ERROR) << "missing locale files for: " << GetLocale().GetName();
+    wxExLog() << "missing locale files for:" << GetLocale().GetName();
   }
 
   // Necessary for autocomplete images.

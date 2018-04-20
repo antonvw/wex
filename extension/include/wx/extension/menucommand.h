@@ -10,21 +10,30 @@
 #include <string>
 #include <wx/dlimpexp.h>
 
+/// The command as returned by GetCommand.
+enum
+{
+  COMMAND_INCLUDE_NONE        = 0x0000, ///< no other commands
+  COMMAND_INCLUDE_SUBCOMMAND  = 0x0001, ///< includes a possible subcommand
+  COMMAND_INCLUDE_ACCELL      = 0x0002, ///< includes accelerator
+};
+
+/// The command type as read from xml file.  
+enum
+{
+  MENU_COMMAND_IS_NONE   = 0x0000, ///< command invalid (from default constructor)
+  MENU_COMMAND_IS_POPUP  = 0x0001, ///< command in popup menu 
+  MENU_COMMAND_IS_MAIN   = 0x0002, ///< command in main menu 
+  MENU_COMMAND_SEPARATOR = 0x0004, ///< command is followed by a separator
+  MENU_COMMAND_ELLIPSES  = 0x0008, ///< command is followed by an ellipses
+};
+
 /// This class contains a single menu command.
 /// The menu command is meant to be used as command as
 /// e.g. vcs or debug command directly.
 class WXDLLIMPEXP_BASE wxExMenuCommand
 {
 public:
-  enum
-  {
-    MENU_COMMAND_IS_NONE   = 0x0000, ///< command invalid (from default constructor)
-    MENU_COMMAND_IS_POPUP  = 0x0001, ///< command in popup menu 
-    MENU_COMMAND_IS_MAIN   = 0x0002, ///< command in main menu 
-    MENU_COMMAND_SEPARATOR = 0x0004, ///< command is followed by a separator
-    MENU_COMMAND_ELLIPSES  = 0x0008, ///< command is followed by an ellipses
-  };
-  
   /// Default constructor.
   wxExMenuCommand() {;};
 
@@ -56,9 +65,8 @@ public:
     
   /// Returns the command (and subcommand and accelerators if necessary).
   const std::string GetCommand(
-    bool include_subcommand = true,
-    bool include_accelerators = false) const;
-  
+    long type = COMMAND_INCLUDE_SUBCOMMAND) const;
+
   /// Returns the flags.
   const auto& GetFlags() const {return m_Flags;};
 
@@ -69,13 +77,11 @@ public:
   auto GetType() const {return m_Type;};
   
   /// Returns true if this is a help like command.
-  bool IsHelp() const {return GetCommand(false) == "help";};
+  bool IsHelp() const {return GetCommand(COMMAND_INCLUDE_NONE) == "help";};
 
   /// Returns true if a subcommand can be used for this command.
   bool UseSubcommand() const;
 private:
-  long From(const std::string& type) const;
-
   std::string m_Command, m_Flags, m_SubMenu;
 
   bool m_SubMenuIsCommand {false};

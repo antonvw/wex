@@ -31,17 +31,13 @@ public:
     : m_Name(node.attribute("name").value()) {
     if (m_Name.empty())
     {
-      std::stringstream ss;
-      ss << "no name with offset: " << node.offset_debug();
-      wxExLog().Log(ss);
+      wxExLog("no name") << node;
     }
     else
     {
       if (wxExMenus::AddCommands(node, m_Commands) == 0)
       {
-        std::stringstream ss;
-        ss << "no commands found for: " << m_Name;
-        wxExLog().Log(ss);
+        wxExLog("no commands found for") << m_Name;
         m_Commands.push_back({});
       }  
     }};

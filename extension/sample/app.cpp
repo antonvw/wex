@@ -387,7 +387,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       if (m_STC->GetFileName().Path() == wxExLexers::Get()->GetFileName().Path())
       {
         wxExLexers::Get()->LoadDocument();
-        LOG(INFO) << "File contains: " << wxExLexers::Get()->GetLexers().size() << " lexers";
+        VLOG(9) << "File contains: " << wxExLexers::Get()->GetLexers().size() << " lexers";
           // As the lexer might have changed, update status bar field as well.
   #if wxUSE_STATUSBAR
         UpdateStatusBar(m_STC, "PaneLexer");
@@ -448,7 +448,7 @@ void wxExSampleFrame::OnCommandItemDialog(
   }
   else if (event.GetId() >= 1000 && event.GetId() < 1050)
   {
-    LOG(INFO) << "button: " << event.GetId() << " checked: " << event.IsChecked();
+    VLOG(9) << "button: " << event.GetId() << " checked: " << event.IsChecked();
   }
   else
   {

@@ -2,7 +2,7 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wxExVCS class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -43,6 +43,10 @@ public:
   /// vcs entry, and collects the output.
   /// Returns return code from vcs entry Execute.
   bool Execute();
+  
+  /// Returns branch for current vcs entry, or empty string
+  /// if vcs is not used.
+  const std::string GetBranch() const;
   
   /// Returns the number of vcs entries.
   static auto GetCount() {return m_Entries.size();};

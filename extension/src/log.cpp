@@ -6,38 +6,119 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/log.h>
+#include <wx/extension/item.h>
 #include <easylogging++.h>
 
-wxExLog::wxExLog(int level)
+wxExLog::wxExLog(const std::string& topic, wxExLogLevel level)
   : m_Level(level)
+  , m_Separator(!topic.empty())
+{
+  if (!topic.empty())
+  {
+    m_ss << topic << ":";
+  }
+}
+
+wxExLog::wxExLog(wxExLogLevel level)
+  : m_Level(level)
+  , m_Separator(false)
 {
 }
 
-void wxExLog::Log(const std::stringstream& ss)
+wxExLog::wxExLog(const std::exception& e)
+{
+  m_ss << "std::exception:" << S() << e.what();
+}
+
+wxExLog::wxExLog(const pugi::xpath_exception& e)
+{
+  m_ss << "pugi::exception:" << S() << e.what();
+}
+
+wxExLog::wxExLog(const pugi::xml_parse_result& r)
+{
+  if (r.status != pugi::xml_parse_status::status_ok)
+  {
+    m_ss << 
+      "xml parse result:" << S() << r.description() << S() <<
+      "at offset:" << S() << r.offset;
+  }
+  else 
+  {
+    m_Level = LEVEL_INFO;
+    m_Separator = false;
+  }
+}
+
+wxExLog::~wxExLog()
+{
+  if (!m_ss.str().empty())
+  {
+    Log();
+  }
+}
+
+wxExLog& wxExLog::operator<<(int r)
+{
+  m_ss << S() << r;
+  return *this;
+}
+
+wxExLog& wxExLog::operator<<(const char* r)
+{
+  m_ss << S() << r;
+  return *this;
+}
+
+wxExLog& wxExLog::operator<<(const std::string& r)
+{
+  m_ss << S() << r;
+  return *this;
+}
+
+wxExLog& wxExLog::operator<<(const std::stringstream& r)
+{
+  m_ss << S() << r.str();
+  return *this;
+}
+
+wxExLog& wxExLog::operator<<(const pugi::xml_node& r)
+{
+  m_ss << S() << "at offset:" << S() << r.offset_debug();
+  return *this;
+}
+
+wxExLog& wxExLog::operator<<(const wxExItem& r)
+{
+  m_ss << S() << "item:" << S() << r.Log().str();
+  return *this;
+}
+
+void wxExLog::Log() const
 {  
   switch (m_Level)
   {
     case LEVEL_INFO:
-      LOG(INFO) << ss.str();
+      LOG(INFO) << m_ss.str();
       break;
     case LEVEL_DEBUG:
-      LOG(DEBUG) << ss.str();
+      LOG(DEBUG) << m_ss.str();
       break;
     case LEVEL_WARNING:
-      LOG(WARNING) << ss.str();
+      LOG(WARNING) << m_ss.str();
       break;
     case LEVEL_ERROR:
-      LOG(ERROR) << ss.str();
+      LOG(ERROR) << m_ss.str();
       break;
     case LEVEL_FATAL:
-      LOG(FATAL) << ss.str();
+      LOG(FATAL) << m_ss.str();
       break;
   }
 }  
 
-void wxExLog::Log(const std::exception& e, const std::stringstream& ss)
-{
-  std::stringstream sse;
-  sse << "exception: " << e.what() << " " << ss.str();
-  Log(sse);
+const std::string wxExLog::S()
+{  
+  const std::string s(m_Separator ? " ": "");
+  m_Separator = true;
+  return s;
 }

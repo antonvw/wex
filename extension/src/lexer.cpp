@@ -16,10 +16,10 @@
 #include <wx/extension/lexer.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h> // for wxExAlignText
-#include <easylogging++.h>
 
 // We always use lines with 80 characters. 
 const int line_size = 80;
@@ -83,7 +83,7 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
 
         if (new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
         {
-          LOG(ERROR) << "invalid keyword set: " << new_setno;
+          wxExLog("invalid keyword set") << new_setno;
           return false;
         }
 
@@ -100,7 +100,7 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
       }
       catch (std::exception& e)
       {
-        LOG(ERROR) << "keyword exception: " << e.what();
+        wxExLog(e) << "keyword:" << keyword;
         return false;
       }
     }
@@ -404,7 +404,7 @@ void wxExLexer::Set(const pugi::xml_node* node)
 
   if (!m_IsOk)
   {
-    LOG(ERROR) << "missing lexer with offset: " << node->offset_debug();
+    wxExLog("missing lexer") << *node;
   }
   else
   {
@@ -425,7 +425,7 @@ void wxExLexer::Set(const pugi::xml_node* node)
       else if (em == "background")
         m_EdgeMode = wxExEdgeMode::BACKGROUND;
       else
-        LOG(ERROR) << "unsupported edge mode: " << em << " with offset: " << node->offset_debug();
+        wxExLog("unsupported edge mode") << em << *node;
     }
 
     const std::string ec(node->attribute("edgecolumns").value());
@@ -438,7 +438,7 @@ void wxExLexer::Set(const pugi::xml_node* node)
       }
       catch (std::exception& e)
       {
-        LOG(ERROR) << "edgecolumns exception: " << e.what();
+        wxExLog(e) << "edgecolumns:" << ec;
       }
     }
  
@@ -467,7 +467,7 @@ void wxExLexer::Set(const pugi::xml_node* node)
         
         if (!direct.empty() && !AddKeywords(direct))
         {
-          LOG(ERROR) << "keywords could not be set with offset: " << child.offset_debug();
+          wxExLog("keywords could not be set") << child;
         }
 
         // Add all keywords that point to a keyword set.
@@ -482,18 +482,17 @@ void wxExLexer::Set(const pugi::xml_node* node)
 
             if (keywords.empty())
             {
-              LOG(ERROR) << "empty keywords for " << att.value() << " with offset: " << child.offset_debug();
+              wxExLog("empty keywords for") << att.value() << child;
             }
 
             if (!AddKeywords(keywords, setno))
             {
-              LOG(ERROR) << "keywords for " << att.value() << " could not be set with offset: " 
-                << child.offset_debug();
+              wxExLog("keywords for") << att.value() << "could not be set" << child;
             }
           }
           catch (std::exception& e)
           {
-            LOG(ERROR) << "keyword exception: " << e.what();
+            wxExLog(e) << "keyword:" << att.name();
           }
         }
       }
@@ -501,7 +500,7 @@ void wxExLexer::Set(const pugi::xml_node* node)
       {
         if (!m_Properties.empty())
         {
-          LOG(ERROR) << "properties already available with offset: " << child.offset_debug();
+          wxExLog("properties already available") << child;
         }
 
         wxExNodeProperties(&child, m_Properties);
@@ -524,7 +523,7 @@ bool wxExLexer::Set(const std::string& lexer, bool fold)
     !wxExLexers::Get()->GetLexers().empty() &&
     !lexer.empty())
   {
-    LOG(ERROR) << "lexer is not known: " << lexer;
+    wxExLog("lexer is not known") << lexer;
   }
   
   return m_IsOk;

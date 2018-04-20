@@ -240,7 +240,7 @@ bool wxExAddress::Read(const std::string& arg) const
   {
     wxExProcess process;
     
-    if (!process.Execute(arg.substr(1), true))
+    if (!process.Execute(arg.substr(1), PROCESS_EXEC_WAIT))
     {
       return false;
     }

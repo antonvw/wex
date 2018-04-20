@@ -13,6 +13,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/extension/ex.h>
+#include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
@@ -39,12 +40,12 @@ wxExViMacrosFSM::wxExViMacrosFSM()
       [&]{
         if (!m_variable.IsTemplate())
         {
-          LOG(ERROR) << "variable: " << m_variable.GetName() << " is no template";
+          wxExLog() << "variable:" << m_variable.GetName() << "is no template";
           return false;
         }
         if (m_variable.GetValue().empty())
         {
-          LOG(ERROR) << "template variable: " << m_variable.GetName() << " is empty";
+          wxExLog() << "template variable:" << m_variable.GetName() << "is empty";
           return false;
         }
         return true;},
@@ -136,7 +137,7 @@ void wxExViMacrosFSM::ExpandingTemplate()
   
   if (!ifs.is_open())
   {
-    LOG(ERROR) << "could not open template file: " << filename.Path().string();
+    wxExLog() << "could not open template file:" << filename.Path().string();
     m_error = true;
     return;
   }
@@ -170,13 +171,13 @@ void wxExViMacrosFSM::ExpandingTemplate()
       
       if (!completed)
       {
-        LOG(ERROR) << "variable syntax error: " << variable;
+        wxExLog() << "variable syntax error:" << variable;
         m_error = true;
       }
       // Prevent recursion.
       else if (variable == m_variable.GetName())
       {
-        LOG(ERROR) << "recursive variable: " << variable;
+        wxExLog() << "recursive variable:" << variable;
         m_error = true;
       }
       else
@@ -246,13 +247,13 @@ bool wxExViMacrosFSM::ExpandingVariable(
       }
       else
       {
-        LOG(ERROR) << "xml query failed: " << query;
+        wxExLog() << "xml query failed:" << query;
         return false;
       }
     }
     catch (pugi::xpath_exception& e)
     {
-      LOG(ERROR) << e.what();
+      wxExLog(e) << name;
       return false;
     }
   }

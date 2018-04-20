@@ -23,14 +23,15 @@
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/tokenizer.h>
+#include <wx/extension/type-to-value.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include <wx/extension/vi-macros.h>
-#include <easylogging++.h>
 #include "eval.h"
 
 #if wxUSE_GUI
@@ -185,6 +186,7 @@ wxExEx::wxExEx(wxExSTC* stc)
         std::replace(text.begin(), text.end(), '=', ' ');
         wxExCmdLine(
           {{{"a", "ac", "Auto Complete"}, [](bool on){wxConfigBase::Get()->Write(_("Auto complete"), on);}},
+           {{"b", "eb", "Error Bells"}, [](bool on){wxConfigBase::Get()->Write(_("Error bells"), on ? 2: 0);}},
            {{"C", "ic", "Ignore Case"}, [&](bool on){
              if (!on) m_SearchFlags |= wxSTC_FIND_MATCHCASE;
              else     m_SearchFlags &= ~wxSTC_FIND_MATCHCASE;
@@ -263,12 +265,12 @@ wxExEx::wxExEx(wxExSTC* stc)
         {
           if (line == command)
           {
-            LOG(ERROR) << line << ": recursive (line: " << std::to_string(i + 1) << ")";
+            wxExLog(line) << "recursive (line: " << i + 1 << ")";
             return false;
           }
           else if (!Command(line))
           {
-            LOG(ERROR) << line << ": error (line: " << std::to_string(i + 1) << ")";
+            wxExLog(line) << "command error (line: " << i + 1 << ")";
             return false;
           }
         }
@@ -666,7 +668,7 @@ bool wxExEx::MarkerAdd(char marker, int line)
 
   if (!lm.IsOk())
   {
-    LOG(ERROR) << "could not find marker symbol: " << m_MarkerSymbol.GetNo() << " in lexers";
+    wxExLog("could not find marker symbol") << m_MarkerSymbol.GetNo() << " in lexers";
     return false;
   }
   
@@ -709,7 +711,7 @@ bool wxExEx::MarkerAdd(char marker, int line)
     
   if (id == -1)
   {
-    LOG(ERROR) << "could not add marker: " << marker  << " to line: " << lin;
+    wxExLog("could not add marker") << marker  << " to line: " << lin;
     return false;  
   }
     
@@ -781,7 +783,11 @@ int wxExEx::MarkerLine(char marker) const
     }
     else
     {
-      wxBell();
+      if (wxConfigBase::Get()->ReadLong(_("Error bells"), 1))
+      {
+        wxBell();
+      }
+
       wxLogStatus(_("Undefined marker: %c"), marker);
       return -1;
     }

@@ -13,6 +13,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/addressrange.h>
 #include <wx/extension/ctags.h>
@@ -406,7 +407,13 @@ wxExVi::wxExVi(wxExSTC* stc)
       return (size_t)0;}},
     {"u", [&](const std::string& command){
       if (GetSTC()->CanUndo()) GetSTC()->Undo();
-      else wxBell();
+      else 
+      {
+        if (wxConfigBase::Get()->ReadLong(_("Error bells"), 1))
+        {
+          wxBell();
+        }
+      }
       return 1;}},
     {"x", [&](const std::string& command){
       return DeleteRange(this, GetSTC()->GetCurrentPos(), GetSTC()->GetCurrentPos() + m_Count) ? 1: 0;}},

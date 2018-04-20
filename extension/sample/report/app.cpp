@@ -12,6 +12,7 @@
 #include <wx/aboutdlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listitem.h>
+#include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
@@ -193,7 +194,7 @@ wxExListView* wxExRepSampleFrame::Activate(
           {
             if (!lexer->GetDisplayLexer().empty())
             {
-              LOG(INFO) << lexer->GetDisplayLexer() << ", only cpp for the sample";
+              VLOG(9) << lexer->GetDisplayLexer() << ", only cpp for the sample";
             }
               
             return nullptr;

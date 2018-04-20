@@ -17,10 +17,10 @@
 #include <wx/timer.h>
 #include <wx/uiaction.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
 #include <wx/extension/util.h>
-#include <easylogging++.h>
 #include "test.h"
 
 void AddExtension(wxExPath& fn)
@@ -237,15 +237,7 @@ void wxExTestApp::SetTestPath()
     m_TestPath.Append("test").Append("data");
   }
 
-  try
-  {
-    wxExPath::Current(m_TestPath.Path().string());
-  }
-  catch (std::exception& e)
-  {
-    LOG(ERROR) << e.what();
-    exit(1);
-  }
+  wxExPath::Current(m_TestPath.Path().string());
 }
 
 int wxExTestMain(int argc, char* argv[], wxExTestApp* app)
@@ -264,7 +256,7 @@ int wxExTestMain(int argc, char* argv[], wxExTestApp* app)
   }
   catch (const std::exception& e)
   {
-    LOG(ERROR) << "exception: " << e.what();
+    wxExLog(e) << "app";
     exit(EXIT_FAILURE);
   }
 }

@@ -7,8 +7,6 @@
 
 #pragma once
 
-#define DEFAULT_TAGFILE "tags"
-
 /// Margin flags.
 enum wxExSTCMarginFlags
 {

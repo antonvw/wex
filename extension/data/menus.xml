@@ -98,13 +98,13 @@ Copyright: (c) 2018, Anton van Wezenbeek
     name="git"
     admin-dir=".git"
     toplevel="true"
-    margin-width="280" 
+    margin-width="250" 
     pos-begin="(" 
     pos-end="+">
 
     <commands>
+      <command flags="none" type="separator"> &amp;blame </command>
       <command type="main ellipses"> &amp;add </command>
-      <command flags="none"> &amp;blame </command>
       <command type="ellipses"> &amp;commit </command>
       <command type="ellipses"> &amp;diff </command>
       <command type="ellipses main"> &amp;help </command>
@@ -144,35 +144,38 @@ Copyright: (c) 2018, Anton van Wezenbeek
     flags-location="prefix">
 
     <commands>
-      <command> &amp;get </command>
+      <command type="ellipses"> &amp;get </command>
       <!-- print shows blame info -->
-      <command> &amp;print </command>
-      <command> &amp;prs </command>
-      <command> &amp;prt </command>
-      <command> &amp;sccsdiff </command>
+      <command type="ellipses"> &amp;print </command>
+      <command type="ellipses"> &amp;prs </command>
+      <command type="ellipses"> &amp;prt </command>
+      <command type="ellipses"> &amp;sccsdiff </command>
     </commands>
   </vcs>
 
   <vcs 
     name="svn"
     admin-dir=".svn"
-    toplevel="true">
+    toplevel="true"
+    margin-width="280"
+    pos-begin=" " 
+    pos-end="+">
 
     <commands>
       <command type="main"> &amp;add </command>
-      <command type="popup"> &amp;blame </command>
-      <command type="popup"> &amp;cat </command>
-      <command type="main"> &amp;cleanup </command>
-      <command> &amp;commit </command>
-      <command> &amp;diff </command>
+      <command flags="-v" type="popup"> &amp;blame </command>
+      <command flags="none" type="separator"> &amp;stat </command>
+      <command type="ellipses popup"> &amp;cat </command>
+      <command type="ellipses main"> &amp;cleanup </command>
+      <command type="ellipses"> &amp;commit </command>
+      <command type="ellipses"> &amp;diff </command>
       <command type="main"> &amp;help </command>
-      <command> &amp;info </command>
-      <command> &amp;log </command>
+      <command type="ellipses"> &amp;info </command>
+      <command type="ellipses"> &amp;log </command>
       <command type="main"> &amp;ls </command>
       <command type="popup"> &amp;proplist </command>
-      <command type="popup"> prop&amp;set </command>
-      <command> &amp;stat </command>
-      <command> &amp;update </command>
+      <command type="ellipses popup"> prop&amp;set </command>
+      <command type="ellipses"> &amp;update </command>
     </commands>
   </vcs>
 

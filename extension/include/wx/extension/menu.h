@@ -2,7 +2,7 @@
 // Name:      menu.h
 // Purpose:   Declaration of wxExMenu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -39,12 +39,10 @@ public:
 
   /// Appends a menu item for stock menu id's
   /// using automatic naming, help text and art id.
-  wxMenuItem* Append(int id);
-
   /// Appends a menu item.
   wxMenuItem* Append(
     int id,
-    const wxString& name,
+    const wxString& name = wxEmptyString,
     const wxString& helptext = wxEmptyString,
     const wxArtID& artid = wxEmptyString);
 

@@ -14,7 +14,7 @@
 const wxExVersionInfo wxExGetVersionInfo() 
 {
   return wxExVersionInfo("wxExtension", 
-    18, 4, 0, 
+    18, 10, 0, 
     "wxExtension Library (a collection of wxWidgets extension classes)",
     "(c) 1998-2018, Anton van Wezenbeek." + wxString(_("All rights reserved.")));
 }

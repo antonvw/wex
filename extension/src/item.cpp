@@ -40,12 +40,12 @@
 #include <wx/extension/item.h>
 #include <wx/extension/itemtpldlg.h>
 #include <wx/extension/listview.h>
+#include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/notebook.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tocontainer.h>
 #include <wx/extension/util.h>
-#include <easylogging++.h>
 
 #if wxUSE_GUI
 
@@ -192,7 +192,7 @@ void wxExItem::AddItems(
     }
     else
     {
-      LOG(ERROR) << "more pages than images";
+      wxExLog() << "more pages than images";
     }
   }
   
@@ -496,7 +496,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
 
       if (m_ImageList == nullptr)
       {
-        LOG(ERROR) << "toolbook requires image list";
+        wxExLog() << "toolbook requires image list";
         return false;
       }
       break;
@@ -768,7 +768,7 @@ wxFlexGridSizer* wxExItem::Layout(
         {
           if (!m_Initial.has_value())
           {
-            LOG(ERROR) << "illegal notebook";
+            wxExLog() << "illegal notebook";
             return nullptr;
           }
           
@@ -804,7 +804,7 @@ wxFlexGridSizer* wxExItem::Layout(
   }
   catch (std::bad_cast& e)
   {
-    LOG(ERROR) << "item: " << e.what() << Log().str();
+    wxExLog(e) << *this;
   }
   
   return nullptr;

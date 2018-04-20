@@ -2,13 +2,14 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/menu.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/report/defs.h>
 #include "test.h"
+#include <easylogging++.h>
 
 TEST_CASE("wxExFrameWithHistory")
 {
@@ -22,7 +23,8 @@ TEST_CASE("wxExFrameWithHistory")
   list->Show();
   
   REQUIRE(!GetFrame()->OpenFile(GetTestPath("test.h"))); // as we have no focused stc
-  REQUIRE( GetFrame()->GetFileHistory().GetHistoryFile().Path().string().find("../test.h") == std::string::npos);
+  REQUIRE( GetFrame()->GetFileHistory().
+    GetHistoryFile().Path().string().find("../test.h") == std::string::npos);
 
   REQUIRE(!GetFrame()->OpenFile(
     wxExPath(GetProject()),
@@ -39,16 +41,19 @@ TEST_CASE("wxExFrameWithHistory")
   REQUIRE(!GetFrame()->GetFindInCaption(ID_TOOL_REPORT_FIND).empty());
   
   // It does not open, next should fail.
-  REQUIRE( GetFrame()->GetProjectHistory().GetHistoryFile().Path().string().find(GetProject()) == std::string::npos);
+  REQUIRE( GetFrame()->GetProjectHistory().
+    GetHistoryFile().Path().string().find(GetProject()) == std::string::npos);
   
   REQUIRE( GetFrame()->GetProject() == nullptr);
 
-  REQUIRE( GetFrame()->Grep("xxxxxxx"));
-  REQUIRE( GetFrame()->Grep("xxxxxxx yyy"));
+  VLOG(9) << "pwd: " << wxExPath::Current();
+
   REQUIRE( GetFrame()->Grep("xxxxxxx *.cpp ./"));
+  REQUIRE( GetFrame()->Grep("xxxxxxx yyy"));
+  REQUIRE( GetFrame()->Grep("xxxxxxx"));
 
 #ifndef __WXMSW__
-  REQUIRE( GetFrame()->Sed("xxxxxxx") == false);
+  REQUIRE( GetFrame()->Sed("xxxxxxx yyy"));
 #endif
   
   GetFrame()->SetRecentProject("xxx.prj");

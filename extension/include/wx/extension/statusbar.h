@@ -2,7 +2,7 @@
 // Name:      statusbar.h
 // Purpose:   Declaration of wxExStatusBar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -39,7 +39,6 @@ public:
     /// - PaneInfo
     /// - PaneLexer
     /// - PaneTheme
-    /// - PaneVCS
     /// - PaneMacro
     /// - PaneMode
     /// by setting up one of these panes,
@@ -80,10 +79,8 @@ public:
   /// Resets the hidden text if show is true.
   void Show(bool show);
 private:
-  std::string m_HelpText;
-  std::string m_HiddenText;
-  std::string m_Name;
-  bool m_IsShown = true;
+  std::string m_HelpText, m_HiddenText, m_Name; // no const
+  bool m_IsShown {true};
 };
 
 class wxExFrame;

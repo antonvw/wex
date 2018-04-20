@@ -16,9 +16,9 @@
 #include <wx/window.h>
 #include <wx/extension/item.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/log.h>
 #include <wx/extension/tostring.h>
 #include <wx/extension/util.h>
-#include <easylogging++.h>
 
 #if wxUSE_GUI
 
@@ -248,13 +248,12 @@ wxExConfigDefaults::wxExConfigDefaults(
             m_Config->ReadLong(std::get<0>(it), std::any_cast<long>(std::get<2>(it)));
             break;
           default:
-            LOG(ERROR) << "unsupported default type for: "  << 
-              std::get<0>(it).c_str();
+            wxExLog("unsupported default type for") << std::get<0>(it).ToStdString();
         }
       }
       catch (std::bad_cast& e)
       {
-        LOG(ERROR) << "defaults: " << e.what() << " for: " << std::get<0>(it).ToStdString();
+        wxExLog(e) << std::get<0>(it).ToStdString();
       }
     }
   }

@@ -10,9 +10,9 @@
 #include <wx/app.h>
 #include <wx/config.h>
 #include <wx/extension/cmdline.h>
+#include <wx/extension/log.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/version.h>
-#include <easylogging++.h>
 
 class wxExCmdLineOption
 {
@@ -191,7 +191,7 @@ wxExCmdLine::wxExCmdLine(
           }
           break;
         
-        default: LOG(ERROR) << "unknown type";
+        default: wxExLog() << "unknown type";
       }
     }
 
@@ -214,7 +214,7 @@ wxExCmdLine::wxExCmdLine(
   }
   catch (TCLAP::ArgException& e)
   {
-    LOG(ERROR) << e.what();
+    wxExLog(e) << "tclap";
   }
   catch (TCLAP::ExitException& )
   {
@@ -270,7 +270,7 @@ bool wxExCmdLine::Parse(
 
     if (!m_Params.empty() && !m_Params[0]->Run())
     {
-      LOG(ERROR) << "could not run params";
+      wxExLog() << "could not run params";
       return false;
     }
     
@@ -278,7 +278,7 @@ bool wxExCmdLine::Parse(
   }
   catch (TCLAP::ArgException& e)
   {
-    LOG(ERROR) << e.what();
+    wxExLog(e) << "tclap";
     return false;
   }
   catch (TCLAP::ExitException& )

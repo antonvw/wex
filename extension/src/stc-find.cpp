@@ -8,6 +8,7 @@
 #include <regex>
 #include <wx/log.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/util.h>
 #include <easylogging++.h>

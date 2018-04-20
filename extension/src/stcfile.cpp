@@ -13,6 +13,7 @@
 #include <wx/extension/stcfile.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/path.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h> // for STAT_ etc.

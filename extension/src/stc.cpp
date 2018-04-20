@@ -8,22 +8,19 @@
 #include <vector>
 #include <wx/app.h>
 #include <wx/config.h>
+#include <wx/defs.h>
 #include <wx/settings.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/debug.h>
-#include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
-#include <wx/extension/menu.h>
 #include <wx/extension/path.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
-#include <easylogging++.h>
 
 #if wxUSE_GUI
 
@@ -125,117 +122,6 @@ wxExSTC::wxExSTC(const wxExPath& filename, const wxExSTCData& data)
   Fold();
 }
 
-void wxExSTC::BuildPopupMenu(wxExMenu& menu)
-{
-  const std::string sel = GetSelectedText().ToStdString();
-
-  if (GetCurrentLine() == 0 && !wxExLexers::Get()->GetLexers().empty())
-  {
-    menu.Append(ID_EDIT_SHOW_PROPERTIES, _("Properties"));
-  }
-    
-  if (m_Data.Menu() & STC_MENU_OPEN_LINK)
-  {
-    std::string filename;
-
-    if (LinkOpen(LINK_OPEN_BROWSER | LINK_CHECK))
-    {
-      menu.AppendSeparator();
-      menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
-    }
-    else if (LinkOpen(LINK_OPEN | LINK_CHECK, &filename))
-    {
-      menu.AppendSeparator();
-      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + filename);
-    }
-  }
-
-#if wxCHECK_VERSION(3,1,0)
-  if (GetEdgeMode() == wxSTC_EDGE_MULTILINE)
-  {
-    menu.AppendSeparator();
-    menu.Append(ID_EDIT_EDGE_SET, _("Edge Column"));
-    menu.Append(ID_EDIT_EDGE_CLEAR, _("Edge Column Reset"));
-  }
-#endif
-
-  if (m_Data.Menu() & STC_MENU_OPEN_WWW && !sel.empty())
-  {
-    menu.AppendSeparator();
-    menu.Append(ID_EDIT_OPEN_WWW, _("&Search"));
-  }
-  
-  if (m_Data.Menu() & STC_MENU_DEBUG)
-  {
-    m_Frame->GetDebug()->AddMenu(&menu, true);
-  }
-  
-  if ((m_Data.Menu() & STC_MENU_VCS) &&
-       GetFileName().FileExists() && sel.empty() &&
-       wxExVCS::DirExists(GetFileName()))
-  {
-    menu.AppendSeparator();
-    menu.AppendVCS(GetFileName());
-  }
-
-  if (!m_vi.GetIsActive() && GetTextLength() > 0)
-  {
-    menu.AppendSeparator();
-    menu.Append(wxID_FIND);
-
-    if (!GetReadOnly())
-    {
-      menu.Append(wxID_REPLACE);
-    }
-  }
-
-  menu.AppendSeparator();
-  menu.AppendEdit();
-
-  if (!GetReadOnly())
-  {
-    if (!sel.empty())
-    {
-      wxExMenu* menuSelection = new wxExMenu(menu.GetStyle());
-      menuSelection->Append(ID_EDIT_UPPERCASE, _("&Uppercase\tF11"));
-      menuSelection->Append(ID_EDIT_LOWERCASE, _("&Lowercase\tF12"));
-
-      if (wxExGetNumberOfLines(sel) > 1)
-      {
-        wxExMenu* menuSort = new wxExMenu(menu.GetStyle());
-        menuSort->Append(wxID_SORT_ASCENDING);
-        menuSort->Append(wxID_SORT_DESCENDING);
-        menuSelection->AppendSeparator();
-        menuSelection->AppendSubMenu(menuSort, _("&Sort"));
-      }
-
-      menu.AppendSeparator();
-      menu.AppendSubMenu(menuSelection, _("&Selection"));
-    }
-  }
-
-  if (!GetReadOnly() && (CanUndo() || CanRedo()))
-  {
-    menu.AppendSeparator();
-    if (CanUndo()) menu.Append(wxID_UNDO);
-    if (CanRedo()) menu.Append(wxID_REDO);
-  }
-
-  // Folding if nothing selected, property is set,
-  // and we have a lexer.
-  if (
-     sel.empty() && 
-     GetProperty("fold") == "1" &&
-     m_Lexer.IsOk() &&
-    !m_Lexer.GetScintillaLexer().empty())
-  {
-    menu.AppendSeparator();
-    menu.Append(ID_EDIT_TOGGLE_FOLD, _("&Toggle Fold\tCtrl+T"));
-    menu.Append(ID_EDIT_FOLD_ALL, _("&Fold All Lines\tF9"));
-    menu.Append(ID_EDIT_UNFOLD_ALL, _("&Unfold All Lines\tF10"));
-  }
-}
-
 bool wxExSTC::CanCut() const
 {
   return wxStyledTextCtrl::CanCut() && !GetReadOnly() && !HexMode();
@@ -246,34 +132,6 @@ bool wxExSTC::CanPaste() const
   return wxStyledTextCtrl::CanPaste() && !GetReadOnly() && !HexMode();
 }
 
-
-void wxExSTC::CheckBrace()
-{
-  if (HexMode())
-  {
-    m_HexMode.HighlightOther();
-  }
-  else if (!CheckBrace(GetCurrentPos()))
-  {
-    CheckBrace(GetCurrentPos() - 1);
-  }
-}
-
-bool wxExSTC::CheckBrace(int pos)
-{
-  const int brace_match = BraceMatch(pos);
-
-  if (brace_match != wxSTC_INVALID_POSITION)
-  {
-    BraceHighlight(pos, brace_match);
-    return true;
-  }
-  else
-  {
-    BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
-    return false;
-  }
-}
 
 void wxExSTC::Clear()
 {
@@ -329,30 +187,6 @@ bool wxExSTC::FileReadOnlyAttributeChanged()
   wxLogStatus(_("Readonly attribute changed"));
 
   return true;
-}
-
-void wxExSTC::FileTypeMenu()
-{
-  wxMenu* menu = new wxMenu();
-
-  // The order here should be the same as the defines for wxSTC_EOL_CRLF.
-  // So the FindItemByPosition can work
-  menu->AppendRadioItem(ID_EDIT_EOL_DOS, "&DOS");
-  menu->AppendRadioItem(ID_EDIT_EOL_MAC, "&MAC");
-  menu->AppendRadioItem(ID_EDIT_EOL_UNIX, "&UNIX");
-  menu->AppendSeparator();
-  wxMenuItem* hex = menu->AppendCheckItem(ID_EDIT_HEX, "&HEX");
-  
-  menu->FindItemByPosition(GetEOLMode())->Check();
-  
-  if (HexMode())
-  {
-    hex->Check();
-  }
-
-  PopupMenu(menu);
-  
-  delete menu;
 }
 
 void wxExSTC::Fold(bool foldall)
@@ -993,33 +827,47 @@ bool wxExSTC::ShowVCS(const wxExVCSEntry* vcs)
   wxExTokenizer tkz(vcs->GetStdOut(), "\r\n");
 
   int begin, end;
-  bool number = true;
-  bool found = false;
+  bool begin_is_number, end_is_number = true;
 
   try
   {
     begin = std::stoi(vcs->GetPosBegin());
+  }
+  catch (std::exception& e)
+  {
+    begin_is_number = false;
+  }
+
+  try
+  {
     end = std::stoi(vcs->GetPosEnd());
   }
   catch (std::exception& e)
   {
-    number = false;
+    end_is_number = false;
   }
 
   int line = 0;
+  bool found = false;
+
   while (tkz.HasMoreTokens())
   {
     const std::string text(tkz.GetNextToken());
 
-    if (!number)
+    if (!begin_is_number)
     {
       begin = text.find(vcs->GetPosBegin());
+    }
+
+    if (!end_is_number)
+    {
       end = text.find(vcs->GetPosEnd());
     }
 
     if (begin != std::string::npos && end != std::string::npos)
     {
       MarginSetText(line, text.substr(begin + 1, end - begin - 1));
+      wxExLexers::Get()->ApplyMarginTextStyle(this, line);
       found = true;
     }
  

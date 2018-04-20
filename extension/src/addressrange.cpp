@@ -209,7 +209,10 @@ const std::string wxExAddressRange::BuildReplacement(const std::string& text) co
         
       case 'L': 
         if (backslash) 
+        {
           std::transform(target.begin(), target.end(), target.begin(), ::tolower);
+          m_STC->Replace(m_STC->GetTargetStart(), m_STC->GetTargetEnd(), target);
+        }
         else
           replacement += c;
         backslash = false; 
@@ -217,7 +220,10 @@ const std::string wxExAddressRange::BuildReplacement(const std::string& text) co
         
       case 'U': 
         if (backslash) 
+        {
           std::transform(target.begin(), target.end(), target.begin(), ::toupper);
+          m_STC->Replace(m_STC->GetTargetStart(), m_STC->GetTargetEnd(), target);
+        }
         else
           replacement += c;
         backslash = false; 
@@ -342,7 +348,8 @@ bool wxExAddressRange::Escape(const std::string& command)
       m_Process->Kill();
     }
     
-    return m_Process->Execute(expanded, false, m_STC->GetFileName().GetPath());
+    return m_Process->Execute(expanded, 
+      PROCESS_EXEC_DEFAULT, m_STC->GetFileName().GetPath());
   }
   
   if (!IsOk())
@@ -359,7 +366,7 @@ bool wxExAddressRange::Escape(const std::string& command)
 
   wxExProcess process;
   
-  const bool ok = process.Execute(command + " " + filename, true);
+  const bool ok = process.Execute(command + " " + filename, PROCESS_EXEC_WAIT);
   
   if (remove(filename.c_str()) != 0)
   {

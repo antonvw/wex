@@ -129,7 +129,7 @@ bool wxExDebug::Execute(const std::string& action, wxExSTC* stc)
 
   if (!m_Process->IsRunning())
   {
-    m_Process->Execute(m_Entry.GetName(), false);
+    m_Process->Execute(m_Entry.GetName());
   }
 
   return m_Process->Write(action == "interrupt" ?
