@@ -4,11 +4,11 @@ and some applications that show how to use it.
 The [syncped](http://sourceforge.net/projects/syncped) application is 
 one of these applications, being a full featured source code text editor. 
 
-# Dependencies
+# Requirements
 
-- [wxWidgets 3.x](http://www.wxwidgets.org/) or [this fork](https://github.com/antonvw/wxWidgets/)
-  
 - [cmake](http://www.cmake.org/)    
+
+- a `c++17` standard supporting compiler    
 
 # Uses
 
@@ -28,45 +28,15 @@ one of these applications, being a full featured source code text editor.
 
 - [universal-ctags lib](https://github.com/universal-ctags/ctags)    
 
+- [wxWidgets 3.x](https://github.com/antonvw/wxWidgets/)
+
 # Build process 
 
   [![Travis](https://travis-ci.org/antonvw/wxExtension.png?branch=master)](https://travis-ci.org/antonvw/wxExtension)
   [![Appveyor](https://ci.appveyor.com/api/projects/status/x3jm519fq1i407a6?svg=true)](https://ci.appveyor.com/project/antonvw/wxextension)
   [![Coveralls](https://coveralls.io/repos/antonvw/wxExtension/badge.svg?branch=master&service=github)](https://coveralls.io/github/antonvw/wxExtension?branch=master)   
 
-## Building wxWidgets
-
-- under windows:   
-    -- using Microsoft Visual Studio 2017:    
-    `git clone --recursive`   
-    `mkdir build`   
-    `cd build`   
-    
-    (or make a `debug` directory and use `-DCMAKE_BUILD_TYPE=Debug`)   
-    
-    `cmake.exe -DwxBUILD_SHARED=OFF -DCMAKE_BUILD_TYPE=Release ..`    
-    `nmake`    
-    copy generated lib\vc_lib to wxWidgets\lib
-    
-- under Linux g++ 7.1.1:   
-    install gtk:   
-    `sudo apt-get install libgtk2.0-dev` or   
-    `sudo apt-get install libgtk-3-dev`   
-    then in buildgtk (created):   
-    `../configure --with-gtk && make` or   
-    `../configure --with-gtk=3 && make` and   
-    `make install`    
-    
-- under Linux clang 3.5.0:   
-    `export CC=clang`   
-    `export CXX=clang++`    
-    see g++   
-    
-- under MacOS:    
-    `brew install wxwidgets`    
-    `brew install xcode`    
-
-## Building wxExtension        
+## Building
 
 - `git clone --recursive`   
   `mkdir build`   

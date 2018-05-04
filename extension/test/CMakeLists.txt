@@ -1,8 +1,6 @@
-if (BUILD_TEST)
-  include_directories(../include/)
-  include_directories(doctest/doctest)
+include_directories(../include/)
+include_directories(../../external/doctest/doctest)
   
-  add_subdirectory(base)
-  add_subdirectory(gui)
-  add_subdirectory(gui-report)
-endif()
+add_subdirectory(base)
+add_subdirectory(gui)
+add_subdirectory(gui-report)

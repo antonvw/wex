@@ -2,7 +2,7 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wxExNotebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -19,8 +19,9 @@ wxExNotebook::wxExNotebook(const wxExWindowData& data)
       data.Id(), 
       data.Pos(), 
       data.Size(), 
-      data.Style() == DATA_NUMBER_NOT_SET?
-        wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS: data.Style())
+      data.Style() == DATA_NUMBER_NOT_SET ?
+        wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS: 
+        data.Style())
   , m_Frame(dynamic_cast<wxExManagedFrame*>(wxTheApp->GetTopWindow()))
 {
   // Here you could use another art provider.
@@ -47,7 +48,7 @@ wxExNotebook::wxExNotebook(const wxExWindowData& data)
     }});
   
   Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, [=](wxAuiNotebookEvent& event) {
-    const int sel = event.GetSelection();
+    const auto sel = event.GetSelection();
     if (sel != wxNOT_FOUND)
     {
       if (m_Frame != nullptr && !m_Frame->AllowClose(GetId(), GetPage(sel)))

@@ -103,7 +103,7 @@ int wxExDir::FindFiles()
 {
   if (!m_Dir.DirExists())
   {
-    wxExLog("invalid path") << m_Dir.Path();
+    wxExLog("invalid path") << m_Dir.Path().string();
     return -1;
   }
 

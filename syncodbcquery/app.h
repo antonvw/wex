@@ -2,10 +2,9 @@
 // Name:      app.h
 // Purpose:   Declaration of classes for syncodbcquery
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#define wxExUSE_OTL 1
 #include <wx/extension/app.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/statistics.h>

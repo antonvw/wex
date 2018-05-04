@@ -1,10 +1,8 @@
 project(syncsocketserver)
 
-include_directories(../extension/include)
-include_directories(../extension/easyloggingpp/src)
-include_directories(../extension/pugixml/src)
+include(../cmake/common.cmake)
 
-FILE(GLOB SRCS "*.cpp")
+file(GLOB SRCS "*.cpp")
   
 if(WIN32)
   set(SRCS ${SRCS} app.rc)

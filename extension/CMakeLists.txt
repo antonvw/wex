@@ -1,14 +1,16 @@
 project(wxExtensionLibrary)
 
-include_directories(include)
-include_directories(easyloggingpp/src)
-include_directories(pugixml/src)
-include_directories(tclap/include)
-
 add_subdirectory(src)
 add_subdirectory(src/report)
-add_subdirectory(sample)
-add_subdirectory(test)
+
+if (wxExBUILD_SAMPLES)
+  add_subdirectory(sample)
+endif ()
+
+if (wxExBUILD_TESTS)
+  add_subdirectory(test)
+endif ()
+
 add_subdirectory(locale)
 
 if (CMAKE_BUILD_TYPE MATCHES "Coverage")
@@ -22,8 +24,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     # combine tracefiles
     COMMAND lcov --add-tracefile app.base --add-tracefile app.run --output-file app.run
     # remove output that we are not interested in
-    COMMAND lcov --remove app.run "/usr/*" "*sample*" "*otlv4.h*" 
-      "*eval.hpp" "*doctest*" "easyloggingpp*" "fsm.h" "*pugi*" "readtags.*" "*tclap*" --output-file app.run
+    COMMAND lcov --remove app.run "/usr/*" "*sample*" "*external/*" --output-file app.run
     # generate local files
     COMMAND genhtml --no-branch-coverage --title "${PROJECT_NAME}" app.run
     COMMENT "Running lcov" VERBATIM)    

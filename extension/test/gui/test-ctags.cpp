@@ -23,6 +23,7 @@ TEST_CASE("wxExCTags")
     wxExEx* ex = &GetSTC()->GetVi();
 
     REQUIRE( wxExCTags(ex).Find("wxExTestApp") );
+    REQUIRE( wxExCTags(GetFrame()).Find("wxExTestApp") );
     REQUIRE( wxExCTags(ex).AutoComplete("wxExTest") == "wxExTestApp");
 
     wxExCTagsFilter filter;

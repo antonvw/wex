@@ -10,7 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <shunting-yard/eval.hpp>
+#include <eval.hpp>
 #include <wx/numformatter.h>
 #include <wx/extension/ex.h>
 #include <wx/extension/log.h>

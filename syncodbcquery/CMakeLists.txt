@@ -1,13 +1,12 @@
 project(syncodbcquery)
 
+include(../cmake/common.cmake)
+
 if (NOT ${ODBC_FOUND})
   message(FATAL_ERROR "odbc lib not found")
 endif()
 
-include_directories(../extension/include)
-include_directories(../extension/pugixml/src)
-
-FILE(GLOB SRCS "*.cpp")
+file(GLOB SRCS "*.cpp")
   
 if(WIN32)
   set(SRCS ${SRCS} app.rc)

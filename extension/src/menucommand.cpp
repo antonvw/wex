@@ -21,21 +21,22 @@ wxExMenuCommand::wxExMenuCommand(
   , m_SubMenu(!submenu.empty() ? submenu: subcommand)
   , m_SubMenuIsCommand(!subcommand.empty())
   , m_Type([](const std::string& type) {
-      long command = (
+      long id = (
         type.empty() || 
        (type.find("popup") == std::string::npos && 
         type.find("main") == std::string::npos)) ? 
         MENU_COMMAND_IS_POPUP | MENU_COMMAND_IS_MAIN: MENU_COMMAND_IS_NONE;
 
-      command |= (type.find("popup") != std::string::npos ? 
+      id |= (type.find("popup") != std::string::npos ? 
         MENU_COMMAND_IS_POPUP: MENU_COMMAND_IS_NONE);
-      command |= (type.find("main") != std::string::npos ? 
+      id |= (type.find("main") != std::string::npos ? 
         MENU_COMMAND_IS_MAIN: MENU_COMMAND_IS_NONE);
-      command |= (type.find("separator") != std::string::npos ? 
+      id |= (type.find("separator") != std::string::npos ? 
         MENU_COMMAND_SEPARATOR: MENU_COMMAND_IS_NONE);
-      command |= (type.find("ellipses") != std::string::npos ? 
+      id |= (type.find("ellipses") != std::string::npos ? 
         MENU_COMMAND_ELLIPSES: MENU_COMMAND_IS_NONE);
-      return command;} (type))
+
+      return id;} (type))
 {
 }
   

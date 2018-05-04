@@ -7,31 +7,25 @@ image: Visual Studio 2017
 
 clone_folder: c:\projects\wxex
 
+clone_depth: 1
+
 configuration:
   - Release
 
 install:
   - git config http.postBuffer 524288000
-  - git submodule init && git submodule update --init --recursive
-  - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.1-include.7z'
-  - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.1-lib.7z'
-  - ps: Start-FileDownload 'http://sourceforge.net/projects/syncped/files/wxWidgets-3.1.1-locale.7z'
-  - cmd: 7z x wxWidgets-3.1.1-include.7z -oC:\wxWidgets
-  - cmd: 7z x wxWidgets-3.1.1-lib.7z -oC:\wxWidgets\lib
-  - cmd: 7z x wxWidgets-3.1.1-locale.7z -oC:\wxWidgets
+  - git submodule init && git submodule update --init --recursive --depth 1
 
 before_build:
-  - mkdir build
-  - ps: cd build
+  - mkdir build && cd build
 
 build_script:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
-  - SET WXLIBFOLDER=vc_lib
-  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PROGRAM_PATH=C:\cygwin\bin -DBUILD_TEST=ON -DENABLE_GETTEXT=ON ..
+  - cmake -G "NMake Makefiles" -DCMAKE_PROGRAM_PATH="C:\cygwin\bin" -DwxExBUILD_SP=ON -DwxExBUILD_TESTS=ON -DENABLE_GETTEXT=ON ..
   - nmake
   - ..\ci\pack.bat
 
 test: OFF
 
 artifacts:
-  - path: 'build\syncped-v18.10.0.zip'
+  - path: 'build\syncped-v{version}.zip'

@@ -1,9 +1,6 @@
 project(syncped)
 
-include_directories(../extension/include)
-include_directories(../extension/easyloggingpp/src)
-include_directories(../extension/pugixml/src)
-include_directories(../extension/tclap/include)
+include(../cmake/common.cmake)
 
 file(GLOB SRCS "*.cpp")
   
@@ -11,21 +8,18 @@ if (WIN32)
   set(SRCS ${SRCS} app.rc)
 endif()
 
-if(NOT APPLE )
-  add_executable(
-    ${PROJECT_NAME}
-    WIN32 
-    ${SRCS})
+if (NOT APPLE)
+  add_executable(${PROJECT_NAME} WIN32 ${SRCS})
 else()
   # Define some settings for the Bundle
   # add to mac osx Info.plist: <key>NSPrincipleClass</key> (new cmake version)
   set( MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME} )
   set( MACOSX_BUNDLE_GUI_IDENTIFIER ${PROJECT_NAME} )
   set( MACOSX_BUNDLE_ICON_FILE app-large.icns )
-  set( MACOSX_BUNDLE_INFO_STRING "${PROJECT_NAME}" )
-  set( MACOSX_BUNDLE_SHORT_VERSION_STRING "18.10.0" )
-  set( MACOSX_BUNDLE_BUNDLE_VERSION "18.10.0" )
-  set( MACOSX_BUNDLE_COPYRIGHT "(c) 1998-2018 Anton van Wezenbeek" )
+  set( MACOSX_BUNDLE_INFO_STRING ${PROJECT_NAME} )
+  set( MACOSX_BUNDLE_SHORT_VERSION_STRING ${EX_VERSION} )
+  set( MACOSX_BUNDLE_BUNDLE_VERSION ${EX_VERSION} )
+  set( MACOSX_BUNDLE_COPYRIGHT "(c) ${EX_COPYRIGHT} Anton van Wezenbeek" )
 
   # create a bundle with an icon too!
   add_executable( ${PROJECT_NAME} MACOSX_BUNDLE ${SRCS} )
@@ -35,7 +29,7 @@ else()
     COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/Resources
     COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/MacOS
     COMMAND cp ${CMAKE_CURRENT_BINARY_DIR}/../../${PROJECT_NAME}/${MACOSX_BUNDLE_ICON_FILE}
-            ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE}
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE}
    )
   add_dependencies( ${PROJECT_NAME} osx_bundle_dirs )
   # This tells cmake where to place files inside the bundle
@@ -55,11 +49,11 @@ endif()
 
 if (NOT WIN32)
   if (EXISTS "/usr/share/applications")
-    install(FILES syncped.desktop DESTINATION /usr/share/applications)
+    install(FILES ${PROJECT_NAME}.desktop DESTINATION /usr/share/applications)
   endif()
   if (EXISTS "/usr/share/icons")
-    install(FILES syncped.png DESTINATION /usr/share/icons/hicolor/scalable/apps/)
-    install(FILES syncped.svg DESTINATION /usr/share/icons/hicolor/scalable)
+    install(FILES ${PROJECT_NAME}.png DESTINATION /usr/share/icons/hicolor/scalable/apps/)
+    install(FILES ${PROJECT_NAME}.svg DESTINATION /usr/share/icons/hicolor/scalable)
   endif()
 endif()
 

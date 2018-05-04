@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 
-brew update || brew update
-brew install wxwidgets
+brew update && brew upgrade
 brew unlink cmake
 brew install cmake

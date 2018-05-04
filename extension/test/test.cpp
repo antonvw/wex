@@ -114,7 +114,7 @@ void SetEnvironment(const std::string& dir)
   }
 
 #if wxExUSE_OTL
-  (void)system(cp + " .odbc.ini " + wxGetHomeDir());
+  (void)system(std::string(cp + " .odbc.ini " + wxGetHomeDir()).c_str());
 #endif
 
   // Create the global lexers object (after copying lexers.xml), 

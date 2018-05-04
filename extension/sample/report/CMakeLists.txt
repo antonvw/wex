@@ -1,9 +1,6 @@
 project(wxex-sample-report)
 
-include_directories(
-  ../include/)
-
-FILE(GLOB SRCS "*.cpp")
+file(GLOB SRCS "*.cpp")
   
 if(WIN32)
   set(SRCS ${SRCS} app.rc)

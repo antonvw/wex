@@ -14,11 +14,10 @@ TEST_CASE( "wxExLog" )
   ss << "the great white";
 
   wxExLog() << "default constructor";
-  wxExLog(LEVEL_INFO) << "level info";
-
+  wxExLog(LEVEL_DEBUG) << "level debug";
   wxExLog("shark") << ss << "is white";
 
-  wxExLog log("shark", LEVEL_WARNING);
+  wxExLog log("shark", LEVEL_DEBUG);
   log << std::stringstream("is hungry") << "eats" << 25 << "fish";
 
   REQUIRE( log.Get().find("shark") == 0);

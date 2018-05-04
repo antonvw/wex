@@ -175,7 +175,7 @@ bool wxExApp::OnInit()
       {
         if (!m_Locale.AddCatalog(p.path().stem().string()))
         {
-          wxExLog() << "could not add catalog:" << p.path().stem();
+          wxExLog() << "could not add catalog:" << p.path().stem().string();
         }
       }
     }

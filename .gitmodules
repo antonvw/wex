@@ -1,12 +1,15 @@
-[submodule "extension/test/doctest"]
-	path = extension/test/doctest
+[submodule "external/doctest"]
+	path = external/doctest
 	url = https://github.com/onqtam/doctest.git
-[submodule "extension/pugixml"]
-	path = extension/pugixml
+[submodule "external/pugixml"]
+	path = external/pugixml
 	url = https://github.com/zeux/pugixml.git
-[submodule "extension/tclap"]
-	path = extension/tclap
+[submodule "external/tclap"]
+	path = external/tclap
 	url = https://git.code.sf.net/p/tclap/code
-[submodule "extension/easyloggingpp"]
-	path = extension/easyloggingpp
+[submodule "external/easyloggingpp"]
+	path = external/easyloggingpp
 	url = https://github.com/muflihun/easyloggingpp.git
+[submodule "external/wxWidgets"]
+	path = external/wxWidgets
+	url = https://github.com/antonvw/wxWidgets.git

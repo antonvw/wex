@@ -45,7 +45,7 @@
 
 - `mkdir build`   
   `cd build`   
-  `cmake -DBUILD_TEST=ON ..`   
+  `cmake -DwxExBUILD_TESTS=ON ..`   
   `make`   
   `make test`   
 
@@ -53,7 +53,7 @@
   This requires `lcov` and `genhtml` tools (part of lcov, v1.9).    
   `mkdir Coverage`   
   `cd Coverage`   
-  `cmake -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TEST=ON ..`   
+  `cmake -DCMAKE_BUILD_TYPE=Coverage -DwxExBUILD_TESTS=ON ..`   
   `make`  
   `make lcov-prep`  
   `make test`  

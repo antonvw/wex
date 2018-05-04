@@ -173,7 +173,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
       <command type="ellipses"> &amp;info </command>
       <command type="ellipses"> &amp;log </command>
       <command type="main"> &amp;ls </command>
-      <command type="popup"> &amp;proplist </command>
+      <command type="ellipses popup"> &amp;proplist </command>
       <command type="ellipses popup"> prop&amp;set </command>
       <command type="ellipses"> &amp;update </command>
     </commands>

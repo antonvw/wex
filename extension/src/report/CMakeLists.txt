@@ -1,8 +1,5 @@
-FILE(GLOB SRCS "*.cpp")
+file(GLOB SRCS "*.cpp")
   
-include_directories(
-  ../../include/)
-
 add_library(
   wxex-rep
   ${SRCS})

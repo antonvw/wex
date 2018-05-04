@@ -1,14 +1,13 @@
 project(wxex-sample)
 
-include_directories(
-  ../include/)
-
-FILE(GLOB SRCS "*.cpp")
+file(GLOB SRCS "*.cpp")
 
 if(WIN32)
   set(SRCS ${SRCS} app.rc)
 endif(WIN32)
   
+include(../../cmake/common.cmake)
+
 add_executable(
   ${PROJECT_NAME}
   WIN32 

@@ -1,10 +1,10 @@
-FILE(GLOB SRCS 
-  "*.c" 
-  "*.cpp" 
-  "../easyloggingpp/src/*.cc" 
-  "../pugixml/src/*.cpp" 
-  "shunting-yard/*.cpp")
-  
+file(GLOB SRCS 
+  "*.cpp"
+  "../../external/ctags/*.c"
+  "../../external/easyloggingpp/src/*.cc"
+  "../../external/pugixml/src/*.cpp"
+  "../../external/shunting-yard/*.cpp")
+
 add_library(
   wxex 
   ${SRCS})

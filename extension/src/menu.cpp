@@ -36,24 +36,30 @@ wxMenuItem* wxExMenu::Append(
   const wxString& helptext,
   const wxArtID& artid)
 {
-  if (artid.empty())
-  {
-    return wxMenu::Append(id, name, helptext);
-  }
+  wxMenuItem* item = new wxMenuItem(this, id, name, helptext);
 
-  const wxBitmap bitmap(
-    wxArtProvider::GetBitmap(
-      artid, 
+  const wxExStockArt art(id);
+
+  if (art.GetBitmap().IsOk())
+  {
+    item->SetBitmap(art.GetBitmap(
       wxART_MENU, 
       wxArtProvider::GetSizeHint(wxART_MENU, true)));
-
-  if (!bitmap.IsOk())
+  }
+  else if (!artid.empty())
   {
-    return wxMenu::Append(id, name, helptext);
+    const wxBitmap bitmap(
+      wxArtProvider::GetBitmap(
+        artid, 
+        wxART_MENU, 
+        wxArtProvider::GetSizeHint(wxART_MENU, true)));
+
+    if (bitmap.IsOk())
+    {
+      item->SetBitmap(bitmap);
+    }
   }
 
-  wxMenuItem* item = new wxMenuItem(this, id, name, helptext);
-  item->SetBitmap(bitmap);
   return wxMenu::Append(item);
 }
 

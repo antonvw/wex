@@ -47,6 +47,7 @@ TEST_CASE("wxExDebug")
 
 #ifndef __WXMSW__
   REQUIRE( dbg.Execute("break"));
+  REQUIRE( dbg.Execute("break all breakpoints"));
   REQUIRE( dbg.Execute("break", GetSTC()));
 #endif
   REQUIRE( dbg.GetBreakpoints().empty()); // no file loaded

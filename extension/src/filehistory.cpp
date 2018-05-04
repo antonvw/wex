@@ -2,7 +2,7 @@
 // Name:      filehistory.cpp
 // Purpose:   Implementation of wxExFileHistory class methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <experimental/filesystem>
@@ -195,17 +195,31 @@ wxString wxExFileHistoryImp::GetHistoryFile(size_t index) const
 {
   if (GetCount() > 0 && (int)index < GetMaxFiles())
   {
-    const wxString file(wxFileHistory::GetHistoryFile(index));
+    bool error = false;
+    wxString file;
 
-    if (!std::experimental::filesystem::is_regular_file(file.ToStdString()))
+    try
+    {
+      file = wxFileHistory::GetHistoryFile(index);
+
+      if (!std::experimental::filesystem::is_regular_file(file.ToStdString()))
+      {
+        error = true;
+      }
+      else
+      {
+        return wxFileHistory::GetHistoryFile(index);
+      }
+    }
+    catch (const std::exception& e)
+    {
+      error = true;
+    }
+
+    if (error)
     {
       const_cast< wxExFileHistoryImp * >( this )->RemoveFileFromHistory(index);
-      wxLogStatus(_("Removed not existing file: %s from history"), 
-        file.c_str());
-    }
-    else
-    {
-      return wxFileHistory::GetHistoryFile(index);
+      wxLogStatus(_("Removed not existing file: %s from history"), file.c_str());
     }
   }
   

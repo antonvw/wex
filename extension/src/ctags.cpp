@@ -21,7 +21,7 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <easylogging++.h>
-#include "readtags.h"
+#include <readtags.h>
 
 enum wxExImageAccessType
 {
