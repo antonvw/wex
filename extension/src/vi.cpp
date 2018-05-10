@@ -542,7 +542,7 @@ wxExVi::wxExVi(wxExSTC* stc)
       const auto end = GetSTC()->WordEndPosition(GetSTC()->GetCurrentPos(), true);
       const std::string word(GetSTC()->GetSelectedText().empty() ?
         GetSTC()->GetTextRange(start, end).ToStdString():
-        GetSTC()->GetSelectedText());
+        GetSTC()->GetSelectedText().ToStdString());
       if (command == "T")
       {
         wxExBrowserSearch(word);

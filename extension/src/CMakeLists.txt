@@ -8,5 +8,6 @@ file(GLOB SRCS
 add_library(
   wxex 
   ${SRCS})
+cotire(wxex)
   
 set_target_properties(wxex PROPERTIES DEBUG_POSTFIX "d")

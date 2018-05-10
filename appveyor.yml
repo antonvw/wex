@@ -14,7 +14,7 @@ configuration:
 
 install:
   - git config http.postBuffer 524288000
-  - git submodule init && git submodule update --init --recursive --depth 1
+  - git submodule init && git submodule update --init --recursive --depth 50
 
 before_build:
   - mkdir build && cd build

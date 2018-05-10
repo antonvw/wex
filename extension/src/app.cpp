@@ -98,13 +98,13 @@ bool wxExApp::OnInit()
 
     for (const auto& s : supported)
     {
-      if (strcmp(argv[i], s.first.c_str()) == 0)
+      if (strcmp(argv[i].c_str(), s.first.c_str()) == 0)
       {
         found = true;
-        char* buffer = (char *)malloc(strlen(argv[i + 1]));
-        strcpy(buffer, argv[i + 1]);
+        char* buffer = (char *)malloc(strlen(argv[i + 1].c_str()));
+        strcpy(buffer, argv[i + 1].c_str());
 
-        argv_elp[argc_elp] = (char *)malloc(s.second.size() + 1 + strlen(argv[i + 1]));
+        argv_elp[argc_elp] = (char *)malloc(s.second.size() + 1 + strlen(argv[i + 1].c_str()));
         sprintf(argv_elp[argc_elp], "%s=%s", s.second.c_str(), buffer);
         argc_elp++;
         i++;
@@ -114,8 +114,8 @@ bool wxExApp::OnInit()
 
     if (!found)
     {
-      argv_elp[argc_elp] = (char *)malloc(strlen(argv[i]));
-      strcpy(argv_elp[argc_elp], argv[i]);
+      argv_elp[argc_elp] = (char *)malloc(strlen(argv[i].c_str()));
+      strcpy(argv_elp[argc_elp], argv[i].c_str());
       argc_elp++;
     }
   }
@@ -133,7 +133,8 @@ bool wxExApp::OnInit()
     << "started: " 
     << GetAppName() << "-" << wxExGetVersionInfo().GetVersionOnlyString().c_str()
     << " verbosity: " 
-    << el::Loggers::verboseLevel();
+    << el::Loggers::verboseLevel()
+    << " config: " << elp.Path().string();
 
   const wxLanguageInfo* info = nullptr;
   

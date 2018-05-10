@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wxExFrame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -113,7 +113,7 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
   : wxFrame(
       data.Parent(), 
       data.Id(), 
-      data.Title().empty() ? wxTheApp->GetAppDisplayName(): data.Title(), 
+      data.Title().empty() ? std::string(wxTheApp->GetAppDisplayName()): data.Title(), 
       data.Pos(), data.Size(), 
       data.Style() == DATA_NUMBER_NOT_SET ? 
         wxDEFAULT_FRAME_STYLE: data.Style(), 

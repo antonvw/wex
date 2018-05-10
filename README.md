@@ -28,7 +28,7 @@ one of these applications, being a full featured source code text editor.
 
 - [universal-ctags lib](https://github.com/universal-ctags/ctags)    
 
-- [wxWidgets 3.x](https://github.com/antonvw/wxWidgets/)
+- [wxWidgets 3.x lib](https://github.com/antonvw/wxWidgets/)
 
 # Build process 
 
@@ -42,16 +42,17 @@ one of these applications, being a full featured source code text editor.
   `mkdir build`   
   `cd build`   
 
-- under windows:   
-  -- using Visual Studio:   
-    `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
-    `nmake`   
-  -- using mingw:   
-    `cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
-    `mingw32-make`   
-  
-- under Linux or MacOS:   
-    `cmake ..`   
-    `make`   
+  cmake and make it:    
+  - - under windows:   
+      -- using Visual Studio:   
+        `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
+        `nmake`   
+      -- using mingw:   
+        `cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
+        `mingw32-make`   
+    
+  - - under Linux or MacOS:   
+      `cmake ..`   
+      `make`   
 
 - for OTL add `-DwxExUSE_OTL=ON`    

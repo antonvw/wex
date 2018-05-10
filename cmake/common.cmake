@@ -105,6 +105,7 @@ else ()
     stdc++fs
     )
 endif ()
+cotire(${PROJECT_NAME})
 endmacro()  
 
 if (WIN32)
@@ -137,7 +138,12 @@ else ()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 
+file(GLOB_RECURSE wxExSETUP_H ${wxExtension_BINARY_DIR}/*.h)
+get_filename_component(wxExSETUP_H ${wxExSETUP_H} DIRECTORY)
+get_filename_component(wxExSETUP_H ${wxExSETUP_H} DIRECTORY)
+
 list(APPEND wxTOOLKIT_INCLUDE_DIRS 
+  ${wxExSETUP_H}
   external/wxWidgets/include 
   extension/include 
   external/ctags external/easyloggingpp/src 

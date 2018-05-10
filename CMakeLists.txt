@@ -20,6 +20,8 @@ string(REGEX MATCH "[0-9]+-[0-9]+"
   EX_COPYRIGHT ${EX_VERSION_CONTENTS})
 set(EX_COPYRIGHT ${EX_COPYRIGHT})
 
+add_definitions(-DELPP_NO_DEFAULT_LOG_FILE)
+
 if (${wxExUSE_OTL} MATCHES ON)
   add_definitions(-DwxExUSE_OTL)
 endif ()
@@ -34,16 +36,18 @@ endif ()
 
 enable_testing()
 
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/wxWidgets/build/cmake/modules")
+include(cotire)
 include(cmake/options-ex.cmake)
 include(cmake/common.cmake)
 
 add_subdirectory(extension)
 
-if (wxExUSE_SP)
+if (wxExBUILD_SP)
   add_subdirectory(syncped)
 endif ()
 
-if (wxExUSE_SOQ)
+if (wxExBUILD_SOQ)
   add_subdirectory(syncodbcquery)
 endif ()
 

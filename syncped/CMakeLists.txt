@@ -36,6 +36,8 @@ else()
   set_source_files_properties( ${ProjectName_RESOURCES} ${ProjectName_TRANSLATIONS}
     PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
 endif()
+
+cotire(${PROJECT_NAME})
  
 target_link_all()
 

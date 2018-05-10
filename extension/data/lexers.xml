@@ -2200,20 +2200,20 @@ Copyright: (c) 2018, Anton van Wezenbeek
       add_compile_options add_custom_command add_custom_target add_definitions add_dependencies add_executable
       add_library add_subdirectory add_test aux_source_directory break build_command
       cmake_host_system_information cmake_minimum_required cmake_policy configure_file create_test_sourcelist define_property
-      elseif else enable_language enable_testing endforeach endfunction
-      endif endmacro endwhile execute_process export file
+      elseif else enable_language enable_testing endfunction
+      endif execute_process export file
       find_file find_library find_package find_path find_program fltk_wrap_ui
-      foreach function get_cmake_property get_directory_property get_filename_component get_property
+      function get_cmake_property get_directory_property get_filename_component get_property
       get_source_file_property get_target_property get_test_property if include_directories include_external_msproject
       include_regular_expression include install link_directories list load_cache
-      load_command macro mark_as_advanced math message option
+      load_command mark_as_advanced math message option
       project qt_wrap_cpp qt_wrap_ui remove_definitions return separate_arguments
       set_directory_properties set_property set set_source_files_properties set_target_properties set_tests_properties
       site_name source_group string target_compile_definitions target_compile_options target_include_directories
-      target_link_libraries try_compile try_run unset variable_watch while
+      target_link_libraries try_compile try_run unset variable_watch
     </set>
     <set name="cmake-variables">
-      ABSOLUTE ABSTRACT ADDITIONAL_MAKE_CLEAN_FILES ALL AND APPEND 
+      ABSOLUTE ABSTRACT ADDITIONAL_MAKE_CLEAN_FILES ALL AND APPEND
       APPLE APPLE  ARGS ASCII BEFORE BORLAND
       BORLAND BUILD_SHARED_LIBS CACHE CACHE_VARIABLES CLEAR CMAKE_ABSOLUTE_DESTINATION_FILES
       CMAKE_ANDROID_API CMAKE_ANDROID_API_MIN CMAKE_ANDROID_GUI CMAKE_APPBUNDLE_PATH CMAKE_AR CMAKE_ARCHIVE_OUTPUT_DIRECTORY
@@ -2879,10 +2879,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
   <lexer name="clarionnocase" macro="clarion"/>
   <lexer name="cmake" extensions="CMakeLists.txt;*.cmake">
     <styles>
-      <style no="ifdefinedef"> fore:brown </style> 
-      <style no="whiledef"> fore:brown </style> 
-      <style no="foreachdef"> fore:brown </style> 
-      <style no="ifdefinedef"> fore:brown </style> 
+      <style no="whiledef,foreachdef,ifdefinedef,macrodef"> fore:medium slate blue </style> 
     </styles> 
     <properties>
       <property name="fold"> 1 </property>
