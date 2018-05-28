@@ -80,6 +80,6 @@ private:
   tagFile* m_File {nullptr};
   const int m_Separator;
   bool m_Prepare {false};
-  std::map< std::string, wxExCTagsEntry > m_Matches;
-  std::map< std::string, wxExCTagsEntry >::iterator m_Iterator;
+  static std::map< std::string, wxExCTagsEntry > m_Matches;
+  static std::map< std::string, wxExCTagsEntry >::iterator m_Iterator;
 };

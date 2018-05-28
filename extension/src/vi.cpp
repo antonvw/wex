@@ -156,8 +156,6 @@ enum
   MOTION_YANK,
 };
 
-std::string wxExVi::m_LastFindCharCommand;
-
 wxExVi::wxExVi(wxExSTC* stc)
   : wxExEx(stc)
   , m_Mode(this, 
@@ -259,14 +257,9 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"G", [&](const std::string& command){
       if (m_Count == 1)
       {
-        if (m_Mode.Visual())
-        {
-          GetSTC()->DocumentEndExtend();
-        }
-        else
-        {
+        m_Mode.Visual() ?
+          GetSTC()->DocumentEndExtend():
           GetSTC()->DocumentEnd();
-        }
       }
       else
       {
@@ -424,14 +417,9 @@ wxExVi::wxExVi(wxExSTC* stc)
       GetFrame()->SaveCurrentPage("ctags");
       if (GetSTC()->GetSelectedText().empty())
       {
-        if (GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) == 0)
-        {
-          GetCTags()->Find(std::string());
-        }
-        else
-        {
+        GetSTC()->GetColumn(GetSTC()->GetCurrentPos()) == 0 ?
+          GetCTags()->Find(std::string()):
           GetCTags()->Find(GetSTC()->GetWordAtPos(GetSTC()->GetCurrentPos()));
-        }
       }
       else
       {
@@ -458,14 +446,9 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"dgg", [&](const std::string& command){
       return DeleteRange(this, 0, GetSTC()->PositionFromLine(GetSTC()->GetCurrentLine())) ? 3: 0;}},
     {"gg", [&](const std::string& command){
-      if (m_Mode.Visual())
-      {
-        GetSTC()->DocumentStartExtend(); 
-      }
-      else
-      {
+      m_Mode.Visual() ?
+        GetSTC()->DocumentStartExtend():
         GetSTC()->DocumentStart(); 
-      }
       return 2;}},
     {"yy", [&](const std::string& command){
       wxExAddressRange(this, m_Count).Yank();
@@ -650,9 +633,8 @@ bool wxExVi::Command(const std::string& command)
   }
 
   const auto size = GetSTC()->GetLength();
-  std::string parse(command);
-
-  if (!ParseCommand(parse))
+  
+  if (std::string parse(command); !ParseCommand(parse))
   {
     return false;
   }
@@ -751,10 +733,9 @@ void wxExVi::CommandReg(const char reg)
 void wxExVi::FilterCount(std::string& command, const std::string& prefix)
 {
   std::vector<std::string> v;
-        
-  const auto matches = wxExMatch("^" + prefix + "([1-9][0-9]*)(.*)", command, v);
   
-  if (matches >= 2)
+  if (const auto matches = wxExMatch("^" + prefix + "([1-9][0-9]*)(.*)", command, v);
+    matches >= 2)
   {
     const auto count = std::stoi(v[matches - 2]);
     
@@ -1063,7 +1044,7 @@ bool wxExVi::MotionCommand(int type, std::string& command)
   }
 
   int parsed = 0;
-  int start = GetSTC()->GetCurrentPos();
+  auto start = GetSTC()->GetCurrentPos();
   
   switch (type)
   {
@@ -1267,9 +1248,8 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   }
   else if ((event.GetModifiers() & wxMOD_CONTROL) && event.GetKeyCode() != WXK_NONE)
   {
-    const auto& it = GetMacros().GetKeysMap(KEY_CONTROL).find(event.GetKeyCode());
-
-    if (it != GetMacros().GetKeysMap(KEY_CONTROL).end()) 
+    if (const auto& it = GetMacros().GetKeysMap(KEY_CONTROL).find(event.GetKeyCode());
+      it != GetMacros().GetKeysMap(KEY_CONTROL).end()) 
     {
       Command(it->second);
       return false;
@@ -1284,9 +1264,8 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
       Command("\x1b");
     }
 
-    const auto& it = GetMacros().GetKeysMap(KEY_ALT).find(event.GetKeyCode());
-
-    if (it != GetMacros().GetKeysMap(KEY_ALT).end()) 
+    if (const auto& it = GetMacros().GetKeysMap(KEY_ALT).find(event.GetKeyCode());
+      it != GetMacros().GetKeysMap(KEY_ALT).end()) 
     {
       Command(it->second);
       return false;
@@ -1340,9 +1319,8 @@ bool wxExVi::OtherCommand(std::string& command) const
 
 bool wxExVi::ParseCommand(std::string& command)
 {
-  const auto& it = GetMacros().GetKeysMap().find(command.front());
-
-  if (it != GetMacros().GetKeysMap().end()) 
+  if (const auto& it = GetMacros().GetKeysMap().find(command.front());
+    it != GetMacros().GetKeysMap().end()) 
   {
     command = it->second;
   }

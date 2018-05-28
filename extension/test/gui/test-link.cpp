@@ -2,7 +2,7 @@
 // Name:      test-link.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -132,14 +132,13 @@ TEST_CASE("wxExLink")
     lnk.SetFromConfig();
 
     wxExControlData data;
-    data.Line(-1);
+    data.Line(LINK_LINE_OPEN_URL);
+    REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).Path().empty());
     REQUIRE( lnk.GetPath("test.cpp", data).Path().empty());
     REQUIRE( lnk.GetPath("<test.cpp>", data).Path().empty());
     REQUIRE( lnk.GetPath("gcc>", data).Path().empty());
     REQUIRE( lnk.GetPath("<gcc>", data).Path().empty());
-    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data).Path().empty());
-    REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("some text www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data).Path() == 
       "https://github.com/antonvw/wxExtension" );
@@ -148,13 +147,12 @@ TEST_CASE("wxExLink")
     REQUIRE( lnk.GetPath("some text [https://github.com/antonvw/wxExtension]", data).Path() == 
       "https://github.com/antonvw/wxExtension" );
     REQUIRE( lnk.GetPath("httpd = new httpd", data).Path().empty());
-    data.Line(0);
-    REQUIRE( lnk.GetPath("some text https://github.com/antonvw/wxExtension", data).Path().empty() );
-    // hypertext file
+
+    // MIME file
+    data.Line(LINK_LINE_OPEN_URL_AND_MIME);
     stc->GetFile().FileNew("test.html");
-    REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path().empty() );
-    REQUIRE( lnk.GetPath("xx", data).Path().empty());
-    data.Line(-1);
+    REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
+    REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data) == "test.html" );
     REQUIRE( lnk.GetPath("xx", data).Path() == "test.html" );
     data.Line(-2);
     REQUIRE( lnk.GetPath("xx", data).Path().empty());

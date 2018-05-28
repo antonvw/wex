@@ -119,9 +119,7 @@ void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
   else if (event.Moving())
   {
 #if wxUSE_TOOLTIPS
-    const wxString tooltip = GetToolTipText();
-              
-    if (pane.GetHelpText().empty())
+    if (const auto tooltip = GetToolTipText(); pane.GetHelpText().empty())
     {
       if (!tooltip.empty())
       {

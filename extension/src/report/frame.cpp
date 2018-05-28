@@ -45,7 +45,8 @@ wxExFrameWithHistory::wxExFrameWithHistory(
   t.insert(m_TextRecursive);
   
   const std::vector<wxExItem> f {
-    {wxExFindReplaceData::Get()->GetTextFindWhat(), ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
+    {wxExFindReplaceData::Get()->GetTextFindWhat(), 
+       ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
     {m_TextInFiles, ITEM_COMBOBOX, std::any(), wxExControlData().Required(true)},
     {m_TextInFolder, ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)},
     {t}};
@@ -95,7 +96,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(
     {
       Grep(event.GetString().ToStdString());
     }
-    else
+    else if (m_FiFDialog != nullptr)
     {
       if (GetSTC() != nullptr && !GetSTC()->GetFindString().empty())
       {
@@ -109,7 +110,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(
     {
       Sed(event.GetString().ToStdString());
     }
-    else
+    else if (m_RiFDialog != nullptr)
     {
       if (GetSTC() != nullptr && !GetSTC()->GetFindString().empty())
       {

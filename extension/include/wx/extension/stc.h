@@ -301,7 +301,7 @@ private:
   {
     LINK_CHECK         = 0x0001,
     LINK_OPEN          = 0x0002,
-    LINK_OPEN_BROWSER  = 0x0004,
+    LINK_OPEN_MIME     = 0x0004,
   };
 
   void BindAll();
@@ -340,8 +340,8 @@ private:
   wxFont m_DefaultFont;
 
   // All objects share the following:
-  static wxExItemDialog* m_ConfigDialog;
-  static wxExSTCEntryDialog* m_EntryDialog;
-  static int m_Zoom;
+  static inline wxExItemDialog* m_ConfigDialog = nullptr;
+  static inline wxExSTCEntryDialog* m_EntryDialog = nullptr;
+  static inline int m_Zoom = -1;
 };
 #endif // wxUSE_GUI

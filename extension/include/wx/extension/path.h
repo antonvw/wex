@@ -2,7 +2,7 @@
 // Name:      path.h
 // Purpose:   Declaration of class wxExPath
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -112,6 +112,10 @@ public:
     
   /// Make this path absolute.
   wxExPath& MakeAbsolute(const wxExPath& base = wxExPath());
+
+  /// Opens this path using registered mime type.
+  /// Returns false if no mime type is found.
+  bool OpenMIME() const;
   
   /// Returns path.
   /// E.g. Path().string() returns fullpath.

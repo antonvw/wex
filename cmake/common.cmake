@@ -2,7 +2,7 @@ function(pack)
   if (WIN32)
     set(CONFIG_INSTALL_DIR bin)
   else ()
-    set(CONFIG_INSTALL_DIR $ENV{HOME}/.config/${PROJECT_NAME})
+    set(CONFIG_INSTALL_DIR /home/${user}/.config/${PROJECT_NAME})
   endif ()
 
   set(CPACK_GENERATOR "ZIP")
@@ -28,7 +28,10 @@ function(pack)
     install(FILES ${dlls} DESTINATION ${CONFIG_INSTALL_DIR})
   endif()
 
-  install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} USE_SOURCE_PERMISSIONS)
+  configure_file(../extension/data/conf.elp ${CONFIG_INSTALL_DIR}/conf.elp)
+  install(DIRECTORY ../extension/data/ DESTINATION ${CONFIG_INSTALL_DIR} 
+    USE_SOURCE_PERMISSIONS
+    FILES_MATCHING PATTERN "*.elp" EXCLUDE )
   
   if (NOT WIN32)
     install(CODE "EXECUTE_PROCESS(COMMAND chown -R ${user} ${CONFIG_INSTALL_DIR})")

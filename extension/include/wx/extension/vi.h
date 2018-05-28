@@ -2,7 +2,7 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wxExVi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -76,7 +76,7 @@ private:
   bool Put(bool after);
   bool TransitionCommand(std::string& command);
 
-  static std::string m_LastFindCharCommand;
+  static inline std::string m_LastFindCharCommand;
   bool m_Dot{false}, m_SearchForward{true};
   int m_Count{1};
   std::string m_CommandKeep, m_InsertText;

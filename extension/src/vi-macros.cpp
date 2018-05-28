@@ -62,18 +62,15 @@ const std::vector< std::string > wxExViMacros::Get()
 
 const std::vector< std::string > wxExViMacros::Get(const std::string& macro)
 {
-  const auto& it = m_Macros.find(macro);
-    
-  if (it != m_Macros.end())
+  if (const auto& it = m_Macros.find(macro); it != m_Macros.end())
   {
     return it->second;
   }
   else
   {
-    const auto& it = m_Variables.find(macro);
     std::vector<std::string> v;
     
-    if (it != m_Variables.end())
+    if (const auto& it = m_Variables.find(macro); it != m_Variables.end())
     {
       v.emplace_back(it->second.GetValue());
     }
@@ -115,9 +112,7 @@ const std::vector< std::string > wxExViMacros::GetRegisters() const
     }
   }
    
-  const std::string clipboard(wxExSkipWhiteSpace(wxExClipboardGet()));
-              
-  if (!clipboard.empty())
+  if (const std::string clipboard(wxExSkipWhiteSpace(wxExClipboardGet())); !clipboard.empty())
   {
     r.emplace_back("*=" + clipboard);
   }
@@ -142,11 +137,9 @@ bool wxExViMacros::LoadDocument()
     return false;
   }
 
-  const pugi::xml_parse_result result = m_doc.load_file(
-    GetFileName().Path().string().c_str(),
+  if (const auto result = m_doc.load_file(GetFileName().Path().string().c_str(),
     pugi::parse_default | pugi::parse_comments);
-
-  if (!result)
+    !result)
   {
     wxExXmlError(GetFileName(), &result);
     return false;
@@ -208,9 +201,8 @@ void wxExViMacros::ParseNode(
   const std::string& name,
   T & container)
 {
-  const S value = wxExTypeToValue<S>(node.attribute("name").value()).get();
-
-  if (container.find(value) != container.end())
+  if (const S value = wxExTypeToValue<S>(node.attribute("name").value()).get();
+    container.find(value) != container.end())
   {
     wxExLog() << "duplicate " << 
       name << ": " << value << " from: " << 
@@ -231,9 +223,8 @@ void wxExViMacros::ParseNodeMacro(const pugi::xml_node& node)
     v.emplace_back(command.text().get());
   }
   
-  const auto& it = m_Macros.find(node.attribute("name").value());
-
-  if (it != m_Macros.end())
+  if (const auto& it = m_Macros.find(node.attribute("name").value());
+    it != m_Macros.end())
   {
     wxExLog() << "duplicate macro: " << node.attribute("name").value() << node;
   }
@@ -246,9 +237,9 @@ void wxExViMacros::ParseNodeMacro(const pugi::xml_node& node)
 void wxExViMacros::ParseNodeVariable(const pugi::xml_node& node)
 {
   const wxExVariable variable(node);
-  const auto& it = m_Variables.find(variable.GetName());
 
-  if (it != m_Variables.end())
+  if (const auto& it = m_Variables.find(variable.GetName());
+    it != m_Variables.end())
   {
     wxExLog() << "duplicate variable: " << variable.GetName() << node;
   }
@@ -303,11 +294,9 @@ void wxExViMacros::SaveMacro(const std::string& macro)
 {
   try
   {
-    const std::string query("//macro[@name='" + macro + "']");
-
-    pugi::xpath_node node = m_doc.document_element().select_node(query.c_str());
-
-    if (node && node.node())
+    if (auto node = m_doc.document_element().select_node(
+      std::string("//macro[@name='" + macro + "']").c_str());
+      node && node.node())
     {
       m_doc.document_element().remove_child(node.node());
     }
@@ -337,10 +326,9 @@ void wxExViMacros::Set(
 {
   try
   {
-    const std::string query("//" + xpath + "[@name='" + name + "']");
-    pugi::xpath_node node = m_doc.document_element().select_node(query.c_str());
-
-    if (node && node.node())
+    if (auto node = m_doc.document_element().select_node(
+      std::string("//" + xpath + "[@name='" + name + "']").c_str());
+      node && node.node())
     {
       m_doc.document_element().remove_child(node.node());
     }

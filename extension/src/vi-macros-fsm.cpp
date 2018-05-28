@@ -22,8 +22,6 @@
 #include <easylogging++.h>
 #include "vi-macros-fsm.h"
 
-std::string wxExViMacrosFSM::m_macro;
-
 wxExViMacrosFSM::wxExViMacrosFSM()
 {
   // from-state, to-state, trigger, guard, action
@@ -182,9 +180,7 @@ void wxExViMacrosFSM::ExpandingTemplate()
       }
       else
       {
-        std::string value;
-        
-        if (!ExpandingVariable(variable, &value))
+        if (std::string value; !ExpandingVariable(variable, &value))
         {
           m_error = true;
         }
@@ -221,14 +217,13 @@ bool wxExViMacrosFSM::ExpandingVariable(
   const std::string& name, std::string* value) const
 {
   pugi::xml_node node;
-  const auto& it = wxExViMacros::m_Variables.find(name);
   wxExVariable* var;
     
-  if (it == wxExViMacros::m_Variables.end())
+  if (const auto& it = wxExViMacros::m_Variables.find(name);
+    it == wxExViMacros::m_Variables.end())
   {
-    wxExVariable varnew(name);
-    const auto& it = wxExViMacros::m_Variables.insert({name, varnew});
-    var = &it.first->second;
+    const auto& itn = wxExViMacros::m_Variables.insert({name, wxExVariable(name)});
+    var = &itn.first->second;
     node = wxExViMacros::m_doc.document_element().append_child("variable");
   }
   else
@@ -239,9 +234,9 @@ bool wxExViMacrosFSM::ExpandingVariable(
     {
       // node = wxExViMacros::m_doc.document_element().child(name.c_str());
       const std::string query("//variable[@name='" + name + "']");
-      pugi::xpath_node xp = wxExViMacros::m_doc.document_element().select_node(query.c_str());
 
-      if (xp && xp.node())
+      if (auto xp = wxExViMacros::m_doc.document_element().select_node(query.c_str());
+        xp && xp.node())
       {
         node = xp.node();
       }

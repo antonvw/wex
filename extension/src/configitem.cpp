@@ -106,10 +106,7 @@ bool wxExItem::ToConfig(bool save) const
     case ITEM_COMBOBOX:
     case ITEM_COMBOBOX_DIR:
     case ITEM_COMBOBOX_FILE:
-      {
-      wxComboBox* cb = (wxComboBox*)GetWindow();
-
-      if (save)
+      if (wxComboBox* cb = (wxComboBox*)GetWindow(); save)
       {
         const auto l = wxExToListString(cb, m_MaxItems).Get();
 
@@ -129,7 +126,6 @@ bool wxExItem::ToConfig(bool save) const
       else
       {
         wxExComboBoxFromList(cb, wxExListFromConfig(m_Label.ToStdString()));
-      }
       }
       break;
 
@@ -162,10 +158,7 @@ bool wxExItem::ToConfig(bool save) const
       break;
 
     case ITEM_RADIOBOX:
-      {
-      wxRadioBox* rb = (wxRadioBox*)GetWindow();
-
-      if (save)
+      if (wxRadioBox* rb = (wxRadioBox*)GetWindow(); save)
       {
         for (const auto& b : std::any_cast<wxExItem::Choices>(GetInitial()))
         {
@@ -178,12 +171,12 @@ bool wxExItem::ToConfig(bool save) const
       else
       {
         const wxExItem::Choices & choices(std::any_cast<wxExItem::Choices>(GetInitial()));
-        const auto c = choices.find(wxConfigBase::Get()->ReadLong(m_Label, 0));
-        if (c != choices.end())
+        
+        if (const auto c = choices.find(wxConfigBase::Get()->ReadLong(m_Label, 0));
+          c != choices.end())
         {
           rb->SetStringSelection(c->second);
         }
-      }
       }
       break;
 

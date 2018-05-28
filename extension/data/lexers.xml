@@ -2728,6 +2728,9 @@ Copyright: (c) 2018, Anton van Wezenbeek
       including check on well formed doc, and autocomplete.
    5) edgemode. Can be none, line or background.
    6) edgecolumns. Sets the location of the edge columns.
+   7) preview. If this attribute is present, a Preview menu item 
+      appears in the stc context menu, to preview the document 
+      using mime type application associated with the extension.
    Furthermore it might contain the next tags:
    1) <styles>. Colouring styles for this lexer. 
       The attribute 'no' contains the scintilla styles.
@@ -2951,7 +2954,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
   <lexer name="gap"/>
   <lexer name="gui4cli"/>
   <lexer name="haskell"/>
-  <lexer name="hypertext" extensions="*.htm;*.html;*.php">
+  <lexer name="hypertext" extensions="*.htm;*.html;*.php" preview="true">
     <styles>
       <style no="tag"> tag </style>
       <style no="tagend"> tag </style>
@@ -3160,7 +3163,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
   <lexer name="makefile" extensions="Makefile;*makefile;makefile*.*;*.pro">
     <comments begin1="#"/>
   </lexer>
-  <lexer name="markdown" extensions="*.md" edgemode="none">
+  <lexer name="markdown" extensions="*.md" edgemode="none" preview="true">
     <styles>
       <style no="strong1"> fore:yellow,bold </style>
       <style no="strong2"> fore:green,bold </style>

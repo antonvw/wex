@@ -36,8 +36,8 @@ const int idLowercase = wxWindow::NewControlId();
 const int idMarginTextHide = wxWindow::NewControlId();
 const int idMarkerNext = wxWindow::NewControlId(2);
 const int idMarkerPrevious = idMarkerNext + 1;
-const int idOpenBrowser = wxWindow::NewControlId();
 const int idOpenLink = wxWindow::NewControlId();
+const int idOpenMIME = wxWindow::NewControlId();
 const int idOpenWWW = wxWindow::NewControlId();
 const int idShowProperties = wxWindow::NewControlId();
 const int idToggleFold = wxWindow::NewControlId();
@@ -129,25 +129,21 @@ void wxExSTC::BindAll()
       event.GetUnicodeKey() == '>' && 
       m_Lexer.GetScintillaLexer() == "hypertext")
      {
-       const int match_pos = FindText(
-         GetCurrentPos() - 1,
-         PositionFromLine(GetCurrentLine()),
-         "<");
-       if (match_pos != wxSTC_INVALID_POSITION && GetCharAt(match_pos + 1) != '!')
+       if (const auto match_pos = FindText(
+             GetCurrentPos() - 1,
+             PositionFromLine(GetCurrentLine()),
+             "<");
+           match_pos != wxSTC_INVALID_POSITION && GetCharAt(match_pos + 1) != '!')
        {
-         const std::string match(GetWordAtPos(match_pos + 1));
-
-         if (
+         if (const auto match(GetWordAtPos(match_pos + 1));
             match.find("/") != 0 &&
             GetCharAt(GetCurrentPos() - 2) != '/' &&
            (m_Lexer.GetLanguage() == "xml" || m_Lexer.IsKeyword(match)) &&
            !SelectionIsRectangle())
          {
-           const std::string add("</" + match + ">");
-           if (m_vi.GetIsActive())
+           if (const std::string add("</" + match + ">"); m_vi.GetIsActive())
            {
-             const int esc = 27;
-             if (
+             if (const int esc = 27;
                !m_vi.Command(add) ||
                !m_vi.Command(std::string(1, esc)) ||
                !m_vi.Command("%") ||
@@ -210,8 +206,8 @@ void wxExSTC::BindAll()
       
   Bind(wxEVT_LEFT_DCLICK, [=](wxMouseEvent& event) {
     m_MarginTextClick = -1;
-    std::string filename;
-    if (LinkOpen(LINK_OPEN | LINK_CHECK, &filename)) 
+    
+    if (std::string filename; LinkOpen(LINK_OPEN | LINK_CHECK, &filename)) 
     {
       if (!LinkOpen(LINK_OPEN)) 
         event.Skip();
@@ -219,7 +215,7 @@ void wxExSTC::BindAll()
     else if (m_Lexer.GetScintillaLexer() != "hypertext" ||
       GetCurLine().Contains("href")) 
     {
-      if (!LinkOpen(LINK_OPEN_BROWSER)) 
+      if (!LinkOpen(LINK_OPEN_MIME)) 
         event.Skip();
     }
     else event.Skip();});
@@ -299,10 +295,10 @@ void wxExSTC::BindAll()
   // not yet possible for wx3.0. And add wxSTC_AUTOMATICFOLD_CLICK
   // to configdialog, and SetAutomaticFold.
   Bind(wxEVT_STC_MARGINCLICK, [=](wxStyledTextEvent& event) {
-    const int line = LineFromPosition(event.GetPosition());
+    const auto line = LineFromPosition(event.GetPosition());
     if (event.GetMargin() == m_MarginFoldingNumber)
     {
-      const int level = GetFoldLevel(line);
+      const auto level = GetFoldLevel(line);
       if ((level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
       {
         ToggleFold(line);
@@ -321,7 +317,7 @@ void wxExSTC::BindAll()
 #endif
     if (event.GetMargin() == m_MarginTextNumber)
     {
-      wxMenu* menu = new wxMenu();
+      auto* menu = new wxMenu();
       menu->Append(idMarginTextHide, "&Hide");
       PopupMenu(menu);
       delete menu;
@@ -566,11 +562,11 @@ void wxExSTC::BindAll()
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {SetZoom(--m_Zoom);}, idZoomOut);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(true);}, ID_EDIT_FIND_NEXT);
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {GetFindString(); FindNext(false);}, ID_EDIT_FIND_PREVIOUS);
-  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen(LINK_OPEN_BROWSER);}, idOpenBrowser);
+  Bind(wxEVT_MENU, [=](wxCommandEvent& event) {LinkOpen(LINK_OPEN_MIME);}, idOpenMIME);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    const int level = GetFoldLevel(GetCurrentLine());
-    const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+    const auto level = GetFoldLevel(GetCurrentLine());
+    const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
       GetCurrentLine(): GetFoldParent(GetCurrentLine());
     ToggleFold(line_to_fold);}, idToggleFold);
     
@@ -609,7 +605,7 @@ void wxExSTC::BindAll()
     idMarginTextHide);
 
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    int line = (event.GetId() == idMarkerNext ? 
+    auto line = (event.GetId() == idMarkerNext ? 
       wxStyledTextCtrl::MarkerNext(GetCurrentLine() + 1, 0xFFFF):
       wxStyledTextCtrl::MarkerPrevious(GetCurrentLine() - 1, 0xFFFF));
     if (line == -1)
@@ -630,7 +626,7 @@ void wxExSTC::BindAll()
 
 void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 {
-  const std::string sel = GetSelectedText().ToStdString();
+  const auto sel(GetSelectedText().ToStdString());
 
   if (GetCurrentLine() == 0 && !wxExLexers::Get()->GetLexers().empty())
   {
@@ -639,14 +635,12 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     
   if (m_Data.Menu() & STC_MENU_OPEN_LINK)
   {
-    std::string filename;
-
-    if (LinkOpen(LINK_OPEN_BROWSER | LINK_CHECK))
+    if (sel.empty() && LinkOpen(LINK_OPEN_MIME | LINK_CHECK))
     {
       menu.AppendSeparator();
-      menu.Append(idOpenBrowser, _("&Open In Browser"));
+      menu.Append(idOpenMIME, _("&Preview"));
     }
-    else if (LinkOpen(LINK_OPEN | LINK_CHECK, &filename))
+    else if (std::string filename; LinkOpen(LINK_OPEN | LINK_CHECK, &filename))
     {
       menu.AppendSeparator();
       menu.Append(idOpenLink, _("Open") + " " + filename);
@@ -699,13 +693,13 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   {
     if (!sel.empty())
     {
-      wxExMenu* menuSelection = new wxExMenu(menu.GetStyle());
+      auto* menuSelection = new wxExMenu(menu.GetStyle());
       menuSelection->Append(idUppercase, _("&Uppercase\tF11"));
       menuSelection->Append(idLowercase, _("&Lowercase\tF12"));
 
       if (wxExGetNumberOfLines(sel) > 1)
       {
-        wxExMenu* menuSort = new wxExMenu(menu.GetStyle());
+        auto* menuSort = new wxExMenu(menu.GetStyle());
         menuSort->Append(wxID_SORT_ASCENDING);
         menuSort->Append(wxID_SORT_DESCENDING);
         menuSelection->AppendSeparator();
@@ -753,9 +747,7 @@ void wxExSTC::CheckBrace()
 
 bool wxExSTC::CheckBrace(int pos)
 {
-  const int brace_match = BraceMatch(pos);
-
-  if (brace_match != wxSTC_INVALID_POSITION)
+  if (const auto brace_match = BraceMatch(pos); brace_match != wxSTC_INVALID_POSITION)
   {
     BraceHighlight(pos, brace_match);
     return true;
@@ -769,7 +761,7 @@ bool wxExSTC::CheckBrace(int pos)
 
 void wxExSTC::FileTypeMenu()
 {
-  wxMenu* menu = new wxMenu();
+  auto* menu = new wxMenu();
 
   // The order here should be the same as the defines for wxSTC_EOL_CRLF.
   // So the FindItemByPosition can work

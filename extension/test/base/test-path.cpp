@@ -2,7 +2,7 @@
 // Name:      test-path.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
@@ -49,6 +49,7 @@ TEST_CASE( "wxExPath" )
     path.ReplaceFileName("xxx");
 
     REQUIRE(!wxExPath("XXXXX").GetStat().IsOk());
+    REQUIRE(!wxExPath("XXXXX").OpenMIME());
 
     REQUIRE( wxExPath("XXXXX").MakeAbsolute().GetFullName() == "XXXXX");
     REQUIRE( wxExPath("XXXXX").MakeAbsolute().Path().string() != "XXXXX");

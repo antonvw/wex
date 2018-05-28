@@ -215,9 +215,9 @@ bool wxExViMode::Transition(const std::string& command)
     case wxExViModes::INSERT:
       if (!m_vi->GetSTC()->HexMode())
       {
-        const auto& it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
+        if (const auto& it = std::find_if(m_InsertCommands.begin(), m_InsertCommands.end(), 
           [command](auto const& e) {return e.first == command[0];});
-        if (it != m_InsertCommands.end() && it->second != nullptr)
+          it != m_InsertCommands.end() && it->second != nullptr)
           it->second();
       }
       break;

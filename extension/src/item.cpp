@@ -49,8 +49,6 @@
 
 #if wxUSE_GUI
 
-bool wxExItem::m_UseConfig = true;
-
 wxExItem::wxExItem(wxExItemType type, 
   const wxString& label, const std::any& value, wxExLabelType label_type,
   int major_dimension, const std::any& min, const std::any& max, const std::any& inc,

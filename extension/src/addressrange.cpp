@@ -55,7 +55,7 @@ public:
     m_Ex->MarkerDelete('%');
   }
   
-  int Changes() const {return m_Changes;};
+  auto Changes() const {return m_Changes;};
   
   bool Commands() const {return !m_Commands.empty();};
   
@@ -123,7 +123,7 @@ public:
 private:
   const wxExIndicator m_FindIndicator;
   std::vector<std::string> m_Commands;
-  int m_Changes = 0;
+  int m_Changes {0};
   wxExEx* m_Ex;
 };
 
@@ -269,7 +269,7 @@ int wxExAddressRange::Confirm(
     _("Replace"), 
     wxCANCEL | wxYES_NO);
     
-  const int line = m_STC->LineFromPosition(m_STC->GetTargetStart());
+  const auto line = m_STC->LineFromPosition(m_STC->GetTargetStart());
   
   msgDialog.SetExtendedMessage(wxString::Format("Line %d: %s", 
     line + 1, m_STC->GetLineText(line).c_str()));
@@ -284,7 +284,7 @@ int wxExAddressRange::Confirm(
 
 bool wxExAddressRange::Copy(const wxExAddress& destination) const
 {
-  const int dest_line = destination.GetLine();
+  const auto dest_line = destination.GetLine();
 
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk() ||
      dest_line == 0 || 
@@ -303,7 +303,7 @@ bool wxExAddressRange::Copy(const wxExAddress& destination) const
 
   m_STC->EndUndoAction();
   
-  const int lines = wxExGetNumberOfLines(m_Ex->GetRegisterText());
+  const auto lines = wxExGetNumberOfLines(m_Ex->GetRegisterText());
 
   if (lines >= 2)
   {
@@ -416,9 +416,7 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
   
   if (next.HasMoreTokens())
   {
-    const std::string token(next.GetNextToken());
-    
-    if (!token.empty())
+    if (const std::string token(next.GetNextToken()); !token.empty())
     {
       const char command = token[0];
       std::string arg(token.size() > 1 ? token.substr(1): std::string());
@@ -461,7 +459,7 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
   
   while (m_STC->SearchInTarget(pattern) != -1)
   {
-    int match = m_STC->LineFromPosition(m_STC->GetTargetStart());
+    auto match = m_STC->LineFromPosition(m_STC->GetTargetStart());
     
     if (!inverse)
     {
@@ -492,8 +490,7 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
   
   if (inverse)
   {
-    int match = m_STC->GetLineCount();
-    if (!g.ForEach(start, match, hits)) return false;
+    if (auto match = m_STC->GetLineCount(); !g.ForEach(start, match, hits)) return false;
   }
   
   if (hits > 0)
@@ -553,7 +550,7 @@ bool wxExAddressRange::Join() const
   
 bool wxExAddressRange::Move(const wxExAddress& destination) const
 {
-  const int dest_line = destination.GetLine();
+  const auto dest_line = destination.GetLine();
 
   if (m_STC->GetReadOnly() || m_STC->HexMode() || !IsOk() ||
      dest_line == 0 || 
@@ -572,7 +569,7 @@ bool wxExAddressRange::Move(const wxExAddress& destination) const
 
   m_STC->EndUndoAction();
   
-  const int lines = wxExGetNumberOfLines(m_Ex->GetRegisterText());
+  const auto lines = wxExGetNumberOfLines(m_Ex->GetRegisterText());
 
   if (lines >= 2)
   {
@@ -641,7 +638,7 @@ bool wxExAddressRange::Print(const std::string& flags) const
   
   std::string text;
   
-  for (int i = m_Begin.GetLine() - 1; i < m_End.GetLine(); i++)
+  for (auto i = m_Begin.GetLine() - 1; i < m_End.GetLine(); i++)
   {
     char buffer[8];
     sprintf(buffer, "%6d ", i + 1);
@@ -768,7 +765,7 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
     return false;
   }
 
-  int searchFlags = m_Ex->GetSearchFlags();
+  auto searchFlags = m_Ex->GetSearchFlags();
   if (options.find("i") != std::string::npos) searchFlags &= ~wxSTC_FIND_MATCHCASE;
     
   if ((searchFlags & wxSTC_FIND_REGEXP) && 
@@ -784,7 +781,7 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
   }
 
   int corrected = 0;
-  int end_line = m_End.GetLine() - 1;
+  auto end_line = m_End.GetLine() - 1;
   
   if (!m_STC->GetSelectedText().empty())
   {

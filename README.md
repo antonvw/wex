@@ -7,27 +7,18 @@ one of these applications, being a full featured source code text editor.
 # Requirements
 
 - [cmake](http://www.cmake.org/)    
-
 - a `c++17` standard supporting compiler    
 
 # Uses
 
 - [doctest lib](https://github.com/onqtam/doctest)    
-
 - [easylogging++ lib](https://github.com/muflihun/easyloggingpp)    
-
 - [eval lib](https://github.com/r-lyeh/eval)    
-
 - [fsm lib](https://github.com/eglimi/cppfsm)    
-
 - [OTL database lib](http://otl.sourceforge.net/)    
-
 - [pugixml lib](https://github.com/zeux/pugixml)    
-
 - [tclap lib](http://tclap.sourceforge.net/)    
-
 - [universal-ctags lib](https://github.com/universal-ctags/ctags)    
-
 - [wxWidgets 3.x lib](https://github.com/antonvw/wxWidgets/)
 
 # Build process 
@@ -38,21 +29,11 @@ one of these applications, being a full featured source code text editor.
 
 ## Building
 
-- `git clone --recursive`   
-  `mkdir build`   
-  `cd build`   
+`git clone --recursive`   
+`mkdir build`   
+`cd build`   
+`cmake ..`   
+`make -DwxExBUILD_SP=ON`   
 
-  cmake and make it:    
-  - - under windows:   
-      -- using Visual Studio:   
-        `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
-        `nmake`   
-      -- using mingw:   
-        `cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release ..`   
-        `mingw32-make`   
-    
-  - - under Linux or MacOS:   
-      `cmake ..`   
-      `make`   
-
-- for OTL add `-DwxExUSE_OTL=ON`    
+for Visual Studio add `-G "NMake Makefiles"` and do `nmake`,
+for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`   

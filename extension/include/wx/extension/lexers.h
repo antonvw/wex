@@ -153,5 +153,5 @@ private:
   std::string m_FoldingBackgroundColour, m_FoldingForegroundColour, m_Theme;
   int m_StyleNoTextMargin {-1};
 
-  static wxExLexers* m_Self;
+  static inline wxExLexers* m_Self = nullptr;
 };

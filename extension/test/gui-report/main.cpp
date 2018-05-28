@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -22,7 +22,8 @@ public:
         Type(LIST_KEYWORD).Lexer(&lexer));
       AddPane(this, m_Report);};
 
-  virtual wxExListView* Activate(wxExListType list_type, const wxExLexer* lexer) override {
+  virtual wxExListView* Activate(
+    wxExListType list_type, const wxExLexer* lexer) override {
     // only for coverage
     wxExFrameWithHistory::Activate(list_type, lexer);
     return m_Report;};
@@ -37,7 +38,7 @@ class wxExTestGuiApp : public wxExTestApp
 public: 
   wxExTestGuiApp() : wxExTestApp() {;};
 
-  bool OnInit() 
+  bool OnInit() override
   {
     if (!wxExTestApp::OnInit())
     {

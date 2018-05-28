@@ -2,7 +2,7 @@
 // Name:      item.h
 // Purpose:   Declaration of wxExItem class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -477,7 +477,7 @@ private:
   UserWindowCreate m_UserWindowCreate;
   UserWindowToConfig m_UserWindowToConfig;
   
-  static bool m_UseConfig;
+  static inline bool m_UseConfig = true;
 };
 
 class wxConfigBase;

@@ -124,10 +124,12 @@ const std::string Filtered(
   return entry.name;
 }
 
+std::map< std::string, wxExCTagsEntry > wxExCTags::m_Matches;
+std::map< std::string, wxExCTagsEntry >::iterator wxExCTags::m_Iterator;
+
 wxExCTags::wxExCTags(wxExEx* ex)
   : m_Ex(ex)
   , m_Frame(ex->GetFrame())
-  , m_Iterator(m_Matches.begin())
   , m_Separator(3)
 {
   Init(m_Ex->GetCommand().STC()->GetData().CTagsFileName());
@@ -135,7 +137,6 @@ wxExCTags::wxExCTags(wxExEx* ex)
 
 wxExCTags::wxExCTags(wxExFrame* frame)
   : m_Frame(frame)
-  , m_Iterator(m_Matches.begin())
   , m_Separator(3)
 {
   Init(DEFAULT_TAGFILE);
@@ -182,9 +183,8 @@ std::string wxExCTags::AutoComplete(
   do
   {
     wxExImageAccessType image = IMAGE_NONE;
-    const std::string tag(Filtered(entry, filter, image));
 
-    if (!tag.empty() && tag != prev_tag)
+    if (const auto tag(Filtered(entry, filter, image)); !tag.empty() && tag != prev_tag)
     {
       if (!s.empty()) s.append(std::string(1, m_Separator));
 
@@ -332,9 +332,9 @@ bool wxExCTags::Find(const std::string& name)
 
 void wxExCTags::Init(const std::string& filename)
 {
-  wxExPath path(filename);
+  m_Iterator = m_Matches.begin();
 
-  if (path.IsAbsolute())
+  if (wxExPath path(filename); path.IsAbsolute())
   {
     // an absolute file should exist
     Open(path.Path().string(), true);
@@ -366,6 +366,7 @@ bool wxExCTags::Next()
 {
   if (m_Matches.size() <= 1)
   {
+    VLOG(9) << "ctags no next match: " << m_Matches.size();
     return false;
   }
 
@@ -381,9 +382,7 @@ bool wxExCTags::Next()
 
 bool wxExCTags::Open(const std::string& path, bool show_error)
 {
-  tagFileInfo info;
-
-  if ((m_File = tagsOpen(path.c_str(), &info)) != nullptr)
+  if (tagFileInfo info; (m_File = tagsOpen(path.c_str(), &info)) != nullptr)
   {
     VLOG(9) << "ctags file: " << path;
     return true;
@@ -400,6 +399,7 @@ bool wxExCTags::Previous()
 {
   if (m_Matches.size() <= 1)
   {
+    VLOG(9) << "ctags no previous match: " << m_Matches.size();
     return false;
   }
 

@@ -29,9 +29,8 @@
 #define wxCAST_TO(classname)                                 \
   if (m_FindFocus != nullptr && m_FindFocus->IsShown())      \
   {                                                          \
-    classname* win = dynamic_cast<classname*>(m_FindFocus);  \
-                                                             \
-    if (win != nullptr)                                      \
+    if (classname* win = dynamic_cast<classname*>(m_FindFocus); \
+      win != nullptr)                                        \
     {                                                        \
       return win;                                            \
     }                                                        \
@@ -50,40 +49,35 @@
                                                              \
   wxWindow* win = wxWindow::FindFocus();                     \
                                                              \
-  wxExSTC* cl = dynamic_cast<wxExSTC*>(win);                 \
-                                                             \
-  if (cl != nullptr)                                         \
+  if (wxExSTC* cl = dynamic_cast<wxExSTC*>(win);             \
+    cl != nullptr)                                           \
   {                                                          \
     m_FindFocus = cl;                                        \
   }                                                          \
   else                                                       \
   {                                                          \
-    wxExListView* cl = dynamic_cast<wxExListView*>(win);     \
-                                                             \
-    if (cl != nullptr)                                       \
+    if (wxExListView* cl = dynamic_cast<wxExListView*>(win); \
+      cl != nullptr)                                         \
     {                                                        \
       m_FindFocus = cl;                                      \
     }                                                        \
     else                                                     \
     {                                                        \
-      wxExGrid* grid = dynamic_cast<wxExGrid*>(win);         \
-                                                             \
-      if (grid != nullptr)                                   \
+      if (wxExGrid* grid = dynamic_cast<wxExGrid*>(win);     \
+        grid != nullptr)                                     \
       {                                                      \
         m_FindFocus = grid;                                  \
       }                                                      \
     }                                                        \
   }                                                          \
                                                              \
-  wxExSTC* stc = GetSTC();                                   \
-                                                             \
-  if (stc != nullptr)                                        \
+  if (wxExSTC* stc = GetSTC(); stc != nullptr)               \
   {                                                          \
     stc->GetFindString();                                    \
   }                                                          \
                                                              \
   m_FindReplaceDialog = new wxFindReplaceDialog(             \
-    this, &wxExFindReplaceData::Get()->GetFRD(), text, dlg);  \
+    this, &wxExFindReplaceData::Get()->GetFRD(), text, dlg); \
   m_FindReplaceDialog->Show();                               \
 };                                                           \
   
@@ -166,8 +160,7 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
     ID_VIEW_STATUSBAR);
 
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    wxExListView* lv = GetListView();
-    if (lv != nullptr && lv->HasFocus())
+    if (wxExListView* lv = GetListView(); lv != nullptr && lv->HasFocus())
     {
       UpdateStatusBar(lv);
     }}, ID_UPDATE_STATUS_BAR);
@@ -180,16 +173,14 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
     if (!event.GetString().empty())
     {
       std::string text(event.GetString());
-      wxExSTC* stc = GetSTC();
-      if (stc != nullptr)
+      if (wxExSTC* stc = GetSTC(); stc != nullptr)
       {
         wxExPath::Current(stc->GetFileName().GetPath());
         if (!wxExMarkerAndRegisterExpansion(&stc->GetVi(), text)) return;
       }
       if (!wxExShellExpansion(text)) return;
       std::string cmd;
-      std::vector <std::string> v;
-      if (wxExMatch("\\+([^ \t]+)* *(.*)", text, v) > 1)
+      if (std::vector <std::string> v; wxExMatch("\\+([^ \t]+)* *(.*)", text, v) > 1)
       {
         cmd = v[0];
         text = v[1];
@@ -250,9 +241,7 @@ wxExSTC* wxExFrame::GetSTC()
   
 bool wxExFrame::IsOpen(const wxExPath& filename)
 {
-  wxExSTC* stc = GetSTC();
-  
-  if (stc != nullptr)
+  if (wxExSTC* stc = GetSTC(); stc != nullptr)
   {
     return stc->GetFileName() == filename;
   }
@@ -345,8 +334,8 @@ void wxExFrame::StatusBarClicked(const std::string& pane)
     }
     else
     {
-      wxExListView* lv = GetListView();
-      if (lv != nullptr) wxPostEvent(lv, wxCommandEvent(wxEVT_MENU, wxID_JUMP_TO));
+      if (wxExListView* lv = GetListView();
+        lv != nullptr) wxPostEvent(lv, wxCommandEvent(wxEVT_MENU, wxID_JUMP_TO));
     }
   }
   else if (pane == "PaneLexer")

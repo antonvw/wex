@@ -2,7 +2,7 @@
 // Name:      link.h
 // Purpose:   Declaration of class wxExLink
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,6 +12,10 @@
 #include <wx/extension/path.h>
 
 #if wxUSE_GUI
+
+#define LINK_LINE_OPEN_URL          -1
+#define LINK_LINE_OPEN_MIME         -2
+#define LINK_LINE_OPEN_URL_AND_MIME -3
 
 class wxExControlData;
 class wxExPaths;
@@ -32,10 +36,12 @@ public:
   const wxExPath GetPath(
     /// text containing a path somewhere
     const std::string& text,
-    /// control data to be filled in
-    /// Line from data:
-    /// - -1: look for browse, and browse file
-    /// - -2: look for browse
+    /// control data to be filled in Line from data, 
+    /// you can use:
+    /// - LINK_LINE_OPEN_URL 
+    /// - LINK_LINE_OPEN_MIME 
+    /// - LINK_LINE_OPEN_URL_AND_MIMTE 
+    /// as line number. 
     /// Afterwards Line and Col from data are filled in if possible.
     wxExControlData& data) const;
   

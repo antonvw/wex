@@ -2,7 +2,7 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of wxExStream class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -53,7 +53,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
   {
     if (m_Tool.GetId() == ID_TOOL_REPORT_FIND)
     {
-      const auto it = (!m_FRD->MatchCase() ?
+      if (const auto it = (!m_FRD->MatchCase() ?
         std::search(line.begin(), line.end(), m_FindString.begin(), m_FindString.end(),
           [](char ch1, char ch2) {return std::toupper(ch1) == ch2;}):
 #ifndef __WXMSW__
@@ -63,8 +63,7 @@ bool wxExStream::Process(std::string& line, size_t line_no)
         std::search(line.begin(), line.end(), 
           m_FindString.begin(), m_FindString.end()));
 #endif
-
-      if (it != line.end())
+        it != line.end())
       {
         match = true;
         pos = it - line.begin();
@@ -97,9 +96,8 @@ bool wxExStream::Process(std::string& line, size_t line_no)
       ProcessMatch(line, line_no, pos);
     }
     
-    const auto ac = IncActionsCompleted(count);
-
-    if (!m_Asked && m_Threshold != -1 && (ac - m_Prev > m_Threshold))
+    if (const auto ac = IncActionsCompleted(count);
+      !m_Asked && m_Threshold != -1 && (ac - m_Prev > m_Threshold))
     {
       if (wxMessageBox(
         "More than " + std::to_string(m_Threshold) + " matches in: " + 

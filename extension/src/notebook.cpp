@@ -48,8 +48,7 @@ wxExNotebook::wxExNotebook(const wxExWindowData& data)
     }});
   
   Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, [=](wxAuiNotebookEvent& event) {
-    const auto sel = event.GetSelection();
-    if (sel != wxNOT_FOUND)
+    if (const auto sel = event.GetSelection(); sel != wxNOT_FOUND)
     {
       if (m_Frame != nullptr && !m_Frame->AllowClose(GetId(), GetPage(sel)))
       {
@@ -92,11 +91,10 @@ wxWindow* wxExNotebook::AddPage(
 
 const std::string wxExNotebook::ChangeSelection(const std::string& key)
 {
-  const auto index = GetPageIndexByKey(key);
   int previous;
   
-  if (index != wxNOT_FOUND && 
-    ((previous = wxAuiNotebook::ChangeSelection(index))) >= 0)
+  if (const auto index = GetPageIndexByKey(key); 
+    index != wxNOT_FOUND && ((previous = wxAuiNotebook::ChangeSelection(index))) >= 0)
   {
     wxWindow* page = m_Keys[key];
     m_Keys[key] = page;
@@ -109,9 +107,8 @@ const std::string wxExNotebook::ChangeSelection(const std::string& key)
   
 bool wxExNotebook::DeletePage(const std::string& key)
 {
-  const auto index = GetPageIndexByKey(key);
-
-  if (index != wxNOT_FOUND && wxAuiNotebook::DeletePage(index))
+  if (const auto index = GetPageIndexByKey(key);
+    index != wxNOT_FOUND && wxAuiNotebook::DeletePage(index))
   {
     wxWindow* page = m_Keys[key];
     m_Keys.erase(key);
@@ -170,55 +167,52 @@ bool wxExNotebook::SetPageText(
   const std::string& text,
   const wxBitmap& bitmap)
 {
-  const auto index = GetPageIndexByKey(key);
-
-  if (index == wxNOT_FOUND || !wxAuiNotebook::SetPageText(index, text))
+  if (const auto index = GetPageIndexByKey(key);
+    index == wxNOT_FOUND || !wxAuiNotebook::SetPageText(index, text))
   {
     return false;
   }
-
-  wxWindow* page = m_Keys[key];
-  m_Keys.erase(key);
-  m_Keys[new_key] = page;
-  m_Windows[page] = new_key;
-  
-  if (bitmap.IsOk())
+  else 
   {
-    SetPageBitmap(index, bitmap);
-  }
+    wxWindow* page = m_Keys[key];
+    m_Keys.erase(key);
+    m_Keys[new_key] = page;
+    m_Windows[page] = new_key;
+    
+    if (bitmap.IsOk())
+    {
+      SetPageBitmap(index, bitmap);
+    }
 
-  return true;
+    return true;
+  }
 }
 
 wxWindow* wxExNotebook::SetSelection(const std::string& key)
 {
-  const auto index = GetPageIndexByKey(key);
-
-  if (index == wxNOT_FOUND)
+  if (const auto index = GetPageIndexByKey(key); index == wxNOT_FOUND)
   {
     return nullptr;
   }
-
-  wxAuiNotebook::SetSelection(index);
-  
-  wxWindow* page = GetPage(index);
-  
-  page->SetFocus();
-  
-  return page;
+  else 
+  {
+    wxAuiNotebook::SetSelection(index);
+    wxWindow* page = GetPage(index);
+    page->SetFocus();
+    return page;
+  }
 }
   
 bool wxExNotebook::Split(const std::string& key, int direction)
 {
-  const auto index = GetPageIndexByKey(key);
-
-  if (index == wxNOT_FOUND)
+  if (const auto index = GetPageIndexByKey(key); index == wxNOT_FOUND)
   {
     return false;
   }
-  
-  wxAuiNotebook::Split(index, direction);
-  
-  return true;
+  else 
+  {
+    wxAuiNotebook::Split(index, direction);
+    return true;
+  }
 }
 #endif // wxUSE_GUI

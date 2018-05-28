@@ -2,7 +2,7 @@
 // Name:      tool.cpp
 // Purpose:   Implementation of wxExTool class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -28,14 +28,10 @@ wxExTool::wxExTool(int type)
 
 const std::string wxExTool::Info() const
 {
-  const auto& it = m_ToolInfo.find(m_Id);
-
-  if (it != m_ToolInfo.end())
-  {
+  if (const auto& it = m_ToolInfo.find(m_Id); it != m_ToolInfo.end())
     return it->second.GetInfo();
-  }
-
-  return std::string();
+  else 
+    return std::string();
 }
 
 const std::string wxExTool::Info(const wxExStatistics<int>* stat) const

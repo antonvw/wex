@@ -5,6 +5,8 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/mimetype.h>
+#include <wx/url.h>
 #include <wx/extension/path.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
@@ -31,7 +33,8 @@ wxExPath::wxExPath(const std::experimental::filesystem::path& p)
 }
 
 wxExPath::wxExPath(const std::string& path, const std::string& name)
-  : wxExPath(std::experimental::filesystem::path(SubstituteTilde(path)).append(name).string())
+  : wxExPath(std::experimental::filesystem::path(SubstituteTilde(path)).
+      append(name).string())
 {
 }
 
@@ -140,6 +143,34 @@ wxExPath& wxExPath::MakeAbsolute(const wxExPath& base)
   }
 
   return *this;
+}
+
+bool wxExPath::OpenMIME() const
+{
+  if (const auto & ex = GetExtension(); ex.empty())
+  {
+    if (wxURL url(m_path.string()); url.IsOk())
+    {
+      return wxLaunchDefaultBrowser(m_path.string());
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else if (auto* type = wxTheMimeTypesManager->GetFileTypeFromExtension(ex);
+    type == nullptr)
+  {
+    return false;
+  }
+  else if (const std::string command(type->GetOpenCommand(Path().string())); command.empty())
+  {
+    return false;
+  }
+  else
+  {
+    return wxExecute(command) != -1;
+  }
 }
 
 wxExPath& wxExPath::ReplaceFileName(const std::string& filename)

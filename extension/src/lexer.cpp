@@ -40,6 +40,7 @@ wxExLexer& wxExLexer::operator=(const wxExLexer& l)
     m_Keywords = l.m_Keywords;
     m_KeywordsSet = l.m_KeywordsSet;
     m_Language = l.m_Language;
+    m_Previewable = l.m_Previewable;
     m_Properties = l.m_Properties;
     m_ScintillaLexer = l.m_ScintillaLexer;
     m_Styles = l.m_Styles;
@@ -70,24 +71,21 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
   while (tkz.HasMoreTokens())
   {
     const std::string line = tkz.GetNextToken();
-    wxExTokenizer fields(line, ":");
     std::string keyword;
 
-    if (fields.CountTokens() > 1)
+    if (wxExTokenizer fields(line, ":"); fields.CountTokens() > 1)
     {
       keyword = fields.GetNextToken();
 
       try
       {
-        const int new_setno = std::stoi(fields.GetNextToken());
-
-        if (new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
+        if (const auto new_setno = std::stoi(fields.GetNextToken());
+          new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
         {
           wxExLog("invalid keyword set") << new_setno;
           return false;
         }
-
-        if (new_setno != setno)
+        else if (new_setno != setno)
         {
           if (!keywords_set.empty())
           {
@@ -113,9 +111,7 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
     m_Keywords.insert(keyword);
   }
 
-  const auto& it = m_KeywordsSet.find(setno);
-  
-  if (it == m_KeywordsSet.end())
+  if (const auto& it = m_KeywordsSet.find(setno); it == m_KeywordsSet.end())
   {
     m_KeywordsSet.insert({setno, keywords_set});
   }
@@ -160,9 +156,7 @@ bool wxExLexer::Apply() const
   }
 
   // And finally colour the entire document.
-  const auto length = m_STC->GetLength();
-
-  if (length > 0)
+  if (const auto length = m_STC->GetLength(); length > 0)
   {
     m_STC->Colourise(0, length - 1);
   }
@@ -172,25 +166,23 @@ bool wxExLexer::Apply() const
 
 void wxExLexer::AutoMatch(const std::string& lexer)
 {
-  const wxExLexer& l(wxExLexers::Get()->FindByName(lexer));
-  
-  if (l.GetScintillaLexer().empty())
+  if (const wxExLexer& l(wxExLexers::Get()->FindByName(lexer));
+    l.GetScintillaLexer().empty())
   {
     for (const auto& it : wxExLexers::Get()->GetMacros(lexer))
     {
-      const auto& macro = wxExLexers::Get()->GetThemeMacros().find(it.first);
-
       // First try exact match.
-      if (macro != wxExLexers::Get()->GetThemeMacros().end())
+      if (const auto& macro = wxExLexers::Get()->GetThemeMacros().find(it.first);
+        macro != wxExLexers::Get()->GetThemeMacros().end())
       {
         m_Styles.emplace_back(wxExStyle(it.second, macro->second));
       }
       else
       {
         // Then, a partial using find_if.
-        const auto& style = std::find_if(wxExLexers::Get()->GetThemeMacros().begin(), wxExLexers::Get()->GetThemeMacros().end(), 
+        if (const auto& style = std::find_if(wxExLexers::Get()->GetThemeMacros().begin(), wxExLexers::Get()->GetThemeMacros().end(), 
           [&](auto const& e) {return it.first.find(e.first) != std::string::npos;});
-        if (style != wxExLexers::Get()->GetThemeMacros().end())
+          style != wxExLexers::Get()->GetThemeMacros().end())
           m_Styles.emplace_back(wxExStyle(it.second, style->second));
       }
     }
@@ -269,9 +261,8 @@ const std::string wxExLexer::GetKeywordsString(
   }
   else
   {
-    const auto& it = m_KeywordsSet.find(keyword_set);
-
-    if (it != m_KeywordsSet.end())
+    if (const auto& it = m_KeywordsSet.find(keyword_set);
+      it != m_KeywordsSet.end())
     {
       return wxExGetStringSet(it->second, min_size, prefix);
     }
@@ -387,6 +378,9 @@ void wxExLexer::Reset()
   m_Styles.clear();
 
   m_IsOk = false;
+  m_Previewable = false;
+
+  m_EdgeMode = wxExEdgeMode::ABSENT;
   
   if (m_STC != nullptr)
   {
@@ -413,10 +407,9 @@ void wxExLexer::Set(const pugi::xml_node* node)
       m_ScintillaLexer);
     m_Extensions = node->attribute("extensions").value();
     m_Language = node->attribute("language").value();
+    m_Previewable = !node->attribute("preview").empty();
 
-    const std::string em(node->attribute("edgemode").value());
-
-    if (!em.empty())
+    if (const std::string em(node->attribute("edgemode").value()); !em.empty())
     {
       if (em == "none")
         m_EdgeMode = wxExEdgeMode::NONE;
@@ -428,9 +421,8 @@ void wxExLexer::Set(const pugi::xml_node* node)
         wxExLog("unsupported edge mode") << em << *node;
     }
 
-    const std::string ec(node->attribute("edgecolumns").value());
-
-    if (!ec.empty())
+    if (const std::string ec(node->attribute("edgecolumns").value());
+      !ec.empty())
     {
       try
       {
@@ -463,9 +455,8 @@ void wxExLexer::Set(const pugi::xml_node* node)
       else if (strcmp(child.name(), "keywords") == 0)
       {
         // Add all direct keywords
-        const std::string& direct(child.text().get());
-        
-        if (!direct.empty() && !AddKeywords(direct))
+        if (const std::string& direct(child.text().get());
+          !direct.empty() && !AddKeywords(direct))
         {
           wxExLog("keywords could not be set") << child;
         }
@@ -597,9 +588,9 @@ bool wxExLexer::Set(const wxExLexer& lexer, bool fold)
 
 void wxExLexer::SetProperty(const std::string& name, const std::string& value)
 {
-  const auto& it = std::find_if(m_Properties.begin(), m_Properties.end(), 
+  if (const auto& it = std::find_if(m_Properties.begin(), m_Properties.end(), 
     [name](auto const& e) {return e.GetName() == name;});
-  if (it != m_Properties.end()) it->Set(value);
+    it != m_Properties.end()) it->Set(value);
   else m_Properties.emplace_back(wxExProperty(name, value));
 }
 

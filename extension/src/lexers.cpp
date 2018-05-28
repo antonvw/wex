@@ -20,8 +20,6 @@
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h> // for wxExMatchesOneOf
 
-wxExLexers* wxExLexers::m_Self = nullptr;
-
 // Constructor for lexers from specified filename.
 // This must be an existing xml file containing all lexers.
 // It does not do LoadDocument, however if you use the global Get,
@@ -76,9 +74,8 @@ void wxExLexers::ApplyGlobalStyles(wxExSTC* stc)
     stc->SetFoldMarginColour(true, col);
   }
 
-  const auto& colour_it = m_ThemeColours.find(m_Theme);
-  
-  if (colour_it != m_ThemeColours.end())
+  if (const auto& colour_it = m_ThemeColours.find(m_Theme);
+    colour_it != m_ThemeColours.end())
   {
     for (const auto& it : colour_it->second)
     {
@@ -95,19 +92,14 @@ void wxExLexers::ApplyGlobalStyles(wxExSTC* stc)
 
 const std::string wxExLexers::ApplyMacro(const std::string& text, const std::string& lexer)
 {
-  const auto& it = GetMacros(lexer).find(text);
-  
-  if (it != GetMacros(lexer).end())
-  {
+  if (const auto& it = GetMacros(lexer).find(text);
+    it != GetMacros(lexer).end())
     return it->second;
-  }
-  else
-  {
-    const auto& it = GetThemeMacros().find(text);
-    if (it != GetThemeMacros().end()) return it->second;
-  }
-  
-  return text;
+  else if (const auto& it = GetThemeMacros().find(text);
+    it != GetThemeMacros().end()) 
+    return it->second;
+  else 
+    return text;
 }
 
 void wxExLexers::ApplyMarginTextStyle(wxExSTC* stc, int line) const
@@ -190,11 +182,10 @@ bool wxExLexers::LoadDocument()
   if (!m_Path.FileExists()) return false;
   
   pugi::xml_document doc;
-  const pugi::xml_parse_result result = doc.load_file(
-    m_Path.Path().string().c_str(),
-    pugi::parse_default | pugi::parse_trim_pcdata);
 
-  if (!result)
+  if (const auto result = doc.load_file(m_Path.Path().string().c_str(), 
+    pugi::parse_default | pugi::parse_trim_pcdata);
+    !result)
   {
     wxExXmlError(m_Path, &result);
     return false;
@@ -221,15 +212,13 @@ bool wxExLexers::LoadDocument()
     else if (strcmp(node.name(), "keyword")== 0) ParseNodeKeyword(node);
     else if (strcmp(node.name(), "lexer") ==  0) 
     {
-      const wxExLexer lexer(&node);
-      if (lexer.IsOk()) m_Lexers.emplace_back(lexer);
+      if (const wxExLexer lexer(&node); lexer.IsOk()) 
+        m_Lexers.emplace_back(lexer);
     }
   }
 
   // Check config, but do not create one.
-  wxConfigBase* config = wxConfigBase::Get(false);
-
-  if (config != nullptr)
+  if (wxConfigBase* config = wxConfigBase::Get(false); config != nullptr)
   {
     const std::string extensions(std::accumulate(
       m_Lexers.begin(), m_Lexers.end(), std::string(wxFileSelectorDefaultWildcardStr), 
@@ -248,6 +237,7 @@ bool wxExLexers::LoadDocument()
     if (!m_DefaultStyle.IsOk()) wxExLog() << "default style not ok";
     if (!m_DefaultStyle.ContainsDefaultStyle()) wxExLog() << "default style does not contain default style";
   }  
+
   if (m_ThemeMacros.size() <= 1) // NoTheme is always present
   {
     wxExLog() << "themes are missing";
@@ -290,17 +280,14 @@ void wxExLexers::ParseNodeGlobal(const pugi::xml_node& node)
     }
     else if (strcmp(child.name(), "indicator") == 0)
     {
-      const wxExIndicator indicator(child);
-
-      if (indicator.IsOk())
+      if (const wxExIndicator indicator(child); indicator.IsOk())
       {
         m_Indicators.insert(indicator);
       }
     }
     else if (strcmp(child.name(), "marker") == 0)
     {
-      const wxExMarker marker(child);
-      if (marker.IsOk()) m_Markers.insert(marker);
+      if (const wxExMarker marker(child); marker.IsOk()) m_Markers.insert(marker);
     }
     else if (strcmp(child.name(), "properties") == 0)
     {
@@ -308,9 +295,7 @@ void wxExLexers::ParseNodeGlobal(const pugi::xml_node& node)
     }
     else if (strcmp(child.name(), "style") == 0)
     {
-      const wxExStyle style(child, "global");
-
-      if (style.ContainsDefaultStyle())
+      if (const wxExStyle style(child, "global"); style.ContainsDefaultStyle())
       {
         if (m_DefaultStyle.IsOk())
         {
@@ -358,20 +343,15 @@ void wxExLexers::ParseNodeMacro(const pugi::xml_node& node)
 
       for (const auto& macro: child.children())
       {
-        const std::string no = macro.attribute("no").value();
-        const std::string content = macro.text().get();
-
-        if (!no.empty())
+        if (const std::string no = macro.attribute("no").value(); !no.empty())
         {
-          const auto& it = macro_map.find(no);
-
-          if (it != macro_map.end())
+          if (const auto& it = macro_map.find(no); it != macro_map.end())
           {
             wxExLog("macro") << no << macro << " already exists";
           }
           else
           {
-            if (!content.empty())
+            if (const std::string content = macro.text().get(); !content.empty())
             {
               try
               {
@@ -408,17 +388,12 @@ void wxExLexers::ParseNodeTheme(const pugi::xml_node& node)
   
   for (const auto& child: node.children())
   {
-    const std::string content = child.text().get();
-      
-    if (strcmp(child.name(), "def") == 0)
+    if (const std::string content = child.text().get();
+      strcmp(child.name(), "def") == 0)
     {
-      const std::string style = child.attribute("style").value();
-      
-      if (!style.empty())
+      if (const std::string style = child.attribute("style").value(); !style.empty())
       {
-        const auto& it = tmpMacros.find(style);
-
-        if (it != tmpMacros.end())
+        if (const auto& it = tmpMacros.find(style); it != tmpMacros.end())
         {
           wxExLog("macro style") <<  style << child << " already exists";
         }
@@ -460,8 +435,8 @@ bool SingleChoice(wxWindow* parent, const wxString& title,
 {
   wxSingleChoiceDialog dlg(parent, _("Input") + ":", title, s);
 
-  const int index = s.Index(selection);
-  if (index != wxNOT_FOUND) dlg.SetSelection(index);
+  if (const auto index = s.Index(selection); 
+    index != wxNOT_FOUND) dlg.SetSelection(index);
   if (dlg.ShowModal() == wxID_CANCEL) return false;
 
   selection = dlg.GetStringSelection();

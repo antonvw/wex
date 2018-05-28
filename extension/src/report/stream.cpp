@@ -2,7 +2,7 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of class wxExStreamToListView
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cctype> // for isspace
@@ -282,9 +282,8 @@ void wxExStreamToListView::ProcessEnd()
     for (const auto& setit : GetFileName().GetLexer().GetKeywords())
     {
       const wxExStatistics<int>& stat = GetStatistics().GetElements();
-      const auto& it = stat.GetItems().find(setit);
       
-      if (it != stat.GetItems().end())
+      if (const auto& it = stat.GetItems().find(setit); it != stat.GetItems().end())
       {
         m_Report->SetItem(
           item.GetId(), 

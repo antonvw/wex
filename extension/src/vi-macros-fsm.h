@@ -97,15 +97,14 @@ private:
   void SetAskForInput() const;
   void StartRecording();
   void StopRecording();
-
   static void Verbose(States, States, Triggers);
 
   int m_count{1};
   bool m_error {false}, m_playback {false};
   wxExEx* m_ex {nullptr};
-  static std::string m_macro;
   wxExVariable m_variable;
   std::string* m_expanded {nullptr};
+  static inline std::string m_macro;
 
   FSM::Fsm<States, States::IDLE, Triggers> m_fsm;
 };

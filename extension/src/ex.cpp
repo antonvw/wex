@@ -72,9 +72,7 @@ enum class wxExInfoMessage
 
 wxExCommandArg ParseCommandWithArg(const std::string& command)
 {
-  const std::string post(wxExAfter(command, ' '));
-
-  if (post == command)
+  if (const std::string post(wxExAfter(command, ' ')); post == command)
   {
     return wxExCommandArg::NONE;
   }
@@ -614,9 +612,7 @@ bool wxExEx::HandleContainer(
   const T * container,
   std::function<bool(const std::string&, const std::string&)> cb)
 {
-  wxExTokenizer tkz(command);
-
-  if (tkz.CountTokens() >= 2)
+  if (wxExTokenizer tkz(command); tkz.CountTokens() >= 2)
   {
     tkz.GetNextToken(); // skip
     const std::string name(tkz.GetNextToken());
@@ -643,9 +639,8 @@ void wxExEx::InfoMessage() const
 
 void wxExEx::InfoMessage(const std::string& text, wxExInfoMessage type) const
 {
-  const auto lines = wxExGetNumberOfLines(text);
-  
-  if (lines >= wxConfig::Get()->Read("Reported lines", 5))
+  if (const auto lines = wxExGetNumberOfLines(text);
+    lines >= wxConfig::Get()->Read("Reported lines", 5))
   {
     wxString msg;
 
@@ -679,9 +674,7 @@ bool wxExEx::MarkerAdd(char marker, int line)
 
   if (lm.GetSymbol() == wxSTC_MARK_CHARACTER)
   {
-    const auto& it = m_MarkerNumbers.find(marker);
-
-    if (it == m_MarkerNumbers.end())
+    if (const auto& it = m_MarkerNumbers.find(marker); it == m_MarkerNumbers.end())
     {
       // We have symbol:
       // 0: non-char ex marker
@@ -722,9 +715,7 @@ bool wxExEx::MarkerAdd(char marker, int line)
 
 bool wxExEx::MarkerDelete(char marker)
 {
-  const auto& it = m_MarkerIdentifiers.find(marker);
-
-  if (it != m_MarkerIdentifiers.end())
+  if (const auto& it = m_MarkerIdentifiers.find(marker); it != m_MarkerIdentifiers.end())
   {
     m_Command.STC()->MarkerDeleteHandle(it->second);
     m_MarkerIdentifiers.erase(it);
@@ -736,9 +727,7 @@ bool wxExEx::MarkerDelete(char marker)
 
 bool wxExEx::MarkerGoto(char marker)
 {
-  const int line = MarkerLine(marker);
-  
-  if (line != -1)
+  if (const auto line = MarkerLine(marker); line != -1)
   {
     wxExSTCData(m_Command.STC()).Control(wxExControlData().Line(line + 1)).Inject();
     return true;
@@ -769,11 +758,9 @@ int wxExEx::MarkerLine(char marker) const
   }
   else
   {
-    const auto& it = m_MarkerIdentifiers.find(marker);
-
-    if (it != m_MarkerIdentifiers.end())
+    if ( const auto& it = m_MarkerIdentifiers.find(marker); it != m_MarkerIdentifiers.end())
     {
-      const int line = m_Command.STC()->MarkerLineFromHandle(it->second);
+      const auto line = m_Command.STC()->MarkerLineFromHandle(it->second);
     
       if (line == -1)
       {
@@ -860,9 +847,8 @@ void wxExEx::SetRegistersDelete(const std::string& value) const
   
   for (int i = 9; i >= 2; i--)
   {
-    const std::string value(m_Macros.GetRegister(wxUniChar(48 + i - 1)));
-    
-    if (!value.empty())
+    if (const std::string value(m_Macros.GetRegister(wxUniChar(48 + i - 1)));
+      !value.empty())
     {
       m_Macros.SetRegister(wxUniChar(48 + i), value);
     }
@@ -936,8 +922,7 @@ bool wxExEx::Yank(const char name, bool show_message) const
   {
     return false;
   }
-  
-  if (GetRegister())
+  else if (GetRegister())
   {
     m_Macros.SetRegister(GetRegister(), range);
   }

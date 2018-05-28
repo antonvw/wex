@@ -28,9 +28,7 @@ public:
   wxExPath FindPath(const std::string& path) const {
     for (const auto& it : m_Paths)
     {
-      const wxExPath valid(it, path);
-
-      if (valid.FileExists())
+      if (const wxExPath valid(it, path); valid.FileExists())
       {
         return valid;
       }
@@ -53,7 +51,9 @@ wxExLink::~wxExLink()
 const wxExPath wxExLink::FindPath(
   const std::string& text, const wxExControlData& data) const
 {
-  if (text.empty())
+  if (text.empty() &&
+    data.Line() != LINK_LINE_OPEN_MIME &&
+    data.Line() != LINK_LINE_OPEN_URL_AND_MIME)
   {
     return wxExPath();
   }
@@ -67,8 +67,8 @@ const wxExPath wxExLink::FindPath(
   }
   
   // hypertext link
-  std::vector <std::string> v;
-  if (data.Line() < 0 &&
+  if (std::vector <std::string> v; 
+      (data.Line() == LINK_LINE_OPEN_URL || LINK_LINE_OPEN_URL_AND_MIME) && 
       (wxExMatch("(https?:.*)", text, v) > 0 || 
        wxExMatch("(www.*)", text, v) > 0))
   {
@@ -78,9 +78,7 @@ const wxExPath wxExLink::FindPath(
     
     for (const auto c : delimiters)
     {
-      const size_t pos = match.find(c);
-      
-      if (pos != std::string::npos)
+      if (const size_t pos = match.find(c); pos != std::string::npos)
       {
         return match.substr(0, pos);
       }
@@ -90,16 +88,10 @@ const wxExPath wxExLink::FindPath(
     return match;
   }
   
-  // hypertext file
-  if (
-    data.Line() == -1 &&
-    m_STC != nullptr && 
-    m_STC->GetLexer().GetScintillaLexer() == "hypertext")
+  if (data.Line() == LINK_LINE_OPEN_URL)
   {
-    return m_STC->GetFileName();
+    return std::string();
   }
-  
-  if (data.Line() < 0) return wxExPath();
 
   // Better first try to find "...", then <...>, as in next example.
   // <A HREF="http://www.scintilla.org">scintilla</A> component.
@@ -116,6 +108,21 @@ const wxExPath wxExLink::FindPath(
     }
   }
 
+  // Previewable (MIME) file
+  if (
+    data.Line() == LINK_LINE_OPEN_MIME || 
+    data.Line() == LINK_LINE_OPEN_URL_AND_MIME)
+  {
+    if (m_STC != nullptr && m_STC->GetLexer().Previewable())
+    {
+      return m_STC->GetFileName();
+    }
+    else 
+    {
+      return std::string();
+    }
+  }
+  
   return wxExSkipWhiteSpace(text);
 }
 
@@ -126,7 +133,9 @@ const wxExPath wxExLink::GetPath(
   const wxExPath path(FindPath(text, data));
 
   // if http link requested  
-  if (data.Line() < 0)
+  if (data.Line() == LINK_LINE_OPEN_MIME || 
+      data.Line() == LINK_LINE_OPEN_URL ||
+      data.Line() == LINK_LINE_OPEN_URL_AND_MIME)
   { 
     return path;
   }
@@ -150,9 +159,7 @@ const wxExPath wxExLink::GetPath(
   if (file.IsRelative() && 
       m_STC != nullptr && m_STC->GetFileName().FileExists())
   {
-    wxExPath path(file.MakeAbsolute(m_STC->GetFileName()));
-
-    if (path.FileExists())
+    if (wxExPath path(file.MakeAbsolute(m_STC->GetFileName())); path.FileExists())
     {
       return path;
     }
@@ -209,9 +216,8 @@ bool wxExLink::SetLink(wxExPath& link, wxExControlData& data) const
 #endif
 
   // file[:line[:column]]
-  std::vector <std::string> v;
-  
-  if (wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link.Path().string(), v) > 0)
+  if (std::vector <std::string> v;
+    wxExMatch("([0-9A-Za-z _/.-]+):([0-9]*):?([0-9]*)", link.Path().string(), v) > 0)
   {
     link = v[0];
     data.Reset();

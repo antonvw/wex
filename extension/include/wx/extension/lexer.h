@@ -141,6 +141,10 @@ public:
     bool fill_out_with_space = true,
     bool fill_out = true) const;
     
+  /// Returns true if the stc component 
+  /// associated with this lexer can be previewed.
+  bool Previewable() const {return m_Previewable;};
+
   /// Resets lexer and applies it to stc.
   /// The is ok member is set to false.
   void Reset();
@@ -184,7 +188,7 @@ private:
   std::vector<wxExProperty> m_Properties;
   std::vector<wxExStyle> m_Styles;
   
-  bool m_IsOk {false};
+  bool m_IsOk {false}, m_Previewable {false};
   wxExEdgeMode m_EdgeMode {wxExEdgeMode::ABSENT};
   wxExSTC* m_STC {nullptr};
 };

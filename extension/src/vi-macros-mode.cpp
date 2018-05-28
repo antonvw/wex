@@ -34,10 +34,8 @@ bool ShowDialog(wxWindow* parent, std::string& macro)
     _("Input") + ":", 
     _("Select Macro"),
     macros);
-    
-  const int index = macros.Index(wxExViMacros::GetMacro());
 
-  if (index != wxNOT_FOUND)
+  if (const auto index = macros.Index(wxExViMacros::GetMacro()); index != wxNOT_FOUND)
   {
     dialog.SetSelection(index);
   }
@@ -163,16 +161,15 @@ int wxExViMacrosMode::Transition(
       }
       else
       {
-        std::vector <std::string> v;
-
-        if (wxExMatch("@([a-zA-Z].+)@", macro, v) > 0)
+        if (std::vector <std::string> v;
+          wxExMatch("@([a-zA-Z].+)@", macro, v) > 0)
         {
           macro = v[0];
         }
         else if (wxExViMacros::StartsWith(macro.substr(1)))
         {
-          std::string s;
-          if (wxExAutoCompleteText(macro.substr(1), wxExViMacros::Get(), s))
+          if (std::string s;
+            wxExAutoCompleteText(macro.substr(1), wxExViMacros::Get(), s))
           {
             wxExFrame::StatusText(s, "PaneMacro");
             macro = s;

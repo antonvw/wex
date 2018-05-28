@@ -77,11 +77,10 @@ bool wxExSTC::FindNext(
 
       do
       {
-        const std::string margin(MarginGetText(line));
-
-        if (((find_flags & wxSTC_FIND_REGEXP) && 
-          std::regex_search(margin, m, std::regex(text))) ||
-          margin.find(text) != std::string::npos) 
+        if (const std::string margin(MarginGetText(line));
+           ((find_flags & wxSTC_FIND_REGEXP) && 
+             std::regex_search(margin, m, std::regex(text))) ||
+             margin.find(text) != std::string::npos) 
         {
           found = true;
         }
@@ -104,11 +103,10 @@ bool wxExSTC::FindNext(
 
       do
       {
-        const std::string margin(MarginGetText(line));
-
-        if (((find_flags & wxSTC_FIND_REGEXP) && 
-          std::regex_search(margin, m, std::regex(text))) ||
-          margin.find(text) != std::string::npos) 
+        if (const std::string margin(MarginGetText(line));
+          ((find_flags & wxSTC_FIND_REGEXP) && 
+            std::regex_search(margin, m, std::regex(text))) ||
+            margin.find(text) != std::string::npos) 
         {
           found = true;
         }

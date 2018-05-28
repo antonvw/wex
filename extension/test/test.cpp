@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #define DOCTEST_CONFIG_IMPLEMENT
@@ -15,7 +15,6 @@
 #include <functional>
 #include <wx/config.h>
 #include <wx/timer.h>
-#include <wx/uiaction.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
@@ -86,76 +85,9 @@ const wxExPath GetTestPath(const std::string& file)
   return wxExTestApp::GetTestPath(file);
 }
 
-void SystemArg(
-  const std::string& cmd, const std::string& file, const std::string& dir)
-{
-  const wxExPath path({"..", "..", "data", file});
-  const std::string line(cmd + " " + path.Path().string() + " " + dir);
-
-  (void)system(line.c_str());
-}
-
-void SetEnvironment(const std::string& dir)
-{
-  if (!wxExPath(dir).DirExists())
-  {
-    (void)system(std::string("mkdir -p " + dir).c_str());
-  }
-
-#ifdef __UNIX__
-  const std::string cp("cp");
-#else
-  const std::string cp("COPY");
-#endif
-  
-  for (const auto& it : {"cht.txt", "conf.elp", "lexers.xml", "macros.xml", "menus.xml"})
-  {
-    SystemArg(cp, it, dir);
-  }
-
-#if wxExUSE_OTL
-  (void)system(std::string(cp + " .odbc.ini " + wxGetHomeDir()).c_str());
-#endif
-
-  // Create the global lexers object (after copying lexers.xml), 
-  wxExLexers::Get();
-}
-    
 bool wxExUIAction(wxWindow* win, const std::string& action, const std::string& par)
 {
-#if wxCHECK_VERSION(3,1,0)
-  wxUIActionSimulator sim;
-
-  if (action.find("button") == 0)
-  {
-    sim.MouseMove(win->GetScreenPosition() + wxPoint(100, 100));
-    
-    if (par.find("left") != std::string::npos || par.find("right") != std::string::npos)
-    {
-      sim.MouseClick(par.find("right") != std::string::npos ? wxMOUSE_BTN_RIGHT: wxMOUSE_BTN_LEFT);
-    }
-  }
-  else if (action.find("key") == 0)
-  {
-  }
-  else if (action.find("toolbar") == 0)
-  {
-    sim.MouseMove(win->GetScreenPosition() + wxPoint(5, 5));
-    sim.MouseClick(wxMOUSE_BTN_LEFT);
-  }
-  else
-  {
-    return false;
-  }
-  
-  wxTimer* timer = new wxTimer(wxTheApp);
-  timer->StartOnce(100);
-
-  wxTheApp->Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
-    wxUIActionSimulator sim;
-    sim.Char(WXK_RETURN);});
-#endif
-
+  // no longer wxUIActionSimulator needed
   return true;
 }
   
@@ -165,14 +97,14 @@ wxExPath wxExTestApp::GetTestPath(const std::string& file)
 {
   return file.empty() ?
     m_TestPath:
-    wxExPath({m_TestPath.Path().string(), file});
+    wxExPath(m_TestPath.Path().string(), file);
 }
 
 bool wxExTestApp::OnInit()
 {
-  SetAppName("wxex-test-gui");
+  SetAppName("wxex-test"); // as in CMakeLists
   SetTestPath();
-  SetEnvironment(wxExConfigDir());
+  wxExLexers::Get();
   
   if (!wxExApp::OnInit())
   {

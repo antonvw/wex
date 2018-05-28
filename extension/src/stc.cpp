@@ -24,8 +24,6 @@
 
 #if wxUSE_GUI
 
-int wxExSTC::m_Zoom = -1;
-
 wxExSTC::wxExSTC(const std::string& text, const wxExSTCData& data)
   : wxExSTC(wxExPath(), data)
 {
@@ -132,17 +130,11 @@ bool wxExSTC::CanPaste() const
   return wxStyledTextCtrl::CanPaste() && !GetReadOnly() && !HexMode();
 }
 
-
 void wxExSTC::Clear()
 {
-  if (m_vi.GetIsActive() && GetSelectedText().empty())
-  {
-    (void)m_vi.Command(std::string(1, WXK_DELETE));
-  }
-  else
-  {
+  m_vi.GetIsActive() && GetSelectedText().empty() ?
+    (void)m_vi.Command(std::string(1, WXK_DELETE)):
     wxStyledTextCtrl::Clear();
-  }
 }
 
 void wxExSTC::ClearDocument(bool set_savepoint)
@@ -220,14 +212,14 @@ void wxExSTC::FoldAll()
 {
   if (GetProperty("fold") != "1") return;
 
-  const int current_line = GetCurrentLine();
+  const auto current_line = GetCurrentLine();
   const bool xml = (m_Lexer.GetLanguage() == "xml");
 
   int line = 0;
   while (line < GetLineCount())
   {
-    const int level = GetFoldLevel(line);
-    const int last_child_line = GetLastChild(line, level);
+    const auto level = GetFoldLevel(line);
+    const auto last_child_line = GetLastChild(line, level);
     
     if (xml && (
         level == wxSTC_FOLDLEVELBASE + wxSTC_FOLDLEVELHEADERFLAG))
@@ -264,9 +256,8 @@ const std::string wxExSTC::GetEOL() const
 // Cannot be const because of GetSelectedText (not const in 2.9.4).
 const std::string wxExSTC::GetFindString()
 {
-  const std::string selection = GetSelectedText().ToStdString();
-
-  if (!selection.empty() && wxExGetNumberOfLines(selection) == 1)
+  if (const auto selection = GetSelectedText().ToStdString();
+    !selection.empty() && wxExGetNumberOfLines(selection) == 1)
   {
     bool alnum = true;
     
@@ -300,9 +291,9 @@ const std::string wxExSTC::GetFindString()
 
 const std::string wxExSTC::GetWordAtPos(int pos) const
 {
-  const int word_start = 
+  const auto word_start = 
     const_cast< wxExSTC * >( this )->WordStartPosition(pos, true);
-  const int word_end = 
+  const auto word_end = 
     const_cast< wxExSTC * >( this )->WordEndPosition(pos, true);
 
   if (word_start == word_end && word_start < GetTextLength())
@@ -354,30 +345,31 @@ void wxExSTC::GuessType()
 
 bool wxExSTC::LinkOpen()
 {
-  return LinkOpen(LINK_OPEN | LINK_OPEN_BROWSER);
+  return LinkOpen(LINK_OPEN | LINK_OPEN_MIME);
 }
 
 bool wxExSTC::LinkOpen(int mode, std::string* filename)
 {
-  const std::string sel = GetSelectedText().ToStdString();
+  const auto sel = GetSelectedText().ToStdString();
 
-  if (sel.size() > 200 || sel.find('\n') != std::string::npos)
+  if (sel.size() > 200 || 
+    (!sel.empty() && sel.find('\n') != std::string::npos))
   {
     return false;
   }
 
   const std::string text = (!sel.empty() ? sel: GetCurLine().ToStdString());
 
-  if (mode & LINK_OPEN_BROWSER)
+  if (mode & LINK_OPEN_MIME)
   {
     const wxExPath path(m_Link.GetPath(text, 
-      wxExControlData().Line(sel.empty() ? -1 : -2)));
+      wxExControlData().Line(LINK_LINE_OPEN_URL_AND_MIME)));
     
     if (!path.Path().string().empty()) 
     {
       if (!(mode & LINK_CHECK)) 
       {
-        wxLaunchDefaultBrowser(path.Path().string());
+        path.OpenMIME();
       }
 
       return true;
@@ -387,10 +379,9 @@ bool wxExSTC::LinkOpen(int mode, std::string* filename)
   if (mode & LINK_OPEN)
   {
     wxExControlData data;
-
-    const wxExPath path(m_Link.GetPath(text, data));
     
-    if (!path.Path().string().empty()) 
+    if (const wxExPath path(m_Link.GetPath(text, data));
+      !path.Path().string().empty()) 
     {
       if (filename != nullptr)
       {
@@ -433,7 +424,7 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
   
   UseModificationMarkers(false);
   
-  const int line = LineFromPosition(event.GetPosition());
+  const auto line = LineFromPosition(event.GetPosition());
   
   if (event.GetModificationType() & wxSTC_PERFORMED_UNDO)
   {
@@ -571,7 +562,7 @@ void wxExSTC::Print(bool prompt)
 #if wxUSE_PRINTING_ARCHITECTURE
 void wxExSTC::PrintPreview(wxPreviewFrameModalityKind kind)
 {
-  wxPrintPreview* preview = new wxPrintPreview(
+  auto* preview = new wxPrintPreview(
     new wxExPrintout(this), 
     new wxExPrintout(this));
 
@@ -583,7 +574,7 @@ void wxExSTC::PrintPreview(wxPreviewFrameModalityKind kind)
     return;
   }
 
-  wxPreviewFrame* frame = new wxPreviewFrame(
+  auto* frame = new wxPreviewFrame(
     preview,
     this,
     wxExPrintCaption(GetName().ToStdString()));
@@ -646,10 +637,10 @@ int wxExSTC::ReplaceAll(
     // If not just continue without replacing.
     if (SelectionIsRectangle())
     {
-      const int line = LineFromPosition(GetTargetStart());
-      const int start_pos = GetLineSelStartPosition(line);
-      const int end_pos = GetLineSelEndPosition(line);
-      const int length = GetTargetEnd() - GetTargetStart();
+      const auto line = LineFromPosition(GetTargetStart());
+      const auto start_pos = GetLineSelStartPosition(line);
+      const auto end_pos = GetLineSelEndPosition(line);
+      const auto length = GetTargetEnd() - GetTargetStart();
 
       if (start_pos == wxSTC_INVALID_POSITION ||
           end_pos == wxSTC_INVALID_POSITION ||
@@ -897,17 +888,16 @@ void wxExSTC::Undo()
 
 void wxExSTC::UseModificationMarkers(bool use)
 {
-  if (use)
-    Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this);
-  else
-    Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this);
+  use ?
+    Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this):
+    (void)Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText, this);
 }
 
 void wxExSTC::WordLeftRectExtend() 
 {
-  const int repeat = GetCurrentPos() - WordStartPosition(GetCurrentPos(), false);
+  const auto repeat = GetCurrentPos() - WordStartPosition(GetCurrentPos(), false);
   
-  for (int i = 0; i < repeat ; i++)
+  for (auto i = 0; i < repeat ; i++)
   {
     CharLeftRectExtend();
   }
@@ -915,9 +905,9 @@ void wxExSTC::WordLeftRectExtend()
 
 void wxExSTC::WordRightRectExtend() 
 {
-  const int repeat = WordEndPosition(GetCurrentPos(), false) - GetCurrentPos();
+  const auto repeat = WordEndPosition(GetCurrentPos(), false) - GetCurrentPos();
   
-  for (int i = 0; i < repeat; i++)
+  for (auto i = 0; i < repeat; i++)
   {
     CharRightRectExtend();
   }

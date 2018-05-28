@@ -23,10 +23,8 @@ TEST_CASE("wxExLexer")
   SUBCASE("Default constructor")
   {
     REQUIRE(!lexer.IsOk());
+    REQUIRE(!lexer.Previewable());
     REQUIRE( lexer.GetStyles().empty());
-    REQUIRE( lexer.GetDisplayLexer().empty());
-    REQUIRE( lexer.GetScintillaLexer().empty());
-    lexer.Reset();
     REQUIRE( lexer.GetDisplayLexer().empty());
     REQUIRE( lexer.GetScintillaLexer().empty());
   }
@@ -65,11 +63,22 @@ TEST_CASE("wxExLexer")
     REQUIRE( lexer.IsOk());
     REQUIRE( lexer.GetScintillaLexer() == "hypertext");
     REQUIRE( lexer.GetDisplayLexer() == "hypertext");
+    REQUIRE( lexer.Previewable());
     REQUIRE( lexer.Set(wxExLexers::Get()->FindByText("// this is a cpp comment text")));
     REQUIRE( lexer.IsOk());
     REQUIRE( wxExLexer(lexer).IsOk());
     REQUIRE( lexer.GetDisplayLexer() == "cpp");
     REQUIRE( lexer.GetScintillaLexer() == "cpp");
+  }
+
+  SUBCASE("Reset")
+  {
+    lexer.Set("markdown");
+    REQUIRE( lexer.GetEdgeMode() == wxExEdgeMode::NONE);
+    lexer.Reset();
+    REQUIRE( lexer.GetDisplayLexer().empty());
+    REQUIRE( lexer.GetScintillaLexer().empty());
+    REQUIRE( lexer.GetEdgeMode() == wxExEdgeMode::ABSENT);
   }
 
   SUBCASE("Testing several methods")

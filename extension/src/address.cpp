@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wxExAddress
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <memory>
@@ -35,7 +35,6 @@ bool wxExAddress::AdjustWindow(const std::string& text) const
     return false;
   }
   
-  const std::string type(v[0]);
   const int count = (v[1].empty() ? 2: std::stoi(v[1]));
   const std::string flags(v[2]);
   
@@ -47,10 +46,10 @@ bool wxExAddress::AdjustWindow(const std::string& text) const
   int begin = GetLine();
   bool separator = false;
   
-  if (!type.empty())
+  if (const std::string type(v[0]); !type.empty())
   {
     switch ((int)type.at(0))
-     {
+    {
       case '-': begin -= ((type.length() * count) - 1); break;
       case '+': begin += (((type.length()  - 1) * count) + 1); break;
       case '^': begin += (((type.length()  + 1) * count) - 1); break;

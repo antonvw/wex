@@ -52,14 +52,10 @@ public:
     {_("vi tag fullpath"), ITEM_CHECKBOX, true}}) {;};
 };
   
-wxExItemDialog* wxExSTC::m_ConfigDialog = nullptr;
-wxExSTCEntryDialog* wxExSTC::m_EntryDialog = nullptr;
-
 bool wxExSTC::AutoIndentation(int c)
 {
-  const long ai = wxConfigBase::Get()->ReadLong(_("Auto indent"), INDENT_ALL);
-  
-  if (ai == INDENT_NONE)
+  if (const auto ai = wxConfigBase::Get()->ReadLong(_("Auto indent"), INDENT_ALL);
+    ai == INDENT_NONE)
   {
     return false;
   }
@@ -225,8 +221,7 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
         {{_X("Include directory"), wxExListViewData().Type(LIST_FOLDER).
           Window(wxExWindowData().Size({200, 200}))}}}}}},
       wxExWindowData(data).
-        Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title()).
-        Size(wxSize(510, 500)));
+        Title(data.Id() == wxID_PREFERENCES ? wxGetStockLabel(data.Id(), 0).ToStdString(): data.Title()));
   }
 
   return (data.Button() & wxAPPLY) ? 
@@ -263,9 +258,8 @@ void wxExSTC::ConfigGet()
     {
       SetEdgeColumn(cfg->ReadLong(_("Edge column"), 0));
     
-      const int el = cfg->ReadLong(_("Edge line"), wxSTC_EDGE_NONE);
-    
-      if (el != wxSTC_EDGE_NONE)
+      if (const auto el = cfg->ReadLong(_("Edge line"), wxSTC_EDGE_NONE);
+        el != wxSTC_EDGE_NONE)
       {
         SetEdgeMode(font.IsFixedWidth() ? el: wxSTC_EDGE_BACKGROUND);
       }

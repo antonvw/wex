@@ -1042,42 +1042,41 @@ std::vector<wxString>* pitems;
 int wxCALLBACK CompareFunctionCB(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
 {
   const bool ascending = (sortData > 0);
-  const wxExColumn::wxExColumnType type = 
-    (wxExColumn::wxExColumnType)std::abs(sortData);
 
-  switch (type)
+  switch (const wxExColumn::wxExColumnType type = 
+    (wxExColumn::wxExColumnType)std::abs(sortData); type) 
   {
-  case wxExColumn::COL_DATE:
-    if (ascending) return (unsigned long)item1 > (unsigned long)item2;
-    else           return (unsigned long)item1 < (unsigned long)item2;
-  break;
+    case wxExColumn::COL_DATE:
+      if (ascending) return (unsigned long)item1 > (unsigned long)item2;
+      else           return (unsigned long)item1 < (unsigned long)item2;
+    break;
 
-  case wxExColumn::COL_INT:
-  case wxExColumn::COL_FLOAT:
-    if (ascending) return item1 > item2;
-    else           return item1 < item2;
-  break;
+    case wxExColumn::COL_INT:
+    case wxExColumn::COL_FLOAT:
+      if (ascending) return item1 > item2;
+      else           return item1 < item2;
+    break;
 
-  case wxExColumn::COL_STRING:
-    {
-    const wxString& str1 = (*pitems)[item1];
-    const wxString& str2 = (*pitems)[item2];
+    case wxExColumn::COL_STRING:
+      {
+      const wxString& str1 = (*pitems)[item1];
+      const wxString& str2 = (*pitems)[item2];
 
-    if (!wxExFindReplaceData::Get()->MatchCase())
-    {
-      if (ascending) return strcmp(str1.Upper().c_str(), str2.Upper().c_str());
-      else           return strcmp(str2.Upper().c_str(), str1.Upper().c_str());
-    }
-    else
-    {
-      if (ascending) return strcmp(str1.c_str(), str2.c_str());
-      else           return strcmp(str2.c_str(), str1.c_str());
-    }
-    }
-  break;
+      if (!wxExFindReplaceData::Get()->MatchCase())
+      {
+        if (ascending) return strcmp(str1.Upper().c_str(), str2.Upper().c_str());
+        else           return strcmp(str2.Upper().c_str(), str1.Upper().c_str());
+      }
+      else
+      {
+        if (ascending) return strcmp(str1.c_str(), str2.c_str());
+        else           return strcmp(str2.c_str(), str1.c_str());
+      }
+      }
+    break;
 
-  default:
-    wxFAIL;
+    default:
+      wxFAIL;
   }
 
   return 0;
