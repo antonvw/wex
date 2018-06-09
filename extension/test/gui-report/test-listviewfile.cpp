@@ -2,7 +2,7 @@
 // Name:      test-listviewfile.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/dir.h>
@@ -57,6 +57,4 @@ TEST_CASE("wxExListViewFile")
     wxQueueEvent(listView, event);
   }
 #endif
-  
-  REQUIRE(wxExUIAction(listView));
 }

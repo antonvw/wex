@@ -19,35 +19,29 @@
 
 bool ShowDialog(wxWindow* parent, std::string& macro)
 {
-  const auto& v(wxExViMacros::Get());
-  
-  if (v.empty())
+  if (const auto& v(wxExViMacros::Get()); !v.empty())
   {
-    return false;
+    wxArrayString macros;
+    macros.resize(v.size());
+    copy(v.begin(), v.end(), macros.begin());
+  
+    if (const auto index = macros.Index(wxExViMacros::GetMacro()); index != wxNOT_FOUND)
+    {
+      wxSingleChoiceDialog dialog(parent,
+        _("Input") + ":", 
+        _("Select Macro"),
+        macros);
+      dialog.SetSelection(index);
+
+      if (dialog.ShowModal() == wxID_OK)
+      {
+        macro = dialog.GetStringSelection();
+        return true;
+      }
+    }
   }
 
-  wxArrayString macros;
-  macros.resize(v.size());
-  copy(v.begin(), v.end(), macros.begin());
-  
-  wxSingleChoiceDialog dialog(parent,
-    _("Input") + ":", 
-    _("Select Macro"),
-    macros);
-
-  if (const auto index = macros.Index(wxExViMacros::GetMacro()); index != wxNOT_FOUND)
-  {
-    dialog.SetSelection(index);
-  }
-
-  if (dialog.ShowModal() != wxID_OK)
-  {
-    return false;
-  }
-  
-  macro = dialog.GetStringSelection();
-
-  return true;
+  return false;
 }
 
 wxExViMacrosMode::wxExViMacrosMode()

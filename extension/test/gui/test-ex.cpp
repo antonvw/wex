@@ -314,8 +314,7 @@ TEST_CASE("wxExEx")
     
     for (const auto& calc : calcs)
     {
-      const auto val = ex->Calculator(calc.first, width);
-      if (!std::isnan(val))
+      if (const auto [val, width] = ex->Calculator(calc.first); !std::isnan(val))
       {
         REQUIRE( val == calc.second.first);
         REQUIRE( width == calc.second.second);

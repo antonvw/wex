@@ -47,23 +47,23 @@
     m_FindReplaceDialog->Destroy();                          \
   }                                                          \
                                                              \
-  wxWindow* win = wxWindow::FindFocus();                     \
+  auto* win = wxWindow::FindFocus();                         \
                                                              \
-  if (wxExSTC* cl = dynamic_cast<wxExSTC*>(win);             \
+  if (auto* cl = dynamic_cast<wxExSTC*>(win);                \
     cl != nullptr)                                           \
   {                                                          \
     m_FindFocus = cl;                                        \
   }                                                          \
   else                                                       \
   {                                                          \
-    if (wxExListView* cl = dynamic_cast<wxExListView*>(win); \
+    if (auto* cl = dynamic_cast<wxExListView*>(win);         \
       cl != nullptr)                                         \
     {                                                        \
       m_FindFocus = cl;                                      \
     }                                                        \
     else                                                     \
     {                                                        \
-      if (wxExGrid* grid = dynamic_cast<wxExGrid*>(win);     \
+      if (auto* grid = dynamic_cast<wxExGrid*>(win);         \
         grid != nullptr)                                     \
       {                                                      \
         m_FindFocus = grid;                                  \
@@ -71,7 +71,7 @@
     }                                                        \
   }                                                          \
                                                              \
-  if (wxExSTC* stc = GetSTC(); stc != nullptr)               \
+  if (auto* stc = GetSTC(); stc != nullptr)                  \
   {                                                          \
     stc->GetFindString();                                    \
   }                                                          \
@@ -81,12 +81,6 @@
   m_FindReplaceDialog->Show();                               \
 };                                                           \
   
-#if wxUSE_STATUSBAR
-wxExStatusBar* wxExFrame::m_StatusBar = nullptr;
-#endif
-
-bool wxExFrame::m_IsClosing = false;
-
 #if wxUSE_DRAG_AND_DROP
 class FileDropTarget : public wxFileDropTarget
 {
@@ -160,7 +154,7 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
     ID_VIEW_STATUSBAR);
 
   Bind(wxEVT_UPDATE_UI, [=](wxUpdateUIEvent& event) {
-    if (wxExListView* lv = GetListView(); lv != nullptr && lv->HasFocus())
+    if (auto* lv = GetListView(); lv != nullptr && lv->HasFocus())
     {
       UpdateStatusBar(lv);
     }}, ID_UPDATE_STATUS_BAR);
@@ -173,7 +167,7 @@ wxExFrame::wxExFrame(const wxExWindowData& data)
     if (!event.GetString().empty())
     {
       std::string text(event.GetString());
-      if (wxExSTC* stc = GetSTC(); stc != nullptr)
+      if (auto* stc = GetSTC(); stc != nullptr)
       {
         wxExPath::Current(stc->GetFileName().GetPath());
         if (!wxExMarkerAndRegisterExpansion(&stc->GetVi(), text)) return;
@@ -241,7 +235,7 @@ wxExSTC* wxExFrame::GetSTC()
   
 bool wxExFrame::IsOpen(const wxExPath& filename)
 {
-  if (wxExSTC* stc = GetSTC(); stc != nullptr)
+  if (auto* stc = GetSTC(); stc != nullptr)
   {
     return stc->GetFileName() == filename;
   }
@@ -267,7 +261,7 @@ wxExSTC* wxExFrame::OpenFile(
   const wxExPath& filename,
   const wxExSTCData& data)
 {
-  wxExSTC* stc = GetSTC();
+  auto* stc = GetSTC();
 
   if (stc != nullptr)
   {
@@ -282,7 +276,7 @@ wxExSTC* wxExFrame::OpenFile(
   const wxExVCSEntry& vcs,
   const wxExSTCData& data)
 {
-  wxExSTC* stc = GetSTC();
+  auto* stc = GetSTC();
 
   if (stc != nullptr)
   {
@@ -298,7 +292,7 @@ wxExSTC* wxExFrame::OpenFile(
   const std::string& text,
   const wxExSTCData& data)
 {
-  wxExSTC* stc = GetSTC();
+  auto* stc = GetSTC();
 
   if (stc != nullptr)
   {
@@ -324,9 +318,7 @@ void wxExFrame::SetMenuBar(wxMenuBar* bar)
 #if wxUSE_STATUSBAR
 void wxExFrame::StatusBarClicked(const std::string& pane)
 {
-  wxExSTC* stc = GetSTC();
-    
-  if (pane == "PaneInfo")
+  if (auto* stc = GetSTC(); pane == "PaneInfo")
   {
     if (stc != nullptr) 
     {
@@ -334,7 +326,7 @@ void wxExFrame::StatusBarClicked(const std::string& pane)
     }
     else
     {
-      if (wxExListView* lv = GetListView();
+      if (auto* lv = GetListView();
         lv != nullptr) wxPostEvent(lv, wxCommandEvent(wxEVT_MENU, wxID_JUMP_TO));
     }
   }
@@ -393,13 +385,11 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const std::string& pane)
     {
       int start;
       int end;
+      const auto line = stc->GetCurrentLine() + 1;
+      const auto pos = stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
       stc->GetSelection(&start, &end);
 
-      const int len  = end - start;
-      const int line = stc->GetCurrentLine() + 1;
-      const int pos = stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
-
-      if (len == 0) 
+      if (const int len  = end - start; len == 0) 
       {
         text = wxString::Format("%d,%d", line, pos);
       }
@@ -411,12 +401,11 @@ bool wxExFrame::UpdateStatusBar(wxExSTC* stc, const std::string& pane)
         }
         else
         {
-          // There might be null's inside selection.
-          // So use the GetSelectedTextRaw variant.
-          const int number_of_lines = 
+          if (const auto number_of_lines = 
+            // There might be null's inside selection.
+            // So use the GetSelectedTextRaw variant.
             wxExGetNumberOfLines(wxString(stc->GetSelectedTextRaw()).ToStdString());
-            
-          if (number_of_lines <= 1) 
+              number_of_lines <= 1) 
             text = wxString::Format("%d,%d,%d", line, pos, len);
           else
             text = wxString::Format("%d,%d,%d", line, number_of_lines, len);

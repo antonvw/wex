@@ -218,7 +218,7 @@ bool wxExLexers::LoadDocument()
   }
 
   // Check config, but do not create one.
-  if (wxConfigBase* config = wxConfigBase::Get(false); config != nullptr)
+  if (auto* config = wxConfigBase::Get(false); config != nullptr)
   {
     const std::string extensions(std::accumulate(
       m_Lexers.begin(), m_Lexers.end(), std::string(wxFileSelectorDefaultWildcardStr), 
@@ -276,7 +276,7 @@ void wxExLexers::ParseNodeGlobal(const pugi::xml_node& node)
     }
     else if (strcmp(child.name(), "hex") == 0)
     {
-      m_StylesHex.emplace_back(wxExStyle(child, "global"));
+      m_StylesHex.emplace_back(child, "global");
     }
     else if (strcmp(child.name(), "indicator") == 0)
     {

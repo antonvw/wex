@@ -117,7 +117,7 @@ private:
   static wxString m_WorkingDirKey;
 
 #if wxUSE_GUI
-  static wxExShell* m_Shell;
+  static inline wxExShell* m_Shell = nullptr;
 #endif  
 
   std::unique_ptr<wxExProcessImp> m_Process;

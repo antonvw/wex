@@ -26,8 +26,10 @@ TEST_CASE("wxExCTags")
     REQUIRE( wxExCTags(GetFrame()).Find("wxExTestApp") );
     REQUIRE( wxExCTags(ex).AutoComplete("wxExTest") == "wxExTestApp");
 
-    wxExCTagsFilter filter;
-    REQUIRE( wxExCTags(ex).Filter("wxExTestApp", filter));
+    wxExCTagsEntry current;
+    wxExCTagsEntry filter;
+    REQUIRE( wxExCTags(ex).Find("wxExTestApp", current, filter));
+    REQUIRE( current.Kind() == "f" );
   }
 
   SUBCASE("tags non-existing file")

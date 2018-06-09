@@ -170,10 +170,9 @@ bool wxExFrameWithHistory::FindInFiles(
     return false;
   }
   
-  const wxExPath filename(files[0]);
   const wxExTool tool(id);
   
-  if (show_dialog && FindInFilesDialog(
+  if (const wxExPath filename(files[0]); show_dialog && FindInFilesDialog(
     tool.GetId(),
     filename.DirExists() && !filename.FileExists()) == wxID_CANCEL)
   {
@@ -329,8 +328,7 @@ bool wxExFrameWithHistory::Grep(const std::string& arg, bool sed)
 #ifdef __WXMSW__
   std::thread t([=]{
 #endif
-    wxExSTC* stc = GetSTC();
-    if (stc != nullptr)
+    if (auto* stc = GetSTC(); stc != nullptr)
       wxExPath::Current(stc->GetFileName().GetPath());
     wxExFindReplaceData::Get()->SetUseRegEx(true);
     wxLogStatus(GetFindReplaceInfoText());
@@ -371,7 +369,7 @@ void wxExFrameWithHistory::OnCommandItemDialog(
           if (GetProject() != nullptr)
           {
             long flags = 0;
-            wxConfigBase* cfg = wxConfigBase::Get();
+            auto* cfg = wxConfigBase::Get();
           
             if (cfg->ReadBool(GetProject()->GetTextAddFiles(), true)) flags |= DIR_FILES;
             if (cfg->ReadBool(GetProject()->GetTextAddRecursive(), true)) flags |= DIR_RECURSIVE;

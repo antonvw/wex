@@ -74,7 +74,7 @@ private:
   std::map<
     std::string, std::tuple<wxExPath, int, int>> m_Breakpoints;
 
-  static wxExItemDialog* m_Dialog;  
+  static inline wxExItemDialog* m_Dialog = nullptr;  
   wxExPath m_Path;
   wxExManagedFrame* m_Frame;
   wxExMenuCommands< wxExMenuCommand> m_Entry;

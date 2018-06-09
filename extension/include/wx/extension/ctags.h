@@ -9,10 +9,10 @@
 
 #include <map>
 #include <string>
-#include <wx/extension/ctags-filter.h>
+#include <wx/extension/ctags-entry.h>
 #include <wx/dlimpexp.h>
 
-class wxExCTagsEntry;
+class wxExCTagsInfo;
 class wxExEx;
 class wxExFrame;
 typedef struct sTagFile tagFile;
@@ -41,26 +41,28 @@ public:
   std::string AutoComplete(
     /// text to be completed
     const std::string& text,
-    /// filter on ctags extension field(s), default no filter
-    const wxExCTagsFilter& filter = wxExCTagsFilter());
+    /// filter on ctags extension entry, default no filter
+    const wxExCTagsEntry& filter = wxExCTagsEntry());
 
-  /// Finds the tag and uses it to fill the supplied filter.
-  /// Returns true if a matching tag is found, 
-  /// and can be used as a master.
-  bool Filter(
-    /// tag
-    const std::string& name,
-    /// filter to be filled
-    wxExCTagsFilter& filter) const;
-
-  /// Find the tags matching `name', and fills matches.
+  /// Find the tags matching `tag', and fills matches.
   /// Returns true if a matching tag is found,
   /// and calls frame OpenFile if name matches and
   /// there is no next match in another file.
   /// If the name is empty, Next is invoked.
   /// Otherwise shows a dialog to select a file from the matches.
   /// Returns false if dialog was cancelled.
-  bool Find(const std::string& name);
+  bool Find(const std::string& tag);
+
+  /// Finds the tag matching 'tag' and uses it to fill the supplied entries.
+  /// Returns true if a matching tag is found, 
+  /// and can be used as a master.
+  bool Find(
+    /// tag
+    const std::string& tag,
+    /// tag properties to be filled
+    wxExCTagsEntry& current,
+    /// tag filter to be filled
+    wxExCTagsEntry& filter) const;
 
   /// Jumps to next match from a previous Find.
   bool Next();
@@ -80,6 +82,6 @@ private:
   tagFile* m_File {nullptr};
   const int m_Separator;
   bool m_Prepare {false};
-  static std::map< std::string, wxExCTagsEntry > m_Matches;
-  static std::map< std::string, wxExCTagsEntry >::iterator m_Iterator;
+  static std::map< std::string, wxExCTagsInfo > m_Matches;
+  static std::map< std::string, wxExCTagsInfo >::iterator m_Iterator;
 };

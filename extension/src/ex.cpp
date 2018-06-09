@@ -72,7 +72,7 @@ enum class wxExInfoMessage
 
 wxExCommandArg ParseCommandWithArg(const std::string& command)
 {
-  if (const std::string post(wxExAfter(command, ' ')); post == command)
+  if (const auto post(wxExAfter(command, ' ')); post == command)
   {
     return wxExCommandArg::NONE;
   }
@@ -346,22 +346,21 @@ void wxExEx::AddText(const std::string& text)
   InfoMessage(text, wxExInfoMessage::ADD);
 }
 
-double wxExEx::Calculator(const std::string& text, int& width)
+std::tuple<double, int> wxExEx::Calculator(const std::string& text)
 {
-  std::string err;
-  const auto val = m_Evaluator.Eval(this, text, width, err);
+  const auto& [val, width, err] = m_Evaluator.Eval(this, text);
 
   if (!err.empty())
   {
     ShowDialog("Error", text + "\n" + err);
   }
 
-  return val;
+  return {val, width};
 }
 
 bool wxExEx::Command(const std::string& cmd)
 {
-  std::string command(cmd);
+  auto command(cmd);
 
   if (!m_IsActive || command.empty() || command.front() != ':') return false;
 
@@ -395,9 +394,8 @@ bool wxExEx::Command(const std::string& cmd)
 
 bool wxExEx::CommandAddress(const std::string& command)
 {
-  std::string rest(command);
-  std::string range_str;  
-  std::string cmd;
+  auto rest(command);
+  std::string range_str, cmd;
   bool addr1 = false; // single address
 
   if (rest.compare(0, 5, "'<,'>") == 0)
@@ -418,9 +416,8 @@ bool wxExEx::CommandAddress(const std::string& command)
     const std::string addrm("'[a-z]"); // addr using marker
     const std::string cmd_group1("([aikrz=]|pu)(.*)"); // 1 addr command
     const std::string cmd_group2("([cdgjmpsStvywy<>\\!&~])(.*)"); // 2 addr command
-    std::vector <std::string> v;
     
-    if (
+    if (std::vector <std::string> v;
       // a % address range
       wxExMatch("^%" + cmd_group2, rest, v) == 2 ||
       // addr2 search
@@ -479,9 +476,7 @@ bool wxExEx::CommandAddress(const std::string& command)
   
   if (addr1)
   {
-    const wxExAddress addr(this, range_str);
-    
-    switch ((int)cmd[0])
+    switch (const wxExAddress addr(this, range_str); (int)cmd[0])
     {
     case 0: return false;
     case 'a': return addr.Append(rest);
@@ -507,9 +502,7 @@ bool wxExEx::CommandAddress(const std::string& command)
   }
   else
   {
-    wxExAddressRange range(this, range_str);
-    
-    switch ((int)cmd[0])
+    switch (wxExAddressRange range(this, range_str); (int)cmd[0])
     {
     case 0: return false;
     case 'c': return range.Change(rest);
@@ -570,7 +563,7 @@ void wxExEx::Copy(const wxExEx* ex)
 
 void wxExEx::Cut(bool show_message)
 {
-  const std::string sel(GetSelectedText());
+  const auto sel(GetSelectedText());
   
   Yank('0', false);
 
@@ -615,7 +608,7 @@ bool wxExEx::HandleContainer(
   if (wxExTokenizer tkz(command); tkz.CountTokens() >= 2)
   {
     tkz.GetNextToken(); // skip
-    const std::string name(tkz.GetNextToken());
+    const auto name(tkz.GetNextToken());
     cb(name, tkz.GetString());
   }
   else if (container != nullptr)
@@ -758,7 +751,7 @@ int wxExEx::MarkerLine(char marker) const
   }
   else
   {
-    if ( const auto& it = m_MarkerIdentifiers.find(marker); it != m_MarkerIdentifiers.end())
+    if (const auto& it = m_MarkerIdentifiers.find(marker); it != m_MarkerIdentifiers.end())
     {
       const auto line = m_Command.STC()->MarkerLineFromHandle(it->second);
     
@@ -847,7 +840,7 @@ void wxExEx::SetRegistersDelete(const std::string& value) const
   
   for (int i = 9; i >= 2; i--)
   {
-    if (const std::string value(m_Macros.GetRegister(wxUniChar(48 + i - 1)));
+    if (const auto value(m_Macros.GetRegister(wxUniChar(48 + i - 1)));
       !value.empty())
     {
       m_Macros.SetRegister(wxUniChar(48 + i), value);
@@ -916,7 +909,7 @@ void wxExEx::ShowDialog(
 
 bool wxExEx::Yank(const char name, bool show_message) const
 {
-  const std::string range(GetSelectedText());
+  const auto range(GetSelectedText());
   
   if (range.empty())
   {

@@ -61,12 +61,12 @@ void wxExStyle::Set(const pugi::xml_node& node, const std::string& macro)
   while (fields.HasMoreTokens())
   {
     const auto& single = fields.GetNextToken();
-    const auto& it = wxExLexers::Get()->GetThemeMacros().find(single);
 
-    if (it != wxExLexers::Get()->GetThemeMacros().end())
+    if (const auto& it = wxExLexers::Get()->GetThemeMacros().find(single);
+      it != wxExLexers::Get()->GetThemeMacros().end())
     {
       wxString value = it->second;
-      
+
       if (value.Contains("default-font"))
       {
         const wxFont font(wxConfigBase::Get()->ReadObject(_("Default font"), 
@@ -76,9 +76,8 @@ void wxExStyle::Set(const pugi::xml_node& node, const std::string& macro)
           wxString::Format("face:%s,size:%d",
             font.GetFaceName().c_str(), font.GetPointSize()));
             
-        const wxFontStyle style = font.GetStyle();
-            
-        if (style == wxFONTSTYLE_ITALIC || style == wxFONTSTYLE_SLANT)
+        if (const wxFontStyle style = font.GetStyle(); 
+          style == wxFONTSTYLE_ITALIC || style == wxFONTSTYLE_SLANT)
         {
           value += ",italic";
         }
@@ -124,9 +123,8 @@ void wxExStyle::SetNo(
  
     try
     {
-      const int style_no = std::stoi(single);
-      
-      if (style_no >= 0 && style_no <= wxSTC_STYLE_MAX)
+      if (const auto style_no = std::stoi(single);
+        style_no >= 0 && style_no <= wxSTC_STYLE_MAX)
       {
         m_No.insert(style_no);
       }

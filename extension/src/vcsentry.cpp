@@ -133,17 +133,11 @@ const std::string wxExVCSEntry::GetBranch() const
 {
   if (GetName() == "git")
   { 
-    wxExProcess p;
-
-    if (p.Execute("git branch", PROCESS_EXEC_WAIT))
+    if (wxExProcess p; p.Execute("git branch", PROCESS_EXEC_WAIT))
     {
-      wxExTokenizer tkz(p.GetStdOut(), "\r\n");
-
-      while (tkz.HasMoreTokens())
+      for (wxExTokenizer tkz(p.GetStdOut(), "\r\n"); tkz.HasMoreTokens(); )
       {
-        const std::string token(tkz.GetNextToken());
-
-        if (token.find('*') == 0)
+        if (const auto token(tkz.GetNextToken()); token.find('*') == 0)
         {
           return wxExSkipWhiteSpace(token.substr(1));
         }

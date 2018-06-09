@@ -91,9 +91,6 @@ int wxExVCS::ConfigDialog(const wxExWindowData& par) const
       break;
   }
   
-  const wxExWindowData data(wxExWindowData(par).
-    Title(_("Set VCS").ToStdString()));
-
   // use a radiobox 
   std::vector<wxExItem> v{{"VCS", choices, true, cols}};
 
@@ -102,7 +99,8 @@ int wxExVCS::ConfigDialog(const wxExWindowData& par) const
     v.push_back({it2.GetName(), ITEM_FILEPICKERCTRL});
   }
 
-  if (data.Button() & wxAPPLY)
+  if (const wxExWindowData data(wxExWindowData(par).
+    Title(_("Set VCS").ToStdString())); data.Button() & wxAPPLY)
   {
     wxExItemDialog* dlg = new wxExItemDialog(v, data);
     return dlg->Show();
@@ -116,9 +114,7 @@ int wxExVCS::ConfigDialog(const wxExWindowData& par) const
 
 bool wxExVCS::DirExists(const wxExPath& filename)
 {
-  const wxExVCSEntry entry(FindEntry(filename));
-
-  if (
+  if (const wxExVCSEntry entry(FindEntry(filename));
     entry.AdminDirIsTopLevel() && 
     IsAdminDirTopLevel(entry.GetAdminDir(), filename))
   {
@@ -182,9 +178,8 @@ const wxExVCSEntry wxExVCS::FindEntry(const std::string& filename)
 
 const wxExVCSEntry wxExVCS::FindEntry(const wxExPath& filename)
 {
-  const int vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO);
-
-  if (vcs == VCS_AUTO)
+  if (const int vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO);
+    vcs == VCS_AUTO)
   {
     if (!filename.Path().empty())
     {
@@ -259,7 +254,7 @@ const std::string wxExVCS::GetRelativeFile(
 
   while (it != fn.Path().end())
   {
-     relative_file.Append(*it++);
+    relative_file.Append(*it++);
   }
 
   return relative_file.Path().string();
@@ -349,12 +344,12 @@ bool wxExVCS::SetEntryFromBase(wxWindow* parent)
   }
   
   const std::string message = _("Select VCS Folder").ToStdString();
-  
-  // See also vcsentry, same item is used there.
-  const std::vector<wxExItem> v{{
-    _("Base folder"), ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)}};
       
-  if (wxExConfigFirstOf(_("Base folder")).empty()) 
+  if (
+    // See also vcsentry, same item is used there.
+    const std::vector<wxExItem> v{{
+      _("Base folder"), ITEM_COMBOBOX_DIR, std::any(), wxExControlData().Required(true)}};
+    wxExConfigFirstOf(_("Base folder")).empty()) 
   {
     if (
       parent != nullptr && 

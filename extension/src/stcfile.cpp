@@ -24,10 +24,9 @@ void CheckWellFormed(wxExSTC* stc, const wxExPath& fn)
 {
   if (fn.GetLexer().GetLanguage() == "xml")
   {
-    const pugi::xml_parse_result result = 
+    if (const pugi::xml_parse_result result = 
       pugi::xml_document().load_file(fn.Path().string().c_str());
-    
-    if (!result)
+      !result)
     {
       wxExXmlError(fn, &result, stc);
     }
@@ -146,9 +145,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
   m_PreviousLength = Length();
 
-  const auto buffer = Read(offset);
-
-  if (!m_STC->GetHexMode().Active())
+  if (const auto buffer = Read(offset); !m_STC->GetHexMode().Active())
   {
     m_STC->Allocate(buffer->length());
     

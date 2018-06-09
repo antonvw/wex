@@ -231,7 +231,7 @@ int wxExSTC::ConfigDialog(const wxExWindowData& par)
 void wxExSTC::ConfigGet()
 {
   STCDefaults use;
-  wxConfigBase* cfg = use.Get();
+  auto* cfg = use.Get();
   
   const wxFont font(cfg->ReadObject(
     _("Default font"), wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT)));

@@ -32,9 +32,8 @@
 
 bool Update(wxExFindReplaceData* frd, wxCheckListBox* clb, int item, bool save, bool value)
 {
-  const wxString field(clb->GetString(item));
-  
-  if (field == frd->GetTextMatchWholeWord())
+  if (const wxString field(clb->GetString(item));
+    field == frd->GetTextMatchWholeWord())
   {
     !save ? clb->Check(item, frd->MatchWord()): frd->SetMatchWord(value);
   }
@@ -108,9 +107,8 @@ bool wxExItem::ToConfig(bool save) const
     case ITEM_COMBOBOX_FILE:
       if (wxComboBox* cb = (wxComboBox*)GetWindow(); save)
       {
-        const auto l = wxExToListString(cb, m_MaxItems).Get();
-
-        if (m_Label == wxExFindReplaceData::Get()->GetTextFindWhat())
+        if (const auto l = wxExToListString(cb, m_MaxItems).Get();
+          m_Label == wxExFindReplaceData::Get()->GetTextFindWhat())
         {
           wxExFindReplaceData::Get()->SetFindStrings(l);
         }

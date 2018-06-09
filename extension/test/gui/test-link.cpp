@@ -154,7 +154,7 @@ TEST_CASE("wxExLink")
     REQUIRE( lnk.GetPath("www.wxwidgets.org", data).Path() == "www.wxwidgets.org" );
     REQUIRE( lnk.GetPath("xxx.wxwidgets.org", data) == "test.html" );
     REQUIRE( lnk.GetPath("xx", data).Path() == "test.html" );
-    data.Line(-2);
+    data.Line(-99);
     REQUIRE( lnk.GetPath("xx", data).Path().empty());
   }
 }

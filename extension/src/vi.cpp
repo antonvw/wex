@@ -242,11 +242,10 @@ wxExVi::wxExVi(wxExSTC* stc)
       }
       return command.size();}},
     {"nN", [&](const std::string& command){REPEAT(
-      const std::string find(GetSTC()->GetMarginTextClick() > 0 ?
+      if (const std::string find(GetSTC()->GetMarginTextClick() > 0 ?
         wxExListFromConfig("exmargin").front():
         wxExFindReplaceData::Get()->GetFindString());
-
-      if (!GetSTC()->FindNext(
+        !GetSTC()->FindNext(
         find,
         GetSearchFlags(), 
         command == "n"? m_SearchForward: !m_SearchForward))
@@ -633,50 +632,52 @@ bool wxExVi::Command(const std::string& command)
   }
 
   const auto size = GetSTC()->GetLength();
-  
-  if (std::string parse(command); !ParseCommand(parse))
+
+  if (
+    auto parse(command); !ParseCommand(parse))
   {
     return false;
   }
-
-  if (!m_Dot)
+  else 
   {
-    // Set last command.
-    SetLastCommand(command, 
-      // Always when in insert mode,
-      // or this was a file change command (so size different from before).
-      Mode().Insert() || size != GetSTC()->GetLength());
+    if (!m_Dot)
+    {
+      // Set last command.
+      SetLastCommand(command, 
+        // Always when in insert mode,
+        // or this was a file change command (so size different from before).
+        Mode().Insert() || size != GetSTC()->GetLength());
+    }
+        
+    if (GetMacros().Mode()->IsRecording() && command[0] != 'q' && command != "/" && command != "?")
+    {
+      GetMacros().Record(command);
+    }  
+
+    return true;
   }
-    
-  if (GetMacros().Mode()->IsRecording() && command[0] != 'q' && command != "/" && command != "?")
-  {
-    GetMacros().Record(command);
-  }  
-
-  return true;
 }
 
 void wxExVi::CommandCalc(const std::string& command)
 {
-  const auto index = command[0] == '=' ? 1: 2;
-  int width = 0;
-  const auto sum = Calculator(command.substr(index), width);
-  if (std::isnan(sum)) return;
-
-  if (Mode().Insert())
+  if (const auto [sum, width] = Calculator(
+    command.substr(command[0] == '=' ? 1: 2)); !std::isnan(sum))
   {
-    if (GetLastCommand().find('c') != std::string::npos)
+    if (Mode().Insert())
     {
-      GetSTC()->ReplaceSelection(wxEmptyString);
+      if (GetLastCommand().find('c') != std::string::npos)
+      {
+        GetSTC()->ReplaceSelection(wxEmptyString);
+      }
+    
+      AddText(wxString::Format("%.*f", width, sum).ToStdString());
     }
-  
-    AddText(wxString::Format("%.*f", width, sum).ToStdString());
-  }
-  else
-  {
-    const wxString msg(wxString::Format("%.*f", width, sum));
-    SetRegisterYank(msg.ToStdString());
-    GetFrame()->ShowExMessage(msg.ToStdString());
+    else
+    {
+      const wxString msg(wxString::Format("%.*f", width, sum));
+      SetRegisterYank(msg.ToStdString());
+      GetFrame()->ShowExMessage(msg.ToStdString());
+    }
   }
 }
 
@@ -737,9 +738,7 @@ void wxExVi::FilterCount(std::string& command, const std::string& prefix)
   if (const auto matches = wxExMatch("^" + prefix + "([1-9][0-9]*)(.*)", command, v);
     matches >= 2)
   {
-    const auto count = std::stoi(v[matches - 2]);
-    
-    if (count > 0)
+    if (const auto count = std::stoi(v[matches - 2]); count > 0)
     {
       m_Count *= count;
       command = (matches == 2 ? v[1]: v[0] + v[2]);
@@ -798,13 +797,11 @@ bool wxExVi::InsertMode(const std::string& command)
     {
       return false;
     }
-
-    wxExTokenizer tkz(command, std::string(1, WXK_CONTROL_R), false);
     
-    while (tkz.HasMoreTokens())
+    for (wxExTokenizer tkz(command, std::string(1, WXK_CONTROL_R), false); tkz.HasMoreTokens(); )
     {
-      const std::string token = tkz.GetNextToken();
-      const std::string rest(tkz.GetString());
+      const auto token = tkz.GetNextToken();
+      const auto rest(tkz.GetString());
       
       if (wxExRegAfter("\x12", "\x12" + rest.substr(0, 1)))
       {
@@ -845,9 +842,8 @@ bool wxExVi::InsertMode(const std::string& command)
       // If we have text to be added.
       if (command.size() > 1)
       { 
-        const std::string rest(command.substr(0, command.size() - 1));
-        
-        if (!GetSTC()->GetSelectedText().empty())
+        if (const auto rest(command.substr(0, command.size() - 1));
+          !GetSTC()->GetSelectedText().empty())
         {
           GetSTC()->ReplaceSelection(rest);
         }
@@ -931,24 +927,21 @@ bool wxExVi::InsertMode(const std::string& command)
 
 void wxExVi::InsertModeNormal(const std::string& text)
 {
-  wxExTokenizer tkz(text, "\r\n", false);
-  
-  if (text.find('\0') == std::string::npos && tkz.HasMoreTokens())
+  if (wxExTokenizer tkz(text, "\r\n", false);
+    text.find('\0') == std::string::npos && tkz.HasMoreTokens())
   {
     while (tkz.HasMoreTokens())
     {
-      std::string token(tkz.GetNextToken());
-      
-      if (!token.empty())
+      if (auto token(tkz.GetNextToken()); !token.empty())
       {
         if (token.back() == ' ' || token.back() == '\t' || token.back() == ';')
         {
           if (!m_InsertText.empty())
           {
             const size_t last(m_InsertText.find_last_of(" ;\t"));
-            const auto& it = GetMacros().GetAbbreviations().find(m_InsertText.substr(last + 1));
             
-            if (it != GetMacros().GetAbbreviations().end())
+            if (const auto& it = GetMacros().GetAbbreviations().find(m_InsertText.substr(last + 1));
+              it != GetMacros().GetAbbreviations().end())
             {
               m_InsertText.replace(last + 1, it->first.length(), it->second);
               
@@ -969,11 +962,11 @@ void wxExVi::InsertModeNormal(const std::string& text)
           }
           else
           {
-            const size_t last(token.find_last_of(" ;\t", token.size() - 2));
-            const std::string word(token.substr(last + 1, token.size() - 2 - last));
-            const auto& it = GetMacros().GetAbbreviations().find(word);
+            const auto last(token.find_last_of(" ;\t", token.size() - 2));
+            const auto word(token.substr(last + 1, token.size() - 2 - last));
             
-            if (it != GetMacros().GetAbbreviations().end())
+            if (const auto& it = GetMacros().GetAbbreviations().find(word);
+              it != GetMacros().GetAbbreviations().end())
             {
               token.replace(last + 1, it->first.length(), it->second);
             }
@@ -1097,9 +1090,7 @@ bool wxExVi::MotionCommand(int type, std::string& command)
       if (!m_Command.IsHandled() && 
           (parsed = it->second(command.substr(offset))) == 0) return false;
     
-      auto end = GetSTC()->GetCurrentPos();
-    
-      if (end - start > 0)
+      if (auto end = GetSTC()->GetCurrentPos(); end - start > 0)
       {
         GetSTC()->CopyRange(start, end - start);
         GetSTC()->SetSelection(start, end);
@@ -1281,7 +1272,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 
 bool wxExVi::OtherCommand(std::string& command) const
 {
-  const auto& it = std::find_if(m_OtherCommands.begin(), m_OtherCommands.end(), 
+  if (const auto& it = std::find_if(m_OtherCommands.begin(), m_OtherCommands.end(), 
     [command](auto const& e) 
     {
       if (!isalpha(e.first.front())) 
@@ -1301,20 +1292,16 @@ bool wxExVi::OtherCommand(std::string& command) const
         return e.first == command.substr(0, e.first.size());
       }
     });
-  
-  if (it == m_OtherCommands.end())
+    it != m_OtherCommands.end())
   { 
-    return false;
+    if (const auto parsed = it->second(command); parsed > 0)
+    {
+      command = command.substr(parsed);
+      return true;
+    }
   }
 
-  const auto parsed = it->second(command);
-
-  if (parsed > 0)
-  {
-    command = command.substr(parsed);
-  }
-
-  return parsed > 0;
+  return false;
 }
 
 bool wxExVi::ParseCommand(std::string& command)

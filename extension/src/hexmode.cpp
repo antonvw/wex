@@ -2,7 +2,7 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wxExHexMode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
@@ -40,7 +40,7 @@ const std::string MakeLine(wxExSTC* stc, const std::string& buffer,
 {
   std::string field_hex, field_ascii;
   
-  long count = buffer.size() - offset;
+  auto count = buffer.size() - offset;
   count = (bytesPerLine < count ? bytesPerLine : count);
 
   for (wxFileOffset byte = 0; byte < count; byte++)
@@ -113,16 +113,13 @@ void wxExHexMode::AppendText(const std::string& buffer)
 
 void wxExHexMode::ControlCharDialog(const std::string& caption)
 {
-  wxExHexModeLine ml(this, m_STC->GetSelectionStart());
-  
-  if (
+  if (wxExHexModeLine ml(this, m_STC->GetSelectionStart());
     ml.IsAsciiField() &&
     m_STC->GetSelectedText().size() == 1)
   {
     const wxUniChar value = m_STC->GetSelectedText().GetChar(0);
-
-    int new_value;
-    if ((new_value = GetHexNumberFromUser(_("Input") + " 00 - FF",
+    
+    if (int new_value; (new_value = GetHexNumberFromUser(_("Input") + " 00 - FF",
       caption, value, 0, 255, m_STC)) >= 0)
     {
       ml.Replace(new_value);
@@ -196,14 +193,11 @@ bool wxExHexMode::GotoDialog()
 
 bool wxExHexMode::HighlightOther()
 {
-  const int pos = m_STC->GetCurrentPos();
-  
-  if (HighlightOther(pos))
+  if (const auto pos = m_STC->GetCurrentPos(); HighlightOther(pos))
   {
     return true;
   }
-    
-  if (m_STC->PositionFromLine(pos) != pos)
+  else if (m_STC->PositionFromLine(pos) != pos)
   {
     return HighlightOther(pos - 1);
   }
@@ -213,9 +207,8 @@ bool wxExHexMode::HighlightOther()
     
 bool wxExHexMode::HighlightOther(int pos)
 {
-  const int brace_match = wxExHexModeLine(this, pos).OtherField();
-  
-  if (brace_match != wxSTC_INVALID_POSITION)
+  if (const auto brace_match = wxExHexModeLine(this, pos).OtherField();
+    brace_match != wxSTC_INVALID_POSITION)
   {
     m_STC->BraceHighlight(pos, 
       m_STC->PositionFromLine(m_STC->LineFromPosition(pos)) + brace_match);
@@ -261,7 +254,7 @@ bool wxExHexMode::ReplaceTarget(const std::string& replacement, bool settext)
   //     30 39 39 33 34 35 (replace)
   // RT: 31 32 -> 39 39 39
   //     30 39 39 39 33 34 35 (insert)
-  int start = m_STC->GetTargetStart(); 
+  auto start = m_STC->GetTargetStart(); 
 
   for (
     int i = 0;

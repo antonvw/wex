@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <tuple>
+
 class evaluator_extra;
 class wxExEx;
 
@@ -21,15 +23,12 @@ public:
  ~wxExEvaluator();
 
   /// Runs a calculation.
-  double Eval(
+  /// Returns calculated value with precision width of text, and possible error.
+  std::tuple<double, int, std::string> Eval(
     /// the ex component, e.g. for line number (.) if present in text
     wxExEx* ex, 
     /// text containing the expression to be evaluated
-    const std::string& text, 
-    /// the width to present the number
-    int& width, 
-    /// possible error during evaluation
-    std::string& err);
+    const std::string& text);
 
   /// Returns the info for variables.
   std::string GetInfo(const wxExEx* ex);

@@ -28,9 +28,7 @@ wxExVariable::wxExVariable(const pugi::xml_node& node)
   , m_Value(node.text().get())
   , m_Prefix(node.attribute("prefix").value())
 {
-  const std::string type = node.attribute("type").value();
-
-  if (!type.empty())
+  if (const std::string type = node.attribute("type").value(); !type.empty())
   {
     if (type == "BUILTIN")
     {
@@ -65,13 +63,11 @@ wxExVariable::wxExVariable(const pugi::xml_node& node)
 
 bool wxExVariable::CheckLink(std::string& value) const
 {
-  std::vector <std::string> v;
-
-  if (wxExMatch("@([a-zA-Z].+)@", m_Value, v) > 0)
+  if (std::vector <std::string> v;
+    wxExMatch("@([a-zA-Z].+)@", m_Value, v) > 0)
   {
-    const auto& it = wxExViMacros::GetVariables().find(v[0]);
-
-    if (it != wxExViMacros::GetVariables().end())
+    if (const auto& it = wxExViMacros::GetVariables().find(v[0]);
+      it != wxExViMacros::GetVariables().end())
     {
       if (!it->second.Expand(value))
       {
@@ -172,13 +168,13 @@ bool wxExVariable::Expand(std::string& value, wxExEx* ex) const
       break;
       
     case VARIABLE_ENVIRONMENT:
-      {
-      wxString val;
-      if (!wxGetEnv(m_Name, &val))
+      if (wxString val; !wxGetEnv(m_Name, &val))
       {
         return false;
       }
-      value = val;
+      else 
+      {
+        value = val;
       }
       break;
       
@@ -254,9 +250,8 @@ bool wxExVariable::ExpandBuiltIn(wxExEx* ex, std::string& expanded) const
     }
     else if (m_Name == "Created")
     {
-      wxExPath file(ex->GetSTC()->GetFileName());
-      
-      if (ex->GetSTC()->GetFileName().GetStat().IsOk())
+      if (wxExPath file(ex->GetSTC()->GetFileName());
+        ex->GetSTC()->GetFileName().GetStat().IsOk())
       {
         expanded = wxDateTime(file.GetStat().st_ctime).FormatISODate();
       }

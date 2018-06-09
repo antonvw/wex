@@ -67,6 +67,4 @@ TEST_CASE("wxExFrameWithHistory")
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(GetFrame(), event);
   }
-  
-  REQUIRE(wxExUIAction(GetFrame()));
 }

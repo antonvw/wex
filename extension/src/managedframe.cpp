@@ -128,13 +128,11 @@ wxExManagedFrame::wxExManagedFrame(size_t maxFiles, const wxExWindowData& data)
     m_FileHistory.Clear();}, ID_CLEAR_FILES);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExSTC* stc = GetSTC();
-    if (stc != nullptr)
+    if (auto* stc = GetSTC(); stc != nullptr)
     {
       auto it = wxExFindReplaceData::Get()->GetFindStrings().begin();
       std::advance(it, event.GetId() - ID_FIND_FIRST);
-      const std::string text(*it);
-      if (stc->FindNext(text, 
+      if (const std::string text(*it); stc->FindNext(text, 
         stc->GetVi().GetIsActive()? stc->GetVi().GetSearchFlags(): -1))
       {
         wxExFindReplaceData::Get()->SetFindString(text);
@@ -242,9 +240,7 @@ void wxExManagedFrame::DoRecent(
   size_t index, 
   wxExSTCWindowFlags flags)
 {
-  const wxExPath file(history.GetHistoryFile(index));
-  
-  if (!file.Path().empty())
+  if (const wxExPath file(history.GetHistoryFile(index)); !file.Path().empty())
   {
     OpenFile(file, wxExSTCData().Flags(flags));
   }
@@ -276,11 +272,9 @@ void wxExManagedFrame::HideExBar(int hide)
   
 void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 {
-  wxExSTC* stc = wxDynamicCast(page, wxExSTC);
-
-  if (stc != nullptr)
+  if (auto* stc = wxDynamicCast(page, wxExSTC); stc != nullptr)
   {
-     SetRecentFile(stc->GetFileName());
+    SetRecentFile(stc->GetFileName());
   }
 }
 
@@ -323,27 +317,22 @@ void wxExManagedFrame::ShowExMessage(const std::string& text)
 
 bool wxExManagedFrame::ShowPane(const std::string& pane, bool show)
 {
-  wxAuiPaneInfo& info = m_Manager.GetPane(pane);
-
-  if (!info.IsOk())
+  if (wxAuiPaneInfo& info = m_Manager.GetPane(pane); !info.IsOk())
   {
     return false;
   }
-
-  show ? info.Show(): info.Hide();
-
-  m_Manager.Update();
-  
-  m_OptionsBar->Update(pane, show);
-  
-  return true;
+  else 
+  {
+    show ? info.Show(): info.Hide();
+    m_Manager.Update();
+    m_OptionsBar->Update(pane, show);
+    return true;
+  }
 }
   
 void wxExManagedFrame::SyncAll()
 {
-  wxExSTC* stc = GetSTC();
-  
-  if (stc != nullptr)
+  if (auto* stc = GetSTC(); stc != nullptr)
   {
     stc->Sync(wxConfigBase::Get()->ReadBool("AllowSync", true));
   }
@@ -393,13 +382,11 @@ wxExTextCtrl::wxExTextCtrl(
           wxExPath::Current(m_ex->GetSTC()->GetFileName().GetPath());
         }
 
-        std::vector<std::string> v;
-        std::string expansion;
-
-        if (wxExAutoCompleteFileName(m_Command.Command(), expansion, v))
+        if (const auto& [r, e, v] = wxExAutoCompleteFileName(m_Command.Command());
+          r)
         {
-          m_Command.Append(expansion);
-          AppendText(expansion);
+          m_Command.Append(e);
+          AppendText(e);
         }}
         break;
 

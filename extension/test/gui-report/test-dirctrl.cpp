@@ -2,7 +2,7 @@
 // Name:      test-dirctrl.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/report/dir.h> // necessary?
@@ -21,7 +21,6 @@ void Test(wxExGenericDirCtrl* ctrl)
   {
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(ctrl, event);
-    REQUIRE(wxExUIAction(ctrl, "key"));
   }
 }
 

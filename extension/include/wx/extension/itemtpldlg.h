@@ -2,7 +2,7 @@
 // Name:      itemtpldlg.h
 // Purpose:   Declaration of wxExItemTemplateDialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -169,8 +169,8 @@ protected:
       case ITEM_CHECKBOX:
         if (m_ForceCheckBoxChecked)
         {
-          wxCheckBox* cb = (wxCheckBox*)item.GetWindow();
-          if (item.GetLabel().Lower().Contains(m_Contains.Lower()) && 
+          if (wxCheckBox* cb = (wxCheckBox*)item.GetWindow(); 
+            item.GetLabel().Lower().Contains(m_Contains.Lower()) && 
               cb->IsChecked() &&
               item.GetPage() == m_Page)
           {
@@ -201,9 +201,7 @@ protected:
       case ITEM_COMBOBOX:
       case ITEM_COMBOBOX_DIR:
       case ITEM_COMBOBOX_FILE:
-        {
-        wxComboBox* cb = (wxComboBox*)item.GetWindow();
-        if (item.GetData().Required())
+        if (wxComboBox* cb = (wxComboBox*)item.GetWindow(); item.GetData().Required())
         {
           if (cb->GetValue().empty())
           {
@@ -211,14 +209,11 @@ protected:
             return;
           }
         }
-        }
         break;
 
       case ITEM_TEXTCTRL_INT:
       case ITEM_TEXTCTRL:
-        {
-        wxTextCtrl* tc = (wxTextCtrl*)item.GetWindow();
-        if (item.GetData().Required())
+        if (wxTextCtrl* tc = (wxTextCtrl*)item.GetWindow(); item.GetData().Required())
         {
           if (tc->GetValue().empty())
           {
@@ -226,34 +221,29 @@ protected:
             return;
           }
         }
-        }
         break;
 
       case ITEM_DIRPICKERCTRL:
-        {
-        wxDirPickerCtrl* pc = (wxDirPickerCtrl*)item.GetWindow();
-        if (item.GetData().Required())
+        if (wxDirPickerCtrl* pc = (wxDirPickerCtrl*)item.GetWindow(); 
+          item.GetData().Required())
         {
           if (pc->GetPath().empty())
           {
             event.Enable(false);
             return;
           }
-        }
         }
         break;
 
       case ITEM_FILEPICKERCTRL:
-        {
-        wxFilePickerCtrl* pc = (wxFilePickerCtrl*)item.GetWindow();
-        if (item.GetData().Required())
+        if (wxFilePickerCtrl* pc = (wxFilePickerCtrl*)item.GetWindow(); 
+          item.GetData().Required())
         {
           if (pc->GetPath().empty())
           {
             event.Enable(false);
             return;
           }
-        }
         }
         break;
 
@@ -263,8 +253,8 @@ protected:
     event.Enable(m_ForceCheckBoxChecked ? one_checkbox_checked: true);};
 private:
   void Click(const wxCommandEvent& event) const {
-    wxExFrame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExFrame);
-    if (frame != nullptr)
+    if (wxExFrame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExFrame);
+      frame != nullptr)
     {
       frame->OnCommandItemDialog(GetId(), event);
     }};

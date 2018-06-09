@@ -8,6 +8,7 @@
 #pragma once
 
 #include <functional>
+#include <tuple>
 #include <map>
 #include <string>
 #include <utility>
@@ -42,12 +43,8 @@ public:
   /// Adds text (to STC or register, if register is active).
   void AddText(const std::string& text);
  
-  /// Returns calculated value of text.
-  double Calculator(
-    /// text used for calculation
-    const std::string& text, 
-    /// width, or precision, for doubles
-    int& width);
+  /// Returns calculated value with precision width of text.
+  std::tuple<double, int> Calculator(const std::string& text);
   
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.

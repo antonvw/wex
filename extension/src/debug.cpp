@@ -50,8 +50,7 @@ public:
 private:
   virtual bool OnDir(const wxExPath& p) override {
     std::ifstream ifs(wxExPath(p.Path(), "comm").Path());
-    std::string line;
-    if (ifs.is_open() && std::getline(ifs, line))
+    if (std::string line; ifs.is_open() && std::getline(ifs, line))
     {
       m_ListView->InsertItem({line, p.GetName()});
     }
@@ -61,15 +60,12 @@ private:
 };
 #endif
 
-wxExItemDialog* wxExDebug::m_Dialog = nullptr;
-
 wxExDebug::wxExDebug(wxExManagedFrame* frame, wxExProcess* debug)
   : m_Frame(frame)
   , m_Process(debug)
 {
-  std::vector< wxExMenuCommands<wxExMenuCommand>> entries;
-  
-  if (wxExMenus::Load("debug", entries))
+  if (std::vector< wxExMenuCommands<wxExMenuCommand>> entries;
+    wxExMenus::Load("debug", entries))
   {
     const size_t use = wxConfigBase::Get()->ReadLong("DEBUG", 0);
     m_Entry = entries[use < entries.size() ? use: 0];
@@ -95,9 +91,8 @@ int wxExDebug::AddMenu(wxExMenu* menu, bool popup) const
   
 bool wxExDebug::DeleteAllBreakpoints(const std::string& text)
 {
-  std::vector<std::string> v;
-
-  if (wxExMatch("(d|del|delete|Delete) (all )?breakpoints", text, v) >= 1)
+  if (std::vector<std::string> v;
+    wxExMatch("(d|del|delete|Delete) (all )?breakpoints", text, v) >= 1)
   {
     for (const auto& it: m_Breakpoints)
     {
@@ -139,9 +134,8 @@ bool wxExDebug::Execute(const std::string& action, wxExSTC* stc)
 bool wxExDebug::GetArgs(
   const std::string& command, std::string& args, wxExSTC* stc)
 {
-  std::vector<std::string> v;
-
-  if (wxExMatch("^(at|attach)", command, v) == 1)
+  if (std::vector<std::string> v;
+    wxExMatch("^(at|attach)", command, v) == 1)
   {
     static wxExListView* lv = nullptr;
     bool init = false;
@@ -221,9 +215,8 @@ bool wxExDebug::GetArgs(
 
 void wxExDebug::ProcessStdIn(const std::string& text)
 {
-  std::vector<std::string> v;
-
-  if (wxExMatch("(d|del|delete) +([0-9 ]*)", text, v) > 0)
+  if (std::vector<std::string> v;
+    wxExMatch("(d|del|delete) +([0-9 ]*)", text, v) > 0)
   {
     switch (v.size())
     {
@@ -232,20 +225,15 @@ void wxExDebug::ProcessStdIn(const std::string& text)
       break;
 
       case 2:
-      {
-        wxExTokenizer tkz(v[1], " ");
-
-        while (tkz.HasMoreTokens())
+        for (wxExTokenizer tkz(v[1], " "); tkz.HasMoreTokens(); )
         {
-          const auto& it = m_Breakpoints.find(tkz.GetNextToken());
-
-          if (it != m_Breakpoints.end() && m_Frame->IsOpen(std::get<0>(it->second)))
+          if (const auto& it = m_Breakpoints.find(tkz.GetNextToken());
+            it != m_Breakpoints.end() && m_Frame->IsOpen(std::get<0>(it->second)))
           {
-            wxExSTC* stc = m_Frame->OpenFile(std::get<0>(it->second));
+            auto* stc = m_Frame->OpenFile(std::get<0>(it->second));
             stc->MarkerDeleteHandle(std::get<1>(it->second));
           }
         }
-      }
       break;
     }
   }
@@ -253,10 +241,9 @@ void wxExDebug::ProcessStdIn(const std::string& text)
 
 void wxExDebug::ProcessStdOut(const std::string& text)
 {
-  std::vector<std::string> v;
   wxExControlData data;
 
-  if (
+  if (std::vector<std::string> v;
     wxExMatch("Breakpoint ([0-9]+) at 0x[0-9a-f]+: file (.*), line ([0-9]+)", text, v) == 3 || 
     wxExMatch("Breakpoint ([0-9]+) at 0x[0-9a-f]+: (.*):([0-9]+)", text, v) == 3)
   {

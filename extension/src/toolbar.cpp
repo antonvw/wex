@@ -309,7 +309,7 @@ wxExFindTextCtrl::wxExFindTextCtrl(wxWindow* parent, wxExFrame* frame,
     }});
   
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
-    wxExSTC* stc = m_Frame->GetSTC();
+    auto* stc = m_Frame->GetSTC();
     if (stc != nullptr)
     {
       stc->PositionSave();
@@ -333,9 +333,9 @@ void wxExFindTextCtrl::Find(bool find_next, bool restore_position)
 {
   // We cannot use events here, as OnFindDialog in stc uses frd data,
   // whereas we need the GetValue here.
-  wxExSTC* stc = m_Frame->GetSTC();
-  wxExGrid* grid = m_Frame->GetGrid();
-  wxExListView* lv = m_Frame->GetListView();
+  auto* stc = m_Frame->GetSTC();
+  auto* grid = m_Frame->GetGrid();
+  auto* lv = m_Frame->GetListView();
 
   if (stc != nullptr)
   {

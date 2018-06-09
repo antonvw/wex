@@ -2,7 +2,7 @@
 // Name:      test-grid.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -50,6 +50,4 @@ TEST_CASE("wxExGrid")
   REQUIRE(grid->IsAllowedDragSelection());
   grid->UseDragAndDrop(false);
 #endif
-  
-  REQUIRE(wxExUIAction(grid));
 }

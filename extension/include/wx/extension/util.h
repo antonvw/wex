@@ -58,17 +58,18 @@ const std::string wxExAlignText(
   const wxExLexer& lexer);
 
 /// Tries to autocomplete filename,
-/// result stored in the vector.
-/// Returns true if a match was found 
-bool wxExAutoCompleteFileName(
-  /// text containing start of a filename
-  const std::string& text, 
+/// the result is stored in the tuple.
+std::tuple<
+  /// true if a match was found 
+  bool, 
   /// expansion of text to matching filename
   /// (if only 1 match exists)
   /// or common part of matching filenames
-  std::string& expansion,
+  const std::string, 
   /// vector containing completed file name(s)
-  std::vector<std::string> & v);
+  const std::vector<std::string>> wxExAutoCompleteFileName(
+  /// text containing start of a filename
+  const std::string& text); 
   
 /// Tries to autocomplete text from a vector of strings,
 /// result stored in the string.

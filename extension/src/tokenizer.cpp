@@ -18,9 +18,8 @@ wxExTokenizer::wxExTokenizer(
 size_t wxExTokenizer::CountTokens() const 
 {
   size_t count = 0;
-  wxExTokenizer tkz(m_Text, m_Delimiters, m_SkipEmptyTokens);
 
-  while (tkz.HasMoreTokens())
+  for (wxExTokenizer tkz(m_Text, m_Delimiters, m_SkipEmptyTokens); tkz.HasMoreTokens(); )
   {
     tkz.GetNextToken();
     count++;

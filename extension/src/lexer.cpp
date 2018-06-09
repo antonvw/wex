@@ -21,9 +21,6 @@
 #include <wx/extension/tokenizer.h>
 #include <wx/extension/util.h> // for wxExAlignText
 
-// We always use lines with 80 characters. 
-const int line_size = 80;
-
 wxExLexer& wxExLexer::operator=(const wxExLexer& l)
 {
   if (this != &l)
@@ -40,6 +37,7 @@ wxExLexer& wxExLexer::operator=(const wxExLexer& l)
     m_Keywords = l.m_Keywords;
     m_KeywordsSet = l.m_KeywordsSet;
     m_Language = l.m_Language;
+    m_LineSize = l.m_LineSize;
     m_Previewable = l.m_Previewable;
     m_Properties = l.m_Properties;
     m_ScintillaLexer = l.m_ScintillaLexer;
@@ -66,11 +64,9 @@ bool wxExLexer::AddKeywords(const std::string& value, int setno)
   
   std::set<std::string> keywords_set;
 
-  wxExTokenizer tkz(value, "\r\n ");
-
-  while (tkz.HasMoreTokens())
+  for (wxExTokenizer tkz(value, "\r\n "); tkz.HasMoreTokens(); )
   {
-    const std::string line = tkz.GetNextToken();
+    const auto line(tkz.GetNextToken());
     std::string keyword;
 
     if (wxExTokenizer fields(line, ":"); fields.CountTokens() > 1)
@@ -166,7 +162,7 @@ bool wxExLexer::Apply() const
 
 void wxExLexer::AutoMatch(const std::string& lexer)
 {
-  if (const wxExLexer& l(wxExLexers::Get()->FindByName(lexer));
+  if (const auto& l(wxExLexers::Get()->FindByName(lexer));
     l.GetScintillaLexer().empty())
   {
     for (const auto& it : wxExLexers::Get()->GetMacros(lexer))
@@ -175,7 +171,7 @@ void wxExLexer::AutoMatch(const std::string& lexer)
       if (const auto& macro = wxExLexers::Get()->GetThemeMacros().find(it.first);
         macro != wxExLexers::Get()->GetThemeMacros().end())
       {
-        m_Styles.emplace_back(wxExStyle(it.second, macro->second));
+        m_Styles.emplace_back(it.second, macro->second);
       }
       else
       {
@@ -183,7 +179,7 @@ void wxExLexer::AutoMatch(const std::string& lexer)
         if (const auto& style = std::find_if(wxExLexers::Get()->GetThemeMacros().begin(), wxExLexers::Get()->GetThemeMacros().end(), 
           [&](auto const& e) {return it.first.find(e.first) != std::string::npos;});
           style != wxExLexers::Get()->GetThemeMacros().end())
-          m_Styles.emplace_back(wxExStyle(it.second, style->second));
+          m_Styles.emplace_back(it.second, style->second);
       }
     }
   }
@@ -206,13 +202,15 @@ const std::string wxExLexer::CommentComplete(const std::string& comment) const
   if (m_CommentEnd.empty()) return std::string();
   
   // Fill out rest of comment with spaces, and comment end string.
-  const int n = line_size - comment.size() - m_CommentEnd.size();
-  
-  if (n <= 0) return std::string();
-  
-  const std::string blanks = std::string(n, ' ');
-  
-  return blanks + m_CommentEnd;
+  if (const int n = m_LineSize - comment.size() - m_CommentEnd.size(); n <= 0) 
+  {
+    return std::string();
+  }
+  else
+  {
+    const auto blanks = std::string(n, ' ');
+    return blanks + m_CommentEnd;
+  }
 }
 
 const std::string wxExLexer::GetFormattedText(
@@ -221,12 +219,10 @@ const std::string wxExLexer::GetFormattedText(
   bool fill_out_with_space,
   bool fill_out) const
 {
-  std::string text = lines, header_to_use = header;
-  size_t nCharIndex;
-  std::string out;
+  std::string text = lines, header_to_use = header, out;
 
   // Process text between the carriage return line feeds.
-  while ((nCharIndex = text.find("\n")) != std::string::npos)
+  for (size_t nCharIndex; (nCharIndex = text.find("\n")) != std::string::npos; )
   {
     out += wxExAlignText(
       text.substr(0, nCharIndex),
@@ -347,7 +343,7 @@ const std::string wxExLexer::MakeSingleLineComment(
     // To prevent filling out spaces
     if (fill_out_character != ' ' || !m_CommentEnd.empty())
     {
-      const int fill_chars = UsableCharactersPerLine() - text.size();
+      const auto fill_chars = UsableCharactersPerLine() - text.size();
 
       if (fill_chars > 0)
       {
@@ -465,11 +461,11 @@ void wxExLexer::Set(const pugi::xml_node* node)
         for (const auto& att: child.attributes())
         {
           std::string nm(att.name());
-          const int pos = nm.find("-");
+          const auto pos = nm.find("-");
           try
           {
-            const int setno = (pos == std::string::npos ? 0: std::stoi(nm.substr(pos + 1)));
-            const std::string keywords = wxExLexers::Get()->GetKeywords(att.value());
+            const auto setno = (pos == std::string::npos ? 0: std::stoi(nm.substr(pos + 1)));
+            const auto keywords = wxExLexers::Get()->GetKeywords(att.value());
 
             if (keywords.empty())
             {
@@ -591,14 +587,14 @@ void wxExLexer::SetProperty(const std::string& name, const std::string& value)
   if (const auto& it = std::find_if(m_Properties.begin(), m_Properties.end(), 
     [name](auto const& e) {return e.GetName() == name;});
     it != m_Properties.end()) it->Set(value);
-  else m_Properties.emplace_back(wxExProperty(name, value));
+  else m_Properties.emplace_back(name, value);
 }
 
 int wxExLexer::UsableCharactersPerLine() const
 {
   // We adjust this here for
   // the space the beginning and end of the comment characters occupy.
-  return line_size
+  return m_LineSize
     - ((m_CommentBegin.size() != 0) ? m_CommentBegin.size() + 1 : 0)
     - ((m_CommentEnd.size() != 0) ? m_CommentEnd.size() + 1 : 0);
 }

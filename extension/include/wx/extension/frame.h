@@ -130,10 +130,10 @@ protected:
 #endif
 
 #if wxUSE_STATUSBAR
-  static wxExStatusBar* m_StatusBar;
+  static inline wxExStatusBar* m_StatusBar = nullptr;
 #endif
 private:
-  static bool m_IsClosing;
+  static inline bool m_IsClosing = false;
   
   bool m_IsCommand {false};
   wxWindow* m_FindFocus {nullptr};

@@ -142,9 +142,7 @@ void wxExViMacrosFSM::ExpandingTemplate()
 
   SetAskForInput();
 
-  char c;
-
-  while (ifs.get(c) && !m_error)
+  for (char c; ifs.get(c) && !m_error; )
   {
     if (c != '@')
     {

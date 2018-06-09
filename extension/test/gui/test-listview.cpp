@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wxExtension unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -122,6 +122,4 @@ TEST_CASE("wxExListView")
     wxCommandEvent* event = new wxCommandEvent(wxEVT_MENU, id);
     wxQueueEvent(listView2, event);
   }
-
-  REQUIRE(wxExUIAction(listView));
 }

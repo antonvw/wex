@@ -10,7 +10,7 @@
 #include <set>
 #include <string>
 #include <wx/dlimpexp.h>
-#include <wx/extension/ctags-filter.h>
+#include <wx/extension/ctags-entry.h>
 
 class wxExSTC;
 
@@ -52,6 +52,6 @@ private:
   std::string m_Text;
   std::set< std:: string > m_Inserts;
 
-  wxExCTagsFilter m_Filter;
+  wxExCTagsEntry m_Filter;
   wxExSTC* m_STC;
 };

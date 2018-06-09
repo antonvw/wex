@@ -2,7 +2,7 @@
 // Name:      file.cpp
 // Purpose:   Implementation of class wxExFile
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -28,10 +28,8 @@ wxExFile& wxExFile::operator=(const wxExFile& f)
 
 bool wxExFile::CheckSync()
 {
-  // Might be used without wxApp.
-  wxConfigBase* config = wxConfigBase::Get(false);
-
-  if ( m_File->IsOpened() ||
+  // config might be used without wxApp.
+  if (auto* config = wxConfigBase::Get(false); m_File->IsOpened() ||
       !m_Path.m_Stat.IsOk() ||
       (config != nullptr && !config->ReadBool("AllowSync", true)))
   {
@@ -128,15 +126,11 @@ bool wxExFile::FileSave(const wxExPath& file)
 bool wxExFile::Get(bool synced)
 {
   // Do not log error messages if opening fails.
+  if (wxLogNull logNo; 
+     (synced && !Open(m_Path.Path().string())) ||
+    (!synced && m_OpenFile && !Open(m_Path.Path().string())))
   {
-    wxLogNull logNo;
-  
-    if ( 
-       (synced && !Open(m_Path.Path().string())) ||
-      (!synced && m_OpenFile && !Open(m_Path.Path().string())))
-    {
-      return false;
-    }
+    return false;
   }
 
   if (!DoFileLoad(synced))

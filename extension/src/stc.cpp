@@ -218,15 +218,13 @@ void wxExSTC::FoldAll()
   int line = 0;
   while (line < GetLineCount())
   {
-    const auto level = GetFoldLevel(line);
-    const auto last_child_line = GetLastChild(line, level);
-    
-    if (xml && (
+    if (const auto level = GetFoldLevel(line); xml && (
         level == wxSTC_FOLDLEVELBASE + wxSTC_FOLDLEVELHEADERFLAG))
     {
       line++;
     }
-    else if (last_child_line > line + 1)
+    else if (const auto last_child_line = GetLastChild(line, level);
+      last_child_line > line + 1)
     {
       if (GetFoldExpanded(line)) ToggleFold(line);
       line = last_child_line + 1;
@@ -424,9 +422,8 @@ void wxExSTC::MarkModified(const wxStyledTextEvent& event)
   
   UseModificationMarkers(false);
   
-  const auto line = LineFromPosition(event.GetPosition());
-  
-  if (event.GetModificationType() & wxSTC_PERFORMED_UNDO)
+  if (const auto line = LineFromPosition(event.GetPosition());
+    event.GetModificationType() & wxSTC_PERFORMED_UNDO)
   {
     if (event.GetLinesAdded() == 0)
     {
@@ -770,7 +767,7 @@ void wxExSTC::SetSearchFlags(int flags)
   {
     flags = 0;
     
-    wxExFindReplaceData* frd = wxExFindReplaceData::Get();
+    auto* frd = wxExFindReplaceData::Get();
     if (frd->UseRegEx()) 
     {
       flags |= wxSTC_FIND_REGEXP;
@@ -815,8 +812,6 @@ bool wxExSTC::ShowVCS(const wxExVCSEntry* vcs)
     return false;
   }
 
-  wxExTokenizer tkz(vcs->GetStdOut(), "\r\n");
-
   int begin, end;
   bool begin_is_number, end_is_number = true;
 
@@ -841,9 +836,9 @@ bool wxExSTC::ShowVCS(const wxExVCSEntry* vcs)
   int line = 0;
   bool found = false;
 
-  while (tkz.HasMoreTokens())
+  for (wxExTokenizer tkz(vcs->GetStdOut(), "\r\n"); tkz.HasMoreTokens(); )
   {
-    const std::string text(tkz.GetNextToken());
+    const auto text(tkz.GetNextToken());
 
     if (!begin_is_number)
     {

@@ -160,7 +160,7 @@ void wxExSTC::BindAll()
        }
      }});
 	  
-  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
+  auto* frd = wxExFindReplaceData::Get();
   
   Bind(wxEVT_FIND, [=](wxFindDialogEvent& event) {
     frd->SetFindString(frd->GetFindString());
@@ -244,8 +244,8 @@ void wxExSTC::BindAll()
         if (menu.GetMenuItemCount() > 0)
         {
           // If last item is a separator, delete it.
-          wxMenuItem* item = menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
-          if (item->IsSeparator())
+          if (wxMenuItem* item = menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
+            item->IsSeparator())
           {
             menu.Delete(item->GetId());
           }
@@ -262,9 +262,9 @@ void wxExSTC::BindAll()
     m_Frame->SetFindFocus(this);
     event.Skip();});
 
-  Bind(wxEVT_STC_AUTOCOMP_SELECTION, [=](wxStyledTextEvent& event) {
+  Bind(wxEVT_STC_AUTOCOMP_COMPLETED, [=](wxStyledTextEvent& event) {
     m_AutoComplete.Activate(event.GetText().ToStdString());});
-    
+
   Bind(wxEVT_STC_CHARADDED, [=](wxStyledTextEvent& event) {
     event.Skip();
     AutoIndentation(event.GetKey());});
@@ -295,11 +295,10 @@ void wxExSTC::BindAll()
   // not yet possible for wx3.0. And add wxSTC_AUTOMATICFOLD_CLICK
   // to configdialog, and SetAutomaticFold.
   Bind(wxEVT_STC_MARGINCLICK, [=](wxStyledTextEvent& event) {
-    const auto line = LineFromPosition(event.GetPosition());
-    if (event.GetMargin() == m_MarginFoldingNumber)
+    if (const auto line = LineFromPosition(event.GetPosition());
+      event.GetMargin() == m_MarginFoldingNumber)
     {
-      const auto level = GetFoldLevel(line);
-      if ((level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
+      if (const auto level = GetFoldLevel(line); (level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
       {
         ToggleFold(line);
       }
@@ -343,8 +342,7 @@ void wxExSTC::BindAll()
     }
     else
     {
-      long val;
-      if ((val = wxGetNumberFromUser(
+      if (long val; (val = wxGetNumberFromUser(
         _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
         wxEmptyString,
         _("Enter Line Number"),
@@ -364,8 +362,7 @@ void wxExSTC::BindAll()
     wxID_REPLACE);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    long pos;
-    if ((pos = wxGetNumberFromUser(_("Input") + ":",
+    if (long pos; (pos = wxGetNumberFromUser(_("Input") + ":",
       wxEmptyString,
       _("Enter Sort Position"),
       GetCurrentPos() + 1 - PositionFromLine(GetCurrentLine()),
@@ -402,11 +399,10 @@ void wxExSTC::BindAll()
     if (!propnames.empty())
     {
       properties += "\n[Available properties]\n";
-      wxExTokenizer tkz(propnames, "\n");
     
-      while (tkz.HasMoreTokens())
+      for (wxExTokenizer tkz(propnames, "\n"); tkz.HasMoreTokens(); )
       {
-        const std::string prop(tkz.GetNextToken());
+        const auto prop(tkz.GetNextToken());
         const std::string description(DescribeProperty(prop));
         properties += prop + 
           (!GetProperty(prop).empty() ? "=" + GetProperty(prop).ToStdString(): std::string()) + 
@@ -490,7 +486,7 @@ void wxExSTC::BindAll()
       return;
     }
 
-    const std::string word = (!GetSelectedText().empty() ? 
+    const auto word = (!GetSelectedText().empty() ? 
       GetSelectedText().ToStdString() : GetWordAtPos(pos));
 
     if (word.empty()) 
@@ -498,10 +494,9 @@ void wxExSTC::BindAll()
       return;
     }
 
-    const int c = word[0];
     std::stringstream stream;
 
-    if (c < 32 || c > 125)
+    if (const int c = word[0]; c < 32 || c > 125)
     {
       stream << "bin: " << c;
     }

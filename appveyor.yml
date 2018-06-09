@@ -1,19 +1,14 @@
 version: 18.10.0.{build}
 
-platform: 
-  - x86 
+platform: x86 
 
-image: 
-  - Visual Studio 2017
+image: Visual Studio 2017
 
-clone_folder: 
-  - c:\projects\wxex
+clone_folder: c:\projects\wxex
 
-clone_depth: 
-  - 5
+clone_depth: 5
 
-configuration:
-  - Release
+configuration: Release
 
 install:
   - git config http.postBuffer 524288000
@@ -28,8 +23,7 @@ build_script:
   - nmake
   - ..\ci\pack.bat
 
-test: 
-  - OFF
+test: OFF
 
 artifacts:
   - path: 'build\syncped-v{version}.zip'

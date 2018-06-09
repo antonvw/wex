@@ -56,9 +56,7 @@ DecoratedFrame::DecoratedFrame(App* app)
     {"PaneMacro", 75},
     {"PaneMode", 100}});
   
-  wxExVCS vcs;
-  
-  if (vcs.Use() && wxExVCS::GetCount() > 0)
+  if (wxExVCS vcs; vcs.Use() && wxExVCS::GetCount() > 0)
   {
     vcs.SetEntryFromBase();
     StatusText(!vcs.GetBranch().empty() ? vcs.GetBranch(): vcs.GetName(), "PaneVCS");
@@ -78,7 +76,7 @@ DecoratedFrame::DecoratedFrame(App* app)
   m_StatusBar->ShowField("PaneMode", false);
 #endif
 
-  wxExMenu *menuFile = new wxExMenu();
+  auto *menuFile = new wxExMenu();
   menuFile->Append(wxID_NEW,
     wxExEllipsed(wxGetStockLabel(wxID_NEW, wxSTOCK_NOFLAGS), "\tCtrl+N"));
   menuFile->Append(wxID_OPEN);
@@ -96,7 +94,7 @@ DecoratedFrame::DecoratedFrame(App* app)
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
-  wxExMenu *menuEdit = new wxExMenu();
+  auto *menuEdit = new wxExMenu();
   menuEdit->Append(wxID_UNDO);
   menuEdit->Append(wxID_REDO);
   menuEdit->AppendSeparator();
@@ -106,7 +104,7 @@ DecoratedFrame::DecoratedFrame(App* app)
   menuEdit->AppendSeparator();
   menuEdit->Append(wxID_JUMP_TO);
   menuEdit->AppendSeparator();
-  wxExMenu* menuFind = new wxExMenu();
+  auto* menuFind = new wxExMenu();
   
   if (vi_mode)
   {
@@ -142,7 +140,7 @@ DecoratedFrame::DecoratedFrame(App* app)
     ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+K"));
   menuEdit->AppendSeparator();
   
-  wxExMenu* menuMacro = new wxExMenu();
+  auto* menuMacro = new wxExMenu();
   menuMacro->Append(ID_EDIT_MACRO_START_RECORD, wxExEllipsed(_("Start Record")));
   menuMacro->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
   menuMacro->AppendSeparator();
@@ -156,7 +154,7 @@ DecoratedFrame::DecoratedFrame(App* app)
   
   menuEdit->AppendSubMenu(menuMacro, _("&Macro"), wxEmptyString, ID_EDIT_MACRO_MENU);
 
-  wxExMenu *menuView = new wxExMenu;
+  auto *menuView = new wxExMenu;
   AppendPanes(menuView);
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_FILES, _("&Files"));
@@ -167,13 +165,13 @@ DecoratedFrame::DecoratedFrame(App* app)
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_ASCII_TABLE, _("&Ascii Table"));
 
-  wxExMenu *menuProcess = new wxExMenu();
+  auto *menuProcess = new wxExMenu();
   menuProcess->Append(ID_PROCESS_SELECT, wxExEllipsed(_("&Select")));
   menuProcess->AppendSeparator();
   menuProcess->Append(wxID_EXECUTE);
   menuProcess->Append(wxID_STOP);
 
-  wxExMenu *menuProject = new wxExMenu();
+  auto *menuProject = new wxExMenu();
   menuProject->Append(
     ID_PROJECT_NEW, wxGetStockLabel(wxID_NEW), wxEmptyString, wxART_NEW);
   menuProject->Append(
@@ -222,7 +220,7 @@ DecoratedFrame::DecoratedFrame(App* app)
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_LIST, wxExEllipsed(_("Set &List Options")));
 
-  wxExMenu *menuHelp = new wxExMenu();
+  auto *menuHelp = new wxExMenu();
   menuHelp->Append(wxID_ABOUT);
   menuHelp->Append(wxID_HELP);
 

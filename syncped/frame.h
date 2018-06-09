@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of class Frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,6 +14,7 @@
 #include "support.h"
 
 class App;
+class EditorsNotebook;
 
 class Frame : public DecoratedFrame
 {
@@ -24,7 +25,7 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual wxExListView* Activate(wxExListType type, const wxExLexer* lexer = nullptr) override;
-  virtual bool ExecExCommand(wxExExCommand& ciommand) override;
+  virtual bool ExecExCommand(wxExExCommand& command) override;
   virtual wxExListViewFile* GetProject() override;
   virtual bool IsOpen(const wxExPath& filename) override;
   virtual void OnCommandItemDialog(wxWindowID dialogid, const wxCommandEvent& event) override;
@@ -61,14 +62,17 @@ private:
   const wxString m_ProjectWildcard = 
     _("Project Files") + " (*.prj)|*.prj";
 
-  int m_NewProjectNo = 1, m_SplitId = 1;
+  bool m_Maximized {false};
+  int m_NewProjectNo {1}, m_SplitId {1};
 
-  wxCheckBox *m_CheckBoxDirCtrl, *m_CheckBoxHistory;
-  wxExGenericDirCtrl* m_DirCtrl;
-  wxExListViewWithFrame* m_History = nullptr;
-  wxExNotebook *m_Editors, *m_Lists, *m_Projects = nullptr;
-  wxExProcess* m_Process;
-  wxExSTC* m_asciiTable = nullptr;
+  EditorsNotebook *m_Editors {nullptr};
+
+  wxCheckBox *m_CheckBoxDirCtrl {nullptr}, *m_CheckBoxHistory {nullptr};
+  wxExGenericDirCtrl* m_DirCtrl {nullptr};
+  wxExListViewWithFrame* m_History {nullptr};
+  wxExNotebook *m_Lists {nullptr}, *m_Projects {nullptr};
+  wxExProcess* m_Process {nullptr};
+  wxExSTC* m_asciiTable {nullptr};
   std::string m_SavedPage;
 
   DECLARE_EVENT_TABLE()

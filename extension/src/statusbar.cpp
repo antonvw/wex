@@ -119,7 +119,7 @@ void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
   else if (event.Moving())
   {
 #if wxUSE_TOOLTIPS
-    if (const auto tooltip = GetToolTipText(); pane.GetHelpText().empty())
+    if (const auto& tooltip = GetToolTipText(); pane.GetHelpText().empty())
     {
       if (!tooltip.empty())
       {
@@ -144,9 +144,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
   {
     if (it.IsShown())
     {
-      wxRect rect;
-      
-      if (GetFieldRect(fieldno, rect))
+      if (wxRect rect; GetFieldRect(fieldno, rect))
       {
         if (rect.Contains(event.GetPosition()))
         {
@@ -208,15 +206,12 @@ wxExStatusBar* wxExStatusBar::Setup(
 bool wxExStatusBar::SetStatusText(
   const std::string& text, const std::string& field)
 {
-  int shown_pane_no, pane_no;
-
-  if (!GetFieldNo(field, shown_pane_no, pane_no))
+  if (int shown_pane_no, pane_no; !GetFieldNo(field, shown_pane_no, pane_no))
   {
     // Do not show error, as you might explicitly want to ignore messages.
     return false;
   }
-
-  if (shown_pane_no == FIELD_NOT_SHOWN)
+  else if (shown_pane_no == FIELD_NOT_SHOWN)
   {
     m_Panes[pane_no].SetHiddenText(text);
     return false;
@@ -236,8 +231,8 @@ bool wxExStatusBar::ShowField(const std::string& field, bool show)
 {
   wxASSERT(!m_Panes.empty());
   
-  int* widths = new int[m_Panes.size()];
-  int* styles = new int[m_Panes.size()];
+  auto* widths = new int[m_Panes.size()];
+  auto* styles = new int[m_Panes.size()];
   int panes_shown = 0;
   std::vector<std::string> changes;
   bool changed = false;
@@ -254,7 +249,7 @@ bool wxExStatusBar::ShowField(const std::string& field, bool show)
           
           it.Show(true);
           
-          for (int j = panes_shown; j < GetFieldsCount(); j++)
+          for (auto j = panes_shown; j < GetFieldsCount(); j++)
           {
             changes.emplace_back(wxStatusBar::GetStatusText(j));
           }
@@ -272,7 +267,7 @@ bool wxExStatusBar::ShowField(const std::string& field, bool show)
           it.Show(false);
           changed = true;
           
-          for (int j = panes_shown + 1; j < GetFieldsCount(); j++)
+          for (auto j = panes_shown + 1; j < GetFieldsCount(); j++)
           {
             changes.emplace_back(wxStatusBar::GetStatusText(j));
           }

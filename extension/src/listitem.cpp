@@ -2,7 +2,7 @@
 // Name:      listitem.cpp
 // Purpose:   Implementation of class 'wxExListItem'
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -86,9 +86,7 @@ void wxExListItem::Insert(long index)
 
 void wxExListItem::SetItem(const std::string& col_name, const std::string& text) 
 {
-  const auto col = m_ListView->FindColumn(col_name);
-  
-  if (col != -1)
+  if (const auto col = m_ListView->FindColumn(col_name); col != -1)
   {
     m_ListView->SetItem(GetId(), col, text);
   }
@@ -122,7 +120,7 @@ void wxExListItem::Update()
      m_Path.GetStat().IsOk())
   {
     SetItem(_("Type").ToStdString(),
-      m_Path.DirExists() ? m_FileSpec: m_Path.GetExtension().substr(1));
+      m_Path.DirExists() ? m_FileSpec: m_Path.GetExtension());
     SetItem(_("In Folder").ToStdString(), m_Path.GetPath());
     SetItem(_("Size").ToStdString(),
       m_Path.FileExists() ? std::to_string(m_Path.GetStat().st_size): std::string());

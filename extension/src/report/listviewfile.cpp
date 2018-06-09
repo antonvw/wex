@@ -138,7 +138,7 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
      !GetFileName().FileExists() || 
      (GetFileName().FileExists() && !GetFileName().IsReadOnly());
      
-  const long style = menu.GetStyle() | (!ok ? wxExMenu::MENU_IS_READ_ONLY: 0);
+  const auto style = menu.GetStyle() | (!ok ? wxExMenu::MENU_IS_READ_ONLY: 0);
 
   menu.SetStyle(style);
 

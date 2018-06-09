@@ -116,9 +116,8 @@ wxExShell::wxExShell(
     }
 
     bool skip = true;
-    const int key = event.GetKeyCode();
     
-    switch (key)
+    switch (const int key = event.GetKeyCode(); key)
     {
       case WXK_RETURN:
       case WXK_TAB:
@@ -328,37 +327,35 @@ void wxExShell::Expand()
   // subdir: src
   // prefix: vi
   wxExPath path(wxExAfter(m_Command, ' ', false));
-  const std::string prefix(path.GetFullName());
-  
   std::string expansion;
+  const std::string prefix(path.GetFullName());
   
   if (AutoCompActive())
   {
-    const int index = AutoCompGetCurrent();
-    
-    if (index >= 0 && index < (int)m_AutoCompleteList.size())
+    if (const int index = AutoCompGetCurrent(); 
+      index >= 0 && index < (int)m_AutoCompleteList.size())
     {
       expansion = m_AutoCompleteList[index].substr(prefix.length());
     }
     
     AutoCompCancel();
   }
-  else
+  else if (const auto [r, e, v] = wxExAutoCompleteFileName(m_Command); r)
   {
-    if (wxExAutoCompleteFileName(m_Command, expansion, m_AutoCompleteList))
+    if (v.size() > 1)
     {
-      if (m_AutoCompleteList.size() > 1)
-      {
-        m_AutoCompleteList.erase(m_AutoCompleteList.begin());
-        AutoCompShow(prefix.length(), std::accumulate(
-          m_AutoCompleteList.begin(), m_AutoCompleteList.end(), std::string(), 
-          [&](const std::string& a, const std::string& b) {
-            return a.empty() ? b : a + (char)AutoCompGetSeparator() + b;}));
-      }
+      m_AutoCompleteList = v;
+      AutoCompShow(prefix.length(), std::accumulate(
+        v.begin(), v.end(), std::string(), 
+        [&](const std::string& a, const std::string& b) {
+          return a.empty() ? b : a + (char)AutoCompGetSeparator() + b;}));
+    }
+    else 
+    {
+      expansion = e;
     }
   }
-  
-  // If we have an expansion.
+
   if (!expansion.empty())
   {
     m_Command += expansion;
@@ -540,9 +537,7 @@ bool wxExShell::ProcessChar(int key)
 void wxExShell::ProcessCharDefault(int key)
 {
   // Insert the key at current position.
-  const int index = GetCurrentPos() - m_CommandStartPosition;
-  
-  if (
+  if (const int index = GetCurrentPos() - m_CommandStartPosition;
     GetCurrentPos() < GetLength() && 
     index >= 0 && index < (int)m_Command.size())
   {
@@ -595,9 +590,7 @@ bool wxExShell::Prompt(const std::string& text, bool add_eol)
 
 bool wxExShell::SetCommandFromHistory(const std::string& short_command)
 {
-  const int no_asked_for = atoi(short_command.c_str());
-
-  if (no_asked_for > 0)
+  if (const auto no_asked_for = atoi(short_command.c_str()); no_asked_for > 0)
   {
     int no = 1;
 
@@ -633,9 +626,8 @@ bool wxExShell::SetCommandFromHistory(const std::string& short_command)
       it != m_Commands.rend();
       ++it)
     {
-      const std::string command = *it;
-
-      if (command.substr(0, short_command_check.size()) == short_command_check)
+      if (const std::string command = *it;
+        command.substr(0, short_command_check.size()) == short_command_check)
       {
         m_Command = command;
         return true;

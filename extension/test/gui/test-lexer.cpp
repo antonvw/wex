@@ -27,6 +27,7 @@ TEST_CASE("wxExLexer")
     REQUIRE( lexer.GetStyles().empty());
     REQUIRE( lexer.GetDisplayLexer().empty());
     REQUIRE( lexer.GetScintillaLexer().empty());
+    REQUIRE( lexer.GetLineSize() > 0);
   }
 
   SUBCASE("Default constructor with lexer")

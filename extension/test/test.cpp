@@ -85,14 +85,6 @@ const wxExPath GetTestPath(const std::string& file)
   return wxExTestApp::GetTestPath(file);
 }
 
-bool wxExUIAction(wxWindow* win, const std::string& action, const std::string& par)
-{
-  // no longer wxUIActionSimulator needed
-  return true;
-}
-  
-wxExPath wxExTestApp::m_TestPath;
-
 wxExPath wxExTestApp::GetTestPath(const std::string& file)
 {
   return file.empty() ?

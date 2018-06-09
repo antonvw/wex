@@ -62,8 +62,8 @@ public:
 private:
   void HandleCommand(const std::string& command);
   virtual void OnTerminate(int pid, int status) override {
-    const auto it = std::find(m_pids.begin(), m_pids.end(), pid);
-    if (it != m_pids.end())
+    if (const auto& it = std::find(m_pids.begin(), m_pids.end(), pid);
+      it != m_pids.end())
     {
       m_pids.erase(it);
     }
@@ -77,7 +77,7 @@ private:
   wxExShell* m_Shell;
   std::unique_ptr<wxTimer> m_Timer;
   wxCriticalSection m_Critical;
-  static std::vector<int> m_pids;
+  static inline std::vector<int> m_pids;
 };
 
 auto ShowProcess(wxExManagedFrame* frame, bool show)
@@ -91,9 +91,6 @@ auto ShowProcess(wxExManagedFrame* frame, bool show)
   return false;  
 }
       
-std::vector<int> wxExProcessImp::m_pids;
-
-wxExShell* wxExProcess::m_Shell = nullptr;
 wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 
 wxExProcess::wxExProcess() 
@@ -151,7 +148,7 @@ bool wxExProcess::Execute(
 {
   m_Error = false;
     
-  std::string cwd(wd);
+  auto cwd(wd);
     
   if (command.empty())
   {
@@ -338,10 +335,9 @@ void wxExProcessImp::HandleCommand(const std::string& command)
 
   if (command.find(cd) == 0)
   {
-    const std::string rest = wxExSkipWhiteSpace(wxExAfter(command, cd.back()));
-    
     wxLogNull logNo;
-    if (rest.empty() || rest == "~")
+    if (const auto rest (wxExSkipWhiteSpace(wxExAfter(command, cd.back())));
+      rest.empty() || rest == "~")
     {
 #ifdef __WXMSW__
 #else        
@@ -357,18 +353,14 @@ void wxExProcessImp::HandleCommand(const std::string& command)
 
 bool wxExProcessImp::Kill(int sig)
 {
-  const auto pid = GetPid();
-
-  if (wxProcess::Kill(pid, (wxSignal)sig) != wxKILL_OK)
+  if (const auto pid = GetPid(); wxProcess::Kill(pid, (wxSignal)sig) != wxKILL_OK)
   {
     return false;
   }
-
-  if (sig == wxSIGKILL || sig == wxSIGTERM)
+  else if (sig == wxSIGKILL || sig == wxSIGTERM)
   {
-    const auto it = std::find(m_pids.begin(), m_pids.end(), pid);
-
-    if (it != m_pids.end())
+    if (const auto& it = std::find(m_pids.begin(), m_pids.end(), pid);
+      it != m_pids.end())
     {
       m_pids.erase(it);
     }
@@ -437,9 +429,7 @@ bool wxExProcessImp::Write(const std::string& text)
   }
     
   // Write text to process and restart timer.
-  wxOutputStream* os = GetOutputStream();
-
-  if (os != nullptr)
+  if (wxOutputStream* os = GetOutputStream(); os != nullptr)
   {
     HandleCommand(text);
 
@@ -448,7 +438,7 @@ bool wxExProcessImp::Write(const std::string& text)
       m_Frame->GetDebug()->ProcessStdIn(text);
     }
 
-    const std::string el = (text.size() == 1 && text[0] == 3 ? 
+    const auto el = (text.size() == 1 && text[0] == 3 ? 
       std::string(): std::string("\n"));
     wxTextOutputStream(*os).WriteString(text + el);
     m_StdIn = text;

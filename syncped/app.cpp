@@ -32,9 +32,7 @@ bool App::OnInit()
   SetAppName("syncped");
   Reset();
   
-  bool exit = false;
-
-  if (
+  if (bool exit = false;
     !wxExApp::OnInit() ||
     !wxExCmdLine(
      {{{"d", "debug", "use debug mode"}, [&](bool on) {m_Debug = on;}},
@@ -57,8 +55,8 @@ bool App::OnInit()
           "\nLanguage: " << GetLocale().GetLanguage() <<
           "\nLocale: " << GetLocale().GetLocale().c_str() <<
           "\nIs ok: " << GetLocale().IsOk();
-          const wxLanguageInfo *info = wxLocale::GetLanguageInfo(GetLocale().GetLanguage());
-          if (info == nullptr)
+          if (const auto *info = wxLocale::GetLanguageInfo(GetLocale().GetLanguage());
+            info == nullptr)
           {
             std::cout << "\nNo info\n";
           }

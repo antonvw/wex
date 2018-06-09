@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -43,7 +43,7 @@ private:
 
   doctest::Context* m_Context;
   
-  static wxExPath m_TestPath;
+  static inline wxExPath m_TestPath;
 };
 
 /// Adds managed pane.
@@ -55,13 +55,3 @@ const wxExPath GetTestPath(const std::string& file = std::string());
   
 /// Invoke UI action on window, 
 int wxExTestMain(int argc, char* argv[], wxExTestApp* app);
-
-/// Returns false if an error occurred.
-bool wxExUIAction(
-  /// window to operate on
-  wxWindow* win, 
-  /// action, if starts with button is a button action,
-  /// if starts with dialog is a dialog action
-  const std::string& action = "button",
-  /// e.g. the dialog to operate on
-  const std::string& par = "right");

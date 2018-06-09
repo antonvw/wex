@@ -24,9 +24,7 @@ wxExEvaluator::~wxExEvaluator()
   delete m_eval;
 }
 
-double wxExEvaluator::Eval(
-  wxExEx* ex,
-  const std::string& text, int& width, std::string& err)
+std::tuple<double, int, std::string> wxExEvaluator::Eval(wxExEx* ex, const std::string& text)
 {
   Init();
 
@@ -34,7 +32,7 @@ double wxExEvaluator::Eval(
 
   if (expr.empty() || expr.find("%s") != std::string::npos)
   {
-    return 0;
+    return {0, 0, "empty expression"};
   }
   
   const char ds(wxNumberFormatter::GetDecimalSeparator());
@@ -44,20 +42,17 @@ double wxExEvaluator::Eval(
   std::regex re(rt);
   const auto words_begin = std::sregex_iterator(text.begin(), text.end(), re);
   const auto words_end = std::sregex_iterator();  
+  int width = 0;
 
   if (words_begin != words_end)
   {
-    std::smatch match = *words_begin; 
-
-    if (!match.empty())
+    if (std::smatch match = *words_begin; !match.empty())
     {
       width = match.length() - 1;
     }
   }
   else
   {
-    width = 0;
-    
     // Replace . with current line.
     wxExReplaceAll(expr, ".", std::to_string(
       ex->GetCommand().STC()->GetCurrentLine() + 1));
@@ -70,11 +65,12 @@ double wxExEvaluator::Eval(
   // Expand all markers and registers.
   if (!wxExMarkerAndRegisterExpansion(ex, expr))
   {
-    return 0;
+    return {0, 0, "marker or register error"};
   }
 
   // https://github.com/r-lyeh/eval
-  return m_eval->eval(expr, &err);
+  std::string err;
+  return {m_eval->eval(expr, &err), width, err};
 }
 
 std::string wxExEvaluator::GetInfo(const wxExEx* ex)
@@ -148,6 +144,5 @@ void wxExEvaluator::Init()
   catch (std::exception& e)
   {
     wxExLog(e) << "evaluator";
-    return;
   }
 }

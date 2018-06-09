@@ -26,27 +26,35 @@ bool wxExAutoComplete::Activate(const std::string& text)
     return false;
   }
 
-  bool ret = m_STC->GetVi().GetCTags()->Filter(text, m_Filter);
+  wxExCTagsEntry current;
+
+  m_STC->GetVi().GetCTags()->Find(text, current, m_Filter);
+
+  if (current.Active())
+  {
+    VLOG(9) << "current: " << current.Get();
+  }
 
   if (m_Filter.Active())
   {
-    VLOG(9) << "filter active: " << m_Filter.Get();
+    VLOG(9) << "filter: " << m_Filter.Get();
   }
 
-  if (m_STC->GetVi().GetIsActive())
+  if (const std::string complete(
+    current.Kind() == "f" || current.Kind() == "p" ? current.Signature(): "");
+    !complete.empty())
   {
-    const std::string command(text.substr(m_Text.size()));
+    m_STC->AddText(complete);
 
-    if (!command.empty() && !m_STC->GetVi().Command(command))
+    if (m_STC->GetVi().GetIsActive())
     {
-      wxExLog() << "AutoComplete command failed";
-      return false;
+      // TODO: update vi insert text
     }
   }
 
   m_Text.clear();
 
-  return ret;
+  return true;
 }
 
 bool wxExAutoComplete::Apply(char c)
@@ -130,31 +138,28 @@ bool wxExAutoComplete::ShowCTags(bool show) const
 {
   if (!show) return false;
 
-  const std::string comp(m_STC->GetVi().GetCTags()->AutoComplete(
+  if (const std::string comp(m_STC->GetVi().GetCTags()->AutoComplete(
     m_Text, m_Filter));
-
-  if (comp.empty())
+    comp.empty())
   {
     return false;
   }
-
-  m_STC->AutoCompSetSeparator(m_STC->GetVi().GetCTags()->Separator());
-  m_STC->AutoCompShow(m_Text.length() - 1, comp);
-  m_STC->AutoCompSetSeparator(' ');
-
-  return true;
+  else 
+  {
+    m_STC->AutoCompSetSeparator(m_STC->GetVi().GetCTags()->Separator());
+    m_STC->AutoCompShow(m_Text.length() - 1, comp);
+    m_STC->AutoCompSetSeparator(' ');
+    return true;
+  }
 }
 
 bool wxExAutoComplete::ShowInserts(bool show) const
 {
-  if (!show) return false;
-
-  if (!m_Text.empty() && !m_Inserts.empty())
+  if (show && !m_Text.empty() && !m_Inserts.empty())
   {
-    const std::string comp(wxExGetStringSet(
+    if (const std::string comp(wxExGetStringSet(
       m_Inserts, m_MinSize, m_Text));
-      
-    if (!comp.empty())
+      !comp.empty())
     {
       m_STC->AutoCompShow(m_Text.length() - 1, comp);
       return true;
@@ -166,14 +171,11 @@ bool wxExAutoComplete::ShowInserts(bool show) const
 
 bool wxExAutoComplete::ShowKeywords(bool show) const
 {
-  if (!show) return false;
-
-  if (!m_Text.empty() && m_STC->GetLexer().KeywordStartsWith(m_Text))
+  if (show && !m_Text.empty() && m_STC->GetLexer().KeywordStartsWith(m_Text))
   {
-    const std::string comp(
+    if (const std::string comp(
       m_STC->GetLexer().GetKeywordsString(-1, m_MinSize, m_Text));
-      
-    if (!comp.empty())
+      !comp.empty())
     {
       m_STC->AutoCompShow(m_Text.length() - 1, comp);
       return true;

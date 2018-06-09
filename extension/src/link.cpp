@@ -166,7 +166,7 @@ const wxExPath wxExLink::GetPath(
   }
 
   // Check whether last word is a file.
-  const int pos = path.Path().string().find_last_of(' ');
+  const auto pos = path.Path().string().find_last_of(' ');
   wxExPath word = wxExSkipWhiteSpace((
     pos != std::string::npos ? path.Path().string().substr(pos): std::string()));
 

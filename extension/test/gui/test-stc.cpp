@@ -254,6 +254,5 @@ TEST_CASE("wxExSTC")
   SUBCASE("Popup")
   {
     REQUIRE( stc->GetLexer().Set("cpp"));
-    REQUIRE(wxExUIAction(stc));
   }
 }

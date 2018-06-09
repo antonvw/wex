@@ -169,7 +169,7 @@ wxExCmdLine::wxExCmdLine(
             std::get<0>(it->first), std::get<1>(it->first), std::get<2>(it->first),
             false, -1, "float");
           m_Parser->add(arg);
-          m_Options.push_back(new wxExCmdLineOption(arg, it->second.second));
+          m_Options.emplace_back(new wxExCmdLineOption(arg, it->second.second));
           }
           break;
 
@@ -178,7 +178,7 @@ wxExCmdLine::wxExCmdLine(
             std::get<0>(it->first), std::get<1>(it->first), std::get<2>(it->first),
             false, -1, "int");
           m_Parser->add(arg);
-          m_Options.push_back(new wxExCmdLineOption(arg, it->second.second));
+          m_Options.emplace_back(new wxExCmdLineOption(arg, it->second.second));
           }
           break;
         
@@ -187,7 +187,7 @@ wxExCmdLine::wxExCmdLine(
             std::get<0>(it->first), std::get<1>(it->first), std::get<2>(it->first),
             false, std::string(), "string");
           m_Parser->add(arg);
-          m_Options.push_back(new wxExCmdLineOption(arg, it->second.second));
+          m_Options.emplace_back(new wxExCmdLineOption(arg, it->second.second));
           }
           break;
         
@@ -200,7 +200,7 @@ wxExCmdLine::wxExCmdLine(
       const bool def = !wxConfigBase::Get()->ReadBool(std::get<1>(it->first), true);
       auto* arg = new TCLAP::SwitchArg(
         std::get<0>(it->first), std::get<1>(it->first), std::get<2>(it->first), def); 
-      m_Switches.push_back(new wxExCmdLineSwitch(arg, it->second));
+      m_Switches.emplace_back(new wxExCmdLineSwitch(arg, it->second));
       m_Parser->add(arg);
     }
 
@@ -208,7 +208,7 @@ wxExCmdLine::wxExCmdLine(
     {
       auto* arg = new TCLAP::UnlabeledMultiArg<std::string>(
         p.first.first, p.first.second, false, std::string());
-      m_Params.push_back(new wxExCmdLineParam(arg, p.second));
+      m_Params.emplace_back(new wxExCmdLineParam(arg, p.second));
       m_Parser->add(arg);
     }
   }

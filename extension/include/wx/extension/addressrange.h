@@ -148,9 +148,9 @@ private:
   void Set(wxExAddress& begin, wxExAddress& end, int lines);
   bool SetSelection() const;
 
-  static std::string m_Pattern;
-  static std::string m_Replacement;
-  static wxExProcess* m_Process;
+  static inline std::string m_Pattern;
+  static inline std::string m_Replacement;
+  static inline wxExProcess* m_Process = nullptr;
   
   const wxExIndicator m_FindIndicator {wxExIndicator(0)};
 

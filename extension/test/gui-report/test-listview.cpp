@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wxExtension report unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017 Anton van Wezenbeek
+// Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/listitem.h>
@@ -37,8 +37,6 @@ TEST_CASE("wxExListViewWithFrame")
   }
 #endif
   
-  REQUIRE(wxExUIAction(listView));
-
   wxExListViewWithFrame* listView2 = new wxExListViewWithFrame(wxExListViewData().Type(LIST_FIND));
   listView2->Destroy();
 }

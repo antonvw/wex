@@ -105,6 +105,9 @@ public:
   /// Returns the language.
   const auto & GetLanguage() const {return m_Language;};
   
+  /// Returns the line size.
+  const auto GetLineSize() const {return m_LineSize;};
+  
   /// Returns the properties.
   const auto & GetProperties() const {return m_Properties;};
   
@@ -189,6 +192,7 @@ private:
   std::vector<wxExStyle> m_Styles;
   
   bool m_IsOk {false}, m_Previewable {false};
+  int m_LineSize {80};
   wxExEdgeMode m_EdgeMode {wxExEdgeMode::ABSENT};
   wxExSTC* m_STC {nullptr};
 };

@@ -28,7 +28,7 @@ wxExIndicator::wxExIndicator(const pugi::xml_node& node)
 
     wxExTokenizer fields(node.text().get(), ",");
 
-    const std::string style = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+    const auto style = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
 
     m_Style = std::stoi(style);
 

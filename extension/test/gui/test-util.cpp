@@ -69,17 +69,14 @@ TEST_CASE("wxEx")
   
   SUBCASE("wxExAutoCompleteFileName")
   {
-    std::string expansion;
-    std::vector<std::string> v;
-    REQUIRE( wxExAutoCompleteFileName("te", expansion, v));
-    REQUIRE( expansion == "st");
-    REQUIRE(!wxExAutoCompleteFileName("XX", expansion, v));
-    REQUIRE( expansion == "st");
+    REQUIRE( std::get<0> (wxExAutoCompleteFileName("te")));
+    REQUIRE( std::get<1> (wxExAutoCompleteFileName("te")) == "st");
+    REQUIRE(!std::get<0> (wxExAutoCompleteFileName("XX")));
     
 #ifdef __UNIX__
 #ifndef __WXOSX__    
-    REQUIRE( wxExAutoCompleteFileName("/usr/include/s", expansion, v));
-    REQUIRE( wxExAutoCompleteFileName("../../../extension/src/v", expansion, v));
+    REQUIRE( std::get<0> (wxExAutoCompleteFileName("/usr/include/s")));
+    REQUIRE( std::get<0> (wxExAutoCompleteFileName("../../../extension/src/v")));
     // It is not clear whether ~ is relative or absolute...
     //REQUIRE( wxExAutoCompleteFileName("~/", expansion, v));
 #endif    

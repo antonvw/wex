@@ -32,11 +32,11 @@ enum wxExImageAccessType
 };
 
 // Support class.
-class wxExCTagsEntry
+class wxExCTagsInfo
 {
 public:
   // Constructor.
-  wxExCTagsEntry(const tagEntry& entry)
+  wxExCTagsInfo(const tagEntry& entry)
     : m_LineNumber(entry.address.lineNumber)
     , m_Path(entry.file)
     , m_Pattern(entry.address.pattern != nullptr ? 
@@ -66,20 +66,20 @@ private:
 
 void SetImage(const tagEntry& entry, wxExImageAccessType& image)
 {
-  const char* value = tagsField(&entry, "access");
-  if (value == nullptr) return;
-
-  if (strcmp(value, "public") == 0)
+  if (const char* value = tagsField(&entry, "access"); value != nullptr)
   {
-    image = IMAGE_PUBLIC;
-  }
-  else if (strcmp(value, "protected") == 0)
-  {
-    image = IMAGE_PROTECTED;
-  }
-  else if (strcmp(value, "private") == 0)
-  {
-    image = IMAGE_PRIVATE;
+    if (strcmp(value, "public") == 0)
+    {
+      image = IMAGE_PUBLIC;
+    }
+    else if (strcmp(value, "protected") == 0)
+    {
+      image = IMAGE_PROTECTED;
+    }
+    else if (strcmp(value, "private") == 0)
+    {
+      image = IMAGE_PRIVATE;
+    }
   }
 }
 
@@ -93,7 +93,7 @@ bool Compare(const tagEntry& entry,
 
 const std::string Filtered(
   const tagEntry& entry, 
-  const wxExCTagsFilter& filter, 
+  const wxExCTagsEntry& filter, 
   wxExImageAccessType& image)
 {
   if (!filter.Active()) return entry.name;
@@ -124,8 +124,8 @@ const std::string Filtered(
   return entry.name;
 }
 
-std::map< std::string, wxExCTagsEntry > wxExCTags::m_Matches;
-std::map< std::string, wxExCTagsEntry >::iterator wxExCTags::m_Iterator;
+std::map< std::string, wxExCTagsInfo > wxExCTags::m_Matches;
+std::map< std::string, wxExCTagsInfo >::iterator wxExCTags::m_Iterator;
 
 wxExCTags::wxExCTags(wxExEx* ex)
   : m_Ex(ex)
@@ -148,7 +148,7 @@ wxExCTags::~wxExCTags()
 }
 
 std::string wxExCTags::AutoComplete(
-  const std::string& text, const wxExCTagsFilter& filter)
+  const std::string& text, const wxExCTagsEntry& filter)
 {
   if (m_File == nullptr) return std::string();
 
@@ -164,7 +164,7 @@ std::string wxExCTags::AutoComplete(
   else if (tagsFind(
     m_File, 
     &entry, 
-    text.c_str(), TAG_PARTIALMATCH | TAG_IGNORECASE) == TagFailure)
+    text.c_str(), TAG_PARTIALMATCH | TAG_OBSERVECASE) == TagFailure)
   {
     return std::string();
   }
@@ -184,7 +184,8 @@ std::string wxExCTags::AutoComplete(
   {
     wxExImageAccessType image = IMAGE_NONE;
 
-    if (const auto tag(Filtered(entry, filter, image)); !tag.empty() && tag != prev_tag)
+    if (const auto tag(Filtered(entry, filter, image)); !tag.empty() && 
+      tag != prev_tag)
     {
       if (!s.empty()) s.append(std::string(1, m_Separator));
 
@@ -214,7 +215,7 @@ std::string wxExCTags::AutoComplete(
 
 void wxExCTags::AutoCompletePrepare()
 {
-  m_Ex->GetSTC()->AutoCompSetIgnoreCase(true);
+  m_Ex->GetSTC()->AutoCompSetIgnoreCase(false);
   m_Ex->GetSTC()->AutoCompSetAutoHide(false);
 
   wxLogNull logNo;
@@ -225,70 +226,20 @@ void wxExCTags::AutoCompletePrepare()
   m_Prepare = true;
 }
 
-bool Master(const tagEntry& entry)
-{
-  return entry.kind != nullptr && 
-     ((strcmp(entry.kind, "c") == 0) ||
-      (strcmp(entry.kind, "e") == 0) ||
-      (strcmp(entry.kind, "m") == 0));
-}
-
-bool wxExCTags::Filter(const std::string& name, wxExCTagsFilter& filter) const
+bool wxExCTags::Find(const std::string& tag)
 {
   if (m_File == nullptr) return false;
 
-  tagEntry entry;
-
-  // Find first entry. This entry determines which kind of
-  // filter will be set.
-  if (tagsFind(m_File, &entry, name.c_str(), TAG_FULLMATCH) == TagFailure)
-  {
-    return false;
-  }
-
-  // If this is not a master entry find next.
-  while (!Master(entry) && tagsFindNext(m_File, &entry) == TagSuccess)
-  {
-  }
-
-  if (!Master(entry))
-  {
-    filter.Clear();
-    return false;
-  }
-
-  // Set filter for member functions for this member or class.
-  if (strcmp(entry.kind, "m") == 0)
-  {
-    const char* value = tagsField(&entry, "typeref");
-
-    if (value != nullptr)
-    {
-      filter.Kind("f").Class(wxExBefore(wxExAfter(value, ':'), ' '));
-    }
-  }
-  else 
-  {
-    filter.Kind("f").Class(entry.name);
-  }
-
-  return true;
-}
-
-bool wxExCTags::Find(const std::string& name)
-{
-  if (m_File == nullptr) return false;
-
-  if (name.empty())
+  if (tag.empty())
   {
     return Next();
   }
 
   tagEntry entry;
   
-  if (tagsFind(m_File, &entry, name.c_str(), TAG_FULLMATCH) == TagFailure)
+  if (tagsFind(m_File, &entry, tag.c_str(), TAG_FULLMATCH) == TagFailure)
   {
-    wxLogStatus("tag not found: " + wxString(name));
+    wxLogStatus("tag not found: " + wxString(tag));
     return false;
   }
   
@@ -296,7 +247,7 @@ bool wxExCTags::Find(const std::string& name)
 
   do
   {
-    const wxExCTagsEntry ct(entry);
+    const wxExCTagsInfo ct(entry);
     m_Matches.insert({ct.GetName(), ct});
   } while (tagsFindNext(m_File, &entry) == TagSuccess);
 
@@ -325,10 +276,67 @@ bool wxExCTags::Find(const std::string& name)
     }
   }
 
-  wxExFindReplaceData::Get()->SetFindString(name);
+  wxExFindReplaceData::Get()->SetFindString(tag);
 
   return true;
 }  
+
+bool Master(const tagEntry& entry)
+{
+  return entry.kind != nullptr && 
+     ((strcmp(entry.kind, "c") == 0) ||
+      (strcmp(entry.kind, "e") == 0) ||
+      (strcmp(entry.kind, "m") == 0));
+}
+
+bool wxExCTags::Find(const std::string& tag, 
+  wxExCTagsEntry& current,
+  wxExCTagsEntry& filter) const
+{
+  if (m_File == nullptr) return false;
+
+  tagEntry entry;
+
+  // Find first entry. This entry determines which kind of
+  // filter will be set.
+  if (tagsFind(m_File, &entry, tag.c_str(), TAG_FULLMATCH) == TagFailure)
+  {
+    return false;
+  }
+
+  filter.Clear();
+
+  do 
+  {
+    current.Kind(entry.kind).Class(entry.name);
+
+    if (const char* value = tagsField(&entry, "signature"); value != nullptr)
+    {
+      current.Signature(value);
+    }
+
+    // If this is not a master entry find next.
+    if (Master(entry))
+    {
+      // Set filter for member functions for this member or class.
+      if (strcmp(entry.kind, "m") == 0)
+      {
+        if (const char* value = tagsField(&entry, "typeref"); value != nullptr)
+        {
+          filter.Kind("f").Class(wxExBefore(wxExAfter(value, ':'), ' '));
+        }
+      }
+      else 
+      {
+        filter.Kind("f").Class(entry.name);
+      }
+
+      return true;
+    }
+  } while (!Master(entry) && tagsFindNext(m_File, &entry) == TagSuccess);
+
+  return false;
+}
 
 void wxExCTags::Init(const std::string& filename)
 {

@@ -68,14 +68,14 @@ const std::vector< std::string > wxExViMacros::Get(const std::string& macro)
   }
   else
   {
-    std::vector<std::string> v;
-    
     if (const auto& it = m_Variables.find(macro); it != m_Variables.end())
     {
-      v.emplace_back(it->second.GetValue());
+      return {it->second.GetValue()};
     }
-  
-    return v;
+    else 
+    {
+      return {std::string()};
+    }
   }
 }
 

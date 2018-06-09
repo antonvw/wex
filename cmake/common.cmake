@@ -95,7 +95,7 @@ if (WIN32)
     ${PROJECT_NAME}
     wxex-rep
     wxex
-    ${wxWidgets_LIBRARIES} scintilla
+    ${wxWidgets_LIBRARIES} wxscintilla
     ${extra_macro_args}
     )
 else ()
@@ -142,6 +142,8 @@ else ()
 endif ()
 
 file(GLOB_RECURSE wxExSETUP_H ${wxExtension_BINARY_DIR}/*.h)
+# use only first element from list
+list(GET wxExSETUP_H 0 wxExSETUP_H) 
 get_filename_component(wxExSETUP_H ${wxExSETUP_H} DIRECTORY)
 get_filename_component(wxExSETUP_H ${wxExSETUP_H} DIRECTORY)
 

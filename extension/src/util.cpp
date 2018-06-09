@@ -59,7 +59,7 @@ const std::string wxExAlignText(
   const std::string& lines, const std::string& header,
   bool fill_out_with_space, bool fill_out, const wxExLexer& lexer)
 {
-  const size_t line_length = lexer.UsableCharactersPerLine();
+  const auto line_length = lexer.UsableCharactersPerLine();
 
   // Use the header, with one space extra to separate, or no header at all.
   const std::string header_with_spaces =
@@ -73,12 +73,10 @@ const std::string wxExAlignText(
 
   while (!in.empty())
   {
-    const std::string word = wxExGetWord(in, false, false);
-
-    if (line.size() + 1 + word.size() > line_length)
+    if (const auto word = wxExGetWord(in, false, false);
+      line.size() + 1 + word.size() > line_length)
     {
       out += lexer.MakeSingleLineComment(line, fill_out_with_space, fill_out) + "\n";
-
       line = header_with_spaces + word;
     }
     else
@@ -93,8 +91,8 @@ const std::string wxExAlignText(
   return out;
 }
 
-bool wxExAutoCompleteFileName(
-  const std::string& text, std::string& expansion, std::vector<std::string> & v)
+std::tuple<bool, const std::string, const std::vector<std::string>> 
+  wxExAutoCompleteFileName(const std::string& text)
 {
   // E.g.:
   // 1) text: src/vi
@@ -114,12 +112,11 @@ bool wxExAutoCompleteFileName(
   }
 
   const std::string prefix(path.GetFullName());
-
-  v = wxExGetAllFiles(path.GetPath(), prefix + "*");
+  const std::vector <std::string > v(wxExGetAllFiles(path.GetPath(), prefix + "*"));
 
   if (v.empty())
   {
-    return false;
+    return {false, std::string(), v};
   }
 
   size_t rest_equal_size = std::string::npos;
@@ -146,9 +143,7 @@ bool wxExAutoCompleteFileName(
     }
   }
 
-  expansion = v[0].substr(prefix.length(), rest_equal_size);
-
-  return true;
+  return {true, v[0].substr(prefix.length(), rest_equal_size), v};
 }
 
 bool wxExAutoCompleteText(const std::string& text, 
@@ -170,9 +165,8 @@ bool wxExAutoCompleteText(const std::string& text,
 
 const std::string wxExBefore(const std::string& text, char c, bool first)
 {
-  std::string::size_type pos = (first ? text.find(c): text.rfind(c));
-
-  if (pos != std::string::npos)
+  if (std::string::size_type pos = (first ? text.find(c): text.rfind(c));
+    pos != std::string::npos)
   {
     return text.substr(0, pos);
   }
@@ -184,57 +178,53 @@ const std::string wxExBefore(const std::string& text, char c, bool first)
 
 bool wxExBrowserSearch(const std::string& text)
 {
-  const std::string search_engine(wxExConfigFirstOf(_("Search engine")));
-
-  if (search_engine.empty())
+  if (const std::string search_engine(wxExConfigFirstOf(_("Search engine")));
+    search_engine.empty())
   {
     return false;
   }
- 
-  wxLaunchDefaultBrowser(search_engine + "?q=" + text);
-
-  return true;
+  else 
+  {
+    wxLaunchDefaultBrowser(search_engine + "?q=" + text);
+    return true;
+  }
 }
 
 bool wxExClipboardAdd(const std::string& text)
 {
-  wxClipboardLocker locker;
-  if (!locker) return false;
-  if (!wxTheClipboard->AddData(new wxTextDataObject(text))) return false;
-
-  // Take care that clipboard data remain after exiting
-  // This is a boolean method as well, we don't check it, as
-  // clipboard data is copied.
-  // At least on Ubuntu 8.10 FLush returns false.
-  wxTheClipboard->Flush();
+  if (wxClipboardLocker locker; !locker)
+  {
+    return false;
+  }
+  else
+  {
+    if (wxTheClipboard->AddData(new wxTextDataObject(text)))
+    {
+      // Take care that clipboard data remain after exiting
+      // This is a boolean method as well, we don't check it, as
+      // clipboard data is copied.
+      // At least on Ubuntu 8.10 FLush returns false.
+      wxTheClipboard->Flush();
+    }
+  }
 
   return true;
 }
 
 const std::string wxExClipboardGet()
 {
-  wxClipboardLocker locker;
-
-  if (!locker)
+  if (wxClipboardLocker locker; !locker)
   {
-    wxLogStatus("Cannot open clipboard");
-    return std::string();
+    if (wxTheClipboard->IsSupported(wxDF_TEXT))
+    {
+      if (wxTextDataObject data; wxTheClipboard->GetData(data))
+      {
+        return data.GetText().ToStdString();
+      }
+    }
   }
 
-  if (!wxTheClipboard->IsSupported(wxDF_TEXT))
-  {
-    return std::string();
-  }
-
-  wxTextDataObject data;
-  
-  if (!wxTheClipboard->GetData(data))
-  {
-    wxLogStatus("Cannot get clipboard data");
-    return std::string();
-  }
-
-  return data.GetText().ToStdString();
+  return std::string();
 }
 
 #if wxUSE_GUI
@@ -288,16 +278,12 @@ const std::string wxExConfigFirstOf(const wxString& key)
 
 const std::string wxExConfigFirstOfWrite(const wxString& key, const wxString& value)
 {
-  wxExTokenizer tkz(wxConfigBase::Get()->Read(key).ToStdString(), 
-    std::string(1, wxExGetFieldSeparator()));
-  
   std::vector<wxString> v{value};
 
-  while (tkz.HasMoreTokens())
+  for (wxExTokenizer tkz(wxConfigBase::Get()->Read(key).ToStdString(), 
+    std::string(1, wxExGetFieldSeparator())); tkz.HasMoreTokens(); )
   {
-    const wxString val = tkz.GetNextToken();
-    
-    if (val != value)
+    if (const wxString val = tkz.GetNextToken(); val != value)
     {
       v.emplace_back(val);
     }
@@ -403,10 +389,9 @@ int wxExGetNumberOfLines(const std::string& text, bool trim)
     return 0;
   }
   
-  const std::string trimmed = (trim ? wxExSkipWhiteSpace(text): text);
-  const int c = std::count(trimmed.begin(), trimmed.end(), '\n') + 1;
+  const auto trimmed = (trim ? wxExSkipWhiteSpace(text): text);
   
-  if (c != 1)
+  if (const int c = std::count(trimmed.begin(), trimmed.end(), '\n') + 1; c != 1)
   {
     return c;
   }
@@ -514,24 +499,18 @@ bool wxExMarkerAndRegisterExpansion(wxExEx* ex, std::string& text)
 {
   if (ex == nullptr) return false;
 
-  wxExTokenizer tkz(text, "'" + std::string(1, WXK_CONTROL_R), false);
-
-  while (tkz.HasMoreTokens())
+  for (wxExTokenizer tkz(text, "'" + std::string(1, WXK_CONTROL_R), false); tkz.HasMoreTokens(); )
   {
     tkz.GetNextToken();
     
-    const std::string rest(tkz.GetString());
-    
-    if (!rest.empty())
+    if (const std::string rest(tkz.GetString()); !rest.empty())
     {
       const char name(rest[0]);
       
       // Replace marker.
       if (tkz.GetLastDelimiter() == '\'')
       {
-        const auto line = ex->MarkerLine(name);
-        
-        if (line >= 0)
+        if (const auto line = ex->MarkerLine(name); line >= 0)
         {
           wxExReplaceAll(text, 
             tkz.GetLastDelimiter() + std::string(1, name), 
@@ -560,18 +539,15 @@ int wxExMatch(const std::string& reg, const std::string& text,
 {
   try 
   {
-    std::match_results<std::string::const_iterator> m;
-    
-    if (!std::regex_search(text, m, std::regex(reg))) return -1;
-    
-    if (m.size() > 1)
+    if (std::match_results<std::string::const_iterator> m;
+      !std::regex_search(text, m, std::regex(reg))) 
+    {
+      return -1;
+    }
+    else if (m.size() > 1)
     {
       v.clear();
-
-      for (size_t i = 1; i < m.size(); i++)
-      {
-        v.emplace_back(m[i]);
-      }
+      std::copy(++m.begin(), m.end(), std::back_inserter(v));
     }
 
     return v.size();
@@ -592,9 +568,8 @@ bool wxExMatchesOneOf(const std::string& fullname, const std::string& pattern)
   wxExReplaceAll(re, ".", "\\.");
   wxExReplaceAll(re, "*", ".*");
   wxExReplaceAll(re, "?", ".?");
-  wxExTokenizer tkz(re, ";");
   
-  while (tkz.HasMoreTokens())
+  for (wxExTokenizer tkz(re, ";"); tkz.HasMoreTokens(); )
   {
     if (std::regex_match(fullname, std::regex(tkz.GetNextToken()))) return true;
   }
@@ -608,7 +583,7 @@ void wxExNodeProperties(const pugi::xml_node* node, std::vector<wxExProperty>& p
   {
     if (strcmp(child.name(), "property") == 0)
     {
-      properties.emplace_back(wxExProperty(child));
+      properties.emplace_back(child);
     }
   }
 }
@@ -620,7 +595,7 @@ void wxExNodeStyles(const pugi::xml_node* node, const std::string& lexer,
   {
     if (strcmp(child.name(), "style") == 0)
     {
-      styles.emplace_back(wxExStyle(child, lexer));
+      styles.emplace_back(child, lexer);
     }
   }
 }
@@ -655,9 +630,8 @@ int wxExOpenFiles(wxExFrame* frame, const std::vector< wxExPath > & files,
 
       if (!it.FileExists() && it.Path().string().find(":") != std::string::npos)
       {
-        const wxExPath val = wxExLink().GetPath(it.Path().string(), data.Control());
-        
-        if (!val.Path().empty())
+        if (const wxExPath& val(wxExLink().GetPath(it.Path().string(), data.Control()));
+          !val.Path().empty())
         {
           fn = val;
         }
@@ -682,11 +656,10 @@ void wxExOpenFilesDialog(wxExFrame* frame,
   long style, const wxString& wildcards, bool ask_for_continue,
   const wxExSTCData& data, int dir_flags)
 {
-  auto* stc = frame->GetSTC();
   wxArrayString paths;
   const wxString caption(_("Select Files"));
       
-  if (stc != nullptr)
+  if (auto* stc = frame->GetSTC(); stc != nullptr)
   {
     wxExFileDialog dlg(
       &stc->GetFile(),
@@ -740,7 +713,7 @@ const std::string wxExPrintHeader(const wxExPath& filename)
       wxExGetEndOfText(
         filename.Path().string() + " " +
         wxDateTime(filename.GetStat().st_mtime).Format().ToStdString(), 
-        80);
+        filename.GetLexer().GetLineSize());
   }
   else
   {
@@ -764,10 +737,9 @@ int wxExReplaceAll(std::string& text,
   int* match_pos) 
 {
   int count = 0;
-  size_t pos = 0;
   bool update = false;
 
-  while ((pos = text.find(search, pos)) != std::string::npos) 
+  for (size_t pos = 0; (pos = text.find(search, pos)) != std::string::npos; ) 
   {
     if (match_pos != nullptr && !update)
     {
@@ -867,13 +839,12 @@ const std::string wxExSort(const std::string& input,
   wxBusyCursor wait;
 
   // Empty lines are not kept after sorting, as they are used as separator.
-  wxExTokenizer tkz(input, eol);
   std::map<wxString, wxString> m;
   std::multimap<wxString, wxString> mm;
   std::multiset<wxString> ms;
   std::vector<wxString> lines;
   
-  while (tkz.HasMoreTokens())
+  for (wxExTokenizer tkz(input, eol); tkz.HasMoreTokens(); )
   {
     const wxString line = tkz.GetNextToken() + eol;
     
@@ -929,9 +900,10 @@ const std::string wxExSort(const std::string& input,
 bool wxExSortSelection(wxExSTC* stc,
   size_t sort_type, size_t pos, size_t len)
 {
-  const int start_pos = stc->GetSelectionStart();
+  const auto start_pos = stc->GetSelectionStart();
   
-  if (start_pos == -1 || pos == std::string::npos)
+  if (start_pos == -1 || 
+    pos > stc->GetSelectionEnd() || pos == std::string::npos)
   {
     return false;
   }
@@ -943,15 +915,15 @@ bool wxExSortSelection(wxExSTC* stc,
   {
     if (stc->SelectionIsRectangle())
     {
-      const int start_pos_line = stc->PositionFromLine(stc->LineFromPosition(start_pos));
-      const int end_pos_line = stc->PositionFromLine(stc->LineFromPosition(stc->GetSelectionEnd()) + 1);
-      const int nr_lines = 
+      const auto start_pos_line = stc->PositionFromLine(stc->LineFromPosition(start_pos));
+      const auto end_pos_line = stc->PositionFromLine(stc->LineFromPosition(stc->GetSelectionEnd()) + 1);
+      const auto nr_lines = 
         stc->LineFromPosition(stc->GetSelectionEnd()) - 
         stc->LineFromPosition(start_pos);
         
-      const wxString sel = stc->GetTextRange(start_pos_line, end_pos_line); 
+      const auto sel = stc->GetTextRange(start_pos_line, end_pos_line); 
       stc->DeleteRange(start_pos_line, end_pos_line - start_pos_line);
-      const std::string text(wxExSort(sel.ToStdString(), sort_type, pos, stc->GetEOL(), len));
+      const auto text(wxExSort(sel.ToStdString(), sort_type, pos, stc->GetEOL(), len));
       stc->InsertText(start_pos_line, text);
 
       stc->SetCurrentPos(start_pos);
@@ -1025,9 +997,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< wxExPath > & fi
 {
   if (files.empty()) return;
   
-  wxExVCS vcs(files, id);
-  
-  if (vcs.GetEntry().GetCommand().IsOpen())
+  if (wxExVCS vcs(files, id); vcs.GetEntry().GetCommand().IsOpen())
   {
     if (vcs.ShowDialog() == wxID_OK)
     {
@@ -1071,9 +1041,8 @@ void wxExXmlError(
   // prevent recursion
   if (stc == nullptr && filename != wxExLexers::Get()->GetFileName())
   {
-    wxExManagedFrame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame);
-
-    if (frame != nullptr)
+    if (auto* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame);
+      frame != nullptr)
     {
       stc = frame->OpenFile(filename);
     }

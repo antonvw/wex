@@ -31,14 +31,10 @@ public:
     m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
     m_Ex->GetSTC()->BeginUndoAction();
     
-    wxExTokenizer tkz(commands, "|");
-    
-    while (tkz.HasMoreTokens())
+    for (wxExTokenizer tkz(commands, "|"); tkz.HasMoreTokens(); )
     {
-      const std::string cmd(tkz.GetNextToken());
-      
       // Prevent recursive global.
-      if (cmd[0] != 'g' && cmd[0] != 'v')
+      if (const auto cmd(tkz.GetNextToken()); cmd[0] != 'g' && cmd[0] != 'v')
       {
         if (cmd[0] == 'd' || cmd[0] == 'm')
         {
@@ -85,9 +81,7 @@ public:
   {
     if (start < end)
     {
-      int i = start; 
-      
-      while (i < end && i < m_Ex->GetSTC()->GetLineCount() - 1)
+      for (int i = start;  i < end && i < m_Ex->GetSTC()->GetLineCount() - 1; )
       {
         if (Commands())
         {
@@ -126,10 +120,6 @@ private:
   int m_Changes {0};
   wxExEx* m_Ex;
 };
-
-std::string wxExAddressRange::m_Pattern;
-std::string wxExAddressRange::m_Replacement;
-wxExProcess* wxExAddressRange::m_Process = nullptr;
 
 wxExAddressRange::wxExAddressRange(wxExEx* ex, int lines)
   : m_Begin(ex)
@@ -411,19 +401,19 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
 
   next.GetNextToken(); // skip empty token
 
-  const std::string pattern = next.GetNextToken();
+  const auto pattern = next.GetNextToken();
   std::string rest;
   
   if (next.HasMoreTokens())
   {
-    if (const std::string token(next.GetNextToken()); !token.empty())
+    if (const auto token(next.GetNextToken()); !token.empty())
     {
       const char command = token[0];
       std::string arg(token.size() > 1 ? token.substr(1): std::string());
       
       if (next.HasMoreTokens())
       {
-        std::string subpattern = next.GetNextToken();
+        auto subpattern = next.GetNextToken();
         
         if (subpattern.empty())
         {
@@ -606,11 +596,10 @@ bool wxExAddressRange::Parse(
     }
   }
 
-  std::vector<std::string> v;
-
-  if (wxExMatch("/(.*)/(.*)/([cgi]*)", command, v) == 3 ||
-      wxExMatch("/(.*)/(.*)", command, v) == 2 ||
-      wxExMatch("/(.*)", command, v) == 1)
+  if (std::vector<std::string> v;
+    wxExMatch("/(.*)/(.*)/([cgi]*)", command, v) == 3 ||
+    wxExMatch("/(.*)/(.*)", command, v) == 2 ||
+    wxExMatch("/(.*)", command, v) == 1)
   {
     pattern = v[0];
     if (v.size() >= 2) replacement = v[1];

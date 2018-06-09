@@ -102,9 +102,7 @@ bool wxExAddress::Flags(const std::string& flags) const
     return true;
   }
   
-  std::vector<std::string> v;
-  
-  if (wxExMatch("([-+#pl])", flags, v) < 0)
+  if (std::vector<std::string> v; wxExMatch("([-+#pl])", flags, v) < 0)
   {
     wxLogStatus("Unsupported flags: %s", flags.c_str());
     return false;
@@ -121,12 +119,11 @@ int wxExAddress::GetLine() const
     return m_Line;
   }
 
-  // If this is a // address, return line with first forward match.
-  std::vector <std::string> v;
-
   m_Ex->GetSTC()->SetSearchFlags(m_Ex->GetSearchFlags());
 
-  if (wxExMatch("/(.*)/$", m_Address, v) > 0)
+  // If this is a // address, return line with first forward match.
+  if (std::vector <std::string> v;
+    wxExMatch("/(.*)/$", m_Address, v) > 0)
   {
     m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
     m_Ex->GetSTC()->SetTargetEnd(m_Ex->GetSTC()->GetTextLength());
@@ -146,9 +143,8 @@ int wxExAddress::GetLine() const
     
     return 0;
   }
-
   // If this is a ?? address, return line with first backward match.
-  if (wxExMatch("\\?(.*)\\?", m_Address, v) > 0)
+  else if (wxExMatch("\\?(.*)\\?", m_Address, v) > 0)
   {
     m_Ex->GetSTC()->SetTargetStart(m_Ex->GetSTC()->GetCurrentPos());
     m_Ex->GetSTC()->SetTargetEnd(0);
@@ -170,14 +166,11 @@ int wxExAddress::GetLine() const
   }
   
   // Try address calculation.
-  int width = 0;
-  const auto sum = m_Ex->Calculator(m_Address, width);
-  
-  if (std::isnan(sum))
+  if (const auto [sum, width] = m_Ex->Calculator(m_Address); std::isnan(sum))
   {
     return 0;
   }
-  if (sum < 0)
+  else if (sum < 0)
   {
     return 1;
   }
