@@ -12,4 +12,4 @@
 	url = https://github.com/muflihun/easyloggingpp.git
 [submodule "external/wxWidgets"]
 	path = external/wxWidgets
-	url = https://github.com/antonvw/wxWidgets.git
+	url = https://github.com/wxWidgets/wxWidgets.git
