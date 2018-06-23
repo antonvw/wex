@@ -8,6 +8,9 @@ file(GLOB SRCS
 add_library(
   wxex 
   ${SRCS})
-cotire(wxex)
+
+if (NOT (CMAKE_BUILD_TYPE MATCHES "Coverage"))
+  cotire(wxex)
+endif()
   
 set_target_properties(wxex PROPERTIES DEBUG_POSTFIX "d")

@@ -74,7 +74,7 @@ const std::vector< std::string > wxExViMacros::Get(const std::string& macro)
     }
     else 
     {
-      return {std::string()};
+      return {};
     }
   }
 }

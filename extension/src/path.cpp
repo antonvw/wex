@@ -14,7 +14,7 @@
 
 const std::string SubstituteTilde(const std::string& text)
 {
-  std::string out(text);
+  auto out(text);
   wxExReplaceAll(out, "~", wxGetHomeDir().ToStdString());
   return out;
 }
@@ -163,7 +163,7 @@ bool wxExPath::OpenMIME() const
   {
     return false;
   }
-  else if (const std::string command(type->GetOpenCommand(Path().string())); command.empty())
+  else if (const auto command(type->GetOpenCommand(Path().string())); command.empty())
   {
     return false;
   }

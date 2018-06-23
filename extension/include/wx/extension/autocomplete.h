@@ -45,7 +45,7 @@ private:
   bool ShowKeywords(bool show) const;
   bool Use() const;
 
-  const int m_MinSize;
+  const size_t m_MinSize;
 
   bool m_Use {true};
 

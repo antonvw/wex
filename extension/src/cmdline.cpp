@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream> // for tclap!
+#include <variant>
 #include <tclap/CmdLine.h>
 #include <wx/app.h>
 #include <wx/config.h>
@@ -19,65 +20,57 @@ class wxExCmdLineOption
 public:
   wxExCmdLineOption(
     TCLAP::ValueArg<float>* f, std::function<void(const std::any& any)> fu)
-    : m_Type(CMD_LINE_FLOAT) 
-    , m_f(fu) {m_tclap_u.m_val_f = f;};
+    : m_val(f), m_f(fu) {;};
 
   wxExCmdLineOption(
     TCLAP::ValueArg<int>* i, std::function<void(const std::any& any)> fu)
-    : m_Type(CMD_LINE_INT) 
-    , m_f(fu) {m_tclap_u.m_val_i = i;};
+    : m_val(i), m_f(fu) {;};
 
   wxExCmdLineOption(
     TCLAP::ValueArg<std::string>* s, std::function<void(const std::any& any)> fu)
-    : m_Type(CMD_LINE_STRING) 
-    , m_f(fu) {m_tclap_u.m_val_s = s;};
+    : m_val(s), m_f(fu) {;};
 
  ~wxExCmdLineOption()
   {
-    switch (m_Type)
-    {
-      case CMD_LINE_FLOAT: delete m_tclap_u.m_val_f; break;
-      case CMD_LINE_INT: delete m_tclap_u.m_val_i; break;
-      case CMD_LINE_STRING: delete m_tclap_u.m_val_s; break;
-    }
+    if (std::holds_alternative<TCLAP::ValueArg<float>*>(m_val))
+      delete std::get<0>(m_val);
+    else if (std::holds_alternative<TCLAP::ValueArg<int>*>(m_val))
+      delete std::get<1>(m_val);
+    else if (std::holds_alternative<TCLAP::ValueArg<std::string>*>(m_val))
+      delete std::get<2>(m_val);
   };
 
-  void Run()
+  void Run() const
   {
-    switch (m_Type)
+    if (auto pval = std::get_if<TCLAP::ValueArg<float>*>(&m_val))
     {
-      case CMD_LINE_FLOAT:
-        if (m_tclap_u.m_val_f->getValue() != -1) 
-        {
-          m_f(m_tclap_u.m_val_f->getValue());
-        }
-        break;
-
-      case CMD_LINE_INT:
-        if (m_tclap_u.m_val_i->getValue() != -1) 
-        {
-          m_f(m_tclap_u.m_val_i->getValue());
-        }
-        break;
-
-      case CMD_LINE_STRING:
-        if (!m_tclap_u.m_val_s->getValue().empty()) 
-        {
-          m_f(m_tclap_u.m_val_s->getValue());
-        }
-        break;
+      if ((*pval)->getValue() != -1) 
+      {
+        m_f((*pval)->getValue());
+      }
+    }
+    else if (auto pval = std::get_if<TCLAP::ValueArg<int>*>(&m_val))
+    {
+      if ((*pval)->getValue() != -1) 
+      {
+        m_f((*pval)->getValue());
+      }
+    }
+    else if (auto pval = std::get_if<TCLAP::ValueArg<std::string>*>(&m_val))
+    {
+      if (!(*pval)->getValue().empty()) 
+      {
+        m_f((*pval)->getValue());
+      }
     }
   }
 private:    
-  const wxExCmdLineTypes m_Type;
   std::function<void(const std::any& any)> m_f; 
 
-  union wxExInternal
-  {
-    TCLAP::ValueArg<float>* m_val_f; 
-    TCLAP::ValueArg<int>* m_val_i; 
-    TCLAP::ValueArg<std::string>* m_val_s; 
-  } m_tclap_u;
+  const std::variant <
+    TCLAP::ValueArg<float>*,
+    TCLAP::ValueArg<int>*,
+    TCLAP::ValueArg<std::string>*> m_val; 
 };
 
 class wxExCmdLineParam
@@ -90,20 +83,13 @@ public:
 
  ~wxExCmdLineParam() {delete m_val.first;};
 
-  bool Run()
+  const bool Run()
   {
-    if (!m_val.first->getValue().empty()) 
-    {
-      if (!m_val.second(m_val.first->getValue()))
-      {
-        return false;
-      }
-    }
-
-    return true;
+    return 
+      m_val.first->getValue().empty() || m_val.second(m_val.first->getValue());
   }
 private:
-  std::pair<
+  const std::pair<
     TCLAP::UnlabeledMultiArg<std::string>*, 
     std::function<bool(std::vector<std::string>)>> m_val; 
 };
@@ -139,7 +125,7 @@ public:
     }
   }
 private:
-  std::pair<
+  const std::pair<
     TCLAP::SwitchArg*, 
     std::function<void(bool)>> m_val; 
 };

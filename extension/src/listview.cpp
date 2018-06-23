@@ -63,6 +63,18 @@ bool GetTime(const std::string& text, time_t& t)
   return true;
 }
 
+std::string IgnoreCase(const std::string& text)
+{
+  std::string output(text);
+
+  if (!wxExFindReplaceData::Get()->MatchCase())
+  {
+    for (auto & c : output) c = std::toupper(c);
+  }
+
+  return output;
+}
+
 #if wxUSE_DRAG_AND_DROP
 // FileDropTarget is already used by wxExFrame.
 class DropTarget : public wxFileDropTarget
@@ -423,7 +435,7 @@ wxExListView::wxExListView(const wxExListViewData& data)
     }});
     
   Bind(wxEVT_SET_FOCUS, [=](wxFocusEvent& event) {
-    if (wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow()); 
+    if (auto* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow()); 
       frame != nullptr)
     {
       frame->SetFindFocus(this);
@@ -443,7 +455,7 @@ bool wxExListView::AppendColumns(const std::vector <wxExColumn>& cols)
 
   for (const auto& col : cols)
   {
-    wxExColumn mycol(col);
+    auto mycol(col);
     
     if (const auto index = wxListView::AppendColumn(
       mycol.GetText(), mycol.GetAlign(), mycol.GetWidth());
@@ -645,12 +657,7 @@ bool wxExListView::FindNext(const std::string& text, bool find_next)
     return false;
   }
 
-  std::string text_use = text;
-
-  if (!wxExFindReplaceData::Get()->MatchCase())
-  {
-    for (auto & c : text_use) c = std::toupper(c);
-  }
+  std::string text_use = IgnoreCase(text);
 
   const auto firstselected = GetFirstSelected();
   static bool recursive = false;
@@ -679,12 +686,7 @@ bool wxExListView::FindNext(const std::string& text, bool find_next)
 
     for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
-      text = std::string(wxListView::GetItemText(index, col));
-
-      if (!wxExFindReplaceData::Get()->MatchCase())
-      {
-        for (auto & c : text) c = std::toupper(c);
-      }
+      text = IgnoreCase(std::string(wxListView::GetItemText(index, col)));
 
       if (wxExFindReplaceData::Get()->MatchWord())
       {
@@ -834,17 +836,16 @@ void wxExListView::ItemActivated(long item_number)
     if (wxExListItem item(this, item_number);
       item.GetFileName().FileExists())
     {
-      if (wxExFrame* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
+      if (auto* frame = dynamic_cast<wxExFrame*>(wxTheApp->GetTopWindow());
         frame != nullptr)
       {
-        const std::string no(GetItemText(item_number, _("Line No").ToStdString()));
-
-        wxExControlData data = 
+        const auto no(GetItemText(item_number, _("Line No").ToStdString()));
+        auto data(
           (m_Data.Type() == LIST_FIND && !no.empty() ?
              wxExControlData().
                Line(std::stoi(no)). 
                Find(GetItemText(item_number, _("Match").ToStdString())): 
-             wxExControlData());
+             wxExControlData()));
 
         frame->OpenFile(item.GetFileName(), data);
       }
@@ -1021,41 +1022,55 @@ void wxExListView::PrintPreview()
 #endif
 }
 
-std::vector<wxString>* pitems;
+template <typename T> int Compare(T x, T y)
+{
+  if (x > y) return 1;
+  else if (x < y) return -1;
+  else return 0;
+}
+
+std::vector<std::string>* pitems;
 
 int wxCALLBACK CompareFunctionCB(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
 {
   const bool ascending = (sortData > 0);
+  const auto& str1 = (*pitems)[item1];
+  const auto& str2 = (*pitems)[item2];
 
-  switch (const wxExColumn::wxExColumnType type = 
+  switch (const auto type = 
     (wxExColumn::wxExColumnType)std::abs(sortData); type) 
   {
     case wxExColumn::COL_DATE:
-      if (ascending) return (unsigned long)item1 > (unsigned long)item2;
-      else           return (unsigned long)item1 < (unsigned long)item2;
+      if (!str1.empty() && !str2.empty())
+      {
+        time_t tm1, tm2;
+        if (!GetTime(str1, tm1) ||
+            !GetTime(str2, tm2)) return false;
+        if (ascending) return Compare((unsigned long)tm1, (unsigned long)tm2);
+        else           return Compare((unsigned long)tm2, (unsigned long)tm1);
+      }
+    break;
+
+    case wxExColumn::COL_FLOAT:
+      if (ascending) return Compare(std::stof(str1), std::stof(str2));
+      else           return Compare(std::stof(str2), std::stof(str1));
     break;
 
     case wxExColumn::COL_INT:
-    case wxExColumn::COL_FLOAT:
-      if (ascending) return item1 > item2;
-      else           return item1 < item2;
+      if (ascending) return Compare(std::stoi(str1), std::stoi(str2));
+      else           return Compare(std::stoi(str2), std::stoi(str1));
     break;
 
     case wxExColumn::COL_STRING:
-      {
-      const wxString& str1 = (*pitems)[item1];
-      const wxString& str2 = (*pitems)[item2];
-
       if (!wxExFindReplaceData::Get()->MatchCase())
       {
-        if (ascending) return strcmp(str1.Upper().c_str(), str2.Upper().c_str());
-        else           return strcmp(str2.Upper().c_str(), str1.Upper().c_str());
+        if (ascending) return IgnoreCase(str1).compare(IgnoreCase(str2));
+        else           return IgnoreCase(str2).compare(IgnoreCase(str1));
       }
       else
       {
-        if (ascending) return strcmp(str1.c_str(), str2.c_str());
-        else           return strcmp(str2.c_str(), str1.c_str());
-      }
+        if (ascending) return str1.compare(str2);
+        else           return str2.compare(str1);
       }
     break;
 
@@ -1100,67 +1115,52 @@ bool wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     return false;
   }
   
+  wxBusyCursor wait;
+
   SortColumnReset();
   
-  wxExColumn& sorted_col = m_Columns[column_no];
+  auto& sorted_col = m_Columns[column_no];
   
   sorted_col.SetIsSortedAscending(sort_method);
 
-  wxBusyCursor wait;
-
-  // Keeping the items is necessary for sorting strings.
-  std::vector<wxString> items;
+  std::vector<std::string> items;
   pitems = &items;
 
-  for (auto i = 0; i < GetItemCount(); i++)
+  for (int i = 0; i < GetItemCount(); i++)
   {
-    const wxString val = wxListView::GetItemText(i, column_no);
-    items.emplace_back(val);
-
-    switch (sorted_col.GetType())
-    {
-      case wxExColumn::COL_DATE:
-        if (!val.empty())
-        {
-          time_t tm;
-          if (!GetTime(val.ToStdString(), tm)) return false;
-          SetItemData(i, tm);
-        }
-        else
-        {
-          SetItemData(i, 0);
-        }
-      break;
-
-      case wxExColumn::COL_FLOAT: SetItemData(i, (long)atof(val.c_str())); break;
-      case wxExColumn::COL_INT: SetItemData(i, atoi(val.c_str())); break;
-      case wxExColumn::COL_STRING: SetItemData(i, i); break;
-      default: wxFAIL;
-    }
+    items.emplace_back(wxListView::GetItemText(i, column_no).ToStdString());
+    SetItemData(i, i);
   }
 
   const wxIntPtr sortdata =
     (sorted_col.GetIsSortedAscending() ?
-       sorted_col.GetType():
-      (0 - sorted_col.GetType()));
+       sorted_col.GetType(): (0 - sorted_col.GetType()));
 
-  SortItems(CompareFunctionCB, sortdata);
-
-  m_SortedColumnNo = column_no;
-
-  if (m_Data.Image() != IMAGE_NONE)
+  try
   {
-    SetColumnImage(column_no, GetArtID(
-      sorted_col.GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
-  }
+    SortItems(CompareFunctionCB, sortdata);
 
-  if (GetItemCount() > 0)
+    m_SortedColumnNo = column_no;
+
+    if (m_Data.Image() != IMAGE_NONE)
+    {
+      SetColumnImage(column_no, GetArtID(
+        sorted_col.GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
+    }
+
+    if (GetItemCount() > 0)
+    {
+      ItemsUpdate();
+      AfterSorting();
+    }
+
+    wxLogStatus(_("Sorted on") + ": " + sorted_col.GetText());
+  }
+  catch (std::exception& e)
   {
-    ItemsUpdate();
-    AfterSorting();
+    wxExLog(e) << "sort:" << sorted_col.GetText().ToStdString();
+    return false;
   }
-
-  wxLogStatus(_("Sorted on") + ": " + sorted_col.GetText());
   
   return true;
 }

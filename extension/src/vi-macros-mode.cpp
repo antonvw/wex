@@ -23,21 +23,22 @@ bool ShowDialog(wxWindow* parent, std::string& macro)
   {
     wxArrayString macros;
     macros.resize(v.size());
-    copy(v.begin(), v.end(), macros.begin());
+    std::copy(v.begin(), v.end(), macros.begin());
   
+    wxSingleChoiceDialog dialog(parent,
+      _("Input") + ":", 
+      _("Select Macro"),
+      macros);
+
     if (const auto index = macros.Index(wxExViMacros::GetMacro()); index != wxNOT_FOUND)
     {
-      wxSingleChoiceDialog dialog(parent,
-        _("Input") + ":", 
-        _("Select Macro"),
-        macros);
       dialog.SetSelection(index);
+    }
 
-      if (dialog.ShowModal() == wxID_OK)
-      {
-        macro = dialog.GetStringSelection();
-        return true;
-      }
+    if (dialog.ShowModal() == wxID_OK)
+    {
+      macro = dialog.GetStringSelection();
+      return true;
     }
   }
 

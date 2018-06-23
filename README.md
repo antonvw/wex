@@ -19,7 +19,7 @@ one of these applications, being a full featured source code text editor.
 - [pugixml lib](https://github.com/zeux/pugixml)    
 - [tclap lib](http://tclap.sourceforge.net/)    
 - [universal-ctags lib](https://github.com/universal-ctags/ctags)    
-- [wxWidgets 3.x lib](https://github.com/antonvw/wxWidgets/)
+- [wxWidgets lib](https://github.com/wxWidgets/wxWidgets/)
 
 # Build process 
 
@@ -29,11 +29,12 @@ one of these applications, being a full featured source code text editor.
 
 ## Building
 
-`git clone --recursive`   
-`mkdir build`   
-`cd build`   
-`cmake ..`   
-`make -DwxExBUILD_SP=ON`   
+```
+git clone --recursive   
+mkdir build && cd build   
+cmake ..   
+make -DwxExBUILD_SP=ON   
+```
 
 for Visual Studio add `-G "NMake Makefiles"` and do `nmake`,
 for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`   

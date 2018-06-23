@@ -21,7 +21,7 @@ wxExAutoComplete::wxExAutoComplete(wxExSTC* stc)
 
 bool wxExAutoComplete::Activate(const std::string& text)
 {
-  if (!Use())
+  if (text.empty() || !Use())
   {
     return false;
   }
@@ -40,16 +40,9 @@ bool wxExAutoComplete::Activate(const std::string& text)
     VLOG(9) << "filter: " << m_Filter.Get();
   }
 
-  if (const std::string complete(
-    current.Kind() == "f" || current.Kind() == "p" ? current.Signature(): "");
-    !complete.empty())
+  // TODO: update vi insert text
+  if (m_STC->GetVi().GetIsActive())
   {
-    m_STC->AddText(complete);
-
-    if (m_STC->GetVi().GetIsActive())
-    {
-      // TODO: update vi insert text
-    }
   }
 
   m_Text.clear();
@@ -138,7 +131,7 @@ bool wxExAutoComplete::ShowCTags(bool show) const
 {
   if (!show) return false;
 
-  if (const std::string comp(m_STC->GetVi().GetCTags()->AutoComplete(
+  if (const auto comp(m_STC->GetVi().GetCTags()->AutoComplete(
     m_Text, m_Filter));
     comp.empty())
   {
@@ -157,7 +150,7 @@ bool wxExAutoComplete::ShowInserts(bool show) const
 {
   if (show && !m_Text.empty() && !m_Inserts.empty())
   {
-    if (const std::string comp(wxExGetStringSet(
+    if (const auto comp(wxExGetStringSet(
       m_Inserts, m_MinSize, m_Text));
       !comp.empty())
     {
@@ -173,7 +166,7 @@ bool wxExAutoComplete::ShowKeywords(bool show) const
 {
   if (show && !m_Text.empty() && m_STC->GetLexer().KeywordStartsWith(m_Text))
   {
-    if (const std::string comp(
+    if (const auto comp(
       m_STC->GetLexer().GetKeywordsString(-1, m_MinSize, m_Text));
       !comp.empty())
     {

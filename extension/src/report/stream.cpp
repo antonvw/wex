@@ -173,11 +173,10 @@ bool wxExStreamToListView::Process(std::string& line, size_t line_no)
         continue;
       }
 
-      const size_t max_check_size = 
+      const auto max_check_size = 
         GetFileName().GetLexer().GetCommentBegin().size();
-      const size_t check_size = (i > max_check_size ? max_check_size: i + 1);
-
-      const std::string text = line.substr(i + 1 - check_size, check_size);
+      const auto check_size = (i > max_check_size ? max_check_size: i + 1);
+      const auto text = line.substr(i + 1 - check_size, check_size);
 
       switch (CheckForComment(text))
       {

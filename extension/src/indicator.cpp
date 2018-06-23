@@ -21,7 +21,7 @@ wxExIndicator::wxExIndicator(const pugi::xml_node& node)
 
   try
   {
-    const std::string single = 
+    const auto single = 
       wxExLexers::Get()->ApplyMacro(node.attribute("no").value());
 
     m_No = std::stoi(single);

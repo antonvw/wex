@@ -19,18 +19,15 @@ wxExMarker::wxExMarker(const pugi::xml_node& node)
 {
   if (node.empty()) return;
 
-  const std::string single = 
+  const auto single = 
     wxExLexers::Get()->ApplyMacro(node.attribute("no").value());
 
   try
   {
-    m_No = std::stoi(single);
-
     wxExTokenizer fields(node.text().get(), ",");
 
-    const std::string symbol = wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
-
-    m_Symbol = std::stoi(symbol);
+    m_No = std::stoi(single);
+    m_Symbol = std::stoi(wxExLexers::Get()->ApplyMacro(fields.GetNextToken()));
 
     if (fields.HasMoreTokens())
     {

@@ -53,7 +53,7 @@ const std::string MakeLine(wxExSTC* stc, const std::string& buffer,
     field_ascii += Printable(c, stc);
   }
 
-  const std::string field_spaces = std::string(
+  const auto field_spaces = std::string(
     (bytesPerLine - count)* eachHexField,
     ' ');
       

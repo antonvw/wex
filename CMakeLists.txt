@@ -6,6 +6,16 @@ set(user $ENV{USER} CACHE INTERNAL "keep user")
 
 include(cmake/options.cmake)
 
+configure_file(
+  extension/src/lexers/LexAda.cxx 
+  ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/lexers COPYONLY)
+configure_file(
+  extension/src/lexers/LexBash.cxx 
+  ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/lexers COPYONLY)
+configure_file(
+  extension/src/lexers/Catalogue.cxx 
+  ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/src COPYONLY)
+
 add_subdirectory(external)
 
 include(external/wxWidgets/build/cmake/toolkit.cmake)
@@ -37,6 +47,7 @@ endif ()
 enable_testing()
 
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/wxWidgets/build/cmake/modules")
+
 include(cotire)
 include(cmake/options-ex.cmake)
 include(cmake/common.cmake)

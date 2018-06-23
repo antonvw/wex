@@ -261,14 +261,13 @@ wxExSTC* wxExFrame::OpenFile(
   const wxExPath& filename,
   const wxExSTCData& data)
 {
-  auto* stc = GetSTC();
-
-  if (stc != nullptr)
+  if (auto* stc = GetSTC(); stc != nullptr)
   {
     stc->Open(filename, data);
+    return stc;
   }
 
-  return stc;
+  return nullptr;
 }
 
 wxExSTC* wxExFrame::OpenFile(
@@ -276,15 +275,14 @@ wxExSTC* wxExFrame::OpenFile(
   const wxExVCSEntry& vcs,
   const wxExSTCData& data)
 {
-  auto* stc = GetSTC();
-
-  if (stc != nullptr)
+  if (auto* stc = GetSTC(); stc != nullptr)
   {
     stc->SetText(vcs.GetStdOut());
     wxExVCSCommandOnSTC(vcs.GetCommand(), filename.GetLexer(), stc);
+    return stc;
   }
 
-  return stc;
+  return nullptr;
 }
 
 wxExSTC* wxExFrame::OpenFile(
@@ -292,14 +290,13 @@ wxExSTC* wxExFrame::OpenFile(
   const std::string& text,
   const wxExSTCData& data)
 {
-  auto* stc = GetSTC();
-
-  if (stc != nullptr)
+  if (auto* stc = GetSTC(); stc != nullptr)
   {
     stc->SetText(text);
+    return stc;
   }
 
-  return stc;
+  return nullptr;
 }
     
 void wxExFrame::SetMenuBar(wxMenuBar* bar)
@@ -355,7 +352,7 @@ bool wxExFrame::UpdateStatusBar(const wxListView* lv)
 {
   if (!m_IsClosing && lv->IsShown())
   {
-    const std::string text = std::to_string(lv->GetItemCount()) + 
+    const auto text = std::to_string(lv->GetItemCount()) + 
       (lv->GetSelectedItemCount() > 0 ? "," + std::to_string(lv->GetSelectedItemCount()):
        std::string());
       

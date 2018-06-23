@@ -323,7 +323,7 @@ bool wxExAddressRange::Escape(const std::string& command)
 {
   if (m_Begin.m_Address.empty() && m_End.m_Address.empty())
   {
-    std::string expanded(command);
+    auto expanded(command);
 
     if (
       !wxExMarkerAndRegisterExpansion(m_Ex, expanded) ||
@@ -408,8 +408,8 @@ bool wxExAddressRange::Global(const std::string& text, bool inverse) const
   {
     if (const auto token(next.GetNextToken()); !token.empty())
     {
-      const char command = token[0];
-      std::string arg(token.size() > 1 ? token.substr(1): std::string());
+      const auto command = token[0];
+      auto arg(token.size() > 1 ? token.substr(1): std::string());
       
       if (next.HasMoreTokens())
       {
@@ -579,7 +579,7 @@ bool wxExAddressRange::Parse(
   // we can use string tokenizer with / as separator.
   bool escaped = false;
   
-  std::string command(command_org);
+  auto command(command_org);
   
   if (command.find("\\\\/") == std::string::npos && 
       command.find("\\/") != std::string::npos)
@@ -799,7 +799,7 @@ bool wxExAddressRange::Substitute(const std::string& text, const char cmd)
   const bool build = (repl.find_first_of("&0LU\\") != std::string::npos);
   const bool confirm = (options.find("c") != std::string::npos);
   const bool global = (options.find("g") != std::string::npos);
-  std::string replacement(repl);
+  auto replacement(repl);
 
   while (m_STC->SearchInTarget(pattern) != -1 && result != wxID_CANCEL)
   {
@@ -872,7 +872,7 @@ bool wxExAddressRange::Write(const std::string& text) const
     return false;
   }
   
-  std::string filename(wxExSkipWhiteSpace(text.find(">>") != std::string::npos ? 
+  auto filename(wxExSkipWhiteSpace(text.find(">>") != std::string::npos ? 
     wxExAfter(text, '>', false): text, SKIP_LEFT));
 
 #ifdef __UNIX__

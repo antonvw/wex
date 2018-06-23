@@ -73,12 +73,12 @@ const wxExPath wxExLink::FindPath(
        wxExMatch("(www.*)", text, v) > 0))
   {
     // with a possible delimiter
-    const std::string match(v[0]);
+    const auto match(v[0]);
     const std::string delimiters("\")]");
     
     for (const auto c : delimiters)
     {
-      if (const size_t pos = match.find(c); pos != std::string::npos)
+      if (const auto pos = match.find(c); pos != std::string::npos)
       {
         return match.substr(0, pos);
       }

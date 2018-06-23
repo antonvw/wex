@@ -108,7 +108,7 @@ else ()
     stdc++fs
     )
 endif ()
-cotire(${PROJECT_NAME})
+  cotire(${PROJECT_NAME})
 endmacro()  
 
 if (WIN32)

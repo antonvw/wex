@@ -42,7 +42,7 @@ wxExMenuCommand::wxExMenuCommand(
   
 const std::string wxExMenuCommand::GetCommand(long type) const
 {
-  std::string command = m_Command;
+  auto command = m_Command;
 
   if (m_SubMenuIsCommand && 
      (type & COMMAND_INCLUDE_SUBCOMMAND))

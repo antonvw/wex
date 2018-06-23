@@ -117,7 +117,7 @@ bool wxExVariable::Expand(wxExEx* ex)
   }
   
   // If there is a prefix, make a comment out of it.
-  std::string commented(value);
+  auto commented(value);
 
   if (ex != nullptr)
   { 
@@ -293,7 +293,7 @@ bool wxExVariable::ExpandInput(std::string& expanded)  const
 {
   if (m_AskForInput)
   {
-    const std::string use(!expanded.empty() ? expanded: m_Value);
+    const auto use(!expanded.empty() ? expanded: m_Value);
 
     if (m_Dialog == nullptr)
     {

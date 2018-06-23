@@ -337,18 +337,13 @@ const std::string wxExLexer::MakeSingleLineComment(
 
   std::string out = m_CommentBegin + fill_out_character + text;
 
-  // Fill out characters.
-  if (fill_out)
+  // Fill out characters (prevent filling out spaces)
+  if (fill_out && 
+      (fill_out_character != ' ' || !m_CommentEnd.empty()))
   {
-    // To prevent filling out spaces
-    if (fill_out_character != ' ' || !m_CommentEnd.empty())
+    if (const auto fill_chars = UsableCharactersPerLine() - text.size(); fill_chars > 0)
     {
-      const auto fill_chars = UsableCharactersPerLine() - text.size();
-
-      if (fill_chars > 0)
-      {
-        out += std::string(fill_chars, fill_out_character);
-      }
+      out += std::string(fill_chars, fill_out_character);
     }
   }
 

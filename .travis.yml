@@ -32,7 +32,7 @@ matrix:
         apt:
           update: true
       env:
-        - MATRIX_EVAL="rm /usr/local/include/c++ && brew update && brew install --force gcc && CC=gcc-7 && CXX=g++-7 && brew link --overwrite gcc"
+        - MATRIX_EVAL="rm /usr/local/include/c++ && brew update && brew install --force gcc && CC=gcc-7 && CXX=g++-7 && brew link --overwrite gcc && brew link cmake"
 
   allow_failures:
     - os: osx

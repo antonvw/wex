@@ -211,7 +211,7 @@ wxString wxExFileHistoryImp::GetHistoryFile(size_t index) const
         return wxFileHistory::GetHistoryFile(index);
       }
     }
-    catch (const std::exception& e)
+    catch (const std::exception& )
     {
       error = true;
     }

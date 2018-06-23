@@ -85,8 +85,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(
     m_ProjectHistory.Clear();}, ID_CLEAR_PROJECTS);
     
   Bind(wxEVT_MENU, [=](wxCommandEvent& event) {
-    wxExListViewFile* project = GetProject();
-    if (project != nullptr)
+    if (auto* project = GetProject(); project != nullptr)
     {
       project->FileSave();
     }}, ID_PROJECT_SAVE);
@@ -139,14 +138,13 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
       
     Unbind(wxEVT_IDLE, &wxExFrameWithHistory::OnIdle, this);
 
-    wxExDirTool dir(
+    if (wxExDirTool dir(
       tool,
       wxExConfigFirstOf(m_TextInFolder),
       wxExConfigFirstOf(m_TextInFiles),
       DIR_FILES | (wxConfigBase::Get()->ReadBool(m_TextRecursive, true) ? 
         DIR_RECURSIVE : 0));
-
-    if (dir.FindFiles() >= 0)
+      dir.FindFiles() >= 0)
     {
       wxExLogStatus(tool.Info(&dir.GetStatistics().GetElements()));
     }
@@ -193,14 +191,10 @@ bool wxExFrameWithHistory::FindInFiles(
     {
       if (it.FileExists())
       {
-        wxExStreamToListView file(it, tool);
-
-        if (!file.RunTool())
+        if (wxExStreamToListView file(it, tool); file.RunTool())
         {
-          break;
+          stats += file.GetStatistics().GetElements();
         }
-        
-        stats += file.GetStatistics().GetElements();
       }
       else if (it.DirExists())
       {
@@ -410,11 +404,10 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
   auto* stc = GetSTC();
   auto* project = GetProject();
 
-  const size_t pos = title.size() - indicator.size();
-
-  if ((project != nullptr && project->GetContentsChanged()) ||
-       // using GetContentsChanged gives assert in vcs dialog
-      (stc != nullptr && stc->GetModify() && 
+  if (const size_t pos = title.size() - indicator.size();
+    (project != nullptr && project->GetContentsChanged()) ||
+     // using GetContentsChanged gives assert in vcs dialog
+    (stc != nullptr && stc->GetModify() && 
       (!(stc->GetData().Flags() & STC_WIN_NO_INDICATOR))))
   {
     // Project or editor changed, add indicator if not yet done.
@@ -439,16 +432,13 @@ void wxExFrameWithHistory::SetRecentFile(const wxExPath& path)
   
   if (m_FileHistoryList != nullptr && path.FileExists())
   {
-    wxExListItem item(m_FileHistoryList, path);
-    item.Insert((long)0);
+    wxExListItem(m_FileHistoryList, path).Insert(0);
 
     if (m_FileHistoryList->GetItemCount() > 1)
     {
-      for (int i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
+      for (auto i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
       {
-        wxExListItem item(m_FileHistoryList, i);
-
-        if (item.GetFileName() == path)
+        if (wxExListItem item(m_FileHistoryList, i); item.GetFileName() == path)
         {
           item.Delete();
         }
@@ -467,11 +457,9 @@ void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
   // Add all (existing) items from FileHistory.
   for (size_t i = 0; i < GetFileHistory().GetCount(); i++)
   {
-    wxExListItem item(
-      m_FileHistoryList, 
+    if (wxExListItem item(m_FileHistoryList, 
       GetFileHistory().GetHistoryFile(i));
-
-    if (item.GetFileName().GetStat().IsOk())
+      item.GetFileName().GetStat().IsOk())
     {
       item.Insert();
     }

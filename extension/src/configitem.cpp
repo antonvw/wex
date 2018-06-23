@@ -86,26 +86,26 @@ bool wxExItem::ToConfig(bool save) const
     case ITEM_TOGGLEBUTTON:       PERSISTENT(ReadBool, bool, false); break;
 
     case ITEM_CHECKLISTBOX_BOOL:
+      if (auto* clb = (wxCheckListBox*)GetWindow();
+        clb != nullptr)
       {
-      wxCheckListBox* clb = (wxCheckListBox*)GetWindow();
-      wxASSERT(clb != nullptr);
-
-      for (size_t i = 0; i < clb->GetCount(); i++)
-      {
-        if (!Update(wxExFindReplaceData::Get(), clb, i, save, clb->IsChecked(i)))
+        for (size_t i = 0; i < clb->GetCount(); i++)
         {
-          if (save)
-            wxConfigBase::Get()->Write(clb->GetString(i), clb->IsChecked(i));
-          else
-            clb->Check(i, wxConfigBase::Get()->ReadBool(clb->GetString(i), false));
+          if (!Update(wxExFindReplaceData::Get(), clb, i, save, clb->IsChecked(i)))
+          {
+            if (save)
+              wxConfigBase::Get()->Write(clb->GetString(i), clb->IsChecked(i));
+            else
+              clb->Check(i, wxConfigBase::Get()->ReadBool(clb->GetString(i), false));
+          }
         }
-      }}
+      }
       break;
 
     case ITEM_COMBOBOX:
     case ITEM_COMBOBOX_DIR:
     case ITEM_COMBOBOX_FILE:
-      if (wxComboBox* cb = (wxComboBox*)GetWindow(); save)
+      if (auto* cb = (wxComboBox*)GetWindow(); save)
       {
         if (const auto l = wxExToListString(cb, m_MaxItems).Get();
           m_Label == wxExFindReplaceData::Get()->GetTextFindWhat())
@@ -156,7 +156,7 @@ bool wxExItem::ToConfig(bool save) const
       break;
 
     case ITEM_RADIOBOX:
-      if (wxRadioBox* rb = (wxRadioBox*)GetWindow(); save)
+      if (auto* rb = (wxRadioBox*)GetWindow(); save)
       {
         for (const auto& b : std::any_cast<wxExItem::Choices>(GetInitial()))
         {

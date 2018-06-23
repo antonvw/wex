@@ -376,23 +376,21 @@ wxExVi::wxExVi(wxExSTC* stc)
     {"@", [&](const std::string& command){
       return GetMacros().Mode()->Transition(command, this, false, m_Count);}},
     {"r", [&](const std::string& command){
-      if (command.size() > 1)
+      if (command.size() > 1 &&
+        !GetSTC()->GetReadOnly())
       {
-        if (!GetSTC()->GetReadOnly())
+        if (GetSTC()->HexMode())
         {
-          if (GetSTC()->HexMode())
+          if (!GetSTC()->GetHexMode().Replace(command.back()))
           {
-            if (!GetSTC()->GetHexMode().Replace(command.back()))
-            {
-              return m_Command.clear();
-            }
+            return m_Command.clear();
           }
-          else
-          {
-            GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
-            GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + m_Count);
-            GetSTC()->ReplaceTarget(wxString(command.back(), m_Count));
-          }
+        }
+        else
+        {
+          GetSTC()->SetTargetStart(GetSTC()->GetCurrentPos());
+          GetSTC()->SetTargetEnd(GetSTC()->GetCurrentPos() + m_Count);
+          GetSTC()->ReplaceTarget(wxString(command.back(), m_Count));
         }
         return (size_t)2;
       }
@@ -631,8 +629,6 @@ bool wxExVi::Command(const std::string& command)
     return true;
   }
 
-  const auto size = GetSTC()->GetLength();
-
   if (
     auto parse(command); !ParseCommand(parse))
   {
@@ -640,7 +636,7 @@ bool wxExVi::Command(const std::string& command)
   }
   else 
   {
-    if (!m_Dot)
+    if (const auto size = GetSTC()->GetLength(); !m_Dot)
     {
       // Set last command.
       SetLastCommand(command, 

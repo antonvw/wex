@@ -56,8 +56,8 @@ wxExNotebook::wxExNotebook(const wxExWindowData& data)
       }
       else
       {
-        wxWindow* page = GetPage(sel);
-        const std::string key = m_Windows[page];
+        auto* page = GetPage(sel);
+        const auto key = m_Windows[page];
         m_Windows.erase(page);
         m_Keys.erase(key);
         event.Skip(); // call base
@@ -96,7 +96,7 @@ const std::string wxExNotebook::ChangeSelection(const std::string& key)
   if (const auto index = GetPageIndexByKey(key); 
     index != wxNOT_FOUND && ((previous = wxAuiNotebook::ChangeSelection(index))) >= 0)
   {
-    wxWindow* page = m_Keys[key];
+    auto* page = m_Keys[key];
     m_Keys[key] = page;
     m_Windows[page] = key;
     return GetKeyByPage(GetPage(previous));
@@ -110,7 +110,7 @@ bool wxExNotebook::DeletePage(const std::string& key)
   if (const auto index = GetPageIndexByKey(key);
     index != wxNOT_FOUND && wxAuiNotebook::DeletePage(index))
   {
-    wxWindow* page = m_Keys[key];
+    auto* page = m_Keys[key];
     m_Keys.erase(key);
     m_Windows.erase(page);
     page = nullptr;
@@ -130,7 +130,7 @@ bool wxExNotebook::DeletePage(const std::string& key)
 
 const std::string wxExNotebook::GetCurrentPage()
 {
-  wxWindow* page = wxAuiNotebook::GetCurrentPage();
+  auto* page = wxAuiNotebook::GetCurrentPage();
   return GetKeyByPage(page);
 }
   
@@ -174,7 +174,7 @@ bool wxExNotebook::SetPageText(
   }
   else 
   {
-    wxWindow* page = m_Keys[key];
+    auto* page = m_Keys[key];
     m_Keys.erase(key);
     m_Keys[new_key] = page;
     m_Windows[page] = new_key;
@@ -197,7 +197,7 @@ wxWindow* wxExNotebook::SetSelection(const std::string& key)
   else 
   {
     wxAuiNotebook::SetSelection(index);
-    wxWindow* page = GetPage(index);
+    auto* page = GetPage(index);
     page->SetFocus();
     return page;
   }

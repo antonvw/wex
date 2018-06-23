@@ -147,6 +147,14 @@ wxExCTags::~wxExCTags()
   tagsClose(m_File);
 }
 
+std::string skipConst(const char* text)
+{
+  if (std::vector<std::string> v; wxExMatch("(.*) *const$", text, v) == 1)
+    return v[0];
+  else
+    return text;
+}
+
 std::string wxExCTags::AutoComplete(
   const std::string& text, const wxExCTagsEntry& filter)
 {
@@ -196,7 +204,7 @@ std::string wxExCTags::AutoComplete(
 
       if (filter.Kind() == "f")
       {
-        s.append(tagsField(&entry, "signature"));
+        s.append(skipConst(tagsField(&entry, "signature")));
       }
 
       s.append(image != IMAGE_NONE ? "?" + std::to_string(image): std::string());

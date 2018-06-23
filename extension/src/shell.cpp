@@ -328,11 +328,10 @@ void wxExShell::Expand()
   // prefix: vi
   wxExPath path(wxExAfter(m_Command, ' ', false));
   std::string expansion;
-  const std::string prefix(path.GetFullName());
   
-  if (AutoCompActive())
+  if (const auto prefix(path.GetFullName()); AutoCompActive())
   {
-    if (const int index = AutoCompGetCurrent(); 
+    if (const auto index = AutoCompGetCurrent(); 
       index >= 0 && index < (int)m_AutoCompleteList.size())
     {
       expansion = m_AutoCompleteList[index].substr(prefix.length());
@@ -510,15 +509,12 @@ bool wxExShell::ProcessChar(int key)
   
     case WXK_BACK:
     case WXK_DELETE:
+      // Delete the key at current position.
+      if (const int offset = (key == WXK_BACK ? 1: 0), 
+        index = GetCurrentPos() - m_CommandStartPosition - offset;
+        !m_Command.empty() && index >= 0 && index < (int)m_Command.length())
       {
-        // Delete the key at current position.
-        const int offset = (key == WXK_BACK ? 1: 0);
-        const int index = GetCurrentPos() - m_CommandStartPosition - offset;
-        
-        if (!m_Command.empty() && index >= 0 && index < (int)m_Command.length())
-        {
-          m_Command.erase(index, 1);
-        }
+        m_Command.erase(index, 1);
       }
       break;
     
@@ -626,7 +622,7 @@ bool wxExShell::SetCommandFromHistory(const std::string& short_command)
       it != m_Commands.rend();
       ++it)
     {
-      if (const std::string command = *it;
+      if (const auto command = *it;
         command.substr(0, short_command_check.size()) == short_command_check)
       {
         m_Command = command;

@@ -65,7 +65,7 @@ const std::string wxExTokenizer::GetString() const
     return std::string();
   }
 
-  size_t pos = m_TokenEndPos;
+  auto pos = m_TokenEndPos;
 
   // skip leading delimiters
   while (pos < m_Text.size() && m_Delimiters.find(m_Text[pos]) != std::string::npos)

@@ -141,18 +141,10 @@ TEST_CASE("wxExLexer")
   SUBCASE("Property")
   {
     lexer.SetProperty("test", "value");
-    std::string val;
+    lexer.SetProperty("other", "one");
 
-    for (const auto& p : lexer.GetProperties())
-    {
-      if (p.GetName() == "test")
-      {
-        val = p.GetValue();
-        break;
-      }
-    }
-    
-    REQUIRE(val == "value");
+    REQUIRE( lexer.GetProperties().front().GetValue() == "value");
+    REQUIRE( lexer.GetProperties().back().GetValue() == "one");
   }
 
   SUBCASE("Comment complete")
@@ -161,5 +153,12 @@ TEST_CASE("wxExLexer")
     REQUIRE( lexer.GetDisplayLexer() == "pascal");
     REQUIRE( lexer.GetScintillaLexer() == "pascal");
     REQUIRE( std::regex_match(lexer.CommentComplete("(*test"), std::regex(" +\\*\\)")));
+  }
+
+  SUBCASE("lexers")
+  {
+    REQUIRE( wxExLexer("ada").IsOk());
+    REQUIRE( wxExLexer("rfw").IsOk());
+    REQUIRE(!wxExLexer("xxx").IsOk());
   }
 }

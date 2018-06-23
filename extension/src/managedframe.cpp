@@ -282,14 +282,13 @@ wxExSTC* wxExManagedFrame::OpenFile(
   const wxExPath& file,
   const wxExSTCData& stc_data)
 {
-  wxExSTC* stc;
-  
-  if ((stc = wxExFrame::OpenFile(file, stc_data)) != nullptr)
+  if (auto* stc = wxExFrame::OpenFile(file, stc_data); stc != nullptr)
   {
     SetRecentFile(file);
+    return stc;
   }
 
-  return stc;
+  return nullptr;
 }
 
 void wxExManagedFrame::PrintEx(wxExEx* ex, const std::string& text)
@@ -382,7 +381,7 @@ wxExTextCtrl::wxExTextCtrl(
           wxExPath::Current(m_ex->GetSTC()->GetFileName().GetPath());
         }
 
-        if (const auto& [r, e, v] = wxExAutoCompleteFileName(m_Command.Command());
+        if ([[maybe_unused]]const auto& [r, e, v] = wxExAutoCompleteFileName(m_Command.Command());
           r)
         {
           m_Command.Append(e);

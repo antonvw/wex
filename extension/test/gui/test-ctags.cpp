@@ -29,7 +29,7 @@ TEST_CASE("wxExCTags")
     wxExCTagsEntry current;
     wxExCTagsEntry filter;
     REQUIRE( wxExCTags(ex).Find("wxExTestApp", current, filter));
-    REQUIRE( current.Kind() == "f" );
+    REQUIRE( current.Kind() == "c" );
   }
 
   SUBCASE("tags non-existing file")

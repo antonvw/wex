@@ -49,8 +49,7 @@ const char* _X(const char* text)
 
 const std::string wxExAfter(const std::string& text, char c, bool first)
 {
-  const size_t pos = (first ? text.find(c): text.rfind(c));
-
+  const auto pos = (first ? text.find(c): text.rfind(c));
   return
     (pos == std::string::npos ? text: text.substr(pos + 1));
 }
@@ -62,11 +61,11 @@ const std::string wxExAlignText(
   const auto line_length = lexer.UsableCharactersPerLine();
 
   // Use the header, with one space extra to separate, or no header at all.
-  const std::string header_with_spaces =
+  const auto header_with_spaces =
     (header.empty()) ? std::string() : std::string(header.size(), ' ');
 
-  std::string in = lines;
-  std::string line = header;
+  auto in = lines;
+  auto line = header;
 
   bool at_begin = true;
   std::string out;
@@ -111,7 +110,7 @@ std::tuple<bool, const std::string, const std::vector<std::string>>
     path.MakeAbsolute();
   }
 
-  const std::string prefix(path.GetFullName());
+  const auto prefix(path.GetFullName());
   const std::vector <std::string > v(wxExGetAllFiles(path.GetPath(), prefix + "*"));
 
   if (v.empty())
@@ -119,14 +118,14 @@ std::tuple<bool, const std::string, const std::vector<std::string>>
     return {false, std::string(), v};
   }
 
-  size_t rest_equal_size = std::string::npos;
+  auto rest_equal_size = std::string::npos;
 
   if (v.size() > 1)
   {
     bool all_ok = true;
     rest_equal_size = 0;
       
-    for (size_t i = prefix.length(); i < v[0].size() && all_ok; i++)
+    for (auto i = prefix.length(); i < v[0].size() && all_ok; i++)
     {
       for (size_t j = 1; j < v.size() && all_ok; j++)
       {
@@ -165,7 +164,7 @@ bool wxExAutoCompleteText(const std::string& text,
 
 const std::string wxExBefore(const std::string& text, char c, bool first)
 {
-  if (std::string::size_type pos = (first ? text.find(c): text.rfind(c));
+  if (const auto pos = (first ? text.find(c): text.rfind(c));
     pos != std::string::npos)
   {
     return text.substr(0, pos);
@@ -178,7 +177,7 @@ const std::string wxExBefore(const std::string& text, char c, bool first)
 
 bool wxExBrowserSearch(const std::string& text)
 {
-  if (const std::string search_engine(wxExConfigFirstOf(_("Search engine")));
+  if (const auto search_engine(wxExConfigFirstOf(_("Search engine")));
     search_engine.empty())
   {
     return false;
@@ -215,12 +214,13 @@ const std::string wxExClipboardGet()
 {
   if (wxClipboardLocker locker; !locker)
   {
-    if (wxTheClipboard->IsSupported(wxDF_TEXT))
+    return std::string();
+  }
+  else if (wxTheClipboard->IsSupported(wxDF_TEXT))
+  {
+    if (wxTextDataObject data; wxTheClipboard->GetData(data))
     {
-      if (wxTextDataObject data; wxTheClipboard->GetData(data))
-      {
-        return data.GetText().ToStdString();
-      }
+      return data.GetText().ToStdString();
     }
   }
 
@@ -241,7 +241,7 @@ bool wxExCompareFile(const wxExPath& file1, const wxExPath& file2)
     return false;
   }
 
-  const std::string arguments =
+  const auto arguments =
      (file1.GetStat().st_mtime < file2.GetStat().st_mtime) ?
        "\"" + file1.Path().string() + "\" \"" + file2.Path().string() + "\"":
        "\"" + file2.Path().string() + "\" \"" + file1.Path().string() + "\"";
@@ -330,7 +330,7 @@ const std::string wxExFirstOf(
 
 const std::string wxExGetEndOfText(const std::string& text, size_t max_chars)
 {
-  std::string text_out(text);
+  auto text_out(text);
 
   if (text_out.length() > max_chars)
   {
@@ -352,7 +352,7 @@ const std::string wxExGetFindResult(const std::string& find_text,
 {
   if (!recursive)
   {
-    const std::string where = (find_next) ? _("bottom").ToStdString(): _("top").ToStdString();
+    const auto where = (find_next) ? _("bottom").ToStdString(): _("top").ToStdString();
     return
       _("Searching for").ToStdString() + " " + 
       wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " +
@@ -503,12 +503,10 @@ bool wxExMarkerAndRegisterExpansion(wxExEx* ex, std::string& text)
   {
     tkz.GetNextToken();
     
-    if (const std::string rest(tkz.GetString()); !rest.empty())
+    if (const auto rest(tkz.GetString()); !rest.empty())
     {
-      const char name(rest[0]);
-      
       // Replace marker.
-      if (tkz.GetLastDelimiter() == '\'')
+      if (const char name(rest[0]); tkz.GetLastDelimiter() == '\'')
       {
         if (const auto line = ex->MarkerLine(name); line >= 0)
         {
@@ -564,7 +562,7 @@ bool wxExMatchesOneOf(const std::string& fullname, const std::string& pattern)
   if (pattern == "*") return true; // asterix matches always.
 
   // Make a regex of pattern matching chars.
-  std::string re(pattern); 
+  auto re(pattern); 
   wxExReplaceAll(re, ".", "\\.");
   wxExReplaceAll(re, "*", ".*");
   wxExReplaceAll(re, "?", ".?");
@@ -810,7 +808,7 @@ const std::string wxExSkipWhiteSpace(
   size_t skip_type,
   const std::string& replace_with)
 {
-  std::string output(text); 
+  auto output(text); 
 
   if (skip_type == SKIP_ALL)
   {
@@ -939,7 +937,7 @@ bool wxExSortSelection(wxExSTC* stc,
     }
     else
     {
-      const std::string text(wxExSort(stc->GetSelectedText().ToStdString(), sort_type, pos, stc->GetEOL(), len));
+      const auto text(wxExSort(stc->GetSelectedText().ToStdString(), sort_type, pos, stc->GetEOL(), len));
       stc->ReplaceSelection(text);
       stc->SetSelection(start_pos, start_pos + text.size());
     }
@@ -958,7 +956,7 @@ bool wxExSortSelection(wxExSTC* stc,
 const std::string wxExTranslate(const std::string& text, 
   int pageNum, int numPages)
 {
-  std::string translation(text);
+  auto translation(text);
 
   wxExReplaceAll(translation, "@PAGENUM@", std::to_string(pageNum));
   wxExReplaceAll(translation, "@PAGESCNT@", std::to_string(numPages));
@@ -1003,9 +1001,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const std::vector< wxExPath > & fi
     {
       for (const auto& it : files)
       {
-        wxExVCS vcs({it}, id);
-        
-        if (vcs.Execute())
+        if (wxExVCS vcs({it}, id); vcs.Execute())
         {
           if (!vcs.GetEntry().GetStdOut().empty())
           {

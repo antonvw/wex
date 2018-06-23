@@ -313,7 +313,7 @@ bool wxExItem::CreateWindow(wxWindow* parent, bool readonly)
       wxArrayString arraychoices;
       const std::set<wxString> & choices(std::any_cast<std::set<wxString>>(m_Initial));
       arraychoices.resize(choices.size()); // required!
-      copy (choices.begin(), choices.end(), arraychoices.begin());
+      std::copy (choices.begin(), choices.end(), arraychoices.begin());
       m_Window = new wxCheckListBox(parent,
         m_Data.Window().Id(), 
         m_Data.Window().Pos(), 
@@ -711,7 +711,7 @@ const std::any wxExItem::GetValue() const
     case ITEM_TOGGLEBUTTON: any = ((wxToggleButton* )m_Window)->GetValue(); break;
     
     case ITEM_CHECKLISTBOX_BIT: {
-      wxCheckListBox* clb = (wxCheckListBox*)GetWindow();
+      auto* clb = (wxCheckListBox*)GetWindow();
       long value = 0;
       int item = 0;
 
@@ -916,7 +916,7 @@ bool wxExItem::SetValue(const std::any& value) const
     
     case ITEM_LISTVIEW:
       {
-      wxExListView* win = (wxExListView*)GetWindow();
+      auto* win = (wxExListView*)GetWindow();
       win->DeleteAllItems();
       win->ItemFromText(std::any_cast<std::string>(value));
       }

@@ -819,7 +819,7 @@ bool wxExSTC::ShowVCS(const wxExVCSEntry* vcs)
   {
     begin = std::stoi(vcs->GetPosBegin());
   }
-  catch (std::exception& e)
+  catch (std::exception& )
   {
     begin_is_number = false;
   }
@@ -828,7 +828,7 @@ bool wxExSTC::ShowVCS(const wxExVCSEntry* vcs)
   {
     end = std::stoi(vcs->GetPosEnd());
   }
-  catch (std::exception& e)
+  catch (std::exception& )
   {
     end_is_number = false;
   }

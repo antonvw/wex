@@ -35,8 +35,8 @@ bool wxExAddress::AdjustWindow(const std::string& text) const
     return false;
   }
   
-  const int count = (v[1].empty() ? 2: std::stoi(v[1]));
-  const std::string flags(v[2]);
+  const auto count = (v[1].empty() ? 2: std::stoi(v[1]));
+  const auto flags(v[2]);
   
   if (!Flags(flags))
   {
@@ -46,7 +46,7 @@ bool wxExAddress::AdjustWindow(const std::string& text) const
   int begin = GetLine();
   bool separator = false;
   
-  if (const std::string type(v[0]); !type.empty())
+  if (const auto type(v[0]); !type.empty())
   {
     switch ((int)type.at(0))
     {
@@ -166,7 +166,7 @@ int wxExAddress::GetLine() const
   }
   
   // Try address calculation.
-  if (const auto [sum, width] = m_Ex->Calculator(m_Address); std::isnan(sum))
+  if ([[maybe_unused]]const auto [sum, width] = m_Ex->Calculator(m_Address); std::isnan(sum))
   {
     return 0;
   }

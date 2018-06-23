@@ -107,7 +107,7 @@ void wxExFindReplaceData::SetFindStrings(
 
 void wxExFindReplaceData::SetMatchCase(bool value)
 {
-  int flags = GetFlags();
+  auto flags = GetFlags();
   if (value) flags |= wxFR_MATCHCASE;
   else       flags &= ~wxFR_MATCHCASE;
   SetFlags(flags);
@@ -115,7 +115,7 @@ void wxExFindReplaceData::SetMatchCase(bool value)
 
 void wxExFindReplaceData::SetMatchWord(bool value)
 {
-  int flags = GetFlags();
+  auto flags = GetFlags();
   
   if (value) flags |= wxFR_WHOLEWORD;
   else       flags &= ~wxFR_WHOLEWORD;

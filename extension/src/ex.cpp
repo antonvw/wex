@@ -296,16 +296,14 @@ wxExEx::wxExEx(wxExSTC* stc)
       m_CTags->Find(wxExFirstOf(command, " "));
       return true;}},
     {":una", [&](const std::string& command) {
-      wxExTokenizer tkz(command);
-      if (tkz.CountTokens() >= 1)
+      if (wxExTokenizer tkz(command); tkz.CountTokens() >= 1)
       {
         tkz.GetNextToken(); // skip :una
         m_Macros.SetAbbreviation(tkz.GetNextToken(), "");
       }
       return true;}},
     {":unm", [&](const std::string& command) {
-      wxExTokenizer tkz(command);
-      if (tkz.CountTokens() >= 1)
+      if (wxExTokenizer tkz(command); tkz.CountTokens() >= 1)
       {
         tkz.GetNextToken(); // skip :unm
         switch (ParseCommandWithArg(command))
@@ -733,45 +731,43 @@ int wxExEx::MarkerLine(char marker) const
 {
   if (marker == '<')
   {
-    if (GetSelectedText().empty())
+    if (!GetSelectedText().empty())
     {
-      return -1;
+      return m_Command.STC()->LineFromPosition(m_Command.STC()->GetSelectionStart());
     }
-    
-    return m_Command.STC()->LineFromPosition(m_Command.STC()->GetSelectionStart());
   }
   else if (marker == '>')
   {
-    if (GetSelectedText().empty())
+    if (!GetSelectedText().empty())
     {
-      return -1;
+      return m_Command.STC()->LineFromPosition(m_Command.STC()->GetSelectionEnd());
     }
-  
-    return m_Command.STC()->LineFromPosition(m_Command.STC()->GetSelectionEnd());
   }
   else
   {
     if (const auto& it = m_MarkerIdentifiers.find(marker); it != m_MarkerIdentifiers.end())
     {
-      const auto line = m_Command.STC()->MarkerLineFromHandle(it->second);
-    
-      if (line == -1)
+      if (const auto line = m_Command.STC()->MarkerLineFromHandle(it->second); line == -1)
       {
         wxLogStatus("Handle for marker: %c invalid", marker);
       }
-      return line;
+      else
+      {
+        return line;
+      }
     }
     else
     {
-      if (wxConfigBase::Get()->ReadLong(_("Error bells"), 1))
-      {
-        wxBell();
-      }
-
       wxLogStatus(_("Undefined marker: %c"), marker);
-      return -1;
     }
   }
+
+  if (wxConfigBase::Get()->ReadLong(_("Error bells"), 1))
+  {
+    wxBell();
+  }
+
+  return -1;
 }
 
 void wxExEx::Print(const std::string& text)

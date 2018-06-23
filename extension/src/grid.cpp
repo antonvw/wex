@@ -480,7 +480,7 @@ bool wxExGrid::IsAllowedDropSelection(const wxGridCellCoords& drop_coords, const
 
   while (tkz.HasMoreTokens())
   {
-    const std::string line = (tkz.GetNextToken());
+    const auto line(tkz.GetNextToken());
 
     wxExTokenizer tkz(line, "\t");
 
@@ -553,7 +553,7 @@ void wxExGrid::SetCellsValue(
 
   while (tkz.HasMoreTokens())
   {
-    const std::string line = (tkz.GetNextToken());
+    const auto line(tkz.GetNextToken());
 
     wxExTokenizer tkz(line, "\t");
 

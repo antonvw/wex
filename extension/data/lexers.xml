@@ -2514,7 +2514,7 @@ Copyright: (c) 2018, Anton van Wezenbeek
       unique_lock unique_ptr unitbuf unordered_map unordered_multimap unordered_multiset
       unordered_set unsetf upper_bound uppercase uses_allocator va_arg
       va_copy va_end va_start valarray value value_comp
-      value_compare value_or value_type vector vfprintf vfwprintf
+      value_compare value_or value_type variant vector vfprintf vfwprintf
       vprintf vscanf vfscanf vsscanf vsprintf vswprintf vwprintf vwscanf vfwscanf vswscanf
       wbuffer_convert wcerr wcin wclog wcout wcscat
       wcschr wcscmp wcscoll wcscpy wcscspn wcslen

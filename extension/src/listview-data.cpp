@@ -114,7 +114,7 @@ bool wxExListViewData::Inject()
   {
     injected = true;
     m_Initialized = true;
-    std::string name = TypeDescription();
+    auto name = TypeDescription();
 
     switch (m_Type)
     {
